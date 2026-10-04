@@ -14,6 +14,7 @@
 #include "actor/NpcActor.h"
 #include "game/GroundInfoBase.h"
 #include "net/CommManager.h"
+#include "field/FishShadow.h"
 
 // calls into other modules (the old extern "C" declarations keep their local signatures; the call compiles like the method call)
 #define Unk_02007694_getActionDonePriority _ZN12Unk_0200769421getActionDonePriorityEj
@@ -2174,19 +2175,12 @@ struct Unk_ov003_0220d114_Ent {
     u8 v[20];
 };
 
-struct Unk_ov003_0220d114_Act {
-    u8 pad_00[0x7e];
-    s8 fishId;
-    u8 pad_7f[0x1ff - 0x7f];
-    u8 sizeClass;
-};
-
 typedef PlayerActor Obj;
 typedef Unk_ov003_0220cd4c_V3 V3;
 typedef Mtx43 Blk;
 typedef PlayerActionRequest Msg;
 extern "C" void _ZN19PlayerActionRequest6assignEiis(Msg *self, s32 a, s32 b, s32 c);
-typedef Unk_ov003_0220d114_Act Act;
+typedef FishShadow Act;
 
 extern "C" {
 extern void *gCommManager;
@@ -2314,17 +2308,12 @@ struct FishShowCatchWork {
 
 
 
-struct Unk_ov003_0220d6f4_Act {
-    u8 pad_00[0x7e];
-    s8 fishId;
-};
-
 typedef PlayerActor Obj;
 typedef Unk_ov003_0220d6f4_V3 V3;
 typedef Mtx43 Blk;
 typedef PlayerActionRequest Msg;
 extern "C" void _ZN19PlayerActionRequest6assignEiis(Msg *self, s32 a, s32 b, s16 c);
-typedef Unk_ov003_0220d6f4_Act Act;
+typedef FishShadow Act;
 typedef TalkMsgRequest Sec;
 typedef FishShowCatchWork Rec;
 

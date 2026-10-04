@@ -3,7 +3,7 @@
 
 #include "types.h"
 
-struct Unk_ov004_02205c80_Obj;
+class FtrActor;
 
 // On/off state of a switchable furniture object (current and pending value; member at 0x73c), saved to the room map.
 // Members defined in src/ov004/unk_ov004_02204f24.cpp (0x02205c44-0x02205d5a).
@@ -13,9 +13,9 @@ struct FtrSwitch {
     void toggle(s32 flag);
     BOOL isChanging();
     u8 isOn();
-    void saveToMap(Unk_ov004_02205c80_Obj *o);
-    void commit(Unk_ov004_02205c80_Obj *o);
-    void loadFromMap(Unk_ov004_02205c80_Obj *o);
+    void saveToMap(FtrActor *o);
+    void commit(FtrActor *o);
+    void loadFromMap(FtrActor *o);
     void clear();
 
     /* 0x00 */ u8 cur;

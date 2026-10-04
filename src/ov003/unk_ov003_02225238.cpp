@@ -5,7 +5,7 @@
 #include "field/BottleThrow.h"
 #include "field/Unk_ov003_02224ba4_V3.h"
 #include "field/Unk_ov003_02225238_Grid.h"
-#include "field/Unk_ov003_02224bc4_Actor.h"
+#include "actor/Character.h"
 
 typedef Unk_ov003_02224ba4_V3 V3;
 
@@ -25,7 +25,7 @@ extern BottleThrow sBottleThrows[4];
 extern V3 data_ov003_02257d50;
 extern CommManager *gCommManager;
 
-Unk_ov003_02224bc4_Actor *PlayerActor_GetCharacter(s32 n);
+Character *PlayerActor_GetCharacter(s32 n);
 void func_0203239c(void *p);
 void func_020323b0(void *p);
 void func_021355f0(void *p, u32 n, u32 size, void *dtor);

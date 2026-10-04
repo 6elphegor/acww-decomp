@@ -19,8 +19,6 @@
 #include "room/FtrStackedSet.h"
 #include "talk/TalkWindowState.h"
 #include "game/BoxCollider.h"
-#include "room/Unk_ov004_02205c80_Obj.h"
-#include "room/Unk_ov004_02206570_Act.h"
 #include "game/CollisionEdge.h"
 #include "room/FtrTileList.h"
 #include "room/FtrGlowMat.h"

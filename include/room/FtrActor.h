@@ -106,6 +106,15 @@ public:
     BOOL isStereoOn();
     BOOL bindTvScreenTex(BOOL a);   // defined in 02209f70
 
+    void initLamp();
+    void moveTiles(void *a, s32 b);
+    void writeTiles(s32 unused, void *x, s32 y, u8 flag);
+    void clearTiles(s32 a, s32 b);
+    void getTiles(Unk_ov004_02207854_List *l, void *x, s32 y);
+    void applyPolygonId();
+    void setupModel();
+    void setupFromSpawnArg();
+
     /* 0x12e */ u16 modelSlot; // a ModelSlotHandle (ctor/dtor called by hand)
     /* 0x130 */ u8 pad_130[0x14c - 0x130];
     /* 0x14c */ s32 drawScale;
@@ -123,10 +132,17 @@ public:
     /* 0x178 */ u8 stackLink[0x10];   // FtrStackLink
     /* 0x188 */ u8 topItems[0x44];   // FtrTopItems
     /* 0x1cc */ u8 topItemCylinders[0x80];   // 4 x TouchPickCylinder (0x20)
-    /* 0x24c */ u8 moveFlag[0x34];
+    union {
+        /* 0x24c */ u8 moveFlag[0x34];   // move-animation state (FtrMoveAnim_*)
+        struct {
+            /* 0x24c */ u8 pad_24c[4];
+            /* 0x250 */ Mtx43 worldMtx;  // read by getTiles / writeTiles / clearTiles
+        };
+    };
     /* 0x280 */ u32 ftrIndex;
     /* 0x284 */ u8 mapLayer;
-    /* 0x285 */ u8 pad_285[3];
+    /* 0x285 */ u8 isSetUp;         // setupFromSpawnArg done
+    /* 0x286 */ u8 pad_286[2];
     /* 0x288 */ u8 touchBox[0x2a8];  // TouchPickBox
     /* 0x530 */ s32 baseAct;
     /* 0x534 */ u8 model[0x590 - 0x534]; // BlendAnimModel

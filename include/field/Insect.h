@@ -1,0 +1,89 @@
+#ifndef FIELD_INSECT_H
+#define FIELD_INSECT_H
+
+#include "types.h"
+#include "gfx/ModelAnim.h"
+#include "game/CollisionState.h"
+#include "gfx/AnimModel.h"
+#include "game/BugNetTarget.h"
+#include "gfx/PooledModel.h"
+#include "snd/CreatureSndChannel.h"
+#include "gfx/Mtx43.h"
+#include "gfx/ModelSlotPool.h"
+#include "game/FxVec3.h"
+#include "field/Unk_ov003_0225980c_V3.h"
+
+// Material (texture) animation of the bee / ant swarm insects (vtable 0x02234aac, derived from ModelAnim).
+class InsectMatAnim : public ModelAnim {
+public:
+    InsectMatAnim();
+    virtual ~InsectMatAnim();
+    static void *operator new(unsigned long, void *p) { return p; }
+};
+
+// One insect (0x25c bytes, code in src/ov003/unk_ov003_02225800.cpp): sFieldInsects[8], sSpecialInsects[2],
+// sHeldInsects[4] (static objects, no vtable).
+// Per-kind behavior: sInsectBehaviors[kind] {init, update}; update is kept in updateFn. Every namespace of
+// unk_ov003_02225800.cpp reaches it as `Rec` / `Obj` (typedefs of Insect); the ov068 critter helpers
+// (src/ov068/unk_ov068_022687c0.cpp) take it too.
+class Insect {
+public:
+    Insect();
+    ~Insect();
+
+    /* 0x000 */ InsectMatAnim matAnim;
+    /* 0x020 */ CollisionState collisionState;
+    /* 0x050 */ AnimModel model;
+    /* 0x108 */ BugNetTarget bugNetTarget;
+    /* 0x130 */ PooledModel pooledModel;
+    /* 0x170 */ void (*updateFn)(Insect *);
+    /* 0x174 */ CreatureSndChannel seEmitter;
+    /* 0x180 */ Mtx43 handMtx;
+    /* 0x1b0 */ Unk_ov003_0225980c_V3 wanderBoxMin;
+    /* 0x1bc */ Unk_ov003_0225980c_V3 wanderBoxMax;
+    /* 0x1c8 */ Unk_ov003_0225980c_V3 homePos;
+    /* 0x1d4 */ Unk_ov003_0225980c_V3 targetPos;
+    /* 0x1e0 */ Unk_ov003_0225980c_V3 perchPos; // dragonfly perch / moth light point (Insect_InitMoth: start position)
+    /* 0x1ec */ FxVec3 feelers[2];
+    /* 0x204 */ Unk_ov003_0225980c_V3 position;
+    /* 0x210 */ Unk_ov003_0225980c_V3 scale;
+    /* 0x21c */ s32 behaviorWork;
+    /* 0x220 */ s32 targetHeight;
+    /* 0x224 */ s32 disturbRadius;
+    /* 0x228 */ s32 baseHeight;
+    /* 0x22c */ s32 effectHandle;
+    /* 0x230 */ ModelSlotHandle modelSlot;
+    /* 0x232 */ s16 auxTimer;
+    /* 0x234 */ s16 outOfViewTimer;
+    /* 0x236 */ s16 despawnTimer;
+    /* 0x238 */ s16 rotX;
+    /* 0x23a */ s16 rotY;
+    /* 0x23c */ s16 rotZ;
+    /* 0x23e */ s16 unk_23e;
+    /* 0x240 */ s16 turnAngle;
+    /* 0x242 */ s16 stateTimer;
+    /* 0x244 */ s16 waitTimer;
+    /* 0x246 */ u8 canSing;
+    /* 0x247 */ u8 playerHoldsNet;
+    /* 0x248 */ u8 inUse;
+    /* 0x249 */ u8 inView;
+    /* 0x24a */ u8 isAlarmed;
+    /* 0x24b */ u8 unk_24b;
+    /* 0x24c */ u8 unk_24c;
+    /* 0x24d */ s8 kind;
+    /* 0x24e */ s8 hitCountdown;
+    /* 0x24f */ u8 frameCounter;
+    /* 0x250 */ u8 lifeState;
+    /* 0x251 */ u8 state;
+    /* 0x252 */ u8 cooldownTimer;
+    /* 0x253 */ u8 turnDelay;
+    /* 0x254 */ u8 alarm;
+    /* 0x255 */ u8 alarmThreshold;
+    /* 0x256 */ u8 unk_256;
+    /* 0x257 */ u8 moveSpeed;
+    /* 0x258 */ u8 inViewMask;
+    /* 0x259 */ u8 moveTargetDist;
+    /* 0x25a */ u8 pad_25a[2];
+};
+
+#endif

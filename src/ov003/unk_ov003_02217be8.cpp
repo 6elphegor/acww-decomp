@@ -11,6 +11,7 @@
 #include "gfx/Model.h"
 #include "sys/ProcProfile.h"
 #include "gfx/DebugColor.h"
+#include "gfx/NNSG3dRS.h"
 
 // TU19 of ov003: ground part classes 0x02217be8 / 0x02217dbc and the scene 0x02232418 (0x02217be8-0x022187f8)
 
@@ -122,40 +123,6 @@ public:
     void updateAmbientSe();
 };
 
-struct Unk_ov003_02218034_Obj {
-    u8 pad_00[0x5c];
-    u8 *resMdl;
-};
-
-struct Unk_ov003_02218784_Obj {
-    u8 pad_00[0x1c];
-    void (*cbVecFuncMat)(struct Unk_ov003_02218794_Obj *);
-    u8 pad_20[0x90 - 0x20];
-    u8 cbVecTimingMat;
-};
-
-struct Unk_ov003_02218794_Inner {
-    u8 pad_00[0x2c];
-    u8 *ptrUser;
-};
-
-struct Unk_ov003_02218794_A {
-    u8 pad_00[1];
-    u8 matIdx;
-};
-
-struct Unk_ov003_02218794_B {
-    u8 pad_00[0x28];
-    u32 transT;
-};
-
-struct Unk_ov003_02218794_Obj {
-    Unk_ov003_02218794_A *c;
-    Unk_ov003_02218794_Inner *pRenderObj;
-    u8 pad_08[0xb0 - 0x8];
-    struct Unk_ov003_02218794_B *pMatAnmResult;
-};
-
 // other modules' methods are reached through their real mangled symbols (object first)
 #define G3dResAccess_findMatIdx _ZN12G3dResAccess10findMatIdxEi
 #define MapBlockAcre_getAcreId _ZN12MapBlockAcre9getAcreIdEv
@@ -249,14 +216,14 @@ extern "C" FieldGround *FieldGround_Create() {
     return new FieldGround;
 }
 
-extern "C" void FieldGround_OnBeachMaterial(Unk_ov003_02218794_Obj *o) {
+extern "C" void FieldGround_OnBeachMaterial(NNSG3dRS *rs) {
     if (data_ov003_02235494 == 0) {
-        Unk_ov003_02218794_Inner *in = o->pRenderObj;
-        u8 *r3 = in->ptrUser;
-        u8 b = o->c->matIdx;
-        if (r3 != 0) {
-            if (*(s8 *)(r3 + 0xe8) == b) {
-                FX_Div(o->pMatAnmResult->transT + 0xda2, 0xda2);
+        NNSG3dRenderObj *in = rs->pRenderObj;
+        FieldGroundBlock *blk = (FieldGroundBlock *)in->ptrUser;
+        u8 b = rs->c[1]; // material id of the SBC MAT command
+        if (blk != 0) {
+            if (blk->beachMatIdx == b) {
+                FX_Div(rs->pMatAnmResult->transT + 0xda2, 0xda2);
                 Ground_SetWaveLevel();
                 data_ov003_02235494 = 1;
             }
@@ -264,9 +231,9 @@ extern "C" void FieldGround_OnBeachMaterial(Unk_ov003_02218794_Obj *o) {
     }
 }
 
-extern "C" void FieldGround_OnModelInit(Unk_ov003_02218784_Obj *o) {
-    o->cbVecFuncMat = FieldGround_OnBeachMaterial;
-    o->cbVecTimingMat = 2;
+extern "C" void FieldGround_OnModelInit(NNSG3dRS *rs) {
+    rs->cbVecFunc[4] = (void *)FieldGround_OnBeachMaterial; // NNS_G3D_SBC_MAT
+    rs->cbVecTiming[4] = 2;
 }
 
 FieldGround::FieldGround() {
@@ -492,10 +459,9 @@ void FieldGround::updateAmbientSe() {
     }
 }
 
-extern "C" void FieldGround_SetWaterMatFlags(void *op, s32 flag) {
-    Unk_ov003_02218034_Obj *o = (Unk_ov003_02218034_Obj *)op;
+extern "C" void FieldGround_SetWaterMatFlags(Model *o, s32 flag) {
     u32 i;
-    u8 *base = o->resMdl;
+    u8 *base = (u8 *)o->resMdl;
     u8 *r4 = base + *(s32 *)(base + 8);
     for (i = 0; i < 2; i++) {
         u32 t = G3dResAccess_findMatIdx(o->resMdl, sWaterMatNames[i]);

@@ -2,6 +2,7 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "sys/ProcProfile.h"
+#include "town/BuildingActor.h"
 
 // TU21 of ov003: house models, scene 0x022324ec (0x022187fc-0x02219294)
 // mwcc samples optimiser pragmas at the end of the file, so this applies to the whole TU
@@ -10,12 +11,6 @@
 
 struct Unk_ov003_02218e2c_V3 {
     s32 x, y, z;
-};
-
-struct Unk_ov003_02218bc8_Ent {
-    u8 pad_00[0x228];
-    /* 0x228 */ s32 gridX;
-    /* 0x22c */ s32 gridZ;
 };
 
 struct Unk_ov003_02218c60_Grid {
@@ -73,7 +68,7 @@ extern "C" {
 extern void *gFieldStructureHeap;
 extern u8 gSaveTownFlag[];
 extern void *gCurrentHeap;
-extern Unk_ov003_02218bc8_Ent *sBuildingList[0x20];
+extern BuildingActor *sBuildingList[0x20];
 extern Unk_ov003_02218c60_Grid *gSceneBlockMap;
 extern u8 data_020d0a7c[];
 extern u32 *gActorDefaultParent;
@@ -185,7 +180,7 @@ ProcProfile sFieldStructureMgrProfile = {(void *(*)())FieldStructureMgr_Create, 
 u8 sDoorExitMode;
 u16 sSpawnedBuildingCount1;
 char data_ov003_02235888[0x28];
-Unk_ov003_02218bc8_Ent *sBuildingList[0x20];
+BuildingActor *sBuildingList[0x20];
 const char sStructureTexSuffixes[3] = "sw";
 }
 
@@ -489,7 +484,7 @@ s32 BuildingList_Add(void *p) {
     s32 i;
     for (i = 0; (u32)i < 0x20; i++) {
         if (sBuildingList[i] == 0) {
-            sBuildingList[i] = (Unk_ov003_02218bc8_Ent *)p;
+            sBuildingList[i] = (BuildingActor *)p;
             return 1;
         }
     }
@@ -511,7 +506,7 @@ s32 BuildingList_Remove(void *p) {
 void *BuildingList_FindByGrid(s32 a, s32 b) {
     s32 i;
     for (i = 0; (u32)i < 0x20; i++) {
-        Unk_ov003_02218bc8_Ent *e = sBuildingList[i];
+        BuildingActor *e = sBuildingList[i];
         if (e != 0 && e->gridX == a && e->gridZ == b) {
             return e;
         }
@@ -531,7 +526,7 @@ void *BuildingList_FindByItem(u32 id) {
     s32 z0 = 0;
     s32 z1 = 0;
     for (i = 0; (u32)i < 0x20; i++) {
-        Unk_ov003_02218bc8_Ent *e = sBuildingList[i];
+        BuildingActor *e = sBuildingList[i];
         if (e != 0) {
             u16 *r = BuildingActor_getItemId(e);
             BOOL ok;

@@ -3,20 +3,9 @@
 #include "Unk_020d8c7c.h"
 #include "sys/ProcProfile.h"
 #include "gfx/DebugColor.h"
+#include "gfx/Camera.h"
 
 // TU28 of ov003: scene 0x02234f10 (+ the camera update 0x0222ef10) and the six colour constants of its header
-struct Unk_ov003_0222ef10_Cam {
-    u8 pad_00[0x110];
-    u8 targetFocus[8];
-    u32 targetFocusZ;
-    u8 pad_11c[0x1ca - 0x11c];
-    u8 focusIsPair;
-    u8 pad_1cb;
-    u8 focusPointA[0xc];
-    u8 focusPointB[0xc];
-    s32 closeUpFactorTarget;
-};
-
 // 4-byte colour constructors (unreferenced except by __sinit)
 class SnowballSpawner : public GameProc {
 public:
@@ -57,16 +46,16 @@ DebugColor data_ov003_0225b74c(20, 24, 24, 31);
 
 // ---- functions ----
 
-extern "C" void FieldCamera_UpdateFocusZoom(Unk_ov003_0222ef10_Cam *cam) {
+extern "C" void FieldCamera_UpdateFocusZoom(Camera *cam) {
     void *c = PlayerActor_GetBodyPos(4);
     s32 t;
     s32 v;
     if (cam->focusIsPair != 0) {
-        v = Camera_CalcTriangleSpan(c, cam->focusPointA, cam->focusPointB, cam->targetFocus, &t);
+        v = Camera_CalcTriangleSpan(c, &cam->focusPointA, &cam->focusPointB, &cam->targetFocus, &t);
     } else {
-        v = Camera_CalcPointSpan(c, cam->focusPointA, cam->targetFocus, &t);
+        v = Camera_CalcPointSpan(c, &cam->focusPointA, &cam->targetFocus, &t);
     }
-    cam->targetFocusZ = cam->targetFocusZ + t;
+    cam->targetFocus.z = cam->targetFocus.z + t;
     if (v < 0x4800) {
         v = 0x4800;
     } else if (v > 0xb000) {

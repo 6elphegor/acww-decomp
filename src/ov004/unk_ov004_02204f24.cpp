@@ -19,8 +19,6 @@
 #include "room/FtrAnimSet.h"
 #include "room/FtrStackedSet.h"
 #include "game/BoxCollider.h"
-#include "room/Unk_ov004_02205c80_Obj.h"
-#include "room/Unk_ov004_02206570_Act.h"
 #include "room/FtrTileList.h"
 #include "room/FtrGlowMat.h"
 #include "room/FtrStackLink.h"
@@ -130,62 +128,11 @@ typedef FtrActor Self;
 #include "room/FtrActor.h"
 
 
-// ================================================================ Unk_ov004_022077a4 (methods of the same object, named by the file they came from)
-class Unk_ov004_022077a4;
 
 // Set of up to four neighbour objects built by func_ov004_02206494
 struct FtrStackedSetView {
     u32 count;
-    Unk_ov004_022077a4 *v[4];
-};
-
-class Unk_ov004_022077a4 : public Character {
-public:
-    virtual BOOL vfunc_60();
-    virtual void vfunc_64(s32 a, NNSG3dRS *b);
-    virtual BOOL vfunc_68();
-    virtual void vfunc_6c(s32 a, void *b);
-    virtual BOOL vfunc_70(u32 a, u8 b);
-    virtual u8 vfunc_74(u32 a);
-    virtual u8 vfunc_78();
-
-    void initLamp();
-    void moveTiles(void *a, s32 b);
-    void writeTiles(s32 unused, void *x, s32 y, u8 flag);
-    void clearTiles(s32 a, s32 b);
-    void getTiles(Unk_ov004_02207854_List *l, void *x, s32 y);
-    void applyPolygonId();
-    void setupModel();
-    void setupFromSpawnArg();
-
-    /* 0xec */ u8 pad_ec[0x14c - 0xec];
-    /* 0x14c */ s32 drawScale, drawScaleY, drawScaleZ, colliderScale;
-    /* 0x15c */ u8 pad_15c[0x178 - 0x15c];
-    /* 0x178 */ u8 stackLink[0x250 - 0x178];
-    /* 0x250 */ Mtx43 worldMtx;
-    /* 0x280 */ s32 ftrIndex;
-    /* 0x284 */ u8 mapLayer;
-    /* 0x285 */ u8 isSetUp;
-    /* 0x286 */ u8 pad_286[0x534 - 0x286];
-    /* 0x534 */ u8 model[0x590 - 0x534];
-    /* 0x590 */ void *modelResMdl;
-    /* 0x594 */ u8 pad_594[0x6c8 - 0x594];
-    /* 0x6c8 */ u8 modelRes[0x73c - 0x6c8];
-    /* 0x73c */ u8 switchState[2];
-    /* 0x73e */ u8 clockHands[6];
-    /* 0x744 */ u8 lampMat[0x760 - 0x744];
-    /* 0x760 */ u8 visNodes[8];
-    /* 0x768 */ s32 spawnMode;
-    /* 0x76c */ u8 pad_76c[4];
-    /* 0x770 */ s32 commentPersonality, commentId;
-    /* 0x778 */ u8 pad_778[4];
-    /* 0x77c */ s32 kind;
-    /* 0x780 */ s32 footprint;
-    /* 0x784 */ s32 hasTopSurface;
-    /* 0x788 */ u8 noCollision, startsOff;
-    /* 0x78a */ u8 pad_78a[2];
-    /* 0x78c */ s32 surfaceHeight;
-    /* 0x790 */ s32 lightKind;
+    FtrActor *v[4];
 };
 
 // ================================================================ local helper types / inlines
@@ -398,7 +345,7 @@ s32 LightLevel_getLevel(void *p);
 s32 Math_LerpFx(s32 a, s32 b, s32 c);
 s32 NNSi_G3dModifyMatFlag(void *p, s32 a, s32 b);
 s32 NNS_G3dMdlSetMdlEmi(void *p, s32 a, s32 b);
-Unk_ov004_02205c80_Obj *FtrActorGrid_getActor(void *mgr, s32 a, s32 b, s32 c);
+FtrActor *FtrActorGrid_getActor(void *mgr, s32 a, s32 b, s32 c);
 void *FtrActorTable_GetInstance();
 s32 FtrActorTable_indexOf(void *mgr, void *o);
 void RoomItemIcons_DrawItem(u32 a, void *b, void *c, s32 d, s32 e, s32 f);
@@ -602,14 +549,14 @@ extern Mtx43 data_021f47e0;
 BOOL _ZN8FtrActor9isPreviewEv(void *self);
 BOOL _ZN8FtrActor11findOwnTileEPiS0_ii(void *self, s32 *a, s32 *b, s32 c, s32 d);
 BOOL _ZN8FtrActor11canRotateByEi(void *self);
-void _ZN18Unk_ov004_022077a48getTilesEP23Unk_ov004_02207854_ListPvi(void *self, Unk_ov004_02207854_List *l, void *x, s32 y);
+void _ZN8FtrActor8getTilesEP23Unk_ov004_02207854_ListPvi(void *self, Unk_ov004_02207854_List *l, void *x, s32 y);
 void _ZN11FtrTileListC1Ev(void *self);
 u32 _ZN11FtrTileList8getCountEv(void *self);
 Unk_ov004_02206520_Ent *_ZN11FtrTileList3getEi(void *self, s32 i);
 void _ZN11FtrTileList7releaseEv(void *self);
 BOOL _ZN11FtrTileList3addEjj(void *self, u32 a, u32 b);
 FtrStackedSetView *_ZN13FtrStackedSetC1EP11FtrTileListi(FtrStackedSetView *self, void *l, s32 flag);
-Unk_ov004_022077a4 *_ZN13FtrStackedSet3getEj(FtrStackedSetView *self, u32 i);
+FtrActor *_ZN13FtrStackedSet3getEj(FtrStackedSetView *self, u32 i);
 u32 _ZN13FtrStackedSet8getCountEv(FtrStackedSetView *self);
 void _ZN13FtrStackedSetC1Ev(FtrStackedSetView *self);
 BOOL _ZN8FtrActor8isGyroidEv(void);
@@ -656,7 +603,7 @@ void FtrActor_SpawnActorC0(void *a, u32 x);
 s32 FtrActor_GetDragSe(void);
 s32 FtrActor_TestCurSceneUnk();
 s32 FtrActor_TestSceneUnk(s32 a);
-void FtrActor_MakeItemForAngle(u16 *out, Unk_ov004_022077a4 *obj, s32 ang);
+void FtrActor_MakeItemForAngle(u16 *out, FtrActor *obj, s32 ang);
 u32 FtrActor_AngleToDir(s32 v);
 void FtrActor_SetInitialAct(Self *self);
 void FtrActor_UpdateTopItemBoxes(Self *self);
@@ -748,7 +695,7 @@ static inline BOOL Unk_ov004_02207650_InRange(u16 *p) {
 
 #define UNK_OV004_022072B4_FAIL()                              \
     {                                                          \
-        ((Unk_ov004_022077a4 *)this)->writeTiles(0, 0, 0, 0); \
+        ((FtrActor *)this)->writeTiles(0, 0, 0, 0); \
         _ZN11FtrTileList7releaseEv(&c2);   \
         _ZN11FtrTileList7releaseEv(&c1);   \
         return FALSE;                                          \
@@ -1110,7 +1057,7 @@ BOOL FtrActor::onCreate() {
     spawnMode = t;
     FtrActorTable_add(FtrActorTable_GetInstance(), this);
     void *r = ModelSlotPool_acquire(sFtrMgrPool, &modelSlot);
-    ((Unk_ov004_022077a4 *)this)->setupFromSpawnArg();
+    setupFromSpawnArg();
     if (Character_getCharId(this) == 0) {
         Character_setCharId(this, makeCharId(0, 0));
     }
@@ -1119,7 +1066,7 @@ BOOL FtrActor::onCreate() {
         void *p = ((FtrModelRes *)(modelRes))->getModel();
         Model_setResource(model, p, ((FtrModelRes *)(modelRes))->getTexture());
         isInitializing = 1;
-        ((Unk_ov004_022077a4 *)this)->setupModel();
+        setupModel();
         if (initModel()) {
             isInitializing = 0;
             return 1;
@@ -1130,7 +1077,7 @@ BOOL FtrActor::onCreate() {
             void *p = ((FtrModelRes *)(modelRes))->getModel();
             Model_setResource(model, p, ((FtrModelRes *)(modelRes))->getTexture());
             isInitializing = 1;
-            ((Unk_ov004_022077a4 *)this)->setupModel();
+            setupModel();
             if (initModel()) {
                 isInitializing = 0;
                 return 1;
@@ -1144,7 +1091,7 @@ BOOL FtrActor::onCreate() {
 // @02209558
 void FtrActor::postCreate(s32 a) {
     if (a == 2) {
-        ((Unk_ov004_022077a4 *)this)->initLamp();
+        initLamp();
     }
     Character_postCreate(this, a);
 }
@@ -1175,7 +1122,7 @@ BOOL FtrActor::onExecute() {
     }
     if (isPreview() == 0) {
         updateLamp();
-        ((FtrSwitch *)(switchState))->commit((Unk_ov004_02205c80_Obj *)this);
+        ((FtrSwitch *)(switchState))->commit(this);
         FtrActor_UpdateTopItemBoxes((Self *)this);
     }
     return TRUE;
@@ -1216,7 +1163,7 @@ BOOL FtrActor::preDraw() {
         }
     }
     if (isPreview() == 0) {
-        ((FtrTopItems *)((u8 *)this + 0x188))->drawAll((Unk_ov004_02205c80_Obj *)this);
+        ((FtrTopItems *)((u8 *)this + 0x188))->drawAll(this);
     }
     return TRUE;
 }
@@ -1237,7 +1184,7 @@ BOOL FtrActor::postDelete(s32 a) {
         FtrActor_ReleaseCollider((Self *)this);
         if (isRemoving() == 0) {
             if (isHidden() == 0) {
-                ((FtrSwitch *)(switchState))->saveToMap((Unk_ov004_02205c80_Obj *)this);
+                ((FtrSwitch *)(switchState))->saveToMap(this);
             }
         }
         ((FtrModelRes *)(modelRes))->release();
@@ -1248,13 +1195,13 @@ BOOL FtrActor::postDelete(s32 a) {
             u32 r = Scene_GetCurrent();
             if (FtrMgr_IsSaleMode() && !SceneId_IsVillagerHouse(r) && !SceneId_IsHouseRoom(r)) {
                 void *g = gSceneBlockMap;
-                ((Unk_ov004_022077a4 *)this)->clearTiles(0, 0);
+                clearTiles(0, 0);
                 if (g) {
                     u16 v = 0x1547;
                     BlockMap_SetItemAtUnit(g, &v, x, y, 0);
                 }
             } else {
-                ((Unk_ov004_022077a4 *)this)->clearTiles(1, 0);
+                clearTiles(1, 0);
             }
             spawnActorC0AtCenter();
         }
@@ -1872,7 +1819,7 @@ extern "C" void FtrActor_UpdateTopItemBoxes(Self *self) {
         void *grid;
         u32 i;
         _ZN11FtrTileListC1Ev(&l);
-        ((Unk_ov004_022077a4 *)(self))->getTiles(&l, 0, 0);
+        ((FtrActor *)(self))->getTiles(&l, 0, 0);
         grid = gSceneBlockMap;
         for (i = 0; i < _ZN11FtrTileList8getCountEv(&l); i++) {
             s32 x = _ZN11FtrTileList3getEi(&l, i)->x;
@@ -1898,7 +1845,7 @@ extern "C" void FtrActor_SetInitialAct(Self *self) {
 }
 
 // @02207ef0
-void Unk_ov004_022077a4::setupFromSpawnArg() {
+void FtrActor::setupFromSpawnArg() {
     if (isSetUp == 0) {
         struct {
             volatile u16 tmp;
@@ -1909,7 +1856,7 @@ void Unk_ov004_022077a4::setupFromSpawnArg() {
         f.bits = *(FtrSpawnArg *)&param;
         Unk_ov004_022077a4_Vec3 p1, p2, r;
         volatile Unk_ov004_022077a4_Vec3 q;
-        if (!((FtrActor *)this)->isPreview()) {
+        if (!isPreview()) {
             FieldPos_FromBlockUnitCenter(&position, 0, 0, f.bits.tileX, f.bits.tileZ);
             position.y = FtrMgr_GetSurfaceHeightAtPos(&position);
             drawScale = 0x1000;
@@ -1939,12 +1886,12 @@ void Unk_ov004_022077a4::setupFromSpawnArg() {
         }
         rotY = f.bits.dir << 14;
         ftrIndex = f.bits.ftrIndex;
-        if (ftrIndex >= 0x6e9) {
+        if ((s32)ftrIndex >= 0x6e9) {
             ftrIndex = 0x6e8;
         }
         f.tmp = Item_MakeFurniture(ftrIndex, 0);
         mapLayer = f.bits.layer;
-        if (!((FtrActor *)this)->isPreview() && mapLayer == 0) {
+        if (!isPreview() && mapLayer == 0) {
             position.y = 0;
             if (Scene_GetCurrent() == 10) {
                 position.y = FtrMgr_GetSurfaceHeightAtPos(&position);
@@ -1959,7 +1906,7 @@ void Unk_ov004_022077a4::setupFromSpawnArg() {
         startsOff = FtrInfo_TestIndoorFlag3(ftrIndex);
         hasTopSurface = FtrInfo_GetDmaUnk04(ftrIndex);
         lightKind = FtrInfo_GetIndoorFlagPair(ftrIndex);
-        if (!((FtrActor *)this)->isPreview()) {
+        if (!isPreview()) {
             if (footprint == 2) {
                 position.x += 0x1000;
                 position.z += 0x1000;
@@ -1969,7 +1916,7 @@ void Unk_ov004_022077a4::setupFromSpawnArg() {
             }
         }
         FtrActor_UpdateMtx((Self *)this);
-        ((FtrSwitch *)(switchState))->loadFromMap((Unk_ov004_02205c80_Obj *)this);
+        ((FtrSwitch *)(switchState))->loadFromMap(this);
         writeTiles(1, 0, 0, 0);
         FtrActor_SetInitialAct((Self *)this);
         FtrActor_InitCollider((Self *)this);
@@ -1978,11 +1925,11 @@ void Unk_ov004_022077a4::setupFromSpawnArg() {
 }
 
 // @02207e48
-void Unk_ov004_022077a4::setupModel() {
-    void *p = modelResMdl;
+void FtrActor::setupModel() {
+    void *p = (void *)modelResMdl;
     s32 a = G3dResAccess_findNodeIdx(p, (s32)"kh_j");
     s32 b = G3dResAccess_findNodeIdx(p, (s32)"km_j");
-    ((FtrClockHands *)(clockHands))->set((s8)a, (s8)b);
+    ((FtrClockHands *)&clockHands)->set((s8)a, (s8)b);
     Model_setInitCallback(model, (s32)FtrActor_SetModelCallbacks, this);
     ((FtrVisNodes *)(visNodes))->init((void *)modelResMdl, 1);
     s32 t = (s32)((FtrModelRes *)(modelRes))->getModel();
@@ -1993,7 +1940,7 @@ void Unk_ov004_022077a4::setupModel() {
 }
 
 // @02207e14
-void Unk_ov004_022077a4::applyPolygonId() {
+void FtrActor::applyPolygonId() {
     s32 r = FtrActorTable_indexOf(FtrActorTable_GetInstance(), this);
     if (r != -1) {
         Model_setPolygonId(model, sFtrPolygonIds[r]);
@@ -2007,7 +1954,7 @@ const u8 sFtrPolygonIds[0x1c] = {0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d,
                                       0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0x3a, 0x3b, 0x3c, 0x3c, 0x3c, 0x3c, 0x3c};
 
 // @02207c40
-void Unk_ov004_022077a4::getTiles(Unk_ov004_02207854_List *l, void *x, s32 y) {
+void FtrActor::getTiles(Unk_ov004_02207854_List *l, void *x, s32 y) {
     Unk_ov004_022077a4_Vec3 c;
     Unk_ov004_022077a4_Vec3 d;
     Unk_ov004_022077a4_Vec3 e;
@@ -2081,13 +2028,13 @@ extern "C" u32 FtrActor_AngleToDir(s32 v) {
 }
 
 // @02207bdc
-extern "C" void FtrActor_MakeItemForAngle(u16 *out, Unk_ov004_022077a4 *obj, s32 ang) {
+extern "C" void FtrActor_MakeItemForAngle(u16 *out, FtrActor *obj, s32 ang) {
     *out = Item_MakeFurniture(obj->ftrIndex, FtrActor_AngleToDir(ang));
 }
 
 // @02207ac4
-void Unk_ov004_022077a4::clearTiles(s32 a, s32 b) {
-    if (!((FtrActor *)this)->isPreview()) {
+void FtrActor::clearTiles(s32 a, s32 b) {
+    if (!isPreview()) {
         Unk_ov004_02207854_List l;
         void *grid;
         u32 i;
@@ -2123,8 +2070,8 @@ void Unk_ov004_022077a4::clearTiles(s32 a, s32 b) {
 }
 
 // @022078d8
-void Unk_ov004_022077a4::writeTiles(s32 unused, void *x, s32 y, u8 flag) {
-    if (!((FtrActor *)this)->isPreview()) {
+void FtrActor::writeTiles(s32 unused, void *x, s32 y, u8 flag) {
+    if (!isPreview()) {
         Unk_ov004_02207854_List l;
         u16 a, b, c;
         u32 r7;
@@ -2152,7 +2099,7 @@ void Unk_ov004_022077a4::writeTiles(s32 unused, void *x, s32 y, u8 flag) {
         } else {
             r7 = ((u32 (*)(void *))FtrActor_PredIsGyroid)(this);
         }
-        v18 = vfunc_78();
+        v18 = getActAid();
         for (i = 0; i < _ZN11FtrTileList8getCountEv(&l); i++) {
             if (i == 0) {
                 u32 s = ((FtrSwitch *)(switchState))->isOn();
@@ -2167,7 +2114,7 @@ void Unk_ov004_022077a4::writeTiles(s32 unused, void *x, s32 y, u8 flag) {
             FtrActorGrid_setCell(o, this, p3->x, p4->y, mapLayer);
         }
         if (flag != 0) {
-            u32 r = ((FtrActor *)this)->makeCharId((s32)x, y);
+            u32 r = makeCharId((s32)x, y);
             if (r != Character_getCharId(this)) {
                 Character_setCharId(this, r);
             }
@@ -2177,7 +2124,7 @@ void Unk_ov004_022077a4::writeTiles(s32 unused, void *x, s32 y, u8 flag) {
 }
 
 // @02207854
-void Unk_ov004_022077a4::moveTiles(void *a, s32 b) {
+void FtrActor::moveTiles(void *a, s32 b) {
     Unk_ov004_02207854_List l;
     FtrStackedSetView set;
     u32 i;
@@ -2187,7 +2134,7 @@ void Unk_ov004_022077a4::moveTiles(void *a, s32 b) {
     clearTiles(1, 1);
     writeTiles(1, a, b, 1);
     for (i = 0; i < _ZN13FtrStackedSet8getCountEv(&set); i++) {
-        Unk_ov004_022077a4 *o = _ZN13FtrStackedSet3getEj(&set, i);
+        FtrActor *o = _ZN13FtrStackedSet3getEj(&set, i);
         if (o != 0) {
             o->writeTiles(1, a, b, 1);
         }
@@ -2207,9 +2154,9 @@ extern "C" s32 FtrActor_TestCurSceneUnk() {
 }
 
 // @022077a4
-void Unk_ov004_022077a4::initLamp() {
+void FtrActor::initLamp() {
     if (FtrActor_PredIsLightSource()) {
-        void *v = modelResMdl;
+        void *v = (void *)modelResMdl;
         u32 t = ((FtrSwitch *)(switchState))->isOn();
         ((FtrGlowMat *)(lampMat))->bindMaterial((G3dResAccess *)v, (s32)"lp_m", t);
         if (FtrActor_TestCurSceneUnk()) {
@@ -2284,7 +2231,7 @@ extern "C" s32 FtrActor_GetDragSe(void) {
 BOOL FtrActor::hasItemOnTop() {
     Unk_ov004_02207854_List c;
     _ZN11FtrTileListC1Ev(&c);
-    ((Unk_ov004_022077a4 *)(this))->getTiles(&c, 0, 0);
+    ((FtrActor *)(this))->getTiles(&c, 0, 0);
     void *grid = gSceneBlockMap;
     if (mapLayer == 0 && hasTopSurface == 1) {
         u32 i;
@@ -2345,7 +2292,7 @@ BOOL FtrActor::canMoveTo(s32 a, s32 b) {
     if (grid == 0 || cam == 0) {
         return FALSE;
     }
-    if (!((FtrTopItems *)(topItems))->canPickUp((Unk_ov004_02205c80_Obj *)this)) {
+    if (!((FtrTopItems *)(topItems))->canPickUp(this)) {
         return FALSE;
     }
     Unk_0203e4f0_Vec *pp = (Unk_0203e4f0_Vec *)(cam + 0x5c);
@@ -2361,11 +2308,11 @@ BOOL FtrActor::canMoveTo(s32 a, s32 b) {
     }
     FieldPos_ToUnit(&x1, &y1, &v2);
     obj = (FtrActor *)FtrActorGrid_getActor(FtrActorGrid_GetInstance(), x1, y1, 0);
-    ((Unk_ov004_022077a4 *)(this))->clearTiles(0, 0);
+    ((FtrActor *)(this))->clearTiles(0, 0);
     _ZN11FtrTileListC1Ev(&c1);
-    ((Unk_ov004_022077a4 *)(this))->getTiles(&c1, (void *)a, b);
+    ((FtrActor *)(this))->getTiles(&c1, (void *)a, b);
     _ZN11FtrTileListC1Ev(&c2);
-    ((Unk_ov004_022077a4 *)(this))->getTiles(&c2, (void *)a, b >> 1);
+    ((FtrActor *)(this))->getTiles(&c2, (void *)a, b >> 1);
     u32 i;
     for (i = 0; i < _ZN11FtrTileList8getCountEv(&c1); i++) {
         x = _ZN11FtrTileList3getEi(&c1, i)->x;
@@ -2389,7 +2336,7 @@ BOOL FtrActor::canMoveTo(s32 a, s32 b) {
             if ((obj && obj->noCollision == 0 && obj != this) || Ground_GetExitAtPos(&v2) != -1 || FtrMgr_GetSurfaceHeightAtPos(&v2)) UNK_OV004_022072B4_FAIL()
         }
     }
-    ((Unk_ov004_022077a4 *)(this))->writeTiles(0, 0, 0, 0);
+    ((FtrActor *)(this))->writeTiles(0, 0, 0, 0);
     _ZN11FtrTileList7releaseEv(&c2);
     _ZN11FtrTileList7releaseEv(&c1);
     return TRUE;
@@ -2420,7 +2367,7 @@ u16 FtrActor::makeCharId(s32 a, s32 b) {
 BOOL FtrActor::findOwnTile(s32 *ox, s32 *oy, s32 a, s32 b) {
     Unk_ov004_02207854_List c;
     _ZN11FtrTileListC1Ev(&c);
-    ((Unk_ov004_022077a4 *)(this))->getTiles(&c, (void *)a, *(s16 *)&b);
+    ((FtrActor *)(this))->getTiles(&c, (void *)a, *(s16 *)&b);
     void *grid = gSceneBlockMap;
     u32 i;
     for (i = 0; i < _ZN11FtrTileList8getCountEv(&c); i++) {
@@ -2462,7 +2409,7 @@ void FtrActor::spawnActorC0AtTile(s32 a) {
         Unk_0203e4f0_Vec v1;
         Unk_0203e4f0_Vec v2;
         _ZN11FtrTileListC1Ev(&c);
-        ((Unk_ov004_022077a4 *)(this))->getTiles(&c, 0, 0);
+        ((FtrActor *)(this))->getTiles(&c, 0, 0);
         s32 hi = 0;
         s32 hiIdx = ~hi;
         s32 loIdx = hiIdx;
@@ -2808,7 +2755,7 @@ void FtrCollider::clearOwner() {
 }
 
 // @02206744
-void FtrCollider::onEdgeContact(CollisionEdge *a, Unk_ov004_02206570_Act *b, s32 c) {
+void FtrCollider::onEdgeContact(CollisionEdge *a, Actor *b, s32 c) {
     CollisionVec2 v0, v1, v2, mid, d1, d2;
     volatile Unk_ov004_02206744_V3 pos;
     Unk_ov004_02206744_V3 w1, w2, buf;
@@ -2823,7 +2770,7 @@ void FtrCollider::onEdgeContact(CollisionEdge *a, Unk_ov004_02206570_Act *b, s32
             t20 = Math_Atan2(a->normal.x, a->normal.y);
             t24 = t20 + 0x8000;
             r7 = (u16)(t24 - b->rotY);
-            pv = &b->prevPosition;
+            pv = (Unk_ov004_02206744_V3 *)&b->prevPosition;
             px = b->prevPosition.x;
             pos.x = px;
             pos.y = pv->y;
@@ -2867,13 +2814,13 @@ void FtrCollider::onEdgeContact(CollisionEdge *a, Unk_ov004_02206570_Act *b, s32
                                 }
                                 slideOwnerForWideFtr(b);
                                 t18 = (s32)FtrActorTable_indexOf(FtrActorTable_GetInstance(), owner);
-                                r5 = (s16)(t20 - ((Unk_ov004_02206570_Act *)owner)->rotY);
+                                r5 = (s16)(t20 - ((FtrActor *)owner)->rotY);
                                 if (FtrActor_GetLayer((Self *)owner) == 1) {
                                     void *q;
                                     FtrActor_GetCenter((Self *)owner, (Vec3 *)&buf);
                                     q = FtrActorGrid_getActorAtPos(FtrActorGrid_GetInstance(), &buf, 0);
                                     if (q != NULL) {
-                                        r5 = (s16)(t20 - ((Unk_ov004_02206570_Act *)q)->rotY - ((FtrStackLink *)((u8 *)owner + 0x178))->getRelAngle());
+                                        r5 = (s16)(t20 - ((FtrActor *)q)->rotY - ((FtrStackLink *)((u8 *)owner + 0x178))->getRelAngle());
                                     }
                                 }
                                 r5 = FtrActor_AngleToDir(r5);
@@ -2897,16 +2844,16 @@ char sFtrModelName[] = "FTR:a/bmd/bmd0";
 char *sFtrModelNamePtr = sFtrModelName;
 
 // @02206570
-void FtrCollider::slideOwnerForWideFtr(Unk_ov004_02206570_Act *b) {
-    Unk_ov004_02206570_Act *o;
+void FtrCollider::slideOwnerForWideFtr(Actor *b) {
+    FtrActor *o;
     Unk_ov004_02206744_V3 tmp[2];
-    o = (Unk_ov004_02206570_Act *)owner;
+    o = (FtrActor *)owner;
     if (*(s32 *)((u8 *)o + 0x780) == 1) {
         static FxVec3 tbl0[2] = {FxVec3(0, 0, 0), FxVec3(-0x2000, 0, 0)};
         static FxVec3 tbl1[2] = {FxVec3(0, 0, 0), FxVec3(0x2000, 0, 0)};
         static FxVec3 one(0x2000, 0, 0);
         s32 r6;
-        Mtx43_SetRotY(&data_021f47e0, ((Unk_ov004_02206570_Act *)owner)->rotY);
+        Mtx43_SetRotY(&data_021f47e0, ((FtrActor *)owner)->rotY);
         MTX_MultVec43(&one, &data_021f47e0, &tmp[0]);
         FtrActor_LocalToWorld((Self *)owner, &tmp[1], &tbl1[0]);
         r6 = Vec_Distance(&b->position, &tmp[1]);
@@ -2918,7 +2865,7 @@ void FtrCollider::slideOwnerForWideFtr(Unk_ov004_02206570_Act *b) {
                 d->x = s->x;
                 d->y = s->y;
                 d->z = s->z;
-                VEC_Subtract(&((Unk_ov004_02206570_Act *)owner)->position, &tmp[0], &((Unk_ov004_02206570_Act *)owner)->position);
+                VEC_Subtract(&((FtrActor *)owner)->position, &tmp[0], &((FtrActor *)owner)->position);
             }
         } else {
             if (Vec_NotEqual((u8 *)owner + 0x140, &tbl0[1])) {
@@ -2926,7 +2873,7 @@ void FtrCollider::slideOwnerForWideFtr(Unk_ov004_02206570_Act *b) {
                 d->x = ((u32 *)tbl0)[3];
                 d->y = ((u32 *)tbl0)[4];
                 d->z = ((u32 *)tbl0)[5];
-                VEC_Add(&((Unk_ov004_02206570_Act *)owner)->position, &tmp[0], &((Unk_ov004_02206570_Act *)owner)->position);
+                VEC_Add(&((FtrActor *)owner)->position, &tmp[0], &((FtrActor *)owner)->position);
             }
         }
     }
@@ -2978,7 +2925,7 @@ void FtrStackedSet::collect(FtrTileList *l, s32 flag) {
             void *mgr = FtrActorGrid_GetInstance();
             Unk_ov004_02206520_Ent *a = l->get(i);
             Unk_ov004_02206520_Ent *b = l->get(i);
-            Unk_ov004_02205c80_Obj *o = FtrActorGrid_getActor(mgr, a->x, b->y, 1);
+            FtrActor *o = FtrActorGrid_getActor(mgr, a->x, b->y, 1);
             if (o != NULL) {
                 add(o);
             }
@@ -3003,12 +2950,12 @@ u32 FtrStackedSet::getCount() {
 }
 
 // @02206474
-Unk_ov004_02205c80_Obj *FtrStackedSet::get(u32 i) {
+FtrActor *FtrStackedSet::get(u32 i) {
     return actors[i & 3];
 }
 
 // @02206434
-BOOL FtrStackedSet::add(Unk_ov004_02205c80_Obj *o) {
+BOOL FtrStackedSet::add(FtrActor *o) {
     u32 i;
     u32 n;
     if (o == NULL) {
@@ -3171,7 +3118,7 @@ BOOL FtrTopItem::set(u16 *id, Unk_ov004_02205d8c_Vec *pos) {
 }
 
 // @02206234
-void FtrTopItem::draw(Unk_ov004_02205c80_Obj *o) {
+void FtrTopItem::draw(FtrActor *o) {
     if (isSet()) {
         Unk_ov004_02205d8c_Vec z, d, p, s;
         data_021f47e0 = o->modelMtx;
@@ -3220,7 +3167,7 @@ FtrTopItem *FtrTopItems::get(u32 i) {
 }
 
 // @02206190
-void FtrTopItems::drawAll(Unk_ov004_02205c80_Obj *o) {
+void FtrTopItems::drawAll(FtrActor *o) {
     u32 i;
     for (i = 0; i < 4; i++) {
         get(i)->draw(o);
@@ -3240,9 +3187,9 @@ BOOL FtrTopItems::add(u16 *id, Unk_ov004_02205d8c_Vec *pos) {
 }
 
 // @0220607c
-BOOL FtrTopItems::canPickUp(Unk_ov004_02205c80_Obj *o) {
+BOOL FtrTopItems::canPickUp(FtrActor *o) {
     FtrTileList list;
-    _ZN18Unk_ov004_022077a48getTilesEP23Unk_ov004_02207854_ListPvi(o, (Unk_ov004_02207854_List *)&list, 0, 0);
+    _ZN8FtrActor8getTilesEP23Unk_ov004_02207854_ListPvi(o, (Unk_ov004_02207854_List *)&list, 0, 0);
     void *grid = gSceneBlockMap;
     u32 i;
     for (i = 0; i < list.getCount(); i++) {
@@ -3263,11 +3210,11 @@ BOOL FtrTopItems::canPickUp(Unk_ov004_02205c80_Obj *o) {
 }
 
 // @02205f58
-BOOL FtrTopItems::pickUpAll(Unk_ov004_02205c80_Obj *o) {
+BOOL FtrTopItems::pickUpAll(FtrActor *o) {
     static ItemId dflt(0xfff1);
     BOOL res = TRUE;
     FtrTileList list;
-    _ZN18Unk_ov004_022077a48getTilesEP23Unk_ov004_02207854_ListPvi(o, (Unk_ov004_02207854_List *)&list, 0, 0);
+    _ZN8FtrActor8getTilesEP23Unk_ov004_02207854_ListPvi(o, (Unk_ov004_02207854_List *)&list, 0, 0);
     void *grid = gSceneBlockMap;
     if (canPickUp(o)) {
         clearAll();
@@ -3302,7 +3249,7 @@ BOOL FtrTopItems::pickUpAll(Unk_ov004_02205c80_Obj *o) {
 }
 
 // @02205eb0
-void FtrTopItems::dropAll(Unk_ov004_02205c80_Obj *o) {
+void FtrTopItems::dropAll(FtrActor *o) {
     u32 i;
     for (i = 0; i < 4; i++) {
         FtrTopItem *e = get(i);
@@ -3391,7 +3338,7 @@ BOOL FtrStackLink::attachAt(s32 x, s32 y, s16 z) {
 // @02205d8c
 extern "C" BOOL FtrStack_CalcRelPlacement(s32 *idx, Unk_ov004_02205d8c_Vec *pos, s16 *ang, s32 x, s32 a, s16 b) {
     void *mgr = FtrActorGrid_GetInstance();
-    Unk_ov004_02205c80_Obj *e = FtrActorGrid_getActor(mgr, x, a, 0);
+    FtrActor *e = FtrActorGrid_getActor(mgr, x, a, 0);
     s32 i = FtrActorTable_indexOf(FtrActorTable_GetInstance(), e);
     if (e != NULL && i != -1) {
         Unk_ov004_02205d8c_Vec t;
@@ -3443,7 +3390,7 @@ FtrSwitch::~FtrSwitch() {
 }
 
 // @02205cdc
-void FtrSwitch::loadFromMap(Unk_ov004_02205c80_Obj *o) {
+void FtrSwitch::loadFromMap(FtrActor *o) {
     s32 r = 0;
     s32 x, y;
     if (o->spawnMode == 1 || _ZN8FtrActor9isPreviewEv(o) != 0) {
@@ -3462,14 +3409,14 @@ void FtrSwitch::loadFromMap(Unk_ov004_02205c80_Obj *o) {
 }
 
 // @02205cc4
-void FtrSwitch::commit(Unk_ov004_02205c80_Obj *o) {
+void FtrSwitch::commit(FtrActor *o) {
     if (_ZN8FtrActor9isPreviewEv(o) == 0) {
         cur = next;
     }
 }
 
 // @02205c80
-void FtrSwitch::saveToMap(Unk_ov004_02205c80_Obj *o) {
+void FtrSwitch::saveToMap(FtrActor *o) {
     if (_ZN8FtrActor9isPreviewEv(o) == 0) {
         s32 x, y;
         if (_ZN8FtrActor11findOwnTileEPiS0_ii(o, &x, &y, 0, 0)) {
@@ -3861,14 +3808,14 @@ BOOL FtrActor::execIdle() {}
 
 // @022052f4
 BOOL FtrActor::enterRotate() {
-    ((FtrTopItems *)topItems)->pickUpAll((Unk_ov004_02205c80_Obj *)this);
+    ((FtrTopItems *)topItems)->pickUpAll(this);
     s32 d = (s16)(targetAngle - rotY);
-    ((Unk_ov004_022077a4 *)this)->moveTiles(0, d);
+    moveTiles(0, d);
     if (d < 0) d = 1; else d = 0;
     VCALL98(this, d);
     if (mapLayer == 0 && hasTopSurface == 1) {
         FtrTileList v;
-        ((Unk_ov004_022077a4 *)this)->getTiles((Unk_ov004_02207854_List *)&v, 0, 0);
+        getTiles((Unk_ov004_02207854_List *)&v, 0, 0);
         for (u32 i = 0; i < v.getCount(); i++) {
             void *mgr = FtrActorGrid_GetInstance();
             Unk_ov004_02206520_Ent *e = v.get(i);
@@ -3888,7 +3835,7 @@ BOOL FtrActor::execRotate() {
     VCALL9C(this, neg);
     if (mapLayer == 0 && hasTopSurface == 1) {
         FtrTileList v;
-        ((Unk_ov004_022077a4 *)this)->getTiles((Unk_ov004_02207854_List *)&v, 0, 0);
+        getTiles((Unk_ov004_02207854_List *)&v, 0, 0);
         for (u32 i = 0; i < v.getCount(); i++) {
             void *mgr = FtrActorGrid_GetInstance();
             Unk_ov004_02206520_Ent *e = v.get(i);
@@ -3899,7 +3846,7 @@ BOOL FtrActor::execRotate() {
     }
     if (Math_StepAngle(&rotY, targetAngle, 0x700)) {
         setAct(1);
-        ((FtrTopItems *)topItems)->dropAll((Unk_ov004_02205c80_Obj *)this);
+        ((FtrTopItems *)topItems)->dropAll(this);
     }
 }
 
@@ -3907,8 +3854,8 @@ BOOL FtrActor::execRotate() {
 BOOL FtrActor::enterPush() {
     Unk_ov004_0224882c_Buf buf;
     Vec_Sub(&buf, targetPos, &position);
-    ((FtrTopItems *)topItems)->pickUpAll((Unk_ov004_02205c80_Obj *)this);
-    ((Unk_ov004_022077a4 *)this)->moveTiles(&buf, 0);
+    ((FtrTopItems *)topItems)->pickUpAll(this);
+    moveTiles(&buf, 0);
     void *g = FurnitureManager_GetMoveAnim();
     if (g) {
         if (FtrMoveAnim_StartPush(g, moveFlag, &position.x, targetAngle)) {
@@ -3930,7 +3877,7 @@ void FtrActor::execPush() {
             position.y = targetPos[1];
             position.z = targetPos[2];
             setAct(1);
-            ((FtrTopItems *)topItems)->dropAll((Unk_ov004_02205c80_Obj *)this);
+            ((FtrTopItems *)topItems)->dropAll(this);
         } else {
             position.x = buf.v[0];
             position.y = buf.v[1];
@@ -3943,8 +3890,8 @@ void FtrActor::execPush() {
 BOOL FtrActor::enterPull() {
     Unk_ov004_0224882c_Buf buf;
     Vec_Sub(&buf, targetPos, &position);
-    ((FtrTopItems *)topItems)->pickUpAll((Unk_ov004_02205c80_Obj *)this);
-    ((Unk_ov004_022077a4 *)this)->moveTiles(&buf, 0);
+    ((FtrTopItems *)topItems)->pickUpAll(this);
+    moveTiles(&buf, 0);
     void *g = FurnitureManager_GetMoveAnim();
     if (g) {
         if (FtrMoveAnim_StartPull(g, moveFlag, &position.x, targetAngle)) {

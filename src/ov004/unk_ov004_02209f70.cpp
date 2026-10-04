@@ -20,8 +20,6 @@
 #include "room/FtrStackedSet.h"
 #include "talk/TalkWindowState.h"
 #include "game/BoxCollider.h"
-#include "room/Unk_ov004_02205c80_Obj.h"
-#include "room/Unk_ov004_02206570_Act.h"
 #include "game/CollisionEdge.h"
 #include "room/FtrTileList.h"
 #include "room/FtrGlowMat.h"
@@ -3539,7 +3537,7 @@ void FtrClock::markNearestSoundingClock() {
 // ---- part 19: from unk_0220f2bc.cpp
 namespace p19 {
 extern "C" {
-void _ZN18Unk_ov004_022077a48getTilesEP23Unk_ov004_02207854_ListPvi(void *self, FtrTileList *l, s32 a, s32 b);
+void _ZN8FtrActor8getTilesEP23Unk_ov004_02207854_ListPvi(void *self, FtrTileList *l, s32 a, s32 b);
 u32 FtrActor_GetFtrIndex(void *self);
 u32 FtrActor_GetHeap(void *self);
 void FtrActor_StepAnims(void *self);
@@ -3716,7 +3714,7 @@ namespace p20 {
 extern "C" {
 BOOL FtrActor_StepAnims(void *self);
 u32 FtrActor_GetFtrIndex(void *self);
-void _ZN18Unk_ov004_022077a48getTilesEP23Unk_ov004_02207854_ListPvi(void *self, void *a, s32 b, s32 c);
+void _ZN8FtrActor8getTilesEP23Unk_ov004_02207854_ListPvi(void *self, void *a, s32 b, s32 c);
 }
 }
 
@@ -3931,7 +3929,7 @@ void FtrStorage::execFtrAct00() {
         if (kind == 0xb) {
             FtrTileList arr;
             Unk_ov004_0220fde4_Vec v;
-            p20::_ZN18Unk_ov004_022077a48getTilesEP23Unk_ov004_02207854_ListPvi(this, &arr, 0, 0);
+            p20::_ZN8FtrActor8getTilesEP23Unk_ov004_02207854_ListPvi(this, &arr, 0, 0);
             v.x = 0;
             v.y = 0;
             v.z = 0x2000;
@@ -4692,7 +4690,7 @@ BOOL _ZN9FtrSwitch4isOnEv(void *p);
 BOOL PlayerActor_GetPosIfInBed(void *out, u32 i);
 BOOL PlayerActor_GetPosIfSitting(void *out, u32 i);
 void PlayerActor_LocalRequestSeatApproach(void *a, void *b, void *c, void *d);
-void _ZN18Unk_ov004_022077a48getTilesEP23Unk_ov004_02207854_ListPvi(FtrActor *o, FtrTileList *l, s32 a, s32 b);
+void _ZN8FtrActor8getTilesEP23Unk_ov004_02207854_ListPvi(FtrActor *o, FtrTileList *l, s32 a, s32 b);
 BOOL FtrActor_StepAnims(FtrActor *o);
 BOOL _ZN8FtrActor10playSound0Ev(FtrActor *o);
 BOOL _ZN8FtrActor10playSound2Ev(FtrActor *o);
@@ -4818,7 +4816,7 @@ BOOL FtrBed::updateActive() {
             if (p22::PlayerActor_GetPosIfInBed(&v, i)) {
                 p22::FieldPos_ToUnit(&x, &y, &v);
                 FtrTileList list;
-                p22::_ZN18Unk_ov004_022077a48getTilesEP23Unk_ov004_02207854_ListPvi(this, &list, z, z);
+                p22::_ZN8FtrActor8getTilesEP23Unk_ov004_02207854_ListPvi(this, &list, z, z);
                 for (j = 0; j < list.getCount(); j++) {
                     if (x == list.get(j)->x && y == list.get(j)->y) {
                         p22::_ZN11FtrVisNodes10setVisibleEj(visNodes, 1);
@@ -4909,7 +4907,7 @@ BOOL FtrSeat::updateActive() {
             if (p22::PlayerActor_GetPosIfSitting(&v, i)) {
                 p22::FieldPos_ToUnit(&x, &y, &v);
                 FtrTileList list;
-                p22::_ZN18Unk_ov004_022077a48getTilesEP23Unk_ov004_02207854_ListPvi(this, &list, z, z);
+                p22::_ZN8FtrActor8getTilesEP23Unk_ov004_02207854_ListPvi(this, &list, z, z);
                 for (j = 0; j < list.getCount(); j++) {
                     if (x == list.get(j)->x && y == list.get(j)->y) {
                         p22::_ZN11FtrVisNodes10setVisibleEj(visNodes, 1);
@@ -6161,7 +6159,7 @@ BOOL FtrStorage::enterTalkAct09() {
         FtrTileList list;
     } l;
     FtrTileList &list = l.list;
-    p19::_ZN18Unk_ov004_022077a48getTilesEP23Unk_ov004_02207854_ListPvi(this, &list, 0, 0);
+    p19::_ZN8FtrActor8getTilesEP23Unk_ov004_02207854_ListPvi(this, &list, 0, 0);
     u8 *grid = p19::gSceneBlockMap;
     if (grid != NULL) {
         u32 i;

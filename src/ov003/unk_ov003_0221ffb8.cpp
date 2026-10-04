@@ -5,7 +5,7 @@
 #include "gfx/ModelSlotPool.h"
 #include "gfx/ModelAnim.h"
 #include "game/GroundInfo.h"
-#include "field/Unk_ov003_02224bc4_Actor.h"
+#include "actor/Character.h"
 #include "gfx/AnimModel.h"
 #include "gfx/PooledModel.h"
 #include "sys/ProcProfile.h"
@@ -13,9 +13,11 @@
 #include "gfx/NNSG3dResMatData.h"
 #include "town/Unk_0204e858_Grid.h"
 #include "player/FishBobber.h"
+#include "field/FishShadow.h"
 
 // TU23 of ov003 (fish actors, scene classes 0223498c / 02234a94): 0x0221ffb8-0x02224e68, static initialiser 0x354 bytes.
-// Merged from ten unit files; every view of the shared objects (sFishShadows etc.) is reached through casts.
+// Merged from ten unit files; the per-file aliases (E_f3, Obj_f6 .. Obj_f9, Rec_f7, Self_f5, ...) are typedefs of
+// FishShadow / FishCatch / FieldFishManager / BottleThrow.
 
 #define SndEnvChannel_callRelease _ZN13SndEnvChannel11callReleaseEv
 #define SndEnvChannel_callRequest _ZN13SndEnvChannel11callRequestEPv
@@ -75,62 +77,6 @@ struct Unk_ov003_02220128_Vec3 {
     s32 x, y, z;
 };
 
-struct Unk_ov003_02220128_Pos {
-    s32 a, b;
-};
-
-struct Unk_ov003_02257e9c_Rec {
-    u8 pad_00[0x40];
-    s32 state;
-    u8 pad_44[4];
-    s32 mode;
-    u8 pad_4c[8];
-    Unk_ov003_02220128_Vec3 position;
-    Unk_ov003_02220128_Vec3 unk_60;
-    Unk_ov003_02220128_Vec3 unk_6c;
-    u8 pad_78[4];
-    s32 moveFrame;
-    u8 pad_80[0x10];
-    s32 fishId;
-    u8 pad_94[0x10];
-};
-
-struct FishShadow {
-    FishShadow();
-    ~FishShadow();
-    u8 pad_000[0x7f];
-    u8 hasFin;
-    u8 pad_080[0x208 - 0x80];
-    Unk_ov003_02220128_Pos spawnBlock;
-    u8 pad_210[0x24c - 0x210];
-};
-
-struct Unk_ov003_02220844_Obj {
-    u8 pad_000[0x7e];
-    u8 fishId;
-    u8 hasFin;
-    s32 state;
-    u8 pad_84[0x12c - 0x84];
-    s32 spawnPos;
-    s32 spawnPosY;
-    s32 spawnPosZ;
-    s16 rotY;
-    u8 pad_13a[0x1fc - 0x13a];
-    u8 spawnState;
-    u8 pad_1fd;
-    u8 habitat;
-    u8 sizeClass;
-    u8 moveState;
-    u8 pad_201[0x208 - 0x201];
-    Unk_ov003_02220128_Pos spawnBlock;
-    u8 pad_210[0x211 - 0x210];
-    u8 slotIndex;
-    u16 respawnTimer;
-    u8 pad_214[0x218 - 0x214];
-    Unk_ov003_02220128_Vec3 prevPosition;
-    u8 pad_224[0x244 - 0x224];
-    s32 despawnTimer;
-};
 
 static inline BOOL Unk_ov003_022203f8_Chk(void *s, s32 v) {
     if ((u32)(v - 0x34) <= 2) {
@@ -139,158 +85,54 @@ static inline BOOL Unk_ov003_022203f8_Chk(void *s, s32 v) {
     return FALSE;
 }
 
-struct Unk_ov003_022209ec_Buf {
-    u8 pad_00[0x24];
-    s32 flowDir;
-    u8 pad_28[4];
-    s32 flowDirZ;
-    u8 pad_30[0x14];
-    Unk_ov003_022209ec_Buf() {}
-    ~Unk_ov003_022209ec_Buf() {}
-};
-
 // ---- from file 3
-struct Unk_ov003_02220a2c_V3 {
-    s32 x, y, z;
-    Unk_ov003_02220a2c_V3() {}
-};
-
 typedef Unk_ov003_02220a2c_V3 V3_f3;
 
 // owner object (passed in r0 by the state functions); only fields used here
-struct Unk_ov003_02220a2c_O {
-    u8 pad_00[0x80];
-    s32 shadowAnimFile;
-    u8 spawnAttempted;
-};
-
 // 0x24c-byte entry, table at ((E_f3 *)(sFishShadows))
-struct Unk_ov003_0225812c_f3 {
-    u8 pad_00[0x7e];
-    s8 fishId;
-    u8 hasFin;
-    s32 state;
-    u8 pad_84[0x120 - 0x84];
-    Unk_ov003_02220a2c_V3 position;
-    u16 unk_12c;
-    u8 pad_12e[0x138 - 0x12e];
-    s16 rotY;
-    u8 pad_13a[0x13c - 0x13a];
-    s32 stateTimer;
-    u8 pad_140[0x144 - 0x140];
-    u8 model[0x1a0 - 0x144];
-    void *modelResMdl;
-    u8 pad_1a4[0x1e8 - 0x1a4];
-    u32 animFrame;
-    u8 pad_1ec[4];
-    s32 animFrameStep;
-    u8 pad_1f4[0x1fd - 0x1f4];
-    u8 alpha;
-    u8 habitat;
-    u8 sizeClass;
-    u8 moveState;
-    u8 appearCount;
-    u8 pad_202[2];
-    s32 effectHandle;
-    u8 pad_208[0x214 - 0x208];
-    u8 scareDelay;
-    u8 pad_215[3];
-    V3_f3 prevPosition;
-    u8 biteState;
-    u8 pad_225[0x23c - 0x225];
-    u8 aiMode;
-    u8 pad_23d[3];
-    u8 pad_240[4];
-    s32 despawnTimer;
-    u8 pad_248[4];
-};
-
 struct Unk_ov003_022210a4_Bits {
     u32 lo : 12;
     u32 mid : 16;
     u32 hi : 4;
 };
 
-struct Unk_ov003_022210a4_R {
-    u8 pad_00[8];
-    s32 curFrame;
-    u8 pad_0c[0x18 - 0xc];
-    s32 *anmObj;
-};
 
-struct Unk_ov003_02257be0_f3 {
-    u8 pad_00[0x48];
-    V3_f3 position;
-    s16 rotY;
-    u8 pad_56[2];
-    u8 model[0x11c - 0x58];
-    Unk_ov003_022210a4_R matAnim;
-};
+class FieldFishManager;
+typedef FieldFishManager O_f3;
 
-typedef Unk_ov003_02220a2c_O O_f3;
-
-typedef Unk_ov003_0225812c_f3 E_f3;
+typedef FishShadow E_f3;
 
 
 
 // ---- from file 4
-struct Unk_ov003_02221364_Vec {
-    s32 x, y, z;
-};
-
-struct Unk_ov003_02221524_Slot {
-    u8 pad_00[0x80];
-    s32 state;
-    u8 pad_84[0x1fc - 0x84];
-    u8 spawnState;
-    u8 pad_1fd[3];
-    s32 unk_200;
-    s32 effectHandle;
-    struct {
-        s32 a;
-        s32 b;
-    } spawnBlock;
-    u8 pad_210[0x224 - 0x210];
-    u8 biteState;
-    u8 pad_225[2];
-    s8 playerIdx;
-    u8 pad_228[4];
-    void *bobber;
-    u8 pad_230[0x23c - 0x230];
-    u8 aiMode;
-    u8 pad_23d[0x24c - 0x23d];
-};
-
+// A caught fish being lifted / displayed (0xa4 bytes, sFishCatches[4]; FishCatch_* state functions).
 struct FishCatch {
     FishCatch();
     ~FishCatch();
-    u8 pad_00[0x40];
-    s32 state;
-    s32 displayHandle;
-    s32 mode;
-    u8 pad_4c[0x54 - 0x4c];
-    s32 position;
-    s32 positionY;
-    s32 positionZ;
-    Unk_ov003_02221364_Vec arcPointA;
-    u8 pad_6c[0x78 - 0x6c];
-    s8 shadowIndex;
-    u8 pad_79[3];
-    s32 moveFrame;
-    u8 isLanded;
-    u8 pad_81[3];
-    s32 scale;
-    s32 scaleY;
-    s32 scaleZ;
-    s32 fishId;
-    u8 swimAwayPending;
-    u8 pad_95;
-    u16 rotX;
-    u16 rotY;
-    u16 rotZ;
-    s32 effectHandle;
-    u8 storedSent;
-    u8 pad_a1[3];
+    /* 0x00 */ u8 seEmitter[0x40]; // SndSeEmitter (built by the constructor)
+    /* 0x40 */ s32 state;
+    /* 0x44 */ s32 displayHandle;
+    /* 0x48 */ s32 mode;
+    /* 0x4c */ s32 gravity;
+    /* 0x50 */ s32 ySpeed;
+    /* 0x54 */ Unk_ov003_02220128_Vec3 position;
+    /* 0x60 */ Unk_ov003_02220128_Vec3 arcPointA;
+    /* 0x6c */ Unk_ov003_02220128_Vec3 arcPointB;
+    /* 0x78 */ s8 shadowIndex;
+    /* 0x79 */ u8 pad_79[3];
+    /* 0x7c */ s32 moveFrame;
+    /* 0x80 */ u8 isLanded;
+    /* 0x81 */ u8 pad_81[3];
+    /* 0x84 */ Unk_ov003_02220128_Vec3 scale;
+    /* 0x90 */ s32 fishId;
+    /* 0x94 */ u8 swimAwayPending;
+    /* 0x95 */ u8 pad_95;
+    /* 0x96 */ s16 rotX;
+    /* 0x98 */ s16 rotY;
+    /* 0x9a */ s16 rotZ;
+    /* 0x9c */ s32 effectHandle;
+    /* 0xa0 */ u8 storedSent;
+    /* 0xa1 */ u8 pad_a1[3];
 };
 
 
@@ -307,7 +149,8 @@ public:
     /* 0x50 */ ModelSlotPool shadowModelPool;
     /* 0x68 */ ModelSlotPool finModelPool;
     /* 0x80 */ s32 shadowAnimFile;
-    /* 0x84 */ u8 pad_84[4];
+    /* 0x84 */ u8 spawnAttempted;
+    /* 0x85 */ u8 pad_85[3];
 };
 
 typedef void (FieldFishManager::*Unk_ov003_0222144c_Fn_f4)(void *, void *);
@@ -320,11 +163,7 @@ struct FishShadowStateEntry {
 
 
 // ---- from file 5
-struct Unk_ov003_02221cec_Vec3 {
-    s32 x, y, z;
-};
-
-typedef Unk_ov003_02221cec_Vec3 V3_f5;
+typedef Unk_ov003_02220128_Vec3 V3_f5;
 
 typedef Mtx43 T48_f5;
 
@@ -332,80 +171,9 @@ struct Unk_ov003_02221cec_Dead : V3_f5 {
     Unk_ov003_02221cec_Dead() {}
 };
 
-class Unk_ov003_02221cec_Ent {
-public:
-    virtual void vfunc_00();
-    virtual void vfunc_04();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void vfunc_10();
-    virtual void vfunc_14();
-    virtual void vfunc_18();
-    virtual void vfunc_1c();
-    virtual void vfunc_20();
-    virtual void vfunc_24();
-    virtual void vfunc_28();
-    virtual void vfunc_2c();
-    virtual void vfunc_30();
-    virtual void vfunc_34();
-    virtual void vfunc_38();
-    virtual void vfunc_3c();
-    virtual void vfunc_40();
-    virtual void vfunc_44();
-    virtual void vfunc_48();
-    virtual void vfunc_4c();
-    virtual void vfunc_50();
-    virtual void vfunc_54();
-    virtual void vfunc_58();
-    virtual BOOL vfunc_5c(V3_f5 *out);
+typedef Character Ent_f5;
 
-    u8 pad_04[0x58];
-    V3_f5 position;
-    u8 pad_68[0xb0 - 0x68];
-    u32 actorFlags;
-};
-
-typedef Unk_ov003_02221cec_Ent Ent_f5;
-
-struct Unk_ov003_02221cec_Self {
-    u8 pad_00[0x40];
-    s32 state;
-    s32 displayHandle;
-    s32 mode;
-    s32 gravity;
-    s32 ySpeed;
-    V3_f5 position;
-    V3_f5 arcPointA;
-    V3_f5 arcPointB;
-    s8 shadowIndex;
-    u8 pad_79[3];
-    s32 moveFrame;
-    u8 isLanded;
-    u8 pad_81[3];
-    V3_f5 scale;
-    s32 fishId;
-    u8 swimAwayPending;
-    u8 pad_95;
-    s16 rotX;
-    s16 rotY;
-    s16 rotZ;
-    s32 effectHandle;
-    u8 storedSent;
-};
-
-typedef Unk_ov003_02221cec_Self Self_f5;
-
-struct Unk_ov003_02222224_Rec {
-    u8 pad_000[0x224];
-    u8 biteState;
-    u8 pad_225[2];
-    s8 playerIdx;
-    u8 pad_228[4];
-    s32 bobber;
-    u8 pad_230[0x23c - 0x230];
-    u8 aiMode;
-    u8 pad_23d[0x24c - 0x23d];
-};
+typedef FishCatch Self_f5;
 
 #define CP(d, s) do { (d).x = (s).x; (d).y = (s).y; (d).z = (s).z; } while (0)
 
@@ -414,76 +182,19 @@ static inline BOOL Unk_ov003_02222490_Bit(u32 f, u32 m) {
 }
 
 // ---- from file 6
-struct Unk_ov003_02222658_V3 {
-    s32 x, y, z;
-};
+typedef Unk_ov003_02220128_Vec3 V3_f6;
 
-typedef Unk_ov003_02222658_V3 V3_f6;
-
-struct Unk_ov003_02222658_Ent {
-    /* 0x00 */ u8 pad_00[0x40];
-    /* 0x40 */ s32 state;
-    /* 0x44 */ u8 pad_44[4];
-    /* 0x48 */ s32 mode;
-    /* 0x4c */ u8 pad_4c[0x14];
-    /* 0x60 */ V3_f6 arcPointA;
-    /* 0x6c */ u8 pad_6c[0xc];
-    /* 0x78 */ u8 shadowIndex;
-    /* 0x79 */ u8 pad_79[0x17];
-    /* 0x90 */ s32 fishId;
-    /* 0x94 */ u8 pad_94[0x10];
-};
-
-typedef Unk_ov003_02222658_Ent Ent_f6;
-
-struct Unk_ov003_02222764_Sub {
-    u8 b0, b1, b2, b3;
-};
-
-typedef Unk_ov003_02222764_Sub Sub_f6;
+typedef FishCatch Ent_f6;
 
 
-class Unk_ov003_02222658_Obj;
 
-typedef void (Unk_ov003_02222658_Obj::*Fn_f6)(void *);
+typedef void (FishCatch::*Fn_f6)(void *);
 
 struct FishCatchStateEntry {
     Fn_f6 f;
 };
 
-class Unk_ov003_02222658_Obj {
-public:
-    /* 0x000 */ u8 pad_000[0x40];
-    /* 0x040 */ s32 unk_40;
-    /* 0x044 */ u8 pad_044[0x10];
-    /* 0x054 */ V3_f6 unk_54;
-    /* 0x060 */ u8 pad_060[0x1e];
-    /* 0x07e */ s8 fishId;
-    /* 0x07f */ u8 pad_07f[0x120 - 0x7f];
-    /* 0x120 */ V3_f6 position;
-    /* 0x12c */ u8 pad_12c[0xc];
-    /* 0x138 */ u16 rotY;
-    /* 0x13a */ u8 pad_13a[2];
-    /* 0x13c */ s32 stateTimer;
-    /* 0x140 */ u8 pad_140[0x1fd - 0x140];
-    /* 0x1fd */ u8 alpha;
-    /* 0x1fe */ u8 habitat;
-    /* 0x1ff */ u8 sizeClass;
-    /* 0x200 */ u8 pad_200[0x218 - 0x200];
-    /* 0x218 */ s32 prevPosition, prevPositionY, prevPositionZ;
-    /* 0x224 */ u8 biteState;
-    /* 0x225 */ u8 pad_225[2];
-    /* 0x227 */ s8 playerIdx;
-    /* 0x228 */ u8 pad_228[4];
-    /* 0x22c */ void *bobber;
-    /* 0x230 */ u8 pad_230[0xc];
-    /* 0x23c */ u8 aiMode;
-    /* 0x23d */ u8 biteStepTimer;
-    /* 0x23e */ u8 pad_23e[0x248 - 0x23e];
-    /* 0x248 */ Sub_f6 croak;
-};
-
-typedef Unk_ov003_02222658_Obj Obj_f6;
+typedef FishShadow Obj_f6;
 
 
 static inline BOOL R74(volatile u16 *p)
@@ -499,134 +210,33 @@ static inline BOOL R74(volatile u16 *p)
 
 #define COPY() \
     do { \
-        self->position.x = self->prevPosition; \
-        self->position.y = self->prevPositionY; \
-        self->position.z = self->prevPositionZ; \
+        self->position.x = self->prevPosition.x; \
+        self->position.y = self->prevPosition.y; \
+        self->position.z = self->prevPosition.z; \
     } while (0)
 
 // ---- from file 7
-struct Unk_ov003_02222fe4_V3 {
-    s32 x, y, z;
-};
-
-typedef Unk_ov003_02222fe4_V3 V3_f7;
+typedef Unk_ov003_02220128_Vec3 V3_f7;
 
 
-struct Unk_ov003_02257e9c_Rec_f7 {
-    u8 pad_00[0x40];
-    s32 state;
-    void *displayHandle;
-    s32 mode;
-    u8 pad_4c[8];
-    V3_f7 position;
-    V3_f7 unk_60;
-    V3_f7 unk_6c;
-    u8 pad_78[8];
-    u8 isLanded;
-    u8 pad_81[3];
-    V3_f7 scale;
-    s32 fishId;
-    u8 pad_94;
-    u8 pad_95;
-    s16 unk_96;
-    s16 unk_98;
-    s16 unk_9a;
-    s32 effectHandle;
-    u8 storedSent;
-    u8 pad_a1[3];
-};
+typedef FishCatch Rec_f7;
 
-typedef Unk_ov003_02257e9c_Rec_f7 Rec_f7;
-
-struct Unk_ov003_0225812c_Obj {
-    u8 pad_000[0x7e];
-    s8 fishId;
-    u8 hasFin;
-    u8 pad_80[0x120 - 0x80];
-    V3_f7 position;
-    u8 pad_12c[0x138 - 0x12c];
-    s16 rotY;
-    u8 pad_13a[2];
-    s32 stateTimer;
-    u16 cruiseTimer;
-    u8 pad_142[0x1e0 - 0x142];
-    u8 animFrameCtrl[8];
-    s32 animFrame;
-    u8 pad_1ec[0x1ff - 0x1ec];
-    u8 sizeClass;
-    u8 moveState;
-    u8 pad_201[3];
-    s32 effectHandle;
-    u8 pad_208[0x211 - 0x208];
-    u8 slotIndex;
-    u8 pad_212[0x224 - 0x212];
-    u8 biteState;
-    u8 biteStep;
-    u8 pad_226;
-    s8 playerIdx;
-    u8 pad_228[4];
-    FishBobber *bobber;
-    V3_f7 hookPos;
-    u8 aiMode;
-    u8 pad_23d;
-    u8 pullDir;
-    u8 reelGoal;
-    u8 pad_240[0x24c - 0x240];
-};
-
-typedef Unk_ov003_0225812c_Obj Obj_f7;
+typedef FishShadow Obj_f7;
 
 
 
 // ---- from file 8
-struct Unk_ov003_02223924_V3 {
-    s32 x, y, z;
-};
+typedef Unk_ov003_02220128_Vec3 V3_f8;
 
-typedef Unk_ov003_02223924_V3 V3_f8;
 
-class Unk_ov003_02223924_Obj;
-
-typedef s32 (Unk_ov003_02223924_Obj::*Fn_f8)();
+typedef s32 (FishShadow::*Fn_f8)();
 
 struct FishBiteStateEntry {
     Fn_f8 f;
 };
 
 
-class Unk_ov003_02223924_Obj {
-public:
-    /* 0x000 */ u8 pad_000[0x7e];
-    /* 0x07e */ s8 fishId;
-    /* 0x07f */ u8 hasFin;
-    /* 0x080 */ u8 pad_080[0x120 - 0x80];
-    /* 0x120 */ V3_f8 position;
-    /* 0x12c */ u8 pad_12c[0xc];
-    /* 0x138 */ u16 rotY;
-    /* 0x13a */ u8 pad_13a[2];
-    /* 0x13c */ s32 stateTimer;
-    /* 0x140 */ u8 pad_140[2];
-    /* 0x142 */ u16 wobblePhase;
-    /* 0x144 */ u8 pad_144[0x1fe - 0x144];
-    /* 0x1fe */ u8 habitat;
-    /* 0x1ff */ u8 sizeClass;
-    /* 0x200 */ u8 pad_200[4];
-    /* 0x204 */ s32 effectHandle;
-    /* 0x208 */ u8 pad_208[0x224 - 0x208];
-    /* 0x224 */ u8 biteState;
-    /* 0x225 */ u8 biteStep;
-    /* 0x226 */ u8 pad_226;
-    /* 0x227 */ s8 playerIdx;
-    /* 0x228 */ u8 pad_228[4];
-    /* 0x22c */ void *bobber;
-    /* 0x230 */ u8 pad_230[0xc];
-    /* 0x23c */ u8 pad_23c;
-    /* 0x23d */ u8 biteStepTimer;
-    /* 0x23e */ u8 pad_23e[2];
-    /* 0x240 */ u8 biteDelay;
-};
-
-typedef Unk_ov003_02223924_Obj Obj_f8;
+typedef FishShadow Obj_f8;
 
 
 
@@ -648,13 +258,7 @@ struct Unk_ov003_02224990_V3 {
 
 typedef Unk_ov003_02224990_V3 V3d_f9;
 
-struct Unk_ov003_0222426c_Sub {
-    u8 b0, b1, b2, b3;
-};
-
-class Unk_ov003_0222426c_Obj;
-
-typedef void (Unk_ov003_0222426c_Obj::*Fn_f9)();
+typedef void (FishShadow::*Fn_f9)();
 
 struct FishMoveStateEntry {
     Fn_f9 f;
@@ -665,54 +269,10 @@ struct FishAiStateEntry {
     Fn_f9 think;
 };
 
-class Unk_ov003_0222426c_Obj {
-public:
-    /* 0x000 */ u8 pad_000[0x7e];
-    /* 0x07e */ s8 fishId;
-    /* 0x07f */ u8 pad_07f[0x120 - 0x7f];
-    /* 0x120 */ V3_f9 position;
-    /* 0x12c */ s32 spawnPos, spawnPosY, spawnPosZ;
-    /* 0x138 */ s16 rotY;
-    /* 0x13a */ u8 pad_13a[2];
-    /* 0x13c */ s32 stateTimer;
-    /* 0x140 */ u16 cruiseTimer;
-    /* 0x142 */ s16 wobblePhase;
-    /* 0x144 */ u8 pad_144[0x19a - 0x144];
-    /* 0x19a */ u8 pad_19a[0x1fc - 0x19a];
-    /* 0x1fc */ u8 spawnState;
-    /* 0x1fd */ u8 alpha;
-    /* 0x1fe */ u8 habitat;
-    /* 0x1ff */ u8 sizeClass;
-    /* 0x200 */ u8 moveState;
-    /* 0x201 */ u8 appearCount;
-    /* 0x202 */ u8 pad_202[0x210 - 0x202];
-    /* 0x210 */ u8 turnDir;
-    /* 0x211 */ u8 pad_211[0x218 - 0x211];
-    /* 0x218 */ s32 prevPosition, prevPositionY, prevPositionZ;
-    /* 0x224 */ u8 biteState;
-    /* 0x225 */ u8 pad_225[0x23c - 0x225];
-    /* 0x23c */ u8 aiMode;
-    /* 0x23d */ u8 pad_23d[0x248 - 0x23d];
-    /* 0x248 */ Unk_ov003_0222426c_Sub croak;
-};
+typedef FishShadow Obj_f9;
 
-typedef Unk_ov003_0222426c_Obj Obj_f9;
 
-class Unk_ov003_02224ae0_Ent;
-
-struct Unk_ov003_02224ae0_E {
-    /* 0x00 */ u8 pad_00[0x30];
-    /* 0x30 */ u8 state;
-    /* 0x31 */ u8 pad_31[3];
-    /* 0x34 */ V3_f9 position;
-    /* 0x40 */ V3_f9 startPos;
-    /* 0x4c */ V3_f9 targetPos;
-    /* 0x58 */ s32 stateTimer;
-    /* 0x5c */ u8 isLocal;
-    /* 0x5d */ u8 pad_5d[3];
-};
-
-typedef Unk_ov003_02224ae0_E E_f9;
+typedef BottleThrow E_f9;
 
 class BottleThrowStateOwner;
 
@@ -780,7 +340,9 @@ public:
     /* 0x004 */ ModelSlotHandle modelSlot;
     /* 0x006 */ u8 pad_06[2];
     /* 0x008 */ PooledModel pooledModel;
-    /* 0x048 */ u8 pad_48[0x10]; // position + rotY (see Unk_ov003_02257be0_f3)
+    /* 0x048 */ Unk_ov003_02220a2c_V3 position;
+    /* 0x054 */ s16 rotY;
+    /* 0x056 */ u8 pad_56[2];
     /* 0x058 */ AnimModel model;
     /* 0x110 */ u8 pad_110[0xc];
     /* 0x11c */ FishFinMatAnim matAnim;
@@ -843,7 +405,7 @@ s32 func_02133150(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 SndEnvChannel_callRelease(void *p);
 void SndEnvChannel_callRequest(void *, s32);
-void SndEnvChannel_callUpdateRelative(void *self, Unk_ov003_02221364_Vec *v);
+void SndEnvChannel_callUpdateRelative(void *self, Unk_ov003_02220128_Vec3 *v);
 void SndEnvChannel_callReset(void *self);
 s32 SndSeEmitter_callStop(void *p);
 void SndSeEmitter_callInit(void *self);
@@ -865,7 +427,7 @@ BOOL FishDisplay_HasPassedFrame(void *o, s32 a);
 void FishDisplay_Release(s32 h);
 void FishDisplay_SetEntry(s32 h, s32 a, V3_f5 *p, V3_f5 *q, s32 r, s32 s, s32 t, s32 u, s32 v, s32 w);
 s32 FishDisplay_Acquire();
-s32 FishDisplay_GetRequestPos(Unk_ov003_02221364_Vec *v, s32 *p, u8 i);
+s32 FishDisplay_GetRequestPos(Unk_ov003_02220128_Vec3 *v, s32 *p, u8 i);
 u32 FishDisplay_GetRequestFish(u8 i);
 u32 FishDisplay_GetRequestKind(u8 i);
 void AnimModel_detachJointAnim(void *p);
@@ -932,12 +494,12 @@ BOOL FishShadow_GetPos(u32 *out, s32 id);
 void FieldWater_ApplyFlow(s32 *p, s32 b);
 BOOL FieldFish_IsPlayerRunning(s32 idx);
 BOOL FieldFish_IsPlayerNear(void *self, s32 b, s32 idx);
-BOOL FishShadow_TrySpawn(void *self, Unk_ov003_02220844_Obj *e, s32 flag);
+BOOL FishShadow_TrySpawn(void *self, FishShadow *e, s32 flag);
 BOOL FieldFish_CollectHabitatBlocks(void *self, u8 *out, s32 *cnt, s32 mode);
-BOOL FieldFish_PickSpawnUnit(void *self, s32 *ox, s32 *oz, s32 *a3, s32 *a4, s32 mode, s32 flag, Unk_ov003_02220844_Obj *e);
-BOOL FishShadow_CanSpawnFish(void *self, Unk_ov003_02220844_Obj *e, s32 id);
+BOOL FieldFish_PickSpawnUnit(void *self, s32 *ox, s32 *oz, s32 *a3, s32 *a4, s32 mode, s32 flag, FishShadow *e);
+BOOL FishShadow_CanSpawnFish(void *self, FishShadow *e, s32 id);
 BOOL FieldFish_IsRainOrSnow(void *self);
-void FishShadow_TickRespawnTimer(Unk_ov003_02220844_Obj *self);
+void FishShadow_TickRespawnTimer(FishShadow *self);
 BOOL FieldFish_IsInBox(s32 *a, s32 *b, s32 c, s32 d, s32 e);
 BOOL FieldFish_HasPassed(s32 *a, s32 *b, s32 *c);
 BOOL FieldFish_HasPassed1D(s32 a, s32 b, s32 c);
@@ -972,7 +534,7 @@ void FishShadow_CheckOffscreen(O_f3 *o, E_f3 *e, s32 idx);
 void FishCatch_PollRemote(void *a);
 void FishCatch_StartRemoteHook(void *a, s32 idx);
 BOOL FishCatch_EndRemote(void *a, u8 idx);
-BOOL FishCatch_StartRemoteReel(void *a, u8 idx, u32 v, Unk_ov003_02221364_Vec *p);
+BOOL FishCatch_StartRemoteReel(void *a, u8 idx, u32 v, Unk_ov003_02220128_Vec3 *p);
 BOOL FishCatch_StartRemoteLift(void *a, u8 idx);
 u8 *func_ov003_022219dc(u8 *a);
 u8 *func_ov003_02221998(u8 *a);
@@ -1020,13 +582,13 @@ BOOL FishShadow_IsSeaNorth(Obj_f6 *self);
 s32 FishShadow_CheckWaterBounds(Obj_f6 *self);
 BOOL FishShadow_IsProbeOutOfWater(Obj_f6 *self);
 void FishShadow_GetProbeGroundKinds(Obj_f6 *self, s32 *o1, s32 *o2, s32 *o3);
-void FishCroak_Update(Sub_f6 *s, Obj_f6 *o);
-void FishCroak_Idle(Sub_f6 *s, Obj_f6 *o);
-void FishCroak_Listen(Sub_f6 *s, Obj_f6 *o);
-void FishCroak_Croak(Sub_f6 *s, Obj_f6 *o);
-s32 FishCroak_Clear(Sub_f6 *s);
+void FishCroak_Update(FishCroak *s, Obj_f6 *o);
+void FishCroak_Idle(FishCroak *s, Obj_f6 *o);
+void FishCroak_Listen(FishCroak *s, Obj_f6 *o);
+void FishCroak_Croak(FishCroak *s, Obj_f6 *o);
+s32 FishCroak_Clear(FishCroak *s);
 s32 FishShadow_ResetCroak(Obj_f6 *self);
-void FishCatch_Update(Obj_f6 *self, void *arg);
+void FishCatch_Update(FishCatch *self, void *arg);
 s32 FishCatch_StateIdle();
 BOOL FishShadow_BiteHooked(Obj_f7 *o);
 BOOL FishShadow_BiteFlee(Obj_f7 *o);
@@ -1348,7 +910,7 @@ one:
 extern "C" s32 BottleThrow_Start(s32 i)
 {
     BottleThrow *e;
-    Unk_ov003_02224bc4_Actor *p;
+    Character *p;
     void *s;
     V3_f10 t;
     if (i < 0 || i >= 4) {
@@ -1358,7 +920,7 @@ extern "C" s32 BottleThrow_Start(s32 i)
     if (e->state != 0) {
         return 1;
     }
-    p = ((Unk_ov003_02224bc4_Actor * (*)(s32))PlayerActor_GetCharacter)(i);
+    p = ((Character * (*)(s32))PlayerActor_GetCharacter)(i);
     if (p == 0) {
         return 0;
     }
@@ -1371,18 +933,18 @@ extern "C" s32 BottleThrow_Start(s32 i)
         }
         u32 f = p->actorFlags;
         if (Unk_ov003_02224bc4_Bit(f, 4) && Unk_ov003_02224bc4_Bit(f, 2)) {
-            { V3_f10 *ps = &p->position; V3_f10 *pd = &e->startPos; pd->x = ps->x; pd->y = ps->y; pd->z = ps->z; }
-        } else if (p->vfunc_5c(&t)) {
+            { V3_f10 *ps = (V3_f10 *)&p->position; V3_f10 *pd = &e->startPos; pd->x = ps->x; pd->y = ps->y; pd->z = ps->z; }
+        } else if (p->getHeldItemPos((Unk_020d77a4_Vec3 *)&t)) {
             { V3_f10 *pd = &e->startPos; pd->x = t.x; pd->y = t.y; pd->z = t.z; }
         } else {
-            { V3_f10 *ps = &p->position; V3_f10 *pd = &e->startPos; pd->x = ps->x; pd->y = ps->y; pd->z = ps->z; }
+            { V3_f10 *ps = (V3_f10 *)&p->position; V3_f10 *pd = &e->startPos; pd->x = ps->x; pd->y = ps->y; pd->z = ps->z; }
         }
     } else {
         e->isLocal = 1;
-        if (p->vfunc_5c(&t)) {
+        if (p->getHeldItemPos((Unk_020d77a4_Vec3 *)&t)) {
             { V3_f10 *pd = &e->startPos; pd->x = t.x; pd->y = t.y; pd->z = t.z; }
         } else {
-            { V3_f10 *ps = &p->position; V3_f10 *pd = &e->startPos; pd->x = ps->x; pd->y = ps->y; pd->z = ps->z; }
+            { V3_f10 *ps = (V3_f10 *)&p->position; V3_f10 *pd = &e->startPos; pd->x = ps->x; pd->y = ps->y; pd->z = ps->z; }
         }
     }
     e->state = 1;
@@ -1430,7 +992,7 @@ extern "C" s32 BottleThrow_IsOffscreen(E_f9 *e)
         return 1;
     }
     V3_f9 v = (*(V3_f9 *)&gCameraLookAt);
-    if (((s32 (*)(V3_f9 *, V3_f9 *, s32, s32, s32))FieldFish_IsInBox)(&e->position, &v, 0x8000, 0x6000, 0x6000) == 0) {
+    if (((s32 (*)(V3_f9 *, V3_f9 *, s32, s32, s32))FieldFish_IsInBox)((V3_f9 *)&e->position, &v, 0x8000, 0x6000, 0x6000) == 0) {
         r = 1;
     }
     return r;
@@ -1455,7 +1017,7 @@ extern "C" void BottleThrow_StateIdle()
 //@ 0x2224990
 extern "C" void BottleThrow_StateFly(void *self, E_f9 *e)
 {
-    V3_f9 *pos = &e->position;
+    V3_f9 *pos = (V3_f9 *)&e->position;
     s32 *cnt = &e->stateTimer;
     V3d_f9 *pa = (V3d_f9 *)&e->startPos;
     V3d_f9 a(*pa);
@@ -1495,7 +1057,7 @@ extern "C" void BottleThrow_StateFly(void *self, E_f9 *e)
 //@ 0x222489c
 extern "C" void BottleThrow_StateDrift(void *self, E_f9 *e)
 {
-    V3_f9 *pos = &e->position;
+    V3_f9 *pos = (V3_f9 *)&e->position;
     s32 *cnt = &e->stateTimer;
     V3_f9 a1, b, a2;
     s32 t;
@@ -1527,7 +1089,7 @@ extern "C" void BottleThrow_StateDrift(void *self, E_f9 *e)
     *cnt = *cnt + 1;
     if (*cnt >= 0x78) {
         e->state = 0;
-        V3_f9 *v = &e->targetPos;
+        V3_f9 *v = (V3_f9 *)&e->targetPos;
         e->targetPos.x = 0x1000;
         v->y = 0x1000;
         v->z = 0x1000;
@@ -1782,15 +1344,15 @@ extern "C" void FishShadow_MoveFlee(Obj_f8 *self)
     if (a > 0x215) {
         a = 0x215;
     }
-    pf = &self->wobblePhase;
+    pf = (u16 *)&self->wobblePhase;
     *pf = (s16)*pf + 0x2000;
     s142 = data_02135f44[(*pf >> 4) * 2];
-    s138 = *(volatile s16 *)&data_02135f44[(self->rotY >> 4) * 2];
+    s138 = *(volatile s16 *)&data_02135f44[((u16)self->rotY >> 4) * 2];
     sq = a >> 5;
     t = func_01ffcb0c(a, s138);
     x = t + func_01ffcb0c(sq, s142);
-    s142 = data_02135f44[(self->wobblePhase >> 4) * 2];
-    s138 = *(volatile s16 *)&data_02135f44[((self->rotY >> 4) * 2) + 1];
+    s142 = data_02135f44[((u16)self->wobblePhase >> 4) * 2];
+    s138 = *(volatile s16 *)&data_02135f44[(((u16)self->rotY >> 4) * 2) + 1];
     t = func_01ffcb0c(a, s138);
     y = t + func_01ffcb0c(sq, s142);
     self->position.x += x;
@@ -2311,7 +1873,7 @@ extern "C" BOOL FishShadow_TryHook(Obj_f7 *o) {
         o->pullDir = FieldFish_RandRange(0, 2) != 0;
         o->reelGoal = FieldFish_RandRange(((u8 *)((u8 *)&sFishSizeClassParams[0].a2))[o->sizeClass * 0x14], ((u8 *)((u8 *)&sFishSizeClassParams[0].a3))[o->sizeClass * 0x14]);
         V3_f7 *ps = (V3_f7 *)&e->pos;
-        V3_f7 *pd = &o->hookPos;
+        V3_f7 *pd = (V3_f7 *)&o->hookPos;
         pd->x = e->pos.x;
         pd->y = ps->y;
         pd->z = ps->z;
@@ -2452,8 +2014,8 @@ extern "C" BOOL FishCatch_StartLift(s32 idx, s32 flag) {
         rec->state = 4;
         return TRUE;
     }
-    V3_f7 *q = &rec->unk_60;
-    ang = Math_AngleXZ(&rec->unk_6c, q);
+    V3_f7 *q = &rec->arcPointA;
+    ang = Math_AngleXZ(&rec->arcPointB, q);
     V3_f7 tmp;
     if (Ground_FindWaterAhead(&tmp, pos, ang, 0x7800, 0x2000, 0xc)) {
         q->x = tmp.x;
@@ -2527,7 +2089,7 @@ extern "C" BOOL FishCatch_NetSendStored(s32 idx) {
 //@ 0x222323c
 extern "C" BOOL FishCatch_IsDisplayReady(Rec_f7 *self, u32 a) {
     BOOL r = FALSE;
-    if (FishDisplay_HasPassedFrame(self->displayHandle, 1)) {
+    if (FishDisplay_HasPassedFrame((void *)self->displayHandle, 1)) {
         r = TRUE;
     }
     return r;
@@ -2536,9 +2098,9 @@ extern "C" BOOL FishCatch_IsDisplayReady(Rec_f7 *self, u32 a) {
 
 //@ 0x222316c
 extern "C" void FishCatch_SetModelAngles(Rec_f7 *self, s32 a, s32 t) {
-    s16 *p96 = &self->unk_96;
-    s16 *p98 = &self->unk_98;
-    s16 *p9a = &self->unk_9a;
+    s16 *p96 = &self->rotX;
+    s16 *p98 = &self->rotY;
+    s16 *p9a = &self->rotZ;
     switch (t) {
     case 0xa:
     case 0xb:
@@ -2626,7 +2188,7 @@ extern "C" BOOL FishShadow_TryNoticeBobber(Obj_f7 *self) {
     if (ok != 0) {
         V3_f7 v8;
         V3_f7 v14;
-        V3_f7 *p120 = &self->position;
+        V3_f7 *p120 = (V3_f7 *)&self->position;
         v14.x = p120->x;
         v14.y = p120->y;
         v14.z = p120->z;
@@ -2636,7 +2198,7 @@ extern "C" BOOL FishShadow_TryNoticeBobber(Obj_f7 *self) {
             v8.x = e->pos.x;
             v8.y = pv->y;
             v8.z = pv->z;
-            if (FieldFish_IsCastSplashActive() && ((BOOL (*)(V3_f7 *, V3_f7 *, s32, s32, s32))FieldFish_IsInBox)(&self->position, &v8, sc, sc, sc)) {
+            if (FieldFish_IsCastSplashActive() && ((BOOL (*)(V3_f7 *, V3_f7 *, s32, s32, s32))FieldFish_IsInBox)((V3_f7 *)&self->position, &v8, sc, sc, sc)) {
                 if (self->moveState != 2) {
                     self->moveState = 2;
                 }
@@ -2755,7 +2317,7 @@ extern "C" BOOL FishShadow_Land(Obj_f6 *self, u32 k)
     e = (Ent_f6 *)((u8 *)((Ent_f6 *)(sFishCatches)) + idx * 0xa4);
     e->state = 1;
     e->mode = 1;
-    pv = &self->position;
+    pv = (V3_f6 *)&self->position;
     q = &e->arcPointA;
     q->x = pv->x;
     q->y = pv->y;
@@ -2843,7 +2405,7 @@ extern "C" BOOL FishShadow_IsSeaNorth(Obj_f6 *self)
     BOOL r = FALSE;
     s32 x, y;
     V3_f6 p;
-    V3_f6 *pv = &self->position;
+    V3_f6 *pv = (V3_f6 *)&self->position;
     p.x = pv->x;
     p.y = pv->y;
     p.z = pv->z;
@@ -2861,7 +2423,7 @@ extern "C" s32 FishShadow_CheckWaterBounds(Obj_f6 *self)
 {
     s32 r = 0;
     s32 x, y;
-    ((void (*)(s32 *, s32 *, V3_f6 *))FieldPos_ToUnit)(&x, &y, &self->position);
+    ((void (*)(s32 *, s32 *, V3_f6 *))FieldPos_ToUnit)(&x, &y, (V3_f6 *)&self->position);
     switch (self->habitat) {
     case 0:
     case 1:
@@ -2992,7 +2554,7 @@ extern "C" void FishShadow_GetProbeGroundKinds(Obj_f6 *self, s32 *o1, s32 *o2, s
     v1.x = self->position.x + (r * data_02135f44[i1]) / 100;
     v1.y = -0x1333;
     v1.z = z1;
-    i2 = (self->rotY >> 4) * 2;
+    i2 = ((u16)self->rotY >> 4) * 2;
     z2 = self->position.z + (r * data_02135f44[i2 + 1]) / 100;
     v2.x = self->position.x + (r * data_02135f44[i2]) / 100;
     v2.y = -0x1333;
@@ -3007,7 +2569,7 @@ extern "C" void FishShadow_GetProbeGroundKinds(Obj_f6 *self, s32 *o1, s32 *o2, s
 
 
 //@ 0x22228b0
-extern "C" void FishCroak_Update(Sub_f6 *s, Obj_f6 *o)
+extern "C" void FishCroak_Update(FishCroak *s, Obj_f6 *o)
 {
     switch (s->b3) {
     case 0:
@@ -3024,7 +2586,7 @@ extern "C" void FishCroak_Update(Sub_f6 *s, Obj_f6 *o)
 
 
 //@ 0x222285c
-extern "C" void FishCroak_Idle(Sub_f6 *s, Obj_f6 *o)
+extern "C" void FishCroak_Idle(FishCroak *s, Obj_f6 *o)
 {
     s32 t;
     if (s->b0 != 0) {
@@ -3046,7 +2608,7 @@ extern "C" void FishCroak_Idle(Sub_f6 *s, Obj_f6 *o)
 
 
 //@ 0x22227dc
-extern "C" void FishCroak_Listen(Sub_f6 *s, Obj_f6 *o)
+extern "C" void FishCroak_Listen(FishCroak *s, Obj_f6 *o)
 {
     s32 t;
     if (s->b2 != 0) {
@@ -3079,11 +2641,11 @@ extern "C" void FishCroak_Listen(Sub_f6 *s, Obj_f6 *o)
 
 
 //@ 0x2222770
-extern "C" void FishCroak_Croak(Sub_f6 *s, Obj_f6 *o)
+extern "C" void FishCroak_Croak(FishCroak *s, Obj_f6 *o)
 {
     if (s->b1 != 0) {
         s->b1 = s->b1 - 1;
-        SndEnvChannel_callRequest(&o->unk_40, 0x82f);
+        SndEnvChannel_callRequest(o->envChannel, 0x82f);
     } else {
         s->b2 = ((s32 (*)(s32, s32))FieldFish_RandRange)(0x14, 0x50);
         s->b3 = 1;
@@ -3103,7 +2665,7 @@ extern "C" void FishCroak_Croak(Sub_f6 *s, Obj_f6 *o)
 
 
 //@ 0x2222764
-extern "C" s32 FishCroak_Clear(Sub_f6 *s)
+extern "C" s32 FishCroak_Clear(FishCroak *s)
 {
     s->b0 = 0;
     s->b1 = 0;
@@ -3120,7 +2682,7 @@ extern "C" s32 FishShadow_ResetCroak(Obj_f6 *self)
 
 
 //@ 0x2222658
-extern "C" void FishCatch_Update(Obj_f6 *self, void *arg)
+extern "C" void FishCatch_Update(FishCatch *self, void *arg)
 {
     V3_f6 a, b;
     if (((s32 (*)(void *))BottleThrow_IsActive)(arg)) {
@@ -3138,19 +2700,19 @@ extern "C" void FishCatch_Update(Obj_f6 *self, void *arg)
             ((s32 (*)(s32, V3_f6 *, s32, s32))Effect_Create)(0x15, &b, 0, 0);
         }
     } else {
-        a.x = self->unk_54.x;
-        a.y = self->unk_54.y;
-        a.z = self->unk_54.z;
+        a.x = self->position.x;
+        a.y = self->position.y;
+        a.z = self->position.z;
         ((void (*)(void *, V3_f6 *))SndSeEmitter_callUpdateRelative)(self, &a);
     }
-    if (sFishCatchStates[self->unk_40].f) {
-        (self->*sFishCatchStates[self->unk_40].f)(arg);
+    if (sFishCatchStates[self->state].f) {
+        (self->*sFishCatchStates[self->state].f)(arg);
     }
     {
         void *s = gCommManager;
         if (((s32 (*)(void *))CommManager_isOnline)(s)) {
             if (((s32 (*)(void *, void *))CommManager_isMyAid)(s, arg) == 0) {
-                if (self->unk_40 == 4) {
+                if (self->state == 4) {
                     ((s32 (*)(void *, s32, s32, s32, s32))FishDisplay_PostRequest)(arg, 8, -1, 0, 0);
                 }
             }
@@ -3249,7 +2811,7 @@ extern "C" BOOL FishCatch_StateHold(Self_f5 *self, u32 a) {
     u32 f = e->actorFlags;
     if (Unk_ov003_02222490_Bit(f, 4) && Unk_ov003_02222490_Bit(f, 2)) {
         V3_f5 v;
-        V3_f5 *pv = &e->position;
+        V3_f5 *pv = (V3_f5 *)&e->position;
         v.x = pv->x;
         v.y = pv->y;
         v.z = pv->z;
@@ -3291,7 +2853,7 @@ extern "C" BOOL FishCatch_StateUpdate(Self_f5 *self, u32 a) {
             self->state = 4;
             return r6;
         }
-        FishCatch_UpdateSwimAway(self, &e->position);
+        FishCatch_UpdateSwimAway(self, (V3_f5 *)&e->position);
         r5 = r5 - self->moveFrame;
         if (r5 < 1) {
             r5 = 1;
@@ -3384,9 +2946,9 @@ extern "C" BOOL FishCatch_DetachShadow(Self_f5 *self) {
     BOOL r = FALSE;
     s32 i = self->shadowIndex;
     if (i != -1) {
-        Unk_ov003_02222224_Rec *p = &((Unk_ov003_02222224_Rec *)(sFishShadows))[i];
+        FishShadow *p = &((FishShadow *)(sFishShadows))[i];
         if (p->bobber != 0) {
-            p->bobber = r;
+            p->bobber = (FishBobber *)r;
         }
         p->playerIdx = -1;
         p->aiMode = 0;
@@ -3571,8 +3133,8 @@ extern "C" BOOL FishCatch_UpdateSwimAway(Self_f5 *self, V3_f5 *p) {
 
 //@ 0x2221cec
 extern "C" void FishCatch_GetLineEnd(Self_f5 *self, Ent_f5 *ent, V3_f5 *out) {
-    if (ent->vfunc_5c(out) == 0) {
-        V3_f5 *pv = &ent->position;
+    if (ent->getHeldItemPos((Unk_020d77a4_Vec3 *)out) == 0) {
+        V3_f5 *pv = (V3_f5 *)&ent->position;
         out->x = pv->x;
         out->y = pv->y;
         out->z = pv->z;
@@ -3636,7 +3198,7 @@ extern "C" void FishCatch_PollRemote(void *a) {
 //@ 0x2221b94
 extern "C" void FishCatch_StartRemoteHook(void *a, s32 idx) {
     u32 r = FishDisplay_GetRequestFish(idx);
-    Unk_ov003_02221364_Vec v;
+    Unk_ov003_02220128_Vec3 v;
     v.y = -0x1333;
     if (FishDisplay_GetRequestPos(&v, &v.z, idx)) {
         if (FishCatch_StartRemoteReel(a, idx, r, &v)) {
@@ -3661,7 +3223,7 @@ extern "C" BOOL FishCatch_EndRemote(void *a, u8 idx) {
 
 
 //@ 0x2221b34
-extern "C" BOOL FishCatch_StartRemoteReel(void *a, u8 idx, u32 v, Unk_ov003_02221364_Vec *p) {
+extern "C" BOOL FishCatch_StartRemoteReel(void *a, u8 idx, u32 v, Unk_ov003_02220128_Vec3 *p) {
     if (idx >= 4) {
         return FALSE;
     }
@@ -3669,7 +3231,7 @@ extern "C" BOOL FishCatch_StartRemoteReel(void *a, u8 idx, u32 v, Unk_ov003_0222
     if (e->state != 0) {
         return FALSE;
     }
-    Unk_ov003_02221364_Vec *d = &e->arcPointA;
+    Unk_ov003_02220128_Vec3 *d = &e->arcPointA;
     d->x = p->x;
     d->y = p->y;
     d->z = p->z;
@@ -3687,8 +3249,8 @@ extern "C" BOOL FishCatch_StartRemoteLift(void *a, u8 idx) {
         return FALSE;
     }
     FishCatch *e = &sFishCatches[idx];
-    volatile Unk_ov003_02221364_Vec v;
-    Unk_ov003_02221364_Vec *pv = &e->arcPointA;
+    volatile Unk_ov003_02220128_Vec3 v;
+    Unk_ov003_02220128_Vec3 *pv = &e->arcPointA;
     v.x = pv->x;
     v.y = pv->y;
     v.z = pv->z;
@@ -3796,18 +3358,18 @@ FishCatch::FishCatch()
     a->shadowIndex = -1;
     a->isLanded = 0;
     a->moveFrame = 0;
-    a->scale = 0x1333;
-    a->scaleY = 0x1333;
-    a->scaleZ = 0x1333;
+    a->scale.x = 0x1333;
+    a->scale.y = 0x1333;
+    a->scale.z = 0x1333;
     a->swimAwayPending = 0;
     a->rotX = 0;
     a->rotY = 0;
     a->rotZ = 0;
     a->effectHandle = -1;
     a->storedSent = 0;
-    a->position = 0x1000;
-    a->positionY = 0x1000;
-    a->positionZ = 0x1000;
+    a->position.x = 0x1000;
+    a->position.y = 0x1000;
+    a->position.z = 0x1000;
 }
 
 
@@ -3833,7 +3395,7 @@ FieldFishManager::~FieldFishManager() {
 extern "C" BOOL FishShadow_SetAppearing(void *a, s32 idx) {
     BOOL r = FALSE;
     if (idx >= 0 && idx < 6) {
-        Unk_ov003_02221524_Slot *s = ((Unk_ov003_02221524_Slot *)(sFishShadows)) + idx;
+        FishShadow *s = ((FishShadow *)(sFishShadows)) + idx;
         s->state = 2;
         r = TRUE;
     }
@@ -3844,7 +3406,7 @@ extern "C" BOOL FishShadow_SetAppearing(void *a, s32 idx) {
 //@ 0x22216f8
 extern "C" void FishShadow_Despawn(void *a, s32 idx) {
     if (idx >= 0 && idx < 6) {
-        Unk_ov003_02221524_Slot *s = &((Unk_ov003_02221524_Slot *)(sFishShadows))[idx];
+        FishShadow *s = &((FishShadow *)(sFishShadows))[idx];
         s->state = 0;
         Effect_End(s->effectHandle);
         s->effectHandle = -1;
@@ -3897,7 +3459,7 @@ BOOL FieldFishManager::onCreate() {
     ModelSlotPool_init(a + 0x50, 6, 0, 0, 0x800, (void *)FishShadowHeap_Create, (void *)FishShadowHeap_Destroy, (void *)"fish_sdw");
     ModelSlotPool_init(a + 0x68, 1, 0x400, 0x80, 0x800, (void *)FishFinHeap_Create, (void *)FishFinHeap_Destroy, (void *)"fish_fin");
     *(s32 *)(a + 0x80) = ((s32 (*)(u32, void *, s32, u32))File_LoadAlloc)((*(u32 *)((u8 *)&sFishShadowAnimPath)), gCurrentHeap, 4, 0);
-    Unk_ov003_02221524_Slot *s = ((Unk_ov003_02221524_Slot *)(sFishShadows));
+    FishShadow *s = ((FishShadow *)(sFishShadows));
     s32 i = 0;
     s32 z = 0;
     do {
@@ -3933,14 +3495,14 @@ BOOL FieldFishManager::onCreate() {
 
 //@ 0x2221498
 extern "C" void FishShadow_Run(void *a, u8 *b, void *c) {
-    Unk_ov003_02221364_Vec v1;
-    Unk_ov003_02221364_Vec *pv = (Unk_ov003_02221364_Vec *)(b + 0x120);
+    Unk_ov003_02220128_Vec3 v1;
+    Unk_ov003_02220128_Vec3 *pv = (Unk_ov003_02220128_Vec3 *)(b + 0x120);
     v1.x = pv->x;
     v1.y = pv->y;
     v1.z = pv->z;
-    ((void (*)(void *, Unk_ov003_02221364_Vec *))SndSeEmitter_callUpdateRelative)(b, &v1);
-    Unk_ov003_02221364_Vec v2;
-    pv = (Unk_ov003_02221364_Vec *)(b + 0x120);
+    ((void (*)(void *, Unk_ov003_02220128_Vec3 *))SndSeEmitter_callUpdateRelative)(b, &v1);
+    Unk_ov003_02220128_Vec3 v2;
+    pv = (Unk_ov003_02220128_Vec3 *)(b + 0x120);
     v2.x = pv->x;
     v2.y = pv->y;
     v2.z = pv->z;
@@ -4001,8 +3563,8 @@ extern "C" void FishShadow_EnterWaitInView() {
 //@ 0x2221364
 extern "C" void FishShadow_ExecWaitInView(u8 *a, u8 *b, s32 c) {
     if ((*(void * *)&gCamera) != 0) {
-        Unk_ov003_02221364_Vec v;
-        v = (*(Unk_ov003_02221364_Vec *)&gCameraLookAt);
+        Unk_ov003_02220128_Vec3 v;
+        v = (*(Unk_ov003_02220128_Vec3 *)&gCameraLookAt);
         if (((s32 (*)(void *, void *, s32, s32, s32))FieldFish_IsInBox)(b + 0x12c, &v, 0xa000, 0x10000, 0xa000)) {
             FishShadow_SetAppearing(a, c);
             if (b[0x7f] != 0) {
@@ -4111,22 +3673,22 @@ extern "C" void FishShadow_ExecSwim(O_f3 *o, E_f3 *e, s32 x) {
 
 //@ 0x22210a4
 extern "C" void FishShadow_UpdateFin(O_f3 *o, E_f3 *e) {
-    Unk_ov003_02257be0_f3 *p = (Unk_ov003_02257be0_f3 *)((u8 *)((u8 *)&sFishFinModel));
+    FishFinModel *p = (FishFinModel *)((u8 *)((u8 *)&sFishFinModel));
     V3_f3 *pv = &e->position;
     p->position.x = pv->x;
     p->position.y = pv->y;
     p->position.z = pv->z;
     s16 ang = e->rotY;
     p->rotY = ang;
-    u8 *q = p->model;
+    u8 *q = (u8 *)&p->model;
     *(s32 *)(q + 0xac) = e->animFrameStep;
     *(u32 *)(q + 0xa4) = (u32)(u16)(((Unk_ov003_022210a4_Bits *)&e->animFrame)->mid + 1) << 12;
     FieldFish_SetModelMatrix(o, pv, q, ang);
     AnimModel_stepAnim(e->model);
     AnimModel_stepAnim(q);
-    Unk_ov003_022210a4_R *r = &p->matAnim;
+    FishFinMatAnim *r = &p->matAnim;
     AnimFrameCtrl_step(r);
-    *r->anmObj = r->curFrame;
+    *(s32 *)r->anmObj = r->curFrame;
 }
 
 
@@ -4444,7 +4006,7 @@ extern "C" void FishShadow_CheckOffscreen(O_f3 *o, E_f3 *e, s32 idx) {
 
 //@ 0x22209ec
 extern "C" void FieldWater_ApplyFlow(s32 *p, s32 b) {
-    Unk_ov003_022209ec_Buf buf;
+    GroundInfoBase buf;
     GroundInfo_initAtPos(&buf, p, 0, 0);
     p[0] += func_01ffcb0c(b, buf.flowDir);
     p[2] += func_01ffcb0c(b, buf.flowDirZ);
@@ -4479,7 +4041,7 @@ extern "C" BOOL FieldFish_IsPlayerNear(void *self, s32 b, s32 idx) {
 
 
 //@ 0x2220844
-extern "C" BOOL FishShadow_TrySpawn(void *self, Unk_ov003_02220844_Obj *e, s32 flag) {
+extern "C" BOOL FishShadow_TrySpawn(void *self, FishShadow *e, s32 flag) {
     BOOL r = FALSE;
     s32 a = -1, b = -1;
     Unk_ov003_02220128_Pos cd;
@@ -4514,7 +4076,7 @@ extern "C" BOOL FishShadow_TrySpawn(void *self, Unk_ov003_02220844_Obj *e, s32 f
                 r = TRUE;
                 e->state = r;
                 e->moveState = 0;
-                Unk_ov003_02220128_Vec3 *pv = &e->prevPosition;
+                Unk_ov003_02220128_Vec3 *pv = (Unk_ov003_02220128_Vec3 *)&e->prevPosition;
                 *pv = v;
                 s32 db = cd.b;
                 Unk_ov003_02220128_Pos *pp = &e->spawnBlock;
@@ -4617,7 +4179,7 @@ extern "C" BOOL FieldFish_CollectHabitatBlocks(void *self, u8 *out, s32 *cnt, s3
 
 
 //@ 0x2220460
-extern "C" BOOL FieldFish_PickSpawnUnit(void *self, s32 *ox, s32 *oz, s32 *a3, s32 *a4, s32 mode, s32 flag, Unk_ov003_02220844_Obj *e) {
+extern "C" BOOL FieldFish_PickSpawnUnit(void *self, s32 *ox, s32 *oz, s32 *a3, s32 *a4, s32 mode, s32 flag, FishShadow *e) {
     s32 z = 0;
     s32 cnt = z;
     s32 sx, sz;
@@ -4737,7 +4299,7 @@ extern "C" BOOL FieldFish_PickSpawnUnit(void *self, s32 *ox, s32 *oz, s32 *a3, s
 
 
 //@ 0x22203f8
-extern "C" BOOL FishShadow_CanSpawnFish(void *self, Unk_ov003_02220844_Obj *e, s32 id) {
+extern "C" BOOL FishShadow_CanSpawnFish(void *self, FishShadow *e, s32 id) {
     BOOL ok = Unk_ov003_022203f8_Chk(self, id);
     if (ok) {
         if (((u8 * (*)(s32))PlayerActor_GetActor)(4) == NULL) {
@@ -4773,7 +4335,7 @@ extern "C" BOOL FieldFish_IsRainOrSnow(void *self) {
 
 
 //@ 0x2220388
-extern "C" void FishShadow_TickRespawnTimer(Unk_ov003_02220844_Obj *self) {
+extern "C" void FishShadow_TickRespawnTimer(FishShadow *self) {
     if (Math_CountDownU16(&self->respawnTimer) == 0) {
         if ((u32)self->state <= 1) {
             self->state = 0;
@@ -4866,9 +4428,9 @@ extern "C" BOOL FishCatch_GetReelTarget(Unk_ov003_02220128_Vec3 *out, s32 idx) {
     if (idx < 0 || idx >= 4) {
         return FALSE;
     }
-    Unk_ov003_02257e9c_Rec *rec = &((Unk_ov003_02257e9c_Rec *)(sFishCatches))[idx];
+    FishCatch *rec = &((FishCatch *)(sFishCatches))[idx];
     if (rec->mode == 1) {
-        Unk_ov003_02220128_Vec3 *pv = &rec->unk_60;
+        Unk_ov003_02220128_Vec3 *pv = &rec->arcPointA;
         *out = *pv;
         r = TRUE;
     }
@@ -4891,7 +4453,7 @@ extern "C" BOOL FishCatch_StartRelease(s32 idx, u16 id0, Unk_ov003_02220128_Vec3
     if (idx < 0 || idx >= 4) {
         return FALSE;
     }
-    Unk_ov003_02257e9c_Rec *rec = &((Unk_ov003_02257e9c_Rec *)(sFishCatches))[idx];
+    FishCatch *rec = &((FishCatch *)(sFishCatches))[idx];
     if (rec->state != 0) {
         return FALSE;
     }
@@ -4905,9 +4467,9 @@ extern "C" BOOL FishCatch_StartRelease(s32 idx, u16 id0, Unk_ov003_02220128_Vec3
     s32 r6 = (u16)id - 0x12e8;
     rec->fishId = r6;
     ((void (*)(void *, s32, s32))FishCatch_SetModelAngles)(rec, ((s32 (*)(Unk_ov003_02220128_Vec3 *, Unk_ov003_02220128_Vec3 *))Math_AngleXZ)(&v, pos), r6);
-    Unk_ov003_02220128_Vec3 *pd = &rec->unk_60;
+    Unk_ov003_02220128_Vec3 *pd = &rec->arcPointA;
     *pd = v;
-    pd = &rec->unk_6c;
+    pd = &rec->arcPointB;
     *pd = *pos;
     pd = &rec->position;
     *pd = v;

@@ -11,6 +11,8 @@
 #include "gfx/EffectSplEmitter.h"
 #include "gfx/NNSG3dRS.h"
 #include "field/FieldAction.h"
+#include "actor/Actor.h"
+#include "gfx/SPLResource.h"
 
 // ================================================================ other modules' real names
 #define CommManager_isOnline _ZN11CommManager8isOnlineEv
@@ -93,17 +95,43 @@ struct TreeLeafFxCbs {
     /* 0x00 */ EffectEmitterCbs emitters[2];
 };
 
+// unit x / z pair (A01 vector-shape candidate); TreeAnim / TreeAnimRequest member, also used by ns_0221aed4
+struct Unk_ov003_0221aed4_Raw2 {
+    s32 x, z;
+};
+
+// fx32 animation frame as bitfields (A01 copy set of AnimFrameCtrl::curFrame views)
+struct Unk_ov003_0221b8bc_Bits {
+    u32 a : 12;
+    u32 b : 16;
+    u32 c : 4;
+};
+
 // 0x14c-byte animated tree (shake / chop animation of one tree model, TreeAnim_*). The AnimModel and the
-// SndSeEmitter are built by TreeAnim_Construct and torn down by TreeAnim_Destruct (raw storage here).
+// SndSeEmitter are built by TreeAnim_Construct and torn down by TreeAnim_Destruct (raw storage here; the AnimModel
+// members the TreeAnim code reads directly are named in the union, at their TreeAnim offsets).
 struct TreeAnim {
     /* 0x000 */ s32 active;
     /* 0x004 */ s32 sessionSlot;
-    /* 0x008 */ u8 animModel[0xb8];
+    union {
+        /* 0x008 */ u8 animModel[0xb8]; // AnimModel
+        struct {
+            /* 0x008 */ u8 pad_008[0x5c];
+            /* 0x064 */ void *resMdl;                      // animModel.resMdl
+            /* 0x068 */ u32 resTex;                        // animModel.resTex
+            /* 0x06c */ Mtx43 baseMatrix;                  // animModel.mtx
+            /* 0x09c */ u8 pad_09c[8];
+            /* 0x0a4 */ u8 frameCtrl[8];                   // animModel's AnimFrameCtrl base (vtable, numFrames)
+            /* 0x0ac */ Unk_ov003_0221b8bc_Bits animFrame; // animModel.curFrame
+            /* 0x0b0 */ u8 pad_0b0[8];
+            /* 0x0b8 */ u8 playMode;                       // animModel.playMode
+            /* 0x0b9 */ u8 pad_0b9[7];
+        };
+    };
     /* 0x0c0 */ s32 posX;
     /* 0x0c4 */ s32 posY;
     /* 0x0c8 */ s32 posZ;
-    /* 0x0cc */ s32 unitX;
-    /* 0x0d0 */ s32 unitZ;
+    /* 0x0cc */ Unk_ov003_0221aed4_Raw2 unit;
     /* 0x0d4 */ s32 animKind;
     /* 0x0d8 */ s32 alpha;
     /* 0x0dc */ s32 leafSpawnCount;
@@ -112,11 +140,6 @@ struct TreeAnim {
     /* 0x138 */ s32 unk_138[3];
     /* 0x144 */ TreeLeafFxEntry *leafRecord;
     /* 0x148 */ TreeLeafFxEntry *seasonalRecord;
-};
-
-// unit x / z pair (A01 vector-shape candidate); TreeAnimRequest member, also used by ns_0221aed4
-struct Unk_ov003_0221aed4_Raw2 {
-    s32 x, z;
 };
 
 // Queued tree animation (TreeAnimSet_Request -> TreeAnimSet_ProcessRequest / TreeAnimRequest_Resolve).
@@ -155,7 +178,7 @@ public:
     virtual BOOL onExecute();
     virtual BOOL onDraw();
 
-    /* 0x050 */ u32 iconModels[0x49];
+    /* 0x050 */ CachedModel *iconModels[0x49];
     /* 0x174 */ CachedModel treeModels[0x12];
     /* 0xc6c */ CachedModel cedarModels[6];
     /* 0x1014 */ CachedModel litCedarModels[3];
@@ -222,13 +245,6 @@ struct Unk_ov003_02219578_V3 {
 };
 struct Unk_ov003_022195b8_Pos {
     s32 x, z;
-};
-struct Unk_ov003_02219654_V3 {
-    s32 x, y, z;
-};
-struct Unk_ov003_02219654_Obj {
-    u8 pad_00[0x5c];
-    Unk_ov003_02219654_V3 position;
 };
 typedef Unk_ov003_02219578_P2 P2;
 typedef Unk_ov003_02219578_V3 V3;
@@ -638,24 +654,6 @@ struct Unk_ov003_0221aed4_Fx {
     /* 0xa0 */ u8 pendingApply;
     /* 0xa1 */ u8 pendingCommit;
 };
-struct Unk_ov003_0221b5e4_Obj {
-    /* 0x00 */ s32 unk_00;
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ u8 animModel[0xb0];
-    /* 0xb8 */ s32 *pVisAnmResult;
-    /* 0xbc */ u8 pad_bc[4];
-    /* 0xc0 */ s32 posX;
-    /* 0xc4 */ s32 posY;
-    /* 0xc8 */ s32 posZ;
-    /* 0xcc */ Unk_ov003_0221aed4_Raw2 unit;
-    /* 0xd4 */ s32 animKind;
-    /* 0xd8 */ s32 alpha;
-    /* 0xdc */ s32 leafSpawnCount;
-    /* 0xe0 */ u8 pad_e0[0x138 - 0xe0];
-    /* 0x138 */ s32 unk_138[3];
-    /* 0x144 */ s32 leafRecord;
-    /* 0x148 */ s32 seasonalRecord;
-};
 struct Unk_ov003_0221b7d4_Rec {
     s32 x, y, z;
 };
@@ -727,9 +725,9 @@ void Tree_DropSpecial(u16 *cell, s32 a, P2 p);
 // ---- prototypes of this file's functions
 extern "C" void Tree_DropSpecial(u16 *cell, s32 a, P2 p);
 extern "C" void Tree_DropItems(u16 *cell, s32 a, P2 p);
-extern "C" void TreeAnim_DropItems(Unk_ov003_0221b5e4_Obj *self, void *cell);
-extern "C" s32 TreeAnim_Start(Unk_ov003_0221b5e4_Obj *self, s32 a, P2 p, s32 kind, s32 idx, s32 last);
-extern "C" void TreeAnim_Reset(Unk_ov003_0221b5e4_Obj *self);
+extern "C" void TreeAnim_DropItems(TreeAnim *self, void *cell);
+extern "C" s32 TreeAnim_Start(TreeAnim *self, s32 a, P2 p, s32 kind, s32 idx, s32 last);
+extern "C" void TreeAnim_Reset(TreeAnim *self);
 extern "C" void TreeAnim_ModelCallback(NNSG3dRS *rs);
 extern "C" void TreeAnimSet_LoadAnims(u32 (*arr)[4]);
 extern "C" void TreeAnimSet_FreeAnims(u32 (*arr)[4]);
@@ -764,33 +762,6 @@ struct Unk_ov003_0221b8bc_Col {
 struct Unk_ov003_0221b8bc_Col2 {
     u16 a, b;
 };
-struct Unk_ov003_0221b8bc_Bits {
-    u32 a : 12;
-    u32 b : 16;
-    u32 c : 4;
-};
-struct Unk_ov003_0221b8bc {
-    /* 0x00 */ u32 active;
-    /* 0x04 */ s32 sessionSlot;
-    /* 0x08 */ u8 animModel[0x5c];
-    /* 0x64 */ void *resMdl;
-    /* 0x68 */ u32 unk_68;
-    /* 0x6c */ Mtx43 baseMatrix;
-    /* 0x9c */ u8 unk_9c[0x10];
-    /* 0xac */ Unk_ov003_0221b8bc_Bits animFrame;
-    /* 0xb0 */ u8 unk_b0[8];
-    /* 0xb8 */ u8 unk_b8;
-    /* 0xb9 */ u8 pad_b9[7];
-    /* 0xc0 */ Unk_ov003_0221b8bc_V3 pos;
-    /* 0xcc */ s32 unitX;
-    /* 0xd0 */ s32 unitZ;
-    /* 0xd4 */ s32 animKind;
-    /* 0xd8 */ s32 alpha;
-    /* 0xdc */ s32 leafSpawnCount;
-    /* 0xe0 */ u8 seEmitter[0x64];
-    /* 0x144 */ TreeLeafFxEntry *leafRecord;
-    /* 0x148 */ TreeLeafFxEntry *seasonalRecord;
-};
 extern "C" {
 
 extern void *gCommManager;
@@ -806,7 +777,7 @@ void *PlayerData_GetCurrent(void);
 s32 PlayerData_testFlag(void *p, s32 a);
 void FieldPos_FromUnitCenter(Unk_ov003_0221b8bc_V3 *out, s32 x, s32 z);
 void func_01ffd070(Unk_ov003_0221b8bc_V3 *out, Unk_ov003_0221b8bc_V3 *a, void *m);
-void FieldItemFx_StartBeeHiveDrop(Unk_ov003_0221b8bc *o, s32 id, Unk_ov003_0221b8bc_V2 *a, Unk_ov003_0221b8bc_V3 *b);
+void FieldItemFx_StartBeeHiveDrop(TreeAnim *o, s32 id, Unk_ov003_0221b8bc_V2 *a, Unk_ov003_0221b8bc_V3 *b);
 s32 PendingUnit_FindBySlot(u8 a, u8 b);
 void *PendingUnit_Get(void);
 s32 Item_GetFruitTreeFruit(u16 *p);
@@ -817,10 +788,10 @@ u16 *PlayerActor_GetActor(void *p);
 void *TownBlockMap_Get(void);
 u16 *BlockMap_GetItemPtr(void *g, s32 hx, s32 hy, s32 lx, s32 ly, s32 e);
 s32 PendingUnit_Find(Unk_ov003_0221b8bc_V2 *p, s32 a);
-void TreeAnim_DropItems(Unk_ov003_0221b8bc *o, u16 *cell);
+void TreeAnim_DropItems(TreeAnim *o, u16 *cell);
 void PendingUnit_ApplyAtIfAid(Unk_ov003_0221b8bc_V2 *p, s32 id, s32 a);
 void Snd_SeEmitterPlayOneShot(void *p, u32 a, u32 b, u32 c);
-void TreeAnim_Reset(Unk_ov003_0221b8bc *o);
+void TreeAnim_Reset(TreeAnim *o);
 void CachedModel_release(void *p);
 void SndSeEmitter_callStop(void *p);
 s32 WorldCurve_ToCurved(Unk_ov003_0221b8bc_V3 *out, void *v);
@@ -843,27 +814,27 @@ void AnimModel_allocAnmObj(void *p, s32 a);
 void Model_setCallback(void *p, void *fn, s32 a, s32 b, void *o, s32 c);
 void SndSeEmitter_callInit(void *p);
 void TreeAnim_ModelCallback(void);
-Unk_ov003_0221b8bc *TreeAnimSet_GetInstance(void *a, u16 *cell, s32 n, s32 f);
+TreeAnim *TreeAnimSet_GetInstance(void *a, u16 *cell, s32 n, s32 f);
 s32 Item_IsTreeGrown(u16 *p);
 s32 Town_CanReleaseBees(void);
 void PendingUnit_ApplyAt(Unk_ov003_0221b8bc_V2 *p, s32 a);
 void TreeAnimRequest_Resolve(TreeAnimRequest *e);
-void TreeAnim_Start(Unk_ov003_0221b8bc *a, s32 id, Unk_ov003_0221b8bc_V2 *p, s32 c, s32 n, s32 d);
+void TreeAnim_Start(TreeAnim *a, s32 id, Unk_ov003_0221b8bc_V2 *p, s32 c, s32 n, s32 d);
 
-s32 Tree_GetDropSide(Unk_ov003_0221b8bc *o, Unk_ov003_0221b8bc_V3 *p);
+s32 Tree_GetDropSide(TreeAnim *o, Unk_ov003_0221b8bc_V3 *p);
 }
 // ---- prototypes of this file's functions
 extern "C" { void TreeAnimSet_ProcessRequest(void *a, TreeAnimRequest *o); }
 extern "C" { void TreeAnimSet_Request(u8 *a, s32 id, s32 *pos, s32 c, s32 d); }
 extern "C" { void Tree_KeepShaking(s32 id, s32 *pos); }
-extern "C" { void TreeAnim_Init(Unk_ov003_0221b8bc *o); }
-extern "C" { void TreeAnim_Update(Unk_ov003_0221b8bc *o); }
-extern "C" { void TreeAnim_Draw(Unk_ov003_0221b8bc *o); }
-extern "C" { s32 TreeAnim_Release(Unk_ov003_0221b8bc *o); }
-extern "C" { void TreeAnim_Begin(Unk_ov003_0221b8bc *o, s32 flag); }
-extern "C" { s32 Tree_GetDropSide(Unk_ov003_0221b8bc *o, Unk_ov003_0221b8bc_V3 *p); }
+extern "C" { void TreeAnim_Init(TreeAnim *o); }
+extern "C" { void TreeAnim_Update(TreeAnim *o); }
+extern "C" { void TreeAnim_Draw(TreeAnim *o); }
+extern "C" { s32 TreeAnim_Release(TreeAnim *o); }
+extern "C" { void TreeAnim_Begin(TreeAnim *o, s32 flag); }
+extern "C" { s32 Tree_GetDropSide(TreeAnim *o, Unk_ov003_0221b8bc_V3 *p); }
 extern "C" { void Tree_DropFruit(u16 *cell, s32 id, s32 *pos); }
-extern "C" { void Tree_DropBeeHive(Unk_ov003_0221b8bc *o, s32 *p); }
+extern "C" { void Tree_DropBeeHive(TreeAnim *o, s32 *p); }
 }
 
 namespace ns_0221c220 {
@@ -1012,12 +983,8 @@ struct Unk_ov003_0221cb54_Col {
 struct Unk_ov003_0221d37c_Blk {
     s64 v[6];
 };
-struct Unk_ov003_0221d37c_O {
-    u8 pad_00[0x50];
-    void *iconModels[4];
-};
 typedef Unk_ov003_0221d37c_Blk Blk;
-typedef Unk_ov003_0221d37c_O O;
+typedef FieldObjectManager O;
 typedef Unk_ov003_0221cb54_P2 P2;
 typedef Unk_ov003_0221cb54_V3 V3;
 typedef Unk_ov003_0221cb54_Raw2 R2;
@@ -1309,28 +1276,7 @@ struct Unk_ov003_0221e4d4_Blk {
 typedef Unk_ov003_0221e4d4_V3 V3;
 typedef Unk_ov003_0221e4d4_Blk Blk;
 typedef CachedModel Elem;
-struct Unk_ov003_0221e4d4_Model {
-    u8 pad_00[0x5c];
-    void *resMdl;
-};
-struct Unk_ov003_0221e4d4_Obj {
-    /* 0x0000 */ u8 pad_0000[0x50];
-    /* 0x0050 */ Unk_ov003_0221e4d4_Model *iconModels[1];
-    /* 0x0054 */ u8 pad_0054[0x3068 - 0x54];
-    /* 0x3068 */ Elem designModels[4][8];
-    /* 0x43e8 */ Elem grassModels[5];
-    /* 0x46f4 */ u8 pad_46f4[0x4708 - 0x46f4];
-    /* 0x4708 */ Elem holeModels;
-    /* 0x47a4 */ Elem holeModelAlt;
-    /* 0x4840 */ Elem crackModels;
-    /* 0x48dc */ Elem crackModelAlt;
-    /* 0x4978 */ u8 pad_4978[0x49a8 - 0x4978];
-    /* 0x49a8 */ Elem turnipModels[2];
-    /* 0x4ae0 */ u8 pad_4ae0[0x4b20 - 0x4ae0];
-    /* 0x4b20 */ u8 treeAnimSet[0x6a6c - 0x4b20];
-    /* 0x6a6c */ s32 frameCounter;
-};
-typedef Unk_ov003_0221e4d4_Obj Obj;
+typedef FieldObjectManager Obj;
 typedef BOOL (*Fn)();
 extern "C" {
 
@@ -1371,7 +1317,7 @@ s32 CachedModel_loadWithSharedTex(void *p, void *t, u8 a, u8 b);
 s32 CachedModel_load(void *p, void *a, void *b);
 s32 CachedModel_loadWithTex(void *p, void *a, void *b, u32 c, u32 d, void *e, u32 f);
 
-s32 FieldObj_DrawModel(Obj *o, Unk_ov003_0221e4d4_Model *m, Blk b);
+s32 FieldObj_DrawModel(Obj *o, CachedModel *m, Blk b);
 s32 FieldObj_DrawDesign(Obj *o, volatile u16 *t, Blk m);
 s32 FieldObj_DrawSpecialFlower(Obj *o, volatile u16 *t, Blk m);
 s32 FieldObj_DrawFlower(Obj *o, volatile u16 *t, Blk m);
@@ -1505,12 +1451,6 @@ extern "C" { void FieldObj_DrawItemModel(Obj *o, u32 t, V3 *pos, V3 *scale, s32 
 
 namespace ns_0221ede8 {
 typedef CachedModel Elem;
-struct Unk_ov003_0221f674_Seg {
-    u8 pad_00[8];
-    Elem e;
-    u8 pad_a4[0x14c - 0xa4];
-};
-typedef Unk_ov003_0221f674_Seg Seg;
 struct Unk_ov003_0221efb4_Obj {
     /* 0x0000 */ u8 pad_0000[0x174];
     /* 0x0174 */ Elem treeModels[3][6];
@@ -1523,10 +1463,10 @@ struct Unk_ov003_0221efb4_Obj {
     /* 0x3068 */ u8 pad_3068[0x4af0 - 0x3068];
     /* 0x4af0 */ u8 dandelionModelSet[0x10];
     /* 0x4b00 */ u8 pad_4b00[0x4b20 - 0x4b00];
-    /* 0x4b20 */ Seg treeAnims[3][4];
-    /* 0x5ab0 */ Seg cedarAnims[4];
+    /* 0x4b20 */ TreeAnim treeAnims[3][4];
+    /* 0x5ab0 */ TreeAnim cedarAnims[4];
     /* 0x5fe0 */ u8 pad_5fe0[0x63c4 - 0x5fe0];
-    /* 0x63c4 */ Seg palmAnims[4];
+    /* 0x63c4 */ TreeAnim palmAnims[4];
 };
 typedef Unk_ov003_0221efb4_Obj Obj;
 extern "C" {
@@ -3334,7 +3274,7 @@ BOOL FieldObj_LoadIconModels(FieldObjectManager *self)
     if (ModelSet_Load(&self->iconModelSet, (char *)"/fg/icon/icon.nsbmd", sFieldObjectModelHeap)) {
         s32 i;
         for (i = 0; i < 0x49; i++) {
-            self->iconModels[i] = (u32)ModelSet_Find(&self->iconModelSet, (void *)Item_GetIconModelName(i, 1));
+            self->iconModels[i] = (CachedModel *)ModelSet_Find(&self->iconModelSet, (void *)Item_GetIconModelName(i, 1));
         }
         ok = TRUE;
     }
@@ -3629,7 +3569,7 @@ namespace ns_0221ede8 {
 extern "C" BOOL FieldObj_LoadTreeStageModels(Obj *o, u32 *a, u32 *b, void *c)
 {
     s32 i, j;
-    Seg *base2; u32 *pb1; u32 *pb2; u32 *q2; u32 *q1; Elem *base1;
+    TreeAnim *base2; u32 *pb1; u32 *pb2; u32 *q2; u32 *q1; Elem *base1;
     for (i = 0; i < 3; i++) {
         s32 t = FieldObj_GetSeasonSet(o, i);
         j = 1;
@@ -3651,7 +3591,7 @@ extern "C" BOOL FieldObj_LoadTreeStageModels(Obj *o, u32 *a, u32 *b, void *c)
         q2 = a + t * 6;
         for (; j < 4; j++) {
             void *n = FieldObj_GetTreeAnimModelPath(o, i, j);
-            if (!CachedModel_loadWithTex(&base2[j].e, n, sFieldObjectModelHeap, (q2 + j)[1], *pb2, c, 2)) {
+            if (!CachedModel_loadWithTex(base2[j].animModel, n, sFieldObjectModelHeap, (q2 + j)[1], *pb2, c, 2)) {
                 return FALSE;
             }
         }
@@ -3672,8 +3612,8 @@ extern "C" BOOL FieldObj_LoadCedarStageModels(Obj *o, u32 *a, u32 *b, void *c)
     }
     for (i = 0; i < 4; i++) {
         void *n = FieldObj_GetCedarAnimModelPath(o, i);
-        Seg *sg = &o->cedarAnims[i];
-        if (!CachedModel_loadWithTex(&sg->e, n, sFieldObjectModelHeap, (a + i)[1], *b, c, 2)) {
+        TreeAnim *sg = &o->cedarAnims[i];
+        if (!CachedModel_loadWithTex(sg->animModel, n, sFieldObjectModelHeap, (a + i)[1], *b, c, 2)) {
             return FALSE;
         }
     }
@@ -3706,8 +3646,8 @@ extern "C" BOOL FieldObj_LoadPalmStageModels(Obj *o, u32 *a, u32 *b, void *c)
     }
     for (i = 0; i < 4; i++) {
         void *n = FieldObj_GetPalmAnimModelPath(o, i);
-        Seg *sg = &o->palmAnims[i];
-        if (!CachedModel_loadWithTex(&sg->e, n, sFieldObjectModelHeap, (a + i)[1], *b, c, 2)) {
+        TreeAnim *sg = &o->palmAnims[i];
+        if (!CachedModel_loadWithTex(sg->animModel, n, sFieldObjectModelHeap, (a + i)[1], *b, c, 2)) {
             return FALSE;
         }
     }
@@ -4186,10 +4126,10 @@ namespace ns_0221e4d4 {
 extern "C" {
 BOOL FieldObj_LoadHoleModels(Obj *o, u32 idx) {
     void *m = FieldObj_GetGroundTexSet();
-    if (CachedModel_loadWithTex(&o->holeModels, data_ov003_02232634, sFieldObjectModelHeap, 0, idx, &m, 1) == 0) {
+    if (CachedModel_loadWithTex(&o->holeModels[0], data_ov003_02232634, sFieldObjectModelHeap, 0, idx, &m, 1) == 0) {
         return FALSE;
     }
-    if (CachedModel_loadWithTex(&o->holeModelAlt, data_ov003_02232634, sFieldObjectModelHeap, 0, idx, (sFieldObjShapeTable + 0x310), 1)) {
+    if (CachedModel_loadWithTex(&o->holeModels[1], data_ov003_02232634, sFieldObjectModelHeap, 0, idx, (sFieldObjShapeTable + 0x310), 1)) {
         return TRUE;
     }
     return FALSE;
@@ -4228,10 +4168,10 @@ namespace ns_0221e4d4 {
 extern "C" {
 BOOL FieldObj_LoadCrackModels(Obj *o, u32 idx) {
     void *m = FieldObj_GetGroundTexSet();
-    if (CachedModel_loadWithTex(&o->crackModels, data_ov003_02232648, sFieldObjectModelHeap, 0, idx, &m, 1) == 0) {
+    if (CachedModel_loadWithTex(&o->crackModels[0], data_ov003_02232648, sFieldObjectModelHeap, 0, idx, &m, 1) == 0) {
         return FALSE;
     }
-    if (CachedModel_loadWithTex(&o->crackModelAlt, data_ov003_02232648, sFieldObjectModelHeap, 0, idx, (sFieldObjShapeTable + 0x30c), 1)) {
+    if (CachedModel_loadWithTex(&o->crackModels[1], data_ov003_02232648, sFieldObjectModelHeap, 0, idx, (sFieldObjShapeTable + 0x30c), 1)) {
         return TRUE;
     }
     return FALSE;
@@ -4283,7 +4223,7 @@ BOOL FieldObj_LoadTurnips(Obj *o) {
 namespace ns_0221e4d4 {
 extern "C" {
 BOOL FieldObj_LoadDesignModels(Obj *o) {
-    Elem *p = &o->designModels[0][0];
+    Elem *p = &o->designModels[0];
     s32 i;
     u32 j;
     for (i = 0; i < 4; i++) {
@@ -4335,7 +4275,7 @@ BOOL _ZN18FieldObjectManager8onCreateEv(Obj *o) {
         gFieldObjectManager = o;
         if (FieldObj_RunLoaders(o)) {
             o->frameCounter = 0;
-            TreeAnimSet_Init(o->treeAnimSet);
+            TreeAnimSet_Init(&o->treeAnimSet);
             TreeLeafFx_Init(sTreeLeafFx);
             FieldItemFxTable_Init(sFieldItemFxTable);
             Field_OnEnter();
@@ -4353,7 +4293,7 @@ namespace ns_0221e4d4 {
 extern "C" {
 BOOL _ZN18FieldObjectManager9onExecuteEv(Obj *o) {
     FieldItemFxTable_Update(sFieldItemFxTable);
-    TreeAnimSet_Update(o->treeAnimSet);
+    TreeAnimSet_Update(&o->treeAnimSet);
     return TRUE;
 }
 }
@@ -4362,7 +4302,7 @@ BOOL _ZN18FieldObjectManager9onExecuteEv(Obj *o) {
 namespace ns_0221e4d4 {
 extern "C" {
 s32 FieldObj_DrawIconModel(Obj *o, u32 idx, V3 *a, s32 b, V3 *c, s32 d, s32 e, s32 f) {
-    Unk_ov003_0221e4d4_Model *m = o->iconModels[idx];
+    CachedModel *m = o->iconModels[idx];
     V3 t;
     s32 ang = WorldCurve_ToCurved(&t, a);
     Mtx43_SetTranslate(&data_021f47e0, t.x, t.y, t.z);
@@ -5635,8 +5575,8 @@ extern "C" {
 Elem2 *TreeAnim_Construct(Elem2 *self) {
     s32 *p;
     func_020548d0(self->animModel);
-    self->unitX = 0;
-    self->unitZ = 0;
+    self->unit.x = 0;
+    self->unit.z = 0;
     SndSeEmitter_ctor(self->seEmitter);
     p = self->unk_120;
     do {
@@ -5784,7 +5724,7 @@ void TreeAnimSet_ProcessRequest(void *a, TreeAnimRequest *o) {
     Unk_ov003_0221b8bc_V2 p;
     s32 *q;
     s32 hx, hy;
-    Unk_ov003_0221b8bc *e;
+    TreeAnim *e;
     void *g = TownBlockMap_Get();
     if (g == 0) {
         TreeAnimRequest_Resolve(o);
@@ -5928,15 +5868,15 @@ void Tree_KeepShaking(s32 id, s32 *pos) {
         u16 *cell = BlockMap_GetItemPtr(g, hx, hy, x - (hx << 4), z - (hy << 4), 0);
         if (cell != 0) {
             s32 n;
-            Unk_ov003_0221b8bc *e;
+            TreeAnim *e;
             if (CommManager_isOnline(gCommManager) == 0) {
                 id = 0;
             }
             n = Item_GetTreeStage(cell);
             if (n > 0 && n <= 4) {
                 e = TreeAnimSet_GetInstance(gFieldObjectManager + 0x4b20, cell, n - 1, (pos[0] ^ pos[1]) & 1);
-                if (e != 0 && pos[0] == e->unitX && pos[1] == e->unitZ && id == e->sessionSlot) {
-                    e->unk_b8 = 0;
+                if (e != 0 && pos[0] == e->unit.x && pos[1] == e->unit.z && id == e->sessionSlot) {
+                    e->playMode = 0;
                 }
             }
         }
@@ -5947,7 +5887,7 @@ void Tree_KeepShaking(s32 id, s32 *pos) {
 
 namespace ns_0221b8bc {
 extern "C" {
-void TreeAnim_Init(Unk_ov003_0221b8bc *o) {
+void TreeAnim_Init(TreeAnim *o) {
     CachedModel_allocJointRecord(o->animModel, sFieldObjectAnimHeap);
     AnimModel_allocAnmObj(o->animModel, sFieldObjectAnimHeap);
     o->animKind = 8;
@@ -5960,10 +5900,10 @@ void TreeAnim_Init(Unk_ov003_0221b8bc *o) {
 
 namespace ns_0221b8bc {
 extern "C" {
-void TreeAnim_Update(Unk_ov003_0221b8bc *o) {
+void TreeAnim_Update(TreeAnim *o) {
     if (o->active == 1) {
         AnimModel_stepAnim(o->animModel);
-        if (AnimFrameCtrl_isFinished(o->unk_9c + 8)) {
+        if (AnimFrameCtrl_isFinished(o->frameCtrl)) {
             TreeAnim_Reset(o);
         } else {
             s32 r5 = 0;
@@ -6044,8 +5984,8 @@ void TreeAnim_Update(Unk_ov003_0221b8bc *o) {
             if (r5 != 0) {
                 void *g = TownBlockMap_Get();
                 if (g != 0) {
-                    s32 x = o->unitX;
-                    s32 z = o->unitZ;
+                    s32 x = o->unit.x;
+                    s32 z = o->unit.z;
                     s32 hx = x >> 4;
                     s32 hy = z >> 4;
                     u16 *cell = BlockMap_GetItemPtr(g, hx, hy, x - (hx << 4), z - (hy << 4), 0);
@@ -6078,11 +6018,11 @@ void TreeAnim_Update(Unk_ov003_0221b8bc *o) {
                         }
                         if (n > 0) {
                             Unk_ov003_0221b8bc_V2 a, b;
-                            a.x = o->unitX;
-                            a.z = o->unitZ;
+                            a.x = o->unit.x;
+                            a.z = o->unit.z;
                             o->leafRecord = (TreeLeafFxEntry *)TreeLeafFx_SpawnLeaves(&sTreeLeafFx, o->animKind, n - 1, cell, &a, o->leafSpawnCount);
-                            b.x = o->unitX;
-                            b.z = o->unitZ;
+                            b.x = o->unit.x;
+                            b.z = o->unit.z;
                             o->seasonalRecord = (TreeLeafFxEntry *)TreeLeafFx_SpawnSeasonal(&sTreeLeafFx, o->animKind, n - 1, cell, &b, o->leafSpawnCount);
                             o->leafSpawnCount = o->leafSpawnCount + 1;
                         }
@@ -6091,23 +6031,23 @@ void TreeAnim_Update(Unk_ov003_0221b8bc *o) {
             }
         }
         Unk_ov003_0221b8bc_V3 v3;
-        v3.x = o->pos.x;
-        v3.y = o->pos.y;
-        v3.z = o->pos.z;
+        v3.x = o->posX;
+        v3.y = o->posY;
+        v3.z = o->posZ;
         SndSeEmitter_callUpdateRelative(o->seEmitter, &v3);
     }
-    o->unk_b8 = 1;
+    o->playMode = 1;
 }
 }
 }
 
 namespace ns_0221b8bc {
 extern "C" {
-void TreeAnim_Draw(Unk_ov003_0221b8bc *o) {
+void TreeAnim_Draw(TreeAnim *o) {
     if (o->active == 1) {
         volatile Unk_ov003_0221b8bc_Col2 l;
         Unk_ov003_0221b8bc_V3 v;
-        s32 r = WorldCurve_ToCurved(&v, &o->pos);
+        s32 r = WorldCurve_ToCurved(&v, &o->posX);
         Mtx43_SetTranslate(&data_021f47e0, v.x, v.y, v.z);
         Mtx43_RotateX(&data_021f47e0, r);
         o->baseMatrix = data_021f47e0;
@@ -6122,7 +6062,7 @@ void TreeAnim_Draw(Unk_ov003_0221b8bc *o) {
 
 namespace ns_0221b8bc {
 extern "C" {
-s32 TreeAnim_Release(Unk_ov003_0221b8bc *o) {
+s32 TreeAnim_Release(TreeAnim *o) {
     TreeAnim_Reset(o);
     CachedModel_release(o->animModel);
     SndSeEmitter_callStop(o->seEmitter);
@@ -6132,13 +6072,13 @@ s32 TreeAnim_Release(Unk_ov003_0221b8bc *o) {
 
 namespace ns_0221b8bc {
 extern "C" {
-void TreeAnim_Begin(Unk_ov003_0221b8bc *o, s32 flag) {
+void TreeAnim_Begin(TreeAnim *o, s32 flag) {
     Unk_ov003_0221b8bc_V2 a, b, c;
     s32 hx, hy, x, z;
     u16 *cell;
     void *g = TownBlockMap_Get();
-    x = o->unitX;
-    z = o->unitZ;
+    x = o->unit.x;
+    z = o->unit.z;
     hx = x >> 4;
     hy = z >> 4;
     cell = BlockMap_GetItemPtr(g, hx, hy, x - (hx << 4), z - (hy << 4), 0);
@@ -6147,19 +6087,19 @@ void TreeAnim_Begin(Unk_ov003_0221b8bc *o, s32 flag) {
         break;
     case 2:
     case 3:
-        a.x = o->unitX;
-        a.z = o->unitZ;
+        a.x = o->unit.x;
+        a.z = o->unit.z;
         if (PendingUnit_Find(&a, 0) >= 0) {
             TreeAnim_DropItems(o, cell);
-            b.x = o->unitX;
-            b.z = o->unitZ;
+            b.x = o->unit.x;
+            b.z = o->unit.z;
             PendingUnit_ApplyAtIfAid(&b, o->sessionSlot, 0);
         }
         break;
     default:
         TreeAnim_DropItems(o, cell);
-        c.x = o->unitX;
-        c.z = o->unitZ;
+        c.x = o->unit.x;
+        c.z = o->unit.z;
         PendingUnit_ApplyAtIfAid(&c, o->sessionSlot, 0);
         break;
     }
@@ -6194,7 +6134,7 @@ void TreeAnim_Begin(Unk_ov003_0221b8bc *o, s32 flag) {
 
 namespace ns_0221b8bc {
 extern "C" {
-s32 Tree_GetDropSide(Unk_ov003_0221b8bc *o, Unk_ov003_0221b8bc_V3 *p) {
+s32 Tree_GetDropSide(TreeAnim *o, Unk_ov003_0221b8bc_V3 *p) {
     s32 r = 0;
     u16 *q = PlayerActor_GetActor(Field_AidOrLocal(o));
     if (q != 0) {
@@ -6265,7 +6205,7 @@ void Tree_DropFruit(u16 *cell, s32 id, s32 *pos) {
 
 namespace ns_0221b8bc {
 extern "C" {
-void Tree_DropBeeHive(Unk_ov003_0221b8bc *o, s32 *p) {
+void Tree_DropBeeHive(TreeAnim *o, s32 *p) {
     Unk_ov003_0221b8bc_V2 a;
     Unk_ov003_0221b8bc_V3 b;
     Unk_ov003_0221b8bc_V3D c;
@@ -6354,14 +6294,14 @@ extern "C" void Tree_DropItems(u16 *cell, s32 a, P2 p)
 }
 
 namespace ns_0221aed4 {
-extern "C" void TreeAnim_DropItems(Unk_ov003_0221b5e4_Obj *self, void *cell)
+extern "C" void TreeAnim_DropItems(TreeAnim *self, void *cell)
 {
-    Tree_DropItems((u16 *)cell, (s32)self->unk_04, P2(self->unit));
+    Tree_DropItems((u16 *)cell, (s32)self->sessionSlot, P2(self->unit));
 }
 }
 
 namespace ns_0221aed4 {
-extern "C" s32 TreeAnim_Start(Unk_ov003_0221b5e4_Obj *self, s32 a, P2 p, s32 kind, s32 idx, s32 last)
+extern "C" s32 TreeAnim_Start(TreeAnim *self, s32 a, P2 p, s32 kind, s32 idx, s32 last)
 {
     TownBlockMap_Get();
     BOOL f = TRUE;
@@ -6372,7 +6312,7 @@ extern "C" s32 TreeAnim_Start(Unk_ov003_0221b5e4_Obj *self, s32 a, P2 p, s32 kin
         AnimModel_attachAnim(&self->animModel);
     }
     self->animKind = kind;
-    self->unk_04 = a;
+    self->sessionSlot = a;
     self->unit.x = p.x;
     self->unit.z = p.z;
     Unk_ov003_0221b65c_Tmp t;
@@ -6387,9 +6327,9 @@ extern "C" s32 TreeAnim_Start(Unk_ov003_0221b5e4_Obj *self, s32 a, P2 p, s32 kin
 }
 
 namespace ns_0221aed4 {
-extern "C" void TreeAnim_Reset(Unk_ov003_0221b5e4_Obj *self)
+extern "C" void TreeAnim_Reset(TreeAnim *self)
 {
-    self->unk_00 = 0;
+    self->active = 0;
     self->alpha = 0;
     self->unit.x = -1;
     self->unit.z = -1;
@@ -7790,9 +7730,9 @@ extern "C" void FieldItemFx_StartBalloonDrop(s32 a, s32 n)
     V3 A(0, 0, 0);
     s32 p0 = 0;
     s32 p1 = 0;
-    Unk_ov003_02219654_Obj *obj = (Unk_ov003_02219654_Obj *)PlayerActor_GetActor(4);
+    Actor *obj = (Actor *)PlayerActor_GetActor(4);
     if (obj != NULL) {
-        Unk_ov003_02219654_V3 *pv = &obj->position;
+        VecFx32 *pv = &obj->position;
         A.x = pv->x;
         A.y = pv->y;
         A.z = pv->z;
