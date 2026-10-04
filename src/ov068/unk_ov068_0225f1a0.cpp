@@ -16,6 +16,8 @@
 #include "actor/Actor.h"
 #include "actor/Character.h"
 #include "talk/EncodedString10.h"
+#include "actor/NpcActor.h"
+#include "actor/VillagerActor.h"
 #define X_func_ov068_0225f5f4 _ZN17FieldVillagerLook17setLookModeLockedEP13FieldVillagerjiiPviih
 #define X_func_ov068_0225f630 _ZN17FieldVillagerLook9resetLookEP13FieldVillager
 #define X_func_ov068_0225f670 _ZN17FieldVillagerLook4initEP13FieldVillager
@@ -325,84 +327,7 @@ public:
 struct Unk_020d77a4_Vec3;
 
 
-class NpcActor : public Character {
-public:
-    virtual void postCreate(s32 v);
-    virtual BOOL onExecute();
-    virtual BOOL onDraw();
-    virtual BOOL vfunc_30();
-    virtual BOOL vfunc_5c(Unk_020d77a4_Vec3 *v);
-    virtual BOOL onToolHit(u16 *p);
-    virtual void *vfunc_64();
-    virtual BOOL updateAct();
-    virtual u8 *getTexturePath();
-    virtual u8 *getModelPath();
-    virtual void getName(u32 a);
-    virtual u32 getGender();
-    virtual BOOL canPlayTalkMelody();
-    virtual void onTalkMelodyPlayed();
-    virtual u16 getSpecies();
-    virtual void setShirt(u16 *p, BOOL flag);
-    virtual void onJoinTalk();
-    virtual void onLeaveTalk();
-    virtual void getAct0BAnimA();
-    virtual void getAct0BAnimB();
-    virtual void vfunc_9c();
-    virtual void getTeachableEmotion();
-};
 
-class VillagerActor : public NpcActor {
-public:
-    VillagerActor();
-    virtual ~VillagerActor();
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual BOOL vfunc_0c();
-    virtual BOOL preDelete();
-    virtual void *vfunc_64();
-    virtual u8 *getTexturePath();
-    virtual u8 *getModelPath();
-    virtual void getName(u32 a);
-    virtual u32 getGender();
-    virtual BOOL canPlayTalkMelody();
-    virtual void onTalkMelodyPlayed();
-    virtual u16 getSpecies();
-    virtual void setShirt(u16 *p, BOOL flag);
-    virtual void addMood(u32 a, s32 b);
-    virtual BOOL vfunc_a8();
-    virtual BOOL vfunc_ac();
-    virtual BOOL vfunc_b0();
-    virtual BOOL vfunc_b4();
-    virtual BOOL vfunc_b8(u32 idx);
-    virtual BOOL vfunc_bc();
-
-    /* 0x0ea */ u8 pad_ea[0x150 - 0xea];
-    /* 0x150 */ Unk_ov068_022661c8_Blk unk_150;
-    /* 0x180 */ u8 pad_180[0x3b0 - 0x180];
-    /* 0x3b0 */ u8 unk_3b0[0x5c];
-    /* 0x40c */ s32 unk_40c;
-    /* 0x410 */ u8 pad_410[0x478 - 0x410];
-    /* 0x478 */ Unk_ov068_0225f23c_Vec unk_478;
-    /* 0x484 */ Unk_ov068_0225f23c_Vec unk_484;
-    /* 0x490 */ Unk_ov068_0225f23c_Vec unk_490;
-    /* 0x49c */ u8 pad_49c[0x4cc - 0x49c];
-    /* 0x4cc */ u8 unk_4cc[0x508 - 0x4cc];
-    /* 0x508 */ u8 unk_508;
-    /* 0x509 */ u8 pad_509[0x560 - 0x509];
-    /* 0x560 */ u8 partnerPlayer;
-    /* 0x561 */ u8 updateEnabled;
-    /* 0x562 */ u8 drawEnabled;
-    /* 0x563 */ u8 pad_563[0x618 - 0x563];
-    /* 0x618 */ u8 unk_618[0x10];
-    /* 0x628 */ void *curHeldTool;
-    /* 0x62c */ u8 pad_62c[0x680 - 0x62c];
-    /* 0x680 */ Unk_ov068_0226fb80_Sub680 villagerTalk;
-    /* 0x824 */ u8 pad_824[0x82c - 0x824];
-    /* 0x82c */ void *villagerData;
-    /* 0x830 */ u8 pad_830[8];
-    /* 0x838 */ u8 unk_838[0x5b];
-    /* 0x893 */ u8 unk_893;
-};
 
 // Vtable 0x0226fb80
 class FieldVillager : public VillagerActor {
@@ -3298,7 +3223,7 @@ BOOL FieldVillager::vfunc_00() {
 
 BOOL FieldVillager::drawDefault() {
     using namespace ns_02265d34;
-    data_021cb69c = unk_150;
+    data_021cb69c = *(Unk_ov068_022661c8_Blk *)((u8 *)&model + 0x150 - 0xec);
     if (func_0201b138(this) == 0) {
         return FALSE;
     }
@@ -3313,15 +3238,15 @@ BOOL FieldVillager::onDraw() {
         r = (this->*look.drawFn)();
     } else {
         Unk_ov068_0225f23c_Vec *pv = (Unk_ov068_0225f23c_Vec *)&position;
-        unk_478.x = position.x;
-        unk_478.y = pv->y;
-        unk_478.z = pv->z;
-        unk_484.x = position.x;
-        unk_484.y = pv->y;
-        unk_484.z = pv->z;
-        unk_490.x = position.x;
-        unk_490.y = pv->y;
-        unk_490.z = pv->z;
+        (*(Unk_ov068_0225f23c_Vec *)((u8 *)&emotionFx + 0x58)).x = position.x;
+        (*(Unk_ov068_0225f23c_Vec *)((u8 *)&emotionFx + 0x58)).y = pv->y;
+        (*(Unk_ov068_0225f23c_Vec *)((u8 *)&emotionFx + 0x58)).z = pv->z;
+        (*(Unk_ov068_0225f23c_Vec *)((u8 *)&emotionFx + 0x64)).x = position.x;
+        (*(Unk_ov068_0225f23c_Vec *)((u8 *)&emotionFx + 0x64)).y = pv->y;
+        (*(Unk_ov068_0225f23c_Vec *)((u8 *)&emotionFx + 0x64)).z = pv->z;
+        (*(Unk_ov068_0225f23c_Vec *)((u8 *)&emotionFx + 0x70)).x = position.x;
+        (*(Unk_ov068_0225f23c_Vec *)((u8 *)&emotionFx + 0x70)).y = pv->y;
+        (*(Unk_ov068_0225f23c_Vec *)((u8 *)&emotionFx + 0x70)).z = pv->z;
     }
     return r;
 }
@@ -3404,7 +3329,7 @@ s32 FieldVillager::getPlayerMemory() {
 
 BOOL FieldVillager::isPlayerFacing() {
     using namespace ns_02265d34;
-    if (unk_508 != 0 && ActorCollider_isHitByGroup(unk_4cc, 4) != 0) {
+    if (collider.isHit != 0 && ActorCollider_isHitByGroup(&collider, 4) != 0) {
         Unk_ov068_02265ee8_Obj *p = (Unk_ov068_02265ee8_Obj *)PlayerActor_GetCharacter(4);
         if (p != NULL && p->speed != 0) {
             s16 d = Math_AngleXZ(&p->position, &position) - p->moveAngleY;
@@ -3421,7 +3346,7 @@ BOOL FieldVillager::isPlayerFacing() {
 
 void FieldVillager::updateStareTimer() {
     using namespace ns_02265d34;
-    if (drawEnabled != 0 && updateEnabled != 0 && look.drawFn != 0 && NpcTalkCtrl_isBusy(unk_618) == 0 && getPlayerMemory() != 0) {
+    if (footstepFx.unk_0a != 0 && footstepFx.unk_09 != 0 && look.drawFn != 0 && NpcTalkCtrl_isBusy(&talkCtrl) == 0 && getPlayerMemory() != 0) {
         if (isPlayerFacing()) {
             pushFrames++;
             if ((s32)pushFrames >= 100) {
@@ -3721,7 +3646,7 @@ BOOL FieldVillager::updateAct() {
     }
     FieldVillagerAi_Update(&ai, this);
     fleaFx.update(this);
-    VillagerMood_update(unk_838, this);
+    VillagerMood_update(&mood, this);
     look.update(this);
     *(u8 *)((u8 *)this + 0xa01) = 0;
     return TRUE;
@@ -7250,7 +7175,7 @@ void FieldVillager::vfunc_4c(u32 idx, u8 v) {
     using namespace ns_0225f1a0;
     switch (idx) {
     case 3:
-        partnerPlayer = v;
+        footstepFx.unk_08 = v;
         if (VillagerTalk_hasPartner(this)) {
             talkType = 1;
             talkPartner = (Unk_ov068_0225f904_Menu *)VillagerTalk_getPartner(this);
@@ -7323,7 +7248,7 @@ void FieldVillager::vfunc_4c(u32 idx, u8 v) {
         break;
     }
     case 0:
-        partnerPlayer = v;
+        footstepFx.unk_08 = v;
         VillagerTalk_begin((&villagerTalk), this, talkType);
         func_02015ab0((&villagerTalk), NpcActor_getPlayerActor(this, 4));
         if (talkPartner) {
@@ -7339,7 +7264,7 @@ void FieldVillager::vfunc_4c(u32 idx, u8 v) {
         talkType = 0;
         break;
     case 5:
-        partnerPlayer = v;
+        footstepFx.unk_08 = v;
         FieldVillagerAi_SaveResumeState(&ai);
         FieldVillagerAi_ChangeState(&ai, this, 6);
         break;
@@ -7415,9 +7340,9 @@ void FieldVillagerFxTimer::update(FieldVillager *o) {
         holdCount = holdCount - 1;
     }
     if (fleaEffectTimer == 0) {
-        buf.a = o->unk_478.x;
-        buf.b = o->unk_478.y;
-        buf.c = o->unk_478.z;
+        buf.a = (*(Unk_ov068_0225f23c_Vec *)((u8 *)&o->emotionFx + 0x58)).x;
+        buf.b = (*(Unk_ov068_0225f23c_Vec *)((u8 *)&o->emotionFx + 0x58)).y;
+        buf.c = (*(Unk_ov068_0225f23c_Vec *)((u8 *)&o->emotionFx + 0x58)).z;
         Effect_PlayById(0x81, &buf, 0, 0);
         if (Villager_HasFlea(o->villagerData)) {
             fleaEffectTimer = Random_GlobalBelow(0xf) + 0xf;
@@ -7454,7 +7379,7 @@ BOOL FieldVillager::vfunc_b4() {
         p = (void *)getPlayerMemory();
     }
     if ((p == NULL && NpcActor_isPlayerNear(this, 0x6000, 4) == 0) || (p != NULL && VillagerMemory_IsUsed(p) != 0)) {
-        if (NpcTalkCtrl_isBusy(unk_618) == 0) {
+        if (NpcTalkCtrl_isBusy(&talkCtrl) == 0) {
             if (FieldVillagerAi_IsFreeIdle(&ai) != 0) {
                 if (VillagerTalk_hasPartner(this) == 0) {
                     if (VillagerTalk_getEventKind(this) == 0xb) {
@@ -7501,7 +7426,7 @@ void FieldVillager::onJoinTalk() {
 
 void FieldVillager::onLeaveTalk() {
     using namespace ns_0225f1a0;
-    VillagerMood_requestApply(unk_838);
+    VillagerMood_requestApply(&mood);
     if (FieldVillagerAi_Resume(&ai, this) == 0) {
         FieldVillagerAi_ChangeState(&ai, this, 0);
     }
@@ -7556,7 +7481,7 @@ void FieldVillagerLook::tickLookTime() {
 
 void FieldVillagerLook::setLookMode(FieldVillager *o, u32 idx, s32 a, s32 b, void *v, s32 c, s32 d, u8 e) {
     using namespace ns_0225f1a0;
-    NpcLookAt_setTarget(o->unk_3b0, idx, a, b, v, c, d, e);
+    NpcLookAt_setTarget(&o->lookAt, idx, a, b, v, c, d, e);
     lookMode = idx;
 }
 
@@ -7610,9 +7535,9 @@ void FieldVillagerLook::trackInsect(FieldVillager *o) {
     using namespace ns_0225f1a0;
     Unk_ov068_0225f23c_Vec buf;
     if (isSameInsect(targetSlot, targetId)) {
-        s32 r = getInsectIfNear(&buf, targetSlot, (Unk_ov068_0225f23c_Vec *)&o->position, o->unk_40c);
+        s32 r = getInsectIfNear(&buf, targetSlot, (Unk_ov068_0225f23c_Vec *)&o->position, o->lookAt.maxDistance);
         if (r != -1 && r == targetId) {
-            NpcLookAt_setTargetPos(o->unk_3b0, &buf);
+            NpcLookAt_setTargetPos(&o->lookAt, &buf);
         } else {
             resetLook(o);
         }
@@ -7667,8 +7592,8 @@ void FieldVillagerLook::trackFish(FieldVillager *o) {
     using namespace ns_0225f1a0;
     Unk_ov068_0225f23c_Vec buf;
     if (isSameFish(targetSlot, targetId)) {
-        if (getFishPosIfNear(&buf, targetSlot, (Unk_ov068_0225f23c_Vec *)&o->position, o->unk_40c)) {
-            NpcLookAt_setTargetPos(o->unk_3b0, &buf);
+        if (getFishPosIfNear(&buf, targetSlot, (Unk_ov068_0225f23c_Vec *)&o->position, o->lookAt.maxDistance)) {
+            NpcLookAt_setTargetPos(&o->lookAt, &buf);
         } else {
             resetLook(o);
         }
@@ -7683,12 +7608,12 @@ void FieldVillagerLook::update(FieldVillager *o) {
     Unk_ov068_0225f23c_Vec buf;
     if (isLocked == 0) {
         u8 a = lookMode;
-        u8 b = o->unk_3b0[0];
+        u8 b = o->lookAt.lookType;
         if (a == b) {
             switch (a) {
             case 1:
                 if (FieldVillager_GetMood(o) <= 1) {
-                    if (NpcLookAt_canSeeTarget(o->unk_3b0, o) == 0) {
+                    if (NpcLookAt_canSeeTarget(&o->lookAt, o) == 0) {
                         s32 r;
                         idx = -1;
                         r = findInsectNear(&buf, &idx, (Unk_ov068_0225f23c_Vec *)&o->position, 0x5000);
@@ -7705,7 +7630,7 @@ void FieldVillagerLook::update(FieldVillager *o) {
                 }
                 break;
             case 3:
-                if (NpcLookAt_canSeeTarget(o->unk_3b0, o)) {
+                if (NpcLookAt_canSeeTarget(&o->lookAt, o)) {
                     tickLookTime();
                 }
                 switch (targetKind) {

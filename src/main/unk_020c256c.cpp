@@ -14,6 +14,10 @@
 #include "actor/Character.h"
 #include "talk/TalkMsgRequest.h"
 #include "talk/ActorTalkRequest.h"
+#include "npc/Unk_02014254.h"
+#include "snd/SndSeEmitterKind1.h"
+#include "actor/NpcActor.h"
+#include "actor/SpNpcActor.h"
 
 extern "C" {
 u32 _ZN8NpcActor14getPlayerActorEj(void *p, s32 n);
@@ -57,99 +61,13 @@ public:
 };
 
 // ---- SpNpcTest and its bases (scene object derived from NpcActor) ----
-#define MEMBER(name, size) \
-    struct name { \
-        u8 unk_00[size]; \
-        name(); \
-    }
-MEMBER(ThreeLayerAnimModel, 0x2a0 - 0xec);
-MEMBER(Unk_0201ad3c, 0xc);
-MEMBER(NpcFaceAnim, 0x334 - 0x2ac);
-MEMBER(Unk_0201accc, 0x3a8 - 0x350);
-MEMBER(Unk_0201a794, 0x418 - 0x3b0);
-MEMBER(CollisionState, 0x30);
-MEMBER(ActorFollowCollider, 0x514 - 0x4cc);
-struct Unk_02014254 : NpcTalkCtrl {
-    Unk_02014254();
-};
 
-struct Unk_020f4080 {
-    u8 unk_00[0x558 - 0x514];
-    Unk_020f4080();
-};
 
 typedef Unk_020d77a4_Vec3 Unk_0203e7a4_Vec;
 
 
 
-struct NpcActor : Character {
-    u16 unk_ea;
-    ThreeLayerAnimModel model;
-    Unk_0201ad3c moveAnimSet;
-    NpcFaceAnim faceAnim;
-    NpcAnimCtrl animCtrl;
-    Unk_0201accc moveCtrl;
-    Unk_0201a8bc obstacleProbe;
-    Unk_0201ad18 unk_3aa;
-    Unk_0201a794 lookAt;
-    NpcSpeechState speechState;
-    Unk_0201a13c emotionFx;
-    CollisionState collisionState;
-    ActorFollowCollider collider;
-    Unk_020f4080 seEmitter;
-    Unk_020135e4 footstepFx;
-    NpcActionCtrl actionCtrl;
-    Unk_02014254 talkCtrl;
-    NpcActor() : unk_ea(0xfff1) {}
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual void postCreate(s32 a);
-    virtual BOOL vfunc_0c();
-    virtual BOOL onExecute();
-    virtual BOOL onDraw();
-    virtual BOOL vfunc_30();
-    virtual void vfunc_4c(u32 a, u8 b);
-    virtual BOOL vfunc_5c(Unk_020d77a4_Vec3 *p);
-    virtual void onToolHit();
-    virtual void vfunc_64();
-    virtual BOOL updateAct() = 0;
-    virtual const char *getTexturePath() = 0;
-    virtual const char *getModelPath() = 0;
-    virtual void getName(u32 a);
-    virtual u32 getGender();
-    virtual BOOL canPlayTalkMelody();
-    virtual void onTalkMelodyPlayed();
-    virtual u16 getSpecies();
-    virtual void setShirt();
-    virtual void onJoinTalk();
-    virtual void onLeaveTalk();
-    virtual void getAct0BAnimA();
-    virtual void getAct0BAnimB();
-    virtual void vfunc_9c();
-    virtual void getTeachableEmotion();
-    virtual void addMood();
-};
 
-class SpNpcActor : public NpcActor {
-public:
-    SpNpcActor() {}
-    virtual ~SpNpcActor();
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual BOOL vfunc_0c();
-    virtual BOOL preDelete();
-    virtual void getName(u32 a);
-    virtual u32 getGender();
-    virtual BOOL canPlayTalkMelody();
-    virtual void onTalkMelodyPlayed();
-    virtual u16 getSpecies();
-    virtual BOOL getWalkAnimSpeedScale();
-
-    SpNpcAnimHeapHandle animHeapHandle;
-    s32 colliderRadius;
-    s32 colliderHeight;
-    u8 talkMelodyPlayed;
-};
 
 class SpNpcTest;
 typedef BOOL (SpNpcTest::*Unk_020c28b0_Fn)();
@@ -168,8 +86,8 @@ public:
     virtual BOOL vfunc_48(void *p);
     virtual void vfunc_4c(u32 a, u8 b);
     virtual BOOL updateAct();
-    virtual const char *getTexturePath();
-    virtual const char *getModelPath();
+    virtual u8 *getTexturePath();
+    virtual u8 *getModelPath();
 
     BOOL mainAct03();
     BOOL setupAct03();
@@ -424,12 +342,12 @@ BOOL SpNpcTest::vfunc_0c() {
     return FALSE;
 }
 
-const char *SpNpcTest::getTexturePath() {
-    return sSpNpcModelPaths[1];
+u8 *SpNpcTest::getTexturePath() {
+    return (u8 *)sSpNpcModelPaths[1];
 }
 
-const char *SpNpcTest::getModelPath() {
-    return sSpNpcModelPaths[0];
+u8 *SpNpcTest::getModelPath() {
+    return (u8 *)sSpNpcModelPaths[0];
 }
 
 BOOL SpNpcTest::updateAct() {

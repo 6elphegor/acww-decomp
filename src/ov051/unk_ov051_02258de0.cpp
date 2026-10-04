@@ -21,6 +21,8 @@
 #include "gfx/ThreeLayerAnimModel.h"
 #include "talk/TalkMsgRequest.h"
 #include "talk/ActorTalkRequest.h"
+#include "actor/NpcActor.h"
+#include "actor/SpNpcActor.h"
 
 
 class SpNpcKappn;
@@ -114,92 +116,13 @@ public:
     virtual void onTag09_9();
 };
 
-#define MEMBER(name, size) \
-    struct name { \
-        u8 unk_00[size]; \
-        name(); \
-        ~name(); \
-    }
-MEMBER(Unk_0201ad3c, 0xc);
-MEMBER(NpcFaceAnim, 0x334 - 0x2ac);
-MEMBER(Unk_0201a794, 0x418 - 0x3b0);
-MEMBER(CollisionState, 0x30);
 
 
 
 struct Unk_020d77a4_Vec3;
 
 
-class NpcActor : public Character {
-public:
-    NpcActor() : unk_ea(0xfff1) {}
-    virtual ~NpcActor();
-    virtual void postCreate(s32 v);
-    virtual BOOL onExecute();
-    virtual BOOL onDraw();
-    virtual BOOL vfunc_30();
-    virtual void vfunc_4c(u32 v, u8 b);
-    virtual BOOL vfunc_5c(Unk_020d77a4_Vec3 *v);
-    virtual void onToolHit();
-    virtual void vfunc_64();
-    virtual BOOL updateAct();
-    virtual u8 *getTexturePath();
-    virtual u8 *getModelPath();
-    virtual void getName(u32 v);
-    virtual void getGender();
-    virtual void canPlayTalkMelody();
-    virtual void onTalkMelodyPlayed();
-    virtual u32 getSpecies();
-    virtual void setShirt();
-    virtual void onJoinTalk();
-    virtual void onLeaveTalk();
-    virtual void getAct0BAnimA();
-    virtual void getAct0BAnimB();
-    virtual s32 vfunc_9c();
-    virtual void getTeachableEmotion();
-    virtual void addMood();
 
-    void setTalkRequest(Unk_0201bc1c *p);
-
-    u16 unk_ea;
-    ThreeLayerAnimModel model;
-    Unk_0201ad3c moveAnimSet;
-    NpcFaceAnim faceAnim;
-    NpcAnimCtrl animCtrl;
-    Unk_0201accc moveCtrl;
-    Unk_0201a8bc obstacleProbe;
-    Unk_0201ad18 unk_3aa;
-    Unk_0201a794 lookAt;
-    NpcSpeechState speechState;
-    Unk_0201a13c emotionFx;
-    CollisionState collisionState;
-    Unk_02088d00 collider;
-    Unk_020f4080 seEmitter;
-    Unk_020135e4 footstepFx;
-    NpcActionCtrl actionCtrl;
-    Unk_02014254 talkCtrl;
-};
-
-class SpNpcActor : public NpcActor {
-public:
-    SpNpcActor() {}
-    virtual ~SpNpcActor();
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual BOOL vfunc_0c();
-    virtual BOOL preDelete();
-    virtual void getName(u32 v);
-    virtual void getGender();
-    virtual void canPlayTalkMelody();
-    virtual void onTalkMelodyPlayed();
-    virtual u32 getSpecies();
-    virtual s32 getWalkAnimSpeedScale();
-
-    SpNpcAnimHeapHandle animHeapHandle;
-    s32 colliderRadius;
-    s32 colliderHeight;
-    u8 talkMelodyPlayed;
-};
 
 class SpNpcKappnTalk : public Unk_020d7710 {
 public:
@@ -261,8 +184,8 @@ public:
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
-    virtual u32 getSpecies();
-    virtual s32 vfunc_9c();
+    virtual u16 getSpecies();
+    virtual u16 vfunc_9c();
 
     BOOL mainAct04();
     BOOL setupAct04();
@@ -466,9 +389,9 @@ void SpNpcKappn::changeAct(s32 state) {
     }
 }
 
-u32 SpNpcKappn::getSpecies() { return 0xffff; }
+u16 SpNpcKappn::getSpecies() { return 0xffff; }
 
-s32 SpNpcKappn::vfunc_9c() { return 10; }
+u16 SpNpcKappn::vfunc_9c() { return 10; }
 
 BOOL SpNpcKappn::setupAct00() { return TRUE; }
 

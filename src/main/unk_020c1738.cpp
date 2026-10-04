@@ -17,6 +17,11 @@
 #include "actor/Character.h"
 #include "talk/TalkMsgRequest.h"
 #include "talk/ActorTalkRequest.h"
+#include "npc/Unk_02014254.h"
+#include "snd/SndSeEmitterKind1.h"
+#include "actor/NpcActor.h"
+#include "actor/ActorFollowCollider.h"
+#include "actor/SpNpcActor.h"
 
 extern "C" {
 void _ZN8NpcActor14setTalkRequestEP12Unk_0201bc1c(void *a, void *b);
@@ -101,103 +106,13 @@ public:
 };
 
 // ---- SpNpcKaitlin / SpNpcKatie and their bases (scene object derived from NpcActor) ----
-#define MEMBER(name, size) \
-    struct name { \
-        u8 unk_00[size]; \
-        name(); \
-    }
-MEMBER(ThreeLayerAnimModel, 0x2a0 - 0xec);
-MEMBER(Unk_0201ad3c, 0xc);
-MEMBER(NpcFaceAnim, 0x334 - 0x2ac);
-MEMBER(CollisionState, 0x30);
-struct ActorFollowCollider {
-    u8 unk_00[0x514 - 0x4cc - 4];
-    u8 unk_44;
-    u8 pad_45[3];
-    ActorFollowCollider();
-};
-struct Unk_02014254 : NpcTalkCtrl {
-    Unk_02014254();
-};
 
-struct Unk_020f4080 {
-    u8 unk_00[0x558 - 0x514];
-    Unk_020f4080();
-};
 
 typedef Unk_020d77a4_Vec3 Unk_0203e7a4_Vec;
 
 
 
-struct NpcActor : Character {
-    u16 unk_ea;
-    ThreeLayerAnimModel model;
-    Unk_0201ad3c moveAnimSet;
-    NpcFaceAnim faceAnim;
-    NpcAnimCtrl animCtrl;
-    Unk_0201accc moveCtrl;
-    Unk_0201a8bc obstacleProbe;
-    Unk_0201ad18 unk_3aa;
-    Unk_0201a794 lookAt;
-    NpcSpeechState speechState;
-    Unk_0201a13c emotionFx;
-    CollisionState collisionState;
-    ActorFollowCollider collider;
-    Unk_020f4080 seEmitter;
-    Unk_020135e4 footstepFx;
-    NpcActionCtrl actionCtrl;
-    Unk_02014254 talkCtrl;
-    NpcActor() : unk_ea(0xfff1) {}
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual void postCreate(s32 a);
-    virtual BOOL vfunc_0c();
-    virtual BOOL onExecute();
-    virtual BOOL onDraw();
-    virtual BOOL vfunc_30();
-    virtual void vfunc_4c(u32 a, u8 b);
-    virtual BOOL vfunc_5c(Unk_020d77a4_Vec3 *p);
-    virtual void onToolHit();
-    virtual void vfunc_64();
-    virtual BOOL updateAct() = 0;
-    virtual const char *getTexturePath() = 0;
-    virtual const char *getModelPath() = 0;
-    virtual void getName(u32 a);
-    virtual u32 getGender();
-    virtual BOOL canPlayTalkMelody();
-    virtual void onTalkMelodyPlayed();
-    virtual u16 getSpecies();
-    virtual void setShirt();
-    virtual void onJoinTalk();
-    virtual void onLeaveTalk();
-    virtual void getAct0BAnimA();
-    virtual void getAct0BAnimB();
-    virtual void vfunc_9c();
-    virtual void getTeachableEmotion();
-    virtual void addMood();
-};
 
-class SpNpcActor : public NpcActor {
-public:
-    SpNpcActor() {}
-    virtual ~SpNpcActor();
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual BOOL vfunc_0c();
-    virtual BOOL preDelete();
-    virtual void getName(u32 a);
-    virtual u32 getGender();
-    virtual BOOL canPlayTalkMelody();
-    virtual void onTalkMelodyPlayed();
-    virtual u16 getSpecies();
-    virtual BOOL getWalkAnimSpeedScale();
-
-    SpNpcAnimHeapHandle animHeapHandle;
-    s32 colliderRadius;
-    s32 colliderHeight;
-    u8 talkMelodyPlayed;
-    u8 unk_651;
-};
 
 struct Unk_020c17f8_Vec {
     s32 x, y, z;
@@ -220,8 +135,8 @@ public:
     virtual BOOL vfunc_48(void *other);
     virtual void vfunc_4c(u32 a, u8 b);
     virtual BOOL updateAct();
-    virtual const char *getTexturePath();
-    virtual const char *getModelPath();
+    virtual u8 *getTexturePath();
+    virtual u8 *getModelPath();
     virtual void onJoinTalk();
     virtual void onLeaveTalk();
     virtual BOOL getWalkAnimSpeedScale();
@@ -314,7 +229,7 @@ BOOL SpNpcKaitlin::vfunc_00() {
     PlayerData_GetCurrent();
     changeAct(0);
     if (Scene_GetCurrent() == 0x2f) {
-        collider.unk_44 = 0;
+        collisionEnabled = 0;
         _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(&lookAt, 0, 0, 0, (s32)gVec3Zero, 4, data_020c6d1c, 1);
         position.x = 0x10000;
         position.z = 0x16800;
@@ -342,12 +257,12 @@ void SpNpcKaitlin_ChangeAct06() {
     }
 }
 
-const char *SpNpcKaitlin::getTexturePath() {
-    return sSpNpcKaitlinTexPath;
+u8 *SpNpcKaitlin::getTexturePath() {
+    return (u8 *)sSpNpcKaitlinTexPath;
 }
 
-const char *SpNpcKaitlin::getModelPath() {
-    return sSpNpcKaitlinModelPath;
+u8 *SpNpcKaitlin::getModelPath() {
+    return (u8 *)sSpNpcKaitlinModelPath;
 }
 
 BOOL SpNpcKaitlin::updateAct() {

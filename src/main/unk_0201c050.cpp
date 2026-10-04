@@ -1242,6 +1242,7 @@ struct NpcActor : Character {
     Unk_020135e4 footstepFx;
     NpcActionCtrl actionCtrl;
     Unk_02014254 talkCtrl;
+    u8 unk_628[0x640 - 0x628]; // NpcActor tail fields (curHeldTool .. collisionRadius, see actor/NpcActor.h)
     NpcActor() : unk_ea(0xfff1) {}
     virtual ~NpcActor() {}
     virtual BOOL vfunc_00();

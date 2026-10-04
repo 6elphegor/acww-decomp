@@ -18,6 +18,7 @@
 #include "snd/Unk_0213b938.h"
 #include "snd/Unk_0213b970.h"
 #include "game/SkyProc.h"
+#include "actor/SpNpcActor.h"
 
 // ======== class types (global scope) ========
 struct Unk_021f4400;
@@ -975,19 +976,6 @@ public:
     s32 getTopic();
     void setTopic(s32 v);
     void attachOwner(SpNpcKatie *owner);
-};
-// Base of SpNpcKatie; its dtor is out of line.
-class SpNpcActor : public ProcBase {
-public:
-    virtual ~SpNpcActor();
-
-    /* 0x004 */ u8 unk_050[0x5c - 0x50];
-    /* 0x05c */ u8 position[0x2a0 - 0x5c];
-    /* 0x2a0 */ u8 unk_2a0[0xc];
-    /* 0x2ac */ u8 unk_2ac[0x3b0 - 0x2ac];
-    /* 0x3b0 */ u8 unk_3b0[0x564 - 0x3b0];
-    /* 0x564 */ u8 unk_564[0x618 - 0x564];
-    /* 0x618 */ u8 unk_618[0x654 - 0x618];
 };
 class SpNpcKatie : public SpNpcActor {
 public:

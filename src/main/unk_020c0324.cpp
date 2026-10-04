@@ -17,6 +17,10 @@
 #include "talk/TalkMsgRequest.h"
 #include "talk/ActorTalkRequest.h"
 #include "talk/TalkWindowState.h"
+#include "snd/SndSeEmitterKind1.h"
+#include "actor/NpcActor.h"
+#include "actor/ActorFollowCollider.h"
+#include "actor/SpNpcActor.h"
 
 typedef Unk_020bfe30_Vec Unk_020c0acc_Vec;
 
@@ -146,104 +150,12 @@ public:
 };
 
 // ---- SpNpcKatie and its bases (scene object derived from NpcActor) ----
-#define MEMBER(name, size) \
-    struct name { \
-        u8 unk_00[size]; \
-        name(); \
-    }
-MEMBER(Unk_0201ad3c, 0xc);
-MEMBER(NpcFaceAnim, 0x334 - 0x2ac);
-MEMBER(Unk_0201accc, 0x3a8 - 0x350);
-MEMBER(Unk_0201a794, 0x418 - 0x3b0);
-MEMBER(CollisionState, 0x30);
-struct ActorFollowCollider {
-    u8 unk_00[0x1c];
-    u32 groups;
-    u8 pad_20[0x44 - 0x20];
-    u8 unk_44;
-    u8 pad_45[3];
-    ActorFollowCollider();
-};
-MEMBER(NpcActionCtrl, 0x618 - 0x564);
-MEMBER(Unk_02014254, 0x28);
-
-struct Unk_020f4080 {
-    u8 unk_00[0x558 - 0x514];
-    Unk_020f4080();
-};
 
 
 
 
-struct NpcActor : Character {
-    u16 unk_ea;
-    ThreeLayerAnimModel model;
-    Unk_0201ad3c moveAnimSet;
-    NpcFaceAnim faceAnim;
-    NpcAnimCtrl animCtrl;
-    Unk_0201accc moveCtrl;
-    Unk_0201a8bc obstacleProbe;
-    Unk_0201ad18 unk_3aa;
-    Unk_0201a794 lookAt;
-    NpcSpeechState speechState;
-    Unk_0201a13c emotionFx;
-    CollisionState collisionState;
-    ActorFollowCollider collider;
-    Unk_020f4080 seEmitter;
-    Unk_020135e4 footstepFx;
-    NpcActionCtrl actionCtrl;
-    Unk_02014254 talkCtrl;
-    NpcActor() : unk_ea(0xfff1) {}
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual void postCreate(s32 a);
-    virtual BOOL vfunc_0c();
-    virtual BOOL onExecute();
-    virtual BOOL onDraw();
-    virtual BOOL vfunc_30();
-    virtual void vfunc_4c(u32 a, u8 b);
-    virtual BOOL vfunc_5c(Unk_020d77a4_Vec3 *p);
-    virtual void onToolHit();
-    virtual void vfunc_64();
-    virtual BOOL updateAct() = 0;
-    virtual void *getTexturePath() = 0;
-    virtual void *getModelPath() = 0;
-    virtual void getName(u32 a);
-    virtual u32 getGender();
-    virtual BOOL canPlayTalkMelody();
-    virtual void onTalkMelodyPlayed();
-    virtual u16 getSpecies();
-    virtual void setShirt();
-    virtual void onJoinTalk();
-    virtual void onLeaveTalk();
-    virtual void getAct0BAnimA();
-    virtual void getAct0BAnimB();
-    virtual void vfunc_9c();
-    virtual void getTeachableEmotion();
-    virtual void addMood();
-};
 
-class SpNpcActor : public NpcActor {
-public:
-    SpNpcActor() {}
-    virtual ~SpNpcActor();
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual BOOL vfunc_0c();
-    virtual BOOL preDelete();
-    virtual void getName(u32 a);
-    virtual u32 getGender();
-    virtual BOOL canPlayTalkMelody();
-    virtual void onTalkMelodyPlayed();
-    virtual u16 getSpecies();
-    virtual BOOL getWalkAnimSpeedScale();
 
-    SpNpcAnimHeapHandle animHeapHandle;
-    s32 colliderRadius;
-    s32 colliderHeight;
-    u8 talkMelodyPlayed;
-    u8 unk_651;
-};
 
 typedef BOOL (SpNpcKatie::*Unk_020c11b8_Fn)();
 struct Unk_020c11b8_Ent {
@@ -261,8 +173,8 @@ public:
     virtual BOOL vfunc_48(void *other);
     virtual void vfunc_4c(u32 a, u8 b);
     virtual BOOL updateAct();
-    virtual void *getTexturePath();
-    virtual void *getModelPath();
+    virtual u8 *getTexturePath();
+    virtual u8 *getModelPath();
 
     BOOL mainAct08();
     BOOL setupAct08();
@@ -356,7 +268,7 @@ BOOL SpNpcKatie::vfunc_00() {
                 position.z -= 0x2000;
                 talk.setTopic(3);
                 changeAct(5);
-                collider.unk_44 = 0;
+                collisionEnabled = 0;
             } else {
                 talk.setTopic(5);
                 changeAct(1);
@@ -379,13 +291,13 @@ BOOL SpNpcKatie::vfunc_00() {
     } else if (Scene_GetCurrent() == 0xb) {
         talk.setTopic(3);
         changeAct(5);
-        collider.unk_44 = 0;
+        collisionEnabled = 0;
     } else if (Scene_GetCurrent() == 0xc) {
         _ZN12Unk_02086f846getPosEP17Unk_02086ec4_Vec3(TownSessionState_GetKatieState(TownSessionState_Get()), &position);
         talk.setTopic(3);
         changeAct(5);
     } else if (Scene_GetCurrent() == 0x2f) {
-        collider.unk_44 = 0;
+        collisionEnabled = 0;
         TalkRequestFlags_SetSceneHold();
         changeAct(8);
     }
@@ -403,12 +315,12 @@ BOOL SpNpcKatie::vfunc_0c() {
     return TRUE;
 }
 
-void *SpNpcKatie::getTexturePath() {
-    return sSpNpcKatieTexPath;
+u8 *SpNpcKatie::getTexturePath() {
+    return (u8 *)sSpNpcKatieTexPath;
 }
 
-void *SpNpcKatie::getModelPath() {
-    return sSpNpcKatieModelPath;
+u8 *SpNpcKatie::getModelPath() {
+    return (u8 *)sSpNpcKatieModelPath;
 }
 
 BOOL SpNpcKatie::updateAct() {
@@ -492,7 +404,7 @@ BOOL SpNpcKatie::setupAct01() {
             position.z = a.z + 0x1000;
         }
     }
-    collider.unk_44 = 1;
+    collisionEnabled = 1;
     return TRUE;
 }
 
@@ -585,18 +497,18 @@ BOOL SpNpcKatie::mainAct05() {
     if (p == NULL) {
         return TRUE;
     }
-    if (collider.unk_44 == 0 && Scene_GetCurrent() == 0) {
+    if (collisionEnabled == 0 && Scene_GetCurrent() == 0) {
         Town_FindGateHouse(TownBlockMap_Get(), &a, 0, 0);
         FieldPos_SnapToUnitCenter(&b, (Unk_020bfe30_Vec *)&position);
         if (b.z > a.z) {
-            collider.unk_44 = 1;
+            collisionEnabled = 1;
         }
     }
-    if (collider.unk_44 == 0 && Scene_GetCurrent() == 0xb) {
+    if (collisionEnabled == 0 && Scene_GetCurrent() == 0xb) {
         FieldPos_SnapToUnitCenter(&d, (Unk_020bfe30_Vec *)&position);
         FieldPos_FromUnitCenter(&c, 6, 15);
         if (d.z < c.z) {
-            collider.unk_44 = 1;
+            collisionEnabled = 1;
         }
     }
     q = PlayerActor_GetBodyPos(4);

@@ -15,6 +15,8 @@
 #include "talk/TalkMsgRequest.h"
 #include "talk/ActorTalkRequest.h"
 #include "talk/TalkWindowState.h"
+#include "actor/NpcActor.h"
+#include "actor/VillagerActor.h"
 
 extern "C" {
 }
@@ -23,73 +25,7 @@ extern "C" {
 // ---------------------------------------------------------------------------------------------------------------------
 
 
-class NpcActor : public Character {
-public:
-    virtual void postCreate(s32 a);
-    virtual BOOL onExecute();
-    virtual BOOL vfunc_30();
-    virtual BOOL vfunc_5c(Unk_020d77a4_Vec3 *p);
-    virtual void onToolHit();
-    virtual void *vfunc_64();
-    virtual BOOL updateAct();
-    virtual u8 *getTexturePath();
-    virtual u8 *getModelPath();
-    virtual void getName(u32 a);
-    virtual u32 getGender();
-    virtual BOOL canPlayTalkMelody();
-    virtual void onTalkMelodyPlayed();
-    virtual u16 getSpecies();
-    virtual void setShirt(u16 *p, BOOL flag);
-    virtual void onJoinTalk();
-    virtual void onLeaveTalk();
-    virtual void getAct0BAnimA();
-    virtual void getAct0BAnimB();
-    virtual void vfunc_9c();
-    virtual void getTeachableEmotion();
-    virtual void addMood(u32 a, s32 b);
 
-    u16 unk_ea;
-    u8 unk_ec[0x350 - 0xec];
-    u8 unk_350[0x3b0 - 0x350];
-    u8 unk_3b0[0x558 - 0x3b0];
-    u8 unk_558[0xc];
-    u8 unk_564[0x618 - 0x564];
-    u8 unk_618[0x640 - 0x618];
-};
-
-class VillagerActor : public NpcActor {
-public:
-    VillagerActor();
-    virtual ~VillagerActor();
-    virtual BOOL vfunc_0c();
-    virtual void *vfunc_64();
-    virtual u8 *getTexturePath();
-    virtual u8 *getModelPath();
-    virtual void getName(u32 a);
-    virtual u32 getGender();
-    virtual BOOL canPlayTalkMelody();
-    virtual void onTalkMelodyPlayed();
-    virtual u16 getSpecies();
-    virtual void setShirt(u16 *p, BOOL flag);
-    virtual void addMood(u32 a, s32 b);
-    virtual BOOL vfunc_a8();
-    virtual BOOL vfunc_ac();
-    virtual BOOL vfunc_b0();
-    virtual void vfunc_b4();
-    virtual void vfunc_b8();
-    virtual void vfunc_bc();
-
-    /* 0x640 */ u32 eventKind;
-    /* 0x644 */ u32 talkPartnerId;
-    /* 0x648 */ u32 invitedByPartner;
-    /* 0x64c */ u8 unk_64c[0x680 - 0x64c];
-    /* 0x680 */ u8 unk_680[0x824 - 0x680];
-    /* 0x824 */ u8 unk_824[8];
-    /* 0x82c */ void *villagerData;
-    /* 0x830 */ void *villagerState;
-    /* 0x834 */ u32 unk_834;
-    /* 0x838 */ u8 unk_838[0x894 - 0x838];
-};
 
 // ---------------------------------------------------------------------------------------------------------------------
 
@@ -468,7 +404,7 @@ BOOL BirthdayHostVillager::vfunc_00() {
         return FALSE;
     }
     drawFn = *(Unk_ov004_0224c034_Fn *)data_ov004_0224befc;
-    Unk_02013474_enableFootsteps(&unk_558);
+    Unk_02013474_enableFootsteps(&footstepFx);
     return TRUE;
 }
 
@@ -509,7 +445,7 @@ void BirthdayHostVillager::func_ov004_02215b9c() {
 }
 
 BOOL BirthdayHostVillager::vfunc_48(void *) {
-    if (NpcTalkCtrl_isBusy(&unk_618)) {
+    if (NpcTalkCtrl_isBusy(&talkCtrl)) {
         return FALSE;
     }
     if (act <= 3) {
@@ -519,7 +455,7 @@ BOOL BirthdayHostVillager::vfunc_48(void *) {
 }
 
 BOOL BirthdayHostVillager::vfunc_58(void *) {
-    if (NpcTalkCtrl_isBusy(&unk_618) == 0) {
+    if (NpcTalkCtrl_isBusy(&talkCtrl) == 0) {
         return TRUE;
     }
     return FALSE;
@@ -934,8 +870,8 @@ void BirthdayHostVillager::execAct() {
 }
 
 BOOL BirthdayHostVillager::setupAct00() {
-    if (NpcActionCtrl_requestStand(unk_564, 1, data_020c6cc8)) {
-        NpcLookAt_setTarget(unk_3b0, 1, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
+    if (NpcActionCtrl_requestStand((u8 *)&actionCtrl, 1, data_020c6cc8)) {
+        NpcLookAt_setTarget((u8 *)&lookAt, 1, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
         return TRUE;
     }
     return FALSE;
@@ -943,12 +879,12 @@ BOOL BirthdayHostVillager::setupAct00() {
 
 void BirthdayHostVillager::mainAct00() {
     s32 c[3];
-    u8 *m = unk_564;
-    if (unk_3b0[0x508 - 0x3b0] != 0 && NpcActionCtrl_getAction(m) == 1) {
+    u8 *m = (u8 *)&actionCtrl;
+    if (collider.isHit != 0 && NpcActionCtrl_getAction(m) == 1) {
         NpcActionCtrl_requestAction(m, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
         return;
     }
-    if (NpcActionCtrl_getAction(unk_564) == 0) {
+    if (NpcActionCtrl_getAction((u8 *)&actionCtrl) == 0) {
         if (walkTimer != 0) {
             walkTimer--;
         }
@@ -958,42 +894,42 @@ void BirthdayHostVillager::mainAct00() {
             waypoint[1] = walkTarget[1];
             waypoint[2] = walkTarget[2];
             if (walkAngle != rotY) {
-                if (NpcActionCtrl_requestAction(unk_564, 3, 1, 0, 0, 0, walkAngle, 0, 0, data_020c6cc8, 0) != 0) {
+                if (NpcActionCtrl_requestAction((u8 *)&actionCtrl, 3, 1, 0, 0, 0, walkAngle, 0, 0, data_020c6cc8, 0) != 0) {
                     walkTimer = Random_GlobalBelow(0x46) + 0x14;
                 }
             } else {
-                if (NpcActionCtrl_requestAction(unk_564, 1, 1, walkTarget[0], walkTarget[2], 0, 0, 0, 0, data_020c6cc8, 0) != 0) {
+                if (NpcActionCtrl_requestAction((u8 *)&actionCtrl, 1, 1, walkTarget[0], walkTarget[2], 0, 0, 0, 0, data_020c6cc8, 0) != 0) {
                     walkTimer = Random_GlobalBelow(0x50) + 0x14;
                 }
             }
         } else {
-            if (NpcActionCtrl_isActionDone(unk_564) != 0) {
-                NpcActionCtrl_requestStand(unk_564, 1, data_020c6cc8);
+            if (NpcActionCtrl_isActionDone((u8 *)&actionCtrl) != 0) {
+                NpcActionCtrl_requestStand((u8 *)&actionCtrl, 1, data_020c6cc8);
             }
         }
-    } else if (NpcActionCtrl_getAction(unk_564) == 3) {
-        if (NpcActionCtrl_isActionDone(unk_564) != 0) {
-            NpcActionCtrl_requestAction(unk_564, 1, 1, walkTarget[0], walkTarget[2], 0, 0, 0, 0, data_020c6cc8, 0);
+    } else if (NpcActionCtrl_getAction((u8 *)&actionCtrl) == 3) {
+        if (NpcActionCtrl_isActionDone((u8 *)&actionCtrl) != 0) {
+            NpcActionCtrl_requestAction((u8 *)&actionCtrl, 1, 1, walkTarget[0], walkTarget[2], 0, 0, 0, 0, data_020c6cc8, 0);
         }
-    } else if (NpcActionCtrl_getAction(unk_564) == 1) {
+    } else if (NpcActionCtrl_getAction((u8 *)&actionCtrl) == 1) {
         switch (NpcActor_findAvoidPos(this, c)) {
         case 1:
-            NpcActionCtrl_requestStand(unk_564, 1, data_020c6cc8);
+            NpcActionCtrl_requestStand((u8 *)&actionCtrl, 1, data_020c6cc8);
             break;
         case 2:
             waypoint[0] = c[0];
             waypoint[1] = c[1];
             waypoint[2] = c[2];
-            NpcMoveCtrl_setWaypoint(unk_350, waypoint);
+            NpcMoveCtrl_setWaypoint((u8 *)&moveCtrl, waypoint);
             break;
         default:
             if (func_020e96ec(waypoint, walkTarget) != 0) {
                 waypoint[0] = walkTarget[0];
                 waypoint[1] = walkTarget[1];
                 waypoint[2] = walkTarget[2];
-                NpcMoveCtrl_setWaypoint(unk_350, walkTarget);
+                NpcMoveCtrl_setWaypoint((u8 *)&moveCtrl, walkTarget);
             } else if (func_020e9650(walkTarget, &position) < 0x200) {
-                NpcActionCtrl_requestStand(unk_564, 1, data_020c6cc8);
+                NpcActionCtrl_requestStand((u8 *)&actionCtrl, 1, data_020c6cc8);
             }
             break;
         }
@@ -1001,14 +937,14 @@ void BirthdayHostVillager::mainAct00() {
 }
 
 BOOL BirthdayHostVillager::setupAct01() {
-    u8 *m = unk_564;
+    u8 *m = (u8 *)&actionCtrl;
     Unk_ov004_022146ec_Actor *o = BirthdayGuestVillager_Get();
     if (o != 0) {
         s32 dx = o->pos[0] - position.x;
         s32 dz = o->pos[2] - position.z;
         s32 ang = func_020e7b98(dx, dz);
         NpcActionCtrl_requestAction(m, 3, 1, 0, 0, 0, ang, 0, 0, data_020c6cc8, 0);
-        NpcLookAt_setTarget(unk_3b0, 2, 0, o, gVec3Zero, 4, data_020c6d1c, 1);
+        NpcLookAt_setTarget((u8 *)&lookAt, 2, 0, o, gVec3Zero, 4, data_020c6d1c, 1);
         return TRUE;
     }
     return FALSE;
@@ -1027,10 +963,10 @@ void BirthdayHostVillager::mainAct02() {
     }
     switch (emotionTimer) {
     case 0x14:
-        NpcActionCtrl_requestEmotion(unk_564, 1, 3, data_020c6cc8);
+        NpcActionCtrl_requestEmotion((u8 *)&actionCtrl, 1, 3, data_020c6cc8);
         break;
     case 1:
-        NpcActionCtrl_requestEmotion(unk_564, 1, 0, data_020c6cc8);
+        NpcActionCtrl_requestEmotion((u8 *)&actionCtrl, 1, 0, data_020c6cc8);
         break;
     case 0:
         changeAct(0);
@@ -1050,13 +986,13 @@ void BirthdayHostVillager::mainAct03() {
     switch (emotionTimer) {
     case 0x28:
         if (Random_GlobalBelow(2) == 0) {
-            NpcActionCtrl_requestEmotion(unk_564, 1, 0xa, data_020c6cc8);
+            NpcActionCtrl_requestEmotion((u8 *)&actionCtrl, 1, 0xa, data_020c6cc8);
         } else {
-            NpcActionCtrl_requestEmotion(unk_564, 1, 0x17, data_020c6cc8);
+            NpcActionCtrl_requestEmotion((u8 *)&actionCtrl, 1, 0x17, data_020c6cc8);
         }
         break;
     case 1:
-        NpcActionCtrl_requestEmotion(unk_564, 1, 0, data_020c6cc8);
+        NpcActionCtrl_requestEmotion((u8 *)&actionCtrl, 1, 0, data_020c6cc8);
         break;
     case 0:
         changeAct(0);
@@ -1066,7 +1002,7 @@ void BirthdayHostVillager::mainAct03() {
 
 BOOL BirthdayHostVillager::setupAct04() {
     if ((u32)(act - 1) <= 2) {
-        NpcActionCtrl_requestEmotion(unk_564, 2, 0, data_020c6cc8);
+        NpcActionCtrl_requestEmotion((u8 *)&actionCtrl, 2, 0, data_020c6cc8);
     }
     return TRUE;
 }
@@ -1077,7 +1013,7 @@ BOOL BirthdayHostVillager::setupAct05() {
     BOOL r;
     void *o = PlayerActor_GetActor(4);
     if (o != 0) {
-        NpcTalkCtrl_requestTurnAndTalk(unk_618, 0, NpcActor_getAngleTo(this, o), 0);
+        NpcTalkCtrl_requestTurnAndTalk((u8 *)&talkCtrl, 0, NpcActor_getAngleTo(this, o), 0);
         r = TRUE;
     } else {
         r = FALSE;
@@ -1108,7 +1044,7 @@ void BirthdayHostVillager::mainAct07() {
 
 BOOL BirthdayHostVillager::setupAct08() {
     approachTimer = 0x32;
-    NpcActionCtrl_requestAction(unk_564, 1, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    NpcActionCtrl_requestAction((u8 *)&actionCtrl, 1, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
@@ -1124,25 +1060,25 @@ void BirthdayHostVillager::mainAct08() {
     b.z = a.z;
     v = NpcActor_getDistanceToPlayer(this, 4);
     if (v > 0x4000) {
-        if (NpcActionCtrl_getAction(unk_564) == 1) {
-            NpcActionCtrl_requestAction(unk_564, 2, 1, 0, 0, 0x800, 0, 0, 0, data_020c6cc8, 0);
+        if (NpcActionCtrl_getAction((u8 *)&actionCtrl) == 1) {
+            NpcActionCtrl_requestAction((u8 *)&actionCtrl, 2, 1, 0, 0, 0x800, 0, 0, 0, data_020c6cc8, 0);
         }
     } else {
-        if (NpcActionCtrl_getAction(unk_564) == 2) {
-            NpcActionCtrl_requestAction(unk_564, 1, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+        if (NpcActionCtrl_getAction((u8 *)&actionCtrl) == 2) {
+            NpcActionCtrl_requestAction((u8 *)&actionCtrl, 1, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
         }
     }
-    NpcMoveCtrl_setWaypoint(unk_350, &b);
+    NpcMoveCtrl_setWaypoint((u8 *)&moveCtrl, &b);
     if (approachTimer != 0) {
         approachTimer--;
     }
     r4 = Math_AngleXZ(&position, &a);
     r0 = func_020e780c(rotY, r4);
     if (v <= 0x3000 || approachTimer == 0) {
-        NpcTalkCtrl_requestTurnAndTalk(unk_618, 0, r4, 0);
+        NpcTalkCtrl_requestTurnAndTalk((u8 *)&talkCtrl, 0, r4, 0);
         changeAct(9);
     } else if (r0 > 0x2000) {
-        NpcActionCtrl_requestAction(unk_564, 4, 2, b.x, b.z, 0, r4, 0, 0, data_020c6cc8, 0);
+        NpcActionCtrl_requestAction((u8 *)&actionCtrl, 4, 2, b.x, b.z, 0, r4, 0, 0, data_020c6cc8, 0);
     }
 }
 

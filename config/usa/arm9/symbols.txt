@@ -1354,6 +1354,7 @@ NpcActor_CanPlayerPay kind:function(thumb,size=0x1c) addr:0x0201ade4
 NpcActor_FindFreeUnitNear kind:function(thumb,size=0x284) addr:0x0201ae00
 _ZN8NpcActor8vfunc_64Ev kind:function(thumb,size=0x4) addr:0x0201b084
 _ZN8NpcActor9onToolHitEv kind:function(thumb,size=0x4) addr:0x0201b088
+_ZN8NpcActor9onToolHitEPt kind:label(thumb) addr:0x0201b088
 _ZN8NpcActor8vfunc_4cEi kind:function(thumb,size=0x16) addr:0x0201b08c
 _ZN8NpcActor8vfunc_4cEjh kind:label(thumb) addr:0x0201b08c
 _ZN8NpcActor8vfunc_5cEP17Unk_020d77a4_Vec3 kind:function(thumb,size=0x48) addr:0x0201b0a4
@@ -1377,6 +1378,7 @@ _ZN8NpcActor18netSetSlotsIfOwnerEjjjz kind:function(thumb,size=0x74) addr:0x0201
 _ZN8NpcActor11netSetSlotsEiii kind:function(thumb,size=0x18) addr:0x0201ba70
 _ZN8NpcActor10isNetOwnerEv kind:function(thumb,size=0x64) addr:0x0201ba88
 _ZN8NpcActor7addMoodEv kind:function(thumb,size=0x2) addr:0x0201baec
+_ZN8NpcActor7addMoodEji kind:label(thumb) addr:0x0201baec
 _ZN8NpcActor8vfunc_9cEv kind:function(thumb,size=0xc) addr:0x0201baf0
 _ZN8NpcActor13getAct0BAnimBEv kind:function(thumb,size=0x20) addr:0x0201bafc
 _ZN8NpcActor13getAct0BAnimAEv kind:function(thumb,size=0x20) addr:0x0201bb1c
@@ -1385,6 +1387,7 @@ _ZN8NpcActor16getFreeOffsetPosEP16Unk_020d77a4_VecPv kind:function(thumb,size=0x
 _ZN8NpcActor11onLeaveTalkEv kind:function(thumb,size=0x2) addr:0x0201bbec
 _ZN8NpcActor10onJoinTalkEv kind:function(thumb,size=0x2) addr:0x0201bbf0
 _ZN8NpcActor8setShirtEv kind:function(thumb,size=0x2) addr:0x0201bbf4
+_ZN8NpcActor8setShirtEPti kind:label(thumb) addr:0x0201bbf4
 _ZN8NpcActor16getSpeakerGenderEv kind:function(thumb,size=0x22) addr:0x0201bbf8
 _ZN8NpcActor14getTalkRequestEv kind:function(thumb,size=0xc) addr:0x0201bc1c
 _ZN8NpcActor14setTalkRequestEP12Unk_0201bc1c kind:function(thumb,size=0x24) addr:0x0201bc28
@@ -1446,6 +1449,7 @@ _ZN12VillagerTalk9vfunc_14cEv kind:function(thumb,size=0x4) addr:0x0201c7d4
 _ZN13VillagerActor8vfunc_bcEv kind:label(thumb) addr:0x0201c7d4
 _ZN12VillagerTalk9vfunc_148Ev kind:function(thumb,size=0x4) addr:0x0201c7d8
 _ZN13VillagerActor8vfunc_b8Ev kind:label(thumb) addr:0x0201c7d8
+_ZN13VillagerActor8vfunc_b8Ej kind:label(thumb) addr:0x0201c7d8
 _ZN12VillagerTalk9vfunc_144Ev kind:function(thumb,size=0x4) addr:0x0201c7dc
 _ZN13VillagerActor8vfunc_b4Ev kind:label(thumb) addr:0x0201c7dc
 _ZN12VillagerTalk18isInvitedByPartnerEv kind:function(thumb,size=0xc) addr:0x0201c7e0

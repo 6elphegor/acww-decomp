@@ -11,7 +11,7 @@ struct Unk_020135e4 {
     /* 0x0 */ u8 pad_00[8];
     /* 0x8 */ u8 unk_08;
     /* 0x9 */ u8 unk_09;
-    /* 0xa */ u8 pad_0a;
+    /* 0xa */ u8 unk_0a;
     /* 0xb */ u8 unk_0b;
     Unk_020135e4();
     ~Unk_020135e4();

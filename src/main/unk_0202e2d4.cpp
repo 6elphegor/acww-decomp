@@ -11,6 +11,13 @@
 #include "npc/Unk_0201a13c.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
+#include "snd/SndSeEmitterKind1.h"
+#include "actor/NpcActor.h"
+#include "actor/SpNpcActor.h"
+
+// The NpcActor destructor (and its seEmitter member's) is inlined into the derived destructor in this file.
+inline SndSeEmitterKind1::~SndSeEmitterKind1() {}
+inline NpcActor::~NpcActor() {}
 
 
 extern "C" {
@@ -34,85 +41,14 @@ void Npc_GetName(u32 a, u16 *p);
 }
 
 // ---- SpNpcActor (scene object derived from NpcActor) ----
-#define MEMBER(name, size) \
-    struct name { \
-        u8 unk_00[size]; \
-        name(); \
-        ~name(); \
-    }
-MEMBER(ThreeLayerAnimModel, 0x2a0 - 0xec);
-MEMBER(Unk_0201ad3c, 0xc);
-MEMBER(NpcFaceAnim, 0x334 - 0x2ac);
-MEMBER(Unk_0201accc, 0x3a8 - 0x350);
-MEMBER(Unk_0201a794, 0x418 - 0x3b0);
-MEMBER(CollisionState, 0x30);
-MEMBER(ActorFollowCollider, 0x514 - 0x4cc);
-MEMBER(NpcActionCtrl, 0x618 - 0x564);
 
 extern "C" void func_020f43c8(void *p);
 
-struct Unk_020f4080 {
-    u8 unk_00[0x558 - 0x514];
-    Unk_020f4080();
-    ~Unk_020f4080() {
-        *(u32 *)this = (u32)data_020d6f54;
-        func_020f43c8(this);
-    }
-};
 
 typedef Unk_020d77a4_Vec3 Unk_0203e7a4_Vec;
 
 
 
-struct NpcActor : Character {
-    u16 unk_ea;
-    ThreeLayerAnimModel model;
-    Unk_0201ad3c moveAnimSet;
-    NpcFaceAnim faceAnim;
-    NpcAnimCtrl animCtrl;
-    Unk_0201accc moveCtrl;
-    Unk_0201a8bc obstacleProbe;
-    Unk_0201ad18 unk_3aa;
-    Unk_0201a794 lookAt;
-    NpcSpeechState speechState;
-    Unk_0201a13c emotionFx;
-    CollisionState collisionState;
-    ActorFollowCollider collider;
-    Unk_020f4080 seEmitter;
-    Unk_020135e4 footstepFx;
-    NpcActionCtrl actionCtrl;
-    Unk_02014254 talkCtrl;
-    NpcActor();
-    virtual ~NpcActor() {}
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual void postCreate(s32 a);
-    virtual BOOL vfunc_0c();
-    virtual BOOL onExecute();
-    virtual BOOL onDraw();
-    virtual BOOL vfunc_30();
-    virtual void vfunc_4c(u32 a, u8 b);
-    virtual BOOL vfunc_5c(Unk_020d77a4_Vec3 *p);
-    virtual void onToolHit();
-    virtual void vfunc_64();
-    virtual void updateAct();
-    virtual void getTexturePath() = 0;
-    virtual void getModelPath() = 0;
-    virtual void getName(u32 a);
-    virtual u32 getGender();
-    virtual BOOL canPlayTalkMelody();
-    virtual void onTalkMelodyPlayed();
-    virtual u16 getSpecies();
-    virtual void setShirt();
-    virtual void onJoinTalk();
-    virtual void onLeaveTalk();
-    virtual void getAct0BAnimA();
-    virtual void getAct0BAnimB();
-    virtual void vfunc_9c();
-    virtual void getTeachableEmotion();
-    virtual void addMood();
-    u16 getNpcIndex();
-};
 
 extern "C" {
 void NpcRegistry_RemoveSpNpc(void *p);
@@ -141,29 +77,6 @@ static inline BOOL Unk_0202e318_IsOne(u8 v) {
     return FALSE;
 }
 
-class SpNpcActor : public NpcActor {
-public:
-    SpNpcActor();
-    virtual ~SpNpcActor();
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual BOOL vfunc_0c();
-    virtual BOOL preDelete();
-    virtual void getName(u32 a);
-    virtual u32 getGender();
-    virtual BOOL canPlayTalkMelody();
-    virtual void onTalkMelodyPlayed();
-    virtual u16 getSpecies();
-    virtual BOOL getWalkAnimSpeedScale();
-
-    BOOL loadAnimSet();
-    void setColliderSize(s32 a, s32 b);
-
-    SpNpcAnimHeapHandle animHeapHandle;
-    s32 colliderRadius;
-    s32 colliderHeight;
-    u8 talkMelodyPlayed;
-};
 
 SpNpcActor::~SpNpcActor() {}
 

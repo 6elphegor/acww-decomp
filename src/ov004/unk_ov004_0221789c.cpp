@@ -28,6 +28,8 @@
 #include "actor/Character.h"
 #include "talk/TalkMsgRequest.h"
 #include "talk/ActorTalkRequest.h"
+#include "actor/NpcActor.h"
+#include "actor/VillagerActor.h"
 
 class FleaMarketSellerVillager;
 
@@ -192,85 +194,7 @@ void *ActorTalkRequest_getChoiceList(void *o);
 struct Unk_020d77a4_Vec3;
 
 
-class NpcActor : public Character {
-public:
-    NpcActor() : unk_ea(0xfff1) {}
-    virtual void postCreate(s32 v);
-    virtual BOOL onExecute();
-    virtual BOOL onDraw();
-    virtual BOOL vfunc_30();
-    virtual BOOL vfunc_5c(Unk_020d77a4_Vec3 *v);
-    virtual void onToolHit();
-    virtual void *vfunc_64();
-    virtual BOOL updateAct();
-    virtual u8 *getTexturePath();
-    virtual u8 *getModelPath();
-    virtual void getName(u32 a);
-    virtual u32 getGender();
-    virtual BOOL canPlayTalkMelody();
-    virtual void onTalkMelodyPlayed();
-    virtual u16 getSpecies();
-    virtual void setShirt(u16 *p, BOOL flag);
-    virtual void onJoinTalk();
-    virtual void onLeaveTalk();
-    virtual void getAct0BAnimA();
-    virtual void getAct0BAnimB();
-    virtual void vfunc_9c();
-    virtual void getTeachableEmotion();
 
-    u16 unk_ea;
-    Unk_02053d3c model;
-    Unk_0201ad3c moveAnimSet;
-    NpcFaceAnim faceAnim;
-    NpcAnimCtrl animCtrl;
-    Unk_0201accc moveCtrl;
-    Unk_0201a8bc obstacleProbe;
-    Unk_0201ad18 unk_3aa;
-    Unk_0201a794 lookAt;
-    NpcSpeechState speechState;
-    Unk_0201a13c emotionFx;
-    Unk_020323b0 collisionState;
-    Unk_02088d00 collider;
-    Unk_020f4080 seEmitter;
-    Unk_020135e4 footstepFx;
-    NpcActionCtrl actionCtrl;
-    Unk_02014254 talkCtrl;
-};
-
-class VillagerActor : public NpcActor {
-public:
-    VillagerActor();
-    virtual ~VillagerActor();
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual BOOL vfunc_0c();
-    virtual BOOL preDelete();
-    virtual void *vfunc_64();
-    virtual u8 *getTexturePath();
-    virtual u8 *getModelPath();
-    virtual void getName(u32 a);
-    virtual u32 getGender();
-    virtual u16 getSpecies();
-    virtual void setShirt(u16 *p, BOOL flag);
-    virtual void addMood(u32 a, s32 b);
-    virtual BOOL vfunc_a8();
-    virtual BOOL vfunc_ac();
-    virtual BOOL vfunc_b0();
-    virtual void vfunc_b4();
-    virtual void vfunc_b8();
-    virtual void vfunc_bc();
-
-    /* 0x640 */ u32 eventKind;
-    /* 0x644 */ u32 talkPartnerId;
-    /* 0x648 */ u32 invitedByPartner;
-    /* 0x64c */ Unk_0202d7f4 clothModel;
-    /* 0x680 */ Unk_0202d5e8 villagerTalk;
-    /* 0x824 */ Unk_02082088 animHeapHandle;
-    /* 0x82c */ void *villagerData;
-    /* 0x830 */ void *villagerState;
-    /* 0x834 */ u32 unk_834;
-    /* 0x838 */ VillagerMood mood;
-};
 
 
 

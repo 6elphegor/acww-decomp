@@ -1,57 +1,8 @@
 #include "types.h"
+#include "actor/NpcActor.h"
+#include "actor/VillagerActor.h"
 
-struct NpcActor {
-    NpcActor();
-    virtual void vfunc_00();
-    virtual void vfunc_04();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void vfunc_10();
-    virtual void vfunc_14();
-    virtual void vfunc_18();
-    virtual void vfunc_1c();
-    virtual void vfunc_20();
-    virtual void vfunc_24();
-    virtual void vfunc_28();
-    virtual void vfunc_2c();
-    virtual void vfunc_30();
-    virtual void vfunc_34();
-    virtual void vfunc_38();
-    virtual void vfunc_3c();
-    virtual void vfunc_40();
-    virtual void vfunc_44();
-    virtual void vfunc_48();
-    virtual void vfunc_4c();
-    virtual void vfunc_50();
-    virtual void vfunc_54();
-    virtual void vfunc_58();
-    virtual void vfunc_5c();
-    virtual void onToolHit();
-    virtual void vfunc_64();
-    virtual void vfunc_68();
-    virtual void vfunc_6c();
-    virtual void vfunc_70();
-    virtual void vfunc_74();
-    virtual void vfunc_78();
-    virtual void canPlayTalkMelody();
-    virtual void onTalkMelodyPlayed();
-    virtual void vfunc_84();
-    virtual void vfunc_88();
-    virtual void vfunc_8c();
-    virtual void vfunc_90();
-    virtual void vfunc_94();
-    virtual void vfunc_98();
-    virtual void vfunc_9c();
-    virtual void vfunc_a0();
-    virtual void vfunc_a4();
-    u8 pad_04[0x58];
-    u32 position;
-};
 
-// The villager slots hold VillagerActors; slot 0xa8 is VillagerActor's own virtual.
-struct VillagerActor : NpcActor {
-    virtual BOOL vfunc_a8();
-};
 
 extern "C" {
 s32 SaveVillagers_IsValidIndex(s32);
@@ -207,7 +158,7 @@ NpcActor *NpcActorRegistry::findVillagerAt(s32 a, s32 b) {
     s32 i;
     for (i = 0; i < 8; s++, i++) {
         if (isVillagerSlotUsed(s)) {
-            FieldPos_ToUnit(&x, &y, &s->actor->position);
+            FieldPos_ToUnit(&x, &y, (u32 *)&s->actor->position);
             if (x == a && y == b) {
                 r = s->actor;
                 break;
@@ -349,7 +300,7 @@ NpcActor *NpcActorRegistry::findSpNpcAt(s32 a, s32 b) {
     s32 i;
     for (i = 0; i < 4; s++, i++) {
         if (isSpNpcSlotUsed(s)) {
-            FieldPos_ToUnit(&x, &y, &s->actor->position);
+            FieldPos_ToUnit(&x, &y, (u32 *)&s->actor->position);
             if (x == a && y == b) {
                 r = s->actor;
                 break;
