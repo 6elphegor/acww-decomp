@@ -8,6 +8,10 @@
 #include "npc/VillagerId.h"
 #include "npc/VillagerMood.h"
 #include "talk/VillagerTalkRequestItemTopics.h"
+#include "game/ReddPassword.h"
+#include "item/Letter.h"
+#include "npc/NpcAnimCtrl.h"
+#include "npc/NpcSpeechState.h"
 
 
 class VillagerTalk;
@@ -1239,12 +1243,10 @@ struct ThreeLayerAnimModel {
 };
 MEMBER(Unk_0201ad3c, 0xc);
 MEMBER(NpcFaceAnim, 0x334 - 0x2ac);
-MEMBER(NpcAnimCtrl, 0x1c);
 MEMBER(Unk_0201accc, 0x3a8 - 0x350);
 struct Unk_0201a8bc { u8 unk_00[2]; Unk_0201a8bc(); };
 struct Unk_0201ad18 { u8 unk_00[6]; Unk_0201ad18(); };
 MEMBER(Unk_0201a794, 0x418 - 0x3b0);
-MEMBER(NpcSpeechState, 8);
 MEMBER(Unk_0201a13c, 0x49c - 0x420);
 MEMBER(CollisionState, 0x30);
 MEMBER(ActorFollowCollider, 0x514 - 0x4cc);
@@ -1397,12 +1399,6 @@ public:
     /* 0x838 */ VillagerMood mood;
 };
 
-// sTalkLetter (0xf4 bytes), constructed by __sinit; constructor and destructor are functions of another unit
-struct Letter {
-    u8 pad_00[0xf4];
-    Letter();
-    ~Letter();
-};
 // one entry of the tables in bss (three pointers to member functions)
 struct Unk_021be8c0 {
     u32 w[6];
@@ -1991,10 +1987,6 @@ public:
     void *errandSlot;
 };
 
-class ReddPassword {
-public:
-    void getAnswerText(void *p);
-};
 
 class Unk_0202ce90_Base {
 public:

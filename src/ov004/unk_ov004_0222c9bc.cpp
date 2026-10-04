@@ -4,6 +4,7 @@
 #include "Unk_020d8c7c.h"
 #include "room/Unk_ov004_0222c9d0.h"
 #include "actor/ActorCollider.h"
+#include "snd/SndEnvChannel.h"
 
 // ---------------------------------------------------------------------------------------------------------------
 // Calls into other modules: the old stand-in names are #defined to the real symbols (mangled method names).
@@ -98,20 +99,15 @@ struct FxVec3 {
 };
 
 // ---- library sub-object with two inline vtable stores (0x0213b91c, 0x0213b954)
-class SndEnvChannel {
-public:
-    SndEnvChannel() {}
-    virtual void vfunc_00();
-    u8 unk_04[8];
-    u16 unk_0c;
-    u8 unk_0e;
-    u8 pad_0f;
-};
 
 class Unk_0213b954 : public SndEnvChannel {
 public:
     Unk_0213b954() {}
     virtual void vfunc_00();
+
+    /* 0x0c */ u16 unk_0c;
+    /* 0x0e */ u8 unk_0e;
+    /* 0x0f */ u8 pad_0f;
 };
 
 // ---- collision sub-object chain (main: ActorCollider <- StaticCollider), derived class in this overlay

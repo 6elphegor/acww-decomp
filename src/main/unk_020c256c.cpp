@@ -1,5 +1,8 @@
 #include "types.h"
 #include "game/Unk_020d77a4_Vec3.h"
+#include "npc/NpcTalkCtrl.h"
+#include "npc/NpcAnimCtrl.h"
+#include "npc/NpcSpeechState.h"
 
 extern "C" {
 u32 _ZN8NpcActor14getPlayerActorEj(void *p, s32 n);
@@ -142,12 +145,10 @@ public:
 MEMBER(ThreeLayerAnimModel, 0x2a0 - 0xec);
 MEMBER(Unk_0201ad3c, 0xc);
 MEMBER(NpcFaceAnim, 0x334 - 0x2ac);
-MEMBER(NpcAnimCtrl, 0x1c);
 MEMBER(Unk_0201accc, 0x3a8 - 0x350);
 struct Unk_0201a8bc { u8 unk_00[2]; Unk_0201a8bc(); };
 struct Unk_0201ad18 { u8 unk_00[6]; Unk_0201ad18(); };
 MEMBER(Unk_0201a794, 0x418 - 0x3b0);
-MEMBER(NpcSpeechState, 8);
 MEMBER(Unk_0201a13c, 0x49c - 0x420);
 MEMBER(CollisionState, 0x30);
 MEMBER(ActorFollowCollider, 0x514 - 0x4cc);
@@ -158,10 +159,6 @@ struct NpcActionCtrl {
     s32 getAction();
     void requestAction(u32 a, s32 b, s32 c, s32 d, s16 e, s16 f, s32 g, s32 h, u16 i, u16 j);
     u8 unk_00[0x618 - 0x564];
-};
-struct NpcTalkCtrl {
-    BOOL isBusy();
-    u8 unk_00[0x28];
 };
 struct Unk_02014254 : NpcTalkCtrl {
     Unk_02014254();

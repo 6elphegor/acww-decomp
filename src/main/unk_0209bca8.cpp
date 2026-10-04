@@ -1,5 +1,7 @@
 #include "types.h"
 #include "town/TownAcreIndex.h"
+#include "sys/RecordFile.h"
+#include "town/TownAcreCell.h"
 
 extern "C" {
 void *MI_CpuFill8(void *p, u32 v, u32 n);
@@ -11,29 +13,8 @@ extern const u32 sPondAcreIds[6];
 }
 
 // ---- RecordFile (cached record table)
-class RecordFile {
-public:
-    RecordFile();
-    ~RecordFile();
-    void close();
-    void loadAll();
-    BOOL open(void *path, s32 size, s32 count);
-    u8 pad[0x1c];
-};
 
 // ---- 8-byte cell
-class TownAcreCell {
-public:
-    TownAcreCell();
-    ~TownAcreCell();
-    BOOL setType(s32 v);
-    void setAcreId(s32 v);
-    s32 getType();
-    s32 getAcreId();
-
-    s32 type;
-    s32 acreId;
-};
 
 // ---- 6x6 cell grid (the same object is TownAcreGrid in the symbol names of two of its methods)
 class TownAcreGrid {

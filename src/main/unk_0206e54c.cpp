@@ -1,13 +1,7 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
+#include "item/Letter.h"
 
-// 0xf4-byte object sFutureLetter (constructor/destructor in another unit)
-class Letter {
-public:
-    Letter();
-    virtual ~Letter();
-    u8 d[0xf0];
-};
 
 // 8-byte list head sOpenMenuList: inline constructor, no destructor
 class Unk_021cb4e8 {

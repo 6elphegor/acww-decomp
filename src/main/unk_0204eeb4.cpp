@@ -1,5 +1,7 @@
 #include "types.h"
 #include "town/Unk_0204e858_Grid.h"
+#include "sys/OverlaySlot.h"
+#include "town/MapBlockEntry.h"
 
 inline void *operator new(unsigned long, void *p) {
     return p;
@@ -8,20 +10,7 @@ inline void *operator new(unsigned long, void *p) {
 
 
 
-struct MapBlockEntry {
-    u32 acreId;
-    u32 layers[2];
-    u32 buried;
-    MapBlockEntry();
-};
 
-struct OverlaySlot {
-    u8 overlayId;
-    u8 refCount;
-    u8 unk_02;
-    u32 ramStart;
-    u32 ramSize;
-};
 
 OverlaySlot sOverlaySlots[12];
 

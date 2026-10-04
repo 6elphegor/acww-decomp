@@ -4,6 +4,8 @@
 #include "net/CommManager.h"
 #include "talk/MsgStringBase.h"
 #include "talk/MsgStringAttr.h"
+#include "gfx/SpriteAnim.h"
+#include "ui/UiWidget.h"
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Classes owned by other units (declarations only, no inline bodies)
@@ -44,31 +46,7 @@ public:
     /* 0x08 */ MsgStringAttr attr;
 };
 
-class UiWidget {
-public:
-    UiWidget();
-    virtual ~UiWidget();
-    virtual void draw() = 0;
-    virtual void vfunc_0c() = 0;
-    virtual void setOrigin(s32 a, s32 b);
-    s32 getOriginY();
-    s32 getOriginX();
 
-    /* 0x04 */ s32 originX;
-    /* 0x08 */ s32 originY;
-};
-
-class SpriteAnim {
-public:
-    SpriteAnim();
-    ~SpriteAnim();
-    void update();
-    s32 getFrameY(s32 v);
-    s32 getFrameX(s32 v);
-    void *getCell();
-
-    /* 0x00 */ u8 unk_00[0x14];
-};
 
 class MsgString9B {
 public:

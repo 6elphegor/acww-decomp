@@ -1,4 +1,5 @@
 #include "types.h"
+#include "town/MapBlockEntry.h"
 
 inline void *operator new(unsigned long, void *p) {
     return p;
@@ -21,12 +22,6 @@ public:
     void reset();
 };
 
-struct MapBlockEntry {
-    u32 acreId;
-    u32 layers[2];
-    u32 buried;
-    MapBlockEntry();
-};
 
 class SongSet {
 public:

@@ -47,6 +47,7 @@
 #include "player/Unk_02008100_Msg.h"
 #include "player/Unk_02008190_Ptr.h"
 #include "player/Unk_02008858_Blk.h"
+#include "snd/SndSeEmitter.h"
 #include "actor/BlinkTimer.h"
 #include "player/PlayerGlassesModelRef.h"
 #include "player/PlayerFaceTexRef.h"
@@ -229,15 +230,8 @@ struct CollisionState { CollisionState(); ~CollisionState(); };
 struct SndSeEmitterKind99 { SndSeEmitterKind99(); ~SndSeEmitterKind99(); };
 struct Unk_0201a13c { Unk_0201a13c(); ~Unk_0201a13c(); };
 
-// library class with an inline virtual destructor: its vtable (0x020d6f4c) and destructors are emitted here
-struct SndSeEmitter {
-    virtual ~SndSeEmitter();
-    virtual void init();
-    virtual void update();
-    virtual void stop();
-};
 struct SndSeEmitterKind1 : SndSeEmitter {
-    u8 unk_04[0x4c];
+    u8 unk_44[0xc];
     SndSeEmitterKind1();
     virtual ~SndSeEmitterKind1() {}
 };

@@ -13,6 +13,8 @@
 #include "ui/Unk_ov002_022018e4_Arg.h"
 #include "ui/Unk_ov002_02203c5c_Rec.h"
 #include "talk/TalkWindowState.h"
+#include "gfx/SpriteAnim.h"
+#include "ui/UiWidget.h"
 #undef postCreate
 #undef vfunc_14
 
@@ -153,18 +155,6 @@ void _ZN8UiWidget9setOriginEii();
 // ---------------------------------------------------------------------------------------------------------------------
 // Classes of the main module
 
-class SpriteAnim {
-public:
-    SpriteAnim();
-    ~SpriteAnim();
-    void update();
-    s32 getFrameY(s32 v);
-    s32 getFrameX(s32 v);
-    s32 getFrameIndex();
-    void *getCell();
-
-    /* 0x00 */ u8 unk_00[0x14];
-};
 
 
 class LabelBalloonText : public MsgStringBase {
@@ -207,19 +197,6 @@ public:
     /* 0x3c */ TextLabel *label;
 };
 
-class UiWidget {
-public:
-    UiWidget();
-    virtual ~UiWidget();
-    virtual void draw() = 0;
-    virtual void vfunc_0c() = 0;
-    virtual void setOrigin(s32 a, s32 b);
-    s32 getOriginY();
-    s32 getOriginX();
-
-    /* 0x04 */ s32 originX;
-    /* 0x08 */ s32 originY;
-};
 
 class LabelBalloon : public UiWidget {
 public:

@@ -7,25 +7,8 @@
 // Classes: TvSoundProgram4, TvSoundProgram6, TvSoundProgram7, TvSoundProgram8, TvSoundProgram10 : TvSound (the base is only declared here; its key
 // function, vtable and report / update are in RC_020f5b9c). The class DECLARATION order (below) sets the vtable order: keep it.
 #include "types.h"
+#include "snd/TvSound.h"
 
-// Base of the sound-emitter objects (defined in the previous file, unk_020f5b9c.cpp: its key function vfunc_00, the vtable and
-// report / update live there; only declared here).
-class TvSound {
-public:
-    virtual void reset(); // reset
-    virtual void release(); // release both voices
-    virtual void vfunc_08(s32 id, void *arg); // event handler
-    virtual void turnOn(s32 v);
-    virtual void turnOff();
-    virtual void startSounds(); // init
-
-    void startSe(s32 code, u32 *slot);
-    void updatePosition(void *arg);
-
-    /* 0x04 */ u32 a; // sound handles
-    /* 0x08 */ u32 b;
-    /* 0x0c */ u8 c12;
-};
 
 // 0x14 bytes
 class TvSoundProgram4 : public TvSound {

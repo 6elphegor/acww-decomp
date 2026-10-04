@@ -2,6 +2,7 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "talk/TalkWindowState.h"
+#include "save/SaveRecord4.h"
 
 
 class MsgRequest {
@@ -351,29 +352,6 @@ static inline BOOL Unk_0209e7b4_Is2(u8 v) {
 
 // 4-byte record
 
-class SaveRecord4 {
-public:
-    BOOL isDateActive();
-    void expireDate();
-    void setDateToday(void *src);
-    void resetDate();
-    u8 getStamp();
-    void setStamp(u8 v);
-    void newStamp();
-    BOOL isStateUnset();
-    BOOL isStateValid();
-    void setStateValidAlt();
-    void markInterrupted();
-    void clearState();
-    void setStateValid();
-    void destruct();
-    void construct();
-
-    /* 0x00 */ u8 unk_00;
-    /* 0x01 */ u8 unk_01;
-    /* 0x02 */ u8 unk_02;
-    /* 0x03 */ u8 unk_03;
-};
 
 extern "C" void SaveData_ConstructDateRecord() {}
 

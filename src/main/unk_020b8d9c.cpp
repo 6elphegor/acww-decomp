@@ -9,6 +9,10 @@
 #include "item/Unk_02062f94_Ret.h"
 #include "gfx/StarTwinkle.h"
 #include "item/ItemPickSpec.h"
+#include "snd/SndEnvChannel.h"
+#include "gfx/SpriteAnim.h"
+#include "game/WeatherRecord.h"
+#include "item/Letter.h"
 
 // ======== class types (global scope) ========
 struct Unk_021f4400;
@@ -117,13 +121,9 @@ struct Unk_020b8ec0_Time { u8 second; u8 unk_01; u8 hour; u8 pad[5]; };
 struct Unk_02095204 { u8 pad[0x5c]; struct { u32 unk_00; u32 unk_04; u32 unk_08; } unk_5c; };
 struct Unk_021efc08 { u8 pad[4]; u16 unk_04; };
 struct Unk_021efa88 { u8 pad[2]; u16 unk_02; };
-struct SndEnvChannel {
-    virtual void vfunc_00();
-    u32 unk_04;
-};
 struct Unk_0213b938 : SndEnvChannel {
     virtual void vfunc_00();
-    u8 unk_08[8];
+    u8 unk_0c[4];
 };
 class SkyProc : public GameProc {
 public:
@@ -488,11 +488,6 @@ struct Unk_020bca5c_Elem {
 struct Unk_020bc754_Vec {
     s32 x, y, z;
 };
-struct Letter {
-    Letter();
-    ~Letter();
-    u8 unk_00[0xf4];
-};
 struct Unk_020bc99c_Loc {
     u8 a;
     u8 pad;
@@ -552,15 +547,11 @@ public:
     Unk_020bca5c_Elem shotRequests[4];
     u8 shotSeq[0x10];
 };
-struct SpriteAnim {
-    u8 seq[4];
-    ~SpriteAnim();
-};
 // 0x74-byte element of the 60-element array at the start of SkySprites
 struct SkySprite {
     u8 unk_00[0x10];
     SpriteAnim unk_10;
-    u8 unk_14[0x74 - 0x14];
+    u8 unk_24[0x74 - 0x24];
     SkySprite();
     ~SkySprite();
 };
@@ -591,7 +582,6 @@ struct SkyShotRequest {
 };
 struct Unk_0213b970 : SndEnvChannel {
     virtual void vfunc_00();
-    u32 unk_08;
     void func_02003c30();
     void func_02003c40(s32 a);
     void func_02003c50(s32 a);
@@ -970,16 +960,6 @@ public:
     void endRainDrop();
     void updateRainDrop();
     void initRainDrop(BOOL flag);
-};
-struct WeatherRecord {
-    u8 day;
-    u8 month;
-    u8 year;
-    u8 unk_03;
-    u8 todayPattern;
-    u8 tomorrowPattern;
-    s8 hourBase;
-    u8 rained;
 };
 // ---------------------------------------------------------------------------------------------------------------------
 // Library base class; its ctor and dtor are out of line.

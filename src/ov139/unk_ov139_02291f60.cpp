@@ -1,6 +1,7 @@
 #include "types.h"
 #include "talk/MsgStringBase.h"
 #include "talk/MsgStringAttr.h"
+#include "ui/UiWidget.h"
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Declarations from other files
@@ -75,18 +76,6 @@ public:
     /* 0x3c */ void *label;
 };
 
-// Menu layer (size 0xbc)
-class UiWidget {
-public:
-    UiWidget();
-    virtual ~UiWidget();
-    virtual void draw() = 0;
-    virtual void vfunc_0c() = 0;
-    virtual void setOrigin(s32 a, s32 b);
-
-    /* 0x04 */ s32 originX;
-    /* 0x08 */ s32 originY;
-};
 
 class LabelBalloon : public UiWidget {
 public:

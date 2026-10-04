@@ -6,6 +6,9 @@
 #include "game/Unk_0204da0c_Size.h"
 #include "town/Unk_0204e858_Grid.h"
 #include "item/ItemId.h"
+#include "sys/OverlaySlot.h"
+#include "town/MapBlockEntry.h"
+#include "town/TownBlockMap.h"
 
 
 struct Unk_0204da0c_Map {
@@ -113,22 +116,6 @@ struct AcreItemGrid {
     ~AcreItemGrid();
 };
 
-struct TownBlockMap {
-    u8 *blocks;
-    s32 width;
-    s32 height;
-    s32 unitsX;
-    s32 unitsZ;
-    s32 worldWidth;
-    s32 worldHeight;
-    s32 mapSlot;
-    u32 releaseBg();
-    void bindBg();
-    void updateAcreIds();
-    void freeBlocks(void *heap);
-    BOOL build(void *heap);
-    void clear();
-};
 
 extern "C" {
 struct Unk_0204d920_Pad { s32 v[4]; Unk_0204d920_Pad() {} ~Unk_0204d920_Pad() {} };
@@ -232,20 +219,7 @@ public:
 
 
 
-struct MapBlockEntry {
-    u32 acreId;
-    u32 layers[2];
-    u32 buried;
-    MapBlockEntry();
-};
 
-struct OverlaySlot {
-    u8 overlayId;
-    u8 refCount;
-    u8 unk_02;
-    u32 ramStart;
-    u32 ramSize;
-};
 
 extern OverlaySlot sOverlaySlots[];
 

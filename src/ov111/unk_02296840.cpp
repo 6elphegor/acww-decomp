@@ -6,6 +6,7 @@
 #undef postCreate
 #undef vfunc_14
 #include "text/Unk_02050288.h"
+#include "ui/UiWidget.h"
 
 enum Unk_ov111_022970cc_Status { UNK_OV111_ST_0 = 0, UNK_OV111_ST_1 = 1, UNK_OV111_ST_2 = 2, UNK_OV111_ST_3 = 3 };
 
@@ -206,19 +207,6 @@ public:
     /* 0x90 */ u8 menuId;
 };
 
-// Sub-object at +0x3ccc (0x64 bytes, vtable 0x02204614). Its methods are split over two ov002 classes that share
-// the object: MenuCursorBase and MenuCursor (called through casts).
-class UiWidget {
-public:
-    UiWidget();
-    virtual ~UiWidget();
-    virtual void draw() = 0;
-    virtual void vfunc_0c() = 0;
-    virtual void setOrigin(s32 a, s32 b);
-
-    /* 0x04 */ s32 originX;
-    /* 0x08 */ s32 originY;
-};
 
 class HandCursor : public UiWidget {
 public:

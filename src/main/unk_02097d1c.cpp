@@ -1,6 +1,7 @@
 #include "types.h"
 #include "player/Unk_02097ff4.h"
 #include "item/ItemId.h"
+#include "item/Letter.h"
 
 class PlayerInventory;
 class Unk_02097ff4;
@@ -157,12 +158,6 @@ public:
     u8 patterns[0x1148];
 };
 
-class Letter {
-public:
-    Letter();
-    ~Letter();
-    u8 unk_00[0xf4];
-};
 
 
 struct Unk_0209865c_Nib {

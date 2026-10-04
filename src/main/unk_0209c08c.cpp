@@ -6,6 +6,8 @@
 #include "town/TownAcreIndex.h"
 #include "gfx/ModelSlotPool.h"
 #include "gfx/TexTransfer.h"
+#include "sys/RecordFile.h"
+#include "town/TownAcreCell.h"
 
 inline void *operator new(unsigned long, void *p) { return p; }
 
@@ -48,29 +50,8 @@ extern "C" {
 // ---- CommManager (comm state; only the methods used here)
 
 // ---- RecordFile (cached record table)
-class RecordFile {
-public:
-    RecordFile();
-    ~RecordFile();
-    void close();
-    void loadAll();
-    BOOL open(const char *path, s32 size, s32 count);
-    u8 pad[0x1c];
-};
 
 // ---- 8-byte cell
-class TownAcreCell {
-public:
-    TownAcreCell();
-    ~TownAcreCell();
-    BOOL setType(s32 v);
-    void setAcreId(s32 v);
-    s32 getType();
-    s32 getAcreId();
-
-    s32 type;
-    s32 acreId;
-};
 
 // ---- 6x6 cell grid
 class TownAcreGenerator {

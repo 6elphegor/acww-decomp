@@ -6,6 +6,7 @@
 #include "field/Unk_ov003_Flags.h"
 #include "game/Unk_ov009_0225b880_Vec3.h"
 #include "talk/TalkWindowState.h"
+#include "game/ReddPassword.h"
 class ProcBase {
 public:
     static void *operator new(unsigned long size);
@@ -218,7 +219,6 @@ public:
     /* 0x2b0 */
 };
 
-class ReddPassword {public: u32 getPromptText(void *w);};
 
 
 extern "C" {

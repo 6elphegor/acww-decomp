@@ -1,5 +1,7 @@
 #include "types.h"
 #include "talk/MsgStringBase.h"
+#include "gfx/SpriteAnim.h"
+#include "ui/UiWidget.h"
 
 struct Vec {
     s32 x, y, z;
@@ -27,22 +29,7 @@ public:
     u8 unk_04[0x30];
 };
 
-class SpriteAnim {
-public:
-    SpriteAnim();
-    ~SpriteAnim();
 
-    /* 0x00 */ u8 unk_00[0x14];
-};
-
-// Root of the chain; vfunc_10 is its function at 0x02089f6c
-class UiWidget {
-public:
-    virtual ~UiWidget();
-    virtual void draw();
-    virtual void vfunc_0c();
-    virtual void setOrigin(s32 a, s32 b);
-};
 
 // Base of FieldInfoLabelBalloon, 0xbc bytes
 class LabelBalloon : public UiWidget {
@@ -50,7 +37,7 @@ public:
     LabelBalloon(s32 a);
     virtual ~LabelBalloon();
 
-    /* 0x04 */ u8 unk_04[0xb8];
+    /* 0x0c */ u8 unk_0c[0xb0];
 };
 
 // Its vtable, constructor, destructor and virtuals belong to U225 (0x020b7bb0..)

@@ -3,6 +3,7 @@
 #include "game/Unk_020702ec_Date.h"
 #include "net/Unk_020720f8_Data.h"
 #include "save/MuseumData.h"
+#include "sys/RecordFile.h"
 
 // U125: design (pattern) storage and display helpers, 0x02070560-0x020720f8
 
@@ -212,13 +213,6 @@ public:
 };
 enum Unk_020720f8_Id { Unk_020720f8_Id_0 = 0 };
 
-// record table object sPatternPresetInfo (0x1c bytes)
-class RecordFile {
-public:
-    RecordFile();
-    ~RecordFile();
-    u32 unk_00[7];
-};
 
 struct PatternPresetInfoFile {
     RecordFile file;

@@ -4,6 +4,7 @@
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
 #include "gfx/Unk_020dbd44.h"
+#include "game/UnitShapeQueryX.h"
 
 // ================================================================ other modules' real names
 #define CommManager_isOnline _ZN11CommManager8isOnlineEv
@@ -66,13 +67,6 @@ public:
     u8 pad[0x6a70 - 0x4b20];
 };
 
-// main's UnitShapeQuery, declared in its label spelling UnitShapeQueryX (its destructor stubs 0x020315d0/f4/2031600/0x0203160c
-// are byte-identical; the call in D0 goes to 0x020315d0, which symbols.txt names ...C2Ev, so the base is declared under the
-// X spelling, whose D2 label is an alias of it)
-struct UnitShapeQueryX {
-    virtual ~UnitShapeQueryX();
-    virtual BOOL getUnitShape(s32 *a, s32 *b, s32 *c, s32 x, s32 z);
-};
 
 class FieldObjectShapeQuery : public UnitShapeQueryX {
 public:

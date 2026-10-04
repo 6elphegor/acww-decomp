@@ -4,44 +4,15 @@
 #include "talk/MsgStringBase.h"
 #include "talk/MsgStringAttr.h"
 #include "ui/NameLabelBalloonView.h"
+#include "gfx/SpriteAnim.h"
+#include "ui/UiWidget.h"
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Classes of the unit (declarations of the classes whose vtable another unit owns come first)
 
 struct SpriteAnimSeq;
 
-// Animation object (ctor 0x02089270, dtor 0x0208926c)
-class SpriteAnim {
-public:
-    SpriteAnim();
-    ~SpriteAnim();
-    void update();
-    void restart();
-    void pause();
-    BOOL isFinished();
-    s32 getFrameY(s32 v);
-    s32 getFrameX(s32 v);
-    void *getCell();
-    void setPlayOnce(s32 v);
-    void setSeq(SpriteAnimSeq *v);
 
-    /* 0x00 */ u8 unk_00[0x14];
-};
-
-// Base class with vtable at 0x020e0db4 (ctor 0x02089fa8)
-class UiWidget {
-public:
-    UiWidget();
-    virtual ~UiWidget();
-    virtual void draw() = 0;
-    virtual void vfunc_0c() = 0;
-    virtual void setOrigin(s32 a, s32 b);
-    s32 getOriginY();
-    s32 getOriginX();
-
-    /* 0x04 */ s32 originX;
-    /* 0x08 */ s32 originY;
-};
 
 
 

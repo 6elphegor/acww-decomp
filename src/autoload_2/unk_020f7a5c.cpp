@@ -15,6 +15,7 @@
 //   The "Rb" state machine (f83fc, f8604, f86c0..f8b08, called by name from main) stays plain extern "C" over a struct view.
 // The scene class file (unk_020f0fb4.cpp) and main call the constructors / destructors by their func_ names (aliases keep them).
 #include "types.h"
+#include "snd/BgmBeatPhase.h"
 
 // BGM descriptor: u16 id at +0x38 (240 = a special track whose values are halved)
 struct Hd {
@@ -44,20 +45,6 @@ struct Mg {
     Hd *h;
 };
 
-// beat/phase state (member at +0x14 of the animation object; its constructor is also called from an overlay)
-class BgmBeatPhase {
-public:
-    BgmBeatPhase();
-
-    /* 0x00 */ s8 s0;
-    /* 0x01 */ s8 s1;
-    /* 0x02 */ s8 s2;
-    /* 0x03 */ s8 s3;
-    /* 0x04 */ s8 s4;
-    /* 0x08 */ s32 w8;
-    /* 0x0c */ s32 w12;
-    /* 0x10 */ s32 w16;
-};
 
 // base: BGM tempo follower (vtable 0x0213bb88), 0x14 bytes
 class BgmTempoTracker {
@@ -436,17 +423,17 @@ void BgmTempoTracker::syncTempo() {
 }
 
 BgmBeatPhase::BgmBeatPhase() {
-    s1 = -1;
-    s2 = -1;
-    s3 = -1;
-    s4 = -1;
-    w16 = 0;
-    w12 = w16;
-    w8 = w12;
+    trackAnim = -1;
+    seqVar0 = -1;
+    seqVar2 = -1;
+    seqVar3 = -1;
+    unk_10 = 0;
+    unk_0c = unk_10;
+    unk_08 = unk_0c;
 }
 
 BgmBeatSync::BgmBeatSync() {
-    sub.s0 = -1;
+    sub.seqVar4 = -1;
     c28 = 0;
     c2a = 0;
     c29 = 1;
@@ -469,15 +456,15 @@ void BgmBeatSync::update() {
     BgmTempoTracker::update();
     pickAnim();
     readTempo();
-    if (sub.s0 == -1) {
+    if (sub.seqVar4 == -1) {
         Hr *h = &gSndBgmHandle;
         s32 id;
         if (!nz((u32)h->p)) return;
         func_0210a024(h, 4, &v);
-        sub.s0 = v;
-        sub.w8 = 0;
-        sub.w12 = 0;
-        sub.w16 = 0;
+        sub.seqVar4 = v;
+        sub.unk_08 = 0;
+        sub.unk_0c = 0;
+        sub.unk_10 = 0;
         id = h->p->id;
         switch (id) {
         case 109:
@@ -522,37 +509,37 @@ void BgmBeatSync::pickAnim() {
     Hr *const h = &gSndBgmHandle;
     s32 i;
     u8 buf[28];
-    sub.s1 = -1;
+    sub.trackAnim = -1;
     for (i = 2; i <= 13; i++) {
         if (func_02109f4c(h, i, buf) == 0) continue;
         if (i == 10) continue;
         if (buf[9] == 0) continue;
         switch (i) {
         case 11:
-            sub.s1 = 0;
+            sub.trackAnim = 0;
             return;
         case 6:
-            sub.s1 = 1;
+            sub.trackAnim = 1;
             return;
         case 3:
         case 9:
-            sub.s1 = 2;
+            sub.trackAnim = 2;
             return;
         case 5:
         case 8:
-            sub.s1 = 3;
+            sub.trackAnim = 3;
             return;
         case 2:
         case 7:
         case 12:
-            sub.s1 = 4;
+            sub.trackAnim = 4;
             return;
         case 4:
         case 13:
-            sub.s1 = 5;
+            sub.trackAnim = 5;
             return;
         default:
-            sub.s1 = 0;
+            sub.trackAnim = 0;
             return;
         }
     }
@@ -566,9 +553,9 @@ void BgmBeatSync::readTempo() {
     func_0210a024(h, 0, &v[1]);
     func_0210a024(h, 2, &v[2]);
     func_0210a024(h, 3, &v[3]);
-    sub.s2 = v[1];
-    sub.s3 = v[2];
-    sub.s4 = v[3];
+    sub.seqVar0 = v[1];
+    sub.seqVar2 = v[2];
+    sub.seqVar3 = v[3];
     if (s2c > v[0]) c2e = (c2e == 0);
     s2c = v[0];
 }
@@ -577,9 +564,9 @@ void BgmBeatSync::calcPhase() {
     s16 t;
     s32 den;
     s32 d;
-    sub.w8 = FX_Div(s2c << 12, 0x3000);
+    sub.unk_08 = FX_Div(s2c << 12, 0x3000);
     t = s2c;
-    switch (sub.s0) {
+    switch (sub.seqVar4) {
     case 3:
         den = 0x4800;
         break;
@@ -604,9 +591,9 @@ void BgmBeatSync::calcPhase() {
     }
     d = FX_Div(t << 12, den) + 0xc000;
     if (d >= 0x20000) d -= 0x20000;
-    sub.w16 = d;
+    sub.unk_10 = d;
     t = s2c;
-    switch (sub.s0) {
+    switch (sub.seqVar4) {
     case 4:
     default:
         switch (c2a) {
@@ -638,5 +625,5 @@ void BgmBeatSync::calcPhase() {
     }
     d = FX_Div(t << 12, den) + 0x4000;
     if (d >= 0x14000) d -= 0x14000;
-    sub.w12 = d;
+    sub.unk_0c = d;
 }

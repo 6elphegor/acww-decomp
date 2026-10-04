@@ -5,6 +5,8 @@
 #include "Unk_020d8c7c.h"
 #include "ui/CursorMotion.h"
 #include "menu/PopupChoiceIdList.h"
+#include "ui/UiWidget.h"
+#include "item/Letter.h"
 #undef postCreate
 #undef vfunc_14
 
@@ -99,12 +101,6 @@ public:
     u32 getPresent();
 };
 
-class Letter {
-public:
-    Letter();
-    virtual ~Letter();
-    u32 unk_04[(0xf4 - 4) / 4];
-};
 
 struct Unk_0206d1d4_Src;
 
@@ -174,17 +170,6 @@ public:
 };
 
 
-class UiWidget {
-public:
-    UiWidget();
-    virtual ~UiWidget();
-    virtual void draw() = 0;
-    virtual void vfunc_0c() = 0;
-    virtual void setOrigin(s32 a, s32 b);
-
-    /* 0x04 */ s32 originX;
-    /* 0x08 */ s32 originY;
-};
 
 class HandCursor : public UiWidget {
 public:

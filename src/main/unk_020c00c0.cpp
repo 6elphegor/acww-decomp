@@ -5,6 +5,8 @@
 #include "game/Unk_020c010c_Ent.h"
 #include "npc/Unk_020c0538_Out.h"
 #include "player/Unk_02097ff4.h"
+#include "snd/SndEnvChannel.h"
+#include "game/WeatherRecord.h"
 
 
 static inline void Unk_020bfe30_Set(Unk_020bfe30_Vec *v, s32 x, s32 y, s32 z) {
@@ -453,18 +455,13 @@ public:
 };
 
 // ---------------------------------------------------------------------------------------------------------------------
-// Vtable classes of the library (autoload_2)
-class SndEnvChannel {
-public:
-    SndEnvChannel() {}
-    virtual ~SndEnvChannel();
-    u8 unk_04[0xc];
-};
 
 class Unk_0213b938 : public SndEnvChannel {
 public:
     Unk_0213b938() {}
-    virtual ~Unk_0213b938();
+    virtual void vfunc_00();
+
+    /* 0x0c */ u8 unk_0c[4];
 };
 
 class SkyProc : public GameProc {
@@ -474,16 +471,6 @@ public:
     /* 0x50 */ Unk_0213b938 envSndChannel;
 };
 
-struct WeatherRecord {
-    u8 day;
-    u8 month;
-    u8 year;
-    u8 unk_03;
-    u8 todayPattern;
-    u8 tomorrowPattern;
-    s8 hourBase;
-    u8 rained;
-};
 
 // prototypes
 extern "C" void Weather_Construct();

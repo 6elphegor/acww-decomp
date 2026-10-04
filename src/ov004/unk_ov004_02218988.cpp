@@ -10,6 +10,9 @@
 #include "npc/Unk_0202d5e8.h"
 #include "actor/Unk_02088d00.h"
 #include "npc/VillagerMood.h"
+#include "snd/SndSeEmitter.h"
+#include "npc/NpcAnimCtrl.h"
+#include "npc/NpcSpeechState.h"
 // Library base class (same as GameProc.h, but vfunc_08 takes the s32 the vtable symbol names).
 class ProcBase {
 public:
@@ -231,22 +234,14 @@ s32 SceneId_IsTownUnk31();
 
 struct Unk_0201ad3c { Unk_0201ad3c(); ~Unk_0201ad3c(); u32 pad[0xc / 4]; };
 struct NpcFaceAnim { NpcFaceAnim(); ~NpcFaceAnim(); u32 pad[0x88 / 4]; };
-struct NpcAnimCtrl { NpcAnimCtrl(); ~NpcAnimCtrl(); u32 pad[0x1c / 4]; };
 struct Unk_0201accc { Unk_0201accc(); ~Unk_0201accc(); u32 pad[0x58 / 4]; };
 struct Unk_0201a8bc { Unk_0201a8bc(); u8 pad[2]; };
 struct Unk_0201ad18 { Unk_0201ad18(); u8 pad[6]; };
 struct Unk_0201a794 { Unk_0201a794(); ~Unk_0201a794(); u32 pad[0x68 / 4]; };
-struct NpcSpeechState { NpcSpeechState(); ~NpcSpeechState(); u32 pad[8 / 4]; };
 struct Unk_020135e4 { Unk_020135e4(); ~Unk_020135e4(); u8 pad[8]; u8 unk_08; u8 pad_09[2]; u8 unk_0b; };
 struct NpcActionCtrl { NpcActionCtrl(); ~NpcActionCtrl(); u32 pad[0xb4 / 4]; };
 struct Unk_02014254 { Unk_02014254(); ~Unk_02014254(); u32 pad[0x28 / 4]; };
 
-class SndSeEmitter {
-public:
-    SndSeEmitter();
-    virtual ~SndSeEmitter();
-    u32 pad[0x40 / 4];
-};
 class Unk_020f4080 : public SndSeEmitter {
 public:
     Unk_020f4080();

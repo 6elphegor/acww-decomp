@@ -7,6 +7,7 @@
 #include "actor/Unk_ov003_SceneEntry.h"
 #include "game/Unk_ov009_0225b880_Vec3.h"
 #include "talk/TalkWindowState.h"
+#include "game/ReddPassword.h"
 struct Unk_ov003_Color {
     u8 a, b, c, d;
     Unk_ov003_Color(u8 a_, u8 b_, u8 c_, u8 d_) {
@@ -238,7 +239,6 @@ public:
     /* 0x2b0 */
 };
 
-class ReddPassword {public: u32 getPromptText(void *w);};
 
 
 extern "C" {

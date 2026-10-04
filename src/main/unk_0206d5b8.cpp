@@ -3,6 +3,7 @@
 #include "game/Unk_0206d1d4_Src.h"
 #include "sys/Unk_0206d8b8_Pair.h"
 #include "talk/MsgStringAttr.h"
+#include "sys/RecordFile.h"
 
 extern u32 OVERLAY_1_ID[];
 extern u32 OVERLAY_65_ID[];
@@ -488,24 +489,6 @@ void Fatal_Handler(void *arg);
 #pragma thumb reset
 
 // ---- RecordFile: cached record table ----
-class RecordFile {
-public:
-    RecordFile();
-    ~RecordFile();
-    void loadPage(u32 idx);
-    u8 *getRecord(u32 idx);
-    void close();
-    void freeAll();
-    void loadAll();
-    BOOL open(void *path, s32 size, s32 count);
-
-    /* 0x00 */ Unk_0206d8b8_Pair fileId;
-    /* 0x08 */ s32 recordSize;
-    /* 0x0c */ s32 recordCount;
-    /* 0x10 */ u8 *data;
-    /* 0x14 */ s32 pageIndex;
-    /* 0x18 */ u8 *pageBuf;
-};
 
 class InfoTableSet {
 public:

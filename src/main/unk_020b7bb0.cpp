@@ -1,4 +1,6 @@
 #include "types.h"
+#include "gfx/SpriteAnim.h"
+#include "ui/UiWidget.h"
 
 extern "C" {
 // Other files
@@ -14,22 +16,7 @@ void Oam_DrawCell(s32 a, u32 b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 i,
 void _ZN21FieldInfoLabelBalloon11updateBlinkEv(void *p);
 }
 
-class SpriteAnim {
-public:
-    SpriteAnim();
-    ~SpriteAnim();
 
-    /* 0x00 */ u8 unk_00[0x14];
-};
-
-// Root of the chain; vfunc_10 is its function at 0x02089f6c
-class UiWidget {
-public:
-    virtual ~UiWidget();
-    virtual void draw();
-    virtual void vfunc_0c();
-    virtual void setOrigin(s32 a, s32 b);
-};
 
 // Base of FieldInfoLabelBalloon (ctor func_02089e60, dtor func_02089d9c), 0xbc bytes
 class LabelBalloon : public UiWidget {
@@ -37,7 +24,7 @@ public:
     LabelBalloon(s32 a);
     virtual ~LabelBalloon();
 
-    /* 0x04 */ u8 unk_04[0xb8];
+    /* 0x0c */ u8 unk_0c[0xb0];
 };
 
 class FieldInfoLabelBalloon : public LabelBalloon {

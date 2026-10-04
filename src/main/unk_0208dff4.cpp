@@ -1,5 +1,7 @@
 #include "types.h"
 #include "text/Unk_02050288.h"
+#include "gfx/SpriteAnim.h"
+#include "ui/UiWidget.h"
 
 extern "C" {
 void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
@@ -45,7 +47,6 @@ public:
 extern s32 gGfxMainOnTop;
 extern u8 data_020d4694[];
 extern u8 data_020d468c[];
-struct SpriteAnimSeq { u32 frames; u32 frameCount; };
 extern SpriteAnimSeq data_020d5b0c[];
 extern u16 sLabelButtonColorCache[2];
 extern const u8 sLabelButtonKindTextColors[4];
@@ -54,36 +55,7 @@ extern const u8 sLabelButtonKindSeqOffsets[4];
 extern const s32 sLabelButtonStateSeqIds[4];
 extern const s32 sLabelButtonStatePlayOnce[4];
 
-class SpriteAnim {
-public:
-    SpriteAnim();
-    ~SpriteAnim();
-    void update();
-    void restart();
-    BOOL isFinished();
-    s32 getFrameY(s32 v);
-    s32 getFrameX(s32 v);
-    void *getCell();
-    void setSpeed(s32 v);
-    void setPlayOnce(s32 v);
-    void setSeq(SpriteAnimSeq *v);
 
-    /* 0x00 */ u8 unk_00[0x14];
-};
-
-class UiWidget {
-public:
-    UiWidget();
-    virtual ~UiWidget();
-    virtual void draw() = 0;
-    virtual void vfunc_0c() = 0;
-    virtual void setOrigin(s32 a, s32 b);
-    s32 getOriginY();
-    s32 getOriginX();
-
-    /* 0x04 */ s32 originX;
-    /* 0x08 */ s32 originY;
-};
 
 class ScrollKnob : public UiWidget {
 public:

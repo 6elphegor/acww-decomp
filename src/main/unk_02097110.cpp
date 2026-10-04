@@ -1,15 +1,7 @@
 // mwcc-flags: -str reuse
 #include "types.h"
+#include "item/Letter.h"
 
-class Letter {
-public:
-    Letter();
-    virtual ~Letter();
-
-    /* 0x04 */ u8 unk_04[0xec];
-    /* 0xf0 */ u16 present;
-    /* 0xf2 */ u16 pad_f2;
-};
 
 struct Unk_020973e4 {
     u32 balance;

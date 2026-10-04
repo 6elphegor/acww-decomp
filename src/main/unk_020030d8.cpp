@@ -1,4 +1,7 @@
 #include "types.h"
+#include "snd/TvSound.h"
+#include "gfx/SpriteAnim.h"
+#include "ui/UiWidget.h"
 
 // ---------------------------------------------------------------------------------------------------------------------
 // 12-byte record with a base class at 0x020639xx (functions VillagerId_Copy..VillagerId_CopyFrom are still free functions)
@@ -31,38 +34,7 @@ extern u8 data_020d47a4[];
 
 struct SpriteAnimSeq;
 
-// Sub-object at +0xc of HudUnkSlideIcon (ctor 0x02089270, dtor 0x0208926c)
-class SpriteAnim {
-public:
-    SpriteAnim();
-    ~SpriteAnim();
-    void update();
-    void restart();
-    void pause();
-    s32 getFrameY(s32 v);
-    s32 getFrameX(s32 v);
-    void *getCell();
-    void setFrame(s32 a, s32 b);
-    void setPlayOnce(s32 v);
-    void setSeq(SpriteAnimSeq *v);
 
-    /* 0x00 */ u8 unk_00[0x14];
-};
-
-// Base class with vtable at 0x020e0db4 (ctor 0x02089fa8, D2 0x02089f78)
-class UiWidget {
-public:
-    UiWidget();
-    virtual ~UiWidget();
-    virtual void draw() = 0;
-    virtual void vfunc_0c() = 0;
-    virtual void setOrigin(s32 a, s32 b);
-    s32 getOriginY();
-    s32 getOriginX();
-
-    /* 0x04 */ s32 originX;
-    /* 0x08 */ s32 originY;
-};
 
 // Vtable at 0x020d5e0c
 class HudUnkSlideIcon : public UiWidget {
@@ -126,21 +98,6 @@ struct Unk_020d467c {
 };
 extern Unk_020d467c data_020d467c;
 
-// Base of the objects created in TvSound_Create (vtable data_0213bac4, in autoload_2)
-class TvSound {
-public:
-    virtual void reset();
-    virtual void release();
-    virtual void vfunc_08(s32 a, void *b);
-    virtual void turnOn(s32 a);
-    virtual void turnOff();
-
-    void callTurnOff();
-    void callTurnOn(s32 a);
-    void callUpdate(s32 a, void *b);
-    void callRelease();
-    void callReset();
-};
 
 struct Unk_02003878_Vec {
     s32 x;

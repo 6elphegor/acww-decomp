@@ -17,25 +17,8 @@
 //                  base's tail padding (+0xd).
 // The class DECLARATION order sets the vtable order: keep it.
 #include "types.h"
+#include "snd/TvSound.h"
 
-// Base of the sound-emitter objects that main's TvSound_Create creates (inline constructors there store this vtable, then the
-// derived one). main's unk_020030d8.cpp declares the same class (non-virtual helpers func_020037b0.. are defined in main).
-class TvSound {
-public:
-    virtual void reset(); // reset
-    virtual void release(); // release both voices
-    virtual void vfunc_08(s32 id, void *arg); // event handler
-    virtual void turnOn(s32 v);
-    virtual void turnOff();
-    virtual void startSounds(); // init
-
-    void startSe(s32 code, u32 *slot);
-    void updatePosition(void *arg);
-
-    /* 0x04 */ u32 a; // sound handles
-    /* 0x08 */ u32 b;
-    /* 0x0c */ u8 c12;
-};
 
 class TvSoundProgram0 : public TvSound {
 public:

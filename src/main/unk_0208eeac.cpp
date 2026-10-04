@@ -1,5 +1,7 @@
 #include "types.h"
 #include "save/TownExchangeRecord.h"
+#include "gfx/SpriteAnim.h"
+#include "ui/UiWidget.h"
 
 extern "C" {
 void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
@@ -8,36 +10,7 @@ s32 _ZN10LetterView8getStateEv();
 void Letter_Clear(void *p);
 }
 
-// Sub-object at +0x14 of InputModeIcon (ctor 0x02089270, dtor 0x0208926c)
-class SpriteAnim {
-public:
-    SpriteAnim();
-    ~SpriteAnim();
-    void update();
-    void restart();
-    s32 getFrameY(s32 v);
-    s32 getFrameX(s32 v);
-    void *getCell();
-    void setPlayOnce(s32 v);
-    void setSeq(void *v);
 
-    /* 0x00 */ u8 unk_00[0x14];
-};
-
-// Base class with vtable at 0x020e0db4 (ctor 0x02089fa8, D2 0x02089f78)
-class UiWidget {
-public:
-    UiWidget();
-    virtual ~UiWidget();
-    virtual void draw() = 0;
-    virtual void vfunc_0c() = 0;
-    virtual void setOrigin(s32 a, s32 b);
-    s32 getOriginY();
-    s32 getOriginX();
-
-    /* 0x04 */ s32 originX;
-    /* 0x08 */ s32 originY;
-};
 
 // Vtable at 0x020e1164; singleton sInputModeIcon
 class InputModeIcon : public UiWidget {

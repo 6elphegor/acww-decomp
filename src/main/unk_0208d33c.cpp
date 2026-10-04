@@ -1,6 +1,8 @@
 #include "types.h"
 #include "gfx/Unk_02089240_Rec.h"
 #include "gfx/Unk_0208d154_Sub.h"
+#include "gfx/SpriteAnim.h"
+#include "ui/UiWidget.h"
 
 extern "C" {
 void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
@@ -25,25 +27,6 @@ extern u8 data_020d5b0c[];
 extern u8 data_020d467c[];
 
 
-// Sub-object (ctor 0x02089270, dtor 0x0208926c)
-class SpriteAnim {
-public:
-    SpriteAnim();
-    ~SpriteAnim();
-    void update();
-    void restart();
-    BOOL isFinished();
-    s32 getFrameY(s32 v);
-    s32 getFrameX(s32 v);
-    Unk_02089240_Rec *getSeq();
-    void *getCell();
-    void setFrame(s32 a, s32 b);
-    void setSpeed(s32 v);
-    void setPlayOnce(s32 v);
-    void setSeq(void *v);
-
-    /* 0x00 */ u8 unk_00[0x14];
-};
 
 // Sub-object at +0x38 of NameLabelBalloon (0x34 bytes, ctor 0x02039b04, dtor 0x02039aec)
 class ChatBalloonText {
@@ -55,20 +38,6 @@ public:
     /* 0x00 */ u32 unk_00[13];
 };
 
-// Base class with vtable at 0x020e0db4 (ctor 0x02089fa8, D2 0x02089f78)
-class UiWidget {
-public:
-    UiWidget();
-    virtual ~UiWidget();
-    virtual void draw() = 0;
-    virtual void vfunc_0c() = 0;
-    virtual void setOrigin(s32 a, s32 b);
-    s32 getOriginY();
-    s32 getOriginX();
-
-    /* 0x04 */ s32 originX;
-    /* 0x08 */ s32 originY;
-};
 
 
 class NameLabelBalloon : public UiWidget {

@@ -8,6 +8,8 @@
 #include "room/FtrActorTable.h"
 #include "room/FtrPreviewer.h"
 #include "room/FtrSwitch.h"
+#include "snd/TvSound.h"
+#include "game/GroundInfoBase.h"
 
 // other modules' symbols by their real names
 #define Actor_spawn _ZN5Actor5spawnEPvS0_S0_S0_S0_
@@ -299,19 +301,8 @@ public:
     /* 0x7b4 */ Unk_ov004_Vec3 centerPos;
 };
 
-class TvSound {
-public:
-    void callTurnOff();
-    void callTurnOn(s32 a);
-    void callUpdate(s32 a, void *b);
-};
 
 
-class GroundInfoBase {
-public:
-    u8 pad_00[0x40];
-    s32 getHeight(s32 a);
-};
 
 class GroundInfo : public GroundInfoBase {
 public:

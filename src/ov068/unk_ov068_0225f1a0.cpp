@@ -10,6 +10,7 @@
 #include "types.h"
 #include "gfx/Unk_ov068_0226647c_Cam.h"
 #include "actor/Unk_ov068_SceneEntry.h"
+#include "player/HeldToolModel.h"
 #define X_func_ov068_0225f5f4 _ZN17FieldVillagerLook17setLookModeLockedEP13FieldVillagerjiiPviih
 #define X_func_ov068_0225f630 _ZN17FieldVillagerLook9resetLookEP13FieldVillager
 #define X_func_ov068_0225f670 _ZN17FieldVillagerLook4initEP13FieldVillager
@@ -288,14 +289,6 @@ public:
     /* 0xf8 */ s32 talkUrgeTimer;
 };
 
-// Member at +0x9b0 (0x40 bytes)
-class HeldToolModel {
-public:
-    ~HeldToolModel();
-    u32 pad[0x3c / 4];
-    u8 visible;
-    u8 pad_3d[3];
-};
 
 // Menu object referenced from +0x9f4
 class Unk_ov068_0225f904_Menu {

@@ -7,6 +7,7 @@
 #include "gfx/AnimFrameCtrl.h"
 #include "room/RoomObjRes.h"
 #include "room/RoomObjTex.h"
+#include "game/BoxCollider.h"
 // Library base class (as include/GameProc.h, but vfunc_20 takes the u32 that ov004's override uses)
 class ProcBase {
 public:
@@ -161,14 +162,6 @@ public:
     /* 0x40 */ u8 unk_40;
 };
 
-struct BoxCollider {
-    virtual void onEdgeContact();
-    u8 pad_04[0x94];
-    u8 isActive;
-
-    BoxCollider();
-    ~BoxCollider();
-};
 
 class BarberMachine;
 

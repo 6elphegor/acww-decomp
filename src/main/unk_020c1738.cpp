@@ -1,5 +1,8 @@
 #include "types.h"
 #include "game/Unk_020d77a4_Vec3.h"
+#include "npc/NpcTalkCtrl.h"
+#include "npc/NpcAnimCtrl.h"
+#include "npc/NpcSpeechState.h"
 
 extern "C" {
 void _ZN8NpcActor14setTalkRequestEP12Unk_0201bc1c(void *a, void *b);
@@ -183,7 +186,6 @@ public:
 MEMBER(ThreeLayerAnimModel, 0x2a0 - 0xec);
 MEMBER(Unk_0201ad3c, 0xc);
 MEMBER(NpcFaceAnim, 0x334 - 0x2ac);
-MEMBER(NpcAnimCtrl, 0x1c);
 struct Unk_0201accc {
     u8 unk_00[0x3a8 - 0x350];
     Unk_0201accc();
@@ -194,7 +196,6 @@ struct Unk_0201a794 {
     u8 unk_00[0x418 - 0x3b0];
     Unk_0201a794();
 };
-MEMBER(NpcSpeechState, 8);
 MEMBER(Unk_0201a13c, 0x49c - 0x420);
 MEMBER(CollisionState, 0x30);
 struct ActorFollowCollider {
@@ -207,9 +208,6 @@ struct Unk_020135e4 { u8 pad_00[0xb]; u8 unk_0b; Unk_020135e4(); };
 struct NpcActionCtrl {
     NpcActionCtrl();
     u8 unk_00[0x618 - 0x564];
-};
-struct NpcTalkCtrl {
-    u8 unk_00[0x28];
 };
 struct Unk_02014254 : NpcTalkCtrl {
     Unk_02014254();

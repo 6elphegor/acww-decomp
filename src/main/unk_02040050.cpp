@@ -5,12 +5,8 @@
 #include "game/Unk_0203fe18_B4.h"
 #include "game/Unk_0203ff50_Slot.h"
 #include "game/Unk_020400b0_Big.h"
+#include "game/ReddPassword.h"
 
-class ReddPassword {
-public:
-    BOOL dropPassword();
-    s32 pickPassword();
-};
 class ReddShop {
 public:
     ReddPassword *getPassword();

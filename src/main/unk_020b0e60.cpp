@@ -3,6 +3,7 @@
 #include "item/ItemId.h"
 #include "game/StrBSizeData.h"
 #include "game/LightLevel.h"
+#include "game/UnitShapeQueryX.h"
 
 inline void *operator new(unsigned long, void *p) { return p; }
 
@@ -259,12 +260,6 @@ public:
     /* 0x228 */ u8 gateDesign;
 };
 
-class UnitShapeQueryX {
-public:
-    UnitShapeQueryX();
-    virtual ~UnitShapeQueryX();
-    virtual BOOL getUnitShape(s32 *a, s32 *b, s32 *c, s32 x, s32 z);
-};
 
 class TownUnitShapeQuery : public UnitShapeQueryX {
 public:

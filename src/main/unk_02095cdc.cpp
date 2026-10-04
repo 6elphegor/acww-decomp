@@ -2,6 +2,8 @@
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
 #include "game/Unk_02095774_Ent.h"
+#include "save/MotherLetterState.h"
+#include "item/Letter.h"
 
 
 
@@ -38,15 +40,6 @@ public:
     u8 pad[0xf4];
 };
 
-class Letter {
-public:
-    Letter();
-    virtual ~Letter();
-
-    /* 0x04 */ u8 unk_04[0xec];
-    /* 0xf0 */ u16 present;
-    /* 0xf2 */ u16 pad_f2;
-};
 
 // Array of ten elements, indexed table getter at 0x02097020.
 class LetterOutbox {
@@ -82,26 +75,6 @@ public:
     /* 0x98a */ u16 pad_98a;
 };
 
-class MotherLetterState {
-public:
-    void setBirthdayLetterYear(u32 v);
-    u8 getBirthdayLetterYear();
-    BOOL isSent(s32 i);
-    void clearSent(s32 i);
-    void setSent(s32 i);
-    BOOL testFlag(u32 mask);
-    void setFlag(u32 mask);
-    void setLastDate(s32 *v);
-    BOOL checkLastDate(s32 *v);
-    void clear();
-
-    /* 0x00 */ u8 lastDay;
-    /* 0x01 */ u8 lastMonth;
-    /* 0x02 */ u8 lastYear;
-    /* 0x03 */ u8 birthdayYearFlags;
-    /* 0x04 */ u8 unk_04[15];
-    /* 0x13 */ u8 pad_13;
-};
 
 class FutureLetter : public Letter {
 public:

@@ -1,18 +1,8 @@
 #include "types.h"
 #include "town/TownAcreIndex.h"
+#include "town/TownAcreCell.h"
 
 
-class TownAcreCell {
-public:
-    s32 type;
-    s32 acreId;
-    TownAcreCell();
-    ~TownAcreCell();
-    BOOL setType(s32 v);
-    void setAcreId(s32 v);
-    s32 getType();
-    s32 getAcreId();
-};
 
 extern "C" {
 s32 Random_GlobalBelow(s32);

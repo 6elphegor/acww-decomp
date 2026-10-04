@@ -8,20 +8,11 @@
 #include "field/Unk_ov003_0225980c_Rec.h"
 #include "gfx/AnimFrameCtrl.h"
 #include "gfx/ModelSlotPool.h"
+#include "snd/SndEnvChannel.h"
+#include "game/GroundInfoBase.h"
 
 // ---- main-module library classes shared by several functions of this unit (global: their methods are called by symbol)
 
-class GroundInfoBase {
-public:
-    u8 pad_00[0x24];
-    s32 flowDir, flowDirY, flowDirZ;
-    s32 waterKind;
-    s32 attr;
-    u8 pad_38[4];
-    s32 waterSurfaceY;
-    BOOL isBelowWaterSurface(s32 a);
-    s32 getHeight(s32 a);
-};
 
 class GroundInfo : public GroundInfoBase {
 public:
@@ -108,17 +99,13 @@ public:
     u32 pad[3];
 };
 
-class SndEnvChannel {
-public:
-    SndEnvChannel() {}
-    virtual void vfunc_00();
-    u8 unk_04[0xc];
-};
 
 class Unk_0213b954 : public SndEnvChannel {
 public:
     Unk_0213b954() {}
     virtual void vfunc_00();
+
+    /* 0x0c */ u8 unk_0c[4];
 };
 
 // ---- static object holding a InsectMatAnim plus library sub-objects (no vtable)

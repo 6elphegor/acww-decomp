@@ -1,16 +1,12 @@
 #include "types.h"
 #include "game/Unk_020702ec_Date.h"
 #include "save/MuseumData.h"
+#include "item/Letter.h"
 
 struct MsgString9C {
     MsgString9C();
     virtual ~MsgString9C();
     u32 pad[6];
-};
-struct Letter {
-    Letter();
-    virtual ~Letter();
-    u8 d[0xf0];
 };
 
 extern u32 data_020e0498;

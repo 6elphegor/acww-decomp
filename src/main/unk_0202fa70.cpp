@@ -1,6 +1,8 @@
 #include "types.h"
 #include "game/Unk_0202f2ac_V3.h"
 #include "game/Unk_0203389c_Vec.h"
+#include "game/GroundInfoBase.h"
+#include "game/UnitShapeQueryX.h"
 
 struct Unk_0202ff44_V3;
 struct CollisionVisitor;
@@ -274,11 +276,6 @@ struct Unk_0203182c_Vec { s32 x, y, z; };
 struct Unk_02031304_Vec { s32 x, y, z; };
 extern "C" BOOL Collision_GetUnitShape(s32 x, s32 z, s32 *a, s32 *b, s32 *c);
 struct Unk_020314f4_Vec { s32 x, y, z; };
-struct UnitShapeQueryX {
-    UnitShapeQueryX();
-    virtual ~UnitShapeQueryX();
-    virtual BOOL getUnitShape(s32 *a, s32 *b, s32 *c, s32 x, s32 z);
-};
 struct Unk_020d8ce8 {
     u8 pad_000[0x120];
     UnitShapeQueryX *shapeQuery;
@@ -668,25 +665,6 @@ public:
 extern "C" s32 FX_Div(s32 a, s32 b);
 extern "C" long long func_020e9600(void *a, void *b);
 extern "C" BOOL Collision_GetUnitShape(s32 a, s32 b, s32 *c, s32 *d, s32 *e);
-class GroundInfoBase {
-public:
-    void setWaveDir(s32 a, s32 b, s32 c);
-    BOOL isBelowWaterSurface(s32 x);
-    s32 getWaterSurfaceY();
-    s32 getHeight(s32 flag);
-
-    u8 pad_00[0x10];
-    u8 unk_10[0xc];
-    s32 unitX;
-    s32 unitZ;
-    s32 flowDir;
-    s32 flowDirY;
-    s32 flowDirZ;
-    s32 waterKind;
-    s32 attr;
-    s32 height;
-    s32 waterSurfaceY;
-};
 class CollisionMapIndex {
 public:
     BOOL setIndex(s32 v);

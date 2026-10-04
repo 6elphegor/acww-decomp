@@ -4,6 +4,9 @@
 #include "actor/Unk_ov068_SceneEntry.h"
 #include "game/Unk_ov083_Vec.h"
 #include "talk/TalkWindowState.h"
+#include "snd/BgmBeatPhase.h"
+#include "npc/NpcAnimCtrl.h"
+#include "npc/NpcSpeechState.h"
 #define Actor_spawn _ZN5Actor5spawnEPvS0_S0_S0_S0_
 #define NpcTalkCtrl_requestTalk _ZN11NpcTalkCtrl11requestTalkEhh
 #define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
@@ -172,7 +175,6 @@ struct ThreeLayerAnimModel {
 };
 MEMBER(Unk_0201ad3c, 0xc);
 MEMBER(NpcFaceAnim, 0x334 - 0x2ac);
-MEMBER(NpcAnimCtrl, 0x1c);
 struct Unk_0201accc {
     u8 unk_00[0x3a8 - 0x350];
     Unk_0201accc();
@@ -184,7 +186,6 @@ struct Unk_0201ad18 {
     Unk_0201ad18();
 };
 MEMBER(Unk_0201a794, 0x418 - 0x3b0);
-MEMBER(NpcSpeechState, 8);
 MEMBER(Unk_0201a13c, 0x49c - 0x420);
 MEMBER(CollisionState, 0x30);
 struct Unk_020135e4 {
@@ -327,19 +328,6 @@ struct Unk_ov068_0226ce70_Date {
     u32 b;
 };
 
-// message block at +0xb8 of the sub-object (constructed by the autoload_2 function 0x020f8134)
-struct BgmBeatPhase {
-    s8 seqVar4;
-    s8 trackAnim;
-    s8 seqVar0;
-    s8 seqVar2;
-    s8 seqVar3;
-    u8 pad_05[3];
-    s32 unk_08;
-    u8 pad_0c[8];
-    u8 unk_14;
-    u8 pad_15[3];
-};
 extern "C" void func_020f8134(void *self);
 
 class SpNpcRoostGuest;
@@ -378,6 +366,8 @@ public:
     /* 0xb0 */ SpNpcRoostGuest *owner;
     /* 0xb4 */ s32 script;
     /* 0xb8 */ BgmBeatPhase lastBeatState;
+    /* 0xcc */ u8 unk_cc;
+    /* 0xcd */ u8 pad_cd[3];
 };
 
 class SpNpcRoostGuest : public SpNpcActor {
@@ -967,9 +957,7 @@ BOOL SpNpcRoostGuest::mainAct02() {
     return TRUE;
 }
 
-SpNpcRoostGuestTalk::SpNpcRoostGuestTalk() {
-    func_020f8134(&lastBeatState);
-}
+SpNpcRoostGuestTalk::SpNpcRoostGuestTalk() {}
 
 // ---------------------------------------------------------------------------------------------------------------------
 SpNpcRoostGuestTalk::~SpNpcRoostGuestTalk() {}
@@ -1340,7 +1328,7 @@ void SpNpcRoostGuestTalk::scriptStartPerformance() {
                 owner->unk_654 = t + 0x63;
             }
             Bgm_Request(0xf, (u16)owner->unk_654, 0x7f, 0);
-            lastBeatState.unk_14 = 0;
+            unk_cc = 0;
             KkShowFx_Start();
             setScript(3);
         }
@@ -1380,9 +1368,9 @@ void SpNpcRoostGuestTalk::scriptPerform() {
                 NpcLookAt_setManualAngles(&owner->lookAt, 0, -0xc18, 0, 0x100, 0x200);
             }
             u16 v = data_020c6cc8;
-            if (lastBeatState.unk_14 == 0) {
+            if (unk_cc == 0) {
                 v = 0x28;
-                lastBeatState.unk_14 = 1;
+                unk_cc = 1;
             }
             s32 t0 = p->seqVar4;
             if (t0 == 3) {

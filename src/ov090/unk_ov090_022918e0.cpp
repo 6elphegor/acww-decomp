@@ -7,6 +7,8 @@
 #include "sys/Unk_020b83b0.h"
 #include "talk/MsgStringBase.h"
 #include "gfx/BgTransfer.h"
+#include "gfx/SpriteAnim.h"
+#include "ui/UiWidget.h"
 #undef postCreate
 #undef vfunc_14
 
@@ -44,12 +46,6 @@ extern u8 gTouchChanged;
 extern u16 gPad[];
 }
 
-class SpriteAnim {
-public:
-    SpriteAnim();
-    ~SpriteAnim();
-    u8 unk_00[0x14];
-};
 
 
 class LabelBalloonText : public MsgStringBase {
@@ -62,17 +58,6 @@ public:
     /* 0x04 */ u8 unk_04[0x24];
 };
 
-class UiWidget {
-public:
-    UiWidget();
-    virtual ~UiWidget();
-    virtual void draw() = 0;
-    virtual void vfunc_0c() = 0;
-    virtual void setOrigin(s32 a, s32 b);
-
-    /* 0x04 */ s32 originX;
-    /* 0x08 */ s32 originY;
-};
 
 class LabelBalloon : public UiWidget {
 public:

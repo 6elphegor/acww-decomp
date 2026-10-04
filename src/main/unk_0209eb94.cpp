@@ -4,6 +4,7 @@
 #include "net/CommManager.h"
 #include "save/BlancaFaceRecord.h"
 #include "talk/TalkWindowState.h"
+#include "town/TownBlockMap.h"
 
 // ---- declarations shared by the merged files
 class TalkMsgRequest;
@@ -822,10 +823,6 @@ s32 TownExchange_Clear(void *a);
 
 // ---- unk_020a25d8.cpp
 
-struct TownBlockMap {
-    void bindBg();
-    void updateAcreIds();
-};
 
 struct Unk_020a25d8 {
     u8 pad_00[0x9d];

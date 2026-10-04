@@ -5,6 +5,7 @@
 #include "Unk_020d8c7c.h"
 #include "game/Unk_0203389c_Vec.h"
 #include "game/Unk_ov004_0223d800_Vec.h"
+#include "game/GroundInfoBase.h"
 
 // ---- main / runtime symbols by their real names
 #define func_02000c8c _ZN6FxVec3D1Ev
@@ -60,12 +61,6 @@
 
 // ---- main-module classes used by this unit
 
-class GroundInfoBase {
-public:
-    s32 getHeight(s32 flag);
-    u8 pad_00[0x3c];
-    s32 waterSurfaceY;
-};
 
 class GroundInfo : public GroundInfoBase {
 public:

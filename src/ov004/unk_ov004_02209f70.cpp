@@ -20,6 +20,7 @@
 #include "room/FtrAnimSet.h"
 #include "room/FtrStackedSet.h"
 #include "talk/TalkWindowState.h"
+#include "game/BoxCollider.h"
 // ov004 translation unit 0x02209f70-0x022136d0 (34 classes derived from FtrActor). Built by two compilers:
 // this file's thunks need mwcc 1.2/sp2, FtrSingingInsect::updateActive / vfunc_7c (in the _switch file) need 1.2/base;
 // the functions and data objects are placed by address (config/usa/arm9/overlays/ov004/object_order.txt).
@@ -311,12 +312,6 @@ struct Unk_ov004_02206570_Act {
     s16 rotY;
 };
 
-struct BoxCollider {
-    virtual void onEdgeContact(CollisionEdge *a, Unk_ov004_02206570_Act *b, s32 c);
-    u8 pad_04[0x98];
-    BoxCollider();
-    ~BoxCollider();
-};
 
 struct FtrCollider : BoxCollider {
     void *owner;

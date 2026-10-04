@@ -4,6 +4,7 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "ui/CursorMotion.h"
+#include "item/Letter.h"
 #undef postCreate
 #undef vfunc_14
 
@@ -103,12 +104,6 @@ public:
     u8 unk_24[0x14];
 };
 
-class Letter {
-public:
-    Letter();
-    ~Letter();
-    u32 unk_00[0xf4 / 4];
-};
 
 class InventoryItemGrid {
 public:

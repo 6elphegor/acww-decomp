@@ -2,16 +2,12 @@
 #include "game/Unk_020aebbc.h"
 #include "game/Unk_021c47c4.h"
 #include "game/Unk_020aec00.h"
+#include "game/ShopAckCounter.h"
 
 struct Counter {
     Counter();
     /* 0x00 */ u8 needed;
     /* 0x01 */ u8 received;
-};
-struct ShopAckCounter {
-    ShopAckCounter();
-    u8 needed;
-    u8 received;
 };
 
 struct Elem2a { Elem2a(); u16 d; };

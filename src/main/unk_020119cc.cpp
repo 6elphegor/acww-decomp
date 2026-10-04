@@ -5,6 +5,10 @@
 #include "npc/Unk_0201a13c.h"
 #include "actor/BlinkTimer.h"
 #include "gfx/HudObjGfx.h"
+#include "player/HeldToolModel.h"
+#include "npc/NpcAnimCtrl.h"
+#include "npc/NpcSpeechState.h"
+#include "npc/NpcTalkCtrl.h"
 
 
 // unk_02011580.cpp
@@ -31,39 +35,6 @@ struct Unk_0205dfa4_9c {
 // unk_02011580.cpp
 struct Unk_0205dfa4 : Unk_0205dfa4_Prim, Unk_0205dfa4_9c {};
 
-// unk_02011580.cpp
-struct HeldToolModel {
-    u16 heldItem;
-    u8 unk_02[2];
-    u8 modelHandle[8];
-    u8 handMtx[0x30];
-    u8 visible;
-
-    void func_02011b60(u32 v);
-    Unk_0205dfa4 *func_02011b7c();
-    void setAnimSpeed(u32 v);
-    u32 getAnimSpeed();
-    void draw(Unk_02006d14 *p);
-    void update(Unk_02006d14 *p);
-    void release();
-    void func_02011c44(u32 a, u32 b);
-    void func_02011c64(HeldToolModel *p, u32 a, u32 b);
-    void func_02011c9c(u32 a, u32 b);
-    void func_02011cbc(HeldToolModel *p, u32 a, u32 b);
-    void func_02011cf4(u32 a, u32 b);
-    void func_02011d14(HeldToolModel *p, u32 a, u32 b);
-    void func_02011d4c(u32 a, u32 b);
-    void func_02011d6c(HeldToolModel *p, u32 a, u32 b);
-    void playWalkAnim(u32 a, u32 b);
-    void playWalkAnimFor(HeldToolModel *p, u32 a, u32 b);
-    void playIdleAnim(u32 a, u32 b);
-    void playIdleAnimFor(HeldToolModel *p, u32 a, u32 b);
-    void playAnim(u32 a, u32 b, u32 c);
-    BOOL attach(u32 a, u16 *b, u32 c, u16 d);
-    BOOL load(u32 a);
-    HeldToolModel *destroy();
-    HeldToolModel *init();
-};
 
 // unk_02011ec0.cpp
 struct Unk_02011f74_Pair {
@@ -566,41 +537,6 @@ class NpcTalkCtrl;
 
 class Unk_02014258;
 
-// unk_02013b10.cpp
-class NpcTalkCtrl {
-public:
-    s32 unk_00;
-    s16 unk_04;
-    s16 turnAngle;
-    u8 state;
-    u8 requestedState;
-    u8 step;
-    u8 clearActorFlagOnEnd;
-    u8 keepCamera;
-    u8 stopAction;
-    u8 unk_0e;
-
-    void mainState2(Unk_02013b10_Ctx *ctx);
-    void state2Step1(Unk_02013b10_Ctx *ctx);
-    void state2Step0(Unk_02013b10_Ctx *ctx);
-    void setupState2(Unk_02013b10_Ctx *ctx);
-    void mainState0(Unk_02013b10_Ctx *ctx);
-    void state0Step2(Unk_02013b10_Ctx *ctx);
-    void state0Step1(Unk_02013b10_Ctx *ctx);
-    void state0Step0(Unk_02013b10_Ctx *ctx);
-    void setupState0(Unk_02013b10_Ctx *ctx);
-    void endTalk(Unk_02013b10_Ctx *ctx);
-    void startTalkMessage(Unk_02013b10_Ctx *ctx);
-    void updateSpeakerMouth(Unk_02013b10_Ctx *ctx);
-    void update(Unk_02013b10_Ctx *ctx);
-    void applyRequest(Unk_02013b10_Ctx *ctx);
-    BOOL request(u8 b, u32 c, s16 d, s16 e, u8 f, u8 g);
-    BOOL requestState4(u32 c, s32 d, s16 e, u8 g);
-    BOOL requestTalk(u8 f, u8 g);
-    BOOL requestTurnAndTalk(s16 d, s16 e, u8 g);
-    BOOL isBusy();
-    void reset();
-};
 
 // unk_02013b10.cpp
 struct Unk_02014040_Ent {
@@ -1135,25 +1071,6 @@ struct Unk_02015fe0_Obj {
     u8 speechState[8];
 };
 
-// unk_02015fe0.cpp
-class NpcAnimCtrl {
-public:
-    u8 unk_00[0xc];
-    s32 talkGestureVariant;
-    u8 talkGestureActive;
-    u8 pad_11[3];
-    s32 animSpeedScale;
-    u8 unk_18[4];
-
-    NpcAnimCtrl();
-    ~NpcAnimCtrl();
-    void playHoldItemPose(Unk_02015fe0_Obj *o, u16 *p, void *q, u16 x);
-    void playAnim(Unk_02015fe0_Obj *o, s32 kind, s32 a3, s32 a4, s32 a5, u16 a6, s32 mode);
-    BOOL isPlayingAnim(s32 mode, void *p);
-    s32 resolveAnimId(s32 mode, void *p);
-    void *getAnimResource(s32 a, s32 b);
-    BOOL initForActor(Unk_02015fe0_Obj *o, s32 a);
-};
 
 class Unk_02016360;
 
@@ -1851,20 +1768,6 @@ struct NpcEmotionFx {
     void reset();
 };
 
-// unk_02019998.cpp
-struct NpcSpeechState {
-    u8 speaking;
-    s32 mouthType;
-
-    NpcSpeechState();
-    ~NpcSpeechState();
-    s32 getMouthType();
-    void setMouthType(s32 v);
-    BOOL isSpeaking();
-    void stopSpeaking();
-    void startSpeaking();
-    void reset();
-};
 
 struct Unk_0201a1e0_Target;
 

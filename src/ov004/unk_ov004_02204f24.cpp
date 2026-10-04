@@ -18,6 +18,7 @@
 #include "room/FtrClockHands.h"
 #include "room/FtrAnimSet.h"
 #include "room/FtrStackedSet.h"
+#include "game/BoxCollider.h"
 
 // ================================================================ plain value types
 
@@ -307,12 +308,6 @@ struct Unk_ov004_02206570_Act {
     s16 rotY;
 };
 
-struct BoxCollider {
-    virtual void onEdgeContact(CollisionEdge *a, Unk_ov004_02206570_Act *b, s32 c);
-    u8 pad_04[0x98];
-    BoxCollider();
-    ~BoxCollider();
-};
 
 struct FtrCollider : BoxCollider {
     void *owner;

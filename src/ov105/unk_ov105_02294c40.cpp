@@ -7,6 +7,7 @@
 #include "player/Unk_02097ff4.h"
 #include "ui/CursorMotion.h"
 #include "talk/TalkWindowState.h"
+#include "item/Letter.h"
 #undef postCreate
 #undef vfunc_14
 
@@ -116,12 +117,6 @@ extern void *gMenuHeap;
 
 // Main-module helper classes (real symbol names) -------------------------------------------------
 
-class Letter {
-public:
-    Letter();
-    ~Letter();
-    u32 unk_00[0xf4 / 4];
-};
 
 // Same 0xf4-byte element object under the name that owns the state accessors
 class LetterView {

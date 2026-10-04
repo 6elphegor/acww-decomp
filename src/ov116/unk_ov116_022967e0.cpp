@@ -2,6 +2,7 @@
 #define vfunc_14() vfunc_14(s32 a)
 #include "types.h"
 #include "Unk_020d8c7c.h"
+#include "ui/UiWidget.h"
 #undef postCreate
 #undef vfunc_14
 
@@ -88,17 +89,6 @@ public:
     u32 unk_00[0x129c / 4];
 };
 
-class UiWidget {
-public:
-    UiWidget();
-    virtual ~UiWidget();
-    virtual void draw() = 0;
-    virtual void vfunc_0c() = 0;
-    virtual void setOrigin(s32 a, s32 b);
-
-    /* 0x04 */ s32 originX;
-    /* 0x08 */ s32 originY;
-};
 
 class HandCursor : public UiWidget {
 public:

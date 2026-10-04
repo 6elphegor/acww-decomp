@@ -1,14 +1,9 @@
 #include "types.h"
 #include "talk/MsgStringAttr.h"
 #include "item/ItemId.h"
+#include "sys/RecordFile.h"
 
 
-class RecordFile {
-public:
-    RecordFile();
-    ~RecordFile();
-    u8 unk_00[0x1c];
-};
 
 class ItemInfoTables {
 public:

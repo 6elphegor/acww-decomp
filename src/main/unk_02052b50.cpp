@@ -1,4 +1,5 @@
 #include "types.h"
+#include "sys/RecordFile.h"
 
 extern "C" {
 extern u32 data_0213bfec;
@@ -21,14 +22,6 @@ s32 Item_GetFurnitureIndex(void *p);
 s32 Item_IsFurniture(void *p);
 }
 
-// cached record table (defined by another unit)
-class RecordFile {
-public:
-    RecordFile();
-    ~RecordFile();
-    u8 *getRecord(u32 idx);
-    u8 unk_00[0x1c];
-};
 
 class InfoTableSet {
 public:

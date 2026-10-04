@@ -1,17 +1,10 @@
 #include "types.h"
+#include "snd/TvSound.h"
 
 extern "C" {
 void *Heap_Alloc(u32 heap, u32 size);
 }
 
-class TvSound {
-public:
-    virtual void reset();
-    virtual void release();
-    virtual void vfunc_08(s32 a, void *b);
-    virtual void turnOn(s32 a);
-    virtual void turnOff();
-};
 
 struct Unk_02003878_Obj {
     void *vtable;

@@ -3,6 +3,7 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "town/TownMapMarkers.h"
+#include "ui/UiWidget.h"
 #undef postCreate
 #undef vfunc_14
 
@@ -109,14 +110,6 @@ public:
     void selectTab(u32 x);
 };
 
-class UiWidget {
-public:
-    UiWidget();
-    virtual ~UiWidget();
-    virtual void draw() = 0;
-    virtual void vfunc_0c() = 0;
-    u32 unk_04[2];
-};
 
 // object at +0x484 (size 0x64, vtable 0x02204614); methods split over two more ov002 classes
 class MenuCursorBase {

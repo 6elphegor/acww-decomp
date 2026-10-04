@@ -4,6 +4,8 @@
 #include "talk/TalkStartMsg.h"
 #include "save/TownExchangeRecord.h"
 #include "talk/TalkWindowState.h"
+#include "npc/NpcAnimCtrl.h"
+#include "npc/NpcSpeechState.h"
 
 // Library base class (same as GameProc.h, but vfunc_08 takes the s32 the vtable symbol names).
 class ProcBase {
@@ -129,7 +131,6 @@ struct ThreeLayerAnimModel {
 };
 MEMBER(Unk_0201ad3c, 0xc);
 MEMBER(NpcFaceAnim, 0x334 - 0x2ac);
-MEMBER(NpcAnimCtrl, 0x1c);
 struct Unk_0201accc {
     u8 unk_00[0x3a8 - 0x350];
     Unk_0201accc();
@@ -141,7 +142,6 @@ struct Unk_0201ad18 {
     Unk_0201ad18();
 };
 MEMBER(Unk_0201a794, 0x418 - 0x3b0);
-MEMBER(NpcSpeechState, 8);
 MEMBER(Unk_0201a13c, 0x49c - 0x420);
 MEMBER(CollisionState, 0x30);
 struct Unk_020135e4 {

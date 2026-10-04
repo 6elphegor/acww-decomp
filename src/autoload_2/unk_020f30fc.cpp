@@ -29,14 +29,9 @@
 // are the implicit derived-to-base conversions when `this` is passed to the extern "C" SndHandle functions of unk_020ede18.cpp, and
 // `h ? h - 4 : 0` in f4010 is static_cast<SndSeEmitter *>(h).
 #include "types.h"
+#include "snd/SndSeEmitter.h"
 #include "game/Vec3.h"
 
-// sound handle (functions in unk_020ede18.cpp, plain C names): the non-polymorphic second base of the channel object, at +4
-struct SndHandle {
-    /* 0x00 */ u8 pad00[0x30];
-    /* 0x30 */ void (*volCb)(SndHandle *h, s32 idx);
-    /* 0x34 */ u8 pad34[4];
-};
 
 // sound manager gSndMgr (SndMgr, unk_020f0dec.cpp): only the fields read here
 struct SndScene {
@@ -104,25 +99,6 @@ s32 Snd_ListenerDistanceCallback(void *p);
 s32 Snd_ListenerVolumeCallback(void *p);
 s32 Snd_ListenerPanCallback(void *p);
 }
-// channel object base, vtable 0x0213b9a0 (dsd label data_0213b9a8); main / ov003 / ov004 call its C1 and D1 as func_020f440c / func_020f43fc
-class SndSeEmitter : public SndHandle {
-public:
-    SndSeEmitter();                   // C1 0x020f440c, C2 0x020f4424
-    virtual ~SndSeEmitter();          // D2 0x020f43c8, D0 0x020f43d8, D1 0x020f43fc
-    virtual void init();          // 0x020f4394
-    virtual void update(void *src); // 0x020f4380
-    virtual void stop();          // 0x020f4144
-    void stopEffects();               // 0x020f4100
-    BOOL playHeld(s32 id, s32 c, s16 d);  // 0x020f4158
-    BOOL playOneShot(s32 id, s32 c, s16 d); // 0x020f41fc
-    u16 nextAlternateId(u16 s);                // 0x020f3f38
-    void playAlternate(u16 s);             // 0x020f3f10
-
-    /* 0x3c */ u16 h3c;
-    /* 0x3e */ u8 b3e;
-    /* 0x3f */ u8 b3f;
-    /* 0x40 */ u8 b40;
-};
 
 // main's class (vtable _ZTV17SndSeEmitterKind1 in main, implicit destructor): its constructor lives here
 class SndSeEmitterKind1 : public SndSeEmitter {

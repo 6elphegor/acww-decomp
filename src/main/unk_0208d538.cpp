@@ -1,5 +1,7 @@
 #include "types.h"
 #include "gfx/Unk_02089240_Rec.h"
+#include "gfx/SpriteAnim.h"
+#include "ui/UiWidget.h"
 
 extern "C" {
 void Snd_SetPanIfChanged(u8 v);
@@ -14,38 +16,7 @@ extern const s32 sHandCursorAnimSeqIds[0x13];
 
 struct SpriteAnimSeq;
 
-class SpriteAnim {
-public:
-    SpriteAnim();
-    ~SpriteAnim();
-    void update();
-    void restart();
-    BOOL isFinished();
-    s32 getFrameY(s32 v);
-    s32 getFrameX(s32 v);
-    Unk_02089240_Rec *getSeq();
-    void *getCell();
-    void setFrame(s32 a, s32 b);
-    void setSpeed(s32 v);
-    void setPlayOnce(s32 v);
-    void setSeq(SpriteAnimSeq *v);
 
-    /* 0x00 */ u8 unk_00[0x14];
-};
-
-class UiWidget {
-public:
-    UiWidget();
-    virtual ~UiWidget();
-    virtual void draw() = 0;
-    virtual void vfunc_0c() = 0;
-    virtual void setOrigin(s32 a, s32 b);
-    s32 getOriginY();
-    s32 getOriginX();
-
-    /* 0x04 */ s32 originX;
-    /* 0x08 */ s32 originY;
-};
 
 class HandCursor : public UiWidget {
 public:
@@ -120,10 +91,10 @@ void HandCursor::setAnim(s32 idx) {
 
 void HandCursor::setAnimAtEnd(s32 idx) {
     setAnim(idx);
-    Unk_02089240_Rec *p = layer1.getSeq();
+    SpriteAnimSeq *p = layer1.getSeq();
     layer1.setFrame(p->frameCount - 1, 0);
     if (hasLayer2 != 0) {
-        Unk_02089240_Rec *q = layer2.getSeq();
+        SpriteAnimSeq *q = layer2.getSeq();
         layer2.setFrame(q->frameCount - 1, 0);
     }
 }

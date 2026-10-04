@@ -1,4 +1,5 @@
 #include "types.h"
+#include "save/SaveRecord4.h"
 
 // 0x0209eb0c-0x0209eb94: the last 13 functions of the file that U193 (0x0209e394-0x0209eb0c) comes from
 // (members of the 4-byte record class SaveRecord4 whose first methods are in U193, and of SaveChecksum).
@@ -7,29 +8,6 @@ extern "C" {
 u32 Random_GlobalBelow(s32 n);
 }
 
-class SaveRecord4 {
-public:
-    BOOL isDateActive();
-    void expireDate();
-    void setDateToday(void *src);
-    void resetDate();
-    u8 getStamp();
-    void setStamp(u8 v);
-    void newStamp();
-    BOOL isStateUnset();
-    BOOL isStateValid();
-    void setStateValidAlt();
-    void markInterrupted();
-    void clearState();
-    void setStateValid();
-    void destruct();
-    void construct();
-
-    /* 0x00 */ u8 unk_00;
-    /* 0x01 */ u8 unk_01;
-    /* 0x02 */ u8 unk_02;
-    /* 0x03 */ u8 unk_03;
-};
 
 class SaveChecksum {
 public:

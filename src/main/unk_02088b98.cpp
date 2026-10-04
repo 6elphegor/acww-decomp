@@ -58,31 +58,10 @@ public:
 
 // Included here, after the twins above: the class definition order decides the vtable order in .data.
 #include "actor/ActorCollider.h"
+#include "gfx/SpriteAnim.h"
 
-struct SpriteAnimFrame {
-    /* 0x00 */ void *cell;
-    /* 0x04 */ s32 duration;
-    /* 0x08 */ s16 x;
-    /* 0x0a */ s16 y;
-};
 
-struct SpriteAnimSeq {
-    /* 0x00 */ SpriteAnimFrame *frames;
-    /* 0x04 */ s32 frameCount;
-};
 
-class SpriteAnim {
-public:
-    SpriteAnim();
-    ~SpriteAnim();
-    void update();
-    void restart();
-    /* 0x00 */ SpriteAnimSeq *seq;
-    /* 0x04 */ s32 frameIndex;
-    /* 0x08 */ s32 frameTime;
-    /* 0x0c */ s32 speed;
-    /* 0x10 */ s32 playOnce;
-};
 
 extern "C" {
 s32 func_020e7b98(s32 a, s32 b);

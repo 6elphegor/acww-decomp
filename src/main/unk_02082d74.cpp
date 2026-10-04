@@ -5,6 +5,7 @@
 #include "net/Unk_020cbb18_Data.h"
 #include "town/Unk_02082e80_Grid.h"
 #include "room/RoomFreeUnitMap.h"
+#include "game/GroundInfoBase.h"
 
 typedef Unk_0203389c_Vec Unk_02083c28_Vec;
 struct VisitorSpawner;
@@ -103,12 +104,6 @@ struct Unk_02084ecc_Vec {
     s32 x, y, z;
 };
 
-struct GroundInfoBase {
-    u8 pad_00[0x34];
-    s32 attr;
-    u8 pad_38[8];
-    BOOL getHeight(s32 a);
-};
 
 struct GroundInfo : GroundInfoBase {
     GroundInfo() {}
