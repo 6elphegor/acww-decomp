@@ -27,7 +27,7 @@ struct VillagerState {
     /* 0x1c */ u8 activity;
     /* 0x1d */ u8 flags;
     /* 0x1e */ u8 talkUrge;
-    /* 0x20 */ s32 roomScore; // < 0: no room evaluated yet (VillagerTalkRumorTopics::selectTsuHappyroom)
+    /* 0x20 */ s32 roomScore; // signed: compared with >= 0 (VillagerTalkRumorTopics::selectTsuHappyroom); init stores 0
     /* 0x24 */ u16 roomBonusFlags;
     /* 0x26 */ u16 heldItem;
     /* 0x28 */ TalkRepeat talkRepeat;
