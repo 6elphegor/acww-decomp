@@ -313,54 +313,54 @@ static inline void func_ov094_022943b0(void *p) { ((LetterGrid *)p)->clearMarks(
 static inline void func_ov094_022943f8(void *p) { ((LetterGrid *)p)->clearCursorSlot(); }
 static inline void func_ov094_0229462c(void *a) { ((LetterGrid *)a)->updateCursorLift(); }
 static inline void func_ov094_02294644(void *a, s32 b) { ((LetterGrid *)a)->init((s32)b); }
-static inline void func_ov110_02294d68(LostFoundRecycleMenu *s, u32 m) { ((LostFoundRecycleMenu *)s)->clearFlags((u32)m); }
-static inline void func_ov110_02294d78(LostFoundRecycleMenu *s, u32 v) { ((LostFoundRecycleMenu *)s)->setFlags((u32)v); }
-static inline BOOL func_ov110_02294d88(LostFoundRecycleMenu *s, u32 m) { return ((LostFoundRecycleMenu *)s)->testFlags((u32)m); }
-static inline BOOL func_ov110_02294d9c(LostFoundRecycleMenu *s) { return ((LostFoundRecycleMenu *)s)->isResultSent(); }
-static inline void func_ov110_02294e78(LostFoundRecycleMenu *s, u32 v) { ((LostFoundRecycleMenu *)s)->confirm((s32)v); }
-static inline void func_ov110_02294fb8(LostFoundRecycleMenu *s, s32 a) { ((LostFoundRecycleMenu *)s)->setOkLabel((s32)a); }
-static inline void func_ov110_02295034(LostFoundRecycleMenu *s) { ((LostFoundRecycleMenu *)s)->resetTextLabels(); }
-static inline BOOL func_ov110_02295060(LostFoundRecycleMenu *s, u32 a, u32 b) { return ((LostFoundRecycleMenu *)s)->moveCursorByPad((void *)a, (s32)b); }
-static inline void func_ov110_022953b4(LostFoundRecycleMenu *s) { ((LostFoundRecycleMenu *)s)->cancelChoiceList(); }
-static inline s32 func_ov110_022953e0(LostFoundRecycleMenu *s) { return ((LostFoundRecycleMenu *)s)->applyChoice(); }
-static inline void func_ov110_02295404(LostFoundRecycleMenu *s, u32 v) { ((LostFoundRecycleMenu *)s)->startExchange((u8)v); }
-static inline void func_ov110_0229544c(LostFoundRecycleMenu *s, u32 v) { ((LostFoundRecycleMenu *)s)->startPutDown((u8)v); }
-static inline void func_ov110_02295488(LostFoundRecycleMenu *s) { ((LostFoundRecycleMenu *)s)->startPickUp(); }
-static inline void func_ov110_022954a8(LostFoundRecycleMenu *s) { ((LostFoundRecycleMenu *)s)->releaseCursor(); }
-static inline void func_ov110_022954c8(LostFoundRecycleMenu *s) { ((LostFoundRecycleMenu *)s)->pressCursor(); }
-static inline void func_ov110_022954e8(LostFoundRecycleMenu *s) { ((LostFoundRecycleMenu *)s)->refreshCursor(); }
-static inline void func_ov110_02295508(LostFoundRecycleMenu *s) { ((LostFoundRecycleMenu *)s)->placeCursorAtTarget(); }
-static inline void func_ov110_0229553c(LostFoundRecycleMenu *s) { ((LostFoundRecycleMenu *)s)->placeCursorOnFirstChoice(); }
-static inline void func_ov110_02296370(LostFoundRecycleMenu *s) { ((LostFoundRecycleMenu *)s)->mainAct15(); }
-static inline void func_ov110_022963b4(LostFoundRecycleMenu *s) { ((LostFoundRecycleMenu *)s)->mainAct14(); }
-static inline void func_ov110_022963e8(LostFoundRecycleMenu *s) { ((LostFoundRecycleMenu *)s)->mainAct13(); }
-static inline void func_ov110_02296408(LostFoundRecycleMenu *s) { ((LostFoundRecycleMenu *)s)->mainAct12(); }
-static inline void func_ov110_0229644c(LostFoundRecycleMenu *s) { ((LostFoundRecycleMenu *)s)->mainAct11(); }
-static inline void func_ov110_02296488(LostFoundRecycleMenu *s) { ((LostFoundRecycleMenu *)s)->mainAct10(); }
-static inline void func_ov110_022964c0(LostFoundRecycleMenu *s) { ((LostFoundRecycleMenu *)s)->mainAct0F(); }
-static inline void func_ov110_02296510(LostFoundRecycleMenu *s) { ((LostFoundRecycleMenu *)s)->mainAct0E(); }
-static inline void func_ov110_02296558(LostFoundRecycleMenu *s) { ((LostFoundRecycleMenu *)s)->mainAct0D(); }
-static inline void func_ov110_022965ac(LostFoundRecycleMenu *s) { ((LostFoundRecycleMenu *)s)->mainAct0C(); }
-static inline void func_ov110_022965d8(LostFoundRecycleMenu *s) { ((LostFoundRecycleMenu *)s)->mainAct0B(); }
-static inline void func_ov110_02296608(LostFoundRecycleMenu *s) { ((LostFoundRecycleMenu *)s)->updateCursorRelease(); }
-static inline void func_ov110_02296630(LostFoundRecycleMenu *s) { ((LostFoundRecycleMenu *)s)->updateCursorPress(); }
-static inline void func_ov110_02296664(LostFoundRecycleMenu *s) { ((LostFoundRecycleMenu *)s)->updateCursorMove(); }
-static inline void func_ov110_022966b4(LostFoundRecycleMenu *s) { ((LostFoundRecycleMenu *)s)->mainAct07(); }
-static inline void func_ov110_02296700(LostFoundRecycleMenu *s) { ((LostFoundRecycleMenu *)s)->mainAct06(); }
-static inline void func_ov110_02296780(LostFoundRecycleMenu *s) { ((LostFoundRecycleMenu *)s)->mainAct05(); }
-static inline void func_ov110_02296874(LostFoundRecycleMenu *s) { ((LostFoundRecycleMenu *)s)->mainAct04(); }
-static inline void func_ov110_022969ec(LostFoundRecycleMenu *s) { ((LostFoundRecycleMenu *)s)->mainAct03(); }
-static inline void func_ov110_02296b1c(LostFoundRecycleMenu *s) { ((LostFoundRecycleMenu *)s)->mainAct02(); }
-static inline void func_ov110_02296bb8(LostFoundRecycleMenu *s) { ((LostFoundRecycleMenu *)s)->mainAct01(); }
-static inline void func_ov110_02296c0c(LostFoundRecycleMenu *s) { ((LostFoundRecycleMenu *)s)->mainAct00(); }
-static inline void func_ov110_02296f70(LostFoundRecycleMenu *s) { ((LostFoundRecycleMenu *)s)->transitionAct06(); }
-static inline void func_ov110_02296fbc(LostFoundRecycleMenu *s) { ((LostFoundRecycleMenu *)s)->transitionAct05(); }
-static inline void func_ov110_02297024(LostFoundRecycleMenu *s) { ((LostFoundRecycleMenu *)s)->transitionAct04(); }
-static inline void func_ov110_02297094(LostFoundRecycleMenu *s) { ((LostFoundRecycleMenu *)s)->transitionAct03(); }
-static inline void func_ov110_022970cc(LostFoundRecycleMenu *s) { ((LostFoundRecycleMenu *)s)->transitionAct02(); }
-static inline void func_ov110_0229714c(LostFoundRecycleMenu *s) { ((LostFoundRecycleMenu *)s)->transitionAct01(); }
-static inline BOOL func_ov110_0229726c(LostFoundRecycleMenu *s) { return ((LostFoundRecycleMenu *)s)->isForcedClose(); }
-static inline void func_ov110_0229728c(LostFoundRecycleMenu *s) { ((LostFoundRecycleMenu *)s)->runMainState(); }
+static inline void func_ov110_02294d68(LostFoundRecycleMenu *s, u32 m) { s->clearFlags((u32)m); }
+static inline void func_ov110_02294d78(LostFoundRecycleMenu *s, u32 v) { s->setFlags((u32)v); }
+static inline BOOL func_ov110_02294d88(LostFoundRecycleMenu *s, u32 m) { return s->testFlags((u32)m); }
+static inline BOOL func_ov110_02294d9c(LostFoundRecycleMenu *s) { return s->isResultSent(); }
+static inline void func_ov110_02294e78(LostFoundRecycleMenu *s, u32 v) { s->confirm((s32)v); }
+static inline void func_ov110_02294fb8(LostFoundRecycleMenu *s, s32 a) { s->setOkLabel((s32)a); }
+static inline void func_ov110_02295034(LostFoundRecycleMenu *s) { s->resetTextLabels(); }
+static inline BOOL func_ov110_02295060(LostFoundRecycleMenu *s, u32 a, u32 b) { return s->moveCursorByPad((void *)a, (s32)b); }
+static inline void func_ov110_022953b4(LostFoundRecycleMenu *s) { s->cancelChoiceList(); }
+static inline s32 func_ov110_022953e0(LostFoundRecycleMenu *s) { return s->applyChoice(); }
+static inline void func_ov110_02295404(LostFoundRecycleMenu *s, u32 v) { s->startExchange((u8)v); }
+static inline void func_ov110_0229544c(LostFoundRecycleMenu *s, u32 v) { s->startPutDown((u8)v); }
+static inline void func_ov110_02295488(LostFoundRecycleMenu *s) { s->startPickUp(); }
+static inline void func_ov110_022954a8(LostFoundRecycleMenu *s) { s->releaseCursor(); }
+static inline void func_ov110_022954c8(LostFoundRecycleMenu *s) { s->pressCursor(); }
+static inline void func_ov110_022954e8(LostFoundRecycleMenu *s) { s->refreshCursor(); }
+static inline void func_ov110_02295508(LostFoundRecycleMenu *s) { s->placeCursorAtTarget(); }
+static inline void func_ov110_0229553c(LostFoundRecycleMenu *s) { s->placeCursorOnFirstChoice(); }
+static inline void func_ov110_02296370(LostFoundRecycleMenu *s) { s->mainAct15(); }
+static inline void func_ov110_022963b4(LostFoundRecycleMenu *s) { s->mainAct14(); }
+static inline void func_ov110_022963e8(LostFoundRecycleMenu *s) { s->mainAct13(); }
+static inline void func_ov110_02296408(LostFoundRecycleMenu *s) { s->mainAct12(); }
+static inline void func_ov110_0229644c(LostFoundRecycleMenu *s) { s->mainAct11(); }
+static inline void func_ov110_02296488(LostFoundRecycleMenu *s) { s->mainAct10(); }
+static inline void func_ov110_022964c0(LostFoundRecycleMenu *s) { s->mainAct0F(); }
+static inline void func_ov110_02296510(LostFoundRecycleMenu *s) { s->mainAct0E(); }
+static inline void func_ov110_02296558(LostFoundRecycleMenu *s) { s->mainAct0D(); }
+static inline void func_ov110_022965ac(LostFoundRecycleMenu *s) { s->mainAct0C(); }
+static inline void func_ov110_022965d8(LostFoundRecycleMenu *s) { s->mainAct0B(); }
+static inline void func_ov110_02296608(LostFoundRecycleMenu *s) { s->updateCursorRelease(); }
+static inline void func_ov110_02296630(LostFoundRecycleMenu *s) { s->updateCursorPress(); }
+static inline void func_ov110_02296664(LostFoundRecycleMenu *s) { s->updateCursorMove(); }
+static inline void func_ov110_022966b4(LostFoundRecycleMenu *s) { s->mainAct07(); }
+static inline void func_ov110_02296700(LostFoundRecycleMenu *s) { s->mainAct06(); }
+static inline void func_ov110_02296780(LostFoundRecycleMenu *s) { s->mainAct05(); }
+static inline void func_ov110_02296874(LostFoundRecycleMenu *s) { s->mainAct04(); }
+static inline void func_ov110_022969ec(LostFoundRecycleMenu *s) { s->mainAct03(); }
+static inline void func_ov110_02296b1c(LostFoundRecycleMenu *s) { s->mainAct02(); }
+static inline void func_ov110_02296bb8(LostFoundRecycleMenu *s) { s->mainAct01(); }
+static inline void func_ov110_02296c0c(LostFoundRecycleMenu *s) { s->mainAct00(); }
+static inline void func_ov110_02296f70(LostFoundRecycleMenu *s) { s->transitionAct06(); }
+static inline void func_ov110_02296fbc(LostFoundRecycleMenu *s) { s->transitionAct05(); }
+static inline void func_ov110_02297024(LostFoundRecycleMenu *s) { s->transitionAct04(); }
+static inline void func_ov110_02297094(LostFoundRecycleMenu *s) { s->transitionAct03(); }
+static inline void func_ov110_022970cc(LostFoundRecycleMenu *s) { s->transitionAct02(); }
+static inline void func_ov110_0229714c(LostFoundRecycleMenu *s) { s->transitionAct01(); }
+static inline BOOL func_ov110_0229726c(LostFoundRecycleMenu *s) { return s->isForcedClose(); }
+static inline void func_ov110_0229728c(LostFoundRecycleMenu *s) { s->runMainState(); }
 
 extern "C" {
 void LostFoundRecycleMenu_PickCancelChoice(LostFoundRecycleMenu *s);

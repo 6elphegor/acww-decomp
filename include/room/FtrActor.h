@@ -28,9 +28,9 @@ public:
     virtual BOOL onExecute();
     virtual BOOL preDraw();
     virtual VecFx32 *getInteractionPos();
-    virtual BOOL onMatCalc();
+    virtual BOOL onMatCalc(s32 matId, NNSG3dRS *rs);
     virtual void onNodeVisCalc(s32 a, NNSG3dRS *b);
-    virtual BOOL onJointCalcPre();
+    virtual BOOL onJointCalcPre(s32 nodeId, NNSG3dRS *rs);
     virtual void onJointCalcPost(s32 a, void *b);
     virtual BOOL changeAct(u32 a, u8 b);
     virtual u8 getActSwitchState(u32 a);
@@ -41,9 +41,9 @@ public:
     virtual BOOL isVisible();
     virtual BOOL needsTexCopy();
     virtual void onRemove();
-    virtual void onMoveStart();
-    virtual void onRotateStart();
-    virtual void onRotateUpdate();
+    virtual void onMoveStart(BOOL isPush);
+    virtual void onRotateStart(BOOL negative);
+    virtual void onRotateUpdate(BOOL negative);
     virtual BOOL isReady();
 
     void execPreview();

@@ -25,11 +25,26 @@ public:
 // sHeldInsects[4] (static objects, no vtable).
 // Per-kind behavior: sInsectBehaviors[kind] {init, update}; update is kept in updateFn. Every namespace of
 // unk_ov003_02225800.cpp reaches it as `Rec` / `Obj` (typedefs of Insect); the ov068 critter helpers
-// (src/ov068/unk_ov068_022687c0.cpp) take it too.
+// (src/ov068/unk_ov068_022687c0.cpp, free functions and the methods below) take it too.
 class Insect {
 public:
     Insect();
     ~Insect();
+
+    // per-kind behavior helpers (src/ov068/unk_ov068_022687c0.cpp)
+    void antsAppear();
+    void insectFleeFrom(s32 *p);
+    BOOL insectFindFlowerTarget(s16 *out, s32 *dist, s32 *pos);
+    void insectWanderSteer(s16 *p, s32 a, s32 b, u8 thr, s32 sc);
+    void beeChasePlayer();
+    void beeSwarmDescend();
+    void beeEnterSwarm();
+    void mosquitoChase(s16 *p);
+    BOOL spiderSway();
+    BOOL spiderCheckPlayerHit();
+    void dungBeetlePushSnowball();
+    void dungBeetleWalk();
+    void hovererFly();
 
     /* 0x000 */ InsectMatAnim matAnim;
     /* 0x020 */ CollisionState collisionState;

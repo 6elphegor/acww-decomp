@@ -172,37 +172,6 @@ struct FtrSpawnArgBuf {
     u32 w1;
 };
 
-struct Unk_ov004_02209e44_Target {
-    virtual void vfunc_00();
-    virtual void vfunc_04();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void vfunc_10();
-    virtual void vfunc_14();
-    virtual void vfunc_18();
-    virtual void vfunc_1c();
-    virtual void vfunc_20();
-    virtual void vfunc_24();
-    virtual void vfunc_28();
-    virtual void vfunc_2c();
-    virtual void vfunc_30();
-    virtual void vfunc_34();
-    virtual void vfunc_38();
-    virtual void vfunc_3c();
-    virtual void vfunc_40();
-    virtual void vfunc_44();
-    virtual void vfunc_48();
-    virtual void vfunc_4c();
-    virtual void vfunc_50();
-    virtual void vfunc_54();
-    virtual void vfunc_58();
-    virtual void vfunc_5c();
-    virtual void vfunc_60(u32 a, void *b);
-    virtual void vfunc_64(u32 a, void *b);
-    virtual void vfunc_68(u32 a, void *b);
-    virtual void vfunc_6c(u32 a, void *b);
-};
-
 typedef BOOL (FtrActor::*Unk_ov004_0224882c_Fn)();
 struct FtrCenterPosBuf { s32 v[4]; };
 
@@ -703,53 +672,6 @@ static inline BOOL Unk_ov004_02207650_InRange(u16 *p) {
 #define PT(o) ((void *)((u8 *)self + (o)))
 typedef FtrActor Self;
 
-// virtual call with one argument through the vtable slot (the real slots take no parameter in symbols.txt)
-// view of the 0x0224882c vtable used for the three slots that take a parameter although symbols.txt names them without one
-struct Unk_ov004_0224882c_VT {
-    virtual void vslot_00();
-    virtual void vslot_04();
-    virtual void vslot_08();
-    virtual void vslot_0c();
-    virtual void vslot_10();
-    virtual void vslot_14();
-    virtual void vslot_18();
-    virtual void vslot_1c();
-    virtual void vslot_20();
-    virtual void vslot_24();
-    virtual void vslot_28();
-    virtual void vslot_2c();
-    virtual void vslot_30();
-    virtual void vslot_34();
-    virtual void vslot_38();
-    virtual void vslot_3c();
-    virtual void vslot_40();
-    virtual void vslot_44();
-    virtual void vslot_48();
-    virtual void vslot_4c();
-    virtual void vslot_50();
-    virtual void vslot_54();
-    virtual void vslot_58();
-    virtual void vslot_5c();
-    virtual void vslot_60();
-    virtual void vslot_64();
-    virtual void vslot_68();
-    virtual void vslot_6c();
-    virtual void vslot_70();
-    virtual void vslot_74();
-    virtual void vslot_78();
-    virtual void vslot_7c();
-    virtual void vslot_80();
-    virtual void vslot_84();
-    virtual void vslot_88();
-    virtual void vslot_8c();
-    virtual void vslot_90();
-    virtual void vfunc_94(s32 a);
-    virtual void vfunc_98(s32 a);
-    virtual void vfunc_9c(s32 a);
-};
-#define VCALL94(self, arg) ((Unk_ov004_0224882c_VT *)(self))->vfunc_94(arg)
-#define VCALL98(self, arg) ((Unk_ov004_0224882c_VT *)(self))->vfunc_98(arg)
-#define VCALL9C(self, arg) ((Unk_ov004_0224882c_VT *)(self))->vfunc_9c(arg)
 
 
 // ---- declarations of the data defined below
@@ -809,17 +731,17 @@ void FtrActor::operator delete(void *p) {
 
 // @02209ebc
 extern "C" void FtrActor_MatCallback(NNSG3dRS *self) {
-    Unk_ov004_02209e44_Target *t = (Unk_ov004_02209e44_Target *)self->pRenderObj->ptrUser;
+    FtrActor *t = (FtrActor *)self->pRenderObj->ptrUser;
     if (t != 0) {
-        t->vfunc_60(self->c[1], self);
+        t->onMatCalc(self->c[1], self);
     }
 }
 
 // @02209e90
 extern "C" void FtrActor_NodeDescCallbackA(NNSG3dRS *self) {
-    Unk_ov004_02209e44_Target *t = (Unk_ov004_02209e44_Target *)self->pRenderObj->ptrUser;
+    FtrActor *t = (FtrActor *)self->pRenderObj->ptrUser;
     if (t != 0) {
-        t->vfunc_68(self->c[1], self);
+        t->onJointCalcPre(self->c[1], self);
     }
     self->cbVecFunc[6] = (void *)FtrActor_NodeDescCallbackB;
     self->cbVecTiming[6] = 2;
@@ -827,9 +749,9 @@ extern "C" void FtrActor_NodeDescCallbackA(NNSG3dRS *self) {
 
 // @02209e64
 extern "C" void FtrActor_NodeDescCallbackB(NNSG3dRS *self) {
-    Unk_ov004_02209e44_Target *t = (Unk_ov004_02209e44_Target *)self->pRenderObj->ptrUser;
+    FtrActor *t = (FtrActor *)self->pRenderObj->ptrUser;
     if (t != 0) {
-        t->vfunc_6c(self->c[1], self);
+        t->onJointCalcPost(self->c[1], self);
     }
     self->cbVecFunc[6] = (void *)FtrActor_NodeDescCallbackA;
     self->cbVecTiming[6] = 1;
@@ -837,9 +759,9 @@ extern "C" void FtrActor_NodeDescCallbackB(NNSG3dRS *self) {
 
 // @02209e44
 extern "C" void FtrActor_NodeCallback(NNSG3dRS *o) {
-    Unk_ov004_02209e44_Target *t = (Unk_ov004_02209e44_Target *)o->pRenderObj->ptrUser;
+    FtrActor *t = (FtrActor *)o->pRenderObj->ptrUser;
     if (t != NULL) {
-        t->vfunc_64(o->c[1], o);
+        t->onNodeVisCalc(o->c[1], o);
     }
 }
 
@@ -1216,13 +1138,13 @@ BOOL FtrActor::isVisible() { return TRUE; }
 void FtrActor::onRemove() {}
 
 // @02209284
-void FtrActor::onMoveStart() {}
+void FtrActor::onMoveStart(BOOL isPush) {}
 
 // @02209280
-void FtrActor::onRotateStart() {}
+void FtrActor::onRotateStart(BOOL negative) {}
 
 // @0220927c
-void FtrActor::onRotateUpdate() {}
+void FtrActor::onRotateUpdate(BOOL negative) {}
 
 // data
 DebugColor data_ov004_0224f60c(31, 20, 20, 31);
@@ -2509,11 +2431,11 @@ extern "C" void FtrActor_GetItemId(u16 *out, FtrActor *o) {
 }
 
 // @02206f38
-BOOL FtrActor::onMatCalc() {
+BOOL FtrActor::onMatCalc(s32 matId, NNSG3dRS *rs) {
 }
 
 // @02206f34
-BOOL FtrActor::onJointCalcPre() {
+BOOL FtrActor::onJointCalcPre(s32 nodeId, NNSG3dRS *rs) {
 }
 
 // @02206ef8
@@ -3808,7 +3730,7 @@ BOOL FtrActor::enterRotate() {
     s32 d = (s16)(targetAngle - rotY);
     moveTiles(0, d);
     if (d < 0) d = 1; else d = 0;
-    VCALL98(this, d);
+    onRotateStart(d);
     if (mapLayer == 0 && hasTopSurface == 1) {
         FtrTileList v;
         getTiles((Unk_ov004_02207854_List *)&v, 0, 0);
@@ -3816,7 +3738,7 @@ BOOL FtrActor::enterRotate() {
             void *mgr = FtrActorGrid_GetInstance();
             Unk_ov004_02206520_Ent *e = v.get(i);
             FtrActor *o = (FtrActor *)FtrActorGrid_getActor(mgr, e->x, v.get(i)->y, 1);
-            if (o) VCALL98(o, d);
+            if (o) o->onRotateStart(d);
         }
         v.release();
     }
@@ -3828,7 +3750,7 @@ BOOL FtrActor::execRotate() {
     s32 d = (s16)(targetAngle - rotY);
     BOOL neg;
     if (d < 0) neg = TRUE; else neg = FALSE;
-    VCALL9C(this, neg);
+    onRotateUpdate(neg);
     if (mapLayer == 0 && hasTopSurface == 1) {
         FtrTileList v;
         getTiles((Unk_ov004_02207854_List *)&v, 0, 0);
@@ -3836,7 +3758,7 @@ BOOL FtrActor::execRotate() {
             void *mgr = FtrActorGrid_GetInstance();
             Unk_ov004_02206520_Ent *e = v.get(i);
             FtrActor *o = (FtrActor *)FtrActorGrid_getActor(mgr, e->x, v.get(i)->y, 1);
-            if (o) VCALL9C(o, neg);
+            if (o) o->onRotateUpdate(neg);
         }
         v.release();
     }
@@ -3855,7 +3777,7 @@ BOOL FtrActor::enterPush() {
     void *g = FurnitureManager_GetMoveAnim();
     if (g) {
         if (FtrMoveAnim_StartPush(g, moveFlag, &position.x, targetAngle)) {
-            VCALL94(this, 1);
+            onMoveStart(TRUE);
             spawnActorC0AtTile(0);
             return TRUE;
         }
@@ -3891,7 +3813,7 @@ BOOL FtrActor::enterPull() {
     void *g = FurnitureManager_GetMoveAnim();
     if (g) {
         if (FtrMoveAnim_StartPull(g, moveFlag, &position.x, targetAngle)) {
-            VCALL94(this, 0);
+            onMoveStart(FALSE);
             spawnActorC0AtTile(1);
             return TRUE;
         }

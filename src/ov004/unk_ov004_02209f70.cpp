@@ -1446,8 +1446,8 @@ public:
     virtual void onJointCalcPost(s32 a, void *b);
     virtual BOOL initModel();
     virtual BOOL updateActive();
-    virtual void onRotateStart();
-    virtual void onRotateUpdate();
+    virtual void onRotateStart(BOOL negative);
+    virtual void onRotateUpdate(BOOL negative);
 
     /* 0x840 */ s16 compassNode;
     /* 0x842 */ volatile s16 rotateFrames;
@@ -1483,20 +1483,20 @@ void FtrCompass::onJointCalcPost(s32 a, void *b) {
     }
 }
 
-extern "C" void _ZN10FtrCompass14onRotateUpdateEv(FtrCompass *self, BOOL v) {
-    if (++self->rotateFrames == 8) {
-        self->swingPhase = 0;
-        if (v) {
-            self->swingAmp = p13::func_01ffcb0c(self->swingAmp, p13::data_02135f44[((u16)self->swingPhase >> 4) * 2]) + 0x2d000;
-            if (self->swingAmp > 0x2d000) self->swingAmp = 0x2d000;
+void FtrCompass::onRotateUpdate(BOOL negative) {
+    if (++this->rotateFrames == 8) {
+        this->swingPhase = 0;
+        if (negative) {
+            this->swingAmp = p13::func_01ffcb0c(this->swingAmp, p13::data_02135f44[((u16)this->swingPhase >> 4) * 2]) + 0x2d000;
+            if (this->swingAmp > 0x2d000) this->swingAmp = 0x2d000;
         } else {
-            self->swingAmp = p13::func_01ffcb0c(self->swingAmp, p13::data_02135f44[((u16)self->swingPhase >> 4) * 2]) - 0x2d000;
-            if (self->swingAmp < -0x2d000) self->swingAmp = -0x2d000;
+            this->swingAmp = p13::func_01ffcb0c(this->swingAmp, p13::data_02135f44[((u16)this->swingPhase >> 4) * 2]) - 0x2d000;
+            if (this->swingAmp < -0x2d000) this->swingAmp = -0x2d000;
         }
     }
 }
 
-void FtrCompass::onRotateStart() {
+void FtrCompass::onRotateStart(BOOL negative) {
     rotateFrames = 0;
 }
 
@@ -2382,7 +2382,7 @@ public:
     FtrGyroid();
     virtual ~FtrGyroid();
     virtual BOOL onDelete();
-    virtual BOOL onJointCalcPre();
+    virtual BOOL onJointCalcPre(s32 nodeId, NNSG3dRS *rs);
     virtual void onJointCalcPost(s32 idx, void *b);
     virtual BOOL changeAct(u32 idx, u8 x);
     virtual u8 getActSwitchState(u32 idx);
@@ -2623,8 +2623,8 @@ void FtrGyroid::onJointCalcPost(s32 idx, void *b) {
     p16::_ZN14BlendAnimModel15onJointCalcPostEPS_(model, o);
 }
 
-extern "C" BOOL _ZN9FtrGyroid14onJointCalcPreEv(FtrGyroid *self, u32 a, void *o) {
-    p16::_ZN14BlendAnimModel14onJointCalcPreEPS_(self->model, o);
+BOOL FtrGyroid::onJointCalcPre(s32 nodeId, NNSG3dRS *rs) {
+    p16::_ZN14BlendAnimModel14onJointCalcPreEPS_(this->model, rs);
 }
 
 BOOL FtrGyroid::onDelete() {
@@ -2718,7 +2718,7 @@ public:
     virtual BOOL onDelete();
     virtual BOOL initModel();
     virtual BOOL updateActive();
-    virtual void onMoveStart();
+    virtual void onMoveStart(BOOL isPush);
 };
 
 // ---------------------------------------------------------------- FtrTv (2-state)
@@ -6011,51 +6011,51 @@ void FtrGyroid::execFtrAct02() {
     }
 }
 
-extern "C" void _ZN7FtrCart11onMoveStartEv(FtrCart *self, BOOL b) {
-    s32 p = p16::_ZN13FtrContactSet11findContactEPv(p16::FtrContactSet_GetInstance(), self);
+void FtrCart::onMoveStart(BOOL isPush) {
+    s32 p = p16::_ZN13FtrContactSet11findContactEPv(p16::FtrContactSet_GetInstance(), this);
     BOOL c = FALSE;
     if (p != 0) {
-        u16 *rec = p16::_ZN10FtrAnimSet6getBcaEj(p16::_ZN11FtrModelRes10getAnimSetEv(self->modelRes), c);
-        if (self->kind == 0x16) {
+        u16 *rec = p16::_ZN10FtrAnimSet6getBcaEj(p16::_ZN11FtrModelRes10getAnimSetEv(this->modelRes), c);
+        if (this->kind == 0x16) {
             if (p16::_ZN10FtrContact7getSideEv(p) == 2) {
-                if (b) {
-                    if (p16::_ZN8FtrActor10playSound1Ev(self) != 0) c = TRUE;
-                    p16::_ZN8FtrActor8playAnimEiiij(self, 0, 1, 0x1000, 0);
+                if (isPush) {
+                    if (p16::_ZN8FtrActor10playSound1Ev(this) != 0) c = TRUE;
+                    p16::_ZN8FtrActor8playAnimEiiij(this, 0, 1, 0x1000, 0);
                 } else {
-                    if (p16::_ZN8FtrActor10playSound1Ev(self) != 0) c = TRUE;
-                    p16::_ZN8FtrActor8playAnimEiiij(self, 0, 3, 0x1000, rec[2] - 1);
+                    if (p16::_ZN8FtrActor10playSound1Ev(this) != 0) c = TRUE;
+                    p16::_ZN8FtrActor8playAnimEiiij(this, 0, 3, 0x1000, rec[2] - 1);
                 }
             } else if (p16::_ZN10FtrContact7getSideEv(p) == 0) {
-                if (b) {
-                    if (p16::_ZN8FtrActor10playSound1Ev(self) != 0) c = TRUE;
-                    p16::_ZN8FtrActor8playAnimEiiij(self, 0, 3, 0x1000, rec[2] - 1);
+                if (isPush) {
+                    if (p16::_ZN8FtrActor10playSound1Ev(this) != 0) c = TRUE;
+                    p16::_ZN8FtrActor8playAnimEiiij(this, 0, 3, 0x1000, rec[2] - 1);
                 } else {
-                    if (p16::_ZN8FtrActor10playSound1Ev(self) != 0) c = TRUE;
-                    p16::_ZN8FtrActor8playAnimEiiij(self, 0, 1, 0x1000, 0);
+                    if (p16::_ZN8FtrActor10playSound1Ev(this) != 0) c = TRUE;
+                    p16::_ZN8FtrActor8playAnimEiiij(this, 0, 1, 0x1000, 0);
                 }
             }
         } else {
             if (p16::_ZN10FtrContact7getSideEv(p) == 3) {
-                if (b) {
-                    if (p16::_ZN8FtrActor10playSound1Ev(self) != 0) c = TRUE;
-                    p16::_ZN8FtrActor8playAnimEiiij(self, 0, 1, 0x1000, 0);
+                if (isPush) {
+                    if (p16::_ZN8FtrActor10playSound1Ev(this) != 0) c = TRUE;
+                    p16::_ZN8FtrActor8playAnimEiiij(this, 0, 1, 0x1000, 0);
                 } else {
-                    if (p16::_ZN8FtrActor10playSound1Ev(self) != 0) c = TRUE;
-                    p16::_ZN8FtrActor8playAnimEiiij(self, 0, 3, 0x1000, rec[2] - 1);
+                    if (p16::_ZN8FtrActor10playSound1Ev(this) != 0) c = TRUE;
+                    p16::_ZN8FtrActor8playAnimEiiij(this, 0, 3, 0x1000, rec[2] - 1);
                 }
             } else if (p16::_ZN10FtrContact7getSideEv(p) == 1) {
-                if (b) {
-                    if (p16::_ZN8FtrActor10playSound1Ev(self) != 0) c = TRUE;
-                    p16::_ZN8FtrActor8playAnimEiiij(self, 0, 3, 0x1000, rec[2] - 1);
+                if (isPush) {
+                    if (p16::_ZN8FtrActor10playSound1Ev(this) != 0) c = TRUE;
+                    p16::_ZN8FtrActor8playAnimEiiij(this, 0, 3, 0x1000, rec[2] - 1);
                 } else {
-                    if (p16::_ZN8FtrActor10playSound1Ev(self) != 0) c = TRUE;
-                    p16::_ZN8FtrActor8playAnimEiiij(self, 0, 1, 0x1000, 0);
+                    if (p16::_ZN8FtrActor10playSound1Ev(this) != 0) c = TRUE;
+                    p16::_ZN8FtrActor8playAnimEiiij(this, 0, 1, 0x1000, 0);
                 }
             }
         }
     }
     if (c == 0) {
-        if (p16::FtrActor_GetDragSe(self) != 0xffff) {
+        if (p16::FtrActor_GetDragSe(this) != 0xffff) {
             p16::PlayerActor_PlayLocalSe();
         }
     }

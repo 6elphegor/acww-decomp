@@ -1,10 +1,8 @@
 // mwcc-version: 1.2/base
 #include "types.h"
 #include "gfx/VecFx32.h"
-#include "game/Unk_ov068_02268214_Flags.h"
-#include "game/Unk_ov068_02268214.h"
-#include "field/SnowballStateViews.h"
 #include "actor/Actor.h"
+#include "field/Snowball.h"
 
 #define GroundInfoBase_getHeight _ZN14GroundInfoBase9getHeightEi
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP7VecFx32ii
@@ -92,9 +90,6 @@ void Snowman_SendPrizeLetter();
 s32 GroundInfoBase_getHeight(void *o, s32 f);
 u16 *BlockMap_GetItemPtrAtPos(void *grid, void *pos, u32 z);
 extern u8 data_021ed2e6[];
-s32 _ZN18Unk_ov068_0226821419spawnSnowballSplashEv(void *);
-void _ZN18Unk_ov068_0226821418spawnSnowballBreakEv(void *);
-void _ZN18Unk_ov068_0226821419applySnowballMotionEv(void *);
 s32 Snowball_GetSizeRatioRank(s32 v);
 }
 
@@ -102,7 +97,7 @@ s32 Snowball_GetSizeRatioRank(s32 v);
 
 #define FX32_CONST(x) ((s32)((x) > 0 ? (x) * 4096.0f + 0.5f : (x) * 4096.0f - 0.5f))
 
-static inline BOOL Unk_ov068_02268214_InRange(u16 *p) {
+static inline BOOL Snowball_IsHoleItem(u16 *p) {
     BOOL r = FALSE;
     if (*p >= 0xfc && *p <= 0xfd) {
         r = TRUE;
@@ -110,19 +105,19 @@ static inline BOOL Unk_ov068_02268214_InRange(u16 *p) {
     return r;
 }
 
-void Unk_ov068_02268214::applySnowballMotion() {
-    if ((collisionState & 1) != 0) {
-        velocityY = 0;
+void Snowball::applySnowballMotion() {
+    if ((collisionState.prevFlags & 1) != 0) {
+        velocity.y = 0;
     } else {
-        velocityY = velocityY + 0x6d;
-        if (velocityY > 0x200) {
-            velocityY = 0x200;
+        velocity.y = velocity.y + 0x6d;
+        if (velocity.y > 0x200) {
+            velocity.y = 0x200;
         }
     }
-    positionY = positionY - velocityY;
-    if (fl_374.f6 == 0 && fl_374.f10 == 0) {
-        position = position + rollVelX;
-        positionZ = positionZ + rollVelZ;
+    position.y = position.y - velocity.y;
+    if (snowballFlags.e == 0 && snowballFlags.i == 0) {
+        position.x = position.x + rollVelX;
+        position.z = position.z + rollVelZ;
     }
 }
 
@@ -148,22 +143,22 @@ extern "C" s32 Snowball_GetSizeRatioRank(s32 v) {
     return 3;
 }
 
-void Unk_ov068_02268214::spawnSnowballBreak() {
+void Snowball::spawnSnowballBreak() {
     VecFx32 v;
     u16 h;
-    Vec_Add(&v, &position, unk_304);
+    Vec_Add(&v, &position, &drawOffset);
     v.y = v.y + (radius - 0x400);
     h = FX_Div(radius, 0x1000);
     Effect_Create(0x3e, &v, 0, &h);
     Snd_SeEmitterPlayOneShot(seEmitter, 0x81f, 0x7f, 0);
 }
 
-void Unk_ov068_02268214::spawnSnowballSplash() {
+void Snowball::spawnSnowballSplash() {
     VecFx32 v;
     u16 h;
-    v.x = position;
-    v.y = positionY;
-    v.z = positionZ;
+    v.x = position.x;
+    v.y = position.y;
+    v.z = position.z;
     v.y = data_020c7c1c + 0x100;
     h = FX_Div(radius, 0x1000);
     Effect_Create(0x3f, &v, 0, &h);
@@ -171,13 +166,13 @@ void Unk_ov068_02268214::spawnSnowballSplash() {
     FieldFish_ScareAround(&position, 0x5000);
 }
 
-BOOL Unk_ov068_02268214::enterSnowballRoll() {
-    snowballFlags |= 0x10;
-    snowballFlags &= ~0x20;
+BOOL Snowball::enterSnowballRoll() {
+    snowballFlagBits |= 0x10;
+    snowballFlagBits &= ~0x20;
     return TRUE;
 }
 
-void Unk_ov068_02268214::execSnowballRoll() {
+void Snowball::execSnowballRoll() {
     u8 *grid = gSceneBlockMap;
     s32 sx, sy;
     u16 cell;
@@ -188,7 +183,7 @@ void Unk_ov068_02268214::execSnowballRoll() {
     collisionRadius = radius;
     s32 a = rollVelZ;
     s32 sum = func_01ffcb0c(rollVelX, rollVelX) + func_01ffcb0c(a, a);
-    if (talkAct == 0 && snowballState == 0 && sum > 0 && radius >= 0xa00 && fl_374.f6 != 0) {
+    if (talkAct == 0 && snowballState == 0 && sum > 0 && radius >= 0xa00 && snowballFlags.e != 0) {
         u8 *o = (u8 *)Snowball_FindOtherInBallState(this);
         if (o != 0 && *(s32 *)(o + 0x268) >= 0xa00) {
             d = Vec_Distance(&position, o + 0x5c);
@@ -215,13 +210,13 @@ void Unk_ov068_02268214::execSnowballRoll() {
                     lv = Snowball_GetSizeRatioRank(FX_Div(radius, *(s32 *)(o + 0x268)));
                     s32 res = SnowmanRecords_add(data_021ed2e6, radius, *(s32 *)(o + 0x268), lv);
                     if (res != -1) {
-                        Unk_ov068_02268214_Flags &of = *(Unk_ov068_02268214_Flags *)(o + 0x374);
-                        of.f0_1 = res;
-                        fl_374.f0_1 = of.f0_1;
-                        of.f2_3 = lv;
-                        fl_374.f2_3 = of.f2_3;
-                        of.f8 = 1;
-                        fl_374.f8 = of.f8;
+                        SnowballFlags &of = *(SnowballFlags *)(o + 0x374);
+                        of.a = res;
+                        snowballFlags.a = of.a;
+                        of.b = lv;
+                        snowballFlags.b = of.b;
+                        of.g = 1;
+                        snowballFlags.g = of.g;
                         Snowball_ChangeState(this, 8);
                         Snowball_ChangeState(o, 7);
                         if (lv == 0) {
@@ -255,7 +250,7 @@ void Unk_ov068_02268214::execSnowballRoll() {
     if (grid != 0) {
         FieldPos_SnapToUnitCenter(objC, &position);
         u16 *c = BlockMap_GetItemPtrAtPos(grid, &position, 0);
-        if (c != 0 && Unk_ov068_02268214_InRange(c) != 0) {
+        if (c != 0 && Snowball_IsHoleItem(c) != 0) {
             if (Vec_DistXZ(objC, &position) < 0x1000) {
                 u8 *o = (u8 *)Snowball_FindOtherInBallState(this);
                 if (o != 0 && *(s32 *)(o + 0x39c) == 0 && *(s32 *)(o + 0x398) == 4) {
@@ -274,20 +269,20 @@ void Unk_ov068_02268214::execSnowballRoll() {
             }
         }
     }
-    unk_368 = rollVelX;
-    unk_36c = positionZ - prevPositionZ;
-    if (talkAct == 0 && snowballState == 0 && fl_374.f6 == 0) {
-        s32 v36c = unk_36c;
+    moveVelX = rollVelX;
+    moveVelZ = position.z - prevPosition.z;
+    if (talkAct == 0 && snowballState == 0 && snowballFlags.e == 0) {
+        s32 v36c = moveVelZ;
         u32 n;
         s32 ang;
         u32 i;
-        s32 m = func_01ffcb0c(unk_368, unk_368) + func_01ffcb0c(v36c, v36c);
+        s32 m = func_01ffcb0c(moveVelX, moveVelX) + func_01ffcb0c(v36c, v36c);
         if (m >= FX_Div(0x12c000, 0x2710000)) {
-            n = unk_280;
+            n = collisionState.contacts.numContacts;
             if (n != 0) {
-                ang = Math_Atan2(unk_368, unk_36c);
+                ang = Math_Atan2(moveVelX, moveVelZ);
                 for (i = 0; i < n; i++) {
-                    if (Math_AngleDiffAbs((s16)(unk_27c[i] + 0x8000), ang) < 0x1000) {
+                    if (Math_AngleDiffAbs((s16)(collisionState.contacts.angles[i] + 0x8000), ang) < 0x1000) {
                         if (Snowball_Break(this, 1) != 0) {
                             GroundInfo_Destruct(objA);
                             return;
@@ -300,9 +295,9 @@ void Unk_ov068_02268214::execSnowballRoll() {
     GroundInfo_Destruct(objA);
 }
 
-s32 SnowballStateView2::enterSnowballFall() {
-    unk_374_b4 = 1;
-    unk_374_b5 = 0;
+s32 Snowball::enterSnowballFall() {
+    snowballFlags.c = 1;
+    snowballFlags.d = 0;
     collisionRadius = 0;
     u32 ei = param & 1;
     Unk_ov068_022678c4_Ent *e = (Unk_ov068_022678c4_Ent *)LooseSnowballs_Get();
@@ -310,8 +305,8 @@ s32 SnowballStateView2::enterSnowballFall() {
     e[ei & 1].b = 0;
     e[ei & 1].c = 0;
     e[ei & 1].d = 0x800;
-    positionY = 0;
-    velocityY = 0;
+    position.y = 0;
+    velocity.y = 0;
     rollVelX = func_01ffcb0c(rollVelX, 0x119a);
     rollVelZ = func_01ffcb0c(rollVelZ, 0x119a);
     fallFrames = 0;
@@ -324,8 +319,8 @@ s32 SnowballStateView2::enterSnowballFall() {
                 s32 a = ((u16)r->rotY >> 4) * 2;
                 rollVelX = func_01ffcb0c(0x2b8, data_02135f44[a]);
                 rollVelZ = func_01ffcb0c(0x2b8, data_02135f44[a + 1]);
-                position = prevPosition + rollVelX;
-                positionZ = prevPositionZ + rollVelZ;
+                position.x = prevPosition.x + rollVelX;
+                position.z = prevPosition.z + rollVelZ;
             }
         } else {
             s32 r = FX_Div(0x2b8, d);
@@ -336,37 +331,37 @@ s32 SnowballStateView2::enterSnowballFall() {
     return 1;
 }
 
-void SnowballStateView2::execSnowballFall() {
+void Snowball::execSnowballFall() {
     u32 buf[17];
     s32 lim;
     s32 t = radius;
     t = t + (t >> 1);
     Math_ApproachS32Max(&collisionRadius, t, 0xcc, t);
-    position += rollVelX;
-    positionZ += rollVelZ;
+    position.x += rollVelX;
+    position.z += rollVelZ;
     if (fallFrames < 0xc) {
-        velocityY = velocityY + 1;
-        positionY -= 0x100;
+        velocity.y = velocity.y + 1;
+        position.y -= 0x100;
         fallFrames = fallFrames + 1;
     } else {
-        velocityY = velocityY + (FX_Div(0, 0x2710000) + 0xe9);
-        positionY = positionY - velocityY;
+        velocity.y = velocity.y + (FX_Div(0, 0x2710000) + 0xe9);
+        position.y = position.y - velocity.y;
     }
-    if (collisionFlags & 2) {
+    if (collisionState.flags & 2) {
         GroundInfo_initAtPos(buf, &position, 0, 0);
         lim = (s32)buf[15] - radius - 0x200;
-        if (positionY < lim) {
-            _ZN18Unk_ov068_0226821419spawnSnowballSplashEv(this);
-            positionY = lim;
+        if (position.y < lim) {
+            spawnSnowballSplash();
+            position.y = lim;
             Snowball_ChangeState(this, 2);
         }
         GroundInfo_Destruct(buf);
     }
 }
 
-s32 SnowballStateView2::enterSnowballSink() {
-    unk_374_b4 = 1;
-    unk_374_b5 = 0;
+s32 Snowball::enterSnowballSink() {
+    snowballFlags.c = 1;
+    snowballFlags.d = 0;
     wobblePhase = 0;
     u32 ei = param & 1;
     Unk_ov068_022678c4_Ent *e = (Unk_ov068_022678c4_Ent *)LooseSnowballs_Get();
@@ -375,56 +370,56 @@ s32 SnowballStateView2::enterSnowballSink() {
     e[ei & 1].c = 0;
     e[ei & 1].d = 0x800;
     u32 *g = gVec3Zero;
-    drawOffset = g[0];
-    drawOffsetY = g[1];
-    drawOffsetZ = g[2];
-    velocityY = 0;
+    drawOffset.x = g[0];
+    drawOffset.y = g[1];
+    drawOffset.z = g[2];
+    velocity.y = 0;
     return 1;
 }
 
-void SnowballStateView2::execSnowballSink() {
+void Snowball::execSnowballSink() {
     u32 buf[16];
     s32 t = radius;
     t = t + (t >> 1);
     Math_ApproachS32Max(&collisionRadius, t, 0x200, t);
     GroundInfo_initAtPos(buf, &position, 0, 0);
     s32 *p = (s32 *)&buf[9];
-    position += p[0] >> 5;
-    positionZ += p[2] >> 5;
+    position.x += p[0] >> 5;
+    position.z += p[2] >> 5;
     radius = func_01ffcb0c(radius, 0xfd7);
-    drawOffsetY = func_01ffcb0c(0x100, data_02135f44[(wobblePhase >> 4) * 2]);
+    drawOffset.y = func_01ffcb0c(0x100, data_02135f44[((u16)wobblePhase >> 4) * 2]);
     wobblePhase = (s16)wobblePhase + 0x400;
     if (radius < 0x80) {
         radius = 0;
         ProcBase_RequestDelete(this);
     }
-    _ZN18Unk_ov068_0226821419applySnowballMotionEv(this);
-    positionY = (s32)buf[15] - radius - 0x200;
+    applySnowballMotion();
+    position.y = (s32)buf[15] - radius - 0x200;
     GroundInfo_Destruct(buf);
 }
 
-s32 SnowballStateView2::enterSnowballBreak() {
-    unk_374_b4 = 1;
-    unk_374_b5 = 0;
+s32 Snowball::enterSnowballBreak() {
+    snowballFlags.c = 1;
+    snowballFlags.d = 0;
     u32 ei = param & 1;
     Unk_ov068_022678c4_Ent *e = (Unk_ov068_022678c4_Ent *)LooseSnowballs_Get();
     e[ei & 1].a = 0;
     e[ei & 1].b = 0;
     e[ei & 1].c = 0;
     e[ei & 1].d = 0x800;
-    _ZN18Unk_ov068_0226821418spawnSnowballBreakEv(this);
+    spawnSnowballBreak();
     return 1;
 }
 
-void SnowballStateView2::execSnowballBreak() {
+void Snowball::execSnowballBreak() {
     collisionRadius = radius;
     ProcBase_RequestDelete(this);
 }
 
-s32 SnowballStateView2::enterSnowballHole() {
-    unk_374_b4 = 0;
-    unk_374_b5 = 1;
-    FieldPos_SnapToUnitCenter(holePos, &position);
+s32 Snowball::enterSnowballHole() {
+    snowballFlags.c = 0;
+    snowballFlags.d = 1;
+    FieldPos_SnapToUnitCenter(&holePos, &position);
     u32 ei = param & 1;
     Unk_ov068_022678c4_Ent *e = (Unk_ov068_022678c4_Ent *)LooseSnowballs_Get();
     e[ei & 1].a = 0;
@@ -434,61 +429,61 @@ s32 SnowballStateView2::enterSnowballHole() {
     return 1;
 }
 
-void SnowballStateView2::execSnowballHole() {
+void Snowball::execSnowballHole() {
     collisionRadius = radius;
     s32 v[3];
-    Vec_Sub(v, holePos, &position);
+    Vec_Sub(v, &holePos, &position);
     Vec_SafeNormalize(v);
     Vec_Scale(v, 0x80);
-    position += v[0];
-    positionZ += v[2];
-    _ZN18Unk_ov068_0226821419applySnowballMotionEv(this);
-    s32 d = Vec_DistXZ(&position, holePos);
+    position.x += v[0];
+    position.z += v[2];
+    applySnowballMotion();
+    s32 d = Vec_DistXZ(&position, &holePos);
     s32 lim = 0;
     if (d < 0x1000) {
         lim = -((0x1000 - d) / 5);
     }
-    if (positionY < lim) {
-        positionY = lim;
+    if (position.y < lim) {
+        position.y = lim;
         if (d < 0x333) {
             Snowball_Break(this, 1);
         }
     }
 }
 
-s32 SnowballStateView2::enterSnowball05() {
-    unk_374_b4 = 0;
-    unk_374_b5 = 1;
+s32 Snowball::enterSnowball05() {
+    snowballFlags.c = 0;
+    snowballFlags.d = 1;
     u32 ei = param & 1;
     Unk_ov068_022678c4_Ent *e = (Unk_ov068_022678c4_Ent *)LooseSnowballs_Get();
     e[ei & 1].a = 0;
     e[ei & 1].b = 0;
     e[ei & 1].c = 0;
     e[ei & 1].d = 0x800;
-    targetPosX = position;
-    targetPosY = positionY;
-    targetPosZ = positionZ;
+    targetPos.x = position.x;
+    targetPos.y = position.y;
+    targetPos.z = position.z;
     return 1;
 }
 
-void SnowballStateView2::execSnowball05() {
+void Snowball::execSnowball05() {
     rollVelZ += FX_Div(0, 0x3e8000) + 0x158;
-    position += rollVelX;
-    positionZ += rollVelZ;
-    s32 d = positionZ - targetPosZ;
+    position.x += rollVelX;
+    position.z += rollVelZ;
+    s32 d = position.z - targetPos.z;
     if (d < 0) {
         d = -d;
     }
-    positionY = -func_01ffcb0c(d, 0x3d7);
+    position.y = -func_01ffcb0c(d, 0x3d7);
     static s32 thr = FX_Div(0, 0x64000) + 0x3000;
     if (d >= thr) {
         Snowball_ChangeState(this, 6);
     }
 }
 
-s32 SnowballStateView2::enterSnowballSplash() {
-    unk_374_b4 = 0;
-    unk_374_b5 = 1;
+s32 Snowball::enterSnowballSplash() {
+    snowballFlags.c = 0;
+    snowballFlags.d = 1;
     u32 ei = param & 1;
     Unk_ov068_022678c4_Ent *e = (Unk_ov068_022678c4_Ent *)LooseSnowballs_Get();
     e[ei & 1].a = 0;
@@ -497,56 +492,56 @@ s32 SnowballStateView2::enterSnowballSplash() {
     e[ei & 1].d = 0x800;
     wobblePhase = 0;
     rollVelZ >>= 1;
-    _ZN18Unk_ov068_0226821419spawnSnowballSplashEv(this);
+    spawnSnowballSplash();
     return 1;
 }
 
-void SnowballStateView2::execSnowballSplash() {
+void Snowball::execSnowballSplash() {
     u32 buf[16];
     GroundInfo_initAtPos(buf, &position, 0, 0);
     s32 *p = (s32 *)&buf[9];
-    position += p[0] >> 5;
-    positionZ += p[2] >> 5;
+    position.x += p[0] >> 5;
+    position.z += p[2] >> 5;
     radius = func_01ffcb0c(radius, 0xf85);
-    drawOffsetY = func_01ffcb0c(0x100, data_02135f44[(wobblePhase >> 4) * 2]);
+    drawOffset.y = func_01ffcb0c(0x100, data_02135f44[((u16)wobblePhase >> 4) * 2]);
     wobblePhase = (s16)wobblePhase + 0x400;
     if (radius < 0x100) {
         radius = 0;
         ProcBase_RequestDelete(this);
     }
     s32 lim = (s32)buf[15] - radius - 0x200;
-    positionY -= 0x400;
-    if (positionY < lim) {
-        positionY = lim;
+    position.y -= 0x400;
+    if (position.y < lim) {
+        position.y = lim;
     }
     GroundInfo_Destruct(buf);
 }
 
-s32 SnowballStateView2::enterSnowballToSnowman() {
-    unk_374_b4 = 0;
-    unk_374_b5 = 1;
-    FieldPos_SnapToUnitCenter(&targetPosX, &position);
+s32 Snowball::enterSnowballToSnowman() {
+    snowballFlags.c = 0;
+    snowballFlags.d = 1;
+    FieldPos_SnapToUnitCenter(&targetPos, &position);
     u32 ei = param & 1;
     Unk_ov068_022678c4_Ent *e = (Unk_ov068_022678c4_Ent *)LooseSnowballs_Get();
     e[ei & 1].a = 0;
     e[ei & 1].b = 0;
     e[ei & 1].c = 0;
     e[ei & 1].d = 0x800;
-    stepX = FX_Div(targetPosX - position, 0x10000);
-    stepZ = FX_Div(targetPosZ - positionZ, 0x10000);
+    stepX = FX_Div(targetPos.x - position.x, 0x10000);
+    stepZ = FX_Div(targetPos.z - position.z, 0x10000);
     stepCount = 0;
     return 1;
 }
 
-void SnowballStateView2::execSnowballToSnowman() {
+void Snowball::execSnowballToSnowman() {
     collisionRadius = radius;
-    position += stepX;
-    positionY = 0;
-    positionZ += stepZ;
+    position.x += stepX;
+    position.y = 0;
+    position.z += stepZ;
     if (stepCount++ >= 0x10) {
-        position = targetPosX;
-        positionY = targetPosY;
-        positionZ = targetPosZ;
+        position.x = targetPos.x;
+        position.y = targetPos.y;
+        position.z = targetPos.z;
         void *g = gSceneBlockMap;
         if (g) {
             s32 x, y;
@@ -559,7 +554,7 @@ void SnowballStateView2::execSnowballToSnowman() {
             if (c) {
                 displacedItem = *c;
             }
-            u16 v = Item_MakeSnowman(snowmanIndex);
+            u16 v = Item_MakeSnowman(snowballFlags.a);
             BlockMap_SetItemAtUnit(g, &v, x, y, 0);
         }
         Snowball_DropDisplacedItem(&displacedItem);
@@ -567,118 +562,118 @@ void SnowballStateView2::execSnowballToSnowman() {
     }
 }
 
-s32 SnowballStateView2::enterSnowballStack() {
-    unk_374_b4 = 0;
-    unk_374_b5 = 1;
-    SnowballStateView2 *o = (SnowballStateView2 *)Snowball_FindOtherInBallState(this);
-    FieldPos_SnapToUnitCenter(&targetPosX, (u8 *)o + 0x5c);
-    targetPosY += ((o->radius * 2 - (o->radius >> 3)) - (radius >> 3)) - 0x400;
-    velocityY = -(FX_Div(0, 0x3e8000) + 0x8f2);
+s32 Snowball::enterSnowballStack() {
+    snowballFlags.c = 0;
+    snowballFlags.d = 1;
+    Snowball *o = (Snowball *)Snowball_FindOtherInBallState(this);
+    FieldPos_SnapToUnitCenter(&targetPos, (u8 *)o + 0x5c);
+    targetPos.y += ((o->radius * 2 - (o->radius >> 3)) - (radius >> 3)) - 0x400;
+    velocity.y = -(FX_Div(0, 0x3e8000) + 0x8f2);
     u32 ei = param & 1;
     Unk_ov068_022678c4_Ent *e = (Unk_ov068_022678c4_Ent *)LooseSnowballs_Get();
     e[ei & 1].a = 0;
     e[ei & 1].b = 0;
     e[ei & 1].c = 0;
     e[ei & 1].d = 0x800;
-    stepX = FX_Div(targetPosX - position, 0x10000);
-    stepZ = FX_Div(targetPosZ - positionZ, 0x10000);
+    stepX = FX_Div(targetPos.x - position.x, 0x10000);
+    stepZ = FX_Div(targetPos.z - position.z, 0x10000);
     stepCount = 0;
     Snd_SeEmitterPlayOneShot(seEmitter, 0x81e, 0x7f, 0);
     return 1;
 }
 
-void SnowballStateView1::execSnowballStack() {
+void Snowball::execSnowballStack() {
     collisionRadius = radius;
-    position += stepX;
-    positionZ += stepZ;
-    velocityY += FX_Div(0, 0x2710000) + 0xdf;
-    positionY -= velocityY;
-    if (velocityY >= 0) {
-        s32 t = targetPosY - 0x200;
-        if (positionY < t) {
-            positionY = t;
+    position.x += stepX;
+    position.z += stepZ;
+    velocity.y += FX_Div(0, 0x2710000) + 0xdf;
+    position.y -= velocity.y;
+    if (velocity.y >= 0) {
+        s32 t = targetPos.y - 0x200;
+        if (position.y < t) {
+            position.y = t;
             Snowball_ChangeState(this, 0xa);
         }
     }
     if (stepCount++ >= 0x10) {
-        position = targetPosX;
-        positionZ = targetPosZ;
+        position.x = targetPos.x;
+        position.z = targetPos.z;
     }
 }
 
-BOOL SnowballStateView1::enterSnowballSettle() {
-    snowballFlags &= ~0x10;
-    snowballFlags |= 0x20;
+BOOL Snowball::enterSnowballSettle() {
+    snowballFlagBits &= ~0x10;
+    snowballFlagBits |= 0x20;
     wobblePhase = 0;
-    velocityY = FX_Div(targetPosY - positionY, 0x1333);
+    velocity.y = FX_Div(targetPos.y - position.y, 0x1333);
     return TRUE;
 }
 
-void SnowballStateView1::execSnowballSettle() {
+void Snowball::execSnowballSettle() {
     collisionRadius = radius;
-    position += stepX;
-    positionZ += stepZ;
-    positionY += velocityY;
-    if (positionY > targetPosY) {
-        positionY = targetPosY;
+    position.x += stepX;
+    position.z += stepZ;
+    position.y += velocity.y;
+    if (position.y > targetPos.y) {
+        position.y = targetPos.y;
     }
     if (stepCount++ >= 0x10) {
-        positionY = targetPosY;
+        position.y = targetPos.y;
         Snowball_ChangeState(this, 0xb);
     }
 }
 
-BOOL SnowballStateView1::enterSnowballCrumble() {
-    snowballFlags &= ~0x10;
-    snowballFlags |= 0x20;
+BOOL Snowball::enterSnowballCrumble() {
+    snowballFlagBits &= ~0x10;
+    snowballFlagBits |= 0x20;
     Snowball_ClearItemAt(&position);
-    drawOffset = gVec3Zero[0];
-    drawOffsetY = gVec3Zero[1];
-    drawOffsetZ = gVec3Zero[2];
+    drawOffset.x = gVec3Zero[0];
+    drawOffset.y = gVec3Zero[1];
+    drawOffset.z = gVec3Zero[2];
     wobblePhase = 0;
     crumbleTimer = 0xc;
     return TRUE;
 }
 
-void SnowballStateView1::execSnowballCrumble() {
+void Snowball::execSnowballCrumble() {
     s32 a;
     collisionRadius = radius;
     a = data_02135f44[((u16)wobblePhase >> 4) * 2 + 1];
-    drawOffset = -func_01ffcb0c(0x100, a);
-    drawOffsetZ = func_01ffcb0c(0x100, a);
+    drawOffset.x = -func_01ffcb0c(0x100, a);
+    drawOffset.z = func_01ffcb0c(0x100, a);
     wobblePhase = wobblePhase + 0x3800;
     if (crumbleTimer != 0) {
         crumbleTimer--;
     }
     if (crumbleTimer == 0) {
-        _ZN18Unk_ov068_0226821418spawnSnowballBreakEv(this);
+        spawnSnowballBreak();
         ProcBase_RequestDelete(this);
     }
 }
 
-BOOL SnowballStateView1::enterSnowballCrumble2() {
-    snowballFlags &= ~0x10;
-    snowballFlags |= 0x20;
-    drawOffset = gVec3Zero[0];
-    drawOffsetY = gVec3Zero[1];
-    drawOffsetZ = gVec3Zero[2];
+BOOL Snowball::enterSnowballCrumble2() {
+    snowballFlagBits &= ~0x10;
+    snowballFlagBits |= 0x20;
+    drawOffset.x = gVec3Zero[0];
+    drawOffset.y = gVec3Zero[1];
+    drawOffset.z = gVec3Zero[2];
     wobblePhase = 0;
     crumbleTimer = 0xc;
     return TRUE;
 }
 
-void SnowballStateView1::execSnowballCrumble2() {
+void Snowball::execSnowballCrumble2() {
     s32 a;
     collisionRadius = radius;
     a = data_02135f44[((u16)wobblePhase >> 4) * 2 + 1];
-    drawOffset = func_01ffcb0c(0x100, a);
-    drawOffsetZ = -func_01ffcb0c(0x100, a);
+    drawOffset.x = func_01ffcb0c(0x100, a);
+    drawOffset.z = -func_01ffcb0c(0x100, a);
     wobblePhase = wobblePhase + 0x5000;
     if (crumbleTimer != 0) {
         crumbleTimer--;
     }
     if (crumbleTimer == 0) {
-        _ZN18Unk_ov068_0226821418spawnSnowballBreakEv(this);
+        spawnSnowballBreak();
         ProcBase_RequestDelete(this);
     }
 }

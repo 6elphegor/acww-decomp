@@ -18,7 +18,6 @@
 #include "sys/ProcProfile.h"
 
 class SongPickMenu;
-class SongPickMenu;
 typedef SongPickMenu S;
 struct PopupChoiceIdList;
 

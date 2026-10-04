@@ -14,6 +14,7 @@
 #include "talk/MsgRequest.h"
 #include "talk/TalkMsgRequest.h"
 #include "talk/MsgString256.h"
+#include "field/Snowball.h"
 
 
 
@@ -26,28 +27,13 @@
 typedef VecFx32Ctor V3;
 typedef VecFx32 V3P;
 
-struct Unk_ov003_02212a5c_Bits {
-    u16 a : 2;
-    u16 b : 2;
-    u16 c : 1;
-    u16 d : 1;
-    u16 e : 1;
-    u16 f : 1;
-    u16 g : 1;
-    u16 h : 1;
-    u16 i : 1;
-};
-
-struct Unk_ov003_022135c4_Q4 {
-    s32 x, y, z, w;
-};
 struct Unk_ov003_022135c4_Blk {
     s64 v[6];
 };
 struct Unk_ov003_022135c4_Rec {
     s32 x, y, z, w;
 };
-typedef Unk_ov003_022135c4_Q4 Q4;
+typedef Quat Q4;
 typedef Unk_ov003_022135c4_Blk Blk;
 typedef Unk_ov003_022135c4_Rec Rec;
 
@@ -72,109 +58,12 @@ typedef GroundInfo Loc;
 
 
 
-class SnowballCollider : public ActorFollowCollider {
-public:
-    SnowballCollider();
-    ~SnowballCollider();
-    virtual void onCollide(u32 a, u32 b, u32 c);
-    /* 0x44 */ u8 hitThisFrame;
-};
 
-
-class Snowball;
 typedef Snowball Obj;
 typedef void (Snowball::*Unk_02212954_Fn)();
 typedef BOOL (Snowball::*Unk_022129d0_Fn)();
 typedef void (Snowball::*Fn0)();
 typedef BOOL (Snowball::*Fn1)();
-
-class Snowball : public Character, public TalkMsgRequest {
-public:
-    Snowball();
-    virtual ~Snowball();
-    virtual BOOL onCreate();
-    virtual BOOL onDelete();
-    virtual BOOL onExecute();
-    virtual BOOL onDraw();
-    virtual BOOL acceptsInteraction(void *a);
-    virtual void onInteractionEvent(u32 a, u8 b);
-    static void *operator new(unsigned long size);
-    static void operator delete(void *p);
-
-    void mainTalkEnd();
-    BOOL setupTalkEnd();
-    void mainTalk();
-    BOOL setupTalk();
-    void mainTalkIdle();
-    BOOL setupTalkIdle();
-    void runTalkAct();
-    BOOL changeTalkAct(s32 m);
-    void execSnowmanHead();
-    BOOL enterSnowmanHead();
-    void execSnowmanBody();
-    BOOL enterSnowmanBody();
-
-    /* 0x130 */ CachedModel ballModel;
-    /* 0x1cc */ CachedModel faceModel;
-    /* 0x268 */ s32 radius;
-    /* 0x26c */ s32 collisionRadius;
-    /* 0x270 */ CollisionState collisionState;
-    /* 0x2a0 */ SnowballCollider collider;
-    /* 0x2e8 */ s32 colliderWeight;
-    /* 0x2ec */ s32 rollVelX;
-    /* 0x2f0 */ s32 rollVelZ;
-    /* 0x2f4 */ Unk_ov003_022135c4_Q4 rotationQuat;
-    /* 0x304 */ VecFx32 drawOffset;
-    /* 0x310 */ u8 pad_310[8];
-    /* 0x318 */ VecFx32 lastFramePos;
-    /* 0x324 */ u8 seEmitter[0x365 - 0x324];
-    /* 0x365 */ u8 prevContactCount;
-    /* 0x366 */ u8 hitSeLatch;
-    /* 0x367 */ u8 pad_367[0x370 - 0x367];
-    /* 0x370 */ s32 pushSpeed;
-    /* 0x374 */ Unk_ov003_02212a5c_Bits snowballFlags;
-    /* 0x376 */ u8 pad_376[0x390 - 0x376];
-    /* 0x390 */ s16 pushAngle;
-    /* 0x392 */ u8 pad_392[0x396 - 0x392];
-    /* 0x396 */ u16 displacedItem;
-    /* 0x398 */ s32 snowballState;
-    /* 0x39c */ s32 talkAct;
-};
-
-// ov068 classes that own the state functions named in the ptmf tables (their symbols live in ov068)
-class SnowballStateView1 : public Snowball {
-public:
-    void execSnowballCrumble2();
-    void enterSnowballCrumble2();
-    void execSnowballCrumble();
-    void enterSnowballCrumble();
-    void execSnowballSettle();
-    void enterSnowballSettle();
-    void execSnowballStack();
-};
-class SnowballStateView2 : public Snowball {
-public:
-    void enterSnowballStack();
-    void execSnowballToSnowman();
-    void enterSnowballToSnowman();
-    void execSnowballSplash();
-    void enterSnowballSplash();
-    void execSnowball05();
-    void enterSnowball05();
-    void execSnowballHole();
-    void enterSnowballHole();
-    void execSnowballBreak();
-    void enterSnowballBreak();
-    void execSnowballSink();
-    void enterSnowballSink();
-    void execSnowballFall();
-    void enterSnowballFall();
-};
-class Unk_ov068_02268214 : public Snowball {
-public:
-    void execSnowballRoll();
-    void enterSnowballRoll();
-};
 
 extern "C" {
 extern void *gSceneBlockMap;
@@ -394,7 +283,7 @@ BOOL Snowball::onExecute() {
     Snowball_RunState(this);
     runTalkAct();
     Snowball_UpdateRolling(this);
-    Unk_ov003_02212a5c_Bits *fl = &snowballFlags;
+    SnowballFlags *fl = &snowballFlags;
     fl->f = fl->e;
     fl->e = 0;
     fl->h = 0;
@@ -938,10 +827,10 @@ extern "C" const s16 sSnowmanNeighbourOffsets[16] = {-1, -1, 0, -1, 0, -1, -1, 0
 
 extern "C" BOOL Snowball_ChangeState(Obj *o, s32 st) {
     static Fn1 tbl[14] = {
-        (Fn1)&Unk_ov068_02268214::enterSnowballRoll, (Fn1)&SnowballStateView2::enterSnowballFall, (Fn1)&SnowballStateView2::enterSnowballSink, (Fn1)&SnowballStateView2::enterSnowballBreak,
-        (Fn1)&SnowballStateView2::enterSnowballHole, (Fn1)&SnowballStateView2::enterSnowball05, (Fn1)&SnowballStateView2::enterSnowballSplash, (Fn1)&SnowballStateView2::enterSnowballToSnowman,
-        (Fn1)&SnowballStateView2::enterSnowballStack, (Fn1)&Obj::enterSnowmanBody, (Fn1)&SnowballStateView1::enterSnowballSettle, (Fn1)&Obj::enterSnowmanHead,
-        (Fn1)&SnowballStateView1::enterSnowballCrumble, (Fn1)&SnowballStateView1::enterSnowballCrumble2};
+        (Fn1)&Obj::enterSnowballRoll, (Fn1)&Obj::enterSnowballFall, (Fn1)&Obj::enterSnowballSink, (Fn1)&Obj::enterSnowballBreak,
+        (Fn1)&Obj::enterSnowballHole, (Fn1)&Obj::enterSnowball05, (Fn1)&Obj::enterSnowballSplash, (Fn1)&Obj::enterSnowballToSnowman,
+        (Fn1)&Obj::enterSnowballStack, (Fn1)&Obj::enterSnowmanBody, (Fn1)&Obj::enterSnowballSettle, (Fn1)&Obj::enterSnowmanHead,
+        (Fn1)&Obj::enterSnowballCrumble, (Fn1)&Obj::enterSnowballCrumble2};
     if (st < 0xe) {
         if ((o->*tbl[st])()) {
             o->snowballState = st;
@@ -953,10 +842,10 @@ extern "C" BOOL Snowball_ChangeState(Obj *o, s32 st) {
 
 extern "C" void Snowball_RunState(Obj *o) {
     static Fn0 tbl[14] = {
-        (Fn0)&Unk_ov068_02268214::execSnowballRoll, (Fn0)&SnowballStateView2::execSnowballFall, (Fn0)&SnowballStateView2::execSnowballSink, (Fn0)&SnowballStateView2::execSnowballBreak,
-        (Fn0)&SnowballStateView2::execSnowballHole, (Fn0)&SnowballStateView2::execSnowball05, (Fn0)&SnowballStateView2::execSnowballSplash, (Fn0)&SnowballStateView2::execSnowballToSnowman,
-        (Fn0)&SnowballStateView1::execSnowballStack, (Fn0)&Obj::execSnowmanBody, (Fn0)&SnowballStateView1::execSnowballSettle, (Fn0)&Obj::execSnowmanHead,
-        (Fn0)&SnowballStateView1::execSnowballCrumble, (Fn0)&SnowballStateView1::execSnowballCrumble2};
+        (Fn0)&Obj::execSnowballRoll, (Fn0)&Obj::execSnowballFall, (Fn0)&Obj::execSnowballSink, (Fn0)&Obj::execSnowballBreak,
+        (Fn0)&Obj::execSnowballHole, (Fn0)&Obj::execSnowball05, (Fn0)&Obj::execSnowballSplash, (Fn0)&Obj::execSnowballToSnowman,
+        (Fn0)&Obj::execSnowballStack, (Fn0)&Obj::execSnowmanBody, (Fn0)&Obj::execSnowballSettle, (Fn0)&Obj::execSnowmanHead,
+        (Fn0)&Obj::execSnowballCrumble, (Fn0)&Obj::execSnowballCrumble2};
     if (o->snowballState < 0xe) (o->*tbl[o->snowballState])();
 }
 

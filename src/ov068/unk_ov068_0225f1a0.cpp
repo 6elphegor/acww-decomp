@@ -294,7 +294,7 @@ public:
     virtual BOOL isPickable();
     virtual BOOL consumeFleaRemoved();
     virtual BOOL canAcceptPartnerInvite();
-    virtual BOOL acceptPartnerInvite(u32 idx);
+    virtual BOOL acceptPartnerInvite(u32 partner);
     virtual BOOL endPartnerTalk();
 
     void refreshActivity();
@@ -440,7 +440,7 @@ public:
 };
 
 
-struct ApproachAnimFx {
+struct FieldVillagerApproachFx {
     u16 effectId;
     u8 seIndex;
     u8 c;
@@ -925,7 +925,7 @@ extern s16 sSeePlayerArc;
 extern u16 data_020c6cc8;
 extern u32 data_020c6d1c;
 extern u8 gVec3Zero[];
-extern ApproachAnimFx sApproachAnimFx[];
+extern FieldVillagerApproachFx sApproachAnimFx[];
 s32 X_func_ov068_0225f83c(void *);
 void X_func_ov068_0225f838(...);
 s32 FieldVillagerAi_ChangeState(void *, void *, s32);
@@ -5721,7 +5721,7 @@ void FieldVillagerAiPlayerStates::approachStep0(FieldVillager *o) {
             v.y = *(s32 *)((u8 *)o + 0x47c);
             v.z = *(s32 *)((u8 *)o + 0x480);
             h = *(s16 *)((u8 *)o + 0x8e);
-            ApproachAnimFx *e = &sApproachAnimFx[Random_GlobalBelow(2)];
+            FieldVillagerApproachFx *e = &sApproachAnimFx[Random_GlobalBelow(2)];
             Effect_Create(e->effectId, &v, &h, 0);
             Snd_SeEmitterPlayOneShotAlt((u8 *)o + 0x514, e->seIndex + 0x84, 0x7f, 0);
         }
@@ -7083,10 +7083,10 @@ BOOL FieldVillager::canAcceptPartnerInvite() {
     return FALSE;
 }
 
-BOOL FieldVillager::acceptPartnerInvite(u32 idx) {
+BOOL FieldVillager::acceptPartnerInvite(u32 partner) {
     using namespace ns_0225f1a0;
     if (canAcceptPartnerInvite()) {
-        VillagerTalk_setPartner(this, idx);
+        VillagerTalk_setPartner(this, partner);
         VillagerTalk_setInvitedByPartner(this, 1);
         FieldVillagerAi_SaveResumeState(&ai);
         FieldVillagerAi_ChangeState(&ai, this, 9);

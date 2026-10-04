@@ -34,7 +34,7 @@ public:
     /* 0xac */ virtual BOOL vfunc_ac();
     /* 0xb0 */ virtual BOOL consumeFleaRemoved();
     /* 0xb4 */ virtual s32 canAcceptPartnerInvite();
-    /* 0xb8 */ virtual s32 acceptPartnerInvite(u32 idx); // FieldVillager's override takes the index
+    /* 0xb8 */ virtual s32 acceptPartnerInvite(u32 partner); // the inviting villager (FieldVillager passes its pointer as u32)
     /* 0xbc */ virtual s32 endPartnerTalk();
 
     BOOL isFlag834();

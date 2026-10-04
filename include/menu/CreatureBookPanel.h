@@ -44,7 +44,7 @@ public:
     /* 0x808 */ MsgString406 descText;
     /* 0x828 */ u8 unk_828[0x9b0 - 0x828];
     /* 0x9b0 */ BgVramTask paletteTask;
-    /* 0x9d4 */ u16 paletteFile[0x10]; // [2] / [3]: background colour of the shown / hidden picture
+    /* 0x9d4 */ u16 paletteFile[0x10]; // [2] / [3]: background color of the shown / hidden picture
     /* 0x9f4 */ u16 paletteBuf[0x10];  // [2]: blend of the two (CreatureBook_BlendBgColor)
     /* 0xa14 */ ItemIconUploadChars iconUploadChars[9];
     /* 0xe94 */ BgVramTaskPair rowIconTasks[9];

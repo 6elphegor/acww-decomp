@@ -428,7 +428,7 @@ void SpNpcPascalTalk::start(TalkStartMsg *a) {
     }
     if (topic >= 0 && topic < 3) {
         out->msgIndex = sSpNpcPascalTopicMsgs[topic].msgIndex;
-        out->msgKey = (const char *)sSpNpcPascalTopicMsgs[topic].msgKey;
+        out->msgKey = sSpNpcPascalTopicMsgs[topic].msgKey;
     }
 }
 

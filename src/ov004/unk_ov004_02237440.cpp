@@ -772,7 +772,7 @@ extern "C" u8 MuseumInsect_ProbeFloor(MuseumInsect *o) {
         g.initAtPos((VecFx32 *)(p), 0, 1);
         d = g.getHeight(1);
     }
-    if (d <= 0 || d > p->y || (b == 0x1e && MuseumInsect_ClampToBounds((MuseumInsect *)o, p) != 0)) {
+    if (d <= 0 || d > p->y || (b == 0x1e && MuseumInsect_ClampToBounds(o, p) != 0)) {
         r++;
     }
     {
@@ -780,7 +780,7 @@ extern "C" u8 MuseumInsect_ProbeFloor(MuseumInsect *o) {
         g.initAtPos((VecFx32 *)(p + 1), 0, 1);
         d = g.getHeight(1);
     }
-    if (d <= 0 || d > p[1].y || (b == 0x1e && MuseumInsect_ClampToBounds((MuseumInsect *)o, p + 1) != 0)) {
+    if (d <= 0 || d > p[1].y || (b == 0x1e && MuseumInsect_ClampToBounds(o, p + 1) != 0)) {
         r = r + 2;
     }
     return r;

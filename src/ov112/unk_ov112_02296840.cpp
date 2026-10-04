@@ -23,11 +23,9 @@
 #include "menu/MenuErrorMessage.h"
 #include "sys/ProcProfile.h"
 
-// Plain view of the scene object used by the extern "C" helpers (offsets only).
+// The extern "C" helpers reach the scene object as S.
 class BbsWriteMenu;
 typedef BbsWriteMenu S;
-
-class BbsWriteMenu;
 
 // ---- main-module classes (only what is used here) ----
 class EncodedString;

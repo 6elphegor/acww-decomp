@@ -353,7 +353,7 @@ void CreatureBook_UpdateScrollTouch(CreatureBookPanel *s, s32 a)
     if (s->knobPos > 0x8c) {
         s->knobPos = 0x8c;
     }
-    ((CreatureBookPanel *)s)->syncScrollToKnob();
+    s->syncScrollToKnob();
     if (s->touchTarget == 2) {
         s32 d = s->knobLastTickPos - s->knobPos;
         if (d >= 4 || d <= -4) {
@@ -411,7 +411,7 @@ void CreatureBook_UpdateScrollHold(CreatureBookPanel *s)
     if (s->knobPos != old) {
         Menu_PlayScrollTickSe(&s->scrollKnob);
     }
-    ((CreatureBookPanel *)s)->syncScrollToKnob();
+    s->syncScrollToKnob();
 }
 
 void CreatureBook_ReleaseKnob(CreatureBookPanel *s)
@@ -460,7 +460,7 @@ void CreatureBook_ApplyScrollInertia(CreatureBookPanel *s)
         }
     }
     if (pos != s->scroll) {
-        ((CreatureBookPanel *)s)->syncKnobToScroll();
+        s->syncKnobToScroll();
         if (CreatureBook_SetScroll(s, pos)) {
             CreatureBook_RefreshRowIcons(s);
         }

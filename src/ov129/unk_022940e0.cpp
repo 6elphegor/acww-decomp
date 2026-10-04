@@ -1335,11 +1335,11 @@ void ConstellationEditorMenu::markOtherConstellations() {
     s32 i = 0;
     do {
         if (i != n) {
-            u16 *p = (u16 *)Constellation_GetRecord(i);
+            ConstellationRecord *p = (ConstellationRecord *)Constellation_GetRecord(i);
             if (p != NULL) {
                 s32 j = 0;
                 for (; j < 16; j++) {
-                    u32 v = ((u16 *)((u8 *)p + 0x26))[j];
+                    u32 v = p->lines[j];
                     if (v != 0xffff) {
                         lineStates[v] = 1;
                     }

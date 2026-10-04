@@ -2,6 +2,7 @@
 #include "types.h"
 #include "gfx/VecFx32.h"
 #include "net/CommManager.h"
+#include "field/Snowball.h"
 
 // TU27 of ov003: free functions (spawn-position search over a 4x4 pool of 16x16 bitmaps, object slot table)
 struct UnitMaskChunk {
@@ -23,30 +24,6 @@ struct Unk_ov003_0222e734_Cell {
 struct Unk_ov003_0222e734_Grid {
     Unk_ov003_0222e734_Cell *cells;
     u32 w, h;
-};
-
-struct Unk_ov003_0222eb10_Fl {
-    u16 a : 2;
-    u16 b : 2;
-    u16 c : 1;
-    u16 d : 1;
-    u16 e : 1;
-    u16 f : 1;
-    u16 g : 1;
-    u16 h : 1;
-    u16 i : 1;
-};
-
-struct Unk_ov003_0222eb10_Obj {
-    u8 pad_00[8];
-    u32 param;
-    u8 pad_0c[0x2e4 - 0xc];
-    u8 colliderContact;
-    u8 pad_2e5[0x374 - 0x2e5];
-    Unk_ov003_0222eb10_Fl snowballFlags;
-    u8 pad_376[0x398 - 0x376];
-    s32 snowballState;
-    s32 talkAct;
 };
 
 struct LooseSnowballsView {
@@ -108,13 +85,13 @@ void UnitMaskChunk_Mark(UnitMaskChunk *c, s32 x, s32 y);
 BOOL UnitMaskChunk_IsMarked(UnitMaskChunk *c, s32 x, s32 y);
 BOOL UnitMaskChunk_PickRandom(UnitMaskChunk *c, s32 *ox, s32 *oy);
 void UnitMaskChunk_Clear(UnitMaskChunk *c);
-Unk_ov003_0222eb10_Obj *Snowball_FindByParam(u32 id);
+Snowball *Snowball_FindByParam(u32 id);
 BOOL Snowball_FindSpawnPos(void *a, void *b, s32 c, s32 d);
 }
 
 // the eight actor slots
 extern "C" {
-Unk_ov003_0222eb10_Obj *sSnowballs[8];
+Snowball *sSnowballs[8];
 }
 
 // ---- functions ----
@@ -221,8 +198,8 @@ extern "C" void SnowballSpawner_SpawnSnowmen(void *self) {
     }
 }
 
-extern "C" BOOL Snowball_Register(Unk_ov003_0222eb10_Obj *p) {
-    Unk_ov003_0222eb10_Obj **s = &sSnowballs[p->param & 7];
+extern "C" BOOL Snowball_Register(Snowball *p) {
+    Snowball **s = &sSnowballs[p->param & 7];
     if (*s != 0) {
         return FALSE;
     }
@@ -230,8 +207,8 @@ extern "C" BOOL Snowball_Register(Unk_ov003_0222eb10_Obj *p) {
     return TRUE;
 }
 
-extern "C" BOOL Snowball_Unregister(Unk_ov003_0222eb10_Obj *p) {
-    Unk_ov003_0222eb10_Obj **s = &sSnowballs[p->param & 7];
+extern "C" BOOL Snowball_Unregister(Snowball *p) {
+    Snowball **s = &sSnowballs[p->param & 7];
     if (*s == p) {
         *s = 0;
         return TRUE;
@@ -239,10 +216,10 @@ extern "C" BOOL Snowball_Unregister(Unk_ov003_0222eb10_Obj *p) {
     return FALSE;
 }
 
-extern "C" Unk_ov003_0222eb10_Obj *Snowball_FindByParam(u32 id) {
+extern "C" Snowball *Snowball_FindByParam(u32 id) {
     u32 i;
     for (i = 0; i < 8; i++) {
-        Unk_ov003_0222eb10_Obj *p = sSnowballs[i];
+        Snowball *p = sSnowballs[i];
         if (p != 0 && id == p->param) {
             return p;
         }
@@ -263,7 +240,7 @@ extern "C" BOOL Snowball_TryPushAny(void *self, s32 a, s32 b, s32 c, s32 d) {
 }
 
 extern "C" void *Snowball_GetLooseBall(u32 id) {
-    Unk_ov003_0222eb10_Obj *o = Snowball_FindByParam(id & 1);
+    Snowball *o = Snowball_FindByParam(id & 1);
     if (o != 0) {
         if (o->talkAct == 0) {
             if (o->snowballState == 0) {
@@ -274,7 +251,7 @@ extern "C" void *Snowball_GetLooseBall(u32 id) {
                     bit = FALSE;
                 }
                 if (bit == 0) {
-                    if (o->colliderContact == 0) {
+                    if (o->collider.hitThisFrame == 0) {
                         return o;
                     }
                 }
@@ -287,7 +264,7 @@ extern "C" void *Snowball_GetLooseBall(u32 id) {
 extern "C" void *Snowball_FindOtherInBallState(void *self) {
     u32 i;
     for (i = 0; i < 8; i++) {
-        Unk_ov003_0222eb10_Obj *p = sSnowballs[i];
+        Snowball *p = sSnowballs[i];
         if (p != 0 && p != self && Snowball_IsInBallState(p)) {
             return p;
         }
