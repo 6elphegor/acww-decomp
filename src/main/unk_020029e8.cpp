@@ -2,8 +2,6 @@
 #include "Unk_020d8c7c.h"
 #include "gfx/ToonTable.h"
 #include "gfx/Mtx43.h"
-#include "actor/Unk_02002f14_S16Vec.h"
-#include "actor/Unk_02002f14_S32Vec.h"
 #include "actor/ActorListNode.h"
 #include "gfx/AbAllObjGfx.h"
 #include "npc/VillagerId.h"

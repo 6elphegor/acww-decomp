@@ -1,4 +1,5 @@
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "net/CommManager.h"
 #include "talk/TalkStartMsg.h"
 #include "npc/NpcAnimCtrl.h"
@@ -29,17 +30,6 @@ class Character;
 class SpNpcPellyPhyllis;
 class SpNpcPellyPhyllisTalk;
 
-struct Unk_ov054_Vec {
-    s32 x, y, z;
-};
-typedef Unk_ov054_Vec Unk_ov054_0225902c_Vec;
-typedef Unk_ov054_Vec Unk_ov054_0225ba54_Vec;
-
-struct Unk_ov054_0225ab00_Vec {
-    s32 x, y, z;
-    Unk_ov054_0225ab00_Vec() {}
-    ~Unk_ov054_0225ab00_Vec() {}
-};
 
 struct Unk_ov054_0225b3ac_Row {
     s32 a, b, c;
@@ -81,7 +71,6 @@ struct Unk_ov054_0225a7c4_Bits {
 
 
 
-struct Unk_020d77a4_Vec3;
 
 
 
@@ -404,7 +393,7 @@ s32 TalkRequest_AddPlayerTalk6(void *self, s32 a);
 void TalkRequest_SetTargetDone(void *self);
 s32 PlayerActor_IsScriptedWalking(s32 a);
 void PlayerActor_RequestWalkTo(void *v, s32 a, s32 b);
-Unk_ov054_Vec *PlayerActor_GetBodyPos(s32 a);
+VecFx32 *PlayerActor_GetBodyPos(s32 a);
 s32 NpcActionCtrl_getAction(void *self);
 BOOL NpcActionCtrl_isActionDone(void *self);
 void NpcActionCtrl_requestStand(void *self, s32 a, u32 b);
@@ -440,7 +429,7 @@ extern const u16 sSpNpcPellyPhyllisHandles[2];
 extern const u8 data_ov054_0225b360[4];
 extern const u8 data_ov054_0225b364[5];
 extern const s32 sSpNpcPellyPhyllisMenuSizes[5];
-extern const Unk_ov054_Vec sSpNpcPellyPhyllisWindowSpots[2];
+extern const VecFx32 sSpNpcPellyPhyllisWindowSpots[2];
 extern const Unk_ov054_0225b3ac_Row sSpNpcPellyPhyllisCounterPos[2];
 extern const u8 sSpNpcPellyPhyllisDramaMsgTable[30];
 extern const s32 sSpNpcPellyPhyllisDonationLevels[22];
@@ -671,7 +660,7 @@ extern "C" SpNpcPellyPhyllis *SpNpcPellyPhyllis_Create() { return new SpNpcPelly
 
 BOOL SpNpcPellyPhyllis::preCreate() {
     SpNpcPellyPhyllisSpawnLocal l;
-    Unk_ov054_0225ba54_Vec vec;
+    VecFx32 vec;
     if (!SpNpcActor::preCreate()) {
         return FALSE;
     }
@@ -801,9 +790,9 @@ void SpNpcPellyPhyllis::changeAct(s32 state) {
 BOOL SpNpcPellyPhyllis::updateWindow() {
     s32 a, b;
     s32 c, d;
-    Unk_ov054_0225ba54_Vec v;
-    Unk_ov054_0225ba54_Vec w;
-    Unk_ov054_0225ba54_Vec *p = PlayerActor_GetBodyPos(4);
+    VecFx32 v;
+    VecFx32 w;
+    VecFx32 *p = PlayerActor_GetBodyPos(4);
     v.x = p->x;
     v.y = p->y;
     v.z = p->z;
@@ -816,7 +805,7 @@ BOOL SpNpcPellyPhyllis::updateWindow() {
     for (; i < 2; i++) {
         c = z;
         d = z;
-        const Unk_ov054_Vec *q = &sSpNpcPellyPhyllisWindowSpots[i];
+        const VecFx32 *q = &sSpNpcPellyPhyllisWindowSpots[i];
         w.x = q->x;
         w.y = q->y;
         w.z = q->z;
@@ -843,8 +832,8 @@ BOOL SpNpcPellyPhyllis::mainAct00() {
 }
 
 BOOL SpNpcPellyPhyllis::setupAct01() {
-    Unk_ov054_0225ba54_Vec v;
-    const Unk_ov054_Vec *p = &sSpNpcPellyPhyllisWindowSpots[0];
+    VecFx32 v;
+    const VecFx32 *p = &sSpNpcPellyPhyllisWindowSpots[0];
     v.x = p->x;
     v.y = p->y;
     v.z = p->z;
@@ -951,9 +940,9 @@ BOOL SpNpcPellyPhyllis::setupAct07() {
 }
 
 BOOL SpNpcPellyPhyllis::mainAct07() {
-    Unk_ov054_0225ab00_Vec v;
+    VecFx32CtorDtor v;
     isOnline();
-    Unk_ov054_0225ba54_Vec *p = PlayerActor_GetBodyPos(4);
+    VecFx32 *p = PlayerActor_GetBodyPos(4);
     v.x = p->x;
     v.y = p->y;
     v.z = p->z;
@@ -2249,8 +2238,8 @@ BOOL SpNpcPellyPhyllis::acceptsInteraction(void *other) {
     Character *o = (Character *)other;
     BOOL r = FALSE;
     s32 bx, by, cx, cy;
-    Unk_ov054_0225902c_Vec pos;
-    Unk_ov054_0225902c_Vec *pv = (Unk_ov054_0225902c_Vec *)&o->position;
+    VecFx32 pos;
+    VecFx32 *pv = (VecFx32 *)&o->position;
     pos.x = o->position.x;
     pos.y = pv->y;
     pos.z = pv->z;
@@ -2259,8 +2248,8 @@ BOOL SpNpcPellyPhyllis::acceptsInteraction(void *other) {
     cx = 0;
     cy = 0;
     FieldPos_ToUnit(&bx, &by, &pos);
-    Unk_ov054_0225902c_Vec dst;
-    const Unk_ov054_Vec *pd = &sSpNpcPellyPhyllisWindowSpots[window];
+    VecFx32 dst;
+    const VecFx32 *pd = &sSpNpcPellyPhyllisWindowSpots[window];
     dst.x = sSpNpcPellyPhyllisWindowSpots[window].x;
     dst.y = pd->y;
     dst.z = pd->z;
@@ -2378,7 +2367,7 @@ extern "C" void *data_ov054_0225b828[2] = {(void *)_ZN17SpNpcPellyPhyllis9mainAc
 extern "C" char sSpNpcPhyllisKey[] = "sp_npc_opelican";
 extern "C" void *data_ov054_0225b850[2] = {(void *)_ZN21SpNpcPellyPhyllisTalk16startMailLettersEv, 0};
 extern "C" u8 sSpNpcPhyllisModelPath[] = "npc_sp/model/pgb.nsbmd";
-extern "C" const Unk_ov054_Vec sSpNpcPellyPhyllisWindowSpots[2] = {{0xf000, 0, 0x17000}, {0x13000, 0, 0x17000}};
+extern "C" const VecFx32 sSpNpcPellyPhyllisWindowSpots[2] = {{0xf000, 0, 0x17000}, {0x13000, 0, 0x17000}};
 extern "C" void *data_ov054_0225b6f8[2] = {(void *)_ZN17SpNpcPellyPhyllis9mainAct0BEv, 0};
 extern "C" void *data_ov054_0225b7d8[2] = {(void *)_ZN21SpNpcPellyPhyllisTalk16startMailLettersEv, 0};
 extern "C" char sSpNpcPellyPhyllisSequence4Key[] = "sp_etc_sequence4";

@@ -1,11 +1,11 @@
 #include "types.h"
+#include "gfx/VecFx32.h"
 
 
 #include "types.h"
 #include "actor/ActorProfile.h"
 #include "talk/TalkTopicMsg.h"
 #include "net/CommManager.h"
-#include "game/Unk_ov004_0221b954_Vec.h"
 #include "talk/TalkWindowState.h"
 #include "npc/NpcAnimCtrl.h"
 #include "npc/NpcSpeechState.h"
@@ -41,7 +41,6 @@ class ActorTalkRequest;
 
 
 
-struct Unk_020d77a4_Vec3;
 
 
 
@@ -88,7 +87,7 @@ struct SpNpcBrewsterActEntry {
 #define NpcActor_setCollisionRadius _ZN8NpcActor18setCollisionRadiusEi
 #define Character_setInteractionRange _ZN9Character19setInteractionRangeEi
 #define NpcAnimCtrl_getAnimId _ZN11NpcAnimCtrl9getAnimIdEj
-#define NpcLookAt_setTarget _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih
+#define NpcLookAt_setTarget _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih
 #define NpcMoveCtrl_setSpeedPreset _ZN11NpcMoveCtrl14setSpeedPresetEiiii
 #define NpcMoveCtrl_setTurnMode _ZN11NpcMoveCtrl11setTurnModeEh
 #define NpcMoveAnimSet_setRunAnim _ZN14NpcMoveAnimSet10setRunAnimEi
@@ -117,7 +116,7 @@ extern "C" {
 extern CommManager *gCommManager;
 extern s32 data_020c6d1c;
 extern u16 data_020c6cc8;
-extern Unk_ov004_0221b954_Vec gVec3Zero;
+extern VecFx32 gVec3Zero;
 extern u32 sSpNpcBrewsterMsgFiles[];
 extern u8 data_ov004_0224cec8[];
 extern u8 sSpNpcBrewsterModelPath[];
@@ -144,7 +143,7 @@ void Character_setInteractionRange(void *self, s32 v);
 void ActorTalkRequest_setTalkPlayer(void *self, u32 v);
 void *ActorTalkRequest_getTalkPlayer(void *self);
 void NpcAnimCtrl_getAnimId(void *self, u32 v);
-void NpcLookAt_setTarget(void *self, u8 a, s32 b, s32 c, Unk_ov004_0221b954_Vec *v, s32 d, s32 e, u8 f);
+void NpcLookAt_setTarget(void *self, u8 a, s32 b, s32 c, VecFx32 *v, s32 d, s32 e, u8 f);
 void NpcMoveCtrl_setSpeedPreset(void *self, s32 a, s32 b, s32 c, s32 d);
 void NpcMoveCtrl_setTurnMode(void *self, u8 a);
 void NpcMoveAnimSet_setRunAnim(void *self, s32 a);

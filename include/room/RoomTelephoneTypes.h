@@ -11,10 +11,6 @@ struct Unk_ov004_02229ae0_Pad {
     ~Unk_ov004_02229ae0_Pad() {}
 };
 
-struct Unk_ov004_02229970_Xyz {
-    /* 0x0 */ s32 x, y, z;
-};
-
 struct Unk_ov004_02229660_Bits {
     u32 lo : 12;
     u32 mid : 16;

@@ -1,4 +1,5 @@
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "actor/CharacterListNode.h"
 #include "talk/TalkRequestEntry.h"
 #include "game/CharacterList.h"
@@ -323,7 +324,7 @@ BOOL Character::acceptsInteractionOutOfRange(void *a) { return FALSE; }
 
 BOOL Character::acceptsSelfRequestedInteraction(void *a) { return FALSE; }
 
-BOOL Character::getHeldItemPos(Unk_020d77a4_Vec3 *out) { return FALSE; }
+BOOL Character::getHeldItemPos(VecFx32 *out) { return FALSE; }
 
 void Character::attachTalkRequest(s32 a) { Talk_AttachRequestToWindow0(a); }
 

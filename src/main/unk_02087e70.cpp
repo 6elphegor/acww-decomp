@@ -1,5 +1,5 @@
 #include "types.h"
-#include "game/Vec3.h"
+#include "gfx/VecFx32.h"
 #include "game/TouchPicker.h"
 #include "game/TouchPickSphere.h"
 #include "game/BugNetTarget.h"
@@ -21,8 +21,8 @@ s32 FX_Div(s32 v, s32 s);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 Oam_GetObjHeight(u32 *p);
 s32 Oam_GetObjWidth(u32 *p);
-s32 WorldCurve_Apply(Vec3 *out, void *in);
-void Vec_Sub(Vec3 *out, Vec3 *a, Vec3 *b);
+s32 WorldCurve_Apply(VecFx32 *out, void *in);
+void Vec_Sub(VecFx32 *out, VecFx32 *a, VecFx32 *b);
 s64 func_01ffd028(void *v, void *p);
 void MIi_CpuCopy32(void *a, void *b, u32 c);
 void MIi_CpuCopyFast(void *a, void *b, u32 c);
@@ -67,7 +67,7 @@ BugNetTarget::BugNetTarget() {
 BugNetTarget::~BugNetTarget() {
 }
 
-void BugNetTarget::submit(Vec3 *a, s32 b, Vec3 *c, u8 d) {
+void BugNetTarget::submit(VecFx32 *a, s32 b, VecFx32 *c, u8 d) {
     nextTarget = 0;
     BugNetTarget *h = data_021ce63c;
     if (h == 0) {
@@ -84,8 +84,8 @@ void BugNetTarget::submit(Vec3 *a, s32 b, Vec3 *c, u8 d) {
 extern "C" BOOL BugNet_HitTest(void *a, void *b, s32 rad, u8 *out) {
     BOOL result = FALSE;
     BugNetTarget *p = data_021ce63c;
-    Vec3 v1, v2, v3;
-    Vec3 pts[6];
+    VecFx32 v1, v2, v3;
+    VecFx32 pts[6];
     u32 i;
     WorldCurve_Apply(&v1, a);
     WorldCurve_Apply(&v2, b);

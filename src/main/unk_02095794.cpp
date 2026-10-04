@@ -1,4 +1,5 @@
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
 #include "game/Unk_02095774_Ent.h"
@@ -324,7 +325,7 @@ BOOL RemotePlayerSpawner::onExecute() {
     s32 lv1, lx1, ly1;
     s16 lr2[3], lr3[3];
     s32 lv2, lx2, ly2;
-    Unk_0209579c_Pos p1, p2, p3;
+    VecFx32Ctor p1, p2, p3;
     s32 ob;
     s32 i;
     s32 j;

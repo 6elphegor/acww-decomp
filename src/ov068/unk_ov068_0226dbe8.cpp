@@ -1,5 +1,6 @@
 // mwcc-version: 1.2/base
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "npc/VillagerClothModel.h"
 #include "talk/MsgStringBase.h"
 #include "gfx/DebugColor.h"
@@ -41,10 +42,10 @@
 #define NpcActionCtrl_requestAction _ZN13NpcActionCtrl13requestActionEjiiissiitt
 #define NpcActionCtrl_isActionDone _ZN13NpcActionCtrl12isActionDoneEv
 #define NpcActionCtrl_getAction _ZN13NpcActionCtrl9getActionEv
-#define NpcLookAt_setTarget _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih
+#define NpcLookAt_setTarget _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih
 #define NpcMoveCtrl_setSpeedPreset _ZN11NpcMoveCtrl14setSpeedPresetEiiii
 #define func_0201b138 _ZN8NpcActor6onDrawEv
-#define NpcActor_findAvoidPos _ZN8NpcActor12findAvoidPosEP16Unk_020d77a4_Vec
+#define NpcActor_findAvoidPos _ZN8NpcActor12findAvoidPosEP7VecFx32
 #define NpcActor_setTalkRequest _ZN8NpcActor14setTalkRequestEP16ActorTalkRequest
 #define NpcActor_getAngleTo _ZN8NpcActor10getAngleToEPS_
 #define func_0202d928 _ZN13VillagerActor9preDeleteEv
@@ -63,7 +64,6 @@
 
 
 
-struct Unk_020d77a4_Vec3;
 
 
 
@@ -84,10 +84,6 @@ struct HouseVisitStarText {
 struct Unk_ov068_02270a6c_Bits {
     u8 lo : 3;
     u8 hi : 5;
-};
-
-struct Unk_ov068_02270afc_Vec {
-    s32 x, y, z;
 };
 
 struct Unk_ov068_02270afc_Pair {
@@ -280,7 +276,7 @@ extern "C" Unk_ov068_02270afc_BFn __ptmf_null;
 
 namespace sA {
 extern "C" {
-void _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(void *self, void *v);
+void _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(void *self, void *v);
 void func_02135558(void *obj, void (*dtor)(void *), void *dso);
 extern u16 data_020c6cc8;
 extern s32 data_020c8cbc;
@@ -326,7 +322,7 @@ void NpcLookAt_setTarget(void *, u32, s32, s32, void *, s32, s32, u8);
 void Ground_LockExit(s32);
 s32 NpcTalkCtrl_isBusy(void *);
 void TalkRequest_AddPlayerTalk6(void *, s32);
-Unk_ov068_02270afc_Vec *PlayerActor_GetBodyPos(s32);
+VecFx32 *PlayerActor_GetBodyPos(s32);
 s32 Ground_IsOnLockedExit(void *);
 void NpcMoveCtrl_setSpeedPreset(void *, s32, s32, s32, s32);
 s32 TalkRequest_SetTargetDone(void *);
@@ -893,8 +889,8 @@ void HouseVisitVillager::execVisitOutside() {
     if (HouseVisit_IsAppointmentNow(this)) {
         VillagerActor *p = PlayerActor_GetActor(4);
         if (p) {
-            Unk_ov068_02270afc_Vec v;
-            Unk_ov068_02270afc_Vec *pv = (Unk_ov068_02270afc_Vec *)&p->position;
+            VecFx32 v;
+            VecFx32 *pv = (VecFx32 *)&p->position;
             v.x = pv->x;
             v.y = pv->y;
             v.z = pv->z;
@@ -1017,9 +1013,9 @@ void HouseVisitVillager::execVisitStay() {
             stayTimer = stayTimer - 1;
         }
     }
-    Unk_ov068_02270afc_Vec *p = PlayerActor_GetBodyPos(4);
+    VecFx32 *p = PlayerActor_GetBodyPos(4);
     if (p) {
-        Unk_ov068_02270afc_Vec v;
+        VecFx32 v;
         v.x = p->x;
         v.y = p->y;
         v.z = p->z;
@@ -1042,9 +1038,9 @@ BOOL HouseVisitVillager::enterVisitWander() {
 
 void HouseVisitVillager::execVisitWander() {
     using namespace sA;
-    Unk_ov068_02270afc_Vec v;
-    Unk_ov068_02270afc_Vec tmp;
-    Unk_ov068_02270afc_Vec *pv = (Unk_ov068_02270afc_Vec *)PlayerActor_GetBodyPos(4);
+    VecFx32 v;
+    VecFx32 tmp;
+    VecFx32 *pv = (VecFx32 *)PlayerActor_GetBodyPos(4);
     if (visitState == 6) {
         if (NpcTalkCtrl_isBusy(&talkCtrl) == 0) {
             if (stayTimer == 0 || talksLeft == 0) {
@@ -1126,14 +1122,14 @@ void HouseVisitVillager::execVisitWander() {
             waypointX = tmp.x;
             waypointY = tmp.y;
             waypointZ = tmp.z;
-            _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(&moveCtrl, &waypointX);
+            _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(&moveCtrl, &waypointX);
             break;
         default:
             if (Vec_NotEqual(&waypointX, &walkTargetX) != 0) {
                 waypointX = walkTargetX;
                 waypointY = walkTargetY;
                 waypointZ = walkTargetZ;
-                _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(&moveCtrl, &walkTargetX);
+                _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(&moveCtrl, &walkTargetX);
             } else if (Vec_DistXZ(&walkTargetX, &position) < 0x200) {
                 NpcActionCtrl_requestStand(&actionCtrl, 1, data_020c6cc8);
                 setVisitWalkSpeed();

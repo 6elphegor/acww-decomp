@@ -1,5 +1,6 @@
 // mwcc-flags: -str reuse
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "item/ItemId.h"
 #include "talk/TalkStartMsg.h"
 #include "talk/TalkWindowState.h"
@@ -30,17 +31,7 @@ class ActorTalkRequest;
 class SpNpcRedd;
 class SpNpcReddTalk;
 
-struct Unk_ov052_Vec {
-    s32 x, y, z;
-};
-
-struct Unk_ov052_02259d6c_Vec {
-    s32 x, y, z;
-    Unk_ov052_02259d6c_Vec() {}
-    ~Unk_ov052_02259d6c_Vec() {}
-};
-
-struct SpNpcReddVecLocal : Unk_ov052_Vec {
+struct SpNpcReddVecLocal : VecFx32 {
     SpNpcReddVecLocal() {}
 };
 
@@ -74,7 +65,7 @@ s32 _ZN13NpcActionCtrl12isActionDoneEv(void *self);
 s32 _ZN13NpcActionCtrl9getActionEv(void *self);
 void _ZN11NpcMoveCtrl14setSpeedPresetEiiii(void *self, s32 a, s32 b, s32 c, s32 d);
 void _ZN11NpcMoveCtrl14setTargetAngleEs(void *self, s32 v);
-void _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(void *self, void *v);
+void _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(void *self, void *v);
 void _ZN8BlockMap17getWalkLinksAtPosEPv(void *g, void *v);
 void *PlayerActor_GetBodyPos(s32 a);
 s32 Ground_IsOnLockedExit(void *p);
@@ -159,7 +150,6 @@ public:
 
 
 
-struct Unk_020d77a4_Vec3;
 
 
 
@@ -359,15 +349,15 @@ BOOL SpNpcRedd::setupAct01() {
 }
 
 BOOL SpNpcRedd::mainAct01() {
-    Unk_ov052_Vec *pv = (Unk_ov052_Vec *)PlayerActor_GetBodyPos(4);
-    Unk_ov052_Vec v;
+    VecFx32 *pv = (VecFx32 *)PlayerActor_GetBodyPos(4);
+    VecFx32 v;
     v.x = pv->x;
     v.y = pv->y;
     v.z = pv->z;
     s32 r6 = getDistanceToPlayer(4);
     s32 t = getAngleToPlayer(4);
     s32 r4 = Math_AngleDiffAbs(rotY, t);
-    Unk_ov052_Vec out;
+    VecFx32 out;
     NpcActor_FindFreeUnitNear(&out, this, &v);
     if (r6 > 0x3000 && Vec_NotEqual(&out, &position)) {
         changeAct(3);
@@ -399,15 +389,15 @@ BOOL SpNpcRedd::mainAct02() {
     if (tryItemTalk()) {
         return TRUE;
     }
-    Unk_ov052_Vec *pv = (Unk_ov052_Vec *)PlayerActor_GetBodyPos(4);
-    Unk_ov052_Vec v;
+    VecFx32 *pv = (VecFx32 *)PlayerActor_GetBodyPos(4);
+    VecFx32 v;
     v.x = pv->x;
     v.y = pv->y;
     v.z = pv->z;
     s32 r6 = getDistanceToPlayer(4);
     s32 r4 = getAngleToPlayer(4);
     Math_AngleDiffAbs(rotY, r4);
-    Unk_ov052_Vec out;
+    VecFx32 out;
     NpcActor_FindFreeUnitNear(&out, this, &v);
     if (r6 > 0x3000) {
         if (Vec_NotEqual(&out, &position)) {
@@ -439,13 +429,13 @@ BOOL SpNpcRedd::mainAct03() {
     if (tryItemTalk()) {
         return TRUE;
     }
-    Unk_ov052_Vec *pv = (Unk_ov052_Vec *)PlayerActor_GetBodyPos(4);
-    Unk_ov052_Vec v;
+    VecFx32 *pv = (VecFx32 *)PlayerActor_GetBodyPos(4);
+    VecFx32 v;
     v.x = pv->x;
     v.y = pv->y;
     v.z = pv->z;
     s32 t = getDistanceToPlayer(4);
-    Unk_ov052_Vec out;
+    VecFx32 out;
     NpcActor_FindFreeUnitNear(&out, this, &v);
     if (t > 0x4000) {
         if (_ZN13NpcActionCtrl9getActionEv(&actionCtrl) == 1) {
@@ -456,7 +446,7 @@ BOOL SpNpcRedd::mainAct03() {
             _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 1, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
         }
     }
-    _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(&moveCtrl, &out);
+    _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(&moveCtrl, &out);
     if (t <= 0x3000 || Vec_Equal(&out, &position) != 0) {
         changeAct(1);
     }
@@ -478,13 +468,13 @@ BOOL SpNpcRedd::mainAct04() {
     if (tryItemTalk()) {
         return TRUE;
     }
-    Unk_ov052_Vec *pv = (Unk_ov052_Vec *)PlayerActor_GetBodyPos(4);
-    Unk_ov052_Vec v;
+    VecFx32 *pv = (VecFx32 *)PlayerActor_GetBodyPos(4);
+    VecFx32 v;
     v.x = pv->x;
     v.y = pv->y;
     v.z = pv->z;
     s32 t = getDistanceToPlayer(4);
-    Unk_ov052_Vec out;
+    VecFx32 out;
     NpcActor_FindFreeUnitNear(&out, this, &v);
     if (t > 0x4000) {
         if (_ZN13NpcActionCtrl9getActionEv(&actionCtrl) == 1) {
@@ -495,7 +485,7 @@ BOOL SpNpcRedd::mainAct04() {
             _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 1, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
         }
     }
-    _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(&moveCtrl, &out);
+    _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(&moveCtrl, &out);
     if (t <= 0x3000 || Vec_Equal(&out, &position) != 0) {
         changeAct(1);
     }
@@ -535,8 +525,8 @@ BOOL SpNpcRedd::setupAct06() {
 }
 
 BOOL SpNpcRedd::mainAct06() {
-    Unk_ov052_02259d6c_Vec *pv = (Unk_ov052_02259d6c_Vec *)PlayerActor_GetBodyPos(4);
-    Unk_ov052_02259d6c_Vec v;
+    VecFx32CtorDtor *pv = (VecFx32CtorDtor *)PlayerActor_GetBodyPos(4);
+    VecFx32CtorDtor v;
     v.x = pv->x;
     v.y = pv->y;
     v.z = pv->z;
@@ -562,12 +552,12 @@ BOOL SpNpcRedd::setupAct09() {
 }
 
 BOOL SpNpcRedd::mainAct09() {
-    Unk_ov052_Vec *pv = (Unk_ov052_Vec *)PlayerActor_GetBodyPos(4);
-    Unk_ov052_Vec v;
+    VecFx32 *pv = (VecFx32 *)PlayerActor_GetBodyPos(4);
+    VecFx32 v;
     v.x = pv->x;
     v.y = pv->y;
     v.z = pv->z;
-    Unk_ov052_Vec out;
+    VecFx32 out;
     NpcActor_FindFreeUnitNear(&out, this, &v);
     s32 t = getDistanceToPlayer(4);
     _ZN8BlockMap17getWalkLinksAtPosEPv(gSceneBlockMap, &position);
@@ -580,7 +570,7 @@ BOOL SpNpcRedd::mainAct09() {
             _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 1, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
         }
     }
-    _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(&moveCtrl, &out);
+    _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(&moveCtrl, &out);
     if (t <= 0x3000 || Vec_Equal(&out, &position) != 0 || Math_CountDownU8(&approachTimer) == 0) {
         talk.resetMsg();
         talk.setTalkPlayer(getPlayerActor(4));
@@ -925,8 +915,8 @@ void SpNpcRedd::onInteractionEvent(u32 cmd, u8 arg) {
         break;
     case 8:
         if (talk.getTopic() == 1 || talk.getTopic() == 2) {
-            Unk_ov052_Vec v;
-            Unk_ov052_Vec *src = (Unk_ov052_Vec *)PlayerActor_GetBodyPos(4);
+            VecFx32 v;
+            VecFx32 *src = (VecFx32 *)PlayerActor_GetBodyPos(4);
             v = *src;
             if (Ground_IsOnLockedExit(&v)) {
                 Ground_UnlockExit();
@@ -951,13 +941,13 @@ void SpNpcRedd::onInteractionEvent(u32 cmd, u8 arg) {
 BOOL SpNpcRedd::pickDisplayItem() {
     u16 t[2];
     s32 bx, by;
-    Unk_ov052_Vec v;
+    VecFx32 v;
     Character *p = (Character *)PlayerActor_GetActor(4);
     BOOL f = Unk_ov052_02258f34_Flags() ? TRUE : FALSE;
     if (p == 0 || TalkRequest_IsActive() != 0 || _ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) != 0 || ((gPad[1] & 1) == 0 && f == 0)) {
         return FALSE;
     }
-    Unk_ov052_Vec *pv = (Unk_ov052_Vec *)&p->position;
+    VecFx32 *pv = (VecFx32 *)&p->position;
     v.x = p->position.x;
     v.y = pv->y;
     v.z = pv->z;
@@ -976,7 +966,7 @@ BOOL SpNpcRedd::pickDisplayItem() {
             }
         } else {
             s32 bx2 = 0, by2 = 0;
-            Unk_ov052_Vec v2;
+            VecFx32 v2;
             TouchPick_GetGroundPos(Scene_GetTouchPicker(), &v2);
             FieldPos_ToUnit(&bx2, &by2, &v2);
             if (bx2 != bx || by2 != by) {
@@ -1005,8 +995,8 @@ BOOL SpNpcRedd::tryItemTalk() {
 
 BOOL SpNpcRedd::tryFarewellTalk() {
     SpNpcReddVecLocal v;
-    Unk_ov052_Vec *src = (Unk_ov052_Vec *)PlayerActor_GetBodyPos(4);
-    *(Unk_ov052_Vec *)&v = *src;
+    VecFx32 *src = (VecFx32 *)PlayerActor_GetBodyPos(4);
+    *(VecFx32 *)&v = *src;
     if (Ground_IsOnLockedExit(&v)) {
         if (boughtSomething == 0) {
             talk.setTopic(1);

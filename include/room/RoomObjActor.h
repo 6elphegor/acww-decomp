@@ -5,12 +5,12 @@
 // resources, texture and sound helpers (vtable 0x0224d4e0, 0x70 bytes). Defined in src/ov004/unk_ov004_0221e7a8.cpp
 // (its constructor there is the extern "C" function _ZN12RoomObjActorC2Ev).
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "actor/Character.h"
 #include "gfx/AnimModel.h"
 #include "room/RoomObjRes.h"
 #include "room/RoomObjTex.h"
 
-struct Unk_ov004_02224ee4_Vec;
 
 class RoomObjActor : public Character {
 public:
@@ -21,7 +21,7 @@ public:
     virtual BOOL preExecute();
     virtual BOOL postExecute(u32 a);
     virtual BOOL changeSyncState(u32 v);
-    virtual void getSoundPos(Unk_ov004_02224ee4_Vec *out);
+    virtual void getSoundPos(VecFx32 *out);
 
     void setSyncSlot(u32 v);
     s32 storeSyncState();

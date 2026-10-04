@@ -1,7 +1,8 @@
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
-#include "gfx/Unk_020bfe30_Vec.h"
+#include "gfx/Mtx43.h"
 #include "game/EventDayEntry.h"
 #include "item/PickedItem.h"
 #include "gfx/StarTwinkle.h"
@@ -26,7 +27,6 @@ class SkyProc;
 struct MinuteHour;
 struct WeatherManager;
 struct SkyLightingLocals;
-struct Unk_020bacc0_P;
 struct SkySpawnRate;
 struct Unk_020bbcc8_Xxx;
 struct Letter;
@@ -43,23 +43,19 @@ struct SndEnvChannel;
 struct SkySndChannel;
 struct Unk_0213b938;
 struct FxVec3;
-struct Unk_020bd0a4_Vec3;
 struct SkySePlayer;
 struct SkyShotSequence;
 struct SkyObjPalette;
 struct SkySprites;
 struct SkyObjGfxDef;
 struct SkyObjCharLayout;
-struct Unk_020bdd94_Out;
 struct SkySoundPosBuf;
 struct SkyLookAtVec;
 struct Unk_020bee28_Vec2;
-struct Unk_020bf1d8_Vec;
 struct FireworkColorPair;
 struct Unk_020bee28_V;
 struct SkyParticleStackPad;
 struct SkyShootingStarStackPad;
-struct Unk_020bfe30_Vec;
 struct Mtx43;
 struct WeatherRecord;
 struct EventDayEntry;
@@ -179,7 +175,6 @@ struct SkyLightingLocals {
     /* 0x4 */ u16 clearColor;
     /* 0x6 */ u16 roomColorArg;
 };
-struct Unk_020bacc0_P { s32 x; s32 y; };
 // Slingshot shot request of one player (SkySprites::shotRequests): set by SkySprites::onSlingshotFired from the player's
 // position, turned into kind 11 sprites (3 with the golden slingshot) by the shot spawner.
 struct SkyShotRequest {
@@ -324,9 +319,6 @@ struct SkySprite {
     void updateBird();
     void endBird();
 };
-struct Unk_020bd0a4_Vec3 {
-    s32 x, y, z;
-};
 struct SkySePlayer {
     SkySndChannel channels[8];
     FxVec3 positions[8];
@@ -334,8 +326,8 @@ struct SkySePlayer {
 
     SkySePlayer();
     void update();
-    void request(s32 idx, s32 a, Unk_020bd0a4_Vec3* p);
-    void requestSustained(s32 idx, s32 a, Unk_020bd0a4_Vec3* p);
+    void request(s32 idx, s32 a, VecFx32* p);
+    void requestSustained(s32 idx, s32 a, VecFx32* p);
     void releaseAll();
     void resetAll();
 };
@@ -511,7 +503,6 @@ enum Unk_020bd718_E { Unk_020bd718_E0 };
 struct SkyObjGfxDef { u32 charFile; u16 charTileA; u16 charTileB; u32 charLayout; s8 srcPalette; s8 objPalette; s8 unk_0e; s8 unk_0f; };
 // Row of sSkyObjCharLayouts: where the top and bottom tile runs of a graphic go in its slot
 struct SkyObjCharLayout { u32 topTileX; u32 topTileCount; u32 bottomTileX; u32 bottomTileCount; };
-struct Unk_020bdd94_Out { s32 x; s32 y; s32 z; };
 // 16-byte local of SkySprite_RequestSe / RequestSeSustained; SkySprite_GetSoundPos fills the first three words
 struct SkySoundPosBuf {
     /* 0x0 */ s32 x;
@@ -533,10 +524,6 @@ struct Unk_020bee28_Vec2 {
     s32 x, y;
     Unk_020bee28_Vec2(s32 a, s32 b) { x = a; y = b; }
 };
-struct Unk_020bf1d8_Vec {
-    s32 x, y, z;
-    Unk_020bf1d8_Vec(const Unk_020bf1d8_Vec &o) { x = o.x; y = o.y; z = o.z; }
-};
 // sFireworkColors row: a burst fades from the first colour to the second (SkySprite::updateFireworkPalette)
 struct FireworkColorPair {
     /* 0x0 */ Rgb555 start;
@@ -544,7 +531,7 @@ struct FireworkColorPair {
 };
 struct Unk_020bee28_V {
     s32 x, y, z;
-    Unk_020bee28_V(const Unk_020bf1d8_Vec &o) { x = o.x; y = o.y; z = o.z; }
+    Unk_020bee28_V(const VecFx32Copy &o) { x = o.x; y = o.y; z = o.z; }
     ~Unk_020bee28_V() {}
 };
 struct SkyParticleStackPad {
@@ -964,7 +951,7 @@ extern SkySprites gSkySprites;
 
 // ======== unk_020bfe30.cpp ========
 namespace n13 {
-static inline void Unk_020bfe30_Set(Unk_020bfe30_Vec *v, s32 x, s32 y, s32 z) {
+static inline void Unk_020bfe30_Set(VecFx32 *v, s32 x, s32 y, s32 z) {
     v->x = x;
     v->y = y;
     v->z = z;
@@ -973,7 +960,7 @@ extern "C" {
 void SkySprite_Release(void *p);
 }
 extern "C" {
-void VEC_Add(Unk_020bfe30_Vec *a, Unk_020bfe30_Vec *b, Unk_020bfe30_Vec *c);
+void VEC_Add(VecFx32 *a, VecFx32 *b, VecFx32 *c);
 }
 extern "C" {
 Actor *PlayerActor_GetActor(s32 n);
@@ -1135,7 +1122,7 @@ extern "C" {
 BOOL _ZN13NpcActionCtrl12isActionDoneEv(void *p);
 }
 extern "C" {
-void _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
+void _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
 }
 extern "C" {
 void _ZN11NpcTalkCtrl11requestTalkEhh(void *p, s32 a, s32 b);
@@ -1198,7 +1185,7 @@ extern "C" {
 extern u8 gScreenTransition;
 }
 extern "C" {
-extern Unk_020bfe30_Vec sSpNpcKatieReunionWalkPos;
+extern VecFx32 sSpNpcKatieReunionWalkPos;
 }
 extern "C" {
 extern u16 data_020c6cc8;
@@ -1252,7 +1239,7 @@ static inline BOOL Unk_020c06a0_IsMode2() {
     return gScreenTransition == 2;
 }
 
-extern "C" void Sky_ProjectToScreenX(s32 *out, Unk_020bfe30_Vec *in);
+extern "C" void Sky_ProjectToScreenX(s32 *out, VecFx32 *in);
 extern "C" SkyProc *SkyProc_Create();
 extern "C" void *SkySprites_Destruct(void *p);
 
@@ -1270,10 +1257,10 @@ extern "C" SkyProc *SkyProc_Create() {
     return new SkyProc();
 }
 
-extern "C" void Sky_ProjectToScreenX(s32 *out, Unk_020bfe30_Vec *in) {
+extern "C" void Sky_ProjectToScreenX(s32 *out, VecFx32 *in) {
     Mtx43 *m = Camera_GetViewMatrix();
     data_021f47e0 = *m;
-    Unk_020bfe30_Vec v;
+    VecFx32 v;
     v.x = in->x;
     v.y = in->y;
     v.z = in->z;
@@ -1294,7 +1281,7 @@ void SkySprite::initRainDrop(BOOL flag) {
     s32 x = (sRainSideToggle * Random_GlobalBelow(0x8a) + 0x80) << 12;
     sRainSideToggle *= -1;
     s32 y = -0x14000 - (Random_GlobalBelow(0x10) << 12);
-    Unk_020bfe30_Vec *p34 = (Unk_020bfe30_Vec *)&screenPos;
+    VecFx32 *p34 = (VecFx32 *)&screenPos;
     p34->x = x;
     p34->y = y;
     p34->z = 0;
@@ -1302,7 +1289,7 @@ void SkySprite::initRainDrop(BOOL flag) {
     s32 rr = Random_GlobalBelow(0xaac) - 0x556;
     s32 sh = ((mul * (rr + data_021f1448[0x38 / 2])) << 4) >> 16;
     idx = ((u16)sh >> 4) * 2;
-    Unk_020bfe30_Vec *p40 = (Unk_020bfe30_Vec *)&screenVel;
+    VecFx32 *p40 = (VecFx32 *)&screenVel;
     s16 *tab = data_02135f44;
     p40->x = tab[idx] * -0x24;
     p40->y = tab[idx + 1] * 0x24;
@@ -1334,8 +1321,8 @@ namespace n13 {
 }
 void SkySprite::updateRainDrop() {
     using namespace n13;
-    Unk_020bfe30_Vec *p = (Unk_020bfe30_Vec *)&screenPos;
-    VEC_Add(p, (Unk_020bfe30_Vec *)&screenVel, p);
+    VecFx32 *p = (VecFx32 *)&screenPos;
+    VEC_Add(p, (VecFx32 *)&screenVel, p);
     Actor *e = PlayerActor_GetActor(4);
     if (e) {
         s32 d = -(e->position.x - e->prevPosition.x);
@@ -2014,10 +2001,10 @@ extern "C" {
 extern u8 gSkySprites[];
 }
 extern "C" {
-extern Unk_020bf1d8_Vec gCameraLookAt;
+extern VecFx32Copy gCameraLookAt;
 }
 extern "C" {
-extern Unk_020bf1d8_Vec gVec3Zero;
+extern VecFx32Copy gVec3Zero;
 }
 extern "C" {
 extern s32 data_020c8cb8;
@@ -2151,7 +2138,7 @@ void SkySprite::updateUfo()
         }
     }
     if ((s32)work0 >= 2) {
-        Unk_020bf1d8_Vec v = gVec3Zero;
+        VecFx32Copy v = gVec3Zero;
         s32 sc;
         if ((s32)work0 >= 4) {
             v.x = dir ? 0x19a : -0x19a;
@@ -2519,7 +2506,7 @@ extern "C" {
 s32 _ZN10SpriteAnim10isFinishedEv(void *p);
 }
 extern "C" {
-void _ZN11SkySePlayer16requestSustainedEiiP17Unk_020bd0a4_Vec3(void *a, u32 b, u32 c, void *d);
+void _ZN11SkySePlayer16requestSustainedEiiP7VecFx32(void *a, u32 b, u32 c, void *d);
 }
 extern "C" {
 SkyShotRequest *_ZN10SkySprites14getShotRequestEi(void *a, u32 b);
@@ -2861,7 +2848,7 @@ void SkySprite::updateBird() {
     if (work1 > 0) {
         work1--;
         if (work1 <= 0 && (work0 & 3) == 0) {
-            _ZN11SkySePlayer16requestSustainedEiiP17Unk_020bd0a4_Vec3(data_021f44ac, 7, 0x805, gVec3Zero);
+            _ZN11SkySePlayer16requestSustainedEiiP7VecFx32(data_021f44ac, 7, 0x805, gVec3Zero);
         }
     } else {
         VecFx32 *pos = &screenPos;
@@ -3188,19 +3175,19 @@ extern const char* sSkyObjCharFiles[];
 namespace L_021f44ac { extern "C" { extern struct S { u8 p[0x2fcc]; u8 v[1]; } gSkySprites; } }
 #define data_021f44ac n09::L_021f44ac::gSkySprites.v
 extern "C" {
-void _ZN11SkySePlayer16requestSustainedEiiP17Unk_020bd0a4_Vec3(void*, s32, s32, void*);
+void _ZN11SkySePlayer16requestSustainedEiiP7VecFx32(void*, s32, s32, void*);
 }
 extern "C" {
-void _ZN11SkySePlayer7requestEiiP17Unk_020bd0a4_Vec3(void*, s32, s32, void*);
+void _ZN11SkySePlayer7requestEiiP7VecFx32(void*, s32, s32, void*);
 }
 extern "C" {
-void SkySprite_GetPos(SkySprite*, Unk_020bdd94_Out*);
+void SkySprite_GetPos(SkySprite*, VecFx32*);
 }
 extern "C" {
-s32 SkySprite_MakeSoundPos(Unk_020bdd94_Out*, s32, s32, s32);
+s32 SkySprite_MakeSoundPos(VecFx32*, s32, s32, s32);
 }
 extern "C" {
-void SkySprite_GetSoundPos(SkySprite*, Unk_020bdd94_Out*);
+void SkySprite_GetSoundPos(SkySprite*, VecFx32*);
 }
 extern "C" {
 s32 func_01ffcb0c(s32, s32);
@@ -3236,7 +3223,7 @@ extern "C" {
 s32 Camera_GetCloseUpFactor();
 }
 extern "C" {
-void SkySprite_ProjectWorldPos(SkySprite*, Unk_020bdd94_Out*, s32);
+void SkySprite_ProjectWorldPos(SkySprite*, VecFx32*, s32);
 }
 namespace L_021f3010 { extern "C" { extern struct S { u8 p[0x1b30]; SkyObjGfxSlot v[1]; } gSkySprites; } }
 #define data_021f3010 n09::L_021f3010::gSkySprites.v
@@ -3271,12 +3258,12 @@ extern "C" void SkyObjGfxLoader_Init(u8* p);
 extern "C" void SkySprite_RequestSeSustainedOn(SkySprite* p, s32 a, s32 b);
 extern "C" void SkySprite_RequestSe(SkySprite* p, s32 a);
 extern "C" void SkySprite_RequestSeSustained(SkySprite* p, s32 a);
-extern "C" void SkySprite_GetPos(SkySprite* p, Unk_020bdd94_Out* out);
-extern "C" void SkySprite_GetSoundPos(SkySprite* p, Unk_020bdd94_Out* out);
-extern "C" s32 SkySprite_MakeSoundPos(Unk_020bdd94_Out* out, s32 a, s32 b, s32 c);
+extern "C" void SkySprite_GetPos(SkySprite* p, VecFx32* out);
+extern "C" void SkySprite_GetSoundPos(SkySprite* p, VecFx32* out);
+extern "C" s32 SkySprite_MakeSoundPos(VecFx32* out, s32 a, s32 b, s32 c);
 extern "C" BOOL SkySprite_CheckShotHit(SkySprite* p, s32 a, s32 b, s32 c);
 extern "C" void SkySprite_ProjectCrossing(SkySprite* p, s32 a);
-extern "C" void SkySprite_ProjectWorldPos(SkySprite* p, Unk_020bdd94_Out* q, s32 a);
+extern "C" void SkySprite_ProjectWorldPos(SkySprite* p, VecFx32* q, s32 a);
 extern "C" BOOL SkySprite_AdvanceCrossing(SkySprite* p, s32 a, s32 b, s32 c);
 extern "C" void SkySprite_BeginCrossing(SkySprite* p, u8 a, s32 b);
 extern "C" void SkySprite_Release(SkySprite* p);
@@ -3428,7 +3415,7 @@ extern "C" BOOL SkySprite_AdvanceCrossing(SkySprite* p, s32 a, s32 b, s32 c) {
     return r;
 }
 
-extern "C" void SkySprite_ProjectWorldPos(SkySprite* p, Unk_020bdd94_Out* q, s32 a) {
+extern "C" void SkySprite_ProjectWorldPos(SkySprite* p, VecFx32* q, s32 a) {
     SkyLookAtVec loc;
     loc.x = gCameraLookAt.x;
     loc.y = gCameraLookAt.y;
@@ -3468,7 +3455,7 @@ extern "C" void SkySprite_ProjectWorldPos(SkySprite* p, Unk_020bdd94_Out* q, s32
 }
 
 extern "C" void SkySprite_ProjectCrossing(SkySprite* p, s32 a) {
-    Unk_020bdd94_Out t;
+    VecFx32 t;
     t.x = p->trackX;
     t.y = 0;
     t.z = data_020c8cb8;
@@ -3507,7 +3494,7 @@ extern "C" BOOL SkySprite_CheckShotHit(SkySprite* p, s32 a, s32 b, s32 c) {
     return found;
 }
 
-extern "C" s32 SkySprite_MakeSoundPos(Unk_020bdd94_Out* out, s32 a, s32 b, s32 c) {
+extern "C" s32 SkySprite_MakeSoundPos(VecFx32* out, s32 a, s32 b, s32 c) {
     s32 t = func_01ffcb0c(0x400, c);
     s32 u = func_01ffcb0c(0x1000, c);
     s32 v = FX_Div(0x1000 - t, u - t);
@@ -3519,11 +3506,11 @@ extern "C" s32 SkySprite_MakeSoundPos(Unk_020bdd94_Out* out, s32 a, s32 b, s32 c
     return v;
 }
 
-extern "C" void SkySprite_GetSoundPos(SkySprite* p, Unk_020bdd94_Out* out) {
+extern "C" void SkySprite_GetSoundPos(SkySprite* p, VecFx32* out) {
     SkySprite_MakeSoundPos(out, p->screenPos.x, p->screenPos.y, p->scaleX);
 }
 
-extern "C" void SkySprite_GetPos(SkySprite* p, Unk_020bdd94_Out* out) {
+extern "C" void SkySprite_GetPos(SkySprite* p, VecFx32* out) {
     out->x = p->screenPos.x;
     out->y = p->screenPos.y;
     out->z = 0;
@@ -3531,20 +3518,20 @@ extern "C" void SkySprite_GetPos(SkySprite* p, Unk_020bdd94_Out* out) {
 
 extern "C" void SkySprite_RequestSeSustained(SkySprite* p, s32 a) {
     SkySoundPosBuf out;
-    SkySprite_GetSoundPos(p, (Unk_020bdd94_Out*)&out);
-    _ZN11SkySePlayer16requestSustainedEiiP17Unk_020bd0a4_Vec3(data_021f44ac, 0, a, &out);
+    SkySprite_GetSoundPos(p, (VecFx32*)&out);
+    _ZN11SkySePlayer16requestSustainedEiiP7VecFx32(data_021f44ac, 0, a, &out);
 }
 
 extern "C" void SkySprite_RequestSe(SkySprite* p, s32 a) {
     SkySoundPosBuf out;
-    SkySprite_GetSoundPos(p, (Unk_020bdd94_Out*)&out);
-    _ZN11SkySePlayer7requestEiiP17Unk_020bd0a4_Vec3(data_021f44ac, 0, a, &out);
+    SkySprite_GetSoundPos(p, (VecFx32*)&out);
+    _ZN11SkySePlayer7requestEiiP7VecFx32(data_021f44ac, 0, a, &out);
 }
 
 extern "C" void SkySprite_RequestSeSustainedOn(SkySprite* p, s32 a, s32 b) {
-    Unk_020bdd94_Out out;
+    VecFx32 out;
     SkySprite_GetPos(p, &out);
-    _ZN11SkySePlayer16requestSustainedEiiP17Unk_020bd0a4_Vec3(data_021f44ac, a, b, &out);
+    _ZN11SkySePlayer16requestSustainedEiiP7VecFx32(data_021f44ac, a, b, &out);
 }
 
 extern "C" void SkyObjGfxLoader_Init(u8* p) {
@@ -3775,7 +3762,7 @@ extern "C" {
 void Camera_StartShake(s32 a);
 }
 extern "C" {
-void SkySprite_MakeSoundPos(Unk_020bd0a4_Vec3* out, s32 a, s32 b, s32 c);
+void SkySprite_MakeSoundPos(VecFx32* out, s32 a, s32 b, s32 c);
 }
 extern "C" {
 void* PlayerData_GetResident(void* a, s32 i);
@@ -4162,7 +4149,7 @@ void SkyShotSequence::actBalloonDrop() {
     }
     if (landSePending != 0 || splashSePending != 0) {
         s32 id = landSePending != 0 ? 0x7f9 : 0x7fa;
-        Unk_020bd0a4_Vec3 v;
+        VecFx32 v;
         SkySprite_MakeSoundPos(&v, targetX, targetY, targetScale);
         data_021f44ac.requestSustained(0, id, &v);
         landSePending = 0;
@@ -4188,7 +4175,7 @@ void SkyShotSequence::actUfoFall() {
     relaxHead(0x50, 0);
     timer--;
     if (timer <= 0) {
-        Unk_020bd0a4_Vec3 v;
+        VecFx32 v;
         Camera_StartShake(0xa3d);
         SkySprite_MakeSoundPos(&v, targetX, targetY, targetScale);
         data_021f44ac.requestSustained(0, 0x7fd, &v);
@@ -4233,7 +4220,7 @@ void SkyShotSequence::actPeteFall() {
     if (timer > 0) {
         timer--;
     } else {
-        Unk_020bd0a4_Vec3 v;
+        VecFx32 v;
         Camera_StartShake(0x5c3);
         SkySprite_MakeSoundPos(&v, targetX, targetY, targetScale);
         data_021f44ac.requestSustained(0, 0x800, &v);
@@ -4343,7 +4330,7 @@ void SkySePlayer::releaseAll() {
 namespace n08 {
 
 }
-void SkySePlayer::requestSustained(s32 idx, s32 a, Unk_020bd0a4_Vec3* p) {
+void SkySePlayer::requestSustained(s32 idx, s32 a, VecFx32* p) {
     using namespace n08;
     if (active) {
         channels[idx].callRequestSustained((void *)a);
@@ -4355,7 +4342,7 @@ void SkySePlayer::requestSustained(s32 idx, s32 a, Unk_020bd0a4_Vec3* p) {
 namespace n08 {
 
 }
-void SkySePlayer::request(s32 idx, s32 a, Unk_020bd0a4_Vec3* p) {
+void SkySePlayer::request(s32 idx, s32 a, VecFx32* p) {
     using namespace n08;
     if (active) {
         channels[idx].callRequest((void *)a);
@@ -6862,7 +6849,7 @@ extern "C" void SkySprites_Draw(SkySprites *obj) {
     for (e = obj->sprites; e < end; e++) {
         void *sub;
         void *r;
-        Unk_020bacc0_P *pos;
+        Vec2 *pos;
         s32 a, b, x, y, py;
         if (e->kind == 0xd) continue;
         if (e->state != 2) continue;
@@ -6870,7 +6857,7 @@ extern "C" void SkySprites_Draw(SkySprites *obj) {
         sub = &e->anim;
         r = _ZN10SpriteAnim7getCellEv(sub);
         if (r == NULL) continue;
-        pos = (Unk_020bacc0_P *)&e->screenPos;
+        pos = (Vec2 *)&e->screenPos;
         a = _ZN10SpriteAnim9getFrameXEi(sub, id);
         b = _ZN10SpriteAnim9getFrameYEi(sub, id);
         x = a + ((pos->x + 0x800) >> 12);

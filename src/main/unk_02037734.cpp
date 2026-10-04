@@ -1,4 +1,5 @@
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "text/Unk_02050288.h"
 #include "talk/MsgStringBase.h"
 #include "talk/MsgStringAttr.h"
@@ -100,15 +101,11 @@ extern u8 gFontA[];
 
 extern ProcBase *gActorDefaultParent;
 
-struct Unk_02037ea0_V {
-    s32 x, y, z;
-};
-
 struct Unk_02037ea0_G {
     u8 pad[0x40];
-    Unk_02037ea0_V a, c, b;
+    VecFx32 a, c, b;
 };
-extern Unk_02037ea0_V gVec3Zero;
+extern VecFx32 gVec3Zero;
 extern Unk_02037ea0_G data_027e02c8;
 extern u8 data_027e00d0[];
 extern u8 data_027e0114[];
@@ -388,7 +385,7 @@ void CommCautionWindow::draw() {
     if (modelVisible) {
         G3i_PerspectiveW_(0x424, 0xf74, 0x1548, 0xf6, 0x3e800, 0x1000, 0, data_027e00d0);
         data_027e0148[0x7c / 4] &= ~0x50;
-        Unk_02037ea0_V a, b, c, d;
+        VecFx32 a, b, c, d;
         a = gVec3Zero;
         b.x = 0;
         b.y = 0;

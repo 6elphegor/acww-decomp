@@ -1,6 +1,6 @@
 // mwcc-version: 1.2/base
 #include "types.h"
-#include "game/Unk_020b4f8c_Vec.h"
+#include "gfx/VecFx32.h"
 #include "game/SceneWarp.h"
 #include "game/SceneInfo.h"
 
@@ -45,13 +45,13 @@ SceneWarpList data_ov029_02258b8c = {data_ov029_02258c54, 7};
 SceneMapInfo data_ov029_02258b94 = {data_ov029_02258b80, 1, 1};
 
 SceneWarp data_ov029_02258c54[7] = {
-    SceneWarp(0x3c, Unk_020b4f8c_Vec(0, 0, 0), 0, 0, 2, 2, 0, 4),
-    SceneWarp(0x3f, Unk_020b4f8c_Vec(0, 0, 0), 0, 0, 2, 2, 0, 0),
-    SceneWarp(0x3f, Unk_020b4f8c_Vec(0, 0, 0), 0x800000, 0, 2, 2, 0, 0),
-    SceneWarp(0x3f, Unk_020b4f8c_Vec(0, 0, 0), 0x800000, 0, 2, 2, 0, 0),
-    SceneWarp(0x3f, Unk_020b4f8c_Vec(0, 0, 0), 0x800000, 0, 2, 2, 0, 0),
-    SceneWarp(0x3f, Unk_020b4f8c_Vec(0, 0, 0), 0x800000, 0, 2, 2, 0, 0),
-    SceneWarp(0x3f, Unk_020b4f8c_Vec(0, 0, 0), 0x800000, 0, 2, 2, 0, 0),
+    SceneWarp(0x3c, VecFx32Copy(0, 0, 0), 0, 0, 2, 2, 0, 4),
+    SceneWarp(0x3f, VecFx32Copy(0, 0, 0), 0, 0, 2, 2, 0, 0),
+    SceneWarp(0x3f, VecFx32Copy(0, 0, 0), 0x800000, 0, 2, 2, 0, 0),
+    SceneWarp(0x3f, VecFx32Copy(0, 0, 0), 0x800000, 0, 2, 2, 0, 0),
+    SceneWarp(0x3f, VecFx32Copy(0, 0, 0), 0x800000, 0, 2, 2, 0, 0),
+    SceneWarp(0x3f, VecFx32Copy(0, 0, 0), 0x800000, 0, 2, 2, 0, 0),
+    SceneWarp(0x3f, VecFx32Copy(0, 0, 0), 0x800000, 0, 2, 2, 0, 0),
 };
 
 SceneInfo data_ov029_02258bd0 = {&data_ov029_02258b9c, 0, &data_ov029_02258b94, &data_ov029_02258b8c, -1, -1};

@@ -1,9 +1,9 @@
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "actor/ActorProfile.h"
 #include "gfx/DebugColor.h"
 #include "net/CommManager.h"
-#include "gfx/Unk_020bfe30_Vec.h"
-#include "game/Unk_020d77a4_Vec3.h"
+#include "gfx/Mtx43.h"
 #include "npc/NpcAnimCtrl.h"
 #include "npc/NpcSpeechState.h"
 #include "npc/NpcResHandleView.h"
@@ -25,8 +25,6 @@
 #include "talk/SpNpcKatieTalk.h"
 #include "npc/SpNpcKatie.h"
 
-typedef Unk_020bfe30_Vec Unk_020c0acc_Vec;
-
 
 class SpNpcKatie;
 
@@ -40,8 +38,8 @@ void _ZN13NpcActionCtrl15requestPlayAnimEiijtt(void *a, s32 b, s32 c, s32 d, s32
 s32 _ZN13NpcActionCtrl12isActionDoneEv(void *self);
 s32 _ZN13NpcActionCtrl9getActionEv(void *self);
 s32 _ZN9NpcLookAt15getObstacleBitsEv(void *self);
-void _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(void *a, s32 b, s32 c, s32 d, u8 *e, s32 f, s32 g, s32 h);
-void _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(void *a, void *b);
+void _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(void *a, s32 b, s32 c, s32 d, u8 *e, s32 f, s32 g, s32 h);
+void _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(void *a, void *b);
 void _ZN14NpcMoveAnimSet12setStandAnimEi(void *a, s32 b);
 void _ZN14NpcMoveAnimSet11setWalkAnimEi(void *a, s32 b);
 s32 _ZN8NpcActor19getDistanceToPlayerEj(void *a, s32 b);
@@ -59,17 +57,17 @@ void Effect_End(s32 a);
 void _ZN15KatieVisitState14clearFollowingEv(void *a);
 void _ZN15KatieVisitState12setFollowingEv(void *a);
 s32 _ZN15KatieVisitState11isFollowingEv(void *a);
-void _ZN15KatieVisitState6getPosEP17Unk_02086ec4_Vec3(void *a, void *b);
-void _ZN15KatieVisitState6setPosEP17Unk_02086ec4_Vec3(void *a, void *b);
+void _ZN15KatieVisitState6getPosEP7VecFx32(void *a, void *b);
+void _ZN15KatieVisitState6setPosEP7VecFx32(void *a, void *b);
 void Snd_SeEmitterPlayOneShot(void *a, s32 b, s32 c, s32 d);
 void *PlayerData_GetCurrent(void);
 void *TownSessionState_Get(void);
 void *TownSessionState_GetKatieState(void *a);
 void *PlayerActor_GetBodyPos(s32 a);
 void *TownBlockMap_Get(void);
-void Town_FindGateHouse(void *a, Unk_020c0acc_Vec *b, s32 c, s32 d);
-void FieldPos_SnapToUnitCenter(Unk_020c0acc_Vec *a, Unk_020c0acc_Vec *b);
-void FieldPos_FromUnitCenter(Unk_020c0acc_Vec *a, s32 b, s32 c);
+void Town_FindGateHouse(void *a, VecFx32 *b, s32 c, s32 d);
+void FieldPos_SnapToUnitCenter(VecFx32 *a, VecFx32 *b);
+void FieldPos_FromUnitCenter(VecFx32 *a, s32 b, s32 c);
 s32 _ZN10PlayerData18getLostChildRecordEv(void *a);
 BOOL _ZN15LostChildRecord11isEscortingEv(s32 a);
 BOOL _ZN10PlayerData8testFlagEj(void *a, s32 b);
@@ -80,8 +78,8 @@ void TalkRequestFlags_ClearSceneHold(void);
 void TalkRequestFlags_SetSceneHold(void);
 BOOL _ZN11NpcTalkCtrl6isBusyEv(void *a);
 void _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(void *a, s32 b, s32 c, s32 d);
-BOOL TownMap_FindBuildingAbovePos(Unk_020c0acc_Vec *a, s32 b, s32 c, s32 d);
-void TownMap_IsPosWalkable(Unk_020c0acc_Vec *a, s32 b);
+BOOL TownMap_FindBuildingAbovePos(VecFx32 *a, s32 b, s32 c, s32 d);
+void TownMap_IsPosWalkable(VecFx32 *a, s32 b);
 s32 Vec_DistXZ(void *a, void *b);
 BOOL Math_CountDownU16(void *a);
 s32 _ZN11NpcFaceAnim12getMouthAnimEv(void *p);
@@ -151,7 +149,7 @@ extern char sSpNpcKatieKey[16];
 extern char sSpNpcKatieModelPath[23];
 extern char sSpNpcKatieTexPath[27];
 extern char *sSpNpcKatieMsgKey;
-extern const Unk_020bfe30_Vec sSpNpcKatieReunionWalkPos;
+extern const VecFx32 sSpNpcKatieReunionWalkPos;
 extern "C" SpNpcKatie *SpNpcKatie_Create(void);
 
 extern "C" SpNpcKatie *SpNpcKatie_Create(void) {
@@ -194,15 +192,15 @@ BOOL SpNpcKatie::onCreate() {
     effectHandle = -1;
     p = PlayerData_GetCurrent();
     if (Scene_GetCurrent() == 0) {
-        FieldPos_SnapToUnitCenter((Unk_020bfe30_Vec *)&position, (Unk_020bfe30_Vec *)&position);
-        if (TownMap_FindBuildingAbovePos((Unk_020bfe30_Vec *)&position, 1, 0, 0)) {
-            TownMap_IsPosWalkable((Unk_020bfe30_Vec *)&position, 0);
+        FieldPos_SnapToUnitCenter((VecFx32 *)&position, (VecFx32 *)&position);
+        if (TownMap_FindBuildingAbovePos((VecFx32 *)&position, 1, 0, 0)) {
+            TownMap_IsPosWalkable((VecFx32 *)&position, 0);
             position.x += 0x2000;
             position.z += 0x2000;
         }
         if (_ZN15KatieVisitState11isFollowingEv(TownSessionState_GetKatieState(TownSessionState_Get())) != 0) {
             if (Scene_GetPrevious() == 0xb) {
-                Town_FindGateHouse(TownBlockMap_Get(), (Unk_020bfe30_Vec *)&position, 0, 0);
+                Town_FindGateHouse(TownBlockMap_Get(), (VecFx32 *)&position, 0, 0);
                 position.z -= 0x2000;
                 talk.setTopic(3);
                 changeAct(5);
@@ -231,7 +229,7 @@ BOOL SpNpcKatie::onCreate() {
         changeAct(5);
         collisionEnabled = 0;
     } else if (Scene_GetCurrent() == 0xc) {
-        _ZN15KatieVisitState6getPosEP17Unk_02086ec4_Vec3(TownSessionState_GetKatieState(TownSessionState_Get()), &position);
+        _ZN15KatieVisitState6getPosEP7VecFx32(TownSessionState_GetKatieState(TownSessionState_Get()), &position);
         talk.setTopic(3);
         changeAct(5);
     } else if (Scene_GetCurrent() == 0x2f) {
@@ -267,11 +265,11 @@ BOOL SpNpcKatie::updateAct() {
         r = (this->*(sSpNpcKatieActTable[act].main))();
     }
     if (Scene_GetCurrent() == 0) {
-        _ZN15KatieVisitState6setPosEP17Unk_02086ec4_Vec3(TownSessionState_GetKatieState(TownSessionState_Get()), &position);
+        _ZN15KatieVisitState6setPosEP7VecFx32(TownSessionState_GetKatieState(TownSessionState_Get()), &position);
     }
     if (Scene_GetCurrent() == 0xb) {
         if (_ZN15LostChildRecord11isEscortingEv(_ZN10PlayerData18getLostChildRecordEv(PlayerData_GetCurrent()))) {
-            _ZN15KatieVisitState6setPosEP17Unk_02086ec4_Vec3(TownSessionState_GetKatieState(TownSessionState_Get()), &position);
+            _ZN15KatieVisitState6setPosEP7VecFx32(TownSessionState_GetKatieState(TownSessionState_Get()), &position);
         }
     }
     return r;
@@ -321,7 +319,7 @@ void SpNpcKatie::changeAct(s32 state) {
 
 BOOL SpNpcKatie::setupAct00() {
     collider.groups |= 2;
-    _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(&lookAt, 1, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
+    _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(&lookAt, 1, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
     _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
@@ -331,12 +329,12 @@ BOOL SpNpcKatie::mainAct00() {
 }
 
 BOOL SpNpcKatie::setupAct01() {
-    Unk_020c0acc_Vec a, b;
+    VecFx32 a, b;
     collider.groups |= 2;
-    _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(&lookAt, 0, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
+    _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(&lookAt, 0, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
     _ZN13NpcActionCtrl15requestPlayAnimEiijtt(&actionCtrl, 1, 0x53, 1, data_020c6cc8, 0);
     Town_FindGateHouse(TownBlockMap_Get(), &a, 0, 0);
-    FieldPos_SnapToUnitCenter(&b, (Unk_020bfe30_Vec *)&position);
+    FieldPos_SnapToUnitCenter(&b, (VecFx32 *)&position);
     if (b.z < a.z) {
         if (b.x >= a.x - 0x4000 && b.x <= a.x + 0x4000) {
             position.z = a.z + 0x1000;
@@ -362,7 +360,7 @@ BOOL SpNpcKatie::mainAct01() {
 }
 
 BOOL SpNpcKatie::setupAct02() {
-    _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(&lookAt, 0, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
+    _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(&lookAt, 0, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
     _ZN13NpcActionCtrl15requestPlayAnimEiijtt(&actionCtrl, 1, 0xab, 1, data_020c6cc8, 0);
     return TRUE;
 }
@@ -379,7 +377,7 @@ BOOL SpNpcKatie::mainAct02() {
 
 BOOL SpNpcKatie::setupAct03() {
     s32 p, r4;
-    _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(&lookAt, 1, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
+    _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(&lookAt, 1, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
     p = _ZN16ActorTalkRequest13getTalkPlayerEv(&talk);
     r4 = 0;
     if (p != 0) {
@@ -423,12 +421,12 @@ BOOL SpNpcKatie::mainAct04() {
 BOOL SpNpcKatie::setupAct05() {
     collider.groups &= ~2;
     stuckTimer = 0x28;
-    prevPos = *(Unk_020bfe30_Vec *)&position;
+    prevPos = *(VecFx32 *)&position;
     return TRUE;
 }
 
 BOOL SpNpcKatie::mainAct05() {
-    Unk_020c0acc_Vec a, b, c, d;
+    VecFx32 a, b, c, d;
     void *p = PlayerData_GetCurrent();
     void *q;
     s32 t;
@@ -437,13 +435,13 @@ BOOL SpNpcKatie::mainAct05() {
     }
     if (collisionEnabled == 0 && Scene_GetCurrent() == 0) {
         Town_FindGateHouse(TownBlockMap_Get(), &a, 0, 0);
-        FieldPos_SnapToUnitCenter(&b, (Unk_020bfe30_Vec *)&position);
+        FieldPos_SnapToUnitCenter(&b, (VecFx32 *)&position);
         if (b.z > a.z) {
             collisionEnabled = 1;
         }
     }
     if (collisionEnabled == 0 && Scene_GetCurrent() == 0xb) {
-        FieldPos_SnapToUnitCenter(&d, (Unk_020bfe30_Vec *)&position);
+        FieldPos_SnapToUnitCenter(&d, (VecFx32 *)&position);
         FieldPos_FromUnitCenter(&c, 6, 15);
         if (d.z < c.z) {
             collisionEnabled = 1;
@@ -462,7 +460,7 @@ BOOL SpNpcKatie::mainAct05() {
         }
         v = _ZN9NpcLookAt15getObstacleBitsEv(&obstacleProbe);
         d2 = Vec_DistXZ(&prevPos, &position);
-        prevPos = *(Unk_020bfe30_Vec *)&position;
+        prevPos = *(VecFx32 *)&position;
         if (d2 <= 0x29 || v != 0) {
             if (Math_CountDownU16(&stuckTimer) == 0) {
                 changeAct(1);
@@ -476,7 +474,7 @@ BOOL SpNpcKatie::mainAct05() {
         if (_ZN13NpcActionCtrl9getActionEv(&actionCtrl) != 2) {
             _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 2, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
         }
-        _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(&moveCtrl, q);
+        _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(&moveCtrl, q);
     } else if (_ZN13NpcActionCtrl9getActionEv(&actionCtrl) != 0) {
         _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     }
@@ -494,11 +492,11 @@ BOOL SpNpcKatie::setupAct06() {
 }
 
 BOOL SpNpcKatie::mainAct06() {
-    Unk_020c0acc_Vec v;
+    VecFx32 v;
     s16 a;
     if (_ZN11NpcAnimCtrl13isPlayingAnimEiPv(&animCtrl, 0x122, &moveAnimSet)) {
         a = rotY;
-        Unk_020c0acc_Vec *src = (Unk_020c0acc_Vec *)&position;
+        VecFx32 *src = (VecFx32 *)&position;
         v = *src;
         if ((((u32)model.curFrame << 4) >> 16) == 7) {
             Effect_Create(0x39, &v, &a, 0);
@@ -525,8 +523,8 @@ BOOL SpNpcKatie::setupAct08() {
 
 BOOL SpNpcKatie::mainAct08() {
     u8 buf;
-    Unk_020bfe30_Vec vec24;
-    Unk_020bfe30_Vec vec30;
+    VecFx32 vec24;
+    VecFx32 vec30;
     s32 r5 = Net_GetJoiningAid();
     CommManager *r7 = gCommManager;
     s32 r6 = r7->localSlot;
@@ -552,7 +550,7 @@ BOOL SpNpcKatie::mainAct08() {
         if (_ZN13NpcActionCtrl12isActionDoneEv(&actionCtrl)) {
             reunionStep = 3;
             talk.setTopic(6);
-            _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(&lookAt, 0, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
+            _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(&lookAt, 0, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
             _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
             _ZN11NpcTalkCtrl11requestTalkEhh(&talkCtrl, 0, 1);
         }
@@ -569,7 +567,7 @@ BOOL SpNpcKatie::mainAct08() {
     case 4:
         if (_ZN13NpcActionCtrl12isActionDoneEv(&actionCtrl)) {
             _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
-            _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(&lookAt, 1, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
+            _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(&lookAt, 1, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
             s32 t = NpcRegistry_FindSpNpc(0x23);
             if (t) {
                 _ZN16ActorTalkRequest15setPartnerActorEP8NpcActor(&talk, t);
@@ -779,7 +777,7 @@ DebugColor data_021f4584(31, 31, 20, 31);
 DebugColor data_021f457c(20, 31, 20, 31);
 DebugColor data_021f4590(20, 31, 31, 31);
 DebugColor data_021f4588(20, 24, 24, 31);
-const Unk_020bfe30_Vec sSpNpcKatieReunionWalkPos = { 0x10000, 0, 0x11800 };
+const VecFx32 sSpNpcKatieReunionWalkPos = { 0x10000, 0, 0x11800 };
 SpNpcKatieActEntry sSpNpcKatieActTable[9] = {
     { &SpNpcKatie::setupAct00, &SpNpcKatie::mainAct00 },
     { &SpNpcKatie::setupAct01, &SpNpcKatie::mainAct01 },

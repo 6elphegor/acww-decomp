@@ -11,8 +11,4 @@ struct Unk_020d6df4_7d0 {
     void initWalk();
 };
 
-struct Unk_020d6df4_Vec {
-    /* 0x0 */ s32 x, y, z;
-};
-
 #endif

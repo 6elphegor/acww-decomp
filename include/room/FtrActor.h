@@ -2,10 +2,10 @@
 #define ROOM_FTRACTOR_H
 
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "actor/Character.h"
 #include "talk/TalkMsgRequest.h"
 #include "gfx/Mtx43.h"
-#include "game/Unk_0203e4f0_Vec.h"
 #include "room/FtrActorParts.h"
 
 struct NNSG3dRS;
@@ -78,7 +78,7 @@ public:
 
     BOOL isPreview();
     void spawnEffectAtCorner(s32 a);
-    void spawnEffectAt(Unk_0203e4f0_Vec *v);
+    void spawnEffectAt(VecFx32 *v);
     void spawnActorC0AtCenter();
     void spawnActorC0AtTile(s32 a);
     BOOL findOwnTile(s32 *ox, s32 *oy, s32 a, s32 b);

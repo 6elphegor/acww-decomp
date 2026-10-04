@@ -1,5 +1,6 @@
 // mwcc-flags: -str reuse
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "talk/TalkWindowState.h"
 #include "npc/NpcAnimCtrl.h"
 #include "npc/NpcSpeechState.h"
@@ -31,10 +32,6 @@ class SpNpcPascal;
 class SpNpcPascalTalk;
 
 
-struct Unk_ov076_Vec {
-    s32 x, y, z;
-};
-
 struct SpNpcPascalMsgLocal {
     u8 msgIndex;
     u8 unk_01;
@@ -56,7 +53,7 @@ void _ZN16ActorTalkRequest12openSubSceneEi(void *p, s32 v);
 BOOL _ZN8NpcActor10getAngleToEPS_(void *p, void *q);
 void _ZN11NpcMoveCtrl14setTargetAngleEs(void *self, s32 a);
 void _ZN9NpcLookAt7disableEv(void *self);
-void _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(void *self, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
+void _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(void *self, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
 void _ZN13NpcActionCtrl15requestPlayAnimEiijtt(void *self, s32 a, s32 b, u32 c, s32 d, s32 e);
 void _ZN13NpcActionCtrl13requestActionEjiiissiitt(void *self, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j);
 BOOL _ZN13NpcActionCtrl12isActionDoneEv(void *self);
@@ -80,8 +77,8 @@ void EventWeekSlots_MarkPlayer(u32 id);
 void TalkRequest_SetTargetDone(void *self);
 void Math_StepAngle(void *a, s32 b, s32 c);
 void ProcBase_RequestDelete(void *self);
-void FieldFish_ScareAround(Unk_ov076_Vec *v, s32 a);
-void Effect_Create(s32 a, Unk_ov076_Vec *v, s32 b, s32 c);
+void FieldFish_ScareAround(VecFx32 *v, s32 a);
+void Effect_Create(s32 a, VecFx32 *v, s32 b, s32 c);
 void Snd_SeEmitterPlayOneShotAlt(void *self, s32 a, s32 b, s32 c);
 extern u16 data_020c6cc8;
 extern u32 data_020c6d1c;
@@ -119,7 +116,6 @@ public:
 
 
 
-struct Unk_020d77a4_Vec3;
 
 
 
@@ -315,13 +311,13 @@ BOOL SpNpcPascal::setupAct04() {
         t = -t;
     }
     spinSpeed = t;
-    _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(&lookAt, 0, 0, 0, (s32)&gVec3Zero, 4, data_020c6d1c, 1);
+    _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(&lookAt, 0, 0, 0, (s32)&gVec3Zero, 4, data_020c6d1c, 1);
     diveStartZ = position.z;
     return TRUE;
 }
 
 BOOL SpNpcPascal::mainAct04() {
-    Unk_ov076_Vec v;
+    VecFx32 v;
     if (_ZN11NpcAnimCtrl9getAnimIdEj(&animCtrl, 0) == 0xf9 &&
         _ZN11NpcAnimCtrl14isAnimFinishedEP8NpcActor(&animCtrl, this)) {
         changeAct(5);
@@ -332,7 +328,7 @@ BOOL SpNpcPascal::mainAct04() {
         }
         Math_StepAngle(&rotY, 0, spinSpeed);
         if (((Unk_ov076_02271a3c_Bits *)((u8 *)this + 0x190))->mid == 0x1b) {
-            Unk_ov076_Vec *pv = (Unk_ov076_Vec *)&position;
+            VecFx32 *pv = (VecFx32 *)&position;
             v.x = pv->x;
             v.y = pv->y;
             v.z = pv->z;

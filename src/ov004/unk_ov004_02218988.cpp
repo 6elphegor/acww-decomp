@@ -1,6 +1,7 @@
 // mwcc-version: 1.2/base
 // mwcc-flags: -str reuse
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "actor/ActorProfile.h"
 #include "npc/VillagerClothModel.h"
 #include "npc/VillagerMood.h"
@@ -47,7 +48,7 @@ class FleaMarketBuyerVillager;
 #define NpcActionCtrl_isActionDone _ZN13NpcActionCtrl12isActionDoneEv
 #define NpcActionCtrl_getAction _ZN13NpcActionCtrl9getActionEv
 #define NpcLookAt_disable _ZN9NpcLookAt7disableEv
-#define NpcMoveCtrl_setWaypoint _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3
+#define NpcMoveCtrl_setWaypoint _ZN11NpcMoveCtrl11setWaypointEP7VecFx32
 #define NpcActor_setTalkRequest _ZN8NpcActor14setTalkRequestEP16ActorTalkRequest
 #define NpcActor_getPlayerActor _ZN8NpcActor14getPlayerActorEj
 #define NpcActor_getAngleTo _ZN8NpcActor10getAngleToEPS_
@@ -84,16 +85,6 @@ struct FleaMarketBuyerActEntry {
 
 struct Unk_ov004_02218cdc_Rec {
     s32 a, b, c;
-};
-
-struct Unk_ov004_0221946c_Vec {
-    s32 x, y, z;
-    Unk_ov004_0221946c_Vec() {}
-    ~Unk_ov004_0221946c_Vec() {}
-};
-
-struct Unk_ov004_02219e0c_V {
-    s32 x, y, z;
 };
 
 
@@ -216,7 +207,6 @@ s32 SceneId_IsTownUnk31();
 
 
 
-struct Unk_020d77a4_Vec3;
 
 
 
@@ -569,8 +559,8 @@ BOOL FleaMarketBuyerVillager::mainAct00() {
         }
         Actor *p = (Actor *)PlayerActor_GetActor(4);
         if (p) {
-            Unk_ov004_02219e0c_V v;
-            Unk_ov004_02219e0c_V *pv = (Unk_ov004_02219e0c_V *)&p->position;
+            VecFx32 v;
+            VecFx32 *pv = (VecFx32 *)&p->position;
             v.x = p->position.x;
             v.y = pv->y;
             v.z = pv->z;
@@ -642,7 +632,7 @@ BOOL FleaMarketBuyerVillager::mainAct02() {
         changeAct(8);
         return TRUE;
     } else if (c == 0) {
-        Unk_ov004_0221946c_Vec v;
+        VecFx32CtorDtor v;
         v.x = 0;
         v.y = 0;
         v.z = 0;
@@ -715,7 +705,7 @@ BOOL FleaMarketBuyerVillager::setupAct05() {
 BOOL FleaMarketBuyerVillager::mainAct05() {
     s32 xy[2];
     u32 loc24[3];
-    Unk_ov004_0221946c_Vec v;
+    VecFx32CtorDtor v;
     if (checkLeave()) {
         return TRUE;
     }
@@ -777,7 +767,7 @@ BOOL FleaMarketBuyerVillager::setupAct07() {
 }
 
 BOOL FleaMarketBuyerVillager::mainAct07() {
-    Unk_ov004_0221946c_Vec v;
+    VecFx32CtorDtor v;
     s32 *q = (s32 *)PlayerActor_GetBodyPos(4);
     v.x = q[0];
     v.y = q[1];

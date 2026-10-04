@@ -1,6 +1,5 @@
 #include "types.h"
 #include "actor/ActorProfile.h"
-#include "game/Unk_020d77a4_Vec3.h"
 #include "npc/NpcTalkCtrl.h"
 #include "npc/NpcAnimCtrl.h"
 #include "npc/NpcSpeechState.h"
@@ -57,8 +56,6 @@ public:
 
 // ---- SpNpcTest and its bases (scene object derived from NpcActor) ----
 
-
-typedef Unk_020d77a4_Vec3 Unk_0203e7a4_Vec;
 
 
 

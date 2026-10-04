@@ -1,5 +1,5 @@
 #include "types.h"
-#include "game/Vec3.h"
+#include "gfx/VecFx32.h"
 
 
 // Declaration-only twins (same layout and virtuals as ActorCollider / ActorFollowCollider): the original vtable order in .data
@@ -9,7 +9,7 @@ class ActorColliderView {
 public:
     ActorColliderView();
     ~ActorColliderView();
-    virtual Vec3 *getPos() = 0;
+    virtual VecFx32 *getPos() = 0;
     virtual u32 getOwnerId() = 0;
     virtual void onCollide(u32 a, u32 b, u32 c);
     void setup(s32 a, s32 b, s32 c, s32 d, u32 e, u8 f, s32 g);
@@ -20,7 +20,7 @@ class ActorFollowColliderView : public ActorColliderView {
 public:
     ActorFollowColliderView();
     ~ActorFollowColliderView();
-    virtual Vec3 *getPos();
+    virtual VecFx32 *getPos();
     virtual u32 getOwnerId();
     void setupForActor(void *p, s32 a, s32 b, u32 c, u32 d, u32 e, u8 f, s32 g);
     /* 0x40 */ u8 *ownerActor;
@@ -30,27 +30,27 @@ class ActorPlacedCollider : public ActorFollowColliderView {
 public:
     ActorPlacedCollider();
     ~ActorPlacedCollider();
-    virtual Vec3 *getPos();
+    virtual VecFx32 *getPos();
     virtual u32 getOwnerId();
-    void setupForActorAt(void *p, Vec3 *v, s32 a, s32 b, u32 c, u32 d, u32 e, u8 f, s32 g);
-    /* 0x44 */ Vec3 position;
+    void setupForActorAt(void *p, VecFx32 *v, s32 a, s32 b, u32 c, u32 d, u32 e, u8 f, s32 g);
+    /* 0x44 */ VecFx32 position;
 };
 
 class StaticCollider : public ActorColliderView {
 public:
     StaticCollider();
     ~StaticCollider();
-    virtual Vec3 *getPos();
+    virtual VecFx32 *getPos();
     virtual u32 getOwnerId();
-    void setupAtPos(Vec3 *v, s32 a, s32 b, u32 c, u32 d, u32 e, u8 f, s32 g);
-    /* 0x40 */ Vec3 position;
+    void setupAtPos(VecFx32 *v, s32 a, s32 b, u32 c, u32 d, u32 e, u8 f, s32 g);
+    /* 0x40 */ VecFx32 position;
 };
 
 class ActorFollowCollider : public ActorColliderView {
 public:
     ActorFollowCollider();
     ~ActorFollowCollider();
-    virtual Vec3 *getPos();
+    virtual VecFx32 *getPos();
     virtual u32 getOwnerId();
     void setupForActor(void *p, s32 a, s32 b, u32 c, u32 d, u32 e, u8 f, s32 g);
     /* 0x40 */ u8 *ownerActor;
@@ -69,10 +69,10 @@ s32 Math_AngleDiffAbs(s32 a, s32 b);
 s32 _ZN5Actor8findByIdEj(s32 v);
 void _ZN19ActorFollowCollider10getOwnerIdEv(void *p);
 void ActorCollider_ClearList(void);
-void Vec_Sub(Vec3 *out, Vec3 *a, Vec3 *b);
+void Vec_Sub(VecFx32 *out, VecFx32 *a, VecFx32 *b);
 s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
-s32 Vec_MagXZ(Vec3 *v);
+s32 Vec_MagXZ(VecFx32 *v);
 }
 
 ActorCollider *gActorColliderList;
@@ -107,11 +107,11 @@ void SpriteAnim::update() {
 
 u32 StaticCollider::getOwnerId() { return FALSE; }
 
-Vec3 *StaticCollider::getPos() { return &position; }
+VecFx32 *StaticCollider::getPos() { return &position; }
 
 u32 ActorPlacedCollider::getOwnerId() { _ZN19ActorFollowCollider10getOwnerIdEv(this); }
 
-Vec3 *ActorPlacedCollider::getPos() { return &position; }
+VecFx32 *ActorPlacedCollider::getPos() { return &position; }
 
 extern "C" void ActorCollider_InitList(void) { ActorCollider_ClearList(); }
 
@@ -195,8 +195,8 @@ BOOL ActorCollider::canCollideWith(ActorCollider *o) {
 
 extern "C" void ActorCollider_ResolveAll() {
     ActorCollider *o;
-    Vec3 *cv;
-    Vec3 d;
+    VecFx32 *cv;
+    VecFx32 d;
     s32 len;
     s32 pen;
     s32 t;
@@ -318,7 +318,7 @@ ActorFollowCollider::ActorFollowCollider() {
 ActorFollowCollider::~ActorFollowCollider() {
 }
 
-Vec3 *ActorFollowCollider::getPos() { return (Vec3 *)(ownerActor + 0x5c); }
+VecFx32 *ActorFollowCollider::getPos() { return (VecFx32 *)(ownerActor + 0x5c); }
 
 u32 ActorFollowCollider::getOwnerId() { return *(u32 *)(ownerActor + 4); }
 
@@ -327,7 +327,7 @@ void ActorFollowCollider::setupForActor(void *p, s32 a, s32 b, u32 c, u32 d, u32
     setup(a, b, c, d, e, f, g);
 }
 
-void StaticCollider::setupAtPos(Vec3 *v, s32 a, s32 b, u32 c, u32 d, u32 e, u8 f, s32 g) {
+void StaticCollider::setupAtPos(VecFx32 *v, s32 a, s32 b, u32 c, u32 d, u32 e, u8 f, s32 g) {
     position = *v;
     setup(a, b, c, d, e, f, g);
 }
@@ -338,7 +338,7 @@ ActorPlacedCollider::ActorPlacedCollider() {
 ActorPlacedCollider::~ActorPlacedCollider() {
 }
 
-void ActorPlacedCollider::setupForActorAt(void *p, Vec3 *v, s32 a, s32 b, u32 c, u32 d, u32 e, u8 f, s32 g) {
+void ActorPlacedCollider::setupForActorAt(void *p, VecFx32 *v, s32 a, s32 b, u32 c, u32 d, u32 e, u8 f, s32 g) {
     setupForActor(p, a, b, c, d, e, f, g);
     position = *v;
 }

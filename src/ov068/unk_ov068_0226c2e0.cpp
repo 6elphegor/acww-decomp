@@ -1,7 +1,7 @@
 // mwcc-version: 1.2/base
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "actor/ActorProfile.h"
-#include "game/Unk_ov083_Vec.h"
 #include "talk/TalkWindowState.h"
 #include "snd/BgmBeatPhase.h"
 #include "npc/NpcAnimCtrl.h"
@@ -38,7 +38,7 @@
 #define NpcFaceAnim_resumeMouthMaterial _ZN11NpcFaceAnim19resumeMouthMaterialEv
 #define NpcFaceAnim_setMouthTexture _ZN11NpcFaceAnim15setMouthTextureEj
 #define NpcLookAt_setManualAngles _ZN9NpcLookAt15setManualAnglesEissss
-#define NpcLookAt_setTarget _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih
+#define NpcLookAt_setTarget _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih
 #define NpcLookAt_setPitchLimit _ZN9NpcLookAt13setPitchLimitEs
 #define NpcMoveAnimSet_setRunAnim _ZN14NpcMoveAnimSet10setRunAnimEi
 #define NpcMoveAnimSet_setWalkAnim _ZN14NpcMoveAnimSet11setWalkAnimEi
@@ -74,7 +74,6 @@ class ActorTalkRequest;
 
 
 
-struct Unk_020d77a4_Vec3;
 
 
 
@@ -171,10 +170,6 @@ typedef BOOL (SpNpcRoostGuest::*SpNpcRoostGuestActFn)();
 struct SpNpcRoostGuestActEntry {
     SpNpcRoostGuestActFn enter;
     SpNpcRoostGuestActFn exit;
-};
-
-struct Unk_ov068_0226c3b4_Vec {
-    s32 x, y, z;
 };
 
 
@@ -295,8 +290,8 @@ extern "C" {
 extern u16 data_020c6cc8;
 
 void PlayerData_GetCurrent();
-Unk_ov068_0226c3b4_Vec *PlayerActor_GetBodyPos(s32 a);
-void FieldPos_ToUnit(s32 *a, s32 *b, Unk_ov068_0226c3b4_Vec *v);
+VecFx32 *PlayerActor_GetBodyPos(s32 a);
+void FieldPos_ToUnit(s32 *a, s32 *b, VecFx32 *v);
 BOOL PlayerActor_IsInAction(s32 a, s32 b);
 void TalkRequest_AddPlayerTalk7(void *p, s32 a);
 BOOL Math_CountDownU16(void *p);
@@ -1242,7 +1237,7 @@ BOOL SpNpcRoostGuest::checkPlayerSeated() {
         return FALSE;
     }
     PlayerData_GetCurrent();
-    Unk_ov068_0226c3b4_Vec v;
+    VecFx32 v;
     v = *PlayerActor_GetBodyPos(4);
     s32 a = 0;
     s32 b = 0;

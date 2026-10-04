@@ -1,15 +1,14 @@
 // mwcc-version: 1.2/sp2
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "room/Unk_ov004_0224882c_Buf.h"
 #include "gfx/Mtx43.h"
 #include "gfx/DebugColor.h"
 #include "actor/ActorProfile.h"
 #include "actor/ActorListNode.h"
 #include "actor/CharacterListNode.h"
-#include "game/Unk_0203e4f0_Vec.h"
 #include "room/FtrActorParts.h"
 #include "gfx/AnimFrameCtrl.h"
-#include "game/Vec3.h"
 #include "item/ItemId.h"
 #include "game/LightLevel.h"
 #include "gfx/G3dResAccess.h"
@@ -40,9 +39,6 @@
 // ================================================================ plain value types
 
 
-typedef Vec3 Unk_ov004_Vec3;
-typedef Vec3 Unk_ov004_022077a4_Vec3;
-typedef Vec3 Unk_ov004_02208284_V3;
 
 // main class 0x02000c8c (3 words, registered for destruction through __register_global_object)
 struct FxVec3 {
@@ -219,7 +215,7 @@ static inline BOOL Unk_ov004_02205820_Is3d(u16 v) {
 // ================================================================ real names of the symbols outside this unit
 #define func_02002d9c _ZN5Actor7preDrawEv   // main
 #define func_02002ec0 _ZN5Actor10postDeleteEv   // main
-#define BoxColliderShape_updateTransform _ZN16BoxColliderShape15updateTransformEP16Unk_0203182c_VeciS1_   // main
+#define BoxColliderShape_updateTransform _ZN16BoxColliderShape15updateTransformEP7VecFx32iS1_   // main
 #define Character_setCharId _ZN9Character9setCharIdEj   // main
 #define Character_getCharId _ZN9Character9getCharIdEv   // main
 #define func_0203e650 _ZN9Character9preDeleteEv   // main
@@ -256,8 +252,8 @@ static inline BOOL Unk_ov004_02205820_Is3d(u16 v) {
 #define LightLevel_getLevel _ZN10LightLevel8getLevelEv   // main
 #define Math_LerpFx _Z11Math_LerpFxiii   // main
 #define LightLevel_update _ZN10LightLevel6updateEv   // main
-#define TouchPicker_addCylinder _ZN11TouchPicker11addCylinderEP17TouchPickCylinderP4Vec3S3_S3_ih   // main
-#define TouchPicker_addBox _ZN11TouchPicker6addBoxEP12TouchPickBoxP4Vec3iiisih   // main
+#define TouchPicker_addCylinder _ZN11TouchPicker11addCylinderEP17TouchPickCylinderP7VecFx32S3_S3_ih   // main
+#define TouchPicker_addBox _ZN11TouchPicker6addBoxEP12TouchPickBoxP7VecFx32iiisih   // main
 #define TouchPicker_pushBox _ZN11TouchPicker7pushBoxEP12TouchPickBox   // main
 #define func_020b69fc _ZN17TouchPickCylinderD2Ev   // main
 #define func_020b6a0c _ZN17TouchPickCylinderC2Ev   // main
@@ -295,7 +291,7 @@ static inline BOOL Unk_ov004_02205820_Is3d(u16 v) {
 #define FtrPhone_execFtrAct00 _ZN8FtrPhone12execFtrAct00Ev   // ov004
 #define FtrPhone_enterFtrAct00 _ZN8FtrPhone13enterFtrAct00Ev   // ov004
 #define FtrPhone_execFtrAct _ZN8FtrPhone10execFtrActEv   // ov004
-#define FtrContactSet_setContact _ZN13FtrContactSet10setContactEiP21Unk_ov004_02235528_V3S1_iS1_S1_si   // ov004
+#define FtrContactSet_setContact _ZN13FtrContactSet10setContactEiP7VecFx32S1_iS1_S1_si   // ov004
 #define FtrContactSet_findContact _ZN13FtrContactSet11findContactEPv   // ov004
 #define FtrContact_getPushAngle _ZN10FtrContact12getPushAngleEv   // ov004
 #define FtrContact_getClampedContactPoint _ZN10FtrContact22getClampedContactPointEv   // ov004
@@ -333,13 +329,13 @@ BOOL FtrMoveAnim_StartPush(void *o, void *a, s32 *b, s32 c);
 BOOL FtrMoveAnim_Step(void *o, void *a, s32 *out);
 s32 Math_StepAngle(s16 *v, s32 target, s32 step);
 s32 func_01ffcb0c(s32 a, s32 b);
-void Vec_RotateY(Unk_ov004_Vec3 *v, s16 a);
-void func_01ffd070(Unk_ov004_Vec3 *out, Unk_ov004_Vec3 *a, Unk_ov004_Vec3 *b);
+void Vec_RotateY(VecFx32 *v, s16 a);
+void func_01ffd070(VecFx32 *out, VecFx32 *a, VecFx32 *b);
 s32 G3dResAccess_findNodeIdx(void *p, u32 id);
 void *PlayerActor_GetActor(s32 a);
 u16 Item_MakeFurniture(s32 a, s32 b);
 s32 FtrMgr_GetSurfaceHeightAtPos(void *v);
-s32 ItemDrop_StartFromLocalPlayer(u16 *a, Unk_ov004_Vec3 *b);
+s32 ItemDrop_StartFromLocalPlayer(u16 *a, VecFx32 *b);
 s32 LightLevel_update(void *p);
 s32 LightLevel_getLevel(void *p);
 s32 Math_LerpFx(s32 a, s32 b, s32 c);
@@ -593,7 +589,7 @@ extern "C" {
 void FtrVisNodes_Destruct(void *);
 void FtrVisNodes_Construct(void *);
 u16 FtrGlowMat_GetBaseEmission();
-BOOL FtrStack_CalcRelPlacement(s32 *idx, Unk_ov004_02205d8c_Vec *pos, s16 *ang, s32 x, s32 a, s16 b);
+BOOL FtrStack_CalcRelPlacement(s32 *idx, VecFx32 *pos, s16 *ang, s32 x, s32 a, s16 b);
 void FtrActor_GetItemId(u16 *out, FtrActor *o);
 s32 FtrActor_PredIsGyroid(void);
 s32 FtrActor_PredIsSeatOrBed(void);
@@ -610,7 +606,7 @@ void FtrActor_UpdateTopItemBoxes(Self *self);
 void FtrActor_UpdateBox(Self *self);
 void FtrActor_ReleaseCollider(Self *self);
 void FtrActor_InitCollider(Self *self);
-void FtrActor_GetBoxSize(Self *self, Unk_ov004_02208284_V3 *out);
+void FtrActor_GetBoxSize(Self *self, VecFx32 *out);
 void FtrActor_UpdateMtx(Self *self);
 s32 FtrActor_CalcWorldMtx(Self *self, s32 a, s32 b);
 u8 FtrActor_GetLayer(Self *self);
@@ -620,7 +616,7 @@ Self *FtrActor_GetParent(Self *self);
 BOOL FtrActor_IsPosClearOfCharacters(Self *self, s32 a, s32 b, s32 c, s32 d);
 BOOL FtrActor_IsWithinDist(Self *self, s32 a, void *p, s32 b);
 BOOL FtrActor_TestPlayerUnk();
-void FtrActor_GetCenter(Self *self, Unk_ov004_02208284_V3 *out);
+void FtrActor_GetCenter(Self *self, VecFx32 *out);
 void FtrActor_GetCorner(Self *self, void *out, s32 i);
 void FtrActor_LocalToWorld(Self *self, void *out, void *src);
 u32 FtrActor_GetHeap(Self *self);
@@ -1101,7 +1097,7 @@ BOOL FtrActor::onExecute() {
     s32 v[4];
     if (isPreview() == 0) {
         FtrSoundEmitter_attach(soundEmitter);
-        FtrActor_GetCenter(this, (Vec3 *)v);
+        FtrActor_GetCenter(this, (VecFx32 *)v);
         centerPos[0] = v[0];
         centerPos[1] = v[1];
         centerPos[2] = v[2];
@@ -1534,10 +1530,10 @@ extern "C" void FtrActor_GetCorner(Self *self, void *out, s32 i) {
 }
 
 // @022088c0
-extern "C" void FtrActor_GetCenter(Self *self, Unk_ov004_02208284_V3 *out) {
+extern "C" void FtrActor_GetCenter(Self *self, VecFx32 *out) {
     u32 i = 0;
-    Unk_ov004_02208284_V3 v;
-    Unk_ov004_02208284_V3 t;
+    VecFx32 v;
+    VecFx32 t;
     v.x = i;
     v.y = i;
     v.z = i;
@@ -1661,7 +1657,7 @@ extern "C" s32 FtrActor_CalcWorldMtx(Self *self, s32 a, s32 b) {
         Mtx43_Translate(&data_021f47e0, x, r4, r6);
         Mtx43_RotateY(&data_021f47e0, ((FtrStackLink *)(PT(0x178)))->getRelAngle());
     } else {
-        Unk_ov004_02208284_V3 v;
+        VecFx32 v;
         s32 ang;
         v.x = S32(0x5c);
         v.y = S32(0x60);
@@ -1703,11 +1699,11 @@ extern "C" void FtrActor_UpdateMtx(Self *self) {
 s16 sFtrPreviewPitch;
 
 // @02208470
-extern "C" void FtrActor_GetBoxSize(Self *self, Unk_ov004_02208284_V3 *out) {
+extern "C" void FtrActor_GetBoxSize(Self *self, VecFx32 *out) {
     static FxVec3 vs[3] = {FxVec3(0x2000, 0x2000, 0x2000),
                                          FxVec3(0x4000, 0x2000, 0x2000),
                                          FxVec3(0x4000, 0x2000, 0x4000)};
-    volatile Unk_ov004_02208284_V3 r;
+    volatile VecFx32 r;
     Scene_GetCurrent();
     {
         FxVec3 *q = &vs[S32(0x780)];
@@ -1729,9 +1725,9 @@ extern "C" void FtrActor_GetBoxSize(Self *self, Unk_ov004_02208284_V3 *out) {
 
 // @0220838c
 extern "C" void FtrActor_InitCollider(Self *self) {
-    Unk_ov004_02208284_V3 a;
+    VecFx32 a;
     s32 b[3];
-    Unk_ov004_02208284_V3 c;
+    VecFx32 c;
     if (!((FtrActor *)(self))->isPreview()) {
         u32 r6;
         s32 k;
@@ -1774,9 +1770,9 @@ extern "C" void FtrActor_ReleaseCollider(Self *self) {
 
 // @02208284
 extern "C" void FtrActor_UpdateBox(Self *self) {
-    Unk_ov004_02208284_V3 a;
+    VecFx32 a;
     s32 b[3];
-    Unk_ov004_02208284_V3 c;
+    VecFx32 c;
     if (!((FtrActor *)(self))->isPreview()) {
         s32 r4;
         s32 t;
@@ -1815,7 +1811,7 @@ extern "C" void FtrActor_UpdateBox(Self *self) {
 extern "C" void FtrActor_UpdateTopItemBoxes(Self *self) {
     if (B8(0x284) == 0 && S32(0x784) == 1) {
         Unk_ov004_02207854_List l;
-        Unk_ov004_02208284_V3 v;
+        VecFx32 v;
         void *grid;
         u32 i;
         _ZN11FtrTileListC1Ev(&l);
@@ -1854,8 +1850,8 @@ void FtrActor::setupFromSpawnArg() {
             u32 pad2;
         } f;
         f.bits = *(FtrSpawnArg *)&param;
-        Unk_ov004_022077a4_Vec3 p1, p2, r;
-        volatile Unk_ov004_022077a4_Vec3 q;
+        VecFx32 p1, p2, r;
+        volatile VecFx32 q;
         if (!isPreview()) {
             FieldPos_FromBlockUnitCenter(&position, 0, 0, f.bits.tileX, f.bits.tileZ);
             position.y = FtrMgr_GetSurfaceHeightAtPos(&position);
@@ -1864,8 +1860,8 @@ void FtrActor::setupFromSpawnArg() {
             drawScaleZ = 0x1000;
             colliderScale = 0x1000;
         } else {
-            p1 = *(Unk_ov004_022077a4_Vec3 *)gCameraEye;
-            p2 = *(Unk_ov004_022077a4_Vec3 *)gCameraLookAt;
+            p1 = *(VecFx32 *)gCameraEye;
+            p2 = *(VecFx32 *)gCameraLookAt;
             Vec_Sub(&r, &p2, &p1);
             Vec_SafeNormalize(&r);
             s32 qz = func_01ffcb0c(r.z, 0x4000);
@@ -1955,9 +1951,9 @@ const u8 sFtrPolygonIds[0x1c] = {0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d,
 
 // @02207c40
 void FtrActor::getTiles(Unk_ov004_02207854_List *l, void *x, s32 y) {
-    Unk_ov004_022077a4_Vec3 c;
-    Unk_ov004_022077a4_Vec3 d;
-    Unk_ov004_022077a4_Vec3 e;
+    VecFx32 c;
+    VecFx32 d;
+    VecFx32 e;
     s32 ox, oy;
     c.x = position.x;
     c.y = position.y;
@@ -2081,7 +2077,7 @@ void FtrActor::writeTiles(s32 unused, void *x, s32 y, u8 flag) {
         getTiles(&l, x, y);
         a = 0xfff1;
         if (mapLayer == 1) {
-            Unk_ov004_022077a4_Vec3 v1, v2;
+            VecFx32 v1, v2;
             static FxVec3 s0(0, 0, 0);
             static FxVec3 s1(0, 0, 0x1000);
             MTX_MultVec43(&s0, &data_021f47e0, &v1);
@@ -2264,8 +2260,8 @@ BOOL FtrActor::canMoveBy(s32 a) {
 // @022072b4
 BOOL FtrActor::canMoveTo(s32 a, s32 b) {
     s32 x0, y0, x1, y1;
-    Unk_0203e4f0_Vec v1;
-    Unk_0203e4f0_Vec v2;
+    VecFx32 v1;
+    VecFx32 v2;
     Unk_ov004_02207854_List c1;
     Unk_ov004_02207854_List c2;
     FtrActor *obj;
@@ -2295,7 +2291,7 @@ BOOL FtrActor::canMoveTo(s32 a, s32 b) {
     if (!((FtrTopItems *)(topItems))->canPickUp(this)) {
         return FALSE;
     }
-    Unk_0203e4f0_Vec *pp = (Unk_0203e4f0_Vec *)(cam + 0x5c);
+    VecFx32 *pp = (VecFx32 *)(cam + 0x5c);
     v1.x = pp->x;
     v1.y = pp->y;
     v1.z = pp->z;
@@ -2406,8 +2402,8 @@ void FtrActor::spawnActorC0AtTile(s32 a) {
     void *cam = PlayerActor_GetBodyPos(4);
     if (cam) {
         Unk_ov004_02207854_List c;
-        Unk_0203e4f0_Vec v1;
-        Unk_0203e4f0_Vec v2;
+        VecFx32 v1;
+        VecFx32 v2;
         _ZN11FtrTileListC1Ev(&c);
         ((FtrActor *)(this))->getTiles(&c, 0, 0);
         s32 hi = 0;
@@ -2446,15 +2442,15 @@ void FtrActor::spawnActorC0AtTile(s32 a) {
 void FtrActor::spawnActorC0AtCenter() {
     void *cam = PlayerActor_GetBodyPos(4);
     if (cam) {
-        Unk_0203e4f0_Vec v;
-        FtrActor_GetCenter(this, (Vec3 *)&v);
+        VecFx32 v;
+        FtrActor_GetCenter(this, (VecFx32 *)&v);
         FtrActor_SpawnActorC0(&v, (u32)Math_AngleXZ(&v, cam));
     }
 }
 
 // @02206fe0
-void FtrActor::spawnEffectAt(Unk_0203e4f0_Vec *v) {
-    Unk_0203e4f0_Vec t;
+void FtrActor::spawnEffectAt(VecFx32 *v) {
+    VecFx32 t;
     t.x = v->x;
     t.y = v->y;
     t.z = v->z;
@@ -2467,12 +2463,12 @@ void FtrActor::spawnEffectAtCorner(s32 a) {
     s32 q[3];
     s32 r[3];
     FtrActor_GetCorner(this, p, a);
-    FtrActor_GetCenter(this, (Vec3 *)q);
+    FtrActor_GetCenter(this, (VecFx32 *)q);
     s32 y = position.y;
     r[0] = (p[0] + q[0]) >> 1;
     r[1] = y;
     r[2] = (p[2] + q[2]) >> 1;
-    spawnEffectAt((Unk_0203e4f0_Vec *)r);
+    spawnEffectAt((VecFx32 *)r);
 }
 
 // @02206f8c
@@ -2757,8 +2753,8 @@ void FtrCollider::clearOwner() {
 // @02206744
 void FtrCollider::onEdgeContact(CollisionEdge *a, Actor *b, s32 c) {
     CollisionVec2 v0, v1, v2, mid, d1, d2;
-    volatile Unk_ov004_02206744_V3 pos;
-    Unk_ov004_02206744_V3 w1, w2, buf;
+    volatile VecFx32Ctor pos;
+    VecFx32Ctor w1, w2, buf;
     s32 t18, t1c, t20, t24, len2;
     s32 r7;
     s32 r5;
@@ -2766,11 +2762,11 @@ void FtrCollider::onEdgeContact(CollisionEdge *a, Actor *b, s32 c) {
     void *chk = PlayerActor_GetActor(4);
     if (b != NULL && (void *)b == chk) {
         if (owner != NULL && ((FtrActor *)owner)->isAct(1)) {
-            Unk_ov004_02206744_V3 *pv;
+            VecFx32Ctor *pv;
             t20 = Math_Atan2(a->normal.x, a->normal.y);
             t24 = t20 + 0x8000;
             r7 = (u16)(t24 - b->rotY);
-            pv = (Unk_ov004_02206744_V3 *)&b->prevPosition;
+            pv = (VecFx32Ctor *)&b->prevPosition;
             px = b->prevPosition.x;
             pos.x = px;
             pos.y = pv->y;
@@ -2817,7 +2813,7 @@ void FtrCollider::onEdgeContact(CollisionEdge *a, Actor *b, s32 c) {
                                 r5 = (s16)(t20 - ((FtrActor *)owner)->rotY);
                                 if (FtrActor_GetLayer((Self *)owner) == 1) {
                                     void *q;
-                                    FtrActor_GetCenter((Self *)owner, (Vec3 *)&buf);
+                                    FtrActor_GetCenter((Self *)owner, (VecFx32 *)&buf);
                                     q = FtrActorGrid_getActorAtPos(FtrActorGrid_GetInstance(), &buf, 0);
                                     if (q != NULL) {
                                         r5 = (s16)(t20 - ((FtrActor *)q)->rotY - ((FtrStackLink *)((u8 *)owner + 0x178))->getRelAngle());
@@ -2846,7 +2842,7 @@ char *sFtrModelNamePtr = sFtrModelName;
 // @02206570
 void FtrCollider::slideOwnerForWideFtr(Actor *b) {
     FtrActor *o;
-    Unk_ov004_02206744_V3 tmp[2];
+    VecFx32Ctor tmp[2];
     o = (FtrActor *)owner;
     if (*(s32 *)((u8 *)o + 0x780) == 1) {
         static FxVec3 tbl0[2] = {FxVec3(0, 0, 0), FxVec3(-0x2000, 0, 0)};
@@ -2860,7 +2856,7 @@ void FtrCollider::slideOwnerForWideFtr(Actor *b) {
         FtrActor_LocalToWorld((Self *)owner, &tmp[1], &tbl1[1]);
         if (r6 < Vec_Distance(&b->position, &tmp[1])) {
             if (Vec_NotEqual((u8 *)owner + 0x140, &tbl0[0])) {
-                Unk_ov004_02206744_V3 *d = (Unk_ov004_02206744_V3 *)((u8 *)owner + 0x140);
+                VecFx32Ctor *d = (VecFx32Ctor *)((u8 *)owner + 0x140);
                 FxVec3 *s = &tbl0[0];
                 d->x = s->x;
                 d->y = s->y;
@@ -2869,7 +2865,7 @@ void FtrCollider::slideOwnerForWideFtr(Actor *b) {
             }
         } else {
             if (Vec_NotEqual((u8 *)owner + 0x140, &tbl0[1])) {
-                Unk_ov004_02206744_V3 *d = (Unk_ov004_02206744_V3 *)((u8 *)owner + 0x140);
+                VecFx32Ctor *d = (VecFx32Ctor *)((u8 *)owner + 0x140);
                 d->x = ((u32 *)tbl0)[3];
                 d->y = ((u32 *)tbl0)[4];
                 d->z = ((u32 *)tbl0)[5];
@@ -3096,7 +3092,7 @@ void FtrTopItem::clear() {
 }
 
 // @022062f8
-Unk_ov004_02205d8c_Vec *FtrTopItem::getPos() {
+VecFx32 *FtrTopItem::getPos() {
     return &relPos;
 }
 
@@ -3106,7 +3102,7 @@ u16 *FtrTopItem::getItem() {
 }
 
 // @022062c8
-BOOL FtrTopItem::set(u16 *id, Unk_ov004_02205d8c_Vec *pos) {
+BOOL FtrTopItem::set(u16 *id, VecFx32 *pos) {
     if (isSet() == 0) {
         item = *id;
         relPos.x = pos->x;
@@ -3120,7 +3116,7 @@ BOOL FtrTopItem::set(u16 *id, Unk_ov004_02205d8c_Vec *pos) {
 // @02206234
 void FtrTopItem::draw(FtrActor *o) {
     if (isSet()) {
-        Unk_ov004_02205d8c_Vec z, d, p, s;
+        VecFx32 z, d, p, s;
         data_021f47e0 = o->modelMtx;
         s32 x, y, c;
         c = getPos()->z;
@@ -3175,7 +3171,7 @@ void FtrTopItems::drawAll(FtrActor *o) {
 }
 
 // @0220614c
-BOOL FtrTopItems::add(u16 *id, Unk_ov004_02205d8c_Vec *pos) {
+BOOL FtrTopItems::add(u16 *id, VecFx32 *pos) {
     u32 i;
     for (i = 0; i < 4; i++) {
         if (get(i)->isSet() == 0) {
@@ -3228,7 +3224,7 @@ BOOL FtrTopItems::pickUpAll(FtrActor *o) {
             s32 hy = y >> 4;
             u16 *cell = BlockMap_GetItemPtr(grid, hx, hy, x - (hx << 4), y - (hy << 4), 1);
             if (cell != NULL && Item_IsNormalItem(cell)) {
-                Unk_ov004_02205d8c_Vec v, d;
+                VecFx32 v, d;
                 FieldPos_FromUnitCenter(&v, x, y);
                 v.y = o->surfaceHeight;
                 MTX_MultVec43(&v, &data_021f47e0, &d);
@@ -3254,7 +3250,7 @@ void FtrTopItems::dropAll(FtrActor *o) {
     for (i = 0; i < 4; i++) {
         FtrTopItem *e = get(i);
         if (e->isSet()) {
-            Unk_ov004_02205d8c_Vec z, d;
+            VecFx32 z, d;
             s32 a, b;
             z.x = 0;
             z.y = 0;
@@ -3302,7 +3298,7 @@ s32 FtrStackLink::getParentIndex() {
 }
 
 // @02205e80
-Unk_ov004_02205d8c_Vec *FtrStackLink::getRelPos() {
+VecFx32 *FtrStackLink::getRelPos() {
     return &relPos;
 }
 
@@ -3312,7 +3308,7 @@ s32 FtrStackLink::getRelAngle() {
 }
 
 // @02205e58
-BOOL FtrStackLink::set(s32 idx, Unk_ov004_02205d8c_Vec *pos, s32 ang) {
+BOOL FtrStackLink::set(s32 idx, VecFx32 *pos, s32 ang) {
     if (idx >= 0 && (u32)idx < 0x1c) {
         parentIndex = idx;
         relPos.x = pos->x;
@@ -3327,7 +3323,7 @@ BOOL FtrStackLink::set(s32 idx, Unk_ov004_02205d8c_Vec *pos, s32 ang) {
 // @02205e20
 BOOL FtrStackLink::attachAt(s32 x, s32 y, s16 z) {
     s32 idx;
-    Unk_ov004_02205d8c_Vec pos;
+    VecFx32 pos;
     s16 ang;
     if (FtrStack_CalcRelPlacement(&idx, &pos, &ang, x, y, z)) {
         return set(idx, &pos, ang);
@@ -3336,13 +3332,13 @@ BOOL FtrStackLink::attachAt(s32 x, s32 y, s16 z) {
 }
 
 // @02205d8c
-extern "C" BOOL FtrStack_CalcRelPlacement(s32 *idx, Unk_ov004_02205d8c_Vec *pos, s16 *ang, s32 x, s32 a, s16 b) {
+extern "C" BOOL FtrStack_CalcRelPlacement(s32 *idx, VecFx32 *pos, s16 *ang, s32 x, s32 a, s16 b) {
     void *mgr = FtrActorGrid_GetInstance();
     FtrActor *e = FtrActorGrid_getActor(mgr, x, a, 0);
     s32 i = FtrActorTable_indexOf(FtrActorTable_GetInstance(), e);
     if (e != NULL && i != -1) {
-        Unk_ov004_02205d8c_Vec t;
-        Unk_ov004_02205d8c_Vec d;
+        VecFx32 t;
+        VecFx32 d;
         FieldPos_FromUnitCenter(&t, x, a);
         t.y = e->surfaceHeight;
         FtrActor_CalcWorldMtx((Self *)e, 0, 0);
@@ -3595,14 +3591,14 @@ BOOL FtrActor::startRotate(s32 a) {
 
 // @022058c0
 BOOL FtrActor::startPush(s16 a) {
-    Unk_ov004_Vec3 v;
+    VecFx32 v;
     v.x = 0;
     v.y = 0;
     v.z = 0x2000;
     Vec_RotateY(&v, a);
     if (canMoveBy((s32)&v)) {
-        Unk_ov004_Vec3 w;
-        func_01ffd070(&w, (Vec3 *)&position, &v);
+        VecFx32 w;
+        func_01ffd070(&w, (VecFx32 *)&position, &v);
         targetPos[0] = w.x;
         targetPos[1] = w.y;
         targetPos[2] = w.z;
@@ -3619,14 +3615,14 @@ BOOL FtrActor::startPush(s16 a) {
 
 // @02205820
 BOOL FtrActor::startPull(s16 a) {
-    Unk_ov004_Vec3 v;
+    VecFx32 v;
     v.x = 0;
     v.y = 0;
     v.z = 0x2000;
     Vec_RotateY(&v, (s16)(a + 0x8000));
     if (canMoveBy((s32)&v)) {
-        Unk_ov004_Vec3 w;
-        func_01ffd070(&w, (Vec3 *)&position, &v);
+        VecFx32 w;
+        func_01ffd070(&w, (VecFx32 *)&position, &v);
         targetPos[0] = w.x;
         targetPos[1] = w.y;
         targetPos[2] = w.z;
@@ -3734,14 +3730,14 @@ BOOL FtrActor::enterAppear() {
     wobbleSpeed = 0x2710;
     wobbleAmp = 0x800;
     if (PlayerActor_GetActor(4)) {
-        Unk_ov004_Vec3 pos;
+        VecFx32 pos;
         u16 t;
         FtrActor_GetCenter(this, &pos);
         if (mapLayer == 0) pos.y = 0;
         else pos.y = FtrMgr_GetSurfaceHeightAtPos(&pos);
         pos.y += 0x800;
         t = Item_MakeFurniture(ftrIndex, 0);
-        Unk_ov004_Vec3 c;
+        VecFx32 c;
         c.x = pos.x;
         c.y = pos.y;
         c.z = pos.z;
@@ -3759,8 +3755,8 @@ void FtrActor::execAppear() {
         if (appearFrame == 0xc) PlayerActor_PlayLocalSe(0x4c7);
         if (appearFrame == 0xf) {
             FtrCenterPosBuf buf;
-            FtrActor_GetCenter(this, (Vec3 *)&buf);
-            spawnEffectAt((Unk_0203e4f0_Vec *)&buf);
+            FtrActor_GetCenter(this, (VecFx32 *)&buf);
+            spawnEffectAt((VecFx32 *)&buf);
         }
     } else if (appearFrame < 0x11) {
         appearFrame = appearFrame + 1;
@@ -3913,7 +3909,7 @@ BOOL FtrActor::enterRemove() {
     Unk_ov004_0224882c_Buf buf;
     onRemove();
     actFrame = 0;
-    FtrActor_GetCenter(this, (Vec3 *)&buf);
+    FtrActor_GetCenter(this, (VecFx32 *)&buf);
     FtrMgr_SetRemovePos(&buf);
     PlayerActor_PlayLocalSe(0x4c8);
     return TRUE;
@@ -3928,8 +3924,8 @@ void FtrActor::execRemove() {
         ProcBase_RequestDelete(this);
     }
     if (actFrame == 1) {
-        FtrActor_GetCenter(this, (Vec3 *)&buf);
-        spawnEffectAt((Unk_0203e4f0_Vec *)&buf);
+        FtrActor_GetCenter(this, (VecFx32 *)&buf);
+        spawnEffectAt((VecFx32 *)&buf);
     }
     actFrame++;
 }
@@ -3947,8 +3943,8 @@ void FtrActor::execHide() {
     if (drawScale == 0) {
         setAct(7);
     } else if (actFrame == 1) {
-        FtrActor_GetCenter(this, (Vec3 *)&buf);
-        spawnEffectAt((Unk_0203e4f0_Vec *)&buf);
+        FtrActor_GetCenter(this, (VecFx32 *)&buf);
+        spawnEffectAt((VecFx32 *)&buf);
     }
     actFrame++;
 }

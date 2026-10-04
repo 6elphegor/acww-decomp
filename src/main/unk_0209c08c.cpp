@@ -8,7 +8,6 @@
 #include "gfx/TexTransfer.h"
 #include "sys/RecordFile.h"
 #include "town/TownAcreCell.h"
-#include "room/Unk_0209c614_Actor.h"
 #include "gfx/VramTask.h"
 #include "town/TownAcreGrid.h"
 #include "gfx/TexVramTask.h"

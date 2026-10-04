@@ -1,6 +1,6 @@
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "Unk_020d8c7c.h"
-#include "game/Vec3.h"
 #include "gfx/GfxFrameHooks.h"
 #include "gfx/ViewFrustum.h"
 #include "game/FxVec3.h"
@@ -16,7 +16,7 @@
 
 
 
-static inline void setVec(Vec3* o, s32 x, s32 y, s32 z) {
+static inline void setVec(VecFx32* o, s32 x, s32 y, s32 z) {
     o->x = x;
     o->y = y;
     o->z = z;
@@ -40,7 +40,7 @@ static inline BOOL is1(u8 v) {
 struct ScenePos {
     ScenePos();
     ~ScenePos();
-    Vec3 pos;     // 0x00
+    VecFx32 pos;     // 0x00
     u32 spawnParam;   // 0x0c
     s16 angle;   // 0x10
     u8 scene;    // 0x12
@@ -129,12 +129,12 @@ void _ZN11CommManager14setMemberCountEj(void*, s32);
 u32 NetArea_GetSlotScene(u32 i);
 void Scene_Request(s32 a, s32 b, s32 c, s32 d);
 s32 Scene_SaveFadeIn(s32 a);
-u32 PlayerActor_GetResumeTransform(Vec3* a, s16* b);
-void FieldPos_ToUnit(s32* a, s32* b, Vec3* c);
-void FieldPos_SnapToUnitCenter(Vec3* out, Vec3* in);
+u32 PlayerActor_GetResumeTransform(VecFx32* a, s16* b);
+void FieldPos_ToUnit(s32* a, s32* b, VecFx32* c);
+void FieldPos_SnapToUnitCenter(VecFx32* out, VecFx32* in);
 void* TownBlockMap_Get();
-BOOL Town_FindPlayerHouse(void* o, Vec3* v, s32* a, s32* b);
-BOOL Town_FindGateHouse(void* o, Vec3* v, s32* a, s32* b);
+BOOL Town_FindPlayerHouse(void* o, VecFx32* v, s32* a, s32* b);
+BOOL Town_FindGateHouse(void* o, VecFx32* v, s32* a, s32* b);
 void Clock_GetDayMonth(u8 *out);
 void OverlayMgr_Release(u32 v);
 void OverlayMgr_Acquire(u32 v);
@@ -257,28 +257,28 @@ u8 SceneWarp_GetFadeOut(SceneWarp* e);
 BOOL SceneWarp_HasNoPos(SceneWarp* e);
 u32 SceneWarp_GetSpawnParam(SceneWarp* e);
 s32 SceneWarp_GetAngle(SceneWarp* e);
-Vec3* SceneWarp_GetPos(SceneWarp* e);
+VecFx32* SceneWarp_GetPos(SceneWarp* e);
 void FieldScene_Request(s32 a, s32 b);
 u8 Scene_GetRequestedScene();
 u8 SceneWarp_GetScene(u8* p);
 void SceneWarp_Clear(u8* p);
 void Scene_ResetTownReturnPos(s32 unused);
-BOOL Scene_SetTownReturnPos(s32 unused, s32 id, Vec3* pos, u32 w, s16 s, s32 p, s32 q);
-BOOL Scene_SetSavedPos(s32 unused, s32 id, Vec3* pos, u32 w, s16 s, s32 p, s32 q);
+BOOL Scene_SetTownReturnPos(s32 unused, s32 id, VecFx32* pos, u32 w, s16 s, s32 p, s32 q);
+BOOL Scene_SetSavedPos(s32 unused, s32 id, VecFx32* pos, u32 w, s16 s, s32 p, s32 q);
 BOOL SceneExit_GetDoor(s32 unused, s32 id, u32* type, s16* s);
-BOOL SceneExit_SnapPos(s32 a, s32 id, Vec3* out, Vec3* in);
-BOOL SceneWarp_RequestAt(SceneWarp* e, u8 id, Vec3* v, u32 w, s16 s, u8 p, u8 q);
+BOOL SceneExit_SnapPos(s32 a, s32 id, VecFx32* out, VecFx32* in);
+BOOL SceneWarp_RequestAt(SceneWarp* e, u8 id, VecFx32* v, u32 w, s16 s, u8 p, u8 q);
 BOOL SceneWarp_RequestFade(SceneWarp* e, u8 id, u8 p, u8 q);
 BOOL SceneWarp_RequestScene(SceneWarp* e, u8 id);
-void SceneWarp_Init(SceneWarp* e, u8 id, Vec3* v, u32 w, s16 s, u8 p, u8 q, s16 r, u8 t);
+void SceneWarp_Init(SceneWarp* e, u8 id, VecFx32* v, u32 w, s16 s, u8 p, u8 q, s16 r, u8 t);
 BOOL SceneId_IsValid(u32 id);
 s32 ScenePos_GetUnitZ(ScenePos* i);
 s32 ScenePos_GetUnitX(ScenePos* i);
 u8 ScenePos_GetScene(ScenePos* i);
 s32 ScenePos_GetAngle(ScenePos* i);
 u32 ScenePos_GetSpawnParam(ScenePos* i);
-Vec3* ScenePos_GetPos(ScenePos* i);
-void ScenePos_Set(ScenePos* i, s32 id, Vec3* v, u32 w, s16 s, s32 p, s32 q);
+VecFx32* ScenePos_GetPos(ScenePos* i);
+void ScenePos_Set(ScenePos* i, s32 id, VecFx32* v, u32 w, s16 s, s32 p, s32 q);
 void ScenePos_Reset(ScenePos* i);
 u8* Scene_GetTouchPicker();
 BOOL GroundSeason_IsSnow();
@@ -302,8 +302,8 @@ s32 SceneId_GetMuseumRoom(u32 a);
 BOOL Scene_InNookShop();
 BOOL SceneId_IsNookShop(u32 a);
 void Scene_SavePlayerPos(s32 unused, s32 add);
-s32 SceneExit_ResolveSpecial(s32 a, s32 id, u8* type, Vec3* pos, u32* w, s16* s, s32* x, s32* y, u8* p, u8* q);
-s32 SceneExit_Resolve(s32 a, s32 id, u8* type, Vec3* pos, u32* w, s16* s, u8* p, u8* q, s32* ox, s32* oy);
+s32 SceneExit_ResolveSpecial(s32 a, s32 id, u8* type, VecFx32* pos, u32* w, s16* s, s32* x, s32* y, u8* p, u8* q);
+s32 SceneExit_Resolve(s32 a, s32 id, u8* type, VecFx32* pos, u32* w, s16* s, u8* p, u8* q, s32* ox, s32* oy);
 BOOL SceneWarp_RequestExit(s32 a, s32 id);
 s32 Scene_GetNookShop(void);
 s32 SceneId_GetNookShop(u32 x);
@@ -1087,10 +1087,10 @@ ScenePos::~ScenePos() {}
 
 extern "C" void ScenePos_Reset(ScenePos* i) {
     static FxVec3 v(0x30000, 0, 0x30000);
-    ScenePos_Set(i, 0, (Vec3*)&v, 0x800000, 0, -1, -1);
+    ScenePos_Set(i, 0, (VecFx32*)&v, 0x800000, 0, -1, -1);
 }
 
-extern "C" void ScenePos_Set(ScenePos* i, s32 id, Vec3* v, u32 w, s16 s, s32 p, s32 q) {
+extern "C" void ScenePos_Set(ScenePos* i, s32 id, VecFx32* v, u32 w, s16 s, s32 p, s32 q) {
     i->scene = id;
     i->pos.x = v->x;
     i->pos.y = v->y;
@@ -1101,7 +1101,7 @@ extern "C" void ScenePos_Set(ScenePos* i, s32 id, Vec3* v, u32 w, s16 s, s32 p, 
     i->unitZ = q;
 }
 
-extern "C" Vec3* ScenePos_GetPos(ScenePos* i) { return &i->pos; }
+extern "C" VecFx32* ScenePos_GetPos(ScenePos* i) { return &i->pos; }
 
 extern "C" u32 ScenePos_GetSpawnParam(ScenePos* i) { return i->spawnParam; }
 
@@ -1134,7 +1134,7 @@ SceneWarp::SceneWarp() {
 
 SceneWarp::~SceneWarp() {}
 
-extern "C" void SceneWarp_Init(SceneWarp* e, u8 id, Vec3* v, u32 w, s16 s, u8 p, u8 q, s16 r, u8 t) {
+extern "C" void SceneWarp_Init(SceneWarp* e, u8 id, VecFx32* v, u32 w, s16 s, u8 p, u8 q, s16 r, u8 t) {
     e->type = id;
     e->pos.x = v->x;
     e->pos.y = v->y;
@@ -1167,7 +1167,7 @@ extern "C" BOOL SceneWarp_RequestFade(SceneWarp* e, u8 id, u8 p, u8 q) {
     return FALSE;
 }
 
-extern "C" BOOL SceneWarp_RequestAt(SceneWarp* e, u8 id, Vec3* v, u32 w, s16 s, u8 p, u8 q) {
+extern "C" BOOL SceneWarp_RequestAt(SceneWarp* e, u8 id, VecFx32* v, u32 w, s16 s, u8 p, u8 q) {
     if (e->type == 0x3f) {
         e->type = id;
         e->pos.x = v->x;
@@ -1183,7 +1183,7 @@ extern "C" BOOL SceneWarp_RequestAt(SceneWarp* e, u8 id, Vec3* v, u32 w, s16 s, 
     return FALSE;
 }
 
-extern "C" s32 SceneExit_ResolveSpecial(s32 a, s32 id, u8* type, Vec3* pos, u32* w, s16* s, s32* x, s32* y, u8* p, u8* q) {
+extern "C" s32 SceneExit_ResolveSpecial(s32 a, s32 id, u8* type, VecFx32* pos, u32* w, s16* s, s32* x, s32* y, u8* p, u8* q) {
     if (id != -1) {
         SceneInfo* d = gCurSceneInfo;
         if (d) {
@@ -1196,7 +1196,7 @@ extern "C" s32 SceneExit_ResolveSpecial(s32 a, s32 id, u8* type, Vec3* pos, u32*
                         SceneWarp* e = &entries[id];
                         void* o = TownBlockMap_Get();
                         s32 va, vb;
-                        Vec3 v;
+                        VecFx32 v;
                         switch (entries[id].type) {
                         case 0x3e:
                             if (Town_FindPlayerHouse(o, &v, &va, &vb)) {
@@ -1231,7 +1231,7 @@ extern "C" s32 SceneExit_ResolveSpecial(s32 a, s32 id, u8* type, Vec3* pos, u32*
                         case 0x3f:
                             *type = ScenePos_GetScene(&sSavedScenePos);
                             {
-                                Vec3* src = ScenePos_GetPos(&sSavedScenePos);
+                                VecFx32* src = ScenePos_GetPos(&sSavedScenePos);
                                 pos->x = src->x;
                                 pos->y = src->y;
                                 pos->z = src->z;
@@ -1246,7 +1246,7 @@ extern "C" s32 SceneExit_ResolveSpecial(s32 a, s32 id, u8* type, Vec3* pos, u32*
                         case 0x3c:
                             *type = ScenePos_GetScene(&gTownReturnPos);
                             {
-                                Vec3* src = ScenePos_GetPos(&gTownReturnPos);
+                                VecFx32* src = ScenePos_GetPos(&gTownReturnPos);
                                 pos->x = src->x;
                                 pos->y = src->y;
                                 pos->z = src->z;
@@ -1269,7 +1269,7 @@ extern "C" s32 SceneExit_ResolveSpecial(s32 a, s32 id, u8* type, Vec3* pos, u32*
     return 1;
 }
 
-extern "C" s32 SceneExit_Resolve(s32 a, s32 id, u8* type, Vec3* pos, u32* w, s16* s, u8* p, u8* q, s32* ox, s32* oy) {
+extern "C" s32 SceneExit_Resolve(s32 a, s32 id, u8* type, VecFx32* pos, u32* w, s16* s, u8* p, u8* q, s32* ox, s32* oy) {
     s32 x, y;
     s32 r = SceneExit_ResolveSpecial(a, id, type, pos, w, s, &x, &y, p, q);
     if (ox) *ox = x;
@@ -1311,7 +1311,7 @@ extern "C" BOOL SceneWarp_RequestExit(s32 a, s32 id) {
     u8 t, u, v;
     s16 s;
     s32 w, x, y;
-    Vec3 vec;
+    VecFx32 vec;
     s32 r = SceneExit_Resolve(a, id, &t, &vec, (u32*)&w, &s, &u, &v, &x, &y);
     switch (r) {
     case 0:
@@ -1352,10 +1352,10 @@ extern "C" BOOL SceneExit_GetDoor(s32 unused, s32 id, u32* type, s16* s) {
     return FALSE;
 }
 
-extern "C" BOOL SceneExit_SnapPos(s32 a, s32 id, Vec3* out, Vec3* in) {
+extern "C" BOOL SceneExit_SnapPos(s32 a, s32 id, VecFx32* out, VecFx32* in) {
     u32 type;
     s16 s;
-    Vec3 t;
+    VecFx32 t;
     if (SceneExit_GetDoor(a, id, &type, &s)) {
         FieldPos_SnapToUnitCenter(&t, in);
         setVec(out, t.x, in->y, t.z);
@@ -1374,7 +1374,7 @@ extern "C" BOOL SceneExit_SnapPos(s32 a, s32 id, Vec3* out, Vec3* in) {
     return FALSE;
 }
 
-extern "C" BOOL Scene_SetSavedPos(s32 unused, s32 id, Vec3* pos, u32 w, s16 s, s32 p, s32 q) {
+extern "C" BOOL Scene_SetSavedPos(s32 unused, s32 id, VecFx32* pos, u32 w, s16 s, s32 p, s32 q) {
     if (SceneId_IsValid(id)) {
         ScenePos_Set(&sSavedScenePos, id, pos, w, s, p, q);
         return TRUE;
@@ -1387,7 +1387,7 @@ extern "C" void Scene_SavePlayerPos(s32 unused, s32 add) {
     static s32 minZ = data_020c8cc0 + 0x1000;
     s16 s;
     s32 p, q;
-    Vec3 v;
+    VecFx32 v;
     u32 r = PlayerActor_GetResumeTransform(&v, &s);
     p = 0;
     q = 0;
@@ -1398,7 +1398,7 @@ extern "C" void Scene_SavePlayerPos(s32 unused, s32 add) {
 }
 
 
-extern "C" BOOL Scene_SetTownReturnPos(s32 unused, s32 id, Vec3* pos, u32 w, s16 s, s32 p, s32 q) {
+extern "C" BOOL Scene_SetTownReturnPos(s32 unused, s32 id, VecFx32* pos, u32 w, s16 s, s32 p, s32 q) {
     if (SceneId_IsValid(id)) {
         ScenePos_Set(&gTownReturnPos, id, pos, w, s, p, q);
         return TRUE;
@@ -1421,7 +1421,7 @@ extern "C" void FieldScene_Request(s32 a, s32 b) {
     }
 }
 
-extern "C" Vec3* SceneWarp_GetPos(SceneWarp* e) { return &e->pos; }
+extern "C" VecFx32* SceneWarp_GetPos(SceneWarp* e) { return &e->pos; }
 
 extern "C" s32 SceneWarp_GetAngle(SceneWarp* e) { return e->angle; }
 

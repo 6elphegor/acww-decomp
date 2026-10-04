@@ -34,10 +34,6 @@ class SpNpcTortimerBrightNights;
 class SpNpcTortimerBrightNightsTalk;
 struct TalkStartMsg;
 
-struct Unk_ov085_Vec {
-    s32 x, y, z;
-};
-
 
 extern "C" {
 void *PlayerData_GetCurrent();
@@ -102,7 +98,6 @@ public:
 
 
 
-struct Unk_020d77a4_Vec3;
 
 
 

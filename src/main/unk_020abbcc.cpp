@@ -1,7 +1,7 @@
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "game/GroundInfoBase.h"
 #include "gfx/NNSG3dResMatData.h"
-#include "game/Vec3.h"
 #include "gfx/SceneLightsCol.h"
 #include "gfx/Mtx43.h"
 #include "gfx/Model.h"
@@ -22,18 +22,18 @@ void NNSi_G3dModifyMatFlag(u32 a, u32 b, u32 c);
 void Mtx43_SetTranslate(void *m, s32 a, s32 b, s32 c);
 void Mtx43_RotateX(void *m, s32 a);
 s32 Ground_GetDefaultY(s32 a);
-void _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii(GroundInfoBase *p, Vec3 *pos, s32 a, s32 b);
+void _ZN10GroundInfo9initAtPosEP7VecFx32ii(GroundInfoBase *p, VecFx32 *pos, s32 a, s32 b);
 s32 _ZN14GroundInfoBase9getHeightEi(GroundInfoBase *p, s32 a);
 void GroundInfo_Destruct(GroundInfoBase *p);
 BOOL Scene_InMuseumRoom(void);
-s32 WorldCurve_ToCurved(Vec3 *out, Vec3 *in);
+s32 WorldCurve_ToCurved(VecFx32 *out, VecFx32 *in);
 Col SceneLights_GetRoomColor(void);
-u8 ObjShadow_GetCharaAlpha(Vec3 *p, s32 q);
+u8 ObjShadow_GetCharaAlpha(VecFx32 *p, s32 q);
 extern u8 gFieldSceneKind;
 extern u8 data_021f47e0[];
 }
 
-extern "C" void CharaShadow_Draw(Vec3 *pos, s32 a, s32 b, s32 c);
+extern "C" void CharaShadow_Draw(VecFx32 *pos, s32 a, s32 b, s32 c);
 
 u32 sCharaShadowPolyId = 1;
 
@@ -69,7 +69,7 @@ extern "C" void CharaShadow_Unload() {
     sCharaShadowModel.release();
 }
 
-extern "C" void CharaShadow_DrawFaded(Vec3 *pos, s32 a, s32 b, s32 c) {
+extern "C" void CharaShadow_DrawFaded(VecFx32 *pos, s32 a, s32 b, s32 c) {
     if (c == 0) {
         c = 1;
     }
@@ -80,12 +80,12 @@ extern "C" void CharaShadow_DrawFaded(Vec3 *pos, s32 a, s32 b, s32 c) {
     CharaShadow_Draw(pos, a, b, r6);
 }
 
-extern "C" void CharaShadow_Draw(Vec3 *pos, s32 a, s32 b, s32 c) {
+extern "C" void CharaShadow_Draw(VecFx32 *pos, s32 a, s32 b, s32 c) {
     GroundInfoBase buf1;
     GroundInfoBase buf2;
-    Vec3 pos2;
-    Vec3 out;
-    Vec3 scale;
+    VecFx32 pos2;
+    VecFx32 out;
+    VecFx32 scale;
     s32 off, d, absd;
     if (a == 0) {
         return;
@@ -93,14 +93,14 @@ extern "C" void CharaShadow_Draw(Vec3 *pos, s32 a, s32 b, s32 c) {
     s32 lvl = ObjShadow_GetCharaAlpha(pos, a);
     off = 0;
     if (gFieldSceneKind == 0 ? 1 : off) {
-        _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii(&buf1, pos, 0, 0);
+        _ZN10GroundInfo9initAtPosEP7VecFx32ii(&buf1, pos, 0, 0);
         off = _ZN14GroundInfoBase9getHeightEi(&buf1, 0);
         if (off > 0) {
             off = 0;
         }
         GroundInfo_Destruct(&buf1);
     } else if (Scene_InMuseumRoom()) {
-        _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii(&buf2, pos, 0, 0);
+        _ZN10GroundInfo9initAtPosEP7VecFx32ii(&buf2, pos, 0, 0);
         off = _ZN14GroundInfoBase9getHeightEi(&buf2, 0);
         GroundInfo_Destruct(&buf2);
     }
@@ -151,8 +151,8 @@ extern "C" void CharaShadow_Draw(Vec3 *pos, s32 a, s32 b, s32 c) {
     }
 }
 
-extern "C" void CharaShadow_DrawPlayer(Vec3 *pos, s32 a) {
-    Vec3 v;
+extern "C" void CharaShadow_DrawPlayer(VecFx32 *pos, s32 a) {
+    VecFx32 v;
     v = *pos;
     v.y = v.y - (Ground_GetDefaultY(0) + 0x800);
     CharaShadow_Draw(&v, a, 0xe00, 0x1000);

@@ -2,13 +2,13 @@
 #define TALK_ACTORTALKREQUEST_H
 
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "talk/TalkMsgRequest.h"
 #include "talk/TalkStartMsg.h"
 
 class ChoiceList;
 class NpcActor;
 struct TalkSubSceneParams;
-struct Unk_02014420_Vec2;
 
 // Talk request of an actor conversation (0xac bytes; vtable 0x020d7710): TalkMsgRequest plus the two talking actors,
 // emotion state, the deferred task runner and the sub-scene parameters (0x64..0xa8). Base of the SpNpc*Talk /
@@ -95,7 +95,7 @@ public:
     BOOL takeItemWait();
     BOOL taskGiveItem();
     BOOL requestPlayRandomMelody();
-    BOOL requestPlayMelody(Unk_02014420_Vec2 *p);
+    BOOL requestPlayMelody(Vec2 *p);
     BOOL requestEatItem();
     BOOL requestItemAct12();
     BOOL requestReturnItem();

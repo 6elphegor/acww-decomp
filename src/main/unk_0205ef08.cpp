@@ -1,11 +1,8 @@
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "gfx/Mtx43.h"
 #include "game/GroundInfo.h"
 #include "player/FishBobberStates.h"
-
-struct Unk_0205f1e8_Vec {
-    s32 x, y, z;
-};
 
 
 
@@ -55,19 +52,19 @@ s32 _s32_div_f(s32 a, s32 b);
 s32 Math_ApproachS32(s32 *dst, s32 src, s32 step, s32 target, s32 lim);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 Math_Atan2(s32 a, s32 b);
-s32 Effect_Create(s32 kind, Unk_0205f1e8_Vec *v, void *a, s32 b);
-s32 Effect_SetPosition(s32 h, Unk_0205f1e8_Vec *v, void *a, s32 b);
+s32 Effect_Create(s32 kind, VecFx32 *v, void *a, s32 b);
+s32 Effect_SetPosition(s32 h, VecFx32 *v, void *a, s32 b);
 s32 Effect_End(s32 h);
-void Vec_ShiftRightTo(Unk_0205f1e8_Vec *out, Unk_0205f1e8_Vec *in, s32 n);
-void VEC_Add(Unk_0205f1e8_Vec *a, Unk_0205f1e8_Vec *b, Unk_0205f1e8_Vec *out);
-void VEC_Subtract(Unk_0205f1e8_Vec *a, Unk_0205f1e8_Vec *b, Unk_0205f1e8_Vec *out);
-s32 Vec_DistXZ(Unk_0205f1e8_Vec *a, Unk_0205f1e8_Vec *b);
-void Vec_ShiftRight(Unk_0205f1e8_Vec *v, s32 n);
+void Vec_ShiftRightTo(VecFx32 *out, VecFx32 *in, s32 n);
+void VEC_Add(VecFx32 *a, VecFx32 *b, VecFx32 *out);
+void VEC_Subtract(VecFx32 *a, VecFx32 *b, VecFx32 *out);
+s32 Vec_DistXZ(VecFx32 *a, VecFx32 *b);
+void Vec_ShiftRight(VecFx32 *v, s32 n);
 void Mtx43_SetTranslate(Mtx43 *m, s32 x, s32 y, s32 z);
 void FieldFish_StartCastSplash();
 void *func_0205fd94(u8 *tbl, u32 idx);
-void WorldCurve_FromCurved(void *p, Unk_0205f1e8_Vec *v);
-void WorldCurve_ToCurved(Unk_0205f1e8_Vec *a, Unk_0205f1e8_Vec *b);
+void WorldCurve_FromCurved(void *p, VecFx32 *v);
+void WorldCurve_ToCurved(VecFx32 *a, VecFx32 *b);
 s32 func_0205fbb8(void *p);
 void func_0205553c(void *e, s32 a);
 void GroundInfo_Destruct(void *p);
@@ -85,7 +82,7 @@ char sPlayerPalettePathBuf[0x14];
 
 extern "C" BOOL ItemSync_Apply(u8 *p);
 
-extern "C" BOOL Fishing_StepArc(Unk_0205f1e8_Vec *a, s32 k, Unk_0205f1e8_Vec *b, s32 *c, u8 flag)
+extern "C" BOOL Fishing_StepArc(VecFx32 *a, s32 k, VecFx32 *b, s32 *c, u8 flag)
 {
     s32 m, n, d, r1, r2;
     if (flag) {

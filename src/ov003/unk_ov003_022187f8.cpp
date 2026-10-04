@@ -1,6 +1,6 @@
 // mwcc-version: 1.2/base
 #include "types.h"
-#include "game/Unk_020b4f8c_Vec.h"
+#include "gfx/VecFx32.h"
 #include "game/SceneWarp.h"
 #include "game/FxVec3.h"
 #include "game/SceneInfo.h"
@@ -38,7 +38,7 @@ SceneWarp sFieldSceneObjects[21] = {
     SceneWarp(0x10, data_ov003_022355a0, 0x22c00000, -0x8000, 2, 2, 0, 0),
     SceneWarp(0x01, data_ov003_022355a0, 0x22c00000, -0x8000, 2, 2, 0, 0),
     SceneWarp(0x0b, data_ov003_022355a0, 0x22c00000, -0x8000, 2, 2, 0, 0),
-    SceneWarp(0x3f, Unk_020b4f8c_Vec(0, 0, 0), 0, 0, 2, 2, 0, 0),
+    SceneWarp(0x3f, VecFx32Copy(0, 0, 0), 0, 0, 2, 2, 0, 0),
 };
 SceneWarpList sFieldSceneObjectList = {sFieldSceneObjects, 0x15};
 }

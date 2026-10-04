@@ -1,6 +1,6 @@
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "actor/CharacterListNode.h"
-#include "game/Unk_0203e4f0_Vec.h"
 #include "talk/TalkRequestEntry.h"
 #include "game/CharacterList.h"
 #include "net/CommManager.h"
@@ -117,11 +117,11 @@ u32 Talk_AttachRequestToWindow0(s32);
 }
 
 extern "C" {
-s32 Math_AngleXZ(Unk_0203e4f0_Vec *, Unk_0203e4f0_Vec *);
+s32 Math_AngleXZ(VecFx32 *, VecFx32 *);
 }
 
 extern "C" {
-long long Vec_MagSqXZ(Unk_0203e4f0_Vec *);
+long long Vec_MagSqXZ(VecFx32 *);
 }
 
 extern "C" {

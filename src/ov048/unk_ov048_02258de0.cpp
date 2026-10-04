@@ -1,4 +1,5 @@
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "save/Pattern.h"
 #include "npc/NpcAnimCtrl.h"
 #include "npc/NpcSpeechState.h"
@@ -30,16 +31,8 @@ class NpcActor;
 class SpNpcCopper;
 class SpNpcCopperTalk;
 
-struct Unk_ov048_Vec {
-    s32 x, y, z;
-};
-
-struct SpNpcCopperVecLocal : Unk_ov048_Vec {
+struct SpNpcCopperVecLocal : VecFx32 {
     SpNpcCopperVecLocal() {}
-};
-
-struct Unk_ov048_0225b278_Vec {
-    s32 x, y, z;
 };
 
 
@@ -54,12 +47,12 @@ extern void *sSpNpcCopperMsgKey;
 extern void *sSpNpcCopperTexturePathPtr;
 extern void *sSpNpcCopperModelPathPtr;
 extern const u8 sCopperWifiStartMsgs[4];
-extern const Unk_ov048_Vec sCopperGateCheckPos;
-extern const Unk_ov048_Vec sCopperTurnBackPos;
-extern const Unk_ov048_Vec sCopperSendOffWalkPos;
-extern const Unk_ov048_Vec sCopperSendOffExitPos;
-extern const Unk_ov048_Vec sCopperArrivalWalkPos;
-extern const Unk_ov048_Vec sCopperDepartWalkPos;
+extern const VecFx32 sCopperGateCheckPos;
+extern const VecFx32 sCopperTurnBackPos;
+extern const VecFx32 sCopperSendOffWalkPos;
+extern const VecFx32 sCopperSendOffExitPos;
+extern const VecFx32 sCopperArrivalWalkPos;
+extern const VecFx32 sCopperDepartWalkPos;
 extern CommManager *gCommManager;
 extern u8 gScreenTransition;
 extern u16 data_020c6cc8;
@@ -171,14 +164,14 @@ s32 SceneWarp_RequestFade(void *, s32, s32, s32);
 void * TownSessionState_Get();
 void * TownSessionState_GetTravelState(void *);
 Actor *PlayerActor_GetActor(s32);
-void FieldPos_ToUnit(s32 *, s32 *, Unk_ov048_0225b278_Vec *);
+void FieldPos_ToUnit(s32 *, s32 *, VecFx32 *);
 void _ZN15TownTravelState7setModeEj(void *, s32);
 void _ZN15TownTravelState8setAngleEi(void *, s32);
-s32 Scene_SetSavedPos(void *, s32, Unk_ov048_0225b278_Vec *, s32, s32, s32, s32);
+s32 Scene_SetSavedPos(void *, s32, VecFx32 *, s32, s32, s32, s32);
 void Camera_SaveView();
 void SaveManager_RequestAct17();
 void SaveManager_RequestAct14();
-s32 SceneWarp_RequestAt(void *, s32, Unk_ov048_0225b278_Vec *, s32, s32, s32, s32);
+s32 SceneWarp_RequestAt(void *, s32, VecFx32 *, s32, s32, s32, s32);
 s32 NetSession_GetLastSyncSlot();
 void * PlayerData_GetBySessionSlot();
 void _ZN15TalkWindowState13detachRequestEv(void *);
@@ -227,7 +220,7 @@ s32 Comm_BeginHostSession();
 void * TownId_GetName(void *);
 void * _ZN8PlayerId7getNameEv(void *);
 void Net_SetLocalGameInfo(void *, s32);
-Unk_ov048_Vec * PlayerActor_GetBodyPos(s32);
+VecFx32 * PlayerActor_GetBodyPos(s32);
 void _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(void *, s32, s32, s32);
 s32 _ZN10SpNpcActor8onDeleteEv();
 s32 Scene_GetCurrent();
@@ -390,7 +383,6 @@ public:
 
 
 
-struct Unk_020d77a4_Vec3;
 
 
 
@@ -820,8 +812,8 @@ BOOL SpNpcCopper::mainAct05() {
     SpNpcCopperVecLocal a;
     SpNpcCopperVecLocal b;
     PlayerData_GetCurrent();
-    Unk_ov048_Vec *p = PlayerActor_GetBodyPos(4);
-    *(Unk_ov048_Vec *)&a = *p;
+    VecFx32 *p = PlayerActor_GetBodyPos(4);
+    *(VecFx32 *)&a = *p;
     switch (talk.subStep) {
     case 0:
         if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) == 0) {
@@ -829,7 +821,7 @@ BOOL SpNpcCopper::mainAct05() {
         }
         break;
     case 1:
-        *(Unk_ov048_Vec *)&b = sCopperTurnBackPos;
+        *(VecFx32 *)&b = sCopperTurnBackPos;
         PlayerActor_RequestWalkTo(&b, 0x266, 4);
         talk.subStep = 3;
         break;
@@ -929,7 +921,7 @@ BOOL SpNpcCopper::mainAct07() {
 }
 
 BOOL SpNpcCopper::act08Step0() {
-    Unk_ov048_Vec v;
+    VecFx32 v;
     if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) == 0) {
         Camera_SetMode14();
         v = sCopperSendOffWalkPos;
@@ -962,7 +954,7 @@ BOOL SpNpcCopper::act08Step2() {
 BOOL SpNpcCopper::act08Step3() {
     u8 *base = _ZN5Actor13findByProfileEjPS_(0x73, 0);
     u8 *r4 = base + 0x564;
-    Unk_ov048_Vec v;
+    VecFx32 v;
     if (_ZN13NpcActionCtrl9getActionEv(&actionCtrl) == 3) {
         if (_ZN13NpcActionCtrl12isActionDoneEv(&actionCtrl)) {
             _ZN13NpcActionCtrl12requestStandEjt(&actionCtrl, 1, data_020c6cc8);
@@ -1188,7 +1180,7 @@ extern "C" const u8 sCopperWifiStartMsgs[4];
 extern "C" void *sSpNpcCopperTexturePathPtr;
 extern "C" SpNpcCopperTalkScript sSpNpcCopperTalkScripts[23];
 extern "C" void *sSpNpcCopperMsgKey;
-extern "C" const Unk_ov048_Vec sCopperDepartWalkPos;
+extern "C" const VecFx32 sCopperDepartWalkPos;
 extern "C" Unk_ov048_State_Ent sSpNpcCopperActTable[18];
 extern "C" void *data_ov048_0225c8dc[2];
 extern "C" void *data_ov048_0225cacc[2];
@@ -1319,15 +1311,15 @@ extern "C" void *data_ov048_0225c744[2];
 extern "C" void *data_ov048_0225c73c[2];
 extern "C" void *data_ov048_0225c72c[2];
 extern "C" void *data_ov048_0225c734[2];
-extern "C" const Unk_ov048_Vec sCopperGateCheckPos;
+extern "C" const VecFx32 sCopperGateCheckPos;
 extern "C" char sSpNpcCopperKey[];
 extern "C" void *sSpNpcCopperModelPathPtr;
-extern "C" const Unk_ov048_Vec sCopperTurnBackPos;
-extern "C" const Unk_ov048_Vec sCopperSendOffExitPos;
+extern "C" const VecFx32 sCopperTurnBackPos;
+extern "C" const VecFx32 sCopperSendOffExitPos;
 extern "C" char sSpNpcCopperTexturePath[];
 extern "C" ActorProfile sSpNpcCopperProfile;
-extern "C" const Unk_ov048_Vec sCopperSendOffWalkPos;
-extern "C" const Unk_ov048_Vec sCopperArrivalWalkPos;
+extern "C" const VecFx32 sCopperSendOffWalkPos;
+extern "C" const VecFx32 sCopperArrivalWalkPos;
 
 extern "C" char sSpNpcCopperSequence4Key[] = {'s', 'p', '_', 'e', 't', 'c', '_', 's', 'e', 'q', 'u', 'e', 'n', 'c', 'e', '4', 0};
 
@@ -1353,7 +1345,7 @@ BOOL SpNpcCopper::mainAct08() {
 }
 
 BOOL SpNpcCopper::act09Step0() {
-    Unk_ov048_Vec v;
+    VecFx32 v;
     s32 a = Net_GetJoiningAid();
     if (Unk_ov048_0225b4e4_Is2()) {
         if (PlayerActor_SetNetFollowPaused(1, a)) {
@@ -1461,7 +1453,7 @@ BOOL SpNpcCopper::act0BStep1() {
     s32 a = NetSession_GetLastSyncSlot();
     void *o = TalkWindow_Get(0);
     if (*(s32 *)((u8 *)o + 4) == 0) {
-        Unk_ov048_Vec v;
+        VecFx32 v;
         _ZN15TalkWindowState13detachRequestEv(o);
         v = sCopperDepartWalkPos;
         PlayerActor_RequestWalkTo(&v, 0x35c, a);
@@ -1517,7 +1509,7 @@ extern "C" SpNpcCopperTalkScript sSpNpcCopperTalkScripts[23] = {
 
 extern "C" void *sSpNpcCopperMsgKey = sSpNpcCopperKey;
 
-extern "C" const Unk_ov048_Vec sCopperDepartWalkPos = {0x10000, 0x0, 0x5000};
+extern "C" const VecFx32 sCopperDepartWalkPos = {0x10000, 0x0, 0x5000};
 
 extern "C" Unk_ov048_State_Ent sSpNpcCopperActTable[18] = {
     {*(SpNpcCopper::Fn *)data_ov048_0225cabc, *(SpNpcCopper::Fn *)data_ov048_0225cab4},
@@ -1822,7 +1814,7 @@ BOOL SpNpcCopper::mainAct0C() {
         void *h;
         s32 a, b;
         s32 s;
-        Unk_ov048_0225b278_Vec v;
+        VecFx32 v;
         Actor *e;
         h = TownSessionState_GetTravelState(TownSessionState_Get());
         e = PlayerActor_GetActor(4);
@@ -1853,7 +1845,7 @@ BOOL SpNpcCopper::mainAct0D() {
         void *h;
         s32 a, b;
         s32 s;
-        Unk_ov048_0225b278_Vec v;
+        VecFx32 v;
         Actor *e;
         h = TownSessionState_GetTravelState(TownSessionState_Get());
         e = PlayerActor_GetActor(4);
@@ -2182,15 +2174,15 @@ void SpNpcCopperTalk::startGoHome() {
     *(u16 *)(owner + 0xe3e) = 200;
     setScript(8);
 }
-extern "C" const Unk_ov048_Vec sCopperGateCheckPos = {0x10000, 0x0, 0x10000};
+extern "C" const VecFx32 sCopperGateCheckPos = {0x10000, 0x0, 0x10000};
 
 extern "C" char sSpNpcCopperKey[] = {'s', 'p', '_', 'n', 'p', 'c', '_', 'g', 'a', 't', 'e', 'k', 'e', 'e', 'p', 'e', 'r', 0};
 
 extern "C" void *sSpNpcCopperModelPathPtr = sSpNpcCopperModelPath;
 
-extern "C" const Unk_ov048_Vec sCopperTurnBackPos = {0x10000, 0x0, 0x11800};
+extern "C" const VecFx32 sCopperTurnBackPos = {0x10000, 0x0, 0x11800};
 
-extern "C" const Unk_ov048_Vec sCopperSendOffExitPos = {0x10000, 0x0, 0x2000};
+extern "C" const VecFx32 sCopperSendOffExitPos = {0x10000, 0x0, 0x2000};
 
 void SpNpcCopperTalk::onMessageEnd(u32) {
     static Unk_ov048_0225a8d4_Row tbl[28] = {
@@ -2518,9 +2510,9 @@ extern "C" char sSpNpcCopperTexturePath[] = {'n', 'p', 'c', '_', 's', 'p', '/', 
 
 extern "C" ActorProfile sSpNpcCopperProfile = {(void *(*)())SpNpcCopper_Create, 0x72, 0x77, 2, 0x5000, 0x5000, 0x3e800};
 
-extern "C" const Unk_ov048_Vec sCopperSendOffWalkPos = {0x10000, 0x0, 0x13000};
+extern "C" const VecFx32 sCopperSendOffWalkPos = {0x10000, 0x0, 0x13000};
 
-extern "C" const Unk_ov048_Vec sCopperArrivalWalkPos = {0x10000, 0x0, 0x11800};
+extern "C" const VecFx32 sCopperArrivalWalkPos = {0x10000, 0x0, 0x11800};
 
 void SpNpcCopperTalk::onChoice(u32) {
     if (GameStart_IsActive() == 0) {
@@ -3314,8 +3306,8 @@ BOOL SpNpcCopper::checkPlayerAtGate() {
     if (_ZN11CommManager12isSlotActiveEi(gCommManager, gCommManager->myAid) == 0) {
         return FALSE;
     }
-    Unk_ov048_Vec *p = PlayerActor_GetBodyPos(4);
-    *(Unk_ov048_Vec *)&v = *p;
+    VecFx32 *p = PlayerActor_GetBodyPos(4);
+    *(VecFx32 *)&v = *p;
     if (v.z <= sCopperGateCheckPos.z) {
         PlayerData_GetCurrent();
         if (_ZN11CommManager8isOnlineEv(g)) {

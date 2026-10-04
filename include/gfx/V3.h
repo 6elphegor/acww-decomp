@@ -2,6 +2,7 @@
 #define GFX_V3_H
 
 #include "types.h"
+#include "gfx/VecFx32.h"
 
 // Plain s32 vector views (split from gfx/VecFx32.h so headers that need VecFx32 do not clash with file-local
 // `V3` typedefs).

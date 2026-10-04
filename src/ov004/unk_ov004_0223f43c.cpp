@@ -1,39 +1,16 @@
 // mwcc-version: 1.2/base
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "gfx/Camera.h"
 #include "gfx/DebugColor.h"
 
-struct Unk_0223f44c_Vec {
-    s32 x, y, z;
-};
-
-struct Unk_0223f6bc_V3 {
-    s32 x, y, z;
-    Unk_0223f6bc_V3(s32 a, s32 b, s32 c) {
-        x = a;
-        y = b;
-        z = c;
-    }
-};
-
-// Vector member of the static camera tables. It has a (empty) destructor, which makes the compiler keep a stack
-// temporary for every initialiser (the original __sinit has a 0x4c byte frame).
-struct Unk_ov004_0223f44c_V3D {
-    s32 x, y, z;
-    Unk_ov004_0223f44c_V3D(s32 a, s32 b, s32 c) {
-        x = a;
-        y = b;
-        z = c;
-    }
-    ~Unk_ov004_0223f44c_V3D() {}
-};
 
 // 0x20-byte static table; the destructor is main's func_020b... (see notes: needs main 0x0203c230 renamed)
 struct CameraSetup {
     s16 a, b;
     s32 w0;
-    Unk_ov004_0223f44c_V3D p;
-    Unk_ov004_0223f44c_V3D q;
+    VecFx32CtorDtor p;
+    VecFx32CtorDtor q;
     ~CameraSetup();
 };
 
@@ -61,7 +38,7 @@ struct CameraTargetView {
 
 extern "C" {
 extern Camera *gCamera;
-extern Unk_0223f44c_Vec gVec3Zero;
+extern VecFx32 gVec3Zero;
 extern s16 data_02135f44[];
 extern u32 sCameraPoseGrid[][3];
 extern CameraSetup sCameraKkShowSetup;
@@ -71,11 +48,11 @@ extern u32 data_ov004_0224f31c[];
 extern u32 data_ov004_0224f32c[];
 extern u32 data_ov004_0224f33c[];
 extern CameraKkShowShot sCameraKkShowShots[];
-extern const Unk_0223f44c_Vec data_ov004_02246838;
-extern const Unk_0223f44c_Vec data_ov004_0224682c;
+extern const VecFx32 data_ov004_02246838;
+extern const VecFx32 data_ov004_0224682c;
 // linker-provided absolute symbol (overlay id 2 == the value 2): the original loads this constant from the literal pool
 
-Unk_0223f44c_Vec *PlayerActor_GetBodyPos(s32 a);
+VecFx32 *PlayerActor_GetBodyPos(s32 a);
 s32 Scene_GetCurrent(void);
 s32 Random_GlobalBelow(s32 a);
 s32 Math_AngleXZ(void *a, void *b);
@@ -98,7 +75,7 @@ s16 _ZN6Camera6getYawEv(Camera *o);
 s16 _ZN6Camera8getPitchEv(Camera *o);
 s32 _ZN6Camera7setModeEi(Camera *o, s32 a);
 void _ZN6Camera11updateBlendEv(Camera *o);
-void _ZN6Camera14setLookAtOrbitEP14Unk_0203b350_Viii(Camera *o, void *a, s32 b, s32 c, s32 d);
+void _ZN6Camera14setLookAtOrbitEP7VecFx32iii(Camera *o, void *a, s32 b, s32 c, s32 d);
 void _ZN6Camera14setBlendParamsEPj(Camera *o, u32 *src);
 void _ZN6Camera14setBlendPresetEi(Camera *o, s32 a);
 void _ZN6Camera8loadPoseEiP10CameraPose(Camera *o, s32 a, s32 b);
@@ -109,7 +86,7 @@ s32 _ZN6Camera15getRoomEdgeSideEPi(Camera *o, s32 *p);
 #define Camera_getPitch _ZN6Camera8getPitchEv
 #define Camera_setMode _ZN6Camera7setModeEi
 #define Camera_updateBlend _ZN6Camera11updateBlendEv
-#define Camera_setLookAtOrbit _ZN6Camera14setLookAtOrbitEP14Unk_0203b350_Viii
+#define Camera_setLookAtOrbit _ZN6Camera14setLookAtOrbitEP7VecFx32iii
 #define Camera_setBlendParams _ZN6Camera14setBlendParamsEPj
 #define Camera_setBlendPreset _ZN6Camera14setBlendPresetEi
 #define Camera_loadPose _ZN6Camera8loadPoseEiP10CameraPose
@@ -123,7 +100,7 @@ void Camera_KkShowWideShot(Camera *o);
 
 #define Unk_0223f44c_Finish(o)                                          \
     do {                                                                \
-        Unk_0223f44c_Vec cam;                                           \
+        VecFx32 cam;                                           \
         s32 p, q;                                                       \
         Camera_updateBlend(o);                                               \
         Camera_GetLookAtPoint(&cam, o);                                         \
@@ -135,14 +112,14 @@ void Camera_KkShowWideShot(Camera *o);
 extern "C" {
 
 void Camera_UpdateRoomFocus(Camera *self, CameraTargetView *a) {
-    Unk_0223f44c_Vec *p;
+    VecFx32 *p;
     s32 lim;
     s32 sp4;
     s32 sp8;
     s32 inv;
     s32 sc;
     s32 dy;
-    Unk_0223f44c_Vec d;
+    VecFx32 d;
     s32 ang, r7;
     s32 t;
     if (a == 0) {
@@ -214,7 +191,7 @@ BOOL Camera_InitMode10(Camera *self) {
 BOOL Camera_StartBlendToPlayer(Camera *self) {
     Camera_loadPose(self, sCameraPoseGrid[1][1], 0);
     Camera_setBlendPreset(self, 0);
-    Unk_0223f44c_Vec *p = PlayerActor_GetBodyPos(4);
+    VecFx32 *p = PlayerActor_GetBodyPos(4);
     self->targetFocus.x = p->x;
     self->targetFocus.y = p->y;
     self->targetFocus.z = p->z;
@@ -223,7 +200,7 @@ BOOL Camera_StartBlendToPlayer(Camera *self) {
 }
 
 void Camera_UpdateMode10(Camera *self) {
-    Unk_0223f44c_Vec v;
+    VecFx32 v;
     Camera_updateBlend(self);
     Camera_GetLookAtPoint(&v, self);
     s32 a = Camera_getPitch(self);
@@ -301,10 +278,10 @@ void Camera_UpdateMode12(Camera *o) {
     Unk_0223f44c_Finish(o);
 }
 
-BOOL Camera_SetMode16At(Unk_0223f44c_Vec *v) {
+BOOL Camera_SetMode16At(VecFx32 *v) {
     Camera *c = gCamera;
     if (c) {
-        Unk_0223f44c_Vec *d = (Unk_0223f44c_Vec *)&c->focusPointA;
+        VecFx32 *d = (VecFx32 *)&c->focusPointA;
         *d = *v;
         return Camera_setMode(gCamera, 0x10);
     }
@@ -321,8 +298,8 @@ BOOL Camera_InitMode16(Camera *o) {
 }
 
 void Camera_UpdateMode16(Camera *o) {
-    Unk_0223f44c_Vec *p = PlayerActor_GetBodyPos(4);
-    Unk_0223f44c_Vec a, b;
+    VecFx32 *p = PlayerActor_GetBodyPos(4);
+    VecFx32 a, b;
     s32 d;
     func_01ffd070(&a, p, &o->focusPointA);
     Vec_ShiftRightTo(&b, &a, 1);
@@ -386,8 +363,8 @@ void Camera_UpdateMode20(Camera *o) {
     Unk_0223f44c_Finish(o);
 }
 
-void Camera_SetMode20At(Unk_0223f44c_Vec *v) {
-    *(Unk_0223f44c_Vec *)&gCamera->focusPointA = *v;
+void Camera_SetMode20At(VecFx32 *v) {
+    *(VecFx32 *)&gCamera->focusPointA = *v;
     Camera_setMode(gCamera, 0x14);
 }
 
@@ -450,7 +427,7 @@ void Camera_UpdateMode18(Camera *o) {
         o->target.h0 = o->target.h0 + e->yawStep;
         m->yawOffset = m->yawOffset + e->yawStep;
         {
-            Unk_0223f6bc_V3 t(e->orbitX, 0, e->orbitZ);
+            VecFx32Ctor t(e->orbitX, 0, e->orbitZ);
             VEC_Add(&o->targetFocus.x, &t, &o->targetFocus.x);
             Vec_RotateY(&t, m->yawOffset);
             VEC_Subtract(&o->targetFocus.x, &t, &o->targetFocus.x);
@@ -543,16 +520,16 @@ DebugColor data_ov004_022589a4(31, 20, 20, 31);
 DebugColor data_ov004_02258994(20, 20, 31, 31);
 DebugColor data_ov004_02258990(31, 31, 20, 31);
 // Data order: this unit is placed object by object (see object_order.txt).
-const Unk_0223f44c_Vec data_ov004_02246838 = {0x10000, 0, 0x11000};
+const VecFx32 data_ov004_02246838 = {0x10000, 0, 0x11000};
 DebugColor data_ov004_022589a0(20, 31, 20, 31);
-const Unk_0223f44c_Vec data_ov004_0224682c = {0x10000, 0, 0x11000};
+const VecFx32 data_ov004_0224682c = {0x10000, 0, 0x11000};
 u32 data_ov004_0224f32c[4] = {0, 0x3c000, 0x5000, 0x5000};
 DebugColor data_ov004_02258998(20, 31, 31, 31);
 DebugColor data_ov004_0225899c(20, 24, 24, 31);
-CameraSetup sCameraKkShowSetup = {0, 0x1100, 0x14100, Unk_ov004_0223f44c_V3D(0, 0x1e14, 0xf0a), Unk_ov004_0223f44c_V3D(0x13600, 0x200, 0x17600)};
+CameraSetup sCameraKkShowSetup = {0, 0x1100, 0x14100, VecFx32CtorDtor(0, 0x1e14, 0xf0a), VecFx32CtorDtor(0x13600, 0x200, 0x17600)};
 u32 data_ov004_0224f31c[4] = {0, 0x438000, 0, 0x384000};
 u32 data_ov004_0224f33c[4] = {0, 0x7d0000, 0x7d0000, 0};
-CameraSetup sCameraKkShowWideSetup = {0, -0x200, 0x6a00, Unk_ov004_0223f44c_V3D(0, 0x1e14, 0xf0a), Unk_ov004_0223f44c_V3D(0x10400, 0x200, 0x12b00)};
+CameraSetup sCameraKkShowWideSetup = {0, -0x200, 0x6a00, VecFx32CtorDtor(0, 0x1e14, 0xf0a), VecFx32CtorDtor(0x10400, 0x200, 0x12b00)};
 CameraKkShowShot sCameraKkShowShots[14] = {
     {0xf9fc, 0x2000, 0x157c2, -2009, -8523, 0xe700, 0x0, -12544, 3328, 40, 0},
     {0xf623, 0x1b00, 0x11405, -1571, 0x1bfb, 0xb000, 0x20, 15104, 1280, -48, 0},
@@ -570,4 +547,4 @@ CameraKkShowShot sCameraKkShowShots[14] = {
     {0x1a6f6, 0x2000, 0x15892, -5483, -2535, 0xe700, -48, -13568, 2560, -24, 0},
 };
 
-CameraSetup sCameraKkShowPrevSetup = {0x1b00, 0x1000, 0x9700, Unk_ov004_0223f44c_V3D(0, 0x1e14, 0xf0a), Unk_ov004_0223f44c_V3D(0xf5ad, 0x200, 0x12757)};
+CameraSetup sCameraKkShowPrevSetup = {0x1b00, 0x1000, 0x9700, VecFx32CtorDtor(0, 0x1e14, 0xf0a), VecFx32CtorDtor(0xf5ad, 0x200, 0x12757)};

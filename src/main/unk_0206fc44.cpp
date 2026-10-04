@@ -1,7 +1,7 @@
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "text/Unk_02050288.h"
-#include "gfx/Unk_0206fd10_Vec.h"
-#include "game/Unk_0206f6fc_Pos.h"
+#include "gfx/Mtx43.h"
 #include "talk/MsgStringBase.h"
 #include "talk/MsgStringAttr.h"
 #include "talk/EncodedStringBase.h"
@@ -393,7 +393,7 @@ void String_Load2dMenuByRef(void *a, u8 *p);
 }
 
 extern "C" {
-void CpuMtx_MultRotScaledTrans(void *a, Unk_0206fd10_Vec *v, Unk_0206fd10_Vec *w);
+void CpuMtx_MultRotScaledTrans(void *a, VecFx32 *v, VecFx32 *w);
 }
 
 extern "C" {
@@ -401,11 +401,11 @@ void CpuMtx_MultRot(void *a);
 }
 
 extern "C" {
-void CpuMtx_MultTrans(Unk_0206fd10_Vec *v);
+void CpuMtx_MultTrans(VecFx32 *v);
 }
 
 extern "C" {
-void CpuMtx_MultRotTrans(void *a, Unk_0206fd10_Vec *v);
+void CpuMtx_MultRotTrans(void *a, VecFx32 *v);
 }
 
 extern "C" {
@@ -424,13 +424,13 @@ s32 Museum_CountDonatedFossilsInGroup(u32 a, s32 b);
 
 static inline BOOL Unk_0206f6fc_IsZero(u8 v) { return v == 0 ? TRUE : FALSE; }
 // prototypes (test harness)
-void CpuMtx_MultRotTrans(void *a, Unk_0206fd10_Vec *v);
-void CpuMtx_MultTrans(Unk_0206fd10_Vec *v);
+void CpuMtx_MultRotTrans(void *a, VecFx32 *v);
+void CpuMtx_MultTrans(VecFx32 *v);
 void CpuMtx_MultRot(void *a);
-void CpuMtx_MultRotScaledTrans(void *a, Unk_0206fd10_Vec *v, Unk_0206fd10_Vec *w);
+void CpuMtx_MultRotScaledTrans(void *a, VecFx32 *v, VecFx32 *w);
 
 
-void CpuMtx_MultRotTrans(void *a, Unk_0206fd10_Vec *v) {
+void CpuMtx_MultRotTrans(void *a, VecFx32 *v) {
     Mtx43 m;
     func_01ffb46c(a, &m);
     m.m[9] = v->x;
@@ -439,7 +439,7 @@ void CpuMtx_MultRotTrans(void *a, Unk_0206fd10_Vec *v) {
     MTX_Concat43(&m, &data_021cb69c, &data_021cb69c);
 }
 
-void CpuMtx_MultTrans(Unk_0206fd10_Vec *v) {
+void CpuMtx_MultTrans(VecFx32 *v) {
     Mtx43 m;
     MTX_Identity43_(&m);
     m.m[9] = v->x;
@@ -454,7 +454,7 @@ void CpuMtx_MultRot(void *a) {
     MTX_Concat43(&m, &data_021cb69c, &data_021cb69c);
 }
 
-void CpuMtx_MultRotScaledTrans(void *a, Unk_0206fd10_Vec *v, Unk_0206fd10_Vec *w) {
+void CpuMtx_MultRotScaledTrans(void *a, VecFx32 *v, VecFx32 *w) {
     Mtx43 m;
     func_01ffb46c(a, &m);
     if (w == NULL) {

@@ -1,10 +1,10 @@
 // mwcc-version: 1.2/base
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "gfx/NNSG3dRS.h"
 #include "gfx/DebugColor.h"
 #include "actor/ActorProfile.h"
 #include "actor/CharacterListNode.h"
-#include "game/Unk_ov004_02224ee4_Vec.h"
 #include "gfx/AnimFrameCtrl.h"
 #include "room/RoomObjRes.h"
 #include "room/RoomObjTex.h"
@@ -32,10 +32,6 @@
 
 
 
-
-struct Unk_ov004_02225c6c_V3 {
-    s32 x, y, z;
-};
 
 
 // a 4-byte colour record whose constructor is inline (the __sinit of this unit initialises six of them)
@@ -399,7 +395,7 @@ void CheckInGate::updateDoorCollision() {
         BoxCollider_Unregister(doorCollider);
     }
     if (F(u8, 0x490)) {
-        Unk_ov004_02225c6c_V3 v;
+        VecFx32 v;
         s32 z = F(s32, 0x494) + 0x10000;
         v.x = 0x10000;
         v.y = 0;

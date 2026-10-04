@@ -1,30 +1,17 @@
 // mwcc-version: 1.2/base
 #include "types.h"
-#include "game/Unk_ov068_Vec.h"
+#include "gfx/VecFx32.h"
 #include "game/Unk_ov068_02268214_Flags.h"
 #include "game/Unk_ov068_02268214.h"
 #include "field/SnowballStateViews.h"
 #include "actor/Actor.h"
 
 #define GroundInfoBase_getHeight _ZN14GroundInfoBase9getHeightEi
-#define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
+#define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP7VecFx32ii
 #define SnowmanRecords_add _ZN14SnowmanRecords3addEjjj
 
 struct Unk_ov068_022678c4_Ent {
     u32 a, b, c, d;
-};
-
-struct Unk_ov068_022678c4_V {
-    s32 x, y, z;
-    Unk_ov068_022678c4_V(s32 a, s32 b, s32 c) {
-        x = a;
-        y = b;
-        z = c;
-    }
-};
-
-struct Unk_ov068_022678c4_Vv {
-    s32 x, y, z;
 };
 
 extern "C" {
@@ -81,7 +68,7 @@ void Math_ApproachS32Max(void *, s32, s32, s32);
 s32 Vec_MagXZ(void *);
 Actor *PlayerActor_GetActor(s32);
 extern s32 data_020c7c1c;
-void func_01ffd070(Unk_ov068_02268608_Vec *out, void *a, void *b);
+void func_01ffd070(VecFx32 *out, void *a, void *b);
 void Effect_Create(s32 a, void *v, s32 b, void *h);
 void FieldFish_ScareAround(void *a, s32 b);
 void *func_0209c0ac(void *);
@@ -162,7 +149,7 @@ extern "C" s32 Snowball_GetSizeRatioRank(s32 v) {
 }
 
 void Unk_ov068_02268214::spawnSnowballBreak() {
-    Unk_ov068_02268608_Vec v;
+    VecFx32 v;
     u16 h;
     func_01ffd070(&v, &position, unk_304);
     v.y = v.y + (radius - 0x400);
@@ -172,7 +159,7 @@ void Unk_ov068_02268214::spawnSnowballBreak() {
 }
 
 void Unk_ov068_02268214::spawnSnowballSplash() {
-    Unk_ov068_02268608_Vec v;
+    VecFx32 v;
     u16 h;
     v.x = position;
     v.y = positionY;
@@ -328,7 +315,7 @@ s32 SnowballStateView2::enterSnowballFall() {
     rollVelX = func_01ffcb0c(rollVelX, 0x119a);
     rollVelZ = func_01ffcb0c(rollVelZ, 0x119a);
     fallFrames = 0;
-    Unk_ov068_022678c4_V v(rollVelX, 0, rollVelZ);
+    VecFx32Ctor v(rollVelX, 0, rollVelZ);
     s32 d = Vec_MagXZ(&v);
     if (d < 0x2b8) {
         if (d == 0) {

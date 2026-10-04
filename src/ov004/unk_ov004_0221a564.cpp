@@ -1,6 +1,7 @@
 // mwcc-version: 1.2/base
 // mwcc-flags: -str reuse
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "actor/ActorProfile.h"
 #include "npc/VillagerClothModel.h"
 #include "room/RoomFreeUnitMap.h"
@@ -45,13 +46,13 @@ class SickVillager;
 #define NpcActionCtrl_requestAction _ZN13NpcActionCtrl13requestActionEjiiissiitt
 #define NpcActionCtrl_isActionDone _ZN13NpcActionCtrl12isActionDoneEv
 #define NpcActionCtrl_getAction _ZN13NpcActionCtrl9getActionEv
-#define NpcLookAt_setTarget _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih
+#define NpcLookAt_setTarget _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih
 #define NpcMoveCtrl_setSpeedPreset _ZN11NpcMoveCtrl14setSpeedPresetEiiii
-#define NpcMoveCtrl_setWaypoint _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3
+#define NpcMoveCtrl_setWaypoint _ZN11NpcMoveCtrl11setWaypointEP7VecFx32
 #define NpcMoveAnimSet_setWalkAnim _ZN14NpcMoveAnimSet11setWalkAnimEi
 #define NpcMoveAnimSet_setStandAnim _ZN14NpcMoveAnimSet12setStandAnimEi
 #define func_0201b138 _ZN8NpcActor6onDrawEv
-#define NpcActor_findAvoidPos _ZN8NpcActor12findAvoidPosEP16Unk_020d77a4_Vec
+#define NpcActor_findAvoidPos _ZN8NpcActor12findAvoidPosEP7VecFx32
 #define NpcActor_setTalkRequest _ZN8NpcActor14setTalkRequestEP16ActorTalkRequest
 #define NpcActor_getPlayerActor _ZN8NpcActor14getPlayerActorEj
 #define NpcActor_getAngleTo _ZN8NpcActor10getAngleToEPS_
@@ -78,20 +79,10 @@ class SickVillagerTalk;
 typedef BOOL (SickVillager::*Unk_ov004_0224cb98_BFn)();
 typedef void (SickVillager::*Unk_ov004_0224cb98_VFn)();
 
-struct Unk_ov004_0221a7d4_Vec {
-    s32 x, y, z;
-};
-
 struct Unk_ov004_0221b1e8_Map {
     u8 *blocks;
     u8 *width;
     u8 *height;
-};
-
-struct Unk_ov004_0221b0f0_Vec {
-    s32 x, y, z;
-    Unk_ov004_0221b0f0_Vec() {}
-    ~Unk_ov004_0221b0f0_Vec() {}
 };
 
 extern SickVillager *sSickVillager;
@@ -194,7 +185,6 @@ u32 Item_GetFurnitureIndex(void *);
 
 
 
-struct Unk_020d77a4_Vec3;
 
 
 
@@ -265,8 +255,8 @@ public:
     /* 0xa4c */ RoomFreeUnitMap freeUnitMap;
     /* 0xa6c */ s16 walkAngle;
     /* 0xa6e */ u16 walkTimer;
-    /* 0xa70 */ Unk_ov004_0221a7d4_Vec waypoint;
-    /* 0xa7c */ Unk_ov004_0221a7d4_Vec walkTarget;
+    /* 0xa70 */ VecFx32 waypoint;
+    /* 0xa7c */ VecFx32 walkTarget;
     /* 0xa88 */ u8 emotionTimer;
     /* 0xa89 */ u8 pad_a89[3];
 };
@@ -452,7 +442,7 @@ BOOL SickVillager::acceptsInteraction(void *) {
 }
 
 void SickVillager::onInteractionEvent(u32 idx, u8 v) {
-    Unk_ov004_0221b0f0_Vec vec;
+    VecFx32CtorDtor vec;
     vec.x = position.x;
     vec.y = position.y;
     vec.z = position.z;
@@ -700,7 +690,7 @@ BOOL SickVillager::setupAct00() {
 }
 
 void SickVillager::mainAct00() {
-    Unk_ov004_0221a7d4_Vec v;
+    VecFx32 v;
     if (mood.severeSickness != 0) {
         if (NpcActionCtrl_getAction(&actionCtrl) == 1) {
             if (gFrameCounter % 14 == 0) {

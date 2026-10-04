@@ -1,5 +1,6 @@
 // mwcc-flags: -str reuse
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
 #include "save/BlancaFaceRecord.h"
@@ -841,10 +842,6 @@ void SceneWarp_SetFadeOut(void *p, u32 v);
 
 // ---- unk_020a3238.cpp
 
-struct Unk_020a3238_Vec {
-    s32 x, y, z;
-};
-
 
 namespace NI {
 extern "C" {
@@ -852,8 +849,8 @@ extern u8 gScreenTransition;
 extern u8 gSaveData[];
 extern u8 gSavePlayers[];
 extern u32 sEraseResidentSlot;
-extern Unk_020a3238_Vec data_020d0788;
-extern Unk_020a3238_Vec data_020d0770;
+extern VecFx32 data_020d0788;
+extern VecFx32 data_020d0770;
 extern u8 gSaveVillagers[];
 s32 _ZN11SaveManager15verifySlotsStepEv(SaveManager *self);
 s32 _ZN14SaveSlotWriter12saveSlotStepEi(SaveManager *self, u32 n);
@@ -869,8 +866,8 @@ s32 Scene_GetWarpRequest();
 void SceneWarp_RequestExit(s32 a, s32 b);
 s32 Scene_GetCurrent();
 s32 TownBlockMap_Get();
-void Town_FindTownHallFront(s32 a, Unk_020a3238_Vec *v, s32 b, s32 c);
-void SceneWarp_RequestAt(s32 a, s32 b, Unk_020a3238_Vec *v, s32 c, s32 d, s32 e, s32 f);
+void Town_FindTownHallFront(s32 a, VecFx32 *v, s32 b, s32 c);
+void SceneWarp_RequestAt(s32 a, s32 b, VecFx32 *v, s32 c, s32 d, s32 e, s32 f);
 void SceneWarp_RequestFade(s32 a, s32 b, s32 c, s32 d);
 s32 _ZN8SaveData8testFlagEj(void *p, s32 n);
 void GameStart_SetMode3();
@@ -964,9 +961,9 @@ static inline BOOL Unk_020a42c4_IsTwo(u8 v) { return v == 2 ? TRUE : FALSE; }
 
 // ---- objects of the unit
 extern const s32 sSaveSlotSizes[3];
-extern const Unk_020a3238_Vec data_020d0770;
+extern const VecFx32 data_020d0770;
 extern const s32 sSaveSlotDataSizes[3];
-extern const Unk_020a3238_Vec data_020d0788;
+extern const VecFx32 data_020d0788;
 extern const u32 sSaveSlotOffsets[3];
 extern char data_020e24f0[];
 extern char data_020e277c[];
@@ -1670,7 +1667,7 @@ void SaveManager::execAct08() {
 void SaveManager::enterAct09() {}
 
 void SaveManager::execAct09() {
-    Unk_020a3238_Vec v;
+    VecFx32 v;
     TalkWindowState *o = NI::TalkWindow_Get(0);
     if (o->state == 0) {
         o->detachRequest();
@@ -1685,7 +1682,7 @@ void SaveManager::execAct09() {
 void SaveManager::enterAct0A() {}
 
 void SaveManager::execAct0A() {
-    Unk_020a3238_Vec v;
+    VecFx32 v;
     TalkWindowState *o = NI::TalkWindow_Get(0);
     if (o->state == 0) {
         o->detachRequest();
@@ -1763,7 +1760,7 @@ void SaveManager::execAct0E() {
 void SaveManager::enterAct0F() {}
 
 void SaveManager::execAct0F() {
-    Unk_020a3238_Vec v;
+    VecFx32 v;
     TalkWindowState *o = NI::TalkWindow_Get(0);
     if (Unk_020a3238_Is2(NI::gScreenTransition)) {
         if (o->state == 0) {
@@ -3417,7 +3414,7 @@ s32 sSaveManagerRequest;
 
 u8 sRecentJoinAids[3];
 
-const Unk_020a3238_Vec data_020d0770 = {0x10000, 0, 0x5000};
+const VecFx32 data_020d0770 = {0x10000, 0, 0x5000};
 
 void *data_020e272c[2] = {(void *)NT::_ZN11SaveManager9execAct1EEv, 0};
 
@@ -3517,7 +3514,7 @@ void *data_020e25b4[2] = {(void *)NT::SaveManager_ExecAct18, 0};
 
 s32 sEraseResidentSlot;
 
-const Unk_020a3238_Vec data_020d0788 = {0x10000, 0, 0x5000};
+const VecFx32 data_020d0788 = {0x10000, 0, 0x5000};
 
 void *data_020e259c[2] = {(void *)NT::_ZN11SaveManager9execAct06Ev, 0};
 

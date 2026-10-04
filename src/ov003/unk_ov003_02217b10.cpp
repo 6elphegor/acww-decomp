@@ -1,8 +1,7 @@
 // mwcc-version: 1.2/base
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "gfx/Mtx43.h"
-#include "field/Unk_ov003_02217910_V3.h"
-#include "field/Unk_ov003_02217910_V3D.h"
 #include "field/Unk_ov003_02217b78_Ent.h"
 #include "field/FieldGroundBackdrop.h"
 #include "gfx/Model.h"
@@ -29,7 +28,7 @@ extern "C" {
 extern void *gCamera;
 extern s32 data_020c8cb4;
 extern u8 data_021f47e0[];
-extern Unk_ov003_02217910_V3 gCameraLookAt;
+extern VecFx32 gCameraLookAt;
 
 void Mtx43_SetTranslate(void *m, s32 x, s32 y, s32 z);
 void Mtx43_RotateX(void *m, s32 a);
@@ -72,7 +71,7 @@ BOOL FieldGroundBackdrop::init() {
 }
 
 BOOL FieldGroundBackdrop::followCamera() {
-    Unk_ov003_02217910_V3D v;
+    VecFx32CtorDtor v;
     void *cam = gCamera;
     if (cam != 0) {
         v.x = gCameraLookAt.x;

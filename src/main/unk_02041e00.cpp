@@ -1,4 +1,5 @@
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "net/CommManager.h"
 #include "gfx/EffectSplEmitter.h"
 #include "actor/Actor.h"
@@ -213,16 +214,13 @@ void FieldActionFx_ClearAll(Unk_02042104_Ent *p);
 struct Unk_02042104_Pair {
     s32 hi, lo;
 };
-struct Unk_02042104_Vec {
-    s32 x, y, z;
-};
 extern u8 gFieldSceneKind;
 u32 PlayerActor_GetActor(u32 v);
 void PendingUnit_CancelAt(Unk_02042104_Pair *p, s32 k);
 void FieldAction_WaterFlowers(u32 v, Unk_02042104_Pair *p);
-void FieldItemFx_StartDrop(u32 a, u32 b, Unk_02042104_Pair *c, Unk_02042104_Vec *d);
-void ItemDrop_StartToUnit(u32 a, u32 b, Unk_02042104_Pair *c, Unk_02042104_Vec *d, u32 e);
-void FieldItemFx_StartPlant(u32 a, u32 b, Unk_02042104_Pair *c, Unk_02042104_Vec *d);
+void FieldItemFx_StartDrop(u32 a, u32 b, Unk_02042104_Pair *c, VecFx32 *d);
+void ItemDrop_StartToUnit(u32 a, u32 b, Unk_02042104_Pair *c, VecFx32 *d, u32 e);
+void FieldItemFx_StartPlant(u32 a, u32 b, Unk_02042104_Pair *c, VecFx32 *d);
 inline BOOL Unk_02042104_IsZero(u8 v) {
     return v == 0 ? TRUE : FALSE;
 }
@@ -234,7 +232,6 @@ void FieldActionFx_Start(FieldActionResultMsg *p);
 namespace nB {
 extern "C" {
 
-struct Unk_020422c0_Pos { s32 x, y; };
 struct MoneyRockState {
     u8 y;
     u8 x;
@@ -242,7 +239,6 @@ struct MoneyRockState {
     s16 timer;
 };
 static inline BOOL Unk_02042660_InRange(u32 c, u32 lo, u32 hi) { BOOL r = FALSE; if (c >= lo && c <= hi) r = TRUE; return r; }
-struct Unk_02042830_V3 { s32 x, y, z; };
 inline BOOL Unk_02042830_IsZero(u8 v) { return v == 0 ? TRUE : FALSE; }
 extern void *gSceneBlockMap;
 extern u8 gFieldSceneKind;
@@ -281,10 +277,10 @@ s32 Scene_InTown(void);
 s32 Room_CanDropOnFurnitureAt(s32, s32);
 s32 Ground_IsNeighbourReachable(s32, s32, s32, s32, s32);
 s32 _ZN8BlockMap12getPlantFlagEii(void *, s32, s32);
-u16 *FieldAction_CheckFreeUnit(u32, void *, s32, s32, Unk_020422c0_Pos *);
-BOOL FieldItemFx_StartPop(u32, u32, Unk_020422c0_Pos *);
-BOOL FieldItemFx_StartDrop(u32, u32, Unk_020422c0_Pos *, Unk_02042830_V3 *);
-BOOL ItemDrop_StartToUnit(u32, u32, Unk_020422c0_Pos *, Unk_02042830_V3 *, u32);
+u16 *FieldAction_CheckFreeUnit(u32, void *, s32, s32, Vec2 *);
+BOOL FieldItemFx_StartPop(u32, u32, Vec2 *);
+BOOL FieldItemFx_StartDrop(u32, u32, Vec2 *, VecFx32 *);
+BOOL ItemDrop_StartToUnit(u32, u32, Vec2 *, VecFx32 *, u32);
 void *PlayerActor_GetActor(u32);
 u32 FieldPlayer_GetHeldItem(void *);
 u16 Flower_GetWateredForm(void *, void *, s32);
@@ -295,25 +291,25 @@ void FieldAction_Clear(FieldActionRequest *, s32);
 void MoneyRock_Init(MoneyRockState *);
 void MoneyRock_Reset(MoneyRockState *);
 void ChopCount_ClearAll(void);
-void ChopCount_Set(FieldActionState *m, Unk_020422c0_Pos *p, u32 v);
-s32 ChopCount_Get(FieldActionState *m, Unk_020422c0_Pos *p);
+void ChopCount_Set(FieldActionState *m, Vec2 *p, u32 v);
+s32 ChopCount_Get(FieldActionState *m, Vec2 *p);
 void FieldActions_Update(u8 *p);
 void FieldActions_Init(u8 *p);
-BOOL MoneyRock_TrySpawnBagAt(MoneyRockState *self, void *m, Unk_020422c0_Pos *p);
-void MoneyRock_SpawnBag(MoneyRockState *self, Unk_020422c0_Pos *p);
-void MoneyRock_OnHit(MoneyRockState *self, Unk_020422c0_Pos *p);
+BOOL MoneyRock_TrySpawnBagAt(MoneyRockState *self, void *m, Vec2 *p);
+void MoneyRock_SpawnBag(MoneyRockState *self, Vec2 *p);
+void MoneyRock_OnHit(MoneyRockState *self, Vec2 *p);
 void MoneyRock_Update(MoneyRockState *self);
 void MoneyRock_Reset(MoneyRockState *self);
 void MoneyRock_Init(MoneyRockState *self);
 void FieldAction_Clear(FieldActionRequest *e, s32 i);
-s32 FieldAction_Add(FieldActionRequest *e, u32 a1, s32 type, Unk_020422c0_Pos *pos, u16 a5, u16 a6, u8 a7, u8 a8, s32 a9, s8 a10);
+s32 FieldAction_Add(FieldActionRequest *e, u32 a1, s32 type, Vec2 *pos, u16 a5, u16 a6, u8 a7, u8 a8, s32 a9, s8 a10);
 FieldActionRequest *FieldAction_Get(s32 i);
 void Field_ClearObjectFcFdAt(s32 *p);
 void FieldAction_Release(s32 i);
-void FieldAction_WaterFlowers(void *self, Unk_020422c0_Pos *p);
+void FieldAction_WaterFlowers(void *self, Vec2 *p);
 s32 FieldAction_PollDrop(s32 idx);
-u16 *FieldAction_CheckFreeUnit(u32 a, void *m, s32 x, s32 y, Unk_020422c0_Pos *p);
-s32 FieldAction_FindDropUnit(void *self, Unk_020422c0_Pos *p, u8 *out);
+u16 *FieldAction_CheckFreeUnit(u32 a, void *m, s32 x, s32 y, Vec2 *p);
+s32 FieldAction_FindDropUnit(void *self, Vec2 *p, u8 *out);
 s32 FieldAction_RequestPlaceAtPendingForAid(void *a, void *b);
 }
 }
@@ -328,10 +324,6 @@ struct Unk_02042588_Pos {
     Unk_02042588_Pos(const Unk_02042588_Pos &o) : x(o.x), y(o.y) {}
 };
 typedef Unk_02042588_Pos Pos;
-struct Unk_02042d10_Vec {
-    s32 x, y, z;
-    Unk_02042d10_Vec(const Unk_02042d10_Vec &o) : x(o.x), y(o.y), z(o.z) {}
-};
 extern FieldActionRequest sFieldActions[];
 extern void *gSceneBlockMap;
 extern CommManager *gCommManager;
@@ -354,7 +346,7 @@ void *BlockMap_GetItemPtr(void *m, s32 a, s32 b, s32 c, s32 d, s32 e);
 u8 *PlayerActor_GetActor(s32 a);
 s32 Item_IsTreeStage0(u16 *p);
 s32 Item_GetFruitTreeFruit(u16 *p);
-void FieldItemFx_StartPlant(s32 a, u16 b, Pos p, Unk_02042d10_Vec v);
+void FieldItemFx_StartPlant(s32 a, u16 b, Pos p, VecFx32Copy v);
 void FieldItemFx_StartPop(s32 a, u16 b, Pos p);
 void PendingUnit_ApplyAt(Pos p, u8 a);
 s32 Scene_InTown();
@@ -532,15 +524,13 @@ s32 FieldAction_RequestShake(void *a, u16 *id, Unk_020434f0_P *pos, s32 mode);
 namespace nE {
 extern "C" {
 
-struct Unk_02043f04_Pos { s32 x, z; };
-struct Unk_02044014_Vec3 { s32 x, y, z; };
 extern CommManager *gCommManager;
 extern u8 gEffectSplDefaultInitCbs[];
 extern u8 data_020da2a4[];
 extern u8 data_020da2a8[];
 s32 Flower_GetSpecies(u16 *a);
 s32 Flower_GetColor(u16 *a);
-void FlowerFx_SetParams(FlowerFxParams *g, s32 a, s32 b, s32 c, u8 d, Unk_02044014_Vec3 *v, s16 e);
+void FlowerFx_SetParams(FlowerFxParams *g, s32 a, s32 b, s32 c, u8 d, VecFx32 *v, s16 e);
 void *PlayerData_GetBySessionSlot(void);
 u16 *_ZN10PlayerData11getHeldItemEv(void);
 s32 _ZN11CommManager8isOnlineEv(void *g);
@@ -551,22 +541,22 @@ s32 Random_GlobalBelow(s32 a);
 s32 Item_IsFlower(void);
 s32 Scene_GetCurrent(void);
 s32 ItemSync_SetAtUnit(s32 a, s32 b, s32 c, s32 d, s32 e);
-s32 FieldPos_FromUnitCenter(Unk_02044014_Vec3 *out, s32 x, s32 z);
+s32 FieldPos_FromUnitCenter(VecFx32 *out, s32 x, s32 z);
 s32 EffectSpl_CreateOneShot(s32 id, void *v, s32 c, void *cb);
-s32 Flower_TrampleAt(Unk_02043f04_Pos *p, s32 f);
-s32 Flower_TrampleTile(void *m, Unk_02043f04_Pos *p, s32 f);
-void Flower_SpawnPetalFx(u16 *a, Unk_02043f04_Pos *p, s16 c, s32 d);
+s32 Flower_TrampleAt(VecXZ *p, s32 f);
+s32 Flower_TrampleTile(void *m, VecXZ *p, s32 f);
+void Flower_SpawnPetalFx(u16 *a, VecXZ *p, s16 c, s32 d);
 u32 FieldPlayer_GetHeldItem(void);
 s32 Field_IsLocalAid(s32 a);
 s32 Field_AidOrZero(s32 a);
 s32 Field_AidOrLocal(s32 a);
-s32 Flower_PlayTrampleFx(Unk_02043f04_Pos *p);
-void Flower_Trample(Unk_02043f04_Pos *p);
-s32 Flower_TrampleAt(Unk_02043f04_Pos *p, s32 f);
-s32 Flower_TrampleTile(void *m, Unk_02043f04_Pos *p, s32 f);
-void DeadTurnip_SpawnDigFx(Unk_02043f04_Pos *p);
-void Weed_SpawnPullFx(u16 *a, Unk_02043f04_Pos *p);
-void Flower_SpawnPetalFxAt(u16 *a, Unk_02043f04_Pos *p, s16 c, s32 d);
+s32 Flower_PlayTrampleFx(VecXZ *p);
+void Flower_Trample(VecXZ *p);
+s32 Flower_TrampleAt(VecXZ *p, s32 f);
+s32 Flower_TrampleTile(void *m, VecXZ *p, s32 f);
+void DeadTurnip_SpawnDigFx(VecXZ *p);
+void Weed_SpawnPullFx(u16 *a, VecXZ *p);
+void Flower_SpawnPetalFxAt(u16 *a, VecXZ *p, s16 c, s32 d);
 static inline BOOL Unk_02044098_R(u16 *p, u32 lo, u32 hi)
 {
     BOOL r = FALSE;
@@ -575,22 +565,19 @@ static inline BOOL Unk_02044098_R(u16 *p, u32 lo, u32 hi)
     }
     return r;
 }
-void Flower_SpawnPetalFx(u16 *a, Unk_02043f04_Pos *pos, s16 c, s32 d);
-void FlowerFx_SetParams(FlowerFxParams *g, s32 a, s32 b, s32 c, u8 d, Unk_02044014_Vec3 *v, s16 e);
+void Flower_SpawnPetalFx(u16 *a, VecXZ *pos, s16 c, s32 d);
+void FlowerFx_SetParams(FlowerFxParams *g, s32 a, s32 b, s32 c, u8 d, VecFx32 *v, s16 e);
 struct Unk_020441f0_Color {
     u16 r : 5;
     u16 g : 5;
     u16 b : 5;
 };
-struct Unk_020441f0_T {
-    s32 x, y, z;
-};
 extern u16 *data_020da2ac[];
 extern u16 *data_020da2e4[];
 extern u16 *data_020da2c8[];
 u16 Sky_GetLightColor(s32 a);
-void Vec_RotateY(Unk_020441f0_T *t, s32 a);
-s32 Vec_SafeNormalize(Unk_020441f0_T *t);
+void Vec_RotateY(VecFx32 *t, s32 a);
+s32 Vec_SafeNormalize(VecFx32 *t);
 void FlowerFx_InitBySpecies(EffectSplEmitter *p);
 void FlowerFx_InitByColor(EffectSplEmitter *p);
 struct Unk_02044490_H6 { u16 a, b, c; };
@@ -605,12 +592,12 @@ s32 PlayerActor_TestSlotFlag(s32 a, s32 b);
 void Area_PlaceItem(s32 m, s32 x, s32 z, s32 a, s32 b);
 void FieldAction_OnNetResult(FieldActionResultMsg *e, s32 t);
 void FieldAction_ApplyResultOffscreen(FieldActionResultMsg *e, s32 m);
-void FieldItemFx_StartPop(s32 a, s32 b, Unk_02043f04_Pos *p);
-void PendingUnit_Replace(s32 a, Unk_02043f04_Pos *p, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 i);
-void PendingUnit_CancelAt(Unk_02043f04_Pos *p, s32 f);
+void FieldItemFx_StartPop(s32 a, s32 b, VecXZ *p);
+void PendingUnit_Replace(s32 a, VecXZ *p, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 i);
+void PendingUnit_CancelAt(VecXZ *p, s32 f);
 void FieldAction_CancelPendingForResult(FieldActionResultMsg *e);
 void FieldAction_ApplyResult(FieldActionResultMsg *e);
-s32 PendingUnit_Reserve(u32 a, Unk_02043f04_Pos *p, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 i);
+s32 PendingUnit_Reserve(u32 a, VecXZ *p, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 i);
 s32 TreeDrop_Spawn(FieldActionResultMsg *e, FieldActionRequestMsg *s, s32 t);
 void _ZN11CommManager11beginRecordEv(void *g);
 void _ZN11CommManager11writeRecordEPhj(void *g, FieldActionResultMsg *e, s32 mask);
@@ -624,8 +611,6 @@ void FieldAction_HostProcess(FieldActionRequestMsg *src, u8 flag, s32 t);
 namespace nF {
 extern "C" {
 
-struct Unk_020449e8_Pos { s32 x, y; };
-struct Unk_02044aa8_Vec3 { s32 x, y, z; };
 struct Unk_02044aa8_Rng { u32 a, b; };
 extern CommManager *gCommManager;
 extern FieldActionRequest sFieldActions[];
@@ -661,60 +646,60 @@ static inline BOOL Unk_02044aa8_R(volatile u16 *p, u32 c, u32 lo, u32 hi)
     return r;
 }
 BOOL _ZN11CommManager8isOnlineEv(CommManager *g);
-s32 FieldPos_FromUnitCenter(Unk_02044aa8_Vec3 *out, s32 x, s32 z);
+s32 FieldPos_FromUnitCenter(VecFx32 *out, s32 x, s32 z);
 Actor *PlayerActor_GetActor(u32 i);
 s32 func_01ffcb0c(s32 a, s32 b);
 u32 Field_AidOrLocal(u32 a);
 s32 PendingUnit_Reset(void *p);
-s32 PendingUnit_Find(Unk_020449e8_Pos *p, s32 a);
+s32 PendingUnit_Find(Vec2 *p, s32 a);
 s32 Field_AidOrZero();
-s32 PendingUnit_FindByAid(s32 a, Unk_020449e8_Pos *p, s32 b);
+s32 PendingUnit_FindByAid(s32 a, Vec2 *p, s32 b);
 BOOL Item_IsTreeGrown(u16 *p);
 BOOL Town_CanReleaseBees();
 u32 TownBlockMap_Get();
-s32 PendingUnit_Reserve(u8 a, Unk_020449e8_Pos *p, u32 val, u32 code, u32 s0, u32 s1, u32 s2, u8 s3, u32 s4, s32 s5);
+s32 PendingUnit_Reserve(u8 a, Vec2 *p, u32 val, u32 code, u32 s0, u32 s1, u32 s2, u8 s3, u32 s4, s32 s5);
 s32 Item_GetFruitTreeFruit(u16 *p);
 u16 *BlockMap_GetItemPtr(void *obj, s32 tx, s32 ty, s32 px, s32 py, s32 z);
 BOOL _ZN8BlockMap12canPlaceItemEii(void *obj, s32 x, s32 y);
-s32 PendingUnit_IndexAt(Unk_020449e8_Pos *p, s32 a);
+s32 PendingUnit_IndexAt(Vec2 *p, s32 a);
 void _ZN12ItemPickSpec3setEii(Unk_02044aa8_Rng *r, s32 a, s32 b);
 void ItemPickSpec_Destruct(Unk_02044aa8_Rng *r);
 void ItemPick_One(u16 *out, Unk_02044aa8_Rng *r, s32 a, s32 b, s32 c, s32 d, s32 e);
-u32 Tree_GetDropSide(u32 a, Unk_02044aa8_Vec3 *v);
+u32 Tree_GetDropSide(u32 a, VecFx32 *v);
 BOOL NetArea_IsLocalOwner();
 void FieldAction_HostProcess(FieldActionRequestMsg *s, s32 a, s32 b);
 s32 _ZN11CommManager11beginRecordEv(CommManager *g);
 s32 _ZN11CommManager11writeRecordEPhj(CommManager *g, void *p, s32 n);
 s32 _ZN11CommManager9endRecordEjj(CommManager *g, s32 a, s32 b);
-void FieldAction_WaterFlowers(u32 a, Unk_020449e8_Pos *p);
-void MoneyRock_OnHit(void *a, Unk_020449e8_Pos *p);
+void FieldAction_WaterFlowers(u32 a, Vec2 *p);
+void MoneyRock_OnHit(void *a, Vec2 *p);
 void TreeDrop_SpawnFruit(FieldActionResultMsg *o, u32 x, u32 code);
 void TreeDrop_SpawnSpecial(FieldActionResultMsg *o, FieldActionRequestMsg *s, u32 x);
 u32 Tree_GetDropItem(FieldActionResultMsg *a, u32 id);
-BOOL TreeDrop_FindUnit(FieldActionResultMsg *a, Unk_020449e8_Pos *p, u32 idx, void *obj);
-BOOL FieldAction_CanReserveUnit(u32 idx, Unk_020449e8_Pos *p);
+BOOL TreeDrop_FindUnit(FieldActionResultMsg *a, Vec2 *p, u32 idx, void *obj);
+BOOL FieldAction_CanReserveUnit(u32 idx, Vec2 *p);
 BOOL FieldAction_PreApplyOffline(FieldActionRequestMsg *s, FieldActionRequest *e);
-BOOL Field_IsUnitClearOfOthersLocal(Unk_020449e8_Pos *p);
-BOOL Field_IsUnitClearOfOthers(Unk_020449e8_Pos *p, s32 idx);
+BOOL Field_IsUnitClearOfOthersLocal(Vec2 *p);
+BOOL Field_IsUnitClearOfOthers(Vec2 *p, s32 idx);
 BOOL TreeDrop_Spawn(FieldActionResultMsg *o, FieldActionRequestMsg *s, u32 x);
 BOOL TreeDrop_Spawn(FieldActionResultMsg *o, FieldActionRequestMsg *s, u32 x);
 void TreeDrop_SpawnSpecial(FieldActionResultMsg *o, FieldActionRequestMsg *s, u32 x);
 void TreeDrop_SpawnFruit(FieldActionResultMsg *o, u32 x, u32 code);
 u32 Tree_GetDropItem(FieldActionResultMsg *a, u32 id);
-BOOL TreeDrop_FindUnit(FieldActionResultMsg *a, Unk_020449e8_Pos *p, u32 idx, void *obj);
+BOOL TreeDrop_FindUnit(FieldActionResultMsg *a, Vec2 *p, u32 idx, void *obj);
 void FieldAction_Submit(u8 idx, u32 arg);
 BOOL FieldAction_PreApplyOffline(FieldActionRequestMsg *s, FieldActionRequest *e);
-BOOL FieldAction_CanReserveUnit(u32 idx, Unk_020449e8_Pos *p);
-BOOL Field_IsUnitClearOfOthersLocal(Unk_020449e8_Pos *p);
-BOOL Field_IsUnitClearOfOthersForAid(Unk_020449e8_Pos *p, u32 x);
-BOOL Field_IsUnitClearOfOthers(Unk_020449e8_Pos *p, s32 idx);
+BOOL FieldAction_CanReserveUnit(u32 idx, Vec2 *p);
+BOOL Field_IsUnitClearOfOthersLocal(Vec2 *p);
+BOOL Field_IsUnitClearOfOthersForAid(Vec2 *p, u32 x);
+BOOL Field_IsUnitClearOfOthers(Vec2 *p, s32 idx);
 void PendingUnits_ClearAll(u8 *a);
 u8 *PendingUnit_GetActivePosOfAid(u32 a);
 PendingUnit *PendingUnit_Get(u32 i);
 s32 PendingUnit_FindBySlot(u32 a, u32 b);
 s32 PendingUnit_FindActiveOfAid(u32 a);
 void PendingUnit_FindFree();
-s32 PendingUnit_FindForAid(u32 a, Unk_020449e8_Pos *p, s32 b);
+s32 PendingUnit_FindForAid(u32 a, Vec2 *p, s32 b);
 }
 }
 
@@ -722,10 +707,6 @@ s32 PendingUnit_FindForAid(u32 a, Unk_020449e8_Pos *p, s32 b);
 namespace nG {
 extern "C" {
 
-struct Unk_020452ec_Pos {
-    s32 x;
-    s32 y;
-};
 extern u32 sPendingUnits;
 extern u8 gTownJunkInsectFlags[];
 PendingUnit *PendingUnit_Get(s32 i);
@@ -740,34 +721,34 @@ void PendingUnit_WriteToMap(PendingUnit *e);
 void PendingUnit_NoteJunk(PendingUnit *e);
 void *TownBlockMap_Get();
 u16 *BlockMap_GetItemPtr(void *p, s32 xh, s32 yh, s32 xl, s32 yl, s32 z);
-s32 ChopCount_Set(void *p, Unk_020452ec_Pos *pos, u32 v);
+s32 ChopCount_Set(void *p, Vec2 *pos, u32 v);
 extern u8 sFieldActions[];
-void PendingUnit_SetIndex(s32 idx, u8 aid, Unk_020452ec_Pos *pos, u16 a, u16 c, u8 k, u8 b, u8 c2, u8 d, u8 f, s8 g);
-BOOL PendingUnit_CanAddAt(Unk_020452ec_Pos *pos);
-BOOL PendingUnit_Add(u8 aid, Unk_020452ec_Pos *pos, u16 a, u16 c, u8 k, u8 b, u8 c2, u8 d, u8 f, s8 g);
-void Tree_DropItems(PackedUnitPos *q, u32 kind, Unk_020452ec_Pos *pos);
+void PendingUnit_SetIndex(s32 idx, u8 aid, Vec2 *pos, u16 a, u16 c, u8 k, u8 b, u8 c2, u8 d, u8 f, s8 g);
+BOOL PendingUnit_CanAddAt(Vec2 *pos);
+BOOL PendingUnit_Add(u8 aid, Vec2 *pos, u16 a, u16 c, u8 k, u8 b, u8 c2, u8 d, u8 f, s8 g);
+void Tree_DropItems(PackedUnitPos *q, u32 kind, Vec2 *pos);
 void Field_SetUnitItem(s32 x, s32 y, u32 a, u32 b);
 void Room_SetItemAtUnit(s32 x, s32 y, u32 a, u32 b);
 BOOL Scene_InTown();
-s32 FieldItemFx_CancelAt(u32 kind, Unk_020452ec_Pos *pos);
+s32 FieldItemFx_CancelAt(u32 kind, Vec2 *pos);
 static inline s32 Unk_021c3f8c_GetX(PackedUnitPos p) { return p.v >> 8; }
 static inline s32 Unk_021c3f8c_GetY(PackedUnitPos p) { return p.v & 0xff; }
-static inline void Unk_0204548c_Unpack(PackedUnitPos px, PackedUnitPos py, Unk_020452ec_Pos *out) {
+static inline void Unk_0204548c_Unpack(PackedUnitPos px, PackedUnitPos py, Vec2 *out) {
     out->x = Unk_021c3f8c_GetX(px);
     out->y = Unk_021c3f8c_GetY(py);
 }
-s32 PendingUnit_FindByAid(s32 aid, Unk_020452ec_Pos *pos, s32 flag);
-s32 PendingUnit_Find(Unk_020452ec_Pos *pos, s32 flag);
+s32 PendingUnit_FindByAid(s32 aid, Vec2 *pos, s32 flag);
+s32 PendingUnit_Find(Vec2 *pos, s32 flag);
 void PendingUnits_Flush();
 void PendingUnits_Enable();
-s32 PendingUnit_IndexAt(Unk_020452ec_Pos *pos, s32 flag);
+s32 PendingUnit_IndexAt(Vec2 *pos, s32 flag);
 void PendingUnit_ClearActiveOfAid(u32 aid);
 void PendingUnit_CommitForAid(PendingUnit *e);
-void PendingUnit_CommitAt(Unk_020452ec_Pos *pos, s32 flag);
-void PendingUnit_CancelAt(Unk_020452ec_Pos *pos, s32 flag);
-void PendingUnit_ApplyAtIfAid(Unk_020452ec_Pos *pos, u32 v, s32 flag);
+void PendingUnit_CommitAt(Vec2 *pos, s32 flag);
+void PendingUnit_CancelAt(Vec2 *pos, s32 flag);
+void PendingUnit_ApplyAtIfAid(Vec2 *pos, u32 v, s32 flag);
 void PendingUnit_ApplyIndex(s32 i);
-void PendingUnit_ApplyAt(Unk_020452ec_Pos *pos, s32 flag);
+void PendingUnit_ApplyAt(Vec2 *pos, s32 flag);
 s32 PendingUnit_Flush(PendingUnit *e);
 s32 PendingUnit_Reset(PendingUnit *e);
 void PendingUnit_Commit(PendingUnit *e);
@@ -779,11 +760,11 @@ struct Unk_02045af8_Pad {
 void PendingUnit_NoteJunk(PendingUnit *e);
 void PendingUnit_WriteToMap(PendingUnit *e);
 void PendingUnit_Set(PendingUnit *e, u8 aid, u16 pos, u16 a, u16 c, u8 k, u8 b, u8 c2, u8 d, u8 f, s8 g);
-void PendingUnit_SetIndex(s32 idx, u8 aid, Unk_020452ec_Pos *pos, u16 a, u16 c, u8 k, u8 b, u8 c2, u8 d, u8 f, s8 g);
-BOOL PendingUnit_CanAddAt(Unk_020452ec_Pos *pos);
-BOOL PendingUnit_Add(u8 aid, Unk_020452ec_Pos *pos, u16 a, u16 c, u8 k, u8 b, u8 c2, u8 d, u8 f, s8 g);
-BOOL PendingUnit_Reserve(u8 aid, Unk_020452ec_Pos *pos, u16 a, u16 c, u8 k, u8 b, u8 c2, u8 d, u8 f, s8 g);
-void PendingUnit_Replace(u8 aid, Unk_020452ec_Pos *pos, u16 a, u16 c, u8 k, u8 b, u8 c2, u8 d, u8 f, s8 g);
+void PendingUnit_SetIndex(s32 idx, u8 aid, Vec2 *pos, u16 a, u16 c, u8 k, u8 b, u8 c2, u8 d, u8 f, s8 g);
+BOOL PendingUnit_CanAddAt(Vec2 *pos);
+BOOL PendingUnit_Add(u8 aid, Vec2 *pos, u16 a, u16 c, u8 k, u8 b, u8 c2, u8 d, u8 f, s8 g);
+BOOL PendingUnit_Reserve(u8 aid, Vec2 *pos, u16 a, u16 c, u8 k, u8 b, u8 c2, u8 d, u8 f, s8 g);
+void PendingUnit_Replace(u8 aid, Vec2 *pos, u16 a, u16 c, u8 k, u8 b, u8 c2, u8 d, u8 f, s8 g);
 s32 PendingUnit_Apply(PendingUnit *e);
 }
 }
@@ -1129,7 +1110,6 @@ struct Unk_020473cc_Date {
 };
 struct Unk_020473cc_Rgb { u8 b[3]; };
 struct Unk_02046e90_Pair { u32 a, b; };
-struct Unk_020470b8_Pos { s32 x, z; };
 extern u8 data_020da2a0[];
 extern u8 gSaveTownState[];
 extern u8 data_020c910c[];
@@ -1212,10 +1192,6 @@ void Town_ClearObjectFcFdAtPos(void *a, void *b);
 namespace nK {
 extern "C" {
 
-struct Unk_02047830_Pos {
-    s32 x;
-    s32 y;
-};
 extern volatile TownEval gTownEval;
 extern u8 data_021c47bc[];
 extern u8 gSaveVillagers[];
@@ -1230,8 +1206,8 @@ void FieldUnit_FromBlockUnit(s32 *ox, s32 *oy, s32 x, s32 y, s32 a, s32 b);
 s32 BlockMap_PlaceItemAt(void *a, void *map, s32 x, s32 y, s32 b, s32 c, s32 d, s32 e);
 s32 BlockMap_PlaceItem(void *a, s32 x, s32 y, u32 v, s32 w);
 s32 Town_SpawnItemInAcre(void *a, void *b, s32 x, s32 y, s32 id, void *fn, s32 f);
-s32 Town_PlaceAtRandomUnit(void *a, void *b, s32 cnt, Unk_02047830_Pos *arr, s32 id, s32 z);
-s32 Town_ForEachNeighbor(void *a, Unk_02047830_Pos *from, Unk_02047830_Pos *to, void *fn);
+s32 Town_PlaceAtRandomUnit(void *a, void *b, s32 cnt, Vec2 *arr, s32 id, s32 z);
+s32 Town_ForEachNeighbor(void *a, Vec2 *from, Vec2 *to, void *fn);
 s32 MoneyRock_Reset(void *p);
 s32 MI_CpuCopy8(void *src, void *dst, s32 n);
 s32 Event_GetState(s32 a, void *b, s32 c);
@@ -1257,10 +1233,10 @@ s32 Town_ConvertRandomRock(void *a, void *b, s32 c, s32 d, s32 e, s32 f);
 s32 Town_SpawnRafflesia(void *a, void *b, s32 c, s32 d);
 s32 Town_WitherRafflesia(void *a, void *b);
 void Town_SpawnJacobsLadder(void *a, void *b, s32 c, s32 d);
-void Town_PickJacobsLadderAcre(Unk_02047830_Pos *out, void *a, s32 c, s32 d);
+void Town_PickJacobsLadderAcre(Vec2 *out, void *a, s32 c, s32 d);
 void Town_SpawnVillagerHouseFlowers(void *a, void *b, s32 c, s32 d);
-void Town_SpawnFlowersAroundHouse(void *a, void *b, Unk_02047830_Pos *pos, s32 d);
-BOOL Pos_IsInList(void *a, Unk_02047830_Pos *pos, Unk_02047830_Pos *arr, s32 n);
+void Town_SpawnFlowersAroundHouse(void *a, void *b, Vec2 *pos, s32 d);
+BOOL Pos_IsInList(void *a, Vec2 *pos, Vec2 *arr, s32 n);
 static inline BOOL Unk_02047798_InRange(u16 *p, u32 lo, u32 hi) {
     BOOL r = FALSE;
     if (*p >= lo && *p <= hi) r = TRUE;
@@ -1283,18 +1259,18 @@ s32 Town_WitherRafflesia(void *a, void *b);
 s32 Town_SpawnRafflesia(void *a, void *b, s32 c, s32 d);
 void Town_TrySpawnJacobsLadder(void *a, void *b, s32 c, s32 d);
 void Town_SpawnJacobsLadder(void *a, void *b, s32 c, s32 d);
-void Town_PickJacobsLadderAcre(Unk_02047830_Pos *out, void *a, s32 c, s32 d);
+void Town_PickJacobsLadderAcre(Vec2 *out, void *a, s32 c, s32 d);
 void Town_SpawnClover(void *a, void *b, s32 c, s32 d);
 void Town_SpawnDandelion(void *a, void *b, s32 c, s32 d);
 void Town_SpawnRandomFlower(void *a, void *b, s32 c, s32 d);
 void Town_UpdateVillagerHouseFlowers(void *a, void *b, void *c, s32 d);
-struct Unk_02047e64_Pos : Unk_02047830_Pos {
+struct Unk_02047e64_Pos : Vec2 {
     Unk_02047e64_Pos(s32 px, s32 py) { x = px; y = py; }
 };
 void Town_SpawnVillagerHouseFlowers(void *a, void *b, s32 c, s32 d);
-void Town_SpawnFlowersAroundHouse(void *a, void *b, Unk_02047830_Pos *pos, s32 d);
+void Town_SpawnFlowersAroundHouse(void *a, void *b, Vec2 *pos, s32 d);
 void Town_SpawnWeeds(void *a, void *b);
-BOOL Pos_IsInList(void *a, Unk_02047830_Pos *pos, Unk_02047830_Pos *arr, s32 n);
+BOOL Pos_IsInList(void *a, Vec2 *pos, Vec2 *arr, s32 n);
 void Town_SpawnSpecialTrees(void *a, void *b, s32 c, s32 d);
 void Town_BreedFlowers(void *a, TownBlockMap *b, s32 c, s32 d);
 }
@@ -1304,13 +1280,10 @@ void Town_BreedFlowers(void *a, TownBlockMap *b, s32 c, s32 d);
 namespace nL {
 extern "C" {
 
-struct Unk_020481b8_Pos {
-    s32 x, y;
-};
 struct TreeQuota {
     s32 trees;
     s32 numSaplings;
-    Unk_020481b8_Pos saplingUnits[64];
+    Vec2 saplingUnits[64];
     u16 saplingItems[64];
 };
 struct Unk_020485d4_Size {
@@ -1349,16 +1322,16 @@ void Town_WitherSapling(void *o, u16 id, s32 x, s32 y);
 void *TownBlockMap_Get();
 void TreeQuota_Add(TreeQuota *s, u16 id, s32 x, s32 y);
 void TreeQuota_Init(TreeQuota *s, TownEvalAcre *c, s32 i, s32 j);
-s32 Town_CollectFreeUnits(void *a, Unk_020481b8_Pos *arr, void *c, s32 d, s32 e, s32 (*fn)(void *, s32, s32));
-s32 Town_PlaceAtRandomUnit(void *a, void *b, s32 n, Unk_020481b8_Pos *arr, u16 e, s32 g);
+s32 Town_CollectFreeUnits(void *a, Vec2 *arr, void *c, s32 d, s32 e, s32 (*fn)(void *, s32, s32));
+s32 Town_PlaceAtRandomUnit(void *a, void *b, s32 n, Vec2 *arr, u16 e, s32 g);
 void Town_SpawnBellTrees(void *a, void *b, s32 w, s32 h);
 void Town_SpawnFurnitureTrees(void *a, void *b, s32 c, s32 d);
 void Town_SpawnBeeTrees(void *a, void *b, s32 w, s32 h);
 struct Unk_020481b8_PosZ { s32 x, y; Unk_020481b8_PosZ() { x = 0; y = 0; } };
 s32 Town_MakeSpecialTree(void *a, void *b, s32 x, s32 y, s32 e);
 BOOL Town_SpawnItemInAcre(void *a, void *b, void *c, s32 d, u16 e, s32 (*f)(void *, s32, s32), s32 g);
-s32 Town_PlaceAtRandomUnit(void *a, void *b, s32 n, Unk_020481b8_Pos *arr, u16 e, s32 g);
-s32 Town_CollectFreeUnits(void *a, Unk_020481b8_Pos *arr, void *c, s32 d, s32 e, s32 (*fn)(void *, s32, s32));
+s32 Town_PlaceAtRandomUnit(void *a, void *b, s32 n, Vec2 *arr, u16 e, s32 g);
+s32 Town_CollectFreeUnits(void *a, Vec2 *arr, void *c, s32 d, s32 e, s32 (*fn)(void *, s32, s32));
 BOOL Town_IsSandAt();
 s32 Town_GetSandAttr();
 BOOL Town_CanBuryAt(void *p, s32 x, s32 y);
@@ -1490,15 +1463,11 @@ void Town_WitherCrowdedSaplings(u32 a, void *m, Pos size);
 namespace nN {
 extern "C" {
 
-struct Unk_020499c4_Pair {
-    s32 a;
-    s32 b;
-};
 extern TownEval gTownEval;
 s32 TownEval_GetScoreRank(TownEval *a, s32 v);
 void TownEval_EvaluateAcre(TownEvalAcre *cell, TownBlockMap *b, s32 i, s32 j);
 void TownEval_EvaluateAndCleanAcre(TownEvalAcre *cell, TownBlockMap *b, s32 i, s32 j);
-void TownEval_PickAdvice(void *out, Unk_020499c4_Pair *p, TownEvalAcre *cell);
+void TownEval_PickAdvice(void *out, Vec2 *p, TownEvalAcre *cell);
 void TownEval_EvaluateAndClean(TownEval *a, TownBlockMap *b, s32 w, s32 h);
 s32 TownEval_GetTownRank(void *a, s32 *p, s32 w, s32 h);
 void TownEval_Evaluate(TownEval *a, TownBlockMap *b);
@@ -2874,9 +2843,9 @@ extern "C" void TownEval_EvaluateAndClean(TownEval *a, TownBlockMap *b, s32 w, s
             }
         }
     }
-    Unk_020499c4_Pair pr;
-    pr.a = by;
-    pr.b = bx;
+    Vec2 pr;
+    pr.x = by;
+    pr.y = bx;
     TownEval_PickAdvice(&a->advice, &pr, &a->acres[by][bx]);
     a->rank = TownEval_GetTownRank(a, nZ::gTownEval.counts, w, h);
 }
@@ -2940,9 +2909,9 @@ extern "C" void TownEval_Evaluate(TownEval *a, TownBlockMap *b) {
             }
         }
     }
-    Unk_020499c4_Pair pr;
-    pr.a = by;
-    pr.b = bx;
+    Vec2 pr;
+    pr.x = by;
+    pr.y = bx;
     TownEval_PickAdvice(&a->advice, &pr, &a->acres[by][bx]);
     a->rank = TownEval_GetTownRank(a, nZ::gTownEval.counts, w, h);
 }
@@ -3760,7 +3729,7 @@ extern "C" void Town_LimitSaplingsPerQuadrant(void *a, void *q, s32 w, s32 h) {
     s32 x, y, i;
     u16 *t;
     TreeQuota *sl = &s[0][0];
-    Unk_020481b8_Pos *pp;
+    Vec2 *pp;
     y = 0;
     do {
         pp = sl->saplingUnits;
@@ -3813,7 +3782,7 @@ extern "C" void Town_GrowTrees(void *a, void *q, Unk_020485d4_Size *sz) {
 namespace nL {
 extern "C" void Town_UpdateTrees(void *a, void *q, s32 c, s32 d) {
     TownBlockMap *qq = (TownBlockMap *)q;
-    Unk_020481b8_Pos *pp = (Unk_020481b8_Pos *)&qq->width;
+    Vec2 *pp = (Vec2 *)&qq->width;
     s32 h = pp->y << 4;
     s32 w = pp->x << 4;
     Unk_020485d4_Size s1(w, h);
@@ -3934,7 +3903,7 @@ extern "C" BOOL Town_IsSandAt() {
 }
 
 namespace nL {
-extern "C" s32 Town_CollectFreeUnits(void *a, Unk_020481b8_Pos *arr, void *c, s32 d, s32 e, s32 (*fn)(void *, s32, s32)) {
+extern "C" s32 Town_CollectFreeUnits(void *a, Vec2 *arr, void *c, s32 d, s32 e, s32 (*fn)(void *, s32, s32)) {
     s32 j, n, i;
     n = 0;
     i = 0;
@@ -3959,9 +3928,9 @@ extern "C" s32 Town_CollectFreeUnits(void *a, Unk_020481b8_Pos *arr, void *c, s3
 }
 
 namespace nL {
-extern "C" s32 Town_PlaceAtRandomUnit(void *a, void *b, s32 n, Unk_020481b8_Pos *arr, u16 e, s32 g) {
+extern "C" s32 Town_PlaceAtRandomUnit(void *a, void *b, s32 n, Vec2 *arr, u16 e, s32 g) {
     s32 r = -1;
-    Unk_020481b8_Pos *p;
+    Vec2 *p;
     if (n > 0) {
         u16 t;
         r = Random_GlobalBelow(n);
@@ -3985,11 +3954,11 @@ extern "C" s32 Town_PlaceAtRandomUnit(void *a, void *b, s32 n, Unk_020481b8_Pos 
 
 namespace nL {
 extern "C" BOOL Town_SpawnItemInAcre(void *a, void *b, void *c, s32 d, u16 e, s32 (*f)(void *, s32, s32), s32 g) {
-    Unk_020481b8_Pos arr[256];
+    Vec2 arr[256];
     s32 i, n;
     BOOL result;
-    Unk_020481b8_Pos *pp = arr;
-    Unk_020481b8_Pos *endp;
+    Vec2 *pp = arr;
+    Vec2 *endp;
     result = FALSE;
     endp = arr + 256;
     do {
@@ -4099,7 +4068,7 @@ extern "C" void Town_SpawnSpecialTrees(void *a, void *b, s32 c, s32 d) {
 }
 
 namespace nK {
-extern "C" BOOL Pos_IsInList(void *a, Unk_02047830_Pos *pos, Unk_02047830_Pos *arr, s32 n) {
+extern "C" BOOL Pos_IsInList(void *a, Vec2 *pos, Vec2 *arr, s32 n) {
     BOOL r = FALSE;
     for (; n != 0; arr++, n--) {
         if (pos->x == arr->x && pos->y == arr->y) {
@@ -4114,8 +4083,8 @@ extern "C" BOOL Pos_IsInList(void *a, Unk_02047830_Pos *pos, Unk_02047830_Pos *a
 namespace nK {
 extern "C" void Town_SpawnWeeds(void *a, void *b) {
     s32 r;
-    Unk_02047830_Pos pos;
-    Unk_02047830_Pos arr[3];
+    Vec2 pos;
+    Vec2 arr[3];
     s32 cnt = 0;
     s32 i;
     s32 z = 0;
@@ -4137,9 +4106,9 @@ extern "C" void Town_SpawnWeeds(void *a, void *b) {
 }
 
 namespace nK {
-extern "C" void Town_SpawnFlowersAroundHouse(void *a, void *b, Unk_02047830_Pos *pos, s32 d) {
-    Unk_02047830_Pos arr[17];
-    Unk_02047830_Pos *q;
+extern "C" void Town_SpawnFlowersAroundHouse(void *a, void *b, Vec2 *pos, s32 d) {
+    Vec2 arr[17];
+    Vec2 *q;
     s32 cnt;
     s32 x, y, xh, yh, i;
     s32 z = 0;
@@ -4224,10 +4193,10 @@ extern "C" void Town_BreedFlowers(void *a, TownBlockMap *b, s32 c, s32 d) {
             if (Random_GlobalBelow(100) < 20) {
                 s32 i, j, k;
                 s32 ox, oy;
-                Unk_02047830_Pos from, to;
-                Unk_02047830_Pos arr[256];
-                Unk_02047830_Pos *q;
-                Unk_02047830_Pos *end = &arr[256];
+                Vec2 from, to;
+                Vec2 arr[256];
+                Vec2 *q;
+                Vec2 *end = &arr[256];
                 q = arr;
                 do { q->x = 0; q->y = 0; q++; } while (q != end);
                 cnt = 0;
@@ -4248,7 +4217,7 @@ extern "C" void Town_BreedFlowers(void *a, TownBlockMap *b, s32 c, s32 d) {
                 }
                 if (cnt > 0) {
                     k = Random_GlobalBelow(cnt);
-                    Unk_02047830_Pos *bp = (Unk_02047830_Pos *)((u8 *)b + 4);
+                    Vec2 *bp = (Vec2 *)((u8 *)b + 4);
                     s32 fx = bp->x << 4;
                     s32 fy = bp->y << 4;
                     to.x = arr[k].x;
@@ -4281,7 +4250,7 @@ extern "C" void Town_SpawnClover(void *a, void *b, s32 c, s32 d) {
 }
 
 namespace nK {
-extern "C" void Town_PickJacobsLadderAcre(Unk_02047830_Pos *out, void *a, s32 c, s32 d) {
+extern "C" void Town_PickJacobsLadderAcre(Vec2 *out, void *a, s32 c, s32 d) {
     s32 t = c * d - nZ::gTownEval.jacobsAcres;
     if (t > 0) {
         s32 n = Random_GlobalBelow(t);
@@ -4306,7 +4275,7 @@ extern "C" void Town_PickJacobsLadderAcre(Unk_02047830_Pos *out, void *a, s32 c,
 
 namespace nK {
 extern "C" void Town_SpawnJacobsLadder(void *a, void *b, s32 c, s32 d) {
-    Unk_02047830_Pos out;
+    Vec2 out;
     Town_PickJacobsLadderAcre(&out, a, c, d);
     s32 x = out.x;
     s32 y = out.y;
@@ -4478,7 +4447,7 @@ namespace nJ {
 extern "C" void Town_ClearObjectFcFdAtPos(void *a, void *b) {
     void *m = TownBlockMap_Get(a);
     if (m != 0) {
-        Unk_020470b8_Pos v;
+        VecXZ v;
         v.x = 0;
         v.z = 0;
         FieldPos_ToUnit(&v.x, &v.z, b);
@@ -4487,7 +4456,7 @@ extern "C" void Town_ClearObjectFcFdAtPos(void *a, void *b) {
         u16 *p = BlockMap_GetItemPtr(m, tx, tz, x - (tx << 4), z - (tz << 4), 0);
         if (p != 0) {
             if (Unk_020470b8_R(p, 0xfc, 0xfd)) {
-                Unk_020470b8_Pos pos;
+                VecXZ pos;
                 pos.x = v.x;
                 pos.z = v.z;
                 if (PendingUnit_IndexAt(&pos, 0) < 0) {
@@ -4641,9 +4610,9 @@ extern "C" u32 Item_RandomAcorn(void *a) {
 
 namespace nJ {
 extern "C" void Town_DropAcornsInAcre(void *a, void *b, s32 x, s32 z) {
-    Unk_020470b8_Pos arr[256];
+    VecXZ arr[256];
     s32 j, i, n;
-    Unk_020470b8_Pos *q = arr;
+    VecXZ *q = arr;
     do { q->x = 0; q->z = 0; q++; } while (q != arr + 256);
     n = 0;
     for (i = 0; i < 16; i++) {
@@ -4664,7 +4633,7 @@ extern "C" void Town_DropAcornsInAcre(void *a, void *b, s32 x, s32 z) {
     }
     if (n > 0) {
         s32 idx = Random_GlobalBelow(n);
-        Unk_020470b8_Pos *pick = arr + idx;
+        VecXZ *pick = arr + idx;
         u8 *d = data_020c910c;
         for (s32 k = 0; k < 3; d++, k++) {
             s32 px = pick->x + (((s32)*d >> 4) - 8);
@@ -4711,9 +4680,9 @@ extern "C" void Town_ApplyVillagerFlowerEvent(void *a, void *b, void *c, void *d
 
 namespace nJ {
 extern "C" void Town_DecorateCedarsInAcre(void *a, void *m, s32 x, s32 z) {
-    Unk_020470b8_Pos arr[256];
+    VecXZ arr[256];
     s32 j, i, n, k;
-    Unk_020470b8_Pos *q = arr;
+    VecXZ *q = arr;
     do { q->x = 0; q->z = 0; q++; } while (q != arr + 256);
     n = 0;
     k = 0;
@@ -4736,7 +4705,7 @@ extern "C" void Town_DecorateCedarsInAcre(void *a, void *m, s32 x, s32 z) {
     for (s32 t = 3 - k; t != 0; t--) {
         if (n > 0) {
             s32 idx = Random_GlobalBelow(n);
-            Unk_020470b8_Pos *pick = arr + idx;
+            VecXZ *pick = arr + idx;
             BlockMap_PlaceItem(m, arr[idx].x, pick->z, 0x6d, 0);
             LitCedarList_Add(arr[idx].x, pick->z);
             arr[idx].x = arr[n - 1].x;
@@ -5886,7 +5855,7 @@ extern "C" s32 PendingUnit_Apply(PendingUnit *e) {
                 case 7: {
                     if (e->mode != 2) {
                         u32 a = e->unk_01_a;
-                        Unk_020452ec_Pos q;
+                        Vec2 q;
                         q.x = x;
                         q.y = y;
                         ChopCount_Set(sFieldActions, &q, (a + 1) & 3);
@@ -5973,7 +5942,7 @@ extern "C" s32 PendingUnit_Flush(PendingUnit *e) {
 }
 
 namespace nG {
-extern "C" void PendingUnit_SetIndex(s32 idx, u8 aid, Unk_020452ec_Pos *pos, u16 a, u16 c, u8 k, u8 b, u8 c2, u8 d, u8 f, s8 g) {
+extern "C" void PendingUnit_SetIndex(s32 idx, u8 aid, Vec2 *pos, u16 a, u16 c, u8 k, u8 b, u8 c2, u8 d, u8 f, s8 g) {
     PackedUnitPos p;
     p.b.x = pos->x;
     p.b.z = pos->y;
@@ -5982,9 +5951,9 @@ extern "C" void PendingUnit_SetIndex(s32 idx, u8 aid, Unk_020452ec_Pos *pos, u16
 }
 
 namespace nG {
-extern "C" BOOL PendingUnit_CanAddAt(Unk_020452ec_Pos *pos) {
+extern "C" BOOL PendingUnit_CanAddAt(Vec2 *pos) {
     BOOL result = TRUE;
-    Unk_020452ec_Pos t;
+    Vec2 t;
     t.x = pos->x;
     t.y = pos->y;
     s32 i = PendingUnit_Find(&t, 0);
@@ -6000,15 +5969,15 @@ extern "C" BOOL PendingUnit_CanAddAt(Unk_020452ec_Pos *pos) {
 }
 
 namespace nG {
-extern "C" BOOL PendingUnit_Add(u8 aid, Unk_020452ec_Pos *pos, u16 a, u16 c, u8 k, u8 b, u8 c2, u8 d, u8 f, s8 g) {
+extern "C" BOOL PendingUnit_Add(u8 aid, Vec2 *pos, u16 a, u16 c, u8 k, u8 b, u8 c2, u8 d, u8 f, s8 g) {
     BOOL result = FALSE;
-    Unk_020452ec_Pos t;
+    Vec2 t;
     t.x = pos->x;
     t.y = pos->y;
     if (PendingUnit_CanAddAt(&t)) {
         s32 i = PendingUnit_FindFree();
         if (i >= 0) {
-            Unk_020452ec_Pos t2;
+            Vec2 t2;
             t2.x = pos->x;
             t2.y = pos->y;
             PendingUnit_SetIndex(i, aid, &t2, a, c, k, b, c2, d, f, g);
@@ -6020,23 +5989,23 @@ extern "C" BOOL PendingUnit_Add(u8 aid, Unk_020452ec_Pos *pos, u16 a, u16 c, u8 
 }
 
 namespace nG {
-extern "C" BOOL PendingUnit_Reserve(u8 aid, Unk_020452ec_Pos *pos, u16 a, u16 c, u8 k, u8 b, u8 c2, u8 d, u8 f, s8 g) {
+extern "C" BOOL PendingUnit_Reserve(u8 aid, Vec2 *pos, u16 a, u16 c, u8 k, u8 b, u8 c2, u8 d, u8 f, s8 g) {
     BOOL result = FALSE;
-    Unk_020452ec_Pos t;
+    Vec2 t;
     t.x = pos->x;
     t.y = pos->y;
     s32 i = PendingUnit_Find(&t, f);
     if (i >= 0) {
         PendingUnit *e = &nZ::sPendingUnits.entries[i];
         if ((aid & 3) == nZ::sPendingUnits.entries[i].aid && e->unk_01_d != 0) {
-            Unk_020452ec_Pos t2;
+            Vec2 t2;
             t2.x = pos->x;
             t2.y = pos->y;
             PendingUnit_SetIndex(i, aid, &t2, a, c, k, b, c2, d, f, g);
             result = TRUE;
         }
     } else {
-        Unk_020452ec_Pos t3;
+        Vec2 t3;
         t3.x = pos->x;
         t3.y = pos->y;
         result = PendingUnit_Add(aid, &t3, a, c, k, b, c2, d, f, g);
@@ -6046,8 +6015,8 @@ extern "C" BOOL PendingUnit_Reserve(u8 aid, Unk_020452ec_Pos *pos, u16 a, u16 c,
 }
 
 namespace nG {
-extern "C" void PendingUnit_Replace(u8 aid, Unk_020452ec_Pos *pos, u16 a, u16 c, u8 k, u8 b, u8 c2, u8 d, u8 f, s8 g) {
-    Unk_020452ec_Pos t;
+extern "C" void PendingUnit_Replace(u8 aid, Vec2 *pos, u16 a, u16 c, u8 k, u8 b, u8 c2, u8 d, u8 f, s8 g) {
+    Vec2 t;
     t.x = pos->x;
     t.y = pos->y;
     s32 i = PendingUnit_Find(&t, f);
@@ -6062,7 +6031,7 @@ extern "C" void PendingUnit_Replace(u8 aid, Unk_020452ec_Pos *pos, u16 a, u16 c,
                 PackedUnitPos q;
                 q.v = 0xfff1;
                 q.v = e->oldItem;
-                Unk_020452ec_Pos t2;
+                Vec2 t2;
                 t2.x = pos->x;
                 t2.y = pos->y;
                 Tree_DropItems(&q, e->aid, &t2);
@@ -6071,12 +6040,12 @@ extern "C" void PendingUnit_Replace(u8 aid, Unk_020452ec_Pos *pos, u16 a, u16 c,
             }
             PendingUnit_Apply(e);
         }
-        Unk_020452ec_Pos t3;
+        Vec2 t3;
         t3.x = pos->x;
         t3.y = pos->y;
         PendingUnit_SetIndex(i, aid, &t3, a, c, k, b, c2, d, f, g);
     } else {
-        Unk_020452ec_Pos t4;
+        Vec2 t4;
         t4.x = pos->x;
         t4.y = pos->y;
         PendingUnit_Add(aid, &t4, a, c, k, b, c2, d, f, g);
@@ -6085,8 +6054,8 @@ extern "C" void PendingUnit_Replace(u8 aid, Unk_020452ec_Pos *pos, u16 a, u16 c,
 }
 
 namespace nG {
-extern "C" void PendingUnit_ApplyAt(Unk_020452ec_Pos *pos, s32 flag) {
-    Unk_020452ec_Pos t;
+extern "C" void PendingUnit_ApplyAt(Vec2 *pos, s32 flag) {
+    Vec2 t;
     t.x = pos->x;
     t.y = pos->y;
     PendingUnit_ApplyIndex(PendingUnit_Find(&t, flag));
@@ -6102,8 +6071,8 @@ extern "C" void PendingUnit_ApplyIndex(s32 i) {
 }
 
 namespace nG {
-extern "C" void PendingUnit_ApplyAtIfAid(Unk_020452ec_Pos *pos, u32 v, s32 flag) {
-    Unk_020452ec_Pos t;
+extern "C" void PendingUnit_ApplyAtIfAid(Vec2 *pos, u32 v, s32 flag) {
+    Vec2 t;
     t.x = pos->x;
     t.y = pos->y;
     s32 i = PendingUnit_Find(&t, flag);
@@ -6117,14 +6086,14 @@ extern "C" void PendingUnit_ApplyAtIfAid(Unk_020452ec_Pos *pos, u32 v, s32 flag)
 }
 
 namespace nG {
-extern "C" void PendingUnit_CancelAt(Unk_020452ec_Pos *pos, s32 flag) {
-    Unk_020452ec_Pos t;
+extern "C" void PendingUnit_CancelAt(Vec2 *pos, s32 flag) {
+    Vec2 t;
     t.x = pos->x;
     t.y = pos->y;
     s32 i = PendingUnit_Find(&t, flag);
     if (i >= 0) {
         PendingUnit *e = &nZ::sPendingUnits.entries[i];
-        Unk_020452ec_Pos xy;
+        Vec2 xy;
         Unk_0204548c_Unpack(e->unit, e->unit, &xy);
         if (FieldItemFx_CancelAt(nZ::sPendingUnits.entries[i].aid, &xy) == 0) {
             switch (e->kind) {
@@ -6144,8 +6113,8 @@ extern "C" void PendingUnit_CancelAt(Unk_020452ec_Pos *pos, s32 flag) {
 }
 
 namespace nG {
-extern "C" void PendingUnit_CommitAt(Unk_020452ec_Pos *pos, s32 flag) {
-    Unk_020452ec_Pos t;
+extern "C" void PendingUnit_CommitAt(Vec2 *pos, s32 flag) {
+    Vec2 t;
     t.x = pos->x;
     t.y = pos->y;
     s32 i = PendingUnit_Find(&t, flag);
@@ -6177,8 +6146,8 @@ extern "C" void PendingUnit_ClearActiveOfAid(u32 aid) {
 }
 
 namespace nG {
-extern "C" s32 PendingUnit_IndexAt(Unk_020452ec_Pos *pos, s32 flag) {
-    Unk_020452ec_Pos t;
+extern "C" s32 PendingUnit_IndexAt(Vec2 *pos, s32 flag) {
+    Vec2 t;
     t.x = pos->x;
     t.y = pos->y;
     return PendingUnit_Find(&t, flag);
@@ -6202,7 +6171,7 @@ extern "C" void PendingUnits_Flush() {
 }
 
 namespace nG {
-extern "C" s32 PendingUnit_Find(Unk_020452ec_Pos *pos, s32 flag) {
+extern "C" s32 PendingUnit_Find(Vec2 *pos, s32 flag) {
     s32 result = -1;
     PendingUnit *e = nZ::sPendingUnits.entries;
     for (s32 i = 0; i < 20; e++, i++) {
@@ -6216,7 +6185,7 @@ extern "C" s32 PendingUnit_Find(Unk_020452ec_Pos *pos, s32 flag) {
 }
 
 namespace nG {
-extern "C" s32 PendingUnit_FindByAid(s32 aid, Unk_020452ec_Pos *pos, s32 flag) {
+extern "C" s32 PendingUnit_FindByAid(s32 aid, Vec2 *pos, s32 flag) {
     s32 result = -1;
     PendingUnit *e = nZ::sPendingUnits.entries;
     for (s32 i = 0; i < 20; e++, i++) {
@@ -6230,8 +6199,8 @@ extern "C" s32 PendingUnit_FindByAid(s32 aid, Unk_020452ec_Pos *pos, s32 flag) {
 }
 
 namespace nF {
-extern "C" s32 PendingUnit_FindForAid(u32 a, Unk_020449e8_Pos *p, s32 b) {
-    Unk_020449e8_Pos t;
+extern "C" s32 PendingUnit_FindForAid(u32 a, Vec2 *p, s32 b) {
+    Vec2 t;
     s32 x = Field_AidOrZero();
     t.x = p->x;
     t.y = p->y;
@@ -6241,7 +6210,7 @@ extern "C" s32 PendingUnit_FindForAid(u32 a, Unk_020449e8_Pos *p, s32 b) {
 
 namespace nF {
 extern "C" void PendingUnit_FindFree() {
-    Unk_020449e8_Pos p;
+    Vec2 p;
     p.x = 0xff;
     p.y = 0xff;
     PendingUnit_Find(&p, 0);
@@ -6320,8 +6289,8 @@ extern "C" void PendingUnits_ClearAll(u8 *a) {
 }
 
 namespace nF {
-extern "C" BOOL Field_IsUnitClearOfOthers(Unk_020449e8_Pos *p, s32 idx) {
-    Unk_02044aa8_Vec3 v;
+extern "C" BOOL Field_IsUnitClearOfOthers(Vec2 *p, s32 idx) {
+    VecFx32 v;
     if (!_ZN11CommManager8isOnlineEv(gCommManager)) {
         return TRUE;
     }
@@ -6330,7 +6299,7 @@ extern "C" BOOL Field_IsUnitClearOfOthers(Unk_020449e8_Pos *p, s32 idx) {
         if (i != idx) {
             Actor *o = PlayerActor_GetActor(i);
             if (o) {
-                Unk_02044aa8_Vec3 *q = (Unk_02044aa8_Vec3 *)&o->position;
+                VecFx32 *q = (VecFx32 *)&o->position;
                 s32 dx = v.x - q->x;
                 s32 dz = v.z - q->z;
                 s32 a = func_01ffcb0c(dx, dx);
@@ -6346,8 +6315,8 @@ extern "C" BOOL Field_IsUnitClearOfOthers(Unk_020449e8_Pos *p, s32 idx) {
 }
 
 namespace nF {
-extern "C" BOOL Field_IsUnitClearOfOthersForAid(Unk_020449e8_Pos *p, u32 x) {
-    Unk_020449e8_Pos t;
+extern "C" BOOL Field_IsUnitClearOfOthersForAid(Vec2 *p, u32 x) {
+    Vec2 t;
     t.x = p->x;
     t.y = p->y;
     return Field_IsUnitClearOfOthers(&t, Field_AidOrLocal(x));
@@ -6355,8 +6324,8 @@ extern "C" BOOL Field_IsUnitClearOfOthersForAid(Unk_020449e8_Pos *p, u32 x) {
 }
 
 namespace nF {
-extern "C" BOOL Field_IsUnitClearOfOthersLocal(Unk_020449e8_Pos *p) {
-    Unk_020449e8_Pos t;
+extern "C" BOOL Field_IsUnitClearOfOthersLocal(Vec2 *p) {
+    Vec2 t;
     s32 owner = gCommManager->localSlot;
     t.x = p->x;
     t.y = p->y;
@@ -6365,11 +6334,11 @@ extern "C" BOOL Field_IsUnitClearOfOthersLocal(Unk_020449e8_Pos *p) {
 }
 
 namespace nF {
-extern "C" BOOL FieldAction_CanReserveUnit(u32 idx, Unk_020449e8_Pos *p) {
+extern "C" BOOL FieldAction_CanReserveUnit(u32 idx, Vec2 *p) {
     volatile u16 v = 0xfff1;
     BOOL res = FALSE;
     FieldActionRequest *e = &sFieldActions[idx];
-    Unk_020449e8_Pos t;
+    Vec2 t;
     s32 r;
     s32 fl;
     v = e->oldItem;
@@ -6378,7 +6347,7 @@ extern "C" BOOL FieldAction_CanReserveUnit(u32 idx, Unk_020449e8_Pos *p) {
     t.y = p->y;
     r = PendingUnit_IndexAt(&t, fl);
     if (r < 0) {
-        Unk_020449e8_Pos t2;
+        Vec2 t2;
         t2.x = p->x;
         t2.y = p->y;
         if (Field_IsUnitClearOfOthersLocal(&t2)) {
@@ -6424,7 +6393,7 @@ extern "C" BOOL FieldAction_PreApplyOffline(FieldActionRequestMsg *s, FieldActio
         break;
     }
     case 0xf: {
-        Unk_020449e8_Pos t;
+        Vec2 t;
         u32 r = Field_AidOrLocal(e->aid);
         t.x = e->unit.x;
         t.y = e->unit.y;
@@ -6438,7 +6407,7 @@ extern "C" BOOL FieldAction_PreApplyOffline(FieldActionRequestMsg *s, FieldActio
         res = TRUE;
         break;
     case 0xe: {
-        Unk_020449e8_Pos t;
+        Vec2 t;
         t.x = e->unit.x;
         t.y = e->unit.y;
         MoneyRock_OnHit(&data_021c47bc, &t);
@@ -6454,8 +6423,8 @@ extern "C" void FieldAction_Submit(u8 idx, u32 arg) {
     void *o = gSceneBlockMap;
     FieldActionRequest *e = &sFieldActions[idx];
     FieldActionRequestMsg s;
-    Unk_020449e8_Pos p;
-    Unk_020449e8_Pos p2;
+    Vec2 p;
+    Vec2 p2;
     FieldActionResultMsg out;
     u16 *t;
     s32 x, y;
@@ -6522,7 +6491,7 @@ extern "C" void FieldAction_Submit(u8 idx, u32 arg) {
 }
 
 namespace nF {
-extern "C" BOOL TreeDrop_FindUnit(FieldActionResultMsg *a, Unk_020449e8_Pos *p, u32 idx, void *obj) {
+extern "C" BOOL TreeDrop_FindUnit(FieldActionResultMsg *a, Vec2 *p, u32 idx, void *obj) {
     s32 i, z0, z1;
     u32 *base;
     u32 *e;
@@ -6539,7 +6508,7 @@ extern "C" BOOL TreeDrop_FindUnit(FieldActionResultMsg *a, Unk_020449e8_Pos *p, 
         s32 ty = y >> 4;
         u16 *t = BlockMap_GetItemPtr(obj, tx, ty, x - (tx << 4), y - (ty << 4), z0);
         if (t && *t == 0xfff1 && _ZN8BlockMap12canPlaceItemEii(obj, x, y)) {
-            Unk_020449e8_Pos q;
+            Vec2 q;
             q.x = x;
             q.y = y;
             if (PendingUnit_IndexAt(&q, z1) < 0) {
@@ -6578,7 +6547,7 @@ extern "C" u32 Tree_GetDropItem(FieldActionResultMsg *a, u32 id) {
 
 namespace nF {
 extern "C" void TreeDrop_SpawnFruit(FieldActionResultMsg *o, u32 x, u32 code) {
-    Unk_020449e8_Pos pos;
+    Vec2 pos;
     pos.x = 0;
     pos.y = 0;
     u32 owner;
@@ -6600,7 +6569,7 @@ extern "C" void TreeDrop_SpawnFruit(FieldActionResultMsg *o, u32 x, u32 code) {
             pos.x = (vx >> 8) + ((d >> 4) - 8);
             pos.y = (vy & 0xff) + ((d & 0xf) - 8);
             if (TreeDrop_FindUnit(o, &pos, i, (void *)owner)) {
-                Unk_020449e8_Pos q;
+                Vec2 q;
                 q.x = pos.x;
                 q.y = pos.y;
                 PendingUnit_Reserve(x, &q, val, 0xfff1, 0, 0, 0, i, 0, -1);
@@ -6623,10 +6592,10 @@ extern "C" void TreeDrop_SpawnSpecial(FieldActionResultMsg *o, FieldActionReques
     volatile u16 v2;
     u16 ret;
     volatile u16 x1, y1, x2, y2, p1, p2;
-    Unk_020449e8_Pos pos;
+    Vec2 pos;
     Unk_02044aa8_Rng rng;
-    Unk_020449e8_Pos q;
-    Unk_02044aa8_Vec3 vec;
+    Vec2 q;
+    VecFx32 vec;
     u32 owner;
     u32 code;
     pos.x = 0;
@@ -6752,23 +6721,23 @@ extern "C" void FieldAction_HostProcess(FieldActionRequestMsg *src, u8 flag, s32
         case 23:
             break;
         case 24: {
-            Unk_02043f04_Pos p;
+            VecXZ p;
             p.x = x;
             p.z = z;
             PendingUnit_Reserve((u8)t, &p, e.item, 0xfff1, e.kind, e.unk_01_3, e.mode, 4, e.layer, -1);
-            Unk_02043f04_Pos q;
+            VecXZ q;
             q.x = x;
             q.z = z;
             FieldItemFx_StartPop(t, e.item, &q);
             break;
         }
         case 26: {
-            Unk_02043f04_Pos p;
+            VecXZ p;
             p.x = x;
             p.z = z;
             PendingUnit_Reserve((u8)t, &p, e.item, 0xfff1, e.kind, e.unk_01_3, e.mode, 4, e.layer, -1);
             if (!Field_IsLocalAid(t)) {
-                Unk_02043f04_Pos q;
+                VecXZ q;
                 q.x = x;
                 q.z = z;
                 FieldItemFx_StartPop(t, e.item, &q);
@@ -6777,7 +6746,7 @@ extern "C" void FieldAction_HostProcess(FieldActionRequestMsg *src, u8 flag, s32
         }
         default: {
             u32 h = src->oldItem;
-            Unk_02043f04_Pos p;
+            VecXZ p;
             p.x = x;
             p.z = z;
             PendingUnit_Reserve((u8)t, &p, e.item, h, e.kind, e.unk_01_3, e.mode, 4, e.layer, -1);
@@ -6819,7 +6788,7 @@ extern "C" void FieldAction_ApplyResult(FieldActionResultMsg *e) {
         return;
     case 24:
     case 26: {
-        Unk_02043f04_Pos p;
+        VecXZ p;
         p.x = x;
         p.z = z;
         FieldItemFx_StartPop(e->aid, e->item, &p);
@@ -6832,7 +6801,7 @@ extern "C" void FieldAction_ApplyResult(FieldActionResultMsg *e) {
         s32 zh = z >> 4;
         h = *(u16 *)BlockMap_GetItemPtr(gSceneBlockMap, xh, zh, x - (xh << 4), z - (zh << 4), 0);
     }
-    Unk_02043f04_Pos p1;
+    VecXZ p1;
     s32 f7 = e->layer;
     s32 f5 = e->mode;
     s32 f3 = e->unk_01_3;
@@ -6852,7 +6821,7 @@ extern "C" void FieldAction_ApplyResult(FieldActionResultMsg *e) {
             s32 pz = v & 0xff;
             volatile u16 vv = e->dropUnits[i];
             if (vv != 0xffff) {
-                Unk_02043f04_Pos p2;
+                VecXZ p2;
                 s32 g7 = e->layer;
                 p2.x = px;
                 p2.z = pz;
@@ -6879,7 +6848,7 @@ extern "C" void FieldAction_CancelPendingForResult(FieldActionResultMsg *e) {
         s32 zh = z >> 4;
         BlockMap_GetItemPtr(gSceneBlockMap, xh, zh, x - (xh << 4), z - (zh << 4), 0);
     }
-    Unk_02043f04_Pos p1;
+    VecXZ p1;
     s32 f1 = e->layer;
     p1.x = x;
     p1.z = z;
@@ -6894,7 +6863,7 @@ extern "C" void FieldAction_CancelPendingForResult(FieldActionResultMsg *e) {
             s32 pz = v & 0xff;
             volatile u16 vv = e->dropUnits[i];
             if (vv != 0xffff) {
-                Unk_02043f04_Pos p2;
+                VecXZ p2;
                 s32 f2 = e->layer;
                 p2.x = px;
                 p2.z = pz;
@@ -6956,7 +6925,7 @@ extern "C" void FieldAction_OnNetResult(FieldActionResultMsg *e, s32 t) {
 }
 
 namespace nE {
-extern "C" void FlowerFx_SetParams(FlowerFxParams *g, s32 a, s32 b, s32 c, u8 d, Unk_02044014_Vec3 *v, s16 e) {
+extern "C" void FlowerFx_SetParams(FlowerFxParams *g, s32 a, s32 b, s32 c, u8 d, VecFx32 *v, s16 e) {
     g->mode = a;
     g->species = b;
     g->color = c;
@@ -6973,8 +6942,8 @@ extern "C" void FlowerFx_InitByColor(EffectSplEmitter *p) {
     FlowerFxParams *const g = &nZ::gTownUpdater.flowerFx;
     Unk_020441f0_Color c0, c2, c4;
     volatile u16 c6;
-    Unk_020441f0_T t;
-    Unk_02044014_Vec3 *gv = (Unk_02044014_Vec3 *)((u8 *)g + 8);
+    VecFx32 t;
+    VecFx32 *gv = (VecFx32 *)((u8 *)g + 8);
     p->posX = g->pos.x + (*(s32 **)p->resource)[1];
     p->posY = gv->y + (*(s32 **)p->resource)[2];
     p->posZ = gv->z + (*(s32 **)p->resource)[3];
@@ -7009,8 +6978,8 @@ extern "C" void FlowerFx_InitBySpecies(EffectSplEmitter *p) {
     FlowerFxParams *const g = &nZ::gTownUpdater.flowerFx;
     Unk_020441f0_Color c0, c2, c4;
     volatile u16 c6;
-    Unk_020441f0_T t;
-    Unk_02044014_Vec3 *gv = (Unk_02044014_Vec3 *)((u8 *)g + 8);
+    VecFx32 t;
+    VecFx32 *gv = (VecFx32 *)((u8 *)g + 8);
     p->posX = g->pos.x + (*(s32 **)p->resource)[1];
     p->posY = gv->y + (*(s32 **)p->resource)[2];
     p->posZ = gv->z + (*(s32 **)p->resource)[3];
@@ -7042,10 +7011,10 @@ extern "C" void FlowerFx_InitBySpecies(EffectSplEmitter *p) {
 }
 
 namespace nE {
-extern "C" void Flower_SpawnPetalFx(u16 *a, Unk_02043f04_Pos *pos, s16 c, s32 d) {
+extern "C" void Flower_SpawnPetalFx(u16 *a, VecXZ *pos, s16 c, s32 d) {
     s32 k, id1, id2;
     u8 flag;
-    Unk_02044014_Vec3 v, w;
+    VecFx32 v, w;
     k = (u8)Flower_GetSpecies(a);
     switch (k) {
     case 0:
@@ -7120,8 +7089,8 @@ yes:
 }
 
 namespace nE {
-extern "C" void Flower_SpawnPetalFxAt(u16 *a, Unk_02043f04_Pos *p, s16 c, s32 d) {
-    Unk_02043f04_Pos t;
+extern "C" void Flower_SpawnPetalFxAt(u16 *a, VecXZ *p, s16 c, s32 d) {
+    VecXZ t;
     t.x = p->x;
     t.z = p->z;
     Flower_SpawnPetalFx(a, &t, c, d);
@@ -7129,7 +7098,7 @@ extern "C" void Flower_SpawnPetalFxAt(u16 *a, Unk_02043f04_Pos *p, s16 c, s32 d)
 }
 
 namespace nE {
-extern "C" void Weed_SpawnPullFx(u16 *a, Unk_02043f04_Pos *p) {
+extern "C" void Weed_SpawnPullFx(u16 *a, VecXZ *p) {
     s32 id;
     switch (*a) {
     case 0x1f:
@@ -7142,24 +7111,24 @@ extern "C" void Weed_SpawnPullFx(u16 *a, Unk_02043f04_Pos *p) {
         id = 0x76;
         break;
     }
-    Unk_02044014_Vec3 v;
+    VecFx32 v;
     FieldPos_FromUnitCenter(&v, p->x, p->z);
     EffectSpl_CreateOneShot(id, &v, 0, gEffectSplDefaultInitCbs);
 }
 }
 
 namespace nE {
-extern "C" void DeadTurnip_SpawnDigFx(Unk_02043f04_Pos *p) {
-    Unk_02044014_Vec3 v;
+extern "C" void DeadTurnip_SpawnDigFx(VecXZ *p) {
+    VecFx32 v;
     FieldPos_FromUnitCenter(&v, p->x, p->z);
     EffectSpl_CreateOneShot(0x94, &v, 0, gEffectSplDefaultInitCbs);
 }
 }
 
 namespace nE {
-extern "C" s32 Flower_TrampleTile(void *m, Unk_02043f04_Pos *p, s32 f) {
+extern "C" s32 Flower_TrampleTile(void *m, VecXZ *p, s32 f) {
     if (Item_IsFlower()) {
-        Unk_02043f04_Pos t;
+        VecXZ t;
         t.x = p->x;
         t.z = p->z;
         Flower_SpawnPetalFx((u16 *)m, &t, 0, f);
@@ -7171,7 +7140,7 @@ extern "C" s32 Flower_TrampleTile(void *m, Unk_02043f04_Pos *p, s32 f) {
 }
 
 namespace nE {
-extern "C" s32 Flower_TrampleAt(Unk_02043f04_Pos *p, s32 f) {
+extern "C" s32 Flower_TrampleAt(VecXZ *p, s32 f) {
     void *m = TownBlockMap_Get();
     if (m) {
         s32 x = p->x;
@@ -7180,7 +7149,7 @@ extern "C" s32 Flower_TrampleAt(Unk_02043f04_Pos *p, s32 f) {
         s32 zh = z >> 4;
         void *r = BlockMap_GetItemPtr(m, xh, zh, x - (xh << 4), z - (zh << 4), 0);
         if (r) {
-            Unk_02043f04_Pos t;
+            VecXZ t;
             t.x = p->x;
             t.z = p->z;
             Flower_TrampleTile(r, &t, f);
@@ -7190,7 +7159,7 @@ extern "C" s32 Flower_TrampleAt(Unk_02043f04_Pos *p, s32 f) {
 }
 
 namespace nE {
-extern "C" void Flower_Trample(Unk_02043f04_Pos *p) {
+extern "C" void Flower_Trample(VecXZ *p) {
     void *m = TownBlockMap_Get();
     if (m) {
         s32 x = p->x;
@@ -7200,7 +7169,7 @@ extern "C" void Flower_Trample(Unk_02043f04_Pos *p) {
         void *r = BlockMap_GetItemPtr(m, xh, zh, x - (xh << 4), z - (zh << 4), 0);
         if (r) {
             s32 f = Random_GlobalBelow(0x50) < 0x46 ? 1 : 0;
-            Unk_02043f04_Pos t;
+            VecXZ t;
             t.x = p->x;
             t.z = p->z;
             Flower_TrampleTile(r, &t, f);
@@ -7210,8 +7179,8 @@ extern "C" void Flower_Trample(Unk_02043f04_Pos *p) {
 }
 
 namespace nE {
-extern "C" s32 Flower_PlayTrampleFx(Unk_02043f04_Pos *p) {
-    Unk_02043f04_Pos t;
+extern "C" s32 Flower_PlayTrampleFx(VecXZ *p) {
+    VecXZ t;
     t.x = p->x;
     t.z = p->z;
     return Flower_TrampleAt(&t, 1);
@@ -7955,7 +7924,7 @@ extern "C" s32 FieldAction_PollResult(s32 idx) {
                 u8 *o = PlayerActor_GetActor(4);
                 if (o) {
                     u16 v = e->oldItem;
-                    Unk_02042d10_Vec *q = (Unk_02042d10_Vec *)(o + 0x5c);
+                    VecFx32Copy *q = (VecFx32Copy *)(o + 0x5c);
                     volatile u16 id = 0xfff1;
                     id = e->item;
                     if (Item_IsTreeStage0((u16 *)&id)) {
@@ -8078,7 +8047,7 @@ extern "C" s32 FieldAction_RequestPlaceAtPendingForAid(void *a, void *b) {
 }
 
 namespace nB {
-extern "C" u16 *FieldAction_CheckFreeUnit(u32 a, void *m, s32 x, s32 y, Unk_020422c0_Pos *p) {
+extern "C" u16 *FieldAction_CheckFreeUnit(u32 a, void *m, s32 x, s32 y, Vec2 *p) {
     s32 hx = x >> 4;
     s32 hy = y >> 4;
     u16 *t = BlockMap_GetItemPtr(m, hx, hy, x - (hx << 4), y - (hy << 4), 0);
@@ -8122,7 +8091,7 @@ extern "C" u16 *FieldAction_CheckFreeUnit(u32 a, void *m, s32 x, s32 y, Unk_0204
 }
 
 namespace nB {
-extern "C" s32 FieldAction_FindDropUnit(void *self, Unk_020422c0_Pos *p, u8 *out) {
+extern "C" s32 FieldAction_FindDropUnit(void *self, Vec2 *p, u8 *out) {
     s32 res;
     s32 *ent;
     s32 i;
@@ -8141,16 +8110,16 @@ extern "C" s32 FieldAction_FindDropUnit(void *self, Unk_020422c0_Pos *p, u8 *out
             u8 b = sDropUnitOffsets[*ent];
             s32 x = p->x + ((b >> 4) - 8);
             s32 y = p->y + ((b & 0xf) - 8);
-            Unk_020422c0_Pos q;
+            Vec2 q;
             u16 *t;
             q = *p;
             t = FieldAction_CheckFreeUnit((u32)self, w, x, y, &q);
             if (t != NULL && *t == 0xfff1) {
-                Unk_020422c0_Pos q2;
+                Vec2 q2;
                 q2.x = x;
                 q2.y = y;
                 if (PendingUnit_IndexAt(&q2, z) < 0) {
-                    Unk_020422c0_Pos q3;
+                    Vec2 q3;
                     s32 k = *(s32 *)(g + 0x68);
                     q3.x = x;
                     q3.y = y;
@@ -8194,7 +8163,7 @@ extern "C" s32 FieldAction_PollDrop(s32 idx) {
     case 2: {
         u8 *o = (u8 *)PlayerActor_GetActor(4);
         if (w != NULL && o != NULL) {
-            Unk_02042830_V3 *pv = (Unk_02042830_V3 *)(o + 0x5c);
+            VecFx32 *pv = (VecFx32 *)(o + 0x5c);
             if (Unk_02042830_IsZero(gFieldSceneKind)) {
                 volatile u16 tmp;
                 tmp = 0xfff1;
@@ -8239,18 +8208,18 @@ extern "C" s32 FieldAction_PollDrop(s32 idx) {
                     s8 = 0;
                 }
                 if (s8 || Unk_02042660_InRange(v, 0xa7, 0xc6) || v == 0x1e) {
-                    Unk_020422c0_Pos q;
+                    Vec2 q;
                     q.x = e->unit.x;
                     q.y = e->unit.y;
                     if (FieldItemFx_StartPop(e->aid, e->item, &q)) {
                         res = 1;
                     }
                 } else {
-                    Unk_02042830_V3 a;
+                    VecFx32 a;
                     a.x = pv->x;
                     a.y = pv->y;
                     a.z = pv->z;
-                    Unk_020422c0_Pos q;
+                    Vec2 q;
                     q.x = e->unit.x;
                     q.y = e->unit.y;
                     if (FieldItemFx_StartDrop(e->aid, e->item, &q, &a)) {
@@ -8258,12 +8227,12 @@ extern "C" s32 FieldAction_PollDrop(s32 idx) {
                     }
                 }
             } else {
-                Unk_02042830_V3 a;
+                VecFx32 a;
                 a.x = pv->x;
                 a.y = pv->y;
                 a.z = pv->z;
                 u32 b = e->layer;
-                Unk_020422c0_Pos q;
+                Vec2 q;
                 q.x = e->unit.x;
                 q.y = e->unit.y;
                 if (ItemDrop_StartToUnit(e->aid, e->item, &q, &a, b)) {
@@ -8288,13 +8257,13 @@ extern "C" void FieldAction_Release(s32 i) {
 }
 
 namespace nB {
-extern "C" void FieldAction_WaterFlowers(void *self, Unk_020422c0_Pos *p) {
+extern "C" void FieldAction_WaterFlowers(void *self, Vec2 *p) {
     s32 flag, found, i;
     void *m, *o;
     u16 *t;
     s32 y, x;
     s32 r;
-    Unk_020422c0_Pos q;
+    Vec2 q;
     s8 *dx, *dy;
     m = TownBlockMap_Get();
     o = PlayerActor_GetActor(4);
@@ -8381,7 +8350,7 @@ extern "C" FieldActionRequest *FieldAction_Get(s32 i) {
 }
 
 namespace nB {
-extern "C" s32 FieldAction_Add(FieldActionRequest *e, u32 a1, s32 type, Unk_020422c0_Pos *pos, u16 a5, u16 a6, u8 a7, u8 a8, s32 a9, s8 a10) {
+extern "C" s32 FieldAction_Add(FieldActionRequest *e, u32 a1, s32 type, Vec2 *pos, u16 a5, u16 a6, u8 a7, u8 a8, s32 a9, s8 a10) {
     s32 i, res = -1;
     for (i = 0; i < 3; e++, i++) {
         if (e->state == 0 && e->kind == 0) {
@@ -8447,7 +8416,7 @@ extern "C" void MoneyRock_Update(MoneyRockState *self) {
             u16 v = *(u16 *)self;
             s32 x = v >> 8;
             s32 y = v & 0xff;
-            Unk_020422c0_Pos q;
+            Vec2 q;
             q.x = x;
             q.y = y;
             if (PendingUnit_Find(&q, 0) < 0) {
@@ -8470,8 +8439,8 @@ extern "C" void MoneyRock_Update(MoneyRockState *self) {
 }
 
 namespace nB {
-extern "C" void MoneyRock_OnHit(MoneyRockState *self, Unk_020422c0_Pos *p) {
-    Unk_020422c0_Pos q;
+extern "C" void MoneyRock_OnHit(MoneyRockState *self, Vec2 *p) {
+    Vec2 q;
     if (self->timer < 0) {
         s32 py = p->y;
         self->x = p->x;
@@ -8489,7 +8458,7 @@ extern "C" void MoneyRock_OnHit(MoneyRockState *self, Unk_020422c0_Pos *p) {
 }
 
 namespace nB {
-extern "C" void MoneyRock_SpawnBag(MoneyRockState *self, Unk_020422c0_Pos *p) {
+extern "C" void MoneyRock_SpawnBag(MoneyRockState *self, Vec2 *p) {
     TownBlockMap *m = (TownBlockMap *)TownBlockMap_Get();
     if (m != NULL) {
         Unk_0204da0c_Size *sz = (Unk_0204da0c_Size *)&m->width;
@@ -8505,7 +8474,7 @@ extern "C" void MoneyRock_SpawnBag(MoneyRockState *self, Unk_020422c0_Pos *p) {
                 if (nx == p->x && ny == p->y) {
                     continue;
                 }
-                Unk_020422c0_Pos q;
+                Vec2 q;
                 q.x = nx;
                 q.y = ny;
                 if (MoneyRock_TrySpawnBagAt(self, m, &q)) {
@@ -8518,14 +8487,14 @@ extern "C" void MoneyRock_SpawnBag(MoneyRockState *self, Unk_020422c0_Pos *p) {
 }
 
 namespace nB {
-extern "C" BOOL MoneyRock_TrySpawnBagAt(MoneyRockState *self, void *m, Unk_020422c0_Pos *p) {
+extern "C" BOOL MoneyRock_TrySpawnBagAt(MoneyRockState *self, void *m, Vec2 *p) {
     BOOL r = FALSE;
     s32 x = p->x, y = p->y;
     s32 hx = x >> 4, hy = y >> 4;
     u16 *t = BlockMap_GetItemPtr(m, hx, hy, x - (hx << 4), y - (hy << 4), 0);
     if (t != NULL && *t == 0xfff1) {
         if (_ZN8BlockMap12canPlaceItemEii(m, p->x, p->y) != 0) {
-            Unk_020422c0_Pos q;
+            Vec2 q;
             s32 qy = p->y;
             q.x = p->x;
             q.y = qy;
@@ -8554,7 +8523,7 @@ extern "C" void FieldActions_Update(u8 *p) {
 }
 
 namespace nB {
-extern "C" s32 ChopCount_Get(FieldActionState *m, Unk_020422c0_Pos *p) {
+extern "C" s32 ChopCount_Get(FieldActionState *m, Vec2 *p) {
     s32 idx = ((p->x - 0x10) >> 2) + ((p->y - 0x10) << 4);
     s32 sh = (p->x & 3) << 1;
     if (idx < 0 || idx >= 0x400) {
@@ -8566,7 +8535,7 @@ extern "C" s32 ChopCount_Get(FieldActionState *m, Unk_020422c0_Pos *p) {
 }
 
 namespace nB {
-extern "C" void ChopCount_Set(FieldActionState *m, Unk_020422c0_Pos *p, u32 v) {
+extern "C" void ChopCount_Set(FieldActionState *m, Vec2 *p, u32 v) {
     s32 idx = ((p->x - 0x10) >> 2) + ((p->y - 0x10) << 4);
     s32 sh = (p->x & 3) << 1;
     if (idx < 0 || idx >= 0x400) {
@@ -8602,7 +8571,7 @@ extern "C" void FieldActionFx_Start(FieldActionResultMsg *p) {
     s32 k;
     struct {
         Unk_02042104_Pair p[6];
-        Unk_02042104_Vec v[3];
+        VecFx32 v[3];
     } m;
     Unk_02042104_Ent *e = &sFieldActionFxSlots[p->aid];
     if (e->a != 0) {
@@ -8644,7 +8613,7 @@ extern "C" void FieldActionFx_Start(FieldActionResultMsg *p) {
     case 18: {
         u32 o = PlayerActor_GetActor(p->aid);
         if (o != 0) {
-            Unk_02042104_Vec *q = (Unk_02042104_Vec *)(o + 0x5c);
+            VecFx32 *q = (VecFx32 *)(o + 0x5c);
             if (Unk_02042104_IsZero(gFieldSceneKind)) {
                 m.v[0] = *q;
                 m.p[2].hi = hi;
@@ -8668,7 +8637,7 @@ extern "C" void FieldActionFx_Start(FieldActionResultMsg *p) {
         if (p->item != 0xfff1) {
             u32 o = PlayerActor_GetActor(p->aid);
             if (o != 0) {
-                Unk_02042104_Vec *q = (Unk_02042104_Vec *)(o + 0x5c);
+                VecFx32 *q = (VecFx32 *)(o + 0x5c);
                 m.v[2] = *q;
                 m.p[5].hi = hi;
                 m.p[5].lo = lo;

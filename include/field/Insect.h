@@ -11,7 +11,7 @@
 #include "gfx/Mtx43.h"
 #include "gfx/ModelSlotPool.h"
 #include "game/FxVec3.h"
-#include "field/Unk_ov003_0225980c_V3.h"
+#include "gfx/VecFx32.h"
 
 // Material (texture) animation of the bee / ant swarm insects (vtable 0x02234aac, derived from ModelAnim).
 class InsectMatAnim : public ModelAnim {
@@ -39,14 +39,14 @@ public:
     /* 0x170 */ void (*updateFn)(Insect *);
     /* 0x174 */ CreatureSndChannel seEmitter;
     /* 0x180 */ Mtx43 handMtx;
-    /* 0x1b0 */ Unk_ov003_0225980c_V3 wanderBoxMin;
-    /* 0x1bc */ Unk_ov003_0225980c_V3 wanderBoxMax;
-    /* 0x1c8 */ Unk_ov003_0225980c_V3 homePos;
-    /* 0x1d4 */ Unk_ov003_0225980c_V3 targetPos;
-    /* 0x1e0 */ Unk_ov003_0225980c_V3 perchPos; // dragonfly perch / moth light point (Insect_InitMoth: start position)
+    /* 0x1b0 */ VecFx32Ctor wanderBoxMin;
+    /* 0x1bc */ VecFx32Ctor wanderBoxMax;
+    /* 0x1c8 */ VecFx32Ctor homePos;
+    /* 0x1d4 */ VecFx32Ctor targetPos;
+    /* 0x1e0 */ VecFx32Ctor perchPos; // dragonfly perch / moth light point (Insect_InitMoth: start position)
     /* 0x1ec */ FxVec3 feelers[2];
-    /* 0x204 */ Unk_ov003_0225980c_V3 position;
-    /* 0x210 */ Unk_ov003_0225980c_V3 scale;
+    /* 0x204 */ VecFx32Ctor position;
+    /* 0x210 */ VecFx32Ctor scale;
     /* 0x21c */ s32 behaviorWork;
     /* 0x220 */ s32 targetHeight;
     /* 0x224 */ s32 disturbRadius;

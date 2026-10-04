@@ -1,8 +1,8 @@
 // mwcc-version: 1.2/sp2
 // ov003 TU12 (actor 02231c14): .text 0x022165d0-0x02216824
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "actor/ActorProfile.h"
-#include "game/Unk_ov003_Vec.h"
 #include "talk/TalkWindowState.h"
 #include "sys/ProcBase.h"
 #include "actor/Actor.h"
@@ -73,7 +73,7 @@ void NNS_G3dBindMdlTex(void *a, void *b);
 void NNS_G3dBindMdlPltt(void *a, void *b);
 void _ZN5Actor5spawnEPvS0_S0_S0_S0_(s32 a, s32 b, void *c, s32 d, s32 e);
 s32 Str_SPrintf(char *buf, const char *fmt, ...);
-BOOL _ZN13BuildingActor10getDoorPosEP23Unk_ov009_0225b880_Vec3Ps(void *self, void *v, s16 *ang);
+BOOL _ZN13BuildingActor10getDoorPosEP7VecFx32Ps(void *self, void *v, s16 *ang);
 
 BuildingActor *BuildingList_FindByItem(u32 a);
 u32 Field_GetStructureTexSuffix();
@@ -82,10 +82,6 @@ u8 PlayerHouse_GetTexIndex();
 char *PlayerHouse_GetTexPath();
 }
 #define Actor_spawn _ZN5Actor5spawnEPvS0_S0_S0_S0_
-
-struct Unk_ov003_Vec3 {
-    s32 x, y, z;
-};
 
 class PlayerHouse : public BuildingActor {
 public:
@@ -121,11 +117,11 @@ PlayerHouse::PlayerHouse() {}
 PlayerHouse::~PlayerHouse() {}
 
 BOOL PlayerHouse::initBuilding() {
-    Unk_ov003_Vec3 v;
+    VecFx32 v;
     s16 ang;
     loadHouseTex();
     bindHouseTex();
-    if (_ZN13BuildingActor10getDoorPosEP23Unk_ov009_0225b880_Vec3Ps(this, &v, &ang)) {
+    if (_ZN13BuildingActor10getDoorPosEP7VecFx32Ps(this, &v, &ang)) {
         v.x -= 0x2000;
         v.z += 0x1000;
         Actor_spawn(0x24, 0x501d, &v, 0, 0);

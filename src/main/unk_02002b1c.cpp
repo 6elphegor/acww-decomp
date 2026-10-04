@@ -1,10 +1,9 @@
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "Unk_020d8c7c.h"
 #include "gfx/ToonTable.h"
 #include "gfx/Mtx43.h"
 #include "actor/ActorCollider.h"
-#include "actor/Unk_02002f14_S16Vec.h"
-#include "actor/Unk_02002f14_S32Vec.h"
 #include "actor/ActorListNode.h"
 #include "gfx/ViewFrustum.h"
 #include "gfx/AbAllObjGfx.h"
@@ -282,18 +281,18 @@ Actor::Actor() {
     listNode.next = 0;
     listNode.owner = this;
     List_PushBack(&gActorList, &listNode);
-    Unk_02002f14_S32Vec *v = (Unk_02002f14_S32Vec *)sActorSpawnPos;
+    VecFx32 *v = (VecFx32 *)sActorSpawnPos;
     if (v) {
         position.x = v->x;
         position.y = v->y;
         position.z = v->z;
     }
-    Unk_02002f14_S16Vec *w = (Unk_02002f14_S16Vec *)sActorSpawnRot;
+    VecFx16 *w = (VecFx16 *)sActorSpawnRot;
     if (w) {
         rotX = w->x;
         rotY = w->y;
         rotZ = w->z;
-        Unk_02002f14_S16Vec *x = (Unk_02002f14_S16Vec *)sActorSpawnRot;
+        VecFx16 *x = (VecFx16 *)sActorSpawnRot;
         moveAngleX = x->x;
         moveAngleY = x->y;
         moveAngleZ = x->z;

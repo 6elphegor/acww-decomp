@@ -10,7 +10,7 @@
 // 0x020f4a5c-0x020f5b9c; the pan-curve code (0x020f44f0-0x020f4a5c, with Snd_CalcListenerDistance) uses only bss 0x021f5bfc-0x021f5c28.
 // The unit's own compile reproduces the order of all six objects with the definitions at the end of the file in address order.
 #include "types.h"
-#include "game/Vec3.h"
+#include "gfx/VecFx32.h"
 
 struct Obj {
     /* 0x00 */ u32 *vptr;
@@ -103,11 +103,11 @@ BOOL NNS_SndArcPlayerStartSeqArc(void *a, u32 b, u32 c);
 s32 FX_Div(s32 a, s32 b);
 
 s32 Snd_DistanceToVolume(s32 x);
-s32 Snd_CalcPan(Vec3 *p, s32 m);
-s32 Snd_CalcListenerDistance(Vec3 *p, s32 m);
-void MelodyBeat_ApplyPosition(void *obj, Vec3 *pos);
+s32 Snd_CalcPan(VecFx32 *p, s32 m);
+s32 Snd_CalcListenerDistance(VecFx32 *p, s32 m);
+void MelodyBeat_ApplyPosition(void *obj, VecFx32 *pos);
 BOOL MelodyBeat_EndStep(Seq1 *self);
-void MelodyBeat_PlayStep(Seq1 *self, Vec3 *pos);
+void MelodyBeat_PlayStep(Seq1 *self, VecFx32 *pos);
 void MelodyBeat_ReadParams(Seq1 *self);
 u8 *MelodyPlayer_GetPattern(Ctl2 *c);
 void MelodyPlayer_LoadBank(void *c, u32 id);
@@ -471,7 +471,7 @@ extern "C" void MelodyPlayer_StartTrackA(Ctl2 *c) {
 }
 
 // Ctl2: start the event of the given mode with listener volume / pan from a position
-extern "C" void MelodyPlayer_PlayAt(Ctl2 *c, Vec3 *pos, u32 mode) {
+extern "C" void MelodyPlayer_PlayAt(Ctl2 *c, VecFx32 *pos, u32 mode) {
     u32 a;
     u32 b;
     if ((u8)(c->b3c + 255) <= 1) return;
@@ -603,7 +603,7 @@ extern "C" void MelodyBeat_Start(Seq1 *self, u16 id) {
 }
 
 // Seq1: per-frame update of the pattern player
-extern "C" void MelodyBeat_Update(Seq1 *self, Vec3 *pos) {
+extern "C" void MelodyBeat_Update(Seq1 *self, VecFx32 *pos) {
     SndObjX *o;
     u8 flag;
     s32 v;
@@ -652,7 +652,7 @@ extern "C" void MelodyBeat_ReadParams(Seq1 *self) {
 }
 
 // Seq1: start the sound of the current pattern step (13 = random variant)
-extern "C" void MelodyBeat_PlayStep(Seq1 *self, Vec3 *pos) {
+extern "C" void MelodyBeat_PlayStep(Seq1 *self, VecFx32 *pos) {
     u32 v = sMelodyBeatPattern[self->step];
     switch (v) {
     case 13:
@@ -692,7 +692,7 @@ extern "C" BOOL MelodyBeat_EndStep(Seq1 *self) {
 }
 
 // set the volume (id 15) and pan (id 15) of a voice from a position
-extern "C" void MelodyBeat_ApplyPosition(void *obj, Vec3 *pos) {
+extern "C" void MelodyBeat_ApplyPosition(void *obj, VecFx32 *pos) {
     s32 a = Snd_DistanceToVolume(Snd_CalcListenerDistance(pos, 0));
     s32 b = Snd_CalcPan(pos, 0);
     func_0210a148(obj, 15, a);

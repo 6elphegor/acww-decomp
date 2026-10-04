@@ -1,4 +1,5 @@
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "Unk_020d8c7c.h"
 #include "gfx/EffectSplEmitter.h"
 #include "gfx/AnimModel.h"
@@ -132,18 +133,6 @@ struct EffectSplResEntry {
 };
 
 
-
-struct Unk_0208ffe4_V {
-    s32 x;
-    s32 y;
-    s32 z;
-    Unk_0208ffe4_V(s32 a, s32 b, s32 c)
-    {
-        x = a;
-        y = b;
-        z = c;
-    }
-};
 
 union EffectTintColor {
     u16 v;
@@ -880,7 +869,7 @@ BOOL EffectSplProc::onExecute()
 
 extern "C" u16 EffectSpl_ToCurvedPos(void *a0, volatile s32 a1, volatile s32 a2, volatile s32 a3)
 {
-    Unk_0208ffe4_V t(a1, a2, a3);
+    VecFx32Ctor t(a1, a2, a3);
     return WorldCurve_ToCurved(a0, &t);
 }
 

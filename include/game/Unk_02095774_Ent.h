@@ -2,6 +2,7 @@
 #define GAME_UNK_02095774_ENT_H
 
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "sys/ProcBase.h"
 #include "actor/Actor.h"
 
@@ -13,11 +14,6 @@ struct Unk_02095dcc_Grid {
     /* 0x00 */ u8 pad_00[0xc];
     /* 0x0c */ s32 unitsX;
     /* 0x10 */ s32 unitsZ;
-};
-
-struct Unk_0209579c_Pos {
-    s32 x, y, z;
-    Unk_0209579c_Pos() {}
 };
 
 struct Unk_0209579c_L {

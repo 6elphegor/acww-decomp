@@ -1,6 +1,6 @@
 // mwcc-version: 1.2/base
 #include "types.h"
-#include "game/Unk_ov068_Vec.h"
+#include "gfx/VecFx32.h"
 #include "game/Unk_ov068_02268214_Flags.h"
 #include "game/Unk_ov068_02268214.h"
 #include "field/Insect.h"
@@ -8,7 +8,7 @@
 #pragma opt_loop_invariants off
 
 // Insect vector type (position etc.)
-typedef Unk_ov003_0225980c_V3 V3;
+typedef VecFx32Ctor V3;
 
 struct MothLightStackPad {
     s32 v[3];
@@ -32,7 +32,7 @@ extern s32 data_020c7c1c;
 extern u8 *gSceneBlockMap;
 s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
-void func_01ffd070(Unk_ov068_02268608_Vec *out, void *a, void *b);
+void func_01ffd070(VecFx32 *out, void *a, void *b);
 void Effect_Create(s32 a, void *v, s32 b, void *h);
 void Snd_SeEmitterPlayOneShot(void *a, s32 b, s32 c, s32 d);
 void FieldFish_ScareAround(void *a, s32 b);

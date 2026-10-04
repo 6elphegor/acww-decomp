@@ -1,10 +1,10 @@
 #include "types.h"
 #include "net/CommManager.h"
-#include "player/Unk_02006d14_Vec.h"
+#include "gfx/VecFx32.h"
 #include "gfx/Mtx43.h"
 #include "player/PlayerActor.h"
 
-typedef Unk_02006d14_Vec Unk_02006d14_V3;
+typedef VecFx32Ctor Unk_02006d14_V3;
 
 // An enum-typed local keeps the constant in a callee-saved register across the call.
 // _ZN11PlayerActor12requestAct79Ejj is declared with the enum parameter (real type u32) so the argument is
@@ -60,13 +60,13 @@ s32 _ZN11PlayerActor12requestAct79Ejj(PlayerActor *o, Unk_02094a08_Limit a, s32 
 s32 _ZN11PlayerActor12requestAct32Ejj(PlayerActor *o, u32 a, s32 b);
 s32 _ZN11PlayerActor12requestAct30EPtjjjjjs(PlayerActor *o, u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, s32 g);
 s32 _ZN11PlayerActor13requestTurnToEsjj(PlayerActor *o, s32 a, u32 b, s32 c);
-s32 _ZN11PlayerActor13requestWalkToEP16Unk_02006d14_Vecjjs(PlayerActor *o, Unk_02006d14_Vec *v, u32 a, u32 b, s32 c);
+s32 _ZN11PlayerActor13requestWalkToEP11VecFx32Ctorjjs(PlayerActor *o, VecFx32Ctor *v, u32 a, u32 b, s32 c);
 s32 _ZN11PlayerActor17requestHoldUpItemEPtjj(PlayerActor *o, u16 *p, u32 a, s32 b);
 s32 _ZN11PlayerActor21requestChangeHeldItemEtjj(PlayerActor *o, u32 a, u32 b, s32 c);
 s32 _ZN12Unk_0200769420requestChangeClothesEtjjjs(PlayerActor *o, u32 a, u32 b, u32 c, u32 d, s32 e);
 s32 _ZN11PlayerActor12requestAct76Ehhhjs(PlayerActor *o, u32 a, u32 b, u32 c, u32 d, s32 e);
 s32 _ZN11PlayerActor11requestWaitEjjj(PlayerActor *o, u32 a, u32 b, s32 c);
-s32 PlayerActor_RequestExitWalkOut(PlayerActor *o, Unk_02006d14_Vec *v, u32 a, s32 b);
+s32 PlayerActor_RequestExitWalkOut(PlayerActor *o, VecFx32Ctor *v, u32 a, s32 b);
 s32 _ZN12Unk_0200769412requestAct05Etjj(PlayerActor *o, s32 a, s32 b, s32 c);
 s32 _ZN11PlayerActor20getEffectivePriorityEv(PlayerActor *o);
 BOOL _ZN11PlayerActor14testActionFlagEj(PlayerActor *o, s32 id);
@@ -862,14 +862,14 @@ extern "C" s32 PlayerActor_RequestHoldUpItem(u16 *p) {
     return 0;
 }
 
-extern "C" s32 PlayerActor_RequestWalkTo(Unk_02006d14_Vec *v, u32 b, u32 idx) {
+extern "C" s32 PlayerActor_RequestWalkTo(VecFx32Ctor *v, u32 b, u32 idx) {
     PlayerActor *o = PlayerActor_Get(idx);
     if (o) {
-        Unk_02006d14_Vec t;
+        VecFx32Ctor t;
         t.x = v->x;
         t.y = v->y;
         t.z = v->z;
-        return _ZN11PlayerActor13requestWalkToEP16Unk_02006d14_Vecjjs(o, &t, b, 5, -1);
+        return _ZN11PlayerActor13requestWalkToEP11VecFx32Ctorjjs(o, &t, b, 5, -1);
     }
     return 0;
 }
@@ -945,7 +945,7 @@ extern "C" s32 PlayerActor_LocalRequestExitWalkOut() {
     PlayerActor *o = PlayerActor_Get(4);
     s16 h;
     s32 pad;
-    Unk_02006d14_Vec v;
+    VecFx32Ctor v;
     if (o) {
         o->actionPriority = _ZN12Unk_0200769421getActionDonePriorityEj(o, o->action);
         if (o->exitMode == 3) {
@@ -955,7 +955,7 @@ extern "C" s32 PlayerActor_LocalRequestExitWalkOut() {
                 SceneExit_GetDoor(Scene_GetWarpRequest(), r5, &pad, &h);
             }
             s32 t = Math_AngleToDir4(h);
-            Unk_02006d14_Vec *pv = (Unk_02006d14_Vec *)&o->position;
+            VecFx32Ctor *pv = (VecFx32Ctor *)&o->position;
             v.x = o->position.x;
             v.y = pv->y;
             v.z = pv->z;

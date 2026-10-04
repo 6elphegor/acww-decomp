@@ -1,4 +1,5 @@
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "npc/NpcAnimCtrl.h"
 #include "npc/NpcSpeechState.h"
 #include "npc/NpcResHandleView.h"
@@ -25,10 +26,6 @@
 
 class ActorTalkRequest;
 
-struct Unk_ov073_Vec {
-    s32 x, y, z;
-};
-
 class SpNpcJoan;
 class SpNpcJoanTalk;
 
@@ -37,8 +34,8 @@ extern u16 data_020c6cc8;
 extern u32 data_020c6d1c;
 extern s32 data_020c6cf0;
 extern u32 gCamera;
-extern Unk_ov073_Vec gCameraLookAt;
-extern Unk_ov073_Vec gVec3Zero;
+extern VecFx32 gCameraLookAt;
+extern VecFx32 gVec3Zero;
 extern u8 gRandom[];
 extern u8 data_021ed29c[];
 extern u8 gSaveData[];
@@ -85,16 +82,16 @@ void _ZN13NpcActionCtrl13requestActionEjiiissiitt(void *self, u32 a, u32 b, u32 
 s32 _ZN13NpcActionCtrl12isActionDoneEv(void *p);
 s32 _ZN13NpcActionCtrl9getActionEv(void *p);
 s32 _ZN12Unk_0201acf88getLevelEv(void *p);
-Unk_ov073_Vec *_ZN11NpcMoveCtrl14getDestinationEv(void *p);
+VecFx32 *_ZN11NpcMoveCtrl14getDestinationEv(void *p);
 void _ZN13NpcFootstepFx16disableFootstepsEv(void *p);
 void _ZN13NpcFootstepFx15enableFootstepsEv(void *p);
 void _ZN10VisitorPos6setPosEii(void *p, s32 x, s32 z);
 s32 _ZN9NpcLookAt15getObstacleBitsEv(void *p);
 s32 _ZN11NpcMoveCtrl10hasArrivedEP9Characteri(void *p, void *scene, s32 v);
-void _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(void *p, void *v);
+void _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(void *p, void *v);
 s32 _ZN11NpcMoveCtrl10hasNextLegEv(void *p);
 void _ZN11NpcMoveCtrl16resetDestinationEv(void *p);
-void _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(void *self, u8 a, s32 b, s32 c, Unk_ov073_Vec *v, s32 d, s32 e, u8 f);
+void _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(void *self, u8 a, s32 b, s32 c, VecFx32 *v, s32 d, s32 e, u8 f);
 }
 
 
@@ -130,7 +127,6 @@ public:
 
 
 
-struct Unk_020d77a4_Vec3;
 
 
 
@@ -159,10 +155,10 @@ public:
     BOOL mainAct02();
     BOOL tryAvoidObstacle();
     BOOL steerAroundObstacle();
-    BOOL findSidestepPos(Unk_ov073_Vec *out, void *tbl);
+    BOOL findSidestepPos(VecFx32 *out, void *tbl);
     BOOL pickWanderTarget(s32 *a, s32 *b);
     BOOL isInCameraBox();
-    BOOL isInFocusBox(Unk_ov073_Vec *a, Unk_ov073_Vec *b);
+    BOOL isInFocusBox(VecFx32 *a, VecFx32 *b);
     BOOL setupAct02();
     void changeAct(s32 state);
 
@@ -268,11 +264,11 @@ BOOL SpNpcJoan::setupAct02() {
     _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     _ZN13NpcFootstepFx15enableFootstepsEv(&footstepFx);
     _ZN13NpcFootstepFx15enableFootstepsEv(&footstepFx);
-    _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(&lookAt, 1, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
+    _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(&lookAt, 1, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
     return TRUE;
 }
 
-BOOL SpNpcJoan::isInFocusBox(Unk_ov073_Vec *a, Unk_ov073_Vec *b) {
+BOOL SpNpcJoan::isInFocusBox(VecFx32 *a, VecFx32 *b) {
     BOOL r = FALSE, f2 = FALSE, f1 = FALSE;
     s32 ax = a->x;
     s32 bx = b->x;
@@ -293,10 +289,10 @@ BOOL SpNpcJoan::isInFocusBox(Unk_ov073_Vec *a, Unk_ov073_Vec *b) {
 }
 
 BOOL SpNpcJoan::isInCameraBox() {
-    Unk_ov073_Vec *p = (Unk_ov073_Vec *)&position;
+    VecFx32 *p = (VecFx32 *)&position;
     BOOL r = FALSE;
     if (gCamera != 0) {
-        Unk_ov073_Vec v;
+        VecFx32 v;
         v.x = gCameraLookAt.x;
         v.y = gCameraLookAt.y;
         v.z = gCameraLookAt.z;
@@ -307,7 +303,7 @@ BOOL SpNpcJoan::isInCameraBox() {
 
 BOOL SpNpcJoan::pickWanderTarget(s32 *a, s32 *b) {
     BOOL r = FALSE;
-    Unk_ov073_Vec v;
+    VecFx32 v;
     s32 i;
     v.x = 0;
     v.y = 0;
@@ -329,9 +325,9 @@ BOOL SpNpcJoan::pickWanderTarget(s32 *a, s32 *b) {
     return r;
 }
 
-BOOL SpNpcJoan::findSidestepPos(Unk_ov073_Vec *out, void *tbl) {
+BOOL SpNpcJoan::findSidestepPos(VecFx32 *out, void *tbl) {
     BOOL r = FALSE;
-    Unk_ov073_Vec v;
+    VecFx32 v;
     Npc_RotateOffsetXZ(&v, &position, tbl, moveAngleY);
     if (Npc_IsPosBlocked(&v) != 1) {
         out->x = v.x;
@@ -343,7 +339,7 @@ BOOL SpNpcJoan::findSidestepPos(Unk_ov073_Vec *out, void *tbl) {
 }
 
 BOOL SpNpcJoan::steerAroundObstacle() {
-    Unk_ov073_Vec v;
+    VecFx32 v;
     void *q = &actionCtrl;
     void *s = &moveCtrl;
     s32 k = _ZN9NpcLookAt15getObstacleBitsEv(&obstacleProbe);
@@ -356,7 +352,7 @@ BOOL SpNpcJoan::steerAroundObstacle() {
             break;
         case 1:
             if (findSidestepPos(&v, &sSpNpcJoanSidestepOffsets[1])) {
-                _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(s, &v);
+                _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(s, &v);
             } else {
                 _ZN13NpcActionCtrl13requestActionEjiiissiitt(q, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
             }
@@ -364,7 +360,7 @@ BOOL SpNpcJoan::steerAroundObstacle() {
             break;
         case 2:
             if (findSidestepPos(&v, &sSpNpcJoanSidestepOffsets[0])) {
-                _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(s, &v);
+                _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(s, &v);
             } else {
                 _ZN13NpcActionCtrl13requestActionEjiiissiitt(q, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
             }
@@ -387,8 +383,8 @@ BOOL SpNpcJoan::tryAvoidObstacle() {
 #define ZERO_CALL(p) _ZN13NpcActionCtrl13requestActionEjiiissiitt(p, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0)
 
 BOOL SpNpcJoan::mainAct02() {
-    Unk_ov073_Vec va;
-    Unk_ov073_Vec vb;
+    VecFx32 va;
+    VecFx32 vb;
     void *r4 = &actionCtrl;
     BOOL r6 = isInCameraBox();
     Math_CountDownU8(&actCounter);

@@ -10,10 +10,6 @@ class VillagerActor;
 
 
 
-struct Unk_0203c0b0_Vec {
-    s32 x, y, z;
-};
-
 
 
 

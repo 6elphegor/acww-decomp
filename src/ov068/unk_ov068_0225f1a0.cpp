@@ -8,6 +8,7 @@
 // with every object named the heapsort order of .data/.bss/.rodata is set by the order of the definitions in nsD (solved by inverting the heapsort),
 // the registration entry sFieldVillagerProfile is defined inside ns_02265d34 (next to the factory it points to), the vtable comes last.
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "gfx/Mtx43.h"
 #include "save/Pattern.h"
 #include "gfx/Camera.h"
@@ -50,7 +51,7 @@
 #define HeldToolModel_attach _ZN13HeldToolModel6attachEjPtjt
 #define HeldToolModel_load _ZN13HeldToolModel4loadEj
 #define HeldToolModel_init _ZN13HeldToolModel4initEv
-#define VillagerRoute_runStep _ZN13VillagerRoute7runStepEP16Unk_02012810_Vec
+#define VillagerRoute_runStep _ZN13VillagerRoute7runStepEP7VecFx32
 #define VillagerRoute_getStage _ZN13VillagerRoute8getStageEv
 #define VillagerRoute_isActive _ZN13VillagerRoute8isActiveEv
 #define VillagerRoute_setStepMode _ZN13VillagerRoute11setStepModeEj
@@ -82,19 +83,19 @@
 #define NpcEmotionFx_startEntry _ZN12NpcEmotionFx10startEntryEP15NpcEmotionPhasei
 #define NpcLookAt_isOnTarget _ZN9NpcLookAt10isOnTargetEv
 #define NpcLookAt_canSeeTarget _ZN9NpcLookAt12canSeeTargetEP9Character
-#define NpcLookAt_setTarget _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih
-#define NpcLookAt_setTargetPos _ZN9NpcLookAt12setTargetPosEP17Unk_0201a334_Vec3
+#define NpcLookAt_setTarget _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih
+#define NpcLookAt_setTargetPos _ZN9NpcLookAt12setTargetPosEP7VecFx32
 #define NpcMoveCtrl_resetDestination _ZN11NpcMoveCtrl16resetDestinationEv
 #define NpcMoveCtrl_hasNextLeg _ZN11NpcMoveCtrl10hasNextLegEv
 #define NpcMoveCtrl_getDestination _ZN11NpcMoveCtrl14getDestinationEv
-#define NpcMoveCtrl_setDestination _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3
+#define NpcMoveCtrl_setDestination _ZN11NpcMoveCtrl14setDestinationEP7VecFx32
 #define NpcMoveCtrl_setTargetAngle _ZN11NpcMoveCtrl14setTargetAngleEs
 #define NpcMoveCtrl_hasArrived _ZN11NpcMoveCtrl10hasArrivedEP9Characteri
-#define NpcMoveCtrl_setWaypoint _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3
+#define NpcMoveCtrl_setWaypoint _ZN11NpcMoveCtrl11setWaypointEP7VecFx32
 #define Unk_0201acf8_getLevel _ZN12Unk_0201acf88getLevelEv
 #define func_0201b08c _ZN8NpcActor18onInteractionEventEi
 #define func_0201b138 _ZN8NpcActor6onDrawEv
-#define NpcActor_findAvoidPos _ZN8NpcActor12findAvoidPosEP16Unk_020d77a4_Vec
+#define NpcActor_findAvoidPos _ZN8NpcActor12findAvoidPosEP7VecFx32
 #define NpcActor_setTalkRequest _ZN8NpcActor14setTalkRequestEP16ActorTalkRequest
 #define NpcActor_getPlayerActor _ZN8NpcActor14getPlayerActorEj
 #define NpcActor_getRelativeAngleTo _ZN8NpcActor18getRelativeAngleToEPS_
@@ -126,7 +127,7 @@
 #define func_0202d8ec _ZN13VillagerActor8onDeleteEv
 #define func_0202d948 _ZN13VillagerActor8onCreateEv
 #define func_0202dab0 _ZN13VillagerActor9preCreateEv
-#define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
+#define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP7VecFx32ii
 #define Character_clearTalkStartMode _ZN9Character18clearTalkStartModeEv
 #define Character_setTalkStartMode0 _ZN9Character17setTalkStartMode0Ev
 #define Character_isInFacingArcOf _ZN9Character15isInFacingArcOfEPS_ss
@@ -164,10 +165,6 @@ extern "C" void HeldToolModel_init(void *);
 class FieldVillager;
 class FieldVillagerAi;
 
-struct Unk_ov068_0225f23c_Vec {
-    s32 x, y, z;
-};
-
 
 struct Unk_ov068_0225f858_Vec {
     s32 a, b, c;
@@ -187,15 +184,15 @@ class FieldVillagerLook {
 public:
     void update(FieldVillager *o);
     void trackFish(FieldVillager *o);
-    void startLookAtFish(FieldVillager *o, s32 a, s32 b, Unk_ov068_0225f23c_Vec *v);
+    void startLookAtFish(FieldVillager *o, s32 a, s32 b, VecFx32 *v);
     BOOL isSameFish(s32 a, s32 b);
-    s32 findFishNear(Unk_ov068_0225f23c_Vec *v, s32 *out, Unk_ov068_0225f23c_Vec *p, s32 lim);
-    BOOL getFishPosIfNear(Unk_ov068_0225f23c_Vec *v, s32 i, Unk_ov068_0225f23c_Vec *p, s32 lim);
+    s32 findFishNear(VecFx32 *v, s32 *out, VecFx32 *p, s32 lim);
+    BOOL getFishPosIfNear(VecFx32 *v, s32 i, VecFx32 *p, s32 lim);
     void trackInsect(FieldVillager *o);
-    void startLookAtInsect(FieldVillager *o, s32 a, s32 b, Unk_ov068_0225f23c_Vec *v);
+    void startLookAtInsect(FieldVillager *o, s32 a, s32 b, VecFx32 *v);
     BOOL isSameInsect(u32 a, s32 b);
-    s32 findInsectNear(Unk_ov068_0225f23c_Vec *v, s32 *out, Unk_ov068_0225f23c_Vec *p, s32 lim);
-    s32 getInsectIfNear(Unk_ov068_0225f23c_Vec *v, s32 i, Unk_ov068_0225f23c_Vec *p, s32 lim);
+    s32 findInsectNear(VecFx32 *v, s32 *out, VecFx32 *p, s32 lim);
+    s32 getInsectIfNear(VecFx32 *v, s32 i, VecFx32 *p, s32 lim);
     void setLookMode(FieldVillager *o, u32 idx, s32 a, s32 b, void *v, s32 c, s32 d, u8 e);
     void tickLookTime();
     void setLookModeLocked(FieldVillager *o, u32 idx, s32 a, s32 b, void *v, s32 c, s32 d, u8 e);
@@ -270,7 +267,6 @@ public:
 };
 
 
-struct Unk_020d77a4_Vec3;
 
 
 
@@ -394,28 +390,9 @@ public:
     BOOL checkWanderEvents(FieldVillager *o);
 };
 
-struct Unk_ov068_02260780_Vec {
-    s32 x, y, z;
-};
-
-struct FieldVillagerPosCopy : Unk_ov068_02260780_Vec {
+struct FieldVillagerPosCopy : VecFx32 {
     FieldVillagerPosCopy() {}
     ~FieldVillagerPosCopy() {}
-};
-
-struct Unk_ov068_02260f90_V3 {
-    s32 x, y, z;
-};
-
-struct Unk_ov068_02261644_V3 {
-    s32 x, y, z;
-    Unk_ov068_02261644_V3() {}
-    ~Unk_ov068_02261644_V3() {}
-    Unk_ov068_02261644_V3(const Unk_ov068_02261644_V3 &o) {
-        x = o.x;
-        y = o.y;
-        z = o.z;
-    }
 };
 
 class FieldVillagerAiPutAway {
@@ -462,21 +439,11 @@ public:
     BOOL enterBirthdayWait(FieldVillager *o);
 };
 
-struct Unk_ov068_02261cd4_Vec {
-    s32 x;
-    s32 y;
-    s32 z;
-};
-
 
 struct ApproachAnimFx {
     u16 effectId;
     u8 seIndex;
     u8 c;
-};
-
-struct Unk_ov068_02262044_Vec {
-    s32 x, y, z;
 };
 
 class FieldVillagerAiPlayerStates {
@@ -581,10 +548,6 @@ struct Unk_ov068_02263aac_Bits {
     u32 hi : 4;
 };
 
-struct Unk_ov068_0226392c_V3 {
-    s32 x, y, z;
-};
-
 class FieldVillagerAiTalk {
 public:
     /* 0x00 */ u8 pad_00[0x1c];
@@ -653,18 +616,6 @@ public:
     void inHouseStep0(FieldVillager *o);
 };
 
-struct Unk_ov068_02264188_V3 {
-    s32 x, y, z;
-};
-
-
-struct Unk_ov068_022649f4_Vec {
-    s32 x, y, z;
-};
-
-struct Unk_ov068_02264ab4_P2 {
-    s32 x, y;
-};
 
 struct Unk_ov068_0226506c_Flags {
     u8 pad : 1;
@@ -682,25 +633,7 @@ struct FieldVillagerFocusRange {
     s32 negX, posX, negZ, posZ;
 };
 
-struct Unk_ov068_02265434_Vec {
-    s32 x, y, z;
-};
 
-struct Unk_ov068_02265bcc_Vec {
-    s32 x, y, z;
-    Unk_ov068_02265bcc_Vec() {}
-    ~Unk_ov068_02265bcc_Vec() {}
-};
-
-struct Unk_ov068_02265bcc_Src {
-    s32 x, y, z;
-};
-
-
-
-struct Unk_ov068_02265d34_Vec2 {
-    s32 a, b;
-};
 
 
 
@@ -945,8 +878,8 @@ void NpcFootstepFx_enableFootsteps(void *);
 void NpcTalkCtrl_requestTurnAndTalk(void *, s32, s32, s32);
 void NpcActionCtrl_requestAction(void *, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
 s32 BlockMap_FindItemAllAttr(void *, s32 *, s32 *, s32 *, s32 *, u16 *, u16 *, s32, s32);
-void FieldPos_FromBlockUnit(Unk_ov068_02260f90_V3 *, s32, s32, s32, s32);
-s16 Math_AngleXZ(Unk_ov068_02260f90_V3 *, Unk_ov068_02260f90_V3 *);
+void FieldPos_FromBlockUnit(VecFx32 *, s32, s32, s32, s32);
+s16 Math_AngleXZ(VecFx32 *, VecFx32 *);
 void NpcMoveCtrl_setTargetAngle(void *, s32);
 void Bgm_RequestSilence(s32, s32, s32);
 void VillagerStates_SetBirthdayVisitor(s32);
@@ -1453,10 +1386,10 @@ void FieldPos_FromUnitCenter(void *, u32, u32);
 void *PlayerData_GetCurrent();
 s32 PlayerData_testFlag(void *, s32);
 s32 Villager_IsAsleep(void *, s32);
-s32 FieldVillagerAi_DirCrossesPlayerTalk(void *, void *, Unk_ov068_022649f4_Vec *);
+s32 FieldVillagerAi_DirCrossesPlayerTalk(void *, void *, VecFx32 *);
 s32 FieldVillagerAi_IsPlayerShowingCatch(void *);
 s32 FieldVillagerAi_WasHitByNet(void *, FieldVillager *);
-s32 FieldVillagerAi_IsBuriedPitfallAt(void *, Unk_ov068_02264ab4_P2 *);
+s32 FieldVillagerAi_IsBuriedPitfallAt(void *, Vec2 *);
 void *FieldVillagerAi_FindChatPartner(void *, FieldVillager *);
 void X_func_ov068_02265dc8(void *);
 s32 NpcActionCtrl_getAction(void *);
@@ -1512,16 +1445,16 @@ extern "C" BOOL FieldVillagerAi_ShouldAdmireCatch(FieldVillagerAiStates *self, F
 extern "C" s32 FieldVillagerAi_IsPlayerShowingCatch(void *self);
 extern "C" s32 FieldVillagerAi_WasHitByNet(void *self, FieldVillager *o);
 extern "C" BOOL FieldVillagerAi_TryFallInPitfall(void *self, FieldVillager *o);
-extern "C" BOOL FieldVillagerAi_IsBuriedPitfallAt(void *self, Unk_ov068_02264ab4_P2 *v);
+extern "C" BOOL FieldVillagerAi_IsBuriedPitfallAt(void *self, Vec2 *v);
 extern "C" BOOL FieldVillagerAi_CheckHeldItemChange(FieldVillagerAiStates *self, FieldVillager *o);
 extern "C" BOOL FieldVillagerAi_TryStartChat(FieldVillagerAiStates *self, FieldVillager *o);
 extern "C" void *FieldVillagerAi_FindChatPartner(void *self, FieldVillager *o);
 extern "C" BOOL FieldVillagerAi_HandleBlockedMove(void *self, FieldVillager *o);
-extern "C" BOOL FieldVillagerAi_GetRouteTarget(FieldVillagerAiStates *self, Unk_ov068_022649f4_Vec *out, FieldVillager *o);
+extern "C" BOOL FieldVillagerAi_GetRouteTarget(FieldVillagerAiStates *self, VecFx32 *out, FieldVillager *o);
 extern "C" BOOL FieldVillagerAi_IsNearPlayerTalkSpot(void *self, void *v, s32 lim);
 extern "C" s32 FieldVillagerAi_PathCrossesPlayerTalk(void *self, void *a, void *b);
 extern "C" s32 FieldVillagerAi_HeadingCrossesPlayerTalk(void *self, FieldVillager *o);
-extern "C" BOOL FieldVillagerAi_DirCrossesPlayerTalk(void *self, void *a, Unk_ov068_022649f4_Vec *b);
+extern "C" BOOL FieldVillagerAi_DirCrossesPlayerTalk(void *self, void *a, VecFx32 *b);
 extern "C" BOOL FieldVillagerAi_IsAtHomeDoor(FieldVillagerAiStates *self, FieldVillager *o);
 extern "C" BOOL FieldVillagerAi_ShouldGoHome(void *self, FieldVillager *o);
 }
@@ -1570,7 +1503,7 @@ s32 Random_GlobalBelow(s32);
 void Effect_PlayById(s32, void *, s32, s32);
 extern s32 sRandomRouteTypes[];
 extern u32 gCamera;
-extern Unk_ov068_02265434_Vec gCameraLookAt;
+extern VecFx32 gCameraLookAt;
 extern void *data_ov068_0226fa68[2];
 extern u16 data_020c6cc8;
 extern s32 sFieldVillagerAiCooldown;
@@ -1642,7 +1575,7 @@ void FieldVillagerAi_ChangeState(FieldVillagerAi *self, FieldVillager *o, s32 id
 void *FieldVillager_GetTalkRepeat(FieldVillager *o);
 void FieldVillager_StopEmotion(FieldVillager *o);
 s32 FieldVillagerAi_PickRandomRouteType(FieldVillagerAi *self);
-s32 FieldVillager_IsInRect(FieldVillagerFocusRange *r, Unk_ov068_02265434_Vec *a, Unk_ov068_02265434_Vec *b);
+s32 FieldVillager_IsInRect(FieldVillagerFocusRange *r, VecFx32 *a, VecFx32 *b);
 void FieldVillagerAi_ClearResumeState(FieldVillagerAi *self);
 void FieldVillagerAi_SetResumeState(FieldVillagerAi *self, s32 v);
 void FieldVillagerAi_Update(FieldVillagerAi *self, FieldVillager *o);
@@ -1670,7 +1603,7 @@ static inline BOOL Unk_ov068_02265c24_R(u16 *p, u32 lo, u32 hi) {
 extern "C" void FieldVillagerAi_StartRoute(FieldVillagerAi *self, s32 a, FieldVillager *o);
 extern "C" s32 FieldVillagerAi_PickRandomRouteType(FieldVillagerAi *self);
 extern "C" s32 FieldVillager_IsNearCameraFocus(FieldVillagerFocusRange *r, FieldVillager *o);
-extern "C" s32 FieldVillager_IsInRect(FieldVillagerFocusRange *r, Unk_ov068_02265434_Vec *a, Unk_ov068_02265434_Vec *b);
+extern "C" s32 FieldVillager_IsInRect(FieldVillagerFocusRange *r, VecFx32 *a, VecFx32 *b);
 extern "C" s32 FieldVillagerAi_EnterWander(FieldVillagerAi *self, FieldVillager *o);
 extern "C" void FieldVillagerAi_InitTimers(FieldVillagerAi *self);
 extern "C" void FieldVillagerAi_StartCooldown(FieldVillagerAi *self);
@@ -3011,7 +2944,7 @@ BOOL FieldVillager::onDraw() {
     if (look.drawFn != 0) {
         r = (this->*look.drawFn)();
     } else {
-        Unk_ov068_0225f23c_Vec *pv = (Unk_ov068_0225f23c_Vec *)&position;
+        VecFx32 *pv = (VecFx32 *)&position;
         jointPos[0].x = position.x;
         jointPos[0].y = pv->y;
         jointPos[0].z = pv->z;
@@ -3143,9 +3076,9 @@ void FieldVillager::chooseActivity() {
             void *p = VillagerPlanBlock_GetPlan(Villager_GetPlan(a));
             s32 r4 = VillagerPlan_getState(p);
             s32 r7 = Random_GlobalBelow(100);
-            Unk_ov068_02265d34_Vec2 buf;
-            buf.a = 0;
-            buf.b = 0;
+            Vec2 buf;
+            buf.x = 0;
+            buf.y = 0;
             Clock_GetDateTime(&buf);
             if (r7 < 30) {
                 if (VillagerPlan_isTrendOlderThan(p, &buf, 3) != 0) {
@@ -3178,9 +3111,9 @@ void FieldVillager::refreshActivity() {
         if (VillagerId_isValid(VillagerData_getVillagerId(a)) != 0) {
             s32 t = VillagerState_GetActivity(Villager_GetState(a));
             void *p = VillagerPlanBlock_GetPlan(Villager_GetPlan(a));
-            Unk_ov068_02265d34_Vec2 buf;
-            buf.a = 0;
-            buf.b = 0;
+            Vec2 buf;
+            buf.x = 0;
+            buf.y = 0;
             Clock_GetDateTime(&buf);
             if (Trend_IsValid(t) != 0 || t == 8) {
                 if (t == VillagerPlan_getState(p) || VillagerPlan_isTrendOlderThan(p, &buf, 3) != 0) {
@@ -3250,8 +3183,8 @@ s32 FieldVillager_CanSimulateCatch(FieldVillager *o) {
         u8 *p = (u8 *)PlayerActor_GetCharacter(4);
         u32 g = gSceneBlockMap;
         if (p != 0 && g != 0) {
-            Unk_ov068_02265bcc_Vec v;
-            Unk_ov068_02265bcc_Src *pv = (Unk_ov068_02265bcc_Src *)(p + 0x5c);
+            VecFx32CtorDtor v;
+            VecFx32 *pv = (VecFx32 *)(p + 0x5c);
             v.x = *(s32 *)(p + 0x5c);
             v.y = pv->y;
             v.z = pv->z;
@@ -3666,7 +3599,7 @@ s32 FieldVillagerAi_EnterWander(FieldVillagerAi *self, FieldVillager *o) {
 
 namespace ns_02265324 {
 extern "C" {
-s32 FieldVillager_IsInRect(FieldVillagerFocusRange *r, Unk_ov068_02265434_Vec *a, Unk_ov068_02265434_Vec *b) {
+s32 FieldVillager_IsInRect(FieldVillagerFocusRange *r, VecFx32 *a, VecFx32 *b) {
     s32 ret = 0;
     BOOL k2 = FALSE;
     BOOL k1 = FALSE;
@@ -3693,10 +3626,10 @@ s32 FieldVillager_IsInRect(FieldVillagerFocusRange *r, Unk_ov068_02265434_Vec *a
 namespace ns_02265324 {
 extern "C" {
 s32 FieldVillager_IsNearCameraFocus(FieldVillagerFocusRange *r, FieldVillager *o) {
-    Unk_ov068_02265434_Vec *pb = (Unk_ov068_02265434_Vec *)&o->position;
+    VecFx32 *pb = (VecFx32 *)&o->position;
     s32 res = 0;
     if (gCamera != 0) {
-        Unk_ov068_02265434_Vec v;
+        VecFx32 v;
         v.x = gCameraLookAt.x;
         v.y = gCameraLookAt.y;
         v.z = gCameraLookAt.z;
@@ -3805,7 +3738,7 @@ BOOL FieldVillagerAi_IsAtHomeDoor(FieldVillagerAiStates *self, FieldVillager *o)
     BOOL r;
     if (VillagerRoute_isActive(self->route) != 0 && VillagerRoute_getStage(self->route) == 3) {
         u8 *p = (u8 *)VillagerDataItemView_getHousePos(o->getVillagerData());
-        Unk_ov068_022649f4_Vec t;
+        VecFx32 t;
         FieldPos_FromUnitCenter(&t, p[0], p[1] + 1);
         if (Vec_DistXZ(&t, &o->position) < 0x800) {
             r = TRUE;
@@ -3822,14 +3755,14 @@ BOOL FieldVillagerAi_IsAtHomeDoor(FieldVillagerAiStates *self, FieldVillager *o)
 
 namespace ns_022649f4 {
 extern "C" {
-BOOL FieldVillagerAi_DirCrossesPlayerTalk(void *self, void *a, Unk_ov068_022649f4_Vec *b) {
+BOOL FieldVillagerAi_DirCrossesPlayerTalk(void *self, void *a, VecFx32 *b) {
     if (TalkRequest_IsTalking() != 0) {
         if (Vec_NotEqual(b, gVec3Zero) != 0) {
             u8 *p = (u8 *)PlayerActor_GetCharacter(4);
             u8 *q = (u8 *)TalkRequest_GetTalkTarget();
             if (p != 0 && q != 0) {
-                Unk_ov068_022649f4_Vec t1;
-                Unk_ov068_022649f4_Vec t2;
+                VecFx32 t1;
+                VecFx32 t2;
                 Vec_Sub(&t1, p + 0x5c, a);
                 Vec_Sub(&t2, q + 0x5c, a);
                 s32 x = func_01ffcb0c(b->x, t1.z);
@@ -3851,7 +3784,7 @@ namespace ns_022649f4 {
 extern "C" {
 s32 FieldVillagerAi_HeadingCrossesPlayerTalk(void *self, FieldVillager *o) {
     if (o->speed != 0) {
-        Unk_ov068_022649f4_Vec t;
+        VecFx32 t;
         t.x = 0;
         t.y = 0;
         t.z = 0x1000;
@@ -3866,7 +3799,7 @@ s32 FieldVillagerAi_HeadingCrossesPlayerTalk(void *self, FieldVillager *o) {
 namespace ns_022649f4 {
 extern "C" {
 s32 FieldVillagerAi_PathCrossesPlayerTalk(void *self, void *a, void *b) {
-    Unk_ov068_022649f4_Vec t;
+    VecFx32 t;
     Vec_Sub(&t, a, b);
     return FieldVillagerAi_DirCrossesPlayerTalk(self, b, &t);
 }
@@ -3880,8 +3813,8 @@ BOOL FieldVillagerAi_IsNearPlayerTalkSpot(void *self, void *v, s32 lim) {
         u8 *a = (u8 *)PlayerActor_GetCharacter(4);
         u8 *b = (u8 *)TalkRequest_GetTalkTarget();
         if (a != 0 && b != 0) {
-            Unk_ov068_022649f4_Vec t1;
-            Unk_ov068_022649f4_Vec t2;
+            VecFx32 t1;
+            VecFx32 t2;
             Vec_Sub(&t1, a + 0x5c, b + 0x5c);
             Vec_ShiftRight(&t1, 1);
             func_01ffd070(&t2, a + 0x5c, &t1);
@@ -3901,7 +3834,7 @@ BOOL FieldVillagerAi_IsNearPlayerTalkSpot(void *self, void *v, s32 lim) {
 
 namespace ns_022649f4 {
 extern "C" {
-BOOL FieldVillagerAi_GetRouteTarget(FieldVillagerAiStates *self, Unk_ov068_022649f4_Vec *out, FieldVillager *o) {
+BOOL FieldVillagerAi_GetRouteTarget(FieldVillagerAiStates *self, VecFx32 *out, FieldVillager *o) {
     if (o->getVillagerData() != 0) {
         Unk_ov068_0226506c_Flags *fl = (Unk_ov068_0226506c_Flags *)((u8 *)Villager_GetState(o->getVillagerData()) + 0x1d);
         if (fl->f1 != 0) {
@@ -4165,7 +4098,7 @@ fail:
 
 namespace ns_022649f4 {
 extern "C" {
-BOOL FieldVillagerAi_IsBuriedPitfallAt(void *self, Unk_ov068_02264ab4_P2 *v) {
+BOOL FieldVillagerAi_IsBuriedPitfallAt(void *self, Vec2 *v) {
     void *g = gSceneBlockMap;
     if (g != 0) {
         s32 x = v->x;
@@ -4192,15 +4125,15 @@ namespace ns_022649f4 {
 extern "C" {
 BOOL FieldVillagerAi_TryFallInPitfall(void *self, FieldVillager *o) {
     BOOL r;
-    Unk_ov068_022649f4_Vec *p = (Unk_ov068_022649f4_Vec *)&o->position;
+    VecFx32 *p = (VecFx32 *)&o->position;
     s32 a, b;
-    Unk_ov068_02264ab4_P2 q;
-    Unk_ov068_022649f4_Vec t;
+    Vec2 q;
+    VecFx32 t;
     r = FALSE;
     a = r;
     b = r;
     FieldPos_ToUnit(&a, &b, p);
-    if (FieldVillagerAi_IsBuriedPitfallAt(self, (Unk_ov068_02264ab4_P2 *)&a) != 0) {
+    if (FieldVillagerAi_IsBuriedPitfallAt(self, (Vec2 *)&a) != 0) {
         FieldPos_SnapToUnitCenter(&t, p);
         if (Vec_DistXZ(&t, p) <= 0xb00) {
             q.x = a;
@@ -4314,7 +4247,7 @@ BOOL FieldVillagerAiStates::checkWanderEvents(FieldVillager *o) {
 BOOL FieldVillagerAiStates::execWander(FieldVillager *o) {
     using namespace ns_02264000;
     u8 *r6 = (u8 *)o + 0x564;
-    Unk_ov068_02264188_V3 va, vb;
+    VecFx32 va, vb;
     if (FieldVillager_IsNearCameraFocus(this, o) != 0) {
     if (checkWanderEvents(o) != 0) {
         goto end;
@@ -4522,7 +4455,7 @@ void FieldVillagerAiStates::goInHouseStep1(FieldVillager *o) {
 
 void FieldVillagerAiStates::goInHouseStep2(FieldVillager *o) {
     using namespace ns_02264000;
-    Unk_ov068_02264188_V3 v;
+    VecFx32 v;
     if (NpcAnimCtrl_getAnimId((u8 *)o + 0x334, 0) == 0x3b) {
         if (NpcActionCtrl_isActionDone((u8 *)o + 0x564) != 0) {
             FieldVillagerAi_ChangeState(this, o, 3);
@@ -4646,8 +4579,8 @@ void FieldVillagerAiInHouse::inHouseStep1(FieldVillager *o) {
             VillagerState_SetRole(x, 1);
             VillagerState_SetPresence(x, 0);
             FieldPos_FromUnitCenter((u8 *)o + 0x5c, y[0], y[1] + 1);
-            Unk_ov068_0226392c_V3 *s = (Unk_ov068_0226392c_V3 *)((u8 *)o + 0x5c);
-            Unk_ov068_0226392c_V3 *d = (Unk_ov068_0226392c_V3 *)((u8 *)o + 0x68);
+            VecFx32 *s = (VecFx32 *)((u8 *)o + 0x5c);
+            VecFx32 *d = (VecFx32 *)((u8 *)o + 0x68);
             *d = *s;
             VillagerRoute_reset(route);
             FieldVillagerAi_ChangeState(this, o, 0);
@@ -4694,8 +4627,8 @@ BOOL FieldVillagerAiAbsent::enterAbsent(FieldVillager *o) {
     *((u8 *)o + 0x562) = 0;
     *((u8 *)o + 0x563) = 1;
     FieldPos_FromUnitCenter((u8 *)o + 0x5c, t[0], t[1]);
-    Unk_ov068_0226392c_V3 *s = (Unk_ov068_0226392c_V3 *)((u8 *)o + 0x5c);
-    Unk_ov068_0226392c_V3 *d = (Unk_ov068_0226392c_V3 *)((u8 *)o + 0x68);
+    VecFx32 *s = (VecFx32 *)((u8 *)o + 0x5c);
+    VecFx32 *d = (VecFx32 *)((u8 *)o + 0x68);
     *d = *s;
     *((u8 *)o + 0x9ec) = 0;
     VillagerMood_disableEffects((u8 *)o + 0x838);
@@ -4737,8 +4670,8 @@ BOOL FieldVillagerAiLeaveHouse::enterLeaveHouse(FieldVillager *o) {
     *(u16 *)((u8 *)o + 0x94) = 0;
     NpcMoveCtrl_setTargetAngle((u8 *)o + 0x350);
     *(s32 *)((u8 *)o + 0x64) += 0x1000;
-    Unk_ov068_0226392c_V3 *s = (Unk_ov068_0226392c_V3 *)((u8 *)o + 0x5c);
-    Unk_ov068_0226392c_V3 *d = (Unk_ov068_0226392c_V3 *)((u8 *)o + 0x68);
+    VecFx32 *s = (VecFx32 *)((u8 *)o + 0x5c);
+    VecFx32 *d = (VecFx32 *)((u8 *)o + 0x68);
     *d = *s;
     VillagerActor_setFlag834(o);
     *(u32 *)((u8 *)o + 0x4e8) |= 2;
@@ -5734,7 +5667,7 @@ BOOL FieldVillagerAiPlayerStates::enterApproach(FieldVillager *o) {
     using namespace ns_02261900;
     FieldVillager_StopEmotion(o);
     approachTarget = (Character *)PlayerActor_GetCharacter(4);
-    Unk_ov068_02261cd4_Vec *pv = (Unk_ov068_02261cd4_Vec *)((u8 *)o + 0x5c);
+    VecFx32 *pv = (VecFx32 *)((u8 *)o + 0x5c);
     approachStartX = *(s32 *)((u8 *)o + 0x5c);
     approachStartY = pv->y;
     approachStartZ = pv->z;
@@ -5776,13 +5709,13 @@ void FieldVillagerAiPlayerStates::approachStep0(FieldVillager *o) {
                 stateTimer = 0xc8;
             } else {
                 Character *p = approachTarget;
-                Unk_ov068_02261cd4_Vec *pv = (Unk_ov068_02261cd4_Vec *)((u8 *)p + 0x5c);
+                VecFx32 *pv = (VecFx32 *)((u8 *)p + 0x5c);
                 NpcActionCtrl_requestAction((u8 *)o + 0x564, 2, 1, pv->x, pv->z, 0, 0, 0, 0, data_020c6cc8, 0);
                 step = 1;
                 stateTimer = 0xc8;
             }
         } else if (NpcAnimCtrl_getAnimId((u8 *)o + 0x334, 0) == 0xdf && ((*(u32 *)((u8 *)o + 0x190) << 4) >> 16) == 9) {
-            Unk_ov068_02262044_Vec v;
+            VecFx32 v;
             s16 h;
             v.x = *(s32 *)((u8 *)o + 0x478);
             v.y = *(s32 *)((u8 *)o + 0x47c);
@@ -5888,7 +5821,7 @@ void FieldVillagerAiPlayerStates::approachStep4(FieldVillager *o) {
             stateTimer = 0xc8;
         } else if (NpcActionCtrl_getAction((u8 *)o + 0x564) == 0 && NpcActionCtrl_isActionDone((u8 *)o + 0x564) != 0) {
             Character *p = approachTarget;
-            Unk_ov068_02261cd4_Vec *pv = (Unk_ov068_02261cd4_Vec *)((u8 *)p + 0x5c);
+            VecFx32 *pv = (VecFx32 *)((u8 *)p + 0x5c);
             NpcActionCtrl_requestAction((u8 *)o + 0x564, 2, 1, pv->x, pv->z, 0, 0, 0, 0, data_020c6cc8, 0);
             step = 1;
             stateTimer = 0xc8;
@@ -6017,7 +5950,7 @@ BOOL FieldVillagerAiBirthdayWait::enterBirthdayWait(FieldVillager *o) {
         s[0] = 0x5014;
         s[1] = 0x501a;
         if (BlockMap_FindItemAllAttr(g, &a, &b, &c, &d, &s[0], &s[1], 1, 0) != 0) {
-            Unk_ov068_02260f90_V3 q, p;
+            VecFx32 q, p;
             p.x = 0;
             p.y = 0;
             p.z = 0;
@@ -6028,9 +5961,9 @@ BOOL FieldVillagerAiBirthdayWait::enterBirthdayWait(FieldVillager *o) {
             q.x -= 0x2000;
             q.z += 0x8000;
             q.y = 0;
-            Unk_ov068_02260f90_V3 *pv = (Unk_ov068_02260f90_V3 *)((u8 *)o + 0x5c);
+            VecFx32 *pv = (VecFx32 *)((u8 *)o + 0x5c);
             *pv = q;
-            Unk_ov068_02260f90_V3 *pw = (Unk_ov068_02260f90_V3 *)((u8 *)o + 0x68);
+            VecFx32 *pw = (VecFx32 *)((u8 *)o + 0x68);
             *pw = *pv;
             *(s16 *)((u8 *)o + 0x8e) = Math_AngleXZ(&q, &p);
             *(s16 *)((u8 *)o + 0x94) = *(s16 *)((u8 *)o + 0x8e);
@@ -6081,8 +6014,8 @@ void FieldVillagerAiBirthdayInvite::birthdayInviteStep0(FieldVillager *o) {
 void FieldVillagerAiBirthdayInvite::birthdayInviteStep1(FieldVillager *o) {
     using namespace ns_02260f90;
     if (NpcActionCtrl_getAction((u8 *)o + 0x564) == 3 && NpcActionCtrl_isActionDone((u8 *)o + 0x564) != 0) {
-        Unk_ov068_02261644_V3 *pv = (Unk_ov068_02261644_V3 *)((u8 *)o + 0x5c);
-        Unk_ov068_02261644_V3 vv(*pv);
+        VecFx32CopyDtor *pv = (VecFx32CopyDtor *)((u8 *)o + 0x5c);
+        VecFx32CopyDtor vv(*pv);
         vv.x -= 0x2000;
         vv.z += 0x8000;
         NpcActionCtrl_requestAction((u8 *)o + 0x564, 2, 1, vv.x, vv.z, 0, 0, 0, 0, data_020c6cc8, 0);
@@ -6350,7 +6283,7 @@ void FieldVillagerAiStates::pitfallStep0(FieldVillager *o) {
     using namespace ns_022605f4;
     if (NpcAnimCtrl_getAnimId((u8 *)o + 0x334, 0) == 0x127) {
         VecFx32 *pp = &o->position;
-        Unk_ov068_02260780_Vec loc;
+        VecFx32 loc;
         FieldPos_SnapToUnitCenter(&loc, pp);
         FieldVillager_StepToward(&pp->x, loc.x, 0xe66, 0x1ec, 0x31);
         FieldVillager_StepToward(&pp->z, loc.z, 0xe66, 0x1ec, 0x31);
@@ -6373,14 +6306,14 @@ void FieldVillagerAiStates::pitfallStep1(FieldVillager *o) {
             NpcActionCtrl_requestPlayAnim((u8 *)o + 0x564, 1, 0x128, 1, t, 0);
             FieldVillager *ow = o;
             VecFx32 *pv = &ow->position;
-            Unk_ov068_02260780_Vec v;
+            VecFx32 v;
             v.x = ow->position.x;
             v.y = pv->y;
             v.z = pv->z;
             u32 obj[16];
             GroundInfo_initAtPos(obj, &v, 0, 0);
             s32 r = obj[13];
-            Unk_ov068_02260780_Vec v2;
+            VecFx32 v2;
             v2.x = v.x;
             v2.y = v.y;
             v2.z = v.z;
@@ -6413,7 +6346,7 @@ void FieldVillagerAiStates::pitfallStep2(FieldVillager *o) {
             pitfallTimer = 0x64;
             FieldVillager *ow = o;
             VecFx32 *pv = &ow->position;
-            Unk_ov068_02260780_Vec v;
+            VecFx32 v;
             v.x = ow->position.x;
             v.y = pv->y;
             v.z = pv->z;
@@ -6453,14 +6386,14 @@ void FieldVillagerAiStates::pitfallStep3(FieldVillager *o) {
             }
             FieldVillager *ow = o;
             VecFx32 *pv = &ow->position;
-            Unk_ov068_02260780_Vec v;
+            VecFx32 v;
             v.x = ow->position.x;
             v.y = pv->y;
             v.z = pv->z;
             u32 obj[16];
             GroundInfo_initAtPos(obj, &v, 0, 0);
             s32 r = obj[13];
-            Unk_ov068_02260780_Vec v2;
+            VecFx32 v2;
             v2.x = v.x;
             v2.y = v.y;
             v2.z = v.z;
@@ -6541,14 +6474,14 @@ BOOL FieldVillagerAiStates::enterPitfallClimbOut(FieldVillager *o) {
     }
     FieldVillager *ow = o;
     VecFx32 *pv = &ow->position;
-    Unk_ov068_02260780_Vec v;
+    VecFx32 v;
     v.x = ow->position.x;
     v.y = pv->y;
     v.z = pv->z;
     u32 obj[16];
     GroundInfo_initAtPos(obj, &v, 0, 0);
     s32 r = obj[13];
-    Unk_ov068_02260780_Vec v2;
+    VecFx32 v2;
     v2.x = v.x;
     v2.y = v.y;
     v2.z = v.z;
@@ -7034,7 +6967,7 @@ void FieldVillager::onInteractionEvent(u32 idx, u8 v) {
             t = Villager_GetWhereabouts(getVillagerData());
             q = VillagerDataItemView_getHousePos(getVillagerData());
             FieldPos_FromUnitCenter(&position, ((u8 *)q)[0], ((u8 *)q)[1]);
-            { Unk_ov068_0225f23c_Vec *sp = (Unk_ov068_0225f23c_Vec *)&position; Unk_ov068_0225f23c_Vec *d = (Unk_ov068_0225f23c_Vec *)&prevPosition; d->x = sp->x; d->y = sp->y; d->z = sp->z; }
+            { VecFx32 *sp = (VecFx32 *)&position; VecFx32 *d = (VecFx32 *)&prevPosition; d->x = sp->x; d->y = sp->y; d->z = sp->z; }
             sv = VillagerStates_GetBirthdayHost();
             if (sv == Villager_GetIndex(getVillagerData()) || (u32)(t - 3) <= 4) {
                 FieldVillagerAi_ChangeState(&ai, this, 0xc);
@@ -7243,7 +7176,7 @@ void FieldVillagerLook::setLookMode(FieldVillager *o, u32 idx, s32 a, s32 b, voi
     lookMode = idx;
 }
 
-s32 FieldVillagerLook::getInsectIfNear(Unk_ov068_0225f23c_Vec *v, s32 i, Unk_ov068_0225f23c_Vec *p, s32 lim) {
+s32 FieldVillagerLook::getInsectIfNear(VecFx32 *v, s32 i, VecFx32 *p, s32 lim) {
     using namespace ns_0225f1a0;
     s32 t = FieldInsect_GetPosAndKind(v, i);
     if (t != -1 && Vec_DistXZ(p, v) < lim) {
@@ -7252,7 +7185,7 @@ s32 FieldVillagerLook::getInsectIfNear(Unk_ov068_0225f23c_Vec *v, s32 i, Unk_ov0
     return -1;
 }
 
-s32 FieldVillagerLook::findInsectNear(Unk_ov068_0225f23c_Vec *v, s32 *out, Unk_ov068_0225f23c_Vec *p, s32 lim) {
+s32 FieldVillagerLook::findInsectNear(VecFx32 *v, s32 *out, VecFx32 *p, s32 lim) {
     using namespace ns_0225f1a0;
     s32 i;
     s32 t;
@@ -7280,7 +7213,7 @@ BOOL FieldVillagerLook::isSameInsect(u32 a, s32 b) {
     return FALSE;
 }
 
-void FieldVillagerLook::startLookAtInsect(FieldVillager *o, s32 a, s32 b, Unk_ov068_0225f23c_Vec *v) {
+void FieldVillagerLook::startLookAtInsect(FieldVillager *o, s32 a, s32 b, VecFx32 *v) {
     using namespace ns_0225f1a0;
     targetSlot = a;
     targetId = b;
@@ -7291,9 +7224,9 @@ void FieldVillagerLook::startLookAtInsect(FieldVillager *o, s32 a, s32 b, Unk_ov
 
 void FieldVillagerLook::trackInsect(FieldVillager *o) {
     using namespace ns_0225f1a0;
-    Unk_ov068_0225f23c_Vec buf;
+    VecFx32 buf;
     if (isSameInsect(targetSlot, targetId)) {
-        s32 r = getInsectIfNear(&buf, targetSlot, (Unk_ov068_0225f23c_Vec *)&o->position, o->lookAt.maxDistance);
+        s32 r = getInsectIfNear(&buf, targetSlot, (VecFx32 *)&o->position, o->lookAt.maxDistance);
         if (r != -1 && r == targetId) {
             NpcLookAt_setTargetPos(&o->lookAt, &buf);
         } else {
@@ -7304,7 +7237,7 @@ void FieldVillagerLook::trackInsect(FieldVillager *o) {
     }
 }
 
-BOOL FieldVillagerLook::getFishPosIfNear(Unk_ov068_0225f23c_Vec *v, s32 i, Unk_ov068_0225f23c_Vec *p, s32 lim) {
+BOOL FieldVillagerLook::getFishPosIfNear(VecFx32 *v, s32 i, VecFx32 *p, s32 lim) {
     using namespace ns_0225f1a0;
     if (FishShadow_GetPos(v, i) && Vec_DistXZ(p, v) < lim) {
         return TRUE;
@@ -7312,7 +7245,7 @@ BOOL FieldVillagerLook::getFishPosIfNear(Unk_ov068_0225f23c_Vec *v, s32 i, Unk_o
     return FALSE;
 }
 
-s32 FieldVillagerLook::findFishNear(Unk_ov068_0225f23c_Vec *v, s32 *out, Unk_ov068_0225f23c_Vec *p, s32 lim) {
+s32 FieldVillagerLook::findFishNear(VecFx32 *v, s32 *out, VecFx32 *p, s32 lim) {
     using namespace ns_0225f1a0;
     s32 i;
     s32 t;
@@ -7337,7 +7270,7 @@ BOOL FieldVillagerLook::isSameFish(s32 a, s32 b) {
     return FALSE;
 }
 
-void FieldVillagerLook::startLookAtFish(FieldVillager *o, s32 a, s32 b, Unk_ov068_0225f23c_Vec *v) {
+void FieldVillagerLook::startLookAtFish(FieldVillager *o, s32 a, s32 b, VecFx32 *v) {
     using namespace ns_0225f1a0;
     targetSlot = a;
     targetId = b;
@@ -7348,9 +7281,9 @@ void FieldVillagerLook::startLookAtFish(FieldVillager *o, s32 a, s32 b, Unk_ov06
 
 void FieldVillagerLook::trackFish(FieldVillager *o) {
     using namespace ns_0225f1a0;
-    Unk_ov068_0225f23c_Vec buf;
+    VecFx32 buf;
     if (isSameFish(targetSlot, targetId)) {
-        if (getFishPosIfNear(&buf, targetSlot, (Unk_ov068_0225f23c_Vec *)&o->position, o->lookAt.maxDistance)) {
+        if (getFishPosIfNear(&buf, targetSlot, (VecFx32 *)&o->position, o->lookAt.maxDistance)) {
             NpcLookAt_setTargetPos(&o->lookAt, &buf);
         } else {
             resetLook(o);
@@ -7363,7 +7296,7 @@ void FieldVillagerLook::trackFish(FieldVillager *o) {
 void FieldVillagerLook::update(FieldVillager *o) {
     using namespace ns_0225f1a0;
     s32 idx;
-    Unk_ov068_0225f23c_Vec buf;
+    VecFx32 buf;
     if (isLocked == 0) {
         u8 a = lookMode;
         u8 b = o->lookAt.lookType;
@@ -7374,12 +7307,12 @@ void FieldVillagerLook::update(FieldVillager *o) {
                     if (NpcLookAt_canSeeTarget(&o->lookAt, o) == 0) {
                         s32 r;
                         idx = -1;
-                        r = findInsectNear(&buf, &idx, (Unk_ov068_0225f23c_Vec *)&o->position, 0x5000);
+                        r = findInsectNear(&buf, &idx, (VecFx32 *)&o->position, 0x5000);
                         if (r != -1) {
                             startLookAtInsect(o, idx, r, &buf);
                         } else {
                             idx = -1;
-                            r = findFishNear(&buf, &idx, (Unk_ov068_0225f23c_Vec *)&o->position, 0x5000);
+                            r = findFishNear(&buf, &idx, (VecFx32 *)&o->position, 0x5000);
                             if (r != -1) {
                                 startLookAtFish(o, idx, r, &buf);
                             }

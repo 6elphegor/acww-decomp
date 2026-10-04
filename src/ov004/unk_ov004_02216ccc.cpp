@@ -135,7 +135,6 @@ u32 NpcAnimCtrl_getAnimId(void *o, u32 v);
 
 
 
-struct Unk_020d77a4_Vec3;
 
 
 

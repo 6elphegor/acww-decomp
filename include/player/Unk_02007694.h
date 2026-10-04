@@ -2,8 +2,8 @@
 #define PLAYER_UNK_02007694_H
 
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "gfx/Mtx43.h"
-#include "player/Unk_0200bff8_Vec.h"
 #include "player/Unk_0200c2fc.h"
 
 // PlayerActor view of the action handlers (walk, skid turn, change clothes, act05/91/92, wait menu, held-up item).
@@ -175,8 +175,8 @@ public:
     /* 0x2e0 */ u8 bodyAnimPlayMode;
     /* 0x2e1 */ u8 unk_2e1[0x694 - 0x2e1];
     /* 0x694 */ Mtx43 itemHandMtx;
-    /* 0x6c4 */ Unk_0200bff8_Vec footPosA;
-    /* 0x6d0 */ Unk_0200bff8_Vec footPosB;
+    /* 0x6c4 */ VecFx32 footPosA;
+    /* 0x6d0 */ VecFx32 footPosB;
     /* 0x6dc */ u8 headTopPos[0x700 - 0x6dc];
     /* 0x700 */ s32 animId;
     /* 0x704 */ u8 handPose[5];

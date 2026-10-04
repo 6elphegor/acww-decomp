@@ -1,5 +1,6 @@
 // mwcc-flags: -str reuse
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "game/GroundInfoBase.h"
 #include "gfx/ObjShadowTexture.h"
 #include "gfx/NNSG3dResTex.h"
@@ -8,7 +9,6 @@
 #include "game/Unk_021c47c4.h"
 #include "gfx/NNSG3dResMatData.h"
 #include "item/PickedItem.h"
-#include "game/Vec3.h"
 #include "item/ItemId.h"
 #include "item/ItemPickSpec.h"
 #include "item/RandomSource.h"
@@ -2392,7 +2392,7 @@ extern "C" {
 void G3_LoadMtx43(void *p);
 }
 extern "C" {
-void func_01ffd070(Vec3 *out, Vec3 *a, Vec3 *b);
+void func_01ffd070(VecFx32 *out, VecFx32 *a, VecFx32 *b);
 }
 extern "C" {
 u32 _s32_div_f(u32 a, u32 b);
@@ -2431,7 +2431,7 @@ extern "C" {
 s32 Ground_GetDefaultY(s32 a);
 }
 extern "C" {
-void func_020339bc(GroundInfoBase *p, Vec3 *pos, s32 a, s32 b);
+void func_020339bc(GroundInfoBase *p, VecFx32 *pos, s32 a, s32 b);
 }
 extern "C" {
 s32 func_02033914(GroundInfoBase *p, s32 a);
@@ -2443,13 +2443,13 @@ extern "C" {
 BOOL Scene_InMuseumRoom(void);
 }
 extern "C" {
-s32 WorldCurve_ToCurved(Vec3 *out, Vec3 *in);
+s32 WorldCurve_ToCurved(VecFx32 *out, VecFx32 *in);
 }
 extern "C" {
-void WorldCurve_Apply(Vec3 *out, Vec3 *in);
+void WorldCurve_Apply(VecFx32 *out, VecFx32 *in);
 }
 extern "C" {
-void func_0205553c(void *a, Vec3 *scale);
+void func_0205553c(void *a, VecFx32 *scale);
 }
 extern "C" {
 void func_02054b14(void *a);
@@ -2563,7 +2563,7 @@ extern "C" {
 extern s32 gCamera;
 }
 extern "C" {
-extern Vec3 gCameraLookAt;
+extern VecFx32 gCameraLookAt;
 }
 extern "C" {
 extern u8 sObjShadowViewMtx[];
@@ -2812,16 +2812,16 @@ extern "C" {
 void ObjShadow_NormalizeAxes(void *a, void *b);
 }
 extern "C" {
-u8 ObjShadow_CalcAlpha(Vec3 *p, s32 q, u8 c);
+u8 ObjShadow_CalcAlpha(VecFx32 *p, s32 q, u8 c);
 }
 extern "C" {
-u8 ObjShadow_GetCharaAlpha(Vec3 *p, s32 q);
+u8 ObjShadow_GetCharaAlpha(VecFx32 *p, s32 q);
 }
 extern "C" {
-u8 ObjShadow_GetObjAlpha(Vec3 *p, s32 q);
+u8 ObjShadow_GetObjAlpha(VecFx32 *p, s32 q);
 }
 extern "C" {
-void CharaShadow_Draw(Vec3 *pos, s32 a, s32 b, s32 c);
+void CharaShadow_Draw(VecFx32 *pos, s32 a, s32 b, s32 c);
 }
 
 static inline BOOL inRange2(const u16 &a, const u16 &b) {

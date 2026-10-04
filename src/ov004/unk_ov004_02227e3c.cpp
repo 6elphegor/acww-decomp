@@ -1,11 +1,10 @@
 // mwcc-version: 1.2/sp2
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "gfx/DebugColor.h"
 #include "actor/ActorProfile.h"
 #include "actor/CharacterListNode.h"
-#include "game/Unk_ov004_02224ee4_Vec.h"
 #include "gfx/AnimFrameCtrl.h"
-#include "game/Vec3.h"
 #include "room/RoomObjRes.h"
 #include "room/RoomObjTex.h"
 #include "gfx/CachedModel.h"
@@ -468,7 +467,7 @@ void RecycleBox::onChoice(u32 a) {}
 
 void RecycleBox::initCollision() {
     BoxCollider_Register(collider, 0x2000, 0x4000, 0x2000, (u8 *)this + 0x5c, 0, 0);
-    Scene_GetTouchPicker()->addBox((TouchPickBox *)touchBox, (Vec3 *)((u8 *)this + 0x5c), 0x2000, 0x4000, 0x2000, 0, 0xc, 0xff);
+    Scene_GetTouchPicker()->addBox((TouchPickBox *)touchBox, (VecFx32 *)((u8 *)this + 0x5c), 0x2000, 0x4000, 0x2000, 0, 0xc, 0xff);
 }
 
 void RecycleBox::removeCollision() {

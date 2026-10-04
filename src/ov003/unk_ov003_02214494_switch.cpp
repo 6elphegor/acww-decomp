@@ -2,7 +2,6 @@
 // mwcc-flags: -O4,s
 #include "types.h"
 #include "field/Unk_ov003_02214494_Views.h"
-#include "game/Unk_ov009_0225b880_Vec3.h"
 #include "talk/TalkWindowState.h"
 #include "game/ReddPassword.h"
 #include "sys/ProcBase.h"

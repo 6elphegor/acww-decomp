@@ -58,10 +58,6 @@ struct Unk_ov074_02271e54_V {
     s32 x, y, z, w;
 };
 
-struct Unk_ov074_02272020_V {
-    s32 x, y, z;
-};
-
 
 // Other modules' methods are called through their mangled symbol names (self first).
 #define NpcFootstepFx_disableFootsteps _ZN13NpcFootstepFx16disableFootstepsEv
@@ -71,12 +67,12 @@ struct Unk_ov074_02272020_V {
 #define NpcActionCtrl_requestAction _ZN13NpcActionCtrl13requestActionEjiiissiitt
 #define NpcActionCtrl_isActionDone _ZN13NpcActionCtrl12isActionDoneEv
 #define NpcActionCtrl_getAction _ZN13NpcActionCtrl9getActionEv
-#define NpcLookAt_setTarget _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih
+#define NpcLookAt_setTarget _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih
 #define NpcLookAt_getObstacleBits _ZN9NpcLookAt15getObstacleBitsEv
 #define NpcMoveCtrl_resetDestination _ZN11NpcMoveCtrl16resetDestinationEv
 #define NpcMoveCtrl_hasNextLeg _ZN11NpcMoveCtrl10hasNextLegEv
 #define NpcMoveCtrl_getDestination _ZN11NpcMoveCtrl14getDestinationEv
-#define NpcMoveCtrl_setDestination _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3
+#define NpcMoveCtrl_setDestination _ZN11NpcMoveCtrl14setDestinationEP7VecFx32
 #define NpcMoveCtrl_hasArrived _ZN11NpcMoveCtrl10hasArrivedEP9Characteri
 #define NpcActor_getAngleTo _ZN8NpcActor10getAngleToEPS_
 #define func_0206260c _ZN8ItemNameD1Ev
@@ -208,7 +204,6 @@ public:
 
 
 
-struct Unk_020d77a4_Vec3;
 
 
 
@@ -393,7 +388,7 @@ extern "C" s32 SpNpcBlanca_IsInFocusBox(void *self, void *a, void *b) {
 extern "C" s32 SpNpcBlanca_IsInCameraBox(void *self) {
     void *pos = PS(0x5c);
     s32 r = 0;
-    Unk_ov074_02272020_V v;
+    VecFx32 v;
     if (gCamera != 0) {
         v.x = gCameraLookAt[0];
         v.y = gCameraLookAt[1];
@@ -406,7 +401,7 @@ extern "C" s32 SpNpcBlanca_IsInCameraBox(void *self) {
 extern "C" s32 SpNpcBlanca_PickWanderTarget(void *self, s32 *a, s32 *b) {
     s32 r6 = 0;
     s32 i;
-    Unk_ov074_02272020_V v;
+    VecFx32 v;
     v.x = 0;
     v.y = 0;
     v.z = 0;
@@ -447,7 +442,7 @@ extern "C" s32 SpNpcBlanca_SteerAroundObstacle(void *self) {
     void *r4 = PS(0x350);
     s32 r6 = NpcLookAt_getObstacleBits(PS(0x3a8));
     s32 r7 = 0;
-    Unk_ov074_02272020_V v;
+    VecFx32 v;
 
     if (NpcMoveCtrl_hasArrived(r4, self, 1) == 0) {
         switch (r6) {

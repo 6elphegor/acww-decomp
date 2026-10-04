@@ -1,8 +1,8 @@
 // mwcc-version: 1.2/base
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "Unk_020d8c7c.h"
 #include "gfx/Mtx43.h"
-#include "field/Unk_ov003_02217910_V3.h"
 #include "field/Unk_ov003_02217b78_Ent.h"
 #include "gfx/AnimFrameCtrl.h"
 #include "gfx/ModelAnim.h"
@@ -64,27 +64,21 @@ public:
     BOOL release();
     BOOL draw();
     BOOL updateAnims();
-    BOOL setup(Unk_ov003_02217910_V3 *pos, s32 idx);
+    BOOL setup(VecFx32 *pos, s32 idx);
     BOOL isActive();
     s32 getBlockZ();
     s32 getBlockX();
-    Unk_ov003_02217910_V3 *getPos();
+    VecFx32 *getPos();
     s32 getCurveAngle();
 
     /* 0x00 */ CachedModel model;
-    /* 0x9c */ Unk_ov003_02217910_V3 position;
+    /* 0x9c */ VecFx32 position;
     /* 0xa8 */ s16 curveAngle;
     /* 0xac */ s32 blockX;
     /* 0xb0 */ s32 blockZ;
     /* 0xb4 */ ModelAnim matAnims[2];
 };
 
-// 4-byte colour constructors (unreferenced except by __sinit)
-// ---- scene ----
-struct Unk_ov003_02218478_V3 {
-    s32 x, y, z;
-    Unk_ov003_02218478_V3() {}
-};
 
 struct Unk_ov003_02218478_Cell {
     u8 pad[0x28];
@@ -139,7 +133,7 @@ public:
 
 extern "C" {
 extern void *gCamera;
-extern Unk_ov003_02218478_V3 gCameraLookAt;
+extern VecFx32Ctor gCameraLookAt;
 extern void *gBgHeap;
 extern Unk_ov003_02218478_Grid *gSceneBlockMap;
 extern s32 data_021ce63c;
@@ -163,11 +157,11 @@ s32 Acre_GetAttr(s32 a);
 s32 Camera_getEyeCurveAngle(void *self);
 void Camera_GetLookAtBlock(void *, s32 *, s32 *);
 s32 WorldCurve_AngleToDistance(s32);
-s16 WorldCurve_ToCurved(Unk_ov003_02218478_V3 *out, Unk_ov003_02218478_V3 *v);
+s16 WorldCurve_ToCurved(VecFx32Ctor *out, VecFx32Ctor *v);
 s32 WorldCurve_GetAngleScale();
 void FieldUnit_FromBlockUnit(s32 *, s32 *, s32, s32, s32, s32);
 s32 Ground_GetSpecialPieceKind(s32, s32);
-void FieldPos_FromBlockUnitCenter(Unk_ov003_02218478_V3 *, s32, s32, s32, s32);
+void FieldPos_FromBlockUnitCenter(VecFx32Ctor *, s32, s32, s32, s32);
 void *Heap_Alloc(void *, s32);
 void Mtx43_SetTranslate(void *m, s32 x, s32 y, s32 z);
 void Mtx43_RotateX(void *m, s32 a);
@@ -184,7 +178,7 @@ void FieldGround_InitEnvChannel(void *p);
 s32 FieldGround_GetSoundSrcKind(void *p);
 void *FieldGround_GetSoundSrcPos(void *p);
 void FieldGround_EndSoundSrc(void *p);
-void FieldGround_FindSoundSrc(void *out, Unk_ov003_02218478_V3 *pos);
+void FieldGround_FindSoundSrc(void *out, VecFx32Ctor *pos);
 s32 FieldGround_ReleaseBackdrop(void *p);
 s32 FieldGround_DrawBackdrop(void *p);
 
@@ -275,11 +269,11 @@ BOOL FieldGround::onCreate() {
                     FieldUnit_FromBlockUnit(&o1, &o2, bx, by, tx, ty);
                     s32 t = Ground_GetSpecialPieceKind(o1, o2);
                     if (t != -1) {
-                        Unk_ov003_02217910_V3 v;
+                        VecFx32 v;
                         v.x = 0;
                         v.y = 0;
                         v.z = 0;
-                        FieldPos_FromBlockUnitCenter((Unk_ov003_02218478_V3 *)&v, bx, by, tx, ty);
+                        FieldPos_FromBlockUnitCenter((VecFx32Ctor *)&v, bx, by, tx, ty);
                         piece.setup(&v, t);
                     }
                 }
@@ -433,7 +427,7 @@ BOOL FieldGround::onDelete() {
 void FieldGround::updateAmbientSe() {
     data_ov003_02235490 = 0;
     if (gCamera != 0) {
-        Unk_ov003_02218478_V3 v = gCameraLookAt;
+        VecFx32Ctor v = gCameraLookAt;
         GroundSoundSrcView q;
         FieldGround_FindSoundSrc(&q, &v);
         void *r6 = (void *)FieldGround_GetSoundSrcPos(&q);
@@ -498,7 +492,7 @@ s32 FieldGroundPiece::getCurveAngle() {
     return curveAngle;
 }
 
-Unk_ov003_02217910_V3 *FieldGroundPiece::getPos() {
+VecFx32 *FieldGroundPiece::getPos() {
     return &position;
 }
 
@@ -517,7 +511,7 @@ BOOL FieldGroundPiece::isActive() {
     return FALSE;
 }
 
-BOOL FieldGroundPiece::setup(Unk_ov003_02217910_V3 *pos, s32 idx) {
+BOOL FieldGroundPiece::setup(VecFx32 *pos, s32 idx) {
     if (isActive()) {
         return FALSE;
     }
@@ -536,8 +530,8 @@ BOOL FieldGroundPiece::setup(Unk_ov003_02217910_V3 *pos, s32 idx) {
         matAnims[1].init(BgModelCache_getGroundTexSrtAnm(BgModelCache_Get()), 0, 0x1000, 0);
         matAnims[1].addToRenderObj((u32)((Model *)&model)->getRenderObj());
     }
-    Unk_ov003_02217910_V3 tmp;
-    curveAngle = WorldCurve_ToCurved((Unk_ov003_02218478_V3 *)&tmp, (Unk_ov003_02218478_V3 *)&position);
+    VecFx32 tmp;
+    curveAngle = WorldCurve_ToCurved((VecFx32Ctor *)&tmp, (VecFx32Ctor *)&position);
     Mtx43_SetTranslate(data_021f47e0, position.x, 0, 0);
     Mtx43_RotateX(data_021f47e0, curveAngle);
     *(Mtx43 *)((u8 *)&model + 0x64) = *(Mtx43 *)data_021f47e0;

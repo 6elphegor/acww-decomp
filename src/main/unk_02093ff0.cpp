@@ -1,5 +1,5 @@
 #include "types.h"
-#include "gfx/Unk_02093aa8_Vec.h"
+#include "gfx/VecFx32.h"
 #include "talk/MsgStringBase.h"
 #include "talk/MsgStringAttr.h"
 #include "save/TownId.h"
@@ -33,7 +33,7 @@ extern EffectScratchSlot data_021d0830;
 }
 
 extern "C" {
-extern Unk_02093aa8_Vec gVec3Zero;
+extern VecFx32 gVec3Zero;
 }
 
 extern "C" {
@@ -97,11 +97,11 @@ s32 memcmp(const void *, const void *, u32);
 }
 
 extern "C" {
-s32 EffectCb_FollowTrackedOffset(EffectEmitterEntry *o, Unk_02093aa8_Vec *a, Unk_02093aa8_Vec *b);
+s32 EffectCb_FollowTrackedOffset(EffectEmitterEntry *o, VecFx32 *a, VecFx32 *b);
 }
 
 extern "C" {
-s32 EffectCb_InitTrackedOffset(EffectEmitterEntry *o, Unk_02093aa8_Vec *a, Unk_02093aa8_Vec *b);
+s32 EffectCb_InitTrackedOffset(EffectEmitterEntry *o, VecFx32 *a, VecFx32 *b);
 }
 
 extern "C" {
@@ -109,7 +109,7 @@ s32 Effect_StartOneShot(s32 a, s32 b, void *c, s32 d, s32 e, void *f);
 }
 
 extern "C" {
-void EffectCb_PlaceEmitter(EffectSplEmitter *o, EffectSlot *e, Unk_02093aa8_Vec *a, Unk_02093aa8_Vec *b);
+void EffectCb_PlaceEmitter(EffectSplEmitter *o, EffectSlot *e, VecFx32 *a, VecFx32 *b);
 }
 
 extern "C" {

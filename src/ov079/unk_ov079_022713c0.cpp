@@ -1,5 +1,6 @@
 // mwcc-flags: -str reuse
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "game/Unk_0202368c_Obj.h"
 #include "talk/TalkStartMsg.h"
 #include "talk/TalkWindowState.h"
@@ -137,14 +138,9 @@ public:
 
 
 
-struct Unk_020d77a4_Vec3;
 
 
 
-
-struct Unk_ov079_Vec3 {
-    s32 x, y, z;
-};
 
 class SpNpcWendell : public SpNpcActor {
 public:
@@ -169,10 +165,10 @@ public:
     BOOL mainAct02();
     BOOL checkCollisionWhileMoving();
     BOOL handleCollision();
-    BOOL getOffsetPosIfFree(Unk_ov079_Vec3 *out, void *in);
+    BOOL getOffsetPosIfFree(VecFx32 *out, void *in);
     BOOL findRandomWalkTarget(s32 *x, s32 *z);
     BOOL isNearCameraTarget();
-    BOOL isInViewBox(Unk_ov079_Vec3 *a, Unk_ov079_Vec3 *b);
+    BOOL isInViewBox(VecFx32 *a, VecFx32 *b);
     BOOL setupAct02();
     void changeAct(s32 state);
 
@@ -231,14 +227,14 @@ s32 Math_AngleXZ(void *a, void *b);
 void *_ZN11NpcMoveCtrl14getDestinationEv(void *p);
 BOOL _ZN11NpcMoveCtrl10hasArrivedEP9Characteri(void *a, void *b, u32 c);
 s32 _ZN9NpcLookAt15getObstacleBitsEv(void *p);
-void _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(void *a, void *b);
+void _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(void *a, void *b);
 BOOL _ZN11NpcMoveCtrl10hasNextLegEv(void *a);
 void _ZN11NpcMoveCtrl16resetDestinationEv(void *a);
 void Npc_RotateOffsetXZ(void *out, void *base, void *off, s32 ang);
 BOOL Npc_IsPosBlocked(void *pos);
 void FieldPos_SnapToUnitCenter(void *a, void *b);
 BOOL TownMap_IsPosWalkable(void *v, s32 a);
-void _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(void *p, u32 a, u32 b, void *c, void *d, u32 e, u32 f, u32 g);
+void _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(void *p, u32 a, u32 b, void *c, void *d, u32 e, u32 f, u32 g);
 BOOL EventAnnounce_IsBusy();
 void *TownSessionState_Get();
 void TownSessionState_GetVisitorPos(void *p);
@@ -351,11 +347,11 @@ BOOL SpNpcWendell::setupAct02() {
     _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     _ZN13NpcFootstepFx15enableFootstepsEv(&footstepFx);
     _ZN13NpcFootstepFx15enableFootstepsEv(&footstepFx);
-    _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(&lookAt, 1, 0, NULL, gVec3Zero, 4, data_020c6d1c, 1);
+    _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(&lookAt, 1, 0, NULL, gVec3Zero, 4, data_020c6d1c, 1);
     return TRUE;
 }
 
-BOOL SpNpcWendell::isInViewBox(Unk_ov079_Vec3 *a, Unk_ov079_Vec3 *b) {
+BOOL SpNpcWendell::isInViewBox(VecFx32 *a, VecFx32 *b) {
     BOOL r = FALSE;
     BOOL f2 = FALSE;
     BOOL f1 = FALSE;
@@ -380,20 +376,20 @@ BOOL SpNpcWendell::isInViewBox(Unk_ov079_Vec3 *a, Unk_ov079_Vec3 *b) {
 }
 
 BOOL SpNpcWendell::isNearCameraTarget() {
-    Unk_ov079_Vec3 *b = (Unk_ov079_Vec3 *)&position;
+    VecFx32 *b = (VecFx32 *)&position;
     BOOL r = FALSE;
-    Unk_ov079_Vec3 v;
+    VecFx32 v;
     if (gCamera != 0) {
-        v.x = ((Unk_ov079_Vec3 *)gCameraLookAt)->x;
-        v.y = ((Unk_ov079_Vec3 *)gCameraLookAt)->y;
-        v.z = ((Unk_ov079_Vec3 *)gCameraLookAt)->z;
+        v.x = ((VecFx32 *)gCameraLookAt)->x;
+        v.y = ((VecFx32 *)gCameraLookAt)->y;
+        v.z = ((VecFx32 *)gCameraLookAt)->z;
         r = isInViewBox(&v, b);
     }
     return r;
 }
 
 BOOL SpNpcWendell::findRandomWalkTarget(s32 *px, s32 *pz) {
-    Unk_ov079_Vec3 v;
+    VecFx32 v;
     BOOL r = FALSE;
     s32 i;
     v.x = r;
@@ -416,9 +412,9 @@ BOOL SpNpcWendell::findRandomWalkTarget(s32 *px, s32 *pz) {
     return r;
 }
 
-BOOL SpNpcWendell::getOffsetPosIfFree(Unk_ov079_Vec3 *out, void *in) {
+BOOL SpNpcWendell::getOffsetPosIfFree(VecFx32 *out, void *in) {
     BOOL r = FALSE;
-    Unk_ov079_Vec3 v;
+    VecFx32 v;
     Npc_RotateOffsetXZ(&v, &position, in, moveAngleY);
     if (Npc_IsPosBlocked(&v) != 1) {
         out->x = v.x;
@@ -434,7 +430,7 @@ BOOL SpNpcWendell::handleCollision() {
     void *p350 = &moveCtrl;
     s32 k = _ZN9NpcLookAt15getObstacleBitsEv(&obstacleProbe);
     BOOL r = FALSE;
-    Unk_ov079_Vec3 v;
+    VecFx32 v;
     if (!_ZN11NpcMoveCtrl10hasArrivedEP9Characteri(p350, this, 1)) {
         switch (k) {
         case 3:
@@ -443,7 +439,7 @@ BOOL SpNpcWendell::handleCollision() {
             break;
         case 1:
             if (getOffsetPosIfFree(&v, &sSpNpcWendellSideStepOffsets[1])) {
-                _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(p350, &v);
+                _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(p350, &v);
             } else {
                 _ZN13NpcActionCtrl13requestActionEjiiissiitt(p564, r, 1, r, r, r, r, r, r, data_020c6cc8, r);
             }
@@ -451,7 +447,7 @@ BOOL SpNpcWendell::handleCollision() {
             break;
         case 2:
             if (getOffsetPosIfFree(&v, sSpNpcWendellSideStepOffsets)) {
-                _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(p350, &v);
+                _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(p350, &v);
             } else {
                 _ZN13NpcActionCtrl13requestActionEjiiissiitt(p564, r, 1, r, r, r, r, r, r, data_020c6cc8, r);
             }
@@ -483,10 +479,10 @@ BOOL SpNpcWendell::mainAct02() {
                 if (_ZN12Unk_0201acf88getLevelEv(&unk_3aa) == 2) {
                     _ZN13NpcActionCtrl13requestActionEjiiissiitt(p, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
                 } else if ((Random_Next(gRandom) & 7) == 0) {
-                    Unk_ov079_Vec3 v;
-                    v.x = ((Unk_ov079_Vec3 *)gVec3Zero)->x;
-                    v.y = ((Unk_ov079_Vec3 *)gVec3Zero)->y;
-                    v.z = ((Unk_ov079_Vec3 *)gVec3Zero)->z;
+                    VecFx32 v;
+                    v.x = ((VecFx32 *)gVec3Zero)->x;
+                    v.y = ((VecFx32 *)gVec3Zero)->y;
+                    v.z = ((VecFx32 *)gVec3Zero)->z;
                     if (findRandomWalkTarget(&v.x, &v.z)) {
                         s32 t = Math_AngleXZ(&position, &v);
                         if (NpcActor_IsFrontAngle((s16)(t - rotY))) {
@@ -513,8 +509,8 @@ BOOL SpNpcWendell::mainAct02() {
                     if (actCounter == 0) {
                         _ZN13NpcActionCtrl13requestActionEjiiissiitt(p, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
                     } else {
-                        Unk_ov079_Vec3 *q = (Unk_ov079_Vec3 *)_ZN11NpcMoveCtrl14getDestinationEv(&moveCtrl);
-                        Unk_ov079_Vec3 w;
+                        VecFx32 *q = (VecFx32 *)_ZN11NpcMoveCtrl14getDestinationEv(&moveCtrl);
+                        VecFx32 w;
                         w.x = q->x;
                         w.y = q->y;
                         w.z = q->z;

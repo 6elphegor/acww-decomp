@@ -51,7 +51,7 @@ u32 GroundAttr_GetFootstepSe(u32 a);
 }
 
 extern "C" {
-void _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii(void *self, void *vec, s32 a, s32 b);
+void _ZN10GroundInfo9initAtPosEP7VecFx32ii(void *self, void *vec, s32 a, s32 b);
 }
 
 extern "C" {
@@ -521,7 +521,7 @@ extern "C" u32 GroundAttr_ResolveCarpet(u32 a) {
 extern "C" u32 GroundAttr_GetAtPos(u32 a) {
     u8 buf[0x40];
     u32 r;
-    _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii(buf, (void *)a, 0, 0);
+    _ZN10GroundInfo9initAtPosEP7VecFx32ii(buf, (void *)a, 0, 0);
     r = GroundAttr_ResolveCarpet(*(u32 *)(buf + 0x34));
     GroundInfo_Destruct(buf);
     return r;

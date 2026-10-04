@@ -1,12 +1,9 @@
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "Unk_020d8c7c.h"
 #include "save/Backup.h"
 #include "gfx/Mtx43.h"
 #include "sys/ProcProfile.h"
-
-struct Unk_020db984_Vec3 {
-    s32 x, y, z;
-};
 
 struct FishDisplayEntry {
     u8 pad_00[0x40];
@@ -14,9 +11,9 @@ struct FishDisplayEntry {
     s32 entryState;
     u8 modelSlot[4];
     u8 pooledModel[0x40];
-    Unk_020db984_Vec3 pos;
+    VecFx32 pos;
     u8 model[0xb8];
-    Unk_020db984_Vec3 scale;
+    VecFx32 scale;
     s16 rotX, rotY, rotZ;
     u8 pad_162[2];
     u32 alpha;
@@ -43,7 +40,7 @@ void *__cxa_vec_cleanup(void *p, u32 n, u32 size, void *dtor);
 s32 FishDisplay_FindFreeEntry(void);
 u32 FishDisplay_GetRequestKind(u32 i);
 s32 _ZN13AnimFrameCtrl14hasPassedFrameEi(void *, s32);
-void FishDisplayEntry_SetScale(FishDisplayEntry *, Unk_020db984_Vec3 *);
+void FishDisplayEntry_SetScale(FishDisplayEntry *, VecFx32 *);
 void _ZN9AnimModel12drawAnimatedEPv(void *, void *);
 void FishDisplay_PostRequest(u32 a, u32 b, s32 c, u32 d, u32 e);
 extern s32 sFishDisplayEntryCount;
@@ -93,7 +90,7 @@ void _ZN9AnimModelC1Ev(void *p);
 void _ZN13ModelSlotPoolC1Ev(void *p);
 void *__cxa_vec_ctor(void *p, s32 n, s32 size, void *ctor, void *dtor);
 void _ZN9AnimModel8stepAnimEv(void *);
-void _ZN12SndSeEmitter18callUpdateRelativeEP16Unk_02003a6c_Vec(void *, void *);
+void _ZN12SndSeEmitter18callUpdateRelativeEP7VecFx32(void *, void *);
 void Snd_SeEmitterPlayOneShot(void *, u32, u32, u32);
 s32 MI_CpuCopy8(void *src, void *dst, s32 n);
 void NetBuf_UnpackPair20(void *buf, s32 *a, s32 *b);
@@ -300,12 +297,12 @@ BOOL FishDisplay::onExecute() {
             } else {
                 _ZN9AnimModel8stepAnimEv((u8 *)e + 0x98);
                 if (e->playSound != 0) {
-                    Unk_020db984_Vec3 *p = &e->pos;
-                    Unk_020db984_Vec3 t;
+                    VecFx32 *p = &e->pos;
+                    VecFx32 t;
                     t.x = p->x;
                     t.y = p->y;
                     t.z = p->z;
-                    _ZN12SndSeEmitter18callUpdateRelativeEP16Unk_02003a6c_Vec(e, &t);
+                    _ZN12SndSeEmitter18callUpdateRelativeEP7VecFx32(e, &t);
                     if (_ZN13AnimFrameCtrl14hasPassedFrameEi((u8 *)e + 0x134, 1)) {
                         Snd_SeEmitterPlayOneShot(e, 0x84d, 0x7f, v4);
                     }
@@ -324,10 +321,10 @@ BOOL FishDisplay::onExecute() {
 void FishDisplay::updateTransform(FishDisplayEntry *e) {
     u8 *m = (u8 *)e + 0x98;
     s32 id = e->fishId;
-    Unk_020db984_Vec3 v;
-    Unk_020db984_Vec3 o;
+    VecFx32 v;
+    VecFx32 o;
     s32 ang;
-    Unk_020db984_Vec3 *pv = &e->pos;
+    VecFx32 *pv = &e->pos;
     v.x = pv->x; v.y = pv->y; v.z = pv->z;
     s32 mode = *(s32 *)((u8 *)this + 8);
     if (mode == 0) {
@@ -433,7 +430,7 @@ BOOL FishDisplay::onDraw() {
     FishDisplayEntry *e = g->entries;
     for (s32 i = 0; i < sFishDisplayEntryCount; e++, i++) {
         if (e->entryState == 3) {
-            Unk_020db984_Vec3 v;
+            VecFx32 v;
             v.x = e->scale.x;
             v.y = e->scale.y;
             v.z = e->scale.z;
@@ -452,7 +449,7 @@ BOOL FishDisplay::onDelete() {
     return TRUE;
 }
 
-extern "C" void FishDisplayEntry_SetScale(FishDisplayEntry *e, Unk_020db984_Vec3 *v) {
+extern "C" void FishDisplayEntry_SetScale(FishDisplayEntry *e, VecFx32 *v) {
     e->scale.x = v->x;
     e->scale.y = v->y;
     e->scale.z = v->z;
@@ -546,15 +543,15 @@ extern "C" s32 FishDisplay_Acquire(void) {
     return FishDisplay_FindFreeEntry();
 }
 
-extern "C" BOOL FishDisplay_SetEntry(s32 idx, s32 id, Unk_020db984_Vec3 *pos, Unk_020db984_Vec3 *vec, s16 a5, s16 a6, s16 a7, u8 a8, u8 a9, u32 a10) {
+extern "C" BOOL FishDisplay_SetEntry(s32 idx, s32 id, VecFx32 *pos, VecFx32 *vec, s16 a5, s16 a6, s16 a7, u8 a8, u8 a9, u32 a10) {
     BOOL r = FALSE;
     FishDisplay *g = gFishDisplay;
     if (g != NULL && idx >= 0 && idx < sFishDisplayEntryCount && id >= 0 && id < 0x3c) {
         FishDisplayEntry *e = &g->entries[idx];
         e->fishId = id;
-        Unk_020db984_Vec3 *d = &e->pos;
+        VecFx32 *d = &e->pos;
         d->x = pos->x; d->y = pos->y; d->z = pos->z;
-        Unk_020db984_Vec3 t;
+        VecFx32 t;
         t.x = vec->x; t.y = vec->y; t.z = vec->z;
         FishDisplayEntry_SetScale(e, &t);
         e->rotX = a5;

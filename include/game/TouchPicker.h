@@ -2,10 +2,10 @@
 #define GAME_TOUCHPICKER_H
 
 #include "types.h"
+#include "gfx/VecFx32.h"
 
 // Touch-screen picking: TouchPicker keeps lists of pickable triangles / spheres / cylinders and the last pick result.
 // Methods defined in src/main/unk_020b60b0.cpp.
-struct Vec3;
 struct TouchPickTriangle;
 struct TouchPickSphere;
 struct TouchPickCylinder;
@@ -30,13 +30,13 @@ struct TouchPicker : TouchPickResult {
     TouchPicker();
     ~TouchPicker();
     void reset();
-    BOOL addTriangle(TouchPickTriangle *o, Vec3 *a, Vec3 *b, Vec3 *c, s32 d, u8 e);
+    BOOL addTriangle(TouchPickTriangle *o, VecFx32 *a, VecFx32 *b, VecFx32 *c, s32 d, u8 e);
     BOOL pushTriangle(TouchPickTriangle *o);
-    BOOL addCylinder(TouchPickCylinder *o, Vec3 *a, Vec3 *b, Vec3 *c, s32 d, u8 e);
+    BOOL addCylinder(TouchPickCylinder *o, VecFx32 *a, VecFx32 *b, VecFx32 *c, s32 d, u8 e);
     BOOL pushCylinder(TouchPickCylinder *o);
-    BOOL addSphere(TouchPickSphere *o, Vec3 *a, Vec3 *b, s32 c, u8 d);
+    BOOL addSphere(TouchPickSphere *o, VecFx32 *a, VecFx32 *b, s32 c, u8 d);
     BOOL pushSphere(TouchPickSphere *o);
-    BOOL addBox(TouchPickBox *box, Vec3 *pos, s32 w, s32 h, s32 d, s16 angle, s32 e, u8 f);
+    BOOL addBox(TouchPickBox *box, VecFx32 *pos, s32 w, s32 h, s32 d, s16 angle, s32 e, u8 f);
     BOOL pushBox(TouchPickBox *box);
     /* 0x1c */ TouchPickTriangle *triangles;
     /* 0x20 */ TouchPickSphere *spheres;

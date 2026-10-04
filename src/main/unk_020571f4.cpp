@@ -1,17 +1,9 @@
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "Unk_020d8c7c.h"
 #include "game/FxVec3.h"
 #include "actor/Character.h"
 #include "sys/ProcProfile.h"
-
-struct Unk_020dc034_V {
-    s32 x, y, z;
-};
-
-struct Unk_02058ddc_V {
-    s32 x, y, z;
-    Unk_02058ddc_V(const Unk_02058ddc_V &o) : x(o.x), y(o.y), z(o.z) {}
-};
 
 
 struct FishHoldOffsets {
@@ -50,13 +42,13 @@ public:
     /* 0x54 */ s32 kind;
     /* 0x58 */ u8 nextMode;
     /* 0x5c */ s32 variant;
-    /* 0x60 */ Unk_020dc034_V itemPos;
-    /* 0x6c */ Unk_020dc034_V target;
-    /* 0x78 */ Unk_020dc034_V worldOffset;
-    /* 0x84 */ Unk_020dc034_V offset;
-    /* 0x90 */ Unk_020dc034_V moveStep;
-    /* 0x9c */ Unk_020dc034_V basePos;
-    /* 0xa8 */ Unk_020dc034_V scale;
+    /* 0x60 */ VecFx32 itemPos;
+    /* 0x6c */ VecFx32 target;
+    /* 0x78 */ VecFx32 worldOffset;
+    /* 0x84 */ VecFx32 offset;
+    /* 0x90 */ VecFx32 moveStep;
+    /* 0x9c */ VecFx32 basePos;
+    /* 0xa8 */ VecFx32 scale;
     /* 0xb4 */ s16 itemRot[3];
     u8 pad_ba[2];
     /* 0xbc */ s32 reach;
@@ -125,11 +117,11 @@ public:
     void act01Phase0();
     void startAct01();
 
-    Unk_020dc034_V getHoldOffset(u32 idx);
-    void localToWorld(Unk_020dc034_V *out, Unk_020dc034_V *in, u32 idx);
+    VecFx32 getHoldOffset(u32 idx);
+    void localToWorld(VecFx32 *out, VecFx32 *in, u32 idx);
     BOOL setNextModeBy(u8 v, void *p);
     void setBusy(u32 v);
-    void getMasterHoldPos(Unk_020dc034_V *out);
+    void getMasterHoldPos(VecFx32 *out);
     void drawItem();
     BOOL isAwaitingTake();
     BOOL requestModeBy(u8 v, void *p);
@@ -162,29 +154,29 @@ extern u8 gSaveVillagers[];
 void FishDisplay_Release(s32 a);
 s32 Vec_DistXZ(void *a, void *b);
 void Math_StepS32(s32 *p, s32 target, s32 step);
-void Vec_RotateY(Unk_020dc034_V *v, s32 angle);
-void VEC_Add(Unk_020dc034_V *a, Unk_020dc034_V *b, Unk_020dc034_V *out);
-void FieldPos_SnapToUnitCenter(Unk_020dc034_V *a, Unk_020dc034_V *b);
+void Vec_RotateY(VecFx32 *v, s32 angle);
+void VEC_Add(VecFx32 *a, VecFx32 *b, VecFx32 *out);
+void FieldPos_SnapToUnitCenter(VecFx32 *a, VecFx32 *b);
 s32 Scene_GetCurrent();
 s32 Snd_SeEmitterPlayOneShot(void *p, u32 a, s32 b, s32 c);
-void Vec_Sub(Unk_020dc034_V *out, Unk_020dc034_V *a, Unk_020dc034_V *b);
+void Vec_Sub(VecFx32 *out, VecFx32 *a, VecFx32 *b);
 void Math_StepS32Alt(s32 *p, s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 func_02133150(s32 a, s32 b);
 s32 Fish_GetSizeClass(s32 a);
-s32 Effect_PlayById(s32 a, Unk_020dc034_V *v, void *b, void *c);
-void Field_DrawIconModel(u32 id, Unk_02058ddc_V *a, Unk_02058ddc_V *b, s16 x, s16 y, s16 z);
-void RoomItemIcons_DrawIcon(u32 id, Unk_02058ddc_V *a, Unk_02058ddc_V *b, s16 x, s16 y, s16 z);
-void Field_DrawItemIcon(u32 id, Unk_02058ddc_V *a, Unk_02058ddc_V *b, s16 x, s16 y, s16 z);
-void RoomItemIcons_DrawItem(u32 id, Unk_02058ddc_V *a, Unk_02058ddc_V *b, s16 x, s16 y, s16 z);
-s32 FishDisplay_SetEntry(s32 c4, s32 idx, Unk_020dc034_V *p, Unk_020dc034_V *q, s32 a0, s32 a1, s32 a2, s32 z0, s32 z1, s32 k);
+s32 Effect_PlayById(s32 a, VecFx32 *v, void *b, void *c);
+void Field_DrawIconModel(u32 id, VecFx32Copy *a, VecFx32Copy *b, s16 x, s16 y, s16 z);
+void RoomItemIcons_DrawIcon(u32 id, VecFx32Copy *a, VecFx32Copy *b, s16 x, s16 y, s16 z);
+void Field_DrawItemIcon(u32 id, VecFx32Copy *a, VecFx32Copy *b, s16 x, s16 y, s16 z);
+void RoomItemIcons_DrawItem(u32 id, VecFx32Copy *a, VecFx32Copy *b, s16 x, s16 y, s16 z);
+s32 FishDisplay_SetEntry(s32 c4, s32 idx, VecFx32 *p, VecFx32 *q, s32 a0, s32 a1, s32 a2, s32 z0, s32 z1, s32 k);
 s32 _ZN9Character9getCharIdEv(void *p);
 BOOL Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
 s32 FishDisplay_Acquire();
 void _ZN12SndSeEmitter8callStopEv(void *p);
 void _ZN12SndSeEmitter8callInitEv(void *p);
-void _ZN12SndSeEmitter18callUpdateRelativeEP16Unk_02003a6c_Vec(void *p, Unk_020dc034_V *v);
+void _ZN12SndSeEmitter18callUpdateRelativeEP7VecFx32(void *p, VecFx32 *v);
 void Math_CountDownU8(void *p);
 void SaveVillagers_Get(void *p, u32 v);
 u32 Villager_GetAnimalKind();
@@ -197,10 +189,10 @@ extern const u8 data_020ca684[4];
 extern const s32 sHandOverReachFar;
 extern const s32 sHandOverReach;
 extern const u8 data_020ca690[4];
-extern const Unk_020dc034_V sHoldOffsetDefault;
-extern const Unk_020dc034_V data_020ca6a0;
-extern const Unk_020dc034_V data_020ca6ac;
-extern const Unk_020dc034_V data_020ca6b8;
+extern const VecFx32 sHoldOffsetDefault;
+extern const VecFx32 data_020ca6a0;
+extern const VecFx32 data_020ca6ac;
+extern const VecFx32 data_020ca6b8;
 extern const s32 data_020ca6c4[4];
 extern const u32 sHandOverFishScale[8];
 extern const s32 data_020ca6f4[0x30];
@@ -242,12 +234,12 @@ FxVec3 data_021c5a84(0, 0, 0x1300);
 s32 HandOverItem_IsMaster(s32 a);
 s32 HandOverItem_IsModeActive(u32 v);
 u32 HandOverItem_GetFishHoldOffsetSet(ProcBase *o);
-Unk_020dc034_V *HandOverItem_GetFishHoldOffset(ProcBase *t, u32 i);
-Unk_020dc034_V *HandOverItem_GetFishHoldOffset2(ProcBase *t, u32 i);
+VecFx32 *HandOverItem_GetFishHoldOffset(ProcBase *t, u32 i);
+VecFx32 *HandOverItem_GetFishHoldOffset2(ProcBase *t, u32 i);
 u32 HandOverItem_GetFishScale(u32 a);
-void HandOverItem_DrawIcon(void *unused, u32 id, Unk_020dc034_V *p, Unk_020dc034_V *q, s16 *ang);
-void _ZN12HandOverItem13getHoldOffsetEj(Unk_020dc034_V *out, HandOverItem *self, s32 idx);
-void HandOverItem_DrawItem(HandOverItem *self, u16 *id, Unk_020dc034_V *p, Unk_020dc034_V *q, s16 *ang);
+void HandOverItem_DrawIcon(void *unused, u32 id, VecFx32 *p, VecFx32 *q, s16 *ang);
+void _ZN12HandOverItem13getHoldOffsetEj(VecFx32 *out, HandOverItem *self, s32 idx);
+void HandOverItem_DrawItem(HandOverItem *self, u16 *id, VecFx32 *p, VecFx32 *q, s16 *ang);
 }
 
 extern "C" u32 HandOverItem_GetFishScale(u32 i)
@@ -284,20 +276,20 @@ extern "C" u32 HandOverItem_GetFishHoldOffsetSet(ProcBase *o)
     return r;
 }
 
-extern "C" Unk_020dc034_V *HandOverItem_GetFishHoldOffset(ProcBase *o, u32 idx)
+extern "C" VecFx32 *HandOverItem_GetFishHoldOffset(ProcBase *o, u32 idx)
 {
     if (o->profile == 9) {
-        return (Unk_020dc034_V *)&sFishHoldOffsetSets[3][idx];
+        return (VecFx32 *)&sFishHoldOffsetSets[3][idx];
     }
-    return (Unk_020dc034_V *)&sFishHoldOffsetSets[HandOverItem_GetFishHoldOffsetSet(o)][idx];
+    return (VecFx32 *)&sFishHoldOffsetSets[HandOverItem_GetFishHoldOffsetSet(o)][idx];
 }
 
-extern "C" Unk_020dc034_V *HandOverItem_GetFishHoldOffset2(ProcBase *o, u32 idx)
+extern "C" VecFx32 *HandOverItem_GetFishHoldOffset2(ProcBase *o, u32 idx)
 {
     if (o->profile == 9) {
-        return (Unk_020dc034_V *)sFishHoldOffsetSets[3][idx].altHoldOffset;
+        return (VecFx32 *)sFishHoldOffsetSets[3][idx].altHoldOffset;
     }
-    return (Unk_020dc034_V *)sFishHoldOffsetSets[HandOverItem_GetFishHoldOffsetSet(o)][idx].altHoldOffset;
+    return (VecFx32 *)sFishHoldOffsetSets[HandOverItem_GetFishHoldOffsetSet(o)][idx].altHoldOffset;
 }
 
 extern "C" HandOverItem *HandOverItem_Create()
@@ -335,11 +327,11 @@ BOOL HandOverItem::onExecute()
         if (mode < 0xc) {
             if (sHandOverItemActs[mode][variant].b != 0) {
                 (this->*(sHandOverItemActs[mode][variant].b))();
-                Unk_020dc034_V v;
+                VecFx32 v;
                 v.x = itemPos.x;
                 v.y = itemPos.y;
                 v.z = itemPos.z;
-                _ZN12SndSeEmitter18callUpdateRelativeEP16Unk_02003a6c_Vec(&seEmitter, &v);
+                _ZN12SndSeEmitter18callUpdateRelativeEP7VecFx32(&seEmitter, &v);
             }
         }
         if (isAwaitingTake()) {
@@ -479,7 +471,7 @@ BOOL HandOverItem::isAwaitingTake()
     return r5;
 }
 
-void HandOverItem_DrawItem(HandOverItem *self, u16 *id, Unk_020dc034_V *p, Unk_020dc034_V *q, s16 *ang)
+void HandOverItem_DrawItem(HandOverItem *self, u16 *id, VecFx32 *p, VecFx32 *q, s16 *ang)
 {
     BOOL r = FALSE;
     if (*id >= 0x12e8 && *id <= 0x131f) r = TRUE;
@@ -493,25 +485,25 @@ void HandOverItem_DrawItem(HandOverItem *self, u16 *id, Unk_020dc034_V *p, Unk_0
         }
     }
     if (Unk_02058ddc_IsZero(*gFieldSceneKind) == 1) {
-        Unk_02058ddc_V a(*(Unk_02058ddc_V *)p);
-        Unk_02058ddc_V b(*(Unk_02058ddc_V *)q);
+        VecFx32Copy a(*(VecFx32Copy *)p);
+        VecFx32Copy b(*(VecFx32Copy *)q);
         Field_DrawItemIcon(*id, &a, &b, ang[0], ang[1], ang[2]);
     } else {
-        Unk_02058ddc_V a(*(Unk_02058ddc_V *)p);
-        Unk_02058ddc_V b(*(Unk_02058ddc_V *)q);
+        VecFx32Copy a(*(VecFx32Copy *)p);
+        VecFx32Copy b(*(VecFx32Copy *)q);
         RoomItemIcons_DrawItem(*id, &a, &b, ang[0], ang[1], ang[2]);
     }
 }
 
-void HandOverItem_DrawIcon(void *unused, u32 id, Unk_020dc034_V *p, Unk_020dc034_V *q, s16 *ang)
+void HandOverItem_DrawIcon(void *unused, u32 id, VecFx32 *p, VecFx32 *q, s16 *ang)
 {
     if (Unk_02058ddc_IsZero(*gFieldSceneKind) == 1) {
-        Unk_02058ddc_V a(*(Unk_02058ddc_V *)p);
-        Unk_02058ddc_V b(*(Unk_02058ddc_V *)q);
+        VecFx32Copy a(*(VecFx32Copy *)p);
+        VecFx32Copy b(*(VecFx32Copy *)q);
         Field_DrawIconModel(id, &a, &b, ang[0], ang[1], ang[2]);
     } else {
-        Unk_02058ddc_V a(*(Unk_02058ddc_V *)p);
-        Unk_02058ddc_V b(*(Unk_02058ddc_V *)q);
+        VecFx32Copy a(*(VecFx32Copy *)p);
+        VecFx32Copy b(*(VecFx32Copy *)q);
         RoomItemIcons_DrawIcon(id, &a, &b, ang[0], ang[1], ang[2]);
     }
 }
@@ -520,17 +512,17 @@ void HandOverItem::drawItem()
 {
     if (mode < 0xc && item != 0xfff1 && visible == 1) {
         if (kind == 2 && !(item >= 0x1561 && item <= 0x1564) && !(item >= 0x155f && item <= 0x1560)) {
-            HandOverItem_DrawIcon(this, 0x27, &itemPos, (Unk_020dc034_V *)&scale, itemRot);
+            HandOverItem_DrawIcon(this, 0x27, &itemPos, (VecFx32 *)&scale, itemRot);
         } else {
-            HandOverItem_DrawItem(this, &item, &itemPos, (Unk_020dc034_V *)&scale, itemRot);
+            HandOverItem_DrawItem(this, &item, &itemPos, (VecFx32 *)&scale, itemRot);
         }
     }
 }
 
-void HandOverItem::getMasterHoldPos(Unk_020dc034_V *out)
+void HandOverItem::getMasterHoldPos(VecFx32 *out)
 {
     if (chars[0] != NULL) {
-        chars[0]->getHeldItemPos((Unk_020d77a4_Vec3 *)out);
+        chars[0]->getHeldItemPos((VecFx32 *)out);
     }
 }
 
@@ -549,7 +541,7 @@ BOOL HandOverItem::setNextModeBy(u8 v, void *p)
     return r;
 }
 
-void HandOverItem::localToWorld(Unk_020dc034_V *out, Unk_020dc034_V *in, u32 idx)
+void HandOverItem::localToWorld(VecFx32 *out, VecFx32 *in, u32 idx)
 {
     out->x = in->x;
     out->y = in->y;
@@ -557,12 +549,12 @@ void HandOverItem::localToWorld(Unk_020dc034_V *out, Unk_020dc034_V *in, u32 idx
     if (idx < 2) {
         if (chars[idx] != NULL) {
             Vec_RotateY(out, chars[idx]->rotY);
-            VEC_Add(out, (Unk_020dc034_V *)&chars[idx]->position, out);
+            VEC_Add(out, (VecFx32 *)&chars[idx]->position, out);
         }
     }
 }
 
-Unk_020dc034_V HandOverItem::getHoldOffset(u32 idx)
+VecFx32 HandOverItem::getHoldOffset(u32 idx)
 {
     u32 t = 0xd8;
     Character *o = chars[idx];
@@ -582,7 +574,7 @@ Unk_020dc034_V HandOverItem::getHoldOffset(u32 idx)
 
 void HandOverItem::startAct01()
 {
-    Unk_020dc034_V pos, off;
+    VecFx32 pos, off;
     offset.x = 0;
     offset.y = 0;
     offset.z = 0;
@@ -592,7 +584,7 @@ void HandOverItem::startAct01()
     basePos.x = 0;
     basePos.y = 0;
     basePos.z = 0;
-    pos = *(Unk_020dc034_V *)&data_021c5acc;
+    pos = *(VecFx32 *)&data_021c5acc;
     if (Unk_020586bc_Range(&item, 0x12e8, 0x131f)) {
         VEC_Add(&pos, HandOverItem_GetFishHoldOffset((ProcBase *)chars[0], Fish_GetSizeClass(item - 0x12e8)), &pos);
     }
@@ -629,7 +621,7 @@ void HandOverItem::act01Phase0()
 
 void HandOverItem::act01Phase1()
 {
-    Unk_020dc034_V cur;
+    VecFx32 cur;
     s32 v = scale.x;
     s32 a = data_020ca6c4[phase];
     s32 b = data_021c5ae8[phase];
@@ -676,13 +668,13 @@ void HandOverItem::startAct02()
 
 void HandOverItem::startAct03()
 {
-    Unk_020dc034_V cur, pos, off;
+    VecFx32 cur, pos, off;
     s32 a, b, c;
     getMasterHoldPos(&cur);
     basePos.x = 0;
     basePos.y = 0;
     basePos.z = 0;
-    pos = *(Unk_020dc034_V *)&data_021c5a84;
+    pos = *(VecFx32 *)&data_021c5a84;
     if (Unk_020586bc_Range(&item, 0x12e8, 0x131f)) {
         VEC_Add(&pos, HandOverItem_GetFishHoldOffset2((ProcBase *)chars[0], Fish_GetSizeClass(item - 0x12e8)), &pos);
     }
@@ -720,13 +712,13 @@ void HandOverItem::updateAct03()
 
 void HandOverItem::startAct04()
 {
-    Unk_020dc034_V cur, pos, off;
+    VecFx32 cur, pos, off;
     s32 a, b;
     getMasterHoldPos(&cur);
     basePos.x = 0;
     basePos.y = 0;
     basePos.z = 0;
-    pos = *(Unk_020dc034_V *)&data_021c5acc;
+    pos = *(VecFx32 *)&data_021c5acc;
     if (Unk_020586bc_Range(&item, 0x12e8, 0x131f)) {
         VEC_Add(&pos, HandOverItem_GetFishHoldOffset((ProcBase *)chars[0], Fish_GetSizeClass(item - 0x12e8)), &pos);
     }
@@ -749,7 +741,7 @@ void HandOverItem::startAct04()
 
 void HandOverItem::updateAct04()
 {
-    Unk_020dc034_V cur, t;
+    VecFx32 cur, t;
     s32 n = frame;
     if (n < 9) {
         getMasterHoldPos(&cur);
@@ -772,7 +764,7 @@ void HandOverItem::updateAct04()
 
 void HandOverItem::startAct0A()
 {
-    Unk_020dc034_V cur, t;
+    VecFx32 cur, t;
     setBusy(0);
     getMasterHoldPos(&cur);
     Vec_Sub(&t, &itemPos, &cur);
@@ -790,7 +782,7 @@ void HandOverItem::updateAct0A()
 
 void HandOverItem::startAct05()
 {
-    Unk_020dc034_V cur, t;
+    VecFx32 cur, t;
     target.x = 0;
     target.y = 0;
     target.z = 0;
@@ -856,7 +848,7 @@ void HandOverItem::updateAct06() {}
 
 void HandOverItem::startAct07()
 {
-    Unk_020dc034_V cur, t;
+    VecFx32 cur, t;
     getMasterHoldPos(&cur);
     Vec_Sub(&t, &itemPos, &cur);
     offset.x = t.x;
@@ -900,7 +892,7 @@ void HandOverItem::updateAct08()
 
 void HandOverItem::startAct0B()
 {
-    Unk_020dc034_V cur, t;
+    VecFx32 cur, t;
     setBusy(1);
     getMasterHoldPos(&cur);
     Vec_Sub(&t, &itemPos, &cur);
@@ -1025,7 +1017,7 @@ void HandOverItem::act01V1Phase1()
         frame = frame + 1;
         if ((s32)frame >= n) {
             static FxVec3 s(0x10000, 0, 0x17000);
-            Unk_020dc034_V t2;
+            VecFx32 t2;
             t2.x = 0;
             t2.y = 0;
             t2.z = 0x2000;
@@ -1035,7 +1027,7 @@ void HandOverItem::act01V1Phase1()
                 target.z = s.z;
             } else {
                 Vec_RotateY(&t2, chars[0]->rotY);
-                VEC_Add(&t2, (Unk_020dc034_V *)&chars[0]->position, &t2);
+                VEC_Add(&t2, (VecFx32 *)&chars[0]->position, &t2);
                 FieldPos_SnapToUnitCenter(&target, &t2);
             }
             target.y = target.y + 0x1000;
@@ -1093,7 +1085,7 @@ void HandOverItem::updateAct01V1()
 void HandOverItem::startAct02V1()
 {
     static FxVec3 s(0x10000, 0, 0x17000);
-    Unk_020dc034_V t;
+    VecFx32 t;
     t.x = 0;
     t.y = 0;
     t.z = 0x2000;
@@ -1103,7 +1095,7 @@ void HandOverItem::startAct02V1()
         target.z = s.z;
     } else {
         Vec_RotateY(&t, chars[0]->rotY);
-        VEC_Add(&t, (Unk_020dc034_V *)&chars[0]->position, &t);
+        VEC_Add(&t, (VecFx32 *)&chars[0]->position, &t);
         FieldPos_SnapToUnitCenter(&target, &t);
     }
     target.y = target.y + 0x1000;
@@ -1430,11 +1422,11 @@ extern "C" BOOL HandOverItem_CanTake(Actor *p) {
     return r;
 }
 
-extern "C" BOOL HandOverItem_GetPos(Unk_020dc034_V *out) {
+extern "C" BOOL HandOverItem_GetPos(VecFx32 *out) {
     BOOL r = FALSE;
     HandOverItem *g = sHandOverItem;
     if (g) {
-        Unk_020dc034_V *pv = &g->itemPos;
+        VecFx32 *pv = &g->itemPos;
         out->x = pv->x;
         out->y = pv->y;
         out->z = pv->z;
@@ -1499,10 +1491,10 @@ const u8 data_020ca684[4] = { 0x6, 0x9, 0x15, 0x0 };
 const u8 data_020ca690[4] = { 0xb, 0x14, 0x16, 0x18 };
 const s32 sHandOverReachFar = 0x4000;
 const s32 sHandOverReach = 0x1500;
-const Unk_020dc034_V sHoldOffsetDefault = { 0x0, -0x600, 0x0 };
-const Unk_020dc034_V data_020ca6a0 = { 0x0, -0x1000, 0x0 };
-const Unk_020dc034_V data_020ca6ac = { 0x0, -0x1000, 0x200 };
-const Unk_020dc034_V data_020ca6b8 = { 0x0, -0x900, 0x300 };
+const VecFx32 sHoldOffsetDefault = { 0x0, -0x600, 0x0 };
+const VecFx32 data_020ca6a0 = { 0x0, -0x1000, 0x0 };
+const VecFx32 data_020ca6ac = { 0x0, -0x1000, 0x200 };
+const VecFx32 data_020ca6b8 = { 0x0, -0x900, 0x300 };
 const s32 data_020ca6c4[4] = { 0x0, 0x1100, 0xf80, 0x1000 };
 const u32 sHandOverFishScale[8] = { 0x1666, 0x14cd, 0x1333, 0x10cd, 0x1000, 0x1000, 0x1000, 0xe66 };
 const s32 data_020ca6f4[0x30] = {

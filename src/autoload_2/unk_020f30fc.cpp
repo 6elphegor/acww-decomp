@@ -29,11 +29,11 @@
 // are the implicit derived-to-base conversions when `this` is passed to the extern "C" SndHandle functions of unk_020ede18.cpp, and
 // `h ? h - 4 : 0` in f4010 is static_cast<SndSeEmitter *>(h).
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "snd/SndSeEmitterKind99.h"
 #include "snd/SndSeEmitterKind1.h"
 #include "sys/FndList.h"
 #include "snd/SndSeEmitter.h"
-#include "game/Vec3.h"
 
 
 // sound manager gSndMgr (SndMgr, unk_020f0dec.cpp): only the fields read here
@@ -129,9 +129,9 @@ void func_02109fd0(void *p, u32 a, s32 b);
 void NNS_SndPlayerSetTrackPan(void *p, u32 a, s32 b);
 void NNS_SndHandleReleaseSeq(void *p);
 SeqInfo *func_0210b8a0(u32 a, u32 b);
-s32 Snd_CalcListenerDistance(Vec3 *p, s32 m);
+s32 Snd_CalcListenerDistance(VecFx32 *p, s32 m);
 s32 Snd_DistanceToVolume(s32 x);
-s32 Snd_CalcPan(Vec3 *p, s32 m);
+s32 Snd_CalcPan(VecFx32 *p, s32 m);
 Pan4500 *Snd_GetVolumeCurve(void);
 void Snd_CalcDepthVolumes(s32 z, s32 *a, s32 *b);
 void func_0210a1e8(void *p, s32 v);
@@ -150,19 +150,19 @@ static inline BOOL notNull(void *p) {
 class SndPosNode {
 public:
     void init(SndPosList *list);      // 0x020f3e14
-    void play(s32 v, Vec3 *p);        // 0x020f3d54
+    void play(s32 v, VecFx32 *p);        // 0x020f3d54
     void restart();                   // 0x020f3c78
     void stop();                      // 0x020f3c2c
     BOOL isFinished();                // 0x020f3be8
     void updatePan();                 // 0x020f3b98
-    void playOnce(u32 v, Vec3 *p);    // 0x020f3b08
+    void playOnce(u32 v, VecFx32 *p);    // 0x020f3b08
     void setPitch(s32 v);             // 0x020f3af0
-    void setBgmPan(Vec3 *p);          // 0x020f3a6c (does not use this)
+    void setBgmPan(VecFx32 *p);          // 0x020f3a6c (does not use this)
     void release();                   // 0x020f3a34
 
     /* 0x00 */ void *link[2];
     /* 0x08 */ SndSeqHandle h;
-    /* 0x0c */ Vec3 pos;
+    /* 0x0c */ VecFx32 pos;
     /* 0x18 */ u16 id;
     /* 0x1a */ u8 b1a;
     /* 0x1b */ u8 b1b;
@@ -176,7 +176,7 @@ public:
     void add(SndPosNode *node);            // 0x020f39a0
     void update();                         // 0x020f3800
     void remove(SndPosNode *node);         // 0x020f37b4
-    void playAt(s32 v, Vec3 *p);           // 0x020f3724
+    void playAt(s32 v, VecFx32 *p);           // 0x020f3724
 
     /* 0x00 */ FndList list;
     /* 0x0c */ SndSeqHandle h;
@@ -190,7 +190,7 @@ public:
     virtual void vfunc_04();           // 0x020f36dc stop and release
     virtual void requestSustained(u32 v);      // 0x020f369c
     virtual void request(u32 v);      // 0x020f365c
-    virtual void update(Vec3 *pos);  // 0x020f3144 update
+    virtual void update(VecFx32 *pos);  // 0x020f3144 update
 
     /* 0x04 */ SndSeqHandle h;
     /* 0x08 */ u16 v;
@@ -215,7 +215,7 @@ public:
     virtual void vfunc_00();           // 0x020f3120
     virtual void requestSustained(u32 v);      // 0x020f3114
     virtual void request(u32 v);      // 0x020f3108
-    virtual void update(Vec3 *pos);  // 0x020f30fc
+    virtual void update(VecFx32 *pos);  // 0x020f30fc
 };
 
 // Definitions in descending address order (mwcc emits a file's functions last to first). The compiler-generated functions land by
@@ -362,7 +362,7 @@ void SndPosNode::init(SndPosList *list) {
     Snd_InitHandle(&h);
 }
 
-void SndPosNode::play(s32 v, Vec3 *p) {
+void SndPosNode::play(s32 v, VecFx32 *p) {
     if (gSndMgr.f4d != 0) return;
     pos = *p;
     if (v > 1001 && v < 1072) {
@@ -424,7 +424,7 @@ void SndPosNode::updatePan() {
     NNS_SndPlayerSetTrackPan(&h, 255, b);
 }
 
-void SndPosNode::playOnce(u32 v, Vec3 *p) {
+void SndPosNode::playOnce(u32 v, VecFx32 *p) {
     if (gSndMgr.f4d != 0) return;
     id = v;
     pos = *p;
@@ -441,7 +441,7 @@ void SndPosNode::setPitch(s32 v) {
     return func_02109fd0(&h, 0, v);
 }
 
-void SndPosNode::setBgmPan(Vec3 *p) {
+void SndPosNode::setBgmPan(VecFx32 *p) {
     s32 a;
     SndSeqHandle *bh = &gSndBgmHandle;
     if (!notNull(bh->p)) return;
@@ -521,7 +521,7 @@ void SndPosList::remove(SndPosNode *node) {
     }
 }
 
-void SndPosList::playAt(s32 v, Vec3 *p) {
+void SndPosList::playAt(s32 v, VecFx32 *p) {
     Snd_StartSeqArc(v % 1000, 1, &h);
     s32 a = Snd_DistanceToVolume(Snd_CalcListenerDistance(p, 0));
     s32 b = Snd_CalcPan(p, 0);
@@ -575,7 +575,7 @@ extern "C" s32 Snd_CalcSeVolume(s32 a, s32 b) {
     return v;
 }
 
-void SndEnvChannel::update(Vec3 *pos) {
+void SndEnvChannel::update(VecFx32 *pos) {
     s32 t;
     s32 w;
     s32 a, b;
@@ -711,6 +711,6 @@ void SkySndChannel::request(u32 nv) {
     SndEnvChannel::request(nv);
 }
 
-void SkySndChannel::update(Vec3 *pos) {
+void SkySndChannel::update(VecFx32 *pos) {
     SndEnvChannel::update(pos);
 }

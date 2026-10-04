@@ -3,8 +3,8 @@
 
 // Collision sphere (center + radius). Methods at 0x0202e918..0x0202e9c8 (src/main/unk_0202e840.cpp).
 #include "types.h"
+#include "gfx/VecFx32.h"
 
-struct Unk_0202e918_Vec3;
 class CollisionSegment;
 
 struct HitSphere {
@@ -15,8 +15,8 @@ struct HitSphere {
 
     HitSphere();
     ~HitSphere();
-    BOOL intersectSegment(Unk_0202e918_Vec3 *out, CollisionSegment *cap);
-    void set(Unk_0202e918_Vec3 *p, s32 r);
+    BOOL intersectSegment(VecFx32Ctor *out, CollisionSegment *cap);
+    void set(VecFx32Ctor *p, s32 r);
 };
 
 #endif

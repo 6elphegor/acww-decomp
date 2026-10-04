@@ -2,7 +2,6 @@
 #include "types.h"
 #include "gfx/NNSG3dResAnmCommon.h"
 #include "actor/ActorProfile.h"
-#include "game/Unk_ov003_Vec.h"
 #include "gfx/AnimFrameCtrl.h"
 #include "talk/TalkWindowState.h"
 #include "gfx/Mtx43.h"
@@ -64,7 +63,7 @@ s32 Vec_DistXZ(void *a, void *b);
 s32 Math_AngleDiffAbs(s32 a, s32 b);
 void *Scene_GetTouchPicker();
 void _ZN11TouchPicker10pushSphereEP15TouchPickSphere(void *self, void *o);
-BOOL _ZN11TouchPicker9addSphereEP15TouchPickSphereP4Vec3S3_ih(void *self, void *o, void *a, s32 b, s32 c, u8 d);
+BOOL _ZN11TouchPicker9addSphereEP15TouchPickSphereP7VecFx32S3_ih(void *self, void *o, void *a, s32 b, s32 c, u8 d);
 u32 BuildingList_IndexOf(void *p);
 BOOL Scene_InTown();
 BOOL _ZN11CommManager8isOnlineEv(void *self);
@@ -170,7 +169,7 @@ BOOL Mailbox::initBuilding() {
     v.y = position.y;
     v.z = position.z;
     v.y = v.y + 0x1000;
-    _ZN11TouchPicker9addSphereEP15TouchPickSphereP4Vec3S3_ih(Scene_GetTouchPicker(), (TouchPickSphere *)touchSphere, &v, 0x1000, 7, b);
+    _ZN11TouchPicker9addSphereEP15TouchPickSphereP7VecFx32S3_ih(Scene_GetTouchPicker(), (TouchPickSphere *)touchSphere, &v, 0x1000, 7, b);
     canUse = 1;
     if (!Scene_InTown()) {
         canUse = 0;

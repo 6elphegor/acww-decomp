@@ -1,4 +1,5 @@
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "player/PlayerSpNpcRecord.h"
 #include "npc/VillagerId.h"
 #include "save/Unk_02085810_Rec.h"
@@ -168,10 +169,6 @@ struct Unk_02086340_T {
     u32 w0, w1;
 };
 
-struct Unk_020868cc_Vec3 {
-    s32 x, y, z;
-};
-
 // ---- bitfield byte objects ----
 struct GulliverQuest {
     u8 cnt : 3;
@@ -242,10 +239,6 @@ extern const s16 sGulliverRepairedAngles[];
 
 extern GulliverQuest data_021e58a6;
 
-struct Unk_02086ec4_Vec3 {
-    s32 x, y, z;
-};
-
 // 0x02086e60 record (also used by the free functions below)
 class Unk_02086e60;
 
@@ -259,7 +252,7 @@ public:
     void clear();
     void destruct();
     void construct();
-    void getGulliverSpawn(void *v, u16 *out, Unk_020868cc_Vec3 *p);
+    void getGulliverSpawn(void *v, u16 *out, VecFx32 *p);
 
     u8 visitorSpawned : 1;
     u8 gulliverSpotRolled : 1;
@@ -278,8 +271,8 @@ public:
     void unmarkFallPos();
     void markFallPos();
     BOOL hasFallPos();
-    void getPos(Unk_02086ec4_Vec3 *out);
-    void setPos(Unk_02086ec4_Vec3 *v);
+    void getPos(VecFx32 *out);
+    void setPos(VecFx32 *v);
     void clear();
     void destruct();
     void construct();
@@ -294,10 +287,6 @@ public:
 struct Unk_02086c04_Map {
     u32 pad[3];
     s32 w, h;
-};
-
-struct Unk_02086c04_Pair {
-    s32 a, b;
 };
 
 // ---- 0x02086ef0: s16 + byte
@@ -357,8 +346,8 @@ public:
     void clearFollowing();
     void setFollowing();
     BOOL isFollowing();
-    void getPos(Unk_02086ec4_Vec3 *out);
-    void setPos(Unk_02086ec4_Vec3 *v);
+    void getPos(VecFx32 *out);
+    void setPos(VecFx32 *v);
     void pickKatiePos();
     void clear();
     void destruct();
@@ -498,7 +487,7 @@ s32 MenuCtrl_IsClockMovedBack();
 s32 Random_GlobalBelow2(s32 a);
 void *TownBlockMap_Get();
 void FieldUnit_FromBlockUnit(s32 *out1, s32 *out2, s32 a, s32 b, s32 c, s32 d);
-s32 FieldPos_FromUnitCenter(Unk_020868cc_Vec3 *out, s32 x, s32 z);
+s32 FieldPos_FromUnitCenter(VecFx32 *out, s32 x, s32 z);
 void FieldPos_SnapToUnitCenter(void *a, void *b);
 void _ZN17VisitorSpawnFlags16rollGulliverSpotEv(void *);
 extern u8 gSaveData[];
@@ -607,7 +596,7 @@ namespace Ns_02086b7c {
 extern "C" {
 void *MI_CpuCopy8(void *dst, const void *src, u32 n);
 s32 Random_GlobalBelow(s32 n);
-void FieldPos_FromUnitCenter(Unk_02086ec4_Vec3 *out, s32 x, s32 y);
+void FieldPos_FromUnitCenter(VecFx32 *out, s32 x, s32 y);
 s32 FieldUnit_FromBlockUnit(s32 *x, s32 *y, s32 a, s32 b, s32 c, s32 d);
 s32 Math_IsInRange(s32 a, s32 b, s32 c);
 }
@@ -1326,7 +1315,7 @@ loopy2:
 loopx2:
             if (((tbl[0] >> x2) & 1) != 0) {
                 if (r == 0) {
-                    Unk_02086ec4_Vec3 v;
+                    VecFx32 v;
                     Ns_02086b7c::FieldPos_FromUnitCenter(&v, bx + x2, by + y2);
                     setPos(&v);
                     goto after;
@@ -1348,12 +1337,12 @@ end:
     following = 0;
 }
 
-void KatieVisitState::setPos(Unk_02086ec4_Vec3 *v) {
+void KatieVisitState::setPos(VecFx32 *v) {
     posX = v->x;
     posZ = v->z;
 }
 
-void KatieVisitState::getPos(Unk_02086ec4_Vec3 *out) {
+void KatieVisitState::getPos(VecFx32 *out) {
     out->x = posX;
     out->z = posZ;
 }
@@ -1432,12 +1421,12 @@ void PeteFallState::destruct() {}
 
 void PeteFallState::clear() { MI_CpuFill8(this, 0, 12); }
 
-void PeteFallState::setPos(Unk_02086ec4_Vec3 *v) {
+void PeteFallState::setPos(VecFx32 *v) {
     fallPosX = v->x;
     fallPosZ = v->z;
 }
 
-void PeteFallState::getPos(Unk_02086ec4_Vec3 *out) {
+void PeteFallState::getPos(VecFx32 *out) {
     out->x = fallPosX;
     out->z = fallPosZ;
 }
@@ -1525,20 +1514,20 @@ BOOL PeteFallState::pickFallPos(s32 px, s32 flip) {
         return FALSE;
     }
     s32 f1, f2, w, h;
-    Unk_02086c04_Pair *sel = 0;
+    Vec2 *sel = 0;
     s32 sx = 0, sy = 0;
     s32 *dims = &map->w;
     w = dims[0];
     h = dims[1];
-    Unk_02086c04_Pair p1, p2;
+    Vec2 p1, p2;
     u16 buf1[4], buf2[4];
-    Unk_02086ec4_Vec3 v;
+    VecFx32 v;
     s32 a, b, c, d;
     s32 y;
-    p1.a = 0;
-    p1.b = 0;
-    p2.a = 0;
-    p2.b = 0;
+    p1.x = 0;
+    p1.y = 0;
+    p2.x = 0;
+    p2.y = 0;
     if (flip != 0) dir = -1; else dir = 1;
     FieldPos_ToUnit(&sx, &sy, px);
     a = sx + dir * 8 - flip;
@@ -1551,14 +1540,14 @@ BOOL PeteFallState::pickFallPos(s32 px, s32 flip) {
     goto test;
 loop:
     if (y < h) {
-        p1.b = y;
-        f1 = Field_PickRandomInLine(&p1.a, Field_IsClearSpotYX, y, a, sx, map, buf1, 4);
+        p1.y = y;
+        f1 = Field_PickRandomInLine(&p1.x, Field_IsClearSpotYX, y, a, sx, map, buf1, 4);
         if (a > 0 && a < w - 1) a += dir;
         y++;
     }
     if (b >= 0 && b < w) {
-        p2.a = b;
-        f2 = Field_PickRandomInLine(&p2.b, Field_IsClearSpotXY, b, sy, c, map, buf2, 4);
+        p2.x = b;
+        f2 = Field_PickRandomInLine(&p2.y, Field_IsClearSpotXY, b, sy, c, map, buf2, 4);
         b += dir;
         if (c < h - 1) c++;
     }
@@ -1581,7 +1570,7 @@ test:
     if (b < w) goto loop;
 done:
     if (sel != 0) {
-        Ns_02086b7c::FieldPos_FromUnitCenter(&v, sel->a, sel->b);
+        Ns_02086b7c::FieldPos_FromUnitCenter(&v, sel->x, sel->y);
         setPos(&v);
         facing = Ns_02086b7c::Random_GlobalBelow(4);
         markFallPos();
@@ -1612,9 +1601,9 @@ void VisitorSpawnFlags::clearVisitorSpawned() { visitorSpawned = 0; }
 
 void VisitorSpawnFlags::setVisitorSpawned() { visitorSpawned = 1; }
 
-void VisitorSpawnFlags::getGulliverSpawn(void *v, u16 *out, Unk_020868cc_Vec3 *p) {
+void VisitorSpawnFlags::getGulliverSpawn(void *v, u16 *out, VecFx32 *p) {
     if (gulliverSpotRolled == 0) _ZN17VisitorSpawnFlags16rollGulliverSpotEv(this);
-    Unk_020868cc_Vec3 t;
+    VecFx32 t;
     const Unk_02086af0_Off *tb = sGulliverSpotOffsets;
     const Unk_02086af0_Off *e = &tb[gulliverSpot];
     s32 z = p->z + e->z;
@@ -1655,7 +1644,7 @@ s32 VisitorPos::countFreeInAcre(s32 *pos, void *ctx) {
     return n;
 }
 
-BOOL VisitorPos::pickFreeInAcre(Unk_020868cc_Vec3 *out, s32 *pos, void *ctx) {
+BOOL VisitorPos::pickFreeInAcre(VecFx32 *out, s32 *pos, void *ctx) {
     s32 n = 0;
     s32 bx = 0, by = 0;
     u16 arr[16];
@@ -1692,7 +1681,7 @@ BOOL VisitorPos::pickFreeInAcre(Unk_020868cc_Vec3 *out, s32 *pos, void *ctx) {
 BOOL VisitorPos::pickRandomPos() {
     u8 buf[4];
     s32 xy[2];
-    Unk_020868cc_Vec3 out;
+    VecFx32 out;
     s32 n;
     TownBlockMap *o = (TownBlockMap *)TownBlockMap_Get();
     if (o != NULL) {
@@ -1735,7 +1724,7 @@ void VisitorPos::setPos(s32 a, s32 b) {
     z = b;
 }
 
-void VisitorPos::getPos(Unk_020868cc_Vec3 *out) const {
+void VisitorPos::getPos(VecFx32 *out) const {
     out->x = x;
     out->z = z;
     out->y = 0;

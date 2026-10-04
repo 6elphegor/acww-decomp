@@ -1,5 +1,6 @@
 // mwcc-flags: -str reuse
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "town/VisitorPos.h"
 #include "talk/TalkStartMsg.h"
 #include "talk/TalkWindowState.h"
@@ -37,10 +38,6 @@ class SpNpcShrunk;
 class SpNpcShrunkTalk;
 struct VisitorPos;
 
-struct Unk_ov088_Vec {
-    s32 x, y, z;
-};
-
 
 
 
@@ -64,18 +61,18 @@ extern u16 data_020c6cc8;
 extern u32 data_020c6d1c;
 extern s32 data_020c6cf0;
 extern u32 gCamera;
-extern Unk_ov088_Vec gCameraLookAt;
+extern VecFx32 gCameraLookAt;
 extern s16 data_02135f44[];
 s32 func_01ffcb0c(s32 a, s32 b);
-void FieldPos_SnapToUnitCenter(Unk_ov088_Vec *a, Unk_ov088_Vec *b);
-BOOL TownMap_IsPosWalkable(Unk_ov088_Vec *a, s32 b);
+void FieldPos_SnapToUnitCenter(VecFx32 *a, VecFx32 *b);
+BOOL TownMap_IsPosWalkable(VecFx32 *a, s32 b);
 BOOL Npc_IsPosBlocked(void *p);
-void Npc_RotateOffsetXZ(void *out, Unk_ov088_Vec *a, Unk_ov088_Vec *b, s32 c);
+void Npc_RotateOffsetXZ(void *out, VecFx32 *a, VecFx32 *b, s32 c);
 void TalkRequest_SetTargetDone(void *p);
 void *TownSessionState_Get();
 VisitorPos *TownSessionState_GetVisitorPos(void *p);
 extern u32 gRandom[];
-extern Unk_ov088_Vec gVec3Zero;
+extern VecFx32 gVec3Zero;
 void Emotion_SetSlot(s32 a, s32 b);
 u32 Emotion_GetSlot(s32 i);
 s32 Emotion_FindFreeSlot();
@@ -95,12 +92,12 @@ void _ZN9MsgString4copyEPS_(void *self, void *o);
 void _ZN13NpcFootstepFx16disableFootstepsEv(void *self);
 void _ZN13NpcFootstepFx15enableFootstepsEv(void *self);
 void _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(void *self, u32 a, u32 b, u32 c);
-void _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(void *self, u32 a, s32 b, s32 c, void *d, s32 e, s32 f, u32 g);
+void _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(void *self, u32 a, s32 b, s32 c, void *d, s32 e, s32 f, u32 g);
 s32 _ZN9NpcLookAt15getObstacleBitsEv(void *self);
 void _ZN11NpcMoveCtrl16resetDestinationEv(void *self);
 BOOL _ZN11NpcMoveCtrl10hasNextLegEv(void *self);
-Unk_ov088_Vec *_ZN11NpcMoveCtrl14getDestinationEv(void *self);
-void _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(void *self, void *v);
+VecFx32 *_ZN11NpcMoveCtrl14getDestinationEv(void *self);
+void _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(void *self, void *v);
 BOOL _ZN11NpcMoveCtrl10hasArrivedEP9Characteri(void *self, void *owner, s32 v);
 s32 _ZN12Unk_0201acf88getLevelEv(void *self);
 void _ZN13NpcActionCtrl13requestActionEjiiissiitt(void *self, u32 a, u32 b, u32 c, u32 s0, u32 s1, u32 s2, u32 s3, u32 s4, u32 s5, u32 s6);
@@ -143,7 +140,6 @@ public:
 
 
 
-struct Unk_020d77a4_Vec3;
 
 
 
@@ -170,10 +166,10 @@ public:
     BOOL mainAct02();
     BOOL checkCollisionWhileMoving();
     BOOL handleCollision();
-    BOOL getOffsetPosIfFree(Unk_ov088_Vec *out, Unk_ov088_Vec *p);
+    BOOL getOffsetPosIfFree(VecFx32 *out, VecFx32 *p);
     BOOL findRandomWalkTarget(s32 *a, s32 *b);
     BOOL isNearCameraTarget();
-    BOOL isInViewBox(Unk_ov088_Vec *a, Unk_ov088_Vec *b);
+    BOOL isInViewBox(VecFx32 *a, VecFx32 *b);
     BOOL setupAct02();
     BOOL mainAct01();
     BOOL mainAct00();
@@ -351,11 +347,11 @@ BOOL SpNpcShrunk::setupAct02() {
     _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     _ZN13NpcFootstepFx15enableFootstepsEv(&footstepFx);
     _ZN13NpcFootstepFx15enableFootstepsEv(&footstepFx);
-    _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(&lookAt, 1, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
+    _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(&lookAt, 1, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
     return TRUE;
 }
 
-BOOL SpNpcShrunk::isInViewBox(Unk_ov088_Vec *a, Unk_ov088_Vec *b) {
+BOOL SpNpcShrunk::isInViewBox(VecFx32 *a, VecFx32 *b) {
     BOOL r = FALSE;
     BOOL f1 = FALSE;
     BOOL f2 = FALSE;
@@ -384,10 +380,10 @@ BOOL SpNpcShrunk::isInViewBox(Unk_ov088_Vec *a, Unk_ov088_Vec *b) {
 }
 
 BOOL SpNpcShrunk::isNearCameraTarget() {
-    Unk_ov088_Vec *pos = (Unk_ov088_Vec *)&position;
+    VecFx32 *pos = (VecFx32 *)&position;
     BOOL r = FALSE;
     if (gCamera != 0) {
-        Unk_ov088_Vec v;
+        VecFx32 v;
         v.x = gCameraLookAt.x;
         v.y = gCameraLookAt.y;
         v.z = gCameraLookAt.z;
@@ -398,7 +394,7 @@ BOOL SpNpcShrunk::isNearCameraTarget() {
 
 BOOL SpNpcShrunk::findRandomWalkTarget(s32 *a, s32 *b) {
     BOOL r = FALSE;
-    Unk_ov088_Vec v;
+    VecFx32 v;
     s32 i;
     v.x = 0;
     v.y = 0;
@@ -420,10 +416,10 @@ BOOL SpNpcShrunk::findRandomWalkTarget(s32 *a, s32 *b) {
     return r;
 }
 
-BOOL SpNpcShrunk::getOffsetPosIfFree(Unk_ov088_Vec *out, Unk_ov088_Vec *p) {
+BOOL SpNpcShrunk::getOffsetPosIfFree(VecFx32 *out, VecFx32 *p) {
     BOOL r = FALSE;
     struct { s32 x, y, z, w; } t;
-    Npc_RotateOffsetXZ(&t, (Unk_ov088_Vec *)&position, p, moveAngleY);
+    Npc_RotateOffsetXZ(&t, (VecFx32 *)&position, p, moveAngleY);
     if (Npc_IsPosBlocked(&t) != 1) {
         out->x = t.x;
         out->y = t.y;
@@ -438,7 +434,7 @@ BOOL SpNpcShrunk::handleCollision() {
     NpcMoveCtrl *q = &moveCtrl;
     s32 r6 = _ZN9NpcLookAt15getObstacleBitsEv(&obstacleProbe);
     BOOL r = FALSE;
-    Unk_ov088_Vec v;
+    VecFx32 v;
     if (_ZN11NpcMoveCtrl10hasArrivedEP9Characteri(q, this, 1) == 0) {
         switch (r6) {
         case 3:
@@ -446,16 +442,16 @@ BOOL SpNpcShrunk::handleCollision() {
             r = TRUE;
             break;
         case 1:
-            if (getOffsetPosIfFree(&v, (Unk_ov088_Vec *)&sSpNpcShrunkSideStepOffsets[1])) {
-                _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(q, &v);
+            if (getOffsetPosIfFree(&v, (VecFx32 *)&sSpNpcShrunkSideStepOffsets[1])) {
+                _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(q, &v);
             } else {
                 _ZN13NpcActionCtrl13requestActionEjiiissiitt(p, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
             }
             r = TRUE;
             break;
         case 2:
-            if (getOffsetPosIfFree(&v, (Unk_ov088_Vec *)&sSpNpcShrunkSideStepOffsets[0])) {
-                _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(q, &v);
+            if (getOffsetPosIfFree(&v, (VecFx32 *)&sSpNpcShrunkSideStepOffsets[0])) {
+                _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(q, &v);
             } else {
                 _ZN13NpcActionCtrl13requestActionEjiiissiitt(p, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
             }
@@ -481,7 +477,7 @@ BOOL SpNpcShrunk::checkCollisionWhileMoving() {
 
 BOOL SpNpcShrunk::mainAct02() {
     NpcActionCtrl *p = &actionCtrl;
-    Unk_ov088_Vec v, w;
+    VecFx32 v, w;
     s32 r6 = isNearCameraTarget();
     Math_CountDownU8(&waitTimer);
     if (r6 != 0) {
@@ -519,7 +515,7 @@ BOOL SpNpcShrunk::mainAct02() {
                     if (waitTimer == 0) {
                         _ZN13NpcActionCtrl13requestActionEjiiissiitt(p, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
                     } else {
-                        Unk_ov088_Vec *q = _ZN11NpcMoveCtrl14getDestinationEv(&moveCtrl);
+                        VecFx32 *q = _ZN11NpcMoveCtrl14getDestinationEv(&moveCtrl);
                         w.x = q->x;
                         w.y = q->y;
                         w.z = q->z;

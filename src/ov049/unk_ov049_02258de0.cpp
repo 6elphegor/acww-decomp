@@ -1,4 +1,5 @@
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "talk/TalkStartMsg.h"
 #include "npc/NpcAnimCtrl.h"
 #include "npc/NpcSpeechState.h"
@@ -39,10 +40,10 @@
 #define NpcActionCtrl_requestAction _ZN13NpcActionCtrl13requestActionEjiiissiitt
 #define NpcActionCtrl_isActionDone _ZN13NpcActionCtrl12isActionDoneEv
 #define NpcActionCtrl_getAction _ZN13NpcActionCtrl9getActionEv
-#define NpcLookAt_setTarget _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih
+#define NpcLookAt_setTarget _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih
 #define NpcMoveCtrl_setSpeedPreset _ZN11NpcMoveCtrl14setSpeedPresetEiiii
 #define NpcMoveCtrl_setTargetAngle _ZN11NpcMoveCtrl14setTargetAngleEs
-#define NpcMoveCtrl_setWaypoint _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3
+#define NpcMoveCtrl_setWaypoint _ZN11NpcMoveCtrl11setWaypointEP7VecFx32
 #define BlockMap_getWalkLinksAtPos _ZN8BlockMap17getWalkLinksAtPosEPv
 #define func_0206260c _ZN8ItemNameD1Ev
 #define func_0206267c _ZN8ItemNameC1Ev
@@ -83,18 +84,6 @@ class NpcActor;
 class SpNpcMabel;
 class SpNpcMabelTalk;
 
-struct Unk_ov049_02258ee0_Vec {
-    s32 x, y, z;
-};
-
-struct Unk_ov049_02258ee0_Pos {
-    s32 x, y, z;
-};
-
-struct Unk_ov049_0225aba8_Vec {
-    s32 x, y, z;
-};
-
 
 struct PlayerIdInlineCopy;
 struct ItemNameStorage;
@@ -116,7 +105,7 @@ extern u16 gPad[];
 extern s16 data_02135f44[];
 extern u8 gU8None[];
 extern u8 gSaveData[];
-extern Unk_ov049_0225aba8_Vec gVec3Zero;
+extern VecFx32 gVec3Zero;
 extern s32 data_020c6d1c;
 extern u16 data_020c6cc8;
 extern s16 data_020c6cc0;
@@ -124,7 +113,7 @@ extern void *gSceneBlockMap;
 
 BOOL CommManager_isOnline(void *g);
 s16 *DebugVar_GetPtr(s32 a, s32 b);
-Unk_ov049_0225aba8_Vec *PlayerActor_GetBodyPos(s32 a);
+VecFx32 *PlayerActor_GetBodyPos(s32 a);
 s32 Ground_IsOnLockedExit(void *p);
 void TalkRequest_AddPlayerTalk6(void *self, s32 a);
 void *PlayerActor_GetActor(s32 a);
@@ -225,7 +214,7 @@ void TownId_Destruct(TownIdInlineCopy *p);
 void func_020942c8(PlayerIdInlineCopy *p);
 void func_0206267c(ItemNameStorage *p);
 void func_0206260c(ItemNameStorage *p);
-void NpcLookAt_setTarget(void *self, u8 a, s32 b, s32 c, Unk_ov049_0225aba8_Vec *v, s32 d, s32 e, u8 f);
+void NpcLookAt_setTarget(void *self, u8 a, s32 b, s32 c, VecFx32 *v, s32 d, s32 e, u8 f);
 s32 NpcActionCtrl_getAction(void *self);
 BOOL NpcActionCtrl_isActionDone(void *self);
 void NpcActionCtrl_requestAction(void *self, u32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, u16 i, u16 j);
@@ -233,12 +222,12 @@ void NpcActionCtrl_requestStand(void *self, s32 a, u32 b);
 void NpcTalkCtrl_requestTurnAndTalk(void *self, s32 a, s32 b, s32 c);
 NpcActor *ActorTalkRequest_getTalkPlayer(void *self);
 void TalkRequest_SetTargetDone(void *self);
-void NpcActor_FindFreeUnitNear(Unk_ov049_0225aba8_Vec *out, void *self, Unk_ov049_0225aba8_Vec *v);
+void NpcActor_FindFreeUnitNear(VecFx32 *out, void *self, VecFx32 *v);
 void NpcMoveCtrl_setTargetAngle(void *self, s32 v);
-void NpcMoveCtrl_setWaypoint(void *self, Unk_ov049_0225aba8_Vec *v);
+void NpcMoveCtrl_setWaypoint(void *self, VecFx32 *v);
 void BlockMap_getWalkLinksAtPos(void *g, void *v);
-s32 Vec_Equal(Unk_ov049_0225aba8_Vec *a, void *b);
-s32 Vec_NotEqual(Unk_ov049_0225aba8_Vec *a, void *b);
+s32 Vec_Equal(VecFx32 *a, void *b);
+s32 Vec_NotEqual(VecFx32 *a, void *b);
 s32 Math_CountDownU8(void *p);
 s32 Math_CountDownU16(void *p);
 s32 Math_AngleDiffAbs(s32 a, s32 b);
@@ -349,7 +338,6 @@ public:
 
 
 
-struct Unk_020d77a4_Vec3;
 
 
 
@@ -805,12 +793,12 @@ BOOL SpNpcMabel::setupAct01() {
 }
 
 BOOL SpNpcMabel::mainAct01() {
-    Unk_ov049_0225aba8_Vec *pv = PlayerActor_GetBodyPos(4);
-    Unk_ov049_0225aba8_Vec v;
+    VecFx32 *pv = PlayerActor_GetBodyPos(4);
+    VecFx32 v;
     v.x = pv->x;
     v.y = pv->y;
     v.z = pv->z;
-    Unk_ov049_0225aba8_Vec out;
+    VecFx32 out;
     NpcActor_FindFreeUnitNear(&out, this, &v);
     s32 r6 = getDistanceToPlayer(4);
     s32 t = getAngleToPlayer(4);
@@ -847,12 +835,12 @@ BOOL SpNpcMabel::mainAct02() {
     if (tryStartShopItemTalk()) {
         return TRUE;
     }
-    Unk_ov049_0225aba8_Vec *pv = PlayerActor_GetBodyPos(4);
-    Unk_ov049_0225aba8_Vec v;
+    VecFx32 *pv = PlayerActor_GetBodyPos(4);
+    VecFx32 v;
     v.x = pv->x;
     v.y = pv->y;
     v.z = pv->z;
-    Unk_ov049_0225aba8_Vec out;
+    VecFx32 out;
     NpcActor_FindFreeUnitNear(&out, this, &v);
     s32 r6 = getDistanceToPlayer(4);
     s32 r4 = getAngleToPlayer(4);
@@ -884,12 +872,12 @@ BOOL SpNpcMabel::mainAct03() {
     if (tryStartShopItemTalk()) {
         return TRUE;
     }
-    Unk_ov049_0225aba8_Vec *pv = PlayerActor_GetBodyPos(4);
-    Unk_ov049_0225aba8_Vec v;
+    VecFx32 *pv = PlayerActor_GetBodyPos(4);
+    VecFx32 v;
     v.x = pv->x;
     v.y = pv->y;
     v.z = pv->z;
-    Unk_ov049_0225aba8_Vec out;
+    VecFx32 out;
     NpcActor_FindFreeUnitNear(&out, this, &v);
     s32 t = getDistanceToPlayer(4);
     BlockMap_getWalkLinksAtPos(gSceneBlockMap, &position);
@@ -1070,12 +1058,12 @@ BOOL SpNpcMabel::setupAct0D() {
 }
 
 BOOL SpNpcMabel::mainAct0D() {
-    Unk_ov049_0225aba8_Vec *pv = PlayerActor_GetBodyPos(4);
-    Unk_ov049_0225aba8_Vec v;
+    VecFx32 *pv = PlayerActor_GetBodyPos(4);
+    VecFx32 v;
     v.x = pv->x;
     v.y = pv->y;
     v.z = pv->z;
-    Unk_ov049_0225aba8_Vec out;
+    VecFx32 out;
     NpcActor_FindFreeUnitNear(&out, this, &v);
     s32 t = getDistanceToPlayer(4);
     BlockMap_getWalkLinksAtPos(gSceneBlockMap, &position);
@@ -2075,14 +2063,14 @@ void SpNpcMabel::setDesignConcept(u32 y) {
 BOOL SpNpcMabel::pickShopItemAtPlayer() {
     u16 t[3];
     s32 bx, by;
-    Unk_ov049_02258ee0_Vec v;
+    VecFx32 v;
     Character *p = (Character *)PlayerActor_GetActor(4);
     BOOL f = Unk_ov049_02258ee0_Flags() ? TRUE : FALSE;
     if (p == 0 || TalkRequest_IsActive() != 0 || NpcTalkCtrl_isBusy(&talkCtrl) != 0 || ((gPad[1] & 1) == 0 && f == 0)) {
         return FALSE;
     }
     selectedItem = 0xfff1;
-    Unk_ov049_02258ee0_Pos *pv = (Unk_ov049_02258ee0_Pos *)&p->position;
+    VecFx32 *pv = (VecFx32 *)&p->position;
     v.x = p->position.x;
     v.y = pv->y;
     v.z = pv->z;
@@ -2101,7 +2089,7 @@ BOOL SpNpcMabel::pickShopItemAtPlayer() {
             }
         } else {
             s32 bx2 = 0, by2 = 0;
-            Unk_ov049_02258ee0_Vec v2;
+            VecFx32 v2;
             TouchPick_GetGroundPos(Scene_GetTouchPicker(), &v2);
             FieldPos_ToUnit(&bx2, &by2, &v2);
             if (bx2 != bx || by2 != by) {
@@ -2154,8 +2142,8 @@ BOOL SpNpcMabel::tryStartFarewellTalk() {
     if (CommManager_isOnline(gCommManager) != 0 || *DebugVar_GetPtr(0, 0x4a) != 0) {
         return FALSE;
     }
-    Unk_ov049_02258ee0_Vec *src = (Unk_ov049_02258ee0_Vec *)PlayerActor_GetBodyPos(4);
-    Unk_ov049_02258ee0_Vec v;
+    VecFx32 *src = (VecFx32 *)PlayerActor_GetBodyPos(4);
+    VecFx32 v;
     v.x = src->x;
     v.y = src->y;
     v.z = src->z;

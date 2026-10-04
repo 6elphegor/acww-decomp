@@ -1,4 +1,5 @@
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "Unk_020d8c7c.h"
 #include "town/TownMapMarkers.h"
 #include "menu/MenuProc.h"
@@ -295,10 +296,6 @@ static inline BOOL Unk_ov120_022942c0_Both() {
     return FALSE;
 }
 
-struct Unk_ov120_02294634_V {
-    s32 x, y, z;
-};
-
 // Forward declarations (definition order sets the data layout)
 extern "C" void _ZN13MapViewerMenu11stateLoadBgEv();
 extern "C" void _ZN13MapViewerMenu12stateLoadMapEv();
@@ -580,7 +577,7 @@ void MapViewerMenu::stateClosing() {
 }
 
 void MapViewerMenu::initMapViewer() {
-    volatile Unk_ov120_02294634_V v;
+    volatile VecFx32 v;
     labelCount = 0;
     flags = 0;
     listScroll = 0;

@@ -1,6 +1,6 @@
 // mwcc-version: 1.2/base
 #include "types.h"
-#include "game/Unk_ov068_Vec.h"
+#include "gfx/VecFx32.h"
 #include "actor/ActorProfile.h"
 #include "item/ItemId.h"
 #include "npc/NpcResHandleView.h"
@@ -52,10 +52,6 @@ class SpNpcNookIntroTalk;
 #define PlayerData_clearFlag _ZN10PlayerData9clearFlagEj
 
 
-struct Unk_ov068_0226fd68_Vec {
-    s32 x, y, z;
-};
-
 
 
 extern "C" {
@@ -70,7 +66,7 @@ void Bgm_Release(u32 a);
 void Bgm_RequestSilence(u32 a, u32 b, u32 c);
 void Bgm_Request(s32 a, s32 b, s32 c, s32 d);
 void Camera_SetModeDefault();
-void Camera_FocusOnPoint(Unk_ov068_02266680_Vec *v);
+void Camera_FocusOnPoint(VecFx32 *v);
 BOOL PlayerActor_IsScriptedWalking(s32 a);
 void *PlayerActor_GetBodyPos(s32 a);
 void PlayerActor_RequestWalkTo(void *v, u32 a, u32 b);
@@ -109,7 +105,6 @@ extern const char *sNookTexPaths[];
 
 // ---------------------------------------------------------------------------------------------------------------------
 
-struct Unk_020d77a4_Vec3;
 
 
 
@@ -372,8 +367,8 @@ BOOL SpNpcNookIntro::mainAct01() {
 }
 
 BOOL SpNpcNookIntro::setupAct02() {
-    Unk_ov068_0226fd68_Vec v;
-    Unk_ov068_0226fd68_Vec *p = (Unk_ov068_0226fd68_Vec *)PlayerActor_GetBodyPos(4);
+    VecFx32 v;
+    VecFx32 *p = (VecFx32 *)PlayerActor_GetBodyPos(4);
     v.x = p->x;
     v.y = p->y;
     v.z = p->z;
@@ -543,7 +538,7 @@ void SpNpcNookIntroTalk::runWalkScript() {
             PlayerActor_SetNoFaceTalkTarget(0, 4);
             SpNpcNookIntro *o = owner;
             VecFx32 *pv = &o->position;
-            Unk_ov068_02266680_Vec *pd = (Unk_ov068_02266680_Vec *)&o->walkTargetX;
+            VecFx32 *pd = (VecFx32 *)&o->walkTargetX;
             pd->x = pv->x;
             pd->y = pv->y;
             pd->z = pv->z;
@@ -581,7 +576,7 @@ void SpNpcNookIntroTalk::runWalkScript() {
                 TalkWindowState_setNextMessage(sc, (u8 *)&buf, sNookIntroMsgFilePtr);
                 sc->nextState = 1;
                 o = owner;
-                Unk_ov068_02266680_Vec t;
+                VecFx32 t;
                 VecFx32 *pt = &o->position;
                 t.x = pt->x;
                 t.y = pt->y;

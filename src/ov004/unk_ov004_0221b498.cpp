@@ -1,4 +1,5 @@
 #include "types.h"
+#include "gfx/VecFx32.h"
 
 
 
@@ -6,7 +7,6 @@
 #include "actor/ActorProfile.h"
 #include "talk/TalkTopicMsg.h"
 #include "net/CommManager.h"
-#include "game/Unk_ov004_0221b954_Vec.h"
 #include "talk/TalkWindowState.h"
 #include "npc/NpcAnimCtrl.h"
 #include "npc/NpcSpeechState.h"
@@ -42,7 +42,6 @@ class ActorTalkRequest;
 
 
 
-struct Unk_020d77a4_Vec3;
 
 
 
@@ -70,7 +69,7 @@ struct Unk_ov004_0221b6d4_Bits {
 #define SpNpcActor_setColliderSize _ZN10SpNpcActor15setColliderSizeEii
 #define ActorTalkRequest_setTalkPlayer _ZN16ActorTalkRequest13setTalkPlayerEj
 #define ActorTalkRequest_getTalkPlayer _ZN16ActorTalkRequest13getTalkPlayerEv
-#define NpcLookAt_setTarget _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih
+#define NpcLookAt_setTarget _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih
 #define NpcActionCtrl_getAction _ZN13NpcActionCtrl9getActionEv
 #define NpcActionCtrl_isActionDone _ZN13NpcActionCtrl12isActionDoneEv
 #define NpcActionCtrl_requestAction _ZN13NpcActionCtrl13requestActionEjiiissiitt
@@ -89,7 +88,7 @@ extern "C" {
 extern CommManager *gCommManager;
 extern s32 data_020c6d1c;
 extern u16 data_020c6cc8;
-extern Unk_ov004_0221b954_Vec gVec3Zero;
+extern VecFx32 gVec3Zero;
 extern const u8 sSpNpcSableDramaMsgs[];
 extern const u8 sSpNpcSableWeekdayMsgs[];
 extern const u8 sSpNpcSableTalkMsgs[];
@@ -110,7 +109,7 @@ void Character_setInteractionRange(void *self, s32 v);
 void SpNpcActor_setColliderSize(void *self, s32 a, s32 b);
 void ActorTalkRequest_setTalkPlayer(void *self, u32 v);
 NpcActor *ActorTalkRequest_getTalkPlayer(void *self);
-void NpcLookAt_setTarget(void *self, u8 a, s32 b, s32 c, Unk_ov004_0221b954_Vec *v, s32 d, s32 e, u8 f);
+void NpcLookAt_setTarget(void *self, u8 a, s32 b, s32 c, VecFx32 *v, s32 d, s32 e, u8 f);
 s32 NpcActionCtrl_getAction(void *self);
 BOOL NpcActionCtrl_isActionDone(void *self);
 void NpcActionCtrl_requestAction(void *self, u32 a, s32 b, s32 c, s32 d, s16 e, s16 f, s32 g, s32 h, u16 i, u16 j);

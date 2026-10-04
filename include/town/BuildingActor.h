@@ -2,10 +2,10 @@
 #define TOWN_BUILDINGACTOR_H
 
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "actor/Character.h"
 #include "talk/TalkMsgRequest.h"
 #include "gfx/Mtx43.h"
-#include "game/Unk_ov009_0225b880_Vec3.h"
 #include "town/Unk_ov009_0225b880.h"
 
 // Field building / structure actor (houses, shops, tents, signs, mailboxes, the taxi ...): Character with
@@ -57,7 +57,7 @@ public:
     virtual char *getTexPath();
     virtual char *getLightTexPath();
     virtual BOOL needsMatrixUpdate();
-    virtual Unk_ov009_0225da90_Vec3 getSoundPos();
+    virtual VecFx32Ctor getSoundPos();
     virtual BOOL calcCustomBaseMatrix(Mtx43 *out);
 
     s32 getEntranceType();
@@ -114,7 +114,7 @@ public:
     u32 getGridX();
     u16 *getItemId();
     s32 getInteriorScene();
-    BOOL getDoorPos(Unk_ov009_0225b880_Vec3 *out, s16 *ang);
+    BOOL getDoorPos(VecFx32 *out, s16 *ang);
     void updateMatrix();
     void execEntry08();
     BOOL enterEntry08();
@@ -167,7 +167,7 @@ public:
     /* 0x298 */ s32 solidCenterZ;
     /* 0x29c */ s32 solidSizeX;
     /* 0x2a0 */ s32 solidSizeZ;
-    /* 0x2a4 */ Unk_ov009_0225b880_Vec3 entryPos;
+    /* 0x2a4 */ VecFx32 entryPos;
 };
 
 #endif // TOWN_BUILDINGACTOR_H

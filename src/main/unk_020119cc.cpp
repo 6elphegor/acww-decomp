@@ -1,7 +1,7 @@
 // mwcc-flags: -str reuse
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "game/Unk_0201acf8.h"
-#include "game/Unk_020d77a4_Vec3.h"
 #include "actor/BlinkTimer.h"
 #include "gfx/HudObjGfx.h"
 #include "player/HeldToolModel.h"
@@ -49,27 +49,16 @@ struct Unk_02006d14;
 
 
 
-// unk_02011ec0.cpp
-struct Unk_02011f74_Pair {
-    s32 a;
-    s32 b;
-};
 
 // unk_02011ec0.cpp
 // Partial view of BlockMap (class in src/main/unk_0204cc1c.cpp): blocks, width/height, unitsX/unitsZ.
 struct BlockMap {
     void *blocks;
-    Unk_02011f74_Pair size;
-    Unk_02011f74_Pair units;
+    Vec2 size;
+    Vec2 units;
 };
 
 
-// unk_02011ec0.cpp
-struct Unk_02011f74_Vec {
-    s32 x;
-    s32 y;
-    s32 z;
-};
 
 // unk_02011ec0.cpp
 // Opaque 0x28-byte block cell of the scene block map (class MapBlock in src/main/unk_02037358.cpp).
@@ -77,10 +66,6 @@ struct MapBlock {
     u8 data[0x28];
 };
 
-// unk_02012810.cpp
-struct Unk_02012810_Vec {
-    s32 x, y, z;
-};
 
 // unk_02012810.cpp
 struct RouteGridPos {
@@ -89,14 +74,12 @@ struct RouteGridPos {
 
 struct VillagerRoute;
 
-// unk_020131a4.cpp
-struct Unk_02013260_Vec { s32 x; s32 y; };
 
 // unk_020131a4.cpp
-typedef Unk_02013260_Vec (VillagerRoute::*Unk_02013260_Fn)(u32 a, u32 b);
+typedef Vec2 (VillagerRoute::*Unk_02013260_Fn)(u32 a, u32 b);
 
 // unk_02012810.cpp
-typedef s32 (VillagerRoute::*Unk_02012810_Fn)(Unk_02012810_Vec *);
+typedef s32 (VillagerRoute::*Unk_02012810_Fn)(VecFx32 *);
 
 // unk_02012810.cpp
 typedef s32 (VillagerRoute::*Unk_02012810_Fn0)();
@@ -136,7 +119,7 @@ struct VillagerRoute {
     /* 0x00 */ u32 stepMode;
     /* 0x04 */ u32 stepPhase;
     /* 0x08 */ u32 routeType;
-    /* 0x0c */ Unk_02013260_Vec targetUnit;
+    /* 0x0c */ Vec2 targetUnit;
     /* 0x14 */ s32 targetBlockX;
     /* 0x18 */ s32 targetBlockZ;
     /* 0x1c */ RouteGridPos waypoint;
@@ -151,37 +134,37 @@ struct VillagerRoute {
     /* 0x94 */ u32 lastUnitX;
     /* 0x98 */ u32 lastUnitZ;
 
-    BOOL isInBlock(Unk_02011f74_Vec *v);
-    BOOL isInBlockT4(Unk_02011f74_Vec *v);
-    BOOL isInBlockT2(Unk_02011f74_Vec *v);
-    BOOL stepToDoor(Unk_02011f74_Vec *p);
-    BOOL isAtDoorT3(Unk_02011f74_Vec *p);
-    BOOL isAtDoorT1(Unk_02011f74_Vec *p);
-    BOOL stepCheckArrived(Unk_02011f74_Vec *p);
-    BOOL stepWander(Unk_02011f74_Vec *p);
-    BOOL stepAdjacentUnit(Unk_02011f74_Vec *p);
-    BOOL pickAdjacent(Unk_02011f74_Vec *p, BlockMap *w);
-    BOOL stepAlongPath(Unk_02011f74_Vec *p);
-    BOOL advanceOnPath(Unk_02011f74_Vec *p, BlockMap *w);
-    BOOL stepFollowPath(Unk_02011f74_Vec *p);
-    BOOL followPathDir(Unk_02011f74_Vec *p, Unk_02011f74_Pair *lim, BlockMap *w);
-    BOOL isInAttr200Block(Unk_02011f74_Vec *v);
+    BOOL isInBlock(VecFx32 *v);
+    BOOL isInBlockT4(VecFx32 *v);
+    BOOL isInBlockT2(VecFx32 *v);
+    BOOL stepToDoor(VecFx32 *p);
+    BOOL isAtDoorT3(VecFx32 *p);
+    BOOL isAtDoorT1(VecFx32 *p);
+    BOOL stepCheckArrived(VecFx32 *p);
+    BOOL stepWander(VecFx32 *p);
+    BOOL stepAdjacentUnit(VecFx32 *p);
+    BOOL pickAdjacent(VecFx32 *p, BlockMap *w);
+    BOOL stepAlongPath(VecFx32 *p);
+    BOOL advanceOnPath(VecFx32 *p, BlockMap *w);
+    BOOL stepFollowPath(VecFx32 *p);
+    BOOL followPathDir(VecFx32 *p, Vec2 *lim, BlockMap *w);
+    BOOL isInAttr200Block(VecFx32 *v);
 
     s32 oppositeDirs(s32 v);
-    s32 runStep(Unk_02012810_Vec *v);
+    s32 runStep(VecFx32 *v);
     u32 getStage();
     s32 findJunction(RouteGridPos *p);
     RouteJunction popJunction(RouteGridPos *p);
     void pushJunction(u32 hi, u32 lo, RouteGridPos *p);
     s32 scanDir(RouteGridPos *out, Unk_02012e08_Pos pos, u32 mask, RouteGridPos *lim, BlockMap *obj);
-    u32 pickAdjacentUnit(Unk_02012810_Vec *v, BlockMap *o);
-    s32 scanForPath(Unk_02012810_Vec *cand, RouteGridPos *p, Unk_020130f0_Dir *d, s32 limit, RouteGridPos *q, s32 flag, BlockMap *o);
-    u32 findNearestPath(RouteGridPos *out, Unk_02012810_Vec *pos);
-    void planStep(Unk_02012810_Vec *pos);
+    u32 pickAdjacentUnit(VecFx32 *v, BlockMap *o);
+    s32 scanForPath(VecFx32 *cand, RouteGridPos *p, Unk_020130f0_Dir *d, s32 limit, RouteGridPos *q, s32 flag, BlockMap *o);
+    u32 findNearestPath(RouteGridPos *out, VecFx32 *pos);
+    void planStep(VecFx32 *pos);
     s32 countJunctions();
     void clearJunctions();
     s32 firstDir(s32 v);
-    s32 isArrived(Unk_02012810_Vec *v);
+    s32 isArrived(VecFx32 *v);
 
     BOOL isActive();
     void setStepMode(u32 v);
@@ -213,11 +196,9 @@ struct Unk_02013778_Vec : Unk_020133cc_Vec {
 // unk_020131a4.cpp
 typedef void (NpcTalkCtrl::*Unk_02013474_Fn)(NpcActor*);
 
-// unk_02013b10.cpp
-struct Unk_02013b10_Vec { s32 x, y, z; };
 
 // unk_02013b10.cpp
-struct Unk_02013b10_VecT : Unk_02013b10_Vec { Unk_02013b10_VecT() {} Unk_02013b10_VecT(const Unk_02013b10_Vec &o) { x = o.x; y = o.y; z = o.z; } void set(const Unk_02013b10_Vec &o) { x = o.x; y = o.y; z = o.z; } };
+struct Unk_02013b10_VecT : VecFx32 { Unk_02013b10_VecT() {} Unk_02013b10_VecT(const VecFx32 &o) { x = o.x; y = o.y; z = o.z; } void set(const VecFx32 &o) { x = o.x; y = o.y; z = o.z; } };
 
 
 class NpcTalkCtrl;
@@ -229,10 +210,6 @@ struct NpcTalkCtrlState {
     void (NpcTalkCtrl::*mainFn)(NpcActor *);
 };
 
-// unk_02014420.cpp
-struct Unk_02014420_Vec2 {
-    s32 x, y;
-};
 
 // unk_02014420.cpp
 typedef BOOL (ActorTalkRequest::*Unk_02014420_Fn)();
@@ -278,10 +255,6 @@ void operator delete(void *p);
 
 
 
-// unk_02015fe0.cpp
-struct Unk_02015fe0_Vec {
-    s32 x, y, z;
-};
 
 
 // unk_02015fe0.cpp
@@ -337,20 +310,13 @@ typedef void (NpcActionCtrl::*Unk_02017d74_Fn)(NpcActor *);
 
 struct NpcEmotionEntry;
 
-// unk_02018698.cpp
-struct Unk_02018698_Vec {
-    s32 x, y, z;
-    Unk_02018698_Vec(s32 a, s32 b, s32 c) { x = a; y = b; z = c; }
-};
 
 
 // unk_02018698.cpp
 
 // unk_02018698.cpp
-typedef Unk_02018698_Vec V;
+typedef VecFx32Ctor V;
 
-// unk_02019020.cpp
-struct Unk_02019858_Vec { s32 x, y, z; Unk_02019858_Vec(s32 a, s32 b, s32 c) { x = a; y = b; z = c; } };
 
 struct NpcActionCtrl;
 
@@ -422,12 +388,8 @@ struct Unk_0201b2b8_S { u8 b0; u8 pad; s16 h2; s16 h4; u16 h6; u16 h8; u16 ha; }
 
 
 // unk_0201ac80.cpp
-typedef Unk_020d77a4_Vec3 V3;
+typedef VecFx32 V3;
 
-// unk_0201b690.cpp
-struct Unk_020d77a4_Vec {
-    s32 x, y, z;
-};
 
 
 
@@ -447,7 +409,7 @@ struct NNSG3dRenderObj {
 struct NNSG3dJntAnmResult {
     u8 pad_00[0x28];
     MtxFx33 rot;
-    Unk_020d77a4_Vec trans;
+    VecFx32 trans;
 };
 
 class NNSG3dRS;
@@ -554,11 +516,11 @@ inline BOOL Unk_02011c44_InRange(u32 id, u32 lo, u32 hi) {
 namespace nB {
 extern "C" {
 
-void _ZN13VillagerRoute8planStepEP16Unk_02012810_Vec(void *self, Unk_02011f74_Vec *p);
+void _ZN13VillagerRoute8planStepEP7VecFx32(void *self, VecFx32 *p);
 void _ZN13VillagerRoute14clearJunctionsEv(void *self);
 s32 _ZN13VillagerRoute8firstDirEi(void *self, s32 mask);
-s32 _ZN13VillagerRoute9isArrivedEP16Unk_02012810_Vec(void *self, Unk_02011f74_Vec *p);
-s32 _ZN13VillagerRoute16pickAdjacentUnitEP16Unk_02012810_VecP8BlockMap(void *self);
+s32 _ZN13VillagerRoute9isArrivedEP7VecFx32(void *self, VecFx32 *p);
+s32 _ZN13VillagerRoute16pickAdjacentUnitEP7VecFx32P8BlockMap(void *self);
 void _ZN13VillagerRoute16checkUnitChangedEj(void *self);
 void _ZN13VillagerRoute13markUnitUnsetEv(void *self);
 void *_ZN16NpcResHandleView16getHeldItemModelEv(void *);
@@ -582,39 +544,39 @@ u8 *_ZN20VillagerDataItemView11getHousePosEv(...);
 s32 _ZN12VillagerData13getVillagerIdEv(void *);
 s32 SaveVillagers_PickRandomExcept(void *, void *, u32);
 void func_02133ef8(void *, u32);
-void VillagerRoute_PickPathUnitInBlock(Unk_02011f74_Pair *out, void *self, void *a, BlockMap *w);
-void FieldPos_ToUnit(s32 *, s32 *, Unk_02011f74_Vec *);
-void FieldPos_FromUnitCenter(Unk_02011f74_Vec *, s32, s32);
+void VillagerRoute_PickPathUnitInBlock(Vec2 *out, void *self, void *a, BlockMap *w);
+void FieldPos_ToUnit(s32 *, s32 *, VecFx32 *);
+void FieldPos_FromUnitCenter(VecFx32 *, s32, s32);
 s32 BlockMap_BlockHasAllAttr(BlockMap *, s32, s32, u32);
 s32 BlockMap_FindBlockAllAttr(BlockMap *, u32);
-s32 Math_AngleXZ(Unk_02011f74_Vec *, Unk_02011f74_Vec *);
+s32 Math_AngleXZ(VecFx32 *, VecFx32 *);
 s32 Random_Next(void *);
 s32 func_01ffcb0c(s32, s32);
-void FieldPos_SnapToUnitCenter(Unk_02011f74_Vec *, Unk_02011f74_Vec *);
-s32 TownMap_IsPosWalkable(Unk_02011f74_Vec *, s32);
+void FieldPos_SnapToUnitCenter(VecFx32 *, VecFx32 *);
+s32 TownMap_IsPosWalkable(VecFx32 *, s32);
 s32 TownMap_IsUnitWalkable(s32, s32, BlockMap *);
 s32 _ZN8BlockMap12getWalkLinksEii(BlockMap *, s32, s32);
 static inline MapBlock *GetCell(BlockMap *w, u32 x, u32 y)
 {
-    if (x < (u32)w->size.a && (u32)w->size.b > y && w->blocks != NULL) {
-        return (MapBlock *)w->blocks + (x + w->size.a * y);
+    if (x < (u32)w->size.x && (u32)w->size.y > y && w->blocks != NULL) {
+        return (MapBlock *)w->blocks + (x + w->size.x * y);
     }
     return NULL;
 }
 static inline MapBlock *GetCellD(BlockMap *w, u32 x, u32 y, MapBlock *volatile *dflt)
 {
-    if (x < (u32)w->size.a && (u32)w->size.b > y && w->blocks != NULL) {
-        return (MapBlock *)w->blocks + (x + w->size.a * y);
+    if (x < (u32)w->size.x && (u32)w->size.y > y && w->blocks != NULL) {
+        return (MapBlock *)w->blocks + (x + w->size.x * y);
     }
     return *dflt;
 }
-void VillagerRoute_PickCoastBlock(Unk_02011f74_Pair *out, void *self, Unk_02011f74_Vec *v);
-void VillagerRoute_PickRandomBlock(Unk_02011f74_Pair *out, void *self);
-void VillagerRoute_PickOwnHouseBlock(Unk_02011f74_Pair *out, void *self, u32 unused, NpcActor *obj);
-void VillagerRoute_PickOwnHouseDoor(Unk_02011f74_Pair *out, void *self, u32 unused, NpcActor *obj);
-void VillagerRoute_PickOtherHouseBlock(Unk_02011f74_Pair *out, void *self, u32 unused, NpcActor *obj);
-void VillagerRoute_PickOtherHouseDoor(Unk_02011f74_Pair *out, void *self, u32 unused, NpcActor *obj);
-void VillagerRoute_PickAttr200Target(Unk_02011f74_Pair *out, void *self);
+void VillagerRoute_PickCoastBlock(Vec2 *out, void *self, VecFx32 *v);
+void VillagerRoute_PickRandomBlock(Vec2 *out, void *self);
+void VillagerRoute_PickOwnHouseBlock(Vec2 *out, void *self, u32 unused, NpcActor *obj);
+void VillagerRoute_PickOwnHouseDoor(Vec2 *out, void *self, u32 unused, NpcActor *obj);
+void VillagerRoute_PickOtherHouseBlock(Vec2 *out, void *self, u32 unused, NpcActor *obj);
+void VillagerRoute_PickOtherHouseDoor(Vec2 *out, void *self, u32 unused, NpcActor *obj);
+void VillagerRoute_PickAttr200Target(Vec2 *out, void *self);
 }
 }
 
@@ -622,21 +584,21 @@ void VillagerRoute_PickAttr200Target(Unk_02011f74_Pair *out, void *self);
 namespace nC {
 extern "C" {
 namespace nC2 { extern Unk_020130f0_Dir sRouteDirs[4]; }
-void _ZN13VillagerRoute12rememberUnitEj(void *self, Unk_02012810_Vec *v);
+void _ZN13VillagerRoute12rememberUnitEj(void *self, VecFx32 *v);
 extern s32 sRouteDirs[];
 extern BlockMap *gSceneBlockMap;
-s32 _ZN8BlockMap17getWalkLinksAtPosEPv(BlockMap *o, Unk_02012810_Vec *v);
+s32 _ZN8BlockMap17getWalkLinksAtPosEPv(BlockMap *o, VecFx32 *v);
 u32 BlockMap_GetBlockAttr(BlockMap *o, s32 x, s32 z);
-s32 Vec_DistXZ(Unk_02012810_Vec *a, Unk_02012810_Vec *b);
-void FieldPos_ToBlockUnit2(RouteGridPos *a, RouteGridPos *c, Unk_02012810_Vec *v);
-void FieldPos_FromBlockUnitCenter(Unk_02012810_Vec *out, u32 a, u32 b, u32 c, u32 d);
+s32 Vec_DistXZ(VecFx32 *a, VecFx32 *b);
+void FieldPos_ToBlockUnit2(RouteGridPos *a, RouteGridPos *c, VecFx32 *v);
+void FieldPos_FromBlockUnitCenter(VecFx32 *out, u32 a, u32 b, u32 c, u32 d);
 s32 TownMap_IsUnitWalkable(u32 x, u32 z, BlockMap *o);
 s32 Random_PickSetBit(u32 mask, s32 n, s32 max);
 s32 _ZN8BlockMap12getWalkLinksEii(BlockMap *o, u32 x, u32 z);
 void FieldUnit_FromBlockUnit(u32 *bx, u32 *bz, u32 x, u32 z, u32 a, u32 b);
 s32 Random_GlobalBelow(s32 n);
-void FieldPos_ToUnit(u32 *x, u32 *z, Unk_02012810_Vec *v);
-void FieldPos_FromUnitCenter(Unk_02012810_Vec *out, u32 x, u32 z);
+void FieldPos_ToUnit(u32 *x, u32 *z, VecFx32 *v);
+void FieldPos_FromUnitCenter(VecFx32 *out, u32 x, u32 z);
 void *MI_CpuFill8(void *, int, u32);
 void *MI_CpuCopy8(const void *, void *, u32);
 void VillagerRoute_PickPathUnitInBlock(RouteGridPos *out, s32 unused, RouteGridPos *p, BlockMap *obj);
@@ -647,7 +609,7 @@ void VillagerRoute_PickPathUnitInBlock(RouteGridPos *out, s32 unused, RouteGridP
 namespace nD {
 extern "C" {
 
-void _ZN13VillagerRoute8planStepEP16Unk_02012810_Vec(void *self, u32 v);
+void _ZN13VillagerRoute8planStepEP7VecFx32(void *self, u32 v);
 void _ZN13VillagerRoute14clearJunctionsEv(void *self);
 void _ZN11NpcTalkCtrl7endTalkEP8NpcActor(void *self, NpcActor* p);
 void _ZN11NpcTalkCtrl16startTalkMessageEP8NpcActor(void *self);
@@ -674,7 +636,7 @@ BOOL _ZN8BlockMap12getWalkLinksEii(void* p, u32 x, u32 y);
 void FieldPos_FromUnitCenter(void* p, u32 x, u32 y);
 void FieldPos_ToUnit(u32* a, u32* b, u32 c);
 void MI_CpuFill8(void* p, u32 v, u32 n);
-BOOL _ZN13VillagerRoute11scanForPathEP16Unk_02012810_VecP12RouteGridPosP16Unk_020130f0_DiriS3_iP8BlockMap(void* unused, void* p1, u32* pos, u32* step, s32 n, u32* bound, s32 flag, void* q);
+BOOL _ZN13VillagerRoute11scanForPathEP7VecFx32P12RouteGridPosP16Unk_020130f0_DiriS3_iP8BlockMap(void* unused, void* p1, u32* pos, u32* step, s32 n, u32* bound, s32 flag, void* q);
 extern VillagerRouteType sVillagerRouteTypes[];
 s32 _ZN8NpcActor19getTeachableEmotionEv();
 s32 Emotion_FindSlot(u32 v);
@@ -701,7 +663,7 @@ s32 _ZN16ActorTalkRequest9startTaskEi(ActorTalkRequest *p, s32 a);
 u32 Camera_IsBlending(void);
 u32 Camera_GetBlendFramesLeft(void);
 void _ZN14TalkMsgRequest17changeSpeakerNameEP9MsgStringj(ActorTalkRequest *p, MsgString9B *x, u8 *b);
-void Camera_RetargetFocus(Unk_02013b10_Vec *v);
+void Camera_RetargetFocus(VecFx32 *v);
 void _ZN14TalkMsgRequest14setSpeakerNameEPhj(ActorTalkRequest *o, s32 a, u8 *b);
 void _ZN10MsgRequest11setFileNameEPKc(ActorTalkRequest *o, s32 a);
 s32 _ZN15TalkWindowState14isVoicePlayingEv(TalkWindowState *p);
@@ -719,8 +681,8 @@ void _ZN9Character17detachTalkRequestEi(NpcActor *ctx, ActorTalkRequest *o);
 void _ZN9Character17attachTalkRequestEi(NpcActor *ctx, ActorTalkRequest *o);
 void _ZN16ActorTalkRequest11playEmotionEjj(ActorTalkRequest *o, s32 a, s32 b);
 void _ZN16ActorTalkRequest4tickEv(ActorTalkRequest *o);
-void Camera_FocusOnPair(Unk_02013b10_Vec *a, Unk_02013b10_Vec *b);
-void Camera_FocusOnPoint(Unk_02013b10_Vec *a);
+void Camera_FocusOnPair(VecFx32 *a, VecFx32 *b);
+void Camera_FocusOnPoint(VecFx32 *a);
 void Camera_SetModeDefault(void);
 s32 PlayerActor_SetHeadTilt(s32 a, s32 b, s32 c);
 u8 *_ZN8NpcActor16getSpeakerGenderEv(void *p);
@@ -785,7 +747,7 @@ Actor *PlayerActor_GetCharacter(u32 a);
 s32 _ZN8NpcActor10getAngleToEPS_(u8 *a, u8 *b);
 s32 _ZN8NpcActor16getAngleToPlayerEj(u8 *a, u32 b);
 void _ZN13NpcActionCtrl13requestActionEjiiissiitt(u8 *p, u32 a, u32 b, u32 c, u32 d, u32 e, s32 f, u32 g, u32 h, u32 i, u32 j);
-void _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(u8 *p, u32 a, u32 b, u8 *c, u8 *d, u32 e, u32 f, u32 g);
+void _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(u8 *p, u32 a, u32 b, u8 *c, u8 *d, u32 e, u32 f, u32 g);
 ActorTalkRequest *_ZN8NpcActor14getTalkRequestEv();
 }
 }
@@ -812,7 +774,7 @@ void String_FormatFixedPoint(void *a, s32 b, s32 c);
 void String_FormatNumber(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
 void String_Load(void *a, u8 *b, u8 *c);
 void _ZN9MsgString12appendStringEPS_(void *a, void *b);
-void _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(void *self, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
+void _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(void *self, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
 s32 Npc_GetVoiceType(void *p);
 s32 _ZN16ActorTalkRequest7runTaskEv(void *p);
 void _ZN16ActorTalkRequest10resetTasksEv(void *p);
@@ -883,19 +845,19 @@ void _ZN11NpcAnimCtrl15loadTalkGestureEv(void *a);
 void NpcActor_JointCalcLayer3Cb(void);
 void _ZN17NpcBodyAnimHandleD1Ev(void *a);
 void _ZN17NpcBodyAnimHandleC1Ev(void *a);
-BOOL _ZN8NpcActor15netReadPositionEPiPh(void *o, Unk_02015fe0_Vec *v, s16 *a);
+BOOL _ZN8NpcActor15netReadPositionEPiPh(void *o, VecFx32 *v, s16 *a);
 void _ZN11NpcMoveCtrl16aimAtDestinationEP9Character(void *a, void *b);
 void _ZN11NpcMoveCtrl11setMoveModeEP9Characterist(void *a, void *b, s32 c, s32 d, u32 e);
 s32 _ZN11NpcMoveCtrl11getMoveModeEv(void *a);
 void _ZN11NpcMoveCtrl14setTargetAngleEs(void *a, s32 b);
 s32 _ZN11NpcMoveCtrl14getTargetAngleEv(void *a);
-void _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(void *a, Unk_02015fe0_Vec *v);
-void _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(void *a, Unk_02015fe0_Vec *v);
+void _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(void *a, VecFx32 *v);
+void _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(void *a, VecFx32 *v);
 BOOL NpcActor_IsFrontAngle(s16 a);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 Math_Atan2(s32 a, s32 b);
 extern u16 data_020c6cc8;
-extern Unk_02015fe0_Vec gVec3Zero;
+extern VecFx32 gVec3Zero;
 static inline BOOL Unk_02015fe0_R(u16 *p, u32 lo, u32 hi) {
     BOOL r = FALSE;
     if (*p >= lo && *p <= hi) r = TRUE;
@@ -920,8 +882,8 @@ BOOL _ZN8NpcActor15netReadPositionEPiPh(Unk_02006d14 *o, s32 *v, s16 *a);
 BOOL NpcActor_IsFrontAngle(s16 a);
 void _ZN11NpcMoveCtrl11setMoveModeEP9Characterist(NpcMoveCtrl *p, Unk_02006d14 *o, u32 a, u32 b, u32 c);
 void _ZN11NpcMoveCtrl14setTargetAngleEs(NpcMoveCtrl *p, s32 a);
-void _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(NpcMoveCtrl *p, void *v);
-void _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(NpcMoveCtrl *p, void *v);
+void _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(NpcMoveCtrl *p, void *v);
+void _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(NpcMoveCtrl *p, void *v);
 s32 _ZN11NpcAnimCtrl9getAnimIdEj(NpcAnimCtrl *p, u32 a);
 BOOL _ZN11NpcAnimCtrl14isAnimFinishedEP8NpcActor(NpcAnimCtrl *p, ...);
 void _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(NpcAnimCtrl *p, Unk_02006d14 *o, u32 a, u32 b, u32 c, u32 d, u32 e, u32 f);
@@ -975,8 +937,8 @@ BOOL PlayerActor_RequestAct32(void);
 void ThreeLayerAnimModel_AssignJointsToLayer2(void *p, u32 a, u32 b);
 BOOL HandOverItem_CanTake(void *p);
 void _ZN11NpcMoveCtrl11setMoveModeEP9Characterist(void *a, void *b, u32 c, u32 d, u32 e);
-void _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(void *a, void *b);
-void _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(void *a, void *b);
+void _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(void *a, void *b);
+void _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(void *a, void *b);
 void _ZN13NpcActionCtrl11act0EStep19EP12Unk_02006d14(NpcActionCtrl *s, NpcActor *c);
 void _ZN13NpcActionCtrl11act0EStep18EP12Unk_02006d14(NpcActionCtrl *s, NpcActor *c);
 void _ZN13NpcActionCtrl11act0EStep17EP12Unk_02006d14(NpcActionCtrl *s, NpcActor *c);
@@ -1025,8 +987,8 @@ BOOL PlayerActor_RequestAct32(void);
 BOOL HandOverItem_CanTake(void *p);
 BOOL HandOverItem_GetPos(void *p);
 void _ZN11NpcMoveCtrl11setMoveModeEP9Characterist(void *a, void *b, u32 c, u32 d, u32 e);
-void _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(void *a, void *b);
-void _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(void *a, void *b);
+void _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(void *a, void *b);
+void _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(void *a, void *b);
 void _ZN12Unk_0201acf813func_0201acf8Et(void *a, s32 b);
 BOOL Item_IsFurniture(void *p);
 s32 Item_GetFurnitureIndex(void *p);
@@ -1064,8 +1026,8 @@ void _ZN13NpcActionCtrl10setupAct01EPh(NpcActionCtrl *s, NpcActor *c);
 void NpcAction_PackTurn(void *p, s32 a, s32 b, u32 c);
 void _ZN11NpcMoveCtrl11setMoveModeEP9Characterist(void *a, void *b, u32 c, u32 d, u32 e);
 void _ZN11NpcMoveCtrl16aimAtDestinationEP9Character(void *a, void *b);
-void _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(void *a, void *b);
-void _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(void *a, void *b);
+void _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(void *a, void *b);
+void _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(void *a, void *b);
 void _ZN11NpcMoveCtrl14setTargetAngleEs(void *a, s32 b);
 void _ZN12Unk_0201acf813func_0201acf8Et(void *a, s32 b);
 BOOL _ZN12Unk_0201acf88getLevelEv(void *a);
@@ -1082,7 +1044,7 @@ s32 _ZN11NpcMoveCtrl12getTurnSpeedEv(void *a);
 s32 _ZN11NpcMoveCtrl15getDestinationBEv(void *a);
 BOOL _ZN11NpcMoveCtrl10hasArrivedEP9Characteri(void *a, void *b, u32 c);
 BOOL _ZN11NpcMoveCtrl10hasNextLegEv(void *a);
-BOOL _ZN8NpcActor12isPosInFrontEPsP16Unk_020d77a4_Vec(void *a, s16 *out, s32 c);
+BOOL _ZN8NpcActor12isPosInFrontEPsP7VecFx32(void *a, s16 *out, s32 c);
 BOOL NpcActor_IsFrontAngle(s16 v);
 NpcEmotionEntry *Emotion_GetEntry(u32 i);
 }
@@ -1101,8 +1063,8 @@ void NetBuf_PackPair20(void *p, u32 a, u32 b);
 void _ZN11NpcMoveCtrl16aimAtDestinationEP9Character(void *p);
 BOOL _ZN11NpcMoveCtrl10hasArrivedEP9Characteri(void *p, void *owner, u32 v);
 BOOL _ZN11NpcMoveCtrl10hasNextLegEv(void *p);
-void _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(void *p, void *v);
-void _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(void *p, void *v);
+void _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(void *p, void *v);
+void _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(void *p, void *v);
 void _ZN11NpcMoveCtrl14setTargetAngleEs(void *p, s32 v);
 void _ZN11NpcMoveCtrl11setMoveModeEP9Characterist(void *p, void *owner, s32 a, s32 b, u32 c);
 void _ZN12Unk_0201acf813func_0201acf8Et(void *p, s32 v);
@@ -1130,9 +1092,9 @@ void NpcAction_PackMove(u8 *out, u32 a, u32 b, u32 c, u32 s0, s16 s1, u16 s2);
 namespace nO {
 extern "C" {
 
-s32 _ZN9NpcLookAt16calcClampedPitchEP17Unk_0201a334_Vec3S1_i(void *self, void *a, void *b, s32 c);
-s32 _ZN9NpcLookAt14calcClampedYawEP17Unk_0201a334_Vec3S1_i(void *self, void *a, void *b, s32 c);
-s32 _ZN9NpcLookAt7calcYawEP17Unk_0201a334_Vec3S1_i(void *self, void *a, void *b, s32 c);
+s32 _ZN9NpcLookAt16calcClampedPitchEP7VecFx32S1_i(void *self, void *a, void *b, s32 c);
+s32 _ZN9NpcLookAt14calcClampedYawEP7VecFx32S1_i(void *self, void *a, void *b, s32 c);
+s32 _ZN9NpcLookAt7calcYawEP7VecFx32S1_i(void *self, void *a, void *b, s32 c);
 BOOL NpcLookAt_GetHeadPos(void *self, void *a);
 extern s32 sNpcTalkMouthAnims[];
 s32 CharaAnim_GetEyeAnim(void *p);
@@ -1188,11 +1150,11 @@ extern "C" {
 extern u8 gVec3Zero[];
 extern u8 gFieldSceneKind;
 extern s16 data_02135f44[];
-extern Unk_0201a334_Vec3 sNpcObstacleProbeOffsets[];
+extern VecFx32 sNpcObstacleProbeOffsets[];
 extern NpcMoveModeEntry sNpcMoveModeTable[];
-s32 NpcLookAt_GetHeadPos(NpcLookAt *self, Unk_0201a334_Vec3 *out);
+s32 NpcLookAt_GetHeadPos(NpcLookAt *self, VecFx32 *out);
 Character *PlayerActor_GetCharacter(s32 h);
-BOOL PlayerActor_GetHeadPos(Unk_0201a334_Vec3 *out, s32 h);
+BOOL PlayerActor_GetHeadPos(VecFx32 *out, s32 h);
 s32 Math_StepAngle(s16 *p, s32 v, s32 n);
 s32 Vec_Distance(void *a, void *b);
 s32 Vec_NotEqual(void *a, void *b);
@@ -1205,25 +1167,25 @@ s32 func_01ffcb0c(s32 a, s32 b);
 s32 Math_AngleXZ(void *a, void *b);
 void _ZN5Actor14updatePositionEP13ActorCollider(void *a, void *b);
 s32 _ZN9NpcLookAt16isWithinYawLimitEi(NpcLookAt *self, s32 v);
-BOOL Npc_IsPosBlocked(Unk_0201a334_Vec3 *pos);
-void Npc_RotateOffsetXZ(Unk_0201a334_Vec3 *out, Unk_0201a334_Vec3 *base, Unk_0201a334_Vec3 *off, u32 ang);
+BOOL Npc_IsPosBlocked(VecFx32 *pos);
+void Npc_RotateOffsetXZ(VecFx32 *out, VecFx32 *base, VecFx32 *off, u32 ang);
 s32 Model_GetJointWorldMtx(Unk_02006d14_TalkBase *dst, void *src, u32 n);
 s32 WorldCurve_FromCurved(void *v);
 s32 Ground_GetExitAtPos(s32 id);
 BOOL FtrMgr_GetSurfaceHeightAtPos(s32 id);
-void _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii(void *buf, s32 id, s32 a, s32 b);
+void _ZN10GroundInfo9initAtPosEP7VecFx32ii(void *buf, s32 id, s32 a, s32 b);
 s32 _ZN14GroundInfoBase9getHeightEi(void *buf, s32 a);
 s32 Collision_HasUnitShapeAt(s32 id);
 void GroundInfo_Destruct(void *buf);
 s32 _ZN11NpcAnimCtrl13isPlayingAnimEiPv(void *a, s32 b, void *c);
 void _ZN11NpcAnimCtrl17playAnimKeepFrameEP8NpcActorjjj(void *a, void *b, s32 c, u32 d, s32 e);
 void _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(void *a, void *b, s32 c, u32 d, s32 e, s32 f, s32 g, s32 h);
-s32 NpcLookAt_GetHeadPos(NpcLookAt *self, Unk_0201a334_Vec3 *out);
+s32 NpcLookAt_GetHeadPos(NpcLookAt *self, VecFx32 *out);
 static inline BOOL Unk_0201a834_IsOne(u8 v) {
     return v == 1 ? TRUE : FALSE;
 }
-BOOL Npc_IsPosBlocked(Unk_0201a334_Vec3 *pos);
-void Npc_RotateOffsetXZ(Unk_0201a334_Vec3 *out, Unk_0201a334_Vec3 *base, Unk_0201a334_Vec3 *off, u32 ang);
+BOOL Npc_IsPosBlocked(VecFx32 *pos);
+void Npc_RotateOffsetXZ(VecFx32 *out, VecFx32 *base, VecFx32 *off, u32 ang);
 }
 }
 
@@ -1244,17 +1206,17 @@ void *_ZN10PlayerData12getInventoryEv(void *p);
 s32 PlayerInventory_AddBells(void *p, s32 v, s32 n);
 s32 PlayerInventory_GetBellsRoom(void *p, s32 a, s32 b);
 s32 PlayerInventory_CanAddBells(void *p, s32 v, s32 n, s32 m);
-u32 _ZN8BlockMap17getWalkLinksAtPosEPv(void *g, Unk_020d77a4_Vec3 *v);
-void FieldPos_SnapToUnitCenter(Unk_020d77a4_Vec3 *out, Unk_020d77a4_Vec3 *in);
-void func_01ffd070(Unk_020d77a4_Vec3 *out, Unk_020d77a4_Vec3 *a, Unk_020d77a4_Vec3 *b);
-s32 Vec_DistXZ(Unk_020d77a4_Vec3 *a, Unk_020d77a4_Vec3 *b);
-void Vec_Equal(Unk_020d77a4_Vec3 *a, Unk_020d77a4_Vec3 *b);
-s32 TownMap_IsPosWalkable(Unk_020d77a4_Vec3 *v, s32 a);
+u32 _ZN8BlockMap17getWalkLinksAtPosEPv(void *g, VecFx32 *v);
+void FieldPos_SnapToUnitCenter(VecFx32 *out, VecFx32 *in);
+void func_01ffd070(VecFx32 *out, VecFx32 *a, VecFx32 *b);
+s32 Vec_DistXZ(VecFx32 *a, VecFx32 *b);
+void Vec_Equal(VecFx32 *a, VecFx32 *b);
+s32 TownMap_IsPosWalkable(VecFx32 *v, s32 a);
 void func_02133ef8(void *p, u32 n);
 s32 _ZN11CommManager8isOnlineEv(u8 *g);
-Unk_020d77a4_Vec3 *PlayerActor_GetBodyPos(u32 n);
+VecFx32 *PlayerActor_GetBodyPos(u32 n);
 s32 PlayerActor_SetNoFaceTalkTarget(s32 a, s32 b);
-void WorldCurve_FromCurved(Unk_020d77a4_Vec3 *out, Unk_020d77a4_Vec3 *in);
+void WorldCurve_FromCurved(VecFx32 *out, VecFx32 *in);
 void _ZN8NpcActor12releaseModelEv(void *p);
 void _ZN11NpcFaceAnim7releaseEv(void *p);
 void _ZN11NpcAnimCtrl7releaseEv(void *p);
@@ -1293,7 +1255,7 @@ void _ZN13ActorCollider6submitEv(void *p);
 void _ZN13ActorCollider8resetHitEv(void *p);
 void _ZN11NpcAnimCtrl6updateEP8NpcActor(void *p, void *q);
 void _ZN19ThreeLayerAnimModel13updateLayers3Ev(void *p);
-void _ZN12SndSeEmitter21callUpdateRelativeAltEP16Unk_02003a6c_Vec(void *p, Unk_020d77a4_Vec3 *v);
+void _ZN12SndSeEmitter21callUpdateRelativeAltEP7VecFx32(void *p, VecFx32 *v);
 void _ZN13HeldToolModel6updateEP12Unk_02006d14(s32 v, void *p);
 void _ZN13NpcFootstepFx15updateFootstepsEP8NpcActor(void *p, void *q);
 void _ZN11NpcFaceAnim6updateEPh(void *p, void *q);
@@ -1365,7 +1327,7 @@ void JointCb_UseRestTranslation(void *self, u32 flags);
 void MTX_RotY33_(MtxFx33 *m, s32 a, s32 b);
 void MTX_RotX33_(MtxFx33 *m, s32 a, s32 b);
 void MTX_Concat33(MtxFx33 *a, MtxFx33 *b, MtxFx33 *out);
-s32 WorldCurve_Apply(Unk_020d77a4_Vec *a, Unk_020d77a4_Vec *b);
+s32 WorldCurve_Apply(VecFx32 *a, VecFx32 *b);
 s32 WorldCurve_GetRadius();
 void _ZN19ThreeLayerAnimModel21onJointCalcPostLayer3EP8NNSG3dRS(void *p, void *q);
 void NpcActor_JointCalcLayer3Cb(NNSG3dRS *p);
@@ -1424,18 +1386,18 @@ extern const u32 sNpcMoveSpeedPresets[9];
 extern const u32 data_020c6dcc[12];
 extern const u32 sNpcMoveModeTable[25];
 extern const NpcEmotionEntry sEmotionTable[60];
-void _ZN13VillagerRoute9isInBlockEP16Unk_02011f74_Vec(void);
-void _ZN13VillagerRoute11isInBlockT4EP16Unk_02011f74_Vec(void);
-void _ZN13VillagerRoute10stepToDoorEP16Unk_02011f74_Vec(void);
-void _ZN13VillagerRoute10isAtDoorT3EP16Unk_02011f74_Vec(void);
-void _ZN13VillagerRoute11isInBlockT2EP16Unk_02011f74_Vec(void);
-void _ZN13VillagerRoute16stepCheckArrivedEP16Unk_02011f74_Vec(void);
-void _ZN13VillagerRoute10isAtDoorT1EP16Unk_02011f74_Vec(void);
-void _ZN13VillagerRoute16isInAttr200BlockEP16Unk_02011f74_Vec(void);
-void _ZN13VillagerRoute10stepWanderEP16Unk_02011f74_Vec(void);
-void _ZN13VillagerRoute16stepAdjacentUnitEP16Unk_02011f74_Vec(void);
-void _ZN13VillagerRoute13stepAlongPathEP16Unk_02011f74_Vec(void);
-void _ZN13VillagerRoute14stepFollowPathEP16Unk_02011f74_Vec(void);
+void _ZN13VillagerRoute9isInBlockEP7VecFx32(void);
+void _ZN13VillagerRoute11isInBlockT4EP7VecFx32(void);
+void _ZN13VillagerRoute10stepToDoorEP7VecFx32(void);
+void _ZN13VillagerRoute10isAtDoorT3EP7VecFx32(void);
+void _ZN13VillagerRoute11isInBlockT2EP7VecFx32(void);
+void _ZN13VillagerRoute16stepCheckArrivedEP7VecFx32(void);
+void _ZN13VillagerRoute10isAtDoorT1EP7VecFx32(void);
+void _ZN13VillagerRoute16isInAttr200BlockEP7VecFx32(void);
+void _ZN13VillagerRoute10stepWanderEP7VecFx32(void);
+void _ZN13VillagerRoute16stepAdjacentUnitEP7VecFx32(void);
+void _ZN13VillagerRoute13stepAlongPathEP7VecFx32(void);
+void _ZN13VillagerRoute14stepFollowPathEP7VecFx32(void);
 void _ZN11NpcTalkCtrl10mainState4EP8NpcActor(void);
 void _ZN11NpcTalkCtrl11state4Step0EP8NpcActor(void);
 void _ZN11NpcTalkCtrl10mainState3EP8NpcActor(void);
@@ -1819,9 +1781,9 @@ extern "C" void NpcActor_OnJointCalc(NNSG3dRS *self) {
     u16 tmp[2];
     MtxFx33 mB;
     MtxFx33 mA;
-    Unk_020d77a4_Vec va;
+    VecFx32 va;
     MtxFx33 mC;
-    Unk_020d77a4_Vec vb;
+    VecFx32 vb;
     if (p != NULL) {
         BOOL isX;
         if (Item_IsFurniture(&p->npcHandle) != 0) {
@@ -1872,7 +1834,7 @@ extern "C" void NpcActor_OnJointCalc(NNSG3dRS *self) {
         if (isY) {
             NNSG3dJntAnmResult *d = self->pJntAnmResult;
             MtxFx33 *m = &d->rot;
-            Unk_020d77a4_Vec *pv = &d->trans;
+            VecFx32 *pv = &d->trans;
             s32 r;
             va = *pv;
             vb = *pv;
@@ -1950,7 +1912,7 @@ extern "C" BOOL NpcActor_IsFrontAngle(s32 x) {
 }
 }
 
-BOOL NpcActor::isPosInFront(s16 *out, Unk_020d77a4_Vec *pos) {
+BOOL NpcActor::isPosInFront(s16 *out, VecFx32 *pos) {
     using namespace nR;
     *out = Math_AngleXZ(&position, pos);
     return NpcActor_IsFrontAngle((s16)(*out - rotY));
@@ -2003,7 +1965,7 @@ s32 NpcActor::getAngleToPlayer(u32 id) {
     using namespace nR;
     s32 result = 0;
     u8 flag;
-    Unk_020d77a4_Vec vec;
+    VecFx32 vec;
     flag = 0;
     if (PlayerActor_GetSlotPosXZ(&flag, &vec, &vec.z, -1, id) != 0) {
         result = Math_AngleXZ(&position, &vec);
@@ -2063,10 +2025,10 @@ void NpcActor::onJoinTalk() {
 void NpcActor::onLeaveTalk() {
     using namespace nR;}
 
-BOOL NpcActor::getFreeOffsetPos(Unk_020d77a4_Vec *out, void *p) {
+BOOL NpcActor::getFreeOffsetPos(VecFx32 *out, void *p) {
     using namespace nR;
     BOOL result = FALSE;
-    Unk_020d77a4_Vec v;
+    VecFx32 v;
     Npc_RotateOffsetXZ(&v, &position, p, moveAngleY);
     if (Npc_IsPosBlocked(&v) != 1) {
         out->x = v.x;
@@ -2077,11 +2039,11 @@ BOOL NpcActor::getFreeOffsetPos(Unk_020d77a4_Vec *out, void *p) {
     return result;
 }
 
-s32 NpcActor::findAvoidPos(Unk_020d77a4_Vec *out) {
+s32 NpcActor::findAvoidPos(VecFx32 *out) {
     using namespace nR;
     s32 r = _ZN9NpcLookAt15getObstacleBitsEv(&obstacleProbe);
     s32 result = 0;
-    Unk_020d77a4_Vec *pv = (Unk_020d77a4_Vec *)&position;
+    VecFx32 *pv = (VecFx32 *)&position;
     *out = *pv;
     switch (r) {
     case 3:
@@ -2325,7 +2287,7 @@ BOOL NpcActor::onExecute() {
     struct Unk_0201b2b8_L { s32 a, b, x, y, z; } L;
     Mtx43 t;
     u8 buf[0x10];
-    Unk_020d77a4_Vec3 v;
+    VecFx32 v;
     s32 cur;
 
     NpcActor_UpdateMovement(&moveCtrl, this);
@@ -2415,11 +2377,11 @@ BOOL NpcActor::onExecute() {
     }
     _ZN11NpcAnimCtrl6updateEP8NpcActor(&animCtrl, this);
     _ZN19ThreeLayerAnimModel13updateLayers3Ev(&model);
-    Unk_020d77a4_Vec3 *pp = (Unk_020d77a4_Vec3 *)&position;
+    VecFx32 *pp = (VecFx32 *)&position;
     v.x = position.x;
     v.y = pp->y;
     v.z = pp->z;
-    _ZN12SndSeEmitter21callUpdateRelativeAltEP16Unk_02003a6c_Vec(&seEmitter, &v);
+    _ZN12SndSeEmitter21callUpdateRelativeAltEP7VecFx32(&seEmitter, &v);
     if (curHeldTool) {
         _ZN13HeldToolModel6updateEP12Unk_02006d14((s32)curHeldTool, this);
     }
@@ -2435,9 +2397,9 @@ BOOL NpcActor::onExecute() {
 BOOL NpcActor::onDraw() {
     using namespace nQ;
     Mtx43 buf;
-    Unk_020d77a4_Vec3 t0, t1, t2;
+    VecFx32 t0, t1, t2;
     if (updateEnabled == 0) {
-        Unk_020d77a4_Vec3 *p = (Unk_020d77a4_Vec3 *)&position;
+        VecFx32 *p = (VecFx32 *)&position;
         jointPos[0].x = position.x;
         jointPos[0].y = p->y;
         jointPos[0].z = p->z;
@@ -2450,7 +2412,7 @@ BOOL NpcActor::onDraw() {
         return TRUE;
     }
     if (drawEnabled == 0) {
-        Unk_020d77a4_Vec3 *p = (Unk_020d77a4_Vec3 *)&position;
+        VecFx32 *p = (VecFx32 *)&position;
         jointPos[0].x = position.x;
         jointPos[0].y = p->y;
         jointPos[0].z = p->z;
@@ -2466,14 +2428,14 @@ BOOL NpcActor::onDraw() {
     _ZN11NpcMoveCtrl12storeHeadMtxEP12Unk_02006d14(&lookAt, this);
     Model_GetJointWorldMtx(&model, &jointMtx, 0xb);
     Model_GetJointWorldMtx(&model, &buf, 0x10);
-    t0 = *(Unk_020d77a4_Vec3 *)&buf.m[9];
-    WorldCurve_FromCurved((Unk_020d77a4_Vec3 *)&jointPos[0], &t0);
+    t0 = *(VecFx32 *)&buf.m[9];
+    WorldCurve_FromCurved((VecFx32 *)&jointPos[0], &t0);
     Model_GetJointWorldMtx(&model, &buf, 0x7);
-    t1 = *(Unk_020d77a4_Vec3 *)&buf.m[9];
-    WorldCurve_FromCurved((Unk_020d77a4_Vec3 *)&jointPos[1], &t1);
+    t1 = *(VecFx32 *)&buf.m[9];
+    WorldCurve_FromCurved((VecFx32 *)&jointPos[1], &t1);
     Model_GetJointWorldMtx(&model, &buf, 0x4);
-    t2 = *(Unk_020d77a4_Vec3 *)&buf.m[9];
-    WorldCurve_FromCurved((Unk_020d77a4_Vec3 *)&jointPos[2], &t2);
+    t2 = *(VecFx32 *)&buf.m[9];
+    WorldCurve_FromCurved((VecFx32 *)&jointPos[2], &t2);
     if (shadowEnabled != 0) {
         CharaShadow_Draw(&position, 0xb00, 0x4000, 0x1000);
     }
@@ -2495,7 +2457,7 @@ BOOL NpcActor::onDelete() {
     return TRUE;
 }
 
-BOOL NpcActor::getHeldItemPos(Unk_020d77a4_Vec3 *out) {
+BOOL NpcActor::getHeldItemPos(VecFx32 *out) {
     using namespace nQ;
     s32 a = jointMtx.m[9];
     if (a == 0 && jointMtx.m[10] == 0 && jointMtx.m[11] == 0) {
@@ -2750,9 +2712,9 @@ void NpcMoveCtrl::applyMovement(Character *scene) {
             hi = curSpeedPreset.z;
         }
         Math_StepS32Alt(&scene->speed, lo, hi);
-        s32 ang = Math_AngleXZ((Unk_0201a334_Vec3 *)&scene->position, &destination);
+        s32 ang = Math_AngleXZ((VecFx32 *)&scene->position, &destination);
         if (ang == scene->moveAngleY) {
-            s32 d = Vec_DistXZ(&destination, (Unk_0201a334_Vec3 *)&scene->position);
+            s32 d = Vec_DistXZ(&destination, (VecFx32 *)&scene->position);
             if (d < scene->speed) {
                 scene->speed = d;
             }
@@ -2767,7 +2729,7 @@ void NpcMoveCtrl::setMoveMode(Character *scene, s32 mode, s16 ang, u16 extra) {
         mode = 0;
     }
     NpcMoveModeEntry *e = &sNpcMoveModeTable[mode];
-    Unk_0201a334_Vec3 *src = &speedPresets[e->speedPresetIdx];
+    VecFx32 *src = &speedPresets[e->speedPresetIdx];
     curSpeedPreset.x = src->x;
     curSpeedPreset.y = src->y;
     curSpeedPreset.z = src->z;
@@ -2795,7 +2757,7 @@ s32 NpcMoveCtrl::getMoveMode() {
 
 void NpcMoveCtrl::aimAtDestination(Character *scene) {
     using namespace nP;
-    targetAngle = Math_AngleXZ((Unk_0201a334_Vec3 *)&scene->position, &destination);
+    targetAngle = Math_AngleXZ((VecFx32 *)&scene->position, &destination);
 }
 
 s32 NpcMoveCtrl::stepAngle(s16 *p, s16 target, s16 step, u8 mode) {
@@ -2856,7 +2818,7 @@ void NpcMoveCtrl::updateTurn(Character *scene) {
     }
 }
 
-void NpcMoveCtrl::setWaypoint(Unk_0201a334_Vec3 *v) {
+void NpcMoveCtrl::setWaypoint(VecFx32 *v) {
     using namespace nP;
     if (Vec_Equal(&waypoint, &destination)) {
         setDestination(v);
@@ -2866,16 +2828,16 @@ void NpcMoveCtrl::setWaypoint(Unk_0201a334_Vec3 *v) {
     waypoint.z = v->z;
 }
 
-Unk_0201a334_Vec3 *NpcMoveCtrl::getDestinationB() {
+VecFx32 *NpcMoveCtrl::getDestinationB() {
     using namespace nP;
     return &destination;
 }
 
 BOOL NpcMoveCtrl::hasArrived(Character *scene, s32 which) {
     using namespace nP;
-    Unk_0201a334_Vec3 v;
+    VecFx32 v;
     BOOL r;
-    Unk_0201a334_Vec3 *sp = (Unk_0201a334_Vec3 *)&scene->position;
+    VecFx32 *sp = (VecFx32 *)&scene->position;
     v.x = sp->x;
     v.y = sp->y;
     v.z = sp->z;
@@ -2908,14 +2870,14 @@ s32 NpcMoveCtrl::getTurnSpeed() {
     return turnSpeed;
 }
 
-void NpcMoveCtrl::setDestination(Unk_0201a334_Vec3 *v) {
+void NpcMoveCtrl::setDestination(VecFx32 *v) {
     using namespace nP;
     destination.x = v->x;
     destination.y = v->y;
     destination.z = v->z;
 }
 
-Unk_0201a334_Vec3 *NpcMoveCtrl::getDestination() {
+VecFx32 *NpcMoveCtrl::getDestination() {
     using namespace nP;
     return &destination;
 }
@@ -2926,7 +2888,7 @@ s32 NpcMoveCtrl::hasNextLeg() {
 }
 
 namespace nP {
-extern "C" void Npc_RotateOffsetXZ(Unk_0201a334_Vec3 *out, Unk_0201a334_Vec3 *base, Unk_0201a334_Vec3 *off, u32 ang) {
+extern "C" void Npc_RotateOffsetXZ(VecFx32 *out, VecFx32 *base, VecFx32 *off, u32 ang) {
     s32 i = ((u16)ang >> 4) << 1;
     s32 s = data_02135f44[i];
     s32 c = data_02135f44[i + 1];
@@ -2948,7 +2910,7 @@ void NpcMoveCtrl::resetDestination() {
 void NpcMoveCtrl::setSpeedPreset(s32 idx, s32 x, s32 y, s32 z) {
     using namespace nP;
     if (idx >= 1 && idx < 3) {
-        Unk_0201a334_Vec3 *e = &speedPresets[idx];
+        VecFx32 *e = &speedPresets[idx];
         e->x = x;
         e->y = y;
         e->z = z;
@@ -2975,7 +2937,7 @@ void NpcObstacleProbe::clear() {
 }
 
 namespace nP {
-extern "C" BOOL Npc_IsPosBlocked(Unk_0201a334_Vec3 *pos) {
+extern "C" BOOL Npc_IsPosBlocked(VecFx32 *pos) {
     u32 buf[16];
     if (Unk_0201a834_IsOne(gFieldSceneKind)) {
         if (Ground_GetExitAtPos((s32)pos) != -1) {
@@ -2986,7 +2948,7 @@ extern "C" BOOL Npc_IsPosBlocked(Unk_0201a334_Vec3 *pos) {
         }
         return FALSE;
     }
-    _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii(buf, (s32)pos, 0, 0);
+    _ZN10GroundInfo9initAtPosEP7VecFx32ii(buf, (s32)pos, 0, 0);
     s32 r;
     if (buf[12] != 0 || _ZN14GroundInfoBase9getHeightEi(buf, 1) > 0 || Collision_HasUnitShapeAt((s32)pos)) {
         r = 1;
@@ -3001,8 +2963,8 @@ extern "C" BOOL Npc_IsPosBlocked(Unk_0201a334_Vec3 *pos) {
 void NpcObstacleProbe::probe(Character *scene) {
     using namespace nP;
     for (s32 i = 0; i < 2; i++) {
-        Unk_0201a334_Vec3 v;
-        Npc_RotateOffsetXZ(&v, (Unk_0201a334_Vec3 *)&scene->position, &sNpcObstacleProbeOffsets[i], *(s16 *)((u8 *)scene + 0x94));
+        VecFx32 v;
+        Npc_RotateOffsetXZ(&v, (VecFx32 *)&scene->position, &sNpcObstacleProbeOffsets[i], *(s16 *)((u8 *)scene + 0x94));
         if (Npc_IsPosBlocked(&v)) {
             blockedBits |= 1 << i;
         }
@@ -3056,7 +3018,7 @@ void NpcMoveCtrl::storeHeadMtx(Unk_02006d14 *p) {
 }
 
 namespace nP {
-extern "C" s32 NpcLookAt_GetHeadPos(NpcLookAt *self, Unk_0201a334_Vec3 *out) {
+extern "C" s32 NpcLookAt_GetHeadPos(NpcLookAt *self, VecFx32 *out) {
     s32 r = 0;
     s32 x = self->headPos.x;
     if (x != 0 || self->headPos.y != 0 || self->headPos.z != 0) {
@@ -3075,14 +3037,14 @@ void NpcLookAt::setPitchLimit(s16 v) {
     pitchLimit = v;
 }
 
-void NpcLookAt::setTargetPos(Unk_0201a334_Vec3 *v) {
+void NpcLookAt::setTargetPos(VecFx32 *v) {
     using namespace nP;
     targetPos.x = v->x;
     targetPos.y = v->y;
     targetPos.z = v->z;
 }
 
-void NpcLookAt::setTarget(u8 type, s32 pri, s32 tgt, Unk_0201a334_Vec3 *v, s32 h, s32 lim, u8 flag) {
+void NpcLookAt::setTarget(u8 type, s32 pri, s32 tgt, VecFx32 *v, s32 h, s32 lim, u8 flag) {
     using namespace nP;
     if (disabled == 0 && priority != 4 && pri >= priority) {
         lookType = type;
@@ -3124,8 +3086,8 @@ void NpcLookAt::setManualAngles(s32 pri, s16 a, s16 b, s16 c, s16 d) {
 
 BOOL NpcLookAt::canSeeTarget(Character *scene) {
     using namespace nP;
-    volatile Unk_0201a334_Vec3 z;
-    Unk_0201a334_Vec3 *p = 0;
+    volatile VecFx32 z;
+    VecFx32 *p = 0;
     z.x = 0;
     z.y = 0;
     z.z = 0;
@@ -3133,7 +3095,7 @@ BOOL NpcLookAt::canSeeTarget(Character *scene) {
     case 1: {
         Character *t = PlayerActor_GetCharacter(targetPlayer);
         if (t != 0) {
-            p = (Unk_0201a334_Vec3 *)&t->position;
+            p = (VecFx32 *)&t->position;
         }
         break;
     }
@@ -3142,9 +3104,9 @@ BOOL NpcLookAt::canSeeTarget(Character *scene) {
         break;
     }
     if (p != 0 && Vec_NotEqual(p, gVec3Zero) != 0) {
-        s32 d = Vec_Distance(p, (Unk_0201a334_Vec3 *)&scene->position);
+        s32 d = Vec_Distance(p, (VecFx32 *)&scene->position);
         if (maxDistance == 0 || (d < 0 ? -d : d) < maxDistance) {
-            s32 ang = calcYaw(p, (Unk_0201a334_Vec3 *)&scene->position, scene->rotY);
+            s32 ang = calcYaw(p, (VecFx32 *)&scene->position, scene->rotY);
             if (useYawLimit == 0 || _ZN9NpcLookAt16isWithinYawLimitEi(this, ang) != 0) {
                 return TRUE;
             }
@@ -3153,18 +3115,18 @@ BOOL NpcLookAt::canSeeTarget(Character *scene) {
     return FALSE;
 }
 
-s32 NpcLookAt::calcYaw(Unk_0201a334_Vec3 *a, Unk_0201a334_Vec3 *b, s32 c) {
+s32 NpcLookAt::calcYaw(VecFx32 *a, VecFx32 *b, s32 c) {
     using namespace nP;
     return (s16)(Math_AngleXZ(b, a) - c);
 }
 
-s32 NpcLookAt::calcPitch(Unk_0201a334_Vec3 *a, Unk_0201a334_Vec3 *b, s32 c) {
+s32 NpcLookAt::calcPitch(VecFx32 *a, VecFx32 *b, s32 c) {
     using namespace nP;
     s32 d = Vec_Distance(a, b);
     return (s16)(Math_Atan2(a->y - b->y, d) - c);
 }
 
-s32 NpcLookAt::calcClampedYaw(Unk_0201a334_Vec3 *a, Unk_0201a334_Vec3 *b, s32 c) {
+s32 NpcLookAt::calcClampedYaw(VecFx32 *a, VecFx32 *b, s32 c) {
     using namespace nP;
     return clampYaw(calcYaw(a, b, c));
 }
@@ -3183,7 +3145,7 @@ s32 NpcLookAt::clampYaw(s32 v) {
     return v;
 }
 
-s32 NpcLookAt::calcClampedPitch(Unk_0201a334_Vec3 *a, Unk_0201a334_Vec3 *b, s32 c) {
+s32 NpcLookAt::calcClampedPitch(VecFx32 *a, VecFx32 *b, s32 c) {
     using namespace nP;
     return clampPitch(calcPitch(a, b, c));
 }
@@ -3202,10 +3164,10 @@ s32 NpcLookAt::clampPitch(s32 v) {
     return v;
 }
 
-void NpcLookAt::lookAtActor(Character *scene, Character *tgt, Unk_0201a334_Vec3 *v, s32 limit, u8 flag) {
+void NpcLookAt::lookAtActor(Character *scene, Character *tgt, VecFx32 *v, s32 limit, u8 flag) {
     using namespace nP;
-    Unk_0201a334_Vec3 *tp = (Unk_0201a334_Vec3 *)&tgt->position;
-    Unk_0201a334_Vec3 *sp = (Unk_0201a334_Vec3 *)&scene->position;
+    VecFx32 *tp = (VecFx32 *)&tgt->position;
+    VecFx32 *sp = (VecFx32 *)&scene->position;
     s32 a = 0;
     s32 b = 0;
     onTarget = 0;
@@ -3214,7 +3176,7 @@ void NpcLookAt::lookAtActor(Character *scene, Character *tgt, Unk_0201a334_Vec3 
         if (limit == 0 || (d < 0 ? -d : d) < limit) {
             s32 ang = calcYaw(tp, sp, scene->rotY);
             if (!flag || _ZN9NpcLookAt16isWithinYawLimitEi(this, ang)) {
-                Unk_0201a334_Vec3 w;
+                VecFx32 w;
                 if (NpcLookAt_GetHeadPos((NpcLookAt *)this, &w)) {
                     a = calcClampedPitch(v, &w, 0);
                 }
@@ -3248,9 +3210,9 @@ void NpcLookAt::lookAtPlayer(Character *scene, s32 h, s32 limit, u8 flag) {
     using namespace nP;
     Character *t = PlayerActor_GetCharacter(h);
     if (t != 0) {
-        Unk_0201a334_Vec3 v;
+        VecFx32 v;
         if (PlayerActor_GetHeadPos(&v, h)) {
-            Unk_0201a334_Vec3 w;
+            VecFx32 w;
             w.x = v.x;
             w.y = v.y;
             w.z = v.z;
@@ -3272,9 +3234,9 @@ void NpcLookAt::lookAtLocalPlayer(Character *scene) {
 void NpcLookAt::lookAtTargetActor(Character *scene) {
     using namespace nP;
     if (targetActor != 0) {
-        Unk_0201a334_Vec3 v;
+        VecFx32 v;
         if (NpcLookAt_GetHeadPos((NpcLookAt *)((u8 *)targetActor + 0x3b0), &v)) {
-            Unk_0201a334_Vec3 w;
+            VecFx32 w;
             w.x = v.x;
             w.y = v.y;
             w.z = v.z;
@@ -3288,16 +3250,16 @@ void NpcLookAt::lookAtPoint(NpcActor *o) {
     s32 r6 = 0;
     s32 r7 = 0;
     u8 sp[12];
-    s32 d = Vec_Distance(&targetPos, (Unk_0201a334_Vec3 *)&o->position);
+    s32 d = Vec_Distance(&targetPos, (VecFx32 *)&o->position);
     s32 lim;
     onTarget = 0;
     lim = maxDistance;
     if (lim == 0 || (d < 0 ? -d : d) < lim) {
-        s32 t = nO::_ZN9NpcLookAt7calcYawEP17Unk_0201a334_Vec3S1_i(this, &targetPos, (Unk_0201a334_Vec3 *)&o->position, o->rotY);
+        s32 t = nO::_ZN9NpcLookAt7calcYawEP7VecFx32S1_i(this, &targetPos, (VecFx32 *)&o->position, o->rotY);
         if (useYawLimit == 0 || isWithinYawLimit(t)) {
-            r6 = nO::_ZN9NpcLookAt14calcClampedYawEP17Unk_0201a334_Vec3S1_i(this, &targetPos, (Unk_0201a334_Vec3 *)&o->position, o->rotY);
+            r6 = nO::_ZN9NpcLookAt14calcClampedYawEP7VecFx32S1_i(this, &targetPos, (VecFx32 *)&o->position, o->rotY);
             if (nO::NpcLookAt_GetHeadPos(this, sp)) {
-                r7 = nO::_ZN9NpcLookAt16calcClampedPitchEP17Unk_0201a334_Vec3S1_i(this, &targetPos, sp, o->rotX);
+                r7 = nO::_ZN9NpcLookAt16calcClampedPitchEP7VecFx32S1_i(this, &targetPos, sp, o->rotX);
                 onTarget = 1;
             }
         }
@@ -4150,8 +4112,8 @@ s32 NpcActionCtrl::setupAct00(u8 *o) {
     using namespace nN;
     NpcActionParams *c = getCurParams();
     _ZN11NpcMoveCtrl11setMoveModeEP9Characterist(o + 0x350, o, 0, 0, c->blendFrames);
-    _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(o + 0x350, gVec3Zero);
-    _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(o + 0x350, gVec3Zero);
+    _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(o + 0x350, gVec3Zero);
+    _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(o + 0x350, gVec3Zero);
     _ZN11NpcMoveCtrl14setTargetAngleEs(o + 0x350, *(s16 *)(o + 0x8e));
     _ZN12Unk_0201acf813func_0201acf8Et(o + 0x3aa, -2);
     if (*(u32 *)(o + 0x628) != 0) {
@@ -4171,10 +4133,10 @@ void NpcActionCtrl::mainAct00() {
 s32 NpcActionCtrl::setupAct01(u8 *o) {
     using namespace nN;
     NpcActionParams *c = getCurParams();
-    Unk_02019858_Vec v0(c->waypointX, 0, c->waypointZ);
-    Unk_02019858_Vec v1(c->destX, 0, c->destZ);
-    _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(o + 0x350, &v0);
-    _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(o + 0x350, &v1);
+    VecFx32Ctor v0(c->waypointX, 0, c->waypointZ);
+    VecFx32Ctor v1(c->destX, 0, c->destZ);
+    _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(o + 0x350, &v0);
+    _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(o + 0x350, &v1);
     _ZN11NpcMoveCtrl11setMoveModeEP9Characterist(o + 0x350, o, 1, c->turnSpeed, c->blendFrames);
     _ZN12Unk_0201acf813func_0201acf8Et(o + 0x3aa, 1);
     if (*(u32 *)(o + 0x628) != 0) {
@@ -4203,10 +4165,10 @@ void NpcActionCtrl::mainAct01(u8 *o) {
 s32 NpcActionCtrl::setupAct02(u8 *o) {
     using namespace nN;
     NpcActionParams *c = getCurParams();
-    Unk_02019858_Vec v0(c->waypointX, 0, c->waypointZ);
-    Unk_02019858_Vec v1(c->destX, 0, c->destZ);
-    _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(o + 0x350, &v0);
-    _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(o + 0x350, &v1);
+    VecFx32Ctor v0(c->waypointX, 0, c->waypointZ);
+    VecFx32Ctor v1(c->destX, 0, c->destZ);
+    _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(o + 0x350, &v0);
+    _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(o + 0x350, &v1);
     _ZN11NpcMoveCtrl11setMoveModeEP9Characterist(o + 0x350, o, 2, c->turnSpeed, c->blendFrames);
     _ZN12Unk_0201acf813func_0201acf8Et(o + 0x3aa, 1);
     if (*(u32 *)(o + 0x628) != 0) {
@@ -4237,8 +4199,8 @@ s32 NpcActionCtrl::setupAct03(NpcActor *c) {
     NpcActionParams *d = _ZN13NpcActionCtrl12getCurParamsEv(this);
     _ZN11NpcMoveCtrl11setMoveModeEP9Characterist(&c->moveCtrl, c, 3, d->turnSpeed, d->blendFrames);
     _ZN11NpcMoveCtrl14setTargetAngleEs(&c->moveCtrl, d->targetAngle);
-    _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(&c->moveCtrl, gVec3Zero);
-    _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(&c->moveCtrl, gVec3Zero);
+    _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(&c->moveCtrl, gVec3Zero);
+    _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(&c->moveCtrl, gVec3Zero);
     _ZN12Unk_0201acf813func_0201acf8Et(&c->unk_3aa, -2);
     if (c->curHeldTool) {
         _ZN13HeldToolModel12playWalkAnimEjj(c->curHeldTool, data_020c6cc8, 0);
@@ -4264,8 +4226,8 @@ s32 NpcActionCtrl::setupAct04(NpcActor *c) {
     V v1(d->waypointX, 0, d->waypointZ);
     V v2(d->destX, 0, d->destZ);
     _ZN11NpcMoveCtrl11setMoveModeEP9Characterist(&c->moveCtrl, c, 3, d->turnSpeed, d->blendFrames);
-    _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(&c->moveCtrl, &v1);
-    _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(&c->moveCtrl, &v2);
+    _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(&c->moveCtrl, &v1);
+    _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(&c->moveCtrl, &v2);
     _ZN11NpcMoveCtrl14setTargetAngleEs(&c->moveCtrl, d->targetAngle);
     _ZN12Unk_0201acf813func_0201acf8Et(&c->unk_3aa, -2);
     if (c->curHeldTool) {
@@ -4291,17 +4253,17 @@ void NpcActionCtrl::act04Step1(NpcActor *c) {
 namespace nZ {
 extern "C" {
 const u16 data_020c6d70[4] = {0x49, 0x13, 0x4a, 0x1d};
-void *data_020d734c[2] = {(void *)_ZN13VillagerRoute13stepAlongPathEP16Unk_02011f74_Vec, 0};
-void *data_020d71b4[2] = {(void *)_ZN13VillagerRoute16stepCheckArrivedEP16Unk_02011f74_Vec, 0};
+void *data_020d734c[2] = {(void *)_ZN13VillagerRoute13stepAlongPathEP7VecFx32, 0};
+void *data_020d71b4[2] = {(void *)_ZN13VillagerRoute16stepCheckArrivedEP7VecFx32, 0};
 void *data_020d768c[2] = {(void *)_ZN13NpcActionCtrl9postAct0BEP8NpcActor, 0};
 const u16 data_020c6ce0[2] = {0x4b, 0x1};
 void *data_020d73e4[2] = {(void *)_ZN13NpcActionCtrl11act0EStep09EP12Unk_02006d14, 0};
 void *data_020d72ac[2] = {(void *)_ZN11NpcTalkCtrl10mainState4EP8NpcActor, 0};
-void *data_020d7334[2] = {(void *)_ZN13VillagerRoute14stepFollowPathEP16Unk_02011f74_Vec, 0};
+void *data_020d7334[2] = {(void *)_ZN13VillagerRoute14stepFollowPathEP7VecFx32, 0};
 void *data_020d7234[2] = {(void *)_ZN11NpcTalkCtrl10mainState0EP8NpcActor, 0};
 void *data_020d72ec[2] = {(void *)_ZN13NpcActionCtrl10act13Step0EP12Unk_02006d14, 0};
 void *data_020d75fc[2] = {(void *)_ZN13NpcActionCtrl9postAct14EP12Unk_02006d14, 0};
-void *data_020d7124[2] = {(void *)_ZN13VillagerRoute13stepAlongPathEP16Unk_02011f74_Vec, 0};
+void *data_020d7124[2] = {(void *)_ZN13VillagerRoute13stepAlongPathEP7VecFx32, 0};
 void *data_020d765c[2] = {(void *)_ZN13NpcActionCtrl10setupAct0EEP8NpcActor, 0};
 FxVec3 sNpcAvoidOffsets[2] = {FxVec3(0x800, 0, 0x1000), FxVec3(-0x800, 0, 0x1000)};
 void *data_020d7384[2] = {(void *)_ZN16ActorTalkRequest16taskReopenWindowEv, 0};
@@ -4319,7 +4281,7 @@ void *data_020d72f4[2] = {(void *)_ZN13NpcActionCtrl10act15Step3EP8NpcActor, 0};
 void *data_020d731c[2] = {(void *)_ZN11NpcTalkCtrl11state0Step2EP8NpcActor, 0};
 void *data_020d743c[2] = {(void *)_ZN11NpcTalkCtrl11state0Step1EP8NpcActor, 0};
 void *data_020d7084[2] = {(void *)_ZN13NpcActionCtrl10setupAct01EPh, 0};
-void *data_020d70ac[2] = {(void *)_ZN13VillagerRoute10stepWanderEP16Unk_02011f74_Vec, 0};
+void *data_020d70ac[2] = {(void *)_ZN13VillagerRoute10stepWanderEP7VecFx32, 0};
 void *data_020d7464[2] = {(void *)_ZN13NpcActionCtrl9mainAct02EPh, 0};
 const u16 data_020c6cd4[2] = {0x63, 0x12};
 void *data_020d73f4[2] = {(void *)VillagerRoute_PickOwnHouseDoor, 0};
@@ -4333,15 +4295,15 @@ void *data_020d76f4[2] = {(void *)_ZN13NpcActionCtrl9mainAct05EP8NpcActor, 0};
 void *data_020d76ec[2] = {(void *)_ZN13NpcActionCtrl10setupAct07EP8NpcActor, 0};
 const u16 data_020c6d08[2] = {0x57, 0x103};
 void *data_020d76dc[2] = {(void *)_ZN13NpcActionCtrl9postAct07EP8NpcActor, 0};
-void *data_020d74e4[2] = {(void *)_ZN13VillagerRoute10stepToDoorEP16Unk_02011f74_Vec, 0};
+void *data_020d74e4[2] = {(void *)_ZN13VillagerRoute10stepToDoorEP7VecFx32, 0};
 void *data_020d76cc[2] = {(void *)_ZN13NpcActionCtrl9mainAct08EP8NpcActor, 0};
 void *data_020d76c4[2] = {(void *)_ZN13NpcActionCtrl10setupAct09EP8NpcActor, 0};
 void *data_020d76bc[2] = {(void *)_ZN13NpcActionCtrl9mainAct09EP8NpcActor, 0};
 void *data_020d76b4[2] = {(void *)_ZN9NpcLookAt17lookAtTargetActorEP9Character, 0};
 void *data_020d76ac[2] = {(void *)_ZN13NpcActionCtrl9mainAct0AEP8NpcActor, 0};
 void *data_020d76a4[2] = {(void *)_ZN13NpcActionCtrl9postAct0AEP8NpcActor, 0};
-void *data_020d769c[2] = {(void *)_ZN13VillagerRoute10stepWanderEP16Unk_02011f74_Vec, 0};
-void *data_020d7694[2] = {(void *)_ZN13VillagerRoute16stepAdjacentUnitEP16Unk_02011f74_Vec, 0};
+void *data_020d769c[2] = {(void *)_ZN13VillagerRoute10stepWanderEP7VecFx32, 0};
+void *data_020d7694[2] = {(void *)_ZN13VillagerRoute16stepAdjacentUnitEP7VecFx32, 0};
 const u16 data_020c6cc8[2] = {0x4, 0x0};
 const u16 data_020c6d00[2] = {0x3b, 0x0};
 void *data_020d7614[2] = {(void *)_ZN13NpcActionCtrl10setupAct12EP12Unk_02006d14, 0};
@@ -4359,17 +4321,17 @@ void *data_020d7664[2] = {(void *)_ZN16ActorTalkRequest13takeItemStartEv, 0};
 const u32 data_020c6d84[4] = {0x1, 0x2, 0x4, 0x8};
 void *data_020d7684[2] = {(void *)_ZN13NpcActionCtrl10setupAct0CEP8NpcActor, 0};
 const u16 data_020c6d28[2] = {0x53, 0x0};
-void *data_020d722c[2] = {(void *)_ZN13VillagerRoute11isInBlockT2EP16Unk_02011f74_Vec, 0};
+void *data_020d722c[2] = {(void *)_ZN13VillagerRoute11isInBlockT2EP7VecFx32, 0};
 const u32 sNpcMoveSpeedPresets[9] = {0x0, 0x0, 0x0, 0x100, 0x19, 0x33, 0x199, 0x66, 0x99};
 void *data_020d7224[2] = {(void *)_ZN11NpcTalkCtrl11setupState0EP8NpcActor, 0};
 void *data_020d75f4[2] = {(void *)_ZN13NpcActionCtrl10setupAct14EP12Unk_02006d14, 0};
-void *data_020d75ec[2] = {(void *)_ZN13VillagerRoute16stepCheckArrivedEP16Unk_02011f74_Vec, 0};
+void *data_020d75ec[2] = {(void *)_ZN13VillagerRoute16stepCheckArrivedEP7VecFx32, 0};
 const u16 data_020c6cd0[2] = {0x5e, 0x0};
 void *data_020d7214[2] = {(void *)_ZN13NpcActionCtrl10setupAct05EP8NpcActor, 0};
 void *data_020d75d4[2] = {(void *)_ZN16ActorTalkRequest12takeItemWaitEv, 0};
 void *data_020d75cc[2] = {(void *)_ZN13NpcActionCtrl10act04Step0EP8NpcActor, 0};
 void *data_020d75c4[2] = {(void *)_ZN13NpcActionCtrl10act04Step1EP8NpcActor, 0};
-void *data_020d75bc[2] = {(void *)_ZN13VillagerRoute11isInBlockT4EP16Unk_02011f74_Vec, 0};
+void *data_020d75bc[2] = {(void *)_ZN13VillagerRoute11isInBlockT4EP7VecFx32, 0};
 void *data_020d75b4[2] = {(void *)_ZN16ActorTalkRequest12giveItemWaitEv, 0};
 void *data_020d75ac[2] = {(void *)_ZN13NpcActionCtrl10act15Step2EP8NpcActor, 0};
 void *data_020d75a4[2] = {(void *)_ZN13NpcActionCtrl10act05Step1EP8NpcActor, 0};
@@ -4395,9 +4357,9 @@ s32 NpcActionCtrl::setupMoveTurnFirst(NpcActor *c, s32 a, s16 b) {
     V v2(d->destX, 0, d->destZ);
     moveMode = a;
     unk_a0 = b;
-    _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(&c->moveCtrl, &v1);
-    _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(&c->moveCtrl, &v2);
-    if (_ZN8NpcActor12isPosInFrontEPsP16Unk_020d77a4_Vec(c, &out, _ZN11NpcMoveCtrl15getDestinationBEv(&c->moveCtrl))) {
+    _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(&c->moveCtrl, &v1);
+    _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(&c->moveCtrl, &v2);
+    if (_ZN8NpcActor12isPosInFrontEPsP7VecFx32(c, &out, _ZN11NpcMoveCtrl15getDestinationBEv(&c->moveCtrl))) {
         _ZN11NpcMoveCtrl11setMoveModeEP9Characterist(&c->moveCtrl, c, moveMode, d->turnSpeed, d->blendFrames);
         actStep = 1;
     } else {
@@ -4430,11 +4392,11 @@ void NpcActionCtrl::act05Step1(NpcActor *c) {
     _ZN11NpcMoveCtrl16aimAtDestinationEP9Character(&c->moveCtrl, c);
     if (_ZN11NpcMoveCtrl10hasArrivedEP9Characteri(&c->moveCtrl, c, 0)) {
         if (_ZN11NpcMoveCtrl10hasNextLegEv(&c->moveCtrl)) {
-            _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(&c->moveCtrl, (void *)r);
+            _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(&c->moveCtrl, (void *)r);
         } else {
             _ZN13NpcActionCtrl13setActionDoneEi(this, 1);
         }
-    } else if (!_ZN8NpcActor12isPosInFrontEPsP16Unk_020d77a4_Vec(c, &out, r)) {
+    } else if (!_ZN8NpcActor12isPosInFrontEPsP7VecFx32(c, &out, r)) {
         u16 v = data_020c6cc8;
         s32 t = _ZN11NpcMoveCtrl12getTurnSpeedEv(&c->moveCtrl);
         _ZN11NpcMoveCtrl11setMoveModeEP9Characterist(&c->moveCtrl, c, 3, t, data_020c6cc8);
@@ -4449,16 +4411,16 @@ void NpcActionCtrl::act05Step1(NpcActor *c) {
 
 namespace nZ {
 extern "C" {
-void *data_020d7574[2] = {(void *)_ZN13VillagerRoute13stepAlongPathEP16Unk_02011f74_Vec, 0};
+void *data_020d7574[2] = {(void *)_ZN13VillagerRoute13stepAlongPathEP7VecFx32, 0};
 void *data_020d756c[2] = {(void *)_ZN13NpcActionCtrl10setupAct10EP12Unk_02006d14, 0};
 void *data_020d7564[2] = {(void *)_ZN16ActorTalkRequest15closeWindowWaitEv, 0};
 void *data_020d755c[2] = {(void *)_ZN13NpcActionCtrl10act15Step1EP8NpcActor, 0};
-void *data_020d7554[2] = {(void *)_ZN13VillagerRoute16stepAdjacentUnitEP16Unk_02011f74_Vec, 0};
+void *data_020d7554[2] = {(void *)_ZN13VillagerRoute16stepAdjacentUnitEP7VecFx32, 0};
 void *data_020d754c[2] = {(void *)_ZN16ActorTalkRequest16closeWindowStartEv, 0};
 void *data_020d7544[2] = {(void *)_ZN13NpcActionCtrl9postAct0DEP8NpcActor, 0};
-void *data_020d753c[2] = {(void *)_ZN13VillagerRoute14stepFollowPathEP16Unk_02011f74_Vec, 0};
+void *data_020d753c[2] = {(void *)_ZN13VillagerRoute14stepFollowPathEP7VecFx32, 0};
 const u16 data_020c6d3c[2] = {0x54, 0x5};
-void *data_020d71bc[2] = {(void *)_ZN13VillagerRoute10stepWanderEP16Unk_02011f74_Vec, 0};
+void *data_020d71bc[2] = {(void *)_ZN13VillagerRoute10stepWanderEP7VecFx32, 0};
 }
 }
 
@@ -4514,12 +4476,12 @@ namespace nZ {
 extern "C" {
 void *data_020d7514[2] = {(void *)_ZN13NpcActionCtrl10setupAct0BEP8NpcActor, 0};
 void *data_020d750c[2] = {(void *)_ZN16ActorTalkRequest19subSceneCloseWindowEv, 0};
-void *data_020d7504[2] = {(void *)_ZN13VillagerRoute13stepAlongPathEP16Unk_02011f74_Vec, 0};
+void *data_020d7504[2] = {(void *)_ZN13VillagerRoute13stepAlongPathEP7VecFx32, 0};
 void *data_020d74fc[2] = {(void *)_ZN13NpcActionCtrl10setupAct0AEP8NpcActor, 0};
-void *data_020d74f4[2] = {(void *)_ZN13VillagerRoute10stepToDoorEP16Unk_02011f74_Vec, 0};
+void *data_020d74f4[2] = {(void *)_ZN13VillagerRoute10stepToDoorEP7VecFx32, 0};
 const u32 sNpcAct07Anims[5] = {0xda, 0xdb, 0xdc, 0xdd, 0xde};
 void *data_020d7194[2] = {(void *)_ZN16ActorTalkRequest13itemAct12WaitEv, 0};
-void *data_020d70bc[2] = {(void *)_ZN13VillagerRoute14stepFollowPathEP16Unk_02011f74_Vec, 0};
+void *data_020d70bc[2] = {(void *)_ZN13VillagerRoute14stepFollowPathEP7VecFx32, 0};
 void *data_020d74d4[2] = {(void *)_ZN16ActorTalkRequest17taskSwitchSpeakerEv, 0};
 void *data_020d74cc[2] = {(void *)_ZN13NpcActionCtrl10setupAct08EP8NpcActor, 0};
 void *data_020d74c4[2] = {(void *)_ZN16ActorTalkRequest10taskMelodyEv, 0};
@@ -4615,8 +4577,8 @@ s32 NpcActionCtrl::setupAct09(NpcActor *c) {
     NpcActionParams *d = _ZN13NpcActionCtrl12getCurParamsEv(this);
     _ZN11NpcMoveCtrl11setMoveModeEP9Characterist(&c->moveCtrl, c, 0, 0, d->blendFrames);
     _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&c->animCtrl, c, 0xd8, d->blendFrames, 0, 0x1000, 0, 0);
-    _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(&c->moveCtrl, gVec3Zero);
-    _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(&c->moveCtrl, gVec3Zero);
+    _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(&c->moveCtrl, gVec3Zero);
+    _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(&c->moveCtrl, gVec3Zero);
     _ZN12Unk_0201acf813func_0201acf8Et(&c->unk_3aa, -2);
     _ZN13NpcActionCtrl13setActionDoneEi(this, 0);
     return 0;
@@ -4635,8 +4597,8 @@ s32 NpcActionCtrl::setupAct0A(NpcActor *c) {
     using namespace nM;
     NpcActionParams *d = _ZN13NpcActionCtrl12getCurParamsEv(this);
     _ZN11NpcMoveCtrl11setMoveModeEP9Characterist(&c->moveCtrl, c, 0, 0, d->blendFrames);
-    _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(&c->moveCtrl, gVec3Zero);
-    _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(&c->moveCtrl, gVec3Zero);
+    _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(&c->moveCtrl, gVec3Zero);
+    _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(&c->moveCtrl, gVec3Zero);
     _ZN12Unk_0201acf813func_0201acf8Et(&c->unk_3aa, -2);
     _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&c->animCtrl, c, 0x77, d->blendFrames, 1, 0x1000, 0, 0);
     _ZN13NpcActionCtrl13setActionDoneEi(this, 0);
@@ -4655,7 +4617,7 @@ void NpcActionCtrl::act0AStep0(NpcActor *c) {
 
 namespace nZ {
 extern "C" {
-void *data_020d70d4[2] = {(void *)_ZN13VillagerRoute16stepAdjacentUnitEP16Unk_02011f74_Vec, 0};
+void *data_020d70d4[2] = {(void *)_ZN13VillagerRoute16stepAdjacentUnitEP7VecFx32, 0};
 }
 }
 
@@ -4681,8 +4643,8 @@ BOOL NpcActionCtrl::setupAct0B(NpcActor *c) {
     u32 r = c->getAct0BAnimA();
     NpcActionParams *d = _ZN13NpcActionCtrl12getCurParamsEv(this);
     _ZN11NpcMoveCtrl11setMoveModeEP9Characterist(&c->moveCtrl, c, 0, 0, d->blendFrames);
-    _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(&c->moveCtrl, gVec3Zero);
-    _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(&c->moveCtrl, gVec3Zero);
+    _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(&c->moveCtrl, gVec3Zero);
+    _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(&c->moveCtrl, gVec3Zero);
     _ZN12Unk_0201acf813func_0201acf8Et(&c->unk_3aa, -2);
     u16 v = data_020c6cc8;
     _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&c->animCtrl, c, r, data_020c6cc8, 1, 0x1000, 0, 0);
@@ -4710,7 +4672,7 @@ void NpcActionCtrl::act0BStep0(NpcActor *c) {
 namespace nZ {
 extern "C" {
 const u16 data_020c6d10[2] = {0x61, 0x0};
-void *data_020d748c[2] = {(void *)_ZN13VillagerRoute10stepWanderEP16Unk_02011f74_Vec, 0};
+void *data_020d748c[2] = {(void *)_ZN13VillagerRoute10stepWanderEP7VecFx32, 0};
 const u16 data_020c6d1c[2] = {0x8000, 0x0};
 const u16 data_020c6d2c[2] = {0x5a, 0x0};
 void *data_020d7474[2] = {(void *)_ZN16ActorTalkRequest13taskItemAct0FEv, 0};
@@ -4744,8 +4706,8 @@ BOOL NpcActionCtrl::setupAct0C(NpcActor *c) {
     using namespace nL;
     NpcActionParams *d = _ZN13NpcActionCtrl12getCurParamsEv(this);
     _ZN11NpcMoveCtrl11setMoveModeEP9Characterist(&c->moveCtrl, c, 0, 0, data_020c6cc8);
-    _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(&c->moveCtrl, gVec3Zero);
-    _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(&c->moveCtrl, gVec3Zero);
+    _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(&c->moveCtrl, gVec3Zero);
+    _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(&c->moveCtrl, gVec3Zero);
     _ZN12Unk_0201acf813func_0201acf8Et(&c->unk_3aa, -2);
     _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&c->animCtrl, c, d->animId, d->blendFrames, d->animPlayMode, 0x1000, d->animStartFrame, 0);
     netAction = action;
@@ -4779,8 +4741,8 @@ BOOL NpcActionCtrl::setupAct0D(NpcActor *c) {
     using namespace nL;
     NpcActionParams *d = _ZN13NpcActionCtrl12getCurParamsEv(this);
     _ZN11NpcMoveCtrl11setMoveModeEP9Characterist(&c->moveCtrl, c, 0, 0, d->blendFrames);
-    _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(&c->moveCtrl, gVec3Zero);
-    _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(&c->moveCtrl, gVec3Zero);
+    _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(&c->moveCtrl, gVec3Zero);
+    _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(&c->moveCtrl, gVec3Zero);
     _ZN12Unk_0201acf813func_0201acf8Et(&c->unk_3aa, -2);
     u16 v = data_020c6cc8;
     _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&c->animCtrl, c, sNpcGiveItemAnims[d->handOverVariant], data_020c6cc8, 1, 0x1000, 0, 0);
@@ -4863,9 +4825,9 @@ extern "C" {
 void *data_020d7454[2] = {(void *)_ZN13NpcActionCtrl10act0DStep1EP8NpcActor, 0};
 void *data_020d714c[2] = {(void *)_ZN13NpcActionCtrl10act0DStep3EP8NpcActor, 0};
 const u16 data_020c6d38[2] = {0x45, 0x2};
-void *data_020d7104[2] = {(void *)_ZN13VillagerRoute10stepWanderEP16Unk_02011f74_Vec, 0};
+void *data_020d7104[2] = {(void *)_ZN13VillagerRoute10stepWanderEP7VecFx32, 0};
 void *data_020d710c[2] = {(void *)_ZN9NpcLookAt5relaxEv, 0};
-void *data_020d7114[2] = {(void *)_ZN13VillagerRoute10stepWanderEP16Unk_02011f74_Vec, 0};
+void *data_020d7114[2] = {(void *)_ZN13VillagerRoute10stepWanderEP7VecFx32, 0};
 }
 }
 
@@ -4885,8 +4847,8 @@ BOOL NpcActionCtrl::setupAct0E(NpcActor *c) {
     using namespace nL;
     NpcActionParams *d = _ZN13NpcActionCtrl12getCurParamsEv(this);
     _ZN11NpcMoveCtrl11setMoveModeEP9Characterist(&c->moveCtrl, c, 0, 0, d->blendFrames);
-    _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(&c->moveCtrl, gVec3Zero);
-    _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(&c->moveCtrl, gVec3Zero);
+    _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(&c->moveCtrl, gVec3Zero);
+    _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(&c->moveCtrl, gVec3Zero);
     _ZN12Unk_0201acf813func_0201acf8Et(&c->unk_3aa, -2);
     if (d->handOverVariant == 1) {
         PlayerActor_LocalRequestAct36(&d->item, &d->handOverKind, &d->handOverMode, &d->handOverVariant, c);
@@ -4923,8 +4885,8 @@ void NpcActionCtrl::act0EStep00(NpcActor *c) {
             Unk_02017d74_Buf buf;
             if (HandOverItem_GetPos(&buf)) {
                 buf.b = 0;
-                _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(&c->moveCtrl, &buf);
-                _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(&c->moveCtrl, &buf);
+                _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(&c->moveCtrl, &buf);
+                _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(&c->moveCtrl, &buf);
                 _ZN11NpcMoveCtrl11setMoveModeEP9Characterist(&c->moveCtrl, c, 1, 0, data_020c6cc8);
                 actStep = 1;
             }
@@ -4937,8 +4899,8 @@ extern "C" void _ZN13NpcActionCtrl11act0EStep01EP12Unk_02006d14(NpcActionCtrl *s
     if (HandOverItem_CanTake(c)) {
         u16 v = data_020c6cc8;
         _ZN11NpcMoveCtrl11setMoveModeEP9Characterist(&c->moveCtrl, c, 0, 0, v);
-        _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(&c->moveCtrl, gVec3Zero);
-        _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(&c->moveCtrl, gVec3Zero);
+        _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(&c->moveCtrl, gVec3Zero);
+        _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(&c->moveCtrl, gVec3Zero);
         _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&c->animCtrl, c, 0x25, v, 1, 0x1000, 0, 0);
         if (c->curHeldTool) {
             _ZN13HeldToolModel12playIdleAnimEjj(c->curHeldTool, v, 0);
@@ -5264,7 +5226,7 @@ namespace nZ {
 extern "C" {
 const u32 sNpcMoveModeTable[25] = {0x0, 0x100, 0x0, 0x100, 0x0, 0x1, 0x200, 0x1, 0x100, 0x1, 0x2, 0x400, 0x2, 0x400, 0x1, 0x1, 0x800, 0x0, 0x100, 0x1, 0x0, 0x100, 0x1, 0x100, 0x0};
 void *data_020d7414[2] = {(void *)_ZN13NpcActionCtrl11act0EStep03EP12Unk_02006d14, 0};
-void *data_020d740c[2] = {(void *)_ZN13VillagerRoute10stepWanderEP16Unk_02011f74_Vec, 0};
+void *data_020d740c[2] = {(void *)_ZN13VillagerRoute10stepWanderEP7VecFx32, 0};
 void *data_020d7404[2] = {(void *)_ZN16ActorTalkRequest12taskGiveItemEv, 0};
 void *data_020d73fc[2] = {(void *)_ZN13NpcActionCtrl11act0EStep06EP12Unk_02006d14, 0};
 void *data_020d717c[2] = {(void *)_ZN16ActorTalkRequest11eatItemWaitEv, 0};
@@ -5398,8 +5360,8 @@ namespace nZ {
 extern "C" {
 void *data_020d7344[2] = {(void *)_ZN11NpcTalkCtrl11state2Step0EP8NpcActor, 0};
 void *data_020d733c[2] = {(void *)_ZN9NpcLookAt17lookAtLocalPlayerEP9Character, 0};
-void *data_020d72d4[2] = {(void *)_ZN13VillagerRoute13stepAlongPathEP16Unk_02011f74_Vec, 0};
-void *data_020d732c[2] = {(void *)_ZN13VillagerRoute10isAtDoorT3EP16Unk_02011f74_Vec, 0};
+void *data_020d72d4[2] = {(void *)_ZN13VillagerRoute13stepAlongPathEP7VecFx32, 0};
+void *data_020d732c[2] = {(void *)_ZN13VillagerRoute10isAtDoorT3EP7VecFx32, 0};
 }
 }
 
@@ -5561,8 +5523,8 @@ BOOL NpcActionCtrl::setupAct15(Unk_02006d14 *o) {
                 _ZN11NpcMoveCtrl11setMoveModeEP9Characterist(&o->moveCtrl, o, 0, 0, data_020c6cc8);
                 actStep = 0;
             }
-            _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(&o->moveCtrl, gVec3Zero);
-            _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(&o->moveCtrl, gVec3Zero);
+            _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(&o->moveCtrl, gVec3Zero);
+            _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(&o->moveCtrl, gVec3Zero);
         } else {
             s32 a = Math_Atan2(dx, dz);
             if (NpcActor_IsFrontAngle((s16)(a - ang))) {
@@ -5577,13 +5539,13 @@ BOOL NpcActionCtrl::setupAct15(Unk_02006d14 *o) {
                 _ZN11NpcMoveCtrl14setTargetAngleEs(&o->moveCtrl, a);
                 actStep = 3;
             }
-            _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(&o->moveCtrl, v);
-            _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(&o->moveCtrl, v);
+            _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(&o->moveCtrl, v);
+            _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(&o->moveCtrl, v);
         }
     } else {
         _ZN11NpcMoveCtrl11setMoveModeEP9Characterist(&o->moveCtrl, o, 0, 0, data_020c6cc8);
-        _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(&o->moveCtrl, gVec3Zero);
-        _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(&o->moveCtrl, gVec3Zero);
+        _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(&o->moveCtrl, gVec3Zero);
+        _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(&o->moveCtrl, gVec3Zero);
         actStep = 0;
     }
     return TRUE;
@@ -5591,7 +5553,7 @@ BOOL NpcActionCtrl::setupAct15(Unk_02006d14 *o) {
 
 void NpcActionCtrl::act15Step0(NpcActor *o) {
     using namespace nI;
-    Unk_02015fe0_Vec pos;
+    VecFx32 pos;
     s16 ang;
     s32 dx, dz, d;
     pos.x = 0;
@@ -5609,8 +5571,8 @@ void NpcActionCtrl::act15Step0(NpcActor *o) {
                 actStep = 2;
             } else if (_ZN11NpcMoveCtrl11getMoveModeEv(&o->moveCtrl)) {
                 _ZN11NpcMoveCtrl11setMoveModeEP9Characterist(&o->moveCtrl, o, 0, 0, data_020c6cc8);
-                _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(&o->moveCtrl, &gVec3Zero);
-                _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(&o->moveCtrl, &gVec3Zero);
+                _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(&o->moveCtrl, &gVec3Zero);
+                _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(&o->moveCtrl, &gVec3Zero);
             }
         } else {
             s32 a = Math_Atan2(dx, dz);
@@ -5627,15 +5589,15 @@ void NpcActionCtrl::act15Step0(NpcActor *o) {
                 _ZN11NpcMoveCtrl14setTargetAngleEs(&o->moveCtrl, a);
                 actStep = 3;
             }
-            _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(&o->moveCtrl, &pos);
-            _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(&o->moveCtrl, &pos);
+            _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(&o->moveCtrl, &pos);
+            _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(&o->moveCtrl, &pos);
         }
     }
 }
 
 void NpcActionCtrl::act15Step1(NpcActor *o) {
     using namespace nI;
-    Unk_02015fe0_Vec pos;
+    VecFx32 pos;
     s16 ang;
     s32 dx, dz, d;
     pos.x = 0;
@@ -5655,8 +5617,8 @@ void NpcActionCtrl::act15Step1(NpcActor *o) {
             } else {
                 _ZN11NpcMoveCtrl11setMoveModeEP9Characterist(&o->moveCtrl, o, 0, 0, data_020c6cc8);
                 _ZN11NpcMoveCtrl14setTargetAngleEs(&o->moveCtrl, ang);
-                _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(&o->moveCtrl, &gVec3Zero);
-                _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(&o->moveCtrl, &gVec3Zero);
+                _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(&o->moveCtrl, &gVec3Zero);
+                _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(&o->moveCtrl, &gVec3Zero);
                 actStep = 0;
             }
         } else {
@@ -5674,22 +5636,22 @@ void NpcActionCtrl::act15Step1(NpcActor *o) {
                         _ZN11NpcMoveCtrl11setMoveModeEP9Characterist(&o->moveCtrl, o, 1, 0, data_020c6cc8);
                     }
                 }
-                _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(&o->moveCtrl, &pos);
-                _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(&o->moveCtrl, &pos);
+                _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(&o->moveCtrl, &pos);
+                _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(&o->moveCtrl, &pos);
             }
         }
     } else {
         _ZN11NpcMoveCtrl11setMoveModeEP9Characterist(&o->moveCtrl, o, 0, 0, data_020c6cc8);
         _ZN11NpcMoveCtrl14setTargetAngleEs(&o->moveCtrl, ang);
-        _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(&o->moveCtrl, &gVec3Zero);
-        _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(&o->moveCtrl, &gVec3Zero);
+        _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(&o->moveCtrl, &gVec3Zero);
+        _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(&o->moveCtrl, &gVec3Zero);
         actStep = 0;
     }
 }
 
 void NpcActionCtrl::act15Step2(NpcActor *o) {
     using namespace nI;
-    Unk_02015fe0_Vec pos;
+    VecFx32 pos;
     s16 ang;
     s32 dx, dz, d;
     pos.x = 0;
@@ -5723,21 +5685,21 @@ void NpcActionCtrl::act15Step2(NpcActor *o) {
                 _ZN11NpcMoveCtrl14setTargetAngleEs(&o->moveCtrl, a);
                 actStep = 3;
             }
-            _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(&o->moveCtrl, &pos);
-            _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(&o->moveCtrl, &pos);
+            _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(&o->moveCtrl, &pos);
+            _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(&o->moveCtrl, &pos);
         }
     } else {
         _ZN11NpcMoveCtrl11setMoveModeEP9Characterist(&o->moveCtrl, o, 0, 0, data_020c6cc8);
         _ZN11NpcMoveCtrl14setTargetAngleEs(&o->moveCtrl, ang);
-        _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(&o->moveCtrl, &gVec3Zero);
-        _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(&o->moveCtrl, &gVec3Zero);
+        _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(&o->moveCtrl, &gVec3Zero);
+        _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(&o->moveCtrl, &gVec3Zero);
         actStep = 0;
     }
 }
 
 void NpcActionCtrl::act15Step3(NpcActor *o) {
     using namespace nI;
-    Unk_02015fe0_Vec pos;
+    VecFx32 pos;
     s16 ang;
     s32 dx, dz, d;
     pos.x = 0;
@@ -5758,8 +5720,8 @@ void NpcActionCtrl::act15Step3(NpcActor *o) {
             } else {
                 _ZN11NpcMoveCtrl11setMoveModeEP9Characterist(&o->moveCtrl, o, 0, 0, data_020c6cc8);
                 _ZN11NpcMoveCtrl14setTargetAngleEs(&o->moveCtrl, ang);
-                _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(&o->moveCtrl, &gVec3Zero);
-                _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(&o->moveCtrl, &gVec3Zero);
+                _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(&o->moveCtrl, &gVec3Zero);
+                _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(&o->moveCtrl, &gVec3Zero);
                 actStep = 0;
             }
         } else if (d >= 0x29) {
@@ -5776,14 +5738,14 @@ void NpcActionCtrl::act15Step3(NpcActor *o) {
             } else {
                 _ZN11NpcMoveCtrl14setTargetAngleEs(&o->moveCtrl, a);
             }
-            _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(&o->moveCtrl, &pos);
-            _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(&o->moveCtrl, &pos);
+            _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(&o->moveCtrl, &pos);
+            _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(&o->moveCtrl, &pos);
         }
     } else {
         _ZN11NpcMoveCtrl11setMoveModeEP9Characterist(&o->moveCtrl, o, 0, 0, data_020c6cc8);
         _ZN11NpcMoveCtrl14setTargetAngleEs(&o->moveCtrl, ang);
-        _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(&o->moveCtrl, &gVec3Zero);
-        _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(&o->moveCtrl, &gVec3Zero);
+        _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(&o->moveCtrl, &gVec3Zero);
+        _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(&o->moveCtrl, &gVec3Zero);
         actStep = 0;
     }
 }
@@ -6486,7 +6448,7 @@ void ActorTalkRequest::onTag09_3() {
     using namespace nH;
     NpcActor *p = getActor(actionActorIndex);
     if (p != NULL) {
-        _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(((void *)((u8 *)(p) + (0x3b0))), 4, 0, 0, (s32)&gVec3Zero, TalkRequest_GetPlayerId(), 0, 0);
+        _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(((void *)((u8 *)(p) + (0x3b0))), 4, 0, 0, (s32)&gVec3Zero, TalkRequest_GetPlayerId(), 0, 0);
     }
 }
 
@@ -6500,7 +6462,7 @@ void ActorTalkRequest::onTag09_4() {
         if (h != NULL) {
             h->onEventTag(0);
         }
-        _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(p5 + 0x3b0, 4, 0, NULL, gVec3Zero, u, 0, 0);
+        _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(p5 + 0x3b0, 4, 0, NULL, gVec3Zero, u, 0, 0);
         _ZN13NpcActionCtrl13requestActionEjiiissiitt(p5 + 0x564, 3, 2, 0, 0, 0, v, 0, 0, data_020c6cc8, 0);
     }
 }
@@ -6537,7 +6499,7 @@ void ActorTalkRequest::onTag09_5() {
         case 1: {
             u8 *p = nG::_ZN16ActorTalkRequest8getActorEj(this, s);
             if (p != NULL) {
-                _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(p + 0x3b0, 2, 0, p4, gVec3Zero, 4, 0, 0);
+                _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(p + 0x3b0, 2, 0, p4, gVec3Zero, 4, 0, 0);
             }
             break;
         }
@@ -6583,7 +6545,7 @@ void ActorTalkRequest::onTag09_7() {
         case 0: {
             u8 *p = nG::_ZN16ActorTalkRequest8getActorEj(this, s);
             if (p != NULL) {
-                _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(p + 0x3b0, 2, 0, p4, gVec3Zero, 4, 0, 0);
+                _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(p + 0x3b0, 2, 0, p4, gVec3Zero, 4, 0, 0);
             }
             break;
         }
@@ -7023,11 +6985,11 @@ void *data_020d7604[2] = {(void *)_ZN13NpcActionCtrl10setupAct13EP12Unk_02006d14
 void *data_020d721c[2] = {(void *)_ZN13NpcActionCtrl11act0EStep07EP12Unk_02006d14, 0};
 const u16 data_020c6d48[4] = {0xe2, 0x0, 0xe0, 0x0};
 void *data_020d720c[2] = {(void *)_ZN16ActorTalkRequest15taskCloseWindowEv, 0};
-void *data_020d7204[2] = {(void *)_ZN13VillagerRoute16isInAttr200BlockEP16Unk_02011f74_Vec, 0};
+void *data_020d7204[2] = {(void *)_ZN13VillagerRoute16isInAttr200BlockEP7VecFx32, 0};
 void *data_020d71fc[2] = {(void *)_ZN13NpcActionCtrl10setupAct00EPh, 0};
 const u16 data_020c6d0c[2] = {0x5f, 0x19};
 void *data_020d71ec[2] = {(void *)VillagerRoute_PickAttr200Target, 0};
-void *data_020d71e4[2] = {(void *)_ZN13VillagerRoute10stepWanderEP16Unk_02011f74_Vec, 0};
+void *data_020d71e4[2] = {(void *)_ZN13VillagerRoute10stepWanderEP7VecFx32, 0};
 void *data_020d71dc[2] = {(void *)VillagerRoute_PickOwnHouseBlock, 0};
 void *data_020d71d4[2] = {(void *)_ZN16ActorTalkRequest13keepItemStartEv, 0};
 void *data_020d71cc[2] = {(void *)_ZN16ActorTalkRequest12keepItemWaitEv, 0};
@@ -7080,12 +7042,12 @@ BOOL ActorTalkRequest::itemAct0FWait() {
 
 namespace nZ {
 extern "C" {
-void *data_020d7094[2] = {(void *)_ZN13VillagerRoute10stepWanderEP16Unk_02011f74_Vec, 0};
+void *data_020d7094[2] = {(void *)_ZN13VillagerRoute10stepWanderEP7VecFx32, 0};
 void *data_020d71ac[2] = {(void *)_ZN16ActorTalkRequest14returnItemWaitEv, 0};
-void *data_020d71a4[2] = {(void *)_ZN13VillagerRoute13stepAlongPathEP16Unk_02011f74_Vec, 0};
-void *data_020d74ec[2] = {(void *)_ZN13VillagerRoute14stepFollowPathEP16Unk_02011f74_Vec, 0};
+void *data_020d71a4[2] = {(void *)_ZN13VillagerRoute13stepAlongPathEP7VecFx32, 0};
+void *data_020d74ec[2] = {(void *)_ZN13VillagerRoute14stepFollowPathEP7VecFx32, 0};
 const u16 data_020c6cdc[2] = {0x4c, 0x0};
-void *data_020d718c[2] = {(void *)_ZN13VillagerRoute10isAtDoorT1EP16Unk_02011f74_Vec, 0};
+void *data_020d718c[2] = {(void *)_ZN13VillagerRoute10isAtDoorT1EP7VecFx32, 0};
 }
 }
 
@@ -7137,11 +7099,11 @@ BOOL ActorTalkRequest::keepItemWait() {
 namespace nZ {
 extern "C" {
 void *data_020d70dc[2] = {(void *)VillagerRoute_PickCoastBlock, 0};
-void *data_020d7174[2] = {(void *)_ZN13VillagerRoute14stepFollowPathEP16Unk_02011f74_Vec, 0};
+void *data_020d7174[2] = {(void *)_ZN13VillagerRoute14stepFollowPathEP7VecFx32, 0};
 void *data_020d716c[2] = {(void *)_ZN16ActorTalkRequest11melodyStartEv, 0};
 void *data_020d7164[2] = {(void *)_ZN16ActorTalkRequest10melodyWaitEv, 0};
 void *data_020d70ec[2] = {(void *)_ZN16ActorTalkRequest12eatItemStartEv, 0};
-void *data_020d7154[2] = {(void *)_ZN13VillagerRoute14stepFollowPathEP16Unk_02011f74_Vec, 0};
+void *data_020d7154[2] = {(void *)_ZN13VillagerRoute14stepFollowPathEP7VecFx32, 0};
 }
 }
 
@@ -7244,10 +7206,10 @@ BOOL ActorTalkRequest::itemAct12Wait() {
 namespace nZ {
 extern "C" {
 const u16 data_020c6ccc[2] = {0x4d, 0x0};
-void *data_020d724c[2] = {(void *)_ZN13VillagerRoute9isInBlockEP16Unk_02011f74_Vec, 0};
+void *data_020d724c[2] = {(void *)_ZN13VillagerRoute9isInBlockEP7VecFx32, 0};
 void *data_020d7254[2] = {(void *)_ZN11NpcTalkCtrl10mainState1EP8NpcActor, 0};
 void *data_020d725c[2] = {(void *)_ZN11NpcTalkCtrl11setupState2EP8NpcActor, 0};
-void *data_020d727c[2] = {(void *)_ZN13VillagerRoute10stepWanderEP16Unk_02011f74_Vec, 0};
+void *data_020d727c[2] = {(void *)_ZN13VillagerRoute10stepWanderEP7VecFx32, 0};
 void *data_020d7284[2] = {(void *)VillagerRoute_PickRandomBlock, 0};
 const u16 data_020c6d18[2] = {0x44, 0x0};
 }
@@ -7317,7 +7279,7 @@ BOOL ActorTalkRequest::taskEatItem() {
     return r;
 }
 
-BOOL ActorTalkRequest::requestPlayMelody(Unk_02014420_Vec2 *p) {
+BOOL ActorTalkRequest::requestPlayMelody(Vec2 *p) {
     using namespace nF;
     if (nF::_ZN16ActorTalkRequest9startTaskEi(this, 10)) {
         *(long long *)&melodyPattern = *(long long *)p;
@@ -7401,8 +7363,8 @@ const u16 data_020c6cfc[2] = {0x4e, 0x0};
 const u16 data_020c6d58[4] = {0x55, 0x0, 0x56, 0x0};
 const u16 data_020c6d60[4] = {0xe3, 0x0, 0xe1, 0x0};
 const u16 data_020c6ce4[2] = {0x47, 0x6};
-void *data_020d707c[2] = {(void *)_ZN13VillagerRoute9isInBlockEP16Unk_02011f74_Vec, 0};
-void *data_020d71c4[2] = {(void *)_ZN13VillagerRoute10stepWanderEP16Unk_02011f74_Vec, 0};
+void *data_020d707c[2] = {(void *)_ZN13VillagerRoute9isInBlockEP7VecFx32, 0};
+void *data_020d71c4[2] = {(void *)_ZN13VillagerRoute10stepWanderEP7VecFx32, 0};
 void *data_020d709c[2] = {(void *)_ZN13NpcActionCtrl9mainAct01EPh, 0};
 void *data_020d70b4[2] = {(void *)_ZN16ActorTalkRequest15returnItemStartEv, 0};
 void *data_020d719c[2] = {(void *)_ZN13NpcActionCtrl11act0EStep05EP12Unk_02006d14, 0};
@@ -7444,8 +7406,8 @@ BOOL ActorTalkRequest::switchSpeakerFocus() {
     if (q != 0 && q->state == 5) {
         NpcActor *e = _ZN16ActorTalkRequest9getActorBEj(this, (speakerIndex + 1) & 1);
         if (e != 0) {
-            Unk_02013b10_Vec v;
-            Unk_02013b10_Vec *pv = (Unk_02013b10_Vec *)&e->position;
+            VecFx32 v;
+            VecFx32 *pv = (VecFx32 *)&e->position;
             v.x = pv->x;
             v.y = pv->y;
             v.z = pv->z;
@@ -7481,7 +7443,7 @@ BOOL ActorTalkRequest::switchSpeakerSwap() {
 
 namespace nZ {
 extern "C" {
-void *data_020d70e4[2] = {(void *)_ZN13VillagerRoute10stepWanderEP16Unk_02011f74_Vec, 0};
+void *data_020d70e4[2] = {(void *)_ZN13VillagerRoute10stepWanderEP7VecFx32, 0};
 }
 }
 
@@ -7609,9 +7571,9 @@ void NpcTalkCtrl::endTalk(NpcActor *ctx) {
 
 void NpcTalkCtrl::setupState0(NpcActor *ctx) {
     using namespace nE;
-    volatile Unk_02013b10_Vec v;
-    Unk_02013b10_Vec w;
-    Unk_02013b10_Vec *pv = (Unk_02013b10_Vec *)&ctx->position;
+    volatile VecFx32 v;
+    VecFx32 w;
+    VecFx32 *pv = (VecFx32 *)&ctx->position;
     v.x = pv->x;
     v.y = pv->y;
     v.z = pv->z;
@@ -7619,16 +7581,16 @@ void NpcTalkCtrl::setupState0(NpcActor *ctx) {
     if (keepCamera == 0) {
         ActorTalkRequest *o = ctx->talkRequest;
         if (o != 0 && _ZN16ActorTalkRequest15getPartnerActorEv(o) != 0) {
-            Unk_02013b10_Vec *pw = (Unk_02013b10_Vec *)&_ZN16ActorTalkRequest15getPartnerActorEv(o)->position;
+            VecFx32 *pw = (VecFx32 *)&_ZN16ActorTalkRequest15getPartnerActorEv(o)->position;
             w.x = pw->x;
             w.y = pw->y;
             w.z = pw->z;
             v.y += 0x2000;
             w.y += 0x2000;
-            Camera_FocusOnPair((Unk_02013b10_Vec *)&v, &w);
+            Camera_FocusOnPair((VecFx32 *)&v, &w);
         } else {
             v.y += 0x2000;
-            Camera_FocusOnPoint((Unk_02013b10_Vec *)&v);
+            Camera_FocusOnPoint((VecFx32 *)&v);
         }
     }
     if (!(ctx->collider.groups & 2)) clearActorFlagOnEnd = 1;
@@ -7699,9 +7661,9 @@ const u16 data_020c6cf4[2] = {0x4f, 0x0};
 void *data_020d7134[2] = {(void *)_ZN16ActorTalkRequest18switchSpeakerFocusEv, 0};
 void *data_020d7144[2] = {(void *)_ZN16ActorTalkRequest17switchSpeakerSwapEv, 0};
 const u16 data_020c6d34[2] = {0x58, 0x6};
-void *data_020d7264[2] = {(void *)_ZN13VillagerRoute10stepWanderEP16Unk_02011f74_Vec, 0};
-void *data_020d728c[2] = {(void *)_ZN13VillagerRoute10stepWanderEP16Unk_02011f74_Vec, 0};
-void *data_020d729c[2] = {(void *)_ZN13VillagerRoute10stepWanderEP16Unk_02011f74_Vec, 0};
+void *data_020d7264[2] = {(void *)_ZN13VillagerRoute10stepWanderEP7VecFx32, 0};
+void *data_020d728c[2] = {(void *)_ZN13VillagerRoute10stepWanderEP7VecFx32, 0};
+void *data_020d729c[2] = {(void *)_ZN13VillagerRoute10stepWanderEP7VecFx32, 0};
 Unk_0201a1e0_Fn sNpcLookAtTypes[6] = {
     *(Unk_0201a1e0_Fn *)data_020d710c,
     *(Unk_0201a1e0_Fn *)data_020d733c,
@@ -7710,7 +7672,7 @@ Unk_0201a1e0_Fn sNpcLookAtTypes[6] = {
     *(Unk_0201a1e0_Fn *)data_020d72cc,
     *(Unk_0201a1e0_Fn *)data_020d72dc,
 };
-void *data_020d72e4[2] = {(void *)_ZN13VillagerRoute16stepAdjacentUnitEP16Unk_02011f74_Vec, 0};
+void *data_020d72e4[2] = {(void *)_ZN13VillagerRoute16stepAdjacentUnitEP7VecFx32, 0};
 }
 }
 
@@ -7722,8 +7684,8 @@ void NpcTalkCtrl::mainState0(NpcActor *ctx) {
 
 void NpcTalkCtrl::setupState2(NpcActor *ctx) {
     using namespace nE;
-    volatile Unk_02013b10_Vec v;
-    Unk_02013b10_Vec *pv = (Unk_02013b10_Vec *)&ctx->position;
+    volatile VecFx32 v;
+    VecFx32 *pv = (VecFx32 *)&ctx->position;
     v.x = pv->x;
     v.y = pv->y;
     v.z = pv->z;
@@ -7927,7 +7889,7 @@ extern "C" {
 const u16 sNpcGiveItemAnims[4] = {0x22, 0x0, 0x2b, 0x0};
 void *data_020d7074[2] = {(void *)_ZN13NpcActionCtrl9mainAct00Ev, 0};
 void *data_020d70a4[2] = {(void *)_ZN13NpcActionCtrl10setupAct02EPh, 0};
-void *data_020d70c4[2] = {(void *)_ZN13VillagerRoute10stepWanderEP16Unk_02011f74_Vec, 0};
+void *data_020d70c4[2] = {(void *)_ZN13VillagerRoute10stepWanderEP7VecFx32, 0};
 NpcActionEntry sNpcActionTable[22] = {
     *(Unk_02019858_FnA *)data_020d71fc, *(Unk_02019858_FnB *)data_020d7074, 0,
     *(Unk_02019858_FnA *)data_020d7084, *(Unk_02019858_FnB *)data_020d709c, 0,
@@ -7953,8 +7915,8 @@ NpcActionEntry sNpcActionTable[22] = {
     *(Unk_02019858_FnA *)data_020d7624, *(Unk_02019858_FnB *)data_020d7634, 0,
 };
 void *data_020d70f4[2] = {(void *)VillagerRoute_PickOtherHouseDoor, 0};
-void *data_020d70fc[2] = {(void *)_ZN13VillagerRoute10stepWanderEP16Unk_02011f74_Vec, 0};
-void *data_020d712c[2] = {(void *)_ZN13VillagerRoute13stepAlongPathEP16Unk_02011f74_Vec, 0};
+void *data_020d70fc[2] = {(void *)_ZN13VillagerRoute10stepWanderEP7VecFx32, 0};
+void *data_020d712c[2] = {(void *)_ZN13VillagerRoute13stepAlongPathEP7VecFx32, 0};
 void *data_020d726c[2] = {(void *)_ZN11NpcTalkCtrl10mainState2EP8NpcActor, 0};
 void *data_020d72a4[2] = {(void *)_ZN11NpcTalkCtrl11state0Step0EP8NpcActor, 0};
 NpcTalkCtrlState sNpcTalkCtrlStates[5] = {
@@ -8185,7 +8147,7 @@ void VillagerRoute::start(u32 a, u32 idx, u32 b, u32 c) {
             s32 y = targetUnit.y;
             targetBlockX = targetUnit.x >> 4;
             targetBlockZ = y >> 4;
-            nD::_ZN13VillagerRoute8planStepEP16Unk_02012810_Vec(this, a);
+            nD::_ZN13VillagerRoute8planStepEP7VecFx32(this, a);
         }
     }
 }
@@ -8213,7 +8175,7 @@ void VillagerRoute::checkUnitChanged(u32 v) {
         nD::_ZN13VillagerRoute14clearJunctionsEv(this);
         pathDir = 0;
         pathMode = 2;
-        nD::_ZN13VillagerRoute8planStepEP16Unk_02012810_Vec(this, v);
+        nD::_ZN13VillagerRoute8planStepEP7VecFx32(this, v);
         approachDir = 4;
     }
 }
@@ -8230,7 +8192,7 @@ BOOL VillagerRoute::isActive() {
 }
 
 namespace nD {
-extern "C" BOOL _ZN13VillagerRoute11scanForPathEP16Unk_02012810_VecP12RouteGridPosP16Unk_020130f0_DiriS3_iP8BlockMap(void* unused, void* p1, u32* pos, u32* step, s32 n, u32* bound, s32 flag, void* q) {
+extern "C" BOOL _ZN13VillagerRoute11scanForPathEP7VecFx32P12RouteGridPosP16Unk_020130f0_DiriS3_iP8BlockMap(void* unused, void* p1, u32* pos, u32* step, s32 n, u32* bound, s32 flag, void* q) {
     s32 i;
     u32 x = pos[0];
     u32 y = pos[1];
@@ -8254,7 +8216,7 @@ extern "C" BOOL _ZN13VillagerRoute11scanForPathEP16Unk_02012810_VecP12RouteGridP
 }
 }
 
-u32 VillagerRoute::pickAdjacentUnit(Unk_02012810_Vec *v, BlockMap *o) {
+u32 VillagerRoute::pickAdjacentUnit(VecFx32 *v, BlockMap *o) {
     using namespace nC;
     u8 mask = 0;
     RouteGridPos a, c, out;
@@ -8288,10 +8250,10 @@ u32 VillagerRoute::pickAdjacentUnit(Unk_02012810_Vec *v, BlockMap *o) {
     return 4;
 }
 
-u32 VillagerRoute::findNearestPath(RouteGridPos *out, Unk_02012810_Vec *pos) {
+u32 VillagerRoute::findNearestPath(RouteGridPos *out, VecFx32 *pos) {
     using namespace nC;
-    Unk_02012810_Vec best;
-    Unk_02012810_Vec cand[4];
+    VecFx32 best;
+    VecFx32 cand[4];
     u8 mask;
     BlockMap *o;
     RouteGridPos p, q;
@@ -8344,7 +8306,7 @@ u32 VillagerRoute::findNearestPath(RouteGridPos *out, Unk_02012810_Vec *pos) {
         bestd = -4096;
         for (s32 i = 0; i < 4; i++) {
             s32 d;
-            Unk_02012810_Vec *pc = cand;
+            VecFx32 *pc = cand;
             d = Vec_DistXZ(pos, &pc[i]);
             if (((mask >> i) & 1) != 0) {
                 if (bestd < 0 || d < bestd) {
@@ -8365,7 +8327,7 @@ u32 VillagerRoute::findNearestPath(RouteGridPos *out, Unk_02012810_Vec *pos) {
     return dir;
 }
 
-s32 VillagerRoute::isArrived(Unk_02012810_Vec *v) {
+s32 VillagerRoute::isArrived(VecFx32 *v) {
     using namespace nC;
     VillagerRouteType *t = typeTable;
     if (t != 0) {
@@ -8484,7 +8446,7 @@ u32 VillagerRoute::getStage() {
     return routeType;
 }
 
-s32 VillagerRoute::runStep(Unk_02012810_Vec *v) {
+s32 VillagerRoute::runStep(VecFx32 *v) {
     using namespace nC;
     VillagerRouteType *t = typeTable;
     if (t != 0 && stepMode < 2 && stepPhase < 3) {
@@ -8552,13 +8514,13 @@ s32 VillagerRoute::oppositeDirs(s32 v) {
     return 0;
 }
 
-void VillagerRoute::planStep(Unk_02012810_Vec *pos) {
+void VillagerRoute::planStep(VecFx32 *pos) {
     using namespace nC;
     BlockMap *o = gSceneBlockMap;
     s32 dirs, found;
     s32 lo2, present, dirs2, cand, bestd, i, hi, lo, w, bx, bz;
     RouteGridPos q, p, r;
-    Unk_02012810_Vec uv, tv;
+    VecFx32 uv, tv;
 
     if (o == 0) {
         return;
@@ -8684,25 +8646,25 @@ void VillagerRoute::planStep(Unk_02012810_Vec *pos) {
     approachDir = 4;
 }
 
-BOOL VillagerRoute::followPathDir(Unk_02011f74_Vec *p, Unk_02011f74_Pair *lim, BlockMap *w) {
+BOOL VillagerRoute::followPathDir(VecFx32 *p, Vec2 *lim, BlockMap *w) {
     using namespace nB;
     nB::_ZN13VillagerRoute16checkUnitChangedEj(this);
     if ((u32)approachDir < 4) {
-        Unk_02011f74_Pair *tbl = (Unk_02011f74_Pair *)sRouteDirs;
-        Unk_02011f74_Pair *e = &tbl[approachDir];
-        s32 dx = tbl[approachDir].a;
-        s32 dz = e->b;
+        Vec2 *tbl = (Vec2 *)sRouteDirs;
+        Vec2 *e = &tbl[approachDir];
+        s32 dx = tbl[approachDir].x;
+        s32 dz = e->y;
         u32 a = 0;
         u32 b = 0;
         FieldPos_ToUnit((s32 *)&a, (s32 *)&b, p);
-        for (; a < (u32)lim->a && b < (u32)lim->b;) {
+        for (; a < (u32)lim->x && b < (u32)lim->y;) {
             a += dx;
             b += dz;
             BOOL eq = FALSE;
             if (waypoint.x == a && waypoint.z == b) eq = TRUE;
             if (eq || _ZN8BlockMap12getWalkLinksEii(w, a, b)) {
                 FieldPos_FromUnitCenter(p, a, b);
-                nB::_ZN13VillagerRoute8planStepEP16Unk_02012810_Vec(this, p);
+                nB::_ZN13VillagerRoute8planStepEP7VecFx32(this, p);
                 break;
             }
             if (TownMap_IsUnitWalkable(a, b, w)) {
@@ -8714,20 +8676,20 @@ BOOL VillagerRoute::followPathDir(Unk_02011f74_Vec *p, Unk_02011f74_Pair *lim, B
         nB::_ZN13VillagerRoute14clearJunctionsEv(this);
         pathDir = 0;
         pathMode = 2;
-        nB::_ZN13VillagerRoute8planStepEP16Unk_02012810_Vec(this, p);
+        nB::_ZN13VillagerRoute8planStepEP7VecFx32(this, p);
     }
     return FALSE;
 }
 
-BOOL VillagerRoute::stepFollowPath(Unk_02011f74_Vec *p) {
+BOOL VillagerRoute::stepFollowPath(VecFx32 *p) {
     using namespace nB;
     BlockMap *world = gSceneBlockMap;
     if (world) {
-        Unk_02011f74_Pair lim;
-        Unk_02011f74_Pair *sz = &world->units;
+        Vec2 lim;
+        Vec2 *sz = &world->units;
         lim = *sz;
         followPathDir(p, &lim, world);
-        if (nB::_ZN13VillagerRoute9isArrivedEP16Unk_02012810_Vec(this, p)) {
+        if (nB::_ZN13VillagerRoute9isArrivedEP7VecFx32(this, p)) {
             stepPhase = 2;
             return TRUE;
         }
@@ -8735,7 +8697,7 @@ BOOL VillagerRoute::stepFollowPath(Unk_02011f74_Vec *p) {
     return FALSE;
 }
 
-BOOL VillagerRoute::advanceOnPath(Unk_02011f74_Vec *p, BlockMap *w) {
+BOOL VillagerRoute::advanceOnPath(VecFx32 *p, BlockMap *w) {
     using namespace nB;
     nB::_ZN13VillagerRoute16checkUnitChangedEj(this);
     s32 flag = pathDir;
@@ -8751,29 +8713,29 @@ BOOL VillagerRoute::advanceOnPath(Unk_02011f74_Vec *p, BlockMap *w) {
             nB::_ZN13VillagerRoute14clearJunctionsEv(this);
             pathDir = 0;
             pathMode = 2;
-            nB::_ZN13VillagerRoute8planStepEP16Unk_02012810_Vec(this, p);
+            nB::_ZN13VillagerRoute8planStepEP7VecFx32(this, p);
             approachDir = 4;
             return FALSE;
         }
         FieldPos_FromUnitCenter(p, a, b);
         if (a == waypoint.x && b == waypoint.z) {
-            nB::_ZN13VillagerRoute8planStepEP16Unk_02012810_Vec(this, p);
+            nB::_ZN13VillagerRoute8planStepEP7VecFx32(this, p);
         }
         return FALSE;
     }
     nB::_ZN13VillagerRoute14clearJunctionsEv(this);
     pathDir = 0;
     pathMode = 2;
-    nB::_ZN13VillagerRoute8planStepEP16Unk_02012810_Vec(this, p);
+    nB::_ZN13VillagerRoute8planStepEP7VecFx32(this, p);
     return FALSE;
 }
 
-BOOL VillagerRoute::stepAlongPath(Unk_02011f74_Vec *p) {
+BOOL VillagerRoute::stepAlongPath(VecFx32 *p) {
     using namespace nB;
     BlockMap *world = gSceneBlockMap;
     if (world) {
         advanceOnPath(p, world);
-        if (nB::_ZN13VillagerRoute9isArrivedEP16Unk_02012810_Vec(this, p)) {
+        if (nB::_ZN13VillagerRoute9isArrivedEP7VecFx32(this, p)) {
             stepPhase = 2;
             return TRUE;
         }
@@ -8781,22 +8743,22 @@ BOOL VillagerRoute::stepAlongPath(Unk_02011f74_Vec *p) {
     return FALSE;
 }
 
-BOOL VillagerRoute::pickAdjacent(Unk_02011f74_Vec *p, BlockMap *w) {
+BOOL VillagerRoute::pickAdjacent(VecFx32 *p, BlockMap *w) {
     using namespace nB;
-    nB::_ZN13VillagerRoute16pickAdjacentUnitEP16Unk_02012810_VecP8BlockMap(this);
+    nB::_ZN13VillagerRoute16pickAdjacentUnitEP7VecFx32P8BlockMap(this);
     return FALSE;
 }
 
-BOOL VillagerRoute::stepAdjacentUnit(Unk_02011f74_Vec *p) {
+BOOL VillagerRoute::stepAdjacentUnit(VecFx32 *p) {
     using namespace nB;
     BlockMap *world = gSceneBlockMap;
     if (world) {
         pickAdjacent(p, world);
-        if (!nB::_ZN13VillagerRoute9isArrivedEP16Unk_02012810_Vec(this, p)) {
+        if (!nB::_ZN13VillagerRoute9isArrivedEP7VecFx32(this, p)) {
             nB::_ZN13VillagerRoute14clearJunctionsEv(this);
             pathDir = 0;
             pathMode = 2;
-            nB::_ZN13VillagerRoute8planStepEP16Unk_02012810_Vec(this, p);
+            nB::_ZN13VillagerRoute8planStepEP7VecFx32(this, p);
         } else {
             return TRUE;
         }
@@ -8804,7 +8766,7 @@ BOOL VillagerRoute::stepAdjacentUnit(Unk_02011f74_Vec *p) {
     return FALSE;
 }
 
-BOOL VillagerRoute::stepWander(Unk_02011f74_Vec *p) {
+BOOL VillagerRoute::stepWander(VecFx32 *p) {
     using namespace nB;
     u16 mag = 0x7fff;
     s32 mode = Random_GlobalBelow(4);
@@ -8813,7 +8775,7 @@ BOOL VillagerRoute::stepWander(Unk_02011f74_Vec *p) {
     volatile s32 len;
     volatile s32 zero0;
     volatile s32 zero1;
-    Unk_02011f74_Vec tmp;
+    VecFx32 tmp;
     FieldPos_FromUnitCenter(&tmp, targetUnit.x, targetUnit.y);
     if (mode == 0) {
         base = Math_AngleXZ(p, &tmp);
@@ -8847,7 +8809,7 @@ BOOL VillagerRoute::stepWander(Unk_02011f74_Vec *p) {
         }
     }
     nB::_ZN13VillagerRoute13markUnitUnsetEv(this);
-    if (nB::_ZN13VillagerRoute9isArrivedEP16Unk_02012810_Vec(this, p)) {
+    if (nB::_ZN13VillagerRoute9isArrivedEP7VecFx32(this, p)) {
         stepPhase = 2;
         return TRUE;
     }
@@ -8855,19 +8817,19 @@ BOOL VillagerRoute::stepWander(Unk_02011f74_Vec *p) {
 }
 
 namespace nB {
-extern "C" void VillagerRoute_PickAttr200Target(Unk_02011f74_Pair *out, void *self) {
+extern "C" void VillagerRoute_PickAttr200Target(Vec2 *out, void *self) {
     BlockMap *world = gSceneBlockMap;
-    out->a = 0;
-    out->b = 0;
+    out->x = 0;
+    out->y = 0;
     if (world && BlockMap_FindBlockAllAttr(world, 0x200)) {
-        Unk_02011f74_Pair t;
+        Vec2 t;
         VillagerRoute_PickPathUnitInBlock(&t, self, _ZN12MapBlockAcre8getUnk04Ev(), world);
         *out = t;
     }
 }
 }
 
-BOOL VillagerRoute::isInAttr200Block(Unk_02011f74_Vec *v) {
+BOOL VillagerRoute::isInAttr200Block(VecFx32 *v) {
     using namespace nB;
     BlockMap *world = gSceneBlockMap;
     BOOL r = FALSE;
@@ -8883,9 +8845,9 @@ BOOL VillagerRoute::isInAttr200Block(Unk_02011f74_Vec *v) {
 }
 
 namespace nB {
-extern "C" void VillagerRoute_PickOtherHouseDoor(Unk_02011f74_Pair *out, void *self, u32 unused, NpcActor *obj) {
-    out->a = 0;
-    out->b = 0;
+extern "C" void VillagerRoute_PickOtherHouseDoor(Vec2 *out, void *self, u32 unused, NpcActor *obj) {
+    out->x = 0;
+    out->y = 0;
     if (obj->getVillagerData()) {
         s32 key;
         func_02133ef8(&key, 4);
@@ -8893,14 +8855,14 @@ extern "C" void VillagerRoute_PickOtherHouseDoor(Unk_02011f74_Pair *out, void *s
         if (SaveVillagers_PickRandomExcept(gSaveVillagers, &key, 1)) {
             u8 *p = _ZN20VillagerDataItemView11getHousePosEv();
             s32 z = p[1] + 1;
-            out->a = p[0];
-            out->b = z;
+            out->x = p[0];
+            out->y = z;
         }
     }
 }
 }
 
-BOOL VillagerRoute::isAtDoorT1(Unk_02011f74_Vec *p) {
+BOOL VillagerRoute::isAtDoorT1(VecFx32 *p) {
     using namespace nB;
     s32 a = 0;
     s32 b = 0;
@@ -8909,36 +8871,36 @@ BOOL VillagerRoute::isAtDoorT1(Unk_02011f74_Vec *p) {
     return FALSE;
 }
 
-BOOL VillagerRoute::stepCheckArrived(Unk_02011f74_Vec *p) {
+BOOL VillagerRoute::stepCheckArrived(VecFx32 *p) {
     using namespace nB;
-    if (!nB::_ZN13VillagerRoute9isArrivedEP16Unk_02012810_Vec(this, p)) {
+    if (!nB::_ZN13VillagerRoute9isArrivedEP7VecFx32(this, p)) {
         nB::_ZN13VillagerRoute14clearJunctionsEv(this);
         pathDir = 0;
         pathMode = 2;
-        nB::_ZN13VillagerRoute8planStepEP16Unk_02012810_Vec(this, p);
+        nB::_ZN13VillagerRoute8planStepEP7VecFx32(this, p);
         return FALSE;
     }
     return TRUE;
 }
 
 namespace nB {
-extern "C" void VillagerRoute_PickOtherHouseBlock(Unk_02011f74_Pair *out, void *self, u32 unused, NpcActor *obj) {
+extern "C" void VillagerRoute_PickOtherHouseBlock(Vec2 *out, void *self, u32 unused, NpcActor *obj) {
     BlockMap *world = gSceneBlockMap;
-    out->a = 0;
-    out->b = 0;
+    out->x = 0;
+    out->y = 0;
     if (world && obj->getVillagerData()) {
         s32 key;
         func_02133ef8(&key, 4);
         key = _ZN12VillagerData13getVillagerIdEv(obj->getVillagerData());
         if (SaveVillagers_PickRandomExcept(gSaveVillagers, &key, 1)) {
             u8 *p = _ZN20VillagerDataItemView11getHousePosEv();
-            Unk_02011f74_Pair pos;
-            pos.a = 0;
-            pos.b = 0;
+            Vec2 pos;
+            pos.x = 0;
+            pos.y = 0;
             s32 y = p[1];
-            pos.a = p[0] >> 4;
-            pos.b = y >> 4;
-            Unk_02011f74_Pair t;
+            pos.x = p[0] >> 4;
+            pos.y = y >> 4;
+            Vec2 t;
             VillagerRoute_PickPathUnitInBlock(&t, self, &pos, world);
             *out = t;
         }
@@ -8946,7 +8908,7 @@ extern "C" void VillagerRoute_PickOtherHouseBlock(Unk_02011f74_Pair *out, void *
 }
 }
 
-BOOL VillagerRoute::isInBlockT2(Unk_02011f74_Vec *v) {
+BOOL VillagerRoute::isInBlockT2(VecFx32 *v) {
     using namespace nB;
     s32 z = v->z >> 17;
     s32 x = v->x >> 17;
@@ -8955,19 +8917,19 @@ BOOL VillagerRoute::isInBlockT2(Unk_02011f74_Vec *v) {
 }
 
 namespace nB {
-extern "C" void VillagerRoute_PickOwnHouseDoor(Unk_02011f74_Pair *out, void *self, u32 unused, NpcActor *obj) {
-    out->a = 0;
-    out->b = 0;
+extern "C" void VillagerRoute_PickOwnHouseDoor(Vec2 *out, void *self, u32 unused, NpcActor *obj) {
+    out->x = 0;
+    out->y = 0;
     if (obj->getVillagerData()) {
         u8 *p = _ZN20VillagerDataItemView11getHousePosEv(obj->getVillagerData());
         s32 z = p[1] + 1;
-        out->a = p[0];
-        out->b = z;
+        out->x = p[0];
+        out->y = z;
     }
 }
 }
 
-BOOL VillagerRoute::isAtDoorT3(Unk_02011f74_Vec *p) {
+BOOL VillagerRoute::isAtDoorT3(VecFx32 *p) {
     using namespace nB;
     s32 a = 0;
     s32 b = 0;
@@ -8976,13 +8938,13 @@ BOOL VillagerRoute::isAtDoorT3(Unk_02011f74_Vec *p) {
     return FALSE;
 }
 
-BOOL VillagerRoute::stepToDoor(Unk_02011f74_Vec *p) {
+BOOL VillagerRoute::stepToDoor(VecFx32 *p) {
     using namespace nB;
     s32 a = 0;
     s32 b = 0;
     FieldPos_ToUnit(&a, &b, p);
     if (a == targetUnit.x && b >= targetUnit.y && b <= targetUnit.y + 1) {
-        FieldPos_FromUnitCenter(p, ((volatile Unk_02011f74_Pair &)targetUnit).a, ((volatile Unk_02011f74_Pair &)targetUnit).b);
+        FieldPos_FromUnitCenter(p, ((volatile Vec2 &)targetUnit).x, ((volatile Vec2 &)targetUnit).y);
     } else if (a >= targetUnit.x - 3 && a <= targetUnit.x + 4 && b >= targetUnit.y && b <= targetUnit.y + 5) {
         a = targetUnit.x;
         b = targetUnit.y + Random_GlobalBelow(2);
@@ -8991,7 +8953,7 @@ BOOL VillagerRoute::stepToDoor(Unk_02011f74_Vec *p) {
         stepWander(p);
     }
     nB::_ZN13VillagerRoute13markUnitUnsetEv(this);
-    if (nB::_ZN13VillagerRoute9isArrivedEP16Unk_02012810_Vec(this, p)) {
+    if (nB::_ZN13VillagerRoute9isArrivedEP7VecFx32(this, p)) {
         stepPhase = 2;
         return TRUE;
     }
@@ -8999,26 +8961,26 @@ BOOL VillagerRoute::stepToDoor(Unk_02011f74_Vec *p) {
 }
 
 namespace nB {
-extern "C" void VillagerRoute_PickOwnHouseBlock(Unk_02011f74_Pair *out, void *self, u32 unused, NpcActor *obj) {
+extern "C" void VillagerRoute_PickOwnHouseBlock(Vec2 *out, void *self, u32 unused, NpcActor *obj) {
     BlockMap *world = gSceneBlockMap;
-    out->a = 0;
-    out->b = 0;
+    out->x = 0;
+    out->y = 0;
     if (world && obj->getVillagerData()) {
         u8 *p = _ZN20VillagerDataItemView11getHousePosEv(obj->getVillagerData());
-        Unk_02011f74_Pair pos;
-        pos.a = 0;
-        pos.b = 0;
+        Vec2 pos;
+        pos.x = 0;
+        pos.y = 0;
         s32 y = p[1];
-        pos.a = p[0] >> 4;
-        pos.b = y >> 4;
-        Unk_02011f74_Pair t;
+        pos.x = p[0] >> 4;
+        pos.y = y >> 4;
+        Vec2 t;
         VillagerRoute_PickPathUnitInBlock(&t, self, &pos, world);
         *out = t;
     }
 }
 }
 
-BOOL VillagerRoute::isInBlockT4(Unk_02011f74_Vec *v) {
+BOOL VillagerRoute::isInBlockT4(VecFx32 *v) {
     using namespace nB;
     s32 z = v->z >> 17;
     s32 x = v->x >> 17;
@@ -9027,25 +8989,25 @@ BOOL VillagerRoute::isInBlockT4(Unk_02011f74_Vec *v) {
 }
 
 namespace nB {
-extern "C" void VillagerRoute_PickRandomBlock(Unk_02011f74_Pair *out, void *self) {
+extern "C" void VillagerRoute_PickRandomBlock(Vec2 *out, void *self) {
     BlockMap *world = gSceneBlockMap;
-    Unk_02011f74_Pair pos;
-    out->a = 0;
-    out->b = 0;
+    Vec2 pos;
+    out->x = 0;
+    out->y = 0;
     if (world) {
-        Unk_02011f74_Pair *size = &world->size;
-        Unk_02011f74_Pair szcopy;
+        Vec2 *size = &world->size;
+        Vec2 szcopy;
         szcopy = *size;
-        s32 w = szcopy.a;
-        s32 h = size->b;
-        pos.a = 0;
-        pos.b = 0;
+        s32 w = szcopy.x;
+        s32 h = size->y;
+        pos.x = 0;
+        pos.y = 0;
         if (w >= 3) {
-            pos.a = Random_GlobalBelow(w - 2) + 1;
+            pos.x = Random_GlobalBelow(w - 2) + 1;
         }
         if (h >= 3) {
-            pos.b = Random_GlobalBelow(h - 2) + 1;
-            Unk_02011f74_Pair t;
+            pos.y = Random_GlobalBelow(h - 2) + 1;
+            Vec2 t;
             VillagerRoute_PickPathUnitInBlock(&t, self, &pos, world);
             *out = t;
         }
@@ -9053,7 +9015,7 @@ extern "C" void VillagerRoute_PickRandomBlock(Unk_02011f74_Pair *out, void *self
 }
 }
 
-BOOL VillagerRoute::isInBlock(Unk_02011f74_Vec *v) {
+BOOL VillagerRoute::isInBlock(VecFx32 *v) {
     using namespace nB;
     s32 z = v->z >> 17;
     s32 x = v->x >> 17;
@@ -9062,22 +9024,22 @@ BOOL VillagerRoute::isInBlock(Unk_02011f74_Vec *v) {
 }
 
 namespace nB {
-extern "C" void VillagerRoute_PickCoastBlock(Unk_02011f74_Pair *out, void *self, Unk_02011f74_Vec *v) {
+extern "C" void VillagerRoute_PickCoastBlock(Vec2 *out, void *self, VecFx32 *v) {
     BlockMap *world = gSceneBlockMap;
     u8 mask = 0;
-    out->a = 0;
-    out->b = 0;
+    out->x = 0;
+    out->y = 0;
     if (world) {
-        Unk_02011f74_Pair *size = &world->size;
-        Unk_02011f74_Pair szcopy;
+        Vec2 *size = &world->size;
+        Vec2 szcopy;
         s32 count;
         s32 total;
         s32 sz;
         szcopy = *size;
-        sz = szcopy.a;
+        sz = szcopy.x;
         count = 0;
         total = 0;
-        if (size->b > 4 && sz <= 8) {
+        if (size->y > 4 && sz <= 8) {
             s32 px = v->x >> 17;
             s32 pz = v->z >> 17;
             s32 i;
@@ -9096,7 +9058,7 @@ extern "C" void VillagerRoute_PickCoastBlock(Unk_02011f74_Pair *out, void *self,
         if (idx < (u32)total) {
             MapBlock *c = GetCell(world, idx + 1, 4);
             if (c) {
-                Unk_02011f74_Pair t;
+                Vec2 t;
                 VillagerRoute_PickPathUnitInBlock(&t, self, _ZN12MapBlockAcre8getUnk04Ev(), world);
                 *out = t;
             }
@@ -9275,8 +9237,8 @@ inline NpcActor::~NpcActor() {}
 
 namespace nZ {
 extern "C" {
-void *data_020d713c[2] = {(void *)_ZN13VillagerRoute16stepAdjacentUnitEP16Unk_02011f74_Vec, 0};
-void *data_020d72bc[2] = {(void *)_ZN13VillagerRoute14stepFollowPathEP16Unk_02011f74_Vec, 0};
+void *data_020d713c[2] = {(void *)_ZN13VillagerRoute16stepAdjacentUnitEP7VecFx32, 0};
+void *data_020d72bc[2] = {(void *)_ZN13VillagerRoute14stepFollowPathEP7VecFx32, 0};
 void *data_020d7314[2] = {(void *)_ZN13NpcActionCtrl10setupAct04EP8NpcActor, 0};
 void *data_020d75e4[2] = {(void *)_ZN13NpcActionCtrl9postAct13EP12Unk_02006d14, 0};
 Unk_02013260_Fn sVillagerRouteTypes[7][8] = {
@@ -9289,8 +9251,8 @@ Unk_02013260_Fn sVillagerRouteTypes[7][8] = {
     *(Unk_02013260_Fn *)data_020d707c, *(Unk_02013260_Fn *)data_020d70dc, *(Unk_02013260_Fn *)data_020d70fc, *(Unk_02013260_Fn *)data_020d71bc, *(Unk_02013260_Fn *)data_020d728c, *(Unk_02013260_Fn *)data_020d7334, *(Unk_02013260_Fn *)data_020d734c, *(Unk_02013260_Fn *)data_020d7554,
 };
 void *data_020d7184[2] = {(void *)_ZN13NpcActionCtrl11act0EStep04EP12Unk_02006d14, 0};
-void *data_020d72c4[2] = {(void *)_ZN13VillagerRoute10stepWanderEP16Unk_02011f74_Vec, 0};
-void *data_020d74a4[2] = {(void *)_ZN13VillagerRoute10stepToDoorEP16Unk_02011f74_Vec, 0};
+void *data_020d72c4[2] = {(void *)_ZN13VillagerRoute10stepWanderEP7VecFx32, 0};
+void *data_020d74a4[2] = {(void *)_ZN13VillagerRoute10stepToDoorEP7VecFx32, 0};
 Unk_021be028_Dir sRouteDirs[4] = {Unk_021be028_Dir(0, -1), Unk_021be028_Dir(-1, 0), Unk_021be028_Dir(0, 1), Unk_021be028_Dir(1, 0)};
 }
 }

@@ -33,11 +33,5 @@ struct Unk_02010b08_Bits {
     u16 day : 5;
 }; // size 0x2
 
-struct Unk_0201065c_Vec {
-    /* 0x0 */ s32 x;
-    /* 0x4 */ s32 y;
-    /* 0x8 */ s32 z;
-}; // size 0xc
-
 
 #endif // PLAYER_UNK_020107C8_BLK_H

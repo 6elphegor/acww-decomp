@@ -3,7 +3,7 @@
 // Particle drawing: the two billboard particle drawers of the SPL-style manager. They write the 3D geometry engine registers (POLYGON_ATTR 0x040004a4,
 // MTX_IDENTITY 0x04000454, MTX_TRANS 0x04000470, DIF_AMB 0x04000480) and use the ITCM matrix helpers.
 #include "types.h"
-#include "game/Vec3.h"
+#include "gfx/VecFx32.h"
 #include "gfx/SplManager.h"
 #include "gfx/SplRes.h"
 #include "gfx/SplEmitterViews.h"
@@ -52,7 +52,7 @@ void func_020fb378(Mc *m, Node *n, u32 a);
 
 
 
-typedef s32 (*PosCb)(Vec3 *, Vec3);
+typedef s32 (*PosCb)(VecFx32 *, VecFx32);
 typedef void (*SetFn)(s32, s32, s32, s32);
 typedef void (*MkFn)(s32, s32, Mt *);
 
@@ -93,7 +93,7 @@ extern "C" void func_020fa858(Mg2 *m, Nd *p, PosCb cb) {
     Mt mA;
     Mt mB;
     Mt mC;
-    Vec3 v;
+    VecFx32 v;
     Rh *h;
     Mt mD;
     s32 idx;
@@ -156,7 +156,7 @@ extern "C" void func_020fa488(Mg2 *m, Nd *p, PosCb cb) {
     Mt mA;
     Mt mB;
     Mt mC;
-    Vec3 v;
+    VecFx32 v;
     Rh *h;
     Mt mD;
     s32 idx;

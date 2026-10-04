@@ -22,8 +22,6 @@
 #include "npc/NpcActionCtrl.h"
 #include "npc/NpcTalkCtrl.h"
 
-struct Unk_020d77a4_Vec3;
-struct Unk_020d77a4_Vec;
 class ActorTalkRequest;
 
 // Base of all NPC actors (villagers and special NPCs; 0x640 bytes). Methods and vtable in src/main/unk_020119cc.cpp
@@ -41,7 +39,7 @@ public:
     virtual BOOL onDraw();
     virtual BOOL onDeleteRequest();
     virtual void onInteractionEvent(u32 a, u8 b);
-    virtual BOOL getHeldItemPos(Unk_020d77a4_Vec3 *out);
+    virtual BOOL getHeldItemPos(VecFx32 *out);
     /* 0x60 */ virtual BOOL onToolHit(u16 *item);
     /* 0x64 */ virtual void *getVillagerData();
     /* 0x68 */ virtual BOOL updateAct();
@@ -72,8 +70,8 @@ public:
     void netSetSlotsIfOwner(u32 a, u32 b, u32 c, ...);
     s32 netSetSlots(s32 a, s32 b, s32 c);
     BOOL isNetOwner();
-    s32 findAvoidPos(Unk_020d77a4_Vec *out);
-    BOOL getFreeOffsetPos(Unk_020d77a4_Vec *out, void *p);
+    s32 findAvoidPos(VecFx32 *out);
+    BOOL getFreeOffsetPos(VecFx32 *out, void *p);
     s32 getSpeakerGender();
     ActorTalkRequest *getTalkRequest();
     void setTalkRequest(ActorTalkRequest *p);
@@ -85,7 +83,7 @@ public:
     BOOL isNear(NpcActor *other, s32 n);
     s32 getDistanceToPlayer(u32 id);
     s32 getDistanceTo(NpcActor *other);
-    BOOL isPosInFront(s16 *out, Unk_020d77a4_Vec *pos);
+    BOOL isPosInFront(s16 *out, VecFx32 *pos);
     void setCollisionRadius(s32 v);
     void setNpcHandle(u16 *p);
     void setNpcIndex(u16 v);

@@ -4,9 +4,10 @@
 // Katie, the lost-girl special NPC (0x728 bytes): an SpNpcActor with her talk request at 0x658 and the escort state.
 // Defined in src/main/unk_020c0324.cpp (inline constructor/destructor, vtable there).
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "actor/SpNpcActor.h"
 #include "talk/SpNpcKatieTalk.h"
-#include "gfx/Unk_020bfe30_Vec.h"
+#include "gfx/Mtx43.h"
 
 class SpNpcKatie : public SpNpcActor {
 public:
@@ -47,7 +48,7 @@ public:
     /* 0x70d */ u8 escortDeclined;
     /* 0x70e */ u16 stuckTimer;
     /* 0x710 */ u16 waitTimer;
-    /* 0x714 */ Unk_020bfe30_Vec prevPos;
+    /* 0x714 */ VecFx32 prevPos;
     /* 0x720 */ s32 effectHandle;
     /* 0x724 */ u8 reunionStep;
 };

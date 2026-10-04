@@ -1,6 +1,5 @@
 // mwcc-flags: -nothumb -O4,p
 #include "types.h"
-#include "game/Vec3.h"
 #include "gfx/SplManager.h"
 #include "gfx/SplRes.h"
 #include "gfx/SplEmitterViews.h"
@@ -51,7 +50,7 @@ void func_020fb378(Mc *m, Node *n, u32 a);
 
 
 
-typedef s32 (*PosCb)(Vec3 *, Vec3);
+typedef s32 (*PosCb)(VecFx32 *, VecFx32);
 typedef void (*SetFn)(s32, s32, s32, s32);
 typedef void (*MkFn)(s32, s32, Mt *);
 

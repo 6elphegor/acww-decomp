@@ -1,5 +1,6 @@
 // mwcc-flags: -str reuse
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "talk/TalkStartMsg.h"
 #include "talk/TalkWindowState.h"
 #include "npc/NpcAnimCtrl.h"
@@ -33,10 +34,6 @@ class SpNpcLyleTalk;
 
 class ActorTalkRequest;
 
-struct Unk_ov071_02271f54_Vec {
-    s32 x, y, z;
-};
-
 struct SpNpcLyleSidestepPos {
     u32 v[4];
 };
@@ -48,10 +45,6 @@ struct SpNpcLyleMsgLocal {
     u8 pad;
     u16 item;
     u16 item2;
-};
-
-struct Unk_ov071_02271ca0_Vec {
-    s32 x, y, z;
 };
 
 struct SpNpcLyleDateBuf {
@@ -70,7 +63,7 @@ extern s32 data_020c6cf0;
 extern s32 data_020c6d1c;
 extern u32 gVec3Zero[];
 extern u32 gCamera;
-extern Unk_ov071_02271f54_Vec gCameraLookAt;
+extern VecFx32 gCameraLookAt;
 extern u32 gRandom;
 extern u8 gSaveData[];
 extern s16 data_02135f44[];
@@ -123,10 +116,10 @@ s32 _ZN9NpcLookAt15getObstacleBitsEv(void *self);
 BOOL _ZN11NpcMoveCtrl10hasArrivedEP9Characteri(void *self, void *scene, s32 v);
 BOOL _ZN11NpcMoveCtrl10hasNextLegEv(void *self);
 void _ZN11NpcMoveCtrl16resetDestinationEv(void *self);
-void _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(void *self, Unk_ov071_02271f54_Vec *v);
-void _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(void *self, Unk_ov071_02271f54_Vec *v);
+void _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(void *self, VecFx32 *v);
+void _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(void *self, VecFx32 *v);
 void _ZN11NpcMoveCtrl14setSpeedPresetEiiii(void *self, s32 a, s32 b, s32 c, s32 d);
-void _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(void *self, u8 a, s32 b, s32 c, u32 *v, s32 d, s32 e, u8 f);
+void _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(void *self, u8 a, s32 b, s32 c, u32 *v, s32 d, s32 e, u8 f);
 s32 _ZN8NpcActor10getAngleToEPS_(void *p, void *q);
 s32 _ZN8NpcActor13getDistanceToEPS_(void *self, void *p);
 s32 _ZN8NpcActor18getRelativeAngleToEPS_(void *self, void *p);
@@ -182,7 +175,6 @@ public:
 
 
 
-struct Unk_020d77a4_Vec3;
 
 
 
@@ -211,7 +203,7 @@ public:
     BOOL mainAct03();
     BOOL tryAvoidObstacle();
     BOOL steerAroundObstacle();
-    BOOL findSidestepPos(Unk_ov071_02271f54_Vec *out, void *unused);
+    BOOL findSidestepPos(VecFx32 *out, void *unused);
     BOOL pickWanderTarget(s32 *x, s32 *z);
     BOOL setupAct03();
     BOOL mainAct01();
@@ -227,7 +219,7 @@ public:
     BOOL setupAct00();
     s32 tickTimer(s32 *p);
     BOOL isNearCameraFocus(s32 a);
-    BOOL isInFocusBox(Unk_ov071_02271f54_Vec *a, Unk_ov071_02271f54_Vec *b, s32 m);
+    BOOL isInFocusBox(VecFx32 *a, VecFx32 *b, s32 m);
     void changeAct(s32 state);
 
     s32 act;
@@ -238,7 +230,7 @@ public:
     s32 stepTimer;
     s32 approachCooldown;
     Character *chaseTarget;
-    Unk_ov071_02271f54_Vec chaseStart;
+    VecFx32 chaseStart;
 };
 
 typedef BOOL (SpNpcLyle::*SpNpcLyleActFn)();
@@ -378,7 +370,7 @@ void SpNpcLyle::changeAct(s32 state) {
     }
 }
 
-BOOL SpNpcLyle::isInFocusBox(Unk_ov071_02271f54_Vec *a, Unk_ov071_02271f54_Vec *b, s32 m) {
+BOOL SpNpcLyle::isInFocusBox(VecFx32 *a, VecFx32 *b, s32 m) {
     if (m == 0) {
         BOOL r = FALSE;
         BOOL f2 = FALSE;
@@ -419,10 +411,10 @@ BOOL SpNpcLyle::isInFocusBox(Unk_ov071_02271f54_Vec *a, Unk_ov071_02271f54_Vec *
 }
 
 BOOL SpNpcLyle::isNearCameraFocus(s32 a) {
-    Unk_ov071_02271f54_Vec *pos = (Unk_ov071_02271f54_Vec *)&position;
+    VecFx32 *pos = (VecFx32 *)&position;
     BOOL r = FALSE;
     if (gCamera != 0) {
-        Unk_ov071_02271f54_Vec v;
+        VecFx32 v;
         v = gCameraLookAt;
         r = isInFocusBox(&v, pos, a);
     }
@@ -490,7 +482,7 @@ void SpNpcLyle::act01Step0() {
                 act01Step = 2;
             } else {
                 Character *p = chaseTarget;
-                Unk_ov071_02271f54_Vec &v = *(Unk_ov071_02271f54_Vec *)&p->position;
+                VecFx32 &v = *(VecFx32 *)&p->position;
                 _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 2, 1, v.x, v.z, 0, 0, 0, 0, data_020c6cc8, 0);
                 stepTimer = 300;
                 act01Step = 1;
@@ -510,7 +502,7 @@ void SpNpcLyle::act01Step1() {
             act01Step = 2;
             stepTimer = 240;
         } else if (isNearChaseStart() != 0) {
-            _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(q, (Unk_ov071_02271f54_Vec *)&chaseTarget->position);
+            _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(q, (VecFx32 *)&chaseTarget->position);
         } else {
             approachCooldown = 200;
             changeAct(3);
@@ -531,7 +523,7 @@ void SpNpcLyle::act01Step2() {
         changeAct(3);
     } else if (isPlayerInFront(0x5000) == 0) {
         Character *p = chaseTarget;
-        Unk_ov071_02271f54_Vec &v = *(Unk_ov071_02271f54_Vec *)&p->position;
+        VecFx32 &v = *(VecFx32 *)&p->position;
         _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 2, 1, v.x, v.z, 0, 0, 0, 0, data_020c6cc8, 0);
         stepTimer = 300;
         act01Step = 1;
@@ -540,11 +532,11 @@ void SpNpcLyle::act01Step2() {
 
 BOOL SpNpcLyle::setupAct01() {
     chaseTarget = (Character *)PlayerActor_GetCharacter(4);
-    Unk_ov071_02271f54_Vec *pv = (Unk_ov071_02271f54_Vec *)&position;
+    VecFx32 *pv = (VecFx32 *)&position;
     chaseStart = *pv;
     _ZN13NpcActionCtrl15requestPlayAnimEiijtt(&actionCtrl, 1, 0xdf, 1, data_020c6cc8, 0);
     _ZN13NpcFootstepFx15enableFootstepsEv(&footstepFx);
-    _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(&lookAt, 1, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
+    _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(&lookAt, 1, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
     act01Step = 0;
     return TRUE;
 }
@@ -563,13 +555,13 @@ BOOL SpNpcLyle::setupAct03() {
     stepTimer = 0;
     _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     _ZN13NpcFootstepFx15enableFootstepsEv(&footstepFx);
-    _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(&lookAt, 1, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
+    _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(&lookAt, 1, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
     return TRUE;
 }
 
 BOOL SpNpcLyle::pickWanderTarget(s32 *x, s32 *z) {
     BOOL r = FALSE;
-    Unk_ov071_02271f54_Vec v;
+    VecFx32 v;
     v.x = 0;
     v.y = 0;
     v.z = 0;
@@ -592,7 +584,7 @@ BOOL SpNpcLyle::pickWanderTarget(s32 *x, s32 *z) {
     return r;
 }
 
-BOOL SpNpcLyle::findSidestepPos(Unk_ov071_02271f54_Vec *out, void *unused) {
+BOOL SpNpcLyle::findSidestepPos(VecFx32 *out, void *unused) {
     BOOL r = FALSE;
     SpNpcLyleSidestepPos t;
     Npc_RotateOffsetXZ(&t, &position, unused, moveAngleY);
@@ -610,7 +602,7 @@ BOOL SpNpcLyle::steerAroundObstacle() {
     NpcMoveCtrl *q = &moveCtrl;
     s32 k = _ZN9NpcLookAt15getObstacleBitsEv(&obstacleProbe);
     BOOL r = FALSE;
-    Unk_ov071_02271f54_Vec v;
+    VecFx32 v;
     if (_ZN11NpcMoveCtrl10hasArrivedEP9Characteri(q, this, 1) == 0) {
         switch (k) {
         case 3:
@@ -619,7 +611,7 @@ BOOL SpNpcLyle::steerAroundObstacle() {
             break;
         case 1:
             if (findSidestepPos(&v, &sSpNpcLyleSidestepOffsets[1]) != 0) {
-                _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(q, &v);
+                _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(q, &v);
             } else {
                 _ZN13NpcActionCtrl13requestActionEjiiissiitt(p, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
             }
@@ -627,7 +619,7 @@ BOOL SpNpcLyle::steerAroundObstacle() {
             break;
         case 2:
             if (findSidestepPos(&v, sSpNpcLyleSidestepOffsets) != 0) {
-                _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(q, &v);
+                _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(q, &v);
             } else {
                 _ZN13NpcActionCtrl13requestActionEjiiissiitt(p, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
             }
@@ -651,8 +643,8 @@ BOOL SpNpcLyle::tryAvoidObstacle() {
 
 BOOL SpNpcLyle::mainAct03() {
     NpcActionCtrl *p = &actionCtrl;
-    Unk_ov071_02271ca0_Vec v;
-    Unk_ov071_02271ca0_Vec v2;
+    VecFx32 v;
+    VecFx32 v2;
     if (tickTimer(&approachCooldown) == 0) {
         if (Talk_CheckAndSetPlayerFlag(0x28, 0) == 0) {
             if (isNearCameraFocus(0) != 0) {

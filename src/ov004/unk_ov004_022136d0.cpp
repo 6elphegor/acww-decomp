@@ -4,7 +4,7 @@
 #include "Unk_020d8c7c.h"
 #include "gfx/DebugColor.h"
 #include "actor/ActorProfile.h"
-#include "game/Unk_ov004_022091fc_Vec.h"
+#include "gfx/VecFx32.h"
 #include "talk/TalkWindowState.h"
 #include "talk/MsgRequest.h"
 #include "actor/Actor.h"
@@ -19,7 +19,6 @@
 
 
 // ---------------------------------------------------------------- RoomBoardSign
-struct Vec3;
 
 class TouchPicker;
 
@@ -32,7 +31,7 @@ BOOL TalkRequest_SetTargetDone(void *p);
 s32 Vec_DistXZ(s32 *a, s32 *b);
 s32 Math_AngleDiffAbs(s32 a, s32 b);
 TouchPicker *Scene_GetTouchPicker();
-BOOL _ZN11TouchPicker9addSphereEP15TouchPickSphereP4Vec3S3_ih(TouchPicker *self, TouchPickSphere *o, void *a, s32 b, s32 c, u8 d);
+BOOL _ZN11TouchPicker9addSphereEP15TouchPickSphereP7VecFx32S3_ih(TouchPicker *self, TouchPickSphere *o, void *a, s32 b, s32 c, u8 d);
 u32 Scene_GetCurrent();
 s32 _ZN5Actor5spawnEPvS0_S0_S0_S0_(s32 a, s32 b, void *c, void *d, void *e);
 }
@@ -126,7 +125,7 @@ BOOL RoomBoardSign::onCreate() {
 
 BOOL RoomBoardSign::onExecute() {
     execAct();
-    _ZN11TouchPicker9addSphereEP15TouchPickSphereP4Vec3S3_ih(Scene_GetTouchPicker(), (TouchPickSphere *)touchSphere, &position, radius, 0x10, index);
+    _ZN11TouchPicker9addSphereEP15TouchPickSphereP7VecFx32S3_ih(Scene_GetTouchPicker(), (TouchPickSphere *)touchSphere, &position, radius, 0x10, index);
     return TRUE;
 }
 

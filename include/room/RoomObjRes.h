@@ -6,8 +6,8 @@
 // (0x02224ca4..), wrapped inline here. RoomObjSe has no destructor: its owner calls RoomObj_DestructSe by hand.
 // RoomObjTex (+0x248) is in room/RoomObjTex.h.
 #include "types.h"
+#include "gfx/VecFx32.h"
 
-struct Unk_ov004_02224ee4_Vec;
 
 extern "C" {
 s32 RoomObjRes_GetBca(void *self, u32 i);
@@ -49,7 +49,7 @@ public:
     inline RoomObjSe() { RoomObj_ConstructSe(this); }
     inline void RoomObj_PlaySe(s32 v) { ::RoomObj_PlaySe(this, v); }
     inline void RoomObj_DeactivateSe() { ::RoomObj_DeactivateSe(this); }
-    inline void RoomObj_SetSePos(Unk_ov004_02224ee4_Vec *v) { ::RoomObj_SetSePos(this, v); }
+    inline void RoomObj_SetSePos(VecFx32 *v) { ::RoomObj_SetSePos(this, v); }
     inline void RoomObj_ActivateSe() { ::RoomObj_ActivateSe(this); }
 
     /* 0x00 */ u32 emitter[0x10];

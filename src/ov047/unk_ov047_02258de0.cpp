@@ -1,6 +1,6 @@
 // mwcc-flags: -str reuse
 #include "types.h"
-#include "game/Unk_ov046_0225a11c_Vec.h"
+#include "gfx/VecFx32.h"
 #include "talk/TalkStartMsg.h"
 #include "npc/NpcAnimCtrl.h"
 #include "npc/NpcSpeechState.h"
@@ -63,7 +63,7 @@ extern "C" {
 extern CommManager *gCommManager;
 extern u16 data_020c6cc8;
 extern s32 data_020c6d1c;
-extern Unk_ov046_0225a11c_Vec gVec3Zero;
+extern VecFx32 gVec3Zero;
 extern u8 gSaveData[];
 extern u8 data_021ed0a0[];
 extern u8 __ptmf_null[];
@@ -123,7 +123,7 @@ void _ZN13NpcActionCtrl12requestStandEjt(void *self, s32 a, u16 b);
 void _ZN13NpcActionCtrl13requestActionEjiiissiitt(void *self, u32 a, s32 b, s32 c, s32 d, s16 e, s16 f, s32 g, s32 h, u16 i, u16 j);
 BOOL _ZN13NpcActionCtrl12isActionDoneEv(void *self);
 s32 _ZN13NpcActionCtrl9getActionEv(void *self);
-void _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(void *self, u8 a, s32 b, s32 c, Unk_ov046_0225a11c_Vec *v, s32 d, s32 e, u8 f);
+void _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(void *self, u8 a, s32 b, s32 c, VecFx32 *v, s32 d, s32 e, u8 f);
 BOOL _ZN10MuseumData14isFishCompleteEv(void *g);
 BOOL _ZN10MuseumData19isPaintingsCompleteEv(void *g);
 BOOL _ZN10MuseumData17isFossilsCompleteEv(void *g);
@@ -166,7 +166,7 @@ BOOL _ZN8NpcActor11netGetSlotsEii(void *self, s32 *a, s32 *b);
 #define NpcActionCtrl_requestAction _ZN13NpcActionCtrl13requestActionEjiiissiitt
 #define NpcActionCtrl_isActionDone _ZN13NpcActionCtrl12isActionDoneEv
 #define NpcActionCtrl_getAction _ZN13NpcActionCtrl9getActionEv
-#define NpcLookAt_setTarget _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih
+#define NpcLookAt_setTarget _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih
 #define MuseumData_isFishComplete _ZN10MuseumData14isFishCompleteEv
 #define MuseumData_isPaintingsComplete _ZN10MuseumData19isPaintingsCompleteEv
 #define MuseumData_isFossilsComplete _ZN10MuseumData17isFossilsCompleteEv
@@ -195,7 +195,6 @@ BOOL _ZN8NpcActor11netGetSlotsEii(void *self, s32 *a, s32 *b);
 
 
 
-struct Unk_020d77a4_Vec3;
 
 
 

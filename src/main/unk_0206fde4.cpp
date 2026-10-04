@@ -1,5 +1,5 @@
 #include "types.h"
-#include "gfx/Unk_0206fd10_Vec.h"
+#include "gfx/Mtx43.h"
 #include "save/MuseumData.h"
 
 

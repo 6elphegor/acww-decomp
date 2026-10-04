@@ -1,13 +1,12 @@
 // mwcc-version: 1.2/base
 // ov004 TU07: .text 0x02215f04-0x02216ccc (classes BirthdayGuestVillager and its member BirthdayGuestVillagerTalk)
 #include "types.h"
+#include "gfx/VecFx32.h"
 // The no-argument vfunc_08 of the base is widened locally: NpcActor::postCreate takes one argument.
 #include "Unk_020d8c7c.h"
 #include "gfx/DebugColor.h"
 #include "actor/ActorProfile.h"
-#include "game/Unk_020d77a4_Vec3.h"
 #include "town/Unk_0204e858_Grid.h"
-#include "game/Unk_ov004_02215c94_V.h"
 #include "talk/MsgString9B.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
@@ -96,12 +95,10 @@ public:
     /* 0xa46 */ u16 chatCooldown;
     /* 0xa48 */ s16 walkAngle;
     /* 0xa4a */ u16 walkTimer;
-    /* 0xa4c */ Unk_020d77a4_Vec3 waypoint;
-    /* 0xa58 */ Unk_020d77a4_Vec3 walkTarget;
+    /* 0xa4c */ VecFx32 waypoint;
+    /* 0xa58 */ VecFx32 walkTarget;
 };
 
-
-typedef Unk_020d77a4_Vec3 Unk_ov004_Vec3;
 
 
 
@@ -115,9 +112,9 @@ typedef Unk_020d77a4_Vec3 Unk_ov004_Vec3;
 #define NpcActionCtrl_requestAction _ZN13NpcActionCtrl13requestActionEjiiissiitt
 #define NpcActionCtrl_isActionDone _ZN13NpcActionCtrl12isActionDoneEv
 #define NpcActionCtrl_getAction _ZN13NpcActionCtrl9getActionEv
-#define NpcLookAt_setTarget _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih
-#define NpcMoveCtrl_setWaypoint _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3
-#define NpcActor_findAvoidPos _ZN8NpcActor12findAvoidPosEP16Unk_020d77a4_Vec
+#define NpcLookAt_setTarget _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih
+#define NpcMoveCtrl_setWaypoint _ZN11NpcMoveCtrl11setWaypointEP7VecFx32
+#define NpcActor_findAvoidPos _ZN8NpcActor12findAvoidPosEP7VecFx32
 #define NpcActor_setTalkRequest _ZN8NpcActor14setTalkRequestEP16ActorTalkRequest
 #define NpcActor_getAngleTo _ZN8NpcActor10getAngleToEPS_
 #define VillagerTalk_begin _ZN12VillagerTalk5beginEP13VillagerActorj
@@ -211,7 +208,7 @@ void VillagerTalk_begin(void *, void *, u32);
 s32 func_0202d948(void *self);
 s32 func_0202dab0(void *self);
 s32 func_0202d928(void *self);
-void func_01ffd070(Unk_ov004_02215c94_V *out, void *a, void *b);
+void func_01ffd070(VecFx32 *out, void *a, void *b);
 void NpcActor_setTalkRequest(void *self, void *p);
 void *func_0201bc4c(void *self, s32 n);
 void func_02015ab0(void *p, void *q);
@@ -247,7 +244,7 @@ u8 sBirthdayGuestMsgFile[0x28];
 }
 
 extern "C" BirthdayHostVillager *sBirthdayHostVillager;
-extern "C" s32 Room_PickRandomWalkTarget(Unk_ov004_Vec3 *out, Unk_ov004_Vec3 *in, s32 angle);
+extern "C" s32 Room_PickRandomWalkTarget(VecFx32 *out, VecFx32 *in, s32 angle);
 
 
 extern "C" BirthdayGuestVillager *BirthdayGuestVillager_Create() {
@@ -258,7 +255,7 @@ extern "C" BirthdayGuestVillager *BirthdayGuestVillager_Get() {
     return sBirthdayGuestVillager;
 }
 
-extern "C" s32 Room_PickRandomWalkTarget(Unk_ov004_Vec3 *out, Unk_ov004_Vec3 *in, s32 angle) {
+extern "C" s32 Room_PickRandomWalkTarget(VecFx32 *out, VecFx32 *in, s32 angle) {
     s32 gx, gy;
     s32 count, y, x, z;
     FieldPos_ToUnit(&gx, &gy, in);
@@ -395,7 +392,7 @@ BOOL BirthdayGuestVillager::acceptsInteraction(void *) {
 }
 
 void BirthdayGuestVillager::onInteractionEvent(u32 a, u8 b) {
-    Unk_ov004_Vec3 v;
+    VecFx32 v;
     v.x = position.x;
     v.y = position.y;
     v.z = position.z;
@@ -544,7 +541,7 @@ BOOL BirthdayGuestVillager::setupAct00() {
 }
 
 void BirthdayGuestVillager::mainAct00() {
-    Unk_ov004_Vec3 v;
+    VecFx32 v;
     BirthdayHostVillager *a = BirthdayHostVillager_Get(this);
     s32 d;
     if (a) {
@@ -572,16 +569,16 @@ void BirthdayGuestVillager::mainAct00() {
             walkTimer--;
         }
         if (walkTimer == 0) {
-            walkAngle = Room_PickRandomWalkTarget(&walkTarget, (Unk_ov004_Vec3 *)&position, rotY);
+            walkAngle = Room_PickRandomWalkTarget(&walkTarget, (VecFx32 *)&position, rotY);
             waypoint.x = walkTarget.x;
             waypoint.y = walkTarget.y;
             waypoint.z = walkTarget.z;
             if (a && d >= 0x6000 && Random_GlobalBelow(2) == 0) {
                 d = Math_Atan2(a->position.x - position.x, a->position.z - position.z);
                 s32 df = Math_AngleDiffAbs(rotY, d);
-                Unk_ov004_Vec3 *pa = (Unk_ov004_Vec3 *)&a->position;
+                VecFx32 *pa = (VecFx32 *)&a->position;
                 s32 xx = *(volatile s32 *)&a->position.x;
-                Unk_ov004_Vec3 *pq = &walkTarget;
+                VecFx32 *pq = &walkTarget;
                 pq->x = xx;
                 walkTarget.y = pa->y;
                 walkTarget.z = pa->z;
@@ -620,7 +617,7 @@ void BirthdayGuestVillager::mainAct00() {
                 NpcActionCtrl_requestStand((u8 *)&actionCtrl, 1, data_020c6cc8);
                 break;
             case 2: {
-                Unk_ov004_Vec3 *pv = &waypoint;
+                VecFx32 *pv = &waypoint;
                 pv->x = v.x;
                 waypoint.y = v.y;
                 waypoint.z = v.z;
@@ -629,7 +626,7 @@ void BirthdayGuestVillager::mainAct00() {
             }
             default:
                 if (Vec_NotEqual(&waypoint, &walkTarget)) {
-                    Unk_ov004_Vec3 *pw = &walkTarget;
+                    VecFx32 *pw = &walkTarget;
                     waypoint.x = pw->x;
                     waypoint.y = walkTarget.y;
                     waypoint.z = walkTarget.z;

@@ -1,5 +1,6 @@
 // mwcc-flags: -str reuse
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "npc/NpcAnimCtrl.h"
 #include "npc/NpcSpeechState.h"
 #include "npc/NpcResHandleView.h"
@@ -46,7 +47,7 @@
 #define NpcActionCtrl_getAction _ZN13NpcActionCtrl9getActionEv
 #define NpcMoveCtrl_setSpeedPreset _ZN11NpcMoveCtrl14setSpeedPresetEiiii
 #define NpcMoveCtrl_setTargetAngle _ZN11NpcMoveCtrl14setTargetAngleEs
-#define NpcMoveCtrl_setWaypoint _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3
+#define NpcMoveCtrl_setWaypoint _ZN11NpcMoveCtrl11setWaypointEP7VecFx32
 #define RoomBgm_forceClosingMusic _ZN7RoomBgm17forceClosingMusicEv
 #define BlockMap_getWalkLinksAtPos _ZN8BlockMap17getWalkLinksAtPosEPv
 #define HouseData_orderUpgrade _ZN9HouseData12orderUpgradeEj
@@ -95,14 +96,8 @@ class NpcActor;
 class SpNpcNookShop;
 class SpNpcNookShopTalk;
 
-struct Unk_ov050_022590f8_Vec {
-    s32 x, y, z;
-};
-typedef Unk_ov050_022590f8_Vec Unk_ov050_022590f8_Pos;
-typedef Unk_ov050_022590f8_Vec Unk_ov050_0225c9dc_Vec;
-typedef Unk_ov050_022590f8_Vec Unk_ov050_0225cd90_Vec;
 
-struct SpNpcNookShopVecLocal : Unk_ov050_022590f8_Vec {
+struct SpNpcNookShopVecLocal : VecFx32 {
     SpNpcNookShopVecLocal() {}
 };
 
@@ -147,7 +142,6 @@ class SpNpcMabelTalk;
 
 
 
-struct Unk_020d77a4_Vec3;
 
 
 
@@ -371,8 +365,8 @@ extern u16 gPad[];
 extern u16 data_020c6cc8;
 extern s16 data_020c6cc0;
 extern void *gSceneBlockMap;
-extern const Unk_ov050_022590f8_Vec sSpNpcNookShopArbeitStairsBound;
-extern const Unk_ov050_022590f8_Vec sSpNpcNookShopArbeitPushBackPos;
+extern const VecFx32 sSpNpcNookShopArbeitStairsBound;
+extern const VecFx32 sSpNpcNookShopArbeitPushBackPos;
 extern const s32 data_ov050_0225da40[3];
 extern const u8 sSpNpcNookShopRoofColorChoices[16];
 extern const u8 sSpNpcNookShopDramaMsgTable[32];
@@ -410,12 +404,12 @@ s32 NpcActionCtrl_isActionDone(void *self);
 s32 NpcActionCtrl_getAction(void *self);
 void NpcMoveCtrl_setSpeedPreset(void *self, s32 a, s32 b, s32 c, s32 d);
 void NpcMoveCtrl_setTargetAngle(void *self, s32 v);
-void NpcMoveCtrl_setWaypoint(void *self, Unk_ov050_0225cd90_Vec *v);
+void NpcMoveCtrl_setWaypoint(void *self, VecFx32 *v);
 void NpcActor_PayPlayer(void *self, s32 v);
 s32 NpcActor_CheckPayoutFits(void *self, s32 v, s32 w);
 void NpcActor_ChargePlayer(void *self, s32 v);
 s32 NpcActor_CanPlayerPay(void *self, s32 v);
-void NpcActor_FindFreeUnitNear(Unk_ov050_0225cd90_Vec *out, void *self, Unk_ov050_0225cd90_Vec *v);
+void NpcActor_FindFreeUnitNear(VecFx32 *out, void *self, VecFx32 *v);
 s32 Talk_IsInOwnTown(...);
 void Talk_AdvanceDrama(void *a, void *b);
 s32 Talk_IsDramaPending(void *a, void *b, s32 c);
@@ -438,7 +432,7 @@ s32 Item_GetShopPrice(u16 *p);
 void *Item_GetMemberPrice(u16 *p);
 s32 Item_GetPrice(u16 *p);
 void BlockMap_getWalkLinksAtPos(void *g, void *v);
-void FieldPos_ToUnit(s32 *a, s32 *b, Unk_ov050_0225c9dc_Vec *v);
+void FieldPos_ToUnit(s32 *a, s32 *b, VecFx32 *v);
 void HouseData_orderUpgrade(void *g, s32 a);
 s32 HouseData_isUpgradePaidOff(void *m);
 void HouseData_startLoan(void *g);
@@ -475,7 +469,7 @@ u8 *PlayerSpNpcRecord_getArbeitDate(void *p);
 void func_02094018(void *p);
 void func_02094030(void *p);
 void *PlayerActor_GetBodyPos(s32 a);
-void PlayerActor_RequestWalkTo(Unk_ov050_0225c9dc_Vec *v, s32 a, s32 b);
+void PlayerActor_RequestWalkTo(VecFx32 *v, s32 a, s32 b);
 s32 PlayerActor_IsInAction(s32 a, s32 b);
 BOOL PlayerActor_IsScriptedWalking(s32 a);
 void *PlayerActor_GetActor(s32 a);
@@ -551,8 +545,8 @@ void TouchPick_GetGroundPos(void *a, void *b);
 s32 Math_CountDownU16(void *p);
 s32 Math_CountDownU8(void *p);
 s32 Math_AngleDiffAbs(s32 a, s32 b);
-s32 Vec_NotEqual(Unk_ov050_0225cd90_Vec *a, void *b);
-s32 Vec_Equal(Unk_ov050_0225cd90_Vec *a, void *b);
+s32 Vec_NotEqual(VecFx32 *a, void *b);
+s32 Vec_Equal(VecFx32 *a, void *b);
 void Vec_Sub(void *out, void *a, void *b);
 s32 strncmp(const char *a, const char *b, s32 n);
 s32 func_0212a438(const char *s);
@@ -1005,8 +999,8 @@ BOOL SpNpcNookShop::setupAct01() {
 }
 
 BOOL SpNpcNookShop::mainAct01() {
-    Unk_ov050_0225cd90_Vec *pv = (Unk_ov050_0225cd90_Vec *)PlayerActor_GetBodyPos(4);
-    Unk_ov050_0225cd90_Vec v;
+    VecFx32 *pv = (VecFx32 *)PlayerActor_GetBodyPos(4);
+    VecFx32 v;
     v.x = pv->x;
     v.y = pv->y;
     v.z = pv->z;
@@ -1014,7 +1008,7 @@ BOOL SpNpcNookShop::mainAct01() {
     s32 a = getAngleToPlayer(4);
     s32 k = Math_AngleDiffAbs(rotY, a);
     s32 s = getFollowDistance();
-    Unk_ov050_0225cd90_Vec out;
+    VecFx32 out;
     NpcActor_FindFreeUnitNear(&out, this, &v);
     if (PlayerActor_IsInAction(0x8b, 4) || PlayerActor_IsInAction(0x8c, 4)) {
         return TRUE;
@@ -1060,8 +1054,8 @@ BOOL SpNpcNookShop::mainAct02() {
     if (tryItemTalk()) {
         return TRUE;
     }
-    Unk_ov050_0225cd90_Vec *pv = (Unk_ov050_0225cd90_Vec *)PlayerActor_GetBodyPos(4);
-    Unk_ov050_0225cd90_Vec v;
+    VecFx32 *pv = (VecFx32 *)PlayerActor_GetBodyPos(4);
+    VecFx32 v;
     v.x = pv->x;
     v.y = pv->y;
     v.z = pv->z;
@@ -1069,7 +1063,7 @@ BOOL SpNpcNookShop::mainAct02() {
     s32 b = getAngleToPlayer(4);
     Math_AngleDiffAbs(rotY, b);
     s32 s = getFollowDistance();
-    Unk_ov050_0225cd90_Vec out;
+    VecFx32 out;
     NpcActor_FindFreeUnitNear(&out, this, &v);
     if (PlayerActor_IsInAction(0x8b, 4) || PlayerActor_IsInAction(0x8c, 4)) {
         return TRUE;
@@ -1111,13 +1105,13 @@ BOOL SpNpcNookShop::mainAct03() {
     if (tryItemTalk()) {
         return TRUE;
     }
-    Unk_ov050_0225cd90_Vec *pv = (Unk_ov050_0225cd90_Vec *)PlayerActor_GetBodyPos(4);
-    Unk_ov050_0225cd90_Vec v;
+    VecFx32 *pv = (VecFx32 *)PlayerActor_GetBodyPos(4);
+    VecFx32 v;
     v.x = pv->x;
     v.y = pv->y;
     v.z = pv->z;
     s32 t = getDistanceToPlayer(4);
-    Unk_ov050_0225cd90_Vec out;
+    VecFx32 out;
     NpcActor_FindFreeUnitNear(&out, this, &v);
     s32 s = getFollowDistance();
     if (t > getRunDistance()) {
@@ -1265,13 +1259,13 @@ BOOL SpNpcNookShop::setupAct11() {
 
 BOOL SpNpcNookShop::mainAct11() {
     PlayerData_GetCurrent();
-    Unk_ov050_0225c9dc_Vec *pv = (Unk_ov050_0225c9dc_Vec *)PlayerActor_GetBodyPos(4);
-    Unk_ov050_0225c9dc_Vec v0;
+    VecFx32 *pv = (VecFx32 *)PlayerActor_GetBodyPos(4);
+    VecFx32 v0;
     v0.x = pv->x;
     v0.y = pv->y;
     v0.z = pv->z;
     s32 a0 = 0, a1 = 0, a2 = 0, a3 = 0;
-    Unk_ov050_0225c9dc_Vec v1;
+    VecFx32 v1;
     v1 = sSpNpcNookShopArbeitPushBackPos;
     s32 gx = v1.x;
     s32 gy = v1.y;
@@ -1286,7 +1280,7 @@ BOOL SpNpcNookShop::mainAct11() {
         }
         break;
     case 1: {
-        Unk_ov050_0225c9dc_Vec v2;
+        VecFx32 v2;
         v2.x = gx;
         v2.y = gy;
         v2.z = gz;
@@ -1424,12 +1418,12 @@ BOOL SpNpcNookShop::setupAct10() {
 // ---------------------------------------------------------------------------------------------------------------------
 
 BOOL SpNpcNookShop::mainAct10() {
-    Unk_ov050_0225c9dc_Vec *pv = (Unk_ov050_0225c9dc_Vec *)PlayerActor_GetBodyPos(4);
-    Unk_ov050_0225c9dc_Vec v;
+    VecFx32 *pv = (VecFx32 *)PlayerActor_GetBodyPos(4);
+    VecFx32 v;
     v.x = pv->x;
     v.y = pv->y;
     v.z = pv->z;
-    Unk_ov050_0225c9dc_Vec out;
+    VecFx32 out;
     NpcActor_FindFreeUnitNear(&out, this, &v);
     s32 t = getDistanceToPlayer(4);
     BlockMap_getWalkLinksAtPos(gSceneBlockMap, &position);
@@ -1473,8 +1467,8 @@ extern "C" void *data_ov050_0225df30[2];
 extern "C" void *data_ov050_0225dfd8[2];
 extern "C" void *data_ov050_0225dea8[2];
 extern "C" void *data_ov050_0225de50[2];
-extern "C" const Unk_ov050_022590f8_Vec sSpNpcNookShopArbeitStairsBound;
-extern "C" const Unk_ov050_022590f8_Vec sSpNpcNookShopArbeitPushBackPos;
+extern "C" const VecFx32 sSpNpcNookShopArbeitStairsBound;
+extern "C" const VecFx32 sSpNpcNookShopArbeitPushBackPos;
 extern "C" const s32 data_ov050_0225da40[3];
 extern "C" const s32 sSpNpcNookShopItemTopicTable[6][2];
 extern "C" void *data_ov050_0225de68[2];
@@ -1634,8 +1628,8 @@ extern "C" void *data_ov050_0225e140[2];
 extern "C" void *data_ov050_0225e160[2];
 extern "C" void *data_ov050_0225de18[2];
 extern "C" void *data_ov050_0225dde0[2];
-extern "C" const Unk_ov050_022590f8_Vec sSpNpcNookShopArbeitStairsBound;
-extern "C" const Unk_ov050_022590f8_Vec sSpNpcNookShopArbeitPushBackPos;
+extern "C" const VecFx32 sSpNpcNookShopArbeitStairsBound;
+extern "C" const VecFx32 sSpNpcNookShopArbeitPushBackPos;
 extern "C" const s32 data_ov050_0225da40[3];
 extern "C" char data_ov050_0225e2d0[];
 extern "C" char data_ov050_0225e2ec[];
@@ -1807,8 +1801,8 @@ extern "C" void *data_ov050_0225e0d0[2];
 extern "C" void *data_ov050_0225e0c8[2];
 extern "C" void *data_ov050_0225e0c0[2];
 extern "C" void *data_ov050_0225e0b8[2];
-extern "C" const Unk_ov050_022590f8_Vec sSpNpcNookShopArbeitStairsBound;
-extern "C" const Unk_ov050_022590f8_Vec sSpNpcNookShopArbeitPushBackPos;
+extern "C" const VecFx32 sSpNpcNookShopArbeitStairsBound;
+extern "C" const VecFx32 sSpNpcNookShopArbeitPushBackPos;
 extern "C" const s32 data_ov050_0225da40[3];
 extern "C" const u8 sSpNpcNookShopDramaMsgTable[32];
 extern "C" void *data_ov050_0225e080[2];
@@ -3009,9 +3003,9 @@ extern "C" void *data_ov050_0225e0c0[2] = {(void *)_ZN13SpNpcNookShop10setupAct0
 extern "C" void *data_ov050_0225e0b8[2] = {(void *)_ZN17SpNpcNookShopTalk14handleSellMenuEv, 0};
 
 // ---- rodata / data
-extern "C" const Unk_ov050_022590f8_Vec sSpNpcNookShopArbeitStairsBound = {0xd000, 0, 0x8000};
+extern "C" const VecFx32 sSpNpcNookShopArbeitStairsBound = {0xd000, 0, 0x8000};
 
-extern "C" const Unk_ov050_022590f8_Vec sSpNpcNookShopArbeitPushBackPos = {0x10000, 0, 0x9000};
+extern "C" const VecFx32 sSpNpcNookShopArbeitPushBackPos = {0x10000, 0, 0x9000};
 
 extern "C" const s32 data_ov050_0225da40[3] = {0x10000, 0, 0x8000};
 
@@ -3843,17 +3837,17 @@ void SpNpcNookShop::onInteractionEvent(u32 cmd, u8 arg) {
 
 BOOL SpNpcNookShop::isPlayerCloserThanOtherTwin() {
     if (isTwin()) {
-        Unk_ov050_022590f8_Vec a;
-        Unk_ov050_022590f8_Vec *src = (Unk_ov050_022590f8_Vec *)PlayerActor_GetBodyPos(4);
-        *(Unk_ov050_022590f8_Vec *)&a = *src;
+        VecFx32 a;
+        VecFx32 *src = (VecFx32 *)PlayerActor_GetBodyPos(4);
+        *(VecFx32 *)&a = *src;
         u8 *o = (u8 *)Actor_findByProfile(getOtherTwinProfile(), 0);
         if (o != 0) {
-            Unk_ov050_022590f8_Vec b;
-            Unk_ov050_022590f8_Pos *pv = (Unk_ov050_022590f8_Pos *)(o + 0x5c);
+            VecFx32 b;
+            VecFx32 *pv = (VecFx32 *)(o + 0x5c);
             b.x = *(s32 *)(o + 0x5c);
             b.y = pv->y;
             b.z = pv->z;
-            Unk_ov050_022590f8_Vec d1, d2;
+            VecFx32 d1, d2;
             Vec_Sub(&d1, &a, &b);
             s32 l1 = VEC_Mag(&d1);
             Vec_Sub(&d2, &a, &position);
@@ -3875,7 +3869,7 @@ s32 SpNpcNookShop::getOtherTwinProfile() {
 BOOL SpNpcNookShop::pickItemTopic() {
     u16 t[2];
     s32 bx, by;
-    Unk_ov050_022590f8_Vec v;
+    VecFx32 v;
     Character *p = (Character *)PlayerActor_GetActor(4);
     BOOL f = Unk_ov050_022590f8_Flags() ? TRUE : FALSE;
     if (p == 0 || TalkRequest_IsActive() != 0 || NpcTalkCtrl_isBusy(&talkCtrl) != 0 || ((gPad[1] & 1) == 0 && f == 0)) {
@@ -3891,7 +3885,7 @@ BOOL SpNpcNookShop::pickItemTopic() {
         }
     }
     selectedItem = 0xfff1;
-    Unk_ov050_022590f8_Pos *pv = (Unk_ov050_022590f8_Pos *)&p->position;
+    VecFx32 *pv = (VecFx32 *)&p->position;
     v.x = p->position.x;
     v.y = pv->y;
     v.z = pv->z;
@@ -3910,7 +3904,7 @@ BOOL SpNpcNookShop::pickItemTopic() {
             }
         } else {
             s32 bx2 = 0, by2 = 0;
-            Unk_ov050_022590f8_Vec v2;
+            VecFx32 v2;
             TouchPick_GetGroundPos(Scene_GetTouchPicker(), &v2);
             FieldPos_ToUnit(&bx2, &by2, &v2);
             if (bx2 != bx || by2 != by) {
@@ -3971,8 +3965,8 @@ BOOL SpNpcNookShop::tryStairsBlockTalk() {
     PlayerData_getErrands(p);
     if (PlayerData_testFlag(p, 1)) {
         SpNpcNookShopVecLocal v;
-        Unk_ov050_022590f8_Vec *src = (Unk_ov050_022590f8_Vec *)PlayerActor_GetBodyPos(4);
-        *(Unk_ov050_022590f8_Vec *)&v = *src;
+        VecFx32 *src = (VecFx32 *)PlayerActor_GetBodyPos(4);
+        *(VecFx32 *)&v = *src;
         if (v.z < sSpNpcNookShopArbeitStairsBound.z && v.x > sSpNpcNookShopArbeitStairsBound.x) {
             talk.setTopic(0x1e);
             TalkRequest_AddPlayerTalk6(this, 0);
@@ -3984,8 +3978,8 @@ BOOL SpNpcNookShop::tryStairsBlockTalk() {
 
 BOOL SpNpcNookShop::tryFarewellTalk() {
     SpNpcNookShopVecLocal v;
-    Unk_ov050_022590f8_Vec *src = (Unk_ov050_022590f8_Vec *)PlayerActor_GetBodyPos(4);
-    *(Unk_ov050_022590f8_Vec *)&v = *src;
+    VecFx32 *src = (VecFx32 *)PlayerActor_GetBodyPos(4);
+    *(VecFx32 *)&v = *src;
     if (talk.getTopic() != 1 && talk.getTopic() != 0x12) {
         if (isTwin() && isPlayerCloserThanOtherTwin() == 0) {
             if (Ground_IsOnLockedExit(&v)) {

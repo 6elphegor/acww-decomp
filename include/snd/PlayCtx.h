@@ -4,12 +4,13 @@
 // Sound-source play context passed to the listener callbacks (Snd_ListenerDistanceCallback/VolumeCallback/PanCallback,
 // src/autoload_2/unk_020f44f0.cpp); filled by the sound group code in unk_020ede18.cpp.
 #include "types.h"
+#include "gfx/VecFx32.h"
 
 struct Group;
 
 struct PlayCtx {
     /* 0x00 */ Group *group;
-    /* 0x04 */ void *source;     // listener position (Vec3 *)
+    /* 0x04 */ void *source;     // listener position (VecFx32 *)
     /* 0x08 */ u8 pad[8];
     /* 0x10 */ s32 distance;
     /* 0x14 */ s32 volume;

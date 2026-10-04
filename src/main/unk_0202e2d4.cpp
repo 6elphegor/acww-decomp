@@ -1,5 +1,5 @@
 #include "types.h"
-#include "game/Unk_020d77a4_Vec3.h"
+#include "gfx/VecFx32.h"
 #include "npc/NpcAnimCtrl.h"
 #include "npc/NpcSpeechState.h"
 #include "npc/NpcResHandleView.h"
@@ -44,8 +44,6 @@ void Npc_GetName(u32 a, u16 *p);
 #define SndSeEmitter_dtorBase _ZN12SndSeEmitterD2Ev
 extern "C" void SndSeEmitter_dtorBase(void *p);
 
-
-typedef Unk_020d77a4_Vec3 Unk_0203e7a4_Vec;
 
 
 
@@ -110,14 +108,14 @@ BOOL SpNpcActor::onCreate() {
         return FALSE;
     }
     if (!NetArea_IsLocalOwner() && _ZN11CommManager8isOnlineEv(gCommManager) && !netSyncOff) {
-        Unk_0203e7a4_Vec v;
+        VecFx32 v;
         s16 s;
         v.x = 0;
         v.y = 0;
         v.z = 0;
         s = 0;
         if (_ZN8NpcActor15netReadPositionEPiPh(this, &v, &s) && Vec_NotEqual(&v, &gVec3Zero)) {
-            Unk_0203e7a4_Vec *p = (Unk_0203e7a4_Vec *)&position;
+            VecFx32 *p = (VecFx32 *)&position;
             p->x = v.x;
             p->y = v.y;
             p->z = v.z;

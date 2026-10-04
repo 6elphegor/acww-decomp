@@ -4,10 +4,8 @@
 #include "gfx/Mtx43.h"
 #include "actor/ActorListNode.h"
 #include "actor/CharacterListNode.h"
-#include "game/Unk_0203e4f0_Vec.h"
 #include "room/FtrActorParts.h"
 #include "gfx/AnimFrameCtrl.h"
-#include "game/Vec3.h"
 #include "item/ItemId.h"
 #include "game/CollisionVec2.h"
 #include "game/LightLevel.h"
@@ -54,9 +52,6 @@
 // ================================================================ plain value types
 
 
-typedef Vec3 Unk_ov004_Vec3;
-typedef Vec3 Unk_ov004_022077a4_Vec3;
-typedef Vec3 Unk_ov004_02208284_V3;
 
 
 // ================================================================ library chain (as tu01, but slot 08/14 as this class overrides them)

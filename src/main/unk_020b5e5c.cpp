@@ -1,5 +1,5 @@
 #include "types.h"
-#include "game/Vec3.h"
+#include "gfx/VecFx32.h"
 #include "room/FtrActorTable.h"
 
 
@@ -26,7 +26,7 @@ inline BOOL IsMode0() { return gFieldSceneKind == 0; }
 inline BOOL IsBoth() { return gTouchPrevHeld && gTouchPrevChanged; }
 inline BOOL IsMode1() { return gFieldSceneKind == 1; }
 
-extern "C" BOOL TouchPickResult_GetTarget(u8 *obj, Vec3 *out, s32 *a, u8 *b);
+extern "C" BOOL TouchPickResult_GetTarget(u8 *obj, VecFx32 *out, s32 *a, u8 *b);
 extern "C" s32 TouchPick_GetTargetObject(s32 a, s32 *pa, u8 *pb);
 extern "C" s32 TouchPick_GetTappedObject(s32 a, s32 *pa, u8 *pb);
 extern "C" s32 TouchTarget_ResolveNone(void);
@@ -58,7 +58,7 @@ extern "C" TouchTargetResolver sTouchTargetResolvers[23] = {
     FN(TouchTarget_ResolveNone), FN(TouchTarget_ResolveNone), FN(TouchTarget_ResolveNone),
 };
 
-extern "C" BOOL TouchPickResult_GetTarget(u8 *obj, Vec3 *out, s32 *a, u8 *b) {
+extern "C" BOOL TouchPickResult_GetTarget(u8 *obj, VecFx32 *out, s32 *a, u8 *b) {
     if (out) {
         out->x = *(s32 *)(obj + 0xc);
         out->y = *(s32 *)(obj + 0x10);
@@ -76,7 +76,7 @@ extern "C" BOOL TouchPickResult_GetTarget(u8 *obj, Vec3 *out, s32 *a, u8 *b) {
 extern "C" s32 TouchPick_GetTargetObject(s32 a, s32 *pa, u8 *pb) {
     u8 tb;
     s32 ta;
-    Vec3 v;
+    VecFx32 v;
     if (pa == NULL) {
         pa = &ta;
     }

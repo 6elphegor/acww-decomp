@@ -3,7 +3,6 @@
 #include "types.h"
 #include "field/Unk_ov003_02214494_Views.h"
 #include "actor/ActorProfile.h"
-#include "game/Unk_ov003_Vec.h"
 #include "talk/TalkWindowState.h"
 #include "sys/ProcBase.h"
 #include "actor/Actor.h"

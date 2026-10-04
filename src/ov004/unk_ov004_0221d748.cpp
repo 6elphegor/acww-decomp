@@ -5,7 +5,6 @@
 #include "actor/ActorProfile.h"
 #include "talk/TalkTopicMsg.h"
 #include "net/CommManager.h"
-#include "game/Unk_ov004_0221b954_Vec.h"
 #include "talk/TalkWindowState.h"
 #include "npc/NpcAnimCtrl.h"
 #include "npc/NpcSpeechState.h"
@@ -41,7 +40,6 @@ class ActorTalkRequest;
 
 
 
-struct Unk_020d77a4_Vec3;
 
 
 

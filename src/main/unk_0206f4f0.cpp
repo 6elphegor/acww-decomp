@@ -1,5 +1,5 @@
 #include "types.h"
-#include "game/Unk_0206f6fc_Pos.h"
+#include "gfx/VecFx32.h"
 
 // U119: network message handlers 0x0206f4f0-0x0206f804 (the handler table sCommSubHandlers is in the next unit)
 
@@ -99,7 +99,7 @@ extern "C" void CommSub_RecvInsectRelease(u8 *p, u32 id) {
 
 extern "C" void CommSub_RecvReleaseOrThrow(u8 *p, u32 id) {
     u8 buf[5];
-    Unk_0206f6fc_Pos pos;
+    VecFx32 pos;
     if (Unk_0206f6fc_IsZero(gFieldSceneKind)) {
         u8 id8 = id;
         MI_CpuCopy8(p + 2, buf, 5);

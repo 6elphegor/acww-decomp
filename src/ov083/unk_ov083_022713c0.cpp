@@ -1,6 +1,5 @@
 // mwcc-flags: -str reuse
 #include "types.h"
-#include "game/Unk_ov083_Vec.h"
 #include "talk/TalkStartMsg.h"
 #include "talk/TalkWindowState.h"
 #include "npc/NpcAnimCtrl.h"
@@ -94,7 +93,6 @@ public:
 
 
 
-struct Unk_020d77a4_Vec3;
 
 
 

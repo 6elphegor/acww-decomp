@@ -2,9 +2,9 @@
 #define ACTOR_CHARACTER_H
 
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "actor/Actor.h"
 #include "actor/CharacterListNode.h"
-#include "game/Unk_020d77a4_Vec3.h"
 
 // Actor that can be talked to / interacted with (villagers, special NPCs, players, buildings, interactive field and
 // room objects); defined in src/main/unk_0203e438.cpp (vtable 0x020d9668). Members end at 0xea; derived classes
@@ -22,7 +22,7 @@ public:
     virtual VecFx32 *getInteractionPos();                     // 0x50
     virtual BOOL acceptsInteractionOutOfRange(void *other);   // 0x54
     virtual BOOL acceptsSelfRequestedInteraction(void *a);                           // 0x58
-    virtual BOOL getHeldItemPos(Unk_020d77a4_Vec3 *out);            // 0x5c
+    virtual BOOL getHeldItemPos(VecFx32 *out);            // 0x5c
 
     void clearCharFlags(u32 mask);
     void setCharFlags(u32 mask);

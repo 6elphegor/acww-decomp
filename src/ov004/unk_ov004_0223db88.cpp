@@ -1,8 +1,8 @@
 // mwcc-version: 1.2/base
 #include "types.h"
+#include "gfx/VecFx32.h"
 
 #include "Unk_020d8c7c.h"
-#include "game/Unk_ov004_0223d800_Vec.h"
 #include "item/ItemId.h"
 #include "save/MuseumData.h"
 #include "sys/ProcProfile.h"
@@ -10,7 +10,7 @@
 
 // Spawn-definition record (0x1c bytes).
 struct MuseumInfoPointData {
-    /* 0x00 */ Unk_ov004_0223d800_Vec pos;
+    /* 0x00 */ VecFx32 pos;
     /* 0x0c */ s32 arc;
     /* 0x10 */ s16 angle;
     /* 0x12 */ s16 message;
@@ -21,7 +21,7 @@ struct MuseumInfoPointData {
 };
 
 struct MuseumInfoPointDef {
-    /* 0x00 */ Unk_ov004_0223d800_Vec pos;
+    /* 0x00 */ VecFx32 pos;
     /* 0x0c */ u8 facingMask;
     /* 0x0d */ u8 kind;
     /* 0x0e */ s16 message;
@@ -36,7 +36,7 @@ struct MuseumInfoPointSet {
     u32 numPoints;
 };
 
-typedef Unk_ov004_0223d800_Vec V3;
+typedef VecFx32 V3;
 typedef MuseumInfoPointData Rec;
 
 struct Unk_ov004_0223df20_V : V3 {

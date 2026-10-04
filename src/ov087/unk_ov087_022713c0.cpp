@@ -34,10 +34,6 @@ class SpNpcCornimer;
 class SpNpcCornimerTalk;
 struct TalkStartMsg;
 
-struct Unk_ov087_Vec {
-    s32 x, y, z;
-};
-
 
 extern "C" {
 void *PlayerData_GetCurrent();
@@ -96,7 +92,6 @@ public:
 
 
 
-struct Unk_020d77a4_Vec3;
 
 
 

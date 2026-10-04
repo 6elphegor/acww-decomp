@@ -103,7 +103,6 @@ extern u32 __ptmf_null[];
 
 
 
-struct Unk_020d77a4_Vec3;
 
 
 

@@ -1,13 +1,13 @@
 #pragma opt_loop_invariants off
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
 #include "field/BottleThrow.h"
-#include "field/Unk_ov003_02224ba4_V3.h"
 #include "field/Unk_ov003_02225238_Grid.h"
 #include "actor/Character.h"
 
-typedef Unk_ov003_02224ba4_V3 V3;
+typedef VecFx32 V3;
 
 
 

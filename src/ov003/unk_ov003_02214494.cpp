@@ -1,9 +1,9 @@
 // mwcc-version: 1.2/sp2
 // mwcc-flags: -O4,s -str reuse
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "field/Unk_ov003_02214494_Views.h"
 #include "actor/ActorProfile.h"
-#include "game/Unk_ov009_0225b880_Vec3.h"
 #include "talk/TalkWindowState.h"
 #include "game/ReddPassword.h"
 #include "sys/ProcBase.h"
@@ -49,7 +49,7 @@ void PlayerActor_RequestStowThenAct10(u32 a);
 void *Scene_GetWarpRequest();
 BOOL SceneWarp_RequestExit(void *o, s32 a);
 s32 Scene_GetCurrent();
-void Scene_SetTownReturnPos(void *o, s32 a, Unk_ov009_0225b880_Vec3 *v, u32 b, s32 c, u32 d, u32 e);
+void Scene_SetTownReturnPos(void *o, s32 a, VecFx32 *v, u32 b, s32 c, u32 d, u32 e);
 s32 Ground_GetDefaultY(u32 a);
 BOOL PlayerActor_LocalRequestDoorEnter(u32 a, s32 *b, s32 *c, s32 d);
 BOOL MenuCtrl_IsResultOk();
@@ -356,7 +356,7 @@ void ReddTent::execTentWalkIn() {
         setTentState(9);
     } else if (doorEnterRequested == 0) {
         s16 ang;
-        Unk_ov009_0225b880_Vec3 v;
+        VecFx32 v;
         if (getDoorPos(&v, &ang)) {
             if (PlayerActor_LocalRequestDoorEnter(2, &v.x, &v.z, ang)) {
                 doorEnterRequested = 1;
@@ -390,7 +390,7 @@ void ReddTent::execTentWarp() {
     if (warpFrames >= lim) {
         s32 t = getInteriorScene();
         s16 ang;
-        Unk_ov009_0225b880_Vec3 v;
+        VecFx32 v;
         if (getDoorPos(&v, &ang)) {
             if (SceneWarp_RequestExit(Scene_GetWarpRequest(), t)) {
                 v.y = Ground_GetDefaultY(0);

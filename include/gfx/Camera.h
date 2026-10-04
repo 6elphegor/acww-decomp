@@ -2,19 +2,16 @@
 #define GFX_CAMERA_H
 
 // Field/room camera (vtable 0x020d93b0): CameraBase + a 4x3 view matrix, follow/blend offsets, poses and modes.
-// Defined in src/main/unk_0203a0cc.cpp; Unk_0203b350_V is the vector type of its method signatures. The global
+// Defined in src/main/unk_0203a0cc.cpp; VecFx32 is the vector type of its method signatures. The global
 // pointer gCamera points to it; Camera is the name of that view (the extern "C" camera functions of main and ov004).
 // ov004 reads the 4-word mode parameter block at 0x21c as its own struct (by cast), main as {len, ang, vel}, ov068's
 // sway mode as CameraSwayState.
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "sys/CameraBase.h"
 #include "gfx/FxMtx43.h"
 #include "gfx/CameraPose.h"
 #include "gfx/CameraSway.h"
-
-struct Unk_0203b350_V {
-    s32 x, y, z;
-};
 
 class Camera : public CameraBase, public FxMtx43 {
 public:
@@ -45,15 +42,15 @@ public:
     BOOL initModeDefault();
 
     // 0x0203b350 .. 0x0203bc48
-    void dragFocusTo(Unk_0203b350_V *p);
-    void setLookAt(Unk_0203b350_V *a, Unk_0203b350_V *b);
-    void setLookAtOrbit(Unk_0203b350_V *a, s32 r, s32 s, s32 z);
+    void dragFocusTo(VecFx32 *p);
+    void setLookAt(VecFx32 *a, VecFx32 *b);
+    void setLookAtOrbit(VecFx32 *a, s32 r, s32 s, s32 z);
     void updateBlend();
     void setDefaultProjection();
     void updateMode();
     BOOL setMode(s32 idx);
     s32 getRoomEdgeSide(s32 *p);
-    void setFocusPreset11(u8 *o, Unk_0203b350_V *v);
+    void setFocusPreset11(u8 *o, VecFx32 *v);
     BOOL clampToRoomBounds(s32 *p);
     void calcRoomBounds();
     void updateEyeCurveAngle();
@@ -70,7 +67,7 @@ public:
     s16 getYaw();
     s16 getPitch();
     s16 getEyeCurveAngle();
-    Unk_0203b350_V *getEye();
+    VecFx32 *getEye();
     void resetOffsets();
     void setBlendParams(u32 *src);
     void setBlendPreset(s32 i);
@@ -85,7 +82,7 @@ public:
     /* 0xcc */ s32 invViewMtx[9];
     /* 0xf0 */ u8 pad_f0[0xfc - 0xf0];
     /* 0xfc */ CameraPose target;
-    /* 0x110 */ Unk_0203b350_V targetFocus;
+    /* 0x110 */ VecFx32 targetFocus;
     /* 0x11c */ s16 saved, savedPitch;
     /* 0x120 */ s32 savedDistance, savedOffset, savedOffsetY, savedOffsetZ, savedFocus, savedFocusY, savedFocusZ;
     /* 0x13c */ s32 savedEye, savedEyeY, savedEyeZ;
@@ -102,8 +99,8 @@ public:
     /* 0x1c8 */ s16 fovy;
     /* 0x1ca */ u8 focusIsPair;
     /* 0x1cb */ u8 pad_1cb;
-    /* 0x1cc */ Unk_0203b350_V focusPointA;
-    /* 0x1d8 */ Unk_0203b350_V focusPointB;
+    /* 0x1cc */ VecFx32 focusPointA;
+    /* 0x1d8 */ VecFx32 focusPointB;
     /* 0x1e4 */ s32 closeUpFactorTarget, closeUpFactor, presetCol, presetRow;
     /* 0x1f4 */ u8 viewPushed, focusYawLocked, roomFocusSide, seMuted;
     /* 0x1f8 */ s32 mode, prevMode, startMode;

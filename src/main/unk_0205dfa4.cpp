@@ -1,5 +1,6 @@
 // mwcc-flags: -str reuse
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "sys/PrioListNode.h"
 #include "net/CommManager.h"
 #include "gfx/AnimFrameCtrl.h"
@@ -59,10 +60,6 @@ struct Unk_0205e310_P {
     u32 resMdl;
 };
 
-struct Unk_0205dfb8_Vec {
-    s32 x, y, z;
-};
-
 
 
 static inline BOOL Unk_0205e6e4_Is(u8 v, u8 k) { return v == k ? TRUE : FALSE; }
@@ -115,10 +112,10 @@ void HeldItemModel_Update(HeldItemModel *o);
 void HeldItemModels_OnJointCalcPre(NNSG3dRS *rs);
 
 void Model_GetJointWorldMtx(void *slot, Mtx43 *out, u32 a);
-void _ZN9AnimModel12drawAnimatedEPv(void *slot, Unk_0205dfb8_Vec *v);
-void FishBobber_Draw(void *sub, Mtx43 *o, Unk_0205dfb8_Vec *v);
-void WorldCurve_FromCurved(Unk_0205dfb8_Vec *o, Unk_0205dfb8_Vec *v);
-void _ZN10FishBobber12setTargetPosEP16Unk_0205f8d4_Vec(void *sub, Unk_0205dfb8_Vec *v);
+void _ZN9AnimModel12drawAnimatedEPv(void *slot, VecFx32 *v);
+void FishBobber_Draw(void *sub, Mtx43 *o, VecFx32 *v);
+void WorldCurve_FromCurved(VecFx32 *o, VecFx32 *v);
+void _ZN10FishBobber12setTargetPosEP7VecFx32(void *sub, VecFx32 *v);
 void _ZN13AnimFrameCtrl4stepEv(void *p);
 void _ZN10FishBobber6updateEv(void *p);
 void _ZN14BlendAnimModel9stepBlendEv(void *slot);
@@ -664,13 +661,13 @@ extern "C" void HeldItemModel_Update(HeldItemModel *o) {
 }
 
 extern "C" void HeldItemModel_Draw(HeldItemModel *o, Mtx43 *src) {
-    Unk_0205dfb8_Vec A;
+    VecFx32 A;
     Mtx43 B;
-    Unk_0205dfb8_Vec C;
+    VecFx32 C;
     Mtx43 D;
     Mtx43 E;
-    Unk_0205dfb8_Vec F;
-    Unk_0205dfb8_Vec G;
+    VecFx32 F;
+    VecFx32 G;
     u32 id = o->slot;
     if (*HeldItemModels_GetItem(&sHeldItemModelBank, id) != 0xfff1) {
         u8 *slot = (u8 *)HeldItemModels_GetModel(&sHeldItemModelBank, id);
@@ -699,7 +696,7 @@ extern "C" void HeldItemModel_Draw(HeldItemModel *o, Mtx43 *src) {
             G.x = C.x;
             G.y = C.y;
             G.z = C.z;
-            _ZN10FishBobber12setTargetPosEP16Unk_0205f8d4_Vec(&o->bobber, &G);
+            _ZN10FishBobber12setTargetPosEP7VecFx32(&o->bobber, &G);
             break;
         }
     }

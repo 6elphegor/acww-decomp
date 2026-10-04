@@ -1,5 +1,6 @@
 // mwcc-version: 1.2/base
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "net/CommManager.h"
 
 // TU27 of ov003: free functions (spawn-position search over a 4x4 pool of 16x16 bitmaps, object slot table)
@@ -48,14 +49,10 @@ struct Unk_ov003_0222eb10_Obj {
     s32 talkAct;
 };
 
-struct Unk_ov003_0222ed20_V3 {
-    s32 x, y, z;
-};
-
 struct LooseSnowballsView {
-    Unk_ov003_0222ed20_V3 a;
+    VecFx32 a;
     u32 pad_0c;
-    Unk_ov003_0222ed20_V3 b;
+    VecFx32 b;
 };
 
 struct Unk_ov003_0222ed20_Loc {
@@ -82,7 +79,7 @@ s32 CommSyncVar_SetVar(s32 a, s32 b, s32 c, s32 d);
 void FieldUnit_FromBlockUnit(s32 *a, s32 *b, s32 c, s32 d, s32 e, s32 f);
 void FieldPos_ToUnit(s32 *a, s32 *b, void *c);
 void FieldPos_FromUnitCenter(void *out, s32 x, s32 z);
-void FieldPos_FromBlockUnitCenter(Unk_ov003_0222ed20_V3 *out, s32 a, s32 b, s32 c, s32 d);
+void FieldPos_FromBlockUnitCenter(VecFx32 *out, s32 a, s32 b, s32 c, s32 d);
 u16 *BlockMap_GetItemPtr(void *g, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
 BOOL Ground_IsFreeGrassOffPath(s32 a, s32 b);
 BOOL Ground_IsFreeGrass(s32 a, s32 b);
@@ -131,7 +128,7 @@ extern "C" void SnowballSpawner_SpawnLooseBalls(void *self) {
     struct {
         Unk_ov003_0222ed20_Loc l;
         s32 p[3];
-        Unk_ov003_0222ed20_V3 A, B;
+        VecFx32 A, B;
     } f;
     u32 i;
     for (i = 0; i < 3; i++) {
@@ -161,7 +158,7 @@ extern "C" void SnowballSpawner_SpawnLooseBalls(void *self) {
             }
             if (LooseSnowballs_Get()->b.x != 0) {
                 LooseSnowballsView *s = LooseSnowballs_Get();
-                Unk_ov003_0222ed20_V3 *pv = &s->b;
+                VecFx32 *pv = &s->b;
                 f.B.x = pv->x;
                 f.B.y = pv->y;
                 f.B.z = pv->z;
@@ -210,7 +207,7 @@ extern "C" void SnowballSpawner_SpawnSnowmen(void *self) {
                                     MapBlock_SetItem(cell, tmp, lx, ly, 0);
                                 } else {
                                     n = v * 2 + 2;
-                                    Unk_ov003_0222ed20_V3 loc;
+                                    VecFx32 loc;
                                     FieldPos_FromBlockUnitCenter(&loc, bx, by, lx, ly);
                                     Actor_spawn(0xbd, n, &loc, 0, self);
                                     Actor_spawn(0xbd, n + 1, &loc, 0, self);

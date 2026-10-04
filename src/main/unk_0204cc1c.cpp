@@ -1,4 +1,5 @@
 #include "types.h"
+#include "gfx/VecFx32.h"
 
 #include "Unk_020d8c7c.h"
 #include "town/SceneMapInfo.h"
@@ -42,10 +43,6 @@ struct Unk_020ca2f4_Ent {
     u32 b;
 };
 
-struct Unk_0204d0f4_V3 {
-    s32 x, y, z;
-};
-
 struct Unk_0204d0f4_Info {
     u32 a;
     u32 b;
@@ -65,8 +62,6 @@ struct RoomBlockMap {
     u32 itemGrid;
 };
 
-struct Unk_0204d560_Vec { s32 x, y, z; };
-
 
 struct AcreItemGrid {
     ItemId e[0x100];
@@ -79,11 +74,7 @@ extern "C" {
 struct Unk_0204d920_Pad { s32 v[4]; Unk_0204d920_Pad() {} ~Unk_0204d920_Pad() {} };
 }
 
-struct Unk_0204db24_L { volatile s32 xy[2]; Unk_0204d560_Vec v, w; };
-
-struct Unk_0204debc_Pos {
-    s32 x, y;
-};
+struct Unk_0204db24_L { volatile s32 xy[2]; VecFx32 v, w; };
 
 struct BuriedMask {
     u8 data[0x20];
@@ -95,13 +86,9 @@ struct BlockMapSize {
     s32 v[2];
 };
 
-struct Unk_0204e1a8_Vec {
-    s32 x, y, z;
-};
-
 struct Unk_0204e1a8_Loc {
     volatile s32 x, y;
-    Unk_0204e1a8_Vec v;
+    VecFx32 v;
 };
 
 
@@ -119,16 +106,16 @@ public:
     void *buildBlockEntries(s32 heap);
     void updateGroundSeason();
     u32 getGrassType();
-    BOOL toTownAcreIndex(Unk_0204debc_Pos *out, Unk_0204debc_Pos *in);
+    BOOL toTownAcreIndex(Vec2 *out, Vec2 *in);
     BOOL isTownAcre(s32 x, s32 y);
-    void *getAcreBuried(Unk_0204debc_Pos *in);
-    void *getAcreItems(Unk_0204debc_Pos *in);
+    void *getAcreBuried(Vec2 *in);
+    void *getAcreItems(Vec2 *in);
     void clear();
     BOOL placeStructure(u16 *a, s32 x, s32 y, u8 flag);
     BOOL putStructure(u16 *a, s32 x, s32 y);
     BOOL removeStructure(s32 x, s32 y, u16 *p);
     BOOL replaceStructure(u16 *a, u16 *b, u16 *c, s32 x, s32 y);
-    BOOL replaceStructure(u16 *a, u16 *b, u16 *c, Unk_0204debc_Pos pos);
+    BOOL replaceStructure(u16 *a, u16 *b, u16 *c, Vec2 pos);
 };
 
 class BlockMap {
@@ -237,7 +224,7 @@ void CollisionMap_Release(u32 h);
 void CollisionMap_Bind(u32 w, u32 h, u32 c, u32 d);
 u32 BgModelCache_Get();
 u32 _ZN12BgModelCache10getAcreBclEi(u32 a, u32 b);
-void _ZN8MapBlock4initEiP15Unk_02037674_V3iiiP11BgAcreModeljiij(u32 h, u32 a, Unk_0204d0f4_V3 *v, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g, u32 h2, u32 i);
+void _ZN8MapBlock4initEiP7VecFx32iiiP11BgAcreModeljiij(u32 h, u32 a, VecFx32 *v, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g, u32 h2, u32 i);
 u32 _ZN12MapBlockAcre9getAcreIdEv(u32 h);
 u32 BgModel_LoadBcl(u32 a, u32 b);
 s32 _ZN8MapBlock6bindBgEP11BgAcreModeljj(u32 h, s32 a, u32 b, u32 c);
@@ -247,7 +234,7 @@ void RoomBclHeap_Destroy();
 void RoomBclHeap_Create();
 u32 SceneId_GetHouseRoom(u32 v);
 s32 HouseData_IsValidRoomIndex();
-u16 *_ZN7TownMap12getAcreItemsEP16Unk_0204debc_Pos(void *t, s32 *idx);
+u16 *_ZN7TownMap12getAcreItemsEP4Vec2(void *t, s32 *idx);
 void _ZN7TownMap5clearEv(void *t);
 void Town_GenerateAcres(void *t);
 extern void *gTownBclHeap;
@@ -257,7 +244,7 @@ s32 _ZN7TownMap15removeStructureEiiPt(u32 a, u32 b, u32 c, u32 d);
 s32 _ZN7TownMap12putStructureEPtii(u32 a, u32 b, u32 c, u32 d);
 void *StrBSize_Get(u16 *t);
 u32 _ZN12StrBSizeData16getTriangleCountEv(void *h);
-s32 _ZN12StrBSizeData11getTriangleEPiS0_S0_j(void *h, Unk_0204d560_Vec *a, Unk_0204d560_Vec *b, Unk_0204d560_Vec *c, u32 i);
+s32 _ZN12StrBSizeData11getTriangleEPiS0_S0_j(void *h, VecFx32 *a, VecFx32 *b, VecFx32 *c, u32 i);
 s32 FX_Div(s32 a, s32 b);
 s32 Ground_GetDefaultY(s32 a);
 void MapBlock_Init(void *a, s32 b, void *c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 *i, s32 j);
@@ -377,7 +364,7 @@ void TownMap_Generate(TownMap *o, s32 arg);
 void TownMap_ApplyAcreLayouts(void *ov, s32 arg);
 BOOL TownMap_HasEnoughRocks(void *o);
 BOOL TownMap_HasEnoughSigns(void *o);
-s32 BlockMap_IsBuriedAtPos(Unk_0204e858_Grid *g, Unk_0204e858_Vec *v);
+s32 BlockMap_IsBuriedAtPos(Unk_0204e858_Grid *g, VecFx32 *v);
 s32 BlockMap_IsBuriedAtUnit(Unk_0204e858_Grid *g, s32 x, s32 z);
 s32 BlockMap_IsBuried(Unk_0204e858_Grid *g, u32 hx, u32 hy, u32 lx, u32 ly);
 s32 BlockMap_ClearBuriedAtUnit(Unk_0204e858_Grid *g, s32 x, s32 z);
@@ -388,20 +375,20 @@ BOOL BlockMap_FindItemAnyAttr(Unk_0204e858_Grid *g, s32 *outx, s32 *outz, s32 a3
 BOOL BlockMap_FindItemAllAttr(Unk_0204e858_Grid *g, s32 *outx, s32 *outz, s32 a3, s32 p4, s32 p5, s32 p6, s32 filter, s32 p8);
 void *BlockMap_SetItemAtUnit(Unk_0204e858_Grid *g, s32 a, s32 x, s32 z, u8 d);
 void *BlockMap_SetItem(Unk_0204e858_Grid *g, s32 a, u32 hx, u32 hy, u32 lx, u32 ly, u8 d);
-u16 *BlockMap_GetItemPtrAtPos(Unk_0204e858_Grid *g, Unk_0204e858_Vec *v, s32 layer);
+u16 *BlockMap_GetItemPtrAtPos(Unk_0204e858_Grid *g, VecFx32 *v, s32 layer);
 void BlockMap_GetItemPtr(Unk_0204e858_Grid *g, s32 hx, s32 hy, s32 lx, s32 ly, u8 layer);
 void *BlockMap_BlockHasAllAttr(Unk_0204e858_Grid *g, s32 hx, s32 hy, s32 a);
 s32 BlockMap_GetBlockAttr(Unk_0204e858_Grid *g, s32 hx, s32 hy);
 TownBlockCell *BlockMap_FindBlockAnyAttr(Unk_0204e858_Grid *g, s32 filter);
 TownBlockCell *BlockMap_FindBlockAllAttr(Unk_0204e858_Grid *g, s32 filter);
-void FieldPos_FromBlockUnit(Unk_0204e858_Vec *v, s32 a, s32 b, s32 c, s32 d);
-void FieldPos_FromUnitCenter(Unk_0204e858_Vec *v, s32 x, s32 z);
-void FieldPos_FromBlockUnitCenter(Unk_0204e858_Vec *v, s32 a, s32 b, s32 c, s32 d);
-void FieldPos_SnapToUnitCenter(Unk_0204e858_Vec *dst, Unk_0204e858_Vec *src);
+void FieldPos_FromBlockUnit(VecFx32 *v, s32 a, s32 b, s32 c, s32 d);
+void FieldPos_FromUnitCenter(VecFx32 *v, s32 x, s32 z);
+void FieldPos_FromBlockUnitCenter(VecFx32 *v, s32 a, s32 b, s32 c, s32 d);
+void FieldPos_SnapToUnitCenter(VecFx32 *dst, VecFx32 *src);
 void FieldUnit_FromBlockUnit(s32 *ox, s32 *oz, s32 a, s32 b, s32 c, s32 d);
-void FieldPos_ToUnit(s32 *ox, s32 *oz, Unk_0204e858_Vec *v);
-void FieldPos_ToBlockUnit2(s32 *a, s32 *c, Unk_0204e858_Vec *v);
-void FieldPos_ToBlockUnit(s32 *ax, s32 *az, s32 *cx, s32 *cz, Unk_0204e858_Vec *v);
+void FieldPos_ToUnit(s32 *ox, s32 *oz, VecFx32 *v);
+void FieldPos_ToBlockUnit2(s32 *a, s32 *c, VecFx32 *v);
+void FieldPos_ToBlockUnit(s32 *ax, s32 *az, s32 *cx, s32 *cz, VecFx32 *v);
 MapBlockEntry *MapBlockEntry_NewArray(s32 n, void *heap);
 MapBlockEntry::MapBlockEntry();
 void BlockMap_DebugStub();
@@ -583,18 +570,18 @@ extern "C" MapBlockEntry *MapBlockEntry_NewArray(s32 n, void *heap) {
     return p;
 }
 
-extern "C" void FieldPos_ToBlockUnit(s32 *ax, s32 *az, s32 *cx, s32 *cz, Unk_0204e858_Vec *v) {
+extern "C" void FieldPos_ToBlockUnit(s32 *ax, s32 *az, s32 *cx, s32 *cz, VecFx32 *v) {
     *ax = v->x >> 17;
     *az = v->z >> 17;
     *cx = (v->x >> 13) & 15;
     *cz = (v->z >> 13) & 15;
 }
 
-extern "C" void FieldPos_ToBlockUnit2(s32 *a, s32 *c, Unk_0204e858_Vec *v) {
+extern "C" void FieldPos_ToBlockUnit2(s32 *a, s32 *c, VecFx32 *v) {
     FieldPos_ToBlockUnit(a, a + 1, c, c + 1, v);
 }
 
-extern "C" void FieldPos_ToUnit(s32 *ox, s32 *oz, Unk_0204e858_Vec *v) {
+extern "C" void FieldPos_ToUnit(s32 *ox, s32 *oz, VecFx32 *v) {
     *ox = v->x >> 13;
     *oz = v->z >> 13;
 }
@@ -604,24 +591,24 @@ extern "C" void FieldUnit_FromBlockUnit(s32 *ox, s32 *oz, s32 a, s32 b, s32 c, s
     *oz = (b << 4) + d;
 }
 
-extern "C" void FieldPos_SnapToUnitCenter(Unk_0204e858_Vec *dst, Unk_0204e858_Vec *src) {
+extern "C" void FieldPos_SnapToUnitCenter(VecFx32 *dst, VecFx32 *src) {
     FieldPos_FromUnitCenter(dst, src->x >> 13, src->z >> 13);
     dst->y = src->y;
 }
 
-extern "C" void FieldPos_FromBlockUnitCenter(Unk_0204e858_Vec *v, s32 a, s32 b, s32 c, s32 d) {
+extern "C" void FieldPos_FromBlockUnitCenter(VecFx32 *v, s32 a, s32 b, s32 c, s32 d) {
     s32 x = 0, z = 0;
     FieldUnit_FromBlockUnit(&x, &z, a, b, c, d);
     FieldPos_FromUnitCenter(v, x, z);
 }
 
-extern "C" void FieldPos_FromUnitCenter(Unk_0204e858_Vec *v, s32 x, s32 z) {
+extern "C" void FieldPos_FromUnitCenter(VecFx32 *v, s32 x, s32 z) {
     v->x = (x << 13) + 0x1000;
     v->z = (z << 13) + 0x1000;
     v->y = 0;
 }
 
-extern "C" void FieldPos_FromBlockUnit(Unk_0204e858_Vec *v, s32 a, s32 b, s32 c, s32 d) {
+extern "C" void FieldPos_FromBlockUnit(VecFx32 *v, s32 a, s32 b, s32 c, s32 d) {
     v->x = a << 17;
     v->z = b << 17;
     v->x = v->x + (c << 13);
@@ -701,7 +688,7 @@ extern "C" void BlockMap_GetItemPtr(Unk_0204e858_Grid *g, s32 hx, s32 hy, s32 lx
     }
 }
 
-extern "C" u16 *BlockMap_GetItemPtrAtPos(Unk_0204e858_Grid *g, Unk_0204e858_Vec *v, s32 layer) {
+extern "C" u16 *BlockMap_GetItemPtrAtPos(Unk_0204e858_Grid *g, VecFx32 *v, s32 layer) {
     s32 a[2], c[2];
     a[0] = 0;
     a[1] = 0;
@@ -827,7 +814,7 @@ extern "C" s32 BlockMap_IsBuriedAtUnit(Unk_0204e858_Grid *g, s32 x, s32 z) {
     return BlockMap_IsBuried(g, hx, hz, x - (hx << 4), z - (hz << 4));
 }
 
-extern "C" s32 BlockMap_IsBuriedAtPos(Unk_0204e858_Grid *g, Unk_0204e858_Vec *v) {
+extern "C" s32 BlockMap_IsBuriedAtPos(Unk_0204e858_Grid *g, VecFx32 *v) {
     s32 a[2], c[2];
     a[0] = 0;
     a[1] = 0;
@@ -1113,7 +1100,7 @@ BOOL BlockMap::build(MapBlockEntry *e, BlockMapSize *sz, s32 heap) {
         Ns_0204debc::CollisionMap_Bind(width, height, &obj, mapSlot);
         for (l.y = 0; l.y < height; l.y++) {
             for (l.x = 0; l.x < width; l.x++) {
-                Unk_0204e1a8_Vec w;
+                VecFx32 w;
                 l.v.x = l.x << 17;
                 l.v.z = l.y << 17;
                 w = l.v;
@@ -1163,9 +1150,9 @@ void TownMap::clear() {
     grassType = 0;
 }
 
-void *TownMap::getAcreItems(Unk_0204debc_Pos *in) {
+void *TownMap::getAcreItems(Vec2 *in) {
     void *r = NULL;
-    Unk_0204debc_Pos a, b;
+    Vec2 a, b;
     a.x = 0;
     a.y = 0;
     b.x = in->x;
@@ -1176,9 +1163,9 @@ void *TownMap::getAcreItems(Unk_0204debc_Pos *in) {
     return r;
 }
 
-void *TownMap::getAcreBuried(Unk_0204debc_Pos *in) {
+void *TownMap::getAcreBuried(Vec2 *in) {
     void *r = NULL;
-    Unk_0204debc_Pos a, b;
+    Vec2 a, b;
     a.x = 0;
     a.y = 0;
     b.x = in->x;
@@ -1194,7 +1181,7 @@ BOOL TownMap::isTownAcre(s32 x, s32 y) {
     return FALSE;
 }
 
-BOOL TownMap::toTownAcreIndex(Unk_0204debc_Pos *out, Unk_0204debc_Pos *in) {
+BOOL TownMap::toTownAcreIndex(Vec2 *out, Vec2 *in) {
     BOOL r = FALSE;
     if (isTownAcre(in->x, in->y)) {
         out->x = in->x - 1;
@@ -1216,7 +1203,7 @@ void TownMap::updateGroundSeason() {
 
 void *TownMap::buildBlockEntries(s32 heap) {
     volatile s32 zero0, zero1;
-    Unk_0204debc_Pos pos;
+    Vec2 pos;
     MapBlockEntry *r;
     s32 idx;
     pos.x = 0;
@@ -1253,7 +1240,7 @@ extern "C" BOOL TownMap_HasEnoughSigns(void *o) {
     k = 0;
     for (xy[1] = 0; xy[1] < 6; xy[1]++) {
         for (xy[0] = 0; xy[0] < 6; xy[0]++) {
-            p = _ZN7TownMap12getAcreItemsEP16Unk_0204debc_Pos(o, xy);
+            p = _ZN7TownMap12getAcreItemsEP4Vec2(o, xy);
             if (p) {
                 for (k = 0; k < 0x100; p++, k++) {
                     if (*p == 0x500a) cnt++;
@@ -1279,7 +1266,7 @@ extern "C" BOOL TownMap_HasEnoughRocks(void *o) {
     f = FALSE;
     for (xy[1] = 0; xy[1] < 6; xy[1]++) {
         for (xy[0] = 0; xy[0] < 6; xy[0]++) {
-            p = _ZN7TownMap12getAcreItemsEP16Unk_0204debc_Pos(o, xy);
+            p = _ZN7TownMap12getAcreItemsEP4Vec2(o, xy);
             if (p) {
                 for (k = 0; k < 0x100; p++, k++) {
                     f = FALSE;
@@ -1300,7 +1287,7 @@ extern "C" void TownMap_ApplyAcreLayouts(void *ov, s32 arg) {
     xy[1] = 0;
     for (xy[1] = 0; xy[1] < 6; xy[1]++) {
         for (xy[0] = 0; xy[0] < 6; xy[0]++) {
-            u16 *p = _ZN7TownMap12getAcreItemsEP16Unk_0204debc_Pos(o, xy);
+            u16 *p = _ZN7TownMap12getAcreItemsEP4Vec2(o, xy);
             if (p) {
                 Ns_0204d560::FgData_ApplyLayoutGlobal(p, 0, (o + xy[1] * 6)[xy[0]] & 0xfff, arg);
             }
@@ -1490,7 +1477,7 @@ extern "C" void BlockMap_FindItem(u16 *ret, void *m, void *pos, s32 *p4, s32 *p5
 }
 
 extern "C" void BlockMap_FindStructure(u16 *ret, void *m, s32 *pos, s32 *p4, s32 *p5, u16 a6, u16 a7, s32 a8) {
-    void *h; u32 n; s32 sx, sz, ax; u16 t[2]; s32 a, b; Unk_0204d560_Vec v; u32 i; s32 d, az, zz;
+    void *h; u32 n; s32 sx, sz, ax; u16 t[2]; s32 a, b; VecFx32 v; u32 i; s32 d, az, zz;
     BlockMap_FindItem(t, m, &v, &a, &b, a6, a7, a8);
     if (!Unk_0204d560_Chk(t)) {
         h = StrBSize_Get(t);
@@ -1498,7 +1485,7 @@ extern "C" void BlockMap_FindStructure(u16 *ret, void *m, s32 *pos, s32 *p4, s32
             n = _ZN12StrBSizeData16getTriangleCountEv(h);
             sx = 0; sz = 0; i = 0;
             for (; i < n; i++) {
-                Unk_0204d560_Vec v1, v2, v3;
+                VecFx32 v1, v2, v3;
                 if (_ZN12StrBSizeData11getTriangleEPiS0_S0_j(h, &v1, &v2, &v3, i)) {
                     sx += v1.x; sx += v2.x; sx += v3.x;
                     sz += v1.z; sz += v2.z; sz += v3.z;
@@ -1664,7 +1651,7 @@ extern "C" void HouseRoomMap_ReleaseBg(RoomBlockMap *p) {
 extern "C" BOOL HouseRoomMap_Init(RoomBlockMap *p, s32 i, void *heap) {
     BOOL r = FALSE;
     Unk_0204d0f4_Info *info;
-    struct { Unk_0204d0f4_V3 v, w; } l;
+    struct { VecFx32 v, w; } l;
     p->mapSlot = i + 2;
     if (!p->blocks) {
         p->blocks = MapBlock_NewArray(1, heap, 4);
@@ -1680,7 +1667,7 @@ extern "C" BOOL HouseRoomMap_Init(RoomBlockMap *p, s32 i, void *heap) {
         CollisionMap_Bind(p->width, p->height, 0, p->mapSlot);
         l.v.x = 0; l.v.z = 0;
         l.w = l.v;
-        _ZN8MapBlock4initEiP15Unk_02037674_V3iiiP11BgAcreModeljiij(p->blocks, info->a, &l.w, info->b, info->c, info->d, 0, 0, 0, 0, p->mapSlot);
+        _ZN8MapBlock4initEiP7VecFx32iiiP11BgAcreModeljiij(p->blocks, info->a, &l.w, info->b, info->c, info->d, 0, 0, 0, 0, p->mapSlot);
         Heap_Free(heap, info);
         r = TRUE;
     }
@@ -1742,7 +1729,7 @@ extern "C" BOOL VillagerRoom_LoadLayout(u16 *dst, u32 b, void *heap) {
 extern "C" BOOL VillagerRoomMap_Init(RoomBlockMap *p, u32 a, void *heap) {
     BOOL r = FALSE;
     Unk_0204d0f4_Info *info;
-    struct { Unk_0204d0f4_V3 v, w; } l;
+    struct { VecFx32 v, w; } l;
     p->mapSlot = 7;
     if (!p->blocks) {
         p->blocks = MapBlock_NewArray(1, heap, -4);
@@ -1762,7 +1749,7 @@ extern "C" BOOL VillagerRoomMap_Init(RoomBlockMap *p, u32 a, void *heap) {
         l.v.x = 0; l.v.z = 0;
         u32 t = _ZN12BgModelCache10getAcreBclEi(BgModelCache_Get(), info->a);
         l.w = l.v;
-        _ZN8MapBlock4initEiP15Unk_02037674_V3iiiP11BgAcreModeljiij(p->blocks, info->a, &l.w, info->b, info->c, info->d, 0, t, 0, 0, p->mapSlot);
+        _ZN8MapBlock4initEiP7VecFx32iiiP11BgAcreModeljiij(p->blocks, info->a, &l.w, info->b, info->c, info->d, 0, t, 0, 0, p->mapSlot);
         Heap_Free(heap, info);
         r = TRUE;
     }

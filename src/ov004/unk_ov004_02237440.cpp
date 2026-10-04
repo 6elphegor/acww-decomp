@@ -4,7 +4,6 @@
 #include "types.h"
 #include "gfx/Mtx43.h"
 #include "Unk_020d8c7c.h"
-#include "game/Unk_0203389c_Vec.h"
 #include "gfx/VecFx32.h"
 #include "game/GroundInfoBase.h"
 #include "gfx/ModelAnim.h"
@@ -20,7 +19,7 @@
 #define SndEnvChannel_callRelease _ZN13SndEnvChannel11callReleaseEv
 #define SndEnvChannel_callRequest _ZN13SndEnvChannel11callRequestEPv
 #define SndEnvChannel_callRequestSustained _ZN13SndEnvChannel20callRequestSustainedEPv
-#define SndEnvChannel_callUpdateRelative _ZN13SndEnvChannel18callUpdateRelativeEP16Unk_02003a6c_Vec
+#define SndEnvChannel_callUpdateRelative _ZN13SndEnvChannel18callUpdateRelativeEP7VecFx32
 #define SndEnvChannel_callReset _ZN13SndEnvChannel9callResetEv
 #define func_02031c10 _ZN11BoxColliderD2Ev
 #define func_02031c48 _ZN11BoxColliderC1Ev
@@ -48,7 +47,7 @@
 #define MuseumData_isDonated _ZN10MuseumData9isDonatedEPt
 #define func_02088bb0 _ZN14StaticColliderD1Ev
 #define func_02088bc8 _ZN14StaticColliderC1Ev
-#define StaticCollider_setupAtPos _ZN14StaticCollider10setupAtPosEP4Vec3iijjjhi
+#define StaticCollider_setupAtPos _ZN14StaticCollider10setupAtPosEP7VecFx32iijjjhi
 #define ActorCollider_isHitByGroup _ZN13ActorCollider12isHitByGroupEj
 #define ActorCollider_submit _ZN13ActorCollider6submitEv
 #define PooledModel_getModel _ZN11PooledModel8getModelEv
@@ -100,10 +99,6 @@ struct MuseumInsectParam {
     u8 useVisAnim;
     u8 pad_01;
     s16 radius;
-};
-
-struct Unk_ov004_02239988_Vec2 {
-    s32 x, y;
 };
 
 struct Unk_ov004_0223b1e8_Bits {
@@ -204,8 +199,8 @@ public:
     };
     /* 0x051 */ u8 pad_51[3];
     /* 0x054 */ s32 targetHeight;
-    /* 0x058 */ Unk_ov004_02239988_Vec2 boundsMin;
-    /* 0x060 */ Unk_ov004_02239988_Vec2 boundsMax;
+    /* 0x058 */ Vec2 boundsMin;
+    /* 0x060 */ Vec2 boundsMax;
     /* 0x068 */ CollisionState moveResult;
     /* 0x098 */ s16 subCounter;
     /* 0x09a */ u8 isAlerted;
@@ -774,7 +769,7 @@ extern "C" u8 MuseumInsect_ProbeFloor(MuseumInsect *o) {
     s32 d;
     {
         GroundInfo g;
-        g.initAtPos((Unk_0203389c_Vec *)(p), 0, 1);
+        g.initAtPos((VecFx32 *)(p), 0, 1);
         d = g.getHeight(1);
     }
     if (d <= 0 || d > p->y || (b == 0x1e && MuseumInsect_ClampToBounds((MuseumInsect *)o, p) != 0)) {
@@ -782,7 +777,7 @@ extern "C" u8 MuseumInsect_ProbeFloor(MuseumInsect *o) {
     }
     {
         GroundInfo g;
-        g.initAtPos((Unk_0203389c_Vec *)(p + 1), 0, 1);
+        g.initAtPos((VecFx32 *)(p + 1), 0, 1);
         d = g.getHeight(1);
     }
     if (d <= 0 || d > p[1].y || (b == 0x1e && MuseumInsect_ClampToBounds((MuseumInsect *)o, p + 1) != 0)) {
@@ -876,7 +871,7 @@ extern "C" BOOL MuseumInsect_RevertIfOffFloor(void *o_, void *v_) {
     {
         Unk_ov004_0223d85c_V a(o->x, 0, v->z);
         GroundInfo g;
-        g.initAtPos((Unk_0203389c_Vec *)(&a), 0, 0);
+        g.initAtPos((VecFx32 *)(&a), 0, 0);
         if (g.getHeight(0) > 0x200) {
             far = r;
         } else {
@@ -890,7 +885,7 @@ extern "C" BOOL MuseumInsect_RevertIfOffFloor(void *o_, void *v_) {
     {
         Unk_ov004_0223d85c_V a(v->x, 0, o->z);
         GroundInfo g;
-        g.initAtPos((Unk_0203389c_Vec *)(&a), 0, 0);
+        g.initAtPos((VecFx32 *)(&a), 0, 0);
         if (g.getHeight(0) > 0x200) {
             far = TRUE;
         } else {
@@ -1642,7 +1637,7 @@ extern "C" void MuseumInsect_HopperHop(MuseumInsect *o)
     } else {
         {
             GroundInfo loc;
-            loc.initAtPos((Unk_0203389c_Vec *)(r4), 0, 1);
+            loc.initAtPos((VecFx32 *)(r4), 0, 1);
             t = loc.getHeight(0);
         }
         if (!Math_ApproachS32(&r4->y, t, r7, 0x1000, 0x266)) {
@@ -2093,7 +2088,7 @@ extern "C" void MuseumInsect_MoleCricketJump(MuseumInsect *self, s16 *p)
     BOOL ok;
     {
         GroundInfo g;
-        g.initAtPos((Unk_0203389c_Vec *)(v), 0, 1);
+        g.initAtPos((VecFx32 *)(v), 0, 1);
         if (v->y > g.getHeight(0)) {
             ok = FALSE;
         } else {
@@ -2999,7 +2994,7 @@ s32 MuseumInsect::crawl() {
         pos->z = pos->z + func_01ffcb0c(mul, dir.z);
         if (st == 0x34 || st == 0x30) {
             GroundInfoStorage buf;
-            ((GroundInfo *)&buf)->initAtPos((Unk_0203389c_Vec *)pos, 0, 0);
+            ((GroundInfo *)&buf)->initAtPos((VecFx32 *)pos, 0, 0);
             if (((GroundInfo *)&buf)->getHeight(0) > 0x200) {
                 hit = 1;
             } else {
@@ -3482,12 +3477,12 @@ void MuseumInsect::setBounds(s32 *a, s32 *b)
 {
     s32 y1 = func_01ffcb0c(a[1] << 12, 0x100);
     s32 x1 = func_01ffcb0c(a[0] << 12, 0x100);
-    Unk_ov004_02239988_Vec2 *a2 = &boundsMin;
+    Vec2 *a2 = &boundsMin;
     a2->x = x1;
     a2->y = y1;
     s32 y2 = func_01ffcb0c(b[1] << 12, 0x100);
     s32 x2 = func_01ffcb0c(b[0] << 12, 0x100);
-    Unk_ov004_02239988_Vec2 *b2 = &boundsMax;
+    Vec2 *b2 = &boundsMax;
     b2->x = x2;
     b2->y = y2;
 }
@@ -3496,11 +3491,11 @@ void MuseumInsect::setBoundsAroundPos()
 {
     VecFx32 *o = &position;
     s32 ay = o->z - 0x200;
-    Unk_ov004_02239988_Vec2 *a = &boundsMin;
+    Vec2 *a = &boundsMin;
     a->x = o->x - 0x900;
     a->y = ay;
     s32 by = o->z + 0x500;
-    Unk_ov004_02239988_Vec2 *b = &boundsMax;
+    Vec2 *b = &boundsMax;
     b->x = o->x + 0x900;
     b->y = by;
 }

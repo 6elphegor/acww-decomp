@@ -1,4 +1,5 @@
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "game/HitSphere.h"
 #include "game/Unk_0202f2ac_V3.h"
 #include "game/CollisionSegment.h"
@@ -23,7 +24,7 @@ s32 Vec_SafeNormalize(void *v);
 void Vec_Scale(void *v, s32 s);
 s32 Vec_Distance(void *a, void *b);
 s32 Vec_DistXZ(void *a, void *b);
-s32 _ZN16CollisionSegment10distanceToEP15Unk_0202f660_V3(void *a, void *b);
+s32 _ZN16CollisionSegment10distanceToEP7VecFx32(void *a, void *b);
 void Proc_CreateRoot();
 s32 Proc_CreateChild(u32 a, void *b, u32 c, u32 d);
 s32 func_0211c618(s32 *out);
@@ -31,11 +32,6 @@ void ProcBase_RequestDelete();
 void _ZN8ProcBase10postCreateEi(void *self, int a);
 }
 
-// ---- sphere (position + radius), vtable-less ----
-struct Unk_0202e918_Vec3 {
-    s32 x, y, z;
-    Unk_0202e918_Vec3(s32 px, s32 py, s32 pz) { x = px; y = py; z = pz; }
-};
 
 
 
@@ -52,22 +48,22 @@ HitSphere::HitSphere() {
 
 HitSphere::~HitSphere() {}
 
-void HitSphere::set(Unk_0202e918_Vec3 *p, s32 r) {
+void HitSphere::set(VecFx32Ctor *p, s32 r) {
     centerX = p->x;
     centerY = p->y;
     centerZ = p->z;
     radius = r;
 }
 
-BOOL HitSphere::intersectSegment(Unk_0202e918_Vec3 *out, CollisionSegment *cap) {
+BOOL HitSphere::intersectSegment(VecFx32Ctor *out, CollisionSegment *cap) {
     s32 z;
     s32 r = radius;
-    if (_ZN16CollisionSegment10distanceToEP15Unk_0202f660_V3(cap, this) <= r) {
+    if (_ZN16CollisionSegment10distanceToEP7VecFx32(cap, this) <= r) {
         z = centerZ + func_01ffcb0c(cap->dir.z, radius);
         s32 y = centerY + func_01ffcb0c(cap->dir.y, radius);
         s32 x = centerX + func_01ffcb0c(cap->dir.x, radius);
-        Unk_0202e918_Vec3 a(x, y, z);
-        Unk_0202e918_Vec3 b(centerX - x, centerY - y, centerZ - z);
+        VecFx32Ctor a(x, y, z);
+        VecFx32Ctor b(centerX - x, centerY - y, centerZ - z);
         s64 s1 = func_01ffd028(cap, &a);
         s64 s2 = func_01ffd028(cap, &b);
         if (s1 < s2) {

@@ -6,7 +6,7 @@
 // The file ends with Snd_CalcListenerDistance (0x020f4904-0x020f4a5c), which is not built yet; the .data byte data_0213b9d8 and the
 // bss from 0x021f5c28 on belong to the next file (unk_020f4a5c.cpp).
 #include "types.h"
-#include "game/Vec3.h"
+#include "gfx/VecFx32.h"
 #include "snd/PlayCtx.h"
 
 
@@ -30,8 +30,8 @@ s32 Snd_ListenerDistanceCallback(PlayCtx *p);
 s32 Snd_ListenerVolumeCallback(PlayCtx *p);
 s32 Snd_ListenerPanCallback(PlayCtx *p);
 s32 Snd_DistanceToVolume(s32 x);
-s32 Snd_CalcPan(Vec3 *p, s32 m);
-s32 Snd_CalcListenerDistance(Vec3 *p, s32 m);
+s32 Snd_CalcPan(VecFx32 *p, s32 m);
+s32 Snd_CalcListenerDistance(VecFx32 *p, s32 m);
 s32 SndVolumeCurve_Eval(Ramp *r, s32 x);
 }
 
@@ -42,7 +42,7 @@ static inline s32 FX_Mul(s32 a, s32 b) {
 
 // listener callback: distance of the listener at p->source (mode 0)
 extern "C" s32 Snd_ListenerDistanceCallback(PlayCtx *p) {
-    return Snd_CalcListenerDistance((Vec3 *)p->source, 0);
+    return Snd_CalcListenerDistance((VecFx32 *)p->source, 0);
 }
 
 // volume of the pan curve at x
@@ -90,7 +90,7 @@ extern "C" void Snd_CalcDepthVolumes(s32 z, s32 *a, s32 *b) {
 }
 
 // pan value (-128..127) of a position: mode 0 spread, 1 sign, 2 offset from the screen centre
-extern "C" s32 Snd_CalcPan(Vec3 *p, s32 m) {
+extern "C" s32 Snd_CalcPan(VecFx32 *p, s32 m) {
     s32 r;
     s32 x;
     if (p == 0) return 0;
@@ -120,7 +120,7 @@ extern "C" s32 Snd_CalcPan(Vec3 *p, s32 m) {
 
 // listener callback: pan of the listener at p->source (mode 0)
 extern "C" s32 Snd_ListenerPanCallback(PlayCtx *p) {
-    return Snd_CalcPan((Vec3 *)p->source, 0);
+    return Snd_CalcPan((VecFx32 *)p->source, 0);
 }
 
 // clear the Ramp

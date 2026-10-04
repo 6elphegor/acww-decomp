@@ -1,4 +1,5 @@
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "Unk_020d8c7c.h"
 #include "game/LightLevel.h"
 #include "gfx/Camera.h"
@@ -8,8 +9,6 @@
 #include "sys/ProcProfile.h"
 #include "gfx/DebugColor.h"
 #include "gfx/Rgb555.h"
-
-struct Unk_02064674_Vec { s32 x, y, z; };
 
 
 
@@ -60,7 +59,7 @@ struct FlashLight {
 
     /* 0x00 */ s32 flashKind;
     /* 0x04 */ u16 color;
-    /* 0x08 */ Unk_02064674_Vec direction;
+    /* 0x08 */ VecFx32 direction;
     /* 0x14 */ s32 flashPhase;
     /* 0x18 */ s32 isFalling;
     /* 0x1c */ s32 intensity;
@@ -77,7 +76,7 @@ struct SceneLight {
     void calcLampColor();
     void calcSwitchColor();
     void updateOutdoor();
-    void calcDirection(Unk_02064674_Vec *out);
+    void calcDirection(VecFx32 *out);
     s16 getTimeAngle();
 
     /* 0x00 */ s32 lightKind;
@@ -88,7 +87,7 @@ struct SceneLight {
     /* 0x12 */ s16 dirYaw;
     /* 0x14 */ LightSwitch lightSwitch;
     /* 0x34 */ u16 color;
-    /* 0x38 */ Unk_02064674_Vec direction;
+    /* 0x38 */ VecFx32 direction;
 };
 
 struct SceneLightDef {
@@ -173,10 +172,10 @@ void G3_MultMtx33(void *m);
 void NNS_G3dGlbLightVector(s32 id, s32 x, s32 y, s32 z);
 void NNS_G3dGlbLightColor(s32 id, u32 c);
 u16 Sky_GetLightColor(s32 a);
-void Vec_RotateX(Unk_02064674_Vec *v, s32 a);
-void Vec_RotateY(Unk_02064674_Vec *v, s32 a);
-s32 Vec_SafeNormalize(Unk_02064674_Vec *v);
-s32 VEC_Mag(Unk_02064674_Vec *v);
+void Vec_RotateX(VecFx32 *v, s32 a);
+void Vec_RotateY(VecFx32 *v, s32 a);
+s32 Vec_SafeNormalize(VecFx32 *v);
+s32 VEC_Mag(VecFx32 *v);
 s32 func_01ffcb0c(s32 a, s32 b);
 void Clock_GetMinuteHour(MinuteHour *t);
 void Time_AddHourMinute(MinuteHour a, MinuteHour b, MinuteHour *out);
@@ -189,7 +188,7 @@ void VEC_Normalize(void *a, void *b);
 void List_PushBack(void);
 void List_InsertAfter(void *list, void *node, void *prev);
 
-void Light_ClampDir(Unk_02064674_Vec *in, Unk_02064674_Vec *out);
+void Light_ClampDir(VecFx32 *in, VecFx32 *out);
 void Light_GetViewRotation(void *a, void *b);
 void SceneLight_InitStub(void *p);
 void LightSwitch_SetOff(s32 i, u32 v);
@@ -557,7 +556,7 @@ s32 FlashLight::reset()
 
 void FlashLight::update()
 {
-    Unk_02064674_Vec v;
+    VecFx32 v;
     switch (flashKind) {
     case 0:
         updateLightning();
@@ -743,7 +742,7 @@ s16 SceneLight::getTimeAngle()
     return -(((p[0] + p[1] * 60) << 15) / 0x5a0 - 0x4000);
 }
 
-extern "C" void Light_ClampDir(Unk_02064674_Vec *in, Unk_02064674_Vec *out)
+extern "C" void Light_ClampDir(VecFx32 *in, VecFx32 *out)
 {
     if (Vec_SafeNormalize(in)) {
         if (VEC_Mag(in) >= 0xff0) {
@@ -759,7 +758,7 @@ extern "C" void Light_ClampDir(Unk_02064674_Vec *in, Unk_02064674_Vec *out)
     }
 }
 
-void SceneLight::calcDirection(Unk_02064674_Vec *out)
+void SceneLight::calcDirection(VecFx32 *out)
 {
     switch (lightKind) {
     case 0:
@@ -779,7 +778,7 @@ void SceneLight::updateOutdoor()
 {
     Unk_02064674_Color c0;
     volatile u16 c1;
-    Unk_02064674_Vec v, w;
+    VecFx32 v, w;
     v.x = 0;
     v.y = 0;
     v.z = -0x1000;
@@ -845,7 +844,7 @@ void SceneLight::updateColorAndDir()
 {
     Unk_02064674_Color c0;
     volatile u16 c1;
-    Unk_02064674_Vec v, w;
+    VecFx32 v, w;
     switch (lightKind) {
     case 3:
         calcSwitchColor();

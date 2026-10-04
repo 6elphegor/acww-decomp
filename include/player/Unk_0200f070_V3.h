@@ -5,12 +5,6 @@
 // vector, 4x3 matrix, packed date (7/4/5 bits) and a u16 pair.
 #include "types.h"
 
-struct Unk_0200f070_V3 {
-    /* 0x0 */ s32 x;
-    /* 0x4 */ s32 y;
-    /* 0x8 */ s32 z;
-}; // size 0xc
-
 struct Unk_0200f070_M {
     /* 0x0 */ s32 v[12];
 }; // size 0x30

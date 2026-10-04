@@ -2,7 +2,6 @@
 // ov003 TU07 (helper 02214e04 + actor 022312f4): .text 0x02214dfc-0x022150ec
 #include "types.h"
 #include "actor/ActorProfile.h"
-#include "game/Unk_ov003_Vec.h"
 #include "talk/TalkWindowState.h"
 #include "sys/ProcBase.h"
 #include "gfx/MatTexVramTask.h"

@@ -5,12 +5,6 @@
 // unk_02004558.cpp / unk_02004558_extra.cpp. Declarations only; the vtable is emitted elsewhere.
 #include "types.h"
 
-struct Unk_0200ff08_Vec {
-    /* 0x0 */ s32 x;
-    /* 0x4 */ s32 y;
-    /* 0x8 */ s32 z;
-}; // size 0xc
-
 struct Unk_0200ff08_Obj {
     virtual void vfunc_00();
     virtual void vfunc_04();

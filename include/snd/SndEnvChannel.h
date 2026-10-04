@@ -2,9 +2,8 @@
 #define SND_SNDENVCHANNEL_H
 
 #include "types.h"
+#include "gfx/VecFx32.h"
 
-struct Vec3;
-struct Unk_02003a6c_Vec;
 
 // sound sequence handle (one word; functions in unk_020ede18.cpp and the NNS sound library, plain C names)
 struct SndSeqHandle {
@@ -22,7 +21,7 @@ public:
     virtual void vfunc_04();                // 0x020f36dc stop and release
     virtual void requestSustained(u32 v);   // 0x020f369c
     virtual void request(u32 v);            // 0x020f365c
-    virtual void update(Vec3 *pos);         // 0x020f3144 update
+    virtual void update(VecFx32 *pos);         // 0x020f3144 update
 
     // non-virtual wrappers of the slots, defined in main (src/main/unk_020039ec.cpp); the relative versions subtract
     // the camera eye position first
@@ -30,7 +29,7 @@ public:
     void callRequest(void *a);
     void callRequestSustained(void *a);
     void callUpdate(void *a);
-    void callUpdateRelative(Unk_02003a6c_Vec *pos);
+    void callUpdateRelative(VecFx32 *pos);
     void callReset();
 
     /* 0x04 */ SndSeqHandle h;

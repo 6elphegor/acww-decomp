@@ -2,11 +2,11 @@
 // ov004 TU26: .text 0x02229660-0x0222a374 (class RoomTelephone). The switch function at 0x02229c20
 // (RoomTelephone::onChoice) needs mwcc 1.2/base and is in the _switch file (object order).
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "room/RoomTelephoneActEntry.h"
 #include "gfx/DebugColor.h"
 #include "actor/ActorProfile.h"
 #include "actor/CharacterListNode.h"
-#include "game/Unk_ov004_02224ee4_Vec.h"
 #include "room/RoomTelephoneTypes.h"
 #include "gfx/AnimFrameCtrl.h"
 #include "room/RoomObjRes.h"
@@ -119,7 +119,7 @@ class ChoiceList;
 #define ChoiceList_loadTexts _ZN10ChoiceList9loadTextsEv
 #define ChoiceList_setEntry _ZN10ChoiceList8setEntryEiPKhiS1_PKci
 #define ChoiceList_reset _ZN10ChoiceList5resetEii
-#define TouchPicker_addBox _ZN11TouchPicker6addBoxEP12TouchPickBoxP4Vec3iiisih
+#define TouchPicker_addBox _ZN11TouchPicker6addBoxEP12TouchPickBoxP7VecFx32iiisih
 #define TouchPicker_pushBox _ZN11TouchPicker7pushBoxEP12TouchPickBox
 
 extern "C" {
@@ -170,7 +170,7 @@ s32 MenuCtrl_IsResultOk();
 BOOL MenuCtrl_OpenLauncher(u32 a);
 u32 Scene_GetCurrent();
 TouchPicker *Scene_GetTouchPicker();
-BOOL TouchPickResult_GetTarget(TouchPicker *obj, Unk_ov004_02229970_Xyz *out, s32 *a, u8 *b);
+BOOL TouchPickResult_GetTarget(TouchPicker *obj, VecFx32 *out, s32 *a, u8 *b);
 s32 TouchPick_GetTappedObject(TouchPicker *o, u32 a, u32 b);
 void *PlayerActor_GetActor(u32 x);
 void *PlayerActor_GetCharacter(s32 v);

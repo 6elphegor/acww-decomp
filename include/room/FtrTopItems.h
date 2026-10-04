@@ -4,6 +4,7 @@
 // Up to four items placed on top of a furniture object (0x022061b4; member at 0x188 of FtrActor).
 // Members defined in src/ov004/unk_ov004_02204f24.cpp.
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "room/FtrActorParts.h"
 #include "room/FtrTopItem.h"
 
@@ -15,7 +16,7 @@ struct FtrTopItems {
     void dropAll(FtrActor *o);
     BOOL pickUpAll(FtrActor *o);
     BOOL canPickUp(FtrActor *o);
-    BOOL add(u16 *id, Unk_ov004_02205d8c_Vec *pos);
+    BOOL add(u16 *id, VecFx32 *pos);
     void drawAll(FtrActor *o);
     FtrTopItem *get(u32 i);
     void clearAll();

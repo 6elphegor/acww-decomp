@@ -1,5 +1,6 @@
 // mwcc-flags: -str reuse
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "talk/TalkStartMsg.h"
 #include "talk/TalkWindowState.h"
 #include "npc/NpcAnimCtrl.h"
@@ -41,17 +42,17 @@
 #define NpcActionCtrl_getAction _ZN13NpcActionCtrl9getActionEv
 #define NpcMoveAnimSet_setStandAnim _ZN14NpcMoveAnimSet12setStandAnimEi
 #define NpcAnimCtrl_getAnimId _ZN11NpcAnimCtrl9getAnimIdEj
-#define NpcLookAt_setTarget _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih
+#define NpcLookAt_setTarget _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih
 #define NpcLookAt_getObstacleBits _ZN9NpcLookAt15getObstacleBitsEv
 #define Unk_0201acf8_getLevel _ZN12Unk_0201acf88getLevelEv
 #define NpcMoveCtrl_hasArrived _ZN11NpcMoveCtrl10hasArrivedEP9Characteri
 #define NpcMoveCtrl_hasNextLeg _ZN11NpcMoveCtrl10hasNextLegEv
 #define NpcMoveCtrl_resetDestination _ZN11NpcMoveCtrl16resetDestinationEv
-#define NpcMoveCtrl_setDestination _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3
+#define NpcMoveCtrl_setDestination _ZN11NpcMoveCtrl14setDestinationEP7VecFx32
 #define NpcMoveCtrl_getDestination _ZN11NpcMoveCtrl14getDestinationEv
 #define NpcFootstepFx_enableFootsteps _ZN13NpcFootstepFx15enableFootstepsEv
 #define PeteFallState_hasFallPos _ZN13PeteFallState10hasFallPosEv
-#define PeteFallState_getPos _ZN13PeteFallState6getPosEP17Unk_02086ec4_Vec3
+#define PeteFallState_getPos _ZN13PeteFallState6getPosEP7VecFx32
 #define PeteFallState_clear _ZN13PeteFallState5clearEv
 #define NpcActor_getPlayerActor _ZN8NpcActor14getPlayerActorEj
 #define NpcActor_getAngleToPlayer _ZN8NpcActor16getAngleToPlayerEj
@@ -61,10 +62,6 @@
 class SpNpcPete;
 class SpNpcPeteTalk;
 struct TalkStartMsg;
-
-struct Unk_ov075_Vec3 {
-    s32 x, y, z;
-};
 
 struct SpNpcPeteSidestepPos {
     s32 v[4];
@@ -97,7 +94,7 @@ s32 NpcMoveCtrl_hasArrived(void *p, void *q, s32 a);
 s32 NpcMoveCtrl_hasNextLeg(void *p);
 void NpcMoveCtrl_resetDestination(void *p);
 void NpcMoveCtrl_setDestination(void *p, void *q);
-Unk_ov075_Vec3 *NpcMoveCtrl_getDestination(void *p);
+VecFx32 *NpcMoveCtrl_getDestination(void *p);
 void Npc_RotateOffsetXZ(void *out, void *a, void *b, s32 c);
 s32 Npc_IsPosBlocked(void *p);
 s32 Math_AngleXZ(void *a, void *b);
@@ -123,7 +120,7 @@ extern s32 data_020c6cf0;
 extern u8 gVec3Zero[];
 extern u8 gRandom[];
 extern void *gCamera;
-extern Unk_ov075_Vec3 gCameraLookAt;
+extern VecFx32 gCameraLookAt;
 extern s16 data_02135f44[];
 
 void SpNpcPete_ChangeAct(void *self, s32 state);
@@ -157,7 +154,6 @@ public:
 
 
 
-struct Unk_020d77a4_Vec3;
 class ActorTalkRequest;
 
 
@@ -184,7 +180,7 @@ public:
     BOOL mainAct05();
     BOOL tryAvoidObstacle();
     BOOL steerAroundObstacle();
-    BOOL findSidestepPos(Unk_ov075_Vec3 *out, void *p);
+    BOOL findSidestepPos(VecFx32 *out, void *p);
     BOOL pickWanderTarget(s32 *px, s32 *pz);
     s32 isInCameraBox();
     BOOL setupAct05();
@@ -372,8 +368,8 @@ BOOL SpNpcPete::mainAct04() {
     void *r5 = TownSessionState_GetPeteFall(TownSessionState_Get());
     if (PeteFallState_hasFallPos(r5) != 0) {
         PeteFallState_getPos(r5, &position);
-        Unk_ov075_Vec3 *s = (Unk_ov075_Vec3 *)&position;
-        Unk_ov075_Vec3 *d = (Unk_ov075_Vec3 *)&prevPosition;
+        VecFx32 *s = (VecFx32 *)&position;
+        VecFx32 *d = (VecFx32 *)&prevPosition;
         d->x = position.x;
         d->y = s->y;
         d->z = s->z;
@@ -393,8 +389,8 @@ BOOL SpNpcPete::setupAct05() {
 }
 
 extern "C" s32 SpNpcPete_IsInFocusBox(void *self, void *a, void *b) {
-    Unk_ov075_Vec3 *pa = (Unk_ov075_Vec3 *)a;
-    Unk_ov075_Vec3 *pb = (Unk_ov075_Vec3 *)b;
+    VecFx32 *pa = (VecFx32 *)a;
+    VecFx32 *pb = (VecFx32 *)b;
     s32 r = 0;
     BOOL f2 = FALSE;
     BOOL f1 = FALSE;
@@ -421,10 +417,10 @@ extern "C" s32 SpNpcPete_IsInFocusBox(void *self, void *a, void *b) {
 }
 
 s32 SpNpcPete::isInCameraBox() {
-    Unk_ov075_Vec3 *p = (Unk_ov075_Vec3 *)&position;
+    VecFx32 *p = (VecFx32 *)&position;
     s32 r = 0;
     if (gCamera != 0) {
-        Unk_ov075_Vec3 v;
+        VecFx32 v;
         v.x = gCameraLookAt.x;
         v.y = gCameraLookAt.y;
         v.z = gCameraLookAt.z;
@@ -435,7 +431,7 @@ s32 SpNpcPete::isInCameraBox() {
 
 BOOL SpNpcPete::pickWanderTarget(s32 *px, s32 *pz) {
     BOOL r = FALSE;
-    Unk_ov075_Vec3 v;
+    VecFx32 v;
     s32 i;
     v.x = 0;
     v.y = 0;
@@ -457,7 +453,7 @@ BOOL SpNpcPete::pickWanderTarget(s32 *px, s32 *pz) {
     return r;
 }
 
-BOOL SpNpcPete::findSidestepPos(Unk_ov075_Vec3 *out, void *p) {
+BOOL SpNpcPete::findSidestepPos(VecFx32 *out, void *p) {
     BOOL r = FALSE;
     SpNpcPeteSidestepPos t;
     Npc_RotateOffsetXZ(&t, &position, p, moveAngleY);
@@ -475,7 +471,7 @@ BOOL SpNpcPete::steerAroundObstacle() {
     void *b = &moveCtrl;
     s32 r6 = NpcLookAt_getObstacleBits(&obstacleProbe);
     BOOL r = FALSE;
-    Unk_ov075_Vec3 t;
+    VecFx32 t;
     if (NpcMoveCtrl_hasArrived(b, this, 1) == 0) {
         switch (r6) {
         case 3:
@@ -527,10 +523,10 @@ BOOL SpNpcPete::mainAct05() {
                 if (Unk_0201acf8_getLevel(&unk_3aa) == 2) {
                     Unk_ov075_0227188c_CallA();
                 } else if ((Random_Next(gRandom) & 7) == 0) {
-                    Unk_ov075_Vec3 a;
-                    a.x = ((Unk_ov075_Vec3 *)gVec3Zero)->x;
-                    a.y = ((Unk_ov075_Vec3 *)gVec3Zero)->y;
-                    a.z = ((Unk_ov075_Vec3 *)gVec3Zero)->z;
+                    VecFx32 a;
+                    a.x = ((VecFx32 *)gVec3Zero)->x;
+                    a.y = ((VecFx32 *)gVec3Zero)->y;
+                    a.z = ((VecFx32 *)gVec3Zero)->z;
                     if (pickWanderTarget(&a.x, &a.z) != 0) {
                         r6 = Math_AngleXZ(&position, &a);
                         if (NpcActor_IsFrontAngle((s16)(r6 - rotY)) != 0) {
@@ -556,8 +552,8 @@ BOOL SpNpcPete::mainAct05() {
                         if (moveTimer == 0) {
                             Unk_ov075_0227188c_CallA();
                         } else {
-                            Unk_ov075_Vec3 b;
-                            Unk_ov075_Vec3 *q = NpcMoveCtrl_getDestination(&moveCtrl);
+                            VecFx32 b;
+                            VecFx32 *q = NpcMoveCtrl_getDestination(&moveCtrl);
                             b.x = q->x;
                             b.y = q->y;
                             b.z = q->z;

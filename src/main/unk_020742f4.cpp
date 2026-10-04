@@ -20,10 +20,6 @@
 
 // ======== types of unk_02075558.cpp ========
 
-struct Unk_02075bc4_Pt {
-    s32 x, y;
-};
-
 
 struct VillagerShirtRecvStackPad {
     s32 v[1];
@@ -82,6 +78,7 @@ public:
 
 #include "sys/OverlayHandle.h"
 #include "game/NibblePair.h"
+#include "gfx/VecFx32.h"
 
 // ======== unk_02077a54.cpp ========
 namespace n7 {
@@ -2446,10 +2443,10 @@ extern "C" {
 u16 *BlockMap_GetItemPtr(void *, s32, s32, s32, s32, u32);
 }
 extern "C" {
-s32 PendingUnit_IndexAt(Unk_02075bc4_Pt *, u32);
+s32 PendingUnit_IndexAt(Vec2 *, u32);
 }
 extern "C" {
-s32 Field_IsUnitClearOfOthersForAid(Unk_02075bc4_Pt *, void *);
+s32 Field_IsUnitClearOfOthersForAid(Vec2 *, void *);
 }
 extern "C" {
 PendingUnit *PendingUnit_Get();
@@ -2567,7 +2564,7 @@ extern "C" void CommRecv_ItemActionRequest(s32 a, s32 b, s32 c, void *d) {
     void *grid;
     volatile u16 c1, b1, c2, b2, a1, a2;
     FieldActionRequestMsg buf;
-    Unk_02075bc4_Pt pt, pt2;
+    Vec2 pt, pt2;
     grid = TownBlockMap_Get();
     if (grid != NULL) {
         BOOL ok;

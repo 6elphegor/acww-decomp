@@ -1,10 +1,9 @@
 // mwcc-version: 1.2/base
 #include "types.h"
-#include "game/Unk_02003a6c_Vec.h"
+#include "gfx/VecFx32.h"
 #include "snd/SndEnvChannel.h"
 #include "snd/SndSeEmitter.h"
 #include "gfx/Mtx43.h"
-#include "field/Unk_ov003_02217910_V3D.h"
 #include "gfx/Model.h"
 #include "gfx/DebugColor.h"
 
@@ -12,8 +11,6 @@
 
 
 
-
-typedef Unk_02003a6c_Vec Unk_ov003_02217910_V3;
 
 
 
@@ -58,7 +55,7 @@ extern s32 data_020c8cbc;
 extern u8 data_0213b91c[];
 extern u8 data_0213b938[];
 
-s32 Vec_DistXZ(Unk_ov003_02217910_V3 *a, Unk_ov003_02217910_V3 *b);
+s32 Vec_DistXZ(VecFx32 *a, VecFx32 *b);
 s32 BgMgt_GetCount();
 }
 Unk_ov003_022179b8_Ent BgMgt_GetEntry(u8 *obj, s32 i);
@@ -78,7 +75,7 @@ DebugColor data_ov003_02235464(20, 24, 24, 31);
 // ---- functions ----
 extern "C" {
 void FieldGround_ResetSoundSrc(GroundSoundSrc *r);
-s32 FieldGround_ConsiderSoundSrc(GroundSoundSrc *r, s32 d, Unk_ov003_02217910_V3 *p, s32 k);
+s32 FieldGround_ConsiderSoundSrc(GroundSoundSrc *r, s32 d, VecFx32 *p, s32 k);
 void *FieldGround_GetBlockBgObjects(GroundSoundSrc *r, u32 x, u32 y);
 void *FieldGround_GetBlockAcre(GroundSoundSrc *r, u32 x, u32 y);
 }
@@ -120,7 +117,7 @@ extern "C" void *FieldGround_GetBlockBgObjects(GroundSoundSrc *r, u32 x, u32 y) 
     return 0;
 }
 
-extern "C" GroundSoundSrc *FieldGround_FindSoundSrc(GroundSoundSrc *out, Unk_ov003_02217910_V3 *pos) {
+extern "C" GroundSoundSrc *FieldGround_FindSoundSrc(GroundSoundSrc *out, VecFx32 *pos) {
     u8 *obj;
     u32 n;
     FieldGround_ResetSoundSrc(out);
@@ -129,7 +126,7 @@ extern "C" GroundSoundSrc *FieldGround_FindSoundSrc(GroundSoundSrc *out, Unk_ov0
     s32 dy, dx;
     for (dy = -1; dy <= 1; dy++) {
         for (dx = -1; dx <= 1; dx++) {
-            Unk_ov003_02217910_V3D base;
+            VecFx32CtorDtor base;
             s32 xx = cx + dx;
             base.x = xx << 17;
             base.z = (cz + dy) << 17;
@@ -144,7 +141,7 @@ extern "C" GroundSoundSrc *FieldGround_FindSoundSrc(GroundSoundSrc *out, Unk_ov0
                     case 15:
                     case 17:
                     case 18: {
-                        Unk_ov003_02217910_V3 p;
+                        VecFx32 p;
                         p.x = base.x + e.x;
                         p.y = 0;
                         p.z = base.z + e.z;
@@ -158,7 +155,7 @@ extern "C" GroundSoundSrc *FieldGround_FindSoundSrc(GroundSoundSrc *out, Unk_ov0
     return out;
 }
 
-extern "C" BOOL FieldGround_ConsiderSoundSrc(GroundSoundSrc *r, s32 d, Unk_ov003_02217910_V3 *p, s32 k) {
+extern "C" BOOL FieldGround_ConsiderSoundSrc(GroundSoundSrc *r, s32 d, VecFx32 *p, s32 k) {
     if (d < r->distance) {
         r->posX = p->x;
         r->posY = p->y;
@@ -206,8 +203,8 @@ extern "C" void FieldGround_ResetEnvChannel(SndEnvChannel *p) {
     p->callReset();
 }
 
-extern "C" void FieldGround_PlayEnvSe(SndEnvChannel *p, Unk_ov003_02217910_V3 *v, void *a) {
-    Unk_ov003_02217910_V3 t;
+extern "C" void FieldGround_PlayEnvSe(SndEnvChannel *p, VecFx32 *v, void *a) {
+    VecFx32 t;
     t.x = v->x;
     t.y = v->y;
     t.z = v->z;

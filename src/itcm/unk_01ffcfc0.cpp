@@ -2,7 +2,7 @@
 // I004c: itcm 0x01ffcfc0-0x01ffd0b4 (4 ARM functions): tree-node search helpers and two vector helpers. mwcc 1.2/base, C++, ARM, -O4,p.
 // The range ends at 0x01ffd0b4 where the ptmf constants (data in .text, 0x01ffd0b4-0x01ffd0e4) begin.
 #include "types.h"
-#include "game/Vec3.h"
+#include "gfx/VecFx32.h"
 #include "sys/TreeNode.h"
 
 
@@ -12,7 +12,7 @@ TreeNode *func_01ffcfc0(TreeNode *n);
 }
 
 // VEC_Add
-extern "C" void func_01ffd070(Vec3 *out, Vec3 *a, Vec3 *b) {
+extern "C" void func_01ffd070(VecFx32 *out, VecFx32 *a, VecFx32 *b) {
     s32 ax = a->x, bx = b->x, az = a->z, bz = b->z, ay = a->y, by = b->y;
     out->x = ax + bx;
     out->y = ay + by;
@@ -20,7 +20,7 @@ extern "C" void func_01ffd070(Vec3 *out, Vec3 *a, Vec3 *b) {
 }
 
 // squared distance in fx32 (s64 >> 12)
-extern "C" s64 func_01ffd028(Vec3 *a, Vec3 *b) {
+extern "C" s64 func_01ffd028(VecFx32 *a, VecFx32 *b) {
     s64 s = (s64)(a->x - b->x) * (a->x - b->x);
     s += (s64)(a->y - b->y) * (a->y - b->y);
     s += (s64)(a->z - b->z) * (a->z - b->z);

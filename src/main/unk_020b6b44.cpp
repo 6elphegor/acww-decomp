@@ -1,6 +1,6 @@
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "game/Unk_0202f2ac_V3.h"
-#include "game/Vec3.h"
 #include "game/Basis.h"
 #include "gfx/Mtx43.h"
 #include "game/TouchPickTriangle.h"
@@ -25,28 +25,28 @@ extern s32 data_020c8cb8;
 extern Mtx43 gViewMtx;
 s32 _ZN6Camera9getFovTanEv(s32 a);
 s32 FX_Div(s32 a, s32 b);
-void Vec_SafeNormalize(Vec3 *v);
-void Vec_Scale(Vec3 *v, s32 s);
-void func_01ffd070(Vec3 *out, Vec3 *a, Vec3 *b);
+void Vec_SafeNormalize(VecFx32 *v);
+void Vec_Scale(VecFx32 *v, s32 s);
+void func_01ffd070(VecFx32 *out, VecFx32 *a, VecFx32 *b);
 void MTX_Inverse43(Mtx43 *a, Mtx43 *b);
-void MTX_MultVec43(Vec3 *v, Mtx43 *m, Vec3 *out);
-void Vec_Sub(Vec3 *out, Vec3 *a, Vec3 *b);
-void Vec_RotateY(Vec3 *v, s32 angle);
-void Vec_RotateX(Vec3 *v, s32 angle);
-s32 WorldCurve_ToCurved(Vec3 *out, Vec3 *in);
+void MTX_MultVec43(VecFx32 *v, Mtx43 *m, VecFx32 *out);
+void Vec_Sub(VecFx32 *out, VecFx32 *a, VecFx32 *b);
+void Vec_RotateY(VecFx32 *v, s32 angle);
+void Vec_RotateX(VecFx32 *v, s32 angle);
+s32 WorldCurve_ToCurved(VecFx32 *out, VecFx32 *in);
 }
 
 struct Pair {
-    Vec3 p, q;
+    VecFx32 p, q;
 };
 
-extern "C" BOOL TouchPick_HitCylinder(Vec3 *p, Vec3 *q, Vec3 *r, s32 a, s32 b) {
-    Vec3 v28;
+extern "C" BOOL TouchPick_HitCylinder(VecFx32 *p, VecFx32 *q, VecFx32 *r, s32 a, s32 b) {
+    VecFx32 v28;
     s32 ang = WorldCurve_ToCurved(&v28, r);
     s32 sn, cs;
     s32 z;
     s32 y, y2, y3;
-    Vec3 v34, v40, v4c;
+    VecFx32 v34, v40, v4c;
     z = q->z;
     y = q->y;
     v34.x = q->x;
@@ -70,9 +70,9 @@ extern "C" BOOL TouchPick_HitCylinder(Vec3 *p, Vec3 *q, Vec3 *r, s32 a, s32 b) {
     y3 = v4c.y;
     v4c.y = func_01ffcb0c(cs, y3) - func_01ffcb0c(sn, z);
     v4c.z = func_01ffcb0c(sn, y3) + func_01ffcb0c(cs, z);
-    CollisionCylinderX o((Unk_0202f660_V3 *)&v4c, a, b);
-    if (o.clipSegmentCaps((Unk_0202f660_V3 *)&v40, (Unk_0202f660_V3 *)&v34) ||
-        o.clipSegmentSideBounded((Unk_0202f660_V3 *)&v40, (Unk_0202f660_V3 *)&v34)) {
+    CollisionCylinderX o((VecFx32 *)&v4c, a, b);
+    if (o.clipSegmentCaps((VecFx32 *)&v40, (VecFx32 *)&v34) ||
+        o.clipSegmentSideBounded((VecFx32 *)&v40, (VecFx32 *)&v34)) {
         Vec_RotateX(&v40, ang);
         s32 rz = v40.z, ry = v40.y, rx = v40.x;
         p->x = rx;
@@ -84,11 +84,11 @@ extern "C" BOOL TouchPick_HitCylinder(Vec3 *p, Vec3 *q, Vec3 *r, s32 a, s32 b) {
 }
 
 extern "C" void TouchPick_CalcRay(Basis *out, s32 x, s32 z) {
-    Vec3 zero;
+    VecFx32 zero;
     Pair t;
-    Vec3 c, d, e;
+    VecFx32 c, d, e;
     Mtx43 m;
-    Vec3 f;
+    VecFx32 f;
     zero.x = 0;
     zero.y = 0;
     zero.z = 0;
@@ -117,8 +117,8 @@ TouchPickBox::TouchPickBox() {
 TouchPickBox::~TouchPickBox() {
 }
 
-BOOL TouchPickBox::build(Vec3 *pos, s32 w, s32 h, s32 d, s32 angle, s32 e, u8 f) {
-    Vec3 c[8];
+BOOL TouchPickBox::build(VecFx32 *pos, s32 w, s32 h, s32 d, s32 angle, s32 e, u8 f) {
+    VecFx32 c[8];
     s32 hw = w >> 1;
     c[0].x = c[4].x = c[1].x = c[5].x = -hw;
     c[2].x = c[6].x = c[3].x = c[7].x = hw;

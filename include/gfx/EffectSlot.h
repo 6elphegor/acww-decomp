@@ -2,15 +2,15 @@
 #define GFX_EFFECTSLOT_H
 
 #include "types.h"
+#include "gfx/VecFx32.h"
 
-struct Unk_020904f0_Vec;
 
 // 0x1c-byte effect/slot entry (32 of them in EffectManager gEffectManager, plus one scratch entry at data_021d0830).
 // Members defined in src/main/unk_02090268.cpp.
 class EffectSlot {
 public:
     void clear();
-    void set(s32 id, u32 type, Unk_020904f0_Vec *pos, s16 *a, s16 *b, s16 v);
+    void set(s32 id, u32 type, VecFx32 *pos, s16 *a, s16 *b, s16 v);
 
     /* 0x00 */ s32 x;
     /* 0x04 */ s32 y;

@@ -1,8 +1,8 @@
 // mwcc-version: 1.2/sp2
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "actor/ActorProfile.h"
 #include "actor/CharacterListNode.h"
-#include "game/Unk_ov004_02224ee4_Vec.h"
 #include "gfx/AnimFrameCtrl.h"
 #include "room/RoomObjRes.h"
 #include "room/RoomObjTex.h"
@@ -69,7 +69,7 @@ public:
     virtual BOOL onExecute();
     virtual BOOL onDraw();
     virtual BOOL changeSyncState(u32 v);
-    virtual void getSoundPos(Unk_ov004_02224ee4_Vec *out);
+    virtual void getSoundPos(VecFx32 *out);
 
     void removeCollision();
     void initCollision();
@@ -88,7 +88,7 @@ public:
 };
 
 typedef RoomObjActor M;
-typedef Unk_ov004_02224ee4_Vec Vec;
+typedef VecFx32 Vec;
 
 
 extern "C" BarberMachine *BarberMachine_Create();

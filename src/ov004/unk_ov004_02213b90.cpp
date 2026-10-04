@@ -5,7 +5,7 @@
 #include "Unk_020d8c7c.h"
 #include "gfx/DebugColor.h"
 #include "actor/ActorProfile.h"
-#include "game/Unk_ov004_022091fc_Vec.h"
+#include "gfx/VecFx32.h"
 #include "game/Unk_ov004_022146ec_Bits.h"
 #include "net/CommManager.h"
 #include "talk/TalkWindowState.h"
@@ -39,7 +39,7 @@ class TouchPicker;
 #define Character_detachTalkRequest _ZN9Character17detachTalkRequestEi
 #define Character_attachTalkRequest _ZN9Character17attachTalkRequestEi
 #define Character_setCharId _ZN9Character9setCharIdEj
-#define TouchPicker_addSphere _ZN11TouchPicker9addSphereEP15TouchPickSphereP4Vec3S3_ih
+#define TouchPicker_addSphere _ZN11TouchPicker9addSphereEP15TouchPickSphereP7VecFx32S3_ih
 #define MuseumData_isDonated _ZN10MuseumData9isDonatedEPt
 #define MuseumData_getDonationState _ZN10MuseumData16getDonationStateEPt
 #define MuseumData_getDonorName _ZN10MuseumData12getDonorNameEiPt

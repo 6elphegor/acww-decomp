@@ -2,15 +2,11 @@
 #define PLAYER_PLAYERPICKUPARGS_H
 
 #include "types.h"
+#include "gfx/VecFx32.h"
 
 // Arguments of the player pick-up action 0x19: PlayerNetPickUpArgs is their layout in PlayerActor::netData
 // (PlayerActor_NetWritePickUp / NetReadPickUp), PlayerPickUpArgs the payload of the PlayerActionRequest
 // (PlayerActor_SetArgsPickUp, read by setupPickUp); all in src/main/unk_02004558.cpp. Plus the unit position pair.
-
-struct Unk_0200b144_Pos {
-    /* 0x0 */ s32 x;
-    /* 0x4 */ s32 y;
-};
 
 struct PlayerNetPickUpArgs {
     /* 0x0 */ u8 commitUnit;

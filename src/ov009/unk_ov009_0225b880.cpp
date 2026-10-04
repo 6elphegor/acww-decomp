@@ -1,13 +1,11 @@
 // mwcc-version: 1.2/sp2
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "game/Unk_0202f2ac_V3.h"
 #include "actor/CharacterListNode.h"
-#include "game/Unk_ov009_0225b880_Vec3.h"
-#include "game/Vec3.h"
 #include "snd/BgmSceneFade.h"
 #include "game/StrBSizeData.h"
 #include "town/BuildingResources.h"
-#include "game/Unk_02031e10_Vec.h"
 #include "gfx/Mtx43.h"
 #include "town/Unk_ov009_0225b880.h"
 #include "game/Unk_ov009_0225cb4c_V3.h"
@@ -85,7 +83,7 @@ typedef BOOL (BuildingActor::*Unk_ov009_0225c360_Fn)();
 #define func_0203e650 _ZN9Character9preDeleteEv
 #define Character_setCharId _ZN9Character9setCharIdEj
 #define SndSeEmitter_callStop _ZN12SndSeEmitter8callStopEv
-#define SndSeEmitter_callUpdateRelative _ZN12SndSeEmitter18callUpdateRelativeEP16Unk_02003a6c_Vec
+#define SndSeEmitter_callUpdateRelative _ZN12SndSeEmitter18callUpdateRelativeEP7VecFx32
 #define SndSeEmitter_callInit _ZN12SndSeEmitter8callInitEv
 #define TriangleTrigger_getCenter _ZN15TriangleTrigger9getCenterEv
 #define AnimModel_attachAnim _ZN9AnimModel10attachAnimEv
@@ -129,7 +127,7 @@ extern char sBuildingTexPath[];
 extern char sBuildingLightTexPath[];
 extern BuildingResources sBuildingResources[];
 extern u32 gCamera;
-extern Unk_ov009_0225b880_Vec3 gCameraLookAt;
+extern VecFx32 gCameraLookAt;
 extern u8 data_020d0a7c[];
 extern void *gFieldStructureHeap;
 extern void *gCurrentHeap;
@@ -141,7 +139,7 @@ void *func_ov009_0225b934(void *self);
 void _ZN12SndSeEmitterD2Ev(void *self);
 extern u8 data_0213b9c4[];
 void func_ov009_0225b94c(void *self);
-void _ZN17BuildingSeEmitter11setPositionEP23Unk_ov009_0225b880_Vec3(void *self, Unk_ov009_0225b880_Vec3 *v, u32 extra);
+void _ZN17BuildingSeEmitter11setPositionEP7VecFx32(void *self, VecFx32 *v, u32 extra);
 StrBSizeData *StrBSize_Get(u16 *p);
 
 void BuildingInfo_Copy(void *self, const u8 *src);
@@ -162,7 +160,7 @@ s32 BuildingLights_isLit(void *);
 void AnimModel_drawAnimated(void *, u32);
 s32 Math_Atan2(s32, s32);
 s32 func_01ffcb0c(s32, s32);
-void func_01ffd070(Unk_ov009_0225b880_Vec3 *, void *, Unk_ov009_0225b880_Vec3 *);
+void func_01ffd070(VecFx32 *, void *, VecFx32 *);
 void *TriangleTrigger_getCenter(void *);
 BOOL Item_IsFurniture(u16 *);
 s32 Item_GetFurnitureIndex(u16 *);
@@ -184,7 +182,7 @@ BOOL PlayerActor_LocalRequestDoorApproach(s32 *, s32 *, s16 *);
 s32 Scene_GetCurrent();
 s32 SceneWarp_RequestExit(void *, s32);
 s32 Ground_GetDefaultY(u32);
-void Scene_SetTownReturnPos(void *, s32, Unk_ov009_0225b880_Vec3 *, u32, s32, u32, u32);
+void Scene_SetTownReturnPos(void *, s32, VecFx32 *, u32, s32, u32, u32);
 void Building_SetLastEntranceType();
 
 s32 BuildingOccupancy_GetAnswer(u32);
@@ -266,8 +264,8 @@ void ModelSlotHandle_Init(void *);
 void *func_021065dc();
 u32 func_021065f8(void *, u32);
 void *NNS_G3dGetMdlSet();
-void MTX_MultVec43(s32, s32, Unk_ov009_0225b880_Vec3 *);
-void WorldCurve_FromCurved(void *, Unk_ov009_0225b880_Vec3 *);
+void MTX_MultVec43(s32, s32, VecFx32 *);
+void WorldCurve_FromCurved(void *, VecFx32 *);
 void __cxa_vec_cleanup(void *, s32, s32, void (*)(BuildingResources *));
 
 void Building_LocalToWorld(void *p, s32 a, s32 b);
@@ -334,7 +332,7 @@ extern "C" void BuildingActor_Create() {
 }
 
 extern "C" void Building_LocalToWorld(void *p, s32 a, s32 b) {
-    Unk_ov009_0225b880_Vec3 v;
+    VecFx32 v;
     MTX_MultVec43(a, b, &v);
     WorldCurve_FromCurved(p, &v);
 }
@@ -427,7 +425,7 @@ BOOL BuildingActor::onCreate() {
     struct {
         s32 v[12];
     } m;
-    Unk_ov009_0225b880_Vec3 v;
+    VecFx32 v;
     BuildingList_Add(this);
     gridX = position.x >> 13;
     gridZ = position.z >> 13;
@@ -488,9 +486,9 @@ BOOL BuildingActor::preExecute() {
 }
 
 BOOL BuildingActor::postExecute(u32 a) {
-    Unk_ov009_0225da90_Vec3 v = getSoundPos();
+    VecFx32Ctor v = getSoundPos();
     u16 *pp = getItemId();
-    _ZN17BuildingSeEmitter11setPositionEP23Unk_ov009_0225b880_Vec3(seEmitter, (Unk_ov009_0225b880_Vec3 *)&v, *pp);
+    _ZN17BuildingSeEmitter11setPositionEP7VecFx32(seEmitter, (VecFx32 *)&v, *pp);
     if (colliderFlags & 2) {
         colliderFlags |= 8;
     } else {
@@ -924,9 +922,9 @@ void BuildingActor::createShadows(Mtx43 *m) {
                 }
                 BuildingShadowEntry *it = e->shadowTable->getEntry(i);
                 Unk_ov009_0225cb4c_V3 v(it->offsetX, zero, it->offsetZ);
-                Unk_ov009_0225b880_Vec3 out;
+                VecFx32 out;
                 Building_LocalToWorld(&out, (s32)&v, (s32)m);
-                p->build((Vec3 *)&out, it->size, it->shift, it->texIndex, it->texLeft, it->texRight, (s32)heap);
+                p->build((VecFx32 *)&out, it->size, it->shift, it->texIndex, it->texLeft, it->texRight, (s32)heap);
             }
         }
     }
@@ -942,9 +940,9 @@ void BuildingActor::updateShadows(Mtx43 *m) {
             for (; (u32)i < e->shadowTable->getCount(); p++, i++) {
                 BuildingShadowEntry *it = e->shadowTable->getEntry(i);
                 Unk_ov009_0225cb4c_V3 v(it->offsetX, zero, it->offsetZ);
-                Unk_ov009_0225b880_Vec3 out;
+                VecFx32 out;
                 Building_LocalToWorld(&out, (s32)&v, (s32)m);
-                p->draw((Vec3 *)&out);
+                p->draw((VecFx32 *)&out);
             }
         }
     }
@@ -972,9 +970,9 @@ void BuildingActor::createColliders(Mtx43 *m) {
             TouchPickTriangle *e6;
             u8 k;
             u32 i;
-            Unk_ov009_0225b880_Vec3 a, b, c;
-            Unk_ov009_0225b880_Vec3 wa, wb, wc;
-            Unk_ov009_0225b880_Vec3 la, lb, lc;
+            VecFx32 a, b, c;
+            VecFx32 wa, wb, wc;
+            VecFx32 la, lb, lc;
             collisionShapes = (TouchPickTriangle *)Heap_Alloc(gFieldStructureHeap, colliderCount * 0x44);
             colliders = (BuildingCollider *)Heap_Alloc(gFieldStructureHeap, colliderCount * 0x54);
             e4 = colliders;
@@ -989,11 +987,11 @@ void BuildingActor::createColliders(Mtx43 *m) {
                     func_01ffd070(&lb, &position, &b);
                     func_01ffd070(&lc, &position, &c);
                     e6 = new (e6) TouchPickTriangle;
-                    Scene_GetTouchPicker()->addTriangle(e6, (Vec3 *)&wa, (Vec3 *)&wb, (Vec3 *)&wc, 7, k);
+                    Scene_GetTouchPicker()->addTriangle(e6, (VecFx32 *)&wa, (VecFx32 *)&wb, (VecFx32 *)&wc, 7, k);
                     e4 = new (e4) BuildingCollider;
                     e4->building = this;
                     e4->entranceType = getEntranceType();
-                    e4->setupTrigger((Unk_02031e10_Vec *)&la, (Unk_02031e10_Vec *)&lb, (Unk_02031e10_Vec *)&lc, 0x3000);
+                    e4->setupTrigger((VecFx32 *)&la, (VecFx32 *)&lb, (VecFx32 *)&lc, 0x3000);
                     TriangleTrigger_Register(e4);
                 }
             }
@@ -1038,7 +1036,7 @@ BuildingShadowEntry *BuildingShadowTable::getEntry(u32 i) {
 
 BuildingCollider::BuildingCollider() {}
 
-void BuildingCollider::onActorNear(Unk_ov009_0225b880_Vec3 *a, Actor *o, s32 off) {
+void BuildingCollider::onActorNear(VecFx32 *a, Actor *o, s32 off) {
     if (isPlayerAtDoor(a, off, o)) {
         building->colliderFlags |= 2;
         if (o->speed >= 0x200) {
@@ -1048,12 +1046,12 @@ void BuildingCollider::onActorNear(Unk_ov009_0225b880_Vec3 *a, Actor *o, s32 off
 }
 
 // ---------------------------------------------------------------- element
-BOOL BuildingCollider::isPlayerAtDoor(Unk_ov009_0225b880_Vec3 *v, s32 off, Actor *o) {
+BOOL BuildingCollider::isPlayerAtDoor(VecFx32 *v, s32 off, Actor *o) {
     s16 ang;
-    Unk_ov009_0225b880_Vec3 p;
-    Unk_ov009_0225b880_Vec3 a;
-    Unk_ov009_0225b880_Vec3 b;
-    Unk_ov009_0225b880_Vec3 c;
+    VecFx32 p;
+    VecFx32 a;
+    VecFx32 b;
+    VecFx32 c;
     if (o != NULL) {
         if (building != NULL) {
             if (Unk_ov009_0225cc24_IsNine(o->profile)) {
@@ -1229,7 +1227,7 @@ BOOL BuildingActor::enterDoorOpenIn() {
                     }
                 }
             }
-            Unk_ov009_0225da90_Vec3 msg = getSoundPos();
+            VecFx32Ctor msg = getSoundPos();
             Melody_PlayAt(&msg, m);
         }
         return TRUE;
@@ -1311,7 +1309,7 @@ BOOL BuildingActor::enterDoorOpenOut() {
                     }
                 }
             }
-            Unk_ov009_0225da90_Vec3 msg = getSoundPos();
+            VecFx32Ctor msg = getSoundPos();
             Melody_PlayAt(&msg, m);
         }
         return TRUE;
@@ -1492,7 +1490,7 @@ void BuildingActor::execEntry04() {
 BOOL BuildingActor::enterEntry05() {
     s16 ang;
     s32 p4;
-    Unk_ov009_0225b880_Vec3 v;
+    VecFx32 v;
     if (getDoorPos(&v, &ang)) {
         p4 = v.x;
         if (alignsPlayerToDoor() == 0) {
@@ -1545,7 +1543,7 @@ void BuildingActor::execEntryWarp() {
     if (warpTimer >= lim) {
         s32 r = getInteriorScene();
         s16 ang;
-        Unk_ov009_0225b880_Vec3 v;
+        VecFx32 v;
         if (getDoorPos(&v, &ang)) {
             if (SceneWarp_RequestExit(Scene_GetWarpRequest(), r)) {
                 v.y = Ground_GetDefaultY(0);
@@ -1577,7 +1575,7 @@ BOOL BuildingActor::enterEntry08() { return TRUE; }
 void BuildingActor::execEntry08() {
     s16 ang;
     s32 p4;
-    Unk_ov009_0225b880_Vec3 v;
+    VecFx32 v;
     if (getDoorPos(&v, &ang)) {
         p4 = v.x;
         if (alignsPlayerToDoor() == 0) {
@@ -1668,11 +1666,11 @@ void BuildingActor::updateMatrix() {
     }
 }
 
-BOOL BuildingActor::getDoorPos(Unk_ov009_0225b880_Vec3 *out, s16 *ang) {
+BOOL BuildingActor::getDoorPos(VecFx32 *out, s16 *ang) {
     if (colliders != NULL && colliderCount != 0) {
         s32 a = Math_Atan2(colliders->normal.x, colliders->normal.z);
         s32 t0 = func_01ffcb0c(0x1000, colliders->normal.z);
-        Unk_ov009_0225b880_Vec3 v;
+        VecFx32 v;
         v.x = func_01ffcb0c(0x1000, colliders->normal.x);
         v.y = 0;
         v.z = t0;
@@ -1680,7 +1678,7 @@ BOOL BuildingActor::getDoorPos(Unk_ov009_0225b880_Vec3 *out, s16 *ang) {
             *ang = a + 0x8000;
         }
         if (out != NULL) {
-            Unk_ov009_0225b880_Vec3 r;
+            VecFx32 r;
             func_01ffd070(&r, TriangleTrigger_getCenter(colliders), &v);
             out->x = r.x;
             out->y = r.y;
@@ -1744,7 +1742,7 @@ BOOL BuildingActor::playsDoorMelody() { return FALSE; }
 
 BOOL BuildingActor::isOffscreen() {
     if (gCamera != 0) {
-        Unk_ov009_0225b880_Vec3 *g = &gCameraLookAt;
+        VecFx32 *g = &gCameraLookAt;
         s32 dx = position.x - g->x;
         if (dx < 0) {
             dx = -dx;
@@ -1838,9 +1836,9 @@ void BuildingSeEmitter::activate() {
     }
 }
 
-void BuildingSeEmitter::setPosition(Unk_ov009_0225b880_Vec3 *v) {
+void BuildingSeEmitter::setPosition(VecFx32 *v) {
     if (emitter.b40 != 0) {
-        Unk_ov009_0225b880_Vec3 t;
+        VecFx32 t;
         t.x = v->x;
         t.y = v->y;
         t.z = v->z;
@@ -1867,8 +1865,8 @@ void BuildingSeEmitter::playSeHeld(u32 a) {
     }
 }
 
-Unk_ov009_0225da90_Vec3 BuildingActor::getSoundPos() {
-    Unk_ov009_0225da90_Vec3 r;
+VecFx32Ctor BuildingActor::getSoundPos() {
+    VecFx32Ctor r;
     r.x = position.x;
     r.y = position.y;
     r.z = position.z;

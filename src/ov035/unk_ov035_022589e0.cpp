@@ -1,6 +1,6 @@
 // mwcc-version: 1.2/base
 #include "types.h"
-#include "game/Unk_020b4f8c_Vec.h"
+#include "gfx/VecFx32.h"
 #include "game/SceneWarp.h"
 #include "game/SceneInfo.h"
 
@@ -49,6 +49,6 @@ SceneSpawnRecord data_ov035_02258ac0[1] = {
 };
 
 SceneWarp data_ov035_02258b38[2] = {
-    SceneWarp(7, Unk_020b4f8c_Vec(0x11000, 0x200, 0x1d000), 0x10c00000, -0x4000, 2, 2, 0x4000, 1),
-    SceneWarp(1, Unk_020b4f8c_Vec(0xf000, 0x200, 0x1d000), 0x11000000, 0x4000, 2, 2, -0x4000, 2),
+    SceneWarp(7, VecFx32Copy(0x11000, 0x200, 0x1d000), 0x10c00000, -0x4000, 2, 2, 0x4000, 1),
+    SceneWarp(1, VecFx32Copy(0xf000, 0x200, 0x1d000), 0x11000000, 0x4000, 2, 2, -0x4000, 2),
 };

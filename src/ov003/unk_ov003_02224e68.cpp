@@ -1,13 +1,13 @@
 #pragma opt_loop_invariants off
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
 #include "field/BottleThrow.h"
-#include "field/Unk_ov003_02224ba4_V3.h"
 #include "field/Unk_ov003_02225238_Grid.h"
 #include "actor/Character.h"
 
-typedef Unk_ov003_02224ba4_V3 V3;
+typedef VecFx32 V3;
 
 
 
@@ -126,7 +126,7 @@ void SpawnMask_MarkRect(u16 *buf, s32 x, s32 y, s32 rad, u8 a, u8 b)
 {
     s32 ox = 0;
     s32 oy = 0;
-    Unk_ov003_02224e68_V3 pos(x, 0, y);
+    VecFx32Ctor pos(x, 0, y);
     s32 bo;
     s32 t;
     s32 l;

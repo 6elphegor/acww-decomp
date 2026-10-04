@@ -1,5 +1,6 @@
 // mwcc-flags: -str reuse
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "game/Unk_02036c60_Vec.h"
 #include "game/Unk_02037674_V3.h"
 #include "game/Unk_021e5890_T.h"
@@ -353,9 +354,9 @@ extern "C" s32 BgMgt_GetCount(s16 *p)
     return *p;
 }
 
-Unk_02036c60_Vec BgMgt_GetEntry(u8 *base, s32 idx)
+VecFx32 BgMgt_GetEntry(u8 *base, s32 idx)
 {
-    Unk_02036c60_Vec v;
+    VecFx32 v;
     BgMgtEntry *e = (BgMgtEntry *)(base + 2);
     v.x = e[idx].a;
     v.y = e[idx].b << 12;

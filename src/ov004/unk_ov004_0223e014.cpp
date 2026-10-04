@@ -1,5 +1,6 @@
 // mwcc-version: 1.2/base
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "Unk_020d8c7c.h"
 #include "ui/UiWidget.h"
 #include "ui/HandCursor.h"
@@ -13,16 +14,6 @@
 
 
 
-
-struct Unk_ov004_0223e014_Zero {
-    s32 x, y, z;
-    Unk_ov004_0223e014_Zero() {}
-    ~Unk_ov004_0223e014_Zero() {}
-};
-
-struct Unk_ov004_0223e10c_Pair {
-    s32 a, b;
-};
 
 // gPad (the same PadState as autoload_2 unk_020e7500.cpp; only cur/trig are declared here)
 struct PadState {
@@ -40,8 +31,8 @@ extern u8 gSaveData[];
 extern u8 gSavePlayers[];
 extern PadState gPad;
 extern CommManager *gCommManager;
-extern const Unk_ov004_0223e10c_Pair sResidentLabelOffsets[];
-extern const Unk_ov004_0223e10c_Pair sResidentExtraLabelPos;
+extern const Vec2 sResidentLabelOffsets[];
+extern const Vec2 sResidentExtraLabelPos;
 extern const s32 sResidentCursorExtraOffset[];
 extern const s32 sResidentCursorOffsets[];
 #define data_ov004_022447f0 ((const s32 *)((const u8 *)sResidentCursorOffsets + 4))
@@ -509,8 +500,8 @@ void ResidentSelect::updateNameLabels() {
                 MsgString9B o;
                 PlayerId_getNameString(PlayerData_getPlayerId(PlayerData_GetResident(gSavePlayers, i)), &o);
                 Camera_ProjectCurvedToScreen(&x, &y, v);
-                x += sResidentLabelOffsets[i].a;
-                y += sResidentLabelOffsets[i].b;
+                x += sResidentLabelOffsets[i].x;
+                y += sResidentLabelOffsets[i].y;
                 NameLabelBalloon *e = &nameLabels[i];
                 e->setOffset(x, y);
                 e->setText(&o);
@@ -518,14 +509,14 @@ void ResidentSelect::updateNameLabels() {
             }
         }
     }
-    nameLabels[4].setOffset(sResidentExtraLabelPos.a, sResidentExtraLabelPos.b);
+    nameLabels[4].setOffset(sResidentExtraLabelPos.x, sResidentExtraLabelPos.y);
     nameLabels[4].setText(&phoneLabel);
     NameLabelBalloon *e4 = &nameLabels[4];
     e4->update();
 }
 
 extern "C" void ResidentSelect_UpdateCursor(ResidentSelect *o) {
-    Unk_ov004_0223e014_Zero z;
+    VecFx32CtorDtor z;
     s32 xy[2];
     void *pp;
     z.x = 0;
@@ -566,5 +557,5 @@ extern "C" void ResidentSelect_UpdateCursor(ResidentSelect *o) {
 // ---- rodata (defined after the functions so that the compiler cannot fold the loads) ----
 const s32 sResidentCursorExtraOffset[2] = {-6, -14};
 const s32 sResidentCursorOffsets[8] = {-15, -12, -8, -12, -19, -14, -11, -14};
-const Unk_ov004_0223e10c_Pair sResidentExtraLabelPos = {15, -92};
-const Unk_ov004_0223e10c_Pair sResidentLabelOffsets[4] = {{-5, -5}, {5, -5}, {-5, 0}, {5, 0}};
+const Vec2 sResidentExtraLabelPos = {15, -92};
+const Vec2 sResidentLabelOffsets[4] = {{-5, -5}, {5, -5}, {-5, 0}, {5, 0}};

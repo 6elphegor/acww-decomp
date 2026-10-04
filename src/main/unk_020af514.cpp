@@ -1,6 +1,6 @@
 // mwcc-flags: -str reuse
 #include "types.h"
-#include "game/Vec3.h"
+#include "gfx/VecFx32.h"
 #include "town/TownBlockCell.h"
 #include "town/SceneMapInfo.h"
 #include "game/SceneInfo.h"
@@ -129,7 +129,7 @@ struct Vec3s {
     s16 x, y, z;
 };
 
-inline void SetVec(Vec3 *v, s32 x, s32 y, s32 z) {
+inline void SetVec(VecFx32 *v, s32 x, s32 y, s32 z) {
     v->x = x;
     v->y = y;
     v->z = z;
@@ -139,7 +139,7 @@ class Unk_020b4948;
 extern "C" BOOL SceneWarp_HasNoPos(Unk_020b4948 *);
 extern "C" u32 SceneWarp_GetSpawnParam(Unk_020b4948 *);
 extern "C" s32 SceneWarp_GetAngle(Unk_020b4948 *);
-extern "C" Vec3 *SceneWarp_GetPos(Unk_020b4948 *);
+extern "C" VecFx32 *SceneWarp_GetPos(Unk_020b4948 *);
 
 extern "C" {
 Unk_020b4948 *Scene_GetWarpRequest();
@@ -152,9 +152,9 @@ s32 PlayerSession_GetDataIndex(u32);
 BOOL PlayerDataArray_IsUsed(void *, s32);
 u32 PlayerSession_FindFreeGfxSlot();
 void PlayerSession_SetGfxSlot(u32, u32);
-void PlayerActor_Spawn(u32, Vec3 *, Vec3s *, u32);
-void Vec_RotateY(Vec3 *, s32);
-void func_01ffd070(Vec3 *, Vec3 *, Vec3 *);
+void PlayerActor_Spawn(u32, VecFx32 *, Vec3s *, u32);
+void Vec_RotateY(VecFx32 *, s32);
+void func_01ffd070(VecFx32 *, VecFx32 *, VecFx32 *);
 
 struct Data020cbb18 {
     u8 pad[0x64];
@@ -166,8 +166,8 @@ extern u8 gSavePlayers[];
 
 class ScenePlayerSpawn {
 public:
-    BOOL getSpawn(u32 i, BOOL mode, Vec3 *pos, Vec3s *rot, u32 *out);
-    inline void get(Vec3 *pos, Vec3s *r, u32 *out) {
+    BOOL getSpawn(u32 i, BOOL mode, VecFx32 *pos, Vec3s *rot, u32 *out);
+    inline void get(VecFx32 *pos, Vec3s *r, u32 *out) {
         Vec3s *q = &rot;
         SetVec(pos, x << 12 >> 4, y << 12 >> 4, z << 12 >> 4);
         r->x = q->x;
@@ -186,14 +186,14 @@ public:
 };
 
 
-BOOL ScenePlayerSpawn::getSpawn(u32 i, BOOL mode, Vec3 *pos, Vec3s *rot_, u32 *out) {
+BOOL ScenePlayerSpawn::getSpawn(u32 i, BOOL mode, VecFx32 *pos, Vec3s *rot_, u32 *out) {
     if (mode) {
         s32 idx = PlayerSession_GetDataIndex(i);
         if (idx < 4 && PlayerDataArray_IsUsed(gSavePlayers, PlayerSession_GetDataIndex(i))) {
             if (!_ZN11CommManager11isLocalSlotEj(gCommManager, i) || SceneWarp_HasNoPos(Scene_GetWarpRequest())) {
                 (this + idx)->get(pos, rot_, out);
             } else {
-                Vec3 *v = SceneWarp_GetPos(Scene_GetWarpRequest());
+                VecFx32 *v = SceneWarp_GetPos(Scene_GetWarpRequest());
                 pos->x = v->x;
                 pos->y = v->y;
                 pos->z = v->z;
@@ -210,7 +210,7 @@ BOOL ScenePlayerSpawn::getSpawn(u32 i, BOOL mode, Vec3 *pos, Vec3s *rot_, u32 *o
             if (SceneWarp_HasNoPos(Scene_GetWarpRequest())) {
                 get(pos, rot_, out);
             } else {
-                Vec3 v;
+                VecFx32 v;
                 v.x = 0;
                 v.y = 0;
                 v.z = 0;
@@ -221,7 +221,7 @@ BOOL ScenePlayerSpawn::getSpawn(u32 i, BOOL mode, Vec3 *pos, Vec3s *rot_, u32 *o
                     v.z = 0;
                     Vec_RotateY(&v, SceneWarp_GetAngle(Scene_GetWarpRequest()));
                 }
-                Vec3 t;
+                VecFx32 t;
                 func_01ffd070(&t, SceneWarp_GetPos(Scene_GetWarpRequest()), &v);
                 pos->x = t.x;
                 pos->y = t.y;
@@ -246,7 +246,7 @@ BOOL SceneSpawnGroup::spawnPlayersAndCamera(u8 *idx, u32 lo, u32 hi) {
             for (u32 i = 0; i < 4; i++) {
                 Vec3s rot;
                 u32 v;
-                Vec3 pos;
+                VecFx32 pos;
                 if (items->getSpawn(i, TRUE, &pos, &rot, &v)) {
                     PlayerActor_Spawn(i, &pos, &rot, v);
                 }
@@ -255,7 +255,7 @@ BOOL SceneSpawnGroup::spawnPlayersAndCamera(u8 *idx, u32 lo, u32 hi) {
             for (u32 i = 0; i < 4; i++) {
                 Vec3s rot;
                 u32 v;
-                Vec3 pos;
+                VecFx32 pos;
                 if (items->getSpawn(i, FALSE, &pos, &rot, &v)) {
                     PlayerSession_SetGfxSlot(i, PlayerSession_FindFreeGfxSlot());
                     PlayerActor_Spawn(i, &pos, &rot, v);

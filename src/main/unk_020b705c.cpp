@@ -1,8 +1,7 @@
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "game/Unk_0202f2ac_V3.h"
 #include "game/CollisionCylinder.h"
-
-typedef Unk_0202f660_V3 Vec3;
 
 
 
@@ -23,8 +22,8 @@ const u8 sTouchPickKindHasTarget[0x18] = {
     0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0,
 };
 
-extern "C" BOOL TouchPick_HitWorldDrum(Vec3 *out, Vec3 *a, Vec3 *b, s32 c, s32 d) {
-    Vec3 zero, v24, v30;
+extern "C" BOOL TouchPick_HitWorldDrum(VecFx32 *out, VecFx32 *a, VecFx32 *b, s32 c, s32 d) {
+    VecFx32 zero, v24, v30;
     zero.x = 0;
     zero.y = 0;
     zero.z = 0;

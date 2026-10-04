@@ -1,7 +1,8 @@
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
-#include "gfx/Unk_020bfe30_Vec.h"
+#include "gfx/Mtx43.h"
 #include "game/EventDayEntry.h"
 #include "player/PlayerData.h"
 #include "snd/SndEnvChannel.h"
@@ -14,7 +15,7 @@
 #include "npc/SpNpcKatie.h"
 
 
-static inline void Unk_020bfe30_Set(Unk_020bfe30_Vec *v, s32 x, s32 y, s32 z) {
+static inline void Unk_020bfe30_Set(VecFx32 *v, s32 x, s32 y, s32 z) {
     v->x = x;
     v->y = y;
     v->z = z;
@@ -32,7 +33,7 @@ void SkySprite_Release(void *p);
 }
 
 extern "C" {
-void VEC_Add(Unk_020bfe30_Vec *a, Unk_020bfe30_Vec *b, Unk_020bfe30_Vec *c);
+void VEC_Add(VecFx32 *a, VecFx32 *b, VecFx32 *c);
 }
 
 extern "C" {
@@ -319,7 +320,7 @@ extern u8 gScreenTransition;
 }
 
 extern "C" {
-extern Unk_020bfe30_Vec sSpNpcKatieReunionWalkPos;
+extern VecFx32 sSpNpcKatieReunionWalkPos;
 }
 
 extern "C" {

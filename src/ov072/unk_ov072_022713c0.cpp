@@ -83,7 +83,7 @@ BOOL _ZN11NpcTalkCtrl6isBusyEv(void *self);
 void _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(void *self, u32 a, u32 b, u32 c);
 void _ZN13NpcActionCtrl13requestActionEjiiissiitt(void *self, u32 a, u32 b, u32 c, u32 s0, u32 s1, u32 s2, u32 s3, u32 s4, u32 s5, u32 s6);
 void _ZN11NpcTalkCtrl11requestTalkEhh(void *self, u32 a, u32 b);
-void _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(void *self, u32 a, u32 b, u32 c, u32 *d, u32 e, u32 f, u32 g);
+void _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(void *self, u32 a, u32 b, u32 c, u32 *d, u32 e, u32 f, u32 g);
 void SpNpcGulliver_ScatterShipParts();
 BOOL SpNpcGulliver_PlaceShipPart(u8 *cnt, s32 *pe, void *g);
 BOOL SpNpcGulliver_IsSpotClear(s32 *a, s32 *b, void *g);
@@ -118,7 +118,6 @@ public:
 
 
 
-struct Unk_020d77a4_Vec3;
 
 
 
@@ -335,7 +334,7 @@ extern "C" s32 SpNpcGulliver_TickTimer(void *self, s32 *p) {
 }
 
 BOOL SpNpcGulliver::setupAct00() {
-    _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(&lookAt, 0, 0, 0, (u32 *)gVec3Zero, 4, data_020c6d1c, 1);
+    _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(&lookAt, 0, 0, 0, (u32 *)gVec3Zero, 4, data_020c6d1c, 1);
     actionCtrl.requestPlayAnim(1, 0xef, 1, data_020c6cc8, 0);
     _ZN14NpcMoveAnimSet12setStandAnimEi(&moveAnimSet, 0xef);
     return TRUE;
@@ -347,7 +346,7 @@ BOOL SpNpcGulliver::mainAct00() {
 
 BOOL SpNpcGulliver::setupAct01() {
     _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
-    _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(&lookAt, 1, 0, 0, (u32 *)gVec3Zero, 4, data_020c6d1c, 1);
+    _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(&lookAt, 1, 0, 0, (u32 *)gVec3Zero, 4, data_020c6d1c, 1);
     if (repairing != 0) {
         gestureDelay = 0x190;
         gestureDelay += Random_GlobalBelow(0x258);

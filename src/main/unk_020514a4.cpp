@@ -1,4 +1,5 @@
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "room/RoomFtrState.h"
 #include "room/FtrActor.h"
 
@@ -11,10 +12,6 @@ void __cxa_vec_cleanup(void *p, u32 n, u32 sz, void *dtor);
 
 
 
-struct Unk_02052ab4_Vec {
-    s32 x, y, z;
-};
-
 class SpotReservation {
 public:
     u8 active;
@@ -23,7 +20,7 @@ public:
     SpotReservation();
     ~SpotReservation();
     BOOL release();
-    BOOL set(u32 tag, Unk_02052ab4_Vec *p);
+    BOOL set(u32 tag, VecFx32 *p);
     void clear();
 };
 
@@ -31,10 +28,10 @@ class SpotReservationTable {
 public:
     SpotReservation slots[4];
     ~SpotReservationTable();
-    BOOL tryReserve(s32 idx, u32 tag, Unk_02052ab4_Vec *p);
-    BOOL isFree(s32 idx, u32 tag, Unk_02052ab4_Vec *p);
+    BOOL tryReserve(s32 idx, u32 tag, VecFx32 *p);
+    BOOL isFree(s32 idx, u32 tag, VecFx32 *p);
     BOOL release(s32 idx);
-    BOOL set(s32 idx, u32 tag, Unk_02052ab4_Vec *p);
+    BOOL set(s32 idx, u32 tag, VecFx32 *p);
 };
 
 
@@ -50,7 +47,6 @@ struct Unk_0205242c_Item {
 };
 struct FtrFootprintShape { Unk_0205242c_Item *rows[4]; u8 count; };
 struct Unk_0205242c_Self { s32 a; s32 b; };
-struct Unk_02051f68_V { s32 x, y, z; };
 struct FtrPlaceRecord {
     u32 x : 4;
     u32 y : 4;
@@ -180,7 +176,7 @@ void SpotReservation::clear() {
     sceneId = 0;
 }
 
-BOOL SpotReservation::set(u32 tag, Unk_02052ab4_Vec *p) {
+BOOL SpotReservation::set(u32 tag, VecFx32 *p) {
     active = 1;
     posX = p->x;
     posY = p->y;
@@ -194,7 +190,7 @@ BOOL SpotReservation::release() {
     return TRUE;
 }
 
-BOOL SpotReservationTable::set(s32 idx, u32 tag, Unk_02052ab4_Vec *p) {
+BOOL SpotReservationTable::set(s32 idx, u32 tag, VecFx32 *p) {
     if (idx < 4) return slots[idx].set(tag, p);
     return TRUE;
 }
@@ -204,7 +200,7 @@ BOOL SpotReservationTable::release(s32 idx) {
     return FALSE;
 }
 
-BOOL SpotReservationTable::isFree(s32 idx, u32 tag, Unk_02052ab4_Vec *p) {
+BOOL SpotReservationTable::isFree(s32 idx, u32 tag, VecFx32 *p) {
     if (idx < 4) {
         for (u32 i = 0; i < 4; i++) {
             SpotReservation *e = &slots[i];
@@ -217,7 +213,7 @@ BOOL SpotReservationTable::isFree(s32 idx, u32 tag, Unk_02052ab4_Vec *p) {
     return FALSE;
 }
 
-BOOL SpotReservationTable::tryReserve(s32 idx, u32 tag, Unk_02052ab4_Vec *p) {
+BOOL SpotReservationTable::tryReserve(s32 idx, u32 tag, VecFx32 *p) {
     if (isFree(idx, tag, p)) return set(idx, tag, p);
     return FALSE;
 }
@@ -546,13 +542,13 @@ extern "C" void FtrSync_OnToggleRecord(Unk_02051fcc_W *p) {
 }
 
 extern "C" s32 SpotSync_OnReserveRequest(u8 *p, s32 q) {
-    Unk_02051f68_V v;
+    VecFx32 v;
     v.x = 0;
     v.y = 0;
     v.z = 0;
     v.x = p[0] << 9;
     v.z = p[1] << 9;
-    if (sSpotReservations.tryReserve(q, p[2], (Unk_02052ab4_Vec *)&v)) {
+    if (sSpotReservations.tryReserve(q, p[2], (VecFx32 *)&v)) {
         void *g = gCommManager;
         _ZN11CommManager11beginRecordEv(g);
         _ZN11CommManager9endRecordEjj(g, 0x1f, q);
@@ -860,7 +856,7 @@ extern "C" void SpotSync_RequestReserve(s32 *p) {
     sSpotReserveResult = 0;
     s = gCommManager;
     if (_ZN11CommManager8isOnlineEv(s) == 0 || _ZN11CommManager7isMyAidEj(s, 0) != 0) {
-        if (sSpotReservations.tryReserve(0, Scene_GetCurrent(), (Unk_02052ab4_Vec *)p) != 0) {
+        if (sSpotReservations.tryReserve(0, Scene_GetCurrent(), (VecFx32 *)p) != 0) {
             sSpotReserveResult = 1;
         } else {
             sSpotReserveResult = 2;

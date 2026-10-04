@@ -1,12 +1,12 @@
 #include "types.h"
-#include "game/Unk_02003a6c_Vec.h"
+#include "gfx/VecFx32.h"
 #include "snd/SndEnvChannel.h"
 #include "snd/SndSeEmitter.h"
 #include "snd/SndSceneBase.h"
 
 
 extern u32 gCamera;
-extern Unk_02003a6c_Vec gCameraEye;
+extern VecFx32 gCameraEye;
 extern u8 gSndMgr[];
 extern u8 gFieldSceneKind;
 extern u8 *data_021c1b3c;
@@ -30,17 +30,17 @@ void MelodyPlayer_PlayAt(u32, void *, u32);
 }
 
 extern "C" {
-#define SndPosNode_setBgmPan _ZN10SndPosNode9setBgmPanEP4Vec3
+#define SndPosNode_setBgmPan _ZN10SndPosNode9setBgmPanEP7VecFx32
 void SndPosNode_setBgmPan(u32, void *);
 }
 
 extern "C" {
-#define SndPosNode_playOnce _ZN10SndPosNode8playOnceEjP4Vec3
+#define SndPosNode_playOnce _ZN10SndPosNode8playOnceEjP7VecFx32
 void SndPosNode_playOnce(u32, u32, void *);
 }
 
 extern "C" {
-#define SndPosNode_play _ZN10SndPosNode4playEiP4Vec3
+#define SndPosNode_play _ZN10SndPosNode4playEiP7VecFx32
 void SndPosNode_play(u32, u32, void *);
 }
 
@@ -715,8 +715,8 @@ extern "C" void Snd_StopBellRollSe() { SndMgr_StopBellRollSe(gSndMgr); }
 
 void SndSeEmitter::callInit() { init(); }
 
-void SndSeEmitter::callUpdateRelative(Unk_02003a6c_Vec *v) {
-    Unk_02003a6c_Vec t;
+void SndSeEmitter::callUpdateRelative(VecFx32 *v) {
+    VecFx32 t;
     if (v != NULL) {
         if (gCamera != 0) {
             t.x = v->x - gCameraEye.x;
@@ -737,8 +737,8 @@ void SndSeEmitter::callStop() { stop(); }
 
 void SndSeEmitter::callInitAlt() { init(); }
 
-void SndSeEmitter::callUpdateRelativeAlt(Unk_02003a6c_Vec *v) {
-    Unk_02003a6c_Vec t;
+void SndSeEmitter::callUpdateRelativeAlt(VecFx32 *v) {
+    VecFx32 t;
     if (v != NULL) {
         if (gCamera != 0) {
             t.x = v->x - gCameraEye.x;
@@ -763,8 +763,8 @@ extern "C" void Snd_PosListUpdate() { SndPosList_update(); }
 
 extern "C" void Snd_PosNodeInit() { SndPosNode_init(); }
 
-extern "C" void Snd_PosNodePlay(u32 a, u32 b, Unk_02003a6c_Vec *v) {
-    Unk_02003a6c_Vec t;
+extern "C" void Snd_PosNodePlay(u32 a, u32 b, VecFx32 *v) {
+    VecFx32 t;
     if (v != NULL && gCamera != 0) {
         t.x = v->x - gCameraEye.x;
         t.y = v->y - gCameraEye.y;
@@ -773,8 +773,8 @@ extern "C" void Snd_PosNodePlay(u32 a, u32 b, Unk_02003a6c_Vec *v) {
     }
 }
 
-extern "C" void Snd_PosNodePlayOnce(u32 a, u32 b, Unk_02003a6c_Vec *v) {
-    Unk_02003a6c_Vec t;
+extern "C" void Snd_PosNodePlayOnce(u32 a, u32 b, VecFx32 *v) {
+    VecFx32 t;
     if (v != NULL && gCamera != 0) {
         t.x = v->x - gCameraEye.x;
         t.y = v->y - gCameraEye.y;
@@ -783,9 +783,9 @@ extern "C" void Snd_PosNodePlayOnce(u32 a, u32 b, Unk_02003a6c_Vec *v) {
     }
 }
 
-extern "C" void Snd_SetBgmPan(u32 a, Unk_02003a6c_Vec *v) {
+extern "C" void Snd_SetBgmPan(u32 a, VecFx32 *v) {
     if (v != NULL && gCamera != 0) {
-        Unk_02003a6c_Vec t = *v;
+        VecFx32 t = *v;
         t.x -= gCameraEye.x;
         t.y -= gCameraEye.y;
         t.z -= gCameraEye.z;
@@ -801,21 +801,21 @@ extern "C" s32 Snd_PosListCanInit() { return 1; }
 
 void SndEnvChannel::callReset() { vfunc_00(); }
 
-void SndEnvChannel::callUpdateRelative(Unk_02003a6c_Vec *pos) {
-    Unk_02003a6c_Vec t;
+void SndEnvChannel::callUpdateRelative(VecFx32 *pos) {
+    VecFx32 t;
     if (pos != NULL) {
         if (gCamera != 0) {
             t.x = pos->x - gCameraEye.x;
             t.y = pos->y - gCameraEye.y;
             t.z = pos->z - gCameraEye.z;
-            update((Vec3 *)&t);
+            update((VecFx32 *)&t);
         }
     } else {
-        update((Vec3 *)pos);
+        update((VecFx32 *)pos);
     }
 }
 
-void SndEnvChannel::callUpdate(void *a) { update((Vec3 *)a); }
+void SndEnvChannel::callUpdate(void *a) { update((VecFx32 *)a); }
 
 void SndEnvChannel::callRequestSustained(void *a) { requestSustained((u32)a); }
 
@@ -855,8 +855,8 @@ extern "C" void Snd_MelodySetPattern() { MelodyPlayer_SetPattern(); }
 
 extern "C" void Snd_MelodyPlayPattern() { MelodyPlayer_PlayPattern(); }
 
-extern "C" void Snd_MelodyPlayAt(u32 a, Unk_02003a6c_Vec *v, u32 c) {
-    Unk_02003a6c_Vec t;
+extern "C" void Snd_MelodyPlayAt(u32 a, VecFx32 *v, u32 c) {
+    VecFx32 t;
     if (gCamera != 0) {
         t.x = v->x - gCameraEye.x;
         t.y = v->y - gCameraEye.y;
@@ -885,8 +885,8 @@ extern "C" void Snd_BgmSyncInit() { BgmSyncSnd_Init(); }
 
 extern "C" void Snd_BgmSyncSetState() { BgmSyncSnd_SetState(); }
 
-extern "C" s32 Snd_BgmSyncUpdate(u32 a, Unk_02003a6c_Vec *v) {
-    Unk_02003a6c_Vec t;
+extern "C" s32 Snd_BgmSyncUpdate(u32 a, VecFx32 *v) {
+    VecFx32 t;
     s32 r;
     if (v != NULL) {
         if (gCamera == 0) {
@@ -915,8 +915,8 @@ extern "C" void Snd_MelodyBeatInit() { MelodyBeat_Init(); }
 
 extern "C" void Snd_MelodyBeatStart() { MelodyBeat_Start(); }
 
-extern "C" void Snd_MelodyBeatUpdate(u32 a, Unk_02003a6c_Vec *v) {
-    Unk_02003a6c_Vec t;
+extern "C" void Snd_MelodyBeatUpdate(u32 a, VecFx32 *v) {
+    VecFx32 t;
     if (v != NULL) {
         if (gCamera != 0) {
             t.x = v->x - gCameraEye.x;

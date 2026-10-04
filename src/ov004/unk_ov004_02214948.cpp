@@ -1,12 +1,11 @@
 // mwcc-version: 1.2/base
 // ov004 TU06: .text 0x02214948-0x02215f04 (classes BirthdayHostVillager and its member BirthdayHostVillagerTalk)
 #include "types.h"
+#include "gfx/VecFx32.h"
 // The no-argument vfunc_08 of the base is widened locally: NpcActor::postCreate takes one argument.
 #include "Unk_020d8c7c.h"
 #include "gfx/DebugColor.h"
 #include "actor/ActorProfile.h"
-#include "game/Unk_020d77a4_Vec3.h"
-#include "game/Unk_ov004_02215c94_V.h"
 #include "game/FxVec3.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
@@ -45,7 +44,7 @@ BirthdayHostVillager *BirthdayHostVillager_Get();
 BOOL BirthdayHost_GiftFilter(u16 *p, s32 flag);
 u16 BirthdayHost_PickReturnGift(s32 n);
 void func_ov004_0221570c(void *a, void *b);
-s32 FtrMgr_GetSurfaceHeightAtPos(Unk_ov004_02215c94_V *v);
+s32 FtrMgr_GetSurfaceHeightAtPos(VecFx32 *v);
 Actor *BirthdayGuestVillager_Get(void);
 u16 Room_PickRandomWalkTarget(void *, void *, s32);
 }
@@ -64,10 +63,10 @@ u16 Room_PickRandomWalkTarget(void *, void *, s32);
 #define NpcActionCtrl_requestAction _ZN13NpcActionCtrl13requestActionEjiiissiitt
 #define NpcActionCtrl_isActionDone _ZN13NpcActionCtrl12isActionDoneEv
 #define NpcActionCtrl_getAction _ZN13NpcActionCtrl9getActionEv
-#define NpcLookAt_setTarget _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih
-#define NpcMoveCtrl_setWaypoint _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3
+#define NpcLookAt_setTarget _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih
+#define NpcMoveCtrl_setWaypoint _ZN11NpcMoveCtrl11setWaypointEP7VecFx32
 #define func_0201b138 _ZN8NpcActor6onDrawEv
-#define NpcActor_findAvoidPos _ZN8NpcActor12findAvoidPosEP16Unk_020d77a4_Vec
+#define NpcActor_findAvoidPos _ZN8NpcActor12findAvoidPosEP7VecFx32
 #define NpcActor_setTalkRequest _ZN8NpcActor14setTalkRequestEP16ActorTalkRequest
 #define NpcActor_getPlayerActor _ZN8NpcActor14getPlayerActorEj
 #define NpcActor_getAngleTo _ZN8NpcActor10getAngleToEPS_
@@ -93,11 +92,8 @@ u16 Room_PickRandomWalkTarget(void *, void *, s32);
 #define VillagerPlan_getState _ZN12VillagerPlan8getStateEv
 #define ChoiceList_getResult _ZN10ChoiceList9getResultEv
 
-struct Unk_ov004_02214ab4_Vec {
-    s32 x, y, z;
-};
 extern "C" {
-Unk_ov004_02214ab4_Vec *PlayerActor_GetBodyPos(u32);
+VecFx32 *PlayerActor_GetBodyPos(u32);
 s32 NpcActor_getDistanceToPlayer(void *, u32);
 s32 NpcActionCtrl_getAction(void *);
 s32 NpcActionCtrl_requestAction(void *, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
@@ -160,7 +156,7 @@ s32 func_0202d948(void *self);
 s32 func_0202dab0(void *self);
 s32 func_0202d928(void *self);
 void NpcFootstepFx_enableFootsteps(void *p);
-void func_01ffd070(Unk_ov004_02215c94_V *out, void *a, void *b);
+void func_01ffd070(VecFx32 *out, void *a, void *b);
 void NpcActor_setTalkRequest(void *self, void *p);
 void *NpcActor_getPlayerActor(void *self, s32 n);
 void ActorTalkRequest_setTalkPlayer(void *p, void *q);
@@ -261,7 +257,7 @@ BOOL BirthdayHostVillager::preCreate() {
     };
     u32 i;
     for (i = 0; i < 6; i++) {
-        Unk_ov004_02215c94_V t;
+        VecFx32 t;
         func_01ffd070(&t, &position, &vs[i]);
         if (!FtrMgr_GetSurfaceHeightAtPos(&t)) {
             position.x = t.x;
@@ -351,7 +347,7 @@ BOOL BirthdayHostVillager::acceptsSelfRequestedInteraction(void *) {
 }
 
 void BirthdayHostVillager::onInteractionEvent(u32 a, u8 b) {
-    Unk_ov004_02215c94_V v;
+    VecFx32 v;
     v.x = position.x;
     v.y = position.y;
     v.z = position.z;
@@ -938,9 +934,9 @@ BOOL BirthdayHostVillager::setupAct08() {
 }
 
 void BirthdayHostVillager::mainAct08() {
-    Unk_ov004_02214ab4_Vec a, b;
+    VecFx32 a, b;
     s32 v, r4, r0;
-    Unk_ov004_02214ab4_Vec *p = PlayerActor_GetBodyPos(4);
+    VecFx32 *p = PlayerActor_GetBodyPos(4);
     a.x = p->x;
     a.y = p->y;
     a.z = p->z;

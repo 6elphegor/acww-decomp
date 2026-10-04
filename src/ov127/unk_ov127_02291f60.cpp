@@ -1,13 +1,10 @@
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "game/StarSkyView.h"
 #include "game/ConstellationRecord.h"
 
 // File-wide: mwcc samples this pragma at end of TU, so it cannot be scoped to one function.
 #pragma opt_loop_invariants off
-
-struct Unk_ov127_02291f60_Vec {
-    s32 x, y, z;
-};
 
 extern "C" u8 sTestedConstellationStars[0x11];
 extern "C" u8 sSavedConstellationStars[0x11];
@@ -47,11 +44,11 @@ s32 Snd_StopSe(s32 a, s32 b);
 void Snd_PlaySeOnHandle(s32 a);
 s32 Snd_SetPanIfChanged(s32 a);
 void Gfx2d_SetLayerOffset(u32 a, s32 b, s32 c);
-void Vec_Sub(Unk_ov127_02291f60_Vec *out, Unk_ov127_02291f60_Vec *a, Unk_ov127_02291f60_Vec *b);
-s32 Vec_MagXZ(Unk_ov127_02291f60_Vec *v);
+void Vec_Sub(VecFx32 *out, VecFx32 *a, VecFx32 *b);
+s32 Vec_MagXZ(VecFx32 *v);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 FX_Div(s32 a, s32 b);
-void func_01ffd070(Unk_ov127_02291f60_Vec *out, Unk_ov127_02291f60_Vec *a, Unk_ov127_02291f60_Vec *b);
+void func_01ffd070(VecFx32 *out, VecFx32 *a, VecFx32 *b);
 void MI_CpuCopy8(const void *src, void *dst, u32 n);
 
 void StarSky_CollectStars(ConstellationRecord *p, u8 *out);
@@ -393,7 +390,7 @@ extern "C" void StarSky_SetScrollTarget(StarSkyView *s, s32 x, s32 y)
 extern "C" void StarSky_StepToTarget(StarSkyView *s)
 {
     struct {
-        Unk_ov127_02291f60_Vec a, b, c, e, f;
+        VecFx32 a, b, c, e, f;
     } l;
     s32 len, t, bx;
     StarSky_SetFlags(s, 1);

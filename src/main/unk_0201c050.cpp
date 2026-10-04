@@ -1,9 +1,9 @@
 // mwcc-flags: -str reuse
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "item/PocketMatches.h"
 #include "net/CommManager.h"
 #include "game/Unk_0202368c_Obj.h"
-#include "game/Unk_020d77a4_Vec3.h"
 #include "npc/VillagerClothModel.h"
 #include "talk/MsgStringBase.h"
 #include "npc/VillagerId.h"
@@ -63,7 +63,6 @@ class VillagerTalk;
 struct TalkChoiceTable;
 struct CommManager;
 class VillagerMood;
-struct Unk_0201c574_Vec;
 struct VillagerActor;
 struct MsgString25B;
 struct MsgString129;
@@ -71,10 +70,7 @@ struct MsgString33B;
 class VillagerTalkTopics;
 struct TalkTopicMsg;
 struct TalkTopic;
-struct Unk_0201d2d0_Vec;
 class VillagerTalkHolidayTopics;
-struct Unk_0201dc44_Vec;
-struct Unk_0201dca0_Vec;
 struct VillagerId;
 struct ClockDateTime;
 struct PersonalitySleepHours;
@@ -101,7 +97,6 @@ struct RumorVillagerIndex;
 struct RumorVillagerPair;
 struct Unk_02021340_Pad;
 struct Unk_02021340_Map;
-struct Unk_02021340_Pos;
 class VillagerTalkRumorTopics;
 struct TownId;
 struct Unk_02022608_Time;
@@ -180,9 +175,6 @@ struct Unk_0202e18c_Buf {
 };
 
 
-struct Unk_0201d2d0_Vec {
-    s32 x, y, z;
-};
 // the owner of the VillagerTalkTopics object as its functions see it
 
 
@@ -200,8 +192,6 @@ struct TalkChoiceTable {
 typedef BOOL (VillagerMood::*Unk_0201c078_Fn)(VillagerTalk *s);
 
 
-struct Unk_0201c574_Vec { s32 x, y, z; };
-
 struct TalkTopic {
     u32 key;
     u8 variantCount;
@@ -214,14 +204,6 @@ typedef void (VillagerTalkTopics::*Unk_0201d2d0_OutFn)(TalkTopicMsg *);
 
 typedef void (VillagerTalkHolidayTopics::*Unk_0201dc44_State)(TalkTopicMsg *out);
 
-
-struct Unk_0201dc44_Vec {
-    s32 x, y, z;
-};
-
-struct Unk_0201dca0_Vec {
-    s32 x, y, z;
-};
 
 
 struct ClockDateTime {
@@ -310,8 +292,6 @@ struct RumorVillagerPair { RumorVillagerIndex a, b; };
 struct Unk_02021340_Pad { u8 pad_00[0x20]; s32 roomScore; u16 roomBonusFlags; };
 
 struct Unk_02021340_Map { u8 *cells; u32 w; u32 h; };
-
-struct Unk_02021340_Pos { s32 x, y, z; };
 
 
 typedef BOOL (VillagerTalkTopics::*Unk_0201d2d0_BFn)();
@@ -535,11 +515,11 @@ u32 _ZN10VillagerId9getGenderEv(void *);
 s32 _ZN10VillagerId7isValidEv(void *);
 s32 _ZN12SndSeEmitter8callStopEv(void *);
 s32 _ZN12SndSeEmitter8callInitEv(void *);
-s32 _ZN12SndSeEmitter18callUpdateRelativeEP16Unk_02003a6c_Vec(void *, void *);
+s32 _ZN12SndSeEmitter18callUpdateRelativeEP7VecFx32(void *, void *);
 BOOL _ZN11NpcTalkCtrl6isBusyEv(void *);
 s32 _ZN16ActorTalkRequest20requestSwitchSpeakerEh(void *, s32);
 void _ZN16ActorTalkRequest23requestPlayRandomMelodyEv(void *);
-void _ZN16ActorTalkRequest17requestPlayMelodyEP17Unk_02014420_Vec2(void *, void *);
+void _ZN16ActorTalkRequest17requestPlayMelodyEP4Vec2(void *, void *);
 void _ZN16ActorTalkRequest16requestItemAct12Ev(void *);
 void _ZN16ActorTalkRequest17requestReturnItemEv(void *);
 void _ZN16ActorTalkRequest15requestKeepItemEv(void *);
@@ -1456,7 +1436,7 @@ static inline BOOL Unk_02020b38_IsZero(u8 v) {
     return v == 0 ? TRUE : FALSE;
 }
 
-static inline s32 Unk_02021340_GetZ(Unk_02021340_Pos *p) { return p->z; }
+static inline s32 Unk_02021340_GetZ(VecFx32 *p) { return p->z; }
 
 static inline BOOL Unk_02021ef8_IsZero(u8 v) {
     return v == 0 ? TRUE : FALSE;
@@ -9603,7 +9583,7 @@ BOOL VillagerTalkTopics::selectTsuSeAct() {
     Npc_GetStateHeldItem(&h, (VillagerTalk *)actor);
     r4 = FALSE;
     if (r5 != 0) {
-        Unk_0201d2d0_Vec *v = (Unk_0201d2d0_Vec *)&actor->position;
+        VecFx32 *v = (VecFx32 *)&actor->position;
         s32 px = v->x >> 17;
         s32 pz = v->z >> 17;
         if (BlockMap_BlockHasAllAttr(r5 ? r5 : r5, px, pz, 8) != 0) {
@@ -12159,7 +12139,7 @@ void VillagerTalkHolidayTopics::continueEvBirthMsg0() {
 }
 
 void VillagerTalkHolidayTopics::startEvBirthMove() {
-    volatile Unk_0201dca0_Vec v;
+    volatile VecFx32 v;
     VillagerActor *volatile *pc = (VillagerActor *volatile *)&actor;
     VecFx32 *pv = &(*pc)->position;
     s32 x, z;
@@ -12185,9 +12165,9 @@ void VillagerTalkHolidayTopics::updateEvBirthMove() {
 void VillagerTalkTopics::updateEvBirthTurn() {
     TalkTopicMsg out;
     u8 b;
-    Unk_0201d2d0_Vec v;
+    VecFx32 v;
     if (_ZN13NpcActionCtrl9getActionEv(&actor->actionCtrl) == 0 && _ZN13NpcActionCtrl12isActionDoneEv(&actor->actionCtrl) != 0) {
-        v = *(Unk_0201d2d0_Vec *)&actor->position;
+        v = *(VecFx32 *)&actor->position;
         v.y += 0x2000;
         Camera_FocusOnPoint(&v);
         ((VillagerTalk *)this)->setTopicFns((VillagerTalkTopicFns *)sEvBirthTopicTable);
@@ -12455,7 +12435,7 @@ s32 VillagerTalk::attrShowLetter() {
 
 s32 VillagerTalk::attrPlayMemoryTune() {
     if (unk_134_p != NULL) {
-        _ZN16ActorTalkRequest17requestPlayMelodyEP17Unk_02014420_Vec2(this, unk_134_p + 0x5c);
+        _ZN16ActorTalkRequest17requestPlayMelodyEP4Vec2(this, unk_134_p + 0x5c);
         return 1;
     }
     return 0;
@@ -12946,10 +12926,10 @@ void VillagerMood::playMoodEffect(VillagerTalk *s, u32 a, u32 b) {
 }
 
 void VillagerMood::updateSoundPos(VillagerTalk *s) {
-    Unk_0201c574_Vec v;
-    Unk_0201c574_Vec *p = (Unk_0201c574_Vec *)((void *)((u8 *)(s) + (0x5c)));
+    VecFx32 v;
+    VecFx32 *p = (VecFx32 *)((void *)((u8 *)(s) + (0x5c)));
     v = *p;
-    _ZN12SndSeEmitter18callUpdateRelativeEP16Unk_02003a6c_Vec(this, &v);
+    _ZN12SndSeEmitter18callUpdateRelativeEP7VecFx32(this, &v);
 }
 
 void VillagerMood::enableEffects() { effectsOn = 1; }

@@ -2,6 +2,7 @@
 #define TOWN_UNK_OV009_0225B880_H
 
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "gfx/NNSG3dRS.h"
 #include "town/BuildingInfo.h"
 #include "gfx/DebugColor.h"
@@ -9,11 +10,6 @@
 
 // Helper records of the ov009 building actor unit (unk_ov009_0225b880.cpp and its _switch twin).
 class BuildingActor;
-
-struct Unk_ov009_0225da90_Vec3 {
-    /* 0x0 */ s32 x, y, z;
-    Unk_ov009_0225da90_Vec3() {}
-};
 
 struct BuildingEntryFlags {
     /* 0x0 */ u8 f0 : 1;

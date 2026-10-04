@@ -1,13 +1,11 @@
 // mwcc-version: 1.2/base
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "game/Unk_0202f2ac_V3.h"
 #include "actor/CharacterListNode.h"
-#include "game/Unk_ov009_0225b880_Vec3.h"
-#include "game/Vec3.h"
 #include "snd/BgmSceneFade.h"
 #include "game/StrBSizeData.h"
 #include "town/BuildingResources.h"
-#include "game/Unk_02031e10_Vec.h"
 #include "gfx/Mtx43.h"
 #include "town/Unk_ov009_0225b880.h"
 #include "game/Unk_ov009_0225cb4c_V3.h"
@@ -82,7 +80,7 @@ typedef BOOL (BuildingActor::*Unk_ov009_0225c360_Fn)();
 #define func_0203e650 _ZN9Character9preDeleteEv
 #define Character_setCharId _ZN9Character9setCharIdEj
 #define SndSeEmitter_callStop _ZN12SndSeEmitter8callStopEv
-#define SndSeEmitter_callUpdateRelative _ZN12SndSeEmitter18callUpdateRelativeEP16Unk_02003a6c_Vec
+#define SndSeEmitter_callUpdateRelative _ZN12SndSeEmitter18callUpdateRelativeEP7VecFx32
 #define SndSeEmitter_callInit _ZN12SndSeEmitter8callInitEv
 #define TriangleTrigger_getCenter _ZN15TriangleTrigger9getCenterEv
 #define AnimModel_attachAnim _ZN9AnimModel10attachAnimEv
@@ -126,7 +124,7 @@ extern char sBuildingTexPath[];
 extern char sBuildingLightTexPath[];
 extern BuildingResources sBuildingResources[];
 extern u32 gCamera;
-extern Unk_ov009_0225b880_Vec3 gCameraLookAt;
+extern VecFx32 gCameraLookAt;
 extern u8 data_020d0a7c[];
 extern void *gFieldStructureHeap;
 extern void *gCurrentHeap;
@@ -138,7 +136,7 @@ void *func_ov009_0225b934(void *self);
 void _ZN12SndSeEmitterD2Ev(void *self);
 extern u8 data_0213b9c4[];
 void func_ov009_0225b94c(void *self);
-void _ZN17BuildingSeEmitter11setPositionEP23Unk_ov009_0225b880_Vec3(void *self, Unk_ov009_0225b880_Vec3 *v, u32 extra);
+void _ZN17BuildingSeEmitter11setPositionEP7VecFx32(void *self, VecFx32 *v, u32 extra);
 StrBSizeData *StrBSize_Get(u16 *p);
 
 void BuildingInfo_Copy(void *self, const u8 *src);
@@ -159,7 +157,7 @@ void BuildingLights_isLit(void *);
 void AnimModel_drawAnimated(void *, u32);
 s32 Math_Atan2(s32, s32);
 s32 func_01ffcb0c(s32, s32);
-void func_01ffd070(Unk_ov009_0225b880_Vec3 *, void *, Unk_ov009_0225b880_Vec3 *);
+void func_01ffd070(VecFx32 *, void *, VecFx32 *);
 void *TriangleTrigger_getCenter(void *);
 BOOL Item_IsFurniture(u16 *);
 s32 Item_GetFurnitureIndex(u16 *);
@@ -181,7 +179,7 @@ BOOL PlayerActor_LocalRequestDoorApproach(s32 *, s32 *, s16 *);
 s32 Scene_GetCurrent();
 s32 SceneWarp_RequestExit(void *, s32);
 s32 Ground_GetDefaultY(u32);
-void Scene_SetTownReturnPos(void *, s32, Unk_ov009_0225b880_Vec3 *, u32, s32, u32, u32);
+void Scene_SetTownReturnPos(void *, s32, VecFx32 *, u32, s32, u32, u32);
 void Building_SetLastEntranceType();
 
 s32 BuildingOccupancy_GetAnswer(u32);
@@ -263,8 +261,8 @@ void ModelSlotHandle_Init(void *);
 void *func_021065dc();
 u32 func_021065f8(void *, u32);
 void *NNS_G3dGetMdlSet();
-void MTX_MultVec43(s32, s32, Unk_ov009_0225b880_Vec3 *);
-void WorldCurve_FromCurved(void *, Unk_ov009_0225b880_Vec3 *);
+void MTX_MultVec43(s32, s32, VecFx32 *);
+void WorldCurve_FromCurved(void *, VecFx32 *);
 void __cxa_vec_cleanup(void *, s32, s32, void (*)(BuildingResources *));
 
 void Building_LocalToWorld(void *p, s32 a, s32 b);

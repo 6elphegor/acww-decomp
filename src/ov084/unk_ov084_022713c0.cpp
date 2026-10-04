@@ -34,10 +34,6 @@ class SpNpcTortimerFireworks;
 class SpNpcTortimerFireworksTalk;
 struct TalkStartMsg;
 
-struct Unk_ov084_Vec {
-    s32 x, y, z;
-};
-
 
 extern "C" {
 void *PlayerData_GetCurrent();
@@ -99,7 +95,6 @@ public:
 
 
 
-struct Unk_020d77a4_Vec3;
 
 
 

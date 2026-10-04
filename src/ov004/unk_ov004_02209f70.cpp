@@ -1,14 +1,13 @@
 // mwcc-version: 1.2/sp2
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "room/Unk_ov004_0224882c_Buf.h"
 #include "gfx/Mtx43.h"
 #include "actor/ActorProfile.h"
 #include "actor/ActorListNode.h"
 #include "actor/CharacterListNode.h"
-#include "game/Unk_0203e4f0_Vec.h"
 #include "room/FtrActorParts.h"
 #include "gfx/AnimFrameCtrl.h"
-#include "game/Vec3.h"
 #include "item/ItemId.h"
 #include "game/CollisionVec2.h"
 #include "game/LightLevel.h"
@@ -61,9 +60,6 @@
 // ================================================================ plain value types
 
 
-typedef Vec3 Unk_ov004_Vec3;
-typedef Vec3 Unk_ov004_022077a4_Vec3;
-typedef Vec3 Unk_ov004_02208284_V3;
 
 
 // ================================================================ library chain (as tu01, but slot 08/14 as this class overrides them)
@@ -1184,7 +1180,7 @@ s32 Math_StepS32(s32 *p, s32 target, s32 step);
 s32 _ZN12G3dResAccess11findNodeIdxEi(u32 a, const char *s);
 void _ZN12SndSeEmitter8callStopEv(void *p);
 void Snd_SeEmitterPlayOneShot(void *p, s32 a, s32 b, s32 c);
-void _ZN12SndSeEmitter18callUpdateRelativeEP16Unk_02003a6c_Vec(void *p, void *v);
+void _ZN12SndSeEmitter18callUpdateRelativeEP7VecFx32(void *p, void *v);
 void _ZN12SndSeEmitter8callInitEv(void *p);
 u32 PatternTexCache_Get(void);
 u32 _ZN15PatternTexCache13getAbleTexKeyEi(u32 a, u32 b);
@@ -1266,7 +1262,7 @@ BOOL FtrInstrument::onDelete() {
 }
 
 BOOL FtrInstrument::updateAppearRemove() {
-    Unk_ov004_0220bc80_V3 v;
+    VecFx32 v;
     v.x = centerPos[0];
     v.y = centerPos[1];
     v.z = centerPos[2];
@@ -1557,11 +1553,11 @@ BOOL FtrDesignDisplay::onDelete() {
 
 BOOL FtrDesignDisplay::updateActive() {
     if (seEmitterReady) {
-        Unk_ov004_0220bc80_V3 v = *(Unk_ov004_0220bc80_V3 *)centerPos;
+        VecFx32 v = *(VecFx32 *)centerPos;
         if (p13::_ZN15PatternTexCache21testAndClearAbleDirtyEi(p13::PatternTexCache_Get(), designSlot)) {
             p13::Snd_SeEmitterPlayOneShot(&seEmitter, 0x50, 0x7f, 0);
         }
-        p13::_ZN12SndSeEmitter18callUpdateRelativeEP16Unk_02003a6c_Vec(&seEmitter, &v);
+        p13::_ZN12SndSeEmitter18callUpdateRelativeEP7VecFx32(&seEmitter, &v);
     }
     return TRUE;
 }
@@ -1605,13 +1601,9 @@ u32 FtrActor_GetFtrIndex(void *self);
 
 // Shared parent of the three/four classes below; slots 0x64/0x6c/0x70/0x74 take parameters in the overrides here.
 
-struct Unk_ov004_0220cca4_Vec {
-    s32 x, y, z;
-};
-
 namespace p14 {
 extern "C" {
-void _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii(void *, void *, s32, s32);
+void _ZN10GroundInfo9initAtPosEP7VecFx32ii(void *, void *, s32, s32);
 }
 }
 namespace p14 {
@@ -1737,7 +1729,7 @@ void _ZN11FtrVisNodes10setVisibleEj(void *, s32);
 BOOL _ZN9FtrSwitch10isChangingEv(void *);
 BOOL _ZN11FtrVisNodes7hasNodeEi(void *);
 void MTX_MultVec43(void *, void *, void *);
-void _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii(void *, void *, s32, s32);
+void _ZN10GroundInfo9initAtPosEP7VecFx32ii(void *, void *, s32, s32);
 s32 _ZN14GroundInfoBase9getHeightEi(void *, s32);
 void GroundInfo_Destruct(void *);
 }
@@ -2010,17 +2002,17 @@ BOOL FtrCannon::changeAct(u32 a, u8 b) {
 }
 
 void FtrCannon::onJointCalcPost(s32 a, void *b) {
-    Unk_ov004_0220cca4_Vec v;
-    Unk_ov004_0220cca4_Vec o;
+    VecFx32 v;
+    VecFx32 o;
     if (p14::_ZN11FtrVisNodes7hasNodeEi(visNodes) && ftrAct == 1) {
-        Unk_ov004_0220cca4_Vec *pv = (Unk_ov004_0220cca4_Vec *)&((NNSG3dRS *)b)->pJntAnmResult->trans;
+        VecFx32 *pv = (VecFx32 *)&((NNSG3dRS *)b)->pJntAnmResult->trans;
         v.x = pv->x;
         v.y = pv->y;
         v.z = pv->z;
         *(Mtx43 *)p14::data_021f47e0 = modelMtx;
         p14::MTX_MultVec43(&v, p14::data_021f47e0, &o);
         u8 obj[0x44];
-        p14::_ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii(obj, &o, 0, 0);
+        p14::_ZN10GroundInfo9initAtPosEP7VecFx32ii(obj, &o, 0, 0);
         if (p14::_ZN14GroundInfoBase9getHeightEi(obj, 0) > 0) {
             p14::FtrSync_ChangeAct(this, 0, 0xff, 1);
         }
@@ -2330,10 +2322,6 @@ extern "C" void FtrKind19_Create() {
 }
 
 
-// ---- part 16: from unk_0220d69c.cpp
-struct Unk_ov004_0220d69c_Vec {
-    s32 x, y, z;
-};
 
 class FtrGyroid;
 
@@ -2367,7 +2355,7 @@ s32 Snd_BgmSyncPollStarted(void *);
 s32 Snd_BgmSyncReadBeat(void *);
 s32 Snd_BgmSyncSetStartBeat(void *, s32);
 s32 Snd_BgmSyncRelease(void *);
-s32 Snd_BgmSyncUpdate(void *, Unk_ov004_0220d69c_Vec *);
+s32 Snd_BgmSyncUpdate(void *, VecFx32 *);
 s32 Snd_BgmSyncSetState(void *, s32);
 s32 Snd_BgmSyncInit(void *);
 s32 FieldPos_ToUnit(s32 *, s32 *, void *);
@@ -2414,7 +2402,7 @@ public:
     void setSyncStartBeat(u32 v);
     void setSyncState(u32 v);
     void releaseSync();
-    s32 updateSync(Unk_ov004_0220d69c_Vec *v);
+    s32 updateSync(VecFx32 *v);
     void initSync(u32 v);
 
     /* 0x840 */ u8 bgmSync[0x854 - 0x840];
@@ -2438,7 +2426,7 @@ BOOL FtrGyroid::enterFtrAct02() {
 }
 
 void FtrGyroid::execFtrAct01() {
-    updateSync((Unk_ov004_0220d69c_Vec *)&position);
+    updateSync((VecFx32 *)&position);
     if (syncStartFrames != 0) {
         p16::_ZN14BlendAnimModel9stepBlendEv(model);
         syncStartFrames--;
@@ -2506,7 +2494,7 @@ BOOL FtrGyroid::enterFtrAct01() {
 }
 
 void FtrGyroid::execFtrAct00() {
-    updateSync((Unk_ov004_0220d69c_Vec *)&position);
+    updateSync((VecFx32 *)&position);
     p16::_ZN14BlendAnimModel9stepBlendEv(model);
     if (p16::_ZN9FtrSwitch10isChangingEv(switchState)) {
         p16::_ZN9FtrSwitch3setEji(switchState, 0, 0);
@@ -2602,9 +2590,9 @@ void FtrGyroid::releaseSync() {
     }
 }
 
-s32 FtrGyroid::updateSync(Unk_ov004_0220d69c_Vec *v) {
+s32 FtrGyroid::updateSync(VecFx32 *v) {
     if (bgmSyncActive != 0) {
-        Unk_ov004_0220d69c_Vec t;
+        VecFx32 t;
         t.x = v->x;
         t.y = v->y;
         t.z = v->z;
@@ -3718,14 +3706,6 @@ void _ZN8FtrActor8getTilesEP23Unk_ov004_02207854_ListPvi(void *self, void *a, s3
 }
 }
 
-struct Unk_ov004_0220fde4_Vec {
-    s32 x, y, z;
-};
-
-struct Unk_ov004_0220fde4_Pos {
-    s32 x, y;
-};
-
 class FtrStorage : public FtrActor {
 public:
     FtrStorage();
@@ -3928,13 +3908,13 @@ void FtrStorage::execFtrAct00() {
     if (p20::_ZN9FtrSwitch10isChangingEv(switchState) && e != NULL && p20::_ZN10FtrContact7getSideEv(e) == 0) {
         if (kind == 0xb) {
             FtrTileList arr;
-            Unk_ov004_0220fde4_Vec v;
+            VecFx32 v;
             p20::_ZN8FtrActor8getTilesEP23Unk_ov004_02207854_ListPvi(this, &arr, 0, 0);
             v.x = 0;
             v.y = 0;
             v.z = 0x2000;
             p20::Vec_RotateY(&v, *(s16 *)((u8 *)this + 0x8e));
-            volatile Unk_ov004_0220fde4_Pos p;
+            volatile Vec2 p;
             p.x = 0;
             p.y = 0;
             p.x = v.x >> 13;
@@ -4159,16 +4139,6 @@ public:
     ~FtrBedSideTiles();
 };
 
-struct Unk_ov004_022108f0_V {
-    s32 x, y, z;
-};
-
-struct Unk_ov004_02210d7c_V {
-    s32 x, y, z;
-    Unk_ov004_02210d7c_V() {}
-    ~Unk_ov004_02210d7c_V() {}
-};
-
 struct FtrBedKindCheck {
     static inline BOOL R(u16 v) {
         return v == 0x37 ? TRUE : FALSE;
@@ -4225,8 +4195,8 @@ public:
     void execFtrAct00();
     BOOL enterFtrAct00();
     void execFtrAct();
-    void calcStepPos(Unk_ov004_022108f0_V *out, Unk_ov004_022108f0_V *in, s32 ang, Unk_ov004_022108f0_V *opt);
-    s32 checkStepTile(Unk_ov004_022108f0_V *a, s32 b, Unk_ov004_022108f0_V *c);
+    void calcStepPos(VecFx32 *out, VecFx32 *in, s32 ang, VecFx32 *opt);
+    s32 checkStepTile(VecFx32 *a, s32 b, VecFx32 *c);
     u32 getLieTiles(void *o);
     u32 getSideTiles(void *o);
     BOOL isInUse();
@@ -4449,7 +4419,7 @@ void FtrBed::execFtrAct00() {
             if (p21::FtrMgr_IsFurnitureUsable() != 0) {
                 if (p21::_ZN10FtrContact7getSideEv(o) == 2 || p21::_ZN10FtrContact7getSideEv(o) == 0) {
                     FtrBedSideTiles q;
-                    Unk_ov004_022108f0_V a, b, c, e, f;
+                    VecFx32 a, b, c, e, f;
                     getSideTiles(&q);
                     Unk_ov004_02210d58_P *p0 = q.get(0);
                     p21::FieldPos_FromUnitCenter(&a, p0->x, p0->y);
@@ -4505,8 +4475,8 @@ void FtrBed::execFtrAct00() {
     }
 }
 
-s32 FtrBed::checkStepTile(Unk_ov004_022108f0_V *a, s32 b, Unk_ov004_022108f0_V *c) {
-    Unk_ov004_022108f0_V out;
+s32 FtrBed::checkStepTile(VecFx32 *a, s32 b, VecFx32 *c) {
+    VecFx32 out;
     s32 x, y;
     calcStepPos(&out, a, b, c);
     p21::FieldPos_ToUnit(&x, &y, &out);
@@ -4617,11 +4587,11 @@ BOOL FtrBed::changeAct(u32 a, u8 v) {
     return FALSE;
 }
 
-void FtrBed::calcStepPos(Unk_ov004_022108f0_V *out, Unk_ov004_022108f0_V *in, s32 ang, Unk_ov004_022108f0_V *opt) {
+void FtrBed::calcStepPos(VecFx32 *out, VecFx32 *in, s32 ang, VecFx32 *opt) {
     out->x = in->x;
     out->y = in->y;
     out->z = in->z;
-    Unk_ov004_02210d7c_V t;
+    VecFx32CtorDtor t;
     t.x = 0;
     t.y = 0;
     t.z = 0;
@@ -4630,7 +4600,7 @@ void FtrBed::calcStepPos(Unk_ov004_022108f0_V *out, Unk_ov004_022108f0_V *in, s3
         t.y = opt->y;
         t.z = opt->z;
     }
-    Unk_ov004_02210d7c_V w;
+    VecFx32CtorDtor w;
     w.x = t.x;
     w.y = t.y;
     w.z = t.z + 0x1000;
@@ -4662,21 +4632,17 @@ FtrBedSideTiles::~FtrBedSideTiles() {
 
 // ---- part 22: from unk_02210f0c.cpp
 
-struct Unk_ov004_02210f0c_V3 {
-    s32 x, y, z;
-};
-
 // list of up to 4 tile positions (ctor/dtor/methods are defined elsewhere)
 
 struct FtrBedLieOffsetRowView {
-    Unk_ov004_02210f0c_V3 *offsets;
+    VecFx32 *offsets;
     u32 count;
 };
 
 namespace p22 {
 extern "C" {
 extern FtrBedLieOffsetRowView sFtrBedLieOffsets[];
-extern Unk_ov004_02210f0c_V3 *data_ov004_02249028[];
+extern VecFx32 *data_ov004_02249028[];
 extern u8 data_ov004_02240050[];
 extern void *gCommManager;
 
@@ -4728,7 +4694,7 @@ public:
     virtual BOOL initModel();
     virtual BOOL updateActive();
 
-    void getSitterPos(Unk_ov004_02210f0c_V3 *out, void *o);
+    void getSitterPos(VecFx32 *out, void *o);
 
     /* 0x840 */ u16 pushFrames;
     /* 0x842 */ u16 pad_842;
@@ -4767,11 +4733,11 @@ typedef BOOL (FtrKind07::*Unk_ov004_02211738_Fn)();
 
 // ================================================================ FtrBed ==========
 u32 FtrBed::getLieTiles(void *o) {
-    Unk_ov004_02210f0c_V3 *p = p22::sFtrBedLieOffsets[footprint].offsets;
+    VecFx32 *p = p22::sFtrBedLieOffsets[footprint].offsets;
     if (p) {
         u32 i;
         for (i = 0; i < p22::sFtrBedLieOffsets[footprint].count; i++) {
-            Unk_ov004_02210f0c_V3 v;
+            VecFx32 v;
             p22::FtrActor_LocalToWorld(this, &v, &p[i]);
             s32 *q = (s32 *)((FtrTilePair *)o)->get(i);
             p22::FieldPos_ToUnit(q, q + 1, &v);
@@ -4782,11 +4748,11 @@ u32 FtrBed::getLieTiles(void *o) {
 }
 
 u32 FtrBed::getSideTiles(void *o) {
-    Unk_ov004_02210f0c_V3 *p = p22::data_ov004_02249028[footprint];
+    VecFx32 *p = p22::data_ov004_02249028[footprint];
     if (p) {
         u32 i;
         for (i = 0; i < 2; i++) {
-            Unk_ov004_02210f0c_V3 v;
+            VecFx32 v;
             p22::FtrActor_LocalToWorld(this, &v, &p[i]);
             s32 *q = (s32 *)((FtrTilePair *)o)->get(i);
             p22::FieldPos_ToUnit(q, q + 1, &v);
@@ -4811,7 +4777,7 @@ BOOL FtrBed::updateActive() {
         u32 i;
         u32 j;
         for (i = 0; i < 4; i++) {
-            Unk_ov004_02210f0c_V3 v;
+            VecFx32 v;
             s32 x, y;
             if (p22::PlayerActor_GetPosIfInBed(&v, i)) {
                 p22::FieldPos_ToUnit(&x, &y, &v);
@@ -4871,7 +4837,7 @@ extern "C" void FtrBed_Create() {
 }
 
 // ================================================================ FtrSeat ==========
-void FtrSeat::getSitterPos(Unk_ov004_02210f0c_V3 *out, void *o) {
+void FtrSeat::getSitterPos(VecFx32 *out, void *o) {
     if (footprint == 0) {
         out->x = position.x;
         out->y = position.y;
@@ -4881,7 +4847,7 @@ void FtrSeat::getSitterPos(Unk_ov004_02210f0c_V3 *out, void *o) {
         out->x = p[0];
         out->y = p[1];
         out->z = p[2];
-        Unk_ov004_02210f0c_V3 v;
+        VecFx32 v;
         s32 t = p22::_ZN10FtrContact8getDepthEv(o) + 0x1000;
         v.x = 0;
         v.y = 0;
@@ -4903,7 +4869,7 @@ BOOL FtrSeat::updateActive() {
         u32 i;
         u32 j;
         for (i = 0; i < 4; i++) {
-            Unk_ov004_02210f0c_V3 v;
+            VecFx32 v;
             if (p22::PlayerActor_GetPosIfSitting(&v, i)) {
                 p22::FieldPos_ToUnit(&x, &y, &v);
                 FtrTileList list;
@@ -4947,7 +4913,7 @@ BOOL FtrSeat::updateActive() {
             }
         }
         if (ok) {
-            Unk_ov004_02210f0c_V3 pos;
+            VecFx32 pos;
             getSitterPos(&pos, r6);
             if (p22::FtrActor_IsPosClearOfCharacters(&pos, 0x800, 0x2000, 0x800, 0)) {
                 if (pushFrames < 7) {
@@ -6032,7 +5998,7 @@ extern "C" void FtrBasic_Create() {
 
 // ---- functions of classes declared by a later part than the one that holds them
 void FtrGyroid::execFtrAct02() {
-    s32 v = updateSync((Unk_ov004_0220d69c_Vec *)&position.x);
+    s32 v = updateSync((VecFx32 *)&position.x);
     if (v >= 0) {
         s32 i = v >> 12;
         p15::_ZN14BlendAnimModel8initAnimEiiitt(model, p15::_ZN10FtrAnimSet6getBcaEj(p15::_ZN11FtrModelRes10getAnimSetEv(modelRes), 0), 0, v - (i << 12), (u16)i, 0);

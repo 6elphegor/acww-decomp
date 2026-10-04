@@ -1,4 +1,5 @@
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "gfx/AnimFrameCtrl.h"
 #include "gfx/G3dResAccess.h"
 #include "gfx/MatTexBinder.h"

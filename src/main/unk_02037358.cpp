@@ -1,4 +1,5 @@
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "game/Unk_02037674_V3.h"
 #include "gfx/BgModelCache.h"
 
@@ -44,12 +45,12 @@ class MapBlock {
 public:
     void clear();
     void bindBg(BgAcreModel *s, u32 t, u32 u);
-    void init(s32 a, Unk_02037674_V3 *v, s32 b, s32 k0, s32 k1, BgAcreModel *k2, u32 k3, s32 k4, s32 k5, u32 k6);
+    void init(s32 a, VecFx32 *v, s32 b, s32 k0, s32 k1, BgAcreModel *k2, u32 k3, s32 k4, s32 k5, u32 k6);
 
     s32 acreId;
     s32 blockX;
     s32 blockZ;
-    Unk_02037674_V3 pos;
+    VecFx32 pos;
     s32 layers[2];
     BgAcreModel *bgModel;
     s32 buried;
@@ -70,7 +71,7 @@ void MapBlock::clear() {
     }
 }
 
-void MapBlock::init(s32 a, Unk_02037674_V3 *v, s32 b, s32 k0, s32 k1, BgAcreModel *k2, u32 k3, s32 k4, s32 k5, u32 k6) {
+void MapBlock::init(s32 a, VecFx32 *v, s32 b, s32 k0, s32 k1, BgAcreModel *k2, u32 k3, s32 k4, s32 k5, u32 k6) {
     acreId = a;
     pos.x = v->x;
     pos.y = v->y;
@@ -83,8 +84,8 @@ void MapBlock::init(s32 a, Unk_02037674_V3 *v, s32 b, s32 k0, s32 k1, BgAcreMode
     bindBg(k2, k3, k6);
 }
 
-extern "C" void MapBlock_Init(MapBlock *self, s32 a, Unk_02037674_V3 *v, s32 b, s32 k0, s32 k1, BgAcreModel *k2, u32 k3, Unk_02037638_S8 *k45, u32 k6) {
-    Unk_02037674_V3 t;
+extern "C" void MapBlock_Init(MapBlock *self, s32 a, VecFx32 *v, s32 b, s32 k0, s32 k1, BgAcreModel *k2, u32 k3, Unk_02037638_S8 *k45, u32 k6) {
+    VecFx32 t;
     t.x = v->x;
     t.y = v->y;
     t.z = v->z;

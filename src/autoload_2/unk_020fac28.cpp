@@ -1,6 +1,7 @@
 // mwcc-flags: -nothumb -O4,p
 #include "types.h"
 #include "gfx/SplRes.h"
+#include "gfx/V3.h"
 
 static inline s32 FX_Mul(s32 a, s32 b) {
     return (s32)(((s64)a * b + 0x800) >> 12);
@@ -13,10 +14,6 @@ static inline u32 vtx(s16 x, s16 y, s16 z) {
 static inline u32 vtxb(s16 y, s16 x) {
     return ((x >> 6) & 0x3ff) | (((y >> 6) & 0x3ff) << 10);
 }
-
-struct Vec3 {
-    s32 v[3];
-};
 
 struct ChildRes {
     u16 b0 : 3;
@@ -43,8 +40,8 @@ struct Bits46 {
 
 struct Part {
     u8 p0[8];
-    Vec3 pos;
-    Vec3 vel;
+    V3Arr pos;
+    V3Arr vel;
     u16 h32;
     s16 h34;
     u16 h36;
@@ -57,7 +54,7 @@ struct Part {
     s32 w48;
     s16 h52;
     u16 h54;
-    Vec3 v56;
+    V3Arr v56;
 };
 
 
@@ -87,15 +84,15 @@ struct Mg {
     s32 *mtx;
 };
 
-typedef u32 (*DrawCb)(Vec3 *, Vec3);
+typedef u32 (*DrawCb)(V3Arr *, V3Arr);
 extern u32 data_021f5c3c;
 extern s16 data_02135f44[];
 extern "C" {
-void VEC_CrossProduct(Vec3 *a, Vec3 *b, Vec3 *c);
-void VEC_Normalize(Vec3 *a, Vec3 *b);
+void VEC_CrossProduct(V3Arr *a, V3Arr *b, V3Arr *c);
+void VEC_Normalize(V3Arr *a, V3Arr *b);
 void MI_Copy36B(s32 *src, s32 *dst);
-void MTX_MultVec33(Vec3 *v, Vec3 *m, Vec3 *out);
-void MTX_MultVec43(Vec3 *v, s32 *m, Vec3 *out);
+void MTX_MultVec33(V3Arr *v, V3Arr *m, V3Arr *out);
+void MTX_MultVec43(V3Arr *v, s32 *m, V3Arr *out);
 void MTX_RotX43_(s32 *m, s32 s, s32 c);
 void G3_MultMtx43(s32 *m);
 void *spl_pop_front(void *list);
@@ -251,7 +248,7 @@ extern "C" void func_020fbf94(Mg *self, Part *p, DrawCb fp) {
     s32 h52 = p->h52;
     u16 c1 = p->h54;
     u16 c2 = self->cur->h90;
-    Vec3 v;
+    V3Arr v;
     s32 m[12];
     s32 rot[12];
     s32 ang;
@@ -332,7 +329,7 @@ extern "C" void func_020fbf94(Mg *self, Part *p, DrawCb fp) {
 extern "C" void func_020fbad0(Mg *self, Part *p, DrawCb fp) {
     s32 *mtx = self->mtx;
     s32 sc = self->cur->res->p0->s48;
-    Vec3 v;
+    V3Arr v;
     s32 m[12];
     s32 rot[12];
     s32 ang;
@@ -421,10 +418,10 @@ extern "C" void func_020fbad0(Mg *self, Part *p, DrawCb fp) {
 extern "C" void func_020fb378(Mg *self, Part *p, DrawCb fp) {
     s32 *mtx = self->mtx;
     s32 sc = self->cur->res->p0->s48;
-    Vec3 e;
-    Vec3 v;
-    Vec3 d;
-    Vec3 cam;
+    V3Arr e;
+    V3Arr v;
+    V3Arr d;
+    V3Arr cam;
     s32 mc[9];
     s32 m[12];
     s32 ang;
@@ -464,7 +461,7 @@ extern "C" void func_020fb378(Mg *self, Part *p, DrawCb fp) {
         if (d.v[0] == 0 && d.v[1] == 0 && d.v[2] == 0) return;
         VEC_Normalize(&d, &d);
         MI_Copy36B(mtx, mc);
-        MTX_MultVec33(&d, (Vec3 *)mc, &d);
+        MTX_MultVec33(&d, (V3Arr *)mc, &d);
         MTX_MultVec43(&v, mtx, &v);
         e = p->vel;
         VEC_Normalize(&e, &e);
@@ -499,7 +496,7 @@ extern "C" void func_020fb378(Mg *self, Part *p, DrawCb fp) {
         if (d.v[0] == 0 && d.v[1] == 0 && d.v[2] == 0) return;
         VEC_Normalize(&d, &d);
         MI_Copy36B(mtx, mc);
-        MTX_MultVec33(&d, (Vec3 *)mc, &d);
+        MTX_MultVec33(&d, (V3Arr *)mc, &d);
         MTX_MultVec43(&v, mtx, &v);
         e = p->vel;
         VEC_Normalize(&e, &e);
@@ -542,10 +539,10 @@ extern "C" void func_020fb378(Mg *self, Part *p, DrawCb fp) {
 extern "C" void func_020fac28(Mg *self, Part *p, DrawCb fp) {
     s32 *mtx = self->mtx;
     s32 sc = self->cur->res->p0->s48;
-    Vec3 e;
-    Vec3 v;
-    Vec3 d;
-    Vec3 cam;
+    V3Arr e;
+    V3Arr v;
+    V3Arr d;
+    V3Arr cam;
     s32 mc[9];
     s32 m[12];
     s32 ang;
@@ -585,7 +582,7 @@ extern "C" void func_020fac28(Mg *self, Part *p, DrawCb fp) {
         if (d.v[0] == 0 && d.v[1] == 0 && d.v[2] == 0) return;
         VEC_Normalize(&d, &d);
         MI_Copy36B(mtx, mc);
-        MTX_MultVec33(&d, (Vec3 *)mc, &d);
+        MTX_MultVec33(&d, (V3Arr *)mc, &d);
         MTX_MultVec43(&v, mtx, &v);
         e = p->vel;
         VEC_Normalize(&e, &e);
@@ -620,7 +617,7 @@ extern "C" void func_020fac28(Mg *self, Part *p, DrawCb fp) {
         if (d.v[0] == 0 && d.v[1] == 0 && d.v[2] == 0) return;
         VEC_Normalize(&d, &d);
         MI_Copy36B(mtx, mc);
-        MTX_MultVec33(&d, (Vec3 *)mc, &d);
+        MTX_MultVec33(&d, (V3Arr *)mc, &d);
         MTX_MultVec43(&v, mtx, &v);
         e = p->vel;
         VEC_Normalize(&e, &e);

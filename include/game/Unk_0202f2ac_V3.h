@@ -14,10 +14,4 @@ struct Unk_0202f2ac_V3 {
     Unk_0202f2ac_V3(s32 a, s32 b, s32 c) : x(a), y(b), z(c) {}
 }; // size 0xc
 
-struct Unk_0202f660_V3 {
-    /* 0x0 */ s32 x;
-    /* 0x4 */ s32 y;
-    /* 0x8 */ s32 z;
-}; // size 0xc
-
 #endif // GAME_UNK_0202F2AC_V3_H

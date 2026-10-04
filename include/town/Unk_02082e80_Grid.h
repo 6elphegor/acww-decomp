@@ -6,8 +6,6 @@
 
 // Visitor placement helpers: block grid, grid position, s32 vector (src/main/unk_02082d74.cpp, unk_02082d2c.cpp).
 
-struct Unk_02082dd0_V { s32 x, y, z; };
-
 struct Unk_02082e80_Grid {
     /* 0x00 */ TownBlockCell *blocks;
     /* 0x04 */ u32 size[2];

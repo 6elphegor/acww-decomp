@@ -1,5 +1,6 @@
 // mwcc-flags: -str reuse
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "net/CommManager.h"
 #include "actor/VillagerActor.h"
 #include "npc/VillagerState.h"
@@ -504,11 +505,6 @@ void VillagerStates_Init();
 namespace nB {
 extern "C" {
 
-struct Unk_02078738_Pos {
-    s32 x;
-    s32 y;
-    s32 z;
-};
 struct MapBlock {
     u8 pad_00[0x28];
 };
@@ -595,15 +591,15 @@ VillagerState *_ZN13VillagerStateD1Ev(VillagerState *e);
 VillagerState *_ZN13VillagerStateC1Ev(VillagerState *e);
 void VillagerTrend_TickIdle();
 void VillagerTrend_NotifyIdle();
-void VillagerTrend_NotifyUnk6(Unk_02078738_Pos *p);
-BOOL TownMap_HasAttr8AtPos(Unk_02078738_Pos *p);
-void VillagerTrend_NotifyUnk5(Unk_02078738_Pos *p);
+void VillagerTrend_NotifyUnk6(VecFx32 *p);
+BOOL TownMap_HasAttr8AtPos(VecFx32 *p);
+void VillagerTrend_NotifyUnk5(VecFx32 *p);
 void VillagerTrend_OnFurnitureBought();
 void VillagerTrend_OnClothesBought();
-void VillagerTrend_OnItemDug(Unk_02078738_Pos *p);
-void VillagerTrend_OnInsectCaught(Unk_02078738_Pos *p);
-void VillagerTrend_OnFishCaught(Unk_02078738_Pos *p);
-void SaveVillagers_NotifyPlayerActivity(u32 kind, Unk_02078738_Pos *p);
+void VillagerTrend_OnItemDug(VecFx32 *p);
+void VillagerTrend_OnInsectCaught(VecFx32 *p);
+void VillagerTrend_OnFishCaught(VecFx32 *p);
+void SaveVillagers_NotifyPlayerActivity(u32 kind, VecFx32 *p);
 BOOL Villager_IsActorInBox(u16 *h, s32 x0, s32 x1, s32 z0, s32 z1);
 void func_020789a8();
 void *VillagerTransfer_DestructVillager(void *p);
@@ -655,21 +651,21 @@ VillagerState *_ZN13VillagerStateD1Ev(VillagerState *e);
 VillagerState *_ZN13VillagerStateC1Ev(VillagerState *e);
 void VillagerTrend_TickIdle();
 void VillagerTrend_NotifyIdle();
-void VillagerTrend_NotifyUnk6(Unk_02078738_Pos *p);
+void VillagerTrend_NotifyUnk6(VecFx32 *p);
 static inline MapBlock *Unk_02078738_GetCell(BlockMap *g, u32 x, u32 y) {
     if (x < g->width && y < g->height && g->blocks != NULL) {
         return &g->blocks[y * g->width + x];
     }
     return NULL;
 }
-BOOL TownMap_HasAttr8AtPos(Unk_02078738_Pos *p);
-void VillagerTrend_NotifyUnk5(Unk_02078738_Pos *p);
+BOOL TownMap_HasAttr8AtPos(VecFx32 *p);
+void VillagerTrend_NotifyUnk5(VecFx32 *p);
 void VillagerTrend_OnFurnitureBought();
 void VillagerTrend_OnClothesBought();
-void VillagerTrend_OnItemDug(Unk_02078738_Pos *p);
-void VillagerTrend_OnInsectCaught(Unk_02078738_Pos *p);
-void VillagerTrend_OnFishCaught(Unk_02078738_Pos *p);
-void SaveVillagers_NotifyPlayerActivity(u32 kind, Unk_02078738_Pos *p);
+void VillagerTrend_OnItemDug(VecFx32 *p);
+void VillagerTrend_OnInsectCaught(VecFx32 *p);
+void VillagerTrend_OnFishCaught(VecFx32 *p);
+void SaveVillagers_NotifyPlayerActivity(u32 kind, VecFx32 *p);
 void func_020789a8();
 void *VillagerTransfer_DestructVillager(void *p);
 void *VillagerTransfer_ConstructVillager(void *p);
@@ -10302,7 +10298,7 @@ extern "C" BOOL Villager_IsActorInBox(u16 *h, s32 x0, s32 x1, s32 z0, s32 z1) {
 }
 
 namespace nB {
-extern "C" void SaveVillagers_NotifyPlayerActivity(u32 kind, Unk_02078738_Pos *p) {
+extern "C" void SaveVillagers_NotifyPlayerActivity(u32 kind, VecFx32 *p) {
     if ((u32)gSaveVillagers != 0) {
         s32 b[4];
         ClockDateTime t;
@@ -10347,7 +10343,7 @@ extern "C" void SaveVillagers_NotifyPlayerActivity(u32 kind, Unk_02078738_Pos *p
 }
 
 namespace nB {
-extern "C" void VillagerTrend_OnFishCaught(Unk_02078738_Pos *p) {
+extern "C" void VillagerTrend_OnFishCaught(VecFx32 *p) {
     if (!_ZN11CommManager8isOnlineEv(gCommManager)) {
         SaveVillagers_NotifyPlayerActivity(1, p);
     }
@@ -10355,7 +10351,7 @@ extern "C" void VillagerTrend_OnFishCaught(Unk_02078738_Pos *p) {
 }
 
 namespace nB {
-extern "C" void VillagerTrend_OnInsectCaught(Unk_02078738_Pos *p) {
+extern "C" void VillagerTrend_OnInsectCaught(VecFx32 *p) {
     if (!_ZN11CommManager8isOnlineEv(gCommManager)) {
         SaveVillagers_NotifyPlayerActivity(0, p);
     }
@@ -10363,7 +10359,7 @@ extern "C" void VillagerTrend_OnInsectCaught(Unk_02078738_Pos *p) {
 }
 
 namespace nB {
-extern "C" void VillagerTrend_OnItemDug(Unk_02078738_Pos *p) {
+extern "C" void VillagerTrend_OnItemDug(VecFx32 *p) {
     if (!_ZN11CommManager8isOnlineEv(gCommManager)) {
         SaveVillagers_NotifyPlayerActivity(2, p);
     }
@@ -10387,7 +10383,7 @@ extern "C" void VillagerTrend_OnFurnitureBought() {
 }
 
 namespace nB {
-extern "C" void VillagerTrend_NotifyUnk5(Unk_02078738_Pos *p) {
+extern "C" void VillagerTrend_NotifyUnk5(VecFx32 *p) {
     if (!_ZN11CommManager8isOnlineEv(gCommManager)) {
         SaveVillagers_NotifyPlayerActivity(5, p);
     }
@@ -10395,7 +10391,7 @@ extern "C" void VillagerTrend_NotifyUnk5(Unk_02078738_Pos *p) {
 }
 
 namespace nB {
-extern "C" BOOL TownMap_HasAttr8AtPos(Unk_02078738_Pos *p) {
+extern "C" BOOL TownMap_HasAttr8AtPos(VecFx32 *p) {
     BlockMap *g = gSceneBlockMap;
     if (g != NULL) {
         MapBlock *c = Unk_02078738_GetCell(g, p->x >> 17, p->z >> 17);
@@ -10411,7 +10407,7 @@ extern "C" BOOL TownMap_HasAttr8AtPos(Unk_02078738_Pos *p) {
 }
 
 namespace nB {
-extern "C" void VillagerTrend_NotifyUnk6(Unk_02078738_Pos *p) {
+extern "C" void VillagerTrend_NotifyUnk6(VecFx32 *p) {
     if (!_ZN11CommManager8isOnlineEv(gCommManager)) {
         if (TownMap_HasAttr8AtPos(p)) {
             SaveVillagers_NotifyPlayerActivity(6, p);

@@ -37,9 +37,6 @@
 #include "snd/SndSeEmitterKind99.h"
 
 struct Unk_02006d14_Pair;
-struct Unk_02006d14_Vec;
-struct Unk_02006d14_Vec3;
-struct Unk_0200b144_Pos;
 struct Unk_0200b750_Pair;
 struct Unk_0200b908_Obj;
 struct Unk_0200f6d4_V2;
@@ -60,7 +57,7 @@ public:
     virtual BOOL onExecute();
     virtual BOOL onDraw();
     virtual ~PlayerActor();
-    virtual BOOL getHeldItemPos(Unk_020d77a4_Vec3 *out);
+    virtual BOOL getHeldItemPos(VecFx32 *out);
     virtual void onMessageStart(u32 attr);
     virtual void onMessageEnd(u32 attr);
     virtual void onChoice(u32 attr);
@@ -135,7 +132,7 @@ public:
     s32 walkToUpdateSpeed();
     void netWalkTo();
     void setupWalkTo(PlayerActionRequest *item, u32 old);
-    BOOL requestWalkTo(Unk_02006d14_Vec *v, u32 a, u32 b, s16 c);
+    BOOL requestWalkTo(VecFx32Ctor *v, u32 a, u32 b, s16 c);
     void mainChangeHeldItem();
     void changeHeldItemUpdate();
     void endChangeHeldItem();
@@ -194,8 +191,8 @@ public:
     void mainPickUp();
     void pickUpRemoteCheckEnd();
     void pickUpUpdateStore(u8* state, u8 flag);
-    s32 requestPickUpWithItem(Unk_0200b144_Pos* pos, u16 a, u8 b, s32 c, s16 d);
-    s32 requestPickUpAt(Unk_0200b144_Pos* pos, s32 a, u8 b, s32 c, s16 d);
+    s32 requestPickUpWithItem(Vec2* pos, u16 a, u8 b, s32 c, s16 d);
+    s32 requestPickUpAt(Vec2* pos, s32 a, u8 b, s32 c, s16 d);
     void pickUpUpdateAnim(PlayerActionRequest* item, u32 old);
     void endPickUp(PlayerActionRequest* item, u32 old);
     void netPickUp(s16 old);
@@ -246,14 +243,14 @@ public:
     void clearActionFlag(u32 id);
     void setActionFlag(u32 id);
     u32 testActionFlag(u32 id);
-    void playSeAt(u32 a, Unk_02006d14_Vec3 *v);
+    void playSeAt(u32 a, VecFx32 *v);
     void playSe(u32 a);
     void offsetSpawnBySlot();
     void nudgeForward();
-    BOOL netSyncNearPoint(Unk_02006d14_Vec3 *p);
+    BOOL netSyncNearPoint(VecFx32 *p);
     BOOL netSyncNearUnit(s32 *p);
     BOOL netFollowTransform();
-    BOOL getNetTransformInArea(Unk_02006d14_Vec3 *out, s16 *ang);
+    BOOL getNetTransformInArea(VecFx32 *out, s16 *ang);
     void updateShownItemPos(u32 a, ...);
     BOOL checkLidAndError();
     void playFootstepSe();

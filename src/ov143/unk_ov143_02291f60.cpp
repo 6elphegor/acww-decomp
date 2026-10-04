@@ -1,5 +1,6 @@
 // ov143: scene overlay (class MelodyMenu, vtable 0x02293b80): melody / tune editor menu.
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
 #include "menu/MenuProc.h"
@@ -49,10 +50,6 @@ struct MelodyPlayingNoteCell {
 };
 
 class MelodyMenu;
-
-struct Unk_ov143_02292898_V {
-    s32 x, y, z;
-};
 
 class MelodyMenu;
 typedef void (MelodyMenu::*Unk_ov143_02293b80_Fn)();
@@ -755,7 +752,7 @@ void MelodyMenu::showCursor() {
 }
 
 s32 MelodyMenu::getCursorTargetX() {
-    Unk_ov143_02292898_V v;
+    VecFx32 v;
     u32 t = cursorSlot;
     if (t <= 0xf) {
         getNotePos(&v.x, t);
@@ -779,7 +776,7 @@ s32 MelodyMenu::getCursorTargetX() {
 }
 
 s32 MelodyMenu::getCursorTargetY() {
-    Unk_ov143_02292898_V v;
+    VecFx32 v;
     u32 t = cursorSlot;
     if (t <= 0xf) {
         getNotePos(&v.x, t);
@@ -846,7 +843,7 @@ void MelodyMenu::releaseCursor() {
 }
 
 u32 MelodyMenu::hitTestTarget(s32 x, s32 y) {
-    Unk_ov143_02292898_V v;
+    VecFx32 v;
     s32 i;
     for (i = 0; i < 16; i++) {
         getNotePos(&v.x, i);

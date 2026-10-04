@@ -1,8 +1,8 @@
 // mwcc-version: 1.2/base
 // mwcc-flags: -str reuse
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "actor/CharacterListNode.h"
-#include "game/Unk_ov004_02224ee4_Vec.h"
 #include "gfx/AnimFrameCtrl.h"
 #include "room/RoomObjRes.h"
 #include "room/RoomObjTex.h"
@@ -90,7 +90,7 @@ extern char _ZTV12RoomObjActor[];
 }
 
 typedef RoomObjActor M;
-typedef Unk_ov004_02224ee4_Vec Vec;
+typedef VecFx32 Vec;
 
 extern "C" void RoomObj_LoadResourcesByName(char *name, AnimModel *m, RoomObjRes *a, RoomObjTex *b);
 extern "C" void RoomObj_LoadResources(char *a, char *b, AnimModel *m, RoomObjRes *aa, RoomObjTex *bb);
@@ -239,10 +239,6 @@ void RoomObjRes::clear() {
 
 namespace ns_0222459c {
 
-struct Unk_ov004_022245ac_V3 {
-    s32 x, y, z;
-};
-
 class Unk_ov004_022245ac_Msg {
 public:
     inline Unk_ov004_022245ac_Msg() { _ZN19PlayerActionRequestC1Ev(this); }
@@ -253,12 +249,12 @@ public:
 };
 
 struct GetOutOfBedCheckWork {
-    Unk_ov004_022245ac_V3 pos;
+    VecFx32 pos;
     u8 flag;
 };
 
 typedef PlayerActor Obj;
-typedef Unk_ov004_022245ac_V3 V3;
+typedef VecFx32 V3;
 typedef Unk_ov004_022245ac_Msg Msg;
 typedef GetOutOfBedCheckWork Rec;
 typedef RoomObjRes Res;
@@ -299,7 +295,7 @@ void _ZN11PlayerActor21requestFaceItemChangeEPt(Obj *o, u16 *v);
 s32 Snd_SeEmitterPlayHeld(s32 a, s32 b, s32 c, s32 d);
 s32 Snd_SeEmitterPlayOneShot(s32 a, s32 b, s32 c, s32 d);
 s32 _ZN12SndSeEmitter8callStopEv(s32 a);
-s32 _ZN12SndSeEmitter18callUpdateRelativeEP16Unk_02003a6c_Vec(s32 a, V3 *v);
+s32 _ZN12SndSeEmitter18callUpdateRelativeEP7VecFx32(s32 a, V3 *v);
 s32 _ZN12SndSeEmitter8callInitEv(s32 a);
 #define SndSeEmitter_dtor _ZN12SndSeEmitterD1Ev
 void SndSeEmitter_dtor(void *p);
@@ -490,7 +486,7 @@ extern "C" s32 RoomObj_SetSePos(s32 a, V3 *p) {
     v.x = p->x;
     v.y = p->y;
     v.z = p->z;
-    return _ZN12SndSeEmitter18callUpdateRelativeEP16Unk_02003a6c_Vec(a, &v);
+    return _ZN12SndSeEmitter18callUpdateRelativeEP7VecFx32(a, &v);
 }
 
 extern "C" s32 RoomObj_DeactivateSe(s32 a) {
@@ -838,16 +834,6 @@ extern "C" void PlayerActor_GetOutOfBedCheckSetWork(Rec *r, V3 *v, u32 f) {
 
 namespace ns_02223c38 {
 
-struct Unk_ov004_02223c38_V3 {
-    s32 x, y, z;
-};
-
-struct Unk_ov004_02223c38_V3c {
-    s32 x, y, z;
-    Unk_ov004_02223c38_V3c() {}
-    ~Unk_ov004_02223c38_V3c() {}
-};
-
 struct GetOutOfBedWork {
     s32 x;
     s32 z;
@@ -873,8 +859,8 @@ struct Unk_ov004_02223c38_Bits16 {
 };
 
 typedef PlayerActor Obj;
-typedef Unk_ov004_02223c38_V3 V3;
-typedef Unk_ov004_02223c38_V3c V3c;
+typedef VecFx32 V3;
+typedef VecFx32CtorDtor V3c;
 typedef GetOutOfBedWork Rec;
 typedef Unk_ov004_02223c38_Msg Msg;
 typedef Unk_ov004_02223c38_Bits16 Bits16;
@@ -1425,10 +1411,6 @@ extern "C" void PlayerActor_BedApproachSetArgs(Rec *t, s32 x, s32 z, s16 h, u8 a
 
 namespace ns_02223314 {
 
-struct Unk_ov004_02223314_V3 {
-    s32 x, y, z;
-};
-
 struct BedApproachWork {
     s32 targetX;
     s32 targetZ;
@@ -1470,7 +1452,7 @@ public:
 
 typedef PlayerActor Obj;
 typedef Unk_ov004_02223314_Bits Bits;
-typedef Unk_ov004_02223314_V3 V3;
+typedef VecFx32 V3;
 typedef BedApproachWork Rec;
 typedef PickUpItemWork Rec2;
 typedef Unk_ov004_02223314_Msg Msg;
@@ -1983,10 +1965,6 @@ extern "C" void PlayerActor_PickUpItemUpdateScale(Obj *o) {
 
 namespace ns_02222838 {
 
-struct Unk_ov004_02222874_V3 {
-    s32 x, y, z;
-};
-
 struct PlayerFtrGrabApproachArgs {
     s32 x, z;
     s16 h;
@@ -2014,7 +1992,7 @@ struct FtrGrabApproachWork {
 
 typedef PlayerActor Obj;
 typedef TalkMsgRequest Sec;
-typedef Unk_ov004_02222874_V3 V3;
+typedef VecFx32 V3;
 typedef PlayerFtrGrabApproachArgs Tgt;
 typedef Unk_ov004_02222874_Msg Msg;
 typedef FtrGrabApproachWork Rec;
@@ -2610,10 +2588,6 @@ extern "C" void PlayerActor_NetFtrRotate(void) {
 
 namespace ns_02221ed0 {
 
-struct Unk_ov004_02221ed0_V3 {
-    s32 x, y, z;
-};
-
 struct SeatApproachWork {
     s32 x;
     s32 z;
@@ -2638,7 +2612,7 @@ public:
 
 typedef PlayerActor Obj;
 typedef Unk_ov004_02221ed0_Bits Bits;
-typedef Unk_ov004_02221ed0_V3 V3;
+typedef VecFx32 V3;
 typedef SeatApproachWork Rec;
 typedef Unk_ov004_02221ed0_Msg Msg;
 
@@ -3154,10 +3128,6 @@ extern "C" void PlayerActor_SitDownFrontSetArgs(Rec *t, s32 x, s32 z, s16 h) {
 
 namespace ns_022215a8 {
 
-struct Unk_ov004_022215a8_V3 {
-    s32 x, y, z;
-};
-
 struct PlayerSitDownArgs {
     s32 x, z;
     s16 h;
@@ -3192,7 +3162,7 @@ public:
 
 typedef PlayerActor Obj;
 typedef Unk_ov004_022215a8_Bits Bits;
-typedef Unk_ov004_022215a8_V3 V3;
+typedef VecFx32 V3;
 struct Unk_ov004_022215a8_V3c {
     volatile s32 x, y, z;
     Unk_ov004_022215a8_V3c(s32 a, s32 b, s32 c) {
@@ -3690,10 +3660,6 @@ extern "C" s32 PlayerActor_RequestStandUpSide2(Obj *o, u32 a, u32 b) {
 
 namespace ns_02220c78 {
 
-struct Unk_ov004_02220c78_V3 {
-    s32 x, y, z;
-};
-
 struct StorageOpenWork {
     u32 targetX;
     u32 targetZ;
@@ -3720,7 +3686,7 @@ struct Unk_ov004_02220c78_Bits {
 
 typedef PlayerActor Obj;
 typedef Unk_ov004_02220c78_Bits Bits;
-typedef Unk_ov004_02220c78_V3 V3;
+typedef VecFx32 V3;
 typedef StorageOpenWork Rec;
 typedef Unk_ov004_02220c78_Msg Msg;
 
@@ -4226,19 +4192,6 @@ extern "C" void PlayerActor_StorageCloseGetNetData(u8 *a, u8 *b) {
 
 namespace ns_02220314 {
 
-struct Unk_ov004_02220314_V3 {
-    s32 x, y, z;
-};
-
-struct Unk_ov004_02220314_V3c {
-    s32 x, y, z;
-    Unk_ov004_02220314_V3c(s32 a, s32 b, s32 c) {
-        x = a;
-        y = b;
-        z = c;
-    }
-};
-
 struct LeaveRoomWork {
     s32 leaveMode;
     s16 targetAngle;
@@ -4270,7 +4223,7 @@ public:
     inline Unk_ov004_02220314_Msg() { _ZN19PlayerActionRequestC1Ev(this); }
     inline void func_0200e2c0(u32 a, u32 b, u32 c) { _ZN19PlayerActionRequest6assignEiis(this, a, b, c); }
     u8 pad_00[0xc];
-    Unk_ov004_02220314_V3 args;
+    VecFx32 args;
     u8 pad_18[4];
 };
 
@@ -4279,7 +4232,7 @@ static inline BOOL Unk_ov004_02220314_IsZero(u8 v) {
 }
 
 typedef PlayerActor Obj;
-typedef Unk_ov004_02220314_V3 V3;
+typedef VecFx32 V3;
 typedef LeaveRoomWork Rec;
 typedef Unk_ov004_02220314_Msg Msg;
 typedef TalkMsgRequest Sec;
@@ -4304,7 +4257,7 @@ void _ZN9Character17detachTalkRequestEi(Obj *o, Sec *s);
 void _ZN10MsgRequest11setFileNameEPKc(Sec *s, void *n);
 s32 _ZN12Unk_0200769421getActionDonePriorityEj(Obj *o, s32 a);
 s32 _ZN12Unk_0200769416keepsBgCheckWorkEj(Obj *o, s32 a);
-void _ZN11PlayerActor13requestWalkToEP16Unk_02006d14_Vecjjs(Obj *o, V3 *v, u32 a, u32 b, s32 c);
+void _ZN11PlayerActor13requestWalkToEP11VecFx32Ctorjjs(Obj *o, V3 *v, u32 a, u32 b, s32 c);
 s32 RoomEntry_GetRequest(void);
 s32 RoomEntry_Request(s32 a);
 s32 RoomEntryRequest_GetResult(s32 p);
@@ -4635,7 +4588,7 @@ extern "C" void PlayerActor_LeaveRoomUpdateHeight(Obj *o) {
     Rec *r = (Rec *)&o->actionWork;
     s32 m = r->leaveMode;
     if ((u32)(m - 1) <= 1) {
-        Unk_ov004_02220314_V3c v(r->targetX, p->y, r->targetZ);
+        VecFx32Ctor v(r->targetX, p->y, r->targetZ);
         if (Vec_DistXZ((V3 *)&v, p) < 0x1000) {
             s32 d = FX_Div(0x1000 - Vec_DistXZ((V3 *)&v, p)) * 6;
             if (m == 1) {
@@ -4729,7 +4682,7 @@ extern "C" void PlayerActor_LeaveRoomCheckArrive(Obj *o) {
                     l.b.x = l.a.x;
                     l.b.y = l.a.y;
                     l.b.z = l.a.z;
-                    _ZN11PlayerActor13requestWalkToEP16Unk_02006d14_Vecjjs(o, &l.b, 0x333, 5, -1);
+                    _ZN11PlayerActor13requestWalkToEP11VecFx32Ctorjjs(o, &l.b, 0x333, 5, -1);
                 }
             }
             break;
@@ -4773,10 +4726,6 @@ extern "C" s32 PlayerActor_NetAct41(Obj *o, s32 a) {
 
 namespace ns_0221fa00 {
 
-struct Unk_ov004_0221fa00_V3 {
-    s32 x, y, z;
-};
-
 struct HaircutWork {
     u8 hairStyle;
     u8 hairColor;
@@ -4808,7 +4757,7 @@ static inline BOOL Unk_ov004_0221fa00_IsZero(u8 v) {
 }
 
 typedef PlayerActor Obj;
-typedef Unk_ov004_0221fa00_V3 V3;
+typedef VecFx32 V3;
 typedef HaircutWork Rec;
 typedef Unk_ov004_0221fa00_Msg Msg;
 typedef Unk_ov004_0221fa00_Bits Bits;
@@ -5225,12 +5174,8 @@ extern "C" void PlayerActor_HaircutFinishUpdate(Obj *o) {
 
 namespace ns_0221f0b8 {
 
-struct Unk_ov004_0221f0b8_V3 {
-    s32 x, y, z;
-};
-
 struct DoorWalkWork {
-    Unk_ov004_0221f0b8_V3 targetPos;
+    VecFx32 targetPos;
     s32 walkSpeed;
     s32 speedLimit;
     u8 doorTimer;
@@ -5242,12 +5187,12 @@ public:
     inline Unk_ov004_0221f0b8_Msg() { _ZN19PlayerActionRequestC1Ev(this); }
     inline void func_0200e2c0(u32 a, u32 b, u32 c) { _ZN19PlayerActionRequest6assignEiis(this, a, b, c); }
     u8 pad_00[0xc];
-    Unk_ov004_0221f0b8_V3 args;
+    VecFx32 args;
     u8 pad_18[4];
 };
 
 typedef PlayerActor Obj;
-typedef Unk_ov004_0221f0b8_V3 V3;
+typedef VecFx32 V3;
 typedef DoorWalkWork Rec;
 typedef Unk_ov004_0221f0b8_Msg Msg;
 
@@ -5728,20 +5673,12 @@ extern "C" void PlayerActor_NetDoorWalkOut(Obj *o, u32 a) {
 
 namespace ns_0221e7a8 {
 
-struct Unk_ov004_0221e7a8_V3 {
-    s32 x, y, z;
-};
-
 struct ExitWalkWork {
-    Unk_ov004_0221e7a8_V3 targetPos;
+    VecFx32 targetPos;
     s32 walkSpeed;
     s32 speedLimit;
     u8 doorTimer;
     u8 entranceType;
-};
-
-struct Unk_ov004_0221e7a8_Pair {
-    s32 a, b;
 };
 
 class Unk_ov004_0221e7a8_Msg {
@@ -5749,13 +5686,13 @@ public:
     inline Unk_ov004_0221e7a8_Msg() { _ZN19PlayerActionRequestC1Ev(this); }
     inline void func_0200e2c0(u32 a, u32 b, u32 c) { _ZN19PlayerActionRequest6assignEiis(this, a, b, c); }
     u8 pad_00[0xc];
-    Unk_ov004_0221e7a8_V3 args;
+    VecFx32 args;
     u8 pad_18[4];
 };
 
 typedef PlayerActor Obj;
-typedef Unk_ov004_0221e7a8_V3 V3;
-typedef Unk_ov004_0221e7a8_Pair Pair;
+typedef VecFx32 V3;
+typedef Vec2 Pair;
 typedef ExitWalkWork Rec;
 typedef Unk_ov004_0221e7a8_Msg Msg;
 
@@ -6063,12 +6000,12 @@ extern "C" s32 PlayerActor_RoomInteractAt(Obj *o, s32 param) {
     if (r5 >= 0) {
         if (r5 == o->touchTargetId || o->inputMode == 1) {
             if (FtrMgr_GetActorLayer(r5) == 0) {
-                pa.a = 0;
-                pa.b = 0;
+                pa.x = 0;
+                pa.y = 0;
                 _ZN11PlayerActor18requestPickUpReachE17Unk_0200b750_Pairijs(o, &pa, r5, 6, -1);
             } else {
-                pb.a = (u8)u;
-                pb.b = (u8)v;
+                pb.x = (u8)u;
+                pb.y = (u8)v;
                 PlayerActor_RequestPickUpItem(o, &pb, r5, 6, -1);
             }
             return 1;
@@ -6092,8 +6029,8 @@ extern "C" s32 PlayerActor_RoomInteractAt(Obj *o, s32 param) {
             if (r5 == 0) goto second;
             if (Item_IsNormalItem(r5) == 0) goto second;
             FieldPos_ToUnit(&o1, &o2, &tgt);
-            pc.a = o1;
-            pc.b = o2;
+            pc.x = o1;
+            pc.y = o2;
             _ZN11PlayerActor18requestPickUpReachE17Unk_0200b750_Pairijs(o, &pc, -1, 6, -1);
             return 1;
         }
@@ -6105,8 +6042,8 @@ extern "C" s32 PlayerActor_RoomInteractAt(Obj *o, s32 param) {
             return 1;
         }
         FieldPos_ToUnit(&o1, &o2, &tgt);
-        pd.a = o1;
-        pd.b = o2;
+        pd.x = o1;
+        pd.y = o2;
         _ZN11PlayerActor18requestPickUpReachE17Unk_0200b750_Pairijs(o, &pd, -3, 6, -1);
         return 1;
     }
@@ -6129,8 +6066,8 @@ second:
     }
     if (Pocket_FindEmpty() == -1) {
         FieldPos_ToUnit(&o1, &o2, &tgt);
-        pe.a = o1;
-        pe.b = o2;
+        pe.x = o1;
+        pe.y = o2;
         _ZN11PlayerActor18requestPickUpReachE17Unk_0200b750_Pairijs(o, &pe, -1, 6, -1);
         return 1;
     }
@@ -6140,8 +6077,8 @@ second:
         return 1;
     }
     FieldPos_ToUnit(&o1, &o2, &tgt);
-    pf.a = o1;
-    pf.b = o2;
+    pf.x = o1;
+    pf.y = o2;
     _ZN11PlayerActor18requestPickUpReachE17Unk_0200b750_Pairijs(o, &pf, -3, 6, -1);
     return 1;
 fail:

@@ -1,10 +1,10 @@
 // mwcc-version: 1.2/base
 // mwcc-flags: -str reuse
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "snd/BgmBeatPhase.h"
 #include "actor/ActorProfile.h"
 #include "actor/CharacterListNode.h"
-#include "game/Unk_ov004_02224ee4_Vec.h"
 #include "gfx/AnimFrameCtrl.h"
 #include "room/RoomObjRes.h"
 #include "room/RoomObjTex.h"
@@ -165,10 +165,6 @@ public:
 typedef BOOL (ObjB::*Fn)();
 
 
-struct Unk_ov004_0224d988_V3 {
-    s32 x, y, z;
-};
-
 
 class CafeCoffeeSet : public RoomObjActor {
 public:
@@ -185,8 +181,8 @@ public:
     /* 0xef0 */ u8 pad_ef0[3];
     /* 0xef3 */ u8 part3Visible;
     /* 0xef4 */ u8 pad_ef4[0xf1c - 0xef4];
-    /* 0xf1c */ Unk_ov004_0224d988_V3 part4EffectPos;
-    /* 0xf28 */ Unk_ov004_0224d988_V3 part6EffectPos;
+    /* 0xf1c */ VecFx32 part4EffectPos;
+    /* 0xf28 */ VecFx32 part6EffectPos;
     /* 0xf34 */ u16 part4EffectAngle;
     /* 0xf36 */ u16 part6EffectAngle;
     /* 0xf38 */ s32 pourEffect;
@@ -437,8 +433,8 @@ BOOL CafeCoffeeSet::onCreate() {
     CafeCoffeeSet_SwitchAnim(this, 6, &partModels[5], &partRes[5], 0, 0x1000, 0, 0);
     CafeCoffeeSet_SwitchAnim(this, 8, &partModels[6], &partRes[6], 0, 0x1000, 0, 0);
     CafeCoffeeSet_SwitchAnim(this, 6, &partModels[7], &partRes[7], 0, 0x1000, 0, 0);
-    part4EffectPos = *(Unk_ov004_0224d988_V3 *)&data_ov004_02250cd8;
-    part6EffectPos = *(Unk_ov004_0224d988_V3 *)&data_ov004_02250cf0;
+    part4EffectPos = *(VecFx32 *)&data_ov004_02250cd8;
+    part6EffectPos = *(VecFx32 *)&data_ov004_02250cf0;
     part4EffectAngle = 0;
     part6EffectAngle = 0;
     partModels[4].frameStep = 0;

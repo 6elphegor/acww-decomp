@@ -2,7 +2,7 @@
 #define ACTOR_ACTORCOLLIDER_H
 
 #include "types.h"
-#include "game/Vec3.h"
+#include "gfx/VecFx32.h"
 
 // 0x40-byte collision cylinder in the global collider list (vtable 0x020e0d00); base of StaticCollider and
 // ActorFollowCollider. Defined in src/main/unk_02088b98.cpp.
@@ -10,7 +10,7 @@ class ActorCollider {
 public:
     ActorCollider();
     ~ActorCollider();
-    virtual Vec3 *getPos() = 0;
+    virtual VecFx32 *getPos() = 0;
     virtual u32 getOwnerId() = 0;
     virtual void onCollide(u32 a, u32 b, u32 c);
     void submit();

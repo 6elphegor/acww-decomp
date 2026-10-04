@@ -1,5 +1,5 @@
 #include "types.h"
-#include "player/Unk_02006d14_Vec.h"
+#include "gfx/VecFx32.h"
 #include "gfx/Mtx43.h"
 #include "net/CommManager.h"
 #include "player/PlayerActor.h"
@@ -68,7 +68,7 @@ void _ZN16PlayerFaceTexRef4loadEj(PlayerFaceTexRef *p, u8 *v);
 }
 
 extern "C" {
-void WorldCurve_FromCurved(Unk_02006d14_Vec *a, Unk_02006d14_Vec *b);
+void WorldCurve_FromCurved(VecFx32Ctor *a, VecFx32Ctor *b);
 }
 
 extern "C" {
@@ -287,7 +287,7 @@ extern "C" BOOL PlayerActor_SetHeadTilt(u32 a, u32 b, u32 idx) {
     return FALSE;
 }
 
-extern "C" BOOL PlayerActor_GetHeadPos(Unk_02006d14_Vec *out, u32 idx) {
+extern "C" BOOL PlayerActor_GetHeadPos(VecFx32Ctor *out, u32 idx) {
     PlayerActor *o = PlayerActor_Get(idx);
     if (o) {
         s32 a = o->headMtx.m[9];

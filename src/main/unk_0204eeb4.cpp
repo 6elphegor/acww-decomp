@@ -1,4 +1,5 @@
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "town/Unk_0204e858_Grid.h"
 #include "sys/OverlaySlot.h"
 #include "town/MapBlockEntry.h"
@@ -51,11 +52,11 @@ extern "C" s32 OverlayMgr_UnloadSlot(OverlaySlot *e);
 }
 
 extern "C" {
-void FieldPos_ToBlockUnit2(s32 *a, s32 *c, Unk_0204e858_Vec *v);
+void FieldPos_ToBlockUnit2(s32 *a, s32 *c, VecFx32 *v);
 }
 
 extern "C" {
-void FieldPos_ToBlockUnit(s32 *ax, s32 *az, s32 *cx, s32 *cz, Unk_0204e858_Vec *v);
+void FieldPos_ToBlockUnit(s32 *ax, s32 *az, s32 *cx, s32 *cz, VecFx32 *v);
 }
 
 extern "C" {
@@ -63,7 +64,7 @@ void FieldUnit_FromBlockUnit(s32 *ox, s32 *oz, s32 a, s32 b, s32 c, s32 d);
 }
 
 extern "C" {
-void FieldPos_FromUnitCenter(Unk_0204e858_Vec *v, s32 x, s32 z);
+void FieldPos_FromUnitCenter(VecFx32 *v, s32 x, s32 z);
 }
 
 extern "C" {

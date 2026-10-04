@@ -2,6 +2,7 @@
 #define NPC_NPCMOVECTRL_H
 
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "npc/NpcLookAt.h"
 
 class Unk_02006d14;
@@ -14,13 +15,13 @@ public:
     NpcMoveCtrl();
     ~NpcMoveCtrl();
 
-    /* 0x00 */ Unk_0201a334_Vec3 curSpeedPreset;
-    /* 0x0c */ Unk_0201a334_Vec3 speedPresets[3];
+    /* 0x00 */ VecFx32 curSpeedPreset;
+    /* 0x0c */ VecFx32 speedPresets[3];
     /* 0x30 */ s32 moveMode;
     /* 0x34 */ s16 targetAngle;
     /* 0x36 */ s16 turnSpeed;
-    /* 0x38 */ Unk_0201a334_Vec3 waypoint;
-    /* 0x44 */ Unk_0201a334_Vec3 destination;
+    /* 0x38 */ VecFx32 waypoint;
+    /* 0x44 */ VecFx32 destination;
     /* 0x50 */ s32 arriveDistance;
     /* 0x54 */ u8 keepAnimFrame;
     /* 0x55 */ u8 turnMode;
@@ -31,14 +32,14 @@ public:
     void setSpeedPreset(s32 idx, s32 x, s32 y, s32 z);
     void resetDestination();
     s32 hasNextLeg();
-    Unk_0201a334_Vec3 *getDestination();
-    void setDestination(Unk_0201a334_Vec3 *v);
+    VecFx32 *getDestination();
+    void setDestination(VecFx32 *v);
     s32 getTurnSpeed();
     s32 getTargetAngle();
     void setTargetAngle(s16 v);
     BOOL hasArrived(Character *scene, s32 which);
-    Unk_0201a334_Vec3 *getDestinationB();
-    void setWaypoint(Unk_0201a334_Vec3 *v);
+    VecFx32 *getDestinationB();
+    void setWaypoint(VecFx32 *v);
     void updateTurn(Character *scene);
     s32 stepAngle(s16 *p, s16 target, s16 step, u8 mode);
     void aimAtDestination(Character *scene);

@@ -1,7 +1,7 @@
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
-#include "game/Unk_0203389c_Vec.h"
 #include "town/Unk_02082e80_Grid.h"
 #include "room/RoomFreeUnitMap.h"
 #include "game/GroundInfoBase.h"
@@ -10,10 +10,9 @@
 #include "sys/ProcProfile.h"
 #include "town/TownBlockMap.h"
 
-typedef Unk_0203389c_Vec Unk_02083c28_Vec;
 struct VisitorSpawner;
 struct VisitorSchedule;
-typedef void (VisitorSpawner::*Unk_02083c28_Fn)(Unk_02083c28_Vec *, u16 *, VisitorSchedule *);
+typedef void (VisitorSpawner::*Unk_02083c28_Fn)(VecFx32 *, u16 *, VisitorSchedule *);
 typedef u16 *(VisitorSpawner::*Unk_02083d14_Fn)();
 
 struct Unk_02083c28_VecZ {
@@ -73,12 +72,6 @@ struct NpcSpawnerOverlayView {
     void releaseVisitorOverlay();
 };
 
-struct Unk_02083314_V3 {
-    s32 x;
-    s32 y;
-    s32 z;
-};
-
 struct Unk_02083314_K {
     u16 a;
     s16 b;
@@ -92,7 +85,6 @@ struct EventVisitorEntry {
 };
 
 
-struct Unk_02084ae4_Vec { s32 x, y, z; };
 struct PlayerErrandsHeadPad { u8 pad[0x88]; };
 struct HouseVisitInviteIdPart { u8 pad[0xc]; };
 struct HouseVisitInviteErrandPart { u8 pad[0x20]; };
@@ -101,10 +93,6 @@ struct PlayerErrandsInviteView : PlayerErrandsHeadPad, HouseVisitInviteLayoutVie
 struct VillagerSpawnLocals {
     u8 b;
     u16 h[4];
-};
-
-struct Unk_02084ecc_Vec {
-    s32 x, y, z;
 };
 
 
@@ -266,11 +254,11 @@ void *TownSessionState_GetVisitorFlags(void *p);
 void *TownSessionState_GetVisitorPos(void *p);
 void *TownSessionState_GetPeteFall(void *p);
 void *TownSessionState_GetKatieState(void *p);
-void _ZN17VisitorSpawnFlags16getGulliverSpawnEPvPtP17Unk_020868cc_Vec3(void *a, void *b, u16 *c, void *d);
-void _ZNK10VisitorPos6getPosEP17Unk_020868cc_Vec3(void *a, void *b);
-void _ZN13PeteFallState6getPosEP17Unk_02086ec4_Vec3(void *a, void *b);
+void _ZN17VisitorSpawnFlags16getGulliverSpawnEPvPtP7VecFx32(void *a, void *b, u16 *c, void *d);
+void _ZNK10VisitorPos6getPosEP7VecFx32(void *a, void *b);
+void _ZN13PeteFallState6getPosEP7VecFx32(void *a, void *b);
 s32 _ZN13PeteFallState9getFacingEv(void *a);
-void _ZN15KatieVisitState6getPosEP17Unk_02086ec4_Vec3(void *a, void *b);
+void _ZN15KatieVisitState6getPosEP7VecFx32(void *a, void *b);
 s32 _ZN15KatieVisitState12pickKatiePosEv(void *a);
 s32 Random_GlobalBelow(s32 a);
 s32 PlayerData_GetCurrent();
@@ -338,7 +326,7 @@ s32 TownSessionState_Get();
 s32 TownSessionState_GetKatieState(s32);
 s32 TownSessionState_GetResettiFlag(s32);
 s32 TownSessionState_TestFlag(s32, s32);
-s32 _ZN15KatieVisitState6getPosEP17Unk_02086ec4_Vec3(s32, void *);
+s32 _ZN15KatieVisitState6getPosEP7VecFx32(s32, void *);
 s32 _ZN15KatieVisitState11isFollowingEv(s32);
 s32 _ZN16ResettiVisitFlag5isSetEv(s32);
 s32 LostChild_IsKatieDue();
@@ -352,28 +340,28 @@ s32 Random_GlobalBelow(s32);
 void OverlayMgr_Release(u32);
 void *VisitorTable_FindByNpc(u16 *, void *, s32);
 void *VisitorTable_FindByProfile(void *, void *, s32);
-BOOL VisitorPlace_Katie(s32 a, Unk_02083314_V3 *p);
+BOOL VisitorPlace_Katie(s32 a, VecFx32 *p);
 BOOL Visitor_CheckKatie(s32 a, s32 b, s32 c);
 BOOL Visitor_FindKatie(s32 flag);
 BOOL Visitor_CheckJoan(s32 a, s32 b, s32 c);
 BOOL Visitor_FindJoan(s32 flag);
-BOOL VisitorPlace_Lyle(s32 a, Unk_02083314_V3 *p, Unk_02083314_K *q);
+BOOL VisitorPlace_Lyle(s32 a, VecFx32 *p, Unk_02083314_K *q);
 BOOL Visitor_CheckLyle(s32 a, s32 b, s32 c);
 BOOL Visitor_FindLyle(s32 flag);
-BOOL VisitorPlace_Origin(s32 a, Unk_02083314_V3 *p);
-BOOL VisitorPlace_Tortimer(s32 a, Unk_02083314_V3 *p, Unk_02083314_K *q);
-BOOL VisitorPlace_EventHost(s32 a, Unk_02083314_V3 *p, Unk_02083314_K *q);
-BOOL VisitorPlace_NearPlayerHouse(s32 a, Unk_02083314_V3 *p, Unk_02083314_K *q);
-BOOL VisitorPlace_NearTownHall(s32 a, Unk_02083314_V3 *p, Unk_02083314_K *q);
+BOOL VisitorPlace_Origin(s32 a, VecFx32 *p);
+BOOL VisitorPlace_Tortimer(s32 a, VecFx32 *p, Unk_02083314_K *q);
+BOOL VisitorPlace_EventHost(s32 a, VecFx32 *p, Unk_02083314_K *q);
+BOOL VisitorPlace_NearPlayerHouse(s32 a, VecFx32 *p, Unk_02083314_K *q);
+BOOL VisitorPlace_NearTownHall(s32 a, VecFx32 *p, Unk_02083314_K *q);
 BOOL Visitor_CheckEventHost(s32 a, s32 b, s32 c);
 BOOL Visitor_FindEventHost(s32 flag);
 BOOL Visitor_IsNookJobErrandActive();
 BOOL Visitor_CheckTortimer(s32 a, s32 b, s32 c);
 BOOL Visitor_FindTortimer(s32 flag);
 BOOL Visitor_IsTortimerDue();
-BOOL VisitorPlace_TomNook(s32 a, Unk_02083314_V3 *p, Unk_02083314_K *q);
+BOOL VisitorPlace_TomNook(s32 a, VecFx32 *p, Unk_02083314_K *q);
 BOOL Visitor_CheckTomNook();
-BOOL VisitorPlace_Resetti(s32 a, Unk_02083314_V3 *p);
+BOOL VisitorPlace_Resetti(s32 a, VecFx32 *p);
 BOOL Visitor_CheckResetti();
 BOOL Visitor_IsTaxiActive();
 BOOL Visitor_IsNookJobActive();
@@ -389,7 +377,7 @@ extern u32 sEventTortimerProfile[2];
 extern VisitorCheckEntry sVisitorCheckTable[11];
 extern u8 gFieldSceneKind;
 extern CommManager *gCommManager;
-extern Unk_02083c28_Vec gVec3Zero;
+extern VecFx32 gVec3Zero;
 extern NpcNetRecord sSpNpcNetRecords[0x26];
 extern NpcNetRecord sVillagerNetRecords[8];
 extern u8 sVillagerNetRecordPacked;
@@ -400,10 +388,10 @@ s32 Scene_InTown();
 s32 _ZN11CommManager12isSlotActiveEi(CommManager *g, s32 i);
 void OverlayMgr_Acquire(u32 ovl);
 s32 _ZN5Actor5spawnEPvS0_S0_S0_S0_(u32 a, u32 b, void *c, void *d, void *e);
-s32 Field_ClearObjectFcFdAt(Unk_02083c28_Vec *v);
+s32 Field_ClearObjectFcFdAt(VecFx32 *v);
 s32 Visitor_IsNookJobActive(u16 *p);
 u16 *BlockMap_GetItemPtr(void *grid, s32 hx, s32 hy, s32 lx, s32 ly, s32 layer);
-void FieldPos_FromUnitCenter(Unk_02083c28_Vec *out, s32 x, s32 y);
+void FieldPos_FromUnitCenter(VecFx32 *out, s32 x, s32 y);
 void MI_CpuFill8(void *dst, u32 v, u32 n);
 void MI_CpuCopy8(const void *src, void *dst, u32 n);
 s32 CommRecord_UnpackSource(u8 *p, u8 *dst, s32 z);
@@ -430,8 +418,8 @@ s32 TalkRepeat_Tick(void *p, s32 v);
 u16 *VisitorTable_FindByProfile(u16 *key, VisitorSpawnEntry *tbl, s32 n);
 BOOL VisitorSchedule_IsSet(void *p, VisitorSchedule *g);
 void VisitorSchedule_Clear(VisitorSchedule *g);
-void VisitorSchedule_Set(VisitorSchedule *out, u16 *idp, u32 b, u32 c, Unk_02083c28_Vec *pos);
-BOOL Visitor_ScheduleIfHigher(u16 *p, u32 lvl, u32 b, Unk_02083c28_Vec *pos);
+void VisitorSchedule_Set(VisitorSchedule *out, u16 *idp, u32 b, u32 c, VecFx32 *pos);
+BOOL Visitor_ScheduleIfHigher(u16 *p, u32 lvl, u32 b, VecFx32 *pos);
 BOOL RoomFreeUnitMap_Test(u16 *arr, s32 x, s32 y);
 BOOL RoomFreeUnitMap_Clear(u16 *arr, s32 x, s32 y);
 BOOL RoomFreeUnitMap_Set(u16 *arr, s32 x, s32 y);
@@ -442,8 +430,8 @@ u8 *NpcNetRecord_GetVillagerVar(u16 *p);
 u8 *NpcNetRecord_GetSpNpcVar(u16 *p);
 BOOL NpcNetRecord_SetVillagerSlots(u16 *p, u32 b, u32 c);
 BOOL NpcNetRecord_SetSpNpcSlots(u16 *p, u32 b, u32 c);
-BOOL NpcNetRecord_SetVillagerState(u16 *p, u32 b, Unk_02083c28_Vec *v, u16 c, u8 *d, u8 *e);
-BOOL NpcNetRecord_SetSpNpcState(u16 *p, u32 b, Unk_02083c28_Vec *v, u16 c, u8 *d, u8 *e);
+BOOL NpcNetRecord_SetVillagerState(u16 *p, u32 b, VecFx32 *v, u16 c, u8 *d, u8 *e);
+BOOL NpcNetRecord_SetSpNpcState(u16 *p, u32 b, VecFx32 *v, u16 c, u8 *d, u8 *e);
 void NpcNetRecord_PackVillager(void *src, s32 id);
 BOOL NpcNetRecord_SetSlots(u16 *p, u32 b, u32 c);
 }
@@ -538,7 +526,7 @@ s32 SceneId_IsTownUnk31(s32 v);
 void *_ZN20VillagerDataItemView11getHousePosEv(void *p);
 void FieldPos_FromUnitCenter(void *p, s32 x, s32 y);
 s32 Villager_GetWhereabouts(void *p);
-void _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii(void *buf, void *v, s32 a, s32 b);
+void _ZN10GroundInfo9initAtPosEP7VecFx32ii(void *buf, void *v, s32 a, s32 b);
 s32 _ZN14GroundInfoBase9getHeightEi(void *buf, s32 f);
 void GroundInfo_Destruct(void *buf);
 s32 _ZN11SaveRecord412isDateActiveEv(void *p);
@@ -578,7 +566,7 @@ void *SaveVillagers_Get(void *, s32);
 void *_ZN12VillagerData13getVillagerIdEv(void *);
 s32 _ZN10VillagerId7isValidEv(void *);
 u8 *_ZN20VillagerDataItemView11getHousePosEv(...);
-void FieldPos_FromUnitCenter(Unk_02084ecc_Vec *out, s32 x, s32 z);
+void FieldPos_FromUnitCenter(VecFx32 *out, s32 x, s32 z);
 void NetBuf_PackPair20(void *, s32, s32);
 void CommRecord_PackSource(void *, s32, s32);
 s32 VisitorSchedule_Clear(void *);
@@ -674,7 +662,7 @@ extern "C" void NpcNetRecords_InitVillagers()
     for (i = 0; i < 8; p += 0x1e, i++) {
         void *o = F5::SaveVillagers_Get(F5::gSaveVillagers, i);
         if (o != NULL && F5::_ZN10VillagerId7isValidEv(F5::_ZN12VillagerData13getVillagerIdEv(o)) != 0) {
-            Unk_02084ecc_Vec v;
+            VecFx32 v;
             v.x = 0;
             v.y = 0;
             v.z = 0;
@@ -799,7 +787,7 @@ extern "C" void NpcSpawn_FixVillagerPos(void *a, void *vec)
 {
     u32 buf[17];
     void *u;
-    F4::_ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii(buf, u, 0, 0);
+    F4::_ZN10GroundInfo9initAtPosEP7VecFx32ii(buf, u, 0, 0);
     if (F4::Villager_GetWhereabouts(a) == 0) {
         if (F4::_ZN14GroundInfoBase9getHeightEi(buf, 0)) {
             u8 *p = (u8 *)F4::_ZN20VillagerDataItemView11getHousePosEv(a);
@@ -812,7 +800,7 @@ extern "C" void NpcSpawn_FixVillagerPos(void *a, void *vec)
 extern "C" void NpcSpawner_SpawnVillagers(void *a)
 {
     VillagerSpawnLocals w;
-    Unk_02084ae4_Vec v;
+    VecFx32 v;
     s32 n, cnt, i;
     w.h[0] = 0xfff1;
     w.h[1] = 0;
@@ -883,7 +871,7 @@ extern "C" void NpcSpawner_SpawnHouseOwner(u8 *a)
         return;
     }
     u16 h[5];
-    Unk_02084ae4_Vec v;
+    VecFx32 v;
     h[0] = 0xfff1;
     h[1] = 0xfff1;
     v.x = 0;
@@ -942,7 +930,7 @@ extern "C" void NpcSpawner_SpawnPlayerHouseVisitor(void *a)
     s32 t;
     s32 code;
     BOOL flag;
-    Unk_02084ae4_Vec v;
+    VecFx32 v;
     u16 h[4];
     s32 vv[2];
     if (F4::_ZN11CommManager12isSlotActiveEi(F4::gCommManager, F4::gCommManager->myAid)) {
@@ -1159,7 +1147,7 @@ BOOL NpcSpawner::onExecute()
     return TRUE;
 }
 
-extern "C" BOOL NpcNetRecord_SetVillagerState(u16 *p, u32 b, Unk_02083c28_Vec *v, u16 c, u8 *d, u8 *e) {
+extern "C" BOOL NpcNetRecord_SetVillagerState(u16 *p, u32 b, VecFx32 *v, u16 c, u8 *d, u8 *e) {
     u32 i = *p & 0xfff;
     if (i < 8) {
         NpcNetRecord *r = &F3::sVillagerNetRecords[i];
@@ -1212,7 +1200,7 @@ extern "C" u8 *NpcNetRecord_GetVillagerVar(u16 *p) {
     return 0;
 }
 
-extern "C" BOOL NpcNetRecord_SetSpNpcState(u16 *p, u32 b, Unk_02083c28_Vec *v, u16 c, u8 *d, u8 *e) {
+extern "C" BOOL NpcNetRecord_SetSpNpcState(u16 *p, u32 b, VecFx32 *v, u16 c, u8 *d, u8 *e) {
     u32 i = *p & 0xfff;
     if (i < 0x26) {
         NpcNetRecord *r = &F3::sSpNpcNetRecords[i];
@@ -1254,7 +1242,7 @@ extern "C" u8 *NpcNetRecord_GetSpNpcVar(u16 *p) {
     return 0;
 }
 
-extern "C" BOOL NpcNetRecord_SetState(u16 *p, u32 b, Unk_02083c28_Vec *v, u16 c, u8 *d, u8 *e) {
+extern "C" BOOL NpcNetRecord_SetState(u16 *p, u32 b, VecFx32 *v, u16 c, u8 *d, u8 *e) {
     s32 k = (*p & 0xf000) >> 12;
     if (k == 0xe) return F3::NpcNetRecord_SetVillagerState(p, b, v, c, d, e);
     if (k == 0xd) return F3::NpcNetRecord_SetSpNpcState(p, b, v, c, d, e);
@@ -1366,7 +1354,7 @@ extern "C" BOOL RoomFreeUnitMap_Build(u16 *out) {
         if (p) {
             for (y = 0; y < 16; y++) {
                 for (x = 0; x < 16; x++) {
-                    Unk_02083c28_Vec v;
+                    VecFx32 v;
                     F3::FieldPos_FromUnitCenter(&v, x, y);
                     GroundInfo o(&v, 0, 0);
                     if (*p == 0xfff1 && !o.getHeight(1)) {
@@ -1421,14 +1409,14 @@ extern "C" BOOL RoomFreeUnitMap_TestUpper(u16 *arr, s32 x, s32 y) {
     return FALSE;
 }
 
-extern "C" void VisitorSchedule_Set(VisitorSchedule *out, u16 *idp, u32 b, u32 c, Unk_02083c28_Vec *pos) {
+extern "C" void VisitorSchedule_Set(VisitorSchedule *out, u16 *idp, u32 b, u32 c, VecFx32 *pos) {
     out->profile = *idp;
     out->sceneId = b;
     out->priority = c;
     if (pos) {
-        *(Unk_02083c28_Vec *)&out->pos = *pos;
+        *(VecFx32 *)&out->pos = *pos;
     } else {
-        *(Unk_02083c28_Vec *)&out->pos = F3::gVec3Zero;
+        *(VecFx32 *)&out->pos = F3::gVec3Zero;
     }
 }
 
@@ -1466,7 +1454,7 @@ extern "C" u16 *VisitorTable_FindByProfile(u16 *key, VisitorSpawnEntry *tbl, s32
     return 0;
 }
 
-extern "C" BOOL Visitor_ScheduleIfHigher(u16 *p, u32 lvl, u32 b, Unk_02083c28_Vec *pos) {
+extern "C" BOOL Visitor_ScheduleIfHigher(u16 *p, u32 lvl, u32 b, VecFx32 *pos) {
     if (F3::sVisitorSchedule.priority < lvl) {
         F3::VisitorSchedule_Set(&F3::sVisitorSchedule, p, b, lvl, pos);
         return TRUE;
@@ -1474,7 +1462,7 @@ extern "C" BOOL Visitor_ScheduleIfHigher(u16 *p, u32 lvl, u32 b, Unk_02083c28_Ve
     return FALSE;
 }
 
-extern "C" BOOL Visitor_ScheduleLow(u16 *p, u8 b, Unk_02083c28_Vec *pos) {
+extern "C" BOOL Visitor_ScheduleLow(u16 *p, u8 b, VecFx32 *pos) {
     if (F3::Visitor_IsNookJobActive(p) == 0 && F3::_ZN11CommManager12isSlotActiveEi(F3::gCommManager, F3::gCommManager->myAid) == 0) {
         return F3::Visitor_ScheduleIfHigher(p, 1, b, pos);
     }
@@ -1485,7 +1473,7 @@ BOOL VisitorSpawner::pickVisitor() {
     VisitorCheckEntry *e = F3::sVisitorCheckTable;
     s32 ovl = F3::Scene_GetCurrent();
     s32 i = 0;
-    Unk_02083c28_Vec *z = 0;
+    VecFx32 *z = 0;
     for (; i < 11; e++, i++) {
         if (e->lvl <= F3::sVisitorSchedule.priority) break;
         if (e->fn) {
@@ -1504,7 +1492,7 @@ u16 *VisitorSpawner::spawnScheduledVisitor(VisitorSpawnEntry *tbl, s32 n) {
         VisitorSpawnEntry *e = (VisitorSpawnEntry *)F3::VisitorTable_FindByProfile(&F3::sVisitorSchedule.profile, tbl, n);
         if (e) {
             if (F3::sVisitorSchedule.sceneId == F3::Scene_GetCurrent()) {
-                Unk_02083c28_Vec v;
+                VecFx32 v;
                 u16 t[3];
                 t[0] = 0;
                 t[1] = 0;
@@ -1521,7 +1509,7 @@ u16 *VisitorSpawner::spawnScheduledVisitor(VisitorSpawnEntry *tbl, s32 n) {
                 if (F3::_ZN5Actor5spawnEPvS0_S0_S0_S0_(e->id, e->id2, &v, t, this)) {
                     if (F3::Unk_02083c28_IsZero(F3::gFieldSceneKind)) {
                         if (F3::_ZN11CommManager12isSlotActiveEi(F3::gCommManager, F3::gCommManager->myAid) == 0) {
-                            Unk_02083c28_Vec w;
+                            VecFx32 w;
                             w.x = v.x;
                             w.y = v.y;
                             w.z = v.z;
@@ -1584,7 +1572,7 @@ extern "C" BOOL Visitor_CheckResetti()
     return FALSE;
 }
 
-extern "C" BOOL VisitorPlace_Resetti(s32 a, Unk_02083314_V3 *p)
+extern "C" BOOL VisitorPlace_Resetti(s32 a, VecFx32 *p)
 {
     u16 k[2];
     BOOL c = F2::gFieldSceneKind == 0 ? TRUE : FALSE;
@@ -1617,7 +1605,7 @@ extern "C" BOOL Visitor_CheckTomNook()
     return FALSE;
 }
 
-extern "C" BOOL VisitorPlace_TomNook(s32 a, Unk_02083314_V3 *p, Unk_02083314_K *q)
+extern "C" BOOL VisitorPlace_TomNook(s32 a, VecFx32 *p, Unk_02083314_K *q)
 {
     u16 k[2];
     void *g = F2::gSceneBlockMap;
@@ -1738,7 +1726,7 @@ extern "C" BOOL Visitor_CheckEventHost(s32 a, s32 b, s32 c)
     return F2::Visitor_FindEventHost(1);
 }
 
-extern "C" BOOL VisitorPlace_NearTownHall(s32 a, Unk_02083314_V3 *p, Unk_02083314_K *q)
+extern "C" BOOL VisitorPlace_NearTownHall(s32 a, VecFx32 *p, Unk_02083314_K *q)
 {
     void *g = F2::gSceneBlockMap;
     if (g != 0) {
@@ -1760,7 +1748,7 @@ extern "C" BOOL VisitorPlace_NearTownHall(s32 a, Unk_02083314_V3 *p, Unk_0208331
     return FALSE;
 }
 
-extern "C" BOOL VisitorPlace_NearPlayerHouse(s32 a, Unk_02083314_V3 *p, Unk_02083314_K *q)
+extern "C" BOOL VisitorPlace_NearPlayerHouse(s32 a, VecFx32 *p, Unk_02083314_K *q)
 {
     u16 k[2];
     void *g = F2::gSceneBlockMap;
@@ -1783,12 +1771,12 @@ extern "C" BOOL VisitorPlace_NearPlayerHouse(s32 a, Unk_02083314_V3 *p, Unk_0208
     return FALSE;
 }
 
-extern "C" BOOL VisitorPlace_EventHost(s32 a, Unk_02083314_V3 *p, Unk_02083314_K *q)
+extern "C" BOOL VisitorPlace_EventHost(s32 a, VecFx32 *p, Unk_02083314_K *q)
 {
     return F2::VisitorPlace_NearTownHall(a, p, q);
 }
 
-extern "C" BOOL VisitorPlace_Tortimer(s32 a, Unk_02083314_V3 *p, Unk_02083314_K *q)
+extern "C" BOOL VisitorPlace_Tortimer(s32 a, VecFx32 *p, Unk_02083314_K *q)
 {
     F2::PlayerData_GetCurrent();
     if (F2::Visitor_IsNookJobActive() != 0)
@@ -1796,7 +1784,7 @@ extern "C" BOOL VisitorPlace_Tortimer(s32 a, Unk_02083314_V3 *p, Unk_02083314_K 
     return F2::VisitorPlace_NearPlayerHouse(a, p, q);
 }
 
-extern "C" BOOL VisitorPlace_Origin(s32 a, Unk_02083314_V3 *p)
+extern "C" BOOL VisitorPlace_Origin(s32 a, VecFx32 *p)
 {
     p->x = 0;
     p->y = 0;
@@ -1832,7 +1820,7 @@ extern "C" BOOL Visitor_CheckLyle(s32 a, s32 b, s32 c)
     return F2::Visitor_FindLyle(1);
 }
 
-extern "C" BOOL VisitorPlace_Lyle(s32 a, Unk_02083314_V3 *p, Unk_02083314_K *q)
+extern "C" BOOL VisitorPlace_Lyle(s32 a, VecFx32 *p, Unk_02083314_K *q)
 {
     u16 k[2];
     BOOL c = F2::gFieldSceneKind == 0 ? TRUE : FALSE;
@@ -1926,11 +1914,11 @@ extern "C" BOOL Visitor_CheckKatie(s32 a, s32 b, s32 c)
     return F2::Visitor_FindKatie(1);
 }
 
-extern "C" BOOL VisitorPlace_Katie(s32 a, Unk_02083314_V3 *p)
+extern "C" BOOL VisitorPlace_Katie(s32 a, VecFx32 *p)
 {
     BOOL c = F2::gFieldSceneKind == 0 ? TRUE : FALSE;
     if (c) {
-        F2::_ZN15KatieVisitState6getPosEP17Unk_02086ec4_Vec3(F2::TownSessionState_GetKatieState(F2::TownSessionState_Get()), p);
+        F2::_ZN15KatieVisitState6getPosEP7VecFx32(F2::TownSessionState_GetKatieState(F2::TownSessionState_Get()), p);
         return TRUE;
     }
     F2::FieldPos_FromUnitCenter(p, 6, 0x11);
@@ -1972,7 +1960,7 @@ extern "C" BOOL Visitor_CheckKaitlin() {
 }
 
 extern "C" BOOL VisitorPlace_Kaitlin(void *self, void *b) {
-    F1::_ZN15KatieVisitState6getPosEP17Unk_02086ec4_Vec3(F1::TownSessionState_GetKatieState(F1::TownSessionState_Get()), b);
+    F1::_ZN15KatieVisitState6getPosEP7VecFx32(F1::TownSessionState_GetKatieState(F1::TownSessionState_Get()), b);
     return TRUE;
 }
 
@@ -2132,24 +2120,24 @@ fail:
 
 extern "C" BOOL VisitorPlace_Pete(void *self, void *b, u16 *out) {
     void *p = F1::TownSessionState_GetPeteFall(F1::TownSessionState_Get());
-    F1::_ZN13PeteFallState6getPosEP17Unk_02086ec4_Vec3(p, b);
+    F1::_ZN13PeteFallState6getPosEP7VecFx32(p, b);
     out[1] = F1::_ZN13PeteFallState9getFacingEv(p);
     return TRUE;
 }
 
 extern "C" BOOL VisitorPlace_AtVisitorPos(void *self, void *b, u16 *out) {
-    F1::_ZNK10VisitorPos6getPosEP17Unk_020868cc_Vec3(F1::TownSessionState_GetVisitorPos(F1::TownSessionState_Get()), b);
+    F1::_ZNK10VisitorPos6getPosEP7VecFx32(F1::TownSessionState_GetVisitorPos(F1::TownSessionState_Get()), b);
     out[1] = F1::Random_GlobalBelow(0xffff);
     return TRUE;
 }
 
 extern "C" BOOL VisitorPlace_Gulliver(void *self, void *b, u16 *out, void *d) {
-    F1::_ZN17VisitorSpawnFlags16getGulliverSpawnEPvPtP17Unk_020868cc_Vec3(F1::TownSessionState_GetVisitorFlags(F1::TownSessionState_Get()), b, out + 1, d);
+    F1::_ZN17VisitorSpawnFlags16getGulliverSpawnEPvPtP7VecFx32(F1::TownSessionState_GetVisitorFlags(F1::TownSessionState_Get()), b, out + 1, d);
     return TRUE;
 }
 
 extern "C" BOOL VisitorPlace_Gracie(void *self, void *g, u16 *out, s32 *a) {
-    Unk_02082dd0_V v;
+    VecFx32 v;
     s32 z = a[2] + 0x6000;
     s32 x = a[0] - 0x4000;
     v.x = x;

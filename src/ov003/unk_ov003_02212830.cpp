@@ -1,6 +1,6 @@
 // mwcc-version: 1.2/sp2
 #include "types.h"
-#include "game/Unk_0203389c_Vec.h"
+#include "gfx/VecFx32.h"
 #include "actor/ActorProfile.h"
 #include "actor/ActorCollider.h"
 #include "talk/TalkWindowState.h"
@@ -17,26 +17,14 @@
 
 
 
-typedef Unk_0203389c_Vec Unk_ov003_Vec;
 
 
 
 
 
 
-
-// ---------------------------------------------------------------- types of the merged unit (old files 02212140 / 02212a5c / 022135c4 / 02213f70)
-struct Unk_ov003_02212a5c_V3 {
-    s32 x, y, z;
-    Unk_ov003_02212a5c_V3() {}
-    Unk_ov003_02212a5c_V3(s32 a, s32 b, s32 c) {
-        x = a;
-        y = b;
-        z = c;
-    }
-};
-typedef Unk_ov003_02212a5c_V3 V3;
-typedef Unk_ov003_Vec V3P;
+typedef VecFx32Ctor V3;
+typedef VecFx32 V3P;
 
 struct Unk_ov003_02212a5c_Bits {
     u16 a : 2;
@@ -77,7 +65,7 @@ public:
     s32 attr;
     u8 pad_38[0xc];
     GroundInfo() {}
-    GroundInfo *initAtPos(Unk_0203389c_Vec *v, s32 a, s32 b);
+    GroundInfo *initAtPos(VecFx32 *v, s32 a, s32 b);
     ~GroundInfo();
 };
 typedef GroundInfo Loc;
@@ -136,9 +124,9 @@ public:
     /* 0x2ec */ s32 rollVelX;
     /* 0x2f0 */ s32 rollVelZ;
     /* 0x2f4 */ Unk_ov003_022135c4_Q4 rotationQuat;
-    /* 0x304 */ Unk_ov003_Vec drawOffset;
+    /* 0x304 */ VecFx32 drawOffset;
     /* 0x310 */ u8 pad_310[8];
-    /* 0x318 */ Unk_ov003_Vec lastFramePos;
+    /* 0x318 */ VecFx32 lastFramePos;
     /* 0x324 */ u8 seEmitter[0x365 - 0x324];
     /* 0x365 */ u8 prevContactCount;
     /* 0x366 */ u8 hitSeLatch;
@@ -262,7 +250,7 @@ void _ZN14SnowmanRecords12markUnplacedEj(void *self, u32 a);
 s32 _ZN14SnowmanRecords7getInfoEjPjS0_S0_PhS1_S1_(void *self, u32 m, s32 *a, s32 *b, s32 *c, s32 z1, s32 z2, s32 z3);
 void _ZN5Model10drawScaledEPi(void *self, void *v);
 void _ZN11CachedModel10loadCachedEPvS0_(void *self, u32 a, const char *b);
-void _ZN12SndSeEmitter18callUpdateRelativeEP16Unk_02003a6c_Vec(void *self, void *v);
+void _ZN12SndSeEmitter18callUpdateRelativeEP7VecFx32(void *self, void *v);
 void _ZN12SndSeEmitter8callStopEv(void *self);
 void _ZN12SndSeEmitter8callInitEv(void *self);
 
@@ -420,7 +408,7 @@ BOOL Snowball::onExecute() {
     lastFramePos.y = pv->y;
     lastFramePos.z = pv->z;
     V3P sp = *(V3P *)&position;
-    _ZN12SndSeEmitter18callUpdateRelativeEP16Unk_02003a6c_Vec(seEmitter, &sp);
+    _ZN12SndSeEmitter18callUpdateRelativeEP7VecFx32(seEmitter, &sp);
     return TRUE;
 }
 
@@ -609,7 +597,7 @@ extern "C" s32 Snowball_UpdateRolling(Obj *o)
         o->rollVelX = 0;
         o->rollVelZ = 0;
     }
-    loc.initAtPos((Unk_0203389c_Vec *)&o->position, 0, 0);
+    loc.initAtPos((VecFx32 *)&o->position, 0, 0);
     if (loc.attr == 3) {
         if (o->snowballFlags.i == 0) {
             o->radius = func_01ffcb0c(o->radius, (len >> 7) + 0x1000);

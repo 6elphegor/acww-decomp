@@ -5,18 +5,15 @@
 // Generated from 20 earlier source files: one
 // namespace per old file holds that file's own declarations and its view of the object.
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "actor/ActorProfile.h"
 #include "net/CommManager.h"
 #include "talk/TalkWindowState.h"
-#include "player/Unk_02005294_Vec3.h"
 #include "gfx/NNSG3dRS.h"
 #include "player/Unk_02005f50_Flags.h"
-#include "player/Unk_02005f50_V3.h"
 #include "player/Unk_02005f50_Area.h"
 #include "player/Unk_02005f50_Pkt.h"
 #include "player/Unk_02006d14_Pair.h"
-#include "player/Unk_02006d14_Vec.h"
-#include "player/Unk_02006d14_Vec3.h"
 #include "player/Unk_02006d14_V3.h"
 #include "player/Unk_02006d14_Trip.h"
 #include "player/Unk_02006d14_St7d0.h"
@@ -26,13 +23,10 @@
 #include "player/Unk_0200e2c8.h"
 #include "game/Unk_0200f6d4_V2.h"
 #include "player/Unk_0200d64c_Xyz.h"
-#include "game/Unk_0200dde0_Vec3.h"
 #include "player/Unk_0200e7f4_T24.h"
 #include "player/Unk_0200f070_V3.h"
 #include "player/Unk_0200ff08_Obj.h"
 #include "player/Unk_020107c8_Blk.h"
-#include "player/Unk_02007ebc_Vec.h"
-#include "player/Unk_02008074_Vec.h"
 #include "player/PlayerNetActionArgs.h"
 #include "player/Unk_02008100_Msg.h"
 #include "talk/TalkMsgRequest.h"
@@ -77,7 +71,6 @@
 #include "player/Unk_020d6df4_7d0.h"
 #include "player/PlayerHead.h"
 #include "player/Unk_0200c2fc.h"
-#include "player/Unk_0200bff8_Vec.h"
 #include "player/Unk_0200bda0.h"
 #include "player/Unk_0200bc08_Obj.h"
 #include "player/Unk_0200b908_Obj.h"
@@ -96,12 +89,9 @@ class PlayerActor;
 class Unk_02007694;
 class PlayerActor;
 struct PlayerActionRequest;
-struct Unk_02006d14_Vec;
 struct Unk_02006d14_Pair;
-struct Unk_0200b144_Pos;
 struct Unk_0200b750_Pair;
 struct PlayerActionRequest;
-struct Unk_02006d14_Vec3;
 struct Unk_0200f6d4_V2;
 struct Unk_020107c8_Blk;
 
@@ -218,10 +208,10 @@ extern PM_02004ce8 data_020d5ff4;
 namespace nB {
 extern "C" {
 
-void WorldCurve_FromCurved(Unk_02005294_Vec3 *dst, Unk_02005294_Vec3 *src);
-s32 WorldCurve_Apply(Unk_02005294_Vec3 *out, Unk_02005294_Vec3 *in);
+void WorldCurve_FromCurved(VecFx32 *dst, VecFx32 *src);
+s32 WorldCurve_Apply(VecFx32 *out, VecFx32 *in);
 s32 WorldCurve_GetRadius();
-s32 WorldCurve_ToCurved(Unk_02005294_Vec3 *out, Unk_02005294_Vec3 *in);
+s32 WorldCurve_ToCurved(VecFx32 *out, VecFx32 *in);
 void MTX_RotX33_(s32 *out, s32 a, s32 b);
 void MTX_RotY33_(s32 *out, s32 a, s32 b);
 void MTX_Concat33(s32 *a, s32 *b, s32 *out);
@@ -233,13 +223,13 @@ s32 PlayerHead_GetModelId(void *obj, u32 v);
 s32 PlayerGlassesModelRef_GetModelId(void *obj);
 void HeldItemModel_Draw(void *a, void *b);
 Mtx43 HeldItemModel_GetJointMtx(void *obj, u32 mode);
-void CharaShadow_DrawPlayer(Unk_02005294_Vec3 *pos, s32 a);
+void CharaShadow_DrawPlayer(VecFx32 *pos, s32 a);
 void HeldItemModel_Update(void *obj);
 void PlayerActor_CheckSceneExit(s32 a);
 BOOL _ZN11CommManager11isLocalSlotEj(void *a, s32 b);
 s32 Ground_GetDefaultY(s32 a);
-void _ZN12SndSeEmitter18callUpdateRelativeEP16Unk_02003a6c_Vec(void *a, void *b);
-void _ZN12SndSeEmitter21callUpdateRelativeAltEP16Unk_02003a6c_Vec(void *a, void *b);
+void _ZN12SndSeEmitter18callUpdateRelativeEP7VecFx32(void *a, void *b);
+void _ZN12SndSeEmitter21callUpdateRelativeAltEP7VecFx32(void *a, void *b);
 void _ZN17TwoLayerAnimModel21onJointCalcPostLayer2EP8NNSG3dRS(void *a, NNSG3dRS *b);
 void JointCb_CalcCpuMatrix(void *a, NNSG3dRS *b, u32 c);
 void JointCb_UseRestTranslation(NNSG3dRS *a, u32 b);
@@ -442,8 +432,8 @@ extern u8 data_020c6434[];
 extern u8 sPlayerActionLevelsTilt[];
 void PlayerActor_LevelTiltForAction(void *p, u32 i, s32 force);
 s32 FieldActionFx_Take(void *out, s32 v);
-void FieldPos_FromUnitCenter(Unk_02005f50_V3 *out, s32 x, s32 y);
-void FieldPos_ToUnit(s32 *x, s32 *y, Unk_02005f50_V3 *v);
+void FieldPos_FromUnitCenter(VecFx32 *out, s32 x, s32 y);
+void FieldPos_ToUnit(s32 *x, s32 *y, VecFx32 *v);
 s32 _ZN11PlayerActor14testActionFlagEj(void *p, s32 v);
 void _ZN11PlayerActor15clearActionFlagEj(void *p, s32 v);
 s32 _ZN11PlayerActor13setActionFlagEj(void *p, s32 v);
@@ -455,7 +445,7 @@ s32 InputMode_SetTouch();
 s32 InputMode_SetButtons();
 s32 InputMode_Clear();
 s32 _ZN11PlayerActor12approachRotXEv(void *p, s32 v);
-s32 _ZN11PlayerActor15requestPickUpAtEP16Unk_0200b144_Posihis(void *p, void *v, s32 a, s32 b, s32 c, s32 d);
+s32 _ZN11PlayerActor15requestPickUpAtEP4Vec2ihis(void *p, void *v, s32 a, s32 b, s32 c, s32 d);
 s32 _ZN11PlayerActor22requestPickUpFanfareAtEP17Unk_02006d14_Pairhjs(void *p, void *v, s32 a, s32 b, s32 c);
 s32 _ZN11PlayerActor11requestWaitEjjj(void *p, s32 a, s32 b, s32 c);
 s32 PlayerActor_GetSlotAction(s32 *out, s32 a, s32 b);
@@ -806,9 +796,9 @@ void MI_CpuFill8(void *p, u32 v, u32 n);
 void _ZN14CollisionState9beginStepEv(void *p);
 u16 WorldCurve_ToCurved(void *a, void *b);
 void _ZN11PlayerActor7setRotXEt(Unk_02007694 *o, u32 a);
-void WorldCurve_FromCurved(Unk_02007ebc_Vec *out, Unk_02007ebc_Vec *in);
+void WorldCurve_FromCurved(VecFx32 *out, VecFx32 *in);
 s32 FX_Div(s32 a, s32 b);
-void MTX_MultVec43(Unk_02007ebc_Vec *v, Mtx43 *m, Unk_02007ebc_Vec *out);
+void MTX_MultVec43(VecFx32 *v, Mtx43 *m, VecFx32 *out);
 void Math_ApproachS32(void *p, s32 a, s32 b, s32 c, s32 d);
 BOOL _ZN13AnimFrameCtrl10isFinishedEv(void *p);
 BOOL MenuCtrl_IsFinished();
@@ -818,7 +808,7 @@ extern u8 sPlayerActionStopsMovement[];
 extern u8 sPlayerActionDonePriority[];
 extern u8 sPlayerActionPriority[];
 extern u8 sPlayerActionKeepsBgCheckWork[];
-void PlayerActor_CalcHeldUpItemPos(Unk_02007ebc_Vec *out, Unk_02007694 *obj, s32 n);
+void PlayerActor_CalcHeldUpItemPos(VecFx32 *out, Unk_02007694 *obj, s32 n);
 void _ZN11PlayerActor15clearActionFlagEj(void *, u32 a);
 void _ZN5Actor15calcModelMatrixEPv(void *, Mtx43 *out);
 void _ZN11PlayerActor17moveWithCollisionEv(void *);
@@ -910,7 +900,7 @@ BOOL _ZN11CommManager11isLocalSlotEj(void *, s32);
 void _ZN11PlayerActor11advanceAnimEv(PlayerActor *);
 void _ZN11PlayerActor18updateBodyColliderEv(PlayerActor *);
 void _ZN11PlayerActor18netFollowTransformEv(PlayerActor *);
-void PlayerActor_CalcHeldUpItemPos(Unk_02008074_Vec *, PlayerActor *, u32);
+void PlayerActor_CalcHeldUpItemPos(VecFx32 *, PlayerActor *, u32);
 s32 _ZN11PlayerActor13startAnimOnceEijt(PlayerActor *, u32, u32, u32);
 s32 _ZN11PlayerActor9startAnimEijt(PlayerActor *, u32, u32, u32);
 s32 _ZN11PlayerActor11requestWaitEjjj(PlayerActor *, u32, u32, s32);
@@ -1055,7 +1045,7 @@ void _ZN17TwoLayerAnimModel12updateLayersEv(void* p);
 u32 HandOverItem_GetItem(u16* p);
 u32 HandOverItem_IsModeActive(u32 v);
 u32 HandOverItem_SwitchMaster(void* p);
-BOOL HandOverItem_GetPos(Unk_02009a78_Vec* p);
+BOOL HandOverItem_GetPos(VecFx32* p);
 BOOL HandOverItem_CanTake(void* p);
 u32 HandOverItem_End(void* p);
 u32 HandOverItem_GetNextMode();
@@ -1096,7 +1086,7 @@ void _ZN11PlayerActor12requestAct10Esji(void *, u32 a, u32 b, s32 c);
 void _ZN11PlayerActor17moveWithCollisionEv(void *);
 void _ZN11PlayerActor15moveNoCollisionEv(void *);
 void _ZN11PlayerActor16updateFootstepFxEv(void *);
-s32 _ZN11PlayerActor18getRemoteTransformEPhPiS1_Pt(void *, s16* a, Unk_02009a78_Vec* b, s32* c, s16* d);
+s32 _ZN11PlayerActor18getRemoteTransformEPhPiS1_Pt(void *, s16* a, VecFx32* b, s32* c, s16* d);
 s32 _ZN11PlayerActor9startAnimEijt(void *, u32 a, u32 b, u32 c);
 void _ZN11PlayerActor17pickUpUpdateStoreEPhh(void *, u8* p, u32 a);
 void _ZN11PlayerActor15netSyncNearUnitEPi(void *, u32* p);
@@ -1201,8 +1191,8 @@ u16* BlockMap_GetItemPtrAtPos(void* p, void* q, u32 z);
 void* PlayerData_GetCurrent();
 BOOL _ZN10PlayerData8testFlagEj(void* p, u32 v);
 void _ZN10PlayerData7setFlagEj(void* p, u32 v);
-void PendingUnit_CommitAt(Unk_0200b144_Pos* p, u32 z);
-void PendingUnit_ApplyAt(Unk_0200b144_Pos* p, u32 z);
+void PendingUnit_CommitAt(Vec2* p, u32 z);
+void PendingUnit_ApplyAt(Vec2* p, u32 z);
 void VillagerTrend_NotifyUnk6(void* p);
 void HeldItemModel_PlayAnim(void* p, u32 a, u32 b, u32 c);
 extern void* gSceneBlockMap;
@@ -1220,10 +1210,10 @@ void _ZN19PlayerActionRequestC1Ev(void* p);
 void _ZN19PlayerActionRequest6assignEiis(void* p, u32 a, s32 b, s16 c);
 s32 _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(void* self, void* p);
 void _ZN19PlayerActionRequestD1Ev(void* p);
-void PlayerActor_NetWritePickUp(PlayerNetPickUpArgs* dst, Unk_0200b144_Pos* pos, s8 a, u16 b, u8 c);
-void PlayerActor_NetReadPickUp(PlayerNetPickUpArgs* src, Unk_0200b144_Pos* pos, s8* a, u16* b, u8* c);
-void PlayerActor_NetWritePickUp(PlayerNetPickUpArgs* dst, Unk_0200b144_Pos* pos, s8 a, u16 b, u8 c);
-void PlayerActor_SetArgsPickUp(PlayerPickUpArgs* out, Unk_0200b144_Pos* pos, s32 a, s32 b, u8 c);
+void PlayerActor_NetWritePickUp(PlayerNetPickUpArgs* dst, Vec2* pos, s8 a, u16 b, u8 c);
+void PlayerActor_NetReadPickUp(PlayerNetPickUpArgs* src, Vec2* pos, s8* a, u16* b, u8* c);
+void PlayerActor_NetWritePickUp(PlayerNetPickUpArgs* dst, Vec2* pos, s8 a, u16 b, u8 c);
+void PlayerActor_SetArgsPickUp(PlayerPickUpArgs* out, Vec2* pos, s32 a, s32 b, u8 c);
 static inline BOOL Unk_0200add8_R1(u16* p, u32 lo, u32 hi) { BOOL r = FALSE; if (*p >= lo && *p <= hi) r = TRUE; return r; }
 static inline BOOL Unk_0200add8_InRange(u32 c, u32 lo, u32 hi) { BOOL r = FALSE; if (c >= lo && c <= hi) r = TRUE; return r; }
 static inline BOOL Unk_0200add8_IsFFF1(u16* p, u16* t) {
@@ -1241,9 +1231,9 @@ void _ZN11PlayerActor6playSeEj(void *, u32 id);
 void _ZN11PlayerActor15clearActionFlagEj(void *, u32 id);
 void _ZN11PlayerActor21pickUpReachWaitAnswerEv(void *);
 void _ZN11PlayerActor18updateBodyColliderEv(void *);
-void _ZN11PlayerActor15netSyncNearUnitEPi(void *, Unk_0200b144_Pos* pos);
+void _ZN11PlayerActor15netSyncNearUnitEPi(void *, Vec2* pos);
 u32 _ZN12Unk_0200769421getActionDonePriorityEj(void *, u32 id);
-void _ZN11PlayerActor22requestPickUpFanfareAtEP17Unk_02006d14_Pairhjs(void *, Unk_0200b144_Pos* pos, u32 a, u32 b, s32 c);
+void _ZN11PlayerActor22requestPickUpFanfareAtEP17Unk_02006d14_Pairhjs(void *, Vec2* pos, u32 a, u32 b, s32 c);
 void _ZN11PlayerActor11requestWaitEjjj(void *, u32 a, u32 b, s32 c);
 void _ZN11PlayerActor13setActionFlagEj(void *, u32 id);
 void _ZN11PlayerActor11calcHandMtxEv(void *);
@@ -1257,7 +1247,7 @@ s32 _ZN11PlayerActor15getHeldToolKindEv(void *);
 namespace nK {
 extern "C" {
 
-static inline void func_0200bc78_sub(Unk_02006d14_Vec *o, Unk_02006d14_Vec *a, Unk_02006d14_Vec *b) {
+static inline void func_0200bc78_sub(VecFx32Ctor *o, VecFx32Ctor *a, VecFx32Ctor *b) {
     o->x = a->x - b->x;
     o->z = a->z - b->z;
 }
@@ -1291,7 +1281,7 @@ s32 Math_Atan2(s32, s32);
 void PlayerActor_TurnAngle(void *, s32);
 void PlayerActor_RequestReturnToWait();
 void _ZN11PlayerActor11advanceAnimEv(void *);
-s32 _ZN11PlayerActor15requestPickUpAtEP16Unk_0200b144_Posihis(void *, Unk_0200b750_Pair pr, s32 a, s32 b, u32 c, s32 d);
+s32 _ZN11PlayerActor15requestPickUpAtEP4Vec2ihis(void *, Unk_0200b750_Pair pr, s32 a, s32 b, u32 c, s32 d);
 void _ZN11PlayerActor15clearActionFlagEj(void *, u32 id);
 s32 _ZN11PlayerActor9startAnimEijt(void *, u32 a, u32 b, u32 c);
 s32 _ZN11PlayerActor13startAnimOnceEijt(void *, u32 a, u32 b, u32 c);
@@ -1511,15 +1501,15 @@ void TalkRequest_FinishSceneEntry();
 BOOL func_0203d4d4();
 BOOL TalkRequestFlags_IsResetti();
 u8 *Scene_GetTouchPicker();
-s32 TouchPick_GetGroundPos(u8 *obj, Unk_0200d64c_Xyz *out);
-BOOL TouchPickResult_GetTarget(u8 *obj, Unk_0200d64c_Xyz *out, s32 *a, u8 *b);
+s32 TouchPick_GetGroundPos(u8 *obj, VecFx32Ctor *out);
+BOOL TouchPickResult_GetTarget(u8 *obj, VecFx32Ctor *out, s32 *a, u8 *b);
 s32 TouchPick_GetTargetObject(u8 *obj, s32 *pa, u8 *pb);
-u16 *BlockMap_GetItemPtrAtPos(void *a, Unk_0200d64c_Xyz *b, u32 c);
-void FieldPos_ToUnit(s32 *x, s32 *y, Unk_0200d64c_Xyz *v);
-void FieldPos_SnapToUnitCenter(Unk_0200d64c_Xyz *a, Unk_0200d64c_Xyz *b);
+u16 *BlockMap_GetItemPtrAtPos(void *a, VecFx32Ctor *b, u32 c);
+void FieldPos_ToUnit(s32 *x, s32 *y, VecFx32Ctor *v);
+void FieldPos_SnapToUnitCenter(VecFx32Ctor *a, VecFx32Ctor *b);
 s32 _ZN6Camera8getPitchEv(void *p);
-BOOL Camera_ProjectCurvedToScreen(s32 *a, s32 *b, Unk_0200d64c_Xyz *p);
-s32 Vec_MagXZ(Unk_0200d64c_Xyz *v);
+BOOL Camera_ProjectCurvedToScreen(s32 *a, s32 *b, VecFx32Ctor *p);
+s32 Vec_MagXZ(VecFx32Ctor *v);
 s32 Math_Atan2(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 FX_Div(s32 a, s32 b);
@@ -1558,7 +1548,7 @@ BOOL _ZN11PlayerActor14testActionFlagEj(void *, s32 id);
 void _ZN11PlayerActor9setAngleYEPs(void *, u16 *p);
 void _ZN19PlayerActionRequest6assignEiis(void *, u32 a, u32 b, u32 c);
 u32 _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(void *, PlayerActionRequest *p);
-Unk_0200d64c_Xyz PlayerActor_OffsetByAngle(void *, Unk_0200d64c_Xyz *a, s16 *b, void *c);
+VecFx32Ctor PlayerActor_OffsetByAngle(void *, VecFx32Ctor *a, s16 *b, void *c);
 BOOL PlayerActor_IsWaitingForSlots(void *);
 void _ZN11PlayerActor15clearActionFlagEj(void *, s32 id);
 BOOL _ZN11PlayerActor15getHeldToolKindEv(void *);
@@ -1659,12 +1649,12 @@ s32 Model_GetJointWorldMtx(void *p, void *q, s32 v);
 s32 HeldItemModel_PlayAnim(void *p, s32 a, s32 b, s32 c);
 BOOL PlayerActor_IsInAction(s32 a, s32 b);
 BOOL PlayerActor_GetSlotPosXZ(s16 *s, s32 *x, s32 *z, s32 m, s32 arg);
-Unk_02006d14_Vec3 *PlayerActor_GetBodyPos(u32 n);
+VecFx32 *PlayerActor_GetBodyPos(u32 n);
 s32 Math_Atan2(s32 a, s32 b);
 s32 Math_AngleDiffAbs(s32 a, s32 b);
-s32 Vec_DistXZ(Unk_02006d14_Vec3 *a, Unk_02006d14_Vec3 *b);
+s32 Vec_DistXZ(VecFx32 *a, VecFx32 *b);
 s32 func_01ffcb0c(s32 a, s32 b);
-void PlayerActor_OffsetByAngle(Unk_02006d14_Vec3 *out, PlayerActor *p, Unk_02006d14_Vec3 *v, s16 *ang, u32 arg);
+void PlayerActor_OffsetByAngle(VecFx32 *out, PlayerActor *p, VecFx32 *v, s16 *ang, u32 arg);
 s32 _ZN11PlayerActor18updateBodyColliderEv(PlayerActor *p);
 s32 PlayerActor_ApproachAngle(s16 *p, s32 a, s32 b, s32 c, s32 d);
 s32 PlayerActor_GetTan(PlayerActor *p);
@@ -1672,15 +1662,15 @@ s32 _ZN11CommManager11beginRecordEv(CommManager *g);
 s32 _ZN11CommManager11writeRecordEPhj(CommManager *g, void *p, s32 n);
 s32 _ZN11CommManager9endRecordEjj(CommManager *g, s32 a, s32 b);
 s32 PlayerActor_PackClothesChange(u32 *out, u32 a, u32 b);
-s32 WorldCurve_FromCurved(Unk_02006d14_Vec3 *v);
+s32 WorldCurve_FromCurved(VecFx32 *v);
 BOOL InputMode_IsButtons();
 BOOL InputMode_IsTouch();
 s32 Snd_SeEmitterPlayHeld(void *p, u32 a, s32 b, s32 c);
 s32 Snd_SeEmitterPlayOneShot(void *p, u32 a, s32 b, s32 c);
 s32 Math_AngleToDir4(s32 a);
-s32 FieldPos_FromUnitCenter(Unk_02006d14_Vec3 *out, s32 x, s32 z);
+s32 FieldPos_FromUnitCenter(VecFx32 *out, s32 x, s32 z);
 s32 Math_ApproachS32(s32 *p, s32 a, s32 b, s32 c, s32 d);
-void PlayerActor_CalcHandItemPos(Unk_02006d14_Vec3 *out, PlayerActor *p, void *args);
+void PlayerActor_CalcHandItemPos(VecFx32 *out, PlayerActor *p, void *args);
 void PlayerActor_StepTowardPoseFast(PlayerActor *p, s32 a, s32 b, s32 c);
 BOOL _ZN11PlayerActor18getRemoteTransformEPhPiS1_Pt(PlayerActor *p, u8 *b, s32 *x, s32 *z, s16 *ang);
 BOOL PlayerActor_IsWaitingForSlots();
@@ -1703,8 +1693,8 @@ extern void *gCommManager;
 extern void *gSceneBlockMap;
 extern u32 data_020c6210[];
 s32 func_01ffcb0c(s32 a, s32 b);
-void MTX_MultVec43(Unk_0200f070_V3 *v, Unk_0200f070_M *m, Unk_0200f070_V3 *out);
-void WorldCurve_FromCurved(Unk_0200f070_V3 *dst, Unk_0200f070_V3 *src);
+void MTX_MultVec43(VecFx32 *v, Unk_0200f070_M *m, VecFx32 *out);
+void WorldCurve_FromCurved(VecFx32 *dst, VecFx32 *src);
 BOOL _ZN11CommManager11isLocalSlotEj(void *a, s32 b);
 BOOL _ZN11PlayerActor14testActionFlagEj(PlayerActor *o, s32 id);
 BOOL LowBattery_Poll();
@@ -1721,13 +1711,13 @@ void Clock_GetDateTime(void *p);
 void MI_CpuCopy8(void *a, void *b, s32 n);
 void DateTime_Compare(void *a, void *b, s32 n);
 void Snd_SeEmitterPlayAlternate(void *a, void *b, s32 c);
-Unk_0200f070_V3 *Footstep_GetSeAtPos(Unk_0200f070_V3 *v);
+VecFx32 *Footstep_GetSeAtPos(VecFx32 *v);
 BOOL _ZN13AnimFrameCtrl14hasPassedFrameEi(void *o, s32 id);
-void Effect_Create(s32 a, Unk_0200f070_V3 *v, s16 *r, s32 c);
-void PlayerActor_OffsetByAngle(Unk_0200f070_V3 *out, void *o, Unk_0200f070_V3 *in, u16 *ang, s32 *p);
-void PlayerActor_GetFrontPoint(Unk_0200f070_V3 *out, PlayerActor *o);
+void Effect_Create(s32 a, VecFx32 *v, s16 *r, s32 c);
+void PlayerActor_OffsetByAngle(VecFx32 *out, void *o, VecFx32 *in, u16 *ang, s32 *p);
+void PlayerActor_GetFrontPoint(VecFx32 *out, PlayerActor *o);
 void PlayerActor_StepTowardXZ(PlayerActor *o, s32 a, s32 b);
-void FieldPos_SnapToUnitCenter(void *a, Unk_0200f070_V3 *v);
+void FieldPos_SnapToUnitCenter(void *a, VecFx32 *v);
 BOOL PlayerActor_ApproachAngle(s16 *a, s32 b, s32 c, s32 d, s32 e);
 s32 _ZN11PlayerActor9setAngleYEPs(void *o, s16 *a);
 void PlayerActor_TurnAngle(s16 *a, s32 b);
@@ -1751,18 +1741,18 @@ s32 FieldAction_PollResult(s32 a);
 s32 FieldAction_PollDrop(s32 a);
 void FieldAction_Release(s32 a);
 void *FieldAction_Get(s32 a);
-static inline void Unk_0200f070_Set(Unk_0200f070_V3 *r, s32 x, s32 y, s32 z)
+static inline void Unk_0200f070_Set(VecFx32 *r, s32 x, s32 y, s32 z)
 {
     r->x = x;
     r->y = y;
     r->z = z;
 }
-void PlayerActor_CalcHandItemPos(Unk_0200f070_V3 *dst, PlayerActor *o, s32 *p);
+void PlayerActor_CalcHandItemPos(VecFx32 *dst, PlayerActor *o, s32 *p);
 void PlayerActor_SetLastPlayDate(PlayerActor *o, s32 a, Unk_0200f17c_Date *d);
 void PlayerActor_CompareLastPlayDate(void *o, void *a, u8 *b);
 void PlayerActor_CompareLastPlayDateNow(void *o);
-void PlayerActor_OffsetByAngle(Unk_0200f070_V3 *out, void *o, Unk_0200f070_V3 *in, u16 *ang, s32 *p);
-void PlayerActor_GetFrontPoint(Unk_0200f070_V3 *out, PlayerActor *o);
+void PlayerActor_OffsetByAngle(VecFx32 *out, void *o, VecFx32 *in, u16 *ang, s32 *p);
+void PlayerActor_GetFrontPoint(VecFx32 *out, PlayerActor *o);
 void PlayerActor_GetFrontUnitCenter(PlayerActor *a, PlayerActor *b);
 void PlayerActor_StepTowardXZ(PlayerActor *o, s32 a, s32 b);
 void PlayerActor_StepTowardPoseFast(PlayerActor *o, s32 a, s32 b, s32 c);
@@ -1829,7 +1819,7 @@ BOOL TalkRequestFlags_IsResetti(void *);
 void TalkRequest_AddTalk(void *, void *);
 BOOL Character_FindInteractionTarget(void *);
 BOOL _ZN9Character16checkInteractionEPS_(void *, void *);
-void PlayerActor_OffsetByAngle(Unk_0200ff08_Vec *, void *, void *, void *, void *);
+void PlayerActor_OffsetByAngle(VecFx32 *, void *, void *, void *, void *);
 void CharaClothTexRef_GetBuffer(void *);
 u32 ClothTex_GetTexThunk();
 void _ZN14MatTexVramTask7requestEPvjS0_jj(void *, u32, void *, u32, u32, u32);
@@ -1879,7 +1869,7 @@ BOOL _ZN11CommManager11isLocalSlotEj(void *a, u32 b);
 BOOL Scene_InUnk6To8(void);
 u32 Scene_GetCurrent(void);
 u32 Scene_GetTouchPicker(void);
-void _ZN11TouchPicker11addCylinderEP17TouchPickCylinderP4Vec3S3_S3_ih(u32 a, void *b, void *c, u32 d, u32 e, u32 f, u32 g);
+void _ZN11TouchPicker11addCylinderEP17TouchPickCylinderP7VecFx32S3_S3_ih(u32 a, void *b, void *c, u32 d, u32 e, u32 f, u32 g);
 void AnimSlotRef_Load(void *a, s32 b, u32 c, u32 d);
 s32 AnimSlotRef_GetData(void *a);
 u32 func_021065dc(u32 a);
@@ -1898,7 +1888,7 @@ s32 _ZN16PlayerFaceTexRef9getBufferEv(void *a);
 s32 _ZN20CharaFaceAnimWorkRef7getHeapEv(void *a);
 void _ZN13MatTexPatAnim4initEPvS0_jS0_(void *a, s32 b, s32 c, u32 d, s32 e);
 void _ZN13ActorCollider6submitEv(void *a);
-void _ZN19ActorPlacedCollider15setupForActorAtEPvP4Vec3iijjjhi(void *a, void *b, u32 c, u32 d, u32 e, u32 f, u32 g, u32 h, u32 i, u32 j);
+void _ZN19ActorPlacedCollider15setupForActorAtEPvP7VecFx32iijjjhi(void *a, void *b, u32 c, u32 d, u32 e, u32 f, u32 g, u32 h, u32 i, u32 j);
 u32 Ground_GetDefaultY(u32 a);
 BOOL _ZN13AnimFrameCtrl14hasPassedFrameEi(void *a, u32 b);
 BOOL BlinkTimer_Update(void *a);
@@ -3459,7 +3449,7 @@ u32 PlayerActor::getBodyColliderFlags(u32 *a) {
 void PlayerActor::setBodyColliderAt(Unk_020107c8_Blk *a, u32 *b) {
     using namespace nS;
     u32 f = getBodyColliderFlags(b);
-    _ZN19ActorPlacedCollider15setupForActorAtEPvP4Vec3iijjjhi((u8 *)&bodyCollider, this, (u32)a, 0xfd7, 0x2800, f | 4, 0x2fc, 0x15, (u8)sessionSlot, 0x1000);
+    _ZN19ActorPlacedCollider15setupForActorAtEPvP7VecFx32iijjjhi((u8 *)&bodyCollider, this, (u32)a, 0xfd7, 0x2800, f | 4, 0x2fc, 0x15, (u8)sessionSlot, 0x1000);
 }
 
 void PlayerActor::setBodyCollider(u32 *a) {
@@ -3478,12 +3468,12 @@ void PlayerActor::setBodyColliderAtDrawPos(u32 *a) {
 
 void PlayerActor::setSubColliderBody(u32 *a) {
     using namespace nS;
-    _ZN19ActorPlacedCollider15setupForActorAtEPvP4Vec3iijjjhi((u8 *)&subCollider, this, (u32)a, 0xfd7, 0x2800, 6, 0x2fc, 0, 0xff, 0x1000);
+    _ZN19ActorPlacedCollider15setupForActorAtEPvP7VecFx32iijjjhi((u8 *)&subCollider, this, (u32)a, 0xfd7, 0x2800, 6, 0x2fc, 0, 0xff, 0x1000);
 }
 
 void PlayerActor::setSubCollider(u32 a, u32 b, u32 c) {
     using namespace nS;
-    _ZN19ActorPlacedCollider15setupForActorAtEPvP4Vec3iijjjhi((u8 *)&subCollider, this, a, b, c, 0x11, 0x2c, 0, 0xff, 0x1000);
+    _ZN19ActorPlacedCollider15setupForActorAtEPvP7VecFx32iijjjhi((u8 *)&subCollider, this, a, b, c, 0x11, 0x2c, 0, 0xff, 0x1000);
 }
 
 void PlayerActor::updateBodyCollider() {
@@ -3503,14 +3493,14 @@ void PlayerActor::updateCollidersAtDrawPos(u32 *a) {
 void PlayerActor::submitSceneCollider() {
     using namespace nS;
     if (_ZN11CommManager11isLocalSlotEj(gCommManager, sessionSlot) || (Scene_InUnk6To8() && action == 8)) {
-        Unk_0201065c_Vec *p = (Unk_0201065c_Vec *)(u8 *)&position;
-        Unk_0201065c_Vec v;
+        VecFx32 *p = (VecFx32 *)(u8 *)&position;
+        VecFx32 v;
         v.x = p->x;
         v.y = p->y;
         v.z = p->z;
         v.y += 0xb33;
         u32 r = Scene_GetTouchPicker();
-        _ZN11TouchPicker11addCylinderEP17TouchPickCylinderP4Vec3S3_S3_ih(r, (u8 *)&touchCylinder, &v, 0xa00, 0x15cf, 1, (u8)sessionSlot);
+        _ZN11TouchPicker11addCylinderEP17TouchPickCylinderP7VecFx32S3_S3_ih(r, (u8 *)&touchCylinder, &v, 0xa00, 0x15cf, 1, (u8)sessionSlot);
     }
 }
 
@@ -3727,8 +3717,8 @@ s32 PlayerActor::tryInteract() {
     }
     if (useHeldTool()) return TRUE;
     if (((PlayerActor *)this)->actionPressed != 0 && ((PlayerActor *)this)->inputMode == 2) {
-        volatile Unk_0200ff08_Vec saved;
-        Unk_0200ff08_Vec res;
+        volatile VecFx32 saved;
+        VecFx32 res;
         saved.x = ((PlayerActor *)this)->targetPos.x;
         saved.y = ((PlayerActor *)this)->targetPos.y;
         saved.z = ((PlayerActor *)this)->targetPos.z;
@@ -4128,20 +4118,20 @@ s32 PlayerActor::turnAwayFromCamera(s32 a) {
 
 namespace nQ {
 extern "C" void PlayerActor_GetFrontUnitCenter(PlayerActor *a, PlayerActor *b) {
-    Unk_0200f070_V3 v;
+    VecFx32 v;
     PlayerActor_GetFrontPoint(&v, b);
     FieldPos_SnapToUnitCenter(a, &v);
 }
 }
 
 namespace nQ {
-extern "C" void PlayerActor_GetFrontPoint(Unk_0200f070_V3 *out, PlayerActor *o) {
-    PlayerActor_OffsetByAngle(out, o, (Unk_0200f070_V3 *)&o->position, (u16 *)&o->rotY, &sPlayerFrontPointDist);
+extern "C" void PlayerActor_GetFrontPoint(VecFx32 *out, PlayerActor *o) {
+    PlayerActor_OffsetByAngle(out, o, (VecFx32 *)&o->position, (u16 *)&o->rotY, &sPlayerFrontPointDist);
 }
 }
 
 namespace nQ {
-extern "C" void PlayerActor_OffsetByAngle(Unk_0200f070_V3 *out, void *o, Unk_0200f070_V3 *in, u16 *ang, s32 *p) {
+extern "C" void PlayerActor_OffsetByAngle(VecFx32 *out, void *o, VecFx32 *in, u16 *ang, s32 *p) {
     s32 i;
     s32 s, c;
     *out = *in;
@@ -4157,7 +4147,7 @@ void PlayerActor::updateFootstepFx() {
     using namespace nQ;
     if (_ZN13AnimFrameCtrl14hasPassedFrameEi(&(AnimFrameCtrl &)((PlayerActor *)this)->bodyModel, 1) || _ZN13AnimFrameCtrl14hasPassedFrameEi(&(AnimFrameCtrl &)((PlayerActor *)this)->bodyModel, 9)) {
         s16 rot[2];
-        Unk_0200f070_V3 v;
+        VecFx32 v;
         rot[0] = ((PlayerActor *)this)->rotY;
         rot[1] = rot[0] + 0x8000;
         if (_ZN13AnimFrameCtrl14hasPassedFrameEi(&(AnimFrameCtrl &)((PlayerActor *)this)->bodyModel, 9)) {
@@ -4185,7 +4175,7 @@ void PlayerActor::playFootstepSe() {
     if (!(c && ((f & 2) ? TRUE : FALSE))) {
         if (_ZN11PlayerActor14testActionFlagEj(((PlayerActor *)this), 0xa)) {
             BOOL flag = ((PlayerActor *)this)->animId == 2;
-            Unk_0200f070_V3 v;
+            VecFx32 v;
             v.x = (((PlayerActor *)this)->footPosA.x + ((PlayerActor *)this)->footPosB.x) >> 1;
             v.y = (((PlayerActor *)this)->footPosA.y + ((PlayerActor *)this)->footPosB.y) >> 1;
             v.z = (((PlayerActor *)this)->footPosA.z + ((PlayerActor *)this)->footPosB.z) >> 1;
@@ -4253,17 +4243,17 @@ BOOL PlayerActor::checkLidAndError() {
 }
 
 namespace nQ {
-extern "C" void PlayerActor_CalcHandItemPos(Unk_0200f070_V3 *dst, PlayerActor *o, s32 *p) {
+extern "C" void PlayerActor_CalcHandItemPos(VecFx32 *dst, PlayerActor *o, s32 *p) {
     Unk_0200f070_M m = *(Unk_0200f070_M *)&o->itemHandMtx;
     s32 tx = m.v[9], ty = m.v[10], tz = m.v[11];
     m.v[9] = m.v[10] = m.v[11] = 0;
     Unk_0200f070_M m2 = m;
-    Unk_0200f070_V3 v, out;
+    VecFx32 v, out;
     v.x = func_01ffcb0c(0x800, *p);
     v.y = func_01ffcb0c(-0x400, *p);
     v.z = 0;
     MTX_MultVec43(&v, &m2, &out);
-    Unk_0200f070_V3 r;
+    VecFx32 r;
     tx += out.x;
     ty += out.y;
     tz += out.z;
@@ -4276,14 +4266,14 @@ extern "C" void PlayerActor_CalcHandItemPos(Unk_0200f070_V3 *dst, PlayerActor *o
 
 void PlayerActor::updateShownItemPos(u32 a, ...) {
     using namespace nP;
-    Unk_02006d14_Vec3 v;
+    VecFx32 v;
     PlayerActor_CalcHandItemPos(&v, ((PlayerActor *)this), &a);
     Math_ApproachS32(&((PlayerActor *)this)->shownItemPosX, v.x, 0x800, 0x2000, 0x333);
     Math_ApproachS32(&((PlayerActor *)this)->shownItemPosY, v.y, 0x800, 0x2000, 0x333);
     Math_ApproachS32(&((PlayerActor *)this)->shownItemPosZ, v.z, 0x800, 0x2000, 0x333);
 }
 
-BOOL PlayerActor::getNetTransformInArea(Unk_02006d14_Vec3 *out, s16 *ang) {
+BOOL PlayerActor::getNetTransformInArea(VecFx32 *out, s16 *ang) {
     using namespace nP;
     if (_ZN11CommManager11isLocalSlotEj(gCommManager, ((PlayerActor *)this)->sessionSlot)) {
         return FALSE;
@@ -4304,15 +4294,15 @@ BOOL PlayerActor::getNetTransformInArea(Unk_02006d14_Vec3 *out, s16 *ang) {
 
 BOOL PlayerActor::netFollowTransform() {
     using namespace nP;
-    Unk_02006d14_Vec3 v;
+    VecFx32 v;
     s16 ang;
     if (getNetTransformInArea(&v, &ang)) {
-        Unk_02006d14_Vec3 *pos = (Unk_02006d14_Vec3 *)&((PlayerActor *)this)->position;
+        VecFx32 *pos = (VecFx32 *)&((PlayerActor *)this)->position;
         if (pos->x == v.x && pos->z == v.z && ang == ((PlayerActor *)this)->rotY) {
             return TRUE;
         }
         if (Vec_DistXZ(pos, &v) >= 0xe000) {
-            Unk_02006d14_Vec3 *q = (Unk_02006d14_Vec3 *)&((PlayerActor *)this)->prevPosition;
+            VecFx32 *q = (VecFx32 *)&((PlayerActor *)this)->prevPosition;
             *q = v;
             *pos = *q;
             ((PlayerActor *)this)->rotY = ang;
@@ -4327,16 +4317,16 @@ BOOL PlayerActor::netFollowTransform() {
 
 BOOL PlayerActor::netSyncNearUnit(s32 *p) {
     using namespace nP;
-    Unk_02006d14_Vec3 t;
+    VecFx32 t;
     FieldPos_FromUnitCenter(&t, p[0], p[1]);
     return netSyncNearPoint(&t);
 }
 
-BOOL PlayerActor::netSyncNearPoint(Unk_02006d14_Vec3 *p) {
+BOOL PlayerActor::netSyncNearPoint(VecFx32 *p) {
     using namespace nP;
-    Unk_02006d14_Vec3 v;
+    VecFx32 v;
     s16 ang;
-    Unk_02006d14_Vec3 *pos = (Unk_02006d14_Vec3 *)&((PlayerActor *)this)->position;
+    VecFx32 *pos = (VecFx32 *)&((PlayerActor *)this)->position;
     if (getNetTransformInArea(&v, &ang)) {
         if (Vec_DistXZ(&v, p) >= 0x4000) {
             ang = Math_Atan2(p->x - pos->x, p->z - pos->z);
@@ -4352,7 +4342,7 @@ BOOL PlayerActor::netSyncNearPoint(Unk_02006d14_Vec3 *p) {
         return TRUE;
     }
     if (Vec_DistXZ(pos, &v) >= 0xe000) {
-        Unk_02006d14_Vec3 *q = (Unk_02006d14_Vec3 *)&((PlayerActor *)this)->prevPosition;
+        VecFx32 *q = (VecFx32 *)&((PlayerActor *)this)->prevPosition;
         *q = v;
         *pos = *q;
         ((PlayerActor *)this)->rotY = ang;
@@ -4373,7 +4363,7 @@ void PlayerActor::playSe(u32 a) {
     }
 }
 
-void PlayerActor::playSeAt(u32 a, Unk_02006d14_Vec3 *v) {
+void PlayerActor::playSeAt(u32 a, VecFx32 *v) {
     using namespace nP;
     u32 f = ((PlayerActor *)this)->actorFlags;
     if (!(Unk_0200ec54_Bit(f, 4) && Unk_0200ec54_Bit(f, 2))) {
@@ -4414,7 +4404,7 @@ void PlayerActor::loadInputMode() {
     }
 }
 
-BOOL PlayerActor::getHeldItemPos(Unk_020d77a4_Vec3 *out) {
+BOOL PlayerActor::getHeldItemPos(VecFx32 *out) {
     using namespace nP;
     u32 a = ((PlayerActor *)this)->itemHandMtx.m[9];
     if (a == 0 && ((PlayerActor *)this)->itemHandMtx.m[10] == 0 && ((PlayerActor *)this)->itemHandMtx.m[11] == 0) {
@@ -4423,7 +4413,7 @@ BOOL PlayerActor::getHeldItemPos(Unk_020d77a4_Vec3 *out) {
     out->x = a;
     out->y = ((PlayerActor *)this)->itemHandMtx.m[10];
     out->z = ((PlayerActor *)this)->itemHandMtx.m[11];
-    WorldCurve_FromCurved((Unk_02006d14_Vec3 *)out);
+    WorldCurve_FromCurved((VecFx32 *)out);
     return TRUE;
 }
 
@@ -4492,18 +4482,18 @@ void PlayerActor::netUpdateBodyCollider() {
     using namespace nP;
     s16 s[2];
     volatile s32 sx, sy, sz;
-    Unk_02006d14_Vec3 *q = (Unk_02006d14_Vec3 *)&((PlayerActor *)this)->position;
+    VecFx32 *q = (VecFx32 *)&((PlayerActor *)this)->position;
     sx = q->x;
     sy = q->y;
     sz = q->z;
     if (((PlayerActor *)this)->bodyCollider.isHit != 0 && ((PlayerActor *)this)->bodyCollider.hitTargetKind == 0x15) {
         u32 n = ((PlayerActor *)this)->bodyCollider.hitTargetIndex;
         if (_ZN11CommManager11isLocalSlotEj(gCommManager, n) && PlayerActor_IsInAction(2, 4)) {
-            Unk_02006d14_Vec3 v;
+            VecFx32 v;
             if (PlayerActor_GetSlotPosXZ(s, &v.x, &v.z, -1, ((PlayerActor *)this)->sessionSlot)) {
-                Unk_02006d14_Vec3 v2;
-                Unk_02006d14_Vec3 *p = PlayerActor_GetBodyPos(n);
-                Unk_02006d14_Vec3 *q2 = (Unk_02006d14_Vec3 *)&((PlayerActor *)this)->position;
+                VecFx32 v2;
+                VecFx32 *p = PlayerActor_GetBodyPos(n);
+                VecFx32 *q2 = (VecFx32 *)&((PlayerActor *)this)->position;
                 v2 = *q2;
                 s32 a = Math_Atan2(p->x - v2.x, p->z - v2.z);
                 s[1] = Math_Atan2(v.x - v2.x, v.z - v2.z);
@@ -4511,14 +4501,14 @@ void PlayerActor::netUpdateBodyCollider() {
                     s32 d1 = Vec_DistXZ(&v2, p);
                     s32 d2 = Vec_DistXZ(&v2, &v);
                     if (d1 <= d2) {
-                        Unk_02006d14_Vec3 out;
+                        VecFx32 out;
                         if (((PlayerActor *)this)->sessionSlot >= (s32)n) {
                             s[1] = s[1] + 0x4000;
                         } else {
                             s[1] = s[1] - 0x4000;
                         }
                         PlayerActor_OffsetByAngle(&out, ((PlayerActor *)this), &v2, &s[1], (u32)&data_020d5e40);
-                        Unk_02006d14_Vec3 *q3 = (Unk_02006d14_Vec3 *)&((PlayerActor *)this)->position;
+                        VecFx32 *q3 = (VecFx32 *)&((PlayerActor *)this)->position;
                         *q3 = out;
                     }
                 }
@@ -4526,7 +4516,7 @@ void PlayerActor::netUpdateBodyCollider() {
         }
     }
     _ZN11PlayerActor18updateBodyColliderEv(((PlayerActor *)this));
-    q = (Unk_02006d14_Vec3 *)&((PlayerActor *)this)->position;
+    q = (VecFx32 *)&((PlayerActor *)this)->position;
     q->x = sx;
     q->y = sy;
     q->z = sz;
@@ -4784,7 +4774,7 @@ BOOL PlayerActor::doCreate() {
     _ZN11PlayerActor13setActionFlagEj(this, 1);
     BOOL b = (gFieldSceneKind == 0);
     if (b) _ZN11PlayerActor13setActionFlagEj(this, 0);
-    Unk_0200dde0_Vec3 *p = (Unk_0200dde0_Vec3 *)&((PlayerActor *)this)->position;
+    VecFx32 *p = (VecFx32 *)&((PlayerActor *)this)->position;
     ((PlayerActor *)this)->bodyPos.x = p->x;
     ((PlayerActor *)this)->bodyPos.y = p->y;
     ((PlayerActor *)this)->bodyPos.z = p->z;
@@ -5352,17 +5342,17 @@ BOOL PlayerActor::walkFollowNet() {
 void PlayerActor::walkMove() {
     using namespace nM;
     s32 v, c, r4;
-    Unk_020d6df4_Vec out;
+    VecFx32 out;
     s16 sx;
     v = ((PlayerActor *)this)->speed;
-    Unk_020d6df4_Vec old;
-    Unk_020d6df4_Vec *pp = (Unk_020d6df4_Vec *)&((PlayerActor *)this)->position;
+    VecFx32 old;
+    VecFx32 *pp = (VecFx32 *)&((PlayerActor *)this)->position;
     old.x = pp->x;
     old.y = pp->y;
     old.z = pp->z;
     BOOL r6 = Field_TryPushSnowball(&out, &sx, &c, ((PlayerActor *)this)->inputMagnitude, ((PlayerActor *)this)->inputAngle);
     if (r6) {
-        pp = (Unk_020d6df4_Vec *)&((PlayerActor *)this)->position;
+        pp = (VecFx32 *)&((PlayerActor *)this)->position;
         pp->x = out.x;
         pp->y = out.y;
         pp->z = out.z;
@@ -5485,7 +5475,7 @@ void Unk_0200c288::initSkidTurn(s16 a) {
 void Unk_02007694::setupSkidTurn(PlayerActionRequest *item) {
     using namespace nL;
     s16 v = *(s16 *)&item->unk_0c_c2fc;
-    Unk_0200bff8_Vec vec;
+    VecFx32 vec;
     Unk_0200c288 *p = &((Unk_02007694 *)this)->actionWork;
     _ZN11PlayerActor9startAnimEijt(this, 4, 3, 0);
     p->initSkidTurn(v);
@@ -5673,7 +5663,7 @@ void Unk_02007694::changeClothesEffects() {
         Effect_Create(0x22, &((Unk_02007694 *)this)->position[0], 0, 0);
     } else if (_ZN13AnimFrameCtrl14hasPassedFrameEi(&((Unk_02007694 *)this)->bodyAnimCtrl[0], 3)) {
         s16 x = ((Unk_02007694 *)this)->rotY;
-        Unk_0200bff8_Vec v;
+        VecFx32 v;
         s16 h;
         v = ((Unk_02007694 *)this)->footPosB;
         v.z += 0x266;
@@ -5807,15 +5797,15 @@ void PlayerActor::act10FaceTalkTarget() {
     s16 res;
     s16 h;
     Unk_0200bc78_Vec d;
-    Unk_02006d14_Vec *pv;
+    VecFx32Ctor *pv;
     s16 *pr;
     o = (Character *)TalkRequest_GetTalkTarget();
     pr = 0;
     if (_ZN11PlayerActor14testActionFlagEj(this, 0xe)) o = 0;
     if (o != 0) {
-        Unk_02006d14_Vec *ov;
-        pv = (Unk_02006d14_Vec *)&((PlayerActor *)this)->position;
-        ov = (Unk_02006d14_Vec *)o->getInteractionPos();
+        VecFx32Ctor *ov;
+        pv = (VecFx32Ctor *)&((PlayerActor *)this)->position;
+        ov = (VecFx32Ctor *)o->getInteractionPos();
         func_0200bc78_sub(&d, ov, pv);
         res = Math_Atan2(d.x, d.z);
         pr = &res;
@@ -6157,7 +6147,7 @@ void PlayerActor::pickUpReachWaitAnswer() {
     } else {
         if (a >= 0) {
             Unk_0200b750_Pair pr(b, c);
-            _ZN11PlayerActor15requestPickUpAtEP16Unk_0200b144_Posihis(this, pr, a, 0, 6, -1);
+            _ZN11PlayerActor15requestPickUpAtEP4Vec2ihis(this, pr, a, 0, 6, -1);
         } else if (d == 0) {
             if (((PlayerActor *)this)->fieldAnswer == 2) {
                 p->b4 = 2;
@@ -6171,7 +6161,7 @@ void PlayerActor::pickUpReachWaitAnswer() {
 
 void PlayerActor::mainPickUpReach(PlayerActionRequest* item, u32 old) {
     using namespace nJ;
-    Unk_0200b144_Pos p;
+    Vec2 p;
     if (_ZN11CommManager11isLocalSlotEj(gCommManager, ((PlayerActor *)this)->sessionSlot)) {
         _ZN11PlayerActor21pickUpReachWaitAnswerEv(this);
         _ZN11PlayerActor18updateBodyColliderEv(this);
@@ -6179,7 +6169,7 @@ void PlayerActor::mainPickUpReach(PlayerActionRequest* item, u32 old) {
     } else {
         _ZN11PlayerActor11advanceAnimEv(this);
         Unk_02006d14_Sub7d0* q = (Unk_02006d14_Sub7d0 *)((PlayerActor *)this)->actionWorkRaw;
-        Unk_0200b144_Pos t = { q->unk_04.b.unk_05, q->unk_04.b.unk_06 };
+        Vec2 t = { q->unk_04.b.unk_05, q->unk_04.b.unk_06 };
         p = t;
         _ZN11PlayerActor15netSyncNearUnitEPi(this, &p);
         _ZN11PlayerActor18updateBodyColliderEv(this);
@@ -6189,7 +6179,7 @@ void PlayerActor::mainPickUpReach(PlayerActionRequest* item, u32 old) {
 }
 
 namespace nJ {
-extern "C" void PlayerActor_SetArgsPickUp(PlayerPickUpArgs* out, Unk_0200b144_Pos* pos, s32 a, s32 b, u8 c) {
+extern "C" void PlayerActor_SetArgsPickUp(PlayerPickUpArgs* out, Vec2* pos, s32 a, s32 b, u8 c) {
     out->unitX = pos->x;
     out->unitZ = pos->y;
     out->ftrActorIndex = a;
@@ -6198,10 +6188,10 @@ extern "C" void PlayerActor_SetArgsPickUp(PlayerPickUpArgs* out, Unk_0200b144_Po
 }
 }
 
-s32 PlayerActor::requestPickUpAt(Unk_0200b144_Pos* pos, s32 a, u8 b, s32 c, s16 d) {
+s32 PlayerActor::requestPickUpAt(Vec2* pos, s32 a, u8 b, s32 c, s16 d) {
     using namespace nJ;
     u32 obj[7];
-    Unk_0200b144_Pos p;
+    Vec2 p;
     s32 r;
     _ZN19PlayerActionRequestC1Ev(obj);
     _ZN19PlayerActionRequest6assignEiis(obj, 0x19, c, d);
@@ -6213,10 +6203,10 @@ s32 PlayerActor::requestPickUpAt(Unk_0200b144_Pos* pos, s32 a, u8 b, s32 c, s16 
     return r;
 }
 
-s32 PlayerActor::requestPickUpWithItem(Unk_0200b144_Pos* pos, u16 a, u8 b, s32 c, s16 d) {
+s32 PlayerActor::requestPickUpWithItem(Vec2* pos, u16 a, u8 b, s32 c, s16 d) {
     using namespace nJ;
     u32 obj[7];
-    Unk_0200b144_Pos p;
+    Vec2 p;
     s32 r;
     _ZN19PlayerActionRequestC1Ev(obj);
     _ZN19PlayerActionRequest6assignEiis(obj, 0x19, c, d);
@@ -6229,7 +6219,7 @@ s32 PlayerActor::requestPickUpWithItem(Unk_0200b144_Pos* pos, u16 a, u8 b, s32 c
 }
 
 namespace nJ {
-extern "C" void PlayerActor_NetWritePickUp(PlayerNetPickUpArgs* dst, Unk_0200b144_Pos* pos, s8 a, u16 b, u8 c) {
+extern "C" void PlayerActor_NetWritePickUp(PlayerNetPickUpArgs* dst, Vec2* pos, s8 a, u16 b, u8 c) {
     dst->unitX = pos->x;
     dst->unitZ = pos->y;
     dst->ftrActorIndex = a;
@@ -6239,7 +6229,7 @@ extern "C" void PlayerActor_NetWritePickUp(PlayerNetPickUpArgs* dst, Unk_0200b14
 }
 
 namespace nJ {
-extern "C" void PlayerActor_NetReadPickUp(PlayerNetPickUpArgs* src, Unk_0200b144_Pos* pos, s8* a, u16* b, u8* c) {
+extern "C" void PlayerActor_NetReadPickUp(PlayerNetPickUpArgs* src, Vec2* pos, s8* a, u16* b, u8* c) {
     pos->x = src->unitX;
     pos->y = src->unitZ;
     *a = src->ftrActorIndex;
@@ -6276,7 +6266,7 @@ void PlayerActor::setupPickUp(PlayerActionRequest* item, u32 old) {
             if (q != NULL) {
                 if (Unk_0200add8_R1(&((PlayerActor *)this)->actionItem, 0x137b, 0x137b)) {
                     if (_ZN10PlayerData8testFlagEj(q, 0x28) == 0) {
-                        Unk_0200b144_Pos p;
+                        Vec2 p;
                         _ZN10PlayerData7setFlagEj(q, 0x28);
                         p.x = x;
                         p.y = y;
@@ -6285,7 +6275,7 @@ void PlayerActor::setupPickUp(PlayerActionRequest* item, u32 old) {
                     }
                 } else if (((PlayerActor *)this)->actionItem >= 0x136a && ((PlayerActor *)this)->actionItem <= 0x136a) {
                     if (_ZN10PlayerData8testFlagEj(q, 0x27) == 0) {
-                        Unk_0200b144_Pos p;
+                        Vec2 p;
                         _ZN10PlayerData7setFlagEj(q, 0x27);
                         p.x = x;
                         p.y = y;
@@ -6361,19 +6351,19 @@ void PlayerActor::setupPickUp(PlayerActionRequest* item, u32 old) {
         b20 = 0;
     }
     if (b20) {
-        Unk_0200b144_Pos p;
+        Vec2 p;
         p.x = x;
         p.y = y;
         PendingUnit_CommitAt(&p, 0);
     } else {
-        Unk_0200b144_Pos p;
+        Vec2 p;
         p.x = x;
         p.y = y;
         PendingUnit_ApplyAt(&p, 0);
     }
     {
         Unk_02006d14_Sub7d0* s = (Unk_02006d14_Sub7d0 *)((PlayerActor *)this)->actionWorkRaw;
-        Unk_0200b144_Pos p;
+        Vec2 p;
         s->storeStep = 0;
         s->unk_04.s = z;
         s->pickUnitX = x;
@@ -6396,11 +6386,11 @@ void PlayerActor::setupPickUp(PlayerActionRequest* item, u32 old) {
 
 void PlayerActor::netPickUp(s16 old) {
     using namespace nJ;
-    Unk_0200b144_Pos p;
+    Vec2 p;
     s8 a;
     u8 b;
     u16 c;
-    Unk_0200b144_Pos q;
+    Vec2 q;
     if (((PlayerActor *)this)->netPickUpDelay != 0) {
         ((PlayerActor *)this)->netPickUpDelay = ((PlayerActor *)this)->netPickUpDelay + 1;
     } else if (((PlayerActor *)this)->action == 0) {
@@ -7054,7 +7044,7 @@ void PlayerActor::act32UpdateSpeed() {
     s16 ang[3];
     s32 dist;
     Unk_02009a78_Locals L;
-    Unk_02009a78_Vec* pv = (Unk_02009a78_Vec *)&((PlayerActor *)this)->position;
+    VecFx32* pv = (VecFx32 *)&((PlayerActor *)this)->position;
     L.cur = *pv;
     ang[2] = ((PlayerActor *)this)->rotY;
     if (_ZN11CommManager11isLocalSlotEj(gCommManager, ((PlayerActor *)this)->sessionSlot)) {
@@ -7357,13 +7347,13 @@ void PlayerActor::mainChangeHeldItem() {
     changeHeldItemUpdate();
 }
 
-void Unk_0200944c::setWalkToArgs(Unk_02006d14_Vec v, s32 a) {
+void Unk_0200944c::setWalkToArgs(VecFx32Ctor v, s32 a) {
     using namespace nG;
     targetPos = v;
     maxSpeed = a;
 }
 
-BOOL PlayerActor::requestWalkTo(Unk_02006d14_Vec *v, u32 a, u32 b, s16 c) {
+BOOL PlayerActor::requestWalkTo(VecFx32Ctor *v, u32 a, u32 b, s16 c) {
     using namespace nG;
     Unk_020093f4_Msg m;
     BOOL r;
@@ -7376,7 +7366,7 @@ BOOL PlayerActor::requestWalkTo(Unk_02006d14_Vec *v, u32 a, u32 b, s16 c) {
     return r;
 }
 
-void Unk_020093d4::initWalkTo(Unk_02006d14_Vec v, s32 a, s32 b) {
+void Unk_020093d4::initWalkTo(VecFx32Ctor v, s32 a, s32 b) {
     using namespace nG;
     targetPos = v;
     walkSpeed = 0;
@@ -7386,7 +7376,7 @@ void Unk_020093d4::initWalkTo(Unk_02006d14_Vec v, s32 a, s32 b) {
 
 void PlayerActor::setupWalkTo(PlayerActionRequest *item, u32 old) {
     using namespace nG;
-    Unk_02006d14_Vec *p = (Unk_02006d14_Vec *)&((PlayerActionRequest *)item)->unk_0c_b[0];
+    VecFx32Ctor *p = (VecFx32Ctor *)&((PlayerActionRequest *)item)->unk_0c_b[0];
     Unk_020092c8_Loc loc;
     s32 r6;
     _ZN11PlayerActor9startAnimEijt(this, 1, 3, 0);
@@ -7422,9 +7412,9 @@ s32 PlayerActor::walkToUpdateSpeed() {
     s32 *r6 = &p->wc;
     s32 sp0 = p->w10;
     s32 r7 = 0;
-    Unk_02006d14_Vec d;
-    Unk_02006d14_Vec *pv = (Unk_02006d14_Vec *)&((PlayerActor *)this)->position;
-    Unk_02006d14_Vec saved = *pv;
+    VecFx32Ctor d;
+    VecFx32Ctor *pv = (VecFx32Ctor *)&((PlayerActor *)this)->position;
+    VecFx32Ctor saved = *pv;
     s32 t;
     s32 ang;
     s16 h;
@@ -7446,7 +7436,7 @@ s32 PlayerActor::walkToUpdateSpeed() {
                 r7 = 1;
             } else {
                 *r6 = Vec_DistXZ(&((PlayerActor *)this)->position, &saved);
-                Unk_02006d14_Vec *pw = (Unk_02006d14_Vec *)&((PlayerActor *)this)->position;
+                VecFx32Ctor *pw = (VecFx32Ctor *)&((PlayerActor *)this)->position;
                 *pw = saved;
             }
         } else {
@@ -7635,8 +7625,8 @@ BOOL PlayerActor::netAct76(s16 v) {
 void PlayerActor::mainAct76() {
     using namespace nF;
     _ZN11PlayerActor11advanceAnimEv(this);
-    Unk_02008074_Vec *pv = (Unk_02008074_Vec *)&drawPos;
-    volatile Unk_02008074_Vec v;
+    VecFx32 *pv = (VecFx32 *)&drawPos;
+    volatile VecFx32 v;
     v.x = pv->x;
     v.y = pv->y;
     v.z = pv->z;
@@ -7968,7 +7958,7 @@ void PlayerActor::setupHoldUpItem() {
     using namespace nF;
     s32 t;
     netData.writeU16(actionItem);
-    Unk_02008074_Vec v;
+    VecFx32 v;
     PlayerActor_CalcHeldUpItemPos(&v, this, 0);
     shownItemPosX = v.x;
     shownItemPosY = v.y;
@@ -7990,7 +7980,7 @@ void PlayerActor::netHoldUpItem(void *arg) {
 
 void Unk_02007694::holdUpItemUpdate() {
     using namespace nE;
-    Unk_02007ebc_Vec v;
+    VecFx32 v;
     _ZN11PlayerActor11advanceAnimEv(this);
     s32 n = ((u32)((Unk_02007694 *)this)->bodyAnimFrame << 4) >> 16;
     s32 t = 0x1000;
@@ -8017,7 +8007,7 @@ void Unk_02007694::holdUpItemUpdate() {
 }
 
 namespace nE {
-extern "C" void PlayerActor_CalcHeldUpItemPos(Unk_02007ebc_Vec *out, Unk_02007694 *obj, s32 n) {
+extern "C" void PlayerActor_CalcHeldUpItemPos(VecFx32 *out, Unk_02007694 *obj, s32 n) {
     Mtx43 m = obj->itemHandMtx;
     s32 tx = m.m[9];
     s32 ty = m.m[10];
@@ -8026,8 +8016,8 @@ extern "C" void PlayerActor_CalcHeldUpItemPos(Unk_02007ebc_Vec *out, Unk_0200769
     m.m[10] = 0;
     m.m[9] = 0;
     Mtx43 m2 = m;
-    Unk_02007ebc_Vec in;
-    Unk_02007ebc_Vec res;
+    VecFx32 in;
+    VecFx32 res;
     in.x = 0x320;
     in.z = 0;
     if (obj->animId == 0x7e) {
@@ -8043,7 +8033,7 @@ extern "C" void PlayerActor_CalcHeldUpItemPos(Unk_02007ebc_Vec *out, Unk_0200769
     tx += res.x;
     ty += res.y;
     tz += res.z;
-    Unk_02007ebc_Vec fin = {tx, ty, tz};
+    VecFx32 fin = {tx, ty, tz};
     WorldCurve_FromCurved(out, &fin);
 }
 }
@@ -8449,15 +8439,15 @@ void Unk_02005e7c::setShadowForAction(u32 i) {
 
 void PlayerActor::doExecute() {
     using namespace nB;
-    Unk_02005294_Vec3 v;
+    VecFx32 v;
     u32 flags = ((PlayerActor *)this)->actorFlags;
     BOOL f4 = (flags & 4) != 0;
     if (f4) {
         BOOL f2 = (flags & 2) != 0;
         if (f2) {
-            Unk_02005294_Vec3 *p = (Unk_02005294_Vec3 *)&((PlayerActor *)this)->position;
+            VecFx32 *p = (VecFx32 *)&((PlayerActor *)this)->position;
             v = *p;
-            *(Unk_02005294_Vec3 *)&((PlayerActor *)this)->footPosA = *(Unk_02005294_Vec3 *)&((PlayerActor *)this)->footPosB = *(Unk_02005294_Vec3 *)&((PlayerActor *)this)->headTopPos = *(Unk_02005294_Vec3 *)&((PlayerActor *)this)->bodyPos = *p;
+            *(VecFx32 *)&((PlayerActor *)this)->footPosA = *(VecFx32 *)&((PlayerActor *)this)->footPosB = *(VecFx32 *)&((PlayerActor *)this)->headTopPos = *(VecFx32 *)&((PlayerActor *)this)->bodyPos = *p;
             WorldCurve_ToCurved(&v, &v);
             ((PlayerActor *)this)->toolHandMtx.m[9] = ((PlayerActor *)this)->itemHandMtx.m[9] = ((PlayerActor *)this)->heldItemJointMtx.m[9] = ((PlayerActor *)this)->heldItemJointMtx2.m[9] = v.x;
             ((PlayerActor *)this)->toolHandMtx.m[10] = ((PlayerActor *)this)->itemHandMtx.m[10] = ((PlayerActor *)this)->heldItemJointMtx.m[10] = ((PlayerActor *)this)->heldItemJointMtx2.m[10] = v.y;
@@ -8550,9 +8540,9 @@ void PlayerActor::doExecute() {
             ((PlayerActor *)this)->sePosZ = ((PlayerActor *)this)->position.z;
         }
         if (_ZN11PlayerActor14testActionFlagEj(this, 0x19)) {
-            _ZN12SndSeEmitter18callUpdateRelativeEP16Unk_02003a6c_Vec(&((PlayerActor *)this)->seEmitterLocal, &((PlayerActor *)this)->sePosX);
+            _ZN12SndSeEmitter18callUpdateRelativeEP7VecFx32(&((PlayerActor *)this)->seEmitterLocal, &((PlayerActor *)this)->sePosX);
         } else {
-            _ZN12SndSeEmitter21callUpdateRelativeAltEP16Unk_02003a6c_Vec(&((PlayerActor *)this)->seEmitterRemote, &((PlayerActor *)this)->sePosX);
+            _ZN12SndSeEmitter21callUpdateRelativeAltEP7VecFx32(&((PlayerActor *)this)->seEmitterRemote, &((PlayerActor *)this)->sePosX);
         }
     }
     if (((PlayerActor *)this)->prevAction != ((PlayerActor *)this)->action) {
@@ -8577,11 +8567,11 @@ extern "C" void PlayerActor_JointCbPost(NNSG3dRS *p) {
     s32 *pm;
     s32 m2[9];
     s32 m1[9];
-    Unk_02005294_Vec3 v1;
+    VecFx32 v1;
     s32 m3[9];
     Mtx43 c;
-    Unk_02005294_Vec3 t3;
-    Unk_02005294_Vec3 v2;
+    VecFx32 t3;
+    VecFx32 v2;
     PlayerActor *o;
     PlayerActor *r6;
     JointCb_UseRestTranslation(p, 0);
@@ -8605,7 +8595,7 @@ extern "C" void PlayerActor_JointCbPost(NNSG3dRS *p) {
             if ((u32)(r6->animId - 0x82) <= 1) {
                 NNSG3dJntAnmResult *r = p->pJntAnmResult;
                 pm = (s32 *)&r->rot;
-                Unk_02005294_Vec3 *pv = (Unk_02005294_Vec3 *)&r->trans;
+                VecFx32 *pv = (VecFx32 *)&r->trans;
                 v1 = *pv;
                 v2 = *pv;
                 s32 ang = WorldCurve_Apply(&v1, &v2);
@@ -8622,7 +8612,7 @@ extern "C" void PlayerActor_JointCbPost(NNSG3dRS *p) {
             t3.x = c.m[9];
             t3.y = _ZN11PlayerActor15getJointGroundYEi(r6, c.m[10]);
             t3.z = c.m[11];
-            WorldCurve_FromCurved((Unk_02005294_Vec3 *)&r6->bodyPos, &t3);
+            WorldCurve_FromCurved((VecFx32 *)&r6->bodyPos, &t3);
         }
     }
     p->cbVecFunc[6] = (void *)PlayerActor_JointCbStart;
@@ -8639,8 +8629,8 @@ extern "C" void PlayerActor_JointCbStart(NNSG3dRS *p) {
 
 void PlayerActor::drawNotReady() {
     using namespace nB;
-    Unk_02005294_Vec3 *p = (Unk_02005294_Vec3 *)&((PlayerActor *)this)->position;
-    *(Unk_02005294_Vec3 *)&((PlayerActor *)this)->bodyPos = *p;
+    VecFx32 *p = (VecFx32 *)&((PlayerActor *)this)->position;
+    *(VecFx32 *)&((PlayerActor *)this)->bodyPos = *p;
 }
 
 s32 PlayerActor::getJointGroundY(s32 x) {

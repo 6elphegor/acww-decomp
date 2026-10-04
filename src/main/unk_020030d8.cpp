@@ -1,4 +1,5 @@
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "snd/TvSound.h"
 #include "gfx/SpriteAnim.h"
 #include "ui/UiWidget.h"
@@ -90,13 +91,8 @@ struct HudLinkIcon {
 extern SpriteAnimSeq data_020d467c[];
 
 
-struct Unk_02003878_Vec {
-    s32 x;
-    s32 y;
-    s32 z;
-};
 extern s32 gCamera;
-extern Unk_02003878_Vec gCameraEye;
+extern VecFx32 gCameraEye;
 
 // bss, in the order __sinit constructs them
 HudLinkIcon sHudLinkIcon;
@@ -110,7 +106,7 @@ void TvSound::callRelease() { release(); }
 
 void TvSound::callUpdate(s32 a, void *b) {
     if (b != 0) {
-        Unk_02003878_Vec v = *(Unk_02003878_Vec *)b;
+        VecFx32 v = *(VecFx32 *)b;
         if (gCamera != 0) {
             v.x = v.x - gCameraEye.x;
             v.y = v.y - gCameraEye.y;

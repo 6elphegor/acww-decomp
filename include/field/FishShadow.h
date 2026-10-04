@@ -2,18 +2,10 @@
 #define FIELD_FISHSHADOW_H
 
 #include "types.h"
+#include "gfx/VecFx32.h"
 
 class FishBobber;
 
-// Fish-code block pair (spawnBlock) and s32 vector with an empty constructor (A01 vector-shape candidates).
-struct Unk_ov003_02220128_Pos {
-    s32 a, b;
-};
-
-struct Unk_ov003_02220a2c_V3 {
-    s32 x, y, z;
-    Unk_ov003_02220a2c_V3() {}
-};
 
 // Per-shadow croak state (frogs: FishCroak_Init / _Update / _Clear).
 struct FishCroak {
@@ -35,7 +27,7 @@ struct FishShadow {
     /* 0x07f */ u8 hasFin;
     /* 0x080 */ s32 state;
     /* 0x084 */ u8 cachedModel[0x9c];    // CachedModel
-    /* 0x120 */ Unk_ov003_02220a2c_V3 position;
+    /* 0x120 */ VecFx32Ctor position;
     /* 0x12c */ s32 spawnPos, spawnPosY, spawnPosZ;
     /* 0x138 */ s16 rotY;
     /* 0x13a */ u8 pad_13a[2];
@@ -64,20 +56,20 @@ struct FishShadow {
     /* 0x201 */ u8 appearCount;
     /* 0x202 */ u8 pad_202[2];
     /* 0x204 */ s32 effectHandle;
-    /* 0x208 */ Unk_ov003_02220128_Pos spawnBlock;
+    /* 0x208 */ Vec2 spawnBlock;
     /* 0x210 */ u8 turnDir;
     /* 0x211 */ u8 slotIndex;
     /* 0x212 */ u16 respawnTimer;
     /* 0x214 */ u8 scareDelay;
     /* 0x215 */ u8 pad_215[3];
-    /* 0x218 */ Unk_ov003_02220a2c_V3 prevPosition;
+    /* 0x218 */ VecFx32Ctor prevPosition;
     /* 0x224 */ u8 biteState;
     /* 0x225 */ u8 biteStep;
     /* 0x226 */ u8 pad_226;
     /* 0x227 */ s8 playerIdx;
     /* 0x228 */ u8 pad_228[4];
     /* 0x22c */ FishBobber *bobber;
-    /* 0x230 */ Unk_ov003_02220a2c_V3 hookPos;
+    /* 0x230 */ VecFx32Ctor hookPos;
     /* 0x23c */ u8 aiMode;
     /* 0x23d */ u8 biteStepTimer;
     /* 0x23e */ u8 pullDir;

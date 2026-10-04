@@ -1,6 +1,6 @@
 // mwcc-flags: -str reuse
 #include "types.h"
-#include "game/Unk_ov046_0225a11c_Vec.h"
+#include "gfx/VecFx32.h"
 #include "talk/TalkStartMsg.h"
 #include "talk/TalkWindowState.h"
 #include "npc/NpcAnimCtrl.h"
@@ -37,10 +37,6 @@ typedef void (SpNpcCelesteTalk::*SpNpcCelesteTalkFn)();
 typedef void (SpNpcCelesteTalk::*SpNpcCelesteChoiceFn)(s32);
 
 
-struct Unk_ov046_02258e68_Vec {
-    s32 x, y, z;
-};
-
 
 
 extern "C" {
@@ -50,7 +46,7 @@ extern u8 gTouchPrevChanged;
 extern u16 gPad[];
 extern u16 data_020c6cc8;
 extern s32 data_020c6d1c;
-extern Unk_ov046_0225a11c_Vec gVec3Zero;
+extern VecFx32 gVec3Zero;
 
 s32 Random_GlobalBelow(u32 v);
 s32 Constellation_CountFreeSlots(void);
@@ -69,7 +65,7 @@ BOOL MenuCtrl_IsFinished(void);
 BOOL MenuCtrl_IsResultOk(void);
 const void *Choice_GetBmgName(u32 i);
 Actor *PlayerActor_GetActor(s32 n);
-s32 Vec_DistXZ(Unk_ov046_02258e68_Vec *a, Unk_ov046_02258e68_Vec *b);
+s32 Vec_DistXZ(VecFx32 *a, VecFx32 *b);
 void *Scene_GetTouchPicker();
 s32 TouchPickResult_GetTarget(void *a, void *b, void *c, s32 d);
 void Camera_LockFocusYaw();
@@ -93,7 +89,7 @@ void _ZN13NpcActionCtrl13requestActionEjiiissiitt(void *self, u32 a, u32 b, u32 
 void _ZN13NpcActionCtrl15requestPlayAnimEiijtt(void *self, s32 a, s32 b, u32 c, u16 d, u16 e);
 s32 _ZN13NpcActionCtrl9getActionEv(void *self);
 BOOL _ZN13NpcActionCtrl12isActionDoneEv(void *self);
-void _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(void *self, u8 a, s32 b, s32 c, Unk_ov046_0225a11c_Vec *v, s32 d, s32 e, u8 f);
+void _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(void *self, u8 a, s32 b, s32 c, VecFx32 *v, s32 d, s32 e, u8 f);
 }
 #define CommManager_isOnline _ZN11CommManager8isOnlineEv
 #define MsgString_appendString _ZN9MsgString12appendStringEPS_
@@ -104,7 +100,7 @@ void _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(void *self, u8 a, s32 b,
 #define NpcActionCtrl_requestPlayAnim _ZN13NpcActionCtrl15requestPlayAnimEiijtt
 #define NpcActionCtrl_getAction _ZN13NpcActionCtrl9getActionEv
 #define NpcActionCtrl_isActionDone _ZN13NpcActionCtrl12isActionDoneEv
-#define NpcLookAt_setTarget _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih
+#define NpcLookAt_setTarget _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih
 
 
 
@@ -113,7 +109,6 @@ void _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(void *self, u8 a, s32 b,
 
 
 
-struct Unk_020d77a4_Vec3;
 
 
 
@@ -1106,8 +1101,8 @@ void SpNpcCeleste::onInteractionEvent(u32 a, u8) {
 }
 
 BOOL SpNpcCeleste::isPlayerAtTelescope() {
-    Unk_ov046_02258e68_Vec v0;
-    Unk_ov046_02258e68_Vec v1;
+    VecFx32 v0;
+    VecFx32 v1;
     u32 out;
     u32 buf[3];
     BOOL result;

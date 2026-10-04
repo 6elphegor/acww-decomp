@@ -1,5 +1,6 @@
 // mwcc-flags: -str reuse
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "Unk_020d8c7c.h"
 #include "gfx/Unk_0203bd10_Dtcm.h"
 #include "actor/VillagerActor.h"
@@ -14,12 +15,9 @@
 #include "gfx/CameraSway.h"
 #include "gfx/DebugColor.h"
 
-typedef Unk_0203b350_V V3;
-typedef Unk_0203b350_V Unk_0203a148_Vec;
-typedef Unk_0203b350_V Unk_0203a9b8_Vec;
-typedef Unk_0203b350_V Unk_0203c0b0_Vec;
+typedef VecFx32 V3;
 
-struct FxVec3 : Unk_0203b350_V {
+struct FxVec3 : VecFx32 {
     FxVec3() {}
     ~FxVec3();
 };
@@ -95,7 +93,7 @@ extern MtxFx43 data_021f47e0;
 extern s32 sCameraSpanDepthScale;
 extern s32 sCameraFollowVillagerIdx;
 extern s16 data_02135f44[];
-extern Unk_0203a9b8_Vec gVec3Zero;
+extern VecFx32 gVec3Zero;
 extern SceneInfo *gCurSceneInfo;
 extern const CameraPoseGridRow sCameraPoseGrid[3];
 extern s32 data_020c8cb8;
@@ -279,9 +277,9 @@ BOOL Camera_SetModeDefault(void);
 MtxFx43 *Camera_GetViewMatrix(void);
 void Camera_StartBlend(void);
 void Camera_FinishBlend(void);
-s32 Camera_CalcPointSpan(Unk_0203a148_Vec *a, Unk_0203a148_Vec *b, Unk_0203a148_Vec *c, s32 *d);
-s32 Camera_CalcTriangleSpan(Unk_0203a148_Vec *a, Unk_0203a148_Vec *b, Unk_0203a148_Vec *c, Unk_0203a148_Vec *d, s32 *e);
-BOOL Camera_ProjectToScreen(s32 *x, s32 *y, Unk_0203a148_Vec *p);
+s32 Camera_CalcPointSpan(VecFx32 *a, VecFx32 *b, VecFx32 *c, s32 *d);
+s32 Camera_CalcTriangleSpan(VecFx32 *a, VecFx32 *b, VecFx32 *c, VecFx32 *d, s32 *e);
+BOOL Camera_ProjectToScreen(s32 *x, s32 *y, VecFx32 *p);
 BOOL Camera_IsBlending(void);
 void Camera_RestoreView(void);
 void Camera_PlaySe(Camera *o, s32 a);
@@ -295,13 +293,13 @@ s32 _ZN6Camera11getDistanceEv(Camera *o);
 s32 _ZN6Camera6getYawEv(Camera *o);
 s32 _ZN6Camera8getPitchEv(Camera *o);
 s32 _ZN6Camera11getBlendEndEv(Camera *o);
-void _ZN6Camera16setFocusPreset11EPhP14Unk_0203b350_V(Camera *o, CameraSetup *c, s32 a);
-void _ZN6Camera14setLookAtOrbitEP14Unk_0203b350_Viii(Camera *o, void *a, s32 b, s32 c, s32 d);
+void _ZN6Camera16setFocusPreset11EPhP7VecFx32(Camera *o, CameraSetup *c, s32 a);
+void _ZN6Camera14setLookAtOrbitEP7VecFx32iii(Camera *o, void *a, s32 b, s32 c, s32 d);
 void _ZN6Camera7popViewEv(Camera *o);
 void _ZN6Camera8pushViewEv(Camera *o);
 s32 _ZN6Camera7setModeEi(Camera *o, s32 a);
 void _ZN6Camera11updateBlendEv(Camera *o);
-void _ZN6Camera11dragFocusToEP14Unk_0203b350_V(Camera *o, void *a);
+void _ZN6Camera11dragFocusToEP7VecFx32(Camera *o, void *a);
 void _ZN6Camera8loadPoseEiP10CameraPose(Camera *o, s32 a, s32 b);
 void _ZN6Camera14setBlendPresetEi(Camera *o, s32 a);
 }
@@ -327,7 +325,7 @@ void Camera::loadPose(s32 i, CameraPose *out) {
 }
 
 void Camera::lerpPoses(s32 a, s32 b, s32 n) {
-    Unk_0203c0b0_Vec d, q;
+    VecFx32 d, q;
     d.x = sCameraPoseTable[b].x - sCameraPoseTable[a].x;
     d.y = sCameraPoseTable[b].y - sCameraPoseTable[a].y;
     d.z = sCameraPoseTable[b].z - sCameraPoseTable[a].z;
@@ -858,15 +856,15 @@ BOOL Camera::initModeDefault() {
 }
 
 void Camera::updateModeDefault() {
-    volatile Unk_0203a9b8_Vec cur;
+    volatile VecFx32 cur;
     cur.x = targetFocus.x;
     cur.y = targetFocus.y;
     cur.z = targetFocus.z;
-    volatile Unk_0203a9b8_Vec d;
+    volatile VecFx32 d;
     d.x = gVec3Zero.x;
     d.y = gVec3Zero.y;
     d.z = gVec3Zero.z;
-    Unk_0203a9b8_Vec *p = PlayerActor_GetBodyPos(4);
+    VecFx32 *p = PlayerActor_GetBodyPos(4);
     if (p) {
         d.x = p->x;
         d.y = p->y;
@@ -888,9 +886,9 @@ void Camera::updateModeDefault() {
             clampToRoomBounds((s32 *)&targetFocus.x);
         }
     } else {
-        dragFocusTo((Unk_0203a9b8_Vec *)&d);
+        dragFocusTo((VecFx32 *)&d);
     }
-    Unk_0203a9b8_Vec v;
+    VecFx32 v;
     R096_TAIL(v)
 }
 
@@ -937,13 +935,13 @@ void Camera::popView() {
 }
 
 BOOL Camera::initMode1() {
-    Unk_0203a9b8_Vec v;
+    VecFx32 v;
     if (viewPushed == 0) {
         Camera_GetLookAtPoint(&v, this);
         restoreFocus = v.x;
         restoreFocusY = v.y;
         restoreFocusZ = v.z;
-        Unk_0203a9b8_Vec *p = getEye();
+        VecFx32 *p = getEye();
         restoreEye = p->x;
         restoreEyeY = p->y;
         restoreEyeZ = p->z;
@@ -961,12 +959,12 @@ BOOL Camera::initMode1() {
 }
 
 void Camera::updateMode1() {
-    volatile Unk_0203a9b8_Vec d;
-    Unk_0203a9b8_Vec v, e, r, o, v2;
+    volatile VecFx32 d;
+    VecFx32 v, e, r, o, v2;
     d.x = gVec3Zero.x;
     d.y = gVec3Zero.y;
     d.z = gVec3Zero.z;
-    Unk_0203a9b8_Vec *p = PlayerActor_GetBodyPos(4);
+    VecFx32 *p = PlayerActor_GetBodyPos(4);
     if (p) {
         d.x = p->x;
         d.y = p->y;
@@ -975,7 +973,7 @@ void Camera::updateMode1() {
     if (viewPushed == 0) {
         updateBlend();
         Camera_GetLookAtPoint(&v, this);
-        Unk_0203a9b8_Vec *pp = getEye();
+        VecFx32 *pp = getEye();
         e.x = pp->x;
         e.y = pp->y;
         e.z = pp->z;
@@ -1030,7 +1028,7 @@ void Camera::updateModeFocus() {
     } else {
         FieldCamera_UpdateFocusZoom(this);
     }
-    Unk_0203a9b8_Vec v;
+    VecFx32 v;
     R096_TAIL(v)
 }
 
@@ -1046,11 +1044,11 @@ BOOL Camera::initMode3() {
 }
 
 void Camera::updateMode3() {
-    volatile Unk_0203a9b8_Vec d;
+    volatile VecFx32 d;
     d.x = gVec3Zero.x;
     d.y = gVec3Zero.y;
     d.z = gVec3Zero.z;
-    Unk_0203a9b8_Vec *p = PlayerActor_GetBodyPos(4);
+    VecFx32 *p = PlayerActor_GetBodyPos(4);
     if (p) {
         d.x = p->x;
         d.y = p->y;
@@ -1059,7 +1057,7 @@ void Camera::updateMode3() {
     targetFocus.x = d.x;
     targetFocus.y = d.y;
     targetFocus.z = d.z;
-    Unk_0203a9b8_Vec v;
+    VecFx32 v;
     R096_TAIL(v)
 }
 
@@ -1076,11 +1074,11 @@ BOOL Camera::initMode4() {
 }
 
 void Camera::updateMode4() {
-    volatile Unk_0203a9b8_Vec d;
+    volatile VecFx32 d;
     d.x = gVec3Zero.x;
     d.y = gVec3Zero.y;
     d.z = gVec3Zero.z;
-    Unk_0203a9b8_Vec *p = PlayerActor_GetBodyPos(4);
+    VecFx32 *p = PlayerActor_GetBodyPos(4);
     if (p) {
         d.x = p->x;
         d.y = p->y;
@@ -1089,7 +1087,7 @@ void Camera::updateMode4() {
     targetFocus.x = d.x;
     targetFocus.y = d.y;
     targetFocus.z = d.z;
-    Unk_0203a9b8_Vec v;
+    VecFx32 v;
     R096_TAIL(v)
 }
 
@@ -1101,12 +1099,12 @@ BOOL Camera::initModeTrackPair() {
 }
 
 void Camera::updateModeTrackPair() {
-    Unk_0203a9b8_Vec d;
+    VecFx32 d;
     d = gVec3Zero;
-    Unk_0203a9b8_Vec *p = PlayerActor_GetBodyPos(4);
+    VecFx32 *p = PlayerActor_GetBodyPos(4);
     void *q = PlayerActor_GetTrackTarget(4);
     if (p && q) {
-        Unk_0203a9b8_Vec t;
+        VecFx32 t;
         Vec_Sub(&t, p, q);
         s32 len = Vec_MagXZ(&t);
         s32 ang = Math_AngleXZ(p, q);
@@ -1117,7 +1115,7 @@ void Camera::updateModeTrackPair() {
         d.z += func_01ffcb0c(sc, data_02135f44[idx + 1]);
     }
     dragFocusTo(&d);
-    Unk_0203a9b8_Vec v;
+    VecFx32 v;
     R096_TAIL(v)
 }
 
@@ -1128,7 +1126,7 @@ BOOL Camera::initModeRestore() {
 }
 
 void Camera::updateModeRestore() {
-    Unk_0203a9b8_Vec v;
+    VecFx32 v;
     Camera_RestoreView();
     R096_TAIL(v)
 }
@@ -1142,20 +1140,20 @@ BOOL Camera::initModeShake() {
 }
 
 extern "C" void Camera_UpdateModeShake(Camera *o) {
-    Unk_0203a148_Vec v;
-    Unk_0203a148_Vec cam;
+    VecFx32 v;
+    VecFx32 cam;
     CameraShakeParam *r = (CameraShakeParam *)&o->modeParam;
     s32 sc;
     r->ang = r->ang + r->vel;
     Math_StepS16(&r->vel, 0x6000, 0x180);
     sc = func_01ffcb0c(data_02135f44[((u16)r->ang >> 4) * 2], o->modeParam);
-    _ZN6Camera11dragFocusToEP14Unk_0203b350_V(o, &o->savedFocus);
+    _ZN6Camera11dragFocusToEP7VecFx32(o, &o->savedFocus);
     Math_ApproachS32((s32 *)r, 0, 0x400, 0x80, 0x10);
     _ZN6Camera11updateBlendEv(o);
     Camera_GetLookAtPoint(&cam, o);
     s32 p = _ZN6Camera8getPitchEv(o);
     s32 q = _ZN6Camera6getYawEv(o);
-    _ZN6Camera14setLookAtOrbitEP14Unk_0203b350_Viii(o, &cam, p, q, _ZN6Camera11getDistanceEv(o));
+    _ZN6Camera14setLookAtOrbitEP7VecFx32iii(o, &cam, p, q, _ZN6Camera11getDistanceEv(o));
     v.x = 0;
     v.y = 0x1000;
     v.z = 0;
@@ -1173,12 +1171,12 @@ extern "C" BOOL Camera_InitMode19(Camera *o) {
 }
 
 extern "C" void Camera_UpdateMode19(Camera *o) {
-    Unk_0203a148_Vec v;
+    VecFx32 v;
     _ZN6Camera11updateBlendEv(o);
     Camera_GetLookAtPoint(&v, o);
     s32 p = _ZN6Camera8getPitchEv(o);
     s32 q = _ZN6Camera6getYawEv(o);
-    _ZN6Camera14setLookAtOrbitEP14Unk_0203b350_Viii(o, &v, p, q, _ZN6Camera11getDistanceEv(o));
+    _ZN6Camera14setLookAtOrbitEP7VecFx32iii(o, &v, p, q, _ZN6Camera11getDistanceEv(o));
 }
 
 extern "C" BOOL Camera_SetModeDefault(void) {
@@ -1196,9 +1194,9 @@ extern "C" void Camera_SetMode1(void) {
     _ZN6Camera7setModeEi(gCamera, 1);
 }
 
-extern "C" s32 Camera_CalcPointSpan(Unk_0203a148_Vec *a, Unk_0203a148_Vec *b, Unk_0203a148_Vec *c, s32 *d) {
+extern "C" s32 Camera_CalcPointSpan(VecFx32 *a, VecFx32 *b, VecFx32 *c, s32 *d) {
     s32 len;
-    Unk_0203a148_Vec sub, v2, t1, t2;
+    VecFx32 sub, v2, t1, t2;
     Vec_Sub(&sub, a, b);
     v2.x = sub.x;
     v2.y = sub.y;
@@ -1222,8 +1220,8 @@ extern "C" s32 Camera_CalcPointSpan(Unk_0203a148_Vec *a, Unk_0203a148_Vec *b, Un
     return len;
 }
 
-extern "C" s32 Camera_CalcTriangleSpan(Unk_0203a148_Vec *a, Unk_0203a148_Vec *b, Unk_0203a148_Vec *c, Unk_0203a148_Vec *d, s32 *e) {
-    Unk_0203a148_Vec lo, hi, diff, t1, t2;
+extern "C" s32 Camera_CalcTriangleSpan(VecFx32 *a, VecFx32 *b, VecFx32 *c, VecFx32 *d, s32 *e) {
+    VecFx32 lo, hi, diff, t1, t2;
     s32 r;
     lo.x = a->x;
     lo.y = a->y;
@@ -1273,7 +1271,7 @@ extern "C" s32 Camera_CalcTriangleSpan(Unk_0203a148_Vec *a, Unk_0203a148_Vec *b,
     return r;
 }
 
-extern "C" BOOL Camera_FocusOnPoint(Unk_0203a148_Vec *a) {
+extern "C" BOOL Camera_FocusOnPoint(VecFx32 *a) {
     if (gCamera->mode == 9) {
         return FALSE;
     }
@@ -1289,7 +1287,7 @@ extern "C" BOOL Camera_FocusOnPoint(Unk_0203a148_Vec *a) {
     return _ZN6Camera7setModeEi(gCamera, 2);
 }
 
-extern "C" void Camera_FocusOnPair(Unk_0203a148_Vec *a, Unk_0203a148_Vec *b) {
+extern "C" void Camera_FocusOnPair(VecFx32 *a, VecFx32 *b) {
     s32 r = Camera_CalcTriangleSpan(PlayerActor_GetBodyPos(4), a, b, NULL, NULL);
     if (r >= 0xb000) {
         Camera_SetModeDefault();
@@ -1326,21 +1324,21 @@ extern "C" void Camera_SetMode5(void) {
     _ZN6Camera7setModeEi(gCamera, 5);
 }
 
-extern "C" BOOL Camera_RetargetFocus(Unk_0203a148_Vec *v) {
+extern "C" BOOL Camera_RetargetFocus(VecFx32 *v) {
     if (gCamera->mode == 0x13) {
         gCamera->blendTime = 0;
         gCamera->blendDelay = 0;
         gCamera->blendEnd = 0x15000;
         return TRUE;
     }
-    Unk_0203a148_Vec *d = &gCamera->focusPointA;
+    VecFx32 *d = &gCamera->focusPointA;
     *d = *v;
     gCamera->blendTime = 0;
     gCamera->roomFocusSide = 3;
     return TRUE;
 }
 
-extern "C" BOOL Camera_IsBlockingFocusView(Unk_0203a148_Vec *v, s32 unused, s32 h) {
+extern "C" BOOL Camera_IsBlockingFocusView(VecFx32 *v, s32 unused, s32 h) {
     Camera *o = gCamera;
     if (o != NULL) {
         s32 t = o->mode;
@@ -1383,12 +1381,12 @@ extern "C" u8 Camera_GetBlendFramesLeft(void) {
 
 extern "C" void Camera_SaveView(void) {
     sCameraSavedSetup = *(CameraSetup *)&gCamera->target;
-    *(Unk_0203a148_Vec *)&sCameraSavedEye = *(Unk_0203a148_Vec *)&gCamera->eye;
+    *(VecFx32 *)&sCameraSavedEye = *(VecFx32 *)&gCamera->eye;
 }
 
 extern "C" void Camera_RestoreView(void) {
     *(CameraSetup *)&gCamera->target = sCameraSavedSetup;
-    *(Unk_0203a148_Vec *)&gCamera->eye = sCameraSavedEye;
+    *(VecFx32 *)&gCamera->eye = sCameraSavedEye;
 }
 
 extern "C" BOOL Camera_IsViewPushed(void) {
@@ -1417,13 +1415,13 @@ extern "C" void Camera_LockFocusYaw(void) {
 }
 
 extern "C" void Camera_SnapToFocus(s32 a) {
-    _ZN6Camera16setFocusPreset11EPhP14Unk_0203b350_V(gCamera, (CameraSetup *)&gCamera->target, a);
+    _ZN6Camera16setFocusPreset11EPhP7VecFx32(gCamera, (CameraSetup *)&gCamera->target, a);
     *(CameraSetup *)&gCamera->current = *(CameraSetup *)&gCamera->target;
-    Unk_0203a148_Vec v;
+    VecFx32 v;
     Camera_GetLookAtPoint(&v, gCamera);
     s32 p = _ZN6Camera8getPitchEv(gCamera);
     s32 q = _ZN6Camera6getYawEv(gCamera);
-    _ZN6Camera14setLookAtOrbitEP14Unk_0203b350_Viii(gCamera, &v, p, q, _ZN6Camera11getDistanceEv(gCamera));
+    _ZN6Camera14setLookAtOrbitEP7VecFx32iii(gCamera, &v, p, q, _ZN6Camera11getDistanceEv(gCamera));
 }
 
 extern "C" void Camera_MuteSe(void) {
@@ -1461,9 +1459,9 @@ extern "C" BOOL Camera_SetPresetCell(s32 a, s32 b) {
     return FALSE;
 }
 
-extern "C" BOOL Camera_ProjectToScreen(s32 *x, s32 *y, Unk_0203a148_Vec *p) {
+extern "C" BOOL Camera_ProjectToScreen(s32 *x, s32 *y, VecFx32 *p) {
     struct {
-        Unk_0203a148_Vec v;
+        VecFx32 v;
         MtxFx43 m;
     } l;
     if (gCamera != NULL) {
@@ -1483,8 +1481,8 @@ extern "C" BOOL Camera_ProjectToScreen(s32 *x, s32 *y, Unk_0203a148_Vec *p) {
 
 // ======== FUNCTIONS ========
 
-extern "C" BOOL Camera_ProjectCurvedToScreen(s32 *x, s32 *y, Unk_0203a148_Vec *p) {
-    Unk_0203a148_Vec v;
+extern "C" BOOL Camera_ProjectCurvedToScreen(s32 *x, s32 *y, VecFx32 *p) {
+    VecFx32 v;
     WorldCurve_Apply(&v, p);
     return Camera_ProjectToScreen(x, y, &v);
 }

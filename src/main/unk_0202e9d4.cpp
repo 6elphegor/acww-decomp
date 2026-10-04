@@ -1,4 +1,5 @@
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "game/Unk_0202f2ac_V3.h"
 #include "game/CollisionVec2.h"
 #include "game/Unk_0202f7b8_V3.h"
@@ -41,7 +42,7 @@ inline BOOL CollisionEdge::hasRoundEnds() { return TRUE; }
 
 
 
-BOOL CollisionCylinder::clipSegmentCaps(Unk_0202f660_V3 *out, Unk_0202f660_V3 *a) {
+BOOL CollisionCylinder::clipSegmentCaps(VecFx32 *out, VecFx32 *a) {
     s32 t1, t2;
     s32 y, z, y2, z2;
     struct { Unk_0202f7b8_V3 A, B, D, P1, P2; } l;
@@ -81,7 +82,7 @@ BOOL CollisionCylinder::clipSegmentCaps(Unk_0202f660_V3 *out, Unk_0202f660_V3 *a
     return FALSE;
 }
 
-BOOL CollisionCylinder::clipSegmentSideBounded(Unk_0202f660_V3 *out, Unk_0202f660_V3 *a) {
+BOOL CollisionCylinder::clipSegmentSideBounded(VecFx32 *out, VecFx32 *a) {
     s32 ymin, ymax, z;
     if (!containsXZ(a)) {
         struct { Unk_0202f7b8_V3 A, B, C, D; u32 pad[6]; } l;
@@ -140,37 +141,37 @@ BOOL CollisionCylinder::clipSegmentSideBounded(Unk_0202f660_V3 *out, Unk_0202f66
     return FALSE;
 }
 
-CollisionSegment::CollisionSegment(Unk_0202f660_V3 *a, Unk_0202f660_V3 *b) { set(a, b); }
+CollisionSegment::CollisionSegment(VecFx32 *a, VecFx32 *b) { set(a, b); }
 
 CollisionSegment::~CollisionSegment() {}
 
-s32 CollisionSegment::calcDir(Unk_0202f660_V3 *out) {
-    Unk_0202f660_V3 tmp;
+s32 CollisionSegment::calcDir(VecFx32 *out) {
+    VecFx32 tmp;
     Vec_Sub(&tmp, &end, &start);
     *out = tmp;
     return Vec_SafeNormalize(out);
 }
 
-s32 CollisionSegment::distanceTo(Unk_0202f660_V3 *pt) {
-    Unk_0202f660_V3 tmp;
+s32 CollisionSegment::distanceTo(VecFx32 *pt) {
+    VecFx32 tmp;
     projectPoint(&tmp, pt);
     return Vec_Distance(&tmp, pt);
 }
 
-void CollisionSegment::set(Unk_0202f660_V3 *a, Unk_0202f660_V3 *b) {
+void CollisionSegment::set(VecFx32 *a, VecFx32 *b) {
     start = *a;
     end = *b;
     calcDir(&dir);
 }
 
-s32 CollisionSegment::closestPoint(Unk_0202f660_V3 *out, Unk_0202f660_V3 *pt) {
-    Unk_0202f660_V3 tmp;
+s32 CollisionSegment::closestPoint(VecFx32 *out, VecFx32 *pt) {
+    VecFx32 tmp;
     projectPoint(&tmp, pt);
     *out = tmp;
     return Vec_Distance(&tmp, pt);
 }
 
-void CollisionSegment::projectPoint(Unk_0202f660_V3 *out, Unk_0202f660_V3 *pt) {
+void CollisionSegment::projectPoint(VecFx32 *out, VecFx32 *pt) {
     s32 a = VEC_DotProduct(&dir, pt);
     s32 t = -(VEC_DotProduct(&dir, &start) - a);
     s32 y, z;
@@ -184,7 +185,7 @@ void CollisionSegment::projectPoint(Unk_0202f660_V3 *out, Unk_0202f660_V3 *pt) {
     out->z = z;
 }
 
-BOOL CollisionSegment::isBetweenEnds(Unk_0202f660_V3 *pt) {
+BOOL CollisionSegment::isBetweenEnds(VecFx32 *pt) {
     s32 a = VEC_DotProduct(&dir, &start);
     s32 b = VEC_DotProduct(&dir, pt);
     s32 c = VEC_DotProduct(&dir, &end);
@@ -207,7 +208,7 @@ CollisionTriangle::CollisionTriangle() {
 
 CollisionTriangle::~CollisionTriangle() {}
 
-CollisionTriangle::CollisionTriangle(Unk_0202f660_V3 *a, Unk_0202f660_V3 *b, Unk_0202f660_V3 *c, Unk_0202f660_V3 *d) { set((Unk_0202f2ac_V3 *)a, (Unk_0202f2ac_V3 *)b, (Unk_0202f2ac_V3 *)c, (Unk_0202f2ac_V3 *)d); }
+CollisionTriangle::CollisionTriangle(VecFx32 *a, VecFx32 *b, VecFx32 *c, VecFx32 *d) { set((Unk_0202f2ac_V3 *)a, (Unk_0202f2ac_V3 *)b, (Unk_0202f2ac_V3 *)c, (Unk_0202f2ac_V3 *)d); }
 
 BOOL CollisionTriangle::collide(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, s32 c) {
     BOOL r = FALSE;
@@ -267,13 +268,13 @@ BOOL CollisionTriangle::pushOutEdges(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, s32
     }
     result = FALSE;
     if (e < c) {
-        CollisionSegment t0((Unk_0202f660_V3 *)&vertex0, (Unk_0202f660_V3 *)&vertex1);
-        CollisionSegment t1((Unk_0202f660_V3 *)&vertex1, (Unk_0202f660_V3 *)&vertex2);
-        CollisionSegment t2((Unk_0202f660_V3 *)&vertex2, (Unk_0202f660_V3 *)&vertex0);
+        CollisionSegment t0((VecFx32 *)&vertex0, (VecFx32 *)&vertex1);
+        CollisionSegment t1((VecFx32 *)&vertex1, (VecFx32 *)&vertex2);
+        CollisionSegment t2((VecFx32 *)&vertex2, (VecFx32 *)&vertex0);
         CollisionSegment *p = &t0;
         for (; p < &t0 + 3; p++) {
-            d = p->closestPoint((Unk_0202f660_V3 *)&w, (Unk_0202f660_V3 *)a);
-            if (d < c && p->isBetweenEnds((Unk_0202f660_V3 *)a)) {
+            d = p->closestPoint((VecFx32 *)&w, (VecFx32 *)a);
+            if (d < c && p->isBetweenEnds((VecFx32 *)a)) {
                 Vec_Sub(&v, a, &w);
                 if (Vec_SafeNormalize(&v) == 0) {
                     Unk_0202f2ac_V3 *q = &normal;

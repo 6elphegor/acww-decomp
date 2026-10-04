@@ -1,7 +1,6 @@
 // mwcc-version: 1.2/sp2
 #include "types.h"
 #include "actor/ActorProfile.h"
-#include "game/Unk_ov003_Vec.h"
 #include "npc/VillagerId.h"
 #include "talk/TalkWindowState.h"
 #include "sys/ProcBase.h"
@@ -38,7 +37,7 @@ u8 *SaveVillagers_Get(u8 *p, s32 i);
 VillagerId *_ZN12VillagerData13getVillagerIdEv(u8 *p);
 void _ZN9Character17detachTalkRequestEi(void *self, TalkMsgRequest *sec);
 void _ZN9Character17attachTalkRequestEi(void *self, TalkMsgRequest *sec);
-BOOL _ZN11TouchPicker9addSphereEP15TouchPickSphereP4Vec3S3_ih(TouchPicker *self, TouchPickSphere *o, s32 *a, s32 b, s32 c, u8 d);
+BOOL _ZN11TouchPicker9addSphereEP15TouchPickSphereP7VecFx32S3_ih(TouchPicker *self, TouchPickSphere *o, s32 *a, s32 b, s32 c, u8 d);
 BOOL TalkRequest_SetTargetDone(void *p);
 s32 Vec_DistXZ(s32 *a, s32 *b);
 s32 Math_AngleDiffAbs(s32 a, s32 b);
@@ -115,7 +114,7 @@ BOOL VillagerBoard::onCreate() {
 
 BOOL VillagerBoard::onExecute() {
     runAct();
-    _ZN11TouchPicker9addSphereEP15TouchPickSphereP4Vec3S3_ih(Scene_GetTouchPicker(), (TouchPickSphere *)touchSphere, &position.x, 0xc00, 9, *(s32 *)((u8 *)this + 8));
+    _ZN11TouchPicker9addSphereEP15TouchPickSphereP7VecFx32S3_ih(Scene_GetTouchPicker(), (TouchPickSphere *)touchSphere, &position.x, 0xc00, 9, *(s32 *)((u8 *)this + 8));
     return TRUE;
 }
 

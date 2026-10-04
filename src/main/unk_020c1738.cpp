@@ -1,7 +1,7 @@
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "actor/ActorProfile.h"
 #include "gfx/DebugColor.h"
-#include "game/Unk_020d77a4_Vec3.h"
 #include "npc/NpcTalkCtrl.h"
 #include "npc/NpcAnimCtrl.h"
 #include "npc/NpcSpeechState.h"
@@ -36,7 +36,7 @@ s32 _ZN13NpcActionCtrl12isActionDoneEv(void *self);
 s32 _ZN12Unk_0201acf88getLevelEv(void *self);
 s32 _ZN9NpcLookAt15getObstacleBitsEv(void *self);
 s32 _ZN11NpcMoveCtrl10hasArrivedEP9Characteri(void *self, void *owner, s32 a);
-void _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(void *self, void *v);
+void _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(void *self, void *v);
 s32 _ZN11NpcMoveCtrl10hasNextLegEv(void *self);
 void _ZN11NpcMoveCtrl16resetDestinationEv(void *self);
 s32 _ZN13NpcActionCtrl9getActionEv(void *self);
@@ -45,7 +45,7 @@ void Npc_RotateOffsetXZ(void *out, void *pos, void *a, s32 b);
 s32 Npc_IsPosBlocked(void *v);
 s32 Math_AngleXZ(void *pos, void *v);
 s32 NpcActor_IsFrontAngle(s16 a);
-void _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(void *self, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
+void _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(void *self, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
 void Math_CountDownU8(void *p);
 u32 Random_Next(void *p);
 u32 Random_GlobalBelow(u32 n);
@@ -99,15 +99,9 @@ public:
 // ---- SpNpcKaitlin / SpNpcKatie and their bases (scene object derived from NpcActor) ----
 
 
-typedef Unk_020d77a4_Vec3 Unk_0203e7a4_Vec;
 
 
 
-
-
-struct Unk_020c17f8_Vec {
-    s32 x, y, z;
-};
 
 class SpNpcKaitlin;
 typedef BOOL (SpNpcKaitlin::*SpNpcKaitlinActFn)();
@@ -137,10 +131,10 @@ public:
     BOOL mainAct07();
     BOOL tryAvoidObstacle();
     BOOL avoidObstacle();
-    BOOL findSidestepPos(Unk_020c17f8_Vec *out, s32 *data);
+    BOOL findSidestepPos(VecFx32 *out, s32 *data);
     BOOL findRandomWalkTarget(s32 *px, s32 *pz);
     BOOL isInCameraView();
-    BOOL isInViewBox(Unk_020c17f8_Vec *a, Unk_020c17f8_Vec *b);
+    BOOL isInViewBox(VecFx32 *a, VecFx32 *b);
     BOOL setupAct07();
     BOOL mainAct06();
     BOOL setupAct06();
@@ -212,7 +206,7 @@ BOOL SpNpcKaitlin::onCreate() {
     changeAct(0);
     if (Scene_GetCurrent() == 0x2f) {
         collisionEnabled = 0;
-        _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(&lookAt, 0, 0, 0, (s32)gVec3Zero, 4, data_020c6d1c, 1);
+        _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(&lookAt, 0, 0, 0, (s32)gVec3Zero, 4, data_020c6d1c, 1);
         position.x = 0x10000;
         position.z = 0x16800;
     }
@@ -345,7 +339,7 @@ void SpNpcKaitlin::onJoinTalk() {
 }
 
 void SpNpcKaitlin::onLeaveTalk() {
-    _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(&lookAt, 1, 0, 0, (s32)gVec3Zero, 4, data_020c6d1c, 1);
+    _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(&lookAt, 1, 0, 0, (s32)gVec3Zero, 4, data_020c6d1c, 1);
     changeAct(0);
 }
 
@@ -469,11 +463,11 @@ BOOL SpNpcKaitlin::setupAct07() {
     _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     _ZN13NpcFootstepFx15enableFootstepsEv(&footstepFx);
     _ZN13NpcFootstepFx15enableFootstepsEv(&footstepFx);
-    _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(&lookAt, 1, 0, 0, (s32)gVec3Zero, 4, data_020c6d1c, 1);
+    _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(&lookAt, 1, 0, 0, (s32)gVec3Zero, 4, data_020c6d1c, 1);
     return TRUE;
 }
 
-BOOL SpNpcKaitlin::isInViewBox(Unk_020c17f8_Vec *a, Unk_020c17f8_Vec *b) {
+BOOL SpNpcKaitlin::isInViewBox(VecFx32 *a, VecFx32 *b) {
     BOOL r = FALSE, c = FALSE, d = FALSE;
     s32 x = a->x;
     s32 bx = b->x;
@@ -494,10 +488,10 @@ BOOL SpNpcKaitlin::isInViewBox(Unk_020c17f8_Vec *a, Unk_020c17f8_Vec *b) {
 }
 
 BOOL SpNpcKaitlin::isInCameraView() {
-    Unk_020c17f8_Vec *pos = (Unk_020c17f8_Vec *)&position;
+    VecFx32 *pos = (VecFx32 *)&position;
     s32 r = 0;
     if (gCamera != 0) {
-        Unk_020c17f8_Vec v;
+        VecFx32 v;
         v.x = gCameraLookAt[0];
         v.y = gCameraLookAt[1];
         v.z = gCameraLookAt[2];
@@ -510,7 +504,7 @@ BOOL SpNpcKaitlin::findRandomWalkTarget(s32 *px, s32 *pz) {
     s32 *ppx = px;
     s32 *ppz = pz;
     BOOL result = FALSE;
-    Unk_020c17f8_Vec v;
+    VecFx32 v;
     s32 i;
     v.x = 0;
     v.y = 0;
@@ -532,9 +526,9 @@ BOOL SpNpcKaitlin::findRandomWalkTarget(s32 *px, s32 *pz) {
     return result;
 }
 
-BOOL SpNpcKaitlin::findSidestepPos(Unk_020c17f8_Vec *out, s32 *data) {
+BOOL SpNpcKaitlin::findSidestepPos(VecFx32 *out, s32 *data) {
     BOOL result = FALSE;
-    Unk_020c17f8_Vec v;
+    VecFx32 v;
     Npc_RotateOffsetXZ(&v, &position, data, moveAngleY);
     if (Npc_IsPosBlocked(&v) != 1) {
         out->x = v.x;
@@ -550,7 +544,7 @@ BOOL SpNpcKaitlin::avoidObstacle() {
     void *p350 = &moveCtrl;
     s32 st = _ZN9NpcLookAt15getObstacleBitsEv(&obstacleProbe);
     BOOL result = FALSE;
-    Unk_020c17f8_Vec v;
+    VecFx32 v;
     if (_ZN11NpcMoveCtrl10hasArrivedEP9Characteri(p350, this, 1) == 0) {
         switch (st) {
         case 3:
@@ -559,7 +553,7 @@ BOOL SpNpcKaitlin::avoidObstacle() {
             break;
         case 1:
             if (findSidestepPos(&v, &data_021f4658[1].x)) {
-                _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(p350, &v);
+                _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(p350, &v);
             } else {
                 _ZN13NpcActionCtrl13requestActionEjiiissiitt(p564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
             }
@@ -567,7 +561,7 @@ BOOL SpNpcKaitlin::avoidObstacle() {
             break;
         case 2:
             if (findSidestepPos(&v, &data_021f4658[0].x)) {
-                _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(p350, &v);
+                _ZN11NpcMoveCtrl14setDestinationEP7VecFx32(p350, &v);
             } else {
                 _ZN13NpcActionCtrl13requestActionEjiiissiitt(p564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
             }
@@ -601,7 +595,7 @@ BOOL SpNpcKaitlin::mainAct07() {
                 if (_ZN12Unk_0201acf88getLevelEv(&unk_3aa) == 2) {
                     _ZN13NpcActionCtrl13requestActionEjiiissiitt(p564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
                 } else if ((Random_Next(gRandom) & 7) == 0) {
-                    Unk_020c17f8_Vec v1;
+                    VecFx32 v1;
                     v1.x = gVec3Zero[0];
                     v1.y = gVec3Zero[1];
                     v1.z = gVec3Zero[2];
@@ -634,8 +628,8 @@ BOOL SpNpcKaitlin::mainAct07() {
                         if (actCounter == 0) {
                             _ZN13NpcActionCtrl13requestActionEjiiissiitt(p564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
                         } else {
-                            Unk_020c17f8_Vec *src = (Unk_020c17f8_Vec *)_ZN11NpcMoveCtrl14getDestinationEv(&moveCtrl);
-                            Unk_020c17f8_Vec v2;
+                            VecFx32 *src = (VecFx32 *)_ZN11NpcMoveCtrl14getDestinationEv(&moveCtrl);
+                            VecFx32 v2;
                             v2.x = src->x;
                             v2.y = src->y;
                             v2.z = src->z;

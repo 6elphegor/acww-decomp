@@ -1,5 +1,5 @@
 #include "types.h"
-#include "game/Vec3.h"
+#include "gfx/VecFx32.h"
 #include "game/SceneInfo.h"
 
 // TU210: 0x020afeb4-0x020b0774. Owns sConstellationColumns (.bss, autoload_3 0x021ee27c-0x021ee284).
@@ -32,7 +32,7 @@ extern u32 sStarTwinklePalettePaths[];
 extern u8 data_021e7f8c[];
 
 // external
-void _ZN5Actor5spawnEPvS0_S0_S0_S0_(u32 a, u32 b, Vec3 *v, void *c, u32 d);
+void _ZN5Actor5spawnEPvS0_S0_S0_S0_(u32 a, u32 b, VecFx32 *v, void *c, u32 d);
 u64 OS_GetTick(void);
 BOOL Text_EqualsTrimmed(const u8 *a, const u8 *b, s32 len);
 void Mem_Clear(void *dst, u32 size);
@@ -88,7 +88,7 @@ void Constellation_MarkColumn(s32 n);
 void Constellation_ClearColumns(void);
 u8 *Constellation_GetLineCells(s32 n);
 
-inline void setv(Vec3 *v, s32 x, s32 y, s32 z) {
+inline void setv(VecFx32 *v, s32 x, s32 y, s32 z) {
     v->x = x;
     v->y = y;
     v->z = z;
@@ -537,7 +537,7 @@ BOOL SceneSpawnGroup_SpawnActors(SceneSpawnGroup *self, u8 *idxp, u64 start) {
     n = &((SceneSpawnRecord *)self->list)[i];
     result = TRUE;
     while (TRUE) {
-        Vec3 v;
+        VecFx32 v;
         setv(&v, (n->actor.x << 12) >> 4, (n->actor.y << 12) >> 4, (n->actor.z << 12) >> 4);
         _ZN5Actor5spawnEPvS0_S0_S0_S0_(n->actor.profile, n->actor.spawnParam, &v, &n->actor.rot[0], 0);
         n++;

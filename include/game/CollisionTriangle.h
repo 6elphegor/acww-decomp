@@ -4,12 +4,13 @@
 // Collision triangle (vtable 0x020d8ccc; 0x34 bytes). Defined in src/main/unk_0202e9d4.cpp. The derived
 // triangles are built on its second name CollisionTriangleX (game/CollisionTriangleX.h).
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "game/Unk_0202f2ac_V3.h"
 
 class CollisionTriangle {
 public:
     CollisionTriangle();
-    CollisionTriangle(Unk_0202f660_V3 *a, Unk_0202f660_V3 *b, Unk_0202f660_V3 *c, Unk_0202f660_V3 *d);
+    CollisionTriangle(VecFx32 *a, VecFx32 *b, VecFx32 *c, VecFx32 *d);
     ~CollisionTriangle();
     virtual BOOL pushOutFace(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, s32 c);
     virtual BOOL pushBackCrossing(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, s32 c);

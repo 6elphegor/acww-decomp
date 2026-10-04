@@ -1,7 +1,7 @@
 // mwcc-version: 1.2/sp2
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "actor/ActorProfile.h"
-#include "game/Unk_ov003_Vec.h"
 #include "talk/TalkWindowState.h"
 #include "player/PlayerActionRequest.h"
 #include "sys/ProcBase.h"
@@ -14,20 +14,6 @@
 #include "gfx/DebugColor.h"
 #include "gfx/NNSG3dRS.h"
 #include "gfx/NNSG3dRenderObj.h"
-
-struct Unk_ov068_0226acf8_Vec {
-    s32 x, y, z;
-};
-
-struct Unk_ov068_0226b12c_Vec3 {
-    s32 x, y, z;
-    Unk_ov068_0226b12c_Vec3() {}
-    Unk_ov068_0226b12c_Vec3(const Unk_ov068_0226b12c_Vec3 &o) {
-        x = o.x;
-        y = o.y;
-        z = o.z;
-    }
-};
 
 
 
@@ -54,7 +40,7 @@ public:
     virtual BOOL initBuilding();
     virtual void onMessageEnd(u32 attr);
     virtual BOOL needsMatrixUpdate();
-    virtual Unk_ov009_0225da90_Vec3 getSoundPos();
+    virtual VecFx32Ctor getSoundPos();
     virtual s32 getVoiceType();
 
     // update states
@@ -103,14 +89,14 @@ public:
     void updateEffect41();
     void startEffect41();
     s32 getAngleToPlayer();
-    Unk_ov068_0226b12c_Vec3 getDoorPoint();
+    VecFx32Copy getDoorPoint();
     s32 callGetBca2Anim();
 
     /* 0x2b0 */ s32 taxiState;
     /* 0x2b4 */ s32 townHallGridX;
     /* 0x2b8 */ s32 townHallGridZ;
-    /* 0x2bc */ Unk_ov068_0226acf8_Vec townHallWalkTarget;
-    /* 0x2c8 */ Unk_ov068_0226b12c_Vec3 carPos;
+    /* 0x2bc */ VecFx32 townHallWalkTarget;
+    /* 0x2c8 */ VecFx32Copy carPos;
     /* 0x2d4 */ u16 warpDelayTimer;
     /* 0x2d6 */ u8 getInTimer;
     /* 0x2d7 */ u8 exitWalkDelay;
@@ -223,7 +209,7 @@ s32 PlayerActor_RequestWalkTo(void *, s32, s32);
 s32 _ZN13BuildingActor15openDoorForExitEv(void *);
 void TalkRequestFlags_SetSceneHold();
 void Field_SetDoorExitMode(s32);
-s32 _ZN13BuildingActor10getDoorPosEP23Unk_ov009_0225b880_Vec3Ps(void *, void *, void *);
+s32 _ZN13BuildingActor10getDoorPosEP7VecFx32Ps(void *, void *, void *);
 void SceneWarp_RequestExit(void *, s32);
 void *Scene_GetCurrent(void *);
 void Scene_SetTownReturnPos(void *, void *, void *, s32, s32, s32, s32);
@@ -245,9 +231,9 @@ void PlayerActor_RequestTurnTo(s32, s32);
 void Effect_End(s32);
 void Effect_SetPosition(s32, void *, s32, s32);
 s32 Effect_Create(s32, void *, s32, s32);
-Unk_ov068_0226b12c_Vec3 *PlayerActor_GetBodyPos(s32);
-void Vec_Sub(Unk_ov068_0226b12c_Vec3 *, Unk_ov068_0226b12c_Vec3 *, Unk_ov068_0226b12c_Vec3 *);
-void func_01ffd070(Unk_ov068_0226b12c_Vec3 *, void *, Unk_ov068_0226b12c_Vec3 *);
+VecFx32Copy *PlayerActor_GetBodyPos(s32);
+void Vec_Sub(VecFx32Copy *, VecFx32Copy *, VecFx32Copy *);
+void func_01ffd070(VecFx32Copy *, void *, VecFx32Copy *);
 s32 Math_Atan2(s32, s32);
 s32 FX_Div(s32, s32);
 void Taxi_ClearArriving();
@@ -333,8 +319,8 @@ BOOL KappnTaxi::onDelete() {
     return TRUE;
 }
 
-Unk_ov009_0225da90_Vec3 KappnTaxi::getSoundPos() {
-    Unk_ov009_0225da90_Vec3 r;
+VecFx32Ctor KappnTaxi::getSoundPos() {
+    VecFx32Ctor r;
     r.x = carPos.x;
     r.y = carPos.y;
     r.z = carPos.z;
@@ -355,8 +341,8 @@ BOOL KappnTaxi::needsMatrixUpdate() {
 void KappnTaxi::onJointCalcPost(u32 a, void *b) {
     if (a == 0) {
         NNSG3dJntAnmResult *o = ((NNSG3dRS *)b)->pJntAnmResult;
-        Unk_ov068_0226b12c_Vec3 v;
-        Unk_ov068_0226b12c_Vec3 out;
+        VecFx32Copy v;
+        VecFx32Copy out;
         VecFx32 *pv = &o->trans;
         v.x = pv->x;
         v.y = pv->y;
@@ -375,8 +361,8 @@ s32 KappnTaxi::getVoiceType() {
 void KappnTaxi::onMessageEnd(u32) {
 }
 
-Unk_ov068_0226b12c_Vec3 KappnTaxi::getDoorPoint() {
-    Unk_ov068_0226b12c_Vec3 r;
+VecFx32Copy KappnTaxi::getDoorPoint() {
+    VecFx32Copy r;
     r.x = carPos.x;
     r.y = carPos.y;
     r.z = carPos.z;
@@ -386,13 +372,13 @@ Unk_ov068_0226b12c_Vec3 KappnTaxi::getDoorPoint() {
 
 s32 KappnTaxi::getAngleToPlayer() {
     if (PlayerActor_GetBodyPos(4)) {
-        Unk_ov068_0226b12c_Vec3 a;
-        Unk_ov068_0226b12c_Vec3 c;
-        Unk_ov068_0226b12c_Vec3 *p = PlayerActor_GetBodyPos(4);
+        VecFx32Copy a;
+        VecFx32Copy c;
+        VecFx32Copy *p = PlayerActor_GetBodyPos(4);
         a.x = p->x;
         a.y = p->y;
         a.z = p->z;
-        Unk_ov068_0226b12c_Vec3 b = getDoorPoint();
+        VecFx32Copy b = getDoorPoint();
         Vec_Sub(&c, &b, &a);
         return Math_Atan2(c.x, c.z);
     }
@@ -614,7 +600,7 @@ void KappnTaxi::execTaxiDepart() {
                     if (q != 0) {
                         s32 l0[1];
                         s32 l1[3];
-                        if (_ZN13BuildingActor10getDoorPosEP23Unk_ov009_0225b880_Vec3Ps(q, l1, l0) != 0) {
+                        if (_ZN13BuildingActor10getDoorPosEP7VecFx32Ps(q, l1, l0) != 0) {
                             townHallWalkTarget.x = l1[0];
                             townHallWalkTarget.y = l1[1];
                             s32 *p = &townHallWalkTarget.z;
@@ -663,7 +649,7 @@ BOOL KappnTaxi::enterTaxiWarpTownHall() {
 }
 
 void KappnTaxi::execTaxiWarpTownHall() {
-    Unk_ov068_0226acf8_Vec v;
+    VecFx32 v;
     s16 sv;
     if (warpDelayTimer != 0) {
         warpDelayTimer = warpDelayTimer - 1;
@@ -671,7 +657,7 @@ void KappnTaxi::execTaxiWarpTownHall() {
     if (warpDelayTimer == 0) {
         void *q = BuildingList_FindByItem(0x5000);
         if (q != 0) {
-            if (_ZN13BuildingActor10getDoorPosEP23Unk_ov009_0225b880_Vec3Ps(q, &v, &sv) != 0) {
+            if (_ZN13BuildingActor10getDoorPosEP7VecFx32Ps(q, &v, &sv) != 0) {
                 SceneWarp_RequestExit(Scene_GetWarpRequest(), 9);
                 v.z = v.z + 0x1000;
                 void *r4 = Scene_GetWarpRequest();
@@ -709,8 +695,8 @@ void KappnTaxi::execTaxiPlayerExitTownHall() {
             u8 *o = (u8 *)PlayerActor_GetActor(4);
             if (o != 0) {
                 if (exitWalkDelay == 0) {
-                    Unk_ov068_0226acf8_Vec v;
-                    Unk_ov068_0226acf8_Vec *pv = (Unk_ov068_0226acf8_Vec *)(o + 0x5c);
+                    VecFx32 v;
+                    VecFx32 *pv = (VecFx32 *)(o + 0x5c);
                     v.x = pv->x;
                     v.y = pv->y;
                     v.z = pv->z;

@@ -1,4 +1,5 @@
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "Unk_020d8c7c.h"
 #include "item/ItemId.h"
 #include "gfx/G3dResAccess.h"
@@ -20,7 +21,7 @@
 // (called as free functions with the object as first argument; the mangled name is the symbols.txt name)
 #define SndEnvChannel_callRelease _ZN13SndEnvChannel11callReleaseEv
 #define SndEnvChannel_callRequestSustained _ZN13SndEnvChannel20callRequestSustainedEPv
-#define SndEnvChannel_callUpdateRelative _ZN13SndEnvChannel18callUpdateRelativeEP16Unk_02003a6c_Vec
+#define SndEnvChannel_callUpdateRelative _ZN13SndEnvChannel18callUpdateRelativeEP7VecFx32
 #define SndEnvChannel_callReset _ZN13SndEnvChannel9callResetEv
 #define GroundInfoBase_getHeight _ZN14GroundInfoBase9getHeightEi
 #define GroundInfo_initAtUnit _ZN10GroundInfo10initAtUnitEiiii
@@ -50,7 +51,7 @@
 #define HouseRoom_getCarpet _ZN9HouseRoom9getCarpetEPi
 #define HouseRoom_getWallpaper _ZN9HouseRoom12getWallpaperEPi
 #define PatternTexCache_getPlayerTexKey _ZN15PatternTexCache15getPlayerTexKeyEii
-#define TouchPicker_addCylinder _ZN11TouchPicker11addCylinderEP17TouchPickCylinderP4Vec3S3_S3_ih
+#define TouchPicker_addCylinder _ZN11TouchPicker11addCylinderEP17TouchPickCylinderP7VecFx32S3_S3_ih
 #define TouchPicker_pushCylinder _ZN11TouchPicker12pushCylinderEP17TouchPickCylinder
 #define MatTexVramTask_request _ZN14MatTexVramTask7requestEPvjS0_jj
 #define MatTexVramTask_cancel _ZN14MatTexVramTask6cancelEv
@@ -92,10 +93,6 @@ void _ZN16RoomScene22ShapeD1Ev(void *self);
 
 
 
-// ---------------------------------------------------------------- shared helper types
-struct Unk_ov004_0222a994_Vec {
-    s32 x, y, z;
-};
 
 struct RoomShellStackPad {
     s32 v[2];
@@ -107,10 +104,6 @@ struct RoomShellStackPad {
 struct Unk_ov004_0222b954_Pair {
     volatile u16 a;
     volatile u16 b;
-};
-
-struct Unk_ov004_0222b9a4_Vec {
-    s32 x, y, z;
 };
 
 // ---------------------------------------------------------------- classes of this unit
@@ -222,7 +215,7 @@ public:
     /* 0x3522 */ s8 roomSize;
     /* 0x3523 */ s8 hasuNode;
     /* 0x3524 */ u32 pad_3524;
-    /* 0x3528 */ Unk_ov004_0222b9a4_Vec clockPos;
+    /* 0x3528 */ VecFx32 clockPos;
     /* 0x3534 */ void *clockSe;
     /* 0x3538 */ u8 pad_3538[8];
     /* 0x3540 */ s8 wdMatIdx;
@@ -306,7 +299,7 @@ void AnimFrameCtrl_step(void *self);
 s32 FtrMgr_GetCycleCounter(s32 a);
 void RoomBoardSign_Spawn(void *v, s32 a, s32 b, u32 c);
 void SndEnvChannel_callRequestSustained(void *self, u32 a);
-void SndEnvChannel_callUpdateRelative(void *self, Unk_ov004_0222b9a4_Vec *v);
+void SndEnvChannel_callUpdateRelative(void *self, VecFx32 *v);
 void Model_setInitCallback(void *self, void *fn, void *obj);
 void SndEnvChannel_callReset(void *self);
 u16 *Sky_GetCurrentPalette();
@@ -403,7 +396,7 @@ BOOL RoomShell::onExecute() {
             SndEnvChannel_callRequestSustained(&clockSe, 0x4d1);
         }
     }
-    Unk_ov004_0222b9a4_Vec v = clockPos;
+    VecFx32 v = clockPos;
     SndEnvChannel_callUpdateRelative(&clockSe, &v);
     ((RoomScene22Shape *)scene22Shape)->update();
     data_021ce63c = 0;
@@ -828,14 +821,10 @@ extern "C" BOOL RoomEntranceColliders_InHouseScene() {
     return FALSE;
 }
 
-struct Unk_ov004_0222ad9c_V {
-    s32 x, y, z;
-};
-
 BOOL RoomEntranceColliders::init() {
     if (RoomEntranceColliders_InHouseScene() != 0) {
-        Unk_ov004_0222ad9c_V a;
-        Unk_ov004_0222ad9c_V b;
+        VecFx32 a;
+        VecFx32 b;
         a.x = 0xd000;
         a.y = 0;
         a.z = 0x1c000;
@@ -888,12 +877,8 @@ RoomScene22Shape::RoomScene22Shape() {
 RoomScene22Shape::~RoomScene22Shape() {
 }
 
-struct Unk_ov004_0222ac54_V {
-    s32 x, y, z;
-};
-
 void RoomScene22Shape::init() {
-    Unk_ov004_0222ac54_V v;
+    VecFx32 v;
     if (Scene_GetCurrent() == 0x22) {
         isActive = 1;
     }
@@ -992,8 +977,8 @@ void RoomShell::onNodeDescCallback(s32 a, NNSG3dRS *b) {
     RoomShellStackPad pad;
     if (hourHandNode == a) {
         JointCb_RotateClockHourHand(b);
-        Unk_ov004_0222a994_Vec *pv = (Unk_ov004_0222a994_Vec *)&b->pJntAnmResult->trans;
-        Unk_ov004_0222a994_Vec v;
+        VecFx32 *pv = (VecFx32 *)&b->pJntAnmResult->trans;
+        VecFx32 v;
         v.y = pv->y;
         v.z = pv->z;
         v.x = pv->x;
@@ -1116,15 +1101,6 @@ struct RoomBoardSignDef {
     u8 msgIndex;
 };
 
-struct Unk_ov004_0222a644_V3 {
-    s32 x, y, z;
-    Unk_ov004_0222a644_V3(s32 a, s32 b, s32 c) {
-        x = a;
-        y = b;
-        z = c;
-    }
-};
-
 extern "C" void RoomShell_SpawnBoardSigns(void *self) {
     Unk_0204e858_Grid *g = gSceneBlockMap;
     TownBlockCell *c;
@@ -1140,7 +1116,7 @@ extern "C" void RoomShell_SpawnBoardSigns(void *self) {
             if ((u32)o->mgtCount != 0) {
                 u32 i;
                 for (i = 0; i < (u32)o->mgtCount; e++, i++) {
-                    Unk_ov004_0222a644_V3 v((e->posX << 12) >> 4, (e->posY << 12) >> 4, (e->posZ << 12) >> 4);
+                    VecFx32Ctor v((e->posX << 12) >> 4, (e->posY << 12) >> 4, (e->posZ << 12) >> 4);
                     RoomBoardSign_Spawn(&v, (e->radius << 12) >> 4, ((s32)(e->dir << 30)) >> 16, e->msgIndex);
                 }
             }

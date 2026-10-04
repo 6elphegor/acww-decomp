@@ -6,12 +6,13 @@
 // TriangleTrigger, TouchPickTriangle) are built on it: with this naming the base-object destructor that their
 // destructors call (D2) is 0x0202f620, and the base-object constructor (C2) is 0x0202f64c.
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "game/Unk_0202f2ac_V3.h"
 
 class CollisionTriangleX {
 public:
     CollisionTriangleX();                   // C2 0x0202f64c
-    CollisionTriangleX(Unk_0202f660_V3 *a, Unk_0202f660_V3 *b, Unk_0202f660_V3 *c, Unk_0202f660_V3 *d);
+    CollisionTriangleX(VecFx32 *a, VecFx32 *b, VecFx32 *c, VecFx32 *d);
     ~CollisionTriangleX();                  // D2 0x0202f620, D1 0x0202f62c
     virtual BOOL pushOutFace(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, s32 c);
     virtual BOOL pushBackCrossing(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, s32 c);

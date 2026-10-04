@@ -1,9 +1,9 @@
 // mwcc-version: 1.2/sp2
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "actor/ActorProfile.h"
 #include "actor/ActorListNode.h"
 #include "actor/CharacterListNode.h"
-#include "game/Vec3.h"
 #include "talk/TalkWindowState.h"
 #include "game/TouchPicker.h"
 #include "sys/ProcBase.h"
@@ -146,7 +146,7 @@ BOOL Atm::onDelete() {
 
 void Atm::initCollision() {
     BoxCollider_Register(collider, 0x2000, 0x2000, 0x2000, &position.x, 0, 0);
-    Scene_GetTouchPicker()->addBox((TouchPickBox *)touchBox, (Vec3 *)&position, 0x2000, 0x2000, 0x2000, 0, 0xb, 0xff);
+    Scene_GetTouchPicker()->addBox((TouchPickBox *)touchBox, (VecFx32 *)&position, 0x2000, 0x2000, 0x2000, 0, 0xb, 0xff);
 }
 
 BOOL Atm::releaseCollision() {

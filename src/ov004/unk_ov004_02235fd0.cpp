@@ -1,6 +1,7 @@
 // mwcc-version: 1.2/base
 // ov004 TU33: .text 0x02235fd0-0x02237440 (actor 0224ebec "bug" scene object + scene objects 0224eb9c)
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
 #include "actor/ActorListNode.h"
@@ -16,14 +17,14 @@
 #define SndEnvChannel_callRelease _ZN13SndEnvChannel11callReleaseEv
 #define SndEnvChannel_callRequest _ZN13SndEnvChannel11callRequestEPv
 #define SndEnvChannel_callRequestSustained _ZN13SndEnvChannel20callRequestSustainedEPv
-#define SndEnvChannel_callUpdateRelative _ZN13SndEnvChannel18callUpdateRelativeEP16Unk_02003a6c_Vec
+#define SndEnvChannel_callUpdateRelative _ZN13SndEnvChannel18callUpdateRelativeEP7VecFx32
 #define SndEnvChannel_callReset _ZN13SndEnvChannel9callResetEv
 #define func_02031c10 _ZN11BoxColliderD2Ev
 #define func_02031c48 _ZN11BoxColliderC1Ev
 #define func_0203239c _ZN14CollisionStateD1Ev
 #define func_020323b0 _ZN14CollisionStateC1Ev
 #define GroundInfoBase_getHeight _ZN14GroundInfoBase9getHeightEi
-#define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
+#define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP7VecFx32ii
 #define BlockMap_canPlaceItem _ZN8BlockMap12canPlaceItemEii
 #define AnimModel_attachAnim _ZN9AnimModel10attachAnimEv
 #define BlendAnimModel_initAnim _ZN14BlendAnimModel8initAnimEiiitt
@@ -37,7 +38,7 @@
 #define CachedModel_loadCached _ZN11CachedModel10loadCachedEPvS0_
 #define Model_setAlpha _ZN5Model8setAlphaEj
 #define Model_setPolygonId _ZN5Model12setPolygonIdEj
-#define ActorPlacedCollider_setupForActorAt _ZN19ActorPlacedCollider15setupForActorAtEPvP4Vec3iijjjhi
+#define ActorPlacedCollider_setupForActorAt _ZN19ActorPlacedCollider15setupForActorAtEPvP7VecFx32iijjjhi
 #define func_02088c34 _ZN19ActorPlacedColliderD2Ev
 #define func_02088c4c _ZN19ActorPlacedColliderC1Ev
 #define ActorCollider_isHitByGroup _ZN13ActorCollider12isHitByGroupEj
@@ -47,10 +48,6 @@
 
 #pragma opt_loop_invariants off
 
-
-struct Unk_ov004_02236320_V3 {
-    s32 x, y, z;
-};
 
 struct Unk_ov004_02236320_Mtx {
     s64 v[6];
@@ -66,12 +63,6 @@ struct Unk_ov004_0223717c_Grid {
     /* 0x00 */ u8 pad_00[0xc];
     /* 0x0c */ s32 unitsX;
     /* 0x10 */ s32 unitsZ;
-};
-
-struct Unk_ov004_0223717c_Vec {
-    s32 x;
-    s32 y;
-    s32 z;
 };
 
 
@@ -134,8 +125,8 @@ public:
     /* 0x22b */ u8 pad_22b;
     /* 0x22c */ s16 stateTimer;
     /* 0x22e */ s16 jumpTimer;
-    /* 0x230 */ Unk_ov004_02236320_V3 probePoints[2];
-    /* 0x248 */ Unk_ov004_02236320_V3 probePrevPoints[2];
+    /* 0x230 */ VecFx32 probePoints[2];
+    /* 0x248 */ VecFx32 probePrevPoints[2];
     /* 0x260 */ s8 wallProbe;
     /* 0x261 */ u8 pad_261;
     /* 0x262 */ u8 wallTurnDir;
@@ -359,7 +350,7 @@ extern "C" BOOL HouseRoach_SpawnInitial(void *owner) {
     u16 *cell;
     BOOL ok;
     u8 i;
-    Unk_ov004_0223717c_Vec loc;
+    VecFx32 loc;
     u32 *row2;
     u8 k;
     u32 t;
@@ -507,7 +498,7 @@ BOOL HouseRoach::setup() {
 }
 
 void HouseRoach::updateState() {
-    Unk_ov004_02236320_V3 v;
+    VecFx32 v;
     if (roachState != 2) {
         updateCollision();
     }
@@ -542,7 +533,7 @@ void HouseRoach::updateState() {
         }
         break;
     }
-    Unk_ov004_02236320_V3 *pv = (Unk_ov004_02236320_V3 *)&position;
+    VecFx32 *pv = (VecFx32 *)&position;
     v.x = position.x;
     v.y = pv->y;
     v.z = pv->z;
@@ -551,11 +542,11 @@ void HouseRoach::updateState() {
 
 void HouseRoach::updateCollision() {
     s32 ang;
-    Unk_ov004_02236320_V3 *p;
+    VecFx32 *p;
     u32 colliders[4][0x9c / 4]; // four BoxColliders, built (C1) and destroyed (D2) by hand
     u8 fr[4];
     u8 fm[4];
-    Unk_ov004_02236320_V3 v[4];
+    VecFx32 v[4];
     s32 z1;
     s32 z2;
     u32 n;
@@ -565,8 +556,8 @@ void HouseRoach::updateCollision() {
     func_02031c48(colliders[1]);
     func_02031c48(colliders[2]);
     func_02031c48(colliders[3]);
-    p = (Unk_ov004_02236320_V3 *)this;
-    p = (Unk_ov004_02236320_V3 *)((u8 *)p + 0x5c);
+    p = (VecFx32 *)this;
+    p = (VecFx32 *)((u8 *)p + 0x5c);
     n = 1;
     ang = rotY;
     t = FX_Div(0x1000, 0x2000);
@@ -633,11 +624,11 @@ void HouseRoach::updateCollision() {
 }
 
 void HouseRoach::updateAppear() {
-    Unk_ov004_02236320_V3 v;
+    VecFx32 v;
     speed = crawlSpeed;
     updateCollision();
     position.y = prevPosition.y;
-    Unk_ov004_02236320_V3 *pv = (Unk_ov004_02236320_V3 *)&position;
+    VecFx32 *pv = (VecFx32 *)&position;
     v.x = position.x;
     v.y = pv->y;
     v.z = pv->z;
@@ -727,7 +718,7 @@ BOOL HouseRoach::checkStomped() {
 
 BOOL HouseRoach::draw() {
     if (lifeState != 4) {
-        Unk_ov004_02236320_V3 *pv = (Unk_ov004_02236320_V3 *)&position;
+        VecFx32 *pv = (VecFx32 *)&position;
         if (F08(this) > 0x1f) {
             F08(this) = 0x1f;
         }
@@ -771,7 +762,7 @@ void HouseRoach::playSe(u32 sel) {
 
 u8 HouseRoach::probeWalls() {
     u8 r6 = 0;
-    Unk_ov004_02236320_V3 *r4r = &probePoints[0];
+    VecFx32 *r4r = &probePoints[0];
     CollisionStateStorage o1;
     u32 o2[16];
     u32 o3[16];
@@ -810,7 +801,7 @@ u8 HouseRoach::probeWalls() {
 }
 
 void HouseRoach::setProbePoints(s32 dist, s32 delta) {
-    Unk_ov004_02236320_V3 *pv = (Unk_ov004_02236320_V3 *)&position;
+    VecFx32 *pv = (VecFx32 *)&position;
     s16 ang = rotY;
     u32 idx;
     probePoints[0].x = position.x;
@@ -839,16 +830,16 @@ Actor *HouseRoach::getNearestCharacter() {
     s32 d4, d3, d2, d1;
     Actor *p;
     Actor *g;
-    Unk_ov004_02236320_V3 *a;
-    Unk_ov004_02236320_V3 *b;
-    Unk_ov004_02236320_V3 *c;
+    VecFx32 *a;
+    VecFx32 *b;
+    VecFx32 *c;
     p = (Actor *)PlayerActor_GetActor(4);
     g = sHouseRoachVillager;
     if (g != NULL) {
         if (p != NULL) {
-            a = (Unk_ov004_02236320_V3 *)&position;
-            b = (Unk_ov004_02236320_V3 *)&p->position;
-            c = (Unk_ov004_02236320_V3 *)&g->position;
+            a = (VecFx32 *)&position;
+            b = (VecFx32 *)&p->position;
+            c = (VecFx32 *)&g->position;
             d1 = position.x - p->position.x;
             if (d1 < 0) d1 = -d1;
             d2 = a->z - b->z;
@@ -913,7 +904,7 @@ void HouseRoach::updateHitBox() {
 
 BOOL HouseRoach::move() {
     s32 a = rotY;
-    Unk_ov004_02236320_V3 *p6 = (Unk_ov004_02236320_V3 *)&position;
+    VecFx32 *p6 = (VecFx32 *)&position;
     s32 hit = 0;
     u8 i;
     setProbePoints(0x3c, 0xe38);
@@ -926,7 +917,7 @@ BOOL HouseRoach::move() {
             o = (s32)sHouseRoachVillager;
         }
         if (o != 0 && hit == 0) {
-            Unk_ov004_02236320_V3 *q = (Unk_ov004_02236320_V3 *)(o + 0x5c);
+            VecFx32 *q = (VecFx32 *)(o + 0x5c);
             if (Vec_DistXZ(p6, q) < 0x1800) {
                 s32 d = Math_AngleXZ(p6, q);
                 if ((d >= 0 && a >= 0) || (d <= 0 && a <= 0)) {

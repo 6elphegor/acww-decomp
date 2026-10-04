@@ -79,7 +79,6 @@ void NpcActionCtrl_requestAction(void *, s32, s32, s32, s32, s32, s32, s32, s32,
 
 
 
-struct Unk_020d77a4_Vec3;
 
 
 

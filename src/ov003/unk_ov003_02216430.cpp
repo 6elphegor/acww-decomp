@@ -2,7 +2,6 @@
 // ov003 TU11 (actor 02231aa8): .text 0x02216430-0x022165d0
 #include "types.h"
 #include "actor/ActorProfile.h"
-#include "game/Unk_ov003_Vec.h"
 #include "talk/TalkWindowState.h"
 #include "sys/ProcBase.h"
 #include "actor/Actor.h"

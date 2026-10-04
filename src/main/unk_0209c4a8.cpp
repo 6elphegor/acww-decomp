@@ -1,10 +1,8 @@
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "net/CommManager.h"
 #include "room/Unk_0209c41c_Actor.h"
-#include "room/Unk_0209c614_Actor.h"
 #include "actor/Actor.h"
-
-typedef Unk_0209c82c_V Unk_0209c614_Vec;
 
 
 struct SceneExitResolveOut {
@@ -18,8 +16,8 @@ public:
     ~RoomEntryRequest();
 
     /* 0x00 */ u8 scene;
-    /* 0x04 */ Unk_0209c82c_V pos;
-    /* 0x10 */ Unk_0209c82c_V retreatPos;
+    /* 0x04 */ VecFx32 pos;
+    /* 0x10 */ VecFx32 retreatPos;
     /* 0x1c */ u16 angle;
     /* 0x1e */ u8 exitId;
     /* 0x1f */ u8 result;
@@ -46,18 +44,18 @@ extern const u8 sExclusiveRoomScenes[4];
 extern u8 gVec3Zero[];
 
 void SceneExit_GetDoor(void *o, u32 id, u32 *p24, s16 *f);
-void SceneExit_SnapPos(void *o, u32 id, Unk_0209c614_Vec *v34, Unk_0209c614_Vec *v40);
-void FieldPos_SnapToUnitCenter(Unk_0209c614_Vec *a, Unk_0209c614_Vec *b);
+void SceneExit_SnapPos(void *o, u32 id, VecFx32 *v34, VecFx32 *v40);
+void FieldPos_SnapToUnitCenter(VecFx32 *a, VecFx32 *b);
 void *Scene_GetWarpRequest();
-s32 SceneExit_Resolve(void *o, u32 id, u8 *a, Unk_0209c614_Vec *v, u32 *p20, u16 *e, u8 *c, u8 *b, s32 z0, s32 z1);
+s32 SceneExit_Resolve(void *o, u32 id, u8 *a, VecFx32 *v, u32 *p20, u16 *e, u8 *c, u8 *b, s32 z0, s32 z1);
 s32 Scene_GetCurrent();
 s32 Scene_GetPrevious();
 Actor *PlayerActor_GetActor(u32 n);
 
 u32 RoomEntry_IsExclusiveScene(u32 v);
-void RoomEntryRequest_SetRetreatPos(RoomEntryRequest *t, Unk_0209c82c_V *v);
+void RoomEntryRequest_SetRetreatPos(RoomEntryRequest *t, VecFx32 *v);
 void RoomEntryRequest_SetAngle(RoomEntryRequest *t, u32 v);
-void RoomEntryRequest_SetPos(RoomEntryRequest *t, Unk_0209c82c_V *v);
+void RoomEntryRequest_SetPos(RoomEntryRequest *t, VecFx32 *v);
 void RoomEntryRequest_SetScene(RoomEntryRequest *t, u32 v);
 void RoomEntryRequest_SetDoorKind(RoomEntryRequest *t, u32 v);
 void RoomEntryRequest_SetExitId(RoomEntryRequest *t, u32 v);
@@ -175,9 +173,9 @@ extern "C" void RoomEntryRequest_Init(RoomEntryRequest *t) {
     RoomEntryRequest_SetExitId(t, -1);
     RoomEntryRequest_SetDoorKind(t, 0);
     RoomEntryRequest_SetScene(t, 0);
-    RoomEntryRequest_SetPos(t, (Unk_0209c82c_V *)gVec3Zero);
+    RoomEntryRequest_SetPos(t, (VecFx32 *)gVec3Zero);
     RoomEntryRequest_SetAngle(t, 0);
-    RoomEntryRequest_SetRetreatPos(t, (Unk_0209c82c_V *)gVec3Zero);
+    RoomEntryRequest_SetRetreatPos(t, (VecFx32 *)gVec3Zero);
 }
 
 extern "C" u32 RoomEntryRequest_GetResult(RoomEntryRequest *t) {
@@ -212,7 +210,7 @@ extern "C" void RoomEntryRequest_SetScene(RoomEntryRequest *t, u32 v) {
     t->scene = v;
 }
 
-extern "C" void RoomEntryRequest_SetPos(RoomEntryRequest *t, Unk_0209c82c_V *v) {
+extern "C" void RoomEntryRequest_SetPos(RoomEntryRequest *t, VecFx32 *v) {
     t->pos.x = v->x;
     t->pos.y = v->y;
     t->pos.z = v->z;
@@ -222,7 +220,7 @@ extern "C" void RoomEntryRequest_SetAngle(RoomEntryRequest *t, u32 v) {
     t->angle = v;
 }
 
-extern "C" void RoomEntryRequest_SetRetreatPos(RoomEntryRequest *t, Unk_0209c82c_V *v) {
+extern "C" void RoomEntryRequest_SetRetreatPos(RoomEntryRequest *t, VecFx32 *v) {
     t->retreatPos.x = v->x;
     t->retreatPos.y = v->y;
     t->retreatPos.z = v->z;
@@ -247,7 +245,7 @@ extern "C" s32 RoomEntry_IsExclusiveExit(void *p) {
     SceneExitResolveOut t;
     s32 b, a;
     u32 c[3];
-    if (SceneExit_Resolve(Scene_GetWarpRequest(), (u32)p, (u8 *)&t, (Unk_0209c614_Vec *)c, (u32 *)&a, (u16 *)&b, &t.fadeOut, &t.fadeIn, 0, 0)) {
+    if (SceneExit_Resolve(Scene_GetWarpRequest(), (u32)p, (u8 *)&t, (VecFx32 *)c, (u32 *)&a, (u16 *)&b, &t.fadeOut, &t.fadeIn, 0, 0)) {
         return RoomEntry_IsExclusiveScene(t.scene);
     }
     return 0;
@@ -258,11 +256,11 @@ extern "C" BOOL RoomEntry_Request(u32 id) {
     void *o = Scene_GetWarpRequest();
     SceneExitResult s;
     u32 a20, a24;
-    Unk_0209c614_Vec v28, v34, v40, v4c;
+    VecFx32 v28, v34, v40, v4c;
     s32 r = SceneExit_Resolve(o, id, &s.scene, &v28, &a20, &s.e, &s.fadeOut, &s.fadeIn, 0, 0);
     RoomEntryRequest_SetResult(&sRoomEntryRequest, 0);
     if (r != 0 && p != 0) {
-        Unk_0209c614_Vec *pv = (Unk_0209c614_Vec *)&p->position;
+        VecFx32 *pv = (VecFx32 *)&p->position;
         v40.x = pv->x;
         v40.y = pv->y;
         v40.z = pv->z;

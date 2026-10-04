@@ -1,5 +1,6 @@
 // mwcc-flags: -str reuse
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "talk/TalkStartMsg.h"
 #include "talk/TalkWindowState.h"
 #include "npc/NpcAnimCtrl.h"
@@ -124,7 +125,6 @@ union Unk_ov077_Word {
 
 
 
-struct Unk_020d77a4_Vec3;
 
 
 
@@ -246,9 +246,6 @@ SpNpcResettiActEntry sSpNpcResettiActTable[6] = {
     {T(0227211c), T(022720f4)},
 };
 
-struct Unk_ov077_02271a84_V3 {
-    s32 x, y, z;
-};
 static inline BOOL Unk_ov077_02271bf4_IsZero(u8 v) { return v == 0 ? TRUE : FALSE; }
 
 SpNpcResetti *SpNpcResetti_Create() {
@@ -372,7 +369,7 @@ BOOL SpNpcResetti::mainAct03() {
     Character *pl = (Character *)PlayerActor_GetCharacter(4);
     s32 dx, dz;
     s32 ax, az;
-    Unk_ov077_02271a84_V3 v;
+    VecFx32 v;
     s32 i;
     if (pl == NULL) {
         ProcBase_RequestDelete(this);

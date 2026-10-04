@@ -1,5 +1,6 @@
 // mwcc-version: 1.2/base
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "Unk_020d8c7c.h"
 #include "sys/ProcProfile.h"
 #include "town/BuildingActor.h"
@@ -8,10 +9,6 @@
 // mwcc samples optimiser pragmas at the end of the file, so this applies to the whole TU
 // (Building_FindNearPos needs it; all other functions of the TU still match with it)
 #pragma opt_loop_invariants off
-
-struct Unk_ov003_02218e2c_V3 {
-    s32 x, y, z;
-};
 
 struct Unk_ov003_02218c60_Grid {
     /* 0x00 */ u8 *cells;
@@ -123,7 +120,7 @@ void *StrBSize_Get(s32 p);
 s32 StrBSizeData_getSolidUnitCount(void *self);
 s32 StrBSizeData_getSolidUnit(void *self, s32 *a, s32 *b, s32 *c, u32 i);
 void Ground_SetQuadrantsBlocked(s32 x, s32 y, u32 v);
-void FieldPos_FromUnitCenter(Unk_ov003_02218e2c_V3 *v, s32 x, s32 y);
+void FieldPos_FromUnitCenter(VecFx32 *v, s32 x, s32 y);
 void BuildingInfo_Copy(void *o, void *p);
 s32 BuildingInfo_GetKind(void *o);
 s32 BuildingInfo_GetProfile(void *o);
@@ -350,7 +347,7 @@ s32 FieldStructureMgr_SpawnAll(void *self) {
 }
 
 s32 FieldStructureMgr_SpawnBuilding(void *self, u16 *pv, s32 x, s32 y, u8 flag) {
-    Unk_ov003_02218e2c_V3 vec;
+    VecFx32 vec;
     u32 obj[3];
     u32 idx;
     vec.x = 0;

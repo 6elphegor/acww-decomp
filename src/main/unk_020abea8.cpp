@@ -1,11 +1,11 @@
 // mwcc-flags: -str reuse
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "game/GroundInfoBase.h"
 #include "gfx/ObjShadowTexture.h"
 #include "gfx/NNSG3dResTex.h"
 #include "gfx/ObjShadowTexDef.h"
 #include "gfx/NNSG3dResMatData.h"
-#include "game/Vec3.h"
 #include "gfx/ObjShadowBits.h"
 #include "gfx/Unk_020ac2e8_V.h"
 #include "gfx/SceneLightsCol.h"
@@ -32,7 +32,7 @@ s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 void NNS_G3dGeFlushBuffer(void);
 void G3_LoadMtx43(void *p);
-void func_01ffd070(Vec3 *out, Vec3 *a, Vec3 *b);
+void func_01ffd070(VecFx32 *out, VecFx32 *a, VecFx32 *b);
 u32 _s32_div_f(u32 a, u32 b);
 void *Heap_Alloc(s32 heap, u32 size);
 void Heap_Free(s32 heap, void *p);
@@ -41,7 +41,7 @@ void Mtx43_Scale(void *m, s32 a, s32 b, s32 c);
 void MTX_Concat43(void *a, void *b, void *c);
 void VEC_Normalize(void *a, void *b);
 s32 Ground_GetDefaultY(s32 a);
-void WorldCurve_Apply(Vec3 *out, Vec3 *in);
+void WorldCurve_Apply(VecFx32 *out, VecFx32 *in);
 Col SceneLights_GetRoomColor(void);
 RGB SceneLights_GetFlashColor(void);
 s32 SceneLights_GetLightParam(s32 a);
@@ -58,12 +58,12 @@ void Str_SPrintf(char *buf, const void *fmt, ...);
 u32 _ZN12G3dResAccess10findTexIdxEi(u8 *base, char *name);
 u32 _ZN12G3dResAccess11findPlttIdxEi(u8 *base, char *name);
 extern s32 gCamera;
-extern Vec3 gCameraLookAt;
+extern VecFx32 gCameraLookAt;
 extern u8 gViewMtx[];
 void ObjShadow_NormalizeAxes(void *a, void *b);
-u8 ObjShadow_CalcAlpha(Vec3 *p, s32 q, u8 c);
-u8 ObjShadow_GetCharaAlpha(Vec3 *p, s32 q);
-u8 ObjShadow_GetObjAlpha(Vec3 *p, s32 q);
+u8 ObjShadow_CalcAlpha(VecFx32 *p, s32 q, u8 c);
+u8 ObjShadow_GetCharaAlpha(VecFx32 *p, s32 q);
+u8 ObjShadow_GetObjAlpha(VecFx32 *p, s32 q);
 }
 
 #define REG(a) (*(volatile u32 *)(a))
@@ -146,11 +146,11 @@ extern "C" void ObjShadow_Init(void *arg) {
             e++;
         }
         static Vec3Z2 v;
-        sTreeShadowStage2.build((Vec3 *)&v, 0x119a, 0x119a, 2, 0x2000, 0, heap);
-        sTreeShadowStage3.build((Vec3 *)&v, 0x1666, 0x1666, 2, 0x2000, 0, heap);
-        sTreeShadowStage4.build((Vec3 *)&v, 0x2000, 0x2000, 2, 0x2000, 0, heap);
-        sRockShadow.build((Vec3 *)&v, 0x1ccc, 0x1ccc, 0, 0, 0, heap);
-        sSignShadow.build((Vec3 *)&v, 0x555, 0x1000, 0, 0, 0, heap);
+        sTreeShadowStage2.build((VecFx32 *)&v, 0x119a, 0x119a, 2, 0x2000, 0, heap);
+        sTreeShadowStage3.build((VecFx32 *)&v, 0x1666, 0x1666, 2, 0x2000, 0, heap);
+        sTreeShadowStage4.build((VecFx32 *)&v, 0x2000, 0x2000, 2, 0x2000, 0, heap);
+        sRockShadow.build((VecFx32 *)&v, 0x1ccc, 0x1ccc, 0, 0, 0, heap);
+        sSignShadow.build((VecFx32 *)&v, 0x555, 0x1000, 0, 0, 0, heap);
     }
 }
 
@@ -203,7 +203,7 @@ extern "C" void ObjShadow_Exit() {
     sSignShadow.release(heap);
 }
 
-extern "C" u8 ObjShadow_CalcAlpha(Vec3 *p, s32 q, u8 r4) {
+extern "C" u8 ObjShadow_CalcAlpha(VecFx32 *p, s32 q, u8 r4) {
     if (gCamera != 0) {
         Unk_020ac2e8_V v;
         v.x = gCameraLookAt.x;
@@ -248,19 +248,19 @@ u8 sCharaShadowAlpha = 0x12;
 u8 sObjShadowNormMtx[0x24];
 u8 sObjShadowViewMtx[0x30];
 
-extern "C" u8 ObjShadow_GetObjAlpha(Vec3 *p, s32 q) {
+extern "C" u8 ObjShadow_GetObjAlpha(VecFx32 *p, s32 q) {
     return ObjShadow_CalcAlpha(p, q, sObjShadowAlpha);
 }
 
-extern "C" u8 ObjShadow_GetCharaAlpha(Vec3 *p, s32 q) {
+extern "C" u8 ObjShadow_GetCharaAlpha(VecFx32 *p, s32 q) {
     return ObjShadow_CalcAlpha(p, q, sCharaShadowAlpha);
 }
 
-extern "C" void ObjShadow_DrawTree(Vec3 *p, u32 n) {
+extern "C" void ObjShadow_DrawTree(VecFx32 *p, u32 n) {
     if (n >= 2) {
         static Vec3Z v;
-        Vec3 out;
-        func_01ffd070(&out, p, (Vec3 *)&v);
+        VecFx32 out;
+        func_01ffd070(&out, p, (VecFx32 *)&v);
         if (n == 2) {
             sTreeShadowStage2.draw(&out);
         } else if (n == 3) {
@@ -271,13 +271,13 @@ extern "C" void ObjShadow_DrawTree(Vec3 *p, u32 n) {
     }
 }
 
-extern "C" void ObjShadow_DrawRock(Vec3 *p) {
+extern "C" void ObjShadow_DrawRock(VecFx32 *p) {
     sRockShadow.draw(p);
 }
 
-extern "C" void ObjShadow_DrawSign(Vec3 *p) {
-    Vec3 local;
-    Vec3 out;
+extern "C" void ObjShadow_DrawSign(VecFx32 *p) {
+    VecFx32 local;
+    VecFx32 out;
     local.x = 0x166;
     local.y = 0;
     local.z = 0xc80;
@@ -300,7 +300,7 @@ ObjShadowStrip::ObjShadowStrip() {
 
 ObjShadowStrip::~ObjShadowStrip() {}
 
-BOOL ObjShadowStrip::build(Vec3 *pos, s32 size, s32 shift, s32 idx, s32 a, s32 b, s32 heap) {
+BOOL ObjShadowStrip::build(VecFx32 *pos, s32 size, s32 shift, s32 idx, s32 a, s32 b, s32 heap) {
     u32 i;
     if (heap == 0) {
         heap = gCurrentHeap;
@@ -318,7 +318,7 @@ BOOL ObjShadowStrip::build(Vec3 *pos, s32 size, s32 shift, s32 idx, s32 a, s32 b
     u32 n4 = numRows << 2;
     rowDepths = (s32 *)Heap_Alloc(heap, (n4 << 1) + numRows * 12);
     rowTexT = (s32 *)((u8 *)rowDepths + n4);
-    rowVertices = (Vec3 *)((u8 *)rowTexT + n4);
+    rowVertices = (VecFx32 *)((u8 *)rowTexT + n4);
     for (i = 0; i < numRows; i++) {
         if (i == numRows - 1) {
             rowDepths[i] = shift;
@@ -342,8 +342,8 @@ BOOL ObjShadowStrip::build(Vec3 *pos, s32 size, s32 shift, s32 idx, s32 a, s32 b
     return TRUE;
 }
 
-void ObjShadowStrip::draw(Vec3 *pos) {
-    Vec3 tmp;
+void ObjShadowStrip::draw(VecFx32 *pos) {
+    VecFx32 tmp;
     Col c0, c1;
     if (texture != 0 && texture->texRes != 0) {
         u8 lvl = ObjShadow_GetObjAlpha(pos, cullExtent);
@@ -356,7 +356,7 @@ void ObjShadowStrip::draw(Vec3 *pos) {
             REG(0x40004a4) = (lvl << 16) | ((texture->polygonId << 24) | 0x8080);
             s32 *p7 = rowDepths;
             s32 *p28 = rowTexT;
-            Vec3 *vp = rowVertices;
+            VecFx32 *vp = rowVertices;
             REG(0x4000500) = 3;
             s32 e1 = rowDepths[1];
             u32 i = 0;

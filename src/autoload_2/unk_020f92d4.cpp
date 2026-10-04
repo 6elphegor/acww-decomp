@@ -3,7 +3,6 @@
 // SPL-style particle manager (continued from G011b): resource file loader (func_020f92d4: counts + texture table), manager creation (SPL_Init),
 // file-read callbacks (f9620/f9658), emitter draw dispatch (f969c, f9714, f97d0) and the per-emitter simulation step (spl_calc).
 #include "types.h"
-#include "game/Vec3.h"
 #include "gfx/SplManager.h"
 #include "gfx/SplRes.h"
 #include "gfx/SplEmitterViews.h"
@@ -54,7 +53,7 @@ void func_020fb378(Mc *m, Node *n, u32 a);
 
 
 
-typedef s32 (*PosCb)(Vec3 *, Vec3);
+typedef s32 (*PosCb)(VecFx32 *, VecFx32);
 typedef void (*SetFn)(s32, s32, s32, s32);
 typedef void (*MkFn)(s32, s32, Mt *);
 

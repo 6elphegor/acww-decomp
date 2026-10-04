@@ -1,4 +1,5 @@
 #include "types.h"
+#include "gfx/VecFx32.h"
 
 // mwcc-flags: -str reuse
 #include "types.h"
@@ -33,11 +34,7 @@ class ActorTalkRequest;
 class SpNpcHarriet;
 class SpNpcHarrietTalk;
 
-struct Unk_ov053_Vec {
-    s32 x, y, z;
-};
-
-struct SpNpcHarrietVecLocal : Unk_ov053_Vec {
+struct SpNpcHarrietVecLocal : VecFx32 {
     SpNpcHarrietVecLocal() {}
 };
 
@@ -51,7 +48,6 @@ struct SpNpcHarrietVecLocal : Unk_ov053_Vec {
 
 
 
-struct Unk_020d77a4_Vec3;
 
 
 
@@ -143,12 +139,12 @@ struct SpNpcHarrietActEntry {
 extern "C" {
 extern const u8 sSpNpcHarrietCoolColors[];
 extern const u8 sSpNpcHarrietWarmColors[];
-extern const Unk_ov053_Vec sSpNpcHarrietExitLine;
-extern const Unk_ov053_Vec sSpNpcHarrietReturnPos;
-extern const Unk_ov053_Vec data_ov053_0225a1a0;
+extern const VecFx32 sSpNpcHarrietExitLine;
+extern const VecFx32 sSpNpcHarrietReturnPos;
+extern const VecFx32 data_ov053_0225a1a0;
 extern const u8 sSpNpcHarrietStyleTable[];
-extern const Unk_ov053_Vec sSpNpcHarrietRouteToStation[2];
-extern const Unk_ov053_Vec sSpNpcHarrietRouteToCustomer[2];
+extern const VecFx32 sSpNpcHarrietRouteToStation[2];
+extern const VecFx32 sSpNpcHarrietRouteToCustomer[2];
 #define data_ov053_0225a1c4 ((const s32 *)((const u8 *)sSpNpcHarrietRouteToStation + 8))
 #define data_ov053_0225a1dc ((const s32 *)((const u8 *)sSpNpcHarrietRouteToCustomer + 8))
 extern const void *sSpNpcHarrietMsgKey;
@@ -170,8 +166,8 @@ s32 _ZN13NpcActionCtrl15requestPlayAnimEiijtt(void *, s32, s32, s32, u32, s32);
 s32 _ZN13NpcActionCtrl13requestActionEjiiissiitt(void *, s32, s32, s32, s32, s32, s32, s32, s32, u32, s32);
 s32 _ZN13NpcActionCtrl9getActionEv(void *);
 BOOL _ZN13NpcActionCtrl12isActionDoneEv(void *);
-void _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(void *self, Unk_ov053_Vec *v);
-void _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(void *self, u8 a, s32 b, s32 c, void *v, s32 d, s32 e, u8 f);
+void _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(void *self, VecFx32 *v);
+void _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(void *self, u8 a, s32 b, s32 c, void *v, s32 d, s32 e, u8 f);
 void _ZN11NpcMoveCtrl14setSpeedPresetEiiii(void *self, s32 a, s32 b, s32 c, s32 d);
 s32 Math_AngleXZ(void *a, void *b);
 BOOL _ZN11NpcTalkCtrl6isBusyEv(void *self);
@@ -182,7 +178,7 @@ void Bgm_ReleasePriority(u32);
 void Hud_Show();
 BOOL PlayerActor_IsInAction(s32 a, s32 b);
 BOOL PlayerActor_LocalRequestStandUp(s32 a);
-BOOL Camera_SetMode16At(Unk_ov053_Vec *v);
+BOOL Camera_SetMode16At(VecFx32 *v);
 void TalkRequest_SetTargetDone(void *self);
 void TalkRequest_AddPlayerTalk6(void *self, s32 a);
 void *Scene_GetWarpRequest();
@@ -282,12 +278,12 @@ extern "C" ActorProfile sSpNpcHarrietProfile = {(void *(*)())SpNpcHarriet_Create
 extern "C" void *data_ov053_0225a39c[2] = {(void *)_ZN12SpNpcHarriet9mainAct06Ev, 0};
 extern "C" void *data_ov053_0225a38c[2] = {(void *)_ZN12SpNpcHarriet9mainAct0AEv, 0};
 extern "C" const void *sSpNpcHarrietMsgKey = sSpNpcHarrietKey;
-extern "C" const Unk_ov053_Vec data_ov053_0225a1a0 = {0x300, 0x199, 0x199};
+extern "C" const VecFx32 data_ov053_0225a1a0 = {0x300, 0x199, 0x199};
 extern "C" void *data_ov053_0225a3a4[2] = {(void *)_ZN12SpNpcHarriet10setupAct07Ev, 0};
 extern "C" void *data_ov053_0225a344[2] = {(void *)_ZN12SpNpcHarriet9mainAct00Ev, 0};
-extern "C" const Unk_ov053_Vec sSpNpcHarrietRouteToCustomer[2] = {{0xe800, 0, 0x15800}, {0xc000, 0, 0x15000}};
+extern "C" const VecFx32 sSpNpcHarrietRouteToCustomer[2] = {{0xe800, 0, 0x15800}, {0xc000, 0, 0x15000}};
 extern "C" const u8 sSpNpcHarrietWarmColors[] = {1, 4, 2, 6};
-extern "C" const Unk_ov053_Vec sSpNpcHarrietExitLine = {0xb000, 0, 0x1d000};
+extern "C" const VecFx32 sSpNpcHarrietExitLine = {0xb000, 0, 0x1d000};
 extern "C" void *data_ov053_0225a34c[2] = {(void *)_ZN12SpNpcHarriet9mainAct09Ev, 0};
 extern "C" void *data_ov053_0225a354[2] = {(void *)_ZN12SpNpcHarriet10setupAct01Ev, 0};
 extern "C" u8 sSpNpcHarrietTexturePath[] = "npc_sp/model/poo_tex.nsbtx";
@@ -303,7 +299,7 @@ extern "C" void *data_ov053_0225a394[2] = {(void *)_ZN12SpNpcHarriet10setupAct06
 extern "C" void *data_ov053_0225a364[2] = {(void *)_ZN12SpNpcHarriet10setupAct05Ev, 0};
 extern "C" void *data_ov053_0225a3cc[2] = {(void *)_ZN12SpNpcHarriet10setupAct00Ev, 0};
 extern "C" u8 sSpNpcHarrietModelPath[] = "npc_sp/model/poo.nsbmd";
-extern "C" const Unk_ov053_Vec sSpNpcHarrietRouteToStation[2] = {{0xe000, 0, 0x15000}, {0xf000, 0, 0x17000}};
+extern "C" const VecFx32 sSpNpcHarrietRouteToStation[2] = {{0xe000, 0, 0x15000}, {0xf000, 0, 0x17000}};
 extern "C" void *data_ov053_0225a3ec[2] = {(void *)_ZN12SpNpcHarriet9mainAct01Ev, 0};
 extern "C" SpNpcHarrietActEntry sSpNpcHarrietActTable[11] = {
     {*(SpNpcHarrietActFn *)data_ov053_0225a3cc, *(SpNpcHarrietActFn *)data_ov053_0225a344},
@@ -323,7 +319,7 @@ extern "C" const u8 sSpNpcHarrietStyleTable[] = {3, 0xb, 2, 0xa, 6, 0xe, 4, 0xc,
 extern "C" void *data_ov053_0225a3ac[2] = {(void *)_ZN12SpNpcHarriet9mainAct07Ev, 0};
 extern "C" void *data_ov053_0225a3d4[2] = {(void *)_ZN12SpNpcHarriet10setupAct03Ev, 0};
 extern "C" void *data_ov053_0225a384[2] = {(void *)_ZN12SpNpcHarriet10setupAct08Ev, 0};
-extern "C" const Unk_ov053_Vec sSpNpcHarrietReturnPos = {0x10000, 0, 0x1b000};
+extern "C" const VecFx32 sSpNpcHarrietReturnPos = {0x10000, 0, 0x1b000};
 
 SpNpcHarriet *SpNpcHarriet_Create() { return new SpNpcHarriet; }
 
@@ -334,7 +330,7 @@ BOOL SpNpcHarriet::preCreate() {
     setTalkRequest((ActorTalkRequest *)&talk);
     talk.attachOwner(this);
     setCollisionRadius(0x100);
-    const Unk_ov053_Vec *d = &data_ov053_0225a1a0;
+    const VecFx32 *d = &data_ov053_0225a1a0;
     _ZN11NpcMoveCtrl14setSpeedPresetEiiii(&moveCtrl, 2, d->x, d->y, d->z);
     return TRUE;
 }
@@ -419,15 +415,15 @@ BOOL SpNpcHarriet::mainAct01() {
 }
 
 BOOL SpNpcHarriet::setupAct02() {
-    _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(&lookAt, 1, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
+    _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(&lookAt, 1, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
     NpcActor *p = (NpcActor *)talk.getTalkPlayer();
     s32 r4 = 0;
     if (p) {
         r4 = getAngleTo(p);
     }
     if (talk.getTopic() == 5) {
-        Unk_ov053_Vec v;
-        Unk_ov053_Vec *pv = (Unk_ov053_Vec *)&position;
+        VecFx32 v;
+        VecFx32 *pv = (VecFx32 *)&position;
         v.x = pv->x;
         v.y = pv->y;
         v.z = pv->z;
@@ -508,12 +504,12 @@ BOOL SpNpcHarriet::setupAct05() {
 
 BOOL SpNpcHarriet::mainAct05() {
     if (_ZN13NpcActionCtrl9getActionEv(&actionCtrl) == 6) {
-        const Unk_ov053_Vec *r = &sSpNpcHarrietRouteToStation[routeIndex];
-        Unk_ov053_Vec v;
+        const VecFx32 *r = &sSpNpcHarrietRouteToStation[routeIndex];
+        VecFx32 v;
         v.x = r->x;
         v.y = r->y;
         v.z = r->z;
-        _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(&moveCtrl, &v);
+        _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(&moveCtrl, &v);
         if (_ZN13NpcActionCtrl12isActionDoneEv(&actionCtrl)) {
             routeIndex++;
             u32 off = *(volatile u8 *)&routeIndex * 0xc;
@@ -535,8 +531,8 @@ BOOL SpNpcHarriet::mainAct05() {
 
 BOOL SpNpcHarriet::setupAct06() {
     routeIndex = 0;
-    Unk_ov053_Vec v;
-    const Unk_ov053_Vec *p = sSpNpcHarrietRouteToCustomer;
+    VecFx32 v;
+    const VecFx32 *p = sSpNpcHarrietRouteToCustomer;
     v.x = p->x;
     v.y = p->y;
     v.z = p->z;
@@ -547,12 +543,12 @@ BOOL SpNpcHarriet::setupAct06() {
 
 BOOL SpNpcHarriet::mainAct06() {
     if (_ZN13NpcActionCtrl9getActionEv(&actionCtrl) == 6) {
-        const Unk_ov053_Vec *r = &sSpNpcHarrietRouteToCustomer[routeIndex];
-        Unk_ov053_Vec v;
+        const VecFx32 *r = &sSpNpcHarrietRouteToCustomer[routeIndex];
+        VecFx32 v;
         v.x = r->x;
         v.y = r->y;
         v.z = r->z;
-        _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(&moveCtrl, &v);
+        _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(&moveCtrl, &v);
         if (_ZN13NpcActionCtrl12isActionDoneEv(&actionCtrl)) {
             routeIndex++;
             u32 off = *(volatile u8 *)&routeIndex * 0xc;
@@ -573,7 +569,7 @@ BOOL SpNpcHarriet::mainAct06() {
 }
 
 BOOL SpNpcHarriet::setupAct07() {
-    _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(&lookAt, 0, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
+    _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(&lookAt, 0, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
     routeIndex = 0;
     _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 3, 1, 0, 0, 0, 0x4000, 0, 0, data_020c6cc8, 0);
     return TRUE;
@@ -581,12 +577,12 @@ BOOL SpNpcHarriet::setupAct07() {
 
 BOOL SpNpcHarriet::mainAct07() {
     if (_ZN13NpcActionCtrl9getActionEv(&actionCtrl) == 6) {
-        const Unk_ov053_Vec *r = &sSpNpcHarrietRouteToStation[routeIndex];
-        Unk_ov053_Vec v;
+        const VecFx32 *r = &sSpNpcHarrietRouteToStation[routeIndex];
+        VecFx32 v;
         v.x = r->x;
         v.y = r->y;
         v.z = r->z;
-        _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(&moveCtrl, &v);
+        _ZN11NpcMoveCtrl11setWaypointEP7VecFx32(&moveCtrl, &v);
         if (_ZN13NpcActionCtrl12isActionDoneEv(&actionCtrl)) {
             routeIndex++;
             u32 t = data_020c6cc8;
@@ -646,11 +642,11 @@ BOOL SpNpcHarriet::setupAct09() {
 BOOL SpNpcHarriet::mainAct09() {
     PlayerData_GetCurrent();
     SpNpcHarrietVecLocal v;
-    Unk_ov053_Vec *src = (Unk_ov053_Vec *)PlayerActor_GetBodyPos(4);
-    *(Unk_ov053_Vec *)&v = *src;
+    VecFx32 *src = (VecFx32 *)PlayerActor_GetBodyPos(4);
+    *(VecFx32 *)&v = *src;
     s32 bx1 = 0, by1 = 0, bx2 = 0, by2 = 0;
     SpNpcHarrietVecLocal w;
-    *(Unk_ov053_Vec *)&w = sSpNpcHarrietReturnPos;
+    *(VecFx32 *)&w = sSpNpcHarrietReturnPos;
     s32 dx = w.x, dy = w.y, dz = w.z;
     FieldPos_ToUnit(&bx2, &by2, &w);
     FieldPos_ToUnit(&bx1, &by1, &v);
@@ -947,8 +943,8 @@ BOOL SpNpcHarriet::tryChairTalk() {
     }
     PlayerData_GetCurrent();
     SpNpcHarrietVecLocal v;
-    Unk_ov053_Vec *src = (Unk_ov053_Vec *)PlayerActor_GetBodyPos(4);
-    *(Unk_ov053_Vec *)&v = *src;
+    VecFx32 *src = (VecFx32 *)PlayerActor_GetBodyPos(4);
+    *(VecFx32 *)&v = *src;
     s32 bx = 0, by = 0;
     FieldPos_ToUnit(&bx, &by, &v);
     if ((PlayerActor_IsInAction(0x25, 4) || PlayerActor_IsInAction(0x28, 4)) && TalkRequest_AddPlayerTalk7(this, 0)) {
@@ -976,8 +972,8 @@ BOOL SpNpcHarriet::tryLeavePaidTalk() {
         return FALSE;
     }
     SpNpcHarrietVecLocal v;
-    Unk_ov053_Vec *src = (Unk_ov053_Vec *)PlayerActor_GetBodyPos(4);
-    *(Unk_ov053_Vec *)&v = *src;
+    VecFx32 *src = (VecFx32 *)PlayerActor_GetBodyPos(4);
+    *(VecFx32 *)&v = *src;
     if (v.z > sSpNpcHarrietExitLine.z) {
         talk.setTopic(8);
         TalkRequest_AddPlayerTalk6(this, 0);
@@ -988,8 +984,8 @@ BOOL SpNpcHarriet::tryLeavePaidTalk() {
 
 BOOL SpNpcHarriet::tryFarewellTalk() {
     SpNpcHarrietVecLocal v;
-    Unk_ov053_Vec *src = (Unk_ov053_Vec *)PlayerActor_GetBodyPos(4);
-    *(Unk_ov053_Vec *)&v = *src;
+    VecFx32 *src = (VecFx32 *)PlayerActor_GetBodyPos(4);
+    *(VecFx32 *)&v = *src;
     if (Ground_IsOnLockedExit(&v)) {
         talk.setTopic(10);
         TalkRequest_AddPlayerTalk6(this, 0);

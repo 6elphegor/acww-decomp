@@ -2,8 +2,8 @@
 #define SND_SNDSEEMITTER_H
 
 #include "types.h"
+#include "gfx/VecFx32.h"
 
-struct Unk_02003a6c_Vec;
 
 // sound handle (functions in unk_020ede18.cpp, plain C names): the non-polymorphic second base of SndSeEmitter, at +4
 struct SndHandle {
@@ -30,10 +30,10 @@ public:
     // non-virtual wrappers of init / update / stop defined in main (src/main/unk_020039ec.cpp; the Alt ones are
     // byte-identical twins); the relative update subtracts the camera eye position first
     void callInit();
-    void callUpdateRelative(Unk_02003a6c_Vec *v);
+    void callUpdateRelative(VecFx32 *v);
     void callStop();
     void callInitAlt();
-    void callUpdateRelativeAlt(Unk_02003a6c_Vec *v);
+    void callUpdateRelativeAlt(VecFx32 *v);
     void callStopAlt();
 
     /* 0x3c */ u16 h3c;

@@ -155,7 +155,6 @@ public:
 
 
 
-struct Unk_020d77a4_Vec3;
 
 
 

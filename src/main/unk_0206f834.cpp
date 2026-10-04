@@ -1,7 +1,7 @@
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "text/Unk_02050288.h"
-#include "gfx/Unk_0206fd10_Vec.h"
-#include "game/Unk_0206f6fc_Pos.h"
+#include "gfx/Mtx43.h"
 #include "talk/MsgStringBase.h"
 #include "talk/MsgStringAttr.h"
 #include "talk/EncodedStringBase.h"
@@ -393,7 +393,7 @@ void String_Load2dMenuByRef(void *a, u8 *p);
 }
 
 extern "C" {
-void CpuMtx_MultRotScaledTrans(void *a, Unk_0206fd10_Vec *v, Unk_0206fd10_Vec *w);
+void CpuMtx_MultRotScaledTrans(void *a, VecFx32 *v, VecFx32 *w);
 }
 
 extern "C" {
@@ -401,11 +401,11 @@ void CpuMtx_MultRot(void *a);
 }
 
 extern "C" {
-void CpuMtx_MultTrans(Unk_0206fd10_Vec *v);
+void CpuMtx_MultTrans(VecFx32 *v);
 }
 
 extern "C" {
-void CpuMtx_MultRotTrans(void *a, Unk_0206fd10_Vec *v);
+void CpuMtx_MultRotTrans(void *a, VecFx32 *v);
 }
 
 extern "C" {

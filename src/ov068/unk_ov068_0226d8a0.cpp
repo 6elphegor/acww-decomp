@@ -1,7 +1,6 @@
 // mwcc-version: 1.2/base
 #include "types.h"
 #include "actor/CharacterListNode.h"
-#include "game/Unk_ov004_02224ee4_Vec.h"
 #include "gfx/DebugColor.h"
 #include "actor/ActorProfile.h"
 #include "gfx/AnimFrameCtrl.h"

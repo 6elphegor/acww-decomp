@@ -1,4 +1,5 @@
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "Unk_020d8c7c.h"
 #include "town/TownMapMarkers.h"
 #include "ui/UiWidget.h"
@@ -334,10 +335,6 @@ static inline BOOL Unk_ov118_022946d4_Both() {
     return FALSE;
 }
 
-struct Unk_ov118_02294a58_Vec {
-    s32 x, y, z;
-};
-
 static inline BOOL Unk_ov118_02294a58_IsZero(u8 v) {
     return v == 0 ? TRUE : FALSE;
 }
@@ -647,8 +644,8 @@ void MapTab::stateClosing() {
 }
 
 void MapTab::initMapTab() {
-    volatile Unk_ov118_02294a58_Vec v;
-    Unk_ov118_02294a58_Vec *p;
+    volatile VecFx32 v;
+    VecFx32 *p;
     labelCount = 0;
     flags = 0;
     listScroll = 0;
@@ -663,13 +660,13 @@ void MapTab::initMapTab() {
     selectEntry(0);
     buildEntryLists();
     if (Unk_ov118_02294a58_IsZero(gFieldSceneKind)) {
-        p = (Unk_ov118_02294a58_Vec *)PlayerActor_GetBodyPos(4);
+        p = (VecFx32 *)PlayerActor_GetBodyPos(4);
         v.x = p->x;
         v.y = p->y;
         v.z = p->z;
     } else {
         Scene_GetWarpRequest();
-        p = (Unk_ov118_02294a58_Vec *)ScenePos_GetPos(gTownReturnPos);
+        p = (VecFx32 *)ScenePos_GetPos(gTownReturnPos);
         v.x = p->x;
         v.y = p->y;
         v.z = p->z;
