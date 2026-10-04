@@ -26,12 +26,12 @@ struct Unk_ov065_02288b60_Ent {
     u32 addr2;
     u16 port2;
     u16 pad_0e;
-    s32 unk_10;
-    u8 unk_14;
-    u8 unk_15;
+    s32 altAddr;
+    u8 stateFlags;
+    u8 listFlags;
     u16 pad_16;
-    void *unk_18;
-    u32 unk_1c;
+    void *keyValues;
+    u32 ping;
     Unk_ov065_02288b60_Ent *next;
 };
 
@@ -51,7 +51,7 @@ struct Unk_ov065_02288b60_Mgr {
     Unk_ov065_02288c78_List pending;
     s32 sock;
     s32 sock2;
-    u32 unk_28;
+    u32 publicIp;
     u8 key[0x14];
     s32 keycount;
     Unk_ov065_02288b60_Cb cb;
@@ -124,22 +124,22 @@ void GsSrvQuery_SendQuery(Mgr *m, Ent *e) {
     u8 buf[0x100];
     s32 len;
     GsSrvQueue_PushBack(&m->active, e);
-    e->unk_1c = GsUtil_GetTimeMs();
+    e->ping = GsUtil_GetTimeMs();
     sa.family = 2;
-    if ((e->unk_14 & 0x20) == 0) {
+    if ((e->stateFlags & 0x20) == 0) {
         if (m->mode == 1) {
             buf[0] = 0xfe;
             buf[1] = 0xfd;
             buf[2] = 0;
             {
                 u8 *q = &buf[3];
-                u8 *t = (u8 *)&e->unk_1c;
+                u8 *t = (u8 *)&e->ping;
                 q[0] = t[0];
                 q[1] = t[1];
                 q[2] = t[2];
                 q[3] = t[3];
             }
-            if (e->unk_14 & 4) {
+            if (e->stateFlags & 4) {
                 s32 i = 0;
                 buf[7] = m->keycount;
                 if (m->keycount > 0) {
@@ -158,7 +158,7 @@ void GsSrvQuery_SendQuery(Mgr *m, Ent *e) {
                 len = 10;
             }
         } else {
-            if (e->unk_14 & 4) {
+            if (e->stateFlags & 4) {
                 u8 *d = buf;
                 u8 *sp = (u8 *)"\\basic\\\\info\\";
                 u8 *k = (u8 *)13;
@@ -178,7 +178,7 @@ void GsSrvQuery_SendQuery(Mgr *m, Ent *e) {
                 len = 8;
             }
         }
-        if (e->addr == m->unk_28 && (e->unk_15 & 2) != 0) {
+        if (e->addr == m->publicIp && (e->listFlags & 2) != 0) {
             sa.addr = e->addr2;
             sa.port = e->port2;
         } else {
@@ -197,7 +197,7 @@ void GsSrvQuery_Init(Mgr *m, s32 max, s32 mode, s32 force, Unk_ov065_02288b60_Cb
         m->keycount = 0;
         m->cb = cb;
         m->user = user;
-        m->unk_28 = 0;
+        m->publicIp = 0;
         m->sock = GsSock_Socket(2, 2, 0);
         GsSrvQueue_Init(&m->pending);
         GsSrvQueue_Init(&m->active);
@@ -205,7 +205,7 @@ void GsSrvQuery_Init(Mgr *m, s32 max, s32 mode, s32 force, Unk_ov065_02288b60_Cb
 }
 
 void GsSrvQuery_SetPublicIp(Mgr *m, u32 v) {
-    m->unk_28 = v;
+    m->publicIp = v;
 }
 
 void GsSrvQuery_Clear(Mgr *m) {
@@ -221,7 +221,7 @@ void GsSrvQuery_Shutdown(Mgr *m) {
 }
 
 void GsSrvQuery_Add(Mgr *m, Ent *e, s32 front, s32 code) {
-    u8 *p = &e->unk_14;
+    u8 *p = &e->stateFlags;
     *p &= 0xc3;
     if (code == 0) {
         *p |= 4;
@@ -247,7 +247,7 @@ void GsSrvQuery_HandleQr2Reply(Mgr *m, Ent *e, u8 *buf, s32 n) {
     if (*(s8 *)buf == 0) {
         buf += 5;
         n -= 5;
-        if (e->unk_14 & 4) {
+        if (e->stateFlags & 4) {
             if (m->keycount > 0) {
                 do {
                     r = GsUtil_StrSizeInBuffer(buf, n);
@@ -260,13 +260,13 @@ void GsSrvQuery_HandleQr2Reply(Mgr *m, Ent *e, u8 *buf, s32 n) {
                     i++;
                 } while (i < m->keycount);
             }
-            e->unk_14 |= 0x41;
+            e->stateFlags |= 0x41;
         } else {
             GsServer_ParseQr2Reply(e, buf, n);
-            e->unk_14 |= 0x43;
+            e->stateFlags |= 0x43;
         }
-        e->unk_14 &= 0xf3;
-        e->unk_1c = GsUtil_GetTimeMs() - e->unk_1c;
+        e->stateFlags &= 0xf3;
+        e->ping = GsUtil_GetTimeMs() - e->ping;
         GsSrvQueue_Remove(&m->active, e);
         m->cb(m, 0, e, m->user);
     }
@@ -281,13 +281,13 @@ void GsSrvQuery_HandleQr1Reply(Mgr *m, Ent *e, u8 *buf, s32 n) {
     }
     GsServer_ParseQr1Reply(e, buf);
     if (found) {
-        if (e->unk_14 & 4) {
-            e->unk_14 |= 0x41;
+        if (e->stateFlags & 4) {
+            e->stateFlags |= 0x41;
         } else {
-            e->unk_14 |= 0x42;
+            e->stateFlags |= 0x42;
         }
-        e->unk_14 &= 0xf3;
-        e->unk_1c = GsUtil_GetTimeMs() - e->unk_1c;
+        e->stateFlags &= 0xf3;
+        e->ping = GsUtil_GetTimeMs() - e->ping;
         GsSrvQueue_Remove(&m->active, e);
         m->cb(m, 0, e, m->user);
     }
@@ -316,7 +316,7 @@ void GsSrvQuery_ReceiveAll(Mgr *m, s32 flag) {
         }
         buf[n] = 0;
         for (e = m->active.head; e != 0; e = e->next) {
-            if (flag != 0 && (e->unk_15 & 8) != 0 && e->unk_10 == sa.addr) {
+            if (flag != 0 && (e->listFlags & 8) != 0 && e->altAddr == sa.addr) {
                 goto match;
             }
             if (e->addr == sa.addr) {
@@ -327,7 +327,7 @@ void GsSrvQuery_ReceiveAll(Mgr *m, s32 flag) {
                     goto match;
                 }
             }
-            if (e->addr == m->unk_28 && (e->unk_15 & 2) != 0 && e->addr2 == sa.addr && e->port2 == sa.port) {
+            if (e->addr == m->publicIp && (e->listFlags & 2) != 0 && e->addr2 == sa.addr && e->port2 == sa.port) {
             match:
                 if (flag != 0) {
                     if (GsSrvQuery_HandleAltReplyStub(m, e, buf, n) != 0) {
@@ -351,12 +351,12 @@ void GsSrvQuery_CheckTimeouts(Mgr *m) {
     Ent *e = m->active.head;
     if (e != 0) {
         do {
-            if (now <= e->unk_1c + 0x9c4) {
+            if (now <= e->ping + 0x9c4) {
                 return;
             }
-            e->unk_15 |= 0x10;
-            m->active.head->unk_1c = 0x9c4;
-            m->active.head->unk_15 &= 0xd3;
+            e->listFlags |= 0x10;
+            m->active.head->ping = 0x9c4;
+            m->active.head->listFlags &= 0xd3;
             m->cb(m, 1, m->active.head, m->user);
             GsSrvQueue_PopFront(&m->active);
             e = m->active.head;

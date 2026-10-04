@@ -29,31 +29,31 @@ struct Unk_ov065_0228909c_P {
 
 struct Unk_ov065_02289044_Hdr {
     u8 pad_00[4];
-    u16 unk_04;
+    u16 port;
     u8 pad_06[6];
-    u16 unk_0c;
+    u16 port2;
     u8 pad_0e[7];
-    u8 unk_15;
+    u8 listFlags;
 };
 
 struct Unk_ov065_02289174_Ctx {
     u8 pad_00[0x18];
-    void *unk_18;
+    void *keyValues;
 };
 
 struct Unk_ov065_0228911c_Ent {
-    s32 unk_00;
-    s32 unk_04;
+    s32 key;
+    s32 value;
 };
 
 struct Unk_ov065_02289174_KV {
-    s32 unk_00;
-    s32 unk_04;
+    s32 key;
+    s32 value;
 };
 
 struct Unk_ov065_0228903c_Obj {
     u8 pad_00[0x20];
-    s32 unk_20;
+    s32 next;
 };
 
 struct Unk_ov065_02289578_Pkt {
@@ -78,21 +78,21 @@ struct Unk_ov065_02289720_Sub {
 
 struct Unk_ov065_02289460_Obj {
     u8 pad_00[0x10];
-    s32 unk_10;
+    s32 numActiveQueries;
     u8 pad_14[0x2c];
-    s32 unk_40;
+    s32 numQueryKeys;
     u8 pad_44[8];
-    s32 unk_4c;
+    s32 serverList;
     u8 pad_50[0x49c];
-    s32 unk_4ec;
+    s32 myPublicIp;
     u8 pad_4f0[0x130];
-    s32 unk_620;
-    s32 unk_624;
-    u32 unk_628;
-    u16 unk_62c;
+    s32 disconnectOnComplete;
+    s32 noAutoQuery;
+    u32 waitServerIp;
+    u16 waitServerPort;
     u8 pad_62e[2];
     void (*unk_630)(Unk_ov065_02289460_Obj *, s32, void *, void *);
-    void *unk_634;
+    void *userData;
 };
 
 struct Unk_ov065_02289578_Sub {
@@ -2130,7 +2130,7 @@ extern "C" {
 void GsSrvBrowser_OnListEvent(Unk_ov065_02289578_Sub *s, s32 code, Unk_ov065_02289578_Pkt *p, Unk_ov065_02289460_Obj *o) {
     switch (code) {
     case 0:
-        o->unk_630(o, 0, p, o->unk_634);
+        o->unk_630(o, 0, p, o->userData);
         if ((p->unk_14 & 3) != 0) {
             if ((p->unk_14 & 0x40) != 0) {
                 break;
@@ -2139,13 +2139,13 @@ void GsSrvBrowser_OnListEvent(Unk_ov065_02289578_Sub *s, s32 code, Unk_ov065_022
         if ((p->unk_14 & 0x2c) != 0) {
             break;
         }
-        if (o->unk_624 != 0) {
+        if (o->noAutoQuery != 0) {
             break;
         }
         {
             s32 m;
             if ((p->unk_15 & 1) != 0) {
-                if (o->unk_4c == 0 || o->unk_40 == 0) {
+                if (o->serverList == 0 || o->numQueryKeys == 0) {
                     m = 1;
                 } else {
                     m = 0;
@@ -2158,37 +2158,37 @@ void GsSrvBrowser_OnListEvent(Unk_ov065_02289578_Sub *s, s32 code, Unk_ov065_022
         break;
     case 1:
         if ((p->unk_14 & 0x43) == 0) {
-            o->unk_630(o, 2, p, o->unk_634);
+            o->unk_630(o, 2, p, o->userData);
         } else {
-            o->unk_630(o, 1, p, o->unk_634);
+            o->unk_630(o, 1, p, o->userData);
         }
         break;
     case 2:
         if ((p->unk_14 & 0x2c) != 0) {
             GsSrvQuery_Remove(o, p);
         }
-        o->unk_630(o, 3, p, o->unk_634);
+        o->unk_630(o, 3, p, o->userData);
         break;
     case 3:
-        if (o->unk_620 != 0) {
+        if (o->disconnectOnComplete != 0) {
             GsSrvList_Disconnect(s);
         }
-        if (GsArray_Count(s->unk_04) == 0 || o->unk_10 == 0) {
-            o->unk_630(o, 4, NULL, o->unk_634);
+        if (GsArray_Count(s->unk_04) == 0 || o->numActiveQueries == 0) {
+            o->unk_630(o, 4, NULL, o->userData);
         }
         break;
     case 4:
         break;
     case 5:
-        o->unk_630(o, 5, NULL, o->unk_634);
+        o->unk_630(o, 5, NULL, o->userData);
         break;
     case 6:
-        GsSrvQuery_SetPublicIp(o, o->unk_4ec);
+        GsSrvQuery_SetPublicIp(o, o->myPublicIp);
         break;
     }
     if (p != NULL) {
-        if (p->unk_00 == o->unk_628 && p->unk_04 == o->unk_62c) {
-            o->unk_628 = 0;
+        if (p->unk_00 == o->waitServerIp && p->unk_04 == o->waitServerPort) {
+            o->waitServerIp = 0;
         }
     }
 }
@@ -2200,18 +2200,18 @@ extern "C" {
 void GsSrvBrowser_OnQueryEvent(void *a, s32 code, Unk_ov065_02289578_Pkt *p, Unk_ov065_02289460_Obj *o) {
     switch (code) {
     case 1:
-        o->unk_630(o, 2, p, o->unk_634);
+        o->unk_630(o, 2, p, o->userData);
         break;
     case 0:
-        o->unk_630(o, 1, p, o->unk_634);
+        o->unk_630(o, 1, p, o->userData);
         break;
     case 2:
-        o->unk_630(o, 4, p, o->unk_634);
+        o->unk_630(o, 4, p, o->userData);
         break;
     }
     if (p != NULL) {
-        if (p->unk_00 == o->unk_628 && p->unk_04 == o->unk_62c) {
-            o->unk_628 = 0;
+        if (p->unk_00 == o->waitServerIp && p->unk_04 == o->waitServerPort) {
+            o->waitServerIp = 0;
         }
     }
 }
@@ -2230,9 +2230,9 @@ Unk_ov065_02289460_Obj *GsSrvBrowser_New(s32 a, s32 b, s32 c, s32 d, s32 s5, s32
         return NULL;
     }
     o->unk_630 = (void (*)(Unk_ov065_02289460_Obj *, s32, void *, void *))s8;
-    o->unk_634 = s9;
-    o->unk_624 = 0;
-    GsSrvList_Init(&o->unk_4c, a, b, c, d, s7, (void *)GsSrvBrowser_OnListEvent, o);
+    o->userData = s9;
+    o->noAutoQuery = 0;
+    GsSrvList_Init(&o->serverList, a, b, c, d, s7, (void *)GsSrvBrowser_OnListEvent, o);
     GsSrvQuery_Init(o, s5, s6, s7, (void *)GsSrvBrowser_OnQueryEvent, o);
     return o;
 }
@@ -2242,7 +2242,7 @@ Unk_ov065_02289460_Obj *GsSrvBrowser_New(s32 a, s32 b, s32 c, s32 d, s32 s5, s32
 namespace F02288e2c {
 extern "C" {
 void GsSrvBrowser_Free(Unk_ov065_02289460_Obj *o) {
-    GsSrvList_Free(&o->unk_4c);
+    GsSrvList_Free(&o->serverList);
     GsSrvQuery_Shutdown(o);
     GsUtil_Free(o);
 }

@@ -83,17 +83,17 @@ struct Unk_ov065_022833b4_Pair {
 
 struct Unk_ov065_022833b4_Src {
     u8 pad_00[0xc];
-    Unk_ov065_022833b4_Pair unk_0c;
+    Unk_ov065_022833b4_Pair callback;
 };
 
 struct Unk_ov065_022837bc_Ent {
-    u32 unk_00;
-    s32 unk_04;
-    s32 unk_08;
+    u32 requestType;
+    s32 localId;
+    s32 profileId;
     s32 unk_0c;
     s32 unk_10;
-    s32 unk_14;
-    void *unk_18;
+    s32 userData;
+    void *callback;
 };
 
 struct Unk_ov065_02283744_Buf {
@@ -221,21 +221,21 @@ extern "C" {
 struct Unk_ov065_022786bc_Vec;
 
 struct Unk_ov065_02284100_Buf {
-    char *unk_00;
-    s32 unk_04;
-    s32 unk_08;
+    char *data;
+    s32 size;
+    s32 len;
 };
 
 struct Unk_ov065_0228412c_Obj {
-    s32 unk_00;
-    s32 unk_04;
-    s32 unk_08;
-    s32 unk_0c;
-    s32 unk_10;
-    s32 unk_14;
-    s32 unk_18;
-    s32 unk_1c;
-    s32 unk_20;
+    s32 sock;
+    s32 localIp;
+    s32 localPort;
+    s32 connections;
+    s32 closedConnections;
+    s32 freePending;
+    s32 hasError;
+    s32 callbackLevel;
+    s32 connectAttemptCallback;
     s32 unk_24;
     s32 (*unk_28)(Unk_ov065_0228412c_Obj *, Unk_ov065_0228412c_Obj *, s32, s32, s32, s32, s32);
     s32 (*unk_2c)(Unk_ov065_0228412c_Obj *, Unk_ov065_0228412c_Obj *, s32, s32, s32, s32, s32);
@@ -637,20 +637,20 @@ namespace N02282f90 { extern "C" {
 s32 GsPersist_CompleteRequest(s32 idx, s32 a, s32 b, void *p3, s32 p4) {
     if (idx >= 0 && idx < GsArray_Count(sGsPersistRequests)) {
         Unk_ov065_022837bc_Ent *e = (Unk_ov065_022837bc_Ent *)GsArray_At(sGsPersistRequests, idx);
-        void *cb = e->unk_18;
+        void *cb = e->callback;
         if (cb != NULL) {
-            switch (e->unk_00) {
+            switch (e->requestType) {
             case 0:
-                ((Unk_ov065_022837bc_Cb0)cb)(e->unk_04, e->unk_08, a, p3, e->unk_14);
+                ((Unk_ov065_022837bc_Cb0)cb)(e->localId, e->profileId, a, p3, e->userData);
                 break;
             case 1:
-                ((Unk_ov065_022837bc_Cb1)cb)(e->unk_04, e->unk_08, e->unk_0c, e->unk_10, a, b, p3, p4, e->unk_14);
+                ((Unk_ov065_022837bc_Cb1)cb)(e->localId, e->profileId, e->unk_0c, e->unk_10, a, b, p3, p4, e->userData);
                 break;
             case 2:
-                ((Unk_ov065_022837bc_Cb2)cb)(e->unk_04, e->unk_08, e->unk_0c, e->unk_10, a, b, e->unk_14);
+                ((Unk_ov065_022837bc_Cb2)cb)(e->localId, e->profileId, e->unk_0c, e->unk_10, a, b, e->userData);
                 break;
             case 3:
-                ((Unk_ov065_022837bc_Cb3)cb)(e->unk_04, e->unk_08, a, e->unk_14);
+                ((Unk_ov065_022837bc_Cb3)cb)(e->localId, e->profileId, a, e->userData);
                 break;
             }
         }

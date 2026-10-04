@@ -77,17 +77,17 @@ struct Unk_ov065_022833b4_Pair {
 
 struct Unk_ov065_022833b4_Src {
     u8 pad_00[0xc];
-    Unk_ov065_022833b4_Pair unk_0c;
+    Unk_ov065_022833b4_Pair callback;
 };
 
 struct Unk_ov065_022837bc_Ent {
-    u32 unk_00;
-    s32 unk_04;
-    s32 unk_08;
+    u32 requestType;
+    s32 localId;
+    s32 profileId;
     s32 unk_0c;
     s32 unk_10;
-    s32 unk_14;
-    void *unk_18;
+    s32 userData;
+    void *callback;
 };
 
 struct Unk_ov065_02283744_Buf {
@@ -361,7 +361,7 @@ s32 GsGp_ProcessRnReply(void *h, Unk_ov065_022833b4_Src *s, char *str) {
         GsGp_CallErrorCallback(h, 3, 1);
         return 3;
     }
-    pr = s->unk_0c;
+    pr = s->callback;
     if (pr.v[0] != 0) {
         p = (s32 *)GsUtil_Alloc(4);
         if (p == NULL) {
