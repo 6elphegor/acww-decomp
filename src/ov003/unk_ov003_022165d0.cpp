@@ -308,7 +308,7 @@ public:
     void bindHouseTex();
     void loadHouseTex();
 
-    /* 0x2b0 */ void *unk_2b0;
+    /* 0x2b0 */ void *roofTex;
     /* 0x2b4 */ void *unk_2b4;
 };
 
@@ -366,16 +366,16 @@ extern "C" char *PlayerHouse_GetTexPath() {
 
 void PlayerHouse::loadHouseTex() {
     void *r4 = File_LoadAlloc(PlayerHouse_GetTexPath(), gCurrentHeap, -4, 0);
-    unk_2b0 = NNS_G3dGetTex(r4);
-    if (Gfx3d_LoadTex(unk_2b0, 0)) {
-        unk_2b0 = Gfx3d_CopyTex(unk_2b0, gFieldStructureHeap);
+    roofTex = NNS_G3dGetTex(r4);
+    if (Gfx3d_LoadTex(roofTex, 0)) {
+        roofTex = Gfx3d_CopyTex(roofTex, gFieldStructureHeap);
     }
     Mem_Free(r4);
 }
 
 void PlayerHouse::bindHouseTex() {
-    if (unk_2b0) {
-        NNS_G3dBindMdlTex(modelRes, unk_2b0);
+    if (roofTex) {
+        NNS_G3dBindMdlTex(modelRes, roofTex);
     }
     if (unk_2b4) {
         NNS_G3dBindMdlTex(modelRes, unk_2b4);

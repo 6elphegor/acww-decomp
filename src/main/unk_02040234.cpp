@@ -6,8 +6,8 @@ struct Unk_0203fe18_B4Bytes { u8 b0, b1, b2, b3; };
 union Unk_0203fe18_B4 { u32 w; Unk_0203fe18_B4Bytes b; };
 struct Unk_0203fe18_B3 { u8 b0, b1, b2; };
 struct Unk_020400b0_Big { u8 pad[0x15e28]; u8 unk_15e28; u8 unk_15e29; u8 unk_15e2a; };
-struct Unk_0203ff20_Entry { u16 unk_00; u8 unk_02, unk_03, unk_04, unk_05; };
-struct Unk_0203ff50_Slot { u8 pad[0x10]; u8 unk_10, unk_11; u8 unk_12, unk_13; Unk_0203ff20_Entry ent[5]; long long unk_34; };
+struct Unk_0203ff20_Entry { u16 date; u8 eventId, state, occurred, playerMask; };
+struct Unk_0203ff50_Slot { u8 pad[0x10]; u8 reddWeekday, unk_11; u8 todayEventId, todayWeekday; Unk_0203ff20_Entry ent[5]; long long weekStart; };
 class ReddPassword {
 public:
     BOOL dropPassword();
@@ -335,13 +335,13 @@ extern "C" void EventWeekSlots_MarkPastDays(Unk_0203ff50_Slot *s) {
     for (; i <= r6; i++) {
         Unk_0203ff20_Entry *e = EventWeekSlots_Get(s, i + 1);
         if (e) {
-            if (e->unk_02 != 0x63) {
+            if (e->eventId != 0x63) {
                 BOOL ok;
                 MI_CpuCopy8(&d, &c2, 8);
-                ok = EventDayList_GetState(e->unk_02, &c2, arr) == 0 ? TRUE : z;
+                ok = EventDayList_GetState(e->eventId, &c2, arr) == 0 ? TRUE : z;
                 if (ok) {
                     EventWeekSlot_MarkAllPlayers(e);
-                } else if (i != r6 && e->unk_02 == 0x45) {
+                } else if (i != r6 && e->eventId == 0x45) {
                     EventWeekSlot_MarkAllPlayers(e);
                 }
             }
@@ -364,9 +364,9 @@ extern "C" void EventWeekSlots_UpdateWeek(Unk_0203ff50_Slot *s, s32 flag) {
     r6 = Clock_GetWeekday();
     sEventWeekLastHour = d.b2;
     DateTime_GetWeekStart(&d, &t);
-    if (s->unk_34 == 0 || s->unk_34 != t || flag != 0) {
+    if (s->weekStart == 0 || s->weekStart != t || flag != 0) {
         Unk_0203ff20_Entry *e = EventWeekSlots_Get(s, 1);
-        for (i = 0; i < 5; e++, i++) a[i] = e->unk_02;
+        for (i = 0; i < 5; e++, i++) a[i] = e->eventId;
         a[5] = 0x63;
         EventWeekSlots_ClearWeek(s);
         MI_CpuCopy8(&t, &c1, 8);
@@ -377,16 +377,16 @@ extern "C" void EventWeekSlots_UpdateWeek(Unk_0203ff50_Slot *s, s32 flag) {
         EventWeekSlots_PlaceVisitors(s, arr, &cnt, a, &c3);
         MI_CpuCopy8(&t, &c4, 8);
         EventWeekSlots_PlacePete(s, arr, &cnt, &c4);
-        MI_CpuCopy8(&t, &s->unk_34, 8);
+        MI_CpuCopy8(&t, &s->weekStart, 8);
     }
     EventWeekSlots_MarkPastDays(s);
     idx = EventWeekSlots_FindId(s, 0x3d);
     if ((u32)(idx - r6) <= 1) {
         Unk_0203ff20_Entry *e = EventWeekSlots_Get(s, idx);
         if (e) {
-            if (e->unk_04 == 0) {
+            if (e->occurred == 0) {
                 ReddShop_SendPasswordLetters();
-                e->unk_04 = 1;
+                e->occurred = 1;
             }
         }
     }
@@ -410,14 +410,14 @@ extern "C" void EventWeekSlots_UpdateToday(void) {
             sEventWeekLastHour = t;
             e = EventWeekSlots_GetToday((Unk_0203ff50_Slot *)(g + 0x15e18));
             if (e) {
-                u32 id = e->unk_02;
+                u32 id = e->eventId;
                 if (id != 0x63) {
                     s32 r;
                     MI_CpuCopy8(&d, &c, 8);
                     r = Event_GetStateAt(id, &c, 0);
-                    switch (e->unk_03) {
+                    switch (e->state) {
                     case 0:
-                        if (r == 2) e->unk_03 = 1;
+                        if (r == 2) e->state = 1;
                         break;
                     case 1:
                         if (r == 0) EventWeekSlot_MarkAllPlayers(e);
@@ -434,7 +434,7 @@ extern "C" s32 EventWeekSlots_FindId(Unk_0203ff50_Slot *s, u32 id) {
     Unk_0203ff20_Entry *e = EventWeekSlots_Get(s, 1);
     s32 i;
     for (i = 0; i < 5; e++, i++) {
-        if (id == e->unk_02) {
+        if (id == e->eventId) {
             r = i + 1;
             break;
         }

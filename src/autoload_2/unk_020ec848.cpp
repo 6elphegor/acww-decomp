@@ -30,11 +30,11 @@ public:
     virtual void *getGroupId() = 0;
     virtual void *doAdjust() = 0;
 
-    /* 0x04 */ u32 unk_04;
-    /* 0x08 */ void *unk_08;
-    /* 0x0c */ Heap *unk_0c; // parent heap
-    /* 0x10 */ u32 unk_10;
-    /* 0x14 */ void *unk_14;
+    /* 0x04 */ u32 regionStart;
+    /* 0x08 */ void *regionSize;
+    /* 0x0c */ Heap *parentHeap; // parent heap
+    /* 0x10 */ u32 heapFlags;
+    /* 0x14 */ void *heapHandle;
 };
 
 class ProcBase;
@@ -45,15 +45,15 @@ struct TreeNode {
     /* 0x04 */ TreeNode *unk_04;
     /* 0x08 */ TreeNode *unk_08;
     /* 0x0c */ TreeNode *unk_0c;
-    /* 0x10 */ ProcBase *unk_10; // owner
+    /* 0x10 */ ProcBase *owner; // owner
 };
 
 struct QNode {
-    /* 0x00 */ QNode *unk_00;
-    /* 0x04 */ QNode *unk_04;
-    /* 0x08 */ ProcBase *unk_08;
-    /* 0x0c */ u16 unk_0c;
-    /* 0x0e */ u16 unk_0e;
+    /* 0x00 */ QNode *prev;
+    /* 0x04 */ QNode *next;
+    /* 0x08 */ ProcBase *owner;
+    /* 0x0c */ u16 priority;
+    /* 0x0e */ u16 pendingPriority;
 };
 
 struct QList {
@@ -104,8 +104,8 @@ public:
 
 struct SceneDesc {
     ProcBase *(*unk_00)(void);
-    u16 unk_04;
-    u16 unk_06;
+    u16 executePriority;
+    u16 drawPriority;
 };
 
 extern "C" {
@@ -187,17 +187,17 @@ static inline BOOL isTwo(u32 v) {
 extern "C" ProcBase *_ZN8ProcBaseC2Ev(ProcBase *self) {
     *(u32 **)self = data_0213b15c;
     func_020e7b80(&self->treeNode);
-    self->treeNode.unk_10 = self;
-    self->executeNode.unk_00 = NULL;
-    self->executeNode.unk_04 = NULL;
-    self->executeNode.unk_08 = self;
-    self->executeNode.unk_0c = 0;
-    self->executeNode.unk_0e = 0;
-    self->drawNode.unk_00 = NULL;
-    self->drawNode.unk_04 = NULL;
-    self->drawNode.unk_08 = self;
-    self->drawNode.unk_0c = 0;
-    self->drawNode.unk_0e = 0;
+    self->treeNode.owner = self;
+    self->executeNode.prev = NULL;
+    self->executeNode.next = NULL;
+    self->executeNode.owner = self;
+    self->executeNode.priority = 0;
+    self->executeNode.pendingPriority = 0;
+    self->drawNode.prev = NULL;
+    self->drawNode.next = NULL;
+    self->drawNode.owner = self;
+    self->drawNode.priority = 0;
+    self->drawNode.pendingPriority = 0;
     self->id = sProcNextId;
     sProcNextId++;
     self->param = sProcCreateParam;
@@ -205,14 +205,14 @@ extern "C" ProcBase *_ZN8ProcBaseC2Ev(ProcBase *self) {
     self->group = sProcCreateGroup;
     func_020e7af4(&gProcTree, &self->treeNode, (TreeNode *)sProcCreateParent);
     SceneDesc *d = gProfileTable[self->profile];
-    u16 a = d->unk_04;
+    u16 a = d->executePriority;
     QNode *q1 = &self->executeNode;
-    q1->unk_0c = a;
-    q1->unk_0e = a;
-    u16 b = d->unk_06;
+    q1->priority = a;
+    q1->pendingPriority = a;
+    u16 b = d->drawPriority;
     QNode *q2 = &self->drawNode;
-    q2->unk_0c = b;
-    q2->unk_0e = b;
+    q2->priority = b;
+    q2->pendingPriority = b;
     ProcBase *parent = ProcBase_GetParent(self);
     if (parent != NULL) {
         if ((parent->procFlags & 1) != 0 || (parent->procFlags & 2) != 0) self->procFlags |= 2;
@@ -288,43 +288,43 @@ extern "C" void ProcBase_RequestDelete(ProcBase *self) {
 
 extern "C" ProcBase *ProcBase_GetParent(ProcBase *self) {
     TreeNode *parent = self->treeNode.unk_00;
-    if (parent != NULL) return parent->unk_10;
+    if (parent != NULL) return parent->owner;
     return NULL;
 }
 
 extern "C" void ProcBase_SetExecutePriority(ProcBase *self, u16 v) {
     if (isOne(self->state)) {
         if (isThree(gTaskPhase)) {
-            self->executeNode.unk_0e = v;
+            self->executeNode.pendingPriority = v;
             return;
         }
         func_020e79a0(&gTaskExecuteList, &self->executeNode);
         QNode *q = &self->executeNode;
-        q->unk_0c = v;
-        q->unk_0e = v;
+        q->priority = v;
+        q->pendingPriority = v;
         Task_InsertByPriority(&gTaskExecuteList, &self->executeNode);
     } else {
         QNode *q = &self->executeNode;
-        q->unk_0c = v;
-        q->unk_0e = v;
+        q->priority = v;
+        q->pendingPriority = v;
     }
 }
 
 extern "C" void ProcBase_SetDrawPriority(ProcBase *self, u16 v) {
     if (isOne(self->state)) {
         if (isFive(gTaskPhase)) {
-            self->drawNode.unk_0e = v;
+            self->drawNode.pendingPriority = v;
             return;
         }
         func_020e79a0(&gTaskDrawList, &self->drawNode);
         QNode *q = &self->drawNode;
-        q->unk_0c = v;
-        q->unk_0e = v;
+        q->priority = v;
+        q->pendingPriority = v;
         Task_InsertByPriority(&gTaskDrawList, &self->drawNode);
     } else {
         QNode *q = &self->drawNode;
-        q->unk_0c = v;
-        q->unk_0e = v;
+        q->priority = v;
+        q->pendingPriority = v;
     }
 }
 
@@ -337,7 +337,7 @@ extern "C" BOOL _ZN8ProcBase16createHeapFittedEv(ProcBase *self, u32 size, Heap 
         h = FrameHeap_CreateAsCurrent(size, parent);
         if (h != NULL) {
             BOOL ok;
-            u32 f = h->unk_04 & 0x10;
+            u32 f = h->regionStart & 0x10;
             if (f) func_020e8b94(h, 0x10, 0x10);
             ok = self->vfunc_3c();
             if (f == 0) {
@@ -348,7 +348,7 @@ extern "C" BOOL _ZN8ProcBase16createHeapFittedEv(ProcBase *self, u32 size, Heap 
                 func_020e8c94(h);
                 h = NULL;
             } else {
-                need = (u32)h->unk_08;
+                need = (u32)h->regionSize;
                 need = (need - func_020e8af4(h) + 31) & ~31;
                 if (size == need) {
                     func_020e877c(h);
@@ -362,7 +362,7 @@ extern "C" BOOL _ZN8ProcBase16createHeapFittedEv(ProcBase *self, u32 size, Heap 
         u32 f;
         BOOL ok;
         h = FrameHeap_CreateAsCurrent(-1, parent);
-        f = h->unk_04 & 0x10;
+        f = h->regionStart & 0x10;
         if (f) func_020e8b94(h, 0x10, 0x10);
         ok = self->vfunc_3c();
         if (f == 0) {
@@ -374,11 +374,11 @@ extern "C" BOOL _ZN8ProcBase16createHeapFittedEv(ProcBase *self, u32 size, Heap 
             ProcBase_RequestDelete(self);
             return FALSE;
         }
-        need = (u32)h->unk_08;
+        need = (u32)h->regionSize;
                 need = (need - func_020e8af4(h) + 31) & ~31;
     }
     if (h != NULL) {
-        u32 used = (u32)h->unk_08;
+        u32 used = (u32)h->regionSize;
         h2 = NULL;
         used -= func_020e8af4(h);
         if (((used + 15) & ~15) + 0x30 < func_020e8af4(parent)) {
@@ -422,7 +422,7 @@ extern "C" BOOL _ZN8ProcBase10createHeapEv(ProcBase *self, u32 size, Heap *paren
         Heap *h = FrameHeap_CreateAsCurrent(size, parent);
         if (h != NULL) {
             BOOL ok;
-            u32 f = h->unk_04 & 0x10;
+            u32 f = h->regionStart & 0x10;
             if (f) func_020e8b94(h, 0x10, 0x10);
             ok = self->vfunc_3c();
             if (f == 0) {
@@ -485,7 +485,7 @@ extern "C" BOOL ProcBase_HasCreatingChild(ProcBase *self) {
     TreeNode *end = func_01ffcfc0(root);
     TreeNode *n = root->unk_04;
     while (n != NULL && n != end) {
-        if (isZero(n->unk_10->state)) return TRUE;
+        if (isZero(n->owner->state)) return TRUE;
         n = func_01ffcffc(n);
     }
     return FALSE;

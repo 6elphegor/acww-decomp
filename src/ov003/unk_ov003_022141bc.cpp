@@ -269,7 +269,7 @@ public:
     void execBoardIdle();
     BOOL enterBoardIdle();
 
-    /* 0x2b0 */ s32 unk_2b0;
+    /* 0x2b0 */ s32 boardState;
 };
 
 extern "C" void BulletinBoard_Create();
@@ -339,7 +339,7 @@ BOOL BulletinBoard::setBoardState(s32 m) {
     static Unk_02214284_Fn tbl[3] = { &BulletinBoard::enterBoardIdle, &BulletinBoard::enterBoardOpen, &BulletinBoard::enterBoardRead };
     if (m < 3) {
         if ((this->*tbl[m])()) {
-            unk_2b0 = m;
+            boardState = m;
             return TRUE;
         }
     }
@@ -348,8 +348,8 @@ BOOL BulletinBoard::setBoardState(s32 m) {
 
 void BulletinBoard::updateBoardState() {
     static Unk_02214208_Fn tbl[3] = { (Unk_02214208_Fn)&BulletinBoard::execBoardIdle, (Unk_02214208_Fn)&BulletinBoard::execBoardOpen, (Unk_02214208_Fn)&BulletinBoard::execBoardRead };
-    if (unk_2b0 < 3) {
-        (this->*tbl[unk_2b0])();
+    if (boardState < 3) {
+        (this->*tbl[boardState])();
     }
 }
 

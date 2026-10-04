@@ -14,7 +14,7 @@ class Random {
 public:
     Random() { Random_SetSeed(this, (void *)1); }
     ~Random();
-    u32 unk_00;
+    u32 seed;
 };
 
 Random gRandom;

@@ -6,12 +6,12 @@ typedef char *va_list;
 // FS file object, 0x48 bytes
 struct Unk_02063d18_File {
     u8 unk_00[0x14];
-    s32 unk_14;
+    s32 error;
     u8 unk_18[8];
     s32 unk_20;
-    s32 unk_24;
-    s32 unk_28;
-    s32 unk_2c;
+    s32 start;
+    s32 end;
+    s32 pos;
     u8 unk_30[0x18];
 };
 
@@ -85,7 +85,7 @@ void *File_LoadAlloc(u32 path, void *heap, s32 align, u32 *outSize) {
     h = gRootHeap;
     if (heap == 0) heap = gCurrentHeap;
     File_OpenOrPanic(&f, (const char *)path);
-    path = f.unk_28 - f.unk_24;
+    path = f.end - f.start;
     size = path;
     if (size < 8) {
         ret = Heap_AllocAligned(heap, size, align);
@@ -132,7 +132,7 @@ void *File_LoadAlloc(u32 path, void *heap, s32 align, u32 *outSize) {
         }
     }
     if (outSize) *outSize = size;
-    if (f.unk_14 != 0 && ret) {
+    if (f.error != 0 && ret) {
         Heap_Free(heap, ret);
         ret = 0;
     }
@@ -155,7 +155,7 @@ s32 File_ReadAll(Unk_02063d18_File *f, void *dst, u32 n) {
     u32 flags;
     u32 hdr[2];
     u32 st[4];
-    u32 size = f->unk_28 - f->unk_24;
+    u32 size = f->end - f->start;
     ret = size;
     if (size < 8) {
         if (size <= n) {
@@ -200,7 +200,7 @@ s32 File_ReadAll(Unk_02063d18_File *f, void *dst, u32 n) {
             ret = 0;
         }
     }
-    if (f->unk_14 != 0) ret = 0;
+    if (f->error != 0) ret = 0;
     FS_CloseFile(f);
     return ret;
 }
@@ -234,16 +234,16 @@ void File_LoadToBufferF(u32 a, u32 b, const char *fmt, ...) {
 s32 File_GetDecodedSize(Unk_02063d18_File *f) {
     u32 hdr[2];
     s32 e;
-    u32 size = f->unk_28 - f->unk_24;
+    u32 size = f->end - f->start;
     if (size >= 8) {
-        u32 base = f->unk_2c - f->unk_24;
+        u32 base = f->pos - f->start;
         FS_SeekFile(f, 0, 0);
         e = -1;
         if (FS_ReadFile(f, hdr, 8) == e) goto fail;
         if (hdr[0] == 0x37375a4c || hdr[0] == 0x4c5a3737) size = hdr[1] >> 8;
         FS_SeekFile(f, base, 0);
     }
-    if (f->unk_14 != 0) size = -1;
+    if (f->error != 0) size = -1;
     return size;
 fail:
     return e;

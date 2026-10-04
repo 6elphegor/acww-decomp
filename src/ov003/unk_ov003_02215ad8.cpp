@@ -287,7 +287,7 @@ public:
     virtual BOOL onExecute();
     virtual BOOL vfunc_70();
 
-    /* 0x2b0 */ u8 unk_2b0;
+    /* 0x2b0 */ u8 createHour;
     /* 0x2b1 */ u8 pad_2b1[3];
 };
 
@@ -318,7 +318,7 @@ BOOL KatrinaTent::vfunc_70() {
     d.a = 0;
     d.b = 0;
     Clock_GetDateTime(&d);
-    unk_2b0 = *((u8 *)&d + 2);
+    createHour = *((u8 *)&d + 2);
     return TRUE;
 }
 
@@ -333,7 +333,7 @@ BOOL KatrinaTent::vfunc_8c() {
     Clock_GetDateTime(&t);
     BOOL r;
     if (t.b2 >= 6) {
-        if (unk_2b0 < 6) r = FALSE;
+        if (createHour < 6) r = FALSE;
         else r = TRUE;
     } else {
         r = FALSE;

@@ -170,9 +170,9 @@ public:
     }
 struct ThreeLayerAnimModel {
     u8 pad_00[0xa4];
-    s32 unk_a4;
+    s32 curFrame;
     u8 pad_a8[4];
-    s32 unk_ac;
+    s32 frameStep;
     u8 pad_b0[0x2a0 - 0xec - 0xb0];
     ThreeLayerAnimModel();
     ~ThreeLayerAnimModel();
@@ -196,10 +196,10 @@ MEMBER(Unk_0201a13c, 0x49c - 0x420);
 MEMBER(CollisionState, 0x30);
 struct Unk_02088d00 {
     u8 pad_00[0x1c];
-    u32 unk_1c;
+    u32 groups;
     u8 pad_20[0x44 - 0x20];
-    u8 unk_44;
-    u8 unk_45;
+    u8 collisionEnabled;
+    u8 shadowEnabled;
     u8 pad_46[2];
     Unk_02088d00();
     ~Unk_02088d00();
@@ -346,11 +346,11 @@ struct Unk_ov068_0226ce70_Date {
 
 // message block at +0xb8 of the sub-object (constructed by the autoload_2 function 0x020f8134)
 struct BgmBeatPhase {
-    s8 unk_00;
-    s8 unk_01;
-    s8 unk_02;
-    s8 unk_03;
-    s8 unk_04;
+    s8 seqVar4;
+    s8 trackAnim;
+    s8 seqVar0;
+    s8 seqVar2;
+    s8 seqVar3;
     u8 pad_05[3];
     s32 unk_08;
     u8 pad_0c[8];
@@ -739,7 +739,7 @@ BOOL SpNpcRoostGuest::vfunc_04() {
     }
     NpcActor_setTalkRequest(this, &talk);
     talk.attachOwner((Unk_ov068_0226ccd4_Owner *)this);
-    collider.unk_45 = 0;
+    collider.shadowEnabled = 0;
     d.a = 0;
     d.b = 0;
     Clock_GetDateTime(&d);
@@ -843,7 +843,7 @@ BOOL SpNpcRoostGuest::vfunc_00() {
         func_02105f90(*(s32 *)((u8 *)this + 0x148), 3);
     }
     changeAct(0);
-    collider.unk_1c |= 2;
+    collider.groups |= 2;
     if (guestType == 3) {
         NpcAnimCtrl_playAnim(&animCtrl, this, 0x142, 0, 0, 0x1000, 0, 1);
         ThreeLayerAnimModel_AssignJointsToLayer2(&model, 0xc, 0xe);
@@ -1012,11 +1012,11 @@ s32 SpNpcRoostGuestTalk::getTalkMode() {
 void SpNpcRoostGuestTalk::start(Unk_ov068_0226ce70_Out *out) {
     using namespace sB;
     u16 h0, h2, h4, h6;
-    lastBeatState.unk_00 = -1;
-    lastBeatState.unk_01 = -1;
-    lastBeatState.unk_02 = -1;
-    lastBeatState.unk_03 = -1;
-    lastBeatState.unk_04 = -1;
+    lastBeatState.seqVar4 = -1;
+    lastBeatState.trackAnim = -1;
+    lastBeatState.seqVar0 = -1;
+    lastBeatState.seqVar2 = -1;
+    lastBeatState.seqVar3 = -1;
     void *p = PlayerData_GetCurrent();
     out->msgKey = sRoostGuestMsgFiles[owner->guestType];
     if (owner->guestType == 7) {
@@ -1375,11 +1375,11 @@ void SpNpcRoostGuestTalk::scriptPerform() {
     Unk_ov068_0226c63c_Msg *p = Snd_GetBeatState();
     KkShowFx_Update();
     if (p != NULL) {
-        if (p->unk_03 == 1 && lastBeatState.unk_03 == 1) {
+        if (p->seqVar2 == 1 && lastBeatState.seqVar2 == 1) {
             goto end;
         }
-        s32 t4 = p->unk_04;
-        if (t4 != lastBeatState.unk_04) {
+        s32 t4 = p->seqVar3;
+        if (t4 != lastBeatState.seqVar3) {
             if (t4 == 2) {
                 RoomCamera_KkShowResetShot();
                 KkShowFx_CallUnk1de4();
@@ -1387,16 +1387,16 @@ void SpNpcRoostGuestTalk::scriptPerform() {
                 RoomCamera_KkShowPickShot();
             }
         }
-        s32 t1 = p->unk_01;
-        if (t1 != lastBeatState.unk_01) {
+        s32 t1 = p->trackAnim;
+        if (t1 != lastBeatState.trackAnim) {
             if (t1 == -1) {
                 NpcFaceAnim_setMouthTexture(&owner->faceAnim, (u32)sKkMouthM0);
             } else {
                 NpcFaceAnim_setMouthTexture(&owner->faceAnim, (u32)sKkMouthTextures[t1]);
             }
         }
-        s32 t2 = p->unk_02;
-        if (t2 != lastBeatState.unk_02 || p->unk_00 != lastBeatState.unk_00) {
+        s32 t2 = p->seqVar0;
+        if (t2 != lastBeatState.seqVar0 || p->seqVar4 != lastBeatState.seqVar4) {
             if (t2 == 1) {
                 NpcLookAt_setManualAngles(&owner->lookAt, 0, 0, 0, 0x100, 0x200);
             } else {
@@ -1407,28 +1407,28 @@ void SpNpcRoostGuestTalk::scriptPerform() {
                 v = 0x28;
                 lastBeatState.unk_14 = 1;
             }
-            s32 t0 = p->unk_00;
+            s32 t0 = p->seqVar4;
             if (t0 == 3) {
                 NpcActionCtrl_requestPlayAnim(&owner->actionCtrl, 2, 0x103, 0, v, 0);
             } else if (t0 == 4) {
                 NpcActionCtrl_requestPlayAnim(&owner->actionCtrl, 2, 0x104, 0, v, 0);
             }
         }
-        if ((u8)(s8)(p->unk_00 - 3) <= 1) {
-            owner->model.unk_a4 = 0;
-            owner->model.unk_ac = p->unk_08;
+        if ((u8)(s8)(p->seqVar4 - 3) <= 1) {
+            owner->model.curFrame = 0;
+            owner->model.frameStep = p->unk_08;
             ThreeLayerAnimModel_updateLayers3(&owner->model);
-            owner->model.unk_ac = 0;
+            owner->model.frameStep = 0;
         }
         {
-            s32 t3 = p->unk_03;
-            if (t3 != lastBeatState.unk_03) {
+            s32 t3 = p->seqVar2;
+            if (t3 != lastBeatState.seqVar2) {
                 if (t3 == 0) {
                     KkShowFx_Update();
                     KkShowFx_SetParam(0);
                     KkShowFx_CallUnk1f70();
                 }
-                if (p->unk_03 == 1) {
+                if (p->seqVar2 == 1) {
                     NpcFaceAnim_setMouthTexture(&owner->faceAnim, (u32)sKkMouthM0);
                     NpcFaceAnim_resumeMouthMaterial(&owner->faceAnim);
                     NpcActionCtrl_requestStand(&owner->actionCtrl, 2, 0x28);

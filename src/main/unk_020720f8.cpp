@@ -15,59 +15,59 @@ struct Unk_02072408_Tail {
 
 class CommManager {
 public:
-    /* 0x000 */ u8 unk_00[4];
-    /* 0x004 */ u16 unk_04;
-    /* 0x006 */ u8 unk_06;
-    /* 0x007 */ u8 unk_07;
-    /* 0x008 */ u8 *unk_08;
-    /* 0x00c */ u32 unk_0c[3];
-    /* 0x018 */ u32 unk_18[3];
-    /* 0x024 */ u8 *unk_24;
+    /* 0x000 */ u8 slotActive[4];
+    /* 0x004 */ u16 sendSeq;
+    /* 0x006 */ u8 mode;
+    /* 0x007 */ u8 pendingMode;
+    /* 0x008 */ u8 *sendBufs;
+    /* 0x00c */ u32 sendCredits[3];
+    /* 0x018 */ u32 ackCounts[3];
+    /* 0x024 */ u8 *recvBufs;
     /* 0x028 */ union {
         Unk_02072408_Row unk_28[4];
         Unk_02072408_Tail unk_28t;
     };
-    /* 0x064 */ s32 unk_64;
-    /* 0x068 */ u32 unk_68;
-    /* 0x06c */ u8 unk_6c;
-    /* 0x06d */ u8 unk_6d;
+    /* 0x064 */ s32 myAid;
+    /* 0x068 */ u32 localSlot;
+    /* 0x06c */ u8 memberCount;
+    /* 0x06d */ u8 maxSyncVarSize;
     /* 0x06e */ u8 pad_6e[2];
-    /* 0x070 */ void *unk_70;
-    /* 0x074 */ u8 unk_74;
-    /* 0x078 */ u8 *unk_78;
-    /* 0x07c */ u8 unk_7c[0xc4 - 0x7c];
-    /* 0x0c4 */ u8 *unk_c4;
-    /* 0x0c8 */ u32 unk_c8;
-    /* 0x0cc */ u8 *unk_cc;
-    /* 0x0d0 */ u8 *unk_d0;
-    /* 0x0d4 */ u8 *unk_d4;
-    /* 0x0d8 */ u8 *unk_d8;
-    /* 0x0dc */ u32 unk_dc;
-    /* 0x0e0 */ u8 *unk_e0;
-    /* 0x0e4 */ u8 *unk_e4;
-    /* 0x0e8 */ u32 unk_e8;
-    /* 0x0ec */ u8 *unk_ec;
-    /* 0x0f0 */ u32 unk_f0;
-    /* 0x0f4 */ u8 *unk_f4;
-    /* 0x0f8 */ u32 unk_f8;
-    /* 0x0fc */ u32 unk_fc;
-    /* 0x100 */ u32 unk_100;
-    /* 0x104 */ u8 *unk_104;
-    /* 0x108 */ u32 unk_108;
-    /* 0x10c */ u32 unk_10c;
+    /* 0x070 */ void *syncCompareBuf;
+    /* 0x074 */ u8 started;
+    /* 0x078 */ u8 *syncVarBuf;
+    /* 0x07c */ u8 syncVarDirty[0xc4 - 0x7c];
+    /* 0x0c4 */ u8 *recordBuf;
+    /* 0x0c8 */ u32 recordLen;
+    /* 0x0cc */ u8 *recordWritePtr;
+    /* 0x0d0 */ u8 *curRecordStart;
+    /* 0x0d4 */ u8 *curRecordEnd;
+    /* 0x0d8 */ u8 *sendQueueBuf;
+    /* 0x0dc */ u32 sendQueueLen;
+    /* 0x0e0 */ u8 *readPtr;
+    /* 0x0e4 */ u8 *deferredBuf;
+    /* 0x0e8 */ u32 deferredLen;
+    /* 0x0ec */ u8 *heldBuf;
+    /* 0x0f0 */ u32 heldLen;
+    /* 0x0f4 */ u8 *loopbackBuf;
+    /* 0x0f8 */ u32 loopbackLen;
+    /* 0x0fc */ u32 auxBufA;
+    /* 0x100 */ u32 auxLenA;
+    /* 0x104 */ u8 *auxWritePtrA;
+    /* 0x108 */ u32 auxBufB;
+    /* 0x10c */ u32 auxLenB;
     /* 0x110 */ u8 pad_110[4];
-    /* 0x114 */ s16 unk_114;
-    /* 0x116 */ s16 unk_116;
-    /* 0x118 */ u32 unk_118;
-    /* 0x11c */ u32 unk_11c;
-    /* 0x120 */ u32 unk_120;
-    /* 0x124 */ u32 unk_124;
-    /* 0x128 */ u16 unk_128[3];
-    /* 0x12e */ u16 unk_12e;
-    /* 0x130 */ u16 unk_130;
-    /* 0x132 */ u16 unk_132;
-    /* 0x134 */ u8 unk_134[0x3e0];
-    /* 0x514 */ u8 unk_514[0x50];
+    /* 0x114 */ s16 sentSeq;
+    /* 0x116 */ s16 confirmedSeq;
+    /* 0x118 */ u32 controlLen;
+    /* 0x11c */ u32 latchedErrorFlags;
+    /* 0x120 */ u32 errorFlags;
+    /* 0x124 */ u32 errorMode;
+    /* 0x128 */ u16 noAckFrames[3];
+    /* 0x12e */ u16 sendRetry;
+    /* 0x130 */ u16 sendRetryLimit;
+    /* 0x132 */ u16 sessionMemberMask;
+    /* 0x134 */ u8 wifiFriendList[0x3e0];
+    /* 0x514 */ u8 wifiUserData[0x50];
 
     CommManager();
     ~CommManager();
@@ -879,7 +879,7 @@ extern "C" void Comm_RemoveMember(s32 a) {
     NetArea_SetSlotStatus(a, 0x3f, 0, 0, 7);
     o = gCommManager;
     _ZN11CommManager13setSlotActiveEij(o, a, 0);
-    _ZN11CommManager14setMemberCountEj(o, (u8)(o->unk_6c - 1));
+    _ZN11CommManager14setMemberCountEj(o, (u8)(o->memberCount - 1));
     _ZN11CommManager15resetSendCreditEi(o, a);
     _ZN11CommManager11setAckCountEij(o, a, 0);
     NetSession_RemoveSlot(a);
@@ -891,15 +891,15 @@ extern "C" void Comm_CreateHeap(u32 a) {
         u32 v = CommSyncVar_GetVarSize(i);
         if (v > r5) r5 = v;
     }
-    gCommManager->unk_6d = r5;
+    gCommManager->maxSyncVarSize = r5;
     NetHeap_Create(0x4b000, a);
     func_020ebc38();
 }
 extern "C" void Comm_Start(s32 a, u32 b, u32 c) {
     CommManager *o = gCommManager;
-    o->unk_74 = 1;
+    o->started = 1;
     CommSyncVar_Init();
-    o->unk_70 = NetHeap_Alloc(o->unk_6d, 4);
+    o->syncCompareBuf = NetHeap_Alloc(o->maxSyncVarSize, 4);
     _ZN11CommManager11setSendBufsEPh(o, NetHeap_Alloc(0x3000, 4));
     _ZN11CommManager11setRecvBufsEPh(o, NetHeap_Alloc(0x9000, 4));
     _ZN11CommManager12setRecordBufEPh(o, NetHeap_Alloc(0x92e, 4));
@@ -939,13 +939,13 @@ extern "C" void Comm_Start(s32 a, u32 b, u32 c) {
     _ZN11CommManager12setErrorModeEj(o, c);
 }
 extern "C" void Comm_StartOv067Mode() {
-    gCommManager->unk_74 = 1;
+    gCommManager->started = 1;
     _Z20NetOverlay_AssertAnyv();
     Net_Init(0x41444d45, 0x400083, 1, 0x4fe752, 2, (void *)NetHeap_Alloc, (void *)NetHeap_Free);
 }
 extern "C" s32 Comm_End() {
     s32 r5 = 1;
-    if (gCommManager->unk_74 != 0) {
+    if (gCommManager->started != 0) {
         u32 *r4 = gNetHeap;
         u32 r6 = func_020e86fc(r4, 0x8000);
         func_020e86fc(r4, r6 | 0x2000);
@@ -974,17 +974,17 @@ extern "C" s32 Comm_End() {
         _ZN11CommManager11setRecvBufsEPh(o, 0);
         NetHeap_Free(_ZN11CommManager10getSendBufEi(o, 4));
         _ZN11CommManager11setSendBufsEPh(o, 0);
-        NetHeap_Free(o->unk_70);
-        o->unk_70 = 0;
+        NetHeap_Free(o->syncCompareBuf);
+        o->syncCompareBuf = 0;
         NetHeap_Free(_ZN11CommManager13getSyncVarBufEv(o));
         _ZN11CommManager13setSyncVarBufEPh(o, 0);
         _ZN11CommManager5resetEv(o);
-        o->unk_74 = 0;
+        o->started = 0;
     }
     return r5;
 }
 extern "C" void Comm_EndOv067Mode() {
-    if (gCommManager->unk_74 != 0) {
+    if (gCommManager->started != 0) {
         u32 *const r5 = gNetHeap;
         u32 r4 = func_020e86fc(r5, 0x8000);
         func_020e86fc(r5, r4 | 0x2000);
@@ -995,7 +995,7 @@ extern "C" void Comm_EndOv067Mode() {
         func_020e86fc(r5, r4);
         CommManager *o = gCommManager;
         _ZN11CommManager5resetEv(o);
-        o->unk_74 = 0;
+        o->started = 0;
     }
 }
 extern "C" void Comm_DestroyHeap() {
@@ -1005,7 +1005,7 @@ extern "C" void Comm_DestroyHeap() {
 extern "C" void Comm_ProcessReceived(s32 x) {
     if (x == 0) {
         CommManager *o = gCommManager;
-        if (_ZN11CommManager12isSlotActiveEi(o, o->unk_64)) {
+        if (_ZN11CommManager12isSlotActiveEi(o, o->myAid)) {
             if (_ZN11CommManager7getModeEv(o)) {
                 o = gCommManager;
                 _ZN11CommManager12dispatchHeldEv(o);
@@ -1103,7 +1103,7 @@ void Comm_Update(s32 a);
 
 extern "C" void Comm_Update(s32 a) {
     CommManager *g = gCommManager;
-    s32 self = g->unk_64;
+    s32 self = g->myAid;
     u32 mode;
     u32 saved;
     u8 *first;
@@ -1213,7 +1213,7 @@ extern "C" void Comm_Update(s32 a) {
                     }
                 }
                 BOOL sent = g->sendPackets(bufs[0], lens[0], masks[0], bufs[1], lens[1], masks[1], bufs[2], lens[2], masks[2]);
-                if (sent || g->unk_6c <= 1) {
+                if (sent || g->memberCount <= 1) {
                     CommManager *o = gCommManager;
                     o->setSentSeq(o->getSendSeq());
                     o->clearSyncVarDirty();
@@ -1259,7 +1259,7 @@ extern "C" void Comm_Update(s32 a) {
                         }
                     }
                     if (cnt != 0) {
-                        if (g->sendPackets(bufs2[0], lens2[0], masks2[0], bufs2[1], lens2[1], masks2[1], bufs2[2], lens2[2], masks2[2]) || g->unk_6c <= 1) {
+                        if (g->sendPackets(bufs2[0], lens2[0], masks2[0], bufs2[1], lens2[1], masks2[1], bufs2[2], lens2[2], masks2[2]) || g->memberCount <= 1) {
                             for (i = 3; i >= 0; i--) {
                                 if (g->isSlotActive(i) && !g->isMyAid(i)) {
                                     g->setAckCount(i, 0);
@@ -1268,14 +1268,14 @@ extern "C" void Comm_Update(s32 a) {
                         }
                     } else {
                         if (g->isMyAid(0)) {
-                            if (g->unk_6c != 4) {
+                            if (g->memberCount != 4) {
                                 Comm_SendEmpty();
                             }
                         }
                     }
                 } else {
                     if (g->isMyAid(0)) {
-                        if (g->unk_6c != 4) {
+                        if (g->memberCount != 4) {
                             Comm_SendEmpty();
                         }
                     }
@@ -1472,8 +1472,8 @@ extern "C" void Comm_SetRecvBuffersAsHost() { Comm_SetRecvBuffers(0); }
 extern "C" void Comm_BeginHostSession() {
     CommManager *o = gCommManager;
     o->setMode(2);
-    o->unk_64 = 0;
-    o->setSlotActive(o->unk_64, 1);
+    o->myAid = 0;
+    o->setSlotActive(o->myAid, 1);
     Comm_SetRecvBuffers(0);
     NetSession_OnBeginHost();
     NetArea_SetSlotStatus(0, Scene_GetCurrent(), 1, 0, 7);
@@ -1501,7 +1501,7 @@ extern "C" void Comm_SetRecvBuffers(u32 a) {
 extern "C" BOOL Comm_RequestSync(u8 a) {
     u8 tmp;
     CommManager *o = gCommManager;
-    s32 idx = o->unk_64;
+    s32 idx = o->myAid;
     if (!o->isSlotActive(idx)) {
         NetSession_SetSyncState(3, 4);
         o = gCommManager;
@@ -1523,7 +1523,7 @@ extern "C" BOOL Comm_RequestSync(u8 a) {
     return TRUE;
 }
 extern "C" void Comm_GetSyncState() {
-    s32 a = gCommManager->unk_64;
+    s32 a = gCommManager->myAid;
     if (!gCommManager->isSlotActive(a)) {
         NetSession_GetSyncState(3);
     } else {
@@ -1531,7 +1531,7 @@ extern "C" void Comm_GetSyncState() {
     }
 }
 extern "C" void Comm_ClearSyncState() {
-    s32 a = gCommManager->unk_64;
+    s32 a = gCommManager->myAid;
     if (!gCommManager->isSlotActive(a)) {
         NetSession_SetSyncState(3, 7);
     } else {
@@ -1552,7 +1552,7 @@ extern "C" u32 Comm_GetRemoteMask() {
 extern "C" u32 Comm_GetMemberMask() {
     u32 r = Comm_GetRemoteMask();
     CommManager *o = gCommManager;
-    s32 i = o->unk_64;
+    s32 i = o->myAid;
     if (i < 4) {
         r |= (u16)(1 << i);
     }
@@ -1628,7 +1628,7 @@ namespace n3 {
 }
 void CommManager::initLocal() {
     using namespace n3;
-    unk_68 = 4;
+    localSlot = 4;
     clearMemberCount();
     setLatchedErrorFlags(0);
     setErrorFlags(0);
@@ -1643,7 +1643,7 @@ void CommManager::reset() {
     resetSendCredits();
     clearAckCounts();
     clearRecvRings();
-    unk_64 = 4;
+    myAid = 4;
     clearSyncVarDirty();
     resetRecordBuf();
     resetSendQueueLen();
@@ -1692,7 +1692,7 @@ namespace n3 {
 }
 BOOL CommManager::isSendReady() {
     using namespace n3;
-    s32 n = unk_64;
+    s32 n = myAid;
     if (isSlotActive(n)) {
         if (n == 0) {
             if (Net_GetMemberCount() > 1) {
@@ -1715,13 +1715,13 @@ BOOL CommManager::isSendReady() {
 namespace n3 {
 }
 void CommManager::setSlotActive(s32 i, u32 v) {
-    using namespace n3; unk_00[i] = v; }
+    using namespace n3; slotActive[i] = v; }
 namespace n3 {
 }
 u32 CommManager::isSlotActive(s32 i) {
     using namespace n3;
     if (i < 4) {
-        return unk_00[i];
+        return slotActive[i];
     }
     return 0;
 }
@@ -1737,7 +1737,7 @@ namespace n3 {
 }
 BOOL CommManager::isOnline() {
     using namespace n3;
-    if (isSlotActive(unk_64) && unk_6c >= 2) {
+    if (isSlotActive(myAid) && memberCount >= 2) {
         return TRUE;
     }
     return FALSE;
@@ -1745,67 +1745,67 @@ BOOL CommManager::isOnline() {
 namespace n3 {
 }
 s16 CommManager::getSendSeq() {
-    using namespace n3; return (s16)(unk_04 & 0x7fff); }
+    using namespace n3; return (s16)(sendSeq & 0x7fff); }
 namespace n3 {
 }
 void CommManager::incSendSeq() {
-    using namespace n3; unk_04 = unk_04 + 1; }
+    using namespace n3; sendSeq = sendSeq + 1; }
 namespace n3 {
 }
 void CommManager::setMode(u32 v) {
-    using namespace n3; unk_06 = v; }
+    using namespace n3; mode = v; }
 namespace n3 {
 }
 u8 CommManager::getMode() {
-    using namespace n3; return unk_06; }
+    using namespace n3; return mode; }
 namespace n3 {
 }
 void CommManager::setPendingMode(u32 v) {
-    using namespace n3; unk_07 = v; }
+    using namespace n3; pendingMode = v; }
 namespace n3 {
 }
 u8 CommManager::getPendingMode() {
-    using namespace n3; return unk_07; }
+    using namespace n3; return pendingMode; }
 namespace n3 {
 }
 void CommManager::setSendBufs(u8 *p) {
-    using namespace n3; unk_08 = p; }
+    using namespace n3; sendBufs = p; }
 namespace n3 {
 }
 u8 *CommManager::getSendBuf(s32 i) {
     using namespace n3;
     if (i >= 4) {
-        return unk_08;
+        return sendBufs;
     }
     if (isMyAid(i)) {
         return NULL;
     }
-    if (i < unk_64) {
-        return unk_08 + (i << 12);
+    if (i < myAid) {
+        return sendBufs + (i << 12);
     }
-    return unk_08 + ((i - 1) << 12);
+    return sendBufs + ((i - 1) << 12);
 }
 namespace n3 {
 }
 u32 CommManager::getSendCredit(s32 a) {
-    using namespace n3; return unk_0c[Comm_AidToPeerIndex(a)]; }
+    using namespace n3; return sendCredits[Comm_AidToPeerIndex(a)]; }
 namespace n3 {
 }
 void CommManager::addSendCredit(s32 a, u32 b) {
-    using namespace n3; unk_0c[Comm_AidToPeerIndex(a)] += b; }
+    using namespace n3; sendCredits[Comm_AidToPeerIndex(a)] += b; }
 namespace n3 {
 }
 void CommManager::subSendCredit(s32 a, u32 b) {
-    using namespace n3; unk_0c[Comm_AidToPeerIndex(a)] -= b; }
+    using namespace n3; sendCredits[Comm_AidToPeerIndex(a)] -= b; }
 namespace n3 {
 }
 void CommManager::resetSendCredit(s32 a) {
-    using namespace n3; unk_0c[Comm_AidToPeerIndex(a)] = 3; }
+    using namespace n3; sendCredits[Comm_AidToPeerIndex(a)] = 3; }
 namespace n3 {
 }
 void CommManager::resetSendCredits() {
     using namespace n3;
-    u32 *p = unk_0c;
+    u32 *p = sendCredits;
     for (s32 i = 2; i >= 0; i--) {
         *p++ = 3;
     }
@@ -1875,44 +1875,44 @@ extern CommManager *gCommManager;
 
 }
 u32 CommManager::getAckCount(s32 a) {
-    using namespace n2; return unk_18[Comm_AidToPeerIndex(a)]; }
+    using namespace n2; return ackCounts[Comm_AidToPeerIndex(a)]; }
 namespace n2 {
 }
 void CommManager::setAckCount(s32 a, u32 v) {
-    using namespace n2; unk_18[Comm_AidToPeerIndex(a)] = v; }
+    using namespace n2; ackCounts[Comm_AidToPeerIndex(a)] = v; }
 namespace n2 {
 }
 void CommManager::incAckCount(s32 a) {
-    using namespace n2; unk_18[Comm_AidToPeerIndex(a)] += 1; }
+    using namespace n2; ackCounts[Comm_AidToPeerIndex(a)] += 1; }
 namespace n2 {
 }
 void CommManager::clearAckCounts() {
     using namespace n2;
     s32 i;
-    u32 *p = unk_18;
+    u32 *p = ackCounts;
     for (i = 2; i >= 0; i--) *p++ = 0;
 }
 namespace n2 {
 }
 u8 *CommManager::getRecvBuf(s32 a, s32 b) {
     using namespace n2;
-    if (a >= 4) return unk_24;
+    if (a >= 4) return recvBufs;
     if (isMyAid(a)) return 0;
-    if (a < unk_64) {
-        return unk_24 + ((b + a * 3) << 12);
+    if (a < myAid) {
+        return recvBufs + ((b + a * 3) << 12);
     }
-    return unk_24 + ((b + (a - 1) * 3) << 12);
+    return recvBufs + ((b + (a - 1) * 3) << 12);
 }
 namespace n2 {
 }
 u8 *CommManager::getRecvBufByPeer(s32 a, s32 b) {
     using namespace n2;
-    return unk_24 + ((b + a * 3) << 12);
+    return recvBufs + ((b + a * 3) << 12);
 }
 namespace n2 {
 }
 void CommManager::setRecvBufs(u8 *v) {
-    using namespace n2; unk_24 = v; }
+    using namespace n2; recvBufs = v; }
 namespace n2 {
 }
 u32 CommManager::getRecvLen(s32 a, u32 b) {
@@ -1994,7 +1994,7 @@ void CommManager::processReceived() {
                 bb = b;
                 dbg = Scene_GetCurrent();
                 len = CommRecord_GetLength(buf);
-                if (NetArea_IsSlotMoving(unk_64) && t == 7 && a != dbg) {
+                if (NetArea_IsSlotMoving(myAid) && t == 7 && a != dbg) {
                     t = getHeldLen();
                     u8 *dd = getHeldBuf() + t;
                     MI_CpuCopy8(p - 5, dd, len + 5);
@@ -2073,14 +2073,14 @@ namespace n2 {
 }
 BOOL CommManager::isMyAid(u32 v) {
     using namespace n2;
-    if (v == unk_64) return TRUE;
+    if (v == myAid) return TRUE;
     return FALSE;
 }
 namespace n2 {
 }
 BOOL CommManager::isLocalSlot(u32 v) {
     using namespace n2;
-    if (v == unk_68) return TRUE;
+    if (v == localSlot) return TRUE;
     return FALSE;
 }
 namespace n2 {
@@ -2088,10 +2088,10 @@ namespace n2 {
 void CommManager::setMemberCount(u32 v) {
     using namespace n2;
     if (v > 4) {
-        unk_6c = 0;
+        memberCount = 0;
         return;
     }
-    unk_6c = v;
+    memberCount = v;
 }
 namespace n2 {
 }
@@ -2100,11 +2100,11 @@ void CommManager::clearMemberCount() {
 namespace n2 {
 }
 u8 *CommManager::getSyncVarBuf() {
-    using namespace n2; return unk_78; }
+    using namespace n2; return syncVarBuf; }
 namespace n2 {
 }
 void CommManager::setSyncVarBuf(u8 *v) {
-    using namespace n2; unk_78 = v; }
+    using namespace n2; syncVarBuf = v; }
 namespace n2 {
 }
 u8 *CommManager::getSyncVar(u32 i) {
@@ -2116,11 +2116,11 @@ u8 *CommManager::getSyncVar(u32 i) {
 namespace n2 {
 }
 u32 CommManager::isSyncVarDirty(s32 i) {
-    using namespace n2; return unk_7c[i]; }
+    using namespace n2; return syncVarDirty[i]; }
 namespace n2 {
 }
 void CommManager::setSyncVarDirty(s32 i, u32 v) {
-    using namespace n2; unk_7c[i] = v; }
+    using namespace n2; syncVarDirty[i] = v; }
 namespace n2 {
 }
 void CommManager::clearSyncVarDirty() {
@@ -2133,36 +2133,36 @@ void CommManager::clearSyncVarDirty() {
 namespace n2 {
 }
 u8 *CommManager::getRecordBuf() {
-    using namespace n2; return unk_c4; }
+    using namespace n2; return recordBuf; }
 namespace n2 {
 }
 void CommManager::setRecordBuf(u8 *v) {
     using namespace n2;
-    unk_c4 = v;
-    unk_cc = v;
+    recordBuf = v;
+    recordWritePtr = v;
 }
 namespace n2 {
 }
 void CommManager::resetRecordBuf() {
     using namespace n2;
     setRecordLen(0);
-    unk_cc = getRecordBuf();
+    recordWritePtr = getRecordBuf();
 }
 namespace n2 {
 }
 void CommManager::setRecordLen(u32 v) {
-    using namespace n2; unk_c8 = v; }
+    using namespace n2; recordLen = v; }
 namespace n2 {
 }
 u32 CommManager::getRecordLen() {
-    using namespace n2; return unk_c8; }
+    using namespace n2; return recordLen; }
 namespace n2 {
 }
 void CommManager::beginRecord() {
     using namespace n2;
     if (_ZN11CommManager8isOnlineEv(this)) {
-        unk_d0 = unk_cc;
-        unk_d4 = unk_cc + 5;
+        curRecordStart = recordWritePtr;
+        curRecordEnd = recordWritePtr + 5;
     }
 }
 namespace n2 {
@@ -2170,8 +2170,8 @@ namespace n2 {
 void CommManager::writeRecord(u8 *p, u32 n) {
     using namespace n2;
     if (_ZN11CommManager8isOnlineEv(this)) {
-        MI_CpuCopy8(p, unk_d4, n);
-        unk_d4 += n;
+        MI_CpuCopy8(p, curRecordEnd, n);
+        curRecordEnd += n;
     }
 }
 namespace n2 {
@@ -2183,24 +2183,24 @@ void CommManager::endRecord(u32 a, u32 b) {
         if (b - 6 <= 1) {
             NetArea_IsUnsharedScene(Scene_GetCurrent());
         }
-        u32 len = unk_d4 - unk_d0;
+        u32 len = curRecordEnd - curRecordStart;
         CommRecord_SetLength(buf, (u16)(len - 5));
         buf[2] = a;
         buf[3] = b;
-        CommRecord_PackSource(buf + 4, Scene_GetCurrent(), (u8)unk_64);
-        MI_CpuCopy8(buf, unk_d0, 5);
-        unk_c8 += len;
-        unk_cc = unk_d4;
+        CommRecord_PackSource(buf + 4, Scene_GetCurrent(), (u8)myAid);
+        MI_CpuCopy8(buf, curRecordStart, 5);
+        recordLen += len;
+        recordWritePtr = curRecordEnd;
     }
 }
 namespace n2 {
 }
 u8 *CommManager::getSendQueueBuf() {
-    using namespace n2; return unk_d8; }
+    using namespace n2; return sendQueueBuf; }
 namespace n2 {
 }
 void CommManager::setSendQueueBuf(u8 *v) {
-    using namespace n2; unk_d8 = v; }
+    using namespace n2; sendQueueBuf = v; }
 namespace n2 {
 }
 void CommManager::resetSendQueueLen() {
@@ -2208,11 +2208,11 @@ void CommManager::resetSendQueueLen() {
 namespace n2 {
 }
 void CommManager::setSendQueueLen(u32 v) {
-    using namespace n2; unk_dc = v; }
+    using namespace n2; sendQueueLen = v; }
 namespace n2 {
 }
 u32 CommManager::getSendQueueLen() {
-    using namespace n2; return unk_dc; }
+    using namespace n2; return sendQueueLen; }
 namespace n2 {
 extern "C" BOOL Comm_QueueRecords(void *unused, u8 *buf, u32 n) {
     u32 o = gCommManager->getSendQueueLen();
@@ -2226,11 +2226,11 @@ extern "C" BOOL Comm_QueueRecords(void *unused, u8 *buf, u32 n) {
 }
 }
 void CommManager::setReadPtr(u8 *v) {
-    using namespace n2; unk_e0 = v; }
+    using namespace n2; readPtr = v; }
 namespace n2 {
 }
 u8 *CommManager::getReadPtr() {
-    using namespace n2; return unk_e0; }
+    using namespace n2; return readPtr; }
 namespace n2 {
 }
 void CommManager::readRecord(u8 *src, u32 n) {
@@ -2242,11 +2242,11 @@ void CommManager::readRecord(u8 *src, u32 n) {
 namespace n2 {
 }
 u8 *CommManager::getDeferredBuf() {
-    using namespace n2; return unk_e4; }
+    using namespace n2; return deferredBuf; }
 namespace n2 {
 }
 void CommManager::setDeferredBuf(u8 *v) {
-    using namespace n2; unk_e4 = v; }
+    using namespace n2; deferredBuf = v; }
 namespace n2 {
 }
 void CommManager::clearDeferredLen() {
@@ -2254,17 +2254,17 @@ void CommManager::clearDeferredLen() {
 namespace n2 {
 }
 void CommManager::setDeferredLen(u32 v) {
-    using namespace n2; unk_e8 = v; }
+    using namespace n2; deferredLen = v; }
 namespace n2 {
 }
 u32 CommManager::getDeferredLen() {
-    using namespace n2; return unk_e8; }
+    using namespace n2; return deferredLen; }
 namespace n2 {
 }
 void CommManager::flushDeferred() {
     using namespace n2;
     Unk_0207264c_Loc l;
-    s32 v6 = unk_64;
+    s32 v6 = myAid;
     if (_ZN11CommManager12isSlotActiveEi(this, v6)) {
         u32 total = getDeferredLen();
         if (total != 0) {
@@ -2309,11 +2309,11 @@ void CommManager::flushDeferred() {
 namespace n2 {
 }
 u8 *CommManager::getHeldBuf() {
-    using namespace n2; return unk_ec; }
+    using namespace n2; return heldBuf; }
 namespace n2 {
 }
 void CommManager::setHeldBuf(u8 *v) {
-    using namespace n2; unk_ec = v; }
+    using namespace n2; heldBuf = v; }
 namespace n2 {
 }
 void CommManager::clearHeldLen() {
@@ -2321,11 +2321,11 @@ void CommManager::clearHeldLen() {
 namespace n2 {
 }
 void CommManager::setHeldLen(u32 v) {
-    using namespace n2; unk_f0 = v; }
+    using namespace n2; heldLen = v; }
 namespace n2 {
 }
 u32 CommManager::getHeldLen() {
-    using namespace n2; return unk_f0; }
+    using namespace n2; return heldLen; }
 namespace n2 {
 }
 void CommManager::dispatchHeld() {
@@ -2356,11 +2356,11 @@ void CommManager::dispatchHeld() {
 namespace n2 {
 }
 u8 *CommManager::getLoopbackBuf() {
-    using namespace n2; return unk_f4; }
+    using namespace n2; return loopbackBuf; }
 namespace n2 {
 }
 void CommManager::setLoopbackBuf(u8 *v) {
-    using namespace n2; unk_f4 = v; }
+    using namespace n2; loopbackBuf = v; }
 namespace n2 {
 }
 void CommManager::clearLoopbackLen() {
@@ -2368,11 +2368,11 @@ void CommManager::clearLoopbackLen() {
 namespace n2 {
 }
 void CommManager::setLoopbackLen(u32 v) {
-    using namespace n2; unk_f8 = v; }
+    using namespace n2; loopbackLen = v; }
 namespace n2 {
 }
 u32 CommManager::getLoopbackLen() {
-    using namespace n2; return unk_f8; }
+    using namespace n2; return loopbackLen; }
 namespace n2 {
 }
 void CommManager::dispatchLoopback() {
@@ -2399,11 +2399,11 @@ void CommManager::dispatchLoopback() {
 namespace n2 {
 }
 u32 CommManager::getAuxBufA() {
-    using namespace n2; return unk_fc; }
+    using namespace n2; return auxBufA; }
 namespace n2 {
 }
 void CommManager::setAuxBufA(u32 v) {
-    using namespace n2; unk_fc = v; }
+    using namespace n2; auxBufA = v; }
 namespace n2 {
 }
 void CommManager::clearAuxLenA() {
@@ -2411,26 +2411,26 @@ void CommManager::clearAuxLenA() {
 namespace n2 {
 }
 void CommManager::setAuxLenA(u32 v) {
-    using namespace n2; unk_100 = v; }
+    using namespace n2; auxLenA = v; }
 namespace n2 {
 }
 u32 CommManager::getAuxLenA() {
-    using namespace n2; return unk_100; }
+    using namespace n2; return auxLenA; }
 namespace n2 {
 }
 void CommManager::appendAuxB(u8 *src, u32 n) {
     using namespace n2;
-    MI_CpuCopy8(src, unk_104, n);
-    unk_104 += n;
+    MI_CpuCopy8(src, auxWritePtrA, n);
+    auxWritePtrA += n;
 }
 namespace n2 {
 }
 u32 CommManager::getAuxBufB() {
-    using namespace n2; return unk_108; }
+    using namespace n2; return auxBufB; }
 namespace n2 {
 }
 void CommManager::setAuxBufB(u32 v) {
-    using namespace n2; unk_108 = v; }
+    using namespace n2; auxBufB = v; }
 namespace n2 {
 }
 void CommManager::clearAuxLenB() {
@@ -2438,35 +2438,35 @@ void CommManager::clearAuxLenB() {
 namespace n2 {
 }
 void CommManager::setAuxLenB(u32 v) {
-    using namespace n2; unk_10c = v; }
+    using namespace n2; auxLenB = v; }
 namespace n2 {
 }
 u32 CommManager::getAuxLenB() {
-    using namespace n2; return unk_10c; }
+    using namespace n2; return auxLenB; }
 namespace n2 {
 }
 void CommManager::setSentSeq(s16 v) {
-    using namespace n2; unk_114 = v; }
+    using namespace n2; sentSeq = v; }
 namespace n2 {
 }
 void CommManager::setConfirmedSeq(s16 v) {
-    using namespace n2; unk_116 = v; }
+    using namespace n2; confirmedSeq = v; }
 namespace n2 {
 }
 s16 CommManager::getSentSeq() {
-    using namespace n2; return unk_114; }
+    using namespace n2; return sentSeq; }
 namespace n2 {
 }
 s16 CommManager::getConfirmedSeq() {
-    using namespace n2; return unk_116; }
+    using namespace n2; return confirmedSeq; }
 namespace n2 {
 }
 void CommManager::clearSentSeq() {
-    using namespace n2; unk_114 = -1; }
+    using namespace n2; sentSeq = -1; }
 namespace n2 {
 }
 void CommManager::clearConfirmedSeq() {
-    using namespace n2; unk_116 = -1; }
+    using namespace n2; confirmedSeq = -1; }
 namespace n2 {
 }
 
@@ -2571,48 +2571,48 @@ void _ZN9MsgString11fromEncodedEP13EncodedStringii(void *dst, EncodedString16Buf
 
 }
 void CommManager::setControlLen(u32 v) {
-    using namespace n1; unk_118 = v; }
+    using namespace n1; controlLen = v; }
 namespace n1 {
 }
 u32 CommManager::getControlLen() {
-    using namespace n1; return unk_118; }
+    using namespace n1; return controlLen; }
 namespace n1 {
 }
 void CommManager::clearControlLen() {
-    using namespace n1; unk_118 = 0; }
+    using namespace n1; controlLen = 0; }
 namespace n1 {
 }
 void CommManager::appendControl(void *src, u32 n) {
     using namespace n1;
     u8 *d = getSendBuf(4);
-    d = d + unk_118;
+    d = d + controlLen;
     MI_CpuCopy8(src, d, n);
-    unk_118 += n;
+    controlLen += n;
 }
 namespace n1 {
 }
 void CommManager::setLatchedErrorFlags(u32 v) {
-    using namespace n1; unk_11c = v; }
+    using namespace n1; latchedErrorFlags = v; }
 namespace n1 {
 }
 u32 CommManager::getLatchedErrorFlags() {
-    using namespace n1; return unk_11c; }
+    using namespace n1; return latchedErrorFlags; }
 namespace n1 {
 }
 void CommManager::setErrorFlags(u32 v) {
-    using namespace n1; unk_120 = v; }
+    using namespace n1; errorFlags = v; }
 namespace n1 {
 }
 u32 CommManager::getErrorFlags() {
-    using namespace n1; return unk_120; }
+    using namespace n1; return errorFlags; }
 namespace n1 {
 }
 void CommManager::setErrorMode(u32 v) {
-    using namespace n1; unk_124 = v; }
+    using namespace n1; errorMode = v; }
 namespace n1 {
 }
 u32 CommManager::getErrorMode() {
-    using namespace n1; return unk_124; }
+    using namespace n1; return errorMode; }
 namespace n1 {
 }
 void Comm_CountNoAckFrames(CommManager *self) {
@@ -2626,7 +2626,7 @@ void Comm_CountNoAckFrames(CommManager *self) {
             s32 idx = Comm_AidToPeerIndex(i);
             u32 v = g->getNoAckFrames(i);
             Comm_IsWifi();
-            if (v <= 0x258) self->unk_128[idx]++;
+            if (v <= 0x258) self->noAckFrames[idx]++;
         }
     }
 }
@@ -2634,7 +2634,7 @@ namespace n1 {
 }
 u32 CommManager::getNoAckFrames(s32 i) {
     using namespace n1;
-    return unk_128[Comm_AidToPeerIndex(i)];
+    return noAckFrames[Comm_AidToPeerIndex(i)];
 }
 namespace n1 {
 }
@@ -2658,39 +2658,39 @@ namespace n1 {
 }
 void CommManager::resetNoAckFrames(s32 i) {
     using namespace n1;
-    unk_128[Comm_AidToPeerIndex(i)] = 0;
+    noAckFrames[Comm_AidToPeerIndex(i)] = 0;
 }
 namespace n1 {
 }
 void CommManager::clearNoAckFrames() {
     using namespace n1;
-    u16 *p = unk_128;
+    u16 *p = noAckFrames;
     for (s32 i = 2; i >= 0; i--) *p++ = 0;
 }
 namespace n1 {
 }
 void CommManager::setSendRetry(u32 v) {
-    using namespace n1; unk_12e = v; }
+    using namespace n1; sendRetry = v; }
 namespace n1 {
 }
 u32 CommManager::getSendRetry() {
-    using namespace n1; return unk_12e; }
+    using namespace n1; return sendRetry; }
 namespace n1 {
 }
 void CommManager::setSendRetryLimit(u32 v) {
-    using namespace n1; unk_130 = v; }
+    using namespace n1; sendRetryLimit = v; }
 namespace n1 {
 }
 u32 CommManager::getSendRetryLimit() {
-    using namespace n1; return unk_130; }
+    using namespace n1; return sendRetryLimit; }
 namespace n1 {
 }
 void CommManager::setSessionMemberMask(u32 v) {
-    using namespace n1; unk_132 = v; }
+    using namespace n1; sessionMemberMask = v; }
 namespace n1 {
 }
 u8 *CommManager::getWifiFriendList() {
-    using namespace n1; return unk_134; }
+    using namespace n1; return wifiFriendList; }
 namespace n1 {
 }
 u8 *CommManager::getWifiUserData() {

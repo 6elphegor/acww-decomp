@@ -20,35 +20,35 @@ public:
     void startOutputEffect();                        // 0x020f0df8
     void stopAll();                          // 0x020f0dec
 
-    /* 0x00 */ u32 unk_00;
+    /* 0x00 */ u32 beatSync;
     /* 0x04 */ u8 unk_04[0x24];
-    /* 0x28 */ void *unk_28;
-    /* 0x2c */ u32 unk_2c;
-    /* 0x30 */ u32 unk_30;
-    /* 0x34 */ u32 unk_34;
-    /* 0x38 */ u32 unk_38;
-    /* 0x3c */ u32 unk_3c;
+    /* 0x28 */ void *subHeap;
+    /* 0x2c */ u32 scene;
+    /* 0x30 */ u32 melody;
+    /* 0x34 */ u32 strmHandle;
+    /* 0x38 */ u32 seHandle;
+    /* 0x3c */ u32 bgmHandle;
     /* 0x40 */ u32 unk_40;
-    /* 0x44 */ u32 unk_44;
-    /* 0x48 */ u32 unk_48;
+    /* 0x44 */ u32 voiceType;
+    /* 0x48 */ u32 voiceHandle;
     /* 0x4c */ u8 unk_4c;
-    /* 0x4d */ u8 unk_4d;
+    /* 0x4d */ u8 seDisabled;
     /* 0x4e */ u8 unk_4e[2];
-    /* 0x50 */ u32 unk_50;
-    /* 0x54 */ u32 unk_54;
-    /* 0x58 */ u32 unk_58;
-    /* 0x5c */ u32 unk_5c;
-    /* 0x60 */ u8 unk_60;
-    /* 0x61 */ u8 unk_61;
-    /* 0x62 */ u8 unk_62;
+    /* 0x50 */ u32 outputMode;
+    /* 0x54 */ u32 randState;
+    /* 0x58 */ u32 randMul;
+    /* 0x5c */ u32 randAdd;
+    /* 0x60 */ u8 menuDuck;
+    /* 0x61 */ u8 subDucked;
+    /* 0x62 */ u8 keepHeap;
     /* 0x63 */ u8 unk_63;
-    /* 0x64 */ u16 unk_64;
+    /* 0x64 */ u16 trackMask;
     /* 0x66 */ u16 unk_66;
     /* 0x68 */ s32 unk_68;
-    /* 0x6c */ s16 unk_6c;
-    /* 0x6e */ u16 unk_6e;
-    /* 0x70 */ u8 unk_70;
-    /* 0x71 */ u8 unk_71;
+    /* 0x6c */ s16 variantTimer;
+    /* 0x6e */ u16 crossTrackMask;
+    /* 0x70 */ u8 pan;
+    /* 0x71 */ u8 keySeMode;
     /* 0x72 */ u8 unk_72[6];
 };
 
@@ -79,38 +79,38 @@ void NNS_SndCaptureStopEffect(SndMgr *self);
 }
 
 SndMgr::SndMgr() {
-    unk_54 = OS_GetTick();
-    unk_58 = 0x5d588b65;
-    unk_5c = 0x00269ec3;
-    unk_4d = 0;
-    unk_60 = 0;
-    unk_62 = 0;
+    randState = OS_GetTick();
+    randMul = 0x5d588b65;
+    randAdd = 0x00269ec3;
+    seDisabled = 0;
+    menuDuck = 0;
+    keepHeap = 0;
 }
 
 void SndMgr::init(u32 a, u32 b, u32 c) {
-    unk_28 = NULL;
-    if (unk_28 != NULL) Fatal_Trap();
-    unk_28 = NNS_SndHeapCreate(a, 0x339c);
-    if (unk_28 == NULL) Fatal_Trap();
+    subHeap = NULL;
+    if (subHeap != NULL) Fatal_Trap();
+    subHeap = NNS_SndHeapCreate(a, 0x339c);
+    if (subHeap == NULL) Fatal_Trap();
     Snd_InitSystem(a + 0x339c, b - 0x339c, c, 0);
     func_0210b280(func_0211d6e0() - 1);
-    unk_50 = 1;
+    outputMode = 1;
     startOutputEffect();
     NNS_SndSetMasterVolume(127);
     func_0210e8bc(10, Snd_GetHeap());
-    func_0210e6ac(&unk_34);
+    func_0210e6ac(&strmHandle);
     Snd_LoadGroup(0);
-    Snd_InitHandle(&unk_48);
-    Snd_InitHandle(&unk_38);
-    Snd_InitHandle(&unk_3c);
+    Snd_InitHandle(&voiceHandle);
+    Snd_InitHandle(&seHandle);
+    Snd_InitHandle(&bgmHandle);
     Snd_InitHandle(&unk_40);
-    unk_00 = 0;
-    unk_64 = 0;
+    beatSync = 0;
+    trackMask = 0;
     unk_68 = 0;
-    unk_6c = -1;
-    unk_6e = 0;
-    unk_70 = 0;
-    unk_71 = 0;
+    variantTimer = -1;
+    crossTrackMask = 0;
+    pan = 0;
+    keySeMode = 0;
 }
 
 void SndMgr::update() {
@@ -129,12 +129,12 @@ void SndMgr::volumeOn() {
 }
 
 void SndMgr::setOutputMode(u32 v) {
-    unk_50 = v;
-    func_0210ee4c(unk_50);
+    outputMode = v;
+    func_0210ee4c(outputMode);
 }
 
 void SndMgr::startOutputEffect() {
-    Snd_StartOutputEffect(unk_50);
+    Snd_StartOutputEffect(outputMode);
 }
 
 void SndMgr::stopAll() {

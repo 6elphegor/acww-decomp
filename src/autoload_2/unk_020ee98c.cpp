@@ -49,12 +49,12 @@ struct TaskNode10 {
     Unk_Task *unk_10;
 };
 struct TaskList4 {
-    TaskNode10 *unk_00;
-    TaskFn unk_04;
+    TaskNode10 *head;
+    TaskFn fn;
 };
 struct TaskList {
     TaskNode *unk_00;
-    u32 unk_04;
+    u32 tail;
     TaskFn unk_08;
 };
 
@@ -74,12 +74,12 @@ public:
 };
 
 struct Ent {
-    /* 0x00 */ void *unk_00;
-    /* 0x04 */ s16 unk_04;
-    /* 0x06 */ u16 unk_06;
-    /* 0x08 */ u8 unk_08;
-    /* 0x09 */ u8 unk_09;
-    /* 0x0a */ u8 unk_0a;
+    /* 0x00 */ void *handle;
+    /* 0x04 */ s16 trackPitch;
+    /* 0x06 */ u16 index;
+    /* 0x08 */ u8 seqArc;
+    /* 0x09 */ u8 flags;
+    /* 0x0a */ u8 trackVolume;
     /* 0x0b */ u8 pad;
 };
 
@@ -87,11 +87,11 @@ struct Group;
 typedef void (*GroupFn)(Group *g, s32 i, s32 v);
 struct Group {
     /* 0x00 */ u8 pad0[8];
-    /* 0x08 */ Ent unk_08[3];
-    /* 0x2c */ GroupFn unk_2c;
-    /* 0x30 */ GroupFn unk_30;
-    /* 0x34 */ u16 unk_34;
-    /* 0x36 */ u8 unk_36;
+    /* 0x08 */ Ent voices[3];
+    /* 0x2c */ GroupFn startVoiceFn;
+    /* 0x30 */ GroupFn applyParamsFn;
+    /* 0x34 */ u16 flags;
+    /* 0x36 */ u8 numVoices;
 };
 
 struct FndList {
@@ -101,13 +101,13 @@ struct FndList {
     u16 offset;
 };
 struct PlayCtx {
-    /* 0x00 */ Group *unk_00;
-    /* 0x04 */ void *unk_04;
+    /* 0x00 */ Group *group;
+    /* 0x04 */ void *source;
     /* 0x08 */ u8 pad[8];
-    /* 0x10 */ s32 unk_10;
-    /* 0x14 */ s32 unk_14;
-    /* 0x18 */ s32 unk_18;
-    /* 0x1c */ s32 unk_1c;
+    /* 0x10 */ s32 distance;
+    /* 0x14 */ s32 volume;
+    /* 0x18 */ s32 pan;
+    /* 0x1c */ s32 baseVolume;
     /* 0x20 */ s32 unk_20;
 };
 struct InfoB {
@@ -115,18 +115,18 @@ struct InfoB {
     u8 unk_04;
 };
 struct Cfg4 {
-    s32 unk_00, unk_04, unk_08, unk_0c;
+    s32 unk_00, unk_04, unk_08, active;
 };
 struct Bytes4 {
     u8 b0, b1, b2, b3;
 };
 struct Player {
     /* 0x00 */ FndList list;
-    /* 0x0c */ u32 unk_0c;
+    /* 0x0c */ u32 active;
     /* 0x10 */ u32 unk_10;
     /* 0x14 */ u8 unk_14;
     /* 0x15 */ Bytes4 unk_15;
-    /* 0x1c */ u32 unk_1c;
+    /* 0x1c */ u32 heapLevel;
     /* 0x20 */ u8 unk_20[4];
     /* 0x24 */ u8 unk_24[4];
 };
@@ -186,7 +186,7 @@ void func_0210a148(void *p, u32 a, u32 b);
 void NNS_SndPlayerSetTrackPitch(void *p, u32 a, s32 b);
 struct BgmObj {
     u8 pad[0x44];
-    s32 unk_44;
+    s32 voiceType;
 };
 u64 OS_GetTick(void);
 u32 SndVoice_GetSyllable(u32 a, u32 b);
@@ -281,7 +281,7 @@ extern "C" void SndMgr_PlayTalkVoice(BgmObj *o, s32 mode, u32 kind, u32 a, u32 b
     u32 t;
     u32 m;
     u32 r;
-    if (o->unk_44 == 5) Fatal_Trap();
+    if (o->voiceType == 5) Fatal_Trap();
     z = 0;
     switch (mode) {
     case 0:

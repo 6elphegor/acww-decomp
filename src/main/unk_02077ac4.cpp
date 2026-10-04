@@ -17,7 +17,7 @@ public:
 
 struct CommManager {
     u8 pad_00[0x64];
-    s32 unk_64;
+    s32 myAid;
     u32 isSlotActive(s32 i);
     BOOL isOnline();
 };
@@ -368,19 +368,19 @@ extern "C" {
 typedef u32 Unk_02077a54_Fn;
 struct Unk_020781ec_Elem {
     u8 pad_00[0x1d];
-    u8 unk_1d;
+    u8 flags;
     u8 pad_1e[0x2c - 0x1e];
 };
 struct Unk_020781ec_Data {
-    Unk_020781ec_Elem unk_00[8];
-    s8 unk_160;
-    s8 unk_161;
-    s8 unk_162;
-    s8 unk_163;
-    s8 unk_164;
+    Unk_020781ec_Elem entries[8];
+    s8 fleaVillager;
+    s8 greeter;
+    s8 birthdayHost;
+    s8 birthdayGuest;
+    s8 fleaMarketBuyer;
     u8 pad_165[3];
-    s32 unk_168;
-    s8 unk_16c;
+    s32 idleFrames;
+    s8 birthdayVisitor;
 };
 extern void *gCommManager;
 extern void *sSpNpcAnimHeapPool[];
@@ -3587,7 +3587,7 @@ extern "C" u32 Date_GetStarSignOf(u8 *p) {
 namespace nQ {
 extern "C" u32 Town_GetMaxOutdoorVillagers() {
     CommManager *o = gCommManager;
-    if (o->isSlotActive(o->unk_64)) return 0;
+    if (o->isSlotActive(o->myAid)) return 0;
     return 4;
 }
 }
@@ -5879,7 +5879,7 @@ extern "C" void Villager_ResolveRoomLayout(Unk_0207e268 *a, u16 *b) {
 
 namespace nL {
 extern "C" void Villager_PlaceReceivedItems(Unk_0207e268 *a) {
-    if (gCommManager->isSlotActive(gCommManager->unk_64) == 0) {
+    if (gCommManager->isSlotActive(gCommManager->myAid) == 0) {
         if (_ZN12VillagerData13getVillagerIdEv(a)->isValid() != 0) {
             u16 *r4 = Villager_GetReceivedItem(a, 0);
             BOOL r6 = FALSE;
@@ -6006,7 +6006,7 @@ extern "C" s32 Villager_GetWhereabouts(Unk_0207e268 *a) {
     s32 r4 = 0;
     if (_ZN12VillagerData13getVillagerIdEv(a)->isValid() != 0) {
         r4 = Villager_GetState(a);
-        if (gCommManager->isSlotActive(gCommManager->unk_64) != 0) {
+        if (gCommManager->isSlotActive(gCommManager->myAid) != 0) {
             if (VillagerState_GetPresence(r4) == 2) r4 = 2;
             else r4 = 1;
         } else {
@@ -8508,7 +8508,7 @@ extern "C" void SaveVillagers_RefreshPlanStates(u8 *self) {
 
 namespace nF {
 extern "C" void SaveVillagers_UpdatePlansNow(u8 *self) {
-    if (!gCommManager->isSlotActive(gCommManager->unk_64)) {
+    if (!gCommManager->isSlotActive(gCommManager->myAid)) {
         Unk_0207ae28_Buf b;
         b.v[0] = 0;
         b.v[1] = 0;
@@ -9313,7 +9313,7 @@ extern "C" void SaveVillagers_InitTalkUrges(u8 *p, void *q) {
 namespace nE {
 extern "C" void SaveVillagers_DoubleTalkUrges(u8 *p) {
     s32 i;
-    if (gCommManager->isSlotActive(gCommManager->unk_64) == 0) {
+    if (gCommManager->isSlotActive(gCommManager->myAid) == 0) {
         for (i = 0; i < 8; i++) {
             if (((VillagerId *)_ZN12VillagerData13getVillagerIdEv(p))->isValid()) {
                 Villager_DoubleTalkUrge(p);
@@ -9327,7 +9327,7 @@ extern "C" void SaveVillagers_DoubleTalkUrges(u8 *p) {
 namespace nD {
 extern "C" void SaveVillagers_ApplyBadFortune(void *self0) {
     u8 *self = (u8 *)self0;
-    if (_ZN11CommManager12isSlotActiveEi(gCommManager, gCommManager->unk_64) == 0) {
+    if (_ZN11CommManager12isSlotActiveEi(gCommManager, gCommManager->myAid) == 0) {
         s32 i;
         for (i = 0; i < 8; self += 0x700, i++) {
             if (_ZN10VillagerId7isValidEv(_ZN12VillagerData13getVillagerIdEv(self)) != 0) {
@@ -9393,7 +9393,7 @@ extern "C" void SaveVillagers_ApplyGoodFortune(void *self, void *p) {
     if (_ZN11CommManager8isOnlineEv(gCommManager) == 0) {
         SaveVillagers_GiveFortuneGreeting(self, p);
     }
-    if (_ZN11CommManager12isSlotActiveEi(gCommManager, gCommManager->unk_64) == 0) {
+    if (_ZN11CommManager12isSlotActiveEi(gCommManager, gCommManager->myAid) == 0) {
         SaveVillagers_DoubleTalkUrges(self);
     }
 }
@@ -11011,20 +11011,20 @@ extern "C" void VillagerStates_ResetRuntime() {
 
 namespace nA {
 extern "C" void VillagerStates_ClearUnk1dBit0() {
-    Unk_020781ec_Elem *e = VillagerStates_Get()->unk_00;
+    Unk_020781ec_Elem *e = VillagerStates_Get()->entries;
     s32 i;
     for (i = 0; i < 8; e++, i++) {
-        e->unk_1d &= ~1;
+        e->flags &= ~1;
     }
 }
 }
 
 namespace nA {
 extern "C" void VillagerStates_ClearUnk1dBit2() {
-    Unk_020781ec_Elem *e = VillagerStates_Get()->unk_00;
+    Unk_020781ec_Elem *e = VillagerStates_Get()->entries;
     s32 i;
     for (i = 0; i < 8; e++, i++) {
-        e->unk_1d &= ~4;
+        e->flags &= ~4;
     }
 }
 }
@@ -11041,61 +11041,61 @@ extern "C" void VillagerStates_ResetTalkRepeats() {
 
 namespace nA {
 extern "C" void VillagerStates_ClearFleaVillager() {
-    VillagerStates_Get()->unk_160 = -1;
+    VillagerStates_Get()->fleaVillager = -1;
 }
 }
 
 namespace nA {
 extern "C" void VillagerStates_SetBirthdayHost(s32 v) {
-    VillagerStates_Get()->unk_162 = v;
+    VillagerStates_Get()->birthdayHost = v;
 }
 }
 
 namespace nA {
 extern "C" s32 VillagerStates_GetBirthdayHost() {
-    return VillagerStates_Get()->unk_162;
+    return VillagerStates_Get()->birthdayHost;
 }
 }
 
 namespace nA {
 extern "C" void VillagerStates_SetBirthdayGuest(s32 v) {
-    VillagerStates_Get()->unk_163 = v;
+    VillagerStates_Get()->birthdayGuest = v;
 }
 }
 
 namespace nA {
 extern "C" s32 VillagerStates_GetBirthdayGuest() {
-    return VillagerStates_Get()->unk_163;
+    return VillagerStates_Get()->birthdayGuest;
 }
 }
 
 namespace nA {
 extern "C" void VillagerStates_SetBirthdayVisitor(s32 v) {
-    VillagerStates_Get()->unk_16c = v;
+    VillagerStates_Get()->birthdayVisitor = v;
 }
 }
 
 namespace nA {
 extern "C" s32 VillagerStates_GetBirthdayVisitor() {
-    return VillagerStates_Get()->unk_16c;
+    return VillagerStates_Get()->birthdayVisitor;
 }
 }
 
 namespace nA {
 extern "C" void VillagerStates_SetFleaMarketBuyer(s32 v) {
-    VillagerStates_Get()->unk_164 = v;
+    VillagerStates_Get()->fleaMarketBuyer = v;
 }
 }
 
 namespace nA {
 extern "C" s32 VillagerStates_GetFleaMarketBuyer() {
-    return VillagerStates_Get()->unk_164;
+    return VillagerStates_Get()->fleaMarketBuyer;
 }
 }
 
 namespace nA {
 extern "C" void VillagerStates_ResetIdleFrames() {
-    VillagerStates_Get()->unk_168 = 0;
+    VillagerStates_Get()->idleFrames = 0;
 }
 }
 

@@ -90,12 +90,12 @@ struct Unk_ov004_0223e10c_Pair {
 
 struct Unk_ov004_0223e2f4_G {
     u8 pad_00[0x68];
-    s32 unk_68;
+    s32 localSlot;
 };
 
 struct Unk_ov004_0223e2f4_Pad {
     u16 unk_00;
-    u16 unk_02;
+    u16 pressed;
 };
 
 extern "C" {
@@ -367,7 +367,7 @@ void ResidentSelect::updateTouchSelect() {
     }
     if (InputMode_IsTouch() && Unk_ov004_0223e580_BothEf()) {
         if (TouchPickResult_GetTarget(Scene_GetTouchPicker(), out, &a, &c) && a == 1) {
-            gCommManager->unk_68 = c;
+            gCommManager->localSlot = c;
             selectedResident = c;
             changeState(3);
             return;
@@ -375,7 +375,7 @@ void ResidentSelect::updateTouchSelect() {
     }
     if (RoomTelephone_IsTalking()) {
         changeState(0);
-    } else if (gPad.unk_02 & 0xff3) {
+    } else if (gPad.pressed & 0xff3) {
         InputMode_SetButtons();
         changeState(2);
     }
@@ -396,7 +396,7 @@ void ResidentSelect::updatePadSelect() {
         return;
     }
     g = gCommManager;
-    if (g->unk_68 != 4) {
+    if (g->localSlot != 4) {
         changeState(3);
         return;
     }
@@ -410,7 +410,7 @@ void ResidentSelect::updatePadSelect() {
         return;
     }
     if (isPhoneSelected != 0) {
-        u16 k = gPad.unk_02;
+        u16 k = gPad.pressed;
         if (k & 0x80) {
             isPhoneSelected = 0;
             goto L500;
@@ -437,7 +437,7 @@ void ResidentSelect::updatePadSelect() {
     st = selectedResident;
     switch (st) {
     case 0: {
-        u16 k = gPad.unk_02;
+        u16 k = gPad.pressed;
         if (k & 0x10) {
             st = st + 1;
         } else if (k & 0x80) {
@@ -451,7 +451,7 @@ void ResidentSelect::updatePadSelect() {
         break;
     }
     case 1: {
-        u16 k = gPad.unk_02;
+        u16 k = gPad.pressed;
         if (k & 0x20) {
             st = st - 1;
         } else if (k & 0x80) {
@@ -465,7 +465,7 @@ void ResidentSelect::updatePadSelect() {
         break;
     }
     case 2: {
-        u16 k = gPad.unk_02;
+        u16 k = gPad.pressed;
         if (k & 0x10) {
             st = st + 1;
         } else if (k & 0x40) {
@@ -480,7 +480,7 @@ void ResidentSelect::updatePadSelect() {
         break;
     }
     case 3: {
-        u16 k = gPad.unk_02;
+        u16 k = gPad.pressed;
         if (k & 0x20) {
             st = st - 1;
         } else if (k & 0x40) {
@@ -500,12 +500,12 @@ void ResidentSelect::updatePadSelect() {
     }
 L500:
     {
-        u16 k = gPad.unk_02;
+        u16 k = gPad.pressed;
         if ((k & 8) || (k & 1)) {
             if (isPhoneSelected != 0) {
                 RoomTelephone_StartAct0A();
             } else {
-                g->unk_68 = selectedResident;
+                g->localSlot = selectedResident;
                 changeState(3);
             }
         }

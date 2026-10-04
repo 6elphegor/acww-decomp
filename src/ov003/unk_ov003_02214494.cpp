@@ -334,9 +334,9 @@ public:
     void updateTentState();
     BOOL setTentState(s32 i);
 
-    /* 0x2b0 */ s32 unk_2b0;
-    /* 0x2b4 */ u16 unk_2b4; u8 unk_2b6;
-    /* 0x2b7 */ u8 unk_2b7;
+    /* 0x2b0 */ s32 tentState;
+    /* 0x2b4 */ u16 warpFrames; u8 doorEnterRequested;
+    /* 0x2b7 */ u8 createHour;
 };
 
 extern "C" void ReddTent_Create() {
@@ -357,7 +357,7 @@ BOOL ReddTent::vfunc_70() {
     l.w0 = 0;
     l.w1 = 0;
     Clock_GetDateTime(&l);
-    unk_2b7 = ((u8 *)&l)[2];
+    createHour = ((u8 *)&l)[2];
     return TRUE;
 }
 
@@ -376,7 +376,7 @@ BOOL ReddTent::vfunc_8c() {
     if (((u8 *)&l)[2] < 6) {
         goto no;
     }
-    if (unk_2b7 >= 6) {
+    if (createHour >= 6) {
         goto yes;
     }
     return FALSE;
@@ -432,7 +432,7 @@ BOOL ReddTent::setTentState(s32 i) {
     };
     if (i < 10) {
         if ((this->*tbl[i])()) {
-            unk_2b0 = i;
+            tentState = i;
             return TRUE;
         }
     }
@@ -448,7 +448,7 @@ void ReddTent::updateTentState() {
         &ReddTent::execTentGoIn, &ReddTent::execTentEntry07,
         &ReddTent::execTentWalkIn, &ReddTent::execTentWarp,
     };
-    s32 i = unk_2b0;
+    s32 i = tentState;
     if (i < 10) {
         (this->*tbl[i])();
     }
@@ -609,7 +609,7 @@ void ReddTent::execTentEntry07() {
 
 
 BOOL ReddTent::enterTentWalkIn() {
-    unk_2b6 = 0;
+    doorEnterRequested = 0;
     return TRUE;
 }
 
@@ -617,12 +617,12 @@ BOOL ReddTent::enterTentWalkIn() {
 void ReddTent::execTentWalkIn() {
     if (PlayerActor_IsEnteringDoor()) {
         setTentState(9);
-    } else if (unk_2b6 == 0) {
+    } else if (doorEnterRequested == 0) {
         s16 ang;
         Unk_ov009_0225b880_Vec3 v;
         if (getDoorPos(&v, &ang)) {
             if (PlayerActor_LocalRequestDoorEnter(2, &v.x, &v.z, ang)) {
-                unk_2b6 = 1;
+                doorEnterRequested = 1;
             }
         }
     }
@@ -630,7 +630,7 @@ void ReddTent::execTentWalkIn() {
 
 
 BOOL ReddTent::enterTentWarp() {
-    unk_2b4 = 0;
+    warpFrames = 0;
     return TRUE;
 }
 
@@ -639,7 +639,7 @@ BOOL ReddTent::enterTentWarp() {
 // class ReddTent (state functions)
 void ReddTent::execTentWarp() {
     if (PlayerActor_IsStowFinished()) {
-        unk_2b4++;
+        warpFrames++;
     }
     u32 lim;
     if (getEntranceType() == 2) {
@@ -650,7 +650,7 @@ void ReddTent::execTentWarp() {
     if (getEntranceType() == 1) {
         lim += 0xc;
     }
-    if (unk_2b4 >= lim) {
+    if (warpFrames >= lim) {
         s32 t = getInteriorScene();
         s16 ang;
         Unk_ov009_0225b880_Vec3 v;

@@ -10,13 +10,13 @@ struct Unk_02041104_Ent {
     void (*unk_00[4])();
 };
 
-struct Unk_021c3cc0 {
-    u8 unk_00;
-    u8 unk_01;
+struct ScreenTransition {
+    u8 state;
+    u8 type;
     u8 unk_02[2];
-    s32 unk_04;
-    s32 unk_08;
-    s32 unk_0c;
+    s32 progress;
+    s32 step;
+    s32 brightness;
     s32 unk_10;
 };
 
@@ -46,7 +46,7 @@ const Unk_02041104_Ent sTransitionTypeTable[4] = {
 u8 sIrisWipeFlags;
 u8 data_021c3cb8;
 u16 *sIrisWipeActiveTable;
-Unk_021c3cc0 gScreenTransition;
+ScreenTransition gScreenTransition;
 u8 sIrisWipeHBlankTask[0x1c];
 u16 sIrisWipeTableA[0x60];
 u16 sIrisWipeTableB[0x60];
@@ -103,30 +103,30 @@ void IrisWipe_HBlank();
 }
 
 extern "C" void ScreenFade_Begin() {
-    Unk_021c3cc0 *s = &gScreenTransition;
-    if (s->unk_00 == 3) {
-        s->unk_0c = 0;
-    } else if (s->unk_01 == 0) {
-        s->unk_0c = -16;
+    ScreenTransition *s = &gScreenTransition;
+    if (s->state == 3) {
+        s->brightness = 0;
+    } else if (s->type == 0) {
+        s->brightness = -16;
     } else {
-        s->unk_0c = 16;
+        s->brightness = 16;
     }
-    Gfx2d_SetBrightness(s->unk_0c);
+    Gfx2d_SetBrightness(s->brightness);
 }
 
 extern "C" void ScreenFade_End() {}
 
 extern "C" void ScreenFade_Update() {
-    Unk_021c3cc0 *s = &gScreenTransition;
-    if (s->unk_01 == 0) {
-        s->unk_0c = -(s->unk_04 << 4) >> 12;
+    ScreenTransition *s = &gScreenTransition;
+    if (s->type == 0) {
+        s->brightness = -(s->progress << 4) >> 12;
     } else {
-        s->unk_0c = (s->unk_04 << 4) >> 12;
+        s->brightness = (s->progress << 4) >> 12;
     }
 }
 
 extern "C" void ScreenFade_VBlank() {
-    Gfx2d_SetBrightness(gScreenTransition.unk_0c);
+    Gfx2d_SetBrightness(gScreenTransition.brightness);
 }
 
 extern "C" void IrisWipe_HBlank() {
@@ -158,7 +158,7 @@ extern "C" void IrisWipe_SetupLayers() {
     Gfx2d_SetSubWin0Planes(0x1b, 1);
     Gfx2d_SetMainWinOutPlanes(4);
     Gfx2d_SetSubWinOutPlanes(4);
-    if (gScreenTransition.unk_04 == 0) {
+    if (gScreenTransition.progress == 0) {
         Gfx2d_SetMainWin0Rect(0, 0, 0xff, 0xc0);
         Gfx2d_SetSubWin0Rect(0, 0, 0xff, 0xc0);
     } else {
@@ -189,7 +189,7 @@ extern "C" void IrisWipe_Begin() {
     if (HBlank_Add(sIrisWipeHBlankTask, (void *)IrisWipe_HBlank, (void *)IrisWipe_VBlankRegs, 0) != 0) {
         sIrisWipeFlags |= 1;
     }
-    if (gScreenTransition.unk_04 == 0x1000) Gfx2d_SetBrightness(0);
+    if (gScreenTransition.progress == 0x1000) Gfx2d_SetBrightness(0);
 }
 
 extern "C" void IrisWipe_End() {
@@ -207,9 +207,9 @@ extern "C" void IrisWipe_End() {
 extern "C" void IrisWipe_Update() {
     u16 *p;
     u16 t;
-    Unk_021c3cc0 *s = &gScreenTransition;
+    ScreenTransition *s = &gScreenTransition;
     if (sIrisWipeFlags & 2) p = sIrisWipeTableA; else p = sIrisWipeTableB;
-    s32 v = s->unk_04;
+    s32 v = s->progress;
     if (v == 0) {
         volatile u16 c = 0xff;
         MIi_CpuClear16(c, (u32)p, 0xc0);
@@ -260,26 +260,26 @@ extern "C" void CutTransition_Update() {}
 extern "C" void CutTransition_VBlank() {}
 
 extern "C" void ScreenTransition_Init() {
-    gScreenTransition.unk_00 = 0;
-    gScreenTransition.unk_01 = 0;
-    gScreenTransition.unk_0c = -16;
-    gScreenTransition.unk_04 = 0x1000;
-    gScreenTransition.unk_08 = 0;
+    gScreenTransition.state = 0;
+    gScreenTransition.type = 0;
+    gScreenTransition.brightness = -16;
+    gScreenTransition.progress = 0x1000;
+    gScreenTransition.step = 0;
     sIrisWipeActiveTable = 0;
     sIrisWipeFlags = 0;
 }
 
 extern "C" BOOL ScreenTransition_StartFadeOut(u32 a, u32 b) {
-    u32 old = gScreenTransition.unk_01;
+    u32 old = gScreenTransition.type;
     BOOL ok;
-    if (gScreenTransition.unk_00 == 2) ok = TRUE; else ok = FALSE;
+    if (gScreenTransition.state == 2) ok = TRUE; else ok = FALSE;
     if (!ok && data_021c3cb8 == 0) return FALSE;
-    gScreenTransition.unk_00 = 3;
+    gScreenTransition.state = 3;
     data_021c3cb8 = 0;
     void (*fn)() = sTransitionTypeTable[old].unk_00[1];
     if (fn) fn();
-    gScreenTransition.unk_01 = a;
-    gScreenTransition.unk_04 = 0;
+    gScreenTransition.type = a;
+    gScreenTransition.progress = 0;
     fn = sTransitionTypeTable[a].unk_00[0];
     if (fn) {
         fn();
@@ -288,27 +288,27 @@ extern "C" BOOL ScreenTransition_StartFadeOut(u32 a, u32 b) {
         if (a == 2) Snd_FadeOutScene();
     }
     if (b == 0 || a == 3) {
-        gScreenTransition.unk_08 = 0x1000;
+        gScreenTransition.step = 0x1000;
     } else {
-        gScreenTransition.unk_08 = FX_Div(0x1000, b << 12);
+        gScreenTransition.step = FX_Div(0x1000, b << 12);
     }
     return TRUE;
 }
 
 extern "C" BOOL ScreenTransition_StartFadeIn(u32 a, u32 b, u32 c) {
     BOOL ok;
-    if (gScreenTransition.unk_00 == 0) ok = TRUE; else ok = FALSE;
+    if (gScreenTransition.state == 0) ok = TRUE; else ok = FALSE;
     if (!ok) return FALSE;
     ScreenTransition_HideCover();
-    gScreenTransition.unk_00 = 1;
-    gScreenTransition.unk_01 = a;
-    gScreenTransition.unk_04 = 0x1000;
+    gScreenTransition.state = 1;
+    gScreenTransition.type = a;
+    gScreenTransition.progress = 0x1000;
     void (*fn)() = sTransitionTypeTable[a].unk_00[0];
     if (fn) fn();
     if (b == 0 || a == 3) {
-        gScreenTransition.unk_08 = -0x1000;
+        gScreenTransition.step = -0x1000;
     } else {
-        gScreenTransition.unk_08 = FX_Div(-0x1000, b << 12);
+        gScreenTransition.step = FX_Div(-0x1000, b << 12);
     }
     if (c == 0) {
         ((BgmSceneFade *)(data_021c1b3c + 0x2d0))->onFadeIn();
@@ -319,15 +319,15 @@ extern "C" BOOL ScreenTransition_StartFadeIn(u32 a, u32 b, u32 c) {
 
 extern "C" void ScreenTransition_Update() {
     if (CommCaution_ArePlanesHidden() != 0) return;
-    u32 idx = gScreenTransition.unk_01;
-    u32 st = gScreenTransition.unk_00;
+    u32 idx = gScreenTransition.type;
+    u32 st = gScreenTransition.state;
     if (st == 0 || st == 2) return;
-    s32 v = gScreenTransition.unk_08;
+    s32 v = gScreenTransition.step;
     if (v != 0) {
         u32 a = v >= 0 ? 0x1000 : 0;
         if (v < 0) v = -v;
-        if (func_020e759c(&gScreenTransition.unk_04, a, v) != 0) {
-            gScreenTransition.unk_08 = 0;
+        if (func_020e759c(&gScreenTransition.progress, a, v) != 0) {
+            gScreenTransition.step = 0;
         }
     }
     void (*fn)() = sTransitionTypeTable[idx].unk_00[2];
@@ -336,20 +336,20 @@ extern "C" void ScreenTransition_Update() {
 
 extern "C" void ScreenTransition_VBlank() {
     if (CommCaution_ArePlanesHidden() != 0) return;
-    Unk_021c3cc0 *s = &gScreenTransition;
-    u32 idx = s->unk_01;
-    u32 st = s->unk_00;
+    ScreenTransition *s = &gScreenTransition;
+    u32 idx = s->type;
+    u32 st = s->state;
     if (st == 2 || st == 0) return;
     void (*fn)() = sTransitionTypeTable[idx].unk_00[3];
     if (fn) fn();
-    if (gScreenTransition.unk_00 == 1) {
-        if (gScreenTransition.unk_08 != 0) return;
-        gScreenTransition.unk_00 = 2;
+    if (gScreenTransition.state == 1) {
+        if (gScreenTransition.step != 0) return;
+        gScreenTransition.state = 2;
         fn = sTransitionTypeTable[idx].unk_00[1];
         if (fn) fn();
-    } else if (gScreenTransition.unk_00 == 3) {
-        if (gScreenTransition.unk_08 != 0) return;
-        gScreenTransition.unk_00 = 0;
+    } else if (gScreenTransition.state == 3) {
+        if (gScreenTransition.step != 0) return;
+        gScreenTransition.state = 0;
         fn = sTransitionTypeTable[idx].unk_00[1];
         if (fn) fn();
         ScreenTransition_OnHidden();

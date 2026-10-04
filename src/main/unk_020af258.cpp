@@ -2,13 +2,13 @@
 
 struct Counter {
     Counter();
-    /* 0x00 */ u8 unk_00;
-    /* 0x01 */ u8 unk_01;
+    /* 0x00 */ u8 needed;
+    /* 0x01 */ u8 received;
 };
 struct ShopAckCounter {
     ShopAckCounter();
-    u8 unk_00;
-    u8 unk_01;
+    u8 needed;
+    u8 received;
 };
 
 struct Elem2a { Elem2a(); u16 d; };
@@ -22,25 +22,25 @@ struct Obj12 { Obj12(u32 a, u32 b); ~Obj12(); u32 d[3]; };
 struct Big { Big(); ~Big(); u8 d[0xf4]; };
 
 struct Bits5a {
-    u16 unk_00 : 5;
-    u16 unk_05 : 4;
-    u16 unk_09 : 2;
+    u16 saleHour : 5;
+    u16 paintCounter : 4;
+    u16 level : 2;
     u16 unk_0b : 5;
 };
 struct Unk_020aebbc {
-    /* 0x00 */ u32 unk_00;
+    /* 0x00 */ u32 sales;
     u8 pad[0x51 - 4];
-    /* 0x51 */ u8 unk_51;
+    /* 0x51 */ u8 stockStale;
     u8 pad2[7];
-    /* 0x59 */ u8 unk_59;
-    /* 0x5a */ Bits5a unk_5a;
+    /* 0x59 */ u8 renovationScheduled;
+    /* 0x5a */ Bits5a packedState;
 };
 struct Unk_020aec74_Out {
-    u8 unk_00, unk_01, unk_02, unk_03, unk_04, unk_05;
+    u8 second, minute, hour, day, month, year;
     u16 unk_06;
 };
 struct Unk_021c47c4 {
-    u32 unk_00, unk_04, unk_08;
+    u32 blocks, width, height;
 };
 
 extern "C" {

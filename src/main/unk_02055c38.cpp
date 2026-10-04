@@ -5,18 +5,18 @@ struct Unk_020561d8_Mtx { s32 m[9]; };
 
 struct Unk_02055cd0_Ent {
     u8 pad_00[0x22];
-    u8 unk_22;
-    u8 unk_23;
+    u8 matIdx;
+    u8 flags;
     u8 pad_24[4];
 };
 
 struct Unk_02055cd0_Obj {
     u8 pad_00[0x18];
-    u32 unk_18;
+    u32 resMdl;
     u8 pad_1c[0xa];
-    u8 unk_26;
+    u8 numTracks;
     u8 pad_27;
-    Unk_02055cd0_Ent *unk_28;
+    Unk_02055cd0_Ent *tracks;
 };
 struct Unk_02056160_Rec {
     u8 pad[0x28];
@@ -119,13 +119,13 @@ public:
 
 class MatTexPatTrack {
 public:
-    void *unk_00;
-    u8 unk_04[0x1c];
-    u8 unk_20;
-    u8 unk_21;
-    u8 unk_22;
-    u8 unk_23;
-    u16 unk_24;
+    void *patData;
+    u8 vramTask[0x1c];
+    u8 texIdx;
+    u8 keyIdx;
+    u8 matIdx;
+    u8 flags;
+    u16 lastFrame;
 
     void update(u32 frame, u8 *p2, void *p3, void *p4);
     BOOL isPaused();
@@ -138,12 +138,12 @@ public:
 
 class MatTexPatAnim : public AnimFrameCtrl {
 public:
-    void *unk_18;
-    void *unk_1c;
-    void *unk_20;
-    u16 unk_24;
-    u8 unk_26;
-    MatTexPatTrack *unk_28;
+    void *resMdl;
+    void *resTex;
+    void *patAnm;
+    u16 patNumFrames;
+    u8 numTracks;
+    MatTexPatTrack *tracks;
 
     MatTexPatAnim();
     virtual ~MatTexPatAnim();
@@ -159,10 +159,10 @@ public:
 
 class JointBlend {
 public:
-    Unk_020561d8_Mtx unk_04;
-    Unk_020561d8_Vec unk_28;
-    s32 unk_34;
-    s32 unk_38;
+    Unk_020561d8_Mtx poseRot;
+    Unk_020561d8_Vec poseTrans;
+    s32 blendRatio;
+    s32 blendStep;
 
     JointBlend();
     virtual ~JointBlend();
@@ -194,27 +194,27 @@ public:
     TexPatVramTasks();
     ~TexPatVramTasks();
 
-    /* 0x00 */ TexVramTask unk_00[2];
+    /* 0x00 */ TexVramTask tasks[2];
 };
 
 struct TexPatVramUploader {
-    u32 unk_00[14];
+    u32 tasks[14];
     BOOL uploadByName(u8 *hdr, const char *n1, const char *n2, u8 *x, s32 a, s32 b);
     BOOL uploadByIdx(u8 *hdr, s32 i1, s32 i2, u8 *x, s32 a, s32 b);
 };
 
 class TexPatVramAnim : public AnimFrameCtrl {
 public:
-    TexPatVramTasks unk_18;
-    u8 *unk_50;
-    ResName16 unk_54;
-    ResName16 unk_65;
-    u8 *unk_78;
-    u8 *unk_7c;
-    s32 unk_80;
-    s32 unk_84;
-    s32 unk_88;
-    u8 unk_8c;
+    TexPatVramTasks vramTasks;
+    u8 *dstTex;
+    ResName16 texName;
+    ResName16 plttName;
+    u8 *srcTex;
+    u8 *patAnm;
+    s32 curPlttIdx;
+    s32 curTexIdx;
+    s32 prevTexIdx;
+    u8 plttOnly;
 
     TexPatVramAnim();
     virtual ~TexPatVramAnim();
@@ -225,8 +225,8 @@ public:
 };
 
 struct MatTexBinder {
-    u8 *unk_00;
-    s8 unk_04;
+    u8 *resMdl;
+    s8 matIdx;
 
     MatTexBinder();
     ~MatTexBinder();
@@ -269,15 +269,15 @@ public:
     /* 0x04 */ u32 unk_04;
     /* 0x08 */ u32 unk_08;
     /* 0x0c */ u32 unk_0c[2];
-    /* 0x14 */ u32 unk_14;
+    /* 0x14 */ u32 texDataOffset;
     /* 0x18 */ u8 unk_18[0x18];
-    /* 0x30 */ u16 unk_30;
+    /* 0x30 */ u16 plttDataSize;
     /* 0x32 */ u16 unk_32;
-    /* 0x34 */ u16 unk_34;
+    /* 0x34 */ u16 plttDictOffset;
     /* 0x36 */ u16 unk_36;
-    /* 0x38 */ u32 unk_38;
+    /* 0x38 */ u32 plttDataOffset;
     /* 0x3c */ u8 unk_3c[6];
-    /* 0x42 */ u16 unk_42;
+    /* 0x42 */ u16 texDictEntryOffset;
 };
 
 class G3dMatData {
@@ -287,9 +287,9 @@ public:
     u32 getTexSize(void);
 
     /* 0x00 */ u32 unk_00[5];
-    /* 0x14 */ u32 unk_14;
-    /* 0x18 */ u32 unk_18;
-    /* 0x1c */ u16 unk_1c;
+    /* 0x14 */ u32 texImageParam;
+    /* 0x18 */ u32 texImageParamMask;
+    /* 0x1c */ u16 texPlttBase;
 };
 
 s32 G3dRes_FindDictIdx(void *p, s32 a) {
@@ -303,18 +303,18 @@ s32 G3dRes_FindDictIdx(void *p, s32 a) {
 }
 
 u32 G3dMatData::getTexSize(void) {
-    return G3dTex_GetImageSize(unk_14);
+    return G3dTex_GetImageSize(texImageParam);
 }
 
 u32 G3dMatData::getTexAddr(void) {
-    return (unk_14 & 0xffff) << 3;
+    return (texImageParam & 0xffff) << 3;
 }
 
 u32 G3dMatData::getPlttAddr(void) {
-    if (((unk_14 & 0x1c000000) >> 26) == 2) {
-        return unk_1c << 3;
+    if (((texImageParam & 0x1c000000) >> 26) == 2) {
+        return texPlttBase << 3;
     }
-    return unk_1c << 4;
+    return texPlttBase << 4;
 }
 
 s32 G3dResAccess::findMatIdx(s32 a) {
@@ -322,7 +322,7 @@ s32 G3dResAccess::findMatIdx(s32 a) {
 }
 
 u32 G3dResAccess::getTexImageOffset(void) {
-    return unk_14;
+    return texDataOffset;
 }
 
 s32 G3dResAccess::findTexIdx(s32 a) {
@@ -341,9 +341,9 @@ void *G3dResAccess::findTexData(void) {
 
 void *G3dResAccess::getTexData(s32 idx) {
     u8 *base = (u8 *)this + 0x3c;
-    u32 off = unk_42;
+    u32 off = texDictEntryOffset;
     u8 *list = base + off;
-    u8 *data = (u8 *)this + unk_14;
+    u8 *data = (u8 *)this + texDataOffset;
     u32 stride = *(u16 *)(base + off);
     u8 *ent = list + stride * idx;
     return data + ((*(u32 *)(ent + 4) & 0xffff) << 3);
@@ -354,7 +354,7 @@ u32 G3dResAccess::getTexSize(s32 idx) {
         return 0;
     }
     u8 *base = (u8 *)this + 0x3c;
-    u32 off = unk_42;
+    u32 off = texDictEntryOffset;
     u8 *list = base + off;
     u32 stride = *(u16 *)(base + off);
     u8 *ent = list + stride * idx;
@@ -362,17 +362,17 @@ u32 G3dResAccess::getTexSize(s32 idx) {
 }
 
 s32 G3dResAccess::findPlttIdx(s32 a) {
-    return G3dRes_FindDictIdx((u8 *)this + unk_34, a);
+    return G3dRes_FindDictIdx((u8 *)this + plttDictOffset, a);
 }
 
 void *G3dResAccess::getPlttData(s32 idx) {
     if (idx == -1) {
         return 0;
     }
-    u8 *base = (u8 *)this + unk_34;
+    u8 *base = (u8 *)this + plttDictOffset;
     u32 off = *(u16 *)(base + 6);
     u8 *list = base + off;
-    u8 *data = (u8 *)this + unk_38;
+    u8 *data = (u8 *)this + plttDataOffset;
     u32 stride = *(u16 *)(base + off);
     u8 *ent = list + stride * idx;
     return data + (*(u16 *)(ent + 4) << 3);
@@ -384,7 +384,7 @@ void G3dResAccess::findPlttData(void) {
 }
 
 u32 G3dResAccess::getPlttSize(s32 idx) {
-    u8 *base = (u8 *)this + unk_34;
+    u8 *base = (u8 *)this + plttDictOffset;
     u8 *ent = 0;
     s32 i;
     u32 cnt;
@@ -399,9 +399,9 @@ u32 G3dResAccess::getPlttSize(s32 idx) {
     cnt = base[1];
     for (;;) {
         if (i >= (s32)cnt) {
-            return (unk_30 - *(u16 *)ent) << 3;
+            return (plttDataSize - *(u16 *)ent) << 3;
         }
-        u8 *b2 = (u8 *)this + *(volatile u16 *)&unk_34;
+        u8 *b2 = (u8 *)this + *(volatile u16 *)&plttDictOffset;
         u32 off2 = *(u16 *)(b2 + 6);
         u8 *l2 = b2 + off2;
         u32 stride2 = *(u16 *)(b2 + off2);
@@ -423,8 +423,8 @@ TexPatVramTasks::TexPatVramTasks() {
 }
 
 TexPatVramTasks::~TexPatVramTasks() {
-    unk_00[0].cancel();
-    unk_00[1].cancel();
+    tasks[0].cancel();
+    tasks[1].cancel();
 }
 
 BOOL TexPatVramUploader::uploadByIdx(u8 *hdr, s32 i1, s32 i2, u8 *x, volatile s32 a, volatile s32 b) {
@@ -464,7 +464,7 @@ BOOL TexPatVramUploader::uploadByIdx(u8 *hdr, s32 i1, s32 i2, u8 *x, volatile s3
             s32 bb = b;
             u8 *t = _ZN12G3dResAccess11getPlttDataEi(x, bb);
             s32 r3 = _ZN12G3dResAccess11getPlttSizeEi(x, bb);
-            if (!_ZN11TexVramTask11requestPlttEjjjh((u8 *)unk_00 + 0x1c, t, (*(u16 *)e2 + (u16) * (u32 *)(hdr + 0x2c)) << 3, r3, 3)) {
+            if (!_ZN11TexVramTask11requestPlttEjjjh((u8 *)tasks + 0x1c, t, (*(u16 *)e2 + (u16) * (u32 *)(hdr + 0x2c)) << 3, r3, 3)) {
                 _ZN11TexVramTask6cancelEv(this);
                 return FALSE;
             }
@@ -515,12 +515,12 @@ char *ResName16::get() {
 }
 
 TexPatVramAnim::TexPatVramAnim() {
-    unk_50 = NULL;
-    unk_78 = NULL;
-    unk_7c = NULL;
-    unk_80 = -1;
-    unk_84 = -1;
-    unk_88 = -1;
+    dstTex = NULL;
+    srcTex = NULL;
+    patAnm = NULL;
+    curPlttIdx = -1;
+    curTexIdx = -1;
+    prevTexIdx = -1;
 }
 
 TexPatVramAnim::~TexPatVramAnim() {
@@ -528,21 +528,21 @@ TexPatVramAnim::~TexPatVramAnim() {
 }
 
 void TexPatVramAnim::clear() {
-    unk_50 = NULL;
-    unk_78 = NULL;
-    unk_7c = NULL;
-    unk_80 = -1;
-    unk_84 = -1;
+    dstTex = NULL;
+    srcTex = NULL;
+    patAnm = NULL;
+    curPlttIdx = -1;
+    curTexIdx = -1;
 }
 
 BOOL TexPatVramAnim::init(u8 *hdr, const char *n1, const char *n2, u8 *x, u8 *y, u8 flag) {
     clear();
-    unk_8c = flag;
-    unk_54.set(n1);
-    unk_65.set(n2);
-    unk_50 = hdr;
-    unk_78 = x;
-    unk_7c = y;
+    plttOnly = flag;
+    texName.set(n1);
+    plttName.set(n2);
+    dstTex = hdr;
+    srcTex = x;
+    patAnm = y;
     setup(*(u16 *)(y + 4), 0, 0x1000, 0);
     update();
     return TRUE;
@@ -550,23 +550,23 @@ BOOL TexPatVramAnim::init(u8 *hdr, const char *n1, const char *n2, u8 *x, u8 *y,
 
 BOOL TexPatVramAnim::update() {
     s32 xy[2];
-    unk_88 = unk_84;
+    prevTexIdx = curTexIdx;
     step();
     getFrameIndices(&xy[0], &xy[1]);
-    if (unk_84 == xy[0] || unk_8c != 0) {
+    if (curTexIdx == xy[0] || plttOnly != 0) {
         xy[0] = -1;
     }
-    if (unk_80 == xy[1]) {
+    if (curPlttIdx == xy[1]) {
         xy[1] = -1;
     }
-    char *n1 = unk_54.get();
-    char *n2 = unk_65.get();
-    if (((TexPatVramUploader *)&unk_18)->uploadByName(unk_50, n1, n2, unk_78, xy[0], xy[1])) {
+    char *n1 = texName.get();
+    char *n2 = plttName.get();
+    if (((TexPatVramUploader *)&vramTasks)->uploadByName(dstTex, n1, n2, srcTex, xy[0], xy[1])) {
         if (xy[0] != -1) {
-            unk_84 = xy[0];
+            curTexIdx = xy[0];
         }
         if (xy[1] != -1) {
-            unk_80 = xy[1];
+            curPlttIdx = xy[1];
         }
         return TRUE;
     }
@@ -576,12 +576,12 @@ BOOL TexPatVramAnim::update() {
 void TexPatVramAnim::getFrameIndices(s32 *a, s32 *b) {
     *b = -1;
     *a = *b;
-    u8 *r7 = NNSi_G3dGetTexPatAnmFV(unk_7c, 0, (u32)(curFrame << 4) >> 16);
+    u8 *r7 = NNSi_G3dGetTexPatAnmFV(patAnm, 0, (u32)(curFrame << 4) >> 16);
     if (r7 != NULL) {
-        u8 *first = NNSi_G3dGetTexPatAnmTexNameByIdx(unk_7c, r7[2]);
-        r7 = NNSi_G3dGetTexPatAnmPlttNameByIdx(unk_7c, r7[3]);
-        *a = first != NULL ? NNS_G3dGetResDictIdxByName(unk_78 + 0x3c, first) : -1;
-        u8 *h = unk_78;
+        u8 *first = NNSi_G3dGetTexPatAnmTexNameByIdx(patAnm, r7[2]);
+        r7 = NNSi_G3dGetTexPatAnmPlttNameByIdx(patAnm, r7[3]);
+        *a = first != NULL ? NNS_G3dGetResDictIdxByName(srcTex + 0x3c, first) : -1;
+        u8 *h = srcTex;
         u8 *tbl = h + *(u16 *)(h + 0x34);
         *b = r7 != NULL ? NNS_G3dGetResDictIdxByName(tbl, r7) : -1;
     }
@@ -594,7 +594,7 @@ MatTexBinder::MatTexBinder() {
 MatTexBinder::~MatTexBinder() {}
 
 BOOL MatTexBinder::hasMaterial() {
-    if (unk_04 != -1) {
+    if (matIdx != -1) {
         return TRUE;
     }
     return FALSE;
@@ -614,8 +614,8 @@ BOOL MatTexBinder::setMaterialByName(u8 *hdr, const char *name) {
 BOOL MatTexBinder::setMaterial(u8 *hdr, s32 idx) {
     if (!hasMaterial()) {
         if (idx != -1 && idx < *(u8 *)(hdr + *(s32 *)(hdr + 8) + 5)) {
-            unk_04 = idx;
-            unk_00 = hdr;
+            matIdx = idx;
+            resMdl = hdr;
             return TRUE;
         }
         return FALSE;
@@ -624,7 +624,7 @@ BOOL MatTexBinder::setMaterial(u8 *hdr, s32 idx) {
 }
 
 void MatTexBinder::clear() {
-    unk_04 = -1;
+    matIdx = -1;
 }
 
 BOOL MatTexBinder::bindByName(u8 *hdr2, const char *n, const char *n2) {
@@ -672,7 +672,7 @@ BOOL MatTexBinder::bindTex(u8 *hdr2, s32 idx2) {
     if (hasMaterial()) {
         r5 = NULL;
         if (idx2 != -1) {
-            u8 *h = unk_00;
+            u8 *h = resMdl;
             r6 = h + *(s32 *)(h + 8);
             r4 = r6 + *(u16 *)r6;
             for (r3 = 0; r3 < r4[1]; r3++) {
@@ -682,7 +682,7 @@ BOOL MatTexBinder::bindTex(u8 *hdr2, s32 idx2) {
                 lst = r6 + *(u16 *)(tb + stride * r3);
                 u32 j;
                 for (j = 0; j < it[2]; j++) {
-                    if (unk_04 == lst[j]) {
+                    if (matIdx == lst[j]) {
                         r5 = it;
                         break;
                     }
@@ -761,7 +761,7 @@ BOOL MatTexBinder::bindPltt(u8 *hdr2, s32 idx2) {
     if (hasMaterial()) {
         r4 = NULL;
         if (idx2 != -1) {
-            u8 *h = unk_00;
+            u8 *h = resMdl;
             r6 = h + *(s32 *)(h + 8);
             r5 = r6 + *(u16 *)(r6 + 2);
             for (r3 = 0; r3 < r5[1]; r3++) {
@@ -770,7 +770,7 @@ BOOL MatTexBinder::bindPltt(u8 *hdr2, s32 idx2) {
                 r7 = tb + stride * r3;
                 u8 *lst = r6 + *(u16 *)(tb + stride * r3);
                 for (r2 = 0; r2 < r7[2]; r2++) {
-                    if (unk_04 == lst[r2]) {
+                    if (matIdx == lst[r2]) {
                         r4 = r7;
                         break;
                     }
@@ -815,7 +815,7 @@ BOOL MatTexBinder::bindPltt(u8 *hdr2, s32 idx2) {
 }
 
 s8 MatTexBinder::getMaterial() {
-    return unk_04;
+    return matIdx;
 }
 
 extern "C" s32 Model_BindMatTexByName(u8 *hdr, const char *name, s32 p, s32 q, s32 r) {
@@ -930,19 +930,19 @@ no:
 }
 
 JointBlend::JointBlend() {
-    MI_CpuFill8(&unk_04, 0, 0x24);
-    unk_34 = 0;
-    unk_38 = 0;
+    MI_CpuFill8(&poseRot, 0, 0x24);
+    blendRatio = 0;
+    blendStep = 0;
 }
 
 JointBlend::~JointBlend() {}
 
 BOOL JointBlend::advance() {
-    if (unk_38 != 0) {
-        unk_34 += unk_38;
-        if (unk_34 >= 0x1000) {
-            unk_34 = 0x1000;
-            unk_38 = 0;
+    if (blendStep != 0) {
+        blendRatio += blendStep;
+        if (blendRatio >= 0x1000) {
+            blendRatio = 0x1000;
+            blendStep = 0;
             return TRUE;
         }
         return FALSE;
@@ -951,11 +951,11 @@ BOOL JointBlend::advance() {
 }
 
 void JointBlend::start(s32 n) {
-    unk_34 = 0;
+    blendRatio = 0;
     if (n == 0) {
-        unk_38 = 0;
+        blendStep = 0;
     } else {
-        unk_38 = FX_Div(0x1000, n << 12);
+        blendStep = FX_Div(0x1000, n << 12);
     }
 }
 
@@ -1010,7 +1010,7 @@ void JointBlend::blendPose(Unk_02056160_Arg *x) {
     Unk_020561d8_Mtx m;
     u32 idx = x->hdr->idx;
     if ((x->z->flags & 4) == 0 && idx <= 1) {
-        Anim_LerpVec(&x->z->vec, &unk_28, &v, unk_34);
+        Anim_LerpVec(&x->z->vec, &poseTrans, &v, blendRatio);
         Unk_020561d8_Z *z = x->z;
         Unk_020561d8_Vec *pv = &z->vec;
         pv->x = v.x;
@@ -1020,7 +1020,7 @@ void JointBlend::blendPose(Unk_02056160_Arg *x) {
     if (x->z->flags & 2) {
         MTX_Identity33_(&x->z->mtx);
     }
-    Anim_LerpRotMtx(&x->z->mtx, &unk_04, &m, unk_34);
+    Anim_LerpRotMtx(&x->z->mtx, &poseRot, &m, blendRatio);
     x->z->mtx = m;
     x->z->flags &= ~2;
 }
@@ -1029,38 +1029,38 @@ void JointBlend::capturePose(Unk_02056160_Arg *x) {
     Unk_02056160_Rec *r = &x->tbl->recs[x->hdr->idx];
     if (r->mtx.m[0] == 0 && r->mtx.m[1] == 0 && r->mtx.m[2] == 0 && r->mtx.m[3] == 0 && r->mtx.m[4] == 0 &&
         r->mtx.m[5] == 0 && r->mtx.m[6] == 0 && r->mtx.m[7] == 0 && r->mtx.m[8] == 0) {
-        MTX_Identity33_(&unk_04);
+        MTX_Identity33_(&poseRot);
     } else {
-        unk_04 = r->mtx;
+        poseRot = r->mtx;
     }
-    unk_28.x = r->vec.x;
-    unk_28.y = r->vec.y;
-    unk_28.z = r->vec.z;
+    poseTrans.x = r->vec.x;
+    poseTrans.y = r->vec.y;
+    poseTrans.z = r->vec.z;
 }
 
 MatTexPatTrack *MatTexPatTrack::construct() {
-    _ZN11TexVramTaskC2Ev(unk_04);
+    _ZN11TexVramTaskC2Ev(vramTask);
     return this;
 }
 
 void MatTexPatTrack::reset() {
-    unk_21 = 0xff;
-    unk_22 = 0xff;
-    unk_20 = 0xff;
-    unk_23 = 0;
-    unk_00 = NULL;
-    unk_24 = 0xffff;
+    keyIdx = 0xff;
+    matIdx = 0xff;
+    texIdx = 0xff;
+    flags = 0;
+    patData = NULL;
+    lastFrame = 0xffff;
 }
 
 BOOL MatTexPatTrack::init() {
     reset();
-    _ZN11TexVramTask5clearEv(unk_04);
+    _ZN11TexVramTask5clearEv(vramTask);
     return TRUE;
 }
 
 void MatTexPatTrack::release() {
     reset();
-    _ZN11TexVramTask6cancelEv(unk_04);
+    _ZN11TexVramTask6cancelEv(vramTask);
 }
 
 void MatTexPatTrack::update(u32 frame, u8 *p2, void *p3, void *p4) {
@@ -1069,9 +1069,9 @@ void MatTexPatTrack::update(u32 frame, u8 *p2, void *p3, void *p4) {
     u8 *p;
     s32 n;
     u16 *h;
-    if (unk_22 != 0xff && frame != unk_24) {
-        unk_24 = frame;
-        h = (u16 *)unk_00;
+    if (matIdx != 0xff && frame != lastFrame) {
+        lastFrame = frame;
+        h = (u16 *)patData;
         p = b + h[3];
         i = 0;
         n = h[0] - 1;
@@ -1079,11 +1079,11 @@ void MatTexPatTrack::update(u32 frame, u8 *p2, void *p3, void *p4) {
             if (*(u16 *)(p + 4) > frame) break;
             p += 4;
         }
-        if (unk_21 != i) {
-            unk_21 = i;
+        if (keyIdx != i) {
+            keyIdx = i;
             u8 v = NNS_G3dGetResDictIdxByName((u8 *)p3 + 0x3c, b + *(u16 *)(b + 8) + (p[2] << 4));
-            if (v != unk_20) {
-                unk_20 = v;
+            if (v != texIdx) {
+                texIdx = v;
                 upload(p4, p3);
             }
         }
@@ -1091,45 +1091,45 @@ void MatTexPatTrack::update(u32 frame, u8 *p2, void *p3, void *p4) {
 }
 
 void MatTexPatTrack::upload(void *a, void *b) {
-    if (!_ZN11TexVramTask13requestMatTexEPvjj(unk_04, a, unk_22, _ZN12G3dResAccess10getTexDataEi(b, unk_20))) {
-        unk_21 = 0xff;
-        unk_20 = 0xff;
-        unk_24 = 0xffff;
+    if (!_ZN11TexVramTask13requestMatTexEPvjj(vramTask, a, matIdx, _ZN12G3dResAccess10getTexDataEi(b, texIdx))) {
+        keyIdx = 0xff;
+        texIdx = 0xff;
+        lastFrame = 0xffff;
     }
 }
 
-BOOL MatTexPatTrack::isPaused() { return (unk_23 & 1) ? TRUE : FALSE; }
+BOOL MatTexPatTrack::isPaused() { return (flags & 1) ? TRUE : FALSE; }
 
 MatTexPatAnim::MatTexPatAnim() { clear(); }
 
 MatTexPatAnim::~MatTexPatAnim() {}
 
 void MatTexPatAnim::clear() {
-    unk_18 = NULL;
-    unk_24 = 0;
-    unk_26 = 0;
-    unk_28 = NULL;
-    unk_20 = NULL;
+    resMdl = NULL;
+    patNumFrames = 0;
+    numTracks = 0;
+    tracks = NULL;
+    patAnm = NULL;
 }
 
 BOOL MatTexPatAnim::init(void *r1, void *r2, u32 r3, void *heap) {
-    unk_18 = r1;
+    resMdl = r1;
     if (heap == NULL) {
         heap = gCurrentHeap;
     }
-    unk_1c = NNS_G3dGetTex(r2);
-    unk_26 = r3;
-    unk_28 = (MatTexPatTrack *)Heap_Alloc(heap, unk_26 * 0x28);
-    if (unk_28 == NULL) {
+    resTex = NNS_G3dGetTex(r2);
+    numTracks = r3;
+    tracks = (MatTexPatTrack *)Heap_Alloc(heap, numTracks * 0x28);
+    if (tracks == NULL) {
         return FALSE;
     }
     s32 i;
-    for (i = 0; i < unk_26; i++) {
-        MatTexPatTrack *e = &unk_28[i];
+    for (i = 0; i < numTracks; i++) {
+        MatTexPatTrack *e = &tracks[i];
         if (e) {
             e->construct();
         }
-        if (!unk_28[i].init()) {
+        if (!tracks[i].init()) {
             return FALSE;
         }
     }
@@ -1138,30 +1138,30 @@ BOOL MatTexPatAnim::init(void *r1, void *r2, u32 r3, void *heap) {
 
 void MatTexPatAnim::release() {
     s32 i;
-    for (i = 0; i < unk_26; i++) {
-        unk_28[i].release();
+    for (i = 0; i < numTracks; i++) {
+        tracks[i].release();
     }
     clear();
 }
 
 void MatTexPatAnim::setAnim(void *r1, void *r2, u32 r3, u8 p5, void *p6) {
-    unk_20 = NNS_G3dGetAnmByIdx(r1, 0);
-    unk_24 = *(u16 *)((u8 *)unk_20 + 4);
+    patAnm = NNS_G3dGetAnmByIdx(r1, 0);
+    patNumFrames = *(u16 *)((u8 *)patAnm + 4);
     if (r3 == 0) {
-        r3 = unk_24;
+        r3 = patNumFrames;
     }
-    u8 *hdr = (u8 *)unk_18;
+    u8 *hdr = (u8 *)resMdl;
     u8 *base = hdr + *(u32 *)(hdr + 8);
     s32 i;
-    for (i = 0; i < *((u8 *)unk_20 + 0xd); i++) {
-        u8 *a = (u8 *)unk_20 + 0xc;
+    for (i = 0; i < *((u8 *)patAnm + 0xd); i++) {
+        u8 *a = (u8 *)patAnm + 0xc;
         a = a + *(u16 *)(a + 6);
         u8 *b = a + *(u16 *)(a + 2);
-        unk_28[i].unk_22 = NNS_G3dGetResDictIdxByName(base + 4, b + i * 16);
-        unk_28[i].unk_00 = NNSi_G3dGetTexPatAnmDataByIdx(unk_20, i);
-        unk_28[i].unk_21 = 0xff;
-        unk_28[i].unk_20 = 0xff;
-        unk_28[i].unk_24 = 0xffff;
+        tracks[i].matIdx = NNS_G3dGetResDictIdxByName(base + 4, b + i * 16);
+        tracks[i].patData = NNSi_G3dGetTexPatAnmDataByIdx(patAnm, i);
+        tracks[i].keyIdx = 0xff;
+        tracks[i].texIdx = 0xff;
+        tracks[i].lastFrame = 0xffff;
     }
     ::_ZN13AnimFrameCtrl5setupEihit(this, r3, p5, p6, r2);
 }
@@ -1174,29 +1174,29 @@ void MatTexPatAnim::update() {
 void MatTexPatAnim::applyFrame() {
     u32 frame = (u32)(curFrame << 4) >> 16;
     s32 i;
-    for (i = 0; i < unk_26; i++) {
-        if (!unk_28[i].isPaused()) {
-            unk_28[i].update(frame, (u8 *)unk_20, unk_1c, unk_18);
+    for (i = 0; i < numTracks; i++) {
+        if (!tracks[i].isPaused()) {
+            tracks[i].update(frame, (u8 *)patAnm, resTex, resMdl);
         }
     }
 }
 
 BOOL MatTexPatAnim::setMaterialTex(s32 unused, u32 x) {
     BOOL z = FALSE;
-    s32 id = _ZN12G3dResAccess10findMatIdxEi(unk_18);
+    s32 id = _ZN12G3dResAccess10findMatIdxEi(resMdl);
     
     if (id == -1) return z;
-    u8 v = _ZN12G3dResAccess10findTexIdxEi(unk_1c, x);
+    u8 v = _ZN12G3dResAccess10findTexIdxEi(resTex, x);
     
     if (v == -1) return z;
     s32 i = z;
-    for (; i < unk_26; i++) {
-        if (id == unk_28[i].unk_22) {
-            if (v != unk_28[i].unk_20) {
-                unk_28[i].unk_20 = v;
-                unk_28[i].unk_21 = 0xff;
-                unk_28[i].unk_24 = 0xffff;
-                unk_28[i].upload(unk_18, unk_1c);
+    for (; i < numTracks; i++) {
+        if (id == tracks[i].matIdx) {
+            if (v != tracks[i].texIdx) {
+                tracks[i].texIdx = v;
+                tracks[i].keyIdx = 0xff;
+                tracks[i].lastFrame = 0xffff;
+                tracks[i].upload(resMdl, resTex);
                 return TRUE;
             }
             return z;
@@ -1206,12 +1206,12 @@ BOOL MatTexPatAnim::setMaterialTex(s32 unused, u32 x) {
 }
 
 void MatTexPatAnim::pauseMaterial() {
-    s32 id = _ZN12G3dResAccess10findMatIdxEi(unk_18);
+    s32 id = _ZN12G3dResAccess10findMatIdxEi(resMdl);
     s32 i;
     if (id != -1) {
-        for (i = 0; i < unk_26; i++) {
-            if (id == unk_28[i].unk_22) {
-                unk_28[i].unk_23 |= 1;
+        for (i = 0; i < numTracks; i++) {
+            if (id == tracks[i].matIdx) {
+                tracks[i].flags |= 1;
                 break;
             }
         }
@@ -1220,13 +1220,13 @@ void MatTexPatAnim::pauseMaterial() {
 
 extern "C" void MatTexPatAnim_ResumeMaterial(Unk_02055cd0_Obj *p, void *q) {
     s32 i, r;
-    r = _ZN12G3dResAccess10findMatIdxEi((void *)p->unk_18);
+    r = _ZN12G3dResAccess10findMatIdxEi((void *)p->resMdl);
     i = 0;
     if (r != -1) {
-        u32 n = p->unk_26;
+        u32 n = p->numTracks;
         for (; i < (s32)n; i++) {
-            if (r == p->unk_28[i].unk_22) {
-                p->unk_28[i].unk_23 &= ~1;
+            if (r == p->tracks[i].matIdx) {
+                p->tracks[i].flags &= ~1;
                 break;
             }
         }

@@ -282,9 +282,9 @@ public:
     void updateTentState();
     BOOL setTentState(s32 i);
 
-    /* 0x2b0 */ s32 unk_2b0;
-    /* 0x2b4 */ u16 unk_2b4; u8 unk_2b6;
-    /* 0x2b7 */ u8 unk_2b7;
+    /* 0x2b0 */ s32 tentState;
+    /* 0x2b4 */ u16 warpFrames; u8 doorEnterRequested;
+    /* 0x2b7 */ u8 createHour;
 };
 
 void ReddTent::vfunc_4c(u32 a, u8 b) {

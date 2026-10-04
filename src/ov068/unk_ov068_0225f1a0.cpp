@@ -67,7 +67,7 @@
 #define NpcActionCtrl_isActionDone _ZN13NpcActionCtrl12isActionDoneEv
 #define NpcActionCtrl_getEmotionId _ZN13NpcActionCtrl12getEmotionIdEv
 #define NpcActionCtrl_getAction _ZN13NpcActionCtrl9getActionEv
-#define NpcEmotionFx_startEntry _ZN12NpcEmotionFx10startEntryEP18Unk_02019e2c_Entryi
+#define NpcEmotionFx_startEntry _ZN12NpcEmotionFx10startEntryEP15NpcEmotionPhasei
 #define Unk_0201a13c_isOnTarget _ZN12Unk_0201a13c10isOnTargetEv
 #define NpcLookAt_canSeeTarget _ZN9NpcLookAt12canSeeTargetEP18Unk_0201a334_Scene
 #define NpcLookAt_setTarget _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih
@@ -297,7 +297,7 @@ class HeldToolModel {
 public:
     ~HeldToolModel();
     u32 pad[0x3c / 4];
-    u8 unk_3c;
+    u8 visible;
     u8 pad_3d[3];
 };
 
@@ -3464,7 +3464,7 @@ void FieldVillager::attachHeldItemModel() {
         HeldToolModel_attach((&heldTool), this, &b, 0, 0);
         HeldToolModel_playIdleAnim((&heldTool), data_020c6cc8, 0);
         HeldToolModel_setAnimSpeed((&heldTool), 0x1000);
-        heldTool.unk_3c = 1;
+        heldTool.visible = 1;
     }
 }
 

@@ -3,8 +3,8 @@
 
 struct CommManager {
     u8 pad_00[0x64];
-    s32 unk_64;
-    s32 unk_68;
+    s32 myAid;
+    s32 localSlot;
 };
 
 struct Unk_02095774_Ent {
@@ -400,10 +400,10 @@ BOOL PlayerNetSync::onExecute() {
         }
         i--;
     } while (i >= 0);
-    if (_ZN11CommManager12isSlotActiveEi(gCommManager, gCommManager->unk_64)) {
+    if (_ZN11CommManager12isSlotActiveEi(gCommManager, gCommManager->myAid)) {
         Unk_02095774_Ent *o = PlayerActor_GetActor(4);
         if (o) {
-            s32 n = g->unk_68;
+            s32 n = g->localSlot;
             if (n < 4) {
                 CommSyncVar_SetVar(n + 4, (u8 *)o + 0x8e, 0, 0);
                 CommSyncVar_SetVar(n, o->position, 0, 0);

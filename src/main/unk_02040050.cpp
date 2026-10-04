@@ -6,8 +6,8 @@ struct Unk_0203fe18_B4Bytes { u8 b0, b1, b2, b3; };
 union Unk_0203fe18_B4 { u32 w; Unk_0203fe18_B4Bytes b; };
 struct Unk_0203fe18_B3 { u8 b0, b1, b2; };
 struct Unk_020400b0_Big { u8 pad[0x15e28]; u8 unk_15e28; u8 unk_15e29; u8 unk_15e2a; };
-struct Unk_0203ff20_Entry { u16 unk_00; u8 unk_02, unk_03, unk_04, unk_05; };
-struct Unk_0203ff50_Slot { u8 pad[0x10]; u8 unk_10, unk_11; u8 unk_12, unk_13; Unk_0203ff20_Entry ent[5]; long long unk_34; };
+struct Unk_0203ff20_Entry { u16 date; u8 eventId, state, occurred, playerMask; };
+struct Unk_0203ff50_Slot { u8 pad[0x10]; u8 reddWeekday, unk_11; u8 todayEventId, todayWeekday; Unk_0203ff20_Entry ent[5]; long long weekStart; };
 class ReddPassword {
 public:
     BOOL dropPassword();
@@ -213,7 +213,7 @@ extern "C" void EventWeekSlots_MarkTodaySeen(u32 id) {
     if (id >= 0x3e && id < 0x46) {
         Unk_0203ff20_Entry *e = EventWeekSlots_GetToday((Unk_0203ff50_Slot *)gSaveEventWeekSlots);
         if (e) {
-            if (id == e->unk_02) e->unk_04 = 1;
+            if (id == e->eventId) e->occurred = 1;
         }
     }
 }
@@ -303,10 +303,10 @@ extern "C" void EventWeekSlots_SyncToday(Unk_0203ff50_Slot *s) {
     s32 r4 = Clock_GetWeekday();
     Unk_0203ff20_Entry *e = EventWeekSlots_GetToday(s);
     if (e) {
-        u8 t = e->unk_02;
-        if (r4 != s->unk_13 || t != s->unk_12) {
-            s->unk_12 = t;
-            s->unk_13 = r4;
+        u8 t = e->eventId;
+        if (r4 != s->todayWeekday || t != s->todayEventId) {
+            s->todayEventId = t;
+            s->todayWeekday = r4;
         }
         EventWeekSlots_RefreshSeenMask(s);
     }
@@ -316,6 +316,6 @@ extern "C" void EventWeekSlots_RefreshSeenMask(Unk_0203ff50_Slot *s) {
     Unk_0203ff20_Entry *e;
     sEventWeekSeenMask = 0xff;
     e = EventWeekSlots_GetToday((Unk_0203ff50_Slot *)gSaveEventWeekSlots);
-    if (e) sEventWeekSeenMask = e->unk_05;
+    if (e) sEventWeekSeenMask = e->playerMask;
 }
 

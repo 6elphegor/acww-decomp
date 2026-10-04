@@ -13,8 +13,8 @@ struct Unk_ov003_02218e2c_V3 {
 
 struct Unk_ov003_02218bc8_Ent {
     u8 pad_00[0x228];
-    /* 0x228 */ s32 unk_228;
-    /* 0x22c */ s32 unk_22c;
+    /* 0x228 */ s32 gridX;
+    /* 0x22c */ s32 gridZ;
 };
 
 struct Unk_ov003_02218c60_Grid {
@@ -29,7 +29,7 @@ class PlayerHouseTex {
 public:
     PlayerHouseTex();
     ~PlayerHouseTex();
-    s32 unk_00;
+    s32 tex;
 };
 
 // 0x20-byte object at 0x02235840
@@ -37,10 +37,10 @@ class HouseLightUpDeco {
 public:
     HouseLightUpDeco();
     ~HouseLightUpDeco();
-    /* 0x00 */ u32 unk_00;
-    /* 0x04 */ u32 unk_04[5];
-    /* 0x18 */ u32 unk_18;
-    /* 0x1c */ u8 unk_1c;
+    /* 0x00 */ u32 tex;
+    /* 0x04 */ u32 models[5];
+    /* 0x18 */ u32 texPattern;
+    /* 0x1c */ u8 isLoaded;
 };
 
 // 0x28-byte object at 0x02235860
@@ -516,7 +516,7 @@ void *BuildingList_FindByGrid(s32 a, s32 b) {
     s32 i;
     for (i = 0; (u32)i < 0x20; i++) {
         Unk_ov003_02218bc8_Ent *e = sBuildingList[i];
-        if (e != 0 && e->unk_228 == a && e->unk_22c == b) {
+        if (e != 0 && e->gridX == a && e->gridZ == b) {
             return e;
         }
     }
@@ -661,11 +661,11 @@ void HouseLightUpDeco_Clear(HouseLightUpDeco *o) {
     u32 i;
     s32 z = 0;
     for (i = 0; i < 5; i++) {
-        o->unk_04[i] = z;
+        o->models[i] = z;
     }
-    o->unk_00 = z;
-    o->unk_18 = z;
-    o->unk_1c = z;
+    o->tex = z;
+    o->texPattern = z;
+    o->isLoaded = z;
 }
 
 s32 HouseLightUpDeco_Load(HouseLightUpDeco *r) {
@@ -683,12 +683,12 @@ s32 HouseLightUpDeco_Load(HouseLightUpDeco *r) {
         for (i = 0; i < 5; i++) {
             func_020639e8(data_ov003_02235888, "STR:a/obj_x_house%d.nsbmd", i);
             u8 *p = (u8 *)NNS_G3dGetMdlSet(func_021012bc(data_ov003_02235888));
-            r->unk_04[i] = (s32)(p + *(s32 *)(p + *(u16 *)(p + 0xe) + 0xc));
+            r->models[i] = (s32)(p + *(s32 *)(p + *(u16 *)(p + 0xe) + 0xc));
         }
-        r->unk_00 = (s32)NNS_G3dGetTex(func_021012bc("STR:a/obj_x_house0.nsbtx"));
-        Gfx3d_LoadTexAndPltt((void *)r->unk_00, 0);
-        r->unk_18 = (s32)func_021066ac(func_02106690(func_021012bc("STR:a/obj_x_deco.nsbtp")), 0);
-        r->unk_1c = 1;
+        r->tex = (s32)NNS_G3dGetTex(func_021012bc("STR:a/obj_x_house0.nsbtx"));
+        Gfx3d_LoadTexAndPltt((void *)r->tex, 0);
+        r->texPattern = (s32)func_021066ac(func_02106690(func_021012bc("STR:a/obj_x_deco.nsbtp")), 0);
+        r->isLoaded = 1;
         func_02101310((char *)buf);
     }
     return 1;
@@ -704,23 +704,23 @@ s32 HouseLightUpDeco_GetTex(s32 *p) {
 
 s32 HouseLightUpDeco_GetModel(HouseLightUpDeco *r, u32 idx) {
     if (idx < 5) {
-        return r->unk_04[idx];
+        return r->models[idx];
     }
     return 0;
 }
 
 s32 HouseLightUpDeco_GetTexPattern(HouseLightUpDeco *r) {
-    return r->unk_18;
+    return r->texPattern;
 }
 
 u8 HouseLightUpDeco_IsLoaded(HouseLightUpDeco *r) {
-    return r->unk_1c;
+    return r->isLoaded;
 }
 
 }
 
 PlayerHouseTex::PlayerHouseTex() {
-    unk_00 = 0;
+    tex = 0;
 }
 
 PlayerHouseTex::~PlayerHouseTex() {}

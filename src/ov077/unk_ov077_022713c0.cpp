@@ -220,9 +220,9 @@ union Unk_ov077_Word {
 };
 struct ThreeLayerAnimModel {
     u8 pad_00[0xa4];
-    Unk_ov077_Word unk_a4;
+    Unk_ov077_Word curFrame;
     u8 pad_a8[4];
-    s32 unk_ac;
+    s32 frameStep;
     u8 pad_b0[0x2a0 - 0xec - 0xb0];
     ThreeLayerAnimModel();
     ~ThreeLayerAnimModel();
@@ -248,10 +248,10 @@ MEMBER(Unk_0201a13c, 0x49c - 0x420);
 MEMBER(CollisionState, 0x30);
 struct Unk_02088d00 {
     u8 pad_00[0x1c];
-    u32 unk_1c;
+    u32 groups;
     u8 pad_20[0x44 - 0x20];
-    u8 unk_44;
-    u8 unk_45;
+    u8 collisionEnabled;
+    u8 shadowEnabled;
     u8 pad_46[2];
     Unk_02088d00();
     ~Unk_02088d00();
@@ -532,8 +532,8 @@ BOOL SpNpcResetti::vfunc_04() {
     talk.attachOwner(this);
     _ZN14NpcMoveAnimSet12setStandAnimEi(&moveAnimSet, 0xfc);
     _ZN14NpcMoveAnimSet11setWalkAnimEi(&moveAnimSet, 0xfc);
-    collider.unk_45 = 0;
-    collider.unk_44 = 0;
+    collider.shadowEnabled = 0;
+    collider.collisionEnabled = 0;
     return TRUE;
 }
 
@@ -541,7 +541,7 @@ BOOL SpNpcResetti::vfunc_00() {
     if (!SpNpcActor::vfunc_00()) {
         return FALSE;
     }
-    collider.unk_1c |= 2;
+    collider.groups |= 2;
     setInteractionRange(0);
     changeAct(3);
     clearTalkStartMode();
@@ -646,8 +646,8 @@ BOOL SpNpcResetti::mainAct03() {
         ProcBase_RequestDelete(this);
         return TRUE;
     }
-    model.unk_ac = 0;
-    model.unk_a4.w = 0;
+    model.frameStep = 0;
+    model.curFrame.w = 0;
     {
         Unk_ov077_02271a84_V3 *pv = &pl->pos;
         v.x = pv->x;
@@ -698,10 +698,10 @@ BOOL SpNpcResetti::mainAct03() {
 }
 
 BOOL SpNpcResetti::setupAct04() {
-    model.unk_ac = 0x1000;
+    model.frameStep = 0x1000;
     effectHandle = Effect_Create(0x30, &position, 0, 0);
     func_02003ddc(&seEmitter, 0x7e6, 0x7f, 0);
-    collider.unk_44 = 1;
+    collider.collisionEnabled = 1;
     Bgm_RequestSilence(0x17, 0xf, 0);
     return TRUE;
 }
@@ -711,7 +711,7 @@ BOOL SpNpcResetti::mainAct04() {
     u16 v = _ZN8NpcActor10getAngleToEPS_(this, (void *)r);
     rotY = v;
     moveAngleY = v;
-    if ((s16)model.unk_a4.b.mid == 0xc) {
+    if ((s16)model.curFrame.b.mid == 0xc) {
         Effect_End(effectHandle);
         effectHandle = -1;
     }
@@ -740,7 +740,7 @@ BOOL SpNpcResetti::mainAct05() {
     u16 v = _ZN8NpcActor10getAngleToEPS_(this, (void *)r);
     rotY = v;
     moveAngleY = v;
-    f = (s16)model.unk_a4.b.mid;
+    f = (s16)model.curFrame.b.mid;
     if (f == 2) {
         effectHandle = Effect_Create(0x30, &position, 0, 0);
     }

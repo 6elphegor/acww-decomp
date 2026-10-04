@@ -60,7 +60,7 @@ struct Unk_ov096_02297fb8_Msg {
 
 struct CommManager {
     u8 pad_00[0x64];
-    s32 unk_64;
+    s32 myAid;
     BOOL isOnline();
 };
 
@@ -3633,7 +3633,7 @@ BOOL PocketMenu::canDropItem(s32 a) {
 
 s32 PocketMenu::requestDropItem(s32 a) {
     if (Unk_ov096_0229652c_IsZero(gFieldSceneKind)) {
-        fieldRequest = FieldAction_RequestDrop(gCommManager->unk_64, a);
+        fieldRequest = FieldAction_RequestDrop(gCommManager->myAid, a);
         if (fieldRequest == -1) {
             PocketMenu_ReturnToIdle((S *)this);
             PocketMenu_ShowMessage((S *)this, 3, 0xff, 0);
@@ -3841,7 +3841,7 @@ void PocketMenu::actionOpenCountdownMenu() {
 void PocketMenu::setCountdown(s32 n) {
     CommManager *g = gCommManager;
     if (g->isOnline()) {
-        if (g->unk_64 == 0) {
+        if (g->myAid == 0) {
             BOOL z;
             if (n == 0) {
                 z = TRUE;

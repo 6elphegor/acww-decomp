@@ -248,7 +248,7 @@ struct BgmSceneFade {
 
 struct BgmManager {
     u8 pad_00[0x2d0];
-    BgmSceneFade unk_2d0;
+    BgmSceneFade sceneFade;
 };
 
 class BuildingActor;

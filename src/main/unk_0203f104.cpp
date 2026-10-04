@@ -79,8 +79,8 @@ struct Unk_0203fb1c_Rec {
 };
 
 struct Unk_0203fe18_Date { u8 b0, b1, b2, b3, b4, b5, b6, b7; };
-struct Unk_0203ff20_Entry { u16 unk_00; u8 unk_02, unk_03, unk_04, unk_05; };
-struct Unk_0203ff50_Slot { u8 pad[0x10]; u8 unk_10, unk_11; u8 unk_12, unk_13; Unk_0203ff20_Entry ent[5]; long long unk_34; };
+struct Unk_0203ff20_Entry { u16 date; u8 eventId, state, occurred, playerMask; };
+struct Unk_0203ff50_Slot { u8 pad[0x10]; u8 reddWeekday, unk_11; u8 todayEventId, todayWeekday; Unk_0203ff20_Entry ent[5]; long long weekStart; };
 
 union Unk_0203f3a0_L {
     u32 w[3];
@@ -302,10 +302,10 @@ extern "C" void EventWeekSlots_MarkPlayer(u32 id) {
     Unk_0203ff20_Entry *e = EventWeekSlots_Get(s, EventWeekSlots_FindId(s, id));
     if (e) {
         if (id == 0x44) {
-            e->unk_05 = 0xff;
+            e->playerMask = 0xff;
         } else {
             u32 m = 1 << PlayerData_GetCurrentIndex();
-            e->unk_05 = (e->unk_05 & ~m) | m;
+            e->playerMask = (e->playerMask & ~m) | m;
         }
     }
 }
@@ -320,9 +320,9 @@ extern "C" BOOL EventWeekSlots_IsUnavailable(u32 id, s32 idx) {
     if (id == 0x60) id = 0x40;
     e = EventWeekSlots_Get((Unk_0203ff50_Slot *)(g + 0x15e18), idx);
     if (e) {
-        if (id != e->unk_02) {
+        if (id != e->eventId) {
             r = TRUE;
-        } else if ((u8)((e->unk_05 >> PlayerData_GetCurrentIndex()) & 1) != 0) {
+        } else if ((u8)((e->playerMask >> PlayerData_GetCurrentIndex()) & 1) != 0) {
             r = TRUE;
         }
     }
@@ -330,24 +330,24 @@ extern "C" BOOL EventWeekSlots_IsUnavailable(u32 id, s32 idx) {
 }
 
 extern "C" void EventWeekSlot_Clear(Unk_0203ff20_Entry *e) {
-    e->unk_00 = 1;
-    e->unk_02 = 0x63;
-    e->unk_03 = 0;
-    e->unk_04 = 0;
-    e->unk_05 = 0;
+    e->date = 1;
+    e->eventId = 0x63;
+    e->state = 0;
+    e->occurred = 0;
+    e->playerMask = 0;
 }
 
 extern "C" void EventWeekSlot_Set(Unk_0203ff20_Entry *e, u8 id, Unk_0203fe18_Date *d) {
     EventWeekSlot_Clear(e);
     ((u8*)e)[1] = d->b4;
     ((u8*)e)[0] = d->b3;
-    e->unk_02 = id;
+    e->eventId = id;
 }
 
 extern "C" void EventWeekSlot_MarkAllPlayers(Unk_0203ff20_Entry *e) {
-    if (e->unk_02 != 0x45) {
-        e->unk_05 = 0xff;
-        e->unk_03 = 2;
+    if (e->eventId != 0x45) {
+        e->playerMask = 0xff;
+        e->state = 2;
     }
 }
 

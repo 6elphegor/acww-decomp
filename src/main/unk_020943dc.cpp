@@ -2,7 +2,7 @@
 
 struct Unk_02006d14_Vec { s32 x, y, z; };
 struct Unk_02006d14_Blk { u32 w[12]; };
-struct Unk_020cbb18_Data { u8 pad_00[0x68]; s32 unk_68; };
+struct Unk_020cbb18_Data { u8 pad_00[0x68]; s32 localSlot; };
 
 // An enum-typed local keeps the constant in a callee-saved register across the call.
 // func_020085f0 is declared with the enum parameter (real type u32) so the argument is
@@ -11,9 +11,9 @@ enum Unk_02094a08_Limit { Unk_02094a08_LIMIT_5 = 5 };
 
 struct Unk_02006d14 {
     u8 pad_00[0x5c];
-    Unk_02006d14_Vec unk_5c;
+    Unk_02006d14_Vec position;
     u8 pad_68[0x8e - 0x68];
-    s16 unk_8e;
+    s16 rotY;
     u8 pad_90[0x44c - 0x90];
     s32 headPosX;
     s32 headPosY;
@@ -371,11 +371,11 @@ extern "C" u16 *PlayerActor_GetItemInFront() {
     s32 a, b;
     if (!o) return 0;
     if (o->action != 2) return 0;
-    PlayerActor_OffsetByAngle(buf, o, &o->unk_5c, (u8 *)o + 0x8e, &sPlayerFrontItemDist);
+    PlayerActor_OffsetByAngle(buf, o, &o->position, (u8 *)o + 0x8e, &sPlayerFrontItemDist);
     BOOL t = gFieldSceneKind == 1 ? TRUE : FALSE;
     if (t) {
         if (Scene_InHouseRoom()) {
-            if (gCommManager->unk_68 == 0) {
+            if (gCommManager->localSlot == 0) {
                 if (FtrMgr_FindFurnitureFacingPlayer(&a, &b, 0, 0) < 0) {
                     r = BlockMap_GetItemPtrAtPos(gSceneBlockMap, buf, 0);
                 }

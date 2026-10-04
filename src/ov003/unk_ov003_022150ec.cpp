@@ -242,7 +242,7 @@ struct ModelAnim {
 // Other actor with a u8 at +0x2d4 (element of the Y child list)
 struct Unk_ov003_02215748_Ent {
     u8 pad_00[0x2d4];
-    u8 unk_2d4;
+    u8 isCounting;
 };
 
 struct Unk_ov003_SceneEntry {void *(*factory)(); u16 id,size; u32 zero,a,b,c;};
@@ -309,13 +309,13 @@ public:
     static void *operator new(unsigned long size);
     static void operator delete(void *p);
 
-    /* 0x2b0 */ u8 unk_2b0;
-    /* 0x2b1 */ u8 unk_2b1;
-    /* 0x2b2 */ u8 unk_2b2;
+    /* 0x2b0 */ u8 digitIndex;
+    /* 0x2b1 */ u8 digit;
+    /* 0x2b2 */ u8 prevDigit;
     /* 0x2b3 */ u8 pad_2b3;
-    /* 0x2b4 */ ModelAnim unk_2b4;
-    /* 0x2d4 */ u8 unk_2d4;
-    /* 0x2d5 */ u8 unk_2d5;
+    /* 0x2b4 */ ModelAnim matAnim;
+    /* 0x2d4 */ u8 isCounting;
+    /* 0x2d5 */ u8 skipSe;
     /* 0x2d6 */ u8 pad_2d6[2];
 };
 
@@ -343,11 +343,11 @@ public:
     void execCountdown();
     BOOL enterCountdown();
 
-    /* 0x2b0 */ ModelAnim unk_2b0;
-    /* 0x2d0 */ s8 unk_2d0;
-    /* 0x2d1 */ u8 unk_2d1;
+    /* 0x2b0 */ ModelAnim matAnim;
+    /* 0x2d0 */ s8 alphaMatIdx;
+    /* 0x2d1 */ u8 matAlpha;
     /* 0x2d2 */ u8 pad_2d2[2];
-    /* 0x2d4 */ Unk_ov003_02215748_Ent *unk_2d4[6];
+    /* 0x2d4 */ Unk_ov003_02215748_Ent *digits[6];
 };
 
 // ---------------------------------------------------------------- Z
@@ -356,30 +356,30 @@ public:
     virtual void vfunc_78();
     virtual BOOL vfunc_8c();
 
-    /* 0x2b0 */ u8 unk_2b0;
+    /* 0x2b0 */ u8 createHour;
 };
 
 struct Unk_ov003_02215a04_Ctx {
-    u8 unk_00[2];
+    u8 cmd[2];
     u8 pad_02[2];
 };
 struct Unk_ov003_02215a04_Sub {
     u8 pad_00[0x2c];
-    u32 unk_2c;
+    u32 ptrUser;
 };
 struct Unk_ov003_022159c8_Word {
     u8 pad_00[0xc];
-    u32 unk_0c;
+    u32 prmPolygonAttr;
 };
 struct Unk_ov003_02215a04_Obj {
-    Unk_ov003_02215a04_Ctx *unk_00;
-    Unk_ov003_02215a04_Sub *unk_04;
+    Unk_ov003_02215a04_Ctx *c;
+    Unk_ov003_02215a04_Sub *pRenderObj;
     u8 pad_08[0x14];
-    void (*unk_1c)(void *);
+    void (*cbVecFuncMat)(void *);
     u8 pad_20[0x90 - 0x20];
-    u8 unk_90;
+    u8 cbVecTimingMat;
     u8 pad_91[0xb0 - 0x91];
-    Unk_ov003_022159c8_Word *unk_b0;
+    Unk_ov003_022159c8_Word *pMatAnmResult;
 };
 
 // ================================================================
@@ -387,7 +387,7 @@ BOOL CountdownDigit::onExecute() {
     CountdownDigit_Update(this);
     s32 r4 = _ZN5Model12getRenderObjEv(unk_138);
     s32 r2 = getBtaAnim(0);
-    _ZN9ModelAnim7replaceEiiiit(&unk_2b4, r4, r2, 1, 0x1000, unk_2b1);
+    _ZN9ModelAnim7replaceEiiiit(&matAnim, r4, r2, 1, 0x1000, digit);
     return TRUE;
 }
 
@@ -404,20 +404,20 @@ void CountdownDigit::operator delete(void *p) {}
 
 // ---------------------------------------------------------------- Y methods
 void CountdownSign::execNewYear() {
-    _ZN13AnimFrameCtrl4stepEv(&unk_2b0);
-    *unk_2b0.anmObj = unk_2b0.curFrame;
+    _ZN13AnimFrameCtrl4stepEv(&matAnim);
+    *matAnim.anmObj = matAnim.curFrame;
 }
 
 BOOL CountdownSign::enterNewYear() {
     s32 r1 = getBtaAnim(1);
-    _ZN9ModelAnim4initEiiit(&unk_2b0, r1, 0, 0x1000, 0);
-    unk_2d1 = 1;
+    _ZN9ModelAnim4initEiiit(&matAnim, r1, 0, 0x1000, 0);
+    matAlpha = 1;
     return TRUE;
 }
 
 void CountdownSign::execCountdown() {
-    _ZN13AnimFrameCtrl4stepEv(&unk_2b0);
-    *unk_2b0.anmObj = unk_2b0.curFrame;
+    _ZN13AnimFrameCtrl4stepEv(&matAnim);
+    *matAnim.anmObj = matAnim.curFrame;
     u32 tm[2];
     tm[0] = 0;
     tm[1] = 0;
@@ -430,8 +430,8 @@ void CountdownSign::execCountdown() {
 
 BOOL CountdownSign::enterCountdown() {
     s32 r1 = getBtaAnim(0);
-    _ZN9ModelAnim4initEiiit(&unk_2b0, r1, 0, 0x1000, 0);
-    unk_2d1 = 0x1f;
+    _ZN9ModelAnim4initEiiit(&matAnim, r1, 0, 0x1000, 0);
+    matAlpha = 0x1f;
     return TRUE;
 }
 
@@ -461,7 +461,7 @@ void CountdownSign::vfunc_a4() { BuildingActor::vfunc_a4(); }
 
 BOOL CountdownSign::vfunc_0c() {
     for (u32 i = 0; i < 6; i++) {
-        unk_2d4[i] = 0;
+        digits[i] = 0;
     }
     return TRUE;
 }
@@ -470,9 +470,9 @@ BOOL CountdownSign::postDraw(s32 a) {
     if (a == 2) {
         if ((colliderFlags & 1) == 0) {
             for (u32 i = 0; i < 6; i++) {
-                Unk_ov003_02215748_Ent *p = unk_2d4[i];
+                Unk_ov003_02215748_Ent *p = digits[i];
                 if (p) {
-                    if (p->unk_2d4) {
+                    if (p->isCounting) {
                         ::_ZN13BuildingActor12updateMatrixEv(p);
                     }
                 }
@@ -512,15 +512,15 @@ BOOL CountdownSign::vfunc_70() {
         v[1] = b;
         v[2] = c;
         sCountdownSpawnIndex = i;
-        unk_2d4[i] = (Unk_ov003_02215748_Ent *)_ZN5Actor5spawnEPvS0_S0_S0_S0_(0x26, 0x501f, v, z, z);
+        digits[i] = (Unk_ov003_02215748_Ent *)_ZN5Actor5spawnEPvS0_S0_S0_S0_(0x26, 0x501f, v, z, z);
         i++;
     } while (i < 6);
     _ZN5Model15setInitCallbackEii(unk_138, CountdownSign_ModelCallback, this);
-    unk_2d0 = _ZN12G3dResAccess10findMatIdxEi(modelRes, "m_cbs_Adt");
-    if (_ZN9ModelAnim11allocMatAnmEjPv(&unk_2b0, modelRes, gFieldStructureHeap)) {
+    alphaMatIdx = _ZN12G3dResAccess10findMatIdxEi(modelRes, "m_cbs_Adt");
+    if (_ZN9ModelAnim11allocMatAnmEjPv(&matAnim, modelRes, gFieldStructureHeap)) {
         s32 r1 = getBtaAnim(0);
-        _ZN9ModelAnim4initEiiit(&unk_2b0, r1, 0, 0x1000, 0);
-        _ZN9ModelAnim14addToRenderObjEj(&unk_2b0, _ZN5Model12getRenderObjEv(unk_138));
+        _ZN9ModelAnim4initEiiit(&matAnim, r1, 0, 0x1000, 0);
+        _ZN9ModelAnim14addToRenderObjEj(&matAnim, _ZN5Model12getRenderObjEv(unk_138));
     }
     u32 tm[2];
     tm[0] = 0;
@@ -535,7 +535,7 @@ BOOL CountdownSign::vfunc_70() {
 }
 
 CountdownSign::CountdownSign() {
-    unk_2d0 = -1;
+    alphaMatIdx = -1;
 }
 CountdownSign::~CountdownSign() {}
 
@@ -546,14 +546,14 @@ void CountdownSign_SetMaterialAlpha(CountdownSign *self, s32 a, Unk_ov003_02215a
 
 void CountdownSign_ModelCallback(void *p) {
     Unk_ov003_02215a04_Obj *o = (Unk_ov003_02215a04_Obj *)p;
-    o->unk_1c = (void (*)(void *))CountdownSign_MaterialCallback;
-    o->unk_90 = 2;
+    o->cbVecFuncMat = (void (*)(void *))CountdownSign_MaterialCallback;
+    o->cbVecTimingMat = 2;
 }
 
 void CountdownSign_MaterialCallback(Unk_ov003_02215a04_Obj *o) {
-    Unk_ov003_02215a04_Sub *s = o->unk_04;
-    if (s->unk_2c != 0) {
-        CountdownSign_SetMaterialAlpha((CountdownSign *)s->unk_2c, o->unk_00->unk_00[1], o);
+    Unk_ov003_02215a04_Sub *s = o->pRenderObj;
+    if (s->ptrUser != 0) {
+        CountdownSign_SetMaterialAlpha((CountdownSign *)s->ptrUser, o->c->cmd[1], o);
     }
 }
 
@@ -566,9 +566,9 @@ CountdownSign *CountdownSign_Create() {
 }
 
 void CountdownSign_SetMaterialAlpha(CountdownSign *self, s32 a, Unk_ov003_02215a04_Obj *o) {
-    if (a == self->unk_2d0) {
-        o->unk_b0->unk_0c &= ~0x1f0000;
-        o->unk_b0->unk_0c |= (u32)self->unk_2d1 << 16;
+    if (a == self->alphaMatIdx) {
+        o->pMatAnmResult->prmPolygonAttr &= ~0x1f0000;
+        o->pMatAnmResult->prmPolygonAttr |= (u32)self->matAlpha << 16;
     }
 }
 }

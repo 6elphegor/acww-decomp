@@ -323,7 +323,7 @@ public:
     u8 pad_00[0x5c];
     /* 0x5c */ s32 unk_5c[3];
     u8 pad_68[0x8e - 0x68];
-    /* 0x8e */ u16 unk_8e;
+    /* 0x8e */ u16 rotY;
     u8 pad_90[0x13c - 0x90];
     /* 0x13c */ u8 actionPressed;
     u8 pad_13d[3];
@@ -14909,7 +14909,7 @@ extern "C" BOOL PlayerActor_FieldInteractAt(Unk_02006d14 *self, s32 a) {
     }
     if (self->inputMode == 1) {
         Unk_ov003_02204ce8_Vec t;
-        PlayerActor_OffsetByAngle(&t, self, self->unk_5c, &self->unk_8e, data_ov003_02230af0);
+        PlayerActor_OffsetByAngle(&t, self, self->unk_5c, &self->rotY, data_ov003_02230af0);
         v.x = t.x;
         v.y = t.y;
         v.z = t.z;

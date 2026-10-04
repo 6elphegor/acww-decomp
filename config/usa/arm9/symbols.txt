@@ -1006,7 +1006,7 @@ _ZN16ActorTalkRequest10onTaskDoneEv kind:label(thumb) addr:0x020151f0
 _ZN12Unk_020d77107runTaskEv kind:function(thumb,size=0x110) addr:0x020151f4
 _ZN12Unk_020d771013isTaskRunningEv kind:function(thumb,size=0x10) addr:0x02015304
 _ZN12Unk_020d77109startTaskEi kind:function(thumb,size=0x2e) addr:0x02015314
-_ZN12Unk_020d771018initSubSceneParamsEP19Unk_02015344_Params kind:function(thumb,size=0x54) addr:0x02015344
+_ZN12Unk_020d771018initSubSceneParamsEP18TalkSubSceneParams kind:function(thumb,size=0x54) addr:0x02015344
 _ZN12Unk_020d771010resetTasksEv kind:function(thumb,size=0x20) addr:0x02015398
 _ZN12Unk_020d77109onTag09_9Ev kind:function(thumb,size=0xc) addr:0x020153b8
 _ZN16ActorTalkRequest9onTag09_9Ev kind:label(thumb) addr:0x020153b8
@@ -1248,8 +1248,8 @@ _ZN12NpcEmotionFx11killEffectsEv kind:function(thumb,size=0x34) addr:0x02019e8c
 _ZN12NpcEmotionFx10updateSlotEPvsiti kind:function(thumb,size=0x98) addr:0x02019ec0
 _ZN12NpcEmotionFx9stopSoundEv kind:function(thumb,size=0x26) addr:0x02019f58
 _ZN12NpcEmotionFx9keepSoundEv kind:function(thumb,size=0x2e) addr:0x02019f80
-_ZN12NpcEmotionFx9playSoundEP17Unk_02019e2c_Slot kind:function(thumb,size=0x90) addr:0x02019fb0
-_ZN12NpcEmotionFx10startEntryEP18Unk_02019e2c_Entryi kind:function(thumb,size=0x30) addr:0x0201a040
+_ZN12NpcEmotionFx9playSoundEP16NpcEmotionFxSlot kind:function(thumb,size=0x90) addr:0x02019fb0
+_ZN12NpcEmotionFx10startEntryEP15NpcEmotionPhasei kind:function(thumb,size=0x30) addr:0x0201a040
 _ZN12NpcEmotionFx8setSlotsEPvji kind:function(thumb,size=0x2e) addr:0x0201a070
 _ZN12NpcEmotionFx14findFreeHandleEv kind:function(thumb,size=0x1c) addr:0x0201a0a0
 _ZN12NpcEmotionFx9copySlotsEPvS0_i kind:function(thumb,size=0xc) addr:0x0201a0bc

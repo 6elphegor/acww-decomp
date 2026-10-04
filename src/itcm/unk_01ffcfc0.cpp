@@ -8,7 +8,7 @@ struct TreeNode {
     /* 0x04 */ TreeNode *unk_04;
     /* 0x08 */ TreeNode *unk_08;
     /* 0x0c */ TreeNode *unk_0c;
-    /* 0x10 */ void *unk_10;
+    /* 0x10 */ void *owner;
 };
 
 struct Vec3 {

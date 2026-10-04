@@ -42,23 +42,23 @@ public:
     void close();
     BOOL open(void *a, s32 n0, void *b, s32 n1, void *c, s32 n2, s32 count);
 
-    /* 0x00 */ RecordFile unk_00;
-    /* 0x1c */ RecordFile unk_1c;
-    /* 0x38 */ RecordFile unk_38;
+    /* 0x00 */ RecordFile alwaysTable;
+    /* 0x1c */ RecordFile indoorTable;
+    /* 0x38 */ RecordFile dmaTable;
 };
 
 extern InfoTableSet gFtrInfo;
 
 struct Unk_02052c88_Rec {
-    u8 unk_00;
-    u8 unk_01;
-    u8 unk_02;
+    u8 fossilGroup;
+    u8 indoorFlags;
+    u8 indoorFlags2;
     u8 unk_03;
     u8 unk_04;
     u8 unk_05;
     u8 unk_06;
     u8 unk_07[4];
-    u8 unk_0b;
+    u8 ftrName;
 };
 
 #define CLAMP(n) if (n >= 0x6e9) n = 0x6e8;
@@ -514,7 +514,7 @@ BOOL FtrInfo_TestIndoorFlag3(s32 i) {
     if (i >= 0x6e9) i = 0x6e8;
     Unk_02052c88_Rec *r = (Unk_02052c88_Rec *)gFtrInfo.getIndoor()->getRecord(i);
     if (r) {
-        { s32 v = r->unk_01; if ((v >> 3) & 1) return TRUE; }
+        { s32 v = r->indoorFlags; if ((v >> 3) & 1) return TRUE; }
         return FALSE;
     }
     return FALSE;
@@ -525,7 +525,7 @@ s32 FtrInfo_GetIndoorFlagPair(s32 i) {
     BOOL f;
     Unk_02052c88_Rec *r = (Unk_02052c88_Rec *)gFtrInfo.getIndoor()->getRecord(j);
     if (r) {
-        f = Unk_02052dac_Bit(r->unk_01, 4);
+        f = Unk_02052dac_Bit(r->indoorFlags, 4);
     } else {
         f = FALSE;
     }
@@ -533,7 +533,7 @@ s32 FtrInfo_GetIndoorFlagPair(s32 i) {
     if (i >= 0x6e9) i = 0x6e8;
     r = (Unk_02052c88_Rec *)gFtrInfo.getIndoor()->getRecord(i);
     if (r) {
-        f = Unk_02052dac_Bit(r->unk_01, 5);
+        f = Unk_02052dac_Bit(r->indoorFlags, 5);
     } else {
         f = FALSE;
     }
@@ -544,7 +544,7 @@ s32 FtrInfo_GetIndoorFlagPair(s32 i) {
 u8 *FtrInfo_GetName(s32 i) {
     if (i >= 0x6e9) i = 0x6e8;
     Unk_02052c88_Rec *r = (Unk_02052c88_Rec *)gFtrInfo.getDma()->getRecord(i);
-    if (r) return &r->unk_0b;
+    if (r) return &r->ftrName;
     return 0;
 }
 
@@ -552,7 +552,7 @@ BOOL FtrInfo_TestIndoorFlag6(s32 i) {
     if (i >= 0x6e9) i = 0x6e8;
     Unk_02052c88_Rec *r = (Unk_02052c88_Rec *)gFtrInfo.getIndoor()->getRecord(i);
     if (r) {
-        { s32 v = r->unk_01; if ((v >> 6) & 1) return TRUE; }
+        { s32 v = r->indoorFlags; if ((v >> 6) & 1) return TRUE; }
         return FALSE;
     }
     return FALSE;
@@ -563,7 +563,7 @@ BOOL FtrInfo_TestIndoorFlag7(s32 i) {
     BOOL f;
     Unk_02052c88_Rec *r = (Unk_02052c88_Rec *)gFtrInfo.getIndoor()->getRecord(j);
     if (r) {
-        f = Unk_02052dac_Bit(r->unk_01, 7);
+        f = Unk_02052dac_Bit(r->indoorFlags, 7);
     } else {
         f = FALSE;
     }
@@ -581,7 +581,7 @@ BOOL FtrInfo_TestIndoorFlagC(s32 i) {
     if (i >= 0x6e9) i = 0x6e8;
     Unk_02052c88_Rec *r = (Unk_02052c88_Rec *)gFtrInfo.getIndoor()->getRecord(i);
     if (r) {
-        if (r->unk_02 & 1) return TRUE;
+        if (r->indoorFlags2 & 1) return TRUE;
         return FALSE;
     }
     return FALSE;
@@ -613,7 +613,7 @@ s8 FtrInfo_GetDmaUnk06(s32 i) {
 u8 FtrInfo_GetIndoorUnk0(s32 i) {
     if (i >= 0x6e9) i = 0x6e8;
     Unk_02052c88_Rec *r = (Unk_02052c88_Rec *)gFtrInfo.getIndoor()->getRecord(i);
-    if (r) return r->unk_00;
+    if (r) return r->fossilGroup;
     return 0;
 }
 

@@ -8,11 +8,11 @@ struct Unk_0209b570_Ent {
 // Record (12 bytes): two words, u16 at +8, type byte at +0x0a, bits at +0x0b.
 // The constructor/destructor are the unit's own functions 0x0209ada4 / 0x0209ada0 (aliases.txt).
 struct ErrandRecord {
-    u32 unk_00;
-    u32 unk_04;
-    u16 unk_08;
-    u8 unk_0a;
-    u8 unk_0b;
+    u32 dateTime;
+    u32 dateTimeHi;
+    u16 item;
+    u8 kind;
+    u8 stepBits;
 
     ErrandRecord();
     ~ErrandRecord();
@@ -115,8 +115,8 @@ public:
 // Y record with an index byte and a flag byte (0x10 bytes)
 class ParcelErrand : public ErrandRecord {
 public:
-    /* 0x0c */ u8 unk_0c;
-    /* 0x0d */ u8 unk_0d;
+    /* 0x0c */ u8 recipient;
+    /* 0x0d */ u8 pendingRecipients;
 };
 
 class HouseVisitInvite : public Unk_02003130 {
@@ -765,11 +765,11 @@ extern "C" void Trend_GetToolItem(u16 *out, s32 idx) {
 }
 void ErrandRecord::init() {
     using namespace n5;
-    unk_00 = 0;
-    unk_04 = 0;
-    unk_08 = 0xfff1;
-    unk_0a = 0x16;
-    unk_08 = 0xfff1;
+    dateTime = 0;
+    dateTimeHi = 0;
+    item = 0xfff1;
+    kind = 0x16;
+    item = 0xfff1;
 }
 
 
@@ -783,10 +783,10 @@ namespace n5 {
 }
 void ErrandRecord::clear() {
     using namespace n5;
-    unk_0a = 0x16;
-    unk_08 = 0xfff1;
-    unk_0b = unk_0b & ~0x1f;
-    unk_0b = unk_0b & ~0xe0;
+    kind = 0x16;
+    item = 0xfff1;
+    stepBits = stepBits & ~0x1f;
+    stepBits = stepBits & ~0xe0;
 }
 
 
@@ -798,16 +798,16 @@ extern "C" BOOL Errand_IsValidKind(u32 x) {
 
 }
 BOOL ErrandRecord::isActive() {
-    using namespace n5; return Errand_IsValidKind(unk_0a); }
+    using namespace n5; return Errand_IsValidKind(kind); }
 
 
 namespace n5 {
 }
 void ErrandRecord::start(u8 a, u16 *p, u8 b) {
     using namespace n5;
-    unk_0a = a;
-    unk_08 = *p;
-    unk_0b = (unk_0b & ~0x1f) | (b & 0x1f);
+    kind = a;
+    item = *p;
+    stepBits = (stepBits & ~0x1f) | (b & 0x1f);
 }
 
 
@@ -829,7 +829,7 @@ extern "C" s32 Errand_GetClass(u32 x) {
 
 }
 s32 ErrandRecord::getClass() {
-    using namespace n5; return Errand_GetClass(unk_0a); }
+    using namespace n5; return Errand_GetClass(kind); }
 
 
 namespace n5 {
@@ -844,7 +844,7 @@ extern "C" BOOL Errand_GetClassIndex(s32 *out, s32 x) {
 
 }
 BOOL ErrandRecord::getClassIndex(s32 *out) {
-    using namespace n5; return Errand_GetClassIndex(out, unk_0a); }
+    using namespace n5; return Errand_GetClassIndex(out, kind); }
 
 
 namespace n5 {
@@ -869,7 +869,7 @@ extern "C" s32 Errand_GetGroup(u32 x) {
 
 }
 s32 ErrandRecord::getGroup() {
-    using namespace n5; return Errand_GetGroup(unk_0a); }
+    using namespace n5; return Errand_GetGroup(kind); }
 
 
 namespace n5 {
@@ -885,13 +885,13 @@ extern "C" BOOL Errand_GetGroupIndex(s32 *out, s32 x) {
 
 }
 BOOL ErrandRecord::getGroupIndex(s32 *out) {
-    using namespace n5; return Errand_GetGroupIndex(out, unk_0a); }
+    using namespace n5; return Errand_GetGroupIndex(out, kind); }
 
 
 namespace n5 {
 }
 u32 ErrandRecord::getKind() {
-    using namespace n5; return unk_0a; }
+    using namespace n5; return kind; }
 
 
 namespace n5 {
@@ -920,7 +920,7 @@ extern "C" s32 func_0209ac1c(u32 x) {
 
 }
 s32 ErrandRecord::func_0209ac10() {
-    using namespace n5; return func_0209ac1c(unk_0a); }
+    using namespace n5; return func_0209ac1c(kind); }
 
 
 namespace n5 {
@@ -944,43 +944,43 @@ extern "C" s32 Errand_GetSubGroup(u32 x) {
 
 }
 s32 ErrandRecord::getSubGroup() {
-    using namespace n5; return Errand_GetSubGroup(unk_0a); }
+    using namespace n5; return Errand_GetSubGroup(kind); }
 
 
 namespace n5 {
 }
 u32 ErrandRecord::getStep() {
-    using namespace n5; return ((Unk_0209abac_Bits *)&unk_0b)->lo; }
+    using namespace n5; return ((Unk_0209abac_Bits *)&stepBits)->lo; }
 
 
 namespace n5 {
 }
 void ErrandRecord::setStep(u8 v) {
-    using namespace n5; unk_0b = (unk_0b & ~0x1f) | (v & 0x1f); }
+    using namespace n5; stepBits = (stepBits & ~0x1f) | (v & 0x1f); }
 
 
 namespace n5 {
 }
 u32 ErrandRecord::getExtra() {
-    using namespace n5; return ((Unk_0209abac_Bits *)&unk_0b)->hi; }
+    using namespace n5; return ((Unk_0209abac_Bits *)&stepBits)->hi; }
 
 
 namespace n5 {
 }
 void ErrandRecord::setExtra(u8 v) {
-    using namespace n5; unk_0b = (unk_0b & ~0xe0) | ((v & 7) << 5); }
+    using namespace n5; stepBits = (stepBits & ~0xe0) | ((v & 7) << 5); }
 
 
 namespace n5 {
 }
 u16 *ErrandRecord::getItem() {
-    using namespace n5; return &unk_08; }
+    using namespace n5; return &item; }
 
 
 namespace n5 {
 }
 void ErrandRecord::setItem(u16 *p) {
-    using namespace n5; unk_08 = *p; }
+    using namespace n5; item = *p; }
 
 
 namespace n5 {
@@ -1788,10 +1788,10 @@ extern "C" s32 ParcelErrand_PickRecipient(ParcelErrand *z, s32 m) {
 
 extern "C" void ParcelErrand_RemoveRecipient(ParcelErrand *z, s32 i) {
     if ((u32)(i - 2) <= 1) {
-        z->unk_0d &= ~4;
-        z->unk_0d &= ~8;
+        z->pendingRecipients &= ~4;
+        z->pendingRecipients &= ~8;
     } else {
-        z->unk_0d &= ~(1 << i);
+        z->pendingRecipients &= ~(1 << i);
     }
 }
 
@@ -1801,12 +1801,12 @@ extern "C" void ParcelErrand_Start(ParcelErrand *z) {
     u16 v = sParcelItems[r];
     _ZN12ErrandRecord5startEhPth(z, 0x14, &v, 0);
     for (s32 i = 0; i < 5; i++) {
-        z->unk_0d |= 1 << i;
+        z->pendingRecipients |= 1 << i;
     }
-    r = ParcelErrand_PickRecipient(z, z->unk_0d);
+    r = ParcelErrand_PickRecipient(z, z->pendingRecipients);
     if (r < 5) {
         ParcelErrand_RemoveRecipient(z, r);
-        z->unk_0c = r;
+        z->recipient = r;
     }
 }
 
@@ -1815,47 +1815,47 @@ extern "C" void *ParcelErrand_GetRecord(ParcelErrand *z) {
 }
 
 extern "C" void *ParcelErrand_GetRecipientName(ParcelErrand *z, s32 v) {
-    if (z->unk_0c < 5) {
-        u16 t = sParcelRecipients[z->unk_0c];
+    if (z->recipient < 5) {
+        u16 t = sParcelRecipients[z->recipient];
         return (void *)Npc_GetName((void *)v, &t);
     }
     return 0;
 }
 
 extern "C" BOOL ParcelErrand_NextRecipient(ParcelErrand *z) {
-    if (z->unk_0d) {
-        u32 r = ParcelErrand_PickRecipient(z, z->unk_0d);
+    if (z->pendingRecipients) {
+        u32 r = ParcelErrand_PickRecipient(z, z->pendingRecipients);
         if (r < 5) {
             ParcelErrand_RemoveRecipient(z, r);
-            z->unk_0c = r;
+            z->recipient = r;
             _ZN12ErrandRecord7setStepEh(z, 0);
             u16 v = sParcelItems[Random_GlobalBelow(10) & 1];
             _ZN12ErrandRecord7setItemEPt(z, &v);
-            r = ParcelErrand_CountPendingRecipients(z, z->unk_0d);
+            r = ParcelErrand_CountPendingRecipients(z, z->pendingRecipients);
             if ((r == 2 && (Random_GlobalBelow(10) & 1)) || r == 1) {
-                z->unk_0d = 0;
+                z->pendingRecipients = 0;
             }
             return TRUE;
         } else {
-            z->unk_0d = 0;
+            z->pendingRecipients = 0;
         }
     }
     return FALSE;
 }
 
 extern "C" BOOL ParcelErrand_IsFor(ParcelErrand *z, u16 *p) {
-    if (z->unk_0c < 5 && PlayerData_GetCurrent() && !_ZN6TownId15getTownRelationEv(_ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent()))) {
+    if (z->recipient < 5 && PlayerData_GetCurrent() && !_ZN6TownId15getTownRelationEv(_ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent()))) {
         if (((s32)(*p & 0xf000) >> 12) == 0xd && _ZN12ErrandRecord8isActiveEv(z) && _ZN12ErrandRecord7getStepEv(z) == 0) {
             BOOL in = FALSE;
             if (*p >= 0xd019 && *p <= 0xd01c) {
                 in = TRUE;
             }
             if (in) {
-                if (z->unk_0c == 0) {
+                if (z->recipient == 0) {
                     return TRUE;
                 }
             } else {
-                u16 v = sParcelRecipients[z->unk_0c];
+                u16 v = sParcelRecipients[z->recipient];
                 BOOL same;
                 if (Item_IsFurniture(p)) {
                     u16 t = v;

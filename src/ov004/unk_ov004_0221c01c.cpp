@@ -135,11 +135,11 @@ public:
     }
 struct ThreeLayerAnimModel {
     u8 pad_00[0xa4];
-    u32 unk_a4;
-    u32 unk_a8;
-    u32 unk_ac;
+    u32 curFrame;
+    u32 prevFrame;
+    u32 frameStep;
     u8 pad_b0[8];
-    u8 unk_b8[0x2a0 - 0xec - 0xb8];
+    u8 jointBlend[0x2a0 - 0xec - 0xb8];
     ThreeLayerAnimModel();
     ~ThreeLayerAnimModel();
 };
@@ -162,7 +162,7 @@ MEMBER(Unk_0201a13c, 0x49c - 0x420);
 MEMBER(CollisionState, 0x30);
 struct Unk_02088d00 {
     u8 pad_00[0x1c];
-    u32 unk_1c;
+    u32 groups;
     u8 pad_20[0x514 - 0x4cc - 0x20];
     Unk_02088d00();
     ~Unk_02088d00();
@@ -575,7 +575,7 @@ BOOL SpNpcBrewster::vfunc_00() {
     }
     sSpNpcBrewster = this;
     homeAngle = rotY;
-    collider.unk_1c |= 2;
+    collider.groups |= 2;
     if (CommManager_isOnline(gCommManager) != 0 || *DebugVar_GetPtr(0, 0x4a) != 0) {
         if (NetArea_IsLocalOwner() != 0) {
             changeAct(0);
@@ -625,18 +625,18 @@ BOOL SpNpcBrewster::updateAct() {
     }
     if (func_020e77cc(Bgm_GetCurrent(), 0x63, 0xab) != 0) {
         if (beatSyncStarted == 0) {
-            if (((model.unk_a4 << 4) >> 16) != 0) {
-                JointBlend_start(&model.unk_b8, 10);
+            if (((model.curFrame << 4) >> 16) != 0) {
+                JointBlend_start(&model.jointBlend, 10);
             }
             beatSyncStarted = 1;
         }
         u8 *q = Snd_GetBeatState();
         if (q != 0) {
             if ((s8)q[3] != 1) {
-                model.unk_a4 = 0;
-                model.unk_ac = *(u32 *)(q + 0x10);
+                model.curFrame = 0;
+                model.frameStep = *(u32 *)(q + 0x10);
                 ThreeLayerAnimModel_updateLayers3(&model);
-                model.unk_ac = 0;
+                model.frameStep = 0;
             }
         }
     } else {
@@ -1293,7 +1293,7 @@ extern "C" void *SpNpcBrewster_GetJointMtxE() { return &sSpNpcBrewster->jointMtx
 
 extern "C" void *SpNpcBrewster_GetJointMtxB() { return &sSpNpcBrewster->jointMtxB; }
 
-extern "C" u32 SpNpcBrewster_GetAnimFrame() { return ((u32)sSpNpcBrewster->model.unk_a4 << 4) >> 16; }
+extern "C" u32 SpNpcBrewster_GetAnimFrame() { return ((u32)sSpNpcBrewster->model.curFrame << 4) >> 16; }
 
 extern "C" void SpNpcBrewster_GetAnimState() { Unk_02015b8c_getAnimId(&sSpNpcBrewster->animCtrl, 0); }
 

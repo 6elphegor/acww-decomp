@@ -27,11 +27,11 @@ struct MapBlockEntry {
 };
 
 struct OverlaySlot {
-    u8 unk_00;
-    u8 unk_01;
+    u8 overlayId;
+    u8 refCount;
     u8 unk_02;
-    u32 unk_04;
-    u32 unk_08;
+    u32 ramStart;
+    u32 ramSize;
 };
 
 OverlaySlot sOverlaySlots[12];
@@ -292,23 +292,23 @@ extern "C" void OverlayMgr_LoadSlot(OverlaySlot *e, u32 id) {
     u32 buf[11];
     OverlayMgr_GetInfo(buf, id);
     OverlayMgr_LoadOverlay(id);
-    e->unk_00 = id;
-    e->unk_01 = 1;
+    e->overlayId = id;
+    e->refCount = 1;
     e->unk_02 = 0;
-    e->unk_04 = buf[1];
-    e->unk_08 = buf[2] + buf[3];
+    e->ramStart = buf[1];
+    e->ramSize = buf[2] + buf[3];
 }
 
 extern "C" void OverlayMgr_UnloadSlot(OverlaySlot *e) {
     u32 buf[11];
-    u32 id = e->unk_00;
+    u32 id = e->overlayId;
     OverlayMgr_UnloadOverlay(id);
     OverlayMgr_GetInfo(buf, id);
-    e->unk_00 = 0xff;
-    e->unk_01 = 0;
+    e->overlayId = 0xff;
+    e->refCount = 0;
     e->unk_02 = 0;
-    e->unk_04 = 0;
-    e->unk_08 = 0;
+    e->ramStart = 0;
+    e->ramSize = 0;
 }
 
 extern "C" void OverlayMgr_Acquire(u32 id) {
@@ -319,11 +319,11 @@ extern "C" void OverlayMgr_Acquire(u32 id) {
     u32 info[11];
     for (i = 0; (u32)i < 12; i++) {
         OverlaySlot *e = &sOverlaySlots[i];
-        if (e->unk_00 == id) {
-            e->unk_01++;
+        if (e->overlayId == id) {
+            e->refCount++;
             return;
         }
-        if (((volatile OverlaySlot *)e)->unk_00 == 0xff && free == NULL) {
+        if (((volatile OverlaySlot *)e)->overlayId == 0xff && free == NULL) {
             free = e;
         }
     }
@@ -331,8 +331,8 @@ extern "C" void OverlayMgr_Acquire(u32 id) {
     FS_GetOverlayFileID(buf, info);
     for (i = 0, lo = info[1], hi = lo + (info[2] + info[3]); (u32)i < 12; i++) {
         OverlaySlot *e = &sOverlaySlots[i];
-        if (e->unk_00 != id && ((volatile OverlaySlot *)e)->unk_00 != 0xff && e->unk_04 + e->unk_08 > lo && hi > e->unk_04) {
-            if (e->unk_01 == 0) {
+        if (e->overlayId != id && ((volatile OverlaySlot *)e)->overlayId != 0xff && e->ramStart + e->ramSize > lo && hi > e->ramStart) {
+            if (e->refCount == 0) {
                 OverlayMgr_UnloadSlot(e);
                 if (free == NULL) {
                     free = e;
@@ -351,28 +351,28 @@ extern "C" void OverlayMgr_Release(u32 id) {
     OverlaySlot *e = NULL;
     for (s32 i = 0; (u32)i < 12; i++) {
         OverlaySlot *c = &sOverlaySlots[i];
-        if (c->unk_00 == id) {
+        if (c->overlayId == id) {
             e = c;
-            if (c->unk_01 != 0) {
-                c->unk_01--;
+            if (c->refCount != 0) {
+                c->refCount--;
             }
         }
     }
     if (e == NULL) {
         Fatal_Trap();
     }
-    if (e->unk_01 == 0) {
+    if (e->refCount == 0) {
         Unk_0204eee4_Ns::OverlayMgr_UnloadSlot(e);
     }
 }
 
 extern "C" void OverlayMgr_Init() {
     for (s32 i = 0; (u32)i < 12; i++) {
-        sOverlaySlots[i].unk_00 = 0xff;
-        sOverlaySlots[i].unk_01 = 0;
+        sOverlaySlots[i].overlayId = 0xff;
+        sOverlaySlots[i].refCount = 0;
         sOverlaySlots[i].unk_02 = 0;
-        sOverlaySlots[i].unk_04 = 0;
-        sOverlaySlots[i].unk_08 = 0;
+        sOverlaySlots[i].ramStart = 0;
+        sOverlaySlots[i].ramSize = 0;
     }
 }
 

@@ -384,10 +384,10 @@ public:
     u32 isUsable();
     s32 countLetters();
 
-    /* 0x2b0 */ s32 unk_2b0;
-    /* 0x2b4 */ ModelAnim unk_2b4;
-    /* 0x2d4 */ TouchPickSphere unk_2d4;
-    /* 0x2f0 */ u8 unk_2f0;
+    /* 0x2b0 */ s32 useState;
+    /* 0x2b4 */ ModelAnim matAnim;
+    /* 0x2d4 */ TouchPickSphere touchSphere;
+    /* 0x2f0 */ u8 canUse;
     /* 0x2f1 */ u8 pad_2f1[3];
 };
 
@@ -409,18 +409,18 @@ extern "C" void Mailbox_Create() {
 }
 
 Mailbox::Mailbox() {
-    _ZN15TouchPickSphereC1Ev(&unk_2d4);
+    _ZN15TouchPickSphereC1Ev(&touchSphere);
 }
 
 Mailbox::~Mailbox() {
-    _ZN15TouchPickSphereD1Ev(&unk_2d4);
+    _ZN15TouchPickSphereD1Ev(&touchSphere);
 }
 
 BOOL Mailbox::vfunc_70() {
     if (getBtaAnim(0)) {
-        if (unk_2b4.allocMatAnm((u32)modelRes, gFieldStructureHeap)) {
-            unk_2b4.init((s32)getBtaAnim(0), 1, 0x1000, 0);
-            unk_2b4.addToRenderObj((u32)((Model *)unk_138)->getRenderObj());
+        if (matAnim.allocMatAnm((u32)modelRes, gFieldStructureHeap)) {
+            matAnim.init((s32)getBtaAnim(0), 1, 0x1000, 0);
+            matAnim.addToRenderObj((u32)((Model *)unk_138)->getRenderObj());
         }
     }
     u8 b = (u8)BuildingList_IndexOf(this);
@@ -431,15 +431,15 @@ BOOL Mailbox::vfunc_70() {
     v.y = position[1];
     v.z = position[2];
     v.y = v.y + 0x1000;
-    _ZN11TouchPicker9addSphereEP15TouchPickSphereP4Vec3S3_ih(Scene_GetTouchPicker(), &unk_2d4, &v, 0x1000, 7, b);
-    unk_2f0 = 1;
+    _ZN11TouchPicker9addSphereEP15TouchPickSphereP4Vec3S3_ih(Scene_GetTouchPicker(), &touchSphere, &v, 0x1000, 7, b);
+    canUse = 1;
     if (!Scene_InTown()) {
-        unk_2f0 = 0;
+        canUse = 0;
     } else {
         void *g = gCommManager;
         if (_ZN11CommManager8isOnlineEv(g)) {
             if (!_ZN11CommManager7isMyAidEj(g, 0)) {
-                unk_2f0 = 0;
+                canUse = 0;
             }
         }
     }
@@ -454,7 +454,7 @@ BOOL Mailbox::vfunc_70() {
 
 BOOL Mailbox::onExecute() {
     updateUseState();
-    _ZN11TouchPicker10pushSphereEP15TouchPickSphere(Scene_GetTouchPicker(), &unk_2d4);
+    _ZN11TouchPicker10pushSphereEP15TouchPickSphere(Scene_GetTouchPicker(), &touchSphere);
     return TRUE;
 }
 
@@ -509,7 +509,7 @@ s32 Mailbox::countLetters() {
 }
 
 u32 Mailbox::isUsable() {
-    return unk_2f0;
+    return canUse;
 }
 
 BOOL Mailbox::vfunc_b8(void *a) {
@@ -538,7 +538,7 @@ s32 Mailbox::setUseState(s32 idx) {
     };
     if (idx < 5) {
         if ((this->*tbl[idx])()) {
-            unk_2b0 = idx;
+            useState = idx;
             return TRUE;
         }
     }
@@ -553,8 +553,8 @@ void Mailbox::updateUseState() {
         &Mailbox::execUseMenuWait,
         &Mailbox::execUseClose,
     };
-    if (unk_2b0 < 5) {
-        (this->*tbl[unk_2b0])();
+    if (useState < 5) {
+        (this->*tbl[useState])();
     }
 }
 
@@ -644,7 +644,7 @@ void Mailbox::vfunc_74() {
     if (doorState < 7) {
         (this->*tbl[doorState])();
     }
-    if (unk_2b4.hasPassedFrame(0x12)) {
+    if (matAnim.hasPassedFrame(0x12)) {
         ((BuildingSeEmitter *)unk_234)->playSe(0x7de);
     }
 }
@@ -654,7 +654,7 @@ BOOL Mailbox::enterNoMail() {
     _ZN14BlendAnimModel8initAnimEiiitt(unk_138, b, 1, 0x1000, 0, 0);
     void *r4 = ((Model *)unk_138)->getRenderObj();
     void *r2 = getBtaAnim(0);
-    _ZN9ModelAnim7replaceEiiiit(&unk_2b4, r4, r2, 1, 0x1000, 0);
+    _ZN9ModelAnim7replaceEiiiit(&matAnim, r4, r2, 1, 0x1000, 0);
     return TRUE;
 }
 
@@ -684,13 +684,13 @@ BOOL Mailbox::enterHasMail() {
     _ZN14BlendAnimModel8initAnimEiiitt(unk_138, b, 1, 0x1000, a->numFrame - 1, 0);
     void *r5 = ((Model *)unk_138)->getRenderObj();
     void *r2 = getBtaAnim(0);
-    _ZN9ModelAnim7replaceEiiiit(&unk_2b4, r5, r2, 0, 0x1000, 0);
+    _ZN9ModelAnim7replaceEiiiit(&matAnim, r5, r2, 0, 0x1000, 0);
     return TRUE;
 }
 
 void Mailbox::execHasMail() {
-    unk_2b4.step();
-    *unk_2b4.anmObj = unk_2b4.curFrame;
+    matAnim.step();
+    *matAnim.anmObj = matAnim.curFrame;
 }
 
 BOOL Mailbox::enterLidOpen() {
@@ -702,8 +702,8 @@ BOOL Mailbox::enterLidOpen() {
 
 void Mailbox::execLidOpen() {
     _ZN9AnimModel8stepAnimEv(unk_138);
-    unk_2b4.step();
-    *unk_2b4.anmObj = unk_2b4.curFrame;
+    matAnim.step();
+    *matAnim.anmObj = matAnim.curFrame;
     if (isUsable() && ((AnimFrameCtrl *)unk_1d4)->isFinished()) {
         Building_RequestState(this, 4);
     }
@@ -717,8 +717,8 @@ BOOL Mailbox::enterLidOpened() {
 }
 
 void Mailbox::execLidOpened() {
-    unk_2b4.step();
-    *unk_2b4.anmObj = unk_2b4.curFrame;
+    matAnim.step();
+    *matAnim.anmObj = matAnim.curFrame;
 }
 
 BOOL Mailbox::enterLidClose() {
@@ -739,8 +739,8 @@ void Mailbox::execLidClose() {
     } else {
         _ZN9AnimModel8stepAnimEv(unk_138);
     }
-    unk_2b4.step();
-    *unk_2b4.anmObj = unk_2b4.curFrame;
+    matAnim.step();
+    *matAnim.anmObj = matAnim.curFrame;
 }
 
 BOOL Mailbox::enterMailGone() {
@@ -758,7 +758,7 @@ void Mailbox::execMailGone() {
     } else {
         _ZN9AnimModel8stepAnimEv(unk_138);
     }
-    unk_2b4.step();
-    *unk_2b4.anmObj = unk_2b4.curFrame;
+    matAnim.step();
+    *matAnim.anmObj = matAnim.curFrame;
 }
 

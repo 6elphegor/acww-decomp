@@ -133,8 +133,8 @@ public:
     void writeRecord(u8 *buf, u32 n);
     void beginRecord();
     BOOL isOnline();
-    u32 unk_00[0x64 / 4];
-    u32 unk_64;
+    u32 slotActive[0x64 / 4];
+    u32 myAid;
 };
 extern "C" CommManager *gCommManager;
 

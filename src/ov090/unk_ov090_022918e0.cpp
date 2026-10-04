@@ -270,33 +270,33 @@ class Unk_02083b0_dummy;
 class Unk_020b83b0 {
 public:
     u32 unk_04;
-    u32 unk_08;
-    u8 unk_0c;
+    u32 next;
+    u8 priority;
 
-    Unk_020b83b0() : unk_04(0), unk_08(0), unk_0c(0xff) {}
+    Unk_020b83b0() : unk_04(0), next(0), priority(0xff) {}
 };
 
 class VramTask : public Unk_020b83b0 {
 public:
-    u8 unk_0d;
-    u8 unk_0e;
-    u8 unk_0f;
+    u8 state;
+    u8 kind;
+    u8 cost;
 
     VramTask();
     virtual BOOL execute() = 0;
 };
 
 struct BgTransfer {
-    u32 unk_00;
-    u8 unk_04;
-    u32 unk_08;
-    u32 unk_0c;
-    u32 unk_10;
+    u32 buf;
+    u8 layer;
+    u32 loadArg0;
+    u32 loadArg1;
+    u32 loadArg2;
 };
 
 class BgVramTask : public VramTask {
 public:
-    BgTransfer unk_10;
+    BgTransfer xfer;
 
     BgVramTask();
     virtual BOOL execute();
@@ -330,13 +330,13 @@ class BgmVolumeMixer {
 public:
     void endMenuDuck();
     void setMenuDuck(s32 i);
-    u32 unk_00;
+    u32 manager;
 };
 
 class BgmManager {
 public:
-    u32 unk_00[0x71];
-    BgmVolumeMixer unk_1c4;
+    u32 requests[0x71];
+    BgmVolumeMixer mixer;
 };
 
 extern "C" BgmManager *data_021c1b3c;
@@ -543,7 +543,7 @@ void MenuTabBar::selectTab(u32 idx) {
             MenuScreen_BeginClose();
         }
         Snd_PlaySe(2);
-        data_021c1b3c->unk_1c4.endMenuDuck();
+        data_021c1b3c->mixer.endMenuDuck();
     } else {
         if (idx <= 6 && old <= 6) {
             Snd_PlaySe(3);
@@ -682,7 +682,7 @@ void MenuTabBar::initTabBar() {
     tabsShown = 0;
     lrSwitchEnabled = 0;
     Snd_PlaySe(1);
-    data_021c1b3c->unk_1c4.setMenuDuck(0);
+    data_021c1b3c->mixer.setMenuDuck(0);
 }
 
 void MenuTabBar::releaseResources() { cancelVramTasks(); }

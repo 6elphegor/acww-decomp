@@ -1676,9 +1676,9 @@ inline s32 Unk_0200905c_abs(s32 x) { return x < 0 ? -x : x; }
 class Unk_02006d14 {
 public:
       u8 pad_000[0x5c];
-      Unk_02006d14_Vec unk_5c;
+      Unk_02006d14_Vec position;
       u8 pad_068[0x8e - 0x68];
-      s16 unk_8e;
+      s16 rotY;
       u8 pad_090[8];
       s32 speed;
       u8 pad_09c[0x230 - 0x9c];
@@ -1850,9 +1850,9 @@ void PlayerActor_NetReadChangeHeldItem(void* p, u16* out);
 void PlayerActor_NetWriteChangeHeldItem(void* p, u32 v);
 struct Unk_02006d14 {
     u8 pad_000[0x5c];
-    Unk_02009a78_Vec unk_5c;
+    Unk_02009a78_Vec position;
     u8 pad_68[0x8e - 0x68];
-    s16 unk_8e;
+    s16 rotY;
     u8 pad_90[0x98 - 0x90];
     u32 speed;
     u8 pad_9c[0x230 - 0x9c];
@@ -2381,9 +2381,9 @@ struct Unk_0200b908_Obj { u32 unk_00; u8 pad_04[8]; volatile u32 unk_0c; u8 pad_
 class Unk_02006d14 {
 public:
       u8 pad_000[0x5c];
-      Unk_02006d14_Vec unk_5c;
+      Unk_02006d14_Vec position;
       u8 pad_068[0x8e - 0x68];
-      s16 unk_8e;
+      s16 rotY;
       u8 pad_090[0x16c - 0x90 - 0];
       s32 inputMode;
       u8 pad_170[0x2cc - 0x170];
@@ -2494,7 +2494,7 @@ BOOL _ZN13AnimFrameCtrl14hasPassedFrameEi(void *, u32);
 void Effect_Create(u32, void *, u32, u32);
 u32 AnimSlotRef_GetAnimId(void *);
 void _ZN12NpcEmotionFx6updateEPvsit(void *, void *, s32, u32, u32);
-void _ZN12NpcEmotionFx10startEntryEP18Unk_02019e2c_Entryi(void *, void *, u32);
+void _ZN12NpcEmotionFx10startEntryEP15NpcEmotionPhasei(void *, void *, u32);
 void _ZN12NpcEmotionFx4stopEv(void *);
 void *Emotion_GetEntry(u32);
 BOOL _ZN11CommManager11isLocalSlotEj(void *, s32);
@@ -3252,7 +3252,7 @@ BOOL _ZN12Unk_02006d1420getHeldHoldableIndexEv(void *);
 namespace nP {
 extern "C" {
 
-struct CommManager { u8 pad_00[0x64]; s32 unk_64; };
+struct CommManager { u8 pad_00[0x64]; s32 myAid; };
 struct Unk_0200e7f4_T24 { u32 a[12]; };
 extern CommManager *gCommManager;
 extern Unk_0200e7f4_T24 data_021cb69c;
@@ -3261,10 +3261,10 @@ extern s16 data_02135f44[];
 extern u32 data_020d5e40;
 struct Unk_02006d14 {
     u8 pad_000[0x5c];
-    Unk_02006d14_Vec3 unk_5c;
+    Unk_02006d14_Vec3 position;
     Unk_02006d14_Vec3 prevPosition;
     u8 pad_74[0x8e - 0x74];
-    s16 unk_8e;
+    s16 rotY;
     u8 pad_90[0xb0 - 0x90];
     u32 actorFlags;
     u8 pad_b4[0xc4 - 0xb4];
@@ -3451,9 +3451,9 @@ void *FieldAction_Get(s32 a);
 class Unk_02006d14 {
 public:
     u8 pad_000[0x5c];
-    Unk_0200f070_V3 unk_5c;
+    Unk_0200f070_V3 position;
     u8 pad_68[0x8e - 0x68];
-    s16 unk_8e;
+    s16 rotY;
     u8 pad_90[0xb0 - 0x90];
     u32 actorFlags;
     u8 pad_b4[0x2cc - 0xb4];
@@ -3622,7 +3622,7 @@ void PlayerActor_GetHeldItem(u16 *, void *);
 struct Unk_02006d14 {
     u8 pad_000[0x5c];
     u8 unk_5c[0x8e - 0x5c];
-    s16 unk_8e;
+    s16 rotY;
     u8 pad_90[0x138 - 0x90];
     Unk_0200ff08_Obj *interactTarget;
     u8 actionPressed;
@@ -4264,23 +4264,23 @@ public:
 
 void Unk_02006d14::nudgeForward() {
     using namespace nP;
-    switch (Math_AngleToDir4(((nP::Unk_02006d14 *)this)->unk_8e)) {
-    case 2: ((nP::Unk_02006d14 *)this)->unk_5c.z -= 1; break;
-    case 0: ((nP::Unk_02006d14 *)this)->unk_5c.z += 1; break;
-    case 3: ((nP::Unk_02006d14 *)this)->unk_5c.x -= 1; break;
-    case 1: ((nP::Unk_02006d14 *)this)->unk_5c.x += 1; break;
+    switch (Math_AngleToDir4(((nP::Unk_02006d14 *)this)->rotY)) {
+    case 2: ((nP::Unk_02006d14 *)this)->position.z -= 1; break;
+    case 0: ((nP::Unk_02006d14 *)this)->position.z += 1; break;
+    case 3: ((nP::Unk_02006d14 *)this)->position.x -= 1; break;
+    case 1: ((nP::Unk_02006d14 *)this)->position.x += 1; break;
     }
 }
 
 void Unk_02006d14::offsetSpawnBySlot() {
     using namespace nP;
-    s32 r = Math_AngleToDir4(((nP::Unk_02006d14 *)this)->unk_8e);
+    s32 r = Math_AngleToDir4(((nP::Unk_02006d14 *)this)->rotY);
     s32 step = ((nP::Unk_02006d14 *)this)->sessionSlot;
     switch (r) {
-    case 2: ((nP::Unk_02006d14 *)this)->unk_5c.z -= step; break;
-    case 0: ((nP::Unk_02006d14 *)this)->unk_5c.z += step; break;
-    case 3: ((nP::Unk_02006d14 *)this)->unk_5c.x -= step; break;
-    case 1: ((nP::Unk_02006d14 *)this)->unk_5c.x += step; break;
+    case 2: ((nP::Unk_02006d14 *)this)->position.z -= step; break;
+    case 0: ((nP::Unk_02006d14 *)this)->position.z += step; break;
+    case 3: ((nP::Unk_02006d14 *)this)->position.x -= step; break;
+    case 1: ((nP::Unk_02006d14 *)this)->position.x += step; break;
     }
 }
 

@@ -130,8 +130,8 @@ public:
     }
 struct ThreeLayerAnimModel {
     u8 pad_00[0xa0];
-    s32 unk_a0;
-    s32 unk_a4;
+    s32 numFrames;
+    s32 curFrame;
     u8 pad_a8[0x2a0 - 0xec - 0xa8];
     ThreeLayerAnimModel();
     ~ThreeLayerAnimModel();
@@ -155,9 +155,9 @@ MEMBER(Unk_0201a13c, 0x49c - 0x420);
 MEMBER(CollisionState, 0x30);
 struct Unk_02088d00 {
     u8 pad_00[0x1c];
-    u32 unk_1c;
+    u32 groups;
     u8 pad_20[0x44 - 0x20];
-    u8 unk_44;
+    u8 collisionEnabled;
     u8 pad_45[0x514 - 0x4cc - 0x45];
     Unk_02088d00();
     ~Unk_02088d00();
@@ -382,8 +382,8 @@ BOOL SpNpcTortimer2::vfunc_00() {
     }
     sSpNpcTortimer2 = this;
     changeAct(0);
-    collider.unk_1c |= 2;
-    collider.unk_44 = 0;
+    collider.groups |= 2;
+    collider.collisionEnabled = 0;
     return TRUE;
 }
 
@@ -424,7 +424,7 @@ BOOL SpNpcTortimer2::setupAct00() {
 }
 
 BOOL SpNpcTortimer2::mainAct00() {
-    if (((u32)model.unk_a4 << 4) >> 16 == (((u32)model.unk_a0 << 4) >> 16) - 1) {
+    if (((u32)model.curFrame << 4) >> 16 == (((u32)model.numFrames << 4) >> 16) - 1) {
         if (func_020e7518(&idleLoops) == 0 && SaveManager_IsIdle()) {
             changeAct(1);
         }

@@ -20,15 +20,15 @@ extern u32 data_027e0148[];
 }
 
 struct Info {
-    u16 unk_00;
-    u8 unk_02;
-    u8 unk_03;
-    s8 unk_04;
+    u16 profile;
+    u8 entranceType;
+    u8 kind;
+    s8 interiorScene;
     u8 unk_05;
-    u8 unk_06;
-    u8 unk_07;
-    u8 unk_08;
-    u8 unk_09;
+    u8 viewRangeX;
+    u8 viewRangeFront;
+    u8 viewRangeBack;
+    u8 capacity;
 };
 
 struct NibblePair {
@@ -201,12 +201,12 @@ public:
     void update();
     BOOL switchLightAnimated(BOOL on);
 
-    /* 0x00 */ s32 unk_00;
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ u32 unk_08;
-    /* 0x0c */ s32 unk_0c;
-    /* 0x10 */ u16 unk_10;
-    /* 0x12 */ u16 unk_12;
+    /* 0x00 */ s32 level;
+    /* 0x04 */ s32 targetLevel;
+    /* 0x08 */ u32 fadeStep;
+    /* 0x0c */ s32 isFlickering;
+    /* 0x10 */ u16 flickerIndex;
+    /* 0x12 */ u16 flickerDelay;
 };
 
 class DoorLight {
@@ -215,7 +215,7 @@ public:
     ~DoorLight();
     void apply(Ctx *c, s32 t);
     void bindMaterial(Ctx *c);
-    /* 0x00 */ s8 unk_00;
+    /* 0x00 */ s8 matIdx;
 };
 
 class WindowLight {
@@ -224,7 +224,7 @@ public:
     ~WindowLight();
     void apply(Ctx *c, s32 t);
     void bindMaterial(Ctx *c);
-    /* 0x00 */ s8 unk_00;
+    /* 0x00 */ s8 matIdx;
 };
 
 class LampLights {
@@ -236,7 +236,7 @@ public:
     BOOL isLampMaterial(s32 v);
     void bindMaterials(Ctx *c);
 
-    /* 0x04 */ s8 unk_04[3];
+    /* 0x04 */ s8 matIndices[3];
     /* 0x08 */ LightLevel unk_08;
 };
 
@@ -249,9 +249,9 @@ public:
     void updateLights(Ctx *c);
     void bind(Ctx *c, BOOL on);
 
-    /* 0x14 */ DoorLight unk_14;
-    /* 0x18 */ LampLights unk_18;
-    /* 0x34 */ WindowLight unk_34;
+    /* 0x14 */ DoorLight doorLight;
+    /* 0x18 */ LampLights lampLights;
+    /* 0x34 */ WindowLight windowLight;
 };
 
 class TownStyleRecordView {
@@ -271,8 +271,8 @@ public:
     TownStyleRecord();
     ~TownStyleRecord();
 
-    /* 0x00 */ u32 unk_00;
-    /* 0x04 */ Unk_020b246c_Sub unk_04;
+    /* 0x00 */ u32 houseStyles;
+    /* 0x04 */ Unk_020b246c_Sub townFlag;
 };
 
 class TownFlag {
@@ -280,8 +280,8 @@ public:
     void getGateDesign();
     TownFlag *initDefault();
 
-    /* 0x000 */ u8 unk_000[0x228];
-    /* 0x228 */ u8 unk_228;
+    /* 0x000 */ u8 pattern[0x228];
+    /* 0x228 */ u8 gateDesign;
 };
 
 class UnitShapeQueryX {
@@ -883,13 +883,13 @@ Unk_020b246c_Sub::Unk_020b246c_Sub() {
 }
 
 TownFlag *TownFlag::initDefault() {
-    unk_228 = Random_GlobalBelow(3);
+    gateDesign = Random_GlobalBelow(3);
     return (TownFlag *)TownFlagPattern_InitDefault(this);
 }
 
 void TownFlag::getGateDesign() {
-    if (unk_228 >= 3) {
-        unk_228 = (u32)unk_228 % 3;
+    if (gateDesign >= 3) {
+        gateDesign = (u32)gateDesign % 3;
         getGateDesign();
     }
 }
@@ -945,9 +945,9 @@ u8 *TownStyleRecordView::getTownFlag() { return (u8 *)this + 4; }
 
 LightLevel::LightLevel()
 {
-    unk_00 = 0;
-    unk_04 = 0;
-    unk_0c = 0;
+    level = 0;
+    targetLevel = 0;
+    isFlickering = 0;
 }
 
 LightLevel::~LightLevel() {}
@@ -956,48 +956,48 @@ BOOL LightLevel::switchLightAnimated(BOOL on) { return switchLight(on, 0, 0, 0x8
 
 void LightLevel::update()
 {
-    if (unk_0c == 1) {
-        if (unk_12 != 0) {
-            unk_00 = 0;
-            unk_12--;
+    if (isFlickering == 1) {
+        if (flickerDelay != 0) {
+            level = 0;
+            flickerDelay--;
         }
-        if (unk_12 == 0) {
-            if (unk_10 < 0xb) {
-                unk_00 = sLightFlickerTable[unk_10];
-                unk_10++;
+        if (flickerDelay == 0) {
+            if (flickerIndex < 0xb) {
+                level = sLightFlickerTable[flickerIndex];
+                flickerIndex++;
             } else {
-                unk_0c = 0;
-                unk_10 = 0;
+                isFlickering = 0;
+                flickerIndex = 0;
             }
         }
-    } else if (unk_04 != unk_00) {
-        func_020e761c(this, unk_04, unk_08);
+    } else if (targetLevel != level) {
+        func_020e761c(this, targetLevel, fadeStep);
     }
 }
 
 BOOL LightLevel::switchLight(BOOL on, s32 a, s32 b, u32 param)
 {
-    unk_08 = param;
+    fadeStep = param;
     if (on) {
-        if (unk_04 == 0) {
-            unk_04 = 0x1000;
+        if (targetLevel == 0) {
+            targetLevel = 0x1000;
             if (a == 0) {
-                unk_00 = 0x1000;
+                level = 0x1000;
                 return FALSE;
             }
             if (b) {
-                unk_0c = 1;
-                unk_10 = 0;
-                unk_12 = 5;
+                isFlickering = 1;
+                flickerIndex = 0;
+                flickerDelay = 5;
             }
             return TRUE;
         }
     } else {
-        unk_0c = 0;
-        if (unk_04 != 0) {
-            unk_04 = 0;
+        isFlickering = 0;
+        if (targetLevel != 0) {
+            targetLevel = 0;
             if (a == 0) {
-                unk_00 = 0;
+                level = 0;
                 return FALSE;
             }
             return TRUE;
@@ -1008,38 +1008,38 @@ BOOL LightLevel::switchLight(BOOL on, s32 a, s32 b, u32 param)
 
 s32 Math_LerpFx(s32 t, s32 lo, s32 hi) { return lo + func_01ffcb0c(t, hi - lo); }
 
-s32 LightLevel::getLevel() { return unk_00; }
+s32 LightLevel::getLevel() { return level; }
 
-DoorLight::DoorLight() { unk_00 = -1; }
+DoorLight::DoorLight() { matIdx = -1; }
 
 DoorLight::~DoorLight() {}
 
-void DoorLight::bindMaterial(Ctx *c) { unk_00 = _ZN12G3dResAccess10findMatIdxEi(c, "m_door"); }
+void DoorLight::bindMaterial(Ctx *c) { matIdx = _ZN12G3dResAccess10findMatIdxEi(c, "m_door"); }
 
 void DoorLight::apply(Ctx *c, s32 t)
 {
-    if (unk_00 != -1) {
-        NNS_G3dMdlSetMdlDiff(c, unk_00, (u16)((u8)(t * 0xd >> 12) << 10 | ((u8)(t * 0x1f >> 12) | (u8)(t * 0x1b >> 12) << 5)));
+    if (matIdx != -1) {
+        NNS_G3dMdlSetMdlDiff(c, matIdx, (u16)((u8)(t * 0xd >> 12) << 10 | ((u8)(t * 0x1f >> 12) | (u8)(t * 0x1b >> 12) << 5)));
     }
 }
 
-WindowLight::WindowLight() { unk_00 = -1; }
+WindowLight::WindowLight() { matIdx = -1; }
 
-WindowLight::~WindowLight() { unk_00 = -1; }
+WindowLight::~WindowLight() { matIdx = -1; }
 
-void WindowLight::bindMaterial(Ctx *c) { unk_00 = _ZN12G3dResAccess10findMatIdxEi(c, "m_window"); }
+void WindowLight::bindMaterial(Ctx *c) { matIdx = _ZN12G3dResAccess10findMatIdxEi(c, "m_window"); }
 
 void WindowLight::apply(Ctx *c, s32 t)
 {
-    if (unk_00 != -1) {
-        NNS_G3dMdlSetMdlAlpha(c, unk_00, (u8)((t * 0x1d >> 12) + 1));
+    if (matIdx != -1) {
+        NNS_G3dMdlSetMdlAlpha(c, matIdx, (u8)((t * 0x1d >> 12) + 1));
     }
 }
 
 LampLights::LampLights()
 {
     for (u32 i = 0; i < 3; i++) {
-        unk_04[i] = -1;
+        matIndices[i] = -1;
     }
 }
 
@@ -1051,9 +1051,9 @@ void LampLights::bindMaterials(Ctx *c)
         if (getMaterialName(i)) {
             s32 r = _ZN12G3dResAccess10findMatIdxEi(c, getMaterialName(i));
             if (r != -1) {
-                unk_04[i] = r;
+                matIndices[i] = r;
             } else {
-                unk_04[i] = -1;
+                matIndices[i] = -1;
             }
         }
     }
@@ -1061,7 +1061,7 @@ void LampLights::bindMaterials(Ctx *c)
 
 BOOL LampLights::isLampMaterial(s32 v)
 {
-    for (s8 *p = unk_04; p < unk_04 + 3; p++) {
+    for (s8 *p = matIndices; p < matIndices + 3; p++) {
         if (*p == v) {
             return TRUE;
         }
@@ -1105,9 +1105,9 @@ void BuildingLights::bind(Ctx *c, BOOL on)
 {
     switchLightAnimated(on);
     if (c) {
-        unk_14.bindMaterial(c);
-        unk_18.bindMaterials(c);
-        unk_34.bindMaterial(c);
+        doorLight.bindMaterial(c);
+        lampLights.bindMaterials(c);
+        windowLight.bindMaterial(c);
     }
 }
 
@@ -1116,9 +1116,9 @@ void BuildingLights::updateLights(Ctx *c)
     update();
     s32 v = getLevel();
     if (c) {
-        unk_18.apply((Pal *)c, v);
-        unk_34.apply(c, v);
-        unk_14.apply(c, v);
+        lampLights.apply((Pal *)c, v);
+        windowLight.apply(c, v);
+        doorLight.apply(c, v);
     }
 }
 
@@ -1456,36 +1456,36 @@ extern "C" BOOL Town_RemoveGulliverShip(void) {
 }
 
 extern "C" void BuildingInfo_Copy(Info *dst, Info *src) {
-    dst->unk_00 = src->unk_00;
-    dst->unk_02 = src->unk_02;
-    dst->unk_03 = src->unk_03;
-    dst->unk_04 = src->unk_04;
+    dst->profile = src->profile;
+    dst->entranceType = src->entranceType;
+    dst->kind = src->kind;
+    dst->interiorScene = src->interiorScene;
     dst->unk_05 = src->unk_05;
-    dst->unk_06 = src->unk_06;
-    dst->unk_07 = src->unk_07;
-    dst->unk_08 = src->unk_08;
-    dst->unk_09 = src->unk_09;
+    dst->viewRangeX = src->viewRangeX;
+    dst->viewRangeFront = src->viewRangeFront;
+    dst->viewRangeBack = src->viewRangeBack;
+    dst->capacity = src->capacity;
 }
 
 extern "C" void BuildingInfo_Destroy(Info *i) {}
 
-extern "C" u16 BuildingInfo_GetProfile(Info *i) { return i->unk_00; }
+extern "C" u16 BuildingInfo_GetProfile(Info *i) { return i->profile; }
 
-extern "C" u8 BuildingInfo_GetEntranceType(Info *i) { return i->unk_02; }
+extern "C" u8 BuildingInfo_GetEntranceType(Info *i) { return i->entranceType; }
 
-extern "C" u8 BuildingInfo_GetKind(Info *i) { return i->unk_03; }
+extern "C" u8 BuildingInfo_GetKind(Info *i) { return i->kind; }
 
-extern "C" s8 BuildingInfo_GetInteriorScene(Info *i) { return i->unk_04; }
+extern "C" s8 BuildingInfo_GetInteriorScene(Info *i) { return i->interiorScene; }
 
 extern "C" u8 BuildingInfo_GetUnk05(Info *i) { return i->unk_05; }
 
-extern "C" u8 BuildingInfo_GetViewRangeX(Info *i) { return i->unk_06; }
+extern "C" u8 BuildingInfo_GetViewRangeX(Info *i) { return i->viewRangeX; }
 
-extern "C" u8 BuildingInfo_GetViewRangeFront(Info *i) { return i->unk_07; }
+extern "C" u8 BuildingInfo_GetViewRangeFront(Info *i) { return i->viewRangeFront; }
 
-extern "C" u8 BuildingInfo_GetViewRangeBack(Info *i) { return i->unk_08; }
+extern "C" u8 BuildingInfo_GetViewRangeBack(Info *i) { return i->viewRangeBack; }
 
-extern "C" u8 BuildingInfo_GetCapacity(Info *i) { return i->unk_09; }
+extern "C" u8 BuildingInfo_GetCapacity(Info *i) { return i->capacity; }
 
 extern "C" u32 BuildingInfo_MakeKey(Info *i, u32 b, u32 c) { return BuildingKey_Make(BuildingInfo_GetProfile(i), b, c); }
 

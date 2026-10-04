@@ -5,37 +5,37 @@ typedef volatile u32 vu32;
 
 struct Unk_02000fc0_Col {
     u16 unk_00;
-    u16 unk_02;
+    u16 charBase;
 };
 
 struct Unk_02000fc0_Node {
     u8 pad_00[0x68];
-    Unk_02000fc0_Node *unk_68;
-    u32 unk_6c;
+    Unk_02000fc0_Node *next;
+    u32 id;
 };
 
 struct Unk_02000fc0_Cfg {
     u8 pad_00[0x0c];
-    u16 unk_0c;
+    u16 profile;
 };
 
 struct Unk_02000fc0_Ptr {
     u8 pad_00[8];
-    Unk_02000fc0_Cfg *unk_08;
+    Unk_02000fc0_Cfg *owner;
 };
 
 struct Unk_02000fc0_Ctx {
     u8 pad_00[0x38];
-    u32 unk_38;
+    u32 sp;
 };
 
 struct Unk_02000fc0_Thr {
     u8 pad_00[0x6c];
-    u32 unk_6c;
+    u32 id;
     u8 pad_70[0x20];
-    u32 unk_90;
-    u32 unk_94;
-    u32 unk_98;
+    u32 stackTop;
+    u32 stackBottom;
+    u32 stackWarningOffset;
 };
 
 extern "C" {
@@ -153,7 +153,7 @@ void CrashScreen_DumpWords(u8 *dst, u32 src, u32 size) {
     u32 *p;
     u32 end;
     col.unk_00 = color;
-    col.unk_02 = color;
+    col.charBase = color;
     p = (u32 *)(src & ~3);
     size &= ~3;
     end = src + size;
@@ -161,7 +161,7 @@ void CrashScreen_DumpWords(u8 *dst, u32 src, u32 size) {
         if (!CrashScreen_IsValidAddress((u32)p, 4)) {
             break;
         }
-        col.unk_02 = color;
+        col.charBase = color;
         DebugText_Printf(&col, dst, "%08x", *p);
         dst += 0x10;
         color ^= 0x3000;
@@ -175,10 +175,10 @@ void CrashScreen_DrawStack(void) {
     Unk_02000fc0_Ctx *ctx;
     u32 v;
     col.unk_00 = 0xd000;
-    col.unk_02 = 0xd000;
+    col.charBase = 0xd000;
     ctx = (Unk_02000fc0_Ctx *)sCrashContext;
     if (ctx != NULL) {
-        v = ctx->unk_38;
+        v = ctx->sp;
     } else {
         v = sCrashSP;
     }
@@ -201,7 +201,7 @@ void CrashScreen_DrawMain(void) {
     Unk_02000fc0_Node *node;
     u32 r;
     col.unk_00 = 0xd000;
-    col.unk_02 = 0xd000;
+    col.charBase = 0xd000;
     DebugText_Printf(&col, buf + 0x40, "%10ums", sCrashTimeMs);
     DebugText_Print(&col, buf, gBuildTime);
     n = gTaskPhase;
@@ -211,9 +211,9 @@ void CrashScreen_DrawMain(void) {
     v = 0xffff;
     pp = gTaskCurrentNode;
     if (pp != NULL) {
-        Unk_02000fc0_Cfg *cfg = pp->unk_08;
+        Unk_02000fc0_Cfg *cfg = pp->owner;
         if (cfg != NULL) {
-            v = cfg->unk_0c;
+            v = cfg->profile;
         }
     } else {
         v = gProcCreateProfile;
@@ -241,8 +241,8 @@ void CrashScreen_DrawMain(void) {
     }
     r = OS_GetProcMode();
     thr = data_021fcc2c[1];
-    DebugText_Printf(&col, buf + 0x80, "ID:%u mode:%02x", thr->unk_6c, r);
-    DebugText_Printf(&col, buf + 0xc0, "S:%08x-%08x", thr->unk_90, thr->unk_94);
+    DebugText_Printf(&col, buf + 0x80, "ID:%u mode:%02x", thr->id, r);
+    DebugText_Printf(&col, buf + 0xc0, "S:%08x-%08x", thr->stackTop, thr->stackBottom);
     r = func_021122b0();
     if (r != 0) {
         DebugText_Printf(&col, buf + 0x100, "IrqStkErr%u", r);
@@ -254,10 +254,10 @@ void CrashScreen_DrawMain(void) {
             if (r != 0) {
                 break;
             }
-            node = node->unk_68;
+            node = node->next;
         }
         if (node != NULL) {
-            DebugText_Printf(&col, buf + 0x100, "StkErr%u:%u:%x", r, node->unk_6c, ((Unk_02000fc0_Thr *)node)->unk_98);
+            DebugText_Printf(&col, buf + 0x100, "StkErr%u:%u:%x", r, node->id, ((Unk_02000fc0_Thr *)node)->stackWarningOffset);
         }
     }
 }

@@ -3,8 +3,8 @@
 
 struct CommManager {
     u8 pad_00[0x64];
-    s32 unk_64;
-    s32 unk_68;
+    s32 myAid;
+    s32 localSlot;
 };
 
 struct Unk_02095774_Ent {
@@ -949,7 +949,7 @@ extern "C" s32 BottleLetter_Open() {
     Letter_Copy(r5, o);
     Letter_Clear(o);
     CommManager *g = gCommManager;
-    if (_ZN11CommManager8isOnlineEv(g) && g->unk_64 != 0) CommSub_Send(7, 0);
+    if (_ZN11CommManager8isOnlineEv(g) && g->myAid != 0) CommSub_Send(7, 0);
     return TRUE;
 }
 

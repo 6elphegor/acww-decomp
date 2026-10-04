@@ -1,8 +1,8 @@
 #include "types.h"
 
 struct Backup {
-    /* 0x00 */ u32 unk_00;
-    /* 0x04 */ s32 unk_04;
+    /* 0x00 */ u32 totalSize;
+    /* 0x04 */ s32 lockId;
     /* 0x08 */ u8 unk_08;
 };
 
@@ -38,33 +38,33 @@ extern "C" void (*sFishDisplayNetHandlers[3])(u8 *, u32) = {FishDisplay_RecvAct0
 
 extern "C" s32 Backup_Write(Backup *g, u32 a, u32 b, u32 c) {
     s32 r = 1;
-    if (a + c > g->unk_00) {
+    if (a + c > g->totalSize) {
         return r;
     }
-    g->unk_04 = OS_GetLockID();
-    if (g->unk_04 == -3) {
+    g->lockId = OS_GetLockID();
+    if (g->lockId == -3) {
         return r;
     }
-    CARD_LockBackup((u16)g->unk_04);
+    CARD_LockBackup((u16)g->lockId);
     if (CARDi_RequestStreamCommand(b, a, c, 0, 0, 0, 7, 10, 2) != 0) {
         r = 0;
     }
-    CARD_UnlockBackup((u16)g->unk_04);
-    OS_ReleaseLockID((u16)g->unk_04);
-    g->unk_04 = -3;
+    CARD_UnlockBackup((u16)g->lockId);
+    OS_ReleaseLockID((u16)g->lockId);
+    g->lockId = -3;
     return r;
 }
 
 extern "C" s32 Backup_WriteAsync(Backup *g, u32 a, u32 b, u32 c) {
     s32 r = 1;
-    if (a + c > g->unk_00) {
+    if (a + c > g->totalSize) {
         return r;
     }
-    g->unk_04 = OS_GetLockID();
-    if (g->unk_04 == -3) {
+    g->lockId = OS_GetLockID();
+    if (g->lockId == -3) {
         return r;
     }
-    CARD_LockBackup((u16)g->unk_04);
+    CARD_LockBackup((u16)g->lockId);
     CARDi_RequestStreamCommand(b, a, c, 0, 0, r, 7, 10, 2);
     if (Backup_GetStatus(g) == 3) {
         r = 3;
@@ -76,16 +76,16 @@ extern "C" s32 Backup_WriteAsync(Backup *g, u32 a, u32 b, u32 c) {
 
 extern "C" s32 Backup_Read(Backup *g, u32 a, u32 b, u32 c) {
     s32 r = 1;
-    if (c + b <= g->unk_00) {
-        g->unk_04 = OS_GetLockID();
-        if (g->unk_04 != -3) {
-            CARD_LockBackup((u16)g->unk_04);
+    if (c + b <= g->totalSize) {
+        g->lockId = OS_GetLockID();
+        if (g->lockId != -3) {
+            CARD_LockBackup((u16)g->lockId);
             if (CARDi_RequestStreamCommand(c, a, b, 0, 0, 0, 6, r, 0) != 0) {
                 r = 0;
             }
-            CARD_UnlockBackup((u16)g->unk_04);
-            OS_ReleaseLockID((u16)g->unk_04);
-            g->unk_04 = -3;
+            CARD_UnlockBackup((u16)g->lockId);
+            OS_ReleaseLockID((u16)g->lockId);
+            g->lockId = -3;
         }
     }
     return r;
@@ -93,10 +93,10 @@ extern "C" s32 Backup_Read(Backup *g, u32 a, u32 b, u32 c) {
 
 extern "C" s32 Backup_ReadAsync(Backup *g, u32 a, u32 b, u32 c) {
     s32 r = 1;
-    if (c + b <= g->unk_00) {
-        g->unk_04 = OS_GetLockID();
-        if (g->unk_04 != -3) {
-            CARD_LockBackup((u16)g->unk_04);
+    if (c + b <= g->totalSize) {
+        g->lockId = OS_GetLockID();
+        if (g->lockId != -3) {
+            CARD_LockBackup((u16)g->lockId);
             CARDi_RequestStreamCommand(c, a, b, 0, 0, r, 6, r, 0);
             if (Backup_GetStatus(g) == 3) {
                 r = 3;
@@ -110,7 +110,7 @@ extern "C" s32 Backup_ReadAsync(Backup *g, u32 a, u32 b, u32 c) {
 
 extern "C" s32 Backup_GetStatus(Backup *g) {
     s32 r;
-    if (g->unk_04 == -3) {
+    if (g->lockId == -3) {
         r = 4;
     } else if (CARD_TryWaitBackupAsync() == 0) {
         r = 3;
@@ -123,10 +123,10 @@ extern "C" s32 Backup_GetStatus(Backup *g) {
 }
 
 extern "C" void Backup_EndAccess(Backup *g) {
-    if (g->unk_04 != -3) {
-        CARD_UnlockBackup((u16)g->unk_04);
-        OS_ReleaseLockID((u16)g->unk_04);
-        g->unk_04 = -3;
+    if (g->lockId != -3) {
+        CARD_UnlockBackup((u16)g->lockId);
+        OS_ReleaseLockID((u16)g->lockId);
+        g->lockId = -3;
     }
 }
 
@@ -152,9 +152,9 @@ extern "C" void Backup_CancelAndWait(void) {
         do {
             if (CARD_TryWaitBackupAsync() != 0) break;
         } while ((u32)(OS_GetTick() - t) < 0xcc8d);
-        if (gBackup.unk_04 != -3) {
-            CARD_UnlockBackup((u16)gBackup.unk_04);
-            OS_ReleaseLockID((u16)gBackup.unk_04);
+        if (gBackup.lockId != -3) {
+            CARD_UnlockBackup((u16)gBackup.lockId);
+            OS_ReleaseLockID((u16)gBackup.lockId);
         }
     }
 }

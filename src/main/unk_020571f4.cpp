@@ -18,18 +18,18 @@ struct FxVec3 {
 
 struct Unk_02059384_Rec {
     u8 pad_00[0xc];
-    u8 unk_0c[0xc];
+    u8 altHoldOffset[0xc];
 };
 
 struct Unk_020593e8_Obj {
     u8 pad_00[8];
-    u32 unk_08;
-    u16 unk_0c;
+    u32 param;
+    u16 profile;
 };
 
 struct Unk_02057328_Obj {
     u8 unk_00[0x5c];
-    Unk_020dc034_V unk_5c;
+    Unk_020dc034_V position;
 };
 
 class Unk_020dc034_Owner_Base {
@@ -59,9 +59,9 @@ public:
     virtual void vfunc_58();
     virtual void vfunc_5c(Unk_020dc034_V *out);
     u8 pad_04[0x5c - 4];
-    Unk_020dc034_V unk_5c;
+    Unk_020dc034_V position;
     u8 pad_68[0x8e - 0x68];
-    s16 unk_8e;
+    s16 rotY;
 };
 
 class HandOverItem;
@@ -258,9 +258,9 @@ extern const s32 data_020ca9f4[0x30];
 extern const s32 data_020caab4[0x30];
 
 struct Unk_020dbeb4_Entry {
-    void *unk_00;
-    u16 unk_04;
-    u16 unk_06;
+    void *create;
+    u16 executePriority;
+    u16 drawPriority;
 };
 
 extern "C" HandOverItem *HandOverItem_Create();
@@ -312,7 +312,7 @@ extern "C" u32 HandOverItem_GetFishHoldOffsetSet(Unk_020593e8_Obj *o)
 {
     u32 r = 3;
     volatile u16 h = 0xfff1;
-    h = o->unk_08;
+    h = o->param;
     s32 a = h;
     u32 b = h;
     s32 t = (s32)(b & 0xf000) >> 12;
@@ -339,7 +339,7 @@ extern "C" u32 HandOverItem_GetFishHoldOffsetSet(Unk_020593e8_Obj *o)
 
 extern "C" Unk_020dc034_V *HandOverItem_GetFishHoldOffset(Unk_020593e8_Obj *o, u32 idx)
 {
-    if (o->unk_0c == 9) {
+    if (o->profile == 9) {
         return (Unk_020dc034_V *)&sFishHoldOffsetSets[3][idx];
     }
     return (Unk_020dc034_V *)&sFishHoldOffsetSets[HandOverItem_GetFishHoldOffsetSet(o)][idx];
@@ -347,10 +347,10 @@ extern "C" Unk_020dc034_V *HandOverItem_GetFishHoldOffset(Unk_020593e8_Obj *o, u
 
 extern "C" Unk_020dc034_V *HandOverItem_GetFishHoldOffset2(Unk_020593e8_Obj *o, u32 idx)
 {
-    if (o->unk_0c == 9) {
-        return (Unk_020dc034_V *)sFishHoldOffsetSets[3][idx].unk_0c;
+    if (o->profile == 9) {
+        return (Unk_020dc034_V *)sFishHoldOffsetSets[3][idx].altHoldOffset;
     }
-    return (Unk_020dc034_V *)sFishHoldOffsetSets[HandOverItem_GetFishHoldOffsetSet(o)][idx].unk_0c;
+    return (Unk_020dc034_V *)sFishHoldOffsetSets[HandOverItem_GetFishHoldOffsetSet(o)][idx].altHoldOffset;
 }
 
 extern "C" HandOverItem *HandOverItem_Create()
@@ -609,8 +609,8 @@ void HandOverItem::localToWorld(Unk_020dc034_V *out, Unk_020dc034_V *in, u32 idx
     out->z = in->z;
     if (idx < 2) {
         if (unk_cc[idx] != NULL) {
-            func_020e93a0(out, ((Unk_020dc034_Owner_Base *)unk_cc[idx])->unk_8e);
-            VEC_Add(out, &unk_cc[idx]->unk_5c, out);
+            func_020e93a0(out, ((Unk_020dc034_Owner_Base *)unk_cc[idx])->rotY);
+            VEC_Add(out, &unk_cc[idx]->position, out);
         }
     }
 }
@@ -853,7 +853,7 @@ void HandOverItem::startAct05()
     offset.y = t.y;
     offset.z = t.z;
     if (unk_cc[0] != NULL) {
-        func_020e93a0(&offset, (s16)-unk_cc[0]->unk_8e);
+        func_020e93a0(&offset, (s16)-unk_cc[0]->rotY);
     }
     worldOffset.x = 0;
     worldOffset.y = 0;
@@ -893,7 +893,7 @@ void HandOverItem::updateAct05()
             worldOffset.x = offset.x;
             worldOffset.y = offset.y;
             worldOffset.z = offset.z;
-            func_020e93a0(&worldOffset, unk_cc[0]->unk_8e);
+            func_020e93a0(&worldOffset, unk_cc[0]->rotY);
         }
         VEC_Add(&itemPos, &worldOffset, &itemPos);
         frame = frame + 1;
@@ -1072,7 +1072,7 @@ void HandOverItem::act01V1Phase1()
             worldOffset.x = offset.x;
             worldOffset.y = offset.y;
             worldOffset.z = offset.z;
-            func_020e93a0(&worldOffset, unk_cc[0]->unk_8e);
+            func_020e93a0(&worldOffset, unk_cc[0]->rotY);
         }
         VEC_Add(&itemPos, &worldOffset, &itemPos);
         frame = frame + 1;
@@ -1087,8 +1087,8 @@ void HandOverItem::act01V1Phase1()
                 target.y = s.y;
                 target.z = s.z;
             } else {
-                func_020e93a0(&t2, unk_cc[0]->unk_8e);
-                VEC_Add(&t2, &unk_cc[0]->unk_5c, &t2);
+                func_020e93a0(&t2, unk_cc[0]->rotY);
+                VEC_Add(&t2, &unk_cc[0]->position, &t2);
                 FieldPos_SnapToUnitCenter(&target, &t2);
             }
             target.y = target.y + 0x1000;
@@ -1155,8 +1155,8 @@ void HandOverItem::startAct02V1()
         target.y = s.y;
         target.z = s.z;
     } else {
-        func_020e93a0(&t, unk_cc[0]->unk_8e);
-        VEC_Add(&t, &unk_cc[0]->unk_5c, &t);
+        func_020e93a0(&t, unk_cc[0]->rotY);
+        VEC_Add(&t, &unk_cc[0]->position, &t);
         FieldPos_SnapToUnitCenter(&target, &t);
     }
     target.y = target.y + 0x1000;
@@ -1194,7 +1194,7 @@ void HandOverItem::startAct03V1()
         worldOffset.x = sPutDownOffset.x;
         worldOffset.y = sPutDownOffset.y;
         worldOffset.z = sPutDownOffset.z;
-        func_020e93a0(&worldOffset, unk_cc[0]->unk_8e);
+        func_020e93a0(&worldOffset, unk_cc[0]->rotY);
     }
     VEC_Add(&target, &worldOffset, &target);
     s32 a, b, c;
@@ -1238,7 +1238,7 @@ void HandOverItem::updateAct04V1()
             worldOffset.x = sPutDownOffset.x;
             worldOffset.y = sPutDownOffset.y;
             worldOffset.z = sPutDownOffset.z;
-            func_020e93a0(&worldOffset, unk_cc[0]->unk_8e);
+            func_020e93a0(&worldOffset, unk_cc[0]->rotY);
         }
         VEC_Add(&itemPos, &worldOffset, &itemPos);
         frame = frame + 1;
@@ -1293,7 +1293,7 @@ void HandOverItem::updateAct05V1(void) {
         worldOffset.x = offset.x;
         worldOffset.y = offset.y;
         worldOffset.z = offset.z;
-        func_020e93a0(&worldOffset, unk_cc[0]->unk_8e);
+        func_020e93a0(&worldOffset, unk_cc[0]->rotY);
     }
     VEC_Add(&itemPos, &worldOffset, &itemPos);
     frame++;
@@ -1330,7 +1330,7 @@ void HandOverItem::act09V1Phase0(void) {
             worldOffset.x = sPutDownOffset.x;
             worldOffset.y = sPutDownOffset.y;
             worldOffset.z = sPutDownOffset.z;
-            func_020e93a0(&worldOffset, unk_cc[0]->unk_8e);
+            func_020e93a0(&worldOffset, unk_cc[0]->rotY);
         }
         VEC_Add(&target, &worldOffset, &target);
         u32 d = data_021c5a28[0];
@@ -1355,7 +1355,7 @@ void HandOverItem::act09V1Phase1(void) {
         worldOffset.x = sPutDownOffset.x;
         worldOffset.y = sPutDownOffset.y;
         worldOffset.z = sPutDownOffset.z;
-        func_020e93a0(&worldOffset, unk_cc[0]->unk_8e);
+        func_020e93a0(&worldOffset, unk_cc[0]->rotY);
     }
     VEC_Add(&target, &worldOffset, &target);
     func_020e761c(&itemPos.x, target.x, moveStep.x);
@@ -1402,7 +1402,7 @@ void HandOverItem::act09V1Phase2(void) {
         worldOffset.x = offset.x;
         worldOffset.y = offset.y;
         worldOffset.z = offset.z;
-        func_020e93a0(&worldOffset, unk_cc[0]->unk_8e);
+        func_020e93a0(&worldOffset, unk_cc[0]->rotY);
     }
     VEC_Add(&itemPos, &worldOffset, &itemPos);
     frame++;
@@ -1471,7 +1471,7 @@ extern "C" BOOL HandOverItem_CanTake(Unk_02057328_Obj *p) {
     if (p) {
         HandOverItem *g = sHandOverItem;
         if (g) {
-            if (func_020e9650(&p->unk_5c, &g->itemPos) <= g->reach) {
+            if (func_020e9650(&p->position, &g->itemPos) <= g->reach) {
                 r = TRUE;
             } else if (g->isAwaitingTake()) {
                 if (sHandOverItem->takeTimer == 0) {

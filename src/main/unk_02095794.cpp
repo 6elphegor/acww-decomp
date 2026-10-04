@@ -3,8 +3,8 @@
 
 struct CommManager {
     u8 pad_00[0x64];
-    s32 unk_64;
-    s32 unk_68;
+    s32 myAid;
+    s32 localSlot;
 };
 
 struct Unk_02095774_Ent {
@@ -371,7 +371,7 @@ BOOL RemotePlayerSpawner::vfunc_00() { return TRUE; }
 
 BOOL RemotePlayerSpawner::onExecute() {
     CommManager *g = gCommManager;
-    s32 mode = g->unk_64;
+    s32 mode = g->myAid;
     u8 la, lb;
     s16 lc;
     s16 lr1[3];

@@ -2,9 +2,9 @@
 
 struct CommManager {
     u8 pad_00[0x104];
-    u8 *unk_104;
+    u8 *auxWritePtrA;
     u8 pad_108[8];
-    u8 *unk_110;
+    u8 *auxWritePtrB;
 
     void setAuxLenB(u32 v);
     void clearAuxLenB();
@@ -265,10 +265,10 @@ extern "C" void NetArea_BuildStateA() {
     Unk_020a647c_Buf b;
     u32 i;
     for (i = 0; i < 2; i++) {
-        g->unk_104 = p + 4;
-        u8 *start = g->unk_104;
+        g->auxWritePtrA = p + 4;
+        u8 *start = g->auxWritePtrA;
         sNetStateAWriters[i](m);
-        u8 *cur = g->unk_104;
+        u8 *cur = g->auxWritePtrA;
         s32 diff = cur - start;
         if (diff != 0) {
             b.len = diff;

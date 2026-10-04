@@ -264,7 +264,7 @@ public:
 
     BOOL isClosedToday();
 
-    /* 0x2b0 */ s32 unk_2b0;
+    /* 0x2b0 */ s32 shopLevel;
 };
 
 extern "C" ShopBuilding *ShopBuilding_Create() {
@@ -278,7 +278,7 @@ ShopBuilding::~ShopBuilding() {
 }
 
 BOOL ShopBuilding::vfunc_70() {
-    unk_2b0 = Item_GetNookShopLevel(&itemId);
+    shopLevel = Item_GetNookShopLevel(&itemId);
     return TRUE;
 }
 
@@ -300,7 +300,7 @@ void ShopBuilding::vfunc_78() {
         s32 a, b;
     } l;
     setFileName("obj_etc_closed");
-    if (unk_2b0 == -1) {
+    if (shopLevel == -1) {
         if (entryFlags.f1) {
             setFileName("obj_etc_error");
             msgIndex = 0;
@@ -337,7 +337,7 @@ void ShopBuilding::vfunc_78() {
             if (k) {
                 msgIndex = 7;
             } else {
-                msgIndex = unk_2b0 & 3;
+                msgIndex = shopLevel & 3;
             }
         }
     }
@@ -348,7 +348,7 @@ BOOL ShopBuilding::vfunc_8c() {
         u8 a, b, c, d;
     } d;
     Clock_GetMinuteHour(&d);
-    if (unk_2b0 == -1) {
+    if (shopLevel == -1) {
         if (d.b >= 8 && d.b < 0x17) {
             return TRUE;
         }
@@ -378,7 +378,7 @@ range:
 }
 
 BOOL ShopBuilding::isClosedToday() {
-    if (unk_2b0 != -1) {
+    if (shopLevel != -1) {
         struct {
             s32 a, b;
         } d;

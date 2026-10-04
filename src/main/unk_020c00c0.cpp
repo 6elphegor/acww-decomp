@@ -28,8 +28,8 @@ struct Unk_020bffc0_Mtx {
 };
 
 struct CommManager {
-    u8 unk_00[0x68];
-    s32 unk_68;
+    u8 slotActive[0x68];
+    s32 localSlot;
     s32 isOnline();
 };
 
@@ -491,7 +491,7 @@ class SkyProc : public GameProc {
 public:
     virtual void postCreate();
 
-    /* 0x50 */ Unk_0213b938 unk_50;
+    /* 0x50 */ Unk_0213b938 envSndChannel;
 };
 
 struct WeatherRecord {
@@ -663,8 +663,8 @@ extern "C" u8 Weather_GetPrevDayRain() {
 
 // ---------------------------------------------------------------------------------------------------------------------
 struct Unk_020c0538_Out {
-    u32 unk_00;
-    u8 unk_04;
+    u32 msgKey;
+    u8 msgIndex;
 };
 
 // Library base class; its ctor and dtor are out of line.
@@ -708,7 +708,7 @@ struct Unk_020c0408_Obj {
     s32 unk_04;
     s32 unk_08;
     u8 unk_0c[8];
-    s32 unk_14;
+    s32 openMode;
 };
 
 // Sub-object at 0x658 of SpNpcKatie
@@ -754,11 +754,11 @@ public:
     virtual ~SpNpcKatie();
 
     /* 0x654 */ s32 unk_654;
-    /* 0x658 */ SpNpcKatieTalk unk_658;
+    /* 0x658 */ SpNpcKatieTalk talk;
     /* 0x70c */ u8 unk_70c;
-    /* 0x70d */ u8 unk_70d;
+    /* 0x70d */ u8 escortDeclined;
     /* 0x70e */ u8 unk_70e[0x724 - 0x70e];
-    /* 0x724 */ u8 unk_724;
+    /* 0x724 */ u8 reunionStep;
 
     void changeAct(s32 state);
     BOOL mainAct08();

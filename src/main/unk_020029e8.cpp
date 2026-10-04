@@ -228,12 +228,12 @@ void func_020030b4_dummy(void);
 }
 
 struct Unk_02002804_Buf {
-    u16 unk_00[32];
+    u16 colors[32];
 };
 
 // 0x30-byte record copied around by Gfx3d_SetViewMatrix and Gfx3d_Init
 struct Unk_02002848_Data {
-    u32 unk_00[12];
+    u32 m[12];
 };
 
 extern Unk_02002848_Data gViewMtx;
@@ -252,35 +252,35 @@ public:
     BOOL loadPalette();
 
     /* 0x00 */ u8 unk_00[0x48];
-    /* 0x48 */ void *unk_48;
-    /* 0x4c */ void *unk_4c;
+    /* 0x48 */ void *paletteBuf;
+    /* 0x4c */ void *charBuf;
 };
 
 AbAllObjGfx sAbAllObjGfx;
 
 struct Unk_02002f14_Node {
-    /* 0x00 */ void *unk_00;
-    /* 0x04 */ void *unk_04;
-    /* 0x08 */ void *unk_08;
+    /* 0x00 */ void *prev;
+    /* 0x04 */ void *next;
+    /* 0x08 */ void *owner;
 };
 
 struct Unk_02002cb0_Vec {
     /* 0x00 */ u8 unk_00[0x10];
-    /* 0x10 */ s32 unk_10;
+    /* 0x10 */ s32 pushX;
     /* 0x14 */ s32 unk_14;
-    /* 0x18 */ s32 unk_18;
+    /* 0x18 */ s32 pushZ;
 };
 
 struct Unk_02002f14_S16Vec {
-    s16 unk_00;
-    s16 unk_02;
-    s16 unk_04;
+    s16 x;
+    s16 y;
+    s16 z;
 };
 
 struct Unk_02002f14_S32Vec {
-    s32 unk_00;
-    s32 unk_04;
-    s32 unk_08;
+    s32 x;
+    s32 y;
+    s32 z;
 };
 
 class Actor : public GameProc {
@@ -360,7 +360,7 @@ extern "C" void Villager_MakePersonalityFileName(void *buf, u32 size, u32 arg, u
 extern "C" void Gfx3d_InitEngine(void);
 extern "C" void AbAllObjGfx_InitFile(void *p);
 
-AbAllObjGfx::AbAllObjGfx() : unk_48(0), unk_4c(0) {}
+AbAllObjGfx::AbAllObjGfx() : paletteBuf(0), charBuf(0) {}
 
 AbAllObjGfx::~AbAllObjGfx() {
     freePalette();
@@ -381,41 +381,41 @@ extern "C" void AbAllObjGfx_Upload(void) {
 extern "C" void AbAllObjGfx_InitFile(void *p) { FS_InitFile(p); }
 
 BOOL AbAllObjGfx::loadPalette() {
-    unk_48 = File_Load((void *)"/ab_all/ab_all_obj_ncl.bin");
-    if (unk_48) return TRUE;
+    paletteBuf = File_Load((void *)"/ab_all/ab_all_obj_ncl.bin");
+    if (paletteBuf) return TRUE;
     return FALSE;
 }
 
 BOOL AbAllObjGfx::loadChars() {
     void *p = File_Load((void *)"/ab_all/ab_all_obj_ncg.bin");
-    unk_4c = p;
+    charBuf = p;
     if (p) return TRUE;
     return FALSE;
 }
 
 void AbAllObjGfx::freePalette() {
-    if (unk_48) {
-        Mem_Free(unk_48);
-        unk_48 = 0;
+    if (paletteBuf) {
+        Mem_Free(paletteBuf);
+        paletteBuf = 0;
     }
 }
 
 void AbAllObjGfx::freeChars() {
-    if (unk_4c) {
-        Mem_Free(unk_4c);
-        unk_4c = 0;
+    if (charBuf) {
+        Mem_Free(charBuf);
+        charBuf = 0;
     }
 }
 
 void AbAllObjGfx::uploadPalette() {
-    DC_FlushRange(unk_48, 0x80);
-    GX_LoadOBJPltt(unk_48, 0, 0x80);
-    GXS_LoadOBJPltt(unk_48, 0, 0x80);
+    DC_FlushRange(paletteBuf, 0x80);
+    GX_LoadOBJPltt(paletteBuf, 0, 0x80);
+    GXS_LoadOBJPltt(paletteBuf, 0, 0x80);
 }
 
 void AbAllObjGfx::uploadChars() {
-    DC_FlushRange(unk_4c, 0x1000);
-    GX_LoadOBJ(unk_4c, 0, 0x1000);
-    GXS_LoadOBJ(unk_4c, 0, 0x1000);
+    DC_FlushRange(charBuf, 0x1000);
+    GX_LoadOBJ(charBuf, 0, 0x1000);
+    GXS_LoadOBJ(charBuf, 0, 0x1000);
 }
 

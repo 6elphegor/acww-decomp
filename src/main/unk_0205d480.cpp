@@ -16,29 +16,29 @@ extern u8 *gCommManager;
 class Unk_020b83b0 {
 public:
     u32 unk_04;
-    u32 unk_08;
-    u8 unk_0c;
-    Unk_020b83b0() : unk_04(0), unk_08(0), unk_0c(0xff) {}
+    u32 next;
+    u8 priority;
+    Unk_020b83b0() : unk_04(0), next(0), priority(0xff) {}
 };
 
 class VramTask : public Unk_020b83b0 {
 public:
-    u8 unk_0d;
-    u8 unk_0e;
-    u8 unk_0f;
+    u8 state;
+    u8 kind;
+    u8 cost;
     VramTask();
     virtual BOOL execute() = 0;
 };
 
 struct TexTransfer {
-    u32 unk_00;
-    u32 unk_04;
-    u32 unk_08;
+    u32 dstAddr;
+    u32 src;
+    u32 size;
 };
 
 class TexVramTask : public VramTask {
 public:
-    TexTransfer unk_10;
+    TexTransfer xfer;
     TexVramTask();
     virtual BOOL execute();
     void cancel(void);
@@ -225,7 +225,7 @@ extern "C" void PlayerGlassesModelRef_Release(u8 *p) {
 }
 
 extern "C" void PlayerGlassesModelRef_CancelTexUpload(u8 *p) {
-    if (Unk_0205d4e4_IsOne(PlayerGlassesModelRef_GetTexTask(p)->unk_0d)) {
+    if (Unk_0205d4e4_IsOne(PlayerGlassesModelRef_GetTexTask(p)->state)) {
         PlayerGlassesModelRef_GetTexTask(p)->cancel();
     } else {
         PlayerGlassesModelRef_GetTexTask(p)->clear();
@@ -248,7 +248,7 @@ extern "C" void PlayerGlassesModelRef_RelocateTexture(u8 *p) {
 
 extern "C" BOOL PlayerGlassesModelRef_PollTexUpload(u8 *p) {
     TexVramTask *o = PlayerGlassesModelRef_GetTexTask(p);
-    u8 st = o->unk_0d;
+    u8 st = o->state;
     if (Unk_0205d4e4_IsTwo(st)) {
         return TRUE;
     }

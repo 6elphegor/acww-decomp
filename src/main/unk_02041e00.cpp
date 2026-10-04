@@ -464,7 +464,7 @@ BOOL Item_ToPlantedFieldId(u16 *out, u16 *out2, u16 c);
 void FieldAction_TryMoneyTree(u16 *out, u8 *flag, u16 c);
 struct CommManager {
     u8 pad[0x64];
-    s32 unk_64;
+    s32 myAid;
 };
 BOOL Town_CanReleaseBees(void);
 void FieldAction_ResolveBuryItem(void *a, u16 *p, u16 *q, u8 *r, u16 e);
@@ -713,7 +713,7 @@ void FieldAction_HostProcess(Unk_02044774_S *src, u8 flag, s32 t);
 namespace nF {
 extern "C" {
 
-struct CommManager { u8 pad_00[0x64]; s32 unk_64; s32 unk_68; };
+struct CommManager { u8 pad_00[0x64]; s32 myAid; s32 localSlot; };
 struct Unk_020449e8_Pos { s32 x, y; };
 struct Unk_020449e8_Out {
     u8 pad_00[2];
@@ -6746,7 +6746,7 @@ extern "C" BOOL Field_IsUnitClearOfOthersForAid(Unk_020449e8_Pos *p, u32 x) {
 namespace nF {
 extern "C" BOOL Field_IsUnitClearOfOthersLocal(Unk_020449e8_Pos *p) {
     Unk_020449e8_Pos t;
-    s32 owner = gCommManager->unk_68;
+    s32 owner = gCommManager->localSlot;
     t.x = p->x;
     t.y = p->y;
     return Field_IsUnitClearOfOthers(&t, owner);
@@ -6882,7 +6882,7 @@ extern "C" void FieldAction_Submit(u8 idx, u32 arg) {
     CommManager *g = gCommManager;
     if (_ZN11CommManager8isOnlineEv(g)) {
         if (NetArea_IsLocalOwner()) {
-            FieldAction_HostProcess(&s, 1, g->unk_64);
+            FieldAction_HostProcess(&s, 1, g->myAid);
         } else {
             g = gCommManager;
             _ZN11CommManager11beginRecordEv(g);
@@ -7748,7 +7748,7 @@ namespace nD {
 extern "C" BOOL Town_CanReleaseBees(void) {
     BOOL r = FALSE;
     CommManager *g = *(CommManager **)gCommManager;
-    if (_ZN11CommManager12isSlotActiveEi(g, g->unk_64) == 0) {
+    if (_ZN11CommManager12isSlotActiveEi(g, g->myAid) == 0) {
         if (_ZN12Unk_02097ff48testFlagEj(PlayerData_GetCurrent(), 1) == 0) {
             if (gTownUpdater[0x1c] == 0) {
                 r = TRUE;

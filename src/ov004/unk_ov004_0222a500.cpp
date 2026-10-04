@@ -93,8 +93,8 @@ public:
 };
 
 struct MatTexBinder {
-    u8 *unk_00;
-    s8 unk_04;
+    u8 *resMdl;
+    s8 matIdx;
 
     MatTexBinder();
     ~MatTexBinder();

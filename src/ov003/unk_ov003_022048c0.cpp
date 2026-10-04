@@ -226,8 +226,8 @@ public:
     void runAct();
     BOOL changeAct(s32 m);
 
-    /* 0x130 */ s32 unk_130;
-    /* 0x134 */ TouchPickSphere unk_134;
+    /* 0x130 */ s32 act;
+    /* 0x134 */ TouchPickSphere touchSphere;
 };
 
 typedef void (VillagerBoard::*Unk_022049a8_Fn)();
@@ -252,11 +252,11 @@ extern "C" VillagerBoard *VillagerBoard_Create() {
 }
 
 VillagerBoard::VillagerBoard() {
-    _ZN15TouchPickSphereC1Ev(&unk_134);
+    _ZN15TouchPickSphereC1Ev(&touchSphere);
 }
 
 VillagerBoard::~VillagerBoard() {
-    _ZN15TouchPickSphereD1Ev(&unk_134);
+    _ZN15TouchPickSphereD1Ev(&touchSphere);
 }
 
 BOOL VillagerBoard::vfunc_00() {
@@ -270,7 +270,7 @@ BOOL VillagerBoard::vfunc_00() {
 
 BOOL VillagerBoard::onExecute() {
     runAct();
-    _ZN11TouchPicker9addSphereEP15TouchPickSphereP4Vec3S3_ih(Scene_GetTouchPicker(), &unk_134, position, 0xc00, 9, *(s32 *)((u8 *)this + 8));
+    _ZN11TouchPicker9addSphereEP15TouchPickSphereP4Vec3S3_ih(Scene_GetTouchPicker(), &touchSphere, position, 0xc00, 9, *(s32 *)((u8 *)this + 8));
     return TRUE;
 }
 
@@ -321,7 +321,7 @@ BOOL VillagerBoard::changeAct(s32 m) {
     static Unk_02204a24_Fn tbl[3] = { (Unk_02204a24_Fn)&VillagerBoard::setupIdle, (Unk_02204a24_Fn)&VillagerBoard::setupRead, (Unk_02204a24_Fn)&VillagerBoard::setupReadEnd };
     if (m < 3) {
         if ((this->*tbl[m])()) {
-            unk_130 = m;
+            act = m;
             return TRUE;
         }
     }
@@ -330,8 +330,8 @@ BOOL VillagerBoard::changeAct(s32 m) {
 
 void VillagerBoard::runAct() {
     static Unk_022049a8_Fn tbl[3] = { &VillagerBoard::mainIdle, &VillagerBoard::mainRead, &VillagerBoard::mainReadEnd };
-    if (unk_130 < 3) {
-        (this->*tbl[unk_130])();
+    if (act < 3) {
+        (this->*tbl[act])();
     }
 }
 

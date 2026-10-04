@@ -76,7 +76,7 @@ struct Unk_ov004_02216ff4_Entry {
 
 struct Unk_ov004_022170e0_Global {
     u8 pad_00[0x64];
-    s32 unk_64;
+    s32 myAid;
 };
 
 struct Unk_ov004_SceneEntry {
@@ -163,7 +163,7 @@ struct Unk_0201a794 { Unk_0201a794(); ~Unk_0201a794(); u32 pad[0x68 / 4]; };
 struct NpcSpeechState { NpcSpeechState(); ~NpcSpeechState(); u32 pad[8 / 4]; };
 struct Unk_0201a13c { Unk_0201a13c(); ~Unk_0201a13c(); u32 pad[0x7c / 4]; };
 struct Unk_020323b0 { Unk_020323b0(); ~Unk_020323b0(); u32 pad[0x30 / 4]; };
-struct Unk_02088d00 { Unk_02088d00(); ~Unk_02088d00(); u32 pad[0x44 / 4]; u8 unk_44; u8 pad_45[3]; };
+struct Unk_02088d00 { Unk_02088d00(); ~Unk_02088d00(); u32 pad[0x44 / 4]; u8 collisionEnabled; u8 pad_45[3]; };
 struct Unk_020135e4 { Unk_020135e4(); ~Unk_020135e4(); u8 pad[8]; u8 unk_08; u8 pad_09[2]; u8 unk_0b; };
 struct NpcActionCtrl { NpcActionCtrl(); ~NpcActionCtrl(); u32 pad[0xb4 / 4]; };
 struct Unk_02014254 { Unk_02014254(); ~Unk_02014254(); u32 pad[0x28 / 4]; };
@@ -672,7 +672,7 @@ BOOL HouseOwnerAi::updateState03(HouseOwnerVillager *o) {
         s32 la;
         void *w = o->villagerData;
         s32 g;
-        if (NpcActor_netGetSlots(o, &a, &b) != 0 && ((la = a), la == (g = gCommManager->unk_64)) && la == b) {
+        if (NpcActor_netGetSlots(o, &a, &b) != 0 && ((la = a), la == (g = gCommManager->myAid)) && la == b) {
             NpcActor_netSetSlotsIfOwner(o, 1, g, g);
             if (w != 0 && Villager_GetResidentStatus(w) != 3) {
                 o->talkKind = 12;
@@ -684,7 +684,7 @@ BOOL HouseOwnerAi::updateState03(HouseOwnerVillager *o) {
             o->ai.changeState(o, 1);
         } else {
             if (NetArea_IsLocalOwner() != 0 && b == 4) {
-                NpcActor_netSetSlotsIfOwner(o, 1, gCommManager->unk_64, 4);
+                NpcActor_netSetSlotsIfOwner(o, 1, gCommManager->myAid, 4);
                 if (o->ai.applyPendingState(o) == 0) {
                     o->ai.changeState(o, 0);
                 }
@@ -705,7 +705,7 @@ BOOL HouseOwnerAi::updateState04(HouseOwnerVillager *o) {
         if (NpcActor_netGetSlots(o, &a, &b) != 0) {
             if (a == 4) {
                 if (NetArea_IsLocalOwner() != 0) {
-                    NpcActor_netSetSlotsIfOwner(o, 1, gCommManager->unk_64, 4);
+                    NpcActor_netSetSlotsIfOwner(o, 1, gCommManager->myAid, 4);
                     if (o->ai.applyPendingState(o) == 0) {
                         o->ai.changeState(o, 0);
                     }
@@ -728,13 +728,13 @@ void HouseOwnerVillager::vfunc_4c(u32 idx, u32 v) {
     case 3:
         footstepFx.unk_08 = v;
         if (v != 4) {
-            NpcActor_netSetSlotsIfOwner(this, 1, gCommManager->unk_64, v);
+            NpcActor_netSetSlotsIfOwner(this, 1, gCommManager->myAid, v);
             ai.changeState(this, 2);
         } else {
             if (NpcActor_isNetOwner(this) == 0) {
                 return;
             }
-            s32 g = gCommManager->unk_64;
+            s32 g = gCommManager->myAid;
             NpcActor_netSetSlotsIfOwner(this, 1, g, g);
             if (villagerData != 0 && Villager_GetResidentStatus(villagerData) != 3) {
                 talkKind = 12;
@@ -760,12 +760,12 @@ void HouseOwnerVillager::vfunc_4c(u32 idx, u32 v) {
         break;
     case 0:
         footstepFx.unk_08 = v;
-        if (v != 4 && v != gCommManager->unk_64) {
+        if (v != 4 && v != gCommManager->myAid) {
             NpcActor_netSetSlotsIfOwner(this, 1, v, v);
             ai.changeState(this, 4);
         } else {
             if (NpcActor_isNetOwner(this) != 0) {
-                s32 g = gCommManager->unk_64;
+                s32 g = gCommManager->myAid;
                 NpcActor_netSetSlotsIfOwner(this, 1, g, g);
                 VillagerTalk_begin(&villagerTalk, this, talkKind);
                 func_02015ab0(&villagerTalk, NpcActor_getPlayerActor(this, 4));
@@ -777,12 +777,12 @@ void HouseOwnerVillager::vfunc_4c(u32 idx, u32 v) {
     case 8:
         if (v == 4) {
             if (NetArea_IsLocalOwner() != 0) {
-                NpcActor_netSetSlotsIfOwner(this, 1, gCommManager->unk_64, 4);
+                NpcActor_netSetSlotsIfOwner(this, 1, gCommManager->myAid, 4);
                 if (ai.applyPendingState(this) == 0) {
                     ai.changeState(this, 0);
                 }
             } else {
-                NpcActor_netSetSlotsIfOwner(this, 1, 4, gCommManager->unk_64);
+                NpcActor_netSetSlotsIfOwner(this, 1, 4, gCommManager->myAid);
                 ai.changeState(this, 3);
             }
         }
@@ -804,7 +804,7 @@ void HouseOwnerVillager::vfunc_4c(u32 idx, u32 v) {
                         break;
                     }
                 body:
-                    NpcActor_netSetSlotsIfOwner(this, 1, gCommManager->unk_64, 4);
+                    NpcActor_netSetSlotsIfOwner(this, 1, gCommManager->myAid, 4);
                     if (ai.applyPendingState(this) == 0) {
                         ai.changeState(this, 0);
                     }

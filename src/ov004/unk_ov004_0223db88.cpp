@@ -9,30 +9,30 @@ struct Unk_ov004_0223d800_Vec {
 
 // Spawn-definition record (0x1c bytes).
 struct Unk_ov004_0223df58_Rec {
-    /* 0x00 */ Unk_ov004_0223d800_Vec unk_00;
-    /* 0x0c */ s32 unk_0c;
-    /* 0x10 */ s16 unk_10;
-    /* 0x12 */ s16 unk_12;
-    /* 0x14 */ s32 unk_14;
-    /* 0x18 */ u8 unk_18;
-    /* 0x19 */ u8 unk_19;
+    /* 0x00 */ Unk_ov004_0223d800_Vec pos;
+    /* 0x0c */ s32 arc;
+    /* 0x10 */ s16 angle;
+    /* 0x12 */ s16 message;
+    /* 0x14 */ s32 itemList;
+    /* 0x18 */ u8 itemCount;
+    /* 0x19 */ u8 kind;
     /* 0x1a */ u8 pad_1a[2];
 };
 
-struct Unk_ov004_0223df20_Def {
-    /* 0x00 */ Unk_ov004_0223d800_Vec unk_00;
-    /* 0x0c */ u8 unk_0c;
-    /* 0x0d */ u8 unk_0d;
-    /* 0x0e */ s16 unk_0e;
-    /* 0x10 */ const void *unk_10;
-    /* 0x14 */ u8 unk_14;
+struct MuseumInfoPointDef {
+    /* 0x00 */ Unk_ov004_0223d800_Vec pos;
+    /* 0x0c */ u8 facingMask;
+    /* 0x0d */ u8 kind;
+    /* 0x0e */ s16 message;
+    /* 0x10 */ const void *itemList;
+    /* 0x14 */ u8 itemCount;
     /* 0x15 */ u8 pad_15[3];
 };
 
-struct Unk_ov004_0223dd88_Tbl {
-    u8 unk_00;
-    Unk_ov004_0223df58_Rec *unk_04;
-    u32 unk_08;
+struct MuseumInfoPointSet {
+    u8 scene;
+    Unk_ov004_0223df58_Rec *points;
+    u32 numPoints;
 };
 
 typedef Unk_ov004_0223d800_Vec V3;
@@ -58,7 +58,7 @@ struct ItemId {
 
 extern "C" {
 extern void *gSceneBlockMap;
-extern const Unk_ov004_0223dd88_Tbl sMuseumInfoPointsByScene[];
+extern const MuseumInfoPointSet sMuseumInfoPointsByScene[];
 
 s32 FX_Div(s32 a, s32 b);
 s32 func_020e780c(s32 a, s32 b);
@@ -111,9 +111,9 @@ extern "C" MuseumRoom *MuseumRoom_Create();
 extern "C" MuseumRoomUnk53 *MuseumRoomUnk53_Create();
 extern "C" MuseumFossilRoom *MuseumFossilRoom_Create();
 // Static Rec objects of __sinit: ctor = MuseumInfoPoint_InitFromDef (plain function), dtor = the 2-byte function at 0x223e010
-extern "C" Rec *MuseumInfoPoint_InitFromDef(Rec *r, const Unk_ov004_0223df20_Def *d);
+extern "C" Rec *MuseumInfoPoint_InitFromDef(Rec *r, const MuseumInfoPointDef *d);
 struct MuseumInfoPoint : Rec {
-    MuseumInfoPoint(const Unk_ov004_0223df20_Def &d) { MuseumInfoPoint_InitFromDef(this, &d); }
+    MuseumInfoPoint(const MuseumInfoPointDef &d) { MuseumInfoPoint_InitFromDef(this, &d); }
     ~MuseumInfoPoint();
 };
 
@@ -177,26 +177,26 @@ extern const u8 data_ov004_022440d4[1];
 extern const u8 data_ov004_02244130[1];
 extern const u8 data_ov004_022440cc[1];
 extern const u8 data_ov004_02244100[1];
-extern const Unk_ov004_0223df20_Def sMuseumFishPointDefs23[4];
+extern const MuseumInfoPointDef sMuseumFishPointDefs23[4];
 extern MuseumInfoPoint sMuseumFishPoints23[4];
-extern const Unk_ov004_0223df20_Def sMuseumFishPointDefs24[2];
+extern const MuseumInfoPointDef sMuseumFishPointDefs24[2];
 extern MuseumInfoPoint sMuseumFishPoints24[2];
-extern const Unk_ov004_0223df20_Def sMuseumFossilPointDefs25[12];
+extern const MuseumInfoPointDef sMuseumFossilPointDefs25[12];
 extern MuseumInfoPoint sMuseumFossilPoints25[12];
-extern const Unk_ov004_0223df20_Def sMuseumFossilPointDefs26[12];
+extern const MuseumInfoPointDef sMuseumFossilPointDefs26[12];
 extern MuseumInfoPoint sMuseumFossilPoints26[12];
-extern const Unk_ov004_0223df20_Def sMuseumInsectPointDefs27[4];
+extern const MuseumInfoPointDef sMuseumInsectPointDefs27[4];
 extern MuseumInfoPoint sMuseumInsectPoints27[4];
-extern const Unk_ov004_0223df20_Def sMuseumInsectPointDefs28[5];
+extern const MuseumInfoPointDef sMuseumInsectPointDefs28[5];
 extern MuseumInfoPoint sMuseumInsectPoints28[5];
-extern const Unk_ov004_0223df20_Def sMuseumPaintingPointDefs29[20];
+extern const MuseumInfoPointDef sMuseumPaintingPointDefs29[20];
 extern MuseumInfoPoint sMuseumPaintingPoints29[20];
 
 // ---- data (definition order sets the emitted order; the statics of vfunc_48 are created when it is compiled) ----
 const u8 data_ov004_022440f4[1] = {0x2};
 const u8 data_ov004_022441ac[7] = {0xa, 0x1a, 0x20, 0x24, 0x2d, 0x2e, 0x2f};
 const u8 data_ov004_02244170[4] = {0x26, 0x27, 0x28, 0x29};
-const Unk_ov004_0223df20_Def sMuseumPaintingPointDefs29[20] = {
+const MuseumInfoPointDef sMuseumPaintingPointDefs29[20] = {
     {{29696, 4608, 4096}, 1, 2, -1, data_ov004_0224410c, 1},
     {{35584, 4608, 4096}, 1, 2, -1, data_ov004_022440fc, 1},
     {{61952, 4608, 4096}, 1, 2, -1, data_ov004_022440dc, 1},
@@ -218,7 +218,7 @@ const Unk_ov004_0223df20_Def sMuseumPaintingPointDefs29[20] = {
     {{84992, 4608, 102400}, 1, 2, -1, data_ov004_022440cc, 1},
     {{106496, 4608, 102400}, 1, 2, -1, data_ov004_02244100, 1},
 };
-const Unk_ov004_0223df20_Def sMuseumFishPointDefs23[4] = {
+const MuseumInfoPointDef sMuseumFishPointDefs23[4] = {
     {{40192, 5120, 98560}, 1, 1, -1, data_ov004_022441d0, 9},
     {{98816, 5120, 98560}, 1, 1, -1, data_ov004_022441c4, 9},
     {{40192, 5120, 41216}, 1, 1, -1, data_ov004_022441bc, 8},
@@ -227,7 +227,7 @@ const Unk_ov004_0223df20_Def sMuseumFishPointDefs23[4] = {
 MuseumInfoPoint sMuseumFishPoints23[4] = {MuseumInfoPoint(sMuseumFishPointDefs23[0]), MuseumInfoPoint(sMuseumFishPointDefs23[1]), MuseumInfoPoint(sMuseumFishPointDefs23[2]), MuseumInfoPoint(sMuseumFishPointDefs23[3])};
 const u8 data_ov004_0224412c[1] = {0x1};
 const u8 data_ov004_022441e8[10] = {0x23, 0x24, 0x25, 0x26, 0x27, 0x28, 0x29, 0x2a, 0x2b, 0x2c};
-const Unk_ov004_0223df20_Def sMuseumFishPointDefs24[2] = {
+const MuseumInfoPointDef sMuseumFishPointDefs24[2] = {
     {{27136, 5120, 90112}, 1, 1, -1, data_ov004_022441e8, 10},
     {{105728, 5120, 90112}, 1, 1, -1, data_ov004_022441f4, 11},
 };
@@ -237,7 +237,7 @@ const u8 data_ov004_02244168[3] = {0xd, 0xe, 0xf};
 const u8 data_ov004_02244140[2] = {0x1e, 0x1f};
 const u8 data_ov004_02244144[3] = {0x1b, 0x1c, 0x1d};
 const u8 data_ov004_022441b4[7] = {0x9, 0xb, 0x10, 0x11, 0x18, 0x2b, 0x35};
-const Unk_ov004_0223df20_Def sMuseumInsectPointDefs28[5] = {
+const MuseumInfoPointDef sMuseumInsectPointDefs28[5] = {
     {{97536, 5120, 22272}, 1, 0, -1, data_ov004_0224418c, 6},
     {{54272, 5120, 22272}, 1, 0, -1, data_ov004_02244194, 6},
     {{38400, 5120, 85760}, 2, 0, -1, data_ov004_022441b4, 7},
@@ -250,7 +250,7 @@ const u8 data_ov004_02244120[1] = {0xe};
 const u8 data_ov004_022441dc[9] = {0x1a, 0x1b, 0x1c, 0x1d, 0x1e, 0x1f, 0x20, 0x21, 0x22};
 const u8 data_ov004_022440d8[1] = {0xd};
 const u8 data_ov004_022440dc[1] = {0x4};
-const Unk_ov004_0223df20_Def sMuseumFossilPointDefs25[12] = {
+const MuseumInfoPointDef sMuseumFossilPointDefs25[12] = {
     {{61440, 4096, 94208}, 1, 3, 34, data_ov004_02244154, 3},
     {{86016, 4096, 102400}, 1, 3, 36, data_ov004_02244168, 3},
     {{61440, 4096, 69632}, 1, 3, 32, data_ov004_02244164, 3},
@@ -287,7 +287,7 @@ const u8 data_ov004_022440c4[1] = {0x8};
 MuseumInfoPoint sMuseumInsectPoints27[4] = {MuseumInfoPoint(sMuseumInsectPointDefs27[0]), MuseumInfoPoint(sMuseumInsectPointDefs27[1]), MuseumInfoPoint(sMuseumInsectPointDefs27[2]), MuseumInfoPoint(sMuseumInsectPointDefs27[3])};
 const u8 data_ov004_0224415c[3] = {0x20, 0x21, 0x22};
 const u8 data_ov004_022440fc[1] = {0x11};
-const Unk_ov004_0223df20_Def sMuseumFossilPointDefs26[12] = {
+const MuseumInfoPointDef sMuseumFossilPointDefs26[12] = {
     {{53248, 4096, 102400}, 1, 3, 12, data_ov004_02244150, 3},
     {{77824, 4096, 102400}, 1, 3, 16, data_ov004_02244144, 3},
     {{53248, 4096, 77824}, 1, 3, 30, data_ov004_0224414c, 3},
@@ -315,7 +315,7 @@ const u8 data_ov004_022441f4[11] = {0x2d, 0x2e, 0x2f, 0x30, 0x31, 0x32, 0x33, 0x
 const u8 data_ov004_02244154[3] = {0xa, 0xb, 0xc};
 const u8 data_ov004_02244160[3] = {0x23, 0x24, 0x25};
 const u8 data_ov004_02244114[1] = {0x4};
-const Unk_ov004_0223df20_Def sMuseumInsectPointDefs27[4] = {
+const MuseumInfoPointDef sMuseumInsectPointDefs27[4] = {
     {{61952, 5120, 86784}, 3, 0, -1, data_ov004_02244184, 6},
     {{61952, 5120, 51712}, 6, 0, -1, data_ov004_022441ac, 7},
     {{92416, 5120, 34560}, 8, 0, -1, data_ov004_0224417c, 6},
@@ -323,7 +323,7 @@ const Unk_ov004_0223df20_Def sMuseumInsectPointDefs27[4] = {
 };
 const u8 data_ov004_02244124[1] = {0x2};
 const u8 data_ov004_022440e8[1] = {0x3};
-const Unk_ov004_0223dd88_Tbl sMuseumInfoPointsByScene[7] = {
+const MuseumInfoPointSet sMuseumInfoPointsByScene[7] = {
     {0x25, (Rec *)sMuseumFossilPoints25, 12},
     {0x26, (Rec *)sMuseumFossilPoints26, 12},
     {0x23, (Rec *)sMuseumFishPoints23, 4},
@@ -348,13 +348,13 @@ MuseumInfoPoint::~MuseumInfoPoint() {}
 
 extern "C" void MuseumInfoPoint_Init(Rec *r, V3 *pos, s32 mask, u32 b, s16 c, s32 d, u8 e) {
     s32 sum; u32 i; s32 last; s32 cnt;
-    r->unk_00.x = pos->x;
-    r->unk_00.y = pos->y;
-    r->unk_00.z = pos->z;
-    r->unk_19 = b;
-    r->unk_12 = c;
-    r->unk_14 = d;
-    r->unk_18 = e;
+    r->pos.x = pos->x;
+    r->pos.y = pos->y;
+    r->pos.z = pos->z;
+    r->kind = b;
+    r->message = c;
+    r->itemList = d;
+    r->itemCount = e;
     sum = 0;
     cnt = sum;
     last = sum;
@@ -367,56 +367,56 @@ extern "C" void MuseumInfoPoint_Init(Rec *r, V3 *pos, s32 mask, u32 b, s16 c, s3
         }
         i++;
     } while (i < 4);
-    r->unk_10 = FX_Div(sum << 12, cnt << 12) >> 12;
+    r->angle = FX_Div(sum << 12, cnt << 12) >> 12;
     if (cnt == 2) {
-        if (func_020e780c(last, r->unk_10) >= 0x4000) {
-            r->unk_10 = r->unk_10 + 0x8000;
+        if (func_020e780c(last, r->angle) >= 0x4000) {
+            r->angle = r->angle + 0x8000;
         }
     }
     last = 0;
     i = last;
     do {
         if (((mask >> i) & 1) != 0) {
-            s32 t = func_020e780c((s32)(i << 30) >> 16, r->unk_10);
+            s32 t = func_020e780c((s32)(i << 30) >> 16, r->angle);
             if (t > last) {
                 last = t;
             }
         }
         i++;
     } while (i < 4);
-    r->unk_0c = last + 0x1300;
+    r->arc = last + 0x1300;
 }
 
-extern "C" Rec *MuseumInfoPoint_InitFromDef(Rec *r, const Unk_ov004_0223df20_Def *d) {
-    Unk_ov004_0223df20_V v(d->unk_00.x, d->unk_00.y, d->unk_00.z);
-    MuseumInfoPoint_Init(r, &v, d->unk_0c, d->unk_0d, d->unk_0e, (s32)d->unk_10, d->unk_14);
+extern "C" Rec *MuseumInfoPoint_InitFromDef(Rec *r, const MuseumInfoPointDef *d) {
+    Unk_ov004_0223df20_V v(d->pos.x, d->pos.y, d->pos.z);
+    MuseumInfoPoint_Init(r, &v, d->facingMask, d->kind, d->message, (s32)d->itemList, d->itemCount);
     return r;
 }
 
 extern "C" void *MuseumInfoPoint_GetPos(Rec *r) {}
 
 extern "C" s16 MuseumInfoPoint_GetAngle(Rec *r) {
-    return r->unk_10;
+    return r->angle;
 }
 
 extern "C" s32 MuseumInfoPoint_GetArc(Rec *r) {
-    return r->unk_0c;
+    return r->arc;
 }
 
 extern "C" u32 MuseumInfoPoint_GetKind(Rec *r) {
-    return r->unk_19;
+    return r->kind;
 }
 
 extern "C" s16 MuseumInfoPoint_GetMessage(Rec *r) {
-    return r->unk_12;
+    return r->message;
 }
 
 extern "C" s32 MuseumInfoPoint_GetItemList(Rec *r) {
-    return r->unk_14;
+    return r->itemList;
 }
 
 extern "C" u32 MuseumInfoPoint_GetItemCount(Rec *r) {
-    return r->unk_18;
+    return r->itemCount;
 }
 
 extern "C" MuseumRoom *MuseumRoom_Create() {
@@ -445,13 +445,13 @@ void MuseumRoom::spawnInfoPoints() {
     s32 k = Scene_GetCurrent();
     u32 i;
     for (i = 0; i < 7; i++) {
-        const Unk_ov004_0223dd88_Tbl *e = &sMuseumInfoPointsByScene[i];
-        if (k == e->unk_00) {
+        const MuseumInfoPointSet *e = &sMuseumInfoPointsByScene[i];
+        if (k == e->scene) {
             u32 j, n;
             j = 0;
-            n = e->unk_08;
+            n = e->numPoints;
             for (; j < n; j++) {
-                Rec *rec = &e->unk_04[j];
+                Rec *rec = &e->points[j];
                 u32 a = MuseumInfoPoint_GetKind(rec);
                 void *b = MuseumInfoPoint_GetPos(rec);
                 s32 c = MuseumInfoPoint_GetAngle(rec);

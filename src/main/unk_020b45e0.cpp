@@ -15,8 +15,8 @@ extern u32 gGfxFrameHooks;
 }
 
 struct CommManager {
-    u8 unk_00[0x64];
-    u32 unk_64;
+    u8 slotActive[0x64];
+    u32 myAid;
     BOOL isSlotActive(s32 i);
 };
 
@@ -72,7 +72,7 @@ void FieldEntryScene::requestField() {
 void FieldEntryScene::idle() {}
 
 BOOL FieldEntryScene::vfunc_00() {
-    if (gCommManager->isSlotActive(gCommManager->unk_64)) {
+    if (gCommManager->isSlotActive(gCommManager->myAid)) {
         unk_50 = 0;
     } else {
         unk_50 = 1;

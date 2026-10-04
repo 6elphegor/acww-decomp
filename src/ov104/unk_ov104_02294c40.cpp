@@ -133,8 +133,8 @@ public:
     void writeRecord(u8 *buf, u32 n);
     void beginRecord();
     BOOL isOnline();
-    u32 unk_00[0x64 / 4];
-    u32 unk_64;
+    u32 slotActive[0x64 / 4];
+    u32 myAid;
 };
 extern "C" CommManager *gCommManager;
 
@@ -2360,7 +2360,7 @@ void PostOfficeMenu::beginOnlineSend() {
         if (hasFutureLetter(boxLetters)) {
             onlineSendResult |= 0x800;
         }
-        if (g->unk_64 != 0) {
+        if (g->myAid != 0) {
             setFlags(0x1000);
             sendIndex = 0;
             clearFlags(0x2000);

@@ -406,8 +406,8 @@ public:
     u8 getHouseVariant();
     s32 getHouseStyle();
 
-    /* 0x2b0 */ AnimModel unk_2b0;
-    /* 0x368 */ ModelAnim unk_368;
+    /* 0x2b0 */ AnimModel lightUpModel;
+    /* 0x368 */ ModelAnim lightUpAnim;
 };
 
 struct Unk_ov003_SceneEntry {
@@ -465,16 +465,16 @@ BOOL VillagerHouse::vfunc_70() {
     }
     if (HouseLightUpDeco_IsLoaded(FieldStructureMgr_GetLightUpDeco())) {
         s32 q = getHouseStyle() >> 2;
-        if (_ZN5Model11setResourceEP16Unk_020553f8_Resj(&unk_2b0, HouseLightUpDeco_GetModel(FieldStructureMgr_GetLightUpDeco(), q), 0)) {
+        if (_ZN5Model11setResourceEP16Unk_020553f8_Resj(&lightUpModel, HouseLightUpDeco_GetModel(FieldStructureMgr_GetLightUpDeco(), q), 0)) {
             void *a = HouseLightUpDeco_GetModel(FieldStructureMgr_GetLightUpDeco(), q);
             NNS_G3dBindMdlTex(a, HouseLightUpDeco_GetTex(FieldStructureMgr_GetLightUpDeco()));
             void *b = HouseLightUpDeco_GetModel(FieldStructureMgr_GetLightUpDeco(), q);
             NNS_G3dBindMdlPltt(b, HouseLightUpDeco_GetTex(FieldStructureMgr_GetLightUpDeco()));
-            if (unk_368.allocMatAnm((u32)unk_2b0.unk_5c, gFieldStructureHeap)) {
+            if (lightUpAnim.allocMatAnm((u32)lightUpModel.unk_5c, gFieldStructureHeap)) {
                 s32 c = HouseLightUpDeco_GetTexPattern(FieldStructureMgr_GetLightUpDeco());
                 s32 d = HouseLightUpDeco_GetTex(FieldStructureMgr_GetLightUpDeco());
-                unk_368.initWithTex(c, d, 0, 0x1000, 0);
-                unk_368.addToRenderObj((u32)_ZN5Model12getRenderObjEv(&unk_2b0));
+                lightUpAnim.initWithTex(c, d, 0, 0x1000, 0);
+                lightUpAnim.addToRenderObj((u32)_ZN5Model12getRenderObjEv(&lightUpModel));
                 *(Unk_ov003_Blk *)((u8 *)this + 0x314) = baseMatrix;
             }
         }
@@ -486,7 +486,7 @@ BOOL VillagerHouse::onExecute() {
     if (HouseLightUpDeco_IsLoaded(FieldStructureMgr_GetLightUpDeco())) {
         *(Unk_ov003_Blk *)((u8 *)this + 0x314) = baseMatrix;
         if ((colliderFlags & 1) == 0) {
-            unk_368.step();
+            lightUpAnim.step();
             **(u32 **)((u8 *)this + 0x380) = *(u32 *)((u8 *)this + 0x370);
         }
     }
@@ -495,7 +495,7 @@ BOOL VillagerHouse::onExecute() {
 
 BOOL VillagerHouse::onDraw() {
     if (HouseLightUpDeco_IsLoaded(FieldStructureMgr_GetLightUpDeco())) {
-        unk_2b0.drawAnimated(0);
+        lightUpModel.drawAnimated(0);
     }
     return TRUE;
 }

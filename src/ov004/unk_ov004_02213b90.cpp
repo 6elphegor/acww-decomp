@@ -130,9 +130,9 @@ public:
 
 struct Unk_ov004_022142fc_Actor {
     u8 pad_00[0x5c];
-    u8 unk_5c[0xc];
+    u8 position[0xc];
     u8 pad_68[0x8e - 0x68];
-    s16 unk_8e;
+    s16 rotY;
 };
 
 struct Unk_ov004_022146ec_Bits {
@@ -150,7 +150,7 @@ struct Unk_ov004_022146ec_Actor {
 
 struct Unk_ov004_022146ec_Sing {
     u8 pad_00[0x64];
-    u32 unk_64;
+    u32 myAid;
 };
 
 class MuseumExhibitInfo;
@@ -590,8 +590,8 @@ void MuseumExhibitInfo::vfunc_4c(u32 a, u8 b) {
 BOOL MuseumExhibitInfo::vfunc_48(void *a0) {
     Unk_ov004_022142fc_Actor *a = (Unk_ov004_022142fc_Actor *)a0;
     if (a) {
-        if (func_020e9650(a->unk_5c, (u8 *)this + 0x5c) < 0x2333) {
-            if (func_020e780c((s16)(*(s16 *)((u8 *)this + 0x8e) + 0x8000), a->unk_8e) < facingArc) {
+        if (func_020e9650(a->position, (u8 *)this + 0x5c) < 0x2333) {
+            if (func_020e780c((s16)(*(s16 *)((u8 *)this + 0x8e) + 0x8000), a->rotY) < facingArc) {
                 return TRUE;
             }
         }
@@ -744,7 +744,7 @@ BOOL MuseumExhibitInfo::vfunc_00() {
                 position[2] = out[2];
             }
         }
-        l.a = (u16)gCommManager->unk_64;
+        l.a = (u16)gCommManager->myAid;
         *(u16 *)&l = (*(u16 *)&l & ~0xfc) | ((Scene_GetCurrent() & 0x3f) << 2);
         l.c = index;
         Character_setCharId(this, *(u16 *)&l);

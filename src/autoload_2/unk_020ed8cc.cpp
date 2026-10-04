@@ -21,12 +21,12 @@ public:
 };
 
 struct Ent {
-    /* 0x00 */ void *unk_00;
-    /* 0x04 */ s16 unk_04;
-    /* 0x06 */ u16 unk_06;
-    /* 0x08 */ u8 unk_08;
-    /* 0x09 */ u8 unk_09;
-    /* 0x0a */ u8 unk_0a;
+    /* 0x00 */ void *handle;
+    /* 0x04 */ s16 trackPitch;
+    /* 0x06 */ u16 index;
+    /* 0x08 */ u8 seqArc;
+    /* 0x09 */ u8 flags;
+    /* 0x0a */ u8 trackVolume;
     /* 0x0b */ u8 pad;
 };
 
@@ -34,11 +34,11 @@ struct Group;
 typedef void (*GroupFn)(Group *g, s32 i, s32 v);
 struct Group {
     /* 0x00 */ u8 pad0[8];
-    /* 0x08 */ Ent unk_08[3];
-    /* 0x2c */ GroupFn unk_2c;
-    /* 0x30 */ GroupFn unk_30;
-    /* 0x34 */ u16 unk_34;
-    /* 0x36 */ u8 unk_36;
+    /* 0x08 */ Ent voices[3];
+    /* 0x2c */ GroupFn startVoiceFn;
+    /* 0x30 */ GroupFn applyParamsFn;
+    /* 0x34 */ u16 flags;
+    /* 0x36 */ u8 numVoices;
 };
 
 struct FndList {
@@ -52,11 +52,11 @@ struct Bytes4 {
 };
 struct Player {
     /* 0x00 */ FndList list;
-    /* 0x0c */ u32 unk_0c;
+    /* 0x0c */ u32 active;
     /* 0x10 */ u32 unk_10;
     /* 0x14 */ u8 unk_14;
     /* 0x15 */ Bytes4 unk_15;
-    /* 0x1c */ u32 unk_1c;
+    /* 0x1c */ u32 heapLevel;
     /* 0x20 */ u8 unk_20[4];
     /* 0x24 */ u8 unk_24[4];
 };
@@ -107,13 +107,13 @@ void SndSeSystem_UnloadGroup(Player *o);
 extern "C" void SndSeSystem_Shutdown(Player *o, s32 flag) {
     SndSeGroupList_StopAll(&o->list);
     if (flag != 0) SndSeSystem_UnloadGroup(o);
-    o->unk_0c = 0;
+    o->active = 0;
 }
 
 extern "C" void SndSeSystem_UnloadGroup(Player *o) {
     if (o->unk_15.b0 == 255) Fatal_Trap();
-    if (o->unk_1c == 255) return;
-    Snd_RestoreHeapLevel(o->unk_1c);
+    if (o->heapLevel == 255) return;
+    Snd_RestoreHeapLevel(o->heapLevel);
 }
 
 extern "C" void SndSeGroupList_StopAll(FndList *o) {

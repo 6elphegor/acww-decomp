@@ -6,8 +6,8 @@ struct Unk_020bfe30_Vec {
 typedef Unk_020bfe30_Vec Unk_020c0acc_Vec;
 
 struct CommManager {
-    u8 unk_00[0x68];
-    s32 unk_68;
+    u8 slotActive[0x68];
+    s32 localSlot;
 };
 
 class SpNpcKatie;
@@ -137,12 +137,12 @@ struct Unk_020c0408_Obj {
     s32 unk_04;
     s32 unk_08;
     u8 unk_0c[8];
-    s32 unk_14;
+    s32 openMode;
 };
 
 struct Unk_020c0538_Out {
-    u32 unk_00;
-    u8 unk_04;
+    u32 msgKey;
+    u8 msgIndex;
 };
 
 class TalkMsgRequest {
@@ -243,7 +243,7 @@ public:
     }
 struct ThreeLayerAnimModel {
     u8 unk_00[0xa4];
-    u32 unk_a4;
+    u32 curFrame;
     u8 pad_a8[0x2a0 - 0xec - 0xa8];
     ThreeLayerAnimModel();
 };
@@ -421,14 +421,14 @@ public:
     void changeAct(s32 state);
 
     s32 unk_654;
-    SpNpcKatieTalk unk_658;
+    SpNpcKatieTalk talk;
     u8 unk_70c;
-    u8 unk_70d;
-    u16 unk_70e;
-    u16 unk_710;
-    Unk_020c0acc_Vec unk_714;
-    s32 unk_720;
-    u8 unk_724;
+    u8 escortDeclined;
+    u16 stuckTimer;
+    u16 waitTimer;
+    Unk_020c0acc_Vec prevPos;
+    s32 effectHandle;
+    u8 reunionStep;
 };
 
 extern Unk_020c11b8_Ent sSpNpcKatieActTable[9];
@@ -448,8 +448,8 @@ BOOL SpNpcKatie::vfunc_04() {
     if (!SpNpcActor::vfunc_04()) {
         return FALSE;
     }
-    _ZN8NpcActor14setTalkRequestEP12Unk_0201bc1c(this, &unk_658);
-    unk_658.attachOwner(this);
+    _ZN8NpcActor14setTalkRequestEP12Unk_0201bc1c(this, &talk);
+    talk.attachOwner(this);
     _ZN11NpcMoveCtrl14setSpeedPresetEiiii(&moveCtrl, 2, 0x333, 0xcc, 0x133);
     _ZN11NpcMoveCtrl14setSpeedPresetEiiii(&moveCtrl, 1, 0x1b3, 0xcc, 0x133);
     if (Scene_GetCurrent() == 0xb) {
@@ -477,7 +477,7 @@ BOOL SpNpcKatie::vfunc_00() {
         return FALSE;
     }
     sSpNpcKatieInstance = this;
-    unk_720 = -1;
+    effectHandle = -1;
     p = PlayerData_GetCurrent();
     if (Scene_GetCurrent() == 0) {
         FieldPos_SnapToUnitCenter(&position, &position);
@@ -490,35 +490,35 @@ BOOL SpNpcKatie::vfunc_00() {
             if (Scene_GetPrevious() == 0xb) {
                 Town_FindGateHouse(TownBlockMap_Get(), &position, 0, 0);
                 position.z -= 0x2000;
-                unk_658.setTopic(3);
+                talk.setTopic(3);
                 changeAct(5);
                 collider.unk_44 = 0;
             } else {
-                unk_658.setTopic(5);
+                talk.setTopic(5);
                 changeAct(1);
             }
         } else if (_ZN12Unk_02097ff48testFlagEj(p, 0x33) == 0) {
             if (_ZN12Unk_02097ff48testFlagEj(p, 0x31) == 0) {
-                unk_658.setTopic(0);
+                talk.setTopic(0);
             } else {
-                unk_658.setTopic(1);
+                talk.setTopic(1);
             }
             changeAct(1);
         } else {
             if (Talk_CheckAndSetPlayerFlag(0x29, 0) == 0) {
-                unk_658.setTopic(2);
+                talk.setTopic(2);
             } else {
-                unk_658.setTopic(3);
+                talk.setTopic(3);
             }
             changeAct(1);
         }
     } else if (Scene_GetCurrent() == 0xb) {
-        unk_658.setTopic(3);
+        talk.setTopic(3);
         changeAct(5);
         collider.unk_44 = 0;
     } else if (Scene_GetCurrent() == 0xc) {
         _ZN12Unk_02086f846getPosEP17Unk_02086ec4_Vec3(TownSessionState_GetKatieState(TownSessionState_Get()), &position);
-        unk_658.setTopic(3);
+        talk.setTopic(3);
         changeAct(5);
     } else if (Scene_GetCurrent() == 0x2f) {
         collider.unk_44 = 0;
@@ -571,17 +571,17 @@ void SpNpcKatie::vfunc_4c(s32 state) {
     switch (state) {
     case 0:
     case 1:
-        unk_658.vfunc_08();
-        _ZN16ActorTalkRequest13func_02015ab0Ej(&unk_658, _ZN8NpcActor14getPlayerActorEj(this, 4));
-        if (unk_658.getTopic() != 6) {
+        talk.vfunc_08();
+        _ZN16ActorTalkRequest13func_02015ab0Ej(&talk, _ZN8NpcActor14getPlayerActorEj(this, 4));
+        if (talk.getTopic() != 6) {
             changeAct(3);
         }
         break;
     case 8:
-        unk_658.setTopic(3);
+        talk.setTopic(3);
         if (_ZN12Unk_02086f8411isFollowingEv(TownSessionState_GetKatieState(TownSessionState_Get())) != 0) {
             changeAct(5);
-        } else if (unk_70d != 0) {
+        } else if (escortDeclined != 0) {
             changeAct(2);
         } else {
             changeAct(0);
@@ -597,9 +597,9 @@ void SpNpcKatie::changeAct(s32 state) {
         result = (this->*(e->a))();
     }
     if (result) {
-        if (state != 1 && unk_720 != -1) {
-            Effect_End(unk_720);
-            unk_720 = -1;
+        if (state != 1 && effectHandle != -1) {
+            Effect_End(effectHandle);
+            effectHandle = -1;
         }
         unk_654 = state;
     }
@@ -638,11 +638,11 @@ BOOL SpNpcKatie::mainAct01() {
         _ZN14NpcMoveAnimSet12setStandAnimEi(&moveAnimSet, 0x54);
         _ZN14NpcMoveAnimSet11setWalkAnimEi(&moveAnimSet, 0x54);
     }
-    if (unk_720 == -1) {
-        unk_720 = Effect_Create(0x54, emotionFx.unk_58, &rotY, 0);
+    if (effectHandle == -1) {
+        effectHandle = Effect_Create(0x54, emotionFx.unk_58, &rotY, 0);
     }
-    if (unk_720 != -1) {
-        Effect_SetPosition(unk_720, emotionFx.unk_58, &rotY, 0);
+    if (effectHandle != -1) {
+        Effect_SetPosition(effectHandle, emotionFx.unk_58, &rotY, 0);
     }
     return TRUE;
 }
@@ -666,7 +666,7 @@ BOOL SpNpcKatie::mainAct02() {
 BOOL SpNpcKatie::setupAct03() {
     s32 p, r4;
     _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(&lookAt, 1, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
-    p = _ZN16ActorTalkRequest13func_02015aacEv(&unk_658);
+    p = _ZN16ActorTalkRequest13func_02015aacEv(&talk);
     r4 = 0;
     if (p != 0) {
         r4 = _ZN8NpcActor10getAngleToEPS_(this, p);
@@ -695,12 +695,12 @@ BOOL SpNpcKatie::mainAct07() {
 
 BOOL SpNpcKatie::setupAct04() {
     collider.unk_1c &= ~2;
-    unk_710 = 0x28;
+    waitTimer = 0x28;
     return TRUE;
 }
 
 BOOL SpNpcKatie::mainAct04() {
-    if (func_020e7500(&unk_710) == 0) {
+    if (func_020e7500(&waitTimer) == 0) {
         changeAct(5);
     }
     return TRUE;
@@ -708,8 +708,8 @@ BOOL SpNpcKatie::mainAct04() {
 
 BOOL SpNpcKatie::setupAct05() {
     collider.unk_1c &= ~2;
-    unk_70e = 0x28;
-    unk_714 = position;
+    stuckTimer = 0x28;
+    prevPos = position;
     return TRUE;
 }
 
@@ -747,15 +747,15 @@ BOOL SpNpcKatie::mainAct05() {
             return TRUE;
         }
         v = _ZN9NpcLookAt15getObstacleBitsEv(&obstacleProbe);
-        d2 = func_020e9650(&unk_714, &position);
-        unk_714 = position;
+        d2 = func_020e9650(&prevPos, &position);
+        prevPos = position;
         if (d2 <= 0x29 || v != 0) {
-            if (func_020e7500(&unk_70e) == 0) {
+            if (func_020e7500(&stuckTimer) == 0) {
                 changeAct(1);
                 return TRUE;
             }
         } else {
-            unk_70e = 0x28;
+            stuckTimer = 0x28;
         }
     }
     if (t > 0x2800) {
@@ -774,7 +774,7 @@ BOOL SpNpcKatie::setupAct06() {
         _ZN12Unk_02086f8414clearFollowingEv(TownSessionState_GetKatieState(TownSessionState_Get()));
     }
     _ZN13NpcActionCtrl15requestPlayAnimEiijtt(&actionCtrl, 1, 0x122, 1, data_020c6cc8, 0);
-    unk_658.setTopic(4);
+    talk.setTopic(4);
     func_02003e70(&seEmitter, 0x7db, 0x7f, 0);
     return TRUE;
 }
@@ -786,10 +786,10 @@ BOOL SpNpcKatie::mainAct06() {
         a = rotY;
         Unk_020c0acc_Vec *src = &position;
         v = *src;
-        if (((model.unk_a4 << 4) >> 16) == 7) {
+        if (((model.curFrame << 4) >> 16) == 7) {
             Effect_Create(0x39, &v, &a, 0);
         }
-        if (((model.unk_a4 << 4) >> 16) == 9) {
+        if (((model.curFrame << 4) >> 16) == 9) {
             Effect_Create(0x38, &v, &a, 0);
         }
         if (_ZN13NpcActionCtrl12isActionDoneEv(&actionCtrl)) {
@@ -805,7 +805,7 @@ BOOL SpNpcKatie::mainAct06() {
 }
 
 BOOL SpNpcKatie::setupAct08() {
-    unk_724 = 0;
+    reunionStep = 0;
     return TRUE;
 }
 
@@ -815,13 +815,13 @@ BOOL SpNpcKatie::mainAct08() {
     Unk_020bfe30_Vec vec30;
     s32 r5 = Net_GetJoiningAid();
     CommManager *r7 = gCommManager;
-    s32 r6 = r7->unk_68;
+    s32 r6 = r7->localSlot;
     s32 s = PlayerData_GetBySessionSlot(r5);
-    switch (unk_724) {
+    switch (reunionStep) {
     case 0:
         if (Unk_020c06a0_IsMode2()) {
             if (PlayerActor_SetNetFollowPaused(1, r5)) {
-                unk_724 = 1;
+                reunionStep = 1;
             }
         }
         break;
@@ -829,27 +829,27 @@ BOOL SpNpcKatie::mainAct08() {
         vec30 = sSpNpcKatieReunionWalkPos;
         PlayerActor_RequestWalkTo(&vec30, 0x35c, r5);
         _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 1, 1, 0xe000, 0x10800, 0, 0, 0, 0, data_020c6cc8, 0);
-        unk_724 = 2;
+        reunionStep = 2;
         break;
     case 2:
         if (PlayerActor_IsScriptedWalking(r5)) {
             break;
         }
         if (_ZN13NpcActionCtrl12isActionDoneEv(&actionCtrl)) {
-            unk_724 = 3;
-            unk_658.setTopic(6);
+            reunionStep = 3;
+            talk.setTopic(6);
             _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(&lookAt, 0, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
             _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
             _ZN11NpcTalkCtrl11requestTalkEhh(&talkCtrl, 0, 1);
         }
         break;
     case 3:
-        if (unk_658.unk_3c->unk_04 == 5) {
-            _ZN15TalkWindowState11lockAdvanceEv(unk_658.unk_3c);
+        if (talk.unk_3c->unk_04 == 5) {
+            _ZN15TalkWindowState11lockAdvanceEv(talk.unk_3c);
             _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 2, 2, 0xea00, 0x12e00, 0, 0, 0, 0, data_020c6cc8, 0);
             SpNpcKaitlin_ChangeAct04();
             Camera_SetMode19();
-            unk_724 = 4;
+            reunionStep = 4;
         }
         break;
     case 4:
@@ -858,13 +858,13 @@ BOOL SpNpcKatie::mainAct08() {
             _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(&lookAt, 1, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
             s32 t = NpcRegistry_FindSpNpc(0x23);
             if (t) {
-                _ZN16ActorTalkRequest15setPartnerActorEP18Unk_02015b8c_Scene(&unk_658, t);
+                _ZN16ActorTalkRequest15setPartnerActorEP18Unk_02015b8c_Scene(&talk, t);
             }
             buf = 10;
-            _ZN15TalkWindowState14setNextMessageEPhPv(unk_658.unk_3c, &buf, (u32)sSpNpcKatieMsgKey);
-            unk_658.unk_3c->unk_08 = 1;
-            _ZN15TalkWindowState13unlockAdvanceEv(unk_658.unk_3c);
-            unk_724 = 5;
+            _ZN15TalkWindowState14setNextMessageEPhPv(talk.unk_3c, &buf, (u32)sSpNpcKatieMsgKey);
+            talk.unk_3c->unk_08 = 1;
+            _ZN15TalkWindowState13unlockAdvanceEv(talk.unk_3c);
+            reunionStep = 5;
         }
         break;
     case 5:
@@ -874,7 +874,7 @@ BOOL SpNpcKatie::mainAct08() {
             vec24.z = 0x13a00;
             s32 t = Math_AngleXZ(&position, &vec24);
             _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 3, 1, 0, 0, 0, t, 0, 0, data_020c6cc8, 0);
-            unk_724 = 6;
+            reunionStep = 6;
         }
         break;
     case 6:
@@ -882,19 +882,19 @@ BOOL SpNpcKatie::mainAct08() {
             _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 1, 1, 0xde00, 0x13a00, 0, 0, 0, 0, data_020c6cc8, 0);
             PlayerActor_RequestTurnTo(0, r5);
             SpNpcKaitlin_ChangeAct06();
-            unk_724 = 7;
+            reunionStep = 7;
         }
         break;
     case 7:
         if (_ZN13NpcActionCtrl12isActionDoneEv(&actionCtrl)) {
             _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 3, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
-            unk_724 = 8;
+            reunionStep = 8;
         }
         break;
     case 8:
         if (_ZN13NpcActionCtrl12isActionDoneEv(&actionCtrl)) {
             _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 1, 1, 0xf000, 0x1d000, 0, 0, 0, 0, data_020c6cc8, 0);
-            unk_724 = 9;
+            reunionStep = 9;
         }
         break;
     case 9:
@@ -903,7 +903,7 @@ BOOL SpNpcKatie::mainAct08() {
                 FieldInfoBalloon_ShowPleaseWait();
                 break;
             }
-            unk_724 = 10;
+            reunionStep = 10;
         }
         break;
     case 10:
@@ -925,7 +925,7 @@ BOOL SpNpcKatie::mainAct08() {
         } else {
             SceneWarp_RequestExit(Scene_GetWarpRequest(), 1);
         }
-        unk_724 = 11;
+        reunionStep = 11;
         break;
     }
     return TRUE;
@@ -956,34 +956,34 @@ void SpNpcKatieTalk::onEventTag(void *p) {
 
 void SpNpcKatieTalk::start(Unk_020c0538_Out *out) {
     void *t = PlayerData_GetCurrent();
-    out->unk_00 = (u32)sSpNpcKatieMsgKey;
+    out->msgKey = (u32)sSpNpcKatieMsgKey;
     switch (getTopic()) {
     case 0:
         _ZN12Unk_02097ff47setFlagEj(t, 0x33);
-        out->unk_04 = 0;
+        out->msgIndex = 0;
         break;
     case 1:
         _ZN12Unk_02097ff47setFlagEj(t, 0x33);
-        out->unk_04 = Random_GlobalBelow(3) + 1;
+        out->msgIndex = Random_GlobalBelow(3) + 1;
         break;
     case 2:
-        out->unk_04 = Random_GlobalBelow(3) + 4;
+        out->msgIndex = Random_GlobalBelow(3) + 4;
         Talk_CheckAndSetPlayerFlag(0x29, 1);
         break;
     case 3:
-        out->unk_04 = Random_GlobalBelow(3) + 7;
+        out->msgIndex = Random_GlobalBelow(3) + 7;
         break;
     case 4:
-        out->unk_04 = Random_GlobalBelow(3) + 0x19;
+        out->msgIndex = Random_GlobalBelow(3) + 0x19;
         break;
     case 5:
-        out->unk_04 = Random_GlobalBelow(3) + 0x22;
+        out->msgIndex = Random_GlobalBelow(3) + 0x22;
         break;
     case 6:
-        out->unk_04 = 0x14;
+        out->msgIndex = 0x14;
         break;
     }
-    katie->unk_70d = 0;
+    katie->escortDeclined = 0;
 }
 
 void SpNpcKatieTalk::onMessageStart() {
@@ -994,7 +994,7 @@ void SpNpcKatieTalk::onMessageStart() {
 
 void SpNpcKatieTalk::onMessageEnd() {
     if (msgIndex == 0x14) {
-        unk_3c->unk_14 = 0;
+        unk_3c->openMode = 0;
     }
 }
 
@@ -1017,7 +1017,7 @@ void SpNpcKatieTalk::onChoice() {
             if (Scene_GetCurrent() == 0) {
                 _ZN12Unk_02086f8414clearFollowingEv(TownSessionState_GetKatieState(TownSessionState_Get()));
             }
-            katie->unk_70d = 1;
+            katie->escortDeclined = 1;
             break;
         }
         break;

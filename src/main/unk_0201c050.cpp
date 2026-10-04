@@ -272,7 +272,7 @@ struct TalkChoiceTable {
     s8 cancelIndex;
 };
 
-struct CommManager { u8 pad[0x64]; u32 unk_64; };
+struct CommManager { u8 pad[0x64]; u32 myAid; };
 
 struct Unk_0201c050_Parent { u8 pad[0x2c]; void *unk_2c; };
 
@@ -14434,7 +14434,7 @@ BOOL VillagerTalk::hasPartner() {
 
 void VillagerTalk::refreshEventKind() {
     ((VillagerActor *)this)->eventKind = 0xb;
-    if (_ZN11CommManager12isSlotActiveEi((*(CommManager * *)&gCommManager), (*(CommManager * *)&gCommManager)->unk_64) == 0) {
+    if (_ZN11CommManager12isSlotActiveEi((*(CommManager * *)&gCommManager), (*(CommManager * *)&gCommManager)->myAid) == 0) {
         ((VillagerActor *)this)->eventKind = VillagerEvent_GetTodayIndex();
     }
 }
@@ -14504,7 +14504,7 @@ void VillagerMood::clearPending() {
 }
 
 void VillagerMood::addMood(u32 a, s32 b) {
-    if (_ZN11CommManager12isSlotActiveEi((*(CommManager * *)&gCommManager), (*(CommManager * *)&gCommManager)->unk_64) == 0) {
+    if (_ZN11CommManager12isSlotActiveEi((*(CommManager * *)&gCommManager), (*(CommManager * *)&gCommManager)->myAid) == 0) {
         if (a < 5) {
             u16 t = b * 0x4b0;
             if (a == pendingMood) {
@@ -14518,7 +14518,7 @@ void VillagerMood::addMood(u32 a, s32 b) {
 }
 
 void VillagerMood::requestApply() {
-    if (_ZN11CommManager12isSlotActiveEi((*(CommManager * *)&gCommManager), (*(CommManager * *)&gCommManager)->unk_64) == 0) {
+    if (_ZN11CommManager12isSlotActiveEi((*(CommManager * *)&gCommManager), (*(CommManager * *)&gCommManager)->myAid) == 0) {
         applyRequested = 1;
     }
 }
@@ -14861,7 +14861,7 @@ void VillagerMood::update(VillagerTalk *s) {
     void *a = Villager_GetState((void *)(*(u32 *)((void *)((u8 *)(s) + (0x82c)))));
     u32 b = ((s32 (*)())VillagerState_GetMood)();
     if (isActive()) {
-        if (_ZN11CommManager12isSlotActiveEi((*(CommManager * *)&gCommManager), (*(CommManager * *)&gCommManager)->unk_64) == 0) {
+        if (_ZN11CommManager12isSlotActiveEi((*(CommManager * *)&gCommManager), (*(CommManager * *)&gCommManager)->myAid) == 0) {
             if (_ZN11NpcTalkCtrl6isBusyEv(((void *)((u8 *)(s) + (0x618))))) {
                 b = 0;
                 setMoodAnimation(s, b);

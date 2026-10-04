@@ -14,7 +14,7 @@ public:
 };
 
 struct Unk_02003878_Obj {
-    void *unk_00;
+    void *vtable;
 };
 extern u32 data_0213bac4[];
 extern u32 data_0213b9e4[];
@@ -34,7 +34,7 @@ extern u32 data_020c6190[];
 extern const u32 sTvSoundSizes[];
 const u32 sTvSoundSizes[] = {0x10, 0x10, 0x10, 0x10, 0x14, 0x10, 0x10, 0x18, 0x14, 0x10, 0x14, 0x10};
 
-#define MK(sz, vt) { Unk_02003878_Obj *o = (Unk_02003878_Obj *)Heap_Alloc(heap, sz); if (o) { o->unk_00 = data_0213bac4; o->unk_00 = vt; } return (TvSound *)o; }
+#define MK(sz, vt) { Unk_02003878_Obj *o = (Unk_02003878_Obj *)Heap_Alloc(heap, sz); if (o) { o->vtable = data_0213bac4; o->vtable = vt; } return (TvSound *)o; }
 
 extern "C" TvSound *TvSound_Create(u32 heap, s32 type) {
     switch (type) {

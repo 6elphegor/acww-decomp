@@ -12,17 +12,17 @@ enum Unk_02094d60_Limit { Unk_02094d60_LIMIT_5 = 5, Unk_02094d60_LIMIT_6 = 6 };
 
 struct CommManager {
     u8 pad_00[0x64];
-    s32 unk_64;
-    s32 unk_68;
+    s32 myAid;
+    s32 localSlot;
 };
 
 struct Unk_02006d14 {
     u8 pad_00[0x08];
     u32 param;
     u8 pad_0c[0x5c - 0x0c];
-    Unk_02006d14_Vec unk_5c;
+    Unk_02006d14_Vec position;
     u8 pad_68[0x8e - 0x68];
-    s16 unk_8e;
+    s16 rotY;
     u8 pad_90[0x2d4 - 0x90];
     s32 bodyAnimFrame;
     u8 pad_2d8[0x44c - 0x2d8];
@@ -179,7 +179,7 @@ void func_02095218();
 
 extern "C" Unk_02006d14 *PlayerActor_Get(s32 idx) {
     if (idx == 4) {
-        idx = gCommManager->unk_68;
+        idx = gCommManager->localSlot;
     }
     return (Unk_02006d14 *)PlayerSessionTable_GetActor(&gPlayerSessionTable, idx);
 }
@@ -193,12 +193,12 @@ extern "C" u32 PlayerActor_GetNetStateVar(s32 idx) { return _ZN11CommManager10ge
 // ---------------------------------------------------------------- functions (file unk_02095670)
 extern "C" BOOL PlayerActor_GetSlotPosXZ(u8 *outb, s32 *x, s32 *y, s32 mode, s32 idx) {
     if (idx == 4) {
-        idx = gCommManager->unk_68;
+        idx = gCommManager->localSlot;
     }
     if (_ZN11CommManager11isLocalSlotEj(gCommManager, idx)) {
         Unk_02006d14 *e = PlayerActor_Get(4);
         if (e != NULL) {
-            s32 *p = (s32 *)&e->unk_5c;
+            s32 *p = (s32 *)&e->position;
             *outb = Scene_GetCurrent();
             *x = p[0];
             *y = p[2];
@@ -225,12 +225,12 @@ extern "C" BOOL PlayerActor_GetSlotAngle(s16 *out, s32 a, s32 idx)
 {
     u32 st;
     if (idx == 4) {
-        idx = gCommManager->unk_68;
+        idx = gCommManager->localSlot;
     }
     if (_ZN11CommManager11isLocalSlotEj(gCommManager, idx)) {
         Unk_02006d14 *o = PlayerActor_Get(4);
         if (o) {
-            *out = o->unk_8e;
+            *out = o->rotY;
             return TRUE;
         }
         return FALSE;
@@ -256,7 +256,7 @@ extern "C" BOOL PlayerActor_GetSlotAction(u32 *out, s32 a, s32 idx)
 {
     u8 buf;
     if (idx == 4) {
-        idx = gCommManager->unk_68;
+        idx = gCommManager->localSlot;
     }
     if (_ZN11CommManager11isLocalSlotEj(gCommManager, idx)) {
         Unk_02006d14 *o = PlayerActor_Get(4);
@@ -595,10 +595,10 @@ extern "C" s32 PlayerActor_GetResumeTransform(Unk_02006d14_V3 *out, s16 *outAng)
         s16 ang;
         s32 st;
         {
-            Unk_02006d14_V3 *pv = &o->unk_5c;
+            Unk_02006d14_V3 *pv = &o->position;
             saved = *pv;
         }
-        ang = o->unk_8e;
+        ang = o->rotY;
         st = o->action;
         switch (st) {
         case 16:
@@ -616,9 +616,9 @@ extern "C" s32 PlayerActor_GetResumeTransform(Unk_02006d14_V3 *out, s16 *outAng)
                 PlayerActor_EndStandUpSide2(o, 0x2c);
             }
             st = 2;
-            PlayerActor_OffsetByAngle(&tmp, o, &saved, (u16 *)&o->unk_8e, (s32 *)&data_020d0428);
+            PlayerActor_OffsetByAngle(&tmp, o, &saved, (u16 *)&o->rotY, (s32 *)&data_020d0428);
             {
-                Unk_02006d14_V3 *pv = &o->unk_5c;
+                Unk_02006d14_V3 *pv = &o->position;
                 *pv = tmp;
             }
             break;
@@ -642,12 +642,12 @@ extern "C" s32 PlayerActor_GetResumeTransform(Unk_02006d14_V3 *out, s16 *outAng)
             break;
         }
         {
-            Unk_02006d14_V3 *pv = &o->unk_5c;
+            Unk_02006d14_V3 *pv = &o->position;
             *out = *pv;
-            *outAng = o->unk_8e;
+            *outAng = o->rotY;
             *pv = saved;
         }
-        o->unk_8e = ang;
+        o->rotY = ang;
         return st;
     }
     return 0x93;
@@ -967,7 +967,7 @@ extern "C" void PlayerActor_RequestStowThenAct10(u32 a) {
         _ZN12Unk_02006d1412requestAct10Esji(o, 3, 5, -1);
         return;
     B:
-        PlayerActor_RequestStowItem(o, 0x10, a, o->unk_5c.x, o->unk_5c.z, o->unk_8e, 6, -1);
+        PlayerActor_RequestStowItem(o, 0x10, a, o->position.x, o->position.z, o->rotY, 6, -1);
     }
 }
 
@@ -991,13 +991,13 @@ extern "C" s32 PlayerActor_LocalRequestExitWalkOut() {
         o->actionPriority = _ZN12Unk_0200769421getActionDonePriorityEj(o, o->action);
         if (o->exitMode == 3) {
             s32 r5 = o->exitIndex;
-            h = o->unk_8e;
+            h = o->rotY;
             if (r5 != -1) {
                 SceneExit_GetDoor(Scene_GetWarpRequest(), r5, &pad, &h);
             }
             s32 t = Math_AngleToDir4(h);
-            Unk_02006d14_Vec *pv = &o->unk_5c;
-            v.x = o->unk_5c.x;
+            Unk_02006d14_Vec *pv = &o->position;
+            v.x = o->position.x;
             v.y = pv->y;
             v.z = pv->z;
             switch (t) {

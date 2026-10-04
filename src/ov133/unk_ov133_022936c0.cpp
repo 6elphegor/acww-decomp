@@ -107,7 +107,7 @@ extern void *data_ov133_02295298[2];
 struct CommManager {
     s32 isSlotActive(s32 v);
     u8 pad_00[0x64];
-    s32 unk_64;
+    s32 myAid;
 };
 
 class PlayerData {
@@ -1148,7 +1148,7 @@ void FriendCodeMenu::confirm() {
         ((MenuTabBar *)((void *(*)(void *))ProcBase_GetParent)(this))->requestSaveOnClose();
         notifyParent(6);
         MenuCtrl_SetFriendPageFromIndex();
-        if (gCommManager->isSlotActive(gCommManager->unk_64)) {
+        if (gCommManager->isSlotActive(gCommManager->myAid)) {
             switch (Net_GetMode()) {
             case 3:
             case 4: {

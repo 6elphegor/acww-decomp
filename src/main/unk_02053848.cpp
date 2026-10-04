@@ -4,22 +4,22 @@
 inline void *operator new(unsigned long, void *p) { return p; }
 
 struct Unk_02053a54_Obj {
-    u32 unk_00;
+    u32 flag;
     u8 pad_04[0x48];
-    u32 unk_4c;
-    u32 unk_50;
-    u32 unk_54;
+    u32 trans;
+    u32 transY;
+    u32 transZ;
 };
 
 struct Unk_02053a54_Hdr {
     u8 unk_00;
-    u8 unk_01;
+    u8 nodeId;
 };
 
 struct Unk_02053a54_Msg {
-    Unk_02053a54_Hdr *unk_00;
+    Unk_02053a54_Hdr *c;
     u8 pad_04[0xb0];
-    Unk_02053a54_Obj *unk_b4;
+    Unk_02053a54_Obj *pJntAnmResult;
 };
 
 struct Unk_02054584_Data {
@@ -27,35 +27,35 @@ struct Unk_02054584_Data {
     u32 unk_04;
     u32 unk_08;
     u8 pad_0c[0x1c];
-    u8 unk_28[0x24];
-    s32 unk_4c;
-    s32 unk_50;
-    s32 unk_54;
+    u8 rot[0x24];
+    s32 trans;
+    s32 transY;
+    s32 transZ;
 };
 
 struct Unk_02054628_Obj {
-    u8 *unk_00;
+    u8 *c;
     u8 pad_04[0xb0];
-    Unk_02054584_Data *unk_b4;
+    Unk_02054584_Data *pJntAnmResult;
     u8 pad_b8[0x1c];
-    u8 *unk_d4;
+    u8 *pResNodeInfo;
 };
 
 struct Unk_02054778_Info {
     u32 unk_00;
-    u16 unk_04;
+    u16 numFrame;
     u16 pad_06;
-    u32 unk_08;
+    u32 flag;
 };
 
 struct Unk_0205415c_Item {
     u8 pad_00[0x10];
-    u32 unk_10;
+    u32 next;
 };
 struct Unk_0205415c_Obj {
     u8 pad_00[8];
-    u8 unk_08[0x10];
-    Unk_0205415c_Item *unk_18;
+    u8 renderObj[0x10];
+    Unk_0205415c_Item *renderAnmJnt;
 };
 
 class Model {
@@ -133,7 +133,7 @@ class AnimModel : public CachedModel, public AnimFrameCtrl {
 public:
     AnimModel();
     virtual ~AnimModel();
-    Unk_02054584_Data *unk_b4;
+    Unk_02054584_Data *anmObj;
 
     void detachAnim();
     void detachVisAnim();
@@ -183,11 +183,11 @@ public:
     void onJointLayerAssign(u32 i);
     void onJointLayerRelease(u32 i);
 
-    void *unk_f4;
-    AnimFrameCtrl unk_f8;
-    JointBlend unk_110;
-    u32 unk_14c;
-    u32 unk_150;
+    void *layer2AnmObj;
+    AnimFrameCtrl layer2Frame;
+    JointBlend layer2Blend;
+    u32 layer2JointMask;
+    u32 layer2JointMaskHi;
 };
 
 class ThreeLayerAnimModel : public TwoLayerAnimModel {
@@ -208,18 +208,18 @@ public:
     void clearLayer3Joint(u32 i);
     void setLayer3Joint(u32 i);
 
-    void *unk_154;
-    AnimFrameCtrl unk_158;
-    JointBlend unk_170;
-    u32 unk_1ac;
-    u32 unk_1b0;
+    void *layer3AnmObj;
+    AnimFrameCtrl layer3Frame;
+    JointBlend layer3Blend;
+    u32 layer3JointMask;
+    u32 layer3JointMaskHi;
 };
 
 struct ModelSet {
     u32 unk_00;
-    u32 unk_04;
-    CachedModel *unk_08;
-    u8 *unk_0c;
+    u32 numModels;
+    CachedModel *models;
+    u8 *modelNames;
 };
 
 extern "C" {
@@ -423,29 +423,29 @@ extern "C" BOOL ModelSet_Load(ModelSet *t, void *file, void *heap)
         return FALSE;
     }
     u8 *hdr2 = (u8 *)NNS_G3dGetMdlSet(res);
-    t->unk_04 = hdr2[9];
-    size = t->unk_04 << 4;
-    t->unk_0c = (u8 *)Heap_Alloc(heap, size);
+    t->numModels = hdr2[9];
+    size = t->numModels << 4;
+    t->modelNames = (u8 *)Heap_Alloc(heap, size);
     {
         u8 *p = hdr2 + 8;
         p = p + *(u16 *)(hdr2 + 0xe);
-        MI_CpuCopy8(p + *(u16 *)(p + 2), t->unk_0c, size);
+        MI_CpuCopy8(p + *(u16 *)(p + 2), t->modelNames, size);
     }
-    t->unk_08 = (CachedModel *)Heap_Alloc(heap, t->unk_04 * 0x9c);
-    for (i = 0; i < t->unk_04; i++) {
-        new (&t->unk_08[i]) CachedModel();
+    t->models = (CachedModel *)Heap_Alloc(heap, t->numModels * 0x9c);
+    for (i = 0; i < t->numModels; i++) {
+        new (&t->models[i]) CachedModel();
     }
     hdr = NNS_G3dGetTex(res);
     Gfx3d_LoadTexAndPltt(hdr, 0);
     hdr = Gfx3d_CopyTex(hdr, heap);
-    for (i = 0; i < t->unk_04; i++) {
+    for (i = 0; i < t->numModels; i++) {
         u8 *h = (u8 *)NNS_G3dGetMdlSet(res);
         u8 *p = h + 8;
         u32 off = *(u16 *)(h + 0xe);
         u32 st = *(u16 *)(p + off);
         u8 *q = h + *(s32 *)(p + off + st * i + 4);
         void *r = Gfx3d_CopyModel(q, heap);
-        _ZN5Model18setResourceAndBindEP16Unk_020553f8_Resj(&t->unk_08[i], r, hdr);
+        _ZN5Model18setResourceAndBindEP16Unk_020553f8_Resj(&t->models[i], r, hdr);
     }
     Heap_Free(fileHeap, res);
     return TRUE;
@@ -454,10 +454,10 @@ extern "C" BOOL ModelSet_Load(ModelSet *t, void *file, void *heap)
 extern "C" void *ModelSet_Find(ModelSet *t, void *name)
 {
     u32 i = 0;
-    u32 n = t->unk_04;
+    u32 n = t->numModels;
     for (; i < n; i++) {
-        if (strcmp(name, t->unk_0c + i * 16) == 0) {
-            return &t->unk_08[i];
+        if (strcmp(name, t->modelNames + i * 16) == 0) {
+            return &t->models[i];
         }
     }
     return 0;
@@ -466,30 +466,30 @@ extern "C" void *ModelSet_Find(ModelSet *t, void *name)
 extern "C" BOOL ModelSet_Release(ModelSet *t)
 {
     BOOL r = TRUE;
-    if (t->unk_04 == 0) {
+    if (t->numModels == 0) {
         return r;
     }
-    for (u32 i = 0; i < t->unk_04; i++) {
-        r &= t->unk_08[i].release();
+    for (u32 i = 0; i < t->numModels; i++) {
+        r &= t->models[i].release();
     }
-    t->unk_04 = 0;
+    t->numModels = 0;
     return TRUE;
 }
 
 AnimModel::AnimModel()
 {
-    unk_b4 = 0;
+    anmObj = 0;
 }
 
 AnimModel::~AnimModel() {}
 
 BOOL AnimModel::allocAnmObj(void *x)
 {
-    if (unk_b4 != 0 || unk_5c == 0) {
+    if (anmObj != 0 || unk_5c == 0) {
         return FALSE;
     }
-    unk_b4 = (Unk_02054584_Data *)Gfx3d_AllocAnmObj(unk_5c, sJointAnmHeader2, x);
-    if (unk_b4 != 0) {
+    anmObj = (Unk_02054584_Data *)Gfx3d_AllocAnmObj(unk_5c, sJointAnmHeader2, x);
+    if (anmObj != 0) {
         return TRUE;
     }
     return FALSE;
@@ -499,7 +499,7 @@ void AnimModel::stepAnim()
 {
     AnimFrameCtrl &r = *this;
     _ZN13AnimFrameCtrl4stepEv(&r);
-    unk_b4->unk_00 = unk_a4;
+    anmObj->unk_00 = unk_a4;
 }
 
 s32 AnimModel::drawAnimated(void *q)
@@ -513,7 +513,7 @@ s32 AnimModel::drawAnimated(void *q)
 void AnimModel::setFrame(s32 v)
 {
     unk_a4 = v << 12;
-    unk_b4->unk_00 = unk_a4;
+    anmObj->unk_00 = unk_a4;
     if (renderJntRecord != 0) {
         renderObj |= 1;
     }
@@ -521,9 +521,9 @@ void AnimModel::setFrame(s32 v)
 
 extern "C" u16 Anim_GetFrameCountForMode(u32 kind, Unk_02054778_Info *p)
 {
-    u16 r = p->unk_04;
+    u16 r = p->numFrame;
     if (kind == 0 || kind == 2) {
-        u32 f = p->unk_08;
+        u32 f = p->flag;
         if (f & 2) {
             return r;
         }
@@ -541,109 +541,109 @@ void BlendAnimModel::initAnim(s32 a, s32 b, s32 c, u16 d, u16 e)
     }
     AnimFrameCtrl &r = *this;
     _ZN13AnimFrameCtrl5setupEihit(&r, e, b, c, d);
-    NNS_G3dAnmObjInit(unk_b4, a, unk_5c, 0);
-    unk_b4->unk_00 = unk_a4;
+    NNS_G3dAnmObjInit(anmObj, a, unk_5c, 0);
+    anmObj->unk_00 = unk_a4;
 }
 
 s32 AnimModel::attachAnim()
 {
-    NNS_G3dRenderObjAddAnmObj(&renderObj, unk_b4);
+    NNS_G3dRenderObjAddAnmObj(&renderObj, anmObj);
 }
 
 void AnimModel::detachJointAnim()
 {
-    if (unk_b4 != 0) {
+    if (anmObj != 0) {
         NNS_G3dRenderObjRemoveAnmObj(&renderObj, renderAnmJnt);
-        unk_b4 = 0;
+        anmObj = 0;
     }
 }
 
 void AnimModel::detachVisAnim()
 {
-    if (unk_b4 != 0) {
+    if (anmObj != 0) {
         NNS_G3dRenderObjRemoveAnmObj(&renderObj, renderAnmVis);
-        unk_b4 = 0;
+        anmObj = 0;
     }
 }
 
 void AnimModel::detachAnim()
 {
-    if (unk_b4 != 0) {
-        if (renderAnmJnt == unk_b4) {
+    if (anmObj != 0) {
+        if (renderAnmJnt == anmObj) {
             NNS_G3dRenderObjRemoveAnmObj(&renderObj, renderAnmJnt);
-            unk_b4 = 0;
-        } else if (renderAnmVis == unk_b4) {
+            anmObj = 0;
+        } else if (renderAnmVis == anmObj) {
             NNS_G3dRenderObjRemoveAnmObj(&renderObj, renderAnmVis);
-            unk_b4 = 0;
+            anmObj = 0;
         }
     }
 }
 
 extern "C" void JointCb_UseRestTranslation(Unk_02054628_Obj *o, s32 x)
 {
-    u32 idx = o->unk_00[1];
+    u32 idx = o->c[1];
     if (idx >= 2) {
-        u8 *b = o->unk_d4;
+        u8 *b = o->pResNodeInfo;
         u32 off = *(u16 *)(b + 6);
         u8 *t = b + off;
         u32 st = *(u16 *)(b + off);
         u8 *e = b + *(s32 *)(t + st * idx + 4);
         s32 *v = (s32 *)(e + 4);
-        Unk_02054584_Data *d = o->unk_b4;
-        d->unk_4c = v[0];
-        d->unk_50 = v[1];
-        d->unk_54 = v[2];
+        Unk_02054584_Data *d = o->pJntAnmResult;
+        d->trans = v[0];
+        d->transY = v[1];
+        d->transZ = v[2];
     } else if (idx == 1) {
         if (x != 0) {
-            u8 *b = o->unk_d4;
+            u8 *b = o->pResNodeInfo;
             u32 off = *(u16 *)(b + 6);
             u8 *t = b + off;
-            Unk_02054584_Data *d = o->unk_b4;
-            s32 old = d->unk_50;
+            Unk_02054584_Data *d = o->pJntAnmResult;
+            s32 old = d->transY;
             u32 st = *(u16 *)(b + off);
             u8 *e = b + *(s32 *)(t + st * idx + 4);
-            d->unk_50 = old + (*(s32 *)(e + 8) - x);
+            d->transY = old + (*(s32 *)(e + 8) - x);
         }
     }
 }
 
 extern "C" void JointCb_CalcCpuMatrix(void *unused, Unk_02054628_Obj *o, void *p)
 {
-    u32 t = *o->unk_00 & 0xe0;
+    u32 t = *o->c & 0xe0;
     if (t == 0x40) {
-        CpuMtx_RestoreFromStack(o->unk_00[4]);
+        CpuMtx_RestoreFromStack(o->c[4]);
     } else if (t == 0x60) {
-        CpuMtx_RestoreFromStack(o->unk_00[5]);
+        CpuMtx_RestoreFromStack(o->c[5]);
     }
     if (p != 0) {
-        Unk_02054584_Data *d = o->unk_b4;
-        CpuMtx_MultRotScaledTrans(d->unk_28, &d->unk_4c, p);
+        Unk_02054584_Data *d = o->pJntAnmResult;
+        CpuMtx_MultRotScaledTrans(d->rot, &d->trans, p);
     } else {
-        Unk_02054584_Data *d = o->unk_b4;
+        Unk_02054584_Data *d = o->pJntAnmResult;
         u32 f = d->unk_00;
         if (f & 2) {
             if (!(f & 4)) {
-                CpuMtx_MultTrans(&d->unk_4c);
+                CpuMtx_MultTrans(&d->trans);
             }
         } else if (f & 4) {
-            CpuMtx_MultRot(d->unk_28);
+            CpuMtx_MultRot(d->rot);
         } else {
-            CpuMtx_MultRotTrans(d->unk_28, &d->unk_4c);
+            CpuMtx_MultRotTrans(d->rot, &d->trans);
         }
     }
     if (t == 0x20 || t == 0x60) {
-        CpuMtx_StoreToStack(o->unk_00[4]);
+        CpuMtx_StoreToStack(o->c[4]);
     }
 }
 
 u32 BlendAnimModel::getAnmRes()
 {
-    return unk_b4->unk_08;
+    return anmObj->unk_08;
 }
 
 Unk_02054584_Data *BlendAnimModel::getAnmObj()
 {
-    return unk_b4;
+    return anmObj;
 }
 
 BlendAnimModel::BlendAnimModel()
@@ -669,14 +669,14 @@ void BlendAnimModel::onJointCalcPre(BlendAnimModel *x)
 
 void BlendAnimModel::applyJointBlend(BlendAnimModel *x)
 {
-    Unk_02054584_Data *d = x->unk_b4;
+    Unk_02054584_Data *d = x->anmObj;
     if (d->unk_00 & 4) {
-        d->unk_4c = 0;
-        d->unk_50 = 0;
-        d->unk_54 = 0;
+        d->trans = 0;
+        d->transY = 0;
+        d->transZ = 0;
     }
     if (d->unk_00 & 2) {
-        MTX_Identity33_(d->unk_28);
+        MTX_Identity33_(d->rot);
     }
     if (unk_f0 != 0) {
         JointBlend &r = *this;
@@ -707,9 +707,9 @@ void BlendAnimModel::playBlend(s32 a, s32 b, s32 c, s32 d, u16 e, u16 f)
 
 TwoLayerAnimModel::TwoLayerAnimModel()
 {
-    unk_f4 = 0;
-    unk_14c = 0;
-    unk_150 = 0;
+    layer2AnmObj = 0;
+    layer2JointMask = 0;
+    layer2JointMaskHi = 0;
 }
 
 TwoLayerAnimModel::~TwoLayerAnimModel() {}
@@ -717,10 +717,10 @@ TwoLayerAnimModel::~TwoLayerAnimModel() {}
 extern "C" void AnimModel_SwitchAnmObj(void *pv, void *qv) {
     Unk_0205415c_Obj *p = (Unk_0205415c_Obj *)pv;
     Unk_0205415c_Item *q = (Unk_0205415c_Item *)qv;
-    Unk_0205415c_Item *cur = p->unk_18;
-    if (cur != q && cur != NULL && cur->unk_10 == 0) {
-        NNS_G3dRenderObjRemoveAnmObj(&p->unk_08, cur);
-        NNS_G3dRenderObjAddAnmObj(&p->unk_08, q);
+    Unk_0205415c_Item *cur = p->renderAnmJnt;
+    if (cur != q && cur != NULL && cur->next == 0) {
+        NNS_G3dRenderObjRemoveAnmObj(&p->renderObj, cur);
+        NNS_G3dRenderObjAddAnmObj(&p->renderObj, q);
     }
 }
 
@@ -730,65 +730,65 @@ void TwoLayerAnimModel::onJointLayerAssign(u32 i) {}
 
 void TwoLayerAnimModel::setLayer2Joint(u32 i) {
     if (i >= 0x20) {
-        unk_150 |= 1 << (i - 0x20);
+        layer2JointMaskHi |= 1 << (i - 0x20);
     } else {
-        unk_14c |= 1 << i;
+        layer2JointMask |= 1 << i;
     }
 }
 
 void TwoLayerAnimModel::clearLayer2Joint(u32 i) {
     if (i >= 0x20) {
-        unk_150 &= ~(1 << (i - 0x20));
+        layer2JointMaskHi &= ~(1 << (i - 0x20));
     } else {
-        unk_14c &= ~(1 << i);
+        layer2JointMask &= ~(1 << i);
     }
 }
 
 BOOL TwoLayerAnimModel::isLayer2Joint(u32 i) {
     if (i >= 0x20) {
-        if ((unk_150 & (1 << (i - 0x20))) == 0) {
+        if ((layer2JointMaskHi & (1 << (i - 0x20))) == 0) {
             return FALSE;
         }
         return TRUE;
     }
-    if ((unk_14c & (1 << i)) == 0) {
+    if ((layer2JointMask & (1 << i)) == 0) {
         return FALSE;
     }
     return TRUE;
 }
 
 void TwoLayerAnimModel::captureLayer2Pose(Unk_02053a54_Msg *m) {
-    if (unk_110.unk_f0 != 0) {
-        _ZN10JointBlend11capturePoseEP16Unk_02056160_Arg(&unk_110, m);
+    if (layer2Blend.unk_f0 != 0) {
+        _ZN10JointBlend11capturePoseEP16Unk_02056160_Arg(&layer2Blend, m);
     }
 }
 
 void TwoLayerAnimModel::onJointCalcPreLayer2(Unk_02053a54_Msg *m) {
     if (func_01ffcc10() == 0) {
-        if (isLayer2Joint(m->unk_00->unk_01)) {
-            AnimModel_SwitchAnmObj(this, unk_f4);
+        if (isLayer2Joint(m->c->nodeId)) {
+            AnimModel_SwitchAnmObj(this, layer2AnmObj);
             captureLayer2Pose(m);
         } else {
-            AnimModel_SwitchAnmObj(this, unk_b4);
+            AnimModel_SwitchAnmObj(this, anmObj);
             captureJointPose((BlendAnimModel *)m);
         }
     }
 }
 
 void TwoLayerAnimModel::applyLayer2Blend(Unk_02053a54_Msg *m) {
-    if ((m->unk_b4->unk_00 & 4) != 0) {
-        m->unk_b4->unk_4c = 0;
-        m->unk_b4->unk_50 = 0;
-        m->unk_b4->unk_54 = 0;
+    if ((m->pJntAnmResult->flag & 4) != 0) {
+        m->pJntAnmResult->trans = 0;
+        m->pJntAnmResult->transY = 0;
+        m->pJntAnmResult->transZ = 0;
     }
-    if (unk_110.unk_f0 != 0) {
-        _ZN10JointBlend9blendPoseEP16Unk_02056160_Arg(&unk_110, m);
+    if (layer2Blend.unk_f0 != 0) {
+        _ZN10JointBlend9blendPoseEP16Unk_02056160_Arg(&layer2Blend, m);
     }
 }
 
 void TwoLayerAnimModel::onJointCalcPostLayer2(Unk_02053a54_Msg *m) {
     if (func_01ffcc10() == 0) {
-        if (isLayer2Joint(m->unk_00->unk_01)) {
+        if (isLayer2Joint(m->c->nodeId)) {
             applyLayer2Blend(m);
         } else {
             applyJointBlend((BlendAnimModel *)m);
@@ -800,8 +800,8 @@ BOOL TwoLayerAnimModel::allocLayerAnims(u32 a) {
     if (!allocAnmObj((void *)a)) {
         return FALSE;
     }
-    unk_f4 = Gfx3d_AllocAnmObj(unk_5c, sJointAnmHeader2, (void *)a);
-    if (unk_f4 != NULL) {
+    layer2AnmObj = Gfx3d_AllocAnmObj(unk_5c, sJointAnmHeader2, (void *)a);
+    if (layer2AnmObj != NULL) {
         return TRUE;
     }
     return FALSE;
@@ -809,19 +809,19 @@ BOOL TwoLayerAnimModel::allocLayerAnims(u32 a) {
 
 void TwoLayerAnimModel::updateLayers() {
     stepBlend();
-    if (unk_14c != 0 || unk_150 != 0) {
-        if (_ZN10JointBlend7advanceEv(&unk_110) != 0 && (modelFlags & 0x4000) != 0) {
+    if (layer2JointMask != 0 || layer2JointMaskHi != 0) {
+        if (_ZN10JointBlend7advanceEv(&layer2Blend) != 0 && (modelFlags & 0x4000) != 0) {
             clearLayer2Mask();
             modelFlags = modelFlags & 0xffffbfff;
         }
-        _ZN13AnimFrameCtrl4stepEv(&unk_f8);
-        *(u32 *)unk_f4 = unk_f8.unk_a4;
+        _ZN13AnimFrameCtrl4stepEv(&layer2Frame);
+        *(u32 *)layer2AnmObj = layer2Frame.unk_a4;
     }
 }
 
 void TwoLayerAnimModel::drawLayered(u32 a) {
     _ZN9AnimModel12drawAnimatedEPv(this);
-    AnimModel_SwitchAnmObj(this, unk_b4);
+    AnimModel_SwitchAnmObj(this, anmObj);
 }
 
 extern "C" void BlendAnimModel_Play(void *p, s32 a, s32 b, s32 c, s32 d, u16 e, u16 f) {
@@ -829,12 +829,12 @@ extern "C" void BlendAnimModel_Play(void *p, s32 a, s32 b, s32 c, s32 d, u16 e, 
 }
 
 void TwoLayerAnimModel::playLayer2(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, BOOL g) {
-    _ZN10JointBlend5startEi(&unk_110, b);
+    _ZN10JointBlend5startEi(&layer2Blend, b);
     if (*(u16 *)&f == 0) {
         *(u16 *)&f = Anim_GetFrameCountForMode(c, (Unk_02054778_Info *)a);
     }
-    _ZN13AnimFrameCtrl5setupEihit(&unk_f8, *(u16 *)&f, c, d, *(u16 *)&e);
-    NNS_G3dAnmObjInit(unk_f4, a, unk_5c, 0);
+    _ZN13AnimFrameCtrl5setupEihit(&layer2Frame, *(u16 *)&f, c, d, *(u16 *)&e);
+    NNS_G3dAnmObjInit(layer2AnmObj, a, unk_5c, 0);
     if (g != 0) {
         modelFlags = modelFlags | 0x4000;
     } else {
@@ -867,14 +867,14 @@ void TwoLayerAnimModel::releaseJointsFromLayer2(u32 a, u32 b) {
 }
 
 void TwoLayerAnimModel::clearLayer2Mask() {
-    unk_150 = 0;
-    unk_14c = unk_150;
+    layer2JointMaskHi = 0;
+    layer2JointMask = layer2JointMaskHi;
 }
 
 ThreeLayerAnimModel::ThreeLayerAnimModel() {
-    unk_154 = NULL;
-    unk_1ac = 0;
-    unk_1b0 = 0;
+    layer3AnmObj = NULL;
+    layer3JointMask = 0;
+    layer3JointMaskHi = 0;
 }
 
 ThreeLayerAnimModel::~ThreeLayerAnimModel() {
@@ -882,63 +882,63 @@ ThreeLayerAnimModel::~ThreeLayerAnimModel() {
 
 void ThreeLayerAnimModel::setLayer3Joint(u32 i) {
     if (i >= 0x20) {
-        unk_1b0 |= 1 << (i - 0x20);
+        layer3JointMaskHi |= 1 << (i - 0x20);
     } else {
-        unk_1ac |= 1 << i;
+        layer3JointMask |= 1 << i;
     }
 }
 
 void ThreeLayerAnimModel::clearLayer3Joint(u32 i) {
     if (i >= 0x20) {
-        unk_1b0 &= ~(1 << (i - 0x20));
+        layer3JointMaskHi &= ~(1 << (i - 0x20));
     } else {
-        unk_1ac &= ~(1 << i);
+        layer3JointMask &= ~(1 << i);
     }
 }
 
 BOOL ThreeLayerAnimModel::isLayer3Joint(u32 i) {
     if (i >= 0x20) {
-        if ((unk_1b0 & (1 << (i - 0x20))) == 0) {
+        if ((layer3JointMaskHi & (1 << (i - 0x20))) == 0) {
             return FALSE;
         }
         return TRUE;
     }
-    if ((unk_1ac & (1 << i)) == 0) {
+    if ((layer3JointMask & (1 << i)) == 0) {
         return FALSE;
     }
     return TRUE;
 }
 
 void ThreeLayerAnimModel::captureLayer3Pose(Unk_02053a54_Msg *m) {
-    if (unk_170.unk_f0 != 0) {
-        _ZN10JointBlend11capturePoseEP16Unk_02056160_Arg(&unk_170, m);
+    if (layer3Blend.unk_f0 != 0) {
+        _ZN10JointBlend11capturePoseEP16Unk_02056160_Arg(&layer3Blend, m);
     }
 }
 
 void ThreeLayerAnimModel::onJointCalcPreLayer3(Unk_02053a54_Msg *m) {
     if (func_01ffcc10() == 0) {
-        u32 t = m->unk_00->unk_01;
+        u32 t = m->c->nodeId;
         u32 v;
         if (t >= 0x20) {
-            v = unk_1b0 & (1 << (t - 0x20));
+            v = layer3JointMaskHi & (1 << (t - 0x20));
         } else {
-            v = unk_1ac & (1 << t);
+            v = layer3JointMask & (1 << t);
         }
         if (v != 0) {
-            AnimModel_SwitchAnmObj(this, unk_154);
+            AnimModel_SwitchAnmObj(this, layer3AnmObj);
             captureLayer3Pose(m);
         } else {
             u32 w;
             if (t >= 0x20) {
-                w = unk_150 & (1 << (t - 0x20));
+                w = layer2JointMaskHi & (1 << (t - 0x20));
             } else {
-                w = unk_14c & (1 << t);
+                w = layer2JointMask & (1 << t);
             }
             if (w != 0) {
-                AnimModel_SwitchAnmObj(this, unk_f4);
+                AnimModel_SwitchAnmObj(this, layer2AnmObj);
                 captureLayer2Pose(m);
             } else {
-                AnimModel_SwitchAnmObj(this, unk_b4);
+                AnimModel_SwitchAnmObj(this, anmObj);
                 captureJointPose((BlendAnimModel *)m);
             }
         }
@@ -946,23 +946,23 @@ void ThreeLayerAnimModel::onJointCalcPreLayer3(Unk_02053a54_Msg *m) {
 }
 
 void ThreeLayerAnimModel::applyLayer3Blend(Unk_02053a54_Msg *m) {
-    if ((m->unk_b4->unk_00 & 4) != 0) {
-        m->unk_b4->unk_4c = 0;
-        m->unk_b4->unk_50 = 0;
-        m->unk_b4->unk_54 = 0;
+    if ((m->pJntAnmResult->flag & 4) != 0) {
+        m->pJntAnmResult->trans = 0;
+        m->pJntAnmResult->transY = 0;
+        m->pJntAnmResult->transZ = 0;
     }
-    if (unk_170.unk_f0 != 0) {
-        _ZN10JointBlend9blendPoseEP16Unk_02056160_Arg(&unk_170, m);
+    if (layer3Blend.unk_f0 != 0) {
+        _ZN10JointBlend9blendPoseEP16Unk_02056160_Arg(&layer3Blend, m);
     }
 }
 
 void ThreeLayerAnimModel::onJointCalcPostLayer3(Unk_02053a54_Msg *m) {
     if (func_01ffcc10() == 0) {
-        u32 x = unk_1b0 | (unk_1ac | (unk_14c | unk_150));
+        u32 x = layer3JointMaskHi | (layer3JointMask | (layer2JointMask | layer2JointMaskHi));
         if (x == 0) {
             applyJointBlend((BlendAnimModel *)m);
         } else {
-            u32 t = m->unk_00->unk_01;
+            u32 t = m->c->nodeId;
             if ((x & (1 << (t & 0x1f))) == 0) {
                 applyJointBlend((BlendAnimModel *)m);
             } else if (isLayer3Joint(t)) {
@@ -980,8 +980,8 @@ BOOL ThreeLayerAnimModel::allocLayer3Anims(u32 a) {
     if (!allocLayerAnims(a)) {
         return FALSE;
     }
-    unk_154 = Gfx3d_AllocAnmObj(unk_5c, sJointAnmHeader2, (void *)a);
-    if (unk_154 != NULL) {
+    layer3AnmObj = Gfx3d_AllocAnmObj(unk_5c, sJointAnmHeader2, (void *)a);
+    if (layer3AnmObj != NULL) {
         return TRUE;
     }
     return FALSE;
@@ -989,25 +989,25 @@ BOOL ThreeLayerAnimModel::allocLayer3Anims(u32 a) {
 
 void ThreeLayerAnimModel::updateLayers3() {
     updateLayers();
-    if (unk_1ac != 0 || unk_1b0 != 0) {
-        if (_ZN10JointBlend7advanceEv(&unk_170) != 0 && (modelFlags & 0x8000) != 0) {
+    if (layer3JointMask != 0 || layer3JointMaskHi != 0) {
+        if (_ZN10JointBlend7advanceEv(&layer3Blend) != 0 && (modelFlags & 0x8000) != 0) {
             ThreeLayerAnimModel_ClearLayer3Mask(this);
             modelFlags = modelFlags & 0xffff7fff;
         }
-        _ZN13AnimFrameCtrl4stepEv(&unk_158);
-        *(u32 *)unk_154 = unk_158.unk_a4;
+        _ZN13AnimFrameCtrl4stepEv(&layer3Frame);
+        *(u32 *)layer3AnmObj = layer3Frame.unk_a4;
     }
 }
 
 extern "C" void BlendAnimModel_Play2(void *p, s32 a, s32 b, s32 c, s32 d, u16 e, u16 f) { BlendAnimModel_Play(p, a, b, c, d, e, f); }
 
 void ThreeLayerAnimModel::playLayer3(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, BOOL g) {
-    _ZN10JointBlend5startEi(&unk_170, b);
+    _ZN10JointBlend5startEi(&layer3Blend, b);
     if (*(u16 *)&f == 0) {
         *(u16 *)&f = Anim_GetFrameCountForMode(c, (Unk_02054778_Info *)a);
     }
-    _ZN13AnimFrameCtrl5setupEihit(&unk_158, *(u16 *)&f, c, d, *(u16 *)&e);
-    NNS_G3dAnmObjInit(unk_154, a, unk_5c, 0);
+    _ZN13AnimFrameCtrl5setupEihit(&layer3Frame, *(u16 *)&f, c, d, *(u16 *)&e);
+    NNS_G3dAnmObjInit(layer3AnmObj, a, unk_5c, 0);
     if (g != 0) {
         modelFlags = modelFlags | 0x8000;
     } else {
@@ -1015,7 +1015,7 @@ void ThreeLayerAnimModel::playLayer3(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, B
     }
 }
 
-void ThreeLayerAnimModel::checkLayer3Finished() { _ZN13AnimFrameCtrl10isFinishedEv(&unk_158); }
+void ThreeLayerAnimModel::checkLayer3Finished() { _ZN13AnimFrameCtrl10isFinishedEv(&layer3Frame); }
 
 void ThreeLayerAnimModel::playLayer3FromBase(u32 a, u32 b) {
     if (a == 0) {

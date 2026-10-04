@@ -29,29 +29,29 @@ extern u32 gPlayerHeadModelHeap;
 class Unk_020b83b0 {
 public:
     u32 unk_04;
-    u32 unk_08;
-    u8 unk_0c;
-    Unk_020b83b0() : unk_04(0), unk_08(0), unk_0c(0xff) {}
+    u32 next;
+    u8 priority;
+    Unk_020b83b0() : unk_04(0), next(0), priority(0xff) {}
 };
 
 class VramTask : public Unk_020b83b0 {
 public:
-    u8 unk_0d;
-    u8 unk_0e;
-    u8 unk_0f;
+    u8 state;
+    u8 kind;
+    u8 cost;
     VramTask();
     virtual BOOL execute() = 0;
 };
 
 struct TexTransfer {
-    u32 unk_00;
-    u32 unk_04;
-    u32 unk_08;
+    u32 dstAddr;
+    u32 src;
+    u32 size;
 };
 
 class TexVramTask : public VramTask {
 public:
-    TexTransfer unk_10;
+    TexTransfer xfer;
     TexVramTask();
     virtual BOOL execute();
     void cancel(void);
@@ -111,13 +111,13 @@ public:
 };
 
 struct Unk_0205dd38_Pair {
-    u32 unk_00;
-    u32 unk_04;
+    u32 hairModelFile;
+    u32 headgearModelFile;
 };
 
 struct Unk_0205dd38_Bytes {
-    u8 unk_00;
-    u8 unk_01;
+    u8 hairModelId;
+    u8 headgearModelId;
 };
 
 class PlayerHeadBankData {
@@ -295,10 +295,10 @@ extern "C" s32 PlayerHead_GetPlttVramSize(void) { return 0xc0; }
 PlayerHeadBankData::PlayerHeadBankData() {
     for (s32 i = 0; i < 4; i++) {
         unk_00[i] = 0;
-        unk_190[i].unk_00 = 0;
-        unk_190[i].unk_04 = 0;
-        unk_1b0[i].unk_00 = 0x9e;
-        unk_1b0[i].unk_01 = 0x9e;
+        unk_190[i].hairModelFile = 0;
+        unk_190[i].headgearModelFile = 0;
+        unk_1b0[i].hairModelId = 0x9e;
+        unk_1b0[i].headgearModelId = 0x9e;
     }
 }
 
@@ -361,12 +361,12 @@ extern "C" void PlayerHead_Release(u8 *p) {
 }
 
 extern "C" void PlayerHead_CancelTexUpload(u8 *p) {
-    if (Unk_0205d4e4_IsOne(PlayerHead_GetTexTask(p, 0)->unk_0d)) {
+    if (Unk_0205d4e4_IsOne(PlayerHead_GetTexTask(p, 0)->state)) {
         PlayerHead_GetTexTask(p, 0)->cancel();
     } else {
         PlayerHead_GetTexTask(p, 0)->clear();
     }
-    if (Unk_0205d4e4_IsOne(PlayerHead_GetTexTask(p, 1)->unk_0d)) {
+    if (Unk_0205d4e4_IsOne(PlayerHead_GetTexTask(p, 1)->state)) {
         PlayerHead_GetTexTask(p, 1)->cancel();
     } else {
         PlayerHead_GetTexTask(p, 1)->clear();
@@ -432,7 +432,7 @@ extern "C" void PlayerHead_RelocateTextures(u8 *p) {
 extern "C" BOOL PlayerHead_PollTexUpload(u8 *p) {
     BOOL r6 = FALSE, r4 = FALSE;
     TexVramTask *o = PlayerHead_GetTexTask(p, r6);
-    u8 st = o->unk_0d;
+    u8 st = o->state;
     if (Unk_0205d4e4_IsTwo(st)) {
         r6 = TRUE;
     } else if (!Unk_0205d4e4_IsOne(st)) {
@@ -441,7 +441,7 @@ extern "C" BOOL PlayerHead_PollTexUpload(u8 *p) {
     if (PlayerHead_GetModelId(p, 1) < 0x9e) {
         void *d = PlayerHead_GetModelFile(p, 1);
         TexVramTask *o2 = PlayerHead_GetTexTask(p, 1);
-        u8 st2 = o2->unk_0d;
+        u8 st2 = o2->state;
         if (Unk_0205d4e4_IsTwo(st2)) {
             r4 = TRUE;
         } else if (!Unk_0205d4e4_IsOne(st2)) {

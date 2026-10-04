@@ -241,7 +241,7 @@ public:
     }
 struct ThreeLayerAnimModel {
     u8 pad_00[0xa4];
-    s32 unk_a4;
+    s32 curFrame;
     u8 pad_a8[0x2a0 - 0xec - 0xa8];
     ThreeLayerAnimModel();
     ~ThreeLayerAnimModel();
@@ -265,7 +265,7 @@ MEMBER(Unk_0201a13c, 0x49c - 0x420);
 MEMBER(CollisionState, 0x30);
 struct Unk_02088d00 {
     u8 pad_00[0x1c];
-    u32 unk_1c;
+    u32 groups;
     u8 pad_20[0x514 - 0x4cc - 0x20];
     Unk_02088d00();
     ~Unk_02088d00();
@@ -566,7 +566,7 @@ BOOL SpNpcCeleste::vfunc_00() {
     }
     homeAngle = rotY;
     sleepBlend = 0;
-    collider.unk_1c |= 2;
+    collider.groups |= 2;
     talk.setTopic(5);
     if (Clock_GetTimeOfDay() == 2 || Clock_GetTimeOfDay() == 3 || CommManager_isOnline(gCommManager) != 0 ||
         *DebugVar_GetPtr(0, 0x4a) != 0) {

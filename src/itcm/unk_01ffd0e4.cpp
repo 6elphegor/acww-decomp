@@ -14,20 +14,20 @@ struct TreeNode {
     /* 0x04 */ TreeNode *unk_04;
     /* 0x08 */ TreeNode *unk_08;
     /* 0x0c */ TreeNode *unk_0c;
-    /* 0x10 */ ProcBase *unk_10; // owner
+    /* 0x10 */ ProcBase *owner; // owner
 };
 
 struct QNode {
-    /* 0x00 */ QNode *unk_00;
-    /* 0x04 */ QNode *unk_04;
-    /* 0x08 */ ProcBase *unk_08;
-    /* 0x0c */ u16 unk_0c;
-    /* 0x0e */ u16 unk_0e;
+    /* 0x00 */ QNode *prev;
+    /* 0x04 */ QNode *next;
+    /* 0x08 */ ProcBase *owner;
+    /* 0x0c */ u16 priority;
+    /* 0x0e */ u16 pendingPriority;
 };
 
 struct FlagView {
     u8 pad_00[0x13];
-    u8 unk_13;
+    u8 procFlags;
 };
 
 struct QList {
@@ -107,7 +107,7 @@ static inline BOOL testBit(u8 *p, u32 m) {
 }
 
 static inline BOOL changed(QNode *q) {
-    return q->unk_0e != q->unk_0c;
+    return q->pendingPriority != q->priority;
 }
 
 extern "C" s32 ProcBase_RunPhase(ProcBase *p, PmfBool a, PmfBool b, PmfStatus c) {
@@ -169,7 +169,7 @@ extern "C" BOOL func_01ffd1b4(ProcBase *self) {
         func_020e7930(&gTaskDeleteList, &self->executeNode);
         self->state = 2;
         for (TreeNode *c = self->treeNode.unk_04; c != NULL; c = c->unk_0c) {
-            ProcBase_RequestDelete(c->unk_10);
+            ProcBase_RequestDelete(c->owner);
         }
     } else {
         ProcBase *parent = ProcBase_GetParent(self);
@@ -190,14 +190,14 @@ extern "C" BOOL func_01ffd1b4(ProcBase *self) {
             if (changed(q)) {
                 func_020e79a0(&gTaskExecuteList, &self->executeNode);
                 q = &self->executeNode;
-                q->unk_0c = q->unk_0e;
+                q->priority = q->pendingPriority;
                 Task_InsertByPriority(&gTaskExecuteList, q);
             }
             q = &self->drawNode;
             if (changed(q)) {
                 func_020e79a0(&gTaskDrawList, &self->drawNode);
                 q = &self->drawNode;
-                q->unk_0c = q->unk_0e;
+                q->priority = q->pendingPriority;
                 Task_InsertByPriority(&gTaskDrawList, q);
             }
         } else if (!isTwo(self->state)) {

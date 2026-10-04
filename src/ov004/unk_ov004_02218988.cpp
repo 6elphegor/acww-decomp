@@ -82,8 +82,8 @@ struct Unk_ov004_0224c7d0_Ent {
 };
 
 struct Unk_ov004_022191f8_Out {
-    u32 unk_00;
-    u8 unk_04;
+    u32 fileName;
+    u8 msgIndex;
 };
 
 struct Unk_ov004_02218cdc_Rec {
@@ -101,7 +101,7 @@ struct Unk_ov004_02219e0c_V {
 };
 struct Unk_ov004_02219e0c_Obj {
     u8 pad_00[0x5c];
-    Unk_ov004_02219e0c_V unk_5c;
+    Unk_ov004_02219e0c_V position;
 };
 
 struct Unk_ov004_SceneEntry {
@@ -245,7 +245,7 @@ struct Unk_0201a794 { Unk_0201a794(); ~Unk_0201a794(); u32 pad[0x68 / 4]; };
 struct NpcSpeechState { NpcSpeechState(); ~NpcSpeechState(); u32 pad[8 / 4]; };
 struct Unk_0201a13c { Unk_0201a13c(); ~Unk_0201a13c(); u32 pad[0x7c / 4]; };
 struct Unk_020323b0 { Unk_020323b0(); ~Unk_020323b0(); u32 pad[0x30 / 4]; };
-struct Unk_02088d00 { Unk_02088d00(); ~Unk_02088d00(); u32 pad[0x44 / 4]; u8 unk_44; u8 pad_45[3]; };
+struct Unk_02088d00 { Unk_02088d00(); ~Unk_02088d00(); u32 pad[0x44 / 4]; u8 collisionEnabled; u8 pad_45[3]; };
 struct Unk_020135e4 { Unk_020135e4(); ~Unk_020135e4(); u8 pad[8]; u8 unk_08; u8 pad_09[2]; u8 unk_0b; };
 struct NpcActionCtrl { NpcActionCtrl(); ~NpcActionCtrl(); u32 pad[0xb4 / 4]; };
 struct Unk_02014254 { Unk_02014254(); ~Unk_02014254(); u32 pad[0x28 / 4]; };
@@ -819,8 +819,8 @@ BOOL FleaMarketBuyerVillager::mainAct00() {
         Unk_ov004_02219e0c_Obj *p = (Unk_ov004_02219e0c_Obj *)PlayerActor_GetActor(4);
         if (p) {
             Unk_ov004_02219e0c_V v;
-            Unk_ov004_02219e0c_V *pv = &p->unk_5c;
-            v.x = p->unk_5c.x;
+            Unk_ov004_02219e0c_V *pv = &p->position;
+            v.x = p->position.x;
             v.y = pv->y;
             v.z = pv->z;
             if (func_020e9650(&v, &position) > 0x8000) {
@@ -1199,21 +1199,21 @@ void FleaMarketBuyerVillagerTalk::start(void *arg) {
     u32 st = b->visitStage;
     if (st == 5) {
         VillagerId_makeFileName(VillagerData_getVillagerId(b->villagerData), data_ov004_02250800, 0x28, "q10_wait");
-        out->unk_00 = (u32)data_ov004_02250800;
-        out->unk_04 = Random_GlobalBelow(3);
+        out->fileName = (u32)data_ov004_02250800;
+        out->msgIndex = Random_GlobalBelow(3);
     } else if (st == 3) {
         VillagerId_makeFileName(VillagerData_getVillagerId(b->villagerData), data_ov004_02250800, 0x28, "ev_fmarket3");
-        out->unk_00 = (u32)data_ov004_02250800;
-        out->unk_04 = Random_GlobalBelow(2) + 2;
+        out->fileName = (u32)data_ov004_02250800;
+        out->msgIndex = Random_GlobalBelow(2) + 2;
     } else {
         switch (st) {
         case 0:
             VillagerId_makeFileName(VillagerData_getVillagerId(b->villagerData), data_ov004_02250800, 0x28, "q10_call");
-            out->unk_04 = Random_GlobalBelow(3);
+            out->msgIndex = Random_GlobalBelow(3);
             break;
         case 1:
             VillagerId_makeFileName(VillagerData_getVillagerId(b->villagerData), data_ov004_02250800, 0x28, "ev_fmarket3");
-            out->unk_04 = Random_GlobalBelow(2);
+            out->msgIndex = Random_GlobalBelow(2);
             break;
         case 2: {
             VillagerId_makeFileName(VillagerData_getVillagerId(b->villagerData), data_ov004_02250800, 0x28, "ev_fmarket3");
@@ -1234,15 +1234,15 @@ void FleaMarketBuyerVillagerTalk::start(void *arg) {
                 }
             }
             if (eq || villager->prevAct == 5) {
-                out->unk_04 = Random_GlobalBelow(2) + 4;
+                out->msgIndex = Random_GlobalBelow(2) + 4;
             } else {
                 ActorTalkRequest_setItemNameSlot(this, &villager->targetItem, 0, 7);
-                out->unk_04 = Random_GlobalBelow(2) + 6;
+                out->msgIndex = Random_GlobalBelow(2) + 6;
             }
             break;
         }
         }
-        out->unk_00 = (u32)data_ov004_02250800;
+        out->fileName = (u32)data_ov004_02250800;
     }
 }
 

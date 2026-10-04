@@ -20,7 +20,7 @@ BOOL ChoiceIdList_Add(u8 *p, u32 a, u32 b);
 
 struct CommManager {
     u8 pad_00[0x64];
-    s32 unk_64;
+    s32 myAid;
     BOOL isOnline();
 };
 extern "C" CommManager *gCommManager;
@@ -205,7 +205,7 @@ extern "C" s32 PocketMenu_RequestDropIndoor(PocketMenu *self, s32 a) {
             break;
         }
     } else {
-    self->fieldRequest = FieldAction_RequestDrop(gCommManager->unk_64, a);
+    self->fieldRequest = FieldAction_RequestDrop(gCommManager->myAid, a);
     if (self->fieldRequest == -1) {
         PocketMenu_ReturnToIdle(self);
         PocketMenu_ShowMessage(self, 3, 0xff, 0);
@@ -220,7 +220,7 @@ extern "C" s32 PocketMenu_RequestDropIndoor(PocketMenu *self, s32 a) {
 extern "C" BOOL PocketMenu_CanEditRoom() {
     CommManager *g = gCommManager;
     if (g->isOnline()) {
-        if (g->unk_64 != 0 || Room_CountOccupants() > 1) {
+        if (g->myAid != 0 || Room_CountOccupants() > 1) {
             return FALSE;
         }
     } else if (Room_CountOccupants() > 1) {

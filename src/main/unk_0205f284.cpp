@@ -63,13 +63,13 @@ public:
     void clear(void);
     BOOL requestTexResource(u32 *a, u8 b);
     u8 pad_04[9];
-    u8 unk_0d;
+    u8 state;
     u8 pad_0e[0x0e];
 };
 
 struct CommManager {
     u8 pad_00[0x6c];
-    u8 unk_6c;
+    u8 memberCount;
 };
 class GroundInfo {
 public:
@@ -340,7 +340,7 @@ FishBobberPool::~FishBobberPool()
 
 void FishBobberPool::allocBuffers()
 {
-    u32 a = gCommManager->unk_6c;
+    u32 a = gCommManager->memberCount;
     u32 n = Scene_GetMaxPlayers(Scene_GetCurrent());
     u32 i;
     u32 m;
@@ -451,7 +451,7 @@ void FishBobber::detach()
 
 void FishBobberPool::cancelTexUpload(s32 idx)
 {
-    if (Unk_0205fbfc_Is1(unk_d8[idx].unk_0d)) {
+    if (Unk_0205fbfc_Is1(unk_d8[idx].state)) {
         unk_d8[idx].cancel();
     } else {
         unk_d8[idx].clear();
@@ -474,7 +474,7 @@ void FishBobberPool::relocateTex(s32 idx)
 BOOL FishBobberPool::pollTexUpload(s32 idx)
 {
     TexVramTask *p = getTexTask(idx);
-    u8 t = p->unk_0d;
+    u8 t = p->state;
     if (Unk_0205fbfc_Is2(t)) {
         return TRUE;
     }

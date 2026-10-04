@@ -225,7 +225,7 @@ public:
 
 struct Unk_ov003_022173a8_Glob {
     u8 pad[0x58];
-    u32 unk_58;
+    u32 nativeFruit;
 };
 
 extern "C" {
@@ -256,7 +256,7 @@ public:
     virtual void vfunc_78();
     virtual BOOL vfunc_8c();
 
-    /* 0x2b0 */ u16 unk_2b0;
+    /* 0x2b0 */ u16 signIndex;
     /* 0x2b2 */ u16 pad_2b2;
 };
 
@@ -271,7 +271,7 @@ TownSign::~TownSign() {
 }
 
 BOOL TownSign::vfunc_70() {
-    unk_2b0 = Field_GetSpawnedKind1Count();
+    signIndex = Field_GetSpawnedKind1Count();
     return TRUE;
 }
 
@@ -284,10 +284,10 @@ void TownSign::vfunc_78() {
     u16 v[2];
     u32 obj[9];
     setFileName("obj_etc_board");
-    msgIndex = unk_2b0 % 14 + 1;
+    msgIndex = signIndex % 14 + 1;
     u16 w;
-    if (data_021ed150.unk_58 < 5) {
-        w = data_021ed150.unk_58 + 0x1518;
+    if (data_021ed150.nativeFruit < 5) {
+        w = data_021ed150.nativeFruit + 0x1518;
     } else {
         w = 0x1518;
     }

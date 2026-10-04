@@ -41,9 +41,9 @@
 #pragma opt_loop_invariants off
 
 struct Unk_02002f14_Node {
-    void *unk_00;
-    void *unk_04;
-    void *unk_08;
+    void *prev;
+    void *next;
+    void *owner;
 };
 
 struct Unk_ov004_02236320_V3 {
@@ -56,9 +56,9 @@ struct Unk_ov004_02236320_Mtx {
 
 struct Unk_ov004_02236320_Ent {
     u8 pad_00[0x5c];
-    Unk_ov004_02236320_V3 unk_5c;
+    Unk_ov004_02236320_V3 position;
     u8 pad_68[0x98 - 0x68];
-    s32 unk_98;
+    s32 speed;
 };
 
 struct Unk_02002cb0_Vec {
@@ -74,14 +74,14 @@ struct Unk_ov004_02236320_O1 {
 
 struct Unk_ov004_0223717c_Grid {
     /* 0x00 */ u8 pad_00[0xc];
-    /* 0x0c */ s32 unk_0c;
-    /* 0x10 */ s32 unk_10;
+    /* 0x0c */ s32 unitsX;
+    /* 0x10 */ s32 unitsZ;
 };
 
 struct Unk_ov004_0223717c_Vec {
-    s32 unk_00;
-    s32 unk_04;
-    s32 unk_08;
+    s32 x;
+    s32 y;
+    s32 z;
 };
 
 class CommManager {
@@ -303,18 +303,18 @@ BOOL HouseRoach_SpawnInitial(void *owner);
 
 struct Unk_ov004_0224eb5c_Entry {
     void *(*factory)();
-    u16 unk_04;
-    u16 unk_06;
+    u16 executePriority;
+    u16 drawPriority;
 };
 
 struct Unk_ov004_0224eb7c_Entry {
     void *(*factory)();
-    u16 unk_04;
-    u16 unk_06;
-    u32 unk_08;
-    u32 unk_0c;
-    u32 unk_10;
-    u32 unk_14;
+    u16 executePriority;
+    u16 drawPriority;
+    u32 actorFlags;
+    u32 cullHeight;
+    u32 cullRadius;
+    u32 cullDepth;
 };
 
 extern "C" Unk_ov004_0224eb5c_Entry sHouseRoachManagerProfile;
@@ -449,7 +449,7 @@ extern "C" BOOL HouseRoach_SpawnInitial(void *owner) {
     u32 t;
     s32 w;
     u32 b;
-    for (y = 0; y < g->unk_10; y++) {
+    for (y = 0; y < g->unitsZ; y++) {
         row = &rows[y];
         rows[y] = 0;
         x = 0;
@@ -477,13 +477,13 @@ extern "C" BOOL HouseRoach_SpawnInitial(void *owner) {
     xn0:
         x++;
     xt0:
-        if (x < g->unk_0c) goto xl0;
+        if (x < g->unitsX) goto xl0;
     }
     for (i = 0; i < 3 && sHouseRoachActiveCount < sHouseRoachTotal; i++) {
         if (cnt == 0) break;
-        loc.unk_00 = 0;
-        loc.unk_04 = 0;
-        loc.unk_08 = 0;
+        loc.x = 0;
+        loc.y = 0;
+        loc.z = 0;
         t = cnt;
         cnt = (u8)(t - 1);
         k = (u8)(Random_GlobalBelow(t) + 1);
@@ -492,7 +492,7 @@ extern "C" BOOL HouseRoach_SpawnInitial(void *owner) {
     yl1:
         x2 = 0;
         row2 = &rows[y2];
-        w = g->unk_0c;
+        w = g->unitsX;
         goto xt1;
     xl1:
         b = *row2;
@@ -502,8 +502,8 @@ extern "C" BOOL HouseRoach_SpawnInitial(void *owner) {
         if (k == 0) {
             *row2 -= 1 << x2;
             FieldPos_FromUnitCenter(&loc, x2, y2);
-            loc.unk_04 = 0x200;
-            y2 = g->unk_10;
+            loc.y = 0x200;
+            y2 = g->unitsZ;
             goto yn1;
         }
         x2++;
@@ -512,7 +512,7 @@ extern "C" BOOL HouseRoach_SpawnInitial(void *owner) {
     yn1:
         y2++;
     yt1:
-        if (y2 < g->unk_10) goto yl1;
+        if (y2 < g->unitsZ) goto yl1;
         sHouseRoaches[i] = (HouseRoach *)Actor_spawn(0xc0, 0x1f, &loc, 0, owner);
         sHouseRoachActiveCount = sHouseRoachActiveCount + 1;
     }
@@ -788,7 +788,7 @@ BOOL HouseRoach::checkStomped() {
     if (isHit != 0) {
         if (isJumping == 0) {
             if (pl != NULL) {
-                if (pl->unk_98 > 0) {
+                if (pl->speed > 0) {
                     if (ActorCollider_isHitByGroup(hitBox, 4) != 0) {
                         roachState = 2;
                         return TRUE;
@@ -796,7 +796,7 @@ BOOL HouseRoach::checkStomped() {
                 }
             }
             if (sHouseRoachVillager != NULL) {
-                if (sHouseRoachVillager->unk_98 > 0) {
+                if (sHouseRoachVillager->speed > 0) {
                     if (ActorCollider_isHitByGroup(hitBox, 8) != 0) {
                         roachState = 2;
                         return TRUE;
@@ -930,9 +930,9 @@ Unk_ov004_02236320_Ent *HouseRoach::getNearestCharacter() {
     if (g != NULL) {
         if (p != NULL) {
             a = &position;
-            b = &p->unk_5c;
-            c = &g->unk_5c;
-            d1 = position.x - p->unk_5c.x;
+            b = &p->position;
+            c = &g->position;
+            d1 = position.x - p->position.x;
             if (d1 < 0) d1 = -d1;
             d2 = a->z - b->z;
             if (d2 < 0) d2 = -d2;
@@ -983,7 +983,7 @@ void HouseRoach::updateCrawl() {
         Unk_ov004_02236320_Ent *t = getNearestCharacter();
         if (t) {
             s16 *q92 = &moveAngleX;
-            q92[1] = Math_AngleXZ(&t->unk_5c, self0);
+            q92[1] = Math_AngleXZ(&t->position, self0);
             rotY = q92[1];
         }
     }

@@ -37,7 +37,7 @@ class Random {
 public:
     Random() { Random_SetSeed(this, 1); }
     ~Random();
-    u32 unk_00;
+    u32 seed;
 };
 
 extern "C" void *Main_DwcAlloc(u32 a, void *p, u32 n);

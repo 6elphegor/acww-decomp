@@ -227,12 +227,12 @@ void func_020030b4_dummy(void);
 }
 
 struct Unk_02002804_Buf {
-    u16 unk_00[32];
+    u16 colors[32];
 };
 
 // 0x30-byte record copied around by Gfx3d_SetViewMatrix and Gfx3d_Init
 struct Unk_02002848_Data {
-    u32 unk_00[12];
+    u32 m[12];
 };
 
 extern Unk_02002848_Data data_02135934_;
@@ -255,35 +255,35 @@ public:
     BOOL loadPalette();
 
     /* 0x00 */ u8 unk_00[0x48];
-    /* 0x48 */ void *unk_48;
-    /* 0x4c */ void *unk_4c;
+    /* 0x48 */ void *paletteBuf;
+    /* 0x4c */ void *charBuf;
 };
 
 extern AbAllObjGfx sAbAllObjGfx;
 
 struct Unk_02002f14_Node {
-    /* 0x00 */ void *unk_00;
-    /* 0x04 */ void *unk_04;
-    /* 0x08 */ void *unk_08;
+    /* 0x00 */ void *prev;
+    /* 0x04 */ void *next;
+    /* 0x08 */ void *owner;
 };
 
 struct Unk_02002cb0_Vec {
     /* 0x00 */ u8 unk_00[0x10];
-    /* 0x10 */ s32 unk_10;
+    /* 0x10 */ s32 pushX;
     /* 0x14 */ s32 unk_14;
-    /* 0x18 */ s32 unk_18;
+    /* 0x18 */ s32 pushZ;
 };
 
 struct Unk_02002f14_S16Vec {
-    s16 unk_00;
-    s16 unk_02;
-    s16 unk_04;
+    s16 x;
+    s16 y;
+    s16 z;
 };
 
 struct Unk_02002f14_S32Vec {
-    s32 unk_00;
-    s32 unk_04;
-    s32 unk_08;
+    s32 x;
+    s32 y;
+    s32 z;
 };
 
 class Actor : public GameProc {

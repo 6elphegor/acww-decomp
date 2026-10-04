@@ -1,8 +1,8 @@
 #include "types.h"
 
 struct Backup {
-    /* 0x00 */ u32 unk_00;
-    /* 0x04 */ s32 unk_04;
+    /* 0x00 */ u32 totalSize;
+    /* 0x04 */ s32 lockId;
     /* 0x08 */ u8 unk_08;
 };
 
@@ -31,7 +31,7 @@ extern "C" void Backup_Init(Backup *g, s32 n, const char *name) {
     t = OS_GetLockID();
     CARD_LockBackup((u16)t);
     CARD_IdentifyBackup(n);
-    g->unk_00 = CARD_GetBackupTotalSize();
+    g->totalSize = CARD_GetBackupTotalSize();
     CARD_UnlockBackup((u16)t);
     OS_ReleaseLockID((u16)t);
     g->unk_08 = 4;

@@ -59,8 +59,8 @@ public:
     BOOL init();
     void clear();
 
-    /* 0x00 */ CachedModel unk_00;
-    /* 0x9c */ Unk_020553f8_Res *unk_9c;
+    /* 0x00 */ CachedModel model;
+    /* 0x9c */ Unk_020553f8_Res *modelRes;
 };
 
 // other modules' methods are reached through their real mangled symbols (object first)
@@ -102,14 +102,14 @@ FieldGroundBackdrop::~FieldGroundBackdrop() {
 }
 
 void FieldGroundBackdrop::clear() {
-    unk_9c = 0;
+    modelRes = 0;
 }
 
 BOOL FieldGroundBackdrop::init() {
     Unk_ov003_02217b78_Ent *e = (Unk_ov003_02217b78_Ent *)BgModelCache_getAcre(BgModelCache_Get(), 0x83);
     s32 t = BgModelCache_getGroundTex(BgModelCache_Get());
-    unk_9c = e->modelRes;
-    ((Model *)&unk_00)->setResourceAndBind(unk_9c, t);
+    modelRes = e->modelRes;
+    ((Model *)&model)->setResourceAndBind(modelRes, t);
     followCamera();
     return TRUE;
 }
@@ -123,7 +123,7 @@ BOOL FieldGroundBackdrop::followCamera() {
         v.z = gCameraLookAt.z;
         func_020e8388(data_021f47e0, v.x - data_020c8cb4, 0, 0);
         func_020e8434(data_021f47e0, Unk_020d93b8_getEyeCurveAngle(cam));
-        unk_00.unk_64 = *(Unk_ov003_02215c7c_Blk *)data_021f47e0;
+        model.unk_64 = *(Unk_ov003_02215c7c_Blk *)data_021f47e0;
         return TRUE;
     }
     return FALSE;

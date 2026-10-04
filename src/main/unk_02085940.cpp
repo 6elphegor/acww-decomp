@@ -196,15 +196,15 @@ public:
     ContestRecord *destruct();
     ContestRecord *construct();
 
-    /* 0x00 */ Unk_02085810_Base unk_00;
-    /* 0x16 */ Unk_02085810_Rec unk_16;
-    /* 0x22 */ Unk_02085810_Rec unk_22;
-    /* 0x2e */ u16 unk_2e;
-    /* 0x30 */ s32 unk_30;
-    /* 0x34 */ u8 unk_34;
-    /* 0x35 */ u8 unk_35;
-    /* 0x36 */ u8 unk_36;
-    /* 0x37 */ u8 unk_37;
+    /* 0x00 */ Unk_02085810_Base holderPlayer;
+    /* 0x16 */ Unk_02085810_Rec holderVillager;
+    /* 0x22 */ Unk_02085810_Rec votedVillager;
+    /* 0x2e */ u16 item;
+    /* 0x30 */ s32 size;
+    /* 0x34 */ u8 dateDay;
+    /* 0x35 */ u8 dateMonth;
+    /* 0x36 */ u8 dateYear;
+    /* 0x37 */ u8 kind;
 };
 
 class RoostGuestRoll {
@@ -371,8 +371,8 @@ public:
     void func_02086ee8();
     void func_02086eec();
 
-    s32 unk_00;
-    s32 unk_04;
+    s32 fallPosX;
+    s32 fallPosZ;
     u8 unk_08_0 : 1;
     u8 unk_08_1 : 1;
     u8 unk_08_2 : 2;
@@ -413,7 +413,7 @@ public:
     BOOL isPastClosingTime();
     void setClosingTimeToday();
 
-    u8 unk_00;
+    u8 isPending;
     u8 unk_01;
     u8 unk_02;
 };
@@ -568,15 +568,15 @@ public:
     void stampArbeitDate();
     u8 *getArbeitDate();
 
-    u8 unk_00[8];
-    u8 unk_08;
-    u8 unk_09;
-    u8 unk_0a;
-    u8 unk_0b;
-    u8 unk_0c;
-    u8 unk_0d;
-    u8 unk_0e;
-    u8 unk_0f;
+    u8 serviceDates[8];
+    u8 sableTalkCount;
+    u8 cafeVisits;
+    u8 haircutCount;
+    u8 acornsDelivered;
+    u8 acornPrizeStep;
+    u8 resetCount;
+    u8 styleScore;
+    u8 insuranceClaims;
     union {
         u8 unk_10;
         struct {
@@ -921,62 +921,62 @@ extern "C" void PlayerSpNpcRecord_Destruct() {}
 
 extern "C" void func_02087c80() {}
 
-u8 *PlayerSpNpcRecord::getArbeitDate() { return unk_00 + 4; }
+u8 *PlayerSpNpcRecord::getArbeitDate() { return serviceDates + 4; }
 
 void PlayerSpNpcRecord::stampArbeitDate() {
     u8 tmp[3];
     Ns_020874d8::Clock_GetDate(tmp);
-    unk_00[6] = tmp[2];
-    unk_00[5] = tmp[1];
-    unk_00[4] = tmp[0];
+    serviceDates[6] = tmp[2];
+    serviceDates[5] = tmp[1];
+    serviceDates[4] = tmp[0];
 }
 
-u32 PlayerSpNpcRecord::getSableTalkCount() { return unk_08; }
+u32 PlayerSpNpcRecord::getSableTalkCount() { return sableTalkCount; }
 
-void PlayerSpNpcRecord::setSableTalkCount(u32 v) { unk_08 = v; }
+void PlayerSpNpcRecord::setSableTalkCount(u32 v) { sableTalkCount = v; }
 
-u32 PlayerSpNpcRecord::getCafeVisits() { return unk_09; }
+u32 PlayerSpNpcRecord::getCafeVisits() { return cafeVisits; }
 
 void PlayerSpNpcRecord::setCafeVisits(u32 v) {
-    unk_09 = v;
-    if (unk_09 > 15) unk_09 = 15;
+    cafeVisits = v;
+    if (cafeVisits > 15) cafeVisits = 15;
 }
 
-u32 PlayerSpNpcRecord::getHaircutCount() { return unk_0a; }
+u32 PlayerSpNpcRecord::getHaircutCount() { return haircutCount; }
 
 void PlayerSpNpcRecord::addHaircutCount(u32 v) {
-    unk_0a = unk_0a + v;
-    if (unk_0a > 16) unk_0a = 16;
+    haircutCount = haircutCount + v;
+    if (haircutCount > 16) haircutCount = 16;
 }
 
-u32 PlayerSpNpcRecord::getAcornsDelivered() { return unk_0b; }
+u32 PlayerSpNpcRecord::getAcornsDelivered() { return acornsDelivered; }
 
 void PlayerSpNpcRecord::addAcornsDelivered(s32 v) {
-    s32 t = unk_0b;
+    s32 t = acornsDelivered;
     t = t + v;
     if (t > 255) t = 255;
-    unk_0b = t;
+    acornsDelivered = t;
 }
 
-u32 PlayerSpNpcRecord::getAcornPrizeStep() { return unk_0c; }
+u32 PlayerSpNpcRecord::getAcornPrizeStep() { return acornPrizeStep; }
 
 void PlayerSpNpcRecord::advanceAcornPrizeStep() {
-    unk_0c = unk_0c + 1;
-    if (unk_0c > 12) unk_0c = 12;
+    acornPrizeStep = acornPrizeStep + 1;
+    if (acornPrizeStep > 12) acornPrizeStep = 12;
 }
 
-u32 PlayerSpNpcRecord::getResetCount() { return unk_0d; }
+u32 PlayerSpNpcRecord::getResetCount() { return resetCount; }
 
 void PlayerSpNpcRecord::addResetCount() {
-    unk_0d = unk_0d + 1;
-    if (unk_0d > 6) unk_0d = 6;
+    resetCount = resetCount + 1;
+    if (resetCount > 6) resetCount = 6;
 }
 
-u32 PlayerSpNpcRecord::getStyleScore() { return unk_0e; }
+u32 PlayerSpNpcRecord::getStyleScore() { return styleScore; }
 
 void PlayerSpNpcRecord::addStyleScore(u32 v) {
-    unk_0e = unk_0e + v;
-    if (unk_0e > 100) unk_0e = 100;
+    styleScore = styleScore + v;
+    if (styleScore > 100) styleScore = 100;
 }
 
 u32 PlayerSpNpcRecord::hasEnteredFishingTourney() { return unk_10_0; }
@@ -998,7 +998,7 @@ void PlayerSpNpcRecord::addFireworksGiven() {
 
 void PlayerSpNpcRecord::resetFireworksGiven() { unk_10_2 = 0; }
 
-void PlayerSpNpcRecord::resetAcornCount() { unk_0b = 0; unk_0c = 0; }
+void PlayerSpNpcRecord::resetAcornCount() { acornsDelivered = 0; acornPrizeStep = 0; }
 
 u32 PlayerSpNpcRecord::hasFestivalGift() { return unk_10_6; }
 
@@ -1016,11 +1016,11 @@ void PlayerDailyTalkFlags::stampToday() {
     date[0] = tmp[0];
 }
 
-u32 PlayerSpNpcRecord::getInsuranceClaims() { return unk_0f; }
+u32 PlayerSpNpcRecord::getInsuranceClaims() { return insuranceClaims; }
 
 void PlayerSpNpcRecord::addInsuranceClaim() {
-    unk_0f = unk_0f + 1;
-    if (unk_0f >= 0xff) unk_0f = 0xff;
+    insuranceClaims = insuranceClaims + 1;
+    if (insuranceClaims >= 0xff) insuranceClaims = 0xff;
 }
 
 extern "C" void PlayerSpNpcRecord_SendMissingLetter() {
@@ -1104,7 +1104,7 @@ void PlayerSpNpcRecord::sendInsuranceLetters() {
             MailText_SetSlot(4, bufA);
             h[2] = cnt + 0x1491;
             if (sendInsuranceLetter(r6, &h[2])) {
-                unk_0f = 0;
+                insuranceClaims = 0;
             }
         }
     }
@@ -1563,7 +1563,7 @@ void ResettiVisitFlag::setClosingTimeToday() {
     Clock_GetDateTime(this);
     unk_02 = 0x17;
     unk_01 = 0;
-    unk_00 = 0;
+    isPending = 0;
 }
 
 BOOL ResettiVisitFlag::isPastClosingTime() {
@@ -1581,14 +1581,14 @@ void ResettiVisitFlag::func_02086f34() {}
 
 void ResettiVisitFlag::func_02086f30() {}
 
-void ResettiVisitFlag::clear() { unk_00 = 0; }
+void ResettiVisitFlag::clear() { isPending = 0; }
 
 BOOL ResettiVisitFlag::isSet() {
-    if (unk_00 != 0) return TRUE;
+    if (isPending != 0) return TRUE;
     return FALSE;
 }
 
-void ResettiVisitFlag::set(u32 v) { unk_00 = v; }
+void ResettiVisitFlag::set(u32 v) { isPending = v; }
 
 void TownTravelState::func_02086f10() {}
 
@@ -1611,13 +1611,13 @@ void PeteFallState::func_02086ee8() {}
 void PeteFallState::clear() { MI_CpuFill8(this, 0, 12); }
 
 void PeteFallState::setPos(Unk_02086ec4_Vec3 *v) {
-    unk_00 = v->x;
-    unk_04 = v->z;
+    fallPosX = v->x;
+    fallPosZ = v->z;
 }
 
 void PeteFallState::getPos(Unk_02086ec4_Vec3 *out) {
-    out->x = unk_00;
-    out->z = unk_04;
+    out->x = fallPosX;
+    out->z = fallPosZ;
 }
 
 BOOL PeteFallState::hasFallPos() {
@@ -2296,56 +2296,56 @@ u32 RoostGuestRoll::getAfternoonGuest() { return unk_00_2; }
 BOOL RoostGuestRoll::hasLateGuest() { if (unk_00_3) return TRUE; return FALSE; }
 
 void ContestRecord::postResultNotice() {
-    if (_ZN8PlayerId7isValidEv(this) == 0 && _ZN10VillagerId7isValidEv(&unk_16) == 0) {
+    if (_ZN8PlayerId7isValidEv(this) == 0 && _ZN10VillagerId7isValidEv(&holderVillager) == 0) {
         _ZN8SaveData9clearFlagEj(gSaveData, 0xf);
         return;
     }
-    if (unk_37 != 1 && unk_37 != 2 && unk_37 != 3) return;
+    if (kind != 1 && kind != 2 && kind != 3) return;
     if (_ZN8SaveData8testFlagEj(gSaveData, 0xf) == 0) return;
     Unk_02085df0_Rec rec;
     if (_ZN8PlayerId7isValidEv(this) != 0) _ZN8PlayerId13getNameStringEP9MsgString(this, &rec);
-    else _ZN10VillagerId7getNameEj(&unk_16, &rec);
-    if ((u8)(unk_37 + 0xff) <= 1) {
-        MailText_SetSlotMonth(0, unk_35);
-        MailText_SetSlotDayOrdinal(1, unk_34);
+    else _ZN10VillagerId7getNameEj(&holderVillager, &rec);
+    if ((u8)(kind + 0xff) <= 1) {
+        MailText_SetSlotMonth(0, dateMonth);
+        MailText_SetSlotDayOrdinal(1, dateDay);
         MailText_SetSlot(4, &rec);
-        if (unk_30 > 0) {
+        if (size > 0) {
             Unk_02085df0_Num num;
-            if (unk_37 == 1) String_FormatFixedPoint(&num, unk_30, 1);
-            else String_FormatNumber(&num, unk_30 >> 12, 3, 0, 0, 0);
+            if (kind == 1) String_FormatFixedPoint(&num, size, 1);
+            else String_FormatNumber(&num, size >> 12, 3, 0, 0, 0);
             MailText_SetSlot(3, &num);
         }
         BOOL same;
-        if (Item_IsFurniture(&unk_2e) != 0) {
+        if (Item_IsFurniture(&item) != 0) {
             u16 v = 0xfff1;
-            u32 a = Item_GetFurnitureIndex(&unk_2e);
+            u32 a = Item_GetFurnitureIndex(&item);
             if (a == Item_GetFurnitureIndex(&v)) same = TRUE; else same = FALSE;
         } else {
-            if (unk_2e == 0xfff1) same = TRUE; else same = FALSE;
+            if (item == 0xfff1) same = TRUE; else same = FALSE;
         }
         if (same == 0) {
-            Unk_02085df0_Str str(&unk_2e);
+            Unk_02085df0_Str str(&item);
             MailText_SetSlot(2, &str);
         }
     } else {
         MailText_SetSlot(0, &rec);
     }
     s32 k;
-    if ((u8)(unk_37 + 0xff) <= 1) k = Random_GlobalBelow(3);
+    if ((u8)(kind + 0xff) <= 1) k = Random_GlobalBelow(3);
     else k = Random_GlobalBelow(2);
-    Bbs_PostMsgToday(k, sContestResultBbsFiles[unk_37]);
+    Bbs_PostMsgToday(k, sContestResultBbsFiles[kind]);
     _ZN8SaveData9clearFlagEj(gSaveData, 0xf);
 }
 
 void ContestRecord::sendResultLetters() {
-    if (_ZN8PlayerId7isValidEv(this) == 0 && _ZN10VillagerId7isValidEv(&unk_16) == 0) return;
-    if (unk_37 != 1 && unk_37 != 2 && unk_37 != 3) return;
+    if (_ZN8PlayerId7isValidEv(this) == 0 && _ZN10VillagerId7isValidEv(&holderVillager) == 0) return;
+    if (kind != 1 && kind != 2 && kind != 3) return;
     Unk_020859b4_Loc l;
     Clock_GetDate(l.today);
-    if (unk_36 == 0) return;
-    if (unk_35 == 0) return;
-    if (unk_34 == 0) return;
-    DateTime_Make(l.contestTime, &unk_34, 6, 0, 0);
+    if (dateYear == 0) return;
+    if (dateMonth == 0) return;
+    if (dateDay == 0) return;
+    DateTime_Make(l.contestTime, &dateDay, 6, 0, 0);
     l.now = 0;
     l.unk_18 = 0;
     Clock_GetDateTime(&l.now);
@@ -2363,8 +2363,8 @@ void ContestRecord::sendResultLetters() {
         _ZN8SaveData9clearFlagEj(gSaveData, 0xf);
         return;
     }
-    if (unk_37 != 3) {
-        if (unk_36 == l.today[2] && unk_35 == l.today[1] && unk_34 == l.today[0]) return;
+    if (kind != 3) {
+        if (dateYear == l.today[2] && dateMonth == l.today[1] && dateDay == l.today[0]) return;
     } else {
         s32 r4 = Event_GetDaysSinceStart(0xe);
         Clock_GetDateTime(&l.now);
@@ -2374,7 +2374,7 @@ void ContestRecord::sendResultLetters() {
         }
         if (r6 == 1 && DateTime_DiffDays(l.contestTime, &l.now) < 1) return;
     }
-    if (unk_37 == 3 && _ZN8PlayerId7isValidEv(this) == 0) {
+    if (kind == 3 && _ZN8PlayerId7isValidEv(this) == 0) {
         postResultNotice();
         clear();
         return;
@@ -2394,31 +2394,31 @@ void ContestRecord::sendResultLetters() {
         if (r4 == 0) continue;
         if (_ZN10PlayerData6isUsedEv(r4) == 0) continue;
         void *r7 = _ZN10PlayerData14getSpNpcRecordEv(r4);
-        if ((u8)(unk_37 + 0xff) <= 1) {
-            MailText_SetSlotMonth(z14, unk_35);
-            MailText_SetSlotDayOrdinal(1, unk_34);
+        if ((u8)(kind + 0xff) <= 1) {
+            MailText_SetSlotMonth(z14, dateMonth);
+            MailText_SetSlotDayOrdinal(1, dateDay);
             s32 f;
-            if (Item_IsFurniture(&unk_2e) != 0) {
+            if (Item_IsFurniture(&item) != 0) {
                 l.emptyItem = 0xfff1;
-                u32 t = Item_GetFurnitureIndex(&unk_2e);
+                u32 t = Item_GetFurnitureIndex(&item);
                 f = (t == Item_GetFurnitureIndex(&l.emptyItem)) ? 1 : z1c;
             } else {
-                f = (unk_2e == 0xfff1) ? 1 : z20;
+                f = (item == 0xfff1) ? 1 : z20;
             }
             if (f == 0) {
-                Unk_02085df0_Str str(&unk_2e);
+                Unk_02085df0_Str str(&item);
                 MailText_SetSlot(2, &str);
             }
-            if (unk_30 > 0) {
-                if (unk_37 == 1) String_FormatFixedPoint(&n1, unk_30, 1);
-                else String_FormatNumber(&n1, unk_30 >> 12, 3, z24, z24, z24);
+            if (size > 0) {
+                if (kind == 1) String_FormatFixedPoint(&n1, size, 1);
+                else String_FormatNumber(&n1, size >> 12, 3, z24, z24, z24);
                 MailText_SetSlot(3, &n1);
             }
-            if (unk_37 == 1) ok = _ZN17PlayerSpNpcRecord24hasEnteredFishingTourneyEv(r7);
+            if (kind == 1) ok = _ZN17PlayerSpNpcRecord24hasEnteredFishingTourneyEv(r7);
             else ok = _ZN17PlayerSpNpcRecord16hasEnteredBugOffEv(r7);
         } else {
             u16 *p = _ZN10PlayerData11getPlayerIdEv(r4);
-            if ((unk_00.townId == p[0] && memcmp((u8 *)this + 2, p + 1, 8) == 0 && _ZN8PlayerId6equalsEPS_(this, p) != 0) || _ZN17PlayerSpNpcRecord15hasFestivalGiftEv(r7) != 0) {
+            if ((holderPlayer.townId == p[0] && memcmp((u8 *)this + 2, p + 1, 8) == 0 && _ZN8PlayerId6equalsEPS_(this, p) != 0) || _ZN17PlayerSpNpcRecord15hasFestivalGiftEv(r7) != 0) {
                 l.letterVariant = Random_GlobalBelow(3);
                 _ZN8PlayerId13getNameStringEP9MsgString(_ZN10PlayerData11getPlayerIdEv(r4), &rec);
                 _ZN17PlayerSpNpcRecord17clearFestivalGiftEv(r7);
@@ -2427,9 +2427,9 @@ void ContestRecord::sendResultLetters() {
             }
         }
         if (ok == 0) continue;
-        if ((u8)(unk_37 + 0xff) <= 1) {
+        if ((u8)(kind + 0xff) <= 1) {
             u16 *q = _ZN10PlayerData11getPlayerIdEv(r4);
-            if (unk_00.townId == q[0] && memcmp((u8 *)this + 2, q + 1, 8) == 0 && _ZN8PlayerId6equalsEPS_(this, q) != 0) {
+            if (holderPlayer.townId == q[0] && memcmp((u8 *)this + 2, q + 1, 8) == 0 && _ZN8PlayerId6equalsEPS_(this, q) != 0) {
                 l.letterVariant = Random_GlobalBelow(3);
             } else {
                 l.letterVariant = Random_GlobalBelow(3) + 3;
@@ -2438,12 +2438,12 @@ void ContestRecord::sendResultLetters() {
             MailText_SetSlot(4, &rec);
         }
         u16 *w = _ZN10PlayerData11getPlayerIdEv(r4);
-        Letter_ComposeFromMail(&buf, &l, sContestResultMailFiles[unk_37], data_020e0c50, data_020e0c48, w);
+        Letter_ComposeFromMail(&buf, &l, sContestResultMailFiles[kind], data_020e0c50, data_020e0c48, w);
         u16 *x = _ZN10PlayerData11getPlayerIdEv(r4);
-        if ((unk_00.townId == x[0] && memcmp((u8 *)this + 2, x + 1, 8) == 0 && _ZN8PlayerId6equalsEPS_(this, x) != 0) || unk_37 == 3) {
+        if ((holderPlayer.townId == x[0] && memcmp((u8 *)this + 2, x + 1, 8) == 0 && _ZN8PlayerId6equalsEPS_(this, x) != 0) || kind == 3) {
             l.trophy = 0x3878;
-            if (unk_37 == 2) l.trophy = 0x387c;
-            else if (unk_37 == 3) l.trophy = 0x3880;
+            if (kind == 2) l.trophy = 0x387c;
+            else if (kind == 3) l.trophy = 0x3880;
             _ZN10LetterView10setPresentEtj(&buf, l.trophy, 1);
         }
         LetterDelivery_PutInAddresseeMailbox(&buf);
@@ -2454,25 +2454,25 @@ void ContestRecord::sendResultLetters() {
 
 ContestRecord *ContestRecord::construct() {
     _ZN8PlayerIdC1EPv(this);
-    VillagerId_Construct(&unk_16);
-    VillagerId_Construct(&unk_22);
-    unk_2e = 0xfff1;
+    VillagerId_Construct(&holderVillager);
+    VillagerId_Construct(&votedVillager);
+    item = 0xfff1;
     return this;
 }
 
 ContestRecord *ContestRecord::destruct() {
-    VillagerId_Destruct(&unk_22);
-    VillagerId_Destruct(&unk_16);
+    VillagerId_Destruct(&votedVillager);
+    VillagerId_Destruct(&holderVillager);
     _ZN8PlayerIdC1Ev(this);
     return this;
 }
 
 void ContestRecord::clear() {
     _ZN8PlayerId5clearEv(this);
-    VillagerId_Clear(&unk_16);
-    VillagerId_Clear(&unk_22);
-    unk_2e = 0xfff1;
-    unk_30 = 0;
+    VillagerId_Clear(&holderVillager);
+    VillagerId_Clear(&votedVillager);
+    item = 0xfff1;
+    size = 0;
 }
 
 // Declarations for data defined further down (definition order sets the data layout)

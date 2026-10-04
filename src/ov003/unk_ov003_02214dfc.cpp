@@ -270,8 +270,8 @@ struct GateHouseFlagTexture {
     BOOL apply(void *res, void *b);
     void cancelUpload();
 
-    MatTexVramTask unk_00;
-    u8 unk_28[4];
+    MatTexVramTask vramTask;
+    u8 clothTex[4];
 };
 
 extern "C" {
@@ -310,7 +310,7 @@ public:
     virtual char *vfunc_a8();
     virtual char *vfunc_ac();
 
-    /* 0x2b0 */ GateHouseFlagTexture unk_2b0;
+    /* 0x2b0 */ GateHouseFlagTexture flagTexture;
     /* 0x2dc */ u8 pad_2dc[0x59c - 0x2dc];
 };
 
@@ -347,7 +347,7 @@ GateHouse::~GateHouse() {
 
 BOOL GateHouse::vfunc_70() {
     void *t = modelRes;
-    unk_2b0.apply(t, (void *)TownFlag_GetPattern((s32)TownStyleRecordView_getTownFlag(gSaveTownFlag)));
+    flagTexture.apply(t, (void *)TownFlag_GetPattern((s32)TownStyleRecordView_getTownFlag(gSaveTownFlag)));
     s32 x;
     s32 y;
     FieldPos_ToUnit(&x, &y, position);
@@ -368,7 +368,7 @@ BOOL GateHouse::onDraw() {
 }
 
 BOOL GateHouse::vfunc_0c() {
-    unk_2b0.cancelUpload();
+    flagTexture.cancelUpload();
     return TRUE;
 }
 
@@ -409,21 +409,21 @@ BOOL GateHouse::vfunc_94() {
 
 extern "C" BOOL GateHouse_ApplyTownFlag(GateHouse *self) {
     void *t = self->modelRes;
-    self->unk_2b0.apply(t, (void *)TownFlag_GetPattern((s32)TownStyleRecordView_getTownFlag(gSaveTownFlag)));
+    self->flagTexture.apply(t, (void *)TownFlag_GetPattern((s32)TownStyleRecordView_getTownFlag(gSaveTownFlag)));
     return TRUE;
 }
 
 GateHouseFlagTexture::GateHouseFlagTexture() {
-    ClothTex_Construct(unk_28);
+    ClothTex_Construct(clothTex);
 }
 
 GateHouseFlagTexture::~GateHouseFlagTexture() {
-    ClothTex_Destruct(unk_28);
+    ClothTex_Destruct(clothTex);
 }
 
 BOOL GateHouseFlagTexture::apply(void *res, void *b) {
-    if (ClothTex_LoadPattern(unk_28, b)) {
-        if (unk_00.request(res, (u32) "w", ClothTex_GetTex(unk_28), 0, 0)) {
+    if (ClothTex_LoadPattern(clothTex, b)) {
+        if (vramTask.request(res, (u32) "w", ClothTex_GetTex(clothTex), 0, 0)) {
             TownFlag_SetPattern((s32)TownStyleRecordView_getTownFlag(gSaveTownFlag), b);
             return TRUE;
         }
@@ -432,7 +432,7 @@ BOOL GateHouseFlagTexture::apply(void *res, void *b) {
 }
 
 void GateHouseFlagTexture::cancelUpload() {
-    unk_00.cancel();
+    vramTask.cancel();
 }
 
 extern "C" u32 sGateHouseModelNames[3] = { (u32)data_ov003_022312bc, (u32)data_ov003_022312b0, (u32)data_ov003_022312a4 };

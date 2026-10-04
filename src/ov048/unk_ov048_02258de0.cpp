@@ -506,7 +506,7 @@ public:
     }
 struct ThreeLayerAnimModel {
     u8 pad_00[0xa4];
-    s32 unk_a4;
+    s32 curFrame;
     u8 pad_a8[0x2a0 - 0xec - 0xa8];
     ThreeLayerAnimModel();
     ~ThreeLayerAnimModel();
@@ -530,9 +530,9 @@ MEMBER(Unk_0201a13c, 0x49c - 0x420);
 MEMBER(CollisionState, 0x30);
 struct Unk_02088d00 {
     u8 pad_00[0x1c];
-    u32 unk_1c;
+    u32 groups;
     u8 pad_20[0x44 - 0x20];
-    u8 unk_44;
+    u8 collisionEnabled;
     u8 pad_45[0x514 - 0x4cc - 0x45];
     Unk_02088d00();
     ~Unk_02088d00();
@@ -947,7 +947,7 @@ BOOL SpNpcCopper::vfunc_04() {
         footstepFx.unk_0b = 1;
     }
     if (Scene_GetCurrent() == 0xc) {
-        collider.unk_44 = 0;
+        collider.collisionEnabled = 0;
     }
     return TRUE;
 }
@@ -957,7 +957,7 @@ BOOL SpNpcCopper::vfunc_00() {
         return FALSE;
     }
     talk.homeAngle = rotY;
-    collider.unk_1c |= 2;
+    collider.groups |= 2;
     if (_ZN11CommManager8isOnlineEv(gCommManager) && Scene_GetCurrent() == 0xb) {
         if (isNetOwner()) {
             SpNpcCopper_ChangeAct(this, 1);

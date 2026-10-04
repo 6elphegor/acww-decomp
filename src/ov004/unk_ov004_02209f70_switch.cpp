@@ -79,9 +79,9 @@ public:
 };
 
 struct Unk_02002f14_Node {
-    void *unk_00;
-    void *unk_04;
-    void *unk_08;
+    void *prev;
+    void *next;
+    void *owner;
 };
 
 class Actor : public GameProc {
@@ -186,17 +186,17 @@ public:
 // ================================================================ helper object types (members of / used by the 0224882c object)
 struct Unk_ov004_02205c80_Obj {
     u8 pad_00[0x8e];
-    s16 unk_8e;
+    s16 rotY;
     u8 pad_90[0x284 - 0x90];
-    u8 unk_284;
+    u8 mapLayer;
     u8 pad_285[0x598 - 0x285];
-    Unk_ov004_Mtx unk_598;
+    Unk_ov004_Mtx modelMtx;
     u8 pad_5c8[0x768 - 0x5c8];
-    s32 unk_768;
+    s32 spawnMode;
     u8 pad_76c[0x789 - 0x76c];
-    u8 unk_789;
+    u8 startsOff;
     u8 pad_78a[2];
-    s32 unk_78c;
+    s32 surfaceHeight;
 };
 
 struct G3dResAccess {
@@ -213,8 +213,8 @@ struct Unk_ov004_02206520_Ent {
 };
 
 struct FtrTileList {
-    u32 unk_00;
-    Unk_ov004_02206520_Ent unk_04[4];
+    u32 count;
+    Unk_ov004_02206520_Ent tiles[4];
     Unk_ov004_02206520_Ent *get(s32 i);
     u32 getCount();
     BOOL add(u32 a, u32 b);
@@ -223,8 +223,8 @@ struct FtrTileList {
 };
 
 struct Unk_ov004_0220650c {
-    u32 unk_00;
-    u32 unk_04[4];
+    u32 count;
+    u32 actors[4];
     void clear();
 };
 
@@ -236,8 +236,8 @@ public:
     void setVisible(u32 v);
     void init(void *p, u32 v);
 
-    /* 0x00 */ s8 unk_00[4];
-    /* 0x04 */ u8 unk_04;
+    /* 0x00 */ s8 nodeIds[4];
+    /* 0x04 */ u8 visible;
 };
 
 // ---- 0x02205bcc: model animation slot (base: main class LightLevel)
@@ -246,12 +246,12 @@ struct LightLevel {
     ~LightLevel();
     BOOL switchLight(BOOL on, s32 a, s32 b, u32 param);
     BOOL switchLightAnimated(BOOL on);
-    s32 unk_00;
-    s32 unk_04;
-    u32 unk_08;
-    s32 unk_0c;
-    u16 unk_10;
-    u16 unk_12;
+    s32 level;
+    s32 targetLevel;
+    u32 fadeStep;
+    s32 isFlickering;
+    u16 flickerIndex;
+    u16 flickerDelay;
 };
 
 struct FtrGlowMat : public LightLevel {
@@ -259,14 +259,14 @@ struct FtrGlowMat : public LightLevel {
     ~FtrGlowMat();
     BOOL setLit(BOOL on, s32 a, s32 b);
     BOOL bindMaterial(G3dResAccess *res, s32 idx, BOOL on);
-    s8 unk_14;
-    G3dResAccess *unk_18;
+    s8 matIdx;
+    G3dResAccess *resMdl;
 };
 
 // ---- 0x02205b14: element view used by the 3-element container (same object as 0x02205bcc)
 struct Unk_ov004_02205b14_Obj {
     u8 pad[0x18];
-    u8 unk_18;
+    u8 numMat;
 };
 
 class Unk_ov004_02205b14 {
@@ -274,9 +274,9 @@ public:
     void updateEmission();
 
     /* 0x00 */ u8 pad_00[0x14];
-    /* 0x14 */ s8 unk_14;
+    /* 0x14 */ s8 matIdx;
     /* 0x15 */ u8 pad_15[3];
-    /* 0x18 */ Unk_ov004_02205b14_Obj *unk_18;
+    /* 0x18 */ Unk_ov004_02205b14_Obj *resMdl;
 };
 
 class FtrGlowMatSet {
@@ -287,8 +287,8 @@ public:
     u32 setLit(u32 a, u32 b, u32 c);
     u32 init(u32 a, u32 b);
 
-    /* 0x00 */ FtrGlowMat unk_00[3];
-    /* 0x54 */ u8 unk_54;
+    /* 0x00 */ FtrGlowMat mats[3];
+    /* 0x54 */ u8 anyBound;
 };
 
 // ---- 0x02205c44 (member at 0x73c)
@@ -302,8 +302,8 @@ struct FtrSwitch {
     void commit(Unk_ov004_02205c80_Obj *o);
     void loadFromMap(Unk_ov004_02205c80_Obj *o);
     void clear();
-    u8 unk_00;
-    u8 unk_01;
+    u8 cur;
+    u8 next;
 };
 
 // ---- 0x02205d5c (member at 0x73e)
@@ -311,9 +311,9 @@ struct FtrClockHands {
     ~FtrClockHands();
     void set(s32 a, s32 b);
     void clear();
-    s8 unk_00;
-    s8 unk_01;
-    u8 unk_02;
+    s8 hourJnt;
+    s8 minJnt;
+    u8 valid;
 };
 
 // ---- 0x02205e58 (member at 0x178)
@@ -326,9 +326,9 @@ struct FtrStackLink {
     s32 getParentIndex();
     BOOL isAttached();
     void clear();
-    s16 unk_00;
-    s16 unk_02;
-    Unk_ov004_02205d8c_Vec unk_04;
+    s16 parentIndex;
+    s16 relAngle;
+    Unk_ov004_02205d8c_Vec relPos;
 };
 
 // ---- 0x022062f4 (element of 0x022061b4)
@@ -342,8 +342,8 @@ struct FtrTopItem {
     BOOL isSet();
     void draw(Unk_ov004_02205c80_Obj *o);
     u16 unk_00;
-    u16 unk_02;
-    Unk_ov004_02205d8c_Vec unk_04;
+    u16 item;
+    Unk_ov004_02205d8c_Vec relPos;
 };
 
 struct ItemId {
@@ -366,13 +366,13 @@ struct FtrTopItems {
     FtrTopItem *get(u32 i);
     void clearAll();
     u32 unk_00;
-    FtrTopItem unk_04[4];
+    FtrTopItem items[4];
 };
 
 // ---- 0x02206398 (member at 0x44 of 0x02206e38; 5 pairs of resource pointers)
 struct Unk_ov004_02208a18_Rec {
     u32 unk_00;
-    u16 unk_04;
+    u16 numFrame;
 };
 
 struct FtrAnimSet {
@@ -391,12 +391,12 @@ struct FtrAnimSet {
     void setBma(void *v, u32 i);
     void setBca(void *v, u32 i);
     void clear();
-    void *unk_00[2];
-    void *unk_08[2];
-    void *unk_10[2];
-    void *unk_18[2];
-    void *unk_20[2];
-    s32 unk_28;
+    void *bca[2];
+    void *bma[2];
+    void *bva[2];
+    void *bta[2];
+    void *btp[2];
+    s32 texCopy;
 };
 
 // ---- 0x02206434 (set of up to 4 neighbour objects)
@@ -407,8 +407,8 @@ struct FtrStackedSet {
     Unk_ov004_02205c80_Obj *get(u32 i);
     u32 getCount();
     void collect(FtrTileList *l, s32 flag);
-    u32 unk_00;
-    Unk_ov004_02205c80_Obj *unk_04[4];
+    u32 count;
+    Unk_ov004_02205c80_Obj *actors[4];
 };
 
 // ---- 0x022487cc : BoxCollider (member at 0x628)
@@ -437,10 +437,10 @@ struct Unk_ov004_02206744_V3 {
 
 struct Unk_ov004_02206570_Act {
     u8 pad_00[0x5c];
-    Unk_ov004_02206744_V3 unk_5c;
-    Unk_ov004_02206744_V3 unk_68;
+    Unk_ov004_02206744_V3 position;
+    Unk_ov004_02206744_V3 prevPosition;
     u8 pad_74[0x8e - 0x74];
-    s16 unk_8e;
+    s16 rotY;
 };
 
 struct BoxCollider {
@@ -451,7 +451,7 @@ struct BoxCollider {
 };
 
 struct FtrCollider : BoxCollider {
-    void *unk_9c;
+    void *owner;
     FtrCollider();
     void onEdgeContact(CollisionEdge *a, Unk_ov004_02206570_Act *b, s32 c);
     void slideOwnerForWideFtr(Unk_ov004_02206570_Act *b);
@@ -482,14 +482,14 @@ struct Unk_ov004_02206be8_Blk {
 };
 
 struct FtrModelRes {
-    void *unk_00;
-    void *unk_04;
-    void *unk_08;
-    void *unk_0c;
-    ModelResource unk_10;
-    FtrAnimSet unk_44;
-    u16 unk_70;
-    u8 unk_72;
+    void *texFile;
+    void *arcFile;
+    void *model;
+    void *texture;
+    ModelResource texLoader;
+    FtrAnimSet animSet;
+    u16 item;
+    u8 keepTexCopy;
 
     void release();
     void *getTexture();
@@ -507,14 +507,14 @@ struct FtrModelRes {
 struct Unk_ov004_02206e38 {
     Unk_ov004_02206e38();
     ~Unk_ov004_02206e38();
-    u32 unk_00;
-    u32 unk_04;
-    u32 unk_08;
-    u32 unk_0c;
-    ModelResource unk_10;
-    FtrAnimSet unk_44;
-    u16 unk_70;
-    u8 unk_72;
+    u32 texFile;
+    u32 arcFile;
+    u32 model;
+    u32 texture;
+    ModelResource texLoader;
+    FtrAnimSet animSet;
+    u16 item;
+    u8 keepTexCopy;
 };
 
 // ---- 0x02248804 (array of 4 at 0x7c0)
@@ -547,9 +547,9 @@ public:
 // ================================================================ FtrActor
 struct Unk_ov004_02208980_E {
     u8 pad_00[8];
-    s32 unk_08;
+    s32 curFrame;
     u8 pad_0c[12];
-    s32 *unk_18;
+    s32 *anmObj;
     u8 pad_1c[4];
 };
 
@@ -559,7 +559,7 @@ struct Unk_ov004_0224882c_Buf {
 
 struct Unk_ov004_02206ec8_Ctx {
     u8 pad_00[0xb8];
-    u32 *unk_b8;
+    u32 *pVisAnmResult;
 };
 
 struct Unk_ov004_02207854_List {
@@ -583,16 +583,16 @@ struct Unk_ov004_0220bc80_V3 {
 // ---- part 15
 struct Unk_ov004_0220ce38_Slot {
     /* 0x00 */ u32 sub[2];
-    /* 0x08 */ u32 unk_08;
+    /* 0x08 */ u32 curFrame;
     /* 0x0c */ u32 pad_0c[3];
-    /* 0x18 */ u32 *unk_18;
+    /* 0x18 */ u32 *anmObj;
     /* 0x1c */ u32 pad_1c;
 };
 
 // ---- part 24
 struct Unk_ov004_02206e74 {
     u8 pad_00[0x10];
-    u32 unk_10;
+    u32 frameStep;
     u8 pad_14[0x20 - 0x14];
 };
 
@@ -1013,69 +1013,69 @@ public:
     BOOL isStereoOn();
     BOOL bindTvScreenTex(BOOL a);   // defined in TU03
 
-    /* 0x12e */ u16 unk_12e;
+    /* 0x12e */ u16 modelSlot;
     union {
         struct {
             /* 0x130 */ u8 pad_130[0x14c - 0x130];
-            /* 0x14c */ s32 unk_14c;
-            /* 0x150 */ s32 unk_150;
-            /* 0x154 */ s32 unk_154;
-            /* 0x158 */ s32 unk_158;
-            /* 0x15c */ u16 unk_15c;
-            /* 0x15e */ u16 unk_15e;
-            /* 0x160 */ s16 unk_160;
+            /* 0x14c */ s32 drawScale;
+            /* 0x150 */ s32 drawScaleY;
+            /* 0x154 */ s32 drawScaleZ;
+            /* 0x158 */ s32 colliderScale;
+            /* 0x15c */ u16 appearFrame;
+            /* 0x15e */ u16 wobblePhase;
+            /* 0x160 */ s16 wobbleSpeed;
             /* 0x162 */ u8 pad_162[2];
-            /* 0x164 */ s32 unk_164;
-            /* 0x168 */ s16 unk_168;
+            /* 0x164 */ s32 wobbleAmp;
+            /* 0x168 */ s16 targetAngle;
             /* 0x16a */ u8 pad_16a[2];
-            /* 0x16c */ s32 unk_16c[3];
-            /* 0x178 */ u8 unk_178[0x10];   // FtrStackLink
-            /* 0x188 */ u8 unk_188[0x44];   // FtrTopItems
-            /* 0x1cc */ u8 unk_1cc[0x80];   // 4 x TouchPickCylinder (0x20)
-            /* 0x24c */ u8 unk_24c[0x34];
-            /* 0x280 */ u32 unk_280;
-            /* 0x284 */ u8 unk_284;
+            /* 0x16c */ s32 targetPos[3];
+            /* 0x178 */ u8 stackLink[0x10];   // FtrStackLink
+            /* 0x188 */ u8 topItems[0x44];   // FtrTopItems
+            /* 0x1cc */ u8 topItemCylinders[0x80];   // 4 x TouchPickCylinder (0x20)
+            /* 0x24c */ u8 moveFlag[0x34];
+            /* 0x280 */ u32 ftrIndex;
+            /* 0x284 */ u8 mapLayer;
             /* 0x285 */ u8 pad_285[3];
-            /* 0x288 */ u8 unk_288[0x2a8];  // TouchPickBox
-            /* 0x530 */ s32 unk_530;
-            /* 0x534 */ u8 unk_534[0x590 - 0x534]; // BlendAnimModel
-            /* 0x590 */ u32 unk_590;
+            /* 0x288 */ u8 touchBox[0x2a8];  // TouchPickBox
+            /* 0x530 */ s32 baseAct;
+            /* 0x534 */ u8 model[0x590 - 0x534]; // BlendAnimModel
+            /* 0x590 */ u32 modelResMdl;
             /* 0x594 */ u8 pad_594[4];
-            /* 0x598 */ Unk_ov004_Mtx unk_598;
+            /* 0x598 */ Unk_ov004_Mtx modelMtx;
             /* 0x5c8 */ u8 pad_5c8[0x5d0 - 0x5c8];
-            /* 0x5d0 */ u8 unk_5d0[4];
-            /* 0x5d4 */ u32 unk_5d4;
-            /* 0x5d8 */ u32 unk_5d8;
+            /* 0x5d0 */ u8 animFrameCtrl[4];
+            /* 0x5d4 */ u32 animNumFrames;
+            /* 0x5d8 */ u32 animFrame;
             /* 0x5dc */ u8 pad_5dc[0x628 - 0x5dc];
-            /* 0x628 */ u8 unk_628[0xa0];   // FtrCollider
-            /* 0x6c8 */ u8 unk_6c8[0x74];   // Unk_ov004_02206e38
-            /* 0x73c */ u8 unk_73c[2];      // FtrSwitch
-            /* 0x73e */ s8 unk_73e;         // FtrClockHands (3 bytes)
-            /* 0x73f */ s8 unk_73f;
-            /* 0x740 */ u8 unk_740;
+            /* 0x628 */ u8 collider[0xa0];   // FtrCollider
+            /* 0x6c8 */ u8 modelRes[0x74];   // Unk_ov004_02206e38
+            /* 0x73c */ u8 switchState[2];      // FtrSwitch
+            /* 0x73e */ s8 clockHands;         // FtrClockHands (3 bytes)
+            /* 0x73f */ s8 clockHandsMinJnt;
+            /* 0x740 */ u8 clockHandsValid;
             /* 0x741 */ u8 pad_741[3];
-            /* 0x744 */ u8 unk_744[0x1c];   // FtrGlowMat
-            /* 0x760 */ u8 unk_760[8];      // FtrVisNodes
-            /* 0x768 */ s32 unk_768;
-            /* 0x76c */ u16 unk_76c;
+            /* 0x744 */ u8 lampMat[0x1c];   // FtrGlowMat
+            /* 0x760 */ u8 visNodes[8];      // FtrVisNodes
+            /* 0x768 */ s32 spawnMode;
+            /* 0x76c */ u16 actFrame;
             /* 0x76e */ u8 pad_76e[2];
-            /* 0x770 */ s32 unk_770;
-            /* 0x774 */ s32 unk_774;
-            /* 0x778 */ u8 unk_778;
-            /* 0x779 */ u8 unk_779;
-            /* 0x77a */ u8 unk_77a;
+            /* 0x770 */ s32 commentPersonality;
+            /* 0x774 */ s32 commentId;
+            /* 0x778 */ u8 actAid;
+            /* 0x779 */ u8 netRequestPending;
+            /* 0x77a */ u8 isInitializing;
             /* 0x77b */ u8 pad_77b;
-            /* 0x77c */ s32 unk_77c;
-            /* 0x780 */ s32 unk_780;
-            /* 0x784 */ s32 unk_784;
-            /* 0x788 */ u8 unk_788;
-            /* 0x789 */ u8 unk_789;
+            /* 0x77c */ s32 kind;
+            /* 0x780 */ s32 footprint;
+            /* 0x784 */ s32 hasTopSurface;
+            /* 0x788 */ u8 noCollision;
+            /* 0x789 */ u8 startsOff;
             /* 0x78a */ u8 pad_78a[2];
-            /* 0x78c */ s32 unk_78c;
-            /* 0x790 */ s32 unk_790;
-            /* 0x794 */ u8 unk_794[0x20];   // Unk_ov004_02235984
-            /* 0x7b4 */ s32 unk_7b4[3];
-            /* 0x7c0 */ Unk_ov004_02208980_E unk_7c0[4];   // 4 x FtrModelAnim
+            /* 0x78c */ s32 surfaceHeight;
+            /* 0x790 */ s32 lightKind;
+            /* 0x794 */ u8 soundEmitter[0x20];   // Unk_ov004_02235984
+            /* 0x7b4 */ s32 centerPos[3];
+            /* 0x7c0 */ Unk_ov004_02208980_E anims[4];   // 4 x FtrModelAnim
         };
         struct {
             /* 0x130 */ u8 b10_pad_130[0x5d0 - 0x130];
@@ -1323,7 +1323,7 @@ public:
     virtual BOOL initModel();
     virtual BOOL updateActive();
 
-    /* 0x840 */ u32 unk_840;
+    /* 0x840 */ u32 startFrame;
 };
 
 // 0x0224b310: size 0x858
@@ -1360,14 +1360,14 @@ public:
     BOOL enterFtrAct00();
     void execFtrAct();
 
-    /* 0x840 */ s32 unk_840;
-    /* 0x844 */ s32 unk_844;
-    /* 0x848 */ s32 unk_848;
-    /* 0x84c */ u16 unk_84c;
-    /* 0x84e */ u16 unk_84e;
-    /* 0x850 */ u8 unk_850;
+    /* 0x840 */ s32 contactPoint;
+    /* 0x844 */ s32 contactPointY;
+    /* 0x848 */ s32 contactPointZ;
+    /* 0x84c */ u16 pushAngle;
+    /* 0x84e */ u16 talkDelay;
+    /* 0x850 */ u8 ftrAct;
     /* 0x851 */ u8 pad_851[3];
-    /* 0x854 */ s32 unk_854;
+    /* 0x854 */ s32 talkAct;
 };
 
 // 0x0224b43c: size >= 0x84a (only the methods in this range are here)
@@ -1379,13 +1379,13 @@ public:
     virtual BOOL initModel();
     virtual BOOL updateActive();
 
-    /* 0x840 */ u16 unk_840;
-    /* 0x842 */ u16 unk_842;
-    /* 0x844 */ u8 unk_844;
-    /* 0x845 */ u8 unk_845;
-    /* 0x846 */ u8 unk_846;
+    /* 0x840 */ u16 loopsPerPhrase;
+    /* 0x842 */ u16 restTimer;
+    /* 0x844 */ u8 loopCount;
+    /* 0x845 */ u8 singPhase;
+    /* 0x846 */ u8 prevAnimDone;
     /* 0x847 */ u8 pad_847;
-    /* 0x848 */ u16 unk_848;
+    /* 0x848 */ u16 singFrames;
 };
 
 namespace p10 {
@@ -1479,51 +1479,51 @@ typedef BOOL (FtrPhone::*Unk_ov004_0220a280_Fn)();
 BOOL FtrSingingInsect::updateActive() {
     u32 h = p10::FtrSound_GetSe0(p10::FtrActor_GetFtrIndex(this));
     if ((u16)(h + 0xfc07) <= 3) {
-        switch (unk_845) {
+        switch (singPhase) {
         case 0:
-            if (unk_842 != 0) {
-                unk_842--;
+            if (restTimer != 0) {
+                restTimer--;
             }
-            if (unk_842 == 0) {
-                unk_845 = 1;
-                unk_844 = 0;
-                unk_846 = 0;
-                unk_848 = 0;
+            if (restTimer == 0) {
+                singPhase = 1;
+                loopCount = 0;
+                prevAnimDone = 0;
+                singFrames = 0;
                 if (h != p10::gFtrSoundNone) {
                     p10::_ZN15FtrSoundEmitter4playEjj(b10_sub_794, h, b10_sub_7b4);
                 }
             }
             break;
         case 1: {
-            unk_848++;
+            singFrames++;
             u32 r = p10::FtrActor_StepAnims(this);
-            if (unk_846 != 0 && r != 0) {
-                unk_846 = 0;
+            if (prevAnimDone != 0 && r != 0) {
+                prevAnimDone = 0;
                 playAnim(0, 1, 0x1000, 0);
-                unk_844++;
-                if (unk_844 >= unk_840) {
-                    unk_845 = 0;
+                loopCount++;
+                if (loopCount >= loopsPerPhrase) {
+                    singPhase = 0;
                     if (h == 0x3fc) {
-                        unk_842 = 0x3c;
+                        restTimer = 0x3c;
                     } else {
-                        unk_842 = 200;
+                        restTimer = 200;
                     }
                 }
             }
-            unk_846 = r;
+            prevAnimDone = r;
             break;
         }
         }
     } else {
-        switch (unk_845) {
+        switch (singPhase) {
         case 0:
-            if (unk_842 != 0) {
-                unk_842--;
+            if (restTimer != 0) {
+                restTimer--;
             }
-            if (unk_842 == 0) {
-                unk_845 = 1;
-                unk_844 = 0;
-                unk_846 = 0;
+            if (restTimer == 0) {
+                singPhase = 1;
+                loopCount = 0;
+                prevAnimDone = 0;
                 if (h != p10::gFtrSoundNone) {
                     p10::_ZN15FtrSoundEmitter4playEjj(b10_sub_794, h, b10_sub_7b4);
                 }
@@ -1540,27 +1540,27 @@ BOOL FtrSingingInsect::updateActive() {
                 }
             }
             u32 r = p10::FtrActor_StepAnims(this);
-            if (unk_846 != 0 && r != 0) {
-                unk_846 = 0;
+            if (prevAnimDone != 0 && r != 0) {
+                prevAnimDone = 0;
                 playAnim(0, 1, 0x1000, 0);
-                unk_844++;
-                if (unk_844 >= unk_840) {
-                    unk_845 = (unk_845 + 1) & 3;
-                    unk_844 = 0;
-                    if (unk_845 != 0) {
+                loopCount++;
+                if (loopCount >= loopsPerPhrase) {
+                    singPhase = (singPhase + 1) & 3;
+                    loopCount = 0;
+                    if (singPhase != 0) {
                         if (h != p10::gFtrSoundNone) {
                             p10::_ZN15FtrSoundEmitter4playEjj(b10_sub_794, h, b10_sub_7b4);
                         }
                     } else {
                         if (p10::_ZN10FtrAnimSet6getBvaEj(p10::_ZN11FtrModelRes10getAnimSetEv(b10_sub_6c8), 0) != 0) {
-                            unk_842 = unk_840 * b10_unk_824.mid;
+                            restTimer = loopsPerPhrase * b10_unk_824.mid;
                         } else {
-                            unk_842 = unk_840 * b10_unk_5d4.mid;
+                            restTimer = loopsPerPhrase * b10_unk_5d4.mid;
                         }
                     }
                 }
             }
-            unk_846 = r;
+            prevAnimDone = r;
             break;
         }
         }
@@ -1637,8 +1637,8 @@ public:
     BOOL enterFtrAct00();
     void execFtrAct();
 
-    /* 0x840 */ FtrGlowMatSet unk_840;
-    /* 0x898 */ u8 unk_898;
+    /* 0x840 */ FtrGlowMatSet glowMats;
+    /* 0x898 */ u8 ftrAct;
 };
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -1663,8 +1663,8 @@ public:
     void syncAct1();
     void syncAct0();
 
-    /* 0x840 */ u8 unk_840;
-    /* 0x841 */ u8 unk_841;
+    /* 0x840 */ u8 ftrAct;
+    /* 0x841 */ u8 alwaysVisible;
 };
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -1678,7 +1678,7 @@ public:
     virtual BOOL initModel();
     virtual BOOL updateActive();
 
-    /* 0x840 */ u16 unk_840;
+    /* 0x840 */ u16 sampleIndex;
 };
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -1698,10 +1698,10 @@ public:
     virtual BOOL updateActive();
     virtual BOOL isVisible();
 
-    /* 0x840 */ u16 unk_840;
-    /* 0x842 */ u8 unk_842;
+    /* 0x840 */ u16 sampleIndex;
+    /* 0x842 */ u8 initFrames;
     /* 0x843 */ u8 pad_843;
-    /* 0x844 */ MatTexVramTask unk_844;
+    /* 0x844 */ MatTexVramTask texTask;
 };
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -1763,35 +1763,35 @@ BOOL FtrSingingInsect::initModel() {
     s32 t = p11::FtrSound_GetSe0();
     switch (t) {
     case 0x3f9:
-        unk_844 = 4;
-        unk_840 = unk_844;
+        loopCount = 4;
+        loopsPerPhrase = loopCount;
         break;
     case 0x3fb:
-        unk_844 = 4;
-        unk_840 = unk_844;
+        loopCount = 4;
+        loopsPerPhrase = loopCount;
         break;
     case 0x3fa:
-        unk_844 = 4;
-        unk_840 = unk_844;
+        loopCount = 4;
+        loopsPerPhrase = loopCount;
         break;
     case 0x3fc:
-        unk_844 = 2;
-        unk_840 = unk_844;
+        loopCount = 2;
+        loopsPerPhrase = loopCount;
         break;
     default:
-        unk_844 = 1;
-        unk_840 = unk_844;
+        loopCount = 1;
+        loopsPerPhrase = loopCount;
         break;
     }
-    unk_845 = 0;
-    unk_842 = 0;
+    singPhase = 0;
+    restTimer = 0;
     if (b11_unk_768 != 1) {
         if (t == 0x3fc) {
-            unk_842 = p11::Random_GlobalBelow(0x3c, 0);
+            restTimer = p11::Random_GlobalBelow(0x3c, 0);
         } else if ((u16)(t + 0xfc07) <= 2) {
-            unk_842 = p11::Random_GlobalBelow(0xc8, 0);
+            restTimer = p11::Random_GlobalBelow(0xc8, 0);
         } else {
-            unk_842 = p11::Random_GlobalBelow(unk_840 * p11::_ZN8FtrActor17getAnimFrameCountEi(this));
+            restTimer = p11::Random_GlobalBelow(loopsPerPhrase * p11::_ZN8FtrActor17getAnimFrameCountEi(this));
         }
     }
     return TRUE;

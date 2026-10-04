@@ -21,16 +21,16 @@ public:
 };
 
 struct CommManager {
-    /* 0x00 */ u8 unk_00[4];
-    /* 0x04 */ u16 unk_04;
-    /* 0x06 */ u8 unk_06;
-    /* 0x07 */ u8 unk_07;
-    /* 0x08 */ u8 *unk_08;
-    /* 0x0c */ u32 unk_0c[3];
+    /* 0x00 */ u8 slotActive[4];
+    /* 0x04 */ u16 sendSeq;
+    /* 0x06 */ u8 mode;
+    /* 0x07 */ u8 pendingMode;
+    /* 0x08 */ u8 *sendBufs;
+    /* 0x0c */ u32 sendCredits[3];
     /* 0x18 */ u8 pad_18[0x64 - 0x18];
-    /* 0x64 */ s32 unk_64;
-    /* 0x68 */ s32 unk_68;
-    /* 0x6c */ u8 unk_6c;
+    /* 0x64 */ s32 myAid;
+    /* 0x68 */ s32 localSlot;
+    /* 0x6c */ u8 memberCount;
 
     void setErrorMode(u32 v);
     void endRecord(u32 a, u32 b);
@@ -1454,7 +1454,7 @@ void SaveManager::execAct01() {
     switch (actStep) {
     case 0:
         if (NJ::_ZN11SaveManager13func_020a15c8Ej(this, 0) != 0) {
-            if (NJ::gCommManager->isSlotActive(NJ::gCommManager->unk_64) != 0) {
+            if (NJ::gCommManager->isSlotActive(NJ::gCommManager->myAid) != 0) {
                 NJ::Comm_ResetNetSession();
                 if (NJ::Wifi_EndSession(this) != 0) {
                     NJ::NetOverlay_Restore();
@@ -1516,7 +1516,7 @@ void SaveManager::execAct02() {
     switch (actStep) {
     case 0:
         if (NJ::_ZN11SaveManager13func_020a15c8Ej(this, 0) != 0) {
-            if (NJ::gCommManager->isSlotActive(NJ::gCommManager->unk_64) != 0) {
+            if (NJ::gCommManager->isSlotActive(NJ::gCommManager->myAid) != 0) {
                 NJ::Comm_ResetNetSession();
                 if (NJ::Wifi_EndSession(this) != 0) {
                     NJ::NetOverlay_Restore();
@@ -2153,11 +2153,11 @@ extern "C" void SaveManager_ExecAct14(Unk_020a25d8 *p) {
         } else if (p->dateTimeReceived != 0) {
             u32 r7 = NH::Net_GetMyAid();
             CommManager *r5 = NH::gCommManager;
-            r5->unk_64 = r7;
-            void *r6 = NH::PlayerData_Get(NH::PlayerSession_GetDataIndex(r5->unk_68));
-            NH::MI_CpuCopy8(r6, NH::PlayerData_Get(r5->unk_64 + 3), 0x228c);
-            NH::sSessionResidentIndex = NH::PlayerSession_GetDataIndex(r5->unk_68);
-            r5->unk_68 = r7;
+            r5->myAid = r7;
+            void *r6 = NH::PlayerData_Get(NH::PlayerSession_GetDataIndex(r5->localSlot));
+            NH::MI_CpuCopy8(r6, NH::PlayerData_Get(r5->myAid + 3), 0x228c);
+            NH::sSessionResidentIndex = NH::PlayerSession_GetDataIndex(r5->localSlot);
+            r5->localSlot = r7;
             u32 cnt = 0;
             u32 zero = 0;
             s32 i = 3;
@@ -2229,7 +2229,7 @@ extern "C" void SaveManager_ExecAct14(Unk_020a25d8 *p) {
 
 extern "C" void SaveManager_EnterAct15(Unk_020a25d8 *p) {
     NH::SaveManager_StartGatekeeperTalk(p, 1);
-    if (NH::gCommManager->unk_6c == 1) {
+    if (NH::gCommManager->memberCount == 1) {
         NH::LetterDelivery_DeliverOutgoing();
         NH::LetterDelivery_DeliverOutgoing();
         NH::Constellation_PrepareExchange();
@@ -2260,7 +2260,7 @@ extern "C" void SaveManager_ExecAct15(Unk_020a25d8 *p) {
             if (p->actStep > 2) {
                 NH::NetArea_SetSlotStatus(NH::sJoiningAid, 0xc, 1, 0, 7);
                 CommManager *g = NH::gCommManager;
-                g->setMemberCount((u8)(g->unk_6c + 1));
+                g->setMemberCount((u8)(g->memberCount + 1));
                 g->setSlotActive(NH::sJoiningAid, 1);
                 NH::Comm_ResetPeerState(NH::sJoiningAid);
             }
@@ -2354,7 +2354,7 @@ extern "C" void SaveManager_ExecAct16(Unk_020a25d8 *p) {
         } else if (NH::gCommManager->getMode() == 1) {
             NH::NetArea_SetSlotStatus(NH::sJoiningAid, 0xc, 1, 0, 7);
             CommManager *g = NH::gCommManager;
-            g->setMemberCount((u8)(g->unk_6c + 1));
+            g->setMemberCount((u8)(g->memberCount + 1));
             g->setSlotActive(NH::sJoiningAid, 1);
             NH::Comm_ResetPeerState(NH::sJoiningAid);
             p->actStep = 1;
@@ -2387,7 +2387,7 @@ extern "C" void SaveManager_ExecAct16(Unk_020a25d8 *p) {
 extern "C" void SaveManager_EnterAct17(Unk_020a25d8 *p) {
     NH::SaveManager_StartGatekeeperTalk(p, 0);
     NH::_ZN12Unk_02097ff47setFlagEj(NH::PlayerData_GetCurrent(), 2);
-    NH::NetSession_SetLastSyncSlot(NH::gCommManager->unk_64);
+    NH::NetSession_SetLastSyncSlot(NH::gCommManager->myAid);
 }
 
 extern "C" void SaveManager_ExecAct17(Unk_020a25d8 *p) {
@@ -2411,7 +2411,7 @@ extern "C" void SaveManager_ExecAct17(Unk_020a25d8 *p) {
     case 3:
         if (NH::Comm_IsConnectionLost(1)) {
             NH::Comm_SetLostFlag();
-        } else if (NH::_ZN11SaveManager18isTransferReceivedEj(p, NH::gCommManager->unk_64)) {
+        } else if (NH::_ZN11SaveManager18isTransferReceivedEj(p, NH::gCommManager->myAid)) {
             NH::_ZN11SaveManager22backupVillagerTransferEv(p);
             p->actStep = 4;
         }
@@ -2611,7 +2611,7 @@ extern "C" void SaveManager_ExecAct18(Unk_020a25d8 *p) {
                 g = NH::gCommManager;
                 g->beginRecord();
                 g->endRecord(7, 5);
-                if (g->unk_6c == 1) {
+                if (g->memberCount == 1) {
                     NH::Town_OnLoad();
                 }
                 p->actStep = 0x1a;
@@ -2663,7 +2663,7 @@ void Unk_020a1c88::execAct19() {
     case 3:
         if (NG::Comm_IsConnectionLost(1)) {
             NG::Comm_SetLostFlag();
-        } else if (NG::_ZN11SaveManager18isTransferReceivedEj(this, NG::gCommManager->unk_64)) {
+        } else if (NG::_ZN11SaveManager18isTransferReceivedEj(this, NG::gCommManager->myAid)) {
             NG::_ZN11SaveManager22backupVillagerTransferEv(this);
             actStep = 4;
         }
@@ -2947,7 +2947,7 @@ void Unk_020a1c88::execAct1B() {
         if (NG::Comm_IsConnectionLost(1)) {
             NG::Comm_SetLostFlag();
         } else if (NG::func_0209f23c()) {
-            if (NG::_ZN11SaveManager18isTransferReceivedEj(this, NG::gCommManager->unk_64)) {
+            if (NG::_ZN11SaveManager18isTransferReceivedEj(this, NG::gCommManager->myAid)) {
                 NG::_ZN11SaveManager22backupVillagerTransferEv(this);
                 actStep = 4;
             }

@@ -102,15 +102,15 @@ struct Unk_02082d74_M {
 class NpcSpawner : public GameProc {
 public:
     virtual ~NpcSpawner();
-    /* 0x50 */ Unk_02082d74_M unk_50;
+    /* 0x50 */ Unk_02082d74_M freeUnitMap;
 };
 
-struct CommManager { u8 pad_00[0x64]; s32 unk_64; BOOL isSlotActive(s32 i); };
+struct CommManager { u8 pad_00[0x64]; s32 myAid; BOOL isSlotActive(s32 i); };
 
 struct Unk_02082e80_Cell { u8 pad_00[0x28]; };
 struct Unk_02082e80_Grid {
-    Unk_02082e80_Cell *unk_00;
-    u32 unk_04[2];
+    Unk_02082e80_Cell *blocks;
+    u32 size[2];
 };
 struct Unk_02082e80_Pos {
     s32 x, y;
@@ -284,8 +284,8 @@ void FieldPos_FromUnitCenter(void *a, s32 x, s32 y);
 static inline BOOL Unk_02083058_IsA() { return gFieldSceneKind == 0 ? TRUE : FALSE; }
 
 static inline Unk_02082e80_Cell *Unk_02082e80_GetCell(Unk_02082e80_Grid *g, u32 x, u32 y) {
-    if (x < g->unk_04[0] && y < g->unk_04[1] && g->unk_00 != NULL) {
-        return &g->unk_00[y * g->unk_04[0] + x];
+    if (x < g->size[0] && y < g->size[1] && g->blocks != NULL) {
+        return &g->blocks[y * g->size[0] + x];
     }
     return NULL;
 }

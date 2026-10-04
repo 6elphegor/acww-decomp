@@ -225,12 +225,12 @@ void func_020030b4_dummy(void);
 }
 
 struct Unk_02002804_Buf {
-    u16 unk_00[32];
+    u16 colors[32];
 };
 
 // 0x30-byte record copied around by Gfx3d_SetViewMatrix and Gfx3d_Init
 struct Unk_02002848_Data {
-    u32 unk_00[12];
+    u32 m[12];
 };
 
 extern Unk_02002848_Data gViewMtx;
@@ -249,44 +249,44 @@ public:
     BOOL loadPalette();
 
     /* 0x00 */ u8 unk_00[0x48];
-    /* 0x48 */ void *unk_48;
-    /* 0x4c */ void *unk_4c;
+    /* 0x48 */ void *paletteBuf;
+    /* 0x4c */ void *charBuf;
 };
 
 extern AbAllObjGfx sAbAllObjGfx;
 
 struct Unk_02002f14_Node {
-    /* 0x00 */ void *unk_00;
-    /* 0x04 */ void *unk_04;
-    /* 0x08 */ void *unk_08;
+    /* 0x00 */ void *prev;
+    /* 0x04 */ void *next;
+    /* 0x08 */ void *owner;
 };
 
 struct Unk_02002cb0_Vec {
     /* 0x00 */ u8 unk_00[0x10];
-    /* 0x10 */ s32 unk_10;
+    /* 0x10 */ s32 pushX;
     /* 0x14 */ s32 unk_14;
-    /* 0x18 */ s32 unk_18;
+    /* 0x18 */ s32 pushZ;
 };
 
 struct Unk_02002f14_S16Vec {
-    s16 unk_00;
-    s16 unk_02;
-    s16 unk_04;
+    s16 x;
+    s16 y;
+    s16 z;
 };
 
 struct Unk_02002f14_S32Vec {
-    s32 unk_00;
-    s32 unk_04;
-    s32 unk_08;
+    s32 x;
+    s32 y;
+    s32 z;
 };
 
 // list head (8 bytes, zeroed by an inline constructor: the unit's __sinit) and two pointers
 struct Unk_0213c874 {
-    u32 unk_00;
-    u32 unk_04;
+    u32 head;
+    u32 tail;
     Unk_0213c874() {
-        unk_00 = 0;
-        unk_04 = 0;
+        head = 0;
+        tail = 0;
     }
 };
 
@@ -391,25 +391,25 @@ u32 VillagerId::getName(u32 arg) {
 }
 
 Actor::Actor() {
-    listNode.unk_00 = 0;
-    listNode.unk_04 = 0;
-    listNode.unk_08 = this;
+    listNode.prev = 0;
+    listNode.next = 0;
+    listNode.owner = this;
     func_020e7968(&gActorList, &listNode);
     Unk_02002f14_S32Vec *v = (Unk_02002f14_S32Vec *)sActorSpawnPos;
     if (v) {
-        position = v->unk_00;
-        positionY = v->unk_04;
-        positionZ = v->unk_08;
+        position = v->x;
+        positionY = v->y;
+        positionZ = v->z;
     }
     Unk_02002f14_S16Vec *w = (Unk_02002f14_S16Vec *)sActorSpawnRot;
     if (w) {
-        rotX = w->unk_00;
-        rotY = w->unk_02;
-        rotZ = w->unk_04;
+        rotX = w->x;
+        rotY = w->y;
+        rotZ = w->z;
         Unk_02002f14_S16Vec *x = (Unk_02002f14_S16Vec *)sActorSpawnRot;
-        moveAngleX = x->unk_00;
-        moveAngleY = x->unk_02;
-        moveAngleZ = x->unk_04;
+        moveAngleX = x->x;
+        moveAngleY = x->y;
+        moveAngleZ = x->z;
     }
     u32 *e = gProfileTable[*(u16 *)&unk_04[8]];
     actorFlags = e[2];
@@ -470,7 +470,7 @@ BOOL Actor::postDraw() { return ProcBase::postDraw(); }
 
 void *Actor::findById(u32 id) {
     void *r = ProcList_FindById(&gActorList, id);
-    if (r) return ((Unk_02002f14_Node *)r)->unk_08;
+    if (r) return ((Unk_02002f14_Node *)r)->owner;
     return 0;
 }
 
@@ -481,7 +481,7 @@ void *Actor::findByProfile(u32 id, Actor *o) {
     } else {
         r = ProcList_FindByProfile(&gActorList, id, 0);
     }
-    if (r) return ((Unk_02002f14_Node *)r)->unk_08;
+    if (r) return ((Unk_02002f14_Node *)r)->owner;
     return 0;
 }
 
@@ -506,8 +506,8 @@ void Actor::setCullParams(s32 a, s32 b, s32 c) {
 void Actor::applyVelocity(Unk_02002cb0_Vec *v) {
     VEC_Add(&position, &velocity, &position);
     if (v) {
-        position = position + v->unk_10;
-        positionZ = positionZ + v->unk_18;
+        position = position + v->pushX;
+        positionZ = positionZ + v->pushZ;
     }
 }
 

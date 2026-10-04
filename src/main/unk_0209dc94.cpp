@@ -137,7 +137,7 @@ extern const u32 sSndOutputModeTable[2];
 const u32 sSndOutputModeTable[2] = {1, 0};
 
 struct SaveData {
-    u8 unk_00;
+    u8 marker;
     u8 unk_01;
     u8 f_2[10];
     u8 f_c[0x8a30];
@@ -231,7 +231,7 @@ SaveData::~SaveData() {
 }
 
 BOOL SaveData::isValid() {
-    if (unk_00 == 0x8a) {
+    if (marker == 0x8a) {
         if (_ZN11SaveRecord412isStateValidEv(&f_15fdc) != 0) return TRUE;
     }
     return FALSE;

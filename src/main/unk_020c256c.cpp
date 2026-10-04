@@ -304,8 +304,8 @@ public:
     void changeAct(s32 state);
 
     s32 unk_654;
-    SpNpcTestTalk unk_658;
-    s16 unk_70c;
+    SpNpcTestTalk talk;
+    s16 homeAngle;
 };
 
 extern "C" {
@@ -526,8 +526,8 @@ BOOL SpNpcTest::vfunc_04() {
     }
     v = 0xd000;
     _ZN8NpcActor12setNpcHandleEPt(this, &v);
-    _ZN8NpcActor14setTalkRequestEP12Unk_0201bc1c(this, &unk_658);
-    unk_658.attachOwner((u32)this);
+    _ZN8NpcActor14setTalkRequestEP12Unk_0201bc1c(this, &talk);
+    talk.attachOwner((u32)this);
     return TRUE;
 }
 
@@ -536,7 +536,7 @@ BOOL SpNpcTest::vfunc_00() {
         return FALSE;
     }
     changeAct(0);
-    unk_70c = rotY;
+    homeAngle = rotY;
     return TRUE;
 }
 
@@ -584,13 +584,13 @@ BOOL SpNpcTest::mainAct00() {
 
 BOOL SpNpcTest::setupAct01() {
     u32 x;
-    void *p = unk_658.func_02015aac();
+    void *p = talk.func_02015aac();
     x = 0;
     if (p != NULL) {
         x = _ZN8NpcActor10getAngleToEPS_(this, p);
     }
     _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(&talkCtrl, 0, x, 0);
-    unk_658.setPhase(0);
+    talk.setPhase(0);
     return TRUE;
 }
 
@@ -607,7 +607,7 @@ BOOL SpNpcTest::mainAct02() {
 }
 
 BOOL SpNpcTest::setupAct03() {
-    actionCtrl.requestAction(3, 1, 0, 0, 0, unk_70c, 0, 0, data_020c6cc8, 0);
+    actionCtrl.requestAction(3, 1, 0, 0, 0, homeAngle, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
@@ -682,8 +682,8 @@ BOOL SpNpcTest::vfunc_48(void *p) {
 void SpNpcTest::vfunc_4c(s32 a) {
     switch (a) {
     case 0:
-        unk_658.vfunc_08();
-        unk_658.func_02015ab0(_ZN8NpcActor14getPlayerActorEj(this, 4));
+        talk.vfunc_08();
+        talk.func_02015ab0(_ZN8NpcActor14getPlayerActorEj(this, 4));
         changeAct(1);
         break;
     case 8:

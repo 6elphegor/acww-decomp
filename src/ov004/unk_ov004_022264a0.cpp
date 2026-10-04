@@ -143,7 +143,7 @@ class AnimModel : public CachedModel, public AnimFrameCtrl {
 public:
     AnimModel();
     virtual ~AnimModel();
-    void *unk_b4;
+    void *anmObj;
 
     s32 attachAnim();
     s32 drawAnimated(void *q);

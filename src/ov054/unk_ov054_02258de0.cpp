@@ -49,7 +49,7 @@ struct Unk_ov054_0225b3ac_Row {
 
 struct CommManager {
     u8 pad_00[0x64];
-    s32 unk_64;
+    s32 myAid;
 };
 
 struct Unk_ov054_0225b0ac_Local {
@@ -177,7 +177,7 @@ public:
     }
 struct ThreeLayerAnimModel {
     u8 pad_00[0xa4];
-    s32 unk_a4;
+    s32 curFrame;
     u8 pad_a8[0x2a0 - 0xec - 0xa8];
     ThreeLayerAnimModel();
     ~ThreeLayerAnimModel();
@@ -199,7 +199,7 @@ MEMBER(Unk_0201a13c, 0x49c - 0x420);
 MEMBER(CollisionState, 0x30);
 struct Unk_02088d00 {
     u8 pad_00[0x1c];
-    u32 unk_1c;
+    u32 groups;
     u8 pad_20[0x514 - 0x4cc - 0x20];
     Unk_02088d00();
     ~Unk_02088d00();
@@ -1004,7 +1004,7 @@ BOOL SpNpcPellyPhyllis::vfunc_00() {
         }
     }
     homeAngle = rotY;
-    collider.unk_1c |= 2;
+    collider.groups |= 2;
     if (sister == 0) {
         Bgm_Request(0x11, 0x55, 0x7f, 0);
     } else if (sister == 1) {
@@ -1244,13 +1244,13 @@ BOOL SpNpcPellyPhyllis::mainAct09() {
     if (isNetOwner()) {
         s32 a = 4;
         s32 b = 4;
-        if (NpcActor_netGetSlots(this, &a, &b) && a == gCommManager->unk_64 && a == b) {
-            netSetSlotsIfOwner(1, gCommManager->unk_64, gCommManager->unk_64);
+        if (NpcActor_netGetSlots(this, &a, &b) && a == gCommManager->myAid && a == b) {
+            netSetSlotsIfOwner(1, gCommManager->myAid, gCommManager->myAid);
             talk.vfunc_08();
             func_02015ab0(&talk, getPlayerActor(4));
             changeAct(4);
         } else if (NetArea_IsLocalOwner() && b == 4) {
-            netSetSlotsIfOwner(1, gCommManager->unk_64, 4);
+            netSetSlotsIfOwner(1, gCommManager->myAid, 4);
             changeAct(2);
         }
     }
@@ -1266,7 +1266,7 @@ BOOL SpNpcPellyPhyllis::mainAct0A() {
         if (NpcActor_netGetSlots(this, &a, &b)) {
             if (a == 4) {
                 if (NetArea_IsLocalOwner()) {
-                    netSetSlotsIfOwner(1, gCommManager->unk_64, 4);
+                    netSetSlotsIfOwner(1, gCommManager->myAid, 4);
                     changeAct(2);
                 }
             }
@@ -2532,10 +2532,10 @@ void SpNpcPellyPhyllis::vfunc_4c(u32 cmd, u32 arg) {
     case 3:
         footstepFx.unk_08 = arg;
         if (arg != 4) {
-            netSetSlotsIfOwner(1, gCommManager->unk_64, arg);
+            netSetSlotsIfOwner(1, gCommManager->myAid, arg);
             changeAct(0xb);
         } else if (isNetOwner()) {
-            u32 t = gCommManager->unk_64;
+            u32 t = gCommManager->myAid;
             netSetSlotsIfOwner(1, t, t);
             changeAct(0xb);
         }
@@ -2547,11 +2547,11 @@ void SpNpcPellyPhyllis::vfunc_4c(u32 cmd, u32 arg) {
         break;
     case 0:
         footstepFx.unk_08 = arg;
-        if (arg != 4 && arg != gCommManager->unk_64) {
+        if (arg != 4 && arg != gCommManager->myAid) {
             netSetSlotsIfOwner(1, arg, arg);
             changeAct(0xa);
         } else if (isNetOwner()) {
-            u32 t = gCommManager->unk_64;
+            u32 t = gCommManager->myAid;
             netSetSlotsIfOwner(1, t, t);
             talk.vfunc_08();
             func_02015ab0(&talk, getPlayerActor(4));
@@ -2561,10 +2561,10 @@ void SpNpcPellyPhyllis::vfunc_4c(u32 cmd, u32 arg) {
     case 8:
         if (arg == 4) {
             if (NetArea_IsLocalOwner()) {
-                netSetSlotsIfOwner(1, gCommManager->unk_64, 4);
+                netSetSlotsIfOwner(1, gCommManager->myAid, 4);
                 changeAct(2);
             } else {
-                netSetSlotsIfOwner(1, 4, gCommManager->unk_64);
+                netSetSlotsIfOwner(1, 4, gCommManager->myAid);
                 changeAct(9);
             }
         }
@@ -2576,7 +2576,7 @@ void SpNpcPellyPhyllis::vfunc_4c(u32 cmd, u32 arg) {
                 b = 4;
                 if (NpcActor_netGetSlots(this, &a, &b)) {
                     if ((arg != 4 && (s32)arg == b) || arg == 4) {
-                        netSetSlotsIfOwner(1, gCommManager->unk_64, 4);
+                        netSetSlotsIfOwner(1, gCommManager->myAid, 4);
                         changeAct(2);
                     }
                 }
@@ -2594,7 +2594,7 @@ BOOL SpNpcPellyPhyllis::canStartSave() {
 }
 
 s32 SpNpcPellyPhyllis::isLocalSlotActive() {
-    return CommManager_isSlotActive(gCommManager, gCommManager->unk_64);
+    return CommManager_isSlotActive(gCommManager, gCommManager->myAid);
 }
 
 s32 SpNpcPellyPhyllis::isOnline() {

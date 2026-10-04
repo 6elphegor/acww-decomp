@@ -9,12 +9,12 @@ struct Unk_02074c4c_Color {
 };
 // ======== types of unk_02074c4c.cpp ========
 
-struct Unk_02074c4c_G { u8 pad[0x64]; u32 unk_64; u32 unk_68; };
+struct Unk_02074c4c_G { u8 pad[0x64]; u32 myAid; u32 localSlot; };
 // ======== types of unk_02075558.cpp ========
 
 struct Unk_02075558_Obj {
     u32 pad_00[0x19];
-    void *unk_64;
+    void *myAid;
 };struct Unk_02075bc4_Buf {
     u8 kind : 2;
     u8 pad0 : 6;
@@ -58,10 +58,10 @@ struct Unk_020767f8_Tag {
 };
 
 struct OverlayHandleView {
-    s32 unk_00;
-    u8 unk_04;
+    s32 overlayId;
+    u8 isLoading;
     u8 pad[3];
-    u8 unk_08[4];
+    u8 info[4];
 };
 
 struct Unk_02076fc8_D {
@@ -85,7 +85,7 @@ public:
     virtual ~EncodedString192();
     virtual u32 capacity();
     virtual u8 *data();
-    u8 unk_0e[0xb2];
+    u8 bytes[0xb2];
 };
 // ======== types of unk_02077138.cpp ========
 
@@ -125,7 +125,7 @@ public:
     virtual u32 capacity();
     virtual u8 *data();
 
-    /* 0x12 */ u8 unk_12[0xaf];
+    /* 0x12 */ u8 text[0xaf];
 };
 
 // Record of 0xc0 data bytes plus a few state bytes.
@@ -143,11 +143,11 @@ public:
     u8 getDay();
     void init(u8 *src);
 
-    /* 0x00 */ u8 unk_00[0xc0];
-    /* 0xc0 */ u8 unk_c0;
-    /* 0xc1 */ u8 unk_c1;
-    /* 0xc2 */ u8 unk_c2;
-    /* 0xc3 */ u8 unk_c3;
+    /* 0x00 */ u8 text[0xc0];
+    /* 0xc0 */ u8 day;
+    /* 0xc1 */ u8 month;
+    /* 0xc2 */ u8 year;
+    /* 0xc3 */ u8 flags;
 };
 
 class BbsBoard {
@@ -165,36 +165,36 @@ public:
     BbsPost *getPost(s32 idx);
     BbsPost *postAt(s32 idx);
 
-    /* 0x000 */ BbsPost unk_000[15];
-    /* 0xb7c */ u16 unk_b7c;
-    /* 0xb7e */ u8 unk_b7e;
+    /* 0x000 */ BbsPost posts[15];
+    /* 0xb7c */ u16 noticeId;
+    /* 0xb7e */ u8 postCount;
 };
 // ======== types of unk_02077a54.cpp ========
 
 
 struct Unk_020781ec_Elem {
     u8 pad_00[0x1d];
-    u8 unk_1d;
+    u8 flags;
     u8 pad_1e[0x2c - 0x1e];
 };
 
 struct Unk_020781ec_Data {
-    Unk_020781ec_Elem unk_00[8];
-    s8 unk_160;
-    s8 unk_161;
-    s8 unk_162;
-    s8 unk_163;
-    s8 unk_164;
+    Unk_020781ec_Elem entries[8];
+    s8 fleaVillager;
+    s8 greeter;
+    s8 birthdayHost;
+    s8 birthdayGuest;
+    s8 fleaMarketBuyer;
     u8 pad_165[3];
-    s32 unk_168;
-    s8 unk_16c;
+    s32 idleFrames;
+    s8 birthdayVisitor;
 };
 
 class OverlayHandle {
 public:
-    s32 unk_00;
+    s32 overlayId;
     u8 pad_04[0x78];
-    OverlayHandle() { unk_00 = -1; }
+    OverlayHandle() { overlayId = -1; }
     ~OverlayHandle();
 };
 
@@ -981,34 +981,34 @@ extern "C" u8 *BbsPost_GetText(u8 *p) { return p; }}
 
 void BbsPost::init(u8 *src) {
     using namespace n6;
-    unk_c0 = src[0];
-    unk_c1 = src[1];
-    unk_c2 = src[2];
-    unk_c3 = 0;
+    day = src[0];
+    month = src[1];
+    year = src[2];
+    flags = 0;
     Mem_Clear(this, 0xc0);
 }
 namespace n6 {
 }
 
 u8 BbsPost::getDay() {
-    using namespace n6; return unk_c0; }
+    using namespace n6; return day; }
 namespace n6 {
 }
 
 u8 BbsPost::getMonth() {
-    using namespace n6; return unk_c1; }
+    using namespace n6; return month; }
 namespace n6 {
 }
 
 u8 BbsPost::getYear() {
-    using namespace n6; return unk_c2; }
+    using namespace n6; return year; }
 namespace n6 {
 }
 
 BOOL BbsPost::isRead(s32 i) {
     using namespace n6;
     if (i < 0 || i >= 4) return TRUE;
-    if (unk_c3 & (1 << i)) return TRUE;
+    if (flags & (1 << i)) return TRUE;
     return FALSE;
 }
 namespace n6 {
@@ -1017,7 +1017,7 @@ namespace n6 {
 void BbsPost::setRead(s32 i) {
     using namespace n6;
     if (i >= 0 && i < 4) {
-        unk_c3 |= (u8)(1 << i);
+        flags |= (u8)(1 << i);
     }
 }
 namespace n6 {
@@ -1025,7 +1025,7 @@ namespace n6 {
 
 BOOL BbsPost::isFreeText() {
     using namespace n6;
-    if (unk_c3 & 0x10) return TRUE;
+    if (flags & 0x10) return TRUE;
     return FALSE;
 }
 namespace n6 {
@@ -1033,7 +1033,7 @@ namespace n6 {
 
 
 void BbsPost::markFreeText() {
-    using namespace n6; unk_c3 |= 0x10; }
+    using namespace n6; flags |= 0x10; }
 namespace n6 {
 }
 
@@ -1049,7 +1049,7 @@ namespace n6 {
 }
 
 BbsPost *BbsBoard::postAt(s32 idx) {
-    using namespace n6; return &unk_000[idx]; }
+    using namespace n6; return &posts[idx]; }
 namespace n6 {
 }
 
@@ -1062,8 +1062,8 @@ namespace n6 {
 
 void BbsBoard::clear() {
     using namespace n6;
-    unk_b7e = 0;
-    unk_b7c = 0;
+    postCount = 0;
+    noticeId = 0;
 }
 namespace n6 {
 }
@@ -1080,33 +1080,33 @@ namespace n6 {
 
 
 u8 BbsBoard::getPostCount() {
-    using namespace n6; return unk_b7e; }
+    using namespace n6; return postCount; }
 namespace n6 {
 }
 
 
 BbsPost *BbsBoard::addPost() {
     using namespace n6;
-    if (unk_b7e < 15) {
-        unk_b7e++;
-        return &unk_000[unk_b7e - 1];
+    if (postCount < 15) {
+        postCount++;
+        return &posts[postCount - 1];
     } else {
         removePost(0);
-        unk_b7e = 15;
-        return &unk_000[unk_b7e - 1];
+        postCount = 15;
+        return &posts[postCount - 1];
     }
 }
 namespace n6 {
 }
 
 u16 BbsBoard::getNoticeId() {
-    using namespace n6; return unk_b7c; }
+    using namespace n6; return noticeId; }
 namespace n6 {
 }
 
 
 void BbsBoard::setNoticeId(u16 v) {
-    using namespace n6; unk_b7c = v; }
+    using namespace n6; noticeId = v; }
 namespace n6 {
 }
 
@@ -1114,10 +1114,10 @@ namespace n6 {
 void BbsBoard::removePost(s32 idx) {
     using namespace n6;
     s32 i;
-    for (i = idx; i < unk_b7e - 1; i++) {
-        MI_CpuCopy8(&unk_000[i + 1], &unk_000[i], 0xc4);
+    for (i = idx; i < postCount - 1; i++) {
+        MI_CpuCopy8(&posts[i + 1], &posts[i], 0xc4);
     }
-    unk_b7e--;
+    postCount--;
 }
 namespace n6 {
 }
@@ -1139,7 +1139,7 @@ namespace n6 {
 
 
 u8 *MsgString193::data() {
-    using namespace n6; return unk_12; }
+    using namespace n6; return text; }
 namespace n6 {
 }
 
@@ -1436,7 +1436,7 @@ namespace n5 {
 }
 
 u8 *EncodedString192::data() {
-    using namespace n5; return unk_0e; }
+    using namespace n5; return bytes; }
 namespace n5 {
 
 
@@ -1661,17 +1661,17 @@ OverlayHandle::~OverlayHandle() {}
 namespace n5 {
 
 extern "C" void OverlayHandle_Unload(OverlayHandleView *s) {
-    FS_EndOverlay(s->unk_08);
-    s->unk_00 = -1;
+    FS_EndOverlay(s->info);
+    s->overlayId = -1;
 }
 
 extern "C" void OverlayHandle_Load(OverlayHandleView *s, s32 v) {
-    s->unk_04 = 1;
-    s->unk_00 = v;
-    OverlayMgr_GetInfo(s->unk_08);
-    FS_LoadOverlayImage(s->unk_08);
-    FS_StartOverlay(s->unk_08);
-    s->unk_04 = 0;
+    s->isLoading = 1;
+    s->overlayId = v;
+    OverlayMgr_GetInfo(s->info);
+    FS_LoadOverlayImage(s->info);
+    FS_StartOverlay(s->info);
+    s->isLoading = 0;
 }
 
 extern "C" s32 Comm_AidToPeerIndex(s32 x) {
@@ -2073,10 +2073,10 @@ static inline BOOL Unk_02075e60_IsZero(u8 v) { return v == 0 ? TRUE : FALSE; }
 
 class CommManager {
 public:
-    /* 0x00 */ u8 unk_00[0x64];
-    /* 0x64 */ s32 unk_64;
+    /* 0x00 */ u8 slotActive[0x64];
+    /* 0x64 */ s32 myAid;
     /* 0x68 */ u8 unk_68[0x8];
-    /* 0x70 */ void *unk_70;
+    /* 0x70 */ void *syncCompareBuf;
 };
 extern "C" s32 CommBlock_BuildPacket(u32 a) {
     struct { u16 len; u8 hdr[3]; } l;
@@ -2222,14 +2222,14 @@ extern "C" void CommSyncVar_SetVar(u32 a, u32 b, u32 c, s32 d) {
     u32 sz = CommSyncVar_GetVarSize(a);
     void *obj = _ZN11CommManager10getSyncVarEj(g, a);
     if (r == 0 && d == 0) {
-        MI_CpuCopy8(obj, g->unk_70, sz);
+        MI_CpuCopy8(obj, g->syncCompareBuf, sz);
     }
     sCommSyncVarPackHandlers[a](obj, b, c);
     if (d != 0) {
         _ZN11CommManager15setSyncVarDirtyEij(g, a, 1);
     } else if (r == 0) {
         CommManager *h = gCommManager;
-        s32 v = Mem_Differs(obj, h->unk_70, sz);
+        s32 v = Mem_Differs(obj, h->syncCompareBuf, sz);
         _ZN11CommManager15setSyncVarDirtyEij(h, a, v);
     }
 }
@@ -2364,7 +2364,7 @@ extern "C" void CommRecv_FieldActorClaimResult(u32 a) {
             sInsectCatchResult = 1;
         } else {
             h--;
-            if (h == (u32)g->unk_64) {
+            if (h == (u32)g->myAid) {
                 sInsectCatchResult = 0;
                 Insect_OnClaimGranted(t);
             } else {
@@ -2983,7 +2983,7 @@ extern "C" void CommRecv_OwnNetState() {
     Unk_02075558_Obj *o = (Unk_02075558_Obj *)gCommManager;
     u8 b;
     _ZN11CommManager10readRecordEPhj(o, &b, 1);
-    NetSession_SetSyncState(o->unk_64, b);
+    NetSession_SetSyncState(o->myAid, b);
 }
 
 extern "C" void CommRecv_Act02(s32 a, s32 b, s32 c, s32 d) {
@@ -3249,7 +3249,7 @@ extern "C" void CommRecv_Act0C(u32 a, u32 b, u32 c, u32 d) {
     Unk_02074c4c_G *g = gCommManager;
     _ZN11CommManager10readRecordEPhj(g, v, 1);
     NetSyncMsg_Unpack(v, v + 1, v + 2, v + 3);
-    if (d == 0) NetSession_SetMemberSyncReply(g->unk_64, v[1]);
+    if (d == 0) NetSession_SetMemberSyncReply(g->myAid, v[1]);
     else NetSession_SetMemberSyncReply(d, v[1]);
     if (v[2] < 4) NetSession_SetSyncKind();
     if (v[3] < 4) NetSession_SetSyncRequester();
@@ -3417,7 +3417,7 @@ fail:
     return FALSE;
 }
 extern "C" void CommSend_PlayerData(u8 *p, u32 v) {
-    CommSend_Chunked(p, (void *)PlayerData_Get(PlayerSession_GetDataIndex(gCommManager->unk_68)), 0x228c, 4, v);
+    CommSend_Chunked(p, (void *)PlayerData_Get(PlayerSession_GetDataIndex(gCommManager->localSlot)), 0x228c, 4, v);
 }
 extern "C" void CommSend_SyncVarChunk(u8 *p, u32 v) {
     CommSend_Chunked(p, _ZN11CommManager13getSyncVarBufEv(gCommManager), 0x68c, 0xc, v);
@@ -3659,8 +3659,8 @@ s32 Clock_GetDateTime(void *);
 
 struct CommManager {
     u8 pad_00[0x64];
-    s32 unk_64;
-    volatile s32 unk_68;
+    s32 myAid;
+    volatile s32 localSlot;
 };
 extern "C" s32 CommSend_DateTime(u32 a) {
     _Z20NetOverlay_AssertAnyv();
@@ -3770,11 +3770,11 @@ extern "C" s32 CommCtrl_SendAct14() {
     return 0;
 }
 extern "C" s32 CommSend_PlayerDataToHost(void *a) {
-    s32 r = PlayerData_Get(PlayerSession_GetDataIndex(gCommManager->unk_68));
+    s32 r = PlayerData_Get(PlayerSession_GetDataIndex(gCommManager->localSlot));
     return CommSend_Chunked(a, r, 0x228c, 0x15, 1);
 }
 extern "C" s32 CommSend_LetterStorageToHost(void *a) {
-    s32 r = PlayerData_GetLetterStorage(PlayerData_Get(PlayerSession_GetDataIndex(gCommManager->unk_68)));
+    s32 r = PlayerData_GetLetterStorage(PlayerData_Get(PlayerSession_GetDataIndex(gCommManager->localSlot)));
     return CommSend_Chunked(a, r, 0x477c, 0x16, 1);
 }
 extern "C" s32 CommCtrl_SendAct17() {
@@ -3839,7 +3839,7 @@ extern "C" void CommCtrl_RecvVillagerTransferReply(u8 *a, s32 b) {
     }
     if (Scene_GetCurrent() == 0x2e) {
         if (SaveManager_Get() != 0) {
-            _ZN15SaveManagerTalk19setTransferReceivedEjh(SaveManager_Get(), gCommManager->unk_64, 1);
+            _ZN15SaveManagerTalk19setTransferReceivedEjh(SaveManager_Get(), gCommManager->myAid, 1);
         }
     }
 }
@@ -3965,8 +3965,8 @@ extern "C" void CommCtrl_RecvPlayerDataToHost(u8 *a, s32 b) {
             MI_CpuCopy8(a, &n, 4);
             s32 r = _ZN15SaveManagerTalk13func_020a148cEv(SaveManager_Get());
             CommManager *g = gCommManager;
-            g->unk_68 = 0;
-            PlayerSession_SetDataIndex(g->unk_68, r);
+            g->localSlot = 0;
+            PlayerSession_SetDataIndex(g->localSlot, r);
             s32 q = PlayerData_GetCurrent();
             MI_CpuCopy8(a + 4, (void *)(q + n), b - 4);
         }

@@ -31,15 +31,15 @@ public:
     void clear();
     void func_020858ac();
 
-    /* 0x00 */ Unk_02085810_Base unk_00;
-    /* 0x16 */ Unk_02085810_Rec unk_16;
-    /* 0x22 */ Unk_02085810_Rec unk_22;
-    /* 0x2e */ u16 unk_2e;
-    /* 0x30 */ s32 unk_30;
-    /* 0x34 */ u8 unk_34;
-    /* 0x35 */ u8 unk_35;
-    /* 0x36 */ u8 unk_36;
-    /* 0x37 */ u8 unk_37;
+    /* 0x00 */ Unk_02085810_Base holderPlayer;
+    /* 0x16 */ Unk_02085810_Rec holderVillager;
+    /* 0x22 */ Unk_02085810_Rec votedVillager;
+    /* 0x2e */ u16 item;
+    /* 0x30 */ s32 size;
+    /* 0x34 */ u8 dateDay;
+    /* 0x35 */ u8 dateMonth;
+    /* 0x36 */ u8 dateYear;
+    /* 0x37 */ u8 kind;
 };
 
 // Scratch object of the grid probe (func_0203398c constructs, GroundInfo_Destruct destroys).
@@ -174,35 +174,35 @@ void ContestRecord::resetToday() {
     u8 d[8];
     clear();
     Clock_GetDate(d);
-    unk_36 = d[2];
-    unk_35 = d[1];
-    unk_34 = d[0];
-    unk_37 = 0;
+    dateYear = d[2];
+    dateMonth = d[1];
+    dateDay = d[0];
+    kind = 0;
 }
 
-void ContestRecord::setKind(u32 v) { unk_37 = v; }
+void ContestRecord::setKind(u32 v) { kind = v; }
 
-void ContestRecord::setHolderPlayer(Unk_02085810_Base *src) { unk_00 = *src; VillagerId_Clear(&unk_16); }
+void ContestRecord::setHolderPlayer(Unk_02085810_Base *src) { holderPlayer = *src; VillagerId_Clear(&holderVillager); }
 
 void ContestRecord::func_020858ac() {}
 
-void ContestRecord::setHolderVillager(Unk_02085810_Rec *src) { unk_16 = *src; _ZN8PlayerId5clearEv(this); }
+void ContestRecord::setHolderVillager(Unk_02085810_Rec *src) { holderVillager = *src; _ZN8PlayerId5clearEv(this); }
 
-Unk_02085810_Rec *ContestRecord::getHolderVillager() { return &unk_16; }
+Unk_02085810_Rec *ContestRecord::getHolderVillager() { return &holderVillager; }
 
-void ContestRecord::clearVotedVillager() { VillagerId_Clear(&unk_22); }
+void ContestRecord::clearVotedVillager() { VillagerId_Clear(&votedVillager); }
 
-void ContestRecord::setVotedVillager(Unk_02085810_Rec *src) { unk_22 = *src; }
+void ContestRecord::setVotedVillager(Unk_02085810_Rec *src) { votedVillager = *src; }
 
-Unk_02085810_Rec *ContestRecord::getVotedVillager() { return &unk_22; }
+Unk_02085810_Rec *ContestRecord::getVotedVillager() { return &votedVillager; }
 
-extern "C" void ContestRecord_SetItem(ContestRecord *o, u16 *in) { o->unk_2e = *in; }
+extern "C" void ContestRecord_SetItem(ContestRecord *o, u16 *in) { o->item = *in; }
 
-extern "C" void ContestRecord_GetItem(u16 *out, ContestRecord *o) { *out = o->unk_2e; }
+extern "C" void ContestRecord_GetItem(u16 *out, ContestRecord *o) { *out = o->item; }
 
-void ContestRecord::setSize(s32 v) { unk_30 = v; }
+void ContestRecord::setSize(s32 v) { size = v; }
 
-u32 ContestRecord::getSize() { return unk_30; }
+u32 ContestRecord::getSize() { return size; }
 
 extern "C" void ContestRecord_BeginContestDay(u8 *self, u32 mode)
 {

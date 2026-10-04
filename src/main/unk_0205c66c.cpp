@@ -18,7 +18,7 @@ public:
     BOOL requestTexResource(u32 *a, u8 b);
     void clear(void);
     u8 pad[9];
-    u8 unk_0d;
+    u8 state;
     u8 pad2[0xe];
 };
 
@@ -112,7 +112,7 @@ extern "C" void PlayerBodyModelRef_Destruct() {}
 extern "C" void PlayerBodyModelRef_SetSlot(u8 *p, u32 v) { *p = v; }
 
 extern "C" void PlayerBodyModelRef_CancelTexUpload(u8 *p) {
-    u32 s = PlayerBodyModelRef_GetTexTask(p)->unk_0d;
+    u32 s = PlayerBodyModelRef_GetTexTask(p)->state;
     BOOL a = s == 1 ? TRUE : FALSE;
     if (a) PlayerBodyModelRef_GetTexTask(p)->cancel();
     else PlayerBodyModelRef_GetTexTask(p)->clear();
@@ -131,7 +131,7 @@ extern "C" void PlayerBodyModelRef_RelocateTexture(u8 *p) {
 
 extern "C" s32 PlayerBodyModelRef_PollTexUpload(u8 *p) {
     TexVramTask *e = PlayerBodyModelRef_GetTexTask(p);
-    u32 s = e->unk_0d;
+    u32 s = e->state;
     BOOL a = s == 2 ? TRUE : FALSE;
     if (a) return TRUE;
     BOOL b = s == 1 ? TRUE : FALSE;

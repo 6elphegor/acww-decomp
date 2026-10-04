@@ -146,8 +146,8 @@ public:
 };
 
 struct Unk_020c1d80_Out {
-    const char *unk_00;
-    u8 unk_04;
+    const char *msgKey;
+    u8 msgIndex;
 };
 
 class SpNpcTalkRequest : public ActorTalkRequest {
@@ -381,7 +381,7 @@ public:
     void changeAct(s32 state);
 
     s32 unk_654;
-    SpNpcKaitlinTalk unk_658;
+    SpNpcKaitlinTalk talk;
     u32 unk_70c;
 };
 
@@ -426,8 +426,8 @@ BOOL SpNpcKaitlin::vfunc_04() {
         return FALSE;
     }
     sSpNpcKaitlinInstance = this;
-    _ZN8NpcActor14setTalkRequestEP12Unk_0201bc1c(this, &unk_658);
-    unk_658.attachOwner(this);
+    _ZN8NpcActor14setTalkRequestEP12Unk_0201bc1c(this, &talk);
+    talk.attachOwner(this);
     if (Scene_GetCurrent()) {
         _ZN11NpcMoveCtrl14setSpeedPresetEiiii(&moveCtrl, 2, 0x333, 0xcc, 0x133);
         _ZN11NpcMoveCtrl14setSpeedPresetEiiii(&moveCtrl, 1, 0x280, 0xcc, 0x133);
@@ -504,16 +504,16 @@ BOOL SpNpcKaitlin::vfunc_48() {
 void SpNpcKaitlin::vfunc_4c(s32 a) {
     switch (a) {
     case 1:
-        unk_658.vfunc_08();
-        unk_658.func_02015ab0(_ZN8NpcActor14getPlayerActorEj(this, 4));
+        talk.vfunc_08();
+        talk.func_02015ab0(_ZN8NpcActor14getPlayerActorEj(this, 4));
         changeAct(1);
         break;
     case 0:
         changeAct(1);
         break;
     case 3:
-        unk_658.vfunc_08();
-        unk_658.func_02015ab0(_ZN8NpcActor14getPlayerActorEj(this, 4));
+        talk.vfunc_08();
+        talk.func_02015ab0(_ZN8NpcActor14getPlayerActorEj(this, 4));
         changeAct(9);
         break;
     case 8:
@@ -558,7 +558,7 @@ BOOL SpNpcKaitlin::mainAct01() {
 
 BOOL SpNpcKaitlin::setupAct09() {
     u32 x;
-    void *p = unk_658.func_02015aac();
+    void *p = talk.func_02015aac();
     x = 0;
     if (p != NULL) {
         x = _ZN8NpcActor10getAngleToEPS_(this, p);
@@ -659,7 +659,7 @@ s32 SpNpcKaitlinTalk::getTopic() {
 void SpNpcKaitlinTalk::start(void *outp) {
     Unk_020c1d80_Out *out = (Unk_020c1d80_Out *)outp;
     void *p = PlayerData_GetCurrent();
-    out->unk_00 = sSpNpcKaitlinMsgKey;
+    out->msgKey = sSpNpcKaitlinMsgKey;
     if (_ZN12Unk_02097ff48testFlagEj(p, 0x33) == 0) {
         if (_ZN12Unk_02097ff48testFlagEj(p, 0x39) == 0) {
             setTopic(0);
@@ -676,18 +676,18 @@ void SpNpcKaitlinTalk::start(void *outp) {
     switch (getTopic()) {
     case 0:
         _ZN12Unk_02097ff47setFlagEj(p, 0x33);
-        out->unk_04 = 0;
+        out->msgIndex = 0;
         break;
     case 1:
         _ZN12Unk_02097ff47setFlagEj(p, 0x33);
-        out->unk_04 = Random_GlobalBelow(3) + 1;
+        out->msgIndex = Random_GlobalBelow(3) + 1;
         break;
     case 2:
-        out->unk_04 = Random_GlobalBelow(3) + 4;
+        out->msgIndex = Random_GlobalBelow(3) + 4;
         Talk_CheckAndSetPlayerFlag(0x2a, 1);
         break;
     case 3:
-        out->unk_04 = Random_GlobalBelow(3) + 7;
+        out->msgIndex = Random_GlobalBelow(3) + 7;
         break;
     }
 }

@@ -75,16 +75,16 @@ public:
     void chooseSaveSlot();
     void setupGraphics();
 
-    /* 0x50 */ u8 unk_50;
-    /* 0x51 */ volatile u8 unk_51;
-    /* 0x54 */ u64 unk_54;
-    /* 0x5c */ u8 unk_5c;
-    /* 0x5d */ u8 unk_5d;
-    /* 0x5e */ u8 unk_5e;
-    /* 0x5f */ u8 unk_5f;
-    /* 0x60 */ void *unk_60;
-    /* 0x64 */ void *unk_64;
-    /* 0x68 */ void *unk_68;
+    /* 0x50 */ u8 logoState;
+    /* 0x51 */ volatile u8 fadeTimer;
+    /* 0x54 */ u64 startTick;
+    /* 0x5c */ u8 slot0Result;
+    /* 0x5d */ u8 slot1Result;
+    /* 0x5e */ u8 loadResult;
+    /* 0x5f */ u8 loadState;
+    /* 0x60 */ void *bufferHeap;
+    /* 0x64 */ void *slot0Buffer;
+    /* 0x68 */ void *slot1Buffer;
 };
 
 extern "C" BootLogoScene *BootLogoScene_Create(void) { return new BootLogoScene; }
@@ -92,79 +92,79 @@ extern "C" BootLogoScene *BootLogoScene_Create(void) { return new BootLogoScene;
 BOOL BootLogoScene::vfunc_00() {
     gVBlanksPerFrame = 3;
     Snd_CreateScene();
-    unk_50 = 0;
-    unk_60 = gCurrentHeap;
-    unk_64 = Heap_Alloc(unk_60, 0x15fe0);
-    unk_68 = Heap_Alloc(unk_60, 0x15fe0);
+    logoState = 0;
+    bufferHeap = gCurrentHeap;
+    slot0Buffer = Heap_Alloc(bufferHeap, 0x15fe0);
+    slot1Buffer = Heap_Alloc(bufferHeap, 0x15fe0);
     return TRUE;
 }
 
 BOOL BootLogoScene::vfunc_0c() {
-    Heap_Free(unk_60, unk_64);
-    Heap_Free(unk_60, unk_68);
+    Heap_Free(bufferHeap, slot0Buffer);
+    Heap_Free(bufferHeap, slot1Buffer);
     return TRUE;
 }
 
 BOOL BootLogoScene::onExecute() {
-    switch (unk_5f) {
+    switch (loadState) {
     case 0:
-        if (unk_50 == 1) unk_5f = 1;
+        if (logoState == 1) loadState = 1;
         break;
     case 1: {
-        u32 r = Save_ReadSlotAsyncStep(0, unk_64);
+        u32 r = Save_ReadSlotAsyncStep(0, slot0Buffer);
         if (r != 3) {
-            unk_5c = r;
-            unk_5f = 2;
+            slot0Result = r;
+            loadState = 2;
         }
         break;
     }
     case 2: {
-        u32 r = Save_ReadSlotAsyncStep(1, unk_68);
+        u32 r = Save_ReadSlotAsyncStep(1, slot1Buffer);
         if (r != 3) {
-            unk_5d = r;
-            unk_5f = 3;
+            slot1Result = r;
+            loadState = 3;
         }
         break;
     }
     }
-    switch (unk_50) {
+    switch (logoState) {
     case 0:
         setupGraphics();
         Gfx2d_SetBrightness(-16);
-        unk_50 = 1;
-        unk_51 = 0x10;
+        logoState = 1;
+        fadeTimer = 0x10;
         Snd_PlaySe(0x88c);
         break;
     case 1:
-        if (unk_51 != 0) {
-            unk_51 = unk_51 - 1;
-            Gfx2d_SetBrightness(-unk_51);
+        if (fadeTimer != 0) {
+            fadeTimer = fadeTimer - 1;
+            Gfx2d_SetBrightness(-fadeTimer);
         } else {
-            unk_50 = 2;
-            unk_54 = OS_GetTick();
+            logoState = 2;
+            startTick = OS_GetTick();
         }
         break;
     case 2: {
         u64 now = OS_GetTick();
-        if (unk_5f < 5) {
-            if (unk_5f < 3) break;
+        if (loadState < 5) {
+            if (loadState < 3) break;
             chooseSaveSlot();
             applyLoadedSave();
-            unk_5f = 5;
+            loadState = 5;
         }
-        if (now - unk_54 < 0x7fd88) break;
-        unk_50 = 3;
-        unk_51 = 0x10;
+        if (now - startTick < 0x7fd88) break;
+        logoState = 3;
+        fadeTimer = 0x10;
         break;
     }
     case 3:
-        if (unk_51 != 0) {
-            unk_51 = unk_51 - 1;
-            Gfx2d_SetBrightness(unk_51 - 0x10);
+        if (fadeTimer != 0) {
+            fadeTimer = fadeTimer - 1;
+            Gfx2d_SetBrightness(fadeTimer - 0x10);
         } else {
             Gfx2d_SetMainPlanes(0);
             Gfx2d_SetSubPlanes(0);
-            unk_50 = 4;
+            logoState = 4;
             SceneWarp_RequestScene(Scene_GetWarpRequest(), 0x2c);
             FieldScene_Request(3, 2);
         }
@@ -199,35 +199,35 @@ void BootLogoScene::setupGraphics() {
 }
 
 void BootLogoScene::chooseSaveSlot() {
-    if (unk_5c == 1 || unk_5d == 1) {
-        unk_5e = 1;
-    } else if (unk_5c != 0 && unk_5d != 0) {
-        unk_5e = 4;
+    if (slot0Result == 1 || slot1Result == 1) {
+        loadResult = 1;
+    } else if (slot0Result != 0 && slot1Result != 0) {
+        loadResult = 4;
     } else {
         u32 r;
-        if (unk_5c != 0) {
+        if (slot0Result != 0) {
             r = 1;
-        } else if (unk_5d != 0) {
+        } else if (slot1Result != 0) {
             r = 0;
         } else {
             r = Save_SlotStampsMatch();
         }
         if (r == 0) {
-            MI_CpuCopy8(unk_64, &gSaveData, 0x15fe0);
+            MI_CpuCopy8(slot0Buffer, &gSaveData, 0x15fe0);
         } else {
-            MI_CpuCopy8(unk_68, &gSaveData, 0x15fe0);
+            MI_CpuCopy8(slot1Buffer, &gSaveData, 0x15fe0);
         }
-        unk_5e = 0;
+        loadResult = 0;
     }
 }
 
 void BootLogoScene::applyLoadedSave() {
     BgHeap_Create(0x5000, 0);
-    if (unk_5e == 4 || unk_5e == 1) {
-        if (unk_5e == 4) {
+    if (loadResult == 4 || loadResult == 1) {
+        if (loadResult == 4) {
             if (!_ZN11SaveRecord412isStateUnsetEv(&gSaveFooter)) func_0209f224(1);
         }
-        if (unk_5e == 4) Save_InvalidateLetterStorage();
+        if (loadResult == 4) Save_InvalidateLetterStorage();
         _ZN8SaveData5resetEv(&gSaveData);
         GuestPlayers_ResetAll();
         VillagerStates_Init();

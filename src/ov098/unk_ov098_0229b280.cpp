@@ -55,7 +55,7 @@ BOOL ChoiceIdList_Add(u8 *p, u32 a, u32 b);
 
 struct CommManager {
     u8 pad_00[0x64];
-    s32 unk_64;
+    s32 myAid;
     BOOL isOnline();
     void beginRecord();
     void writeRecord(u8 *buf, u32 n);
@@ -472,7 +472,7 @@ void PocketMenu::actionBuryItem() {
         s32 pair[2];
         pair[0] = digUnitX;
         pair[1] = digUnitY;
-        fieldRequest = FieldAction_RequestTool(gCommManager->unk_64, pair, 2, 0, a);
+        fieldRequest = FieldAction_RequestTool(gCommManager->myAid, pair, 2, 0, a);
         if (fieldRequest == -1) {
             PocketMenu_ReturnToIdle(this);
             PocketMenu_ShowMessage(this, 0xd, 0xff, 1);
@@ -514,13 +514,13 @@ void PocketMenu::actionPlantItem() {
         s32 pair[2];
         pair[0] = digUnitX;
         pair[1] = digUnitY;
-        fieldRequest = FieldAction_RequestTool(gCommManager->unk_64, pair, 2, 0, a);
+        fieldRequest = FieldAction_RequestTool(gCommManager->myAid, pair, 2, 0, a);
         if (fieldRequest != -1) {
             setMainState(0x2d);
             return;
         }
     }
-    fieldRequest = FieldAction_RequestAtFreeUnit(gCommManager->unk_64, 0x18, a);
+    fieldRequest = FieldAction_RequestAtFreeUnit(gCommManager->myAid, 0x18, a);
     if (fieldRequest == -1) {
         PocketMenu_ReturnToIdle(this);
         PocketMenu_ShowMessage(this, 8, 0xff, 0);
@@ -555,7 +555,7 @@ void PocketMenu::sendBottleLetter() {
     sendReleasePacket(0, 5);
     s32 p = PocketMenu_GetLetter(this, actionTarget);
     CommManager *g = gCommManager;
-    if (!g->isOnline() || g->unk_64 == 0) {
+    if (!g->isOnline() || g->myAid == 0) {
         u8 *const d = data_021e7f8c;
         Letter_Copy(TownExchange_GetLetter(d), (void *)p);
         ((TownExchangeRecord *)d)->resetCounter();

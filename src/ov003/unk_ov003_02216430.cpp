@@ -293,8 +293,8 @@ public:
     virtual BOOL vfunc_70();
     virtual BOOL vfunc_98();
 
-    /* 0x2b0 */ s8 unk_2b0;
-    /* 0x2b1 */ s8 unk_2b1;
+    /* 0x2b0 */ s8 hourHandNode;
+    /* 0x2b1 */ s8 minuteHandNode;
     /* 0x2b2 */ u8 pad_2b2[2];
 };
 
@@ -320,26 +320,26 @@ extern "C" void TownHall_NodeCallback(Unk_ov003_0221655c_Src *a) {
 }
 
 TownHall::TownHall() {
-    unk_2b1 = -1;
-    unk_2b0 = unk_2b1;
+    minuteHandNode = -1;
+    hourHandNode = minuteHandNode;
 }
 
 TownHall::~TownHall() {
 }
 
 BOOL TownHall::vfunc_70() {
-    unk_2b0 = func_02056fcc(modelRes, (s32) "kh_j");
-    unk_2b1 = func_02056fcc(modelRes, (s32) "km_j");
-    if (unk_2b0 != -1 && unk_2b1 != -1) {
+    hourHandNode = func_02056fcc(modelRes, (s32) "kh_j");
+    minuteHandNode = func_02056fcc(modelRes, (s32) "km_j");
+    if (hourHandNode != -1 && minuteHandNode != -1) {
         ((Model *)unk_138)->setCallback((s32)TownHall_NodeCallback, 6, 2, (s32)this, 0);
     }
     return TRUE;
 }
 
 void TownHall::vfunc_60(u32 a, void *p) {
-    if ((s32)a == unk_2b0) {
+    if ((s32)a == hourHandNode) {
         ((Unk_020b1ddc *)p)->rotateHourHand();
-    } else if ((s32)a == unk_2b1) {
+    } else if ((s32)a == minuteHandNode) {
         ((Unk_020b1ddc *)p)->rotateMinuteHand();
     }
 }

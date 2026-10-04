@@ -9,10 +9,10 @@ void PrioList_Init(void *list);
 // Two-word list head, cleared by __sinit (inline constructor).
 class Unk_021ef630 {
 public:
-    void *unk_00;
-    void *unk_04;
+    void *head;
+    void *tail;
 
-    Unk_021ef630() : unk_00(0), unk_04(0) {}
+    Unk_021ef630() : head(0), tail(0) {}
 };
 
 extern Unk_021ef630 sVramQueue2d;
@@ -20,11 +20,11 @@ extern Unk_021ef630 sVramQueueTex;
 
 // Five-word command record (fields depend on the mode it was set up for).
 struct BgTransfer {
-    u32 unk_00;
-    u8 unk_04;
-    u32 unk_08;
-    u32 unk_0c;
-    u32 unk_10;
+    u32 buf;
+    u8 layer;
+    u32 loadArg0;
+    u32 loadArg1;
+    u32 loadArg2;
 
     void loadPaletteRange(void);
     void setPaletteRange(u32 a, u8 b, u32 c, u8 d);
@@ -40,9 +40,9 @@ struct BgTransfer {
 
 // Three-word record used by three modes.
 struct TexTransfer {
-    u32 unk_00;
-    u32 unk_04;
-    u32 unk_08;
+    u32 dstAddr;
+    u32 src;
+    u32 size;
 };
 
 extern "C" {
@@ -54,17 +54,17 @@ u8 BgTransfer_GetScreenCost(BgTransfer *p);
 class Unk_020b83b0 {
 public:
     u32 unk_04;
-    u32 unk_08;
-    u8 unk_0c;
+    u32 next;
+    u8 priority;
 
-    Unk_020b83b0() : unk_04(0), unk_08(0), unk_0c(0xff) {}
+    Unk_020b83b0() : unk_04(0), next(0), priority(0xff) {}
 };
 
 class VramTask : public Unk_020b83b0 {
 public:
-    u8 unk_0d;
-    u8 unk_0e;
-    u8 unk_0f;
+    u8 state;
+    u8 kind;
+    u8 cost;
 
     VramTask();
     virtual BOOL execute() = 0;
@@ -80,7 +80,7 @@ BOOL VramQueue2d_Enqueue(VramTask *p);
 
 class BgVramTask : public VramTask {
 public:
-    BgTransfer unk_10;
+    BgTransfer xfer;
 
     BgVramTask();
     virtual BOOL execute();
@@ -109,19 +109,19 @@ public:
     virtual BOOL vfunc_00();
 
     /* 0x04 */ u8 unk_04[9];
-    /* 0x0d */ u8 unk_0d;
-    /* 0x0e */ u8 unk_0e;
-    /* 0x0f */ u8 unk_0f;
+    /* 0x0d */ u8 state;
+    /* 0x0e */ u8 kind;
+    /* 0x0f */ u8 cost;
 };
 
 BOOL BgVramTaskPair::requestCharPair(u32 a, u32 b, u8 c, u32 d, u32 e, u32 f, u32 g) {
     prepare();
-    unk_0e = 8;
-    unk_10.setChars(a, c, d, d, e);
-    unk_0f = unk_10.getCharCost();
+    kind = 8;
+    xfer.setChars(a, c, d, d, e);
+    cost = xfer.getCharCost();
     unk_24.setChars(b, c, f, f, g);
-    unk_0f += unk_24.getCharCost();
-    unk_0c = 4;
+    cost += unk_24.getCharCost();
+    priority = 4;
     if (VramQueue2d_Enqueue(this)) {
         return TRUE;
     }
@@ -131,12 +131,12 @@ BOOL BgVramTaskPair::requestCharPair(u32 a, u32 b, u8 c, u32 d, u32 e, u32 f, u3
 
 BOOL BgVramTaskPair::requestCharsAndPalette(u32 a, u8 b, u32 c, u32 d, u32 e, u32 f, u8 g) {
     prepare();
-    unk_0e = 9;
-    unk_10.setChars(a, b, c, d, e);
-    unk_0f = unk_10.getCharCost();
+    kind = 9;
+    xfer.setChars(a, b, c, d, e);
+    cost = xfer.getCharCost();
     unk_24.setPalette(f, b, g);
-    unk_0f += BgTransfer_GetPaletteCost(&unk_24);
-    unk_0c = 4;
+    cost += BgTransfer_GetPaletteCost(&unk_24);
+    priority = 4;
     if (VramQueue2d_Enqueue(this)) {
         return TRUE;
     }
@@ -165,11 +165,11 @@ static inline Unk_020b8340_Task *Unk_020b8340_First(void **l) {
 extern "C" void VramQueueTex_Run(void) {
     Unk_020b8340_Task *r5;
     for (r5 = Unk_020b8340_First((void **)&sVramQueueTex); r5 != 0; r5 = Unk_020b8340_First((void **)&sVramQueueTex)) {
-        if (*(u16 *)0x4000006 + r5->unk_0f > 0xd4) break;
-        BOOL ready = (r5->unk_0d == 1) ? TRUE : FALSE;
+        if (*(u16 *)0x4000006 + r5->cost > 0xd4) break;
+        BOOL ready = (r5->state == 1) ? TRUE : FALSE;
         if (ready) {
             if (r5->vfunc_00() != 0) {
-                r5->unk_0d = 2;
+                r5->state = 2;
             }
         }
         if (r5 != 0) r5 = (Unk_020b8340_Task *)((u8 *)r5 + 4);
@@ -200,11 +200,11 @@ extern "C" void VramQueue2d_Dequeue(VramTask *p) {
 extern "C" void VramQueue2d_Run(void) {
     Unk_020b8340_Task *r5;
     for (r5 = Unk_020b8340_First((void **)&sVramQueue2d); r5 != 0; r5 = Unk_020b8340_First((void **)&sVramQueue2d)) {
-        if (*(u16 *)0x4000006 + r5->unk_0f > 0x104) break;
-        BOOL ready = (r5->unk_0d == 1) ? TRUE : FALSE;
+        if (*(u16 *)0x4000006 + r5->cost > 0x104) break;
+        BOOL ready = (r5->state == 1) ? TRUE : FALSE;
         if (ready) {
             if (r5->vfunc_00() != 0) {
-                r5->unk_0d = 2;
+                r5->state = 2;
             }
         }
         if (r5 != 0) r5 = (Unk_020b8340_Task *)((u8 *)r5 + 4);

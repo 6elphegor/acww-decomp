@@ -104,7 +104,7 @@ struct Unk_021f4400 { u8 pad[9]; u8 birdsRequested; };
 struct Unk_021f4420 { u8 pad[0x10]; u8 shootingStarVisible; };
 struct Unk_021f44a0 { u8 pad[6]; u8 balloonDropEnded; u8 unk_07; u8 unk_08; };
 struct Unk_021f14c8 { u8 pad[0xc]; s32 unk_0c; };
-struct Unk_020b8ec0_Time { u8 unk_00; u8 unk_01; u8 unk_02; u8 pad[5]; };
+struct Unk_020b8ec0_Time { u8 second; u8 unk_01; u8 hour; u8 pad[5]; };
 struct Unk_02095204 { u8 pad[0x5c]; struct { u32 unk_00; u32 unk_04; u32 unk_08; } unk_5c; };
 struct Unk_021efc08 { u8 pad[4]; u16 unk_04; };
 struct Unk_021efa88 { u8 pad[2]; u16 unk_02; };
@@ -123,7 +123,7 @@ public:
     virtual BOOL onExecute();
     virtual BOOL onDraw();
 
-    /* 0x50 */ Unk_0213b938 unk_50;
+    /* 0x50 */ Unk_0213b938 envSndChannel;
 };
 struct Unk_020b96b8_Ent {
     s32 a;
@@ -161,21 +161,21 @@ struct Unk_020b9c90 {
     u16 unk_000[0x304 / 2];
     u16 unk_304[1];
     u8 pad0[0x1208 - 0x306];
-    s32 unk_1208;
-    s32 unk_120c;
+    s32 cloudScroll;
+    s32 transitionProgress;
     u8 pad1[0x1520 - 0x1210];
-    s32 unk_1520;
-    s32 unk_1524;
-    s32 unk_1528;
-    s32 unk_152c;
-    s32 unk_1530;
+    s32 transitionBusy;
+    s32 level;
+    s32 targetLevel;
+    s32 requestedLevel;
+    s32 direction;
     u8 pad2[0x1578 - 0x1534];
-    s32 unk_1578;
-    u8 *unk_157c;
-    s32 unk_1580;
+    s32 streamBlock;
+    u8 *curCloudScreen;
+    s32 curCloudScreenSize;
     u8 pad3[0x158c - 0x1584];
-    s32 unk_158c;
-    s32 unk_1590;
+    s32 transitionStep;
+    s32 transitionTimer;
 
     void setGradientKey(s32 idx, u16 a, s32 b);
     void updateTransitionTimed();
@@ -197,8 +197,8 @@ struct Unk_020ba1dc_Time {
     u32 unk_04;
 };
 struct Unk_020ba518_Time {
-    u8 unk_00;
-    u8 unk_01;
+    u8 minute;
+    u8 hour;
     u8 unk_02;
     u8 unk_03;
 };
@@ -212,14 +212,14 @@ struct Unk_020ba8cc_Obj {
     s32 unk_00;
     s32 unk_04;
     s32 unk_08;
-    s32 unk_0c;
+    s32 rainVolume;
 };
 struct Unk_020ba8cc_State {
     u8 pad_00[0x24];
-    s32 unk_24;
-    s32 unk_28;
+    s32 level;
+    s32 targetLevel;
     u8 pad_2c[8];
-    s32 unk_34;
+    s32 precipKind;
 };
 struct WeatherManager {
     s32 engine;
@@ -311,40 +311,40 @@ struct Unk_020bacc0_Obj {
 };
 struct Unk_020baa10_Ptr { u16 pad[3]; u16 h6; };
 struct Unk_020bb25c_Ent14 {
-    s32 unk_00;
+    s32 playerSlot;
     u8 unk_04[0xc];
-    u8 unk_10;
-    u8 unk_11;
+    u8 golden;
+    u8 pending;
     u8 unk_12[2];
 };
 struct Unk_020bb25c_Ent74 {
-    s32 unk_00;
+    s32 kind;
     u8 unk_04[0x5c];
-    u32 unk_60;
+    u32 work0;
     u8 unk_64[0x10];
 };
 class Unk_020bb25c {
 public:
     u8 unk_0000[0xe80];
-    s32 unk_0e80;
+    s32 rainbowSpriteKind;
     u8 unk_0e84[0x14d8 - 0xe84];
-    Unk_020bb25c_Ent74 unk_14d8[13];
+    Unk_020bb25c_Ent74 fireworkSprites[13];
     u8 unk_1abc[0x2f18 - 0x1abc];
-    u8 unk_2f18;
-    u8 unk_2f19;
+    u8 minute;
+    u8 hour;
     u8 unk_2f1a[0x2f29 - 0x2f1a];
-    u8 unk_2f29;
+    u8 birdsRequested;
     u8 unk_2f2a[2];
-    s32 unk_2f2c;
-    s32 unk_2f30;
-    s32 unk_2f34;
-    s32 unk_2f38[4];
-    s32 unk_2f48;
+    s32 fireworksPattern;
+    s32 fireworksPatternTime;
+    s32 fireworksBigTimer;
+    s32 fireworksSlotTimers[4];
+    s32 fireworksInterval;
     u8 unk_2f4c[0x2f51 - 0x2f4c];
-    u8 unk_2f51;
+    u8 rainbowStrength;
     u8 unk_2f52[0x2f58 - 0x2f52];
-    Unk_020bb25c_Ent14 unk_2f58[4];
-    u8 unk_2fa8[4];
+    Unk_020bb25c_Ent14 shotRequests[4];
+    u8 shotSeq[4];
 
     void fireworksPatternAct0B();
     void fireworksPatternAct0A();
@@ -386,38 +386,38 @@ struct Unk_020bbcc8_Xxx {
 };
 struct Unk_020bbc28 {
     char pad_0000[0xe0c];
-    s32 unk_0e0c;
+    s32 moonSpriteKind;
     char pad_0e10[0x1464 - 0xe10];
-    s32 unk_1464;
+    s32 visitorSpriteKind;
     char pad_1468[0x2eb8 - 0x1468];
-    char unk_2eb8[0x48];
-    s32 unk_2f00;
-    s32 unk_2f04;
-    s32 unk_2f08;
-    s32 unk_2f0c;
+    char palette[0x48];
+    s32 spawnInterval;
+    s32 spawnAccum;
+    s32 precipIntensity;
+    s32 snowCounter;
     char pad_2f10[8];
-    u8 unk_2f18;
-    u8 unk_2f19;
-    u8 unk_2f1a;
-    u8 unk_2f1b;
-    s32 unk_2f1c;
-    s32 unk_2f20;
-    u8 unk_2f24;
-    u8 unk_2f25;
-    u8 unk_2f26;
-    u8 unk_2f27;
+    u8 minute;
+    u8 hour;
+    u8 prevMinute;
+    u8 prevHour;
+    s32 second;
+    s32 prevSecond;
+    u8 balloonChance;
+    u8 ufoChance;
+    u8 ufoEventToday;
+    u8 peteEventToday;
     s32 unk_2f28;
-    s32 unk_2f2c;
-    s32 unk_2f30;
-    s32 unk_2f34;
-    s32 unk_2f38;
-    s32 unk_2f3c;
-    s32 unk_2f40;
-    s32 unk_2f44;
-    s32 unk_2f48;
-    s32 unk_2f4c;
+    s32 fireworksPattern;
+    s32 fireworksPatternTime;
+    s32 fireworksBigTimer;
+    s32 fireworksSlotTimers;
+    s32 fireworksSlotTimers1;
+    s32 fireworksSlotTimers2;
+    s32 fireworksSlotTimers3;
+    s32 fireworksInterval;
+    s32 shootingStarDelay;
     s32 unk_2f50;
-    char unk_2f54[8];
+    char rainStrength[8];
 
     void updatePete();
     void updateUfo();
@@ -453,24 +453,24 @@ struct Unk_020bbc28 {
     void SkySprites_FireworksPatternAct13();
 };
 struct Unk_020bc754_Slot {
-    s32 unk_00;
-    s32 unk_04;
-    s32 unk_08;
+    s32 kind;
+    s32 state;
+    s32 gfxId;
     u8 unk_0c[0x18];
-    s32 unk_24;
+    s32 gfxSlot;
     u8 unk_28[0xc];
-    s32 unk_34;
-    s32 unk_38;
-    s32 unk_3c;
+    s32 screenPosX;
+    s32 screenPosY;
+    s32 screenPosZ;
     u8 unk_40[0x1d];
-    s8 unk_5d;
+    s8 palette;
     u8 unk_5e[0x16];
 };
 struct Unk_020bccc8_Entry {
-    s32 unk_00;
-    s32 unk_04;
-    u8 unk_08;
-    u8 unk_09;
+    s32 gfxId;
+    s32 refCount;
+    u8 loaded;
+    u8 dirty;
     u8 unk_0a[2];
 };
 struct Unk_020bca5c_Elem {
@@ -531,27 +531,27 @@ public:
     void updateMoon();
     void updateRainbow();
 
-    Unk_020bc754_Slot unk_0000[0x3c];
-    Unk_020bccc8_Entry unk_1b30[5];
-    u8 unk_1b6c[0x2eb8 - 0x1b6c];
-    u8 unk_2eb8[0x2f08 - 0x2eb8];
-    s32 unk_2f08;
-    s32 unk_2f0c;
-    s32 unk_2f10;
-    s32 unk_2f14;
-    u16 unk_2f18;
-    u16 unk_2f1a;
-    s32 unk_2f1c;
-    s32 unk_2f20;
-    u8 unk_2f24;
-    u8 unk_2f25;
-    u8 unk_2f26;
-    u8 unk_2f27;
-    u8 unk_2f28;
+    Unk_020bc754_Slot sprites[0x3c];
+    Unk_020bccc8_Entry gfxSlots[5];
+    u8 loader[0x2eb8 - 0x1b6c];
+    u8 palette[0x2f08 - 0x2eb8];
+    s32 precipIntensity;
+    s32 snowCounter;
+    s32 thunderTimer;
+    s32 spriteCount;
+    u16 minuteHour;
+    u16 prevMinuteHour;
+    s32 second;
+    s32 prevSecond;
+    u8 balloonChance;
+    u8 ufoChance;
+    u8 ufoEventToday;
+    u8 peteEventToday;
+    u8 fireworksToday;
     u8 unk_2f29[0x2f54 - 0x2f29];
-    s32 unk_2f54;
-    Unk_020bca5c_Elem unk_2f58[4];
-    u8 unk_2fa8[0x10];
+    s32 rainStrength;
+    Unk_020bca5c_Elem shotRequests[4];
+    u8 shotSeq[0x10];
 };
 struct SpriteAnim {
     u8 seq[4];
@@ -579,12 +579,12 @@ struct Unk_020bd8f8 {
     Unk_020bd8f8();
 };
 struct SkyShotRequest {
-    s32 unk_00;
-    s32 unk_04;
-    s32 unk_08;
-    s32 unk_0c;
-    u8 unk_10;
-    u8 unk_11;
+    s32 playerSlot;
+    s32 pos;
+    s32 posY;
+    s32 posZ;
+    u8 golden;
+    u8 pending;
     SkyShotRequest();
     ~SkyShotRequest();
     void clear();
@@ -608,9 +608,9 @@ struct Unk_020bd0a4_Vec3 {
     s32 x, y, z;
 };
 struct SkySePlayer {
-    Unk_0213b970 unk_00[8];
-    FxVec3 unk_60[8];
-    u8 unk_c0;
+    Unk_0213b970 channels[8];
+    FxVec3 positions[8];
+    u8 active;
 
     SkySePlayer();
     void update();
@@ -621,24 +621,24 @@ struct SkySePlayer {
 };
 struct Unk_020bd774_Entry {
     u8 unk_00[0xc];
-    s8 unk_0c;
-    s8 unk_0d;
+    s8 srcPalette;
+    s8 objPalette;
     u8 unk_0e[2];
 };
 struct SkyShotSequence {
-    s32 unk_00;
-    s32 unk_04;
-    s32 unk_08;
-    s32 unk_0c;
-    s32 unk_10;
-    s32 unk_14;
-    u8 unk_18;
-    s16 unk_1a;
-    s16 unk_1c;
-    u8 unk_1e;
-    u8 unk_1f;
-    u8 unk_20;
-    u8 unk_21;
+    s32 state;
+    s32 playerSlot;
+    s32 timer;
+    s32 targetX;
+    s32 targetY;
+    s32 targetScale;
+    u8 fallDir;
+    s16 headPitch;
+    s16 headYaw;
+    u8 balloonDropEnded;
+    u8 landSePending;
+    u8 splashSePending;
+    u8 goldenBalloon;
 
     SkyShotSequence();
     void relaxHead(s32 a, s32 b);
@@ -665,11 +665,11 @@ struct SkyShotSequence {
     void startShot(s32 a);
 };
 struct SkyObjPalette {
-    s32 unk_00;
-    s8 unk_04[4];
-    u16 unk_08;
-    u16 unk_0a[15];
-    u16 unk_28[16];
+    s32 balloonColor;
+    s8 loadedSrcPalettes[4];
+    u16 overrideMask;
+    u16 overrideColors[15];
+    u16 colors[16];
 
     void setOverride(s32 idx, u16* p);
     BOOL hasOverride(s32 idx);
@@ -682,40 +682,40 @@ struct SkyObjPalette {
     BOOL applyOverrides(s32 v);
 };
 struct SkySprites {
-    SkySprite unk_0000[60];
-    SkyObjGfxSlot unk_1b30[5];
-    SkyObjGfxLoader unk_1b6c;
-    Unk_020bd8f8 unk_2eb8;
-    u32 unk_2f00;
-    u32 unk_2f04;
-    u32 unk_2f08;
-    u32 unk_2f0c;
-    u32 unk_2f10;
-    u32 unk_2f14;
+    SkySprite sprites[60];
+    SkyObjGfxSlot gfxSlots[5];
+    SkyObjGfxLoader loader;
+    Unk_020bd8f8 palette;
+    u32 spawnInterval;
+    u32 spawnAccum;
+    u32 precipIntensity;
+    u32 snowCounter;
+    u32 thunderTimer;
+    u32 spriteCount;
     u8 unk_2f18[0xc];
-    u8 unk_2f24;
-    u8 unk_2f25;
-    u8 unk_2f26;
-    u8 unk_2f27;
-    u8 unk_2f28;
-    u8 unk_2f29;
+    u8 balloonChance;
+    u8 ufoChance;
+    u8 ufoEventToday;
+    u8 peteEventToday;
+    u8 fireworksToday;
+    u8 birdsRequested;
     u8 unk_2f2a[2];
-    u32 unk_2f2c;
-    u32 unk_2f30;
-    u32 unk_2f34;
-    u32 unk_2f38;
-    u32 unk_2f3c;
-    u32 unk_2f40;
-    u32 unk_2f44;
-    u32 unk_2f48;
-    u32 unk_2f4c;
-    u8 unk_2f50;
-    u8 unk_2f51;
+    u32 fireworksPattern;
+    u32 fireworksPatternTime;
+    u32 fireworksBigTimer;
+    u32 fireworksSlotTimers;
+    u32 fireworksSlotTimers1;
+    u32 fireworksSlotTimers2;
+    u32 fireworksSlotTimers3;
+    u32 fireworksInterval;
+    u32 shootingStarDelay;
+    u8 shootingStarVisible;
+    u8 rainbowStrength;
     u8 unk_2f52[2];
-    u32 unk_2f54;
-    SkyShotRequest unk_2f58[4];
-    SkyShotSequence unk_2fa8;
-    SkySePlayer unk_2fcc;
+    u32 rainStrength;
+    SkyShotRequest shotRequests[4];
+    SkyShotSequence shotSeq;
+    SkySePlayer se;
 
     SkySprites();
     ~SkySprites();
@@ -726,28 +726,28 @@ enum Unk_020bd718_E { Unk_020bd718_E0 };
 struct Unk_020d16e8 { u32 charFile; u16 charTileA; u16 charTileB; u32 charLayout; s8 srcPalette; s8 objPalette; s8 unk_0e; s8 unk_0f; };
 struct Unk_020bd868 {
     /* 0x00 */ s32 unk_00;
-    /* 0x04 */ s32 unk_04;
+    /* 0x04 */ s32 refCount;
     /* 0x08 */ u8 unk_08;
-    /* 0x09 */ u8 unk_09;
-    /* 0x0a */ u16 unk_0a[15];
-    /* 0x28 */ u8 unk_28[0x20];
+    /* 0x09 */ u8 dirty;
+    /* 0x0a */ u16 overrideColors[15];
+    /* 0x28 */ u8 colors[0x20];
 };
-struct Unk_020bd9a0_Row { u32 unk_00; u32 unk_04; u32 unk_08; u32 unk_0c; };
+struct Unk_020bd9a0_Row { u32 topTileX; u32 topTileCount; u32 bottomTileX; u32 bottomTileCount; };
 struct Unk_020bdd94_Out { s32 x; s32 y; s32 z; };
 struct Unk_020bdd94 {
     /* 0x00 */ u8 unk_00[0x24];
-    /* 0x24 */ s32 unk_24;
-    /* 0x28 */ s32 unk_28;
-    /* 0x2c */ s16 unk_2c;
-    /* 0x2e */ u8 unk_2e;
+    /* 0x24 */ s32 gfxSlot;
+    /* 0x28 */ s32 trackX;
+    /* 0x2c */ s16 wavePhase;
+    /* 0x2e */ u8 dir;
     /* 0x2f */ u8 unk_2f;
     /* 0x30 */ u8 unk_30[4];
-    /* 0x34 */ s32 unk_34;
-    /* 0x38 */ s32 unk_38;
-    /* 0x3c */ s32 unk_3c;
+    /* 0x34 */ s32 screenPosX;
+    /* 0x38 */ s32 screenPosY;
+    /* 0x3c */ s32 screenPosZ;
     /* 0x40 */ u8 unk_40[0xc];
-    /* 0x4c */ s32 unk_4c;
-    /* 0x50 */ s32 unk_50;
+    /* 0x4c */ s32 scaleX;
+    /* 0x50 */ s32 scaleY;
 };
 struct Unk_020bdd4c_Out { s32 unk_00; s32 unk_04; s32 unk_08; s32 unk_0c; };
 struct Unk_021f23d4 {
@@ -788,8 +788,8 @@ struct Unk_020be204_Vec {
     s32 x, y, z;
 };
 struct Unk_020bca5c_Rec {
-    u32 unk_00;
-    Unk_020be204_Vec unk_04;
+    u32 playerSlot;
+    Unk_020be204_Vec pos;
 };
 class Unk_020be204 {
 public:
@@ -1004,8 +1004,8 @@ struct Unk_020c010c_Ent {
 };
 // ---------------------------------------------------------------------------------------------------------------------
 struct Unk_020c0538_Out {
-    u32 unk_00;
-    u8 unk_04;
+    u32 msgKey;
+    u8 msgIndex;
 };
 // Library base class; its ctor and dtor are out of line.
 class SpNpcTalkRequest {
@@ -1047,7 +1047,7 @@ struct Unk_020c0408_Obj {
     s32 unk_04;
     s32 unk_08;
     u8 unk_0c[8];
-    s32 unk_14;
+    s32 openMode;
 };
 // Sub-object at 0x658 of SpNpcKatie
 class SpNpcKatieTalk : public SpNpcTalkRequest {
@@ -1090,11 +1090,11 @@ public:
     virtual ~SpNpcKatie();
 
     /* 0x654 */ s32 unk_654;
-    /* 0x658 */ SpNpcKatieTalk unk_658;
+    /* 0x658 */ SpNpcKatieTalk talk;
     /* 0x70c */ u8 unk_70c;
-    /* 0x70d */ u8 unk_70d;
+    /* 0x70d */ u8 escortDeclined;
     /* 0x70e */ u8 unk_70e[0x724 - 0x70e];
-    /* 0x724 */ u8 unk_724;
+    /* 0x724 */ u8 reunionStep;
 
     void changeAct(s32 state);
     BOOL mainAct08();
@@ -1109,8 +1109,8 @@ public:
 };
 struct U234_Record {
     void *fn;
-    u16 unk_04;
-    u16 unk_06;
+    u16 executePriority;
+    u16 drawPriority;
 };
 namespace n00 {
 extern "C" {
@@ -1519,8 +1519,8 @@ static inline void Unk_020bfe30_Set(Unk_020bfe30_Vec *v, s32 x, s32 y, s32 z) {
     v->z = z;
 }
 struct CommManager {
-    u8 unk_00[0x68];
-    s32 unk_68;
+    u8 slotActive[0x68];
+    s32 localSlot;
 };
 extern "C" {
 void SkySprite_Release(void *p);
@@ -3372,9 +3372,9 @@ void Unk_020be204::initShot(u32 a) {
     animSeq = 0x2d;
     priority = 2;
     work0 = 0x18;
-    id = rec->unk_00;
+    id = rec->playerSlot;
     work1 = id;
-    Unk_020be204_Vec *pos = &rec->unk_04;
+    Unk_020be204_Vec *pos = &rec->pos;
     const Unk_020be204_Vec &vt = Sky_ProjectToScreenX(pos);
     Unk_020be204_Vec *p34 = &screenPos;
     p34->x = vt.x;
@@ -4002,7 +4002,7 @@ extern "C" void SkySprite_StartAnim(Unk_020be0bc* p) {
 }
 
 extern "C" void SkySprite_Release(Unk_020bdd94* p) {
-    s32 i = p->unk_24;
+    s32 i = p->gfxSlot;
     if (i != 6) {
         SkyObjGfxSlot_Release((Unk_020bd868*)&data_021f3010[i]);
     }
@@ -4010,28 +4010,28 @@ extern "C" void SkySprite_Release(Unk_020bdd94* p) {
 }
 
 extern "C" void SkySprite_BeginCrossing(Unk_020bdd94* p, u8 a, s32 b) {
-    p->unk_2e = a;
+    p->dir = a;
     s32 v;
-    if (p->unk_2e != 0) {
+    if (p->dir != 0) {
         v = 0;
     } else {
         v = sSkyCrossingWidth;
     }
-    p->unk_28 = v;
+    p->trackX = v;
     return SkySprite_ProjectCrossing(p, b);
 }
 
 extern "C" BOOL SkySprite_AdvanceCrossing(Unk_020bdd94* p, s32 a, s32 b, s32 c) {
     BOOL r = FALSE;
-    if (p->unk_2e != 0) {
-        p->unk_28 += a;
-        if (p->unk_28 > sSkyCrossingWidth) r = TRUE;
+    if (p->dir != 0) {
+        p->trackX += a;
+        if (p->trackX > sSkyCrossingWidth) r = TRUE;
     } else {
-        p->unk_28 -= a;
-        if (p->unk_28 < 0) r = TRUE;
+        p->trackX -= a;
+        if (p->trackX < 0) r = TRUE;
     }
     if (!r) {
-        p->unk_2c += c;
+        p->wavePhase += c;
         SkySprite_ProjectCrossing(p, b);
     }
     return r;
@@ -4061,24 +4061,24 @@ extern "C" void SkySprite_ProjectWorldPos(Unk_020bdd94* p, Unk_020bdd94_Out* q, 
         idx = 0;
     }
     idx = func_01ffcb0c(idx, 0x10000);
-    p->unk_34 = sx;
-    p->unk_38 = sy - idx;
-    p->unk_3c = 0;
+    p->screenPosX = sx;
+    p->screenPosY = sy - idx;
+    p->screenPosZ = 0;
     sc = func_01ffcb0c(-0xc00, k) + 0x1000;
     if (sc < 0x400) sc = 0x400;
     else if (sc > 0x1000) sc = 0x1000;
     z = FX_Inv(sc);
-    p->unk_4c = z;
-    p->unk_50 = z;
-    idx = (u16)p->unk_2c >> 4;
+    p->scaleX = z;
+    p->scaleY = z;
+    idx = (u16)p->wavePhase >> 4;
     z = func_01ffcb0c(data_02135f44[idx][0], a);
     z = func_01ffcb0c(z, sc);
-    p->unk_38 += z;
+    p->screenPosY += z;
 }
 
 extern "C" void SkySprite_ProjectCrossing(Unk_020bdd94* p, s32 a) {
     Unk_020bdd94_Out t;
-    t.x = p->unk_28;
+    t.x = p->trackX;
     t.y = 0;
     t.z = data_020c8cb8;
     SkySprite_ProjectWorldPos(p, &t, a);
@@ -4086,13 +4086,13 @@ extern "C" void SkySprite_ProjectCrossing(Unk_020bdd94* p, s32 a) {
 
 extern "C" BOOL SkySprite_CheckShotHit(Unk_020bdd94* p, s32 a, s32 b, s32 c) {
     s32 d;
-    s32 w = func_01ffcb0c(a, p->unk_4c);
-    s32 h = func_01ffcb0c(b, p->unk_50);
-    s32 dy = func_01ffcb0c(c, p->unk_50);
+    s32 w = func_01ffcb0c(a, p->scaleX);
+    s32 h = func_01ffcb0c(b, p->scaleY);
+    s32 dy = func_01ffcb0c(c, p->scaleY);
     s32 hw = _s32_div_f(w, 2);
     s32 hh = _s32_div_f(h, 2);
-    s32 y = p->unk_38 + dy;
-    s32 x = p->unk_34;
+    s32 y = p->screenPosY + dy;
+    s32 x = p->screenPosX;
     s32 left = x - hw;
     s32 right = x + hw;
     s32 top = y - hh;
@@ -4129,12 +4129,12 @@ extern "C" s32 SkySprite_MakeSoundPos(Unk_020bdd94_Out* out, s32 a, s32 b, s32 c
 }
 
 extern "C" void SkySprite_GetSoundPos(Unk_020bdd94* p, Unk_020bdd94_Out* out) {
-    SkySprite_MakeSoundPos(out, p->unk_34, p->unk_38, p->unk_4c);
+    SkySprite_MakeSoundPos(out, p->screenPosX, p->screenPosY, p->scaleX);
 }
 
 extern "C" void SkySprite_GetPos(Unk_020bdd94* p, Unk_020bdd94_Out* out) {
-    out->x = p->unk_34;
-    out->y = p->unk_38;
+    out->x = p->screenPosX;
+    out->y = p->screenPosY;
     out->z = 0;
 }
 
@@ -4179,9 +4179,9 @@ extern "C" BOOL SkyObjGfxLoader_LoadChars(u8* p, s32 idx) {
         src = p + 0x448;
         ok1 &= FS_SeekFile(p, (row->charTileA & ~0x1f) << 5, 0);
         for (i = 0; i < 4; i++) {
-            if (t->unk_04 != 0) {
+            if (t->topTileCount != 0) {
                 ok2 &= FS_ReadFile(p, p + 0x48, 0x400) > 0;
-                MI_CpuCopy8(p + 0x48 + ((row->charTileA & 0x1f) << 5), src + (t->unk_00 << 5), t->unk_04 << 5);
+                MI_CpuCopy8(p + 0x48 + ((row->charTileA & 0x1f) << 5), src + (t->topTileX << 5), t->topTileCount << 5);
             }
             src += 0x180;
         }
@@ -4190,9 +4190,9 @@ extern "C" BOOL SkyObjGfxLoader_LoadChars(u8* p, s32 idx) {
         src = p + 0xa48;
         ok1 &= FS_SeekFile(p, (row->charTileB & ~0x1f) << 5, 0);
         for (i = 4; i < 8; i++) {
-            if (t->unk_0c != 0) {
+            if (t->bottomTileCount != 0) {
                 ok2 &= FS_ReadFile(p, p + 0x48, 0x400) > 0;
-                MI_CpuCopy8(p + 0x48 + ((row->charTileB & 0x1f) << 5), src + (t->unk_08 << 5), t->unk_0c << 5);
+                MI_CpuCopy8(p + 0x48 + ((row->charTileB & 0x1f) << 5), src + (t->bottomTileX << 5), t->bottomTileCount << 5);
             }
             src += 0x180;
         }
@@ -4229,9 +4229,9 @@ extern "C" void SkyObjGfxLoader_FlushChars(u8* p) {
 
 extern "C" void SkyObjGfxSlot_Init(Unk_020bd868* p) {
     p->unk_00 = 0x34;
-    p->unk_04 = 0;
+    p->refCount = 0;
     p->unk_08 = 0;
-    p->unk_09 = 0;
+    p->dirty = 0;
 }
 
 extern "C" void SkyObjGfxSlot_Upload(Unk_020bd868* p, u8* base) {
@@ -4248,9 +4248,9 @@ extern "C" void SkyObjGfxSlot_Upload(Unk_020bd868* p, u8* base) {
     k = 0x94;
     for (s32 i = 0; i < 4; i++) {
         u32 d;
-        u32 n = row->unk_04;
+        u32 n = row->topTileCount;
         if (n != 0) {
-            u32 a = row->unk_00;
+            u32 a = row->topTileX;
             d = dst + (o << 5);
             d += a << 5;
             Unk_020bd9a0_Copy(d, a, n, k, flag);
@@ -4260,9 +4260,9 @@ extern "C" void SkyObjGfxSlot_Upload(Unk_020bd868* p, u8* base) {
     }
     for (s32 i = 4; i < 8; i++) {
         u32 d;
-        u32 n = row->unk_0c;
+        u32 n = row->bottomTileCount;
         if (n != 0) {
-            u32 a = row->unk_08;
+            u32 a = row->bottomTileX;
             d = dst + (o << 5);
             d += a << 5;
             Unk_020bd9a0_Copy(d, a, n, k, flag);
@@ -4273,7 +4273,7 @@ extern "C" void SkyObjGfxSlot_Upload(Unk_020bd868* p, u8* base) {
 }
 
 extern "C" void SkyObjGfxSlot_Acquire(Unk_020bd868* p, s32 v, void* x) {
-    p->unk_04++;
+    p->refCount++;
     if (v != p->unk_00) {
         p->unk_08 = 0;
         _ZN13SkyObjPalette13invalidateForEi(x);
@@ -4284,20 +4284,20 @@ extern "C" void SkyObjGfxSlot_Acquire(Unk_020bd868* p, s32 v, void* x) {
 extern "C" void SkyObjGfxSlot_SetGfx(Unk_020bd868* p, s32 v) {
     if (v != p->unk_00) {
         p->unk_08 = 0;
-        p->unk_09 = 1;
+        p->dirty = 1;
         p->unk_00 = v;
     }
 }
 
 extern "C" void SkyObjGfxSlot_RefreshPalette(Unk_020bd868* p, s32 a) {
-    p->unk_09 = 1;
+    p->dirty = 1;
     _ZN13SkyObjPalette13invalidateForEi(data_021f4398, a);
 }
 
 extern "C" void SkyObjGfxSlot_Release(Unk_020bd868* p) {
-    s32 t = p->unk_04 - 1;
+    s32 t = p->refCount - 1;
     if (t <= 0) t = 0;
-    p->unk_04 = t;
+    p->refCount = t;
 }
 
 extern "C" Unk_020bd868* SkyObjPalette_Init(Unk_020bd868* p) {
@@ -4307,13 +4307,13 @@ extern "C" Unk_020bd868* SkyObjPalette_Init(Unk_020bd868* p) {
     p->unk_00 = 0;
     *(u16*)&p->unk_08 = 0;
     _ZN13SkyObjPalette10invalidateEi(p, -1);
-    end = (u16*)p->unk_28;
-    q = p->unk_0a;
+    end = (u16*)p->colors;
+    q = p->overrideColors;
     tmp = sSkyObjPalDefaultColor;
     for (; q < end; q++) {
         *q = tmp;
     }
-    MI_CpuFill8(p->unk_28, 0, 0x20);
+    MI_CpuFill8(p->colors, 0, 0x20);
     return p;
 }
 
@@ -4326,12 +4326,12 @@ extern "C" void SkyObjPalette_Load(Unk_020bd868* p, u8* base, u32 idx) {
         a += p->unk_00;
     }
     b = row->objPalette << 5;
-    MI_CpuCopy8(base + 0x1048 + a * 32, p->unk_28, 0x20);
+    MI_CpuCopy8(base + 0x1048 + a * 32, p->colors, 0x20);
     res = _ZN13SkyObjPalette14applyOverridesEi(p, row->objPalette);
-    DC_FlushRange(p->unk_28, 0x20);
-    GX_LoadOBJPltt(p->unk_28, b, 0x20);
+    DC_FlushRange(p->colors, 0x20);
+    GX_LoadOBJPltt(p->colors, b, 0x20);
     if (gWeatherManager == 0) {
-        GXS_LoadOBJPltt(p->unk_28, b, 0x20);
+        GXS_LoadOBJPltt(p->colors, b, 0x20);
     }
     if (res == 0) {
         _ZN13SkyObjPalette12setLoadedRowEii(p, row->objPalette, a);
@@ -4456,13 +4456,13 @@ extern "C" void SkyShot_AddHit();
 BOOL SkyObjPalette::applyOverrides(s32 v) {
     using namespace n08;
     BOOL result = FALSE;
-    if (unk_08 != 0) {
+    if (overrideMask != 0) {
         for (s32 i = 0; i < 15; i++) {
             BOOL has = hasOverride(i);
             s32 s = sSkyObjPalOverrideSlots[i];
             BOOL match = ((s >> 4) & 0xf) == v;
             if (has && match) {
-                unk_28[s & 0xf] = unk_0a[i];
+                colors[s & 0xf] = overrideColors[i];
                 result = TRUE;
             }
         }
@@ -4474,7 +4474,7 @@ namespace n08 {
 }
 void SkyObjPalette::pickBalloonColor() {
     using namespace n08;
-    unk_00 = Random_GlobalBelow(5);
+    balloonColor = Random_GlobalBelow(5);
     invalidate(data_020d18c8[0x1d]);
 }
 namespace n08 {
@@ -4484,10 +4484,10 @@ void SkyObjPalette::invalidate(s32 v) {
     using namespace n08;
     if (v < 0) {
         for (s32 i = 0; (u32)i < 4; i++) {
-            unk_04[i] = -1;
+            loadedSrcPalettes[i] = -1;
         }
     } else {
-        unk_04[v - 12] = -1;
+        loadedSrcPalettes[v - 12] = -1;
     }
 }
 namespace n08 {
@@ -4496,7 +4496,7 @@ namespace n08 {
 void SkyObjPalette::invalidateFor(s32 idx) {
     using namespace n08;
     Unk_020bd774_Entry* e = &sSkyObjGfxTable[idx];
-    invalidate(e->unk_0d);
+    invalidate(e->objPalette);
 }
 namespace n08 {
 
@@ -4504,11 +4504,11 @@ namespace n08 {
 BOOL SkyObjPalette::isLoaded(s32 idx) {
     using namespace n08;
     Unk_020bd774_Entry* e = &sSkyObjGfxTable[idx];
-    s32 y = e->unk_0d;
-    s32 x = e->unk_0c;
+    s32 y = e->objPalette;
+    s32 x = e->srcPalette;
     BOOL result = TRUE;
     if (y >= 0 && x >= 0) {
-        if (x != unk_04[y - 12]) {
+        if (x != loadedSrcPalettes[y - 12]) {
             result = FALSE;
         }
     }
@@ -4520,7 +4520,7 @@ namespace n08 {
 void SkyObjPalette::setLoadedRow(s32 a, s32 b) {
     using namespace n08;
     if (a >= 0 && b >= 0) {
-        unk_04[a - 12] = b;
+        loadedSrcPalettes[a - 12] = b;
     }
 }
 namespace n08 {
@@ -4528,14 +4528,14 @@ namespace n08 {
 }
 void SkyObjPalette::func_020bd758(s32 idx) {
     using namespace n08;
-    unk_08 &= ~(1 << idx);
+    overrideMask &= ~(1 << idx);
 }
 namespace n08 {
 
 }
 BOOL SkyObjPalette::hasOverride(s32 idx) {
     using namespace n08;
-    if (unk_08 & (1 << idx)) {
+    if (overrideMask & (1 << idx)) {
         return TRUE;
     }
     return FALSE;
@@ -4545,7 +4545,7 @@ namespace n08 {
 }
 void SkyObjPalette::setOverride(s32 idx, u16* p) {
     using namespace n08;
-    unk_08 |= 1 << idx;
+    overrideMask |= 1 << idx;
     Unk_020bd718_E o = (Unk_020bd718_E)((u32)this + (idx << 1));
     *(u16 *)(o + 10) = *p; // unk_0a[idx] = *p
     invalidate((sSkyObjPalOverrideSlots[idx] >> 4) & 0xf);
@@ -4562,24 +4562,24 @@ namespace n08 {
 }
 void SkyShotRequest::set(s32 a, s32* p, u8 b) {
     using namespace n08;
-    unk_00 = a;
-    unk_04 = p[0];
-    unk_08 = p[1];
-    unk_0c = p[2];
-    unk_10 = b;
-    unk_11 = 1;
+    playerSlot = a;
+    pos = p[0];
+    posY = p[1];
+    posZ = p[2];
+    golden = b;
+    pending = 1;
 }
 namespace n08 {
 
 }
 void SkyShotRequest::clear() {
     using namespace n08;
-    unk_00 = 4;
-    unk_04 = 0;
-    unk_08 = 0;
-    unk_0c = 0;
-    unk_10 = 0;
-    unk_11 = 0;
+    playerSlot = 4;
+    pos = 0;
+    posY = 0;
+    posZ = 0;
+    golden = 0;
+    pending = 0;
 }
 namespace n08 {
 
@@ -4594,9 +4594,9 @@ namespace n08 {
 void SkyShotSequence::startShot(s32 a) {
     using namespace n08;
     if (a == PlayerActor_GetLocalSessionSlot()) {
-        unk_00 = 1;
-        unk_04 = a;
-        unk_08 = 0x2b;
+        state = 1;
+        playerSlot = a;
+        timer = 0x2b;
     }
 }
 namespace n08 {
@@ -4611,9 +4611,9 @@ namespace n08 {
 }
 void SkyShotSequence::onBalloonHit(u8 a) {
     using namespace n08;
-    unk_21 = a;
-    unk_00 = 2;
-    PlayerActor_SetWatchMode(1, unk_04);
+    goldenBalloon = a;
+    state = 2;
+    PlayerActor_SetWatchMode(1, playerSlot);
     SkyShot_AddHit();
 }
 namespace n08 {
@@ -4621,19 +4621,19 @@ namespace n08 {
 }
 void SkyShotSequence::onBalloonFell() {
     using namespace n08;
-    unk_00 = 3;
-    unk_08 = 2;
-    unk_1e = 0;
-    unk_1f = 0;
-    unk_20 = 0;
+    state = 3;
+    timer = 2;
+    balloonDropEnded = 0;
+    landSePending = 0;
+    splashSePending = 0;
 }
 namespace n08 {
 
 }
 void SkyShotSequence::onUfoHit() {
     using namespace n08;
-    unk_00 = 4;
-    PlayerActor_SetWatchMode(1, unk_04);
+    state = 4;
+    PlayerActor_SetWatchMode(1, playerSlot);
     SkyShot_AddHit();
 }
 namespace n08 {
@@ -4641,16 +4641,16 @@ namespace n08 {
 }
 void SkyShotSequence::onUfoFell() {
     using namespace n08;
-    unk_00 = 5;
-    unk_08 = 0x1e;
+    state = 5;
+    timer = 0x1e;
 }
 namespace n08 {
 
 }
 void SkyShotSequence::onPeteHit() {
     using namespace n08;
-    unk_00 = 7;
-    PlayerActor_SetWatchMode(1, unk_04);
+    state = 7;
+    PlayerActor_SetWatchMode(1, playerSlot);
     SkyShot_AddHit();
 }
 namespace n08 {
@@ -4658,18 +4658,18 @@ namespace n08 {
 }
 void SkyShotSequence::onPeteFell() {
     using namespace n08;
-    unk_00 = 8;
-    unk_08 = 0x14;
+    state = 8;
+    timer = 0x14;
 }
 namespace n08 {
 
 }
 void SkyShotSequence::setTarget(s32 a, s32 b, s32 c, u8 d) {
     using namespace n08;
-    unk_0c = a;
-    unk_10 = b;
-    unk_14 = c;
-    unk_18 = d;
+    targetX = a;
+    targetY = b;
+    targetScale = c;
+    fallDir = d;
 }
 namespace n08 {
 
@@ -4722,7 +4722,7 @@ void SkyShotSequence::update() {
         *(Unk_020bd520_Fn *)n00::data_020e464c,
         *(Unk_020bd520_Fn *)n00::data_020e48a4,
     };
-    Unk_020bd520_Fn f = tbl[unk_00];
+    Unk_020bd520_Fn f = tbl[state];
     if (f) {
         (this->*f)();
     }
@@ -4744,9 +4744,9 @@ extern "C" BOOL SkyShot_HasMaxHits() {
 }
 void SkyShotSequence::actShotFlight() {
     using namespace n08;
-    unk_08--;
-    if (unk_08 <= 0) {
-        endWatch(unk_04);
+    timer--;
+    if (timer <= 0) {
+        endWatch(playerSlot);
         reset();
     }
 }
@@ -4763,23 +4763,23 @@ namespace n08 {
 void SkyShotSequence::actBalloonDrop() {
     using namespace n08;
     relaxHead(0x190, 0x190);
-    if (unk_08 > 0) {
-        unk_08--;
-        if (unk_08 == 0) {
-            if (FieldItemFx_StartBalloonDrop(unk_21 != 0 ? 1 : 0, ((unk_0c + 0x800) >> 12) - 0x80) == 0) {
-                unk_1e = 1;
+    if (timer > 0) {
+        timer--;
+        if (timer == 0) {
+            if (FieldItemFx_StartBalloonDrop(goldenBalloon != 0 ? 1 : 0, ((targetX + 0x800) >> 12) - 0x80) == 0) {
+                balloonDropEnded = 1;
             }
         }
     }
-    if (unk_1f != 0 || unk_20 != 0) {
-        s32 id = unk_1f != 0 ? 0x7f9 : 0x7fa;
+    if (landSePending != 0 || splashSePending != 0) {
+        s32 id = landSePending != 0 ? 0x7f9 : 0x7fa;
         Unk_020bd0a4_Vec3 v;
-        SkySprite_MakeSoundPos(&v, unk_0c, unk_10, unk_14);
+        SkySprite_MakeSoundPos(&v, targetX, targetY, targetScale);
         data_021f44ac.requestSustained(0, id, &v);
-        unk_1f = 0;
-        unk_20 = 0;
+        landSePending = 0;
+        splashSePending = 0;
     }
-    if (unk_1e != 0) {
+    if (balloonDropEnded != 0) {
         PlayerActor_LocalEndWatch();
         reset();
     }
@@ -4797,14 +4797,14 @@ namespace n08 {
 void SkyShotSequence::actUfoFall() {
     using namespace n08;
     relaxHead(0x50, 0);
-    unk_08--;
-    if (unk_08 <= 0) {
+    timer--;
+    if (timer <= 0) {
         Unk_020bd0a4_Vec3 v;
         Camera_StartShake(0xa3d);
-        SkySprite_MakeSoundPos(&v, unk_0c, unk_10, unk_14);
+        SkySprite_MakeSoundPos(&v, targetX, targetY, targetScale);
         data_021f44ac.requestSustained(0, 0x7fd, &v);
-        unk_08 = 0x32;
-        unk_00 = 6;
+        timer = 0x32;
+        state = 6;
     }
 }
 namespace n08 {
@@ -4813,8 +4813,8 @@ namespace n08 {
 void SkyShotSequence::actUfoCrashed() {
     using namespace n08;
     relaxHead(0x190, 0x190);
-    unk_08--;
-    if (unk_08 <= 0) {
+    timer--;
+    if (timer <= 0) {
         PlayerActor_LocalEndWatch();
         Camera_RestorePrevMode();
         for (s32 i = 0; i < 4; i++) {
@@ -4841,15 +4841,15 @@ namespace n08 {
 void SkyShotSequence::actPeteFall() {
     using namespace n08;
     relaxHead(0x50, 0);
-    if (unk_08 > 0) {
-        unk_08--;
+    if (timer > 0) {
+        timer--;
     } else {
         Unk_020bd0a4_Vec3 v;
         Camera_StartShake(0x5c3);
-        SkySprite_MakeSoundPos(&v, unk_0c, unk_10, unk_14);
+        SkySprite_MakeSoundPos(&v, targetX, targetY, targetScale);
         data_021f44ac.requestSustained(0, 0x800, &v);
-        unk_08 = 0x1e;
-        unk_00 = 9;
+        timer = 0x1e;
+        state = 9;
     }
 }
 namespace n08 {
@@ -4858,12 +4858,12 @@ namespace n08 {
 void SkyShotSequence::actPeteFallen() {
     using namespace n08;
     relaxHead(0x190, 0x190);
-    unk_08--;
-    if (unk_08 <= 0) {
-        void* p = PlayerActor_GetBodyPos(unk_04);
+    timer--;
+    if (timer <= 0) {
+        void* p = PlayerActor_GetBodyPos(playerSlot);
         if (p) {
             TownSessionState_Get();
-            _ZN13PeteFallState11pickFallPosEii(TownSessionState_GetPeteFall(), p, unk_18);
+            _ZN13PeteFallState11pickFallPosEii(TownSessionState_GetPeteFall(), p, fallDir);
         }
         PlayerActor_LocalEndWatch();
         Camera_RestorePrevMode();
@@ -4875,19 +4875,19 @@ namespace n08 {
 }
 void SkyShotSequence::reset() {
     using namespace n08;
-    unk_00 = 0;
-    unk_04 = 4;
-    unk_08 = 0;
-    unk_0c = 0;
-    unk_10 = 0;
-    unk_14 = 0x1000;
-    unk_18 = 0;
-    unk_1a = 0;
-    unk_1c = 0;
-    unk_1e = 0;
-    unk_1f = 0;
-    unk_20 = 0;
-    unk_21 = 0;
+    state = 0;
+    playerSlot = 4;
+    timer = 0;
+    targetX = 0;
+    targetY = 0;
+    targetScale = 0x1000;
+    fallDir = 0;
+    headPitch = 0;
+    headYaw = 0;
+    balloonDropEnded = 0;
+    landSePending = 0;
+    splashSePending = 0;
+    goldenBalloon = 0;
 }
 namespace n08 {
 
@@ -4899,7 +4899,7 @@ void SkyShotSequence::lookAtTarget() {
     if (p) {
         Sky_ProjectToScreenX(&x, p);
     }
-    s32 t = (FX_Div(unk_0c - x, 0x100000) * -10000) >> 12;
+    s32 t = (FX_Div(targetX - x, 0x100000) * -10000) >> 12;
     if (t < -5000) {
         t = -5000;
     } else if (t > 5000) {
@@ -4907,25 +4907,25 @@ void SkyShotSequence::lookAtTarget() {
     }
     s16 v = t;
     PlayerActor_SetHeadTilt(4000, v, 4);
-    unk_1a = 4000;
-    unk_1c = v;
+    headPitch = 4000;
+    headYaw = v;
 }
 namespace n08 {
 
 }
 void SkyShotSequence::relaxHead(s32 a, s32 b) {
     using namespace n08;
-    func_020e7530(&unk_1a, 0, a);
-    func_020e7530(&unk_1c, 0, b);
-    PlayerActor_SetHeadTilt(unk_1a, unk_1c, 4);
+    func_020e7530(&headPitch, 0, a);
+    func_020e7530(&headYaw, 0, b);
+    PlayerActor_SetHeadTilt(headPitch, headYaw, 4);
 }
 namespace n08 {
 
 }
 SkySePlayer::SkySePlayer() {
     using namespace n08;
-    unk_c0 = 0;
-    for (FxVec3* p = unk_60; p < (FxVec3*)&unk_c0; p++) {
+    active = 0;
+    for (FxVec3* p = positions; p < (FxVec3*)&active; p++) {
         p->x = 0;
         p->y = 0;
         p->z = 0;
@@ -4936,18 +4936,18 @@ namespace n08 {
 }
 void SkySePlayer::resetAll() {
     using namespace n08;
-    for (Unk_0213b970* e = unk_00; e < (Unk_0213b970*)unk_60; e++) {
+    for (Unk_0213b970* e = channels; e < (Unk_0213b970*)positions; e++) {
         e->func_02003cbc();
     }
-    unk_c0 = 1;
+    active = 1;
 }
 namespace n08 {
 
 }
 void SkySePlayer::releaseAll() {
     using namespace n08;
-    unk_c0 = 0;
-    for (Unk_0213b970* e = &unk_00[7]; e >= unk_00; e--) {
+    active = 0;
+    for (Unk_0213b970* e = &channels[7]; e >= channels; e--) {
         e->func_02003c30();
     }
 }
@@ -4956,11 +4956,11 @@ namespace n08 {
 }
 void SkySePlayer::requestSustained(s32 idx, s32 a, Unk_020bd0a4_Vec3* p) {
     using namespace n08;
-    if (unk_c0) {
-        unk_00[idx].func_02003c50(a);
-        unk_60[idx].x = p->x;
-        unk_60[idx].y = p->y;
-        unk_60[idx].z = p->z;
+    if (active) {
+        channels[idx].func_02003c50(a);
+        positions[idx].x = p->x;
+        positions[idx].y = p->y;
+        positions[idx].z = p->z;
     }
 }
 namespace n08 {
@@ -4968,11 +4968,11 @@ namespace n08 {
 }
 void SkySePlayer::request(s32 idx, s32 a, Unk_020bd0a4_Vec3* p) {
     using namespace n08;
-    if (unk_c0) {
-        unk_00[idx].func_02003c40(a);
-        unk_60[idx].x = p->x;
-        unk_60[idx].y = p->y;
-        unk_60[idx].z = p->z;
+    if (active) {
+        channels[idx].func_02003c40(a);
+        positions[idx].x = p->x;
+        positions[idx].y = p->y;
+        positions[idx].z = p->z;
     }
 }
 namespace n08 {
@@ -4980,9 +4980,9 @@ namespace n08 {
 }
 void SkySePlayer::update() {
     using namespace n08;
-    if (unk_c0) {
-        Unk_0213b970* a = unk_00;
-        FxVec3* b = unk_60;
+    if (active) {
+        Unk_0213b970* a = channels;
+        FxVec3* b = positions;
         for (s32 i = 0; i < 8; i++, a++, b++) {
             a->func_02003c60(i == 7 ? NULL : b);
         }
@@ -5003,31 +5003,31 @@ namespace n08 {
 }
 SkySprites::SkySprites() {
     using namespace n08;
-    unk_2f00 = 0;
-    unk_2f04 = 0;
-    unk_2f08 = 0;
-    unk_2f0c = 0;
-    unk_2f10 = 0;
-    unk_2f14 = 0;
-    unk_2f24 = 0;
-    unk_2f25 = 0;
-    unk_2f26 = 0;
-    unk_2f27 = 0;
-    unk_2f28 = 0;
-    unk_2f29 = 0;
-    unk_2f2c = 0;
-    unk_2f30 = 0;
-    unk_2f34 = 0;
-    unk_2f38 = 0;
-    unk_2f3c = 0;
-    unk_2f40 = 0;
-    unk_2f44 = 0;
-    unk_2f48 = 0;
-    unk_2f4c = 0;
-    unk_2f50 = 0;
-    unk_2f51 = 0;
-    unk_2f54 = 0;
-    unk_1b6c.init();
+    spawnInterval = 0;
+    spawnAccum = 0;
+    precipIntensity = 0;
+    snowCounter = 0;
+    thunderTimer = 0;
+    spriteCount = 0;
+    balloonChance = 0;
+    ufoChance = 0;
+    ufoEventToday = 0;
+    peteEventToday = 0;
+    fireworksToday = 0;
+    birdsRequested = 0;
+    fireworksPattern = 0;
+    fireworksPatternTime = 0;
+    fireworksBigTimer = 0;
+    fireworksSlotTimers = 0;
+    fireworksSlotTimers1 = 0;
+    fireworksSlotTimers2 = 0;
+    fireworksSlotTimers3 = 0;
+    fireworksInterval = 0;
+    shootingStarDelay = 0;
+    shootingStarVisible = 0;
+    rainbowStrength = 0;
+    rainStrength = 0;
+    loader.init();
 }
 namespace n08 {
 
@@ -5170,21 +5170,21 @@ extern "C" s32 SkySprites_GetMoonPhaseGfx();
 }
 void Unk_020bc58c::reloadAllGfx() {
     using namespace n07;
-    Unk_020bccc8_Entry *p, *end = &unk_1b30[5];
-    for (p = &unk_1b30[0]; p < end; p++) {
-        s32 id = p->unk_00;
+    Unk_020bccc8_Entry *p, *end = &gfxSlots[5];
+    for (p = &gfxSlots[0]; p < end; p++) {
+        s32 id = p->gfxId;
         if (id != 0x34) {
             s32 r;
-            s32 flag = p->unk_08;
-            r = _ZN13SkyObjPalette8isLoadedEi(unk_2eb8, id);
+            s32 flag = p->loaded;
+            r = _ZN13SkyObjPalette8isLoadedEi(palette, id);
             if (flag == 0) {
-                SkyObjGfxLoader_LoadChars(unk_1b6c, id);
-                SkyObjGfxSlot_Upload(p, unk_1b6c);
-                p->unk_08 = 1;
-                p->unk_09 = 0;
+                SkyObjGfxLoader_LoadChars(loader, id);
+                SkyObjGfxSlot_Upload(p, loader);
+                p->loaded = 1;
+                p->dirty = 0;
             }
             if (r == 0) {
-                SkyObjPalette_Load(unk_2eb8, unk_1b6c, id);
+                SkyObjPalette_Load(palette, loader, id);
             }
         }
     }
@@ -5194,14 +5194,14 @@ namespace n07 {
 }
 void Unk_020bc58c::loadDirtyGfx() {
     using namespace n07;
-    Unk_020bccc8_Entry *end = &unk_1b30[5], *p;
-    for (p = &unk_1b30[0]; p < end; p++) {
-        s32 id = p->unk_00;
-        if (p->unk_09 != 0) {
+    Unk_020bccc8_Entry *end = &gfxSlots[5], *p;
+    for (p = &gfxSlots[0]; p < end; p++) {
+        s32 id = p->gfxId;
+        if (p->dirty != 0) {
             if (id == 0x34) {
-                p->unk_09 = 0;
-            } else if (p->unk_08 == 0) {
-                SkyObjGfxLoader_LoadChars(unk_1b6c, id);
+                p->dirty = 0;
+            } else if (p->loaded == 0) {
+                SkyObjGfxLoader_LoadChars(loader, id);
             }
         }
     }
@@ -5211,23 +5211,23 @@ namespace n07 {
 }
 void Unk_020bc58c::uploadDirtyGfx() {
     using namespace n07;
-    Unk_020bccc8_Entry *p, *end = &unk_1b30[5];
-    for (p = &unk_1b30[0]; p < end; p++) {
-        s32 id = p->unk_00;
-        if (p->unk_09 != 0) {
+    Unk_020bccc8_Entry *p, *end = &gfxSlots[5];
+    for (p = &gfxSlots[0]; p < end; p++) {
+        s32 id = p->gfxId;
+        if (p->dirty != 0) {
             if (id != 0x34) {
                 s32 r;
-                s32 flag = p->unk_08;
-                r = _ZN13SkyObjPalette8isLoadedEi(unk_2eb8, id);
+                s32 flag = p->loaded;
+                r = _ZN13SkyObjPalette8isLoadedEi(palette, id);
                 if (flag == 0) {
-                    SkyObjGfxSlot_Upload(p, unk_1b6c);
-                    p->unk_08 = 1;
+                    SkyObjGfxSlot_Upload(p, loader);
+                    p->loaded = 1;
                 }
                 if (r == 0) {
-                    SkyObjPalette_Load(unk_2eb8, unk_1b6c, id);
+                    SkyObjPalette_Load(palette, loader, id);
                 }
             }
-            p->unk_09 = 0;
+            p->dirty = 0;
         }
     }
 }
@@ -5242,14 +5242,14 @@ s32 Unk_020bc58c::pickGfxSlot(s32 t) {
     ok = FALSE;
     if (grp == 6) {
         ok = TRUE;
-    } else if (t == unk_1b30[grp].unk_00) {
+    } else if (t == gfxSlots[grp].gfxId) {
         ok = TRUE;
     } else {
-        BOOL c0 = unk_1b30[0].unk_04 > 0 ? 1 : 0;
-        BOOL c1 = unk_1b30[1].unk_04 > 0 ? 1 : 0;
-        BOOL c2 = unk_1b30[2].unk_04 > 0 ? 1 : 0;
-        BOOL c3 = unk_1b30[3].unk_04 > 0 ? 1 : 0;
-        BOOL c4 = unk_1b30[4].unk_04 > 0 ? 1 : 0;
+        BOOL c0 = gfxSlots[0].refCount > 0 ? 1 : 0;
+        BOOL c1 = gfxSlots[1].refCount > 0 ? 1 : 0;
+        BOOL c2 = gfxSlots[2].refCount > 0 ? 1 : 0;
+        BOOL c3 = gfxSlots[3].refCount > 0 ? 1 : 0;
+        BOOL c4 = gfxSlots[4].refCount > 0 ? 1 : 0;
         if (grp == 0) {
             ok = (c0 == 0 && c3 == 0) ? TRUE : FALSE;
         } else if (grp == 1) {
@@ -5271,28 +5271,28 @@ namespace n07 {
 void Unk_020bc58c::releaseConflictingSlots(s32 k) {
     using namespace n07;
     if (k == 0) {
-        unk_1b30[3].unk_00 = 0x34;
+        gfxSlots[3].gfxId = 0x34;
         return;
     }
     if (k == 1) {
-        unk_1b30[4].unk_00 = 0x34;
+        gfxSlots[4].gfxId = 0x34;
         return;
     }
     if (k == 2) {
-        unk_1b30[3].unk_00 = 0x34;
-        unk_1b30[4].unk_00 = 0x34;
+        gfxSlots[3].gfxId = 0x34;
+        gfxSlots[4].gfxId = 0x34;
         return;
     }
     if (k == 3) {
-        unk_1b30[0].unk_00 = 0x34;
-        unk_1b30[2].unk_00 = 0x34;
-        unk_1b30[4].unk_00 = 0x34;
+        gfxSlots[0].gfxId = 0x34;
+        gfxSlots[2].gfxId = 0x34;
+        gfxSlots[4].gfxId = 0x34;
         return;
     }
     if (k == 4) {
-        unk_1b30[1].unk_00 = 0x34;
-        unk_1b30[2].unk_00 = 0x34;
-        unk_1b30[3].unk_00 = 0x34;
+        gfxSlots[1].gfxId = 0x34;
+        gfxSlots[2].gfxId = 0x34;
+        gfxSlots[3].gfxId = 0x34;
     }
 }
 namespace n07 {
@@ -5302,21 +5302,21 @@ s32 Unk_020bc58c::findFreeIndex(s32 kind, s32 idx) {
     using namespace n07;
     s32 r = 0x3c;
     if (idx != 0x3c) {
-        if (unk_0000[idx].unk_00 == 0xd) r = idx;
+        if (sprites[idx].kind == 0xd) r = idx;
     } else if (kind == 9) {
-        Unk_020bc754_Slot *p = &unk_0000[0x2e];
+        Unk_020bc754_Slot *p = &sprites[0x2e];
         s32 i;
         for (i = 0x2e; i <= 0x3a; i++, p++) {
-            if (p->unk_00 == 0xd) {
+            if (p->kind == 0xd) {
                 r = i;
                 break;
             }
         }
-    } else if (unk_2f14 < 0x1e) {
+    } else if (spriteCount < 0x1e) {
         s32 i;
-        Unk_020bc754_Slot *p = &unk_0000[0];
+        Unk_020bc754_Slot *p = &sprites[0];
         for (i = 0; i < 0x1e; p++, i++) {
-            if (p->unk_00 == 0xd) {
+            if (p->kind == 0xd) {
                 r = i;
                 break;
             }
@@ -5331,9 +5331,9 @@ s32 Unk_020bc58c::findKind(s32 id) {
     using namespace n07;
     s32 r = 0x3c;
     s32 i;
-    Unk_020bc754_Slot *p = unk_0000;
+    Unk_020bc754_Slot *p = sprites;
     for (i = 0; i < 0x3c; i++, p++) {
-        if (id == p->unk_00) {
+        if (id == p->kind) {
             r = i;
             break;
         }
@@ -5349,7 +5349,7 @@ void Unk_020bc58c::start() {
     spawnInitialPrecip();
     updateMoon();
     updateRainbow();
-    unk_2f24 = 0;
+    balloonChance = 0;
 }
 namespace n07 {
 
@@ -5368,9 +5368,9 @@ void Unk_020bc58c::checkTodayEvents() {
     u32 c[2];
     Unk_020bcb04_Ent arr[7];
     Unk_020bcb04_Ent *p, *end;
-    unk_2f26 = 0;
-    unk_2f27 = 0;
-    unk_2f28 = 0;
+    ufoEventToday = 0;
+    peteEventToday = 0;
+    fireworksToday = 0;
     a[0] = 0;
     a[1] = 0;
     Clock_GetDateTime(a);
@@ -5383,11 +5383,11 @@ void Unk_020bc58c::checkTodayEvents() {
         if (Event_GetState(id, c, 0)) ok = TRUE; else ok = FALSE;
         if (ok) {
             if (id == 0x44) {
-                unk_2f26 = 1;
+                ufoEventToday = 1;
             } else if (id == 0x45) {
-                unk_2f27 = 1;
+                peteEventToday = 1;
             } else if (id == 0x13 || id == 0xf) {
-                unk_2f28 = 1;
+                fireworksToday = 1;
             }
         }
     }
@@ -5417,9 +5417,9 @@ void Unk_020bc58c::onSlingshotFired(s32 i) {
         s32 flag = 0;
         if (buf[0] >= 0x137b && buf[0] <= 0x137b) flag = 1;
         _ZN14SkyShotRequest3setEiPih(getShotRequest(j), i, v, flag);
-        _ZN15SkyShotSequence9startShotEi(unk_2fa8, i);
+        _ZN15SkyShotSequence9startShotEi(shotSeq, i);
     } else {
-        _ZN15SkyShotSequence8endWatchEi(unk_2fa8, i);
+        _ZN15SkyShotSequence8endWatchEi(shotSeq, i);
     }
 }
 namespace n07 {
@@ -5427,7 +5427,7 @@ namespace n07 {
 }
 Unk_020bca5c_Elem *Unk_020bc58c::getShotRequest(s32 i) {
     using namespace n07;
-    return &unk_2f58[i];
+    return &shotRequests[i];
 }
 namespace n07 {
 
@@ -5456,20 +5456,20 @@ namespace n07 {
 }
 void Unk_020bc58c::initClock() {
     using namespace n07;
-    Clock_GetMinuteHour(&unk_2f18);
-    unk_2f1c = Clock_GetSecond();
-    unk_2f1a = unk_2f18;
-    unk_2f20 = unk_2f1c;
+    Clock_GetMinuteHour(&minuteHour);
+    second = Clock_GetSecond();
+    prevMinuteHour = minuteHour;
+    prevSecond = second;
 }
 namespace n07 {
 
 }
 void Unk_020bc58c::tickClock() {
     using namespace n07;
-    unk_2f1a = unk_2f18;
-    unk_2f20 = unk_2f1c;
-    Clock_GetMinuteHour(&unk_2f18);
-    unk_2f1c = Clock_GetSecond();
+    prevMinuteHour = minuteHour;
+    prevSecond = second;
+    Clock_GetMinuteHour(&minuteHour);
+    second = Clock_GetSecond();
 }
 namespace n07 {
 
@@ -5532,23 +5532,23 @@ Unk_020bc754_Slot *Unk_020bc58c::spawn(s32 kind, s32 idx, Unk_020bc754_Vec *vec,
         s32 n = findFreeIndex(kind, idx);
         if (n != 0x3c) {
             if (grp != 6) {
-                SkyObjGfxSlot_Acquire(&unk_1b30[grp], t, unk_2eb8);
+                SkyObjGfxSlot_Acquire(&gfxSlots[grp], t, palette);
                 releaseConflictingSlots(grp);
             }
-            slot = &unk_0000[n];
+            slot = &sprites[n];
             _ZN12Unk_020be2045clearEv(slot);
-            unk_0000[n].unk_00 = kind;
-            slot->unk_04 = 1;
-            slot->unk_24 = grp;
-            slot->unk_08 = t;
-            slot->unk_5d = data_020d16f5[t * 16];
+            sprites[n].kind = kind;
+            slot->state = 1;
+            slot->gfxSlot = grp;
+            slot->gfxId = t;
+            slot->palette = data_020d16f5[t * 16];
             if (vec != NULL) {
-                slot->unk_34 = vec->x;
-                slot->unk_38 = vec->y;
-                slot->unk_3c = vec->z;
+                slot->screenPosX = vec->x;
+                slot->screenPosY = vec->y;
+                slot->screenPosZ = vec->z;
             }
             _ZN12Unk_020be20410initByKindEj(slot, arg);
-            unk_2f14++;
+            spriteCount++;
         }
     }
     return slot;
@@ -5558,11 +5558,11 @@ namespace n07 {
 }
 void Unk_020bc58c::killKind(s32 id) {
     using namespace n07;
-    Unk_020bc754_Slot *p, *end = &unk_0000[0x3c];
-    for (p = &unk_0000[0]; p < end; p++) {
-        if (id == p->unk_00) {
+    Unk_020bc754_Slot *p, *end = &sprites[0x3c];
+    for (p = &sprites[0]; p < end; p++) {
+        if (id == p->kind) {
             _ZN12Unk_020be0f49endByKindEv(p);
-            unk_2f14--;
+            spriteCount--;
         }
     }
 }
@@ -5571,11 +5571,11 @@ namespace n07 {
 }
 void Unk_020bc58c::killAll() {
     using namespace n07;
-    Unk_020bc754_Slot *p, *end = &unk_0000[0x3c];
-    for (p = &unk_0000[0]; p < end; p++) {
-        if (p->unk_00 != 0xd) {
+    Unk_020bc754_Slot *p, *end = &sprites[0x3c];
+    for (p = &sprites[0]; p < end; p++) {
+        if (p->kind != 0xd) {
             _ZN12Unk_020be0f49endByKindEv(p);
-            unk_2f14--;
+            spriteCount--;
         }
     }
 }
@@ -5593,8 +5593,8 @@ void Unk_020bc58c::spawnInitialPrecip() {
         s32 idx = 0xd;
         if (w == 1) idx = 0;
         else if (w == 2) idx = 1;
-        unk_2f08 = 0x6400;
-        unk_2f0c = 0x32;
+        precipIntensity = 0x6400;
+        snowCounter = 0x32;
         if (idx != 0xd) {
             s32 n = a ? 15 : 20;
             s32 i;
@@ -5602,12 +5602,12 @@ void Unk_020bc58c::spawnInitialPrecip() {
                 spawn(idx, 0x3c, NULL, 1);
             }
         }
-        if (a) unk_2f54 = 0x800;
-        else unk_2f54 = 0x1000;
+        if (a) rainStrength = 0x800;
+        else rainStrength = 0x1000;
     } else {
-        unk_2f08 = 0;
-        unk_2f0c = 0;
-        unk_2f54 = 0;
+        precipIntensity = 0;
+        snowCounter = 0;
+        rainStrength = 0;
     }
 }
 namespace n07 {
@@ -5615,14 +5615,14 @@ namespace n07 {
 }
 void Unk_020bc58c::updateLightning() {
     using namespace n07;
-    if (unk_2f10 <= 0) unk_2f10 = 0x32;
-    unk_2f10--;
-    if (unk_2f10 <= 0) {
+    if (thunderTimer <= 0) thunderTimer = 0x32;
+    thunderTimer--;
+    if (thunderTimer <= 0) {
         if (Random_GlobalBelow(8) == 0) {
             spawn(8, 0x3b, NULL, 0);
         }
         SceneLights_StartFlash(0);
-        unk_2f10 = Random_GlobalBelow(200) + 10;
+        thunderTimer = Random_GlobalBelow(200) + 10;
     }
 }
 namespace n07 {
@@ -5630,11 +5630,11 @@ namespace n07 {
 }
 void Unk_020bc58c::updateThunderFlash() {
     using namespace n07;
-    if (unk_2f10 <= 0) unk_2f10 = 0x32;
-    unk_2f10--;
-    if (unk_2f10 <= 0) {
+    if (thunderTimer <= 0) thunderTimer = 0x32;
+    thunderTimer--;
+    if (thunderTimer <= 0) {
         SceneLights_StartFlash(0);
-        unk_2f10 = Random_GlobalBelow(200) + 10;
+        thunderTimer = Random_GlobalBelow(200) + 10;
     }
 }
 namespace n07 {
@@ -5652,7 +5652,7 @@ struct Unk_021ed2b0;
 struct Unk_021f1448;
 struct CommManager {
     char pad_00[0x64];
-    s32 unk_64;
+    s32 myAid;
 };
 struct Unk_021f1448 {
     char pad_00[0x24];
@@ -5780,33 +5780,33 @@ void Unk_020bbc28::updateRain() {
         }
     }
     if (kind == 0) {
-        unk_2f08 = 0;
+        precipIntensity = 0;
     } else {
         Unk_020d0f40 *t = &sRainSpawnRates[kind - 1];
-        if (unk_2f00 == 0) {
-            unk_2f00 = t->baseInterval + Random_GlobalBelow(t->randomInterval);
+        if (spawnInterval == 0) {
+            spawnInterval = t->baseInterval + Random_GlobalBelow(t->randomInterval);
         }
         if (b >= 3) {
-            unk_2f08 += 2;
-            if (unk_2f08 > 0x6400) {
-                unk_2f08 = 0x6400;
+            precipIntensity += 2;
+            if (precipIntensity > 0x6400) {
+                precipIntensity = 0x6400;
             }
         } else {
-            unk_2f08 -= 2;
-            if (unk_2f08 < 0) {
-                unk_2f08 = 0;
+            precipIntensity -= 2;
+            if (precipIntensity < 0) {
+                precipIntensity = 0;
             }
         }
-        unk_2f04 += unk_2f08 >> 8;
-        while (unk_2f04 >= unk_2f00) {
+        spawnAccum += precipIntensity >> 8;
+        while (spawnAccum >= spawnInterval) {
             spawn(0, 0x3c, 0, 0);
-            unk_2f04 -= unk_2f00;
-            if (unk_2f04 <= unk_2f00) {
-                unk_2f00 = t->baseInterval + Random_GlobalBelow(t->randomInterval);
-                if (unk_2f00 < 0x23) {
-                    unk_2f00 = 0x23;
+            spawnAccum -= spawnInterval;
+            if (spawnAccum <= spawnInterval) {
+                spawnInterval = t->baseInterval + Random_GlobalBelow(t->randomInterval);
+                if (spawnInterval < 0x23) {
+                    spawnInterval = 0x23;
                 }
-                unk_2f04 = 0;
+                spawnAccum = 0;
                 break;
             }
         }
@@ -5814,7 +5814,7 @@ void Unk_020bbc28::updateRain() {
     if (kind == 4) {
         updateLightning();
     }
-    func_020e759c(unk_2f54, b == 4 ? 0x1000 : 0x800, 2);
+    func_020e759c(rainStrength, b == 4 ? 0x1000 : 0x800, 2);
 }
 namespace n06 {
 
@@ -5844,61 +5844,61 @@ void Unk_020bbc28::updateSnow() {
         }
     }
     if (kind == 0) {
-        unk_2f00 = 0;
-        unk_2f0c = 0;
+        spawnInterval = 0;
+        snowCounter = 0;
     } else {
         Unk_020d0f40 *t = &sSnowSpawnRates[kind - 1];
-        if (unk_2f00 == 0) {
-            unk_2f00 = 0x3e8;
+        if (spawnInterval == 0) {
+            spawnInterval = 0x3e8;
         }
-        if (unk_2f0c > 2) {
+        if (snowCounter > 2) {
             if (b >= 3) {
-                unk_2f08 += 2;
-                if (unk_2f08 > 0x6400) {
-                    unk_2f08 = 0x6400;
+                precipIntensity += 2;
+                if (precipIntensity > 0x6400) {
+                    precipIntensity = 0x6400;
                 }
             } else {
-                unk_2f08 -= 2;
-                if (unk_2f08 < 0) {
-                    unk_2f08 = 0;
+                precipIntensity -= 2;
+                if (precipIntensity < 0) {
+                    precipIntensity = 0;
                 }
             }
         } else {
             if (b >= 3) {
-                unk_2f08 = 0x6400;
+                precipIntensity = 0x6400;
             } else {
-                unk_2f08 -= 2;
-                if (unk_2f08 < 0) {
-                    unk_2f08 = 0;
+                precipIntensity -= 2;
+                if (precipIntensity < 0) {
+                    precipIntensity = 0;
                 }
             }
         }
-        unk_2f04 += unk_2f08 >> 8;
-        while (unk_2f04 >= unk_2f00) {
+        spawnAccum += precipIntensity >> 8;
+        while (spawnAccum >= spawnInterval) {
             spawn(1, 0x3c, 0, 0);
-            unk_2f04 -= unk_2f00;
-            if (unk_2f04 <= unk_2f00) {
-                switch (unk_2f0c) {
+            spawnAccum -= spawnInterval;
+            if (spawnAccum <= spawnInterval) {
+                switch (snowCounter) {
                 case 0:
-                    unk_2f00 = 0x2af8;
-                    unk_2f04 = 0;
+                    spawnInterval = 0x2af8;
+                    spawnAccum = 0;
                     break;
                 case 1:
-                    unk_2f00 = 0x2328;
-                    unk_2f04 = 0;
+                    spawnInterval = 0x2328;
+                    spawnAccum = 0;
                     break;
                 default:
-                    unk_2f00 = t->baseInterval + Random_GlobalBelow(t->randomInterval);
-                    if (unk_2f0c < 0x32) {
-                        unk_2f04 = 0x4b;
+                    spawnInterval = t->baseInterval + Random_GlobalBelow(t->randomInterval);
+                    if (snowCounter < 0x32) {
+                        spawnAccum = 0x4b;
                     } else {
-                        unk_2f04 = 0;
+                        spawnAccum = 0;
                     }
                     break;
                 }
-                unk_2f0c++;
-                if (unk_2f0c > 0x32) {
-                    unk_2f0c = 0x32;
+                snowCounter++;
+                if (snowCounter > 0x32) {
+                    snowCounter = 0x32;
                 }
                 break;
             }
@@ -5910,7 +5910,7 @@ namespace n06 {
 }
 void Unk_020bbc28::updateShootingStar() {
     using namespace n06;
-    u8 v = unk_2f19;
+    u8 v = hour;
     BOOL a = TRUE;
     if (v < 0x13 && v >= 4) {
         a = FALSE;
@@ -5921,22 +5921,22 @@ void Unk_020bbc28::updateShootingStar() {
         c = TRUE;
     }
     BOOL d = FALSE;
-    if (unk_2f2c == 0 && findKind(9) == 0x3c) {
+    if (fireworksPattern == 0 && findKind(9) == 0x3c) {
         d = TRUE;
     }
     if (a && c && d) {
-        if (unk_2f4c > 0) {
-            unk_2f4c--;
-            if (unk_2f4c == 0) {
+        if (shootingStarDelay > 0) {
+            shootingStarDelay--;
+            if (shootingStarDelay == 0) {
                 spawn(3, 0x1e, 0, 0);
             }
-        } else if (unk_2f1c == 0x1e && unk_2f1c != unk_2f20) {
+        } else if (second == 0x1e && second != prevSecond) {
             if (!Random_GlobalBelow(data_021ed2b0.todayPattern == 0 ? 4 : 0x100)) {
-                unk_2f4c = Random_GlobalBelow(0x258);
+                shootingStarDelay = Random_GlobalBelow(0x258);
             }
         }
     } else {
-        unk_2f4c = 0;
+        shootingStarDelay = 0;
     }
 }
 namespace n06 {
@@ -5944,9 +5944,9 @@ namespace n06 {
 }
 void Unk_020bbc28::updateMoon() {
     using namespace n06;
-    u8 v = unk_2f19;
+    u8 v = hour;
     BOOL b;
-    if (unk_0e0c == 4) {
+    if (moonSpriteKind == 4) {
         b = TRUE;
     } else {
         b = FALSE;
@@ -6320,9 +6320,9 @@ void Unk_020bbc28::updateFireworksShow() {
     Clock_GetDateTime(&s);
     MI_CpuCopy8(&s, &t1, 8);
     if (Event_GetState(0x13, &t1, 1)) {
-        u8 a = unk_2f19;
-        u8 b = unk_2f18;
-        s32 c = unk_2f1c;
+        u8 a = hour;
+        u8 b = minute;
+        s32 c = second;
         if (a < 2) {
             r4 = TRUE;
             if (a == 0 && b == 0 && c == 0) {
@@ -6365,7 +6365,7 @@ void Unk_020bbc28::updateFireworksShow() {
             *(Unk_020bbeb8_Fn *)n00::data_020e4804, *(Unk_020bbeb8_Fn *)n00::data_020e474c, *(Unk_020bbeb8_Fn *)n00::data_020e46d4,
             *(Unk_020bbeb8_Fn *)n00::data_020e4704,
         };
-        if (unk_2f2c == 0) {
+        if (fireworksPattern == 0) {
             s32 v;
             if (r6) {
                 v = 0x12;
@@ -6375,20 +6375,20 @@ void Unk_020bbc28::updateFireworksShow() {
                 v = 0x10;
             }
             selectFireworksPattern(v);
-            unk_2f30 = 0;
+            fireworksPatternTime = 0;
         }
-        unk_2f30--;
-        fn = tbl[unk_2f2c];
+        fireworksPatternTime--;
+        fn = tbl[fireworksPattern];
         (this->*fn)();
     } else {
-        unk_2f2c = 0;
-        unk_2f30 = 0;
-        unk_2f34 = 0;
-        unk_2f38 = 0;
-        unk_2f3c = 0;
-        unk_2f40 = 0;
-        unk_2f44 = 0;
-        unk_2f48 = 0;
+        fireworksPattern = 0;
+        fireworksPatternTime = 0;
+        fireworksBigTimer = 0;
+        fireworksSlotTimers = 0;
+        fireworksSlotTimers1 = 0;
+        fireworksSlotTimers2 = 0;
+        fireworksSlotTimers3 = 0;
+        fireworksInterval = 0;
     }
 }
 namespace n06 {
@@ -6396,26 +6396,26 @@ namespace n06 {
 }
 void Unk_020bbc28::updateBalloon() {
     using namespace n06;
-    if (!_ZN11CommManager12isSlotActiveEi(gCommManager, gCommManager->unk_64)) {
-        u8 v = unk_2f19;
+    if (!_ZN11CommManager12isSlotActiveEi(gCommManager, gCommManager->myAid)) {
+        u8 v = hour;
         if (v >= 0xa && v < 0x10) {
-            if (unk_2f1a != unk_2f18) {
-                if ((u32)unk_2f18 % 10 == 4) {
-                    if (unk_1464 != 5) {
-                        if (unk_2f24 == 0) {
-                            unk_2f24 = Random_GlobalBelow(8) + 1;
+            if (prevMinute != minute) {
+                if ((u32)minute % 10 == 4) {
+                    if (visitorSpriteKind != 5) {
+                        if (balloonChance == 0) {
+                            balloonChance = Random_GlobalBelow(8) + 1;
                         }
-                        u8 c = unk_2f24;
+                        u8 c = balloonChance;
                         if (Random_GlobalBelow(8) < c) {
                             if (!_ZN12Unk_02097ff48testFlagEj(PlayerData_GetCurrent(), 0x30) && SkyShot_HasMaxHits() && !Random_GlobalBelow(4)) {
                                 spawn(5, 0x2d, 0, 1);
                             } else {
                                 spawn(5, 0x2d, 0, 0);
-                                _ZN13SkyObjPalette16pickBalloonColorEv(unk_2eb8);
+                                _ZN13SkyObjPalette16pickBalloonColorEv(palette);
                             }
-                            unk_2f24 = 1;
+                            balloonChance = 1;
                         } else if (c < 8) {
-                            unk_2f24++;
+                            balloonChance++;
                         }
                     }
                 }
@@ -6428,9 +6428,9 @@ namespace n06 {
 }
 void Unk_020bbc28::updateUfo() {
     using namespace n06;
-    if (unk_2f26 != 0) {
+    if (ufoEventToday != 0) {
         if (_ZN8SaveData8testFlagEj(gSaveData, 9)) {
-            unk_2f26 = 0;
+            ufoEventToday = 0;
         } else {
             Unk_020bbcc8_Xxx s;
             Unk_020bbcc8_Xxx t;
@@ -6445,29 +6445,29 @@ void Unk_020bbc28::updateUfo() {
                 b = FALSE;
             }
             if (b) {
-                unk_2f26 = 0;
+                ufoEventToday = 0;
             }
         }
     }
-    if (unk_2f26 != 0) {
-        if (!_ZN11CommManager12isSlotActiveEi(gCommManager, gCommManager->unk_64)) {
-            u8 v = unk_2f18;
+    if (ufoEventToday != 0) {
+        if (!_ZN11CommManager12isSlotActiveEi(gCommManager, gCommManager->myAid)) {
+            u8 v = minute;
             u32 m = (u32)v % 10;
-            if (unk_2f1a != v) {
+            if (prevMinute != v) {
                 if (m == 2 || m == 7) {
                     TownSessionState_Get();
                     TownSessionState_GetVisitorFlags();
                     if (!_ZN17VisitorSpawnFlags16isVisitorSpawnedEv()) {
-                        if (unk_1464 != 6) {
-                            if (unk_2f25 == 0) {
-                                unk_2f25 = Random_GlobalBelow(8) + 1;
+                        if (visitorSpriteKind != 6) {
+                            if (ufoChance == 0) {
+                                ufoChance = Random_GlobalBelow(8) + 1;
                             }
-                            u8 c = unk_2f25;
+                            u8 c = ufoChance;
                             if (Random_GlobalBelow(8) < c) {
                                 spawn(6, 0x2d, 0, 0);
-                                unk_2f25 = 1;
+                                ufoChance = 1;
                             } else if (c < 8) {
-                                unk_2f25++;
+                                ufoChance++;
                             }
                         }
                     }
@@ -6481,23 +6481,23 @@ namespace n06 {
 }
 void Unk_020bbc28::updatePete() {
     using namespace n06;
-    if (unk_2f27 != 0) {
+    if (peteEventToday != 0) {
         if (NpcRegistry_FindSpNpc(8)) {
             if (_ZN8NpcActor10isUpdatingEv()) {
-                unk_2f27 = 0;
+                peteEventToday = 0;
             }
         }
     }
-    if (unk_2f27 != 0) {
-        if (!_ZN11CommManager12isSlotActiveEi(gCommManager, gCommManager->unk_64)) {
+    if (peteEventToday != 0) {
+        if (!_ZN11CommManager12isSlotActiveEi(gCommManager, gCommManager->myAid)) {
             s32 r = Weather_GetFallingPrecip();
             if (r != 1 && r != 2) {
-                if (unk_2f19 != unk_2f1b) {
-                    if (unk_2f19 == 9 || unk_2f19 == 0x11) {
+                if (hour != prevHour) {
+                    if (hour == 9 || hour == 0x11) {
                         TownSessionState_Get();
                         TownSessionState_GetPeteFall();
                         if (!_ZN13PeteFallState15isVisitorActiveEv()) {
-                            if (unk_1464 != 7) {
+                            if (visitorSpriteKind != 7) {
                                 spawn(7, 0x2d, 0, 0);
                             }
                         }
@@ -6555,11 +6555,11 @@ extern "C" void _ZN15SkyShotSequence8endWatchEi(void *p, s32 v);
 }
 void Unk_020bb25c::updateRainbow() {
     using namespace n05;
-    unk_2f51 = 0;
+    rainbowStrength = 0;
     u8 k = data_021ed2b0[0xa];
     if (k >= 0x13 && k <= 0x17) {
-        if (*(data_020d0e04 + k - 0x13) == unk_2f19) {
-            s32 n = unk_2f18;
+        if (*(data_020d0e04 + k - 0x13) == hour) {
+            s32 n = minute;
             if (n < 0x2d) {
                 s32 v;
                 if (n <= 0xf) {
@@ -6572,16 +6572,16 @@ void Unk_020bb25c::updateRainbow() {
                 } else if (v > 0xc000) {
                     v = 0xc000;
                 }
-                unk_2f51 = (v + 0x800) >> 12;
+                rainbowStrength = (v + 0x800) >> 12;
             }
         }
     }
-    BOOL f = unk_0e80 == 10 ? TRUE : FALSE;
-    if (unk_2f51 != 0) {
+    BOOL f = rainbowSpriteKind == 10 ? TRUE : FALSE;
+    if (rainbowStrength != 0) {
         applyRainbowBlend();
         if (!f) {
             if (!spawn(10, 0x20, 0, 0)) {
-                unk_2f51 = 0;
+                rainbowStrength = 0;
             }
         }
     } else if (f) {
@@ -6593,7 +6593,7 @@ namespace n05 {
 }
 void Unk_020bb25c::spawnShots() {
     using namespace n05;
-    Unk_020bb25c_Ent14 *p = &unk_2f58[0];
+    Unk_020bb25c_Ent14 *p = &shotRequests[0];
     Unk_020bb25c_Ent14 *end = p + 4;
     s32 slot = 0x21;
     s32 i = 0;
@@ -6602,15 +6602,15 @@ void Unk_020bb25c::spawnShots() {
     vals[1] = 0;
     vals[2] = 0;
     for (; p < end; p++, slot += 3, i++) {
-        if (p->unk_11 != 0) {
-            u8 flag = p->unk_10;
+        if (p->pending != 0) {
+            u8 flag = p->golden;
             if (spawn(0xb, slot, vals[0], i)) {
                 if (flag != 0) {
                     spawn(0xb, slot + 1, vals[1], i | 0x10);
                     spawn(0xb, slot + 2, vals[2], i | 0x20);
                 }
             } else {
-                _ZN15SkyShotSequence8endWatchEi(&unk_2fa8[0], p->unk_00);
+                _ZN15SkyShotSequence8endWatchEi(&shotSeq[0], p->playerSlot);
             }
             _ZN14SkyShotRequest5clearEv(p);
         }
@@ -6621,8 +6621,8 @@ namespace n05 {
 }
 void Unk_020bb25c::updateBirds() {
     using namespace n05;
-    if (unk_2f29 != 0) {
-        unk_2f29 = 0;
+    if (birdsRequested != 0) {
+        birdsRequested = 0;
         BOOL a = Weather_GetFallingPrecip() == 0 ? TRUE : FALSE;
         u32 x[6];
         x[0] = 0;
@@ -6669,11 +6669,11 @@ namespace n05 {
 BOOL Unk_020bb25c::canLaunchBig(s32 idx) {
     using namespace n05;
     BOOL result = TRUE;
-    Unk_020bb25c_Ent74 *p = &unk_14d8[0];
+    Unk_020bb25c_Ent74 *p = &fireworkSprites[0];
     Unk_020bb25c_Ent74 *end = (Unk_020bb25c_Ent74 *)unk_1abc;
     for (; p < end; p++) {
-        if (p->unk_00 == 9) {
-            u32 f = p->unk_60;
+        if (p->kind == 9) {
+            u32 f = p->work0;
             s32 slot = (f >> 8) & 3;
             BOOL b1 = ((f >> 29) & 1) ? TRUE : FALSE;
             if (slot == idx || !b1) {
@@ -6690,13 +6690,13 @@ namespace n05 {
 BOOL Unk_020bb25c::canLaunchSmall(s32 idx) {
     using namespace n05;
     BOOL result = TRUE;
-    Unk_020bb25c_Ent74 *p = &unk_14d8[0];
+    Unk_020bb25c_Ent74 *p = &fireworkSprites[0];
     Unk_020bb25c_Ent74 *end = (Unk_020bb25c_Ent74 *)unk_1abc;
     for (; p < end; p++) {
-        if (p->unk_00 == 9) {
+        if (p->kind == 9) {
             s32 slot;
             BOOL b1, b2;
-            u32 f = p->unk_60;
+            u32 f = p->work0;
             slot = (f >> 8) & 3;
             b1 = ((f >> 29) & 1) ? TRUE : FALSE;
             b2 = ((f >> 31) & 1) ? TRUE : FALSE;
@@ -6731,8 +6731,8 @@ namespace n05 {
 void Unk_020bb25c::rollLaunchInterval(s32 *out) {
     using namespace n05;
     s32 r;
-    if (unk_2f48 > 0) {
-        r = Random_GlobalBelow(unk_2f48);
+    if (fireworksInterval > 0) {
+        r = Random_GlobalBelow(fireworksInterval);
     } else {
         r = 0;
     }
@@ -6743,12 +6743,12 @@ namespace n05 {
 }
 void Unk_020bb25c::tickBigLaunch() {
     using namespace n05;
-    unk_2f34 = unk_2f34 - 1;
-    if (unk_2f34 <= 0) {
+    fireworksBigTimer = fireworksBigTimer - 1;
+    if (fireworksBigTimer <= 0) {
         s32 r = Random_GlobalBelow(4);
         if (canLaunchBig(r)) {
             launchFirework(r, 1, 0);
-            rollLaunchInterval(&unk_2f34);
+            rollLaunchInterval(&fireworksBigTimer);
         }
     }
 }
@@ -6757,12 +6757,12 @@ namespace n05 {
 }
 void Unk_020bb25c::tickLowBigLaunch() {
     using namespace n05;
-    unk_2f34 = unk_2f34 - 1;
-    if (unk_2f34 <= 0) {
+    fireworksBigTimer = fireworksBigTimer - 1;
+    if (fireworksBigTimer <= 0) {
         s32 r = Random_GlobalBelow(4);
         if (canLaunchBig(r)) {
             launchFirework(r, 1, 1);
-            rollLaunchInterval(&unk_2f34);
+            rollLaunchInterval(&fireworksBigTimer);
         }
     }
 }
@@ -6771,7 +6771,7 @@ namespace n05 {
 }
 void Unk_020bb25c::tickSmallLaunches() {
     using namespace n05;
-    s32 *ptrs[4] = {&unk_2f38[0], &unk_2f38[1], &unk_2f38[2], &unk_2f38[3]};
+    s32 *ptrs[4] = {&fireworksSlotTimers[0], &fireworksSlotTimers[1], &fireworksSlotTimers[2], &fireworksSlotTimers[3]};
     s32 **pp = ptrs;
     s32 i;
     for (i = 0; i < 4; i++, pp++) {
@@ -6790,7 +6790,7 @@ namespace n05 {
 }
 void Unk_020bb25c::tickPairLaunches() {
     using namespace n05;
-    s32 *ptrs[4] = {&unk_2f38[0], &unk_2f38[1], &unk_2f38[2], &unk_2f38[3]};
+    s32 *ptrs[4] = {&fireworksSlotTimers[0], &fireworksSlotTimers[1], &fireworksSlotTimers[2], &fireworksSlotTimers[3]};
     s32 **pp = ptrs;
     s32 all = 1;
     s32 i;
@@ -6819,7 +6819,7 @@ void Unk_020bb25c::tickPairLaunches() {
         s32 **p2 = ptrs;
         for (i = 0; i < 4; i++, p2++) {
             if (a == i || b == i) {
-                *(*p2) = unk_2f48 + Random_GlobalBelow(30);
+                *(*p2) = fireworksInterval + Random_GlobalBelow(30);
             }
         }
     }
@@ -6829,7 +6829,7 @@ namespace n05 {
 }
 void Unk_020bb25c::tickTripleLaunches() {
     using namespace n05;
-    s32 *ptrs[4] = {&unk_2f38[0], &unk_2f38[1], &unk_2f38[2], &unk_2f38[3]};
+    s32 *ptrs[4] = {&fireworksSlotTimers[0], &fireworksSlotTimers[1], &fireworksSlotTimers[2], &fireworksSlotTimers[3]};
     s32 **pp = ptrs;
     s32 all = 1;
     s32 i;
@@ -6857,7 +6857,7 @@ void Unk_020bb25c::tickTripleLaunches() {
         s32 **p2 = ptrs;
         for (i = 0; i < 4; i++, p2++) {
             if (i != skip) {
-                *(*p2) = unk_2f48 + Random_GlobalBelow(30);
+                *(*p2) = fireworksInterval + Random_GlobalBelow(30);
             }
         }
     }
@@ -6867,14 +6867,14 @@ namespace n05 {
 }
 void Unk_020bb25c::setFireworksTiming(s32 a, s32 b, s32 c) {
     using namespace n05;
-    unk_2f48 = a;
+    fireworksInterval = a;
     s32 r;
     if (c > 0) {
         r = Random_GlobalBelow(c);
     } else {
         r = 0;
     }
-    unk_2f30 = b + r;
+    fireworksPatternTime = b + r;
 }
 namespace n05 {
 
@@ -6892,11 +6892,11 @@ void Unk_020bb25c::selectFireworksPattern(s32 mode) {
                 break;
             }
         }
-        unk_2f2c = m;
+        fireworksPattern = m;
     } else {
-        unk_2f2c = mode;
+        fireworksPattern = mode;
     }
-    s32 idx = unk_2f2c;
+    s32 idx = fireworksPattern;
     s32 cnt = sFireworksPatternDelays[idx];
     if (cnt > 0) {
         BOOL flag = FALSE;
@@ -6905,12 +6905,12 @@ void Unk_020bb25c::selectFireworksPattern(s32 mode) {
             flag = TRUE;
         }
         if (flag) {
-            unk_2f34 = Random_GlobalBelow(cnt);
+            fireworksBigTimer = Random_GlobalBelow(cnt);
         } else {
-            unk_2f38[0] = Random_GlobalBelow(cnt);
-            unk_2f38[1] = Random_GlobalBelow(cnt);
-            unk_2f38[2] = Random_GlobalBelow(cnt);
-            unk_2f38[3] = Random_GlobalBelow(cnt);
+            fireworksSlotTimers[0] = Random_GlobalBelow(cnt);
+            fireworksSlotTimers[1] = Random_GlobalBelow(cnt);
+            fireworksSlotTimers[2] = Random_GlobalBelow(cnt);
+            fireworksSlotTimers[3] = Random_GlobalBelow(cnt);
         }
     }
 }
@@ -6919,7 +6919,7 @@ namespace n05 {
 }
 void Unk_020bb25c::fireworksPatternAct01() {
     using namespace n05; 
-    s32 v = unk_2f30; 
+    s32 v = fireworksPatternTime; 
     if (v < 0) { 
         setFireworksTiming(0x14, 0x64, 400); 
     } else if (v == 0) { 
@@ -6932,7 +6932,7 @@ namespace n05 {
 }
 void Unk_020bb25c::fireworksPatternAct02() {
     using namespace n05; 
-    s32 v = unk_2f30; 
+    s32 v = fireworksPatternTime; 
     if (v < 0) { 
         setFireworksTiming(0x64, 0x64, 500); 
     } else if (v == 0) { 
@@ -6945,7 +6945,7 @@ namespace n05 {
 }
 void Unk_020bb25c::fireworksPatternAct03() {
     using namespace n05; 
-    s32 v = unk_2f30; 
+    s32 v = fireworksPatternTime; 
     if (v < 0) { 
         setFireworksTiming(0xc8, 0x64, 600); 
     } else if (v == 0) { 
@@ -6958,7 +6958,7 @@ namespace n05 {
 }
 void Unk_020bb25c::fireworksPatternAct04() {
     using namespace n05; 
-    s32 v = unk_2f30; 
+    s32 v = fireworksPatternTime; 
     if (v < 0) { 
         setFireworksTiming(0x32, 0x64, 400); 
     } else if (v == 0) { 
@@ -6971,7 +6971,7 @@ namespace n05 {
 }
 void Unk_020bb25c::fireworksPatternAct05() {
     using namespace n05; 
-    s32 v = unk_2f30; 
+    s32 v = fireworksPatternTime; 
     if (v < 0) { 
         setFireworksTiming(0xa0, 0x64, 500); 
     } else if (v == 0) { 
@@ -6984,7 +6984,7 @@ namespace n05 {
 }
 void Unk_020bb25c::fireworksPatternAct06() {
     using namespace n05; 
-    s32 v = unk_2f30; 
+    s32 v = fireworksPatternTime; 
     if (v < 0) { 
         setFireworksTiming(0x12c, 0x64, 600); 
     } else if (v == 0) { 
@@ -6997,7 +6997,7 @@ namespace n05 {
 }
 void Unk_020bb25c::fireworksPatternAct07() {
     using namespace n05; 
-    s32 v = unk_2f30; 
+    s32 v = fireworksPatternTime; 
     if (v < 0) { 
         setFireworksTiming(0x1e, 0x96, 400); 
     } else if (v == 0) { 
@@ -7010,7 +7010,7 @@ namespace n05 {
 }
 void Unk_020bb25c::fireworksPatternAct08() {
     using namespace n05; 
-    s32 v = unk_2f30; 
+    s32 v = fireworksPatternTime; 
     if (v < 0) { 
         setFireworksTiming(0x3c, 0x96, 500); 
     } else if (v == 0) { 
@@ -7023,7 +7023,7 @@ namespace n05 {
 }
 void Unk_020bb25c::fireworksPatternAct09() {
     using namespace n05; 
-    s32 v = unk_2f30; 
+    s32 v = fireworksPatternTime; 
     if (v < 0) { 
         setFireworksTiming(0x64, 0x96, 600); 
     } else if (v == 0) { 
@@ -7036,7 +7036,7 @@ namespace n05 {
 }
 void Unk_020bb25c::fireworksPatternAct0A() {
     using namespace n05; 
-    s32 v = unk_2f30; 
+    s32 v = fireworksPatternTime; 
     if (v < 0) { 
         setFireworksTiming(0x28, 0x96, 400); 
     } else if (v == 0) { 
@@ -7049,7 +7049,7 @@ namespace n05 {
 }
 void Unk_020bb25c::fireworksPatternAct0B() {
     using namespace n05; 
-    s32 v = unk_2f30; 
+    s32 v = fireworksPatternTime; 
     if (v < 0) { 
         setFireworksTiming(0x50, 0x96, 500); 
     } else if (v == 0) { 
@@ -7863,9 +7863,9 @@ extern "C" BOOL Sky_LoadPaletteFiles();
 extern "C" void RainSe_FadeVolume(Unk_020ba8cc_Obj *o);
 
 extern "C" void RainSe_FadeVolume(Unk_020ba8cc_Obj *o) {
-    s32 a = data_021f1448.unk_28 == 3;
-    s32 b = data_021f1448.unk_28 == 4;
-    s32 on = data_021f1448.unk_34 == 1;
+    s32 a = data_021f1448.targetLevel == 3;
+    s32 b = data_021f1448.targetLevel == 4;
+    s32 on = data_021f1448.precipKind == 1;
     s32 v = 0;
     s32 w;
     if (on) {
@@ -7877,13 +7877,13 @@ extern "C" void RainSe_FadeVolume(Unk_020ba8cc_Obj *o) {
     }
     w = 0xdf;
     if (on) {
-        if (v < o->unk_0c) {
+        if (v < o->rainVolume) {
             w = 0x1eb;
         }
     } else {
         w = 0x5200;
     }
-    func_020e759c(&o->unk_0c, v, w);
+    func_020e759c(&o->rainVolume, v, w);
 }
 
 extern "C" BOOL Sky_LoadPaletteFiles() {
@@ -7962,7 +7962,7 @@ void WeatherManager::getSkyBlend(s32 *a, s32 *b) {
     using namespace n03;
     Unk_020ba518_Time t;
     Clock_GetMinuteHour(&t);
-    *a = (u32)(t.unk_00 * 0x44445) >> 12;
+    *a = (u32)(t.minute * 0x44445) >> 12;
     if (targetLevel != level) {
         *b = _s32_div_f(transitionProgress << 12, 32);
     } else {
@@ -7975,7 +7975,7 @@ extern "C" s32 Sky_ApplyPalettes(s32 x) {
     u16 **pal = data_021f14ac;
     s32 r;
     Sky_BlendPalettes();
-    if (data_021f1448.unk_28 != data_021f1448.unk_24) {
+    if (data_021f1448.targetLevel != data_021f1448.level) {
         r = Gfx2d_LoadPaletteRange((u8 *)pal[2], sSkyPaletteLayer[x], 1, 1, 1);
     } else {
         r = Gfx2d_LoadPaletteRange((u8 *)pal[0], sSkyPaletteLayer[x], 1, 1, 1);
@@ -7992,14 +7992,14 @@ extern "C" void Sky_BlendPalettes() {
     s32 h2, pm2;
     gWeatherManager.getSkyBlend(&a, &b);
     Clock_GetMinuteHour(&t);
-    h = t.unk_01;
-    if ((s32)t.unk_01 < 12) {
+    h = t.hour;
+    if ((s32)t.hour < 12) {
         pm = 0;
     } else {
         h -= 12;
         pm = 1;
     }
-    h2 = (u32)(t.unk_01 + 1) % 24;
+    h2 = (u32)(t.hour + 1) % 24;
     if (h2 < 12) {
         pm2 = 0;
     } else {
@@ -8010,8 +8010,8 @@ extern "C" void Sky_BlendPalettes() {
     u16 *s1 = &((u16 *)((u8 **)((s32)data_021f148c + set * 8))[pm])[h * 16];
     u16 *s2 = &((u16 *)((u8 **)((s32)data_021f148c + set * 8))[pm2])[h2 * 16];
     Color_Lerp6(pal[0], s1, s2, a);
-    if (data_021f1448.unk_28 != data_021f146c) {
-        set = (Unk_020ba518_E)sSkyPaletteSetByLevel[data_021f1448.unk_28];
+    if (data_021f1448.targetLevel != data_021f146c) {
+        set = (Unk_020ba518_E)sSkyPaletteSetByLevel[data_021f1448.targetLevel];
         s1 = &((u16 *)((u8 **)((s32)data_021f148c + set * 8))[pm])[h * 16];
         s2 = &((u16 *)((u8 **)((s32)data_021f148c + set * 8))[pm2])[h2 * 16];
         Color_Lerp6(pal[1], s1, s2, a);
@@ -8411,12 +8411,12 @@ extern "C" u16 Sky_CalcStarScrollX(u32 unused, void *unused2);
 void Unk_020b9c90::reloadCurrentCloudGraphics()
 {
     using namespace n02;
-    s32 cur = unk_1524;
+    s32 cur = level;
     if (loadCloudChars(cur, 6) != 0) {
-        if (loadCloudScreen((s32 *)&unk_157c, &unk_1580, 0, cur) != 0) {
-            unk_1578 = 0;
-            unk_120c = 0x20;
-            unk_158c = 4;
+        if (loadCloudScreen((s32 *)&curCloudScreen, &curCloudScreenSize, 0, cur) != 0) {
+            streamBlock = 0;
+            transitionProgress = 0x20;
+            transitionStep = 4;
         }
     }
 }
@@ -8426,23 +8426,23 @@ namespace n02 {
 void Unk_020b9c90::streamCurrentCloudScreen()
 {
     using namespace n02;
-    s32 cur = unk_1578;
-    s32 k = (((unk_1208 >> 8) - 8) & 0xff) >> 3;
+    s32 cur = streamBlock;
+    s32 k = (((cloudScroll >> 8) - 8) & 0xff) >> 3;
     if (k == cur) {
-        if (Gfx2d_LoadScreen((u8 *)unk_157c + (k << 5), 6, 0x20, k << 5) != 0) {
+        if (Gfx2d_LoadScreen((u8 *)curCloudScreen + (k << 5), 6, 0x20, k << 5) != 0) {
             cur++;
             if (cur >= 0x20) {
                 cur = -1;
-                if (unk_152c == unk_1524) {
-                    unk_158c = 0;
-                    unk_152c = cur;
-                    unk_1530 = 2;
-                    unk_1520 = 0;
+                if (requestedLevel == level) {
+                    transitionStep = 0;
+                    requestedLevel = cur;
+                    direction = 2;
+                    transitionBusy = 0;
                 } else {
-                    unk_158c = 1;
+                    transitionStep = 1;
                 }
             }
-            unk_1578 = cur;
+            streamBlock = cur;
         }
     }
 }
@@ -8452,8 +8452,8 @@ namespace n02 {
 void Unk_020b9c90::updateTransitionStreamed()
 {
     using namespace n02;
-    if (unk_1520 != 0) {
-        switch (unk_158c) {
+    if (transitionBusy != 0) {
+        switch (transitionStep) {
         case 1:
             loadNextCloudGraphics();
             break;
@@ -8475,17 +8475,17 @@ namespace n02 {
 void Unk_020b9c90::transitionTimedBegin()
 {
     using namespace n02;
-    s32 cur = unk_1524;
+    s32 cur = level;
     s32 next;
-    if (unk_152c > cur) {
+    if (requestedLevel > cur) {
         next = cur + 1;
     } else {
         next = cur - 1;
     }
     setLevels(cur, next);
-    unk_120c = 0;
-    unk_158c = 2;
-    unk_1590 = 0;
+    transitionProgress = 0;
+    transitionStep = 2;
+    transitionTimer = 0;
 }
 namespace n02 {
 
@@ -8493,12 +8493,12 @@ namespace n02 {
 void Unk_020b9c90::transitionTimedBlend()
 {
     using namespace n02;
-    unk_1590++;
-    if (unk_1590 >= 0x2a8) {
-        setLevels(unk_1528, unk_1528);
-        unk_158c = 3;
+    transitionTimer++;
+    if (transitionTimer >= 0x2a8) {
+        setLevels(targetLevel, targetLevel);
+        transitionStep = 3;
     }
-    unk_120c = (unk_1590 << 5) / 0x2a8;
+    transitionProgress = (transitionTimer << 5) / 0x2a8;
 }
 namespace n02 {
 
@@ -8506,9 +8506,9 @@ namespace n02 {
 void Unk_020b9c90::transitionTimedFinish()
 {
     using namespace n02;
-    unk_120c = 0x20;
-    unk_158c = 4;
-    unk_1590 = 0;
+    transitionProgress = 0x20;
+    transitionStep = 4;
+    transitionTimer = 0;
 }
 namespace n02 {
 
@@ -8516,15 +8516,15 @@ namespace n02 {
 void Unk_020b9c90::transitionTimedWait()
 {
     using namespace n02;
-    unk_1590++;
-    if (unk_1590 >= 0x2a8) {
-        if (unk_152c == unk_1524) {
-            unk_158c = 0;
-            unk_152c = -1;
-            unk_1530 = 2;
-            unk_1520 = 0;
+    transitionTimer++;
+    if (transitionTimer >= 0x2a8) {
+        if (requestedLevel == level) {
+            transitionStep = 0;
+            requestedLevel = -1;
+            direction = 2;
+            transitionBusy = 0;
         } else {
-            unk_158c = 1;
+            transitionStep = 1;
         }
     }
 }
@@ -8534,8 +8534,8 @@ namespace n02 {
 void Unk_020b9c90::updateTransitionTimed()
 {
     using namespace n02;
-    if (unk_1520 != 0) {
-        switch (unk_158c) {
+    if (transitionBusy != 0) {
+        switch (transitionStep) {
         case 1:
             transitionTimedBegin();
             break;
@@ -9562,11 +9562,11 @@ extern "C" void Sky_GetStarViewingTime(Unk_020b8ec0_Time *out, s32 a, s32 b) {
     } else if (b > 0x68) {
         b = 0x68;
     }
-    out->unk_02 = 0x12;
+    out->hour = 0x12;
     out->unk_01 = 0;
-    out->unk_00 = 0;
+    out->second = 0;
     DateTime_AddMinutes(out, b * 0x2d0 / 0x68);
-    if (out->unk_02 == 6) {
+    if (out->hour == 6) {
         DateTime_SubHours(out, 1);
     }
     Clock_GetDateTime(tmp);

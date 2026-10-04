@@ -75,17 +75,17 @@ typedef BOOL (SickVillager::*Unk_ov004_0224cb98_BFn)();
 typedef void (SickVillager::*Unk_ov004_0224cb98_VFn)();
 
 struct Unk_ov004_0221a650_Msg {
-    u32 unk_00;
-    s32 unk_04;
-    u32 unk_08;
-    u32 unk_0c;
+    u32 index;
+    s32 state;
+    u32 nextState;
+    u32 stateStep;
     u32 unk_10;
-    u32 unk_14;
+    u32 openMode;
 };
 
 struct Unk_ov004_0221af1c_Out {
-    u32 unk_00;
-    u8 unk_04;
+    u32 fileName;
+    u8 msgIndex;
 };
 
 struct Unk_ov004_0221a7d4_Vec {
@@ -94,13 +94,13 @@ struct Unk_ov004_0221a7d4_Vec {
 
 struct Unk_ov004_0221afc4_Msg {
     u8 pad_00[8];
-    s32 unk_08;
+    s32 nextState;
 };
 
 struct Unk_ov004_0221b1e8_Map {
-    u8 *unk_00;
-    u8 *unk_04;
-    u8 *unk_08;
+    u8 *blocks;
+    u8 *width;
+    u8 *height;
 };
 
 struct Unk_ov004_0221b0f0_Vec {
@@ -242,7 +242,7 @@ struct Unk_0201a794 { Unk_0201a794(); ~Unk_0201a794(); u32 pad[0x68 / 4]; };
 struct NpcSpeechState { NpcSpeechState(); ~NpcSpeechState(); u32 pad[8 / 4]; };
 struct Unk_0201a13c { Unk_0201a13c(); ~Unk_0201a13c(); u32 pad[0x7c / 4]; };
 struct Unk_020323b0 { Unk_020323b0(); ~Unk_020323b0(); u32 pad[0x30 / 4]; };
-struct Unk_02088d00 { Unk_02088d00(); ~Unk_02088d00(); u32 pad[0x3c / 4]; u8 unk_3c; u8 pad_3d[3]; u32 pad_40; u8 unk_44; u8 pad_45[3]; };
+struct Unk_02088d00 { Unk_02088d00(); ~Unk_02088d00(); u32 pad[0x3c / 4]; u8 isHit; u8 pad_3d[3]; u32 pad_40; u8 collisionEnabled; u8 pad_45[3]; };
 struct Unk_020135e4 { Unk_020135e4(); ~Unk_020135e4(); u8 pad[8]; u8 unk_08; u8 pad_09[2]; u8 unk_0b; };
 struct NpcActionCtrl { NpcActionCtrl(); ~NpcActionCtrl(); u32 pad[0xb4 / 4]; };
 struct Unk_02014254 { Unk_02014254(); ~Unk_02014254(); u32 pad[0x28 / 4]; };
@@ -686,7 +686,7 @@ BOOL SickVillager::updateAct() {
 void SickVillager::blockFurnitureCells() {
     Unk_ov004_0221b1e8_Map *m = gSceneBlockMap;
     void *p;
-    if (m->unk_04 > (u8 *)0 && m->unk_08 > (u8 *)0 && (p = m->unk_00) != 0) {
+    if (m->width > (u8 *)0 && m->height > (u8 *)0 && (p = m->blocks) != 0) {
     } else {
         p = 0;
     }
@@ -772,7 +772,7 @@ void SickVillagerTalk::attachOwner(SickVillager *owner) {
 void SickVillagerTalk::onTaskDone(u32 a) {
     if (a == 4) {
         SickVillager_SetCurrentVisitor();
-        ((Unk_ov004_0221afc4_Msg *)unk_3c)->unk_08 = 1;
+        ((Unk_ov004_0221afc4_Msg *)unk_3c)->nextState = 1;
     }
 }
 
@@ -782,7 +782,7 @@ void SickVillagerTalk::update() {
     if (o->act == 6) {
         if (MenuCtrl_IsFinished()) {
             if (MenuCtrl_IsResultOk() == 0) {
-                ((Unk_ov004_0221afc4_Msg *)unk_3c)->unk_08 = 1;
+                ((Unk_ov004_0221afc4_Msg *)unk_3c)->nextState = 1;
                 buf[0] = Random_GlobalBelow(3) + 13;
                 TalkWindowState_setNextMessage(unk_3c, buf, 0);
                 villager->changeAct(4);
@@ -800,7 +800,7 @@ void SickVillagerTalk::update() {
 }
 
 void SickVillagerTalk::start(Unk_ov004_0221af1c_Out *out) {
-    out->unk_00 = (u32)data_ov004_0225095c;
+    out->fileName = (u32)data_ov004_0225095c;
     getSickStage();
     if (villager->mood.severeSickness == 0) {
         VillagerId_makeFileName(VillagerData_getVillagerId(villager->villagerData), data_ov004_0225095c, 0x28, "q12_ask1_2");
@@ -809,10 +809,10 @@ void SickVillagerTalk::start(Unk_ov004_0221af1c_Out *out) {
     }
     villager->isAnswered = 0;
     if (SickVillager_HasCurrentVisitor(this)) {
-        out->unk_04 = Random_GlobalBelow(3) + 3;
+        out->msgIndex = Random_GlobalBelow(3) + 3;
         villager->hasVisitor = 1;
     } else {
-        out->unk_04 = Random_GlobalBelow(3);
+        out->msgIndex = Random_GlobalBelow(3);
         villager->hasVisitor = 0;
     }
 }
@@ -980,7 +980,7 @@ void SickVillager::mainAct00() {
             }
         }
     }
-    if (collider.unk_3c != 0) {
+    if (collider.isHit != 0) {
         if (NpcActionCtrl_getAction(&actionCtrl) == 1) {
             if (changeAct(1)) {
                 return;
@@ -1105,20 +1105,20 @@ BOOL SickVillager::setupAct04() { return TRUE; }
 void SickVillager::mainAct04() {
     Unk_ov004_0221a650_Msg *o = (Unk_ov004_0221a650_Msg *)talk.unk_3c;
     if (o != 0) {
-        if (o->unk_04 == 0) {
+        if (o->state == 0) {
             TalkRequest_SetTargetDone(this);
         }
     }
 }
 
 BOOL SickVillager::setupAct05() {
-    ((Unk_ov004_0221a650_Msg *)talk.unk_3c)->unk_14 = 1;
+    ((Unk_ov004_0221a650_Msg *)talk.unk_3c)->openMode = 1;
     return TRUE;
 }
 
 void SickVillager::mainAct05() {
     Unk_ov004_0221a650_Msg *m = (Unk_ov004_0221a650_Msg *)talk.unk_3c;
-    if (m->unk_04 == 5) {
+    if (m->state == 5) {
         if (MenuCtrl_OpenPocketSelect(MenuCtrl_BuildPocketMask((void *)SickVillager_IsMedicine), 0xd) != 0) {
             changeAct(6);
         }

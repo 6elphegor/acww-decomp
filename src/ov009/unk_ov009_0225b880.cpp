@@ -248,7 +248,7 @@ struct BgmSceneFade {
 
 struct BgmManager {
     u8 pad_00[0x2d0];
-    BgmSceneFade unk_2d0;
+    BgmSceneFade sceneFade;
 };
 
 class BuildingActor;
@@ -1320,7 +1320,7 @@ void BuildingActor::func_ov009_0225d0d8() {
                 switch (getEntranceType()) {
                 case 2:
                     Field_SetDoorExitMode(1);
-                    data_021c1b3c->unk_2d0.setFadeDelay(1);
+                    data_021c1b3c->sceneFade.setFadeDelay(1);
                     if (PlayerActor_LocalRequestDoorExit()) {
                         exitDelay = 0;
                         return;
@@ -1328,7 +1328,7 @@ void BuildingActor::func_ov009_0225d0d8() {
                     break;
                 case 3:
                     Field_SetDoorExitMode(0);
-                    data_021c1b3c->unk_2d0.setFadeDelay(2);
+                    data_021c1b3c->sceneFade.setFadeDelay(2);
                     if (PlayerActor_LocalRequestDoorExit()) {
                         exitDelay = 0;
                         return;
@@ -1337,9 +1337,9 @@ void BuildingActor::func_ov009_0225d0d8() {
                 case 1:
                     Field_SetDoorExitMode(0);
                     if (Unk_ov009_0225d0d8_Match(&itemId, 0x5012) || Unk_ov009_0225d0d8_Match(&itemId, 0x5013)) {
-                        data_021c1b3c->unk_2d0.setFadeDelay(4);
+                        data_021c1b3c->sceneFade.setFadeDelay(4);
                     } else {
-                        data_021c1b3c->unk_2d0.setFadeDelay(3);
+                        data_021c1b3c->sceneFade.setFadeDelay(3);
                     }
                     if (PlayerActor_LocalRequestDoorExit()) {
                         exitDelay = 0;

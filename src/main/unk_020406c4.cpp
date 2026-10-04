@@ -1,6 +1,6 @@
 #include "types.h"
 
-struct Unk_0203ff50_Slot { u8 pad[0x10]; u8 unk_10, unk_11; u8 unk_12, unk_13; u8 rest[0x30]; };
+struct Unk_0203ff50_Slot { u8 pad[0x10]; u8 reddWeekday, unk_11; u8 todayEventId, todayWeekday; u8 rest[0x30]; };
 
 extern "C" {
 

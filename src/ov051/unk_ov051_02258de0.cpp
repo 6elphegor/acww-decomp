@@ -191,7 +191,7 @@ public:
     }
 struct ThreeLayerAnimModel {
     u8 pad_00[0xa4];
-    Unk_ov051_02258e50_Bits unk_a4;
+    Unk_ov051_02258e50_Bits curFrame;
     u8 pad_a8[0x2a0 - 0xec - 0xa8];
     ThreeLayerAnimModel();
     ~ThreeLayerAnimModel();
@@ -215,7 +215,7 @@ MEMBER(Unk_0201a13c, 0x49c - 0x420);
 MEMBER(CollisionState, 0x30);
 struct Unk_02088d00 {
     u8 pad_00[0x1c];
-    u32 unk_1c;
+    u32 groups;
     u8 pad_20[0x514 - 0x4cc - 0x20];
     Unk_02088d00();
     ~Unk_02088d00();
@@ -574,7 +574,7 @@ BOOL SpNpcKappn::vfunc_00() {
     }
     sSpNpcKappnInstance = this;
     changeAct(0);
-    collider.unk_1c |= 2;
+    collider.groups |= 2;
     TalkRequestFlags_SetSceneHold();
     startDelay = 0x29;
     return TRUE;
@@ -1184,7 +1184,7 @@ test0:
 }
 
 extern "C" u32 SpNpcKappn_GetAnimFrame() {
-    return sSpNpcKappnInstance->model.unk_a4.mid;
+    return sSpNpcKappnInstance->model.curFrame.mid;
 }
 
 // ---------------------------------------------------------------------------------------------------------------------

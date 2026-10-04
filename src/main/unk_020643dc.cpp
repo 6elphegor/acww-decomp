@@ -13,12 +13,12 @@ public:
     void update();
     BOOL switchLightAnimated(BOOL on);
 
-    s32 unk_00;
-    s32 unk_04;
-    u32 unk_08;
-    s32 unk_0c;
-    u16 unk_10;
-    u16 unk_12;
+    s32 level;
+    s32 targetLevel;
+    u32 fadeStep;
+    s32 isFlickering;
+    u16 flickerIndex;
+    u16 flickerDelay;
 };
 
 struct Unk_020d93b8 {
@@ -38,10 +38,10 @@ struct Unk_02064870_Time {
 // Element of the 3-entry array at +0x58 of SceneLights (0x44 bytes).
 struct LightSwitch {
     BOOL sync(s32 mode);
-    u8 unk_00;
-    s32 unk_04;
-    LightLevel unk_08;
-    s32 unk_1c;
+    u8 isOn;
+    s32 switchMode;
+    LightLevel lightLevel;
+    s32 fadeFrames;
 };
 
 struct ThunderSe {
@@ -54,8 +54,8 @@ struct ThunderSe {
     void tick();
     s32 clear();
 
-    /* 0x00 */ s32 unk_00;
-    /* 0x04 */ s32 unk_04;
+    /* 0x00 */ s32 seIndex;
+    /* 0x04 */ s32 delayTimer;
 };
 
 struct FlashLight {
@@ -70,14 +70,14 @@ struct FlashLight {
     void update();
     s32 reset();
 
-    /* 0x00 */ s32 unk_00;
-    /* 0x04 */ u16 unk_04;
-    /* 0x08 */ Unk_02064674_Vec unk_08;
-    /* 0x14 */ s32 unk_14;
-    /* 0x18 */ s32 unk_18;
-    /* 0x1c */ s32 unk_1c;
-    /* 0x20 */ s32 unk_20;
-    /* 0x24 */ ThunderSe unk_24[4];
+    /* 0x00 */ s32 flashKind;
+    /* 0x04 */ u16 color;
+    /* 0x08 */ Unk_02064674_Vec direction;
+    /* 0x14 */ s32 flashPhase;
+    /* 0x18 */ s32 isFalling;
+    /* 0x1c */ s32 intensity;
+    /* 0x20 */ s32 intensityStep;
+    /* 0x24 */ ThunderSe thunderSes[4];
 };
 
 struct SceneLight {
@@ -92,37 +92,37 @@ struct SceneLight {
     void calcDirection(Unk_02064674_Vec *out);
     s16 getTimeAngle();
 
-    /* 0x00 */ s32 unk_00;
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ u16 unk_08;
-    /* 0x0c */ s32 unk_0c;
-    /* 0x10 */ s16 unk_10;
-    /* 0x12 */ s16 unk_12;
-    /* 0x14 */ LightSwitch unk_14;
-    /* 0x34 */ u16 unk_34;
-    /* 0x38 */ Unk_02064674_Vec unk_38;
+    /* 0x00 */ s32 lightKind;
+    /* 0x04 */ s32 lightId;
+    /* 0x08 */ u16 timeOffset;
+    /* 0x0c */ s32 skyColorId;
+    /* 0x10 */ s16 dirPitch;
+    /* 0x12 */ s16 dirYaw;
+    /* 0x14 */ LightSwitch lightSwitch;
+    /* 0x34 */ u16 color;
+    /* 0x38 */ Unk_02064674_Vec direction;
 };
 
 struct Unk_0206513c_Def {
-    /* 0x00 */ s32 unk_00;
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ u16 unk_08;
-    /* 0x0c */ s32 unk_0c;
-    /* 0x10 */ s16 unk_10;
-    /* 0x12 */ s16 unk_12;
+    /* 0x00 */ s32 lightKind;
+    /* 0x04 */ s32 lightId;
+    /* 0x08 */ u16 timeOffset;
+    /* 0x0c */ s32 skyColorId;
+    /* 0x10 */ s16 dirPitch;
+    /* 0x12 */ s16 dirYaw;
 };
 
 struct Unk_0206513c_DefList {
-    /* 0x00 */ s32 unk_00;
-    /* 0x04 */ const Unk_0206513c_Def *const *unk_04;
+    /* 0x00 */ s32 numLights;
+    /* 0x04 */ const Unk_0206513c_Def *const *defs;
 };
 
 struct Unk_02065078_Rec {
-    /* 0x00 */ u16 unk_00;
-    /* 0x02 */ u16 unk_02;
-    /* 0x04 */ s16 unk_04;
-    /* 0x06 */ s16 unk_06;
-    /* 0x08 */ u8 unk_08;
+    /* 0x00 */ u16 lampColorOn;
+    /* 0x02 */ u16 roomColorOn;
+    /* 0x04 */ s16 lampDirPitch;
+    /* 0x06 */ s16 lampDirYaw;
+    /* 0x08 */ u8 lightParam;
     /* 0x09 */ u8 unk_09;
 };
 
@@ -132,24 +132,24 @@ struct Unk_02064fa8_Data {
 
 struct Unk_020652c0_Node {
     /* 0x00 */ s32 unk_00;
-    /* 0x04 */ Unk_020652c0_Node *unk_04;
-    /* 0x08 */ s32 unk_08;
+    /* 0x04 */ Unk_020652c0_Node *next;
+    /* 0x08 */ s32 id;
 };
 
 struct Unk_020652c0_List {
-    /* 0x00 */ Unk_020652c0_Node *unk_00;
-    /* 0x04 */ Unk_020652c0_Node *unk_04;
+    /* 0x00 */ Unk_020652c0_Node *head;
+    /* 0x04 */ Unk_020652c0_Node *tail;
 };
 
 struct Unk_020652ec_Node {
     /* 0x00 */ s32 unk_00;
-    /* 0x04 */ Unk_020652ec_Node *unk_04;
-    /* 0x08 */ u8 unk_08;
+    /* 0x04 */ Unk_020652ec_Node *next;
+    /* 0x08 */ u8 priority;
 };
 
 struct Unk_020652ec_List {
-    /* 0x00 */ Unk_020652ec_Node *unk_00;
-    /* 0x04 */ Unk_020652ec_Node *unk_04;
+    /* 0x00 */ Unk_020652ec_Node *head;
+    /* 0x04 */ Unk_020652ec_Node *tail;
 };
 
 struct Unk_02064d6c_Rgb {
@@ -168,17 +168,17 @@ public:
     void updateBaseColor();
     void setupLights();
 
-    /* 0x050 */ s32 unk_50;
-    /* 0x054 */ s32 unk_54;
-    /* 0x058 */ SceneLight unk_58[3];
-    /* 0x124 */ FlashLight unk_124;
-    /* 0x168 */ s16 unk_168;
-    /* 0x16a */ u16 unk_16a;
-    /* 0x16c */ u16 unk_16c;
-    /* 0x16e */ u16 unk_16e;
-    /* 0x170 */ u16 unk_170;
-    /* 0x174 */ LightLevel *unk_174;
-    /* 0x178 */ u8 unk_178;
+    /* 0x050 */ s32 setupKind;
+    /* 0x054 */ s32 numLights;
+    /* 0x058 */ SceneLight lights[3];
+    /* 0x124 */ FlashLight flashLight;
+    /* 0x168 */ s16 baseColor;
+    /* 0x16a */ u16 lampColorOn;
+    /* 0x16c */ u16 lampColorOff;
+    /* 0x16e */ u16 roomColorOn;
+    /* 0x170 */ u16 roomColorOff;
+    /* 0x174 */ LightLevel *roomLightLevel;
+    /* 0x178 */ u8 lightParam;
 };
 
 // Object filled with a constant colour by __sinit.
@@ -197,8 +197,8 @@ struct Unk_021c9f5c {
 // Scene registration entry: constructor, two halfwords.
 struct Unk_020dd3b8 {
     SceneLights *(*unk_00)(void);
-    s16 unk_04;
-    s16 unk_06;
+    s16 executePriority;
+    s16 drawPriority;
 };
 
 struct Unk_020b22ac_Dummy;
@@ -274,25 +274,25 @@ static inline void Unk_02064d6c_Adjust(Unk_02064d6c_Rgb *c) {
 }
 
 extern "C" void PrioList_Init(Unk_020652c0_List *list) {
-    list->unk_00 = NULL;
-    list->unk_04 = NULL;
+    list->head = NULL;
+    list->tail = NULL;
 }
 
 extern "C" BOOL PrioList_Insert(Unk_020652ec_List *list, Unk_020652ec_Node *node) {
-    Unk_020652ec_Node *prev = list->unk_00;
+    Unk_020652ec_Node *prev = list->head;
     if (prev == NULL) {
-        list->unk_00 = node;
-        list->unk_04 = node;
+        list->head = node;
+        list->tail = node;
         return TRUE;
     }
-    Unk_020652ec_Node *cur = prev->unk_04;
+    Unk_020652ec_Node *cur = prev->next;
     while (cur != NULL) {
-        if (cur->unk_08 > node->unk_08) {
+        if (cur->priority > node->priority) {
             func_020e7a10(list, node, prev);
             return TRUE;
         }
         prev = cur;
-        cur = cur->unk_04;
+        cur = cur->next;
     }
     func_020e7a10(list, node, prev);
     return TRUE;
@@ -306,8 +306,8 @@ extern "C" BOOL func_020652dc(void) {
 extern "C" Unk_020652c0_Node *PrioList_FindById(Unk_020652c0_List *list, s32 key) {
     if (key == 0) return NULL;
     Unk_020652c0_Node *p;
-    for (p = list->unk_00; p != NULL; p = p->unk_04) {
-        if (key == p->unk_08) return p;
+    for (p = list->head; p != NULL; p = p->next) {
+        if (key == p->id) return p;
     }
     return NULL;
 }
@@ -329,30 +329,30 @@ void SceneLights::setupLights() {
         LightSwitch_SetOff(0, 1);
     }
     LightSwitch_SetOff(1, 1);
-    const Unk_0206513c_DefList *dl = sSceneLightSetups[unk_50];
-    const Unk_0206513c_Def *const *list = dl->unk_04;
-    s32 count = dl->unk_00;
-    unk_54 = count;
+    const Unk_0206513c_DefList *dl = sSceneLightSetups[setupKind];
+    const Unk_0206513c_Def *const *list = dl->defs;
+    s32 count = dl->numLights;
+    numLights = count;
     i = 0;
     const Unk_02065078_Rec *rec = &sSceneLightColors[id];
     for (; i < count; i++) {
         Unk_0206513c_Def d = *list[i];
-        unk_58[i].unk_00 = d.unk_00;
-        unk_58[i].unk_04 = d.unk_04;
-        unk_58[i].unk_08 = d.unk_08;
-        unk_58[i].unk_0c = d.unk_0c;
-        unk_58[i].unk_10 = d.unk_10;
-        unk_58[i].unk_12 = d.unk_12;
-        switch (list[i]->unk_00) {
+        lights[i].lightKind = d.lightKind;
+        lights[i].lightId = d.lightId;
+        lights[i].timeOffset = d.timeOffset;
+        lights[i].skyColorId = d.skyColorId;
+        lights[i].dirPitch = d.dirPitch;
+        lights[i].dirYaw = d.dirYaw;
+        switch (list[i]->lightKind) {
         case 3:
         case 4:
         case 5:
-            unk_58[i].unk_10 = rec->unk_04;
-            unk_58[i].unk_12 = rec->unk_06;
-            SceneLight *e = &unk_58[i];
-            e->unk_14.unk_00 = 0;
-            e->unk_14.unk_08.switchLightAnimated(0);
-            unk_174 = &e->unk_14.unk_08;
+            lights[i].dirPitch = rec->lampDirPitch;
+            lights[i].dirYaw = rec->lampDirYaw;
+            SceneLight *e = &lights[i];
+            e->lightSwitch.isOn = 0;
+            e->lightSwitch.lightLevel.switchLightAnimated(0);
+            roomLightLevel = &e->lightSwitch.lightLevel;
         }
     }
 }
@@ -360,39 +360,39 @@ void SceneLights::setupLights() {
 BOOL SceneLights::vfunc_00() {
     gSceneLights = this;
     s32 id = Scene_GetCurrent();
-    unk_50 = sSceneLightSetupIds[id];
+    setupKind = sSceneLightSetupIds[id];
     if (id == 0x21) {
-        unk_16a = 0x3e99;
-        unk_16c = 0x3caa;
-        unk_16e = 0x494a;
-        unk_170 = 0x518c;
-        unk_178 = 0xb;
+        lampColorOn = 0x3e99;
+        lampColorOff = 0x3caa;
+        roomColorOn = 0x494a;
+        roomColorOff = 0x518c;
+        lightParam = 0xb;
     } else {
         const Unk_02065078_Rec *rec = &sSceneLightColors[id];
-        unk_16a = rec->unk_00;
-        unk_16c = 0;
-        unk_16e = rec->unk_02;
-        unk_170 = 0;
-        unk_178 = rec->unk_08;
+        lampColorOn = rec->lampColorOn;
+        lampColorOff = 0;
+        roomColorOn = rec->roomColorOn;
+        roomColorOff = 0;
+        lightParam = rec->lightParam;
     }
     setupLights();
     SceneLight *p;
     s32 i;
-    for (p = unk_58, i = 0; i < unk_54; p++, i++) {
+    for (p = lights, i = 0; i < numLights; p++, i++) {
         SceneLight_InitStub(p);
         p->update();
     }
-    unk_124.reset();
+    flashLight.reset();
     return TRUE;
 }
 
 BOOL SceneLights::onExecute() {
     SceneLight *p;
     s32 i;
-    for (p = unk_58, i = 0; i < unk_54; p++, i++) {
+    for (p = lights, i = 0; i < numLights; p++, i++) {
         p->update();
     }
-    unk_124.update();
+    flashLight.update();
     updateBaseColor();
     return TRUE;
 }
@@ -402,15 +402,15 @@ BOOL SceneLights::onDraw() {
     s32 i;
     SceneLight *p;
     Light_GetViewRotation(&gViewMtx, l);
-    for (p = unk_58, i = 0; i < unk_54; p++, i++) {
+    for (p = lights, i = 0; i < numLights; p++, i++) {
         p->apply(l);
     }
-    unk_124.apply(l);
+    flashLight.apply(l);
     return TRUE;
 }
 
 BOOL SceneLights::vfunc_0c() {
-    unk_124.shutdown();
+    flashLight.shutdown();
     gSceneLights = NULL;
     return TRUE;
 }
@@ -455,7 +455,7 @@ extern "C" s16 SceneLights_GetFlashColor(void) {
 }
 
 extern "C" s16 SceneLights_GetBaseColor(void) {
-    return gSceneLights->unk_168;
+    return gSceneLights->baseColor;
 }
 
 void SceneLights::updateBaseColor() {
@@ -469,7 +469,7 @@ void SceneLights::updateBaseColor() {
     l.b = l.a;
     *(u16 *)&l.c = l.b;
     if (Scene_InHouseRoom()) {
-        if (unk_58[2].unk_14.unk_00 != 0) {
+        if (lights[2].lightSwitch.isOn != 0) {
             Unk_02064d6c_Adjust(&l.c);
         }
     } else if (IsOne(gFieldSceneKind)) {
@@ -486,7 +486,7 @@ void SceneLights::updateBaseColor() {
             l.c.b = 31;
         }
     }
-    unk_168 = *(u16 *)&l.c;
+    baseColor = *(u16 *)&l.c;
 }
 
 extern "C" s16 SceneLights_GetRoomColor(void) {
@@ -501,12 +501,12 @@ extern "C" s16 SceneLights_GetRoomColor(void) {
     if (o == NULL) {
         return l.c;
     }
-    switch (o->unk_50) {
+    switch (o->setupKind) {
     case 2:
     case 3: {
-        s32 t = o->unk_174->getLevel();
-        Unk_02064d6c_Rgb *x = (Unk_02064d6c_Rgb *)&gSceneLights->unk_170;
-        Unk_02064d6c_Rgb *y = (Unk_02064d6c_Rgb *)&gSceneLights->unk_16e;
+        s32 t = o->roomLightLevel->getLevel();
+        Unk_02064d6c_Rgb *x = (Unk_02064d6c_Rgb *)&gSceneLights->roomColorOff;
+        Unk_02064d6c_Rgb *y = (Unk_02064d6c_Rgb *)&gSceneLights->roomColorOn;
         s32 b = x->b + (((y->b - x->b) * t) >> 12);
         s32 r = x->r + (((y->r - x->r) * t) >> 12);
         s32 g = x->g + (((y->g - x->g) * t) >> 12);
@@ -525,7 +525,7 @@ extern "C" u8 SceneLights_GetLightParam(u32 x) {
     BOOL b = (gFieldSceneKind == 1);
     if (b) {
         if (x == 0) {
-            return gSceneLights->unk_178;
+            return gSceneLights->lightParam;
         }
         return Sky_GetLightParam(x);
     }
@@ -534,26 +534,26 @@ extern "C" u8 SceneLights_GetLightParam(u32 x) {
 
 s32 ThunderSe::clear()
 {
-    unk_00 = 2;
-    unk_04 = 0;
+    seIndex = 2;
+    delayTimer = 0;
 }
 
 void ThunderSe::tick()
 {
     u32 x;
-    if (unk_00 == 0) {
-        unk_04--;
-        if (unk_04 < 0) {
+    if (seIndex == 0) {
+        delayTimer--;
+        if (delayTimer < 0) {
             if (Scene_InTown() || Scene_InTownUnk31()) {
-                x = sThunderSeIdsAlt[unk_00];
+                x = sThunderSeIdsAlt[seIndex];
             } else {
-                x = sThunderSeIds[unk_00];
+                x = sThunderSeIds[seIndex];
             }
             Snd_PlaySe(x);
-            unk_00 = 2;
+            seIndex = 2;
         }
     } else {
-        unk_00 = 2;
+        seIndex = 2;
     }
 }
 
@@ -561,8 +561,8 @@ s32 ThunderSe::stop() {}
 
 s32 ThunderSe::arm(s32 a, s32 b)
 {
-    unk_00 = a;
-    unk_04 = b;
+    seIndex = a;
+    delayTimer = b;
 }
 
 s32 ThunderSe::clearAll()
@@ -593,7 +593,7 @@ void ThunderSe::schedule(s32 a, s32 b)
 {
     s32 i;
     for (i = 0; i < 4; i++) {
-        if (unk_00 == 2) {
+        if (seIndex == 2) {
             arm(a, b);
         }
     }
@@ -601,14 +601,14 @@ void ThunderSe::schedule(s32 a, s32 b)
 
 s32 FlashLight::reset()
 {
-    unk_00 = 9;
-    return unk_24[0].clearAll();
+    flashKind = 9;
+    return thunderSes[0].clearAll();
 }
 
 void FlashLight::update()
 {
     Unk_02064674_Vec v;
-    switch (unk_00) {
+    switch (flashKind) {
     case 0:
         updateLightning();
         break;
@@ -624,23 +624,23 @@ void FlashLight::update()
         break;
     }
     if (gCamera) {
-        func_020e944c(&unk_08, gCamera->getEyeCurveAngle());
+        func_020e944c(&direction, gCamera->getEyeCurveAngle());
     }
-    v.x = unk_08.x;
-    v.y = unk_08.y;
-    v.z = unk_08.z;
-    Light_ClampDir(&v, &unk_08);
-    unk_24[0].tickAll();
+    v.x = direction.x;
+    v.y = direction.y;
+    v.z = direction.z;
+    Light_ClampDir(&v, &direction);
+    thunderSes[0].tickAll();
 }
 
 void FlashLight::apply(void *m)
 {
-    if (unk_00 != 9) {
+    if (flashKind != 9) {
         *(volatile s32 *)0x4000440 = 2;
         *(volatile s32 *)0x4000454 = 0;
         G3_MultMtx33(m);
-        NNS_G3dGlbLightVector(2, (s16)unk_08.x, (s16)unk_08.y, (s16)unk_08.z);
-        NNS_G3dGlbLightColor(2, unk_04);
+        NNS_G3dGlbLightVector(2, (s16)direction.x, (s16)direction.y, (s16)direction.z);
+        NNS_G3dGlbLightColor(2, color);
     } else {
         NNS_G3dGlbLightColor(2, 0);
     }
@@ -648,12 +648,12 @@ void FlashLight::apply(void *m)
 
 s32 FlashLight::shutdown()
 {
-    return unk_24[0].stopAll();
+    return thunderSes[0].stopAll();
 }
 
 s32 FlashLight::updateLightning()
 {
-    switch (unk_14) {
+    switch (flashPhase) {
     case 1:
         startLightning();
         break;
@@ -665,39 +665,39 @@ s32 FlashLight::updateLightning()
 
 s32 FlashLight::startLightning()
 {
-    unk_04 = 0;
-    unk_14 = 2;
-    unk_1c = 0;
-    unk_20 = 0x800;
-    unk_18 = 0;
-    unk_24[0].schedule(0, 0xb4);
+    color = 0;
+    flashPhase = 2;
+    intensity = 0;
+    intensityStep = 0x800;
+    isFalling = 0;
+    thunderSes[0].schedule(0, 0xb4);
 }
 
 s32 FlashLight::stepLightning()
 {
-    unk_08.x = 0;
-    unk_08.y = -0x1000;
-    unk_08.z = 0;
-    unk_1c = unk_1c + unk_20;
-    if (unk_18 == 0) {
-        if (unk_1c >= 0x1000) {
-            unk_1c = 0x1000;
-            unk_20 = -0x333;
-            unk_18 = 1;
+    direction.x = 0;
+    direction.y = -0x1000;
+    direction.z = 0;
+    intensity = intensity + intensityStep;
+    if (isFalling == 0) {
+        if (intensity >= 0x1000) {
+            intensity = 0x1000;
+            intensityStep = -0x333;
+            isFalling = 1;
         }
-    } else if (unk_1c < 0) {
-        unk_1c = 0;
-        unk_20 = 0;
-        unk_00 = 9;
-        unk_14 = 0;
+    } else if (intensity < 0) {
+        intensity = 0;
+        intensityStep = 0;
+        flashKind = 9;
+        flashPhase = 0;
     }
-    s32 c = unk_1c * 9 >> 12;
-    unk_04 = (c << 10) | (c | (c << 5));
+    s32 c = intensity * 9 >> 12;
+    color = (c << 10) | (c | (c << 5));
 }
 
 s32 FlashLight::updateColorFlash()
 {
-    switch (unk_14) {
+    switch (flashPhase) {
     case 1:
         startColorFlash();
         break;
@@ -709,37 +709,37 @@ s32 FlashLight::updateColorFlash()
 
 s32 FlashLight::startColorFlash()
 {
-    unk_04 = 0;
-    unk_14 = 2;
-    unk_1c = 0;
-    unk_20 = 0x548;
-    unk_18 = 0;
+    color = 0;
+    flashPhase = 2;
+    intensity = 0;
+    intensityStep = 0x548;
+    isFalling = 0;
 }
 
 s32 FlashLight::stepColorFlash()
 {
-    unk_08.x = 0;
-    unk_08.y = -0x1000;
-    unk_08.z = 0;
-    unk_1c = unk_1c + unk_20;
-    if (unk_18 == 0) {
-        if (unk_1c >= 0x1000) {
-            unk_1c = 0x1000;
-            unk_20 = -0x266;
-            unk_18 = 1;
+    direction.x = 0;
+    direction.y = -0x1000;
+    direction.z = 0;
+    intensity = intensity + intensityStep;
+    if (isFalling == 0) {
+        if (intensity >= 0x1000) {
+            intensity = 0x1000;
+            intensityStep = -0x266;
+            isFalling = 1;
         }
-    } else if (unk_1c < 0) {
-        unk_1c = 0;
-        unk_00 = 9;
-        unk_14 = 0;
+    } else if (intensity < 0) {
+        intensity = 0;
+        flashKind = 9;
+        flashPhase = 0;
     }
-    if (unk_00 != 9) {
-        s32 t = unk_1c;
-        u16 c = sFlashLightColors[unk_00 - 1];
+    if (flashKind != 9) {
+        s32 t = intensity;
+        u16 c = sFlashLightColors[flashKind - 1];
         s32 hi = ((c & 0x7c00) >> 10) * t >> 12;
         s32 lo = (c & 0x1f) * t >> 12;
         s32 mid = ((c & 0x3e0) >> 5) * t >> 12;
-        unk_04 = (hi << 10) | (lo | (mid << 5));
+        color = (hi << 10) | (lo | (mid << 5));
     }
 }
 
@@ -761,19 +761,19 @@ BOOL LightSwitch::sync(s32 mode)
     case 3:
     case 4:
         v = sLightSwitchState.flag[0];
-        if (unk_00 != v) {
-            unk_00 = v;
-            unk_04 = sLightSwitchState.b[0];
-            unk_1c = sLightSwitchState.a[0];
+        if (isOn != v) {
+            isOn = v;
+            switchMode = sLightSwitchState.b[0];
+            fadeFrames = sLightSwitchState.a[0];
             r = TRUE;
         }
         break;
     case 5:
         v = sLightSwitchState.flag[1];
-        if (unk_00 != v) {
-            unk_00 = v;
-            unk_04 = sLightSwitchState.b[1];
-            unk_1c = sLightSwitchState.a[1];
+        if (isOn != v) {
+            isOn = v;
+            switchMode = sLightSwitchState.b[1];
+            fadeFrames = sLightSwitchState.a[1];
             r = TRUE;
         }
         break;
@@ -786,7 +786,7 @@ extern "C" void SceneLight_InitStub(void *) {}
 s16 SceneLight::getTimeAngle()
 {
     Unk_02064870_Time res, tm, now;
-    tm.v = unk_08;
+    tm.v = timeOffset;
     Clock_GetMinuteHour(&now);
     Time_AddHourMinute(now, tm, &res);
     u8 *p = (u8 *)&res;
@@ -811,16 +811,16 @@ extern "C" void Light_ClampDir(Unk_02064674_Vec *in, Unk_02064674_Vec *out)
 
 void SceneLight::calcDirection(Unk_02064674_Vec *out)
 {
-    switch (unk_00) {
+    switch (lightKind) {
     case 0:
     case 1:
     case 2:
-        func_020e944c(out, unk_10);
+        func_020e944c(out, dirPitch);
         func_020e93a0(out, getTimeAngle());
         break;
     default:
-        func_020e944c(out, unk_10);
-        func_020e93a0(out, unk_12);
+        func_020e944c(out, dirPitch);
+        func_020e93a0(out, dirYaw);
         break;
     }
 }
@@ -837,58 +837,58 @@ void SceneLight::updateOutdoor()
     if (gCamera) {
         func_020e944c(&v, gCamera->getEyeCurveAngle());
     }
-    *(u16 *)&c0 = Sky_GetLightColor(unk_0c);
+    *(u16 *)&c0 = Sky_GetLightColor(skyColorId);
     c1 = *(u16 *)&c0;
-    unk_34 = c1;
+    color = c1;
     w.x = v.x;
     w.y = v.y;
     w.z = v.z;
-    Light_ClampDir(&w, &unk_38);
+    Light_ClampDir(&w, &direction);
 }
 
 void SceneLight::calcSwitchColor()
 {
-    s32 t = unk_14.unk_08.getLevel();
+    s32 t = lightSwitch.lightLevel.getLevel();
     SceneLights *g = gSceneLights;
-    Unk_02064674_Color *pa = (Unk_02064674_Color *)&g->unk_16c;
-    Unk_02064674_Color *pb = (Unk_02064674_Color *)&g->unk_16a;
+    Unk_02064674_Color *pa = (Unk_02064674_Color *)&g->lampColorOff;
+    Unk_02064674_Color *pb = (Unk_02064674_Color *)&g->lampColorOn;
     Unk_02064674_Color &ca = *pa;
     Unk_02064674_Color &cb = *pb;
     s32 r = ca.r + (((cb.r - ca.r) * t) >> 12);
     s32 gr = ca.g + (((cb.g - ca.g) * t) >> 12);
     s32 bl = ca.b + (((cb.b - ca.b) * t) >> 12);
-    if (unk_14.unk_00 == 0) {
-        if (unk_14.unk_04 != 0) {
+    if (lightSwitch.isOn == 0) {
+        if (lightSwitch.switchMode != 0) {
             r = 0;
             gr = 0;
             bl = 0;
         }
-    } else if (unk_14.unk_04 == 2) {
+    } else if (lightSwitch.switchMode == 2) {
         r = 0x10;
         gr = 0x10;
         bl = 0xd;
     }
-    unk_34 = (bl << 10) | (r | (gr << 5));
+    color = (bl << 10) | (r | (gr << 5));
 }
 
 void SceneLight::calcLampColor()
 {
-    s32 t = unk_14.unk_08.getLevel();
+    s32 t = lightSwitch.lightLevel.getLevel();
     SceneLights *g = gSceneLights;
-    Unk_02064674_Color *pa = (Unk_02064674_Color *)&g->unk_16c;
-    Unk_02064674_Color *pb = (Unk_02064674_Color *)&g->unk_16a;
+    Unk_02064674_Color *pa = (Unk_02064674_Color *)&g->lampColorOff;
+    Unk_02064674_Color *pb = (Unk_02064674_Color *)&g->lampColorOn;
     Unk_02064674_Color &ca = *pa;
     Unk_02064674_Color &cb = *pb;
     s32 r = ca.r + (((cb.r - ca.r) * t) >> 12);
     s32 gr = ca.g + (((cb.g - ca.g) * t) >> 12);
     s32 bl = ca.b + (((cb.b - ca.b) * t) >> 12);
-    unk_34 = (bl << 10) | (r | (gr << 5));
+    color = (bl << 10) | (r | (gr << 5));
 }
 
 void SceneLight::calcWarmColor()
 {
-    s32 t = unk_14.unk_08.getLevel();
-    unk_34 = ((((t << 4) >> 12) + 15) << 10) | ((((t << 2) >> 12) + 25) | (((t * 9 >> 12) + 20) << 5));
+    s32 t = lightSwitch.lightLevel.getLevel();
+    color = ((((t << 4) >> 12) + 15) << 10) | ((((t << 2) >> 12) + 25) | (((t * 9 >> 12) + 20) << 5));
 }
 
 void SceneLight::updateColorAndDir()
@@ -896,7 +896,7 @@ void SceneLight::updateColorAndDir()
     Unk_02064674_Color c0;
     volatile u16 c1;
     Unk_02064674_Vec v, w;
-    switch (unk_00) {
+    switch (lightKind) {
     case 3:
         calcSwitchColor();
         v.x = 0;
@@ -916,9 +916,9 @@ void SceneLight::updateColorAndDir()
         v.z = 0;
         break;
     default:
-        *(u16 *)&c0 = Sky_GetLightColor(unk_0c);
+        *(u16 *)&c0 = Sky_GetLightColor(skyColorId);
         c1 = *(u16 *)&c0;
-        unk_34 = c1;
+        color = c1;
         v.x = 0;
         v.y = 0;
         v.z = -0x1000;
@@ -928,53 +928,53 @@ void SceneLight::updateColorAndDir()
     w.x = v.x;
     w.y = v.y;
     w.z = v.z;
-    Light_ClampDir(&w, &unk_38);
+    Light_ClampDir(&w, &direction);
 }
 
 void SceneLight::update()
 {
-    if (gSceneLights->unk_50 == 0) {
+    if (gSceneLights->setupKind == 0) {
         updateOutdoor();
         return;
     }
-    if (unk_14.sync(unk_00)) {
-        if (unk_14.unk_00 != 0) {
-            switch (unk_14.unk_04) {
+    if (lightSwitch.sync(lightKind)) {
+        if (lightSwitch.isOn != 0) {
+            switch (lightSwitch.switchMode) {
             case 0:
             case 3:
-                unk_14.unk_08.switchLight(1, 1, 0, 0x1000 / unk_14.unk_1c);
+                lightSwitch.lightLevel.switchLight(1, 1, 0, 0x1000 / lightSwitch.fadeFrames);
                 break;
             case 1:
-                unk_14.unk_08.switchLight(1, 1, 1, 0x800);
+                lightSwitch.lightLevel.switchLight(1, 1, 1, 0x800);
                 break;
             default:
-                unk_14.unk_08.switchLight(1, 0, 0, 0x800);
+                lightSwitch.lightLevel.switchLight(1, 0, 0, 0x800);
                 break;
             }
         } else {
-            switch (unk_14.unk_04) {
+            switch (lightSwitch.switchMode) {
             case 0:
             case 3:
-                unk_14.unk_08.switchLight(0, 1, 0, 0x1000 / unk_14.unk_1c);
+                lightSwitch.lightLevel.switchLight(0, 1, 0, 0x1000 / lightSwitch.fadeFrames);
                 break;
             default:
-                unk_14.unk_08.switchLight(0, 0, 0, 0x800);
+                lightSwitch.lightLevel.switchLight(0, 0, 0, 0x800);
                 break;
             }
         }
     }
-    unk_14.unk_08.update();
+    lightSwitch.lightLevel.update();
     updateColorAndDir();
 }
 
 void SceneLight::apply(void *m)
 {
-    s32 id = unk_04;
+    s32 id = lightId;
     *(volatile s32 *)0x4000440 = 2;
     *(volatile s32 *)0x4000454 = 0;
     G3_MultMtx33(m);
-    NNS_G3dGlbLightVector(id, (s16)unk_38.x, (s16)unk_38.y, (s16)unk_38.z);
-    NNS_G3dGlbLightColor(id, unk_34);
+    NNS_G3dGlbLightVector(id, (s16)direction.x, (s16)direction.y, (s16)direction.z);
+    NNS_G3dGlbLightColor(id, color);
 }
 
 extern "C" void LightSwitch_SetOn(s32 i, u32 a, u32 b)

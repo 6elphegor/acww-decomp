@@ -6,9 +6,9 @@ struct Unk_02042104_Date {
     u8 pad6[2];
 };
 
-struct Unk_02041880_Pair { u8 unk_00; u8 unk_01; u8 pad[2]; };
-struct CommManager { u8 unk_00[0x64]; u32 unk_64; };
-struct Unk_02041938 { u8 unk_00[0x10e9]; u8 unk_10e9; u8 unk_10ea; };
+struct Unk_02041880_Pair { u8 spawnFlies; u8 spawnAnts; u8 pad[2]; };
+struct CommManager { u8 slotActive[0x64]; u32 myAid; };
+struct Unk_02041938 { u8 unk_00[0x10e9]; u8 done; u8 started; };
 struct Unk_020419b4 {
     u8 pad00[0x64];
     s32 threadState;
@@ -291,7 +291,7 @@ extern "C" BOOL TownUpdateThread_PollDone() {
     BOOL r = FALSE;
     Unk_02041938 *p = (Unk_02041938 *)gTownUpdater.updateThread;
     if (p != 0) {
-        if (p->unk_10e9 != 0) {
+        if (p->done != 0) {
             TownUpdateThread_Destroy();
             r = TRUE;
         }
@@ -300,7 +300,7 @@ extern "C" BOOL TownUpdateThread_PollDone() {
 }
 
 extern "C" s32 TownUpdateThread_Kill(Unk_02041938 *p) {
-    if (p->unk_10ea != 0) {
+    if (p->started != 0) {
         if (OS_IsThreadTerminated() == 0) OS_KillThread((u32)p, 0);
     }
 }
@@ -316,26 +316,26 @@ extern "C" void TownUpdateThread_Destroy() {
 
 extern "C" void TownJunkInsects_InitFromEval(Unk_02041880_Pair *p) {
     if (((s32)(gTownEval[0x30 / 4] << 24) >> 31) != 0) {
-        p->unk_00 = 1;
+        p->spawnFlies = 1;
     } else {
-        p->unk_00 = 0;
+        p->spawnFlies = 0;
     }
     if (((s32)(gTownEval[0x30 / 4] << 25) >> 31) != 0) {
-        p->unk_01 = 1;
+        p->spawnAnts = 1;
     } else {
-        p->unk_01 = 0;
+        p->spawnAnts = 0;
     }
 }
 
 extern "C" void TownJunkInsects_Apply(Unk_02041880_Pair *p) {
-    if (_ZN11CommManager12isSlotActiveEi((u32)gCommManager, gCommManager->unk_64) != 0) return;
+    if (_ZN11CommManager12isSlotActiveEi((u32)gCommManager, gCommManager->myAid) != 0) return;
     if (Scene_InTown() == 0) {
         if (Scene_InTownUnk31() == 0) return;
     }
-    if (p->unk_01 != 0) sAntSpawnEnabled = 1;
-    if (p->unk_01 != 0 || p->unk_00 != 0) Insect_EnableTrashFlies();
-    p->unk_00 = 0;
-    p->unk_01 = 0;
+    if (p->spawnAnts != 0) sAntSpawnEnabled = 1;
+    if (p->spawnAnts != 0 || p->spawnFlies != 0) Insect_EnableTrashFlies();
+    p->spawnFlies = 0;
+    p->spawnAnts = 0;
 }
 
 extern "C" void TownJunkInsects_Refresh() {

@@ -51,8 +51,8 @@ struct Unk_ov004_0224c994_Ent {
 };
 
 struct Unk_ov004_0221a2d8_Out {
-    void *unk_00;
-    u8 unk_04;
+    void *fileName;
+    u8 msgIndex;
 };
 
 struct Unk_ov004_SceneEntry {
@@ -105,7 +105,7 @@ struct Unk_0201a794 { Unk_0201a794(); ~Unk_0201a794(); u32 pad[0x68 / 4]; };
 struct NpcSpeechState { NpcSpeechState(); ~NpcSpeechState(); u32 pad[8 / 4]; };
 struct Unk_0201a13c { Unk_0201a13c(); ~Unk_0201a13c(); u32 pad[0x7c / 4]; };
 struct Unk_020323b0 { Unk_020323b0(); ~Unk_020323b0(); u32 pad[0x30 / 4]; };
-struct Unk_02088d00 { Unk_02088d00(); ~Unk_02088d00(); u32 pad[0x44 / 4]; u8 unk_44; u8 pad_45[3]; };
+struct Unk_02088d00 { Unk_02088d00(); ~Unk_02088d00(); u32 pad[0x44 / 4]; u8 collisionEnabled; u8 pad_45[3]; };
 struct Unk_020135e4 { Unk_020135e4(); ~Unk_020135e4(); u8 pad[8]; u8 unk_08; u8 pad_09[2]; u8 unk_0b; };
 struct NpcActionCtrl { NpcActionCtrl(); ~NpcActionCtrl(); u32 pad[0xb4 / 4]; };
 struct Unk_02014254 { Unk_02014254(); ~Unk_02014254(); u32 pad[0x28 / 4]; };
@@ -474,8 +474,8 @@ void CafeVillagerTalk::attachOwner(CafeVillager *owner) {
 void CafeVillagerTalk::start(void *arg) {
     Unk_ov004_0221a2d8_Out *out = (Unk_ov004_0221a2d8_Out *)arg;
     VillagerId_makeFileName(VillagerData_getVillagerId(villager->villagerData), data_ov004_022508e0, 0x28, "ai_shop3");
-    out->unk_00 = data_ov004_022508e0;
-    out->unk_04 = Random_GlobalBelow(5);
+    out->fileName = data_ov004_022508e0;
+    out->msgIndex = Random_GlobalBelow(5);
 }
 
 void CafeVillagerTalk::onMessageEnd() {}

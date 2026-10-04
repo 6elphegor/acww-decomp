@@ -36,7 +36,7 @@ extern u16 sNewYearEveDate, sNewYearDayDate, sNewYearEveTime;
 extern u16 sHourlyBgmIds[];
 extern void *gBgHeap;
 extern void *gCurrentHeap;
-struct Unk_021e5890_T { u8 pad[0x14]; u8 unk_14; };
+struct Unk_021e5890_T { u8 pad[0x14]; u8 groundSeasonBits; };
 extern Unk_021e5890_T data_021e5890;}
 
 extern "C" {
@@ -61,10 +61,10 @@ struct Unk_02037638_S8 {
 };
 
 struct Unk_0203718c_Ent {
-    u32 unk_00, unk_04, unk_08, unk_0c, unk_10, unk_14, unk_18, unk_1c, unk_20, unk_24, unk_28, unk_2c;
+    u32 acreId, arc, mdl, bcl, bsd, jntAnm, matAnm, texSrtAnm, tex, unk_24, mgt, mgtCount;
 };
 struct Unk_0203718c_Ent2 {
-    u32 unk_00, unk_04;
+    u32 acreId, bcl;
 };
 
 class BgModelCacheObj {
@@ -74,22 +74,22 @@ public:
     BOOL setup(u32 flag);
     void clearEntries();
 
-    Unk_0203718c_Ent unk_000[31];
-    Unk_0203718c_Ent2 unk_5d0[9];
-    u8 unk_618;
+    Unk_0203718c_Ent acres[31];
+    Unk_0203718c_Ent2 bclCache[9];
+    u8 withAnims;
     u8 pad_619[3];
-    u32 unk_61c;
+    u32 heapSize;
     u32 unk_620;
     u32 unk_624;
     u32 unk_628;
     u32 unk_62c;
-    u32 unk_630;
-    u32 unk_634;
-    u32 unk_638;
-    u32 unk_63c;
-    u32 unk_640;
-    u32 unk_644;
-    u32 unk_648;
+    u32 groundTex;
+    u32 groundMatAnm;
+    u32 groundTexSrtAnm;
+    u32 riverPatAnm;
+    u32 riverPatTex;
+    u32 beBPatAnm;
+    u32 beBPatTex;
 };
 
 struct Unk_02036c60_Vec { s32 x, y, z; };
@@ -97,40 +97,40 @@ struct Unk_02036c60_Vec { s32 x, y, z; };
 struct Unk_02036c60_Ent { u8 a; u8 pad; s16 b; s16 c; };
 
 // ---- BgModelCache ----
-struct Unk_02036cec_Entry {
-    s32 unk_00;
-    void *unk_04;
-    void *unk_08;
-    void *unk_0c;
-    void *unk_10;
-    void *unk_14;
-    void *unk_18;
-    void *unk_1c;
-    void *unk_20;
+struct BgAcreModel {
+    s32 acreId;
+    void *arc;
+    void *mdl;
+    void *bcl;
+    void *bsd;
+    void *jntAnm;
+    void *matAnm;
+    void *texSrtAnm;
+    void *tex;
     u8 unk_24[4];
-    void *unk_28;
-    s32 unk_2c;
+    void *mgt;
+    s32 mgtCount;
 };
 
-struct Unk_02036cec_Small {
-    s32 unk_00;
-    void *unk_04;
+struct BgAcreBcl {
+    s32 acreId;
+    void *bcl;
 };
 
 struct BgModelCache {
-    Unk_02036cec_Entry unk_000[31];
-    Unk_02036cec_Small unk_5d0[9];
-    u8 unk_618;
+    BgAcreModel acres[31];
+    BgAcreBcl bclCache[9];
+    u8 withAnims;
     u8 pad_619[3];
-    s32 unk_61c;
+    s32 heapSize;
     u8 pad_620[0x10];
-    s32 unk_630;
-    s32 unk_634;
-    s32 unk_638;
-    s32 unk_63c;
-    s32 unk_640;
-    s32 unk_644;
-    s32 unk_648;
+    s32 groundTex;
+    s32 groundMatAnm;
+    s32 groundTexSrtAnm;
+    s32 riverPatAnm;
+    s32 riverPatTex;
+    s32 beBPatAnm;
+    s32 beBPatTex;
 
     s32 getBeBPatTex();
     s32 getBeBPatAnm();
@@ -140,7 +140,7 @@ struct BgModelCache {
     s32 getGroundMatAnm();
     s32 getGroundTex();
     BOOL reset();
-    Unk_02036cec_Entry *getAcre(s32 id);
+    BgAcreModel *getAcre(s32 id);
     void *getAcreBcl(s32 id);
     void loadGroundAnims();
     void loadGroundTexture();
@@ -158,32 +158,32 @@ BgModelCacheObj::~BgModelCacheObj() {}
 
 void BgModelCacheObj::clearEntries() {
     Unk_0203718c_Ent *p; Unk_0203718c_Ent2 *q; u32 i; u32 j;
-    p = unk_000;
+    p = acres;
     for (i = 0; i < 0x1f; p++, i++) {
-        p->unk_00 = 0xffff;
-        p->unk_04 = 0;
-        p->unk_08 = 0;
-        p->unk_0c = 0;
-        p->unk_14 = 0;
-        p->unk_18 = 0;
-        p->unk_1c = 0;
-        p->unk_10 = 0;
-        p->unk_20 = 0;
-        p->unk_28 = 0;
-        p->unk_2c = 0;
+        p->acreId = 0xffff;
+        p->arc = 0;
+        p->mdl = 0;
+        p->bcl = 0;
+        p->jntAnm = 0;
+        p->matAnm = 0;
+        p->texSrtAnm = 0;
+        p->bsd = 0;
+        p->tex = 0;
+        p->mgt = 0;
+        p->mgtCount = 0;
     }
-    q = unk_5d0;
+    q = bclCache;
     for (j = 0; j < 9; q++, j++) {
-        q->unk_00 = 0xffff;
-        q->unk_04 = 0;
+        q->acreId = 0xffff;
+        q->bcl = 0;
     }
-    unk_630 = 0;
-    unk_634 = 0;
-    unk_638 = 0;
-    unk_63c = 0;
-    unk_640 = 0;
-    unk_618 = 0;
-    unk_61c = 0;
+    groundTex = 0;
+    groundMatAnm = 0;
+    groundTexSrtAnm = 0;
+    riverPatAnm = 0;
+    riverPatTex = 0;
+    withAnims = 0;
+    heapSize = 0;
     unk_620 = 0;
     unk_624 = 0;
     unk_628 = 0;
@@ -196,7 +196,7 @@ BOOL BgModelCacheObj::setup(u32 flag) {
         _ZN7TownMap18updateGroundSeasonEv(gSaveTownMap);
     }
     clearEntries();
-    unk_618 = flag;
+    withAnims = flag;
     t = Scene_GetCurrent();
     u32 v;
     if ((u32)t < 0x33) {
@@ -204,8 +204,8 @@ BOOL BgModelCacheObj::setup(u32 flag) {
     } else {
         v = 0xac;
     }
-    unk_61c = (u8)v << 10;
-    BgHeap_Create(unk_61c, 0);
+    heapSize = (u8)v << 10;
+    BgHeap_Create(heapSize, 0);
     if (flag != 0 || t == 0xb || t == 0x2f || (u8)(t + 0xf4) <= 2) {
         ((BgModelCache *)this)->loadGroundTexture();
     }
@@ -226,12 +226,12 @@ void BgModelCache::loadGroundTexture()
     s32 a = BgModel_GetGrassType(this);
     s32 b = BgModel_GetGrassType(this);
     void *p;
-    func_020639e8(buf, "/bg/ct%d/grd_set%d%c.nsbtx", a, b, ((u32)(data_021e5890.unk_14 << 24) >> 26) + 0x61);
+    func_020639e8(buf, "/bg/ct%d/grd_set%d%c.nsbtx", a, b, ((u32)(data_021e5890.groundSeasonBits << 24) >> 26) + 0x61);
     p = File_LoadAlloc(buf, gCurrentHeap, -4, 0);
-    s32 *q = &unk_630;
+    s32 *q = &groundTex;
     *q = (s32)NNS_G3dGetTex(p);
     Gfx3d_LoadTexAndPltt((void *)*q, 0);
-    unk_630 = (s32)Gfx3d_CopyTex((void *)unk_630, gBgHeap);
+    groundTex = (s32)Gfx3d_CopyTex((void *)groundTex, gBgHeap);
     if (p) {
         Mem_Free(p);
     }
@@ -242,12 +242,12 @@ void BgModelCache::loadGroundAnims()
     u8 file[0x68];
     void *p = BgModel_LoadFile((void *)"/bg/grd_anm.arc", 0);
     if (func_02101340(file, "BG", p)) {
-        unk_634 = (s32)func_02106634(func_02106618(func_021012bc("BG:a/grd_set.nsbma")), 0);
-        unk_638 = (s32)func_02106670(func_02106654(func_021012bc("BG:a/grd_set.nsbta")), 0);
-        unk_63c = (s32)func_021066ac(func_02106690(func_021012bc("BG:a/riv.nsbtp")), 0);
-        unk_640 = (s32)NNS_G3dGetTex(func_021012bc("BG:a/riv_itp.nsbtx"));
-        unk_644 = (s32)func_021066ac(func_02106690(func_021012bc("BG:a/beB.nsbtp")), 0);
-        unk_648 = (s32)NNS_G3dGetTex(func_021012bc("BG:a/beB_itp.nsbtx"));
+        groundMatAnm = (s32)func_02106634(func_02106618(func_021012bc("BG:a/grd_set.nsbma")), 0);
+        groundTexSrtAnm = (s32)func_02106670(func_02106654(func_021012bc("BG:a/grd_set.nsbta")), 0);
+        riverPatAnm = (s32)func_021066ac(func_02106690(func_021012bc("BG:a/riv.nsbtp")), 0);
+        riverPatTex = (s32)NNS_G3dGetTex(func_021012bc("BG:a/riv_itp.nsbtx"));
+        beBPatAnm = (s32)func_021066ac(func_02106690(func_021012bc("BG:a/beB.nsbtp")), 0);
+        beBPatTex = (s32)NNS_G3dGetTex(func_021012bc("BG:a/beB_itp.nsbtx"));
         func_02101310(file);
     }
 }
@@ -276,66 +276,66 @@ void *BgModelCache::getAcreBcl(s32 id)
 {
     u32 i, j;
     void *r = 0;
-    Unk_02036cec_Entry *e = unk_000;
-    Unk_02036cec_Small *s;
+    BgAcreModel *e = acres;
+    BgAcreBcl *s;
     for (i = 0; i < 0x1f; e++, i++) {
-        if (e->unk_00 == id) {
-            r = e->unk_0c;
+        if (e->acreId == id) {
+            r = e->bcl;
             break;
         }
     }
-    s = unk_5d0;
+    s = bclCache;
     for (j = 0; j < 9; s++, j++) {
-        if (s->unk_04 == 0) {
+        if (s->bcl == 0) {
             if (r) {
-                s->unk_00 = id;
-                s->unk_04 = r;
+                s->acreId = id;
+                s->bcl = r;
             } else {
-                s->unk_04 = BgModel_LoadBcl(id, gBgHeap);
-                s->unk_00 = id;
+                s->bcl = BgModel_LoadBcl(id, gBgHeap);
+                s->acreId = id;
             }
-            return s->unk_04;
+            return s->bcl;
         }
-        if (s->unk_00 == id) {
-            return s->unk_04;
+        if (s->acreId == id) {
+            return s->bcl;
         }
     }
     return 0;
 }
 
-Unk_02036cec_Entry *BgModelCache::getAcre(s32 id)
+BgAcreModel *BgModelCache::getAcre(s32 id)
 {
     void *heap = gBgHeap;
-    Unk_02036cec_Entry *e = unk_000;
+    BgAcreModel *e = acres;
     struct { s32 tmp; u8 buf[0x20]; u8 file[0x68]; } l;
     u32 i;
     for (i = 0; i < 0x1f; e++, i++) {
-        if (e->unk_04 == 0) {
+        if (e->arc == 0) {
             s32 hi = id >> 4;
             void *p;
             func_020639e8(l.buf, "/bg/a%d/%04x.arc", hi, id);
-            e->unk_04 = BgModel_LoadFile(l.buf, e->unk_24);
-            if (func_02101340(l.file, "BG", e->unk_04)) {
+            e->arc = BgModel_LoadFile(l.buf, e->unk_24);
+            if (func_02101340(l.file, "BG", e->arc)) {
                 u8 *q = (u8 *)NNS_G3dGetMdlSet(func_021012bc("BG:a/bmd/bmd0"));
-                e->unk_08 = q + *(s32 *)(q + *(u16 *)(q + 0xe) + 0xc);
-                e->unk_0c = func_021012bc("BG:a/bcl/bcl0");
-                e->unk_10 = func_021012bc("BG:a/bsd/bsd0");
+                e->mdl = q + *(s32 *)(q + *(u16 *)(q + 0xe) + 0xc);
+                e->bcl = func_021012bc("BG:a/bcl/bcl0");
+                e->bsd = func_021012bc("BG:a/bsd/bsd0");
                 p = func_021012bc("BG:a/bca/bca0");
                 if (p) {
-                    e->unk_14 = func_021065f8(func_021065dc(p), 0);
+                    e->jntAnm = func_021065f8(func_021065dc(p), 0);
                 }
                 p = func_021012bc("BG:a/bma/bma0");
                 if (p) {
-                    e->unk_18 = func_02106634(func_02106618(p), 0);
+                    e->matAnm = func_02106634(func_02106618(p), 0);
                 }
                 p = func_021012bc("BG:a/bta/bta0");
                 if (p) {
-                    e->unk_1c = func_02106670(func_02106654(p), 0);
+                    e->texSrtAnm = func_02106670(func_02106654(p), 0);
                 }
                 p = func_021012bc("BG:a/mgt/mgt0");
                 if (p) {
-                    e->unk_28 = (u8 *)p + 2;
-                    e->unk_2c = *(s16 *)p;
+                    e->mgt = (u8 *)p + 2;
+                    e->mgtCount = *(s16 *)p;
                 }
                 func_02101310(l.file);
             }
@@ -345,16 +345,16 @@ Unk_02036cec_Entry *BgModelCache::getAcre(s32 id)
                 if (p) {
                     l.tmp = (s32)NNS_G3dGetTex(p);
                     Gfx3d_LoadTexAndPltt((void *)l.tmp, 0);
-                    e->unk_20 = Gfx3d_CopyTex((void *)l.tmp, heap);
+                    e->tex = Gfx3d_CopyTex((void *)l.tmp, heap);
                     if (p) {
                         Mem_Free(p);
                     }
                 }
             }
-            e->unk_00 = id;
+            e->acreId = id;
             return e;
         }
-        if (e->unk_00 == id) {
+        if (e->acreId == id) {
             return e;
         }
     }
@@ -363,47 +363,47 @@ Unk_02036cec_Entry *BgModelCache::getAcre(s32 id)
 
 BOOL BgModelCache::reset()
 {
-    Unk_02036cec_Entry *e = unk_000;
-    Unk_02036cec_Small *s;
+    BgAcreModel *e = acres;
+    BgAcreBcl *s;
     u32 i, j;
     for (i = 0; i < 0x1f; e++, i++) {
-        e->unk_00 = 0xffff;
-        e->unk_04 = 0;
-        e->unk_08 = 0;
-        e->unk_0c = 0;
-        e->unk_14 = 0;
-        e->unk_18 = 0;
-        e->unk_1c = 0;
-        e->unk_10 = 0;
-        e->unk_28 = 0;
-        e->unk_2c = 0;
-        e->unk_20 = 0;
+        e->acreId = 0xffff;
+        e->arc = 0;
+        e->mdl = 0;
+        e->bcl = 0;
+        e->jntAnm = 0;
+        e->matAnm = 0;
+        e->texSrtAnm = 0;
+        e->bsd = 0;
+        e->mgt = 0;
+        e->mgtCount = 0;
+        e->tex = 0;
     }
-    s = unk_5d0;
+    s = bclCache;
     for (j = 0; j < 9; s++, j++) {
-        s->unk_00 = 0xffff;
-        s->unk_04 = 0;
+        s->acreId = 0xffff;
+        s->bcl = 0;
     }
-    unk_630 = 0;
-    unk_618 = 0;
-    unk_61c = 0;
+    groundTex = 0;
+    withAnims = 0;
+    heapSize = 0;
     BgHeap_Destroy();
     return TRUE;
 }
 
-s32 BgModelCache::getGroundTex() { return unk_630; }
+s32 BgModelCache::getGroundTex() { return groundTex; }
 
-s32 BgModelCache::getGroundMatAnm() { return unk_634; }
+s32 BgModelCache::getGroundMatAnm() { return groundMatAnm; }
 
-s32 BgModelCache::getGroundTexSrtAnm() { return unk_638; }
+s32 BgModelCache::getGroundTexSrtAnm() { return groundTexSrtAnm; }
 
-s32 BgModelCache::getRiverPatAnm() { return unk_63c; }
+s32 BgModelCache::getRiverPatAnm() { return riverPatAnm; }
 
-s32 BgModelCache::getRiverPatTex() { return unk_640; }
+s32 BgModelCache::getRiverPatTex() { return riverPatTex; }
 
-s32 BgModelCache::getBeBPatAnm() { return unk_644; }
+s32 BgModelCache::getBeBPatAnm() { return beBPatAnm; }
 
-s32 BgModelCache::getBeBPatTex() { return unk_648; }
+s32 BgModelCache::getBeBPatTex() { return beBPatTex; }
 
 extern "C" s32 BgMgt_GetCount(s16 *p)
 {

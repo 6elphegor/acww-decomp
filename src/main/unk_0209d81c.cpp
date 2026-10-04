@@ -88,7 +88,7 @@ struct Unk_0209da44_E98c { u8 b[0x98c]; };
 struct Unk_0209da44_Eb4 { u8 b[0xb4]; };
 
 struct SaveData {
-    u8 unk_00;
+    u8 marker;
     u8 unk_01;
     u8 f_2[10];
     u8 f_c[0x8a30];

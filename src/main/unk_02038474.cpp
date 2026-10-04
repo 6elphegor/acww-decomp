@@ -90,8 +90,8 @@ public:
 };
 
 struct CommManager {
-    /* 0x00 */ u8 unk_00[0x64];
-    /* 0x64 */ s32 unk_64;
+    /* 0x00 */ u8 slotActive[0x64];
+    /* 0x64 */ s32 myAid;
 };
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -785,7 +785,7 @@ void ChatBalloonList::post(s32 idx, StrBuf *a, MsgString *b) {
 }
 
 s32 ChatBalloonList::toLocalIndex(s32 idx) {
-    return (idx - gCommManager->unk_64 + 4) % 4;
+    return (idx - gCommManager->myAid + 4) % 4;
 }
 
 s32 ChatBalloonList::getColorIndex(s32 idx) {
@@ -1011,7 +1011,7 @@ extern "C" void ChatBalloon_SendSyncVar(s32 i, ChatBalloon *x) {
 
 extern "C" void ChatBalloon_ReceiveRemote() {
     CommManager *g = gCommManager;
-    s32 n = g->unk_64;
+    s32 n = g->myAid;
     s32 i;
     if (_ZN11CommManager8isOnlineEv(g)) {
         for (i = 0; i < 4; i++) {
@@ -1063,7 +1063,7 @@ extern "C" void ChatQuickMsg_PostWantToSave() {
         _ZN8PlayerId13getNameStringEP9MsgString(_ZN10PlayerData11getPlayerIdEv(p), &t);
         code = 0xef;
         String_Load2d(&buf, &code, 0);
-        ChatBalloon_Post(gCommManager->unk_64, (StrBuf *)&t, &buf);
+        ChatBalloon_Post(gCommManager->myAid, (StrBuf *)&t, &buf);
         Snd_PlaySe(0x32);
         sChatQuickMsgCooldown = 0x1e;
     }
@@ -1149,7 +1149,7 @@ extern "C" void ChatQuickMsg_CheckButtons(void *self) {
             code = 0xf4;
         } else {
             code = 0xef;
-            if (g->unk_64) {
+            if (g->myAid) {
                 skip = TRUE;
             }
         }
@@ -1158,7 +1158,7 @@ extern "C" void ChatQuickMsg_CheckButtons(void *self) {
             String_Load2d(&buf, &ch, 0);
             MsgString9B t;
             _ZN8PlayerId13getNameStringEP9MsgString(_ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent()), &t);
-            ChatBalloon_Post(g->unk_64, (StrBuf *)&t, &buf);
+            ChatBalloon_Post(g->myAid, (StrBuf *)&t, &buf);
             Snd_PlaySe(0x32);
             sChatQuickMsgCooldown = 0x1e;
         }

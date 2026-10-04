@@ -42,9 +42,9 @@ public:
 };
 
 struct Unk_02002f14_Node {
-    void *unk_00;
-    void *unk_04;
-    void *unk_08;
+    void *prev;
+    void *next;
+    void *owner;
 };
 
 class Actor : public GameProc {
@@ -232,9 +232,9 @@ public:
     BOOL releaseCollision();
     void initCollision();
 
-    /* 0x130 */ s32 unk_130;
-    /* 0x134 */ u8 unk_134[0x9c]; // BoxCollider (ctor C1 / dtor D2 called by hand, as the original does)
-    /* 0x1d0 */ TouchPickBox unk_1d0; // (ctor C2 / dtor D2 called by hand)
+    /* 0x130 */ s32 talkAct;
+    /* 0x134 */ u8 collider[0x9c]; // BoxCollider (ctor C1 / dtor D2 called by hand, as the original does)
+    /* 0x1d0 */ TouchPickBox touchBox; // (ctor C2 / dtor D2 called by hand)
 };
 
 typedef void (Atm::*Unk_02204a88_Fn)();
@@ -265,14 +265,14 @@ struct Unk_ov004_Scene_Entry {
 };
 
 Atm::Atm() {
-    _ZN11BoxColliderC1Ev(unk_134);
-    _ZN12TouchPickBoxC2Ev(&unk_1d0);
+    _ZN11BoxColliderC1Ev(collider);
+    _ZN12TouchPickBoxC2Ev(&touchBox);
     sAtmInstance = 0;
 }
 
 Atm::~Atm() {
-    _ZN12TouchPickBoxD2Ev(&unk_1d0);
-    _ZN11BoxColliderD2Ev(unk_134);
+    _ZN12TouchPickBoxD2Ev(&touchBox);
+    _ZN11BoxColliderD2Ev(collider);
 }
 
 BOOL Atm::vfunc_00() {
@@ -285,7 +285,7 @@ BOOL Atm::vfunc_00() {
 
 BOOL Atm::onExecute() {
     execTalkAct();
-    Scene_GetTouchPicker()->pushBox(&unk_1d0);
+    Scene_GetTouchPicker()->pushBox(&touchBox);
     return TRUE;
 }
 
@@ -299,12 +299,12 @@ BOOL Atm::vfunc_0c() {
 }
 
 void Atm::initCollision() {
-    BoxCollider_Register(unk_134, 0x2000, 0x2000, 0x2000, position, 0, 0);
-    Scene_GetTouchPicker()->addBox(&unk_1d0, (Vec3 *)position, 0x2000, 0x2000, 0x2000, 0, 0xb, 0xff);
+    BoxCollider_Register(collider, 0x2000, 0x2000, 0x2000, position, 0, 0);
+    Scene_GetTouchPicker()->addBox(&touchBox, (Vec3 *)position, 0x2000, 0x2000, 0x2000, 0, 0xb, 0xff);
 }
 
 BOOL Atm::releaseCollision() {
-    return BoxCollider_Unregister(unk_134);
+    return BoxCollider_Unregister(collider);
 }
 
 void Atm::setPointTexts() {
@@ -372,7 +372,7 @@ BOOL Atm::setTalkAct(s32 m) {
     static Unk_02204b04_Fn tbl[3] = { (Unk_02204b04_Fn)&Atm::enterTalkAct00, (Unk_02204b04_Fn)&Atm::enterTalkAct01, (Unk_02204b04_Fn)&Atm::enterTalkAct02 };
     if (m < 3) {
         if ((this->*tbl[m])()) {
-            unk_130 = m;
+            talkAct = m;
             return TRUE;
         }
     }
@@ -381,8 +381,8 @@ BOOL Atm::setTalkAct(s32 m) {
 
 void Atm::execTalkAct() {
     static Unk_02204a88_Fn tbl[3] = { &Atm::execTalkAct00, &Atm::execTalkAct01, &Atm::execTalkAct02 };
-    if (unk_130 < 3) {
-        (this->*tbl[unk_130])();
+    if (talkAct < 3) {
+        (this->*tbl[talkAct])();
     }
 }
 

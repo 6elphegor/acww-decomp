@@ -89,9 +89,9 @@ struct Unk_0203a9b8_Sub {
 };
 
 struct Unk_021c47c4 {
-    u32 unk_00;
-    u32 *unk_04;
-    u32 *unk_08;
+    u32 blocks;
+    u32 *width;
+    u32 *height;
 };
 
 struct Unk_0203a9b8_Rgba {
@@ -837,8 +837,8 @@ void Unk_020d93b8::calcRoomBounds()
     } else {
         Unk_021c47c4 *g = gSceneBlockMap;
         u32 arg;
-        if (g->unk_04 > (u32 *)0 && g->unk_08 > (u32 *)0 && g->unk_00 != 0) {
-            arg = g->unk_00;
+        if (g->width > (u32 *)0 && g->height > (u32 *)0 && g->blocks != 0) {
+            arg = g->blocks;
         } else {
             arg = 0;
         }

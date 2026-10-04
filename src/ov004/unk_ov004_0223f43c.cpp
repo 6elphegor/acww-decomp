@@ -77,11 +77,11 @@ struct Unk_021c3070 {
 };
 
 struct Unk_ov004_0223fe00_Sub {
-    s16 unk_00;
+    s16 yaw;
     u8 pad_02[0x12];
-    s32 unk_14;
-    s32 unk_18;
-    s32 unk_1c;
+    s32 focus;
+    s32 focusY;
+    s32 focusZ;
 };
 
 extern "C" {
@@ -192,9 +192,9 @@ void Camera_UpdateRoomFocus(Unk_021c3070 *self, Unk_ov004_0223fe00_Sub *a) {
         d.y = self->focusPointA.y;
         d.z = self->focusPointA.z;
     }
-    sp4 = Unk_0203b350_getRoomEdgeSide(self, &a->unk_14);
+    sp4 = Unk_0203b350_getRoomEdgeSide(self, &a->focus);
     sp8 = 0;
-    ang = Math_AngleXZ(&a->unk_14, &d);
+    ang = Math_AngleXZ(&a->focus, &d);
     s32 av = ang < 0 ? (s16)-ang : ang;
     t = 0x2000 - av;
     if (t < 0) t = 0;
@@ -218,12 +218,12 @@ void Camera_UpdateRoomFocus(Unk_021c3070 *self, Unk_ov004_0223fe00_Sub *a) {
         u32 m = self->roomFocusSide;
         if (m == 1) lim = (s16)-lim;
         if (m != 0) {
-            a->unk_00 = func_01ffcb0c(lim, inv);
-            sp8 = func_01ffcb0c(dy, data_02135f44[((u16)a->unk_00 >> 4) * 2]);
+            a->yaw = func_01ffcb0c(lim, inv);
+            sp8 = func_01ffcb0c(dy, data_02135f44[((u16)a->yaw >> 4) * 2]);
         }
     }
-    a->unk_1c += dy;
-    a->unk_14 += sp8;
+    a->focusZ += dy;
+    a->focus += sp8;
 }
 
 BOOL Camera_InitMode10(Unk_021c3070 *self) {

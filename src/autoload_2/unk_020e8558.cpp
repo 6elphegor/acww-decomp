@@ -74,11 +74,11 @@ public:
     void *adjust();
     u32 setFlags(u32 flags);
 
-    /* 0x04 */ u32 unk_04;
-    /* 0x08 */ u32 unk_08;
-    /* 0x0c */ Heap *unk_0c; // parent heap
-    /* 0x10 */ u32 unk_10; // flags: 0x400 call alloc hook, 0x800 call free hook, 0x2000 allow outside system mode, 0x4000 stop when out of memory
-    /* 0x14 */ void *unk_14; // NNS_Fnd heap handle
+    /* 0x04 */ u32 regionStart;
+    /* 0x08 */ u32 regionSize;
+    /* 0x0c */ Heap *parentHeap; // parent heap
+    /* 0x10 */ u32 heapFlags; // flags: 0x400 call alloc hook, 0x800 call free hook, 0x2000 allow outside system mode, 0x4000 stop when out of memory
+    /* 0x14 */ void *heapHandle; // NNS_Fnd heap handle
 };
 
 // frame heap (vtable 0x0213afa8), 0x18 bytes
@@ -237,22 +237,22 @@ extern "C" void Heap_InitSystem(void) {
 }
 
 Heap::Heap(u32 a, u32 b, Heap *parent) {
-    unk_04 = a;
-    unk_08 = b;
-    unk_0c = parent;
-    unk_10 = 0;
-    unk_10 = 0x4000;
+    regionStart = a;
+    regionSize = b;
+    parentHeap = parent;
+    heapFlags = 0;
+    heapFlags = 0x4000;
 }
 
 ExpHeap::ExpHeap(void *block, u32 size, Heap *parent, void *handle)
     : Heap((u32)block, size, parent) {
-    unk_14 = handle;
+    heapHandle = handle;
     OS_InitMutex(&mutex);
 }
 
 FrameHeap::FrameHeap(void *block, u32 size, Heap *parent, void *handle)
     : Heap((u32)block, size, parent) {
-    unk_14 = handle;
+    heapHandle = handle;
 }
 
 Heap::~Heap() {
@@ -334,7 +334,7 @@ extern "C" FrameHeap *FrameHeap_Create(u32 size, Heap *parent) {
 }
 
 void Heap::lock() {
-    if (OS_GetProcMode() != 31 && (unk_10 & 0x2000) == 0) Fatal_Trap();
+    if (OS_GetProcMode() != 31 && (heapFlags & 0x2000) == 0) Fatal_Trap();
     doLock();
 }
 
@@ -368,10 +368,10 @@ void Heap::destroy() {
     Heap *parent;
     lock();
     doDestroy();
-    unk_04 = 0;
-    unk_08 = 0;
+    regionStart = 0;
+    regionSize = 0;
     unlock();
-    parent = unk_0c;
+    parent = parentHeap;
     this->~Heap();
     if (parent != NULL) parent->free(this);
 }
@@ -381,13 +381,13 @@ void Heap::destroy2() {
 }
 
 void ExpHeap::doDestroy() {
-    NNS_FndDestroyExpHeap(unk_14);
-    unk_14 = NULL;
+    NNS_FndDestroyExpHeap(heapHandle);
+    heapHandle = NULL;
 }
 
 void FrameHeap::doDestroy() {
-    NNS_FndDestroyFrmHeap(unk_14);
-    unk_14 = NULL;
+    NNS_FndDestroyFrmHeap(heapHandle);
+    heapHandle = NULL;
 }
 
 void *Heap::alloc(u32 size, s32 align) {
@@ -395,18 +395,18 @@ void *Heap::alloc(u32 size, s32 align) {
     lock();
     if (size == 0xffffffff) size = maxAlloc(align);
     p = doAlloc(size, align);
-    if (sHeapAllocHook != NULL && (unk_10 & 0x400)) sHeapAllocHook(this, p, size, align);
-    if (p == NULL && (unk_10 & 0x4000)) Fatal_Trap();
+    if (sHeapAllocHook != NULL && (heapFlags & 0x400)) sHeapAllocHook(this, p, size, align);
+    if (p == NULL && (heapFlags & 0x4000)) Fatal_Trap();
     unlock();
     return p;
 }
 
 void *ExpHeap::doAlloc(u32 size, s32 align) {
-    return NNS_FndAllocFromExpHeapEx(unk_14, size, align);
+    return NNS_FndAllocFromExpHeapEx(heapHandle, size, align);
 }
 
 void *FrameHeap::doAlloc(u32 size, s32 align) {
-    return NNS_FndAllocFromFrmHeapEx(unk_14, size, align);
+    return NNS_FndAllocFromFrmHeapEx(heapHandle, size, align);
 }
 
 BOOL ExpHeap::vfunc_24() {
@@ -438,11 +438,11 @@ u32 Heap::getFreeSize() {
 }
 
 u32 ExpHeap::doGetFreeSize() {
-    return func_02100618(unk_14, 4);
+    return func_02100618(heapHandle, 4);
 }
 
 u32 FrameHeap::doGetFreeSize() {
-    return NNS_FndGetAllocatableSizeForFrmHeapEx(unk_14, 4);
+    return NNS_FndGetAllocatableSizeForFrmHeapEx(heapHandle, 4);
 }
 
 u32 Heap::getMaxFreeBlockSize() {
@@ -454,11 +454,11 @@ u32 Heap::getMaxFreeBlockSize() {
 }
 
 u32 ExpHeap::doGetMaxFreeBlockSize() {
-    return func_02100618(unk_14, 4);
+    return func_02100618(heapHandle, 4);
 }
 
 u32 FrameHeap::doGetMaxFreeBlockSize() {
-    return NNS_FndGetAllocatableSizeForFrmHeapEx(unk_14, 4);
+    return NNS_FndGetAllocatableSizeForFrmHeapEx(heapHandle, 4);
 }
 
 u32 Heap::maxAlloc(s32 align) {
@@ -470,19 +470,19 @@ u32 Heap::maxAlloc(s32 align) {
 }
 
 u32 ExpHeap::vfunc_3c(s32 align) {
-    return func_02100618(unk_14, align);
+    return func_02100618(heapHandle, align);
 }
 
 u32 FrameHeap::vfunc_3c(s32 align) {
-    return NNS_FndGetAllocatableSizeForFrmHeapEx(unk_14, align);
+    return NNS_FndGetAllocatableSizeForFrmHeapEx(heapHandle, align);
 }
 
 u32 ExpHeap::getTotalFreeSize() {
-    return NNS_FndGetTotalFreeSizeForExpHeap(unk_14);
+    return NNS_FndGetTotalFreeSizeForExpHeap(heapHandle);
 }
 
 u32 FrameHeap::getTotalFreeSize() {
-    return NNS_FndGetAllocatableSizeForFrmHeapEx(unk_14, 4);
+    return NNS_FndGetAllocatableSizeForFrmHeapEx(heapHandle, 4);
 }
 
 s32 Heap::resize(void *p, u32 size) {
@@ -494,24 +494,24 @@ s32 Heap::resize(void *p, u32 size) {
 }
 
 s32 ExpHeap::doResize(void *p, u32 size) {
-    return NNS_FndResizeForMBlockExpHeap(unk_14, p, size);
+    return NNS_FndResizeForMBlockExpHeap(heapHandle, p, size);
 }
 
 s32 FrameHeap::doResize(void *p, u32 size) {
-    return (s32)func_02100e7c(unk_14);
+    return (s32)func_02100e7c(heapHandle);
 }
 
 void Heap::free(void *p) {
     if (p == NULL) return;
     lock();
-    if (sHeapFreeHook != NULL && (unk_10 & 0x800)) sHeapFreeHook(this, p);
+    if (sHeapFreeHook != NULL && (heapFlags & 0x800)) sHeapFreeHook(this, p);
     doFree(p);
     unlock();
 }
 
 void ExpHeap::doFree(void *p) {
     if (p == NULL) return;
-    NNS_FndFreeToExpHeap(unk_14, p);
+    NNS_FndFreeToExpHeap(heapHandle, p);
 }
 
 void FrameHeap::doFree(void *p) {
@@ -521,7 +521,7 @@ void FrameHeap::doFree(void *p) {
 
 void Heap::freeAll() {
     lock();
-    if (sHeapFreeHook != NULL && (unk_10 & 0x800)) sHeapFreeHook(this, NULL);
+    if (sHeapFreeHook != NULL && (heapFlags & 0x800)) sHeapFreeHook(this, NULL);
     doFreeAll();
     unlock();
 }
@@ -531,11 +531,11 @@ extern "C" void ExpHeap_FreeBlockVisitor(void *block, void *heap, u32 param) {
 }
 
 void ExpHeap::doFreeAll() {
-    func_021005ac(unk_14, ExpHeap_FreeBlockVisitor, 0);
+    func_021005ac(heapHandle, ExpHeap_FreeBlockVisitor, 0);
 }
 
 void FrameHeap::doFreeAll() {
-    NNS_FndFreeToFrmHeap(unk_14, 3);
+    NNS_FndFreeToFrmHeap(heapHandle, 3);
 }
 
 u32 ExpHeap::vfunc_30(void *p) {
@@ -547,7 +547,7 @@ u32 FrameHeap::vfunc_30(void *p) {
 }
 
 void *ExpHeap::changeGroupId() {
-    return (void *)func_02100608(unk_14);
+    return (void *)func_02100608(heapHandle);
 }
 
 void *FrameHeap::changeGroupId() {
@@ -555,7 +555,7 @@ void *FrameHeap::changeGroupId() {
 }
 
 void *ExpHeap::getGroupId() {
-    return (void *)func_02100600(unk_14);
+    return (void *)func_02100600(heapHandle);
 }
 
 void *FrameHeap::getGroupId() {
@@ -566,7 +566,7 @@ void *Heap::adjust() {
     void *r;
     lock();
     r = doAdjust();
-    if (r == NULL && (unk_10 & 0x4000)) Fatal_Trap();
+    if (r == NULL && (heapFlags & 0x4000)) Fatal_Trap();
     unlock();
     return r;
 }
@@ -576,19 +576,19 @@ void *ExpHeap::doAdjust() {
 }
 
 void *FrameHeap::doAdjust() {
-    void *state = func_02100f20(unk_14);
+    void *state = func_02100f20(heapHandle);
     void *p;
     if (state == NULL) return NULL;
     p = (u8 *)state + 0x18;
-    if (unk_0c->resize(this, (u32)p) < 0) return NULL;
-    unk_08 = (u32)state;
+    if (parentHeap->resize(this, (u32)p) < 0) return NULL;
+    regionSize = (u32)state;
     return p;
 }
 
 u32 Heap::setFlags(u32 flags) {
     u32 irq = OS_DisableInterrupts();
-    u32 old = unk_10;
-    if (!(flags & 0x8000)) unk_10 = flags;
+    u32 old = heapFlags;
+    if (!(flags & 0x8000)) heapFlags = flags;
     OS_RestoreInterrupts(irq);
     return old;
 }

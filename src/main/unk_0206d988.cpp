@@ -34,8 +34,8 @@ public:
 class MelodyPlayer {
 public:
     ~MelodyPlayer();
-    MelodyTrack unk_00;
-    MelodyTrack unk_14;
+    MelodyTrack trackA;
+    MelodyTrack trackB;
     u8 pad_28[0x18];
 };
 

@@ -242,19 +242,19 @@ struct ModelAnim {
 // Other actor with a u8 at +0x2d4 (element of the Y child list)
 struct Unk_ov003_02215748_Ent {
     u8 pad_00[0x2d4];
-    u8 unk_2d4;
+    u8 isCounting;
 };
 
 
 
 struct Unk_ov003_022150f0_Obj {
     u8 pad_00[0x2b0];
-    u8 unk_2b0;
-    u8 unk_2b1;
-    u8 unk_2b2;
+    u8 digitIndex;
+    u8 digit;
+    u8 prevDigit;
     u8 pad_2b3[0x2d4 - 0x2b3];
-    u8 unk_2d4;
-    u8 unk_2d5;
+    u8 isCounting;
+    u8 skipSe;
 };
 struct Unk_ov003_02214890_Buf {s32 w0,w1;};
 extern "C" s32 Scene_GetCurrent();
@@ -309,13 +309,13 @@ public:
     static void *operator new(unsigned long size);
     static void operator delete(void *p);
 
-    /* 0x2b0 */ u8 unk_2b0;
-    /* 0x2b1 */ u8 unk_2b1;
-    /* 0x2b2 */ u8 unk_2b2;
+    /* 0x2b0 */ u8 digitIndex;
+    /* 0x2b1 */ u8 digit;
+    /* 0x2b2 */ u8 prevDigit;
     /* 0x2b3 */ u8 pad_2b3;
-    /* 0x2b4 */ ModelAnim unk_2b4;
-    /* 0x2d4 */ u8 unk_2d4;
-    /* 0x2d5 */ u8 unk_2d5;
+    /* 0x2b4 */ ModelAnim matAnim;
+    /* 0x2d4 */ u8 isCounting;
+    /* 0x2d5 */ u8 skipSe;
     /* 0x2d6 */ u8 pad_2d6[2];
 };
 
@@ -343,11 +343,11 @@ public:
     void execCountdown();
     BOOL enterCountdown();
 
-    /* 0x2b0 */ ModelAnim unk_2b0;
-    /* 0x2d0 */ s8 unk_2d0;
-    /* 0x2d1 */ u8 unk_2d1;
+    /* 0x2b0 */ ModelAnim matAnim;
+    /* 0x2d0 */ s8 alphaMatIdx;
+    /* 0x2d1 */ u8 matAlpha;
     /* 0x2d2 */ u8 pad_2d2[2];
-    /* 0x2d4 */ Unk_ov003_02215748_Ent *unk_2d4[6];
+    /* 0x2d4 */ Unk_ov003_02215748_Ent *digits[6];
 };
 
 // ---------------------------------------------------------------- Z
@@ -356,30 +356,30 @@ public:
     virtual void vfunc_78();
     virtual BOOL vfunc_8c();
 
-    /* 0x2b0 */ u8 unk_2b0;
+    /* 0x2b0 */ u8 createHour;
 };
 
 struct Unk_ov003_02215a04_Ctx {
-    u8 unk_00[2];
+    u8 cmd[2];
     u8 pad_02[2];
 };
 struct Unk_ov003_02215a04_Sub {
     u8 pad_00[0x2c];
-    u32 unk_2c;
+    u32 ptrUser;
 };
 struct Unk_ov003_022159c8_Word {
     u8 pad_00[0xc];
-    u32 unk_0c;
+    u32 prmPolygonAttr;
 };
 struct Unk_ov003_02215a04_Obj {
-    Unk_ov003_02215a04_Ctx *unk_00;
-    Unk_ov003_02215a04_Sub *unk_04;
+    Unk_ov003_02215a04_Ctx *c;
+    Unk_ov003_02215a04_Sub *pRenderObj;
     u8 pad_08[0x14];
-    void (*unk_1c)(void *);
+    void (*cbVecFuncMat)(void *);
     u8 pad_20[0x90 - 0x20];
-    u8 unk_90;
+    u8 cbVecTimingMat;
     u8 pad_91[0xb0 - 0x91];
-    Unk_ov003_022159c8_Word *unk_b0;
+    Unk_ov003_022159c8_Word *pMatAnmResult;
 };
 
 // ---------------------------------------------------------------- free functions
@@ -390,45 +390,45 @@ void CountdownSign_SetMaterialAlpha(CountdownSign *self, s32 a, Unk_ov003_02215a
 
 
 BOOL CountdownDigit::vfunc_70() {
-    unk_2b0 = sCountdownSpawnIndex;
-    unk_2b1 = 0;
-    setCharId(unk_2b0);
-    if (_ZN9ModelAnim11allocMatAnmEjPv(&unk_2b4, modelRes, gFieldStructureHeap)) {
+    digitIndex = sCountdownSpawnIndex;
+    digit = 0;
+    setCharId(digitIndex);
+    if (_ZN9ModelAnim11allocMatAnmEjPv(&matAnim, modelRes, gFieldStructureHeap)) {
         s32 r1 = getBtaAnim(0);
-        _ZN9ModelAnim4initEiiit(&unk_2b4, r1, 1, 0x1000, 0);
-        _ZN9ModelAnim14addToRenderObjEj(&unk_2b4, _ZN5Model12getRenderObjEv(unk_138));
+        _ZN9ModelAnim4initEiiit(&matAnim, r1, 1, 0x1000, 0);
+        _ZN9ModelAnim14addToRenderObjEj(&matAnim, _ZN5Model12getRenderObjEv(unk_138));
     }
-    unk_2d4 = 1;
-    unk_2b2 = 0xff;
+    isCounting = 1;
+    prevDigit = 0xff;
     u32 tm[2];
     tm[0] = 0;
     tm[1] = 0;
     Clock_GetDateTime(tm);
     if (((u8 *)tm)[4] != 1) {
-        switch (unk_2b0) {
+        switch (digitIndex) {
         case 0:
-            unk_2b1 = unk_2b2 = (sCountdownHours / 10) & 1;
-            unk_2d5 = 0;
+            digit = prevDigit = (sCountdownHours / 10) & 1;
+            skipSe = 0;
             break;
         case 1:
-            unk_2b1 = unk_2b2 = sCountdownHours % 10;
-            unk_2d5 = 0;
+            digit = prevDigit = sCountdownHours % 10;
+            skipSe = 0;
             break;
         case 2:
-            unk_2b1 = unk_2b2 = sCountdownMinutes / 10;
-            unk_2d5 = 0;
+            digit = prevDigit = sCountdownMinutes / 10;
+            skipSe = 0;
             break;
         case 3:
-            unk_2b1 = unk_2b2 = sCountdownMinutes % 10;
-            unk_2d5 = 0;
+            digit = prevDigit = sCountdownMinutes % 10;
+            skipSe = 0;
             break;
         case 4:
-            unk_2b1 = unk_2b2 = sCountdownSeconds / 10;
-            unk_2d5 = 1;
+            digit = prevDigit = sCountdownSeconds / 10;
+            skipSe = 1;
             break;
         case 5:
-            unk_2b1 = unk_2b2 = sCountdownSeconds % 10;
-            unk_2d5 = 1;
+            digit = prevDigit = sCountdownSeconds % 10;
+            skipSe = 1;
             break;
         }
     }
@@ -439,7 +439,7 @@ BOOL CountdownDigit::vfunc_70() {
 
 extern "C" void CountdownDigit_Update(void *arg) {
     Unk_ov003_022150f0_Obj *o = (Unk_ov003_022150f0_Obj *)arg;
-    if (o->unk_2d4 != 0) {
+    if (o->isCounting != 0) {
         Unk_ov003_02214890_Buf l;
         l.w0 = 0;
         l.w1 = 0;
@@ -447,24 +447,24 @@ extern "C" void CountdownDigit_Update(void *arg) {
         if (((u8 *)&l)[4] == 1) {
             goto clr;
         }
-        switch (o->unk_2b0) {
+        switch (o->digitIndex) {
         case 0:
-            o->unk_2b1 = (sCountdownHours / 10) & 1;
+            o->digit = (sCountdownHours / 10) & 1;
             break;
         case 1:
-            o->unk_2b1 = sCountdownHours % 10;
+            o->digit = sCountdownHours % 10;
             break;
         case 2:
-            o->unk_2b1 = sCountdownMinutes / 10;
+            o->digit = sCountdownMinutes / 10;
             break;
         case 3:
-            o->unk_2b1 = sCountdownMinutes % 10;
+            o->digit = sCountdownMinutes % 10;
             break;
         case 4:
-            o->unk_2b1 = sCountdownSeconds / 10;
+            o->digit = sCountdownSeconds / 10;
             break;
         case 5:
-            o->unk_2b1 = sCountdownSeconds % 10;
+            o->digit = sCountdownSeconds % 10;
             break;
         }
         s32 r = -1;
@@ -483,35 +483,35 @@ extern "C" void CountdownDigit_Update(void *arg) {
                 r = 3;
             }
         }
-        if (o->unk_2b2 == o->unk_2b1) {
+        if (o->prevDigit == o->digit) {
             goto done;
         }
-        if (r != -1 && o->unk_2b0 == 5) {
+        if (r != -1 && o->digitIndex == 5) {
             switch (r) {
             case 1:
-                if (o->unk_2d5 == 0) {
+                if (o->skipSe == 0) {
                     Snd_PlaySe(0x61);
                 }
                 break;
             case 2:
-                if (o->unk_2d5 == 0) {
+                if (o->skipSe == 0) {
                     Snd_PlaySe(0x60);
                 }
                 break;
             case 3:
-                if (o->unk_2d5 == 0) {
+                if (o->skipSe == 0) {
                     Snd_PlaySe(0x62);
                 }
                 break;
             }
-            o->unk_2d5 = 0;
+            o->skipSe = 0;
         } else {
-            o->unk_2d5 = 0;
+            o->skipSe = 0;
         }
         goto done;
     clr:
-        o->unk_2d4 = 0;
+        o->isCounting = 0;
     }
 done:
-    o->unk_2b2 = o->unk_2b1;
+    o->prevDigit = o->digit;
 }

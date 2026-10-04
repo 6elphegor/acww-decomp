@@ -322,31 +322,31 @@ public:
     void execSnowmanBody();
     BOOL enterSnowmanBody();
 
-    /* 0x130 */ CachedModel unk_130;
-    /* 0x1cc */ CachedModel unk_1cc;
-    /* 0x268 */ s32 unk_268;
-    /* 0x26c */ s32 unk_26c;
-    /* 0x270 */ CollisionState unk_270;
-    /* 0x2a0 */ SnowballCollider unk_2a0;
-    /* 0x2e8 */ s32 unk_2e8;
-    /* 0x2ec */ s32 unk_2ec;
-    /* 0x2f0 */ s32 unk_2f0;
-    /* 0x2f4 */ Unk_ov003_022135c4_Q4 unk_2f4;
-    /* 0x304 */ Unk_ov003_Vec unk_304;
+    /* 0x130 */ CachedModel ballModel;
+    /* 0x1cc */ CachedModel faceModel;
+    /* 0x268 */ s32 radius;
+    /* 0x26c */ s32 collisionRadius;
+    /* 0x270 */ CollisionState collisionState;
+    /* 0x2a0 */ SnowballCollider collider;
+    /* 0x2e8 */ s32 colliderWeight;
+    /* 0x2ec */ s32 rollVelX;
+    /* 0x2f0 */ s32 rollVelZ;
+    /* 0x2f4 */ Unk_ov003_022135c4_Q4 rotationQuat;
+    /* 0x304 */ Unk_ov003_Vec drawOffset;
     /* 0x310 */ u8 pad_310[8];
-    /* 0x318 */ Unk_ov003_Vec unk_318;
-    /* 0x324 */ u8 unk_324[0x365 - 0x324];
-    /* 0x365 */ u8 unk_365;
-    /* 0x366 */ u8 unk_366;
+    /* 0x318 */ Unk_ov003_Vec lastFramePos;
+    /* 0x324 */ u8 seEmitter[0x365 - 0x324];
+    /* 0x365 */ u8 prevContactCount;
+    /* 0x366 */ u8 hitSeLatch;
     /* 0x367 */ u8 pad_367[0x370 - 0x367];
-    /* 0x370 */ s32 unk_370;
-    /* 0x374 */ Unk_ov003_02212a5c_Bits unk_374;
+    /* 0x370 */ s32 pushSpeed;
+    /* 0x374 */ Unk_ov003_02212a5c_Bits snowballFlags;
     /* 0x376 */ u8 pad_376[0x390 - 0x376];
-    /* 0x390 */ s16 unk_390;
+    /* 0x390 */ s16 pushAngle;
     /* 0x392 */ u8 pad_392[0x396 - 0x392];
-    /* 0x396 */ u16 unk_396;
-    /* 0x398 */ s32 unk_398;
-    /* 0x39c */ s32 unk_39c;
+    /* 0x396 */ u16 displacedItem;
+    /* 0x398 */ s32 snowballState;
+    /* 0x39c */ s32 talkAct;
 };
 
 // ov068 classes that own the state functions named in the ptmf tables (their symbols live in ov068)
@@ -524,12 +524,12 @@ void SnowballCollider::onCollide(u32 a, u32 b, u32 c) {
 }
 
 Snowball::Snowball() {
-    func_020f440c(unk_324);
-    unk_396 = 0xfff1;
+    func_020f440c(seEmitter);
+    displacedItem = 0xfff1;
 }
 
 Snowball::~Snowball() {
-    func_020f43fc(unk_324);
+    func_020f43fc(seEmitter);
 }
 
 extern "C" s32 Snowball_GetMinRadius() { return 0x800; }
@@ -551,23 +551,23 @@ void Snowball::operator delete(void *p) {
 
 BOOL Snowball::vfunc_00() {
     u32 k = 0xfff1;
-    unk_396 = k;
-    unk_2f4.x = data_020d0584[0];
-    unk_2f4.y = data_020d0584[1];
-    unk_2f4.z = data_020d0584[2];
-    unk_2f4.w = data_020d0584[3];
-    _ZN11CachedModel10loadCachedEPvS0_(&unk_130, 0x534e5730, "/snowman/snowball1.nsbmd");
-    _ZN11CachedModel10loadCachedEPvS0_(&unk_1cc, 0x534e5731, "/snowman/snow_face.nsbmd");
+    displacedItem = k;
+    rotationQuat.x = data_020d0584[0];
+    rotationQuat.y = data_020d0584[1];
+    rotationQuat.z = data_020d0584[2];
+    rotationQuat.w = data_020d0584[3];
+    _ZN11CachedModel10loadCachedEPvS0_(&ballModel, 0x534e5730, "/snowman/snowball1.nsbmd");
+    _ZN11CachedModel10loadCachedEPvS0_(&faceModel, 0x534e5731, "/snowman/snow_face.nsbmd");
     if (Snowball_IsLooseBall(this) != 0) {
         u32 i = param & 1;
         Rec *r = LooseSnowballs_Get();
-        unk_268 = r[i & 1].w;
+        radius = r[i & 1].w;
         i = param & 1;
         r = LooseSnowballs_Get();
         r[i & 1].x = position.x;
         r[i & 1].y = position.y;
         r[i & 1].z = position.z;
-        s32 sv = unk_268;
+        s32 sv = radius;
         i = param & 1;
         r = LooseSnowballs_Get();
         r[i & 1].w = sv;
@@ -579,73 +579,73 @@ BOOL Snowball::vfunc_00() {
     prevPosition.y = position.y;
     prevPosition.z = position.z;
     V3P *pv = &prevPosition;
-    unk_318.x = prevPosition.x;
-    unk_318.y = pv->y;
-    unk_318.z = pv->z;
-    Collision_Move(&unk_270, &position, &prevPosition, 0, unk_26c, this, 0xb);
+    lastFramePos.x = prevPosition.x;
+    lastFramePos.y = pv->y;
+    lastFramePos.z = pv->z;
+    Collision_Move(&collisionState, &position, &prevPosition, 0, collisionRadius, this, 0xb);
     prevPosition.x = position.x;
     prevPosition.y = position.y;
     prevPosition.z = position.z;
     pv = &prevPosition;
-    unk_318.x = prevPosition.x;
-    unk_318.y = pv->y;
-    unk_318.z = pv->z;
-    unk_365 = unk_270.numContacts;
+    lastFramePos.x = prevPosition.x;
+    lastFramePos.y = pv->y;
+    lastFramePos.z = pv->z;
+    prevContactCount = collisionState.numContacts;
     Snowball_UpdateMatrix(this, 0, 0);
-    _ZN12Unk_02003c3013func_02003eccEv(unk_324);
+    _ZN12Unk_02003c3013func_02003eccEv(seEmitter);
     clearTalkStartMode();
     Snowball_Register(this);
 }
 
 BOOL Snowball::onExecute() {
     s32 t = FX_Div(0xa000, 0x64000);
-    if (unk_374.e == 0) unk_370 = t;
-    prevPosition.x = unk_318.x;
-    prevPosition.y = unk_318.y;
-    prevPosition.z = unk_318.z;
+    if (snowballFlags.e == 0) pushSpeed = t;
+    prevPosition.x = lastFramePos.x;
+    prevPosition.y = lastFramePos.y;
+    prevPosition.z = lastFramePos.z;
     Snowball_UpdateCarry(this);
     Snowball_RunState(this);
     runTalkAct();
     Snowball_UpdateRolling(this);
-    Unk_ov003_022135c4_Fl *fl = &unk_374;
+    Unk_ov003_022135c4_Fl *fl = &snowballFlags;
     fl->f = fl->e;
     fl->e = 0;
     fl->h = 0;
     fl->i = 0;
-    unk_2a0.unk_44 = 0;
+    collider.unk_44 = 0;
     prevPosition.x = position.x;
     prevPosition.y = position.y;
     prevPosition.z = position.z;
     V3P *pv = &prevPosition;
-    unk_318.x = prevPosition.x;
-    unk_318.y = pv->y;
-    unk_318.z = pv->z;
+    lastFramePos.x = prevPosition.x;
+    lastFramePos.y = pv->y;
+    lastFramePos.z = pv->z;
     V3P sp = position;
-    _ZN12Unk_02003c4013func_02003e80EP16Unk_02003a6c_Vec(unk_324, &sp);
+    _ZN12Unk_02003c4013func_02003e80EP16Unk_02003a6c_Vec(seEmitter, &sp);
     return TRUE;
 }
 
 BOOL Snowball::onDraw() {
     if (gCamera != 0) {
         if (func_020e9650(gCameraLookAt, &position) <= data_020c8cbc) {
-            s32 s = FX_Div(unk_268, 0x1000);
+            s32 s = FX_Div(radius, 0x1000);
             V3P v;
             v.x = s;
             v.y = s;
             v.z = s;
-            if (unk_398 == 0xb) {
-                _ZN5Model10drawScaledEPi(&unk_1cc, &v);
+            if (snowballState == 0xb) {
+                _ZN5Model10drawScaledEPi(&faceModel, &v);
             } else {
-                _ZN5Model10drawScaledEPi(&unk_130, &v);
+                _ZN5Model10drawScaledEPi(&ballModel, &v);
             }
-            CharaShadow_Draw(&position, unk_268, 0x4000, 0x1000);
+            CharaShadow_Draw(&position, radius, 0x4000, 0x1000);
         }
     }
     return TRUE;
 }
 
 BOOL Snowball::vfunc_0c() {
-    if (unk_398 == 9) {
+    if (snowballState == 9) {
         void *g = gSceneBlockMap;
         volatile s32 x, y;
         FieldPos_ToUnit((s32 *)&x, (s32 *)&y, &position);
@@ -658,25 +658,25 @@ BOOL Snowball::vfunc_0c() {
             u16 v = 0xfff1;
             BlockMap_SetItemAtUnit(g, &v, x, y, 0);
         }
-        if (Snowball_PlaceSnowmanAt((void *)unk_374.a, (Pos *)&position, &unk_396) == 0) {
-            if (Snowball_PlaceSnowmanNearby((void *)unk_374.a, &position, &unk_396) == 0) {
-                _ZN14SnowmanRecords12markUnplacedEj(data_021ed2e6, unk_374.a);
+        if (Snowball_PlaceSnowmanAt((void *)snowballFlags.a, (Pos *)&position, &displacedItem) == 0) {
+            if (Snowball_PlaceSnowmanNearby((void *)snowballFlags.a, &position, &displacedItem) == 0) {
+                _ZN14SnowmanRecords12markUnplacedEj(data_021ed2e6, snowballFlags.a);
             }
         }
-        Snowball_DropDisplacedItem(&unk_396);
+        Snowball_DropDisplacedItem(&displacedItem);
     }
-    if (unk_39c == 0 && unk_398 == 0) {
+    if (talkAct == 0 && snowballState == 0) {
         u32 i = param & 1;
         Rec *r = LooseSnowballs_Get();
         r[i & 1].x = position.x;
         r[i & 1].y = position.y;
         r[i & 1].z = position.z;
-        s32 sv = unk_268;
+        s32 sv = radius;
         i = param & 1;
         r = LooseSnowballs_Get();
         r[i & 1].w = sv;
     }
-    _ZN12Unk_02003c3013func_02003e50Ev(unk_324);
+    _ZN12Unk_02003c3013func_02003e50Ev(seEmitter);
     Snowball_Unregister(this);
 }
 
@@ -699,18 +699,18 @@ extern "C" void Snowball_UpdateMatrix(Obj *o, s32 a, s32 b)
         q.y = v1.y;
         q.z = v1.z;
         q.w = data_02135f44[u + 1];
-        Quat_Mul(&q, &o->unk_2f4, &o->unk_2f4);
+        Quat_Mul(&q, &o->rotationQuat, &o->rotationQuat);
         if ((gFrameCounter & 7) == o->param) {
-            Quat_Normalize(&o->unk_2f4);
+            Quat_Normalize(&o->rotationQuat);
         }
     }
-    func_01ffd070(&ex, &o->position, &o->unk_304);
-    ex.y = ex.y + o->unk_268;
+    func_01ffd070(&ex, &o->position, &o->drawOffset);
+    ex.y = ex.y + o->radius;
     ex.y = ex.y - 0x400;
     s32 ang = WorldCurve_ToCurved(&pv, &ex);
     func_020e8388(&m, pv.x, pv.y, pv.z);
     func_020e8434(&m, ang);
-    Quat_ToMtx43(&o->unk_2f4, &m2);
+    Quat_ToMtx43(&o->rotationQuat, &m2);
     MTX_Concat43(&m2, &m, &m);
     *(Blk *)((u8 *)o + 0x194) = m;
     *(Blk *)((u8 *)o + 0x230) = m;
@@ -718,78 +718,78 @@ extern "C" void Snowball_UpdateMatrix(Obj *o, s32 a, s32 b)
 
 extern "C" void Snowball_UpdateCarry(Obj *o)
 {
-    if (o->unk_2a0.unk_3c != 0) {
-        if (o->unk_374.h == 0) {
-            o->position.x = o->position.x + o->unk_2a0.unk_10;
-            o->position.z = o->position.z + o->unk_2a0.unk_18;
+    if (o->collider.unk_3c != 0) {
+        if (o->snowballFlags.h == 0) {
+            o->position.x = o->position.x + o->collider.unk_10;
+            o->position.z = o->position.z + o->collider.unk_18;
         }
-        if (o->unk_2a0.isHitByGroup(4) != 0 && o->unk_268 < 0xa00) {
-            if (o->unk_366 == 0) {
-                func_02003e70(o->unk_324, 0x81c, 0x7f, 0);
+        if (o->collider.isHitByGroup(4) != 0 && o->radius < 0xa00) {
+            if (o->hitSeLatch == 0) {
+                func_02003e70(o->seEmitter, 0x81c, 0x7f, 0);
             }
-            o->unk_366 = 1;
+            o->hitSeLatch = 1;
         } else {
-            o->unk_366 = 0;
+            o->hitSeLatch = 0;
         }
     } else {
-        o->unk_366 = 0;
+        o->hitSeLatch = 0;
     }
-    o->unk_2e8 = (func_01ffcb0c(FX_Div(o->unk_268 - 0x800, 0xc00), 0x10cd) + 0xdec) << 2;
+    o->colliderWeight = (func_01ffcb0c(FX_Div(o->radius - 0x800, 0xc00), 0x10cd) + 0xdec) << 2;
 }
 
 extern "C" s32 Snowball_UpdateRolling(Obj *o)
 {
-    s32 kind = o->unk_374.c != 0 ? 0xb : 0;
+    s32 kind = o->snowballFlags.c != 0 ? 0xb : 0;
     Loc loc;
     V3P d;
     s32 yaw;
-    if (o->unk_39c == 0 && o->unk_398 == 0) {
+    if (o->talkAct == 0 && o->snowballState == 0) {
         o->position.y -= 0x200;
     }
-    Collision_Move(&o->unk_270, &o->position, &o->prevPosition, 0, o->unk_26c, o, kind);
-    u32 cur = o->unk_270.numContacts;
-    if (cur > o->unk_365 && o->unk_39c == 0 && o->unk_398 == 0) {
-        func_02003e70(o->unk_324, 0x81d, 0x7f, 0);
+    Collision_Move(&o->collisionState, &o->position, &o->prevPosition, 0, o->collisionRadius, o, kind);
+    u32 cur = o->collisionState.numContacts;
+    if (cur > o->prevContactCount && o->talkAct == 0 && o->snowballState == 0) {
+        func_02003e70(o->seEmitter, 0x81d, 0x7f, 0);
     }
-    o->unk_365 = cur;
+    o->prevContactCount = cur;
     u32 fa = 0x20;
-    if (o->unk_374.d != 0) fa |= 2;
+    if (o->snowballFlags.d != 0) fa |= 2;
     u32 fb = 0x12;
     u8 id = o->param;
-    if (o->unk_398 == 0xb) fb = 0x11;
+    if (o->snowballState == 0xb) fb = 0x11;
     s32 s = FX_Div(0x41000, 0x64000);
-    s32 t = o->unk_268;
+    s32 t = o->radius;
     if (t < 0xa00) {
         s = 0x1000;
     } else if (t < 0xe00) {
         s = FX_Div((0x64 - ((FX_Div(t - 0xa00, 0x400) * 0x23) >> 12)) << 12, 0x64000);
     }
-    s32 t2 = o->unk_268;
+    s32 t2 = o->radius;
     s32 r2 = func_01ffcb0c(t2, s);
-    o->unk_2a0.setupForActor(o, r2, t2 * 2, fa, 0x2fc, fb, id, o->unk_2e8);
-    o->unk_2a0.submit();
+    o->collider.setupForActor(o, r2, t2 * 2, fa, 0x2fc, fb, id, o->colliderWeight);
+    o->collider.submit();
     func_020e9960(&d, &o->position, &o->prevPosition);
     s32 len = VEC_Mag(&d);
-    s32 ang = (s16)((FX_Div(len, func_01ffcb0c(0x323d, o->unk_268)) >> 1) << 4);
+    s32 ang = (s16)((FX_Div(len, func_01ffcb0c(0x323d, o->radius)) >> 1) << 4);
     yaw = func_020e7b98(d.x, d.z);
     if (Snowball_IsInBallState(o)) {
         s32 n = VEC_Mag(&d);
         if (n == 0) {
-            o->unk_2ec = 0;
-            o->unk_2f0 = 0;
+            o->rollVelX = 0;
+            o->rollVelZ = 0;
         } else {
             s32 v;
             s32 m = 0;
-            s32 w = o->unk_39c;
-            if (w == 0 && o->unk_398 == 1) m = 1;
+            s32 w = o->talkAct;
+            if (w == 0 && o->snowballState == 1) m = 1;
             if (m) {
                 v = n - FX_Div(0x2000, 0xa5000);
-            } else if (w == 0 && o->unk_398 == 5) {
+            } else if (w == 0 && o->snowballState == 5) {
                 v = n - 0x155;
             } else {
-                s32 q = o->unk_270.flags;
+                s32 q = o->collisionState.flags;
                 if (q & 1) {
-                    if (o->unk_374.e != 0) {
+                    if (o->snowballFlags.e != 0) {
                         v = n - 0x155;
                     } else {
                         v = n - 0x28;
@@ -803,28 +803,28 @@ extern "C" s32 Snowball_UpdateRolling(Obj *o)
             if (v < 0) v = 0;
             if (v > 0x400) v = 0x400;
             n = FX_Div(v, n);
-            o->unk_2ec = func_01ffcb0c(d.x, n);
-            o->unk_2f0 = func_01ffcb0c(d.z, n);
+            o->rollVelX = func_01ffcb0c(d.x, n);
+            o->rollVelZ = func_01ffcb0c(d.z, n);
         }
     } else {
-        o->unk_2ec = 0;
-        o->unk_2f0 = 0;
+        o->rollVelX = 0;
+        o->rollVelZ = 0;
     }
     loc.initAtPos(&o->position, 0, 0);
     if (loc.attr == 3) {
-        if (o->unk_374.i == 0) {
-            o->unk_268 = func_01ffcb0c(o->unk_268, (len >> 7) + 0x1000);
-            if (o->unk_268 > 0x1400) o->unk_268 = 0x1400;
+        if (o->snowballFlags.i == 0) {
+            o->radius = func_01ffcb0c(o->radius, (len >> 7) + 0x1000);
+            if (o->radius > 0x1400) o->radius = 0x1400;
         }
     } else {
         s32 m = 0;
-        s32 w = o->unk_39c;
-        if (w == 0 && o->unk_398 == 2) m = 1;
+        s32 w = o->talkAct;
+        if (w == 0 && o->snowballState == 2) m = 1;
         if (!m) {
-            if (w == 0 && o->unk_398 == 6) {
+            if (w == 0 && o->snowballState == 6) {
             } else {
-                o->unk_268 = func_01ffcb0c(o->unk_268, 0x1000 - (len >> 9));
-                if (o->unk_268 < 0x800) o->unk_268 = 0x800;
+                o->radius = func_01ffcb0c(o->radius, 0x1000 - (len >> 9));
+                if (o->radius < 0x800) o->radius = 0x800;
             }
         }
     }
@@ -833,11 +833,11 @@ extern "C" s32 Snowball_UpdateRolling(Obj *o)
 
 extern "C" BOOL Snowball_TrySetPos(Obj *o, V3P *v)
 {
-    if (o->unk_374.i == 0 && o->unk_374.e == 0 && o->unk_2a0.unk_44 == 0) {
+    if (o->snowballFlags.i == 0 && o->snowballFlags.e == 0 && o->collider.unk_44 == 0) {
         o->position.x = v->x;
         o->position.y = v->y;
         o->position.z = v->z;
-        o->unk_374.i = 1;
+        o->snowballFlags.i = 1;
         return TRUE;
     }
     return FALSE;
@@ -845,12 +845,12 @@ extern "C" BOOL Snowball_TrySetPos(Obj *o, V3P *v)
 
 extern "C" s32 Snowball_GetRadius(Obj *o)
 {
-    return o->unk_268;
+    return o->radius;
 }
 
 extern "C" s32 Snowball_Break(Obj *o, s32 a)
 {
-    if (o->unk_398 < 7) {
+    if (o->snowballState < 7) {
         return Snowball_ChangeState(o, 3);
     }
     return 0;
@@ -867,32 +867,32 @@ extern "C" BOOL Snowball_TryPush(Obj *o, V3 *outPos, u16 *outAng, s32 *outVal, s
     p = (Unk_ov003_022132b4_Tgt *)PlayerActor_GetActor(4);
     if (!Scene_InTown()) return FALSE;
     if (!p) return FALSE;
-    if (o->unk_39c != 0 || o->unk_398 != 0) return FALSE;
-    if (o->unk_268 < 0xa00) return FALSE;
+    if (o->talkAct != 0 || o->snowballState != 0) return FALSE;
+    if (o->radius < 0xa00) return FALSE;
     if (speed > 0xc32) speed = 0xc32;
-    if (o->unk_2a0.unk_3c != 0) {
-        o->position.x += o->unk_2a0.unk_10;
-        o->position.z += o->unk_2a0.unk_18;
-        o->unk_374.h = 1;
+    if (o->collider.unk_3c != 0) {
+        o->position.x += o->collider.unk_10;
+        o->position.z += o->collider.unk_18;
+        o->snowballFlags.h = 1;
     }
     h[0] = ang;
-    if (o->unk_374.f) {
-        h[0] = o->unk_390;
+    if (o->snowballFlags.f) {
+        h[0] = o->pushAngle;
         func_020e7754(&h[0], ang, 5, 0x2000);
     }
-    ox = o->unk_2ec;
-    oz = o->unk_2f0;
-    if (!o->unk_374.f) {
-        o->unk_2ec = ox >> 4;
-        o->unk_2f0 >>= 4;
+    ox = o->rollVelX;
+    oz = o->rollVelZ;
+    if (!o->snowballFlags.f) {
+        o->rollVelX = ox >> 4;
+        o->rollVelZ >>= 4;
     }
-    v0c = func_01ffcb0c(func_01ffcb0c(speed, 0x1b6), o->unk_370);
+    v0c = func_01ffcb0c(func_01ffcb0c(speed, 0x1b6), o->pushSpeed);
     v10 = func_01ffcb0c(v0c, data_02135f44[((u16)h[0] >> 4) * 2]);
     v14 = func_01ffcb0c(v0c, data_02135f44[((u16)h[0] >> 4) * 2 + 1]);
-    o->unk_2ec += v10;
-    o->unk_2f0 += v14;
-    o->position.x += o->unk_2ec;
-    o->position.z += o->unk_2f0;
+    o->rollVelX += v10;
+    o->rollVelZ += v14;
+    o->position.x += o->rollVelX;
+    o->position.z += o->rollVelZ;
     h[1] = p->rotY;
     func_020e7754(&h[1], ang, 8, 0x2000);
     V3 *q = &p->position;
@@ -903,27 +903,27 @@ extern "C" BOOL Snowball_TryPush(Obj *o, V3 *outPos, u16 *outAng, s32 *outVal, s
     pv[1].y = pv[0].y;
     pv[1].z = pv[0].z + v14;
     dist = func_020e7b98(o->position.x - pv[1].x, o->position.z - pv[1].z);
-    if ((u32)func_020e9650(&o->prevPosition, &pv[1]) > (u32)(o->unk_268 + 0x1000)) {
-        o->position.x -= o->unk_2ec;
-        o->position.z -= o->unk_2f0;
-        o->unk_2ec = ox;
-        o->unk_2f0 = oz;
+    if ((u32)func_020e9650(&o->prevPosition, &pv[1]) > (u32)(o->radius + 0x1000)) {
+        o->position.x -= o->rollVelX;
+        o->position.z -= o->rollVelZ;
+        o->rollVelX = ox;
+        o->rollVelZ = oz;
         return FALSE;
     }
     s32 r0v = (s16)func_020e780c(dist, ang);
-    s32 lim = o->unk_374.f ? 0x471c : 0x1000;
+    s32 lim = o->snowballFlags.f ? 0x471c : 0x1000;
     if (r0v > (s16)lim) {
-        o->position.x -= o->unk_2ec;
-        o->position.z -= o->unk_2f0;
-        o->unk_2ec = ox;
-        o->unk_2f0 = oz;
+        o->position.x -= o->rollVelX;
+        o->position.z -= o->rollVelZ;
+        o->rollVelX = ox;
+        o->rollVelZ = oz;
         return FALSE;
     }
     if ((s16)func_020e780c(h[1], h[0]) > 0x471c) {
-        o->position.x -= o->unk_2ec;
-        o->position.z -= o->unk_2f0;
-        o->unk_2ec = ox;
-        o->unk_2f0 = oz;
+        o->position.x -= o->rollVelX;
+        o->position.z -= o->rollVelZ;
+        o->rollVelX = ox;
+        o->rollVelZ = oz;
         return FALSE;
     }
     func_020e9960(&pv[2], &o->position, &pv[1]);
@@ -931,21 +931,21 @@ extern "C" BOOL Snowball_TryPush(Obj *o, V3 *outPos, u16 *outAng, s32 *outVal, s
     outPos->x = pv[1].x;
     outPos->y = pv[1].y;
     outPos->z = pv[1].z;
-    o->unk_374.e = 1;
-    o->unk_390 = h[0];
-    Snd_SeEmitterPlayHeld(o->unk_324, 0x820, 0x7f, 0);
+    o->snowballFlags.e = 1;
+    o->pushAngle = h[0];
+    Snd_SeEmitterPlayHeld(o->seEmitter, 0x820, 0x7f, 0);
     {
-        s32 t = FX_Div(o->unk_268 - 0xa00, 0xa00);
+        s32 t = FX_Div(o->radius - 0xa00, 0xa00);
         s32 r = func_01ffcb0c(0xc00, 0x1000 - t) + 0x200;
-        func_020e7820(&o->unk_370, 0x1000, r, 0x1000);
+        func_020e7820(&o->pushSpeed, 0x1000, r, 0x1000);
     }
-    V3 d(o->unk_2ec, 0, o->unk_2f0);
+    V3 d(o->rollVelX, 0, o->rollVelZ);
     *outVal = func_020e9688(&d) >> 1;
     return TRUE;
 }
 
 extern "C" BOOL Snowball_IsInBallState(Obj *o) {
-    if (o->unk_398 < 7) return TRUE;
+    if (o->snowballState < 7) return TRUE;
     return FALSE;
 }
 
@@ -983,14 +983,14 @@ extern "C" void Snowball_InitState(Obj *o) {
         Snowball_ChangeState(o, 0);
     } else {
         r = Snowball_IsSnowmanBody(o);
-        o->unk_374.a = (o->param - 2) >> 1;
-        if (_ZN14SnowmanRecords7getInfoEjPjS0_S0_PhS1_S1_(data_021ed2e6, o->unk_374.a, &s10, &s14, &s18, 0, 0, 0)) {
-            o->unk_374.b = (u16)s18;
+        o->snowballFlags.a = (o->param - 2) >> 1;
+        if (_ZN14SnowmanRecords7getInfoEjPjS0_S0_PhS1_S1_(data_021ed2e6, o->snowballFlags.a, &s10, &s14, &s18, 0, 0, 0)) {
+            o->snowballFlags.b = (u16)s18;
             if (r) {
-                o->unk_268 = s14;
+                o->radius = s14;
                 Snowball_ChangeState(o, 9);
             } else {
-                o->unk_268 = s10;
+                o->radius = s10;
                 o->position.y = s14 * 2 - (s14 >> 3) - (s10 >> 3) - 0x400;
                 Snowball_ChangeState(o, 11);
             }
@@ -1157,7 +1157,7 @@ extern "C" BOOL Snowball_ChangeState(Obj *o, s32 st) {
         (Fn1)&SnowballStateView1::enterSnowballCrumble, (Fn1)&SnowballStateView1::enterSnowballCrumble2};
     if (st < 0xe) {
         if ((o->*tbl[st])()) {
-            o->unk_398 = st;
+            o->snowballState = st;
             return TRUE;
         }
     }
@@ -1170,19 +1170,19 @@ extern "C" void Snowball_RunState(Obj *o) {
         (Fn0)&SnowballStateView2::execSnowballHole, (Fn0)&SnowballStateView2::execSnowball05, (Fn0)&SnowballStateView2::execSnowballSplash, (Fn0)&SnowballStateView2::execSnowballToSnowman,
         (Fn0)&SnowballStateView1::execSnowballStack, (Fn0)&Obj::execSnowmanBody, (Fn0)&SnowballStateView1::execSnowballSettle, (Fn0)&Obj::execSnowmanHead,
         (Fn0)&SnowballStateView1::execSnowballCrumble, (Fn0)&SnowballStateView1::execSnowballCrumble2};
-    if (o->unk_398 < 0xe) (o->*tbl[o->unk_398])();
+    if (o->snowballState < 0xe) (o->*tbl[o->snowballState])();
 }
 
 BOOL Snowball::enterSnowmanBody() {
-    unk_374.c = 0;
-    unk_374.d = 1;
+    snowballFlags.c = 0;
+    snowballFlags.d = 1;
     return TRUE;
 }
 
 void Snowball::execSnowmanBody() {
-    unk_26c = unk_268;
-    if (unk_2a0.unk_3c != 0) {
-        u8 *p = (u8 *)unk_2a0.getHitActor();
+    collisionRadius = radius;
+    if (collider.unk_3c != 0) {
+        u8 *p = (u8 *)collider.getHitActor();
         if (p) {
             if (*(s32 *)(p + 0x98) > 0x666) {
                 Snowball_Break(this, 1);
@@ -1193,19 +1193,19 @@ void Snowball::execSnowmanBody() {
 
 BOOL Snowball::enterSnowmanHead() {
     s32 *d = data_020d0584;
-    unk_374.c = 0;
-    unk_374.d = 1;
-    unk_2f4.x = d[0];
-    unk_2f4.y = d[1];
-    unk_2f4.z = d[2];
-    unk_2f4.w = d[3];
+    snowballFlags.c = 0;
+    snowballFlags.d = 1;
+    rotationQuat.x = d[0];
+    rotationQuat.y = d[1];
+    rotationQuat.z = d[2];
+    rotationQuat.w = d[3];
     return TRUE;
 }
 
 void Snowball::execSnowmanHead() {
-    unk_26c = unk_268;
-    if (unk_2a0.unk_3c != 0) {
-        u8 *p = (u8 *)unk_2a0.getHitActor();
+    collisionRadius = radius;
+    if (collider.unk_3c != 0) {
+        u8 *p = (u8 *)collider.getHitActor();
         if (p) {
             if (*(s32 *)(p + 0x98) > 0x666) {
                 Snowball_Break(this, 1);
@@ -1213,7 +1213,7 @@ void Snowball::execSnowmanHead() {
             }
         }
     }
-    if (unk_374.g) TalkRequest_AddPlayerTalk6(this, 0);
+    if (snowballFlags.g) TalkRequest_AddPlayerTalk6(this, 0);
 }
 
 BOOL Snowball::vfunc_48(void *a) {
@@ -1223,7 +1223,7 @@ BOOL Snowball::vfunc_48(void *a) {
     lim = func_01ffcb0c(0x2000, FX_Div(0x7d000, 0x64000));
     if (a) {
         if (func_020e9650((u8 *)a + 0x5c, (u8 *)this + 0x5c) < lim) {
-            if (unk_398 == 11) return TRUE;
+            if (snowballState == 11) return TRUE;
         }
     }
     return FALSE;
@@ -1236,7 +1236,7 @@ void Snowball::vfunc_4c(u32 a, u8 b) {
         break;
     case 1:
         changeTalkAct(1);
-        unk_374.g = 0;
+        snowballFlags.g = 0;
         break;
     case 8:
         changeTalkAct(0);
@@ -1248,7 +1248,7 @@ BOOL Snowball::changeTalkAct(s32 m) {
     static Unk_022129d0_Fn tbl[3] = { (Unk_022129d0_Fn)&Snowball::setupTalkIdle, (Unk_022129d0_Fn)&Snowball::setupTalk, (Unk_022129d0_Fn)&Snowball::setupTalkEnd };
     if (m < 3) {
         if ((this->*tbl[m])()) {
-            unk_39c = m;
+            talkAct = m;
             return TRUE;
         }
     }
@@ -1257,8 +1257,8 @@ BOOL Snowball::changeTalkAct(s32 m) {
 
 void Snowball::runTalkAct() {
     static Unk_02212954_Fn tbl[3] = { &Snowball::mainTalkIdle, &Snowball::mainTalk, &Snowball::mainTalkEnd };
-    if (unk_39c < 3) {
-        (this->*tbl[unk_39c])();
+    if (talkAct < 3) {
+        (this->*tbl[talkAct])();
     }
 }
 
@@ -1271,10 +1271,10 @@ void Snowball::mainTalkIdle() {}
 BOOL Snowball::setupTalk() {
     _ZN9Character17attachTalkRequestEi(this, this);
     s32 r;
-    if (unk_374.g) {
-        r = (unk_374.b & 3) * 3 + Random_GlobalBelow(3);
+    if (snowballFlags.g) {
+        r = (snowballFlags.b & 3) * 3 + Random_GlobalBelow(3);
     } else {
-        r = (unk_374.b & 3) * 3 + 12 + Random_GlobalBelow(3);
+        r = (snowballFlags.b & 3) * 3 + 12 + Random_GlobalBelow(3);
     }
     setFileName("sp_npc_snowman");
     msgIndex = r;
@@ -1284,7 +1284,7 @@ BOOL Snowball::setupTalk() {
     _ZN12MsgString256C1Ev(buf);
     String_Load(buf, &c, "st_spnpc_name");
     static_cast<TalkMsgRequest &>(*this).setSpeakerName((u8 *)((Unk_ov003_02212888_Str *)buf)->vfunc_0c(), 0);
-    unk_374.g = 0;
+    snowballFlags.g = 0;
     _ZN12MsgString256D1Ev(buf);
     return TRUE;
 }

@@ -23,39 +23,39 @@ struct FishDisplayEntry {
 
 struct Unk_0204fd24 {
     /* 0x000 */ u8 unk_00[0x40];
-    /* 0x040 */ s32 unk_40;
-    /* 0x044 */ s32 unk_44;
-    /* 0x048 */ u8 unk_48[4];
-    /* 0x04c */ u8 unk_4c[0x40];
-    /* 0x08c */ s32 unk_8c;
-    /* 0x090 */ s32 unk_90;
-    /* 0x094 */ s32 unk_94;
-    /* 0x098 */ u8 unk_98[0xb8];
-    /* 0x150 */ s32 unk_150;
-    /* 0x154 */ s32 unk_154;
-    /* 0x158 */ s32 unk_158;
-    /* 0x15c */ u16 unk_15c;
-    /* 0x15e */ u16 unk_15e;
-    /* 0x160 */ u16 unk_160;
-    /* 0x164 */ s32 unk_164;
+    /* 0x040 */ s32 fishId;
+    /* 0x044 */ s32 entryState;
+    /* 0x048 */ u8 modelSlot[4];
+    /* 0x04c */ u8 pooledModel[0x40];
+    /* 0x08c */ s32 pos;
+    /* 0x090 */ s32 posY;
+    /* 0x094 */ s32 posZ;
+    /* 0x098 */ u8 model[0xb8];
+    /* 0x150 */ s32 scale;
+    /* 0x154 */ s32 scaleY;
+    /* 0x158 */ s32 scaleZ;
+    /* 0x15c */ u16 rotX;
+    /* 0x15e */ u16 rotY;
+    /* 0x160 */ u16 rotZ;
+    /* 0x164 */ s32 alpha;
     /* 0x168 */ s32 unk_168;
 };
 
 struct Backup {
-    /* 0x00 */ u32 unk_00;
-    /* 0x04 */ s32 unk_04;
+    /* 0x00 */ u32 totalSize;
+    /* 0x04 */ s32 lockId;
     /* 0x08 */ u8 unk_08;
     Backup() {
-        unk_00 = 0;
-        unk_04 = -3;
+        totalSize = 0;
+        lockId = -3;
     }
 };
 
 struct Unk_020db94c_Ent {
-    u8 unk_00;
-    u8 unk_01;
-    u32 unk_04;
-    u32 unk_08;
+    u8 kind;
+    u8 fishId;
+    u32 posX;
+    u32 posZ;
 };
 
 struct Unk_020db8b8_Rec {
@@ -146,8 +146,8 @@ public:
     virtual BOOL onExecute();
     virtual BOOL onDraw();
     ~FishDisplay() {
-        _ZN13ModelSlotPoolD1Ev(unk_600);
-        __cxa_vec_cleanup(unk_50, 4, 0x16c, (void *)FishDisplayEntry_Destruct);
+        _ZN13ModelSlotPoolD1Ev(modelPool);
+        __cxa_vec_cleanup(entries, 4, 0x16c, (void *)FishDisplayEntry_Destruct);
     }
     void releaseEntry(s32);
     BOOL beginLoad(s32);
@@ -156,8 +156,8 @@ public:
     BOOL loadStaticModel(void *, FishDisplayEntry *);
     BOOL loadFishModel(void *, FishDisplayEntry *);
 
-    FishDisplayEntry unk_50[4];
-    u8 unk_600[0x18];
+    FishDisplayEntry entries[4];
+    u8 modelPool[0x18];
 };
 
 extern "C" {
@@ -181,8 +181,8 @@ extern const u8 sFishBaseSizes[0x160];
 extern Backup gBackup;
 
 inline FishDisplay::FishDisplay() {
-    __cxa_vec_ctor(unk_50, 4, 0x16c, (void *)FishDisplayEntry_Construct, (void *)FishDisplayEntry_Destruct);
-    _ZN13ModelSlotPoolC1Ev(unk_600);
+    __cxa_vec_ctor(entries, 4, 0x16c, (void *)FishDisplayEntry_Construct, (void *)FishDisplayEntry_Destruct);
+    _ZN13ModelSlotPoolC1Ev(modelPool);
 }
 
 extern const u8 sFishBaseSizes[];
@@ -214,29 +214,29 @@ extern "C" FishDisplay *FishDisplay_Create(void) {
 
 extern "C" Unk_0204fd24 *FishDisplayEntry_Construct(Unk_0204fd24 *e) {
     func_020f440c(e);
-    ModelSlotHandle_Init(e->unk_48);
-    _ZN11PooledModelC1Ev(e->unk_4c);
-    _ZN9AnimModelC1Ev(e->unk_98);
-    e->unk_40 = -1;
-    e->unk_44 = 0;
-    _ZN11PooledModel5resetEv(e->unk_4c);
-    e->unk_8c = 0x1000;
-    e->unk_90 = 0x1000;
-    e->unk_94 = 0x1000;
-    e->unk_150 = 0x1000;
-    e->unk_154 = 0x1000;
-    e->unk_158 = 0x1000;
-    e->unk_15c = 0;
-    e->unk_15e = 0;
-    e->unk_160 = 0;
-    e->unk_164 = 0x1f;
+    ModelSlotHandle_Init(e->modelSlot);
+    _ZN11PooledModelC1Ev(e->pooledModel);
+    _ZN9AnimModelC1Ev(e->model);
+    e->fishId = -1;
+    e->entryState = 0;
+    _ZN11PooledModel5resetEv(e->pooledModel);
+    e->pos = 0x1000;
+    e->posY = 0x1000;
+    e->posZ = 0x1000;
+    e->scale = 0x1000;
+    e->scaleY = 0x1000;
+    e->scaleZ = 0x1000;
+    e->rotX = 0;
+    e->rotY = 0;
+    e->rotZ = 0;
+    e->alpha = 0x1f;
     return e;
 }
 
 extern "C" Unk_0204fd24 *FishDisplayEntry_Destruct(Unk_0204fd24 *e) {
-    _ZN9AnimModelD1Ev(e->unk_98);
-    _ZN11PooledModelD1Ev(e->unk_4c);
-    ModelSlotHandle_Destroy(e->unk_48);
+    _ZN9AnimModelD1Ev(e->model);
+    _ZN11PooledModelD1Ev(e->pooledModel);
+    ModelSlotHandle_Destroy(e->modelSlot);
     func_020f43fc(e);
     return e;
 }
@@ -245,11 +245,11 @@ extern "C" s32 FishDisplay_FindFreeEntry(void) {
     s32 i = 0;
     s32 r = -1;
     if (gFishDisplay != NULL) {
-        Unk_0204fd24 *e = (Unk_0204fd24 *)gFishDisplay->unk_50;
+        Unk_0204fd24 *e = (Unk_0204fd24 *)gFishDisplay->entries;
         for (; i < sFishDisplayEntryCount; e++, i++) {
-            if (e->unk_44 == 0) {
+            if (e->entryState == 0) {
                 r = i;
-                e->unk_44 = 1;
+                e->entryState = 1;
                 break;
             }
         }
@@ -263,10 +263,10 @@ BOOL FishDisplay::beginLoad(s32 idx) {
         return FALSE;
     }
     if (idx != -1) {
-        Unk_0204fd24 *e = (Unk_0204fd24 *)&gFishDisplay->unk_50[idx];
-        e->unk_44 = 2;
-        _ZN13ModelSlotPool7acquireEPt(unk_600, e->unk_48);
-        _ZN11PooledModel5resetEv(e->unk_4c);
+        Unk_0204fd24 *e = (Unk_0204fd24 *)&gFishDisplay->entries[idx];
+        e->entryState = 2;
+        _ZN13ModelSlotPool7acquireEPt(modelPool, e->modelSlot);
+        _ZN11PooledModel5resetEv(e->pooledModel);
         _ZN12Unk_02003c3013func_02003eccEv(e);
         r = TRUE;
     }
@@ -275,16 +275,16 @@ BOOL FishDisplay::beginLoad(s32 idx) {
 
 void FishDisplay::releaseEntry(s32 idx) {
     if (idx >= 0 && idx < sFishDisplayEntryCount && gFishDisplay != NULL) {
-        Unk_0204fd24 *e = (Unk_0204fd24 *)&gFishDisplay->unk_50[idx];
-        if (e->unk_44 != 0 && e->unk_44 != 1) {
+        Unk_0204fd24 *e = (Unk_0204fd24 *)&gFishDisplay->entries[idx];
+        if (e->entryState != 0 && e->entryState != 1) {
             _ZN12Unk_02003c3013func_02003e50Ev(e);
         }
-        e->unk_40 = -1;
-        e->unk_44 = 0;
-        _ZN9AnimModel15detachJointAnimEv(e->unk_98);
-        _ZN11PooledModel6unloadEv(e->unk_4c);
-        _ZN11CachedModel7releaseEv(e->unk_98);
-        _ZN13ModelSlotPool7releaseEPt(unk_600, e->unk_48);
+        e->fishId = -1;
+        e->entryState = 0;
+        _ZN9AnimModel15detachJointAnimEv(e->model);
+        _ZN11PooledModel6unloadEv(e->pooledModel);
+        _ZN11CachedModel7releaseEv(e->model);
+        _ZN13ModelSlotPool7releaseEPt(modelPool, e->modelSlot);
     }
 }
 
@@ -294,7 +294,7 @@ BOOL FishDisplay::vfunc_00() {
     } else if (*(s32 *)&unk_04[4] == 1) {
         sFishDisplayEntryCount = 1;
     }
-    _ZN13ModelSlotPool4initEjPvS0_jPFS0_jjEPFvvE(unk_600, sFishDisplayEntryCount, 0x800, 0x80, 0x134c, (void *)FishDisplayHeap_Create, (void *)FishDisplayHeap_Destroy, "fish_disp");
+    _ZN13ModelSlotPool4initEjPvS0_jPFS0_jjEPFvvE(modelPool, sFishDisplayEntryCount, 0x800, 0x80, 0x134c, (void *)FishDisplayHeap_Create, (void *)FishDisplayHeap_Destroy, "fish_disp");
     gFishDisplay = this;
     return TRUE;
 }
@@ -303,7 +303,7 @@ BOOL FishDisplay::onExecute() {
     volatile s32 v0, v4;
     FishDisplay *g = gFishDisplay;
     if (g == NULL) return FALSE;
-    FishDisplayEntry *e = g->unk_50;
+    FishDisplayEntry *e = g->entries;
     s32 i = 0;
     v4 = 0;
     v0 = 0;
@@ -317,11 +317,11 @@ BOOL FishDisplay::onExecute() {
         case 2: {
             s32 t = e->fishId;
             if ((u32)(t - 0x38) <= 2) {
-                loadStaticModel(unk_600, e);
+                loadStaticModel(modelPool, e);
             } else if (t == 0x3b) {
-                loadShadowModel(unk_600, e);
+                loadShadowModel(modelPool, e);
             } else {
-                loadFishModel(unk_600, e);
+                loadFishModel(modelPool, e);
             }
             break;
         }
@@ -463,7 +463,7 @@ BOOL FishDisplay::loadShadowModel(void *p, FishDisplayEntry *e) {
 BOOL FishDisplay::onDraw() {
     FishDisplay *g = gFishDisplay;
     if (g == NULL) return FALSE;
-    FishDisplayEntry *e = g->unk_50;
+    FishDisplayEntry *e = g->entries;
     for (s32 i = 0; i < sFishDisplayEntryCount; e++, i++) {
         if (e->entryState == 3) {
             Unk_020db984_Vec3 v;
@@ -480,7 +480,7 @@ BOOL FishDisplay::vfunc_0c() {
     for (s32 i = 0; i < sFishDisplayEntryCount; i++) {
         releaseEntry(i);
     }
-    _ZN13ModelSlotPool7destroyEv(unk_600);
+    _ZN13ModelSlotPool7destroyEv(modelPool);
     gFishDisplay = NULL;
     return TRUE;
 }
@@ -495,64 +495,64 @@ extern "C" void FishDisplay_PostRequest(u32 a, u32 b, s32 c, u32 d, u32 e) {
     if (a < 4 && c < 0x38) {
         switch (b) {
         case 0:
-            sFishDisplayRequests[a].unk_00 = b;
-            sFishDisplayRequests[a].unk_01 = c;
-            sFishDisplayRequests[a].unk_04 = d;
-            sFishDisplayRequests[a].unk_08 = e;
+            sFishDisplayRequests[a].kind = b;
+            sFishDisplayRequests[a].fishId = c;
+            sFishDisplayRequests[a].posX = d;
+            sFishDisplayRequests[a].posZ = e;
             break;
         case 3:
-            sFishDisplayRequests[a].unk_00 = b;
+            sFishDisplayRequests[a].kind = b;
             break;
         case 1:
             if (Unk_0204f4f8_IsZero(gFieldSceneKind)) {
                 if (FishDisplay_GetRequestKind(a) == 3) {
-                    sFishDisplayRequests[a].unk_00 = b;
+                    sFishDisplayRequests[a].kind = b;
                 } else {
-                    sFishDisplayRequests[a].unk_00 = 8;
+                    sFishDisplayRequests[a].kind = 8;
                 }
-                sFishDisplayRequests[a].unk_01 = c;
-                sFishDisplayRequests[a].unk_04 = d;
-                sFishDisplayRequests[a].unk_08 = e;
+                sFishDisplayRequests[a].fishId = c;
+                sFishDisplayRequests[a].posX = d;
+                sFishDisplayRequests[a].posZ = e;
             } else {
-                sFishDisplayRequests[a].unk_00 = 8;
-                sFishDisplayRequests[a].unk_01 = c;
-                sFishDisplayRequests[a].unk_04 = d;
-                sFishDisplayRequests[a].unk_08 = e;
+                sFishDisplayRequests[a].kind = 8;
+                sFishDisplayRequests[a].fishId = c;
+                sFishDisplayRequests[a].posX = d;
+                sFishDisplayRequests[a].posZ = e;
             }
             break;
         case 2:
             if (Unk_0204f4f8_IsZero(gFieldSceneKind)) {
                 if (FishDisplay_GetRequestKind(a) == 3 || FishDisplay_GetRequestKind(a) == 8 || FishDisplay_GetRequestKind(a) == 1) {
-                    sFishDisplayRequests[a].unk_00 = b;
+                    sFishDisplayRequests[a].kind = b;
                 } else {
-                    sFishDisplayRequests[a].unk_00 = 8;
+                    sFishDisplayRequests[a].kind = 8;
                 }
-                sFishDisplayRequests[a].unk_01 = c;
-                sFishDisplayRequests[a].unk_04 = d;
-                sFishDisplayRequests[a].unk_08 = e;
+                sFishDisplayRequests[a].fishId = c;
+                sFishDisplayRequests[a].posX = d;
+                sFishDisplayRequests[a].posZ = e;
             } else {
-                sFishDisplayRequests[a].unk_00 = 8;
-                sFishDisplayRequests[a].unk_01 = c;
-                sFishDisplayRequests[a].unk_04 = d;
-                sFishDisplayRequests[a].unk_08 = e;
+                sFishDisplayRequests[a].kind = 8;
+                sFishDisplayRequests[a].fishId = c;
+                sFishDisplayRequests[a].posX = d;
+                sFishDisplayRequests[a].posZ = e;
             }
             break;
         case 4:
-            sFishDisplayRequests[a].unk_00 = b;
+            sFishDisplayRequests[a].kind = b;
             break;
         case 5:
-            sFishDisplayRequests[a].unk_00 = b;
+            sFishDisplayRequests[a].kind = b;
             break;
         case 8:
-            sFishDisplayRequests[a].unk_00 = 8;
-            sFishDisplayRequests[a].unk_01 = c;
-            sFishDisplayRequests[a].unk_04 = d;
-            sFishDisplayRequests[a].unk_08 = e;
+            sFishDisplayRequests[a].kind = 8;
+            sFishDisplayRequests[a].fishId = c;
+            sFishDisplayRequests[a].posX = d;
+            sFishDisplayRequests[a].posZ = e;
             break;
         case 6:
         case 7:
         default:
-            sFishDisplayRequests[a].unk_00 = b;
+            sFishDisplayRequests[a].kind = b;
             break;
         }
     }
@@ -560,18 +560,18 @@ extern "C" void FishDisplay_PostRequest(u32 a, u32 b, s32 c, u32 d, u32 e) {
 
 extern "C" u32 FishDisplay_GetRequestKind(u32 i) {
     if (i >= 4) return 9;
-    return sFishDisplayRequests[i].unk_00;
+    return sFishDisplayRequests[i].kind;
 }
 
 extern "C" u32 FishDisplay_GetRequestFish(u32 i) {
     if (i >= 4) return 0xff;
-    return sFishDisplayRequests[i].unk_01;
+    return sFishDisplayRequests[i].fishId;
 }
 
 extern "C" BOOL FishDisplay_GetRequestPos(u32 *a, u32 *b, u32 i) {
     if (i >= 4) return FALSE;
-    *a = sFishDisplayRequests[i].unk_04;
-    *b = sFishDisplayRequests[i].unk_08;
+    *a = sFishDisplayRequests[i].posX;
+    *b = sFishDisplayRequests[i].posZ;
     return TRUE;
 }
 
@@ -583,7 +583,7 @@ extern "C" BOOL FishDisplay_SetEntry(s32 idx, s32 id, Unk_020db984_Vec3 *pos, Un
     BOOL r = FALSE;
     FishDisplay *g = gFishDisplay;
     if (g != NULL && idx >= 0 && idx < sFishDisplayEntryCount && id >= 0 && id < 0x3c) {
-        FishDisplayEntry *e = &g->unk_50[idx];
+        FishDisplayEntry *e = &g->entries[idx];
         e->fishId = id;
         Unk_020db984_Vec3 *d = &e->pos;
         d->x = pos->x; d->y = pos->y; d->z = pos->z;
@@ -603,14 +603,14 @@ extern "C" BOOL FishDisplay_SetEntry(s32 idx, s32 id, Unk_020db984_Vec3 *pos, Un
 
 extern "C" void FishDisplay_Release(s32 idx) {
     if (gFishDisplay != NULL && idx >= 0 && idx < sFishDisplayEntryCount) {
-        gFishDisplay->unk_50[idx].entryState = 4;
+        gFishDisplay->entries[idx].entryState = 4;
     }
 }
 
 extern "C" BOOL FishDisplay_HasPassedFrame(s32 idx, s32 unused) {
     BOOL r = FALSE;
     if (idx >= 0 && idx < sFishDisplayEntryCount) {
-        FishDisplayEntry *e = &gFishDisplay->unk_50[idx];
+        FishDisplayEntry *e = &gFishDisplay->entries[idx];
         s32 t = e->fishId;
         if (t < 0 || t >= 0x38) return FALSE;
         if (_ZN13AnimFrameCtrl14hasPassedFrameEi((u8 *)e + 0x134, unused)) r = TRUE;

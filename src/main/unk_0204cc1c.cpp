@@ -274,11 +274,11 @@ struct MapBlockEntry {
 };
 
 struct OverlaySlot {
-    u8 unk_00;
-    u8 unk_01;
+    u8 overlayId;
+    u8 refCount;
     u8 unk_02;
-    u32 unk_04;
-    u32 unk_08;
+    u32 ramStart;
+    u32 ramSize;
 };
 
 extern OverlaySlot sOverlaySlots[];

@@ -64,8 +64,8 @@ struct Unk_ov004_02235528_V3 {
 
 struct Unk_ov004_0224e98c_Entry {
     void *(*factory)();
-    u16 unk_04;
-    u16 unk_06;
+    u16 executePriority;
+    u16 drawPriority;
 };
 
 extern s32 data_020c8cb8;
@@ -171,13 +171,13 @@ struct Unk_ov004_02233b90_In {
 };
 
 struct Unk_ov004_02233b90_Vt {
-    u8 unk_00;
-    u8 unk_01;
+    u8 command;
+    u8 nodeId;
 };
 
 struct Unk_ov004_02233b90_Sub {
     u8 pad_00[0x2c];
-    FtrMoveAnim *unk_2c;
+    FtrMoveAnim *ptrUser;
 };
 
 struct Unk_ov004_02233b90_Obj {
@@ -198,7 +198,7 @@ struct Unk_ov004_022337d4_Arc {
 
 struct Unk_ov004_02233d2c_Obj {
     u8 pad_00[0x77c];
-    s32 unk_77c;
+    s32 kind;
 };
 
 struct Unk_ov004_02233f3c_P {
@@ -225,8 +225,8 @@ struct Unk_ov004_02233f3c_V3 {
 struct FtrSwitch {
     void set(u32 v, s32 flag);
     u8 isOn();
-    u8 unk_00;
-    u8 unk_01;
+    u8 cur;
+    u8 next;
 };
 
 // TU02's class: only the members this unit touches
@@ -283,23 +283,23 @@ public:
     /* 0x68 */ u8 pad_68[0x8e - 0x68];
     /* 0x8e */ s16 rotY;
     /* 0x90 */ u8 pad_90[0x14c - 0x90];
-    /* 0x14c */ s32 unk_14c;
+    /* 0x14c */ s32 drawScale;
     /* 0x150 */ u8 pad_150[0x284 - 0x150];
-    /* 0x284 */ u8 unk_284;
+    /* 0x284 */ u8 mapLayer;
     /* 0x285 */ u8 pad_285[0x73c - 0x285];
-    /* 0x73c */ FtrSwitch unk_73c;
+    /* 0x73c */ FtrSwitch switchState;
     /* 0x73e */ u8 pad_73e[0x770 - 0x73e];
-    /* 0x770 */ u32 unk_770;
-    /* 0x774 */ s32 unk_774;
+    /* 0x770 */ u32 commentPersonality;
+    /* 0x774 */ s32 commentId;
     /* 0x778 */ u8 pad_778[4];
-    /* 0x77c */ s32 unk_77c;
+    /* 0x77c */ s32 kind;
     /* 0x780 */ u8 pad_780[4];
-    /* 0x784 */ s32 unk_784;
-    /* 0x788 */ u8 unk_788;
+    /* 0x784 */ s32 hasTopSurface;
+    /* 0x788 */ u8 noCollision;
     /* 0x789 */ u8 pad_789[3];
-    /* 0x78c */ s32 unk_78c;
+    /* 0x78c */ s32 surfaceHeight;
     /* 0x790 */ u8 pad_790[0x7b4 - 0x790];
-    /* 0x7b4 */ Unk_ov004_Vec3 unk_7b4;
+    /* 0x7b4 */ Unk_ov004_Vec3 centerPos;
 };
 
 class TvSound {
@@ -484,8 +484,8 @@ public:
 // object with a byte flag at +0x1c
 class Unk_ov004_02235984 {
 public:
-    /* 0x00 */ u8 unk_00[0x1c];
-    /* 0x1c */ u8 unk_1c;
+    /* 0x00 */ u8 posNode[0x1c];
+    /* 0x1c */ u8 isAttached;
 
     void resetAttached();
 };
@@ -1249,7 +1249,7 @@ u32 FtrSoundList::isInitialized() {
 
 // @0x2235984 unk_02235984.cpp
 void Unk_ov004_02235984::resetAttached() {
-    unk_1c = 0;
+    isAttached = 0;
 }
 
 // @0x2235980 unk_022350c8.cpp
@@ -1868,7 +1868,7 @@ extern "C" s32 FtrMgr_SpawnFromArg(FtrActor *self) {
             if ((u32)FtrMgr_CountSwitchedOn(FtrActor_isGyroid) >= 4) {
                 FtrActor *e = FtrMgr_SwitchOffRandom(FtrActor_isGyroid, 0);
                 if (e != NULL) {
-                    e->unk_73c.set(1, 0);
+                    e->switchState.set(1, 0);
                     FtrSync_RequestToggleGyroid(Scene_GetCurrent(), (u8 *)e + 0x5c, 0);
                 }
             }
@@ -1888,10 +1888,10 @@ extern "C" s32 FtrMgr_SpawnFurniture(s32 x, s32 y, s32 a, s32 b, u8 c, s32 d) {
 extern "C" s32 FtrMgr_GetSurfaceHeight(s32 x, s32 y) {
     FtrActor *e = FtrActorGrid_GetInstance()->getActor(x, y, 0);
     if (e != NULL) {
-        if (e->unk_788 == 1) {
+        if (e->noCollision == 1) {
             return e->position.y;
         }
-        return e->unk_78c + e->position.y;
+        return e->surfaceHeight + e->position.y;
     }
     Unk_0203389c_Vec v;
     GroundInfo g;
@@ -3747,7 +3747,7 @@ extern "C" BOOL FtrMgr_CanStepForward(Unk_ov004_Vec3 *pos, s32 ang) {
 // @0x2234d80 unk_02234774.cpp
 extern "C" BOOL FtrMgr_CanStepSidePlus90(Unk_ov004_Vec3 *pos, s32 ang) {
     FtrActor *m = FtrActorGrid_GetInstance()->getActorAtPos(pos, 0);
-    if (m != NULL && m->unk_77c != 0x26) {
+    if (m != NULL && m->kind != 0x26) {
         return FALSE;
     }
     if (FtrMgr_TestStepTarget(pos, ang + 0x4000, 0x2000) == 2) {
@@ -3759,7 +3759,7 @@ extern "C" BOOL FtrMgr_CanStepSidePlus90(Unk_ov004_Vec3 *pos, s32 ang) {
 // @0x2234d2c unk_02234774.cpp
 extern "C" BOOL FtrMgr_CanStepSideMinus90(Unk_ov004_Vec3 *pos, s32 ang) {
     FtrActor *m = FtrActorGrid_GetInstance()->getActorAtPos(pos, 0);
-    if (m != NULL && m->unk_77c != 0x26) {
+    if (m != NULL && m->kind != 0x26) {
         return FALSE;
     }
     if (FtrMgr_TestStepTarget(pos, ang + 0xc000, 0x2000) == 2) {
@@ -3774,7 +3774,7 @@ extern "C" BOOL FtrMgr_BroadcastStereosAct0() {
     s32 z = 0;
     for (; (u32)i < FtrMgr_GetMaxFurniture(); i++) {
         FtrActor *e = FtrActorTable_GetInstance()->get(i);
-        if (e != NULL && FtrActor_PredIsStereo(e) && e->unk_73c.isOn()) {
+        if (e != NULL && FtrActor_PredIsStereo(e) && e->switchState.isOn()) {
             FtrSync_ChangeAct(e, z, 0xff, 1);
         }
     }
@@ -3788,8 +3788,8 @@ extern "C" void FtrMgr_SetSwitchAll(u32 v, BOOL (*f)(FtrActor *), s32 a) {
         FtrActor *e = FtrActorTable_GetInstance()->get(i);
         if (e != NULL) {
             if (f == NULL || (f != NULL && f(e))) {
-                if (v != e->unk_73c.isOn()) {
-                    e->unk_73c.set(v, a);
+                if (v != e->switchState.isOn()) {
+                    e->switchState.set(v, a);
                 }
             }
         }
@@ -3803,7 +3803,7 @@ extern "C" s32 FtrMgr_CountSwitchedOn(BOOL (*f)(FtrActor *)) {
     for (; i < FtrMgr_GetMaxFurniture(); i++) {
         FtrActor *e = FtrActorTable_GetInstance()->get(i);
         if (e != NULL) {
-            if (f == NULL || (f != NULL && f(e) && e->unk_73c.isOn())) {
+            if (f == NULL || (f != NULL && f(e) && e->switchState.isOn())) {
                 cnt++;
             }
         }
@@ -3822,9 +3822,9 @@ extern "C" FtrActor *FtrMgr_SwitchOffRandom(BOOL (*f)(FtrActor *), s32 a) {
             FtrActor *e = FtrActorTable_GetInstance()->get(i);
             if (e != NULL) {
                 if (f == NULL || (f != NULL && f(e))) {
-                    if (e->unk_73c.isOn()) {
+                    if (e->switchState.isOn()) {
                         if (cnt == pick) {
-                            e->unk_73c.set(0, a);
+                            e->switchState.set(0, a);
                             return e;
                         }
                         cnt++;
@@ -3849,7 +3849,7 @@ extern "C" s32 FtrMgr_PickFurnitureComment(u32 key) {
     u32 i = 0;
     for (; i < n; i++) {
         FtrActor *e = mgr->get(i);
-        if (e != NULL && e->unk_774 != -1 && key == e->unk_770) {
+        if (e != NULL && e->commentId != -1 && key == e->commentPersonality) {
             cnt++;
         }
     }
@@ -3859,9 +3859,9 @@ extern "C" s32 FtrMgr_PickFurnitureComment(u32 key) {
         i = 0;
         for (; i < n; i++) {
             FtrActor *e = mgr->get(i);
-            if (e != NULL && e->unk_774 != -1 && key == e->unk_770) {
+            if (e != NULL && e->commentId != -1 && key == e->commentPersonality) {
                 if (cnt == pick) {
-                    return e->unk_774;
+                    return e->commentId;
                 }
                 cnt++;
             }
@@ -3930,7 +3930,7 @@ extern "C" void FtrMgr_NotifyNearestCabinClock(void *) {
             FtrActor *e = FtrActorTable_GetInstance()->get(i);
             if (e != NULL && FtrActor_isCabinClock(e)) {
                 Unk_ov004_Vec3 v0c;
-                Unk_ov004_Vec3 t = e->unk_7b4;
+                Unk_ov004_Vec3 t = e->centerPos;
                 v0c.x = t.x;
                 v0c.y = t.y;
                 v0c.z = t.z;
@@ -3967,7 +3967,7 @@ extern "C" void FtrMgr_NotifyNearestSoundingClock(void *) {
             FtrActor *e = FtrActorTable_GetInstance()->get(i);
             if (e != NULL && FtrActor_isSoundingClock(e)) {
                 Unk_ov004_Vec3 v0c;
-                Unk_ov004_Vec3 t = e->unk_7b4;
+                Unk_ov004_Vec3 t = e->centerPos;
                 v0c.x = t.x;
                 v0c.y = t.y;
                 v0c.z = t.z;
@@ -4009,7 +4009,7 @@ extern "C" void FurnitureManager_UpdateTvSound(FurnitureManager *self) {
                 FtrActor *e = FtrActorTable_GetInstance()->get(i);
                 if (e != NULL && FtrActor_isTvOn(e)) {
                     Unk_ov004_Vec3 v20;
-                    Unk_ov004_Vec3 t = e->unk_7b4;
+                    Unk_ov004_Vec3 t = e->centerPos;
                     v20.x = t.x;
                     v20.y = t.y;
                     v20.z = t.z;
@@ -4024,7 +4024,7 @@ extern "C" void FurnitureManager_UpdateTvSound(FurnitureManager *self) {
                 FtrActor *e = FtrActorTable_GetInstance()->get(best);
                 if (e != NULL) {
                     func_ov004_0220e738(e);
-                    Unk_ov004_Vec3 t = e->unk_7b4;
+                    Unk_ov004_Vec3 t = e->centerPos;
                     v8.x = t.x;
                     v8.y = t.y;
                     v8.z = t.z;
@@ -4146,7 +4146,7 @@ extern "C" s32 FtrMgr_FindFurnitureFacingPlayer(s32 *a, s32 *b, u16 *c, u16 *d) 
 extern "C" u8 FtrMgr_GetActorLayer(u32 i) {
     if (i < FtrMgr_GetMaxFurniture()) {
         if (FtrActorTable_GetInstance()->get(i) != 0) {
-            return FtrActorTable_GetInstance()->get(i)->unk_284;
+            return FtrActorTable_GetInstance()->get(i)->mapLayer;
         }
     }
     return 0;
@@ -4183,7 +4183,7 @@ extern "C" Unk_ov004_Vec3 *FtrMgr_PollRemovedPos(s32 idx) {
     if (o == 0) {
         return (Unk_ov004_Vec3 *)&sFtrRemovePos;
     }
-    if (o->unk_14c < 0x4cd) {
+    if (o->drawScale < 0x4cd) {
         return (Unk_ov004_Vec3 *)&sFtrRemovePos;
     }
     return 0;
@@ -4294,7 +4294,7 @@ extern "C" s32 FtrMgr_TryPlaceAt(void *out, s32 x, s32 y, s32 dir, s32 pl, u32 l
                 break;
             }
             FtrActor *o = FtrActorGrid_GetInstance()->getActor(px, py, z2);
-            if (o == 0 || (o != 0 && o->unk_784 != 1) || (o != 0 && o->isNotReady() != 0)) {
+            if (o == 0 || (o != 0 && o->hasTopSurface != 1) || (o != 0 && o->isNotReady() != 0)) {
                 ok = FALSE;
                 break;
             }
@@ -4453,7 +4453,7 @@ TILE_ENTRY(FtrMgr_FindPlacementMyDesignC, 0x3f24)
 extern "C" s32 FtrMgr_TakeDisplayedWearable(void *o0) {
     Unk_ov004_02233d2c_Obj *o = (Unk_ov004_02233d2c_Obj *)o0;
     if (o) {
-        switch (o->unk_77c) {
+        switch (o->kind) {
         case 0x1b:
             if (o) {
                 return FtrShirt_syncAct1(o);
@@ -4478,7 +4478,7 @@ extern "C" s32 FtrMgr_TakeDisplayedWearableAt(s32 a, s32 b) {
 extern "C" s32 FtrMgr_RestoreDisplayedWearable(void *o0) {
     Unk_ov004_02233d2c_Obj *o = (Unk_ov004_02233d2c_Obj *)o0;
     if (o) {
-        switch (o->unk_77c) {
+        switch (o->kind) {
         case 0x1b:
             if (o) {
                 return FtrShirt_syncAct0(o);
@@ -4600,12 +4600,12 @@ extern "C" void FtrMoveAnim_NodeCallback(Unk_ov004_02233b90_Obj *o) {
     Unk_ov004_02233b3c_V3 v;
     Unk_ov004_02233b3c_V3 out;
     FtrMoveAnim *r;
-    if (o != 0 && o->c->unk_01 == 0) {
+    if (o != 0 && o->c->nodeId == 0) {
         Unk_ov004_02233b3c_V3 *pv = &o->pJntAnmResult->trans;
         v.x = pv->x;
         v.y = pv->y;
         v.z = pv->z;
-        r = o->pRenderObj->unk_2c;
+        r = o->pRenderObj->ptrUser;
         if (r != 0) {
             *(Unk_ov004_02233b3c_Mat *)data_021f47e0 = *(Unk_ov004_02233b3c_Mat *)FtrMoveAnim_GetMtx(r);
             MTX_MultVec43(&v, data_021f47e0, &out);

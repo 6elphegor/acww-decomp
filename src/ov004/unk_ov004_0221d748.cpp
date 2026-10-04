@@ -135,7 +135,7 @@ public:
     }
 struct ThreeLayerAnimModel {
     u8 pad_00[0xa4];
-    s32 unk_a4;
+    s32 curFrame;
     u8 pad_a8[0x2a0 - 0xec - 0xa8];
     ThreeLayerAnimModel();
     ~ThreeLayerAnimModel();
@@ -159,7 +159,7 @@ MEMBER(Unk_0201a13c, 0x49c - 0x420);
 MEMBER(CollisionState, 0x30);
 struct Unk_02088d00 {
     u8 pad_00[0x1c];
-    u32 unk_1c;
+    u32 groups;
     u8 pad_20[0x514 - 0x4cc - 0x20];
     Unk_02088d00();
     ~Unk_02088d00();
@@ -531,7 +531,7 @@ BOOL SpNpcBooker::vfunc_00() {
         return FALSE;
     }
     homeAngle = rotY;
-    collider.unk_1c |= 2;
+    collider.groups |= 2;
     if (CommManager_isOnline(gCommManager) && Scene_GetCurrent() == 0xb) {
         if (NpcActor_isNetOwner(this)) {
             changeAct(0);

@@ -130,9 +130,9 @@ public:
 
 struct Unk_ov004_022142fc_Actor {
     u8 pad_00[0x5c];
-    u8 unk_5c[0xc];
+    u8 position[0xc];
     u8 pad_68[0x8e - 0x68];
-    s16 unk_8e;
+    s16 rotY;
 };
 
 struct Unk_ov004_022146ec_Bits {
@@ -150,7 +150,7 @@ struct Unk_ov004_022146ec_Actor {
 
 struct Unk_ov004_022146ec_Sing {
     u8 pad_00[0x64];
-    u32 unk_64;
+    u32 myAid;
 };
 
 class MuseumExhibitInfo;

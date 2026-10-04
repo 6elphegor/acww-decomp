@@ -26,8 +26,8 @@ struct HudObjGfx {
 
 // unk_02011580.cpp
 struct Unk_02081d4c {
-    u32 unk_00;
-    u32 unk_04;
+    u32 slot;
+    u32 scale;
 };
 
 struct MsgRequest;
@@ -42,7 +42,7 @@ struct Unk_0205dfa4_Prim {
 // unk_02011580.cpp
 struct Unk_0205dfa4_9c {
     u8 unk_00[0x10];
-    u32 unk_10;
+    u32 frameStep;
 };
 
 // unk_02011580.cpp
@@ -50,11 +50,11 @@ struct Unk_0205dfa4 : Unk_0205dfa4_Prim, Unk_0205dfa4_9c {};
 
 // unk_02011580.cpp
 struct HeldToolModel {
-    u16 unk_00;
+    u16 heldItem;
     u8 unk_02[2];
-    u8 unk_04[8];
-    u8 unk_0c[0x30];
-    u8 unk_3c;
+    u8 modelHandle[8];
+    u8 handMtx[0x30];
+    u8 visible;
 
     void func_02011b60(u32 v);
     Unk_0205dfa4 *func_02011b7c();
@@ -90,9 +90,9 @@ struct Unk_02011f74_Pair {
 
 // unk_02011ec0.cpp
 struct Unk_02011f74_World {
-    void *unk_00;
+    void *blocks;
     Unk_02011f74_Pair size;
-    Unk_02011f74_Pair unk_0c;
+    Unk_02011f74_Pair units;
 };
 
 // unk_02011ec0.cpp
@@ -135,17 +135,17 @@ struct Unk_02011f74_Vec {
 // unk_02011ec0.cpp
 struct Unk_02012164 {
     u32 unk_00;
-    s32 unk_04;
+    s32 stepPhase;
     u32 unk_08;
-    Unk_02011f74_Pair unk_0c;
-    s32 unk_14;
-    s32 unk_18;
-    s32 unk_1c;
-    s32 unk_20;
+    Unk_02011f74_Pair targetUnit;
+    s32 targetBlockX;
+    s32 targetBlockZ;
+    s32 waypointX;
+    s32 waypointZ;
     u8 pad_24[0x88 - 0x24];
-    s32 unk_88;
-    s32 unk_8c;
-    s32 unk_90;
+    s32 pathDir;
+    s32 pathMode;
+    s32 approachDir;
 
     void func_02012810(Unk_02011f74_Vec *p);
     void func_02012df8();
@@ -204,7 +204,7 @@ typedef s32 (Unk_02012810::*Unk_02012810_Fn0)();
 
 // unk_02012810.cpp
 struct Unk_02012810_Tbl {
-    Unk_02012810_Fn unk_00;
+    Unk_02012810_Fn arrivedCheck;
     u32 pad[2];
     Unk_02012810_Fn tbl[2][3];
 };
@@ -212,7 +212,7 @@ struct Unk_02012810_Tbl {
 // unk_02012810.cpp
 struct Unk_02012f04_Obj {
     u32 pad_00[3];
-    Unk_02012b94_Pair unk_0c;
+    Unk_02012b94_Pair units;
 };
 
 // unk_02012810.cpp
@@ -239,19 +239,19 @@ struct Unk_020130f0_Dir {
 // unk_02012810.cpp
 class Unk_02012810 {
 public:
-    u32 unk_00;
-    u32 unk_04;
-    u32 unk_08;
-    u32 unk_0c;
-    u32 unk_10;
+    u32 stepMode;
+    u32 stepPhase;
+    u32 routeType;
+    u32 targetUnitX;
+    u32 targetUnitZ;
     u8 pad_14[8];
-    Unk_02012b94_Pair unk_1c;
+    Unk_02012b94_Pair waypoint;
     u8 pad_24[4];
-    Unk_02012810_Tbl *unk_28;
-    u8 unk_2c[90];
-    u32 unk_88;
-    u32 unk_8c;
-    u32 unk_90;
+    Unk_02012810_Tbl *typeTable;
+    u8 junctions[90];
+    u32 pathDir;
+    u32 pathMode;
+    u32 approachDir;
     s32 unk_94;
     s32 unk_98;
 
@@ -293,29 +293,29 @@ typedef Unk_02013260_Vec (VillagerRoute::*Unk_02013260_Fn)(u32 a, u32 b);
 // unk_020131a4.cpp
 struct Unk_02013260_Entry {
     u8 pad_00[8];
-    Unk_02013260_Fn unk_08;
+    Unk_02013260_Fn pickTarget;
     u8 pad_10[0x30];
 };
 
 // unk_020131a4.cpp
 struct VillagerRoute {
-    u32 unk_00;
-    u32 unk_04;
-    u32 unk_08;
-    Unk_02013260_Vec unk_0c;
-    s32 unk_14;
-    s32 unk_18;
-    u32 unk_1c;
-    u32 unk_20;
+    u32 stepMode;
+    u32 stepPhase;
+    u32 routeType;
+    Unk_02013260_Vec targetUnit;
+    s32 targetBlockX;
+    s32 targetBlockZ;
+    u32 waypointX;
+    u32 waypointZ;
     s16 unk_24;
     s16 unk_26;
-    Unk_02013260_Entry* unk_28;
+    Unk_02013260_Entry* typeTable;
     u8 pad_2c[0x88 - 0x2c];
-    u32 unk_88;
-    u32 unk_8c;
-    u32 unk_90;
-    u32 unk_94;
-    u32 unk_98;
+    u32 pathDir;
+    u32 pathMode;
+    u32 approachDir;
+    u32 lastUnitX;
+    u32 lastUnitZ;
     BOOL isActive();
     void setStepMode(u32 v);
     void checkUnitChanged(u32 v);
@@ -331,7 +331,7 @@ struct VillagerRoute {
 struct Unk_020133cc_Player;
 
 // unk_020131a4.cpp
-struct Unk_02013910_Ref { u32 unk_00; u32 unk_04; };
+struct Unk_02013910_Ref { u32 unk_00; u32 state; };
 
 // unk_020131a4.cpp
 struct Unk_020133cc_Vec {
@@ -394,34 +394,34 @@ struct Unk_020133cc_Player {
     virtual s32 vfunc_80();
     virtual s32 vfunc_84();
     u8 pad_04[0x3c - 4];
-    Unk_02013910_Ref* unk_3c;
+    Unk_02013910_Ref* window;
     u8 pad_40[0x5c - 0x40];
-    Unk_020133cc_Vec unk_5c;
+    Unk_020133cc_Vec position;
     u8 pad_68[0x8e - 0x68];
-    s16 unk_8e;
+    s16 rotY;
     u8 pad_90[0xb0 - 0x90];
-    u32 unk_b0;
+    u32 actorFlags;
     u8 pad_b4[0x188 - 0xb4];
-    Unk_020133cc_Sub unk_188;
+    Unk_020133cc_Sub bodyAnimCtrl;
     u8 pad_18c[0x350 - 0x18c];
-    Unk_020133cc_Sub unk_350;
+    Unk_020133cc_Sub moveCtrl;
     u8 pad_354[0x418 - 0x354];
-    Unk_020133cc_Sub unk_418;
+    Unk_020133cc_Sub speechState;
     u8 pad_41c[0x484 - 0x41c];
-    Unk_020133cc_Vec unk_484;
-    Unk_020133cc_Vec unk_490;
+    Unk_020133cc_Vec footPosA;
+    Unk_020133cc_Vec footPosB;
     u8 pad_49c[0x4e8 - 0x49c];
-    u32 unk_4e8;
+    u32 colliderFlags;
     u8 pad_4ec[0x514 - 0x4ec];
-    Unk_020133cc_Sub unk_514;
+    Unk_020133cc_Sub seEmitter;
     u8 pad_518[0x564 - 0x518];
-    Unk_020133cc_Sub unk_564;
+    Unk_020133cc_Sub actionCtrl;
     u8 pad_568[0x618 - 0x568];
-    Unk_020133cc_Sub unk_618;
+    Unk_020133cc_Sub talkCtrl;
     u8 pad_61c[0x634 - 0x61c];
-    Unk_020133cc_Player* unk_634;
+    Unk_020133cc_Player* talkRequest;
     u8 pad_638[0x63e - 0x638];
-    s16 unk_63e;
+    s16 lastTaughtEmotion;
     Unk_020133cc_Player* func_0201bc1c();
     Unk_020133cc_Player* func_02015a7c();
     Unk_020133cc_Player* func_02015710();
@@ -439,15 +439,15 @@ struct Unk_02013474_Half { s16 a; s16 b; };
 
 // unk_020131a4.cpp
 struct Unk_02013474 {
-    u8 unk_00;
+    u8 footstepsEnabled;
     u8 pad_01[3];
-    u32 unk_04;
+    u32 prevMoveMode;
     u8 unk_08;
     u8 unk_09;
-    u8 unk_0a;
+    u8 step;
     u8 unk_0b;
-    u8 unk_0c;
-    u8 unk_0d;
+    u8 keepCamera;
+    u8 stopAction;
     void updateFootsteps(Unk_020133cc_Player* p);
     void playFootstepSe(Unk_020133cc_Player* p);
     void disableFootsteps();
@@ -480,13 +480,13 @@ typedef void (Unk_02013474::*Unk_02013474_Fn)(Unk_020133cc_Player*);
 
 // unk_020131a4.cpp
 struct Unk_020136c0 {
-    u32 unk_00;
-    u16 unk_04;
-    u16 unk_06;
+    u32 act07Variant;
+    u16 turnSpeed;
+    u16 turnAngle;
     u8 unk_08;
     u8 unk_09;
-    u8 unk_0a;
-    u8 unk_0b;
+    u8 step;
+    u8 clearActorFlagOnEnd;
     void setupState4(Unk_020133cc_Player* p);
 };
 
@@ -499,10 +499,10 @@ struct Unk_02013b10_VecT : Unk_02013b10_Vec { Unk_02013b10_VecT() {} Unk_02013b1
 // unk_02013b10.cpp
 struct Unk_02013b10_Sub {
     u8 pad_00[4];
-    s32 unk_04;
-    s32 unk_08;
+    s32 state;
+    s32 nextState;
     u8 pad_0c[8];
-    s32 unk_14;
+    s32 openMode;
 };
 
 struct Unk_020140d0_X;
@@ -550,22 +550,22 @@ struct Unk_02013b10_Obj {
     virtual void vfunc_8c();
     virtual void vfunc_90();
     u8 pad_04[0x1e - 4];
-    u8 unk_1e;
+    u8 msgIndex;
     u8 pad_1f[0x3c - 0x1f];
-    Unk_02013b10_Sub *unk_3c;
+    Unk_02013b10_Sub *window;
     u8 pad_40[0x5c - 0x40];
-    Unk_02013b10_Vec unk_5c;
+    Unk_02013b10_Vec position;
 };
 
 // unk_02013b10.cpp
 struct Unk_02013b10_Ctx : Unk_02013b10_Obj {
     u8 pad_68[0x8e - sizeof(Unk_02013b10_Obj)];
-    s16 unk_8e;
+    s16 rotY;
     u8 pad_90[0x4e8 - 0x90 ];
-    u32 unk_4e8;
+    u32 colliderFlags;
     u8 pad_4ec[0x564 - 0x4ec];
-    u8 unk_564[0xd0];
-    Unk_02013b10_Obj *unk_634;
+    u8 actionCtrl[0xd0];
+    Unk_02013b10_Obj *talkRequest;
 };
 
 // unk_02013b10.cpp
@@ -629,13 +629,13 @@ struct Unk_02014040_Ent {
 class Unk_02014258 {
 public:
     u8 pad_00[0x3c];
-    Unk_02013b10_Sub *unk_3c;
+    Unk_02013b10_Sub *window;
     u8 pad_40[0x51 - 0x40];
-    u8 unk_51;
+    u8 speakerIndex;
     u8 pad_52[0xa0 - 0x52];
-    u8 unk_a0;
+    u8 focusNewSpeaker;
     u8 pad_a1[7];
-    u8 unk_a8;
+    u8 taskStep;
 
     BOOL taskSwitchSpeaker();
     BOOL switchSpeakerSwap();
@@ -705,26 +705,26 @@ struct Unk_02014420 {
     virtual void vfunc_34();
     virtual void vfunc_38(s32 a);
     u8 pad_04[0x38];
-    void *unk_3c;
+    void *window;
     u32 unk_40;
-    u32 unk_44;
-    Unk_02014420_Ext *unk_48;
+    u32 talkPlayer;
+    Unk_02014420_Ext *ownerActor;
     u8 pad_4c[0x10];
     u8 unk_5c;
     u8 pad_5d[3];
     s32 unk_60;
     u8 pad_64[0x16];
-    u16 unk_7a;
-    u32 unk_7c;
+    u16 subSceneItem;
+    u32 handOverKind;
     u8 pad_80[8];
-    Unk_02014420_Vec2 unk_88;
-    u8 unk_90;
+    Unk_02014420_Vec2 melodyPattern;
+    u8 handOverMode;
     u8 pad_91[3];
-    u32 unk_94;
+    u32 handOverVariant;
     u8 pad_98[9];
-    u8 unk_a1;
+    u8 randomMelody;
     u8 pad_a2[6];
-    u8 unk_a8;
+    u8 taskStep;
     u8 unk_a9;
 
     BOOL func_02015314(s32 cmd);
@@ -773,7 +773,7 @@ struct Unk_020155e4_Ret;
 // unk_02014d90.cpp
 struct Unk_020155e4_Ret {
     u8 pad_00[0x8e];
-    s16 unk_8e;
+    s16 rotY;
 };
 
 // unk_02014d90.cpp
@@ -799,39 +799,39 @@ public:
 
 // unk_02014d90.cpp
 struct Unk_02014d90_Node {
-      u32 unk_00;
-      s32 unk_04;
-      s32 unk_08;
-      u32 unk_0c;
-      u32 unk_10;
-      u32 unk_14;
+      u32 index;
+      s32 state;
+      s32 nextState;
+      u32 stateStep;
+      u32 autoAdvanceTimer;
+      u32 openMode;
 };
 
 // unk_02014d90.cpp
-struct Unk_02015344_Params {
-      s32 unk_00;
-      s32 unk_04;
-      s32 unk_08;
-      s32 unk_0c;
-      s32 unk_10;
-      u16 unk_14;
-      u16 unk_16;
-      s32 unk_18;
-      u8 unk_1c;
+struct TalkSubSceneParams {
+      s32 subSceneType;
+      s32 menuPtrArg0;
+      s32 menuPtrArg1;
+      s32 menu12Arg;
+      s32 pocketFilter;
+      u16 pocketMask;
+      u16 subSceneItem;
+      s32 handOverKind;
+      u8 pocketSelectMode;
       u8 pad_1d;
-      u8 unk_1e;
-      u8 unk_1f;
-      u8 unk_20;
+      u8 launcherMenu;
+      u8 launcherIndex;
+      u8 keepWindowClosed;
       u8 pad_21[0x2c - 0x21];
-      u8 unk_2c;
+      u8 handOverMode;
       u8 pad_2d[3];
-      s32 unk_30;
-      s32 unk_34;
-      s32 unk_38;
-      u8 unk_3c;
+      s32 handOverVariant;
+      s32 launcherText;
+      s32 launcherTextSize;
+      u8 focusNewSpeaker;
       u8 unk_3d;
       u8 pad_3e[2];
-      s32 unk_40;
+      s32 closeMode;
 };
 
 // unk_02014d90.cpp
@@ -896,7 +896,7 @@ public:
     void runTask();
     BOOL isTaskRunning();
     BOOL startTask(s32 x);
-    void initSubSceneParams(Unk_02015344_Params *p);
+    void initSubSceneParams(TalkSubSceneParams *p);
     void resetTasks();
     void func_020143fc(s32 x);
     u8 *func_02015748(u32 x);
@@ -912,29 +912,29 @@ public:
       u8 unk_50;
       u8 pad_51[0x0f];
       s32 unk_60;
-      s32 unk_64;
-      u32 unk_68;
-      u32 unk_6c;
-      u32 unk_70;
-      u32 unk_74;
-      u16 unk_78;
+      s32 subSceneType;
+      u32 menuPtrArg0;
+      u32 menuPtrArg1;
+      u32 menu12Arg;
+      u32 pocketFilter;
+      u16 pocketMask;
       u16 unk_7a;
-      u32 unk_7c;
+      u32 handOverKind;
       u8 unk_80;
       u8 pad_81;
-      u8 unk_82;
-      u8 unk_83;
-      u8 unk_84;
+      u8 launcherMenu;
+      u8 launcherIndex;
+      u8 keepWindowClosed;
       u8 pad_85[0x0b];
-      u8 unk_90;
+      u8 handOverMode;
       u8 pad_91[3];
-      u32 unk_94;
-      u32 unk_98;
-      u32 unk_9c;
+      u32 handOverVariant;
+      u32 launcherText;
+      u32 launcherTextSize;
       u32 unk_a0;
-      u32 unk_a4;
-      u8 unk_a8;
-      u8 unk_a9;
+      u32 closeMode;
+      u8 taskStep;
+      u8 taskRunning;
 };
 
 // unk_02014d90.cpp
@@ -1120,11 +1120,11 @@ public:
     s32 release();
 
       u32 pad_00[2];
-      s32 unk_08;
-      s32 unk_0c;
-      u8 unk_10;
-      s32 unk_14;
-      u8 unk_18;
+      s32 animSpeed;
+      s32 talkGestureVariant;
+      u8 talkGestureActive;
+      s32 animSpeedScale;
+      u8 animSpeedFixed;
 };
 
 // unk_02015fe0.cpp
@@ -1135,31 +1135,31 @@ struct Unk_02015fe0_Vec {
 // unk_02015fe0.cpp
 struct Unk_02015fe0_Obj {
     u8 unk_00[0x5c];
-    s32 unk_5c;
-    u8 unk_60[4];
-    s32 unk_64;
+    s32 position;
+    u8 positionY[4];
+    s32 positionZ;
     u8 unk_68[0x8e - 0x68];
-    s16 unk_8e;
+    s16 rotY;
     u8 unk_90[4];
-    s16 unk_94;
+    s16 moveAngleY;
     u8 unk_96[0xec - 0x96];
-    u8 unk_ec[0x2a0 - 0xec];
-    u8 unk_2a0[0xc];
-    u8 unk_2ac[0x334 - 0x2ac];
-    u8 unk_334[0x1c];
-    u8 unk_350[0x3a8 - 0x350];
+    u8 model[0x2a0 - 0xec];
+    u8 moveAnimSet[0xc];
+    u8 faceAnim[0x334 - 0x2ac];
+    u8 animCtrl[0x1c];
+    u8 moveCtrl[0x3a8 - 0x350];
     u8 unk_3a8[0x418 - 0x3a8];
-    u8 unk_418[8];
+    u8 speechState[8];
 };
 
 // unk_02015fe0.cpp
 class NpcAnimCtrl {
 public:
     u8 unk_00[0xc];
-    s32 unk_0c;
-    u8 unk_10;
+    s32 talkGestureVariant;
+    u8 talkGestureActive;
     u8 pad_11[3];
-    s32 unk_14;
+    s32 animSpeedScale;
     u8 unk_18[4];
 
     NpcAnimCtrl();
@@ -1180,9 +1180,9 @@ typedef void (Unk_02016360::*Unk_02016360_Fn)(Unk_02015fe0_Obj *);
 // unk_02015fe0.cpp
 class Unk_02016360 {
 public:
-    s32 unk_00;
+    s32 netMoveMode;
     u8 pad_04[0x94];
-    u8 unk_98;
+    u8 actStep;
 
     void mainAct15(Unk_02015fe0_Obj *o);
     void act15Step3(Unk_02015fe0_Obj *o);
@@ -1208,11 +1208,11 @@ struct Unk_02016a44_S0ec { u8 pad[4]; };
 // unk_02016a44.cpp
 struct Unk_02006d14_Prim {
     u8 pad_000[0x5c];
-    s32 unk_5c;
+    s32 position;
     u8 pad_060[4];
-    s32 unk_64;
+    s32 positionZ;
     u8 pad_068[0x8e - 0x68];
-    s16 unk_8e;
+    s16 rotY;
     u8 pad_090[0xec - 0x90];
 };
 struct MsgRequest {
@@ -1235,27 +1235,27 @@ public:
 };
 
 // unk_02016a44.cpp
-struct Unk_02016a44_Sub { u8 pad[0x22]; u16 unk_22; };
+struct Unk_02016a44_Sub { u8 pad[0x22]; u16 item; };
 
 // unk_02016a44.cpp
-struct Unk_02016a44_Sub2c { u8 pad[0x22]; u16 unk_22; u8 pad2[0x94 - 0x2c - 0x24]; };
+struct Unk_02016a44_Sub2c { u8 pad[0x22]; u16 item; u8 pad2[0x94 - 0x2c - 0x24]; };
 
 // unk_02016a44.cpp
 class Unk_02016a44 {
 public:
-      s32 unk_00;
-      u8 unk_04;
-      u8 unk_05;
-      u8 unk_06[8];
+      s32 netMoveMode;
+      u8 netAction;
+      u8 netPriority;
+      u8 netArgs[8];
       u8 pad_0e[6];
-      s32 unk_14;
+      s32 priority;
       u8 pad_18[0x28 - 0x18];
-      s32 unk_28;
-      Unk_02016a44_Sub2c unk_2c;
-      s32 unk_94;
-      u8 unk_98;
+      s32 pendingPriority;
+      Unk_02016a44_Sub2c pendingParams;
+      s32 actionDone;
+      u8 actStep;
       u8 pad_99[0xac - 0x99];
-      s32 unk_ac;
+      s32 itemEffect;
 
     BOOL setupAct15(Unk_02006d14 *o);
     BOOL postAct14(Unk_02006d14 *o);
@@ -1313,9 +1313,9 @@ public:
 // unk_0201745c.cpp
 struct Unk_0201745c_State {
     u8 pad_00[0x98];
-    u8 unk_98;
+    u8 actStep;
     u8 pad_99[0xac - 0x99];
-    s32 unk_ac;
+    s32 itemEffect;
 };
 
 // unk_0201745c.cpp
@@ -1356,17 +1356,17 @@ struct Unk_0201745c_Ctx {
     virtual void vf84();
     virtual BOOL vf88(void *a, u32 b);
     u8 pad_04[0x8e - 4];
-    s16 unk_8e;
+    s16 rotY;
     u8 pad_90[0x190 - 0x90];
-    u32 unk_190;
+    u32 bodyAnimFrame;
     u8 pad_194[0x334 - 0x194];
-    u8 unk_334[0x350 - 0x334];
-    u8 unk_350[0x478 - 0x350];
-    s32 unk_478;
-    s32 unk_47c;
-    s32 unk_480;
+    u8 animCtrl[0x350 - 0x334];
+    u8 moveCtrl[0x478 - 0x350];
+    s32 headTopPosX;
+    s32 headTopPosY;
+    s32 headTopPosZ;
     u8 pad_484[0x628 - 0x484];
-    void *unk_628;
+    void *curHeldTool;
 };
 
 // unk_0201745c.cpp
@@ -1377,18 +1377,18 @@ typedef Unk_0201745c_Ctx C_745c;
 
 // unk_02017d74.cpp
 struct Unk_02017d74_Data {
-    s32 unk_00;
+    s32 animId;
     u8 pad_04[0x1c - 4];
-    u16 unk_1c;
-    u16 unk_1e;
-    u8 unk_20;
+    u16 blendFrames;
+    u16 animStartFrame;
+    u8 animPlayMode;
     u8 pad_21;
-    u16 unk_22;
-    s32 unk_24;
-    s32 unk_28;
-    u8 unk_2c;
+    u16 item;
+    s32 handOverKind;
+    s32 handOverPartner;
+    u8 handOverMode;
     u8 pad_2d[3];
-    s32 unk_30;
+    s32 handOverVariant;
 };
 
 // unk_02017d74.cpp
@@ -1433,16 +1433,16 @@ struct Unk_02017d74_Ctx {
     virtual u32 vf94();
     virtual u32 vf98();
     u8 pad_04[0x18c - 4];
-    u32 unk_18c;
-    u32 unk_190;
+    u32 bodyAnimNumFrames;
+    u32 bodyAnimFrame;
     u8 pad_194[0x19c - 0x194];
-    u8 unk_19c;
+    u8 bodyAnimPlayMode;
     u8 pad_19d[0x334 - 0x19d];
-    u8 unk_334[0x350 - 0x334];
-    u8 unk_350[0x3aa - 0x350];
+    u8 animCtrl[0x350 - 0x334];
+    u8 moveCtrl[0x3aa - 0x350];
     u8 unk_3aa[0x514 - 0x3aa];
-    u8 unk_514[0x628 - 0x514];
-    void *unk_628;
+    u8 seEmitter[0x628 - 0x514];
+    void *curHeldTool;
 };
 
 // unk_02017d74.cpp
@@ -1458,14 +1458,14 @@ typedef Unk_02017d74_Ctx C_7d74;
 // unk_02017d74.cpp
 struct Unk_02017d74 {
     u8 pad_00[4];
-    u8 unk_04;
-    u8 unk_05;
-    u8 unk_06[0x14 - 6];
-    s32 unk_14;
+    u8 netAction;
+    u8 netPriority;
+    u8 netArgs[0x14 - 6];
+    s32 priority;
     u8 pad_18[4];
-    s32 unk_1c;
+    s32 action;
     u8 pad_20[0x98 - 0x20];
-    u8 unk_98;
+    u8 actStep;
 
     void act0EStep00(C_7d74 *c);
     BOOL setupAct0E(C_7d74 *c);
@@ -1536,51 +1536,51 @@ struct Unk_02018698_Ctx {
     virtual void vf98();
     virtual u32 vf9c();
     u8 pad_04[0x8e - 4];
-    s16 unk_8e;
+    s16 rotY;
     u8 pad_90[0x98 - 0x90];
-    u32 unk_98;
+    u32 speed;
     u8 pad_9c[0x190 - 0x9c];
-    u32 unk_190;
+    u32 bodyAnimFrame;
     u8 pad_194[0x2ac - 0x194];
-    u8 unk_2ac[0x334 - 0x2ac];
-    u8 unk_334[0x350 - 0x334];
-    u8 unk_350[0x3aa - 0x350];
+    u8 faceAnim[0x334 - 0x2ac];
+    u8 animCtrl[0x350 - 0x334];
+    u8 moveCtrl[0x3aa - 0x350];
     u8 unk_3aa[0x420 - 0x3aa];
-    u8 unk_420[0x445 - 0x420];
-    u8 unk_445;
+    u8 emotionFx[0x445 - 0x420];
+    u8 fxEmotionId;
     u8 pad_446[0x514 - 0x446];
-    u8 unk_514[0x628 - 0x514];
-    void *unk_628;
+    u8 seEmitter[0x628 - 0x514];
+    void *curHeldTool;
 };
 
 // unk_02018698.cpp
 struct Unk_02018698_Data {
     u8 pad_00[4];
-    s32 unk_04;
-    s32 unk_08;
-    s32 unk_0c;
-    s32 unk_10;
-    s32 unk_14;
-    s16 unk_18;
-    s16 unk_1a;
-    u16 unk_1c;
+    s32 waypointX;
+    s32 waypointZ;
+    s32 destX;
+    s32 destZ;
+    s32 act07Variant;
+    s16 targetAngle;
+    s16 turnSpeed;
+    u16 blendFrames;
     u8 pad_1e[3];
-    u8 unk_21;
+    u8 emotionId;
 };
 
 // unk_02018698.cpp
 struct Unk_02018698_Ent {
-    s32 unk_00;
+    s32 introAnim;
     u8 pad_04[0x14];
-    u8 unk_18;
+    u8 introPlayMode;
     u8 pad_19[3];
 };
 
 // unk_02018698.cpp
 struct Unk_02018698_Rec {
-    s32 unk_00;
+    s32 introAnim;
     u8 pad_04[8];
-    s32 unk_0c;
+    s32 loopAnim;
 };
 
 // unk_02018698.cpp
@@ -1600,24 +1600,24 @@ typedef Unk_02018698_Vec V;
 // unk_02018698.cpp
 struct Unk_02018698 {
     u32 pad_00;
-    u8 unk_04;
-    u8 unk_05;
-    u8 unk_06[0x0e];
-    s32 unk_14;
+    u8 netAction;
+    u8 netPriority;
+    u8 netArgs[0x0e];
+    s32 priority;
     u8 pad_18[4];
-    s32 unk_1c;
+    s32 action;
     u8 pad_20[0x94 - 0x20];
-    u32 unk_94;
-    u8 unk_98;
+    u32 actionDone;
+    u8 actStep;
     u8 pad_99[3];
-    s32 unk_9c;
+    s32 moveMode;
     s16 unk_a0;
     u8 pad_a2[2];
-    Unk_02018698_Rec *unk_a4;
-    u8 unk_a8;
-    u8 unk_a9;
+    Unk_02018698_Rec *emotionEntry;
+    u8 emotionIntro;
+    u8 emotionId;
     u8 pad_aa[6];
-    s32 unk_b0;
+    s32 act07Variant;
 
     s32 setupAct0A(C_8698 *c);
     void mainAct09(C_8698 *c);
@@ -1644,14 +1644,14 @@ struct Unk_02018698 {
 
 // unk_02019020.cpp
 struct NpcActionParams {
-    s32 unk_00, unk_04, unk_08, unk_0c, unk_10, unk_14;
-    s16 unk_18, unk_1a;
-    u16 unk_1c, unk_1e;
-    u8 unk_20, unk_21;
-    u16 unk_22;
-    s32 unk_24, unk_28;
-    u8 unk_2c;
-    s32 unk_30;
+    s32 animId, waypointX, waypointZ, destX, destZ, act07Variant;
+    s16 targetAngle, turnSpeed;
+    u16 blendFrames, animStartFrame;
+    u8 animPlayMode, emotionId;
+    u16 item;
+    s32 handOverKind, handOverPartner;
+    u8 handOverMode;
+    s32 handOverVariant;
     void *clear();
     void copyFrom(NpcActionParams *src);
 };
@@ -1713,32 +1713,32 @@ struct NpcActionCtrl {
     void func_02019854();
 
     u8 unk_00[4];
-    u8 unk_04;
-    u8 unk_05;
-    u8 unk_06[0xe];
-    s32 unk_14;
-    u8 unk_18;
-    u8 unk_19;
+    u8 netAction;
+    u8 netPriority;
+    u8 netArgs[0xe];
+    s32 priority;
+    u8 isTalking;
+    u8 talkingRequest;
     u8 pad_1a[2];
-    s32 unk_1c;
-    Unk_02019858_Entry *unk_20;
-    s32 unk_24;
-    s32 unk_28;
-    NpcActionParams unk_2c;
-    NpcActionParams unk_60;
-    s32 unk_94;
-    u8 unk_98;
+    s32 action;
+    Unk_02019858_Entry *actionEntry;
+    s32 pendingAction;
+    s32 pendingPriority;
+    NpcActionParams pendingParams;
+    NpcActionParams curParams;
+    s32 actionDone;
+    u8 actStep;
     u8 unk_99;
     u8 pad_9a[2];
-    s32 unk_9c;
+    s32 moveMode;
     u16 unk_a0;
     u8 pad_a2[2];
-    s32 unk_a4;
-    u8 unk_a8;
-    u8 unk_a9;
+    s32 emotionEntry;
+    u8 emotionIntro;
+    u8 emotionId;
     u8 pad_aa[2];
-    s32 unk_ac;
-    s32 unk_b0;
+    s32 itemEffect;
+    s32 act07Variant;
 };
 
 // unk_02019998.cpp
@@ -1787,21 +1787,21 @@ struct Unk_02019cac_Owner {
     virtual void v68();
     virtual void *vfunc_6c();
     u8 pad[0x148 - 4];
-    s32 unk_148;
+    s32 modelResMdl;
 };
 
 // unk_02019998.cpp
 struct NpcFaceAnim : BlinkTimer {
-    NpcTexPatHeapHandle unk_04;
-    NpcTexPatBufRefHandle unk_0c;
-    NpcFaceAnimHandle unk_14;
-    MatTexPatAnim unk_1c;
-    MatTexPatAnim unk_48;
-    s32 unk_74;
-    s32 unk_78;
-    s32 unk_7c;
-    s32 unk_80;
-    u8 unk_84;
+    NpcTexPatHeapHandle texPatHeap;
+    NpcTexPatBufRefHandle texPatBuf;
+    NpcFaceAnimHandle faceAnimRef;
+    MatTexPatAnim eyeTexAnim;
+    MatTexPatAnim mouthTexAnim;
+    s32 eyeAnimId;
+    s32 mouthAnimId;
+    s32 savedMouthAnimId;
+    s32 talkMouthVariant;
+    u8 loaded;
 
     NpcFaceAnim();
     ~NpcFaceAnim();
@@ -1828,32 +1828,32 @@ struct NpcFaceAnim : BlinkTimer {
 };
 
 // unk_02019998.cpp
-struct Unk_02019e2c_Slot {
-    s16 unk_00;
-    u8 unk_02;
-    u8 unk_03;
+struct NpcEmotionFxSlot {
+    s16 effectId;
+    u8 triggerFrame;
+    u8 repeat;
 };
 
 // unk_02019998.cpp
-struct Unk_02019e2c_Entry {
-    s32 unk_00;
-    void *unk_04;
-    u8 unk_08;
-    u8 unk_09;
+struct NpcEmotionPhase {
+    s32 animId;
+    void *fxSlots;
+    u8 numFxSlots;
+    u8 killPrevFx;
     u8 pad_0a[2];
 };
 
 // unk_02019998.cpp
 struct NpcEmotionFx {
-    s32 unk_00[4];
-    Unk_02019e2c_Slot unk_10[2];
-    s32 unk_18;
-    s32 unk_1c;
-    s32 unk_20;
-    u8 unk_24;
-    u8 unk_25;
-    u8 unk_26;
-    u8 unk_27;
+    s32 effects[4];
+    NpcEmotionFxSlot slots[2];
+    s32 seEmitter;
+    s32 slotAnimId;
+    s32 entryPart;
+    u8 seMode;
+    u8 emotionId;
+    u8 useGlobalSe;
+    u8 effectParam;
 
     void stop();
     void update(void *a, s16 b, s32 c, u16 d);
@@ -1861,8 +1861,8 @@ struct NpcEmotionFx {
     void updateSlot(void *a, s16 b, s32 c, u16 d, s32 j);
     void stopSound();
     void keepSound();
-    void playSound(Unk_02019e2c_Slot *s);
-    void startEntry(Unk_02019e2c_Entry *tbl, s32 idx);
+    void playSound(NpcEmotionFxSlot *s);
+    void startEntry(NpcEmotionPhase *tbl, s32 idx);
     void setSlots(void *a, u32 b, s32 c);
     s32 findFreeHandle();
     void copySlots(void *dst, void *src, s32 n);
@@ -1898,37 +1898,37 @@ struct Unk_0201a1e0_Target { u32 pad; };
 // unk_02019998.cpp
 struct Unk_0201a1e0_Base {
     u8 pad[0x3b0];
-    Unk_0201a1e0_Target unk_3b0;
+    Unk_0201a1e0_Target lookAt;
 };
 
 // unk_02019998.cpp
 struct Unk_0201a25c_Src {
     u8 pad_00[0x5c];
-    s32 unk_5c;
+    s32 position;
     u8 pad_60[0x8c - 0x60];
-    s16 unk_8c;
-    s16 unk_8e;
+    s16 rotX;
+    s16 rotY;
 };
 
 // unk_02019998.cpp
 struct Unk_0201a13c {
-    u8 unk_00;
+    u8 lookType;
     u8 pad_01[7];
-    u8 unk_08[0x10];
-    u8 unk_18;
+    u8 targetPos[0x10];
+    u8 disabled;
     u8 pad_19;
-    s16 unk_1a;
-    s16 unk_1c;
-    s16 unk_1e;
+    s16 pitch;
+    s16 pitchStep;
+    s16 manualPitch;
     u8 pad_20[2];
-    s16 unk_22;
-    s16 unk_24;
-    s16 unk_26;
-    s16 unk_28;
-    u8 unk_2a;
+    s16 yaw;
+    s16 yawStep;
+    s16 manualYaw;
+    s16 yawLimit;
+    u8 onTarget;
     u8 pad_2b[0x5c - 0x2b];
-    s32 unk_5c;
-    u8 unk_60;
+    s32 maxDistance;
+    u8 useYawLimit;
     u8 pad_61[0x7c - 0x61];
 
     Unk_0201a13c();
@@ -1950,13 +1950,13 @@ struct Unk_0201a334_Vec3 { s32 x, y, z; };
 // unk_0201a334.cpp
 struct Unk_0201a334_Scene {
     u8 pad_00[0x5c];
-    Unk_0201a334_Vec3 unk_5c;
+    Unk_0201a334_Vec3 position;
     u8 pad_68[0x8e - 0x68];
-    s16 unk_8e;
+    s16 rotY;
     u8 pad_90[0x94 - 0x90];
-    s16 unk_94;
+    s16 moveAngleY;
     u8 pad_96[2];
-    s32 unk_98;
+    s32 speed;
 };
 
 // unk_0201a334.cpp
@@ -1969,13 +1969,13 @@ struct Unk_0201a734_Obj {
 };
 
 // unk_0201a334.cpp
-struct Unk_0201ab4c_Ent {
-    s32 unk_00;
-    s16 unk_04;
+struct NpcMoveModeEntry {
+    s32 animKind;
+    s16 defaultTurnSpeed;
     s16 pad_06;
-    s32 unk_08;
-    s32 unk_0c;
-    u8 unk_10;
+    s32 speedPresetIdx;
+    s32 arriveDistance;
+    u8 keepAnimFrame;
     u8 pad_11[3];
 };
 
@@ -1988,27 +1988,27 @@ class NpcObstacleProbe;
 // unk_0201a334.cpp
 class NpcLookAt {
 public:
-    u8 unk_00;
+    u8 lookType;
     u8 pad_01[3];
-    Unk_0201a734_Obj *unk_04;
-    Unk_0201a334_Vec3 unk_08;
-    s32 unk_14;
-    u8 unk_18;
+    Unk_0201a734_Obj *targetActor;
+    Unk_0201a334_Vec3 targetPos;
+    s32 priority;
+    u8 disabled;
     u8 pad_19;
-    s16 unk_1a;
-    s16 unk_1c;
-    s16 unk_1e;
-    s16 unk_20;
-    s16 unk_22;
-    s16 unk_24;
-    s16 unk_26;
-    s16 unk_28;
-    u8 unk_2a;
+    s16 pitch;
+    s16 pitchStep;
+    s16 manualPitch;
+    s16 pitchLimit;
+    s16 yaw;
+    s16 yawStep;
+    s16 manualYaw;
+    s16 yawLimit;
+    u8 onTarget;
     u8 pad_2b[0x5c - 0x2b];
-    s32 unk_5c;
-    u8 unk_60;
+    s32 maxDistance;
+    u8 useYawLimit;
     u8 pad_61[3];
-    s32 unk_64;
+    s32 targetPlayer;
 
     void lookAtTargetActor(Unk_0201a334_Scene *scene);
     void lookAtLocalPlayer(Unk_0201a334_Scene *scene);
@@ -2036,7 +2036,7 @@ public:
 // unk_0201a334.cpp
 class NpcObstacleProbe {
 public:
-    u8 unk_00;
+    u8 blockedBits;
 
     void probe(Unk_0201a334_Scene *scene);
     void clear();
@@ -2046,16 +2046,16 @@ public:
 // unk_0201a334.cpp
 class NpcMoveCtrl {
 public:
-    Unk_0201a334_Vec3 unk_00;
-    Unk_0201a334_Vec3 unk_0c[3];
-    s32 unk_30;
-    s16 unk_34;
-    s16 unk_36;
-    Unk_0201a334_Vec3 unk_38;
-    Unk_0201a334_Vec3 unk_44;
-    s32 unk_50;
-    u8 unk_54;
-    u8 unk_55;
+    Unk_0201a334_Vec3 curSpeedPreset;
+    Unk_0201a334_Vec3 speedPresets[3];
+    s32 moveMode;
+    s16 targetAngle;
+    s16 turnSpeed;
+    Unk_0201a334_Vec3 waypoint;
+    Unk_0201a334_Vec3 destination;
+    s32 arriveDistance;
+    u8 keepAnimFrame;
+    u8 turnMode;
 
     void storeHeadMtx(Unk_02006d14 *p);
     void setTurnMode(u8 v);
@@ -2096,21 +2096,21 @@ struct Unk_0201b138_Buf { u8 pad[0x24]; Unk_020d77a4_Vec3 v; };
 
 // unk_0201ac80.cpp
 struct Unk_0201ac88 {
-    s32 unk_00;
-    s32 unk_04;
-    s32 unk_08;
-    u8 unk_0c[0x24];
-    s32 unk_30;
+    s32 curSpeedPreset;
+    s32 curSpeedPresetY;
+    s32 curSpeedPresetZ;
+    u8 speedPresets[0x24];
+    s32 moveMode;
     u8 pad_34[4];
-    s32 unk_38;
-    s32 unk_3c;
-    s32 unk_40;
-    s32 unk_44;
-    s32 unk_48;
-    s32 unk_4c;
+    s32 waypoint;
+    s32 waypointY;
+    s32 waypointZ;
+    s32 destination;
+    s32 destinationY;
+    s32 destinationZ;
     u8 pad_50[4];
-    u8 unk_54;
-    u8 unk_55;
+    u8 keepAnimFrame;
+    u8 turnMode;
 
     void reset();
     void func_0201acc8();
@@ -2129,9 +2129,9 @@ struct Unk_0201acf8 {
 
 // unk_0201ac80.cpp
 struct NpcMoveAnimSet {
-    s32 unk_00;
-    s32 unk_04;
-    s32 unk_08;
+    s32 standAnim;
+    s32 walkAnim;
+    s32 runAnim;
 
     s32 getRunAnim();
     s32 getWalkAnim();
@@ -2154,7 +2154,7 @@ struct Unk_020d77a4_Vec {
 // unk_0201b690.cpp
 struct Unk_020d77a4_Global {
     u8 pad_00[0x64];
-    s32 unk_64;
+    s32 myAid;
 };
 
 // unk_0201b690.cpp
@@ -2322,21 +2322,21 @@ struct Unk_0201be34_Mtx {
 
 // unk_0201b690.cpp
 struct Unk_0201be44_Hdr {
-    u8 unk_00;
-    u8 unk_01;
+    u8 cmd;
+    u8 nodeId;
 };
 
 // unk_0201b690.cpp
 struct Unk_0201be44_Owner {
     u8 pad_00[0x2c];
-    NpcActor *unk_2c;
+    NpcActor *ptrUser;
 };
 
 // unk_0201b690.cpp
 struct Unk_0201be44_Dst {
     u8 pad_00[0x28];
-    Unk_0201be34_Mtx unk_28;
-    Unk_020d77a4_Vec unk_4c;
+    Unk_0201be34_Mtx rot;
+    Unk_020d77a4_Vec trans;
 };
 
 class Unk_0201be34;
@@ -2348,16 +2348,16 @@ typedef void (*Unk_0201be34_StateFn)(Unk_0201be34 *);
 class Unk_0201be34 {
 public:
 
-      Unk_0201be44_Hdr *unk_00;
-      Unk_0201be44_Owner *unk_04;
+      Unk_0201be44_Hdr *c;
+      Unk_0201be44_Owner *pRenderObj;
       u8 pad_08[0x24 - 0x08];
-      Unk_0201be34_StateFn unk_24;
+      Unk_0201be34_StateFn cbVecFuncNodeDesc;
       u8 pad_28[0x92 - 0x28];
-      u8 unk_92;
+      u8 cbVecTimingNodeDesc;
       u8 pad_93[0xb4 - 0x93];
-      Unk_0201be44_Dst *unk_b4;
+      Unk_0201be44_Dst *pJntAnmResult;
       u8 pad_b8[0xd4 - 0xb8];
-      u8 *unk_d4;
+      u8 *pResNodeInfo;
 };
 
 
@@ -2378,14 +2378,14 @@ struct Unk_021be028_Dir {
     s32 x, z;
     Unk_021be028_Dir(s32 a, s32 b) { x = a; z = b; }
 };
-struct Unk_020c6e60_E {
-    u32 unk_00;
-    const u16 *unk_04;
-    u32 unk_08;
-    u32 unk_0c;
-    const u16 *unk_10;
-    u32 unk_14;
-    u32 unk_18;
+struct NpcEmotionEntry {
+    u32 introAnim;
+    const u16 *introFxSlots;
+    u32 introFxInfo;
+    u32 loopAnim;
+    const u16 *loopFxSlots;
+    u32 loopFxInfo;
+    u32 playFlags;
 };
 typedef void (NpcTalkCtrl::*Unk_02014040_Fn)(Unk_02013b10_Ctx *);
 extern u32 data_020d6f54[];
@@ -2515,15 +2515,15 @@ s32 TownMap_IsUnitWalkable(s32, s32, Unk_02011f74_World *);
 s32 _ZN8BlockMap12getWalkLinksEii(Unk_02011f74_World *, s32, s32);
 static inline Unk_02011f74_Cell *GetCell(Unk_02011f74_World *w, u32 x, u32 y)
 {
-    if (x < (u32)w->size.a && (u32)w->size.b > y && w->unk_00 != NULL) {
-        return (Unk_02011f74_Cell *)w->unk_00 + (x + w->size.a * y);
+    if (x < (u32)w->size.a && (u32)w->size.b > y && w->blocks != NULL) {
+        return (Unk_02011f74_Cell *)w->blocks + (x + w->size.a * y);
     }
     return NULL;
 }
 static inline Unk_02011f74_Cell *GetCellD(Unk_02011f74_World *w, u32 x, u32 y, Unk_02011f74_Cell *volatile *dflt)
 {
-    if (x < (u32)w->size.a && (u32)w->size.b > y && w->unk_00 != NULL) {
-        return (Unk_02011f74_Cell *)w->unk_00 + (x + w->size.a * y);
+    if (x < (u32)w->size.a && (u32)w->size.b > y && w->blocks != NULL) {
+        return (Unk_02011f74_Cell *)w->blocks + (x + w->size.a * y);
     }
     return *dflt;
 }
@@ -2994,7 +2994,7 @@ void _ZN13HeldToolModel12playIdleAnimEjj(void *a, u32 b, u32 c);
 s32 _ZN13HeldToolModel12playWalkAnimEjj(void *a, u32 b, u32 c);
 void func_02003f1c(u32 a);
 void func_02003ddc(void *a, u32 b, u32 c, u32 d);
-void _ZN12NpcEmotionFx10startEntryEP18Unk_02019e2c_Entryi(void *a, void *b, u32 c);
+void _ZN12NpcEmotionFx10startEntryEP15NpcEmotionPhasei(void *a, void *b, u32 c);
 void _ZN11NpcFaceAnim13func_020199c8Ev(void *a);
 s32 _ZN11NpcMoveCtrl14getTargetAngleEv(void *a);
 s32 _ZN11NpcMoveCtrl12getTurnSpeedEv(void *a);
@@ -3108,7 +3108,7 @@ extern u8 gVec3Zero[];
 extern u8 gFieldSceneKind;
 extern s16 data_02135f44[];
 extern Unk_0201a334_Vec3 sNpcObstacleProbeOffsets[];
-extern Unk_0201ab4c_Ent sNpcMoveModeTable[];
+extern NpcMoveModeEntry sNpcMoveModeTable[];
 s32 NpcLookAt_GetHeadPos(Unk_0201a734_Obj *self, Unk_0201a334_Vec3 *out);
 Unk_0201a334_Scene *PlayerActor_GetCharacter(s32 h);
 BOOL PlayerActor_GetHeadPos(Unk_0201a334_Vec3 *out, s32 h);
@@ -3342,7 +3342,7 @@ extern const u32 sNpcAct07Anims[5];
 extern const u32 sNpcMoveSpeedPresets[9];
 extern const u32 data_020c6dcc[12];
 extern const u32 sNpcMoveModeTable[25];
-extern const Unk_020c6e60_E sEmotionTable[60];
+extern const NpcEmotionEntry sEmotionTable[60];
 void _ZN12Unk_020121649isInBlockEP16Unk_02011f74_Vec(void);
 void _ZN12Unk_0201216411isInBlockT4EP16Unk_02011f74_Vec(void);
 void _ZN12Unk_0201216410stepToDoorEP16Unk_02011f74_Vec(void);
@@ -3733,8 +3733,8 @@ extern void *data_020d7704[2];
 
 namespace nR {
 extern "C" void NpcActor_OnJointCalc(Unk_0201be34 *self) {
-    u32 idx = self->unk_00->unk_01;
-    NpcActor *p = self->unk_04->unk_2c;
+    u32 idx = self->c->nodeId;
+    NpcActor *p = self->pRenderObj->ptrUser;
     u16 tmp[2];
     Unk_0201be34_Mtx mB;
     Unk_0201be34_Mtx mA;
@@ -3751,24 +3751,24 @@ extern "C" void NpcActor_OnJointCalc(Unk_0201be34 *self) {
         }
         if (isX && (Scene_InMuseumRoom() == 0 || Scene_GetMuseumRoom() != 1)) {
             if (idx == 0x10) {
-                u8 *base = self->unk_d4;
+                u8 *base = self->pResNodeInfo;
                 u16 off = *(u16 *)(base + 6);
                 u8 *t = base + off;
                 u32 n = *(u16 *)t;
                 s32 o = *(s32 *)(t + n * idx + 4);
                 s32 *v = (s32 *)(base + o);
                 s32 *w = v + 1;
-                Unk_0201be44_Dst *d = self->unk_b4;
-                d->unk_4c.x = v[1];
-                d->unk_4c.y = w[1];
-                d->unk_4c.z = w[2];
+                Unk_0201be44_Dst *d = self->pJntAnmResult;
+                d->trans.x = v[1];
+                d->trans.y = w[1];
+                d->trans.z = w[2];
             }
         } else {
             JointCb_UseRestTranslation(self, 0x800);
         }
     }
     if (idx == (u32)data_020c6d20 && p != NULL && p->lookAt < 6) {
-        Unk_0201be34_Mtx *m = &self->unk_b4->unk_28;
+        Unk_0201be34_Mtx *m = &self->pJntAnmResult->rot;
         if (p->unk_3ca != 0) {
             u32 a = (u16)p->unk_3ca >> 4;
             MTX_RotY33_(&mA, data_02135f44[a * 2], data_02135f44[a * 2 + 1]);
@@ -3789,9 +3789,9 @@ extern "C" void NpcActor_OnJointCalc(Unk_0201be34 *self) {
             isY = p->unk_ea == 0xd016 ? TRUE : FALSE;
         }
         if (isY) {
-            Unk_0201be44_Dst *d = self->unk_b4;
-            Unk_0201be34_Mtx *m = &d->unk_28;
-            Unk_020d77a4_Vec *pv = &d->unk_4c;
+            Unk_0201be44_Dst *d = self->pJntAnmResult;
+            Unk_0201be34_Mtx *m = &d->rot;
+            Unk_020d77a4_Vec *pv = &d->trans;
             s32 r;
             va = *pv;
             vb = *pv;
@@ -3808,15 +3808,15 @@ extern "C" void NpcActor_OnJointCalc(Unk_0201be34 *self) {
     if (p != NULL) {
         _ZN19ThreeLayerAnimModel21onJointCalcPostLayer3EP16Unk_02053a54_Msg(p->unk_ec, self);
     }
-    self->unk_24 = NpcActor_SetJointCallbackNext;
-    self->unk_92 = 3;
+    self->cbVecFuncNodeDesc = NpcActor_SetJointCallbackNext;
+    self->cbVecTimingNodeDesc = 3;
 }
 }
 
 namespace nR {
 extern "C" void NpcActor_SetJointCallbackNext(Unk_0201be34 *self) {
-    self->unk_24 = NpcActor_JointCalcLayer3Cb;
-    self->unk_92 = 1;
+    self->cbVecFuncNodeDesc = NpcActor_JointCalcLayer3Cb;
+    self->cbVecTimingNodeDesc = 1;
 }
 }
 
@@ -4056,7 +4056,7 @@ BOOL NpcActor::isNetOwner() {
     if (_ZN11CommManager8isOnlineEv(g) != 0 && netSyncOff == 0) {
         u8 *p = NpcNetRecord_GetVar(&unk_ea);
         if (p != NULL && p[0] != 0) {
-            if ((p[1] == 4 && NetArea_IsLocalOwner() != 0) || p[1] == g->unk_64) {
+            if ((p[1] == 4 && NetArea_IsLocalOwner() != 0) || p[1] == g->myAid) {
                 return TRUE;
             }
             return FALSE;
@@ -4074,7 +4074,7 @@ s32 NpcActor::netSetSlots(s32 a, s32 b, s32 c) {
 void NpcActor::netSetSlotsIfOwner(u32 a, u32 b, u32 c, ...) {
     using namespace nR;
     NpcNetRecord_SetSlots(&unk_ea, b, c);
-    if (_ZN11CommManager12isSlotActiveEi(gCommManager, gCommManager->unk_64) != 0) {
+    if (_ZN11CommManager12isSlotActiveEi(gCommManager, gCommManager->myAid) != 0) {
         if (isNetOwner() != 0) {
             s32 t = (unk_ea & 0xf000) >> 12;
             if (t == 0xe) {
@@ -4130,7 +4130,7 @@ void NpcActor::setNetUserBytes(void *dst, s32 n) {
 void NpcActor::netSendState(u32 a, ...) {
     using namespace nR;
     NpcNetRecord_SetState(&unk_ea, Scene_GetCurrent(), &position, rotY, unk_568, netUserBytes);
-    if (_ZN11CommManager12isSlotActiveEi(gCommManager, gCommManager->unk_64) != 0) {
+    if (_ZN11CommManager12isSlotActiveEi(gCommManager, gCommManager->myAid) != 0) {
         if (isNetOwner() != 0) {
             s32 t = (unk_ea & 0xf000) >> 12;
             if (t == 0xe) {
@@ -4205,7 +4205,7 @@ BOOL NpcActor::vfunc_04() {
 BOOL NpcActor::vfunc_00() {
     using namespace nR;
     if (NetArea_IsLocalOwner() != 0) {
-        netSetSlots(1, gCommManager->unk_64, 4);
+        netSetSlots(1, gCommManager->myAid, 4);
     }
     if (loadModel() == 0) {
         return FALSE;
@@ -4571,31 +4571,31 @@ extern "C" void NpcActor_PayPlayer(void *self, s32 v) {
 
 Unk_0201ad3c::Unk_0201ad3c() {
     using namespace nQ;
-    unk_00 = 0;
-    unk_04 = 1;
-    unk_08 = 2;
+    standAnim = 0;
+    walkAnim = 1;
+    runAnim = 2;
 }
 
 void NpcMoveAnimSet::func_0201ad38() {
     using namespace nQ;}
 
 void NpcMoveAnimSet::setStandAnim(s32 v) {
-    using namespace nQ; unk_00 = v; }
+    using namespace nQ; standAnim = v; }
 
 void NpcMoveAnimSet::setWalkAnim(s32 v) {
-    using namespace nQ; unk_04 = v; }
+    using namespace nQ; walkAnim = v; }
 
 void NpcMoveAnimSet::setRunAnim(s32 v) {
-    using namespace nQ; unk_08 = v; }
+    using namespace nQ; runAnim = v; }
 
 s32 NpcMoveAnimSet::getStandAnim() {
-    using namespace nQ; return unk_00; }
+    using namespace nQ; return standAnim; }
 
 s32 NpcMoveAnimSet::getWalkAnim() {
-    using namespace nQ; return unk_04; }
+    using namespace nQ; return walkAnim; }
 
 s32 NpcMoveAnimSet::getRunAnim() {
-    using namespace nQ; return unk_08; }
+    using namespace nQ; return runAnim; }
 
 Unk_0201ad18::Unk_0201ad18() {
     using namespace nQ;
@@ -4620,18 +4620,18 @@ void Unk_0201acf8::func_0201acf8(u16 v) {
 
 Unk_0201accc::Unk_0201accc() {
     using namespace nQ;
-    unk_00 = 0x1000;
-    unk_04 = 0;
-    unk_08 = 0;
-    unk_30 = 5;
-    unk_38 = 0;
-    unk_3c = 0;
-    unk_40 = 0;
-    unk_44 = 0;
-    unk_48 = 0;
-    unk_4c = 0;
-    unk_54 = 0;
-    unk_55 = 0;
+    curSpeedPreset = 0x1000;
+    curSpeedPresetY = 0;
+    curSpeedPresetZ = 0;
+    moveMode = 5;
+    waypoint = 0;
+    waypointY = 0;
+    waypointZ = 0;
+    destination = 0;
+    destinationY = 0;
+    destinationZ = 0;
+    keepAnimFrame = 0;
+    turnMode = 0;
 }
 
 void Unk_0201ac88::func_0201acc8() {
@@ -4639,19 +4639,19 @@ void Unk_0201ac88::func_0201acc8() {
 
 void Unk_0201ac88::reset() {
     using namespace nQ;
-    unk_00 = 0x1000;
-    unk_04 = 0;
-    unk_08 = 0;
-    unk_30 = 5;
-    unk_38 = 0;
-    unk_3c = 0;
-    unk_40 = 0;
-    unk_44 = 0;
-    unk_48 = 0;
-    unk_4c = 0;
-    unk_54 = 0;
-    unk_55 = 0;
-    MI_CpuCopy8(sNpcMoveSpeedPresets, unk_0c, 0x24);
+    curSpeedPreset = 0x1000;
+    curSpeedPresetY = 0;
+    curSpeedPresetZ = 0;
+    moveMode = 5;
+    waypoint = 0;
+    waypointY = 0;
+    waypointZ = 0;
+    destination = 0;
+    destinationY = 0;
+    destinationZ = 0;
+    keepAnimFrame = 0;
+    turnMode = 0;
+    MI_CpuCopy8(sNpcMoveSpeedPresets, speedPresets, 0x24);
 }
 
 namespace nQ {
@@ -4660,20 +4660,20 @@ extern "C" void NpcActor_UpdateMovement(void *a, void *b) { _ZN11NpcMoveCtrl13ap
 
 void NpcMoveCtrl::applyMovement(Unk_0201a334_Scene *scene) {
     using namespace nP;
-    s32 lo = unk_00.x;
+    s32 lo = curSpeedPreset.x;
     if (lo == 0) {
-        scene->unk_98 = 0;
+        scene->speed = 0;
     } else {
-        s32 hi = unk_00.y;
+        s32 hi = curSpeedPreset.y;
         if (hi >= lo) {
-            hi = unk_00.z;
+            hi = curSpeedPreset.z;
         }
-        func_020e759c(&scene->unk_98, lo, hi);
-        s32 ang = Math_AngleXZ(&scene->unk_5c, &unk_44);
-        if (ang == scene->unk_94) {
-            s32 d = func_020e9650(&unk_44, &scene->unk_5c);
-            if (d < scene->unk_98) {
-                scene->unk_98 = d;
+        func_020e759c(&scene->speed, lo, hi);
+        s32 ang = Math_AngleXZ(&scene->position, &destination);
+        if (ang == scene->moveAngleY) {
+            s32 d = func_020e9650(&destination, &scene->position);
+            if (d < scene->speed) {
+                scene->speed = d;
             }
         }
     }
@@ -4685,36 +4685,36 @@ void NpcMoveCtrl::setMoveMode(Unk_0201a334_Scene *scene, s32 mode, s16 ang, u16 
     if (mode < 0 || mode >= 5) {
         mode = 0;
     }
-    Unk_0201ab4c_Ent *e = &sNpcMoveModeTable[mode];
-    Unk_0201a334_Vec3 *src = &unk_0c[e->unk_08];
-    unk_00.x = src->x;
-    unk_00.y = src->y;
-    unk_00.z = src->z;
+    NpcMoveModeEntry *e = &sNpcMoveModeTable[mode];
+    Unk_0201a334_Vec3 *src = &speedPresets[e->speedPresetIdx];
+    curSpeedPreset.x = src->x;
+    curSpeedPreset.y = src->y;
+    curSpeedPreset.z = src->z;
     if (ang == 0) {
-        unk_36 = e->unk_04;
+        turnSpeed = e->defaultTurnSpeed;
     } else {
-        unk_36 = ang;
+        turnSpeed = ang;
     }
-    unk_50 = e->unk_0c;
+    arriveDistance = e->arriveDistance;
     if (mode != 4) {
-        if ((unk_54 == 1 && e->unk_10 == 1) || _ZN11NpcAnimCtrl13isPlayingAnimEiPv((u8 *)scene + 0x334, e->unk_00, (u8 *)scene + 0x2a0)) {
-            _ZN12Unk_02015b8c17playAnimKeepFrameEP18Unk_02015b8c_Scenejjj((u8 *)scene + 0x334, scene, e->unk_00, extra, 0);
+        if ((keepAnimFrame == 1 && e->keepAnimFrame == 1) || _ZN11NpcAnimCtrl13isPlayingAnimEiPv((u8 *)scene + 0x334, e->animKind, (u8 *)scene + 0x2a0)) {
+            _ZN12Unk_02015b8c17playAnimKeepFrameEP18Unk_02015b8c_Scenejjj((u8 *)scene + 0x334, scene, e->animKind, extra, 0);
         } else {
-            _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti((u8 *)scene + 0x334, scene, e->unk_00, extra, 0, 0x1000, 0, 0);
+            _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti((u8 *)scene + 0x334, scene, e->animKind, extra, 0, 0x1000, 0, 0);
         }
     }
-    unk_30 = mode;
-    unk_54 = e->unk_10;
+    moveMode = mode;
+    keepAnimFrame = e->keepAnimFrame;
 }
 
 s32 NpcMoveCtrl::getMoveMode() {
     using namespace nP;
-    return unk_30;
+    return moveMode;
 }
 
 void NpcMoveCtrl::aimAtDestination(Unk_0201a334_Scene *scene) {
     using namespace nP;
-    unk_34 = Math_AngleXZ(&scene->unk_5c, &unk_44);
+    targetAngle = Math_AngleXZ(&scene->position, &destination);
 }
 
 s32 NpcMoveCtrl::stepAngle(s16 *p, s16 target, s16 step, u8 mode) {
@@ -4768,33 +4768,33 @@ s32 NpcMoveCtrl::stepAngle(s16 *p, s16 target, s16 step, u8 mode) {
 void NpcMoveCtrl::updateTurn(Unk_0201a334_Scene *scene) {
     using namespace nP;
     if (getMoveMode() == 4) {
-        scene->unk_94 = unk_34;
+        scene->moveAngleY = targetAngle;
     } else {
-        stepAngle(&scene->unk_94, unk_34, unk_36, unk_55);
-        *(s16 *)((u8 *)scene + 0x8e) = scene->unk_94;
+        stepAngle(&scene->moveAngleY, targetAngle, turnSpeed, turnMode);
+        *(s16 *)((u8 *)scene + 0x8e) = scene->moveAngleY;
     }
 }
 
 void NpcMoveCtrl::setWaypoint(Unk_0201a334_Vec3 *v) {
     using namespace nP;
-    if (func_020e972c(&unk_38, &unk_44)) {
+    if (func_020e972c(&waypoint, &destination)) {
         setDestination(v);
     }
-    unk_38.x = v->x;
-    unk_38.y = v->y;
-    unk_38.z = v->z;
+    waypoint.x = v->x;
+    waypoint.y = v->y;
+    waypoint.z = v->z;
 }
 
 Unk_0201a334_Vec3 *NpcMoveCtrl::getDestinationB() {
     using namespace nP;
-    return &unk_44;
+    return &destination;
 }
 
 BOOL NpcMoveCtrl::hasArrived(Unk_0201a334_Scene *scene, s32 which) {
     using namespace nP;
     Unk_0201a334_Vec3 v;
     BOOL r;
-    Unk_0201a334_Vec3 *sp = &scene->unk_5c;
+    Unk_0201a334_Vec3 *sp = &scene->position;
     v.x = sp->x;
     v.y = sp->y;
     v.z = sp->z;
@@ -4802,11 +4802,11 @@ BOOL NpcMoveCtrl::hasArrived(Unk_0201a334_Scene *scene, s32 which) {
     v.y = 0;
     s32 d;
     if (which != 0) {
-        d = func_020e96a4(&v, &unk_38);
+        d = func_020e96a4(&v, &waypoint);
     } else {
-        d = func_020e96a4(&v, &unk_44);
+        d = func_020e96a4(&v, &destination);
     }
-    if (d < unk_50) {
+    if (d < arriveDistance) {
         r = TRUE;
     }
     return r;
@@ -4814,34 +4814,34 @@ BOOL NpcMoveCtrl::hasArrived(Unk_0201a334_Scene *scene, s32 which) {
 
 void NpcMoveCtrl::setTargetAngle(s16 v) {
     using namespace nP;
-    unk_34 = v;
+    targetAngle = v;
 }
 
 s32 NpcMoveCtrl::getTargetAngle() {
     using namespace nP;
-    return unk_34;
+    return targetAngle;
 }
 
 s32 NpcMoveCtrl::getTurnSpeed() {
     using namespace nP;
-    return unk_36;
+    return turnSpeed;
 }
 
 void NpcMoveCtrl::setDestination(Unk_0201a334_Vec3 *v) {
     using namespace nP;
-    unk_44.x = v->x;
-    unk_44.y = v->y;
-    unk_44.z = v->z;
+    destination.x = v->x;
+    destination.y = v->y;
+    destination.z = v->z;
 }
 
 Unk_0201a334_Vec3 *NpcMoveCtrl::getDestination() {
     using namespace nP;
-    return &unk_44;
+    return &destination;
 }
 
 s32 NpcMoveCtrl::hasNextLeg() {
     using namespace nP;
-    return func_020e96ec(&unk_38, &unk_44);
+    return func_020e96ec(&waypoint, &destination);
 }
 
 namespace nP {
@@ -4859,15 +4859,15 @@ extern "C" void Npc_RotateOffsetXZ(Unk_0201a334_Vec3 *out, Unk_0201a334_Vec3 *ba
 
 void NpcMoveCtrl::resetDestination() {
     using namespace nP;
-    unk_44.x = unk_38.x;
-    unk_44.y = unk_38.y;
-    unk_44.z = unk_38.z;
+    destination.x = waypoint.x;
+    destination.y = waypoint.y;
+    destination.z = waypoint.z;
 }
 
 void NpcMoveCtrl::setSpeedPreset(s32 idx, s32 x, s32 y, s32 z) {
     using namespace nP;
     if (idx >= 1 && idx < 3) {
-        Unk_0201a334_Vec3 *e = &unk_0c[idx];
+        Unk_0201a334_Vec3 *e = &speedPresets[idx];
         e->x = x;
         e->y = y;
         e->z = z;
@@ -4880,17 +4880,17 @@ void NpcMoveCtrl::func_0201a8cc() {
 
 void NpcMoveCtrl::setTurnMode(u8 v) {
     using namespace nP;
-    unk_55 = v;
+    turnMode = v;
 }
 
 Unk_0201a8bc::Unk_0201a8bc() {
     using namespace nP;
-    unk_00 = 0;
+    blockedBits = 0;
 }
 
 void NpcObstacleProbe::clear() {
     using namespace nP;
-    unk_00 = 0;
+    blockedBits = 0;
 }
 
 namespace nP {
@@ -4921,49 +4921,49 @@ void NpcObstacleProbe::probe(Unk_0201a334_Scene *scene) {
     using namespace nP;
     for (s32 i = 0; i < 2; i++) {
         Unk_0201a334_Vec3 v;
-        Npc_RotateOffsetXZ(&v, &scene->unk_5c, &sNpcObstacleProbeOffsets[i], *(s16 *)((u8 *)scene + 0x94));
+        Npc_RotateOffsetXZ(&v, &scene->position, &sNpcObstacleProbeOffsets[i], *(s16 *)((u8 *)scene + 0x94));
         if (Npc_IsPosBlocked(&v)) {
-            unk_00 |= 1 << i;
+            blockedBits |= 1 << i;
         }
     }
 }
 
 u8 NpcLookAt::getObstacleBits() {
     using namespace nP;
-    return unk_00;
+    return lookType;
 }
 
 Unk_0201a794::Unk_0201a794() {
     using namespace nP;
-    unk_00 = 1;
-    unk_04 = 0;
-    unk_08.x = 0;
-    unk_08.y = 0;
-    unk_08.z = 0;
-    unk_14 = 0;
-    unk_1a = 0;
-    unk_1c = 0x200;
-    unk_1e = 0;
-    unk_20 = 0x1a00;
-    unk_22 = 0;
-    unk_24 = 0x400;
-    unk_26 = 0;
-    unk_28 = 0x3000;
-    unk_18 = 0;
-    unk_2a = 0;
-    unk_5c = 0x8000;
-    unk_60 = 1;
-    unk_64 = 4;
+    lookType = 1;
+    targetActor = 0;
+    targetPos.x = 0;
+    targetPos.y = 0;
+    targetPos.z = 0;
+    priority = 0;
+    pitch = 0;
+    pitchStep = 0x200;
+    manualPitch = 0;
+    pitchLimit = 0x1a00;
+    yaw = 0;
+    yawStep = 0x400;
+    manualYaw = 0;
+    yawLimit = 0x3000;
+    disabled = 0;
+    onTarget = 0;
+    maxDistance = 0x8000;
+    useYawLimit = 1;
+    targetPlayer = 4;
 }
 
 void NpcLookAt::clearTargetActor() {
     using namespace nP;
-    unk_04 = 0;
+    targetActor = 0;
 }
 
 void NpcLookAt::disable() {
     using namespace nP;
-    unk_18 = 1;
+    disabled = 1;
 }
 
 void NpcMoveCtrl::storeHeadMtx(Unk_02006d14 *p) {
@@ -4991,53 +4991,53 @@ extern "C" s32 NpcLookAt_GetHeadPos(Unk_0201a734_Obj *self, Unk_0201a334_Vec3 *o
 
 void NpcLookAt::setPitchLimit(s16 v) {
     using namespace nP;
-    unk_20 = v;
+    pitchLimit = v;
 }
 
 void NpcLookAt::setTargetPos(Unk_0201a334_Vec3 *v) {
     using namespace nP;
-    unk_08.x = v->x;
-    unk_08.y = v->y;
-    unk_08.z = v->z;
+    targetPos.x = v->x;
+    targetPos.y = v->y;
+    targetPos.z = v->z;
 }
 
 void NpcLookAt::setTarget(u8 type, s32 pri, s32 tgt, Unk_0201a334_Vec3 *v, s32 h, s32 lim, u8 flag) {
     using namespace nP;
-    if (unk_18 == 0 && unk_14 != 4 && pri >= unk_14) {
-        unk_00 = type;
-        unk_04 = (Unk_0201a734_Obj *)tgt;
-        unk_08.x = v->x;
-        unk_08.y = v->y;
-        unk_08.z = v->z;
-        unk_14 = pri;
-        unk_2a = 0;
-        unk_5c = lim;
-        unk_60 = flag;
-        unk_64 = h;
-        unk_1e = 0;
-        unk_26 = 0;
-        unk_1c = 0x200;
-        unk_24 = 0x400;
+    if (disabled == 0 && priority != 4 && pri >= priority) {
+        lookType = type;
+        targetActor = (Unk_0201a734_Obj *)tgt;
+        targetPos.x = v->x;
+        targetPos.y = v->y;
+        targetPos.z = v->z;
+        priority = pri;
+        onTarget = 0;
+        maxDistance = lim;
+        useYawLimit = flag;
+        targetPlayer = h;
+        manualPitch = 0;
+        manualYaw = 0;
+        pitchStep = 0x200;
+        yawStep = 0x400;
     }
 }
 
 void NpcLookAt::setManualAngles(s32 pri, s16 a, s16 b, s16 c, s16 d) {
     using namespace nP;
-    if (unk_18 == 0 && unk_14 != 4 && pri >= unk_14) {
-        unk_00 = 5;
-        unk_04 = 0;
-        unk_08.x = 0;
-        unk_08.y = 0;
-        unk_08.z = 0;
-        unk_14 = pri;
-        unk_2a = 0;
-        unk_5c = 0x8000;
-        unk_60 = 1;
-        unk_64 = 4;
-        unk_1e = a;
-        unk_26 = b;
-        unk_1c = c;
-        unk_24 = d;
+    if (disabled == 0 && priority != 4 && pri >= priority) {
+        lookType = 5;
+        targetActor = 0;
+        targetPos.x = 0;
+        targetPos.y = 0;
+        targetPos.z = 0;
+        priority = pri;
+        onTarget = 0;
+        maxDistance = 0x8000;
+        useYawLimit = 1;
+        targetPlayer = 4;
+        manualPitch = a;
+        manualYaw = b;
+        pitchStep = c;
+        yawStep = d;
     }
 }
 
@@ -5048,23 +5048,23 @@ BOOL NpcLookAt::canSeeTarget(Unk_0201a334_Scene *scene) {
     z.x = 0;
     z.y = 0;
     z.z = 0;
-    switch (unk_00) {
+    switch (lookType) {
     case 1: {
-        Unk_0201a334_Scene *t = PlayerActor_GetCharacter(unk_64);
+        Unk_0201a334_Scene *t = PlayerActor_GetCharacter(targetPlayer);
         if (t != 0) {
-            p = &t->unk_5c;
+            p = &t->position;
         }
         break;
     }
     case 3:
-        p = &unk_08;
+        p = &targetPos;
         break;
     }
     if (p != 0 && func_020e96ec(p, gVec3Zero) != 0) {
-        s32 d = func_020e96a4(p, &scene->unk_5c);
-        if (unk_5c == 0 || (d < 0 ? -d : d) < unk_5c) {
-            s32 ang = calcYaw(p, &scene->unk_5c, scene->unk_8e);
-            if (unk_60 == 0 || _ZN12Unk_0201a13c16isWithinYawLimitEi(this, ang) != 0) {
+        s32 d = func_020e96a4(p, &scene->position);
+        if (maxDistance == 0 || (d < 0 ? -d : d) < maxDistance) {
+            s32 ang = calcYaw(p, &scene->position, scene->rotY);
+            if (useYawLimit == 0 || _ZN12Unk_0201a13c16isWithinYawLimitEi(this, ang) != 0) {
                 return TRUE;
             }
         }
@@ -5091,7 +5091,7 @@ s32 NpcLookAt::calcClampedYaw(Unk_0201a334_Vec3 *a, Unk_0201a334_Vec3 *b, s32 c)
 s32 NpcLookAt::clampYaw(s32 v) {
     using namespace nP;
     s32 m = v < 0 ? -v : v;
-    s32 lim = unk_28;
+    s32 lim = yawLimit;
     if (m > lim) {
         if (v > 0) {
             v = lim;
@@ -5110,7 +5110,7 @@ s32 NpcLookAt::calcClampedPitch(Unk_0201a334_Vec3 *a, Unk_0201a334_Vec3 *b, s32 
 s32 NpcLookAt::clampPitch(s32 v) {
     using namespace nP;
     s32 m = v < 0 ? -v : v;
-    s32 lim = unk_20;
+    s32 lim = pitchLimit;
     if (m > lim) {
         if (v >= 0) {
             v = lim;
@@ -5123,43 +5123,43 @@ s32 NpcLookAt::clampPitch(s32 v) {
 
 void NpcLookAt::lookAtActor(Unk_0201a334_Scene *scene, Unk_0201a334_Scene *tgt, Unk_0201a334_Vec3 *v, s32 limit, u8 flag) {
     using namespace nP;
-    Unk_0201a334_Vec3 *tp = &tgt->unk_5c;
-    Unk_0201a334_Vec3 *sp = &scene->unk_5c;
+    Unk_0201a334_Vec3 *tp = &tgt->position;
+    Unk_0201a334_Vec3 *sp = &scene->position;
     s32 a = 0;
     s32 b = 0;
-    unk_2a = 0;
+    onTarget = 0;
     if (tp != 0) {
         s32 d = func_020e96a4(tp, sp);
         if (limit == 0 || (d < 0 ? -d : d) < limit) {
-            s32 ang = calcYaw(tp, sp, scene->unk_8e);
+            s32 ang = calcYaw(tp, sp, scene->rotY);
             if (!flag || _ZN12Unk_0201a13c16isWithinYawLimitEi(this, ang)) {
                 Unk_0201a334_Vec3 w;
                 if (NpcLookAt_GetHeadPos((Unk_0201a734_Obj *)this, &w)) {
                     a = calcClampedPitch(v, &w, 0);
                 }
                 b = clampYaw(ang);
-                unk_2a = 1;
+                onTarget = 1;
             }
         }
     }
-    if (unk_22 != b) {
-        func_020e7530(&unk_22, b, unk_24);
+    if (yaw != b) {
+        func_020e7530(&yaw, b, yawStep);
     }
-    if (unk_1a != a) {
-        func_020e7530(&unk_1a, a, unk_1c);
+    if (pitch != a) {
+        func_020e7530(&pitch, a, pitchStep);
     }
-    if (unk_22 != b || unk_1a != a) {
-        unk_2a = 0;
+    if (yaw != b || pitch != a) {
+        onTarget = 0;
     }
 }
 
 void NpcLookAt::relax() {
     using namespace nP;
-    if (unk_22 != 0) {
-        func_020e7530(&unk_22, 0, unk_24);
+    if (yaw != 0) {
+        func_020e7530(&yaw, 0, yawStep);
     }
-    if (unk_1a != 0) {
-        func_020e7530(&unk_1a, 0, unk_1c);
+    if (pitch != 0) {
+        func_020e7530(&pitch, 0, pitchStep);
     }
 }
 
@@ -5180,24 +5180,24 @@ void NpcLookAt::lookAtPlayer(Unk_0201a334_Scene *scene, s32 h, s32 limit, u8 fla
 
 void NpcLookAt::lookAtTargetPlayer(Unk_0201a334_Scene *scene) {
     using namespace nP;
-    lookAtPlayer(scene, unk_64, unk_5c, unk_60);
+    lookAtPlayer(scene, targetPlayer, maxDistance, useYawLimit);
 }
 
 void NpcLookAt::lookAtLocalPlayer(Unk_0201a334_Scene *scene) {
     using namespace nP;
-    lookAtPlayer(scene, 4, unk_5c, unk_60);
+    lookAtPlayer(scene, 4, maxDistance, useYawLimit);
 }
 
 void NpcLookAt::lookAtTargetActor(Unk_0201a334_Scene *scene) {
     using namespace nP;
-    if (unk_04 != 0) {
+    if (targetActor != 0) {
         Unk_0201a334_Vec3 v;
-        if (NpcLookAt_GetHeadPos((Unk_0201a734_Obj *)((u8 *)unk_04 + 0x3b0), &v)) {
+        if (NpcLookAt_GetHeadPos((Unk_0201a734_Obj *)((u8 *)targetActor + 0x3b0), &v)) {
             Unk_0201a334_Vec3 w;
             w.x = v.x;
             w.y = v.y;
             w.z = v.z;
-            lookAtActor(scene, (Unk_0201a334_Scene *)unk_04, &w, unk_5c, unk_60);
+            lookAtActor(scene, (Unk_0201a334_Scene *)targetActor, &w, maxDistance, useYawLimit);
         }
     }
 }
@@ -5207,46 +5207,46 @@ void Unk_0201a13c::lookAtPoint(Unk_0201a25c_Src *o) {
     s32 r6 = 0;
     s32 r7 = 0;
     u8 sp[12];
-    s32 d = func_020e96a4(&unk_08, &o->unk_5c);
+    s32 d = func_020e96a4(&targetPos, &o->position);
     s32 lim;
-    unk_2a = 0;
-    lim = unk_5c;
+    onTarget = 0;
+    lim = maxDistance;
     if (lim == 0 || (d < 0 ? -d : d) < lim) {
-        s32 t = nO::_ZN9NpcLookAt7calcYawEP17Unk_0201a334_Vec3S1_i(this, &unk_08, &o->unk_5c, o->unk_8e);
-        if (unk_60 == 0 || isWithinYawLimit(t)) {
-            r6 = nO::_ZN9NpcLookAt14calcClampedYawEP17Unk_0201a334_Vec3S1_i(this, &unk_08, &o->unk_5c, o->unk_8e);
+        s32 t = nO::_ZN9NpcLookAt7calcYawEP17Unk_0201a334_Vec3S1_i(this, &targetPos, &o->position, o->rotY);
+        if (useYawLimit == 0 || isWithinYawLimit(t)) {
+            r6 = nO::_ZN9NpcLookAt14calcClampedYawEP17Unk_0201a334_Vec3S1_i(this, &targetPos, &o->position, o->rotY);
             if (nO::NpcLookAt_GetHeadPos(this, sp)) {
-                r7 = nO::_ZN9NpcLookAt16calcClampedPitchEP17Unk_0201a334_Vec3S1_i(this, &unk_08, sp, o->unk_8c);
-                unk_2a = 1;
+                r7 = nO::_ZN9NpcLookAt16calcClampedPitchEP17Unk_0201a334_Vec3S1_i(this, &targetPos, sp, o->rotX);
+                onTarget = 1;
             }
         }
     }
-    if (unk_22 != r6) {
-        func_020e7530(&unk_22, r6, unk_24);
+    if (yaw != r6) {
+        func_020e7530(&yaw, r6, yawStep);
     }
-    if (unk_1a != r7) {
-        func_020e7530(&unk_1a, r7, unk_1c);
+    if (pitch != r7) {
+        func_020e7530(&pitch, r7, pitchStep);
     }
-    if (unk_22 != r6 || unk_1a != r7) {
-        unk_2a = 0;
+    if (yaw != r6 || pitch != r7) {
+        onTarget = 0;
     }
 }
 
 void Unk_0201a13c::approachManualAngles() {
     using namespace nO;
-    if (unk_22 != unk_26) {
-        func_020e7530(&unk_22, unk_26, unk_24);
+    if (yaw != manualYaw) {
+        func_020e7530(&yaw, manualYaw, yawStep);
     }
-    if (unk_1a != unk_1e) {
-        func_020e7530(&unk_1a, unk_1e, unk_1c);
+    if (pitch != manualPitch) {
+        func_020e7530(&pitch, manualPitch, pitchStep);
     }
 }
 
 void Unk_0201a13c::update(Unk_0201a1e0_Base *base) {
     using namespace nO;
-    if (unk_18 == 0 && unk_00 < 6) {
-        Unk_0201a1e0_Fn *pf = &sNpcLookAtTypes[unk_00];
-        Unk_0201a1e0_Target *t = &base->unk_3b0;
+    if (disabled == 0 && lookType < 6) {
+        Unk_0201a1e0_Fn *pf = &sNpcLookAtTypes[lookType];
+        Unk_0201a1e0_Target *t = &base->lookAt;
         (t->**pf)(base);
     }
 }
@@ -5265,12 +5265,12 @@ extern "C" BOOL NpcLookAt_IsWithin(s32 a, s32 b) {
 
 BOOL Unk_0201a13c::isWithinYawLimit(s32 v) {
     using namespace nO;
-    return NpcLookAt_IsWithin(v, unk_28);
+    return NpcLookAt_IsWithin(v, yawLimit);
 }
 
 BOOL Unk_0201a13c::isOnTarget() {
     using namespace nO;
-    if (unk_18 == 0 && unk_2a == 1) {
+    if (disabled == 0 && onTarget == 1) {
         return TRUE;
     }
     return FALSE;
@@ -5338,21 +5338,21 @@ Unk_0201a13c::~Unk_0201a13c() {
 void NpcEmotionFx::reset() {
     using namespace nO;
     MI_CpuFill8(this, 0xff, 0x10);
-    clearSlots(unk_10, 2);
-    unk_1c = 0x137;
-    unk_24 = 2;
-    unk_25 = 0x3c;
-    unk_27 = 0;
-    unk_26 = 0;
+    clearSlots(slots, 2);
+    slotAnimId = 0x137;
+    seMode = 2;
+    emotionId = 0x3c;
+    effectParam = 0;
+    useGlobalSe = 0;
 }
 
 void NpcEmotionFx::clearSlots(void *p, s32 n) {
     using namespace nO;
-    Unk_02019e2c_Slot *q = (Unk_02019e2c_Slot *)p;
+    NpcEmotionFxSlot *q = (NpcEmotionFxSlot *)p;
     s32 zero = 0;
     for (s32 i = 0; i < n; i++) {
         MI_CpuFill8(q, zero, 4);
-        q->unk_00 = ~zero;
+        q->effectId = ~zero;
         q++;
     }
 }
@@ -5368,7 +5368,7 @@ s32 NpcEmotionFx::findFreeHandle() {
     i = 0;
     r = ~i;
     for (; i < 4; i++) {
-        if (unk_00[i] == r) {
+        if (effects[i] == r) {
             r = i;
             break;
         }
@@ -5378,39 +5378,39 @@ s32 NpcEmotionFx::findFreeHandle() {
 
 void NpcEmotionFx::setSlots(void *a, u32 b, s32 c) {
     using namespace nO;
-    clearSlots(unk_10, 2);
-    copySlots(unk_10, a, b);
-    unk_1c = c;
+    clearSlots(slots, 2);
+    copySlots(slots, a, b);
+    slotAnimId = c;
 }
 
-void NpcEmotionFx::startEntry(Unk_02019e2c_Entry *tbl, s32 idx) {
+void NpcEmotionFx::startEntry(NpcEmotionPhase *tbl, s32 idx) {
     using namespace nO;
-    Unk_02019e2c_Entry *e = &tbl[idx];
-    if (e->unk_09 != 0) {
+    NpcEmotionPhase *e = &tbl[idx];
+    if (e->killPrevFx != 0) {
         killEffects();
     }
-    if (e->unk_04 != 0) {
-        setSlots(e->unk_04, e->unk_08, e->unk_00);
-        unk_20 = idx;
+    if (e->fxSlots != 0) {
+        setSlots(e->fxSlots, e->numFxSlots, e->animId);
+        entryPart = idx;
     }
 }
 
-void NpcEmotionFx::playSound(Unk_02019e2c_Slot *s) {
+void NpcEmotionFx::playSound(NpcEmotionFxSlot *s) {
     using namespace nO;
-    u8 *bank = Emotion_GetEntry(unk_25);
-    if (s->unk_03 == 1 || unk_24 == 2) {
-        unk_24 = bank[0x19];
-        if (unk_24 == 1) {
-            if (unk_26 == 0) {
-                Snd_SeEmitterPlayHeld(unk_18, unk_25 + 0x84, 0x7f, 0);
+    u8 *bank = Emotion_GetEntry(emotionId);
+    if (s->repeat == 1 || seMode == 2) {
+        seMode = bank[0x19];
+        if (seMode == 1) {
+            if (useGlobalSe == 0) {
+                Snd_SeEmitterPlayHeld(seEmitter, emotionId + 0x84, 0x7f, 0);
             } else {
-                func_02003f0c(unk_25 + 0x84);
+                func_02003f0c(emotionId + 0x84);
             }
         } else {
-            if (unk_26 == 0) {
-                func_02003e70(unk_18, unk_25 + 0x84, 0x7f, 0);
+            if (useGlobalSe == 0) {
+                func_02003e70(seEmitter, emotionId + 0x84, 0x7f, 0);
             } else {
-                func_02003f1c(unk_25 + 0x84);
+                func_02003f1c(emotionId + 0x84);
             }
         }
     }
@@ -5418,37 +5418,37 @@ void NpcEmotionFx::playSound(Unk_02019e2c_Slot *s) {
 
 void NpcEmotionFx::keepSound() {
     using namespace nO;
-    if (unk_24 == 1 && unk_26 == 0) {
-        Snd_SeEmitterPlayHeld(unk_18, unk_25 + 0x84, 0x7f, 0);
+    if (seMode == 1 && useGlobalSe == 0) {
+        Snd_SeEmitterPlayHeld(seEmitter, emotionId + 0x84, 0x7f, 0);
     }
 }
 
 void NpcEmotionFx::stopSound() {
     using namespace nO;
-    if (unk_24 == 1 && unk_26 != 0) {
+    if (seMode == 1 && useGlobalSe != 0) {
         func_02003efc();
     }
-    unk_24 = 2;
+    seMode = 2;
 }
 
 void NpcEmotionFx::updateSlot(void *a, s16 b, s32 c, u16 d, s32 j) {
     using namespace nO;
-    Unk_02019e2c_Slot *s = &unk_10[j];
-    s32 id = s->unk_00;
+    NpcEmotionFxSlot *s = &slots[j];
+    s32 id = s->effectId;
     if (id >= 0 && id < 0x66) {
-        if (unk_1c == c && unk_1c != 0x137) {
+        if (slotAnimId == c && slotAnimId != 0x137) {
             u16 dd = d;
-            if (s->unk_02 == dd) {
+            if (s->triggerFrame == dd) {
                 s32 k = findFreeHandle();
                 if (k != ~0) {
-                    unk_00[k] = Effect_CreateWithParam((u16)s->unk_00, unk_27, a, &b);
-                    if (s->unk_03 == 0) {
+                    effects[k] = Effect_CreateWithParam((u16)s->effectId, effectParam, a, &b);
+                    if (s->repeat == 0) {
                         clearSlots(s, 1);
                     }
                 }
             }
-            u8 *bank = Emotion_GetEntry(unk_25);
-            s32 bv = *(s16 *)(bank + unk_20 * 12 + 10);
+            u8 *bank = Emotion_GetEntry(emotionId);
+            s32 bv = *(s16 *)(bank + entryPart * 12 + 10);
             if (bv == dd) {
                 playSound(s);
             }
@@ -5460,9 +5460,9 @@ void NpcEmotionFx::killEffects() {
     using namespace nO;
     s32 zero = 0;
     for (s32 i = 0; i < 4; i++) {
-        if (unk_00[i] != ~zero) {
-            Effect_End(unk_00[i]);
-            unk_00[i] = ~zero;
+        if (effects[i] != ~zero) {
+            Effect_End(effects[i]);
+            effects[i] = ~zero;
         }
     }
     stopSound();
@@ -5473,8 +5473,8 @@ void NpcEmotionFx::update(void *a, s16 b, s32 c, u16 d) {
     keepSound();
     s32 zero = 0;
     for (s32 i = 0; i < 4; i++) {
-        if (unk_00[i] != ~zero) {
-            Effect_SetPosition(unk_00[i], a, &b, zero);
+        if (effects[i] != ~zero) {
+            Effect_SetPosition(effects[i], a, &b, zero);
         }
     }
     for (s32 j = 0; j < 2; j++) {
@@ -5489,11 +5489,11 @@ void NpcEmotionFx::stop() {
 
 NpcFaceAnim::NpcFaceAnim() {
     using namespace nO;
-    unk_84 = 0;
-    unk_74 = 0x16f;
-    unk_78 = 0x16f;
-    unk_7c = 0x16f;
-    unk_80 = 2;
+    loaded = 0;
+    eyeAnimId = 0x16f;
+    mouthAnimId = 0x16f;
+    savedMouthAnimId = 0x16f;
+    talkMouthVariant = 2;
 }
 
 NpcFaceAnim::~NpcFaceAnim() {
@@ -5501,7 +5501,7 @@ NpcFaceAnim::~NpcFaceAnim() {
 
 BOOL NpcFaceAnim::isLoaded() {
     using namespace nO;
-    if (unk_84) {
+    if (loaded) {
         return TRUE;
     }
     return FALSE;
@@ -5509,39 +5509,39 @@ BOOL NpcFaceAnim::isLoaded() {
 
 s32 NpcFaceAnim::getMouthAnim() {
     using namespace nO;
-    return unk_78;
+    return mouthAnimId;
 }
 
 BOOL NpcFaceAnim::load(Unk_02019cac_Owner *o) {
     using namespace nO;
     void *r6 = o->vfunc_6c();
-    if (_ZN17NpcFaceAnimHandle15getTexPatBufRefEv(&unk_0c) == 0 && r6 != 0) {
-        if (!_ZN12NpcResHandle7acquireEv(&unk_0c)) {
+    if (_ZN17NpcFaceAnimHandle15getTexPatBufRefEv(&texPatBuf) == 0 && r6 != 0) {
+        if (!_ZN12NpcResHandle7acquireEv(&texPatBuf)) {
             return FALSE;
         }
-        void *a = _ZN17NpcFaceAnimHandle15getTexPatBufRefEv(&unk_0c);
+        void *a = _ZN17NpcFaceAnimHandle15getTexPatBufRefEv(&texPatBuf);
         NpcTexPatBufRef_LoadFile(a, (s32)r6);
-        if (!_ZN12NpcResHandle7acquireEv(&unk_04)) {
+        if (!_ZN12NpcResHandle7acquireEv(&texPatHeap)) {
             return FALSE;
         }
-        void *h = _ZN22NpcHeldItemModelHandle16getTexPatHeapRefEv(&unk_04);
-        s32 fl = o->unk_148;
+        void *h = _ZN22NpcHeldItemModelHandle16getTexPatHeapRefEv(&texPatHeap);
+        s32 fl = o->modelResMdl;
         s32 x = NpcTexPatBufRef_GetBuffer(a);
-        if (!_ZN13MatTexPatAnim4initEPvS0_jS0_(&unk_1c, fl, x, 1, _ZN20CharaFaceAnimWorkRef7getHeapEv(h))) {
+        if (!_ZN13MatTexPatAnim4initEPvS0_jS0_(&eyeTexAnim, fl, x, 1, _ZN20CharaFaceAnimWorkRef7getHeapEv(h))) {
             return FALSE;
         }
-        s32 fl2 = o->unk_148;
+        s32 fl2 = o->modelResMdl;
         s32 y = NpcTexPatBufRef_GetBuffer(a);
-        if (!_ZN13MatTexPatAnim4initEPvS0_jS0_(&unk_48, fl2, y, 1, _ZN20CharaFaceAnimWorkRef7getHeapEv(h))) {
+        if (!_ZN13MatTexPatAnim4initEPvS0_jS0_(&mouthTexAnim, fl2, y, 1, _ZN20CharaFaceAnimWorkRef7getHeapEv(h))) {
             return FALSE;
         }
-        if (!_ZN12NpcResHandle7acquireEv(&unk_14)) {
+        if (!_ZN12NpcResHandle7acquireEv(&faceAnimRef)) {
             return FALSE;
         }
-        unk_74 = 0x16f;
-        unk_78 = 0x16f;
+        eyeAnimId = 0x16f;
+        mouthAnimId = 0x16f;
         BlinkTimer_Clear(this);
-        unk_84 = 1;
+        loaded = 1;
     }
     return TRUE;
 }
@@ -5558,7 +5558,7 @@ BOOL NpcFaceAnim::isTalkMouthAnim(s32 v) {
 
 void NpcFaceAnim::pickTalkMouthVariant() {
     using namespace nO;
-    unk_80 = NpcFace_PickTalkMouth();
+    talkMouthVariant = NpcFace_PickTalkMouth();
 }
 
 s32 NpcFaceAnim::func_02019c70(s32 v) {
@@ -5585,18 +5585,18 @@ BOOL NpcFaceAnim::func_02019c50(s32 a, s32 b, s32 c) {
 
 void NpcFaceAnim::randomizeTalkMouth() {
     using namespace nO;
-    if (isTalkMouthAnim(unk_78)) {
+    if (isTalkMouthAnim(mouthAnimId)) {
         pickTalkMouthVariant();
-        unk_48.curFrame = func_02019c70(unk_80) << 12;
+        mouthTexAnim.curFrame = func_02019c70(talkMouthVariant) << 12;
     }
 }
 
 BOOL NpcFaceAnim::isMouthCycleDone() {
     using namespace nO;
     BOOL r = FALSE;
-    if (isTalkMouthAnim(unk_78)) {
-        r = func_02019c50(unk_80, (u32)(unk_48.curFrame << 4) >> 16, (u32)(unk_48.numFrames << 4) >> 16);
-    } else if (_ZN13AnimFrameCtrl10isFinishedEv(&unk_48)) {
+    if (isTalkMouthAnim(mouthAnimId)) {
+        r = func_02019c50(talkMouthVariant, (u32)(mouthTexAnim.curFrame << 4) >> 16, (u32)(mouthTexAnim.numFrames << 4) >> 16);
+    } else if (_ZN13AnimFrameCtrl10isFinishedEv(&mouthTexAnim)) {
         r = TRUE;
     }
     return r;
@@ -5605,21 +5605,21 @@ BOOL NpcFaceAnim::isMouthCycleDone() {
 void NpcFaceAnim::setMouthAnim(s32 v, u32 w) {
     using namespace nO;
     if (isLoaded()) {
-        void *h = _ZN19NpcTexPatHeapHandle11getFaceAnimEv(&unk_14);
+        void *h = _ZN19NpcTexPatHeapHandle11getFaceAnimEv(&faceAnimRef);
         _ZN16CharaFaceAnimRef8loadAnimEiii(h, v, 1, 0);
-        _ZN13MatTexPatAnim7setAnimEPvS0_jhS0_(&unk_48, _ZN16CharaFaceAnimRef18getMouthAnimBufferEv(h), 0, 0, w, 0x1000);
-        unk_48.curFrame = 0;
-        unk_78 = v;
+        _ZN13MatTexPatAnim7setAnimEPvS0_jhS0_(&mouthTexAnim, _ZN16CharaFaceAnimRef18getMouthAnimBufferEv(h), 0, 0, w, 0x1000);
+        mouthTexAnim.curFrame = 0;
+        mouthAnimId = v;
         randomizeTalkMouth();
-        _ZN13MatTexPatAnim10applyFrameEv(&unk_48);
+        _ZN13MatTexPatAnim10applyFrameEv(&mouthTexAnim);
     }
 }
 
 void NpcFaceAnim::startTalkMouth(s32 i) {
     using namespace nO;
     if (i >= 0 && i < 2) {
-        if (!isTalkMouthAnim(unk_78)) {
-            unk_7c = unk_78;
+        if (!isTalkMouthAnim(mouthAnimId)) {
+            savedMouthAnimId = mouthAnimId;
         }
         setMouthAnim(sNpcTalkMouthAnims[i], 0);
     }
@@ -5627,29 +5627,29 @@ void NpcFaceAnim::startTalkMouth(s32 i) {
 
 void NpcFaceAnim::restoreMouthAnim() {
     using namespace nO;
-    if (unk_7c == 0x16f) {
-        unk_7c = 0xba;
+    if (savedMouthAnimId == 0x16f) {
+        savedMouthAnimId = 0xba;
     }
-    setMouthAnim(unk_7c, 0);
-    unk_7c = 0x16f;
+    setMouthAnim(savedMouthAnimId, 0);
+    savedMouthAnimId = 0x16f;
 }
 
 void NpcFaceAnim::setFaceAnims(s32 t, s32 u, s32 x, s32 mode) {
     using namespace nO;
     if (isLoaded()) {
-        void *h = _ZN19NpcTexPatHeapHandle11getFaceAnimEv(&unk_14);
-        if (t != 0 || unk_74 != t) {
+        void *h = _ZN19NpcTexPatHeapHandle11getFaceAnimEv(&faceAnimRef);
+        if (t != 0 || eyeAnimId != t) {
             _ZN16CharaFaceAnimRef8loadAnimEiii(h, t, 1, 0);
             NNS_G3dGetAnmByIdx(_ZN16CharaFaceAnimRef16getEyeAnimBufferEv(h), 0);
-            _ZN13MatTexPatAnim7setAnimEPvS0_jhS0_(&unk_1c, _ZN16CharaFaceAnimRef16getEyeAnimBufferEv(h), 0, 0, x, 0x1000);
-            unk_74 = t;
-            unk_1c.curFrame = 0;
-            _ZN13MatTexPatAnim10applyFrameEv(&unk_1c);
+            _ZN13MatTexPatAnim7setAnimEPvS0_jhS0_(&eyeTexAnim, _ZN16CharaFaceAnimRef16getEyeAnimBufferEv(h), 0, 0, x, 0x1000);
+            eyeAnimId = t;
+            eyeTexAnim.curFrame = 0;
+            _ZN13MatTexPatAnim10applyFrameEv(&eyeTexAnim);
         }
-        if (mode == 2 || !isTalkMouthAnim(unk_78)) {
+        if (mode == 2 || !isTalkMouthAnim(mouthAnimId)) {
             setMouthAnim(u, 0);
         } else {
-            unk_7c = u;
+            savedMouthAnimId = u;
         }
     }
 }
@@ -5683,12 +5683,12 @@ BOOL NpcFaceAnim::setMaterialTex(void *m, void *q, u32 r) {
 
 BOOL NpcFaceAnim::setMouthTexture(u32 a) {
     using namespace nO;
-    return setMaterialTex(&unk_48, ((u8 *)"m"), a);
+    return setMaterialTex(&mouthTexAnim, ((u8 *)"m"), a);
 }
 
 void NpcFaceAnim::resumeMouthMaterial() {
     using namespace nO;
-    MatTexPatAnim_ResumeMaterial(&unk_48, ((u8 *)"m"));
+    MatTexPatAnim_ResumeMaterial(&mouthTexAnim, ((u8 *)"m"));
 }
 
 void NpcFaceAnim::func_020199c8() {
@@ -5698,60 +5698,60 @@ void NpcFaceAnim::func_020199c8() {
 
 void NpcFaceAnim::release() {
     using namespace nO;
-    _ZN13MatTexPatAnim7releaseEv(&unk_1c);
-    _ZN13MatTexPatAnim7releaseEv(&unk_48);
-    _ZN12NpcResHandle7releaseEv(&unk_0c);
-    _ZN12NpcResHandle7releaseEv(&unk_14);
-    _ZN12NpcResHandle7releaseEv(&unk_04);
+    _ZN13MatTexPatAnim7releaseEv(&eyeTexAnim);
+    _ZN13MatTexPatAnim7releaseEv(&mouthTexAnim);
+    _ZN12NpcResHandle7releaseEv(&texPatBuf);
+    _ZN12NpcResHandle7releaseEv(&faceAnimRef);
+    _ZN12NpcResHandle7releaseEv(&texPatHeap);
 }
 
 void NpcFaceAnim::update(u8 *o) {
     using namespace nN;
     if (isLoaded()) {
-        if (unk_74 == 0) {
-            if (!_ZN13AnimFrameCtrl14hasPassedFrameEi(&unk_1c, 0) || BlinkTimer_Update(this)) {
-                _ZN13MatTexPatAnim6updateEv(&unk_1c);
+        if (eyeAnimId == 0) {
+            if (!_ZN13AnimFrameCtrl14hasPassedFrameEi(&eyeTexAnim, 0) || BlinkTimer_Update(this)) {
+                _ZN13MatTexPatAnim6updateEv(&eyeTexAnim);
             }
         } else {
-            _ZN13MatTexPatAnim6updateEv(&unk_1c);
+            _ZN13MatTexPatAnim6updateEv(&eyeTexAnim);
         }
         if (_ZN14NpcSpeechState12getMouthTypeEv(o + 0x418) < 2) {
             if (_ZN14NpcSpeechState10isSpeakingEv(o + 0x418)) {
-                if (!isTalkMouthAnim(unk_78)) {
+                if (!isTalkMouthAnim(mouthAnimId)) {
                     startTalkMouth(_ZN14NpcSpeechState12getMouthTypeEv(o + 0x418));
                     randomizeTalkMouth();
                 } else if (isMouthCycleDone()) {
                     randomizeTalkMouth();
                 }
-            } else if (isTalkMouthAnim(unk_78)) {
+            } else if (isTalkMouthAnim(mouthAnimId)) {
                 if (isMouthCycleDone()) {
                     restoreMouthAnim();
                 }
             }
-        } else if (isTalkMouthAnim(unk_78)) {
+        } else if (isTalkMouthAnim(mouthAnimId)) {
             restoreMouthAnim();
         }
-        _ZN13MatTexPatAnim6updateEv(&unk_48);
+        _ZN13MatTexPatAnim6updateEv(&mouthTexAnim);
     }
 }
 
 NpcActionCtrl::NpcActionCtrl() {
     using namespace nN;
-    unk_2c.unk_22 = 0xfff1;
-    unk_60.unk_22 = 0xfff1;
-    unk_1c = 0x16;
-    unk_20 = NULL;
-    unk_14 = 0;
+    pendingParams.item = 0xfff1;
+    curParams.item = 0xfff1;
+    action = 0x16;
+    actionEntry = NULL;
+    priority = 0;
     clearPendingAction();
     setActionDone(1);
     unk_99 = 0;
-    unk_9c = 0;
+    moveMode = 0;
     unk_a0 = 0;
-    unk_a4 = 0;
-    unk_a8 = 1;
-    unk_a9 = 0;
-    unk_b0 = 5;
-    unk_ac = -1;
+    emotionEntry = 0;
+    emotionIntro = 1;
+    emotionId = 0;
+    act07Variant = 5;
+    itemEffect = -1;
 }
 
 void NpcActionCtrl::func_02019854() {
@@ -5766,45 +5766,45 @@ void *NpcActionParams::clear() {
 void NpcActionParams::copyFrom(NpcActionParams *src) {
     using namespace nN;
     MI_CpuCopy8(src, this, 0x34);
-    unk_28 = src->unk_28;
+    handOverPartner = src->handOverPartner;
 }
 
 void NpcActionCtrl::startAction(u8 *o, s32 a, s32 b, s32 s0, s32 s1, s16 s2, s32 s3, s32 s4) {
     using namespace nN;
-    NpcActionParams *p = &unk_2c;
+    NpcActionParams *p = &pendingParams;
     setPendingAction(a, b);
     p->clear();
-    p->unk_04 = s0;
-    p->unk_08 = s1;
+    p->waypointX = s0;
+    p->waypointZ = s1;
     if (s3 == 0 && s4 == 0) {
-        p->unk_0c = s0;
-        p->unk_10 = s1;
+        p->destX = s0;
+        p->destZ = s1;
     } else {
-        p->unk_0c = s3;
-        p->unk_10 = s4;
+        p->destX = s3;
+        p->destZ = s4;
     }
-    p->unk_18 = s2;
-    p->unk_1c = data_020c6cc8;
-    unk_60.copyFrom(&unk_2c);
-    MI_CpuFill8(&unk_04, 0, 0xf);
-    unk_18 = 0;
-    unk_19 = 0;
-    changeAction(o, unk_24, unk_28);
+    p->targetAngle = s2;
+    p->blendFrames = data_020c6cc8;
+    curParams.copyFrom(&pendingParams);
+    MI_CpuFill8(&netAction, 0, 0xf);
+    isTalking = 0;
+    talkingRequest = 0;
+    changeAction(o, pendingAction, pendingPriority);
 }
 
 s32 NpcActionCtrl::getAction() {
     using namespace nN;
-    return unk_1c;
+    return action;
 }
 
 u8 NpcActionCtrl::getEmotionId() {
     using namespace nN;
-    return unk_a9;
+    return emotionId;
 }
 
 BOOL NpcActionCtrl::isActionDone() {
     using namespace nN;
-    if (unk_94 == 1) {
+    if (actionDone == 1) {
         return TRUE;
     }
     return FALSE;
@@ -5812,56 +5812,56 @@ BOOL NpcActionCtrl::isActionDone() {
 
 NpcActionParams *NpcActionCtrl::getCurParams() {
     using namespace nN;
-    return &unk_60;
+    return &curParams;
 }
 
 void NpcActionCtrl::changeAction(u8 *o, s32 idx, s32 state) {
     using namespace nN;
-    unk_1c = idx;
+    action = idx;
     if (idx < 0 || idx >= 0x16) {
-        unk_1c = 0;
+        action = 0;
     }
-    unk_14 = state;
-    unk_20 = &sNpcActionTable[unk_1c];
-    unk_98 = 0;
-    if (unk_20 != NULL) {
-        (this->*(unk_20->a))(o);
+    priority = state;
+    actionEntry = &sNpcActionTable[action];
+    actStep = 0;
+    if (actionEntry != NULL) {
+        (this->*(actionEntry->a))(o);
     }
 }
 
 void NpcActionCtrl::clearPendingAction() {
     using namespace nN;
     setPendingAction(0x16, 0);
-    unk_2c.clear();
+    pendingParams.clear();
 }
 
 void NpcActionCtrl::setPendingAction(s32 a, s32 b) {
     using namespace nN;
-    unk_24 = a;
-    unk_28 = b;
+    pendingAction = a;
+    pendingPriority = b;
 }
 
 BOOL NpcActionCtrl::requestAction(u32 a, s32 b, s32 c, s32 s0, s16 s1, s16 s2, s32 s3, s32 s4, u16 s5, u16 s6) {
     using namespace nN;
     BOOL r = FALSE;
-    if (b >= unk_28 || unk_28 == 3) {
+    if (b >= pendingPriority || pendingPriority == 3) {
         if (a != 0xc) {
-            NpcActionParams *p = &unk_2c;
+            NpcActionParams *p = &pendingParams;
             setPendingAction(a, b);
             p->clear();
-            p->unk_04 = c;
-            p->unk_08 = s0;
+            p->waypointX = c;
+            p->waypointZ = s0;
             if (s3 == 0 && s4 == 0) {
-                p->unk_0c = c;
-                p->unk_10 = s0;
+                p->destX = c;
+                p->destZ = s0;
             } else {
-                p->unk_0c = s3;
-                p->unk_10 = s4;
+                p->destX = s3;
+                p->destZ = s4;
             }
-            p->unk_18 = s2;
-            p->unk_1a = s1;
-            p->unk_1c = s5;
-            p->unk_1e = s6;
+            p->targetAngle = s2;
+            p->turnSpeed = s1;
+            p->blendFrames = s5;
+            p->animStartFrame = s6;
             r = TRUE;
         }
     }
@@ -5872,7 +5872,7 @@ BOOL NpcActionCtrl::requestAct07(s32 a, s32 b, s32 c, s32 d, u16 e) {
     using namespace nN;
     BOOL r = FALSE;
     if (requestAction(7, a, 0, 0, b, c, 0, 0, e, 0)) {
-        unk_2c.unk_14 = d;
+        pendingParams.act07Variant = d;
         r = TRUE;
     }
     return r;
@@ -5882,7 +5882,7 @@ BOOL NpcActionCtrl::requestEmotion(s32 a, u8 b, u16 c) {
     using namespace nN;
     BOOL r = FALSE;
     if (requestAction(8, a, 0, 0, 0, 0, 0, 0, c, 0)) {
-        unk_2c.unk_21 = b;
+        pendingParams.emotionId = b;
         r = TRUE;
     }
     return r;
@@ -5896,14 +5896,14 @@ void NpcActionCtrl::requestStand(u32 a, u16 b) {
 BOOL NpcActionCtrl::requestPlayAnim(s32 a, s32 b, u32 c, u16 s0, u16 s1) {
     using namespace nN;
     BOOL r = FALSE;
-    if (a >= unk_28 || unk_28 == 3) {
-        NpcActionParams *p = &unk_2c;
+    if (a >= pendingPriority || pendingPriority == 3) {
+        NpcActionParams *p = &pendingParams;
         setPendingAction(0xc, a);
         p->clear();
-        p->unk_00 = b;
-        p->unk_20 = c;
-        p->unk_1c = s0;
-        p->unk_1e = s1;
+        p->animId = b;
+        p->animPlayMode = c;
+        p->blendFrames = s0;
+        p->animStartFrame = s1;
         r = TRUE;
     }
     return r;
@@ -5912,15 +5912,15 @@ BOOL NpcActionCtrl::requestPlayAnim(s32 a, s32 b, u32 c, u16 s0, u16 s1) {
 BOOL NpcActionCtrl::requestGiveItem(s32 a, u16 *b, u32 c, u8 s0, u32 s1, u32 s2) {
     using namespace nN;
     BOOL r = FALSE;
-    if (a >= unk_28 || unk_28 == 3) {
-        NpcActionParams *p = &unk_2c;
+    if (a >= pendingPriority || pendingPriority == 3) {
+        NpcActionParams *p = &pendingParams;
         setPendingAction(0xd, a);
         p->clear();
-        p->unk_22 = *b;
-        p->unk_24 = c;
-        p->unk_2c = s0;
-        p->unk_30 = s1;
-        p->unk_28 = s2;
+        p->item = *b;
+        p->handOverKind = c;
+        p->handOverMode = s0;
+        p->handOverVariant = s1;
+        p->handOverPartner = s2;
         r = TRUE;
     }
     return r;
@@ -5929,54 +5929,54 @@ BOOL NpcActionCtrl::requestGiveItem(s32 a, u16 *b, u32 c, u8 s0, u32 s1, u32 s2)
 BOOL NpcActionCtrl::requestTakeItem(s32 a, u16 *b, u32 c, u8 s0, u32 s1, u32 s2) {
     using namespace nN;
     BOOL r = FALSE;
-    if (a >= unk_28 || unk_28 == 3) {
-        NpcActionParams *p = &unk_2c;
+    if (a >= pendingPriority || pendingPriority == 3) {
+        NpcActionParams *p = &pendingParams;
         setPendingAction(0xe, a);
         p->clear();
-        p->unk_22 = *b;
-        p->unk_24 = c;
-        p->unk_2c = s0;
-        p->unk_30 = s1;
-        p->unk_28 = s2;
+        p->item = *b;
+        p->handOverKind = c;
+        p->handOverMode = s0;
+        p->handOverVariant = s1;
+        p->handOverPartner = s2;
         r = TRUE;
     }
     return r;
 }
 
 void NpcActionCtrl::requestTalkingOn() {
-    using namespace nN; unk_19 = 1; }
+    using namespace nN; talkingRequest = 1; }
 
 void NpcActionCtrl::requestTalkingOff() {
-    using namespace nN; unk_19 = 2; }
+    using namespace nN; talkingRequest = 2; }
 
 void NpcActionCtrl::setTalking() {
-    using namespace nN; unk_18 = 1; }
+    using namespace nN; isTalking = 1; }
 
 void NpcActionCtrl::clearTalking() {
-    using namespace nN; unk_18 = 0; }
+    using namespace nN; isTalking = 0; }
 
 void NpcActionCtrl::applyPendingAction(u8 *arg) {
     using namespace nN;
-    if (unk_28 != 0) {
-        if (unk_28 >= unk_14 || isActionDone() || unk_14 == 3) {
-            unk_60.copyFrom(&unk_2c);
-            changeAction(arg, unk_24, unk_28);
+    if (pendingPriority != 0) {
+        if (pendingPriority >= priority || isActionDone() || priority == 3) {
+            curParams.copyFrom(&pendingParams);
+            changeAction(arg, pendingAction, pendingPriority);
         }
     }
-    u8 t = unk_19;
+    u8 t = talkingRequest;
     if (t == 1) {
         setTalking();
-        unk_19 = 0;
+        talkingRequest = 0;
     } else if (t == 2) {
         clearTalking();
-        unk_19 = 0;
+        talkingRequest = 0;
     }
     clearPendingAction();
 }
 
 void NpcActionCtrl::setActionDone(s32 v) {
     using namespace nN;
-    unk_94 = v;
+    actionDone = v;
 }
 
 namespace nN {
@@ -6046,29 +6046,29 @@ extern "C" void NpcAction_UnpackItem(u16 *out, void *in) {
 void NpcActionCtrl::update(u8 *arg) {
     using namespace nN;
     applyPendingAction(arg);
-    Unk_02019858_Entry *e = unk_20;
+    Unk_02019858_Entry *e = actionEntry;
     if (e != NULL && e->b != NULL) {
         (this->*(e->b))(arg);
     }
     if (isActionDone()) {
-        unk_14 = 0;
+        priority = 0;
     }
 }
 
 void NpcActionCtrl::postUpdate(u8 *arg) {
     using namespace nN;
-    if (unk_20 != NULL && unk_20->c != NULL) {
-        (this->*(unk_20->c))(arg);
+    if (actionEntry != NULL && actionEntry->c != NULL) {
+        (this->*(actionEntry->c))(arg);
     }
     if (isActionDone()) {
-        unk_14 = 0;
+        priority = 0;
     }
 }
 
 s32 NpcActionCtrl::setupAct00(u8 *o) {
     using namespace nN;
     NpcActionParams *c = getCurParams();
-    _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(o + 0x350, o, 0, 0, c->unk_1c);
+    _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(o + 0x350, o, 0, 0, c->blendFrames);
     _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(o + 0x350, gVec3Zero);
     _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(o + 0x350, gVec3Zero);
     _ZN11NpcMoveCtrl14setTargetAngleEs(o + 0x350, *(s16 *)(o + 0x8e));
@@ -6076,8 +6076,8 @@ s32 NpcActionCtrl::setupAct00(u8 *o) {
     if (*(u32 *)(o + 0x628) != 0) {
         ((HeldToolModel *)*(u32 *)(o + 0x628))->playIdleAnim(data_020c6cc8, 0);
     }
-    unk_04 = unk_1c;
-    unk_05 = unk_14;
+    netAction = action;
+    netPriority = priority;
     setActionDone(0);
     return 0;
 }
@@ -6090,18 +6090,18 @@ void NpcActionCtrl::mainAct00() {
 s32 NpcActionCtrl::setupAct01(u8 *o) {
     using namespace nN;
     NpcActionParams *c = getCurParams();
-    Unk_02019858_Vec v0(c->unk_04, 0, c->unk_08);
-    Unk_02019858_Vec v1(c->unk_0c, 0, c->unk_10);
+    Unk_02019858_Vec v0(c->waypointX, 0, c->waypointZ);
+    Unk_02019858_Vec v1(c->destX, 0, c->destZ);
     _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(o + 0x350, &v0);
     _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(o + 0x350, &v1);
-    _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(o + 0x350, o, 1, c->unk_1a, c->unk_1c);
+    _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(o + 0x350, o, 1, c->turnSpeed, c->blendFrames);
     _ZN12Unk_0201acf813func_0201acf8Et(o + 0x3aa, 1);
     if (*(u32 *)(o + 0x628) != 0) {
         ((HeldToolModel *)*(u32 *)(o + 0x628))->playWalkAnim(data_020c6cc8, 0);
     }
-    unk_04 = unk_1c;
-    unk_05 = unk_14;
-    NpcAction_PackMove(&unk_06[0], c->unk_04, c->unk_08, c->unk_0c, c->unk_10, c->unk_1a, c->unk_1c);
+    netAction = action;
+    netPriority = priority;
+    NpcAction_PackMove(&netArgs[0], c->waypointX, c->waypointZ, c->destX, c->destZ, c->turnSpeed, c->blendFrames);
     setActionDone(0);
     return 0;
 }
@@ -6112,7 +6112,7 @@ void NpcActionCtrl::mainAct01(u8 *o) {
     if (_ZN11NpcMoveCtrl10hasArrivedEP18Unk_0201a334_Scenei(o + 0x350, o, 0)) {
         if (_ZN11NpcMoveCtrl10hasNextLegEv(o + 0x350)) {
             NpcActionParams *c = getCurParams();
-            requestAction(1, 1, c->unk_04, c->unk_08, 0, 0, 0, 0, data_020c6cc8, 0);
+            requestAction(1, 1, c->waypointX, c->waypointZ, 0, 0, 0, 0, data_020c6cc8, 0);
         } else {
             setActionDone(1);
         }
@@ -6122,18 +6122,18 @@ void NpcActionCtrl::mainAct01(u8 *o) {
 s32 NpcActionCtrl::setupAct02(u8 *o) {
     using namespace nN;
     NpcActionParams *c = getCurParams();
-    Unk_02019858_Vec v0(c->unk_04, 0, c->unk_08);
-    Unk_02019858_Vec v1(c->unk_0c, 0, c->unk_10);
+    Unk_02019858_Vec v0(c->waypointX, 0, c->waypointZ);
+    Unk_02019858_Vec v1(c->destX, 0, c->destZ);
     _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(o + 0x350, &v0);
     _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(o + 0x350, &v1);
-    _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(o + 0x350, o, 2, c->unk_1a, c->unk_1c);
+    _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(o + 0x350, o, 2, c->turnSpeed, c->blendFrames);
     _ZN12Unk_0201acf813func_0201acf8Et(o + 0x3aa, 1);
     if (*(u32 *)(o + 0x628) != 0) {
         ((HeldToolModel *)*(u32 *)(o + 0x628))->playWalkAnim(data_020c6cc8, 0);
     }
-    unk_04 = unk_1c;
-    unk_05 = unk_14;
-    NpcAction_PackMove(&unk_06[0], c->unk_04, c->unk_08, c->unk_0c, c->unk_10, c->unk_1a, c->unk_1c);
+    netAction = action;
+    netPriority = priority;
+    NpcAction_PackMove(&netArgs[0], c->waypointX, c->waypointZ, c->destX, c->destZ, c->turnSpeed, c->blendFrames);
     setActionDone(0);
     return 0;
 }
@@ -6144,7 +6144,7 @@ void NpcActionCtrl::mainAct02(u8 *o) {
     if (_ZN11NpcMoveCtrl10hasArrivedEP18Unk_0201a334_Scenei(o + 0x350, o, 0)) {
         if (_ZN11NpcMoveCtrl10hasNextLegEv(o + 0x350)) {
             NpcActionParams *c = getCurParams();
-            requestAction(1, 1, c->unk_04, c->unk_08, 0, 0, 0, 0, data_020c6cc8, 0);
+            requestAction(1, 1, c->waypointX, c->waypointZ, 0, 0, 0, 0, data_020c6cc8, 0);
         } else {
             setActionDone(1);
         }
@@ -6154,25 +6154,25 @@ void NpcActionCtrl::mainAct02(u8 *o) {
 s32 Unk_02018698::setupAct03(C_8698 *c) {
     using namespace nM;
     Unk_02018698_Data *d = _ZN13NpcActionCtrl12getCurParamsEv(this);
-    _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(c->unk_350, c, 3, d->unk_1a, d->unk_1c);
-    _ZN11NpcMoveCtrl14setTargetAngleEs(c->unk_350, d->unk_18);
-    _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(c->unk_350, gVec3Zero);
-    _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(c->unk_350, gVec3Zero);
+    _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(c->moveCtrl, c, 3, d->turnSpeed, d->blendFrames);
+    _ZN11NpcMoveCtrl14setTargetAngleEs(c->moveCtrl, d->targetAngle);
+    _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(c->moveCtrl, gVec3Zero);
+    _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(c->moveCtrl, gVec3Zero);
     _ZN12Unk_0201acf813func_0201acf8Et(c->unk_3aa, -2);
-    if (c->unk_628) {
-        _ZN13HeldToolModel12playWalkAnimEjj(c->unk_628, data_020c6cc8, 0);
+    if (c->curHeldTool) {
+        _ZN13HeldToolModel12playWalkAnimEjj(c->curHeldTool, data_020c6cc8, 0);
     }
-    unk_04 = unk_1c;
-    unk_05 = unk_14;
-    NpcAction_PackTurn(unk_06, d->unk_1a, d->unk_18, d->unk_1c);
+    netAction = action;
+    netPriority = priority;
+    NpcAction_PackTurn(netArgs, d->turnSpeed, d->targetAngle, d->blendFrames);
     _ZN13NpcActionCtrl13setActionDoneEi(this, 0);
     return 0;
 }
 
 void Unk_02018698::mainAct03(C_8698 *c) {
     using namespace nM;
-    if (c->unk_8e == _ZN11NpcMoveCtrl14getTargetAngleEv(c->unk_350)) {
-        _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(c->unk_350, c, 0, 0, _ZN13NpcActionCtrl12getCurParamsEv(this)->unk_1c);
+    if (c->rotY == _ZN11NpcMoveCtrl14getTargetAngleEv(c->moveCtrl)) {
+        _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(c->moveCtrl, c, 0, 0, _ZN13NpcActionCtrl12getCurParamsEv(this)->blendFrames);
         _ZN13NpcActionCtrl13setActionDoneEi(this, 1);
     }
 }
@@ -6180,15 +6180,15 @@ void Unk_02018698::mainAct03(C_8698 *c) {
 s32 Unk_02018698::setupAct04(C_8698 *c) {
     using namespace nM;
     Unk_02018698_Data *d = _ZN13NpcActionCtrl12getCurParamsEv(this);
-    V v1(d->unk_04, 0, d->unk_08);
-    V v2(d->unk_0c, 0, d->unk_10);
-    _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(c->unk_350, c, 3, d->unk_1a, d->unk_1c);
-    _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(c->unk_350, &v1);
-    _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(c->unk_350, &v2);
-    _ZN11NpcMoveCtrl14setTargetAngleEs(c->unk_350, d->unk_18);
+    V v1(d->waypointX, 0, d->waypointZ);
+    V v2(d->destX, 0, d->destZ);
+    _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(c->moveCtrl, c, 3, d->turnSpeed, d->blendFrames);
+    _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(c->moveCtrl, &v1);
+    _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(c->moveCtrl, &v2);
+    _ZN11NpcMoveCtrl14setTargetAngleEs(c->moveCtrl, d->targetAngle);
     _ZN12Unk_0201acf813func_0201acf8Et(c->unk_3aa, -2);
-    if (c->unk_628) {
-        _ZN13HeldToolModel12playWalkAnimEjj(c->unk_628, data_020c6cc8, 0);
+    if (c->curHeldTool) {
+        _ZN13HeldToolModel12playWalkAnimEjj(c->curHeldTool, data_020c6cc8, 0);
     }
     _ZN13NpcActionCtrl13setActionDoneEi(this, 0);
     return 0;
@@ -6196,9 +6196,9 @@ s32 Unk_02018698::setupAct04(C_8698 *c) {
 
 void Unk_02018698::act04Step0(C_8698 *c) {
     using namespace nM;
-    if (c->unk_8e == _ZN11NpcMoveCtrl14getTargetAngleEv(c->unk_350)) {
+    if (c->rotY == _ZN11NpcMoveCtrl14getTargetAngleEv(c->moveCtrl)) {
         _ZN13NpcActionCtrl10setupAct01EPh(this, c);
-        unk_98 = 1;
+        actStep = 1;
     }
 }
 
@@ -6301,8 +6301,8 @@ void *data_020d758c[2] = {(void *)_ZN12Unk_0201442013itemAct0FWaitEv, 0};
 void Unk_02018698::mainAct04(C_8698 *c) {
     using namespace nM;
     static void (Unk_02018698::*tbl[])(C_8698 *) = {*(void (Unk_02018698::**)(C_8698 *))data_020d75cc, *(void (Unk_02018698::**)(C_8698 *))data_020d75c4};
-    if (unk_98 < 2) {
-        (this->*tbl[unk_98])(c);
+    if (actStep < 2) {
+        (this->*tbl[actStep])(c);
     }
 }
 
@@ -6310,23 +6310,23 @@ s32 Unk_02018698::setupMoveTurnFirst(C_8698 *c, s32 a, s16 b) {
     using namespace nM;
     s16 out;
     Unk_02018698_Data *d = _ZN13NpcActionCtrl12getCurParamsEv(this);
-    V v1(d->unk_04, 0, d->unk_08);
-    V v2(d->unk_0c, 0, d->unk_10);
-    unk_9c = a;
+    V v1(d->waypointX, 0, d->waypointZ);
+    V v2(d->destX, 0, d->destZ);
+    moveMode = a;
     unk_a0 = b;
-    _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(c->unk_350, &v1);
-    _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(c->unk_350, &v2);
-    if (_ZN8NpcActor12isPosInFrontEPsP16Unk_020d77a4_Vec(c, &out, _ZN11NpcMoveCtrl15getDestinationBEv(c->unk_350))) {
-        _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(c->unk_350, c, unk_9c, d->unk_1a, d->unk_1c);
-        unk_98 = 1;
+    _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(c->moveCtrl, &v1);
+    _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(c->moveCtrl, &v2);
+    if (_ZN8NpcActor12isPosInFrontEPsP16Unk_020d77a4_Vec(c, &out, _ZN11NpcMoveCtrl15getDestinationBEv(c->moveCtrl))) {
+        _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(c->moveCtrl, c, moveMode, d->turnSpeed, d->blendFrames);
+        actStep = 1;
     } else {
-        _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(c->unk_350, c, 3, d->unk_1a, d->unk_1c);
-        _ZN11NpcMoveCtrl14setTargetAngleEs(c->unk_350, out);
-        c->unk_98 = 0;
-        unk_98 = 0;
+        _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(c->moveCtrl, c, 3, d->turnSpeed, d->blendFrames);
+        _ZN11NpcMoveCtrl14setTargetAngleEs(c->moveCtrl, out);
+        c->speed = 0;
+        actStep = 0;
     }
-    if (c->unk_628) {
-        _ZN13HeldToolModel12playWalkAnimEjj(c->unk_628, data_020c6cc8, 0);
+    if (c->curHeldTool) {
+        _ZN13HeldToolModel12playWalkAnimEjj(c->curHeldTool, data_020c6cc8, 0);
     }
     _ZN12Unk_0201acf813func_0201acf8Et(c->unk_3aa, unk_a0);
     _ZN13NpcActionCtrl13setActionDoneEi(this, 0);
@@ -6335,33 +6335,33 @@ s32 Unk_02018698::setupMoveTurnFirst(C_8698 *c, s32 a, s16 b) {
 
 void Unk_02018698::act05Step0(C_8698 *c) {
     using namespace nM;
-    if (NpcActor_IsFrontAngle(_ZN11NpcMoveCtrl14getTargetAngleEv(c->unk_350) - c->unk_8e)) {
-        s32 t = _ZN11NpcMoveCtrl12getTurnSpeedEv(c->unk_350);
-        _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(c->unk_350, c, unk_9c, t, data_020c6cc8);
-        unk_98 = 1;
+    if (NpcActor_IsFrontAngle(_ZN11NpcMoveCtrl14getTargetAngleEv(c->moveCtrl) - c->rotY)) {
+        s32 t = _ZN11NpcMoveCtrl12getTurnSpeedEv(c->moveCtrl);
+        _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(c->moveCtrl, c, moveMode, t, data_020c6cc8);
+        actStep = 1;
     }
 }
 
 void Unk_02018698::act05Step1(C_8698 *c) {
     using namespace nM;
     s16 out;
-    s32 r = _ZN11NpcMoveCtrl15getDestinationBEv(c->unk_350);
-    _ZN11NpcMoveCtrl16aimAtDestinationEP18Unk_0201a334_Scene(c->unk_350, c);
-    if (_ZN11NpcMoveCtrl10hasArrivedEP18Unk_0201a334_Scenei(c->unk_350, c, 0)) {
-        if (_ZN11NpcMoveCtrl10hasNextLegEv(c->unk_350)) {
-            _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(c->unk_350, (void *)r);
+    s32 r = _ZN11NpcMoveCtrl15getDestinationBEv(c->moveCtrl);
+    _ZN11NpcMoveCtrl16aimAtDestinationEP18Unk_0201a334_Scene(c->moveCtrl, c);
+    if (_ZN11NpcMoveCtrl10hasArrivedEP18Unk_0201a334_Scenei(c->moveCtrl, c, 0)) {
+        if (_ZN11NpcMoveCtrl10hasNextLegEv(c->moveCtrl)) {
+            _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(c->moveCtrl, (void *)r);
         } else {
             _ZN13NpcActionCtrl13setActionDoneEi(this, 1);
         }
     } else if (!_ZN8NpcActor12isPosInFrontEPsP16Unk_020d77a4_Vec(c, &out, r)) {
         u16 v = data_020c6cc8;
-        s32 t = _ZN11NpcMoveCtrl12getTurnSpeedEv(c->unk_350);
-        _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(c->unk_350, c, 3, t, data_020c6cc8);
-        _ZN11NpcMoveCtrl14setTargetAngleEs(c->unk_350, out);
-        unk_98 = 0;
-        c->unk_98 = 0;
-        if (c->unk_628) {
-            _ZN13HeldToolModel12playWalkAnimEjj(c->unk_628, v, 0);
+        s32 t = _ZN11NpcMoveCtrl12getTurnSpeedEv(c->moveCtrl);
+        _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(c->moveCtrl, c, 3, t, data_020c6cc8);
+        _ZN11NpcMoveCtrl14setTargetAngleEs(c->moveCtrl, out);
+        actStep = 0;
+        c->speed = 0;
+        if (c->curHeldTool) {
+            _ZN13HeldToolModel12playWalkAnimEjj(c->curHeldTool, v, 0);
         }
     }
 }
@@ -6384,8 +6384,8 @@ void *data_020d71bc[2] = {(void *)_ZN12Unk_0201216410stepWanderEP16Unk_02011f74_
 void Unk_02018698::mainAct05(C_8698 *c) {
     using namespace nM;
     static void (Unk_02018698::*tbl[])(C_8698 *) = {*(void (Unk_02018698::**)(C_8698 *))data_020d71f4, *(void (Unk_02018698::**)(C_8698 *))data_020d75a4};
-    if (unk_98 < 2) {
-        (this->*tbl[unk_98])(c);
+    if (actStep < 2) {
+        (this->*tbl[actStep])(c);
     }
 }
 
@@ -6402,30 +6402,30 @@ s32 Unk_02018698::setupAct06(C_8698 *c) {
 s32 Unk_02018698::setupAct07(C_8698 *c) {
     using namespace nM;
     Unk_02018698_Data *d = _ZN13NpcActionCtrl12getCurParamsEv(this);
-    _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(c->unk_350, c, 3, d->unk_1a, d->unk_1c);
-    _ZN11NpcMoveCtrl14setTargetAngleEs(c->unk_350, d->unk_18);
+    _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(c->moveCtrl, c, 3, d->turnSpeed, d->blendFrames);
+    _ZN11NpcMoveCtrl14setTargetAngleEs(c->moveCtrl, d->targetAngle);
     _ZN12Unk_0201acf813func_0201acf8Et(c->unk_3aa, -2);
-    if (c->unk_628) {
-        _ZN13HeldToolModel12playWalkAnimEjj(c->unk_628, d->unk_1c, 0);
+    if (c->curHeldTool) {
+        _ZN13HeldToolModel12playWalkAnimEjj(c->curHeldTool, d->blendFrames, 0);
     }
-    unk_b0 = d->unk_14;
+    act07Variant = d->act07Variant;
     _ZN13NpcActionCtrl13setActionDoneEi(this, 0);
     return 0;
 }
 
 void Unk_02018698::act07Step0(C_8698 *c) {
     using namespace nM;
-    if (c->unk_8e == _ZN11NpcMoveCtrl14getTargetAngleEv(c->unk_350)) {
-        if (unk_b0 >= 5) {
-            unk_b0 = 0;
+    if (c->rotY == _ZN11NpcMoveCtrl14getTargetAngleEv(c->moveCtrl)) {
+        if (act07Variant >= 5) {
+            act07Variant = 0;
         }
         u16 v = data_020c6cc8;
-        _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(c->unk_334, c, sNpcAct07Anims[unk_b0], data_020c6cc8, 1, 0x1000, 0, 0);
-        if (c->unk_628) {
-            _ZN13HeldToolModel12playIdleAnimEjj(c->unk_628, v, 0);
+        _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(c->animCtrl, c, sNpcAct07Anims[act07Variant], data_020c6cc8, 1, 0x1000, 0, 0);
+        if (c->curHeldTool) {
+            _ZN13HeldToolModel12playIdleAnimEjj(c->curHeldTool, v, 0);
         }
-        func_02003ddc(c->unk_514, sNpcAct07Ses[unk_b0], 0x7f, 0);
-        unk_98 = 1;
+        func_02003ddc(c->seEmitter, sNpcAct07Ses[act07Variant], 0x7f, 0);
+        actStep = 1;
     }
 }
 
@@ -6449,16 +6449,16 @@ const u16 sNpcAct07Ses[5] = {0x45, 0x46, 0x47, 0x48, 0x49};
 void Unk_02018698::mainAct07(C_8698 *c) {
     using namespace nM;
     static void (Unk_02018698::*tbl[])(C_8698 *) = {*(void (Unk_02018698::**)(C_8698 *))data_020d708c};
-    if (unk_98 < 1) {
-        (this->*tbl[unk_98])(c);
+    if (actStep < 1) {
+        (this->*tbl[actStep])(c);
     }
 }
 
 void Unk_02018698::postAct07(C_8698 *c) {
     using namespace nM;
-    if (unk_98 >= 1) {
+    if (actStep >= 1) {
         if (!_ZN13NpcActionCtrl12isActionDoneEv(this)) {
-            if (_ZN12Unk_02015b8c14isAnimFinishedEP18Unk_02015b8c_Scene(c->unk_334, c)) {
+            if (_ZN12Unk_02015b8c14isAnimFinishedEP18Unk_02015b8c_Scene(c->animCtrl, c)) {
                 _ZN13NpcActionCtrl13setActionDoneEi(this, 1);
             }
         }
@@ -6476,52 +6476,52 @@ extern "C" Unk_02018698_Ent *Emotion_GetEntry(u32 i) {
 
 s32 Unk_02018698::setupAct08(C_8698 *c) {
     using namespace nM;
-    u32 i = _ZN13NpcActionCtrl12getCurParamsEv(this)->unk_21;
+    u32 i = _ZN13NpcActionCtrl12getCurParamsEv(this)->emotionId;
     u32 v = data_020c6cc8;
     if (i >= 0x3c) {
         i = 0;
     }
-    unk_a9 = i;
+    emotionId = i;
     if (i == 0) {
-        _ZN11NpcFaceAnim13func_020199c8Ev(c->unk_2ac);
+        _ZN11NpcFaceAnim13func_020199c8Ev(c->faceAnim);
         v = c->vf9c();
     }
-    unk_a4 = (Unk_02018698_Rec *)&sEmotionTable[i];
-    unk_a8 = ((Unk_02018698_Ent *)unk_a4)->unk_18;
-    _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(c->unk_334, c, ((Unk_02018698_Ent *)unk_a4)->unk_00, v, unk_a8, 0x1000, 0, 0);
-    if (c->unk_628) {
-        _ZN13HeldToolModel12playIdleAnimEjj(c->unk_628, v, 0);
+    emotionEntry = (Unk_02018698_Rec *)&sEmotionTable[i];
+    emotionIntro = ((Unk_02018698_Ent *)emotionEntry)->introPlayMode;
+    _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(c->animCtrl, c, ((Unk_02018698_Ent *)emotionEntry)->introAnim, v, emotionIntro, 0x1000, 0, 0);
+    if (c->curHeldTool) {
+        _ZN13HeldToolModel12playIdleAnimEjj(c->curHeldTool, v, 0);
     }
-    c->unk_445 = i;
-    _ZN12NpcEmotionFx10startEntryEP18Unk_02019e2c_Entryi(c->unk_420, unk_a4, 0);
+    c->fxEmotionId = i;
+    _ZN12NpcEmotionFx10startEntryEP15NpcEmotionPhasei(c->emotionFx, emotionEntry, 0);
     _ZN13NpcActionCtrl13setActionDoneEi(this, 0);
     return 1;
 }
 
 void Unk_02018698::mainAct08(C_8698 *c) {
     using namespace nM;
-    Unk_02018698_Rec *t = unk_a4;
+    Unk_02018698_Rec *t = emotionEntry;
     if (t != 0) {
-        if (unk_a8 == 1) {
-            if (_ZN12Unk_02015b8c14isAnimFinishedEP18Unk_02015b8c_Scene(c->unk_334, c)) {
-                Unk_02018698_Rec *r = unk_a4;
-                s32 *pv = &r->unk_0c;
-                if (r->unk_0c < 0x137) {
+        if (emotionIntro == 1) {
+            if (_ZN12Unk_02015b8c14isAnimFinishedEP18Unk_02015b8c_Scene(c->animCtrl, c)) {
+                Unk_02018698_Rec *r = emotionEntry;
+                s32 *pv = &r->loopAnim;
+                if (r->loopAnim < 0x137) {
                     u16 v = data_020c6cc8;
-                    _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(c->unk_334, c, *pv, data_020c6cc8, 0, 0x1000, 0, 0);
-                    if (c->unk_628) {
-                        _ZN13HeldToolModel12playIdleAnimEjj(c->unk_628, v, 0);
+                    _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(c->animCtrl, c, *pv, data_020c6cc8, 0, 0x1000, 0, 0);
+                    if (c->curHeldTool) {
+                        _ZN13HeldToolModel12playIdleAnimEjj(c->curHeldTool, v, 0);
                     }
-                    c->unk_445 = unk_a9;
-                    _ZN12NpcEmotionFx10startEntryEP18Unk_02019e2c_Entryi(c->unk_420, unk_a4, 1);
-                    unk_a8 = 0;
-                } else if (r->unk_0c == 0x137) {
+                    c->fxEmotionId = emotionId;
+                    _ZN12NpcEmotionFx10startEntryEP15NpcEmotionPhasei(c->emotionFx, emotionEntry, 1);
+                    emotionIntro = 0;
+                } else if (r->loopAnim == 0x137) {
                     _ZN13NpcActionCtrl13setActionDoneEi(this, 1);
                 }
             }
         } else {
-            if (t->unk_00 == 0) {
-                if (((c->unk_190 << 4) >> 16) == 0) {
+            if (t->introAnim == 0) {
+                if (((c->bodyAnimFrame << 4) >> 16) == 0) {
                     _ZN13NpcActionCtrl13setActionDoneEi(this, 1);
                 }
             }
@@ -6532,10 +6532,10 @@ void Unk_02018698::mainAct08(C_8698 *c) {
 s32 Unk_02018698::setupAct09(C_8698 *c) {
     using namespace nM;
     Unk_02018698_Data *d = _ZN13NpcActionCtrl12getCurParamsEv(this);
-    _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(c->unk_350, c, 0, 0, d->unk_1c);
-    _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(c->unk_334, c, 0xd8, d->unk_1c, 0, 0x1000, 0, 0);
-    _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(c->unk_350, gVec3Zero);
-    _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(c->unk_350, gVec3Zero);
+    _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(c->moveCtrl, c, 0, 0, d->blendFrames);
+    _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(c->animCtrl, c, 0xd8, d->blendFrames, 0, 0x1000, 0, 0);
+    _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(c->moveCtrl, gVec3Zero);
+    _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(c->moveCtrl, gVec3Zero);
     _ZN12Unk_0201acf813func_0201acf8Et(c->unk_3aa, -2);
     _ZN13NpcActionCtrl13setActionDoneEi(this, 0);
     return 0;
@@ -6543,7 +6543,7 @@ s32 Unk_02018698::setupAct09(C_8698 *c) {
 
 void Unk_02018698::mainAct09(C_8698 *c) {
     using namespace nM;
-    if (((c->unk_190 << 4) >> 16) == 0) {
+    if (((c->bodyAnimFrame << 4) >> 16) == 0) {
         if (!_ZN12Unk_0201acf813func_0201acfcEv(c->unk_3aa)) {
             _ZN13NpcActionCtrl13setActionDoneEi(this, 1);
         }
@@ -6553,22 +6553,22 @@ void Unk_02018698::mainAct09(C_8698 *c) {
 s32 Unk_02018698::setupAct0A(C_8698 *c) {
     using namespace nM;
     Unk_02018698_Data *d = _ZN13NpcActionCtrl12getCurParamsEv(this);
-    _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(c->unk_350, c, 0, 0, d->unk_1c);
-    _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(c->unk_350, gVec3Zero);
-    _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(c->unk_350, gVec3Zero);
+    _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(c->moveCtrl, c, 0, 0, d->blendFrames);
+    _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(c->moveCtrl, gVec3Zero);
+    _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(c->moveCtrl, gVec3Zero);
     _ZN12Unk_0201acf813func_0201acf8Et(c->unk_3aa, -2);
-    _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(c->unk_334, c, 0x77, d->unk_1c, 1, 0x1000, 0, 0);
+    _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(c->animCtrl, c, 0x77, d->blendFrames, 1, 0x1000, 0, 0);
     _ZN13NpcActionCtrl13setActionDoneEi(this, 0);
     func_02003f1c(0xa0);
-    unk_98 = 0;
+    actStep = 0;
     return 0;
 }
 
 void Unk_02017d74::act0AStep0(C_7d74 *c) {
     using namespace nL;
-    if (_ZN12Unk_02015b8c14isAnimFinishedEP18Unk_02015b8c_Scene(c->unk_334)) {
-        _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(c->unk_334, c, 0x78, data_020c6cc8, 1, 0x1000, 0, 0);
-        unk_98 = 1;
+    if (_ZN12Unk_02015b8c14isAnimFinishedEP18Unk_02015b8c_Scene(c->animCtrl)) {
+        _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(c->animCtrl, c, 0x78, data_020c6cc8, 1, 0x1000, 0, 0);
+        actStep = 1;
     }
 }
 
@@ -6581,15 +6581,15 @@ void *data_020d70d4[2] = {(void *)_ZN12Unk_0201216416stepAdjacentUnitEP16Unk_020
 void Unk_02017d74::mainAct0A(C_7d74 *c) {
     using namespace nL;
     static Unk_02017d74_Fn tbl[1] = {*(Unk_02017d74_Fn *)data_020d7484};
-    if (unk_98 < 1) {
-        (this->*tbl[unk_98])(c);
+    if (actStep < 1) {
+        (this->*tbl[actStep])(c);
     }
 }
 
 void Unk_02017d74::postAct0A(C_7d74 *c) {
     using namespace nL;
-    if (unk_98 >= 1) {
-        if (_ZN12Unk_02015b8c14isAnimFinishedEP18Unk_02015b8c_Scene(c->unk_334)) {
+    if (actStep >= 1) {
+        if (_ZN12Unk_02015b8c14isAnimFinishedEP18Unk_02015b8c_Scene(c->animCtrl)) {
             _ZN13NpcActionCtrl13setActionDoneEi(this, 1);
         }
     }
@@ -6599,30 +6599,30 @@ BOOL Unk_02017d74::setupAct0B(C_7d74 *c) {
     using namespace nL;
     u32 r = c->vf94();
     Unk_02017d74_Data *d = _ZN13NpcActionCtrl12getCurParamsEv(this);
-    _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(c->unk_350, c, 0, 0, d->unk_1c);
-    _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(c->unk_350, gVec3Zero);
-    _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(c->unk_350, gVec3Zero);
+    _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(c->moveCtrl, c, 0, 0, d->blendFrames);
+    _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(c->moveCtrl, gVec3Zero);
+    _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(c->moveCtrl, gVec3Zero);
     _ZN12Unk_0201acf813func_0201acf8Et(c->unk_3aa, -2);
     u16 v = data_020c6cc8;
-    _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(c->unk_334, c, r, data_020c6cc8, 1, 0x1000, 0, 0);
-    if (c->unk_628) {
-        _ZN13HeldToolModel12playIdleAnimEjj(c->unk_628, v, 0);
+    _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(c->animCtrl, c, r, data_020c6cc8, 1, 0x1000, 0, 0);
+    if (c->curHeldTool) {
+        _ZN13HeldToolModel12playIdleAnimEjj(c->curHeldTool, v, 0);
     }
-    unk_98 = 0;
+    actStep = 0;
     _ZN13NpcActionCtrl13setActionDoneEi(this, 0);
     return FALSE;
 }
 
 void Unk_02017d74::act0BStep0(C_7d74 *c) {
     using namespace nL;
-    if (_ZN12Unk_02015b8c14isAnimFinishedEP18Unk_02015b8c_Scene(c->unk_334)) {
+    if (_ZN12Unk_02015b8c14isAnimFinishedEP18Unk_02015b8c_Scene(c->animCtrl)) {
         u32 r = c->vf98();
         u16 v = data_020c6cc8;
-        _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(c->unk_334, c, r, data_020c6cc8, 0, 0x1000, 0, 0);
-        if (c->unk_628) {
-            _ZN13HeldToolModel12playIdleAnimEjj(c->unk_628, v, 0);
+        _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(c->animCtrl, c, r, data_020c6cc8, 0, 0x1000, 0, 0);
+        if (c->curHeldTool) {
+            _ZN13HeldToolModel12playIdleAnimEjj(c->curHeldTool, v, 0);
         }
-        unk_98 = 1;
+        actStep = 1;
     }
 }
 
@@ -6641,17 +6641,17 @@ void *data_020d715c[2] = {(void *)_ZN12Unk_020144209melodyEndEv, 0};
 void Unk_02017d74::mainAct0B(C_7d74 *c) {
     using namespace nL;
     static Unk_02017d74_Fn tbl[1] = {*(Unk_02017d74_Fn *)data_020d746c};
-    if (unk_98 < 1) {
-        (this->*tbl[unk_98])(c);
+    if (actStep < 1) {
+        (this->*tbl[actStep])(c);
     }
 }
 
 void Unk_02017d74::postAct0B(C_7d74 *c) {
     using namespace nL;
-    if (unk_98 >= 1) {
+    if (actStep >= 1) {
         if (!_ZN13NpcActionCtrl12isActionDoneEv(this)) {
-            s32 a = (c->unk_190 << 4) >> 16;
-            s32 b = (c->unk_18c << 4) >> 16;
+            s32 a = (c->bodyAnimFrame << 4) >> 16;
+            s32 b = (c->bodyAnimNumFrames << 4) >> 16;
             if (a >= b - 0x1000) {
                 _ZN13NpcActionCtrl13setActionDoneEi(this, 1);
             }
@@ -6662,14 +6662,14 @@ void Unk_02017d74::postAct0B(C_7d74 *c) {
 BOOL Unk_02017d74::setupAct0C(C_7d74 *c) {
     using namespace nL;
     Unk_02017d74_Data *d = _ZN13NpcActionCtrl12getCurParamsEv(this);
-    _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(c->unk_350, c, 0, 0, data_020c6cc8);
-    _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(c->unk_350, gVec3Zero);
-    _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(c->unk_350, gVec3Zero);
+    _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(c->moveCtrl, c, 0, 0, data_020c6cc8);
+    _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(c->moveCtrl, gVec3Zero);
+    _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(c->moveCtrl, gVec3Zero);
     _ZN12Unk_0201acf813func_0201acf8Et(c->unk_3aa, -2);
-    _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(c->unk_334, c, d->unk_00, d->unk_1c, d->unk_20, 0x1000, d->unk_1e, 0);
-    unk_04 = unk_1c;
-    unk_05 = unk_14;
-    NpcAction_PackAnim(unk_06, d->unk_00, d->unk_20, d->unk_1c, d->unk_1e);
+    _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(c->animCtrl, c, d->animId, d->blendFrames, d->animPlayMode, 0x1000, d->animStartFrame, 0);
+    netAction = action;
+    netPriority = priority;
+    NpcAction_PackAnim(netArgs, d->animId, d->animPlayMode, d->blendFrames, d->animStartFrame);
     _ZN13NpcActionCtrl13setActionDoneEi(this, 0);
     return TRUE;
 }
@@ -6677,16 +6677,16 @@ BOOL Unk_02017d74::setupAct0C(C_7d74 *c) {
 void Unk_02017d74::postAct0C(C_7d74 *c) {
     using namespace nL;
     BOOL r = FALSE;
-    switch (c->unk_19c) {
+    switch (c->bodyAnimPlayMode) {
     case 0:
     case 2:
-        if (((c->unk_190 << 4) >> 16) == 0) {
+        if (((c->bodyAnimFrame << 4) >> 16) == 0) {
             r = TRUE;
         }
         break;
     case 1:
     case 3:
-        r = _ZN12Unk_02015b8c14isAnimFinishedEP18Unk_02015b8c_Scene(c->unk_334);
+        r = _ZN12Unk_02015b8c14isAnimFinishedEP18Unk_02015b8c_Scene(c->animCtrl);
         break;
     }
     if (r) {
@@ -6697,40 +6697,40 @@ void Unk_02017d74::postAct0C(C_7d74 *c) {
 BOOL Unk_02017d74::setupAct0D(C_7d74 *c) {
     using namespace nL;
     Unk_02017d74_Data *d = _ZN13NpcActionCtrl12getCurParamsEv(this);
-    _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(c->unk_350, c, 0, 0, d->unk_1c);
-    _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(c->unk_350, gVec3Zero);
-    _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(c->unk_350, gVec3Zero);
+    _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(c->moveCtrl, c, 0, 0, d->blendFrames);
+    _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(c->moveCtrl, gVec3Zero);
+    _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(c->moveCtrl, gVec3Zero);
     _ZN12Unk_0201acf813func_0201acf8Et(c->unk_3aa, -2);
     u16 v = data_020c6cc8;
-    _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(c->unk_334, c, sNpcGiveItemAnims[d->unk_30], data_020c6cc8, 1, 0x1000, 0, 0);
-    if (c->unk_628) {
-        _ZN13HeldToolModel12playIdleAnimEjj(c->unk_628, v, 0);
+    _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(c->animCtrl, c, sNpcGiveItemAnims[d->handOverVariant], data_020c6cc8, 1, 0x1000, 0, 0);
+    if (c->curHeldTool) {
+        _ZN13HeldToolModel12playIdleAnimEjj(c->curHeldTool, v, 0);
     }
-    func_02003ddc(c->unk_514, 0x4f, 0x7f, 0);
-    HandOverItem_Begin(&d->unk_22, d->unk_24, d->unk_2c, d->unk_30, c, d->unk_28);
+    func_02003ddc(c->seEmitter, 0x4f, 0x7f, 0);
+    HandOverItem_Begin(&d->item, d->handOverKind, d->handOverMode, d->handOverVariant, c, d->handOverPartner);
     HandOverItem_RequestMode(1, c);
     _ZN13NpcActionCtrl13setActionDoneEi(this, 0);
-    if (d->unk_30 == 1) {
-        unk_98 = 4;
+    if (d->handOverVariant == 1) {
+        actStep = 4;
     } else {
-        unk_98 = 0;
+        actStep = 0;
     }
     return TRUE;
 }
 
 void Unk_02017d74::act0DStep0(C_7d74 *c) {
     using namespace nL;
-    if (_ZN12Unk_02015b8c14isAnimFinishedEP18Unk_02015b8c_Scene(c->unk_334)) {
+    if (_ZN12Unk_02015b8c14isAnimFinishedEP18Unk_02015b8c_Scene(c->animCtrl)) {
         if (PlayerActor_RequestAct32()) {
             u16 v = data_020c6cc8;
-            _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(c->unk_334, c, 0x23, data_020c6cc8, 0, 0x1000, 0, 0);
-            if (c->unk_628) {
-                _ZN13HeldToolModel12playIdleAnimEjj(c->unk_628, v, 0);
+            _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(c->animCtrl, c, 0x23, data_020c6cc8, 0, 0x1000, 0, 0);
+            if (c->curHeldTool) {
+                _ZN13HeldToolModel12playIdleAnimEjj(c->curHeldTool, v, 0);
             }
-            unk_98 = 1;
+            actStep = 1;
         }
-    } else if (((c->unk_190 << 4) >> 16) == 8) {
-        func_02003ddc(c->unk_514, 0x63, 0x7f, 0);
+    } else if (((c->bodyAnimFrame << 4) >> 16) == 8) {
+        func_02003ddc(c->seEmitter, 0x63, 0x7f, 0);
     }
 }
 
@@ -6738,11 +6738,11 @@ void Unk_02017d74::act0DStep1(C_7d74 *c) {
     using namespace nL;
     if (!HandOverItem_IsMaster(c)) {
         u16 v = data_020c6cc8;
-        _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(c->unk_334, c, 0, data_020c6cc8, 0, 0x1000, 0, 0);
-        if (c->unk_628) {
-            _ZN13HeldToolModel12playIdleAnimEjj(c->unk_628, v, 0);
+        _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(c->animCtrl, c, 0, data_020c6cc8, 0, 0x1000, 0, 0);
+        if (c->curHeldTool) {
+            _ZN13HeldToolModel12playIdleAnimEjj(c->curHeldTool, v, 0);
         }
-        unk_98 = 2;
+        actStep = 2;
     }
 }
 
@@ -6750,15 +6750,15 @@ void Unk_02017d74::act0DStep2(C_7d74 *c) {
     using namespace nL;
     if (!HandOverItem_IsActive()) {
         _ZN13NpcActionCtrl13setActionDoneEi(this, 1);
-        unk_98 = 5;
+        actStep = 5;
     }
 }
 
 void Unk_02017d74::act0DStep3(C_7d74 *c) {
     using namespace nL;
-    if (((c->unk_190 << 4) >> 16) == 0x17) {
+    if (((c->bodyAnimFrame << 4) >> 16) == 0x17) {
         HandOverItem_RequestMode(2, c);
-        unk_98 = 4;
+        actStep = 4;
     }
 }
 
@@ -6767,13 +6767,13 @@ void Unk_02017d74::act0DStep4(C_7d74 *c) {
     if (!HandOverItem_IsModeActive(1)) {
         Unk_02017d74_Data *d = _ZN13NpcActionCtrl12getCurParamsEv(this);
         HandOverItem_SetNextMode(9, c);
-        if (HandOverItem_SwitchMaster((void *)d->unk_28)) {
+        if (HandOverItem_SwitchMaster((void *)d->handOverPartner)) {
             if (PlayerActor_LocalRequestAct37()) {
-                unk_98 = 2;
+                actStep = 2;
             }
         }
-    } else if (((c->unk_190 << 4) >> 16) == 8) {
-        func_02003ddc(c->unk_514, 0x63, 0x7f, 0);
+    } else if (((c->bodyAnimFrame << 4) >> 16) == 8) {
+        func_02003ddc(c->seEmitter, 0x63, 0x7f, 0);
     }
 }
 
@@ -6791,8 +6791,8 @@ void *data_020d7114[2] = {(void *)_ZN12Unk_0201216410stepWanderEP16Unk_02011f74_
 void Unk_02017d74::mainAct0D(C_7d74 *c) {
     using namespace nL;
     static Unk_02017d74_Fn tbl[5] = {*(Unk_02017d74_Fn *)data_020d745c, *(Unk_02017d74_Fn *)data_020d7454, *(Unk_02017d74_Fn *)data_020d744c, *(Unk_02017d74_Fn *)data_020d714c, *(Unk_02017d74_Fn *)data_020d711c};
-    if (unk_98 < 5) {
-        (this->*tbl[unk_98])(c);
+    if (actStep < 5) {
+        (this->*tbl[actStep])(c);
     }
 }
 
@@ -6803,16 +6803,16 @@ void Unk_02017d74::postAct0D(C_7d74 *c) {
 BOOL Unk_02017d74::setupAct0E(C_7d74 *c) {
     using namespace nL;
     Unk_02017d74_Data *d = _ZN13NpcActionCtrl12getCurParamsEv(this);
-    _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(c->unk_350, c, 0, 0, d->unk_1c);
-    _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(c->unk_350, gVec3Zero);
-    _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(c->unk_350, gVec3Zero);
+    _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(c->moveCtrl, c, 0, 0, d->blendFrames);
+    _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(c->moveCtrl, gVec3Zero);
+    _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(c->moveCtrl, gVec3Zero);
     _ZN12Unk_0201acf813func_0201acf8Et(c->unk_3aa, -2);
-    if (d->unk_30 == 1) {
-        PlayerActor_LocalRequestAct36(&d->unk_22, &d->unk_24, &d->unk_2c, &d->unk_30, c);
-        unk_98 = 0xd;
+    if (d->handOverVariant == 1) {
+        PlayerActor_LocalRequestAct36(&d->item, &d->handOverKind, &d->handOverMode, &d->handOverVariant, c);
+        actStep = 0xd;
     } else {
-        PlayerActor_RequestAct30(&d->unk_22, &d->unk_24, &d->unk_2c, &d->unk_30, c);
-        unk_98 = 0;
+        PlayerActor_RequestAct30(&d->item, &d->handOverKind, &d->handOverMode, &d->handOverVariant, c);
+        actStep = 0;
     }
     _ZN13NpcActionCtrl13setActionDoneEi(this, 0);
     return TRUE;
@@ -6824,28 +6824,28 @@ void Unk_02017d74::act0EStep00(C_7d74 *c) {
         Unk_02017d74_Data *d = _ZN13NpcActionCtrl12getCurParamsEv(this);
         if (Unk_02017d74_Is((u16 *)((u8 *)c + 0xea), 0xd00c) || HandOverItem_CanTake(c)) {
             u16 v = data_020c6cc8;
-            _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(c->unk_334, c, 0x25, data_020c6cc8, 1, 0x1000, 0, 0);
-            if (c->unk_628) {
-                _ZN13HeldToolModel12playIdleAnimEjj(c->unk_628, v, 0);
+            _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(c->animCtrl, c, 0x25, data_020c6cc8, 1, 0x1000, 0, 0);
+            if (c->curHeldTool) {
+                _ZN13HeldToolModel12playIdleAnimEjj(c->curHeldTool, v, 0);
             }
-            unk_98 = 2;
-        } else if (Unk_02017d74_Is(&d->unk_22, 0x1565) && d->unk_24 == 0 && (Scene_GetCurrent() == 9 || Scene_GetCurrent() == 0x10)) {
+            actStep = 2;
+        } else if (Unk_02017d74_Is(&d->item, 0x1565) && d->handOverKind == 0 && (Scene_GetCurrent() == 9 || Scene_GetCurrent() == 0x10)) {
             if (HandOverItem_SwitchMaster(c)) {
                 u16 v = data_020c6cc8;
-                _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(c->unk_334, c, 0x25, data_020c6cc8, 1, 0x1000, 0, 0);
-                if (c->unk_628) {
-                    _ZN13HeldToolModel12playIdleAnimEjj(c->unk_628, v, 0);
+                _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(c->animCtrl, c, 0x25, data_020c6cc8, 1, 0x1000, 0, 0);
+                if (c->curHeldTool) {
+                    _ZN13HeldToolModel12playIdleAnimEjj(c->curHeldTool, v, 0);
                 }
-                unk_98 = 2;
+                actStep = 2;
             }
         } else {
             Unk_02017d74_Buf buf;
             if (HandOverItem_GetPos(&buf)) {
                 buf.b = 0;
-                _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(c->unk_350, &buf);
-                _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(c->unk_350, &buf);
-                _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(c->unk_350, c, 1, 0, data_020c6cc8);
-                unk_98 = 1;
+                _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(c->moveCtrl, &buf);
+                _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(c->moveCtrl, &buf);
+                _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(c->moveCtrl, c, 1, 0, data_020c6cc8);
+                actStep = 1;
             }
         }
     }
@@ -6855,24 +6855,24 @@ namespace nK {
 extern "C" void _ZN12Unk_02016a4411act0EStep01EP12Unk_02006d14(S *s, C_745c *c) {
     if (HandOverItem_CanTake(c)) {
         u16 v = data_020c6cc8;
-        _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(c->unk_350, c, 0, 0, v);
-        _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(c->unk_350, gVec3Zero);
-        _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(c->unk_350, gVec3Zero);
-        _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(c->unk_334, c, 0x25, v, 1, 0x1000, 0, 0);
-        if (c->unk_628) {
-            _ZN13HeldToolModel12playIdleAnimEjj(c->unk_628, v, 0);
+        _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(c->moveCtrl, c, 0, 0, v);
+        _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(c->moveCtrl, gVec3Zero);
+        _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(c->moveCtrl, gVec3Zero);
+        _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(c->animCtrl, c, 0x25, v, 1, 0x1000, 0, 0);
+        if (c->curHeldTool) {
+            _ZN13HeldToolModel12playIdleAnimEjj(c->curHeldTool, v, 0);
         }
-        s->unk_98 = 2;
+        s->actStep = 2;
     }
 }
 }
 
 namespace nK {
 extern "C" void _ZN12Unk_02016a4411act0EStep02EP12Unk_02006d14(S *s, C_745c *c) {
-    if (_ZN12Unk_02015b8c14isAnimFinishedEP18Unk_02015b8c_Scene(c->unk_334)) {
+    if (_ZN12Unk_02015b8c14isAnimFinishedEP18Unk_02015b8c_Scene(c->animCtrl)) {
         if (HandOverItem_SwitchMaster(c)) {
             if (HandOverItem_RequestMode(3, c)) {
-                s->unk_98 = 3;
+                s->actStep = 3;
             }
         }
     }
@@ -6884,11 +6884,11 @@ extern "C" void _ZN12Unk_02016a4411act0EStep03EP12Unk_02006d14(S *s, C_745c *c) 
     if (!HandOverItem_IsModeActive(3)) {
         if (HandOverItem_RequestMode(4, c)) {
             u16 v = data_020c6cc8;
-            _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(c->unk_334, c, 0x26, data_020c6cc8, 1, 0x1000, 0, 0);
-            if (c->unk_628) {
-                _ZN13HeldToolModel12playIdleAnimEjj(c->unk_628, v, 0);
+            _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(c->animCtrl, c, 0x26, data_020c6cc8, 1, 0x1000, 0, 0);
+            if (c->curHeldTool) {
+                _ZN13HeldToolModel12playIdleAnimEjj(c->curHeldTool, v, 0);
             }
-            s->unk_98 = 4;
+            s->actStep = 4;
         }
     }
 }
@@ -6898,54 +6898,54 @@ namespace nK {
 extern "C" void _ZN12Unk_02016a4411act0EStep04EP12Unk_02006d14(S *s, C_745c *c) {
     s16 t;
     s32 v[3];
-    if (_ZN12Unk_02015b8c14isAnimFinishedEP18Unk_02015b8c_Scene(c->unk_334)) {
+    if (_ZN12Unk_02015b8c14isAnimFinishedEP18Unk_02015b8c_Scene(c->animCtrl)) {
         switch (HandOverItem_GetNextMode()) {
         case 6:
             HandOverItem_End(c);
-            _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(c->unk_334, c, 0x28, data_020c6cc8, 1, 0x1000, 0, 0);
+            _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(c->animCtrl, c, 0x28, data_020c6cc8, 1, 0x1000, 0, 0);
             Effect_PlayById2(0x61, (u8 *)c + 0x5c, 0, 0);
-            func_02003ddc(c->unk_350 + 0x1c4, 0x76, 0x7f, 0);
-            s->unk_98 = 6;
+            func_02003ddc(c->moveCtrl + 0x1c4, 0x76, 0x7f, 0);
+            s->actStep = 6;
             break;
         case 7:
             if (HandOverItem_RequestMode(7, c)) {
-                _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(c->unk_334, c, 0x26, data_020c6cc8, 3, 0x1000, 0, 0);
-                s->unk_98 = 7;
+                _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(c->animCtrl, c, 0x26, data_020c6cc8, 3, 0x1000, 0, 0);
+                s->actStep = 7;
             }
             break;
         case 5:
             if (HandOverItem_RequestMode(5, c)) {
-                _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(c->unk_334, c, 0x27, data_020c6cc8, 1, 0x1000, 0, 0);
-                func_02003ddc(c->unk_350 + 0x1c4, 0x4f, 0x7f, 0);
-                s->unk_98 = 5;
+                _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(c->animCtrl, c, 0x27, data_020c6cc8, 1, 0x1000, 0, 0);
+                func_02003ddc(c->moveCtrl + 0x1c4, 0x4f, 0x7f, 0);
+                s->actStep = 5;
             }
             break;
         case 10:
             if (HandOverItem_RequestMode(10, c)) {
-                _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(c->unk_334, c, 0, data_020c6cc8, 0, 0x1000, 0, 0);
-                _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(c->unk_334, c, 0x139, 0, 0, 0x1000, 0, 1);
+                _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(c->animCtrl, c, 0, data_020c6cc8, 0, 0x1000, 0, 0);
+                _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(c->animCtrl, c, 0x139, 0, 0, 0x1000, 0, 1);
                 ThreeLayerAnimModel_AssignJointsToLayer2((u8 *)c + 0xec, 9, 14);
                 _ZN13NpcActionCtrl13setActionDoneEi(s, 1);
-                s->unk_98 = 0x14;
+                s->actStep = 0x14;
             }
             break;
         case 11:
             if (HandOverItem_RequestMode(11, c)) {
-                v[0] = c->unk_478;
-                v[1] = c->unk_47c;
-                v[2] = c->unk_480;
-                t = c->unk_8e;
-                _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(c->unk_334, c, 0x29, data_020c6cc8, 1, 0x1000, 0, 0);
-                s->unk_ac = Effect_Create(0x40, v, &t, 0);
-                s->unk_98 = 0xb;
+                v[0] = c->headTopPosX;
+                v[1] = c->headTopPosY;
+                v[2] = c->headTopPosZ;
+                t = c->rotY;
+                _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(c->animCtrl, c, 0x29, data_020c6cc8, 1, 0x1000, 0, 0);
+                s->itemEffect = Effect_Create(0x40, v, &t, 0);
+                s->actStep = 0xb;
             }
             break;
         case 8:
         case 9:
         default:
-            _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(c->unk_334, c, 0x24, data_020c6cc8, 0, 0x1000, 0, 0);
+            _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(c->animCtrl, c, 0x24, data_020c6cc8, 0, 0x1000, 0, 0);
             _ZN13NpcActionCtrl13setActionDoneEi(s, 1);
-            s->unk_98 = 0x14;
+            s->actStep = 0x14;
             break;
         }
     }
@@ -6954,36 +6954,36 @@ extern "C" void _ZN12Unk_02016a4411act0EStep04EP12Unk_02006d14(S *s, C_745c *c) 
 
 namespace nK {
 extern "C" void _ZN12Unk_02016a4411act0EStep05EP12Unk_02006d14(S *s, C_745c *c) {
-    if (_ZN12Unk_02015b8c14isAnimFinishedEP18Unk_02015b8c_Scene(c->unk_334)) {
+    if (_ZN12Unk_02015b8c14isAnimFinishedEP18Unk_02015b8c_Scene(c->animCtrl)) {
         u16 v = data_020c6cc8;
-        _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(c->unk_334, c, 0, data_020c6cc8, 0, 0x1000, 0, 0);
-        if (c->unk_628) {
-            _ZN13HeldToolModel12playIdleAnimEjj(c->unk_628, v, 0);
+        _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(c->animCtrl, c, 0, data_020c6cc8, 0, 0x1000, 0, 0);
+        if (c->curHeldTool) {
+            _ZN13HeldToolModel12playIdleAnimEjj(c->curHeldTool, v, 0);
         }
         HandOverItem_End(c);
-        if (s->unk_ac != -1) {
-            Effect_End(s->unk_ac);
+        if (s->itemEffect != -1) {
+            Effect_End(s->itemEffect);
         }
         _ZN13NpcActionCtrl13setActionDoneEi(s, 1);
-        s->unk_98 = 0x14;
-    } else if (s->unk_ac != -1) {
-        Effect_SetPosition(s->unk_ac, c->unk_350 + 0x128, &c->unk_8e, 0);
+        s->actStep = 0x14;
+    } else if (s->itemEffect != -1) {
+        Effect_SetPosition(s->itemEffect, c->moveCtrl + 0x128, &c->rotY, 0);
     }
 }
 }
 
 namespace nK {
 extern "C" BOOL _ZN12Unk_02016a4415waitItemAnimEndEP12Unk_02006d14Ptjj(S *s, C_745c *c, void *p, u32 a, u8 b) {
-    if (a == (u32)_ZN12Unk_02015b8c9getAnimIdEj(c->unk_334, 0)) {
-        if (nK2::_ZN12Unk_02015b8c14isAnimFinishedEP18Unk_02015b8c_Scene(c->unk_334, c)) {
+    if (a == (u32)_ZN12Unk_02015b8c9getAnimIdEj(c->animCtrl, 0)) {
+        if (nK2::_ZN12Unk_02015b8c14isAnimFinishedEP18Unk_02015b8c_Scene(c->animCtrl, c)) {
             u16 v = data_020c6cc8;
-            _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(c->unk_334, c, 0, data_020c6cc8, 0, 0x1000, 0, 0);
-            if (c->unk_628) {
-                _ZN13HeldToolModel12playIdleAnimEjj(c->unk_628, v, 0);
+            _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(c->animCtrl, c, 0, data_020c6cc8, 0, 0x1000, 0, 0);
+            if (c->curHeldTool) {
+                _ZN13HeldToolModel12playIdleAnimEjj(c->curHeldTool, v, 0);
             }
             return TRUE;
         } else {
-            switch ((c->unk_190 << 4) >> 16) {
+            switch ((c->bodyAnimFrame << 4) >> 16) {
             case 8:
                 c->vf88(p, b);
                 break;
@@ -6991,7 +6991,7 @@ extern "C" BOOL _ZN12Unk_02016a4415waitItemAnimEndEP12Unk_02006d14Ptjj(S *s, C_7
                 Effect_Create(0x22, (u8 *)c + 0x5c, 0, 0);
                 break;
             case 3: {
-                s16 t = c->unk_8e;
+                s16 t = c->rotY;
                 Effect_Create(0x28, (u8 *)c + 0x490, &t, 0);
                 Effect_Create(0x28, (u8 *)c + 0x484, &t, 0);
                 break;
@@ -7008,21 +7008,21 @@ extern "C" void _ZN12Unk_02016a4411act0EStep06EP12Unk_02006d14(S *s, C_745c *c) 
     void *r = _ZN13NpcActionCtrl12getCurParamsEv(s);
     if (_ZN12Unk_02016a4415waitItemAnimEndEP12Unk_02006d14Ptjj(s, c, (u8 *)r + 0x22, 0x28, 1)) {
         _ZN13NpcActionCtrl13setActionDoneEi(s, 1);
-        s->unk_98 = 0x14;
+        s->actStep = 0x14;
     }
 }
 }
 
 namespace nK {
 extern "C" void _ZN12Unk_02016a4411act0EStep07EP12Unk_02006d14(S *s, C_745c *c) {
-    if (_ZN12Unk_02015b8c14isAnimFinishedEP18Unk_02015b8c_Scene(c->unk_334)) {
+    if (_ZN12Unk_02015b8c14isAnimFinishedEP18Unk_02015b8c_Scene(c->animCtrl)) {
         if (PlayerActor_RequestAct32()) {
             u16 v = data_020c6cc8;
-            _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(c->unk_334, c, 0x23, data_020c6cc8, 0, 0x1000, 0, 0);
-            if (c->unk_628) {
-                _ZN13HeldToolModel12playIdleAnimEjj(c->unk_628, v, 0);
+            _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(c->animCtrl, c, 0x23, data_020c6cc8, 0, 0x1000, 0, 0);
+            if (c->curHeldTool) {
+                _ZN13HeldToolModel12playIdleAnimEjj(c->curHeldTool, v, 0);
             }
-            s->unk_98 = 8;
+            s->actStep = 8;
         }
     }
 }
@@ -7032,11 +7032,11 @@ namespace nK {
 extern "C" void _ZN12Unk_02016a4411act0EStep08EP12Unk_02006d14(S *s, C_745c *c) {
     if (!HandOverItem_IsMaster(c)) {
         u16 v = data_020c6cc8;
-        _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(c->unk_334, c, 0, data_020c6cc8, 0, 0x1000, 0, 0);
-        if (c->unk_628) {
-            _ZN13HeldToolModel12playIdleAnimEjj(c->unk_628, v, 0);
+        _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(c->animCtrl, c, 0, data_020c6cc8, 0, 0x1000, 0, 0);
+        if (c->curHeldTool) {
+            _ZN13HeldToolModel12playIdleAnimEjj(c->curHeldTool, v, 0);
         }
-        s->unk_98 = 9;
+        s->actStep = 9;
     }
 }
 }
@@ -7045,43 +7045,43 @@ namespace nK {
 extern "C" void _ZN12Unk_02016a4411act0EStep09EP12Unk_02006d14(S *s, C_745c *c) {
     if (!HandOverItem_IsActive()) {
         _ZN13NpcActionCtrl13setActionDoneEi(s, 1);
-        s->unk_98 = 0x14;
+        s->actStep = 0x14;
     }
 }
 }
 
 namespace nK {
 extern "C" void _ZN12Unk_02016a4411act0EStep10EP12Unk_02006d14(S *s, C_745c *c) {
-    if (((c->unk_190 << 4) >> 16) == 0) {
+    if (((c->bodyAnimFrame << 4) >> 16) == 0) {
         _ZN13NpcActionCtrl13setActionDoneEi(s, 1);
-        s->unk_98 = 0x14;
+        s->actStep = 0x14;
     }
 }
 }
 
 namespace nK {
 extern "C" void _ZN12Unk_02016a4411act0EStep11EP12Unk_02006d14(S *s, C_745c *c) {
-    if (_ZN12Unk_02015b8c14isAnimFinishedEP18Unk_02015b8c_Scene(c->unk_334)) {
-        _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(c->unk_334, c, 0x2a, 0, 1, 0x1000, 0, 0);
-        if (s->unk_ac != -1) {
-            Effect_End(s->unk_ac);
+    if (_ZN12Unk_02015b8c14isAnimFinishedEP18Unk_02015b8c_Scene(c->animCtrl)) {
+        _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(c->animCtrl, c, 0x2a, 0, 1, 0x1000, 0, 0);
+        if (s->itemEffect != -1) {
+            Effect_End(s->itemEffect);
         }
-        s->unk_98 = 0xc;
+        s->actStep = 0xc;
     }
 }
 }
 
 namespace nK {
 extern "C" void _ZN12Unk_02016a4411act0EStep12EP12Unk_02006d14(S *s, C_745c *c) {
-    if (_ZN12Unk_02015b8c14isAnimFinishedEP18Unk_02015b8c_Scene(c->unk_334)) {
+    if (_ZN12Unk_02015b8c14isAnimFinishedEP18Unk_02015b8c_Scene(c->animCtrl)) {
         u16 v = data_020c6cc8;
-        _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(c->unk_334, c, 0, data_020c6cc8, 0, 0x1000, 0, 0);
-        if (c->unk_628) {
-            _ZN13HeldToolModel12playIdleAnimEjj(c->unk_628, v, 0);
+        _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(c->animCtrl, c, 0, data_020c6cc8, 0, 0x1000, 0, 0);
+        if (c->curHeldTool) {
+            _ZN13HeldToolModel12playIdleAnimEjj(c->curHeldTool, v, 0);
         }
         HandOverItem_End(c);
         _ZN13NpcActionCtrl13setActionDoneEi(s, 1);
-        s->unk_98 = 0x14;
+        s->actStep = 0x14;
     }
 }
 }
@@ -7089,7 +7089,7 @@ extern "C" void _ZN12Unk_02016a4411act0EStep12EP12Unk_02006d14(S *s, C_745c *c) 
 namespace nK {
 extern "C" void _ZN12Unk_02016a4411act0EStep13EP12Unk_02006d14(S *s, C_745c *c) {
     if (HandOverItem_IsModeActive(1)) {
-        s->unk_98 = 0xe;
+        s->actStep = 0xe;
     }
 }
 }
@@ -7097,18 +7097,18 @@ extern "C" void _ZN12Unk_02016a4411act0EStep13EP12Unk_02006d14(S *s, C_745c *c) 
 namespace nK {
 extern "C" void _ZN12Unk_02016a4411act0EStep14EP12Unk_02006d14(S *s, C_745c *c) {
     if (!HandOverItem_IsModeActive(1)) {
-        _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(c->unk_334, c, 0x2c, data_020c6cc8, 1, 0x1000, 0, 0);
-        s->unk_98 = 0xf;
+        _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(c->animCtrl, c, 0x2c, data_020c6cc8, 1, 0x1000, 0, 0);
+        s->actStep = 0xf;
     }
 }
 }
 
 namespace nK {
 extern "C" void _ZN12Unk_02016a4411act0EStep15EP12Unk_02006d14(S *s, C_745c *c) {
-    if (_ZN12Unk_02015b8c14isAnimFinishedEP18Unk_02015b8c_Scene(c->unk_334)) {
+    if (_ZN12Unk_02015b8c14isAnimFinishedEP18Unk_02015b8c_Scene(c->animCtrl)) {
         if (HandOverItem_SwitchMaster(c)) {
             if (HandOverItem_RequestMode(3, c)) {
-                s->unk_98 = 0x10;
+                s->actStep = 0x10;
             }
         }
     }
@@ -7119,8 +7119,8 @@ namespace nK {
 extern "C" void _ZN12Unk_02016a4411act0EStep16EP12Unk_02006d14(S *s, C_745c *c) {
     if (!HandOverItem_IsModeActive(3)) {
         if (HandOverItem_RequestMode(4, c)) {
-            _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(c->unk_334, c, 0x2d, data_020c6cc8, 1, 0x1000, 0, 0);
-            s->unk_98 = 0x11;
+            _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(c->animCtrl, c, 0x2d, data_020c6cc8, 1, 0x1000, 0, 0);
+            s->actStep = 0x11;
         }
     }
 }
@@ -7128,26 +7128,26 @@ extern "C" void _ZN12Unk_02016a4411act0EStep16EP12Unk_02006d14(S *s, C_745c *c) 
 
 namespace nK {
 extern "C" void _ZN12Unk_02016a4411act0EStep17EP12Unk_02006d14(S *s, C_745c *c) {
-    if (_ZN12Unk_02015b8c14isAnimFinishedEP18Unk_02015b8c_Scene(c->unk_334)) {
+    if (_ZN12Unk_02015b8c14isAnimFinishedEP18Unk_02015b8c_Scene(c->animCtrl)) {
         u32 r = HandOverItem_GetNextMode();
         switch (r) {
         case 7:
             if (HandOverItem_RequestMode(7, c)) {
-                _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(c->unk_334, c, 0x2d, data_020c6cc8, 3, 0x1000, 0, 0);
-                s->unk_98 = 0x12;
+                _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(c->animCtrl, c, 0x2d, data_020c6cc8, 3, 0x1000, 0, 0);
+                s->actStep = 0x12;
             }
             break;
         case 5:
             if (HandOverItem_RequestMode(5, c)) {
-                _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(c->unk_334, c, 0x2e, data_020c6cc8, 1, 0x1000, 0, 0);
-                func_02003ddc(c->unk_350 + 0x1c4, 0x4f, 0x7f, 0);
-                s->unk_98 = 5;
+                _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(c->animCtrl, c, 0x2e, data_020c6cc8, 1, 0x1000, 0, 0);
+                func_02003ddc(c->moveCtrl + 0x1c4, 0x4f, 0x7f, 0);
+                s->actStep = 5;
             }
             break;
         default:
-            _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(c->unk_334, c, 0x24, data_020c6cc8, 0, 0x1000, 0, 0);
+            _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(c->animCtrl, c, 0x24, data_020c6cc8, 0, 0x1000, 0, 0);
             _ZN13NpcActionCtrl13setActionDoneEi(s, 1);
-            s->unk_98 = 0x14;
+            s->actStep = 0x14;
             break;
         }
     }
@@ -7156,10 +7156,10 @@ extern "C" void _ZN12Unk_02016a4411act0EStep17EP12Unk_02006d14(S *s, C_745c *c) 
 
 namespace nK {
 extern "C" void _ZN12Unk_02016a4411act0EStep18EP12Unk_02006d14(S *s, C_745c *c) {
-    if (_ZN12Unk_02015b8c14isAnimFinishedEP18Unk_02015b8c_Scene(c->unk_334)) {
+    if (_ZN12Unk_02015b8c14isAnimFinishedEP18Unk_02015b8c_Scene(c->animCtrl)) {
         if (HandOverItem_RequestMode(2, c)) {
-            _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(c->unk_334, c, 0, data_020c6cc8, 0, 0x1000, 0, 0);
-            s->unk_98 = 0x13;
+            _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(c->animCtrl, c, 0, data_020c6cc8, 0, 0x1000, 0, 0);
+            s->actStep = 0x13;
         }
     }
 }
@@ -7172,7 +7172,7 @@ extern "C" void _ZN12Unk_02016a4411act0EStep19EP12Unk_02006d14(S *s, C_745c *c) 
         HandOverItem_SetNextMode(9, c);
         if (HandOverItem_SwitchMaster(*(void **)((u8 *)r + 0x28))) {
             if (PlayerActor_LocalRequestAct37()) {
-                s->unk_98 = 9;
+                s->actStep = 9;
             }
         }
     }
@@ -7212,8 +7212,8 @@ void *data_020d735c[2] = {(void *)_ZN12Unk_020d771012taskSubSceneEv, 0};
 void Unk_02016a44::mainAct0E(Unk_02006d14 *o) {
     using namespace nJ;
     static void (Unk_02016a44::*tbl[20])(Unk_02006d14 *) = {*(void (Unk_02016a44::**)(Unk_02006d14 *))data_020d742c, *(void (Unk_02016a44::**)(Unk_02006d14 *))data_020d7424, *(void (Unk_02016a44::**)(Unk_02006d14 *))data_020d741c, *(void (Unk_02016a44::**)(Unk_02006d14 *))data_020d7414, *(void (Unk_02016a44::**)(Unk_02006d14 *))data_020d7184, *(void (Unk_02016a44::**)(Unk_02006d14 *))data_020d719c, *(void (Unk_02016a44::**)(Unk_02006d14 *))data_020d73fc, *(void (Unk_02016a44::**)(Unk_02006d14 *))data_020d721c, *(void (Unk_02016a44::**)(Unk_02006d14 *))data_020d73ec, *(void (Unk_02016a44::**)(Unk_02006d14 *))data_020d73e4, *(void (Unk_02016a44::**)(Unk_02006d14 *))data_020d73dc, *(void (Unk_02016a44::**)(Unk_02006d14 *))data_020d73d4, *(void (Unk_02016a44::**)(Unk_02006d14 *))data_020d73cc, *(void (Unk_02016a44::**)(Unk_02006d14 *))data_020d73c4, *(void (Unk_02016a44::**)(Unk_02006d14 *))data_020d73bc, *(void (Unk_02016a44::**)(Unk_02006d14 *))data_020d73b4, *(void (Unk_02016a44::**)(Unk_02006d14 *))data_020d73ac, *(void (Unk_02016a44::**)(Unk_02006d14 *))data_020d73a4, *(void (Unk_02016a44::**)(Unk_02006d14 *))data_020d739c, *(void (Unk_02016a44::**)(Unk_02006d14 *))data_020d7394};
-    if (unk_98 < 20) {
-        (this->*tbl[unk_98])(o);
+    if (actStep < 20) {
+        (this->*tbl[actStep])(o);
     }
 }
 
@@ -7226,24 +7226,24 @@ BOOL Unk_02016a44::setupAct0F(Unk_02006d14 *o) {
     Unk_02016a44_Sub *s = nJ::_ZN13NpcActionCtrl12getCurParamsEv(this);
     u16 v;
     HandOverItem_GetItem(&v);
-    s->unk_22 = v;
+    s->item = v;
     if (HandOverItem_IsActive()) {
         HandOverItem_End(o);
     }
     _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(&o->animCtrl, o, 0x28, data_020c6cc8, 1, 0x1000, 0, 0);
-    Effect_PlayById2(0x61, &o->unk_5c, 0, 0);
+    Effect_PlayById2(0x61, &o->position, 0, 0);
     func_02003ddc(&o->seEmitter, 0x76, 0x7f, 0);
     nJ::_ZN13NpcActionCtrl13setActionDoneEi(this, 0);
-    unk_04 = 0x14;
-    unk_05 = unk_14;
-    nJ::NpcAction_PackItem(this, unk_06, &s->unk_22);
+    netAction = 0x14;
+    netPriority = priority;
+    nJ::NpcAction_PackItem(this, netArgs, &s->item);
     return TRUE;
 }
 
 void Unk_02016a44::postAct0F(Unk_02006d14 *o) {
     using namespace nJ;
     Unk_02016a44_Sub *s = nJ::_ZN13NpcActionCtrl12getCurParamsEv(this);
-    if (waitItemAnimEnd(o, &s->unk_22, 0x28, 1)) {
+    if (waitItemAnimEnd(o, &s->item, 0x28, 1)) {
         nJ::_ZN13NpcActionCtrl13setActionDoneEi(this, 1);
     }
 }
@@ -7292,7 +7292,7 @@ void Unk_02016a44::act11Step0(Unk_02006d14 *o) {
     if (_ZN12Unk_02015b8c14isAnimFinishedEP18Unk_02015b8c_Scene(&o->animCtrl)) {
         if (PlayerActor_RequestAct32()) {
             _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(&o->animCtrl, o, 0x23, data_020c6cc8, 0, 0x1000, 0, 0);
-            unk_98 = 1;
+            actStep = 1;
         }
     }
 }
@@ -7301,7 +7301,7 @@ void Unk_02016a44::act11Step1(Unk_02006d14 *o) {
     using namespace nJ;
     if (!HandOverItem_IsMaster(o)) {
         _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(&o->animCtrl, o, 0, data_020c6cc8, 0, 0x1000, 0, 0);
-        unk_98 = 2;
+        actStep = 2;
     }
 }
 
@@ -7309,7 +7309,7 @@ void Unk_02016a44::act11Step2() {
     using namespace nJ;
     if (!HandOverItem_IsActive()) {
         nJ::_ZN13NpcActionCtrl13setActionDoneEi(this, 1);
-        unk_98 = 3;
+        actStep = 3;
     }
 }
 
@@ -7325,8 +7325,8 @@ void *data_020d732c[2] = {(void *)_ZN12Unk_0201216410isAtDoorT3EP16Unk_02011f74_
 void Unk_02016a44::mainAct11(Unk_02006d14 *o) {
     using namespace nJ;
     static void (Unk_02016a44::*tbl[3])(Unk_02006d14 *) = {*(void (Unk_02016a44::**)(Unk_02006d14 *))data_020d737c, *(void (Unk_02016a44::**)(Unk_02006d14 *))data_020d7374, *(void (Unk_02016a44::**)(Unk_02006d14 *))data_020d736c};
-    if (unk_98 < 3) {
-        (this->*tbl[unk_98])(o);
+    if (actStep < 3) {
+        (this->*tbl[actStep])(o);
     }
 }
 
@@ -7335,7 +7335,7 @@ BOOL Unk_02016a44::setupAct12(Unk_02006d14 *o) {
     if (HandOverItem_IsActive()) {
         if (HandOverItem_RequestMode(8, o)) {
             HandOverItem_SetNextMode(8, o);
-            unk_98 = 0;
+            actStep = 0;
             nJ::_ZN13NpcActionCtrl13setActionDoneEi(this, 0);
             PlayerActor_PlayLocalSe(0x72);
         }
@@ -7346,14 +7346,14 @@ BOOL Unk_02016a44::setupAct12(Unk_02006d14 *o) {
 void Unk_02016a44::act12Step0() {
     using namespace nJ;
     if (HandOverItem_IsModeActive(8) != 0) {
-        unk_98 = 1;
+        actStep = 1;
     }
 }
 
 void Unk_02016a44::act12Step1() {
     using namespace nJ;
     if (HandOverItem_IsModeActive(8) == 0) {
-        unk_98 = 2;
+        actStep = 2;
         nJ::_ZN13NpcActionCtrl13setActionDoneEi(this, 1);
     }
 }
@@ -7369,8 +7369,8 @@ void *data_020d7364[2] = {(void *)_ZN12Unk_020136c011setupState4EP19Unk_020133cc
 void Unk_02016a44::mainAct12(Unk_02006d14 *o) {
     using namespace nJ;
     static void (Unk_02016a44::*tbl[2])(Unk_02006d14 *) = {*(void (Unk_02016a44::**)(Unk_02006d14 *))data_020d7354, *(void (Unk_02016a44::**)(Unk_02006d14 *))data_020d72b4};
-    if (unk_98 < 2) {
-        (this->*tbl[unk_98])(o);
+    if (actStep < 2) {
+        (this->*tbl[actStep])(o);
     }
 }
 
@@ -7381,10 +7381,10 @@ BOOL Unk_02016a44::setupAct13(Unk_02006d14 *o) {
     v[0] = o->headTopPosX;
     v[1] = o->headTopPosY;
     v[2] = o->headTopPosZ;
-    ang = o->unk_8e;
+    ang = o->rotY;
     HandOverItem_RequestMode(0xb, o);
     _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(&o->animCtrl, o, 0x29, data_020c6cc8, 1, 0x1000, 0, 0);
-    unk_ac = Effect_Create(0x40, v, &ang, 0);
+    itemEffect = Effect_Create(0x40, v, &ang, 0);
     func_02003ddc(&o->seEmitter, 0x6f, 0x7f, 0);
     nJ::_ZN13NpcActionCtrl13setActionDoneEi(this, 0);
     return TRUE;
@@ -7394,13 +7394,13 @@ void Unk_02016a44::act13Step0(Unk_02006d14 *o) {
     using namespace nJ;
     if (_ZN12Unk_02015b8c14isAnimFinishedEP18Unk_02015b8c_Scene(&o->animCtrl)) {
         _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(&o->animCtrl, o, 0x2a, 0, 1, 0x1000, 0, 0);
-        if (unk_ac != -1) {
-            Effect_End(unk_ac);
+        if (itemEffect != -1) {
+            Effect_End(itemEffect);
         }
-        unk_98 = 1;
+        actStep = 1;
     } else {
-        if (unk_ac != -1) {
-            Effect_SetPosition(unk_ac, &o->headTopPosX, &o->unk_8e, 0);
+        if (itemEffect != -1) {
+            Effect_SetPosition(itemEffect, &o->headTopPosX, &o->rotY, 0);
         }
     }
 }
@@ -7408,8 +7408,8 @@ void Unk_02016a44::act13Step0(Unk_02006d14 *o) {
 void Unk_02016a44::mainAct13(Unk_02006d14 *o) {
     using namespace nJ;
     static void (Unk_02016a44::*tbl[1])(Unk_02006d14 *) = {*(void (Unk_02016a44::**)(Unk_02006d14 *))data_020d72ec};
-    if (unk_98 < 1) {
-        (this->*tbl[unk_98])(o);
+    if (actStep < 1) {
+        (this->*tbl[actStep])(o);
     }
 }
 
@@ -7427,11 +7427,11 @@ void Unk_02016a44::postAct13(Unk_02006d14 *o) {
 s32 Unk_02016a44::requestAct14(s32 a, u16 *p) {
     using namespace nJ;
     s32 r = 0;
-    if (a >= unk_28 || unk_28 == 3) {
-        Unk_02016a44_Sub2c *q = &unk_2c;
+    if (a >= pendingPriority || pendingPriority == 3) {
+        Unk_02016a44_Sub2c *q = &pendingParams;
         nJ::_ZN13NpcActionCtrl16setPendingActionEii(this, 0x14, a);
         _ZN15NpcActionParams5clearEv(q);
-        q->unk_22 = *p;
+        q->item = *p;
         r = 1;
     }
     return r;
@@ -7445,7 +7445,7 @@ BOOL Unk_02016a44::setupAct14(Unk_02006d14 *o) {
     if (o->curHeldTool) {
         _ZN13HeldToolModel12playIdleAnimEjj(o->curHeldTool, t, 0);
     }
-    Effect_PlayById2(0x61, &o->unk_5c, 0, 0);
+    Effect_PlayById2(0x61, &o->position, 0, 0);
     func_02003ddc(&o->seEmitter, 0x76, 0x7f, 0);
     nJ::_ZN13NpcActionCtrl13setActionDoneEi(this, 0);
     return TRUE;
@@ -7454,7 +7454,7 @@ BOOL Unk_02016a44::setupAct14(Unk_02006d14 *o) {
 BOOL Unk_02016a44::postAct14(Unk_02006d14 *o) {
     using namespace nJ;
     Unk_02016a44_Sub *s = nJ::_ZN13NpcActionCtrl12getCurParamsEv(this);
-    if (waitItemAnimEnd(o, &s->unk_22, 6, 0)) {
+    if (waitItemAnimEnd(o, &s->item, 6, 0)) {
         nJ::_ZN13NpcActionCtrl13setActionDoneEi(this, 1);
     }
 }
@@ -7466,35 +7466,35 @@ BOOL Unk_02016a44::setupAct15(Unk_02006d14 *o) {
     v[0] = 0;
     v[1] = 0;
     v[2] = 0;
-    ang = o->unk_8e;
+    ang = o->rotY;
     if (_ZN8NpcActor15netReadPositionEPiPh(o, v, &ang)) {
-        s32 dx = v[0] - o->unk_5c;
-        s32 dz = v[2] - o->unk_64;
+        s32 dx = v[0] - o->position;
+        s32 dz = v[2] - o->positionZ;
         s32 d = func_01ffcb0c(dx, dx) + func_01ffcb0c(dz, dz);
         if (d < 0x29) {
-            if (ang != o->unk_8e) {
+            if (ang != o->rotY) {
                 _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(&o->moveCtrl, o, 3, 0, data_020c6cc8);
                 _ZN11NpcMoveCtrl14setTargetAngleEs(&o->moveCtrl, ang);
-                unk_98 = 2;
+                actStep = 2;
             } else {
                 _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(&o->moveCtrl, o, 0, 0, data_020c6cc8);
-                unk_98 = 0;
+                actStep = 0;
             }
             _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(&o->moveCtrl, gVec3Zero);
             _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(&o->moveCtrl, gVec3Zero);
         } else {
             s32 a = func_020e7b98(dx, dz);
             if (NpcActor_IsFrontAngle((s16)(a - ang))) {
-                if (unk_00 == 2) {
+                if (netMoveMode == 2) {
                     _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(&o->moveCtrl, o, 2, 0, data_020c6cc8);
                 } else {
                     _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(&o->moveCtrl, o, 1, 0, data_020c6cc8);
                 }
-                unk_98 = 1;
+                actStep = 1;
             } else {
                 _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(&o->moveCtrl, o, 4, 0, data_020c6cc8);
                 _ZN11NpcMoveCtrl14setTargetAngleEs(&o->moveCtrl, a);
-                unk_98 = 3;
+                actStep = 3;
             }
             _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(&o->moveCtrl, v);
             _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(&o->moveCtrl, v);
@@ -7503,7 +7503,7 @@ BOOL Unk_02016a44::setupAct15(Unk_02006d14 *o) {
         _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(&o->moveCtrl, o, 0, 0, data_020c6cc8);
         _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(&o->moveCtrl, gVec3Zero);
         _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(&o->moveCtrl, gVec3Zero);
-        unk_98 = 0;
+        actStep = 0;
     }
     return TRUE;
 }
@@ -7516,38 +7516,38 @@ void Unk_02016360::act15Step0(Unk_02015fe0_Obj *o) {
     pos.x = 0;
     pos.y = 0;
     pos.z = 0;
-    ang = o->unk_8e;
+    ang = o->rotY;
     if (_ZN8NpcActor15netReadPositionEPiPh(o, &pos, &ang)) {
-        dx = pos.x - o->unk_5c;
-        dz = pos.z - o->unk_64;
+        dx = pos.x - o->position;
+        dz = pos.z - o->positionZ;
         d = func_01ffcb0c(dx, dx) + func_01ffcb0c(dz, dz);
         if (d < 0x29) {
-            if (ang != o->unk_8e) {
-                _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(o->unk_350, o, 3, 0, data_020c6cc8);
-                _ZN11NpcMoveCtrl14setTargetAngleEs(o->unk_350, ang);
-                unk_98 = 2;
-            } else if (_ZN11NpcMoveCtrl11getMoveModeEv(o->unk_350)) {
-                _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(o->unk_350, o, 0, 0, data_020c6cc8);
-                _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(o->unk_350, &gVec3Zero);
-                _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(o->unk_350, &gVec3Zero);
+            if (ang != o->rotY) {
+                _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(o->moveCtrl, o, 3, 0, data_020c6cc8);
+                _ZN11NpcMoveCtrl14setTargetAngleEs(o->moveCtrl, ang);
+                actStep = 2;
+            } else if (_ZN11NpcMoveCtrl11getMoveModeEv(o->moveCtrl)) {
+                _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(o->moveCtrl, o, 0, 0, data_020c6cc8);
+                _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(o->moveCtrl, &gVec3Zero);
+                _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(o->moveCtrl, &gVec3Zero);
             }
         } else {
             s32 a = func_020e7b98(dx, dz);
             if (NpcActor_IsFrontAngle(a - ang)) {
-                if (unk_00 == 2) {
-                    _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(o->unk_350, o, 2, 0, data_020c6cc8);
+                if (netMoveMode == 2) {
+                    _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(o->moveCtrl, o, 2, 0, data_020c6cc8);
                 } else {
-                    _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(o->unk_350, o, 1, 0, data_020c6cc8);
+                    _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(o->moveCtrl, o, 1, 0, data_020c6cc8);
                 }
-                _ZN11NpcMoveCtrl14setTargetAngleEs(o->unk_350, ang);
-                unk_98 = 1;
+                _ZN11NpcMoveCtrl14setTargetAngleEs(o->moveCtrl, ang);
+                actStep = 1;
             } else {
-                _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(o->unk_350, o, 4, 0, data_020c6cc8);
-                _ZN11NpcMoveCtrl14setTargetAngleEs(o->unk_350, a);
-                unk_98 = 3;
+                _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(o->moveCtrl, o, 4, 0, data_020c6cc8);
+                _ZN11NpcMoveCtrl14setTargetAngleEs(o->moveCtrl, a);
+                actStep = 3;
             }
-            _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(o->unk_350, &pos);
-            _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(o->unk_350, &pos);
+            _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(o->moveCtrl, &pos);
+            _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(o->moveCtrl, &pos);
         }
     }
 }
@@ -7560,49 +7560,49 @@ void Unk_02016360::act15Step1(Unk_02015fe0_Obj *o) {
     pos.x = 0;
     pos.y = 0;
     pos.z = 0;
-    ang = o->unk_8e;
-    _ZN11NpcMoveCtrl16aimAtDestinationEP18Unk_0201a334_Scene(o->unk_350, o);
+    ang = o->rotY;
+    _ZN11NpcMoveCtrl16aimAtDestinationEP18Unk_0201a334_Scene(o->moveCtrl, o);
     if (_ZN8NpcActor15netReadPositionEPiPh(o, &pos, &ang)) {
-        dx = pos.x - o->unk_5c;
-        dz = pos.z - o->unk_64;
+        dx = pos.x - o->position;
+        dz = pos.z - o->positionZ;
         d = func_01ffcb0c(dx, dx) + func_01ffcb0c(dz, dz);
         if (d < 0x29) {
-            if (ang != o->unk_8e) {
-                _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(o->unk_350, o, 3, 0, data_020c6cc8);
-                _ZN11NpcMoveCtrl14setTargetAngleEs(o->unk_350, ang);
-                unk_98 = 2;
+            if (ang != o->rotY) {
+                _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(o->moveCtrl, o, 3, 0, data_020c6cc8);
+                _ZN11NpcMoveCtrl14setTargetAngleEs(o->moveCtrl, ang);
+                actStep = 2;
             } else {
-                _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(o->unk_350, o, 0, 0, data_020c6cc8);
-                _ZN11NpcMoveCtrl14setTargetAngleEs(o->unk_350, ang);
-                _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(o->unk_350, &gVec3Zero);
-                _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(o->unk_350, &gVec3Zero);
-                unk_98 = 0;
+                _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(o->moveCtrl, o, 0, 0, data_020c6cc8);
+                _ZN11NpcMoveCtrl14setTargetAngleEs(o->moveCtrl, ang);
+                _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(o->moveCtrl, &gVec3Zero);
+                _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(o->moveCtrl, &gVec3Zero);
+                actStep = 0;
             }
         } else {
             if (!NpcActor_IsFrontAngle(func_020e7b98(dx, dz) - ang)) {
-                _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(o->unk_350, o, 3, 0, data_020c6cc8);
-                _ZN11NpcMoveCtrl14setTargetAngleEs(o->unk_350, ang);
-                unk_98 = 2;
+                _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(o->moveCtrl, o, 3, 0, data_020c6cc8);
+                _ZN11NpcMoveCtrl14setTargetAngleEs(o->moveCtrl, ang);
+                actStep = 2;
             } else {
-                if (_ZN11NpcMoveCtrl11getMoveModeEv(o->unk_350) == 1) {
-                    if (unk_00 == 2) {
-                        _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(o->unk_350, o, 2, 0, data_020c6cc8);
+                if (_ZN11NpcMoveCtrl11getMoveModeEv(o->moveCtrl) == 1) {
+                    if (netMoveMode == 2) {
+                        _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(o->moveCtrl, o, 2, 0, data_020c6cc8);
                     }
-                } else if (_ZN11NpcMoveCtrl11getMoveModeEv(o->unk_350) == 2) {
-                    if (unk_00 == 1) {
-                        _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(o->unk_350, o, 1, 0, data_020c6cc8);
+                } else if (_ZN11NpcMoveCtrl11getMoveModeEv(o->moveCtrl) == 2) {
+                    if (netMoveMode == 1) {
+                        _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(o->moveCtrl, o, 1, 0, data_020c6cc8);
                     }
                 }
-                _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(o->unk_350, &pos);
-                _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(o->unk_350, &pos);
+                _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(o->moveCtrl, &pos);
+                _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(o->moveCtrl, &pos);
             }
         }
     } else {
-        _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(o->unk_350, o, 0, 0, data_020c6cc8);
-        _ZN11NpcMoveCtrl14setTargetAngleEs(o->unk_350, ang);
-        _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(o->unk_350, &gVec3Zero);
-        _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(o->unk_350, &gVec3Zero);
-        unk_98 = 0;
+        _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(o->moveCtrl, o, 0, 0, data_020c6cc8);
+        _ZN11NpcMoveCtrl14setTargetAngleEs(o->moveCtrl, ang);
+        _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(o->moveCtrl, &gVec3Zero);
+        _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(o->moveCtrl, &gVec3Zero);
+        actStep = 0;
     }
 }
 
@@ -7614,43 +7614,43 @@ void Unk_02016360::act15Step2(Unk_02015fe0_Obj *o) {
     pos.x = 0;
     pos.y = 0;
     pos.z = 0;
-    ang = o->unk_8e;
+    ang = o->rotY;
     if (_ZN8NpcActor15netReadPositionEPiPh(o, &pos, &ang)) {
-        dx = pos.x - o->unk_5c;
-        dz = pos.z - o->unk_64;
+        dx = pos.x - o->position;
+        dz = pos.z - o->positionZ;
         d = func_01ffcb0c(dx, dx) + func_01ffcb0c(dz, dz);
         if (d < 0x29) {
             s16 a = ang;
-            if (a != _ZN11NpcMoveCtrl14getTargetAngleEv(o->unk_350)) {
-                _ZN11NpcMoveCtrl14setTargetAngleEs(o->unk_350, a);
+            if (a != _ZN11NpcMoveCtrl14getTargetAngleEv(o->moveCtrl)) {
+                _ZN11NpcMoveCtrl14setTargetAngleEs(o->moveCtrl, a);
             } else {
-                s32 c = _ZN11NpcMoveCtrl14getTargetAngleEv(o->unk_350);
-                if (c == o->unk_8e) unk_98 = 0;
+                s32 c = _ZN11NpcMoveCtrl14getTargetAngleEv(o->moveCtrl);
+                if (c == o->rotY) actStep = 0;
             }
         } else {
             s32 a = func_020e7b98(dx, dz);
             if (NpcActor_IsFrontAngle(a - ang)) {
-                if (unk_00 == 2) {
-                    _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(o->unk_350, o, 2, 0, data_020c6cc8);
+                if (netMoveMode == 2) {
+                    _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(o->moveCtrl, o, 2, 0, data_020c6cc8);
                 } else {
-                    _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(o->unk_350, o, 1, 0, data_020c6cc8);
+                    _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(o->moveCtrl, o, 1, 0, data_020c6cc8);
                 }
-                _ZN11NpcMoveCtrl14setTargetAngleEs(o->unk_350, ang);
-                unk_98 = 1;
+                _ZN11NpcMoveCtrl14setTargetAngleEs(o->moveCtrl, ang);
+                actStep = 1;
             } else {
-                _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(o->unk_350, o, 4, 0, data_020c6cc8);
-                _ZN11NpcMoveCtrl14setTargetAngleEs(o->unk_350, a);
-                unk_98 = 3;
+                _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(o->moveCtrl, o, 4, 0, data_020c6cc8);
+                _ZN11NpcMoveCtrl14setTargetAngleEs(o->moveCtrl, a);
+                actStep = 3;
             }
-            _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(o->unk_350, &pos);
-            _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(o->unk_350, &pos);
+            _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(o->moveCtrl, &pos);
+            _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(o->moveCtrl, &pos);
         }
     } else {
-        _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(o->unk_350, o, 0, 0, data_020c6cc8);
-        _ZN11NpcMoveCtrl14setTargetAngleEs(o->unk_350, ang);
-        _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(o->unk_350, &gVec3Zero);
-        _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(o->unk_350, &gVec3Zero);
-        unk_98 = 0;
+        _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(o->moveCtrl, o, 0, 0, data_020c6cc8);
+        _ZN11NpcMoveCtrl14setTargetAngleEs(o->moveCtrl, ang);
+        _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(o->moveCtrl, &gVec3Zero);
+        _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(o->moveCtrl, &gVec3Zero);
+        actStep = 0;
     }
 }
 
@@ -7662,48 +7662,48 @@ void Unk_02016360::act15Step3(Unk_02015fe0_Obj *o) {
     pos.x = 0;
     pos.y = 0;
     pos.z = 0;
-    ang = o->unk_8e;
-    _ZN11NpcMoveCtrl16aimAtDestinationEP18Unk_0201a334_Scene(o->unk_350, o);
+    ang = o->rotY;
+    _ZN11NpcMoveCtrl16aimAtDestinationEP18Unk_0201a334_Scene(o->moveCtrl, o);
     if (_ZN8NpcActor15netReadPositionEPiPh(o, &pos, &ang)) {
-        dx = pos.x - o->unk_5c;
-        dz = pos.z - o->unk_64;
+        dx = pos.x - o->position;
+        dz = pos.z - o->positionZ;
         d = func_01ffcb0c(dx, dx) + func_01ffcb0c(dz, dz);
         if (d == 0) {
-            o->unk_94 = o->unk_8e;
-            if (ang != o->unk_8e) {
-                _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(o->unk_350, o, 3, 0, data_020c6cc8);
-                _ZN11NpcMoveCtrl14setTargetAngleEs(o->unk_350, ang);
-                unk_98 = 2;
+            o->moveAngleY = o->rotY;
+            if (ang != o->rotY) {
+                _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(o->moveCtrl, o, 3, 0, data_020c6cc8);
+                _ZN11NpcMoveCtrl14setTargetAngleEs(o->moveCtrl, ang);
+                actStep = 2;
             } else {
-                _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(o->unk_350, o, 0, 0, data_020c6cc8);
-                _ZN11NpcMoveCtrl14setTargetAngleEs(o->unk_350, ang);
-                _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(o->unk_350, &gVec3Zero);
-                _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(o->unk_350, &gVec3Zero);
-                unk_98 = 0;
+                _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(o->moveCtrl, o, 0, 0, data_020c6cc8);
+                _ZN11NpcMoveCtrl14setTargetAngleEs(o->moveCtrl, ang);
+                _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(o->moveCtrl, &gVec3Zero);
+                _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(o->moveCtrl, &gVec3Zero);
+                actStep = 0;
             }
         } else if (d >= 0x29) {
             s32 a = func_020e7b98(dx, dz);
             if (NpcActor_IsFrontAngle(a - ang)) {
-                if (unk_00 == 2) {
-                    _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(o->unk_350, o, 2, 0, data_020c6cc8);
+                if (netMoveMode == 2) {
+                    _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(o->moveCtrl, o, 2, 0, data_020c6cc8);
                 } else {
-                    _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(o->unk_350, o, 1, 0, data_020c6cc8);
+                    _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(o->moveCtrl, o, 1, 0, data_020c6cc8);
                 }
-                o->unk_94 = o->unk_8e;
-                _ZN11NpcMoveCtrl14setTargetAngleEs(o->unk_350, ang);
-                unk_98 = 1;
+                o->moveAngleY = o->rotY;
+                _ZN11NpcMoveCtrl14setTargetAngleEs(o->moveCtrl, ang);
+                actStep = 1;
             } else {
-                _ZN11NpcMoveCtrl14setTargetAngleEs(o->unk_350, a);
+                _ZN11NpcMoveCtrl14setTargetAngleEs(o->moveCtrl, a);
             }
-            _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(o->unk_350, &pos);
-            _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(o->unk_350, &pos);
+            _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(o->moveCtrl, &pos);
+            _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(o->moveCtrl, &pos);
         }
     } else {
-        _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(o->unk_350, o, 0, 0, data_020c6cc8);
-        _ZN11NpcMoveCtrl14setTargetAngleEs(o->unk_350, ang);
-        _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(o->unk_350, &gVec3Zero);
-        _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(o->unk_350, &gVec3Zero);
-        unk_98 = 0;
+        _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(o->moveCtrl, o, 0, 0, data_020c6cc8);
+        _ZN11NpcMoveCtrl14setTargetAngleEs(o->moveCtrl, ang);
+        _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(o->moveCtrl, &gVec3Zero);
+        _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(o->moveCtrl, &gVec3Zero);
+        actStep = 0;
     }
 }
 
@@ -7718,8 +7718,8 @@ void *data_020d745c[2] = {(void *)_ZN12Unk_02017d7410act0DStep0EP16Unk_02017d74_
 void Unk_02016360::mainAct15(Unk_02015fe0_Obj *o) {
     using namespace nI;
     static Unk_02016360_Fn tbl[4] = {*(Unk_02016360_Fn *)data_020d7324, *(Unk_02016360_Fn *)data_020d755c, *(Unk_02016360_Fn *)data_020d75ac, *(Unk_02016360_Fn *)data_020d72f4};
-    if (unk_98 < 4) {
-        (this->*tbl[unk_98])(o);
+    if (actStep < 4) {
+        (this->*tbl[actStep])(o);
     }
 }
 
@@ -7736,14 +7736,14 @@ NpcAnimCtrl::~NpcAnimCtrl() {
 BOOL NpcAnimCtrl::initForActor(Unk_02015fe0_Obj *o, s32 a) {
     using namespace nI;
     _ZN12Unk_02015b8c17setAnimSpeedFixedEh(this, 0);
-    unk_14 = a;
+    animSpeedScale = a;
     if (!_ZN12NpcResHandle7acquireEv(this)) return FALSE;
     playAnim(o, 0, 0, 0, 0x1000, 0, 0);
-    _ZN9AnimModel10attachAnimEv(o->unk_ec);
-    _ZN5Model11setCallbackEiiiii(o->unk_ec, (void *)NpcActor_JointCalcLayer3Cb, 6, 1, o, 0);
-    unk_0c = 2;
+    _ZN9AnimModel10attachAnimEv(o->model);
+    _ZN5Model11setCallbackEiiiii(o->model, (void *)NpcActor_JointCalcLayer3Cb, 6, 1, o, 0);
+    talkGestureVariant = 2;
     if (!_ZN12Unk_02015b8c14hasTalkGestureEv(this)) _ZN12Unk_02015b8c15loadTalkGestureEv(this);
-    unk_10 = 0;
+    talkGestureActive = 0;
     return TRUE;
 }
 
@@ -7800,30 +7800,30 @@ vdone:
     if (mode >= 0 && mode < 3)
     switch (mode) {
     case 0: {
-        s32 size = resolveAnimId(kind, o->unk_2a0);
-        if (size != _ZN14NpcMoveAnimSet12getStandAnimEv(o->unk_2a0) || !isPlayingAnim(size, o->unk_2a0)) {
+        s32 size = resolveAnimId(kind, o->moveAnimSet);
+        if (size != _ZN14NpcMoveAnimSet12getStandAnimEv(o->moveAnimSet) || !isPlayingAnim(size, o->moveAnimSet)) {
             void *r = getAnimResource(size, mode);
             if (r) {
-                BlendAnimModel_Play2(o->unk_ec, r, a3, a4, a5, v, 0);
+                BlendAnimModel_Play2(o->model, r, a3, a4, a5, v, 0);
             }
         }
         _ZN12Unk_02015b8c13syncMouthTypeEP18Unk_02015b8c_Scene(this, o);
         s32 t = _ZN12Unk_02015b8c9getAnimIdEj(this, 0);
-        s32 u = _ZN14NpcSpeechState12getMouthTypeEv(o->unk_418);
-        _ZN11NpcFaceAnim16setFaceAnimsFromEPvii(o->unk_2ac, t, a4, u);
+        s32 u = _ZN14NpcSpeechState12getMouthTypeEv(o->speechState);
+        _ZN11NpcFaceAnim16setFaceAnimsFromEPvii(o->faceAnim, t, a4, u);
         break;
     }
     case 1: {
         void *r = getAnimResource(kind, mode);
         if (r) {
-            _ZN17TwoLayerAnimModel10playLayer2Ejjjjjji(o->unk_ec, r, a3, a4, a5, v, 0, 0);
+            _ZN17TwoLayerAnimModel10playLayer2Ejjjjjji(o->model, r, a3, a4, a5, v, 0, 0);
         }
         break;
     }
     case 2: {
         void *r = getAnimResource(kind, mode);
         if (r) {
-            _ZN19ThreeLayerAnimModel10playLayer3Ejjjjjji(o->unk_ec, r, a3, a4, a5, v, 0, 0);
+            _ZN19ThreeLayerAnimModel10playLayer3Ejjjjjji(o->model, r, a3, a4, a5, v, 0, 0);
         }
         break;
     }
@@ -7837,35 +7837,35 @@ void NpcAnimCtrl::playHoldItemPose(Unk_02015fe0_Obj *o, u16 *p, void *q, u16 x) 
             if (Unk_02015fe0_R(p, 0x1369, 0x1369)) {
                 void *r = getAnimResource(0x13f, 1);
                 if (r) {
-                    _ZN17TwoLayerAnimModel10playLayer2Ejjjjjji(o->unk_ec, r, x, 0, 0x1000, 0, 0, 0);
-                    ThreeLayerAnimModel_AssignJointsToLayer2(o->unk_ec, 0xc, 0xe);
+                    _ZN17TwoLayerAnimModel10playLayer2Ejjjjjji(o->model, r, x, 0, 0x1000, 0, 0, 0);
+                    ThreeLayerAnimModel_AssignJointsToLayer2(o->model, 0xc, 0xe);
                 }
             } else {
                 s32 id = HeldItem_GetHandPose(p);
                 if (id != 0x144) {
                     void *r = getAnimResource(id, 1);
                     if (r) {
-                        _ZN17TwoLayerAnimModel10playLayer2Ejjjjjji(o->unk_ec, r, x, 0, 0x1000, 0, 0, 0);
+                        _ZN17TwoLayerAnimModel10playLayer2Ejjjjjji(o->model, r, x, 0, 0x1000, 0, 0, 0);
                         s32 t = CharaAnim_GetJointGroup(id);
                         if (t < 4) {
                             u32 n = JointGroup_GetRangeCount();
                             for (u32 i = 0; i < n; i++) {
                                 s32 a = JointGroup_GetRangeFirst(t, i);
-                                ThreeLayerAnimModel_AssignJointsToLayer2(o->unk_ec, a, JointGroup_GetRangeLast(t, i));
+                                ThreeLayerAnimModel_AssignJointsToLayer2(o->model, a, JointGroup_GetRangeLast(t, i));
                             }
                         } else {
-                            _ZN17TwoLayerAnimModel18playLayer2FromBaseEjj(o->unk_ec, 0, 0);
+                            _ZN17TwoLayerAnimModel18playLayer2FromBaseEjj(o->model, 0, 0);
                         }
                     }
                 } else {
-                    _ZN17TwoLayerAnimModel18playLayer2FromBaseEjj(o->unk_ec, 0, 0);
+                    _ZN17TwoLayerAnimModel18playLayer2FromBaseEjj(o->model, 0, 0);
                 }
             }
         } else {
-            _ZN17TwoLayerAnimModel18playLayer2FromBaseEjj(o->unk_ec, 0, 0);
+            _ZN17TwoLayerAnimModel18playLayer2FromBaseEjj(o->model, 0, 0);
         }
     } else {
-        _ZN17TwoLayerAnimModel18playLayer2FromBaseEjj(o->unk_ec, 0, 0);
+        _ZN17TwoLayerAnimModel18playLayer2FromBaseEjj(o->model, 0, 0);
     }
 }
 
@@ -7924,7 +7924,7 @@ void Unk_02015b8c::stopTalkGesture(Unk_02015b8c_Scene *scene) {
 
 void Unk_02015b8c::setAnimSpeedFixed(u8 v) {
     using namespace nH;
-    unk_18 = v;
+    animSpeedFixed = v;
 }
 
 void Unk_02015b8c::playAnimKeepFrame(Unk_02015b8c_Scene *scene, u32 c, u32 d, u32 e) {
@@ -7952,14 +7952,14 @@ void Unk_02015b8c::updateAnimSpeed(Unk_02015b8c_Scene *scene) {
     using namespace nH;
     s32 v = *(s32 *)((void *)((u8 *)(scene) + (0x98)));
     if (v == 0) {
-        unk_08 = 0x1000;
+        animSpeed = 0x1000;
     } else if (*_ZN11NpcMoveCtrl13func_0201a8ccEv(((void *)((u8 *)(scene) + (0x350)))) == 0) {
-        unk_08 = 0x1000;
+        animSpeed = 0x1000;
     } else {
-        unk_08 = func_01ffcb0c(v, unk_14);
+        animSpeed = func_01ffcb0c(v, animSpeedScale);
     }
-    if (unk_08 <= *(s32 *)((void *)((u8 *)(scene) + (0x18c)))) {
-        *(s32 *)((void *)((u8 *)(scene) + (0x198))) = unk_08;
+    if (animSpeed <= *(s32 *)((void *)((u8 *)(scene) + (0x18c)))) {
+        *(s32 *)((void *)((u8 *)(scene) + (0x198))) = animSpeed;
     }
 }
 
@@ -7986,29 +7986,29 @@ void Unk_02015b8c::update(Unk_02015b8c_Scene *scene) {
     if (hasTalkGesture()) {
         if (_ZN14NpcSpeechState12getMouthTypeEv(((void *)((u8 *)(scene) + (0x418)))) < 2) {
             if (_ZN14NpcSpeechState10isSpeakingEv(((void *)((u8 *)(scene) + (0x418))))) {
-                if (unk_10 != 0) {
+                if (talkGestureActive != 0) {
                     if (_ZN19ThreeLayerAnimModel19checkLayer3FinishedEv(((void *)((u8 *)(scene) + (0xec)))) == 0) {
                         goto tail;
                     }
                 }
-                unk_0c = NpcFace_PickTalkMouth();
-                s32 a = getTalkGestureStart(unk_0c);
-                s32 b = getTalkGestureEnd(unk_0c);
+                talkGestureVariant = NpcFace_PickTalkMouth();
+                s32 a = getTalkGestureStart(talkGestureVariant);
+                s32 b = getTalkGestureEnd(talkGestureVariant);
                 playTalkGesture(scene, a, b);
-                unk_10 = 1;
-            } else if (unk_10 == 1) {
+                talkGestureActive = 1;
+            } else if (talkGestureActive == 1) {
                 if (_ZN19ThreeLayerAnimModel19checkLayer3FinishedEv(((void *)((u8 *)(scene) + (0xec)))) != 0) {
                     stopTalkGesture(scene);
-                    unk_10 = 0;
+                    talkGestureActive = 0;
                 }
             }
-        } else if (unk_10 == 1) {
+        } else if (talkGestureActive == 1) {
             stopTalkGesture(scene);
-            unk_10 = 0;
+            talkGestureActive = 0;
         }
     }
 tail:
-    if (unk_18 == 0) {
+    if (animSpeedFixed == 0) {
         updateAnimSpeed(scene);
     }
 }
@@ -8430,7 +8430,7 @@ void Unk_020d7710::makePlayerLookAt(u8 *p) {
     u32 b = PlayerActor_GetBodyPos();
     if (b != 0) {
         s32 s = Math_AngleXZ(b, p + 0x5c);
-        s16 d = s - PlayerActor_GetCharacter(4)->unk_8e;
+        s16 d = s - PlayerActor_GetCharacter(4)->rotY;
         PlayerActor_SetHeadTilt(0, d, a);
     }
 }
@@ -8547,32 +8547,32 @@ void Unk_020d7710::onTag09_9() {
 void Unk_020d7710::resetTasks() {
     using namespace nG;
     unk_60 = 12;
-    unk_a8 = 0;
-    unk_a9 = 0;
-    initSubSceneParams((Unk_02015344_Params *)&unk_64);
+    taskStep = 0;
+    taskRunning = 0;
+    initSubSceneParams((TalkSubSceneParams *)&subSceneType);
 }
 
-void Unk_020d7710::initSubSceneParams(Unk_02015344_Params *p) {
+void Unk_020d7710::initSubSceneParams(TalkSubSceneParams *p) {
     using namespace nG;
-    p->unk_00 = 8;
-    p->unk_04 = 0;
-    p->unk_08 = 0;
-    p->unk_0c = 0;
-    p->unk_14 = 0;
-    p->unk_10 = 0;
-    p->unk_1c = 13;
-    p->unk_16 = 0xfff1;
-    p->unk_18 = 0;
-    p->unk_1e = 0x45;
-    p->unk_1f = 0;
-    p->unk_20 = 2;
-    p->unk_2c = 12;
-    p->unk_30 = 2;
-    p->unk_3c = 1;
-    p->unk_34 = 0;
-    p->unk_38 = 0;
+    p->subSceneType = 8;
+    p->menuPtrArg0 = 0;
+    p->menuPtrArg1 = 0;
+    p->menu12Arg = 0;
+    p->pocketMask = 0;
+    p->pocketFilter = 0;
+    p->pocketSelectMode = 13;
+    p->subSceneItem = 0xfff1;
+    p->handOverKind = 0;
+    p->launcherMenu = 0x45;
+    p->launcherIndex = 0;
+    p->keepWindowClosed = 2;
+    p->handOverMode = 12;
+    p->handOverVariant = 2;
+    p->focusNewSpeaker = 1;
+    p->launcherText = 0;
+    p->launcherTextSize = 0;
     p->unk_3d = 0;
-    p->unk_40 = 0;
+    p->closeMode = 0;
 }
 
 BOOL Unk_020d7710::startTask(s32 x) {
@@ -8580,16 +8580,16 @@ BOOL Unk_020d7710::startTask(s32 x) {
     BOOL result = FALSE;
     if (unk_60 == 12 || isTaskRunning() == 0) {
         unk_60 = x;
-        unk_a8 = 0;
+        taskStep = 0;
         result = TRUE;
-        unk_a9 = result;
+        taskRunning = result;
     }
     return result;
 }
 
 BOOL Unk_020d7710::isTaskRunning() {
     using namespace nG;
-    if (unk_a9 != 0) {
+    if (taskRunning != 0) {
         return TRUE;
     }
     return FALSE;
@@ -8609,7 +8609,7 @@ void Unk_020d7710::runTask() {
     if (unk_60 < 12) {
         if ((this->*tbl[unk_60])()) {
             s32 old = unk_60;
-            unk_a9 = 0;
+            taskRunning = 0;
             unk_60 = 12;
             onTaskDone(old);
         }
@@ -8624,7 +8624,7 @@ BOOL Unk_020d7710::openSubScene(s32 x) {
     using namespace nG;
     BOOL result = FALSE;
     if (startTask(0)) {
-        unk_64 = x;
+        subSceneType = x;
         result = TRUE;
     }
     return result;
@@ -8632,106 +8632,106 @@ BOOL Unk_020d7710::openSubScene(s32 x) {
 
 void Unk_020d7710::setPocketItem(u32 a, u32 b, u32 c) {
     using namespace nG;
-    unk_78 = a;
-    unk_74 = 0;
+    pocketMask = a;
+    pocketFilter = 0;
     unk_80 = b;
     unk_7a = 0xfff1;
-    unk_84 = c;
+    keepWindowClosed = c;
 }
 
 void Unk_020d7710::setPocketFilter(u32 a, u32 b, u32 c) {
     using namespace nG;
-    unk_78 = 0;
-    unk_74 = a;
+    pocketMask = 0;
+    pocketFilter = a;
     unk_80 = b;
     unk_7a = 0xfff1;
-    unk_84 = c;
+    keepWindowClosed = c;
 }
 
 void Unk_020d7710::setSubSceneKind(u32 a, u32 b) {
     using namespace nG;
-    unk_82 = a;
-    unk_84 = b;
+    launcherMenu = a;
+    keepWindowClosed = b;
 }
 
 void Unk_020d7710::setSubSceneKindArg(u32 a, u32 b, u32 c) {
     using namespace nG;
-    unk_82 = a;
-    unk_83 = b;
-    unk_84 = c;
+    launcherMenu = a;
+    launcherIndex = b;
+    keepWindowClosed = c;
 }
 
 void Unk_020d7710::setSelectionList(u32 a, u32 b, u32 c) {
     using namespace nG;
-    unk_68 = a;
-    unk_6c = b;
-    unk_84 = c;
+    menuPtrArg0 = a;
+    menuPtrArg1 = b;
+    keepWindowClosed = c;
 }
 
 void Unk_020d7710::setMenu12Arg(u32 a, u32 b) {
     using namespace nG;
-    unk_70 = a;
-    unk_84 = b;
+    menu12Arg = a;
+    keepWindowClosed = b;
 }
 
 void Unk_020d7710::setSubSceneKind2(u32 a, u32 b, u32 c, u8 d) {
     using namespace nG;
-    unk_82 = a;
-    unk_98 = b;
-    unk_9c = c;
-    unk_84 = d;
+    launcherMenu = a;
+    launcherText = b;
+    launcherTextSize = c;
+    keepWindowClosed = d;
 }
 
 BOOL Unk_020d7710::subSceneCloseWindow() {
     using namespace nG;
     if (unk_3c != NULL) {
-        unk_3c->unk_14 = 1;
-        unk_a8 = 1;
+        unk_3c->openMode = 1;
+        taskStep = 1;
     }
     return FALSE;
 }
 
 BOOL Unk_020d7710::subSceneOpen() {
     using namespace nG;
-    if (unk_3c != NULL && unk_3c->unk_04 == 5) {
+    if (unk_3c != NULL && unk_3c->state == 5) {
         BOOL r = FALSE;
-        switch (unk_64) {
+        switch (subSceneType) {
         case 0: {
-            u16 v = unk_78;
-            if (unk_74 != 0) {
-                v = MenuCtrl_BuildPocketMask(unk_74);
+            u16 v = pocketMask;
+            if (pocketFilter != 0) {
+                v = MenuCtrl_BuildPocketMask(pocketFilter);
             }
             r = MenuCtrl_OpenPocketSelect(v, unk_80);
             break;
         }
         case 1:
-            unk_84 = 1;
+            keepWindowClosed = 1;
             r = MenuCtrl_OpenPostOffice();
             break;
         case 2:
-            r = MenuCtrl_OpenLauncher(unk_82);
+            r = MenuCtrl_OpenLauncher(launcherMenu);
             break;
         case 3:
-            r = MenuCtrl_OpenLauncherWithIndex(unk_82, unk_83);
+            r = MenuCtrl_OpenLauncherWithIndex(launcherMenu, launcherIndex);
             break;
         case 4:
-            r = MenuCtrl_OpenNearbyTowns(unk_68, unk_6c);
+            r = MenuCtrl_OpenNearbyTowns(menuPtrArg0, menuPtrArg1);
             break;
         case 5:
-            r = MenuCtrl_RequestOpenMenu12(unk_70);
+            r = MenuCtrl_RequestOpenMenu12(menu12Arg);
             break;
         case 6:
-            r = MenuCtrl_OpenLauncherWithText(unk_82, unk_98, unk_9c);
+            r = MenuCtrl_OpenLauncherWithText(launcherMenu, launcherText, launcherTextSize);
             break;
         case 7:
-            if (unk_84 != 1) {
-                unk_3c->unk_08 = 1;
+            if (keepWindowClosed != 1) {
+                unk_3c->nextState = 1;
             }
-            unk_a8 = 3;
+            taskStep = 3;
             return TRUE;
         }
         if (r) {
-            unk_a8 = 2;
+            taskStep = 2;
         }
     }
     return FALSE;
@@ -8741,10 +8741,10 @@ BOOL Unk_020d7710::subSceneWait() {
     using namespace nG;
     BOOL result = FALSE;
     if (MenuCtrl_IsFinished()) {
-        if (unk_84 != 1) {
-            unk_3c->unk_08 = 1;
+        if (keepWindowClosed != 1) {
+            unk_3c->nextState = 1;
         }
-        unk_a8 = 3;
+        taskStep = 3;
         result = TRUE;
     }
     return result;
@@ -8763,7 +8763,7 @@ BOOL Unk_020d7710::taskSubScene() {
     using namespace nG;
     static Unk_020d7710_StateFn tbl[3] = {*(Unk_020d7710_StateFn *)data_020d750c, *(Unk_020d7710_StateFn *)data_020d7524, *(Unk_020d7710_StateFn *)data_020d752c};
     BOOL r = FALSE;
-    u8 i = unk_a8;
+    u8 i = taskStep;
     if (i < 3) {
         r = (this->*tbl[i])();
     }
@@ -8778,9 +8778,9 @@ BOOL Unk_020d7710::requestReopenWindow() {
 BOOL Unk_020d7710::taskReopenWindow() {
     using namespace nG;
     BOOL result = FALSE;
-    if (unk_3c != NULL && unk_3c->unk_04 == 5) {
+    if (unk_3c != NULL && unk_3c->state == 5) {
         result = TRUE;
-        unk_3c->unk_08 = result;
+        unk_3c->nextState = result;
     }
     return result;
 }
@@ -8788,7 +8788,7 @@ BOOL Unk_020d7710::taskReopenWindow() {
 BOOL Unk_020d7710::requestCloseWindow(u32 x) {
     using namespace nG;
     if (startTask(2)) {
-        unk_a4 = x;
+        closeMode = x;
         return TRUE;
     }
     return FALSE;
@@ -8797,8 +8797,8 @@ BOOL Unk_020d7710::requestCloseWindow(u32 x) {
 BOOL Unk_020d7710::closeWindowStart() {
     using namespace nG;
     if (unk_3c != NULL) {
-        unk_3c->unk_14 = unk_a4;
-        unk_a8 = 1;
+        unk_3c->openMode = closeMode;
+        taskStep = 1;
     }
     return FALSE;
 }
@@ -8806,7 +8806,7 @@ BOOL Unk_020d7710::closeWindowStart() {
 BOOL Unk_020d7710::closeWindowWait() {
     using namespace nG;
     BOOL result = FALSE;
-    if (unk_3c != NULL && unk_3c->unk_04 == 5) {
+    if (unk_3c != NULL && unk_3c->state == 5) {
         result = TRUE;
     }
     return result;
@@ -8823,7 +8823,7 @@ BOOL Unk_020d7710::taskCloseWindow() {
     using namespace nG;
     static Unk_020d7710_StateFn tbl[2] = {*(Unk_020d7710_StateFn *)data_020d754c, *(Unk_020d7710_StateFn *)data_020d7564};
     BOOL r = FALSE;
-    u8 i = unk_a8;
+    u8 i = taskStep;
     if (i < 2) {
         r = (this->*tbl[i])();
     }
@@ -8835,9 +8835,9 @@ BOOL Unk_020d7710::requestGiveItem(u16 *p, u32 b, u32 c, u32 d) {
     BOOL result = FALSE;
     if (startTask(3)) {
         unk_7a = *p;
-        unk_7c = b;
-        unk_90 = c;
-        unk_94 = d;
+        handOverKind = b;
+        handOverMode = c;
+        handOverVariant = d;
         result = TRUE;
     }
     return result;
@@ -8852,8 +8852,8 @@ BOOL Unk_020d7710::giveItemStart() {
         if (_ZN13NpcActionCtrl9getActionEv(unk_48 + 0x564) == 8 && _ZN13NpcActionCtrl12isActionDoneEv(unk_48 + 0x564) == 0) {
             onEventTag(0);
         } else if (unk_3c != NULL) {
-            if (_ZN13NpcActionCtrl15requestGiveItemEiPtjhjj(unk_48 + 0x564, 4, &unk_7a, unk_7c, unk_90, unk_94, unk_44)) {
-                unk_a8 = 1;
+            if (_ZN13NpcActionCtrl15requestGiveItemEiPtjhjj(unk_48 + 0x564, 4, &unk_7a, handOverKind, handOverMode, handOverVariant, unk_44)) {
+                taskStep = 1;
             }
         }
     }
@@ -8866,7 +8866,7 @@ BOOL Unk_020d7710::giveItemWait() {
     if (unk_48 != NULL && unk_3c != NULL) {
         if (_ZN13NpcActionCtrl9getActionEv(unk_48 + 0x564) == 13 && _ZN13NpcActionCtrl12isActionDoneEv(unk_48 + 0x564) != 0) {
             _ZN15TalkWindowState13unlockAdvanceEv(unk_3c);
-            unk_a8 = 2;
+            taskStep = 2;
             result = TRUE;
         }
     }
@@ -8883,8 +8883,8 @@ BOOL Unk_02014420::taskGiveItem() {
     using namespace nF;
     static Unk_02014420_Fn tbl[] = {*(Unk_02014420_Fn *)data_020d7584, *(Unk_02014420_Fn *)data_020d75b4};
     BOOL r = 0;
-    if (unk_a8 < 2) {
-        r = (this->*tbl[unk_a8])();
+    if (taskStep < 2) {
+        r = (this->*tbl[taskStep])();
     }
     return r;
 }
@@ -8893,10 +8893,10 @@ BOOL Unk_02014420::requestTakeItem(u16 *a, u32 b, u32 c, u32 d) {
     using namespace nF;
     BOOL r = 0;
     if (nF::_ZN12Unk_020d77109startTaskEi(this, 4)) {
-        unk_7a = *a;
-        unk_7c = b;
-        unk_90 = c;
-        unk_94 = d;
+        subSceneItem = *a;
+        handOverKind = b;
+        handOverMode = c;
+        handOverVariant = d;
         r = 1;
     }
     return r;
@@ -8904,16 +8904,16 @@ BOOL Unk_02014420::requestTakeItem(u16 *a, u32 b, u32 c, u32 d) {
 
 BOOL Unk_02014420::takeItemStart() {
     using namespace nF;
-    if (unk_48 != NULL) {
-        if (unk_3c != NULL) {
-            _ZN15TalkWindowState11lockAdvanceEv(unk_3c);
+    if (ownerActor != NULL) {
+        if (window != NULL) {
+            _ZN15TalkWindowState11lockAdvanceEv(window);
         }
-        if (_ZN13NpcActionCtrl9getActionEv((u8 *)unk_48 + 0x564) == 8 && !_ZN13NpcActionCtrl12isActionDoneEv((u8 *)unk_48 + 0x564)) {
+        if (_ZN13NpcActionCtrl9getActionEv((u8 *)ownerActor + 0x564) == 8 && !_ZN13NpcActionCtrl12isActionDoneEv((u8 *)ownerActor + 0x564)) {
             vfunc_38(0);
-        } else if (unk_3c != NULL) {
-            if (_ZN13NpcActionCtrl15requestTakeItemEiPtjhjj((u8 *)unk_48 + 0x564, 4, &unk_7a, unk_7c, unk_90, unk_94, unk_44)) {
+        } else if (window != NULL) {
+            if (_ZN13NpcActionCtrl15requestTakeItemEiPtjhjj((u8 *)ownerActor + 0x564, 4, &subSceneItem, handOverKind, handOverMode, handOverVariant, talkPlayer)) {
                 nF::_ZN16ActorTalkRequest17setItemActionBusyEv(this);
-                unk_a8 = 1;
+                taskStep = 1;
             }
         }
     }
@@ -8923,13 +8923,13 @@ BOOL Unk_02014420::takeItemStart() {
 BOOL Unk_02014420::takeItemWait() {
     using namespace nF;
     BOOL r = 0;
-    if (unk_48 != NULL && unk_3c != NULL) {
-        if (_ZN13NpcActionCtrl9getActionEv((u8 *)unk_48 + 0x564) == 0xe && _ZN13NpcActionCtrl12isActionDoneEv((u8 *)unk_48 + 0x564)) {
-            _ZN15TalkWindowState13unlockAdvanceEv(unk_3c);
-            if (unk_90 != 4) {
+    if (ownerActor != NULL && window != NULL) {
+        if (_ZN13NpcActionCtrl9getActionEv((u8 *)ownerActor + 0x564) == 0xe && _ZN13NpcActionCtrl12isActionDoneEv((u8 *)ownerActor + 0x564)) {
+            _ZN15TalkWindowState13unlockAdvanceEv(window);
+            if (handOverMode != 4) {
                 nF::_ZN16ActorTalkRequest19clearItemActionBusyEv(this);
             }
-            unk_a8 = 2;
+            taskStep = 2;
             r = 1;
         }
     }
@@ -8957,8 +8957,8 @@ BOOL Unk_02014420::taskTakeItem() {
     using namespace nF;
     static Unk_02014420_Fn tbl[] = {*(Unk_02014420_Fn *)data_020d7664, *(Unk_02014420_Fn *)data_020d75d4};
     BOOL r = 0;
-    if (unk_a8 < 2) {
-        r = (this->*tbl[unk_a8])();
+    if (taskStep < 2) {
+        r = (this->*tbl[taskStep])();
     }
     return r;
 }
@@ -8974,10 +8974,10 @@ BOOL Unk_02014420::requestItemAct0F() {
 
 BOOL Unk_02014420::itemAct0FStart() {
     using namespace nF;
-    if (unk_48 != NULL && unk_3c != NULL) {
-        if (_ZN13NpcActionCtrl13requestActionEjiiissiitt((u8 *)unk_48 + 0x564, 0xf, 4, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0)) {
-            _ZN15TalkWindowState11lockAdvanceEv(unk_3c);
-            unk_a8 = 1;
+    if (ownerActor != NULL && window != NULL) {
+        if (_ZN13NpcActionCtrl13requestActionEjiiissiitt((u8 *)ownerActor + 0x564, 0xf, 4, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0)) {
+            _ZN15TalkWindowState11lockAdvanceEv(window);
+            taskStep = 1;
         }
     }
     return 0;
@@ -8986,11 +8986,11 @@ BOOL Unk_02014420::itemAct0FStart() {
 BOOL Unk_02014420::itemAct0FWait() {
     using namespace nF;
     BOOL r = 0;
-    if (unk_48 != NULL && unk_3c != NULL) {
-        if (_ZN13NpcActionCtrl9getActionEv((u8 *)unk_48 + 0x564) == 0xf && _ZN13NpcActionCtrl12isActionDoneEv((u8 *)unk_48 + 0x564)) {
-            _ZN15TalkWindowState13unlockAdvanceEv(unk_3c);
+    if (ownerActor != NULL && window != NULL) {
+        if (_ZN13NpcActionCtrl9getActionEv((u8 *)ownerActor + 0x564) == 0xf && _ZN13NpcActionCtrl12isActionDoneEv((u8 *)ownerActor + 0x564)) {
+            _ZN15TalkWindowState13unlockAdvanceEv(window);
             nF::_ZN16ActorTalkRequest19clearItemActionBusyEv(this);
-            unk_a8 = 2;
+            taskStep = 2;
             r = 1;
         }
     }
@@ -9012,8 +9012,8 @@ BOOL Unk_02014420::taskItemAct0F() {
     using namespace nF;
     static Unk_02014420_Fn tbl[] = {*(Unk_02014420_Fn *)data_020d759c, *(Unk_02014420_Fn *)data_020d758c};
     BOOL r = 0;
-    if (unk_a8 < 2) {
-        r = (this->*tbl[unk_a8])();
+    if (taskStep < 2) {
+        r = (this->*tbl[taskStep])();
     }
     return r;
 }
@@ -9029,11 +9029,11 @@ BOOL Unk_02014420::requestKeepItem() {
 
 BOOL Unk_02014420::keepItemStart() {
     using namespace nF;
-    if (unk_48 != NULL && unk_3c != NULL) {
-        if (_ZN13NpcActionCtrl13requestActionEjiiissiitt((u8 *)unk_48 + 0x564, 0x10, 4, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0)) {
+    if (ownerActor != NULL && window != NULL) {
+        if (_ZN13NpcActionCtrl13requestActionEjiiissiitt((u8 *)ownerActor + 0x564, 0x10, 4, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0)) {
             nF::_ZN16ActorTalkRequest17setItemActionBusyEv(this);
-            _ZN15TalkWindowState11lockAdvanceEv(unk_3c);
-            unk_a8 = 1;
+            _ZN15TalkWindowState11lockAdvanceEv(window);
+            taskStep = 1;
         }
     }
     return 0;
@@ -9042,11 +9042,11 @@ BOOL Unk_02014420::keepItemStart() {
 BOOL Unk_02014420::keepItemWait() {
     using namespace nF;
     BOOL r = 0;
-    if (unk_48 != NULL && unk_3c != NULL) {
-        if (_ZN13NpcActionCtrl9getActionEv((u8 *)unk_48 + 0x564) == 0x10 && _ZN13NpcActionCtrl12isActionDoneEv((u8 *)unk_48 + 0x564)) {
-            _ZN15TalkWindowState13unlockAdvanceEv(unk_3c);
+    if (ownerActor != NULL && window != NULL) {
+        if (_ZN13NpcActionCtrl9getActionEv((u8 *)ownerActor + 0x564) == 0x10 && _ZN13NpcActionCtrl12isActionDoneEv((u8 *)ownerActor + 0x564)) {
+            _ZN15TalkWindowState13unlockAdvanceEv(window);
             nF::_ZN16ActorTalkRequest19clearItemActionBusyEv(this);
-            unk_a8 = 2;
+            taskStep = 2;
             r = 1;
         }
     }
@@ -9068,8 +9068,8 @@ BOOL Unk_02014420::taskKeepItem() {
     using namespace nF;
     static Unk_02014420_Fn tbl[] = {*(Unk_02014420_Fn *)data_020d71d4, *(Unk_02014420_Fn *)data_020d71cc};
     BOOL r = 0;
-    if (unk_a8 < 2) {
-        r = (this->*tbl[unk_a8])();
+    if (taskStep < 2) {
+        r = (this->*tbl[taskStep])();
     }
     return r;
 }
@@ -9085,11 +9085,11 @@ BOOL Unk_02014420::requestReturnItem() {
 
 BOOL Unk_02014420::returnItemStart() {
     using namespace nF;
-    if (unk_48 != NULL && unk_3c != NULL) {
-        if (_ZN13NpcActionCtrl13requestActionEjiiissiitt((u8 *)unk_48 + 0x564, 0x11, 4, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0)) {
+    if (ownerActor != NULL && window != NULL) {
+        if (_ZN13NpcActionCtrl13requestActionEjiiissiitt((u8 *)ownerActor + 0x564, 0x11, 4, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0)) {
             nF::_ZN16ActorTalkRequest17setItemActionBusyEv(this);
-            _ZN15TalkWindowState11lockAdvanceEv(unk_3c);
-            unk_a8 = 1;
+            _ZN15TalkWindowState11lockAdvanceEv(window);
+            taskStep = 1;
         }
     }
     return 0;
@@ -9098,11 +9098,11 @@ BOOL Unk_02014420::returnItemStart() {
 BOOL Unk_02014420::returnItemWait() {
     using namespace nF;
     BOOL r = 0;
-    if (unk_48 != NULL && unk_3c != NULL) {
-        if (_ZN13NpcActionCtrl9getActionEv((u8 *)unk_48 + 0x564) == 0x11 && _ZN13NpcActionCtrl12isActionDoneEv((u8 *)unk_48 + 0x564)) {
-            _ZN15TalkWindowState13unlockAdvanceEv(unk_3c);
+    if (ownerActor != NULL && window != NULL) {
+        if (_ZN13NpcActionCtrl9getActionEv((u8 *)ownerActor + 0x564) == 0x11 && _ZN13NpcActionCtrl12isActionDoneEv((u8 *)ownerActor + 0x564)) {
+            _ZN15TalkWindowState13unlockAdvanceEv(window);
             nF::_ZN16ActorTalkRequest19clearItemActionBusyEv(this);
-            unk_a8 = 2;
+            taskStep = 2;
             r = 1;
         }
     }
@@ -9121,8 +9121,8 @@ BOOL Unk_02014420::taskReturnItem() {
     using namespace nF;
     static Unk_02014420_Fn tbl[] = {*(Unk_02014420_Fn *)data_020d70b4, *(Unk_02014420_Fn *)data_020d71ac};
     BOOL r = 0;
-    if (unk_a8 < 2) {
-        r = (this->*tbl[unk_a8])();
+    if (taskStep < 2) {
+        r = (this->*tbl[taskStep])();
     }
     return r;
 }
@@ -9138,10 +9138,10 @@ BOOL Unk_02014420::requestItemAct12() {
 
 BOOL Unk_02014420::itemAct12Start() {
     using namespace nF;
-    if (unk_48 != NULL && unk_3c != NULL) {
-        if (_ZN13NpcActionCtrl13requestActionEjiiissiitt((u8 *)unk_48 + 0x564, 0x12, 4, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0)) {
-            _ZN15TalkWindowState11lockAdvanceEv(unk_3c);
-            unk_a8 = 1;
+    if (ownerActor != NULL && window != NULL) {
+        if (_ZN13NpcActionCtrl13requestActionEjiiissiitt((u8 *)ownerActor + 0x564, 0x12, 4, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0)) {
+            _ZN15TalkWindowState11lockAdvanceEv(window);
+            taskStep = 1;
         }
     }
     return 0;
@@ -9150,10 +9150,10 @@ BOOL Unk_02014420::itemAct12Start() {
 BOOL Unk_02014420::itemAct12Wait() {
     using namespace nF;
     BOOL r = 0;
-    if (unk_48 != NULL && unk_3c != NULL) {
-        if (_ZN13NpcActionCtrl9getActionEv((u8 *)unk_48 + 0x564) == 0x12 && _ZN13NpcActionCtrl12isActionDoneEv((u8 *)unk_48 + 0x564)) {
-            _ZN15TalkWindowState13unlockAdvanceEv(unk_3c);
-            unk_a8 = 2;
+    if (ownerActor != NULL && window != NULL) {
+        if (_ZN13NpcActionCtrl9getActionEv((u8 *)ownerActor + 0x564) == 0x12 && _ZN13NpcActionCtrl12isActionDoneEv((u8 *)ownerActor + 0x564)) {
+            _ZN15TalkWindowState13unlockAdvanceEv(window);
+            taskStep = 2;
             r = 1;
         }
     }
@@ -9176,8 +9176,8 @@ BOOL Unk_02014420::taskItemAct12() {
     using namespace nF;
     static Unk_02014420_Fn tbl[] = {*(Unk_02014420_Fn *)data_020d70cc, *(Unk_02014420_Fn *)data_020d7194};
     BOOL r = 0;
-    if (unk_a8 < 2) {
-        r = (this->*tbl[unk_a8])();
+    if (taskStep < 2) {
+        r = (this->*tbl[taskStep])();
     }
     return r;
 }
@@ -9193,10 +9193,10 @@ BOOL Unk_02014420::requestEatItem() {
 
 BOOL Unk_02014420::eatItemStart() {
     using namespace nF;
-    if (unk_48 != NULL && unk_3c != NULL) {
-        if (_ZN13NpcActionCtrl13requestActionEjiiissiitt((u8 *)unk_48 + 0x564, 0x13, 4, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0)) {
-            _ZN15TalkWindowState11lockAdvanceEv(unk_3c);
-            unk_a8 = 1;
+    if (ownerActor != NULL && window != NULL) {
+        if (_ZN13NpcActionCtrl13requestActionEjiiissiitt((u8 *)ownerActor + 0x564, 0x13, 4, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0)) {
+            _ZN15TalkWindowState11lockAdvanceEv(window);
+            taskStep = 1;
         }
     }
     return 0;
@@ -9205,11 +9205,11 @@ BOOL Unk_02014420::eatItemStart() {
 BOOL Unk_02014420::eatItemWait() {
     using namespace nF;
     BOOL r = 0;
-    if (unk_48 != NULL && unk_3c != NULL) {
-        if (_ZN13NpcActionCtrl9getActionEv((u8 *)unk_48 + 0x564) == 0x13 && _ZN13NpcActionCtrl12isActionDoneEv((u8 *)unk_48 + 0x564)) {
-            _ZN15TalkWindowState13unlockAdvanceEv(unk_3c);
+    if (ownerActor != NULL && window != NULL) {
+        if (_ZN13NpcActionCtrl9getActionEv((u8 *)ownerActor + 0x564) == 0x13 && _ZN13NpcActionCtrl12isActionDoneEv((u8 *)ownerActor + 0x564)) {
+            _ZN15TalkWindowState13unlockAdvanceEv(window);
             nF::_ZN16ActorTalkRequest19clearItemActionBusyEv(this);
-            unk_a8 = 2;
+            taskStep = 2;
             r = 1;
         }
     }
@@ -9230,8 +9230,8 @@ BOOL Unk_02014420::taskEatItem() {
     using namespace nF;
     static Unk_02014420_Fn tbl[] = {*(Unk_02014420_Fn *)data_020d70ec, *(Unk_02014420_Fn *)data_020d717c};
     BOOL r = 0;
-    if (unk_a8 < 2) {
-        r = (this->*tbl[unk_a8])();
+    if (taskStep < 2) {
+        r = (this->*tbl[taskStep])();
     }
     return r;
 }
@@ -9239,8 +9239,8 @@ BOOL Unk_02014420::taskEatItem() {
 BOOL Unk_02014420::requestPlayMelody(Unk_02014420_Vec2 *p) {
     using namespace nF;
     if (nF::_ZN12Unk_020d77109startTaskEi(this, 10)) {
-        *(long long *)&unk_88 = *(long long *)p;
-        unk_a1 = 0;
+        *(long long *)&melodyPattern = *(long long *)p;
+        randomMelody = 0;
         return TRUE;
     }
     return FALSE;
@@ -9249,7 +9249,7 @@ BOOL Unk_02014420::requestPlayMelody(Unk_02014420_Vec2 *p) {
 BOOL Unk_02014420::requestPlayRandomMelody() {
     using namespace nF;
     if (nF::_ZN12Unk_020d77109startTaskEi(this, 10)) {
-        unk_a1 = 1;
+        randomMelody = 1;
         return TRUE;
     }
     return FALSE;
@@ -9259,32 +9259,32 @@ BOOL Unk_02014420::melodyStart() {
     using namespace nF;
     u32 v;
     void *tbl = gMelodyEditPattern;
-    if (unk_48 != NULL) {
-        v = unk_48->vfunc_84();
+    if (ownerActor != NULL) {
+        v = ownerActor->vfunc_84();
     } else {
         v = 0;
     }
     if (v != 0xffff) {
-        if (unk_3c != NULL) {
-            _ZN15TalkWindowState11lockAdvanceEv(unk_3c);
+        if (window != NULL) {
+            _ZN15TalkWindowState11lockAdvanceEv(window);
         }
-        if (unk_a1 == 0) {
-            Melody_Unpack(&unk_88, tbl);
+        if (randomMelody == 0) {
+            Melody_Unpack(&melodyPattern, tbl);
             Melody_PlayEditPattern((u16)v);
         } else {
             Melody_PlayRandom((u16)v);
         }
-        unk_a8 = 1;
+        taskStep = 1;
         return 0;
     }
-    unk_a8 = 3;
+    taskStep = 3;
     return 1;
 }
 
 BOOL Unk_02014420::melodyWait() {
     using namespace nF;
     if (data_020ddf8c != -1) {
-        unk_a8 = 2;
+        taskStep = 2;
     }
     return 0;
 }
@@ -9294,10 +9294,10 @@ BOOL Unk_02014420::melodyEnd() {
     if (data_020ddf8c != -1) {
         return 0;
     }
-    if (unk_3c != NULL) {
-        _ZN15TalkWindowState13unlockAdvanceEv(unk_3c);
+    if (window != NULL) {
+        _ZN15TalkWindowState13unlockAdvanceEv(window);
     }
-    unk_a8 = 3;
+    taskStep = 3;
     return 1;
 }
 
@@ -9331,8 +9331,8 @@ void *data_020d719c[2] = {(void *)_ZN12Unk_02016a4411act0EStep05EP12Unk_02006d14
 BOOL Unk_02014420::taskMelody() {
     using namespace nF;
     static Unk_02014420_Fn tbl[] = {*(Unk_02014420_Fn *)data_020d716c, *(Unk_02014420_Fn *)data_020d7164, *(Unk_02014420_Fn *)data_020d715c};
-    if (unk_a8 < 3) {
-        return (this->*tbl[unk_a8])();
+    if (taskStep < 3) {
+        return (this->*tbl[taskStep])();
     }
     return 0;
 }
@@ -9340,7 +9340,7 @@ BOOL Unk_02014420::taskMelody() {
 BOOL Unk_02014258::requestSwitchSpeaker(u8 v) {
     using namespace nE;
     if (_ZN12Unk_020d77109startTaskEi(this, 0xb)) {
-        unk_a0 = v;
+        focusNewSpeaker = v;
         return TRUE;
     }
     return FALSE;
@@ -9348,49 +9348,49 @@ BOOL Unk_02014258::requestSwitchSpeaker(u8 v) {
 
 BOOL Unk_02014258::switchSpeakerClose() {
     using namespace nE;
-    Unk_02013b10_Sub *q = unk_3c;
+    Unk_02013b10_Sub *q = window;
     if (q != 0) {
-        q->unk_14 = 2;
-        if (unk_a0 != 0) unk_a8 = 1;
-        else unk_a8 = 2;
+        q->openMode = 2;
+        if (focusNewSpeaker != 0) taskStep = 1;
+        else taskStep = 2;
     }
     return FALSE;
 }
 
 BOOL Unk_02014258::switchSpeakerFocus() {
     using namespace nE;
-    Unk_02013b10_Sub *q = unk_3c;
-    if (q != 0 && q->unk_04 == 5) {
-        Unk_02013b10_Ctx *e = _ZN16ActorTalkRequest9getActorBEj(this, (unk_51 + 1) & 1);
+    Unk_02013b10_Sub *q = window;
+    if (q != 0 && q->state == 5) {
+        Unk_02013b10_Ctx *e = _ZN16ActorTalkRequest9getActorBEj(this, (speakerIndex + 1) & 1);
         if (e != 0) {
             Unk_02013b10_Vec v;
-            Unk_02013b10_Vec *pv = &e->unk_5c;
+            Unk_02013b10_Vec *pv = &e->position;
             v.x = pv->x;
             v.y = pv->y;
             v.z = pv->z;
             v.y += 0x2000;
             Camera_RetargetFocus(&v);
         }
-        unk_a8 = 2;
+        taskStep = 2;
     }
     return FALSE;
 }
 
 BOOL Unk_02014258::switchSpeakerSwap() {
     using namespace nE;
-    Unk_02013b10_Sub *q = unk_3c;
-    if (q != 0 && q->unk_04 == 5) {
+    Unk_02013b10_Sub *q = window;
+    if (q != 0 && q->state == 5) {
         if (Camera_IsBlending() == 0 || Camera_GetBlendFramesLeft() < 0x11) {
-            Unk_02013b10_Ctx *e = _ZN16ActorTalkRequest9getActorBEj(this, unk_51);
+            Unk_02013b10_Ctx *e = _ZN16ActorTalkRequest9getActorBEj(this, speakerIndex);
             if (e) _ZN14NpcSpeechState12stopSpeakingEv((u8 *)e + 0x418);
-            unk_51 = (unk_51 + 1) & 1;
-            Unk_02013b10_Ctx *n = _ZN16ActorTalkRequest9getActorBEj(this, unk_51);
+            speakerIndex = (speakerIndex + 1) & 1;
+            Unk_02013b10_Ctx *n = _ZN16ActorTalkRequest9getActorBEj(this, speakerIndex);
             if (n != 0) {
                 Unk_020140d0_X x;
                 n->vfunc_74(&x);
                 _ZN14TalkMsgRequest17changeSpeakerNameEP9MsgStringj(this, &x, _ZN8NpcActor16getSpeakerGenderEv(n));
-                unk_3c->unk_08 = 1;
-                unk_a8 = 3;
+                window->nextState = 1;
+                taskStep = 3;
                 return TRUE;
             }
         }
@@ -9407,7 +9407,7 @@ void *data_020d70e4[2] = {(void *)_ZN12Unk_0201216410stepWanderEP16Unk_02011f74_
 BOOL Unk_02014258::taskSwitchSpeaker() {
     using namespace nE;
     static BOOL (Unk_02014258::*tbl[3])() = {*(BOOL (Unk_02014258::**)())data_020d7434, *(BOOL (Unk_02014258::**)())data_020d7134, *(BOOL (Unk_02014258::**)())data_020d7144};
-    if (unk_a8 < 3) return (this->*tbl[unk_a8])();
+    if (taskStep < 3) return (this->*tbl[taskStep])();
     return FALSE;
 }
 
@@ -9441,11 +9441,11 @@ BOOL NpcTalkCtrl::isBusy() {
 
 void NpcTalkCtrl::updateSpeakerMouth(Unk_02013b10_Ctx *ctx) {
     using namespace nE;
-    Unk_02013b10_Obj *o = ctx->unk_634;
-    if (o != 0 && o->unk_3c != 0) {
+    Unk_02013b10_Obj *o = ctx->talkRequest;
+    if (o != 0 && o->window != 0) {
         u8 *e = _ZN16ActorTalkRequest15getSpeakerActorEv(o);
         if (e != 0) {
-            if (_ZN15TalkWindowState14isVoicePlayingEv(o->unk_3c)) _ZN14NpcSpeechState13startSpeakingEv(e + 0x418);
+            if (_ZN15TalkWindowState14isVoicePlayingEv(o->window)) _ZN14NpcSpeechState13startSpeakingEv(e + 0x418);
             else _ZN14NpcSpeechState12stopSpeakingEv(e + 0x418);
         }
     }
@@ -9483,7 +9483,7 @@ BOOL NpcTalkCtrl::request(u8 b, u32 c, s16 d, s16 e, u8 f, u8 g) {
 
 void NpcTalkCtrl::startTalkMessage(Unk_02013b10_Ctx *ctx) {
     using namespace nE;
-    Unk_02013b10_Obj *o = ctx->unk_634;
+    Unk_02013b10_Obj *o = ctx->talkRequest;
     if (o != 0) {
         Unk_020140d0_Out out;
         Unk_020140d0_X x;
@@ -9494,8 +9494,8 @@ void NpcTalkCtrl::startTalkMessage(Unk_02013b10_Ctx *ctx) {
         _ZN9Character17attachTalkRequestEi(ctx, o);
         o->vfunc_78(&out.a);
         _ZN10MsgRequest11setFileNameEPKc(o, out.a);
-        o->unk_1e = out.b;
-        o->unk_3c->unk_08 = 1;
+        o->msgIndex = out.b;
+        o->window->nextState = 1;
     }
 }
 
@@ -9519,10 +9519,10 @@ void NpcTalkCtrl::update(Unk_02013b10_Ctx *ctx) {
 
 void NpcTalkCtrl::endTalk(Unk_02013b10_Ctx *ctx) {
     using namespace nE;
-    Unk_02013b10_Obj *o = ctx->unk_634;
+    Unk_02013b10_Obj *o = ctx->talkRequest;
     if (o != 0 && _ZN16ActorTalkRequest15getPartnerActorEv(o) != 0) _ZN16ActorTalkRequest15getPartnerActorEv(o)->vfunc_90();
     if (keepCamera == 0) Camera_SetModeDefault();
-    if (clearActorFlagOnEnd == 1) ctx->unk_4e8 &= ~2;
+    if (clearActorFlagOnEnd == 1) ctx->colliderFlags &= ~2;
     PlayerActor_SetHeadTilt(0, 0, 4);
 }
 
@@ -9530,15 +9530,15 @@ void NpcTalkCtrl::setupState0(Unk_02013b10_Ctx *ctx) {
     using namespace nE;
     volatile Unk_02013b10_Vec v;
     Unk_02013b10_Vec w;
-    Unk_02013b10_Vec *pv = &ctx->unk_5c;
+    Unk_02013b10_Vec *pv = &ctx->position;
     v.x = pv->x;
     v.y = pv->y;
     v.z = pv->z;
-    _ZN13NpcActionCtrl13requestActionEjiiissiitt(ctx->unk_564, 3, 2, 0, 0, unk_04, turnAngle, 0, 0, data_020c6cc8, 0);
+    _ZN13NpcActionCtrl13requestActionEjiiissiitt(ctx->actionCtrl, 3, 2, 0, 0, unk_04, turnAngle, 0, 0, data_020c6cc8, 0);
     if (keepCamera == 0) {
-        Unk_02013b10_Obj *o = ctx->unk_634;
+        Unk_02013b10_Obj *o = ctx->talkRequest;
         if (o != 0 && _ZN16ActorTalkRequest15getPartnerActorEv(o) != 0) {
-            Unk_02013b10_Vec *pw = &_ZN16ActorTalkRequest15getPartnerActorEv(o)->unk_5c;
+            Unk_02013b10_Vec *pw = &_ZN16ActorTalkRequest15getPartnerActorEv(o)->position;
             w.x = pw->x;
             w.y = pw->y;
             w.z = pw->z;
@@ -9550,8 +9550,8 @@ void NpcTalkCtrl::setupState0(Unk_02013b10_Ctx *ctx) {
             Camera_FocusOnPoint((Unk_02013b10_Vec *)&v);
         }
     }
-    if (!(ctx->unk_4e8 & 2)) clearActorFlagOnEnd = 1;
-    ctx->unk_4e8 |= 2;
+    if (!(ctx->colliderFlags & 2)) clearActorFlagOnEnd = 1;
+    ctx->colliderFlags |= 2;
     if (ctx->vfunc_7c()) {
         if (ctx->vfunc_84() != 0xffff) Melody_Play();
         ctx->vfunc_80();
@@ -9561,10 +9561,10 @@ void NpcTalkCtrl::setupState0(Unk_02013b10_Ctx *ctx) {
 
 void NpcTalkCtrl::state0Step0(Unk_02013b10_Ctx *ctx) {
     using namespace nE;
-    if (turnAngle == ctx->unk_8e) {
-        if (_ZN13NpcActionCtrl9getActionEv(ctx->unk_564) == 3) {
-            if (_ZN13NpcActionCtrl12isActionDoneEv(ctx->unk_564)) {
-                _ZN13NpcActionCtrl13requestActionEjiiissiitt(ctx->unk_564, 0, 2, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    if (turnAngle == ctx->rotY) {
+        if (_ZN13NpcActionCtrl9getActionEv(ctx->actionCtrl) == 3) {
+            if (_ZN13NpcActionCtrl12isActionDoneEv(ctx->actionCtrl)) {
+                _ZN13NpcActionCtrl13requestActionEjiiissiitt(ctx->actionCtrl, 0, 2, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
                 startTalkMessage(ctx);
                 step = 1;
             }
@@ -9574,18 +9574,18 @@ void NpcTalkCtrl::state0Step0(Unk_02013b10_Ctx *ctx) {
 
 void NpcTalkCtrl::state0Step1(Unk_02013b10_Ctx *ctx) {
     using namespace nE;
-    Unk_02013b10_Obj *o = ctx->unk_634;
+    Unk_02013b10_Obj *o = ctx->talkRequest;
     s32 a, b;
-    if (o != 0 && o->unk_3c != 0) {
-        if (o->unk_3c->unk_04 == 0) {
+    if (o != 0 && o->window != 0) {
+        if (o->window->state == 0) {
             o->vfunc_7c();
             _ZN9Character17detachTalkRequestEi(ctx, o);
             u8 *e = _ZN16ActorTalkRequest15getSpeakerActorEv(o);
             if (e) _ZN14NpcSpeechState12stopSpeakingEv(e + 0x418);
             a = 0;
-            if (_ZN16ActorTalkRequest15getPartnerActorEv(o) != 0 && _ZN13NpcActionCtrl9getActionEv(_ZN16ActorTalkRequest15getPartnerActorEv(o)->unk_564) == 8 && _ZN13NpcActionCtrl12isActionDoneEv(_ZN16ActorTalkRequest15getPartnerActorEv(o)->unk_564) == 0) a = 1;
+            if (_ZN16ActorTalkRequest15getPartnerActorEv(o) != 0 && _ZN13NpcActionCtrl9getActionEv(_ZN16ActorTalkRequest15getPartnerActorEv(o)->actionCtrl) == 8 && _ZN13NpcActionCtrl12isActionDoneEv(_ZN16ActorTalkRequest15getPartnerActorEv(o)->actionCtrl) == 0) a = 1;
             b = 0;
-            if (_ZN13NpcActionCtrl9getActionEv(ctx->unk_564) == 8 && _ZN13NpcActionCtrl12isActionDoneEv(ctx->unk_564) == 0) b = 1;
+            if (_ZN13NpcActionCtrl9getActionEv(ctx->actionCtrl) == 8 && _ZN13NpcActionCtrl12isActionDoneEv(ctx->actionCtrl) == 0) b = 1;
             if (a != 0 || b != 0) {
                 if (b != 0) _ZN16ActorTalkRequest11playEmotionEjj(o, 0, 0);
                 if (a != 0) _ZN16ActorTalkRequest11playEmotionEjj(o, 0, 1);
@@ -9604,9 +9604,9 @@ void NpcTalkCtrl::state0Step1(Unk_02013b10_Ctx *ctx) {
 
 void NpcTalkCtrl::state0Step2(Unk_02013b10_Ctx *ctx) {
     using namespace nE;
-    Unk_02013b10_Obj *o = ctx->unk_634;
-    if (o != 0 && _ZN16ActorTalkRequest15getPartnerActorEv(o) != 0 && _ZN13NpcActionCtrl9getActionEv(_ZN16ActorTalkRequest15getPartnerActorEv(o)->unk_564) == 8 && _ZN13NpcActionCtrl12isActionDoneEv(_ZN16ActorTalkRequest15getPartnerActorEv(o)->unk_564) == 0) return;
-    if (_ZN13NpcActionCtrl9getActionEv(ctx->unk_564) == 8 && _ZN13NpcActionCtrl12isActionDoneEv(ctx->unk_564) == 0) return;
+    Unk_02013b10_Obj *o = ctx->talkRequest;
+    if (o != 0 && _ZN16ActorTalkRequest15getPartnerActorEv(o) != 0 && _ZN13NpcActionCtrl9getActionEv(_ZN16ActorTalkRequest15getPartnerActorEv(o)->actionCtrl) == 8 && _ZN13NpcActionCtrl12isActionDoneEv(_ZN16ActorTalkRequest15getPartnerActorEv(o)->actionCtrl) == 0) return;
+    if (_ZN13NpcActionCtrl9getActionEv(ctx->actionCtrl) == 8 && _ZN13NpcActionCtrl12isActionDoneEv(ctx->actionCtrl) == 0) return;
     endTalk(ctx);
     step = 3;
     state = 5;
@@ -9642,13 +9642,13 @@ void NpcTalkCtrl::mainState0(Unk_02013b10_Ctx *ctx) {
 void NpcTalkCtrl::setupState2(Unk_02013b10_Ctx *ctx) {
     using namespace nE;
     volatile Unk_02013b10_Vec v;
-    Unk_02013b10_Vec *pv = &ctx->unk_5c;
+    Unk_02013b10_Vec *pv = &ctx->position;
     v.x = pv->x;
     v.y = pv->y;
     v.z = pv->z;
-    _ZN13NpcActionCtrl13requestActionEjiiissiitt(ctx->unk_564, 3, 2, 0, 0, unk_04, turnAngle, 0, 0, data_020c6cc8, 0);
-    if (!(ctx->unk_4e8 & 2)) clearActorFlagOnEnd = 1;
-    ctx->unk_4e8 |= 2;
+    _ZN13NpcActionCtrl13requestActionEjiiissiitt(ctx->actionCtrl, 3, 2, 0, 0, unk_04, turnAngle, 0, 0, data_020c6cc8, 0);
+    if (!(ctx->colliderFlags & 2)) clearActorFlagOnEnd = 1;
+    ctx->colliderFlags |= 2;
     if (ctx->vfunc_7c()) {
         if (ctx->vfunc_84() != 0xffff) Melody_Play();
         ctx->vfunc_80();
@@ -9658,10 +9658,10 @@ void NpcTalkCtrl::setupState2(Unk_02013b10_Ctx *ctx) {
 
 void NpcTalkCtrl::state2Step0(Unk_02013b10_Ctx *ctx) {
     using namespace nE;
-    if (_ZN13NpcActionCtrl9getActionEv(ctx->unk_564) == 3) {
-        if (_ZN13NpcActionCtrl12isActionDoneEv(ctx->unk_564)) {
-            _ZN13NpcActionCtrl13requestActionEjiiissiitt(ctx->unk_564, 0, 2, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
-            _ZN13NpcActionCtrl16requestTalkingOnEv(ctx->unk_564);
+    if (_ZN13NpcActionCtrl9getActionEv(ctx->actionCtrl) == 3) {
+        if (_ZN13NpcActionCtrl12isActionDoneEv(ctx->actionCtrl)) {
+            _ZN13NpcActionCtrl13requestActionEjiiissiitt(ctx->actionCtrl, 0, 2, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+            _ZN13NpcActionCtrl16requestTalkingOnEv(ctx->actionCtrl);
             step = 1;
         }
     }
@@ -9670,7 +9670,7 @@ void NpcTalkCtrl::state2Step0(Unk_02013b10_Ctx *ctx) {
 void NpcTalkCtrl::state2Step1(Unk_02013b10_Ctx *ctx) {
     using namespace nE;
     if (unk_0e) {
-        _ZN13NpcActionCtrl17requestTalkingOffEv(ctx->unk_564);
+        _ZN13NpcActionCtrl17requestTalkingOffEv(ctx->actionCtrl);
         step = 2;
         state = 5;
     }
@@ -9685,17 +9685,17 @@ void NpcTalkCtrl::mainState2(Unk_02013b10_Ctx *ctx) {
 void Unk_02013474::setupState1(Unk_020133cc_Player* p) {
     using namespace nD;
     Unk_020133cc_Vec pos;
-    Unk_020133cc_Vec* pv = &p->unk_5c;
+    Unk_020133cc_Vec* pv = &p->position;
     pos = *pv;
-    if (unk_0d != 0) {
-        nD::_ZN13NpcActionCtrl13requestActionEjiiissiitt(&p->unk_564, 0, 2, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    if (stopAction != 0) {
+        nD::_ZN13NpcActionCtrl13requestActionEjiiissiitt(&p->actionCtrl, 0, 2, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     }
-    unk_0a = 0;
-    if (unk_0c == 0) {
-        Unk_020133cc_Player* r6 = p->unk_634;
+    step = 0;
+    if (keepCamera == 0) {
+        Unk_020133cc_Player* r6 = p->talkRequest;
         if (r6 != NULL && nD::_ZN16ActorTalkRequest15getPartnerActorEv(r6) != NULL) {
             Unk_020133cc_Vec w;
-            w = nD::_ZN16ActorTalkRequest15getPartnerActorEv(r6)->unk_5c;
+            w = nD::_ZN16ActorTalkRequest15getPartnerActorEv(r6)->position;
             pos.y += 0x2000;
             w.y += 0x2000;
             Camera_FocusOnPair(&pos, &w);
@@ -9704,10 +9704,10 @@ void Unk_02013474::setupState1(Unk_020133cc_Player* p) {
             Camera_FocusOnPoint(&pos);
         }
     }
-    if (!(p->unk_4e8 & 2)) {
+    if (!(p->colliderFlags & 2)) {
         unk_0b = 1;
     }
-    p->unk_4e8 |= 2;
+    p->colliderFlags |= 2;
     if (p->vfunc_7c()) {
         if (p->vfunc_84() != 0xffff) {
             Melody_Play();
@@ -9719,36 +9719,36 @@ void Unk_02013474::setupState1(Unk_020133cc_Player* p) {
 void Unk_02013474::state1Step0(Unk_020133cc_Player* p) {
     using namespace nD;
     nD::_ZN11NpcTalkCtrl16startTalkMessageEP16Unk_02013b10_Ctx(this);
-    unk_0a = 1;
+    step = 1;
 }
 
 void Unk_02013474::state1Step1(Unk_020133cc_Player* p) {
     using namespace nD;
-    Unk_020133cc_Player* r4 = p->unk_634;
+    Unk_020133cc_Player* r4 = p->talkRequest;
     if (r4 != NULL) {
-        if (r4->unk_3c != NULL) {
-            if (r4->unk_3c->unk_04 == 0) {
+        if (r4->window != NULL) {
+            if (r4->window->state == 0) {
                 r4->vfunc_7c();
                 nD::_ZN9Character17detachTalkRequestEi(p, r4);
                 Unk_020133cc_Player* t = nD::_ZN16ActorTalkRequest15getSpeakerActorEv(r4);
                 if (t != NULL) {
-                    nD::_ZN14NpcSpeechState12stopSpeakingEv(&t->unk_418);
+                    nD::_ZN14NpcSpeechState12stopSpeakingEv(&t->speechState);
                 }
                 BOOL a = FALSE;
-                if (nD::_ZN16ActorTalkRequest15getPartnerActorEv(r4) != NULL && nD::_ZN13NpcActionCtrl9getActionEv(&nD::_ZN16ActorTalkRequest15getPartnerActorEv(r4)->unk_564) == 8 && nD::_ZN13NpcActionCtrl12isActionDoneEv(&nD::_ZN16ActorTalkRequest15getPartnerActorEv(r4)->unk_564) == 0) {
+                if (nD::_ZN16ActorTalkRequest15getPartnerActorEv(r4) != NULL && nD::_ZN13NpcActionCtrl9getActionEv(&nD::_ZN16ActorTalkRequest15getPartnerActorEv(r4)->actionCtrl) == 8 && nD::_ZN13NpcActionCtrl12isActionDoneEv(&nD::_ZN16ActorTalkRequest15getPartnerActorEv(r4)->actionCtrl) == 0) {
                     a = TRUE;
                 }
                 BOOL b = FALSE;
-                if (nD::_ZN13NpcActionCtrl9getActionEv(&p->unk_564) == 8 && nD::_ZN13NpcActionCtrl12isActionDoneEv(&p->unk_564) == 0) {
+                if (nD::_ZN13NpcActionCtrl9getActionEv(&p->actionCtrl) == 8 && nD::_ZN13NpcActionCtrl12isActionDoneEv(&p->actionCtrl) == 0) {
                     b = TRUE;
                 }
                 if (a || b) {
                     if (b) nD::_ZN16ActorTalkRequest11playEmotionEjj(r4, 0, 0);
                     if (a) nD::_ZN16ActorTalkRequest11playEmotionEjj(r4, 0, 1);
-                    unk_0a = 2;
+                    step = 2;
                 } else {
                     nD::_ZN11NpcTalkCtrl7endTalkEP16Unk_02013b10_Ctx(this, p);
-                    unk_0a = 1;
+                    step = 1;
                     unk_08 = 5;
                 }
             } else {
@@ -9761,15 +9761,15 @@ void Unk_02013474::state1Step1(Unk_020133cc_Player* p) {
 
 void Unk_02013474::state1Step2(Unk_020133cc_Player* p) {
     using namespace nD;
-    Unk_020133cc_Player* r6 = p->unk_634;
-    if (r6 != NULL && nD::_ZN16ActorTalkRequest15getPartnerActorEv(r6) != NULL && nD::_ZN13NpcActionCtrl9getActionEv(&nD::_ZN16ActorTalkRequest15getPartnerActorEv(r6)->unk_564) == 8 && nD::_ZN13NpcActionCtrl12isActionDoneEv(&nD::_ZN16ActorTalkRequest15getPartnerActorEv(r6)->unk_564) == 0) {
+    Unk_020133cc_Player* r6 = p->talkRequest;
+    if (r6 != NULL && nD::_ZN16ActorTalkRequest15getPartnerActorEv(r6) != NULL && nD::_ZN13NpcActionCtrl9getActionEv(&nD::_ZN16ActorTalkRequest15getPartnerActorEv(r6)->actionCtrl) == 8 && nD::_ZN13NpcActionCtrl12isActionDoneEv(&nD::_ZN16ActorTalkRequest15getPartnerActorEv(r6)->actionCtrl) == 0) {
         return;
     }
-    if (nD::_ZN13NpcActionCtrl9getActionEv(&p->unk_564) == 8 && nD::_ZN13NpcActionCtrl12isActionDoneEv(&p->unk_564) == 0) {
+    if (nD::_ZN13NpcActionCtrl9getActionEv(&p->actionCtrl) == 8 && nD::_ZN13NpcActionCtrl12isActionDoneEv(&p->actionCtrl) == 0) {
         return;
     }
     nD::_ZN11NpcTalkCtrl7endTalkEP16Unk_02013b10_Ctx(this, p);
-    unk_0a = 1;
+    step = 1;
     unk_08 = 5;
 }
 
@@ -9782,60 +9782,60 @@ void *data_020d751c[2] = {(void *)_ZN12Unk_02017d749mainAct0BEP16Unk_02017d74_Ct
 void Unk_02013474::mainState1(Unk_020133cc_Player* p) {
     using namespace nD;
     static Unk_02013474_Fn tbl[3] = {*(Unk_02013474_Fn *)data_020d749c, *(Unk_02013474_Fn *)data_020d74bc, *(Unk_02013474_Fn *)data_020d74dc};
-    if (unk_0a < 3) {
-        (this->*tbl[unk_0a])(p);
+    if (step < 3) {
+        (this->*tbl[step])(p);
     }
 }
 
 void Unk_02013474::setupState3(Unk_020133cc_Player* p) {
     using namespace nD;
     Unk_02013778_Vec pos;
-    Unk_020133cc_Vec* pv = &p->unk_5c;
+    Unk_020133cc_Vec* pv = &p->position;
     *(Unk_020133cc_Vec*)&pos = *pv;
-    if (unk_0d != 0) {
-        nD::_ZN13NpcActionCtrl13requestActionEjiiissiitt(&p->unk_564, 0, 2, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    if (stopAction != 0) {
+        nD::_ZN13NpcActionCtrl13requestActionEjiiissiitt(&p->actionCtrl, 0, 2, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     }
-    nD::_ZN13NpcActionCtrl16requestTalkingOnEv(&p->unk_564);
-    if (!(p->unk_4e8 & 2)) {
+    nD::_ZN13NpcActionCtrl16requestTalkingOnEv(&p->actionCtrl);
+    if (!(p->colliderFlags & 2)) {
         unk_0b = 1;
     }
-    p->unk_4e8 |= 2;
+    p->colliderFlags |= 2;
     if (p->vfunc_7c()) {
         if (p->vfunc_84() != 0xffff) {
             Melody_Play();
         }
         p->vfunc_80();
     }
-    unk_0a = 0;
+    step = 0;
 }
 
 void Unk_02013474::mainState3(Unk_020133cc_Player* p) {
     using namespace nD;
     static Unk_02013474_Fn tbl[1] = {*(Unk_02013474_Fn *)data_020d7534};
-    if (unk_0a < 1) {
-        (this->*tbl[unk_0a])(p);
+    if (step < 1) {
+        (this->*tbl[step])(p);
     }
 }
 
 void Unk_020136c0::setupState4(Unk_020133cc_Player* p) {
     using namespace nD;
-    nD::_ZN13NpcActionCtrl12requestAct07Eiiiit(&p->unk_564, 2, unk_04, unk_06, unk_00, data_020c6cc8);
-    if (!(p->unk_4e8 & 2)) {
-        unk_0b = 1;
+    nD::_ZN13NpcActionCtrl12requestAct07Eiiiit(&p->actionCtrl, 2, turnSpeed, turnAngle, act07Variant, data_020c6cc8);
+    if (!(p->colliderFlags & 2)) {
+        clearActorFlagOnEnd = 1;
     }
-    p->unk_4e8 |= 2;
-    unk_0a = 0;
+    p->colliderFlags |= 2;
+    step = 0;
 }
 
 void Unk_02013474::state4Step0(Unk_020133cc_Player* p) {
     using namespace nD;
-    if (nD::_ZN13NpcActionCtrl9getActionEv(&p->unk_564) == 7) {
-        if (nD::_ZN13NpcActionCtrl12isActionDoneEv(&p->unk_564) != 0) {
-            nD::_ZN13NpcActionCtrl13requestActionEjiiissiitt(&p->unk_564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+    if (nD::_ZN13NpcActionCtrl9getActionEv(&p->actionCtrl) == 7) {
+        if (nD::_ZN13NpcActionCtrl12isActionDoneEv(&p->actionCtrl) != 0) {
+            nD::_ZN13NpcActionCtrl13requestActionEjiiissiitt(&p->actionCtrl, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
             if (unk_0b == 1) {
-                p->unk_4e8 &= ~2;
+                p->colliderFlags &= ~2;
             }
-            unk_0a = 1;
+            step = 1;
             unk_08 = 5;
         }
     }
@@ -9883,7 +9883,7 @@ Unk_02014040_Ent sNpcTalkCtrlStates[5] = {
     *(Unk_02014040_Fn *)data_020d7274, *(Unk_02014040_Fn *)data_020d7294,
     *(Unk_02014040_Fn *)data_020d7364, *(Unk_02014040_Fn *)data_020d72ac,
 };
-const Unk_020c6e60_E sEmotionTable[60] = {
+const NpcEmotionEntry sEmotionTable[60] = {
     {0x0, 0, 0xffff0100, 0x137, 0, 0xffff0100, 0x0},
     {0x45, data_020c6d34, 0x60101, 0x46, 0, 0xffff0000, 0x1},
     {0x47, data_020c6ce8, 0x101, 0x48, 0, 0xffff0000, 0x1},
@@ -9956,14 +9956,14 @@ void *data_020d708c[2] = {(void *)_ZN12Unk_0201869810act07Step0EP16Unk_02018698_
 void Unk_02013474::mainState4(Unk_020133cc_Player* p) {
     using namespace nD;
     static Unk_02013474_Fn tbl[1] = {*(Unk_02013474_Fn *)data_020d7594};
-    if (unk_0a < 3) {
-        (this->*tbl[unk_0a])(p);
+    if (step < 3) {
+        (this->*tbl[step])(p);
     }
 }
 
 Unk_020135e4::Unk_020135e4() {
     using namespace nD;
-    unk_00 = 0;
+    footstepsEnabled = 0;
 }
 
 void Unk_02013474::func_020135e0() {
@@ -9973,79 +9973,79 @@ void Unk_02013474::func_020135e0() {
 void Unk_02013474::resetFootsteps() {
     using namespace nD;
     disableFootsteps();
-    unk_04 = 5;
+    prevMoveMode = 5;
 }
 
 void Unk_02013474::enableFootsteps() {
     using namespace nD;
-    unk_00 = 1;
+    footstepsEnabled = 1;
 }
 
 void Unk_02013474::disableFootsteps() {
     using namespace nD;
-    unk_00 = 0;
+    footstepsEnabled = 0;
 }
 
 void Unk_02013474::playFootstepSe(Unk_020133cc_Player* p) {
     using namespace nD;
-    u32 f = p->unk_b0;
+    u32 f = p->actorFlags;
     if (!(Unk_02013568_IsSet(f, 4) && Unk_02013568_IsSet(f, 2))) {
-        if (unk_00 != 0) {
-            nD::Snd_SeEmitterPlayAlternate(&p->unk_514, nD::Footstep_GetSeAtPos(&p->unk_5c), 0);
+        if (footstepsEnabled != 0) {
+            nD::Snd_SeEmitterPlayAlternate(&p->seEmitter, nD::Footstep_GetSeAtPos(&p->position), 0);
         }
     }
 }
 
 void Unk_02013474::updateFootsteps(Unk_020133cc_Player* p) {
     using namespace nD;
-    s32 st = nD::_ZN11NpcMoveCtrl11getMoveModeEv(&p->unk_350);
-    if (unk_00 != 0 && (u32)(st - 1) <= 2) {
+    s32 st = nD::_ZN11NpcMoveCtrl11getMoveModeEv(&p->moveCtrl);
+    if (footstepsEnabled != 0 && (u32)(st - 1) <= 2) {
         Unk_02013474_Half h;
-        h.a = p->unk_8e;
-        if (unk_04 == 0) {
-            Effect_Create(0x28, &p->unk_490, &h, 0);
-            Effect_Create(0x28, &p->unk_484, &h, 0);
+        h.a = p->rotY;
+        if (prevMoveMode == 0) {
+            Effect_Create(0x28, &p->footPosB, &h, 0);
+            Effect_Create(0x28, &p->footPosA, &h, 0);
         } else {
-            BOOL r4 = nD::_ZN13AnimFrameCtrl14hasPassedFrameEi(&p->unk_188, 1);
-            BOOL r0 = nD::_ZN13AnimFrameCtrl14hasPassedFrameEi(&p->unk_188, 9);
+            BOOL r4 = nD::_ZN13AnimFrameCtrl14hasPassedFrameEi(&p->bodyAnimCtrl, 1);
+            BOOL r0 = nD::_ZN13AnimFrameCtrl14hasPassedFrameEi(&p->bodyAnimCtrl, 9);
             if (r4 != 0 || r0 != 0) {
                 Unk_020133cc_Vec v;
-                v.x = (r4 ? &p->unk_490 : &p->unk_484)->x;
-                v.y = (r4 ? &p->unk_490 : &p->unk_484)->y;
-                v.z = (r4 ? &p->unk_490 : &p->unk_484)->z;
-                h.b = p->unk_8e + 0x8000;
-                v.y = p->unk_5c.y;
+                v.x = (r4 ? &p->footPosB : &p->footPosA)->x;
+                v.y = (r4 ? &p->footPosB : &p->footPosA)->y;
+                v.z = (r4 ? &p->footPosB : &p->footPosA)->z;
+                h.b = p->rotY + 0x8000;
+                v.y = p->position.y;
                 if (st == 2) Effect_Create(0, &v, &h.b, 0);
                 Effect_Create(0x28, &v, &h, 0);
                 playFootstepSe(p);
             }
         }
     }
-    unk_04 = st;
+    prevMoveMode = st;
 }
 
 void Unk_020133cc_Player::resetLastTaughtEmotion() {
     using namespace nD;
-    unk_63e = -1;
+    lastTaughtEmotion = -1;
 }
 
 void Unk_020133cc_Player::setLastTaughtEmotion(s16 v) {
     using namespace nD;
-    unk_63e = v;
+    lastTaughtEmotion = v;
 }
 
 s16 Unk_020133cc_Player::getLastTaughtEmotion() {
     using namespace nD;
-    return unk_63e;
+    return lastTaughtEmotion;
 }
 
 s32 Unk_020133cc_Player::getNewEmotionToLearn() {
     using namespace nD;
     s32 result = -1;
-    if (nD::_ZN11NpcTalkCtrl6isBusyEv(&unk_618)) {
-        if (nD::_ZN13NpcActionCtrl9getActionEv(&unk_564) == 8) {
+    if (nD::_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl)) {
+        if (nD::_ZN13NpcActionCtrl9getActionEv(&actionCtrl) == 8) {
             if (nD::_ZN8NpcActor14getTalkRequestEv(this) != NULL && nD::_ZN16ActorTalkRequest15getPartnerActorEv(nD::_ZN8NpcActor14getTalkRequestEv(this)) == NULL) {
-                s32 v = nD::_ZN13NpcActionCtrl12getEmotionIdEv(&unk_564);
+                s32 v = nD::_ZN13NpcActionCtrl12getEmotionIdEv(&actionCtrl);
                 if (v > 0 && v < 0x3c && v != getLastTaughtEmotion()) {
                     if (Emotion_FindSlot((u8)v) == -1) {
                         result = v;
@@ -10065,14 +10065,14 @@ s32 NpcActor::getTeachableEmotion() {
 
 VillagerRoute* VillagerRoute::resetTarget() {
     using namespace nD;
-    unk_0c.x = 0;
-    unk_0c.y = 0;
-    unk_14 = 0;
-    unk_18 = 0;
-    unk_1c = 0;
-    unk_20 = 0;
-    unk_94 = 0;
-    unk_98 = 0;
+    targetUnit.x = 0;
+    targetUnit.y = 0;
+    targetBlockX = 0;
+    targetBlockZ = 0;
+    waypointX = 0;
+    waypointZ = 0;
+    lastUnitX = 0;
+    lastUnitZ = 0;
     return this;
 }
 
@@ -10084,26 +10084,26 @@ extern "C" void func_020133a4() {
 void VillagerRoute::reset() {
     using namespace nD;
     MI_CpuFill8(this, 0, 0x9c);
-    unk_00 = 2;
-    unk_08 = 7;
+    stepMode = 2;
+    routeType = 7;
     unk_24 = -1;
     unk_26 = -1;
-    unk_8c = 2;
-    unk_90 = 4;
+    pathMode = 2;
+    approachDir = 4;
 }
 
 void VillagerRoute::start(u32 a, u32 idx, u32 b, u32 c) {
     using namespace nD;
     if (idx < 7) {
         reset();
-        unk_08 = idx;
-        unk_00 = b;
-        unk_28 = &sVillagerRouteTypes[unk_08];
-        if (unk_28->unk_08) {
-            unk_0c = (this->*(unk_28->unk_08))(a, c);
-            s32 y = unk_0c.y;
-            unk_14 = unk_0c.x >> 4;
-            unk_18 = y >> 4;
+        routeType = idx;
+        stepMode = b;
+        typeTable = &sVillagerRouteTypes[routeType];
+        if (typeTable->pickTarget) {
+            targetUnit = (this->*(typeTable->pickTarget))(a, c);
+            s32 y = targetUnit.y;
+            targetBlockX = targetUnit.x >> 4;
+            targetBlockZ = y >> 4;
             nD::_ZN12Unk_020128108planStepEP16Unk_02012810_Vec(this, a);
         }
     }
@@ -10111,14 +10111,14 @@ void VillagerRoute::start(u32 a, u32 idx, u32 b, u32 c) {
 
 void VillagerRoute::rememberUnit(u32 v) {
     using namespace nD;
-    FieldPos_ToUnit(&unk_94, &unk_98, v);
+    FieldPos_ToUnit(&lastUnitX, &lastUnitZ, v);
 }
 
 void VillagerRoute::markUnitUnset() {
     using namespace nD;
-    if (unk_94 == 0 && unk_98 == 0) {
-        unk_94 = 0xff;
-        unk_98 = 0xff;
+    if (lastUnitX == 0 && lastUnitZ == 0) {
+        lastUnitX = 0xff;
+        lastUnitZ = 0xff;
     }
 }
 
@@ -10127,24 +10127,24 @@ void VillagerRoute::checkUnitChanged(u32 v) {
     u32 a = 0;
     u32 b = 0;
     FieldPos_ToUnit(&a, &b, v);
-    if (unk_94 != 0 && unk_98 != 0 && (unk_94 != a || unk_98 != b)) {
-        unk_04 = 3;
+    if (lastUnitX != 0 && lastUnitZ != 0 && (lastUnitX != a || lastUnitZ != b)) {
+        stepPhase = 3;
         nD::_ZN12Unk_0201281014clearJunctionsEv(this);
-        unk_88 = 0;
-        unk_8c = 2;
+        pathDir = 0;
+        pathMode = 2;
         nD::_ZN12Unk_020128108planStepEP16Unk_02012810_Vec(this, v);
-        unk_90 = 4;
+        approachDir = 4;
     }
 }
 
 void VillagerRoute::setStepMode(u32 v) {
     using namespace nD;
-    unk_00 = v;
+    stepMode = v;
 }
 
 BOOL VillagerRoute::isActive() {
     using namespace nD;
-    if (unk_08 < 7) return TRUE;
+    if (routeType < 7) return TRUE;
     return FALSE;
 }
 
@@ -10230,7 +10230,7 @@ u32 Unk_02012810::findNearestPath(Unk_02012b94_Pair *out, Unk_02012810_Vec *pos)
         return 4;
     }
     FieldPos_ToUnit(&p.x, &p.z, pos);
-    Unk_02012b94_Pair *pq = &o->unk_0c;
+    Unk_02012b94_Pair *pq = &o->units;
     q.x = pq->x;
     q.z = pq->z;
     if (_ZN8BlockMap17getWalkLinksAtPosEPv(o, pos) != 0) {
@@ -10286,10 +10286,10 @@ u32 Unk_02012810::findNearestPath(Unk_02012b94_Pair *out, Unk_02012810_Vec *pos)
 
 s32 Unk_02012810::isArrived(Unk_02012810_Vec *v) {
     using namespace nC;
-    Unk_02012810_Tbl *t = unk_28;
+    Unk_02012810_Tbl *t = typeTable;
     if (t != 0) {
-        if (t->unk_00 != 0) {
-            return (this->*(t->unk_00))(v);
+        if (t->arrivedCheck != 0) {
+            return (this->*(t->arrivedCheck))(v);
         }
     }
     return 0;
@@ -10339,12 +10339,12 @@ s32 Unk_02012810::scanDir(Unk_02012b94_Pair *out, Unk_02012e08_Pos pos, u32 mask
 
 void Unk_02012810::clearJunctions() {
     using namespace nC;
-    MI_CpuFill8(unk_2c, 0, 90);
+    MI_CpuFill8(junctions, 0, 90);
 }
 
 s32 Unk_02012810::countJunctions() {
     using namespace nC;
-    u8 *e = unk_2c;
+    u8 *e = junctions;
     for (s32 i = 0; i < 29; e += 3, i++) {
         if (((u32)(e[2] << 24) >> 28) == 0) {
             return i;
@@ -10356,7 +10356,7 @@ s32 Unk_02012810::countJunctions() {
 void Unk_02012810::pushJunction(u32 hi, u32 lo, Unk_02012b94_Pair *p) {
     using namespace nC;
     s32 n = countJunctions();
-    u8 *e = unk_2c + n * 3;
+    u8 *e = junctions + n * 3;
     for (; n > 0; n--) {
         MI_CpuCopy8(e - 3, e, 3);
         e -= 3;
@@ -10369,7 +10369,7 @@ void Unk_02012810::pushJunction(u32 hi, u32 lo, Unk_02012b94_Pair *p) {
 
 s32 Unk_02012810::findJunction(Unk_02012b94_Pair *p) {
     using namespace nC;
-    u8 *e = unk_2c;
+    u8 *e = junctions;
     for (s32 i = 0; i < 30; e += 3, i++) {
         if (p->x == e[0] && p->z == e[1]) {
             return i;
@@ -10384,7 +10384,7 @@ Unk_02012cbc_Ent Unk_02012810::popJunction(Unk_02012b94_Pair *p) {
     Unk_02012cbc_Ent out;
     MI_CpuFill8(&out, 0, 3);
     if (idx != -1) {
-        u8 *a = unk_2c;
+        u8 *a = junctions;
         u8 *b = a + idx * 3;
         MI_CpuCopy8(b, &out, 3);
         b += 3;
@@ -10393,24 +10393,24 @@ Unk_02012cbc_Ent Unk_02012810::popJunction(Unk_02012b94_Pair *p) {
             b += 3;
             a += 3;
         }
-        MI_CpuFill8(unk_2c + (29 - idx) * 3, 0, (idx + 1) * 3);
+        MI_CpuFill8(junctions + (29 - idx) * 3, 0, (idx + 1) * 3);
     }
     return out;
 }
 
 u32 Unk_02012810::getStage() {
     using namespace nC;
-    return unk_08;
+    return routeType;
 }
 
 s32 Unk_02012810::runStep(Unk_02012810_Vec *v) {
     using namespace nC;
-    Unk_02012810_Tbl *t = unk_28;
-    if (t != 0 && unk_00 < 2 && unk_04 < 3) {
-        Unk_02012810_Fn *pf = &t->tbl[unk_00][unk_04];
+    Unk_02012810_Tbl *t = typeTable;
+    if (t != 0 && stepMode < 2 && stepPhase < 3) {
+        Unk_02012810_Fn *pf = &t->tbl[stepMode][stepPhase];
         if (*pf != 0) {
             s32 r = (this->*(*pf))(v);
-            if (unk_00 == 1) {
+            if (stepMode == 1) {
                 nC::_ZN13VillagerRoute12rememberUnitEj(this, v);
             }
             return r;
@@ -10484,15 +10484,15 @@ void Unk_02012810::planStep(Unk_02012810_Vec *pos) {
     }
     present = _ZN8BlockMap17getWalkLinksAtPosEPv(o, pos);
     if (present == 0) {
-        unk_90 = findNearestPath(&unk_1c, pos);
-        unk_04 = 0;
+        approachDir = findNearestPath(&waypoint, pos);
+        stepPhase = 0;
         clearJunctions();
-        unk_88 = 0;
-        unk_8c = 2;
+        pathDir = 0;
+        pathMode = 2;
         return;
     }
-    dirs2 = dirs = oppositeDirs(unk_88);
-    Unk_02012b94_Pair *pq = &o->unk_0c;
+    dirs2 = dirs = oppositeDirs(pathDir);
+    Unk_02012b94_Pair *pq = &o->units;
     q.x = pq->x;
     q.z = pq->z;
     bx = 0;
@@ -10506,21 +10506,21 @@ void Unk_02012810::planStep(Unk_02012810_Vec *pos) {
     FieldPos_ToUnit(&p.x, &p.z, pos);
     if ((present & ~dirs) == 0) {
         if (scanDir(&r, p, dirs, &q, o)) {
-            unk_1c.x = r.x;
-            unk_1c.z = r.z;
-            unk_8c = 1;
-            unk_88 = dirs;
+            waypoint.x = r.x;
+            waypoint.z = r.z;
+            pathMode = 1;
+            pathDir = dirs;
         }
-    } else if (unk_8c != 1) {
+    } else if (pathMode != 1) {
         hi = found;
-        lo = unk_88;
+        lo = pathDir;
         if (findJunction(&p) != -1) {
             Unk_02012cbc_Ent e1 = popJunction(&p);
             hi = e1.f.hi;
             lo = e1.f.lo;
             dirs2 = dirs2 | hi;
         }
-        FieldPos_FromUnitCenter(&tv, unk_0c, unk_10);
+        FieldPos_FromUnitCenter(&tv, targetUnitX, targetUnitZ);
         for (i = 0; i < 4; i++) {
             if (((dirs2 >> i) & 1) == 0) {
                 cand = present & (1 << i);
@@ -10540,28 +10540,28 @@ void Unk_02012810::planStep(Unk_02012810_Vec *pos) {
             }
         }
         if (found != 0) {
-            if (unk_8c == 0) {
+            if (pathMode == 0) {
                 pushJunction(hi | found, lo, &p);
             }
-            unk_1c.x = bx;
-            unk_1c.z = bz;
-            unk_8c = 0;
-            unk_88 = found;
+            waypoint.x = bx;
+            waypoint.z = bz;
+            pathMode = 0;
+            pathDir = found;
         } else {
                 if (scanDir(&r, p, dirs, &q, o)) {
-                unk_1c.x = r.x;
-                unk_1c.z = r.z;
-                unk_8c = 1;
-                unk_88 = dirs;
+                waypoint.x = r.x;
+                waypoint.z = r.z;
+                pathMode = 1;
+                pathDir = dirs;
             }
         }
-        unk_04 = 1;
-    } else if (unk_8c == 1) {
+        stepPhase = 1;
+    } else if (pathMode == 1) {
         s32 cand2, j;
         Unk_02012cbc_Ent e2 = popJunction(&p);
         lo2 = e2.f.lo;
         w = oppositeDirs(lo2);
-        FieldPos_FromUnitCenter(&tv, unk_0c, unk_10);
+        FieldPos_FromUnitCenter(&tv, targetUnitX, targetUnitZ);
         dirs = dirs | w;
         for (j = 0; j < 4; j++) {
             if (((dirs >> j) & 1) == 0) {
@@ -10583,33 +10583,33 @@ void Unk_02012810::planStep(Unk_02012810_Vec *pos) {
         }
         if (found != 0) {
             if (lo2 == 0) {
-                lo2 = unk_88;
+                lo2 = pathDir;
             }
-            unk_1c.x = bx;
-            unk_1c.z = bz;
+            waypoint.x = bx;
+            waypoint.z = bz;
             pushJunction(e2.f.hi | found, lo2, &p);
-            unk_8c = 0;
-            unk_88 = found;
+            pathMode = 0;
+            pathDir = found;
         } else {
                 if (scanDir(&r, p, w, &q, o)) {
-                unk_1c.x = r.x;
-                unk_1c.z = r.z;
-                unk_8c = 1;
-                unk_88 = w;
+                waypoint.x = r.x;
+                waypoint.z = r.z;
+                pathMode = 1;
+                pathDir = w;
             }
         }
-        unk_04 = 1;
+        stepPhase = 1;
     }
-    unk_90 = 4;
+    approachDir = 4;
 }
 
 BOOL Unk_02012164::followPathDir(Unk_02011f74_Vec *p, Unk_02011f74_Pair *lim, Unk_02011f74_World *w) {
     using namespace nB;
     nB::_ZN13VillagerRoute16checkUnitChangedEj(this);
-    if ((u32)unk_90 < 4) {
+    if ((u32)approachDir < 4) {
         Unk_02011f74_Pair *tbl = (Unk_02011f74_Pair *)sRouteDirs;
-        Unk_02011f74_Pair *e = &tbl[unk_90];
-        s32 dx = tbl[unk_90].a;
+        Unk_02011f74_Pair *e = &tbl[approachDir];
+        s32 dx = tbl[approachDir].a;
         s32 dz = e->b;
         u32 a = 0;
         u32 b = 0;
@@ -10618,7 +10618,7 @@ BOOL Unk_02012164::followPathDir(Unk_02011f74_Vec *p, Unk_02011f74_Pair *lim, Un
             a += dx;
             b += dz;
             BOOL eq = FALSE;
-            if (unk_1c == a && unk_20 == b) eq = TRUE;
+            if (waypointX == a && waypointZ == b) eq = TRUE;
             if (eq || _ZN8BlockMap12getWalkLinksEii(w, a, b)) {
                 FieldPos_FromUnitCenter(p, a, b);
                 nB::_ZN12Unk_020128108planStepEP16Unk_02012810_Vec(this, p);
@@ -10631,8 +10631,8 @@ BOOL Unk_02012164::followPathDir(Unk_02011f74_Vec *p, Unk_02011f74_Pair *lim, Un
         }
     } else {
         nB::_ZN12Unk_0201281014clearJunctionsEv(this);
-        unk_88 = 0;
-        unk_8c = 2;
+        pathDir = 0;
+        pathMode = 2;
         nB::_ZN12Unk_020128108planStepEP16Unk_02012810_Vec(this, p);
     }
     return FALSE;
@@ -10643,11 +10643,11 @@ BOOL Unk_02012164::stepFollowPath(Unk_02011f74_Vec *p) {
     Unk_02011f74_World *world = gSceneBlockMap;
     if (world) {
         Unk_02011f74_Pair lim;
-        Unk_02011f74_Pair *sz = &world->unk_0c;
+        Unk_02011f74_Pair *sz = &world->units;
         lim = *sz;
         followPathDir(p, &lim, world);
         if (nB::_ZN12Unk_020128109isArrivedEP16Unk_02012810_Vec(this, p)) {
-            unk_04 = 2;
+            stepPhase = 2;
             return TRUE;
         }
     }
@@ -10657,7 +10657,7 @@ BOOL Unk_02012164::stepFollowPath(Unk_02011f74_Vec *p) {
 BOOL Unk_02012164::advanceOnPath(Unk_02011f74_Vec *p, Unk_02011f74_World *w) {
     using namespace nB;
     nB::_ZN13VillagerRoute16checkUnitChangedEj(this);
-    s32 flag = unk_88;
+    s32 flag = pathDir;
     if (flag != 0) {
         s32 k = nB::_ZN12Unk_020128108firstDirEi(this, flag);
         s32 a = 0;
@@ -10668,21 +10668,21 @@ BOOL Unk_02012164::advanceOnPath(Unk_02011f74_Vec *p, Unk_02011f74_World *w) {
         if (!_ZN8BlockMap12getWalkLinksEii(w, a, b)) {
             FieldPos_FromUnitCenter(p, a, b);
             nB::_ZN12Unk_0201281014clearJunctionsEv(this);
-            unk_88 = 0;
-            unk_8c = 2;
+            pathDir = 0;
+            pathMode = 2;
             nB::_ZN12Unk_020128108planStepEP16Unk_02012810_Vec(this, p);
-            unk_90 = 4;
+            approachDir = 4;
             return FALSE;
         }
         FieldPos_FromUnitCenter(p, a, b);
-        if (a == unk_1c && b == unk_20) {
+        if (a == waypointX && b == waypointZ) {
             nB::_ZN12Unk_020128108planStepEP16Unk_02012810_Vec(this, p);
         }
         return FALSE;
     }
     nB::_ZN12Unk_0201281014clearJunctionsEv(this);
-    unk_88 = 0;
-    unk_8c = 2;
+    pathDir = 0;
+    pathMode = 2;
     nB::_ZN12Unk_020128108planStepEP16Unk_02012810_Vec(this, p);
     return FALSE;
 }
@@ -10693,7 +10693,7 @@ BOOL Unk_02012164::stepAlongPath(Unk_02011f74_Vec *p) {
     if (world) {
         advanceOnPath(p, world);
         if (nB::_ZN12Unk_020128109isArrivedEP16Unk_02012810_Vec(this, p)) {
-            unk_04 = 2;
+            stepPhase = 2;
             return TRUE;
         }
     }
@@ -10713,8 +10713,8 @@ BOOL Unk_02012164::stepAdjacentUnit(Unk_02011f74_Vec *p) {
         pickAdjacent(p, world);
         if (!nB::_ZN12Unk_020128109isArrivedEP16Unk_02012810_Vec(this, p)) {
             nB::_ZN12Unk_0201281014clearJunctionsEv(this);
-            unk_88 = 0;
-            unk_8c = 2;
+            pathDir = 0;
+            pathMode = 2;
             nB::_ZN12Unk_020128108planStepEP16Unk_02012810_Vec(this, p);
         } else {
             return TRUE;
@@ -10733,7 +10733,7 @@ BOOL Unk_02012164::stepWander(Unk_02011f74_Vec *p) {
     volatile s32 zero0;
     volatile s32 zero1;
     Unk_02011f74_Vec tmp;
-    FieldPos_FromUnitCenter(&tmp, unk_0c.a, unk_0c.b);
+    FieldPos_FromUnitCenter(&tmp, targetUnit.a, targetUnit.b);
     if (mode == 0) {
         base = Math_AngleXZ(p, &tmp);
         mag = 0x1000;
@@ -10767,7 +10767,7 @@ BOOL Unk_02012164::stepWander(Unk_02011f74_Vec *p) {
     }
     nB::_ZN13VillagerRoute13markUnitUnsetEv(this);
     if (nB::_ZN12Unk_020128109isArrivedEP16Unk_02012810_Vec(this, p)) {
-        unk_04 = 2;
+        stepPhase = 2;
         return TRUE;
     }
     return FALSE;
@@ -10824,7 +10824,7 @@ BOOL Unk_02012164::isAtDoorT1(Unk_02011f74_Vec *p) {
     s32 a = 0;
     s32 b = 0;
     FieldPos_ToUnit(&a, &b, p);
-    if (a == unk_0c.a && b == unk_0c.b) return TRUE;
+    if (a == targetUnit.a && b == targetUnit.b) return TRUE;
     return FALSE;
 }
 
@@ -10832,8 +10832,8 @@ BOOL Unk_02012164::stepCheckArrived(Unk_02011f74_Vec *p) {
     using namespace nB;
     if (!nB::_ZN12Unk_020128109isArrivedEP16Unk_02012810_Vec(this, p)) {
         nB::_ZN12Unk_0201281014clearJunctionsEv(this);
-        unk_88 = 0;
-        unk_8c = 2;
+        pathDir = 0;
+        pathMode = 2;
         nB::_ZN12Unk_020128108planStepEP16Unk_02012810_Vec(this, p);
         return FALSE;
     }
@@ -10869,7 +10869,7 @@ BOOL Unk_02012164::isInBlockT2(Unk_02011f74_Vec *v) {
     using namespace nB;
     s32 z = v->z >> 17;
     s32 x = v->x >> 17;
-    if (x == unk_14 && z == unk_18) return TRUE;
+    if (x == targetBlockX && z == targetBlockZ) return TRUE;
     return FALSE;
 }
 
@@ -10891,7 +10891,7 @@ BOOL Unk_02012164::isAtDoorT3(Unk_02011f74_Vec *p) {
     s32 a = 0;
     s32 b = 0;
     FieldPos_ToUnit(&a, &b, p);
-    if (a == unk_0c.a && b == unk_0c.b) return TRUE;
+    if (a == targetUnit.a && b == targetUnit.b) return TRUE;
     return FALSE;
 }
 
@@ -10900,18 +10900,18 @@ BOOL Unk_02012164::stepToDoor(Unk_02011f74_Vec *p) {
     s32 a = 0;
     s32 b = 0;
     FieldPos_ToUnit(&a, &b, p);
-    if (a == unk_0c.a && b >= unk_0c.b && b <= unk_0c.b + 1) {
-        FieldPos_FromUnitCenter(p, ((volatile Unk_02011f74_Pair &)unk_0c).a, ((volatile Unk_02011f74_Pair &)unk_0c).b);
-    } else if (a >= unk_0c.a - 3 && a <= unk_0c.a + 4 && b >= unk_0c.b && b <= unk_0c.b + 5) {
-        a = unk_0c.a;
-        b = unk_0c.b + Random_GlobalBelow(2);
+    if (a == targetUnit.a && b >= targetUnit.b && b <= targetUnit.b + 1) {
+        FieldPos_FromUnitCenter(p, ((volatile Unk_02011f74_Pair &)targetUnit).a, ((volatile Unk_02011f74_Pair &)targetUnit).b);
+    } else if (a >= targetUnit.a - 3 && a <= targetUnit.a + 4 && b >= targetUnit.b && b <= targetUnit.b + 5) {
+        a = targetUnit.a;
+        b = targetUnit.b + Random_GlobalBelow(2);
         FieldPos_FromUnitCenter(p, a, b);
     } else {
         stepWander(p);
     }
     nB::_ZN13VillagerRoute13markUnitUnsetEv(this);
     if (nB::_ZN12Unk_020128109isArrivedEP16Unk_02012810_Vec(this, p)) {
-        unk_04 = 2;
+        stepPhase = 2;
         return TRUE;
     }
     return FALSE;
@@ -10941,7 +10941,7 @@ BOOL Unk_02012164::isInBlockT4(Unk_02011f74_Vec *v) {
     using namespace nB;
     s32 z = v->z >> 17;
     s32 x = v->x >> 17;
-    if (x == unk_14 && z == unk_18) return TRUE;
+    if (x == targetBlockX && z == targetBlockZ) return TRUE;
     return FALSE;
 }
 
@@ -10976,7 +10976,7 @@ BOOL Unk_02012164::isInBlock(Unk_02011f74_Vec *v) {
     using namespace nB;
     s32 z = v->z >> 17;
     s32 x = v->x >> 17;
-    if (x == unk_14 && z == unk_18) return TRUE;
+    if (x == targetBlockX && z == targetBlockZ) return TRUE;
     return FALSE;
 }
 
@@ -11026,33 +11026,33 @@ extern "C" void VillagerRoute_PickCoastBlock(Unk_02011f74_Pair *out, void *self,
 
 HeldToolModel *HeldToolModel::init() {
     using namespace nB;
-    unk_00 = 0xfff1;
-    _ZN22NpcHeldItemModelHandleC1Ev(&unk_04);
-    unk_00 = 0xfff1;
+    heldItem = 0xfff1;
+    _ZN22NpcHeldItemModelHandleC1Ev(&modelHandle);
+    heldItem = 0xfff1;
     return this;
 }
 
 HeldToolModel *HeldToolModel::destroy() {
     using namespace nB;
-    _ZN22NpcHeldItemModelHandleD1Ev(&unk_04);
+    _ZN22NpcHeldItemModelHandleD1Ev(&modelHandle);
     return this;
 }
 
 BOOL HeldToolModel::load(u32 a) {
     using namespace nB;
-    if (!_ZN12NpcResHandle7acquireEv(&unk_04)) return FALSE;
-    if (!_ZN16NpcResHandleView12loadHeldItemEi(&unk_04, a)) return FALSE;
-    unk_00 = 0xfff1;
+    if (!_ZN12NpcResHandle7acquireEv(&modelHandle)) return FALSE;
+    if (!_ZN16NpcResHandleView12loadHeldItemEi(&modelHandle, a)) return FALSE;
+    heldItem = 0xfff1;
     return TRUE;
 }
 
 BOOL HeldToolModel::attach(u32 a, u16 *b, u32 c, u16 d) {
     using namespace nB;
-    void *p = _ZN16NpcResHandleView16getHeldItemModelEv(&unk_04);
+    void *p = _ZN16NpcResHandleView16getHeldItemModelEv(&modelHandle);
     if (p) {
         HeldItemModel_SetItem(p, b, 0);
         _ZN11NpcAnimCtrl16playHoldItemPoseEP16Unk_02015fe0_ObjPtPvt((void *)(a + 0x334), a, b, c, d);
-        unk_00 = *b;
+        heldItem = *b;
         return TRUE;
     }
     return FALSE;
@@ -11060,13 +11060,13 @@ BOOL HeldToolModel::attach(u32 a, u16 *b, u32 c, u16 d) {
 
 void HeldToolModel::playAnim(u32 a, u32 b, u32 c) {
     using namespace nA;
-    Unk_02081d4c *r = _ZN16NpcResHandleView16getHeldItemModelEv(&unk_04);
+    Unk_02081d4c *r = _ZN16NpcResHandleView16getHeldItemModelEv(&modelHandle);
     if (r) HeldItemModel_PlayAnim(r, a, b, c);
 }
 
 void HeldToolModel::playIdleAnimFor(HeldToolModel *p, u32 a, u32 b) {
     using namespace nA;
-    u16 id = p->unk_00;
+    u16 id = p->heldItem;
     if (Unk_02011c44_InRange(id, 0x1376, 0x1376) || Unk_02011c44_InRange(id, 0x1377, 0x1377)) {
         playAnim(0, a, b);
     } else if (Unk_02011c44_InRange(id, 0x1374, 0x1374) || Unk_02011c44_InRange(id, 0x1375, 0x1375)) {
@@ -11078,113 +11078,113 @@ void HeldToolModel::playIdleAnimFor(HeldToolModel *p, u32 a, u32 b) {
 
 void HeldToolModel::playIdleAnim(u32 a, u32 b) {
     using namespace nA;
-    if (unk_00 != 0xfff1) playIdleAnimFor(this, a, b);
+    if (heldItem != 0xfff1) playIdleAnimFor(this, a, b);
 }
 
 void HeldToolModel::playWalkAnimFor(HeldToolModel *p, u32 a, u32 b) {
     using namespace nA;
-    u16 id = p->unk_00;
+    u16 id = p->heldItem;
     if (Unk_02011c44_InRange(id, 0x1376, 0x1376) || Unk_02011c44_InRange(id, 0x1377, 0x1377)) playAnim(1, a, b);
 }
 
 void HeldToolModel::playWalkAnim(u32 a, u32 b) {
     using namespace nA;
-    if (unk_00 != 0xfff1) playWalkAnimFor(this, a, b);
+    if (heldItem != 0xfff1) playWalkAnimFor(this, a, b);
 }
 
 void HeldToolModel::func_02011d6c(HeldToolModel *p, u32 a, u32 b) {
     using namespace nA;
-    u16 id = p->unk_00;
+    u16 id = p->heldItem;
     if (Unk_02011c44_InRange(id, 0x1376, 0x1376) || Unk_02011c44_InRange(id, 0x1377, 0x1377)) playAnim(0xf, a, b);
 }
 
 void HeldToolModel::func_02011d4c(u32 a, u32 b) {
     using namespace nA;
-    if (unk_00 != 0xfff1) func_02011d6c(this, a, b);
+    if (heldItem != 0xfff1) func_02011d6c(this, a, b);
 }
 
 void HeldToolModel::func_02011d14(HeldToolModel *p, u32 a, u32 b) {
     using namespace nA;
-    u16 id = p->unk_00;
+    u16 id = p->heldItem;
     if (Unk_02011c44_InRange(id, 0x1376, 0x1376) || Unk_02011c44_InRange(id, 0x1377, 0x1377)) playAnim(0x10, a, b);
 }
 
 void HeldToolModel::func_02011cf4(u32 a, u32 b) {
     using namespace nA;
-    if (unk_00 != 0xfff1) func_02011d14(this, a, b);
+    if (heldItem != 0xfff1) func_02011d14(this, a, b);
 }
 
 void HeldToolModel::func_02011cbc(HeldToolModel *p, u32 a, u32 b) {
     using namespace nA;
-    u16 id = p->unk_00;
+    u16 id = p->heldItem;
     if (Unk_02011c44_InRange(id, 0x1376, 0x1376) || Unk_02011c44_InRange(id, 0x1377, 0x1377)) playAnim(0x11, a, b);
 }
 
 void HeldToolModel::func_02011c9c(u32 a, u32 b) {
     using namespace nA;
-    if (unk_00 != 0xfff1) func_02011cbc(this, a, b);
+    if (heldItem != 0xfff1) func_02011cbc(this, a, b);
 }
 
 void HeldToolModel::func_02011c64(HeldToolModel *p, u32 a, u32 b) {
     using namespace nA;
-    u16 id = p->unk_00;
+    u16 id = p->heldItem;
     if (Unk_02011c44_InRange(id, 0x1376, 0x1376) || Unk_02011c44_InRange(id, 0x1377, 0x1377)) playAnim(0x12, a, b);
 }
 
 void HeldToolModel::func_02011c44(u32 a, u32 b) {
     using namespace nA;
-    if (unk_00 != 0xfff1) func_02011c64(this, a, b);
+    if (heldItem != 0xfff1) func_02011c64(this, a, b);
 }
 
 void HeldToolModel::release() {
-    using namespace nA; _ZN12NpcResHandle7releaseEv(&unk_04); }
+    using namespace nA; _ZN12NpcResHandle7releaseEv(&modelHandle); }
 
 void HeldToolModel::update(Unk_02006d14 *p) {
     using namespace nA;
-    Unk_02081d4c *r = _ZN16NpcResHandleView16getHeldItemModelEv(&unk_04);
+    Unk_02081d4c *r = _ZN16NpcResHandleView16getHeldItemModelEv(&modelHandle);
     if (r) {
         u32 v = p->modelAnimFrameStep;
         Unk_0205dfa4_9c &s = *HeldItemModel_GetModel(r);
-        s.unk_10 = v;
+        s.frameStep = v;
         HeldItemModel_Update(r);
     }
 }
 
 void HeldToolModel::draw(Unk_02006d14 *p) {
     using namespace nA;
-    if (unk_3c != 0) {
-        Unk_02081d4c *r = _ZN16NpcResHandleView16getHeldItemModelEv(&unk_04);
+    if (visible != 0) {
+        Unk_02081d4c *r = _ZN16NpcResHandleView16getHeldItemModelEv(&modelHandle);
         if (p) {
             MsgRequest &s = *p;
-            Model_GetJointWorldMtx(&s, unk_0c, 0xe);
+            Model_GetJointWorldMtx(&s, handMtx, 0xe);
         }
-        if (r) HeldItemModel_Draw(r, unk_0c);
+        if (r) HeldItemModel_Draw(r, handMtx);
     }
 }
 
 u32 HeldToolModel::getAnimSpeed() {
     using namespace nA;
-    Unk_02081d4c *r = _ZN16NpcResHandleView16getHeldItemModelEv(&unk_04);
-    if (r) return r->unk_04;
+    Unk_02081d4c *r = _ZN16NpcResHandleView16getHeldItemModelEv(&modelHandle);
+    if (r) return r->scale;
     return 0;
 }
 
 void HeldToolModel::setAnimSpeed(u32 v) {
     using namespace nA;
-    Unk_02081d4c *r = _ZN16NpcResHandleView16getHeldItemModelEv(&unk_04);
-    if (r) r->unk_04 = v;
+    Unk_02081d4c *r = _ZN16NpcResHandleView16getHeldItemModelEv(&modelHandle);
+    if (r) r->scale = v;
 }
 
 Unk_0205dfa4 *HeldToolModel::func_02011b7c() {
     using namespace nA;
-    Unk_02081d4c *r = _ZN16NpcResHandleView16getHeldItemModelEv(&unk_04);
+    Unk_02081d4c *r = _ZN16NpcResHandleView16getHeldItemModelEv(&modelHandle);
     if (r) return HeldItemModel_GetModel(r);
     return 0;
 }
 
 void HeldToolModel::func_02011b60(u32 v) {
     using namespace nA;
-    Unk_02081d4c *r = _ZN16NpcResHandleView16getHeldItemModelEv(&unk_04);
+    Unk_02081d4c *r = _ZN16NpcResHandleView16getHeldItemModelEv(&modelHandle);
     if (r) HeldItemModel_SetAnimSpeed(r, v);
 }
 

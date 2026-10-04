@@ -518,12 +518,12 @@ public:
     void loadAll();
     BOOL open(void *path, s32 size, s32 count);
 
-    /* 0x00 */ Unk_0206d8b8_Pair unk_00;
-    /* 0x08 */ s32 unk_08;
-    /* 0x0c */ s32 unk_0c;
-    /* 0x10 */ u8 *unk_10;
-    /* 0x14 */ s32 unk_14;
-    /* 0x18 */ u8 *unk_18;
+    /* 0x00 */ Unk_0206d8b8_Pair fileId;
+    /* 0x08 */ s32 recordSize;
+    /* 0x0c */ s32 recordCount;
+    /* 0x10 */ u8 *data;
+    /* 0x14 */ s32 pageIndex;
+    /* 0x18 */ u8 *pageBuf;
 };
 
 class InfoTableSet {
@@ -536,9 +536,9 @@ public:
     void close();
     BOOL open(void *a, s32 n0, void *b, s32 n1, void *c, s32 n2, s32 count);
 
-    /* 0x00 */ RecordFile unk_00;
-    /* 0x1c */ RecordFile unk_1c;
-    /* 0x38 */ RecordFile unk_38;
+    /* 0x00 */ RecordFile alwaysTable;
+    /* 0x1c */ RecordFile indoorTable;
+    /* 0x38 */ RecordFile dmaTable;
 };
 extern "C" void Fatal_ExceptionCallback(void *arg, void *p);
 extern "C" void Main_InitNop(void);
@@ -555,12 +555,12 @@ extern "C" u32 Main_InitDwc(void);
 extern "C" u8 Main_TakeDwcInitResult(void);
 
 RecordFile::RecordFile() {
-    unk_00.a = 0;
-    unk_14 = -1;
-    unk_0c = 0;
-    unk_10 = 0;
-    unk_18 = 0;
-    unk_08 = 0;
+    fileId.a = 0;
+    pageIndex = -1;
+    recordCount = 0;
+    data = 0;
+    pageBuf = 0;
+    recordSize = 0;
 }
 
 RecordFile::~RecordFile() {
@@ -568,57 +568,57 @@ RecordFile::~RecordFile() {
 }
 
 BOOL RecordFile::open(void *path, s32 size, s32 count) {
-    unk_08 = size;
-    unk_0c = count;
+    recordSize = size;
+    recordCount = count;
     FS_ConvertPathToFileID(this, path);
-    unk_18 = (u8 *)Mem_Alloc(size << 3);
+    pageBuf = (u8 *)Mem_Alloc(size << 3);
     return TRUE;
 }
 
 void RecordFile::loadAll() {
-    u32 size = unk_08 * unk_0c;
-    if (unk_10 == 0) {
-        unk_10 = (u8 *)Mem_Alloc(size);
+    u32 size = recordSize * recordCount;
+    if (data == 0) {
+        data = (u8 *)Mem_Alloc(size);
     }
     Backup_GetStatus(gBackup);
-    File_ReadRangeById(unk_00, unk_10, size, 0);
+    File_ReadRangeById(fileId, data, size, 0);
 }
 
 void RecordFile::freeAll() {
-    if (unk_10 != 0) {
-        Mem_Free(unk_10);
-        unk_10 = 0;
+    if (data != 0) {
+        Mem_Free(data);
+        data = 0;
     }
 }
 
 void RecordFile::close() {
-    unk_00.a = 0;
-    unk_14 = -1;
-    unk_0c = 0;
-    unk_08 = 0;
-    if (unk_10 != 0) {
-        Mem_Free(unk_10);
-        unk_10 = 0;
+    fileId.a = 0;
+    pageIndex = -1;
+    recordCount = 0;
+    recordSize = 0;
+    if (data != 0) {
+        Mem_Free(data);
+        data = 0;
     }
-    if (unk_18 != 0) {
-        Mem_Free(unk_18);
-        unk_18 = 0;
+    if (pageBuf != 0) {
+        Mem_Free(pageBuf);
+        pageBuf = 0;
     }
 }
 
 u8 *RecordFile::getRecord(u32 idx) {
-    if (unk_10 != 0) {
-        return unk_10 + unk_08 * idx;
+    if (data != 0) {
+        return data + recordSize * idx;
     }
     u32 blk = idx >> 3;
-    if (unk_14 == blk) {
-        return unk_18 + unk_08 * (idx & 7);
+    if (pageIndex == blk) {
+        return pageBuf + recordSize * (idx & 7);
     }
-    if (unk_18 != 0) {
+    if (pageBuf != 0) {
         loadPage(idx);
-        u32 off = unk_08 * (idx & 7);
-        unk_14 = blk;
-        return unk_18 + off;
+        u32 off = recordSize * (idx & 7);
+        pageIndex = blk;
+        return pageBuf + off;
     }
     return 0;
 }
@@ -628,49 +628,49 @@ void RecordFile::loadPage(u32 idx) {
     u8 file[0x4c];
     Backup_GetStatus(gBackup);
     FS_InitFile(file);
-    if (FS_OpenFileFast(file, unk_00)) {
-        u32 sz = unk_08 << 3;
-        File_ReadRange(file, unk_18, sz, blk * sz);
+    if (FS_OpenFileFast(file, fileId)) {
+        u32 sz = recordSize << 3;
+        File_ReadRange(file, pageBuf, sz, blk * sz);
         FS_CloseFile(file);
     }
 }
 
 BOOL InfoTableSet::open(void *a, s32 n0, void *b, s32 n1, void *c, s32 n2, s32 count) {
-    unk_00.open(a, n0, count);
-    unk_1c.open(b, n1, count);
-    unk_38.open(c, n2, count);
-    unk_00.loadAll();
+    alwaysTable.open(a, n0, count);
+    indoorTable.open(b, n1, count);
+    dmaTable.open(c, n2, count);
+    alwaysTable.loadAll();
     return TRUE;
 }
 
 void InfoTableSet::close() {
-    unk_00.close();
-    unk_1c.close();
-    unk_38.close();
+    alwaysTable.close();
+    indoorTable.close();
+    dmaTable.close();
 }
 
 BOOL InfoTableSet::loadIndoor(s32 v) {
     if (v == 0) {
-        unk_1c.loadAll();
+        indoorTable.loadAll();
     }
     return TRUE;
 }
 
 BOOL InfoTableSet::freeIndoor() {
-    unk_1c.freeAll();
+    indoorTable.freeAll();
     return TRUE;
 }
 
 RecordFile *InfoTableSet::getAlways() {
-    return &unk_00;
+    return &alwaysTable;
 }
 
 RecordFile *InfoTableSet::getIndoor() {
-    return &unk_1c;
+    return &indoorTable;
 }
 
 RecordFile *InfoTableSet::getDma() {
-    return &unk_38;
+    return &dmaTable;
 }
 
 extern "C" void Fatal_ExceptionCallback(void *arg, void *p) {

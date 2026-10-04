@@ -167,28 +167,28 @@ public:
     /* 0x256 */ u8 unk_256;
     /* 0x257 */ u8 moveSpeed;
     /* 0x258 */ u8 pad_258[0x268 - 0x258];
-    /* 0x268 */ s32 unk_268;
-    /* 0x26c */ s32 unk_26c;
-    /* 0x270 */ s32 unk_270;
+    /* 0x268 */ s32 radius;
+    /* 0x26c */ s32 collisionRadius;
+    /* 0x270 */ s32 collisionState;
     /* 0x274 */ u8 pad_274[8];
     /* 0x27c */ s16 unk_27c[2];
     /* 0x280 */ u8 unk_280;
     /* 0x281 */ u8 pad_281[0x2ec - 0x281];
-    /* 0x2ec */ s32 unk_2ec;
-    /* 0x2f0 */ s32 unk_2f0;
+    /* 0x2ec */ s32 rollVelX;
+    /* 0x2f0 */ s32 rollVelZ;
     /* 0x2f4 */ u8 pad_2f4[0x304 - 0x2f4];
     /* 0x304 */ u8 unk_304[0x324 - 0x304];
-    /* 0x324 */ u8 unk_324[0x368 - 0x324];
+    /* 0x324 */ u8 seEmitter[0x368 - 0x324];
     /* 0x368 */ s32 unk_368;
     /* 0x36c */ s32 unk_36c;
     /* 0x370 */ u8 pad_370[4];
     /* 0x374 */ union {
-        u16 unk_374;
+        u16 snowballFlags;
         Unk_ov068_02268214_Flags fl_374;
     };
     /* 0x376 */ u8 pad_376[0x398 - 0x376];
-    /* 0x398 */ s32 unk_398;
-    /* 0x39c */ s32 unk_39c;
+    /* 0x398 */ s32 snowballState;
+    /* 0x39c */ s32 talkAct;
 
     void antsAppear();
     void insectFleeFrom(s32 *p);

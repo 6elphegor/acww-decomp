@@ -5,37 +5,37 @@ typedef volatile u32 vu32;
 
 struct Unk_02000fc0_Col {
     u16 unk_00;
-    u16 unk_02;
+    u16 charBase;
 };
 
 struct Unk_02000fc0_Node {
     u8 pad_00[0x68];
-    Unk_02000fc0_Node *unk_68;
-    u32 unk_6c;
+    Unk_02000fc0_Node *next;
+    u32 id;
 };
 
 struct Unk_02000fc0_Cfg {
     u8 pad_00[0x0c];
-    u16 unk_0c;
+    u16 profile;
 };
 
 struct Unk_02000fc0_Ptr {
     u8 pad_00[8];
-    Unk_02000fc0_Cfg *unk_08;
+    Unk_02000fc0_Cfg *owner;
 };
 
 struct Unk_02000fc0_Ctx {
     u8 pad_00[0x38];
-    u32 unk_38;
+    u32 sp;
 };
 
 struct Unk_02000fc0_Thr {
     u8 pad_00[0x6c];
-    u32 unk_6c;
+    u32 id;
     u8 pad_70[0x20];
-    u32 unk_90;
-    u32 unk_94;
-    u32 unk_98;
+    u32 stackTop;
+    u32 stackBottom;
+    u32 stackWarningOffset;
 };
 
 extern "C" {
@@ -276,46 +276,46 @@ extern "C" {
 u32 func_02132ef8(u64 a, u64 b);
 }
 
-struct Unk_0200153c {
-    s32 unk_00, unk_04, unk_08, unk_0c;
-    u8 unk_10, unk_11;
-    u16 unk_12;
-    u8 unk_14, unk_15, unk_16, unk_17, unk_18, unk_19, unk_1a, unk_1b, unk_1c, unk_1d, unk_1e, unk_1f;
+struct Gfx2dDispCtrl {
+    s32 subBg3CenterX, subBg3CenterY, subBg3OffsetX, subBg3OffsetY;
+    u8 affineMask, offsetDirty;
+    u16 windowDirty;
+    u8 mainPlanes, subPlanes, mainBgMode, subBgMode, mainWindows, subWindows, mainWinOutPlanes, subWinOutPlanes, mainObjWinPlanes, subObjWinPlanes, mainWin0Left, mainWin0Top;
 };
 
-struct Unk_02001608 {
-    u8 unk_00, unk_01, unk_02, unk_03, unk_04, unk_05, unk_06, unk_07, unk_08, unk_09, unk_0a, unk_0b, unk_0c, unk_0d,
-        unk_0e, unk_0f, unk_10, unk_11, unk_12, unk_13;
-    s8 unk_14;
-    u8 unk_15;
+struct Gfx2dWindowBlend {
+    u8 mainWin0Right, mainWin0Bottom, mainWin0Planes, mainWin1Left, mainWin1Top, mainWin1Right, mainWin1Bottom, mainWin1Planes, subWin0Left, subWin0Top, subWin0Right, subWin0Bottom, subWin0Planes, subWin1Left,
+        subWin1Top, subWin1Right, subWin1Bottom, subWin1Planes, blendRequest, blendPlane1;
+    s8 blendPlane2;
+    u8 blendEv1;
     u8 pad_16[2];
 };
 
-struct Unk_02001804 {
-    u16 unk_00, unk_02, unk_04, unk_06;
-    s32 unk_08[4];
-    s32 unk_18, unk_1c, unk_20, unk_24;
-    s32 unk_28[4];
-    s32 unk_38, unk_3c, unk_40, unk_44;
-    u16 unk_48, unk_4a, unk_4c, unk_4e;
-    s32 unk_50[4];
-    s32 unk_60, unk_64, unk_68, unk_6c;
+struct Gfx2dBgScroll {
+    u16 mainBg0OffsetX, mainBg0OffsetY, mainBg1OffsetX, mainBg1OffsetY;
+    s32 mainBg2Mtx[4];
+    s32 mainBg2CenterX, mainBg2CenterY, mainBg2OffsetX, mainBg2OffsetY;
+    s32 mainBg3Mtx[4];
+    s32 mainBg3CenterX, mainBg3CenterY, mainBg3OffsetX, mainBg3OffsetY;
+    u16 subBg0OffsetX, subBg0OffsetY, subBg1OffsetX, subBg1OffsetY;
+    s32 subBg2Mtx[4];
+    s32 subBg2CenterX, subBg2CenterY, subBg2OffsetX, subBg2OffsetY;
 };
 
 struct Unk_020017a4 {
     u16 unk_00, unk_02, unk_04, unk_06, unk_08, unk_0a, unk_0c, unk_0e;
 };
 
-struct Unk_02001844 {
-    u8 unk_00, unk_01, unk_02, unk_03, unk_04;
+struct Gfx2dWindowRect {
+    u8 left, top, right, bottom, planes;
 };
 
-struct Unk_02001858 {
-    s32 unk_00, unk_04, unk_08, unk_0c, unk_10, unk_14, unk_18, unk_1c;
+struct Gfx2dAffine {
+    s32 mtx00, mtx01, mtx10, mtx11, centerX, centerY, offsetX, offsetY;
 };
 
-struct Unk_02001874 {
-    u16 unk_00, unk_02;
+struct Gfx2dOffset {
+    u16 x, y;
 };
 
 extern "C" {
@@ -435,10 +435,10 @@ void GXS_LoadOBJPltt(void *a, u32 b, u32 c);
 }
 
 u8 sGfx2dBackdropColor[4];
-Unk_02001804 sGfx2dBgScroll;
+Gfx2dBgScroll sGfx2dBgScroll;
 u8 sGfx2dSubBg3Mtx[0x10];
-Unk_0200153c sGfx2dDispCtrl;
-Unk_02001608 sGfx2dWindowBlend;
+Gfx2dDispCtrl sGfx2dDispCtrl;
+Gfx2dWindowBlend sGfx2dWindowBlend;
 
 // prototypes
 extern "C" s32 Gfx2d_GetLayerBgIndex(u32 n);
@@ -469,9 +469,9 @@ extern "C" void Gfx2d_ResetState();
 extern "C" void Gfx2d_BeginFrame();
 extern "C" void Gfx2d_ApplyDisplayControl();
 extern "C" void Gfx2d_FlushRegisters();
-extern "C" void Gfx2d_InitBgOffset(Unk_02001874* p);
-extern "C" void Gfx2d_InitBgAffine(Unk_02001858* p);
-extern "C" void Gfx2d_InitWindowRect(Unk_02001844* p);
+extern "C" void Gfx2d_InitBgOffset(Gfx2dOffset* p);
+extern "C" void Gfx2d_InitBgAffine(Gfx2dAffine* p);
+extern "C" void Gfx2d_InitWindowRect(Gfx2dWindowRect* p);
 extern "C" void Gfx2d_SetMainBg1Offset(u32 a, u32 b);
 extern "C" void Gfx2d_SetMainBg2Offset(s32 a, s32 b);
 extern "C" void Gfx2d_SetMainBg3Offset(s32 a, s32 b);
@@ -834,33 +834,33 @@ extern "C" void Gfx2d_LoadBackdropColor(void) {
 }
 
 extern "C" void Gfx2d_ResetState() {
-    sGfx2dDispCtrl.unk_14 = 0;
-    sGfx2dDispCtrl.unk_15 = 0;
-    sGfx2dDispCtrl.unk_18 = 0;
-    sGfx2dDispCtrl.unk_19 = 0;
-    sGfx2dDispCtrl.unk_1a = 0;
-    sGfx2dDispCtrl.unk_1b = 0;
-    sGfx2dDispCtrl.unk_1c = 0;
-    sGfx2dDispCtrl.unk_1d = 0;
-    sGfx2dDispCtrl.unk_16 = 0;
-    sGfx2dDispCtrl.unk_17 = 1;
-    Gfx2d_InitBgOffset((Unk_02001874*)&sGfx2dBgScroll);
-    Gfx2d_InitBgOffset((Unk_02001874 *)&sGfx2dBgScroll.unk_04);
-    Gfx2d_InitBgAffine((Unk_02001858 *)&sGfx2dBgScroll.unk_08);
-    Gfx2d_InitBgAffine((Unk_02001858 *)&sGfx2dBgScroll.unk_28);
-    Gfx2d_InitBgOffset((Unk_02001874 *)&sGfx2dBgScroll.unk_48);
-    Gfx2d_InitBgOffset((Unk_02001874 *)&sGfx2dBgScroll.unk_4c);
-    Gfx2d_InitBgAffine((Unk_02001858 *)&sGfx2dBgScroll.unk_50);
-    Gfx2d_InitBgAffine((Unk_02001858 *)sGfx2dSubBg3Mtx);
-    Gfx2d_InitWindowRect((Unk_02001844 *)&sGfx2dDispCtrl.unk_1e);
-    Gfx2d_InitWindowRect((Unk_02001844 *)&sGfx2dWindowBlend.unk_03);
-    Gfx2d_InitWindowRect((Unk_02001844 *)&sGfx2dWindowBlend.unk_08);
-    Gfx2d_InitWindowRect((Unk_02001844 *)&sGfx2dWindowBlend.unk_0d);
-    sGfx2dDispCtrl.unk_10 = 0;
-    sGfx2dDispCtrl.unk_11 = 0xff;
-    sGfx2dDispCtrl.unk_12 = 0xff;
-    sGfx2dWindowBlend.unk_12 = 0;
-    sGfx2dWindowBlend.unk_14 = 0;
+    sGfx2dDispCtrl.mainPlanes = 0;
+    sGfx2dDispCtrl.subPlanes = 0;
+    sGfx2dDispCtrl.mainWindows = 0;
+    sGfx2dDispCtrl.subWindows = 0;
+    sGfx2dDispCtrl.mainWinOutPlanes = 0;
+    sGfx2dDispCtrl.subWinOutPlanes = 0;
+    sGfx2dDispCtrl.mainObjWinPlanes = 0;
+    sGfx2dDispCtrl.subObjWinPlanes = 0;
+    sGfx2dDispCtrl.mainBgMode = 0;
+    sGfx2dDispCtrl.subBgMode = 1;
+    Gfx2d_InitBgOffset((Gfx2dOffset*)&sGfx2dBgScroll);
+    Gfx2d_InitBgOffset((Gfx2dOffset *)&sGfx2dBgScroll.mainBg1OffsetX);
+    Gfx2d_InitBgAffine((Gfx2dAffine *)&sGfx2dBgScroll.mainBg2Mtx);
+    Gfx2d_InitBgAffine((Gfx2dAffine *)&sGfx2dBgScroll.mainBg3Mtx);
+    Gfx2d_InitBgOffset((Gfx2dOffset *)&sGfx2dBgScroll.subBg0OffsetX);
+    Gfx2d_InitBgOffset((Gfx2dOffset *)&sGfx2dBgScroll.subBg1OffsetX);
+    Gfx2d_InitBgAffine((Gfx2dAffine *)&sGfx2dBgScroll.subBg2Mtx);
+    Gfx2d_InitBgAffine((Gfx2dAffine *)sGfx2dSubBg3Mtx);
+    Gfx2d_InitWindowRect((Gfx2dWindowRect *)&sGfx2dDispCtrl.mainWin0Left);
+    Gfx2d_InitWindowRect((Gfx2dWindowRect *)&sGfx2dWindowBlend.mainWin1Left);
+    Gfx2d_InitWindowRect((Gfx2dWindowRect *)&sGfx2dWindowBlend.subWin0Left);
+    Gfx2d_InitWindowRect((Gfx2dWindowRect *)&sGfx2dWindowBlend.subWin1Left);
+    sGfx2dDispCtrl.affineMask = 0;
+    sGfx2dDispCtrl.offsetDirty = 0xff;
+    sGfx2dDispCtrl.windowDirty = 0xff;
+    sGfx2dWindowBlend.blendRequest = 0;
+    sGfx2dWindowBlend.blendPlane2 = 0;
     Gfx2d_SetSubBgModeState(0);
     Gfx2d_SetMainBgModeState(1);
 }
@@ -868,219 +868,219 @@ extern "C" void Gfx2d_ResetState() {
 extern "C" void Gfx2d_BeginFrame() {}
 
 extern "C" void Gfx2d_ApplyDisplayControl() {
-    GX_SetGraphicsMode(1, sGfx2dDispCtrl.unk_16, 1);
-    GXS_SetGraphicsMode(sGfx2dDispCtrl.unk_17);
-    *(volatile u32*)0x4000000 = (*(volatile u32*)0x4000000 & 0xffffe0ff) | (sGfx2dDispCtrl.unk_14 << 8);
-    *(volatile u32*)0x4001000 = (*(volatile u32*)0x4001000 & 0xffffe0ff) | (sGfx2dDispCtrl.unk_15 << 8);
-    *(volatile u32*)0x4000000 = (*(volatile u32*)0x4000000 & 0xffff1fff) | (sGfx2dDispCtrl.unk_18 << 13);
-    *(volatile u32*)0x4001000 = (*(volatile u32*)0x4001000 & 0xffff1fff) | (sGfx2dDispCtrl.unk_19 << 13);
-    *(volatile u16*)0x400004a = (*(volatile u16*)0x400004a & ~0x3f) | sGfx2dDispCtrl.unk_1a | 0x20;
-    *(volatile u16*)0x400104a = (*(volatile u16*)0x400104a & ~0x3f) | sGfx2dDispCtrl.unk_1b | 0x20;
-    *(volatile u16*)0x400004a = (*(volatile u16*)0x400004a & 0xffffc0ff) | (sGfx2dDispCtrl.unk_1c << 8);
-    *(volatile u16*)0x400104a = (*(volatile u16*)0x400104a & 0xffffc0ff) | (sGfx2dDispCtrl.unk_1d << 8);
+    GX_SetGraphicsMode(1, sGfx2dDispCtrl.mainBgMode, 1);
+    GXS_SetGraphicsMode(sGfx2dDispCtrl.subBgMode);
+    *(volatile u32*)0x4000000 = (*(volatile u32*)0x4000000 & 0xffffe0ff) | (sGfx2dDispCtrl.mainPlanes << 8);
+    *(volatile u32*)0x4001000 = (*(volatile u32*)0x4001000 & 0xffffe0ff) | (sGfx2dDispCtrl.subPlanes << 8);
+    *(volatile u32*)0x4000000 = (*(volatile u32*)0x4000000 & 0xffff1fff) | (sGfx2dDispCtrl.mainWindows << 13);
+    *(volatile u32*)0x4001000 = (*(volatile u32*)0x4001000 & 0xffff1fff) | (sGfx2dDispCtrl.subWindows << 13);
+    *(volatile u16*)0x400004a = (*(volatile u16*)0x400004a & ~0x3f) | sGfx2dDispCtrl.mainWinOutPlanes | 0x20;
+    *(volatile u16*)0x400104a = (*(volatile u16*)0x400104a & ~0x3f) | sGfx2dDispCtrl.subWinOutPlanes | 0x20;
+    *(volatile u16*)0x400004a = (*(volatile u16*)0x400004a & 0xffffc0ff) | (sGfx2dDispCtrl.mainObjWinPlanes << 8);
+    *(volatile u16*)0x400104a = (*(volatile u16*)0x400104a & 0xffffc0ff) | (sGfx2dDispCtrl.subObjWinPlanes << 8);
 }
 
 extern "C" void Gfx2d_FlushRegisters() {
-    if (sGfx2dDispCtrl.unk_11 != 0) {
-        if (sGfx2dDispCtrl.unk_11 & 1) {
+    if (sGfx2dDispCtrl.offsetDirty != 0) {
+        if (sGfx2dDispCtrl.offsetDirty & 1) {
             if ((*(volatile u32*)0x4000000 & 8) == 0) {
-                *(volatile u32*)0x4000010 = (sGfx2dBgScroll.unk_00 & 0x1ff) | ((sGfx2dBgScroll.unk_02 << 16) & 0x1ff0000);
+                *(volatile u32*)0x4000010 = (sGfx2dBgScroll.mainBg0OffsetX & 0x1ff) | ((sGfx2dBgScroll.mainBg0OffsetY << 16) & 0x1ff0000);
             } else {
-                G3X_SetHOffset(sGfx2dBgScroll.unk_00);
+                G3X_SetHOffset(sGfx2dBgScroll.mainBg0OffsetX);
             }
         }
-        if (sGfx2dDispCtrl.unk_11 & 2) {
-            *(volatile u32*)0x4000014 = (sGfx2dBgScroll.unk_04 & 0x1ff) | ((sGfx2dBgScroll.unk_06 << 16) & 0x1ff0000);
+        if (sGfx2dDispCtrl.offsetDirty & 2) {
+            *(volatile u32*)0x4000014 = (sGfx2dBgScroll.mainBg1OffsetX & 0x1ff) | ((sGfx2dBgScroll.mainBg1OffsetY << 16) & 0x1ff0000);
         }
-        if (sGfx2dDispCtrl.unk_11 & 4) {
-            if (sGfx2dDispCtrl.unk_10 & 1) {
-                G2x_SetBGyAffine_(0x4000020, (Unk_02001858 *)&sGfx2dBgScroll.unk_08, sGfx2dBgScroll.unk_18, sGfx2dBgScroll.unk_1c,
-                              sGfx2dBgScroll.unk_20, sGfx2dBgScroll.unk_24);
+        if (sGfx2dDispCtrl.offsetDirty & 4) {
+            if (sGfx2dDispCtrl.affineMask & 1) {
+                G2x_SetBGyAffine_(0x4000020, (Gfx2dAffine *)&sGfx2dBgScroll.mainBg2Mtx, sGfx2dBgScroll.mainBg2CenterX, sGfx2dBgScroll.mainBg2CenterY,
+                              sGfx2dBgScroll.mainBg2OffsetX, sGfx2dBgScroll.mainBg2OffsetY);
             } else {
-                *(volatile u32*)0x4000018 = (sGfx2dBgScroll.unk_20 & 0x1ff) | ((sGfx2dBgScroll.unk_24 << 16) & 0x1ff0000);
+                *(volatile u32*)0x4000018 = (sGfx2dBgScroll.mainBg2OffsetX & 0x1ff) | ((sGfx2dBgScroll.mainBg2OffsetY << 16) & 0x1ff0000);
             }
         }
-        if (sGfx2dDispCtrl.unk_11 & 8) {
-            if (sGfx2dDispCtrl.unk_10 & 2) {
-                G2x_SetBGyAffine_(0x4000030, (Unk_02001858 *)&sGfx2dBgScroll.unk_28, sGfx2dBgScroll.unk_38, sGfx2dBgScroll.unk_3c,
-                              sGfx2dBgScroll.unk_40, sGfx2dBgScroll.unk_44);
+        if (sGfx2dDispCtrl.offsetDirty & 8) {
+            if (sGfx2dDispCtrl.affineMask & 2) {
+                G2x_SetBGyAffine_(0x4000030, (Gfx2dAffine *)&sGfx2dBgScroll.mainBg3Mtx, sGfx2dBgScroll.mainBg3CenterX, sGfx2dBgScroll.mainBg3CenterY,
+                              sGfx2dBgScroll.mainBg3OffsetX, sGfx2dBgScroll.mainBg3OffsetY);
             } else {
-                *(volatile u32*)0x400001c = (sGfx2dBgScroll.unk_40 & 0x1ff) | ((sGfx2dBgScroll.unk_44 << 16) & 0x1ff0000);
+                *(volatile u32*)0x400001c = (sGfx2dBgScroll.mainBg3OffsetX & 0x1ff) | ((sGfx2dBgScroll.mainBg3OffsetY << 16) & 0x1ff0000);
             }
         }
-        if (sGfx2dDispCtrl.unk_11 & 0x10) {
-            *(volatile u32*)0x4001010 = (sGfx2dBgScroll.unk_48 & 0x1ff) | ((sGfx2dBgScroll.unk_4a << 16) & 0x1ff0000);
+        if (sGfx2dDispCtrl.offsetDirty & 0x10) {
+            *(volatile u32*)0x4001010 = (sGfx2dBgScroll.subBg0OffsetX & 0x1ff) | ((sGfx2dBgScroll.subBg0OffsetY << 16) & 0x1ff0000);
         }
-        if (sGfx2dDispCtrl.unk_11 & 0x20) {
-            *(volatile u32*)0x4001014 = (sGfx2dBgScroll.unk_4c & 0x1ff) | ((sGfx2dBgScroll.unk_4e << 16) & 0x1ff0000);
+        if (sGfx2dDispCtrl.offsetDirty & 0x20) {
+            *(volatile u32*)0x4001014 = (sGfx2dBgScroll.subBg1OffsetX & 0x1ff) | ((sGfx2dBgScroll.subBg1OffsetY << 16) & 0x1ff0000);
         }
-        if (sGfx2dDispCtrl.unk_11 & 0x40) {
-            if (sGfx2dDispCtrl.unk_10 & 4) {
-                G2x_SetBGyAffine_(0x4001020, (Unk_02001858 *)&sGfx2dBgScroll.unk_50, sGfx2dBgScroll.unk_60, sGfx2dBgScroll.unk_64,
-                              sGfx2dBgScroll.unk_68, sGfx2dBgScroll.unk_6c);
+        if (sGfx2dDispCtrl.offsetDirty & 0x40) {
+            if (sGfx2dDispCtrl.affineMask & 4) {
+                G2x_SetBGyAffine_(0x4001020, (Gfx2dAffine *)&sGfx2dBgScroll.subBg2Mtx, sGfx2dBgScroll.subBg2CenterX, sGfx2dBgScroll.subBg2CenterY,
+                              sGfx2dBgScroll.subBg2OffsetX, sGfx2dBgScroll.subBg2OffsetY);
             } else {
-                *(volatile u32*)0x4001018 = (sGfx2dBgScroll.unk_68 & 0x1ff) | ((sGfx2dBgScroll.unk_6c << 16) & 0x1ff0000);
+                *(volatile u32*)0x4001018 = (sGfx2dBgScroll.subBg2OffsetX & 0x1ff) | ((sGfx2dBgScroll.subBg2OffsetY << 16) & 0x1ff0000);
             }
         }
-        if (sGfx2dDispCtrl.unk_11 & 0x80) {
-            if (sGfx2dDispCtrl.unk_10 & 8) {
-                G2x_SetBGyAffine_(0x4001030, (Unk_02001858 *)sGfx2dSubBg3Mtx, sGfx2dDispCtrl.unk_00, sGfx2dDispCtrl.unk_04,
-                              sGfx2dDispCtrl.unk_08, sGfx2dDispCtrl.unk_0c);
+        if (sGfx2dDispCtrl.offsetDirty & 0x80) {
+            if (sGfx2dDispCtrl.affineMask & 8) {
+                G2x_SetBGyAffine_(0x4001030, (Gfx2dAffine *)sGfx2dSubBg3Mtx, sGfx2dDispCtrl.subBg3CenterX, sGfx2dDispCtrl.subBg3CenterY,
+                              sGfx2dDispCtrl.subBg3OffsetX, sGfx2dDispCtrl.subBg3OffsetY);
             } else {
-                *(volatile u32*)0x400101c = (sGfx2dDispCtrl.unk_08 & 0x1ff) | ((sGfx2dDispCtrl.unk_0c << 16) & 0x1ff0000);
+                *(volatile u32*)0x400101c = (sGfx2dDispCtrl.subBg3OffsetX & 0x1ff) | ((sGfx2dDispCtrl.subBg3OffsetY << 16) & 0x1ff0000);
             }
         }
-        sGfx2dDispCtrl.unk_11 = 0;
+        sGfx2dDispCtrl.offsetDirty = 0;
     }
-    if (sGfx2dDispCtrl.unk_12 != 0) {
-        if (sGfx2dDispCtrl.unk_12 & 0x1) {
-            *(volatile u16*)0x4000048 = (*(volatile u16*)0x4000048 & ~0x3f) | sGfx2dWindowBlend.unk_02 | 0x20;
+    if (sGfx2dDispCtrl.windowDirty != 0) {
+        if (sGfx2dDispCtrl.windowDirty & 0x1) {
+            *(volatile u16*)0x4000048 = (*(volatile u16*)0x4000048 & ~0x3f) | sGfx2dWindowBlend.mainWin0Planes | 0x20;
         }
-        if (sGfx2dDispCtrl.unk_12 & 0x2) {
-            *(volatile u16*)0x4000048 = (*(volatile u16*)0x4000048 & 0xffffc0ff) | (sGfx2dWindowBlend.unk_07 << 8) | 0x2000;
+        if (sGfx2dDispCtrl.windowDirty & 0x2) {
+            *(volatile u16*)0x4000048 = (*(volatile u16*)0x4000048 & 0xffffc0ff) | (sGfx2dWindowBlend.mainWin1Planes << 8) | 0x2000;
         }
-        if (sGfx2dDispCtrl.unk_12 & 0x4) {
-            *(volatile u16*)0x4001048 = (*(volatile u16*)0x4001048 & ~0x3f) | sGfx2dWindowBlend.unk_0c | 0x20;
+        if (sGfx2dDispCtrl.windowDirty & 0x4) {
+            *(volatile u16*)0x4001048 = (*(volatile u16*)0x4001048 & ~0x3f) | sGfx2dWindowBlend.subWin0Planes | 0x20;
         }
-        if (sGfx2dDispCtrl.unk_12 & 0x100) {
-            *(volatile u16*)0x4001048 = (*(volatile u16*)0x4001048 & ~0x3f) | sGfx2dWindowBlend.unk_0c;
+        if (sGfx2dDispCtrl.windowDirty & 0x100) {
+            *(volatile u16*)0x4001048 = (*(volatile u16*)0x4001048 & ~0x3f) | sGfx2dWindowBlend.subWin0Planes;
         }
-        if (sGfx2dDispCtrl.unk_12 & 0x8) {
-            *(volatile u16*)0x4001048 = (*(volatile u16*)0x4001048 & 0xffffc0ff) | (sGfx2dWindowBlend.unk_11 << 8) | 0x2000;
+        if (sGfx2dDispCtrl.windowDirty & 0x8) {
+            *(volatile u16*)0x4001048 = (*(volatile u16*)0x4001048 & 0xffffc0ff) | (sGfx2dWindowBlend.subWin1Planes << 8) | 0x2000;
         }
-        if (sGfx2dDispCtrl.unk_12 & 0x200) {
-            *(volatile u16*)0x4001048 = (*(volatile u16*)0x4001048 & 0xffffc0ff) | (sGfx2dWindowBlend.unk_11 << 8);
+        if (sGfx2dDispCtrl.windowDirty & 0x200) {
+            *(volatile u16*)0x4001048 = (*(volatile u16*)0x4001048 & 0xffffc0ff) | (sGfx2dWindowBlend.subWin1Planes << 8);
         }
-        if (sGfx2dDispCtrl.unk_12 & 0x10) {
-            u32 d = sGfx2dWindowBlend.unk_01;
-            u32 b = sGfx2dDispCtrl.unk_1f;
-            u32 a = sGfx2dDispCtrl.unk_1e;
-            *(volatile u16*)0x4000040 = ((a << 8) & 0xff00) | (sGfx2dWindowBlend.unk_00 & 0xff);
+        if (sGfx2dDispCtrl.windowDirty & 0x10) {
+            u32 d = sGfx2dWindowBlend.mainWin0Bottom;
+            u32 b = sGfx2dDispCtrl.mainWin0Top;
+            u32 a = sGfx2dDispCtrl.mainWin0Left;
+            *(volatile u16*)0x4000040 = ((a << 8) & 0xff00) | (sGfx2dWindowBlend.mainWin0Right & 0xff);
             *(volatile u16*)0x4000044 = ((b << 8) & 0xff00) | (d & 0xff);
         }
-        if (sGfx2dDispCtrl.unk_12 & 0x20) {
-            u32 d = sGfx2dWindowBlend.unk_06;
-            u32 b = sGfx2dWindowBlend.unk_04;
-            u32 a = sGfx2dWindowBlend.unk_03;
-            *(volatile u16*)0x4000042 = ((a << 8) & 0xff00) | (sGfx2dWindowBlend.unk_05 & 0xff);
+        if (sGfx2dDispCtrl.windowDirty & 0x20) {
+            u32 d = sGfx2dWindowBlend.mainWin1Bottom;
+            u32 b = sGfx2dWindowBlend.mainWin1Top;
+            u32 a = sGfx2dWindowBlend.mainWin1Left;
+            *(volatile u16*)0x4000042 = ((a << 8) & 0xff00) | (sGfx2dWindowBlend.mainWin1Right & 0xff);
             *(volatile u16*)0x4000046 = ((b << 8) & 0xff00) | (d & 0xff);
         }
-        if (sGfx2dDispCtrl.unk_12 & 0x40) {
-            u32 d = sGfx2dWindowBlend.unk_0b;
-            u32 b = sGfx2dWindowBlend.unk_09;
-            u32 a = sGfx2dWindowBlend.unk_08;
-            *(volatile u16*)0x4001040 = ((a << 8) & 0xff00) | (sGfx2dWindowBlend.unk_0a & 0xff);
+        if (sGfx2dDispCtrl.windowDirty & 0x40) {
+            u32 d = sGfx2dWindowBlend.subWin0Bottom;
+            u32 b = sGfx2dWindowBlend.subWin0Top;
+            u32 a = sGfx2dWindowBlend.subWin0Left;
+            *(volatile u16*)0x4001040 = ((a << 8) & 0xff00) | (sGfx2dWindowBlend.subWin0Right & 0xff);
             *(volatile u16*)0x4001044 = ((b << 8) & 0xff00) | (d & 0xff);
         }
-        if (sGfx2dDispCtrl.unk_12 & 0x80) {
-            u32 d = sGfx2dWindowBlend.unk_10;
-            u32 b = sGfx2dWindowBlend.unk_0e;
-            u32 a = sGfx2dWindowBlend.unk_0d;
-            *(volatile u16*)0x4001042 = ((a << 8) & 0xff00) | (sGfx2dWindowBlend.unk_0f & 0xff);
+        if (sGfx2dDispCtrl.windowDirty & 0x80) {
+            u32 d = sGfx2dWindowBlend.subWin1Bottom;
+            u32 b = sGfx2dWindowBlend.subWin1Top;
+            u32 a = sGfx2dWindowBlend.subWin1Left;
+            *(volatile u16*)0x4001042 = ((a << 8) & 0xff00) | (sGfx2dWindowBlend.subWin1Right & 0xff);
             *(volatile u16*)0x4001046 = ((b << 8) & 0xff00) | (d & 0xff);
         }
-        sGfx2dDispCtrl.unk_12 = 0;
+        sGfx2dDispCtrl.windowDirty = 0;
     }
-    u32 t = sGfx2dWindowBlend.unk_12;
+    u32 t = sGfx2dWindowBlend.blendRequest;
     if (t & 0x20) {
         G2x_SetBlendBrightnessExt_(0x4000050, 0x1f, 0x20, 0x10, 0x10, 0);
     } else if (t & 0x10) {
-        G2x_SetBlendAlpha_(0x4000050, sGfx2dWindowBlend.unk_13, sGfx2dWindowBlend.unk_14, sGfx2dWindowBlend.unk_15,
-                      0x10 - sGfx2dWindowBlend.unk_15);
+        G2x_SetBlendAlpha_(0x4000050, sGfx2dWindowBlend.blendPlane1, sGfx2dWindowBlend.blendPlane2, sGfx2dWindowBlend.blendEv1,
+                      0x10 - sGfx2dWindowBlend.blendEv1);
     } else if (t & 0x2) {
         G2x_SetBlendBrightnessExt_(0x4001050, 0x1f, 0x20, 0x10, 0x10, 0);
     } else if (t & 0x8) {
-        G2x_SetBlendAlpha_(0x4001050, sGfx2dWindowBlend.unk_13, sGfx2dWindowBlend.unk_14, sGfx2dWindowBlend.unk_15,
-                      0x10 - sGfx2dWindowBlend.unk_15);
+        G2x_SetBlendAlpha_(0x4001050, sGfx2dWindowBlend.blendPlane1, sGfx2dWindowBlend.blendPlane2, sGfx2dWindowBlend.blendEv1,
+                      0x10 - sGfx2dWindowBlend.blendEv1);
     } else if (t != 0) {
-        G2x_SetBlendBrightness_(0x4001050, sGfx2dWindowBlend.unk_13, sGfx2dWindowBlend.unk_14);
+        G2x_SetBlendBrightness_(0x4001050, sGfx2dWindowBlend.blendPlane1, sGfx2dWindowBlend.blendPlane2);
     }
-    sGfx2dWindowBlend.unk_12 = 0;
+    sGfx2dWindowBlend.blendRequest = 0;
 }
 
-extern "C" void Gfx2d_InitBgOffset(Unk_02001874* p) {
-    p->unk_00 = 0;
-    p->unk_02 = 0;
+extern "C" void Gfx2d_InitBgOffset(Gfx2dOffset* p) {
+    p->x = 0;
+    p->y = 0;
 }
 
-extern "C" void Gfx2d_InitBgAffine(Unk_02001858* p) {
-    p->unk_00 = 0x1000;
-    p->unk_04 = 0;
-    p->unk_08 = 0;
-    p->unk_0c = 0x1000;
-    p->unk_10 = 0;
-    p->unk_14 = 0;
-    p->unk_18 = 0;
-    p->unk_1c = 0;
+extern "C" void Gfx2d_InitBgAffine(Gfx2dAffine* p) {
+    p->mtx00 = 0x1000;
+    p->mtx01 = 0;
+    p->mtx10 = 0;
+    p->mtx11 = 0x1000;
+    p->centerX = 0;
+    p->centerY = 0;
+    p->offsetX = 0;
+    p->offsetY = 0;
 }
 
-extern "C" void Gfx2d_InitWindowRect(Unk_02001844* p) {
-    p->unk_00 = 0;
-    p->unk_01 = 0;
-    p->unk_02 = 0xff;
-    p->unk_03 = 0xc0;
-    p->unk_04 = 0;
+extern "C" void Gfx2d_InitWindowRect(Gfx2dWindowRect* p) {
+    p->left = 0;
+    p->top = 0;
+    p->right = 0xff;
+    p->bottom = 0xc0;
+    p->planes = 0;
 }
 
 extern "C" void Gfx2d_SetMainBg1Offset(u32 a, u32 b) {
-    sGfx2dDispCtrl.unk_11 |= 0x2;
-    sGfx2dBgScroll.unk_04 = a;
-    sGfx2dBgScroll.unk_06 = b;
+    sGfx2dDispCtrl.offsetDirty |= 0x2;
+    sGfx2dBgScroll.mainBg1OffsetX = a;
+    sGfx2dBgScroll.mainBg1OffsetY = b;
 }
 
 extern "C" void Gfx2d_SetMainBg2Offset(s32 a, s32 b) {
-    sGfx2dDispCtrl.unk_11 |= 0x4;
-    sGfx2dBgScroll.unk_20 = a;
-    sGfx2dBgScroll.unk_24 = b;
+    sGfx2dDispCtrl.offsetDirty |= 0x4;
+    sGfx2dBgScroll.mainBg2OffsetX = a;
+    sGfx2dBgScroll.mainBg2OffsetY = b;
 }
 
 extern "C" void Gfx2d_SetMainBg3Offset(s32 a, s32 b) {
-    sGfx2dDispCtrl.unk_11 |= 0x8;
-    sGfx2dBgScroll.unk_40 = a;
-    sGfx2dBgScroll.unk_44 = b;
+    sGfx2dDispCtrl.offsetDirty |= 0x8;
+    sGfx2dBgScroll.mainBg3OffsetX = a;
+    sGfx2dBgScroll.mainBg3OffsetY = b;
 }
 
 extern "C" void Gfx2d_SetSubBg0Offset(u32 a, u32 b) {
-    sGfx2dDispCtrl.unk_11 |= 0x10;
-    sGfx2dBgScroll.unk_48 = a;
-    sGfx2dBgScroll.unk_4a = b;
+    sGfx2dDispCtrl.offsetDirty |= 0x10;
+    sGfx2dBgScroll.subBg0OffsetX = a;
+    sGfx2dBgScroll.subBg0OffsetY = b;
 }
 
 extern "C" void Gfx2d_SetSubBg1Offset(u32 a, u32 b) {
-    sGfx2dDispCtrl.unk_11 |= 0x20;
-    sGfx2dBgScroll.unk_4c = a;
-    sGfx2dBgScroll.unk_4e = b;
+    sGfx2dDispCtrl.offsetDirty |= 0x20;
+    sGfx2dBgScroll.subBg1OffsetX = a;
+    sGfx2dBgScroll.subBg1OffsetY = b;
 }
 
 extern "C" void Gfx2d_SetSubBg2Offset(s32 a, s32 b) {
-    sGfx2dDispCtrl.unk_11 |= 0x40;
-    sGfx2dBgScroll.unk_68 = a;
-    sGfx2dBgScroll.unk_6c = b;
+    sGfx2dDispCtrl.offsetDirty |= 0x40;
+    sGfx2dBgScroll.subBg2OffsetX = a;
+    sGfx2dBgScroll.subBg2OffsetY = b;
 }
 
 extern "C" void Gfx2d_SetSubBg3Offset(s32 a, s32 b) {
-    sGfx2dDispCtrl.unk_11 |= 0x80;
-    sGfx2dDispCtrl.unk_08 = a;
-    sGfx2dDispCtrl.unk_0c = b;
+    sGfx2dDispCtrl.offsetDirty |= 0x80;
+    sGfx2dDispCtrl.subBg3OffsetX = a;
+    sGfx2dDispCtrl.subBg3OffsetY = b;
 }
 
 extern "C" void Gfx2d_SetMainWin0Planes(u32 a) {
-    sGfx2dWindowBlend.unk_02 = a;
-    sGfx2dDispCtrl.unk_12 |= 0x1;
+    sGfx2dWindowBlend.mainWin0Planes = a;
+    sGfx2dDispCtrl.windowDirty |= 0x1;
 }
 
 extern "C" void Gfx2d_SetMainWin1Planes(u32 a) {
-    sGfx2dWindowBlend.unk_07 = a;
-    sGfx2dDispCtrl.unk_12 |= 0x2;
+    sGfx2dWindowBlend.mainWin1Planes = a;
+    sGfx2dDispCtrl.windowDirty |= 0x2;
 }
 
 extern "C" void Gfx2d_SetSubWin0Planes(u32 a, BOOL b) {
-    sGfx2dWindowBlend.unk_0c = a;
+    sGfx2dWindowBlend.subWin0Planes = a;
     Gfx2d_MarkSubWin0PlanesDirty(b);
 }
 
 extern "C" void Gfx2d_SetSubWin1Planes(u32 a, BOOL b) {
-    sGfx2dWindowBlend.unk_11 = a;
+    sGfx2dWindowBlend.subWin1Planes = a;
     Gfx2d_MarkSubWin1PlanesDirty(b);
 }
 
@@ -1091,7 +1091,7 @@ extern "C" void Gfx2d_MarkSubWin0PlanesDirty(BOOL a) {
     } else {
         v = 0x100;
     }
-    sGfx2dDispCtrl.unk_12 |= v;
+    sGfx2dDispCtrl.windowDirty |= v;
 }
 
 extern "C" void Gfx2d_MarkSubWin1PlanesDirty(BOOL a) {
@@ -1101,59 +1101,59 @@ extern "C" void Gfx2d_MarkSubWin1PlanesDirty(BOOL a) {
     } else {
         v = 0x200;
     }
-    sGfx2dDispCtrl.unk_12 |= v;
+    sGfx2dDispCtrl.windowDirty |= v;
 }
 
-extern "C" void Gfx2d_SetMainWinOutPlanes(u32 a) { sGfx2dDispCtrl.unk_1a = a; }
+extern "C" void Gfx2d_SetMainWinOutPlanes(u32 a) { sGfx2dDispCtrl.mainWinOutPlanes = a; }
 
-extern "C" void Gfx2d_RemoveMainWinOutPlanes(u32 a) { sGfx2dDispCtrl.unk_1a &= ~a; }
+extern "C" void Gfx2d_RemoveMainWinOutPlanes(u32 a) { sGfx2dDispCtrl.mainWinOutPlanes &= ~a; }
 
-extern "C" void Gfx2d_SetSubWinOutPlanes(u32 a) { sGfx2dDispCtrl.unk_1b = a; }
+extern "C" void Gfx2d_SetSubWinOutPlanes(u32 a) { sGfx2dDispCtrl.subWinOutPlanes = a; }
 
-extern "C" void Gfx2d_SetMainObjWinPlanes(u32 a) { sGfx2dDispCtrl.unk_1c = a; }
+extern "C" void Gfx2d_SetMainObjWinPlanes(u32 a) { sGfx2dDispCtrl.mainObjWinPlanes = a; }
 
-extern "C" void Gfx2d_SetSubObjWinPlanes(u32 a) { sGfx2dDispCtrl.unk_1d = a; }
+extern "C" void Gfx2d_SetSubObjWinPlanes(u32 a) { sGfx2dDispCtrl.subObjWinPlanes = a; }
 
 extern "C" void Gfx2d_SetMainWin0Rect(u32 a, u32 b, u32 c, u32 d) {
-    sGfx2dDispCtrl.unk_1e = a;
-    sGfx2dDispCtrl.unk_1f = b;
-    sGfx2dWindowBlend.unk_00 = c;
-    sGfx2dWindowBlend.unk_01 = d;
-    sGfx2dDispCtrl.unk_12 |= 0x10;
+    sGfx2dDispCtrl.mainWin0Left = a;
+    sGfx2dDispCtrl.mainWin0Top = b;
+    sGfx2dWindowBlend.mainWin0Right = c;
+    sGfx2dWindowBlend.mainWin0Bottom = d;
+    sGfx2dDispCtrl.windowDirty |= 0x10;
 }
 
 extern "C" void Gfx2d_SetMainWin1Rect(u32 a, u32 b, u32 c, u32 d) {
-    sGfx2dWindowBlend.unk_03 = a;
-    sGfx2dWindowBlend.unk_04 = b;
-    sGfx2dWindowBlend.unk_05 = c;
-    sGfx2dWindowBlend.unk_06 = d;
-    sGfx2dDispCtrl.unk_12 |= 0x20;
+    sGfx2dWindowBlend.mainWin1Left = a;
+    sGfx2dWindowBlend.mainWin1Top = b;
+    sGfx2dWindowBlend.mainWin1Right = c;
+    sGfx2dWindowBlend.mainWin1Bottom = d;
+    sGfx2dDispCtrl.windowDirty |= 0x20;
 }
 
 extern "C" void Gfx2d_SetSubWin0Rect(u32 a, u32 b, u32 c, u32 d) {
-    sGfx2dWindowBlend.unk_08 = a;
-    sGfx2dWindowBlend.unk_09 = b;
-    sGfx2dWindowBlend.unk_0a = c;
-    sGfx2dWindowBlend.unk_0b = d;
-    sGfx2dDispCtrl.unk_12 |= 0x40;
+    sGfx2dWindowBlend.subWin0Left = a;
+    sGfx2dWindowBlend.subWin0Top = b;
+    sGfx2dWindowBlend.subWin0Right = c;
+    sGfx2dWindowBlend.subWin0Bottom = d;
+    sGfx2dDispCtrl.windowDirty |= 0x40;
 }
 
 extern "C" void Gfx2d_SetSubWin1Rect(u32 a, u32 b, u32 c, u32 d) {
-    sGfx2dWindowBlend.unk_0d = a;
-    sGfx2dWindowBlend.unk_0e = b;
-    sGfx2dWindowBlend.unk_0f = c;
-    sGfx2dWindowBlend.unk_10 = d;
-    sGfx2dDispCtrl.unk_12 |= 0x80;
+    sGfx2dWindowBlend.subWin1Left = a;
+    sGfx2dWindowBlend.subWin1Top = b;
+    sGfx2dWindowBlend.subWin1Right = c;
+    sGfx2dWindowBlend.subWin1Bottom = d;
+    sGfx2dDispCtrl.windowDirty |= 0x80;
 }
 
 extern "C" void Gfx2d_SetMainBgModeState(u32 a) {
-    sGfx2dDispCtrl.unk_16 = a;
-    sGfx2dDispCtrl.unk_10 = (sGfx2dDispCtrl.unk_10 & ~0x3) | ((0xf78u >> (a * 2)) & 0x3);
+    sGfx2dDispCtrl.mainBgMode = a;
+    sGfx2dDispCtrl.affineMask = (sGfx2dDispCtrl.affineMask & ~0x3) | ((0xf78u >> (a * 2)) & 0x3);
 }
 
 extern "C" void Gfx2d_SetSubBgModeState(u32 a) {
-    sGfx2dDispCtrl.unk_17 = a;
-    sGfx2dDispCtrl.unk_10 = (sGfx2dDispCtrl.unk_10 & ~0xc) | ((0x3de0u >> (a * 2)) & 0xc);
+    sGfx2dDispCtrl.subBgMode = a;
+    sGfx2dDispCtrl.affineMask = (sGfx2dDispCtrl.affineMask & ~0xc) | ((0x3de0u >> (a * 2)) & 0xc);
 }
 
 extern "C" void Gfx2d_SetMainBgMode(u32 a) {
@@ -1166,37 +1166,37 @@ extern "C" void Gfx2d_SetSubBgMode(u32 a) {
     GXS_SetGraphicsMode(a);
 }
 
-extern "C" u32 Gfx2d_GetMainWindows() { return sGfx2dDispCtrl.unk_18; }
+extern "C" u32 Gfx2d_GetMainWindows() { return sGfx2dDispCtrl.mainWindows; }
 
-extern "C" void Gfx2d_SetMainWindows(u32 a) { sGfx2dDispCtrl.unk_18 = a; }
+extern "C" void Gfx2d_SetMainWindows(u32 a) { sGfx2dDispCtrl.mainWindows = a; }
 
-extern "C" void Gfx2d_EnableMainWindows(u32 a) { sGfx2dDispCtrl.unk_18 |= a; }
+extern "C" void Gfx2d_EnableMainWindows(u32 a) { sGfx2dDispCtrl.mainWindows |= a; }
 
-extern "C" void Gfx2d_DisableMainWindows(u32 a) { sGfx2dDispCtrl.unk_18 &= ~a; }
+extern "C" void Gfx2d_DisableMainWindows(u32 a) { sGfx2dDispCtrl.mainWindows &= ~a; }
 
-extern "C" u32 Gfx2d_GetSubWindows() { return sGfx2dDispCtrl.unk_19; }
+extern "C" u32 Gfx2d_GetSubWindows() { return sGfx2dDispCtrl.subWindows; }
 
-extern "C" void Gfx2d_SetSubWindows(u32 a) { sGfx2dDispCtrl.unk_19 = a; }
+extern "C" void Gfx2d_SetSubWindows(u32 a) { sGfx2dDispCtrl.subWindows = a; }
 
-extern "C" void Gfx2d_EnableSubWindows(u32 a) { sGfx2dDispCtrl.unk_19 |= a; }
+extern "C" void Gfx2d_EnableSubWindows(u32 a) { sGfx2dDispCtrl.subWindows |= a; }
 
-extern "C" void Gfx2d_DisableSubWindows(u32 a) { sGfx2dDispCtrl.unk_19 &= ~a; }
+extern "C" void Gfx2d_DisableSubWindows(u32 a) { sGfx2dDispCtrl.subWindows &= ~a; }
 
-extern "C" u8 Gfx2d_GetMainPlanes(void) { return sGfx2dDispCtrl.unk_14; }
+extern "C" u8 Gfx2d_GetMainPlanes(void) { return sGfx2dDispCtrl.mainPlanes; }
 
-extern "C" void Gfx2d_SetMainPlanes(u8 a) { sGfx2dDispCtrl.unk_14 = a; }
+extern "C" void Gfx2d_SetMainPlanes(u8 a) { sGfx2dDispCtrl.mainPlanes = a; }
 
-extern "C" void Gfx2d_ShowMainPlanes(u8 a) { sGfx2dDispCtrl.unk_14 |= a; }
+extern "C" void Gfx2d_ShowMainPlanes(u8 a) { sGfx2dDispCtrl.mainPlanes |= a; }
 
-extern "C" void Gfx2d_HideMainPlanes(u8 a) { sGfx2dDispCtrl.unk_14 &= ~a; }
+extern "C" void Gfx2d_HideMainPlanes(u8 a) { sGfx2dDispCtrl.mainPlanes &= ~a; }
 
-extern "C" u8 Gfx2d_GetSubPlanes(void) { return sGfx2dDispCtrl.unk_15; }
+extern "C" u8 Gfx2d_GetSubPlanes(void) { return sGfx2dDispCtrl.subPlanes; }
 
-extern "C" void Gfx2d_SetSubPlanes(u8 a) { sGfx2dDispCtrl.unk_15 = a; }
+extern "C" void Gfx2d_SetSubPlanes(u8 a) { sGfx2dDispCtrl.subPlanes = a; }
 
-extern "C" void Gfx2d_ShowSubPlanes(u8 a) { sGfx2dDispCtrl.unk_15 |= a; }
+extern "C" void Gfx2d_ShowSubPlanes(u8 a) { sGfx2dDispCtrl.subPlanes |= a; }
 
-extern "C" void Gfx2d_HideSubPlanes(u8 a) { sGfx2dDispCtrl.unk_15 &= ~a; }
+extern "C" void Gfx2d_HideSubPlanes(u8 a) { sGfx2dDispCtrl.subPlanes &= ~a; }
 
 extern "C" void Gfx2d_SetBrightness(u32 a) {
     if (a != 0) {
@@ -1213,45 +1213,45 @@ extern "C" void Gfx2d_BeginSubObjWinBrightness(void) {
     Gfx2d_SetSubWinOutPlanes(0x1f);
     Gfx2d_SetSubObjWinPlanes(0x10);
     Gfx2d_EnableSubWindows(4);
-    sGfx2dWindowBlend.unk_12 |= 1;
+    sGfx2dWindowBlend.blendRequest |= 1;
 }
 
 extern "C" void Gfx2d_EndSubObjWinBrightness(void) {
     Gfx2d_DisableSubWindows(4);
-    sGfx2dWindowBlend.unk_12 |= 2;
+    sGfx2dWindowBlend.blendRequest |= 2;
 }
 
 extern "C" void Gfx2d_SetSubBrightnessAllPlanes(void) {
-    sGfx2dWindowBlend.unk_13 = 0x1f;
-    sGfx2dWindowBlend.unk_12 |= 4;
+    sGfx2dWindowBlend.blendPlane1 = 0x1f;
+    sGfx2dWindowBlend.blendRequest |= 4;
 }
 
 extern "C" void Gfx2d_ExcludeSubBrightnessPlanes(u8 a) {
-    sGfx2dWindowBlend.unk_13 &= ~a;
-    sGfx2dWindowBlend.unk_12 |= 4;
+    sGfx2dWindowBlend.blendPlane1 &= ~a;
+    sGfx2dWindowBlend.blendRequest |= 4;
 }
 
 extern "C" void Gfx2d_SetSubBrightness(u8 a) {
-    sGfx2dWindowBlend.unk_14 = a;
-    sGfx2dWindowBlend.unk_12 |= 4;
+    sGfx2dWindowBlend.blendPlane2 = a;
+    sGfx2dWindowBlend.blendRequest |= 4;
 }
 
 extern "C" void Gfx2d_SetSubAlphaBlend(u8 a, u8 b, u8 c) {
-    sGfx2dWindowBlend.unk_13 = a;
-    sGfx2dWindowBlend.unk_14 = b;
-    sGfx2dWindowBlend.unk_15 = c;
-    sGfx2dWindowBlend.unk_12 |= 8;
+    sGfx2dWindowBlend.blendPlane1 = a;
+    sGfx2dWindowBlend.blendPlane2 = b;
+    sGfx2dWindowBlend.blendEv1 = c;
+    sGfx2dWindowBlend.blendRequest |= 8;
 }
 
-extern "C" void Gfx2d_ResetSubBlend(void) { sGfx2dWindowBlend.unk_12 |= 2; }
+extern "C" void Gfx2d_ResetSubBlend(void) { sGfx2dWindowBlend.blendRequest |= 2; }
 
 extern "C" void Gfx2d_SetMainAlphaBlend(u8 a, u8 b, u8 c) {
-    sGfx2dWindowBlend.unk_13 = a;
-    sGfx2dWindowBlend.unk_14 = b;
-    sGfx2dWindowBlend.unk_15 = c;
-    sGfx2dWindowBlend.unk_12 |= 0x10;
+    sGfx2dWindowBlend.blendPlane1 = a;
+    sGfx2dWindowBlend.blendPlane2 = b;
+    sGfx2dWindowBlend.blendEv1 = c;
+    sGfx2dWindowBlend.blendRequest |= 0x10;
 }
 
-extern "C" void Gfx2d_ResetMainBlend(void) { sGfx2dWindowBlend.unk_12 |= 0x20; }
+extern "C" void Gfx2d_ResetMainBlend(void) { sGfx2dWindowBlend.blendRequest |= 0x20; }
 
 

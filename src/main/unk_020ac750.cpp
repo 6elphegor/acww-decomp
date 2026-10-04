@@ -299,14 +299,14 @@ struct Obj {
 // ======== types of unk_020aebbc.cpp ========
 
 struct Counter {
-    /* 0x00 */ u8 unk_00;
-    /* 0x01 */ u8 unk_01;
+    /* 0x00 */ u8 needed;
+    /* 0x01 */ u8 received;
 };
 struct ShopAckCounter {
     ShopAckCounter();
     ~ShopAckCounter();
-    u8 unk_00;
-    u8 unk_01;
+    u8 needed;
+    u8 received;
 };
 
 struct Elem2a { Elem2a(); u16 d; };
@@ -314,25 +314,25 @@ struct Unk_020aec00 { u32 vt; u16 e[0x25]; Unk_020aec00(); };
 struct NookShop { u32 vt; ItemId e[0x25]; NookShop(); };
 
 struct Bits5a {
-    u16 unk_00 : 5;
-    u16 unk_05 : 4;
-    u16 unk_09 : 2;
+    u16 saleHour : 5;
+    u16 paintCounter : 4;
+    u16 level : 2;
     u16 unk_0b : 5;
 };
 struct Unk_020aebbc {
-    /* 0x00 */ u32 unk_00;
+    /* 0x00 */ u32 sales;
     u8 pad[0x51 - 4];
-    /* 0x51 */ u8 unk_51;
+    /* 0x51 */ u8 stockStale;
     u8 pad2[7];
-    /* 0x59 */ u8 unk_59;
-    /* 0x5a */ Bits5a unk_5a;
+    /* 0x59 */ u8 renovationScheduled;
+    /* 0x5a */ Bits5a packedState;
 };
 struct Unk_020aec74_Out {
-    u8 unk_00, unk_01, unk_02, unk_03, unk_04, unk_05;
+    u8 second, minute, hour, day, month, year;
     u16 unk_06;
 };
 struct Unk_021c47c4 {
-    u32 unk_00, unk_04, unk_08;
+    u32 blocks, width, height;
 };
 extern const s32 sObjShadowCoordShift;
 extern const u8 kNookCarpetCounts[4];
@@ -608,21 +608,21 @@ extern "C" ShopAckCounter::~ShopAckCounter() {
 
 namespace n5 {
 extern "C" void ShopAckCounter_Clear(Counter *c) {
-    c->unk_00 = 0;
-    c->unk_01 = 0;
+    c->needed = 0;
+    c->received = 0;
 }
 extern "C" void ShopAckCounter_Start(Counter *c) {
-    c->unk_01 = 0;
+    c->received = 0;
     u8 *p = *(u8 **)gCommManager;
-    if (_ZN11CommManager8isOnlineEv(p)) c->unk_00 = p[0x6c] - 1;
-    else c->unk_00 = 0;
+    if (_ZN11CommManager8isOnlineEv(p)) c->needed = p[0x6c] - 1;
+    else c->needed = 0;
 }
 extern "C" BOOL ShopAckCounter_IsDone(Counter *c) {
-    if (c->unk_01 >= c->unk_00) return TRUE;
+    if (c->received >= c->needed) return TRUE;
     return FALSE;
 }
 extern "C" void ShopAckCounter_Add(Counter *c) {
-    if (c->unk_01 < c->unk_00) c->unk_01++;
+    if (c->received < c->needed) c->received++;
     ShopAckCounter_IsDone(c);
 }
 extern "C" void StockList_AddFromPickList(u16 *buf, u32 *pos, s32 r2, s32 r3, u32 n, s32 unused, u8 flag) {
@@ -730,7 +730,7 @@ extern "C" void Shop_RemoveSoldItem(u16 *p, u32 a, s32 b) {
     Unk_021c47c4 *s = gSceneBlockMap;
     if (s == 0) return;
     void *q; u32 k = 0;
-    if (s->unk_04 > k && s->unk_08 > k && s->unk_00 != 0) q = (void *)s->unk_00;
+    if (s->width > k && s->height > k && s->blocks != 0) q = (void *)s->blocks;
     else q = 0;
     if (q == 0) return;
     for (s32 y = 0; y < 16; y++) {
@@ -776,12 +776,12 @@ extern "C" s32 NookShop_PostReopenNotice() {
 extern "C" BOOL NookShop_GetReopenDateTime(Unk_020aec74_Out *out) {
     u8 *h = data_021ed104;
     if (NookShop_GetRenovation(h)[3] != 0) {
-        out->unk_05 = NookShop_GetRenovation(h)[2];
-        out->unk_04 = NookShop_GetRenovation(h)[1];
-        out->unk_03 = NookShop_GetRenovation(h)[0];
-        out->unk_02 = 6;
-        out->unk_01 = 0;
-        out->unk_00 = 0;
+        out->year = NookShop_GetRenovation(h)[2];
+        out->month = NookShop_GetRenovation(h)[1];
+        out->day = NookShop_GetRenovation(h)[0];
+        out->hour = 6;
+        out->minute = 0;
+        out->second = 0;
         out->unk_06 = 0;
         return TRUE;
     }
@@ -805,11 +805,11 @@ extern "C" Unk_020aec00::Unk_020aec00() {
 namespace n5 {
 extern "C" void NookShop_Clear(Unk_020aebbc *p) {
     NookShop_ClearStock(p);
-    p->unk_5a.unk_09 = 0;
-    p->unk_00 = 0;
-    p->unk_5a.unk_00 = 0;
-    p->unk_51 = 1;
-    p->unk_59 = 0;
+    p->packedState.level = 0;
+    p->sales = 0;
+    p->packedState.saleHour = 0;
+    p->stockStale = 1;
+    p->renovationScheduled = 0;
 }
 }
 

@@ -4,19 +4,19 @@ typedef char *va_list;
 #define va_start(ap, parm) ((ap) = (va_list)(((u32)&(parm)) & ~3) + 4)
 
 struct Unk_02063eac_FileId {
-    u32 unk_00;
-    u32 unk_04;
+    u32 arc;
+    u32 file_id;
 };
 
 // FS file object, 0x48 bytes
 struct Unk_02063d18_File {
     u8 unk_00[0x14];
-    s32 unk_14;
+    s32 error;
     u8 unk_18[8];
     s32 unk_20;
-    s32 unk_24;
-    s32 unk_28;
-    s32 unk_2c;
+    s32 start;
+    s32 end;
+    s32 pos;
     u8 unk_30[0x18];
 };
 
@@ -322,7 +322,7 @@ extern "C" void File_ReadRange(Unk_02063d18_File *f, void *dst, u32 size, u32 of
     if (FS_ReadFile(f, &hdr, 8) == -1) return;
     if (hdr.magic == 0x37375a4c || hdr.magic == 0x4c5a3737) {
         if ((hdr.w & 0xf0) != 0xf0) return;
-        if ((u32)(f->unk_28 - f->unk_24) > 0xffff) return;
+        if ((u32)(f->end - f->start) > 0xffff) return;
         blk = 0x20 << hdr.b.lg;
         sFileBlockCache.tbl[0] = 0;
         n = ((_u32_div_f((hdr.w >> 8) - 1, blk) + 1)) * 2;

@@ -11,11 +11,11 @@ extern "C" void SceneWarp_Init(void *e, u8 id, Unk_ov004_Vec3 *v, u32 w, s16 s, 
 struct Unk_020b4fc0 {
     u8 type;
     u8 flag;
-    s16 unk_02;
+    s16 angle;
     Unk_ov004_Vec3 pos;
-    u32 unk_10;
-    u8 unk_14;
-    u8 unk_15;
+    u32 spawnParam;
+    u8 fadeOut;
+    u8 fadeIn;
     s16 unk_16;
     u8 unk_18;
     Unk_020b4fc0(u8 id, const Unk_ov004_Vec3 &v, u32 w, s16 s, u8 p, u8 q, s16 r, u8 t) {

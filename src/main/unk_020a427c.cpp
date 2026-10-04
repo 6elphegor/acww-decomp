@@ -43,7 +43,7 @@ public:
 class CommManager {
 public:
     /* 0x00 */ u8 pad_00[0x64];
-    /* 0x64 */ s32 unk_64;
+    /* 0x64 */ s32 myAid;
     BOOL isOnline();
     BOOL isSlotActive(s32 i);
     void setSessionMemberMask(u32 v);
@@ -147,22 +147,22 @@ struct Unk_020a56c4_Buf {
 // The singleton, composite view (constructor and destructor live here)
 class NetSessionState {
 public:
-    /* 0x00 */ NetSlotStatus unk_00[4];
-    /* 0x0c */ NetMoveRequest unk_0c[4];
-    /* 0x2c */ NetMoveReady unk_2c[4];
-    /* 0x3c */ NetPendingStatus unk_3c[4];
+    /* 0x00 */ NetSlotStatus slotStatus[4];
+    /* 0x0c */ NetMoveRequest moveQueue[4];
+    /* 0x2c */ NetMoveReady moveReady[4];
+    /* 0x3c */ NetPendingStatus pendingStatus[4];
     /* 0x5c */ u8 pad_5c[0x84 - 0x5c];
-    /* 0x84 */ s32 unk_84[4];
-    /* 0x94 */ s32 unk_94;
-    /* 0x98 */ u16 unk_98;
-    /* 0x9c */ s32 unk_9c;
-    /* 0xa0 */ s32 unk_a0;
-    /* 0xa4 */ s32 unk_a4;
-    /* 0xa8 */ s32 unk_a8[4];
-    /* 0xb8 */ s32 unk_b8;
-    /* 0xbc */ u8 unk_bc;
-    /* 0xc0 */ s32 unk_c0;
-    /* 0xc4 */ u8 unk_c4;
+    /* 0x84 */ s32 syncState[4];
+    /* 0x94 */ s32 lastSyncSlot;
+    /* 0x98 */ u16 syncMemberMask;
+    /* 0x9c */ s32 syncPhase;
+    /* 0xa0 */ s32 syncRequester;
+    /* 0xa4 */ s32 syncKind;
+    /* 0xa8 */ s32 memberSyncReply[4];
+    /* 0xb8 */ s32 replyTimer;
+    /* 0xbc */ u8 goDelay;
+    /* 0xc0 */ s32 activeSyncKind;
+    /* 0xc4 */ u8 ctrl07Received;
 
     NetSessionState();
     ~NetSessionState();
@@ -204,23 +204,23 @@ struct Unk_020a512c_Ent {
 
 // The singleton, second view (methods of the 0x020a512c class); same memory as NetSessionState
 struct NetSessionAreaView {
-    u8 unk_00[12];
-    Unk_020a512c_Ent unk_0c[4];
-    u32 unk_2c[4];
-    u8 unk_3c[4][8];
-    u8 unk_5c;
+    u8 slotStatus[12];
+    Unk_020a512c_Ent moveQueue[4];
+    u32 moveReady[4];
+    u8 pendingStatus[4][8];
+    u8 becomesOwner;
     u8 pad_5d[3];
-    s32 unk_60;
-    s32 unk_64;
-    u8 unk_68[4];
-    s32 unk_6c;
-    s32 unk_70;
-    s32 unk_74;
-    s32 unk_78;
-    u8 unk_7c;
+    s32 moveState;
+    s32 handoffSlot;
+    u8 memberAck[4];
+    s32 notifiedOwnerMover;
+    s32 stateSourceSlot;
+    s32 stateRequester;
+    s32 arrivingSlot;
+    u8 ownerAck;
     u8 pad_7d[3];
-    s32 unk_80;
-    u32 unk_84[4];
+    s32 notifiedMemberMover;
+    u32 syncState[4];
     void rejectSyncRequest(u32 a, u32 b);
     void resetSyncStates();
     u32 getSyncState(s32 i);
@@ -459,7 +459,7 @@ void Scene_CheckExit(void *p);
 extern "C" s32 NetArea_GetSlotScene(s32 a) {
     u8 v[3];
     if (a < 4) {
-        gNetSessionState.unk_00[a].get(&v[0], &v[1], &v[2]);
+        gNetSessionState.slotStatus[a].get(&v[0], &v[1], &v[2]);
         return v[0];
     }
     return 0x3f;
@@ -468,7 +468,7 @@ extern "C" s32 NetArea_GetSlotScene(s32 a) {
 extern "C" s32 NetArea_IsSlotOwner(s32 a) {
     u8 v[3];
     if (a < 4) {
-        gNetSessionState.unk_00[a].get(&v[0], &v[1], &v[2]);
+        gNetSessionState.slotStatus[a].get(&v[0], &v[1], &v[2]);
         return v[1];
     }
     return 1;
@@ -477,19 +477,19 @@ extern "C" s32 NetArea_IsSlotOwner(s32 a) {
 extern "C" s32 NetArea_IsSlotMoving(s32 a) {
     u8 v[3];
     if (a < 4) {
-        gNetSessionState.unk_00[a].get(&v[0], &v[1], &v[2]);
+        gNetSessionState.slotStatus[a].get(&v[0], &v[1], &v[2]);
         return v[2];
     }
     return 0;
 }
 
 extern "C" s32 NetArea_IsLocalOwner() {
-    s32 r2 = gCommManager->unk_64;
+    s32 r2 = gCommManager->myAid;
     u8 v[3];
     if (r2 >= 4) {
         return 1;
     }
-    gNetSessionState.unk_00[r2].get(&v[0], &v[1], &v[2]);
+    gNetSessionState.slotStatus[r2].get(&v[0], &v[1], &v[2]);
     if (v[2] == 0) {
         return v[1];
     }
@@ -500,7 +500,7 @@ extern "C" s32 NetArea_IsLocalOwner() {
 }
 
 extern "C" s32 NetArea_IsLocalMoving() {
-    s32 v = gCommManager->unk_64;
+    s32 v = gCommManager->myAid;
     if (v < 4) {
         return NetArea_IsSlotMoving(v);
     }
@@ -515,7 +515,7 @@ extern "C" s32 NetArea_FindOwner(u32 a) {
     CommManager *o = gCommManager;
     for (; i >= 0; i--) {
         if (o->isSlotActive(i)) {
-            gNetSessionState.unk_00[i].get(&v[0], &v[1], &v[2]);
+            gNetSessionState.slotStatus[i].get(&v[0], &v[1], &v[2]);
             if (v[0] == a && v[1] != 0 && v[2] == 0) {
                 r6 = i;
                 break;
@@ -526,7 +526,7 @@ extern "C" s32 NetArea_FindOwner(u32 a) {
 }
 
 extern "C" s32 NetArea_ResolveRoute(s32 a, s32 b, u32 c, u8 *d) {
-    s32 r4 = gCommManager->unk_64;
+    s32 r4 = gCommManager->myAid;
     u8 v[6];
     *d = 0;
     if (b == 0) {
@@ -556,13 +556,13 @@ extern "C" s32 NetArea_ResolveRoute(s32 a, s32 b, u32 c, u8 *d) {
             if (t != a) goto fail;
             return a;
         }
-        gNetSessionState.unk_00[a].get(&v[0], &v[1], &v[2]);
+        gNetSessionState.slotStatus[a].get(&v[0], &v[1], &v[2]);
         if (v[0] == c && v[1] != 0 && v[2] != 0) {
             *d = 1;
         }
         goto fail;
     } else if (b == 7) {
-        gNetSessionState.unk_00[a].get(&v[3], &v[4], &v[5]);
+        gNetSessionState.slotStatus[a].get(&v[3], &v[4], &v[5]);
         if (v[3] == c) {
             if (v[4] != 0) goto fail;
             if (v[5] != 0) goto fail;
@@ -605,7 +605,7 @@ extern "C" s32 NetArea_SendStateB(s32 a) {
 extern "C" s32 NetArea_FindSlotInScene(u32 a) {
     s32 r5 = 4, r4 = 4;
     u8 v[3];
-    NetSlotStatus *p = gNetSessionState.unk_00;
+    NetSlotStatus *p = gNetSessionState.slotStatus;
     u32 i;
     for (i = 0; i < 4; p++, i++) {
         p->get(&v[0], &v[1], &v[2]);
@@ -632,7 +632,7 @@ extern "C" s32 NetArea_FindSlotInScene(u32 a) {
 extern "C" void NetArea_SendMoveTarget() {
     CommManager *o = gCommManager;
     if (o->isMyAid(0)) {
-        s32 r4 = o->unk_64;
+        s32 r4 = o->myAid;
         NetArea_QueueMoveRequest(r4, Scene_GetRequestedScene());
     } else {
         Unk_020a6968 tmp;
@@ -714,13 +714,13 @@ extern "C" void NetArea_SetOwnerAck(s32 a) {
 
 extern "C" void NetArea_GetSlotStatus(s32 idx, u8 *a, u8 *b, u8 *c) {
     if (idx < 4) {
-        gNetSessionState.unk_00[idx].get(a, b, c);
+        gNetSessionState.slotStatus[idx].get(a, b, c);
     }
 }
 
 extern "C" void NetArea_OnStateAReceived() {
     CommManager *o = gCommManager;
-    s32 r5 = o->unk_64;
+    s32 r5 = o->myAid;
     if (o->isSlotActive(r5)) {
         if (_ZN11CommManager10getAuxLenAEv(o)) {
             NetArea_ParseStateA();
@@ -751,7 +751,7 @@ extern "C" void NetArea_ApplyStateB() {
 }
 
 extern "C" void NetArea_SendStateToNewOwner() {
-    if (gCommManager->isSlotActive(gCommManager->unk_64)) {
+    if (gCommManager->isSlotActive(gCommManager->myAid)) {
         if (V3().getMoveState() == 3) {
             if (IsZero_020a5d4c(gScreenTransition)) {
                 if (!NetArea_IsUnsharedScene(Scene_GetCurrent())) {
@@ -764,7 +764,7 @@ extern "C" void NetArea_SendStateToNewOwner() {
 }
 
 extern "C" void NetArea_SendStateToRequester() {
-    if (gCommManager->isSlotActive(gCommManager->unk_64)) {
+    if (gCommManager->isSlotActive(gCommManager->myAid)) {
         s32 r4 = V3().getStateRequester();
         if (r4 < 4) {
             NetArea_SendStateB(r4);
@@ -812,7 +812,7 @@ extern "C" void NetSession_RemoveSlot(s32 a) {
 }
 
 extern "C" void NetSession_Update() {
-    s32 r4 = gCommManager->unk_64;
+    s32 r4 = gCommManager->myAid;
     if (gCommManager->isSlotActive(r4)) {
         V3().updateArrivingSlot();
         V3().notifyMovingMember();
@@ -843,10 +843,10 @@ NetSessionState::~NetSessionState() {
 }
 
 void NetSessionState::resetSlot(s32 idx) {
-    unk_00[idx].reset();
-    unk_0c[idx].reset();
-    unk_2c[idx].reset();
-    unk_3c[idx].reset();
+    slotStatus[idx].reset();
+    moveQueue[idx].reset();
+    moveReady[idx].reset();
+    pendingStatus[idx].reset();
     resetMemberSyncReply(idx);
     ((NetSessionAreaView *)this)->setMemberAck(idx, 0);
     if (idx != 0) {
@@ -875,10 +875,10 @@ void NetSessionState::resetSlot(s32 idx) {
 void NetSessionAreaView::reset() {
     s32 i;
     for (i = 3; i >= 0; i--) {
-        _ZN13NetSlotStatus5resetEv(&unk_00[i * 3]);
-        _ZN14NetMoveRequest5resetEv(&unk_0c[i]);
-        _ZN12NetMoveReady5resetEv(&unk_2c[i]);
-        _ZN16NetPendingStatus5resetEv(unk_3c[i]);
+        _ZN13NetSlotStatus5resetEv(&slotStatus[i * 3]);
+        _ZN14NetMoveRequest5resetEv(&moveQueue[i]);
+        _ZN12NetMoveReady5resetEv(&moveReady[i]);
+        _ZN16NetPendingStatus5resetEv(pendingStatus[i]);
     }
     ((NetSessionState *)this)->resetSyncPhase();
     ((NetSessionState *)this)->resetSyncRequester();
@@ -923,7 +923,7 @@ void NetSessionAreaView::updateMoveQueue() {
         u32 off = i << 2;
         s32 r7 = *(u32 *)((u8 *)idx + off);
         if (r7 < 4) {
-            _ZN13NetSlotStatus3getEPhS0_S0_(&unk_00[r7 * 3], &l.b0, &l.b1, &l.b2);
+            _ZN13NetSlotStatus3getEPhS0_S0_(&slotStatus[r7 * 3], &l.b0, &l.b1, &l.b2);
             NetStatusMsg_Init(l.buf);
             NetStatusMsg_Pack(l.buf, r7, l.b0, l.b1, l.b2, *(u32 *)((u8 *)cnt + off));
             o->beginRecord();
@@ -956,13 +956,13 @@ void NetSessionAreaView::startNextMove(u32 *a, u32 *b) {
 s32 NetSessionAreaView::peekMoveRequest() {
     s32 v;
     u8 byte;
-    _ZN14NetMoveRequest3getEPiPh(unk_0c, &v, &byte);
+    _ZN14NetMoveRequest3getEPiPh(moveQueue, &v, &byte);
     return v;
 }
 
 void NetSessionAreaView::popMoveRequest() {
     if (peekMoveRequest() < 4) {
-        u8 *p = (u8 *)unk_0c;
+        u8 *p = (u8 *)moveQueue;
         s32 i;
         for (i = 2; i >= 0; i--) {
             u8 *q = p + 8;
@@ -978,8 +978,8 @@ void NetSessionAreaView::popMoveRequest() {
 }
 
 void NetSessionAreaView::sendMoveReady() {
-    s32 idx = ((volatile CommManager *)gCommManager)->unk_64;
-    u32 *p = &unk_2c[idx];
+    s32 idx = ((volatile CommManager *)gCommManager)->myAid;
+    u32 *p = &moveReady[idx];
     s32 v;
     _ZN12NetMoveReady3getEPj(p, &v);
     if (v != 0) {
@@ -996,14 +996,14 @@ void NetSessionAreaView::processMoveRequest(u32 *a, u32 *b) {
     CommManager *o;
     s32 r5 = peekMoveRequest();
     if (r5 < 4) {
-        u32 *p = &unk_2c[r5];
+        u32 *p = &moveReady[r5];
         s32 v;
         _ZN12NetMoveReady3getEPj(p, &v);
         if (v == 1) {
             s32 r7 = 1;
             s32 tmp;
             u8 byte;
-            _ZN14NetMoveRequest3getEPiPh(unk_0c, &tmp, &byte);
+            _ZN14NetMoveRequest3getEPiPh(moveQueue, &tmp, &byte);
             s32 i;
             i = 3;
             o = gCommManager;
@@ -1029,7 +1029,7 @@ void NetSessionAreaView::flushStatusUpdates() {
         u8 b0, b1, b2;
         u8 buf[5];
         u32 out;
-        u8 *p = unk_3c[i];
+        u8 *p = pendingStatus[i];
         _ZN16NetPendingStatus3getEPhS0_S0_Pj(p, &b0, &b1, &b2, &out);
         if (out != 0) {
             NetArea_SetSlotStatus(i, b0, b1, b2, out);
@@ -1044,17 +1044,17 @@ void NetSessionAreaView::flushStatusUpdates() {
     }
 }
 
-void NetSessionAreaView::setBecomesOwner(u32 v) { unk_5c = v; }
+void NetSessionAreaView::setBecomesOwner(u32 v) { becomesOwner = v; }
 
-u32 NetSessionAreaView::getBecomesOwner() { return unk_5c; }
+u32 NetSessionAreaView::getBecomesOwner() { return becomesOwner; }
 
-void NetSessionAreaView::setMoveState(s32 v) { unk_60 = v; }
+void NetSessionAreaView::setMoveState(s32 v) { moveState = v; }
 
-s32 NetSessionAreaView::getMoveState() { return unk_60; }
+s32 NetSessionAreaView::getMoveState() { return moveState; }
 
 void NetSessionAreaView::updateMove() {
     CommManager *o = gCommManager;
-    s32 r7 = o->unk_64;
+    s32 r7 = o->myAid;
     u8 b0, b1, b2, b3, b4, b5;
     s32 best;
     s32 flag;
@@ -1172,7 +1172,7 @@ void NetSessionAreaView::updateMove() {
     case 13:
         break;
     case 14:
-        NetArea_SetMoveReady(((CommManager *)o)->unk_64, 1);
+        NetArea_SetMoveReady(((CommManager *)o)->myAid, 1);
         setMoveState(15);
         break;
     case 15:
@@ -1183,23 +1183,23 @@ void NetSessionAreaView::updateMove() {
     }
 }
 
-void NetSessionAreaView::setHandoffSlot(s32 v) { unk_64 = v; }
+void NetSessionAreaView::setHandoffSlot(s32 v) { handoffSlot = v; }
 
-s32 NetSessionAreaView::getHandoffSlot() { return unk_64; }
+s32 NetSessionAreaView::getHandoffSlot() { return handoffSlot; }
 
-void NetSessionAreaView::setMemberAck(s32 i, u32 v) { unk_68[i] = v; }
+void NetSessionAreaView::setMemberAck(s32 i, u32 v) { memberAck[i] = v; }
 
-u32 NetSessionAreaView::getMemberAck(s32 i) { return unk_68[i]; }
+u32 NetSessionAreaView::getMemberAck(s32 i) { return memberAck[i]; }
 
 void NetSessionAreaView::clearMemberAcks() {
-    u8 *p = unk_68;
+    u8 *p = memberAck;
     s32 i;
     for (i = 3; i >= 0; i--) *p++ = 0;
 }
 
-void NetSessionAreaView::setNotifiedOwnerMover(s32 v) { unk_6c = v; }
+void NetSessionAreaView::setNotifiedOwnerMover(s32 v) { notifiedOwnerMover = v; }
 
-s32 NetSessionAreaView::getNotifiedOwnerMover() { return unk_6c; }
+s32 NetSessionAreaView::getNotifiedOwnerMover() { return notifiedOwnerMover; }
 
 void NetSessionAreaView::notifyMovingOwner() {
     s32 r5 = 4;
@@ -1226,17 +1226,17 @@ void NetSessionAreaView::notifyMovingOwner() {
     }
 }
 
-void NetSessionAreaView::setStateSourceSlot(s32 v) { unk_70 = v; }
+void NetSessionAreaView::setStateSourceSlot(s32 v) { stateSourceSlot = v; }
 
-s32 NetSessionAreaView::getStateSourceSlot() { return unk_70; }
+s32 NetSessionAreaView::getStateSourceSlot() { return stateSourceSlot; }
 
-void NetSessionAreaView::setStateRequester(s32 v) { unk_74 = v; }
+void NetSessionAreaView::setStateRequester(s32 v) { stateRequester = v; }
 
-s32 NetSessionAreaView::getStateRequester() { return unk_74; }
+s32 NetSessionAreaView::getStateRequester() { return stateRequester; }
 
-void NetSessionAreaView::setArrivingSlot(s32 v) { unk_78 = v; }
+void NetSessionAreaView::setArrivingSlot(s32 v) { arrivingSlot = v; }
 
-s32 NetSessionAreaView::getArrivingSlot() { return unk_78; }
+s32 NetSessionAreaView::getArrivingSlot() { return arrivingSlot; }
 
 void NetSessionAreaView::updateArrivingSlot() {
     s32 c = getArrivingSlot();
@@ -1248,18 +1248,18 @@ void NetSessionAreaView::updateArrivingSlot() {
     }
 }
 
-void NetSessionAreaView::setOwnerAck(u32 v) { unk_7c = v; }
+void NetSessionAreaView::setOwnerAck(u32 v) { ownerAck = v; }
 
-u32 NetSessionAreaView::getOwnerAck() { return unk_7c; }
+u32 NetSessionAreaView::getOwnerAck() { return ownerAck; }
 
-void NetSessionAreaView::setNotifiedMemberMover(s32 v) { unk_80 = v; }
+void NetSessionAreaView::setNotifiedMemberMover(s32 v) { notifiedMemberMover = v; }
 
-s32 NetSessionAreaView::getNotifiedMemberMover() { return unk_80; }
+s32 NetSessionAreaView::getNotifiedMemberMover() { return notifiedMemberMover; }
 
 void NetSessionAreaView::notifyMovingMember() {
     s32 r5 = 4;
     CommManager *o = gCommManager;
-    s32 saved = o->unk_64;
+    s32 saved = o->myAid;
     s32 i;
     for (i = 3; i >= 0; i--) {
         if (o->isSlotActive(i) != 0 && NetArea_IsSlotMoving(i) != 0) {
@@ -1282,12 +1282,12 @@ void NetSessionAreaView::notifyMovingMember() {
     }
 }
 
-void NetSessionAreaView::setSyncState(s32 i, u32 v) { unk_84[i] = v; }
+void NetSessionAreaView::setSyncState(s32 i, u32 v) { syncState[i] = v; }
 
-u32 NetSessionAreaView::getSyncState(s32 i) { return unk_84[i]; }
+u32 NetSessionAreaView::getSyncState(s32 i) { return syncState[i]; }
 
 void NetSessionAreaView::resetSyncStates() {
-    u32 *p = unk_84;
+    u32 *p = syncState;
     s32 i;
     for (i = 3; i >= 0; i--) *p++ = 7;
 }
@@ -1521,42 +1521,42 @@ void NetSessionState::updateSyncHost() {
     }
 }
 
-void NetSessionState::setLastSyncSlot(s32 v) { unk_94 = v; }
+void NetSessionState::setLastSyncSlot(s32 v) { lastSyncSlot = v; }
 
-s32 NetSessionState::getLastSyncSlot() { return unk_94; }
+s32 NetSessionState::getLastSyncSlot() { return lastSyncSlot; }
 
-void NetSessionState::setSyncMemberMask(u16 v) { unk_98 = v; }
+void NetSessionState::setSyncMemberMask(u16 v) { syncMemberMask = v; }
 
-u16 NetSessionState::getSyncMemberMask() { return unk_98; }
+u16 NetSessionState::getSyncMemberMask() { return syncMemberMask; }
 
-void NetSessionState::setSyncPhase(s32 v) { unk_9c = v; }
+void NetSessionState::setSyncPhase(s32 v) { syncPhase = v; }
 
-s32 NetSessionState::getSyncPhase() { return unk_9c; }
+s32 NetSessionState::getSyncPhase() { return syncPhase; }
 
-void NetSessionState::resetSyncPhase() { unk_9c = 4; }
+void NetSessionState::resetSyncPhase() { syncPhase = 4; }
 
-void NetSessionState::setSyncRequester(s32 v) { unk_a0 = v; }
+void NetSessionState::setSyncRequester(s32 v) { syncRequester = v; }
 
-s32 NetSessionState::getSyncRequester() { return unk_a0; }
+s32 NetSessionState::getSyncRequester() { return syncRequester; }
 
-void NetSessionState::resetSyncRequester() { unk_a0 = 4; }
+void NetSessionState::resetSyncRequester() { syncRequester = 4; }
 
-void NetSessionState::setSyncKind(s32 v) { unk_a4 = v; }
+void NetSessionState::setSyncKind(s32 v) { syncKind = v; }
 
-s32 NetSessionState::getSyncKind() { return unk_a4; }
+s32 NetSessionState::getSyncKind() { return syncKind; }
 
-void NetSessionState::resetSyncKind() { unk_a4 = 4; }
+void NetSessionState::resetSyncKind() { syncKind = 4; }
 
-void NetSessionState::setMemberSyncReply(s32 i, s32 v) { unk_a8[i] = v; }
+void NetSessionState::setMemberSyncReply(s32 i, s32 v) { memberSyncReply[i] = v; }
 
-s32 NetSessionState::getMemberSyncReply(s32 i) { return unk_a8[i]; }
+s32 NetSessionState::getMemberSyncReply(s32 i) { return memberSyncReply[i]; }
 
-void NetSessionState::resetMemberSyncReply(s32 i) { unk_a8[i] = 6; }
+void NetSessionState::resetMemberSyncReply(s32 i) { memberSyncReply[i] = 6; }
 
 void NetSessionState::resetAllMemberSyncReplies() {
     s32 i;
     for (i = 3; i >= 0; i--) {
-        unk_a8[i] = 6;
+        memberSyncReply[i] = 6;
     }
 }
 
@@ -1566,7 +1566,7 @@ u16 gNextSceneProfile = 0xd8;
 
 void NetSessionState::updateSyncClient() {
     CommManager *g = gCommManager;
-    s32 st = g->unk_64;
+    s32 st = g->myAid;
     s32 mode;
     s32 v;
     s32 st2;
@@ -1575,7 +1575,7 @@ void NetSessionState::updateSyncClient() {
         setReplyTimer(0);
         setMemberSyncReply(st, 1);
     }
-    st = g->unk_64;
+    st = g->myAid;
     if (getMemberSyncReply(st) == 1) {
         BOOL r7 = FALSE;
         s32 t = Scene_GetCurrent();
@@ -1625,7 +1625,7 @@ void NetSessionState::updateSyncClient() {
             FieldInfoBalloon_ShowSyncWaitMsg(mode);
         }
     }
-    st2 = g->unk_64;
+    st2 = g->myAid;
     v = getMemberSyncReply(st2);
     if (v == 2) {
         FieldInfoBalloon_ShowSyncKindMsg(getSyncKind());
@@ -1729,23 +1729,23 @@ void NetSessionState::updateSyncClient() {
     }
 }
 
-void NetSessionState::setReplyTimer(s32 v) { unk_b8 = v; }
+void NetSessionState::setReplyTimer(s32 v) { replyTimer = v; }
 
-s32 NetSessionState::getReplyTimer() { return unk_b8; }
+s32 NetSessionState::getReplyTimer() { return replyTimer; }
 
-void NetSessionState::setGoDelay(u8 v) { unk_bc = v; }
+void NetSessionState::setGoDelay(u8 v) { goDelay = v; }
 
-u8 NetSessionState::getGoDelay() { return unk_bc; }
+u8 NetSessionState::getGoDelay() { return goDelay; }
 
-void NetSessionState::setActiveSyncKind(s32 v) { unk_c0 = v; }
+void NetSessionState::setActiveSyncKind(s32 v) { activeSyncKind = v; }
 
-s32 NetSessionState::getActiveSyncKind() { return unk_c0; }
+s32 NetSessionState::getActiveSyncKind() { return activeSyncKind; }
 
-void NetSessionState::setCtrl07Received(u8 v) { unk_c4 = v; }
+void NetSessionState::setCtrl07Received(u8 v) { ctrl07Received = v; }
 
 // End of file: small accessors (defined last so they are not inlined into callers)
 
-u8 NetSessionState::getCtrl07Received() { return unk_c4; }
+u8 NetSessionState::getCtrl07Received() { return ctrl07Received; }
 
 extern "C" SceneBase *SceneBase_Create(void) {
     return new SceneBase();
@@ -1780,7 +1780,7 @@ BOOL SceneBase::vfunc_04() {
     NetArea_OnSceneCreateNop();
     NetArea_ApplyStateB();
     gSceneCreating++;
-    if (gCommManager->isSlotActive(gCommManager->unk_64)) {
+    if (gCommManager->isSlotActive(gCommManager->myAid)) {
         switch (NetArea_GetMoveState()) {
         case 6:
             NetArea_SetMoveState(7);
@@ -1928,7 +1928,7 @@ extern "C" void Scene_CheckExit(void *p) {
         if (Unk_020a42c4_IsTwo(m) == 0) {
             if (data_021c3cb8 == 0) {
                 if (Unk_020a42c4_IsZero(m) != 0) {
-                    if (gCommManager->isSlotActive(gCommManager->unk_64) != 0) {
+                    if (gCommManager->isSlotActive(gCommManager->myAid) != 0) {
                         switch (NetArea_GetMoveState()) {
                         case 5:
                             ProcBase_RequestDelete(p);

@@ -123,18 +123,18 @@ public:
     BgmRequest *init(s32 a, u32 b, s32 c, s32 d, u8 e);
     BgmRequest *initEmpty();
 
-    /* 0x00 */ s32 unk_00;
-    /* 0x04 */ u16 unk_04;
+    /* 0x00 */ s32 priority;
+    /* 0x04 */ u16 bgmId;
     /* 0x06 */ u8 pad_06[2];
-    /* 0x08 */ s32 unk_08;
-    /* 0x0c */ s32 unk_0c;
-    /* 0x10 */ u8 unk_10;
-    /* 0x11 */ u8 unk_11;
-    /* 0x12 */ u8 unk_12;
-    /* 0x13 */ u8 unk_13;
-    /* 0x14 */ u8 unk_14;
+    /* 0x08 */ s32 stopFadeFrames;
+    /* 0x0c */ s32 volume;
+    /* 0x10 */ u8 muteDucks;
+    /* 0x11 */ u8 transient;
+    /* 0x12 */ u8 playing;
+    /* 0x13 */ u8 removePending;
+    /* 0x14 */ u8 volumePending;
     /* 0x15 */ u8 pad_15[3];
-    /* 0x18 */ s32 unk_18;
+    /* 0x18 */ s32 lifetime;
 };
 
 // the symbols name this class in the parameter of three methods of the composite
@@ -147,16 +147,16 @@ typedef BOOL (BgmRequestView::*Unk_02034574_Fn)();
 
 class EventBgm {
 public:
-    u32 unk_04;
-    u16 unk_08;
-    u16 unk_0a;
-    u16 unk_0c;
-    u16 unk_0e;
-    u16 unk_10;
-    u8 unk_12;
-    u8 unk_13;
-    u8 unk_14;
-    u8 unk_15;
+    u32 manager;
+    u16 newYearFanfareBgm;
+    u16 newYearNightBgm;
+    u16 newYearDayBgm;
+    u16 countdownBgm;
+    u16 fireworksBgm;
+    u8 countdownFadeActive;
+    u8 yearChanged;
+    u8 keep;
+    u8 active;
     virtual ~EventBgm();
     EventBgm(u32 a);
     void updateYearChanged();
@@ -188,10 +188,10 @@ public:
 
 class FieldSpecialBgm {
 public:
-    u32 unk_04;
-    u16 unk_08;
-    u8 unk_0a;
-    u8 unk_0b;
+    u32 manager;
+    u16 currentBgm;
+    u8 keep;
+    u8 active;
 
     FieldSpecialBgm(u32 a);
     virtual ~FieldSpecialBgm();
@@ -208,12 +208,12 @@ public:
 
 class HourlyBgm {
 public:
-    u32 unk_04;
-    s32 unk_08;
-    u16 unk_0c;
-    u8 unk_0e;
-    u8 unk_0f;
-    u8 unk_10;
+    u32 manager;
+    s32 hour;
+    u16 currentBgm;
+    u8 hourFadeActive;
+    u8 keep;
+    u8 active;
 
     HourlyBgm(u32 v);
     virtual ~HourlyBgm();
@@ -244,17 +244,17 @@ public:
     void requestPlay(u16 a);
     void func_02035740();
 
-    u32 unk_00;
-    u8 unk_04;
+    u32 manager;
+    u8 playPending;
     u8 pad_05;
-    u16 unk_06;
-    u8 unk_08;
+    u16 playBgmId;
+    u8 stopPending;
     u8 pad_09[3];
-    s32 unk_0c;
-    u8 unk_10;
+    s32 stopFadeFrames;
+    u8 volumePending;
     u8 pad_11[3];
-    s32 unk_14;
-    s32 unk_18;
+    s32 volume;
+    s32 volumeFrames;
 };
 
 typedef void (BgmManagerOwnerView::*Unk_02035780_OwnerFn)();
@@ -265,18 +265,18 @@ public:
     void clearVolumePending();
 
     u8 pad_00[4];
-    u16 unk_04;
+    u16 bgmId;
     u8 pad_06[6];
-    s32 unk_0c;
-    u8 unk_10;
+    s32 volume;
+    u8 muteDucks;
     u8 pad_11;
-    u8 unk_12;
+    u8 playing;
     u8 pad_13;
-    u8 unk_14;
+    u8 volumePending;
     u8 pad_15[0x1c0 - 0x15];
-    s32 unk_1c0;
+    s32 numRequests;
     u8 pad_1c4[0x2b4 - 0x1c4];
-    BgmCommandQueue unk_2b4;
+    BgmCommandQueue commands;
 };
 
 class BgmVolumeChannel {
@@ -286,12 +286,12 @@ public:
     void set(s32 a, s32 b, u8 c);
     void clear();
 
-    u8 unk_00;
-    u8 unk_01;
+    u8 changed;
+    u8 masked;
     u8 pad_02[2];
-    s32 unk_04;
-    s32 unk_08;
-    s32 unk_0c;
+    s32 volume;
+    s32 fadeFrames;
+    s32 state;
 };
 
 class BgmVolumeMixer {
@@ -324,9 +324,9 @@ public:
     void exit();
     void init();
 
-    BgmManagerOwnerView *unk_00;
-    BgmVolumeChannel unk_04[8];
-    s32 unk_84;
+    BgmManagerOwnerView *manager;
+    BgmVolumeChannel channels[8];
+    s32 talkDuckHold;
 };
 
 typedef void (BgmVolumeMixer::*Unk_02035758_Fn)(BgmVolumeChannel *);
@@ -336,15 +336,15 @@ class BgmClock {
 public:
     BgmClock();
     ~BgmClock();
-    s32 unk_00;
-    u16 unk_04;
-    u8 unk_06;
-    u8 unk_07;
-    s32 unk_08;
-    s32 unk_0c;
-    u16 unk_10;
-    u16 unk_12;
-    s32 unk_14;
+    s32 year;
+    u16 dayMonth;
+    u8 minute;
+    u8 hour;
+    s32 second;
+    s32 prevYear;
+    u16 prevDayMonth;
+    u16 prevMinuteHour;
+    s32 prevSecond;
 
     void update();
     BOOL hasYearChanged();
@@ -356,9 +356,9 @@ public:
 
 class FieldBgm {
 public:
-    HourlyBgm unk_04;
-    FieldSpecialBgm unk_18;
-    EventBgm unk_24;
+    HourlyBgm hourlyBgm;
+    FieldSpecialBgm specialBgm;
+    EventBgm eventBgm;
     virtual ~FieldBgm();
     FieldBgm(u32 a);
     void setKeep(u32 a);
@@ -372,14 +372,14 @@ public:
 
 class RoomBgm {
 public:
-    u32 unk_04;
-    u8 unk_08;
-    u16 unk_0a;
-    u8 unk_0c;
-    u8 unk_0d;
-    u8 unk_0e;
-    u8 unk_0f;
-    u8 unk_10;
+    u32 manager;
+    u8 currentScene;
+    u16 sceneBgm;
+    u8 closingFadeActive;
+    u8 closingMusicPlaying;
+    u8 closingForced;
+    u8 active;
+    u8 keep;
     virtual ~RoomBgm();
     void stopClosingMusic();
     void updateSceneBgm();
@@ -413,21 +413,21 @@ public:
     void onFadeIn();
     void onFadeOut();
 
-    u32 unk_04;
-    u8 unk_08;
-    u8 unk_09;
-    u8 unk_0a;
-    u8 unk_0b;
-    s32 unk_0c;
-    s32 unk_10;
+    u32 manager;
+    u8 keepForWarp;
+    u8 sameSceneBgm;
+    u8 keepRequested;
+    u8 exitSilenceState;
+    s32 fadeDelay;
+    s32 releaseTimer;
 };
 
 class FaintBgm {
 public:
     virtual ~FaintBgm();
-    BgmManagerView *unk_04;
-    u16 unk_08;
-    u8 unk_0a;
+    BgmManagerView *manager;
+    u16 currentBgm;
+    u8 silenceActive;
     FaintBgm(BgmManagerView *o);
     void stop();
     void exit();
@@ -471,17 +471,17 @@ public:
     s32 func_02034514();
     void update();
 
-    /* 0x000 */ BgmRequest unk_00[16];
-    /* 0x1c0 */ s32 unk_1c0;
-    /* 0x1c4 */ BgmVolumeMixer unk_1c4;
-    /* 0x24c */ BgmClock unk_24c;
-    /* 0x264 */ FieldBgm unk_264;
-    /* 0x2a0 */ RoomBgm unk_2a0;
-    /* 0x2b4 */ BgmCommandQueue unk_2b4;
-    /* 0x2d0 */ BgmSceneFade unk_2d0;
-    /* 0x2e4 */ FaintBgm unk_2e4;
-    /* 0x2f0 */ BgmTracks unk_2f0;
-    /* 0x2f4 */ u8 unk_2f4;
+    /* 0x000 */ BgmRequest requests[16];
+    /* 0x1c0 */ s32 numRequests;
+    /* 0x1c4 */ BgmVolumeMixer mixer;
+    /* 0x24c */ BgmClock clock;
+    /* 0x264 */ FieldBgm fieldBgm;
+    /* 0x2a0 */ RoomBgm roomBgm;
+    /* 0x2b4 */ BgmCommandQueue commands;
+    /* 0x2d0 */ BgmSceneFade sceneFade;
+    /* 0x2e4 */ FaintBgm faintBgm;
+    /* 0x2f0 */ BgmTracks tracks;
+    /* 0x2f4 */ u8 hourChimeDisabled;
     /* 0x2f5 */ u8 pad_2f5[3];
 };
 
@@ -495,23 +495,23 @@ public:
     virtual ~BgmProc();
     static BgmProc *create();
 
-    /* 0x50 */ BgmManager unk_50;
+    /* 0x50 */ BgmManager bgmManager;
 };
 
 // composite object seen by the second file
 class BgmManagerView {
 public:
-    BgmRequest unk_000[16];
-    s32 unk_1c0;
-    BgmVolumeMixer unk_1c4;
-    BgmClock unk_24c;
-    FieldBgm unk_264;
-    RoomBgm unk_2a0;
-    BgmCommandQueue unk_2b4;
-    BgmSceneFade unk_2d0;
-    FaintBgm unk_2e4;
-    BgmTracks unk_2f0;
-    u8 unk_2f4;
+    BgmRequest requests[16];
+    s32 numRequests;
+    BgmVolumeMixer mixer;
+    BgmClock clock;
+    FieldBgm fieldBgm;
+    RoomBgm roomBgm;
+    BgmCommandQueue commands;
+    BgmSceneFade sceneFade;
+    FaintBgm faintBgm;
+    BgmTracks tracks;
+    u8 hourChimeDisabled;
     BgmManagerView();
     ~BgmManagerView();
     void exit();
@@ -552,7 +552,7 @@ struct Unk_02034320_Pkt {
 class BgmManagerView;
 
 extern "C" {
-struct Unk_020353b0_Rec { s32 unk_00; u16 unk_04; };
+struct Unk_020353b0_Rec { s32 priority; u16 bgmId; };
 }
 
 class BgmManagerOwnerView;
@@ -563,9 +563,9 @@ public:
     void stopClosingMusic();
 
     u8 pad_00[0xc];
-    u8 unk_0c;
-    u8 unk_0d;
-    u8 unk_0e;
+    u8 closingFadeActive;
+    u8 closingMusicPlaying;
+    u8 closingForced;
 };
 
 class RoomBgmSceneView {
@@ -575,20 +575,20 @@ public:
     void playSceneBgm(s32 t);
 
     u8 pad_00[8];
-    u8 unk_08;
+    u8 currentScene;
     u8 pad_09;
-    u16 unk_0a;
+    u16 sceneBgm;
 };
 
 struct Unk_020355dc_Data {
     u8 pad_00[0xc];
-    u16 unk_0c;
+    u16 profile;
 };
 
 struct Unk_020358d4_Buf {
     u8 pad_00[0x30];
-    s32 unk_30;
-    s32 unk_34;
+    s32 waterKind;
+    s32 attr;
     u8 pad_38[8];
 };
 
@@ -603,7 +603,7 @@ struct Unk_020358d4_Src {
 };
 
 extern "C" {
-struct Unk_021e5890_T { u8 pad[0x14]; u8 unk_14; };
+struct Unk_021e5890_T { u8 pad[0x14]; u8 groundSeasonBits; };
 }
 
 struct Unk_02036c60_Vec { s32 x, y, z; };
@@ -611,40 +611,40 @@ struct Unk_02036c60_Vec { s32 x, y, z; };
 struct Unk_02036c60_Ent { u8 a; u8 pad; s16 b; s16 c; };
 
 // ---- BgModelCache ----
-struct Unk_02036cec_Entry {
-    s32 unk_00;
-    void *unk_04;
-    void *unk_08;
-    void *unk_0c;
-    void *unk_10;
-    void *unk_14;
-    void *unk_18;
-    void *unk_1c;
-    void *unk_20;
+struct BgAcreModel {
+    s32 acreId;
+    void *arc;
+    void *mdl;
+    void *bcl;
+    void *bsd;
+    void *jntAnm;
+    void *matAnm;
+    void *texSrtAnm;
+    void *tex;
     u8 unk_24[4];
-    void *unk_28;
-    s32 unk_2c;
+    void *mgt;
+    s32 mgtCount;
 };
 
-struct Unk_02036cec_Small {
-    s32 unk_00;
-    void *unk_04;
+struct BgAcreBcl {
+    s32 acreId;
+    void *bcl;
 };
 
 struct BgModelCache {
-    Unk_02036cec_Entry unk_000[31];
-    Unk_02036cec_Small unk_5d0[9];
-    u8 unk_618;
+    BgAcreModel acres[31];
+    BgAcreBcl bclCache[9];
+    u8 withAnims;
     u8 pad_619[3];
-    s32 unk_61c;
+    s32 heapSize;
     u8 pad_620[0x10];
-    s32 unk_630;
-    s32 unk_634;
-    s32 unk_638;
-    s32 unk_63c;
-    s32 unk_640;
-    s32 unk_644;
-    s32 unk_648;
+    s32 groundTex;
+    s32 groundMatAnm;
+    s32 groundTexSrtAnm;
+    s32 riverPatAnm;
+    s32 riverPatTex;
+    s32 beBPatAnm;
+    s32 beBPatTex;
 
     s32 getBeBPatTex();
     s32 getBeBPatAnm();
@@ -654,7 +654,7 @@ struct BgModelCache {
     s32 getGroundMatAnm();
     s32 getGroundTex();
     BOOL reset();
-    Unk_02036cec_Entry *getAcre(s32 id);
+    BgAcreModel *getAcre(s32 id);
     void *getAcreBcl(s32 id);
     void loadGroundAnims();
     void loadGroundTexture();
@@ -899,11 +899,11 @@ BgmRequest *BgmRequest::initEmpty()
 BgmRequest *BgmRequest::init(s32 a, u32 b, s32 c, s32 d, u8 e)
 {
     clear();
-    unk_00 = a;
-    unk_04 = b;
-    unk_0c = c;
-    unk_08 = d;
-    unk_10 = e;
+    priority = a;
+    bgmId = b;
+    volume = c;
+    stopFadeFrames = d;
+    muteDucks = e;
     return this;
 }
 
@@ -913,39 +913,39 @@ void BgmRequest::func_02036c18()
 
 void BgmRequest::clear()
 {
-    unk_00 = 0x25;
-    unk_04 = 0xffff;
-    unk_08 = 0;
-    unk_0c = 0;
-    unk_10 = 0;
-    unk_11 = 0;
-    unk_12 = 0;
-    unk_13 = 0;
-    unk_14 = 0;
-    unk_18 = 0;
+    priority = 0x25;
+    bgmId = 0xffff;
+    stopFadeFrames = 0;
+    volume = 0;
+    muteDucks = 0;
+    transient = 0;
+    playing = 0;
+    removePending = 0;
+    volumePending = 0;
+    lifetime = 0;
 }
 
 void BgmRequest::copyFrom(BgmRequest *src)
 {
     clear();
-    unk_00 = src->unk_00;
-    unk_04 = src->unk_04;
-    unk_08 = src->unk_08;
-    unk_0c = src->unk_0c;
-    unk_10 = src->unk_10;
-    unk_11 = src->unk_11;
-    unk_12 = src->unk_12;
-    unk_13 = src->unk_13;
-    unk_14 = src->unk_14;
-    unk_18 = src->unk_18;
+    priority = src->priority;
+    bgmId = src->bgmId;
+    stopFadeFrames = src->stopFadeFrames;
+    volume = src->volume;
+    muteDucks = src->muteDucks;
+    transient = src->transient;
+    playing = src->playing;
+    removePending = src->removePending;
+    volumePending = src->volumePending;
+    lifetime = src->lifetime;
 }
 
 BOOL BgmRequest::tickLifetime()
 {
     BOOL r = FALSE;
-    if (unk_18 > 0) {
-        unk_18 = unk_18 - 1;
-        if (unk_18 <= 0) {
+    if (lifetime > 0) {
+        lifetime = lifetime - 1;
+        if (lifetime <= 0) {
             r = TRUE;
         }
     }
@@ -983,7 +983,7 @@ extern "C" void BgmClock_Reset(BgmClock *p)
 
 BOOL BgmClock::isAt(u16 *a, u16 *b)
 {
-    if (unk_04 == *a && *(u16 *)&unk_06 == *b) {
+    if (dayMonth == *a && *(u16 *)&minute == *b) {
         return TRUE;
     }
     return FALSE;
@@ -991,7 +991,7 @@ BOOL BgmClock::isAt(u16 *a, u16 *b)
 
 BOOL BgmClock::isMinuteInRange(u32 a, u32 b, u32 c, u32 d)
 {
-    u32 t = unk_08 + unk_06 * 0x3c;
+    u32 t = second + minute * 0x3c;
     u32 lo = b + a * 0x3c;
     u32 hi = d + c * 0x3c;
     BOOL r = FALSE;
@@ -1005,7 +1005,7 @@ BOOL BgmClock::isMinuteInRange(u32 a, u32 b, u32 c, u32 d)
 
 BOOL BgmClock::isTimeInRange(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f)
 {
-    u32 t = unk_08 + (unk_07 * 0xe10 + unk_06 * 0x3c);
+    u32 t = second + (hour * 0xe10 + minute * 0x3c);
     u32 lo = c + (a * 0xe10 + b * 0x3c);
     u32 hi = f + (d * 0xe10 + e * 0x3c);
     BOOL r = FALSE;
@@ -1019,7 +1019,7 @@ BOOL BgmClock::isTimeInRange(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f)
 
 BOOL BgmClock::hasHourChanged()
 {
-    if (*((u8 *)this + 0x13) != unk_07) {
+    if (*((u8 *)this + 0x13) != hour) {
         return TRUE;
     }
     return FALSE;
@@ -1027,7 +1027,7 @@ BOOL BgmClock::hasHourChanged()
 
 BOOL BgmClock::hasYearChanged()
 {
-    if (unk_0c != unk_00) {
+    if (prevYear != year) {
         return TRUE;
     }
     return FALSE;
@@ -1036,17 +1036,17 @@ BOOL BgmClock::hasYearChanged()
 // ---- BgmClock methods ----
 void BgmClock::update()
 {
-    unk_0c = unk_00;
-    unk_10 = unk_04;
-    unk_12 = *(u16 *)&unk_06;
-    unk_14 = unk_08;
-    unk_00 = Clock_GetYear();
-    Clock_GetDayMonth(&unk_04);
-    Clock_GetMinuteHour((u16 *)&unk_06);
-    unk_08 = Clock_GetSecond();
+    prevYear = year;
+    prevDayMonth = dayMonth;
+    prevMinuteHour = *(u16 *)&minute;
+    prevSecond = second;
+    year = Clock_GetYear();
+    Clock_GetDayMonth(&dayMonth);
+    Clock_GetMinuteHour((u16 *)&minute);
+    second = Clock_GetSecond();
 }
 
-HourlyBgm::HourlyBgm(u32 v) : unk_04(v), unk_08(0x18), unk_0c(0xffff), unk_0e(0), unk_0f(0), unk_10(0)
+HourlyBgm::HourlyBgm(u32 v) : manager(v), hour(0x18), currentBgm(0xffff), hourFadeActive(0), keep(0), active(0)
 {
 }
 
@@ -1056,11 +1056,11 @@ HourlyBgm::~HourlyBgm()
 
 void HourlyBgm::init()
 {
-    unk_0c = 0xffff;
-    unk_08 = 0x18;
-    unk_0e = 0;
-    unk_0f = 0;
-    unk_10 = 0;
+    currentBgm = 0xffff;
+    hour = 0x18;
+    hourFadeActive = 0;
+    keep = 0;
+    active = 0;
 }
 
 void HourlyBgm::exit()
@@ -1070,7 +1070,7 @@ void HourlyBgm::exit()
 
 void HourlyBgm::update()
 {
-    if (unk_10 != 0) {
+    if (active != 0) {
         updateHour();
         updateHourFade();
     }
@@ -1079,73 +1079,73 @@ void HourlyBgm::update()
 void HourlyBgm::stop()
 {
     stopHourBgm();
-    unk_08 = 0x18;
+    hour = 0x18;
     stopHourFade();
-    unk_0f = 0;
-    unk_10 = 0;
+    keep = 0;
+    active = 0;
 }
 
 void HourlyBgm::start()
 {
-    unk_10 = 1;
+    active = 1;
     updateHour();
     updateHourFade();
 }
 
 void HourlyBgm::end()
 {
-    if (unk_0f == 0) {
+    if (keep == 0) {
         stopHourBgm();
-        unk_08 = 0x18;
+        hour = 0x18;
         stopHourFade();
     }
-    unk_10 = 0;
+    active = 0;
 }
 
 void HourlyBgm::setKeep(u32 v)
 {
-    unk_0f = v;
+    keep = v;
 }
 
 void HourlyBgm::playHourBgm()
 {
-    u16 t = sHourlyBgmIds[unk_08];
+    u16 t = sHourlyBgmIds[hour];
     Ns_020367e8::Bgm_Request(0x24, t, 0x7f, 0);
-    unk_0c = t;
+    currentBgm = t;
 }
 
 void HourlyBgm::stopHourBgm()
 {
-    u16 t = unk_0c;
+    u16 t = currentBgm;
     if (t != 0xffff) {
         Ns_020367e8::Bgm_Release(t);
-        unk_0c = 0xffff;
+        currentBgm = 0xffff;
     }
 }
 
 void HourlyBgm::updateHour()
 {
-    u32 v = Ns_020367e8::Bgm_GetClock()->unk_07;
-    if (v != unk_08) {
+    u32 v = Ns_020367e8::Bgm_GetClock()->hour;
+    if (v != hour) {
         stopHourBgm();
-        unk_08 = v;
+        hour = v;
         playHourBgm();
     }
 }
 
 void HourlyBgm::startHourFade(u32 x)
 {
-    if (unk_0e == 0) {
+    if (hourFadeActive == 0) {
         Ns_020367e8::Bgm_RequestSilence(0x1b, x, 0);
-        unk_0e = 1;
+        hourFadeActive = 1;
     }
 }
 
 void HourlyBgm::stopHourFade()
 {
-    if (unk_0e != 0) {
+    if (hourFadeActive != 0) {
         Ns_020367e8::Bgm_ReleasePriority(0x1b);
-        unk_0e = 0;
+        hourFadeActive = 0;
     }
 }
 
@@ -1168,7 +1168,7 @@ void HourlyBgm::updateHourFade()
     }
 }
 
-FieldSpecialBgm::FieldSpecialBgm(u32 v) : unk_04(v), unk_08(0xffff), unk_0a(0), unk_0b(0)
+FieldSpecialBgm::FieldSpecialBgm(u32 v) : manager(v), currentBgm(0xffff), keep(0), active(0)
 {
 }
 
@@ -1178,9 +1178,9 @@ FieldSpecialBgm::~FieldSpecialBgm()
 
 void FieldSpecialBgm::init()
 {
-    unk_08 = 0xffff;
-    unk_0a = 0;
-    unk_0b = 0;
+    currentBgm = 0xffff;
+    keep = 0;
+    active = 0;
 }
 
 void FieldSpecialBgm::exit()
@@ -1195,13 +1195,13 @@ void FieldSpecialBgm::update()
 void FieldSpecialBgm::stop()
 {
     stopBgm();
-    unk_0a = 0;
-    unk_0b = 0;
+    keep = 0;
+    active = 0;
 }
 
 void FieldSpecialBgm::start() {
-    unk_0b = 1;
-    if (unk_08 == 0xffff) {
+    active = 1;
+    if (currentBgm == 0xffff) {
         s32 r5 = Ns_02035e2c::PlayerData_GetCurrent();
         if (Ns_02035e2c::Taxi_IsArriving() != 0) {
             Ns_02035e2c::Bgm_RequestSilence(3, 0, 5);
@@ -1217,52 +1217,52 @@ void FieldSpecialBgm::start() {
 }
 
 void FieldSpecialBgm::end() {
-    if (unk_0a == 0) stopBgm();
-    unk_0b = 0;
+    if (keep == 0) stopBgm();
+    active = 0;
 }
 
-void FieldSpecialBgm::setKeep(u32 a) { unk_0a = a; }
+void FieldSpecialBgm::setKeep(u32 a) { keep = a; }
 
 void FieldSpecialBgm::play(s32 a, u32 b, u32 c) {
     Ns_02035e2c::Bgm_Request(a, b, 0x7f, c);
-    unk_08 = b;
+    currentBgm = b;
 }
 
 void FieldSpecialBgm::stopBgm() {
-    if (unk_08 != 0xffff) { Ns_02035e2c::Bgm_Release(unk_08); unk_08 = 0xffff; }
+    if (currentBgm != 0xffff) { Ns_02035e2c::Bgm_Release(currentBgm); currentBgm = 0xffff; }
 }
 
 EventBgm::EventBgm(u32 a) {
-    unk_04 = a;
-    unk_08 = 0xffff;
-    unk_0a = 0xffff;
-    unk_0c = 0xffff;
-    unk_0e = 0xffff;
-    unk_10 = 0xffff;
-    unk_12 = 0;
-    unk_13 = 0;
-    unk_14 = 0;
-    unk_15 = 0;
+    manager = a;
+    newYearFanfareBgm = 0xffff;
+    newYearNightBgm = 0xffff;
+    newYearDayBgm = 0xffff;
+    countdownBgm = 0xffff;
+    fireworksBgm = 0xffff;
+    countdownFadeActive = 0;
+    yearChanged = 0;
+    keep = 0;
+    active = 0;
 }
 
 EventBgm::~EventBgm() {}
 
 void EventBgm::init() {
-    unk_08 = 0xffff;
-    unk_0a = 0xffff;
-    unk_0c = 0xffff;
-    unk_0e = 0xffff;
-    unk_10 = 0xffff;
-    unk_12 = 0;
-    unk_13 = 0;
-    unk_14 = 0;
-    unk_15 = 0;
+    newYearFanfareBgm = 0xffff;
+    newYearNightBgm = 0xffff;
+    newYearDayBgm = 0xffff;
+    countdownBgm = 0xffff;
+    fireworksBgm = 0xffff;
+    countdownFadeActive = 0;
+    yearChanged = 0;
+    keep = 0;
+    active = 0;
 }
 
 void EventBgm::exit() { stop(); }
 
 void EventBgm::update() {
-    if (unk_15 != 0) {
+    if (active != 0) {
         updateYearChanged();
         updateEvents();
     }
@@ -1275,18 +1275,18 @@ void EventBgm::stop() {
     stopCountdown();
     stopFireworks();
     stopCountdownFade();
-    unk_13 = 0;
-    unk_14 = 0;
-    unk_15 = 0;
+    yearChanged = 0;
+    keep = 0;
+    active = 0;
 }
 
 void EventBgm::start() {
-    unk_15 = 1;
+    active = 1;
     updateEvents();
 }
 
 void EventBgm::end() {
-    if (unk_14 == 0) {
+    if (keep == 0) {
         stopNewYearFanfare();
         stopNewYearNight();
         stopNewYearDay();
@@ -1294,10 +1294,10 @@ void EventBgm::end() {
         stopFireworks();
         stopCountdownFade();
     }
-    unk_15 = 0;
+    active = 0;
 }
 
-void EventBgm::setKeep(u32 a) { unk_14 = a; }
+void EventBgm::setKeep(u32 a) { keep = a; }
 
 void EventBgm::updateEvents() {
     s32 r5 = EventAnnounce_GetActiveEvent();
@@ -1335,14 +1335,14 @@ void EventBgm::updateNewYearDay(BOOL a) {
         s32 r0 = Ns_02035e2c::_ZN8BgmClock13isTimeInRangeEjjjjjj(o, 0, 0, 0, 2, 0, 0);
         s32 r1 = Ns_02035e2c::_ZN8BgmClock13isTimeInRangeEjjjjjj(o, 2, 0, 0, 0, 0, 0);
         if (r0 != 0) {
-            if (unk_13 != 0) {
-                if (unk_08 != 0x35) {
+            if (yearChanged != 0) {
+                if (newYearFanfareBgm != 0x35) {
                     stopNewYearFanfare();
                     playNewYearFanfare(0x35);
                 }
-                unk_13 = 0;
+                yearChanged = 0;
             }
-            if (unk_0a != 0x36) {
+            if (newYearNightBgm != 0x36) {
                 stopNewYearNight();
                 playNewYearNight(0x36);
             }
@@ -1351,7 +1351,7 @@ void EventBgm::updateNewYearDay(BOOL a) {
             stopNewYearNight();
         }
         if (r1 != 0) {
-            if (unk_0c != 0x37) {
+            if (newYearDayBgm != 0x37) {
                 stopNewYearDay();
                 playNewYearDay(0x37);
             }
@@ -1378,7 +1378,7 @@ void EventBgm::updateCountdown(BOOL a) {
         else if (r2 != 0) c = 0x33;
         else if (r3 != 0) c = 0x34;
         if (c != 0xffff) {
-            if (unk_0e != c) {
+            if (countdownBgm != c) {
                 stopCountdown();
                 playCountdown(c);
             }
@@ -1402,7 +1402,7 @@ void EventBgm::updateCountdown(BOOL a) {
 
 s32 EventBgm::updateFireworks(BOOL a) {
     if (a != 0) {
-        if (unk_10 != 0x30) {
+        if (fireworksBgm != 0x30) {
             stopFireworks();
             playFireworks(0x30);
         }
@@ -1411,134 +1411,134 @@ s32 EventBgm::updateFireworks(BOOL a) {
     }
 }
 
-void EventBgm::playNewYearFanfare(u32 a) { Ns_02035e2c::Bgm_RequestTransient(0x1f); unk_08 = a; }
+void EventBgm::playNewYearFanfare(u32 a) { Ns_02035e2c::Bgm_RequestTransient(0x1f); newYearFanfareBgm = a; }
 
-void EventBgm::playNewYearNight(u32 a) { Ns_02035e2c::Bgm_Request(0x20, a, 0x7f, 0); unk_0a = a; }
+void EventBgm::playNewYearNight(u32 a) { Ns_02035e2c::Bgm_Request(0x20, a, 0x7f, 0); newYearNightBgm = a; }
 
-void EventBgm::playNewYearDay(u32 a) { Ns_02035e2c::Bgm_Request(0x21, a, 0x7f, 0); unk_0c = a; }
+void EventBgm::playNewYearDay(u32 a) { Ns_02035e2c::Bgm_Request(0x21, a, 0x7f, 0); newYearDayBgm = a; }
 
-void EventBgm::playCountdown(u32 a) { Ns_02035e2c::Bgm_Request(0x22, a, 0x7f, 0); unk_0e = a; }
+void EventBgm::playCountdown(u32 a) { Ns_02035e2c::Bgm_Request(0x22, a, 0x7f, 0); countdownBgm = a; }
 
-void EventBgm::playFireworks(u32 a) { Ns_02035e2c::Bgm_Request(0x23, a, 0x7f, 0); unk_10 = a; }
+void EventBgm::playFireworks(u32 a) { Ns_02035e2c::Bgm_Request(0x23, a, 0x7f, 0); fireworksBgm = a; }
 
 void EventBgm::stopNewYearFanfare() {
-    if (unk_08 != 0xffff) { Ns_02035e2c::Bgm_ReleaseTransient(unk_08); unk_08 = 0xffff; }
+    if (newYearFanfareBgm != 0xffff) { Ns_02035e2c::Bgm_ReleaseTransient(newYearFanfareBgm); newYearFanfareBgm = 0xffff; }
 }
 
 void EventBgm::stopNewYearNight() {
-    if (unk_0a != 0xffff) { Ns_02035e2c::Bgm_Release(unk_0a); unk_0a = 0xffff; }
+    if (newYearNightBgm != 0xffff) { Ns_02035e2c::Bgm_Release(newYearNightBgm); newYearNightBgm = 0xffff; }
 }
 
 void EventBgm::stopNewYearDay() {
-    if (unk_0c != 0xffff) { Ns_02035e2c::Bgm_Release(unk_0c); unk_0c = 0xffff; }
+    if (newYearDayBgm != 0xffff) { Ns_02035e2c::Bgm_Release(newYearDayBgm); newYearDayBgm = 0xffff; }
 }
 
 void EventBgm::stopCountdown() {
-    if (unk_0e != 0xffff) { Ns_02035e2c::Bgm_Release(unk_0e); unk_0e = 0xffff; }
+    if (countdownBgm != 0xffff) { Ns_02035e2c::Bgm_Release(countdownBgm); countdownBgm = 0xffff; }
 }
 
 void EventBgm::stopFireworks() {
-    if (unk_10 != 0xffff) { Ns_02035e2c::Bgm_Release(unk_10); unk_10 = 0xffff; }
+    if (fireworksBgm != 0xffff) { Ns_02035e2c::Bgm_Release(fireworksBgm); fireworksBgm = 0xffff; }
 }
 
 void EventBgm::startCountdownFade(u32 a) {
-    if (unk_12 == 0) {
+    if (countdownFadeActive == 0) {
         Ns_02035e2c::Bgm_RequestSilence(0x1e, a, 0);
-        unk_12 = 1;
+        countdownFadeActive = 1;
     }
 }
 
 void EventBgm::stopCountdownFade() {
-    if (unk_12 != 0) {
+    if (countdownFadeActive != 0) {
         Ns_02035e2c::Bgm_ReleasePriority(0x1e);
-        unk_12 = 0;
+        countdownFadeActive = 0;
     }
 }
 
 void EventBgm::updateYearChanged() {
-    u8 *p = &unk_13;
+    u8 *p = &yearChanged;
     s32 r = _ZN8BgmClock14hasYearChangedEv(Ns_02035e2c::Bgm_GetClock());
-    if ((unk_13 | r) != 0) r = 1; else r = 0;
+    if ((yearChanged | r) != 0) r = 1; else r = 0;
     *p = r;
 }
 
-FieldBgm::FieldBgm(u32 a) : unk_04(a), unk_18(a), unk_24(a) {}
+FieldBgm::FieldBgm(u32 a) : hourlyBgm(a), specialBgm(a), eventBgm(a) {}
 
 FieldBgm::~FieldBgm() {}
 
 void FieldBgm::init() {
-    unk_04.init();
-    unk_18.init();
-    unk_24.init();
+    hourlyBgm.init();
+    specialBgm.init();
+    eventBgm.init();
 }
 
 void FieldBgm::exit() {
-    unk_24.exit();
-    unk_18.exit();
-    unk_04.exit();
+    eventBgm.exit();
+    specialBgm.exit();
+    hourlyBgm.exit();
 }
 
 void FieldBgm::update() {
-    unk_04.update();
-    unk_18.update();
-    unk_24.update();
+    hourlyBgm.update();
+    specialBgm.update();
+    eventBgm.update();
 }
 
 void FieldBgm::stop() {
-    unk_04.stop();
-    unk_18.stop();
-    unk_24.stop();
+    hourlyBgm.stop();
+    specialBgm.stop();
+    eventBgm.stop();
 }
 
 void FieldBgm::start() {
     if (Ns_02035e2c::Scene_InTown() != 0 || Scene_InTownUnk31() != 0) {
-        unk_04.start();
-        unk_18.start();
-        unk_24.start();
+        hourlyBgm.start();
+        specialBgm.start();
+        eventBgm.start();
     }
 }
 
 void FieldBgm::end() {
     if (Ns_02035e2c::Scene_InTown() != 0 || Scene_InTownUnk31() != 0) {
-        unk_24.end();
-        unk_18.end();
-        unk_04.end();
+        eventBgm.end();
+        specialBgm.end();
+        hourlyBgm.end();
     }
 }
 
 void FieldBgm::setKeep(u32 a) {
-    unk_04.setKeep(a);
-    unk_18.setKeep(a);
-    unk_24.setKeep(a);
+    hourlyBgm.setKeep(a);
+    specialBgm.setKeep(a);
+    eventBgm.setKeep(a);
 }
 
 RoomBgm::RoomBgm(u32 a) {
-    unk_04 = a;
-    unk_08 = 0x3f;
-    unk_0a = 0xffff;
-    unk_0c = 0;
-    unk_0d = 0;
-    unk_0e = 0;
-    unk_0f = 0;
-    unk_10 = 0;
+    manager = a;
+    currentScene = 0x3f;
+    sceneBgm = 0xffff;
+    closingFadeActive = 0;
+    closingMusicPlaying = 0;
+    closingForced = 0;
+    active = 0;
+    keep = 0;
 }
 
 RoomBgm::~RoomBgm() {}
 
 void RoomBgm::init() {
-    unk_08 = 0x3f;
-    unk_0a = 0xffff;
-    unk_0c = 0;
-    unk_0d = 0;
-    unk_0e = 0;
-    unk_0f = 0;
-    unk_10 = 0;
+    currentScene = 0x3f;
+    sceneBgm = 0xffff;
+    closingFadeActive = 0;
+    closingMusicPlaying = 0;
+    closingForced = 0;
+    active = 0;
+    keep = 0;
 }
 
 void RoomBgm::exit() { stop(); }
 
 void RoomBgm::update() {
-    if (unk_0f != 0) {
+    if (active != 0) {
         updateSceneBgm();
         updateClosingMusic();
     }
@@ -1546,33 +1546,33 @@ void RoomBgm::update() {
 
 void RoomBgm::stop() {
     stopSceneBgm();
-    unk_08 = 0x3f;
+    currentScene = 0x3f;
     stopClosingMusic();
-    unk_10 = 0;
-    unk_0f = 0;
+    keep = 0;
+    active = 0;
 }
 
-void RoomBgm::forceClosingMusic() { unk_0e = 1; }
+void RoomBgm::forceClosingMusic() { closingForced = 1; }
 
 void RoomBgm::start() {
-    unk_0f = 1;
+    active = 1;
     updateSceneBgm();
     updateClosingMusic();
 }
 
 void RoomBgm::end() {
-    if (unk_10 == 0) {
+    if (keep == 0) {
         BOOL r;
-        if (unk_0d != 0 && _ZN12BgmSceneFade14hasExitSilenceEv(Ns_02035e2c::Bgm_GetSceneFade()) != 0) r = TRUE; else r = FALSE;
+        if (closingMusicPlaying != 0 && _ZN12BgmSceneFade14hasExitSilenceEv(Ns_02035e2c::Bgm_GetSceneFade()) != 0) r = TRUE; else r = FALSE;
         stopSceneBgm();
-        unk_08 = 0x3f;
+        currentScene = 0x3f;
         stopClosingMusic();
-        unk_0e = r;
+        closingForced = r;
     }
-    unk_0f = 0;
+    active = 0;
 }
 
-void RoomBgm::setKeep(u32 a) { unk_10 = a; }
+void RoomBgm::setKeep(u32 a) { keep = a; }
 
 extern "C" s32 Bgm_GetSceneBgmId(s32 a) {
     u16 *e = data_020c8b9c;
@@ -1600,37 +1600,37 @@ void RoomBgm::playSceneBgm(s32 a) {
     if (r == 1) c = 0x38;
     if (r == 0x14 || r == 0x5c) d = 1;
     Ns_02035e2c::Bgm_Request(0x11, r, c, d);
-    unk_0a = r;
+    sceneBgm = r;
 }
 
 void RoomBgmSceneView::stopSceneBgm() {
-    if (unk_0a != 0xffff) {
-        Ns_020354d8::Bgm_Release(unk_0a);
-        unk_0a = 0xffff;
+    if (sceneBgm != 0xffff) {
+        Ns_020354d8::Bgm_Release(sceneBgm);
+        sceneBgm = 0xffff;
     }
 }
 
 void RoomBgmSceneView::updateSceneBgm() {
     s32 t = Ns_020354d8::Scene_GetCurrent();
-    if (unk_08 != t) {
-        if (unk_0a != Bgm_GetSceneBgmId(t)) {
+    if (currentScene != t) {
+        if (sceneBgm != Bgm_GetSceneBgmId(t)) {
             stopSceneBgm();
             playSceneBgm(t);
         }
-        unk_08 = t;
+        currentScene = t;
     }
 }
 
 void RoomBgmClosingView::stopClosingMusic() {
-    if (unk_0c != 0) {
+    if (closingFadeActive != 0) {
         Ns_020354d8::Bgm_ReleasePriority(0x10);
-        unk_0c = 0;
+        closingFadeActive = 0;
     }
-    if (unk_0d != 0) {
+    if (closingMusicPlaying != 0) {
         Ns_020354d8::Bgm_Release(0x51);
-        unk_0d = 0;
+        closingMusicPlaying = 0;
     }
-    unk_0e = 0;
+    closingForced = 0;
 }
 
 extern "C" void *Bgm_GetClock(void) { return Ns_020354d8::data_021c1b3c + 0x24c; }
@@ -1655,16 +1655,16 @@ void RoomBgmClosingView::updateClosingMusic() {
     }
     if (a == 0 && c != 0) {
         void *pl = Bgm_GetClock();
-        if (unk_0c == 0) {
+        if (closingFadeActive == 0) {
             if (_ZN8BgmClock13isTimeInRangeEjjjjjj(pl, 0x16, 0x31, 0x32, 0x16, 0x32, 0) != 0) {
                 Ns_020354d8::Bgm_RequestSilence(0x10, 0xc8, 0);
-                unk_0c = 1;
+                closingFadeActive = 1;
             }
         }
-        if (unk_0d == 0) {
-            if (_ZN8BgmClock13isTimeInRangeEjjjjjj(pl, 0x16, 0x32, 0, 0, 0, 0) != 0 || unk_0e != 0) {
+        if (closingMusicPlaying == 0) {
+            if (_ZN8BgmClock13isTimeInRangeEjjjjjj(pl, 0x16, 0x32, 0, 0, 0, 0) != 0 || closingForced != 0) {
                 Ns_020354d8::Bgm_Request(0xf, 0x51, 0x7f, 0);
-                unk_0d = 1;
+                closingMusicPlaying = 1;
             }
         }
     }
@@ -1677,28 +1677,28 @@ BgmVolumeChannel::BgmVolumeChannel() {
 BgmVolumeChannel::~BgmVolumeChannel() {}
 
 void BgmVolumeChannel::clear() {
-    unk_00 = 0;
-    unk_01 = 0;
-    unk_04 = 0;
-    unk_08 = 0;
-    unk_0c = 0;
+    changed = 0;
+    masked = 0;
+    volume = 0;
+    fadeFrames = 0;
+    state = 0;
 }
 
 void BgmVolumeChannel::set(s32 a, s32 b, u8 c) {
-    unk_04 = a;
-    unk_08 = b;
-    unk_00 = c;
+    volume = a;
+    fadeFrames = b;
+    changed = c;
 }
 
-BgmVolumeMixer::BgmVolumeMixer(BgmManagerOwnerView *owner) : unk_00(owner) {}
+BgmVolumeMixer::BgmVolumeMixer(BgmManagerOwnerView *owner) : manager(owner) {}
 
 BgmVolumeMixer::~BgmVolumeMixer() {}
 
 void BgmVolumeMixer::init() {
     for (s32 i = 0; i < 8; i++) {
-        unk_04[i].clear();
+        channels[i].clear();
     }
-    unk_84 = 0;
+    talkDuckHold = 0;
 }
 
 void BgmVolumeMixer::exit() {}
@@ -1712,30 +1712,30 @@ void BgmVolumeMixer::update() {
 }
 
 void BgmVolumeMixer::reset() {
-    if ((u32)(unk_04[2].unk_0c - 8) <= 1) {
+    if ((u32)(channels[2].state - 8) <= 1) {
         Snd_RestoreSubPlayers();
     }
     for (s32 i = 0; i < 8; i++) {
-        unk_04[i].clear();
+        channels[i].clear();
     }
-    unk_84 = 0;
+    talkDuckHold = 0;
 }
 
-void BgmVolumeMixer::startTalkDuck() { unk_04[2].unk_0c = 7; }
+void BgmVolumeMixer::startTalkDuck() { channels[2].state = 7; }
 
-void BgmVolumeMixer::endTalkDuck() { unk_04[2].unk_0c = 9; }
+void BgmVolumeMixer::endTalkDuck() { channels[2].state = 9; }
 
-void BgmVolumeMixer::setMenuDuck(s32 i) { unk_04[1].unk_0c = sBgmMenuDuckStates[i]; }
+void BgmVolumeMixer::setMenuDuck(s32 i) { channels[1].state = sBgmMenuDuckStates[i]; }
 
-void BgmVolumeMixer::endMenuDuck() { unk_04[1].unk_0c = 6; }
+void BgmVolumeMixer::endMenuDuck() { channels[1].state = 6; }
 
-void BgmVolumeMixer::startFishDuck() { unk_04[3].unk_0c = 0xa; }
+void BgmVolumeMixer::startFishDuck() { channels[3].state = 0xa; }
 
-void BgmVolumeMixer::endFishDuck() { unk_04[3].unk_0c = 0xc; }
+void BgmVolumeMixer::endFishDuck() { channels[3].state = 0xc; }
 
-void BgmVolumeMixer::startFireworkDuck() { unk_04[4].unk_0c = 0xd; }
+void BgmVolumeMixer::startFireworkDuck() { channels[4].state = 0xd; }
 
-void BgmVolumeMixer::endFireworkDuck() { unk_04[4].unk_0c = 0xf; }//DEF sSceneBgmTable
+void BgmVolumeMixer::endFireworkDuck() { channels[4].state = 0xf; }//DEF sSceneBgmTable
 const u16 sSceneBgmTable[0x3a] = {
     0x1a, 0x4d, 0x1b, 0x4e, 0x1c, 0x4f, 0x1d, 0x50,
     0x1e, 0x50, 0xa, 0x58, 0xb, 0x53, 0xc, 0x53,
@@ -1766,46 +1766,46 @@ void BgmVolumeMixer::updateChannels() {
         &BgmVolumeMixer::updateSceneDuck, &BgmVolumeMixer::updateRequestVolume,
     };
     for (s32 i = 0; i < 8; i++) {
-        (this->*tbl[i])(&unk_04[i]);
+        (this->*tbl[i])(&channels[i]);
     }
 }
 
 void BgmVolumeMixer::updateChannel0(BgmVolumeChannel *e) {}
 
 void BgmVolumeMixer::updateMenuDuck(BgmVolumeChannel *e) {
-    s32 st = e->unk_0c;
+    s32 st = e->state;
     if (st == 2) {
         e->set(0x28, 5, 1);
-        e->unk_0c = 5;
+        e->state = 5;
     } else if (st == 3) {
         e->set(0x7f, 5, 1);
-        e->unk_0c = 5;
+        e->state = 5;
     } else if (st == 4) {
         e->set(0, 5, 1);
-        e->unk_0c = 5;
+        e->state = 5;
     } else if (st != 5) {
         if (st == 6) {
             e->set(0x7f, 5, 1);
-            e->unk_0c = 0;
+            e->state = 0;
         }
     }
 }
 
 void BgmVolumeMixer::updateTalkDuck(BgmVolumeChannel *e) {
-    s32 st = e->unk_0c;
+    s32 st = e->state;
     if (st == 7) {
         e->set(0x28, 5, 1);
-        e->unk_0c = 8;
-        unk_84 = 0;
+        e->state = 8;
+        talkDuckHold = 0;
         Snd_DuckSubPlayers(0);
     } else if (st != 8) {
         if (st == 9) {
-            if (unk_84 > 0) {
-                unk_84 = unk_84 - 1;
+            if (talkDuckHold > 0) {
+                talkDuckHold = talkDuckHold - 1;
             }
-            if (unk_84 <= 0) {
+            if (talkDuckHold <= 0) {
                 e->set(0x7f, 5, 1);
-                e->unk_0c = 0;
+                e->state = 0;
                 Snd_RestoreSubPlayers();
             }
         }
@@ -1813,43 +1813,43 @@ void BgmVolumeMixer::updateTalkDuck(BgmVolumeChannel *e) {
 }
 
 void BgmVolumeMixer::updateFishDuck(BgmVolumeChannel *e) {
-    s32 st = e->unk_0c;
+    s32 st = e->state;
     if (st == 0xa) {
         e->set(0x28, 0xf, 1);
-        e->unk_0c = 0xb;
+        e->state = 0xb;
     } else if (st != 0xb) {
         if (st == 0xc) {
             e->set(0x7f, 0xf, 1);
-            e->unk_0c = 0;
+            e->state = 0;
         }
     }
 }
 
 void BgmVolumeMixer::updateFireworkDuck(BgmVolumeChannel *e) {
-    s32 st = e->unk_0c;
+    s32 st = e->state;
     if (st == 0xd) {
         e->set(0x28, 0xf, 1);
-        e->unk_0c = 0xe;
+        e->state = 0xe;
     } else if (st != 0xe) {
         if (st == 0xf) {
             e->set(0x7f, 0xf, 1);
-            e->unk_0c = 0;
+            e->state = 0;
         }
     }
 }
 
 void BgmVolumeMixer::updatePositionDuck(BgmVolumeChannel *e) {
-    s32 st = e->unk_0c;
+    s32 st = e->state;
     s32 flag = 0;
     Unk_020358d4_Src *p = PlayerActor_GetBodyPos(4);
     if (p) {
         Unk_020358d4_Buf b1;
         _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii(&b1, p, 0, 0);
-        s32 k = b1.unk_34;
+        s32 k = b1.attr;
         Unk_020358d4_Src v(p->x, p->y, p->z + 0x2000);
         Unk_020358d4_Buf b2;
         _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii(&b2, &v, 0, 0);
-        s32 m = b2.unk_30;
+        s32 m = b2.waterKind;
         if (k == 0x13 || k == 0x16 || m == 1) {
             flag = 1;
         }
@@ -1859,60 +1859,60 @@ void BgmVolumeMixer::updatePositionDuck(BgmVolumeChannel *e) {
     if (st == 0) {
         if (flag != 0) {
             e->set(0x28, 0x3c, 1);
-            e->unk_0c = 0x10;
+            e->state = 0x10;
         }
     } else if (st == 0x10) {
         if (flag == 0) {
             e->set(0x7f, 0x3c, 1);
-            e->unk_0c = 0;
+            e->state = 0;
         }
     }
 }
 
 void BgmVolumeMixer::updateSceneDuck(BgmVolumeChannel *e) {
-    s32 st = e->unk_0c;
+    s32 st = e->state;
     s32 t = Ns_020354d8::Scene_GetCurrent();
     BOOL a = t == 0x27 ? TRUE : FALSE;
     BOOL b = t == 0x28 ? TRUE : FALSE;
     if (st == 0) {
         if (a || b) {
             e->set(0x40, 0x28, 1);
-            e->unk_0c = 0x11;
+            e->state = 0x11;
         }
     } else if (st == 0x11) {
         if (!a && !b) {
             e->set(0x7f, 0x28, 1);
-            e->unk_0c = 0;
+            e->state = 0;
         }
     }
 }
 
 void BgmManagerOwnerView::clearVolumePending() {
-    unk_14 = 0;
+    volumePending = 0;
 }
 //DEF sBgmSceneFadeDelays
 const u8 sBgmSceneFadeDelays[8] = {0x01, 0x2f, 0x1b, 0x34, 0x2f, 0x00, 0x00, 0x00};
 
 void BgmVolumeMixer::updateRequestVolume(BgmVolumeChannel *e) {
-    BgmManagerOwnerView *o = unk_00;
-    if (o->unk_1c0 > 0) {
-        if (o->unk_14 != 0 && o->unk_0c != 0) {
-            e->set(o->unk_0c, 0, 1);
+    BgmManagerOwnerView *o = manager;
+    if (o->numRequests > 0) {
+        if (o->volumePending != 0 && o->volume != 0) {
+            e->set(o->volume, 0, 1);
         }
-        unk_00->forEachRequest(&BgmManagerOwnerView::clearVolumePending);
-        e->unk_0c = 0x12;
+        manager->forEachRequest(&BgmManagerOwnerView::clearVolumePending);
+        e->state = 0x12;
     } else {
-        e->unk_0c = 0;
+        e->state = 0;
     }
 }
 
 void BgmVolumeMixer::maskForTopRequest() {
-    BgmManagerOwnerView *o = unk_00;
-    if (o->unk_1c0 > 0 && o->unk_10 != 0) {
-        BgmVolumeChannel *p = &unk_04[2];
-        BgmVolumeChannel *end = &unk_04[7];
+    BgmManagerOwnerView *o = manager;
+    if (o->numRequests > 0 && o->muteDucks != 0) {
+        BgmVolumeChannel *p = &channels[2];
+        BgmVolumeChannel *end = &channels[7];
         for (; p < end; p++) {
-            p->unk_01 = 1;
+            p->masked = 1;
         }
     }
 }
@@ -1924,49 +1924,49 @@ void BgmVolumeMixer::applyVolume() {
     BOOL ok = FALSE;
     s32 t;
     s32 b;
-    BgmManagerOwnerView *o = unk_00;
+    BgmManagerOwnerView *o = manager;
     BgmVolumeChannel *p;
-    if (o->unk_1c0 > 0 && o->unk_12 != 0 && o->unk_04 != 0xffff) {
+    if (o->numRequests > 0 && o->playing != 0 && o->bgmId != 0xffff) {
         ok = TRUE;
     }
     if (ok) {
-        p = &unk_04[7];
-        end = &unk_04[0];
+        p = &channels[7];
+        end = &channels[0];
         f = 0;
         a = 0;
         b = 0;
         for (; p >= end; p--) {
-            if (p->unk_01 == 0) {
-                t = p->unk_0c;
-                if (p->unk_00 != 0) {
+            if (p->masked == 0) {
+                t = p->state;
+                if (p->changed != 0) {
                     f = 1;
-                    b = p->unk_08;
+                    b = p->fadeFrames;
                 }
                 if (t != 0) {
-                    a = p->unk_04;
+                    a = p->volume;
                 }
             }
         }
         if (f != 0) {
-            o->unk_2b4.requestVolume(a, b);
+            o->commands.requestVolume(a, b);
         }
     }
 }
 
 void BgmVolumeMixer::clearChanged() {
     for (s32 i = 0; i < 8; i++) {
-        unk_04[i].unk_00 = 0;
+        channels[i].changed = 0;
     }
 }
 
 void BgmVolumeMixer::clearMasks() {
     for (s32 i = 0; i < 8; i++) {
-        unk_04[i].unk_01 = 0;
+        channels[i].masked = 0;
     }
 }
 
 BgmCommandQueue *BgmCommandQueue::init(void *owner) {
-    unk_00 = (u32)owner;
+    manager = (u32)owner;
     clear();
     return this;
 }
@@ -1974,80 +1974,80 @@ BgmCommandQueue *BgmCommandQueue::init(void *owner) {
 void BgmCommandQueue::func_02035740() {}
 
 void BgmCommandQueue::requestPlay(u16 a) {
-    unk_04 = 1;
-    unk_06 = a;
+    playPending = 1;
+    playBgmId = a;
 }
 
 void BgmCommandQueue::requestStop(s32 a) {
-    unk_08 = 1;
-    unk_0c = a;
+    stopPending = 1;
+    stopFadeFrames = a;
 }
 
 void BgmCommandQueue::requestVolume(s32 a, s32 b) {
-    unk_10 = 1;
-    unk_14 = a;
-    unk_18 = b;
+    volumePending = 1;
+    volume = a;
+    volumeFrames = b;
 }
 
 void BgmCommandQueue::clear() {
-    unk_04 = 0;
-    unk_06 = 0xffff;
-    unk_08 = 0;
-    unk_0c = 0;
-    unk_10 = 0;
-    unk_14 = 0;
-    unk_18 = 0;
+    playPending = 0;
+    playBgmId = 0xffff;
+    stopPending = 0;
+    stopFadeFrames = 0;
+    volumePending = 0;
+    volume = 0;
+    volumeFrames = 0;
 }
 
 void BgmCommandQueue::flush() {
-    if (unk_08 != 0) {
-        unk_08 = 0;
-        Snd_StopBgm(unk_0c);
+    if (stopPending != 0) {
+        stopPending = 0;
+        Snd_StopBgm(stopFadeFrames);
     }
-    if (unk_04 != 0) {
-        unk_04 = 0;
-        Snd_PlayBgm(unk_06);
-        Ns_020354d8::BgmTracks_OnBgmStart(Ns_020354d8::data_021c1b3c + 0x2f0, unk_06);
+    if (playPending != 0) {
+        playPending = 0;
+        Snd_PlayBgm(playBgmId);
+        Ns_020354d8::BgmTracks_OnBgmStart(Ns_020354d8::data_021c1b3c + 0x2f0, playBgmId);
     }
-    if (unk_10 != 0) {
-        unk_10 = 0;
-        Snd_MoveBgmVolume(unk_14, unk_18);
+    if (volumePending != 0) {
+        volumePending = 0;
+        Snd_MoveBgmVolume(volume, volumeFrames);
     }
 }
 
 BgmSceneFade::BgmSceneFade(u32 owner) {
-    unk_04 = owner;
-    unk_08 = 0;
-    unk_09 = 0;
-    unk_0a = 0;
-    unk_0b = 0;
-    unk_0c = 0;
-    unk_10 = 0;
+    manager = owner;
+    keepForWarp = 0;
+    sameSceneBgm = 0;
+    keepRequested = 0;
+    exitSilenceState = 0;
+    fadeDelay = 0;
+    releaseTimer = 0;
 }
 
 BgmSceneFade::~BgmSceneFade() {}
 
 void BgmSceneFade::onFadeOut() {
-    if (gActorDefaultParent->unk_0c != 5) {
-        if (unk_0b == 1) {
+    if (gActorDefaultParent->profile != 5) {
+        if (exitSilenceState == 1) {
             Ns_020354d8::Bgm_RequestSilence(8, 0xf, 0);
-            unk_0b = 2;
-        } else if (unk_0b == 3) {
+            exitSilenceState = 2;
+        } else if (exitSilenceState == 3) {
             Ns_020354d8::Bgm_ReleasePriority(8);
-            unk_0b = 0;
+            exitSilenceState = 0;
         }
-        unk_09 = Bgm_IsSameSceneBgm();
-        _ZN7RoomBgm7setKeepEj(Bgm_GetRoomBgm(), unk_09);
-        if (unk_08 == 0 && unk_09 == 0 && unk_0a == 0) {
-            if (unk_0c != 0 || unk_10 != 0) {
+        sameSceneBgm = Bgm_IsSameSceneBgm();
+        _ZN7RoomBgm7setKeepEj(Bgm_GetRoomBgm(), sameSceneBgm);
+        if (keepForWarp == 0 && sameSceneBgm == 0 && keepRequested == 0) {
+            if (fadeDelay != 0 || releaseTimer != 0) {
                 Ns_020354d8::Bgm_ReleasePriority(7);
             }
-            unk_0c = -1;
-            unk_10 = 0;
+            fadeDelay = -1;
+            releaseTimer = 0;
             Ns_020354d8::Bgm_RequestSilence(7, 0xf, 0);
         } else {
             _ZN8FieldBgm7setKeepEj(Bgm_GetFieldBgm(), 1);
-            if (unk_09 != 0) {
+            if (sameSceneBgm != 0) {
                 Ns_020354d8::BgmTracks_FadeOutForScene(Bgm_GetTracks());
             }
         }
@@ -2061,31 +2061,31 @@ extern "C" void *Bgm_GetFieldBgm(void) { return Ns_020354d8::data_021c1b3c + 0x2
 extern "C" void *Bgm_GetRoomBgm(void) { return Ns_020354d8::data_021c1b3c + 0x2a0; }
 
 void BgmSceneFade::onFadeIn() {
-    if (gActorDefaultParent->unk_0c != 5) {
-        if (unk_0c < 0) {
+    if (gActorDefaultParent->profile != 5) {
+        if (fadeDelay < 0) {
             s32 r = PlayerActor_GetActionOrSpawnAction();
             if (r != 0x3c) {
                 if (r == 0x8b) {
-                    unk_0c = 0x21;
+                    fadeDelay = 0x21;
                 } else if (r == 0x8e) {
-                    unk_0c = 0x21;
+                    fadeDelay = 0x21;
                 } else if (r == 0x43) {
-                    unk_0c = 0x21;
+                    fadeDelay = 0x21;
                 } else if (r == 0x44) {
-                    unk_0c = 0x21;
+                    fadeDelay = 0x21;
                 } else if (r == 2) {
-                    unk_0c = 0x19;
+                    fadeDelay = 0x19;
                 } else {
-                    unk_0c = 0x14;
+                    fadeDelay = 0x14;
                 }
             }
         }
-        if (unk_09 != 0) {
+        if (sameSceneBgm != 0) {
             Ns_020354d8::BgmTracks_FadeInForScene(Bgm_GetTracks());
         }
-        unk_08 = 0;
-        unk_09 = 0;
-        unk_0a = 0;
+        keepForWarp = 0;
+        sameSceneBgm = 0;
+        keepRequested = 0;
         _ZN8FieldBgm7setKeepEj(Bgm_GetFieldBgm(), 0);
         _ZN7RoomBgm7setKeepEj(Bgm_GetRoomBgm(), 0);
     }
@@ -2098,14 +2098,14 @@ extern "C" void BgmSceneFade_Reset(BgmSceneFade *p) { p->reset(); }
 extern "C" void BgmSceneFade_Update(void *p) { _ZN12BgmSceneFade6updateEv(p); }
 
 void BgmSceneFade::reset() {
-    unk_08 = 0;
-    unk_09 = 0;
-    unk_0a = 0;
-    unk_0b = 0;
-    if (unk_0c != 0 || unk_10 != 0) {
+    keepForWarp = 0;
+    sameSceneBgm = 0;
+    keepRequested = 0;
+    exitSilenceState = 0;
+    if (fadeDelay != 0 || releaseTimer != 0) {
         Ns_020354d8::Bgm_ReleasePriority(7);
-        unk_0c = 0;
-        unk_10 = 0;
+        fadeDelay = 0;
+        releaseTimer = 0;
     }
 }
 
@@ -2121,8 +2121,8 @@ void BgmSceneFade::func_020353b0(s32 a, s32 b) {
         Unk_020353b0_Rec *rec = Ns_02034ae8::Bgm_GetPlayingRequest();
         u32 x;
         s32 y;
-        if (rec) x = rec->unk_04; else x = 0xffff;
-        if (rec) y = rec->unk_00; else y = 0x25;
+        if (rec) x = rec->bgmId; else x = 0xffff;
+        if (rec) y = rec->priority; else y = 0x25;
         s32 ff = (x == 0xffff) ? 1 : 0;
         s32 y24 = (y == 0x24) ? 1 : 0;
         s32 y1a = (y == 0x1a) ? 1 : 0;
@@ -2149,40 +2149,40 @@ void BgmSceneFade::func_020353b0(s32 a, s32 b) {
         res = 1;
         f = 1;
     }
-    if (!res) unk_08 = 1;
-    if (f) unk_0b = 1;
+    if (!res) keepForWarp = 1;
+    if (f) exitSilenceState = 1;
 }
 
 void BgmSceneFade::func_02035368(s32 a, s32 b) {
-    if (unk_0b == 2) {
-        unk_0b = 3;
+    if (exitSilenceState == 2) {
+        exitSilenceState = 3;
     } else {
         BOOL c = (a == 0) ? TRUE : FALSE;
         BOOL d = (a == 1) ? TRUE : FALSE;
         BOOL e = FALSE;
         if (a == 2 && b == 6) e = TRUE;
-        if (c || d || !e) unk_08 = 1;
+        if (c || d || !e) keepForWarp = 1;
     }
 }
 
-void BgmSceneFade::setFadeDelay(s32 i) { unk_0c = sBgmSceneFadeDelays[i]; }
+void BgmSceneFade::setFadeDelay(s32 i) { fadeDelay = sBgmSceneFadeDelays[i]; }
 
-void BgmSceneFade::setKeepBgm() { unk_0a = 1; }
+void BgmSceneFade::setKeepBgm() { keepRequested = 1; }
 
 BOOL BgmSceneFade::isKeepingBgm() {
-    if (unk_08 || unk_09 || unk_0a) return TRUE;
+    if (keepForWarp || sameSceneBgm || keepRequested) return TRUE;
     return FALSE;
 }
 
 BOOL BgmSceneFade::hasExitSilence() {
-    if (unk_0b) return TRUE;
+    if (exitSilenceState) return TRUE;
     return FALSE;
 }
 
 void BgmSceneFade::update() {
-    if (unk_0c > 0) {
-        unk_0c--;
-        if (unk_0c <= 0) {
+    if (fadeDelay > 0) {
+        fadeDelay--;
+        if (fadeDelay <= 0) {
             s32 v = 1;
             if (IsZero(gFieldSceneKind) && Ns_02034ae8::Scene_InTown()) {
                 u16 buf[2];
@@ -2198,46 +2198,46 @@ void BgmSceneFade::update() {
                 }
                 if (!ok) v = 20;
             }
-            unk_10 = v;
+            releaseTimer = v;
         }
     }
-    if (unk_10 > 0) {
-        unk_10--;
-        if (unk_10 <= 0) Bgm_ReleasePriority(7);
+    if (releaseTimer > 0) {
+        releaseTimer--;
+        if (releaseTimer <= 0) Bgm_ReleasePriority(7);
     }
 }
 
 FaintBgm::FaintBgm(BgmManagerView *o) {
-    unk_04 = o;
-    unk_08 = 0xffff;
-    unk_0a = 0;
+    manager = o;
+    currentBgm = 0xffff;
+    silenceActive = 0;
 }
 
 FaintBgm::~FaintBgm() {}
 
-extern "C" BgmSceneFade *Bgm_GetSceneFade(void) { return &Ns_02034ae8::data_021c1b3c->unk_2d0; }
+extern "C" BgmSceneFade *Bgm_GetSceneFade(void) { return &Ns_02034ae8::data_021c1b3c->sceneFade; }
 
 void FaintBgm::play() {
-    unk_08 = 0x41;
+    currentBgm = 0x41;
     Ns_02034ae8::Bgm_Request(0xb, 0x41, 0x7f, 1);
     Bgm_GetSceneFade()->setKeepBgm();
 }
 
 void FaintBgm::startSilence() {
-    unk_0a = 1;
+    silenceActive = 1;
     Bgm_RequestSilence(10, 15, 0);
 }
 
 void FaintBgm::fadeOut() {
-    if (unk_08 != 0xffff) {
+    if (currentBgm != 0xffff) {
         Bgm_RequestSilence(10, 5, 5);
-        Bgm_Release(unk_08);
-        unk_08 = 0xffff;
+        Bgm_Release(currentBgm);
+        currentBgm = 0xffff;
     }
-    if (unk_0a) {
+    if (silenceActive) {
         Bgm_ReleasePriority(10);
         Bgm_RequestSilence(10, 5, 5);
-        unk_0a = 0;
+        silenceActive = 0;
     }
 }
 
@@ -2248,13 +2248,13 @@ void FaintBgm::exit() { stop(); }
 extern "C" void FaintBgm_Update(void) {}
 
 void FaintBgm::stop() {
-    if (unk_08 != 0xffff) {
-        Bgm_Release(unk_08);
-        unk_08 = 0xffff;
+    if (currentBgm != 0xffff) {
+        Bgm_Release(currentBgm);
+        currentBgm = 0xffff;
     }
-    if (unk_0a) {
+    if (silenceActive) {
         Bgm_ReleasePriority(10);
-        unk_0a = 0;
+        silenceActive = 0;
     }
 }
 
@@ -2363,13 +2363,13 @@ extern "C" void Bgm_Request(s32 a, s32 b, s32 c, u8 d) {
 
 extern "C" void Bgm_RequestSilence(s32 a, s32 b, s32 c) {
     BgmRequest e(a, 0xffff, 0, b, 0);
-    if (c > 0) e.unk_18 = c;
+    if (c > 0) e.lifetime = c;
     _ZN10BgmManager4pushEP14BgmRequestView(Ns_02034ae8::data_021c1b3c, &e);
 }
 
 extern "C" void Bgm_RequestTransient(s32 a, s32 b) {
     BgmRequest e(a, b, 0x7f, 0, 0);
-    e.unk_11 = 1;
+    e.transient = 1;
     _ZN10BgmManager4pushEP14BgmRequestView(Ns_02034ae8::data_021c1b3c, &e);
 }
 
@@ -2382,16 +2382,16 @@ extern "C" void Bgm_ReleaseTransient(s32 a) { _ZN10BgmManager10releaseBgmEt(Ns_0
 extern "C" u16 Bgm_GetCurrent(void) {
     s32 i = _ZN10BgmManager11findPlayingEv(Ns_02034ae8::data_021c1b3c);
     u16 r = 0xffff;
-    if (i >= 0) r = Ns_02034ae8::data_021c1b3c->unk_000[i].unk_04;
+    if (i >= 0) r = Ns_02034ae8::data_021c1b3c->requests[i].bgmId;
     return r;
 }
 
-extern "C" void Bgm_EnableHourChime(void) { Ns_02034ae8::data_021c1b3c->unk_2f4 = 0; }
+extern "C" void Bgm_EnableHourChime(void) { Ns_02034ae8::data_021c1b3c->hourChimeDisabled = 0; }
 
-extern "C" void Bgm_DisableHourChime(void) { Ns_02034ae8::data_021c1b3c->unk_2f4 = 1; }
+extern "C" void Bgm_DisableHourChime(void) { Ns_02034ae8::data_021c1b3c->hourChimeDisabled = 1; }
 
-BgmManagerView::BgmManagerView() : unk_1c0(0), unk_1c4((BgmManagerOwnerView *)this), unk_264((u32)this), unk_2a0((u32)this), unk_2b4(this), unk_2d0((u32)this), unk_2e4(this) {
-    unk_2f4 = 0;
+BgmManagerView::BgmManagerView() : numRequests(0), mixer((BgmManagerOwnerView *)this), fieldBgm((u32)this), roomBgm((u32)this), commands(this), sceneFade((u32)this), faintBgm(this) {
+    hourChimeDisabled = 0;
 }
 
 BgmManagerView::~BgmManagerView() {}
@@ -2399,38 +2399,38 @@ BgmManagerView::~BgmManagerView() {}
 void BgmManagerView::init() {
     BgmRequest *p, *end;
     Ns_02034ae8::data_021c1b3c = this;
-    end = (BgmRequest *)&unk_1c0;
-    for (p = unk_000; p < end; p++) {
+    end = (BgmRequest *)&numRequests;
+    for (p = requests; p < end; p++) {
         p->clear();
     }
-    unk_1c0 = 0;
-    unk_1c4.init();
-    Ns_this::BgmClock_Init(&unk_24c);
-    unk_264.init();
-    unk_2a0.init();
-    unk_2b4.clear();
-    unk_2d0.init();
-    unk_2e4.init();
-    unk_2f4 = 0;
+    numRequests = 0;
+    mixer.init();
+    Ns_this::BgmClock_Init(&clock);
+    fieldBgm.init();
+    roomBgm.init();
+    commands.clear();
+    sceneFade.init();
+    faintBgm.init();
+    hourChimeDisabled = 0;
 }
 
 void BgmManagerView::exit() {
-    unk_2e4.exit();
-    Ns_this::BgmSceneFade_Reset(&unk_2d0);
-    unk_2b4.clear();
-    unk_2a0.exit();
-    unk_264.exit();
-    Ns_this::BgmClock_Exit(&unk_24c);
-    unk_1c4.exit();
+    faintBgm.exit();
+    Ns_this::BgmSceneFade_Reset(&sceneFade);
+    commands.clear();
+    roomBgm.exit();
+    fieldBgm.exit();
+    Ns_this::BgmClock_Exit(&clock);
+    mixer.exit();
     Ns_02034ae8::data_021c1b3c = 0;
 }
 
 void BgmManager::update() {
-    Ns_this::FaintBgm_Update(&unk_2e4);
-    Ns_this::BgmSceneFade_Update(&unk_2d0);
-    Ns_this::BgmClock_Update(&unk_24c);
-    unk_264.update();
-    unk_2a0.update();
+    Ns_this::FaintBgm_Update(&faintBgm);
+    Ns_this::BgmSceneFade_Update(&sceneFade);
+    Ns_this::BgmClock_Update(&clock);
+    fieldBgm.update();
+    roomBgm.update();
     updateRequests();
     updateHourChime();
     func_02034514();
@@ -2439,35 +2439,35 @@ void BgmManager::update() {
 extern "C" void Bgm_ResetAll() {
     BgmManager *p;
     BgmRequest *e, *end;
-    data_021c1b3c->unk_2e4.stop();
-    data_021c1b3c->unk_2d0.reset();
-    data_021c1b3c->unk_2b4.clear();
-    data_021c1b3c->unk_2a0.stop();
-    data_021c1b3c->unk_264.stop();
-    Ns_this::BgmClock_Reset(&data_021c1b3c->unk_24c);
-    data_021c1b3c->unk_1c4.reset();
-    e = data_021c1b3c->unk_00;
-    end = &data_021c1b3c->unk_00[16];
+    data_021c1b3c->faintBgm.stop();
+    data_021c1b3c->sceneFade.reset();
+    data_021c1b3c->commands.clear();
+    data_021c1b3c->roomBgm.stop();
+    data_021c1b3c->fieldBgm.stop();
+    Ns_this::BgmClock_Reset(&data_021c1b3c->clock);
+    data_021c1b3c->mixer.reset();
+    e = data_021c1b3c->requests;
+    end = &data_021c1b3c->requests[16];
     for (; e < end; e++) {
         e->clear();
     }
-    data_021c1b3c->unk_1c0 = 0;
-    data_021c1b3c->unk_2f4 = 0;
+    data_021c1b3c->numRequests = 0;
+    data_021c1b3c->hourChimeDisabled = 0;
 }
 
 extern "C" void Bgm_StartSceneBgm() {
     if (Unk_02034938_IsA()) {
-        data_021c1b3c->unk_264.start();
+        data_021c1b3c->fieldBgm.start();
     } else if (Unk_02034938_IsB()) {
-        data_021c1b3c->unk_2a0.start();
+        data_021c1b3c->roomBgm.start();
     }
 }
 
 extern "C" void Bgm_EndSceneBgm() {
     if (Unk_02034938_IsA()) {
-        data_021c1b3c->unk_264.end();
+        data_021c1b3c->fieldBgm.end();
     } else if (Unk_02034938_IsB()) {
-        data_021c1b3c->unk_2a0.end();
+        data_021c1b3c->roomBgm.end();
     }
 }
 
@@ -2475,7 +2475,7 @@ extern "C" BgmRequest *Bgm_GetPlayingRequest() {
     s32 i = data_021c1b3c->findPlaying();
     BgmRequest *p = NULL;
     if (i >= 0) {
-        p = &data_021c1b3c->unk_00[i];
+        p = &data_021c1b3c->requests[i];
     }
     return p;
 }
@@ -2484,21 +2484,21 @@ void BgmManager::push(BgmRequestView *e) {
     s32 i = findInsertPos(e);
     if (i >= 0) {
         insertAt(i);
-        unk_00[i].copyFrom(e);
+        requests[i].copyFrom(e);
     }
 }
 
 void BgmManager::releasePriority(s32 v) {
     s32 i = findByPriority(v);
-    if (i >= 0 && i < unk_1c0) {
-        unk_00[i].unk_13 = 1;
+    if (i >= 0 && i < numRequests) {
+        requests[i].removePending = 1;
     }
 }
 
 void BgmManager::releaseBgm(u16 id) {
     s32 i = findByBgm(id);
-    if (i >= 0 && i < unk_1c0) {
-        unk_00[i].unk_13 = 1;
+    if (i >= 0 && i < numRequests) {
+        requests[i].removePending = 1;
     }
 }
 
@@ -2506,9 +2506,9 @@ void BgmManager::updateRequests() {
     updateStop();
     removeMarked();
     startTop();
-    unk_1c4.update();
-    unk_2b4.flush();
-    Ns_this::BgmTracks_Update(&unk_2f0);
+    mixer.update();
+    commands.flush();
+    Ns_this::BgmTracks_Update(&tracks);
     tickRequests();
 }
 
@@ -2516,19 +2516,19 @@ void BgmManager::updateStop() {
     s32 i = findPlaying();
     BgmRequest *p;
     if (i >= 0) {
-        p = &unk_00[i];
-        if (p->unk_04 != 0xffff) {
+        p = &requests[i];
+        if (p->bgmId != 0xffff) {
             BOOL done = FALSE;
             if (i > 0) {
                 BgmRequest *q = findKeptBefore(i);
                 if (q != NULL) {
-                    unk_2b4.requestStop(q->unk_08);
+                    commands.requestStop(q->stopFadeFrames);
                     done = TRUE;
                 }
             }
             if (!done) {
-                if (p->unk_13 != 0) {
-                    unk_2b4.requestStop(p->unk_08);
+                if (p->removePending != 0) {
+                    commands.requestStop(p->stopFadeFrames);
                 }
             }
         }
@@ -2537,52 +2537,52 @@ void BgmManager::updateStop() {
 
 void BgmManager::removeMarked() {
     s32 i, j, last;
-    for (i = unk_1c0 - 1; i >= 0; i--) {
-        if (unk_00[i].unk_13 != 0) {
-            last = unk_1c0 - 1;
+    for (i = numRequests - 1; i >= 0; i--) {
+        if (requests[i].removePending != 0) {
+            last = numRequests - 1;
             for (j = i; j < last; j++) {
-                unk_00[j].copyFrom(&unk_00[j + 1]);
+                requests[j].copyFrom(&requests[j + 1]);
             }
-            unk_00[last].clear();
-            unk_1c0 = last;
+            requests[last].clear();
+            numRequests = last;
         }
     }
 }
 
-void BgmManager::clearPlaying() { unk_00[0].unk_12 = 0; }
+void BgmManager::clearPlaying() { requests[0].playing = 0; }
 //DEF sBgmMenuDuckStates
 const s32 sBgmMenuDuckStates[3] = {2, 3, 4};
 
 void BgmManager::startTop() {
-    if (unk_1c0 > 0 && unk_00[0].unk_12 == 0) {
-        if (unk_00[0].unk_04 != 0xffff) {
-            unk_2b4.requestPlay(unk_00[0].unk_04);
-            unk_00[0].unk_14 = 1;
+    if (numRequests > 0 && requests[0].playing == 0) {
+        if (requests[0].bgmId != 0xffff) {
+            commands.requestPlay(requests[0].bgmId);
+            requests[0].volumePending = 1;
         }
         forEachRequest(&BgmRequestView::clearPlaying);
-        unk_00[0].unk_12 = 1;
+        requests[0].playing = 1;
     }
 }
 
 void BgmManager::tickRequests() {
-    BgmRequest *end = &unk_00[unk_1c0];
+    BgmRequest *end = &requests[numRequests];
     BgmRequest *p;
-    for (p = unk_00; p < end; p++) {
+    for (p = requests; p < end; p++) {
         if (p->tickLifetime()) {
-            p->unk_13 = 1;
+            p->removePending = 1;
         }
-        if (p != unk_00 && p->unk_11 != 0) {
-            p->unk_13 = 1;
+        if (p != requests && p->transient != 0) {
+            p->removePending = 1;
         }
     }
 }
 
 s32 BgmManager::findInsertPos(BgmRequestView *key) {
     s32 r = -1;
-    s32 n = unk_1c0;
+    s32 n = numRequests;
     if (n < 16) {
         for (r = 0; r < n; r++) {
-            if (unk_00[r].unk_00 > key->unk_00) {
+            if (requests[r].priority > key->priority) {
                 break;
             }
         }
@@ -2593,8 +2593,8 @@ s32 BgmManager::findInsertPos(BgmRequestView *key) {
 s32 BgmManager::findPlaying() {
     s32 r = -1;
     s32 i;
-    for (i = 0; i < unk_1c0; i++) {
-        if (unk_00[i].unk_12 != 0) {
+    for (i = 0; i < numRequests; i++) {
+        if (requests[i].playing != 0) {
             r = i;
             break;
         }
@@ -2605,8 +2605,8 @@ s32 BgmManager::findPlaying() {
 s32 BgmManager::findByPriority(s32 v) {
     s32 r = -1;
     s32 i;
-    for (i = 0; i < unk_1c0; i++) {
-        s32 c = unk_00[i].unk_00;
+    for (i = 0; i < numRequests; i++) {
+        s32 c = requests[i].priority;
         if (c == v) {
             r = i;
             break;
@@ -2618,8 +2618,8 @@ s32 BgmManager::findByPriority(s32 v) {
 s32 BgmManager::findByBgm(u16 id) {
     s32 r = -1;
     s32 i;
-    for (i = 0; i < unk_1c0; i++) {
-        u16 c = unk_00[i].unk_04;
+    for (i = 0; i < numRequests; i++) {
+        u16 c = requests[i].bgmId;
         if (c == id) {
             r = i;
             break;
@@ -2632,8 +2632,8 @@ BgmRequest *BgmManager::findKeptBefore(s32 n) {
     BgmRequest *r = NULL;
     s32 i;
     for (i = 0; i < n; i++) {
-        BgmRequest *p = &unk_00[i];
-        if (p->unk_13 == 0) {
+        BgmRequest *p = &requests[i];
+        if (p->removePending == 0) {
             r = p;
             break;
         }
@@ -2643,23 +2643,23 @@ BgmRequest *BgmManager::findKeptBefore(s32 n) {
 
 void BgmManager::insertAt(s32 idx) {
     s32 i;
-    if (unk_1c0 > 0) {
-        for (i = unk_1c0 - 1; i >= idx; i--) {
-            unk_00[i + 1].copyFrom(&unk_00[i]);
+    if (numRequests > 0) {
+        for (i = numRequests - 1; i >= idx; i--) {
+            requests[i + 1].copyFrom(&requests[i]);
         }
     }
-    unk_1c0++;
+    numRequests++;
 }
 
 void BgmManager::forEachRequest(Unk_02034574_Fn fn) {
     s32 i;
-    for (i = 0; i < unk_1c0; i++) {
-        (((BgmRequestView *)&unk_00[i])->*fn)();
+    for (i = 0; i < numRequests; i++) {
+        (((BgmRequestView *)&requests[i])->*fn)();
     }
 }
 
 void BgmManager::updateHourChime() {
-    if (unk_24c.hasHourChanged()) {
+    if (clock.hasHourChanged()) {
         BOOL ok = TRUE;
         if (!Scene_GetSkyKind(1)) {
             ok = FALSE;
@@ -2669,11 +2669,11 @@ void BgmManager::updateHourChime() {
                 ok = FALSE;
             }
         }
-        if (unk_2f4) {
+        if (hourChimeDisabled) {
             ok = FALSE;
         }
         if (ok) {
-            unk_24c.hasYearChanged();
+            clock.hasYearChanged();
             Melody_StartTrackA();
         }
     }
@@ -2688,17 +2688,17 @@ BgmProc::BgmProc() {}
 BgmProc::~BgmProc() {}
 
 BOOL BgmProc::vfunc_00() {
-    unk_50.init();
+    bgmManager.init();
     return TRUE;
 }
 
 BOOL BgmProc::onExecute() {
-    unk_50.update();
+    bgmManager.update();
     return TRUE;
 }
 
 BOOL BgmProc::vfunc_0c() {
-    unk_50.exit();
+    bgmManager.exit();
     return TRUE;
 }
 

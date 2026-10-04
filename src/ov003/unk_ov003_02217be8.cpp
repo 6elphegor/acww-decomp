@@ -76,14 +76,14 @@ struct Unk_ov003_02217b78_Ent {
 
 struct Unk_ov003_02217c3c_P {
     u8 pad_00[8];
-    Unk_020553f8_Res *unk_08;
+    Unk_020553f8_Res *modelRes;
     u8 pad_0c[0x14];
-    u32 unk_20;
+    u32 groundTex;
 };
 
 struct Unk_ov003_02217c3c_Obj {
     u8 pad_00[0x20];
-    Unk_ov003_02217c3c_P *unk_20;
+    Unk_ov003_02217c3c_P *bgModel;
 };
 
 class FieldGroundBackdrop {
@@ -94,8 +94,8 @@ public:
     BOOL init();
     void clear();
 
-    /* 0x00 */ CachedModel unk_00;
-    /* 0x9c */ void *unk_9c;
+    /* 0x00 */ CachedModel model;
+    /* 0x9c */ void *modelRes;
 };
 
 class FieldGroundBlock {
@@ -107,12 +107,12 @@ public:
     BOOL updateAnims();
     BOOL init(Unk_ov003_02217c3c_Obj *o, s32 a, s32 b);
 
-    /* 0x00 */ s32 unk_00;
-    /* 0x04 */ CachedModel unk_04;
-    /* 0xa0 */ s32 unk_a0;
-    /* 0xa4 */ s32 unk_a4;
-    /* 0xa8 */ ModelAnim unk_a8[2];
-    /* 0xe8 */ s8 unk_e8;
+    /* 0x00 */ s32 acreId;
+    /* 0x04 */ CachedModel model;
+    /* 0xa0 */ s32 blockX;
+    /* 0xa4 */ s32 blockZ;
+    /* 0xa8 */ ModelAnim matAnims[2];
+    /* 0xe8 */ s8 beachMatIdx;
 };
 
 class FieldGroundPiece {
@@ -129,12 +129,12 @@ public:
     Unk_ov003_02217910_V3 *getPos();
     s32 getCurveAngle();
 
-    /* 0x00 */ CachedModel unk_00;
-    /* 0x9c */ Unk_ov003_02217910_V3 unk_9c;
-    /* 0xa8 */ s16 unk_a8;
-    /* 0xac */ s32 unk_ac;
-    /* 0xb0 */ s32 unk_b0;
-    /* 0xb4 */ ModelAnim unk_b4[2];
+    /* 0x00 */ CachedModel model;
+    /* 0x9c */ Unk_ov003_02217910_V3 position;
+    /* 0xa8 */ s16 curveAngle;
+    /* 0xac */ s32 blockX;
+    /* 0xb0 */ s32 blockZ;
+    /* 0xb4 */ ModelAnim matAnims[2];
 };
 
 // 4-byte colour constructors (unreferenced except by __sinit)
@@ -173,14 +173,14 @@ struct Unk_ov003_022179b8_Rec {
 
 class FieldGround : public GameProc {
 public:
-    /* 0x50 */ FieldGroundBlock *unk_50;
-    /* 0x54 */ FieldGroundPiece unk_54;
-    /* 0x148 */ s32 unk_148;
-    /* 0x14c */ s32 unk_14c;
-    /* 0x150 */ FieldGroundBackdrop unk_150;
-    /* 0x1f0 */ TexPatVramAnim unk_1f0;
-    /* 0x280 */ TexPatVramAnim unk_280;
-    /* 0x310 */ Unk_ov003_02217948 unk_310;
+    /* 0x50 */ FieldGroundBlock *blocks;
+    /* 0x54 */ FieldGroundPiece piece;
+    /* 0x148 */ s32 numBlocksX;
+    /* 0x14c */ s32 numBlocksZ;
+    /* 0x150 */ FieldGroundBackdrop backdrop;
+    /* 0x1f0 */ TexPatVramAnim riverPatAnim;
+    /* 0x280 */ TexPatVramAnim beachPatAnim;
+    /* 0x310 */ Unk_ov003_02217948 envChannel;
 
     FieldGround();
     virtual BOOL vfunc_00();
@@ -193,36 +193,36 @@ public:
 
 struct Unk_ov003_02218034_Obj {
     u8 pad_00[0x5c];
-    u8 *unk_5c;
+    u8 *resMdl;
 };
 
 struct Unk_ov003_02218784_Obj {
     u8 pad_00[0x1c];
-    void (*unk_1c)(struct Unk_ov003_02218794_Obj *);
+    void (*cbVecFuncMat)(struct Unk_ov003_02218794_Obj *);
     u8 pad_20[0x90 - 0x20];
-    u8 unk_90;
+    u8 cbVecTimingMat;
 };
 
 struct Unk_ov003_02218794_Inner {
     u8 pad_00[0x2c];
-    u8 *unk_2c;
+    u8 *ptrUser;
 };
 
 struct Unk_ov003_02218794_A {
     u8 pad_00[1];
-    u8 unk_01;
+    u8 matIdx;
 };
 
 struct Unk_ov003_02218794_B {
     u8 pad_00[0x28];
-    u32 unk_28;
+    u32 transT;
 };
 
 struct Unk_ov003_02218794_Obj {
-    Unk_ov003_02218794_A *unk_00;
-    Unk_ov003_02218794_Inner *unk_04;
+    Unk_ov003_02218794_A *c;
+    Unk_ov003_02218794_Inner *pRenderObj;
     u8 pad_08[0xb0 - 0x8];
-    struct Unk_ov003_02218794_B *unk_b0;
+    struct Unk_ov003_02218794_B *pMatAnmResult;
 };
 
 // other modules' methods are reached through their real mangled symbols (object first)
@@ -325,12 +325,12 @@ extern "C" FieldGround *FieldGround_Create() {
 
 extern "C" void FieldGround_OnBeachMaterial(Unk_ov003_02218794_Obj *o) {
     if (data_ov003_02235494 == 0) {
-        Unk_ov003_02218794_Inner *in = o->unk_04;
-        u8 *r3 = in->unk_2c;
-        u8 b = o->unk_00->unk_01;
+        Unk_ov003_02218794_Inner *in = o->pRenderObj;
+        u8 *r3 = in->ptrUser;
+        u8 b = o->c->matIdx;
         if (r3 != 0) {
             if (*(s8 *)(r3 + 0xe8) == b) {
-                FX_Div(o->unk_b0->unk_28 + 0xda2, 0xda2);
+                FX_Div(o->pMatAnmResult->transT + 0xda2, 0xda2);
                 Ground_SetWaveLevel();
                 data_ov003_02235494 = 1;
             }
@@ -339,43 +339,43 @@ extern "C" void FieldGround_OnBeachMaterial(Unk_ov003_02218794_Obj *o) {
 }
 
 extern "C" void FieldGround_OnModelInit(Unk_ov003_02218784_Obj *o) {
-    o->unk_1c = FieldGround_OnBeachMaterial;
-    o->unk_90 = 2;
+    o->cbVecFuncMat = FieldGround_OnBeachMaterial;
+    o->cbVecTimingMat = 2;
 }
 
 FieldGround::FieldGround() {
-    FieldGround_InitEnvChannel(&unk_310);
+    FieldGround_InitEnvChannel(&envChannel);
 }
 
 FieldGround::~FieldGround() {
-    FieldGround_DestroyEnvChannel(&unk_310);
+    FieldGround_DestroyEnvChannel(&envChannel);
 }
 
 BOOL FieldGround::vfunc_00() {
-    unk_150.clear();
-    unk_150.init();
+    backdrop.clear();
+    backdrop.init();
     s32 r6 = BgModelCache_getGroundTex(BgModelCache_Get());
     s32 r4 = BgModelCache_getRiverPatTex(BgModelCache_Get());
     s32 r0 = BgModelCache_getRiverPatAnm(BgModelCache_Get());
-    TexPatVramAnim_init(&unk_1f0, (void *)r6, "grd_riv.0", "grd_riv_pl", r4, r0, 0);
+    TexPatVramAnim_init(&riverPatAnim, (void *)r6, "grd_riv.0", "grd_riv_pl", r4, r0, 0);
     r6 = BgModelCache_getGroundTex(BgModelCache_Get());
     r4 = BgModelCache_getBeBPatTex(BgModelCache_Get());
     r0 = BgModelCache_getBeBPatAnm(BgModelCache_Get());
-    TexPatVramAnim_init(&unk_280, (void *)r6, "grd_beB", "grd_beB_pl", r4, r0, 1);
+    TexPatVramAnim_init(&beachPatAnim, (void *)r6, "grd_beB", "grd_beB_pl", r4, r0, 1);
     Unk_ov003_02218478_Grid *g = gSceneBlockMap;
-    unk_148 = g->w;
-    unk_14c = g->h;
-    unk_50 = (FieldGroundBlock *)Heap_Alloc(gBgHeap, unk_14c * (unk_148 * 0xec));
+    numBlocksX = g->w;
+    numBlocksZ = g->h;
+    blocks = (FieldGroundBlock *)Heap_Alloc(gBgHeap, numBlocksZ * (numBlocksX * 0xec));
     {
-        FieldGroundBlock *e = unk_50;
-        for (; e < unk_50 + unk_148 * unk_14c; e++) {
+        FieldGroundBlock *e = blocks;
+        for (; e < blocks + numBlocksX * numBlocksZ; e++) {
             e = new (e) FieldGroundBlock;
         }
     }
     u32 by, bx;
     u32 tx, ty;
-    for (by = 0; by < unk_14c; by++) {
-        for (bx = 0; bx < unk_148; bx++) {
+    for (by = 0; by < numBlocksZ; by++) {
+        for (bx = 0; bx < numBlocksX; bx++) {
             for (ty = 0; ty < 16; ty++) {
                 for (tx = 0; tx < 16; tx++) {
                     s32 o1, o2;
@@ -387,40 +387,40 @@ BOOL FieldGround::vfunc_00() {
                         v.y = 0;
                         v.z = 0;
                         FieldPos_FromBlockUnitCenter((Unk_ov003_02218478_V3 *)&v, bx, by, tx, ty);
-                        unk_54.setup(&v, t);
+                        piece.setup(&v, t);
                     }
                 }
             }
         }
     }
     s32 idx = 0;
-    for (bx = 0; bx < unk_14c; bx++) {
-        for (by = 0; by < unk_148; by++) {
+    for (bx = 0; bx < numBlocksZ; bx++) {
+        for (by = 0; by < numBlocksX; by++) {
             Unk_ov003_02218478_Cell *c;
             if (by < g->w && bx < g->h && g->cells != 0) {
                 c = &g->cells[bx * g->w + by];
             } else {
                 c = 0;
             }
-            (unk_50 + idx++)->init((Unk_ov003_02217c3c_Obj *)c, by, bx);
+            (blocks + idx++)->init((Unk_ov003_02217c3c_Obj *)c, by, bx);
         }
     }
-    FieldGround_ResetEnvChannel(&unk_310);
+    FieldGround_ResetEnvChannel(&envChannel);
     return TRUE;
 }
 
 BOOL FieldGround::onExecute() {
     FieldGroundBlock *e;
     s32 i, j;
-    unk_150.followCamera();
-    unk_54.updateAnims();
-    e = unk_50;
+    backdrop.followCamera();
+    piece.updateAnims();
+    e = blocks;
     i = 0;
     goto test0;
 loop0:
     {
         j = 0;
-        s32 *volatile pw = &unk_148;
+        s32 *volatile pw = &numBlocksX;
         goto test1;
     loop1:
         e->updateAnims();
@@ -431,9 +431,9 @@ loop0:
     }
     i++;
 test0:
-    if (i < unk_14c) goto loop0;
-    unk_1f0.update();
-    unk_280.update();
+    if (i < numBlocksZ) goto loop0;
+    riverPatAnim.update();
+    beachPatAnim.update();
     updateAmbientSe();
     data_021ce63c = 0;
     return TRUE;
@@ -454,7 +454,7 @@ BOOL FieldGround::onDraw() {
     a = 0;
     cx = 0;
     cy = 0;
-    b = ((s32 *)unk_54.getPos())[2];
+    b = ((s32 *)piece.getPos())[2];
     cam_r = 0;
     cam = gCamera;
     if (cam != 0) {
@@ -463,60 +463,60 @@ BOOL FieldGround::onDraw() {
         a = WorldCurve_AngleToDistance(cam_r);
     }
     found = 0;
-    for (y = 0; y < unk_14c; y++) {
-        for (x = 0; x < unk_148; x++) {
+    for (y = 0; y < numBlocksZ; y++) {
+        for (x = 0; x < numBlocksX; x++) {
             BOOL r = FALSE;
             r = Unk_ov003_022181bc_Chk(x, y, cx, cy);
             if (r) {
-                if (x == unk_54.getBlockX() && y == unk_54.getBlockZ()) {
+                if (x == piece.getBlockX() && y == piece.getBlockZ()) {
                     found = 1;
                 }
             }
         }
     }
     if (found == 0) {
-        FieldGround_DrawBackdrop(&unk_150);
+        FieldGround_DrawBackdrop(&backdrop);
     }
     if (found == 0) {
         idx = 0;
-        for (y = 0; y < unk_14c; y++) {
-            for (x = 0; x < unk_148; x++) {
+        for (y = 0; y < numBlocksZ; y++) {
+            for (x = 0; x < numBlocksX; x++) {
                 BOOL r = FALSE;
                 r = Unk_ov003_022181bc_Chk(x, y, cx, cy);
-                if (r) (unk_50 + idx)->draw();
+                if (r) (blocks + idx)->draw();
                 idx++;
             }
         }
     } else {
-        if (unk_54.getCurveAngle() < cam_r) {
+        if (piece.getCurveAngle() < cam_r) {
             if (b < a) {
-                unk_54.draw();
-                FieldGround_DrawBackdrop(&unk_150);
+                piece.draw();
+                FieldGround_DrawBackdrop(&backdrop);
             } else {
-                FieldGround_DrawBackdrop(&unk_150);
-                unk_54.draw();
+                FieldGround_DrawBackdrop(&backdrop);
+                piece.draw();
             }
             idx = 0;
-            for (y = 0; y < unk_14c; y++) {
-                for (x = 0; x < unk_148; x++) {
+            for (y = 0; y < numBlocksZ; y++) {
+                for (x = 0; x < numBlocksX; x++) {
                     BOOL r = FALSE;
                     r = Unk_ov003_022181bc_Chk(x, y, cx, cy);
-                    if (r) (unk_50 + idx)->draw();
+                    if (r) (blocks + idx)->draw();
                     idx++;
                 }
             }
         } else {
-            FieldGround_DrawBackdrop(&unk_150);
+            FieldGround_DrawBackdrop(&backdrop);
             idx = 0;
-            for (y = 0; y < unk_14c; y++) {
-                for (x = 0; x < unk_148; x++) {
+            for (y = 0; y < numBlocksZ; y++) {
+                for (x = 0; x < numBlocksX; x++) {
                     BOOL r = FALSE;
                     r = Unk_ov003_022181bc_Chk(x, y, cx, cy);
-                    if (r) (unk_50 + idx)->draw();
+                    if (r) (blocks + idx)->draw();
                     idx++;
                 }
             }
-            unk_54.draw();
+            piece.draw();
         }
     }
     return TRUE;
@@ -525,15 +525,15 @@ BOOL FieldGround::onDraw() {
 BOOL FieldGround::vfunc_0c() {
     s32 i, j;
     s32 idx;
-    unk_54.release();
+    piece.release();
     idx = 0;
-    for (i = 0; i < unk_14c; i++) {
-        for (j = 0; j < unk_148; j++) {
-            (unk_50 + idx++)->release();
+    for (i = 0; i < numBlocksZ; i++) {
+        for (j = 0; j < numBlocksX; j++) {
+            (blocks + idx++)->release();
         }
     }
-    FieldGround_ReleaseBackdrop(&unk_150);
-    FieldGround_ReleaseEnvChannel(&unk_310);
+    FieldGround_ReleaseBackdrop(&backdrop);
+    FieldGround_ReleaseEnvChannel(&envChannel);
     return TRUE;
 }
 
@@ -560,7 +560,7 @@ void FieldGround::updateAmbientSe() {
                 r4 = 0x80c;
                 break;
             }
-            FieldGround_PlayEnvSe(&unk_310, r6, r4);
+            FieldGround_PlayEnvSe(&envChannel, r6, r4);
         }
         FieldGround_EndSoundSrc(&q);
     }
@@ -569,10 +569,10 @@ void FieldGround::updateAmbientSe() {
 extern "C" void FieldGround_SetWaterMatFlags(void *op, s32 flag) {
     Unk_ov003_02218034_Obj *o = (Unk_ov003_02218034_Obj *)op;
     u32 i;
-    u8 *base = o->unk_5c;
+    u8 *base = o->resMdl;
     u8 *r4 = base + *(s32 *)(base + 8);
     for (i = 0; i < 2; i++) {
-        u32 t = G3dResAccess_findMatIdx(o->unk_5c, sWaterMatNames[i]);
+        u32 t = G3dResAccess_findMatIdx(o->resMdl, sWaterMatNames[i]);
         if (t != (u32)-1) {
             u8 *r1 = r4 + 4;
             u32 hw = *(u16 *)(r4 + 0xa);
@@ -592,30 +592,30 @@ extern "C" void FieldGround_SetWaterMatFlags(void *op, s32 flag) {
 }
 
 FieldGroundPiece::FieldGroundPiece() {
-    unk_ac = -1;
-    unk_b0 = -1;
-    unk_9c.x = 0;
-    unk_9c.y = 0;
-    unk_9c.z = 0;
+    blockX = -1;
+    blockZ = -1;
+    position.x = 0;
+    position.y = 0;
+    position.z = 0;
 }
 
 FieldGroundPiece::~FieldGroundPiece() {
 }
 
 s32 FieldGroundPiece::getCurveAngle() {
-    return unk_a8;
+    return curveAngle;
 }
 
 Unk_ov003_02217910_V3 *FieldGroundPiece::getPos() {
-    return &unk_9c;
+    return &position;
 }
 
 s32 FieldGroundPiece::getBlockX() {
-    return unk_ac;
+    return blockX;
 }
 
 s32 FieldGroundPiece::getBlockZ() {
-    return unk_b0;
+    return blockZ;
 }
 
 BOOL FieldGroundPiece::isActive() {
@@ -629,35 +629,35 @@ BOOL FieldGroundPiece::setup(Unk_ov003_02217910_V3 *pos, s32 idx) {
     if (isActive()) {
         return FALSE;
     }
-    unk_9c.x = pos->x;
-    unk_9c.y = pos->y;
-    unk_9c.z = pos->z;
+    position.x = pos->x;
+    position.y = pos->y;
+    position.z = pos->z;
     Unk_ov003_02217b78_Ent *e = (Unk_ov003_02217b78_Ent *)BgModelCache_getAcre(BgModelCache_Get(), sFieldGroundPieceAcres[idx]);
     s32 t = BgModelCache_getGroundTex(BgModelCache_Get());
     Unk_020553f8_Res *res = e->modelRes;
-    ((Model *)&unk_00)->setResourceAndBind(res, t);
-    if (unk_b4[0].allocMatAnm((u32)res, gBgHeap)) {
-        unk_b4[0].init(BgModelCache_getGroundMatAnm(BgModelCache_Get()), 0, 0x1000, 0);
-        unk_b4[0].addToRenderObj(((Model *)&unk_00)->getRenderObj());
+    ((Model *)&model)->setResourceAndBind(res, t);
+    if (matAnims[0].allocMatAnm((u32)res, gBgHeap)) {
+        matAnims[0].init(BgModelCache_getGroundMatAnm(BgModelCache_Get()), 0, 0x1000, 0);
+        matAnims[0].addToRenderObj(((Model *)&model)->getRenderObj());
     }
-    if (unk_b4[1].allocMatAnm((u32)res, gBgHeap)) {
-        unk_b4[1].init(BgModelCache_getGroundTexSrtAnm(BgModelCache_Get()), 0, 0x1000, 0);
-        unk_b4[1].addToRenderObj(((Model *)&unk_00)->getRenderObj());
+    if (matAnims[1].allocMatAnm((u32)res, gBgHeap)) {
+        matAnims[1].init(BgModelCache_getGroundTexSrtAnm(BgModelCache_Get()), 0, 0x1000, 0);
+        matAnims[1].addToRenderObj(((Model *)&model)->getRenderObj());
     }
     Unk_ov003_02217910_V3 tmp;
-    unk_a8 = WorldCurve_ToCurved((Unk_ov003_02218478_V3 *)&tmp, (Unk_ov003_02218478_V3 *)&unk_9c);
-    func_020e8388(data_021f47e0, unk_9c.x, 0, 0);
-    func_020e8434(data_021f47e0, unk_a8);
-    unk_00.unk_64 = *(Unk_ov003_02215c7c_Blk *)data_021f47e0;
-    unk_ac = pos->x >> 17;
-    unk_b0 = pos->z >> 17;
+    curveAngle = WorldCurve_ToCurved((Unk_ov003_02218478_V3 *)&tmp, (Unk_ov003_02218478_V3 *)&position);
+    func_020e8388(data_021f47e0, position.x, 0, 0);
+    func_020e8434(data_021f47e0, curveAngle);
+    model.unk_64 = *(Unk_ov003_02215c7c_Blk *)data_021f47e0;
+    blockX = pos->x >> 17;
+    blockZ = pos->z >> 17;
     return TRUE;
 }
 
 BOOL FieldGroundPiece::updateAnims() {
     if (isActive()) {
-        ModelAnim *p = &unk_b4[0];
-        ModelAnim *e = &unk_b4[2];
+        ModelAnim *p = &matAnims[0];
+        ModelAnim *e = &matAnims[2];
         for (; p < e; p++) {
             p->step();
             *p->anmObj = p->curFrame;
@@ -669,7 +669,7 @@ BOOL FieldGroundPiece::updateAnims() {
 
 BOOL FieldGroundPiece::draw() {
     if (isActive()) {
-        ((Model *)&unk_00)->drawScaled(0);
+        ((Model *)&model)->drawScaled(0);
         return TRUE;
     }
     return FALSE;
@@ -677,57 +677,57 @@ BOOL FieldGroundPiece::draw() {
 
 BOOL FieldGroundPiece::release() {
     if (isActive()) {
-        ((Model *)&unk_00)->clearResource();
-        unk_b0 = -1;
-        unk_ac = unk_b0;
+        ((Model *)&model)->clearResource();
+        blockZ = -1;
+        blockX = blockZ;
         return TRUE;
     }
     return FALSE;
 }
 
 FieldGroundBlock::FieldGroundBlock() {
-    unk_00 = 0;
-    unk_a0 = 0;
-    unk_a4 = 0;
+    acreId = 0;
+    blockX = 0;
+    blockZ = 0;
 }
 
 BOOL FieldGroundBlock::init(Unk_ov003_02217c3c_Obj *o, s32 a, s32 b) {
-    unk_a0 = a;
-    unk_a4 = b;
-    unk_00 = MapBlockAcre_getAcreId(o);
+    blockX = a;
+    blockZ = b;
+    acreId = MapBlockAcre_getAcreId(o);
     u32 t = BgModelCache_getGroundTex(BgModelCache_Get());
-    Unk_ov003_02217c3c_P *p = o->unk_20;
-    u32 q = p->unk_20;
+    Unk_ov003_02217c3c_P *p = o->bgModel;
+    u32 q = p->groundTex;
     if (q != 0) t = q;
-    Unk_020553f8_Res *res = p->unk_08;
-    ((Model *)&unk_04)->setResourceAndBind(res, t);
-    if (unk_a8[0].allocMatAnm((u32)res, gBgHeap)) {
-        unk_a8[0].init(BgModelCache_getGroundMatAnm(BgModelCache_Get()), 0, 0x1000, 0);
-        unk_a8[0].addToRenderObj(((Model *)&unk_04)->getRenderObj());
+    Unk_020553f8_Res *res = p->modelRes;
+    ((Model *)&model)->setResourceAndBind(res, t);
+    if (matAnims[0].allocMatAnm((u32)res, gBgHeap)) {
+        matAnims[0].init(BgModelCache_getGroundMatAnm(BgModelCache_Get()), 0, 0x1000, 0);
+        matAnims[0].addToRenderObj(((Model *)&model)->getRenderObj());
     }
-    if (unk_a8[1].allocMatAnm((u32)res, gBgHeap)) {
-        unk_a8[1].init(BgModelCache_getGroundTexSrtAnm(BgModelCache_Get()), 0, 0x1000, 0);
-        unk_a8[1].addToRenderObj(((Model *)&unk_04)->getRenderObj());
+    if (matAnims[1].allocMatAnm((u32)res, gBgHeap)) {
+        matAnims[1].init(BgModelCache_getGroundTexSrtAnm(BgModelCache_Get()), 0, 0x1000, 0);
+        matAnims[1].addToRenderObj(((Model *)&model)->getRenderObj());
     }
     func_020e8388(data_021f47e0, a * data_020c8cbc, 0, 0);
     s16 ang = b * WorldCurve_GetAngleScale();
     func_020e8434(data_021f47e0, ang);
-    unk_04.unk_64 = *(Unk_ov003_02215c7c_Blk *)data_021f47e0;
-    if (Acre_GetAttr(unk_00) & 8) {
-        unk_e8 = G3dResAccess_findMatIdx(res, (s32)"m_grd_beA");
-        if (unk_e8 != -1) {
-            ((Model *)&unk_04)->setInitCallback((s32)FieldGround_OnModelInit, (s32)this);
+    model.unk_64 = *(Unk_ov003_02215c7c_Blk *)data_021f47e0;
+    if (Acre_GetAttr(acreId) & 8) {
+        beachMatIdx = G3dResAccess_findMatIdx(res, (s32)"m_grd_beA");
+        if (beachMatIdx != -1) {
+            ((Model *)&model)->setInitCallback((s32)FieldGround_OnModelInit, (s32)this);
         }
     }
-    FieldGround_SetWaterMatFlags(&unk_04, 1);
+    FieldGround_SetWaterMatFlags(&model, 1);
     return TRUE;
 }
 
 BOOL FieldGroundBlock::updateAnims() {
     ModelAnim *e;
     ModelAnim *p;
-    p = &unk_a8[0];
-    e = &unk_a8[2];
+    p = &matAnims[0];
+    e = &matAnims[2];
     for (; p < e; p++) {
         p->step();
         *p->anmObj = p->curFrame;
@@ -736,11 +736,11 @@ BOOL FieldGroundBlock::updateAnims() {
 }
 
 BOOL FieldGroundBlock::draw() {
-    ((Model *)&unk_04)->drawScaled(0);
+    ((Model *)&model)->drawScaled(0);
     return TRUE;
 }
 
 BOOL FieldGroundBlock::release() {
-    ((Model *)&unk_04)->clearResource();
+    ((Model *)&model)->clearResource();
     return TRUE;
 }
