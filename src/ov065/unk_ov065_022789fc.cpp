@@ -1,7 +1,7 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
-#include "net/Unk_ov065_0227931c_Owner.h"
-#include "net/Unk_ov065_02291094.h"
+#include "net/GsSocket.h"
+#include "net/GsHttpConnection.h"
 
 typedef long long s64;
 
@@ -15,9 +15,9 @@ extern const char data_ov065_0228b39c[4] = "+/=";
 s32 sGsRandSeed = 1;
 s32 sGsSockLastError;
 u8 data_ov065_0229107c[4];
-Unk_ov065_02278e64_A sGsLocalHostEnt;
-Unk_ov065_02291094 data_ov065_02291094;
-Unk_ov065_02278e64_B data_ov065_022910a8;
+GsHostEnt sGsLocalHostEnt;
+GsHostAddr data_ov065_02291094;
+GsHostAddrList data_ov065_022910a8;
 }
 
 namespace FA {
@@ -51,10 +51,10 @@ namespace FB {
 
 extern "C" {
 extern s32 sGsSockLastError;
-extern Unk_ov065_02291094 data_ov065_02291094;
+extern GsHostAddr data_ov065_02291094;
 extern u8 data_0213a410[];
-extern Unk_ov065_02278e64_A sGsLocalHostEnt;
-extern Unk_ov065_02278e64_B data_ov065_022910a8;
+extern GsHostEnt sGsLocalHostEnt;
+extern GsHostAddrList data_ov065_022910a8;
 extern u8 data_ov065_0229107c[];
 void MI_CpuFill8(void *p, s32 v, s32 n);
 s32 Sock_SendTo(s32 a, s32 b, s32 c, u32 d, void *sa);
@@ -68,12 +68,12 @@ s32 Sock_Bind(s32 a, void *sa);
 s32 Sock_Shutdown(s32 a, s32 b, s32 c);
 s32 Sock_Close(s32 a, s32 b, s32 c);
 s32 Sock_Create(s32 a, s32 b);
-s32 Sock_Poll(Unk_ov065_02278f0c_Pfd *arr, u32 n, s64 timeout);
+s32 Sock_Poll(GsPollFd *arr, u32 n, s64 timeout);
 s32 Sock_Fcntl(s32 a, s32 cmd, u32 flags);
 u32 SockCore_GetHostIp();
 s32 IpAddr_StoreBe32(u32 v, u32 *p);
 u32 GsSock_GetLastError(s32 s);
-s32 GsHttp_SocketSend(Unk_ov065_0227931c_Owner *o, char *buf, s32 n);
+s32 GsHttp_SocketSend(GsHttpConnection *o, char *buf, s32 n);
 u32 STD_GetStringLength(const char *s);
 char *func_02127838(char *d, const char *s);
 void *GsUtil_Alloc(u32 n);
@@ -89,14 +89,14 @@ s32 GsSock_CheckResult(s32 a, s32 b);
 s32 GsSock_SetSockOpt(s32 a, s32 b, s32 c, s32 d, s32 e);
 s32 GsSock_GetSockOpt(s32 a, s32 b, s32 c, void *val, s32 *len);
 s32 GsSock_Select(s32 sock, s32 *rd, s32 *wr, s32 *ex);
-s32 GsHttpBuf_Append(Unk_ov065_0227931c_Buf *o, char *s, s32 len);
-s32 GsHttpBuf_Grow(Unk_ov065_0227931c_Buf *o, s32 n);
+s32 GsHttpBuf_Append(GsHttpBuffer *o, char *s, s32 len);
+s32 GsHttpBuf_Grow(GsHttpBuffer *o, s32 n);
 }
 }
 
 namespace FB {
 extern "C" {
-s32 GsHttpBuf_AppendHeader(Unk_ov065_0227931c_Buf *o, char *a, char *b) {
+s32 GsHttpBuf_AppendHeader(GsHttpBuffer *o, char *a, char *b) {
     if (!GsHttpBuf_Append(o, a, 0)) {
         return FALSE;
     }
@@ -116,7 +116,7 @@ s32 GsHttpBuf_AppendHeader(Unk_ov065_0227931c_Buf *o, char *a, char *b) {
 
 namespace FB {
 extern "C" {
-s32 GsHttpBuf_AppendChar(Unk_ov065_0227931c_Buf *o, u8 c) {
+s32 GsHttpBuf_AppendChar(GsHttpBuffer *o, u8 c) {
     u8 t = c;
     if (o != 0) {
         return GsHttpBuf_Append(o, (char *)&t, 1);
@@ -128,7 +128,7 @@ s32 GsHttpBuf_AppendChar(Unk_ov065_0227931c_Buf *o, u8 c) {
 
 namespace FB {
 extern "C" {
-s32 GsHttpBuf_AppendInt(Unk_ov065_0227931c_Buf *o, s32 x) {
+s32 GsHttpBuf_AppendInt(GsHttpBuffer *o, s32 x) {
     char buf[16];
     OS_SPrintf(buf, "%d", x);
     return GsHttpBuf_Append(o, buf, 0);
@@ -138,7 +138,7 @@ s32 GsHttpBuf_AppendInt(Unk_ov065_0227931c_Buf *o, s32 x) {
 
 namespace FB {
 extern "C" {
-void GsHttpBuf_Reset(Unk_ov065_0227931c_Buf *o) {
+void GsHttpBuf_Reset(GsHttpBuffer *o) {
     o->length = 0;
     o->readPos = 0;
     *o->data = 0;
@@ -148,8 +148,8 @@ void GsHttpBuf_Reset(Unk_ov065_0227931c_Buf *o) {
 
 namespace FB {
 extern "C" {
-s32 GsHttp_FlushSendBuffer(Unk_ov065_0227931c_Owner *o) {
-    s32 *pp = &o->sendBufReadPos;
+s32 GsHttp_FlushSendBuffer(GsHttpConnection *o) {
+    s32 *pp = &o->sendBuf.readPos;
     s32 z = 0;
     s32 w, e;
     s32 r;
@@ -164,12 +164,12 @@ s32 GsHttp_FlushSendBuffer(Unk_ov065_0227931c_Owner *o) {
         if (w == 0) {
             return TRUE;
         }
-        r = GsHttp_SocketSend(o, o->sendBufData + o->sendBufReadPos, o->sendBufLength - o->sendBufReadPos);
+        r = GsHttp_SocketSend(o, o->sendBuf.data + o->sendBuf.readPos, o->sendBuf.length - o->sendBuf.readPos);
         if (r == ~z) {
             return FALSE;
         }
         *pp += r;
-    } while (o->sendBufReadPos < o->sendBufLength);
+    } while (o->sendBuf.readPos < o->sendBuf.length);
     return TRUE;
 }
 }
@@ -177,7 +177,7 @@ s32 GsHttp_FlushSendBuffer(Unk_ov065_0227931c_Owner *o) {
 
 namespace FB {
 extern "C" {
-s32 GsHttpBuf_Read(Unk_ov065_0227931c_Buf *o, char *dst, s32 *len) {
+s32 GsHttpBuf_Read(GsHttpBuffer *o, char *dst, s32 *len) {
     s32 n = *len;
     s32 avail;
     if (n == 0) {
@@ -342,7 +342,7 @@ s32 GsSock_GetSendBufSize(s32 sock) {
 namespace FB {
 extern "C" {
 s32 GsSock_Select(s32 sock, s32 *rd, s32 *wr, s32 *ex) {
-    Unk_ov065_02278f0c_Pfd pfd;
+    GsPollFd pfd;
     s32 r;
     pfd.fd = sock;
     pfd.events = 0;
@@ -490,8 +490,8 @@ s32 GsSock_Shutdown(s32 a, s32 b, s32 c) {
 
 namespace FB {
 extern "C" {
-s32 GsSock_Bind(s32 a, Unk_ov065_02278c64_Sa *src, u32 len) {
-    Unk_ov065_02278c64_Sa l;
+s32 GsSock_Bind(s32 a, GsSockAddr *src, u32 len) {
+    GsSockAddr l;
     if (*(u16 *)&src->b[2] == 0) {
         return 0;
     }
@@ -504,8 +504,8 @@ s32 GsSock_Bind(s32 a, Unk_ov065_02278c64_Sa *src, u32 len) {
 
 namespace FB {
 extern "C" {
-s32 GsSock_Connect(s32 a, Unk_ov065_02278c64_Sa *src, u32 len) {
-    Unk_ov065_02278c64_Sa l;
+s32 GsSock_Connect(s32 a, GsSockAddr *src, u32 len) {
+    GsSockAddr l;
     l = *src;
     l.b[0] = len;
     return GsSock_CheckResult(Sock_Connect(a, &l), -1);
@@ -563,8 +563,8 @@ s32 GsSock_Send(s32 a, s32 b, s32 c, u32 d) {
 
 namespace FB {
 extern "C" {
-s32 GsSock_SendTo(s32 a, s32 b, s32 c, u32 d, Unk_ov065_02278c64_Sa *addr, u32 len) {
-    Unk_ov065_02278c64_Sa l;
+s32 GsSock_SendTo(s32 a, s32 b, s32 c, u32 d, GsSockAddr *addr, u32 len) {
+    GsSockAddr l;
     *(len ? &l : &l) = *addr;
     l.b[0] = len;
     return GsSock_CheckResult(Sock_SendTo(a, b, c, d, &l), -1);

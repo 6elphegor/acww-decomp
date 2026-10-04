@@ -17,12 +17,12 @@ extern "C" {
 extern s32 sGsAvailStatus;
 
 
-typedef s32 (*Unk_ov065_0227c564_Fn)(Ctx0227 **, void *, s32);
+typedef s32 (*GsGpConnectCallback)(Ctx0227 **, void *, s32);
 
 void GsGp_CloseConnection(Ctx0227 **, s32);
 void GsGp_SetErrorString(Ctx0227 **, const char *);
 s32 GsGp_Connect(Ctx0227 **, const char *, const char *, const char *, const char *, const char *,
-                        const char *, s32, s32, s32, s32, Unk_ov065_0227c564_Fn, s32);
+                        const char *, s32, s32, s32, s32, GsGpConnectCallback, s32);
 s32 GsGp_CheckConnected(Ctx0227 **);
 void GsUtil_Sleep(s32);
 s32 GsGp_FindOperation(Ctx0227 **, Unk_ov065_0227c538_Node **, s32);

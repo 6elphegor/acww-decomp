@@ -1,9 +1,9 @@
-#ifndef NET_UNK_OV065_02272428_SUB_H
-#define NET_UNK_OV065_02272428_SUB_H
+#ifndef NET_DWCMATCHCOMMANDHEADER_H
+#define NET_DWCMATCHCOMMANDHEADER_H
 
 #include "types.h"
 
-// DWC matching: peer client entry, sent-command record and the matching command header
+// DWC matching: sent-command record and the "SBCM" matching command header
 // (src/ov065/unk_ov065_022723b8.cpp, src/ov065/unk_ov065_02270e34.cpp; namespace F02271da0 there).
 
 struct Unk_ov065_02272428_Rec {
@@ -12,15 +12,7 @@ struct Unk_ov065_02272428_Rec {
     /* 0x6 */ u16 unk_06;
 };
 
-struct Unk_ov065_02272428_Sub {
-    /* 0x0 */ u8 clientIndex;
-    /* 0x1 */ u8 retryCount;
-    /* 0x2 */ u16 peerPort;
-    /* 0x4 */ u32 peerIp;
-    /* 0x8 */ s32 cookie;
-};
-
-struct Unk_ov065_022726a0_Hdr {
+struct DwcMatchCommandHeader {
     /* 0x00 */ u8 magic[4];
     /* 0x04 */ u32 version;
     /* 0x08 */ u8 command;

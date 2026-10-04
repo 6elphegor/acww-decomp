@@ -1,7 +1,7 @@
 // mwcc-flags: -O4,p -str reuse
 
 #include "types.h"
-#include "net/Unk_ov065_022786bc_Vec.h"
+#include "net/GsArray.h"
 #include "net/GsTransport.h"
 #include "net/GsBytes.h"
 
@@ -19,7 +19,7 @@ extern "C" {
 
 
 extern "C" {
-extern Unk_ov065_022786bc_Vec *sGsPersistRequests;
+extern GsArray *sGsPersistRequests;
 extern s32 sGsPersistSocket;
 extern s32 data_ov065_022910f8;
 extern char *data_ov065_022910f0;
@@ -42,8 +42,8 @@ s32 rand();
 void srand(s32);
 s32 abs(s32);
 
-void *GsArray_At(Unk_ov065_022786bc_Vec *, s32);
-s32 GsArray_Count(Unk_ov065_022786bc_Vec *);
+void *GsArray_At(GsArray *, s32);
+s32 GsArray_Count(GsArray *);
 void GsPersist_CompleteRequest(s32, s32, s32, char *, s32);
 s32 GsPersist_ProcessReceived(char *, s32);
 void GsPersist_FailAllRequests();

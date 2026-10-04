@@ -1,6 +1,6 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
-#include "net/Unk_ov065_022786bc_Vec.h"
+#include "net/GsArray.h"
 #include "net/Unk_ov065_02280e7c_Ctx.h"
 #include "net/Unk_ov065_02281974_Pair.h"
 #include "net/Unk_ov065_02281790_Ctx.h"
@@ -52,11 +52,11 @@ void *func_0212899c(void *, s32, s32);
 
 void GsUtil_Free(void *);
 void *GsUtil_Alloc(s32);
-Unk_ov065_022786bc_Vec *GsArray_New(s32, s32, void (*)(void *));
-void GsArray_DeleteAt(Unk_ov065_022786bc_Vec *, s32);
-void *GsArray_At(Unk_ov065_022786bc_Vec *, s32);
-s32 GsArray_Count(Unk_ov065_022786bc_Vec *);
-void GsArray_Free(Unk_ov065_022786bc_Vec *);
+GsArray *GsArray_New(s32, s32, void (*)(void *));
+void GsArray_DeleteAt(GsArray *, s32);
+void *GsArray_At(GsArray *, s32);
+s32 GsArray_Count(GsArray *);
+void GsArray_Free(GsArray *);
 void GsUtil_Md5Hex(char *, s32, char *);
 s32 GsUtil_GetTimeSeconds(s32);
 s32 GsSock_Accept(s32, s32, s32);

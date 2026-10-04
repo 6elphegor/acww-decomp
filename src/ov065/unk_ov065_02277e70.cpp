@@ -1,11 +1,11 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
-#include "net/Unk_ov065_02277f70_Ctx.h"
+#include "net/DwcGsHttpCallbackCtx.h"
 
 // ov065 TU34: GameSpy gsAvailable (0x02277e70..0x02278328)
 
 
-struct Unk_ov065_02291024 {
+struct GsAvailQuery {
     s32 socket;
     u8 serverAddr[2];
     u16 serverPort;
@@ -30,7 +30,7 @@ extern s32 sGsAvailStatus;
 extern char sGsAvailHostOverride[];
 extern char sGsGameName[];
 
-Unk_ov065_02291024 sGsAvailQuery;
+GsAvailQuery sGsAvailQuery;
 
 void *DwcNet_Free(s32 a, void *b, s32 c);
 void *DwcNet_Alloc(s32 a, s32 b);
@@ -51,7 +51,7 @@ s32 GsSock_ResolveAddress(const char *, s32, void *);
 
 void DwcCore_SetError(s32, s32);
 s32 DwcGsHttp_ReportError(s32 e);
-s32 DwcGsHttp_OnRequestDone(s32, s32, s32, s32, Unk_ov065_02277f70_Ctx *);
+s32 DwcGsHttp_OnRequestDone(s32, s32, s32, s32, DwcGsHttpCallbackCtx *);
 s32 GsAvail_ParseReply(s8 *, s32, u8 *, u32 *);
 void GsAvail_SendQuery();
 s32 GsSock_SendTo(s32, void *, s32, s32, void *, s32);
@@ -162,7 +162,7 @@ s32 DwcGsHttp_Process() {
     return 1;
 }
 
-s32 DwcGsHttp_OnRequestDone(s32 a, s32 e, s32 c, s32 d, Unk_ov065_02277f70_Ctx *p) {
+s32 DwcGsHttp_OnRequestDone(s32 a, s32 e, s32 c, s32 d, DwcGsHttpCallbackCtx *p) {
     void (*cb)(s32, s32, s32, u32) = p->callback;
     if (cb != NULL) {
         if (e == 0) {
@@ -185,9 +185,9 @@ s32 DwcGsHttp_PostAddString(s32 *p) {
 }
 
 s32 DwcGsHttp_Post(s32 a, s32 *pa, void (*cb)(s32, s32, s32, u32), u32 ud) {
-    Unk_ov065_02277f70_Ctx *p;
+    DwcGsHttpCallbackCtx *p;
     s32 r;
-    p = (Unk_ov065_02277f70_Ctx *)DwcNet_Alloc(4, 8);
+    p = (DwcGsHttpCallbackCtx *)DwcNet_Alloc(4, 8);
     if (p == NULL) {
         DwcGsHttp_ReportError(0x14);
         cb(0, 0, 0x14, p->userData);
@@ -205,9 +205,9 @@ s32 DwcGsHttp_Post(s32 a, s32 *pa, void (*cb)(s32, s32, s32, u32), u32 ud) {
 }
 
 s32 DwcGsHttp_Get(s32 a, void (*cb)(s32, s32, s32, u32), u32 ud) {
-    Unk_ov065_02277f70_Ctx *p;
+    DwcGsHttpCallbackCtx *p;
     s32 r;
-    p = (Unk_ov065_02277f70_Ctx *)DwcNet_Alloc(4, 8);
+    p = (DwcGsHttpCallbackCtx *)DwcNet_Alloc(4, 8);
     if (p == NULL) {
         DwcGsHttp_ReportError(0x14);
         cb(0, 0, 0x14, p->userData);

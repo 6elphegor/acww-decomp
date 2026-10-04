@@ -1,12 +1,12 @@
-#ifndef NET_UNK_OV065_02277418_REC_H
-#define NET_UNK_OV065_02277418_REC_H
+#ifndef NET_DWCNETCHANNEL_H
+#define NET_DWCNETCHANNEL_H
 
 #include "types.h"
 
-// DWC peer transport: per-connection send/receive state, frame header and LCG state
+// DWC per-aid data channel (DwcNet_*): send/receive state, the "DT" frame header and the LCG state
 // (src/ov065/unk_ov065_02277140.cpp, src/ov065/unk_ov065_022723b8.cpp namespace F0227702c).
 
-struct Unk_ov065_02277418_Rec {
+struct DwcNetChannel {
     /* 0x00 */ u8 *sendData;
     /* 0x04 */ u8 *recvBuffer;
     /* 0x08 */ s32 recvBufSize;
@@ -25,7 +25,7 @@ struct Unk_ov065_02277418_Rec {
     /* 0x2c */ u32 timeoutMs;
 };
 
-struct Unk_ov065_0227762c_Hdr {
+struct DwcNetFrameHeader {
     /* 0x0 */ u32 dataSize;
     /* 0x4 */ u16 frameType;
     /* 0x6 */ u8 magic[2];

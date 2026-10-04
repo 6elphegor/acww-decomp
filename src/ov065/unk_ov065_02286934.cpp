@@ -1,7 +1,7 @@
 // mwcc-flags: -O4,p -str reuse
 
 #include "types.h"
-#include "net/Unk_ov065_022786bc_Vec.h"
+#include "net/GsArray.h"
 #include "net/GsInAddr.h"
 #include "net/GsNatNeg.h"
 #include "net/Unk_ov065_02286f04_Hostent.h"
@@ -129,7 +129,7 @@ extern "C" {
 typedef GsQrContext Qr;
 typedef GsQrBuffer Buf;
 typedef GsNatNegotiator Ent;
-typedef Unk_ov065_022786bc_Vec Vec;
+typedef GsArray Vec;
 
 extern "C" {
 extern u8 data_ov065_0228e16c[];

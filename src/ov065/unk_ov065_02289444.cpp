@@ -1,7 +1,7 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
 #include "net/GsBytes.h"
-#include "net/Unk_ov065_022786bc_Vec.h"
+#include "net/GsArray.h"
 #include "net/GsSrvBrowser.h"
 
 extern "C" {
@@ -990,7 +990,7 @@ void GsSrvList_Free(GsSrvList *ctx)
     GsSrvList_ClearServers(ctx);
     GsStrPool_FreeIfEmpty(ctx);
     if (ctx->servers != 0) {
-        GsArray_Free((Unk_ov065_022786bc_Vec *)ctx->servers);
+        GsArray_Free((GsArray *)ctx->servers);
     }
     ctx->servers = 0;
 }

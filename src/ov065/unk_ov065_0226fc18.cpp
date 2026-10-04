@@ -5,6 +5,7 @@
 #include "net/NasAuthResult.h"
 #include "net/DwcControl.h"
 #include "net/GsGpBuddyStatus.h"
+#include "net/DwcConnInfo.h"
 
 typedef long long s64;
 
@@ -14,15 +15,6 @@ u32 data_ov065_02290674;
 u32 sDwcConnTable[32];
 u8 sDwcConnInfo[0x100];
 }
-
-// GT2 connection user data (sDwcConnInfo[32], GsTransport_GetUserData); also Unk_ov065_02270344_Rec in
-// src/ov065/unk_ov065_022723b8.cpp.
-struct DwcConnInfo {
-    /* 0x0 */ u8 slotIndex;
-    /* 0x1 */ u8 aid;
-    /* 0x2 */ u16 unk_02;
-    /* 0x4 */ u32 unk_04;
-};
 
 namespace F0226f7c8 {
 

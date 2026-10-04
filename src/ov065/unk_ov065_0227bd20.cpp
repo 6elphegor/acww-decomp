@@ -14,7 +14,7 @@ namespace Nb {
 
 
 
-typedef void (*Unk_ov065_0227c400_Cb)(void *, void *, void *);
+typedef void (*GsGpCallback)(void *, void *, void *);
 extern "C" {
 s32 strcmp(const char *, const char *);
 s32 strncmp(const char *, const char *, s32);
@@ -53,12 +53,12 @@ extern "C" {
 extern s32 sGsAvailStatus;
 
 
-typedef s32 (*Unk_ov065_0227c564_Fn)(Ctx0227 **, void *, s32);
+typedef s32 (*GsGpConnectCallback)(Ctx0227 **, void *, s32);
 
 void GsGp_CloseConnection(Ctx0227 **, s32);
 void GsGp_SetErrorString(Ctx0227 **, const char *);
 s32 GsGp_Connect(Ctx0227 **, const char *, const char *, const char *, const char *, const char *,
-                        const char *, s32, s32, s32, s32, Unk_ov065_0227c564_Fn, s32);
+                        const char *, s32, s32, s32, s32, GsGpConnectCallback, s32);
 s32 GsGp_CheckConnected(Ctx0227 **);
 void GsUtil_Sleep(s32);
 s32 GsGp_FindOperation(Ctx0227 **, Unk_ov065_0227c538_Node **, s32);
@@ -168,7 +168,7 @@ s32 GsGp_SetCallback(Ctx0227 **h, s32 i, s32 x, s32 y) {
 
 namespace Nc {
 extern "C" {
-s32 GsGp_ConnectPreAuth(Ctx0227 **h, char *a, char *b, s32 c, s32 d, Unk_ov065_0227c564_Fn cb, s32 e) {
+s32 GsGp_ConnectPreAuth(Ctx0227 **h, char *a, char *b, s32 c, s32 d, GsGpConnectCallback cb, s32 e) {
     Ctx0227 *ctx;
     if (h == NULL || (ctx = *h) == NULL) {
         return 2;
@@ -213,7 +213,7 @@ void GsGp_Disconnect(Ctx0227 **h) {
 
 namespace Nb {
 extern "C" {
-s32 GsGp_ProfileSearch(Unk_ov065_0227bd20_Handle *h, s32 a1, s32 a2, s32 a3, s32 a4, s32 a5, s32 a6, s32 a7, Unk_ov065_0227c400_Cb cb, void *arg) {
+s32 GsGp_ProfileSearch(Unk_ov065_0227bd20_Handle *h, s32 a1, s32 a2, s32 a3, s32 a4, s32 a5, s32 a6, s32 a7, GsGpCallback cb, void *arg) {
     Unk_ov065_0227bd20_Ctx *c;
     if (h == NULL || (c = h->connection) == NULL) {
         return 2;
@@ -235,7 +235,7 @@ s32 GsGp_ProfileSearch(Unk_ov065_0227bd20_Handle *h, s32 a1, s32 a2, s32 a3, s32
 
 namespace Nb {
 extern "C" {
-s32 GsGp_GetInfo(Unk_ov065_0227bd20_Handle *h, s32 a1, s32 a2, s32 a3, Unk_ov065_0227c400_Cb cb, void *arg) {
+s32 GsGp_GetInfo(Unk_ov065_0227bd20_Handle *h, s32 a1, s32 a2, s32 a3, GsGpCallback cb, void *arg) {
     Unk_ov065_0227bd20_Ctx *c;
     if (h == NULL || (c = h->connection) == NULL || a1 == 0) {
         return 2;

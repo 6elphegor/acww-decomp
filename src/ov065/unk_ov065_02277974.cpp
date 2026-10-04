@@ -1,12 +1,12 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
-#include "net/Unk_ov065_02277f70_Ctx.h"
+#include "net/DwcGsHttpCallbackCtx.h"
 
 typedef long long s64;
 
 // ov065_040: DWC net helpers: tick->ms, string key lookup, alloc wrappers, WiFi state machine, HTTP-ish task (0x02277974..0x02278250)
 
-struct Unk_ov065_02290f9c {
+struct DwcInetControl {
     s32 connectResult;
     u16 state;
     u16 isConnected;
@@ -17,13 +17,13 @@ struct Unk_ov065_02290f9c {
 struct Unk_ov065_02277d68_Args {
     void *allocFn;
     void *freeFn;
-    u8 unk_08;
-    u8 unk_09;
+    u8 dmaNo;
+    u8 powerMode;
 };
 
 
-typedef void *(*Unk_ov065_02290f98_Fn)(s32, s32, s32);
-typedef void *(*Unk_ov065_02290f94_Fn)(s32, void *, s32);
+typedef void *(*DwcAllocHookFn)(s32, s32, s32);
+typedef void *(*DwcFreeHookFn)(s32, void *, s32);
 
 extern "C" {
 
@@ -41,10 +41,10 @@ void func_02127838(void *, const void *);
 s32 OS_SPrintf(char *, const char *, ...);
 void memcpy(void *, const void *, s32);
 
-Unk_ov065_02290f94_Fn sDwcFreeHook;
+DwcFreeHookFn sDwcFreeHook;
 s32 sGsAvailStatus;
-Unk_ov065_02290f9c *sDwcInet;
-Unk_ov065_02290f98_Fn sDwcAllocHook;
+DwcInetControl *sDwcInet;
+DwcAllocHookFn sDwcAllocHook;
 char sGsAvailHostOverride[0x40];
 char sGsGameName[0x40];
 extern u32 gSslRsaThreadPriority;
@@ -72,11 +72,11 @@ void GsSock_StartupStub();
 void GsAvail_SendQuery();
 s32 GsSock_Socket(s32, s32, s32);
 s32 GsSock_ResolveAddress(const char *, s32, const char *);
-s32 DwcGsHttp_OnRequestDone(s32, s32, s32, s32, Unk_ov065_02277f70_Ctx *);
+s32 DwcGsHttp_OnRequestDone(s32, s32, s32, s32, DwcGsHttpCallbackCtx *);
 s32 GsAvail_ParseReply(s8 *, s32, u8 *, u32 *);
 
-void DwcInet_InitEx(Unk_ov065_02290f9c *p, s32 x, s32 y, u32 z);
-void DwcInet_Init(Unk_ov065_02290f9c *p);
+void DwcInet_InitEx(DwcInetControl *p, s32 x, s32 y, u32 z);
+void DwcInet_Init(DwcInetControl *p);
 void DwcInet_SelectAuthServer(s32 x);
 void DwcInet_StartConnect();
 BOOL DwcInet_IsConnectDone();
@@ -86,7 +86,7 @@ void DwcInet_WaitDisconnect();
 BOOL DwcInet_Disconnect();
 BOOL DwcInet_IsLinkLost();
 void DwcInet_GetLinkLevel();
-void DwcNet_SetAllocator(Unk_ov065_02290f98_Fn a, Unk_ov065_02290f94_Fn b);
+void DwcNet_SetAllocator(DwcAllocHookFn a, DwcFreeHookFn b);
 void *DwcNet_Alloc(s32 a, s32 b);
 void *DwcNet_AllocAligned(s32 a, s32 b, s32 c);
 void *DwcNet_Free(s32 a, void *b, s32 c);
@@ -101,7 +101,7 @@ s32 GsUtil_GetKeyValue(char *key, char *out, char *src, s32 sep);
 u64 DwcNet_GetTimeMs();
 }
 
-void DwcInet_InitEx(Unk_ov065_02290f9c *p, s32 x, s32 y, u32 z) {
+void DwcInet_InitEx(DwcInetControl *p, s32 x, s32 y, u32 z) {
     if (sDwcInet == NULL) {
         MI_CpuFill8(p, 0, 12);
         p->apInitParam0 = x;
@@ -114,7 +114,7 @@ void DwcInet_InitEx(Unk_ov065_02290f9c *p, s32 x, s32 y, u32 z) {
     }
 }
 
-void DwcInet_Init(Unk_ov065_02290f9c *p) {
+void DwcInet_Init(DwcInetControl *p) {
     DwcInet_InitEx(p, 3, 1, 0x14);
 }
 
@@ -136,11 +136,11 @@ void DwcInet_StartConnect() {
     Unk_ov065_02277d68_Args l;
     if (sDwcInet != NULL) {
         if (sDwcInet->state == 1) {
-            Unk_ov065_02290f9c *s;
+            DwcInetControl *s;
             MI_CpuFill8(&l, 0, 12);
             s = sDwcInet;
-            l.unk_08 = s->apInitParam0;
-            l.unk_09 = s->apInitParam1;
+            l.dmaNo = s->apInitParam0;
+            l.powerMode = s->apInitParam1;
             l.allocFn = (void *)DwcNet_Alloc;
             l.freeFn = (void *)DwcNet_Free;
             s->state = 2;
@@ -154,7 +154,7 @@ void DwcInet_StartConnect() {
 }
 
 BOOL DwcInet_IsConnectDone() {
-    Unk_ov065_02290f9c *s = sDwcInet;
+    DwcInetControl *s = sDwcInet;
     if (s == NULL) {
         return FALSE;
     }
@@ -167,7 +167,7 @@ BOOL DwcInet_IsConnectDone() {
 }
 
 void DwcInet_Process() {
-    Unk_ov065_02290f9c *s = sDwcInet;
+    DwcInetControl *s = sDwcInet;
     if (s != NULL && s->state == 2) {
         sDwcInet->connectResult = (s32)WifiAp_Process();
         return;
@@ -217,7 +217,7 @@ void DwcInet_WaitDisconnect() {
 }
 
 BOOL DwcInet_Disconnect() {
-    Unk_ov065_02290f9c *s = sDwcInet;
+    DwcInetControl *s = sDwcInet;
     if (s == NULL) {
         return TRUE;
     }
@@ -247,7 +247,7 @@ void DwcInet_GetLinkLevel() {
     WifiAp_GetLinkLevel();
 }
 
-void DwcNet_SetAllocator(Unk_ov065_02290f98_Fn a, Unk_ov065_02290f94_Fn b) {
+void DwcNet_SetAllocator(DwcAllocHookFn a, DwcFreeHookFn b) {
     sDwcAllocHook = a;
     sDwcFreeHook = b;
 }

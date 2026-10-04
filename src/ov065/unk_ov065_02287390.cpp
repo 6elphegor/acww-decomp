@@ -1,6 +1,6 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
-#include "net/Unk_ov065_022786bc_Vec.h"
+#include "net/GsArray.h"
 #include "net/Unk_ov065_02287200_Sa.h"
 #include "net/GsInAddr.h"
 #include "net/GsNatNeg.h"
@@ -33,7 +33,7 @@ namespace F02287200 {
 typedef GsQrContext Qr;
 typedef GsQrBuffer Buf;
 typedef GsNatNegotiator Ent;
-typedef Unk_ov065_022786bc_Vec Vec;
+typedef GsArray Vec;
 
 extern "C" {
 extern Qr *sGsQrDefault;

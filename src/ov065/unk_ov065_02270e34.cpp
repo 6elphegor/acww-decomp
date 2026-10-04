@@ -3,9 +3,9 @@
 #include "net/NasAuthParams.h"
 #include "net/NasAuthResult.h"
 #include "net/GsGpBuddyStatus.h"
-#include "net/Unk_ov065_02272428_Sub.h"
+#include "net/DwcMatchCommandHeader.h"
 #include "net/DwcFriendControl.h"
-#include "net/Unk_ov065_02290814.h"
+#include "net/DwcMatchControl.h"
 #include "net/DwcControl.h"
 
 typedef long long s64;
@@ -202,7 +202,7 @@ namespace F02271da0 {
 
 extern "C" {
 extern DwcFriendControl *sDwcFriendControl;
-extern Unk_ov065_02290814 *sDwcMatch;
+extern DwcMatchControl *sDwcMatch;
 u64 OS_GetTick();
 s32 func_020ffc60(s32, void *);
 s32 func_020ffdd8(void *);

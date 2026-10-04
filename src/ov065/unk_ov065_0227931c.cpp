@@ -1,8 +1,7 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
-#include "net/Unk_ov065_0227931c_Owner.h"
-#include "net/Unk_ov065_02279c7c.h"
-#include "net/Unk_ov065_02291094.h"
+#include "net/GsSocket.h"
+#include "net/GsHttpConnection.h"
 
 // ov065 TU37: ghttp (1): ghttpBuffer / connection table / ghttpMain (0x0227931c..0x0227a284)
 
@@ -25,11 +24,11 @@ namespace Ng {
 
 
 extern s32 sGsSockLastError;
-extern Unk_ov065_02291094 data_ov065_02291094;
+extern GsHostAddr data_ov065_02291094;
 extern u8 data_0213a410[];
 
-extern Unk_ov065_02278e64_A sGsLocalHostEnt;
-extern Unk_ov065_02278e64_B data_ov065_022910a8;
+extern GsHostEnt sGsLocalHostEnt;
+extern GsHostAddrList data_ov065_022910a8;
 extern u8 data_ov065_0229107c[];
 
 extern "C" {
@@ -45,12 +44,12 @@ s32 Sock_Bind(s32 a, void *sa);
 s32 Sock_Shutdown(s32 a, s32 b, s32 c);
 s32 Sock_Close(s32 a, s32 b, s32 c);
 s32 Sock_Create(s32 a, s32 b);
-s32 Sock_Poll(Unk_ov065_02278f0c_Pfd *arr, u32 n, s64 timeout);
+s32 Sock_Poll(GsPollFd *arr, u32 n, s64 timeout);
 s32 Sock_Fcntl(s32 a, s32 cmd, u32 flags);
 u32 SockCore_GetHostIp();
 s32 IpAddr_StoreBe32(u32 v, u32 *p);
 u32 GsSock_GetLastError(s32 s);
-s32 GsHttp_SocketSend(Unk_ov065_0227931c_Owner *o, char *buf, s32 n);
+s32 GsHttp_SocketSend(GsHttpConnection *o, char *buf, s32 n);
 u32 STD_GetStringLength(const char *s);
 char *func_02127838(char *d, const char *s);
 void *GsUtil_Alloc(u32 n);
@@ -67,8 +66,8 @@ s32 GsSock_CheckResult(s32 a, s32 b);
 s32 GsSock_SetSockOpt(s32 a, s32 b, s32 c, s32 d, s32 e);
 s32 GsSock_GetSockOpt(s32 a, s32 b, s32 c, void *val, s32 *len);
 s32 GsSock_Select(s32 sock, s32 *rd, s32 *wr, s32 *ex);
-s32 GsHttpBuf_Append(Unk_ov065_0227931c_Buf *o, char *s, s32 len);
-s32 GsHttpBuf_Grow(Unk_ov065_0227931c_Buf *o, s32 n);
+s32 GsHttpBuf_Append(GsHttpBuffer *o, char *s, s32 len);
+s32 GsHttpBuf_Grow(GsHttpBuffer *o, s32 n);
 
 }
 
@@ -78,25 +77,25 @@ static inline u32 Unk_ov065_02278dfc_Ntohl(u32 x) {
 }
 }
 extern "C" {
-s32 GsHttpBuf_Append(Unk_ov065_0227931c_Buf *o, char *s, s32 len);
-void GsHttpBuf_Free(Unk_ov065_0227931c_Buf *o);
-s32 GsHttpBuf_InitUser(Unk_ov065_0227931c_Owner *ow, Unk_ov065_0227931c_Buf *o, char *buf, s32 size);
-s32 GsHttpBuf_Init(Unk_ov065_0227931c_Owner *ow, Unk_ov065_0227931c_Buf *o, s32 size, s32 grow);
-s32 GsHttpBuf_Grow(Unk_ov065_0227931c_Buf *o, s32 n);
+s32 GsHttpBuf_Append(GsHttpBuffer *o, char *s, s32 len);
+void GsHttpBuf_Free(GsHttpBuffer *o);
+s32 GsHttpBuf_InitUser(GsHttpConnection *ow, GsHttpBuffer *o, char *buf, s32 size);
+s32 GsHttpBuf_Init(GsHttpConnection *ow, GsHttpBuffer *o, s32 size, s32 grow);
+s32 GsHttpBuf_Grow(GsHttpBuffer *o, s32 n);
 }
 }
 
 namespace Nc {
 
-typedef void (*Unk_ov065_02279588_Cb1)(u32, u32, u32, u32, u32, u32);
-typedef void (*Unk_ov065_022795d4_Cb2)(u32, u32, u32, u32, u32, u32, u32);
-typedef s32 (*Unk_ov065_0227960c_Cb3)(u32, u32, u32, u32, u32);
-typedef s32 (*Unk_ov065_022798f8_Cb4)(Unk_ov065_02279c7c *, void *, u8 *, s32 *, u8 *, s32 *);
-typedef void (*Unk_ov065_02279a64_Cb5)(Unk_ov065_02279c7c *, void *);
+typedef void (*GsHttpPostCallback)(u32, u32, u32, u32, u32, u32);
+typedef void (*GsHttpProgressCallback)(u32, u32, u32, u32, u32, u32, u32);
+typedef s32 (*GsHttpCompletedCallback)(u32, u32, u32, u32, u32);
+typedef s32 (*GsHttpDecryptFn)(GsHttpConnection *, void *, u8 *, s32 *, u8 *, s32 *);
+typedef void (*GsHttpEncryptCleanupFn)(GsHttpConnection *, void *);
 
 
 extern "C" {
-extern Unk_ov065_02279c7c **sGsHttpConnections;
+extern GsHttpConnection **sGsHttpConnections;
 extern s32 sGsHttpConnectionCap;
 extern s32 sGsHttpConnectionCount;
 extern s32 sGsHttpSerial;
@@ -127,29 +126,29 @@ void func_0212899c(void *, s32, u32);
 
 void GsHttp_LeaveCritical();
 void GsHttp_EnterCritical();
-BOOL GsHttp_FreeConnection(Unk_ov065_02279c7c *);
+BOOL GsHttp_FreeConnection(GsHttpConnection *);
 s32 GsHttp_FindFreeSlot();
-BOOL GsHttp_DecryptReceived(Unk_ov065_02279c7c *);
-void GsHttp_ForEachConnection(BOOL (*)(Unk_ov065_02279c7c *));
+BOOL GsHttp_DecryptReceived(GsHttpConnection *);
+void GsHttp_ForEachConnection(BOOL (*)(GsHttpConnection *));
 }
 
 
 extern "C" {
-s32 GsHttp_SocketSend(Unk_ov065_02279c7c *self, u8 *buf, s32 len);
+s32 GsHttp_SocketSend(GsHttpConnection *self, u8 *buf, s32 len);
 }
 extern "C" {
-void GsHttp_CallPostCallback(Unk_ov065_02279c7c *self);
-void GsHttp_CallProgressCallback(Unk_ov065_02279c7c *self, u32 p1, u32 p2);
-void GsHttp_CallCompletedCallback(Unk_ov065_02279c7c *self);
-s32 GsHttp_SendOrQueue(Unk_ov065_02279c7c *self, u8 *buf, s32 len);
-s32 GsHttp_SocketSend(Unk_ov065_02279c7c *self, u8 *buf, s32 len);
-s32 GsHttp_SocketRecv(Unk_ov065_02279c7c *self, u8 *buf, s32 *plen);
-BOOL GsHttp_DecryptReceived(Unk_ov065_02279c7c *self);
+void GsHttp_CallPostCallback(GsHttpConnection *self);
+void GsHttp_CallProgressCallback(GsHttpConnection *self, u32 p1, u32 p2);
+void GsHttp_CallCompletedCallback(GsHttpConnection *self);
+s32 GsHttp_SendOrQueue(GsHttpConnection *self, u8 *buf, s32 len);
+s32 GsHttp_SocketSend(GsHttpConnection *self, u8 *buf, s32 len);
+s32 GsHttp_SocketRecv(GsHttpConnection *self, u8 *buf, s32 *plen);
+BOOL GsHttp_DecryptReceived(GsHttpConnection *self);
 void GsHttp_FreeAllConnections();
-void GsHttp_ResetForRedirect(Unk_ov065_02279c7c *self);
-void GsHttp_ForEachConnection(BOOL (*cb)(Unk_ov065_02279c7c *));
-BOOL GsHttp_FreeConnection(Unk_ov065_02279c7c *s);
-Unk_ov065_02279c7c *GsHttp_NewConnection();
+void GsHttp_ResetForRedirect(GsHttpConnection *self);
+void GsHttp_ForEachConnection(BOOL (*cb)(GsHttpConnection *));
+BOOL GsHttp_FreeConnection(GsHttpConnection *s);
+GsHttpConnection *GsHttp_NewConnection();
 s32 GsHttp_FindFreeSlot();
 void GsHttp_LeaveCritical();
 void GsHttp_EnterCritical();
@@ -172,23 +171,23 @@ extern s32 sGsHttpThrottleBytes;
 
 s32 GsHttpPost_AddStringPart(void *, const char *, const char *);
 s32 GsHttpPost_New();
-void GsHttp_ForEachConnection(s32 (*)(Unk_ov065_02279c7c *));
+void GsHttp_ForEachConnection(s32 (*)(GsHttpConnection *));
 char *GsUtil_StrDup(const char *);
-Unk_ov065_02279c7c *GsHttp_NewConnection();
-BOOL GsHttp_FreeConnection(Unk_ov065_02279c7c *);
-BOOL GsHttp_InitPostState(Unk_ov065_02279c7c *);
+GsHttpConnection *GsHttp_NewConnection();
+BOOL GsHttp_FreeConnection(GsHttpConnection *);
+BOOL GsHttp_InitPostState(GsHttpConnection *);
 void GsUtil_Sleep(s32);
-void GsHttp_StepHostLookup(Unk_ov065_02279c7c *);
-void GsHttp_StepConnect(Unk_ov065_02279c7c *);
-void GsHttp_StepEncryption(Unk_ov065_02279c7c *);
-void GsHttp_StepSendRequest(Unk_ov065_02279c7c *);
-void GsHttp_StepSendPost(Unk_ov065_02279c7c *);
-void GsHttp_StepWaitReply(Unk_ov065_02279c7c *);
-void GsHttp_StepRecvStatus(Unk_ov065_02279c7c *);
-void GsHttp_StepRecvHeaders(Unk_ov065_02279c7c *);
-void GsHttp_StepRecvBody(Unk_ov065_02279c7c *);
-void GsHttp_ResetForRedirect(Unk_ov065_02279c7c *);
-void GsHttp_CallCompletedCallback(Unk_ov065_02279c7c *);
+void GsHttp_StepHostLookup(GsHttpConnection *);
+void GsHttp_StepConnect(GsHttpConnection *);
+void GsHttp_StepEncryption(GsHttpConnection *);
+void GsHttp_StepSendRequest(GsHttpConnection *);
+void GsHttp_StepSendPost(GsHttpConnection *);
+void GsHttp_StepWaitReply(GsHttpConnection *);
+void GsHttp_StepRecvStatus(GsHttpConnection *);
+void GsHttp_StepRecvHeaders(GsHttpConnection *);
+void GsHttp_StepRecvBody(GsHttpConnection *);
+void GsHttp_ResetForRedirect(GsHttpConnection *);
+void GsHttp_CallCompletedCallback(GsHttpConnection *);
 void GsHttp_LeaveCritical();
 void GsHttp_EnterCritical();
 void GsHttp_FreeCritical();
@@ -196,13 +195,13 @@ void GsHttp_InitCritical();
 void GsHttp_FreeAllConnections();
 void GsUtil_Free(void *);
 s32 GsArray_Count(void *);
-Unk_ov065_0227a4e8_Slot *GsArray_At(void *, s32);
-s32 GsHttp_FlushSendBuffer(Unk_ov065_02279c7c *);
+GsHttpPostPartState *GsArray_At(void *, s32);
+s32 GsHttp_FlushSendBuffer(GsHttpConnection *);
 void GsHttpBuf_Reset(void *);
-s32 GsHttp_SendOrQueue(Unk_ov065_02279c7c *, const void *, s32);
-s32 GsHttp_SocketSend(Unk_ov065_02279c7c *, const void *, s32);
-BOOL GsHttpBuf_InitUser(Unk_ov065_02279c7c *, void *, void *, s32);
-BOOL GsHttpBuf_Init(Unk_ov065_02279c7c *, void *, s32, s32);
+s32 GsHttp_SendOrQueue(GsHttpConnection *, const void *, s32);
+s32 GsHttp_SocketSend(GsHttpConnection *, const void *, s32);
+BOOL GsHttpBuf_InitUser(GsHttpConnection *, void *, void *, s32);
+BOOL GsHttpBuf_Init(GsHttpConnection *, void *, s32, s32);
 void GsHttpBuf_AppendChar(void *, s32);
 BOOL GsHttpBuf_Append(void *, const void *, s32);
 s32 OS_SPrintf(char *, const char *, ...);
@@ -210,21 +209,21 @@ s32 STD_GetStringLength(const char *);
 s32 func_0212a120(const char *, s32);
 s32 func_02128030(void *, s32, s32, u32);
 
-s32 GsHttp_Step(Unk_ov065_02279c7c *);
-void GsHttp_SetResultFromStatus(Unk_ov065_02279c7c *);
-s32 GsHttp_SendPostPart(Unk_ov065_0227a4e8_Slot *, Unk_ov065_02279c7c *, s32);
-s32 GsHttp_SendPostPartBuffer(Unk_ov065_0227a4e8_Slot *, Unk_ov065_02279c7c *);
-s32 GsHttp_SendPostPartFile(Unk_ov065_0227a4e8_Slot *, Unk_ov065_02279c7c *);
-s32 GsHttp_SendPostPartString(Unk_ov065_0227a4e8_Slot *, Unk_ov065_02279c7c *);
+s32 GsHttp_Step(GsHttpConnection *);
+void GsHttp_SetResultFromStatus(GsHttpConnection *);
+s32 GsHttp_SendPostPart(GsHttpPostPartState *, GsHttpConnection *, s32);
+s32 GsHttp_SendPostPartBuffer(GsHttpPostPartState *, GsHttpConnection *);
+s32 GsHttp_SendPostPartFile(GsHttpPostPartState *, GsHttpConnection *);
+s32 GsHttp_SendPostPartString(GsHttpPostPartState *, GsHttpConnection *);
 void GsHttp_Startup();
 }
 extern "C" {
 s32 GsHttp_PostAddString(void *a, const char *b, const char *c);
 s32 GsHttp_NewPost();
 void GsHttp_ProcessAll();
-s32 GsHttp_PostEx(const char *a, const char *b, Unk_ov065_0227a4e8_Req *c, u32 d, s32 e, u32 f, u32 g, u32 h);
-s32 GsHttp_Post(const char *a, Unk_ov065_0227a4e8_Req *b, s32 c, u32 d, u32 e);
-s32 GsHttp_GetEx(const char *a, const char *b, void *c, s32 d, Unk_ov065_0227a4e8_Req *e, u32 f, s32 g, u32 h, u32 i, u32 j);
+s32 GsHttp_PostEx(const char *a, const char *b, GsHttpPost *c, u32 d, s32 e, u32 f, u32 g, u32 h);
+s32 GsHttp_Post(const char *a, GsHttpPost *b, s32 c, u32 d, u32 e);
+s32 GsHttp_GetEx(const char *a, const char *b, void *c, s32 d, GsHttpPost *e, u32 f, s32 g, u32 h, u32 i, u32 j);
 s32 GsHttp_Get(const char *a, s32 b, u32 c, u32 d);
 void GsHttp_Cleanup();
 void GsHttp_Startup();
@@ -275,8 +274,8 @@ s32 GsHttp_Get(const char *a, s32 b, u32 c, u32 d) {
 
 namespace Nm {
 extern "C" {
-s32 GsHttp_GetEx(const char *a, const char *b, void *c, s32 d, Unk_ov065_0227a4e8_Req *e, u32 f, s32 g, u32 h, u32 i, u32 j) {
-    Unk_ov065_02279c7c *conn;
+s32 GsHttp_GetEx(const char *a, const char *b, void *c, s32 d, GsHttpPost *e, u32 f, s32 g, u32 h, u32 i, u32 j) {
+    GsHttpConnection *conn;
     if (a == 0 || *a == 0) {
         return -1;
     }
@@ -308,8 +307,8 @@ s32 GsHttp_GetEx(const char *a, const char *b, void *c, s32 d, Unk_ov065_0227a4e
     }
     conn->post = e;
     conn->isBlocking = g;
-    conn->progressCallback = (Unk_ov065_022795d4_Cb2)h;
-    conn->completedCallback = (Unk_ov065_0227960c_Cb3)i;
+    conn->progressCallback = (GsHttpProgressCallback)h;
+    conn->completedCallback = (GsHttpCompletedCallback)i;
     conn->callbackParam = j;
     conn->isThrottled = f;
     conn->isUserBodyBuf = (c != 0) ? 1 : 0;
@@ -345,7 +344,7 @@ s32 GsHttp_GetEx(const char *a, const char *b, void *c, s32 d, Unk_ov065_0227a4e
 
 namespace Nm {
 extern "C" {
-s32 GsHttp_Post(const char *a, Unk_ov065_0227a4e8_Req *b, s32 c, u32 d, u32 e) {
+s32 GsHttp_Post(const char *a, GsHttpPost *b, s32 c, u32 d, u32 e) {
     return GsHttp_PostEx(a, 0, b, 0, c, 0, d, e);
 }
 }
@@ -353,8 +352,8 @@ s32 GsHttp_Post(const char *a, Unk_ov065_0227a4e8_Req *b, s32 c, u32 d, u32 e) {
 
 namespace Nm {
 extern "C" {
-s32 GsHttp_PostEx(const char *a, const char *b, Unk_ov065_0227a4e8_Req *c, u32 d, s32 e, u32 f, u32 g, u32 h) {
-    Unk_ov065_02279c7c *conn;
+s32 GsHttp_PostEx(const char *a, const char *b, GsHttpPost *c, u32 d, s32 e, u32 f, u32 g, u32 h) {
+    GsHttpConnection *conn;
     if (a == 0 || *a == 0) {
         return -1;
     }
@@ -383,8 +382,8 @@ s32 GsHttp_PostEx(const char *a, const char *b, Unk_ov065_0227a4e8_Req *c, u32 d
     }
     conn->post = c;
     conn->isBlocking = e;
-    conn->progressCallback = (Unk_ov065_022795d4_Cb2)f;
-    conn->completedCallback = (Unk_ov065_0227960c_Cb3)g;
+    conn->progressCallback = (GsHttpProgressCallback)f;
+    conn->completedCallback = (GsHttpCompletedCallback)g;
     conn->callbackParam = h;
     conn->isThrottled = d;
     if (c != 0) {
@@ -457,10 +456,10 @@ s32 GsHttp_FindFreeSlot() {
     if (p == 0) {
         return -1;
     }
-    sGsHttpConnections = (Unk_ov065_02279c7c **)p;
+    sGsHttpConnections = (GsHttpConnection **)p;
     i = base;
     for (; i < end; i++) {
-        sGsHttpConnections[i] = (Unk_ov065_02279c7c *)GsUtil_Alloc(0x184);
+        sGsHttpConnections[i] = (GsHttpConnection *)GsUtil_Alloc(0x184);
         if (sGsHttpConnections[i] == 0) {
             for (i--; i >= base; i--) {
                 GsUtil_Free(sGsHttpConnections[i]);
@@ -477,8 +476,8 @@ s32 GsHttp_FindFreeSlot() {
 
 namespace Nc {
 extern "C" {
-Unk_ov065_02279c7c *GsHttp_NewConnection() {
-    Unk_ov065_02279c7c *s;
+GsHttpConnection *GsHttp_NewConnection() {
+    GsHttpConnection *s;
     s32 idx;
     BOOL r;
     GsHttp_EnterCritical();
@@ -551,7 +550,7 @@ Unk_ov065_02279c7c *GsHttp_NewConnection() {
 
 namespace Nc {
 extern "C" {
-BOOL GsHttp_FreeConnection(Unk_ov065_02279c7c *s) {
+BOOL GsHttp_FreeConnection(GsHttpConnection *s) {
     if (s == 0) {
         return FALSE;
     }
@@ -604,12 +603,12 @@ BOOL GsHttp_FreeConnection(Unk_ov065_02279c7c *s) {
 
 namespace Nc {
 extern "C" {
-void GsHttp_ForEachConnection(BOOL (*cb)(Unk_ov065_02279c7c *)) {
+void GsHttp_ForEachConnection(BOOL (*cb)(GsHttpConnection *)) {
     if (sGsHttpConnectionCount > 0) {
         s32 i;
         GsHttp_EnterCritical();
         for (i = 0; i < sGsHttpConnectionCap; i++) {
-            Unk_ov065_02279c7c *s = sGsHttpConnections[i];
+            GsHttpConnection *s = sGsHttpConnections[i];
             if (s->inUse != 0) {
                 cb(s);
             }
@@ -622,7 +621,7 @@ void GsHttp_ForEachConnection(BOOL (*cb)(Unk_ov065_02279c7c *)) {
 
 namespace Nc {
 extern "C" {
-void GsHttp_ResetForRedirect(Unk_ov065_02279c7c *self) {
+void GsHttp_ResetForRedirect(GsHttpConnection *self) {
     self->state = 0;
     GsUtil_Free(self->url);
     self->url = self->redirectUrl;
@@ -699,32 +698,32 @@ void GsHttp_LeaveCritical() {
 
 namespace Nc {
 extern "C" {
-BOOL GsHttp_DecryptReceived(Unk_ov065_02279c7c *self) {
+BOOL GsHttp_DecryptReceived(GsHttpConnection *self) {
     s32 inl = 0;
     s32 outl = 0;
     s32 r;
     do {
-        s32 pos = self->rawRecvBufReadPos;
-        u8 *in = self->rawRecvBufData + pos;
-        inl = self->rawRecvBufLength - pos;
-        s32 w = self->recvBufLength;
-        u8 *out = self->recvBufData + w;
-        outl = self->recvBufCapacity - w;
+        s32 pos = self->rawRecvBuf.readPos;
+        u8 *in = (u8 *)self->rawRecvBuf.data + pos;
+        inl = self->rawRecvBuf.length - pos;
+        s32 w = self->recvBuf.length;
+        u8 *out = (u8 *)self->recvBuf.data + w;
+        outl = self->recvBuf.capacity - w;
         r = self->decryptFn(self, &self->encryptor, in, &inl, out, &outl);
-        if (r == 2 && GsHttpBuf_Grow(&self->recvBuf, self->recvBufGrowBy) == 0) {
+        if (r == 2 && GsHttpBuf_Grow(&self->recvBuf, self->recvBuf.growBy) == 0) {
             return FALSE;
         }
     } while (r == 2 && outl == 0);
-    self->rawRecvBufReadPos += inl;
-    self->recvBufLength += outl;
-    if (self->rawRecvBufReadPos > 0xff) {
-        s32 rest = self->rawRecvBufLength - self->rawRecvBufReadPos;
+    self->rawRecvBuf.readPos += inl;
+    self->recvBuf.length += outl;
+    if (self->rawRecvBuf.readPos > 0xff) {
+        s32 rest = self->rawRecvBuf.length - self->rawRecvBuf.readPos;
         if (rest == 0) {
             GsHttpBuf_Reset(&self->rawRecvBuf);
         } else {
-            memmove(self->rawRecvBufData, self->rawRecvBufData + self->rawRecvBufReadPos, rest);
-            self->rawRecvBufReadPos = 0;
-            self->rawRecvBufLength = rest;
+            memmove(self->rawRecvBuf.data, self->rawRecvBuf.data + self->rawRecvBuf.readPos, rest);
+            self->rawRecvBuf.readPos = 0;
+            self->rawRecvBuf.length = rest;
         }
     }
     if (r == 3) {
@@ -739,7 +738,7 @@ BOOL GsHttp_DecryptReceived(Unk_ov065_02279c7c *self) {
 
 namespace Nc {
 extern "C" {
-s32 GsHttp_SocketRecv(Unk_ov065_02279c7c *self, u8 *buf, s32 *plen) {
+s32 GsHttp_SocketRecv(GsHttpConnection *self, u8 *buf, s32 *plen) {
     s32 len;
     s32 n = *plen - 1;
     if (self->isThrottled != 0) {
@@ -752,11 +751,11 @@ s32 GsHttp_SocketRecv(Unk_ov065_02279c7c *self, u8 *buf, s32 *plen) {
             n = sGsHttpThrottleBytes;
         }
     }
-    if (self->recvBufReadPos < self->recvBufLength) {
+    if (self->recvBuf.readPos < self->recvBuf.length) {
         GsHttpBuf_Read(&self->recvBuf, buf, plen);
-        if (self->recvBufReadPos == self->recvBufLength) {
-            self->recvBufLength = self->headersEnd;
-            self->recvBufReadPos = self->headersEnd;
+        if (self->recvBuf.readPos == self->recvBuf.length) {
+            self->recvBuf.length = self->headersEnd;
+            self->recvBuf.readPos = self->headersEnd;
         }
         return 0;
     }
@@ -785,7 +784,7 @@ s32 GsHttp_SocketRecv(Unk_ov065_02279c7c *self, u8 *buf, s32 *plen) {
             self->result = 0x11;
             return 3;
         }
-        if (self->recvBufLength - self->recvBufReadPos <= 0) {
+        if (self->recvBuf.length - self->recvBuf.readPos <= 0) {
             buf[0] = 0;
             *plen = 0;
             return 1;
@@ -794,9 +793,9 @@ s32 GsHttp_SocketRecv(Unk_ov065_02279c7c *self, u8 *buf, s32 *plen) {
         if (GsHttpBuf_Read(&self->recvBuf, buf, &len) == 0) {
             return 3;
         }
-        if (self->recvBufReadPos == self->recvBufLength) {
-            self->recvBufLength = self->headersEnd;
-            self->recvBufReadPos = self->headersEnd;
+        if (self->recvBuf.readPos == self->recvBuf.length) {
+            self->recvBuf.length = self->headersEnd;
+            self->recvBuf.readPos = self->headersEnd;
         }
         if (len <= 0) {
             return 1;
@@ -815,7 +814,7 @@ s32 GsHttp_SocketRecv(Unk_ov065_02279c7c *self, u8 *buf, s32 *plen) {
 
 namespace Nc {
 extern "C" {
-s32 GsHttp_SocketSend(Unk_ov065_02279c7c *self, u8 *buf, s32 len) {
+s32 GsHttp_SocketSend(GsHttpConnection *self, u8 *buf, s32 len) {
     s32 r = GsSock_Send(self->socketHandle, buf, len, 0);
     if (r == -1) {
         s32 e = GsSock_GetLastError(self->socketHandle);
@@ -837,9 +836,9 @@ s32 GsHttp_SocketSend(Unk_ov065_02279c7c *self, u8 *buf, s32 len) {
 
 namespace Nc {
 extern "C" {
-s32 GsHttp_SendOrQueue(Unk_ov065_02279c7c *self, u8 *buf, s32 len) {
+s32 GsHttp_SendOrQueue(GsHttpConnection *self, u8 *buf, s32 len) {
     s32 r = 0;
-    if (self->sendBufLength == 0) {
+    if (self->sendBuf.length == 0) {
         r = GsHttp_SocketSend(self, buf, len);
         if (r == -1) {
             return 0;
@@ -858,7 +857,7 @@ s32 GsHttp_SendOrQueue(Unk_ov065_02279c7c *self, u8 *buf, s32 len) {
 
 namespace Nc {
 extern "C" {
-void GsHttp_CallCompletedCallback(Unk_ov065_02279c7c *self) {
+void GsHttp_CallCompletedCallback(GsHttpConnection *self) {
     if (self->completedCallback != 0) {
         u32 a;
         u32 b;
@@ -866,12 +865,12 @@ void GsHttp_CallCompletedCallback(Unk_ov065_02279c7c *self) {
             a = 0;
             b = 0;
         } else {
-            a = self->bodyBufData;
+            a = (u32)self->bodyBuf.data;
             b = self->bodyBytesReceived;
         }
         s32 r = self->completedCallback(self->requestId, self->result, a, b, self->callbackParam);
         if (a != 0 && r == 0) {
-            self->bodyBufKeepData = 1;
+            self->bodyBuf.keepData = 1;
         }
     }
 }
@@ -880,7 +879,7 @@ void GsHttp_CallCompletedCallback(Unk_ov065_02279c7c *self) {
 
 namespace Nc {
 extern "C" {
-void GsHttp_CallProgressCallback(Unk_ov065_02279c7c *self, u32 p1, u32 p2) {
+void GsHttp_CallProgressCallback(GsHttpConnection *self, u32 p1, u32 p2) {
     if (self->progressCallback != 0) {
         self->progressCallback(self->requestId, self->state, p1, p2, self->bodyBytesReceived, self->contentLength, self->callbackParam);
     }
@@ -890,7 +889,7 @@ void GsHttp_CallProgressCallback(Unk_ov065_02279c7c *self, u32 p1, u32 p2) {
 
 namespace Nc {
 extern "C" {
-void GsHttp_CallPostCallback(Unk_ov065_02279c7c *self) {
+void GsHttp_CallPostCallback(GsHttpConnection *self) {
     if (self->postCallback != 0) {
         u32 a = GsArray_Count((u32)self->postParts);
         self->postCallback(self->requestId, self->postBytesSent, self->postTotalBytes, self->postPartIndex, a, self->callbackParam);
@@ -901,7 +900,7 @@ void GsHttp_CallPostCallback(Unk_ov065_02279c7c *self) {
 
 namespace Ng {
 extern "C" {
-s32 GsHttpBuf_Grow(Unk_ov065_0227931c_Buf *o, s32 n) {
+s32 GsHttpBuf_Grow(GsHttpBuffer *o, s32 n) {
     s32 newsize;
     void *p;
     if (o == 0) {
@@ -924,7 +923,7 @@ s32 GsHttpBuf_Grow(Unk_ov065_0227931c_Buf *o, s32 n) {
 
 namespace Ng {
 extern "C" {
-s32 GsHttpBuf_Init(Unk_ov065_0227931c_Owner *ow, Unk_ov065_0227931c_Buf *o, s32 size, s32 grow) {
+s32 GsHttpBuf_Init(GsHttpConnection *ow, GsHttpBuffer *o, s32 size, s32 grow) {
     if (ow == 0) {
         return FALSE;
     }
@@ -957,7 +956,7 @@ s32 GsHttpBuf_Init(Unk_ov065_0227931c_Owner *ow, Unk_ov065_0227931c_Buf *o, s32 
 
 namespace Ng {
 extern "C" {
-s32 GsHttpBuf_InitUser(Unk_ov065_0227931c_Owner *ow, Unk_ov065_0227931c_Buf *o, char *buf, s32 size) {
+s32 GsHttpBuf_InitUser(GsHttpConnection *ow, GsHttpBuffer *o, char *buf, s32 size) {
     if (ow == 0) {
         return FALSE;
     }
@@ -986,7 +985,7 @@ s32 GsHttpBuf_InitUser(Unk_ov065_0227931c_Owner *ow, Unk_ov065_0227931c_Buf *o, 
 
 namespace Ng {
 extern "C" {
-void GsHttpBuf_Free(Unk_ov065_0227931c_Buf *o) {
+void GsHttpBuf_Free(GsHttpBuffer *o) {
     if (o != 0 && o->data != 0) {
         if (o->keepData == 0) {
             GsUtil_Free(o->data);
@@ -999,8 +998,8 @@ void GsHttpBuf_Free(Unk_ov065_0227931c_Buf *o) {
 
 namespace Ng {
 extern "C" {
-s32 GsHttpBuf_Append(Unk_ov065_0227931c_Buf *o, char *s, s32 len) {
-    Unk_ov065_0227931c_Owner *ow = o->connection;
+s32 GsHttpBuf_Append(GsHttpBuffer *o, char *s, s32 len) {
+    GsHttpConnection *ow = o->connection;
     s32 n;
     s32 r;
     if (o == 0) {

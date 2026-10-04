@@ -6,7 +6,7 @@
 // GP peer-to-peer connection: peer node, connection view, buddy entry, callback pair and send state (gpiPeer.c)
 // (src/ov065/unk_ov065_02280c08.cpp, src/ov065/unk_ov065_0228176c.cpp).
 
-struct Unk_ov065_022786bc_Vec;
+struct GsArray;
 
 struct Unk_ov065_02280e7c_Node {
     /* 0x00 */ s32 peerState;
@@ -23,7 +23,7 @@ struct Unk_ov065_02280e7c_Node {
     /* 0x2c */ s32 outputBufferCapacity;
     /* 0x30 */ s32 outputBufferLength;
     /* 0x34 */ s32 outputBufferPos;
-    /* 0x38 */ Unk_ov065_022786bc_Vec *messageQueue;
+    /* 0x38 */ GsArray *messageQueue;
     /* 0x3c */ Unk_ov065_02280e7c_Node *next;
 };
 

@@ -1,9 +1,8 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
 #include "net/SockHostEnt.h"
-#include "net/Unk_ov065_022786bc_Vec.h"
-#include "net/Unk_ov065_02279c7c.h"
-#include "net/Unk_ov065_0227bd20_Ctx.h"
+#include "net/GsArray.h"
+#include "net/GsHttpConnection.h"
 
 // ov065 TU38: ghttp (2): request post / process / response handlers (0x0227a284..0x0227bd20)
 
@@ -31,23 +30,23 @@ extern char data_ov065_0228ca58[4];
 
 s32 GsHttpPost_AddStringPart(void *, const char *, const char *);
 s32 GsHttpPost_New();
-void GsHttp_ForEachConnection(s32 (*)(Unk_ov065_02279c7c *));
+void GsHttp_ForEachConnection(s32 (*)(GsHttpConnection *));
 char *GsUtil_StrDup(const char *);
-Unk_ov065_02279c7c *GsHttp_NewConnection();
-BOOL GsHttp_FreeConnection(Unk_ov065_02279c7c *);
-BOOL GsHttp_InitPostState(Unk_ov065_02279c7c *);
+GsHttpConnection *GsHttp_NewConnection();
+BOOL GsHttp_FreeConnection(GsHttpConnection *);
+BOOL GsHttp_InitPostState(GsHttpConnection *);
 void GsUtil_Sleep(s32);
-void GsHttp_StepHostLookup(Unk_ov065_02279c7c *);
-void GsHttp_StepConnect(Unk_ov065_02279c7c *);
-void GsHttp_StepEncryption(Unk_ov065_02279c7c *);
-void GsHttp_StepSendRequest(Unk_ov065_02279c7c *);
-void GsHttp_StepSendPost(Unk_ov065_02279c7c *);
-void GsHttp_StepWaitReply(Unk_ov065_02279c7c *);
-void GsHttp_StepRecvStatus(Unk_ov065_02279c7c *);
-void GsHttp_StepRecvHeaders(Unk_ov065_02279c7c *);
-void GsHttp_StepRecvBody(Unk_ov065_02279c7c *);
-void GsHttp_ResetForRedirect(Unk_ov065_02279c7c *);
-void GsHttp_CallCompletedCallback(Unk_ov065_02279c7c *);
+void GsHttp_StepHostLookup(GsHttpConnection *);
+void GsHttp_StepConnect(GsHttpConnection *);
+void GsHttp_StepEncryption(GsHttpConnection *);
+void GsHttp_StepSendRequest(GsHttpConnection *);
+void GsHttp_StepSendPost(GsHttpConnection *);
+void GsHttp_StepWaitReply(GsHttpConnection *);
+void GsHttp_StepRecvStatus(GsHttpConnection *);
+void GsHttp_StepRecvHeaders(GsHttpConnection *);
+void GsHttp_StepRecvBody(GsHttpConnection *);
+void GsHttp_ResetForRedirect(GsHttpConnection *);
+void GsHttp_CallCompletedCallback(GsHttpConnection *);
 void GsHttp_LeaveCritical();
 void GsHttp_EnterCritical();
 void GsHttp_FreeCritical();
@@ -55,13 +54,13 @@ void GsHttp_InitCritical();
 void GsHttp_FreeAllConnections();
 void GsUtil_Free(void *);
 s32 GsArray_Count(void *);
-Unk_ov065_0227a4e8_Slot *GsArray_At(void *, s32);
-s32 GsHttp_FlushSendBuffer(Unk_ov065_02279c7c *);
+GsHttpPostPartState *GsArray_At(void *, s32);
+s32 GsHttp_FlushSendBuffer(GsHttpConnection *);
 void GsHttpBuf_Reset(void *);
-s32 GsHttp_SendOrQueue(Unk_ov065_02279c7c *, const void *, s32);
-s32 GsHttp_SocketSend(Unk_ov065_02279c7c *, const void *, s32);
-BOOL GsHttpBuf_InitUser(Unk_ov065_02279c7c *, void *, void *, s32);
-BOOL GsHttpBuf_Init(Unk_ov065_02279c7c *, void *, s32, s32);
+s32 GsHttp_SendOrQueue(GsHttpConnection *, const void *, s32);
+s32 GsHttp_SocketSend(GsHttpConnection *, const void *, s32);
+BOOL GsHttpBuf_InitUser(GsHttpConnection *, void *, void *, s32);
+BOOL GsHttpBuf_Init(GsHttpConnection *, void *, s32, s32);
 void GsHttpBuf_AppendChar(void *, s32);
 BOOL GsHttpBuf_Append(void *, const void *, s32);
 s32 OS_SPrintf(char *, const char *, ...);
@@ -69,99 +68,28 @@ s32 STD_GetStringLength(const char *);
 s32 func_0212a120(const char *, s32);
 s32 func_02128030(void *, s32, s32, u32);
 
-s32 GsHttp_Step(Unk_ov065_02279c7c *);
-void GsHttp_SetResultFromStatus(Unk_ov065_02279c7c *);
-s32 GsHttp_SendPostPart(Unk_ov065_0227a4e8_Slot *, Unk_ov065_02279c7c *, s32);
-s32 GsHttp_SendPostPartBuffer(Unk_ov065_0227a4e8_Slot *, Unk_ov065_02279c7c *);
-s32 GsHttp_SendPostPartFile(Unk_ov065_0227a4e8_Slot *, Unk_ov065_02279c7c *);
-s32 GsHttp_SendPostPartString(Unk_ov065_0227a4e8_Slot *, Unk_ov065_02279c7c *);
+s32 GsHttp_Step(GsHttpConnection *);
+void GsHttp_SetResultFromStatus(GsHttpConnection *);
+s32 GsHttp_SendPostPart(GsHttpPostPartState *, GsHttpConnection *, s32);
+s32 GsHttp_SendPostPartBuffer(GsHttpPostPartState *, GsHttpConnection *);
+s32 GsHttp_SendPostPartFile(GsHttpPostPartState *, GsHttpConnection *);
+s32 GsHttp_SendPostPartString(GsHttpPostPartState *, GsHttpConnection *);
 void GsHttp_Startup();
 }
 extern "C" {
-s32 GsHttp_Step(Unk_ov065_02279c7c *c);
-void GsHttp_SetResultFromStatus(Unk_ov065_02279c7c *c);
-s32 GsHttp_SendPostData(Unk_ov065_02279c7c *c);
-s32 GsHttp_SendPostPart(Unk_ov065_0227a4e8_Slot *st, Unk_ov065_02279c7c *c, s32 first);
-s32 GsHttp_SendPostPartBuffer(Unk_ov065_0227a4e8_Slot *st, Unk_ov065_02279c7c *c);
-s32 GsHttp_SendPostPartFile(Unk_ov065_0227a4e8_Slot *st, Unk_ov065_02279c7c *c);
-s32 GsHttp_SendPostPartString(Unk_ov065_0227a4e8_Slot *st, Unk_ov065_02279c7c *c);
+s32 GsHttp_Step(GsHttpConnection *c);
+void GsHttp_SetResultFromStatus(GsHttpConnection *c);
+s32 GsHttp_SendPostData(GsHttpConnection *c);
+s32 GsHttp_SendPostPart(GsHttpPostPartState *st, GsHttpConnection *c, s32 first);
+s32 GsHttp_SendPostPartBuffer(GsHttpPostPartState *st, GsHttpConnection *c);
+s32 GsHttp_SendPostPartFile(GsHttpPostPartState *st, GsHttpConnection *c);
+s32 GsHttp_SendPostPartString(GsHttpPostPartState *st, GsHttpConnection *c);
 }
 }
 
 namespace Na {
-typedef void (*Unk_ov065_02278740_Dtor)(void *);
+typedef void (*GsElemFreeFn)(void *);
 
-
-struct Unk_ov065_0227a884_Rec {
-    s32 type;
-    char *partName;
-    char *unk_08;
-    char *unk_0c;
-    char *unk_10;
-    char *unk_14;
-};
-
-struct Unk_ov065_0227a8ec_Item {
-    Unk_ov065_0227a884_Rec *part;
-    s32 pos;
-    s32 file;
-    s32 fileLength;
-
-};
-
-struct Unk_ov065_0227acfc_Task {
-    Unk_ov065_022786bc_Vec *parts;
-    s32 postCallback;
-    s32 postCallbackParam;
-    s32 isMultipart;
-    s32 autoFree;
-};
-
-struct Unk_ov065_0227a884_Obj {
-    u8 unk_00[0xc];
-    s32 requestType;
-    s32 state;
-    u8 unk_14[4];
-    char *serverHost;
-    u8 unk_1c[4];
-    u16 serverPort;
-    u8 unk_22[0x38 - 0x22];
-    s32 result;
-    u8 unk_3c[0x48 - 0x3c];
-    s32 socketHandle;
-    s32 socketError;
-    u8 unk_50[0x74 - 0x50];
-    s32 recvBuf;
-    u8 *recvBufData;
-    u8 unk_7c[4];
-    s32 recvBufLength;
-    s32 recvBufReadPos;
-    u8 unk_88[0xec - 0x88];
-    s32 statusCode;
-    u8 unk_f0[4];
-    s32 headersIndex;
-    s32 headersEnd;
-    s32 completed;
-    s32 bodyBytesReceived;
-    s32 contentLength;
-    char *redirectUrl;
-    s32 redirectCount;
-    s32 isChunked;
-    u8 chunkHeader;
-    u8 unk_115[0x120 - 0x115];
-    s32 chunkHeaderLength;
-    s32 chunkBytesLeft;
-    s32 chunkState;
-    u8 unk_12c[0x13c - 0x12c];
-    Unk_ov065_0227acfc_Task *post;
-    Unk_ov065_022786bc_Vec *postParts;
-    s32 postPartIndex;
-    s32 postBytesSent;
-    s32 postTotalBytes;
-    s32 postCallback;
-    s32 postCallbackParam;
-    u32 recvTimeSliceMs;
-};
 
 struct Unk_ov065_0227ae94_Blk {
     char b[11];
@@ -174,11 +102,11 @@ extern volatile s32 data_ov065_022910e0;
 extern volatile s32 data_ov065_022910dc;
 extern u16 data_0213a510[];
 
-s32 GsArray_Count(Unk_ov065_022786bc_Vec *);
-void *GsArray_At(Unk_ov065_022786bc_Vec *, s32);
-void GsArray_Free(Unk_ov065_022786bc_Vec *);
-void GsArray_Append(Unk_ov065_022786bc_Vec *, void *);
-Unk_ov065_022786bc_Vec *GsArray_New(s32, s32, Unk_ov065_02278740_Dtor);
+s32 GsArray_Count(GsArray *);
+void *GsArray_At(GsArray *, s32);
+void GsArray_Free(GsArray *);
+void GsArray_Append(GsArray *, void *);
+GsArray *GsArray_New(s32, s32, GsElemFreeFn);
 void *GsUtil_Alloc(s32);
 void GsUtil_Free(void *);
 char *GsUtil_StrDup(const char *);
@@ -202,26 +130,15 @@ s32 strncmp(char *, char *, s32);
 s32 func_0212b770(char *);
 s32 OS_SPrintf(char *, char *, ...);
 
-s32 GsHttp_GetPostLength(Unk_ov065_0227a884_Obj *self);
-void GsHttp_ClosePostPart(Unk_ov065_0227a8ec_Item *it);
-s32 GsHttp_OpenPostPart(Unk_ov065_0227a8ec_Item *it);
-s32 GsHttp_GetMultipartLength(Unk_ov065_0227a884_Obj *self);
-s32 GsHttp_GetUrlEncodedLength(Unk_ov065_0227a884_Obj *self);
-void GsHttpPost_Free(Unk_ov065_0227acfc_Task *t);
-void GsHttpPost_FreePart(Unk_ov065_0227a884_Rec *r);
+s32 GsHttp_GetPostLength(GsHttpConnection *self);
+void GsHttp_ClosePostPart(GsHttpPostPartState *it);
+s32 GsHttp_OpenPostPart(GsHttpPostPartState *it);
+s32 GsHttp_GetMultipartLength(GsHttpConnection *self);
+s32 GsHttp_GetUrlEncodedLength(GsHttpConnection *self);
+void GsHttpPost_Free(GsHttpPost *t);
+void GsHttpPost_FreePart(GsHttpPostPart *r);
 }
 
-
-extern "C" {
-struct Unk_ov065_0227ac34_Item {
-    s32 type;
-    char *partName;
-    char *value;
-    s32 length;
-    s32 needsEscaping;
-    s32 numEscapedChars;
-};
-}
 
 extern "C" {
 #pragma enumsalwaysint off
@@ -229,92 +146,25 @@ enum Unk_ov065_0227acfc_Z { Unk_ov065_0227acfc_Z_0 = 0, Unk_ov065_0227acfc_Z_FF 
 #pragma enumsalwaysint reset
 }
 extern "C" {
-void GsHttp_FreePostState(Unk_ov065_0227a884_Obj *self);
-s32 GsHttp_InitPostState(Unk_ov065_0227a884_Obj *self);
-void GsHttp_ClosePostPart(Unk_ov065_0227a8ec_Item *it);
-s32 GsHttp_OpenPostPart(Unk_ov065_0227a8ec_Item *it);
-s32 GsHttp_GetPostLength(Unk_ov065_0227a884_Obj *self);
-s32 GsHttp_GetMultipartLength(Unk_ov065_0227a884_Obj *self);
-s32 GsHttp_GetUrlEncodedLength(Unk_ov065_0227a884_Obj *self);
-char *GsHttp_GetContentType(Unk_ov065_0227a884_Obj *self);
-s32 GsHttpPost_AddStringPart(Unk_ov065_0227acfc_Task *self, char *a, char *b);
-void GsHttpPost_Free(Unk_ov065_0227acfc_Task *t);
-s32 GsHttpPost_GetAutoFree(Unk_ov065_0227acfc_Task *t);
-Unk_ov065_0227acfc_Task *GsHttpPost_New(void);
-void GsHttpPost_FreePart(Unk_ov065_0227a884_Rec *r);
-void GsHttp_StepRecvBody(Unk_ov065_0227a884_Obj *self);
-void GsHttp_StepRecvHeaders(Unk_ov065_0227a884_Obj *self);
+void GsHttp_FreePostState(GsHttpConnection *self);
+s32 GsHttp_InitPostState(GsHttpConnection *self);
+void GsHttp_ClosePostPart(GsHttpPostPartState *it);
+s32 GsHttp_OpenPostPart(GsHttpPostPartState *it);
+s32 GsHttp_GetPostLength(GsHttpConnection *self);
+s32 GsHttp_GetMultipartLength(GsHttpConnection *self);
+s32 GsHttp_GetUrlEncodedLength(GsHttpConnection *self);
+char *GsHttp_GetContentType(GsHttpConnection *self);
+s32 GsHttpPost_AddStringPart(GsHttpPost *self, char *a, char *b);
+void GsHttpPost_Free(GsHttpPost *t);
+s32 GsHttpPost_GetAutoFree(GsHttpPost *t);
+GsHttpPost *GsHttpPost_New(void);
+void GsHttpPost_FreePart(GsHttpPostPart *r);
+void GsHttp_StepRecvBody(GsHttpConnection *self);
+void GsHttp_StepRecvHeaders(GsHttpConnection *self);
 }
 }
 
 namespace Nb {
-struct Unk_ov065_0227b2a8_Obj;
-
-struct Unk_ov065_0227b2a8_Buf {
-    Unk_ov065_0227b2a8_Obj *unk_00;
-    char *data;
-    s32 unk_08;
-    s32 length;
-    s32 readPos;
-    s32 unk_14;
-    s32 unk_18;
-    s32 unk_1c;
-    s32 unk_20;
-};
-
-struct Unk_ov065_0227b2a8_Obj {
-    u8 pad_00[0x0c];
-    s32 requestType;
-    s32 state;
-    char *url;
-    char *serverHost;
-    s32 serverIp;
-    u16 serverPort;
-    char *requestPath;
-    char *extraHeaders;
-    u8 pad_2c[8];
-    s32 keepAlive;
-    s32 result;
-    u8 pad_3c[0x0c];
-    s32 socketHandle;
-    s32 socketError;
-    Unk_ov065_0227b2a8_Buf sendBuf;
-    Unk_ov065_0227b2a8_Buf recvBuf;
-    Unk_ov065_0227b2a8_Buf unk_98;
-    Unk_ov065_0227b2a8_Buf bodyBuf;
-    u8 pad_e0[4];
-    s32 httpMajorVersion;
-    s32 httpMinorVersion;
-    s32 statusCode;
-    s32 statusTextIndex;
-    u8 pad_f4[4];
-    s32 headersEnd;
-    s32 completed;
-    s32 bodyBytesReceived;
-    s32 contentLength;
-    u8 pad_108[8];
-    s32 isChunked;
-    char chunkHeader[12];
-    s32 chunkHeaderLength;
-    s32 chunkBytesLeft;
-    s32 chunkState;
-    u8 pad_12c[4];
-    s32 connectionClosed;
-    s32 isThrottled;
-    u8 pad_138[4];
-    s32 post;
-    u8 pad_140[8];
-    s32 postBytesSent;
-    s32 postTotalBytes;
-    u8 pad_150[12];
-    char *proxyHost;
-    u16 proxyPort;
-    s32 encryptor;
-    s32 encryptEnabled;
-    s32 encryptInitialized;
-    s32 encryptSessionReady;
-    s32 (*unk_174)(Unk_ov065_0227b2a8_Obj *, void *);
-};
 
 struct Unk_ov065_0227b9c4_Addr {
     u8 len;
@@ -345,25 +195,25 @@ s32 GsSock_Select(s32 sock, s32 *rd, s32 *wr, s32 *ex);
 s32 GsSock_SetRecvBufSize(s32 sock, s32 val);
 s32 GsSock_SetBlocking(s32 sock, s32 flag);
 s32 GsSock_StartupStub();
-s32 GsHttp_FlushSendBuffer(Unk_ov065_0227b2a8_Obj *);
+s32 GsHttp_FlushSendBuffer(GsHttpConnection *);
 s32 GsHttpBuf_Reset(void *);
-s32 GsHttpBuf_AppendInt(Unk_ov065_0227b2a8_Buf *, s32);
-s32 GsHttpBuf_AppendChar(Unk_ov065_0227b2a8_Buf *, s32);
-s32 GsHttpBuf_AppendHeader(Unk_ov065_0227b2a8_Buf *, const char *, const char *);
+s32 GsHttpBuf_AppendInt(GsHttpBuffer *, s32);
+s32 GsHttpBuf_AppendChar(GsHttpBuffer *, s32);
+s32 GsHttpBuf_AppendHeader(GsHttpBuffer *, const char *, const char *);
 s32 GsHttpBuf_Append(void *, const char *, s32);
-s32 GsHttp_CallPostCallback(Unk_ov065_0227b2a8_Obj *);
-s32 GsHttp_CallProgressCallback(Unk_ov065_0227b2a8_Obj *, s32, s32);
-s32 GsHttp_SocketRecv(Unk_ov065_0227b2a8_Obj *, char *, s32 *);
-s32 GsHttp_SendPostData(Unk_ov065_0227b2a8_Obj *);
-s32 GsHttp_FreePostState(Unk_ov065_0227b2a8_Obj *);
-char *GsHttp_GetContentType(Unk_ov065_0227b2a8_Obj *);
+s32 GsHttp_CallPostCallback(GsHttpConnection *);
+s32 GsHttp_CallProgressCallback(GsHttpConnection *, s32, s32);
+s32 GsHttp_SocketRecv(GsHttpConnection *, char *, s32 *);
+s32 GsHttp_SendPostData(GsHttpConnection *);
+s32 GsHttp_FreePostState(GsHttpConnection *);
+char *GsHttp_GetContentType(GsHttpConnection *);
 SockHostEnt *Sock_GetHostByName(char *);
-s32 GsHttp_ParseUrl(Unk_ov065_0227b2a8_Obj *);
+s32 GsHttp_ParseUrl(GsHttpConnection *);
 
-void GsHttp_AppendChunkSizeText(Unk_ov065_0227b2a8_Obj *self, char *p, s32 n);
-s32 GsHttp_ParseChunkSize(Unk_ov065_0227b2a8_Obj *self);
-s32 GsHttp_DeliverBodyData(Unk_ov065_0227b2a8_Obj *self, char *p, s32 n);
-s32 GsHttp_ParseStatusLine(Unk_ov065_0227b2a8_Obj *self);
+void GsHttp_AppendChunkSizeText(GsHttpConnection *self, char *p, s32 n);
+s32 GsHttp_ParseChunkSize(GsHttpConnection *self);
+s32 GsHttp_DeliverBodyData(GsHttpConnection *self, char *p, s32 n);
+s32 GsHttp_ParseStatusLine(GsHttpConnection *self);
 }
 
 #define HTONS(x) ((((x) >> 8) & 0xff) | (((x) << 8) & 0xff00))
@@ -383,18 +233,18 @@ static inline s32 Unk_ov065_0227b5d4_Chk(char *s, s32 i) {
     return v;
 }
 extern "C" {
-s32 GsHttp_ProcessBodyData(Unk_ov065_0227b2a8_Obj *self, char *p, s32 n);
-void GsHttp_AppendChunkSizeText(Unk_ov065_0227b2a8_Obj *self, char *p, s32 n);
-s32 GsHttp_ParseChunkSize(Unk_ov065_0227b2a8_Obj *self);
-s32 GsHttp_DeliverBodyData(Unk_ov065_0227b2a8_Obj *self, char *p, s32 n);
-void GsHttp_StepRecvStatus(Unk_ov065_0227b2a8_Obj *self);
-s32 GsHttp_ParseStatusLine(Unk_ov065_0227b2a8_Obj *self);
-void GsHttp_StepWaitReply(Unk_ov065_0227b2a8_Obj *self);
-void GsHttp_StepSendPost(Unk_ov065_0227b2a8_Obj *self);
-void GsHttp_StepSendRequest(Unk_ov065_0227b2a8_Obj *self);
-void GsHttp_StepEncryption(Unk_ov065_0227b2a8_Obj *self);
-void GsHttp_StepConnect(Unk_ov065_0227b2a8_Obj *self);
-void GsHttp_StepHostLookup(Unk_ov065_0227b2a8_Obj *self);
+s32 GsHttp_ProcessBodyData(GsHttpConnection *self, char *p, s32 n);
+void GsHttp_AppendChunkSizeText(GsHttpConnection *self, char *p, s32 n);
+s32 GsHttp_ParseChunkSize(GsHttpConnection *self);
+s32 GsHttp_DeliverBodyData(GsHttpConnection *self, char *p, s32 n);
+void GsHttp_StepRecvStatus(GsHttpConnection *self);
+s32 GsHttp_ParseStatusLine(GsHttpConnection *self);
+void GsHttp_StepWaitReply(GsHttpConnection *self);
+void GsHttp_StepSendPost(GsHttpConnection *self);
+void GsHttp_StepSendRequest(GsHttpConnection *self);
+void GsHttp_StepEncryption(GsHttpConnection *self);
+void GsHttp_StepConnect(GsHttpConnection *self);
+void GsHttp_StepHostLookup(GsHttpConnection *self);
 }
 }
 
@@ -406,7 +256,7 @@ namespace Nh {
 
 
 
-typedef void (*Unk_ov065_0227c400_Cb)(void *, void *, void *);
+typedef void (*GsGpCallback)(void *, void *, void *);
 
 
 extern "C" {
@@ -438,13 +288,13 @@ void GsUtil_Free(void *);
 extern "C" {
 }
 extern "C" {
-BOOL GsHttp_ParseUrl(Unk_ov065_0227bbf4_Url *u);
+BOOL GsHttp_ParseUrl(GsHttpConnection *u);
 }
 }
 
 namespace Nh {
 extern "C" {
-BOOL GsHttp_ParseUrl(Unk_ov065_0227bbf4_Url *u) {
+BOOL GsHttp_ParseUrl(GsHttpConnection *u) {
     char *p;
     char *e;
     BOOL https;
@@ -512,7 +362,7 @@ BOOL GsHttp_ParseUrl(Unk_ov065_0227bbf4_Url *u) {
 
 namespace Nb {
 extern "C" {
-void GsHttp_StepHostLookup(Unk_ov065_0227b2a8_Obj *self) {
+void GsHttp_StepHostLookup(GsHttpConnection *self) {
     char *h;
     GsHttp_CallProgressCallback(self, 0, 0);
     GsSock_StartupStub();
@@ -546,7 +396,7 @@ void GsHttp_StepHostLookup(Unk_ov065_0227b2a8_Obj *self) {
 
 namespace Nb {
 extern "C" {
-void GsHttp_StepConnect(Unk_ov065_0227b2a8_Obj *self) {
+void GsHttp_StepConnect(GsHttpConnection *self) {
     Unk_ov065_0227b9c4_Addr sa;
     s32 r;
     s32 w[2];
@@ -609,7 +459,7 @@ void GsHttp_StepConnect(Unk_ov065_0227b2a8_Obj *self) {
 
 namespace Nb {
 extern "C" {
-void GsHttp_StepEncryption(Unk_ov065_0227b2a8_Obj *self) {
+void GsHttp_StepEncryption(GsHttpConnection *self) {
     s32 len;
     char buf[0x400];
     if (self->encryptEnabled == 0) {
@@ -628,7 +478,7 @@ void GsHttp_StepEncryption(Unk_ov065_0227b2a8_Obj *self) {
         return;
     }
     if (self->encryptInitialized == 0) {
-        if (self->unk_174(self, &self->encryptor) == 3) {
+        if (self->encryptStartFn(self, &self->encryptor) == 3) {
             return;
         }
     }
@@ -649,8 +499,8 @@ void GsHttp_StepEncryption(Unk_ov065_0227b2a8_Obj *self) {
 
 namespace Nb {
 extern "C" {
-void GsHttp_StepSendRequest(Unk_ov065_0227b2a8_Obj *self) {
-    Unk_ov065_0227b2a8_Buf *b;
+void GsHttp_StepSendRequest(GsHttpConnection *self) {
+    GsHttpBuffer *b;
     char tmp[0x14];
     if (self->sendBuf.length == 0) {
         b = &self->sendBuf;
@@ -714,7 +564,7 @@ void GsHttp_StepSendRequest(Unk_ov065_0227b2a8_Obj *self) {
 
 namespace Nb {
 extern "C" {
-void GsHttp_StepSendPost(Unk_ov065_0227b2a8_Obj *self) {
+void GsHttp_StepSendPost(GsHttpConnection *self) {
     s32 old = self->postBytesSent;
     s32 r = GsHttp_SendPostData(self);
     if (r == 0) {
@@ -735,7 +585,7 @@ void GsHttp_StepSendPost(Unk_ov065_0227b2a8_Obj *self) {
 
 namespace Nb {
 extern "C" {
-void GsHttp_StepWaitReply(Unk_ov065_0227b2a8_Obj *self) {
+void GsHttp_StepWaitReply(GsHttpConnection *self) {
     s32 v[2];
     if (GsSock_Select(self->socketHandle, v, 0, 0) == -1) {
         self->completed = 1;
@@ -753,7 +603,7 @@ void GsHttp_StepWaitReply(Unk_ov065_0227b2a8_Obj *self) {
 
 namespace Nb {
 extern "C" {
-s32 GsHttp_ParseStatusLine(Unk_ov065_0227b2a8_Obj *self) {
+s32 GsHttp_ParseStatusLine(GsHttpConnection *self) {
     s32 a, b, c, d;
     s32 r;
     r = func_02128ca4(self->recvBuf.data, "HTTP/%d.%d %d%n", &a, &b, &c, &d);
@@ -776,7 +626,7 @@ s32 GsHttp_ParseStatusLine(Unk_ov065_0227b2a8_Obj *self) {
 
 namespace Nb {
 extern "C" {
-void GsHttp_StepRecvStatus(Unk_ov065_0227b2a8_Obj *self) {
+void GsHttp_StepRecvStatus(GsHttpConnection *self) {
     s32 len;
     char buf[0x400];
     s32 r;
@@ -820,7 +670,7 @@ void GsHttp_StepRecvStatus(Unk_ov065_0227b2a8_Obj *self) {
 
 namespace Nb {
 extern "C" {
-s32 GsHttp_DeliverBodyData(Unk_ov065_0227b2a8_Obj *self, char *p, s32 n) {
+s32 GsHttp_DeliverBodyData(GsHttpConnection *self, char *p, s32 n) {
     char *a = 0;
     s32 b = 0;
     self->bodyBytesReceived += n;
@@ -853,7 +703,7 @@ s32 GsHttp_DeliverBodyData(Unk_ov065_0227b2a8_Obj *self, char *p, s32 n) {
 
 namespace Nb {
 extern "C" {
-s32 GsHttp_ParseChunkSize(Unk_ov065_0227b2a8_Obj *self) {
+s32 GsHttp_ParseChunkSize(GsHttpConnection *self) {
     s32 v;
     if (func_02128ca4(self->chunkHeader, "%x", &v) != 1) {
         return -1;
@@ -865,7 +715,7 @@ s32 GsHttp_ParseChunkSize(Unk_ov065_0227b2a8_Obj *self) {
 
 namespace Nb {
 extern "C" {
-void GsHttp_AppendChunkSizeText(Unk_ov065_0227b2a8_Obj *self, char *p, s32 n) {
+void GsHttp_AppendChunkSizeText(GsHttpConnection *self, char *p, s32 n) {
     if (n != 0 && self->chunkHeaderLength < 10) {
         s32 l = 10 - self->chunkHeaderLength;
         if (l >= n) {
@@ -881,7 +731,7 @@ void GsHttp_AppendChunkSizeText(Unk_ov065_0227b2a8_Obj *self, char *p, s32 n) {
 
 namespace Nb {
 extern "C" {
-s32 GsHttp_ProcessBodyData(Unk_ov065_0227b2a8_Obj *self, char *p, s32 n) {
+s32 GsHttp_ProcessBodyData(GsHttpConnection *self, char *p, s32 n) {
     if (self->isChunked != 0) {
         while (n > 0) {
             if (self->chunkState == 0) {
@@ -949,7 +799,7 @@ s32 GsHttp_ProcessBodyData(Unk_ov065_0227b2a8_Obj *self, char *p, s32 n) {
 
 namespace Na {
 extern "C" {
-void GsHttp_StepRecvHeaders(Unk_ov065_0227a884_Obj *self) {
+void GsHttp_StepRecvHeaders(GsHttpConnection *self) {
     s32 len;
     u8 buf[0x1000];
     s32 r4;
@@ -966,14 +816,14 @@ void GsHttp_StepRecvHeaders(Unk_ov065_0227a884_Obj *self) {
     if (r4 == 3) {
         return;
     }
-    if (r4 == 1 && self->recvBufReadPos == self->recvBufLength) {
+    if (r4 == 1 && self->recvBuf.readPos == self->recvBuf.length) {
         return;
     }
     if (r4 == 0 && GsHttpBuf_Append(&self->recvBuf, buf, len) == 0) {
         return;
     }
-    off = self->recvBufReadPos;
-    p = self->recvBufData + off;
+    off = self->recvBuf.readPos;
+    p = (u8 *)self->recvBuf.data + off;
     self->headersIndex = off;
     q = func_02129f1c((char *)p, "\r\n\r\n");
     if (q == NULL) {
@@ -984,16 +834,16 @@ void GsHttp_StepRecvHeaders(Unk_ov065_0227a884_Obj *self) {
     }
     q[2] = 0;
     rest = (u8 *)q + 4;
-    rem = self->recvBufLength - (rest - self->recvBufData);
-    self->recvBufLength = (u8 *)(q + 2) - self->recvBufData;
-    self->headersEnd = (u8 *)(q + 2) - self->recvBufData;
-    self->recvBufReadPos = self->headersEnd;
+    rem = self->recvBuf.length - (rest - (u8 *)self->recvBuf.data);
+    self->recvBuf.length = (u8 *)(q + 2) - (u8 *)self->recvBuf.data;
+    self->headersEnd = (u8 *)(q + 2) - (u8 *)self->recvBuf.data;
+    self->recvBuf.readPos = self->headersEnd;
     st = self->statusCode / 100;
     if (st == 1) {
         if (rem != 0) {
-            memmove(self->recvBufData, rest, rem + 1);
-            self->recvBufLength = rem;
-            self->recvBufReadPos = 0;
+            memmove(self->recvBuf.data, rest, rem + 1);
+            self->recvBuf.length = rem;
+            self->recvBuf.readPos = 0;
         } else {
             GsHttpBuf_Reset(&self->recvBuf);
         }
@@ -1095,7 +945,7 @@ void GsHttp_StepRecvHeaders(Unk_ov065_0227a884_Obj *self) {
     }
     self->isChunked = func_02129f1c((char *)p, "Transfer-Encoding: chunked") != NULL ? 1 : 0;
     if (self->isChunked != 0) {
-        self->chunkHeader = 0;
+        self->chunkHeader[0] = 0;
         self->chunkHeaderLength = 0;
         self->chunkBytesLeft = 0;
         self->chunkState = 0;
@@ -1137,7 +987,7 @@ __declspec(weak) void Unk_ov065_0227ae94_pool_order(void) {
 
 namespace Na {
 extern "C" {
-void GsHttp_StepRecvBody(Unk_ov065_0227a884_Obj *self) {
+void GsHttp_StepRecvBody(GsHttpConnection *self) {
     s32 len;
     u8 buf[0x2000];
     s32 start = GsUtil_GetTimeMs();
@@ -1168,17 +1018,17 @@ void GsHttp_StepRecvBody(Unk_ov065_0227a884_Obj *self) {
 
 namespace Na {
 extern "C" {
-void GsHttpPost_FreePart(Unk_ov065_0227a884_Rec *r) {
+void GsHttpPost_FreePart(GsHttpPostPart *r) {
     GsUtil_Free(r->partName);
     if (r->type == 0) {
-        GsUtil_Free(r->unk_08);
+        GsUtil_Free(r->string.value);
     } else if (r->type == 1) {
-        GsUtil_Free(r->unk_08);
-        GsUtil_Free(r->unk_0c);
-        GsUtil_Free(r->unk_10);
+        GsUtil_Free(r->file.fileName);
+        GsUtil_Free(r->file.reportName);
+        GsUtil_Free(r->file.contentType);
     } else if (r->type == 2) {
-        GsUtil_Free(r->unk_10);
-        GsUtil_Free(r->unk_14);
+        GsUtil_Free(r->buffer.reportName);
+        GsUtil_Free(r->buffer.contentType);
     }
 }
 }
@@ -1186,8 +1036,8 @@ void GsHttpPost_FreePart(Unk_ov065_0227a884_Rec *r) {
 
 namespace Na {
 extern "C" {
-Unk_ov065_0227acfc_Task *GsHttpPost_New(void) {
-    Unk_ov065_0227acfc_Task *t = (Unk_ov065_0227acfc_Task *)GsUtil_Alloc(0x14);
+GsHttpPost *GsHttpPost_New(void) {
+    GsHttpPost *t = (GsHttpPost *)GsUtil_Alloc(0x14);
     u8 *p;
     u32 i;
     u8 *q;
@@ -1204,7 +1054,7 @@ Unk_ov065_0227acfc_Task *GsHttpPost_New(void) {
         k--;
     } while (k != NULL);
     t->autoFree = 1;
-    t->parts = GsArray_New(0x18, 0, (Unk_ov065_02278740_Dtor)GsHttpPost_FreePart);
+    t->parts = GsArray_New(0x18, 0, (GsElemFreeFn)GsHttpPost_FreePart);
     if (t->parts == NULL) {
         GsUtil_Free(t);
         return NULL;
@@ -1216,7 +1066,7 @@ Unk_ov065_0227acfc_Task *GsHttpPost_New(void) {
 
 namespace Na {
 extern "C" {
-s32 GsHttpPost_GetAutoFree(Unk_ov065_0227acfc_Task *t) {
+s32 GsHttpPost_GetAutoFree(GsHttpPost *t) {
     return t->autoFree;
 }
 }
@@ -1224,7 +1074,7 @@ s32 GsHttpPost_GetAutoFree(Unk_ov065_0227acfc_Task *t) {
 
 namespace Na {
 extern "C" {
-void GsHttpPost_Free(Unk_ov065_0227acfc_Task *t) {
+void GsHttpPost_Free(GsHttpPost *t) {
     GsArray_Free(t->parts);
     GsUtil_Free(t);
 }
@@ -1233,7 +1083,7 @@ void GsHttpPost_Free(Unk_ov065_0227acfc_Task *t) {
 
 namespace Na {
 extern "C" {
-s32 GsHttpPost_AddStringPart(Unk_ov065_0227acfc_Task *self, char *a, char *b) {
+s32 GsHttpPost_AddStringPart(GsHttpPost *self, char *a, char *b) {
     s32 len;
     s32 cnt;
     s32 i;
@@ -1245,24 +1095,24 @@ s32 GsHttpPost_AddStringPart(Unk_ov065_0227acfc_Task *self, char *a, char *b) {
         GsUtil_Free(b);
         return 0;
     }
-    Unk_ov065_0227ac34_Item item = {0, 0, 0, 0, 0, 0};
+    GsHttpPostPart item = {0, 0, 0, 0, 0, 0};
     item.type = 0;
     item.partName = a;
-    item.value = b;
+    item.string.value = b;
     len = STD_GetStringLength(b);
-    item.length = len;
-    item.needsEscaping = 0;
+    item.string.length = len;
+    item.string.needsEscaping = 0;
     c = func_0212a060(b, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_@-.*");
     if (c != len) {
         cnt = 0;
-        item.needsEscaping = 1;
+        item.string.needsEscaping = 1;
         for (i = 0; b[i] != 0; i++) {
             c = b[i];
             if (func_0212a120("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_@-.*", c) == NULL && c != 0x20) {
                 cnt++;
             }
         }
-        item.numEscapedChars = cnt;
+        item.string.numEscapedChars = cnt;
     }
     GsArray_Append(self->parts, &item);
     return 1;
@@ -1272,7 +1122,7 @@ s32 GsHttpPost_AddStringPart(Unk_ov065_0227acfc_Task *self, char *a, char *b) {
 
 namespace Na {
 extern "C" {
-char *GsHttp_GetContentType(Unk_ov065_0227a884_Obj *self) {
+char *GsHttp_GetContentType(GsHttpConnection *self) {
     if (self->post == NULL) {
         return "";
     }
@@ -1286,8 +1136,8 @@ char *GsHttp_GetContentType(Unk_ov065_0227a884_Obj *self) {
 
 namespace Na {
 extern "C" {
-s32 GsHttp_GetUrlEncodedLength(Unk_ov065_0227a884_Obj *self) {
-    Unk_ov065_0227acfc_Task *t = self->post;
+s32 GsHttp_GetUrlEncodedLength(GsHttpConnection *self) {
+    GsHttpPost *t = self->post;
     s32 sum = 0;
     s32 n;
     s32 i;
@@ -1298,11 +1148,11 @@ s32 GsHttp_GetUrlEncodedLength(Unk_ov065_0227a884_Obj *self) {
     i = sum;
     if (i < n) {
         do {
-            Unk_ov065_0227a884_Rec *r = (Unk_ov065_0227a884_Rec *)GsArray_At(t->parts, i);
+            GsHttpPostPart *r = (GsHttpPostPart *)GsArray_At(t->parts, i);
             s32 l = STD_GetStringLength(r->partName);
             s32 t = sum + l;
-            s32 u = t + (s32)r->unk_0c;
-            sum = u + (s32)r->unk_14 * 2 + 1;
+            s32 u = t + r->string.length;
+            sum = u + r->string.numEscapedChars * 2 + 1;
             i++;
         } while (i < n);
     }
@@ -1313,8 +1163,8 @@ s32 GsHttp_GetUrlEncodedLength(Unk_ov065_0227a884_Obj *self) {
 
 namespace Na {
 extern "C" {
-s32 GsHttp_GetMultipartLength(Unk_ov065_0227a884_Obj *self) {
-    Unk_ov065_0227acfc_Task *t = self->post;
+s32 GsHttp_GetMultipartLength(GsHttpConnection *self) {
+    GsHttpPost *t = self->post;
     s32 sum = 0;
     s32 n;
     s32 i;
@@ -1327,23 +1177,23 @@ s32 GsHttp_GetMultipartLength(Unk_ov065_0227a884_Obj *self) {
     }
     n = GsArray_Count(t->parts);
     for (i = 0; i < n; i++) {
-        Unk_ov065_0227a884_Rec *r = (Unk_ov065_0227a884_Rec *)GsArray_At(t->parts, i);
+        GsHttpPostPart *r = (GsHttpPostPart *)GsArray_At(t->parts, i);
         if (r->type == 0) {
             sum += data_ov065_022910e4;
             sum += STD_GetStringLength(r->partName);
-            sum += (s32)r->unk_0c;
+            sum += r->string.length;
         } else if (r->type == 1) {
             sum += data_ov065_022910e0;
             sum += STD_GetStringLength(r->partName);
-            sum += STD_GetStringLength(r->unk_0c);
-            sum += STD_GetStringLength(r->unk_10);
-            sum += (s32)((Unk_ov065_0227a884_Rec *)GsArray_At(self->postParts, i))->unk_0c;
+            sum += STD_GetStringLength(r->file.reportName);
+            sum += STD_GetStringLength(r->file.contentType);
+            sum += ((GsHttpPostPartState *)GsArray_At(self->postParts, i))->fileLength;
         } else if (r->type == 2) {
             sum += data_ov065_022910e0;
             sum += STD_GetStringLength(r->partName);
-            sum += STD_GetStringLength(r->unk_10);
-            sum += STD_GetStringLength(r->unk_14);
-            sum += (s32)r->unk_0c;
+            sum += STD_GetStringLength(r->buffer.reportName);
+            sum += STD_GetStringLength(r->buffer.contentType);
+            sum += r->buffer.length;
         } else {
             return 0;
         }
@@ -1355,7 +1205,7 @@ s32 GsHttp_GetMultipartLength(Unk_ov065_0227a884_Obj *self) {
 
 namespace Na {
 extern "C" {
-s32 GsHttp_GetPostLength(Unk_ov065_0227a884_Obj *self) {
+s32 GsHttp_GetPostLength(GsHttpConnection *self) {
     if (self->post == NULL) {
         return 0;
     }
@@ -1369,7 +1219,7 @@ s32 GsHttp_GetPostLength(Unk_ov065_0227a884_Obj *self) {
 
 namespace Na {
 extern "C" {
-s32 GsHttp_OpenPostPart(Unk_ov065_0227a8ec_Item *it) {
+s32 GsHttp_OpenPostPart(GsHttpPostPartState *it) {
     s32 t = it->part->type;
     s32 z = 0;
     it->pos = -1;
@@ -1397,7 +1247,7 @@ s32 GsHttp_OpenPostPart(Unk_ov065_0227a8ec_Item *it) {
 
 namespace Na {
 extern "C" {
-void GsHttp_ClosePostPart(Unk_ov065_0227a8ec_Item *it) {
+void GsHttp_ClosePostPart(GsHttpPostPartState *it) {
     switch (it->part->type) {
     case 0:
         break;
@@ -1414,8 +1264,8 @@ void GsHttp_ClosePostPart(Unk_ov065_0227a8ec_Item *it) {
 
 namespace Na {
 extern "C" {
-s32 GsHttp_InitPostState(Unk_ov065_0227a884_Obj *self) {
-    Unk_ov065_0227a8ec_Item item;
+s32 GsHttp_InitPostState(GsHttpConnection *self) {
+    GsHttpPostPartState item;
     s32 n;
     s32 i;
     if (self->post == NULL) {
@@ -1433,19 +1283,19 @@ s32 GsHttp_InitPostState(Unk_ov065_0227a884_Obj *self) {
     }
     i = 0;
     if (i < n) {
-        Unk_ov065_0227a8ec_Item *pi = &item;
+        GsHttpPostPartState *pi = &item;
         volatile s32 z = 0;
         do {
-            Unk_ov065_0227a884_Rec *rec = (Unk_ov065_0227a884_Rec *)GsArray_At(self->post->parts, i);
+            GsHttpPostPart *rec = (GsHttpPostPart *)GsArray_At(self->post->parts, i);
             s32 t = z;
-            pi->part = (Unk_ov065_0227a884_Rec *)t;
+            pi->part = (GsHttpPostPart *)t;
             pi->pos = t;
             pi->file = t;
             pi->fileLength = t;
             item.part = rec;
             if (GsHttp_OpenPostPart(pi) == 0) {
                 for (i--; i >= 0; i--) {
-                    GsHttp_ClosePostPart((Unk_ov065_0227a8ec_Item *)GsArray_At(self->postParts, i));
+                    GsHttp_ClosePostPart((GsHttpPostPartState *)GsArray_At(self->postParts, i));
                 }
                 GsArray_Free(self->postParts);
                 self->postParts = NULL;
@@ -1463,13 +1313,13 @@ s32 GsHttp_InitPostState(Unk_ov065_0227a884_Obj *self) {
 
 namespace Na {
 extern "C" {
-void GsHttp_FreePostState(Unk_ov065_0227a884_Obj *self) {
+void GsHttp_FreePostState(GsHttpConnection *self) {
     if (self->postParts != NULL) {
         s32 n = GsArray_Count(self->postParts);
         s32 i = 0;
         if (i < n) {
             do {
-                GsHttp_ClosePostPart((Unk_ov065_0227a8ec_Item *)GsArray_At(self->postParts, i));
+                GsHttp_ClosePostPart((GsHttpPostPartState *)GsArray_At(self->postParts, i));
                 i++;
             } while (i < n);
         }
@@ -1488,13 +1338,13 @@ void GsHttp_FreePostState(Unk_ov065_0227a884_Obj *self) {
 
 namespace Nm {
 extern "C" {
-s32 GsHttp_SendPostPartString(Unk_ov065_0227a4e8_Slot *st, Unk_ov065_02279c7c *c) {
-    Unk_ov065_0227a4e8_Part *q = st->part;
-    if (q->unk_0c == 0) {
+s32 GsHttp_SendPostPartString(GsHttpPostPartState *st, GsHttpConnection *c) {
+    GsHttpPostPart *q = st->part;
+    if (q->string.length == 0) {
         return 1;
     }
-    if (c->post->isMultipart == 0 && q->unk_10 != 0) {
-        char *s = q->data;
+    if (c->post->isMultipart == 0 && q->string.needsEscaping != 0) {
+        char *s = q->string.value;
         struct T4 {
             char b[4];
         };
@@ -1518,8 +1368,8 @@ s32 GsHttp_SendPostPartString(Unk_ov065_0227a4e8_Slot *st, Unk_ov065_02279c7c *c
         }
         return 1;
     }
-    s32 n = q->unk_0c - st->pos;
-    s32 r = GsHttp_SocketSend(c, q->data, n);
+    s32 n = q->string.length - st->pos;
+    s32 r = GsHttp_SocketSend(c, q->string.value, n);
     if (r == -1) {
         return 0;
     }
@@ -1534,7 +1384,7 @@ s32 GsHttp_SendPostPartString(Unk_ov065_0227a4e8_Slot *st, Unk_ov065_02279c7c *c
 
 namespace Nm {
 extern "C" {
-s32 GsHttp_SendPostPartFile(Unk_ov065_0227a4e8_Slot *st, Unk_ov065_02279c7c *c) {
+s32 GsHttp_SendPostPartFile(GsHttpPostPartState *st, GsHttpConnection *c) {
     char buf[0x1000];
     s32 r;
     do {
@@ -1565,9 +1415,9 @@ s32 GsHttp_SendPostPartFile(Unk_ov065_0227a4e8_Slot *st, Unk_ov065_02279c7c *c) 
 
 namespace Nm {
 extern "C" {
-s32 GsHttp_SendPostPartBuffer(Unk_ov065_0227a4e8_Slot *st, Unk_ov065_02279c7c *c) {
-    Unk_ov065_0227a4e8_Part *p = st->part;
-    s32 len = p->unk_0c;
+s32 GsHttp_SendPostPartBuffer(GsHttpPostPartState *st, GsHttpConnection *c) {
+    GsHttpPostPart *p = st->part;
+    s32 len = p->buffer.length;
     if (len == 0) {
         return 1;
     }
@@ -1576,13 +1426,13 @@ s32 GsHttp_SendPostPartBuffer(Unk_ov065_0227a4e8_Slot *st, Unk_ov065_02279c7c *c
         if (n >= 0x8000) {
             n = 0x8000;
         }
-        s32 r = GsHttp_SocketSend(c, p->data + st->pos, n);
+        s32 r = GsHttp_SocketSend(c, p->buffer.data + st->pos, n);
         if (r == -1) {
             return 0;
         }
         st->pos = st->pos + r;
         p = st->part;
-        len = p->unk_0c;
+        len = p->buffer.length;
         if (len == st->pos) {
             return 1;
         }
@@ -1596,7 +1446,7 @@ s32 GsHttp_SendPostPartBuffer(Unk_ov065_0227a4e8_Slot *st, Unk_ov065_02279c7c *c
 
 namespace Nm {
 extern "C" {
-s32 GsHttp_SendPostPart(Unk_ov065_0227a4e8_Slot *st, Unk_ov065_02279c7c *c, s32 first) {
+s32 GsHttp_SendPostPart(GsHttpPostPartState *st, GsHttpConnection *c, s32 first) {
     char buf[2048];
     if (st->pos == -1) {
         st->pos = 0;
@@ -1607,17 +1457,17 @@ s32 GsHttp_SendPostPart(Unk_ov065_0227a4e8_Slot *st, Unk_ov065_02279c7c *c, s32 
                 OS_SPrintf(buf, "&%s=", st->part->partName);
             }
         } else {
-            Unk_ov065_0227a4e8_Part *p = st->part;
+            GsHttpPostPart *p = st->part;
             if (p->type == 0) {
                 OS_SPrintf(buf, "%sContent-Disposition: form-data; name=\"%s\"\r\n\r\n", first != 0 ? "--Qr4G823s23d---<<><><<<>--7d118e0536\r\n" : "\r\n--Qr4G823s23d---<<><><<<>--7d118e0536\r\n", p->partName);
             } else if (p->type == 1 || p->type == 2) {
                 s32 a, b;
                 if (p->type == 1) {
-                    a = p->unk_0c;
-                    b = p->unk_10;
+                    a = (s32)p->file.reportName;
+                    b = (s32)p->file.contentType;
                 } else {
-                    a = p->unk_10;
-                    b = p->unk_14;
+                    a = (s32)p->buffer.reportName;
+                    b = (s32)p->buffer.contentType;
                 }
                 OS_SPrintf(buf, "%sContent-Disposition: form-data; name=\"%s\"; filename=\"%s\"\r\nContent-Type: %s\r\n\r\n", first != 0 ? "--Qr4G823s23d---<<><><<<>--7d118e0536\r\n" : "\r\n--Qr4G823s23d---<<><><<<>--7d118e0536\r\n", p->partName, a, b);
             }
@@ -1643,14 +1493,14 @@ s32 GsHttp_SendPostPart(Unk_ov065_0227a4e8_Slot *st, Unk_ov065_02279c7c *c, s32 
 
 namespace Nm {
 extern "C" {
-s32 GsHttp_SendPostData(Unk_ov065_02279c7c *c) {
+s32 GsHttp_SendPostData(GsHttpConnection *c) {
     Unk_ov065_0227a3f4_List *l = (Unk_ov065_0227a3f4_List *)&c->postParts;
     s32 cnt = GsArray_Count(l->postParts);
-    if (c->sendBufLength != 0) {
+    if (c->sendBuf.length != 0) {
         if (GsHttp_FlushSendBuffer(c) == 0) {
             return 0;
         }
-        if (c->sendBufReadPos < c->sendBufLength) {
+        if (c->sendBuf.readPos < c->sendBuf.length) {
             return 2;
         }
         GsHttpBuf_Reset(&c->sendBuf);
@@ -1659,7 +1509,7 @@ s32 GsHttp_SendPostData(Unk_ov065_02279c7c *c) {
         }
     }
     for (; l->postPartIndex < cnt; l->postPartIndex++) {
-        Unk_ov065_0227a4e8_Slot *s = GsArray_At(l->postParts, l->postPartIndex);
+        GsHttpPostPartState *s = GsArray_At(l->postParts, l->postPartIndex);
         s32 r = GsHttp_SendPostPart(s, c, l->postPartIndex == 0 ? 1 : 0);
         if (r == 0) {
             return 0;
@@ -1674,7 +1524,7 @@ s32 GsHttp_SendPostData(Unk_ov065_02279c7c *c) {
             return 0;
         }
     }
-    if (c->sendBufLength != 0) {
+    if (c->sendBuf.length != 0) {
         return 2;
     }
     return 1;
@@ -1684,7 +1534,7 @@ s32 GsHttp_SendPostData(Unk_ov065_02279c7c *c) {
 
 namespace Nm {
 extern "C" {
-void GsHttp_SetResultFromStatus(Unk_ov065_02279c7c *c) {
+void GsHttp_SetResultFromStatus(GsHttpConnection *c) {
     s32 code = c->statusCode;
     switch (code / 100) {
     case 0:
@@ -1725,7 +1575,7 @@ void GsHttp_SetResultFromStatus(Unk_ov065_02279c7c *c) {
 
 namespace Nm {
 extern "C" {
-s32 GsHttp_Step(Unk_ov065_02279c7c *c) {
+s32 GsHttp_Step(GsHttpConnection *c) {
     s32 r;
     if (c->isProcessing != 0) {
         return 0;

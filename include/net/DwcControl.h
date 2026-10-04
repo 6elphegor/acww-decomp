@@ -5,6 +5,7 @@
 #include "net/GsGpConnection.h"
 #include "net/DwcFriendControl.h"
 #include "net/DwcUserData.h"
+#include "net/DwcMatchControl.h"
 
 // DWC friend-match core state sDwcControl (DwcCore_Init: GT2 socket and callbacks, GP connection, state, aid, own
 // profile id, user callbacks, login / friend / match controls) and the DWC login control.
@@ -12,7 +13,6 @@
 
 typedef void (*DwcDoneCallback)(s32, s32, s32);                       // login / update-servers done (error, value, arg)
 typedef void (*DwcMatchedCallback)(s32, s32, s32);                    // peer match done
-typedef void (*DwcMatchedScCallback)(s32, s32, s32, s32, s32, s32);   // server-client match done
 typedef void (*DwcConnectionClosedCallback)(s32, s32, s32, s32, s32, s32);
 typedef void (*DwcLoginResultCallback)(s32, s32, u32);                // DwcLoginControl result (DwcLogin_OnLoginDone)
 typedef void (*DwcNasLoginCallback)(void *, void *, u32);             // after NAS login (token, challenge, arg)
@@ -71,9 +71,9 @@ struct DwcControl {
     /* 0x080 */ s32 closedCallbackArg;
     /* 0x084 */ DwcLoginControl loginControl;
     /* 0x2e8 */ DwcFriendControl friendControl;
-    // 0x33c..0x798 is the DWC match control (sDwcMatch, Unk_ov065_02290814: numClients +0xd, qrHandle +0x10,
+    // 0x33c..0x798 is the DWC match control (sDwcMatch, DwcMatchControl: numClients +0xd, qrHandle +0x10,
     // numPlayers +0x14, matchType +0x15, maxPlayers +0x16, serverBrowser +0xe4, memberProfileIds +0xf4, state +0x198);
-    // kept flat here until that class is final.
+    // still flat here (follow-up: embed DwcMatchControl; needs the volatile numPlayers/matchType checked in 0226fc18).
     /* 0x33c */ u8 matchControl[0x349 - 0x33c];
     /* 0x349 */ u8 numClients;
     /* 0x34a */ u8 pad_34a[2];

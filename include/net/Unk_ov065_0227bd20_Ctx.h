@@ -3,19 +3,8 @@
 
 #include "types.h"
 
-// GameSpy Presence (GsGp_*) buddy-status view of the connection, its handle, buddy records and parsed URL
-// (src/ov065/unk_ov065_0227bd20.cpp namespace Nb, src/ov065/unk_ov065_0227a284.cpp namespace Nh).
-
-struct Unk_ov065_0227bbf4_Url {
-    /* 0x00 */ u8 pad_00[0x14];
-    /* 0x14 */ char *url;
-    /* 0x18 */ char *serverHost;
-    /* 0x1c */ u16 unk_1c;
-    /* 0x1e */ u16 unk_1e;
-    /* 0x20 */ u16 serverPort;
-    /* 0x22 */ u16 unk_22;
-    /* 0x24 */ char *requestPath;
-};
+// GameSpy Presence (GsGp_*) view of the GP connection (Unk_ov065_0227c538_Ctx), its handle and buddy status records
+// (src/ov065/unk_ov065_0227bd20.cpp namespace Nb).
 
 struct Unk_ov065_0227bd20_Ctx {
     /* 0x000 */ u8 pad_000[0x100];
@@ -28,9 +17,9 @@ struct Unk_ov065_0227bd20_Ctx {
     /* 0x1d8 */ s32 connectState;
     /* 0x1dc */ u8 pad_1dc[0x1f4 - 0x1dc];
     /* 0x1f4 */ char outputBuffer[0x14];
-    /* 0x208 */ s32 unk_208;
-    /* 0x20c */ s32 unk_20c;
-    /* 0x210 */ s32 unk_210;
+    /* 0x208 */ s32 peerPort;
+    /* 0x20c */ s32 nextOperationId;
+    /* 0x210 */ s32 numSearches;
     /* 0x214 */ s32 lastStatus;
     /* 0x218 */ char lastStatusString[0x100];
     /* 0x318 */ char lastLocationString[0x100];
