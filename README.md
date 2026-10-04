@@ -18,10 +18,10 @@ Every overlay and all of main are built from source, and the build reproduces th
 | ARM9 main | 100% of functions |
 | Overlays (148) | 100% |
 | ITCM | 97.0% |
-| `autoload_2` (libraries) | 93.4% |
-| **Total** | **99.1%** |
+| `autoload_2` (libraries) | 96.7% |
+| **Total** | **99.6%** |
 
-The 23 functions still taken from the original image, and the data no source file owns yet, are listed in
+The 20 functions still taken from the original image, and the data no source file owns yet, are listed in
 [`docs/unmatched.md`](docs/unmatched.md). Most names are still placeholders (`func_<address>`, `Unk_<address>`);
 naming and documenting the game code is the main open work.
 

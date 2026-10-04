@@ -13,17 +13,17 @@ Code (`.text`) built from source:
 | Module | `.text` bytes | Built from source | Not built | Functions not built |
 |---|--:|--:|--:|--:|
 | ARM9 main | 797,444 | 797,224 (99.97%) | 220 (data inside `.text`, see below) | 0 of 11,879 |
-| `autoload_2` (NitroSDK, NitroSystem, MSL, runtime, in-house library) | 320,532 | 299,328 (93.4%) | 21,204 | 21 of 2,189 |
+| `autoload_2` (NitroSDK, NitroSystem, MSL, runtime, in-house library) | 320,532 | 309,804 (96.7%) | 10,728 | 18 of 2,189 |
 | ITCM | 23,264 | 22,560 (97.0%) | 704 (624 in 2 functions, 80 of data) | 2 of 158 |
 | Overlays (99 with code) | 1,450,796 | 1,450,796 (100%) | 0 | 0 |
-| **Total** | **2,592,036** | **2,569,908 (99.1%)** | **22,128** | **23** |
+| **Total** | **2,592,036** | **2,580,384 (99.6%)** | **11,652** | **20** |
 
 Data sections owned by a source file:
 
 | Module | Bytes | Owned by a unit | Not owned |
 |---|--:|--:|--:|
-| ARM9 main (`.rodata`, `.data`, `.init`, `.ctor`, `.exception`, `.exceptix`) | 150,004 | 124,356 (82.9%) | 25,648 |
-| `autoload_2` (`.rodata`, `.data`) | 28,076 | 3,444 (12.3%) | 24,632 |
+| ARM9 main (`.rodata`, `.data`, `.init`, `.ctor`, `.exception`, `.exceptix`) | 150,004 | 124,376 (82.9%) | 25,628 |
+| `autoload_2` (`.rodata`, `.data`) | 28,076 | 3,512 (12.5%) | 24,564 |
 | `autoload_3` (bss of main and the libraries) | 802,752 | 754,072 (93.9%) | 48,680 |
 | DTCM (`.data`) | 1,120 | 0 | 1,120 |
 | Overlays (all sections; 39 overlays are data only) | 505,636 | 505,636 (100%) | 0 |
@@ -53,10 +53,7 @@ Most library units were linked with their code only, so most library data is sti
 | `0x0210f9cc` | 0xb8 | NitroSDK GX | `GX_SetBankForARM7` | Same switch-tree difference ({0, 4}, 0x80, 0x180). |
 | `0x0211cbd0` | 0x18 | NitroSDK RTC | Wait while the RTC lock is busy (`while (lock == 1);`) | 2 of 6 words: the original keeps the lock address in `ip`, the attempt in `r1`. |
 | `0x021239ec` | 0x46c | NitroSDK MB | Read a ROM image (from a file or the system ROM header at 0x027ffe00), hash its segments, patch the autoload callback | The last statement's registers are rotated by one (the constant should be in `r0`). |
-| `0x0212a454` | 0x131c | MSL | `__strtold` | First attempt 1,201 instructions against the original's 1,223. Needs the verbatim MSL C99 `strtold.c`. |
-| `0x0212d78c` | 0x4d4 | MSL | Wide-character `parse_format` (format-string parser) | The jump-table shape: the original has a table for cases 100..117 plus a separate test for 120; mwcc's switch lowering gives 100 separately plus a table for 101..120 for every case set and build tried. |
-| `0x0212dcd0` | 0x1234 | fdlibm (MSL) | `__ieee754_pow` | 66 diff lines: three callee-saved registers (r6/r7/r8) rotated in the last third. The source is the fdlibm 5.2 text with MSL's errno change; it needs an extra copy `xx = x` whose origin is unknown. |
-| `0x02134d70` | 0x39c | C++ runtime | `__NextAction` (exception handling: steps through a function's exception action table) | 3 words: at the head the original has `ldrb r0; ands r1, r0, #0x80`, the attempt the two registers swapped. Its exception-table entries in main (`.exception` 0x020c2b2c, `.exceptix` 0x020c2c40) belong to the same file and are not owned yet either. |
+| `0x0212d78c` | 0x4d4 | MSL | Wide-character `parse_format` (`wprintf.c` format-string parser) | Only the dispatch of the conversion `switch` differs (56 diff lines, 16 bytes longer); everything else matches with MSL's `parse_format` (the version without `j`/`t`/`z`/`a`, `c >= 0x80 ? 0 : ...` digit test, `f.conversion_char = c; switch (c)`). The original has a table for cases 100..117 guarded by the lower bound only (`subs r0, r3, #0x64; addpl`) plus a separate test for 120; every available build (1.2, 2.0, DSi) splits off 100 and builds a bounds-checked table for 101..120, whatever the case order. Same family as the switch differences in [`assembly.md`](assembly.md) (probably the missing 1.2/sp1). |
 
 ### ITCM
 
@@ -75,7 +72,6 @@ Most library units were linked with their code only, so most library data is sti
 | `.text` 0x02000b6c-0x02000b7c | 0x10 | A 16-byte key; `AxMail_GetDigestKey` (built from source) returns its address |
 | `.text` 0x02000b84-0x02000c2c | 0xa8 | The `.version` block: the middleware tag strings `[SDK+...]` (DWC, BACKUP, Wi-Fi, CPS, SSL) that `OSi_ReferSymbol` callers pass to keep them linked |
 | `.init` 0x020c5f68-0x020c5fa4, 0x020c6094-0x020c6108; `.ctor` 0x020d1f40-0x020d1f4c, 0x020d1f54-0x020d1f58 | 0xb0 + 0x10 | Four ARM static initialisers of library-area files whose owners are not settled: `0x020c5f68` (empty), `0x020c5f6c` (constructs a global vector at bss 0x021f4880 and registers its destructor), `0x020c5fa0` (empty), `0x020c6094` (calls `SndVolumeCurve_Clear` and `FX_Div` three times; bss 0x021f5c00-0x021f5c0c) |
-| `.exception` 0x020c2b2c-0x020c2b34, `.exceptix` 0x020c2c40-0x020c2c4c | 0x14 | Exception-table entries of `__NextAction` (above) |
 | `.rodata` 13 small ranges between 0x020c8b9c and 0x020d0c0c | 520 | Constants used by several units, not yet assigned to one |
 | `.data` 0x020d2024-0x020d5d44 | 15,648 | A block of cross-linked tables (354 labels) used by many game units, with no code of its own |
 | `.data` 0x020de408-0x020e0468 | 8,288 | Two objects |
@@ -84,8 +80,8 @@ Most library units were linked with their code only, so most library data is sti
 
 ### Libraries
 
-* `autoload_2` `.rodata` 0x02135914-0x02135964 and 0x02135c9c-0x0213a748 (19,196 bytes) and `.data` (5,436
-  bytes in five ranges between 0x0213a748 and 0x0213c6c0): constant tables and data of library files whose
+* `autoload_2` `.rodata` 0x02135914-0x02135964, 0x02135c9c-0x0213a710 and 0x0213a740-0x0213a748 (19,148 bytes)
+  and `.data` (5,416 bytes in six ranges between 0x0213a748 and 0x0213c6c0): constant tables and data of library files whose
   code is linked without them.
 * `autoload_3` (48,680 bytes): mostly library bss from 0x021f4768 to the end, plus a few small objects of main.
 * DTCM `.data` 0x027e0000-0x027e0460.
