@@ -2,12 +2,12 @@
 #define NET_UNK_OV065_02281790_CTX_H
 
 #include "types.h"
-#include "net/GsGpOperation.h"
-#include "net/GsGpSearch.h"
-#include "net/GsGpProfile.h"
+#include "net/gpiOperation.h"
+#include "net/gpiSearch.h"
+#include "net/gpiProfile.h"
 #include "net/Unk_ov065_0227c538_Node.h"
 
-// GsGpContext view of the profile/search code (sessKey, numSearches, operation list, profile table)
+// GPIConnection view of the profile/search code (sessKey, numSearches, operation list, profile table)
 // (src/ov065/unk_ov065_0228176c.cpp, src/ov065/unk_ov065_02281a5c.cpp).
 
 struct Unk_ov065_02281790_Ctx {
@@ -20,7 +20,7 @@ struct Unk_ov065_02281790_Ctx {
     /* 0x214 */ u8 pad_214[0x418 - 0x214];
     /* 0x418 */ s32 errorCode;
     /* 0x41c */ u8 pad_41c[0x424 - 0x41c];
-    /* 0x424 */ GsGpOperation *operationList;
+    /* 0x424 */ GPIOperation *operationList;
     /* 0x428 */ void *profileTable;
     /* 0x42c */ s32 numProfiles;
     /* 0x430 */ s32 numBuddies;

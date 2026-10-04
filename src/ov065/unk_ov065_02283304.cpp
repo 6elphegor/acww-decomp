@@ -3,7 +3,7 @@
 #include "net/Unk_ov065_02282f90_Ctx.h"
 #include "net/Unk_ov065_022831c0_Host.h"
 #include "net/Unk_ov065_022833b4_Pair.h"
-#include "net/GsPersist.h"
+#include "net/gpersist.h"
 #include "net/Unk_ov065_022833b4_Src.h"
 
 // ov065 TU50: GP gpiTransfer/gpiUnique/gpiUtility (0x02283304..0x02283720)
@@ -31,29 +31,29 @@ extern char data_ov065_0228ddf4[];
 extern char data_ov065_0228de24[];
 extern char *sGsPersistXorKey;
 extern char data_ov065_0228df7c[];
-extern char data_ov065_0228df8c[];
-extern char data_ov065_0228df9c[];
-extern void *sGsPersistRequests;
+extern char enc1[];
+extern char enc3[];
+extern void *serverreqs;
 
 extern "C" {
-void GsPersist_XorCrypt(char *, s32);
-s32 GsPersist_DispatchReply(char *, s32);
-s32 GsPersist_FindFinal(char *, s32);
+void xcode_buf(char *, s32);
+s32 ProcessStatement(char *, s32);
+s32 FindFinal(char *, s32);
 void _strlwr(char *);
-s32 GsGp_AddOperation(void *, s32, void *, void *, s32, s32, s32);
-s32 GsGp_ProcessConnection(void *, s32);
+s32 gpiAddOperation(void *, s32, void *, void *, s32, s32, s32);
+s32 gpiProcess(void *, s32);
 void *GsUtil_Alloc(u32);
 s32 socket(s32, s32, s32);
 s32 SetSockBlocking(s32, s32);
 Unk_ov065_022831c0_Host *Sock_GetHostByName(const char *);
 s32 connect(s32, void *, s32);
 s32 GOAGetLastError(s32);
-void GsGp_CallErrorCallback(void *, s32, s32);
-s32 GsGpPeer_SendTransferHeader(void *, s32, s32, void *);
-s32 GsGpPeer_SendString(void *, s32, char *);
-s32 GsGpPeer_SendMessageBody(void *, s32, const char *, s32);
-s32 GsGp_QueueCallback(void *, Unk_ov065_022833b4_Pair, void *, void *, s32);
-void GsGp_RemoveOperation(void *, void *);
+void gpiCallErrorCallback(void *, s32, s32);
+s32 gpiPeerStartTransferMessage(void *, s32, s32, void *);
+s32 gpiSendOrBufferString(void *, s32, char *);
+s32 gpiPeerFinishTransferMessage(void *, s32, const char *, s32);
+s32 gpiAddCallback(void *, Unk_ov065_022833b4_Pair, void *, void *, s32);
+void gpiRemoveOperation(void *, void *);
 s32 GSISocketSelect(s32, s32, s32 *, s32 *);
 s32 ArrayLength(void *);
 void ArrayFree(void *);
@@ -68,17 +68,17 @@ s32 sscanf(const char *, const char *, ...);
 s32 atol(const char *);
 s32 memset(void *, s32, u32);
 
-void GsGp_SetErrorString(void *, const char *);
-void GsGp_SetError(void *, s32, const char *);
-void GsGp_DebugLog(void *, const char *, ...);
-void GsUtil_StrCopyN(char *, const char *, s32);
-s32 GsGp_GetValue(const char *, const char *, char *, s32);
-s32 GsGp_CheckServerError(void *, const char *, s32);
-s32 GsGpSearch_NewData(void *, void *, s32);
-s32 GsGpSearch_Start(void *, void *, s32, s32, s32);
-s32 GsGpSearch_Connect(void *, void *);
-s32 GsGpPeer_SendTransferReply(void *, s32 *, s32, s32, const char *);
-s32 GsPersist_CompleteRequest(s32, s32, s32, void *, s32);
+void gpiSetErrorString(void *, const char *);
+void gpiSetError(void *, s32, const char *);
+void gpiDebug(void *, const char *, ...);
+void strzcpy(char *, const char *, s32);
+s32 gpiValueForKey(const char *, const char *, char *, s32);
+s32 gpiCheckForError(void *, const char *, s32);
+s32 gpiInitSearchData(void *, void *, s32);
+s32 gpiStartSearch(void *, void *, s32, s32, s32);
+s32 gpiStartProfileSearch(void *, void *);
+s32 gpiSendTransferReply(void *, s32 *, s32, s32, const char *);
+s32 CallReqCallback(s32, s32, s32, void *, s32);
 }
 
 static inline BOOL Unk_ov065_02283684_B(char *p) {
@@ -111,33 +111,33 @@ extern "C" {
 
 }
 extern "C" {
-void GsGpPeer_DeclineTransfer(void *h, s32 p1, s32 p2, const char *p3);
-s32 GsGpPeer_SendTransferReply(void *h, s32 *a, s32 b, s32 c, const char *dflt);
-s32 GsGp_ProcessRnReply(void *h, Unk_ov065_022833b4_Src *s, char *str);
-void GsGp_SetErrorString(void *h, const char *msg);
-void GsGp_SetError(void *h, s32 code, const char *msg);
-s32 GsGp_ReadKeyValue(void *h, char *buf, s32 *pos, char *out1, char *out2);
-s32 GsGp_CheckConnectComplete(void *h, s32 x, s32 *out);
-s32 GsGp_GetValue(const char *hay, const char *needle, char *out, s32 n);
-s32 GsGp_CheckServerError(void *h, const char *str, s32 flag);
+void gpiHandleTransferMessage(void *h, s32 p1, s32 p2, const char *p3);
+s32 gpiSendTransferReply(void *h, s32 *a, s32 b, s32 c, const char *dflt);
+s32 gpiProcessRegisterUniqueNick(void *h, Unk_ov065_022833b4_Src *s, char *str);
+void gpiSetErrorString(void *h, const char *msg);
+void gpiSetError(void *h, s32 code, const char *msg);
+s32 gpiReadKeyAndValue(void *h, char *buf, s32 *pos, char *out1, char *out2);
+s32 gpiCheckSocketConnect(void *h, s32 x, s32 *out);
+s32 gpiValueForKey(const char *hay, const char *needle, char *out, s32 n);
+s32 gpiCheckForError(void *h, const char *str, s32 flag);
 }
 }
 
 namespace Na {
 extern "C" {
-s32 GsGp_CheckServerError(void *h, const char *str, s32 flag) {
+s32 gpiCheckForError(void *h, const char *str, s32 flag) {
     Unk_ov065_02282f90_Ctx *ctx = ((Unk_ov065_02282f90_Handle *)h)->connection;
     char buf[16];
     if (strncmp(str, "\\error\\", 7) == 0) {
-        if (GsGp_GetValue(str, "\\err\\", buf, 0x10) != 0) {
+        if (gpiValueForKey(str, "\\err\\", buf, 0x10) != 0) {
             ctx->errorCode = atol(buf);
         }
-        if (GsGp_GetValue(str, "\\errmsg\\", ctx->errorString, 0x100) == 0) {
+        if (gpiValueForKey(str, "\\errmsg\\", ctx->errorString, 0x100) == 0) {
             ctx->errorString[0] = 0;
         }
         if (flag != 0) {
             BOOL t = Unk_ov065_02283684_B(strstr(str, "\\fatal\\"));
-            GsGp_CallErrorCallback(h, 4, t ? 1 : 0);
+            gpiCallErrorCallback(h, 4, t ? 1 : 0);
         }
         return 1;
     }
@@ -148,7 +148,7 @@ s32 GsGp_CheckServerError(void *h, const char *str, s32 flag) {
 
 namespace Na {
 extern "C" {
-s32 GsGp_GetValue(const char *hay, const char *needle, char *out, s32 n) {
+s32 gpiValueForKey(const char *hay, const char *needle, char *out, s32 n) {
     s32 c = *needle;
     char *p = strstr(hay, needle);
     s32 i;
@@ -170,24 +170,24 @@ s32 GsGp_GetValue(const char *hay, const char *needle, char *out, s32 n) {
 
 namespace Na {
 extern "C" {
-s32 GsGp_CheckConnectComplete(void *h, s32 x, s32 *out) {
+s32 gpiCheckSocketConnect(void *h, s32 x, s32 *out) {
     s32 a = 0;
     s32 b = 0;
     s32 r = GSISocketSelect(x, 0, &a, &b);
     if (r == -1) {
-        GsGp_DebugLog(h, "Error connecting\n");
-        GsGp_SetError(h, 5, "There was an error checking for a completed connection.");
-        GsGp_CallErrorCallback(h, 3, 1);
+        gpiDebug(h, "Error connecting\n");
+        gpiSetError(h, 5, "There was an error checking for a completed connection.");
+        gpiCallErrorCallback(h, 3, 1);
         return 3;
     }
     if (r > 0) {
         if (b != 0) {
-            GsGp_DebugLog(h, "Connection rejected\n");
+            gpiDebug(h, "Connection rejected\n");
             *out = 4;
             return 0;
         }
         if (a != 0) {
-            GsGp_DebugLog(h, "Connection accepted\n");
+            gpiDebug(h, "Connection accepted\n");
             *out = 3;
             return 0;
         }
@@ -200,13 +200,13 @@ s32 GsGp_CheckConnectComplete(void *h, s32 x, s32 *out) {
 
 namespace Na {
 extern "C" {
-s32 GsGp_ReadKeyValue(void *h, char *buf, s32 *pos, char *out1, char *out2) {
+s32 gpiReadKeyAndValue(void *h, char *buf, s32 *pos, char *out1, char *out2) {
     s32 c;
     s32 i = *pos;
     char *p = buf + i;
     if (buf[i] != '\\') {
-        GsGp_SetError(h, 1, "Parse Error.");
-        GsGp_CallErrorCallback(h, 3, 1);
+        gpiSetError(h, 1, "Parse Error.");
+        gpiCallErrorCallback(h, 3, 1);
         return 3;
     }
     i = 0;
@@ -215,13 +215,13 @@ s32 GsGp_ReadKeyValue(void *h, char *buf, s32 *pos, char *out1, char *out2) {
     if (c != '\\') {
         do {
             if (c == 0) {
-                GsGp_SetError(h, 1, "Parse Error.");
-                GsGp_CallErrorCallback(h, 3, 1);
+                gpiSetError(h, 1, "Parse Error.");
+                gpiCallErrorCallback(h, 3, 1);
                 return 3;
             }
             if (i == 0x1ff) {
-                GsGp_SetError(h, 1, "Parse Error.");
-                GsGp_CallErrorCallback(h, 3, 1);
+                gpiSetError(h, 1, "Parse Error.");
+                gpiCallErrorCallback(h, 3, 1);
                 return 3;
             }
             *out1 = c;
@@ -237,8 +237,8 @@ s32 GsGp_ReadKeyValue(void *h, char *buf, s32 *pos, char *out1, char *out2) {
         s32 d;
         while ((d = *buf++) != '\\' && d != 0) {
             if (j == 0x1ff) {
-                GsGp_SetError(h, 1, "Parse Error.");
-                GsGp_CallErrorCallback(h, 3, 1);
+                gpiSetError(h, 1, "Parse Error.");
+                gpiCallErrorCallback(h, 3, 1);
                 return 3;
             }
             *out2 = d;
@@ -255,9 +255,9 @@ s32 GsGp_ReadKeyValue(void *h, char *buf, s32 *pos, char *out1, char *out2) {
 
 namespace Na {
 extern "C" {
-void GsGp_SetError(void *h, s32 code, const char *msg) {
+void gpiSetError(void *h, s32 code, const char *msg) {
     Unk_ov065_02282f90_Ctx *c = ((Unk_ov065_02282f90_Handle *)h)->connection;
-    GsUtil_StrCopyN(c->errorString, msg, 0x100);
+    strzcpy(c->errorString, msg, 0x100);
     c->errorCode = code;
 }
 }
@@ -265,40 +265,40 @@ void GsGp_SetError(void *h, s32 code, const char *msg) {
 
 namespace Na {
 extern "C" {
-void GsGp_SetErrorString(void *h, const char *msg) {
-    GsUtil_StrCopyN(((Unk_ov065_02282f90_Handle *)h)->connection->errorString, msg, 0x100);
+void gpiSetErrorString(void *h, const char *msg) {
+    strzcpy(((Unk_ov065_02282f90_Handle *)h)->connection->errorString, msg, 0x100);
 }
 }
 }
 
 namespace Na {
 extern "C" {
-s32 GsGp_ProcessRnReply(void *h, Unk_ov065_022833b4_Src *s, char *str) {
+s32 gpiProcessRegisterUniqueNick(void *h, Unk_ov065_022833b4_Src *s, char *str) {
     Unk_ov065_022833b4_Pair pr;
     s32 *p;
     s32 r;
-    if (GsGp_CheckServerError(h, str, 1) != 0) {
+    if (gpiCheckForError(h, str, 1) != 0) {
         return 4;
     }
     if (strncmp(str, "\\rn\\", 4) != 0) {
-        GsGp_SetError(h, 1, "Unexpected data was received from the server.");
-        GsGp_CallErrorCallback(h, 3, 1);
+        gpiSetError(h, 1, "Unexpected data was received from the server.");
+        gpiCallErrorCallback(h, 3, 1);
         return 3;
     }
     pr = s->callback;
     if (pr.v[0] != 0) {
         p = (s32 *)GsUtil_Alloc(4);
         if (p == NULL) {
-            GsGp_SetErrorString(h, "Out of memory.");
+            gpiSetErrorString(h, "Out of memory.");
             return 1;
         }
         *p = 0;
-        r = GsGp_QueueCallback(h, pr, p, s, 0);
+        r = gpiAddCallback(h, pr, p, s, 0);
         if (r != 0) {
             return r;
         }
     }
-    GsGp_RemoveOperation(h, s);
+    gpiRemoveOperation(h, s);
     return 0;
 }
 }
@@ -306,22 +306,22 @@ s32 GsGp_ProcessRnReply(void *h, Unk_ov065_022833b4_Src *s, char *str) {
 
 namespace Na {
 extern "C" {
-s32 GsGpPeer_SendTransferReply(void *h, s32 *a, s32 b, s32 c, const char *dflt) {
+s32 gpiSendTransferReply(void *h, s32 *a, s32 b, s32 c, const char *dflt) {
     char buf[0x24];
     s32 r;
     if (dflt == NULL) {
         dflt = "";
     }
-    r = GsGpPeer_SendTransferHeader(h, b, 0xc9, a);
+    r = gpiPeerStartTransferMessage(h, b, 0xc9, a);
     if (r != 0) {
         return r;
     }
     OS_SPrintf(buf, "\\version\\%d\\result\\%d", 1, c);
-    r = GsGpPeer_SendString(h, b, buf);
+    r = gpiSendOrBufferString(h, b, buf);
     if (r != 0) {
         return r;
     }
-    r = GsGpPeer_SendMessageBody(h, b, dflt, -1);
+    r = gpiPeerFinishTransferMessage(h, b, dflt, -1);
     if (r != 0) {
         return r;
     }
@@ -332,12 +332,12 @@ s32 GsGpPeer_SendTransferReply(void *h, s32 *a, s32 b, s32 c, const char *dflt) 
 
 namespace Na {
 extern "C" {
-void GsGpPeer_DeclineTransfer(void *h, s32 p1, s32 p2, const char *p3) {
+void gpiHandleTransferMessage(void *h, s32 p1, s32 p2, const char *p3) {
     char buf[0x40];
     s32 v[3];
-    if (GsGp_GetValue(p3, "\\xfer\\", buf, 0x40) != 0) {
+    if (gpiValueForKey(p3, "\\xfer\\", buf, 0x40) != 0) {
         if (sscanf(buf, "%d %u %u", &v[0], &v[1], &v[2]) == 3) {
-            GsGpPeer_SendTransferReply(h, v, p1, 2, NULL);
+            gpiSendTransferReply(h, v, p1, 2, NULL);
         }
     }
 }

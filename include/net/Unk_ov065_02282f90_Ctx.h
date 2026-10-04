@@ -2,9 +2,9 @@
 #define NET_UNK_OV065_02282F90_CTX_H
 
 #include "types.h"
-#include "net/GsGpSearch.h"
+#include "net/gpiSearch.h"
 
-// GsGpContext view (error string as a char array, error code) and its handle (search-manager / "rn" helpers); used by
+// GPIConnection view (error string as a char array, error code) and its handle (search-manager / "rn" helpers); used by
 // unk_ov065_02281a5c.cpp, unk_ov065_02283304.cpp and unk_ov065_02283720.cpp.
 
 struct Unk_ov065_02282f90_Ctx {

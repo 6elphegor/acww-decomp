@@ -35,13 +35,13 @@ GsAvailQuery AC;
 
 void *DwcNet_Free(s32 a, void *b, s32 c);
 void *DwcNet_Alloc(s32 a, s32 b);
-s32 GsHttp_Get(s32, s32, void *, void *);
-s32 GsHttp_Post(s32, s32, s32, void *, void *);
-s32 GsHttp_PostAddString(s32);
-s32 GsHttp_NewPost();
-void GsHttp_ProcessAll();
-void GsHttp_Cleanup();
-void GsHttp_Startup();
+s32 ghttpGetA(s32, s32, void *, void *);
+s32 ghttpPostA(s32, s32, s32, void *, void *);
+s32 ghttpPostAddStringA(s32);
+s32 ghttpNewPost();
+void ghttpThink();
+void ghttpCleanup();
+void ghttpStartup();
 s32 CanReceiveOnSocket(s32 fd);
 s32 recvfrom(s32, void *, s32, s32, void *, void *);
 void closesocket(s32);
@@ -149,17 +149,17 @@ s32 GSIAvailableCheckThink() {
 }
 
 s32 DwcGsHttp_Startup() {
-    GsHttp_Startup();
+    ghttpStartup();
     return 1;
 }
 
 s32 DwcGsHttp_Cleanup() {
-    GsHttp_Cleanup();
+    ghttpCleanup();
     return 1;
 }
 
 s32 DwcGsHttp_Process() {
-    GsHttp_ProcessAll();
+    ghttpThink();
     return 1;
 }
 
@@ -178,11 +178,11 @@ s32 DwcGsHttp_OnRequestDone(s32 a, s32 e, s32 c, s32 d, DwcGsHttpCallbackCtx *p)
 }
 
 void DwcGsHttp_PostCreate(s32 *p) {
-    *p = GsHttp_NewPost();
+    *p = ghttpNewPost();
 }
 
 s32 DwcGsHttp_PostAddString(s32 *p) {
-    return GsHttp_PostAddString(*p);
+    return ghttpPostAddStringA(*p);
 }
 
 s32 DwcGsHttp_Post(s32 a, s32 *pa, void (*cb)(s32, s32, s32, u32), u32 ud) {
@@ -196,7 +196,7 @@ s32 DwcGsHttp_Post(s32 a, s32 *pa, void (*cb)(s32, s32, s32, u32), u32 ud) {
     }
     p->userData = ud;
     p->callback = cb;
-    r = GsHttp_Post(a, *pa, 0, (void *)DwcGsHttp_OnRequestDone, p);
+    r = ghttpPostA(a, *pa, 0, (void *)DwcGsHttp_OnRequestDone, p);
     if (r < 0) {
         DwcGsHttp_ReportError(r);
         cb(0, 0, r, p->userData);
@@ -216,7 +216,7 @@ s32 DwcGsHttp_Get(s32 a, void (*cb)(s32, s32, s32, u32), u32 ud) {
     }
     p->userData = ud;
     p->callback = cb;
-    r = GsHttp_Get(a, 0, (void *)DwcGsHttp_OnRequestDone, p);
+    r = ghttpGetA(a, 0, (void *)DwcGsHttp_OnRequestDone, p);
     if (r < 0) {
         DwcGsHttp_ReportError(r);
         cb(0, 0, r, p->userData);

@@ -2,10 +2,10 @@
 #define NET_UNK_OV065_022831C0_HOST_H
 
 #include "types.h"
-#include "net/GsGpSearch.h"
-#include "net/GsGpOperation.h"
+#include "net/gpiSearch.h"
+#include "net/gpiOperation.h"
 
-// hostent and sockaddr views of GsGpSearch_Connect (shared SOC types are named by N01); used by
+// hostent and sockaddr views of gpiStartProfileSearch (shared SOC types are named by N01); used by
 // unk_ov065_02281a5c.cpp, unk_ov065_02283304.cpp and unk_ov065_02283720.cpp.
 
 struct Unk_ov065_022831c0_Host {

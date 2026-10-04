@@ -2,7 +2,7 @@
 #define NET_DWCFRIENDCONTROL_H
 
 #include "types.h"
-#include "net/GsGpConnection.h"
+#include "net/gp.h"
 
 // DWC friend control (sDwcFriendControl = &DwcControl::friendControl, DwcFriend_InitControl): friend list sync with
 // the GP buddy list and the DwcFriend_UpdateServersAsync callbacks (src/ov065/unk_ov065_02270e34.cpp,
@@ -20,7 +20,7 @@ typedef void (*DwcFriendAddedCallback)(s32, s32);
 
 struct DwcFriendControl {
     /* 0x00 */ s32 updateState;
-    /* 0x04 */ GsGpConnection *gpConnection;
+    /* 0x04 */ GPConnection *gpConnection;
     /* 0x08 */ u32 tickCount;
     /* 0x0c */ u32 lastTick;
     /* 0x10 */ u32 lastProcessTickHi;

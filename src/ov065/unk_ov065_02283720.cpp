@@ -5,11 +5,11 @@
 #include "net/Unk_ov065_02282f90_Ctx.h"
 #include "net/Unk_ov065_022831c0_Host.h"
 #include "net/Unk_ov065_022833b4_Pair.h"
-#include "net/GsPersist.h"
+#include "net/gpersist.h"
 #include "net/gt2Main.h"
 #include "net/Unk_ov065_022833b4_Src.h"
 
-extern "C" u8 data_ov065_0228df8c[16];
+extern "C" u8 enc1[16];
 
 
 
@@ -55,29 +55,29 @@ extern char data_ov065_0228df60[];
 extern char data_ov065_0228df6c[];
 extern char *sGsPersistXorKey;
 extern char data_ov065_0228df7c[];
-extern char data_ov065_0228df8c[];
-extern char data_ov065_0228df9c[];
-extern void *sGsPersistRequests;
+extern char enc1[];
+extern char enc3[];
+extern void *serverreqs;
 
 extern "C" {
-void GsPersist_XorCrypt(char *, s32);
-s32 GsPersist_DispatchReply(char *, s32);
-s32 GsPersist_FindFinal(char *, s32);
+void xcode_buf(char *, s32);
+s32 ProcessStatement(char *, s32);
+s32 FindFinal(char *, s32);
 void _strlwr(char *);
-s32 GsGp_AddOperation(void *, s32, void *, void *, s32, s32, s32);
-s32 GsGp_ProcessConnection(void *, s32);
+s32 gpiAddOperation(void *, s32, void *, void *, s32, s32, s32);
+s32 gpiProcess(void *, s32);
 void *GsUtil_Alloc(u32);
 s32 socket(s32, s32, s32);
 s32 SetSockBlocking(s32, s32);
 Unk_ov065_022831c0_Host *Sock_GetHostByName(const char *);
 s32 connect(s32, void *, s32);
 s32 GOAGetLastError(s32);
-void GsGp_CallErrorCallback(void *, s32, s32);
-s32 GsGpPeer_SendTransferHeader(void *, s32, s32, void *);
-s32 GsGpPeer_SendString(void *, s32, char *);
-s32 GsGpPeer_SendMessageBody(void *, s32, const char *, s32);
-s32 GsGp_QueueCallback(void *, Unk_ov065_022833b4_Pair, void *, void *, s32);
-void GsGp_RemoveOperation(void *, void *);
+void gpiCallErrorCallback(void *, s32, s32);
+s32 gpiPeerStartTransferMessage(void *, s32, s32, void *);
+s32 gpiSendOrBufferString(void *, s32, char *);
+s32 gpiPeerFinishTransferMessage(void *, s32, const char *, s32);
+s32 gpiAddCallback(void *, Unk_ov065_022833b4_Pair, void *, void *, s32);
+void gpiRemoveOperation(void *, void *);
 s32 GSISocketSelect(s32, s32, s32 *, s32 *);
 s32 ArrayLength(void *);
 void ArrayFree(void *);
@@ -92,17 +92,17 @@ s32 sscanf(const char *, const char *, ...);
 s32 atol(const char *);
 s32 memset(void *, s32, u32);
 
-void GsGp_SetErrorString(void *, const char *);
-void GsGp_SetError(void *, s32, const char *);
-void GsGp_DebugLog(void *, const char *, ...);
-void GsUtil_StrCopyN(char *, const char *, s32);
-s32 GsGp_GetValue(const char *, const char *, char *, s32);
-s32 GsGp_CheckServerError(void *, const char *, s32);
-s32 GsGpSearch_NewData(void *, void *, s32);
-s32 GsGpSearch_Start(void *, void *, s32, s32, s32);
-s32 GsGpSearch_Connect(void *, void *);
-s32 GsGpPeer_SendTransferReply(void *, s32 *, s32, s32, const char *);
-s32 GsPersist_CompleteRequest(s32, s32, s32, void *, s32);
+void gpiSetErrorString(void *, const char *);
+void gpiSetError(void *, s32, const char *);
+void gpiDebug(void *, const char *, ...);
+void strzcpy(char *, const char *, s32);
+s32 gpiValueForKey(const char *, const char *, char *, s32);
+s32 gpiCheckForError(void *, const char *, s32);
+s32 gpiInitSearchData(void *, void *, s32);
+s32 gpiStartSearch(void *, void *, s32, s32, s32);
+s32 gpiStartProfileSearch(void *, void *);
+s32 gpiSendTransferReply(void *, s32 *, s32, s32, const char *);
+s32 CallReqCallback(s32, s32, s32, void *, s32);
 }
 
 static inline BOOL Unk_ov065_02283684_B(char *p) {
@@ -148,12 +148,12 @@ extern "C" {
 
 
 extern "C" {
-extern DArrayImplementation *sGsPersistRequests;
+extern DArrayImplementation *serverreqs;
 extern s32 sGsPersistSocket;
-extern s32 data_ov065_022910f8;
-extern char *data_ov065_022910f0;
-extern s32 data_ov065_02291100;
-extern s32 data_ov065_022910ec;
+extern s32 stats_initstate;
+extern char *rcvbuffer;
+extern s32 rcvmax;
+extern s32 rcvlen;
 extern volatile s32 data_ov065_022910fc;
 extern char data_ov065_02291304[];
 extern char *sGsPersistXorKey;
@@ -173,9 +173,9 @@ s32 abs(s32);
 
 void *ArrayNth(DArrayImplementation *, s32);
 s32 ArrayLength(DArrayImplementation *);
-void GsPersist_CompleteRequest(s32, s32, s32, char *, s32);
-s32 GsPersist_ProcessReceived(char *, s32);
-void GsPersist_FailAllRequests();
+void CallReqCallback(s32, s32, s32, char *, s32);
+s32 ProcessInBuffer(char *, s32);
+void ClosePendingCallbacks();
 s32 CanReceiveOnSocket(s32);
 s32 recv(s32, char *, s32, s32);
 void shutdown(s32, s32);
@@ -186,15 +186,15 @@ void *GsUtil_Alloc(s32);
 s32 current_time(u8 *);
 void gti2CloseSocket(GTI2Socket *);
 
-void GsPersist_HandleAuthReply(char *, s32);
-void GsPersist_HandleGetPidReply(char *, s32);
-void GsPersist_HandleGetReply(char *, s32);
-s32 GsPersist_HandleSetReply(char *, s32);
-s32 GsPersist_FindRequest(s32, s32, s32);
-char *GsPersist_GetValueOrEmpty(char *, char *);
-char *GsPersist_GetValue(char *, char *);
-s32 GsPersist_CanRead(s32);
-void GsPersist_Disconnect();
+void ProcessPlayerAuth(char *, s32);
+void ProcessGetPid(char *, s32);
+void ProcessGetData(char *, s32);
+s32 ProcessSetData(char *, s32);
+s32 FindRequest(s32, s32, s32);
+char *value_for_key_safe(char *, char *);
+char *value_for_key(char *, char *);
+s32 SocketReadable(s32);
+void CloseStatsConnection();
 s32 gti2VerifyChallenge(u8 *);
 
 
@@ -260,8 +260,8 @@ char *gti2GetResponse(char *out, char *in) {
 }
 } }
 
-extern "C" char *sGsPersistXorKey = (char *)data_ov065_0228df8c; //@
-extern "C" { s32 data_ov065_02291100; } //@
+extern "C" char *sGsPersistXorKey = (char *)enc1; //@
+extern "C" { s32 rcvmax; } //@
 namespace N022838c4 { extern "C" {
 BOOL gti2CheckResponse(u8 *a, u8 *b) {
     s32 i;
@@ -279,60 +279,60 @@ BOOL gti2CheckResponse(u8 *a, u8 *b) {
 
 extern "C" u8 data_ov065_0228df7c[16] = {0x13, 0x1d, 0x01, 0x04, 0x00, 0x00, 0x00, 0x28, 0x1f, 0x06, 0x45, 0x34, 0x3f, 0x01, 0x1b, 0x00}; //@
 namespace N022838c4 { extern "C" {
-void GsPersist_Disconnect() {
+void CloseStatsConnection() {
     if (sGsPersistSocket != -1) {
         shutdown(sGsPersistSocket, 2);
         closesocket(sGsPersistSocket);
     }
     sGsPersistSocket = -1;
-    GsPersist_FailAllRequests();
-    if (data_ov065_022910f0 != 0) {
-        GsUtil_Free(data_ov065_022910f0);
-        data_ov065_022910f0 = 0;
-        data_ov065_02291100 = 0;
-        data_ov065_022910ec = 0;
+    ClosePendingCallbacks();
+    if (rcvbuffer != 0) {
+        GsUtil_Free(rcvbuffer);
+        rcvbuffer = 0;
+        rcvmax = 0;
+        rcvlen = 0;
     }
 }
 } }
 
 extern "C" { u8 data_ov065_02291104[0x100]; } //@
 namespace N022838c4 { extern "C" {
-s32 GsPersist_Process() {
+s32 PersistThink() {
     s32 r;
     if (sGsPersistSocket == -1) {
         return 0;
     }
-    if (data_ov065_022910f8 != 5) {
+    if (stats_initstate != 5) {
         return 0;
     }
-    if (GsPersist_CanRead(sGsPersistSocket) != 0) {
+    if (SocketReadable(sGsPersistSocket) != 0) {
         do {
-            if (data_ov065_02291100 - data_ov065_022910ec < 0x80) {
-                if (data_ov065_02291100 < 0x100) {
-                    data_ov065_02291100 = 0x100;
+            if (rcvmax - rcvlen < 0x80) {
+                if (rcvmax < 0x100) {
+                    rcvmax = 0x100;
                 } else {
-                    data_ov065_02291100 = data_ov065_02291100 * 2;
+                    rcvmax = rcvmax * 2;
                 }
-                data_ov065_022910f0 = (char *)GsUtil_Realloc(data_ov065_022910f0, data_ov065_02291100 + 1);
-                if (data_ov065_022910f0 == 0) {
+                rcvbuffer = (char *)GsUtil_Realloc(rcvbuffer, rcvmax + 1);
+                if (rcvbuffer == 0) {
                     return 0;
                 }
             }
-            r = recv(sGsPersistSocket, data_ov065_022910f0 + data_ov065_022910ec, data_ov065_02291100 - data_ov065_022910ec, 0);
+            r = recv(sGsPersistSocket, rcvbuffer + rcvlen, rcvmax - rcvlen, 0);
             if (r <= 0) {
-                GsPersist_Disconnect();
+                CloseStatsConnection();
                 return 0;
             }
-            data_ov065_022910ec += r;
-            data_ov065_022910f0[data_ov065_022910ec] = 0;
-            r = GsPersist_ProcessReceived(data_ov065_022910f0, data_ov065_022910ec);
-            if (r == data_ov065_022910ec) {
-                data_ov065_022910ec = 0;
+            rcvlen += r;
+            rcvbuffer[rcvlen] = 0;
+            r = ProcessInBuffer(rcvbuffer, rcvlen);
+            if (r == rcvlen) {
+                rcvlen = 0;
             } else {
-                memmove(data_ov065_022910f0, data_ov065_022910f0 + r, data_ov065_022910ec - r);
-                data_ov065_022910ec -= r;
+                memmove(rcvbuffer, rcvbuffer + r, rcvlen - r);
+                rcvlen -= r;
             }
-        } while (GsPersist_CanRead(sGsPersistSocket) != 0);
+        } while (SocketReadable(sGsPersistSocket) != 0);
     }
     if (sGsPersistSocket == -1) {
         return 0;
@@ -341,9 +341,9 @@ s32 GsPersist_Process() {
 }
 } }
 
-extern "C" { s32 data_ov065_022910ec; } //@
+extern "C" { s32 rcvlen; } //@
 namespace N022838c4 { extern "C" {
-void GsPersist_XorCrypt(char *p, s32 n) {
+void xcode_buf(char *p, s32 n) {
     s32 i;
     char *k;
     k = sGsPersistXorKey;
@@ -357,7 +357,7 @@ void GsPersist_XorCrypt(char *p, s32 n) {
 } }
 
 namespace N022838c4 { extern "C" {
-char *GsPersist_GetValue(char *s, char *key) {
+char *value_for_key(char *s, char *key) {
     char buf[256] = "\\";
     char *f;
     char *d;
@@ -381,10 +381,10 @@ char *GsPersist_GetValue(char *s, char *key) {
 }
 } }
 
-extern "C" u8 data_ov065_0228df8c[16] = {0x00, 0x61, 0x6d, 0x65, 0x53, 0x70, 0x79, 0x33, 0x44, 0, 0, 0, 0, 0, 0, 0}; //@
+extern "C" u8 enc1[16] = {0x00, 0x61, 0x6d, 0x65, 0x53, 0x70, 0x79, 0x33, 0x44, 0, 0, 0, 0, 0, 0, 0}; //@
 namespace N022838c4 { extern "C" {
-char *GsPersist_GetValueOrEmpty(char *s, char *key) {
-    char *r = GsPersist_GetValue(s, key);
+char *value_for_key_safe(char *s, char *key) {
+    char *r = value_for_key(s, key);
     if (r == 0) {
         r = "";
     }
@@ -393,13 +393,13 @@ char *GsPersist_GetValueOrEmpty(char *s, char *key) {
 } }
 
 namespace N022838c4 { extern "C" {
-s32 GsPersist_CanRead(s32 a) {
+s32 SocketReadable(s32 a) {
     return CanReceiveOnSocket(a);
 }
 } }
 
 namespace N022838c4 { extern "C" {
-char *GsPersist_FindFinal(char *s, s32 len) {
+char *FindFinal(char *s, s32 len) {
     char *p = s;
     s32 n = len - 6;
     if (n > 0) {
@@ -415,64 +415,64 @@ char *GsPersist_FindFinal(char *s, s32 len) {
 } }
 
 namespace N022838c4 { extern "C" {
-s32 GsPersist_FindRequest(s32 a, s32 b, s32 c) {
+s32 FindRequest(s32 a, s32 b, s32 c) {
     s32 i;
-    if (sGsPersistRequests == 0) {
+    if (serverreqs == 0) {
         return -1;
     }
     i = 0;
-    if (i < ArrayLength(sGsPersistRequests)) {
+    if (i < ArrayLength(serverreqs)) {
         do {
-            s32 *e = (s32 *)ArrayNth(sGsPersistRequests, i);
+            s32 *e = (s32 *)ArrayNth(serverreqs, i);
             if (e[0] == a && e[1] == b && e[2] == c) {
                 return i;
             }
             i++;
-        } while (i < ArrayLength(sGsPersistRequests));
+        } while (i < ArrayLength(serverreqs));
     }
     return -1;
 }
 } }
 
-extern "C" u8 data_ov065_0228df9c[16] = {0x00, 0x72, 0x6f, 0x6a, 0x65, 0x63, 0x74, 0x41, 0x70, 0x68, 0x65, 0x78, 0, 0, 0, 0}; //@
+extern "C" u8 enc3[16] = {0x00, 0x72, 0x6f, 0x6a, 0x65, 0x63, 0x74, 0x41, 0x70, 0x68, 0x65, 0x78, 0, 0, 0, 0}; //@
 namespace N022838c4 { extern "C" {
-void GsPersist_HandleAuthReply(char *s, s32 len) {
-    s32 a = atol(GsPersist_GetValueOrEmpty(s, "pauthr"));
-    s32 b = atol(GsPersist_GetValueOrEmpty(s, "lid"));
-    char *m = GsPersist_GetValueOrEmpty(s, "errmsg");
-    s32 i = GsPersist_FindRequest(0, b, 0);
+void ProcessPlayerAuth(char *s, s32 len) {
+    s32 a = atol(value_for_key_safe(s, "pauthr"));
+    s32 b = atol(value_for_key_safe(s, "lid"));
+    char *m = value_for_key_safe(s, "errmsg");
+    s32 i = FindRequest(0, b, 0);
     if (i != -1) {
-        s32 *e = (s32 *)ArrayNth(sGsPersistRequests, i);
+        s32 *e = (s32 *)ArrayNth(serverreqs, i);
         e[2] = a;
-        GsPersist_CompleteRequest(i, a > 0 ? 1 : 0, 0, m, 0);
+        CallReqCallback(i, a > 0 ? 1 : 0, 0, m, 0);
     }
 }
 } }
 
 namespace N022838c4 { extern "C" {
-void GsPersist_HandleGetPidReply(char *s, s32 len) {
+void ProcessGetPid(char *s, s32 len) {
     s32 i;
-    s32 a = atol(GsPersist_GetValueOrEmpty(s, "getpidr"));
-    s32 b = atol(GsPersist_GetValueOrEmpty(s, "lid"));
-    i = GsPersist_FindRequest(3, b, 0);
+    s32 a = atol(value_for_key_safe(s, "getpidr"));
+    s32 b = atol(value_for_key_safe(s, "lid"));
+    i = FindRequest(3, b, 0);
     if (i != -1) {
-        s32 *e = (s32 *)ArrayNth(sGsPersistRequests, i);
+        s32 *e = (s32 *)ArrayNth(serverreqs, i);
         e[2] = a;
-        GsPersist_CompleteRequest(i, a > 0 ? 1 : 0, 0, 0, 0);
+        CallReqCallback(i, a > 0 ? 1 : 0, 0, 0, 0);
     }
 }
 } }
 
-extern "C" { s32 data_ov065_022910f8; } //@
+extern "C" { s32 stats_initstate; } //@
 namespace N022838c4 { extern "C" {
-void GsPersist_HandleGetReply(char *s, s32 len) {
-    s32 a = atol(GsPersist_GetValueOrEmpty(s, "getpdr"));
-    s32 b = atol(GsPersist_GetValueOrEmpty(s, "lid"));
-    s32 c = atol(GsPersist_GetValueOrEmpty(s, "pid"));
-    s32 d = atol(GsPersist_GetValueOrEmpty(s, "mod"));
-    s32 i = GsPersist_FindRequest(1, b, c);
+void ProcessGetData(char *s, s32 len) {
+    s32 a = atol(value_for_key_safe(s, "getpdr"));
+    s32 b = atol(value_for_key_safe(s, "lid"));
+    s32 c = atol(value_for_key_safe(s, "pid"));
+    s32 d = atol(value_for_key_safe(s, "mod"));
+    s32 i = FindRequest(1, b, c);
     if (i != -1) {
-        s32 e = atol(GsPersist_GetValueOrEmpty(s, "length"));
+        s32 e = atol(value_for_key_safe(s, "length"));
         char *p = strstr(s, "\\data\\");
         char *q;
         if (p == 0) {
@@ -481,57 +481,57 @@ void GsPersist_HandleGetReply(char *s, s32 len) {
         } else {
             q = p + 6;
         }
-        GsPersist_CompleteRequest(i, a, d, q, e);
+        CallReqCallback(i, a, d, q, e);
     }
 }
 } }
 
 namespace N022838c4 { extern "C" {
-s32 GsPersist_HandleSetReply(char *s, s32 len) {
-    s32 a = atol(GsPersist_GetValueOrEmpty(s, "setpdr"));
-    s32 b = atol(GsPersist_GetValueOrEmpty(s, "pid"));
-    s32 c = atol(GsPersist_GetValueOrEmpty(s, "lid"));
-    s32 d = atol(GsPersist_GetValueOrEmpty(s, "mod"));
-    s32 i = GsPersist_FindRequest(2, c, b);
+s32 ProcessSetData(char *s, s32 len) {
+    s32 a = atol(value_for_key_safe(s, "setpdr"));
+    s32 b = atol(value_for_key_safe(s, "pid"));
+    s32 c = atol(value_for_key_safe(s, "lid"));
+    s32 d = atol(value_for_key_safe(s, "mod"));
+    s32 i = FindRequest(2, c, b);
     if (i != -1) {
-        GsPersist_CompleteRequest(i, a, d, 0, 0);
+        CallReqCallback(i, a, d, 0, 0);
     }
 }
 } }
 
 extern "C" { char data_ov065_02291304[0x200]; } //@
 namespace N022838c4 { extern "C" {
-void GsPersist_DispatchReply(char *s, s32 len) {
+void ProcessStatement(char *s, s32 len) {
     s[len] = 0;
     if (strncmp(s, "\\pauthr\\", 8) == 0) {
-        GsPersist_HandleAuthReply(s, len);
+        ProcessPlayerAuth(s, len);
     } else if (strncmp(s, "\\getpidr\\", 9) == 0) {
-        GsPersist_HandleGetPidReply(s, len);
+        ProcessGetPid(s, len);
     } else if (strncmp(s, "\\getpidr\\", 9) == 0) {
-        GsPersist_HandleGetPidReply(s, len);
+        ProcessGetPid(s, len);
     } else if (strncmp(s, "\\getpdr\\", 8) == 0) {
-        GsPersist_HandleGetReply(s, len);
+        ProcessGetData(s, len);
     } else if (strncmp(s, "\\setpdr\\", 8) == 0) {
-        GsPersist_HandleSetReply(s, len);
+        ProcessSetData(s, len);
     }
 }
 } }
 
 extern "C" s32 sGsPersistSocket = -1; //@
 namespace N02282f90 { extern "C" {
-s32 GsPersist_ProcessReceived(char *p, s32 n) {
+s32 ProcessInBuffer(char *p, s32 n) {
     s32 total = n;
-    char *q = (char *)GsPersist_FindFinal(p, n);
+    char *q = (char *)FindFinal(p, n);
     while (n > 0 && q != NULL) {
         s32 len;
-        sGsPersistXorKey = data_ov065_0228df8c;
+        sGsPersistXorKey = enc1;
         len = q - p;
-        GsPersist_XorCrypt(p, len);
-        GsPersist_DispatchReply(p, len);
+        xcode_buf(p, len);
+        ProcessStatement(p, len);
         n -= len + 7;
         p = q + 7;
         if (n > 0) {
-            q = (char *)GsPersist_FindFinal(p, n);
+            q = (char *)FindFinal(p, n);
         }
     }
     return total - n;
@@ -539,64 +539,64 @@ s32 GsPersist_ProcessReceived(char *p, s32 n) {
 } }
 
 namespace N02282f90 { extern "C" {
-s32 GsPersist_CompleteRequest(s32 idx, s32 a, s32 b, void *p3, s32 p4) {
-    if (idx >= 0 && idx < ArrayLength(sGsPersistRequests)) {
-        GsPersistRequest *e = (GsPersistRequest *)ArrayNth(sGsPersistRequests, idx);
+s32 CallReqCallback(s32 idx, s32 a, s32 b, void *p3, s32 p4) {
+    if (idx >= 0 && idx < ArrayLength(serverreqs)) {
+        serverreq_t *e = (serverreq_t *)ArrayNth(serverreqs, idx);
         void *cb = e->callback;
         if (cb != NULL) {
-            switch (e->requestType) {
+            switch (e->reqtype) {
             case 0:
-                ((GsPersistAuthCallback)cb)(e->localId, e->profileId, a, p3, e->userData);
+                ((PersAuthCallbackFn)cb)(e->localid, e->profileid, a, p3, e->instance);
                 break;
             case 1:
-                ((GsPersistDataCallback)cb)(e->localId, e->profileId, e->persistType, e->dataIndex, a, b, p3, p4, e->userData);
+                ((PersDataCallbackFn)cb)(e->localid, e->profileid, e->pdtype, e->pdindex, a, b, p3, p4, e->instance);
                 break;
             case 2:
-                ((GsPersistSaveCallback)cb)(e->localId, e->profileId, e->persistType, e->dataIndex, a, b, e->userData);
+                ((PersDataSaveCallbackFn)cb)(e->localid, e->profileid, e->pdtype, e->pdindex, a, b, e->instance);
                 break;
             case 3:
-                ((GsPersistProfileCallback)cb)(e->localId, e->profileId, a, e->userData);
+                ((ProfileCallbackFn)cb)(e->localid, e->profileid, a, e->instance);
                 break;
             }
         }
-        ArrayDeleteAt(sGsPersistRequests, idx);
+        ArrayDeleteAt(serverreqs, idx);
     }
 }
 } }
 
 extern "C" { volatile s32 data_ov065_022910fc; } //@
-extern "C" { char *data_ov065_022910f0; } //@
+extern "C" { char *rcvbuffer; } //@
 namespace N02282f90 { extern "C" {
-void GsPersist_FailAllRequests(void) {
-    if (sGsPersistRequests != NULL) {
-        s32 i = ArrayLength(sGsPersistRequests) - 1;
+void ClosePendingCallbacks(void) {
+    if (serverreqs != NULL) {
+        s32 i = ArrayLength(serverreqs) - 1;
         if (i >= 0) {
             do {
                 GsPersistErrorMsg buf = *(GsPersistErrorMsg *)data_ov065_0228df7c;
-                sGsPersistXorKey = data_ov065_0228df9c;
-                GsPersist_XorCrypt((char *)&buf, 15);
-                GsPersist_CompleteRequest(i, 0, 0, &buf, 0);
+                sGsPersistXorKey = enc3;
+                xcode_buf((char *)&buf, 15);
+                CallReqCallback(i, 0, 0, &buf, 0);
                 i--;
             } while (i >= 0);
         }
-        ArrayFree(sGsPersistRequests);
-        sGsPersistRequests = NULL;
+        ArrayFree(serverreqs);
+        serverreqs = NULL;
     }
 }
 } }
 
 namespace N02282f90 { extern "C" {
-void GsUtil_StrCopyN(char *dst, const char *src, s32 n) {
+void strzcpy(char *dst, const char *src, s32 n) {
     strncpy(dst, src, n);
     *(dst + n - 1) = 0;
 }
 } }
 
 namespace N02282f90 { extern "C" {
-void GsGp_DebugLog(void *h, const char *fmt, ...) {
+void gpiDebug(void *h, const char *fmt, ...) {
 }
 } }
 
 extern "C" { u8 data_ov065_02291204[0x100]; } //@
 
-extern "C" { void *sGsPersistRequests; } //@
+extern "C" { void *serverreqs; } //@

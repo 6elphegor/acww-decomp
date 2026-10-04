@@ -1,14 +1,14 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
-#include "net/GsGpInfoCache.h"
+#include "net/gpiInfo.h"
 #include "net/Unk_ov065_02280854_Ctx.h"
-#include "net/GsGpSearch.h"
+#include "net/gpiSearch.h"
 #include "net/Unk_ov065_0227c538_Node.h"
 #include "net/Unk_ov065_0227d8e0_Ctx.h"
-#include "net/GsGpContext.h"
-#include "net/GsGpCallbackArgs.h"
-#include "net/GsGpPeer.h"
-#include "net/GsGpTransferId.h"
+#include "net/gpi.h"
+#include "net/gp.h"
+#include "net/gpiPeer.h"
+#include "net/gpiTransfer.h"
 #include "net/Unk_ov065_02280d70_P1.h"
 
 // ov065 TU46: GP gpiOperation.c (0x02280740..0x02280c08)
@@ -28,38 +28,38 @@ namespace Na {
 
 
 extern "C" {
-void GsUtil_StrCopyN(void *, const void *, s32);
-void GsGp_SetErrorString(void *, const char *);
-void GsGp_SetError(void *, s32, const char *);
-void GsGp_DebugLog(void *, const char *, ...);
-s32 GsGp_ProcessConnectReply(void *, void *, char *);
-s32 GsGp_ProcessNewProfileReply(void *, void *, char *);
-s32 GsGp_ProcessProfileReply(void *, void *, char *);
-s32 GsGp_ProcessRnReply(void *, void *, char *);
+void strzcpy(void *, const void *, s32);
+void gpiSetErrorString(void *, const char *);
+void gpiSetError(void *, s32, const char *);
+void gpiDebug(void *, const char *, ...);
+s32 gpiProcessConnect(void *, void *, char *);
+s32 gpiProcessNewProfile(void *, void *, char *);
+s32 gpiProcessGetInfo(void *, void *, char *);
+s32 gpiProcessRegisterUniqueNick(void *, void *, char *);
 s32 shutdown(s32, s32);
 s32 closesocket(s32);
 void GsUtil_Free(void *);
 void *GsUtil_Alloc(u32);
-s32 GsGp_QueueCallback(void *, GsGpCallbackPair, void *, void *, s32);
+s32 gpiAddCallback(void *, GPICallback, void *, void *, s32);
 s32 memset(void *, s32, u32);
 s32 STD_GetStringLength(const char *);
 s32 OS_SPrintf(char *, const char *, ...);
-s32 GsGpPeer_SendString(void *, void *, const char *);
-s32 GsGpPeer_Send(void *, void *, const char *, s32);
-s32 GsGpPeer_SendChar(void *, void *, s32);
+s32 gpiSendOrBufferString(void *, void *, const char *);
+s32 gpiSendOrBufferStringLen(void *, void *, const char *, s32);
+s32 gpiSendOrBufferChar(void *, void *, s32);
 s32 time(s32);
-s32 GsGpBuf_AppendString(void *, void *, const char *);
-s32 GsGpBuf_AppendInt(void *, void *, s32);
-s32 GsGpBuf_Append(void *, void *, const char *, s32);
-s32 GsGpBuf_AppendChar(void *, void *, s32);
+s32 gpiAppendStringToBuffer(void *, void *, const char *);
+s32 gpiAppendIntToBuffer(void *, void *, s32);
+s32 gpiAppendStringToBufferLen(void *, void *, const char *, s32);
+s32 gpiAppendCharToBuffer(void *, void *, s32);
 void ArrayAppend(void *, void *);
-s32 GsGpProfile_Find(void *, s32, void *);
+s32 gpiGetProfile(void *, s32, void *);
 s32 socket(s32, s32, s32);
 s32 SetSockBlocking(s32, s32);
 void GsGpPeer_SetSocketBuffers(s32);
 s32 connect(s32, void *, s32);
 s32 GOAGetLastError(s32);
-void GsGp_CallErrorCallback(void *, s32, s32);
+void gpiCallErrorCallback(void *, s32, s32);
 
 extern char data_ov065_0228d884[];
 extern char data_ov065_0228d8ec[];
@@ -74,14 +74,14 @@ extern char data_ov065_0228d96c[];
 extern char data_ov065_0228d9a0[];
 
 
-s32 GsGp_IsValidDate(s32 day, s32 mon, s32 year);
+s32 gpiIsValidDate(s32 day, s32 mon, s32 year);
 
 
 
 
 
 
-void GsGp_FreeOperation(Unk_ov065_02280854_H *h, GsGpOperation *n);
+void gpiDestroyOperation(Unk_ov065_02280854_H *h, GPIOperation *n);
 
 
 
@@ -102,40 +102,40 @@ enum Unk_ov065_02280a2c_Z { Unk_ov065_02280a2c_Z_0 = 0, Unk_ov065_02280a2c_Z_FF 
 
 }
 extern "C" {
-s32 GsGp_IsValidDate(s32 day, s32 mon, s32 year);
-s32 gpiProcessOperation(void *h, GsGpOperation *n, char *x);
-s32 GsGp_HasBlockingOperation(Unk_ov065_02280854_H *h);
-s32 GsGp_FindOperation(Unk_ov065_02280854_H *h, GsGpOperation **out, s32 id);
-void GsGp_RemoveOperation(Unk_ov065_02280854_H *h, GsGpOperation *n);
-void GsGp_FreeOperation(Unk_ov065_02280854_H *h, GsGpOperation *n);
-s32 GsGp_AddOperation(Unk_ov065_02280854_H *h, s32 a, void *b, GsGpOperation **out, s32 e, s32 f, s32 g);
-s32 GsGp_CallFailedCallback(void *h, GsGpOperation *n);
+s32 gpiIsValidDate(s32 day, s32 mon, s32 year);
+s32 gpiProcessOperation(void *h, GPIOperation *n, char *x);
+s32 gpiOperationsAreBlocking(Unk_ov065_02280854_H *h);
+s32 gpiFindOperationByID(Unk_ov065_02280854_H *h, GPIOperation **out, s32 id);
+void gpiRemoveOperation(Unk_ov065_02280854_H *h, GPIOperation *n);
+void gpiDestroyOperation(Unk_ov065_02280854_H *h, GPIOperation *n);
+s32 gpiAddOperation(Unk_ov065_02280854_H *h, s32 a, void *b, GPIOperation **out, s32 e, s32 f, s32 g);
+s32 gpiFailedOpCallback(void *h, GPIOperation *n);
 }
 }
 
 namespace Na {
 extern "C" {
-s32 GsGp_CallFailedCallback(void *h, GsGpOperation *n) {
-    GsGpContext *c = *(GsGpContext **)h;
+s32 gpiFailedOpCallback(void *h, GPIOperation *n) {
+    GPIConnection *c = *(GPIConnection **)h;
     Unk_ov065_0227e0e8_Wrap w;
     s32 r;
     w = n->callback;
-    if (w.p.func != 0) {
+    if (w.p.callback != 0) {
         {
             switch (n->type) {
             case 0: {
-                GsGpConnectResponse *m = (GsGpConnectResponse *)GsUtil_Alloc(0x20);
+                GPConnectResponseArg *m = (GPConnectResponseArg *)GsUtil_Alloc(0x20);
                 if (m == 0) {
-                    GsGp_SetErrorString(h, "Out of memory.");
+                    gpiSetErrorString(h, "Out of memory.");
                     return 1;
                 }
                 memset(m, 0, 0x20);
                 m->result = n->result;
                 if (c->errorCode == 0x201) {
-                    m->profileId = c->profileId;
-                    c->profileId = 0;
+                    m->profile = c->profileid;
+                    c->profileid = 0;
                 }
-                r = GsGp_QueueCallback(h, w.p, m, n, 0);
+                r = gpiAddCallback(h, w.p, m, n, 0);
                 if (r == 0) {
                     break;
                 }
@@ -144,7 +144,7 @@ s32 GsGp_CallFailedCallback(void *h, GsGpOperation *n) {
             case 1: {
                 u8 *m = (u8 *)GsUtil_Alloc(8);
                 if (m == 0) {
-                    GsGp_SetErrorString(h, "Out of memory.");
+                    gpiSetErrorString(h, "Out of memory.");
                     return 1;
                 }
                 m[0] = 0;
@@ -156,7 +156,7 @@ s32 GsGp_CallFailedCallback(void *h, GsGpOperation *n) {
                 m[6] = 0;
                 m[7] = 0;
                 *(s32 *)m = n->result;
-                r = GsGp_QueueCallback(h, w.p, m, n, 0);
+                r = gpiAddCallback(h, w.p, m, n, 0);
                 if (r == 0) {
                     break;
                 }
@@ -165,12 +165,12 @@ s32 GsGp_CallFailedCallback(void *h, GsGpOperation *n) {
             case 2: {
                 void *m = GsUtil_Alloc(0x204);
                 if (m == 0) {
-                    GsGp_SetErrorString(h, "Out of memory.");
+                    gpiSetErrorString(h, "Out of memory.");
                     return 1;
                 }
                 memset(m, 0, 0x204);
                 *(s32 *)m = n->result;
-                r = GsGp_QueueCallback(h, w.p, m, n, 0);
+                r = gpiAddCallback(h, w.p, m, n, 0);
                 if (r == 0) {
                     break;
                 }
@@ -182,7 +182,7 @@ s32 GsGp_CallFailedCallback(void *h, GsGpOperation *n) {
                 u8 *k;
                 Unk_ov065_02280a2c_Z z;
                 if (m == 0) {
-                    GsGp_SetErrorString(h, "Out of memory.");
+                    gpiSetErrorString(h, "Out of memory.");
                     return 1;
                 }
                 q = m;
@@ -194,7 +194,7 @@ s32 GsGp_CallFailedCallback(void *h, GsGpOperation *n) {
                 } while (k != 0);
                 *(s32 *)m = n->result;
                 *(s32 *)(m + 0xc) = 0;
-                r = GsGp_QueueCallback(h, w.p, m, n, 0);
+                r = gpiAddCallback(h, w.p, m, n, 0);
                 if (r == 0) {
                     break;
                 }
@@ -203,7 +203,7 @@ s32 GsGp_CallFailedCallback(void *h, GsGpOperation *n) {
             case 4: {
                 u8 *m = (u8 *)GsUtil_Alloc(4);
                 if (m == 0) {
-                    GsGp_SetErrorString(h, "Out of memory.");
+                    gpiSetErrorString(h, "Out of memory.");
                     return 1;
                 }
                 m[0] = 0;
@@ -211,7 +211,7 @@ s32 GsGp_CallFailedCallback(void *h, GsGpOperation *n) {
                 m[2] = 0;
                 m[3] = 0;
                 *(s32 *)m = n->result;
-                r = GsGp_QueueCallback(h, w.p, m, n, 0);
+                r = gpiAddCallback(h, w.p, m, n, 0);
                 if (r == 0) {
                     break;
                 }
@@ -227,11 +227,11 @@ s32 GsGp_CallFailedCallback(void *h, GsGpOperation *n) {
 
 namespace Na {
 extern "C" {
-s32 GsGp_AddOperation(Unk_ov065_02280854_H *h, s32 a, void *b, GsGpOperation **out, s32 e, s32 f, s32 g) {
+s32 gpiAddOperation(Unk_ov065_02280854_H *h, s32 a, void *b, GPIOperation **out, s32 e, s32 f, s32 g) {
     Unk_ov065_02280854_Ctx *c = h->connection;
-    GsGpOperation *n = (GsGpOperation *)GsUtil_Alloc(0x24);
+    GPIOperation *n = (GPIOperation *)GsUtil_Alloc(0x24);
     if (n == 0) {
-        GsGp_SetErrorString(h, "Out of memory.");
+        gpiSetErrorString(h, "Out of memory.");
         return 1;
     }
     n->type = a;
@@ -248,9 +248,9 @@ s32 GsGp_AddOperation(Unk_ov065_02280854_H *h, s32 a, void *b, GsGpOperation **o
         }
     }
     n->result = 0;
-    n->callback.p.func = f;
+    n->callback.p.callback = f;
     n->callback.p.param = g;
-    n->next = c->operationList;
+    n->pnext = c->operationList;
     c->operationList = n;
     *out = n;
     return 0;
@@ -260,10 +260,10 @@ s32 GsGp_AddOperation(Unk_ov065_02280854_H *h, s32 a, void *b, GsGpOperation **o
 
 namespace Na {
 extern "C" {
-void GsGp_FreeOperation(Unk_ov065_02280854_H *h, GsGpOperation *n) {
+void gpiDestroyOperation(Unk_ov065_02280854_H *h, GPIOperation *n) {
     Unk_ov065_02280854_Ctx *c = h->connection;
     if (n->type == 3) {
-        GsGpSearch *s = (GsGpSearch *)n->data;
+        GPISearchData *s = (GPISearchData *)n->data;
         c->numSearches--;
         shutdown(s->sock, 2);
         closesocket(s->sock);
@@ -281,18 +281,18 @@ void GsGp_FreeOperation(Unk_ov065_02280854_H *h, GsGpOperation *n) {
 
 namespace Na {
 extern "C" {
-void GsGp_RemoveOperation(Unk_ov065_02280854_H *h, GsGpOperation *n) {
+void gpiRemoveOperation(Unk_ov065_02280854_H *h, GPIOperation *n) {
     Unk_ov065_02280854_Ctx *c = h->connection;
-    GsGpOperation *p = c->operationList;
-    GsGpOperation *prev = 0;
-    for (; p; prev = p, p = p->next) {
+    GPIOperation *p = c->operationList;
+    GPIOperation *prev = 0;
+    for (; p; prev = p, p = p->pnext) {
         if (p == n) {
             if (prev == 0) {
-                c->operationList = p->next;
+                c->operationList = p->pnext;
             } else {
-                prev->next = n->next;
+                prev->pnext = n->pnext;
             }
-            GsGp_FreeOperation(h, n);
+            gpiDestroyOperation(h, n);
             return;
         }
     }
@@ -302,9 +302,9 @@ void GsGp_RemoveOperation(Unk_ov065_02280854_H *h, GsGpOperation *n) {
 
 namespace Na {
 extern "C" {
-s32 GsGp_FindOperation(Unk_ov065_02280854_H *h, GsGpOperation **out, s32 id) {
-    GsGpOperation *n = h->connection->operationList;
-    for (; n; n = n->next) {
+s32 gpiFindOperationByID(Unk_ov065_02280854_H *h, GPIOperation **out, s32 id) {
+    GPIOperation *n = h->connection->operationList;
+    for (; n; n = n->pnext) {
         if (n->id == id) {
             if (out) {
                 *out = n;
@@ -322,9 +322,9 @@ s32 GsGp_FindOperation(Unk_ov065_02280854_H *h, GsGpOperation **out, s32 id) {
 
 namespace Na {
 extern "C" {
-s32 GsGp_HasBlockingOperation(Unk_ov065_02280854_H *h) {
-    GsGpOperation *n = h->connection->operationList;
-    for (; n; n = n->next) {
+s32 gpiOperationsAreBlocking(Unk_ov065_02280854_H *h) {
+    GPIOperation *n = h->connection->operationList;
+    for (; n; n = n->pnext) {
         if (n->blocking != 0 && n->type != 3) {
             return 1;
         }
@@ -336,24 +336,24 @@ s32 GsGp_HasBlockingOperation(Unk_ov065_02280854_H *h) {
 
 namespace Na {
 extern "C" {
-s32 gpiProcessOperation(void *h, GsGpOperation *n, char *x) {
+s32 gpiProcessOperation(void *h, GPIOperation *n, char *x) {
     s32 r = 0;
     s32 t = n->type;
     switch (t) {
     case 0:
-        r = GsGp_ProcessConnectReply(h, n, x);
+        r = gpiProcessConnect(h, n, x);
         break;
     case 1:
-        r = GsGp_ProcessNewProfileReply(h, n, x);
+        r = gpiProcessNewProfile(h, n, x);
         break;
     case 2:
-        r = GsGp_ProcessProfileReply(h, n, x);
+        r = gpiProcessGetInfo(h, n, x);
         break;
     case 4:
-        r = GsGp_ProcessRnReply(h, n, x);
+        r = gpiProcessRegisterUniqueNick(h, n, x);
         break;
     default:
-        GsGp_DebugLog(h, "gpiProcessOperation was passed an operation with an invalid type (%d)\n", t);
+        gpiDebug(h, "gpiProcessOperation was passed an operation with an invalid type (%d)\n", t);
         break;
     }
     if (r != 0) {
@@ -366,7 +366,7 @@ s32 gpiProcessOperation(void *h, GsGpOperation *n, char *x) {
 
 namespace Na {
 extern "C" {
-s32 GsGp_IsValidDate(s32 day, s32 mon, s32 year) {
+s32 gpiIsValidDate(s32 day, s32 mon, s32 year) {
     if (day == 0 && mon == 0 && year == 0) {
         return 1;
     }

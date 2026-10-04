@@ -1,11 +1,11 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
-#include "net/GsGpProfile.h"
-#include "net/GsGpOperation.h"
+#include "net/gpiProfile.h"
+#include "net/gpiOperation.h"
 #include "net/Unk_ov065_0227d8e0_Ctx.h"
-#include "net/GsGpContext.h"
-#include "net/GsGpPeer.h"
-#include "net/GsGpCallbackArgs.h"
+#include "net/gpi.h"
+#include "net/gpiPeer.h"
+#include "net/gp.h"
 
 namespace Nc {
 // ov065_048: DWC HTTP/session context (0x0227c538..0x0227ce30)
@@ -14,43 +14,43 @@ namespace Nc {
 
 
 
-typedef GsGpContext Ctx0227;
+typedef GPIConnection Ctx0227;
 extern "C" {
 extern s32 __GSIACResult;
 
 
 typedef s32 (*GsGpConnectCallback)(Ctx0227 **, void *, s32);
 
-void GsGp_CloseConnection(Ctx0227 **, s32);
-void GsGp_SetErrorString(Ctx0227 **, const char *);
-s32 GsGp_Connect(Ctx0227 **, const char *, const char *, const char *, const char *, const char *,
+void gpiDisconnect(Ctx0227 **, s32);
+void gpiSetErrorString(Ctx0227 **, const char *);
+s32 gpiConnect(Ctx0227 **, const char *, const char *, const char *, const char *, const char *,
                         const char *, s32, s32, s32, s32, GsGpConnectCallback, s32);
-s32 GsGp_CheckConnected(Ctx0227 **);
+s32 gpiCheckConnect(Ctx0227 **);
 void msleep(s32);
-s32 GsGp_FindOperation(Ctx0227 **, GsGpOperation **, s32);
-s32 GsGp_CallPendingCallbacks(Ctx0227 **, s32);
-s32 GsGpPeer_ProcessAll(Ctx0227 **);
-s32 GsGpSearch_ProcessAll(Ctx0227 **);
-void GsGp_CallFailedCallback(Ctx0227 **, GsGpOperation *);
-void GsGp_RemoveOperation(Ctx0227 **, GsGpOperation *);
-void GsGp_FlushInfoUpdates(Ctx0227 **, char **);
-s32 GsGp_SendBuffer(Ctx0227 **, s32, char **, s32 *, s32, const char *);
-s32 GsGp_RecvToBuffer(Ctx0227 **, s32, char **, s32 *, s32 *, const char *);
-void GsGp_SetError(Ctx0227 **, s32, const char *);
-void GsGp_CallErrorCallback(Ctx0227 **, s32, s32);
-void GsGp_DebugLog(Ctx0227 **, const char *, ...);
+s32 gpiFindOperationByID(Ctx0227 **, GPIOperation **, s32);
+s32 gpiProcessCallbacks(Ctx0227 **, s32);
+s32 gpiProcessPeers(Ctx0227 **);
+s32 gpiProcessSearches(Ctx0227 **);
+void gpiFailedOpCallback(Ctx0227 **, GPIOperation *);
+void gpiRemoveOperation(Ctx0227 **, GPIOperation *);
+void gpiAddLocalInfo(Ctx0227 **, char **);
+s32 gpiSendFromBuffer(Ctx0227 **, s32, char **, s32 *, s32, const char *);
+s32 gpiRecvToBuffer(Ctx0227 **, s32, char **, s32 *, s32 *, const char *);
+void gpiSetError(Ctx0227 **, s32, const char *);
+void gpiCallErrorCallback(Ctx0227 **, s32, s32);
+void gpiDebug(Ctx0227 **, const char *, ...);
 void *GsUtil_Realloc(void *, s32);
-s32 GsGp_CheckServerError(Ctx0227 **, char *, s32);
-s32 GsGp_ProcessBuddyMessage(Ctx0227 **, char *);
-s32 GsGp_HasBlockingOperation(Ctx0227 **);
-s32 gpiProcessOperation(Ctx0227 **, GsGpOperation *, char *);
-void GsGpProfile_FindIf(Ctx0227 **, s32 (*)(Ctx0227 **, GsGpProfile *, s32), s32);
-s32 GsGpProfile_Find(Ctx0227 **, s32, GsGpProfile **);
-void GsGpBuf_AppendString(Ctx0227 **, char **, const char *);
-void GsGpBuf_AppendInt(Ctx0227 **, char **, s32);
-s32 GsGpProfile_IsUnused(GsGpProfile *);
-void GsGpProfile_Remove(Ctx0227 **, GsGpProfile *);
-s32 GsGpProfile_InitTable(Ctx0227 **);
+s32 gpiCheckForError(Ctx0227 **, char *, s32);
+s32 gpiProcessRecvBuddyMessage(Ctx0227 **, char *);
+s32 gpiOperationsAreBlocking(Ctx0227 **);
+s32 gpiProcessOperation(Ctx0227 **, GPIOperation *, char *);
+void gpiProfileMap(Ctx0227 **, s32 (*)(Ctx0227 **, GPIProfile *, s32), s32);
+s32 gpiGetProfile(Ctx0227 **, s32, GPIProfile **);
+void gpiAppendStringToBuffer(Ctx0227 **, char **, const char *);
+void gpiAppendIntToBuffer(Ctx0227 **, char **, s32);
+s32 gpiCanFreeProfile(GPIProfile *);
+void gpiRemoveProfile(Ctx0227 **, GPIProfile *);
+s32 gpiInitProfiles(Ctx0227 **);
 void SocketStartUp();
 void current_time();
 void GsUtil_Free(void *);
@@ -65,13 +65,13 @@ s32 strncmp(const char *, const char *, u32);
 void memset(void *, s32, u32);
 void srand();
 
-s32 GsGp_ResetConnection(Ctx0227 **h);
-s32 GsGp_DestroyConnection(Ctx0227 **h);
+s32 gpiReset(Ctx0227 **h);
+s32 gpiDestroy(Ctx0227 **h);
 s32 gpiInitialize(Ctx0227 **h, s32 a, s32 b);
-s32 GsGp_ProcessConnection(Ctx0227 **h, s32 a);
-s32 GsGp_ProcessCmMessages(Ctx0227 **h);
-s32 GsGp_ClearProfileCb(Ctx0227 **h, GsGpProfile *n, s32 m);
-s32 GsGp_FixBuddyIndexCb(Ctx0227 **h, GsGpProfile *n, s32 m);
+s32 gpiProcess(Ctx0227 **h, s32 a);
+s32 gpiProcessConnectionManager(Ctx0227 **h);
+s32 gpiResetProfile(Ctx0227 **h, GPIProfile *n, s32 m);
+s32 gpiFixBuddyIndices(Ctx0227 **h, GPIProfile *n, s32 m);
 }
 }
 
@@ -82,38 +82,38 @@ namespace Nd {
 
 
 
-typedef GsGpContext Ctx0227;
+typedef GPIConnection Ctx0227;
 extern "C" {
-s32 GsGpProfile_Find(Ctx0227 **, s32, GsGpProfile **);
-void GsGp_SetErrorString(Ctx0227 **, const char *);
-s32 GsGp_SendAuthAdd(Ctx0227 **, GsGpProfile *);
+s32 gpiGetProfile(Ctx0227 **, s32, GPIProfile **);
+void gpiSetErrorString(Ctx0227 **, const char *);
+s32 gpiSendAuthBuddyRequest(Ctx0227 **, GPIProfile *);
 void GsUtil_Free(void *);
-s32 GsGpProfile_IsUnused(GsGpProfile *);
-void GsGpProfile_Remove(Ctx0227 **, GsGpProfile *);
-s32 GsGpPeer_FindConnected(Ctx0227 **);
-s32 GsGpPeer_New(Ctx0227 **, s32, s32);
-s32 GsGpPeer_RequestSignature(Ctx0227 **, s32);
-s32 GsGpPeer_Connect(Ctx0227 **, s32);
-s32 GsGpPeer_QueueMessage(Ctx0227 **, s32, s32, s32);
-void GsUtil_StrCopyN(char *, const char *, s32);
-void GsGpBuf_AppendString(Ctx0227 **, char **, const char *);
-void GsGpBuf_AppendInt(Ctx0227 **, char **, s32);
-s32 GsGp_GetValue(const char *, const char *, char *, s32);
-void GsGp_SetError(Ctx0227 **, s32, const char *);
-void GsGp_CallErrorCallback(Ctx0227 **, s32, s32);
+s32 gpiCanFreeProfile(GPIProfile *);
+void gpiRemoveProfile(Ctx0227 **, GPIProfile *);
+s32 gpiGetPeerByProfile(Ctx0227 **);
+s32 gpiAddPeer(Ctx0227 **, s32, s32);
+s32 gpiPeerGetSig(Ctx0227 **, s32);
+s32 gpiPeerStartConnect(Ctx0227 **, s32);
+s32 gpiPeerAddMessage(Ctx0227 **, s32, s32, s32);
+void strzcpy(char *, const char *, s32);
+void gpiAppendStringToBuffer(Ctx0227 **, char **, const char *);
+void gpiAppendIntToBuffer(Ctx0227 **, char **, s32);
+s32 gpiValueForKey(const char *, const char *, char *, s32);
+void gpiSetError(Ctx0227 **, s32, const char *);
+void gpiCallErrorCallback(Ctx0227 **, s32, s32);
 s32 time(s32);
 void *GsUtil_Alloc(s32);
 char *goastrdup(const char *);
-s32 GsGp_QueueCallback(Ctx0227 **, GsGpCallbackPair, void *, s32, s32);
-GsGpProfile *GsGpProfile_Add(Ctx0227 **, s32);
+s32 gpiAddCallback(Ctx0227 **, GPICallback, void *, s32, s32);
+GPIProfile *gpiProfileListAdd(Ctx0227 **, s32);
 
 s32 atol(const char *);
 s32 STD_GetStringLength(const char *);
 char *STD_CopyString(char *, const char *);
 char *strstr(const char *, const char *);
 
-s32 GsGp_SendServerBuddyMessage(Ctx0227 **h, s32 a, s32 b, const char *s);
-s32 GsGp_SendBuddyMessageEx(Ctx0227 **h, s32 id, s32 b, s32 t);
+s32 gpiSendServerBuddyMessage(Ctx0227 **h, s32 a, s32 b, const char *s);
+s32 gpiSendBuddyMessage(Ctx0227 **h, s32 id, s32 b, s32 t);
 }
 }
 
@@ -141,10 +141,10 @@ u32 STD_GetStringLength(const char *);
 void memmove(void *, void *, s32);
 void memcpy(void *, const void *, s32);
 s32 OS_SPrintf(char *, const char *, ...);
-s32 GsGp_GetValue(const char *, const char *, char *, s32);
-void GsGp_SetErrorString(void *, const char *);
-void GsGp_SetError(void *, s32, const char *);
-void GsGp_DebugLog(void *, const char *, ...);
+s32 gpiValueForKey(const char *, const char *, char *, s32);
+void gpiSetErrorString(void *, const char *);
+void gpiSetError(void *, s32, const char *);
+void gpiDebug(void *, const char *, ...);
 void *GsUtil_Realloc(void *, s32);
 void *GsUtil_Alloc(s32);
 s32 GsUtil_Free(void *);
@@ -154,36 +154,36 @@ s32 GOAGetLastError(s32);
 s32 ArrayLength(s32);
 s32 shutdown(s32, s32);
 s32 closesocket(s32);
-s32 GsGp_RemoveOperation(void *, void *);
-s32 GsGpPeer_Free(void *, void *);
-s32 GsGpProfile_FindIf(void *, s32, s32);
-s32 GsGp_FreeBuddyDataCb(void);
+s32 gpiRemoveOperation(void *, void *);
+s32 gpiDestroyPeer(void *, void *);
+s32 gpiProfileMap(void *, s32, s32);
+s32 gpiDisconnectCleanupProfile(void);
 
-s32 GsGp_SocketSend(void *, s32, char *, s32, s32 *, s32 *, const char *);
-s32 GsGpBuf_AppendInt(Unk_ov065_0227d8e0_Handle *, GsGpBuffer *, s32);
-s32 GsGpBuf_AppendString(Unk_ov065_0227d8e0_Handle *, GsGpBuffer *, const char *);
-s32 GsGpBuf_Append(Unk_ov065_0227d8e0_Handle *, GsGpBuffer *, const char *, s32);
-s32 GsGpBuf_AppendChar(Unk_ov065_0227d8e0_Handle *, GsGpBuffer *, char);
-s32 GsGpPeer_Send(Unk_ov065_0227d8e0_Handle *, GsGpPeer *, const char *, s32);
-s32 GsGp_SendBuffer(Unk_ov065_0227d8e0_Handle *, s32, GsGpBuffer *, s32 *, s32, const char *);
-s32 GsGp_CallCallback(Unk_ov065_0227d8e0_Handle *, GsGpQueuedCallback *);
-s32 GsGp_QueueCallback(Unk_ov065_0227d8e0_Handle *, Unk_ov065_0227e0e8_Wrap, GsGpQueuedCallback *, GsGpOperation *, s32);
-void GsGp_CallErrorCallback(Unk_ov065_0227d8e0_Handle *, s32, s32);
+s32 gpiSendData(void *, s32, char *, s32, s32 *, s32 *, const char *);
+s32 gpiAppendIntToBuffer(Unk_ov065_0227d8e0_Handle *, GPIBuffer *, s32);
+s32 gpiAppendStringToBuffer(Unk_ov065_0227d8e0_Handle *, GPIBuffer *, const char *);
+s32 gpiAppendStringToBufferLen(Unk_ov065_0227d8e0_Handle *, GPIBuffer *, const char *, s32);
+s32 gpiAppendCharToBuffer(Unk_ov065_0227d8e0_Handle *, GPIBuffer *, char);
+s32 gpiSendOrBufferStringLen(Unk_ov065_0227d8e0_Handle *, GPIPeer *, const char *, s32);
+s32 gpiSendFromBuffer(Unk_ov065_0227d8e0_Handle *, s32, GPIBuffer *, s32 *, s32, const char *);
+s32 gpiCallCallback(Unk_ov065_0227d8e0_Handle *, GPICallbackData *);
+s32 gpiAddCallback(Unk_ov065_0227d8e0_Handle *, Unk_ov065_0227e0e8_Wrap, GPICallbackData *, GPIOperation *, s32);
+void gpiCallErrorCallback(Unk_ov065_0227d8e0_Handle *, s32, s32);
 }
 }
 
 namespace Nf {
 extern "C" {
-s32 GsGp_SendAuthAdd(Unk_ov065_0227d8e0_Handle *h, GsGpProfile *a) {
+s32 gpiSendAuthBuddyRequest(Unk_ov065_0227d8e0_Handle *h, GPIProfile *a) {
     Unk_ov065_0227d8e0_Ctx *c = h->connection;
-    GsGpBuf_AppendString(h, &c->outputBuffer, "\\authadd\\");
-    GsGpBuf_AppendString(h, &c->outputBuffer, "\\sesskey\\");
-    GsGpBuf_AppendInt(h, &c->outputBuffer, c->sessKey);
-    GsGpBuf_AppendString(h, &c->outputBuffer, "\\fromprofileid\\");
-    GsGpBuf_AppendInt(h, &c->outputBuffer, *(s32 *)a);
-    GsGpBuf_AppendString(h, &c->outputBuffer, "\\sig\\");
-    GsGpBuf_AppendString(h, &c->outputBuffer, a->authSig);
-    GsGpBuf_AppendString(h, &c->outputBuffer, "\\final\\");
+    gpiAppendStringToBuffer(h, &c->outputBuffer, "\\authadd\\");
+    gpiAppendStringToBuffer(h, &c->outputBuffer, "\\sesskey\\");
+    gpiAppendIntToBuffer(h, &c->outputBuffer, c->sessKey);
+    gpiAppendStringToBuffer(h, &c->outputBuffer, "\\fromprofileid\\");
+    gpiAppendIntToBuffer(h, &c->outputBuffer, *(s32 *)a);
+    gpiAppendStringToBuffer(h, &c->outputBuffer, "\\sig\\");
+    gpiAppendStringToBuffer(h, &c->outputBuffer, a->authSig);
+    gpiAppendStringToBuffer(h, &c->outputBuffer, "\\final\\");
     return 0;
 }
 }
@@ -199,18 +199,18 @@ static inline u16 Swap16(u16 x) {
 
 #define ERR3() \
     do { \
-        GsGp_SetError(h, 1, "Unexpected data was received from the server."); \
-        GsGp_CallErrorCallback(h, 3, 1); \
+        gpiSetError(h, 1, "Unexpected data was received from the server."); \
+        gpiCallErrorCallback(h, 3, 1); \
         return 3; \
     } while (0)
 
 #define ERR1() \
     do { \
-        GsGp_SetErrorString(h, "Out of memory."); \
+        gpiSetErrorString(h, "Out of memory."); \
         return 1; \
     } while (0)
 extern "C" {
-s32 GsGp_ProcessBuddyMessage(Ctx0227 **h, const char *s) {
+s32 gpiProcessRecvBuddyMessage(Ctx0227 **h, const char *s) {
     Ctx0227 *c = *h;
     s32 code;
     s32 v;
@@ -223,31 +223,31 @@ s32 GsGp_ProcessBuddyMessage(Ctx0227 **h, const char *s) {
     char buf[0x1000];
     char buf3[0x100];
 
-    if (GsGp_GetValue(s, "\\bm\\", buf, 0x1000) == 0) {
+    if (gpiValueForKey(s, "\\bm\\", buf, 0x1000) == 0) {
         ERR3();
     }
     code = atol(buf);
-    if (GsGp_GetValue(s, "\\f\\", buf, 0x1000) == 0) {
+    if (gpiValueForKey(s, "\\f\\", buf, 0x1000) == 0) {
         ERR3();
     }
     v = atol(buf);
-    if (GsGp_GetValue(s, "\\date\\", buf, 0x1000) != 0) {
+    if (gpiValueForKey(s, "\\date\\", buf, 0x1000) != 0) {
         w = atol(buf);
     } else {
         w = time(0);
     }
     switch (code) {
     case 1: {
-        GsGpBuddyMessage *r5;
+        GPRecvBuddyMessageArg *r5;
         p = *(Unk_ov065_0227e0e8_Wrap *)&c->callbacks[3];
-        if (p.p.func == 0) {
+        if (p.p.callback == 0) {
             break;
         }
-        r5 = (GsGpBuddyMessage *)GsUtil_Alloc(0xc);
+        r5 = (GPRecvBuddyMessageArg *)GsUtil_Alloc(0xc);
         if (r5 == NULL) {
             ERR1();
         }
-        if (GsGp_GetValue(s, "\\msg\\", buf, 0x1000) == 0) {
+        if (gpiValueForKey(s, "\\msg\\", buf, 0x1000) == 0) {
             ERR3();
         }
         r5->message = (char *)GsUtil_Alloc(STD_GetStringLength(buf) + 1);
@@ -255,10 +255,10 @@ s32 GsGp_ProcessBuddyMessage(Ctx0227 **h, const char *s) {
             ERR1();
         }
         STD_CopyString(r5->message, buf);
-        r5->profileId = v;
+        r5->profile = v;
         r5->date = w;
         {
-            s32 r = GsGp_QueueCallback(h, p.p, r5, 0, 2);
+            s32 r = gpiAddCallback(h, p.p, r5, 0, 2);
             if (r != 0) {
                 return r;
             }
@@ -266,13 +266,13 @@ s32 GsGp_ProcessBuddyMessage(Ctx0227 **h, const char *s) {
         break;
     }
     case 2: {
-        GsGpProfile *n;
+        GPIProfile *n;
         char *t;
-        n = GsGpProfile_Add(h, v);
+        n = gpiProfileListAdd(h, v);
         if (n == NULL) {
             ERR1();
         }
-        if (GsGp_GetValue(s, "\\msg\\", buf, 0x1000) == 0) {
+        if (gpiValueForKey(s, "\\msg\\", buf, 0x1000) == 0) {
             ERR3();
         }
         t = strstr(buf, "|signed|");
@@ -288,19 +288,19 @@ s32 GsGp_ProcessBuddyMessage(Ctx0227 **h, const char *s) {
         n->authSig = goastrdup(t + 8);
         n->requestCount = n->requestCount + 1;
         p2 = *(Unk_ov065_0227e0e8_Wrap *)&c->callbacks[1];
-        if (p2.p.func == 0) {
+        if (p2.p.callback == 0) {
             break;
         }
         {
-            GsGpBuddyRequest *r5 = (GsGpBuddyRequest *)GsUtil_Alloc(0x40c);
+            GPRecvBuddyRequestArg *r5 = (GPRecvBuddyRequestArg *)GsUtil_Alloc(0x40c);
             if (r5 == NULL) {
                 ERR1();
             }
-            GsUtil_StrCopyN(r5->reason, buf, 0x401);
-            r5->profileId = v;
+            strzcpy(r5->reason, buf, 0x401);
+            r5->profile = v;
             r5->date = w;
             {
-                s32 r = GsGp_QueueCallback(h, p2.p, r5, 0, 6);
+                s32 r = gpiAddCallback(h, p2.p, r5, 0, 6);
                 if (r != 0) {
                     return r;
                 }
@@ -309,16 +309,16 @@ s32 GsGp_ProcessBuddyMessage(Ctx0227 **h, const char *s) {
         break;
     }
     case 100: {
-        GsGpProfile *n;
-        GsGpBuddyStatusInfo *r5;
-        n = GsGpProfile_Add(h, v);
+        GPIProfile *n;
+        GPIBuddyStatus *r5;
+        n = gpiProfileListAdd(h, v);
         if (n == NULL) {
             ERR1();
         }
         if (n->buddyStatus == NULL) {
             u8 *q;
             u8 *k;
-            n->buddyStatus = (GsGpBuddyStatusInfo *)GsUtil_Alloc(0x18);
+            n->buddyStatus = (GPIBuddyStatus *)GsUtil_Alloc(0x18);
             if (n->buddyStatus == NULL) {
                 ERR1();
             }
@@ -336,16 +336,16 @@ s32 GsGp_ProcessBuddyMessage(Ctx0227 **h, const char *s) {
             }
         }
         r5 = n->buddyStatus;
-        if (GsGp_GetValue(s, "\\msg\\", buf, 0x1000) == 0) {
+        if (gpiValueForKey(s, "\\msg\\", buf, 0x1000) == 0) {
             ERR3();
         }
-        if (GsGp_GetValue(buf, "|s|", tmp, 0x10) == 0) {
+        if (gpiValueForKey(buf, "|s|", tmp, 0x10) == 0) {
             ERR3();
         }
         r5->status = atol(tmp);
         GsUtil_Free(r5->statusString);
         r5->statusString = NULL;
-        if (GsGp_GetValue(buf, "|ss|", buf3, 0x100) == 0) {
+        if (gpiValueForKey(buf, "|ss|", buf3, 0x100) == 0) {
             buf3[0] = 0;
         }
         r5->statusString = goastrdup(buf3);
@@ -354,37 +354,37 @@ s32 GsGp_ProcessBuddyMessage(Ctx0227 **h, const char *s) {
         }
         GsUtil_Free(r5->locationString);
         r5->locationString = NULL;
-        if (GsGp_GetValue(buf, "|ls|", buf3, 0x100) == 0) {
+        if (gpiValueForKey(buf, "|ls|", buf3, 0x100) == 0) {
             buf3[0] = 0;
         }
         r5->locationString = goastrdup(buf3);
         if (r5->locationString == NULL) {
             ERR1();
         }
-        if (GsGp_GetValue(buf, "|ip|", tmp, 0x10) == 0) {
+        if (gpiValueForKey(buf, "|ip|", tmp, 0x10) == 0) {
             r5->ip = 0;
         } else {
             r5->ip = SWAP32((u32)atol(tmp));
         }
-        if (GsGp_GetValue(buf, "|p|", tmp, 0x10) == 0) {
+        if (gpiValueForKey(buf, "|p|", tmp, 0x10) == 0) {
             r5->port = 0;
         } else {
             r5->port = Swap16(atol(tmp));
         }
         p3 = *(Unk_ov065_0227e0e8_Wrap *)&c->callbacks[2];
-        if (p3.p.func == 0) {
+        if (p3.p.callback == 0) {
             break;
         }
         {
-            GsGpBuddyStatusChange *m = (GsGpBuddyStatusChange *)GsUtil_Alloc(0xc);
+            GPRecvBuddyStatusArg *m = (GPRecvBuddyStatusArg *)GsUtil_Alloc(0xc);
             if (m == NULL) {
                 ERR1();
             }
-            m->profileId = v;
+            m->profile = v;
             m->index = r5->buddyIndex;
             m->date = w;
             {
-                s32 r = GsGp_QueueCallback(h, p3.p, m, 0, 5);
+                s32 r = gpiAddCallback(h, p3.p, m, 0, 5);
                 if (r != 0) {
                     return r;
                 }
@@ -396,8 +396,8 @@ s32 GsGp_ProcessBuddyMessage(Ctx0227 **h, const char *s) {
         char *t;
         char *t2;
         s32 q;
-        GsGpGameInvite *r5;
-        if (GsGp_GetValue(s, "\\msg\\", buf, 0x1000) == 0) {
+        GPRecvGameInviteArg *r5;
+        if (gpiValueForKey(s, "\\msg\\", buf, 0x1000) == 0) {
             ERR3();
         }
         t = strstr(buf, "|p|");
@@ -410,23 +410,23 @@ s32 GsGp_ProcessBuddyMessage(Ctx0227 **h, const char *s) {
         q = atol(t + 3);
         t2 = strstr(buf, "|l|");
         if (t2 != NULL) {
-            GsUtil_StrCopyN(buf3, t2 + 3, 0x100);
+            strzcpy(buf3, t2 + 3, 0x100);
         } else {
             buf3[0] = 0;
         }
         p4 = *(Unk_ov065_0227e0e8_Wrap *)&c->callbacks[4];
-        if (p4.p.func == 0) {
+        if (p4.p.callback == 0) {
             break;
         }
-        r5 = (GsGpGameInvite *)GsUtil_Alloc(0x108);
+        r5 = (GPRecvGameInviteArg *)GsUtil_Alloc(0x108);
         if (r5 == NULL) {
             ERR1();
         }
-        r5->profileId = v;
-        r5->productId = q;
+        r5->profile = v;
+        r5->productID = q;
         STD_CopyString(r5->location, buf3);
         {
-            s32 r = GsGp_QueueCallback(h, p4.p, r5, 0, 0);
+            s32 r = gpiAddCallback(h, p4.p, r5, 0, 0);
             if (r != 0) {
                 return r;
             }
@@ -434,10 +434,10 @@ s32 GsGp_ProcessBuddyMessage(Ctx0227 **h, const char *s) {
         break;
     }
     case 102:
-        if (GsGp_GetValue(s, "\\msg\\", buf, 0x1000) == 0) {
+        if (gpiValueForKey(s, "\\msg\\", buf, 0x1000) == 0) {
             ERR3();
         }
-        GsGp_SendBuddyMessageEx(h, v, 0x67, (s32)"1");
+        gpiSendBuddyMessage(h, v, 0x67, (s32)"1");
         break;
     }
     return 0;
@@ -447,19 +447,19 @@ s32 GsGp_ProcessBuddyMessage(Ctx0227 **h, const char *s) {
 
 namespace Nd {
 extern "C" {
-s32 GsGp_SendServerBuddyMessage(Ctx0227 **h, s32 a, s32 b, const char *s) {
+s32 gpiSendServerBuddyMessage(Ctx0227 **h, s32 a, s32 b, const char *s) {
     Ctx0227 *c = *h;
     char buf[0xdad];
-    GsUtil_StrCopyN(buf, s, 0xdad);
-    GsGpBuf_AppendString(h, &c->outputBuffer, "\\bm\\");
-    GsGpBuf_AppendInt(h, &c->outputBuffer, b);
-    GsGpBuf_AppendString(h, &c->outputBuffer, "\\sesskey\\");
-    GsGpBuf_AppendInt(h, &c->outputBuffer, c->sessKey);
-    GsGpBuf_AppendString(h, &c->outputBuffer, "\\t\\");
-    GsGpBuf_AppendInt(h, &c->outputBuffer, a);
-    GsGpBuf_AppendString(h, &c->outputBuffer, "\\msg\\");
-    GsGpBuf_AppendString(h, &c->outputBuffer, buf);
-    GsGpBuf_AppendString(h, &c->outputBuffer, "\\final\\");
+    strzcpy(buf, s, 0xdad);
+    gpiAppendStringToBuffer(h, &c->outputBuffer, "\\bm\\");
+    gpiAppendIntToBuffer(h, &c->outputBuffer, b);
+    gpiAppendStringToBuffer(h, &c->outputBuffer, "\\sesskey\\");
+    gpiAppendIntToBuffer(h, &c->outputBuffer, c->sessKey);
+    gpiAppendStringToBuffer(h, &c->outputBuffer, "\\t\\");
+    gpiAppendIntToBuffer(h, &c->outputBuffer, a);
+    gpiAppendStringToBuffer(h, &c->outputBuffer, "\\msg\\");
+    gpiAppendStringToBuffer(h, &c->outputBuffer, buf);
+    gpiAppendStringToBuffer(h, &c->outputBuffer, "\\final\\");
     return 0;
 }
 }
@@ -467,32 +467,32 @@ s32 GsGp_SendServerBuddyMessage(Ctx0227 **h, s32 a, s32 b, const char *s) {
 
 namespace Nd {
 extern "C" {
-s32 GsGp_SendBuddyMessageEx(Ctx0227 **h, s32 id, s32 b, s32 t) {
-    GsGpProfile *n;
+s32 gpiSendBuddyMessage(Ctx0227 **h, s32 id, s32 b, s32 t) {
+    GPIProfile *n;
     s32 r6;
-    r6 = GsGpPeer_FindConnected(h);
+    r6 = gpiGetPeerByProfile(h);
     if (r6 == 0) {
-        if (!(GsGpProfile_Find(h, id, &n) != 0 && n->buddyStatus != NULL && n->buddyStatus->port != 0)) {
-            return GsGp_SendServerBuddyMessage(h, id, b, (const char *)t);
+        if (!(gpiGetProfile(h, id, &n) != 0 && n->buddyStatus != NULL && n->buddyStatus->port != 0)) {
+            return gpiSendServerBuddyMessage(h, id, b, (const char *)t);
         }
-        r6 = GsGpPeer_New(h, id, 1);
+        r6 = gpiAddPeer(h, id, 1);
         if (r6 == 0) {
             return 1;
         }
         if (n->peerSig == 0) {
-            s32 q = GsGpPeer_RequestSignature(h, r6);
+            s32 q = gpiPeerGetSig(h, r6);
             if (q != 0) {
                 return q;
             }
         } else {
-            s32 q = GsGpPeer_Connect(h, r6);
+            s32 q = gpiPeerStartConnect(h, r6);
             if (q != 0) {
                 return q;
             }
         }
     }
     {
-        s32 r = GsGpPeer_QueueMessage(h, r6, b, t);
+        s32 r = gpiPeerAddMessage(h, r6, b, t);
         if (r != 0) {
             return r;
         }
@@ -504,19 +504,19 @@ s32 GsGp_SendBuddyMessageEx(Ctx0227 **h, s32 id, s32 b, s32 t) {
 
 namespace Nd {
 extern "C" {
-s32 GsGp_AuthorizeBuddy(Ctx0227 **h, s32 id) {
+s32 gpiAuthBuddyRequest(Ctx0227 **h, s32 id) {
     Ctx0227 *c = *h;
-    GsGpProfile *n;
+    GPIProfile *n;
     s32 r;
-    if (GsGpProfile_Find(h, id, &n) == 0) {
-        GsGp_SetErrorString(h, "Invalid profile.");
+    if (gpiGetProfile(h, id, &n) == 0) {
+        gpiSetErrorString(h, "Invalid profile.");
         return 2;
     }
     if (n->authSig == 0) {
-        GsGp_SetErrorString(h, "Invalid profile.");
+        gpiSetErrorString(h, "Invalid profile.");
         return 2;
     }
-    r = GsGp_SendAuthAdd(h, n);
+    r = gpiSendAuthBuddyRequest(h, n);
     if (r != 0) {
         return r;
     }
@@ -525,8 +525,8 @@ s32 GsGp_AuthorizeBuddy(Ctx0227 **h, s32 id) {
         if (n->requestCount <= 0) {
             GsUtil_Free(n->authSig);
             n->authSig = 0;
-            if (GsGpProfile_IsUnused(n) != 0) {
-                GsGpProfile_Remove(h, n);
+            if (gpiCanFreeProfile(n) != 0) {
+                gpiRemoveProfile(h, n);
             }
         }
     }
@@ -537,8 +537,8 @@ s32 GsGp_AuthorizeBuddy(Ctx0227 **h, s32 id) {
 
 namespace Nc {
 extern "C" {
-s32 GsGp_FixBuddyIndexCb(Ctx0227 **h, GsGpProfile *n, s32 m) {
-    GsGpBuddyStatusInfo *s = n->buddyStatus;
+s32 gpiFixBuddyIndices(Ctx0227 **h, GPIProfile *n, s32 m) {
+    GPIBuddyStatus *s = n->buddyStatus;
     if (s != NULL) {
         if (s->buddyIndex > m) {
             s->buddyIndex = s->buddyIndex - 1;
@@ -551,19 +551,19 @@ s32 GsGp_FixBuddyIndexCb(Ctx0227 **h, GsGpProfile *n, s32 m) {
 
 namespace Nc {
 extern "C" {
-s32 GsGp_SendDeleteBuddy(Ctx0227 **h, s32 x) {
+s32 gpiDeleteBuddy(Ctx0227 **h, s32 x) {
     Ctx0227 *c = *h;
-    GsGpProfile *n;
-    if (GsGpProfile_Find(h, x, &n) == 0) {
-        GsGp_SetErrorString(h, "Invalid profile.");
+    GPIProfile *n;
+    if (gpiGetProfile(h, x, &n) == 0) {
+        gpiSetErrorString(h, "Invalid profile.");
         return 2;
     }
-    GsGpBuf_AppendString(h, &c->outputBuffer, "\\delbuddy\\");
-    GsGpBuf_AppendString(h, &c->outputBuffer, "\\sesskey\\");
-    GsGpBuf_AppendInt(h, &c->outputBuffer, c->sessKey);
-    GsGpBuf_AppendString(h, &c->outputBuffer, "\\delprofileid\\");
-    GsGpBuf_AppendInt(h, &c->outputBuffer, n->profileId);
-    GsGpBuf_AppendString(h, &c->outputBuffer, "\\final\\");
+    gpiAppendStringToBuffer(h, &c->outputBuffer, "\\delbuddy\\");
+    gpiAppendStringToBuffer(h, &c->outputBuffer, "\\sesskey\\");
+    gpiAppendIntToBuffer(h, &c->outputBuffer, c->sessKey);
+    gpiAppendStringToBuffer(h, &c->outputBuffer, "\\delprofileid\\");
+    gpiAppendIntToBuffer(h, &c->outputBuffer, n->profileId);
+    gpiAppendStringToBuffer(h, &c->outputBuffer, "\\final\\");
     if (n->buddyStatus != NULL) {
         s32 r6 = n->buddyStatus->buddyIndex;
         GsUtil_Free(n->buddyStatus->statusString);
@@ -572,11 +572,11 @@ s32 GsGp_SendDeleteBuddy(Ctx0227 **h, s32 x) {
         n->buddyStatus->locationString = 0;
         GsUtil_Free(n->buddyStatus);
         n->buddyStatus = 0;
-        if (GsGpProfile_IsUnused(n) != 0) {
-            GsGpProfile_Remove(h, n);
+        if (gpiCanFreeProfile(n) != 0) {
+            gpiRemoveProfile(h, n);
         }
         c->numBuddies = c->numBuddies - 1;
-        GsGpProfile_FindIf(h, GsGp_FixBuddyIndexCb, r6);
+        gpiProfileMap(h, gpiFixBuddyIndices, r6);
     }
     return 0;
 }

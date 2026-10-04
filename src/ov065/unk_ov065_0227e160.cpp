@@ -1,14 +1,13 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
-#include "net/GsGpProfile.h"
-#include "net/GsGpCallbackPair.h"
-#include "net/GsGpOperation.h"
+#include "net/gpiProfile.h"
+#include "net/gpiCallback.h"
+#include "net/gpiOperation.h"
 #include "net/Unk_ov065_0227d8e0_Ctx.h"
-#include "net/GsGpConnectData.h"
 #include "net/Unk_ov065_0227f00c_Host.h"
 #include "net/Unk_ov065_0227f324_Rec.h"
-#include "net/GsGpContext.h"
-#include "net/GsGpPeer.h"
+#include "net/gpi.h"
+#include "net/gpiPeer.h"
 
 // ov065 TU44: GP gpiConnect.c (0x0227e160..0x0227f2a4)
 
@@ -59,10 +58,10 @@ u32 STD_GetStringLength(const char *);
 void memmove(void *, void *, s32);
 void memcpy(void *, const void *, s32);
 s32 OS_SPrintf(char *, const char *, ...);
-s32 GsGp_GetValue(const char *, const char *, char *, s32);
-void GsGp_SetErrorString(void *, const char *);
-void GsGp_SetError(void *, s32, const char *);
-void GsGp_DebugLog(void *, const char *, ...);
+s32 gpiValueForKey(const char *, const char *, char *, s32);
+void gpiSetErrorString(void *, const char *);
+void gpiSetError(void *, s32, const char *);
+void gpiDebug(void *, const char *, ...);
 void *GsUtil_Realloc(void *, s32);
 void *GsUtil_Alloc(s32);
 s32 GsUtil_Free(void *);
@@ -72,21 +71,21 @@ s32 GOAGetLastError(s32);
 s32 ArrayLength(s32);
 s32 shutdown(s32, s32);
 s32 closesocket(s32);
-s32 GsGp_RemoveOperation(void *, void *);
-s32 GsGpPeer_Free(void *, void *);
-s32 GsGpProfile_FindIf(void *, s32, s32);
-s32 GsGp_FreeBuddyDataCb(void);
+s32 gpiRemoveOperation(void *, void *);
+s32 gpiDestroyPeer(void *, void *);
+s32 gpiProfileMap(void *, s32, s32);
+s32 gpiDisconnectCleanupProfile(void);
 
-s32 GsGp_SocketSend(void *, s32, char *, s32, s32 *, s32 *, const char *);
-s32 GsGpBuf_AppendInt(Unk_ov065_0227d8e0_Handle *, GsGpBuffer *, s32);
-s32 GsGpBuf_AppendString(Unk_ov065_0227d8e0_Handle *, GsGpBuffer *, const char *);
-s32 GsGpBuf_Append(Unk_ov065_0227d8e0_Handle *, GsGpBuffer *, const char *, s32);
-s32 GsGpBuf_AppendChar(Unk_ov065_0227d8e0_Handle *, GsGpBuffer *, char);
-s32 GsGpPeer_Send(Unk_ov065_0227d8e0_Handle *, GsGpPeer *, const char *, s32);
-s32 GsGp_SendBuffer(Unk_ov065_0227d8e0_Handle *, s32, GsGpBuffer *, s32 *, s32, const char *);
-s32 GsGp_CallCallback(Unk_ov065_0227d8e0_Handle *, GsGpQueuedCallback *);
-s32 GsGp_QueueCallback(Unk_ov065_0227d8e0_Handle *, Unk_ov065_0227e0e8_Wrap, GsGpQueuedCallback *, GsGpOperation *, s32);
-void GsGp_CallErrorCallback(Unk_ov065_0227d8e0_Handle *, s32, s32);
+s32 gpiSendData(void *, s32, char *, s32, s32 *, s32 *, const char *);
+s32 gpiAppendIntToBuffer(Unk_ov065_0227d8e0_Handle *, GPIBuffer *, s32);
+s32 gpiAppendStringToBuffer(Unk_ov065_0227d8e0_Handle *, GPIBuffer *, const char *);
+s32 gpiAppendStringToBufferLen(Unk_ov065_0227d8e0_Handle *, GPIBuffer *, const char *, s32);
+s32 gpiAppendCharToBuffer(Unk_ov065_0227d8e0_Handle *, GPIBuffer *, char);
+s32 gpiSendOrBufferStringLen(Unk_ov065_0227d8e0_Handle *, GPIPeer *, const char *, s32);
+s32 gpiSendFromBuffer(Unk_ov065_0227d8e0_Handle *, s32, GPIBuffer *, s32 *, s32, const char *);
+s32 gpiCallCallback(Unk_ov065_0227d8e0_Handle *, GPICallbackData *);
+s32 gpiAddCallback(Unk_ov065_0227d8e0_Handle *, Unk_ov065_0227e0e8_Wrap, GPICallbackData *, GPIOperation *, s32);
+void gpiCallErrorCallback(Unk_ov065_0227d8e0_Handle *, s32, s32);
 
 
 
@@ -145,7 +144,7 @@ struct Unk_ov065_0227e350_Ctx {
 
 typedef Unk_ov065_0227e350_Ctx Ctx0227;
 
-typedef GsGpConnectData Req0227;
+typedef GPIConnectData Req0227;
 
 
 extern "C" {
@@ -163,24 +162,24 @@ void Util_RandSeed(u32);
 s32 Util_RandInt(s32, s32);
 void MD5Digest(char *, s32, char *);
 void B64Encode(char *, char *, s32, s32);
-s32 GsGpBuf_AppendString(Ctx0227 **, char *, const char *);
-s32 GsGpBuf_AppendInt(Ctx0227 **, char *, s32);
-void GsGp_CallErrorCallback(Ctx0227 **, s32, s32);
-s32 GsGp_QueueCallback(Ctx0227 **, GsGpCallbackPair, void *, GsGpOperation *, s32);
-void GsGp_MakeRandomString(void *, s32);
-void GsGpProfile_FindByNickEmail(Ctx0227 **, char *, char *, u32 **);
-void GsGpProfile_Remove(Ctx0227 **, GsGpProfile *);
-void GsGpProfile_RemoveById(Ctx0227 **);
-u32 *GsGpProfile_Add(Ctx0227 **, s32);
-void GsGp_RemoveOperation(Ctx0227 **, GsGpOperation *);
-void GsGp_SetErrorString(Ctx0227 **, const char *);
-void GsGp_SetError(Ctx0227 **, s32, const void *);
-s32 GsGp_CheckConnectComplete(Ctx0227 **, s32, s32 *);
-s32 GsGp_GetValue(char *, const char *, char *, s32);
-s32 GsGp_CheckServerError(Ctx0227 **, char *, s32);
-void GsUtil_StrCopyN(void *, char *, s32);
-s32 GsGp_SendNewUser(Ctx0227 **, Req0227 *);
-s32 GsGp_SendLogin(Ctx0227 **, Req0227 *);
+s32 gpiAppendStringToBuffer(Ctx0227 **, char *, const char *);
+s32 gpiAppendIntToBuffer(Ctx0227 **, char *, s32);
+void gpiCallErrorCallback(Ctx0227 **, s32, s32);
+s32 gpiAddCallback(Ctx0227 **, GPICallback, void *, GPIOperation *, s32);
+void randomString(void *, s32);
+void gpiFindProfileByUser(Ctx0227 **, char *, char *, u32 **);
+void gpiRemoveProfile(Ctx0227 **, GPIProfile *);
+void gpiRemoveProfileByID(Ctx0227 **);
+u32 *gpiProfileListAdd(Ctx0227 **, s32);
+void gpiRemoveOperation(Ctx0227 **, GPIOperation *);
+void gpiSetErrorString(Ctx0227 **, const char *);
+void gpiSetError(Ctx0227 **, s32, const void *);
+s32 gpiCheckSocketConnect(Ctx0227 **, s32, s32 *);
+s32 gpiValueForKey(char *, const char *, char *, s32);
+s32 gpiCheckForError(Ctx0227 **, char *, s32);
+void strzcpy(void *, char *, s32);
+s32 gpiSendNewuser(Ctx0227 **, Req0227 *);
+s32 gpiSendLogin(Ctx0227 **, Req0227 *);
 
 
 
@@ -202,9 +201,9 @@ namespace Nc {
 
 
 
-typedef GsGpContext Ctx0227;
+typedef GPIConnection Ctx0227;
 
-typedef GsGpCallbackPair Pair0227;
+typedef GPICallback Pair0227;
 
 extern "C" {
 
@@ -243,19 +242,19 @@ extern char data_ov065_0228d748[];
 extern char data_ov065_0228d750[];
 extern u8 data_0213a490[];
 
-s32 GsGp_ResetConnection(Ctx0227 **);
-void GsGp_SetErrorString(Ctx0227 **, const char *);
-void GsGp_SetError(Ctx0227 **, s32, const char *);
-void GsGp_CallErrorCallback(Ctx0227 **, s32, s32);
-void GsUtil_StrCopyN(char *, const char *, s32);
+s32 gpiReset(Ctx0227 **);
+void gpiSetErrorString(Ctx0227 **, const char *);
+void gpiSetError(Ctx0227 **, s32, const char *);
+void gpiCallErrorCallback(Ctx0227 **, s32, s32);
+void strzcpy(char *, const char *, s32);
 void _strlwr(char *);
 void *GsUtil_Alloc(s32);
 void GsUtil_Free(void *);
 char *goastrdup(const char *);
-s32 GsGp_AddOperation(Ctx0227 **, s32, void *, GsGpOperation **, s32, s32, s32);
-void GsGp_CallFailedCallback(Ctx0227 **, GsGpOperation *);
-s32 GsGp_CloseConnection(Ctx0227 **, s32);
-s32 GsGp_ProcessConnection(Ctx0227 **, s32);
+s32 gpiAddOperation(Ctx0227 **, s32, void *, GPIOperation **, s32, s32, s32);
+void gpiFailedOpCallback(Ctx0227 **, GPIOperation *);
+s32 gpiDisconnect(Ctx0227 **, s32);
+s32 gpiProcess(Ctx0227 **, s32);
 s32 socket(s32, s32, s32);
 s32 bind(s32, void *, s32);
 s32 listen(s32, s32);
@@ -264,15 +263,15 @@ s32 connect(s32, void *, s32);
 s32 GOAGetLastError(s32);
 s32 SetSockBlocking(s32, s32);
 Unk_ov065_0227f00c_Host *Sock_GetHostByName(char *);
-s32 GsGpProfile_Find(Ctx0227 **, s32, GsGpProfile **);
-void GsGp_CopyInfoResult(s32, void *);
-s32 GsGp_RemoveOperation(Ctx0227 **, GsGpOperation *);
-s32 GsGp_QueueCallback(Ctx0227 **, Pair0227, void *, GsGpOperation *, s32);
-s32 GsGpBuf_AppendString(Ctx0227 **, char **, const char *);
-s32 GsGpBuf_AppendInt(Ctx0227 **, char **, s32);
-s32 GsGp_QueueProfileUpdate(Ctx0227 **, const char *, const char *);
-s32 GsGp_QueueUserUpdate(Ctx0227 **, const char *, const char *);
-s32 GsGp_SetInfoInt(Ctx0227 **, s32, s32);
+s32 gpiGetProfile(Ctx0227 **, s32, GPIProfile **);
+void gpiInfoCacheToArg(s32, void *);
+s32 gpiRemoveOperation(Ctx0227 **, GPIOperation *);
+s32 gpiAddCallback(Ctx0227 **, Pair0227, void *, GPIOperation *, s32);
+s32 gpiAppendStringToBuffer(Ctx0227 **, char **, const char *);
+s32 gpiAppendIntToBuffer(Ctx0227 **, char **, s32);
+s32 gpiSendLocalInfo(Ctx0227 **, const char *, const char *);
+s32 gpiSendUserInfo(Ctx0227 **, const char *, const char *);
+s32 gpiSetInfoi(Ctx0227 **, s32, s32);
 
 void *memset(void *, s32, u32);
 u32 rand(void);
@@ -280,13 +279,13 @@ s32 atol(const char *);
 s32 STD_GetStringLength(const char *);
 char *STD_CopyString(char *, const char *);
 
-s32 GsGp_SendGetProfile(Ctx0227 **, s32, s32);
-s32 GsGp_OpenSockets(Ctx0227 **, GsGpOperation *);
+s32 gpiSendGetInfo(Ctx0227 **, s32, s32);
+s32 gpiStartConnect(Ctx0227 **, GPIOperation *);
 
 #define GP_FAIL(str) \
     { \
-        GsGp_SetError(h, 5, str); \
-        GsGp_CallErrorCallback(h, 3, 1); \
+        gpiSetError(h, 5, str); \
+        gpiCallErrorCallback(h, 3, 1); \
         return 3; \
     }
 
@@ -299,7 +298,7 @@ s32 GsGp_OpenSockets(Ctx0227 **, GsGpOperation *);
 
 #define CK_NONEMPTY \
     if (*val == 0) { \
-        GsGp_SetErrorString(h, data_ov065_0228d630); \
+        gpiSetErrorString(h, data_ov065_0228d630); \
         return 2; \
     }
 
@@ -309,7 +308,7 @@ s32 GsGp_OpenSockets(Ctx0227 **, GsGpOperation *);
 
 namespace Nc {
 extern "C" {
-void GsGp_MakeRandomString(char *buf, s32 n) {
+void randomString(char *buf, s32 n) {
     s32 i;
     for (i = 0; i < n; i++) {
         buf[i] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"[rand() % 0x3e];
@@ -321,7 +320,7 @@ void GsGp_MakeRandomString(char *buf, s32 n) {
 
 namespace Nc {
 extern "C" {
-s32 GsGp_OpenSockets(Ctx0227 **h, GsGpOperation *n) {
+s32 gpiStartConnect(Ctx0227 **h, GPIOperation *n) {
     Ctx0227 *ctx = *h;
     Unk_ov065_0227f00c_Sa sa;
     s32 len;
@@ -371,20 +370,20 @@ s32 GsGp_OpenSockets(Ctx0227 **h, GsGpOperation *n) {
 
 namespace Nc {
 extern "C" {
-s32 GsGp_Connect(Ctx0227 **h, const char *a1, const char *a2, const char *a3, const char *a4, const char *a5,
+s32 gpiConnect(Ctx0227 **h, const char *a1, const char *a2, const char *a3, const char *a4, const char *a5,
                         const char *a6, const char *a7, s32 mode, s32 a9, s32 a10, s32 a11, s32 a12) {
     Ctx0227 *ctx = *h;
-    GsGpConnectData *obj;
-    GsGpOperation *node;
+    GPIConnectData *obj;
+    GPIOperation *node;
     s32 r;
     if (ctx->connectState == 4) {
-        r = GsGp_ResetConnection(h);
+        r = gpiReset(h);
         if (r != 0) {
             return r;
         }
     }
     if (ctx->connectState != 0) {
-        GsGp_SetErrorString(h, "Invalid connection.");
+        gpiSetErrorString(h, "Invalid connection.");
         return 2;
     }
     switch (mode) {
@@ -395,42 +394,42 @@ s32 GsGp_Connect(Ctx0227 **h, const char *a1, const char *a2, const char *a3, co
         ctx->firewall = 0;
         break;
     default:
-        GsGp_SetErrorString(h, "Invalid firewall.");
+        gpiSetErrorString(h, "Invalid firewall.");
         return 2;
     }
     ctx->firewall = 1;
-    GsUtil_StrCopyN(ctx->nick, a1, 0x1f);
-    GsUtil_StrCopyN(ctx->uniqueNick, a2, 0x15);
-    GsUtil_StrCopyN(ctx->email, a3, 0x33);
-    GsUtil_StrCopyN(ctx->password, a4, 0x1f);
+    strzcpy(ctx->nick, a1, 0x1f);
+    strzcpy(ctx->uniquenick, a2, 0x15);
+    strzcpy(ctx->email, a3, 0x33);
+    strzcpy(ctx->password, a4, 0x1f);
     _strlwr(ctx->email);
-    obj = (GsGpConnectData *)GsUtil_Alloc(0x308);
+    obj = (GPIConnectData *)GsUtil_Alloc(0x308);
     if (obj == 0) {
-        GsGp_SetErrorString(h, "Out of memory.");
+        gpiSetErrorString(h, "Out of memory.");
         return 1;
     }
     memset(obj, 0, 0x308);
-    obj->isNewUser = a9;
+    obj->newuser = a9;
     if (*a5 != 0 && *a6 != 0) {
-        GsUtil_StrCopyN(obj->authToken, a5, 0x100);
-        GsUtil_StrCopyN(obj->authSecret, a6, 0x100);
+        strzcpy(obj->authtoken, a5, 0x100);
+        strzcpy(obj->partnerchallenge, a6, 0x100);
     }
     if (a7 != 0) {
-        GsUtil_StrCopyN(obj->cdKey, a7, 0x41);
+        strzcpy(obj->cdkey, a7, 0x41);
     }
-    r = GsGp_AddOperation(h, 0, obj, &node, a10, a11, a12);
+    r = gpiAddOperation(h, 0, obj, &node, a10, a11, a12);
     if (r != 0) {
         return r;
     }
-    r = GsGp_OpenSockets(h, node);
+    r = gpiStartConnect(h, node);
     if (r != 0) {
         node->result = r;
-        GsGp_CallFailedCallback(h, node);
-        GsGp_CloseConnection(h, 0);
+        gpiFailedOpCallback(h, node);
+        gpiDisconnect(h, 0);
         return r;
     }
     if (node->blocking != 0) {
-        r = GsGp_ProcessConnection(h, node->id);
+        r = gpiProcess(h, node->id);
         if (r != 0) {
             return r;
         }
@@ -442,7 +441,7 @@ s32 GsGp_Connect(Ctx0227 **h, const char *a1, const char *a2, const char *a3, co
 
 namespace Nb {
 extern "C" {
-s32 GsGp_SendLogin(Ctx0227 **h, Req0227 *req) {
+s32 gpiSendLogin(Ctx0227 **h, Req0227 *req) {
     Ctx0227 *c = *h;
     u32 *out;
     char b1[0x21];
@@ -450,72 +449,72 @@ s32 GsGp_SendLogin(Ctx0227 **h, Req0227 *req) {
     char b3[0x50];
     char *p;
     char *q;
-    GsGp_MakeRandomString(req->clientChallenge, 0x20);
-    if (req->authSecret[0] != 0) {
-        p = req->authSecret;
+    randomString(req->userChallenge, 0x20);
+    if (req->partnerchallenge[0] != 0) {
+        p = req->partnerchallenge;
     } else {
         p = c->password;
     }
     MD5Digest(p, STD_GetStringLength(p), req->passwordHash);
-    if (req->authToken[0] != 0) {
-        q = req->authToken;
+    if (req->authtoken[0] != 0) {
+        q = req->authtoken;
     } else if (c->uniqueNick[0] != 0) {
         q = c->uniqueNick;
     } else {
         OS_SPrintf(b3, "%s@%s", c->nick, c->email);
         q = b3;
     }
-    OS_SPrintf(b2, "%s%s%s%s%s%s", req->passwordHash, "                                                ", q, req->clientChallenge, req, req->passwordHash);
+    OS_SPrintf(b2, "%s%s%s%s%s%s", req->passwordHash, "                                                ", q, req->userChallenge, req, req->passwordHash);
     MD5Digest(b2, STD_GetStringLength(b2), b1);
     if (c->infoCaching != 0) {
-        GsGpProfile_FindByNickEmail(h, c->nick, c->email, &out);
+        gpiFindProfileByUser(h, c->nick, c->email, &out);
         if (out != NULL) {
             c->userId = out[1];
             c->profileId = out[0];
         }
     }
-    GsGpBuf_AppendString(h, c->outputBuffer, "\\login\\");
-    GsGpBuf_AppendString(h, c->outputBuffer, "\\challenge\\");
-    GsGpBuf_AppendString(h, c->outputBuffer, req->clientChallenge);
-    if (req->authToken[0] != 0) {
-        GsGpBuf_AppendString(h, c->outputBuffer, "\\authtoken\\");
-        GsGpBuf_AppendString(h, c->outputBuffer, req->authToken);
+    gpiAppendStringToBuffer(h, c->outputBuffer, "\\login\\");
+    gpiAppendStringToBuffer(h, c->outputBuffer, "\\challenge\\");
+    gpiAppendStringToBuffer(h, c->outputBuffer, req->userChallenge);
+    if (req->authtoken[0] != 0) {
+        gpiAppendStringToBuffer(h, c->outputBuffer, "\\authtoken\\");
+        gpiAppendStringToBuffer(h, c->outputBuffer, req->authtoken);
     } else if (c->uniqueNick[0] != 0) {
-        GsGpBuf_AppendString(h, c->outputBuffer, "\\uniquenick\\");
-        GsGpBuf_AppendString(h, c->outputBuffer, c->uniqueNick);
+        gpiAppendStringToBuffer(h, c->outputBuffer, "\\uniquenick\\");
+        gpiAppendStringToBuffer(h, c->outputBuffer, c->uniqueNick);
     } else {
-        GsGpBuf_AppendString(h, c->outputBuffer, "\\user\\");
-        GsGpBuf_AppendString(h, c->outputBuffer, c->nick);
-        GsGpBuf_AppendString(h, c->outputBuffer, "@");
-        GsGpBuf_AppendString(h, c->outputBuffer, c->email);
+        gpiAppendStringToBuffer(h, c->outputBuffer, "\\user\\");
+        gpiAppendStringToBuffer(h, c->outputBuffer, c->nick);
+        gpiAppendStringToBuffer(h, c->outputBuffer, "@");
+        gpiAppendStringToBuffer(h, c->outputBuffer, c->email);
     }
     if (c->userId != 0) {
-        GsGpBuf_AppendString(h, c->outputBuffer, "\\userid\\");
-        GsGpBuf_AppendInt(h, c->outputBuffer, c->userId);
+        gpiAppendStringToBuffer(h, c->outputBuffer, "\\userid\\");
+        gpiAppendIntToBuffer(h, c->outputBuffer, c->userId);
     }
     if (c->profileId != 0) {
-        GsGpBuf_AppendString(h, c->outputBuffer, "\\profileid\\");
-        GsGpBuf_AppendInt(h, c->outputBuffer, c->profileId);
+        gpiAppendStringToBuffer(h, c->outputBuffer, "\\profileid\\");
+        gpiAppendIntToBuffer(h, c->outputBuffer, c->profileId);
     }
-    GsGpBuf_AppendString(h, c->outputBuffer, "\\response\\");
-    GsGpBuf_AppendString(h, c->outputBuffer, b1);
+    gpiAppendStringToBuffer(h, c->outputBuffer, "\\response\\");
+    gpiAppendStringToBuffer(h, c->outputBuffer, b1);
     if (c->firewall == 1) {
-        GsGpBuf_AppendString(h, c->outputBuffer, "\\firewall\\1");
+        gpiAppendStringToBuffer(h, c->outputBuffer, "\\firewall\\1");
     }
-    GsGpBuf_AppendString(h, c->outputBuffer, "\\port\\");
+    gpiAppendStringToBuffer(h, c->outputBuffer, "\\port\\");
     {
         s32 t = (u16)c->peerPort;
         s32 sw = (s16)(u16)(((t >> 8) & 0xff) | ((t << 8) & 0xff00));
-        GsGpBuf_AppendInt(h, c->outputBuffer, sw);
+        gpiAppendIntToBuffer(h, c->outputBuffer, sw);
     }
-    GsGpBuf_AppendString(h, c->outputBuffer, "\\productid\\");
-    GsGpBuf_AppendInt(h, c->outputBuffer, c->productId);
-    GsGpBuf_AppendString(h, c->outputBuffer, "\\gamename\\");
-    GsGpBuf_AppendString(h, c->outputBuffer, __GSIACGamename);
-    GsGpBuf_AppendString(h, c->outputBuffer, "\\namespaceid\\");
-    GsGpBuf_AppendInt(h, c->outputBuffer, c->namespaceId);
-    GsGpBuf_AppendString(h, c->outputBuffer, "\\id\\1");
-    GsGpBuf_AppendString(h, c->outputBuffer, "\\final\\");
+    gpiAppendStringToBuffer(h, c->outputBuffer, "\\productid\\");
+    gpiAppendIntToBuffer(h, c->outputBuffer, c->productId);
+    gpiAppendStringToBuffer(h, c->outputBuffer, "\\gamename\\");
+    gpiAppendStringToBuffer(h, c->outputBuffer, __GSIACGamename);
+    gpiAppendStringToBuffer(h, c->outputBuffer, "\\namespaceid\\");
+    gpiAppendIntToBuffer(h, c->outputBuffer, c->namespaceId);
+    gpiAppendStringToBuffer(h, c->outputBuffer, "\\id\\1");
+    gpiAppendStringToBuffer(h, c->outputBuffer, "\\final\\");
     return 0;
 }
 }
@@ -523,7 +522,7 @@ s32 GsGp_SendLogin(Ctx0227 **h, Req0227 *req) {
 
 namespace Nb {
 extern "C" {
-s32 GsGp_SendNewUser(Ctx0227 **h, Req0227 *req) {
+s32 gpiSendNewuser(Ctx0227 **h, Req0227 *req) {
     Ctx0227 *c = *h;
     char a1[0x1f];
     char b1[0x2d];
@@ -546,23 +545,23 @@ s32 GsGp_SendNewUser(Ctx0227 **h, Req0227 *req) {
     }
     a1[i] = 0;
     B64Encode(a1, b1, len, 1);
-    GsGpBuf_AppendString(h, c->outputBuffer, "\\newuser\\");
-    GsGpBuf_AppendString(h, c->outputBuffer, "\\email\\");
-    GsGpBuf_AppendString(h, c->outputBuffer, c->email);
-    GsGpBuf_AppendString(h, c->outputBuffer, "\\nick\\");
-    GsGpBuf_AppendString(h, c->outputBuffer, c->nick);
-    GsGpBuf_AppendString(h, c->outputBuffer, "\\passwordenc\\");
-    GsGpBuf_AppendString(h, c->outputBuffer, b1);
-    GsGpBuf_AppendString(h, c->outputBuffer, "\\productid\\");
-    GsGpBuf_AppendInt(h, c->outputBuffer, c->productId);
-    GsGpBuf_AppendString(h, c->outputBuffer, "\\gamename\\");
-    GsGpBuf_AppendString(h, c->outputBuffer, __GSIACGamename);
-    GsGpBuf_AppendString(h, c->outputBuffer, "\\namespaceid\\");
-    GsGpBuf_AppendInt(h, c->outputBuffer, c->namespaceId);
-    GsGpBuf_AppendString(h, c->outputBuffer, "\\uniquenick\\");
-    GsGpBuf_AppendString(h, c->outputBuffer, c->uniqueNick);
-    if (req->cdKey[0] != 0) {
-        len = STD_GetStringLength(req->cdKey);
+    gpiAppendStringToBuffer(h, c->outputBuffer, "\\newuser\\");
+    gpiAppendStringToBuffer(h, c->outputBuffer, "\\email\\");
+    gpiAppendStringToBuffer(h, c->outputBuffer, c->email);
+    gpiAppendStringToBuffer(h, c->outputBuffer, "\\nick\\");
+    gpiAppendStringToBuffer(h, c->outputBuffer, c->nick);
+    gpiAppendStringToBuffer(h, c->outputBuffer, "\\passwordenc\\");
+    gpiAppendStringToBuffer(h, c->outputBuffer, b1);
+    gpiAppendStringToBuffer(h, c->outputBuffer, "\\productid\\");
+    gpiAppendIntToBuffer(h, c->outputBuffer, c->productId);
+    gpiAppendStringToBuffer(h, c->outputBuffer, "\\gamename\\");
+    gpiAppendStringToBuffer(h, c->outputBuffer, __GSIACGamename);
+    gpiAppendStringToBuffer(h, c->outputBuffer, "\\namespaceid\\");
+    gpiAppendIntToBuffer(h, c->outputBuffer, c->namespaceId);
+    gpiAppendStringToBuffer(h, c->outputBuffer, "\\uniquenick\\");
+    gpiAppendStringToBuffer(h, c->outputBuffer, c->uniqueNick);
+    if (req->cdkey[0] != 0) {
+        len = STD_GetStringLength(req->cdkey);
         Util_RandSeed(0x79707367);
         i = 0;
         if (i < len) {
@@ -570,16 +569,16 @@ s32 GsGp_SendNewUser(Ctx0227 **h, Req0227 *req) {
             z1 = i;
             do {
                 s8 r = Util_RandInt(z1, 0xff);
-                *p++ = r ^ req->cdKey[i];
+                *p++ = r ^ req->cdkey[i];
             } while (++i < len);
         }
         a2[i] = 0;
         B64Encode(a2, b2, len, 1);
-        GsGpBuf_AppendString(h, c->outputBuffer, "\\cdkeyenc\\");
-        GsGpBuf_AppendString(h, c->outputBuffer, b2);
+        gpiAppendStringToBuffer(h, c->outputBuffer, "\\cdkeyenc\\");
+        gpiAppendStringToBuffer(h, c->outputBuffer, b2);
     }
-    GsGpBuf_AppendString(h, c->outputBuffer, "\\id\\1");
-    GsGpBuf_AppendString(h, c->outputBuffer, "\\final\\");
+    gpiAppendStringToBuffer(h, c->outputBuffer, "\\id\\1");
+    gpiAppendStringToBuffer(h, c->outputBuffer, "\\final\\");
     return 0;
 }
 }
@@ -587,7 +586,7 @@ s32 GsGp_SendNewUser(Ctx0227 **h, Req0227 *req) {
 
 namespace Nb {
 extern "C" {
-s32 GsGp_ProcessConnectReply(Ctx0227 **h, GsGpOperation *n, char *line) {
+s32 gpiProcessConnect(Ctx0227 **h, GPIOperation *n, char *line) {
     Ctx0227 *c = *h;
     Req0227 *req;
     Unk_ov065_0227e0e8_Wrap pr;
@@ -597,47 +596,47 @@ s32 GsGp_ProcessConnectReply(Ctx0227 **h, GsGpOperation *n, char *line) {
     char b4[0x50];
     char *p;
     s32 t;
-    if (GsGp_CheckServerError(h, line, 0) != 0) {
+    if (gpiCheckForError(h, line, 0) != 0) {
         t = c->errorCode;
         if (t == 0x106 && c->profileId != 0) {
-            GsGpProfile_RemoveById(h);
+            gpiRemoveProfileByID(h);
             c->userId = 0;
             c->profileId = 0;
         } else if (t == 0x201) {
-            if (GsGp_GetValue(line, "\\pid\\", b3, 0x200) != 0) {
+            if (gpiValueForKey(line, "\\pid\\", b3, 0x200) != 0) {
                 c->profileId = atol(b3);
             }
         }
         if (strstr(line, "\\fatal\\") != 0) {
-            GsGp_SetError(h, c->errorCode, c);
-            GsGp_CallErrorCallback(h, 4, 1);
+            gpiSetError(h, c->errorCode, c);
+            gpiCallErrorCallback(h, 4, 1);
             return 4;
         }
-        GsGp_SetError(h, c->errorCode, c);
-        GsGp_CallErrorCallback(h, 4, 0);
+        gpiSetError(h, c->errorCode, c);
+        gpiCallErrorCallback(h, 4, 0);
         return 4;
     }
     req = (Req0227 *)n->data;
     switch (n->state) {
     case 1:
         if (strncmp(line, "\\lc\\1", 5) != 0) {
-            GsGp_SetError(h, 1, "Unexpected data was received from the server.");
-            GsGp_CallErrorCallback(h, 3, 1);
+            gpiSetError(h, 1, "Unexpected data was received from the server.");
+            gpiCallErrorCallback(h, 3, 1);
             return 3;
         }
-        if (GsGp_GetValue(line, "\\challenge\\", (char *)req, 0x80) == 0) {
-            GsGp_SetError(h, 1, "Unexpected data was received from the server.");
-            GsGp_CallErrorCallback(h, 3, 1);
+        if (gpiValueForKey(line, "\\challenge\\", (char *)req, 0x80) == 0) {
+            gpiSetError(h, 1, "Unexpected data was received from the server.");
+            gpiCallErrorCallback(h, 3, 1);
             return 3;
         }
-        if (req->isNewUser != 0) {
-            t = GsGp_SendNewUser(h, req);
+        if (req->newuser != 0) {
+            t = gpiSendNewuser(h, req);
             if (t != 0) {
                 return t;
             }
             n->state = 3;
         } else {
-            t = GsGp_SendLogin(h, req);
+            t = gpiSendLogin(h, req);
             if (t != 0) {
                 return t;
             }
@@ -646,23 +645,23 @@ s32 GsGp_ProcessConnectReply(Ctx0227 **h, GsGpOperation *n, char *line) {
         break;
     case 3:
         if (strncmp(line, "\\nur\\", 5) != 0) {
-            GsGp_SetError(h, 1, "Unexpected data was received from the server.");
-            GsGp_CallErrorCallback(h, 3, 1);
+            gpiSetError(h, 1, "Unexpected data was received from the server.");
+            gpiCallErrorCallback(h, 3, 1);
             return 3;
         }
-        if (GsGp_GetValue(line, "\\userid\\", b3, 0x200) == 0) {
-            GsGp_SetError(h, 1, "Unexepected data was received from the server.");
-            GsGp_CallErrorCallback(h, 3, 1);
+        if (gpiValueForKey(line, "\\userid\\", b3, 0x200) == 0) {
+            gpiSetError(h, 1, "Unexepected data was received from the server.");
+            gpiCallErrorCallback(h, 3, 1);
             return 3;
         }
         c->userId = atol(b3);
-        if (GsGp_GetValue(line, "\\profileid\\", b3, 0x200) == 0) {
-            GsGp_SetError(h, 1, "Unexepected data was received from the server.");
-            GsGp_CallErrorCallback(h, 3, 1);
+        if (gpiValueForKey(line, "\\profileid\\", b3, 0x200) == 0) {
+            gpiSetError(h, 1, "Unexepected data was received from the server.");
+            gpiCallErrorCallback(h, 3, 1);
             return 3;
         }
         c->profileId = atol(b3);
-        t = GsGp_SendLogin(h, req);
+        t = gpiSendLogin(h, req);
         if (t != 0) {
             return t;
         }
@@ -670,77 +669,77 @@ s32 GsGp_ProcessConnectReply(Ctx0227 **h, GsGpOperation *n, char *line) {
         break;
     case 2:
         if (strncmp(line, "\\lc\\2", 5) != 0) {
-            GsGp_SetError(h, 1, "Unexpected data was received from the server.");
-            GsGp_CallErrorCallback(h, 3, 1);
+            gpiSetError(h, 1, "Unexpected data was received from the server.");
+            gpiCallErrorCallback(h, 3, 1);
             return 3;
         }
-        if (GsGp_GetValue(line, "\\sesskey\\", b3, 0x200) == 0) {
-            GsGp_SetError(h, 1, "Unexepected data was received from the server.");
-            GsGp_CallErrorCallback(h, 3, 1);
+        if (gpiValueForKey(line, "\\sesskey\\", b3, 0x200) == 0) {
+            gpiSetError(h, 1, "Unexepected data was received from the server.");
+            gpiCallErrorCallback(h, 3, 1);
             return 3;
         }
         c->sessKey = atol(b3);
-        if (GsGp_GetValue(line, "\\userid\\", b3, 0x200) == 0) {
-            GsGp_SetError(h, 1, "Unexepected data was received from the server.");
-            GsGp_CallErrorCallback(h, 3, 1);
+        if (gpiValueForKey(line, "\\userid\\", b3, 0x200) == 0) {
+            gpiSetError(h, 1, "Unexepected data was received from the server.");
+            gpiCallErrorCallback(h, 3, 1);
             return 3;
         }
         c->userId = atol(b3);
-        if (GsGp_GetValue(line, "\\profileid\\", b3, 0x200) == 0) {
-            GsGp_SetError(h, 1, "Unexepected data was received from the server.");
-            GsGp_CallErrorCallback(h, 3, 1);
+        if (gpiValueForKey(line, "\\profileid\\", b3, 0x200) == 0) {
+            gpiSetError(h, 1, "Unexepected data was received from the server.");
+            gpiCallErrorCallback(h, 3, 1);
             return 3;
         }
         c->profileId = atol(b3);
-        if (GsGp_GetValue(line, "\\uniquenick\\", b2, 0x15) == 0) {
+        if (gpiValueForKey(line, "\\uniquenick\\", b2, 0x15) == 0) {
             b2[0] = 0;
         }
-        if (GsGp_GetValue(line, "\\lt\\", c->loginTicket, 0x19) == 0) {
+        if (gpiValueForKey(line, "\\lt\\", c->loginTicket, 0x19) == 0) {
             c->loginTicket[0] = 0;
         }
-        if (req->authToken[0] != 0) {
-            p = req->authToken;
+        if (req->authtoken[0] != 0) {
+            p = req->authtoken;
         } else if (c->uniqueNick[0] != 0) {
             p = c->uniqueNick;
         } else {
             OS_SPrintf(b4, "%s@%s", c->nick, c->email);
             p = b4;
         }
-        OS_SPrintf(b3, "%s%s%s%s%s%s", req->passwordHash, "                                                ", p, req, req->clientChallenge, req->passwordHash);
+        OS_SPrintf(b3, "%s%s%s%s%s%s", req->passwordHash, "                                                ", p, req, req->userChallenge, req->passwordHash);
         MD5Digest(b3, STD_GetStringLength(b3), b1);
-        if (GsGp_GetValue(line, "\\proof\\", b3, 0x200) == 0) {
-            GsGp_SetError(h, 1, "Unexepected data was received from the server.");
-            GsGp_CallErrorCallback(h, 3, 1);
+        if (gpiValueForKey(line, "\\proof\\", b3, 0x200) == 0) {
+            gpiSetError(h, 1, "Unexepected data was received from the server.");
+            gpiCallErrorCallback(h, 3, 1);
             return 3;
         }
         if (memcmp(b1, b3, 0x20) != 0) {
-            GsGp_SetError(h, 0x108, "Could not authenticate server.");
-            GsGp_CallErrorCallback(h, 3, 1);
+            gpiSetError(h, 0x108, "Could not authenticate server.");
+            gpiCallErrorCallback(h, 3, 1);
             return 3;
         }
         if (c->infoCaching != 0) {
-            u32 *e = GsGpProfile_Add(h, c->profileId);
+            u32 *e = gpiProfileListAdd(h, c->profileId);
             e[0] = c->profileId;
             e[1] = c->userId;
         }
         c->connectState = 3;
         pr = n->callback;
-        if (pr.p.func != 0) {
+        if (pr.p.callback != 0) {
             u32 *q = (u32 *)GsUtil_Alloc(0x20);
             if (q == NULL) {
-                GsGp_SetErrorString(h, "Out of memory.");
+                gpiSetErrorString(h, "Out of memory.");
                 return 1;
             }
             memset(q, 0, 0x20);
             q[1] = c->profileId;
             q[0] = 0;
-            GsUtil_StrCopyN(q + 2, b2, 0x15);
-            t = GsGp_QueueCallback(h, pr.p, q, n, 0);
+            strzcpy(q + 2, b2, 0x15);
+            t = gpiAddCallback(h, pr.p, q, n, 0);
             if (t != 0) {
                 return t;
             }
         }
-        GsGp_RemoveOperation(h, n);
+        gpiRemoveOperation(h, n);
         break;
     }
     return 0;
@@ -750,14 +749,14 @@ s32 GsGp_ProcessConnectReply(Ctx0227 **h, GsGpOperation *n, char *line) {
 
 namespace Nb {
 extern "C" {
-s32 GsGp_CheckConnected(Ctx0227 **h) {
+s32 gpiCheckConnect(Ctx0227 **h) {
     Ctx0227 *c = *h;
     s32 out;
-    s32 r = GsGp_CheckConnectComplete(h, c->cmSocket, &out);
+    s32 r = gpiCheckSocketConnect(h, c->cmSocket, &out);
     if (r == 0) {
         if (out == 4) {
-            GsGp_SetError(h, 0x107, "The server has refused the connection.");
-            GsGp_CallErrorCallback(h, 4, 1);
+            gpiSetError(h, 0x107, "The server has refused the connection.");
+            gpiCallErrorCallback(h, 4, 1);
             return 4;
         }
         if (out == 0) {
@@ -773,7 +772,7 @@ s32 GsGp_CheckConnected(Ctx0227 **h) {
 
 namespace Nb {
 extern "C" {
-s32 GsGp_FreeBuddyDataCb(Ctx0227 **h, GsGpProfile *n) {
+s32 gpiDisconnectCleanupProfile(Ctx0227 **h, GPIProfile *n) {
     Ctx0227 *c = *h;
     if (n->buddyStatus != NULL) {
         if (c->infoCachingBuddyOnly == 0) {
@@ -790,8 +789,8 @@ s32 GsGp_FreeBuddyDataCb(Ctx0227 **h, GsGpProfile *n) {
     GsUtil_Free(n->peerSig);
     n->peerSig = 0;
     n->requestCount = 0;
-    if (n->infoCache == 0 || (c->infoCachingBuddyOnly == 1 && n->buddyStatus == NULL)) {
-        GsGpProfile_Remove(h, n);
+    if (n->cache == 0 || (c->infoCachingBuddyOnly == 1 && n->buddyStatus == NULL)) {
+        gpiRemoveProfile(h, n);
         return 0;
     }
     return 1;
@@ -801,21 +800,21 @@ s32 GsGp_FreeBuddyDataCb(Ctx0227 **h, GsGpProfile *n) {
 
 namespace Na {
 extern "C" {
-s32 GsGp_CloseConnection(Unk_ov065_0227d8e0_Handle *h, s32 a) {
+s32 gpiDisconnect(Unk_ov065_0227d8e0_Handle *h, s32 a) {
     Unk_ov065_0227d8e0_Ctx *ctx = h->connection;
     s32 st = ctx->connectState;
     s32 out;
     void *p;
-    GsGpQueuedCallback *n;
-    GsGpQueuedCallback *cur;
+    GPICallbackData *n;
+    GPICallbackData *cur;
     if (st != 4) {
     if (st != 0) {
         if (a != 0 && st == 3) {
-            GsGpBuf_AppendString(h, &ctx->outputBuffer, "\\logout\\\\sesskey\\");
-            GsGpBuf_AppendInt(h, &ctx->outputBuffer, ctx->sessKey);
-            GsGpBuf_AppendString(h, &ctx->outputBuffer, "\\final\\");
+            gpiAppendStringToBuffer(h, &ctx->outputBuffer, "\\logout\\\\sesskey\\");
+            gpiAppendIntToBuffer(h, &ctx->outputBuffer, ctx->sessKey);
+            gpiAppendStringToBuffer(h, &ctx->outputBuffer, "\\final\\");
         }
-        GsGp_SendBuffer(h, ctx->cmSocket, &ctx->outputBuffer, &out, 1, "CM");
+        gpiSendFromBuffer(h, ctx->cmSocket, &ctx->outputBuffer, &out, 1, "CM");
         if (ctx->cmSocket != -1) {
             shutdown(ctx->cmSocket, 2);
             closesocket(ctx->cmSocket);
@@ -841,17 +840,17 @@ s32 GsGp_CloseConnection(Unk_ov065_0227d8e0_Handle *h, s32 a) {
     GsUtil_Free(ctx->userUpdateBuffer);
     ctx->userUpdateBuffer = NULL;
     while (ctx->operationList != NULL) {
-        GsGp_RemoveOperation(h, ctx->operationList);
+        gpiRemoveOperation(h, ctx->operationList);
     }
     ctx->operationList = NULL;
-    n = (GsGpQueuedCallback *)ctx->peerList;
+    n = (GPICallbackData *)ctx->peerList;
     while (n != NULL) {
         cur = n;
-        n = *(GsGpQueuedCallback **)((u8 *)n + 0x3c);
-        GsGpPeer_Free(h, cur);
+        n = *(GPICallbackData **)((u8 *)n + 0x3c);
+        gpiDestroyPeer(h, cur);
     }
     ctx->peerList = NULL;
-    while (GsGpProfile_FindIf(h, (s32)GsGp_FreeBuddyDataCb, 0) == 0) {
+    while (gpiProfileMap(h, (s32)gpiDisconnectCleanupProfile, 0) == 0) {
     }
     }
 }
@@ -860,23 +859,23 @@ s32 GsGp_CloseConnection(Unk_ov065_0227d8e0_Handle *h, s32 a) {
 
 namespace Na {
 extern "C" {
-void GsGp_CallErrorCallback(Unk_ov065_0227d8e0_Handle *h, s32 a, s32 b) {
+void gpiCallErrorCallback(Unk_ov065_0227d8e0_Handle *h, s32 a, s32 b) {
     Unk_ov065_0227d8e0_Ctx *ctx = h->connection;
     Unk_ov065_0227e0e8_Wrap p;
-    GsGpError *m;
+    GPErrorArg *m;
     if (b == 1) {
         ctx->fatalError = 1;
     }
     p = ctx->callbacks[0];
-    if (p.p.func != 0) {
-        m = (GsGpError *)GsUtil_Alloc(0x10);
+    if (p.p.callback != 0) {
+        m = (GPErrorArg *)GsUtil_Alloc(0x10);
         if (m != NULL) {
             m->result = a;
-            m->isFatal = b;
+            m->fatal = b;
             m->errorCode = ctx->errorCode;
             m->errorString = ctx;
         }
-        GsGp_QueueCallback(h, p, (GsGpQueuedCallback *)m, NULL, 1);
+        gpiAddCallback(h, p, (GPICallbackData *)m, NULL, 1);
     }
 }
 }

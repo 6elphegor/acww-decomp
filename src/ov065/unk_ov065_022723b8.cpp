@@ -1,6 +1,6 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
-#include "net/GsGpBuddyStatus.h"
+#include "net/gp.h"
 #include "net/DwcMatchCommandHeader.h"
 #include "net/DwcNetChannel.h"
 #include "net/DwcFriendControl.h"
@@ -73,7 +73,7 @@ void DwcFriend_OnBuddyRequestInfo();
 void DwcFriend_Abort();
 void DwcFriend_Tick();
 s32 DwcFriend_HandleGpResult();
-s32 DwcFriend_GetBuddyStatus(void *, GsGpBuddyStatus *);
+s32 DwcFriend_GetBuddyStatus(void *, GPBuddyStatus *);
 s32 NasBase64_Decode(const char *, s32, char *, u32);
 s32 NasBase64_Encode(void *, s32, void *, u32);
 s32 DwcMatch_HandleGt2Result();
@@ -83,17 +83,17 @@ s32 DwcMatch_SendNnRequest(void *);
 s32 DwcMatch_Fail(s32, s32);
 u64 DwcNet_GetTimeMs();
 s32 GsUtil_GetKeyValue(const char *, char *, char *, s32);
-s32 GsPersist_Process();
+s32 PersistThink();
 s32 gt2Connect(u32, s32, s32, char *, s32, s32, s32, s32);
 s32 gt2AddressToString(u32, u32, s32);
 s32 DwcMatch_CancelNewClient(u32);
 s32 DwcMatch_RestartAfterNnFailure(u32);
 s32 DwcMatch_HandleCommand(u32, u32, u32, u32, void *, s32);
-s32 GsGp_SetStatus(GsGpConnection *, s32, char *, char *);
-s32 GsGp_DeleteBuddy(void *, s32);
-s32 GsGp_IsBuddy(void *, s32);
-s32 GsGp_GetBuddyStatus(void *, s32, GsGpBuddyStatus *);
-s32 GsGp_GetInfo(void *, s32, s32, s32, void (*)(), s32);
+s32 gpSetStatusA(GPConnection *, s32, char *, char *);
+s32 gpDeleteBuddy(void *, s32);
+s32 gpIsBuddy(void *, s32);
+s32 gpGetBuddyStatus(void *, s32, GPBuddyStatus *);
+s32 gpGetInfo(void *, s32, s32, s32, void (*)(), s32);
 s32 DwcFriend_GetStatus(void *, u8 *, u8 *, char *);
 s32 DwcFriend_GetStatusString(void *, char *);
 s32 DwcFriend_GetProfileId(s32);
@@ -273,7 +273,7 @@ s32 DwcMatch_HandleGpResult(void);
 s32 DwcMatch_Cleanup(void);
 s32 DwcMatch_UpdateServerStatus(void);
 s32 DwcFriend_SetOwnStatus(s32, void *, s32);
-s32 GsGp_IsBuddy(u32, u32);
+s32 gpIsBuddy(u32, u32);
 s32 DwcMatch_SendCommand(s32, u32, u32, u32, void *, s32);
 s32 DwcMatch_HandleResult(void);
 s32 DwcMatch_Fail(s32, s32);
@@ -284,8 +284,8 @@ s32 NNFreeNegotiateList(void);
 s32 gt2CloseAllConnectionsHard(u32);
 s32 NNCancel(u32);
 s32 DwcLogin_GetUserData(void);
-s32 GsGp_GetBuddyIndex(u32, s32, void *);
-s32 GsGp_GetBuddyStatus(u32, u32, void *);
+s32 gpGetBuddyIndex(u32, s32, void *);
+s32 gpGetBuddyStatus(u32, u32, void *);
 s32 GsUtil_GetKeyValue(const char *, void *, void *, s32);
 s32 DwcMatch_SendReservation(s32, s32);
 u64 OS_GetTick(void);
@@ -344,7 +344,7 @@ s32 DwcMatch_HandleGpResult(s32);
 void qr2_send_statechanged(u32);
 u32 DwcMatch_AllocAid(void);
 void DwcMatch_ResetSyncTimer(u32);
-s32 GsGp_IsBuddy(u32, s32);
+s32 gpIsBuddy(u32, s32);
 s32 DwcMatch_SendReservationCancel(u32);
 s32 DwcFriend_FindIndexByProfileId(s32);
 s32 DwcMatch_TryNextFriend(...);
@@ -422,7 +422,7 @@ void MIi_CpuClear16(u32, void *, u32);
 void MI_CpuFill8(void *, s32, u32);
 s32 OS_SNPrintf(char *, s32, const char *, ...);
 
-s32 GsGp_SendBuddyMessage(u32, u32, char *);
+s32 gpSendBuddyMessageA(u32, u32, char *);
 s32 gt2AddressToString(u32, u32, s32);
 s32 ServerBrowserSendMessageToServerA(u32, s32, u32, void *, s32);
 s32 ServerBrowserSendNatNegotiateCookieToServerA(u32, s32, u32, u32);
@@ -2206,7 +2206,7 @@ s32 DwcMatch_SendGpCommand(u32 a, u32 b, u32 c, char *d) {
         MI_CpuCopy8(d, p, len);
         p[len] = 0;
     }
-    return GsGp_SendBuddyMessage(a, c, buf);
+    return gpSendBuddyMessageA(a, c, buf);
 }
 #undef G
 }
@@ -2636,7 +2636,7 @@ u32 DwcMatch_CheckReservation(s32 a, u32 b, u32 c, u32 d, u32 e) {
     u32 r;
     switch (g->matchType) {
     case 1:
-        if (GsGp_IsBuddy(g->gpConnection, a) == 0) {
+        if (gpIsBuddy(g->gpConnection, a) == 0) {
             r = 0xff;
             goto end;
         }
@@ -2713,7 +2713,7 @@ u32 DwcMatch_CheckReservation(s32 a, u32 b, u32 c, u32 d, u32 e) {
             goto end;
         }
     case 2:
-        if (GsGp_IsBuddy(g->gpConnection, a) == 0) {
+        if (gpIsBuddy(g->gpConnection, a) == 0) {
             r = 0xff;
             goto end;
         }
@@ -2878,7 +2878,7 @@ s32 DwcMatch_TryNextFriend(s32 a, s32 b) {
         u8 buf14[8];
         u32 h;
         char buf20[12];
-        GsGpBuddyStatus status;
+        GPBuddyStatus status;
     } l;
     if (b != 0) {
         next = g->friendCursor;
@@ -2927,8 +2927,8 @@ s32 DwcMatch_TryNextFriend(s32 a, s32 b) {
             } while (i <= *(volatile u8 *)&c->numClients);
         }
         if (i <= n) continue;
-        e0 = GsGp_GetBuddyIndex((*gp)->gpConnection, x, &l.h);
-        e1 = GsGp_GetBuddyStatus((*gp)->gpConnection, l.h, &l.status);
+        e0 = gpGetBuddyIndex((*gp)->gpConnection, x, &l.h);
+        e1 = gpGetBuddyStatus((*gp)->gpConnection, l.h, &l.status);
         if ((e0 | e1) != 0) continue;
         if (l.status.status != 4) continue;
         n1 = GsUtil_GetKeyValue((char *)"VER", l.buf20, l.status.statusString, 0x2f);
@@ -3225,7 +3225,7 @@ s32 DwcMatch_AreAllBuddies(u32 *a, u32 n) {
     u32 i;
     if (g->unk_19e != 0 && g->matchState == 4) return TRUE;
     for (i = 0; i < n; a++, i++) {
-        if (GsGp_IsBuddy(g->gpConnection, *a) == 0) return FALSE;
+        if (gpIsBuddy(g->gpConnection, *a) == 0) return FALSE;
         if (g->unk_19e != 0 && g->matchState == 1) return TRUE;
     }
     return TRUE;

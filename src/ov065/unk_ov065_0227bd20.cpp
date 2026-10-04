@@ -2,7 +2,7 @@
 #include "types.h"
 #include "net/Unk_ov065_0227bd20_Ctx.h"
 #include "net/Unk_ov065_0227c538_Node.h"
-#include "net/GsGpContext.h"
+#include "net/gpi.h"
 
 namespace Nb {
 // ov065_047: DWC HTTP/GHI-like API wrappers (0x0227bbf4..0x0227c4b0)
@@ -14,7 +14,7 @@ namespace Nb {
 
 
 
-typedef void (*GsGpCallback)(void *, void *, void *);
+typedef void (*GPCallback)(void *, void *, void *);
 extern "C" {
 s32 strcmp(const char *, const char *);
 s32 strncmp(const char *, const char *, s32);
@@ -23,20 +23,20 @@ char *strchr(const char *, s32);
 s32 atol(const char *);
 void *memset(void *, s32, s32);
 char *goastrdup(const char *);
-void GsGp_SetErrorString(void *, const char *);
-void GsUtil_StrCopyN(char *, const char *, s32);
-s32 GsGp_SendBuddyMessageEx(void *, s32, s32, s32);
-s32 GsGp_SendDeleteBuddy(void *, s32);
-s32 GsGp_AuthorizeBuddy(void *, s32);
-s32 GsGp_SetInfoString(void *, s32, s32);
-s32 GsGp_RequestProfileInfo(void *, s32, s32, s32, s32, s32);
-s32 GsGpSearch_ProfileSearch(void *, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
-s32 GsGpBuf_AppendString(void *, char *, const char *);
-s32 GsGpBuf_AppendInt(void *, char *, s32);
-s32 GsGpProfile_Find(void *, s32, void *);
-s32 GsGpProfile_FindByBuddyIndex(void *, s32);
-s32 GsGpProfile_IsUnused(void *);
-s32 GsGpProfile_Remove(void *, void *);
+void gpiSetErrorString(void *, const char *);
+void strzcpy(char *, const char *, s32);
+s32 gpiSendBuddyMessage(void *, s32, s32, s32);
+s32 gpiDeleteBuddy(void *, s32);
+s32 gpiAuthBuddyRequest(void *, s32);
+s32 gpiSetInfos(void *, s32, s32);
+s32 gpiGetInfo(void *, s32, s32, s32, s32, s32);
+s32 gpiProfileSearch(void *, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
+s32 gpiAppendStringToBuffer(void *, char *, const char *);
+s32 gpiAppendIntToBuffer(void *, char *, s32);
+s32 gpiGetProfile(void *, s32, void *);
+s32 gpiFindBuddy(void *, s32);
+s32 gpiCanFreeProfile(void *);
+s32 gpiRemoveProfile(void *, void *);
 void GsUtil_Free(void *);
 }
 }
@@ -48,43 +48,43 @@ namespace Nc {
 
 
 
-typedef GsGpContext Ctx0227;
+typedef GPIConnection Ctx0227;
 extern "C" {
 extern s32 __GSIACResult;
 
 
 typedef s32 (*GsGpConnectCallback)(Ctx0227 **, void *, s32);
 
-void GsGp_CloseConnection(Ctx0227 **, s32);
-void GsGp_SetErrorString(Ctx0227 **, const char *);
-s32 GsGp_Connect(Ctx0227 **, const char *, const char *, const char *, const char *, const char *,
+void gpiDisconnect(Ctx0227 **, s32);
+void gpiSetErrorString(Ctx0227 **, const char *);
+s32 gpiConnect(Ctx0227 **, const char *, const char *, const char *, const char *, const char *,
                         const char *, s32, s32, s32, s32, GsGpConnectCallback, s32);
-s32 GsGp_CheckConnected(Ctx0227 **);
+s32 gpiCheckConnect(Ctx0227 **);
 void msleep(s32);
-s32 GsGp_FindOperation(Ctx0227 **, Unk_ov065_0227c538_Node **, s32);
-s32 GsGp_CallPendingCallbacks(Ctx0227 **, s32);
-s32 GsGpPeer_ProcessAll(Ctx0227 **);
-s32 GsGpSearch_ProcessAll(Ctx0227 **);
-void GsGp_CallFailedCallback(Ctx0227 **, Unk_ov065_0227c538_Node *);
-void GsGp_RemoveOperation(Ctx0227 **, Unk_ov065_0227c538_Node *);
-void GsGp_FlushInfoUpdates(Ctx0227 **, char **);
-s32 GsGp_SendBuffer(Ctx0227 **, s32, char **, s32 *, s32, const char *);
-s32 GsGp_RecvToBuffer(Ctx0227 **, s32, char **, s32 *, s32 *, const char *);
-void GsGp_SetError(Ctx0227 **, s32, const char *);
-void GsGp_CallErrorCallback(Ctx0227 **, s32, s32);
-void GsGp_DebugLog(Ctx0227 **, const char *, ...);
+s32 gpiFindOperationByID(Ctx0227 **, Unk_ov065_0227c538_Node **, s32);
+s32 gpiProcessCallbacks(Ctx0227 **, s32);
+s32 gpiProcessPeers(Ctx0227 **);
+s32 gpiProcessSearches(Ctx0227 **);
+void gpiFailedOpCallback(Ctx0227 **, Unk_ov065_0227c538_Node *);
+void gpiRemoveOperation(Ctx0227 **, Unk_ov065_0227c538_Node *);
+void gpiAddLocalInfo(Ctx0227 **, char **);
+s32 gpiSendFromBuffer(Ctx0227 **, s32, char **, s32 *, s32, const char *);
+s32 gpiRecvToBuffer(Ctx0227 **, s32, char **, s32 *, s32 *, const char *);
+void gpiSetError(Ctx0227 **, s32, const char *);
+void gpiCallErrorCallback(Ctx0227 **, s32, s32);
+void gpiDebug(Ctx0227 **, const char *, ...);
 void *GsUtil_Realloc(void *, s32);
-s32 GsGp_CheckServerError(Ctx0227 **, char *, s32);
-s32 GsGp_ProcessBuddyMessage(Ctx0227 **, char *);
-s32 GsGp_HasBlockingOperation(Ctx0227 **);
+s32 gpiCheckForError(Ctx0227 **, char *, s32);
+s32 gpiProcessRecvBuddyMessage(Ctx0227 **, char *);
+s32 gpiOperationsAreBlocking(Ctx0227 **);
 s32 gpiProcessOperation(Ctx0227 **, Unk_ov065_0227c538_Node *, char *);
-void GsGpProfile_FindIf(Ctx0227 **, s32 (*)(Ctx0227 **, Unk_ov065_0227c538_Node *, s32), s32);
-s32 GsGpProfile_Find(Ctx0227 **, s32, Unk_ov065_0227c538_Node **);
-void GsGpBuf_AppendString(Ctx0227 **, char **, const char *);
-void GsGpBuf_AppendInt(Ctx0227 **, char **, s32);
-s32 GsGpProfile_IsUnused(Unk_ov065_0227c538_Node *);
-void GsGpProfile_Remove(Ctx0227 **, Unk_ov065_0227c538_Node *);
-s32 GsGpProfile_InitTable(Ctx0227 **);
+void gpiProfileMap(Ctx0227 **, s32 (*)(Ctx0227 **, Unk_ov065_0227c538_Node *, s32), s32);
+s32 gpiGetProfile(Ctx0227 **, s32, Unk_ov065_0227c538_Node **);
+void gpiAppendStringToBuffer(Ctx0227 **, char **, const char *);
+void gpiAppendIntToBuffer(Ctx0227 **, char **, s32);
+s32 gpiCanFreeProfile(Unk_ov065_0227c538_Node *);
+void gpiRemoveProfile(Ctx0227 **, Unk_ov065_0227c538_Node *);
+s32 gpiInitProfiles(Ctx0227 **);
 void SocketStartUp();
 void current_time();
 void GsUtil_Free(void *);
@@ -99,19 +99,19 @@ s32 strncmp(const char *, const char *, u32);
 void memset(void *, s32, u32);
 void srand();
 
-s32 GsGp_ResetConnection(Ctx0227 **h);
-s32 GsGp_DestroyConnection(Ctx0227 **h);
+s32 gpiReset(Ctx0227 **h);
+s32 gpiDestroy(Ctx0227 **h);
 s32 gpiInitialize(Ctx0227 **h, s32 a, s32 b);
-s32 GsGp_ProcessConnection(Ctx0227 **h, s32 a);
-s32 GsGp_ProcessCmMessages(Ctx0227 **h);
-s32 GsGp_ClearProfileCb(Ctx0227 **h, Unk_ov065_0227c538_Node *n, s32 m);
-s32 GsGp_FixBuddyIndexCb(Ctx0227 **h, Unk_ov065_0227c538_Node *n, s32 m);
+s32 gpiProcess(Ctx0227 **h, s32 a);
+s32 gpiProcessConnectionManager(Ctx0227 **h);
+s32 gpiResetProfile(Ctx0227 **h, Unk_ov065_0227c538_Node *n, s32 m);
+s32 gpiFixBuddyIndices(Ctx0227 **h, Unk_ov065_0227c538_Node *n, s32 m);
 }
 }
 
 namespace Nc {
 extern "C" {
-s32 GsGp_Initialize(Ctx0227 **h, s32 a, s32 b) {
+s32 gpInitialize(Ctx0227 **h, s32 a, s32 b) {
     if (__GSIACResult != 1) {
         return 2;
     }
@@ -125,9 +125,9 @@ s32 GsGp_Initialize(Ctx0227 **h, s32 a, s32 b) {
 
 namespace Nc {
 extern "C" {
-void GsGp_Destroy(Ctx0227 **h) {
+void gpDestroy(Ctx0227 **h) {
     if (h != NULL && *h != NULL) {
-        GsGp_DestroyConnection(h);
+        gpiDestroy(h);
     }
 }
 }
@@ -135,7 +135,7 @@ void GsGp_Destroy(Ctx0227 **h) {
 
 namespace Nc {
 extern "C" {
-s32 GsGp_Process(Ctx0227 **h) {
+s32 gpProcess(Ctx0227 **h) {
     Ctx0227 *c;
     if (h == NULL || (c = *h) == NULL) {
         return 2;
@@ -143,23 +143,23 @@ s32 GsGp_Process(Ctx0227 **h) {
     if (c->simulation != 0) {
         return 0;
     }
-    return GsGp_ProcessConnection(h, 0);
+    return gpiProcess(h, 0);
 }
 }
 }
 
 namespace Nc {
 extern "C" {
-s32 GsGp_SetCallback(Ctx0227 **h, s32 i, s32 x, s32 y) {
+s32 gpSetCallback(Ctx0227 **h, s32 i, s32 x, s32 y) {
     Ctx0227 *c;
     if (h == NULL || (c = *h) == NULL) {
         return 2;
     }
     if (i < 0 || i >= 6) {
-        GsGp_SetErrorString(h, "Invalid func.");
+        gpiSetErrorString(h, "Invalid func.");
         return 2;
     }
-    c->callbacks[i].func = x;
+    c->callbacks[i].callback = x;
     c->callbacks[i].param = y;
     return 0;
 }
@@ -168,7 +168,7 @@ s32 GsGp_SetCallback(Ctx0227 **h, s32 i, s32 x, s32 y) {
 
 namespace Nc {
 extern "C" {
-s32 GsGp_ConnectPreAuth(Ctx0227 **h, char *a, char *b, s32 c, s32 d, GsGpConnectCallback cb, s32 e) {
+s32 gpConnectPreAuthenticatedA(Ctx0227 **h, char *a, char *b, s32 c, s32 d, GsGpConnectCallback cb, s32 e) {
     Ctx0227 *ctx;
     if (h == NULL || (ctx = *h) == NULL) {
         return 2;
@@ -180,7 +180,7 @@ s32 GsGp_ConnectPreAuth(Ctx0227 **h, char *a, char *b, s32 c, s32 d, GsGpConnect
         return 2;
     }
     if (cb == NULL) {
-        GsGp_SetErrorString(h, "No callback.");
+        gpiSetErrorString(h, "No callback.");
         return 2;
     }
     if (ctx->simulation != 0) {
@@ -188,7 +188,7 @@ s32 GsGp_ConnectPreAuth(Ctx0227 **h, char *a, char *b, s32 c, s32 d, GsGpConnect
         cb(h, z, e);
         return 0;
     }
-    return GsGp_Connect(h, "", "", "",
+    return gpiConnect(h, "", "", "",
                                "", a, b, 0, c, 0, d, cb, e);
 }
 }
@@ -196,14 +196,14 @@ s32 GsGp_ConnectPreAuth(Ctx0227 **h, char *a, char *b, s32 c, s32 d, GsGpConnect
 
 namespace Nc {
 extern "C" {
-void GsGp_Disconnect(Ctx0227 **h) {
+void gpDisconnect(Ctx0227 **h) {
     Ctx0227 *c;
     if (h != NULL) {
         c = *h;
         if (c != NULL) {
             if (c->simulation == 0) {
-                GsGp_CloseConnection(h, 1);
-                GsGp_ResetConnection(h);
+                gpiDisconnect(h, 1);
+                gpiReset(h);
             }
         }
     }
@@ -213,13 +213,13 @@ void GsGp_Disconnect(Ctx0227 **h) {
 
 namespace Nb {
 extern "C" {
-s32 GsGp_ProfileSearch(Unk_ov065_0227bd20_Handle *h, s32 a1, s32 a2, s32 a3, s32 a4, s32 a5, s32 a6, s32 a7, GsGpCallback cb, void *arg) {
+s32 gpProfileSearchA(Unk_ov065_0227bd20_Handle *h, s32 a1, s32 a2, s32 a3, s32 a4, s32 a5, s32 a6, s32 a7, GPCallback cb, void *arg) {
     Unk_ov065_0227bd20_Ctx *c;
     if (h == NULL || (c = h->connection) == NULL) {
         return 2;
     }
     if (cb == NULL) {
-        GsGp_SetErrorString(h, "No callback.");
+        gpiSetErrorString(h, "No callback.");
         return 2;
     }
     if (c->simulation != 0) {
@@ -228,20 +228,20 @@ s32 GsGp_ProfileSearch(Unk_ov065_0227bd20_Handle *h, s32 a1, s32 a2, s32 a3, s32
         cb(h, &l, arg);
         return 0;
     }
-    return GsGpSearch_ProfileSearch(h, a1, a2, a3, a4, a5, a6, 0, a7, (s32)cb, (s32)arg);
+    return gpiProfileSearch(h, a1, a2, a3, a4, a5, a6, 0, a7, (s32)cb, (s32)arg);
 }
 }
 }
 
 namespace Nb {
 extern "C" {
-s32 GsGp_GetInfo(Unk_ov065_0227bd20_Handle *h, s32 a1, s32 a2, s32 a3, GsGpCallback cb, void *arg) {
+s32 gpGetInfo(Unk_ov065_0227bd20_Handle *h, s32 a1, s32 a2, s32 a3, GPCallback cb, void *arg) {
     Unk_ov065_0227bd20_Ctx *c;
     if (h == NULL || (c = h->connection) == NULL || a1 == 0) {
         return 2;
     }
     if (cb == NULL) {
-        GsGp_SetErrorString(h, "No callback.");
+        gpiSetErrorString(h, "No callback.");
         return 2;
     }
     if (c->simulation != 0) {
@@ -250,17 +250,17 @@ s32 GsGp_GetInfo(Unk_ov065_0227bd20_Handle *h, s32 a1, s32 a2, s32 a3, GsGpCallb
         return 0;
     }
     if (c->connectState == 4) {
-        GsGp_SetErrorString(h, "The connection has already been disconnected.");
+        gpiSetErrorString(h, "The connection has already been disconnected.");
         return 2;
     }
-    return GsGp_RequestProfileInfo(h, a1, a2, a3, (s32)cb, (s32)arg);
+    return gpiGetInfo(h, a1, a2, a3, (s32)cb, (s32)arg);
 }
 }
 }
 
 namespace Nb {
 extern "C" {
-s32 GsGp_SetInfo(Unk_ov065_0227bd20_Handle *h, s32 a, s32 b) {
+s32 gpSetInfosA(Unk_ov065_0227bd20_Handle *h, s32 a, s32 b) {
     Unk_ov065_0227bd20_Ctx *c;
     if (h == NULL || (c = h->connection) == NULL) {
         return 2;
@@ -269,17 +269,17 @@ s32 GsGp_SetInfo(Unk_ov065_0227bd20_Handle *h, s32 a, s32 b) {
         return 0;
     }
     if (c->connectState == 4) {
-        GsGp_SetErrorString(h, "The connection has already been disconnected.");
+        gpiSetErrorString(h, "The connection has already been disconnected.");
         return 2;
     }
-    return GsGp_SetInfoString(h, a, b);
+    return gpiSetInfos(h, a, b);
 }
 }
 }
 
 namespace Nb {
 extern "C" {
-s32 GsGp_SendBuddyRequest(Unk_ov065_0227bd20_Handle *h, s32 v, const char *s) {
+s32 gpSendBuddyRequestA(Unk_ov065_0227bd20_Handle *h, s32 v, const char *s) {
     Unk_ov065_0227bd20_Ctx *c;
     char b[0x401];
     char *p;
@@ -290,14 +290,14 @@ s32 GsGp_SendBuddyRequest(Unk_ov065_0227bd20_Handle *h, s32 v, const char *s) {
         return 0;
     }
     if (c->connectState == 4) {
-        GsGp_SetErrorString(h, "The connection has already been disconnected.");
+        gpiSetErrorString(h, "The connection has already been disconnected.");
         return 2;
     }
     if (s == NULL) {
-        GsGp_SetErrorString(h, "Invalid reason.");
+        gpiSetErrorString(h, "Invalid reason.");
         return 2;
     }
-    GsUtil_StrCopyN(b, s, 0x401);
+    strzcpy(b, s, 0x401);
     if (b[0] != 0) {
         p = b;
         do {
@@ -307,14 +307,14 @@ s32 GsGp_SendBuddyRequest(Unk_ov065_0227bd20_Handle *h, s32 v, const char *s) {
             p++;
         } while (*p != 0);
     }
-    GsGpBuf_AppendString(h, c->outputBuffer, "\\addbuddy\\");
-    GsGpBuf_AppendString(h, c->outputBuffer, "\\sesskey\\");
-    GsGpBuf_AppendInt(h, c->outputBuffer, c->sessKey);
-    GsGpBuf_AppendString(h, c->outputBuffer, "\\newprofileid\\");
-    GsGpBuf_AppendInt(h, c->outputBuffer, v);
-    GsGpBuf_AppendString(h, c->outputBuffer, "\\reason\\");
-    GsGpBuf_AppendString(h, c->outputBuffer, b);
-    GsGpBuf_AppendString(h, c->outputBuffer, "\\final\\");
+    gpiAppendStringToBuffer(h, c->outputBuffer, "\\addbuddy\\");
+    gpiAppendStringToBuffer(h, c->outputBuffer, "\\sesskey\\");
+    gpiAppendIntToBuffer(h, c->outputBuffer, c->sessKey);
+    gpiAppendStringToBuffer(h, c->outputBuffer, "\\newprofileid\\");
+    gpiAppendIntToBuffer(h, c->outputBuffer, v);
+    gpiAppendStringToBuffer(h, c->outputBuffer, "\\reason\\");
+    gpiAppendStringToBuffer(h, c->outputBuffer, b);
+    gpiAppendStringToBuffer(h, c->outputBuffer, "\\final\\");
     return 0;
 }
 }
@@ -322,7 +322,7 @@ s32 GsGp_SendBuddyRequest(Unk_ov065_0227bd20_Handle *h, s32 v, const char *s) {
 
 namespace Nb {
 extern "C" {
-s32 GsGp_AuthorizeBuddyRequest(Unk_ov065_0227bd20_Handle *h, s32 a) {
+s32 gpAuthBuddyRequest(Unk_ov065_0227bd20_Handle *h, s32 a) {
     Unk_ov065_0227bd20_Ctx *c;
     if (h == NULL || (c = h->connection) == NULL) {
         return 2;
@@ -331,17 +331,17 @@ s32 GsGp_AuthorizeBuddyRequest(Unk_ov065_0227bd20_Handle *h, s32 a) {
         return 0;
     }
     if (c->connectState == 4) {
-        GsGp_SetErrorString(h, "The connection has already been disconnected.");
+        gpiSetErrorString(h, "The connection has already been disconnected.");
         return 2;
     }
-    return GsGp_AuthorizeBuddy(h, a);
+    return gpiAuthBuddyRequest(h, a);
 }
 }
 }
 
 namespace Nb {
 extern "C" {
-s32 GsGp_DenyBuddyRequest(Unk_ov065_0227bd20_Handle *h, s32 a) {
+s32 gpDenyBuddyRequest(Unk_ov065_0227bd20_Handle *h, s32 a) {
     Unk_ov065_0227bd20_Ctx *c;
     s32 *e;
     if (h == NULL || (c = h->connection) == NULL) {
@@ -351,18 +351,18 @@ s32 GsGp_DenyBuddyRequest(Unk_ov065_0227bd20_Handle *h, s32 a) {
         return 0;
     }
     if (c->connectState == 4) {
-        GsGp_SetErrorString(h, "The connection has already been disconnected.");
+        gpiSetErrorString(h, "The connection has already been disconnected.");
         return 2;
     }
-    if (GsGpProfile_Find(h, a, &e) == 0) {
+    if (gpiGetProfile(h, a, &e) == 0) {
         return 0;
     }
     e[5]--;
     if (c->infoCaching == 0 && e[5] <= 0) {
         GsUtil_Free((void *)e[4]);
         e[4] = 0;
-        if (GsGpProfile_IsUnused(e) != 0) {
-            GsGpProfile_Remove(h, e);
+        if (gpiCanFreeProfile(e) != 0) {
+            gpiRemoveProfile(h, e);
         }
     }
     return 0;
@@ -372,7 +372,7 @@ s32 GsGp_DenyBuddyRequest(Unk_ov065_0227bd20_Handle *h, s32 a) {
 
 namespace Nb {
 extern "C" {
-s32 GsGp_GetNumBuddies(Unk_ov065_0227bd20_Handle *h, s32 *out) {
+s32 gpGetNumBuddies(Unk_ov065_0227bd20_Handle *h, s32 *out) {
     Unk_ov065_0227bd20_Ctx *c;
     if (h == NULL || (c = h->connection) == NULL) {
         return 2;
@@ -389,10 +389,10 @@ s32 GsGp_GetNumBuddies(Unk_ov065_0227bd20_Handle *h, s32 *out) {
 
 namespace Nb {
 extern "C" {
-s32 GsGp_GetBuddyStatus(Unk_ov065_0227bd20_Handle *h, s32 idx, Unk_ov065_0227c05c_Out *out) {
+s32 gpGetBuddyStatus(Unk_ov065_0227bd20_Handle *h, s32 idx, Unk_ov065_0227c05c_Out *out) {
     Unk_ov065_0227bd20_Ctx *c;
     Unk_ov065_0227c05c_Ent *ent;
-    GsGpBuddyStatusInfo *s;
+    GPIBuddyStatus *s;
     s32 n;
     if (h == NULL || (c = h->connection) == NULL) {
         return 2;
@@ -402,29 +402,29 @@ s32 GsGp_GetBuddyStatus(Unk_ov065_0227bd20_Handle *h, s32 idx, Unk_ov065_0227c05
         return 0;
     }
     if (out == NULL) {
-        GsGp_SetErrorString(h, "Invalid status.");
+        gpiSetErrorString(h, "Invalid status.");
         return 2;
     }
     n = c->numBuddies;
     if (idx < 0 || idx >= n) {
-        GsGp_SetErrorString(h, "Invalid index.");
+        gpiSetErrorString(h, "Invalid index.");
         return 2;
     }
-    ent = (Unk_ov065_0227c05c_Ent *)GsGpProfile_FindByBuddyIndex(h, idx);
+    ent = (Unk_ov065_0227c05c_Ent *)gpiFindBuddy(h, idx);
     if (ent == NULL) {
-        GsGp_SetErrorString(h, "Invalid index.");
+        gpiSetErrorString(h, "Invalid index.");
         return 2;
     }
     s = ent->buddyStatus;
     out->profileId = ent->profileId;
     out->status = s->status;
     if (s->statusString != NULL) {
-        GsUtil_StrCopyN(out->statusString, s->statusString, 0x100);
+        strzcpy(out->statusString, s->statusString, 0x100);
     } else {
         *s->statusString = 0;
     }
     if (s->locationString != NULL) {
-        GsUtil_StrCopyN(out->locationString, s->locationString, 0x100);
+        strzcpy(out->locationString, s->locationString, 0x100);
     } else {
         *s->locationString = 0;
     }
@@ -437,7 +437,7 @@ s32 GsGp_GetBuddyStatus(Unk_ov065_0227bd20_Handle *h, s32 idx, Unk_ov065_0227c05
 
 namespace Nb {
 extern "C" {
-s32 GsGp_GetBuddyIndex(Unk_ov065_0227bd20_Handle *h, s32 a, s32 *out) {
+s32 gpGetBuddyIndex(Unk_ov065_0227bd20_Handle *h, s32 a, s32 *out) {
     Unk_ov065_0227bd20_Ctx *c;
     s32 **e;
     if (h == NULL || (c = h->connection) == NULL) {
@@ -447,7 +447,7 @@ s32 GsGp_GetBuddyIndex(Unk_ov065_0227bd20_Handle *h, s32 a, s32 *out) {
         *out = 0;
         return 0;
     }
-    if (GsGpProfile_Find(h, a, &e) != 0 && e[2] != 0) {
+    if (gpiGetProfile(h, a, &e) != 0 && e[2] != 0) {
         *out = *e[2];
     } else {
         *out = -1;
@@ -459,7 +459,7 @@ s32 GsGp_GetBuddyIndex(Unk_ov065_0227bd20_Handle *h, s32 a, s32 *out) {
 
 namespace Nb {
 extern "C" {
-s32 GsGp_IsBuddy(Unk_ov065_0227bd20_Handle *h, s32 a) {
+s32 gpIsBuddy(Unk_ov065_0227bd20_Handle *h, s32 a) {
     Unk_ov065_0227bd20_Ctx *c;
     s32 **e;
     if (h == NULL || (c = h->connection) == NULL) {
@@ -468,7 +468,7 @@ s32 GsGp_IsBuddy(Unk_ov065_0227bd20_Handle *h, s32 a) {
     if (c->simulation != 0) {
         return 0;
     }
-    if (GsGpProfile_Find(h, a, &e) != 0 && e[2] != 0) {
+    if (gpiGetProfile(h, a, &e) != 0 && e[2] != 0) {
         return 1;
     }
     return 0;
@@ -478,7 +478,7 @@ s32 GsGp_IsBuddy(Unk_ov065_0227bd20_Handle *h, s32 a) {
 
 namespace Nb {
 extern "C" {
-s32 GsGp_DeleteBuddy(Unk_ov065_0227bd20_Handle *h, s32 a) {
+s32 gpDeleteBuddy(Unk_ov065_0227bd20_Handle *h, s32 a) {
     Unk_ov065_0227bd20_Ctx *c;
     if (h == NULL || (c = h->connection) == NULL) {
         return 2;
@@ -487,10 +487,10 @@ s32 GsGp_DeleteBuddy(Unk_ov065_0227bd20_Handle *h, s32 a) {
         return 0;
     }
     if (c->connectState == 4) {
-        GsGp_SetErrorString(h, "The connection has already been disconnected.");
+        gpiSetErrorString(h, "The connection has already been disconnected.");
         return 2;
     }
-    if (GsGp_SendDeleteBuddy(h, a) == 0) {
+    if (gpiDeleteBuddy(h, a) == 0) {
         return 0;
     }
 }
@@ -499,7 +499,7 @@ s32 GsGp_DeleteBuddy(Unk_ov065_0227bd20_Handle *h, s32 a) {
 
 namespace Nb {
 extern "C" {
-s32 GsGp_SetStatus(Unk_ov065_0227bd20_Handle *h, s32 v, const char *s1, const char *s2) {
+s32 gpSetStatusA(Unk_ov065_0227bd20_Handle *h, s32 v, const char *s1, const char *s2) {
     Unk_ov065_0227bd20_Ctx *c;
     char b1[0x100];
     char b2[0x100];
@@ -511,18 +511,18 @@ s32 GsGp_SetStatus(Unk_ov065_0227bd20_Handle *h, s32 v, const char *s1, const ch
         return 0;
     }
     if (c->connectState == 4) {
-        GsGp_SetErrorString(h, "The connection has already been disconnected.");
+        gpiSetErrorString(h, "The connection has already been disconnected.");
         return 2;
     }
     if (s1 == NULL) {
-        GsGp_SetErrorString(h, "Invalid statusString.");
+        gpiSetErrorString(h, "Invalid statusString.");
         return 2;
     }
     if (s2 == NULL) {
-        GsGp_SetErrorString(h, "Invalid locationString.");
+        gpiSetErrorString(h, "Invalid locationString.");
         return 2;
     }
-    GsUtil_StrCopyN(b1, s1, 0x100);
+    strzcpy(b1, s1, 0x100);
     if (b1[0] != 0) {
         p = b1;
         do {
@@ -532,7 +532,7 @@ s32 GsGp_SetStatus(Unk_ov065_0227bd20_Handle *h, s32 v, const char *s1, const ch
             p++;
         } while (*p != 0);
     }
-    GsUtil_StrCopyN(b2, s2, 0x100);
+    strzcpy(b2, s2, 0x100);
     if (b2[0] != 0) {
         p = b2;
         do {
@@ -546,17 +546,17 @@ s32 GsGp_SetStatus(Unk_ov065_0227bd20_Handle *h, s32 v, const char *s1, const ch
         return 0;
     }
     c->lastStatus = v;
-    GsUtil_StrCopyN(c->lastStatusString, b1, 0x100);
-    GsUtil_StrCopyN(c->lastLocationString, b2, 0x100);
-    GsGpBuf_AppendString(h, c->outputBuffer, "\\status\\");
-    GsGpBuf_AppendInt(h, c->outputBuffer, v);
-    GsGpBuf_AppendString(h, c->outputBuffer, "\\sesskey\\");
-    GsGpBuf_AppendInt(h, c->outputBuffer, c->sessKey);
-    GsGpBuf_AppendString(h, c->outputBuffer, "\\statstring\\");
-    GsGpBuf_AppendString(h, c->outputBuffer, b1);
-    GsGpBuf_AppendString(h, c->outputBuffer, "\\locstring\\");
-    GsGpBuf_AppendString(h, c->outputBuffer, b2);
-    GsGpBuf_AppendString(h, c->outputBuffer, "\\final\\");
+    strzcpy(c->lastStatusString, b1, 0x100);
+    strzcpy(c->lastLocationString, b2, 0x100);
+    gpiAppendStringToBuffer(h, c->outputBuffer, "\\status\\");
+    gpiAppendIntToBuffer(h, c->outputBuffer, v);
+    gpiAppendStringToBuffer(h, c->outputBuffer, "\\sesskey\\");
+    gpiAppendIntToBuffer(h, c->outputBuffer, c->sessKey);
+    gpiAppendStringToBuffer(h, c->outputBuffer, "\\statstring\\");
+    gpiAppendStringToBuffer(h, c->outputBuffer, b1);
+    gpiAppendStringToBuffer(h, c->outputBuffer, "\\locstring\\");
+    gpiAppendStringToBuffer(h, c->outputBuffer, b2);
+    gpiAppendStringToBuffer(h, c->outputBuffer, "\\final\\");
     return 0;
 }
 }
@@ -564,7 +564,7 @@ s32 GsGp_SetStatus(Unk_ov065_0227bd20_Handle *h, s32 v, const char *s1, const ch
 
 namespace Nb {
 extern "C" {
-s32 GsGp_SendBuddyMessage(Unk_ov065_0227bd20_Handle *h, s32 a, s32 b) {
+s32 gpSendBuddyMessageA(Unk_ov065_0227bd20_Handle *h, s32 a, s32 b) {
     Unk_ov065_0227bd20_Ctx *c;
     if (h == NULL || (c = h->connection) == NULL) {
         return 2;
@@ -573,27 +573,27 @@ s32 GsGp_SendBuddyMessage(Unk_ov065_0227bd20_Handle *h, s32 a, s32 b) {
         return 0;
     }
     if (c->connectState == 4) {
-        GsGp_SetErrorString(h, "The connection has already been disconnected.");
+        gpiSetErrorString(h, "The connection has already been disconnected.");
         return 2;
     }
     if (b == 0) {
-        GsGp_SetErrorString(h, "Invalid message.");
+        gpiSetErrorString(h, "Invalid message.");
         return 2;
     }
-    return GsGp_SendBuddyMessageEx(h, a, 1, b);
+    return gpiSendBuddyMessage(h, a, 1, b);
 }
 }
 }
 
-// Not in the original binary: unreferenced weak function compiled right after GsGp_SendBuddyMessage, so that the four
+// Not in the original binary: unreferenced weak function compiled right after gpSendBuddyMessageA, so that the four
 // shared literals are pooled first as in the original; removed by the dead-stripping link (see notes.txt).
 namespace Nb {
 extern "C" {
 __declspec(weak) void Unk_ov065_0227bd20_pool_order(void) {
-    GsGp_SetErrorString(0, "The connection has already been disconnected.");
-    GsGp_SetErrorString(0, "\\sesskey\\");
-    GsGp_SetErrorString(0, "\\final\\");
-    GsGp_SetErrorString(0, "No callback.");
+    gpiSetErrorString(0, "The connection has already been disconnected.");
+    gpiSetErrorString(0, "\\sesskey\\");
+    gpiSetErrorString(0, "\\final\\");
+    gpiSetErrorString(0, "No callback.");
 }
 }
 }

@@ -19,12 +19,12 @@ extern "C" {
 
 
 extern "C" {
-extern DArrayImplementation *sGsPersistRequests;
+extern DArrayImplementation *serverreqs;
 extern s32 sGsPersistSocket;
-extern s32 data_ov065_022910f8;
-extern char *data_ov065_022910f0;
-extern s32 data_ov065_02291100;
-extern s32 data_ov065_022910ec;
+extern s32 stats_initstate;
+extern char *rcvbuffer;
+extern s32 rcvmax;
+extern s32 rcvlen;
 extern volatile s32 data_ov065_022910fc;
 extern char data_ov065_02291304[];
 extern char *sGsPersistXorKey;
@@ -44,9 +44,9 @@ s32 abs(s32);
 
 void *ArrayNth(DArrayImplementation *, s32);
 s32 ArrayLength(DArrayImplementation *);
-void GsPersist_CompleteRequest(s32, s32, s32, char *, s32);
-s32 GsPersist_ProcessReceived(char *, s32);
-void GsPersist_FailAllRequests();
+void CallReqCallback(s32, s32, s32, char *, s32);
+s32 ProcessInBuffer(char *, s32);
+void ClosePendingCallbacks();
 s32 CanReceiveOnSocket(s32);
 s32 recv(s32, char *, s32, s32);
 void shutdown(s32, s32);
@@ -57,15 +57,15 @@ void *GsUtil_Alloc(s32);
 s32 current_time(u8 *);
 void gti2CloseSocket(GTI2Socket *);
 
-void GsPersist_HandleAuthReply(char *, s32);
-void GsPersist_HandleGetPidReply(char *, s32);
-void GsPersist_HandleGetReply(char *, s32);
-s32 GsPersist_HandleSetReply(char *, s32);
-s32 GsPersist_FindRequest(s32, s32, s32);
-char *GsPersist_GetValueOrEmpty(char *, char *);
-char *GsPersist_GetValue(char *, char *);
-s32 GsPersist_CanRead(s32);
-void GsPersist_Disconnect();
+void ProcessPlayerAuth(char *, s32);
+void ProcessGetPid(char *, s32);
+void ProcessGetData(char *, s32);
+s32 ProcessSetData(char *, s32);
+s32 FindRequest(s32, s32, s32);
+char *value_for_key_safe(char *, char *);
+char *value_for_key(char *, char *);
+s32 SocketReadable(s32);
+void CloseStatsConnection();
 s32 gti2VerifyChallenge(u8 *);
 
 

@@ -2,10 +2,10 @@
 #define NET_UNK_OV065_02280E7C_CTX_H
 
 #include "types.h"
-#include "net/GsGpPeer.h"
-#include "net/GsGpProfile.h"
+#include "net/gpiPeer.h"
+#include "net/gpiProfile.h"
 
-// GsGpContext view of the peer code (nick/password, buddy-message callback, peer socket and list) and the callback pair
+// GPIConnection view of the peer code (nick/password, buddy-message callback, peer socket and list) and the callback pair
 // with constructors used there (src/ov065/unk_ov065_02280c08.cpp gpiPeer.c, src/ov065/unk_ov065_0228176c.cpp).
 
 struct Unk_ov065_02280e7c_Ctx {
@@ -19,7 +19,7 @@ struct Unk_ov065_02280e7c_Ctx {
     /* 0x1c4 */ u8 pad_1c4[0x40];
     /* 0x204 */ s32 peerSocket;
     /* 0x208 */ u8 pad_208[0x22c];
-    /* 0x434 */ GsGpPeer *peerList;
+    /* 0x434 */ GPIPeer *peerList;
 };
 
 struct Unk_ov065_02280e7c_Pair {

@@ -2,7 +2,7 @@
 #define NET_DWCCONTROL_H
 
 #include "types.h"
-#include "net/GsGpConnection.h"
+#include "net/gp.h"
 #include "net/DwcFriendControl.h"
 #include "net/DwcUserData.h"
 #include "net/DwcMatchControl.h"
@@ -19,9 +19,9 @@ typedef void (*DwcNasLoginCallback)(void *, void *, u32);             // after N
 
 // sDwcLoginControl = &DwcControl::loginControl (0x264 bytes, cleared by DwcLogin_InitControl).
 struct DwcLoginControl {
-    /* 0x000 */ GsGpConnection *gpConnection;
+    /* 0x000 */ GPConnection *gpConnection;
     /* 0x004 */ s32 state;
-    /* 0x008 */ u32 productId; // GsGp_Initialize argument
+    /* 0x008 */ u32 productId; // gpInitialize argument
     /* 0x00c */ u32 gameCode;
     /* 0x010 */ u32 unk_10; // DwcLogin_Start arguments 1 and 2
     /* 0x014 */ u32 unk_14;
@@ -48,7 +48,7 @@ struct DwcControl {
     /* 0x010 */ void *gt2PingCallback;
     /* 0x014 */ void *gt2SendBufferSize;
     /* 0x018 */ void *gt2RecvBufferSize;
-    /* 0x01c */ GsGpConnection gpConnection;
+    /* 0x01c */ GPConnection gpConnection;
     /* 0x020 */ void *userData;
     /* 0x024 */ s32 state;
     /* 0x028 */ s32 prevState;

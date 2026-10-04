@@ -1,21 +1,21 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
 #include "net/GsSocket.h"
-#include "net/GsHttpConnection.h"
+#include "net/ghttpConnection.h"
 
 // ov065 TU37: ghttp (1): ghttpBuffer / connection table / ghttpMain (0x0227931c..0x0227a284)
 
 
 extern "C" {
-s32 sGsHttpThrottleBytes = 125;
-u32 sGsHttpThrottleDelay = 250;
-void **sGsHttpConnections;
-s32 sGsHttpSerial;
-s32 sGsHttpConnectionCount;
-s32 sGsHttpConnectionCap;
-void *sGsHttpProxyHost;
-u32 sGsHttpProxyPort;
-s32 sGsHttpStartupCount;
+s32 ghiThrottleBufferSize = 125;
+u32 ghiThrottleTimeDelay = 250;
+void **ghiConnections;
+s32 ghiNextUniqueID;
+s32 ghiNumConnections;
+s32 ghiConnectionsLen;
+void *ghiProxyAddress;
+u32 ghiProxyPort;
+s32 ghiReferenceCount;
 }
 
 namespace Ng {
@@ -49,7 +49,7 @@ s32 Sock_Fcntl(s32 a, s32 cmd, u32 flags);
 u32 SockCore_GetHostIp();
 s32 IpAddr_StoreBe32(u32 v, u32 *p);
 u32 GOAGetLastError(s32 s);
-s32 GsHttp_SocketSend(GsHttpConnection *o, char *buf, s32 n);
+s32 ghiDoSend(GHIConnection *o, char *buf, s32 n);
 u32 STD_GetStringLength(const char *s);
 char *STD_CopyString(char *d, const char *s);
 void *GsUtil_Alloc(u32 n);
@@ -66,8 +66,8 @@ s32 CheckRcode(s32 a, s32 b);
 s32 setsockopt(s32 a, s32 b, s32 c, s32 d, s32 e);
 s32 getsockopt(s32 a, s32 b, s32 c, void *val, s32 *len);
 s32 GSISocketSelect(s32 sock, s32 *rd, s32 *wr, s32 *ex);
-s32 GsHttpBuf_Append(GsHttpBuffer *o, char *s, s32 len);
-s32 GsHttpBuf_Grow(GsHttpBuffer *o, s32 n);
+s32 ghiAppendDataToBuffer(GHIBuffer *o, char *s, s32 len);
+s32 ghiResizeBuffer(GHIBuffer *o, s32 n);
 
 }
 
@@ -77,30 +77,30 @@ static inline u32 Unk_ov065_02278dfc_Ntohl(u32 x) {
 }
 }
 extern "C" {
-s32 GsHttpBuf_Append(GsHttpBuffer *o, char *s, s32 len);
-void GsHttpBuf_Free(GsHttpBuffer *o);
-s32 GsHttpBuf_InitUser(GsHttpConnection *ow, GsHttpBuffer *o, char *buf, s32 size);
-s32 GsHttpBuf_Init(GsHttpConnection *ow, GsHttpBuffer *o, s32 size, s32 grow);
-s32 GsHttpBuf_Grow(GsHttpBuffer *o, s32 n);
+s32 ghiAppendDataToBuffer(GHIBuffer *o, char *s, s32 len);
+void ghiFreeBuffer(GHIBuffer *o);
+s32 ghiInitFixedBuffer(GHIConnection *ow, GHIBuffer *o, char *buf, s32 size);
+s32 ghiInitBuffer(GHIConnection *ow, GHIBuffer *o, s32 size, s32 grow);
+s32 ghiResizeBuffer(GHIBuffer *o, s32 n);
 }
 }
 
 namespace Nc {
 
-typedef void (*GsHttpPostCallback)(u32, u32, u32, u32, u32, u32);
-typedef void (*GsHttpProgressCallback)(u32, u32, u32, u32, u32, u32, u32);
-typedef s32 (*GsHttpCompletedCallback)(u32, u32, u32, u32, u32);
-typedef s32 (*GsHttpDecryptFn)(GsHttpConnection *, void *, u8 *, s32 *, u8 *, s32 *);
-typedef void (*GsHttpEncryptCleanupFn)(GsHttpConnection *, void *);
+typedef void (*ghttpPostCallback)(u32, u32, u32, u32, u32, u32);
+typedef void (*ghttpProgressCallback)(u32, u32, u32, u32, u32, u32, u32);
+typedef s32 (*ghttpCompletedCallback)(u32, u32, u32, u32, u32);
+typedef s32 (*GsHttpDecryptFn)(GHIConnection *, void *, u8 *, s32 *, u8 *, s32 *);
+typedef void (*GsHttpEncryptCleanupFn)(GHIConnection *, void *);
 
 
 extern "C" {
-extern GsHttpConnection **sGsHttpConnections;
-extern s32 sGsHttpConnectionCap;
-extern s32 sGsHttpConnectionCount;
-extern s32 sGsHttpSerial;
-extern u32 sGsHttpThrottleDelay;
-extern s32 sGsHttpThrottleBytes;
+extern GHIConnection **ghiConnections;
+extern s32 ghiConnectionsLen;
+extern s32 ghiNumConnections;
+extern s32 ghiNextUniqueID;
+extern u32 ghiThrottleTimeDelay;
+extern s32 ghiThrottleBufferSize;
 
 u32 ArrayLength(u32);
 s32 send(s32, u8 *, s32, s32);
@@ -109,51 +109,51 @@ s32 GOAGetLastError(s32);
 void shutdown(s32, s32);
 void closesocket(s32);
 u32 current_time();
-BOOL GsHttpBuf_Read(void *, u8 *, s32 *);
-void GsHttpBuf_Reset(void *);
-BOOL GsHttpBuf_Append(void *, u8 *, s32);
-void GsHttpBuf_Free(void *);
-BOOL GsHttpBuf_Init(void *, void *, s32, s32);
-BOOL GsHttpBuf_Grow(void *, s32);
+BOOL ghiReadDataFromBuffer(void *, u8 *, s32 *);
+void ghiResetBuffer(void *);
+BOOL ghiAppendDataToBuffer(void *, u8 *, s32);
+void ghiFreeBuffer(void *);
+BOOL ghiInitBuffer(void *, void *, s32, s32);
+BOOL ghiResizeBuffer(void *, s32);
 void GsUtil_Free(void *);
 void *GsUtil_Realloc(void *, u32);
 void *GsUtil_Alloc(u32);
-void GsHttp_FreePostState(void *);
-BOOL GsHttpPost_GetAutoFree(void *);
-void GsHttpPost_Free(void *);
+void ghiPostCleanupState(void *);
+BOOL ghiIsPostAutoFree(void *);
+void ghiFreePost(void *);
 void memmove(void *, void *, u32);
 void memset(void *, s32, u32);
 
-void GsHttp_LeaveCritical();
-void GsHttp_EnterCritical();
-BOOL GsHttp_FreeConnection(GsHttpConnection *);
-s32 GsHttp_FindFreeSlot();
-BOOL GsHttp_DecryptReceived(GsHttpConnection *);
-void GsHttp_ForEachConnection(BOOL (*)(GsHttpConnection *));
+void ghiUnlock();
+void ghiLock();
+BOOL ghiFreeConnection(GHIConnection *);
+s32 ghiFindFreeSlot();
+BOOL ghiDecryptReceivedData(GHIConnection *);
+void ghiEnumConnections(BOOL (*)(GHIConnection *));
 }
 
 
 extern "C" {
-s32 GsHttp_SocketSend(GsHttpConnection *self, u8 *buf, s32 len);
+s32 ghiDoSend(GHIConnection *self, u8 *buf, s32 len);
 }
 extern "C" {
-void GsHttp_CallPostCallback(GsHttpConnection *self);
-void GsHttp_CallProgressCallback(GsHttpConnection *self, u32 p1, u32 p2);
-void GsHttp_CallCompletedCallback(GsHttpConnection *self);
-s32 GsHttp_SendOrQueue(GsHttpConnection *self, u8 *buf, s32 len);
-s32 GsHttp_SocketSend(GsHttpConnection *self, u8 *buf, s32 len);
-s32 GsHttp_SocketRecv(GsHttpConnection *self, u8 *buf, s32 *plen);
-BOOL GsHttp_DecryptReceived(GsHttpConnection *self);
-void GsHttp_FreeAllConnections();
-void GsHttp_ResetForRedirect(GsHttpConnection *self);
-void GsHttp_ForEachConnection(BOOL (*cb)(GsHttpConnection *));
-BOOL GsHttp_FreeConnection(GsHttpConnection *s);
-GsHttpConnection *GsHttp_NewConnection();
-s32 GsHttp_FindFreeSlot();
-void GsHttp_LeaveCritical();
-void GsHttp_EnterCritical();
-void GsHttp_FreeCritical();
-void GsHttp_InitCritical();
+void ghiCallPostCallback(GHIConnection *self);
+void ghiCallProgressCallback(GHIConnection *self, u32 p1, u32 p2);
+void ghiCallCompletedCallback(GHIConnection *self);
+s32 ghiTrySendThenBuffer(GHIConnection *self, u8 *buf, s32 len);
+s32 ghiDoSend(GHIConnection *self, u8 *buf, s32 len);
+s32 ghiDoReceive(GHIConnection *self, u8 *buf, s32 *plen);
+BOOL ghiDecryptReceivedData(GHIConnection *self);
+void ghiCleanupConnections();
+void ghiRedirectConnection(GHIConnection *self);
+void ghiEnumConnections(BOOL (*cb)(GHIConnection *));
+BOOL ghiFreeConnection(GHIConnection *s);
+GHIConnection *ghiNewConnection();
+s32 ghiFindFreeSlot();
+void ghiUnlock();
+void ghiLock();
+void ghiFreeLock();
+void ghiCreateLock();
 }
 }
 
@@ -164,82 +164,82 @@ namespace Nm {
 
 
 extern "C" {
-extern s32 sGsHttpStartupCount;
-extern void *sGsHttpProxyHost;
-extern u32 sGsHttpThrottleDelay;
-extern s32 sGsHttpThrottleBytes;
+extern s32 ghiReferenceCount;
+extern void *ghiProxyAddress;
+extern u32 ghiThrottleTimeDelay;
+extern s32 ghiThrottleBufferSize;
 
-s32 GsHttpPost_AddStringPart(void *, const char *, const char *);
-s32 GsHttpPost_New();
-void GsHttp_ForEachConnection(s32 (*)(GsHttpConnection *));
+s32 ghiPostAddString(void *, const char *, const char *);
+s32 ghiNewPost();
+void ghiEnumConnections(s32 (*)(GHIConnection *));
 char *goastrdup(const char *);
-GsHttpConnection *GsHttp_NewConnection();
-BOOL GsHttp_FreeConnection(GsHttpConnection *);
-BOOL GsHttp_InitPostState(GsHttpConnection *);
+GHIConnection *ghiNewConnection();
+BOOL ghiFreeConnection(GHIConnection *);
+BOOL ghiPostInitState(GHIConnection *);
 void msleep(s32);
-void GsHttp_StepHostLookup(GsHttpConnection *);
-void GsHttp_StepConnect(GsHttpConnection *);
-void GsHttp_StepEncryption(GsHttpConnection *);
-void GsHttp_StepSendRequest(GsHttpConnection *);
-void GsHttp_StepSendPost(GsHttpConnection *);
-void GsHttp_StepWaitReply(GsHttpConnection *);
-void GsHttp_StepRecvStatus(GsHttpConnection *);
-void GsHttp_StepRecvHeaders(GsHttpConnection *);
-void GsHttp_StepRecvBody(GsHttpConnection *);
-void GsHttp_ResetForRedirect(GsHttpConnection *);
-void GsHttp_CallCompletedCallback(GsHttpConnection *);
-void GsHttp_LeaveCritical();
-void GsHttp_EnterCritical();
-void GsHttp_FreeCritical();
-void GsHttp_InitCritical();
-void GsHttp_FreeAllConnections();
+void ghiDoHostLookup(GHIConnection *);
+void ghiDoConnecting(GHIConnection *);
+void ghiDoSecuringSession(GHIConnection *);
+void ghiDoSendingRequest(GHIConnection *);
+void ghiDoPosting(GHIConnection *);
+void ghiDoWaiting(GHIConnection *);
+void ghiDoReceivingStatus(GHIConnection *);
+void ghiDoReceivingHeaders(GHIConnection *);
+void ghiDoReceivingFile(GHIConnection *);
+void ghiRedirectConnection(GHIConnection *);
+void ghiCallCompletedCallback(GHIConnection *);
+void ghiUnlock();
+void ghiLock();
+void ghiFreeLock();
+void ghiCreateLock();
+void ghiCleanupConnections();
 void GsUtil_Free(void *);
 s32 ArrayLength(void *);
-GsHttpPostPartState *ArrayNth(void *, s32);
-s32 GsHttp_FlushSendBuffer(GsHttpConnection *);
-void GsHttpBuf_Reset(void *);
-s32 GsHttp_SendOrQueue(GsHttpConnection *, const void *, s32);
-s32 GsHttp_SocketSend(GsHttpConnection *, const void *, s32);
-BOOL GsHttpBuf_InitUser(GsHttpConnection *, void *, void *, s32);
-BOOL GsHttpBuf_Init(GsHttpConnection *, void *, s32, s32);
-void GsHttpBuf_AppendChar(void *, s32);
-BOOL GsHttpBuf_Append(void *, const void *, s32);
+GHIPostState *ArrayNth(void *, s32);
+s32 ghiSendBufferedData(GHIConnection *);
+void ghiResetBuffer(void *);
+s32 ghiTrySendThenBuffer(GHIConnection *, const void *, s32);
+s32 ghiDoSend(GHIConnection *, const void *, s32);
+BOOL ghiInitFixedBuffer(GHIConnection *, void *, void *, s32);
+BOOL ghiInitBuffer(GHIConnection *, void *, s32, s32);
+void ghiAppendCharToBuffer(void *, s32);
+BOOL ghiAppendDataToBuffer(void *, const void *, s32);
 s32 OS_SPrintf(char *, const char *, ...);
 s32 STD_GetStringLength(const char *);
 s32 strchr(const char *, s32);
 s32 fread(void *, s32, s32, u32);
 
-s32 GsHttp_Step(GsHttpConnection *);
-void GsHttp_SetResultFromStatus(GsHttpConnection *);
-s32 GsHttp_SendPostPart(GsHttpPostPartState *, GsHttpConnection *, s32);
-s32 GsHttp_SendPostPartBuffer(GsHttpPostPartState *, GsHttpConnection *);
-s32 GsHttp_SendPostPartFile(GsHttpPostPartState *, GsHttpConnection *);
-s32 GsHttp_SendPostPartString(GsHttpPostPartState *, GsHttpConnection *);
-void GsHttp_Startup();
+s32 ghiProcessConnection(GHIConnection *);
+void ghiHandleStatus(GHIConnection *);
+s32 ghiPostStateDoPosting(GHIPostState *, GHIConnection *, s32);
+s32 ghiPostFileMemoryStateDoPosting(GHIPostState *, GHIConnection *);
+s32 ghiPostFileDiskStateDoPosting(GHIPostState *, GHIConnection *);
+s32 ghiPostStringStateDoPosting(GHIPostState *, GHIConnection *);
+void ghttpStartup();
 }
 extern "C" {
-s32 GsHttp_PostAddString(void *a, const char *b, const char *c);
-s32 GsHttp_NewPost();
-void GsHttp_ProcessAll();
-s32 GsHttp_PostEx(const char *a, const char *b, GsHttpPost *c, u32 d, s32 e, u32 f, u32 g, u32 h);
-s32 GsHttp_Post(const char *a, GsHttpPost *b, s32 c, u32 d, u32 e);
-s32 GsHttp_GetEx(const char *a, const char *b, void *c, s32 d, GsHttpPost *e, u32 f, s32 g, u32 h, u32 i, u32 j);
-s32 GsHttp_Get(const char *a, s32 b, u32 c, u32 d);
-void GsHttp_Cleanup();
-void GsHttp_Startup();
+s32 ghttpPostAddStringA(void *a, const char *b, const char *c);
+s32 ghttpNewPost();
+void ghttpThink();
+s32 ghttpPostExA(const char *a, const char *b, GHIPost *c, u32 d, s32 e, u32 f, u32 g, u32 h);
+s32 ghttpPostA(const char *a, GHIPost *b, s32 c, u32 d, u32 e);
+s32 ghttpGetExA(const char *a, const char *b, void *c, s32 d, GHIPost *e, u32 f, s32 g, u32 h, u32 i, u32 j);
+s32 ghttpGetA(const char *a, s32 b, u32 c, u32 d);
+void ghttpCleanup();
+void ghttpStartup();
 }
 }
 
 namespace Nm {
 extern "C" {
-void GsHttp_Startup() {
-    GsHttp_EnterCritical();
-    if (++sGsHttpStartupCount == 1) {
-        GsHttp_InitCritical();
-        sGsHttpThrottleBytes = 0x7d;
-        sGsHttpThrottleDelay = 0xfa;
+void ghttpStartup() {
+    ghiLock();
+    if (++ghiReferenceCount == 1) {
+        ghiCreateLock();
+        ghiThrottleBufferSize = 0x7d;
+        ghiThrottleTimeDelay = 0xfa;
     } else {
-        GsHttp_LeaveCritical();
+        ghiUnlock();
     }
 }
 }
@@ -247,18 +247,18 @@ void GsHttp_Startup() {
 
 namespace Nm {
 extern "C" {
-void GsHttp_Cleanup() {
-    GsHttp_EnterCritical();
-    if (--sGsHttpStartupCount == 0) {
-        GsHttp_FreeAllConnections();
-        if (sGsHttpProxyHost != 0) {
-            GsUtil_Free(sGsHttpProxyHost);
-            sGsHttpProxyHost = 0;
+void ghttpCleanup() {
+    ghiLock();
+    if (--ghiReferenceCount == 0) {
+        ghiCleanupConnections();
+        if (ghiProxyAddress != 0) {
+            GsUtil_Free(ghiProxyAddress);
+            ghiProxyAddress = 0;
         }
-        GsHttp_LeaveCritical();
-        GsHttp_FreeCritical();
+        ghiUnlock();
+        ghiFreeLock();
     } else {
-        GsHttp_LeaveCritical();
+        ghiUnlock();
     }
 }
 }
@@ -266,16 +266,16 @@ void GsHttp_Cleanup() {
 
 namespace Nm {
 extern "C" {
-s32 GsHttp_Get(const char *a, s32 b, u32 c, u32 d) {
-    return GsHttp_GetEx(a, 0, 0, 0, 0, 0, b, 0, c, d);
+s32 ghttpGetA(const char *a, s32 b, u32 c, u32 d) {
+    return ghttpGetExA(a, 0, 0, 0, 0, 0, b, 0, c, d);
 }
 }
 }
 
 namespace Nm {
 extern "C" {
-s32 GsHttp_GetEx(const char *a, const char *b, void *c, s32 d, GsHttpPost *e, u32 f, s32 g, u32 h, u32 i, u32 j) {
-    GsHttpConnection *conn;
+s32 ghttpGetExA(const char *a, const char *b, void *c, s32 d, GHIPost *e, u32 f, s32 g, u32 h, u32 i, u32 j) {
+    GHIConnection *conn;
     if (a == 0 || *a == 0) {
         return -1;
     }
@@ -285,146 +285,146 @@ s32 GsHttp_GetEx(const char *a, const char *b, void *c, s32 d, GsHttpPost *e, u3
     if (c != 0 && d == 0) {
         return -1;
     }
-    if (sGsHttpStartupCount == 0) {
-        GsHttp_Startup();
+    if (ghiReferenceCount == 0) {
+        ghttpStartup();
     }
-    conn = GsHttp_NewConnection();
+    conn = ghiNewConnection();
     if (conn == 0) {
         return -1;
     }
-    conn->requestType = 0;
-    conn->url = goastrdup(a);
-    if (conn->url == 0) {
-        GsHttp_FreeConnection(conn);
+    conn->type = 0;
+    conn->URL = goastrdup(a);
+    if (conn->URL == 0) {
+        ghiFreeConnection(conn);
         return -1;
     }
     if (b != 0 && *b != 0) {
-        conn->extraHeaders = goastrdup(b);
-        if (conn->extraHeaders == 0) {
-            GsHttp_FreeConnection(conn);
+        conn->sendHeaders = goastrdup(b);
+        if (conn->sendHeaders == 0) {
+            ghiFreeConnection(conn);
             return -1;
         }
     }
     conn->post = e;
-    conn->isBlocking = g;
-    conn->progressCallback = (GsHttpProgressCallback)h;
-    conn->completedCallback = (GsHttpCompletedCallback)i;
+    conn->blocking = g;
+    conn->progressCallback = (ghttpProgressCallback)h;
+    conn->completedCallback = (ghttpCompletedCallback)i;
     conn->callbackParam = j;
-    conn->isThrottled = f;
-    conn->isUserBodyBuf = (c != 0) ? 1 : 0;
+    conn->throttle = f;
+    conn->userBufferSupplied = (c != 0) ? 1 : 0;
     BOOL ok;
-    if (conn->isUserBodyBuf != 0) {
-        ok = GsHttpBuf_InitUser(conn, &conn->bodyBuf, c, d);
+    if (conn->userBufferSupplied != 0) {
+        ok = ghiInitFixedBuffer(conn, &conn->getFileBuffer, c, d);
     } else {
-        ok = GsHttpBuf_Init(conn, &conn->bodyBuf, 0x800, 0x800);
+        ok = ghiInitBuffer(conn, &conn->getFileBuffer, 0x800, 0x800);
     }
     if (ok == 0) {
-        GsHttp_FreeConnection(conn);
+        ghiFreeConnection(conn);
         return -1;
     }
     if (e != 0) {
-        if (GsHttp_InitPostState(conn) == 0) {
-            GsHttp_FreeConnection(conn);
+        if (ghiPostInitState(conn) == 0) {
+            ghiFreeConnection(conn);
             return -1;
         }
     }
     if (g != 0) {
-        if (GsHttp_Step(conn) == 0) {
+        if (ghiProcessConnection(conn) == 0) {
             s32 t = 10;
             do {
                 msleep(t);
-            } while (GsHttp_Step(conn) == 0);
+            } while (ghiProcessConnection(conn) == 0);
         }
         return 0;
     }
-    return conn->requestId;
+    return conn->request;
 }
 }
 }
 
 namespace Nm {
 extern "C" {
-s32 GsHttp_Post(const char *a, GsHttpPost *b, s32 c, u32 d, u32 e) {
-    return GsHttp_PostEx(a, 0, b, 0, c, 0, d, e);
+s32 ghttpPostA(const char *a, GHIPost *b, s32 c, u32 d, u32 e) {
+    return ghttpPostExA(a, 0, b, 0, c, 0, d, e);
 }
 }
 }
 
 namespace Nm {
 extern "C" {
-s32 GsHttp_PostEx(const char *a, const char *b, GsHttpPost *c, u32 d, s32 e, u32 f, u32 g, u32 h) {
-    GsHttpConnection *conn;
+s32 ghttpPostExA(const char *a, const char *b, GHIPost *c, u32 d, s32 e, u32 f, u32 g, u32 h) {
+    GHIConnection *conn;
     if (a == 0 || *a == 0) {
         return -1;
     }
     if (c == 0) {
         return -1;
     }
-    if (sGsHttpStartupCount == 0) {
-        GsHttp_Startup();
+    if (ghiReferenceCount == 0) {
+        ghttpStartup();
     }
-    conn = GsHttp_NewConnection();
+    conn = ghiNewConnection();
     if (conn == 0) {
         return -1;
     }
-    conn->requestType = 4;
-    conn->url = goastrdup(a);
-    if (conn->url == 0) {
-        GsHttp_FreeConnection(conn);
+    conn->type = 4;
+    conn->URL = goastrdup(a);
+    if (conn->URL == 0) {
+        ghiFreeConnection(conn);
         return -1;
     }
     if (b != 0 && *b != 0) {
-        conn->extraHeaders = goastrdup(b);
-        if (conn->extraHeaders == 0) {
-            GsHttp_FreeConnection(conn);
+        conn->sendHeaders = goastrdup(b);
+        if (conn->sendHeaders == 0) {
+            ghiFreeConnection(conn);
             return -1;
         }
     }
     conn->post = c;
-    conn->isBlocking = e;
-    conn->progressCallback = (GsHttpProgressCallback)f;
-    conn->completedCallback = (GsHttpCompletedCallback)g;
+    conn->blocking = e;
+    conn->progressCallback = (ghttpProgressCallback)f;
+    conn->completedCallback = (ghttpCompletedCallback)g;
     conn->callbackParam = h;
-    conn->isThrottled = d;
+    conn->throttle = d;
     if (c != 0) {
-        if (GsHttp_InitPostState(conn) == 0) {
-            GsHttp_FreeConnection(conn);
+        if (ghiPostInitState(conn) == 0) {
+            ghiFreeConnection(conn);
             return -1;
         }
     }
     if (e != 0) {
-        if (GsHttp_Step(conn) == 0) {
+        if (ghiProcessConnection(conn) == 0) {
             s32 t = 10;
             do {
                 msleep(t);
-            } while (GsHttp_Step(conn) == 0);
+            } while (ghiProcessConnection(conn) == 0);
         }
         return 0;
     }
-    return conn->requestId;
+    return conn->request;
 }
 }
 }
 
 namespace Nm {
 extern "C" {
-void GsHttp_ProcessAll() {
-    GsHttp_ForEachConnection(GsHttp_Step);
+void ghttpThink() {
+    ghiEnumConnections(ghiProcessConnection);
 }
 }
 }
 
 namespace Nm {
 extern "C" {
-s32 GsHttp_NewPost() {
-    return GsHttpPost_New();
+s32 ghttpNewPost() {
+    return ghiNewPost();
 }
 }
 }
 
 namespace Nm {
 extern "C" {
-s32 GsHttp_PostAddString(void *a, const char *b, const char *c) {
+s32 ghttpPostAddStringA(void *a, const char *b, const char *c) {
     if (a == 0) {
         return 0;
     }
@@ -434,41 +434,41 @@ s32 GsHttp_PostAddString(void *a, const char *b, const char *c) {
     if (c == 0) {
         c = "";
     }
-    return GsHttpPost_AddStringPart(a, b, c);
+    return ghiPostAddString(a, b, c);
 }
 }
 }
 
 namespace Nc {
 extern "C" {
-s32 GsHttp_FindFreeSlot() {
+s32 ghiFindFreeSlot() {
     s32 i = 0;
     s32 base;
     s32 end;
-    for (i = 0; i < sGsHttpConnectionCap; i++) {
-        if (sGsHttpConnections[i]->inUse == 0) {
+    for (i = 0; i < ghiConnectionsLen; i++) {
+        if (ghiConnections[i]->inUse == 0) {
             return i;
         }
     }
-    base = sGsHttpConnectionCap;
+    base = ghiConnectionsLen;
     end = base + 4;
-    void *p = GsUtil_Realloc(sGsHttpConnections, end * 4);
+    void *p = GsUtil_Realloc(ghiConnections, end * 4);
     if (p == 0) {
         return -1;
     }
-    sGsHttpConnections = (GsHttpConnection **)p;
+    ghiConnections = (GHIConnection **)p;
     i = base;
     for (; i < end; i++) {
-        sGsHttpConnections[i] = (GsHttpConnection *)GsUtil_Alloc(0x184);
-        if (sGsHttpConnections[i] == 0) {
+        ghiConnections[i] = (GHIConnection *)GsUtil_Alloc(0x184);
+        if (ghiConnections[i] == 0) {
             for (i--; i >= base; i--) {
-                GsUtil_Free(sGsHttpConnections[i]);
+                GsUtil_Free(ghiConnections[i]);
             }
             return -1;
         }
-        sGsHttpConnections[i]->inUse = 0;
+        ghiConnections[i]->inUse = 0;
     }
-    sGsHttpConnectionCap = end;
+    ghiConnectionsLen = end;
     return base;
 }
 }
@@ -476,73 +476,73 @@ s32 GsHttp_FindFreeSlot() {
 
 namespace Nc {
 extern "C" {
-GsHttpConnection *GsHttp_NewConnection() {
-    GsHttpConnection *s;
+GHIConnection *ghiNewConnection() {
+    GHIConnection *s;
     s32 idx;
     BOOL r;
-    GsHttp_EnterCritical();
-    idx = GsHttp_FindFreeSlot();
+    ghiLock();
+    idx = ghiFindFreeSlot();
     if (idx == -1) {
-        GsHttp_LeaveCritical();
+        ghiUnlock();
         return 0;
     }
-    s = sGsHttpConnections[idx];
+    s = ghiConnections[idx];
     memset(s, 0, 0x184);
     s->inUse = 1;
-    s->requestId = idx;
-    s->serial = sGsHttpSerial++;
-    s->requestType = 0;
+    s->request = idx;
+    s->uniqueID = ghiNextUniqueID++;
+    s->type = 0;
     s->state = 0;
-    s->url = 0;
-    s->serverHost = 0;
-    s->serverIp = 0;
+    s->URL = 0;
+    s->serverAddress = 0;
+    s->serverIP = 0;
     s->serverPort = 0;
     s->requestPath = 0;
-    s->extraHeaders = 0;
-    s->unk_2c = 0;
-    s->isBlocking = 0;
-    s->keepAlive = 0;
+    s->sendHeaders = 0;
+    s->saveFile = 0;
+    s->blocking = 0;
+    s->persistConnection = 0;
     s->result = 0;
     s->progressCallback = 0;
     s->completedCallback = 0;
     s->callbackParam = 0;
-    s->socketHandle = -1;
+    s->socket = -1;
     s->socketError = 0;
-    s->isUserBodyBuf = 0;
-    s->httpMajorVersion = 0;
-    s->httpMinorVersion = 0;
+    s->userBufferSupplied = 0;
+    s->statusMajorVersion = 0;
+    s->statusMinorVersion = 0;
     s->statusCode = 0;
-    s->statusTextIndex = 0;
-    s->headersIndex = 0;
+    s->statusStringIndex = 0;
+    s->headerStringIndex = 0;
     s->headersEnd = 0;
     s->completed = 0;
-    s->bodyBytesReceived = 0;
-    s->contentLength = -1;
-    s->redirectUrl = 0;
+    s->fileBytesReceived = 0;
+    s->totalSize = -1;
+    s->redirectURL = 0;
     s->redirectCount = 0;
-    s->isChunked = 0;
-    s->isProcessing = 0;
-    s->isThrottled = 0;
-    s->lastThrottleRecvTime = 0;
+    s->chunkedTransfer = 0;
+    s->processing = 0;
+    s->throttle = 0;
+    s->lastThrottleRecv = 0;
     s->post = 0;
-    s->recvTimeSliceMs = 0x1f4;
-    s->proxyPort = 0x50;
-    s->proxyHost = 0;
+    s->maxRecvTime = 0x1f4;
+    s->proxyOverridePort = 0x50;
+    s->proxyOverrideServer = 0;
     s->encryptor = 0;
-    r = GsHttpBuf_Init(s, &s->sendBuf, 0x800, 0x1000);
+    r = ghiInitBuffer(s, &s->sendBuffer, 0x800, 0x1000);
     if (r != 0) {
-        r = GsHttpBuf_Init(s, &s->recvBuf, 0x800, 0x800);
+        r = ghiInitBuffer(s, &s->recvBuffer, 0x800, 0x800);
     }
     if (r != 0) {
-        r = GsHttpBuf_Init(s, &s->rawRecvBuf, 0x800, 0x400);
+        r = ghiInitBuffer(s, &s->decodeBuffer, 0x800, 0x400);
     }
     if (r == 0) {
-        GsHttp_FreeConnection(s);
-        GsHttp_LeaveCritical();
+        ghiFreeConnection(s);
+        ghiUnlock();
         return 0;
     }
-    sGsHttpConnectionCount++;
-    GsHttp_LeaveCritical();
+    ghiNumConnections++;
+    ghiUnlock();
     return s;
 }
 }
@@ -550,40 +550,40 @@ GsHttpConnection *GsHttp_NewConnection() {
 
 namespace Nc {
 extern "C" {
-BOOL GsHttp_FreeConnection(GsHttpConnection *s) {
+BOOL ghiFreeConnection(GHIConnection *s) {
     if (s == 0) {
         return FALSE;
     }
     if (s->inUse == 0) {
         return FALSE;
     }
-    if (s->requestId < 0) {
+    if (s->request < 0) {
         return FALSE;
     }
-    if (s->requestId >= sGsHttpConnectionCap) {
+    if (s->request >= ghiConnectionsLen) {
         return FALSE;
     }
-    GsHttp_EnterCritical();
-    GsUtil_Free(s->url);
-    GsUtil_Free(s->serverHost);
+    ghiLock();
+    GsUtil_Free(s->URL);
+    GsUtil_Free(s->serverAddress);
     GsUtil_Free(s->requestPath);
-    GsUtil_Free(s->extraHeaders);
-    GsUtil_Free(s->redirectUrl);
-    GsUtil_Free(s->proxyHost);
-    if (s->socketHandle != -1) {
-        shutdown(s->socketHandle, 2);
-        closesocket(s->socketHandle);
+    GsUtil_Free(s->sendHeaders);
+    GsUtil_Free(s->redirectURL);
+    GsUtil_Free(s->proxyOverrideServer);
+    if (s->socket != -1) {
+        shutdown(s->socket, 2);
+        closesocket(s->socket);
     }
-    GsHttpBuf_Free(&s->sendBuf);
-    GsHttpBuf_Free(&s->recvBuf);
-    GsHttpBuf_Free(&s->rawRecvBuf);
-    GsHttpBuf_Free(&s->bodyBuf);
+    ghiFreeBuffer(&s->sendBuffer);
+    ghiFreeBuffer(&s->recvBuffer);
+    ghiFreeBuffer(&s->decodeBuffer);
+    ghiFreeBuffer(&s->getFileBuffer);
     if (s->postParts != 0) {
-        GsHttp_FreePostState(s);
+        ghiPostCleanupState(s);
     }
     if (s->post != 0) {
-        if (GsHttpPost_GetAutoFree(s->post) != 0) {
-            GsHttpPost_Free(s->post);
+        if (ghiIsPostAutoFree(s->post) != 0) {
+            ghiFreePost(s->post);
             s->post = 0;
         }
     }
@@ -594,8 +594,8 @@ BOOL GsHttp_FreeConnection(GsHttpConnection *s) {
         s->encryptInitialized = 0;
     }
     s->inUse = 0;
-    sGsHttpConnectionCount--;
-    GsHttp_LeaveCritical();
+    ghiNumConnections--;
+    ghiUnlock();
     return TRUE;
 }
 }
@@ -603,17 +603,17 @@ BOOL GsHttp_FreeConnection(GsHttpConnection *s) {
 
 namespace Nc {
 extern "C" {
-void GsHttp_ForEachConnection(BOOL (*cb)(GsHttpConnection *)) {
-    if (sGsHttpConnectionCount > 0) {
+void ghiEnumConnections(BOOL (*cb)(GHIConnection *)) {
+    if (ghiNumConnections > 0) {
         s32 i;
-        GsHttp_EnterCritical();
-        for (i = 0; i < sGsHttpConnectionCap; i++) {
-            GsHttpConnection *s = sGsHttpConnections[i];
+        ghiLock();
+        for (i = 0; i < ghiConnectionsLen; i++) {
+            GHIConnection *s = ghiConnections[i];
             if (s->inUse != 0) {
                 cb(s);
             }
         }
-        GsHttp_LeaveCritical();
+        ghiUnlock();
     }
 }
 }
@@ -621,28 +621,28 @@ void GsHttp_ForEachConnection(BOOL (*cb)(GsHttpConnection *)) {
 
 namespace Nc {
 extern "C" {
-void GsHttp_ResetForRedirect(GsHttpConnection *self) {
+void ghiRedirectConnection(GHIConnection *self) {
     self->state = 0;
-    GsUtil_Free(self->url);
-    self->url = self->redirectUrl;
-    self->redirectUrl = 0;
-    GsUtil_Free(self->serverHost);
-    self->serverHost = 0;
-    self->serverIp = 0;
+    GsUtil_Free(self->URL);
+    self->URL = self->redirectURL;
+    self->redirectURL = 0;
+    GsUtil_Free(self->serverAddress);
+    self->serverAddress = 0;
+    self->serverIP = 0;
     self->serverPort = 0;
     GsUtil_Free(self->requestPath);
     self->requestPath = 0;
-    shutdown(self->socketHandle, 2);
-    closesocket(self->socketHandle);
-    self->socketHandle = -1;
-    GsHttpBuf_Reset(&self->sendBuf);
-    GsHttpBuf_Reset(&self->recvBuf);
-    GsHttpBuf_Reset(&self->rawRecvBuf);
-    self->httpMajorVersion = 0;
-    self->httpMinorVersion = 0;
+    shutdown(self->socket, 2);
+    closesocket(self->socket);
+    self->socket = -1;
+    ghiResetBuffer(&self->sendBuffer);
+    ghiResetBuffer(&self->recvBuffer);
+    ghiResetBuffer(&self->decodeBuffer);
+    self->statusMajorVersion = 0;
+    self->statusMinorVersion = 0;
     self->statusCode = 0;
-    self->statusTextIndex = 0;
-    self->headersIndex = 0;
+    self->statusStringIndex = 0;
+    self->headerStringIndex = 0;
     self->headersEnd = 0;
     self->connectionClosed = 0;
     self->redirectCount++;
@@ -652,17 +652,17 @@ void GsHttp_ResetForRedirect(GsHttpConnection *self) {
 
 namespace Nc {
 extern "C" {
-void GsHttp_FreeAllConnections() {
-    if (sGsHttpConnections != 0) {
+void ghiCleanupConnections() {
+    if (ghiConnections != 0) {
         s32 i;
-        GsHttp_ForEachConnection(GsHttp_FreeConnection);
-        for (i = 0; i < sGsHttpConnectionCap; i++) {
-            GsUtil_Free(sGsHttpConnections[i]);
+        ghiEnumConnections(ghiFreeConnection);
+        for (i = 0; i < ghiConnectionsLen; i++) {
+            GsUtil_Free(ghiConnections[i]);
         }
-        GsUtil_Free(sGsHttpConnections);
-        sGsHttpConnections = 0;
-        sGsHttpConnectionCap = 0;
-        sGsHttpConnectionCount = 0;
+        GsUtil_Free(ghiConnections);
+        ghiConnections = 0;
+        ghiConnectionsLen = 0;
+        ghiNumConnections = 0;
     }
 }
 }
@@ -670,60 +670,60 @@ void GsHttp_FreeAllConnections() {
 
 namespace Nc {
 extern "C" {
-void GsHttp_InitCritical() {
+void ghiCreateLock() {
 }
 }
 }
 
 namespace Nc {
 extern "C" {
-void GsHttp_FreeCritical() {
+void ghiFreeLock() {
 }
 }
 }
 
 namespace Nc {
 extern "C" {
-void GsHttp_EnterCritical() {
+void ghiLock() {
 }
 }
 }
 
 namespace Nc {
 extern "C" {
-void GsHttp_LeaveCritical() {
+void ghiUnlock() {
 }
 }
 }
 
 namespace Nc {
 extern "C" {
-BOOL GsHttp_DecryptReceived(GsHttpConnection *self) {
+BOOL ghiDecryptReceivedData(GHIConnection *self) {
     s32 inl = 0;
     s32 outl = 0;
     s32 r;
     do {
-        s32 pos = self->rawRecvBuf.readPos;
-        u8 *in = (u8 *)self->rawRecvBuf.data + pos;
-        inl = self->rawRecvBuf.length - pos;
-        s32 w = self->recvBuf.length;
-        u8 *out = (u8 *)self->recvBuf.data + w;
-        outl = self->recvBuf.capacity - w;
+        s32 pos = self->decodeBuffer.pos;
+        u8 *in = (u8 *)self->decodeBuffer.data + pos;
+        inl = self->decodeBuffer.len - pos;
+        s32 w = self->recvBuffer.len;
+        u8 *out = (u8 *)self->recvBuffer.data + w;
+        outl = self->recvBuffer.size - w;
         r = self->decryptFn(self, &self->encryptor, in, &inl, out, &outl);
-        if (r == 2 && GsHttpBuf_Grow(&self->recvBuf, self->recvBuf.growBy) == 0) {
+        if (r == 2 && ghiResizeBuffer(&self->recvBuffer, self->recvBuffer.sizeIncrement) == 0) {
             return FALSE;
         }
     } while (r == 2 && outl == 0);
-    self->rawRecvBuf.readPos += inl;
-    self->recvBuf.length += outl;
-    if (self->rawRecvBuf.readPos > 0xff) {
-        s32 rest = self->rawRecvBuf.length - self->rawRecvBuf.readPos;
+    self->decodeBuffer.pos += inl;
+    self->recvBuffer.len += outl;
+    if (self->decodeBuffer.pos > 0xff) {
+        s32 rest = self->decodeBuffer.len - self->decodeBuffer.pos;
         if (rest == 0) {
-            GsHttpBuf_Reset(&self->rawRecvBuf);
+            ghiResetBuffer(&self->decodeBuffer);
         } else {
-            memmove(self->rawRecvBuf.data, self->rawRecvBuf.data + self->rawRecvBuf.readPos, rest);
-            self->rawRecvBuf.readPos = 0;
-            self->rawRecvBuf.length = rest;
+            memmove(self->decodeBuffer.data, self->decodeBuffer.data + self->decodeBuffer.pos, rest);
+            self->decodeBuffer.pos = 0;
+            self->decodeBuffer.len = rest;
         }
     }
     if (r == 3) {
@@ -738,30 +738,30 @@ BOOL GsHttp_DecryptReceived(GsHttpConnection *self) {
 
 namespace Nc {
 extern "C" {
-s32 GsHttp_SocketRecv(GsHttpConnection *self, u8 *buf, s32 *plen) {
+s32 ghiDoReceive(GHIConnection *self, u8 *buf, s32 *plen) {
     s32 len;
     s32 n = *plen - 1;
-    if (self->isThrottled != 0) {
+    if (self->throttle != 0) {
         u32 t = current_time();
-        if (t < self->lastThrottleRecvTime + sGsHttpThrottleDelay) {
+        if (t < self->lastThrottleRecv + ghiThrottleTimeDelay) {
             return 1;
         }
-        self->lastThrottleRecvTime = t;
-        if (n >= sGsHttpThrottleBytes) {
-            n = sGsHttpThrottleBytes;
+        self->lastThrottleRecv = t;
+        if (n >= ghiThrottleBufferSize) {
+            n = ghiThrottleBufferSize;
         }
     }
-    if (self->recvBuf.readPos < self->recvBuf.length) {
-        GsHttpBuf_Read(&self->recvBuf, buf, plen);
-        if (self->recvBuf.readPos == self->recvBuf.length) {
-            self->recvBuf.length = self->headersEnd;
-            self->recvBuf.readPos = self->headersEnd;
+    if (self->recvBuffer.pos < self->recvBuffer.len) {
+        ghiReadDataFromBuffer(&self->recvBuffer, buf, plen);
+        if (self->recvBuffer.pos == self->recvBuffer.len) {
+            self->recvBuffer.len = self->headersEnd;
+            self->recvBuffer.pos = self->headersEnd;
         }
         return 0;
     }
-    len = recv(self->socketHandle, buf, n, 0);
+    len = recv(self->socket, buf, n, 0);
     if (len == -1) {
-        s32 e = GOAGetLastError(self->socketHandle);
+        s32 e = GOAGetLastError(self->socket);
         if (e == -6 || e == -26 || e == -76) {
             return 1;
         }
@@ -776,26 +776,26 @@ s32 GsHttp_SocketRecv(GsHttpConnection *self, u8 *buf, s32 *plen) {
         return 2;
     }
     if (self->encryptEnabled != 0) {
-        if (GsHttpBuf_Append(&self->rawRecvBuf, buf, len) == 0) {
+        if (ghiAppendDataToBuffer(&self->decodeBuffer, buf, len) == 0) {
             return 3;
         }
-        if (GsHttp_DecryptReceived(self) == 0) {
+        if (ghiDecryptReceivedData(self) == 0) {
             self->completed = 1;
             self->result = 0x11;
             return 3;
         }
-        if (self->recvBuf.length - self->recvBuf.readPos <= 0) {
+        if (self->recvBuffer.len - self->recvBuffer.pos <= 0) {
             buf[0] = 0;
             *plen = 0;
             return 1;
         }
         len = *plen - 1;
-        if (GsHttpBuf_Read(&self->recvBuf, buf, &len) == 0) {
+        if (ghiReadDataFromBuffer(&self->recvBuffer, buf, &len) == 0) {
             return 3;
         }
-        if (self->recvBuf.readPos == self->recvBuf.length) {
-            self->recvBuf.length = self->headersEnd;
-            self->recvBuf.readPos = self->headersEnd;
+        if (self->recvBuffer.pos == self->recvBuffer.len) {
+            self->recvBuffer.len = self->headersEnd;
+            self->recvBuffer.pos = self->headersEnd;
         }
         if (len <= 0) {
             return 1;
@@ -814,10 +814,10 @@ s32 GsHttp_SocketRecv(GsHttpConnection *self, u8 *buf, s32 *plen) {
 
 namespace Nc {
 extern "C" {
-s32 GsHttp_SocketSend(GsHttpConnection *self, u8 *buf, s32 len) {
-    s32 r = send(self->socketHandle, buf, len, 0);
+s32 ghiDoSend(GHIConnection *self, u8 *buf, s32 len) {
+    s32 r = send(self->socket, buf, len, 0);
     if (r == -1) {
-        s32 e = GOAGetLastError(self->socketHandle);
+        s32 e = GOAGetLastError(self->socket);
         if (e == -6 || e == -26 || e == -76) {
             return 0;
         }
@@ -836,10 +836,10 @@ s32 GsHttp_SocketSend(GsHttpConnection *self, u8 *buf, s32 len) {
 
 namespace Nc {
 extern "C" {
-s32 GsHttp_SendOrQueue(GsHttpConnection *self, u8 *buf, s32 len) {
+s32 ghiTrySendThenBuffer(GHIConnection *self, u8 *buf, s32 len) {
     s32 r = 0;
-    if (self->sendBuf.length == 0) {
-        r = GsHttp_SocketSend(self, buf, len);
+    if (self->sendBuffer.len == 0) {
+        r = ghiDoSend(self, buf, len);
         if (r == -1) {
             return 0;
         }
@@ -847,7 +847,7 @@ s32 GsHttp_SendOrQueue(GsHttpConnection *self, u8 *buf, s32 len) {
             return 1;
         }
     }
-    if (GsHttpBuf_Append(&self->sendBuf, buf + r, len - r) == 0) {
+    if (ghiAppendDataToBuffer(&self->sendBuffer, buf + r, len - r) == 0) {
         return 0;
     }
     return 2;
@@ -857,20 +857,20 @@ s32 GsHttp_SendOrQueue(GsHttpConnection *self, u8 *buf, s32 len) {
 
 namespace Nc {
 extern "C" {
-void GsHttp_CallCompletedCallback(GsHttpConnection *self) {
+void ghiCallCompletedCallback(GHIConnection *self) {
     if (self->completedCallback != 0) {
         u32 a;
         u32 b;
-        if (self->requestType != 0) {
+        if (self->type != 0) {
             a = 0;
             b = 0;
         } else {
-            a = (u32)self->bodyBuf.data;
-            b = self->bodyBytesReceived;
+            a = (u32)self->getFileBuffer.data;
+            b = self->fileBytesReceived;
         }
-        s32 r = self->completedCallback(self->requestId, self->result, a, b, self->callbackParam);
+        s32 r = self->completedCallback(self->request, self->result, a, b, self->callbackParam);
         if (a != 0 && r == 0) {
-            self->bodyBuf.keepData = 1;
+            self->getFileBuffer.dontFree = 1;
         }
     }
 }
@@ -879,9 +879,9 @@ void GsHttp_CallCompletedCallback(GsHttpConnection *self) {
 
 namespace Nc {
 extern "C" {
-void GsHttp_CallProgressCallback(GsHttpConnection *self, u32 p1, u32 p2) {
+void ghiCallProgressCallback(GHIConnection *self, u32 p1, u32 p2) {
     if (self->progressCallback != 0) {
-        self->progressCallback(self->requestId, self->state, p1, p2, self->bodyBytesReceived, self->contentLength, self->callbackParam);
+        self->progressCallback(self->request, self->state, p1, p2, self->fileBytesReceived, self->totalSize, self->callbackParam);
     }
 }
 }
@@ -889,10 +889,10 @@ void GsHttp_CallProgressCallback(GsHttpConnection *self, u32 p1, u32 p2) {
 
 namespace Nc {
 extern "C" {
-void GsHttp_CallPostCallback(GsHttpConnection *self) {
+void ghiCallPostCallback(GHIConnection *self) {
     if (self->postCallback != 0) {
         u32 a = ArrayLength((u32)self->postParts);
-        self->postCallback(self->requestId, self->postBytesSent, self->postTotalBytes, self->postPartIndex, a, self->callbackParam);
+        self->postCallback(self->request, self->postBytesSent, self->postTotalBytes, self->postPartIndex, a, self->callbackParam);
     }
 }
 }
@@ -900,7 +900,7 @@ void GsHttp_CallPostCallback(GsHttpConnection *self) {
 
 namespace Ng {
 extern "C" {
-s32 GsHttpBuf_Grow(GsHttpBuffer *o, s32 n) {
+s32 ghiResizeBuffer(GHIBuffer *o, s32 n) {
     s32 newsize;
     void *p;
     if (o == 0) {
@@ -909,13 +909,13 @@ s32 GsHttpBuf_Grow(GsHttpBuffer *o, s32 n) {
     if (n <= 0) {
         return FALSE;
     }
-    newsize = o->capacity + n;
+    newsize = o->size + n;
     p = GsUtil_Realloc(o->data, newsize);
     if (p == 0) {
         return FALSE;
     }
     o->data = (char *)p;
-    o->capacity = newsize;
+    o->size = newsize;
     return TRUE;
 }
 }
@@ -923,7 +923,7 @@ s32 GsHttpBuf_Grow(GsHttpBuffer *o, s32 n) {
 
 namespace Ng {
 extern "C" {
-s32 GsHttpBuf_Init(GsHttpConnection *ow, GsHttpBuffer *o, s32 size, s32 grow) {
+s32 ghiInitBuffer(GHIConnection *ow, GHIBuffer *o, s32 size, s32 grow) {
     if (ow == 0) {
         return FALSE;
     }
@@ -938,14 +938,14 @@ s32 GsHttpBuf_Init(GsHttpConnection *ow, GsHttpBuffer *o, s32 size, s32 grow) {
     }
     o->connection = ow;
     o->data = 0;
-    o->capacity = 0;
-    o->length = 0;
-    o->readPos = 0;
-    o->growBy = grow;
-    o->isFixed = 0;
-    o->keepData = 0;
+    o->size = 0;
+    o->len = 0;
+    o->pos = 0;
+    o->sizeIncrement = grow;
+    o->fixed = 0;
+    o->dontFree = 0;
     o->isEncrypted = 0;
-    if (GsHttpBuf_Grow(o, size) == 0) {
+    if (ghiResizeBuffer(o, size) == 0) {
         return FALSE;
     }
     *o->data = 0;
@@ -956,7 +956,7 @@ s32 GsHttpBuf_Init(GsHttpConnection *ow, GsHttpBuffer *o, s32 size, s32 grow) {
 
 namespace Ng {
 extern "C" {
-s32 GsHttpBuf_InitUser(GsHttpConnection *ow, GsHttpBuffer *o, char *buf, s32 size) {
+s32 ghiInitFixedBuffer(GHIConnection *ow, GHIBuffer *o, char *buf, s32 size) {
     if (ow == 0) {
         return FALSE;
     }
@@ -971,11 +971,11 @@ s32 GsHttpBuf_InitUser(GsHttpConnection *ow, GsHttpBuffer *o, char *buf, s32 siz
     }
     o->connection = ow;
     o->data = buf;
-    o->capacity = size;
-    o->length = 0;
-    o->growBy = 0;
-    o->isFixed = 1;
-    o->keepData = 1;
+    o->size = size;
+    o->len = 0;
+    o->sizeIncrement = 0;
+    o->fixed = 1;
+    o->dontFree = 1;
     o->isEncrypted = 0;
     *o->data = 0;
     return TRUE;
@@ -985,9 +985,9 @@ s32 GsHttpBuf_InitUser(GsHttpConnection *ow, GsHttpBuffer *o, char *buf, s32 siz
 
 namespace Ng {
 extern "C" {
-void GsHttpBuf_Free(GsHttpBuffer *o) {
+void ghiFreeBuffer(GHIBuffer *o) {
     if (o != 0 && o->data != 0) {
-        if (o->keepData == 0) {
+        if (o->dontFree == 0) {
             GsUtil_Free(o->data);
         }
         memset(o, 0, 0x24);
@@ -998,8 +998,8 @@ void GsHttpBuf_Free(GsHttpBuffer *o) {
 
 namespace Ng {
 extern "C" {
-s32 GsHttpBuf_Append(GsHttpBuffer *o, char *s, s32 len) {
-    GsHttpConnection *ow = o->connection;
+s32 ghiAppendDataToBuffer(GHIBuffer *o, char *s, s32 len) {
+    GHIConnection *ow = o->connection;
     s32 n;
     s32 r;
     if (o == 0) {
@@ -1016,40 +1016,40 @@ s32 GsHttpBuf_Append(GsHttpBuffer *o, char *s, s32 len) {
     }
     if (o->isEncrypted == 1) {
         do {
-            n = o->capacity - o->length;
-            r = ow->encryptFn(ow, &ow->encryptor, s, &len, o->data + o->length, &n);
+            n = o->size - o->len;
+            r = ow->encryptFn(ow, &ow->encryptor, s, &len, o->data + o->len, &n);
             if (r == 2) {
-                if (o->isFixed != 0) {
+                if (o->fixed != 0) {
                     o->connection->completed = 1;
                     o->connection->result = 2;
                     return FALSE;
                 }
-                if (GsHttpBuf_Grow(o, o->growBy) != 0) {
+                if (ghiResizeBuffer(o, o->sizeIncrement) != 0) {
                     o->connection->completed = 1;
                     o->connection->result = 1;
                     return FALSE;
                 }
             } else {
-                o->length += n;
+                o->len += n;
             }
         } while (r == 2);
     } else {
-        s32 t = o->length + len;
-        while (t >= o->capacity) {
-            if (o->isFixed != 0) {
+        s32 t = o->len + len;
+        while (t >= o->size) {
+            if (o->fixed != 0) {
                 o->connection->completed = 1;
                 o->connection->result = 2;
                 return FALSE;
             }
-            if (GsHttpBuf_Grow(o, o->growBy) == 0) {
+            if (ghiResizeBuffer(o, o->sizeIncrement) == 0) {
                 o->connection->completed = 1;
                 o->connection->result = 1;
                 return FALSE;
             }
         }
-        memcpy(o->data + o->length, s, len);
-        o->length = t;
-        o->data[o->length] = 0;
+        memcpy(o->data + o->len, s, len);
+        o->len = t;
+        o->data[o->len] = 0;
     }
     return TRUE;
 }

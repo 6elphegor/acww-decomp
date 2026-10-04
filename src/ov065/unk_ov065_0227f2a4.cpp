@@ -1,19 +1,18 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
-#include "net/GsGpProfile.h"
-#include "net/GsGpOperation.h"
-#include "net/GsGpCallbackPair.h"
-#include "net/GsGpConnectData.h"
+#include "net/gpiProfile.h"
+#include "net/gpiOperation.h"
+#include "net/gpiCallback.h"
 #include "net/Unk_ov065_0227f00c_Host.h"
 #include "net/Unk_ov065_0227f324_Rec.h"
-#include "net/GsGpInfoCache.h"
+#include "net/gpiInfo.h"
 #include "net/Unk_ov065_02280854_Ctx.h"
-#include "net/GsGpCallbackArgs.h"
+#include "net/gp.h"
 #include "net/Unk_ov065_0227c538_Node.h"
-#include "net/GsGpTransferId.h"
+#include "net/gpiTransfer.h"
 #include "net/Unk_ov065_02280d70_P1.h"
-#include "net/GsGpContext.h"
-#include "net/GsGpPeer.h"
+#include "net/gpi.h"
+#include "net/gpiPeer.h"
 #include "net/Unk_ov065_0227d8e0_Ctx.h"
 
 // ov065 TU45: GP gpiInfo.c (0x0227f2a4..0x02280740)
@@ -30,8 +29,8 @@ namespace Na {
 
 
 
-typedef GsGpContext Ctx0227;
-typedef GsGpCallbackPair Pair0227;
+typedef GPIConnection Ctx0227;
+typedef GPICallback Pair0227;
 
 extern "C" {
 
@@ -49,19 +48,19 @@ extern char data_ov065_0228d564[];
 extern char data_ov065_0228d58c[];
 extern u8 data_0213a490[];
 
-s32 GsGp_ResetConnection(Ctx0227 **);
-void GsGp_SetErrorString(Ctx0227 **, const char *);
-void GsGp_SetError(Ctx0227 **, s32, const char *);
-void GsGp_CallErrorCallback(Ctx0227 **, s32, s32);
-void GsUtil_StrCopyN(char *, const char *, s32);
+s32 gpiReset(Ctx0227 **);
+void gpiSetErrorString(Ctx0227 **, const char *);
+void gpiSetError(Ctx0227 **, s32, const char *);
+void gpiCallErrorCallback(Ctx0227 **, s32, s32);
+void strzcpy(char *, const char *, s32);
 void _strlwr(char *);
 void *GsUtil_Alloc(s32);
 void GsUtil_Free(void *);
 char *goastrdup(const char *);
-s32 GsGp_AddOperation(Ctx0227 **, s32, void *, GsGpOperation **, s32, s32, s32);
-void GsGp_CallFailedCallback(Ctx0227 **, GsGpOperation *);
-s32 GsGp_CloseConnection(Ctx0227 **, s32);
-s32 GsGp_ProcessConnection(Ctx0227 **, s32);
+s32 gpiAddOperation(Ctx0227 **, s32, void *, GPIOperation **, s32, s32, s32);
+void gpiFailedOpCallback(Ctx0227 **, GPIOperation *);
+s32 gpiDisconnect(Ctx0227 **, s32);
+s32 gpiProcess(Ctx0227 **, s32);
 s32 socket(s32, s32, s32);
 s32 bind(s32, void *, s32);
 s32 listen(s32, s32);
@@ -70,15 +69,15 @@ s32 connect(s32, void *, s32);
 s32 GOAGetLastError(s32);
 s32 SetSockBlocking(s32, s32);
 Unk_ov065_0227f00c_Host *Sock_GetHostByName(char *);
-s32 GsGpProfile_Find(Ctx0227 **, s32, GsGpProfile **);
-void GsGp_CopyInfoResult(GsGpInfoCache *, void *);
-s32 GsGp_RemoveOperation(Ctx0227 **, GsGpOperation *);
-s32 GsGp_QueueCallback(Ctx0227 **, Pair0227, void *, GsGpOperation *, s32);
-s32 GsGpBuf_AppendString(Ctx0227 **, char **, const char *);
-s32 GsGpBuf_AppendInt(Ctx0227 **, char **, s32);
-s32 GsGp_QueueProfileUpdate(Ctx0227 **, const char *, const char *);
-s32 GsGp_QueueUserUpdate(Ctx0227 **, const char *, const char *);
-s32 GsGp_SetInfoInt(Ctx0227 **, s32, s32);
+s32 gpiGetProfile(Ctx0227 **, s32, GPIProfile **);
+void gpiInfoCacheToArg(GPIInfoCache *, void *);
+s32 gpiRemoveOperation(Ctx0227 **, GPIOperation *);
+s32 gpiAddCallback(Ctx0227 **, Pair0227, void *, GPIOperation *, s32);
+s32 gpiAppendStringToBuffer(Ctx0227 **, char **, const char *);
+s32 gpiAppendIntToBuffer(Ctx0227 **, char **, s32);
+s32 gpiSendLocalInfo(Ctx0227 **, const char *, const char *);
+s32 gpiSendUserInfo(Ctx0227 **, const char *, const char *);
+s32 gpiSetInfoi(Ctx0227 **, s32, s32);
 
 void *memset(void *, s32, u32);
 u32 rand(void);
@@ -86,13 +85,13 @@ s32 atol(const char *);
 s32 STD_GetStringLength(const char *);
 char *STD_CopyString(char *, const char *);
 
-s32 GsGp_SendGetProfile(Ctx0227 **, s32, s32);
-s32 GsGp_OpenSockets(Ctx0227 **, GsGpOperation *);
+s32 gpiSendGetInfo(Ctx0227 **, s32, s32);
+s32 gpiStartConnect(Ctx0227 **, GPIOperation *);
 
 #define GP_FAIL(str) \
     { \
-        GsGp_SetError(h, 5, str); \
-        GsGp_CallErrorCallback(h, 3, 1); \
+        gpiSetError(h, 5, str); \
+        gpiCallErrorCallback(h, 3, 1); \
         return 3; \
     }
 
@@ -105,18 +104,18 @@ s32 GsGp_OpenSockets(Ctx0227 **, GsGpOperation *);
 
 #define CK_NONEMPTY \
     if (*val == 0) { \
-        GsGp_SetErrorString(h, "Invalid value."); \
+        gpiSetErrorString(h, "Invalid value."); \
         return 2; \
     }
 
 
 }
 extern "C" {
-void GsGp_FreeCachedInfo(GsGpProfile *p);
-s32 GsGp_CacheProfileInfo(Ctx0227 **h, GsGpProfile *p, GsGpInfoCache *q);
-s32 GsGp_RequestProfileInfo(Ctx0227 **h, s32 a1, s32 a2, s32 a3, s32 a4, s32 a5);
-s32 GsGp_SendGetProfile(Ctx0227 **h, s32 a1, s32 a2);
-s32 GsGp_SetInfoString(Ctx0227 **h, s32 cmd, char *val);
+void gpiFreeInfoCache(GPIProfile *p);
+s32 gpiSetInfoCache(Ctx0227 **h, GPIProfile *p, GPIInfoCache *q);
+s32 gpiGetInfo(Ctx0227 **h, s32 a1, s32 a2, s32 a3, s32 a4, s32 a5);
+s32 gpiSendGetInfo(Ctx0227 **h, s32 a1, s32 a2);
+s32 gpiSetInfos(Ctx0227 **h, s32 cmd, char *val);
 }
 }
 
@@ -150,39 +149,39 @@ s32 OS_SPrintf(char *, const char *, ...);
 void GsUtil_Free(void *);
 void *GsUtil_Alloc(s32);
 char *goastrdup(const char *);
-s32 GsGpBuf_AppendString(void *, char *, const char *);
-s32 GsGpBuf_AppendInt(void *, char *, s32);
-void GsGp_CallErrorCallback(void *, s32, s32);
-s32 GsGp_QueueCallback(void *, GsGpCallbackPair, void *, void *, s32);
-s32 GsGp_CacheProfileInfo(void *, u32 *, GsGpInfoCache *);
-s32 GsGp_CopyInfoResult(GsGpInfoCache *, void *);
-s32 GsGp_UnpackDate(void *, s32, s32 *, s32 *, s32 *);
-void GsGp_RemoveOperation(void *, void *);
-s32 GsGpProfile_Find(void *, s32, u32 **);
-u32 *GsGpProfile_Add(void *, s32);
-void GsGp_SetErrorString(void *, const char *);
-void GsGp_SetError(void *, s32, const char *);
-s32 GsGp_GetValue(const char *, const char *, char *, s32);
-s32 GsGp_CheckServerError(void *, const char *, s32);
+s32 gpiAppendStringToBuffer(void *, char *, const char *);
+s32 gpiAppendIntToBuffer(void *, char *, s32);
+void gpiCallErrorCallback(void *, s32, s32);
+s32 gpiAddCallback(void *, GPICallback, void *, void *, s32);
+s32 gpiSetInfoCache(void *, u32 *, GPIInfoCache *);
+s32 gpiInfoCacheToArg(GPIInfoCache *, void *);
+s32 gpiIntToDate(void *, s32, s32 *, s32 *, s32 *);
+void gpiRemoveOperation(void *, void *);
+s32 gpiGetProfile(void *, s32, u32 **);
+u32 *gpiProfileListAdd(void *, s32);
+void gpiSetErrorString(void *, const char *);
+void gpiSetError(void *, s32, const char *);
+s32 gpiValueForKey(const char *, const char *, char *, s32);
+s32 gpiCheckForError(void *, const char *, s32);
 
-s32 GsGp_QueueUserUpdate(void *h, char *a, char *b);
-s32 GsGp_QueueProfileUpdate(void *h, char *a, char *b);
-
-
+s32 gpiSendUserInfo(void *h, char *a, char *b);
+s32 gpiSendLocalInfo(void *h, char *a, char *b);
 
 
 
 
-#define FIND(key, dst, n) GsGp_GetValue(str, key, dst, n)
+
+
+#define FIND(key, dst, n) gpiValueForKey(str, key, dst, n)
 
 
 }
 extern "C" {
-s32 GsGp_SetInfoInt(void *h, s32 code, s32 val);
-s32 GsGp_QueueUserUpdate(void *h, char *a, char *b);
-s32 GsGp_QueueProfileUpdate(void *h, char *a, char *b);
-s32 GsGp_FlushInfoUpdates(void *h, char *p);
-s32 GsGp_ProcessProfileReply(void *h, Unk_ov065_0227ff90_Req *req, char *str);
+s32 gpiSetInfoi(void *h, s32 code, s32 val);
+s32 gpiSendUserInfo(void *h, char *a, char *b);
+s32 gpiSendLocalInfo(void *h, char *a, char *b);
+s32 gpiAddLocalInfo(void *h, char *p);
+s32 gpiProcessGetInfo(void *h, Unk_ov065_0227ff90_Req *req, char *str);
 }
 }
 
@@ -201,38 +200,38 @@ namespace Nc {
 
 
 extern "C" {
-void GsUtil_StrCopyN(void *, const void *, s32);
-void GsGp_SetErrorString(void *, const char *);
-void GsGp_SetError(void *, s32, const char *);
-void GsGp_DebugLog(void *, const char *, ...);
-s32 GsGp_ProcessConnectReply(void *, void *, char *);
-s32 GsGp_ProcessNewProfileReply(void *, void *, char *);
-s32 GsGp_ProcessProfileReply(void *, void *, char *);
-s32 GsGp_ProcessRnReply(void *, void *, char *);
+void strzcpy(void *, const void *, s32);
+void gpiSetErrorString(void *, const char *);
+void gpiSetError(void *, s32, const char *);
+void gpiDebug(void *, const char *, ...);
+s32 gpiProcessConnect(void *, void *, char *);
+s32 gpiProcessNewProfile(void *, void *, char *);
+s32 gpiProcessGetInfo(void *, void *, char *);
+s32 gpiProcessRegisterUniqueNick(void *, void *, char *);
 s32 shutdown(s32, s32);
 s32 closesocket(s32);
 void GsUtil_Free(void *);
 void *GsUtil_Alloc(u32);
-s32 GsGp_QueueCallback(void *, GsGpCallbackPair, void *, void *, s32);
+s32 gpiAddCallback(void *, GPICallback, void *, void *, s32);
 s32 memset(void *, s32, u32);
 s32 STD_GetStringLength(const char *);
 s32 OS_SPrintf(char *, const char *, ...);
-s32 GsGpPeer_SendString(void *, void *, const char *);
-s32 GsGpPeer_Send(void *, void *, const char *, s32);
-s32 GsGpPeer_SendChar(void *, void *, s32);
+s32 gpiSendOrBufferString(void *, void *, const char *);
+s32 gpiSendOrBufferStringLen(void *, void *, const char *, s32);
+s32 gpiSendOrBufferChar(void *, void *, s32);
 s32 time(s32);
-s32 GsGpBuf_AppendString(void *, void *, const char *);
-s32 GsGpBuf_AppendInt(void *, void *, s32);
-s32 GsGpBuf_Append(void *, void *, const char *, s32);
-s32 GsGpBuf_AppendChar(void *, void *, s32);
+s32 gpiAppendStringToBuffer(void *, void *, const char *);
+s32 gpiAppendIntToBuffer(void *, void *, s32);
+s32 gpiAppendStringToBufferLen(void *, void *, const char *, s32);
+s32 gpiAppendCharToBuffer(void *, void *, s32);
 void ArrayAppend(void *, void *);
-s32 GsGpProfile_Find(void *, s32, void *);
+s32 gpiGetProfile(void *, s32, void *);
 s32 socket(s32, s32, s32);
 s32 SetSockBlocking(s32, s32);
 void GsGpPeer_SetSocketBuffers(s32);
 s32 connect(s32, void *, s32);
 s32 GOAGetLastError(s32);
-void GsGp_CallErrorCallback(void *, s32, s32);
+void gpiCallErrorCallback(void *, s32, s32);
 
 extern char data_ov065_0228d894[];
 extern char data_ov065_0228d8dc[];
@@ -248,14 +247,14 @@ extern char data_ov065_0228d96c[];
 extern char data_ov065_0228d9a0[];
 
 
-s32 GsGp_IsValidDate(s32 day, s32 mon, s32 year);
+s32 gpiIsValidDate(s32 day, s32 mon, s32 year);
 
 
 
 
 
 
-void GsGp_FreeOperation(Unk_ov065_02280854_H *h, GsGpOperation *n);
+void gpiDestroyOperation(Unk_ov065_02280854_H *h, GPIOperation *n);
 
 
 
@@ -276,19 +275,19 @@ enum Unk_ov065_02280a2c_Z { Unk_ov065_02280a2c_Z_0 = 0, Unk_ov065_02280a2c_Z_FF 
 
 }
 extern "C" {
-void GsGp_CopyInfoResult(GsGpInfoCache *s, GsGpGetInfoResponse *d);
-s32 GsGp_UnpackDate(void *ctx, s32 packed, s32 *pa, s32 *pb, s32 *pc);
+void gpiInfoCacheToArg(GPIInfoCache *s, GPGetInfoResponseArg *d);
+s32 gpiIntToDate(void *ctx, s32 packed, s32 *pa, s32 *pb, s32 *pc);
 }
 }
 
 namespace Nc {
 extern "C" {
-s32 GsGp_UnpackDate(void *ctx, s32 packed, s32 *pa, s32 *pb, s32 *pc) {
+s32 gpiIntToDate(void *ctx, s32 packed, s32 *pa, s32 *pb, s32 *pc) {
     s32 a = (packed >> 24) & 0xff;
     s32 b = (packed >> 16) & 0xff;
     s32 c = packed & 0xffff;
-    if (GsGp_IsValidDate(a, b, c) == 0) {
-        GsGp_SetErrorString(ctx, "Invalid date.");
+    if (gpiIsValidDate(a, b, c) == 0) {
+        gpiSetErrorString(ctx, "Invalid date.");
         return 2;
     }
     *pa = a;
@@ -301,82 +300,82 @@ s32 GsGp_UnpackDate(void *ctx, s32 packed, s32 *pa, s32 *pb, s32 *pc) {
 
 namespace Nc {
 extern "C" {
-void GsGp_CopyInfoResult(GsGpInfoCache *s, GsGpGetInfoResponse *d) {
+void gpiInfoCacheToArg(GPIInfoCache *s, GPGetInfoResponseArg *d) {
     if (s->nick) {
-        GsUtil_StrCopyN(d->nick, s->nick, 0x1f);
+        strzcpy(d->nick, s->nick, 0x1f);
     } else {
         d->nick[0] = 0;
     }
-    if (s->uniqueNick) {
-        GsUtil_StrCopyN(d->uniqueNick, s->uniqueNick, 0x15);
+    if (s->uniquenick) {
+        strzcpy(d->uniquenick, s->uniquenick, 0x15);
     } else {
-        d->uniqueNick[0] = 0;
+        d->uniquenick[0] = 0;
     }
     if (s->email) {
-        GsUtil_StrCopyN(d->email, s->email, 0x33);
+        strzcpy(d->email, s->email, 0x33);
     } else {
         d->email[0] = 0;
     }
-    if (s->firstName) {
-        GsUtil_StrCopyN(d->firstName, s->firstName, 0x1f);
+    if (s->firstname) {
+        strzcpy(d->firstname, s->firstname, 0x1f);
     } else {
-        d->firstName[0] = 0;
+        d->firstname[0] = 0;
     }
-    if (s->lastName) {
-        GsUtil_StrCopyN(d->lastName, s->lastName, 0x1f);
+    if (s->lastname) {
+        strzcpy(d->lastname, s->lastname, 0x1f);
     } else {
-        d->lastName[0] = 0;
+        d->lastname[0] = 0;
     }
     if (s->homepage) {
-        GsUtil_StrCopyN(d->homepage, s->homepage, 0x4c);
+        strzcpy(d->homepage, s->homepage, 0x4c);
     } else {
         d->homepage[0] = 0;
     }
-    d->icqUin = s->icqUin;
-    GsUtil_StrCopyN(d->zipCode, s->zipCode, 0xb);
-    GsUtil_StrCopyN(d->countryCode, s->countryCode, 3);
+    d->icquin = s->icquin;
+    strzcpy(d->zipcode, s->zipcode, 0xb);
+    strzcpy(d->countrycode, s->countrycode, 3);
     d->longitude = s->longitude;
     d->latitude = s->latitude;
-    if (s->location) {
-        GsUtil_StrCopyN(d->location, s->location, 0x80);
+    if (s->place) {
+        strzcpy(d->place, s->place, 0x80);
     } else {
-        d->location[0] = 0;
+        d->place[0] = 0;
     }
-    d->birthDay = s->birthDay;
-    d->birthMonth = s->birthMonth;
-    d->birthYear = s->birthYear;
+    d->birthday = s->birthday;
+    d->birthmonth = s->birthmonth;
+    d->birthyear = s->birthyear;
     d->sex = s->sex;
-    d->publicMask = s->publicMask;
-    if (s->aimName) {
-        GsUtil_StrCopyN(d->aimName, s->aimName, 0x33);
+    d->publicmask = s->publicmask;
+    if (s->aimname) {
+        strzcpy(d->aimname, s->aimname, 0x33);
     } else {
-        d->aimName[0] = 0;
+        d->aimname[0] = 0;
     }
-    d->icqUin = s->icqUin;
+    d->icquin = s->icquin;
     d->longitude = s->longitude;
     d->latitude = s->latitude;
-    d->birthDay = s->birthDay;
-    d->birthMonth = s->birthMonth;
-    d->birthYear = s->birthYear;
+    d->birthday = s->birthday;
+    d->birthmonth = s->birthmonth;
+    d->birthyear = s->birthyear;
     d->sex = s->sex;
-    d->publicMask = s->publicMask;
+    d->publicmask = s->publicmask;
     d->pic = s->pic;
-    d->occupationId = s->occupationId;
-    d->industryId = s->industryId;
-    d->incomeId = s->incomeId;
-    d->marriedId = s->marriedId;
-    d->childCount = s->childCount;
+    d->occupationid = s->occupationid;
+    d->industryid = s->industryid;
+    d->incomeid = s->incomeid;
+    d->marriedid = s->marriedid;
+    d->childcount = s->childcount;
     d->interests1 = s->interests1;
     d->ownership1 = s->ownership1;
-    d->connectionType = s->connectionType;
+    d->conntypeid = s->conntypeid;
 }
 }
 }
 
 namespace Nb {
 extern "C" {
-s32 GsGp_ProcessProfileReply(void *h, Unk_ov065_0227ff90_Req *req, char *str) {
-    GsGpContext *ctx = *(GsGpContext **)h;
+s32 gpiProcessGetInfo(void *h, Unk_ov065_0227ff90_Req *req, char *str) {
+    GPIConnection *ctx = *(GPIConnection **)h;
     struct {
         u32 *e;
         Unk_ov065_0227e0e8_Wrap p;
@@ -390,73 +389,73 @@ s32 GsGp_ProcessProfileReply(void *h, Unk_ov065_0227ff90_Req *req, char *str) {
     } l;
     s32 r5;
     s32 flag;
-    GsGpPeer *n;
+    GPIPeer *n;
     void *node;
 
-    if (GsGp_CheckServerError(h, str, 1) != 0) {
+    if (gpiCheckForError(h, str, 1) != 0) {
         return 4;
     }
     if (strncmp(str, "\\pi\\", 4) != 0) {
-        GsGp_SetError(h, 1, "Unexpected data was received from the server.");
-        GsGp_CallErrorCallback(h, 3, 1);
+        gpiSetError(h, 1, "Unexpected data was received from the server.");
+        gpiCallErrorCallback(h, 3, 1);
         return 3;
     }
     if (FIND("\\profileid\\", l.buf, 0x40) == 0) {
-        GsGp_SetError(h, 1, "Unexpected data was received from the server.");
-        GsGp_CallErrorCallback(h, 3, 1);
+        gpiSetError(h, 1, "Unexpected data was received from the server.");
+        gpiCallErrorCallback(h, 3, 1);
         return 3;
     }
     r5 = atol(l.buf);
-    GsGpProfile_Find(h, r5, &l.e);
-    GsGpInfoCache s = {0};
+    gpiGetProfile(h, r5, &l.e);
+    GPIInfoCache s = {0};
     char f[0x4c];
     s.nick = l.a;
-    s.uniqueNick = l.b;
+    s.uniquenick = l.b;
     s.email = l.c;
-    s.firstName = l.d;
-    s.lastName = l.e2;
+    s.firstname = l.d;
+    s.lastname = l.e2;
     s.homepage = f;
-    s.aimName = l.g;
+    s.aimname = l.g;
     if (FIND("\\nick\\", s.nick, 0x1f) == 0) {
         s.nick[0] = 0;
     }
-    if (FIND("\\uniquenick\\", s.uniqueNick, 0x15) == 0) {
-        s.uniqueNick[0] = 0;
+    if (FIND("\\uniquenick\\", s.uniquenick, 0x15) == 0) {
+        s.uniquenick[0] = 0;
     }
     if (FIND("\\email\\", s.email, 0x33) == 0) {
         s.email[0] = 0;
     }
-    if (FIND("\\firstname\\", s.firstName, 0x1f) == 0) {
-        s.firstName[0] = 0;
+    if (FIND("\\firstname\\", s.firstname, 0x1f) == 0) {
+        s.firstname[0] = 0;
     }
-    if (FIND("\\lastname\\", s.lastName, 0x1f) == 0) {
-        s.lastName[0] = 0;
+    if (FIND("\\lastname\\", s.lastname, 0x1f) == 0) {
+        s.lastname[0] = 0;
     }
     if (FIND("\\icquin\\", l.buf, 0x40) == 0) {
-        s.icqUin = -1;
+        s.icquin = -1;
     } else {
-        s.icqUin = atol(l.buf);
+        s.icquin = atol(l.buf);
     }
     if (FIND("\\homepage\\", s.homepage, 0x4c) == 0) {
         s.homepage[0] = 0;
     }
-    if (FIND("\\zipcode\\", s.zipCode, 0xb) == 0) {
-        s.zipCode[0] = 0;
+    if (FIND("\\zipcode\\", s.zipcode, 0xb) == 0) {
+        s.zipcode[0] = 0;
     }
-    if (FIND("\\countrycode\\", s.countryCode, 3) == 0) {
-        s.countryCode[0] = 0;
+    if (FIND("\\countrycode\\", s.countrycode, 3) == 0) {
+        s.countrycode[0] = 0;
     }
     s.longitude = 0;
     s.latitude = 0;
-    if (FIND("\\loc\\", s.location, 0x80) == 0) {
-        s.location[0] = 0;
+    if (FIND("\\loc\\", s.place, 0x80) == 0) {
+        s.place[0] = 0;
     }
     if (FIND("\\birthday\\", l.buf, 0x40) == 0) {
-        s.birthDay = 0;
-        s.birthMonth = 0;
-        s.birthYear = 0;
+        s.birthday = 0;
+        s.birthmonth = 0;
+        s.birthyear = 0;
     } else {
-        s32 r = GsGp_UnpackDate(h, atol(l.buf), &s.birthDay, &s.birthMonth, &s.birthYear);
+        s32 r = gpiIntToDate(h, atol(l.buf), &s.birthday, &s.birthmonth, &s.birthyear);
         if (r != 0) {
             return r;
         }
@@ -471,12 +470,12 @@ s32 GsGp_ProcessProfileReply(void *h, Unk_ov065_0227ff90_Req *req, char *str) {
         s.sex = 0x502;
     }
     if (FIND("\\pmask\\", l.buf, 0x40) == 0) {
-        s.publicMask = -1;
+        s.publicmask = -1;
     } else {
-        s.publicMask = atol(l.buf);
+        s.publicmask = atol(l.buf);
     }
-    if (FIND("\\aim\\", s.aimName, 0x33) == 0) {
-        s.aimName[0] = 0;
+    if (FIND("\\aim\\", s.aimname, 0x33) == 0) {
+        s.aimname[0] = 0;
     }
     if (FIND("\\pic\\", l.buf, 0x40) == 0) {
         s.pic = 0;
@@ -484,29 +483,29 @@ s32 GsGp_ProcessProfileReply(void *h, Unk_ov065_0227ff90_Req *req, char *str) {
         s.pic = atol(l.buf);
     }
     if (FIND("\\occ\\", l.buf, 0x40) == 0) {
-        s.occupationId = 0;
+        s.occupationid = 0;
     } else {
-        s.occupationId = atol(l.buf);
+        s.occupationid = atol(l.buf);
     }
     if (FIND("\\ind\\", l.buf, 0x40) == 0) {
-        s.industryId = 0;
+        s.industryid = 0;
     } else {
-        s.industryId = atol(l.buf);
+        s.industryid = atol(l.buf);
     }
     if (FIND("\\inc\\", l.buf, 0x40) == 0) {
-        s.incomeId = 0;
+        s.incomeid = 0;
     } else {
-        s.incomeId = atol(l.buf);
+        s.incomeid = atol(l.buf);
     }
     if (FIND("\\mar\\", l.buf, 0x40) == 0) {
-        s.marriedId = 0;
+        s.marriedid = 0;
     } else {
-        s.marriedId = atol(l.buf);
+        s.marriedid = atol(l.buf);
     }
     if (FIND("\\chc\\", l.buf, 0x40) == 0) {
-        s.childCount = 0;
+        s.childcount = 0;
     } else {
-        s.childCount = atol(l.buf);
+        s.childcount = atol(l.buf);
     }
     if (FIND("\\i1\\", l.buf, 0x40) == 0) {
         s.interests1 = 0;
@@ -519,27 +518,27 @@ s32 GsGp_ProcessProfileReply(void *h, Unk_ov065_0227ff90_Req *req, char *str) {
         s.ownership1 = atol(l.buf);
     }
     if (FIND("\\conn\\", l.buf, 0x40) == 0) {
-        s.connectionType = 0;
+        s.conntypeid = 0;
     } else {
-        s.connectionType = atol(l.buf);
+        s.conntypeid = atol(l.buf);
     }
     if (FIND("\\sig\\", l.buf, 0x40) == 0) {
-        GsGp_SetError(h, 1, "Unexpected data was received from the server.");
-        GsGp_CallErrorCallback(h, 3, 1);
+        gpiSetError(h, 1, "Unexpected data was received from the server.");
+        gpiCallErrorCallback(h, 3, 1);
         return 3;
     }
     flag = ctx->infoCaching;
-    for (n = ctx->peerList; n != NULL; n = n->next) {
-        if (n->profileId == r5 && n->peerState == 0x65) {
+    for (n = ctx->peerList; n != NULL; n = n->pnext) {
+        if (n->profile == r5 && n->state == 0x65) {
             if (l.e == NULL) {
-                l.e = GsGpProfile_Add(h, r5);
+                l.e = gpiProfileListAdd(h, r5);
             }
-            n->peerState = 0x66;
+            n->state = 0x66;
             flag = 1;
         }
     }
     if (l.e == NULL && ctx->infoCaching != 0) {
-        l.e = GsGpProfile_Add(h, r5);
+        l.e = gpiProfileListAdd(h, r5);
     }
     if (flag != 0) {
         GsUtil_Free((void *)l.e[6]);
@@ -547,26 +546,26 @@ s32 GsGp_ProcessProfileReply(void *h, Unk_ov065_0227ff90_Req *req, char *str) {
         l.e[6] = (u32)goastrdup(l.buf);
     }
     if (ctx->infoCaching != 0) {
-        GsGp_CacheProfileInfo(h, l.e, &s);
+        gpiSetInfoCache(h, l.e, &s);
     }
     l.p = req->callback;
-    if (l.p.p.func != 0) {
+    if (l.p.p.callback != 0) {
         node = GsUtil_Alloc(0x204);
         if (node == NULL) {
-            GsGp_SetErrorString(h, "Out of memory.");
+            gpiSetErrorString(h, "Out of memory.");
             return 1;
         }
-        GsGp_CopyInfoResult(&s, node);
+        gpiInfoCacheToArg(&s, node);
         ((s32 *)node)[0] = 0;
         ((s32 *)node)[1] = r5;
         {
-            s32 r = GsGp_QueueCallback(h, l.p.p, node, req, 0);
+            s32 r = gpiAddCallback(h, l.p.p, node, req, 0);
             if (r != 0) {
                 return r;
             }
         }
     }
-    GsGp_RemoveOperation(h, req);
+    gpiRemoveOperation(h, req);
     return 0;
 }
 }
@@ -574,20 +573,20 @@ s32 GsGp_ProcessProfileReply(void *h, Unk_ov065_0227ff90_Req *req, char *str) {
 
 namespace Nb {
 extern "C" {
-s32 GsGp_FlushInfoUpdates(void *h, char *p) {
+s32 gpiAddLocalInfo(void *h, char *p) {
     Unk_ov065_0227fe88_Ctx *c = *(Unk_ov065_0227fe88_Ctx **)h;
     if (c->profileUpdateBufferLength > 0) {
-        GsGpBuf_AppendString(h, p, "\\updatepro\\\\sesskey\\");
-        GsGpBuf_AppendInt(h, p, c->sessKey);
-        GsGpBuf_AppendString(h, p, (const char *)c->profileUpdateBuffer);
-        GsGpBuf_AppendString(h, p, "\\final\\");
+        gpiAppendStringToBuffer(h, p, "\\updatepro\\\\sesskey\\");
+        gpiAppendIntToBuffer(h, p, c->sessKey);
+        gpiAppendStringToBuffer(h, p, (const char *)c->profileUpdateBuffer);
+        gpiAppendStringToBuffer(h, p, "\\final\\");
         c->profileUpdateBufferLength = 0;
     }
     if (c->userUpdateBufferLength > 0) {
-        GsGpBuf_AppendString(h, p, "\\updateui\\\\sesskey\\");
-        GsGpBuf_AppendInt(h, p, c->sessKey);
-        GsGpBuf_AppendString(h, p, (const char *)c->userUpdateBuffer);
-        GsGpBuf_AppendString(h, p, "\\final\\");
+        gpiAppendStringToBuffer(h, p, "\\updateui\\\\sesskey\\");
+        gpiAppendIntToBuffer(h, p, c->sessKey);
+        gpiAppendStringToBuffer(h, p, (const char *)c->userUpdateBuffer);
+        gpiAppendStringToBuffer(h, p, "\\final\\");
         c->userUpdateBufferLength = 0;
     }
     return 0;
@@ -597,13 +596,13 @@ s32 GsGp_FlushInfoUpdates(void *h, char *p) {
 
 namespace Nb {
 extern "C" {
-s32 GsGp_QueueProfileUpdate(void *h, char *a, char *b) {
+s32 gpiSendLocalInfo(void *h, char *a, char *b) {
     Unk_ov065_0227fe88_Ctx *c = *(Unk_ov065_0227fe88_Ctx **)h;
-    s32 r = GsGpBuf_AppendString(h, (char *)&c->profileUpdateBuffer, a);
+    s32 r = gpiAppendStringToBuffer(h, (char *)&c->profileUpdateBuffer, a);
     if (r != 0) {
         return r;
     }
-    r = GsGpBuf_AppendString(h, (char *)&c->profileUpdateBuffer, b);
+    r = gpiAppendStringToBuffer(h, (char *)&c->profileUpdateBuffer, b);
     if (r != 0) {
         return r;
     }
@@ -614,13 +613,13 @@ s32 GsGp_QueueProfileUpdate(void *h, char *a, char *b) {
 
 namespace Nb {
 extern "C" {
-s32 GsGp_QueueUserUpdate(void *h, char *a, char *b) {
+s32 gpiSendUserInfo(void *h, char *a, char *b) {
     Unk_ov065_0227fe88_Ctx *c = *(Unk_ov065_0227fe88_Ctx **)h;
-    s32 r = GsGpBuf_AppendString(h, (char *)&c->userUpdateBuffer, a);
+    s32 r = gpiAppendStringToBuffer(h, (char *)&c->userUpdateBuffer, a);
     if (r != 0) {
         return r;
     }
-    r = GsGpBuf_AppendString(h, (char *)&c->userUpdateBuffer, b);
+    r = gpiAppendStringToBuffer(h, (char *)&c->userUpdateBuffer, b);
     if (r != 0) {
         return r;
     }
@@ -631,17 +630,17 @@ s32 GsGp_QueueUserUpdate(void *h, char *a, char *b) {
 
 namespace Nb {
 extern "C" {
-s32 GsGp_SetInfoInt(void *h, s32 code, s32 val) {
+s32 gpiSetInfoi(void *h, s32 code, s32 val) {
     char buf[16];
     s32 r;
     switch (code) {
     case 0x708:
         if (val < 0) {
-            GsGp_SetErrorString(h, "Invalid zipcode.");
+            gpiSetErrorString(h, "Invalid zipcode.");
             return 2;
         }
         OS_SPrintf(buf, "%d", val);
-        r = GsGp_QueueProfileUpdate(h, "\\zipcode\\", buf);
+        r = gpiSendLocalInfo(h, "\\zipcode\\", buf);
         if (r != 0) {
             return r;
         }
@@ -649,80 +648,80 @@ s32 GsGp_SetInfoInt(void *h, s32 code, s32 val) {
     case 0x70b:
         switch (val) {
         case 0x500:
-            r = GsGp_QueueProfileUpdate(h, "\\sex\\", "0");
+            r = gpiSendLocalInfo(h, "\\sex\\", "0");
         if (r != 0) {
             return r;
         }
             break;
         case 0x501:
-            r = GsGp_QueueProfileUpdate(h, "\\sex\\", "1");
+            r = gpiSendLocalInfo(h, "\\sex\\", "1");
         if (r != 0) {
             return r;
         }
             break;
         case 0x502:
-            r = GsGp_QueueProfileUpdate(h, "\\sex\\", "2");
+            r = gpiSendLocalInfo(h, "\\sex\\", "2");
         if (r != 0) {
             return r;
         }
             break;
         default:
-            GsGp_SetErrorString(h, "Invalid sex.");
+            gpiSetErrorString(h, "Invalid sex.");
             return 2;
         }
         break;
     case 0x706:
         OS_SPrintf(buf, "%d", val);
-        r = GsGp_QueueProfileUpdate(h, "\\icquin\\", buf);
+        r = gpiSendLocalInfo(h, "\\icquin\\", buf);
         if (r != 0) {
             return r;
         }
         break;
     case 0x70c:
         OS_SPrintf(buf, "%d", val);
-        r = GsGp_QueueUserUpdate(h, "\\cpubrandid\\", buf);
+        r = gpiSendUserInfo(h, "\\cpubrandid\\", buf);
         if (r != 0) {
             return r;
         }
         break;
     case 0x70d:
         OS_SPrintf(buf, "%d", val);
-        r = GsGp_QueueUserUpdate(h, "\\cpuspeed\\", buf);
+        r = gpiSendUserInfo(h, "\\cpuspeed\\", buf);
         if (r != 0) {
             return r;
         }
         break;
     case 0x70e:
         OS_SPrintf(buf, "%d", val / 16);
-        r = GsGp_QueueUserUpdate(h, "\\memory\\", buf);
+        r = gpiSendUserInfo(h, "\\memory\\", buf);
         if (r != 0) {
             return r;
         }
         break;
     case 0x710:
         OS_SPrintf(buf, "%d", val / 4);
-        r = GsGp_QueueUserUpdate(h, "\\videocard1ram\\", buf);
+        r = gpiSendUserInfo(h, "\\videocard1ram\\", buf);
         if (r != 0) {
             return r;
         }
         break;
     case 0x712:
         OS_SPrintf(buf, "%d", val / 4);
-        r = GsGp_QueueUserUpdate(h, "\\videocard2ram\\", buf);
+        r = gpiSendUserInfo(h, "\\videocard2ram\\", buf);
         if (r != 0) {
             return r;
         }
         break;
     case 0x713:
         OS_SPrintf(buf, "%d", val);
-        r = GsGp_QueueUserUpdate(h, "\\connectionid\\", buf);
+        r = gpiSendUserInfo(h, "\\connectionid\\", buf);
         if (r != 0) {
             return r;
         }
         break;
     case 0x714:
         OS_SPrintf(buf, "%d", val);
-        r = GsGp_QueueUserUpdate(h, "\\connectionspeed\\", buf);
+        r = gpiSendUserInfo(h, "\\connectionspeed\\", buf);
         if (r != 0) {
             return r;
         }
@@ -732,62 +731,62 @@ s32 GsGp_SetInfoInt(void *h, s32 code, s32 val) {
             val = 1;
         }
         OS_SPrintf(buf, "%d", val);
-        r = GsGp_QueueUserUpdate(h, "\\hasnetwork\\", buf);
+        r = gpiSendUserInfo(h, "\\hasnetwork\\", buf);
         if (r != 0) {
             return r;
         }
         break;
     case 0x718:
         OS_SPrintf(buf, "%d", val);
-        r = GsGp_QueueProfileUpdate(h, "\\pic\\", buf);
+        r = gpiSendLocalInfo(h, "\\pic\\", buf);
         if (r != 0) {
             return r;
         }
         break;
     case 0x719:
         OS_SPrintf(buf, "%d", val);
-        r = GsGp_QueueProfileUpdate(h, "\\occ\\", buf);
+        r = gpiSendLocalInfo(h, "\\occ\\", buf);
         if (r != 0) {
             return r;
         }
         break;
     case 0x71a:
         OS_SPrintf(buf, "%d", val);
-        r = GsGp_QueueProfileUpdate(h, "\\ind\\", buf);
+        r = gpiSendLocalInfo(h, "\\ind\\", buf);
         if (r != 0) {
             return r;
         }
         break;
     case 0x71b:
         OS_SPrintf(buf, "%d", val);
-        r = GsGp_QueueProfileUpdate(h, "\\inc\\", buf);
+        r = gpiSendLocalInfo(h, "\\inc\\", buf);
         if (r != 0) {
             return r;
         }
         break;
     case 0x71c:
         OS_SPrintf(buf, "%d", val);
-        r = GsGp_QueueProfileUpdate(h, "\\mar\\", buf);
+        r = gpiSendLocalInfo(h, "\\mar\\", buf);
         if (r != 0) {
             return r;
         }
         break;
     case 0x71d:
         OS_SPrintf(buf, "%d", val);
-        r = GsGp_QueueProfileUpdate(h, "\\chc\\", buf);
+        r = gpiSendLocalInfo(h, "\\chc\\", buf);
         if (r != 0) {
             return r;
         }
         break;
     case 0x71e:
         OS_SPrintf(buf, "%d", val);
-        r = GsGp_QueueProfileUpdate(h, "\\i1\\", buf);
+        r = gpiSendLocalInfo(h, "\\i1\\", buf);
         if (r != 0) {
             return r;
         }
         break;
     default:
-        GsGp_SetErrorString(h, "Invalid info.");
+        gpiSetErrorString(h, "Invalid info.");
         return 2;
     }
     return 0;
@@ -797,73 +796,73 @@ s32 GsGp_SetInfoInt(void *h, s32 code, s32 val) {
 
 namespace Na {
 extern "C" {
-s32 GsGp_SetInfoString(Ctx0227 **h, s32 cmd, char *val) {
+s32 gpiSetInfos(Ctx0227 **h, s32 cmd, char *val) {
     Ctx0227 *ctx = *h;
     char buf[0x100];
     s32 r;
     char ch;
     s32 c;
     if (val == 0) {
-        GsGp_SetErrorString(h, "Invalid value.");
+        gpiSetErrorString(h, "Invalid value.");
         return 2;
     }
     switch (cmd) {
     case 0x700:
         CK_NONEMPTY
-        GsUtil_StrCopyN(buf, val, 0x1f);
-        GsUtil_StrCopyN(ctx->nick, buf, 0x1f);
-        r = GsGp_QueueProfileUpdate(h, "\\nick\\", buf);
+        strzcpy(buf, val, 0x1f);
+        strzcpy(ctx->nick, buf, 0x1f);
+        r = gpiSendLocalInfo(h, "\\nick\\", buf);
         if (r != 0) return r;
         break;
     case 0x701:
         CK_NONEMPTY
-        GsUtil_StrCopyN(buf, val, 0x15);
-        GsUtil_StrCopyN(ctx->uniqueNick, buf, 0x15);
-        r = GsGp_QueueProfileUpdate(h, "\\uniquenick\\", buf);
+        strzcpy(buf, val, 0x15);
+        strzcpy(ctx->uniquenick, buf, 0x15);
+        r = gpiSendLocalInfo(h, "\\uniquenick\\", buf);
         if (r != 0) return r;
         break;
     case 0x702:
         CK_NONEMPTY
-        GsUtil_StrCopyN(buf, val, 0x33);
+        strzcpy(buf, val, 0x33);
         _strlwr(buf);
-        GsUtil_StrCopyN(ctx->email, buf, 0x33);
-        r = GsGp_QueueUserUpdate(h, "\\email\\", buf);
+        strzcpy(ctx->email, buf, 0x33);
+        r = gpiSendUserInfo(h, "\\email\\", buf);
         if (r != 0) return r;
         break;
     case 0x703:
         CK_NONEMPTY
-        GsUtil_StrCopyN(buf, val, 0x1f);
-        GsUtil_StrCopyN(ctx->password, buf, 0x1f);
-        r = GsGp_QueueUserUpdate(h, "\\password\\", buf);
+        strzcpy(buf, val, 0x1f);
+        strzcpy(ctx->password, buf, 0x1f);
+        r = gpiSendUserInfo(h, "\\password\\", buf);
         if (r != 0) return r;
         break;
     case 0x704:
-        GsUtil_StrCopyN(buf, val, 0x1f);
-        r = GsGp_QueueProfileUpdate(h, "\\firstname\\", buf);
+        strzcpy(buf, val, 0x1f);
+        r = gpiSendLocalInfo(h, "\\firstname\\", buf);
         if (r != 0) return r;
         break;
     case 0x705:
-        GsUtil_StrCopyN(buf, val, 0x1f);
-        r = GsGp_QueueProfileUpdate(h, "\\lastname\\", buf);
+        strzcpy(buf, val, 0x1f);
+        r = gpiSendLocalInfo(h, "\\lastname\\", buf);
         if (r != 0) return r;
         break;
     case 0x707:
-        GsUtil_StrCopyN(buf, val, 0x4c);
-        r = GsGp_QueueProfileUpdate(h, "\\homepage\\", buf);
+        strzcpy(buf, val, 0x4c);
+        r = gpiSendLocalInfo(h, "\\homepage\\", buf);
         if (r != 0) return r;
         break;
     case 0x708:
-        GsUtil_StrCopyN(buf, val, 0xb);
-        r = GsGp_QueueProfileUpdate(h, "\\zipcode\\", buf);
+        strzcpy(buf, val, 0xb);
+        r = gpiSendLocalInfo(h, "\\zipcode\\", buf);
         if (r != 0) return r;
         break;
     case 0x709:
         if (STD_GetStringLength(val) != 2) {
-            GsGp_SetErrorString(h, "Invalid countrycode.");
+            gpiSetErrorString(h, "Invalid countrycode.");
             return 2;
         }
-        GsUtil_StrCopyN(buf, val, 3);
-        r = GsGp_QueueProfileUpdate(h, "\\countrycode\\", buf);
+        strzcpy(buf, val, 3);
+        r = gpiSendLocalInfo(h, "\\countrycode\\", buf);
         if (r != 0) return r;
         break;
     case 0x70b:
@@ -879,95 +878,95 @@ s32 GsGp_SetInfoString(Ctx0227 **h, s32 cmd, char *val) {
         } else {
             STD_CopyString(buf, "2");
         }
-        r = GsGp_QueueProfileUpdate(h, "\\sex\\", buf);
+        r = gpiSendLocalInfo(h, "\\sex\\", buf);
         if (r != 0) return r;
         break;
     case 0x706:
-        GsUtil_StrCopyN(buf, val, 0x100);
-        r = GsGp_QueueProfileUpdate(h, "\\icquin\\", buf);
+        strzcpy(buf, val, 0x100);
+        r = gpiSendLocalInfo(h, "\\icquin\\", buf);
         if (r != 0) return r;
         break;
     case 0x70d:
-        r = GsGp_SetInfoInt(h, 0x70d, atol(val));
+        r = gpiSetInfoi(h, 0x70d, atol(val));
         if (r != 0) return r;
         break;
     case 0x70e:
-        r = GsGp_SetInfoInt(h, 0x70e, atol(val));
+        r = gpiSetInfoi(h, 0x70e, atol(val));
         if (r != 0) return r;
         break;
     case 0x70f:
-        GsUtil_StrCopyN(buf, val, 0x100);
-        r = GsGp_QueueProfileUpdate(h, "\\videocard1string\\", buf);
+        strzcpy(buf, val, 0x100);
+        r = gpiSendLocalInfo(h, "\\videocard1string\\", buf);
         if (r != 0) return r;
         break;
     case 0x710:
-        r = GsGp_SetInfoInt(h, 0x710, atol(val));
+        r = gpiSetInfoi(h, 0x710, atol(val));
         if (r != 0) return r;
         break;
     case 0x711:
-        GsUtil_StrCopyN(buf, val, 0x100);
-        r = GsGp_QueueProfileUpdate(h, "\\videocard2string\\", buf);
+        strzcpy(buf, val, 0x100);
+        r = gpiSendLocalInfo(h, "\\videocard2string\\", buf);
         if (r != 0) return r;
         break;
     case 0x712:
-        r = GsGp_SetInfoInt(h, 0x712, atol(val));
+        r = gpiSetInfoi(h, 0x712, atol(val));
         if (r != 0) return r;
         break;
     case 0x714:
-        r = GsGp_SetInfoInt(h, 0x714, atol(val));
+        r = gpiSetInfoi(h, 0x714, atol(val));
         if (r != 0) return r;
         break;
     case 0x715:
-        r = GsGp_SetInfoInt(h, 0x715, atol(val));
+        r = gpiSetInfoi(h, 0x715, atol(val));
         if (r != 0) return r;
         break;
     case 0x716:
-        GsUtil_StrCopyN(buf, val, 0x100);
-        r = GsGp_QueueProfileUpdate(h, "\\osstring\\", buf);
+        strzcpy(buf, val, 0x100);
+        r = gpiSendLocalInfo(h, "\\osstring\\", buf);
         if (r != 0) return r;
         break;
     case 0x717:
-        GsUtil_StrCopyN(buf, val, 0x33);
-        r = GsGp_QueueProfileUpdate(h, "\\aim\\", buf);
+        strzcpy(buf, val, 0x33);
+        r = gpiSendLocalInfo(h, "\\aim\\", buf);
         if (r != 0) return r;
         break;
     case 0x718:
-        GsUtil_StrCopyN(buf, val, 0x100);
-        r = GsGp_QueueProfileUpdate(h, "\\pic\\", buf);
+        strzcpy(buf, val, 0x100);
+        r = gpiSendLocalInfo(h, "\\pic\\", buf);
         if (r != 0) return r;
         break;
     case 0x719:
-        GsUtil_StrCopyN(buf, val, 0x100);
-        r = GsGp_QueueProfileUpdate(h, "\\occ\\", buf);
+        strzcpy(buf, val, 0x100);
+        r = gpiSendLocalInfo(h, "\\occ\\", buf);
         if (r != 0) return r;
         break;
     case 0x71a:
-        GsUtil_StrCopyN(buf, val, 0x100);
-        r = GsGp_QueueProfileUpdate(h, "\\ind\\", buf);
+        strzcpy(buf, val, 0x100);
+        r = gpiSendLocalInfo(h, "\\ind\\", buf);
         if (r != 0) return r;
         break;
     case 0x71b:
-        GsUtil_StrCopyN(buf, val, 0x100);
-        r = GsGp_QueueProfileUpdate(h, "\\inc\\", buf);
+        strzcpy(buf, val, 0x100);
+        r = gpiSendLocalInfo(h, "\\inc\\", buf);
         if (r != 0) return r;
         break;
     case 0x71c:
-        GsUtil_StrCopyN(buf, val, 0x100);
-        r = GsGp_QueueProfileUpdate(h, "\\mar\\", buf);
+        strzcpy(buf, val, 0x100);
+        r = gpiSendLocalInfo(h, "\\mar\\", buf);
         if (r != 0) return r;
         break;
     case 0x71d:
-        GsUtil_StrCopyN(buf, val, 0x100);
-        r = GsGp_QueueProfileUpdate(h, "\\chc\\", buf);
+        strzcpy(buf, val, 0x100);
+        r = gpiSendLocalInfo(h, "\\chc\\", buf);
         if (r != 0) return r;
         break;
     case 0x71e:
-        GsUtil_StrCopyN(buf, val, 0x100);
-        r = GsGp_QueueProfileUpdate(h, "\\i1\\", buf);
+        strzcpy(buf, val, 0x100);
+        r = gpiSendLocalInfo(h, "\\i1\\", buf);
         if (r != 0) return r;
         break;
     default:
-        GsGp_SetErrorString(h, "Invalid info.");
+        gpiSetErrorString(h, "Invalid info.");
         return 2;
     }
     return 0;
@@ -977,7 +976,7 @@ s32 GsGp_SetInfoString(Ctx0227 **h, s32 cmd, char *val) {
 
 namespace Na {
 extern "C" {
-// Not in the original binary: unreferenced weak function compiled right before GsGp_SetInfoString, so that the literals
+// Not in the original binary: unreferenced weak function compiled right before gpiSetInfos, so that the literals
 // "%d", "Invalid info.", "\\birthday\\" are pooled where the original has them; removed by the dead-stripping link (notes.txt).
 __declspec(weak) void Unk_ov065_0227f54c_pool_order(void) {
     STD_GetStringLength("%d");
@@ -989,15 +988,15 @@ __declspec(weak) void Unk_ov065_0227f54c_pool_order(void) {
 
 namespace Na {
 extern "C" {
-s32 GsGp_SendGetProfile(Ctx0227 **h, s32 a1, s32 a2) {
+s32 gpiSendGetInfo(Ctx0227 **h, s32 a1, s32 a2) {
     Ctx0227 *ctx = *h;
-    GsGpBuf_AppendString(h, &ctx->outputBuffer, "\\getprofile\\\\sesskey\\");
-    GsGpBuf_AppendInt(h, &ctx->outputBuffer, ctx->sessKey);
-    GsGpBuf_AppendString(h, &ctx->outputBuffer, "\\profileid\\");
-    GsGpBuf_AppendInt(h, &ctx->outputBuffer, a1);
-    GsGpBuf_AppendString(h, &ctx->outputBuffer, "\\id\\");
-    GsGpBuf_AppendInt(h, &ctx->outputBuffer, a2);
-    GsGpBuf_AppendString(h, &ctx->outputBuffer, "\\final\\");
+    gpiAppendStringToBuffer(h, &ctx->outputBuffer, "\\getprofile\\\\sesskey\\");
+    gpiAppendIntToBuffer(h, &ctx->outputBuffer, ctx->sessKey);
+    gpiAppendStringToBuffer(h, &ctx->outputBuffer, "\\profileid\\");
+    gpiAppendIntToBuffer(h, &ctx->outputBuffer, a1);
+    gpiAppendStringToBuffer(h, &ctx->outputBuffer, "\\id\\");
+    gpiAppendIntToBuffer(h, &ctx->outputBuffer, a2);
+    gpiAppendStringToBuffer(h, &ctx->outputBuffer, "\\final\\");
     return 0;
 }
 }
@@ -1005,10 +1004,10 @@ s32 GsGp_SendGetProfile(Ctx0227 **h, s32 a1, s32 a2) {
 
 namespace Na {
 extern "C" {
-s32 GsGp_RequestProfileInfo(Ctx0227 **h, s32 a1, s32 a2, s32 a3, s32 a4, s32 a5) {
+s32 gpiGetInfo(Ctx0227 **h, s32 a1, s32 a2, s32 a3, s32 a4, s32 a5) {
     void *m;
-    GsGpProfile *n;
-    GsGpOperation *out2;
+    GPIProfile *n;
+    GPIOperation *out2;
     Pair0227 pr;
     s32 ok;
     Ctx0227 *ctx;
@@ -1023,40 +1022,40 @@ s32 GsGp_RequestProfileInfo(Ctx0227 **h, s32 a1, s32 a2, s32 a3, s32 a4, s32 a5)
     if (ctx->infoCaching == 0) {
         ok = 0;
     }
-    if (a4 != 0 && ok != 0 && GsGpProfile_Find(h, a1, &n) != 0 && n->infoCache != 0) {
+    if (a4 != 0 && ok != 0 && gpiGetProfile(h, a1, &n) != 0 && n->cache != 0) {
         m = GsUtil_Alloc(0x204);
         if (m == 0) {
-            GsGp_SetErrorString(h, "Out of memory.");
+            gpiSetErrorString(h, "Out of memory.");
             return 1;
         }
-        GsGp_CopyInfoResult(n->infoCache, m);
+        gpiInfoCacheToArg(n->cache, m);
         ((s32 *)m)[0] = 0;
         ((s32 *)m)[1] = a1;
-        pr.func = a4;
+        pr.callback = a4;
         pr.param = a5;
-        r = GsGp_AddOperation(h, 2, 0, &out2, 1, a4, a5);
+        r = gpiAddOperation(h, 2, 0, &out2, 1, a4, a5);
         if (r != 0) {
             return r;
         }
         p5 = out2->id;
-        r = GsGp_QueueCallback(h, pr, m, out2, 0);
+        r = gpiAddCallback(h, pr, m, out2, 0);
         if (r != 0) {
             return r;
         }
-        GsGp_RemoveOperation(h, out2);
+        gpiRemoveOperation(h, out2);
     } else {
-        r = GsGp_AddOperation(h, 2, 0, &out2, a3, a4, a5);
+        r = gpiAddOperation(h, 2, 0, &out2, a3, a4, a5);
         if (r != 0) {
             return r;
         }
         p5 = out2->id;
-        r = GsGp_SendGetProfile(h, a1, p5);
+        r = gpiSendGetInfo(h, a1, p5);
         if (r != 0) {
             return r;
         }
     }
     if (a3 != 0) {
-        r = GsGp_ProcessConnection(h, p5);
+        r = gpiProcess(h, p5);
         if (r != 0) {
             return r;
         }
@@ -1068,25 +1067,25 @@ s32 GsGp_RequestProfileInfo(Ctx0227 **h, s32 a1, s32 a2, s32 a3, s32 a4, s32 a5)
 
 namespace Na {
 extern "C" {
-s32 GsGp_CacheProfileInfo(Ctx0227 **h, GsGpProfile *p, GsGpInfoCache *q) {
-    GsGpInfoCache *d;
+s32 gpiSetInfoCache(Ctx0227 **h, GPIProfile *p, GPIInfoCache *q) {
+    GPIInfoCache *d;
     if ((*h)->infoCaching == 0) {
         return 1;
     }
-    GsGp_FreeCachedInfo(p);
-    p->infoCache = (GsGpInfoCache *)GsUtil_Alloc(0xf0);
-    d = p->infoCache;
+    gpiFreeInfoCache(p);
+    p->cache = (GPIInfoCache *)GsUtil_Alloc(0xf0);
+    d = p->cache;
     if (d != 0) {
         *(Unk_ov065_0227f324_Copy *)d = *(Unk_ov065_0227f324_Copy *)q;
-        p->infoCache->nick = goastrdup(q->nick);
-        p->infoCache->uniqueNick = goastrdup(q->uniqueNick);
-        p->infoCache->email = goastrdup(q->email);
-        p->infoCache->firstName = goastrdup(q->firstName);
-        p->infoCache->lastName = goastrdup(q->lastName);
-        p->infoCache->homepage = goastrdup(q->homepage);
-        p->infoCache->aimName = goastrdup(q->aimName);
+        p->cache->nick = goastrdup(q->nick);
+        p->cache->uniquenick = goastrdup(q->uniquenick);
+        p->cache->email = goastrdup(q->email);
+        p->cache->firstname = goastrdup(q->firstname);
+        p->cache->lastname = goastrdup(q->lastname);
+        p->cache->homepage = goastrdup(q->homepage);
+        p->cache->aimname = goastrdup(q->aimname);
     }
-    if (p->infoCache != 0) {
+    if (p->cache != 0) {
         return 1;
     }
     return 0;
@@ -1096,24 +1095,24 @@ s32 GsGp_CacheProfileInfo(Ctx0227 **h, GsGpProfile *p, GsGpInfoCache *q) {
 
 namespace Na {
 extern "C" {
-void GsGp_FreeCachedInfo(GsGpProfile *p) {
-    if (p->infoCache != 0) {
-        GsUtil_Free(p->infoCache->nick);
-        p->infoCache->nick = 0;
-        GsUtil_Free(p->infoCache->uniqueNick);
-        p->infoCache->uniqueNick = 0;
-        GsUtil_Free(p->infoCache->email);
-        p->infoCache->email = 0;
-        GsUtil_Free(p->infoCache->firstName);
-        p->infoCache->firstName = 0;
-        GsUtil_Free(p->infoCache->lastName);
-        p->infoCache->lastName = 0;
-        GsUtil_Free(p->infoCache->homepage);
-        p->infoCache->homepage = 0;
-        GsUtil_Free(p->infoCache->aimName);
-        p->infoCache->aimName = 0;
-        GsUtil_Free(p->infoCache);
-        p->infoCache = 0;
+void gpiFreeInfoCache(GPIProfile *p) {
+    if (p->cache != 0) {
+        GsUtil_Free(p->cache->nick);
+        p->cache->nick = 0;
+        GsUtil_Free(p->cache->uniquenick);
+        p->cache->uniquenick = 0;
+        GsUtil_Free(p->cache->email);
+        p->cache->email = 0;
+        GsUtil_Free(p->cache->firstname);
+        p->cache->firstname = 0;
+        GsUtil_Free(p->cache->lastname);
+        p->cache->lastname = 0;
+        GsUtil_Free(p->cache->homepage);
+        p->cache->homepage = 0;
+        GsUtil_Free(p->cache->aimname);
+        p->cache->aimname = 0;
+        GsUtil_Free(p->cache);
+        p->cache = 0;
     }
 }
 }

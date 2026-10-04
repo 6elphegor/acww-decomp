@@ -1,7 +1,7 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
 #include "net/GsSocket.h"
-#include "net/GsHttpConnection.h"
+#include "net/ghttpConnection.h"
 
 typedef long long s64;
 
@@ -73,7 +73,7 @@ s32 Sock_Fcntl(s32 a, s32 cmd, u32 flags);
 u32 SockCore_GetHostIp();
 s32 IpAddr_StoreBe32(u32 v, u32 *p);
 u32 GOAGetLastError(s32 s);
-s32 GsHttp_SocketSend(GsHttpConnection *o, char *buf, s32 n);
+s32 ghiDoSend(GHIConnection *o, char *buf, s32 n);
 u32 STD_GetStringLength(const char *s);
 char *STD_CopyString(char *d, const char *s);
 void *GsUtil_Alloc(u32 n);
@@ -89,24 +89,24 @@ s32 CheckRcode(s32 a, s32 b);
 s32 setsockopt(s32 a, s32 b, s32 c, s32 d, s32 e);
 s32 getsockopt(s32 a, s32 b, s32 c, void *val, s32 *len);
 s32 GSISocketSelect(s32 sock, s32 *rd, s32 *wr, s32 *ex);
-s32 GsHttpBuf_Append(GsHttpBuffer *o, char *s, s32 len);
-s32 GsHttpBuf_Grow(GsHttpBuffer *o, s32 n);
+s32 ghiAppendDataToBuffer(GHIBuffer *o, char *s, s32 len);
+s32 ghiResizeBuffer(GHIBuffer *o, s32 n);
 }
 }
 
 namespace FB {
 extern "C" {
-s32 GsHttpBuf_AppendHeader(GsHttpBuffer *o, char *a, char *b) {
-    if (!GsHttpBuf_Append(o, a, 0)) {
+s32 ghiAppendHeaderToBuffer(GHIBuffer *o, char *a, char *b) {
+    if (!ghiAppendDataToBuffer(o, a, 0)) {
         return FALSE;
     }
-    if (!GsHttpBuf_Append(o, ": ", 2)) {
+    if (!ghiAppendDataToBuffer(o, ": ", 2)) {
         return FALSE;
     }
-    if (!GsHttpBuf_Append(o, b, 0)) {
+    if (!ghiAppendDataToBuffer(o, b, 0)) {
         return FALSE;
     }
-    if (GsHttpBuf_Append(o, "\r\n", 2)) {
+    if (ghiAppendDataToBuffer(o, "\r\n", 2)) {
         return TRUE;
     }
     return FALSE;
@@ -116,10 +116,10 @@ s32 GsHttpBuf_AppendHeader(GsHttpBuffer *o, char *a, char *b) {
 
 namespace FB {
 extern "C" {
-s32 GsHttpBuf_AppendChar(GsHttpBuffer *o, u8 c) {
+s32 ghiAppendCharToBuffer(GHIBuffer *o, u8 c) {
     u8 t = c;
     if (o != 0) {
-        return GsHttpBuf_Append(o, (char *)&t, 1);
+        return ghiAppendDataToBuffer(o, (char *)&t, 1);
     }
     return FALSE;
 }
@@ -128,19 +128,19 @@ s32 GsHttpBuf_AppendChar(GsHttpBuffer *o, u8 c) {
 
 namespace FB {
 extern "C" {
-s32 GsHttpBuf_AppendInt(GsHttpBuffer *o, s32 x) {
+s32 ghiAppendIntToBuffer(GHIBuffer *o, s32 x) {
     char buf[16];
     OS_SPrintf(buf, "%d", x);
-    return GsHttpBuf_Append(o, buf, 0);
+    return ghiAppendDataToBuffer(o, buf, 0);
 }
 }
 }
 
 namespace FB {
 extern "C" {
-void GsHttpBuf_Reset(GsHttpBuffer *o) {
-    o->length = 0;
-    o->readPos = 0;
+void ghiResetBuffer(GHIBuffer *o) {
+    o->len = 0;
+    o->pos = 0;
     *o->data = 0;
 }
 }
@@ -148,28 +148,28 @@ void GsHttpBuf_Reset(GsHttpBuffer *o) {
 
 namespace FB {
 extern "C" {
-s32 GsHttp_FlushSendBuffer(GsHttpConnection *o) {
-    s32 *pp = &o->sendBuf.readPos;
+s32 ghiSendBufferedData(GHIConnection *o) {
+    s32 *pp = &o->sendBuffer.pos;
     s32 z = 0;
     s32 w, e;
     s32 r;
     do {
-        s32 t = GSISocketSelect(o->socketHandle, (s32 *)z, &w, &e);
+        s32 t = GSISocketSelect(o->socket, (s32 *)z, &w, &e);
         if (t == ~z || e != 0) {
             o->completed = 1;
             o->result = 5;
-            o->socketError = GOAGetLastError(o->socketHandle);
+            o->socketError = GOAGetLastError(o->socket);
             return FALSE;
         }
         if (w == 0) {
             return TRUE;
         }
-        r = GsHttp_SocketSend(o, o->sendBuf.data + o->sendBuf.readPos, o->sendBuf.length - o->sendBuf.readPos);
+        r = ghiDoSend(o, o->sendBuffer.data + o->sendBuffer.pos, o->sendBuffer.len - o->sendBuffer.pos);
         if (r == ~z) {
             return FALSE;
         }
         *pp += r;
-    } while (o->sendBuf.readPos < o->sendBuf.length);
+    } while (o->sendBuffer.pos < o->sendBuffer.len);
     return TRUE;
 }
 }
@@ -177,23 +177,23 @@ s32 GsHttp_FlushSendBuffer(GsHttpConnection *o) {
 
 namespace FB {
 extern "C" {
-s32 GsHttpBuf_Read(GsHttpBuffer *o, char *dst, s32 *len) {
+s32 ghiReadDataFromBuffer(GHIBuffer *o, char *dst, s32 *len) {
     s32 n = *len;
     s32 avail;
     if (n == 0) {
         return FALSE;
     }
-    avail = o->length - o->readPos;
+    avail = o->len - o->pos;
     if (avail <= 0) {
         return FALSE;
     }
     if (n >= avail) {
         n = avail;
     }
-    memcpy(dst, o->data + o->readPos, n);
+    memcpy(dst, o->data + o->pos, n);
     dst[n] = 0;
     *len = n;
-    o->readPos += n;
+    o->pos += n;
     return TRUE;
 }
 }
