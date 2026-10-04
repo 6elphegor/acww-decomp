@@ -4,11 +4,6 @@
 typedef unsigned int u32;
 typedef int s32;
 
-typedef struct {
-    u32 unk0;
-    OSThread *current;
-} OSThreadInfo;
-
 extern OSThreadInfo data_021fcc2c; // OSi_ThreadInfo
 
 u32 OS_DisableInterrupts(void);       // OS_DisableInterrupts_IrqAndFiq

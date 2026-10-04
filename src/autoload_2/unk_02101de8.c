@@ -1,9 +1,7 @@
 // mwcc-flags: -nothumb -O4,p
 // NitroSystem (NNS) g2d NNS_G2dArrangeOBJ1D (lay OBJs over a 1D-mapped char canvas): autoload_2 0x02101de8-0x0210211c.
 // ARM, mwcc 1.2/base, -O4,p.
-typedef unsigned char u8;
-typedef unsigned short u16;
-typedef unsigned int u32;
+#include "nitro/gxoam.h"
 
 // NitroSDK math.h: MATH_CountLeadingZerosInline (ARM code) is a one-instruction inline asm; the SDK's MATH_ILog2 is
 // built on it. The original has the clz conditionalised inside the caller (movlt/clzlt/rsblt), as mwcc does for this
@@ -14,12 +12,6 @@ static inline u32 MATH_CountLeadingZerosInline(u32 x)
     return x;
 }
 static inline u32 MATH_ILog2(u32 x) { return 31 - MATH_CountLeadingZerosInline(x); }
-
-typedef struct GXOamAttr {
-    u32 attr01;
-    u16 attr2;
-    u16 _3;
-} GXOamAttr;
 
 // OBJ size (log2 of the width and height in characters) for an area of 2^hs x 2^ws characters
 typedef struct ObjShift { u8 w; u8 h; } ObjShift;

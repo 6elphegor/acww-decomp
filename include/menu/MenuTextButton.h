@@ -5,7 +5,7 @@
 // Defined in ov002, unk_ov002_02202fac.cpp (0x02203ab8..0x02203d50).
 #include "types.h"
 #include "ui/LabelString.h"
-#include "ui/OamCellEntry.h"
+#include "nitro/gxoam.h"
 
 class MenuTextButton {
 public:
@@ -21,7 +21,7 @@ public:
     void setLabelNoShadow(u8 v);                // 0x02203ca4
     void setLabelWithShadow(u8 v);              // 0x02203cc4
     void setLabel(u8 v);                        // 0x02203ce4
-    void setup(OamCellEntry *p, u8 a, u8 b); // 0x02203cf8
+    void setup(GXOamAttr *p, u8 a, u8 b); // 0x02203cf8
     BOOL isDisabled();                          // 0x02203ab8
     void setEnabled();                          // 0x02203ac4
     void setDisabled();                         // 0x02203ad0
@@ -31,7 +31,7 @@ public:
     void drawAt(s32 x, s32 y, s32 c);           // 0x02203b30
 
     /* 0x04 */ LabelString caption;
-    /* 0x44 */ OamCellEntry *cells;
+    /* 0x44 */ GXOamAttr *cells;
     /* 0x48 */ u8 widthTiles;
     /* 0x49 */ u8 pressStep;
     /* 0x4a */ u8 frameCellCount;

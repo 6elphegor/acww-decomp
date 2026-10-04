@@ -210,7 +210,8 @@ fin:
     }
 }
 
-// NNS_G3dGetMdlByIdx (model from model set, NULL if the entry is NULL)
+// NNS_G3dGetAnmByIdx: the idx-th animation of an animation file (dictionary of its first data block; NULL if the entry is NULL).
+// Same body as pret pokeheartgold nnsys.s NNS_G3dGetAnmByIdx, minus that version's NULL / index range checks.
 u8 *NNS_G3dGetAnmByIdx(u8 *p, u32 i)
 {
     u8 *base = p + *(u32 *)(p + *(u16 *)(p + 12));

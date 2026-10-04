@@ -1,5 +1,6 @@
 // mwcc-flags: -nothumb -O4,p
 #include "nitro/os_rtc.h"
+#include "nitro/os_alarm.h"
 // NitroSDK OS reset / owner info (os_reset.c, os_ownerInfo.c), autoload_2 0x02115468-0x0211565c (the former unit 0x02114ef4-0x0211565c split into its files by
 // their bss). ARM code, mwcc 1.2/base.
 typedef unsigned char u8;
@@ -8,23 +9,6 @@ typedef unsigned int u32;
 typedef unsigned long long u64;
 typedef long long s64;
 typedef int s32;
-
-typedef struct OSAlarm OSAlarm;
-struct OSAlarm {
-    void (*handler)(void *);
-    void *arg;
-    u32 tag;
-    u64 fire;
-    OSAlarm *prev;
-    OSAlarm *next;
-    u64 period;
-    u64 start;
-};
-
-typedef struct {
-    OSAlarm *head;
-    OSAlarm *tail;
-} OSAlarmQueue;
 
 // user data block in the shared area (0x027ffc80)
 typedef struct {

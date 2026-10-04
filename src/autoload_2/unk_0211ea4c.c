@@ -1,5 +1,5 @@
 #include "sys/CardCommon.h"
-#include "nitro/wm.h"
+#include "nitro/wm_status.h"
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK CARD pulled-out detection (card_pullOut.c), autoload_2 0x0211ea4c-0x0211eb00, with its bss (autoload_3
 // 0x021ff460-0x021ff468). Split from unk_0211e558.c by the files' bss. ARM code, mwcc 1.2/base.
@@ -15,30 +15,6 @@ typedef char *va_list;
 #define va_end(ap)
 
 typedef struct CardCommon CardCommon;
-
-typedef struct {
-    u16 state;
-    u8 _02[0x44];
-    u16 f46;
-    u8 _48[0x70];
-    u16 fb8;
-    u8 _ba[0x17e - 0xba];
-    u16 f17e;
-} WMStatus;
-
-typedef struct {
-    void *w0;
-    WMStatus *status;
-    u32 f8;
-    u8 *f0c;
-    u8 *f10;
-    u16 dmaNo;
-    u16 f16;
-    void (*cb18[42])(WMMsg *);
-    void (*cbC0)(WMMsg *);
-    void (*reqCb[16])(WMMsg *);
-    u32 reqArg[16];
-} WMArm9Buf;
 
 extern CardCommon data_021fec00;
 extern u32 data_021ff240[];

@@ -1,5 +1,5 @@
 #include "sys/CardCommon.h"
-#include "nitro/wm.h"
+#include "nitro/wm_status.h"
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK WM (status address, ARM7 buffer set-up), autoload_2 0x0211eb00-0x0211eeec, with the WM buffers
 // (autoload_3 .bss 0x021ff4cc-0x021fff00). Split from unk_0211e558.c by the files' bss. ARM code, mwcc 1.2/base.
@@ -15,30 +15,6 @@ typedef char *va_list;
 #define va_end(ap)
 
 typedef struct CardCommon CardCommon;
-
-typedef struct {
-    u16 state;
-    u8 _02[0x44];
-    u16 f46;
-    u8 _48[0x70];
-    u16 fb8;
-    u8 _ba[0x17e - 0xba];
-    u16 f17e;
-} WMStatus;
-
-typedef struct {
-    void *w0;
-    WMStatus *status;
-    u32 f8;
-    u8 *f0c;
-    u8 *f10;
-    u16 dmaNo;
-    u16 f16;
-    void (*cb18[42])(WMMsg *);
-    void (*cbC0)(WMMsg *);
-    void (*reqCb[16])(WMMsg *);
-    u32 reqArg[16];
-} WMArm9Buf;
 
 extern CardCommon data_021fec00;
 extern u32 data_021ff240[];
@@ -134,10 +110,10 @@ BOOL CARDi_TryReadCardDma(CardCommon *req);void WmReceiveFifo(u32 tag, WMMsg *m,
             if (m->errcode == 19) Fatal_Trap();
             if (data_021ff46c->cbC0 != 0) data_021ff46c->cbC0(m);
         } else if (m->id == 0x82) {
-            if (data_021ff46c->reqCb[m->f06] != 0) {
-                m->arg = (void *)data_021ff46c->reqArg[m->f06];
+            if (data_021ff46c->portCb[m->f06] != 0) {
+                m->arg = (void *)data_021ff46c->portArg[m->f06];
                 DC_InvalidateRange((void *)m->f08, data_021ff46c->status->f46);
-                data_021ff46c->reqCb[m->f06](m);
+                data_021ff46c->portCb[m->f06](m);
             }
         } else if (m->id == 0x81) {
             m->id = 15;
@@ -197,9 +173,9 @@ BOOL CARDi_TryReadCardDma(CardCommon *req);void WmReceiveFifo(u32 tag, WMMsg *m,
                 }
                 for (i = 0; i < 16; i++) {
                     data_021ff4b8.f06 = i;
-                    if (data_021ff46c->reqCb[i] != 0) {
-                        data_021ff4b8.arg = (void *)data_021ff46c->reqArg[i];
-                        data_021ff46c->reqCb[i](&data_021ff4b8);
+                    if (data_021ff46c->portCb[i] != 0) {
+                        data_021ff4b8.arg = (void *)data_021ff46c->portArg[i];
+                        data_021ff46c->portCb[i](&data_021ff4b8);
                     }
                 }
             }

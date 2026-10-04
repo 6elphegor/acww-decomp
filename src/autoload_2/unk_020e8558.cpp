@@ -17,21 +17,8 @@
 // 8844) stay extern "C".
 #include "types.h"
 #include "sys/Heap.h"
+#include "sys/OSThread.h"
 
-// OSMutex (0x18 bytes)
-struct OSMutex_View {
-    u32 w[6];
-};
-
-struct OSThread_View {
-    u8 pad[0x6c];
-    u32 id;
-};
-struct OSThreadInfo_View {
-    u16 isNeedRescheduling;
-    u16 irqDepth;
-    OSThread_View *current;
-};
 
 inline void *operator new(unsigned long, void *p) {
     return p;
@@ -84,7 +71,7 @@ public:
     virtual void *getGroupId();
     virtual void *doAdjust();
 
-    /* 0x18 */ OSMutex_View mutex;
+    /* 0x18 */ OSMutex mutex;
 };
 
 typedef void (*HeapFreeHook)(Heap *heap, void *p);
@@ -101,13 +88,13 @@ u32 NNS_FndGetGroupIDForExpHeap(void *heap);
 u32 NNS_FndSetGroupIDForExpHeap(void *heap);
 u32 NNS_FndGetSizeForMBlockExpHeap(void *p);
 u32 NNS_FndFreeToFrmHeap(void *heap, s32);
-void NNS_FndVisitAllocatedForExpHeap(void *heap, void (*visitor)(void *block, void *heap, u32 param), u32 param); // NNS_FndVisitAllocatedForExpHeap
+void NNS_FndVisitAllocatedForExpHeap(void *heap, void (*visitor)(void *block, void *heap, u32 param), u32 param);
 void NNS_FndFreeToExpHeap(void *heap, void *p); // NNS_FndFreeToExpHeap
 void *NNS_FndResizeForMBlockFrmHeap(void *heap);
 s32 NNS_FndResizeForMBlockExpHeap(void *heap, void *p, u32 size); // NNS_FndResizeForMBlockExpHeap
 u32 NNS_FndGetAllocatableSizeForFrmHeapEx(void *heap, s32 align); // NNS_FndGetAllocatableSizeForFrmHeapEx
 u32 NNS_FndGetTotalFreeSizeForExpHeap(void *heap); // NNS_FndGetTotalFreeSizeForExpHeap
-u32 NNS_FndGetAllocatableSizeForExpHeapEx(void *heap, s32 align); // NNS_FndGetAllocatableSizeForExpHeapEx
+u32 NNS_FndGetAllocatableSizeForExpHeapEx(void *heap, s32 align);
 void *NNS_FndAllocFromFrmHeapEx(void *heap, u32 size, s32 align); // NNS_FndAllocFromFrmHeapEx
 void *NNS_FndAllocFromExpHeapEx(void *heap, u32 size, s32 align); // NNS_FndAllocFromExpHeapEx
 void NNS_FndDestroyFrmHeap(void *heap);
@@ -125,7 +112,7 @@ ThreadHook OS_SetSwitchThreadCallback(ThreadHook);
 void OS_SetThreadParameter(void *thread, void *v);
 void *OS_GetThreadParameter(void *thread);
 
-extern OSThreadInfo_View data_021fcc2c; // OSi_ThreadInfo
+extern OSThreadInfo data_021fcc2c; // OSi_ThreadInfo
 
 void ExpHeap_FreeBlockVisitor(void *block, void *heap, u32 param);
 void Heap_OnThreadSwitch(void *a, void *b);

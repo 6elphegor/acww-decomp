@@ -101,7 +101,7 @@ static inline BOOL Unk_ov128_02294b44_Both() {
 
 
 // Sprite/text pair element (0x50 bytes), vtable 0x022046dc
-struct OamCellEntry;
+struct GXOamAttr;
 
 
 
@@ -458,7 +458,7 @@ void StargazingMenu::setupSkyView() {
     StarSky_LoadScopeBg(&skyView, 6, 0);
     StarTwinkle_Init(&twinkle, 3);
     StarSky_LoadObjGraphics(&skyView);
-    closeButton.setup((OamCellEntry *)data_ov128_02295458, 6, 2);
+    closeButton.setup((GXOamAttr *)data_ov128_02295458, 6, 2);
     closeButton.setLabelWithShadow(0x69);
     updateSkyScroll();
 }

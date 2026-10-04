@@ -106,8 +106,8 @@ MBlock *RemoveMBlock(void *list, MBlock *blk);
 void GetRegionOfMBlock(Region *r, MBlock *blk);
 BOOL RecycleRegion(ExpHead *e, Region *r);
 void *AllocUsedBlockFromFreeBlock(ExpHead *e, MBlock *free, u32 mblock, u32 size, u16 dir);
-void *AllocFromHead(HeapHead *h, u32 size, s32 alignment);
-void *AllocFromTail(HeapHead *h, u32 size, s32 alignment);
+void *AllocFromHead__ExpHeap(HeapHead *h, u32 size, s32 alignment);
+void *AllocFromTail__ExpHeap(HeapHead *h, u32 size, s32 alignment);
 HeapHead *InitExpHeap(u32 start, u32 end, u16 opt);
 void NNSi_FndInitHeapHead(HeapHead *heap, u32 sig, u32 start, u32 end, u16 opt);
 void SetFirstObject(NNSFndList *list, void *obj);
@@ -184,8 +184,8 @@ void *NNS_FndAllocFromExpHeapEx(HeapHead *heap, u32 size, s32 alignment);
 void NNS_FndDestroyExpHeap(HeapHead *heap);
 HeapHead *NNS_FndCreateExpHeapEx(u32 start, u32 size, u16 opt);
 BOOL RecycleRegion(ExpHead *e, Region *rgn);
-void *AllocFromTail(HeapHead *heap, u32 size, s32 alignment);
-void *AllocFromHead(HeapHead *heap, u32 size, s32 alignment);
+void *AllocFromTail__ExpHeap(HeapHead *heap, u32 size, s32 alignment);
+void *AllocFromHead__ExpHeap(HeapHead *heap, u32 size, s32 alignment);
 void *AllocUsedBlockFromFreeBlock(ExpHead *e, MBlock *freeBlk, u32 mblock, u32 size, u16 dir);
 HeapHead *InitExpHeap(u32 start, u32 end, u16 opt);
 MBlock *InitMBlock(Region *rgn, u16 sig);
@@ -300,7 +300,7 @@ HeapHead *InitFrameHeap(u32 start, u32 end, u16 opt) {
     return heap;
 }
 
-// frmheap: AllocFromHead
+// frmheap: AllocFromHead__ExpHeap
 void *AllocFromHead__FrameHeap(FrmHead *f, u32 size, u32 alignment) {
     u32 head = f->head;
     u32 start = (alignment - 1 + head) & ~(alignment - 1);
@@ -314,7 +314,7 @@ void *AllocFromHead__FrameHeap(FrmHead *f, u32 size, u32 alignment) {
     return (void *)start;
 }
 
-// frmheap: AllocFromTail
+// frmheap: AllocFromTail__ExpHeap
 void *AllocFromTail__FrameHeap(FrmHead *f, u32 size, u32 alignment) {
     u32 tail = f->tail;
     u32 newTail = (tail - size) & ~(alignment - 1);

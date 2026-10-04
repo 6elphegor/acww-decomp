@@ -9,15 +9,6 @@ typedef signed int s32;
 typedef struct OSThread OSThread;
 typedef struct OSMutex OSMutex;
 
-
-typedef struct {
-    u16 isNeedRescheduling;
-    u16 irqDepth;
-    OSThread *current;
-    OSThread *list;
-    void (*switchCallback)(OSThread *, OSThread *);
-} OSThreadInfo;
-
 extern OSThread **data_021fcc24;   // OSi_CurrentThreadPtr
 extern u32 data_021fcc28;          // OSi_IsThreadInitialized
 extern OSThreadInfo data_021fcc2c; // OSi_ThreadInfo

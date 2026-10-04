@@ -9,7 +9,7 @@
 #include "menu/MenuTween.h"
 #include "menu/PopupChoiceIdList.h"
 #include "ui/AddresseePageArg.h"
-#include "ui/OamCellEntry.h"
+#include "nitro/gxoam.h"
 #include "talk/TalkWindowState.h"
 #include "gfx/SpriteAnim.h"
 #include "ui/UiWidget.h"
@@ -197,13 +197,13 @@ extern const u8 sBottomButtonTargetX[];
 extern const u8 sBottomButtonTargetY[];
 extern const u8 sBottomButtonOfTarget[];
 extern s32 sPopupChoicePopOffsets[];
-extern OamCellEntry sButtonCellsW4A[];
-extern OamCellEntry sButtonCellsW4B[];
-extern OamCellEntry sButtonCellsW6Single[];
-extern OamCellEntry sButtonCellsW8[];
-extern OamCellEntry sButtonCellsW6A[];
-extern OamCellEntry sButtonCellsW6B[];
-extern OamCellEntry sButtonCellsW12[];
+extern GXOamAttr sButtonCellsW4A[];
+extern GXOamAttr sButtonCellsW4B[];
+extern GXOamAttr sButtonCellsW6Single[];
+extern GXOamAttr sButtonCellsW8[];
+extern GXOamAttr sButtonCellsW6A[];
+extern GXOamAttr sButtonCellsW6B[];
+extern GXOamAttr sButtonCellsW12[];
 }
 
 
@@ -293,7 +293,7 @@ static inline BOOL Unk_ov002_022009d4_Both() {
 }
 
 // ---- .rodata
-extern "C" OamCellEntry sButtonCellsW8[5] = {
+extern "C" GXOamAttr sButtonCellsW8[5] = {
     {0x81f440a0, 0x14c, 0, 0xc, 0x0},
     {0x801440a0, 0x150, 0, 0xc, 0x0},
     {0x800440a0, 0xd0, 0, 0xb, 0x0},
@@ -301,12 +301,12 @@ extern "C" OamCellEntry sButtonCellsW8[5] = {
     {0x81ec40a0, 0xcf, 0, 0xb, 0xffff},
 };
 extern "C" const u8 sBottomButtonTargetY[12] = {0xb6, 0x9e, 0xb2, 0xa9, 0xa9, 0xb6, 0xb6, 0xb6, 0xb6, 0xb6, 0x00, 0x00};
-extern "C" OamCellEntry sButtonCellsW4A[3] = {
+extern "C" GXOamAttr sButtonCellsW4A[3] = {
     {0x80204044, 0x146, 0, 0xc, 0x0},
     {0x90284044, 0xcf, 0, 0xb, 0x0},
     {0x80184044, 0xcf, 0, 0xb, 0xffff},
 };
-extern "C" OamCellEntry sButtonCellsW6A[6] = {
+extern "C" GXOamAttr sButtonCellsW6A[6] = {
     {0x80084000, 0x14, 1, 0x0, 0x0},
     {0x40280000, 0x18, 1, 0x0, 0x0},
     {0x90204000, 0x5b, 1, 0x0, 0x0},
@@ -315,7 +315,7 @@ extern "C" OamCellEntry sButtonCellsW6A[6] = {
     {0x80044004, 0x5b, 1, 0x1, 0xffff},
 };
 extern "C" const u8 sBottomButtonOfTarget[12] = {0x00, 0x01, 0x00, 0x00, 0x01, 0x00, 0x01, 0x00, 0x00, 0x01, 0x00, 0x00};
-extern "C" OamCellEntry sButtonCellsW6B[6] = {
+extern "C" GXOamAttr sButtonCellsW6B[6] = {
     {0x80084000, 0x1a, 1, 0x0, 0x0},
     {0x40280000, 0x1e, 1, 0x0, 0x0},
     {0x90204000, 0x5b, 1, 0x0, 0x0},
@@ -325,7 +325,7 @@ extern "C" OamCellEntry sButtonCellsW6B[6] = {
 };
 extern "C" const u8 sTextButtonPressOffsets[4] = {0x00, 0x02, 0x03, 0x00};
 extern "C" const u8 sBottomButtonTargetX[12] = {0x58, 0xca, 0xca, 0x62, 0xc2, 0x3e, 0xc4, 0x7c, 0x74, 0xc4, 0x00, 0x00};
-extern "C" OamCellEntry sButtonCellsW12[7] = {
+extern "C" GXOamAttr sButtonCellsW12[7] = {
     {0x81d440a0, 0x14c, 0, 0xc, 0x0},
     {0x81f440a0, 0x150, 0, 0xc, 0x0},
     {0x801440a0, 0x154, 0, 0xc, 0x0},
@@ -334,13 +334,13 @@ extern "C" OamCellEntry sButtonCellsW12[7] = {
     {0x901c40a0, 0xcf, 0, 0xb, 0x0},
     {0x81cc40a0, 0xcf, 0, 0xb, 0xffff},
 };
-extern "C" OamCellEntry sButtonCellsW6Single[4] = {
+extern "C" GXOamAttr sButtonCellsW6Single[4] = {
     {0x804840a0, 0x140, 0, 0xc, 0x0},
     {0x406800a0, 0x144, 0, 0xc, 0x0},
     {0x905e40a0, 0xcf, 0, 0xb, 0x0},
     {0x804040a0, 0xcf, 0, 0xb, 0xffff},
 };
-extern "C" OamCellEntry sButtonCellsW4B[3] = {
+extern "C" GXOamAttr sButtonCellsW4B[3] = {
     {0x81c04044, 0x142, 0, 0xc, 0x0},
     {0x91c84044, 0xcf, 0, 0xb, 0x0},
     {0x81b84044, 0xcf, 0, 0xb, 0xffff},
@@ -627,7 +627,7 @@ MenuTextButton::MenuTextButton() {
 
 MenuTextButton::~MenuTextButton() { caption.destroyLabel(); }
 
-void MenuTextButton::setup(OamCellEntry *p, u8 a, u8 b) {
+void MenuTextButton::setup(GXOamAttr *p, u8 a, u8 b) {
     cells = p;
     widthTiles = a;
     frameCellCount = b;
@@ -652,7 +652,7 @@ void MenuTextButton::setLabelNoShadow(u8 v) {
 
 void MenuTextButton::renderText(u8 a, u8 b) {
     String_Load2dMenu(&caption, msgId);
-    caption.createLabel(8, cells->charName, widthTiles, a, b, 0);
+    caption.createLabel(8, cells->charNo, widthTiles, a, b, 0);
     caption.redrawAligned(1, 0);
 }
 

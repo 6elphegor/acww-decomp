@@ -4,7 +4,8 @@
 #include "types.h"
 
 // NitroSDK OS thread and mutex records (os_thread.c / os_mutex.c, autoload_2 0x02113088-0x02114410).
-// Used by the C units src/autoload_2/unk_02113088.c, unk_02113b6c.c, unk_02113cc8.c, unk_02113ed0.c, unk_02113fd8.c.
+// Used by the C units src/autoload_2/unk_02113088.c, unk_02113b6c.c, unk_02113cc8.c, unk_02113ed0.c, unk_02113fd8.c,
+// unk_02114410.c and the heap code src/autoload_2/unk_020e8558.cpp.
 
 typedef struct OSThread OSThread;
 typedef struct OSMutex OSMutex;
@@ -53,5 +54,14 @@ struct OSMutex {
     OSMutex *next;          // 0x10
     OSMutex *prev;          // 0x14
 };
+
+// OSi_ThreadInfo (data_021fcc2c; its address is also published at 0x027fffa0)
+typedef struct OSThreadInfo {
+    u16 isNeedRescheduling; // 0x00
+    u16 irqDepth;           // 0x02
+    OSThread *current;      // 0x04
+    OSThread *list;         // 0x08
+    void (*switchCallback)(OSThread *, OSThread *); // 0x0c
+} OSThreadInfo;
 
 #endif

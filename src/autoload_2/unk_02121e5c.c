@@ -1,4 +1,4 @@
-#include "nitro/wm.h"
+#include "nitro/wm_status.h"
 // mwcc-flags: -nothumb -O4,p
 // MB/WH-style peer module: MBi_CommParentSendBlock (send next child block / cache miss -> task load), autoload_2 0x02121e5c-0x02122114.
 // ARM code, mwcc 1.2/base, flags -nothumb -O4,p. Header = S015b/unit.c header (prototypes fixed: MBi_MakeParentSendBuffer / MBi_BlockHeaderEnd).
@@ -7,32 +7,6 @@ typedef unsigned short u16;
 typedef unsigned int u32;
 typedef int s32;
 typedef int BOOL;
-
-typedef struct {
-    u16 state;
-    u8 _02[0x0a];
-    u32 f0c;
-    u8 _10[0x76];
-    u16 f86;
-    u8 _88[0xfc];
-    u16 f184;
-} WMStatus;
-
-typedef void (*WMCallback)(WMMsg *);
-
-typedef struct {
-    void *w0;
-    WMStatus *status;
-    u32 f8;
-    u8 *req;
-    u8 *f10;
-    u16 dmaNo;
-    u16 f16;
-    WMCallback cb18[42];
-    WMCallback cbC0;
-    WMCallback portCb[16];
-    void *portArg[16];
-} WMArm9Buf;
 
 typedef struct {
     u16 hdr;

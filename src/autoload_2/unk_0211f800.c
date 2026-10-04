@@ -1,4 +1,4 @@
-#include "nitro/wm.h"
+#include "nitro/wm_status.h"
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK WM (wireless manager) API, autoload_2 0x0211f800-0x02120c98. ARM code, mwcc 1.2/base.
 typedef unsigned char u8;
@@ -6,44 +6,6 @@ typedef unsigned short u16;
 typedef unsigned int u32;
 typedef int s32;
 typedef int BOOL;
-
-typedef struct {
-    u16 state;          // 0x00
-    u8 _02[0x0a];
-    u32 f0c;
-    u32 f10;
-    u8 _14[0x3c];
-    u32 f50;
-    u8 _54[0x32];
-    u16 f86;
-    u8 _88[0x3a];
-    u16 fc2;
-    u8 _c4[0x30];
-    u16 ff4;
-    u8 _f6[0x88];
-    u16 f17e;
-    u8 _180[4];
-    u16 f184;
-    u8 _186[8];
-    u16 f18e;
-    u16 f190;
-} WMStatus;
-
-typedef void (*WMCallback)(WMMsg *);
-
-typedef struct {
-    void *w0;
-    WMStatus *status;   // 0x04
-    u32 f8;
-    u8 *req;            // 0x0c
-    u8 *f10;
-    u16 dmaNo;
-    u16 f16;
-    WMCallback cb18[42];
-    WMCallback cbC0;
-    WMCallback reqCb[16];
-    u32 reqArg[16];
-} WMArm9Buf;
 
 typedef struct {
     u8 _0[4];
@@ -530,8 +492,8 @@ u32 WM_SetPortCallback(u16 port, WMCallback cb, u32 arg) {
     }
     {
         WMArm9Buf *w = WMi_GetSystemWork();
-        w->reqCb[port] = cb;
-        w->reqArg[port] = arg;
+        w->portCb[port] = cb;
+        w->portArg[port] = arg;
     }
     OS_RestoreInterrupts(irq);
     return 0;

@@ -3,7 +3,6 @@
 #include "game/TouchPicker.h"
 #include "game/TouchPickSphere.h"
 #include "game/BugNetTarget.h"
-#include "ui/OamCellEntry.h"
 #include "nitro/gxoam.h"
 
 
@@ -210,7 +209,7 @@ extern "C" s32 Oam_DrawObj(s32 mode, u32 *info, s32 x, s32 y, s32 pal, s32 pri, 
     return 1;
 }
 
-extern "C" GXOamAttr *Oam_DrawObjRotated(u32 mode, OamCellEntry *e, s32 dx, s32 dy, s32 pal, s32 pri, s32 scale, s32 rot, s32 sz)
+extern "C" GXOamAttr *Oam_DrawObjRotated(u32 mode, GXOamAttr *e, s32 dx, s32 dy, s32 pal, s32 pri, s32 scale, s32 rot, s32 sz)
 {
     GXOamAttr *oam;
     s32 *cnt;
@@ -303,7 +302,7 @@ extern "C" GXOamAttr *Oam_DrawObjRotated(u32 mode, OamCellEntry *e, s32 dx, s32 
         }
     }
     if (pal == -1) {
-        pal = e->palette;
+        pal = e->cParam;
     }
     if (pri == -1) {
         pri = e->priority;
@@ -338,16 +337,16 @@ extern "C" GXOamAttr *Oam_DrawObjRotated(u32 mode, OamCellEntry *e, s32 dx, s32 
         }
     } else {
         idx = 0;
-        flags = ((volatile OamCellEntry *)e)->attr01 & 0x30000000;
+        flags = ((volatile GXOamAttr *)e)->attr01 & 0x30000000;
     }
-    w1lo = e->charName;
+    w1lo = e->charNo;
     b13 = (e->attr01 << 18) >> 31;
     Unk_02087e70_SetAttr(oam, x, y, pri, (Unk_02087e70_Mode_)((e->attr01 << 20) >> 30), (e->attr01 << 19) >> 31, flags, e->attr01 & 0xc000c000, b13, w1lo, pal, idx);
     *cnt = *cnt + 1;
     return oam;
 }
 
-extern "C" void Oam_DrawCell(u32 mode, OamCellEntry *e, s32 dx, s32 dy, s32 pal, s32 pri, s32 sx, s32 sy, s32 rot, s32 sz, s32 fx, s32 fy)
+extern "C" void Oam_DrawCell(u32 mode, GXOamAttr *e, s32 dx, s32 dy, s32 pal, s32 pri, s32 sx, s32 sy, s32 rot, s32 sz, s32 fx, s32 fy)
 {
     GXOamAttr *oam;
     s32 priv;
@@ -453,14 +452,14 @@ top:
                 w = h;
             }
             if (x + w < 0 || x > 0x100) {
-                if (e->attr3 == 0xffff) {
+                if (e->_3 == 0xffff) {
                     goto end;
                 }
                 e++;
                 goto top;
             }
             if (y + w < 0 || y > 0xc0) {
-                if (e->attr3 == 0xffff) {
+                if (e->_3 == 0xffff) {
                     goto end;
                 }
                 e++;
@@ -468,14 +467,14 @@ top:
             }
         } else {
             if (x + w < 0 || x > 0x100) {
-                if (e->attr3 == 0xffff) {
+                if (e->_3 == 0xffff) {
                     goto end;
                 }
                 e++;
                 goto top;
             }
             if (y + h < 0 || y > 0xc0) {
-                if (e->attr3 == 0xffff) {
+                if (e->_3 == 0xffff) {
                     goto end;
                 }
                 e++;
@@ -483,7 +482,7 @@ top:
             }
         }
         if (pal == -1) {
-            palv = e->palette;
+            palv = e->cParam;
         } else {
             palv = pal;
         }
@@ -520,7 +519,7 @@ top:
             }
             idx = Oam_AllocAffine(oam - *cnt, aux, m);
             if (idx == -1) {
-                if (e->attr3 == 0xffff) {
+                if (e->_3 == 0xffff) {
                     goto end;
                 }
                 e++;
@@ -541,12 +540,12 @@ top:
         if (fy) {
             flags |= 0x20000000;
         }
-        w1lo = e->charName;
+        w1lo = e->charNo;
         b13 = (e->attr01 << 18) >> 31;
         Unk_02087e70_SetAttr(oam, x, y, priv, size, (e->attr01 << 19) >> 31, flags, e->attr01 & 0xc000c000, b13, w1lo, palv, idx);
         oam++;
         *cnt = *cnt + 1;
-        if (e->attr3 == 0xffff) {
+        if (e->_3 == 0xffff) {
             goto end;
         }
         e++;

@@ -9,7 +9,7 @@
 #include "menu/MenuTween.h"
 #include "menu/PopupChoiceIdList.h"
 #include "ui/AddresseePageArg.h"
-#include "ui/OamCellEntry.h"
+#include "nitro/gxoam.h"
 #include "talk/TalkWindowState.h"
 #include "gfx/SpriteAnim.h"
 #include "ui/UiWidget.h"
@@ -198,13 +198,13 @@ extern const u8 sBottomButtonTargetX[];
 extern const u8 sBottomButtonTargetY[];
 extern const u8 sBottomButtonOfTarget[];
 extern s32 sPopupChoicePopOffsets[];
-extern OamCellEntry sButtonCellsW4A[];
-extern OamCellEntry sButtonCellsW4B[];
-extern OamCellEntry sButtonCellsW6Single[];
-extern OamCellEntry sButtonCellsW8[];
-extern OamCellEntry sButtonCellsW6A[];
-extern OamCellEntry sButtonCellsW6B[];
-extern OamCellEntry sButtonCellsW12[];
+extern GXOamAttr sButtonCellsW4A[];
+extern GXOamAttr sButtonCellsW4B[];
+extern GXOamAttr sButtonCellsW6Single[];
+extern GXOamAttr sButtonCellsW8[];
+extern GXOamAttr sButtonCellsW6A[];
+extern GXOamAttr sButtonCellsW6B[];
+extern GXOamAttr sButtonCellsW12[];
 }
 
 

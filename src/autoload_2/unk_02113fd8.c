@@ -14,8 +14,6 @@ typedef char *va_list;
 typedef struct OSThread OSThread;
 typedef struct OSMutex OSMutex;
 
-
-
 typedef struct {
     OSThreadQueue sendQueue;
     OSThreadQueue recvQueue;
@@ -24,14 +22,6 @@ typedef struct {
     s32 firstIndex;
     s32 usedCount;
 } OSMessageQueue;
-
-typedef struct {
-    u16 isNeedRescheduling;
-    u16 irqDepth;
-    OSThread *current;
-    OSThread *list;
-    void (*switchCallback)(OSThread *, OSThread *);
-} OSThreadInfo;
 
 typedef struct {
     s32 len;

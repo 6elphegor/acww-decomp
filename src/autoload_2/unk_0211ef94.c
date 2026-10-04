@@ -1,5 +1,5 @@
 #include "sys/CardCommon.h"
-#include "nitro/wm.h"
+#include "nitro/wm_status.h"
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK region, autoload_2 0x0211ef94-0x0211f488. ARM code, mwcc 1.2/base.
 typedef unsigned char u8;
@@ -14,30 +14,6 @@ typedef char *va_list;
 #define va_end(ap)
 
 typedef struct CardCommon CardCommon;
-
-typedef struct {
-    u16 state;
-    u8 _02[0x44];
-    u16 f46;
-    u8 _48[0x70];
-    u16 fb8;
-    u8 _ba[0x17e - 0xba];
-    u16 f17e;
-} WMStatus;
-
-typedef struct {
-    void *w0;
-    WMStatus *status;
-    u32 f8;
-    u8 *f0c;
-    u8 *f10;
-    u16 dmaNo;
-    u16 f16;
-    void (*cb18[42])(WMMsg *);
-    void (*cbC0)(WMMsg *);
-    void (*reqCb[16])(WMMsg *);
-    u32 reqArg[16];
-} WMArm9Buf;
 
 extern CardCommon data_021fec00;
 extern u32 data_021ff240[];
@@ -172,8 +148,8 @@ u32 WmInitCore(void *buf, u16 dmaNo, u32 size) {
     data_021ff46c = (WMArm9Buf *)buf;
     ((WMArm9Buf *)buf)->w0 = (u8 *)buf + 0x200;
     data_021ff46c->status = (WMStatus *)((u8 *)data_021ff46c->w0 + 0x300);
-    data_021ff46c->f0c = (u8 *)data_021ff46c->status + 0x800;
-    data_021ff46c->f10 = data_021ff46c->f0c + 0x100;
+    data_021ff46c->req = (u8 *)data_021ff46c->status + 0x800;
+    data_021ff46c->f10 = data_021ff46c->req + 0x100;
     WmClearFifoRecvFlag();
     data_021ff46c->dmaNo = dmaNo;
     for (i = 0; i < 16; i++) WM_SetPortCallback(i, 0, 0);
@@ -217,9 +193,9 @@ u32 WMi_SendCommand(u32 id, u16 paramNum, ...) {
         return 8;
     }
     if (paramNum == 0) {
-        DC_StoreRange(data_021ff46c->f0c, 0x100);
+        DC_StoreRange(data_021ff46c->req, 0x100);
         DC_InvalidateRange(msg, 0x100);
-        MI_DmaCopy32(data_021ff46c->dmaNo, data_021ff46c->f0c, msg, 0x100);
+        MI_DmaCopy32(data_021ff46c->dmaNo, data_021ff46c->req, msg, 0x100);
     }
     msg->id = id;
     va_start(va, paramNum);

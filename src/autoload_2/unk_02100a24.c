@@ -1,5 +1,5 @@
 // mwcc-flags: -nothumb -O4,p
-// NitroSystem (NNS) code, expheap.c (AllocFromTail/Head): autoload_2 0x02100a24-0x02100bb0. ARM code, mwcc 1.2/base, -O4,p.
+// NitroSystem (NNS) code, expheap.c (AllocFromTail__ExpHeap / AllocFromHead__ExpHeap): autoload_2 0x02100a24-0x02100bb0. ARM code, mwcc 1.2/base, -O4,p.
 typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
@@ -106,8 +106,8 @@ MBlock *RemoveMBlock(void *list, MBlock *blk);
 void GetRegionOfMBlock(Region *r, MBlock *blk);
 BOOL RecycleRegion(ExpHead *e, Region *r);
 void *AllocUsedBlockFromFreeBlock(ExpHead *e, MBlock *free, u32 mblock, u32 size, u16 dir);
-void *AllocFromHead(HeapHead *h, u32 size, s32 alignment);
-void *AllocFromTail(HeapHead *h, u32 size, s32 alignment);
+void *AllocFromHead__ExpHeap(HeapHead *h, u32 size, s32 alignment);
+void *AllocFromTail__ExpHeap(HeapHead *h, u32 size, s32 alignment);
 HeapHead *InitExpHeap(u32 start, u32 end, u16 opt);
 void NNSi_FndInitHeapHead(HeapHead *heap, u32 sig, u32 start, u32 end, u16 opt);
 void SetFirstObject(NNSFndList *list, void *obj);
@@ -184,8 +184,8 @@ void *NNS_FndAllocFromExpHeapEx(HeapHead *heap, u32 size, s32 alignment);
 void NNS_FndDestroyExpHeap(HeapHead *heap);
 HeapHead *NNS_FndCreateExpHeapEx(u32 start, u32 size, u16 opt);
 BOOL RecycleRegion(ExpHead *e, Region *rgn);
-void *AllocFromTail(HeapHead *heap, u32 size, s32 alignment);
-void *AllocFromHead(HeapHead *heap, u32 size, s32 alignment);
+void *AllocFromTail__ExpHeap(HeapHead *heap, u32 size, s32 alignment);
+void *AllocFromHead__ExpHeap(HeapHead *heap, u32 size, s32 alignment);
 void *AllocUsedBlockFromFreeBlock(ExpHead *e, MBlock *freeBlk, u32 mblock, u32 size, u16 dir);
 HeapHead *InitExpHeap(u32 start, u32 end, u16 opt);
 MBlock *InitMBlock(Region *rgn, u16 sig);
@@ -220,8 +220,8 @@ void NNS_GfdResetFrmTexVramState(void);
 void NNS_GfdInitFrmTexVramManager(u32 mode, BOOL setFuncs);
 void NNSi_GfdSetTexNrmSearchArray(u32 a0, u32 a1, u32 a2, u32 a3, u32 a4);
 
-// expheap: AllocFromHead
-void *AllocFromHead(HeapHead *heap, u32 size, s32 alignment) {
+// expheap: AllocFromHead__ExpHeap
+void *AllocFromHead__ExpHeap(HeapHead *heap, u32 size, s32 alignment) {
     ExpHead *e = EXP(heap);
     BOOL allocFirst = (GetAllocMode(e) == 0);
     MBlock *found;
@@ -247,8 +247,8 @@ void *AllocFromHead(HeapHead *heap, u32 size, s32 alignment) {
     return AllocUsedBlockFromFreeBlock(e, found, foundAddr, size, 0);
 }
 
-// expheap: AllocFromTail
-void *AllocFromTail(HeapHead *heap, u32 size, s32 alignment) {
+// expheap: AllocFromTail__ExpHeap
+void *AllocFromTail__ExpHeap(HeapHead *heap, u32 size, s32 alignment) {
     ExpHead *e = EXP(heap);
     BOOL allocFirst;
     MBlock *found;
