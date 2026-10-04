@@ -1,5 +1,6 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
+#include "game/Unk_020d96fc_G.h"
 
 struct Unk_0203fe18_Date { u8 b0, b1, b2, b3, b4, b5, b6, b7; };
 struct Unk_0203fe18_B4Bytes { u8 b0, b1, b2, b3; };
@@ -17,7 +18,6 @@ class ReddShop {
 public:
     ReddPassword *getPassword();
 };
-struct Unk_020d96fc_G { u8 b0, b1, b2, b3; };
 
 class EventCalendarModule : public GameProc {
 public:

@@ -1,22 +1,7 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
+#include "net/Unk_ov065_0225f1cc_Cfg.h"
 
-struct Unk_ov065_0225f1cc_Cfg {
-    u32 useDhcp;
-    u32 ownIp;
-    u32 netmask;
-    u32 gateway;
-    u32 dns1;
-    u32 dns2;
-    void *(*unk_18)(u32);
-    void (*unk_1c)(void *);
-    s32 msgPoolSize;
-    u32 recvRingSize;
-    u32 recvRingBuf;
-    s32 threadPriority;
-    s32 mtu;
-    s32 recvWindow;
-};
 
 struct Unk_ov065_0225f210_G {
     s32 stackFlags;

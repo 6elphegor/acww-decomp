@@ -1,4 +1,6 @@
 #include "types.h"
+#include "game/Unk_020aebbc.h"
+#include "game/Unk_021c47c4.h"
 
 struct Counter {
     Counter();
@@ -21,27 +23,6 @@ struct Obj30 { Obj30(); ~Obj30(); u8 d[0x30]; };
 struct Obj12 { Obj12(u32 a, u32 b); ~Obj12(); u32 d[3]; };
 struct Big { Big(); ~Big(); u8 d[0xf4]; };
 
-struct Bits5a {
-    u16 saleHour : 5;
-    u16 paintCounter : 4;
-    u16 level : 2;
-    u16 unk_0b : 5;
-};
-struct Unk_020aebbc {
-    /* 0x00 */ u32 sales;
-    u8 pad[0x51 - 4];
-    /* 0x51 */ u8 stockStale;
-    u8 pad2[7];
-    /* 0x59 */ u8 renovationScheduled;
-    /* 0x5a */ Bits5a packedState;
-};
-struct Unk_020aec74_Out {
-    u8 second, minute, hour, day, month, year;
-    u16 unk_06;
-};
-struct Unk_021c47c4 {
-    u32 blocks, width, height;
-};
 
 extern "C" {
 void *func_021355f0(void *p, s32 n, s32 size, void *ctor);

@@ -6,6 +6,7 @@
 #include "Unk_020d8c7c.h"
 #include "gfx/Unk_ov004_Quad.h"
 #include "actor/Unk_ov004_SceneEntry.h"
+#include "game/Unk_020d77a4_Vec3.h"
 #undef postCreate
 
 extern "C" {
@@ -18,9 +19,6 @@ struct FxVec3 : Unk_ov004_02215c94_V {
 };
 }
 
-struct Unk_020d77a4_Vec3 {
-    s32 x, y, z;
-};
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Class chain of BirthdayHostVillager (vtable 0x0224c034). Every slot's final overrider carries the name the symbols use.

@@ -1,5 +1,6 @@
 // mwcc-flags: -str reuse
 #include "types.h"
+#include "sys/Unk_020b83b0.h"
 
 extern "C" {
 void *Heap_AllocAligned(void *heap, s32 size, s32 align);
@@ -26,13 +27,6 @@ extern u8 *gCommManager;
 extern u32 gPlayerHeadModelHeap;
 }
 
-class Unk_020b83b0 {
-public:
-    u32 unk_04;
-    u32 next;
-    u8 priority;
-    Unk_020b83b0() : unk_04(0), next(0), priority(0xff) {}
-};
 
 class VramTask : public Unk_020b83b0 {
 public:

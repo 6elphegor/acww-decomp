@@ -2,6 +2,7 @@
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
 #include "game/Unk_0203389c_Vec.h"
+#include "net/Unk_020cbb18_Data.h"
 
 typedef Unk_0203389c_Vec Unk_02083c28_Vec;
 struct VisitorSpawner;
@@ -124,10 +125,6 @@ struct GroundInfo : GroundInfoBase {
     ~GroundInfo();
 };
 
-struct Unk_020cbb18_Data {
-    u8 pad_00[0x64];
-    u32 myAid;
-};
 
 struct Unk_02084ffc_Grid {
     u8 *blocks;

@@ -1,4 +1,5 @@
 #include "types.h"
+#include "game/Unk_020b1ddc.h"
 
 inline void *operator new(unsigned long, void *p) { return p; }
 
@@ -183,14 +184,6 @@ struct Obj_b4 {
     Mtx33 mtx;
 };
 
-class Unk_020b1ddc {
-public:
-    void rotateMinuteHand();
-    void rotateHourHand();
-
-    u8 pad[0xb4];
-    Obj_b4 *pJntAnmResult;
-};
 
 class LightLevel {
 public:

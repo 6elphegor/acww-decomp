@@ -1,5 +1,6 @@
 #include "types.h"
 #include "game/Unk_02033914.h"
+#include "gfx/Unk_021ede90.h"
 
 struct Vec3 {
     s32 x, y, z;
@@ -14,9 +15,6 @@ struct Mtx43 {
     s32 m[12];
 };
 
-struct Unk_021ede90 {
-    u32 unk_00, unk_04, unk_08, unk_0c, unk_10;
-};
 
 class Model {
 public:

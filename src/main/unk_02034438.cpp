@@ -2,6 +2,7 @@
 #include "Unk_020d8c7c.h"
 #include "game/Unk_02034250_Id.h"
 #include "game/Unk_02036c60_Vec.h"
+#include "game/Unk_021e5890_T.h"
 
 extern "C" {
 extern u8 gFieldSceneKind;
@@ -598,7 +599,6 @@ struct Unk_020358d4_Src {
 };
 
 extern "C" {
-struct Unk_021e5890_T { u8 pad[0x14]; u8 groundSeasonBits; };
 }
 
 

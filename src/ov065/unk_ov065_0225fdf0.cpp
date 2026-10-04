@@ -3,6 +3,7 @@
 #include "net/Unk_ov065_0225fd18_Counters.h"
 #include "net/Unk_ov065_02261408_Hostent.h"
 #include "net/Unk_ov065_02261638_Rng.h"
+#include "net/Unk_ov065_0225faf4_Sess.h"
 
 namespace Unk_ov065_02260de4_Ns {
 
@@ -1174,87 +1175,17 @@ s32 SockCore_QueueSend(File *self, u8 *buf, s32 len, s32 off, u32 a5, u32 a6, s3
 
 namespace Unk_ov065_0225faf4_Ns {
 
-struct Unk_ov065_0225faf4_Node {
-    Unk_ov065_0225faf4_Node *next;
-    u16 len;
-    u16 remotePort;
-    u32 remoteAddr;
-    u8 data[4];
-};
 
-struct Unk_ov065_0225faf4_Alloc {
-    void *pad[6];
-    Unk_ov065_0225faf4_Node *(*alloc)(u32);
-    void (*free)(void *);
-};
 
-struct Unk_ov065_0225faf4_Sess;
 
-struct Unk_ov065_0225faf4_Ctx {
-    u8 pad_00[0xc4];
-    Unk_ov065_0225faf4_Sess *cur;
-    u8 pad_c8[0x18];
-    u8 mutex[0x18];
-    s32 pos;
-    u16 limit;
-    s8 lock;
-    u8 pad_ff;
-    Unk_ov065_0225faf4_Node *volatile tail;
-    Unk_ov065_0225faf4_Node *head;
-    u16 used;
-    u16 cap;
-    u8 queue[4];
-};
 
-struct Unk_ov065_022603bc_Rx {
-    u8 pad_00[0x102];
-    u16 ringRead;
-    u8 pad_104[4];
-};
 
-struct Unk_ov065_0225faf4_Sess {
-    u32 unk_00;
-    u32 unk_04;
-    u8 ipState;
-    u8 pad_09;
-    u16 localPort;
-    u8 pad_0c[0xc];
-    u16 remotePort;
-    u16 boundRemotePort;
-    u32 remoteAddr;
-    u32 boundRemoteAddr;
-    u8 pad_24[0x1c];
-    u8 *rxBuf;
-    s32 rxLen;
-    s32 txBufSize;
-    u8 *txBuf;
-    u8 pad_50[0x14];
-    Unk_ov065_0225faf4_Ctx *ctx;
-    Unk_ov065_022603bc_Rx *rx;
-    s32 result;
-    volatile s16 flags;
-    s8 blocking;
-    s8 state;
-    u16 boundPort;
-    u16 peerPort;
-    u32 peerAddr;
-};
 
 typedef Unk_ov065_0225faf4_Node Node;
 typedef Unk_ov065_0225faf4_Sess Sess;
 typedef Unk_ov065_0225faf4_Ctx Ctx;
 typedef Unk_ov065_022603bc_Rx Rx;
 
-struct Unk_ov065_0225faf4_Job {
-    u32 unk_00;
-    Sess *sess;
-    u32 unk_08;
-    s8 sockType;
-    u8 pad_0d[3];
-    u16 localPort;
-    u16 remotePort;
-    void *remoteAddr;
-};
 
 struct Unk_ov065_0225ff64_Job {
     u32 unk_00;

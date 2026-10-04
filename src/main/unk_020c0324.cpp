@@ -1,9 +1,9 @@
 #include "types.h"
 #include "net/CommManager.h"
+#include "gfx/Unk_020bfe30_Vec.h"
+#include "npc/Unk_020c0538_Out.h"
+#include "game/Unk_020d77a4_Vec3.h"
 
-struct Unk_020bfe30_Vec {
-    s32 x, y, z;
-};
 typedef Unk_020bfe30_Vec Unk_020c0acc_Vec;
 
 
@@ -129,18 +129,7 @@ public:
 };
 
 // ---- SpNpcKatieTalk and its bases (vtable 0x020ddcf0 chain) ----
-struct Unk_020c0408_Obj {
-    u8 unk_00[4];
-    s32 unk_04;
-    s32 unk_08;
-    u8 unk_0c[8];
-    s32 openMode;
-};
 
-struct Unk_020c0538_Out {
-    u32 msgKey;
-    u8 msgIndex;
-};
 
 class TalkMsgRequest {
 public:
@@ -276,9 +265,6 @@ struct Unk_020f4080 {
     Unk_020f4080();
 };
 
-struct Unk_020d77a4_Vec3 {
-    s32 x, y, z;
-};
 
 class Actor : public ProcBase {
 public:

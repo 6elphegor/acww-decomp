@@ -1,6 +1,8 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
 #include "net/Unk_ov065_0225fd18_Counters.h"
+#include "net/Unk_ov065_0225f4d4_Msg.h"
+#include "net/Unk_ov065_0225faf4_Sess.h"
 
 // ---- types of the former unk_0225f1a0.cpp part (functions 0x0225f5c8..0x0225fa6c)
 
@@ -31,17 +33,6 @@ struct Unk_ov065_0225f618_Pair {
 
 struct Unk_ov065_0225f378_Obj;
 
-struct Unk_ov065_0225f4d4_Msg {
-    s32 (*unk_00)(Unk_ov065_0225f4d4_Msg *);
-    Unk_ov065_0225f378_Obj *sock;
-    void *replyQueue;
-    s8 sockType;
-    s8 blocking;
-    u8 unk_0e[2];
-    u16 localPort;
-    u32 *outPort;
-    u32 *outAddr;
-};
 
 struct Unk_ov065_0225f634_Sub1 {
     u8 unk_00[0xe0];
@@ -89,80 +80,16 @@ struct Unk_ov065_0225f378_Obj {
 
 // ---- types of the former unk_0225faf4.cpp part (functions 0x0225faf4..0x0225fd18)
 
-struct Unk_ov065_0225faf4_Node {
-    Unk_ov065_0225faf4_Node *next;
-    u16 len;
-    u16 remotePort;
-    u32 remoteAddr;
-    u8 data[4];
-};
 
-struct Unk_ov065_0225faf4_Alloc {
-    void *pad[6];
-    Unk_ov065_0225faf4_Node *(*alloc)(u32);
-    void (*free)(void *);
-};
 
 struct Unk_ov065_0225faf4_Sess;
 
-struct Unk_ov065_0225faf4_Ctx {
-    u8 pad_00[0xc4];
-    Unk_ov065_0225faf4_Sess *cur;
-    u8 pad_c8[0x18];
-    u8 mutex[0x18];
-    s32 pos;
-    u16 limit;
-    s8 lock;
-    u8 pad_ff;
-    Unk_ov065_0225faf4_Node *volatile tail;
-    Unk_ov065_0225faf4_Node *head;
-    u16 used;
-    u16 cap;
-    u8 queue[4];
-};
 
-struct Unk_ov065_0225faf4_Sess {
-    u32 unk_00;
-    u32 unk_04;
-    u8 ipState;
-    u8 pad_09;
-    u16 localPort;
-    u8 pad_0c[0xc];
-    u16 remotePort;
-    u16 boundRemotePort;
-    u32 remoteAddr;
-    u32 boundRemoteAddr;
-    u8 pad_24[0x1c];
-    u8 *rxBuf;
-    s32 rxLen;
-    s32 txBufSize;
-    u8 *txBuf;
-    u8 pad_50[0x14];
-    Unk_ov065_0225faf4_Ctx *ctx;
-    void *rx;
-    s32 result;
-    volatile s16 flags;
-    s8 blocking;
-    s8 state;
-    u16 boundPort;
-    u16 peerPort;
-    u32 peerAddr;
-};
 
 typedef Unk_ov065_0225faf4_Node Node;
 typedef Unk_ov065_0225faf4_Sess Sess;
 typedef Unk_ov065_0225faf4_Ctx Ctx;
 
-struct Unk_ov065_0225faf4_Job {
-    u32 unk_00;
-    Sess *sess;
-    u32 unk_08;
-    s8 sockType;
-    u8 pad_0d[3];
-    u16 localPort;
-    u16 remotePort;
-    void *remoteAddr;
-};
 
 typedef Unk_ov065_0225faf4_Job Job;
 

@@ -1,15 +1,10 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
+#include "net/Unk_ov065_0225f1cc_Cfg.h"
+#include "net/Unk_ov065_0225f4d4_Msg.h"
 
 struct Unk_ov065_0225f378_Obj;
 
-struct Unk_ov065_0225f4d4_Msg {
-    s32 (*unk_00)(Unk_ov065_0225f4d4_Msg *);
-    Unk_ov065_0225f378_Obj *sock;
-    void *replyQueue;
-    s8 sockType;
-    s8 blocking;
-};
 
 struct Unk_ov065_0225f378_Obj {
     u8 pad_00[0x64];
@@ -31,11 +26,6 @@ struct Unk_ov065_0225f524_Q {
     s32 usedCount;
 };
 
-struct Unk_ov065_0225f1cc_Cfg {
-    u8 pad_00[0x18];
-    void *(*unk_18)(u32);
-    void (*unk_1c)(void *);
-};
 
 extern "C" {
 // TU01

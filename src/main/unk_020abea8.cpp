@@ -1,6 +1,10 @@
 // mwcc-flags: -str reuse
 #include "types.h"
 #include "game/Unk_02033914.h"
+#include "gfx/Unk_020ac0c4_Entry.h"
+#include "gfx/Unk_020ac500_Tex.h"
+#include "gfx/Unk_020d094c.h"
+#include "gfx/Unk_021ede90.h"
 
 struct Vec3 {
     s32 x, y, z;
@@ -16,10 +20,6 @@ struct Vec3Z2 {
     ~Vec3Z2();
 };
 
-struct Unk_020d094c {
-    char *unk_00;
-    u8 unk_04, unk_05, unk_06, unk_07;
-};
 
 struct Vec3Z {
     s32 x, y, z;
@@ -42,25 +42,12 @@ struct RGB {
     u16 a : 1;
 };
 
-struct Unk_020ac0c4_Entry {
-    u8 *texRes;
-    u32 texImageParam;
-    u32 plttBase;
-    u16 width;
-    u16 height;
-    u32 texFormat;
-    u8 unk_14;
-    u8 unk_15[3];
-};
 
 
 struct Mtx43 {
     s32 m[12];
 };
 
-struct Unk_021ede90 {
-    u32 unk_00, unk_04, unk_08, unk_0c, unk_10;
-};
 
 class ObjShadowStrip {
 public:
@@ -156,32 +143,6 @@ extern ObjShadowStrip sTreeShadowStage4;
 extern ObjShadowStrip sRockShadow;
 extern ObjShadowStrip sSignShadow;
 
-struct Unk_020ac500_DictHdr {
-    u16 sizeUnit;
-    u16 ofsName;
-    u8 data[4];
-};
-struct Unk_020ac500_Dict {
-    u8 rev;
-    u8 num;
-    u16 size;
-    u16 pad;
-    u16 ofsEntry;
-};
-struct Unk_020ac500_Tex {
-    u8 pad_00[8];
-    u32 texKey;
-    u8 pad_0c[0x20];
-    u32 plttKey;
-    u8 pad_30[4];
-    u16 ofsPlttDict;
-    u8 pad_36[6];
-    Unk_020ac500_Dict dict;
-};
-struct Unk_020ac500_Pltt {
-    u16 offset;
-    u16 flag;
-};
 static inline void *Unk_020ac500_Data(const Unk_020ac500_Dict *dict, u32 idx) {
     Unk_020ac500_DictHdr *hdr = (Unk_020ac500_DictHdr *)((u8 *)dict + dict->ofsEntry);
     return &hdr->data[hdr->sizeUnit * idx];

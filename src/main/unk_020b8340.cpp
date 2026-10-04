@@ -1,4 +1,5 @@
 #include "types.h"
+#include "sys/Unk_020b83b0.h"
 
 extern "C" {
 void func_020e79a0(void *list, void *node);
@@ -51,14 +52,6 @@ u8 BgTransfer_GetPaletteCost(BgTransfer *p);
 u8 BgTransfer_GetScreenCost(BgTransfer *p);
 }
 
-class Unk_020b83b0 {
-public:
-    u32 unk_04;
-    u32 next;
-    u8 priority;
-
-    Unk_020b83b0() : unk_04(0), next(0), priority(0xff) {}
-};
 
 class VramTask : public Unk_020b83b0 {
 public:

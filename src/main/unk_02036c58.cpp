@@ -2,6 +2,7 @@
 #include "types.h"
 #include "game/Unk_02036c60_Vec.h"
 #include "game/Unk_02037674_V3.h"
+#include "game/Unk_021e5890_T.h"
 
 extern "C" {
 void func_02133ef8(void *, u32);
@@ -38,7 +39,6 @@ extern u16 sNewYearEveDate, sNewYearDayDate, sNewYearEveTime;
 extern u16 sHourlyBgmIds[];
 extern void *gBgHeap;
 extern void *gCurrentHeap;
-struct Unk_021e5890_T { u8 pad[0x14]; u8 groundSeasonBits; };
 extern Unk_021e5890_T data_021e5890;}
 
 extern "C" {

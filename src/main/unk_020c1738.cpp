@@ -1,4 +1,5 @@
 #include "types.h"
+#include "game/Unk_020d77a4_Vec3.h"
 
 extern "C" {
 void _ZN8NpcActor14setTalkRequestEP12Unk_0201bc1c(void *a, void *b);
@@ -220,9 +221,6 @@ struct Unk_020f4080 {
     Unk_020f4080();
 };
 
-struct Unk_020d77a4_Vec3 {
-    s32 x, y, z;
-};
 typedef Unk_020d77a4_Vec3 Unk_0203e7a4_Vec;
 
 class Actor : public ProcBase {

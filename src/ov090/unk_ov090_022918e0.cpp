@@ -4,6 +4,7 @@
 #include "Unk_020d8c7c.h"
 #include "text/Unk_02050288.h"
 #include "menu/Unk_ov002_022013a0.h"
+#include "sys/Unk_020b83b0.h"
 #undef postCreate
 #undef vfunc_14
 
@@ -252,14 +253,6 @@ extern u8 gFieldSceneKind;
 }
 
 class Unk_02083b0_dummy;
-class Unk_020b83b0 {
-public:
-    u32 unk_04;
-    u32 next;
-    u8 priority;
-
-    Unk_020b83b0() : unk_04(0), next(0), priority(0xff) {}
-};
 
 class VramTask : public Unk_020b83b0 {
 public:

@@ -1,8 +1,8 @@
 #include "types.h"
 #include "player/Unk_02006d14_Vec.h"
 #include "player/Unk_02006d14_Blk.h"
+#include "net/Unk_020cbb18_Data.h"
 
-struct Unk_020cbb18_Data { u8 pad_00[0x68]; s32 localSlot; };
 
 // An enum-typed local keeps the constant in a callee-saved register across the call.
 // func_020085f0 is declared with the enum parameter (real type u32) so the argument is

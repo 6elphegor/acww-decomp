@@ -1,6 +1,7 @@
 // mwcc-flags: -str reuse
 #include "types.h"
 #include "game/Unk_0201acf8.h"
+#include "game/Unk_020d77a4_Vec3.h"
 
 // unk_02011580.cpp
 struct HudObjGfx {
@@ -2080,8 +2081,6 @@ public:
     void applyMovement(Unk_0201a334_Scene *scene);
 };
 
-// unk_0201ac80.cpp
-struct Unk_020d77a4_Vec3 { s32 x, y, z; };
 
 // unk_0201ac80.cpp
 struct Unk_0201b2b8_T30 { u32 a[12]; };

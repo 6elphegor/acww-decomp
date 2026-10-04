@@ -1,5 +1,6 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
+#include "town/Unk_020b5350_Info.h"
 
 struct Unk_0204da0c_Size {
     s32 w;
@@ -168,12 +169,6 @@ void *Heap_Alloc(void *heap, s32 size);
 }
 
 extern "C" {
-struct Unk_020b5350_Info {
-    u32 *acreIds;
-    u8 width;
-    u8 height;
-    u16 moduleParam;
-};
 }
 
 extern "C" {

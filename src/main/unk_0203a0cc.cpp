@@ -3,6 +3,7 @@
 #include "Unk_020d8c7c.h"
 #include "gfx/Unk_0203bc68_Ent.h"
 #include "npc/Unk_0203be94_Obj.h"
+#include "game/Unk_021c47c4.h"
 
 struct Unk_0203b350_V {
     s32 x, y, z;
@@ -90,11 +91,6 @@ struct Unk_0203a9b8_Sub {
     s16 ang, vel;
 };
 
-struct Unk_021c47c4 {
-    u32 blocks;
-    u32 *width;
-    u32 *height;
-};
 
 struct Unk_0203a9b8_Rgba {
     u8 v[4];
@@ -784,7 +780,7 @@ void Unk_020d93b8::calcRoomBounds()
     } else {
         Unk_021c47c4 *g = gSceneBlockMap;
         u32 arg;
-        if (g->width > (u32 *)0 && g->height > (u32 *)0 && g->blocks != 0) {
+        if ((u32 *)g->width > (u32 *)0 && (u32 *)g->height > (u32 *)0 && g->blocks != 0) {
             arg = g->blocks;
         } else {
             arg = 0;

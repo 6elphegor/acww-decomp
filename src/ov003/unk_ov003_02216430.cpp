@@ -1,6 +1,7 @@
 // mwcc-version: 1.2/sp2
 // ov003 TU11 (actor 02231aa8): .text 0x02216430-0x022165d0
 #include "types.h"
+#include "game/Unk_020b1ddc.h"
 
 // shared_actor.h.txt -- declarations shared by the ov003 actor units (class family of ov009 BuildingActor).
 // Written by the agent that owns ov003 TU06/07/09/10/11/12 (all 1.2/sp2).  Paste unchanged after `#include "types.h"`
@@ -260,11 +261,6 @@ public:
     void setCallback(s32 a, s32 b, s32 c, s32 d, s32 e);
 };
 
-class Unk_020b1ddc {
-public:
-    void rotateHourHand();
-    void rotateMinuteHand();
-};
 
 extern "C" {
 s32 _ZN12G3dResAccess13func_02056fccEi(void *self, s32 i);

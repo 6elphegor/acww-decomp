@@ -1,6 +1,12 @@
 // mwcc-flags: -str reuse
 #include "types.h"
 #include "game/Unk_02033914.h"
+#include "gfx/Unk_020ac0c4_Entry.h"
+#include "gfx/Unk_020ac500_Tex.h"
+#include "game/Unk_020aebbc.h"
+#include "gfx/Unk_020d094c.h"
+#include "game/Unk_021c47c4.h"
+#include "gfx/Unk_021ede90.h"
 struct ItemId {
     u16 v;
     ItemId();
@@ -71,10 +77,6 @@ struct Vec3Z2 {
     ~Vec3Z2();
 };
 
-struct Unk_020d094c {
-    char *unk_00;
-    u8 unk_04, unk_05, unk_06, unk_07;
-};
 
 struct Vec3Z {
     s32 x, y, z;
@@ -97,25 +99,12 @@ struct RGB {
     u16 a : 1;
 };
 
-struct Unk_020ac0c4_Entry {
-    u8 *texRes;
-    u32 texImageParam;
-    u32 plttBase;
-    u16 width;
-    u16 height;
-    u32 texFormat;
-    u8 unk_14;
-    u8 unk_15[3];
-};
 
 
 struct Mtx43 {
     s32 m[12];
 };
 
-struct Unk_021ede90 {
-    u32 unk_00, unk_04, unk_08, unk_0c, unk_10;
-};
 
 class ObjShadowStrip {
 public:
@@ -151,32 +140,6 @@ struct Bits {
     u32 d : 6;
 };
 
-struct Unk_020ac500_DictHdr {
-    u16 sizeUnit;
-    u16 ofsName;
-    u8 data[4];
-};
-struct Unk_020ac500_Dict {
-    u8 rev;
-    u8 num;
-    u16 size;
-    u16 pad;
-    u16 ofsEntry;
-};
-struct Unk_020ac500_Tex {
-    u8 pad_00[8];
-    u32 texKey;
-    u8 pad_0c[0x20];
-    u32 plttKey;
-    u8 pad_30[4];
-    u16 ofsPlttDict;
-    u8 pad_36[6];
-    Unk_020ac500_Dict dict;
-};
-struct Unk_020ac500_Pltt {
-    u16 offset;
-    u16 flag;
-};
 
 struct Unk_020ac2e8_V : Vec3 {
     Unk_020ac2e8_V() {}
@@ -311,27 +274,6 @@ struct Elem2a { Elem2a(); u16 d; };
 struct Unk_020aec00 { u32 vt; u16 e[0x25]; Unk_020aec00(); };
 struct NookShop { u32 vt; ItemId e[0x25]; NookShop(); };
 
-struct Bits5a {
-    u16 saleHour : 5;
-    u16 paintCounter : 4;
-    u16 level : 2;
-    u16 unk_0b : 5;
-};
-struct Unk_020aebbc {
-    /* 0x00 */ u32 sales;
-    u8 pad[0x51 - 4];
-    /* 0x51 */ u8 stockStale;
-    u8 pad2[7];
-    /* 0x59 */ u8 renovationScheduled;
-    /* 0x5a */ Bits5a packedState;
-};
-struct Unk_020aec74_Out {
-    u8 second, minute, hour, day, month, year;
-    u16 unk_06;
-};
-struct Unk_021c47c4 {
-    u32 blocks, width, height;
-};
 extern const s32 sObjShadowCoordShift;
 extern const u8 kNookCarpetCounts[4];
 extern const u8 kNookPaintCounts[4];

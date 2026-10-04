@@ -1,6 +1,7 @@
 #include "types.h"
 #include "text/Unk_02050288.h"
 #include "Unk_020d8c7c.h"
+#include "game/Unk_020a88fc_Pad.h"
 
 inline void *operator new(unsigned long, void *p) { return p; }
 
@@ -773,11 +774,6 @@ extern MsgRenderProcessor gMsgRenderProcessor;
 extern MsgCopyProcessor gMsgCopyProcessor;
 extern MsgQuery gMsgQuery;
 
-struct Unk_020a88fc_Pad {
-    s32 v[2];
-    Unk_020a88fc_Pad() {}
-    ~Unk_020a88fc_Pad() {}
-};
 
 extern "C" {
 void BmgMsgAttr_Clear(BmgMsgAttr *s);

@@ -2,6 +2,7 @@
 #include "types.h"
 #include "net/CommManager.h"
 #include "game/Unk_0202368c_Obj.h"
+#include "game/Unk_020d77a4_Vec3.h"
 
 
 class VillagerTalk;
@@ -1317,9 +1318,6 @@ struct Unk_020f4080 {
     }
 };
 
-struct Unk_020d77a4_Vec3 {
-    s32 x, y, z;
-};
 
 class Actor : public ProcBase {
 public:

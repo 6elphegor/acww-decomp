@@ -1,4 +1,5 @@
 #include "types.h"
+#include "game/Unk_020d77a4_Vec3.h"
 
 // Library base class (ARM code in autoload_2 / ITCM). vfunc_08 takes a flag here: the slot is shared with
 // NpcActor::postCreate(int).
@@ -82,9 +83,6 @@ struct Unk_020f4080 {
     }
 };
 
-struct Unk_020d77a4_Vec3 {
-    s32 x, y, z;
-};
 typedef Unk_020d77a4_Vec3 Unk_0203e7a4_Vec;
 
 class Actor : public ProcBase {

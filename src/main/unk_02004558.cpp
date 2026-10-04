@@ -47,6 +47,9 @@
 #include "player/Unk_02008100_Msg.h"
 #include "player/Unk_02008190_Ptr.h"
 #include "player/Unk_02008858_Blk.h"
+#include "gfx/Unk_021cb69c.h"
+#include "player/Unk_021c1b3c.h"
+#include "player/Unk_020d6df4_7d0.h"
 #include "player/PlayerHead.h"
 #include "player/Unk_0200c2fc.h"
 #include "player/Unk_0200bff8_Vec.h"
@@ -523,10 +526,6 @@ struct Unk_0200944c {
 
 
 
-struct Unk_020d6df4_7d0 {
-    s32 walkSpeed;
-    void initWalk();
-};
 
 
 
@@ -613,15 +612,6 @@ extern PM_02004ce8 data_020d5ff4;
 namespace nB {
 extern "C" {
 
-struct Unk_021cb69c {
-    union {
-        struct {
-            s32 unk_00, unk_04, unk_08, unk_0c, unk_10, unk_14, unk_18, unk_1c, unk_20;
-            s32 unk_24, unk_28, unk_2c;
-        };
-        s32 unk_a[12];
-    };
-};
 class PlayerActor;
 void WorldCurve_FromCurved(Unk_02005294_Vec3 *dst, Unk_02005294_Vec3 *src);
 s32 WorldCurve_Apply(Unk_02005294_Vec3 *out, Unk_02005294_Vec3 *in);
@@ -2884,11 +2874,6 @@ void _ZN12Unk_02006d1411tryInteractEv(void *);
 namespace nM {
 extern "C" {
 
-struct Unk_020d6df4_Vec { s32 x, y, z; };
-struct Unk_020d6df4_Data {
-    u8 pad_00[0x64];
-    s32 myAid;
-};
 struct Unk_0205dfa4_Sub {
     s32 unk_00;
     s32 numFrames;
@@ -3305,10 +3290,6 @@ void PlayerActor_GetShirt(u16 *out, void *obj);
 extern u8 data_020c6194[], data_020c6198[], data_020c619c[], data_020c61a0[], data_020c61a4[], data_020c61a8[], data_020c61ac[], data_020c61b0[], data_020c61b4[];
 extern u8 gFieldSceneKind;
 extern u8 sPlayerActionIsLocomotion[];
-struct Unk_021c1b3c {
-    u8 unk_00[0x248];
-    s32 unk_248;
-};
 extern Unk_021c1b3c *data_021c1b3c;
 extern u8 gTalkMsgIndexEnd;
 extern char sPlayerClothTexName[], sPlayerSkinPalName[];

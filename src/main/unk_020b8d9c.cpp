@@ -1,6 +1,11 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
+#include "gfx/Unk_020bfe30_Vec.h"
+#include "game/Unk_020c010c_Ent.h"
+#include "npc/Unk_020c0538_Out.h"
+#include "game/Unk_021ed2b0.h"
+#include "game/Unk_021eff48.h"
 
 // ======== class types (global scope) ========
 struct Unk_021f4400;
@@ -950,22 +955,6 @@ struct Unk_020bfc48_Pad {
     Unk_020bfc48_Pad() {}
     ~Unk_020bfc48_Pad() {}
 };
-struct Unk_020bfe30_Vec {
-    s32 x, y, z;
-};
-struct Unk_020bfe38_Ent {
-    u8 unk_00[0x5c];
-    s32 position;
-    u8 unk_60[8];
-    s32 prevPosition;
-};
-struct Unk_020bfec0_Ent {
-    u8 unk_00[0x54];
-    s32 rainStrength;
-};
-struct Unk_020bffc0_Mtx {
-    s32 m[12];
-};
 class Unk_020bfe30 {
 public:
     /* 0x00 */ u8 unk_00[4];
@@ -999,15 +988,7 @@ struct WeatherRecord {
     s8 hourBase;
     u8 rained;
 };
-struct Unk_020c010c_Ent {
-    u16 eventId;
-    u8 unk_02[10];
-};
 // ---------------------------------------------------------------------------------------------------------------------
-struct Unk_020c0538_Out {
-    u32 msgKey;
-    u8 msgIndex;
-};
 // Library base class; its ctor and dtor are out of line.
 class SpNpcTalkRequest {
 public:
@@ -1042,13 +1023,6 @@ public:
     virtual void onWindowClose();
     virtual void onTalkEnd();
     virtual void start(Unk_020c0538_Out *out);
-};
-struct Unk_020c0408_Obj {
-    u8 unk_00[4];
-    s32 unk_04;
-    s32 unk_08;
-    u8 unk_0c[8];
-    s32 openMode;
 };
 // Sub-object at 0x658 of SpNpcKatie
 class SpNpcKatieTalk : public SpNpcTalkRequest {
@@ -5643,17 +5617,6 @@ namespace n07 {
 
 // ======== unk_020bbc28.cpp ========
 namespace n06 {
-struct Unk_021ed2b0;
-struct Unk_021f1448;
-struct Unk_021f1448 {
-    char pad_00[0x24];
-    s32 level;
-    s32 targetLevel;
-};
-struct Unk_021ed2b0 {
-    char pad_00[0xa];
-    u8 todayPattern;
-};
 typedef void (Unk_020bbc28::*Unk_020bbeb8_Fn)();
 extern "C" {
 extern CommManager *gCommManager;
@@ -7055,10 +7018,6 @@ namespace n05 {
 
 // ======== unk_020ba93c.cpp ========
 namespace n04 {
-struct Unk_021eff48;
-struct Unk_021f1448;
-struct Unk_021f1448 { u8 pad0[0x1c]; s32 f1c; u8 pad1[4]; s32 f24; s32 f28; u8 pad2[0x08]; s32 f34; };
-struct Unk_021eff48 { s32 f0; s32 f4; };
 namespace L_021f1448 { extern "C" { extern struct S { u8 p[0x1500]; Unk_021f1448 v; } gWeatherManager; } }
 #define data_021f1448 n04::L_021f1448::gWeatherManager.v
 extern "C" {
@@ -7381,7 +7340,7 @@ extern "C" void SkySprites_FireworksPatternAct13(Unk_020bacc0_Obj *obj) {
 }
 
 extern "C" void SkySprites_ApplyRainbowBlend(Unk_020bacc0_Obj *obj) {
-    u16 *p = (u16 *)(data_021f1158 + gWeatherManager.f4 * 0x180);
+    u16 *p = (u16 *)(data_021f1158 + gWeatherManager.unk_04 * 0x180);
     u16 *end1 = (u16 *)((u8 *)p + 0xee);
     u16 *end2 = (u16 *)((u8 *)p + 0x12e);
     u32 v = obj->f2f51;
@@ -7416,7 +7375,7 @@ extern "C" void SkySprites_Stop(Unk_020bacc0_Obj *obj) {
 }
 
 extern "C" void SkySprites_UpdateEvents(Unk_020bacc0_Obj *obj) {
-    switch (data_021f1448.f34) {
+    switch (data_021f1448.precipKind) {
     case 1:
         _ZN12Unk_020bbc2810updateRainEv(obj);
         break;
@@ -7444,7 +7403,7 @@ extern "C" void SkySprites_UpdateEvents(Unk_020bacc0_Obj *obj) {
 extern "C" void SkySprites_UpdateEventsIndoor(Unk_020bacc0_Obj *obj) {
     s32 r = Scene_GetSkyKind(0);
     if (r != 0 && r != 3) {
-        if (data_021f1448.f34 == 1 && data_021f1448.f24 == 4) {
+        if (data_021f1448.precipKind == 1 && data_021f1448.level == 4) {
             _ZN12Unk_020bc58c18updateThunderFlashEv(obj);
         }
         _ZN12Unk_020bbc2819updateFireworksShowEv(obj);
@@ -7496,7 +7455,7 @@ extern "C" void SkySprites_UpdateIndoor(Unk_020bacc0_Obj *obj) {
 extern "C" void SkySprites_Draw(Unk_020bacc0_Obj *obj) {
     Unk_020bacc0_Entry *e;
     Unk_020bacc0_Entry *end = obj->e + 0x3c;
-    s32 yoff = data_021f145c[data_021f1448.f1c ^ 1];
+    s32 yoff = data_021f145c[data_021f1448.bufferIndex ^ 1];
     s32 id = -1;
     for (e = obj->e; e < end; e++) {
         void *sub;
@@ -7515,7 +7474,7 @@ extern "C" void SkySprites_Draw(Unk_020bacc0_Obj *obj) {
         x = a + ((pos->x + 0x800) >> 12);
         py = b + ((pos->y + 0x800) >> 12);
         y = py - yoff;
-        if (gWeatherManager.f0 == 1) {
+        if (gWeatherManager.engine == 1) {
             u8 k = e->f5c;
             BOOL hidden = FALSE;
             if (k != 0) {
@@ -7581,8 +7540,8 @@ extern "C" void Sky_CalcLightColors(s32 a, s32 b, u32 c, u32 d) {
 }
 
 extern "C" void Sky_CalcFogOffset(s32 a, s32 b, u32 c, u32 d) {
-    s32 cur = data_021f1448.f24;
-    s32 next = data_021f1448.f28;
+    s32 cur = data_021f1448.level;
+    s32 next = data_021f1448.targetLevel;
     if (next != cur) {
         u16 *pc = sSkyFogOffsetTables[cur];
         u32 t1 = (u16)(((0x1000 - a) * pc[c] + a * pc[d]) >> 12);
@@ -7675,9 +7634,9 @@ extern "C" void RainSe_Release(void *p) {
 }
 
 extern "C" void RainSe_InitVolume(Unk_020ba93c_Obj *p) {
-    BOOL a = data_021f1448.f24 == 3;
-    BOOL b = data_021f1448.f24 == 4;
-    BOOL c = data_021f1448.f34 == 1;
+    BOOL a = data_021f1448.level == 3;
+    BOOL b = data_021f1448.level == 4;
+    BOOL c = data_021f1448.precipKind == 1;
     p->f0c = 0;
     if (c) {
         if (a) {
@@ -7699,14 +7658,6 @@ extern "C" void RainSe_InitVolume(Unk_020ba93c_Obj *p) {
 
 // ======== unk_020b9fe4.cpp ========
 namespace n03 {
-struct Unk_021ed2b0;
-struct Unk_021ed2b0 {
-    u8 pad_00[0xa];
-    u8 todayPattern;
-    u8 pad_0b;
-    s8 hourBase;
-    u8 rained;
-};
 extern "C" {
 BOOL Sky_AllocPaletteBufs(u16 **p);
 }
@@ -8799,35 +8750,9 @@ extern "C" void Sky_VBlankMain()
 
 // ======== unk_020b8d98.cpp ========
 namespace n01 {
-struct Unk_021eff48;
-struct Unk_021f1448;
 struct Unk_021f3010;
 typedef volatile u16 vu16;
 typedef volatile u32 vu32;
-struct Unk_021f1448 {
-    /* 0x00 */ u8 pad_00[0x1c];
-    /* 0x1c */ u32 bufferIndex;
-    /* 0x20 */ u32 unk_20;
-    /* 0x24 */ s32 level;
-    /* 0x28 */ s32 targetLevel;
-    /* 0x2c */ u32 requestedLevel;
-    /* 0x30 */ s32 direction;
-    /* 0x34 */ s32 precipKind;
-    /* 0x38 */ u32 rainSlant;
-    /* 0x3c */ u16 starScrollX;
-    /* 0x3e */ u16 starScrollY;
-    /* 0x40 */ u8 pad_40[0x24];
-    /* 0x64 */ u32 curPalette;
-    /* 0x68 */ u32 unk_68;
-    /* 0x6c */ u32 transitionPalette;
-    /* 0x70 */ u8 pad_70[8];
-    /* 0x78 */ s32 unk_78;
-};
-struct Unk_021eff48 {
-    /* 0x0000 */ s32 engine;
-    /* 0x0004 */ u8 pad_0004[0x1540];
-    /* 0x1544 */ u32 unk_1544[2][2];
-};
 struct Unk_021f3010 { u8 pad[8]; u8 unk_08; u8 pad2[3]; };
 namespace L_021f4400 { extern "C" { extern struct S { u8 p[0x2f20]; Unk_021f4400 v; } gSkySprites; } }
 #define data_021f4400 n01::L_021f4400::gSkySprites.v

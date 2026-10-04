@@ -1,4 +1,5 @@
 #include "types.h"
+#include "game/Unk_020dd30c_Buf.h"
 
 extern "C" {
 extern u8 gItemInfo[];
@@ -370,9 +371,6 @@ public:
     /* 0x08 */ MsgStringAttr attr;
 };
 
-struct Unk_020dd30c_Buf {
-    u8 b[16];
-};
 
 // 16-byte raw buffer (vtable 0x020dd30c)
 class EncodedString16Buf : public EncodedString {

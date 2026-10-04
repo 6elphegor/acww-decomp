@@ -1,10 +1,10 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
+#include "gfx/Unk_020bfe30_Vec.h"
+#include "game/Unk_020c010c_Ent.h"
+#include "npc/Unk_020c0538_Out.h"
 
-struct Unk_020bfe30_Vec {
-    s32 x, y, z;
-};
 
 static inline void Unk_020bfe30_Set(Unk_020bfe30_Vec *v, s32 x, s32 y, s32 z) {
     v->x = x;
@@ -12,21 +12,8 @@ static inline void Unk_020bfe30_Set(Unk_020bfe30_Vec *v, s32 x, s32 y, s32 z) {
     v->z = z;
 }
 
-struct Unk_020bfe38_Ent {
-    u8 unk_00[0x5c];
-    s32 position;
-    u8 unk_60[8];
-    s32 prevPosition;
-};
 
-struct Unk_020bfec0_Ent {
-    u8 unk_00[0x54];
-    s32 rainStrength;
-};
 
-struct Unk_020bffc0_Mtx {
-    s32 m[12];
-};
 
 
 class Unk_02097ff4 {
@@ -501,10 +488,6 @@ struct WeatherRecord {
     u8 rained;
 };
 
-struct Unk_020c010c_Ent {
-    u16 eventId;
-    u8 unk_02[10];
-};
 // prototypes
 extern "C" void Weather_Construct();
 extern "C" void Weather_Destruct();
@@ -658,10 +641,6 @@ extern "C" u8 Weather_GetPrevDayRain() {
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
-struct Unk_020c0538_Out {
-    u32 msgKey;
-    u8 msgIndex;
-};
 
 // Library base class; its ctor and dtor are out of line.
 class SpNpcTalkRequest {
@@ -699,13 +678,6 @@ public:
     virtual void start(Unk_020c0538_Out *out);
 };
 
-struct Unk_020c0408_Obj {
-    u8 unk_00[4];
-    s32 unk_04;
-    s32 unk_08;
-    u8 unk_0c[8];
-    s32 openMode;
-};
 
 // Sub-object at 0x658 of SpNpcKatie
 class SpNpcKatieTalk : public SpNpcTalkRequest {
