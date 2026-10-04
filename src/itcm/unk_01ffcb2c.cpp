@@ -1,6 +1,7 @@
 // I004a: itcm 0x01ffcb2c-0x01ffcc60 (7 Thumb functions): map-grid lookups, a vector helper, a callback list walker.
 // NO mwcc-flags line: Thumb with the default -O4,s (with -O4,p func_01ffcb2c and func_01ffcbd8 differ).
 #include "types.h"
+#include "game/Vec3.h"
 
 struct Chunk {
     /* 0x00 */ u8 *unk_00;
@@ -13,9 +14,6 @@ struct Grid {
     /* 0x128 */ u32 unk_128;
 };
 
-struct Vec3 {
-    s32 x, y, z;
-};
 
 struct Cam {
     /* 0x00 */ u8 pad_00[0x84];

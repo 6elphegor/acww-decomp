@@ -1,6 +1,7 @@
 #include "types.h"
 #include "gfx/Unk_02089240_Rec.h"
 #include "gfx/Unk_0208d154_Sub.h"
+#include "ui/NameLabelBalloonView.h"
 
 extern "C" {
 void GX_LoadOBJPltt(void *a, u32 b, u32 c);
@@ -58,11 +59,6 @@ public:
     /* 0x08 */ s32 originY;
 };
 
-class NameLabelBalloonView {
-public:
-    void freeLabel();
-    void createLabel();
-};
 
 
 class NameLabelBalloon : public UiWidget {

@@ -1,8 +1,6 @@
 #include "types.h"
+#include "game/Vec3.h"
 
-struct Vec3 {
-    s32 x, y, z;
-};
 
 // Declaration-only twins (same layout and virtuals as ActorCollider / ActorFollowCollider): the original vtable order in .data
 // is a heapsort of the class declaration order that cannot be reached with the real bases declared first.
@@ -58,40 +56,8 @@ public:
     /* 0x40 */ u8 *ownerActor;
 };
 
-class ActorCollider {
-public:
-    ActorCollider();
-    ~ActorCollider();
-    virtual Vec3 *getPos() = 0;
-    virtual u32 getOwnerId() = 0;
-    virtual void onCollide(u32 a, u32 b, u32 c);
-    void submit();
-    void resetHit();
-    BOOL isHitByGroup(u32 mask);
-    BOOL canCollideWith(ActorCollider *o);
-    void setup(s32 a, s32 b, s32 c, s32 d, u32 e, u8 f, s32 g);
-    s32 getHitActor();
-    BOOL isPushedFromAngle(s32 a);
-
-    /* 0x04 */ s32 radius;
-    /* 0x08 */ s32 height;
-    /* 0x0c */ u8 targetKind;
-    /* 0x0d */ u8 targetIndex;
-    /* 0x0e */ u8 hitTargetKind;
-    /* 0x0f */ u8 hitTargetIndex;
-    /* 0x10 */ s32 pushX;
-    /* 0x14 */ s32 pushY;
-    /* 0x18 */ s32 pushZ;
-    /* 0x1c */ u32 groups;
-    /* 0x20 */ u32 collideMask;
-    /* 0x24 */ s32 unk_24;
-    /* 0x28 */ u32 hitGroups;
-    /* 0x2c */ u32 hitOwnerId;
-    /* 0x30 */ s32 hitDepth;
-    /* 0x34 */ s32 weight;
-    /* 0x38 */ ActorCollider *next;
-    /* 0x3c */ u8 isHit;
-};
+// Included here, after the twins above: the class definition order decides the vtable order in .data.
+#include "actor/ActorCollider.h"
 
 struct SpriteAnimFrame {
     /* 0x00 */ void *cell;

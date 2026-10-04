@@ -2,6 +2,8 @@
 #include "net/CommManager.h"
 #include "sys/Unk_020b83b0.h"
 #include "room/Unk_0209c41c_Actor.h"
+#include "gfx/TexVramSlot.h"
+#include "town/TownAcreIndex.h"
 
 inline void *operator new(unsigned long, void *p) { return p; }
 
@@ -92,10 +94,6 @@ public:
 };
 
 // ---- row helper
-class TownAcreIndex {
-public:
-    u8 *calcIndex(s32 i);
-};
 
 // ---- model resource helpers
 
@@ -123,29 +121,6 @@ public:
     BOOL requestTexResource(u32 *a, u8 b);
 };
 
-class TexVramSlot {
-public:
-    u32 texKeyBase;
-    u32 tex4x4KeyBase;
-    u32 plttKeyBase;
-    u8 unk_10;
-    u8 unk_11;
-
-    TexVramSlot();
-    virtual ~TexVramSlot();
-    void setKeys(u32 a, u32 b, u32 c);
-    void clear(void);
-    void relocateTexture(void *p);
-    u32 makePlttKeyAt(u32 a, u32 b);
-    u32 makeKeyAtOffset(u32 a, u32 b, u32 c);
-    u32 makeTex4x4KeyAt(u32 a, u32 b);
-    u32 makeTexKeyAt(u32 a, u32 b);
-    u32 makePlttKey(u32 a);
-    u32 makeKeyWithBase(u32 a, u32 b);
-    u32 makeTex4x4Key(u32 a);
-    u32 makeTexKey(u32 a);
-    s32 alloc(void *a, void *b, void *c);
-};
 
 class ModelResource {
 public:
@@ -249,12 +224,15 @@ TexVramSlot *ModelSlot::getVramSlot() {
     return &vramSlot;
 }
 
+// TexVramSlot::alloc is void, but this caller tests its (leftover) return register.
+extern "C" s32 _ZN11TexVramSlot5allocEPvS0_S0_(TexVramSlot *self, void *a, void *b, void *c);
+
 BOOL ModelSlot::init(void *a, void *b, u32 size, void *extra) {
     if (size) {
         heap = FrameHeap_Create((size + 3) & ~3, (u32)extra);
     }
     if (a != 0 || b != 0) {
-        if (vramSlot.alloc(a, 0, b)) return TRUE;
+        if (_ZN11TexVramSlot5allocEPvS0_S0_(&vramSlot, a, 0, b)) return TRUE;
         return FALSE;
     }
     return TRUE;

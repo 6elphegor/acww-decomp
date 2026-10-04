@@ -29,6 +29,7 @@
 // are the implicit derived-to-base conversions when `this` is passed to the extern "C" SndHandle functions of unk_020ede18.cpp, and
 // `h ? h - 4 : 0` in f4010 is static_cast<SndSeEmitter *>(h).
 #include "types.h"
+#include "game/Vec3.h"
 
 // sound handle (functions in unk_020ede18.cpp, plain C names): the non-polymorphic second base of the channel object, at +4
 struct SndHandle {
@@ -52,9 +53,6 @@ struct Glob {
     /* 0x60 */ u8 f60;
 };
 
-struct Vec3 {
-    s32 x, y, z;
-};
 
 // NNS_FndList
 struct FndList {

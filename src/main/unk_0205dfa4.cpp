@@ -2,6 +2,8 @@
 #include "types.h"
 #include "sys/Unk_020b83b0.h"
 #include "net/Unk_0205f6f8_Cfg.h"
+#include "gfx/AnimFrameCtrl.h"
+#include "gfx/TexVramSlot.h"
 
 // ---- helper classes (declared elsewhere) ----
 class ItemId {
@@ -11,19 +13,6 @@ public:
     ~ItemId();
 };
 
-class TexVramSlot {
-public:
-    u32 texKeyBase;
-    u32 tex4x4KeyBase;
-    u32 plttKeyBase;
-    u8 unk_10;
-    u8 unk_11;
-    TexVramSlot();
-    virtual ~TexVramSlot();
-    void clear(void);
-    void relocateTexture(void *p);
-    void alloc(void *a, void *b, void *c);
-};
 
 
 class VramTask : public Unk_020b83b0 {
@@ -74,16 +63,6 @@ public:
     void *getRenderObj();
 };
 
-class AnimFrameCtrl {
-public:
-    inline AnimFrameCtrl() : curFrame(0), prevFrame(0), frameStep(0x1000) {}
-    virtual ~AnimFrameCtrl();
-    u32 numFrames;
-    u32 curFrame;
-    u32 prevFrame;
-    u32 frameStep;
-    u32 playMode;
-};
 
 class ModelAnim : public AnimFrameCtrl {
 public:

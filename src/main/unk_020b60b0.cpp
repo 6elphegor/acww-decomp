@@ -1,8 +1,7 @@
 #include "types.h"
+#include "game/Vec3.h"
+#include "actor/ActorCollider.h"
 
-struct Vec3 {
-    s32 x, y, z;
-};
 
 struct Mtx43 {
     s32 m[12];
@@ -351,17 +350,6 @@ struct Unk_020b60dc_Cell {
     u32 pad_34[0xc / 4];
 };
 
-// ActorCollider (unk_02088b98.cpp), the fields TouchPick_Cast reads
-class ActorCollider {
-public:
-    virtual Vec3 *getPos();
-    u32 radius;
-    u32 height;
-    u8 targetKind;
-    u8 targetIndex;
-    u8 pad_0e[0x38 - 0xe];
-    ActorCollider *next;
-};
 
 struct Unk_020b60dc_Rec {
     Vec3 center;

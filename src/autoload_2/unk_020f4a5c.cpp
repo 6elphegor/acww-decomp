@@ -10,6 +10,7 @@
 // 0x020f4a5c-0x020f5b9c; the pan-curve code (0x020f44f0-0x020f4a5c, with func_020f4904) uses only bss 0x021f5bfc-0x021f5c28.
 // The unit's own compile reproduces the order of all six objects with the definitions at the end of the file in address order.
 #include "types.h"
+#include "game/Vec3.h"
 
 struct Obj {
     /* 0x00 */ u32 *vptr;
@@ -22,9 +23,6 @@ struct Obj {
     /* 0x40 */ u8 b40;
 };
 
-struct Vec3 {
-    s32 x, y, z;
-};
 
 struct Seq1 {
     /* 0x00 */ void *h;

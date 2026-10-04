@@ -1,4 +1,5 @@
 #include "types.h"
+#include "gfx/AnimFrameCtrl.h"
 
 struct Unk_020561d8_Vec { s32 x, y, z; };
 struct Unk_020561d8_Mtx { s32 m[9]; };
@@ -93,20 +94,6 @@ extern "C" void Anim_LerpRotMtx(Unk_020561d8_Mtx *a, Unk_020561d8_Mtx *b, Unk_02
 extern "C" s32 G3dRes_FindDictIdx(void *p, s32 a);
 extern "C" void *gCurrentHeap;
 
-class AnimFrameCtrl {
-public:
-    u32 numFrames;
-    s32 curFrame;
-    s32 prevFrame;
-    s32 frameStep;
-    u8 playMode;
-    inline AnimFrameCtrl() : curFrame(0), prevFrame(0), frameStep(0x1000) {}
-    virtual ~AnimFrameCtrl();
-    BOOL isFinished();
-    void setup(s32 frames, u8 mode, s32 speed, u16 last);
-    void step();
-    BOOL hasPassedFrame(s32 x);
-};
 
 class ModelAnim : public AnimFrameCtrl {
 public:

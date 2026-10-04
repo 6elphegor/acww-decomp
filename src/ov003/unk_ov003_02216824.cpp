@@ -3,6 +3,7 @@
 #include "field/Unk_ov003_Flags.h"
 #include "actor/Unk_ov003_SceneEntry.h"
 #include "game/Unk_ov003_Vec.h"
+#include "gfx/AnimFrameCtrl.h"
 
 class ProcBase {
 public:
@@ -224,20 +225,6 @@ public:
 };
 
 // ---- main-module helper classes ----
-class AnimFrameCtrl {
-public:
-    virtual ~AnimFrameCtrl();
-    inline AnimFrameCtrl() : curFrame(0), prevFrame(0), frameStep(0x1000) {}
-    void step();
-    BOOL isFinished();
-    BOOL hasPassedFrame(s32 a);
-
-    u32 numFrames;
-    u32 curFrame;
-    u32 prevFrame;
-    u32 frameStep;
-    u32 playMode;
-};
 
 class ModelAnim : public AnimFrameCtrl {
 public:

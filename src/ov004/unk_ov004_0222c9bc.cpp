@@ -3,6 +3,7 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "room/Unk_ov004_0222c9d0.h"
+#include "actor/ActorCollider.h"
 
 // ---------------------------------------------------------------------------------------------------------------
 // Calls into other modules: the old stand-in names are #defined to the real symbols (mangled method names).
@@ -114,39 +115,12 @@ public:
 };
 
 // ---- collision sub-object chain (main: ActorCollider <- StaticCollider), derived class in this overlay
-class ActorCollider {
-public:
-    ActorCollider();
-    ~ActorCollider();
-    virtual void *getPos() = 0;
-    virtual u32 getOwnerId() = 0;
-    virtual void onCollide(u32 a, u32 b, u32 c);
-
-    /* 0x04 */ s32 radius;
-    /* 0x08 */ s32 height;
-    /* 0x0c */ u8 targetKind;
-    /* 0x0d */ u8 targetIndex;
-    /* 0x0e */ u8 hitTargetKind;
-    /* 0x0f */ u8 hitTargetIndex;
-    /* 0x10 */ s32 pushX;
-    /* 0x14 */ s32 pushY;
-    /* 0x18 */ s32 pushZ;
-    /* 0x1c */ u32 groups;
-    /* 0x20 */ u32 collideMask;
-    /* 0x24 */ s32 unk_24;
-    /* 0x28 */ u32 hitGroups;
-    /* 0x2c */ u32 hitOwnerId;
-    /* 0x30 */ s32 hitDepth;
-    /* 0x34 */ s32 weight;
-    /* 0x38 */ ActorCollider *next;
-    /* 0x3c */ u8 isHit;
-};
 
 class StaticCollider : public ActorCollider {
 public:
     StaticCollider();
     ~StaticCollider();
-    virtual void *getPos();
+    virtual Vec3 *getPos();
     virtual u32 getOwnerId();
     /* 0x40 */ V3 position;
 };

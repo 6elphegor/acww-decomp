@@ -4,6 +4,9 @@
 #include "gfx/Unk_0203bc68_Ent.h"
 #include "npc/Unk_0203be94_Obj.h"
 #include "game/Unk_021c47c4.h"
+#include "gfx/CameraPose.h"
+#include "gfx/CameraSetup.h"
+#include "gfx/FxMtx43.h"
 
 struct Unk_0203b350_V {
     s32 x, y, z;
@@ -32,11 +35,6 @@ struct Unk_0203a8d4_Rot {
     s16 vel;
 };
 
-struct CameraSetup {
-    s16 a, b;
-    s32 c0, c1, c2, c3, c4, c5, c6;
-    ~CameraSetup();
-};
 typedef CameraSetup Unk_0203a278_Cam;
 
 // Camera/scene helper object; the global pointer is gCamera.
@@ -109,11 +107,6 @@ struct Unk_0203c1f0_Entry {
 };
 
 
-struct CameraPose {
-    s16 h0, h1;
-    s32 w0;
-    s32 x, y, z;
-};
 
 struct Unk_0203c23c_Static {
     u16 v;
@@ -129,11 +122,6 @@ public:
     virtual BOOL onDraw();
 };
 
-class FxMtx43 {
-public:
-    FxMtx43();
-    u8 pad_00[0x30];
-};
 
 #define M(T, o) (*(T *)((u8 *)this + (o)))
 

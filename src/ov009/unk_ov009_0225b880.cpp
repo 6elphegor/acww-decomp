@@ -3,6 +3,7 @@
 #include "game/Unk_0202f2ac_V3.h"
 #include "actor/Unk_0203e5d0_Node.h"
 #include "game/Unk_ov009_0225b880_Vec3.h"
+#include "game/Vec3.h"
 
 // Library base class chain (header GameProc.h rebuilt so that the vtable names the real symbols:
 // slot 08 is Character::postCreate(int)).
@@ -182,9 +183,6 @@ struct Unk_ov009_0225bb0c_Tmp {
     u32 pad[4];
 };
 
-struct Vec3 {
-    s32 x, y, z;
-};
 struct Unk_02031e10_Vec {
     s32 x, y, z;
 };

@@ -6,6 +6,7 @@
 #include "room/Unk_ov004_02224d60_B.h"
 #include "gfx/Unk_ov068_022708fc_Color.h"
 #include "actor/Unk_ov068_SceneEntry.h"
+#include "gfx/AnimFrameCtrl.h"
 // shared_0224d4e8.h.txt -- final declaration of class RoomObjActor (defined in ov004 TU17, 0x0221e7a8-0x02225290).
 // Paste this block unchanged into TU18..TU26 (it is the base of 0224d618 (TU18), 0224d80c (TU19), 0224dd98 (TU23),
 // 0224def8 (TU24), 0224e034 (TU25), 0224e2b8 (TU26)).  It is what TU17's unit.cpp compiles; vtable symbols in the
@@ -114,19 +115,6 @@ public:
     u32 unk_98;
 };
 
-class AnimFrameCtrl {
-public:
-    virtual ~AnimFrameCtrl();
-    inline AnimFrameCtrl() : unk_a4(0), unk_a8(0), unk_ac(0x1000) {}
-    u32 unk_a0;
-    s32 unk_a4;
-    s32 unk_a8;
-    s32 unk_ac;
-    u32 unk_b0;
-
-    s32 isFinished();
-    s32 hasPassedFrame(s32 a);
-};
 
 class AnimModel : public CachedModel, public AnimFrameCtrl {
 public:

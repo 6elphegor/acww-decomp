@@ -1,4 +1,5 @@
 #include "types.h"
+#include "town/TownAcreIndex.h"
 
 extern "C" {
 void *MI_CpuFill8(void *p, u32 v, u32 n);
@@ -65,10 +66,6 @@ public:
 };
 
 // ---- row helper
-class TownAcreIndex {
-public:
-    u8 *calcIndex(s32 i);
-};
 
 extern "C" BOOL Acre_HasPond(u32 v) {
     const u32 *p = sPondAcreIds;

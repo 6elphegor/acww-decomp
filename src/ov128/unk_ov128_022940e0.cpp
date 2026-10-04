@@ -2,6 +2,7 @@
 #define vfunc_14() vfunc_14(s32 a)
 #include "types.h"
 #include "Unk_020d8c7c.h"
+#include "gfx/StarTwinkle.h"
 #undef postCreate
 #undef vfunc_14
 
@@ -162,13 +163,6 @@ public:
     u32 unk_04[0x3c / 4];
 };
 
-// 0x330-byte sub-object at +0x148, ctor func_020b08b8, dtor func_020b08b4
-class StarTwinkle {
-public:
-    StarTwinkle();
-    ~StarTwinkle();
-    u32 unk_00[0x330 / 4];
-};
 
 // ov127 sub-object at +0x478, ctor func_ov127_02292aac, dtor func_ov127_02292aa8
 class StarSkyView {

@@ -8,11 +8,10 @@
 #include "actor/Unk_0203e5d0_Node.h"
 #include "game/Unk_0203e4f0_Vec.h"
 #include "room/FtrActorParts.h"
+#include "gfx/AnimFrameCtrl.h"
+#include "game/Vec3.h"
 
 // ================================================================ plain value types
-struct Vec3 {
-    s32 x, y, z;
-};
 
 
 typedef Vec3 Unk_ov004_Vec3;
@@ -458,16 +457,6 @@ struct Unk_ov004_02206e38 {
 };
 
 // ---- 0x02248804 (array of 4 at 0x7c0)
-class AnimFrameCtrl {
-public:
-    AnimFrameCtrl();
-    virtual ~AnimFrameCtrl();
-    u32 numFrames;
-    u32 curFrame;
-    u32 prevFrame;
-    u32 frameStep;
-    u32 playMode;
-};
 
 class ModelAnim : public AnimFrameCtrl {
 public:

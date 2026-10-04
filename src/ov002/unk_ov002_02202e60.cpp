@@ -6,6 +6,10 @@
 #include "text/Unk_02050288.h"
 #include "talk/MsgStringBase.h"
 #include "talk/MsgStringAttr.h"
+#include "ui/CursorMotion.h"
+#include "sys/KeyRepeat.h"
+#include "menu/MenuTween.h"
+#include "menu/PopupChoiceIdList.h"
 #undef postCreate
 #undef vfunc_14
 
@@ -402,46 +406,8 @@ public:
     /* 0xbe */ volatile u8 autoCloseTimer;
 };
 
-// vptr-only class (vtable 0x022044d4)
-class KeyRepeat {
-public:
-    KeyRepeat();
-    virtual ~KeyRepeat();
-};
 
-// cursor / input repeat state (view of the object at +0x50 of MenuProc; the vptr is a KeyRepeat)
-class KeyRepeatView {
-public:
-    u32 unk_00;
-    s16 delay;
-    s16 minInterval;
-    s16 intervalStep;
-    s16 interval;
-    s16 countdown;
-    u8 heldKeys;
-    u8 pendingKeys;
-    u8 takenKeys;
-    void init(s32 a, s32 b, s32 c);
-    BOOL isRight();
-    BOOL isLeft();
-    BOOL isDown();
-    BOOL isUp();
-    u32 take();
-    void update();
-};
 
-// slider base class (vtable 0x022044c4)
-class MenuTween {
-public:
-    MenuTween();
-    virtual ~MenuTween();
-    s32 stepSize;
-    s32 progress;
-    s32 scaleLinear(s32 v);
-    s32 scaleQuadratic(s32 v);
-    BOOL step();
-    void start(u32 n);
-};
 
 // slider class (vtable 0x022044b4)
 class MenuSlide : public MenuTween {
@@ -695,29 +661,6 @@ public:
     /* 0x105 */ u8 isFatal;
 };
 
-// Scroll/move helper embedded at +0x4c of MenuCursorBase (vtable 0x02204604)
-class CursorMotion {
-public:
-    CursorMotion();
-    virtual ~CursorMotion();
-
-    BOOL isMoving();
-    void startEase(s32 x, s32 y, s32 n);
-    void startLinear(s32 x, s32 y, s32 n);
-    void setPos(s32 x, s32 y);
-    void stop();
-    s32 getY();
-    s32 getX();
-    BOOL update();
-    void reset();
-
-    /* 0x04 */ s32 posX;
-    /* 0x08 */ s32 posY;
-    /* 0x0c */ s32 stepX;
-    /* 0x10 */ s32 stepY;
-    /* 0x14 */ u8 framesLeft;
-    /* 0x15 */ u8 mode;
-};
 
 // Intermediate base of the vtables 0x02204614 / 0x02204630 / 0x0220464c
 class MenuCursorBase : public HandCursor {
@@ -800,11 +743,6 @@ public:
     /* 0x44 */ u8 bgColor;
 };
 
-struct PopupChoiceIdList {
-    u8 msgIds[5];
-    u8 values[5];
-    u8 customMask;
-};
 
 // Menu/selection object, vtable 0x02204558
 class PopupChoiceMenu {

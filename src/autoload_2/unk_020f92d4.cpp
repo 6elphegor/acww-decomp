@@ -3,6 +3,7 @@
 // SPL-style particle manager (continued from G011b): resource file loader (func_020f92d4: counts + texture table), manager creation (SPL_Init),
 // file-read callbacks (f9620/f9658), emitter draw dispatch (f969c, f9714, f97d0) and the per-emitter simulation step (spl_calc).
 #include "types.h"
+#include "game/Vec3.h"
 
 // SPL-style particle manager (continued from G011b): resource header word, bits 24-29 = field types
 struct HdrBits {
@@ -259,11 +260,6 @@ struct Mg2 {
     Mt *mt;
 };
 
-struct Vec3 {
-    s32 x;
-    s32 y;
-    s32 z;
-};
 
 typedef s32 (*PosCb)(Vec3 *, Vec3);
 typedef void (*SetFn)(s32, s32, s32, s32);

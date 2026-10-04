@@ -5,6 +5,7 @@
 #include "game/Unk_ov004_02224ee4_Vec.h"
 #include "room/Unk_ov004_02224d60_B.h"
 #include "actor/Unk_ov068_SceneEntry.h"
+#include "gfx/AnimFrameCtrl.h"
 #define AnimFrameCtrl_hasPassedFrame _ZN13AnimFrameCtrl14hasPassedFrameEi
 #define AnimFrameCtrl_step _ZN13AnimFrameCtrl4stepEv
 #define BlendAnimModel_initAnim _ZN14BlendAnimModel8initAnimEiiitt
@@ -129,19 +130,6 @@ public:
     u32 unk_98;
 };
 
-class AnimFrameCtrl {
-public:
-    virtual ~AnimFrameCtrl();
-    inline AnimFrameCtrl() : unk_a4(0), unk_a8(0), unk_ac(0x1000) {}
-    u32 unk_a0;
-    s32 unk_a4;
-    s32 unk_a8;
-    s32 unk_ac;
-    u32 unk_b0;
-
-    s32 isFinished();
-    s32 AnimFrameCtrl_hasPassedFrame(s32 a);
-};
 
 class AnimModel : public CachedModel, public AnimFrameCtrl {
 public:
@@ -496,7 +484,7 @@ void TaxiInterior::loadModels() {
 
 void TaxiInterior::playBodyAnim(s32 a) {
     void *p = (void *)RoomObjRes_GetBca(&res, 0);
-    BlendAnimModel_initAnim(&model, p, a, 0x1000, ((Unk_ov068_022702b4_Bits *)&model.unk_a4)->mid, 0);
+    BlendAnimModel_initAnim(&model, p, a, 0x1000, ((Unk_ov068_022702b4_Bits *)&model.curFrame)->mid, 0);
     void *r6 = Model_getRenderObj(&model);
     void *q = RoomObjRes_GetBma(&res, 0);
     ModelAnim_replace(&bodyMatAnim, r6, q, a, 0x1000, bodyMatAnim.curFrame.b.mid);

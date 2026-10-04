@@ -4,6 +4,7 @@
 #include "actor/Unk_0203e5d0_Node.h"
 #include "gfx/Unk_02055704.h"
 #include "game/Unk_ov004_02224ee4_Vec.h"
+#include "gfx/AnimFrameCtrl.h"
 
 extern "C" {
 void _ZN19PlayerActionRequestC1Ev(void *self);
@@ -112,19 +113,6 @@ public:
     u32 unk_98;
 };
 
-class AnimFrameCtrl {
-public:
-    virtual ~AnimFrameCtrl();
-    inline AnimFrameCtrl() : unk_a4(0), unk_a8(0), unk_ac(0x1000) {}
-    u32 unk_a0;
-    s32 unk_a4;
-    s32 unk_a8;
-    s32 unk_ac;
-    u32 unk_b0;
-
-    s32 isFinished();
-    s32 hasPassedFrame(s32 a);
-};
 
 class AnimModel : public CachedModel, public AnimFrameCtrl {
 public:

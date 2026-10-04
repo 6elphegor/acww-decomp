@@ -6,14 +6,9 @@
 #include "game/Unk_0203f3a0_L.h"
 #include "game/Unk_0203f408_Entry.h"
 #include "game/Unk_0203f42c_L.h"
+#include "talk/TalkRequestEntry.h"
+#include "gfx/WorldCurve.h"
 
-struct TalkRequestEntry {
-    /* 0x00 */ u8 unk_00[0x0c];
-    /* 0x0c */ s32 unk_0c;
-    /* 0x10 */ s32 unk_10;
-    /* 0x14 */ u8 inUse;
-    /* 0x15 */ u8 unk_15[7];
-};
 
 
 struct Unk_0203ec0c {
@@ -22,18 +17,6 @@ struct Unk_0203ec0c {
     /* 0x08 */ u8 unk_08;
 };
 
-class WorldCurve {
-public:
-    WorldCurve();
-    ~WorldCurve();
-
-    /* 0x00 */ s32 x;
-    /* 0x04 */ s32 y;
-    /* 0x08 */ s32 z;
-    /* 0x0c */ s16 centerAngle;
-    /* 0x10 */ s32 flatDistance;
-    /* 0x14 */ s32 dropSlope;
-};
 
 
 

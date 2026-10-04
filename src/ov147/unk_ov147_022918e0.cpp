@@ -1,5 +1,6 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
+#include "menu/TitleBlinkText.h"
 
 struct TitleChoiceSet {
     u8 *msgIds;
@@ -213,36 +214,6 @@ public:
     /* 0x44 */ TitleScreen *unk_44;
 };
 
-// Object at +0xac of the scene (0x20 bytes, vtable 0x022935e8)
-class TitleBlinkText {
-public:
-    TitleBlinkText();
-    virtual ~TitleBlinkText();
-    s32 state;
-    s32 variant;
-    s32 requestedVariant;
-    s32 alpha;
-    s32 holdCount;
-    s32 showDelay;
-    u8 fadingOut;
-
-    void updateShown();
-    void show();
-    void updateDelay();
-    void startDelay();
-    void updateIdle();
-    void setIdle();
-    void clearBlend();
-    void applyBlendAlpha();
-    BOOL stepBlink();
-    void resetBlink();
-    BOOL isHidden();
-    void requestHide();
-    void requestVariant(s32 v);
-    void update();
-    void shutdown();
-    void init();
-};
 
 extern "C" {
 extern u32 sTitleLogoCharsWork[][8];

@@ -1,10 +1,8 @@
 #include "types.h"
 #include "game/Unk_02033914.h"
 #include "gfx/Unk_021ede90.h"
+#include "game/Vec3.h"
 
-struct Vec3 {
-    s32 x, y, z;
-};
 
 struct Col {
     u16 v;

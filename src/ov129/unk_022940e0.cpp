@@ -2,6 +2,8 @@
 #define vfunc_14() vfunc_14(s32 a)
 #include "types.h"
 #include "Unk_020d8c7c.h"
+#include "game/ConstellationRecord.h"
+#include "gfx/StarTwinkle.h"
 #undef postCreate
 #undef vfunc_14
 
@@ -231,13 +233,6 @@ public:
     u32 unk_00[0x108 / 4];
 };
 
-// sub-object at +0x388 (ctor func_020b08b8, dtor func_020b08b4)
-class StarTwinkle {
-public:
-    StarTwinkle();
-    ~StarTwinkle();
-    u32 unk_00[0x330 / 4];
-};
 
 // sub-object at +0x6b8 (ov127 state, ctor func_ov127_02292aac, dtor func_ov127_02292aa8), 0x2838 bytes
 class StarSkyView {
@@ -303,15 +298,6 @@ struct Unk_ov129_0229497c_Save {
     u16 lines[16];
 };
 
-// static object type at data_ov129_02296698 (ctor func_020b0a70, dtor func_020b0a60)
-class ConstellationRecord {
-public:
-    ConstellationRecord();
-    ~ConstellationRecord();
-    u8 unk_00[0x16];
-    u8 name[0x10];
-    u16 lines[0x10];
-};
 
 class ConstellationEditorMenu;
 typedef void (ConstellationEditorMenu::*Unk_ov129_022965f8_Fn)();

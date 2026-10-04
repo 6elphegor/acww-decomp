@@ -1,5 +1,6 @@
 #include "types.h"
 #include "sys/Unk_020b83b0.h"
+#include "gfx/TexVramSlot.h"
 
 extern "C" {
 void *Heap_AllocAligned(void *heap, s32 size, s32 align);
@@ -40,29 +41,6 @@ public:
     void clear(void);
 };
 
-class TexVramSlot {
-public:
-    u32 texKeyBase;
-    u32 tex4x4KeyBase;
-    u32 plttKeyBase;
-    u8 unk_10;
-    u8 unk_11;
-
-    TexVramSlot();
-    virtual ~TexVramSlot();
-    void setKeys(u32 a, u32 b, u32 c);
-    void clear(void);
-    void relocateTexture(void *p);
-    u32 makePlttKeyAt(u32 a, u32 b);
-    u32 makeKeyAtOffset(u32 a, u32 b, u32 c);
-    u32 makeTex4x4KeyAt(u32 a, u32 b);
-    u32 makeTexKeyAt(u32 a, u32 b);
-    u32 makePlttKey(u32 a);
-    u32 makeKeyWithBase(u32 a, u32 b);
-    u32 makeTex4x4Key(u32 a);
-    u32 makeTexKey(u32 a);
-    void alloc(void *a, void *b, void *c);
-};
 
 static inline BOOL Unk_0205d4e4_IsTwo(u8 v) {
     return v == 2 ? TRUE : FALSE;

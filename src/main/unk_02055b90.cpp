@@ -1,15 +1,6 @@
 #include "types.h"
+#include "gfx/AnimFrameCtrl.h"
 
-class AnimFrameCtrl {
-public:
-    virtual ~AnimFrameCtrl();
-
-    u32 numFrames;
-    u32 curFrame;
-    u32 prevFrame;
-    u32 frameStep;
-    u32 playMode;
-};
 
 class ModelAnim : public AnimFrameCtrl {
 public:

@@ -1,35 +1,12 @@
 #include "types.h"
 #include "game/Unk_0203c92c_Bits.h"
+#include "player/PlayerOptions.h"
 
 extern "C" {
 void MI_CpuCopy8(void *src, void *dst, u32 n);
 }
 
 // ---- flag object at 0x021c3264
-class PlayerOptions {
-public:
-    PlayerOptions();
-    ~PlayerOptions();
-    void markTalkVoiceChanged();
-    void markStereoChanged();
-    void markHiraganaChanged();
-    BOOL isTalkVoiceChanged();
-    BOOL isStereoChanged();
-    BOOL isHiraganaChanged();
-    void reset();
-    void setTalkVoice(u32 v);
-    u32 getTalkVoice();
-    void clearStereo();
-    void setStereo();
-    BOOL isStereo();
-    void clearHiragana();
-    void setHiragana();
-    BOOL isHiragana();
-    void resetValues();
-
-    /* 0x00 */ u8 options;
-    /* 0x01 */ u8 changedMask;
-};
 
 PlayerOptions sPlayerOptions;
 extern "C" void PlayerOptions_CopyOut(void *src, void *dst);

@@ -6,6 +6,7 @@
 #include "field/Unk_ov003_0222adc4_V3.h"
 #include "field/Unk_ov003_0222aff0_Bits.h"
 #include "field/Unk_ov003_0225980c_Rec.h"
+#include "gfx/AnimFrameCtrl.h"
 
 // ---- main-module library classes shared by several functions of this unit (global: their methods are called by symbol)
 
@@ -42,17 +43,6 @@ struct Unk_ov003_Off25c { u8 pad[0x25c]; u8 at; };
 struct Unk_ov003_Off2 { u8 pad[0x2]; u8 at; };
 
 // ---- main-module classes (declarations only)
-class AnimFrameCtrl {
-public:
-    inline AnimFrameCtrl() : curFrame(0), prevFrame(0), frameStep(0x1000) {}
-    virtual ~AnimFrameCtrl();
-
-    u32 numFrames;
-    u32 curFrame;
-    u32 prevFrame;
-    u32 frameStep;
-    u32 playMode;
-};
 
 class ModelAnim : public AnimFrameCtrl {
 public:

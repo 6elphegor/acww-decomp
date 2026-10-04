@@ -1,9 +1,6 @@
 #include "types.h"
+#include "town/TownAcreIndex.h"
 
-class TownAcreIndex {
-public:
-    s32 calcIndex(s32 y);
-};
 
 class TownAcreCell {
 public:
@@ -59,7 +56,7 @@ extern "C" s32 AcreType_GetRiverVariant(s32 v);
 
 TownAcreCell *TownAcreGrid::getCell(s32 x, s32 y)
 {
-    s32 idx = ((TownAcreIndex *)x)->calcIndex(y);
+    s32 idx = (s32)((TownAcreIndex *)x)->calcIndex(y);
     if ((u32)idx < 0x24) return &cells[idx];
     static TownAcreCell dflt;
     return &dflt;

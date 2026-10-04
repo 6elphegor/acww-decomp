@@ -7,6 +7,7 @@
 #include "game/Unk_021ed2b0.h"
 #include "game/Unk_021eff48.h"
 #include "item/Unk_02062f94_Ret.h"
+#include "gfx/StarTwinkle.h"
 
 // ======== class types (global scope) ========
 struct Unk_021f4400;
@@ -1072,13 +1073,6 @@ public:
     BOOL mainAct08();
 };
 
-// 0x330-byte object of another unit's class (constructor 0x020b08b8, destructor 0x020b08b4)
-class StarTwinkle {
-public:
-    StarTwinkle();
-    ~StarTwinkle();
-    u8 unk_000[0x330];
-};
 struct U234_Record {
     void *fn;
     u16 executePriority;

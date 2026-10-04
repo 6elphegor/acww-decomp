@@ -1,6 +1,7 @@
 #include "types.h"
 #include "net/CommManager.h"
 #include "net/Unk_020a647c_Buf.h"
+#include "net/NetSessionParts.h"
 
 
 extern "C" {
@@ -29,47 +30,9 @@ void NetStatusMsgBase_Init(void *p);
 
 extern CommManager *gCommManager;
 
-struct NetMoveReady {
-    u32 unk_00;
-    NetMoveReady();
-    ~NetMoveReady();
-    void reset();
-    void get(u32 *out);
-    void set(u32 v);
-};
 
-struct NetMoveRequest {
-    u32 slot;
-    u8 targetScene;
-    NetMoveRequest();
-    ~NetMoveRequest();
-    void reset();
-    void get(s32 *a, u8 *b);
-    void set(u32 a, u8 b);
-};
 
-struct NetSlotStatus {
-    u8 sceneId;
-    u8 isOwner;
-    u8 isMoving;
-    NetSlotStatus();
-    ~NetSlotStatus();
-    void reset();
-    void get(u8 *a, u8 *b, u8 *c);
-    void set(u8 a, u8 b, u8 c);
-};
 
-struct NetPendingStatus {
-    u8 sceneId;
-    u8 isOwner;
-    u8 isMoving;
-    u32 dirtyMask;
-    NetPendingStatus();
-    ~NetPendingStatus();
-    void reset();
-    void get(u8 *a, u8 *b, u8 *c, u32 *d);
-    void setMasked(u8 a, u8 b, u8 c, u32 mask);
-};
 
 extern "C" {
 }

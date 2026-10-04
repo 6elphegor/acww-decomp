@@ -4,6 +4,7 @@
 #include "gfx/Unk_ov003_02215c7c_Blk.h"
 #include "field/Unk_ov003_02217910_V3.h"
 #include "field/Unk_ov003_02217b78_Ent.h"
+#include "gfx/AnimFrameCtrl.h"
 
 // TU19 of ov003: ground part classes 0x02217be8 / 0x02217dbc and the scene 0x02232418 (0x02217be8-0x022187f8)
 
@@ -32,18 +33,6 @@ public:
     void setResourceAndBind(Unk_020553f8_Res *r, u32 a);
 };
 
-class AnimFrameCtrl {
-public:
-    virtual ~AnimFrameCtrl();
-    inline AnimFrameCtrl() : curFrame(0), prevFrame(0), frameStep(0x1000) {}
-    void step();
-
-    u32 numFrames;
-    u32 curFrame;
-    u32 prevFrame;
-    u32 frameStep;
-    u32 playMode;
-};
 
 class ModelAnim : public AnimFrameCtrl {
 public:

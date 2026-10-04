@@ -1,8 +1,6 @@
 #include "types.h"
+#include "game/Vec3.h"
 
-struct Vec3 {
-    s32 x, y, z;
-};
 
 extern "C" s32 Snowball_FindByParam(s32 a);
 extern "C" s32 RoomBoardSign_GetByIndex(s32 a);

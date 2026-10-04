@@ -1,12 +1,11 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
+#include "game/Vec3.h"
+#include "gfx/ViewFrustum.h"
 
 #define reg_4000358 (*(u32 *)0x4000358)
 #define reg_4000008 (*(u16 *)0x4000008)
 
-struct Vec3 {
-    s32 x, y, z;
-};
 
 // local static of ScenePos_Reset; destructor in another unit
 struct FxVec3 {
@@ -109,13 +108,6 @@ struct Unk_020b5d5c_Rec {
     u16 b;
 };
 
-// 0x5c-byte object (constructor/destructor in another unit)
-class ViewFrustum {
-public:
-    ViewFrustum();
-    virtual ~ViewFrustum();
-    u8 d[0x58];
-};
 
 // 0x28-byte object (constructor/destructor in another unit)
 class TouchPicker {

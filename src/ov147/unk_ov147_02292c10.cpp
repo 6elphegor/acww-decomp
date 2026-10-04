@@ -1,5 +1,6 @@
 // ov147 second translation unit (0x02292c10..0x022930bc): the object at scene+0xac and its helpers.
 #include "types.h"
+#include "menu/TitleBlinkText.h"
 
 extern "C" {
 extern s16 data_02135f44[];
@@ -34,35 +35,6 @@ void *TitleBlinkText_Alloc(u32 size);
 s32 TitleBlinkText_Free(void *p);
 }
 
-class TitleBlinkText {
-public:
-    TitleBlinkText();
-    virtual ~TitleBlinkText();
-    s32 state;
-    s32 variant;
-    s32 requestedVariant;
-    s32 alpha;
-    s32 holdCount;
-    s32 showDelay;
-    u8 fadingOut;
-
-    void updateShown();
-    void show();
-    void updateDelay();
-    void startDelay();
-    void updateIdle();
-    void setIdle();
-    void clearBlend();
-    void applyBlendAlpha();
-    BOOL stepBlink();
-    void resetBlink();
-    BOOL isHidden();
-    void requestHide();
-    void requestVariant(s32 v);
-    void update();
-    void shutdown();
-    void init();
-};
 
 TitleBlinkText::TitleBlinkText() {
 }

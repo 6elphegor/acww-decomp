@@ -1,6 +1,8 @@
 #include "types.h"
 #include "talk/MsgStringBase.h"
 #include "talk/MsgStringAttr.h"
+#include "game/ConstellationRecord.h"
+#include "gfx/StarTwinkle.h"
 extern u16 sConstellationLineCells[0x718];
 extern char *sStarTwinklePalettePaths[5];
 extern char sStarPalPathB4[0x14];
@@ -63,12 +65,6 @@ public:
     u8 text[0x10];
 };
 
-class ConstellationRecord {
-public:
-    ConstellationRecord();
-    ~ConstellationRecord();
-    u8 unk_00[0x46];
-};
 
 class ConstellationStore {
 public:
@@ -77,11 +73,6 @@ public:
     ConstellationRecord records[16];
 };
 
-class StarTwinkle {
-public:
-    StarTwinkle();
-    ~StarTwinkle();
-};
 
 extern "C" {
 void *_ZN10BgVramTask6cancelEv(void *p);

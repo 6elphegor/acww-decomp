@@ -2,6 +2,7 @@
 // I004c: itcm 0x01ffcfc0-0x01ffd0b4 (4 ARM functions): tree-node search helpers and two vector helpers. mwcc 1.2/base, C++, ARM, -O4,p.
 // The range ends at 0x01ffd0b4 where the ptmf constants (data in .text, 0x01ffd0b4-0x01ffd0e4) begin.
 #include "types.h"
+#include "game/Vec3.h"
 
 struct TreeNode {
     /* 0x00 */ TreeNode *unk_00; // parent
@@ -11,9 +12,6 @@ struct TreeNode {
     /* 0x10 */ void *owner;
 };
 
-struct Vec3 {
-    s32 x, y, z;
-};
 
 extern "C" {
 TreeNode *func_01ffcfc0(TreeNode *n);

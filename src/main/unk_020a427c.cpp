@@ -1,5 +1,6 @@
 #include "types.h"
 #include "net/CommManager.h"
+#include "net/NetSessionParts.h"
 
 // Local copies of the library base classes with the parameters these overrides forward.
 class ProcBase {
@@ -60,38 +61,9 @@ struct Unk_020a4778_Id {
     u8 townName[8];
 };
 
-// Pieces of the singleton at gNetSessionState
-struct NetSlotStatus {
-    u8 unk_00[3];
-    NetSlotStatus();
-    ~NetSlotStatus();
-    void reset();
-    void get(u8 *a, u8 *b, u8 *c);
-};
 
-struct NetMoveRequest {
-    u32 unk_00[2];
-    NetMoveRequest();
-    ~NetMoveRequest();
-    void reset();
-    void get(s32 *a, u8 *b);
-};
 
-struct NetMoveReady {
-    u32 unk_00;
-    NetMoveReady();
-    ~NetMoveReady();
-    void reset();
-    void get(u32 *a);
-};
 
-struct NetPendingStatus {
-    u32 unk_00[2];
-    NetPendingStatus();
-    ~NetPendingStatus();
-    void reset();
-    void get(u8 *a, u8 *b, u8 *c, u32 *d);
-};
 
 // stack objects with plain-function constructors and destructors
 extern "C" {

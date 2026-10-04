@@ -8,6 +8,7 @@
 #include "game/Unk_021c47c4.h"
 #include "gfx/Unk_021ede90.h"
 #include "item/Unk_02062f94_Ret.h"
+#include "game/Vec3.h"
 struct ItemId {
     u16 v;
     ItemId();
@@ -64,9 +65,6 @@ struct ItemName {
 
 // ======== types of unk_020abbcc.cpp ========
 
-struct Vec3 {
-    s32 x, y, z;
-};
 
 struct Vec3Z2 {
     s32 x, y, z;

@@ -2,6 +2,7 @@
 #define vfunc_14() vfunc_14(s32 a)
 #include "types.h"
 #include "Unk_020d8c7c.h"
+#include "ui/CursorMotion.h"
 #undef postCreate
 #undef vfunc_14
 
@@ -160,12 +161,6 @@ public:
     u32 unk_04[(0xc0 - 4) / 4];
 };
 
-class CursorMotion {
-public:
-    CursorMotion();
-    ~CursorMotion();
-    u32 unk_00[0x18 / 4];
-};
 
 class MenuCursorBuf0 {
 public:

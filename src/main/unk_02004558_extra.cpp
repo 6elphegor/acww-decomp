@@ -51,6 +51,8 @@
 #include "player/Unk_02009a78_Locals.h"
 #include "player/Unk_02009d5c_Sub.h"
 #include "player/Unk_02009f68_Bytes.h"
+#include "actor/BlinkTimer.h"
+#include "player/PlayerGlassesModelRef.h"
 #include "player/PlayerFaceTexRef.h"
 #include "player/PlayerBodyWorkRef.h"
 #include "player/PlayerBodyModelRef.h"
@@ -217,10 +219,8 @@ struct ActorPlacedCollider { ActorPlacedCollider(); ~ActorPlacedCollider(); };
 struct TouchPickCylinder { TouchPickCylinder(); ~TouchPickCylinder(); };
 struct TwoLayerAnimModel { TwoLayerAnimModel(); ~TwoLayerAnimModel(); };
 struct CachedModel { CachedModel(); ~CachedModel(); };
-struct PlayerGlassesModelRef { PlayerGlassesModelRef(); ~PlayerGlassesModelRef(); };
 struct HeldItemModel { HeldItemModel(); ~HeldItemModel(); };
 struct MatTexPatAnim { MatTexPatAnim(); ~MatTexPatAnim(); };
-struct BlinkTimer { BlinkTimer(); ~BlinkTimer(); };
 struct MatTexVramTask { MatTexVramTask(); };
 struct CollisionState { CollisionState(); ~CollisionState(); };
 struct SndSeEmitterKind99 { SndSeEmitterKind99(); ~SndSeEmitterKind99(); };
@@ -3804,7 +3804,6 @@ public:
     MatTexPatAnim mouthTexAnim;
     u8 pad_739[0x2b];
     BlinkTimer blinkTimer;
-    u8 pad_765[0x3];
     s32 eyeAnimId;
     s32 mouthAnimId;
     CharaClothTexRef shirtTex;

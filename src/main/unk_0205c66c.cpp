@@ -1,14 +1,6 @@
 #include "types.h"
+#include "gfx/TexVramSlot.h"
 
-class TexVramSlot {
-public:
-    TexVramSlot();
-    virtual ~TexVramSlot();
-    void clear(void);
-    void alloc(void *a, void *b, void *c);
-    void relocateTexture(void *p);
-    u8 pad_04[0x10];
-};
 
 class TexVramTask {
 public:

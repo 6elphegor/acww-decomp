@@ -6,6 +6,7 @@
 #include "actor/Unk_02002f14_S16Vec.h"
 #include "actor/Unk_02002f14_S32Vec.h"
 #include "actor/Unk_02002f14_Node.h"
+#include "gfx/ViewFrustum.h"
 
 typedef volatile u16 vu16;
 typedef volatile u32 vu32;
@@ -221,10 +222,6 @@ extern "C" {
 void GameProc_CreateChild(void *a, void *b, void *c, u32 d);
 }
 
-class ViewFrustum {
-public:
-    s32 testSphere(void *m, void *v, s32 r, s32 *out);
-};
 
 extern "C" {
 void func_020030b4_dummy(void);

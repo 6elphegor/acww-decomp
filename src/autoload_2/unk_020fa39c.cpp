@@ -1,5 +1,6 @@
 // mwcc-flags: -nothumb -O4,p
 #include "types.h"
+#include "game/Vec3.h"
 
 // SPL-style particle manager (continued from G011b): resource header word, bits 24-29 = field types
 struct HdrBits {
@@ -256,11 +257,6 @@ struct Mg2 {
     Mt *mt;
 };
 
-struct Vec3 {
-    s32 x;
-    s32 y;
-    s32 z;
-};
 
 typedef s32 (*PosCb)(Vec3 *, Vec3);
 typedef void (*SetFn)(s32, s32, s32, s32);

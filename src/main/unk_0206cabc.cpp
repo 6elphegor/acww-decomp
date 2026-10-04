@@ -2,6 +2,7 @@
 #include "text/Unk_02050288.h"
 #include "talk/MsgStringBase.h"
 #include "talk/MsgStringAttr.h"
+#include "ui/LetterLayout.h"
 
 extern "C" {
 extern u8 sMailCheckWords[];
@@ -202,20 +203,6 @@ public:
     /* 0x49 */ u8 nameHighlightLength;
 };
 
-class LetterLayout {
-public:
-    void redrawAll();
-    void freeAllLabels();
-    s32 getBodyLineOfPos(s32 v);
-    s32 getBodyLineCount();
-    u8 *getBodyLineStarts();
-
-    /* 0x000 */ u8 headerLines[0x98];
-    /* 0x098 */ u8 bodyLines[4][0x4c];
-    /* 0x1c8 */ u8 recipientName[0x28];
-    /* 0x1f0 */ s32 bodyLineStarts[5];
-    /* 0x204 */ s32 bodyLineCount;
-};
 
 extern "C" BOOL String_LoadByIndexB(MsgString *buf, const char *name, u32 key);
 

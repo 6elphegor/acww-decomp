@@ -1,5 +1,6 @@
 // mwcc-version: 1.2/sp2
 #include "types.h"
+#include "gfx/AnimFrameCtrl.h"
 
 inline void *operator new(unsigned long, void *p) { return p; }
 
@@ -100,17 +101,6 @@ public:
 // included here, not at the top: the vtable emission order (CachedModel before Unk_020dbd44) follows declaration order
 #include "gfx/Unk_020dbd44.h"
 
-class AnimFrameCtrl {
-public:
-    virtual ~AnimFrameCtrl();
-    inline AnimFrameCtrl() : unk_a4(0), unk_a8(0), unk_ac(0x1000) {}
-    u32 unk_a0;
-    u32 unk_a4;
-    s32 unk_a8;
-    s32 unk_ac;
-    u8 unk_b0;
-    u8 pad_b1[3];
-};
 
 class JointBlend {
 public:
@@ -493,7 +483,7 @@ void AnimModel::stepAnim()
 {
     AnimFrameCtrl &r = *this;
     _ZN13AnimFrameCtrl4stepEv(&r);
-    anmObj->unk_00 = unk_a4;
+    anmObj->unk_00 = curFrame;
 }
 
 s32 AnimModel::drawAnimated(void *q)
@@ -506,8 +496,8 @@ s32 AnimModel::drawAnimated(void *q)
 
 void AnimModel::setFrame(s32 v)
 {
-    unk_a4 = v << 12;
-    anmObj->unk_00 = unk_a4;
+    curFrame = v << 12;
+    anmObj->unk_00 = curFrame;
     if (renderJntRecord != 0) {
         renderObj |= 1;
     }
@@ -536,7 +526,7 @@ void BlendAnimModel::initAnim(s32 a, s32 b, s32 c, u16 d, u16 e)
     AnimFrameCtrl &r = *this;
     _ZN13AnimFrameCtrl5setupEihit(&r, e, b, c, d);
     NNS_G3dAnmObjInit(anmObj, a, unk_5c, 0);
-    anmObj->unk_00 = unk_a4;
+    anmObj->unk_00 = curFrame;
 }
 
 s32 AnimModel::attachAnim()
@@ -809,7 +799,7 @@ void TwoLayerAnimModel::updateLayers() {
             modelFlags = modelFlags & 0xffffbfff;
         }
         _ZN13AnimFrameCtrl4stepEv(&layer2Frame);
-        *(u32 *)layer2AnmObj = layer2Frame.unk_a4;
+        *(u32 *)layer2AnmObj = layer2Frame.curFrame;
     }
 }
 
@@ -840,7 +830,7 @@ void TwoLayerAnimModel::playLayer2FromBase(u32 a, u32 b) {
     if (a == 0) {
         clearLayer2Mask();
     } else {
-        playLayer2(getAnmRes(), a, unk_b0, unk_ac, (unk_a4 << 4) >> 16, b, 1);
+        playLayer2(getAnmRes(), a, playMode, frameStep, ((u32)curFrame << 4) >> 16, b, 1);
     }
 }
 
@@ -989,7 +979,7 @@ void ThreeLayerAnimModel::updateLayers3() {
             modelFlags = modelFlags & 0xffff7fff;
         }
         _ZN13AnimFrameCtrl4stepEv(&layer3Frame);
-        *(u32 *)layer3AnmObj = layer3Frame.unk_a4;
+        *(u32 *)layer3AnmObj = layer3Frame.curFrame;
     }
 }
 
@@ -1015,7 +1005,7 @@ void ThreeLayerAnimModel::playLayer3FromBase(u32 a, u32 b) {
     if (a == 0) {
         ThreeLayerAnimModel_ClearLayer3Mask(this);
     } else {
-        playLayer3(getAnmRes(), a, unk_b0, unk_ac, (unk_a4 << 4) >> 16, b, 1);
+        playLayer3(getAnmRes(), a, playMode, frameStep, ((u32)curFrame << 4) >> 16, b, 1);
     }
 }
 

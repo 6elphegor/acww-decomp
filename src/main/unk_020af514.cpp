@@ -1,5 +1,6 @@
 // mwcc-flags: -str reuse
 #include "types.h"
+#include "game/Vec3.h"
 
 extern "C" {
 u32 GroundSeason_IsSnowPhase(u32);
@@ -161,9 +162,6 @@ public:
     LooseSnowball items[2];
 };
 
-struct Vec3 {
-    s32 x, y, z;
-};
 
 struct Vec3s {
     s16 x, y, z;

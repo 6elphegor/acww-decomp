@@ -2,13 +2,10 @@
 #include "Unk_020d8c7c.h"
 #include "gfx/Unk_0203bc68_Ent.h"
 #include "npc/Unk_0203be94_Obj.h"
+#include "gfx/CameraPose.h"
+#include "gfx/FxMtx43.h"
 
 
-struct CameraPose {
-    s16 h0, h1;
-    s32 w0;
-    s32 x, y, z;
-};
 
 struct Unk_0203c0b0_Vec {
     s32 x, y, z;
@@ -234,11 +231,6 @@ extern "C" {
 BOOL Item_TestInfoFlag3(u16 *p);
 }
 
-class FxMtx43 {
-public:
-    FxMtx43();
-    u8 pad_00[0x30];
-};
 
 class Unk_020d93b8 : public CameraBase, public FxMtx43 {
 public:

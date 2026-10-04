@@ -3,6 +3,7 @@
 #include "text/Unk_02050288.h"
 #include "talk/MsgStringBase.h"
 #include "talk/MsgStringAttr.h"
+#include "ui/NameLabelBalloonView.h"
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Classes of the unit (declarations of the classes whose vtable another unit owns come first)
@@ -670,16 +671,6 @@ public:
 
 extern "C" HudProc *HudProc_Create();
 
-class NameLabelBalloonView {
-public:
-    void freeLabel();
-    void createLabel();
-
-    u32 pad_00[3];
-    /* 0x0c */ s32 kind;
-    u32 pad_10[0x5c / 4];
-    /* 0x6c */ MsgTextLabel *textLabel;
-};
 
 extern HudController gHud;
 

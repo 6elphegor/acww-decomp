@@ -4,6 +4,7 @@
 #include "net/CommManager.h"
 #include "game/Unk_0205f6b4_Obj.h"
 #include "gfx/Unk_0205f7f4_Mtx.h"
+#include "gfx/TexVramSlot.h"
 
 
 struct Unk_0205f8d4_Vec {
@@ -36,15 +37,6 @@ class FishBobberPool;
 
 typedef void (FishBobber::*Unk_0205f8d4_Fn)();
 
-class TexVramSlot {
-public:
-    TexVramSlot();
-    virtual ~TexVramSlot();
-    void clear(void);
-    void alloc(void *a, void *b, void *c);
-    void relocateTexture(void *p);
-    u8 pad_04[0x10];
-};
 
 class CachedModel {
 public:

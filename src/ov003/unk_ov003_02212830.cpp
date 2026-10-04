@@ -2,6 +2,7 @@
 #include "types.h"
 #include "game/Unk_0203389c_Vec.h"
 #include "actor/Unk_ov003_SceneEntry.h"
+#include "actor/ActorCollider.h"
 
 class ProcBase {
 public:
@@ -242,31 +243,12 @@ public:
 };
 typedef GroundInfo Loc;
 
-class ActorCollider {
-public:
-    ActorCollider();
-    ~ActorCollider();
-    virtual Unk_ov003_Vec *getPos() = 0;
-    virtual u32 getOwnerId() = 0;
-    virtual void onCollide(u32 a, u32 b, u32 c);
-
-    void *getHitActor();
-    void submit();
-    s32 isHitByGroup(u32 a);
-
-    /* 0x04 */ u8 pad_04[0xc];
-    /* 0x10 */ s32 pushX;
-    /* 0x14 */ u8 pad_14[4];
-    /* 0x18 */ s32 pushZ;
-    /* 0x1c */ u8 pad_1c[0x3c - 0x1c];
-    /* 0x3c */ u8 isHit;
-};
 
 class ActorFollowCollider : public ActorCollider {
 public:
     ActorFollowCollider();
     ~ActorFollowCollider();
-    virtual Unk_ov003_Vec *getPos();
+    virtual Vec3 *getPos();
     virtual u32 getOwnerId();
     s32 setupForActor(void *o, s32 a, s32 b, u32 c, u32 d, u32 e, u8 f, s32 g);
     /* 0x40 */ u8 *ownerActor;

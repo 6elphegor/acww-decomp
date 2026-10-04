@@ -1,9 +1,7 @@
 #include "types.h"
 #include "game/Unk_0202f2ac_V3.h"
+#include "game/Vec3.h"
 
-struct Vec3 {
-    s32 x, y, z;
-};
 
 struct Mtx43 {
     s32 m[12];

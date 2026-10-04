@@ -1,5 +1,6 @@
 #include "types.h"
 #include "sys/Unk_020b83b0.h"
+#include "gfx/TexVramSlot.h"
 
 extern "C" {
 void *File_LoadAlloc(void *a, void *heap, s32 b, s32 c);
@@ -62,19 +63,6 @@ public:
     BOOL requestTexResource(u32 *a, u8 b);
 };
 
-class TexVramSlot {
-public:
-    u32 texKeyBase;
-    u32 tex4x4KeyBase;
-    u32 plttKeyBase;
-    u8 unk_10;
-    u8 unk_11;
-
-    TexVramSlot();
-    virtual ~TexVramSlot();
-    void setKeys(u32 a, u32 b, u32 c);
-    void relocateTexture(void *p);
-};
 
 class ModelResource {
 public:

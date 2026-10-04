@@ -4,29 +4,11 @@
 #include "game/Unk_0203ecec_Global.h"
 #include "game/Unk_0203f218_Slot.h"
 #include "game/Unk_0203f408_Entry.h"
-
-struct TalkRequestEntry {
-    TalkRequestEntry();
-
-    /* 0x00 */ s32 prev;
-    /* 0x04 */ s32 next;
-    /* 0x08 */ u8 unk_08;
-    /* 0x09 */ u8 unk_09[3];
-    /* 0x0c */ s32 unk_0c;
-    /* 0x10 */ s32 unk_10;
-    /* 0x14 */ u8 inUse;
-    /* 0x15 */ u8 unk_15[7];
-};
+#include "talk/TalkRequestEntry.h"
+#include "gfx/WorldCurve.h"
 
 
-struct WorldCurve {
-    /* 0x00 */ s32 x;
-    /* 0x04 */ s32 y;
-    /* 0x08 */ s32 z;
-    /* 0x0c */ s16 centerAngle;
-    /* 0x10 */ s32 flatDistance;
-    /* 0x14 */ s32 dropSlope;
-};
+
 
 
 struct Unk_0203ef38_Global {

@@ -1,4 +1,5 @@
 #include "types.h"
+#include "game/Vec3.h"
 
 // TU210: 0x020afeb4-0x020b0774. Owns sConstellationColumns (.bss, autoload_3 0x021ee27c-0x021ee284).
 
@@ -19,9 +20,6 @@ struct B8 {
     u8 b[8];
 };
 
-struct Vec3 {
-    s32 x, y, z;
-};
 
 struct Node {
     u16 unk_00;

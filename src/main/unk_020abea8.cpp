@@ -5,10 +5,8 @@
 #include "gfx/Unk_020ac500_Tex.h"
 #include "gfx/Unk_020d094c.h"
 #include "gfx/Unk_021ede90.h"
+#include "game/Vec3.h"
 
-struct Vec3 {
-    s32 x, y, z;
-};
 
 struct Vec3Z2 {
     s32 x, y, z;

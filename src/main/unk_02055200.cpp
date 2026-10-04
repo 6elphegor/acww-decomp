@@ -1,4 +1,6 @@
 #include "types.h"
+#include "gfx/AnimFrameCtrl.h"
+#include "gfx/TexVramSlot.h"
 
 struct Unk_020553f8_Res {
     u32 unk_00;
@@ -28,29 +30,6 @@ struct Unk_02055820_Slot {
     u32 key;
 };
 
-class TexVramSlot {
-public:
-    u32 texKeyBase;
-    u32 tex4x4KeyBase;
-    u32 plttKeyBase;
-    u8 unk_10;
-    u8 unk_11;
-
-    TexVramSlot();
-    virtual ~TexVramSlot();
-    void setKeys(u32 a, u32 b, u32 c);
-    void clear(void);
-    void relocateTexture(void *p);
-    u32 makePlttKeyAt(u32 a, u32 b);
-    u32 makeKeyAtOffset(u32 a, u32 b, u32 c);
-    u32 makeTex4x4KeyAt(u32 a, u32 b);
-    u32 makeTexKeyAt(u32 a, u32 b);
-    u32 makePlttKey(u32 a);
-    u32 makeKeyWithBase(u32 a, u32 b);
-    u32 makeTex4x4Key(u32 a);
-    u32 makeTexKey(u32 a);
-    void alloc(void *a, void *b, void *c);
-};
 
 // Declaration-only twin of Unk_020dbe14: the original vtable order (e14, e24, e34) is the heapsort of the declaration
 // order e24, e34, e14, which needs Model declared before its real base. aliases.txt maps the twin's names.
@@ -98,17 +77,6 @@ public:
     virtual ~Unk_020dbe14();
 };
 
-class AnimFrameCtrl {
-public:
-    inline AnimFrameCtrl() : curFrame(0), prevFrame(0), frameStep(0x1000) {}
-    virtual ~AnimFrameCtrl();
-
-    u32 numFrames;
-    u32 curFrame;
-    u32 prevFrame;
-    u32 frameStep;
-    u32 playMode;
-};
 
 class ModelAnim : public AnimFrameCtrl {
 public:

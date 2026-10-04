@@ -3,6 +3,7 @@
 // Particle drawing: the two billboard particle drawers of the SPL-style manager. They write the 3D geometry engine registers (POLYGON_ATTR 0x040004a4,
 // MTX_IDENTITY 0x04000454, MTX_TRANS 0x04000470, DIF_AMB 0x04000480) and use the ITCM matrix helpers.
 #include "types.h"
+#include "game/Vec3.h"
 
 // SPL-style particle manager (continued from G011b): resource header word, bits 24-29 = field types
 struct HdrBits {
@@ -259,11 +260,6 @@ struct Mg2 {
     Mt *mt;
 };
 
-struct Vec3 {
-    s32 x;
-    s32 y;
-    s32 z;
-};
 
 typedef s32 (*PosCb)(Vec3 *, Vec3);
 typedef void (*SetFn)(s32, s32, s32, s32);

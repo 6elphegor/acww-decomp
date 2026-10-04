@@ -5,10 +5,8 @@
 // data_0213b9d8, bss 0x021f5bfc-0x021f5c2c and main's __sinit 0x020c6094 (FX_Div constants, Ramp clear SndVolumeCurve_Clear) belong to it, see PLAN.md); it stays
 // PARTIAL until that file is reconstructed whole (it continues with G012b 0x020f4a5c-0x020f5b9c and needs func_020f4904).
 #include "types.h"
+#include "game/Vec3.h"
 
-struct Vec3 {
-    s32 x, y, z;
-};
 
 struct PlayCtx {
     s32 w0;

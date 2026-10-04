@@ -3,6 +3,7 @@
 #include "game/Unk_0201acf8.h"
 #include "game/Unk_020d77a4_Vec3.h"
 #include "npc/Unk_0201a13c.h"
+#include "actor/BlinkTimer.h"
 
 // unk_02011580.cpp
 struct HudObjGfx {
@@ -1744,8 +1745,6 @@ struct NpcActionCtrl {
     s32 act07Variant;
 };
 
-// unk_02019998.cpp
-struct BlinkTimer { BlinkTimer(); ~BlinkTimer(); u32 unk_00; };
 
 // unk_02019998.cpp
 struct NpcTexPatHeapHandle { NpcTexPatHeapHandle(); ~NpcTexPatHeapHandle(); u32 pad[2]; };

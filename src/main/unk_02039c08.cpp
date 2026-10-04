@@ -1,4 +1,5 @@
 #include "types.h"
+#include "gfx/ViewFrustum.h"
 
 struct Unk_02039cf4_Obj {
     u32 unk_00;
@@ -25,22 +26,6 @@ extern s16 data_02135f44[];
 extern "C" BOOL RecycleBin_Set(u32 i, u16 v);
 extern "C" u16 RecycleBin_Get(u32 i);
 
-class ViewFrustum {
-public:
-    s32 testSphere(void *m, void *v, s32 r, s32 *out);
-    void calcPlanes();
-
-    /* 0x00 */ s32 unk_00;
-    /* 0x04 */ s32 leftPlane[3];
-    /* 0x10 */ s32 topPlane[3];
-    /* 0x1c */ s32 rightPlane[3];
-    /* 0x28 */ s32 bottomPlane[3];
-    /* 0x34 */ s32 unk_34[6];
-    /* 0x4c */ s32 aspect;
-    /* 0x50 */ s32 nearClip;
-    /* 0x54 */ s32 farClip;
-    /* 0x58 */ u16 fovy;
-};
 
 void ViewFrustum::calcPlanes() {
     s32 v[12];

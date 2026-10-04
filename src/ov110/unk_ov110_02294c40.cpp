@@ -5,6 +5,7 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
+#include "ui/CursorMotion.h"
 #undef postCreate
 #undef vfunc_14
 
@@ -183,18 +184,6 @@ public:
     u32 unk_04[(0xc0 - 4) / 4];
 };
 
-class CursorMotion {
-public:
-    CursorMotion();
-    ~CursorMotion();
-    void startLinear(s32, s32, s32);
-    s32 setPos(s32, s32);
-    s32 getY();
-    s32 getX();
-    BOOL update();
-    void reset();
-    u32 unk_00[0x18 / 4];
-};
 
 class PopupChoiceMenuBody {
 public:
@@ -512,7 +501,7 @@ static inline BOOL func_ov002_022017a4(void *p) { return ((PopupChoiceMenuBody *
 static inline BOOL func_ov002_022017b4(void *p) { return ((PopupChoiceMenuBody *)p)->isOpen(); }
 static inline void func_ov002_02202310(void *a, s32 b, s32 c, s32 d) { ((PopupChoiceMenu *)a)->init((s32)b, (s32)c, (const char *)d); }
 static inline void func_ov002_022026c4(void *p, s32 a, s32 b, s32 c) { ((CursorMotion *)p)->startLinear((s32)a, (s32)b, (s32)c); }
-static inline s32 func_ov002_022026f4(void *p, s32 a, s32 b) { return ((CursorMotion *)p)->setPos((s32)a, (s32)b); }
+static inline void func_ov002_022026f4(void *p, s32 a, s32 b) { ((CursorMotion *)p)->setPos((s32)a, (s32)b); }
 static inline s32 func_ov002_02202708(void *p) { return ((CursorMotion *)p)->getY(); }
 static inline s32 func_ov002_02202710(void *p) { return ((CursorMotion *)p)->getX(); }
 static inline BOOL func_ov002_02202718(void *p) { return ((CursorMotion *)p)->update(); }

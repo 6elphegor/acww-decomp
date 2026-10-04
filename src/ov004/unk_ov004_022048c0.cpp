@@ -3,10 +3,8 @@
 #include "actor/Unk_ov004_SceneEntry.h"
 #include "actor/Unk_02002f14_Node.h"
 #include "actor/Unk_0203e5d0_Node.h"
+#include "game/Vec3.h"
 
-struct Vec3 {
-    s32 x, y, z;
-};
 
 // ---------------------------------------------------------------- library base chain (as in link_ov009)
 // Slots 0x0c / 0x24 are overridden by Atm; they carry the overriding methods' names so that the

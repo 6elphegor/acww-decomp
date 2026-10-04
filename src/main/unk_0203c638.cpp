@@ -1,6 +1,7 @@
 #include "types.h"
 #include "game/Unk_0203c92c_Bits.h"
 #include "game/Unk_0203ce24_Elem.h"
+#include "player/PlayerOptions.h"
 
 // ---- 0x020d94b8 base (MsgRequest at 0x020e2a30)
 class MsgRequest {
@@ -146,28 +147,6 @@ extern "C" Unk_0203ce24_Elem data_021c3784[];
 extern "C" MailTextBuilder gMailTextBuilder;
 
 // ---- flag object at 0x021c3264
-class PlayerOptions {
-public:
-    void markTalkVoiceChanged();
-    void markStereoChanged();
-    void markHiraganaChanged();
-    BOOL isTalkVoiceChanged();
-    BOOL isStereoChanged();
-    BOOL isHiraganaChanged();
-    void reset();
-    void setTalkVoice(u32 v);
-    u32 getTalkVoice();
-    void clearStereo();
-    void setStereo();
-    BOOL isStereo();
-    void clearHiragana();
-    void setHiragana();
-    BOOL isHiragana();
-    void resetValues();
-
-    /* 0x00 */ u8 options;
-    /* 0x01 */ u8 changedMask;
-};
 
 extern "C" PlayerOptions sPlayerOptions;
 extern "C" PlayerOptions *func_0203c9b4(PlayerOptions *p);

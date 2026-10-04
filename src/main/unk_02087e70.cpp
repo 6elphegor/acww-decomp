@@ -1,8 +1,6 @@
 #include "types.h"
+#include "game/Vec3.h"
 
-struct Vec3 {
-    s32 x, y, z;
-};
 
 struct Unk_02087e70_Ent {
     u32 w0;
