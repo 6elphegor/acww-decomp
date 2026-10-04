@@ -5,7 +5,7 @@
 #include "game/HitSphere.h"
 
 // Pickable sphere of the TouchPicker (linked through next). Methods defined in src/main/unk_020b60b0.cpp.
-// Several owners keep it as raw storage (u8[0x1c]) because the original builds the member with C1/C2 explicitly.
+// Several owners hold it as raw storage (u32[7]) because the original builds the member with explicit C1/D1 calls.
 struct Vec3;
 
 struct TouchPickSphere : HitSphere {

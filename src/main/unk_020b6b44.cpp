@@ -3,50 +3,19 @@
 #include "game/Vec3.h"
 #include "game/Basis.h"
 #include "gfx/Mtx43.h"
+#include "game/TouchPickTriangle.h"
+#include "game/CollisionTriangle.h"
+#include "game/CollisionCylinder.h"
 
 
 
 
 
 
-// base class (symbols.txt: CollisionTriangle); its destructor is called through its D1 symbol (0x0202f620)
-struct CollisionTriangle {
-    CollisionTriangle();
-    virtual void pushOutFace(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, s32 c);
-    virtual void pushBackCrossing(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, s32 c);
-    virtual void pushOutEdges(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, s32 c);
-    virtual void collide(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, s32 c);
-    u8 pad[0x34];
-};
 
-struct TouchPickTriangle : CollisionTriangle {
-    TouchPickTriangle();
-    ~TouchPickTriangle();
-    BOOL setupCurved(Vec3 *a, Vec3 *b, Vec3 *c, s32 d, u8 e);
-    BOOL setup(Vec3 *a, Vec3 *b, Vec3 *c, s32 d, u8 e);
-    /* 0x38 */ TouchPickTriangle *next;
-    /* 0x3c */ s32 kind;
-    /* 0x40 */ u8 index;
-};
 
-struct TouchPickBox {
-    TouchPickBox();
-    ~TouchPickBox();
-    BOOL build(Vec3 *pos, s32 w, s32 h, s32 d, s32 angle, s32 e, u8 f);
-    /* 0x00 */ TouchPickTriangle triangles[10];
-};
 
-struct CollisionCylinder {
-    CollisionCylinder(Unk_0202f660_V3 *c, s32 a, s32 b);
-    BOOL clipSegmentCaps(Unk_0202f660_V3 *a, Unk_0202f660_V3 *b);
-    BOOL clipSegmentSideBounded(Unk_0202f660_V3 *a, Unk_0202f660_V3 *b);
-    u8 pad[0x14];
-};
 
-// the original calls the D2 copy (0x0202fdb4) of the destructor, which a declared ~CollisionCylinder() would not
-extern "C" void _ZN17CollisionCylinderD2Ev(CollisionCylinder *self);
-// base destructor: the original derived destructor calls the D1 copy (0x0202f620)
-extern "C" void _ZN17CollisionTriangleD1Ev(CollisionTriangle *self);
 
 extern "C" {
 s32 func_01ffcb0c(s32 a, s32 b);
@@ -101,7 +70,7 @@ extern "C" BOOL TouchPick_HitCylinder(Vec3 *p, Vec3 *q, Vec3 *r, s32 a, s32 b) {
     y3 = v4c.y;
     v4c.y = func_01ffcb0c(cs, y3) - func_01ffcb0c(sn, z);
     v4c.z = func_01ffcb0c(sn, y3) + func_01ffcb0c(cs, z);
-    CollisionCylinder o((Unk_0202f660_V3 *)&v4c, a, b);
+    CollisionCylinderX o((Unk_0202f660_V3 *)&v4c, a, b);
     if (o.clipSegmentCaps((Unk_0202f660_V3 *)&v40, (Unk_0202f660_V3 *)&v34) ||
         o.clipSegmentSideBounded((Unk_0202f660_V3 *)&v40, (Unk_0202f660_V3 *)&v34)) {
         func_020e944c(&v40, ang);
@@ -109,10 +78,8 @@ extern "C" BOOL TouchPick_HitCylinder(Vec3 *p, Vec3 *q, Vec3 *r, s32 a, s32 b) {
         p->x = rx;
         p->y = ry;
         p->z = rz;
-        _ZN17CollisionCylinderD2Ev(&o);
         return TRUE;
     }
-    _ZN17CollisionCylinderD2Ev(&o);
     return FALSE;
 }
 
@@ -206,7 +173,5 @@ TouchPickTriangle::TouchPickTriangle() {
     index = 0xff;
 }
 
-TouchPickTriangle::~TouchPickTriangle() {
-    _ZN17CollisionTriangleD1Ev(this);
-}
+TouchPickTriangle::~TouchPickTriangle() {}
 

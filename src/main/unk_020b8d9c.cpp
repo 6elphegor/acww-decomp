@@ -21,6 +21,7 @@
 #include "actor/SpNpcActor.h"
 #include "talk/SpNpcTalkRequest.h"
 #include "talk/SpNpcKatieTalk.h"
+#include "npc/SpNpcKatie.h"
 
 // ======== class types (global scope) ========
 struct Unk_021f4400;
@@ -921,20 +922,6 @@ struct Unk_020bfc48_Pad {
     ~Unk_020bfc48_Pad() {}
 };
 // ---------------------------------------------------------------------------------------------------------------------
-class SpNpcKatie : public SpNpcActor {
-public:
-    virtual ~SpNpcKatie();
-
-    /* 0x654 */ s32 unk_654;
-    /* 0x658 */ SpNpcKatieTalk talk;
-    /* 0x70c */ u8 unk_70c;
-    /* 0x70d */ u8 escortDeclined;
-    /* 0x70e */ u8 unk_70e[0x724 - 0x70e];
-    /* 0x724 */ u8 reunionStep;
-
-    void changeAct(s32 state);
-    BOOL mainAct08();
-};
 
 struct U234_Record {
     void *fn;

@@ -36,43 +36,6 @@ struct Unk_0203a8d4_Rot {
 
 typedef CameraSetup Unk_0203a278_Cam;
 
-// Camera/scene helper object; the global pointer is gCamera.
-struct Unk_021c3070 {
-    /* 0x00 */ u8 unk_00[0x50];
-    /* 0x50 */ Unk_0203a148_Mtx viewMtx;
-    /* 0x80 */ u8 unk_80[0x38];
-    /* 0xb8 */ s32 blendDelay;
-    /* 0xbc */ s32 blendEnd;
-    /* 0xc0 */ u8 unk_c0[8];
-    /* 0xc8 */ s32 blendTime;
-    /* 0xcc */ Unk_0203a148_Vec invViewMtx;
-    /* 0xd8 */ u8 unk_d8[0x24];
-    /* 0xfc */ Unk_0203a278_Cam target;
-    /* 0x11c */ u8 saved[0x14];
-    /* 0x130 */ u8 savedFocus[0x18];
-    /* 0x148 */ Unk_0203a278_Cam current;
-    /* 0x168 */ Unk_0203a148_Vec eye;
-    /* 0x174 */ u8 unk_174[0x14];
-    /* 0x188 */ Unk_0203a148_Vec lookTarget;
-    /* 0x194 */ Unk_0203a148_Vec lookEye;
-    /* 0x1a0 */ u8 lookUp[0x2a];
-    /* 0x1ca */ u8 focusIsPair;
-    /* 0x1cb */ u8 unk_1cb;
-    /* 0x1cc */ Unk_0203a148_Vec focusPointA;
-    /* 0x1d8 */ Unk_0203a148_Vec focusPointB;
-    /* 0x1e4 */ u8 closeUpFactorTarget[4];
-    /* 0x1e8 */ s32 closeUpFactor;
-    /* 0x1ec */ s32 presetCol;
-    /* 0x1f0 */ s32 presetRow;
-    /* 0x1f4 */ u8 viewPushed;
-    /* 0x1f5 */ u8 focusYawLocked;
-    /* 0x1f6 */ u8 roomFocusSide;
-    /* 0x1f7 */ u8 seMuted;
-    /* 0x1f8 */ s32 mode;
-    /* 0x1fc */ s32 prevMode;
-    /* 0x200 */ u8 startMode[0x1c];
-    /* 0x21c */ Unk_0203a8d4_Rot modeParam;
-};
 
 struct Unk_0203a9b8_Cfg {
     u8 pad[4];
@@ -1212,12 +1175,12 @@ BOOL Unk_020d93b8::initModeShake() {
 extern "C" void Camera_UpdateModeShake(Unk_021c3070 *o) {
     Unk_0203a148_Vec v;
     Unk_0203a148_Vec cam;
-    Unk_0203a8d4_Rot *r = &o->modeParam;
+    Unk_0203a8d4_Rot *r = (Unk_0203a8d4_Rot *)&o->modeParam;
     s32 sc;
     r->ang = r->ang + r->vel;
     func_020e769c(&r->vel, 0x6000, 0x180);
-    sc = func_01ffcb0c(data_02135f44[((u16)r->ang >> 4) * 2], o->modeParam.len);
-    _ZN12Unk_020d93b811dragFocusToEP14Unk_0203b350_V(o, o->savedFocus);
+    sc = func_01ffcb0c(data_02135f44[((u16)r->ang >> 4) * 2], o->modeParam);
+    _ZN12Unk_020d93b811dragFocusToEP14Unk_0203b350_V(o, &o->savedFocus);
     func_020e7870((s32 *)r, 0, 0x400, 0x80, 0x10);
     _ZN12Unk_020d93b811updateBlendEv(o);
     Camera_GetLookAtPoint(&cam, o);
@@ -1370,7 +1333,7 @@ extern "C" void Camera_FocusOnPair(Unk_0203a148_Vec *a, Unk_0203a148_Vec *b) {
 }
 
 extern "C" void Camera_StartShake(s32 a) {
-    gCamera->modeParam.len = a;
+    gCamera->modeParam = a;
     _ZN12Unk_020d93b87setModeEi(gCamera, 0x11);
 }
 
@@ -1418,7 +1381,7 @@ extern "C" BOOL Camera_IsBlockingFocusView(Unk_0203a148_Vec *v, s32 unused, s32 
                 return FALSE;
             }
         }
-        if (v->z - (h >> 1) > o->target.c6 - 0x2000) {
+        if (v->z - (h >> 1) > o->targetFocus.z - 0x2000) {
             return TRUE;
         }
         return FALSE;
@@ -1450,13 +1413,13 @@ extern "C" u8 Camera_GetBlendFramesLeft(void) {
 }
 
 extern "C" void Camera_SaveView(void) {
-    sCameraSavedSetup = gCamera->target;
-    *(Unk_0203a148_Vec *)&sCameraSavedEye = gCamera->eye;
+    sCameraSavedSetup = *(CameraSetup *)&gCamera->target;
+    *(Unk_0203a148_Vec *)&sCameraSavedEye = *(Unk_0203a148_Vec *)&gCamera->eye;
 }
 
 extern "C" void Camera_RestoreView(void) {
-    gCamera->target = sCameraSavedSetup;
-    gCamera->eye = sCameraSavedEye;
+    *(CameraSetup *)&gCamera->target = sCameraSavedSetup;
+    *(Unk_0203a148_Vec *)&gCamera->eye = sCameraSavedEye;
 }
 
 extern "C" BOOL Camera_IsViewPushed(void) {
@@ -1485,8 +1448,8 @@ extern "C" void Camera_LockFocusYaw(void) {
 }
 
 extern "C" void Camera_SnapToFocus(s32 a) {
-    _ZN12Unk_020d93b816setFocusPreset11EPhP14Unk_0203b350_V(gCamera, &gCamera->target, a);
-    gCamera->current = gCamera->target;
+    _ZN12Unk_020d93b816setFocusPreset11EPhP14Unk_0203b350_V(gCamera, (Unk_0203a278_Cam *)&gCamera->target, a);
+    *(CameraSetup *)&gCamera->current = *(CameraSetup *)&gCamera->target;
     Unk_0203a148_Vec v;
     Camera_GetLookAtPoint(&v, gCamera);
     s32 p = _ZN12Unk_020d93b88getPitchEv(gCamera);
@@ -1510,7 +1473,7 @@ extern "C" void Camera_PlaySe(Unk_021c3070 *o, s32 a) {
 
 extern "C" Unk_0203a148_Mtx *Camera_GetViewMatrix(void) {
     if (gCamera != NULL) {
-        return &gCamera->viewMtx;
+        return (Unk_0203a148_Mtx *)&(FxMtx43 &)*gCamera;
     }
     return NULL;
 }

@@ -47,6 +47,8 @@
 #include "player/Unk_020080e8.h"
 #include "player/Unk_02008100_Msg.h"
 #include "player/Unk_02008858_Blk.h"
+#include "snd/SndSeEmitterKind99.h"
+#include "snd/SndSeEmitterKind1.h"
 #include "talk/MsgRequest.h"
 #include "player/Unk_02006d14_7d0.h"
 #include "actor/Character.h"
@@ -166,18 +168,11 @@ public:
     /* 0x41 */ u8 pad_41[3];
 };
 
-// ---- sound emitters of PlayerActor. SndSeEmitterKind1 keeps its inline destructor here: this unit emits its link-once
-// D1 0x02004b48 / D0 0x02010fa4 (snd/SndSeEmitterKind1.h declares it out of line). SndSeEmitterKind99 (C1 0x020f3ee4) is
-// defined in autoload_2 (unk_020f30fc.cpp).
-struct SndSeEmitterKind1 : SndSeEmitter {
-    SndSeEmitterKind1();
-    virtual ~SndSeEmitterKind1() {}
-};
+// ---- sound emitters of PlayerActor (snd/SndSeEmitterKind1.h, snd/SndSeEmitterKind99.h). SndSeEmitterKind1 has no key
+// function: this unit emits its link-once vtable and D1 0x02004b48 / D0 0x02010fa4, so the destructor that the header
+// declares out of line is defined inline here.
+inline SndSeEmitterKind1::~SndSeEmitterKind1() {}
 
-struct SndSeEmitterKind99 : SndSeEmitterKind1 {
-    SndSeEmitterKind99();
-    virtual ~SndSeEmitterKind99();
-};
 
 
 

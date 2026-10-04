@@ -2,7 +2,7 @@
 #define GAME_BUGNETTARGET_H
 
 // Touch-pickable bug-net target (0x28 bytes): a TouchPickSphere linked into the net target list. Defined in
-// src/main/unk_02087e70.cpp, which keeps its own declaration on a raw TouchPickSphere view (explicit C1/D2 calls).
+// src/main/unk_02087e70.cpp (its ctor/dtor make the implicit base calls TouchPickSphere C2 / D2).
 #include "types.h"
 #include "game/TouchPickSphere.h"
 

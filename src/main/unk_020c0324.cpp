@@ -23,6 +23,7 @@
 #include "actor/SpNpcActor.h"
 #include "talk/SpNpcTalkRequest.h"
 #include "talk/SpNpcKatieTalk.h"
+#include "npc/SpNpcKatie.h"
 
 typedef Unk_020bfe30_Vec Unk_020c0acc_Vec;
 
@@ -143,49 +144,6 @@ struct Unk_020c11b8_Ent {
     Unk_020c11b8_Fn b;
 };
 
-class SpNpcKatie : public SpNpcActor {
-public:
-    SpNpcKatie() {}
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual BOOL vfunc_0c();
-    virtual ~SpNpcKatie() {}
-    virtual BOOL vfunc_48(void *other);
-    virtual void vfunc_4c(u32 a, u8 b);
-    virtual BOOL updateAct();
-    virtual u8 *getTexturePath();
-    virtual u8 *getModelPath();
-
-    BOOL mainAct08();
-    BOOL setupAct08();
-    BOOL mainAct06();
-    BOOL setupAct06();
-    BOOL mainAct05();
-    BOOL setupAct05();
-    BOOL mainAct04();
-    BOOL setupAct04();
-    BOOL mainAct07();
-    BOOL setupAct07();
-    BOOL mainAct03();
-    BOOL setupAct03();
-    BOOL mainAct02();
-    BOOL setupAct02();
-    BOOL mainAct01();
-    BOOL setupAct01();
-    BOOL mainAct00();
-    BOOL setupAct00();
-    void changeAct(s32 state);
-
-    s32 unk_654;
-    SpNpcKatieTalk talk;
-    u8 unk_70c;
-    u8 escortDeclined;
-    u16 stuckTimer;
-    u16 waitTimer;
-    Unk_020c0acc_Vec prevPos;
-    s32 effectHandle;
-    u8 reunionStep;
-};
 
 extern Unk_020c11b8_Ent sSpNpcKatieActTable[9];
 extern SpNpcKatie *sSpNpcKatieInstance;

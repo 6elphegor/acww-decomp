@@ -3,7 +3,7 @@
 
 // Texture helper of the ov004 room objects (RoomObjActor +0x248); its methods are the plain functions
 // RoomObjTex_* (0x02224d04..) declared in room/RoomObjRes.h. No destructor: the owner calls RoomObjTex_Destruct by
-// hand (the ov068 taxi TUs keep their own copy, whose inline destructor does it implicitly).
+// hand (the ov068 taxi TUs use their own 4-byte RoomObjTexAuto, whose inline destructor does it implicitly).
 #include "room/RoomObjRes.h"
 
 class RoomObjTex {

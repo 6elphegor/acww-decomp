@@ -29,6 +29,8 @@
 // are the implicit derived-to-base conversions when `this` is passed to the extern "C" SndHandle functions of unk_020ede18.cpp, and
 // `h ? h - 4 : 0` in f4010 is static_cast<SndSeEmitter *>(h).
 #include "types.h"
+#include "snd/SndSeEmitterKind99.h"
+#include "snd/SndSeEmitterKind1.h"
 #include "sys/FndList.h"
 #include "snd/SndSeEmitter.h"
 #include "game/Vec3.h"
@@ -94,19 +96,10 @@ s32 Snd_ListenerVolumeCallback(void *p);
 s32 Snd_ListenerPanCallback(void *p);
 }
 
-// main's class (vtable _ZTV17SndSeEmitterKind1 in main, implicit destructor): its constructor lives here
-class SndSeEmitterKind1 : public SndSeEmitter {
-public:
-    SndSeEmitterKind1();                                // C1 0x020f4080, C2 0x020f40c0
-    static void onVolume(SndHandle *h, s32 idx);   // 0x020f4010
-};
+// main's class SndSeEmitterKind1 (snd/SndSeEmitterKind1.h; vtable _ZTV17SndSeEmitterKind1 in main): its constructor and
+// onVolume live here. Its destructor is implicit in the original (link-once D1/D0), so it is defined inline here.
+inline SndSeEmitterKind1::~SndSeEmitterKind1() {}
 
-// vtable 0x0213b984 (dsd label data_0213b98c)
-class SndSeEmitterKind99 : public SndSeEmitterKind1 {
-public:
-    SndSeEmitterKind99();                   // C1 0x020f3ee4
-    virtual ~SndSeEmitterKind99();          // D0 0x020f3e7c, D1 0x020f3eb4
-};
 
 // vtable 0x0213b9bc (dsd label data_0213b9c4)
 class SndSeEmitterKind2 : public SndSeEmitter {

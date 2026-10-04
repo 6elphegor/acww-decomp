@@ -12,6 +12,7 @@
 #include "actor/Actor.h"
 #include "actor/Character.h"
 #include "gfx/AnimModel.h"
+#include "room/RoomObjActor.h"
 // shared_0224d4e8.h.txt -- final declaration of class RoomObjActor (defined in ov004 TU17, 0x0221e7a8-0x02225290).
 // Paste this block unchanged into TU18..TU26 (it is the base of 0224d618 (TU18), 0224d80c (TU19), 0224dd98 (TU23),
 // 0224def8 (TU24), 0224e034 (TU25), 0224e2b8 (TU26)).  It is what TU17's unit.cpp compiles; vtable symbols in the
@@ -66,29 +67,6 @@ void RoomObj_ActivateSe(void *self);
 
 
 
-class RoomObjActor : public Character {
-public:
-    RoomObjActor();
-    virtual ~RoomObjActor();
-    virtual BOOL vfunc_04();
-    virtual BOOL preDelete();
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_20(u32 a);
-    virtual BOOL changeSyncState(u32 v);
-    virtual void getSoundPos(Unk_ov004_02224ee4_Vec *out);
-
-    void setSyncSlot(u32 v);
-    s32 storeSyncState();
-    s32 getSyncState();
-    void releaseResources();
-    void loadResourcesByName(char *name);
-    void loadResources(char *a, char *b);
-
-    /* 0xec */ AnimModel model;
-    /* 0x1a4 */ RoomObjRes res;
-    /* 0x248 */ Unk_ov004_02224d60_B tex;
-    /* 0x250 */ RoomObjSe se;
-};
 
 
 struct Unk_ov068_022708fc_Obj {
@@ -98,9 +76,11 @@ struct Unk_ov068_022708fc_Obj {
 
 
 
-struct RoomObjTex {
-    inline RoomObjTex() { RoomObjTex_Construct(this); }
-    inline ~RoomObjTex() { RoomObjTex_Destruct(this); }
+// 4-byte texture slot with an inline destructor (the ov004 RoomObjTex of room/RoomObjTex.h has none: its owners destroy
+// it by hand); named apart so that room/RoomObjActor.h can be included
+struct RoomObjTexAuto {
+    inline RoomObjTexAuto() { RoomObjTex_Construct(this); }
+    inline ~RoomObjTexAuto() { RoomObjTex_Destruct(this); }
     u32 texture;
 };
 
@@ -134,7 +114,7 @@ public:
     /* 0x299 */ u8 pad_299[3];
     /* 0x29c */ AnimModel chrModel;
     /* 0x354 */ RoomObjRes chrRes;
-    /* 0x3f8 */ RoomObjTex chrTex;
+    /* 0x3f8 */ RoomObjTexAuto chrTex;
 };
 
 // colour constants (sinit store order = definition order), the registration entry, the instance pointer

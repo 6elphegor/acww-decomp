@@ -12,6 +12,7 @@
 #include "actor/Character.h"
 #include "gfx/AnimModel.h"
 #include "gfx/ModelAnim.h"
+#include "room/RoomObjActor.h"
 #define AnimFrameCtrl_hasPassedFrame _ZN13AnimFrameCtrl14hasPassedFrameEi
 #define AnimFrameCtrl_step _ZN13AnimFrameCtrl4stepEv
 #define BlendAnimModel_initAnim _ZN14BlendAnimModel8initAnimEiiitt
@@ -82,29 +83,6 @@ void RoomObj_ActivateSe(void *self);
 
 
 
-class RoomObjActor : public Character {
-public:
-    RoomObjActor();
-    virtual ~RoomObjActor();
-    virtual BOOL vfunc_04();
-    virtual BOOL preDelete();
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_20(u32 a);
-    virtual BOOL changeSyncState(u32 v);
-    virtual void getSoundPos(Unk_ov004_02224ee4_Vec *out);
-
-    void setSyncSlot(u32 v);
-    s32 storeSyncState();
-    s32 getSyncState();
-    void releaseResources();
-    void loadResourcesByName(char *name);
-    void loadResources(char *a, char *b);
-
-    /* 0xec */ AnimModel model;
-    /* 0x1a4 */ RoomObjRes res;
-    /* 0x248 */ Unk_ov004_02224d60_B tex;
-    /* 0x250 */ RoomObjSe se;
-};
 
 struct Unk_ov068_022702b4_Bits {
     u32 lo : 12;
@@ -117,9 +95,11 @@ union Unk_ov068_022702b4_Word {
     Unk_ov068_022702b4_Bits b;
 };
 
-struct RoomObjTex {
-    inline RoomObjTex() { RoomObjTex_Construct(this); }
-    inline ~RoomObjTex() { RoomObjTex_Destruct(this); }
+// 4-byte texture slot with an inline destructor (the ov004 RoomObjTex of room/RoomObjTex.h has none: its owners destroy
+// it by hand); named apart so that room/RoomObjActor.h can be included
+struct RoomObjTexAuto {
+    inline RoomObjTexAuto() { RoomObjTex_Construct(this); }
+    inline ~RoomObjTexAuto() { RoomObjTex_Destruct(this); }
     u32 texture;
 };
 
@@ -205,12 +185,12 @@ public:
     /* 0x2b0 */ ModelAnim bodyTexAnim;
     /* 0x2d0 */ AnimModel driverModel;
     /* 0x388 */ RoomObjRes driverRes;
-    /* 0x42c */ RoomObjTex driverTex;
+    /* 0x42c */ RoomObjTexAuto driverTex;
     /* 0x430 */ u8 isDriverAnimating;
     /* 0x431 */ u8 pad_431[3];
     /* 0x434 */ AnimModel wheelModel;
     /* 0x4ec */ RoomObjRes wheelRes;
-    /* 0x590 */ RoomObjTex wheelTex;
+    /* 0x590 */ RoomObjTexAuto wheelTex;
     /* 0x594 */ s32 rainState;
     /* 0x598 */ u16 rainFadeFrame;
     /* 0x59a */ s16 rainAlpha;

@@ -13,6 +13,7 @@
 #include "actor/SpNpcActor.h"
 #include "talk/SpNpcTalkRequest.h"
 #include "talk/SpNpcKatieTalk.h"
+#include "npc/SpNpcKatie.h"
 
 
 static inline void Unk_020bfe30_Set(Unk_020bfe30_Vec *v, s32 x, s32 y, s32 z) {
@@ -600,20 +601,6 @@ extern "C" u8 Weather_GetPrevDayRain() {
 
 
 
-class SpNpcKatie : public SpNpcActor {
-public:
-    virtual ~SpNpcKatie();
-
-    /* 0x654 */ s32 unk_654;
-    /* 0x658 */ SpNpcKatieTalk talk;
-    /* 0x70c */ u8 unk_70c;
-    /* 0x70d */ u8 escortDeclined;
-    /* 0x70e */ u8 unk_70e[0x724 - 0x70e];
-    /* 0x724 */ u8 reunionStep;
-
-    void changeAct(s32 state);
-    BOOL mainAct08();
-};
 
 static inline BOOL Unk_020c06a0_IsMode2() {
     return gScreenTransition == 2;

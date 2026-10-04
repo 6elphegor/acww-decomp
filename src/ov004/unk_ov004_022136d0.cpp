@@ -10,6 +10,7 @@
 #include "actor/Actor.h"
 #include "actor/Character.h"
 #include "talk/TalkMsgRequest.h"
+#include "game/TouchPickSphere.h"
 
 
 
@@ -19,11 +20,6 @@
 
 // ---------------------------------------------------------------- RoomBoardSign
 struct Vec3;
-// TouchPickSphere member: the original constructs it with the complete-object constructor (C1), which a member
-// declaration cannot do, so it is raw storage plus explicit calls through the real symbol names.
-struct TouchPickSphere {
-    u8 pad[0x1c];
-};
 
 class TouchPicker;
 
@@ -64,7 +60,7 @@ public:
     BOOL registerSelf();
 
     /* 0x130 */ s32 act;
-    /* 0x134 */ TouchPickSphere touchSphere;
+    /* 0x134 */ u32 touchSphere[0x1c / 4]; // a TouchPickSphere, built and destroyed by explicit C1/D1 calls
     /* 0x150 */ u8 index;
     /* 0x151 */ u8 pad_151;
     /* 0x152 */ s16 signMsgIndex;
@@ -108,11 +104,11 @@ extern "C" RoomBoardSign *RoomBoardSign_Create() {
 }
 
 RoomBoardSign::RoomBoardSign() {
-    _ZN15TouchPickSphereC1Ev(&touchSphere);
+    _ZN15TouchPickSphereC1Ev((TouchPickSphere *)touchSphere);
 }
 
 RoomBoardSign::~RoomBoardSign() {
-    _ZN15TouchPickSphereD1Ev(&touchSphere);
+    _ZN15TouchPickSphereD1Ev((TouchPickSphere *)touchSphere);
 }
 
 BOOL RoomBoardSign::vfunc_00() {
@@ -130,7 +126,7 @@ BOOL RoomBoardSign::vfunc_00() {
 
 BOOL RoomBoardSign::onExecute() {
     execAct();
-    _ZN11TouchPicker9addSphereEP15TouchPickSphereP4Vec3S3_ih(Scene_GetTouchPicker(), &touchSphere, &position, radius, 0x10, index);
+    _ZN11TouchPicker9addSphereEP15TouchPickSphereP4Vec3S3_ih(Scene_GetTouchPicker(), (TouchPickSphere *)touchSphere, &position, radius, 0x10, index);
     return TRUE;
 }
 

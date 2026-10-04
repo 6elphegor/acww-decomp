@@ -2101,10 +2101,12 @@ _ZN13CollisionVec27setFromEPS_ kind:function(thumb,size=0x16) addr:0x0202f030
 _ZN13CollisionVec23setEii kind:function(thumb,size=0x6) addr:0x0202f048
 _ZN13CollisionVec2C1Eii kind:label(thumb) addr:0x0202f048
 _ZN17CollisionTriangle13intersectLineEP15Unk_0202f2ac_V3S1_S1_ kind:function(thumb,size=0xcc) addr:0x0202f050
+_ZN18CollisionTriangleX13intersectLineEP15Unk_0202f2ac_V3S1_S1_ kind:label(thumb) addr:0x0202f050
 _ZN17CollisionTriangle16intersectSegmentEP15Unk_0202f2ac_V3S1_S1_ kind:function(thumb,size=0x40) addr:0x0202f11c
 _ZN17CollisionTriangle10containsYZEP15Unk_0202f2ac_V3 kind:function(thumb,size=0x8c) addr:0x0202f15c
 _ZN17CollisionTriangle10containsXYEP15Unk_0202f2ac_V3 kind:function(thumb,size=0x8c) addr:0x0202f1e8
 _ZN17CollisionTriangle10distanceToEP15Unk_0202f2ac_V3 kind:function(thumb,size=0x36) addr:0x0202f274
+_ZN18CollisionTriangleX10distanceToEP15Unk_0202f2ac_V3 kind:label(thumb) addr:0x0202f274
 _ZN17CollisionTriangle10calcOffsetEv kind:function(thumb,size=0x2c) addr:0x0202f2ac
 _ZN17CollisionTriangle10containsXZEP15Unk_0202f2ac_V3 kind:function(thumb,size=0x8c) addr:0x0202f2d8
 _ZN18CollisionTriangleX10containsXZEP15Unk_0202f2ac_V3 kind:label(thumb) addr:0x0202f2d8
@@ -2137,7 +2139,9 @@ _ZN16CollisionSegment7calcDirEP15Unk_0202f660_V3 kind:function(thumb,size=0x2c) 
 _ZN16CollisionSegmentD1Ev kind:function(thumb,size=0x2) addr:0x0202f7a4
 _ZN16CollisionSegmentC1EP15Unk_0202f660_V3S1_ kind:function(thumb,size=0x10) addr:0x0202f7a8
 _ZN17CollisionCylinder22clipSegmentSideBoundedEP15Unk_0202f660_V3S1_ kind:function(thumb,size=0x1b0) addr:0x0202f7b8
+_ZN18CollisionCylinderX22clipSegmentSideBoundedEP15Unk_0202f660_V3S1_ kind:label(thumb) addr:0x0202f7b8
 _ZN17CollisionCylinder15clipSegmentCapsEP15Unk_0202f660_V3S1_ kind:function(thumb,size=0x106) addr:0x0202f968
+_ZN18CollisionCylinderX15clipSegmentCapsEP15Unk_0202f660_V3S1_ kind:label(thumb) addr:0x0202f968
 _ZN17CollisionCylinder15clipSegmentSideEP15Unk_0202f660_V3S1_ kind:function(thumb,size=0x1b0) addr:0x0202fa70
 _ZN18CollisionCylinderX15clipSegmentSideEP15Unk_0202f660_V3S1_ kind:label(thumb) addr:0x0202fa70
 _ZN17CollisionCylinder14clipSegmentTopEP15Unk_0202f660_V3S1_ kind:function(thumb,size=0xac) addr:0x0202fc20

@@ -2,7 +2,7 @@
 #define GAME_COLLISIONEDGE_H
 
 // 2D line segment with normal of the collision code (vtable 0x020d8ce4; base of WallEdge). Methods in
-// src/main/unk_0202e9d4.cpp, which keeps its own declaration (there hasRoundEnds is an inline virtual).
+// src/main/unk_0202e9d4.cpp, which defines hasRoundEnds inline after including this header (weak vtable).
 #include "types.h"
 #include "game/CollisionVec2.h"
 

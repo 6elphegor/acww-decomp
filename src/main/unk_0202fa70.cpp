@@ -10,6 +10,10 @@
 #include "game/FxVec3.h"
 #include "game/GroundInfo.h"
 #include "game/CollisionCylinder.h"
+#include "game/CollisionTriangleX.h"
+#include "game/TriangleTrigger.h"
+#include "game/CollisionVec2.h"
+#include "game/CollisionEdge.h"
 
 struct Unk_0202ff44_V3;
 struct CollisionVisitor;
@@ -86,13 +90,6 @@ Unk_020331a8_Cell *_ZN14GroundCellGrid7getCellEii(void *grid, s32 x, s32 z);
 }
 
 // ---- 2D vector; its functions and the empty destructor at 0x0202ea3c belong to the unit at 0x0202e9d4
-class CollisionVec2 {
-public:
-    s32 x, y;
-    void set(s32 a, s32 b);
-    CollisionVec2 *setFrom(CollisionVec2 *p);
-    s64 distSq(CollisionVec2 *p);
-};
 
 struct Unk_0202ea3c : CollisionVec2 {
     Unk_0202ea3c() { set(0, 0); }
@@ -105,20 +102,6 @@ extern FxVec3 sCollisionQueryMargin;
 extern CollisionWorld sCollisionWorld;
 
 // ---- triangle (vtable 0x020d8cc4, unit at 0x0202e9d4)
-class CollisionTriangleX {
-public:
-    CollisionTriangleX();
-    CollisionTriangleX(Unk_0202f660_V3 *a, Unk_0202f660_V3 *b, Unk_0202f660_V3 *c, Unk_0202f660_V3 *d);
-    ~CollisionTriangleX();
-    virtual BOOL pushOutFace(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, s32 c);
-    virtual BOOL pushBackCrossing(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, s32 c);
-    virtual BOOL pushOutEdges(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, s32 c);
-    virtual BOOL collide(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, s32 c);
-    Unk_0202f2ac_V3 vertex0, vertex1, vertex2, normal;
-    s32 offset;
-    BOOL containsXZ(Unk_0202f2ac_V3 *p);
-    BOOL set(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, Unk_0202f2ac_V3 *c, Unk_0202f2ac_V3 *d);
-};
 
 // ---- {attribute, callback} pair (functions 0x020339cc-0x020339f8; symbols.txt: CollisionTag, see aliases.txt)
 class CollisionTagX {
@@ -317,17 +300,6 @@ struct BoxColliderX {
 extern "C" s64 func_01ffd028(void* v, void* p);
 extern "C" void Collision_CalcTriangleNormal(void* out, Unk_02031e10_Vec* a, Unk_02031e10_Vec* b, Unk_02031e10_Vec* c);
 extern "C" void _ZN17CollisionTriangle3setEP15Unk_0202f2ac_V3S1_S1_S1_(void* self, Unk_02031e10_Vec* a, Unk_02031e10_Vec* b, Unk_02031e10_Vec* c, void* d);
-struct TriangleTrigger : CollisionTriangleX {
-    TriangleTrigger* next;
-    s32 center, centerY, centerZ;
-    s32 radiusSq;
-
-    TriangleTrigger();
-    virtual void onActorNear(s32 a, s32 c, s32 b) = 0;
-    void setupTrigger(Unk_02031e10_Vec* a, Unk_02031e10_Vec* b, Unk_02031e10_Vec* c, s32 d);
-    s32* getCenter();
-    void resetTrigger();
-};
 // ---------------------------------------------------------------- SegmentCollisionVisitor (triangle collision, three block layouts)
 struct Unk_02031ed4_Vec {
     s32 x, y, z;
@@ -526,22 +498,6 @@ class WallEdge;
 class Unk_02032dc4_Cb {
 public:
     virtual void vfunc_00(WallEdge *e, s32 arg, s32 r);
-};
-class CollisionEdge {
-public:
-    virtual BOOL hasRoundEnds();
-    CollisionEdge() {
-        start.set(0, 0);
-        end.set(0, 0);
-        normal.set(0, 0);
-    }
-    ~CollisionEdge();
-    CollisionVec2 start, end, normal;
-    s32 offset;
-    void set(CollisionVec2 *a, CollisionVec2 *b, CollisionVec2 *c);
-    BOOL pushBackCrossing(CollisionVec2 *a, CollisionVec2 *b, s32 r);
-    BOOL pushOutEnds(CollisionVec2 *a, CollisionVec2 *b, s32 r);
-    BOOL pushOutFace(CollisionVec2 *a, CollisionVec2 *b, s32 r);
 };
 // declared before WallEdge: the three weak vtables (0x020d8d48, d54, d6c) come out in reverse declaration order
 class FloorTriangle : public CollisionTriangleX, public CollisionTagX {
@@ -2153,7 +2109,7 @@ extern "C" void TriangleTrigger_CheckAll(s32* a, s32 b, s32 c) {
     if (p != NULL) {
         for (; p != NULL; p = p->next) {
             if ((s64)p->radiusSq >= func_01ffd028(&p->center, a)) {
-                p->onActorNear((s32)a, c, b);
+                p->onActorNear((Unk_ov009_0225b880_Vec3 *)a, (Unk_ov009_0225cc24_Obj *)c, b);
             }
         }
     }

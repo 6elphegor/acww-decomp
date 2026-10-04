@@ -1,16 +1,18 @@
-#ifndef GAME_COLLISIONTRIANGLE_H
-#define GAME_COLLISIONTRIANGLE_H
+#ifndef GAME_COLLISIONTRIANGLEX_H
+#define GAME_COLLISIONTRIANGLEX_H
 
-// Collision triangle (vtable 0x020d8ccc; 0x34 bytes). Defined in src/main/unk_0202e9d4.cpp. The derived
-// triangles are built on its second name CollisionTriangleX (game/CollisionTriangleX.h).
+// Second name of the collision triangle (game/CollisionTriangle.h; the same functions and vtable 0x020d8cc4, defined
+// in src/main/unk_0202e9d4.cpp). symbols.txt gives these names as labels. The derived triangles (FloorTriangle,
+// TriangleTrigger, TouchPickTriangle) are built on it: with this naming the base-object destructor that their
+// destructors call (D2) is 0x0202f620, and the base-object constructor (C2) is 0x0202f64c.
 #include "types.h"
 #include "game/Unk_0202f2ac_V3.h"
 
-class CollisionTriangle {
+class CollisionTriangleX {
 public:
-    CollisionTriangle();
-    CollisionTriangle(Unk_0202f660_V3 *a, Unk_0202f660_V3 *b, Unk_0202f660_V3 *c, Unk_0202f660_V3 *d);
-    ~CollisionTriangle();
+    CollisionTriangleX();                   // C2 0x0202f64c
+    CollisionTriangleX(Unk_0202f660_V3 *a, Unk_0202f660_V3 *b, Unk_0202f660_V3 *c, Unk_0202f660_V3 *d);
+    ~CollisionTriangleX();                  // D2 0x0202f620, D1 0x0202f62c
     virtual BOOL pushOutFace(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, s32 c);
     virtual BOOL pushBackCrossing(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, s32 c);
     virtual BOOL pushOutEdges(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, s32 c);
@@ -21,11 +23,7 @@ public:
     /* 0x28 */ Unk_0202f2ac_V3 normal;
     /* 0x34 */ s32 offset;
     BOOL intersectLine(Unk_0202f2ac_V3 *out, Unk_0202f2ac_V3 *p, Unk_0202f2ac_V3 *q);
-    BOOL intersectSegment(Unk_0202f2ac_V3 *out, Unk_0202f2ac_V3 *p, Unk_0202f2ac_V3 *q);
-    BOOL containsYZ(Unk_0202f2ac_V3 *p);
-    BOOL containsXY(Unk_0202f2ac_V3 *p);
     s32 distanceTo(Unk_0202f2ac_V3 *p);
-    s32 calcOffset();
     BOOL containsXZ(Unk_0202f2ac_V3 *p);
     BOOL set(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, Unk_0202f2ac_V3 *c, Unk_0202f2ac_V3 *d);
 };

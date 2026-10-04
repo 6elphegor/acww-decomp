@@ -10,6 +10,7 @@
 #include "actor/Character.h"
 #include "talk/MsgRequest.h"
 #include "talk/TalkMsgRequest.h"
+#include "game/TouchPickSphere.h"
 
 
 
@@ -27,10 +28,6 @@ struct Unk_02204930_Pad {
 };
 
 
-// member at +0x134: the original constructs it with C2 (base-object constructor), so it is raw storage plus explicit calls
-struct TouchPickSphere {
-    u8 pad[0x1c];
-};
 
 struct TouchPicker;
 
@@ -85,7 +82,7 @@ public:
     BOOL changeAct(s32 m);
 
     /* 0x130 */ s32 act;
-    /* 0x134 */ TouchPickSphere touchSphere;
+    /* 0x134 */ u32 touchSphere[0x1c / 4]; // a TouchPickSphere, built and destroyed by explicit C1/D1 calls
 };
 
 typedef void (VillagerBoard::*Unk_022049a8_Fn)();
@@ -110,11 +107,11 @@ extern "C" VillagerBoard *VillagerBoard_Create() {
 }
 
 VillagerBoard::VillagerBoard() {
-    _ZN15TouchPickSphereC1Ev(&touchSphere);
+    _ZN15TouchPickSphereC1Ev((TouchPickSphere *)touchSphere);
 }
 
 VillagerBoard::~VillagerBoard() {
-    _ZN15TouchPickSphereD1Ev(&touchSphere);
+    _ZN15TouchPickSphereD1Ev((TouchPickSphere *)touchSphere);
 }
 
 BOOL VillagerBoard::vfunc_00() {
@@ -128,7 +125,7 @@ BOOL VillagerBoard::vfunc_00() {
 
 BOOL VillagerBoard::onExecute() {
     runAct();
-    _ZN11TouchPicker9addSphereEP15TouchPickSphereP4Vec3S3_ih(Scene_GetTouchPicker(), &touchSphere, &position.x, 0xc00, 9, *(s32 *)((u8 *)this + 8));
+    _ZN11TouchPicker9addSphereEP15TouchPickSphereP4Vec3S3_ih(Scene_GetTouchPicker(), (TouchPickSphere *)touchSphere, &position.x, 0xc00, 9, *(s32 *)((u8 *)this + 8));
     return TRUE;
 }
 

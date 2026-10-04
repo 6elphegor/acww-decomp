@@ -18,6 +18,7 @@
 #include "talk/MsgRequest.h"
 #include "talk/TalkMsgRequest.h"
 #include "room/MuseumExhibitInfo.h"
+#include "game/TouchPickSphere.h"
 
 
 
@@ -25,11 +26,6 @@
 
 
 
-// Member at +0x134: the original constructs it with the complete-object constructor (C1), which a member declaration
-// cannot do, so it is raw storage plus explicit calls through the real symbol names (as in TU04).
-struct TouchPickSphere {
-    u8 pad[0x1c];
-};
 
 
 

@@ -8,6 +8,7 @@
 #include "gfx/Mtx43.h"
 #include "game/CollisionCylinder.h"
 #include "game/TouchPickCylinder.h"
+#include "game/TouchPickTriangle.h"
 
 
 
@@ -27,15 +28,6 @@ struct Unk_0202f64c {
     u8 pad[0x34];
 };
 
-struct TouchPickTriangle : Unk_0202f64c {
-    TouchPickTriangle();
-    ~TouchPickTriangle();
-    BOOL setupCurved(Vec3 *a, Vec3 *b, Vec3 *c, s32 d, u8 e);
-    BOOL setup(Vec3 *a, Vec3 *b, Vec3 *c, s32 d, u8 e);
-    /* 0x38 */ TouchPickTriangle *next;
-    /* 0x3c */ s32 kind;
-    /* 0x40 */ u8 index;
-};
 
 struct Unk_0202f660_V3;
 struct Unk_0202e918_Vec3;
@@ -45,12 +37,6 @@ struct Unk_0202e918_Vec3;
 
 
 
-struct TouchPickBox {
-    TouchPickBox();
-    ~TouchPickBox();
-    BOOL build(Vec3 *pos, s32 w, s32 h, s32 d, s32 angle, s32 e, u8 f);
-    /* 0x00 */ TouchPickTriangle triangles[10];
-};
 
 
 struct TouchPickerView : TouchPickResult {

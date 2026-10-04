@@ -1,17 +1,10 @@
 #include "types.h"
 #include "game/Unk_0202f2ac_V3.h"
+#include "game/CollisionCylinder.h"
 
 typedef Unk_0202f660_V3 Vec3;
 
-struct CollisionCylinder {
-    CollisionCylinder(Vec3 *c, s32 a, s32 b);
-    BOOL clipSegmentCaps(Vec3 *a, Vec3 *b);
-    BOOL clipSegmentSideBounded(Vec3 *a, Vec3 *b);
-    u8 pad[0x14];
-};
 
-// the original calls the D2 copy of the destructor (0x0202fdb4), which a declared ~CollisionCylinder() would not
-extern "C" void _ZN17CollisionCylinderD2Ev(CollisionCylinder *self);
 
 extern "C" {
 s32 func_01ffcb0c(s32 a, s32 b);
@@ -35,7 +28,7 @@ extern "C" BOOL TouchPick_HitWorldDrum(Vec3 *out, Vec3 *a, Vec3 *b, s32 c, s32 d
     zero.x = 0;
     zero.y = 0;
     zero.z = 0;
-    CollisionCylinder o(&zero, c, d);
+    CollisionCylinderX o(&zero, c, d);
     Unk_020b7074_Pad pad;
     s32 az = a->z, ay = a->y, ax = a->x;
     v24.x = ax;
@@ -62,10 +55,8 @@ extern "C" BOOL TouchPick_HitWorldDrum(Vec3 *out, Vec3 *a, Vec3 *b, s32 c, s32 d
         v30.x = func_01ffcb0c(cs2, x2) - func_01ffcb0c(sn2, y2);
         v30.y = func_01ffcb0c(sn2, x2) + func_01ffcb0c(cs2, y2);
         *out = v30;
-        _ZN17CollisionCylinderD2Ev(&o);
         return TRUE;
     }
-    _ZN17CollisionCylinderD2Ev(&o);
     return FALSE;
 }
 

@@ -16,6 +16,7 @@
 #include "talk/TalkMsgRequest.h"
 #include "snd/BuildingSeEmitter.h"
 #include "town/BuildingActor.h"
+#include "game/TouchPickSphere.h"
 
 
 
@@ -34,11 +35,6 @@ class Unk_020b1ddc;
 
 
 
-// Member at +0x2d4: the original constructs it with the base-object constructor (C1 here; the member is built with the complete-object ctor at 0x020b6a94), which a member declaration
-// cannot do, so it is raw storage plus explicit calls through the real symbol names.
-struct TouchPickSphere {
-    u8 pad[0x1c];
-};
 
 
 struct Unk_ov003_02231e4c_Color {
@@ -144,7 +140,7 @@ public:
 
     /* 0x2b0 */ s32 useState;
     /* 0x2b4 */ ModelAnim matAnim;
-    /* 0x2d4 */ TouchPickSphere touchSphere;
+    /* 0x2d4 */ u32 touchSphere[0x1c / 4]; // a TouchPickSphere, built and destroyed by explicit C1/D1 calls
     /* 0x2f0 */ u8 canUse;
     /* 0x2f1 */ u8 pad_2f1[3];
 };
@@ -167,11 +163,11 @@ extern "C" void Mailbox_Create() {
 }
 
 Mailbox::Mailbox() {
-    _ZN15TouchPickSphereC1Ev(&touchSphere);
+    _ZN15TouchPickSphereC1Ev((TouchPickSphere *)touchSphere);
 }
 
 Mailbox::~Mailbox() {
-    _ZN15TouchPickSphereD1Ev(&touchSphere);
+    _ZN15TouchPickSphereD1Ev((TouchPickSphere *)touchSphere);
 }
 
 BOOL Mailbox::vfunc_70() {
@@ -189,7 +185,7 @@ BOOL Mailbox::vfunc_70() {
     v.y = position.y;
     v.z = position.z;
     v.y = v.y + 0x1000;
-    _ZN11TouchPicker9addSphereEP15TouchPickSphereP4Vec3S3_ih(Scene_GetTouchPicker(), &touchSphere, &v, 0x1000, 7, b);
+    _ZN11TouchPicker9addSphereEP15TouchPickSphereP4Vec3S3_ih(Scene_GetTouchPicker(), (TouchPickSphere *)touchSphere, &v, 0x1000, 7, b);
     canUse = 1;
     if (!Scene_InTown()) {
         canUse = 0;
@@ -212,7 +208,7 @@ BOOL Mailbox::vfunc_70() {
 
 BOOL Mailbox::onExecute() {
     updateUseState();
-    _ZN11TouchPicker10pushSphereEP15TouchPickSphere(Scene_GetTouchPicker(), &touchSphere);
+    _ZN11TouchPicker10pushSphereEP15TouchPickSphere(Scene_GetTouchPicker(), (TouchPickSphere *)touchSphere);
     return TRUE;
 }
 

@@ -1,6 +1,8 @@
 #include "types.h"
 #include "game/Vec3.h"
 #include "game/TouchPicker.h"
+#include "game/TouchPickSphere.h"
+#include "game/BugNetTarget.h"
 
 
 struct Unk_02087e70_Ent {
@@ -17,25 +19,8 @@ struct Unk_02087e70_Oam {
     u16 pad;
 };
 
-// The original constructor calls the base's C1 and its destructor the base's D2; mwcc would call C2/D2
-// for a base subobject, so the base is a plain struct and the two calls are written out.
-struct TouchPickSphere {
-    u8 pad[0x1c];
-};
-
-extern "C" void _ZN15TouchPickSphereC2Ev(TouchPickSphere *p);
-extern "C" void _ZN15TouchPickSphereD2Ev(TouchPickSphere *p);
 
 
-class BugNetTarget : public TouchPickSphere {
-public:
-    BugNetTarget();
-    ~BugNetTarget();
-    void submit(Vec3 *a, s32 b, Vec3 *c, u8 d);
-    /* 0x1c */ BugNetTarget *nextTarget;
-    /* 0x20 */ u8 isHit;
-    /* 0x24 */ s32 hitRadius;
-};
 
 extern "C" {
 extern s32 sOamObjHeights[];
@@ -88,13 +73,11 @@ static inline void Unk_02087e70_SetAttr(Unk_02087e70_Oam *oam, s32 x, s32 y, s32
 }
 
 BugNetTarget::BugNetTarget() {
-    _ZN15TouchPickSphereC2Ev(this);
     nextTarget = 0;
     isHit = 0;
 }
 
 BugNetTarget::~BugNetTarget() {
-    _ZN15TouchPickSphereD2Ev(this);
 }
 
 void BugNetTarget::submit(Vec3 *a, s32 b, Vec3 *c, u8 d) {

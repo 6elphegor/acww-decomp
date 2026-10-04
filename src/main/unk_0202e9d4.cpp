@@ -5,6 +5,7 @@
 #include "game/CollisionCircle.h"
 #include "game/CollisionTriangle.h"
 #include "game/CollisionCylinder.h"
+#include "game/CollisionEdge.h"
 
 
 extern "C" {
@@ -30,28 +31,9 @@ static inline s32 Unk_0202f2ac_Abs(s32 v) { return v < 0 ? -v : v; }
 
 CollisionVec2 gCollisionVec2Zero(0, 0);
 
-class CollisionEdge {
-public:
-    CollisionEdge(CollisionVec2 *a, CollisionVec2 *b);
-    CollisionEdge(CollisionVec2 *a, CollisionVec2 *b, CollisionVec2 *c);
-    ~CollisionEdge();
-    virtual BOOL hasRoundEnds() { return TRUE; }
+// game/CollisionEdge.h declares hasRoundEnds out of line; in this unit it is inline (no key function: weak vtable)
+inline BOOL CollisionEdge::hasRoundEnds() { return TRUE; }
 
-    BOOL pushBackCrossing(CollisionVec2 *a, CollisionVec2 *b, s32 c);
-    BOOL pushOutEnds(CollisionVec2 *a, CollisionVec2 *b, s32 c);
-    BOOL pushOutFace(CollisionVec2 *a, CollisionVec2 *b, s32 c);
-    BOOL isBetweenEnds(CollisionVec2 *a);
-    BOOL intersectSegment(CollisionVec2 *out, CollisionVec2 *a, CollisionVec2 *b);
-    BOOL intersectLine(CollisionVec2 *out, CollisionVec2 *a, CollisionVec2 *b);
-    s32 distanceTo(CollisionVec2 *p);
-    s32 calcOffset();
-    void set(CollisionVec2 *a, CollisionVec2 *b, CollisionVec2 *c);
-
-    /* 0x04 */ CollisionVec2 start;
-    /* 0x0c */ CollisionVec2 end;
-    /* 0x14 */ CollisionVec2 normal;
-    /* 0x1c */ s32 offset;
-};
 
 // ---- triangle (vtable 0x020d8ccc) ----
 

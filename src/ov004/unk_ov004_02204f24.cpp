@@ -36,6 +36,8 @@
 #include "room/FtrModelRes.h"
 #include "talk/MsgRequest.h"
 #include "talk/TalkMsgRequest.h"
+#include "game/CollisionVec2.h"
+#include "game/CollisionEdge.h"
 
 // ================================================================ plain value types
 
@@ -102,23 +104,7 @@ struct FxVec3 {
 // ---- 0x02206434 (set of up to 4 neighbour objects)
 
 // ---- 0x022487cc : BoxCollider (member at 0x628)
-class CollisionVec2 {
-public:
-    s32 x, y;
-    void set(s32 a, s32 b);
-    void setDiff(CollisionVec2 *a, CollisionVec2 *b);
-    s64 distSq(CollisionVec2 *p);
-    BOOL normalize();
-};
 
-class CollisionEdge {
-public:
-    virtual BOOL hasRoundEnds();
-    CollisionVec2 start, end, normal;
-    s32 offset;
-    BOOL intersectLine(CollisionVec2 *out, CollisionVec2 *a, CollisionVec2 *b);
-    s32 isBetweenEnds(CollisionVec2 *p);
-};
 
 
 

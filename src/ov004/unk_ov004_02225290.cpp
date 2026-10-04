@@ -12,50 +12,14 @@
 #include "gfx/AnimModel.h"
 #include "talk/TalkMsgRequest.h"
 #include "sys/ProcBase.h"
+#include "actor/Actor.h"
+#include "actor/Character.h"
+#include "room/RoomObjActor.h"
 
 
 
 
-class Actor : public GameProc {
-public:
-    Actor();
-    virtual BOOL vfunc_04();
-    
-    virtual BOOL preDelete();
-    virtual BOOL vfunc_14(s32 status);
-    virtual BOOL preExecute();
-    virtual BOOL preDraw();
-    virtual BOOL postDraw(s32 status);
-    virtual ~Actor();
 
-    /* 0x50 */ u8 unk_50[0xc];
-    /* 0x5c */ s32 position[3];
-    /* 0x68 */ u8 pad_68[0xd4 - 0x68];
-};
-
-class Character : public Actor {
-public:
-    Character();
-    virtual ~Character();
-    virtual void postCreate(s32 v);
-    virtual BOOL vfunc_04();
-    virtual BOOL preDelete();
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_48(void *a);
-    virtual void vfunc_4c(u32 a, u8 b);
-    virtual void *getInteractionPos();
-    virtual BOOL acceptsInteractionOutOfRange(void *a);
-    virtual BOOL vfunc_58(void *a);
-    virtual BOOL vfunc_5c();
-
-    void setCharId(u32 a);
-
-    /* 0xd4 */ Unk_0203e5d0_Node charNode;
-    /* 0xe4 */ s32 interactionRangeSq;
-    /* 0xe8 */ u16 charFlags;
-    /* 0xea */ u8 unk_ea;
-    /* 0xeb */ u8 pad_eb;
-};
 
 // ---- model resource sub-object at +0xec (see src/main/unk_02054190.cpp)
 
@@ -95,29 +59,6 @@ void RoomObj_PlaySe(void *o, s32 v);
 void _ZN14BlendAnimModel8initAnimEiiitt(void *self, s32 a, s32 b, s32 c, u16 d, u16 e);
 }
 
-class RoomObjActor : public Character {
-public:
-    RoomObjActor();
-    virtual ~RoomObjActor();
-    virtual BOOL vfunc_04();
-    virtual BOOL preDelete();
-    virtual BOOL preExecute();
-    virtual BOOL changeSyncState(u32 v);
-    virtual void getSoundPos(Unk_ov004_02224ee4_Vec *out);
-
-    void setSyncSlot(u32 v);
-    s32 storeSyncState();
-    s32 getSyncState();
-    void releaseResources();
-    void loadResourcesByName(char *name);
-    void loadResources(char *a, char *b);
-    virtual BOOL vfunc_20(u32 a);
-
-    /* 0xec */ AnimModel model;
-    /* 0x1a4 */ RoomObjRes res;
-    /* 0x248 */ RoomObjTex tex;
-    /* 0x250 */ RoomObjSe se;
-};
 
 class BarberMachine : public RoomObjActor, public TalkMsgRequest {
 public:
@@ -321,7 +262,7 @@ void BarberMachine::updateState03() {
 
 // @22252cc
 void BarberMachine::initCollision() {
-    BoxCollider_Register(&collider, 0x2000, 0x4000, 0x2000, position, 0, 0);
+    BoxCollider_Register(&collider, 0x2000, 0x4000, 0x2000, &position, 0, 0);
 }
 
 // @22252bc

@@ -24,6 +24,10 @@
 #include "talk/TalkMsgRequest.h"
 #include "snd/BuildingSeEmitter.h"
 #include "town/BuildingActor.h"
+#include "game/TriangleTrigger.h"
+#include "town/BuildingCollider.h"
+#include "game/TouchPickTriangle.h"
+#include "game/CollisionTriangle.h"
 
 
 
@@ -45,11 +49,6 @@
 
 
 // ---- main-module helper classes (declarations only)
-struct TouchPickTriangle {
-    TouchPickTriangle();
-    static void *operator new(unsigned long, void *p) { return p; }
-    u8 pad[0x44];
-};
 
 
 
@@ -59,42 +58,8 @@ struct TouchPickTriangle {
 class BuildingActor;
 struct Unk_ov009_0225cc24_Obj;
 
-class CollisionTriangle {
-public:
-    CollisionTriangle();
-    virtual s32 pushOutFace(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, s32 c);
-    virtual void pushBackCrossing(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, s32 c);
-    virtual void pushOutEdges(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, s32 c);
-    virtual void collide(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, s32 c);
-    virtual void onActorNear(Unk_ov009_0225b880_Vec3 *a, Unk_ov009_0225cc24_Obj *o, s32 off);
-    s32 distanceTo(Unk_0202f2ac_V3 *p);
-    BOOL intersectLine(Unk_0202f2ac_V3 *out, Unk_0202f2ac_V3 *p, Unk_0202f2ac_V3 *q);
 
-    s32 unk_04[9];
-    s32 normal, normalY, normalZ, offset;
-};
 
-class TriangleTrigger : public CollisionTriangle {
-public:
-    TriangleTrigger();
-    void setupTrigger(Unk_02031e10_Vec *a, Unk_02031e10_Vec *b, Unk_02031e10_Vec *c, s32 d);
-
-    TriangleTrigger *next;
-    s32 center, centerY, centerZ;
-    s32 radiusSq;
-};
-
-// ov009 element (vtable 0x0225e280, size 0x54), one per ground-collision triangle
-class BuildingCollider : public TriangleTrigger {
-public:
-    BuildingCollider();
-    virtual void onActorNear(Unk_ov009_0225b880_Vec3 *a, Unk_ov009_0225cc24_Obj *o, s32 off);
-    BOOL isPlayerAtDoor(Unk_ov009_0225b880_Vec3 *v, s32 off, Unk_ov009_0225cc24_Obj *o);
-    static void *operator new(unsigned long, void *p) { return p; }
-
-    /* 0x4c */ BuildingActor *building;
-    /* 0x50 */ s32 entranceType;
-};
 
 
 

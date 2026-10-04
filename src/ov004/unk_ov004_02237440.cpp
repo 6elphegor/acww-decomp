@@ -7,6 +7,7 @@
 #include "game/Unk_ov004_0223d800_Vec.h"
 #include "game/GroundInfoBase.h"
 #include "gfx/ModelAnim.h"
+#include "game/GroundInfo.h"
 
 // ---- main / runtime symbols by their real names
 #define func_02000c8c _ZN6FxVec3D1Ev
@@ -63,11 +64,6 @@
 // ---- main-module classes used by this unit
 
 
-class GroundInfo : public GroundInfoBase {
-public:
-    GroundInfo() {}
-    GroundInfo *initAtPos(Unk_0203389c_Vec *v, s32 a, s32 b);
-};
 
 
 // vtable 0x0224ec70
@@ -1271,7 +1267,6 @@ extern "C" u8 MuseumInsect_ProbeFloor(Obj_d800 *o) {
         GroundInfo g;
         g.initAtPos((Unk_0203389c_Vec *)(p), 0, 1);
         d = g.getHeight(1);
-        GroundInfo_Destruct(&g);
     }
     if (d <= 0 || d > p->y || (b == 0x1e && MuseumInsect_ClampToBounds((Unk_ov004_0223d800_Bounds *)o, p) != 0)) {
         r++;
@@ -1280,7 +1275,6 @@ extern "C" u8 MuseumInsect_ProbeFloor(Obj_d800 *o) {
         GroundInfo g;
         g.initAtPos((Unk_0203389c_Vec *)(p + 1), 0, 1);
         d = g.getHeight(1);
-        GroundInfo_Destruct(&g);
     }
     if (d <= 0 || d > p[1].y || (b == 0x1e && MuseumInsect_ClampToBounds((Unk_ov004_0223d800_Bounds *)o, p + 1) != 0)) {
         r = r + 2;
@@ -1379,7 +1373,6 @@ extern "C" BOOL MuseumInsect_RevertIfOffFloor(void *o_, void *v_) {
         } else {
             far = FALSE;
         }
-        GroundInfo_Destruct(&g);
     }
     if (far) {
         o->x = v->x;
@@ -1394,7 +1387,6 @@ extern "C" BOOL MuseumInsect_RevertIfOffFloor(void *o_, void *v_) {
         } else {
             far = FALSE;
         }
-        GroundInfo_Destruct(&g);
     }
     if (far) {
         o->z = v->z;
@@ -2143,7 +2135,6 @@ extern "C" void MuseumInsect_HopperHop(Obj_c4bc *o)
             GroundInfo loc;
             loc.initAtPos((Unk_0203389c_Vec *)(r4), 0, 1);
             t = loc.getHeight(0);
-            GroundInfo_Destruct(&loc);
         }
         if (!func_020e7870(&r4->y, t, r7, 0x1000, 0x266)) {
             o->subCounter = (Random_GlobalBelow(9) + 2) * 20;
@@ -2599,7 +2590,6 @@ extern "C" void MuseumInsect_MoleCricketJump(Obj_bb5c *self, s16 *p)
         } else {
             ok = TRUE;
         }
-        GroundInfo_Destruct(&g);
     }
     if (ok && *p > 0) {
         self->moveState = 4;

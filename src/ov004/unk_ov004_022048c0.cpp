@@ -13,6 +13,7 @@
 #include "talk/ChoiceList.h"
 #include "talk/MsgRequest.h"
 #include "talk/TalkMsgRequest.h"
+#include "game/TouchPickTriangle.h"
 
 
 // ---------------------------------------------------------------- library base chain (as in link_ov009)
@@ -27,9 +28,6 @@
 
 
 
-struct TouchPickBox {
-    u8 pad[0x2a8];
-};
 
 
 
@@ -88,7 +86,7 @@ public:
 
     /* 0x130 */ s32 talkAct;
     /* 0x134 */ u8 collider[0x9c]; // BoxCollider (ctor C1 / dtor D2 called by hand, as the original does)
-    /* 0x1d0 */ TouchPickBox touchBox; // (ctor C2 / dtor D2 called by hand)
+    /* 0x1d0 */ u32 touchBox[0x2a8 / 4]; // a TouchPickBox (ctor C2 / dtor D2 called by hand)
 };
 
 typedef void (Atm::*Unk_02204a88_Fn)();
@@ -114,12 +112,12 @@ extern "C" Atm *Atm_GetInstance() {
 
 Atm::Atm() {
     _ZN11BoxColliderC1Ev(collider);
-    _ZN12TouchPickBoxC2Ev(&touchBox);
+    _ZN12TouchPickBoxC2Ev(touchBox);
     sAtmInstance = 0;
 }
 
 Atm::~Atm() {
-    _ZN12TouchPickBoxD2Ev(&touchBox);
+    _ZN12TouchPickBoxD2Ev(touchBox);
     _ZN11BoxColliderD2Ev(collider);
 }
 
@@ -133,7 +131,7 @@ BOOL Atm::vfunc_00() {
 
 BOOL Atm::onExecute() {
     execTalkAct();
-    Scene_GetTouchPicker()->pushBox(&touchBox);
+    Scene_GetTouchPicker()->pushBox((TouchPickBox *)touchBox);
     return TRUE;
 }
 
@@ -148,7 +146,7 @@ BOOL Atm::vfunc_0c() {
 
 void Atm::initCollision() {
     BoxCollider_Register(collider, 0x2000, 0x2000, 0x2000, &position.x, 0, 0);
-    Scene_GetTouchPicker()->addBox(&touchBox, (Vec3 *)&position, 0x2000, 0x2000, 0x2000, 0, 0xb, 0xff);
+    Scene_GetTouchPicker()->addBox((TouchPickBox *)touchBox, (Vec3 *)&position, 0x2000, 0x2000, 0x2000, 0, 0xb, 0xff);
 }
 
 BOOL Atm::releaseCollision() {

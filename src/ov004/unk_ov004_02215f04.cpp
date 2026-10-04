@@ -19,6 +19,7 @@
 #include "actor/VillagerActor.h"
 #include "talk/Unk_020d7710.h"
 #include "talk/VillagerTalk.h"
+#include "npc/BirthdayHostVillager.h"
 
 extern "C" {
 struct Unk_ov004_02215c94_S : Unk_ov004_02215c94_V {
@@ -106,13 +107,6 @@ public:
     /* 0xa58 */ Unk_020d77a4_Vec3 walkTarget;
 };
 
-// Menu of TU06, seen from here: only what the code in this unit touches.
-class BirthdayHostVillager : public VillagerActor {
-public:
-    BOOL changeAct(s32 idx);
-
-    /* 0x894 */ s32 act;
-};
 
 typedef Unk_020d77a4_Vec3 Unk_ov004_Vec3;
 
