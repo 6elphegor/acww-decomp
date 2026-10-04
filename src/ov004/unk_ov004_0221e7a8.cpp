@@ -1,6 +1,8 @@
 // mwcc-version: 1.2/base
 // mwcc-flags: -str reuse
 #include "types.h"
+#include "actor/Unk_0203e5d0_Node.h"
+#include "gfx/Unk_02055704.h"
 
 extern "C" {
 void _ZN19PlayerActionRequestC1Ev(void *self);
@@ -61,12 +63,6 @@ struct Unk_ov004_02224ee4_Vec {
     s32 x, y, z;
 };
 
-struct Unk_0203e5d0_Node {
-    /* 0x00 */ u32 unk_00;
-    /* 0x04 */ Unk_0203e5d0_Node *next;
-    /* 0x08 */ u32 charId;
-    /* 0x0c */ void *owner;
-};
 
 class Actor : public GameProc {
 public:
@@ -110,12 +106,6 @@ public:
 };
 
 // ---- model resource sub-object at +0xec (see src/main/unk_02054190.cpp)
-class Unk_02055704 {
-public:
-    Unk_02055704();
-    virtual ~Unk_02055704();
-    u8 pad_04[0x94];
-};
 
 class CachedModel : public Unk_02055704 {
 public:

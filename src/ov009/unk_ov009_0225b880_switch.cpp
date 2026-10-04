@@ -1,6 +1,7 @@
 // mwcc-version: 1.2/base
 #include "types.h"
 #include "game/Unk_0202f2ac_V3.h"
+#include "actor/Unk_0203e5d0_Node.h"
 
 // Library base class chain (header GameProc.h rebuilt so that the vtable names the real symbols:
 // slot 08 is Character::postCreate(int)).
@@ -80,12 +81,6 @@ public:
     /* 0xd2 */ u16 pad_d2;
 };
 
-struct Unk_0203e5d0_Node {
-    /* 0x00 */ u32 unk_00;
-    /* 0x04 */ Unk_0203e5d0_Node *next;
-    /* 0x08 */ u32 charId;
-    /* 0x0c */ void *owner;
-};
 
 class Character : public Actor {
 public:

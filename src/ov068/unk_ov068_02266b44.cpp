@@ -1,5 +1,6 @@
 // mwcc-version: 1.2/base
 #include "types.h"
+#include "npc/Unk_0201a13c.h"
 
 // Library base class (same as GameProc.h, but vfunc_08 takes the s32 the vtable symbol names).
 class ProcBase {
@@ -151,7 +152,6 @@ struct Unk_0201a8bc { Unk_0201a8bc(); u8 pad[2]; };
 struct Unk_0201ad18 { Unk_0201ad18(); u8 pad[6]; };
 struct Unk_0201a794 { Unk_0201a794(); u32 pad[0x68 / 4]; };
 struct NpcSpeechState { NpcSpeechState(); u32 pad[8 / 4]; };
-struct Unk_0201a13c { Unk_0201a13c(); u32 pad[0x7c / 4]; };
 struct CollisionState { CollisionState(); u32 pad[0x30 / 4]; };
 struct Unk_02088d00 { Unk_02088d00(); u32 pad[0x1c / 4]; u32 groups; u32 pad_20[0x24 / 4]; u8 collisionEnabled; u8 pad_45[3]; };
 struct Unk_020f4080 { Unk_020f4080(); u32 pad[0x44 / 4]; };

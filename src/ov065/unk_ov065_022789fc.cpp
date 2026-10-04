@@ -1,15 +1,12 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
 #include "net/Unk_ov065_0227931c_Owner.h"
+#include "net/Unk_ov065_02291094.h"
 
 typedef long long s64;
 
 // ov065 TU36: GameSpy common (nonport: PRNG/base64/socket wrappers, ghttpBuffer) 0x022789fc..0x0227931c
 
-struct Unk_ov065_02291094 {
-    u32 hostIp;
-    u8 pad_04[0x10];
-};
 
 extern "C" {
 extern const char data_ov065_0228b394[4] = "[]_";

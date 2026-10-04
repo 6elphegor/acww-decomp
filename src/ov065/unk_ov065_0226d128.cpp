@@ -1,6 +1,7 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
 #include "net/Unk_ov065_0226d158_Owner.h"
+#include "net/Unk_ov065_02290600_Obj.h"
 
 typedef unsigned long long u64;
 typedef long long s64;
@@ -13,21 +14,7 @@ typedef void (*Unk_ov065_0226dd2c_Free)(const char *, void *, u32);
 
 
 
-struct Unk_ov065_02290604_S {
-    u64 userId;
-    u64 tempUserId;
-    u16 password;
-};
 
-struct Unk_ov065_02290600_Obj {
-    u8 pad_00[0x24];
-    s32 result;
-    u8 pad_28[0x938 - 0x28];
-    void *responseBuffer;
-    u8 pad_93c[0x968 - 0x93c];
-    u8 thread[0x9d4 - 0x968];
-    s32 threadId;
-};
 
 struct Unk_ov065_0226dd2c_Cfg {
     u32 v[11];

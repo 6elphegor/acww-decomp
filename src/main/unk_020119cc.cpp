@@ -2,6 +2,7 @@
 #include "types.h"
 #include "game/Unk_0201acf8.h"
 #include "game/Unk_020d77a4_Vec3.h"
+#include "npc/Unk_0201a13c.h"
 
 // unk_02011580.cpp
 struct HudObjGfx {
@@ -1912,39 +1913,6 @@ struct Unk_0201a25c_Src {
     s16 rotY;
 };
 
-// unk_02019998.cpp
-struct Unk_0201a13c {
-    u8 lookType;
-    u8 pad_01[7];
-    u8 targetPos[0x10];
-    u8 disabled;
-    u8 pad_19;
-    s16 pitch;
-    s16 pitchStep;
-    s16 manualPitch;
-    u8 pad_20[2];
-    s16 yaw;
-    s16 yawStep;
-    s16 manualYaw;
-    s16 yawLimit;
-    u8 onTarget;
-    u8 pad_2b[0x5c - 0x2b];
-    s32 maxDistance;
-    u8 useYawLimit;
-    u8 pad_61[0x7c - 0x61];
-
-    Unk_0201a13c();
-    ~Unk_0201a13c();
-    BOOL isOnTarget();
-    BOOL isWithinYawLimit(s32 v);
-    void update(Unk_0201a1e0_Base *base);
-    void approachManualAngles();
-    void lookAtPoint(Unk_0201a25c_Src *o);
-    s32 func_0201a53c(void *a, void *b, s32 c);
-    s32 func_0201a578(void *a, void *b, s32 c);
-    s32 func_0201a5b8(void *a, void *b, s32 c);
-    BOOL NpcLookAt_GetHeadPos(void *a);
-};
 
 // unk_0201a334.cpp
 struct Unk_0201a334_Vec3 { s32 x, y, z; };

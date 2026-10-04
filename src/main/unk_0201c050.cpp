@@ -3,6 +3,7 @@
 #include "net/CommManager.h"
 #include "game/Unk_0202368c_Obj.h"
 #include "game/Unk_020d77a4_Vec3.h"
+#include "npc/Unk_0202d7f4.h"
 
 
 class VillagerTalk;
@@ -218,11 +219,6 @@ struct Unk_020d8938_Tbl {
     Unk_020d8938_Fn c;
 };
 
-struct Unk_0202d7f4 {
-    Unk_0202d7f4();
-    ~Unk_0202d7f4();
-    u32 pad[0x34 / 4];
-};
 
 struct VillagerAnimHeapHandle {
     VillagerAnimHeapHandle();

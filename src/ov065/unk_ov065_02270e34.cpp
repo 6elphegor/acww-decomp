@@ -6,6 +6,8 @@
 #include "net/Unk_ov065_0227112c_Cfg.h"
 #include "net/Unk_ov065_0227194c_Out.h"
 #include "net/Unk_ov065_02272428_Sub.h"
+#include "net/Unk_ov065_0229080c.h"
+#include "net/Unk_ov065_02290814.h"
 
 typedef long long s64;
 
@@ -298,82 +300,14 @@ s32 DwcFriend_Tick(void);
 }
 
 namespace F02271da0 {
-struct Unk_ov065_0229080c_Big {
-    u8 unk_00[0x214];
-    s32 lastStatus;
-    u8 lastStatusString[0x100];
-    u8 lastLocationString[0x100];
-};
-
-struct Unk_ov065_0229080c_Sub {
-    Unk_ov065_0229080c_Big *connection;
-};
-
-struct Unk_ov065_0229080c_Ent {
-    u8 unk_00[0xc];
-};
-
-struct Unk_ov065_0229080c {
-    s32 updateState;
-    Unk_ov065_0229080c_Sub *gpConnection;
-    u32 tickCount;
-    u32 lastTick;
-    u32 lastProcessTickHi;
-    s32 numFriends;
-    Unk_ov065_0229080c_Ent *friendList;
-    u8 syncIndex;
-    u8 isListChanged;
-    u8 syncPhase;
-    u8 updateStep;
-    u32 unk_20;
-    u32 unk_24;
-    u32 buddyRequestText;
-    void (*unk_2c)(s32, u32, s32);
-    s32 updateCallbackArg;
-    void (*unk_34)(s32, s32, char *, s32);
-    s32 statusCallbackArg;
-    void (*unk_3c)(void);
-    void (*unk_40)(void);
-    void (*unk_44)(s32, s32);
-    s32 addedCallbackArg;
-    u32 unk_4c;
-    u32 unk_50;
-};
 
 
 
 
-struct Unk_ov065_02290814_Sub {
-    u32 transportSocket;
-};
 
-struct Unk_ov065_02290814 {
-    u8 gpConnection[4];
-    Unk_ov065_02290814_Sub *transportSocketPtr;
-    s32 transportCallbacks;
-    u8 connectRetryCount;
-    u8 numClients;
-    u8 unk_0e[6];
-    u8 numPlayers;
-    volatile u8 matchType;
-    u8 unk_16[0xde];
-    u32 memberProfileIds[32];
-    u8 nnRetryCount;
-    u8 nnFailCount;
-    u8 nnCookieHigh[2];
-    u32 nnLastCookie;
-    u32 nnRetryTime;
-    u32 nnRetryTimeHi;
-    u32 connectWaitTime;
-    u32 connectWaitTimeHi;
-    u8 unk_18c[0xc];
-    s32 state;
-    u8 unk_19c[0x4c];
-    u32 profileId;
-    u8 unk_1ec[0xc];
-    u32 memberConnectIps[32];
-    u16 memberConnectPorts[32];
-};
+
+
+
 
 extern "C" {
 extern Unk_ov065_0229080c *sDwcFriendControl;

@@ -4,6 +4,9 @@
 #include "gfx/Unk_ov004_Mtx.h"
 #include "gfx/Unk_ov004_Rgba.h"
 #include "actor/Unk_ov004_SceneEntry.h"
+#include "actor/Unk_02002f14_Node.h"
+#include "actor/Unk_0203e5d0_Node.h"
+#include "game/Unk_0203e4f0_Vec.h"
 
 // ================================================================ plain value types
 struct Vec3 {
@@ -13,9 +16,6 @@ struct Vec3 {
 
 typedef Vec3 Unk_ov004_Vec3;
 struct Unk_ov004_02205d8c_Vec {
-    s32 x, y, z;
-};
-struct Unk_0203e4f0_Vec {
     s32 x, y, z;
 };
 typedef Vec3 Unk_ov004_022077a4_Vec3;
@@ -70,11 +70,6 @@ public:
     /* 0x04 */ u8 unk_04[0x4c];
 };
 
-struct Unk_02002f14_Node {
-    void *prev;
-    void *next;
-    void *owner;
-};
 
 class Actor : public GameProc {
 public:
@@ -95,12 +90,6 @@ public:
     /* 0x90 */ u8 pad_90[0xd4 - 0x90];
 };
 
-struct Unk_0203e5d0_Node {
-    u32 unk_00;
-    Unk_0203e5d0_Node *next;
-    u32 charId;
-    void *owner;
-};
 
 class Character : public Actor {
 public:

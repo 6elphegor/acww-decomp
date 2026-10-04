@@ -3,6 +3,7 @@
 #include "net/Unk_ov065_0226b488_Rec.h"
 #include "net/Unk_ov065_0226cfe4_Buf.h"
 #include "net/Unk_ov065_0226d158_Owner.h"
+#include "net/Unk_ov065_02290600_Obj.h"
 #pragma opt_strength_reduction off
 
 extern "C" {
@@ -34,21 +35,7 @@ typedef long long s64;
 
 
 
-struct Unk_ov065_02290604_S {
-    u64 userId;
-    u64 tempUserId;
-    u16 password;
-};
 
-struct Unk_ov065_02290600_Obj {
-    u8 pad_00[0x24];
-    s32 result;
-    u8 pad_28[0x938 - 0x28];
-    void *responseBuffer;
-    u8 pad_93c[0x968 - 0x93c];
-    u8 thread[0x9d4 - 0x968];
-    s32 threadId;
-};
 
 typedef void *(*Unk_ov065_02290600_Alloc)(const char *, u32);
 typedef void (*Unk_ov065_02290600_Free)(const char *, void *, u32);

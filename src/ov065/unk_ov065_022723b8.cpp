@@ -3,6 +3,9 @@
 #include "net/Unk_ov065_0227194c_Out.h"
 #include "net/Unk_ov065_02272428_Sub.h"
 #include "net/Unk_ov065_02277418_Rec.h"
+#include "net/Unk_ov065_0229080c.h"
+#include "net/Unk_ov065_02290814.h"
+#include "net/Unk_ov065_02290840_Ent.h"
 
 typedef long long s64;
 
@@ -21,82 +24,14 @@ extern "C" {
 
 // ov065_031: DWC-like connection/http glue (0x02271da0..0x022726a0)
 
-struct Unk_ov065_0229080c_Big {
-    u8 unk_00[0x214];
-    s32 lastStatus;
-    u8 lastStatusString[0x100];
-    u8 lastLocationString[0x100];
-};
-
-struct Unk_ov065_0229080c_Sub {
-    Unk_ov065_0229080c_Big *connection;
-};
-
-struct Unk_ov065_0229080c_Ent {
-    u8 unk_00[0xc];
-};
-
-struct Unk_ov065_0229080c {
-    s32 updateState;
-    Unk_ov065_0229080c_Sub *gpConnection;
-    u32 tickCount;
-    u32 lastTick;
-    u32 lastProcessTickHi;
-    s32 numFriends;
-    Unk_ov065_0229080c_Ent *friendList;
-    u8 syncIndex;
-    u8 isListChanged;
-    u8 syncPhase;
-    u8 updateStep;
-    u32 unk_20;
-    u32 unk_24;
-    u32 buddyRequestText;
-    void (*unk_2c)(s32, u32, s32);
-    s32 updateCallbackArg;
-    void (*unk_34)(s32, s32, char *, s32);
-    s32 statusCallbackArg;
-    void (*unk_3c)(void);
-    void (*unk_40)(void);
-    void (*unk_44)(s32, s32);
-    s32 addedCallbackArg;
-    u32 unk_4c;
-    u32 unk_50;
-};
 
 
 
 
-struct Unk_ov065_02290814_Sub {
-    u32 transportSocket;
-};
 
-struct Unk_ov065_02290814 {
-    u8 gpConnection[4];
-    Unk_ov065_02290814_Sub *transportSocketPtr;
-    s32 transportCallbacks;
-    u8 connectRetryCount;
-    u8 numClients;
-    u8 unk_0e[6];
-    u8 numPlayers;
-    volatile u8 matchType;
-    u8 unk_16[0xde];
-    u32 memberProfileIds[32];
-    u8 nnRetryCount;
-    u8 nnFailCount;
-    u8 nnCookieHigh[2];
-    u32 nnLastCookie;
-    u32 nnRetryTime;
-    u32 nnRetryTimeHi;
-    u32 connectWaitTime;
-    u32 connectWaitTimeHi;
-    u8 unk_18c[0xc];
-    s32 state;
-    u8 unk_19c[0x4c];
-    u32 profileId;
-    u8 unk_1ec[0xc];
-    u32 memberConnectIps[32];
-    u16 memberConnectPorts[32];
-};
+
+
+
 
 
 extern "C" {
@@ -229,12 +164,6 @@ struct Unk_ov065_02290818_Sm {
     u64 lastSendTime;
 };
 
-struct Unk_ov065_02290840_Ent {
-    u8 keyId;
-    u8 isString;
-    u8 unk_02[6];
-    s32 *value;
-};
 
 extern "C" {
 extern Unk_ov065_02290814_Ctx *sDwcMatch;
@@ -698,103 +627,8 @@ extern "C" {
 
 // ov065_036: DWC matchmaking / SB (server browser) request code (0x022751b0..0x02275c60)
 
-struct Unk_ov065_02290814_Sub {
-    u32 transportSocket;
-};
 
-struct Unk_ov065_02275474_Arg {
-    u8 clientIndex;
-    u8 retryCount;
-    u16 peerPort;
-    u32 peerIp;
-    u32 cookie;
-};
 
-struct Unk_ov065_02290814 {
-    u32 gpConnection;
-    Unk_ov065_02290814_Sub *transportSocketPtr;
-    u8 transportCallbacks[4];
-    u8 connectRetryCount;
-    u8 numClients;
-    u8 numValidClients;
-    u8 unk_0f[5];
-    u8 numPlayers;
-    volatile u8 matchType;
-    u8 maxPlayers;
-    u8 unk_17;
-    u8 unk_18;
-    u8 unk_19;
-    u16 publicPort;
-    u32 publicIp;
-    u32 reservation;
-    u8 memberIps[0x80];
-    u8 memberPorts[0x40];
-    u32 serverBrowser;
-    u32 queryRetryMode;
-    u8 unk_ec[8];
-    u32 memberProfileIds[32];
-    u8 nnRetryCount;
-    u8 nnFailCount;
-    u16 nnCookieHigh;
-    u32 nnLastCookie;
-    u32 nnRetryTime;
-    u32 nnRetryTimeHi;
-    u32 connectWaitTime;
-    u32 connectWaitTimeHi;
-    Unk_ov065_02275474_Arg nnRequest;
-    s32 state;
-    u8 unk_19c;
-    u8 unk_19d;
-    u8 unk_19e;
-    u8 unk_19f;
-    u8 closeState;
-    u8 unk_1a1;
-    u8 unk_1a2;
-    u8 unk_1a3;
-    u8 unk_1a4;
-    u8 unk_1a5;
-    u16 syncWaitMs;
-    u16 unk_1a8;
-    u16 targetServerPort;
-    u32 targetServerIp;
-    u32 unk_1b0;
-    u32 unk_1b4;
-    u32 unk_1b8;
-    u32 unk_1bc;
-    u32 unk_1c0;
-    u32 unk_1c4;
-    u32 syncAckMask;
-    u32 unk_1cc;
-    u32 unk_1d0;
-    u32 unk_1d4;
-    u32 unk_1d8;
-    u32 unk_1dc;
-    u32 waitStartTime;
-    u32 waitStartTimeHi;
-    u32 profileId;
-    u32 serverProfileId;
-    u32 targetProfileId;
-    u32 unk_1f4;
-    u32 memberConnectIps[32];
-    u16 memberConnectPorts[32];
-    u8 aids[0x20];
-    u32 validAidMask;
-    u8 unk_2dc[0x54];
-    u8 unk_330[0x84];
-    u8 cmdType;
-    u8 unk_3b5;
-    u16 cmdPort;
-    u32 cmdIp;
-    u32 cmdArgs[32];
-    u32 cmdProfileId;
-    u32 cmdArgCount;
-    u32 cmdTime;
-    u32 cmdTimeHi;
-    u32 unk_44c;
-    u32 matchCallbackParam;
-    u32 unk_454;
-    u32 unk_458;
-};
 
 struct Unk_ov065_02275298_Hdr {
     char magic[4];
@@ -807,10 +641,6 @@ struct Unk_ov065_02275298_Hdr {
     u32 cmdArgs[32];
 };
 
-struct Unk_ov065_02290840_Ent {
-    u8 keyId;
-    u8 unk_01[11];
-};
 
 extern Unk_ov065_02290814 *sDwcMatch;
 extern u32 sDwcMatchUserFilter;
@@ -902,63 +732,7 @@ extern "C" {
 
 typedef s32 (*Unk_ov065_0227627c_Fn)(s32, s32, s32, s32, s32, s32);
 
-struct Unk_ov065_02290814_Sub {
-    u32 transportSocket;
-};
 
-struct Unk_ov065_02290814 {
-    u32 gpConnection;
-    Unk_ov065_02290814_Sub *transportSocketPtr;
-    u32 transportCallbacks;
-    u8 connectRetryCount;
-    u8 numClients;
-    u8 numValidClients;
-    u8 unk_0f;
-    u32 qrHandle;
-    volatile u8 numPlayers;
-    volatile u8 matchType;
-    u8 maxPlayers;
-    u8 unk_17;
-    u8 unk_18[8];
-    u32 reservation;
-    u32 memberIps[32];
-    u16 memberPorts[32];
-    u32 serverBrowser;
-    s32 queryRetryMode;
-    u32 queryRetryTick;
-    u32 queryRetryTickHi;
-    u32 memberProfileIds[32];
-    u32 unk_174[4];
-    u32 connectWaitTime;
-    u32 connectWaitTimeHi;
-    u8 unk_18c[8];
-    u32 nnCookie;
-    s32 state;
-    u8 unk_19c[4];
-    u8 closeState;
-    u8 unk_1a1;
-    u8 unk_1a2[4];
-    u16 syncWaitMs;
-    u8 unk_1a8[0x20];
-    u32 syncAckMask;
-    u8 unk_1cc[0x14];
-    u32 waitStartTime;
-    u32 waitStartTimeHi;
-    u32 profileId;
-    u32 serverProfileId;
-    u32 targetProfileId;
-    u32 unk_1f4;
-    u32 memberConnectIps[32];
-    u16 memberConnectPorts[32];
-    u8 aids[0x20];
-    u32 validAidMask;
-    u8 unk_2dc[0xd8];
-    u8 cmdType;
-    u8 unk_3b5;
-    u8 unk_3b6[0x96];
-    Unk_ov065_0227627c_Fn unk_44c;
-    u32 matchCallbackParam;
-};
 
 struct Unk_ov065_02270344_Rec {
     u8 slotIndex;
@@ -2079,9 +1853,9 @@ BOOL DwcMatch_OnConnectionClosed(s32 a, u32 b) {
     if (g->unk_1a1 == 1 || (u8)(g->closeState + 0xff) <= 1) {
         return TRUE;
     }
-    if (g->nnCookie != 0) {
-        GsNatNeg_Cancel(g->nnCookie);
-        g->nnCookie = 0;
+    if (g->nnRequest.cookie != 0) {
+        GsNatNeg_Cancel(g->nnRequest.cookie);
+        g->nnRequest.cookie = 0;
     }
     if (g->numClients != 0) {
         if (g->closeState == 0) {
@@ -2442,7 +2216,7 @@ void DwcMatch_Init(u32 a, u32 b, u32 c, u32 d) {
     DwcMatch_ResetState(0);
     G->matchType = a;
     G->maxPlayers = b;
-    G->unk_44c = c;
+    G->unk_44c = (Unk_ov065_0227627c_Fn)c;
     G->matchCallbackParam = d;
     G->nnFailCount = 0;
     G->aids[0] = 0;

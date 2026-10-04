@@ -2,6 +2,7 @@
 #include "types.h"
 #include "net/Unk_ov065_0227931c_Owner.h"
 #include "net/Unk_ov065_02279c7c.h"
+#include "net/Unk_ov065_02291094.h"
 
 // ov065 TU37: ghttp (1): ghttpBuffer / connection table / ghttpMain (0x0227931c..0x0227a284)
 
@@ -24,9 +25,6 @@ namespace Ng {
 
 
 extern s32 sGsSockLastError;
-struct Unk_ov065_02291094 {
-    u32 hostIp;
-};
 extern Unk_ov065_02291094 data_ov065_02291094;
 extern u8 data_0213a410[];
 

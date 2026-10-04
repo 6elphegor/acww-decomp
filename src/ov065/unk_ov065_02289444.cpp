@@ -2,6 +2,7 @@
 #include "types.h"
 #include "net/Unk_ov065_022786bc_Vec.h"
 #include "net/Unk_ov065_02288ffc_W.h"
+#include "net/Unk_ov065_02289460_Obj.h"
 
 extern "C" {
 char *data_ov065_0228e954 = "Query Error: ";
@@ -14,90 +15,17 @@ namespace F02288e2c {
 
 // ov065_067: GameSpy-like key/value parsing, hash table wrappers, connection object (0x02288e2c..0x02289720)
 
-struct Unk_ov065_02289258_Pad {
-    s32 v[1];
-    Unk_ov065_02289258_Pad() {}
-    ~Unk_ov065_02289258_Pad() {}
-};
 
 
-struct Unk_ov065_0228909c_P {
-    u32 a;
-    u32 b;
-};
 
-struct Unk_ov065_02289044_Hdr {
-    u8 pad_00[4];
-    u16 port;
-    u8 pad_06[6];
-    u16 port2;
-    u8 pad_0e[7];
-    u8 listFlags;
-};
 
-struct Unk_ov065_02289174_Ctx {
-    u8 pad_00[0x18];
-    void *keyValues;
-};
 
-struct Unk_ov065_0228911c_Ent {
-    s32 key;
-    s32 value;
-};
 
-struct Unk_ov065_02289174_KV {
-    s32 key;
-    s32 value;
-};
 
-struct Unk_ov065_0228903c_Obj {
-    u8 pad_00[0x20];
-    s32 next;
-};
 
-struct Unk_ov065_02289578_Pkt {
-    u32 addr;
-    u16 port;
-    u8 pad_06[8];
-    u8 unk_0e[6];
-    u8 stateFlags;
-    u8 listFlags;
-};
 
-struct Unk_ov065_02289720_Sub {
-    s32 state;
-    u8 pad_04[0x484];
-    void (*unk_488)(Unk_ov065_02289720_Sub *, s32, s32, void *);
-    u8 pad_48c[8];
-    void *callbackParam;
-    u8 pad_498[0x18];
-    s32 socket;
-    u32 lanStartTime;
-};
 
-struct Unk_ov065_02289460_Obj {
-    u8 pad_00[0x10];
-    s32 numActiveQueries;
-    u8 pad_14[0x2c];
-    s32 numQueryKeys;
-    u8 pad_44[8];
-    s32 serverList;
-    u8 pad_50[0x49c];
-    s32 myPublicIp;
-    u8 pad_4f0[0x130];
-    s32 disconnectOnComplete;
-    s32 noAutoQuery;
-    u32 waitServerIp;
-    u16 waitServerPort;
-    u8 pad_62e[2];
-    void (*unk_630)(Unk_ov065_02289460_Obj *, s32, void *, void *);
-    void *userData;
-};
 
-struct Unk_ov065_02289578_Sub {
-    s32 unk_00;
-    void *servers;
-};
 
 static inline u16 Unk_ov065_02289044_Htons(u16 x) {
     return (x >> 8 & 0xff) | ((x << 8) & 0xff00);

@@ -3,6 +3,7 @@
 #include "gfx/Unk_020bfe30_Vec.h"
 #include "npc/Unk_020c0538_Out.h"
 #include "game/Unk_020d77a4_Vec3.h"
+#include "npc/Unk_0201a13c.h"
 
 typedef Unk_020bfe30_Vec Unk_020c0acc_Vec;
 
@@ -241,11 +242,6 @@ struct Unk_0201a8bc { u8 unk_00[2]; Unk_0201a8bc(); };
 struct Unk_0201ad18 { u8 unk_00[6]; Unk_0201ad18(); };
 MEMBER(Unk_0201a794, 0x418 - 0x3b0);
 MEMBER(NpcSpeechState, 8);
-struct Unk_0201a13c {
-    u8 unk_00[0x58];
-    u8 unk_58[0x7c - 0x58];
-    Unk_0201a13c();
-};
 MEMBER(CollisionState, 0x30);
 struct ActorFollowCollider {
     u8 unk_00[0x1c];

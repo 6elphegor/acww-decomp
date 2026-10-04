@@ -3,6 +3,9 @@
 #include "room/Unk_ov004_0224882c_Buf.h"
 #include "gfx/Unk_ov004_Mtx.h"
 #include "room/FtrActorViews.h"
+#include "actor/Unk_02002f14_Node.h"
+#include "actor/Unk_0203e5d0_Node.h"
+#include "game/Unk_0203e4f0_Vec.h"
 // The two functions of the ov004 translation unit 0x02209f70-0x022136d0 that need mwcc 1.2/base (signed-halfword
 // switch tables): FtrSingingInsect::updateActive and vfunc_7c. Same declarations as the main file of the unit;
 // nothing else is emitted here (see config/usa/arm9/overlays/ov004/object_order.txt).
@@ -21,9 +24,6 @@ struct Vec3 {
 
 typedef Vec3 Unk_ov004_Vec3;
 struct Unk_ov004_02205d8c_Vec {
-    s32 x, y, z;
-};
-struct Unk_0203e4f0_Vec {
     s32 x, y, z;
 };
 typedef Vec3 Unk_ov004_022077a4_Vec3;
@@ -78,11 +78,6 @@ public:
     /* 0x04 */ u8 unk_04[0x4c];
 };
 
-struct Unk_02002f14_Node {
-    void *prev;
-    void *next;
-    void *owner;
-};
 
 class Actor : public GameProc {
 public:
@@ -103,12 +98,6 @@ public:
     /* 0x90 */ u8 pad_90[0xd4 - 0x90];
 };
 
-struct Unk_0203e5d0_Node {
-    u32 unk_00;
-    Unk_0203e5d0_Node *next;
-    u32 charId;
-    void *owner;
-};
 
 class Character : public Actor {
 public:

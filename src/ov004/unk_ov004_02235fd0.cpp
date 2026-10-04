@@ -4,6 +4,7 @@
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
 #include "actor/Unk_02002cb0_Vec.h"
+#include "actor/Unk_02002f14_Node.h"
 
 // main / runtime symbols by their real names
 #define func_02000c8c _ZN6FxVec3D1Ev
@@ -42,11 +43,6 @@
 
 #pragma opt_loop_invariants off
 
-struct Unk_02002f14_Node {
-    void *prev;
-    void *next;
-    void *owner;
-};
 
 struct Unk_ov004_02236320_V3 {
     s32 x, y, z;

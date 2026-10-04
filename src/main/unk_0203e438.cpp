@@ -1,4 +1,6 @@
 #include "types.h"
+#include "actor/Unk_0203e5d0_Node.h"
+#include "game/Unk_0203e4f0_Vec.h"
 // Library base class; its code is ARM in autoload_2 and ITCM. It allocates its objects on a separate heap.
 class ProcBase {
 public:
@@ -51,12 +53,6 @@ struct Unk_0203e22c_State {
 
 class Character;
 
-struct Unk_0203e5d0_Node {
-    /* 0x00 */ u32 unk_00;
-    /* 0x04 */ Unk_0203e5d0_Node *next;
-    /* 0x08 */ u32 charId;
-    /* 0x0c */ Character *owner;
-};
 
 struct Unk_0203e5d0_List {
     /* 0x00 */ Unk_0203e5d0_Node *head;
@@ -77,9 +73,6 @@ struct Unk_0203e938_Net {
     /* 0x64 */ u32 myAid;
 };
 
-struct Unk_0203e4f0_Vec {
-    s32 x, y, z;
-};
 
 extern "C" {
 extern Unk_0203e22c_State *gTalkRequestCurrent;

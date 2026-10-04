@@ -5,6 +5,7 @@
 #include "actor/Unk_02002cb0_Vec.h"
 #include "actor/Unk_02002f14_S16Vec.h"
 #include "actor/Unk_02002f14_S32Vec.h"
+#include "actor/Unk_02002f14_Node.h"
 
 typedef volatile u16 vu16;
 typedef volatile u32 vu32;
@@ -259,11 +260,6 @@ public:
 
 extern AbAllObjGfx sAbAllObjGfx;
 
-struct Unk_02002f14_Node {
-    /* 0x00 */ void *prev;
-    /* 0x04 */ void *next;
-    /* 0x08 */ void *owner;
-};
 
 
 

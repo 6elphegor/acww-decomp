@@ -1,6 +1,8 @@
 // mwcc-version: 1.2/sp2
 #include "types.h"
 #include "actor/Unk_ov004_SceneEntry.h"
+#include "actor/Unk_02002f14_Node.h"
+#include "actor/Unk_0203e5d0_Node.h"
 
 struct Vec3 {
     s32 x, y, z;
@@ -42,11 +44,6 @@ public:
     /* 0x04 */ u8 unk_04[0x4c];
 };
 
-struct Unk_02002f14_Node {
-    void *prev;
-    void *next;
-    void *owner;
-};
 
 class Actor : public GameProc {
 public:
@@ -67,12 +64,6 @@ public:
     /* 0x90 */ u8 pad_90[0xd4 - 0x90];
 };
 
-struct Unk_0203e5d0_Node {
-    u32 unk_00;
-    Unk_0203e5d0_Node *next;
-    u32 charId;
-    void *owner;
-};
 
 class Character : public Actor {
 public:

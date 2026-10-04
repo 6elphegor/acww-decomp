@@ -2,6 +2,12 @@
 // mwcc-flags: -str reuse
 #include "types.h"
 #include "actor/Unk_ov004_SceneEntry.h"
+#include "npc/Unk_0201a13c.h"
+#include "npc/Unk_0202d7f4.h"
+#include "npc/Unk_020323b0.h"
+#include "npc/Unk_02053d3c.h"
+#include "npc/Unk_02082088.h"
+#include "npc/Unk_0202d5e8.h"
 // Library base class (same as GameProc.h, but vfunc_08 takes the s32 the vtable symbol names).
 class ProcBase {
 public:
@@ -221,12 +227,6 @@ void Scene_GetPrevious();
 s32 SceneId_IsTownUnk31();
 }
 
-// Members of the scene object, named after their constructors.
-struct Unk_02053d3c {
-    Unk_02053d3c();
-    ~Unk_02053d3c();
-    u32 pad[0x1b4 / 4];
-};
 struct Unk_0201ad3c { Unk_0201ad3c(); ~Unk_0201ad3c(); u32 pad[0xc / 4]; };
 struct NpcFaceAnim { NpcFaceAnim(); ~NpcFaceAnim(); u32 pad[0x88 / 4]; };
 struct NpcAnimCtrl { NpcAnimCtrl(); ~NpcAnimCtrl(); u32 pad[0x1c / 4]; };
@@ -235,8 +235,6 @@ struct Unk_0201a8bc { Unk_0201a8bc(); u8 pad[2]; };
 struct Unk_0201ad18 { Unk_0201ad18(); u8 pad[6]; };
 struct Unk_0201a794 { Unk_0201a794(); ~Unk_0201a794(); u32 pad[0x68 / 4]; };
 struct NpcSpeechState { NpcSpeechState(); ~NpcSpeechState(); u32 pad[8 / 4]; };
-struct Unk_0201a13c { Unk_0201a13c(); ~Unk_0201a13c(); u32 pad[0x7c / 4]; };
-struct Unk_020323b0 { Unk_020323b0(); ~Unk_020323b0(); u32 pad[0x30 / 4]; };
 struct Unk_02088d00 { Unk_02088d00(); ~Unk_02088d00(); u32 pad[0x44 / 4]; u8 collisionEnabled; u8 pad_45[3]; };
 struct Unk_020135e4 { Unk_020135e4(); ~Unk_020135e4(); u8 pad[8]; u8 unk_08; u8 pad_09[2]; u8 unk_0b; };
 struct NpcActionCtrl { NpcActionCtrl(); ~NpcActionCtrl(); u32 pad[0xb4 / 4]; };
@@ -254,21 +252,6 @@ public:
     ~Unk_020f4080() {}
 };
 
-struct Unk_0202d7f4 {
-    Unk_0202d7f4();
-    ~Unk_0202d7f4();
-    u32 pad[0x34 / 4];
-};
-class Unk_0202d5e8 {
-public:
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual void vfunc_08();
-    u32 pad[(0x1a0 - 4) / 4];
-    u8 unk_1a0;
-    u8 pad_1a1[3];
-};
-struct Unk_02082088 { Unk_02082088(); ~Unk_02082088(); u32 pad[2]; };
 struct VillagerMood { VillagerMood(); ~VillagerMood(); u32 pad[0x5c / 4]; };
 
 class Actor : public ProcBase {

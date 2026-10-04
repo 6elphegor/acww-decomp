@@ -7,6 +7,7 @@
 #include "gfx/Unk_ov004_Quad.h"
 #include "actor/Unk_ov004_SceneEntry.h"
 #include "game/Unk_020d77a4_Vec3.h"
+#include "talk/Unk_02015b54.h"
 #undef postCreate
 
 extern "C" {
@@ -122,45 +123,6 @@ public:
 };
 
 // ---------------------------------------------------------------------------------------------------------------------
-// Member BirthdayGuestVillagerTalk (at +0x898 of the menu): a menu state holder with the owner at +0x1a0. Its vtable
-// 0x0224c198 names its slots after four library classes; the chain below reproduces which class owns which slot.
-class Unk_02015b54 {
-public:
-    Unk_02015b54();
-    virtual ~Unk_02015b54();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void onMessageStart();
-    virtual void onMessageEnd();
-    virtual void onChoice();
-    virtual void onSignalTag();
-    virtual void onActionTag0();
-    virtual void onActionTag1(u32 a);
-    virtual void onActionTag2(u32 a);
-    virtual void onActionTag3(u32 a);
-    virtual void onActionTag4(u32 a);
-    virtual void onConditionTag();
-    virtual void onEventTag(u32 a);
-    virtual void onTag09_0();
-    virtual void onTag09_1();
-    virtual void onTag09_2();
-    virtual void onTag09_3();
-    virtual void onTag09_4();
-    virtual void onTag09_5();
-    virtual void onTag09_6();
-    virtual void onTag09_7();
-    virtual void onTag09_8();
-    virtual void onTag09_9();
-    virtual void onScannedTag();
-    virtual void getSpeakerData();
-    virtual void getVoiceType();
-    virtual void onWindowClose();
-    virtual void onTalkEnd();
-    virtual void start(void *arg);
-    virtual void runDeferred();
-    virtual void update();
-    virtual void onTaskDone();
-};
 
 class Unk_020d7710 : public Unk_02015b54 {
 public:
