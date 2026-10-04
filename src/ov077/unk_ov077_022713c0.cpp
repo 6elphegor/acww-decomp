@@ -18,6 +18,7 @@
 #include "actor/Actor.h"
 #include "actor/Character.h"
 #include "talk/ChoiceList.h"
+#include "gfx/ThreeLayerAnimModel.h"
 
 
 struct Unk_0201bc1c;
@@ -196,15 +197,6 @@ struct Unk_ov077_Bits {
 union Unk_ov077_Word {
     u32 w;
     Unk_ov077_Bits b;
-};
-struct ThreeLayerAnimModel {
-    u8 pad_00[0xa4];
-    Unk_ov077_Word curFrame;
-    u8 pad_a8[4];
-    s32 frameStep;
-    u8 pad_b0[0x2a0 - 0xec - 0xb0];
-    ThreeLayerAnimModel();
-    ~ThreeLayerAnimModel();
 };
 MEMBER(NpcFaceAnim, 0x334 - 0x2ac);
 MEMBER(Unk_0201accc, 0x3a8 - 0x350);
@@ -547,7 +539,7 @@ BOOL SpNpcResetti::mainAct03() {
         return TRUE;
     }
     model.frameStep = 0;
-    model.curFrame.w = 0;
+    model.curFrame = 0;
     {
         Unk_ov077_02271a84_V3 *pv = &pl->pos;
         v.x = pv->x;
@@ -611,7 +603,7 @@ BOOL SpNpcResetti::mainAct04() {
     s16 v = _ZN8NpcActor10getAngleToEPS_(this, (void *)r);
     rotY = v;
     moveAngleY = v;
-    if ((s16)model.curFrame.b.mid == 0xc) {
+    if ((s16)((Unk_ov077_Word *)&model.curFrame)->b.mid == 0xc) {
         Effect_End(effectHandle);
         effectHandle = -1;
     }
@@ -640,7 +632,7 @@ BOOL SpNpcResetti::mainAct05() {
     s16 v = _ZN8NpcActor10getAngleToEPS_(this, (void *)r);
     rotY = v;
     moveAngleY = v;
-    f = (s16)model.curFrame.b.mid;
+    f = (s16)((Unk_ov077_Word *)&model.curFrame)->b.mid;
     if (f == 2) {
         effectHandle = Effect_Create(0x30, &position, 0, 0);
     }

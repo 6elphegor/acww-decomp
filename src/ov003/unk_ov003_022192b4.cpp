@@ -1260,16 +1260,6 @@ struct Unk_ov003_0221e398_V3 {
 };
 typedef Unk_ov003_0221db54_V3 V3;
 typedef Unk_ov003_0221db54_Blk Blk;
-class CachedModel {
-public:
-    CachedModel();
-    virtual ~CachedModel();
-    u32 pad_04[0x58 / 4];
-    u32 unk_5c;
-    u32 pad_60;
-    u8 unk_64[0x30];
-    u32 pad_94[2];
-};
 class TreeAnimSet {
 public:
     TreeAnimSet();
@@ -4898,7 +4888,7 @@ extern "C" void FieldObj_DrawModel(O *o, M *p, Blk m)
         Model_drawShapesDirect(p, 0);
         volatile u16 a = SceneLights_GetRoomColor();
         volatile u16 b = a;
-        func_02105fd8(p->unk_5c, b);
+        func_02105fd8((u32)p->unk_5c, b);
     }
 }
 }

@@ -6,6 +6,8 @@
 #include "game/FxVec3.h"
 #include "gfx/MatTexVramTask.h"
 #include "game/TouchPickCylinder.h"
+#include "gfx/AnimModel.h"
+#include "gfx/ModelAnim.h"
 
 // ---------------------------------------------------------------- real symbol names of main-module methods
 // (called as free functions with the object as first argument; the mangled name is the symbols.txt name)
@@ -72,11 +74,6 @@ struct Unk_020b8d98 {
 
 
 
-struct AnimModel {
-    AnimModel();
-    ~AnimModel();
-    u8 pad[0x5c];
-};
 
 extern "C" {
 void *__cxa_vec_ctor(void *array, u32 count, u32 size, void *ctor, void *dtor);
@@ -87,14 +84,6 @@ void _ZN16RoomScene22ShapeC1Ev(void *self);
 void _ZN16RoomScene22ShapeD1Ev(void *self);
 }
 
-class ModelAnim {
-public:
-    ModelAnim();
-    virtual ~ModelAnim();
-    u8 pad_04[4];
-    u32 curFrame;
-    u8 pad_0c[0xc];
-};
 
 
 
@@ -195,9 +184,6 @@ class RoomShellMatAnim : public ModelAnim {
 public:
     RoomShellMatAnim();
     virtual ~RoomShellMatAnim();
-
-    /* 0x18 */ u32 *anmObj;
-    /* 0x1c */ u32 pad_1c;
 };
 
 // object at manager+0x1228: dummy floor
@@ -294,10 +280,6 @@ public:
     void calcRoomSize();
 
     /* 0x0050 */ AnimModel model;
-    /* 0x00ac */ u8 *mdl;
-    /* 0x00b0 */ u32 unk_b0;
-    /* 0x00b4 */ Unk_ov004_0222b430_Mtx baseMtx;
-    /* 0x00e4 */ u32 pad_e4[(0x108 - 0xe4) / 4];
     /* 0x0108 */ RoomShellMatAnim matAnim[1];
     /* 0x0128 */ RoomWallpaper wallpaper;
     /* 0x1228 */ RoomCarpet carpet;
@@ -467,13 +449,13 @@ BOOL RoomShell::vfunc_00() {
     ((RoomScene22Shape *)scene22Shape)->init();
     calcRoomSize();
     initAnims();
-    setMatLightFlags(mdl);
+    setMatLightFlags((u8 *)model.unk_5c);
     storeBaseMtx();
     initWallAndFloor();
-    hourHandNode = func_02056fcc(mdl, "kh_j");
-    minuteHandNode = func_02056fcc(mdl, "km_j");
-    hasuNode = func_02056fcc(mdl, "hasu1");
-    wdMatIdx = G3dResAccess_findMatIdx(mdl, "wd");
+    hourHandNode = func_02056fcc((u8 *)model.unk_5c, "kh_j");
+    minuteHandNode = func_02056fcc((u8 *)model.unk_5c, "km_j");
+    hasuNode = func_02056fcc((u8 *)model.unk_5c, "hasu1");
+    wdMatIdx = G3dResAccess_findMatIdx((u8 *)model.unk_5c, "wd");
     Model_setInitCallback(&model, (void *)RoomShell_InitRenderObj, this);
     RoomShell_SpawnBoardSigns(this);
     Unk_02003c30_callReset(&clockSe);
@@ -487,7 +469,7 @@ BOOL RoomShell::onExecute() {
     RoomShellMatAnim *e = matAnim;
     if (func_ov004_0222ae7c((Unk_ov004_0222ae7c_Obj *)e)) {
         AnimFrameCtrl_step(e);
-        *matAnim[0].anmObj = matAnim[0].curFrame;
+        *(u32 *)matAnim[0].anmObj = matAnim[0].curFrame;
     }
     if (clockPos.x != 0) {
         s32 id = FtrMgr_GetCycleCounter(clockPos.x);
@@ -509,7 +491,7 @@ BOOL RoomShell::onDraw() {
         Unk_ov004_0222b954_Pair t;
         t.a = RoomShell_CalcWdColor(this);
         t.b = t.a;
-        NNS_G3dMdlSetMdlDiff(mdl, wdMatIdx, t.b);
+        NNS_G3dMdlSetMdlDiff((u8 *)model.unk_5c, wdMatIdx, t.b);
     }
     AnimModel_drawAnimated(&model, 0);
     return TRUE;
@@ -623,8 +605,8 @@ void RoomShell::initWallAndFloor() {
         c = NULL;
     }
     Unk_ov004_0222b45c_Res *r = (Unk_ov004_0222b45c_Res *)c->bgModel;
-    wallpaper.bindMaterial(mdl, r->resTex);
-    carpet.bindMaterial(mdl, (u8 *)r->resTex);
+    wallpaper.bindMaterial((u8 *)model.unk_5c, r->resTex);
+    carpet.bindMaterial((u8 *)model.unk_5c, (u8 *)r->resTex);
     volatile u16 h[2];
     s32 w8;
     s32 w12;
@@ -632,13 +614,13 @@ void RoomShell::initWallAndFloor() {
     h[1] = 0xfff1;
     RoomShell_GetSceneWallFloor(this, (u16 *)&h[0], &w8, (u16 *)&h[1], &w12);
     if (Unk_ov004_0222b510_Range(&h[0])) {
-        wallpaper.applyDefault(0x1124, mdl, w8);
+        wallpaper.applyDefault(0x1124, (u8 *)model.unk_5c, w8);
     }
     if (Unk_ov004_0222b510_Range(&h[1])) {
-        carpet.applyDefault(0x1182, (G3dResAccess *)mdl, w12);
+        carpet.applyDefault(0x1182, (G3dResAccess *)model.unk_5c, w12);
     }
-    ((Unk_ov004_0222b15c *)&wallpaper)->setWallpaper((u16 *)&h[0], (G3dResAccess *)mdl, w8);
-    carpet.setCarpet((u16 *)&h[1], (G3dResAccess *)mdl, w12);
+    ((Unk_ov004_0222b15c *)&wallpaper)->setWallpaper((u16 *)&h[0], (G3dResAccess *)model.unk_5c, w8);
+    carpet.setCarpet((u16 *)&h[1], (G3dResAccess *)model.unk_5c, w12);
 }
 
 void RoomShell::initAnims() {
@@ -658,7 +640,7 @@ void RoomShell::initAnims() {
         }
     }
     if (r->resMatAnm != 0) {
-        if (ModelAnim_allocMatAnm(matAnim, mdl, gBgHeap)) {
+        if (ModelAnim_allocMatAnm(matAnim, (u8 *)model.unk_5c, gBgHeap)) {
             ModelAnim_init(matAnim, r->resMatAnm, 0, 0x1000, 0);
             ModelAnim_addToRenderObj(matAnim, Model_getRenderObj(&model));
         }
@@ -667,7 +649,7 @@ void RoomShell::initAnims() {
 
 void RoomShell::storeBaseMtx() {
     func_020e8388(data_021f47e0, 0, 0, 0);
-    baseMtx = *(Unk_ov004_0222b430_Mtx *)data_021f47e0;
+    *(Unk_ov004_0222b430_Mtx *)&model.mtx = *(Unk_ov004_0222b430_Mtx *)data_021f47e0;
 }
 
 void RoomShell::setMatLightFlags(u8 *p) {
@@ -1021,7 +1003,7 @@ extern "C" u16 *RoomShell_SetWallpaper(u16 *p, s32 key, u32 flag) {
     if (r != FALSE || (*p >= 0x1188 && *p <= 0x11a7)) {
         RoomShell *g = sRoomShell;
         if (g != 0) {
-            if (((Unk_ov004_0222b15c *)&g->wallpaper)->setWallpaper(p, (G3dResAccess *)g->mdl, key) != 0) {
+            if (((Unk_ov004_0222b15c *)&g->wallpaper)->setWallpaper(p, (G3dResAccess *)g->model.unk_5c, key) != 0) {
                 if (flag != 0) {
                     if (Scene_InNookShop() != 0) Snd_PlaySe(0x50);
                 }
@@ -1039,7 +1021,7 @@ extern "C" u16 *RoomShell_SetCarpet(u16 *p, s32 key, u32 flag) {
     if (r != FALSE || (*p >= 0x1188 && *p <= 0x11a7)) {
         RoomShell *g = sRoomShell;
         if (g != 0) {
-            if (g->carpet.setCarpet(p, (G3dResAccess *)g->mdl, key) != 0) {
+            if (g->carpet.setCarpet(p, (G3dResAccess *)g->model.unk_5c, key) != 0) {
                 if (flag != 0) {
                     if (Scene_InNookShop() != 0) Snd_PlaySe(0x50);
                 }

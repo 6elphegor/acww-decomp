@@ -14,6 +14,7 @@
 #include "actor/Character.h"
 #include "gfx/AnimModel.h"
 #include "room/RoomObjActor.h"
+#include "gfx/ModelAnim.h"
 
 
 
@@ -75,12 +76,6 @@ struct Unk_ov004_02226468_Obj {
 // a 4-byte colour record whose constructor is inline (the __sinit of this unit initialises six of them)
 
 
-class ModelAnim {
-public:
-    ModelAnim();
-    ~ModelAnim();
-    u8 unk_00[0x2c];
-};
 
 class CheckInGate : public RoomObjActor {
 public:
@@ -111,7 +106,8 @@ public:
     void setGroundMatFlags();
     BOOL bindTextures();
 
-    /* 0x290 */ ModelAnim matAnim; // fields at 0x298 (u32), 0x2a8 (u32 *), 0x2b0/0x2b4/0x2b8 (u32) are read through F()
+    /* 0x290 */ ModelAnim matAnim; // curFrame (0x298) and anmObj (0x2a8) are read through F()
+    /* 0x2b0 */ u32 matIdx[3];      // material indices of m_lt / m_ltdoor / m_open (read through F())
     /* 0x2bc */ u32 doorCollider[0x27];    // a BoxCollider (ctor/dtor by hand: the original destroys it with D2)
     /* 0x358 */ u32 leftCollider[0x27];
     /* 0x3f4 */ u32 rightCollider[0x27];

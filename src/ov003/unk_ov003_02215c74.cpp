@@ -13,6 +13,7 @@
 #include "talk/MsgString9B.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
+#include "gfx/AnimModel.h"
 
 // shared_actor.h.txt -- declarations shared by the ov003 actor units (class family of ov009 BuildingActor).
 // Written by the agent that owns ov003 TU06/07/09/10/11/12 (all 1.2/sp2).  Paste unchanged after `#include "types.h"`
@@ -185,16 +186,6 @@ public:
 // ---- main-module helper classes ----
 
 
-class AnimModel {
-public:
-    AnimModel();
-    virtual ~AnimModel();
-    s32 drawAnimated(void *q);
-
-    u8 pad_04[0x5c - 4];
-    void *unk_5c;
-    u8 pad_60[0xb8 - 0x60];
-};
 
 
 #define Actor_spawn _ZN5Actor5spawnEPvS0_S0_S0_S0_

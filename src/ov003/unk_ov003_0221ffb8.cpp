@@ -6,6 +6,8 @@
 #include "gfx/ModelAnim.h"
 #include "game/GroundInfo.h"
 #include "field/Unk_ov003_02224bc4_Actor.h"
+#include "gfx/AnimModel.h"
+#include "gfx/PooledModel.h"
 
 // TU23 of ov003 (fish actors, scene classes 0223498c / 02234a94): 0x0221ffb8-0x02224e68, static initialiser 0x354 bytes.
 // Merged from ten unit files; every view of the shared objects (sFishShadows etc.) is reached through casts.
@@ -821,30 +823,20 @@ public:
 };
 
 
-class PooledModel {
-public:
-    PooledModel();
-    ~PooledModel();
-    u8 raw[0x50];
-};
 
-class AnimModel {
-public:
-    AnimModel();
-    ~AnimModel();
-    u8 raw[0xc4];
-};
 
 class FishFinModel {
 public:
     FishFinModel();
     ~FishFinModel();
-    u32 attachState;
-    ModelSlotHandle modelSlot;
-    u8 pad_06[2];
-    PooledModel pooledModel;
-    AnimModel model;
-    FishFinMatAnim matAnim;
+    /* 0x000 */ u32 attachState;
+    /* 0x004 */ ModelSlotHandle modelSlot;
+    /* 0x006 */ u8 pad_06[2];
+    /* 0x008 */ PooledModel pooledModel;
+    /* 0x048 */ u8 pad_48[0x10]; // position + rotY (see Unk_ov003_02257be0_f3)
+    /* 0x058 */ AnimModel model;
+    /* 0x110 */ u8 pad_110[0xc];
+    /* 0x11c */ FishFinMatAnim matAnim;
 };
 
 extern "C" {
@@ -3941,7 +3933,7 @@ extern "C" void FishShadow_Despawn(void *a, s32 idx) {
 extern "C" BOOL FishFinModel_Attach(u8 *a) {
     (*(u32 *)((u8 *)&sFishFinModel)) = 2;
     ((void (*)(void *, void *))ModelSlotPool_acquire)(a + 0x68, ((u8 *)((u8 *)&sFishFinModel.modelSlot.index)));
-    PooledModel_reset(((u8 *)((u8 *)&sFishFinModel.pooledModel.raw[0])));
+    PooledModel_reset(((u8 *)((u8 *)&sFishFinModel.pooledModel)));
     return TRUE;
 }
 
@@ -3949,9 +3941,9 @@ extern "C" BOOL FishFinModel_Attach(u8 *a) {
 //@ 0x2221684
 extern "C" void FishFinModel_Release(u8 *a) {
     (*(u32 *)((u8 *)&sFishFinModel)) = 0;
-    AnimModel_detachJointAnim(((u8 *)((u8 *)&sFishFinModel.model.raw[0])));
-    CachedModel_release(((u8 *)((u8 *)&sFishFinModel.model.raw[0])));
-    PooledModel_unload(((u8 *)((u8 *)&sFishFinModel.pooledModel.raw[0])));
+    AnimModel_detachJointAnim(((u8 *)((u8 *)&sFishFinModel.model)));
+    CachedModel_release(((u8 *)((u8 *)&sFishFinModel.model)));
+    PooledModel_unload(((u8 *)((u8 *)&sFishFinModel.pooledModel)));
     ModelSlotPool_release(a + 0x68, ((u8 *)((u8 *)&sFishFinModel.modelSlot.index)));
     sFishFinModel.matAnim.anmObj = 0;
     sFishFinModel.matAnim.resMdl = 0;
@@ -4267,7 +4259,7 @@ BOOL FieldFishManager::onDraw() {
                 v2.x = func_02133150(rec->shadowScaleX << 12, 100);
                 v2.y = 0x1000;
                 v2.z = func_02133150(rec->shadowScaleZ << 12, 100);
-                AnimModel_drawAnimated(((u8 *)((u8 *)&sFishFinModel.model.raw[0])), &v2);
+                AnimModel_drawAnimated(((u8 *)((u8 *)&sFishFinModel.model)), &v2);
             }
         }
         e = (E_f3 *)((u8 *)e + 0x24c);

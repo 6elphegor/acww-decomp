@@ -23,6 +23,7 @@
 #include "actor/Character.h"
 #include "talk/ChoiceString.h"
 #include "talk/ChoiceList.h"
+#include "gfx/ThreeLayerAnimModel.h"
 
 
 struct Unk_0201bc1c;
@@ -212,13 +213,6 @@ public:
         name(); \
         ~name(); \
     }
-struct ThreeLayerAnimModel {
-    u8 pad_00[0xa4];
-    s32 curFrame;
-    u8 pad_a8[0x2a0 - 0xec - 0xa8];
-    ThreeLayerAnimModel();
-    ~ThreeLayerAnimModel();
-};
 MEMBER(Unk_0201ad3c, 0xc);
 MEMBER(NpcFaceAnim, 0x334 - 0x2ac);
 MEMBER(CollisionState, 0x30);

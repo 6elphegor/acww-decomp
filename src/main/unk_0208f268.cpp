@@ -1,6 +1,8 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "gfx/EffectSplEmitter.h"
+#include "gfx/AnimModel.h"
+#include "gfx/ModelAnim.h"
 
 struct Unk_0209002c_Handle;
 
@@ -61,19 +63,6 @@ s32 SPL_LoadTexByVRAMManager(u32 h);
 s32 SPL_LoadTexPlttByVRAMManager(u32 h);
 }
 
-// Opaque views of library-side model classes (see unk_02054190.cpp / unk_020553f8.cpp for the full declarations)
-class AnimModel {
-public:
-    AnimModel();
-    virtual ~AnimModel();
-
-    /* 0x04 */ u8 unk_04[0x58];
-    /* 0x5c */ void *unk_5c;
-    /* 0x60 */ u8 resTex[4];
-    /* 0x64 */ u8 unk_64[0x30];
-    /* 0x94 */ u8 unk_94[8];
-    /* 0x9c */ u8 unk_9c[0x1c];
-};
 
 class Unk_020dbe7c_Anim {
 public:
@@ -85,13 +74,6 @@ public:
     /* 0x14 */ u32 playMode;
 };
 
-class ModelAnim : public Unk_020dbe7c_Anim {
-public:
-    ModelAnim();
-    virtual ~ModelAnim();
-    /* 0x18 */ u32 *anmObj;
-    /* 0x1c */ u32 resMdl;
-};
 
 struct Unk_0208f480_Mtx {
     s64 v[6];
@@ -1488,10 +1470,10 @@ void EffectModel::update() {
         for (i = 1; i < 3; i++) {
             if ((&animSlot0Used)[i] != 0) {
                 _ZN13AnimFrameCtrl4stepEv(&anims[i]);
-                *anims[i].anmObj = anims[i].unk_08;
+                *(u32 *)anims[i].anmObj = anims[i].curFrame;
             }
         }
-        if (_ZN13AnimFrameCtrl10isFinishedEv(model.unk_9c) != 0) {
+        if (_ZN13AnimFrameCtrl10isFinishedEv((AnimFrameCtrl *)&model) != 0) {
             active = 0;
         }
     }

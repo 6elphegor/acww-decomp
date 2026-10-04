@@ -65,94 +65,15 @@ struct Unk_0205415c_Obj {
 #include "gfx/CachedModel.h"
 // included here, not at the top: the vtable emission order (CachedModel before Unk_020dbd44) follows declaration order
 #include "gfx/Unk_020dbd44.h"
+#include "gfx/AnimModel.h"
+#include "gfx/TwoLayerAnimModel.h"
+#include "gfx/ThreeLayerAnimModel.h"
 
 
 
-class AnimModel : public CachedModel, public AnimFrameCtrl {
-public:
-    AnimModel();
-    virtual ~AnimModel();
-    Unk_02054584_Data *anmObj;
 
-    void detachAnim();
-    void detachVisAnim();
-    void detachJointAnim();
-    s32 attachAnim();
-    void setFrame(s32 v);
-    s32 drawAnimated(void *q);
-    void stepAnim();
-    BOOL allocAnmObj(void *x);
-};
 
-class BlendAnimModel : public AnimModel, public JointBlend {
-public:
-    BlendAnimModel();
-    virtual ~BlendAnimModel();
 
-    void playBlend(s32 a, s32 b, s32 c, s32 d, u16 e, u16 f);
-    void stepBlend();
-    void onJointCalcPost(BlendAnimModel *x);
-    void applyJointBlend(BlendAnimModel *x);
-    void onJointCalcPre(BlendAnimModel *x);
-    void captureJointPose(BlendAnimModel *x);
-    Unk_02054584_Data *getAnmObj();
-    u32 getAnmRes();
-    void initAnim(s32 a, s32 b, s32 c, u16 d, u16 e);
-};
-
-class TwoLayerAnimModel : public BlendAnimModel {
-public:
-    TwoLayerAnimModel();
-    virtual ~TwoLayerAnimModel();
-    void clearLayer2Mask();
-    void releaseJointsFromLayer2(u32 a, u32 b);
-    void assignJointsToLayer2(u32 a, u32 b);
-    void playLayer2FromBase(u32 a, u32 b);
-    void playLayer2(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, BOOL g);
-    void drawLayered(u32 a);
-    void updateLayers();
-    BOOL allocLayerAnims(u32 a);
-    void onJointCalcPostLayer2(Unk_02053a54_Msg *m);
-    void applyLayer2Blend(Unk_02053a54_Msg *m);
-    void onJointCalcPreLayer2(Unk_02053a54_Msg *m);
-    void captureLayer2Pose(Unk_02053a54_Msg *m);
-    BOOL isLayer2Joint(u32 i);
-    void clearLayer2Joint(u32 i);
-    void setLayer2Joint(u32 i);
-    void onJointLayerAssign(u32 i);
-    void onJointLayerRelease(u32 i);
-
-    void *layer2AnmObj;
-    AnimFrameCtrl layer2Frame;
-    JointBlend layer2Blend;
-    u32 layer2JointMask;
-    u32 layer2JointMaskHi;
-};
-
-class ThreeLayerAnimModel : public TwoLayerAnimModel {
-public:
-    ThreeLayerAnimModel();
-    virtual ~ThreeLayerAnimModel();
-    void assignJointsToLayer3(u32 a, u32 b);
-    void playLayer3FromBase(u32 a, u32 b);
-    void checkLayer3Finished();
-    void playLayer3(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, BOOL g);
-    void updateLayers3();
-    BOOL allocLayer3Anims(u32 a);
-    void onJointCalcPostLayer3(Unk_02053a54_Msg *m);
-    void applyLayer3Blend(Unk_02053a54_Msg *m);
-    void onJointCalcPreLayer3(Unk_02053a54_Msg *m);
-    void captureLayer3Pose(Unk_02053a54_Msg *m);
-    BOOL isLayer3Joint(u32 i);
-    void clearLayer3Joint(u32 i);
-    void setLayer3Joint(u32 i);
-
-    void *layer3AnmObj;
-    AnimFrameCtrl layer3Frame;
-    JointBlend layer3Blend;
-    u32 layer3JointMask;
-    u32 layer3JointMaskHi;
-};
 
 struct ModelSet {
     u32 unk_00;

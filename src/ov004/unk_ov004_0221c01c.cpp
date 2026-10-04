@@ -23,6 +23,7 @@
 #include "actor/Actor.h"
 #include "actor/Character.h"
 #include "talk/ChoiceList.h"
+#include "gfx/ThreeLayerAnimModel.h"
 
 
 struct Unk_0201bc1c;
@@ -116,16 +117,6 @@ public:
         name(); \
         ~name(); \
     }
-struct ThreeLayerAnimModel {
-    u8 pad_00[0xa4];
-    u32 curFrame;
-    u32 prevFrame;
-    u32 frameStep;
-    u8 pad_b0[8];
-    u8 jointBlend[0x2a0 - 0xec - 0xb8];
-    ThreeLayerAnimModel();
-    ~ThreeLayerAnimModel();
-};
 MEMBER(Unk_0201ad3c, 0xc);
 MEMBER(NpcFaceAnim, 0x334 - 0x2ac);
 MEMBER(Unk_0201a794, 0x418 - 0x3b0);
@@ -522,8 +513,8 @@ BOOL SpNpcBrewster::updateAct() {
     }
     if (func_020e77cc(Bgm_GetCurrent(), 0x63, 0xab) != 0) {
         if (beatSyncStarted == 0) {
-            if (((model.curFrame << 4) >> 16) != 0) {
-                JointBlend_start(&model.jointBlend, 10);
+            if ((((u32)model.curFrame << 4) >> 16) != 0) {
+                JointBlend_start((JointBlend *)&model, 10);
             }
             beatSyncStarted = 1;
         }

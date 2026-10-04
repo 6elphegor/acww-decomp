@@ -2,7 +2,7 @@
 #define GFX_ANIMMODEL_H
 
 // Cached model with a joint/visibility animation object (0xb8 bytes; base of BlendAnimModel). Defined in
-// src/main/unk_02053848.cpp, which keeps its own declaration on its full Model/CachedModel chain.
+// src/main/unk_02053848.cpp.
 #include "types.h"
 #include "gfx/CachedModel.h"
 #include "gfx/AnimFrameCtrl.h"

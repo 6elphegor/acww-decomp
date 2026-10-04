@@ -27,6 +27,7 @@
 #include "actor/Character.h"
 #include "talk/ConstellationEncodedString16.h"
 #include "talk/VillagerTalkAcornTopics.h"
+#include "gfx/ThreeLayerAnimModel.h"
 
 
 class VillagerTalk;
@@ -1197,15 +1198,6 @@ public:
         name(); \
         ~name(); \
     }
-struct ThreeLayerAnimModel {
-    u8 unk_00[0x5c];
-    u32 unk_5c;
-    u8 unk_60[0x2a0 - 0xec - 0x60];
-    ThreeLayerAnimModel();
-    ~ThreeLayerAnimModel();
-    u32 func_02054b38(u32 a);
-    u32 allocLayer3Anims(u32 a);
-};
 MEMBER(Unk_0201ad3c, 0xc);
 MEMBER(NpcFaceAnim, 0x334 - 0x2ac);
 MEMBER(Unk_0201accc, 0x3a8 - 0x350);
@@ -4180,7 +4172,7 @@ BOOL VillagerClothModel::change(VillagerActor *parent, u16 *id) {
     if (!same || (Unk_0202d664_Range(id, 0x12a8, 0x12af) && Unk_0202d664_Range(&clothItem, 0x12a8, 0x12af))) {
         p = buildTexture(parent, id);
         if (p) {
-            result = _ZN14MatTexVramTask7requestEPvjS0_jj(this, parent->model.unk_5c, sVillagerClothMaterialNames, p, 0, 0);
+            result = _ZN14MatTexVramTask7requestEPvjS0_jj(this, (u32)parent->model.unk_5c, sVillagerClothMaterialNames, p, 0, 0);
             clothItem = *id;
         }
     }

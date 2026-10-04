@@ -18,6 +18,7 @@
 #include "actor/Actor.h"
 #include "actor/Character.h"
 #include "talk/ChoiceList.h"
+#include "gfx/ThreeLayerAnimModel.h"
 
 
 class SpNpcKappn;
@@ -171,13 +172,6 @@ public:
         name(); \
         ~name(); \
     }
-struct ThreeLayerAnimModel {
-    u8 pad_00[0xa4];
-    Unk_ov051_02258e50_Bits curFrame;
-    u8 pad_a8[0x2a0 - 0xec - 0xa8];
-    ThreeLayerAnimModel();
-    ~ThreeLayerAnimModel();
-};
 MEMBER(Unk_0201ad3c, 0xc);
 MEMBER(NpcFaceAnim, 0x334 - 0x2ac);
 MEMBER(Unk_0201a794, 0x418 - 0x3b0);
@@ -1095,7 +1089,7 @@ test0:
 }
 
 extern "C" u32 SpNpcKappn_GetAnimFrame() {
-    return sSpNpcKappnInstance->model.curFrame.mid;
+    return ((Unk_ov051_02258e50_Bits *)&sSpNpcKappnInstance->model.curFrame)->mid;
 }
 
 // ---------------------------------------------------------------------------------------------------------------------

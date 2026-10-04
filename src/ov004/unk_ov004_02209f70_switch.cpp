@@ -39,6 +39,7 @@
 #include "actor/Actor.h"
 #include "actor/Character.h"
 #include "gfx/ModelResource.h"
+#include "room/FtrModelRes.h"
 // The two functions of the ov004 translation unit 0x02209f70-0x022136d0 that need mwcc 1.2/base (signed-halfword
 // switch tables): FtrSingingInsect::updateActive and vfunc_7c. Same declarations as the main file of the unit;
 // nothing else is emitted here (see config/usa/arm9/overlays/ov004/object_order.txt).
@@ -156,41 +157,7 @@ class TexVramSlot;
 
 
 
-struct FtrModelRes {
-    void *texFile;
-    void *arcFile;
-    void *model;
-    void *texture;
-    ModelResource texLoader;
-    FtrAnimSet animSet;
-    u16 item;
-    u8 keepTexCopy;
 
-    void release();
-    void *getTexture();
-    void *getModel();
-    BOOL loadAsync(void *obj, s32 a, s32 flag);
-    BOOL loadSync(void *obj, s32 a, s32 flag);
-    void freeTexFile();
-    FtrAnimSet *getAnimSet();
-    BOOL loadFiles(void *obj, s32 id);
-    char *makeTexPath(s32 id);
-    char *makeArcPath(s32 id);
-    BOOL isLoaded();
-};
-
-struct Unk_ov004_02206e38 {
-    Unk_ov004_02206e38();
-    ~Unk_ov004_02206e38();
-    u32 texFile;
-    u32 arcFile;
-    u32 model;
-    u32 texture;
-    ModelResource texLoader;
-    FtrAnimSet animSet;
-    u16 item;
-    u8 keepTexCopy;
-};
 
 // ---- 0x02248804 (array of 4 at 0x7c0)
 

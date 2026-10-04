@@ -16,6 +16,7 @@
 #include "npc/NpcActionCtrl.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
+#include "gfx/ThreeLayerAnimModel.h"
 
 
 class FieldVillager;
@@ -114,8 +115,6 @@ extern const char *sNookModelPaths[];
 extern const char *sNookTexPaths[];
 }
 
-// Member object types of the scene object, named after their constructors.
-struct ThreeLayerAnimModel { ThreeLayerAnimModel(); u32 pad[0x1b4 / 4]; };
 struct NpcFaceAnim { NpcFaceAnim(); u32 pad[0x88 / 4]; };
 struct NpcAnimCtrl { NpcAnimCtrl(); u32 pad[0x1c / 4]; };
 struct NpcSpeechState { NpcSpeechState(); u32 pad[8 / 4]; };

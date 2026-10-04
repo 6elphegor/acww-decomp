@@ -33,6 +33,7 @@
 #include "actor/Actor.h"
 #include "actor/Character.h"
 #include "gfx/ModelResource.h"
+#include "room/FtrModelRes.h"
 
 // ================================================================ plain value types
 
@@ -173,41 +174,7 @@ class TexVramSlot;
 
 
 
-struct FtrModelRes {
-    void *texFile;
-    void *arcFile;
-    void *model;
-    void *texture;
-    ModelResource texLoader;
-    FtrAnimSet animSet;
-    u16 item;
-    u8 keepTexCopy;
 
-    void release();
-    void *getTexture();
-    void *getModel();
-    BOOL loadAsync(void *obj, s32 a, s32 flag);
-    BOOL loadSync(void *obj, s32 a, s32 flag);
-    void freeTexFile();
-    FtrAnimSet *getAnimSet();
-    BOOL loadFiles(void *obj, s32 id);
-    char *makeTexPath(s32 id);
-    char *makeArcPath(s32 id);
-    BOOL isLoaded();
-};
-
-struct Unk_ov004_02206e38 {
-    Unk_ov004_02206e38();
-    ~Unk_ov004_02206e38();
-    u32 texFile;
-    u32 arcFile;
-    u32 model;
-    u32 texture;
-    ModelResource texLoader;
-    FtrAnimSet animSet;
-    u16 item;
-    u8 keepTexCopy;
-};
 
 // ---- 0x02248804 (array of 4 at 0x7c0)
 

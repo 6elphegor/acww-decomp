@@ -14,6 +14,7 @@
 #include "save/Pattern.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
+#include "gfx/ThreeLayerAnimModel.h"
 
 #define NpcTalkCtrl_requestTurnAndTalk _ZN11NpcTalkCtrl18requestTurnAndTalkEssh
 #define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
@@ -429,13 +430,6 @@ public:
         name(); \
         ~name(); \
     }
-struct ThreeLayerAnimModel {
-    u8 pad_00[0xa4];
-    s32 curFrame;
-    u8 pad_a8[0x2a0 - 0xec - 0xa8];
-    ThreeLayerAnimModel();
-    ~ThreeLayerAnimModel();
-};
 MEMBER(Unk_0201ad3c, 0xc);
 MEMBER(NpcFaceAnim, 0x334 - 0x2ac);
 MEMBER(Unk_0201accc, 0x3a8 - 0x350);

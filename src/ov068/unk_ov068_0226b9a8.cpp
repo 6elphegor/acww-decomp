@@ -11,6 +11,7 @@
 #include "actor/Actor.h"
 #include "actor/Character.h"
 #include "gfx/AnimModel.h"
+#include "gfx/ModelAnim.h"
 #define AnimFrameCtrl_hasPassedFrame _ZN13AnimFrameCtrl14hasPassedFrameEi
 #define AnimFrameCtrl_step _ZN13AnimFrameCtrl4stepEv
 #define BlendAnimModel_initAnim _ZN14BlendAnimModel8initAnimEiiitt
@@ -116,16 +117,6 @@ union Unk_ov068_022702b4_Word {
     Unk_ov068_022702b4_Bits b;
 };
 
-// Member object types, named after their constructors.
-struct ModelAnim {
-    ModelAnim();
-    ~ModelAnim();
-    /* 0x00 */ u8 pad_00[8];
-    /* 0x08 */ Unk_ov068_022702b4_Word curFrame;
-    /* 0x0c */ u8 pad_0c[0xc];
-    /* 0x18 */ u32 *anmObj;
-    /* 0x1c */ u32 pad_1c;
-};
 struct RoomObjTex {
     inline RoomObjTex() { RoomObjTex_Construct(this); }
     inline ~RoomObjTex() { RoomObjTex_Destruct(this); }
@@ -279,10 +270,10 @@ BOOL TaxiInterior::vfunc_00() {
 BOOL TaxiInterior::onExecute() {
     updateRainState();
     AnimFrameCtrl_step(&bodyTexAnim);
-    *bodyTexAnim.anmObj = bodyTexAnim.curFrame.v;
+    *(u32 *)bodyTexAnim.anmObj = bodyTexAnim.curFrame;
     AnimModel_stepAnim(&model);
     AnimFrameCtrl_step(&bodyMatAnim);
-    *bodyMatAnim.anmObj = bodyMatAnim.curFrame.v;
+    *(u32 *)bodyMatAnim.anmObj = bodyMatAnim.curFrame;
     if (isDriverAnimating) {
         AnimModel_stepAnim(&driverModel);
     }
@@ -375,7 +366,7 @@ void TaxiInterior::playBodyAnim(s32 a) {
     BlendAnimModel_initAnim(&model, p, a, 0x1000, ((Unk_ov068_022702b4_Bits *)&model.curFrame)->mid, 0);
     void *r6 = Model_getRenderObj(&model);
     void *q = RoomObjRes_GetBma(&res, 0);
-    ModelAnim_replace(&bodyMatAnim, r6, q, a, 0x1000, bodyMatAnim.curFrame.b.mid);
+    ModelAnim_replace(&bodyMatAnim, r6, q, a, 0x1000, ((Unk_ov068_022702b4_Bits *)&bodyMatAnim.curFrame)->mid);
 }
 
 BOOL TaxiInterior::setRainState(s32 s) {

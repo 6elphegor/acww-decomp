@@ -13,6 +13,7 @@
 #include "town/TownAcreGrid.h"
 #include "gfx/TexVramTask.h"
 #include "gfx/ModelResource.h"
+#include "gfx/PooledModel.h"
 
 inline void *operator new(unsigned long, void *p) { return p; }
 
@@ -81,20 +82,6 @@ public:
 };
 
 // ---- model resource holder (derived from ModelResource)
-class PooledModel {
-public:
-    PooledModel();
-    ~PooledModel();
-    void *getModel();
-    void unload();
-    void reset();
-    s32 loadFromSlot(ModelSlot *e, const char *name);
-
-    ModelResource resource;
-    u8 isLoaded;
-    void *slot;
-    void *unk_3c;
-};
 
 // ---- pool of 0x1c-byte entries
 // global of the file: 1-byte state with empty inline constructor/destructor (func_0209c0a8 / func_0209c0a4)

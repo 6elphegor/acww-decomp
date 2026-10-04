@@ -17,6 +17,7 @@
 #include "snd/Unk_0213b954.h"
 #include "gfx/AnimModel.h"
 #include "game/BugNetTarget.h"
+#include "gfx/PooledModel.h"
 
 // ---- main-module library classes shared by several functions of this unit (global: their methods are called by symbol)
 
@@ -58,13 +59,6 @@ public:
 
 
 
-class PooledModel {
-public:
-    PooledModel();
-    ~PooledModel();
-    void reset();
-    u32 pad[0x40 / 4];
-};
 
 
 

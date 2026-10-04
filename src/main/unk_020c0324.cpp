@@ -13,6 +13,7 @@
 #include "sys/ProcBase.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
+#include "gfx/ThreeLayerAnimModel.h"
 
 typedef Unk_020bfe30_Vec Unk_020c0acc_Vec;
 
@@ -211,12 +212,6 @@ public:
         u8 unk_00[size]; \
         name(); \
     }
-struct ThreeLayerAnimModel {
-    u8 unk_00[0xa4];
-    u32 curFrame;
-    u8 pad_a8[0x2a0 - 0xec - 0xa8];
-    ThreeLayerAnimModel();
-};
 MEMBER(Unk_0201ad3c, 0xc);
 MEMBER(NpcFaceAnim, 0x334 - 0x2ac);
 MEMBER(Unk_0201accc, 0x3a8 - 0x350);
@@ -716,10 +711,10 @@ BOOL SpNpcKatie::mainAct06() {
         a = rotY;
         Unk_020c0acc_Vec *src = (Unk_020c0acc_Vec *)&position;
         v = *src;
-        if (((model.curFrame << 4) >> 16) == 7) {
+        if ((((u32)model.curFrame << 4) >> 16) == 7) {
             Effect_Create(0x39, &v, &a, 0);
         }
-        if (((model.curFrame << 4) >> 16) == 9) {
+        if ((((u32)model.curFrame << 4) >> 16) == 9) {
             Effect_Create(0x38, &v, &a, 0);
         }
         if (_ZN13NpcActionCtrl12isActionDoneEv(&actionCtrl)) {

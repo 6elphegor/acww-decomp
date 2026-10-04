@@ -9,8 +9,8 @@
 struct Unk_02053a54_Msg;
 
 // AnimModel with pose blending between two animations (0xf4 bytes), and the two-layer variant whose second animation
-// drives a joint subset (0x154 bytes; PlayerActor::bodyModel). Both are defined in src/main/unk_02053848.cpp, which keeps
-// its own declarations on its full Model/CachedModel chain.
+// drives a joint subset (0x154 bytes; PlayerActor::bodyModel, base of ThreeLayerAnimModel). Both are defined in
+// src/main/unk_02053848.cpp (BlendAnimModel 0x0205436c..0x0205458c, TwoLayerAnimModel 0x02053dc0..0x020542ec).
 class BlendAnimModel : public AnimModel, public JointBlend {
 public:
     BlendAnimModel();

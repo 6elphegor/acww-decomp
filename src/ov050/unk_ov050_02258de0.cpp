@@ -14,6 +14,7 @@
 #include "talk/MsgString9B.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
+#include "gfx/ThreeLayerAnimModel.h"
 
 #define Actor_findByProfile _ZN5Actor13findByProfileEjPS_
 #define VillagerId_getName _ZN10VillagerId7getNameEj
@@ -248,13 +249,6 @@ public:
         name(); \
         ~name(); \
     }
-struct ThreeLayerAnimModel {
-    u8 pad_00[0xa4];
-    s32 curFrame;
-    u8 pad_a8[0x2a0 - 0xec - 0xa8];
-    ThreeLayerAnimModel();
-    ~ThreeLayerAnimModel();
-};
 MEMBER(Unk_0201ad3c, 0xc);
 MEMBER(NpcFaceAnim, 0x334 - 0x2ac);
 MEMBER(Unk_0201accc, 0x3a8 - 0x350);
