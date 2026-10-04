@@ -8,46 +8,46 @@ typedef void *(*Unk_ov065_0226ecfc_Alloc)(const void *tag, u32 size);
 typedef void (*Unk_ov065_0226ecfc_Free)(const void *tag, void *p, u32 z);
 
 struct Unk_ov065_0226ecfc_Glob {
-    s32 unk_00;
-    s32 unk_04;
-    u8 unk_08[0x100];
+    s32 state;
+    s32 errorCode;
+    u8 responseFields[0x100];
     Unk_ov065_0226ecfc_Alloc unk_108;
     Unk_ov065_0226ecfc_Free unk_10c;
     u32 pad110;
-    char *unk_114;
-    char *unk_118;
-    u8 unk_11c[0x6c];
-    u32 unk_188;
+    char *body302;
+    char *bodyWayport;
+    u8 thread[0x6c];
+    u32 threadId;
     u8 pad18c[0x1dc - 0x18c];
-    u8 unk_1dc[4];
+    u8 mutex[4];
 };
 
 struct Unk_ov065_0226ecfc_Ctx {
     u8 pad00[0x24];
-    s32 unk_24;
+    s32 result;
     u8 pad28[0x938 - 0x28];
-    s32 unk_938;
+    s32 responseBuffer;
     u8 pad93c[0x968 - 0x93c];
-    u8 unk_968[0x9d4 - 0x968];
-    s32 unk_9d4;
+    u8 thread[0x9d4 - 0x968];
+    s32 threadId;
 };
 
 struct Unk_ov065_0226ecfc_Req {
-    char *unk_00;
-    s32 unk_04;
-    s32 unk_08;
-    s32 unk_0c;
+    char *url;
+    s32 method;
+    s32 userRecvBuffer;
+    s32 rxBufSize;
     void *(*unk_10)(const void *tag, u32 size);
     void (*unk_14)(const void *tag, void *p, u32 z);
-    s32 unk_18;
-    s32 unk_1c;
+    s32 useTestServer;
+    s32 timeoutMs;
 };
 
 struct Unk_ov065_0226ecfc_Out {
-    u8 unk_00;
+    u8 inGameName;
     u8 unk_01;
     u8 pad02[0x14];
-    u8 unk_16;
+    u8 gsbrcd;
     u8 pad17[0x24 - 0x17];
     void *(*unk_24)(const void *tag, u32 size);
     void (*unk_28)(const void *tag, void *p, u32 z);
@@ -168,7 +168,7 @@ s32 NetCheck_Start(Unk_ov065_0226f924_Cfg *cfg) {
         return 4;
     }
     MI_CpuFill8(sNetCheck, 0, 0x1200);
-    sNetCheck->unk_04 = -0x1869f;
+    sNetCheck->errorCode = -0x1869f;
     *(Unk_ov065_0226f924_Blob *)&sNetCheck->unk_108 = *(Unk_ov065_0226f924_Blob *)cfg;
     if (sNetCheckHttp != 0) {
         return 4;
@@ -177,7 +177,7 @@ s32 NetCheck_Start(Unk_ov065_0226f924_Cfg *cfg) {
     if (sNetCheckHttp == 0) {
         return 4;
     }
-    OS_InitMutex(sNetCheck->unk_1dc);
+    OS_InitMutex(sNetCheck->mutex);
     NetCheck_StartThread();
     return 0;
 }
@@ -192,14 +192,14 @@ void NetCheck_Destroy() {
     NasAuth_Destroy();
     g = sNetCheck;
     if (g != 0) {
-        if (g->unk_114 != 0) {
-            g->unk_10c("DWCnetcheck->body_302", g->unk_114, 0);
-            sNetCheck->unk_114 = 0;
+        if (g->body302 != 0) {
+            g->unk_10c("DWCnetcheck->body_302", g->body302, 0);
+            sNetCheck->body302 = 0;
         }
         g = sNetCheck;
-        if (g->unk_118 != 0) {
-            g->unk_10c("DWCnetcheck->body_wayport", g->unk_118, 0);
-            sNetCheck->unk_118 = 0;
+        if (g->bodyWayport != 0) {
+            g->unk_10c("DWCnetcheck->body_wayport", g->bodyWayport, 0);
+            sNetCheck->bodyWayport = 0;
         }
         sNetCheck->unk_10c("DWCnetcheck", sNetCheck, 0);
         sNetCheck = 0;
@@ -208,11 +208,11 @@ void NetCheck_Destroy() {
 
 void NetCheck_StartThread() {
     Unk_ov065_0226ecfc_Glob *g = sNetCheck;
-    if (g->unk_188 == 0 || OS_IsThreadTerminated(g->unk_11c) != 0) {
+    if (g->threadId == 0 || OS_IsThreadTerminated(g->thread) != 0) {
         g = sNetCheck;
-        OS_CreateThread(g->unk_11c, NetCheck_ThreadMain, g, (u8 *)g + 0x1200, 0x1000, 0x10);
+        OS_CreateThread(g->thread, NetCheck_ThreadMain, g, (u8 *)g + 0x1200, 0x1000, 0x10);
         g = sNetCheck;
-        OS_WakeupThreadDirect(g->unk_11c);
+        OS_WakeupThreadDirect(g->thread);
     }
 }
 
@@ -222,10 +222,10 @@ void NetCheck_Abort() {
             DwcHttp_Abort();
         }
         NasAuth_Abort();
-        if (sNetCheck->unk_188 != 0) {
-            OS_JoinThread(sNetCheck->unk_11c);
+        if (sNetCheck->threadId != 0) {
+            OS_JoinThread(sNetCheck->thread);
         }
-        sNetCheck->unk_04 = -7;
+        sNetCheck->errorCode = -7;
     }
 }
 
@@ -251,14 +251,14 @@ void NetCheck_ThreadMain(void) {
     Unk_ov065_0226ecfc_Pad pad;
 
     for (;;) {
-        sNetCheckHttpParams.unk_00 = sNetCheckUrlPtr;
-        sNetCheckHttpParams.unk_04 = 1;
-        sNetCheckHttpParams.unk_08 = 0;
-        sNetCheckHttpParams.unk_0c = 0x1000;
+        sNetCheckHttpParams.url = sNetCheckUrlPtr;
+        sNetCheckHttpParams.method = 1;
+        sNetCheckHttpParams.userRecvBuffer = 0;
+        sNetCheckHttpParams.rxBufSize = 0x1000;
         sNetCheckHttpParams.unk_10 = sNetCheck->unk_108;
         sNetCheckHttpParams.unk_14 = sNetCheck->unk_10c;
-        sNetCheckHttpParams.unk_1c = 0x4e20;
-        sNetCheck->unk_04 = -2;
+        sNetCheckHttpParams.timeoutMs = 0x4e20;
+        sNetCheck->errorCode = -2;
         if (DwcHttp_Init(sNetCheckHttp, &sNetCheckHttpParams)) {
             DwcHttp_Destroy(sNetCheckHttp);
             NetCheck_SetState(1);
@@ -270,13 +270,13 @@ void NetCheck_ThreadMain(void) {
             goto end;
         }
         DwcHttp_StartThread(sNetCheckHttp);
-        if (sNetCheckHttp->unk_9d4) {
-            OS_JoinThread(sNetCheckHttp->unk_968);
+        if (sNetCheckHttp->threadId) {
+            OS_JoinThread(sNetCheckHttp->thread);
         }
         cx = sNetCheckHttp;
-        switch (cx->unk_24) {
+        switch (cx->result) {
         case 2:
-            sNetCheck->unk_04 = -1;
+            sNetCheck->errorCode = -1;
         default:
             DwcHttp_Destroy(sNetCheckHttp);
             NetCheck_SetState(3);
@@ -284,30 +284,30 @@ void NetCheck_ThreadMain(void) {
         case 8:
             break;
         }
-        if (DwcHttp_ParseResponse(sNetCheck->unk_08, 0x20, 0, cx->unk_938) != 1) {
+        if (DwcHttp_ParseResponse(sNetCheck->responseFields, 0x20, 0, cx->responseBuffer) != 1) {
             DwcHttp_Destroy(sNetCheckHttp);
             NetCheck_SetState(2);
             goto end;
         }
-        v = func_0212b770(DwcHttp_FindField(sNetCheck->unk_08, 0x20, "httpresult"));
+        v = func_0212b770(DwcHttp_FindField(sNetCheck->responseFields, 0x20, "httpresult"));
         if (data_0220064c == 0x22) {
             NetCheck_SetState(2);
             goto end;
         }
         if (v == 200) {
         } else if (v == 0x12e) {
-        if (sNetCheck->unk_118 != 0) {
-            sNetCheck->unk_04 = -6;
+        if (sNetCheck->bodyWayport != 0) {
+            sNetCheck->errorCode = -6;
             DwcHttp_Destroy(sNetCheckHttp);
-            sNetCheckHttpParams.unk_00 = sNasHttpParams;
-            sNetCheckHttpParams.unk_04 = 0;
-            sNetCheckHttpParams.unk_08 = 0;
-            sNetCheckHttpParams.unk_0c = 0x200;
+            sNetCheckHttpParams.url = sNasHttpParams;
+            sNetCheckHttpParams.method = 0;
+            sNetCheckHttpParams.userRecvBuffer = 0;
+            sNetCheckHttpParams.rxBufSize = 0x200;
             sNetCheckHttpParams.unk_10 = sNetCheck->unk_108;
             sNetCheckHttpParams.unk_14 = sNetCheck->unk_10c;
-            sNetCheckHttpParams.unk_1c = 0x4e20;
-            if (strcmp(sNetCheckHttpParams.unk_00, "https://nas.nintendowifi.net/ac")) {
-                sNetCheckHttpParams.unk_18 = 1;
+            sNetCheckHttpParams.timeoutMs = 0x4e20;
+            if (strcmp(sNetCheckHttpParams.url, "https://nas.nintendowifi.net/ac")) {
+                sNetCheckHttpParams.useTestServer = 1;
             }
             if (DwcHttp_Init(sNetCheckHttp, &sNetCheckHttpParams)) {
                 DwcHttp_Destroy(sNetCheckHttp);
@@ -315,7 +315,7 @@ void NetCheck_ThreadMain(void) {
                 goto end;
             }
             if (NasAuth_BuildRequest(sNetCheckHttp, "", "",
-                                    sNetCheck->unk_08, 0x20, 1)) {
+                                    sNetCheck->responseFields, 0x20, 1)) {
                 DwcHttp_Destroy(sNetCheckHttp);
                 NetCheck_SetState(8);
                 goto end;
@@ -337,26 +337,26 @@ void NetCheck_ThreadMain(void) {
                 NetCheck_SetState(8);
                 goto end;
             }
-            p = sNetCheck->unk_118;
+            p = sNetCheck->bodyWayport;
             if (DwcHttp_AddFormParam(sNetCheckHttp, "HotSpotResponse", p, func_0212a438(p))) {
                 DwcHttp_Destroy(sNetCheckHttp);
                 NetCheck_SetState(8);
                 goto end;
             }
-            sNetCheck->unk_10c("DWCnetcheck->body_wayport", sNetCheck->unk_118, 0);
-            sNetCheck->unk_118 = 0;
+            sNetCheck->unk_10c("DWCnetcheck->body_wayport", sNetCheck->bodyWayport, 0);
+            sNetCheck->bodyWayport = 0;
             if (DwcHttp_FinishHeaders(sNetCheckHttp)) {
                 DwcHttp_Destroy(sNetCheckHttp);
                 NetCheck_SetState(1);
                 goto end;
             }
             DwcHttp_StartThread(sNetCheckHttp);
-            if (sNetCheckHttp->unk_9d4) {
-                OS_JoinThread(sNetCheckHttp->unk_968);
+            if (sNetCheckHttp->threadId) {
+                OS_JoinThread(sNetCheckHttp->thread);
             }
-            switch (sNetCheckHttp->unk_24) {
+            switch (sNetCheckHttp->result) {
             case 2:
-                sNetCheck->unk_04 = -1;
+                sNetCheck->errorCode = -1;
             default:
                 DwcHttp_Destroy(sNetCheckHttp);
                 NetCheck_SetState(3);
@@ -367,15 +367,15 @@ void NetCheck_ThreadMain(void) {
                 goto end;
             }
         } else {
-            loc1 = DwcHttp_FindField(sNetCheck->unk_08, 0x20, "httpbody");
+            loc1 = DwcHttp_FindField(sNetCheck->responseFields, 0x20, "httpbody");
             if (loc1 == 0) {
                 DwcHttp_Destroy(sNetCheckHttp);
                 NetCheck_SetState(2);
                 goto end;
             }
-            sNetCheck->unk_114 =
+            sNetCheck->body302 =
                 (char *)sNetCheck->unk_108("DWCnetcheck->body_302", func_0212a438(loc1) + 1);
-            p1 = sNetCheck->unk_114;
+            p1 = sNetCheck->body302;
             if (p1 == 0) {
                 DwcHttp_Destroy(sNetCheckHttp);
                 NetCheck_SetState(4);
@@ -391,10 +391,10 @@ void NetCheck_ThreadMain(void) {
         DwcHttp_Destroy(sNetCheckHttp);
         func_020ff0bc(&tk.tick);
         if (tk.tick == 0) {
-            sNetCheck->unk_04 = -3;
-            sNetCheckNasConfig.unk_00 = 0;
+            sNetCheck->errorCode = -3;
+            sNetCheckNasConfig.inGameName = 0;
             sNetCheckNasConfig.unk_01 = 0;
-            sNetCheckNasConfig.unk_16 = 0;
+            sNetCheckNasConfig.gsbrcd = 0;
             sNetCheckNasConfig.unk_24 = sNetCheck->unk_108;
             sNetCheckNasConfig.unk_28 = sNetCheck->unk_10c;
             if (NasAuth_Start(&sNetCheckNasConfig, sNetCheckHttp)) {
@@ -404,10 +404,10 @@ void NetCheck_ThreadMain(void) {
             NasAuth_JoinThread();
             if (NasAuth_GetState() != 0x14) {
                 if (NasAuth_GetState() == 9) {
-                    sNetCheck->unk_04 = -1;
+                    sNetCheck->errorCode = -1;
                 } else {
                     NasAuth_GetResult(&bb.e);
-                    sNetCheck->unk_04 = bb.e;
+                    sNetCheck->errorCode = bb.e;
                 }
                 NetCheck_SetState(6);
                 goto end;
@@ -415,20 +415,20 @@ void NetCheck_ThreadMain(void) {
             NasAuth_Destroy();
         }
         if (v == 200) {
-            sNetCheck->unk_04 = 0;
+            sNetCheck->errorCode = 0;
             NetCheck_SetState(0xb);
             goto end;
         }
-        sNetCheck->unk_04 = -4;
-        sNetCheckHttpParams.unk_00 = sNasHttpParams;
-        sNetCheckHttpParams.unk_04 = 0;
-        sNetCheckHttpParams.unk_08 = 0;
-        sNetCheckHttpParams.unk_0c = 0x1000;
+        sNetCheck->errorCode = -4;
+        sNetCheckHttpParams.url = sNasHttpParams;
+        sNetCheckHttpParams.method = 0;
+        sNetCheckHttpParams.userRecvBuffer = 0;
+        sNetCheckHttpParams.rxBufSize = 0x1000;
         sNetCheckHttpParams.unk_10 = sNetCheck->unk_108;
         sNetCheckHttpParams.unk_14 = sNetCheck->unk_10c;
-        sNetCheckHttpParams.unk_1c = 0x9c40;
-        if (strcmp(sNetCheckHttpParams.unk_00, "https://nas.nintendowifi.net/ac")) {
-            sNetCheckHttpParams.unk_18 = 1;
+        sNetCheckHttpParams.timeoutMs = 0x9c40;
+        if (strcmp(sNetCheckHttpParams.url, "https://nas.nintendowifi.net/ac")) {
+            sNetCheckHttpParams.useTestServer = 1;
         }
         if (DwcHttp_Init(sNetCheckHttp, &sNetCheckHttpParams)) {
             DwcHttp_Destroy(sNetCheckHttp);
@@ -436,7 +436,7 @@ void NetCheck_ThreadMain(void) {
             goto end;
         }
         if (NasAuth_BuildRequest(sNetCheckHttp, "", "",
-                                sNetCheck->unk_08, 0x20, 1)) {
+                                sNetCheck->responseFields, 0x20, 1)) {
             DwcHttp_Destroy(sNetCheckHttp);
             NetCheck_SetState(8);
             goto end;
@@ -458,27 +458,27 @@ void NetCheck_ThreadMain(void) {
             NetCheck_SetState(8);
             goto end;
         }
-        p = sNetCheck->unk_114;
+        p = sNetCheck->body302;
         if (DwcHttp_AddFormParam(sNetCheckHttp, "HTML", p, func_0212a438(p))) {
             DwcHttp_Destroy(sNetCheckHttp);
             NetCheck_SetState(8);
             goto end;
         }
-        sNetCheck->unk_10c("DWCnetcheck->body_302", sNetCheck->unk_114, 0);
-        sNetCheck->unk_114 = 0;
+        sNetCheck->unk_10c("DWCnetcheck->body_302", sNetCheck->body302, 0);
+        sNetCheck->body302 = 0;
         if (DwcHttp_FinishHeaders(sNetCheckHttp)) {
             DwcHttp_Destroy(sNetCheckHttp);
             NetCheck_SetState(1);
             goto end;
         }
         DwcHttp_StartThread(sNetCheckHttp);
-        if (sNetCheckHttp->unk_9d4) {
-            OS_JoinThread(sNetCheckHttp->unk_968);
+        if (sNetCheckHttp->threadId) {
+            OS_JoinThread(sNetCheckHttp->thread);
         }
         cx = sNetCheckHttp;
-        switch (cx->unk_24) {
+        switch (cx->result) {
         case 2:
-            sNetCheck->unk_04 = -1;
+            sNetCheck->errorCode = -1;
         default:
             DwcHttp_Destroy(sNetCheckHttp);
             NetCheck_SetState(3);
@@ -486,12 +486,12 @@ void NetCheck_ThreadMain(void) {
         case 8:
             break;
         }
-        if (DwcHttp_ParseResponse(sNetCheck->unk_08, 0x20, 0, cx->unk_938) != 1) {
+        if (DwcHttp_ParseResponse(sNetCheck->responseFields, 0x20, 0, cx->responseBuffer) != 1) {
             DwcHttp_Destroy(sNetCheckHttp);
             NetCheck_SetState(2);
             goto end;
         }
-        v = func_0212b770(DwcHttp_FindField(sNetCheck->unk_08, 0x20, "httpresult"));
+        v = func_0212b770(DwcHttp_FindField(sNetCheck->responseFields, 0x20, "httpresult"));
         if (data_0220064c == 0x22) {
             DwcHttp_Destroy(sNetCheckHttp);
             NetCheck_SetState(2);
@@ -502,7 +502,7 @@ void NetCheck_ThreadMain(void) {
             NetCheck_SetState(2);
             goto end;
         }
-        if (DwcHttp_GetFieldDecoded(sNetCheck->unk_08, 0x20, "returncd", pn.num, 4) <= 0) {
+        if (DwcHttp_GetFieldDecoded(sNetCheck->responseFields, 0x20, "returncd", pn.num, 4) <= 0) {
             DwcHttp_Destroy(sNetCheckHttp);
             NetCheck_SetState(9);
             goto end;
@@ -518,19 +518,19 @@ void NetCheck_ThreadMain(void) {
             NetCheck_SetState(6);
             goto end;
         }
-        n1 = DwcHttp_GetFieldDecoded(sNetCheck->unk_08, 0x20, "url", 0, 0);
+        n1 = DwcHttp_GetFieldDecoded(sNetCheck->responseFields, 0x20, "url", 0, 0);
         if (n1 <= 0) {
             DwcHttp_Destroy(sNetCheckHttp);
             NetCheck_SetState(9);
             goto end;
         }
-        n2 = DwcHttp_GetFieldDecoded(sNetCheck->unk_08, 0x20, "data", 0, 0);
+        n2 = DwcHttp_GetFieldDecoded(sNetCheck->responseFields, 0x20, "data", 0, 0);
         if (n2 <= 0) {
             DwcHttp_Destroy(sNetCheckHttp);
             NetCheck_SetState(9);
             goto end;
         }
-        n3 = DwcHttp_GetFieldDecoded(sNetCheck->unk_08, 0x20, "wait", 0, 0);
+        n3 = DwcHttp_GetFieldDecoded(sNetCheck->responseFields, 0x20, "wait", 0, 0);
         a = (char *)sNetCheck->unk_108("url", n1 + 1);
         if (a == 0) {
             DwcHttp_Destroy(sNetCheckHttp);
@@ -551,14 +551,14 @@ void NetCheck_ThreadMain(void) {
                 goto end;
             }
         }
-        n = DwcHttp_GetFieldDecoded(sNetCheck->unk_08, 0x20, "url", a, n1 + 1);
+        n = DwcHttp_GetFieldDecoded(sNetCheck->responseFields, 0x20, "url", a, n1 + 1);
         if (n < 0) {
             DwcHttp_Destroy(sNetCheckHttp);
             NetCheck_SetState(9);
             goto end;
         }
         a[n] = 0;
-        n = DwcHttp_GetFieldDecoded(sNetCheck->unk_08, 0x20, "data", b, n2 + 1);
+        n = DwcHttp_GetFieldDecoded(sNetCheck->responseFields, 0x20, "data", b, n2 + 1);
         if (n < 0) {
             DwcHttp_Destroy(sNetCheckHttp);
             NetCheck_SetState(9);
@@ -567,7 +567,7 @@ void NetCheck_ThreadMain(void) {
         b[n] = 0;
         t = 0;
         if (n3 > 0) {
-            n = DwcHttp_GetFieldDecoded(sNetCheck->unk_08, 0x20, "wait", c, n3 + 1);
+            n = DwcHttp_GetFieldDecoded(sNetCheck->responseFields, 0x20, "wait", c, n3 + 1);
             if (n < 0) {
                 DwcHttp_Destroy(sNetCheckHttp);
                 NetCheck_SetState(9);
@@ -586,14 +586,14 @@ void NetCheck_ThreadMain(void) {
             }
         }
         DwcHttp_Destroy(sNetCheckHttp);
-        sNetCheck->unk_04 = -5;
-        sNetCheckHttpParams.unk_00 = a;
-        sNetCheckHttpParams.unk_04 = 0;
-        sNetCheckHttpParams.unk_08 = 0;
-        sNetCheckHttpParams.unk_0c = 0x1000;
+        sNetCheck->errorCode = -5;
+        sNetCheckHttpParams.url = a;
+        sNetCheckHttpParams.method = 0;
+        sNetCheckHttpParams.userRecvBuffer = 0;
+        sNetCheckHttpParams.rxBufSize = 0x1000;
         sNetCheckHttpParams.unk_10 = sNetCheck->unk_108;
         sNetCheckHttpParams.unk_14 = sNetCheck->unk_10c;
-        sNetCheckHttpParams.unk_1c = 0x1d4c0;
+        sNetCheckHttpParams.timeoutMs = 0x1d4c0;
         if (DwcHttp_Init(sNetCheckHttp, &sNetCheckHttpParams)) {
             DwcHttp_Destroy(sNetCheckHttp);
             NetCheck_SetState(1);
@@ -610,13 +610,13 @@ void NetCheck_ThreadMain(void) {
             goto end;
         }
         DwcHttp_StartThread(sNetCheckHttp);
-        if (sNetCheckHttp->unk_9d4) {
-            OS_JoinThread(sNetCheckHttp->unk_968);
+        if (sNetCheckHttp->threadId) {
+            OS_JoinThread(sNetCheckHttp->thread);
         }
         cx = sNetCheckHttp;
-        switch (cx->unk_24) {
+        switch (cx->result) {
         case 2:
-            sNetCheck->unk_04 = -1;
+            sNetCheck->errorCode = -1;
         default:
             DwcHttp_Destroy(sNetCheckHttp);
             NetCheck_SetState(3);
@@ -624,20 +624,20 @@ void NetCheck_ThreadMain(void) {
         case 8:
             break;
         }
-        if (DwcHttp_ParseResponse(sNetCheck->unk_08, 0x20, 1, cx->unk_938) != 1) {
+        if (DwcHttp_ParseResponse(sNetCheck->responseFields, 0x20, 1, cx->responseBuffer) != 1) {
             DwcHttp_Destroy(sNetCheckHttp);
             NetCheck_SetState(2);
             goto end;
         }
-        loc2 = DwcHttp_FindField(sNetCheck->unk_08, 0x20, "httpbody");
+        loc2 = DwcHttp_FindField(sNetCheck->responseFields, 0x20, "httpbody");
         if (loc2 == 0) {
             DwcHttp_Destroy(sNetCheckHttp);
             NetCheck_SetState(2);
             goto end;
         }
-        sNetCheck->unk_118 =
+        sNetCheck->bodyWayport =
             (char *)sNetCheck->unk_108("DWCnetcheck->body_wayport", func_0212a438(loc2) + 1);
-        p2 = sNetCheck->unk_118;
+        p2 = sNetCheck->bodyWayport;
         if (p2 == 0) {
             DwcHttp_Destroy(sNetCheckHttp);
             NetCheck_SetState(4);
@@ -662,20 +662,20 @@ end:
 s32 NetCheck_GetState(void) {
     Unk_ov065_0226ecfc_Glob *g;
     s32 r;
-    OS_LockMutex(sNetCheck->unk_1dc);
-    r = sNetCheck->unk_00;
-    OS_UnlockMutex(sNetCheck->unk_1dc);
+    OS_LockMutex(sNetCheck->mutex);
+    r = sNetCheck->state;
+    OS_UnlockMutex(sNetCheck->mutex);
     return r;
 }
 
 void NetCheck_SetState(s32 v) {
-    OS_LockMutex(sNetCheck->unk_1dc);
-    sNetCheck->unk_00 = v;
-    OS_UnlockMutex(sNetCheck->unk_1dc);
+    OS_LockMutex(sNetCheck->mutex);
+    sNetCheck->state = v;
+    OS_UnlockMutex(sNetCheck->mutex);
 }
 
 s32 NetCheck_GetErrorCode(void) {
-    return sNetCheck->unk_04;
+    return sNetCheck->errorCode;
 }
 
 // Not in the original binary (unreferenced, not in symbols.txt: dead-stripped by the link). Defined last so that it is compiled

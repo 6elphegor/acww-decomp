@@ -27,22 +27,22 @@ typedef unsigned long long u64;
 typedef long long s64;
 
 struct Unk_ov065_0226d158_Form {
-    void *unk_00;
-    s32 unk_04;
-    s32 unk_08;
+    void *entries;
+    s32 capacity;
+    s32 count;
 };
 
 struct Unk_ov065_0226d158_Date {
-    s32 unk_00;
-    s32 unk_04;
-    s32 unk_08;
-    s32 unk_0c;
+    s32 year;
+    s32 month;
+    s32 day;
+    s32 week;
 };
 
 struct Unk_ov065_0226d158_Time {
-    s32 unk_00;
-    s32 unk_04;
-    s32 unk_08;
+    s32 hour;
+    s32 minute;
+    s32 second;
 };
 
 struct Unk_ov065_0226d158_Kv {
@@ -51,14 +51,14 @@ struct Unk_ov065_0226d158_Kv {
 };
 
 struct Unk_ov065_0226d158_Owner {
-    u8 unk_00;
+    u8 language;
     u8 unk_01;
-    u8 unk_02;
-    u8 unk_03;
-    u16 unk_04[10];
-    u16 unk_18;
-    u16 unk_1a[26];
-    u16 unk_4e;
+    u8 birthMonth;
+    u8 birthDay;
+    u16 nickName[10];
+    u16 nickNameLength;
+    u16 comment[26];
+    u16 commentLength;
 };
 
 struct Unk_ov065_02290604_S {

@@ -8,22 +8,22 @@ typedef void *(*Unk_ov065_0226dd2c_Alloc)(const char *, u32);
 typedef void (*Unk_ov065_0226dd2c_Free)(const char *, void *, u32);
 
 struct Unk_ov065_0226d158_Form {
-    void *unk_00;
-    s32 unk_04;
-    s32 unk_08;
+    void *entries;
+    s32 capacity;
+    s32 count;
 };
 
 struct Unk_ov065_0226d158_Date {
-    s32 unk_00;
-    s32 unk_04;
-    s32 unk_08;
-    s32 unk_0c;
+    s32 year;
+    s32 month;
+    s32 day;
+    s32 week;
 };
 
 struct Unk_ov065_0226d158_Time {
-    s32 unk_00;
-    s32 unk_04;
-    s32 unk_08;
+    s32 hour;
+    s32 minute;
+    s32 second;
 };
 
 struct Unk_ov065_0226d158_Kv {
@@ -32,14 +32,14 @@ struct Unk_ov065_0226d158_Kv {
 };
 
 struct Unk_ov065_0226d158_Owner {
-    u8 unk_00;
+    u8 language;
     u8 unk_01;
-    u8 unk_02;
-    u8 unk_03;
-    u16 unk_04[10];
-    u16 unk_18;
-    u16 unk_1a[26];
-    u16 unk_4e;
+    u8 birthMonth;
+    u8 birthDay;
+    u16 nickName[10];
+    u16 nickNameLength;
+    u16 comment[26];
+    u16 commentLength;
 };
 
 struct Unk_ov065_02290604_S {
@@ -564,17 +564,17 @@ s32 NasAuth_BuildRequest(void *a0, const char *a1, const u16 *a2, Unk_ov065_0226
         OS_SPrintf(macstr + i * 2, "%02x", mac[i]);
     }
     macstr[12] = 0;
-    if (owner.unk_00 > 6) {
-        owner.unk_00 = 1;
+    if (owner.language > 6) {
+        owner.language = 1;
     }
-    OS_SNPrintf(birth, 5, "%02x%02x", owner.unk_02, owner.unk_03);
-    OS_SNPrintf(devtime, 13, "%02d%02d%02d%02d%02d%02d", date.unk_00, date.unk_04, date.unk_08,
-                  time.unk_00, time.unk_04, time.unk_08);
-    MI_CpuCopy8(owner.unk_04, nick, 0x14);
+    OS_SNPrintf(birth, 5, "%02x%02x", owner.birthMonth, owner.birthDay);
+    OS_SNPrintf(devtime, 13, "%02d%02d%02d%02d%02d%02d", date.year, date.month, date.day,
+                  time.hour, time.minute, time.second);
+    MI_CpuCopy8(owner.nickName, nick, 0x14);
     nick[0x14] = 0;
     MI_CpuFill8(&form, 0, 0xc);
-    form.unk_00 = a3;
-    form.unk_04 = a4;
+    form.entries = a3;
+    form.capacity = a4;
     if (a5 != 1) {
         if (sNasUserId.unk_00 == 0) {
             DwcHttp_AddField(&form, "action", "acctcreate");
@@ -604,7 +604,7 @@ s32 NasAuth_BuildRequest(void *a0, const char *a1, const u16 *a2, Unk_ov065_0226
     DwcHttp_AddField(&form, "makercd", code2);
     DwcHttp_AddField(&form, "unitcd", "0");
     DwcHttp_AddField(&form, "macadr", macstr);
-    DwcHttp_AddField(&form, "lang", sNasLangCodeTable[owner.unk_00]);
+    DwcHttp_AddField(&form, "lang", sNasLangCodeTable[owner.language]);
     DwcHttp_AddField(&form, "birth", birth);
     DwcHttp_AddField(&form, "devtime", devtime);
     DwcHttp_AddField(&form, "bssid", bssid);

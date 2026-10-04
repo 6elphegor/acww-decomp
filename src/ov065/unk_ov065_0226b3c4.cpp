@@ -343,16 +343,16 @@ extern "C" {
 struct Unk_ov065_0226bf70_Ent {
     u8 lo : 4;
     u8 hi : 4;
-    u8 unk_01;
-    u8 unk_02;
-    u8 unk_03;
-    u8 unk_04[0x20];
+    u8 apType;
+    u8 channelIndex;
+    u8 ssidLength;
+    u8 ssid[0x20];
 };
 
 struct Unk_ov065_0226bf70_Rec {
     u8 pad00[0xc];
-    u8 unk_0c[0x2a];
-    u16 unk_36;
+    u8 ssid[0x2a];
+    u16 channel;
     u8 pad38[0xc0 - 0x38];
 };
 
@@ -510,7 +510,7 @@ s32 WifiAp_StepScanSsids(Unk_ov065_0226bf70_Ctx *ctx) {
             return WifiAp_FinishSearchPass(ctx, 4);
         }
         ctx->stepStartTick = OS_GetTick();
-        WifiAp_StartScan(gWifiLinkAnyBssid, ctx->searchEntries[ctx->searchIndex].unk_04, ctx->searchEntries[ctx->searchIndex].unk_02, 0x300000);
+        WifiAp_StartScan(gWifiLinkAnyBssid, ctx->searchEntries[ctx->searchIndex].ssid, ctx->searchEntries[ctx->searchIndex].channelIndex, 0x300000);
     }
     return 4;
 }
@@ -530,7 +530,7 @@ s32 WifiAp_StepScanFoundChannels(Unk_ov065_0226bf70_Ctx *ctx) {
             return WifiAp_FinishSearchPass(ctx, 5);
         }
         ctx->stepStartTick = OS_GetTick();
-        WifiAp_StartScan(gWifiLinkAnyBssid, ctx->searchEntries[ctx->searchIndex].unk_04, ctx->scanChannel, 0x300000);
+        WifiAp_StartScan(gWifiLinkAnyBssid, ctx->searchEntries[ctx->searchIndex].ssid, ctx->scanChannel, 0x300000);
     }
     return 5;
 }
@@ -700,9 +700,9 @@ s32 WifiAp_BuildSearchWithFreespot(Unk_ov065_0226bf70_Ctx *ctx) {
     n = WifiAp_BuildSearchFromSettings(ctx);
     out += n;
     if (ctx->searchConfig.lo == 0 || ctx->searchConfig.lo == 6) {
-        MI_CpuCopy8(sWifiApSsidFreespot, out->unk_04, 8);
-        out->unk_03 = 8;
-        out->unk_01 = 8;
+        MI_CpuCopy8(sWifiApSsidFreespot, out->ssid, 8);
+        out->ssidLength = 8;
+        out->apType = 8;
         n++;
     }
     return n;
@@ -714,23 +714,23 @@ s32 WifiAp_BuildSearchWithHotspots(Unk_ov065_0226bf70_Ctx *ctx) {
     n = WifiAp_BuildSearchFromSettings(ctx);
     out += n;
     if (ctx->searchConfig.lo == 0 || ctx->searchConfig.lo == 4) {
-        MI_CpuCopy8(sWifiApSsidUsbConnector, out->unk_04, 8);
-        out->unk_03 = 8;
-        out->unk_01 = 6;
+        MI_CpuCopy8(sWifiApSsidUsbConnector, out->ssid, 8);
+        out->ssidLength = 8;
+        out->apType = 6;
         n++;
         out++;
     }
     if (ctx->searchConfig.lo == 0 || ctx->searchConfig.lo == 7) {
-        MI_CpuCopy8(sWifiApSsidWayport, out->unk_04, 8);
-        out->unk_03 = 8;
-        out->unk_01 = 9;
+        MI_CpuCopy8(sWifiApSsidWayport, out->ssid, 8);
+        out->ssidLength = 8;
+        out->apType = 9;
         n++;
         out++;
     }
     if (ctx->searchConfig.lo == 0 || ctx->searchConfig.lo == 8) {
-        MI_CpuCopy8(sWifiApSsidNintendoWfc, out->unk_04, 0xb);
-        out->unk_03 = 0xb;
-        out->unk_01 = 0xa;
+        MI_CpuCopy8(sWifiApSsidNintendoWfc, out->ssid, 0xb);
+        out->ssidLength = 0xb;
+        out->apType = 0xa;
         n++;
     }
     return n;
@@ -755,12 +755,12 @@ u8 WifiAp_BuildSearchFromSettings(Unk_ov065_0226bf70_Ctx *ctx) {
                     if (c == 0) {
                         break;
                     }
-                    out->unk_04[k] = c;
+                    out->ssid[k] = c;
                     k++;
                 } while (k < 0x20);
                 if (k != 0) {
-                    out->unk_03 = k;
-                    out->unk_01 = i;
+                    out->ssidLength = k;
+                    out->apType = i;
                     ok = TRUE;
                 } else {
                     ok = FALSE;
@@ -777,12 +777,12 @@ u8 WifiAp_BuildSearchFromSettings(Unk_ov065_0226bf70_Ctx *ctx) {
                         if (c == 0) {
                             break;
                         }
-                        out->unk_04[k2] = c;
+                        out->ssid[k2] = c;
                         k2++;
                     } while (k2 < 0x20);
                     if (k2 != 0) {
-                        out->unk_03 = k2;
-                        out->unk_01 = i + 3;
+                        out->ssidLength = k2;
+                        out->apType = i + 3;
                         ok2 = TRUE;
                     } else {
                         ok2 = FALSE;
@@ -806,18 +806,18 @@ u32 WifiAp_BuildSearchFromFound(s32 n, u8 *p, Unk_ov065_0226bf70_Ent *out, Unk_o
             if (i >= 9) {
                 break;
             }
-            if (p[0] == 0 && rec->unk_36 != p[3]) {
+            if (p[0] == 0 && rec->channel != p[3]) {
                 u8 k = 0;
                 do {
-                    u8 c = rec->unk_0c[k];
+                    u8 c = rec->ssid[k];
                     if (c == 0) {
                         break;
                     }
-                    out->unk_04[k] = c;
+                    out->ssid[k] = c;
                     k++;
                 } while (k < 0x20);
-                out->unk_03 = k;
-                out->unk_02 = rec->unk_36 - 1;
+                out->ssidLength = k;
+                out->channelIndex = rec->channel - 1;
                 out++;
                 cnt++;
             }

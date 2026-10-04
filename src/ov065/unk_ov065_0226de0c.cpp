@@ -8,10 +8,10 @@ typedef void *(*Unk_ov065_0226e3ac_Alloc)(const char *, u32);
 typedef void (*Unk_ov065_0226e3ac_Free)(const char *, void *, u32);
 
 struct Unk_ov065_0226e3ac_Buf {
-    u8 *unk_00;
-    u8 *unk_04;
-    u8 *unk_08;
-    s32 unk_0c;
+    u8 *base;
+    u8 *cur;
+    u8 *limit;
+    s32 capacity;
 };
 
 struct Unk_ov065_0226e3ac_Cfg {
@@ -19,54 +19,54 @@ struct Unk_ov065_0226e3ac_Cfg {
 };
 
 struct Unk_ov065_0226e3ac_Ctx {
-    u8 unk_00;
+    u8 initFlag;
     u8 unk_01[3];
-    u32 unk_04;
-    s32 unk_08;
-    u8 *unk_0c;
-    s32 unk_10;
+    u32 url;
+    s32 method;
+    u8 *userRecvBuffer;
+    s32 rxBufSize;
     Unk_ov065_0226e3ac_Alloc unk_14;
     Unk_ov065_0226e3ac_Free unk_18;
-    s32 unk_1c;
-    s32 unk_20;
-    s32 unk_24;
-    char unk_28[0xa8 - 0x28];
-    char *unk_a8;
-    char *unk_ac;
-    s32 unk_b0;
-    u8 unk_b4[0x118 - 0xb4];
-    u8 unk_118[0x91c - 0x118];
-    void *unk_91c;
-    void *unk_920;
-    s32 unk_924;
-    Unk_ov065_0226e3ac_Buf unk_928;
-    Unk_ov065_0226e3ac_Buf unk_938;
-    u8 unk_948[0x960 - 0x948];
-    s32 unk_960;
-    char *unk_964;
-    u8 unk_968[0x9d4 - 0x968];
-    s32 unk_9d4;
+    s32 useTestServer;
+    s32 timeoutMs;
+    s32 result;
+    char urlBuffer[0xa8 - 0x28];
+    char *hostName;
+    char *path;
+    s32 isHttps;
+    u8 ipSocket[0x118 - 0xb4];
+    u8 sslCtx[0x91c - 0x118];
+    void *lowRecvBuf;
+    void *lowSendBuf;
+    s32 numFormParams;
+    Unk_ov065_0226e3ac_Buf requestBuffer;
+    Unk_ov065_0226e3ac_Buf responseBuffer;
+    u8 responseMutex[0x960 - 0x948];
+    s32 contentLength;
+    char *bodyStart;
+    u8 thread[0x9d4 - 0x968];
+    s32 threadId;
     u8 unk_9d8[0xa28 - 0x9d8];
-    u8 unk_a28[0xa40 - 0xa28];
-    s32 unk_a40;
+    u8 abortMutex[0xa40 - 0xa28];
+    s32 isAbortRequested;
     u8 unk_a44[0x1a60 - 0xa44];
 };
 
 struct Unk_ov065_0226e554_Conn {
     u8 unk_00[0xc];
-    void *unk_0c;
+    void *sslCtx;
     u8 unk_10[0x3c - 0x10];
-    s32 unk_3c;
-    void *unk_40;
+    s32 rxBufSize;
+    void *rxBuf;
     u8 unk_44[4];
-    s32 unk_48;
-    void *unk_4c;
+    s32 txBufSize;
+    void *txBuf;
     u8 unk_50[0x64 - 0x50];
 };
 
 struct Unk_ov065_0226e554_Ssl {
     u8 unk_00[0x7d4];
-    char *unk_7d4;
+    char *hostName;
     u8 unk_7d8[0x7e4 - 0x7d8];
     u32 (*unk_7e4)(u32);
     u8 unk_7e8[0x804 - 0x7e8];
@@ -74,18 +74,18 @@ struct Unk_ov065_0226e554_Ssl {
 
 struct Unk_ov065_0226eacc_Tbl {
     u32 unk_00;
-    u32 unk_04;
+    u32 currentThread;
 };
 
 struct Unk_ov065_0226de90_Ent {
-    const char *unk_00;
-    char *unk_04;
+    const char *key;
+    char *value;
 };
 
 struct Unk_ov065_0226ded4_List {
-    Unk_ov065_0226de90_Ent *unk_00;
-    s32 unk_04;
-    s32 unk_08;
+    Unk_ov065_0226de90_Ent *entries;
+    s32 capacity;
+    s32 count;
 };
 
 typedef Unk_ov065_0226e3ac_Ctx Unk_ov065_0226e170_Ctx;
@@ -183,24 +183,24 @@ s32 sDwcHttpTestServer;
 
 s32 DwcHttp_Init(Unk_ov065_0226e3ac_Ctx *c, Unk_ov065_0226e3ac_Cfg *cfg) {
     MI_CpuFill8(c, 0, 0x1a60);
-    c->unk_960 = -1;
-    *(Unk_ov065_0226e3ac_Cfg *)&c->unk_04 = *cfg;
-    c->unk_91c = c->unk_14("http->lowrecvbuf", 0xb68);
-    if (c->unk_91c == NULL) {
-        c->unk_24 = 1;
+    c->contentLength = -1;
+    *(Unk_ov065_0226e3ac_Cfg *)&c->url = *cfg;
+    c->lowRecvBuf = c->unk_14("http->lowrecvbuf", 0xb68);
+    if (c->lowRecvBuf == NULL) {
+        c->result = 1;
         return 1;
     }
-    c->unk_920 = c->unk_14("http->lowsendbuf", 0x5ea);
-    if (c->unk_920 == NULL) {
-        c->unk_24 = 1;
+    c->lowSendBuf = c->unk_14("http->lowsendbuf", 0x5ea);
+    if (c->lowSendBuf == NULL) {
+        c->result = 1;
         return 1;
     }
     DwcHttp_ParseUrl(c, (char *)cfg->v[0]);
-    c->unk_24 = DwcHttp_BuildRequestLine(c);
-    if (c->unk_24 == 0) {
-        c->unk_00 = 0xff;
+    c->result = DwcHttp_BuildRequestLine(c);
+    if (c->result == 0) {
+        c->initFlag = 0xff;
     }
-    return c->unk_24;
+    return c->result;
 }
 
 s32 DwcHttp_FinishHeaders(Unk_ov065_0226e3ac_Ctx *c) {
@@ -209,7 +209,7 @@ s32 DwcHttp_FinishHeaders(Unk_ov065_0226e3ac_Ctx *c) {
     if (DwcHttp_AddHeader(c, "Connection", "close") != 0) {
         return 1;
     }
-    n = func_0212a438(func_02129f1c((char *)c->unk_928.unk_00, "\r\n\r\n") + 4);
+    n = func_0212a438(func_02129f1c((char *)c->requestBuffer.base, "\r\n\r\n") + 4);
     if (n != 0) {
         OS_SNPrintf(buf, 7, "%d", n);
         if (DwcHttp_AddHeader(c, "Content-Length", buf) != 0) {
@@ -220,39 +220,39 @@ s32 DwcHttp_FinishHeaders(Unk_ov065_0226e3ac_Ctx *c) {
 }
 
 void DwcHttp_StartThread(Unk_ov065_0226e3ac_Ctx *c) {
-    u32 prio = OS_GetThreadPriority(data_021fcc2c.unk_04);
-    c->unk_a40 = 0;
-    OS_InitMutex(&c->unk_a28);
-    OS_InitMutex(&c->unk_948);
-    if (c->unk_1c == 1) {
+    u32 prio = OS_GetThreadPriority(data_021fcc2c.currentThread);
+    c->isAbortRequested = 0;
+    OS_InitMutex(&c->abortMutex);
+    OS_InitMutex(&c->responseMutex);
+    if (c->useTestServer == 1) {
         sDwcHttpTestServer = 1;
     } else {
         sDwcHttpTestServer = 0;
     }
-    if (c->unk_9d4 == 0 || OS_IsThreadTerminated(&c->unk_968) != 0) {
-        OS_CreateThread(&c->unk_968, (s32 (*)(void *))DwcHttp_ThreadMain, c, (u8 *)c + 0x1a60, 0x1000, prio - 1);
-        OS_WakeupThreadDirect(&c->unk_968);
+    if (c->threadId == 0 || OS_IsThreadTerminated(&c->thread) != 0) {
+        OS_CreateThread(&c->thread, (s32 (*)(void *))DwcHttp_ThreadMain, c, (u8 *)c + 0x1a60, 0x1000, prio - 1);
+        OS_WakeupThreadDirect(&c->thread);
     }
 }
 
 void DwcHttp_Abort(Unk_ov065_0226e3ac_Ctx *c) {
-    if (c->unk_00 == 0xff) {
-        OS_LockMutex(&c->unk_a28);
-        c->unk_a40 = 1;
-        OS_UnlockMutex(&c->unk_a28);
-        if (c->unk_9d4 != 0) {
-            OS_JoinThread(&c->unk_968);
+    if (c->initFlag == 0xff) {
+        OS_LockMutex(&c->abortMutex);
+        c->isAbortRequested = 1;
+        OS_UnlockMutex(&c->abortMutex);
+        if (c->threadId != 0) {
+            OS_JoinThread(&c->thread);
         }
     }
 }
 
 s32 DwcHttp_CheckNotAborted(Unk_ov065_0226e3ac_Ctx *c) {
-    OS_LockMutex(&c->unk_a28);
-    if (c->unk_a40 == 1) {
-        OS_UnlockMutex(&c->unk_a28);
+    OS_LockMutex(&c->abortMutex);
+    if (c->isAbortRequested == 1) {
+        OS_UnlockMutex(&c->abortMutex);
         return 0;
     }
-    OS_UnlockMutex(&c->unk_a28);
+    OS_UnlockMutex(&c->abortMutex);
     OS_Sleep(10);
     return 1;
 }
@@ -273,22 +273,22 @@ void DwcHttp_ThreadMain(Unk_ov065_0226e3ac_Ctx *c) {
     u8 *data;
 
     hdr = 0;
-    conn = (Unk_ov065_0226e554_Conn *)&c->unk_b4;
-    ssl = (Unk_ov065_0226e554_Ssl *)&c->unk_118;
-    rb = &c->unk_938;
-    timeout = c->unk_20;
+    conn = (Unk_ov065_0226e554_Conn *)&c->ipSocket;
+    ssl = (Unk_ov065_0226e554_Ssl *)&c->sslCtx;
+    rb = &c->responseBuffer;
+    timeout = c->timeoutMs;
     if (timeout <= 0) {
         timeout = 0xea60;
     }
     MI_CpuFill8(conn, 0, 0x64);
-    conn->unk_3c = 0xb68;
-    conn->unk_40 = c->unk_91c;
-    conn->unk_48 = 0x5ea;
-    conn->unk_4c = c->unk_920;
+    conn->rxBufSize = 0xb68;
+    conn->rxBuf = c->lowRecvBuf;
+    conn->txBufSize = 0x5ea;
+    conn->txBuf = c->lowSendBuf;
     IpSoc_Use(conn);
     i = 0;
     do {
-        host = Dns_Resolve(c->unk_a8);
+        host = Dns_Resolve(c->hostName);
         if (host != 0) {
             break;
         }
@@ -296,16 +296,16 @@ void DwcHttp_ThreadMain(Unk_ov065_0226e3ac_Ctx *c) {
         i++;
     } while (i < 3);
     if (host == 0) {
-        c->unk_24 = 2;
+        c->result = 2;
         return;
     }
     IpSoc_Init();
     u32 port;
-    if (c->unk_b0 == 1) {
+    if (c->isHttps == 1) {
         MI_CpuFill8(ssl, 0, 0x804);
         ssl->unk_7e4 = DwcHttp_CertCallback;
-        ssl->unk_7d4 = c->unk_a8;
-        conn->unk_0c = ssl;
+        ssl->hostName = c->hostName;
+        conn->sslCtx = ssl;
         Ssl_SetRootCaList(sDwcHttpRootCaList, 0xb);
         Ssl_EnableOnCurrentSocket(1);
         port = 0x1bb;
@@ -314,7 +314,7 @@ void DwcHttp_ThreadMain(Unk_ov065_0226e3ac_Ctx *c) {
     }
     IpSoc_Bind(0, (u16)port, host);
     start = OS_GetTick();
-    if (c->unk_b0 == 1) {
+    if (c->isHttps == 1) {
         OS_GetLowEntropyData(tmp);
         SslRand_AddSeed(tmp, 0x20);
         mark = start;
@@ -329,37 +329,37 @@ void DwcHttp_ThreadMain(Unk_ov065_0226e3ac_Ctx *c) {
         i++;
     } while (i < 3);
     if (r != 0) {
-        c->unk_24 = 3;
+        c->result = 3;
         IpSoc_Release();
         IpSoc_Unuse();
         return;
     }
-    c->unk_928.unk_04 = c->unk_928.unk_00;
-    p = (char *)c->unk_928.unk_00;
-    c->unk_928.unk_08 = (u8 *)p + func_0212a438(p);
-    if (c->unk_928.unk_04 < c->unk_928.unk_08) {
+    c->requestBuffer.cur = c->requestBuffer.base;
+    p = (char *)c->requestBuffer.base;
+    c->requestBuffer.limit = (u8 *)p + func_0212a438(p);
+    if (c->requestBuffer.cur < c->requestBuffer.limit) {
         do {
             if (gOwnIp == 0) {
-                c->unk_24 = 5;
+                c->result = 5;
                 goto fail;
             }
-            len = c->unk_928.unk_08 - c->unk_928.unk_04;
+            len = c->requestBuffer.limit - c->requestBuffer.cur;
             if (len > 0x2bc) {
                 len = 0x2bc;
             }
-            len = IpSoc_Write((u32)c->unk_928.unk_04, len);
+            len = IpSoc_Write((u32)c->requestBuffer.cur, len);
             if (len <= 0) {
-                c->unk_24 = 5;
+                c->result = 5;
                 goto fail;
             }
             IpSoc_FlushPending();
             u64 now = OS_GetTick();
             u64 el = ((now - start) << 6) / 0x82ea;
             if ((u64)(s64)timeout < el) {
-                c->unk_24 = 4;
+                c->result = 4;
                 goto fail;
             }
-            if (c->unk_b0 == 1) {
+            if (c->isHttps == 1) {
                 el = ((now - mark) << 6) / 0x82ea;
                 if (1000 < el) {
                     OS_GetLowEntropyData(tmp);
@@ -367,95 +367,95 @@ void DwcHttp_ThreadMain(Unk_ov065_0226e3ac_Ctx *c) {
                     mark = now;
                 }
             }
-            c->unk_928.unk_04 = c->unk_928.unk_04 + len;
+            c->requestBuffer.cur = c->requestBuffer.cur + len;
             if (DwcHttp_CheckNotAborted(c) == 0) {
-                c->unk_24 = 7;
+                c->result = 7;
                 goto fail;
             }
-        } while (c->unk_928.unk_04 < c->unk_928.unk_08);
+        } while (c->requestBuffer.cur < c->requestBuffer.limit);
     }
-    DwcHttp_FreeBuffer(c, &c->unk_928);
-    OS_LockMutex(&c->unk_948);
-    if (c->unk_0c == NULL) {
-        if (DwcHttp_AllocBuffer(c, &c->unk_938, c->unk_10) == 0) {
-            c->unk_24 = 1;
-            OS_UnlockMutex(&c->unk_948);
+    DwcHttp_FreeBuffer(c, &c->requestBuffer);
+    OS_LockMutex(&c->responseMutex);
+    if (c->userRecvBuffer == NULL) {
+        if (DwcHttp_AllocBuffer(c, &c->responseBuffer, c->rxBufSize) == 0) {
+            c->result = 1;
+            OS_UnlockMutex(&c->responseMutex);
             goto fail;
         }
     } else {
-        c->unk_938.unk_00 = c->unk_0c;
-        c->unk_938.unk_04 = c->unk_938.unk_00;
-        c->unk_938.unk_08 = c->unk_938.unk_00 + c->unk_10;
-        c->unk_938.unk_0c = c->unk_10;
+        c->responseBuffer.base = c->userRecvBuffer;
+        c->responseBuffer.cur = c->responseBuffer.base;
+        c->responseBuffer.limit = c->responseBuffer.base + c->rxBufSize;
+        c->responseBuffer.capacity = c->rxBufSize;
     }
-    rb->unk_04 = rb->unk_00;
-    rb->unk_08 = rb->unk_00 + rb->unk_0c;
-    OS_UnlockMutex(&c->unk_948);
+    rb->cur = rb->base;
+    rb->limit = rb->base + rb->capacity;
+    OS_UnlockMutex(&c->responseMutex);
     {
         for (;;) {
             if (gOwnIp == 0) {
-                c->unk_24 = 5;
+                c->result = 5;
                 goto fail;
             }
-            OS_LockMutex(&c->unk_948);
-            if (rb->unk_04 >= rb->unk_08 - 1) {
-                OS_UnlockMutex(&c->unk_948);
+            OS_LockMutex(&c->responseMutex);
+            if (rb->cur >= rb->limit - 1) {
+                OS_UnlockMutex(&c->responseMutex);
                 goto done8;
             }
             len = IpSoc_GetReadLength();
             if (len > 0) {
                 data = IpSoc_Read((u32 *)&len);
                 if (data == NULL) {
-                    OS_UnlockMutex(&c->unk_948);
+                    OS_UnlockMutex(&c->responseMutex);
                     goto done8;
                 }
-                s32 room = rb->unk_08 - 1 - rb->unk_04;
+                s32 room = rb->limit - 1 - rb->cur;
                 got = len;
                 if (got >= room) {
                     got = room;
                 }
-                MI_CpuCopy8(data, rb->unk_04, got);
-                rb->unk_04 = rb->unk_04 + got;
-                *rb->unk_04 = 0;
+                MI_CpuCopy8(data, rb->cur, got);
+                rb->cur = rb->cur + got;
+                *rb->cur = 0;
                 if (hdr != 1) {
-                    p = (char *)rb->unk_00;
+                    p = (char *)rb->base;
                     if (func_02129f1c(p, "\r\n\r\n") != NULL) {
                         hdr = 1;
-                        c->unk_964 = func_02129f1c(p, "\r\n\r\n") + 4;
-                        q = func_02129f1c((char *)rb->unk_00, "Content-Length: ");
+                        c->bodyStart = func_02129f1c(p, "\r\n\r\n") + 4;
+                        q = func_02129f1c((char *)rb->base, "Content-Length: ");
                         if (q != NULL) {
                             q = q + func_0212a438("Content-Length: ");
                             q2 = func_02129f1c(q, "\r\n");
                             ch = q2[0];
                             q2[0] = 0;
-                            c->unk_960 = func_0212b770(q);
+                            c->contentLength = func_0212b770(q);
                             q2[0] = ch;
                         }
                     }
                 }
                 if ((u32)len > (u32)got) {
                     IpSoc_Consume(len);
-                    OS_UnlockMutex(&c->unk_948);
+                    OS_UnlockMutex(&c->responseMutex);
                     goto done8;
                 }
                 IpSoc_Consume(got);
             }
             if (len < 0) {
-                OS_UnlockMutex(&c->unk_948);
+                OS_UnlockMutex(&c->responseMutex);
                 goto done8;
             }
-            if (c->unk_960 > 0 && len > 0 && (u8 *)c->unk_964 + c->unk_960 <= rb->unk_04) {
-                OS_UnlockMutex(&c->unk_948);
+            if (c->contentLength > 0 && len > 0 && (u8 *)c->bodyStart + c->contentLength <= rb->cur) {
+                OS_UnlockMutex(&c->responseMutex);
                 goto done8;
             }
             u64 now = OS_GetTick();
             u64 el = ((now - start) << 6) / 0x82ea;
             if ((u64)(s64)timeout < el) {
-                c->unk_24 = 6;
-                OS_UnlockMutex(&c->unk_948);
+                c->result = 6;
+                OS_UnlockMutex(&c->responseMutex);
                 goto fail;
             }
-            if (c->unk_b0 == 1) {
+            if (c->isHttps == 1) {
                 el = ((now - mark) << 6) / 0x82ea;
                 if (1000 < el) {
                     OS_GetLowEntropyData(tmp);
@@ -463,9 +463,9 @@ void DwcHttp_ThreadMain(Unk_ov065_0226e3ac_Ctx *c) {
                     mark = now;
                 }
             }
-            OS_UnlockMutex(&c->unk_948);
+            OS_UnlockMutex(&c->responseMutex);
             if (DwcHttp_CheckNotAborted(c) == 0) {
-                c->unk_24 = 7;
+                c->result = 7;
                 goto fail;
             }
         }
@@ -475,7 +475,7 @@ done8:
     IpSoc_TcpWaitClosed();
     IpSoc_Release();
     IpSoc_Unuse();
-    c->unk_24 = 8;
+    c->result = 8;
     return;
 fail:
     IpSoc_TcpShutdown();
@@ -487,100 +487,100 @@ fail:
 
 void DwcHttp_Destroy(Unk_ov065_0226e3ac_Ctx *c) {
     if (c != NULL) {
-        if (c->unk_0c == NULL) {
-            DwcHttp_FreeBuffer(c, &c->unk_938);
+        if (c->userRecvBuffer == NULL) {
+            DwcHttp_FreeBuffer(c, &c->responseBuffer);
         }
-        DwcHttp_FreeBuffer(c, &c->unk_928);
-        if (c->unk_91c != NULL) {
-            c->unk_18("http->lowrecvbuf", c->unk_91c, 0);
-            c->unk_91c = NULL;
+        DwcHttp_FreeBuffer(c, &c->requestBuffer);
+        if (c->lowRecvBuf != NULL) {
+            c->unk_18("http->lowrecvbuf", c->lowRecvBuf, 0);
+            c->lowRecvBuf = NULL;
         }
-        if (c->unk_920 != NULL) {
-            c->unk_18("http->lowsendbuf", c->unk_920, 0);
-            c->unk_920 = NULL;
+        if (c->lowSendBuf != NULL) {
+            c->unk_18("http->lowsendbuf", c->lowSendBuf, 0);
+            c->lowSendBuf = NULL;
         }
         MI_CpuFill8(c, 0, 0x1a60);
     }
 }
 
 s32 DwcHttp_BuildRequestLine(Unk_ov065_0226e3ac_Ctx *c) {
-    Unk_ov065_0226e3ac_Buf *b = &c->unk_928;
-    const char *fmt = c->unk_08 == 0 ? "POST /%s HTTP/1.0\r\nContent-type: application/x-www-form-urlencoded\r\nHost: %s\r\n\r\n" : "GET /%s HTTP/1.0\r\nHost: %s\r\n\r\n";
+    Unk_ov065_0226e3ac_Buf *b = &c->requestBuffer;
+    const char *fmt = c->method == 0 ? "POST /%s HTTP/1.0\r\nContent-type: application/x-www-form-urlencoded\r\nHost: %s\r\n\r\n" : "GET /%s HTTP/1.0\r\nHost: %s\r\n\r\n";
     s32 n, r, sz;
-    n = func_0212a438(c->unk_a8);
-    n += func_0212a438(fmt) - 4 + func_0212a438(c->unk_ac);
+    n = func_0212a438(c->hostName);
+    n += func_0212a438(fmt) - 4 + func_0212a438(c->path);
     sz = n + 0x400;
-    if (DwcHttp_AllocBuffer(c, &c->unk_928, sz) != 1) {
+    if (DwcHttp_AllocBuffer(c, &c->requestBuffer, sz) != 1) {
         return 1;
     }
-    r = OS_SNPrintf((char *)b->unk_04, b->unk_0c, fmt, c->unk_ac, c->unk_a8);
-    b->unk_04 = b->unk_04 + r;
+    r = OS_SNPrintf((char *)b->cur, b->capacity, fmt, c->path, c->hostName);
+    b->cur = b->cur + r;
     return 0;
 }
 
 s32 DwcHttp_AddHeader(Unk_ov065_0226e3ac_Ctx *c, const char *a1, const char *a2) {
     s32 n, avail;
-    Unk_ov065_0226e3ac_Buf *b = &c->unk_928;
+    Unk_ov065_0226e3ac_Buf *b = &c->requestBuffer;
     char *p;
     s8 saved;
     n = func_0212a438(a2);
     n += func_0212a438("%s: %s\r\n") - 4 + func_0212a438(a1);
-    avail = b->unk_08 - b->unk_04;
+    avail = b->limit - b->cur;
     if (n + 1 > avail) {
         if (DwcHttp_GrowBuffer(c, b, n - avail + 1) == 0) {
             return 1;
         }
     }
-    p = func_02129f1c((char *)b->unk_00, "\r\n\r\n") + 2;
+    p = func_02129f1c((char *)b->base, "\r\n\r\n") + 2;
     saved = p[0];
     memmove(p + n, p, func_0212a438(p) + 1);
     s32 r = OS_SNPrintf(p, n + 1, "%s: %s\r\n", a1, a2);
     p[r] = saved;
-    b->unk_04 = b->unk_04 + n;
+    b->cur = b->cur + n;
     return 0;
 }
 
 s32 DwcHttp_AddFormParam(Unk_ov065_0226e170_Ctx *c, const char *a1, void *a2, s32 a3) {
-    Unk_ov065_0226e170_Buf *b = &c->unk_928;
-    const char *fmt = c->unk_924 == 0 ? "%s=" : "&%s=";
+    Unk_ov065_0226e170_Buf *b = &c->requestBuffer;
+    const char *fmt = c->numFormParams == 0 ? "%s=" : "&%s=";
     s32 r7, len, tot, avail, r;
-    c->unk_924++;
+    c->numFormParams++;
     r7 = NasBase64_Encode(a2, a3, NULL, 0);
     len = func_0212a438(fmt);
     tot = r7 + (len - 2 + func_0212a438(a1));
-    avail = b->unk_08 - b->unk_04;
+    avail = b->limit - b->cur;
     if (tot > avail) {
         if (DwcHttp_GrowBuffer(c, b, tot - avail + 1) == 0) {
             return 1;
         }
-        avail = b->unk_08 - b->unk_04;
+        avail = b->limit - b->cur;
     }
-    r = OS_SNPrintf((char *)b->unk_04, avail, fmt, a1);
-    b->unk_04 = b->unk_04 + r;
-    if (NasBase64_Encode(a2, a3, b->unk_04, b->unk_08 - b->unk_04 - 1) < 0) {
+    r = OS_SNPrintf((char *)b->cur, avail, fmt, a1);
+    b->cur = b->cur + r;
+    if (NasBase64_Encode(a2, a3, b->cur, b->limit - b->cur - 1) < 0) {
         return 1;
     }
-    b->unk_04 = b->unk_04 + r7;
-    *b->unk_04 = 0;
+    b->cur = b->cur + r7;
+    *b->cur = 0;
     return 0;
 }
 
 s32 DwcHttp_AppendBody(Unk_ov065_0226e170_Ctx *c, const char *s) {
     s32 n, avail, r;
-    Unk_ov065_0226e170_Buf *b = &c->unk_928;
+    Unk_ov065_0226e170_Buf *b = &c->requestBuffer;
     n = func_0212a438(s);
-    avail = b->unk_08 - b->unk_04;
+    avail = b->limit - b->cur;
     if (n > avail) {
         if (DwcHttp_GrowBuffer(c, b, n - avail + 1) == 0) {
             return 1;
         }
-        avail = b->unk_08 - b->unk_04;
+        avail = b->limit - b->cur;
     }
-    r = OS_SNPrintf((char *)b->unk_04, avail, "%s", s);
+    r = OS_SNPrintf((char *)b->cur, avail, "%s", s);
     if (r != n) {
         return 1;
     }
-    b->unk_04 = b->unk_04 + r;
+    b->cur = b->cur + r;
     return 0;
 }
 
@@ -595,19 +595,19 @@ s32 DwcHttp_AllocBuffer(Unk_ov065_0226e170_Ctx *c, Unk_ov065_0226e170_Buf *b, s3
     if (n == 0) {
         return 0;
     }
-    b->unk_00 = (u8 *)c->unk_14("DWCHttpBuffer", n);
-    if (b->unk_00 == NULL) {
+    b->base = (u8 *)c->unk_14("DWCHttpBuffer", n);
+    if (b->base == NULL) {
         return 0;
     }
-    b->unk_04 = b->unk_00;
-    b->unk_0c = n;
-    b->unk_08 = b->unk_00 + b->unk_0c;
+    b->cur = b->base;
+    b->capacity = n;
+    b->limit = b->base + b->capacity;
     return 1;
 }
 
 void DwcHttp_FreeBuffer(Unk_ov065_0226e170_Ctx *c, Unk_ov065_0226e170_Buf *b) {
-    if (b->unk_00 != NULL) {
-        c->unk_18("DWCHttpBuffer", b->unk_00, 0);
+    if (b->base != NULL) {
+        c->unk_18("DWCHttpBuffer", b->base, 0);
     }
     MI_CpuFill8(b, 0, 0x10);
 }
@@ -617,19 +617,19 @@ s32 DwcHttp_GrowBuffer(Unk_ov065_0226e170_Ctx *c, Unk_ov065_0226e170_Buf *b, s32
     if (n <= 0) {
         return 0;
     }
-    p = (u8 *)c->unk_14(NULL, b->unk_0c + n);
+    p = (u8 *)c->unk_14(NULL, b->capacity + n);
     if (p == NULL) {
         return 0;
     }
-    MI_CpuCopy8(b->unk_00, p, b->unk_0c);
-    c->unk_18(NULL, b->unk_00, 0);
+    MI_CpuCopy8(b->base, p, b->capacity);
+    c->unk_18(NULL, b->base, 0);
     if (p == NULL) {
         return 0;
     }
-    b->unk_04 = b->unk_04 + (p - b->unk_00);
-    b->unk_0c = b->unk_0c + n;
-    b->unk_00 = p;
-    b->unk_08 = p + b->unk_0c;
+    b->cur = b->cur + (p - b->base);
+    b->capacity = b->capacity + n;
+    b->base = p;
+    b->limit = p + b->capacity;
     return 1;
 }
 
@@ -639,39 +639,39 @@ s32 DwcHttp_ParseUrl(Unk_ov065_0226e0a8_Ctx *c, char *s) {
     if ((u32)func_0212a438(s) >= 0x80) {
         return 0;
     }
-    func_0212a2ec(c->unk_28, s, 0x80);
+    func_0212a2ec(c->urlBuffer, s, 0x80);
     n = func_0212a438(s);
-    if (n != (u32)func_0212a438(c->unk_28)) {
+    if (n != (u32)func_0212a438(c->urlBuffer)) {
         return 0;
     }
-    if (func_02129f1c(c->unk_28, "http://")) {
-        c->unk_a8 = c->unk_28 + 7;
-        c->unk_b0 = 0;
+    if (func_02129f1c(c->urlBuffer, "http://")) {
+        c->hostName = c->urlBuffer + 7;
+        c->isHttps = 0;
     } else {
-        q = func_02129f1c(c->unk_28, "https://");
+        q = func_02129f1c(c->urlBuffer, "https://");
         if (q == NULL) {
             return 0;
         }
-        c->unk_a8 = q + 8;
-        c->unk_b0 = 1;
+        c->hostName = q + 8;
+        c->isHttps = 1;
     }
-    q = func_02129f1c(c->unk_a8, "/");
+    q = func_02129f1c(c->hostName, "/");
     if (q == NULL) {
-        c->unk_ac = NULL;
+        c->path = NULL;
     } else {
         *q = 0;
-        c->unk_ac = q + 1;
+        c->path = q + 1;
     }
     return 1;
 }
 
 s32 DwcHttp_AddField(Unk_ov065_0226ded4_List *l, const char *k, char *v) {
-    if (l->unk_08 > l->unk_04) {
+    if (l->count > l->capacity) {
         return 0;
     }
-    l->unk_00[l->unk_08].unk_00 = k;
-    l->unk_00[l->unk_08].unk_04 = v;
-    l->unk_08++;
+    l->entries[l->count].key = k;
+    l->entries[l->count].value = v;
+    l->count++;
     return 1;
 }
 
@@ -683,9 +683,9 @@ s32 DwcHttp_ParseResponse(Unk_ov065_0226de90_Ent *tbl, s32 n, s32 flag, char *te
     char *end;
     char *tx;
     char *t;
-    l.unk_00 = tbl;
-    l.unk_04 = n;
-    l.unk_08 = 0;
+    l.entries = tbl;
+    l.capacity = n;
+    l.count = 0;
     MI_CpuFill8(tbl, 0, n * 8);
     p = func_02129f1c(text, "\r\n\r\n");
     if (p == NULL) {
@@ -760,11 +760,11 @@ char *DwcHttp_FindField(Unk_ov065_0226de90_Ent *tbl, s32 n, const char *key) {
     if (n > 0) {
         p = tbl;
         do {
-            if (p->unk_00 == NULL) {
+            if (p->key == NULL) {
                 break;
             }
-            if (strcmp(key, p->unk_00) == 0) {
-                return tbl[i].unk_04;
+            if (strcmp(key, p->key) == 0) {
+                return tbl[i].value;
             }
             p++;
             i++;

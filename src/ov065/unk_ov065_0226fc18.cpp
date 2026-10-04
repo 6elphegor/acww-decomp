@@ -22,51 +22,51 @@ struct Unk_ov065_0226f924_Cfg {
 };
 
 struct Unk_ov065_0226f7c8_Ctx {
-    u8 unk_00[4];
-    s32 unk_04;
-    u8 unk_08[0x100];
-    Unk_ov065_0226f924_Cfg unk_108;
-    u32 unk_114;
-    u32 unk_118;
-    u8 unk_11c[0x6c];
-    u32 unk_188;
+    u8 state[4];
+    s32 errorCode;
+    u8 responseFields[0x100];
+    Unk_ov065_0226f924_Cfg allocator;
+    u32 body302;
+    u32 bodyWayport;
+    u8 thread[0x6c];
+    u32 threadId;
     u8 unk_18c[0x50];
     u8 unk_1dc[0x1024];
 };
 
 struct Unk_ov065_0226fc54_Ctx {
     u8 unk_00[0x24];
-    s32 unk_24;
+    s32 state;
     u8 unk_28[4];
-    u8 unk_2c;
-    u8 unk_2d;
+    u8 myAid;
+    u8 isClosingAll;
     u8 unk_2e[2];
-    u32 unk_30;
+    u32 ownProfileId;
     u8 unk_34[0x38];
     u32 (*unk_6c)(s32, s32, s32);
-    s32 unk_70;
+    s32 matchCallbackArg;
     u32 (*unk_74)(s32, s32, s32, s32, s32, s32);
-    s32 unk_78;
+    s32 serverMatchCallbackArg;
     u32 (*unk_7c)(s32, s32, s32, s32, s32, s32);
-    s32 unk_80;
+    s32 closedCallbackArg;
     u8 unk_84[0x2c5];
-    u8 unk_349;
+    u8 numClients;
     u8 unk_34a[2];
-    u32 unk_34c;
-    u8 unk_350;
-    u8 unk_351;
-    u8 unk_352;
+    u32 qr2Object;
+    u8 numPlayers;
+    u8 matchType;
+    u8 maxPlayers;
     u8 unk_353[0xdd];
-    u32 unk_430[0x29];
-    u32 unk_4d4;
+    u32 memberProfileIds[0x29];
+    u32 matchState;
     u8 unk_4d8[0x11c];
-    u8 unk_5f4[0x20];
-    u32 unk_614;
+    u8 aids[0x20];
+    u32 validAidMask;
 };
 
 struct Unk_ov065_0226fc54_Ent {
-    u8 unk_00;
-    u8 unk_01;
+    u8 slotIndex;
+    u8 aid;
 };
 extern "C" {
 extern Unk_ov065_0226f7c8_Ctx *sNetCheck;
@@ -171,7 +171,7 @@ struct Unk_ov065_02290670 {
 
 struct Unk_ov065_02270710_Buf {
     u32 unk_00;
-    u32 unk_04;
+    u32 status;
     u8 pad_08[0x208];
 };
 
@@ -274,48 +274,48 @@ typedef void (*Unk_ov065_02270c94_Cb)(s32, s32, u32);
 typedef void (*Unk_ov065_02271440_Cb)(void *, void *, u32);
 
 struct Unk_ov065_02270ba4_Sub {
-    void *unk_00;
+    void *instance;
 };
 
 struct Unk_ov065_02270ba4_G {
-    void *unk_00;
-    void *unk_04;
-    void *unk_08;
-    void *unk_0c;
-    void *unk_10;
-    void *unk_14;
-    void *unk_18;
-    Unk_ov065_02270ba4_Sub unk_1c;
-    void *unk_20;
-    u32 unk_24;
-    u32 unk_28;
-    u8 unk_2c;
-    u8 unk_2d;
+    void *transportSocket;
+    void *gt2ConnectedCallback;
+    void *gt2ReceivedCallback;
+    void *gt2ClosedCallback;
+    void *gt2PingCallback;
+    void *gt2SendBufferSize;
+    void *gt2RecvBufferSize;
+    Unk_ov065_02270ba4_Sub gpConnection;
+    void *userData;
+    u32 state;
+    u32 prevState;
+    u8 myAid;
+    u8 isClosingAll;
     u16 unk_2e;
-    u32 unk_30;
-    u8 unk_34[0x20];
-    void *unk_54;
-    void *unk_58;
-    u32 unk_5c;
-    u32 unk_60;
-    u32 unk_64;
-    u32 unk_68;
-    u32 unk_6c;
-    u32 unk_70;
-    u32 unk_74;
-    u32 unk_78;
-    u32 unk_7c;
-    u32 unk_80;
-    u8 unk_84[0x2e8 - 0x84];
-    u8 unk_2e8[0x33c - 0x2e8];
-    u8 unk_33c[0x34c - 0x33c];
-    void *unk_34c;
+    u32 ownProfileId;
+    u8 buddyRequestText[0x20];
+    void *gameName;
+    void *secretKey;
+    u32 loginCallback;
+    u32 loginCallbackArg;
+    u32 updateCallback;
+    u32 updateCallbackArg;
+    u32 matchCallback;
+    u32 matchCallbackArg;
+    u32 serverMatchCallback;
+    u32 serverMatchCallbackArg;
+    u32 closedCallback;
+    u32 closedCallbackArg;
+    u8 loginControl[0x2e8 - 0x84];
+    u8 friendControl[0x33c - 0x2e8];
+    u8 matchControl[0x34c - 0x33c];
+    void *qr2Object;
     u8 unk_350[4];
-    u8 unk_354;
+    u8 qr2ShutdownPending;
     u8 unk_355[0x420 - 0x355];
-    void *unk_420;
+    void *serverBrowser;
     u8 unk_424[0x7a0 - 0x424];
-    u8 unk_7a0[4];
+    u8 netChannelTable[4];
 };
 
 struct Unk_ov065_02270eb0_Tri {
@@ -328,37 +328,37 @@ struct Unk_ov065_02270eb0_P {
     u8 unk_08[0xc];
     u32 unk_14;
     u8 unk_18[4];
-    u32 unk_1c;
+    u32 profileId;
     u8 unk_20[4];
-    u32 unk_24;
+    u32 gameCode;
 };
 
 struct Unk_ov065_02270eb0_H {
-    void *unk_00;
-    s32 unk_04;
+    void *gpConnection;
+    s32 state;
     u8 unk_08[4];
-    u32 unk_0c;
+    u32 gameCode;
     u8 unk_10[8];
     Unk_ov065_02270c94_Cb unk_18;
-    u32 unk_1c;
-    Unk_ov065_02270eb0_P *unk_20;
+    u32 resultCallbackArg;
+    Unk_ov065_02270eb0_P *userData;
     u8 unk_24[4];
-    void *unk_28;
-    u64 unk_2c;
-    s32 unk_34;
-    u64 unk_38;
-    Unk_ov065_02270eb0_Tri unk_40;
-    char unk_4c[0x100];
-    char unk_14c[0x100];
-    u8 unk_24c[9];
-    char unk_255[0x100];
+    void *nasAuthWork;
+    u64 nasAuthStartTick;
+    s32 gpConnectPending;
+    u64 gpConnectStartTick;
+    Unk_ov065_02270eb0_Tri loginId;
+    char authToken[0x100];
+    char authChallenge[0x100];
+    u8 loginIdText[9];
+    char gsbrcd[0x100];
 };
 
 struct Unk_ov065_02270eb0_X {
-    s32 unk_00;
-    u32 unk_04;
+    s32 result;
+    u32 profileId;
     u8 unk_08[0x86];
-    s8 unk_8e[1];
+    s8 uniqueNick[1];
 };
 
 struct Unk_ov065_0227112c_Pair {
@@ -367,18 +367,18 @@ struct Unk_ov065_0227112c_Pair {
 };
 
 struct Unk_ov065_02270fd4_S {
-    s32 unk_00;
+    s32 result;
     u8 unk_04[0x46];
-    char unk_4a[0x100];
+    char token[0x100];
     u8 unk_14a[0x2d];
-    char unk_177[0x4d];
+    char challenge[0x4d];
 };
 
 struct Unk_ov065_0227112c_Cfg {
-    u8 unk_00[0x16];
-    char unk_16[14];
-    void *unk_24;
-    void *unk_28;
+    u8 inGameName[0x16];
+    char gsbrcd[14];
+    void *allocFunc;
+    void *freeFunc;
 };
 
 namespace Unk_ov065_0227138c_Ns {
@@ -490,41 +490,41 @@ void DwcCore_Init(Unk_ov065_02270ba4_G *g, Unk_ov065_02270eb0_P *a1, void *a2, c
                          void *a5, void *a6, void *a7, void *a8) {
     sDwcControl = g;
     DwcCore_ClearError();
-    sDwcControl->unk_00 = NULL;
-    sDwcControl->unk_04 = (void *)DwcMatch_OnGt2Connected;
-    sDwcControl->unk_08 = (void *)DwcConn_OnGt2Receive;
-    sDwcControl->unk_0c = (void *)DwcConn_OnGt2Closed;
-    sDwcControl->unk_10 = (void *)DwcConn_OnGt2Ping;
-    sDwcControl->unk_14 = a5 != NULL ? a5 : (void *)0x2000;
-    sDwcControl->unk_18 = a6 != NULL ? a6 : (void *)0x2000;
-    sDwcControl->unk_1c.unk_00 = NULL;
-    sDwcControl->unk_20 = a1;
-    sDwcControl->unk_24 = 0;
-    sDwcControl->unk_28 = 0;
-    sDwcControl->unk_2c = 0;
-    sDwcControl->unk_2d = 0;
+    sDwcControl->transportSocket = NULL;
+    sDwcControl->gt2ConnectedCallback = (void *)DwcMatch_OnGt2Connected;
+    sDwcControl->gt2ReceivedCallback = (void *)DwcConn_OnGt2Receive;
+    sDwcControl->gt2ClosedCallback = (void *)DwcConn_OnGt2Closed;
+    sDwcControl->gt2PingCallback = (void *)DwcConn_OnGt2Ping;
+    sDwcControl->gt2SendBufferSize = a5 != NULL ? a5 : (void *)0x2000;
+    sDwcControl->gt2RecvBufferSize = a6 != NULL ? a6 : (void *)0x2000;
+    sDwcControl->gpConnection.instance = NULL;
+    sDwcControl->userData = a1;
+    sDwcControl->state = 0;
+    sDwcControl->prevState = 0;
+    sDwcControl->myAid = 0;
+    sDwcControl->isClosingAll = 0;
     sDwcControl->unk_2e = 0;
-    sDwcControl->unk_30 = 0;
-    sDwcControl->unk_54 = data_ov065_02291104;
-    sDwcControl->unk_58 = data_ov065_02291204;
-    sDwcControl->unk_5c = 0;
-    sDwcControl->unk_60 = 0;
-    sDwcControl->unk_64 = 0;
-    sDwcControl->unk_68 = 0;
-    sDwcControl->unk_6c = 0;
-    sDwcControl->unk_70 = 0;
-    sDwcControl->unk_74 = 0;
-    sDwcControl->unk_78 = 0;
-    sDwcControl->unk_7c = 0;
-    sDwcControl->unk_80 = 0;
+    sDwcControl->ownProfileId = 0;
+    sDwcControl->gameName = data_ov065_02291104;
+    sDwcControl->secretKey = data_ov065_02291204;
+    sDwcControl->loginCallback = 0;
+    sDwcControl->loginCallbackArg = 0;
+    sDwcControl->updateCallback = 0;
+    sDwcControl->updateCallbackArg = 0;
+    sDwcControl->matchCallback = 0;
+    sDwcControl->matchCallbackArg = 0;
+    sDwcControl->serverMatchCallback = 0;
+    sDwcControl->serverMatchCallbackArg = 0;
+    sDwcControl->closedCallback = 0;
+    sDwcControl->closedCallbackArg = 0;
     DwcConn_ClearTables();
-    DwcLogin_InitControl(&sDwcControl->unk_84, a1, &sDwcControl->unk_1c, a2, a1->unk_24,
+    DwcLogin_InitControl(&sDwcControl->loginControl, a1, &sDwcControl->gpConnection, a2, a1->gameCode,
                         (void *)DwcLogin_OnLoginDone, 0);
-    DwcFriend_InitControl(&sDwcControl->unk_2e8, &sDwcControl->unk_1c, &sDwcControl->unk_34, a7,
+    DwcFriend_InitControl(&sDwcControl->friendControl, &sDwcControl->gpConnection, &sDwcControl->buddyRequestText, a7,
                         a8);
-    DwcMatch_InitControl(&sDwcControl->unk_33c, &sDwcControl->unk_1c, sDwcControl,
-                        &sDwcControl->unk_04, data_ov065_02291104, data_ov065_02291204, a7, a8);
-    DwcNet_InitChannelTable(&sDwcControl->unk_7a0);
+    DwcMatch_InitControl(&sDwcControl->matchControl, &sDwcControl->gpConnection, sDwcControl,
+                        &sDwcControl->gt2ConnectedCallback, data_ov065_02291104, data_ov065_02291204, a7, a8);
+    DwcNet_InitChannelTable(&sDwcControl->netChannelTable);
     u32 n;
     if (STD_GetStringLength(a3) < 0x100) {
         n = STD_GetStringLength(a3);
@@ -551,33 +551,33 @@ void DwcCore_Shutdown(void) {
     if (sDwcControl == NULL) {
         return;
     }
-    if (sDwcControl->unk_34c != NULL) {
-        GsQr_Shutdown(sDwcControl->unk_34c);
-        sDwcControl->unk_34c = NULL;
+    if (sDwcControl->qr2Object != NULL) {
+        GsQr_Shutdown(sDwcControl->qr2Object);
+        sDwcControl->qr2Object = NULL;
     }
-    sDwcControl->unk_354 = 0;
-    if (sDwcControl->unk_420 != NULL) {
-        GsSrvBrowser_Free(sDwcControl->unk_420);
-        sDwcControl->unk_420 = NULL;
+    sDwcControl->qr2ShutdownPending = 0;
+    if (sDwcControl->serverBrowser != NULL) {
+        GsSrvBrowser_Free(sDwcControl->serverBrowser);
+        sDwcControl->serverBrowser = NULL;
     }
     GsNatNeg_FreeAll();
     GsPersist_Disconnect();
-    if (sDwcControl->unk_1c.unk_00 != NULL) {
-        GsGp_SetCallback(&sDwcControl->unk_1c, 0, 0, 0);
-        GsGp_SetCallback(&sDwcControl->unk_1c, 3, 0, 0);
-        GsGp_SetCallback(&sDwcControl->unk_1c, 1, 0, 0);
-        GsGp_SetCallback(&sDwcControl->unk_1c, 2, 0, 0);
-        GsGp_Process(&sDwcControl->unk_1c);
-        GsGp_Destroy(&sDwcControl->unk_1c);
-        sDwcControl->unk_1c.unk_00 = NULL;
+    if (sDwcControl->gpConnection.instance != NULL) {
+        GsGp_SetCallback(&sDwcControl->gpConnection, 0, 0, 0);
+        GsGp_SetCallback(&sDwcControl->gpConnection, 3, 0, 0);
+        GsGp_SetCallback(&sDwcControl->gpConnection, 1, 0, 0);
+        GsGp_SetCallback(&sDwcControl->gpConnection, 2, 0, 0);
+        GsGp_Process(&sDwcControl->gpConnection);
+        GsGp_Destroy(&sDwcControl->gpConnection);
+        sDwcControl->gpConnection.instance = NULL;
     }
     DwcLogin_Shutdown();
     DwcFriend_ClearControl();
     DwcMatch_Shutdown();
     DwcNet_ClearChannelTable();
-    if (sDwcControl->unk_00 != NULL) {
-        GsTransport_CloseSocket(sDwcControl->unk_00);
-        sDwcControl->unk_00 = NULL;
+    if (sDwcControl->transportSocket != NULL) {
+        GsTransport_CloseSocket(sDwcControl->transportSocket);
+        sDwcControl->transportSocket = NULL;
     }
     sDwcControl = NULL;
 }
@@ -759,7 +759,7 @@ void DwcMatch_ConnectToFriendServer(s32 a, Unk_ov065_02270710_Cb cb, s32 arg, s3
         } else {
             GsGp_GetBuddyIndex(G->unk_1c, t, &v);
             GsGp_GetBuddyStatus(G->unk_1c, v, &buf);
-            if (buf.unk_04 != 6) {
+            if (buf.status != 6) {
                 FAIL710()
             } else {
                 DwcMatch_StartClient(t, DwcMatch_OnMatchDone, 0, d, e);
@@ -1217,7 +1217,7 @@ void DwcMatch_OnMatchDone(s32 a0, s32 a1, s32 a2, s32 a3, s32 a4) {
     Unk_ov065_0226fc54_Ctx *h;
 
     if (a0 == 0 && a1 != 0) {
-        if (sDwcControl->unk_4d4 == 0) {
+        if (sDwcControl->matchState == 0) {
             DwcMatch_ResetPlayerCounts();
             DwcCore_SetState(3);
         }
@@ -1225,27 +1225,27 @@ void DwcMatch_OnMatchDone(s32 a0, s32 a1, s32 a2, s32 a3, s32 a4) {
         DwcCore_SetState(6);
         i = 0;
         g = sDwcControl;
-        if (i <= *(volatile u8 *)&g->unk_349) {
+        if (i <= *(volatile u8 *)&g->numClients) {
             h = g;
             do {
-                if (h->unk_30 == g->unk_430[0]) {
-                sDwcControl->unk_2c = sDwcControl->unk_5f4[i];
+                if (h->ownProfileId == g->memberProfileIds[0]) {
+                sDwcControl->myAid = sDwcControl->aids[i];
                 break;
                 }
                 g = (Unk_ov065_0226fc54_Ctx *)((u8 *)g + 4);
                 i++;
-            } while (i <= *(volatile u8 *)&h->unk_349);
+            } while (i <= *(volatile u8 *)&h->numClients);
         }
     }
-    sDwcControl->unk_614 = DwcConn_AidListToBitmap(sDwcControl->unk_5f4, sDwcControl->unk_349 + 1);
+    sDwcControl->validAidMask = DwcConn_AidListToBitmap(sDwcControl->aids, sDwcControl->numClients + 1);
     DwcMatch_UpdateValidAidCount();
     g = sDwcControl;
-    if (*(volatile u8 *)&g->unk_351 == 2 || *(volatile u8 *)&g->unk_351 == 3) {
-        sDwcControl->unk_74(a0, a1, a2, a3, a4, sDwcControl->unk_78);
+    if (*(volatile u8 *)&g->matchType == 2 || *(volatile u8 *)&g->matchType == 3) {
+        sDwcControl->unk_74(a0, a1, a2, a3, a4, sDwcControl->serverMatchCallbackArg);
     } else {
-        g->unk_6c(a0, a1, g->unk_70);
+        g->unk_6c(a0, a1, g->matchCallbackArg);
     }
-    if (a0 != 0 && sDwcControl != 0 && sDwcControl->unk_24 == 5) {
+    if (a0 != 0 && sDwcControl != 0 && sDwcControl->state == 5) {
         DwcCore_SetState(3);
     }
 }
@@ -1284,11 +1284,11 @@ void DwcMatch_OnGpBuddyMessage(void *a, u32 *b, u32 c) {
                     s += n + 1;
                     if (memcmp(s, (void *)"MAT", STD_GetStringLength((void *)"MAT")) == 0) {
                         g = sDwcControl;
-                        if (g->unk_24 != 5) {
-                            if (g->unk_24 != 6) {
+                        if (g->state != 5) {
+                            if (g->state != 6) {
                                 goto fin;
                             }
-                            if (*(volatile u8 *)&g->unk_351 != 2 && *(volatile u8 *)&g->unk_351 != 3) {
+                            if (*(volatile u8 *)&g->matchType != 2 && *(volatile u8 *)&g->matchType != 3) {
                                 goto fin;
                             }
                         }
@@ -1349,25 +1349,25 @@ void DwcConn_OnGt2Closed(s32 a0, s32 a1) {
         if (et == 0) {
             return;
         }
-        r5 = et->unk_01;
-        u32 m = *(volatile u32 *)&sDwcControl->unk_614;
+        r5 = et->aid;
+        u32 m = *(volatile u32 *)&sDwcControl->validAidMask;
         k = TRUE;
         if ((m & (1 << r5)) == 0) {
             k = FALSE;
         }
         DwcNet_ResetChannel(r5);
         g = sDwcControl;
-        if ((g->unk_351 == 2 && a1 == 0) || (g->unk_351 == 3 && r5 == 0)) {
+        if ((g->matchType == 2 && a1 == 0) || (g->matchType == 3 && r5 == 0)) {
             v10 = 1;
         }
         v0c = DwcConn_RemoveAid(r5);
-        sDwcConnTable[ent->unk_00] = 0;
-        sDwcControl->unk_349--;
-        sDwcControl->unk_350--;
+        sDwcConnTable[ent->slotIndex] = 0;
+        sDwcControl->numClients--;
+        sDwcControl->numPlayers--;
     }
     g = sDwcControl;
-    if (g->unk_2d == 0 && g->unk_24 == 6 && k == 0) {
-        if (g->unk_351 == 2 && r4 == 0) {
+    if (g->isClosingAll == 0 && g->state == 6 && k == 0) {
+        if (g->matchType == 2 && r4 == 0) {
             DwcMatch_UpdateServerStatus();
             DwcMatch_OnClientDisconnected(v0c);
             return;
@@ -1382,34 +1382,34 @@ void DwcConn_OnGt2Closed(s32 a0, s32 a1) {
         return;
     }
     g = sDwcControl;
-    if (g->unk_2d == 0) {
-        if (*(volatile u8 *)&g->unk_351 != 2 && *(volatile u8 *)&g->unk_351 != 3) {
+    if (g->isClosingAll == 0) {
+        if (*(volatile u8 *)&g->matchType != 2 && *(volatile u8 *)&g->matchType != 3) {
             goto skip1;
         }
         Unk_ov065_0226fc54_Ctx *h = sDwcControl;
-        u32 n = h->unk_349;
+        u32 n = h->numClients;
         u32 i = n + 2;
-        if (h->unk_430[i] != 0) {
-            h->unk_5f4[n + 1] = h->unk_5f4[i];
-            DwcMatch_RemoveMemberAt(sDwcControl->unk_349 + 1, sDwcControl->unk_349 + 3);
+        if (h->memberProfileIds[i] != 0) {
+            h->aids[n + 1] = h->aids[i];
+            DwcMatch_RemoveMemberAt(sDwcControl->numClients + 1, sDwcControl->numClients + 3);
         }
     }
 skip1:
     g = sDwcControl;
-    if (g->unk_351 == 2) {
-        if (g->unk_2d == 0) {
+    if (g->matchType == 2) {
+        if (g->isClosingAll == 0) {
             DwcMatch_UpdateServerStatus();
-        } else if (g->unk_349 == 0) {
+        } else if (g->numClients == 0) {
             DwcFriend_SetOwnStatus(1, (void *)"", 0);
         }
-    } else if (g->unk_349 == 0) {
+    } else if (g->numClients == 0) {
         DwcFriend_SetOwnStatus(1, (void *)"", 0);
     }
     g = sDwcControl;
-    if (*(volatile u8 *)&g->unk_351 != 0 && *(volatile u8 *)&g->unk_351 != 1) {
+    if (*(volatile u8 *)&g->matchType != 0 && *(volatile u8 *)&g->matchType != 1) {
     } else {
-        sDwcControl->unk_352 = sDwcControl->unk_350;
-        GsQr_SendStateChanged(sDwcControl->unk_34c);
+        sDwcControl->maxPlayers = sDwcControl->numPlayers;
+        GsQr_SendStateChanged(sDwcControl->qr2Object);
     }
     g = sDwcControl;
     if (g->unk_7c != 0 && k != 0) {
@@ -1418,13 +1418,13 @@ skip1:
         } else {
             a1 = 0;
         }
-        sDwcControl->unk_7c(r4, a1, v10, r5, DwcFriend_FindIndexByProfileId(v0c), g->unk_80);
+        sDwcControl->unk_7c(r4, a1, v10, r5, DwcFriend_FindIndexByProfileId(v0c), g->closedCallbackArg);
     }
     g = sDwcControl;
-    if (g->unk_2d == 0 && g->unk_351 == 2) {
+    if (g->isClosingAll == 0 && g->matchType == 2) {
         return;
     }
-    if (g->unk_349 == 0) {
+    if (g->numClients == 0) {
         GsNatNeg_FreeAll();
         DwcMatch_ResetPlayerCounts();
         DwcCore_SetState(3);
