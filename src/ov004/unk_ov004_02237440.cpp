@@ -5012,7 +5012,7 @@ BOOL MuseumInsectRoom::onExecute() {
     func_02031c48(obj0);
     func_02031c48(obj1);
     func_02031c48(obj2);
-    if (*(s32 *)&unk_04[4] == 0) {
+    if ((s32)param == 0) {
         rect[0].x = 0x3800;
         rect[0].z = 0x8000;
         r[3] = 0;
@@ -5071,7 +5071,7 @@ void MuseumInsectRoom::updateObstacles() {
     s32 z = 0;
     u8 n;
     u8 i;
-    if (*(s32 *)&unk_04[4] == 1) {
+    if ((s32)param == 1) {
         pos[0].x = 0x13000;
         pos[0].y = 0x800;
         pos[0].z = 0xe300;
@@ -5162,7 +5162,7 @@ BOOL MuseumInsectRoom::vfunc_0c() {
 }
 
 void MuseumInsectRoom::spawnDonatedInsects() {
-    u32 v = *(s32 *)&unk_04[4];
+    u32 v = (s32)param;
     v = (u8)v;
     BOOL flag = FALSE;
     u8 i = flag;

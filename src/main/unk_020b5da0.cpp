@@ -8,17 +8,17 @@ extern "C" void Snd_CreateScene(void);
 class SceneBase : public GameProc {
 public:
     SceneBase() {
-        unk_04[0xf] |= 1;
-        unk_04[0xf] |= 4;
+        procFlags |= 1;
+        procFlags |= 4;
     }
     virtual BOOL vfunc_04();
-    virtual void postCreate();
+    virtual void postCreate(s32 status);
     virtual BOOL preDelete();
-    virtual BOOL vfunc_14();
+    virtual BOOL vfunc_14(s32 status);
     virtual BOOL preExecute();
-    virtual BOOL vfunc_20();
+    virtual BOOL vfunc_20(u32 status);
     virtual BOOL preDraw();
-    virtual BOOL postDraw();
+    virtual BOOL postDraw(s32 status);
     virtual ~SceneBase() {}
 };
 

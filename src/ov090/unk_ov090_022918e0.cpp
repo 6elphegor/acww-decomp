@@ -1,5 +1,3 @@
-#define postCreate() postCreate(s32 a)
-#define vfunc_14() vfunc_14(s32 a)
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "text/Unk_02050288.h"
@@ -11,8 +9,6 @@
 #include "ui/UiWidget.h"
 #include "snd/BgmVolumeMixer.h"
 #include "gfx/VramTask.h"
-#undef postCreate
-#undef vfunc_14
 
 extern "C" {
 void Gfx2d_SetWindowRect(s32 a, s32 x0, s32 y0, s32 x1, s32 y1);
@@ -161,7 +157,7 @@ public:
     virtual BOOL vfunc_14(s32 a);
     virtual BOOL onExecute();
     virtual BOOL preExecute();
-    virtual BOOL vfunc_20();
+    virtual BOOL vfunc_20(u32 status);
     virtual BOOL execWaitScreen();
     virtual BOOL execTransition();
     virtual BOOL execMain();

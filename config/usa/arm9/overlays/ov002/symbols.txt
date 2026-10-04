@@ -43,6 +43,7 @@ _ZN8MenuProc8execMainEv kind:function(thumb,size=0x4) addr:0x02200b20
 _ZN8MenuProc14execTransitionEv kind:function(thumb,size=0x4) addr:0x02200b24
 _ZN8MenuProc14execWaitScreenEv kind:function(thumb,size=0x30) addr:0x02200b28
 _ZN8MenuProc8vfunc_20Ev kind:function(thumb,size=0x8) addr:0x02200b58
+_ZN8MenuProc8vfunc_20Ej kind:label(thumb) addr:0x02200b58
 _ZN8MenuProc10preExecuteEv kind:function(thumb,size=0x18) addr:0x02200b60
 _ZN8MenuProc8vfunc_14Ei kind:function(thumb,size=0x22) addr:0x02200b78
 _ZN8MenuProc9preDeleteEv kind:function(thumb,size=0x18) addr:0x02200b9c

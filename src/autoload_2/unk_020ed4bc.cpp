@@ -17,38 +17,8 @@
 #include "types.h"
 #include "sys/PrioNode.h"
 #include "sys/TaskList.h"
+#include "sys/ProcBase.h"
 
-// library base class (include/GameProc.h) plus the five task callbacks (non-virtual members, not in the header yet)
-class ProcBase {
-public:
-    static void *operator new(unsigned long size);
-    static void operator delete(void *ptr);
-
-    ProcBase();
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual void postCreate();
-    virtual BOOL vfunc_0c();
-    virtual BOOL preDelete();
-    virtual BOOL vfunc_14();
-    virtual BOOL onExecute();
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_20();
-    virtual BOOL onDraw();
-    virtual BOOL preDraw();
-    virtual BOOL postDraw();
-    virtual BOOL vfunc_30();
-    virtual BOOL createHeapFitted();
-    virtual BOOL createHeap();
-    virtual BOOL vfunc_3c();
-    virtual ~ProcBase();
-
-    void taskConnect();  // itcm func_01ffd1b4
-    void taskExecute();  // itcm func_01ffd14c
-    void taskDraw();     // itcm func_01ffd0e4
-    void taskCreate();   // func_020ecb78
-    void taskDelete();   // func_020ecaf4
-};
 typedef void (ProcBase::*TaskFn)();
 
 struct ListNode {

@@ -1,12 +1,8 @@
 // ov145: scene overlay (class DonationMenu, vtable 0x022937c0): donation / catalogue list menu.
-#define postCreate() postCreate(s32 a)
-#define vfunc_14() vfunc_14(s32 a)
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "talk/MsgStringBase.h"
 #include "talk/MsgStringAttr.h"
-#undef postCreate
-#undef vfunc_14
 
 class DonationMenu;
 typedef void (DonationMenu::*Unk_ov145_022937c0_Fn)();
@@ -155,7 +151,7 @@ public:
     virtual BOOL vfunc_14(s32 a);
     virtual BOOL onExecute();
     virtual BOOL preExecute();
-    virtual BOOL vfunc_20();
+    virtual BOOL vfunc_20(u32 status);
     virtual BOOL execWaitScreen();
     virtual BOOL execTransition();
     virtual BOOL execMain();

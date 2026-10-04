@@ -8,6 +8,7 @@
 #include "room/RoomObjRes.h"
 #include "room/RoomObjTex.h"
 #include "gfx/CachedModel.h"
+#include "sys/ProcBase.h"
 
 extern "C" {
 void _ZN19PlayerActionRequestC1Ev(void *self);
@@ -29,40 +30,7 @@ char sRoomErrorMsgFile[16] = "obj_etc_error";
 s32 data_ov004_0224d4b4 = 0x400;
 }
 
-// Library base class chain (header GameProc.h rebuilt so that the vtable names the real symbols:
-// slot 08 is Character::postCreate(s32), slot 20 takes a u32).
-class ProcBase {
-public:
-    static void *operator new(unsigned long size);
-    static void operator delete(void *ptr);
 
-    ProcBase();
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual void postCreate(s32 v);
-    virtual BOOL vfunc_0c();
-    virtual BOOL preDelete();
-    virtual BOOL vfunc_14();
-    virtual BOOL onExecute();
-    virtual BOOL preExecute();
-    virtual void vfunc_20(u32 a);
-    virtual BOOL onDraw();
-    virtual BOOL preDraw();
-    virtual BOOL postDraw();
-    virtual BOOL vfunc_30();
-    virtual BOOL createHeapFitted();
-    virtual BOOL createHeap();
-    virtual BOOL vfunc_3c();
-    virtual ~ProcBase();
-};
-
-class GameProc : public ProcBase {
-public:
-    GameProc() {}
-    virtual ~GameProc() {}
-
-    /* 0x04 */ u8 unk_04[0x4c];
-};
 
 
 
@@ -71,11 +39,11 @@ public:
     Actor();
     virtual BOOL vfunc_04();
     virtual BOOL preDelete();
-    virtual BOOL vfunc_14();
+    virtual BOOL vfunc_14(s32 status);
     virtual BOOL preExecute();
-    virtual void vfunc_20(u32 a);
+    virtual BOOL vfunc_20(u32 a);
     virtual BOOL preDraw();
-    virtual BOOL postDraw();
+    virtual BOOL postDraw(s32 status);
     virtual ~Actor();
 
     /* 0x50 */ u8 unk_50[0xc];
@@ -164,7 +132,7 @@ public:
     virtual BOOL vfunc_04();
     virtual BOOL preDelete();
     virtual BOOL preExecute();
-    virtual void vfunc_20(u32 a);
+    virtual BOOL vfunc_20(u32 a);
     virtual BOOL changeSyncState(u32 v);
     virtual void getSoundPos(Unk_ov004_02224ee4_Vec *out);
 
@@ -233,7 +201,7 @@ BOOL RoomObjActor::preExecute() {
     return TRUE;
 }
 
-void RoomObjActor::vfunc_20(u32 a) {
+BOOL RoomObjActor::vfunc_20(u32 a) {
     Vec out;
     getSoundPos(&out);
     se.RoomObj_SetSePos(&out);

@@ -259,13 +259,13 @@ class Actor : public GameProc {
 public:
     Actor();
     virtual BOOL vfunc_04();
-    virtual void postCreate();
+    virtual void postCreate(s32 status);
     virtual BOOL preDelete();
-    virtual BOOL vfunc_14();
+    virtual BOOL vfunc_14(s32 status);
     virtual BOOL preExecute();
-    virtual BOOL vfunc_20();
+    virtual BOOL vfunc_20(u32 status);
     virtual BOOL preDraw();
-    virtual BOOL postDraw();
+    virtual BOOL postDraw(s32 status);
     virtual ~Actor() { func_020e79a0(&gActorList, &listNode); }
 
     void calcModelMatrix(void *out);
@@ -359,7 +359,7 @@ Actor::Actor() {
         moveAngleY = x->y;
         moveAngleZ = x->z;
     }
-    u32 *e = gProfileTable[*(u16 *)&unk_04[8]];
+    u32 *e = gProfileTable[profile];
     actorFlags = e[2];
     setCullParams(e[3], e[4], e[5]);
 }
@@ -369,8 +369,8 @@ BOOL Actor::vfunc_04() {
     return FALSE;
 }
 
-void Actor::postCreate() {
-    GameProc::postCreate();
+void Actor::postCreate(s32 status) {
+    GameProc::postCreate(status);
     actorFlags |= 4;
 }
 
@@ -379,7 +379,7 @@ BOOL Actor::preDelete() {
     return FALSE;
 }
 
-BOOL Actor::vfunc_14() { return ProcBase::vfunc_14(); }
+BOOL Actor::vfunc_14(s32 status) { return ProcBase::vfunc_14(status); }
 
 BOOL Actor::preExecute() {
     s32 r4;
@@ -406,7 +406,7 @@ BOOL Actor::preExecute() {
     return TRUE;
 }
 
-BOOL Actor::vfunc_20() { return ProcBase::vfunc_20(); }
+BOOL Actor::vfunc_20(u32 status) { return ProcBase::vfunc_20(status); }
 
 BOOL Actor::preDraw() {
     if (!ProcBase::preDraw()) return FALSE;
@@ -414,7 +414,7 @@ BOOL Actor::preDraw() {
     return TRUE;
 }
 
-BOOL Actor::postDraw() { return ProcBase::postDraw(); }
+BOOL Actor::postDraw(s32 status) { return ProcBase::postDraw(status); }
 
 void *Actor::findById(u32 id) {
     void *r = ProcList_FindById(&gActorList, id);

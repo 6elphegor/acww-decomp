@@ -29,6 +29,7 @@
 #include "room/FtrStackLink.h"
 #include "room/FtrTopItem.h"
 #include "game/FxVec3.h"
+#include "sys/ProcBase.h"
 // The two functions of the ov004 translation unit 0x02209f70-0x022136d0 that need mwcc 1.2/base (signed-halfword
 // switch tables): FtrSingingInsect::updateActive and vfunc_7c. Same declarations as the main file of the unit;
 // nothing else is emitted here (see config/usa/arm9/overlays/ov004/object_order.txt).
@@ -46,38 +47,7 @@ typedef Unk_ov004_Mtx Unk_ov004_02205eb0_Mtx;
 
 
 // ================================================================ library chain (as tu01, but slot 08/14 as this class overrides them)
-class ProcBase {
-public:
-    static void *operator new(unsigned long size);
-    static void operator delete(void *ptr);
 
-    ProcBase();
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual void postCreate(s32 a);
-    virtual BOOL vfunc_0c();
-    virtual BOOL preDelete();
-    virtual BOOL vfunc_14(s32 a);
-    virtual BOOL onExecute();
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_20();
-    virtual BOOL onDraw();
-    virtual BOOL preDraw();
-    virtual BOOL postDraw();
-    virtual BOOL vfunc_30();
-    virtual BOOL createHeapFitted();
-    virtual BOOL createHeap();
-    virtual BOOL vfunc_3c();
-    virtual ~ProcBase();
-};
-
-class GameProc : public ProcBase {
-public:
-    GameProc() {}
-    virtual ~GameProc() {}
-
-    /* 0x04 */ u8 unk_04[0x4c];
-};
 
 
 class Actor : public GameProc {
@@ -87,9 +57,9 @@ public:
     virtual BOOL preDelete();
     virtual BOOL vfunc_14(s32 a);
     virtual BOOL preExecute();
-    virtual BOOL vfunc_20();
+    virtual BOOL vfunc_20(u32 status);
     virtual BOOL preDraw();
-    virtual BOOL postDraw();
+    virtual BOOL postDraw(s32 status);
     virtual ~Actor();
 
     /* 0x50 */ Unk_02002f14_Node listNode;

@@ -25,6 +25,7 @@
 #include "room/FtrGlowMat.h"
 #include "room/FtrStackLink.h"
 #include "room/FtrTopItem.h"
+#include "sys/ProcBase.h"
 
 // ================================================================ plain value types
 
@@ -49,38 +50,7 @@ struct FxVec3 {
 };
 
 // ================================================================ library chain (as tu01, but slot 08/14 as this class overrides them)
-class ProcBase {
-public:
-    static void *operator new(unsigned long size);
-    static void operator delete(void *ptr);
 
-    ProcBase();
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual void postCreate(s32 a);
-    virtual BOOL vfunc_0c();
-    virtual BOOL preDelete();
-    virtual BOOL vfunc_14(s32 a);
-    virtual BOOL onExecute();
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_20();
-    virtual BOOL onDraw();
-    virtual BOOL preDraw();
-    virtual BOOL postDraw();
-    virtual BOOL vfunc_30();
-    virtual BOOL createHeapFitted();
-    virtual BOOL createHeap();
-    virtual BOOL vfunc_3c();
-    virtual ~ProcBase();
-};
-
-class GameProc : public ProcBase {
-public:
-    GameProc() {}
-    virtual ~GameProc() {}
-
-    /* 0x04 */ u8 unk_04[0x4c];
-};
 
 
 class Actor : public GameProc {
@@ -90,9 +60,9 @@ public:
     virtual BOOL preDelete();
     virtual BOOL vfunc_14(s32 a);
     virtual BOOL preExecute();
-    virtual BOOL vfunc_20();
+    virtual BOOL vfunc_20(u32 status);
     virtual BOOL preDraw();
-    virtual BOOL postDraw();
+    virtual BOOL postDraw(s32 status);
     virtual ~Actor();
 
     /* 0x50 */ Unk_02002f14_Node listNode;
@@ -2295,7 +2265,7 @@ void Unk_ov004_022077a4::setupFromSpawnArg() {
             Unk_ov004_02207ef0_Bits bits;
             u32 pad2;
         } f;
-        f.bits = *(Unk_ov004_02207ef0_Bits *)&unk_04[4];
+        f.bits = *(Unk_ov004_02207ef0_Bits *)&param;
         Unk_ov004_022077a4_Vec3 p1, p2, r;
         volatile Unk_ov004_022077a4_Vec3 q;
         if (!((FtrActor *)this)->isPreview()) {

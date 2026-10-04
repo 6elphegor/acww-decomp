@@ -51,6 +51,7 @@
 #include "player/Unk_02009a78_Locals.h"
 #include "player/Unk_02009d5c_Sub.h"
 #include "player/Unk_02009f68_Bytes.h"
+#include "sys/ProcBase.h"
 #include "player/Unk_02007694.h"
 #include "player/Unk_020093d4.h"
 #include "player/Unk_02008e50_Msg.h"
@@ -110,49 +111,18 @@ struct Unk_020107c8_Blk;
 typedef void (*PMF)();
 
 // ---- library base class chain of the object (declarations only; vtables and code are in other units)
-class ProcBase {
-public:
-    static void *operator new(unsigned long size);
-    static void operator delete(void *ptr);
 
-    ProcBase();
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual void postCreate();
-    virtual BOOL vfunc_0c();
-    virtual BOOL preDelete();
-    virtual BOOL vfunc_14();
-    virtual BOOL onExecute();
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_20();
-    virtual BOOL onDraw();
-    virtual BOOL preDraw();
-    virtual BOOL postDraw();
-    virtual BOOL vfunc_30();
-    virtual BOOL createHeapFitted();
-    virtual BOOL createHeap();
-    virtual BOOL vfunc_3c();
-    virtual ~ProcBase();
-};
-
-class GameProc : public ProcBase {
-public:
-    GameProc();
-    virtual ~GameProc();
-
-    /* 0x04 */ u8 unk_04[0x4c];
-};
 
 class Actor : public GameProc {
 public:
     Actor();
     virtual BOOL vfunc_04();
     virtual BOOL preDelete();
-    virtual BOOL vfunc_14();
+    virtual BOOL vfunc_14(s32 status);
     virtual BOOL preExecute();
-    virtual BOOL vfunc_20();
+    virtual BOOL vfunc_20(u32 status);
     virtual BOOL preDraw();
-    virtual BOOL postDraw();
+    virtual BOOL postDraw(s32 status);
     virtual ~Actor();
 
     /* 0x50 */ u8 unk_50[0xd4 - 0x50];
@@ -163,7 +133,7 @@ public:
     Character();
     virtual ~Character();
     virtual BOOL vfunc_04();
-    virtual void postCreate();
+    virtual void postCreate(s32 status);
     virtual BOOL preDelete();
     virtual BOOL preExecute();
     virtual BOOL vfunc_48(void *a);

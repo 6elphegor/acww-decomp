@@ -166,10 +166,13 @@ _ZN5Actor8postDrawEv kind:function(thumb,size=0x8) addr:0x02002d94
 _ZN5Actor8postDrawEi kind:label(thumb) addr:0x02002d94
 _ZN5Actor7preDrawEv kind:function(thumb,size=0x32) addr:0x02002d9c
 _ZN5Actor8vfunc_20Ev kind:function(thumb,size=0x8) addr:0x02002dd0
+_ZN5Actor8vfunc_20Ej kind:label(thumb) addr:0x02002dd0
 _ZN5Actor10preExecuteEv kind:function(thumb,size=0xe8) addr:0x02002dd8
 _ZN5Actor8vfunc_14Ev kind:function(thumb,size=0x8) addr:0x02002ec0
+_ZN5Actor8vfunc_14Ei kind:label(thumb) addr:0x02002ec0
 _ZN5Actor9preDeleteEv kind:function(thumb,size=0x18) addr:0x02002ec8
 _ZN5Actor10postCreateEv kind:function(thumb,size=0x1c) addr:0x02002ee0
+_ZN5Actor10postCreateEi kind:label(thumb) addr:0x02002ee0
 _ZN5Actor8vfunc_04Ev kind:function(thumb,size=0x18) addr:0x02002efc
 _ZN5ActorC1Ev kind:function(thumb,size=0xb4) addr:0x02002f14
 _ZN5ActorC2Ev kind:label(thumb) addr:0x02002f14
@@ -10250,8 +10253,10 @@ Scene_CreateRequested kind:function(thumb,size=0x58) addr:0x020a4394
 Scene_RequestBoot kind:function(thumb,size=0x28) addr:0x020a43ec
 Scene_Request kind:function(thumb,size=0x1c) addr:0x020a4414
 _ZN9SceneBase8postDrawEv kind:function(thumb,size=0x8) addr:0x020a4430
+_ZN9SceneBase8postDrawEi kind:label(thumb) addr:0x020a4430
 _ZN9SceneBase7preDrawEv kind:function(thumb,size=0x18) addr:0x020a4438
 _ZN9SceneBase8vfunc_20Ev kind:function(thumb,size=0x8) addr:0x020a4450
+_ZN9SceneBase8vfunc_20Ej kind:label(thumb) addr:0x020a4450
 _ZN9SceneBase10preExecuteEv kind:function(thumb,size=0x10c) addr:0x020a4458
 _ZN9SceneBase8vfunc_14Ei kind:function(thumb,size=0x44) addr:0x020a4564
 _ZN9SceneBase8vfunc_14Ev kind:label(thumb) addr:0x020a4564

@@ -3672,7 +3672,7 @@ extern "C" void MuseumAquarium_ReleaseFish(Mgr *self, s32 i)
 extern "C" BOOL _ZN14MuseumAquarium8vfunc_00Ev(Mgr *self)
 {
     ModelSlotPool_init((u8 *)self + 0x7f8, 0x38, 0x800, 0x80, 0xc00, (void *)MuseumAquariumHeap_Create, (void *)MuseumAquariumHeap_Destroy, 0);
-    sAquariumRoom = *(s32 *)&self->unk_04[4];
+    sAquariumRoom = (s32)self->param;
     if (sAquariumRoom == 0) {
         self->obstacles[0].box[0] = 0xc000;
         self->obstacles[0].box[1] = 0x700;

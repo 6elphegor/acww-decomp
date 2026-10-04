@@ -281,9 +281,9 @@ void FishDisplay::releaseEntry(s32 idx) {
 }
 
 BOOL FishDisplay::vfunc_00() {
-    if (*(s32 *)&unk_04[4] == 0) {
+    if ((s32)param == 0) {
         sFishDisplayEntryCount = 4;
-    } else if (*(s32 *)&unk_04[4] == 1) {
+    } else if ((s32)param == 1) {
         sFishDisplayEntryCount = 1;
     }
     _ZN13ModelSlotPool4initEjPvS0_jPFS0_jjEPFvvE(modelPool, sFishDisplayEntryCount, 0x800, 0x80, 0x134c, (void *)FishDisplayHeap_Create, (void *)FishDisplayHeap_Destroy, "fish_disp");

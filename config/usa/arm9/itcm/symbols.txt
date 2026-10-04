@@ -151,9 +151,11 @@ _ZN8ProcBase11taskExecuteEv kind:label(arm) addr:0x01ffd14c
 func_01ffd1b4 kind:function(arm,size=0x230) addr:0x01ffd1b4
 _ZN8ProcBase11taskConnectEv kind:label(arm) addr:0x01ffd1b4
 _ZN8ProcBase8postDrawEv kind:function(arm,size=0x4) addr:0x01ffd3e4
+_ZN8ProcBase8postDrawEi kind:label(arm) addr:0x01ffd3e4
 _ZN8ProcBase7preDrawEv kind:function(arm,size=0x28) addr:0x01ffd3e8
 _ZN8ProcBase6onDrawEv kind:function(arm,size=0x8) addr:0x01ffd410
 _ZN8ProcBase8vfunc_20Ev kind:function(arm,size=0x4) addr:0x01ffd418
+_ZN8ProcBase8vfunc_20Ej kind:label(arm) addr:0x01ffd418
 _ZN8ProcBase10preExecuteEv kind:function(arm,size=0x28) addr:0x01ffd41c
 _ZN8ProcBase9onExecuteEv kind:function(arm,size=0x8) addr:0x01ffd444
 ProcBase_RunPhase kind:function(arm,size=0xc0) addr:0x01ffd44c

@@ -6,39 +6,9 @@
 #include "gfx/AnimFrameCtrl.h"
 #include "talk/TalkWindowState.h"
 #include "gfx/Unk_ov009_0225bc88_Blk.h"
+#include "sys/ProcBase.h"
 
-class ProcBase {
-public:
-    static void *operator new(unsigned long size);
-    static void operator delete(void *ptr);
 
-    ProcBase();
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual void postCreate(s32 v);
-    virtual BOOL vfunc_0c();
-    virtual BOOL preDelete();
-    virtual BOOL vfunc_14();
-    virtual BOOL onExecute();
-    virtual BOOL preExecute();
-    virtual void vfunc_20(u32 a);
-    virtual BOOL onDraw();
-    virtual BOOL preDraw();
-    virtual BOOL postDraw();
-    virtual BOOL vfunc_30();
-    virtual BOOL createHeapFitted();
-    virtual BOOL createHeap();
-    virtual BOOL vfunc_3c();
-    virtual ~ProcBase();
-};
-
-class GameProc : public ProcBase {
-public:
-    GameProc() {}
-    virtual ~GameProc() {}
-
-    /* 0x04 */ u8 unk_04[0x4c];
-};
 
 
 class Actor : public GameProc {
@@ -46,11 +16,11 @@ public:
     Actor();
     virtual BOOL vfunc_04();
     virtual BOOL preDelete();
-    virtual BOOL vfunc_14();
+    virtual BOOL vfunc_14(s32 status);
     virtual BOOL preExecute();
-    virtual void vfunc_20(u32 a);
+    virtual BOOL vfunc_20(u32 a);
     virtual BOOL preDraw();
-    virtual BOOL postDraw();
+    virtual BOOL postDraw(s32 status);
     virtual ~Actor();
 
     /* 0x50 */ u8 unk_50[0xc];
@@ -156,7 +126,7 @@ public:
     virtual BOOL vfunc_00();
     virtual BOOL preDelete();
     virtual BOOL preExecute();
-    virtual void vfunc_20(u32 a);
+    virtual BOOL vfunc_20(u32 a);
     virtual BOOL preDraw();
     virtual BOOL vfunc_48(void *a);
     virtual void vfunc_4c(u32 a, u8 b);

@@ -3,40 +3,9 @@
 #include "net/NetSessionParts.h"
 #include "save/LostChildRecord.h"
 #include "game/FxVec3.h"
+#include "sys/ProcBase.h"
 
-// Local copies of the library base classes with the parameters these overrides forward.
-class ProcBase {
-public:
-    static void *operator new(unsigned long size);
-    static void operator delete(void *ptr);
-    ProcBase();
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual void postCreate(s32 a);
-    virtual BOOL vfunc_0c();
-    virtual BOOL preDelete();
-    virtual BOOL vfunc_14(s32 a);
-    virtual BOOL onExecute();
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_20();
-    virtual BOOL onDraw();
-    virtual BOOL preDraw();
-    virtual BOOL postDraw();
-    virtual BOOL vfunc_30();
-    virtual BOOL createHeapFitted();
-    virtual BOOL createHeap();
-    virtual BOOL vfunc_3c();
-    virtual ~ProcBase();
-};
 
-class GameProc : public ProcBase {
-public:
-    GameProc() {}
-    virtual void postCreate(s32 a);
-    virtual ~GameProc() {}
-
-    /* 0x04 */ u8 unk_04[0x4c];
-};
 
 
 
@@ -202,17 +171,17 @@ struct NetSessionAreaView {
 class SceneBase : public GameProc {
 public:
     SceneBase() {
-        unk_04[0xf] |= 1;
-        unk_04[0xf] |= 4;
+        procFlags |= 1;
+        procFlags |= 4;
     }
     virtual BOOL vfunc_04();
     virtual void postCreate(s32 a);
     virtual BOOL preDelete();
     virtual BOOL vfunc_14(s32 a);
     virtual BOOL preExecute();
-    virtual BOOL vfunc_20();
+    virtual BOOL vfunc_20(u32 status);
     virtual BOOL preDraw();
-    virtual BOOL postDraw();
+    virtual BOOL postDraw(s32 status);
     virtual ~SceneBase() {}
 };
 
@@ -1736,7 +1705,7 @@ BOOL SceneBase::vfunc_04() {
 void SceneBase::postCreate(s32 a) {
     if (a == 2) {
         gSceneCreating = 0;
-        if (*(u16 *)&unk_04[8] != 6) {
+        if (profile != 6) {
             ScreenTransition_ShowCover();
         }
         Comm_ProcessReceived(0);
@@ -1789,10 +1758,10 @@ BOOL SceneBase::preExecute() {
         }
         return FALSE;
     }
-    if (unk_04[0xf] & 1) {
+    if (procFlags & 1) {
         if (ProcBase_HasCreatingChild(this) == 0) {
-            unk_04[0xf] &= ~1;
-            unk_04[0xf] &= ~4;
+            procFlags &= ~1;
+            procFlags &= ~4;
         } else {
             return FALSE;
         }
@@ -1810,7 +1779,7 @@ BOOL SceneBase::preExecute() {
     return TRUE;
 }
 
-BOOL SceneBase::vfunc_20() { return ProcBase::vfunc_20(); }
+BOOL SceneBase::vfunc_20(u32 status) { return ProcBase::vfunc_20(status); }
 
 BOOL SceneBase::preDraw() {
     if (ProcBase::preDraw()) {
@@ -1819,7 +1788,7 @@ BOOL SceneBase::preDraw() {
     return FALSE;
 }
 
-BOOL SceneBase::postDraw() { return ProcBase::postDraw(); }
+BOOL SceneBase::postDraw(s32 status) { return ProcBase::postDraw(status); }
 
 extern "C" void Scene_Request(u32 a, u32 b, u32 c, u32 d) {
     gNextSceneProfile = a;

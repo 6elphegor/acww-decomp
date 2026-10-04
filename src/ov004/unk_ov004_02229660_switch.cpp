@@ -15,6 +15,7 @@
 #include "talk/TalkWindowState.h"
 #include "room/PhoneChoiceSet.h"
 #include "gfx/CachedModel.h"
+#include "sys/ProcBase.h"
 
 // shared_0224d4e8.h.txt -- final declaration of class RoomObjActor (defined in ov004 TU17, 0x0221e7a8-0x02225290).
 // Paste this block unchanged into TU18..TU26 (it is the base of 0224d618 (TU18), 0224d80c (TU19), 0224dd98 (TU23),
@@ -37,40 +38,7 @@
 //  * Names a derived class must not reuse: unk_ea (u8, 0xff = none), unk_ec (AnimModel), unk_1a4, unk_248, unk_250.
 // Layout: M is 0x290 bytes; TalkMsgRequest (secondary base of the derived classes) starts at 0x290.
 
-// Library base class chain (header GameProc.h rebuilt so that the vtable names the real symbols:
-// slot 08 is Character::postCreate(s32), slot 20 takes a u32).
-class ProcBase {
-public:
-    static void *operator new(unsigned long size);
-    static void operator delete(void *ptr);
 
-    ProcBase();
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual void postCreate(s32 v);
-    virtual BOOL vfunc_0c();
-    virtual BOOL preDelete();
-    virtual BOOL vfunc_14();
-    virtual BOOL onExecute();
-    virtual BOOL preExecute();
-    virtual void vfunc_20(u32 a);
-    virtual BOOL onDraw();
-    virtual BOOL preDraw();
-    virtual BOOL postDraw();
-    virtual BOOL vfunc_30();
-    virtual BOOL createHeapFitted();
-    virtual BOOL createHeap();
-    virtual BOOL vfunc_3c();
-    virtual ~ProcBase();
-};
-
-class GameProc : public ProcBase {
-public:
-    GameProc() {}
-    virtual ~GameProc() {}
-
-    /* 0x04 */ u8 unk_04[0x4c];
-};
 
 
 
@@ -79,11 +47,11 @@ public:
     Actor();
     virtual BOOL vfunc_04();
     virtual BOOL preDelete();
-    virtual BOOL vfunc_14();
+    virtual BOOL vfunc_14(s32 status);
     virtual BOOL preExecute();
-    virtual void vfunc_20(u32 a);
+    virtual BOOL vfunc_20(u32 a);
     virtual BOOL preDraw();
-    virtual BOOL postDraw();
+    virtual BOOL postDraw(s32 status);
     virtual ~Actor();
 
     /* 0x50 */ u8 unk_50[0xc];
@@ -162,7 +130,7 @@ public:
     virtual BOOL vfunc_04();
     virtual BOOL preDelete();
     virtual BOOL preExecute();
-    virtual void vfunc_20(u32 a);
+    virtual BOOL vfunc_20(u32 a);
     virtual BOOL changeSyncState(u32 v);
     virtual void getSoundPos(Unk_ov004_02224ee4_Vec *out);
 

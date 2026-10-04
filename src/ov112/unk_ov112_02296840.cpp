@@ -1,12 +1,8 @@
 // ov112: scene overlay (class BbsWriteMenu, vtable 0x02299b10, 0x6a7c bytes): text-entry keyboard screen.
-#define postCreate() postCreate(s32 a)
-#define vfunc_14() vfunc_14(s32 a)
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
 #include "player/PlayerId.h"
-#undef postCreate
-#undef vfunc_14
 
 // Plain view of the scene object used by the extern "C" helpers (offsets only).
 struct Unk_ov112_02296840 {
@@ -238,7 +234,7 @@ public:
     virtual BOOL vfunc_14(s32 a);
     virtual BOOL onExecute();
     virtual BOOL preExecute();
-    virtual BOOL vfunc_20();
+    virtual BOOL vfunc_20(u32 status);
     virtual BOOL execWaitScreen();
     virtual BOOL execTransition();
     virtual BOOL execMain();

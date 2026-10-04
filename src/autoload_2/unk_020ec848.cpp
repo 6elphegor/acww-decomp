@@ -10,6 +10,7 @@
 #include "sys/Heap.h"
 #include "sys/TreeNode.h"
 #include "sys/QNode.h"
+#include "sys/ProcBase.h"
 
 
 class ProcBase;
@@ -22,41 +23,6 @@ struct P2 {
     u32 b;
 };
 
-class ProcBase {
-public:
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual void postCreate();
-    virtual BOOL vfunc_0c();
-    virtual BOOL preDelete();
-    virtual BOOL vfunc_14();
-    virtual BOOL onExecute();
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_20();
-    virtual BOOL onDraw();
-    virtual BOOL preDraw();
-    virtual BOOL postDraw();
-    virtual BOOL vfunc_30();
-    virtual BOOL createHeapFitted();
-    virtual BOOL createHeap();
-    virtual BOOL vfunc_3c();
-    virtual ~ProcBase();
-
-    /* 0x04 */ u32 id;
-    /* 0x08 */ u32 param;
-    /* 0x0c */ u16 profile;
-    /* 0x0e */ u8 state;
-    /* 0x0f */ u8 deletePending;
-    /* 0x10 */ u8 activatePending;
-    /* 0x11 */ u8 createRetry;
-    /* 0x12 */ u8 group;
-    /* 0x13 */ u8 procFlags;
-    /* 0x14 */ TreeNode treeNode;
-    /* 0x28 */ QNode executeNode;
-    /* 0x38 */ QNode drawNode;
-    /* 0x48 */ void *seq;
-    /* 0x4c */ Heap *unk_4c;
-};
 
 struct SceneDesc {
     ProcBase *(*unk_00)(void);

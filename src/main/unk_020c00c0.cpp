@@ -444,7 +444,7 @@ public:
 
 class SkyProc : public GameProc {
 public:
-    virtual void postCreate();
+    virtual void postCreate(s32 status);
 
     /* 0x50 */ Unk_0213b938 envSndChannel;
 };
@@ -670,7 +670,7 @@ class SpNpcActor : public ProcBase {
 public:
     virtual ~SpNpcActor();
 
-    /* 0x004 */ u8 unk_004[0x5c - 4];
+    /* 0x004 */ u8 unk_050[0x5c - 0x50];
     /* 0x05c */ u8 position[0x2a0 - 0x5c];
     /* 0x2a0 */ u8 unk_2a0[0xc];
     /* 0x2ac */ u8 unk_2ac[0x3b0 - 0x2ac];

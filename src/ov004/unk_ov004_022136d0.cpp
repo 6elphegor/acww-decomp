@@ -11,13 +11,13 @@
 class Actor : public GameProc {
 public:
     virtual BOOL vfunc_04();
-    virtual void postCreate();
+    virtual void postCreate(s32 status);
     virtual BOOL preDelete();
-    virtual BOOL vfunc_14();
+    virtual BOOL vfunc_14(s32 status);
     virtual BOOL preExecute();
-    virtual BOOL vfunc_20();
+    virtual BOOL vfunc_20(u32 status);
     virtual BOOL preDraw();
-    virtual BOOL postDraw();
+    virtual BOOL postDraw(s32 status);
 
     /* 0x50 */ u8 unk_50[0xc];
     /* 0x5c */ s32 position[3];
@@ -31,7 +31,7 @@ public:
     Character();
     virtual ~Character();
     virtual BOOL vfunc_04();
-    virtual void postCreate();
+    virtual void postCreate(s32 status);
     virtual BOOL preDelete();
     virtual BOOL preExecute();
     virtual BOOL vfunc_48(void *a);

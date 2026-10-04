@@ -11,6 +11,7 @@
 #include "gfx/Unk_ov068_0226647c_Cam.h"
 #include "actor/Unk_ov068_SceneEntry.h"
 #include "player/HeldToolModel.h"
+#include "sys/ProcBase.h"
 #define X_func_ov068_0225f5f4 _ZN17FieldVillagerLook17setLookModeLockedEP13FieldVillagerjiiPviih
 #define X_func_ov068_0225f630 _ZN17FieldVillagerLook9resetLookEP13FieldVillager
 #define X_func_ov068_0225f670 _ZN17FieldVillagerLook4initEP13FieldVillager
@@ -150,30 +151,6 @@ class FieldVillagerAi;
 typedef void (FieldVillagerAiLeaveHouse::*Unk_ov068_02263b90_Fn)(Unk_ov068_Owner *);
 typedef void (FieldVillagerAi::*Unk_ov068_0225f1a0_Fn)(FieldVillager *);
 typedef BOOL (FieldVillager::*Unk_ov068_0226fb80_Fn)();
-class ProcBase {
-public:
-    static void *operator new(unsigned long size);
-    static void operator delete(void *ptr);
-
-    ProcBase();
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual void postCreate(s32 v);
-    virtual BOOL vfunc_0c();
-    virtual BOOL preDelete();
-    virtual BOOL vfunc_14();
-    virtual BOOL onExecute();
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_20();
-    virtual BOOL onDraw();
-    virtual BOOL preDraw();
-    virtual BOOL postDraw();
-    virtual BOOL vfunc_30();
-    virtual BOOL createHeapFitted();
-    virtual BOOL createHeap();
-    virtual BOOL vfunc_3c();
-    virtual ~ProcBase();
-};
 
 extern "C" s32 func_01ffcb0c(s32, s32);
 extern "C" void HeldToolModel_init(void *);
@@ -343,10 +320,10 @@ public:
 // Owner base (VillagerActor), size 0x894
 class Actor : public ProcBase {
 public:
-    virtual BOOL vfunc_14();
-    virtual BOOL vfunc_20();
+    virtual BOOL vfunc_14(s32 status);
+    virtual BOOL vfunc_20(u32 status);
     virtual BOOL preDraw();
-    virtual BOOL postDraw();
+    virtual BOOL postDraw(s32 status);
 };
 
 struct Unk_020d77a4_Vec3;
@@ -414,7 +391,7 @@ public:
     virtual BOOL vfunc_b8(u32 idx);
     virtual BOOL vfunc_bc();
 
-    /* 0x004 */ u8 pad_04[0x58];
+    /* 0x50 */ u8 pad_50[0x5c - 0x50];
     /* 0x05c */ Unk_ov068_0225f23c_Vec position;
     /* 0x068 */ Unk_ov068_0225f23c_Vec prevPosition;
     /* 0x074 */ u8 pad_74[0x150 - 0x74];

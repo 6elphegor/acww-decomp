@@ -1,11 +1,7 @@
-#define postCreate() postCreate(s32 a)
-#define vfunc_14() vfunc_14(s32 a)
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "ui/UiWidget.h"
 #include "snd/BgmVolumeMixer.h"
-#undef postCreate
-#undef vfunc_14
 
 extern "C" {
 void Snd_PlaySe(s32 a);
@@ -105,7 +101,7 @@ public:
     virtual BOOL vfunc_14(s32 a);
     virtual BOOL onExecute();
     virtual BOOL preExecute();
-    virtual BOOL vfunc_20();
+    virtual BOOL vfunc_20(u32 status);
     virtual BOOL execWaitScreen();
     virtual BOOL execTransition();
     virtual BOOL execMain();

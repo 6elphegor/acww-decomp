@@ -2,7 +2,6 @@
 // ov004 TU06: .text 0x02214948-0x02215f04 (classes BirthdayHostVillager and its member BirthdayHostVillagerTalk)
 #include "types.h"
 // The no-argument vfunc_08 of the base is widened locally: NpcActor::postCreate takes one argument.
-#define postCreate() postCreate(s32 a)
 #include "Unk_020d8c7c.h"
 #include "gfx/Unk_ov004_Quad.h"
 #include "actor/Unk_ov004_SceneEntry.h"
@@ -12,7 +11,6 @@
 #include "npc/Unk_ov004_0221572c_Sub.h"
 #include "game/Unk_ov004_02215c94_V.h"
 #include "game/FxVec3.h"
-#undef postCreate
 
 extern "C" {
 }
@@ -22,10 +20,10 @@ extern "C" {
 // Class chain of BirthdayHostVillager (vtable 0x0224c034). Every slot's final overrider carries the name the symbols use.
 class Actor : public ProcBase {
 public:
-    virtual BOOL vfunc_14();
-    virtual BOOL vfunc_20();
+    virtual BOOL vfunc_14(s32 status);
+    virtual BOOL vfunc_20(u32 status);
     virtual BOOL preDraw();
-    virtual BOOL postDraw();
+    virtual BOOL postDraw(s32 status);
 };
 
 class Character : public Actor {
@@ -39,7 +37,7 @@ public:
     virtual BOOL acceptsInteractionOutOfRange(void *a);
     virtual BOOL vfunc_58();
 
-    u32 pad_04[0x58 / 4];
+    u32 pad_50[(0x5c - 0x50) / 4];
     s32 position[3];
     u8 pad_68[0x8e - 0x68];
     s16 rotY;

@@ -1,38 +1,8 @@
 #include "types.h"
 #include "game/HitSphere.h"
+#include "sys/ProcBase.h"
 
-// Library base class (ARM code in autoload_2 / ITCM). vfunc_08 takes a flag here.
-class ProcBase {
-public:
-    static void *operator new(unsigned long size);
-    static void operator delete(void *ptr);
 
-    ProcBase();
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual void postCreate(int a);
-    virtual BOOL vfunc_0c();
-    virtual BOOL preDelete();
-    virtual BOOL vfunc_14();
-    virtual BOOL onExecute();
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_20();
-    virtual BOOL onDraw();
-    virtual BOOL preDraw();
-    virtual BOOL postDraw();
-    virtual BOOL vfunc_30();
-    virtual BOOL createHeapFitted();
-    virtual BOOL createHeap();
-    virtual BOOL vfunc_3c();
-    virtual ~ProcBase();
-};
-
-// Real vtable class for the library base: its D1/D0 are compiler generated here.
-class GameProc : public ProcBase {
-public:
-    virtual void postCreate(int a);
-    u8 unk_04[0x4c];
-};
 
 
 extern "C" {

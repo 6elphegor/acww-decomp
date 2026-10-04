@@ -1,10 +1,6 @@
 // ov111: scene overlay (class ChatMenu, vtable 0x02298a48, 0x3e58 bytes): a character/name entry screen.
-#define postCreate() postCreate(s32 a)
-#define vfunc_14() vfunc_14(s32 a)
 #include "types.h"
 #include "Unk_020d8c7c.h"
-#undef postCreate
-#undef vfunc_14
 #include "text/Unk_02050288.h"
 #include "ui/UiWidget.h"
 #include "player/PlayerId.h"
@@ -170,7 +166,7 @@ public:
     virtual BOOL vfunc_14(s32 a);
     virtual BOOL onExecute();
     virtual BOOL preExecute();
-    virtual BOOL vfunc_20();
+    virtual BOOL vfunc_20(u32 status);
     virtual BOOL execWaitScreen();
     virtual BOOL execTransition();
     virtual BOOL execMain();

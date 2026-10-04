@@ -17,6 +17,7 @@
 #include "npc/Unk_0201ad18.h"
 #include "npc/Unk_020135e4.h"
 #include "talk/VillagerTalkRequestStartTopics.h"
+#include "sys/ProcBase.h"
 
 
 class VillagerTalk;
@@ -1200,32 +1201,6 @@ public:
 };
 
 // ---- class chain of VillagerActor (vtable 0x020d89c0):
-// ProcBase <- Actor <- Character <- NpcActor <- VillagerActor (the bases as in the unit of
-// SpNpcActor; all their members are functions of other units)
-class ProcBase {
-public:
-    static void *operator new(unsigned long size);
-    static void operator delete(void *ptr);
-
-    ProcBase();
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual void postCreate(int a);
-    virtual BOOL vfunc_0c();
-    virtual BOOL preDelete();
-    virtual BOOL vfunc_14();
-    virtual BOOL onExecute();
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_20();
-    virtual BOOL onDraw();
-    virtual BOOL preDraw();
-    virtual BOOL postDraw();
-    virtual BOOL vfunc_30();
-    virtual BOOL createHeapFitted();
-    virtual BOOL createHeap();
-    virtual BOOL vfunc_3c();
-    virtual ~ProcBase();
-};
 
 #define MEMBER(name, size) \
     struct name { \
@@ -1270,14 +1245,14 @@ struct Unk_020f4080 {
 
 class Actor : public ProcBase {
 public:
-    virtual BOOL vfunc_14();
-    virtual BOOL vfunc_20();
+    virtual BOOL vfunc_14(s32 status);
+    virtual BOOL vfunc_20(u32 status);
     virtual BOOL preDraw();
-    virtual BOOL postDraw();
+    virtual BOOL postDraw(s32 status);
 };
 
 struct Character : Actor {
-    u8 pad_04[0x58];
+    u8 pad_50[0x5c - 0x50];
     Unk_020d77a4_Vec3 position;
     u8 pad_68[0x8e - 0x68];
     s16 rotY;
@@ -1318,7 +1293,7 @@ struct NpcActor : Character {
     virtual ~NpcActor() {}
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
-    virtual void postCreate(int a);
+    virtual void postCreate(s32 a);
     virtual BOOL vfunc_0c();
     virtual BOOL onExecute();
     virtual BOOL onDraw();

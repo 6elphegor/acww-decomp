@@ -1,6 +1,4 @@
 // ov002: shared library overlay (menu / cursor / slider helpers used by the scene overlays).
-#define postCreate() postCreate(s32 a)
-#define vfunc_14() vfunc_14(s32 a)
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "text/Unk_02050288.h"
@@ -15,8 +13,6 @@
 #include "talk/TalkWindowState.h"
 #include "gfx/SpriteAnim.h"
 #include "ui/UiWidget.h"
-#undef postCreate
-#undef vfunc_14
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Real names of functions of other modules (plain names that are really methods / ctors / dtors)
@@ -419,7 +415,7 @@ public:
     virtual BOOL vfunc_14(s32 a);
     virtual BOOL onExecute();
     virtual BOOL preExecute();
-    virtual BOOL vfunc_20();
+    virtual BOOL vfunc_20(u32 status);
     virtual BOOL execWaitScreen();
     virtual BOOL execTransition();
     virtual BOOL execMain();
@@ -1265,7 +1261,7 @@ BOOL MenuProc::vfunc_04() {
     if (!ProcBase::vfunc_04()) {
         return FALSE;
     }
-    menuId = *(s32 *)&unk_04[4];
+    menuId = (s32)param;
     openMenuOwner = this;
     ((KeyRepeatView *)&keyRepeat)->init(8, 1, 7);
     return TRUE;
@@ -1305,7 +1301,7 @@ BOOL MenuProc::preExecute() {
     return FALSE;
 }
 
-BOOL MenuProc::vfunc_20() { return ProcBase::vfunc_20(); }
+BOOL MenuProc::vfunc_20(u32 status) { return ProcBase::vfunc_20(status); }
 
 BOOL MenuProc::execWaitScreen() {
     if (MenuScreen_IsOpen()) {

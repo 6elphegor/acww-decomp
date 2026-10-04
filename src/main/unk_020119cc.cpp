@@ -16,6 +16,7 @@
 #include "npc/NpcMoveAnimSet.h"
 #include "npc/Unk_0201ad18.h"
 #include "game/FxVec3.h"
+#include "sys/ProcBase.h"
 
 
 // unk_02011580.cpp
@@ -1898,40 +1899,18 @@ struct Unk_020d77a4_Global {
     s32 myAid;
 };
 
-// unk_0201b690.cpp
-class ProcBase {
-public:
-    static void operator delete(void *ptr);
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual void postCreate(s32 x);
-    virtual BOOL vfunc_0c();
-    virtual void preDelete();
-    virtual void vfunc_14();
-    virtual BOOL onExecute();
-    virtual void preExecute();
-    virtual void vfunc_20();
-    virtual BOOL onDraw();
-    virtual void preDraw();
-    virtual void postDraw();
-    virtual void vfunc_30();
-    virtual void createHeapFitted();
-    virtual void createHeap();
-    virtual void vfunc_3c();
-    virtual ~ProcBase();
-};
 class Actor : public ProcBase {
 public:
-    virtual void vfunc_14();
-    virtual void vfunc_20();
-    virtual void preDraw();
-    virtual void postDraw();
+    virtual BOOL vfunc_14(s32 status);
+    virtual BOOL vfunc_20(u32 status);
+    virtual BOOL preDraw();
+    virtual BOOL postDraw(s32 status);
     virtual ~Actor();
 };
 class Character : public Actor {
 public:
-    virtual void preDelete();
-    virtual void preExecute();
+    virtual BOOL preDelete();
+    virtual BOOL preExecute();
     virtual ~Character();
     virtual void vfunc_48(void *p);
     virtual void vfunc_4c(s32 v);
@@ -1940,9 +1919,7 @@ public:
     virtual void vfunc_58(void *p);
     virtual BOOL vfunc_5c(Unk_020d77a4_Vec3 *out);
 
-    /* 0x04 */ u32 id;
-    /* 0x08 */ u32 param;
-    /* 0x0c */ u8 pad_0c[0x5c - 0x0c];
+    /* 0x50 */ u8 pad_50[0x5c - 0x50];
     /* 0x5c */ Unk_020d77a4_Vec position;
     /* 0x68 */ u8 pad_68[0x8e - 0x68];
     /* 0x8e */ s16 rotY;
@@ -1962,7 +1939,7 @@ public:
     virtual BOOL vfunc_0c();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
-    virtual void vfunc_30();
+    virtual BOOL vfunc_30();
     virtual ~NpcActor();
     virtual void vfunc_4c(s32 v);
     virtual BOOL vfunc_5c(Unk_020d77a4_Vec3 *out);
@@ -4129,7 +4106,7 @@ BOOL NpcActor::onDraw() {
     return TRUE;
 }
 
-void NpcActor::vfunc_30() {
+BOOL NpcActor::vfunc_30() {
     using namespace nQ;}
 
 BOOL NpcActor::vfunc_0c() {

@@ -7,32 +7,8 @@
 #include "npc/Unk_0201ac88.h"
 #include "npc/Unk_0201ad18.h"
 #include "npc/Unk_020135e4.h"
+#include "sys/ProcBase.h"
 
-// Library base class (same as GameProc.h, but vfunc_08 takes the s32 the vtable symbol names).
-class ProcBase {
-public:
-    static void *operator new(unsigned long size);
-    static void operator delete(void *ptr);
-
-    ProcBase();
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual void postCreate(s32 v);
-    virtual BOOL vfunc_0c();
-    virtual BOOL preDelete();
-    virtual BOOL vfunc_14();
-    virtual BOOL onExecute();
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_20();
-    virtual BOOL onDraw();
-    virtual BOOL preDraw();
-    virtual BOOL postDraw();
-    virtual BOOL vfunc_30();
-    virtual BOOL createHeapFitted();
-    virtual BOOL createHeap();
-    virtual BOOL vfunc_3c();
-    virtual ~ProcBase();
-};
 
 struct Unk_0201bc1c;
 class NpcActor;
@@ -535,10 +511,10 @@ struct Unk_020f4080 {
 
 class Actor : public ProcBase {
 public:
-    virtual BOOL vfunc_14();
-    virtual BOOL vfunc_20();
+    virtual BOOL vfunc_14(s32 status);
+    virtual BOOL vfunc_20(u32 status);
     virtual BOOL preDraw();
-    virtual BOOL postDraw();
+    virtual BOOL postDraw(s32 status);
 };
 
 struct Unk_020d77a4_Vec3;
@@ -553,11 +529,7 @@ public:
     virtual void getInteractionPos();
     virtual void acceptsInteractionOutOfRange(void *p);
     virtual BOOL vfunc_58();
-    u8 pad_04[0x1a];
-    u8 unk_1e;
-    u8 pad_1f[0x3c - 0x1f];
-    void *unk_3c;
-    u8 pad_40[0x5c - 0x40];
+    u8 pad_50[0x5c - 0x50];
     s32 position, positionY, positionZ;
     u8 pad_68[0x8e - 0x68];
     s16 rotY;
@@ -3470,8 +3442,9 @@ s32 SpNpcCopper::getWifiErrorMsg(s32 id) {
     MsgString25 b;
     String_FormatNumber(&a, q, 2, 6, 0, 0);
     String_FormatNumber(&b, id - q * 1000, 3, 6, 0, 0);
-    _ZN15TalkWindowState7setSlotEiPv(unk_3c, 6, &a);
-    _ZN15TalkWindowState7setSlotEiPv(unk_3c, 7, &b);
+    // the original reads this+0x3c (ProcBase::drawNode.next; the old per-file Character copy called it unk_3c)
+    _ZN15TalkWindowState7setSlotEiPv(drawNode.next, 6, &a);
+    _ZN15TalkWindowState7setSlotEiPv(drawNode.next, 7, &b);
     return r;
 }
 

@@ -1,42 +1,9 @@
 #include "types.h"
+#include "sys/ProcBase.h"
 
 struct Unk_0203dad4_Task;
 
-// Library base class (local copy of include/GameProc.h; the signatures of slots 0x18 and 0x20 are the ones the
-// overrides in this unit need)
-class ProcBase {
-public:
-    static void *operator new(unsigned long size);
-    static void operator delete(void *ptr);
 
-    ProcBase();
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual void postCreate();
-    virtual BOOL vfunc_0c();
-    virtual BOOL preDelete();
-    virtual BOOL vfunc_14();
-    virtual BOOL onExecute();
-    virtual BOOL preExecute();
-    virtual void vfunc_20(u32 b);
-    virtual BOOL onDraw();
-    virtual BOOL preDraw();
-    virtual BOOL postDraw();
-    virtual BOOL vfunc_30();
-    virtual BOOL createHeapFitted();
-    virtual BOOL createHeap();
-    virtual BOOL vfunc_3c();
-    virtual ~ProcBase();
-};
-
-class GameProc : public ProcBase {
-public:
-    GameProc() {}
-    virtual void postCreate();
-    virtual ~GameProc() {}
-
-    /* 0x04 */ u8 unk_04[0x4c];
-};
 
 class TalkRequestQueue : public GameProc {
 public:
@@ -44,7 +11,7 @@ public:
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
     virtual BOOL onExecute();
-    virtual void vfunc_20(u32 b);
+    virtual BOOL vfunc_20(u32 b);
     virtual BOOL onDraw();
     // destructor implicit (D1 is at the lower address)
 };
@@ -762,7 +729,7 @@ BOOL TalkRequestQueue::onDraw() {
     return TRUE;
 }
 
-void TalkRequestQueue::vfunc_20(u32 b) {
+BOOL TalkRequestQueue::vfunc_20(u32 b) {
     NetArea_SendStateToNewOwner();
     NetArea_SendStateToRequester();
     if (gActorDefaultParent != 0) {

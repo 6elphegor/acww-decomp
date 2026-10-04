@@ -6,43 +6,11 @@
 #include "game/Vec3.h"
 #include "talk/TalkWindowState.h"
 #include "game/TouchPicker.h"
+#include "sys/ProcBase.h"
 
 
 // ---------------------------------------------------------------- library base chain (as in link_ov009)
-// Slots 0x0c / 0x24 are overridden by Atm; they carry the overriding methods' names so that the
-// overrides do not also override the secondary base's vfunc_0c / vfunc_24 (which would emit extra thunks).
-class ProcBase {
-public:
-    static void *operator new(unsigned long size);
-    static void operator delete(void *ptr);
 
-    ProcBase();
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual void postCreate(s32 v);
-    virtual BOOL vfunc_0c();
-    virtual BOOL preDelete();
-    virtual BOOL vfunc_14();
-    virtual BOOL onExecute();
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_20();
-    virtual BOOL onDraw();
-    virtual BOOL preDraw();
-    virtual BOOL postDraw();
-    virtual BOOL vfunc_30();
-    virtual BOOL createHeapFitted();
-    virtual BOOL createHeap();
-    virtual BOOL vfunc_3c();
-    virtual ~ProcBase();
-};
-
-class GameProc : public ProcBase {
-public:
-    GameProc() {}
-    virtual ~GameProc() {}
-
-    /* 0x04 */ u8 unk_04[0x4c];
-};
 
 
 class Actor : public GameProc {
@@ -50,11 +18,11 @@ public:
     Actor();
     virtual BOOL vfunc_04();
     virtual BOOL preDelete();
-    virtual BOOL vfunc_14();
+    virtual BOOL vfunc_14(s32 status);
     virtual BOOL preExecute();
-    virtual BOOL vfunc_20();
+    virtual BOOL vfunc_20(u32 status);
     virtual BOOL preDraw();
-    virtual BOOL postDraw();
+    virtual BOOL postDraw(s32 status);
     virtual ~Actor();
 
     /* 0x50 */ Unk_02002f14_Node listNode;

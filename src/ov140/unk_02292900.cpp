@@ -1,11 +1,7 @@
 // ov140: scene overlay (class DistantTownsMenu, vtable 0x02293e04, 0x1760 bytes).
 // A list screen of up to 0x20 records shown six per page, with three counters drawn as digits.
-#define postCreate() postCreate(s32 a)
-#define vfunc_14() vfunc_14(s32 a)
 #include "types.h"
 #include "Unk_020d8c7c.h"
-#undef postCreate
-#undef vfunc_14
 
 class DistantTownsMenu;
 
@@ -59,7 +55,7 @@ public:
     virtual BOOL vfunc_14(s32 a);
     virtual BOOL onExecute();
     virtual BOOL preExecute();
-    virtual BOOL vfunc_20();
+    virtual BOOL vfunc_20(u32 status);
     virtual BOOL execWaitScreen();
     virtual BOOL execTransition();
     virtual BOOL execMain();

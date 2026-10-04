@@ -4,11 +4,7 @@
 // (the file-local Obj/V3/Rec/Msg typedefs and the extern "C" declarations differ per file); functions are emitted in
 // descending address order, each in its own namespace block.
 #include "types.h"
-#define postCreate() postCreate(s32 a)
-#define vfunc_14() vfunc_14(s32 a)
 #include "Unk_020d8c7c.h"
-#undef vfunc_14
-#undef postCreate
 
 // calls into other modules (the old extern "C" declarations keep their local signatures; the call compiles like the method call)
 #define Unk_02007694_getActionDonePriority _ZN12Unk_0200769421getActionDonePriorityEj
@@ -594,9 +590,9 @@ public:
     virtual BOOL preDelete();
     virtual BOOL vfunc_14(s32 a);
     virtual BOOL preExecute();
-    virtual BOOL vfunc_20();
+    virtual BOOL vfunc_20(u32 status);
     virtual BOOL preDraw();
-    virtual BOOL postDraw();
+    virtual BOOL postDraw(s32 status);
 
     /* 0x50 */ u8 unk_50[0xc];
     /* 0x5c */ Unk_ov003_02205c28_V3 position;
@@ -812,9 +808,9 @@ public:
     virtual BOOL preDelete();
     virtual BOOL vfunc_14(s32 a);
     virtual BOOL preExecute();
-    virtual BOOL vfunc_20();
+    virtual BOOL vfunc_20(u32 status);
     virtual BOOL preDraw();
-    virtual BOOL postDraw();
+    virtual BOOL postDraw(s32 status);
 
     /* 0x50 */ u8 unk_50[0xc];
     /* 0x5c */ Unk_ov003_02206574_V3 position;
@@ -2251,9 +2247,9 @@ public:
     virtual BOOL preDelete();
     virtual BOOL vfunc_14(s32 a);
     virtual BOOL preExecute();
-    virtual BOOL vfunc_20();
+    virtual BOOL vfunc_20(u32 status);
     virtual BOOL preDraw();
-    virtual BOOL postDraw();
+    virtual BOOL postDraw(s32 status);
 
     /* 0x50 */ u8 unk_50[0xc];
     /* 0x5c */ Unk_ov003_0220a684_V3 position;
@@ -2709,9 +2705,9 @@ public:
     virtual BOOL preDelete();
     virtual BOOL vfunc_14(s32 a);
     virtual BOOL preExecute();
-    virtual BOOL vfunc_20();
+    virtual BOOL vfunc_20(u32 status);
     virtual BOOL preDraw();
-    virtual BOOL postDraw();
+    virtual BOOL postDraw(s32 status);
 
     /* 0x50 */ u8 unk_50[0xc];
     /* 0x5c */ Unk_ov003_0220bc84_V3 position;

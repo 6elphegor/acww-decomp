@@ -1,13 +1,9 @@
 // ov142: scene overlay (class CatalogMenu, vtable 0x02294da8, 0x2e10 bytes): item catalog list.
-#define postCreate() postCreate(s32 a)
-#define vfunc_14() vfunc_14(s32 a)
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "talk/MsgStringBase.h"
 #include "talk/MsgStringAttr.h"
 #include "room/FtrPreviewer.h"
-#undef postCreate
-#undef vfunc_14
 
 class CatalogMenu;
 
@@ -228,7 +224,7 @@ public:
     virtual BOOL vfunc_14(s32 a);
     virtual BOOL onExecute();
     virtual BOOL preExecute();
-    virtual BOOL vfunc_20();
+    virtual BOOL vfunc_20(u32 status);
     virtual BOOL execWaitScreen();
     virtual BOOL execTransition();
     virtual BOOL execMain();

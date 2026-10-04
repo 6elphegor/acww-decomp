@@ -1,5 +1,4 @@
 // mwcc-flags: -str reuse
-#define postCreate() postCreate(s32 a)
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "actor/Unk_02088d00.h"
@@ -11,7 +10,6 @@
 #include "npc/NpcObstacleProbe.h"
 #include "npc/Unk_0201ad18.h"
 #include "npc/Unk_020135e4.h"
-#undef postCreate
 
 // Real (mangled) names of other modules' functions that the unit calls as plain functions taking the object first.
 #define NpcAnimCtrl_playAnim _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti
@@ -200,10 +198,10 @@ struct Unk_0201bc1c;
 
 class Actor : public ProcBase {
 public:
-    BOOL vfunc_14();
-    BOOL vfunc_20();
+    BOOL vfunc_14(s32 status);
+    BOOL vfunc_20(u32 status);
     BOOL preDraw();
-    BOOL postDraw();
+    BOOL postDraw(s32 status);
 };
 
 class Character : public Actor {
@@ -216,7 +214,7 @@ public:
     virtual void getInteractionPos();
     virtual void acceptsInteractionOutOfRange(void *p);
     virtual void vfunc_58(void *p);
-    u8 pad_04[0x58];
+    u8 pad_50[0x5c - 0x50];
     s32 position, positionY, positionZ;
     u8 pad_68[0x8e - 0x68];
     s16 rotY;
