@@ -19,6 +19,15 @@
 #include "gfx/BgVramTask.h"
 #include "ui/TouchPromptBalloon.h"
 #include "player/PlayerData.h"
+#include "talk/MsgString.h"
+#include "talk/MsgString9B.h"
+#include "ui/LabelButton.h"
+#include "ui/HandCursor.h"
+#include "menu/MenuCursor.h"
+#include "menu/MenuLabelButton.h"
+#include "menu/PopupChoiceMenu.h"
+#include "menu/MenuBottomButtons.h"
+#include "menu/MenuErrorMessage.h"
 
 class PostOfficeMenu;
 class MenuLauncher;
@@ -132,130 +141,23 @@ extern "C" CommManager *gCommManager;
 
 extern "C" TalkWindowState *TalkWindow_Get(s32 a);
 
-class MsgString {
-public:
-    virtual ~MsgString();
-};
-class MsgString9B : public MsgString {
-public:
-    MsgString9B();
-    virtual ~MsgString9B();
-    u32 unk_04[7];
-};
 
 struct Unk_0206d1d4_Src;
 
 
 
 
-class LabelButton : public UiWidget {
-public:
-    virtual void draw();
-    virtual void vfunc_0c();
-    void setState(s32 v);
-    void setPos(s32 x, s32 y);
-};
 
-class HandCursor : public UiWidget {
-public:
-    virtual void draw();
-    virtual void vfunc_0c();
-    BOOL isAnimDone();
-    s32 getAnim();
-    void setAnimAtEnd(s32 idx);
-    void enableObjWindow();
-};
 
 // ov002 sub-objects ----------------------------------------------------------------------------
 
 
 
-class MenuCursorBase : public HandCursor {
-public:
-    void drawWrapped();
-    s32 getFrameScreenY();
-    s32 getFrameScreenX();
-    BOOL isMoving();
-    BOOL func_ov002_022028fc();
-    BOOL func_ov002_02202928();
-    void moveToEase(s32 a, s32 b, s32 c, s32 d);
-    void moveToLinear(s32 a, s32 b, s32 c);
-    void warpTo(s32 a, s32 b);
-    void setPoseIdle();
-};
-// Same cursor object under the name used by the second group of its methods
-class MenuCursor : public HandCursor {
-public:
-    void setPosePress();
-    void switchToAnim01();
-    void switchToAnim07();
-    void setAnimIfChanged(s32 a);
-};
-class MenuCursorBuf0 : public MenuCursorBase {
-public:
-    MenuCursorBuf0();
-    virtual ~MenuCursorBuf0();
-    u32 unk_0c[(0x64 - 0xc) / 4];
-};
 
 struct PopupChoiceIdList;
-class PopupChoiceMenuBody {
-public:
-    s32 getRowY(s32 a);
-    s32 getRowX();
-    s32 hitTestRowOrLast(s32 a, s32 b);
-    void setRowsFromIds(PopupChoiceIdList *r, s32 a);
-    BOOL isClosed();
-    BOOL isOpen();
-};
-class PopupChoiceMenu {
-public:
-    PopupChoiceMenu();
-    ~PopupChoiceMenu();
-    void placeNearPoint(s32 a, s32 b);
-    void init(s32 a, s32 b, const char *path);
-    u8 unk_00[0x2f4];
-    u8 unk_2f4[0xc];
-};
 
-class MenuErrorMessage {
-public:
-    MenuErrorMessage();
-    ~MenuErrorMessage();
-    BOOL update(s32 a);
-    u32 unk_00[0x108 / 4];
-};
 
-class MenuLabelButton : public LabelButton {
-public:
-    MenuLabelButton();
-    virtual ~MenuLabelButton();
-    BOOL isTouched();
-    void showDefault(s32 a);
-    BOOL stepAnim();
-    s32 getAnchorY(s32 a);
-    s32 getAnchorX(s32 a);
-    u32 unk_0c[(0x70 - 0xc) / 4];
-};
 
-class MenuBottomButtonsBody {
-public:
-    s32 getPressOffset();
-    BOOL stepPress();
-    void setSelected(u8 v);
-    s32 getTargetY(s32 a);
-    s32 getTargetX(s32 a);
-    BOOL isTouched(s32 a);
-};
-class MenuBottomButtons {
-public:
-    MenuBottomButtons();
-    ~MenuBottomButtons();
-    void setLayoutConfirmAnd06(u8 v);
-    void drawAt(s32 a);
-    void freeTexts();
-    u32 unk_00[0x164 / 4];
-};
 
 // ov094 sub-objects ----------------------------------------------------------------------------
 
@@ -409,6 +311,8 @@ public:
     /* 0x2408 */ CursorMotion flyMotion;
     /* 0x2420 */ MenuCursorBuf0 cursor;
     /* 0x2484 */ PopupChoiceMenu popup;
+    /* 0x2778 */ PopupChoiceIdList choiceList;
+    /* 0x2783 */ u8 pad_2783[1];
     /* 0x2784 */ MenuErrorMessage errorMessage;
     /* 0x288c */ LetterRenderer letterView;
     /* 0x2a9c */ MenuLabelButton letterCloseButton;
@@ -1765,7 +1669,7 @@ void PostOfficeMenu_OnPopupChoice(S *s) {
 
 void PostOfficeMenu_OpenPopup(S *s, s32 a) {
     s32 r6, r2;
-    ((PopupChoiceMenuBody *)&s->popup)->setRowsFromIds((PopupChoiceIdList *)s->popup.unk_2f4, s->testFlags(0x8000));
+    ((PopupChoiceMenuBody *)&s->popup)->setRowsFromIds(&s->choiceList, s->testFlags(0x8000));
     r6 = s->getSlotX(s->selectedSlot);
     r2 = s->getSlotY(s->selectedSlot);
     if (a != 0) {
@@ -1789,25 +1693,25 @@ void PostOfficeMenu_SelectLetter(S *s, u32 a, s32 b) {
     s32 r5;
     s->clearFlags(0x8000);
     s->selectedSlot = a;
-    ChoiceIdList_Clear(s->popup.unk_2f4, 4);
+    ChoiceIdList_Clear(&s->choiceList, 4);
     r7 = s->getSlotLetter(a);
     if (MenuCtrl_IsButtons()) {
-        ChoiceIdList_Add(s->popup.unk_2f4, 0, 0);
+        ChoiceIdList_Add(&s->choiceList, 0, 0);
     }
     r5 = ((LetterView *)r7)->getState();
     if (r5 != 0) {
         if (r5 == 7) {
-            ChoiceIdList_Add(s->popup.unk_2f4, 0x17, 1);
+            ChoiceIdList_Add(&s->choiceList, 0x17, 1);
         } else {
-            ChoiceIdList_Add(s->popup.unk_2f4, 0x14, 1);
+            ChoiceIdList_Add(&s->choiceList, 0x14, 1);
         }
     }
     if (((LetterView *)r7)->getPresent() == 0xfff1) {
         if (r5 == 3 || r5 == 6 || r5 == 1 || r5 == 4) {
-            ChoiceIdList_Add(s->popup.unk_2f4, 0x15, 3);
+            ChoiceIdList_Add(&s->choiceList, 0x15, 3);
         }
     }
-    ChoiceIdList_Add(s->popup.unk_2f4, 2, 4);
+    ChoiceIdList_Add(&s->choiceList, 2, 4);
     PostOfficeMenu_HideCursor(s);
     if (b == 0) {
         s->nameBalloon.hide(1);
@@ -1817,10 +1721,10 @@ void PostOfficeMenu_SelectLetter(S *s, u32 a, s32 b) {
 
 void PostOfficeMenu_OpenDiscardConfirm(S *s) {
     s->setFlags(0x8000);
-    ChoiceIdList_Clear(s->popup.unk_2f4, 4);
-    ChoiceIdList_Add(s->popup.unk_2f4, 0x1a, 4);
-    ChoiceIdList_Add(s->popup.unk_2f4, 0x15, 2);
-    ChoiceIdList_Add(s->popup.unk_2f4, 0x19, 4);
+    ChoiceIdList_Clear(&s->choiceList, 4);
+    ChoiceIdList_Add(&s->choiceList, 0x1a, 4);
+    ChoiceIdList_Add(&s->choiceList, 0x15, 2);
+    ChoiceIdList_Add(&s->choiceList, 0x19, 4);
     PostOfficeMenu_OpenPopup(s, 0);
 }
 

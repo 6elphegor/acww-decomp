@@ -6,6 +6,7 @@
 #include "ui/LabelString.h"
 #include "menu/MenuCursor.h"
 #include "menu/CreatureBookPanel.h"
+#include "menu/MenuTabBar.h"
 
 extern "C" {
 extern u8 gTouchCurX;
@@ -49,11 +50,6 @@ void CreatureBook_StopPictureFade(void *p);
 void CreatureBook_DrawRows(void *p, s32 a);
 }
 
-class MenuTabBar {
-public:
-    void onTabMenuClosed();
-    void selectTab(u32 a);
-};
 
 class InsectBookTab;
 

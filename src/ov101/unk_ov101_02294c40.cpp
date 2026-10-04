@@ -14,6 +14,7 @@
 #include "menu/MenuCursor.h"
 #include "menu/MenuBottomButtons.h"
 #include "menu/PopupChoiceMenu.h"
+#include "menu/MenuErrorMessage.h"
 
 class PocketItemSelectMenu;
 class MenuLauncher;
@@ -115,13 +116,6 @@ static inline BOOL Unk_ov101_02296280_Both()
 
 
 
-class MenuErrorMessage {
-public:
-    MenuErrorMessage();
-    ~MenuErrorMessage();
-    BOOL update(s32 a);
-    u32 unk_00[0x108 / 4];
-};
 
 
 

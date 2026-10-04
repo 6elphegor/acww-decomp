@@ -15,18 +15,14 @@
 #include "menu/MenuCursor.h"
 #include "player/PlayerData.h"
 #include "menu/Keyboard.h"
+#include "menu/MenuErrorMessage.h"
+#include "menu/MenuTabBar.h"
 
 enum Unk_ov111_022970cc_Status { UNK_OV111_ST_0 = 0, UNK_OV111_ST_1 = 1, UNK_OV111_ST_2 = 2, UNK_OV111_ST_3 = 3 };
 
 class ChatMenu;
 typedef ChatMenu S;
 
-class MenuTabBar {
-public:
-    BOOL isJustOpened();
-    void onTabMenuClosed();
-    void selectTab(u32 v);
-};
 
 
 
@@ -155,15 +151,6 @@ BOOL Keyboard_IsSlotDisabled(void *s, s32 i);
 
 
 
-// Holder at +0x3d30 (0x108 bytes)
-class MenuErrorMessage {
-public:
-    MenuErrorMessage();
-    ~MenuErrorMessage();
-    BOOL update(s32 a);
-    void open(u8 *a, s32 b, u32 c);
-    u32 unk_00[0x108 / 4];
-};
 
 
 

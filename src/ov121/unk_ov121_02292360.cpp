@@ -9,6 +9,7 @@
 #include "ui/TouchPromptBalloon.h"
 #include "menu/MenuCursor.h"
 #include "menu/PopupChoiceMenu.h"
+#include "menu/MenuErrorMessage.h"
 
 #define func_020624c0 _ZN18EncodedString16BufD1Ev
 #define func_02062510 _ZN18EncodedString16BufC1Ev
@@ -256,12 +257,6 @@ extern u32 sDesignTabTargetFrameCells[];
 
 
 
-class MenuErrorMessage {
-public:
-    MenuErrorMessage();
-    ~MenuErrorMessage();
-    u32 unk_00[0x108 / 4];
-};
 
 
 // Vtable 0x02294d68, size 0x107c

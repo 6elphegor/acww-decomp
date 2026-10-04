@@ -3,6 +3,7 @@
 #include "net/CommManager.h"
 #include "menu/MenuSlide.h"
 #include "menu/MenuProc.h"
+#include "menu/PocketMenu.h"
 
 extern "C" {
 s32 Snd_PlaySe(s32 a);
@@ -22,18 +23,6 @@ extern "C" CommManager *gCommManager;
 
 
 
-// Vtable 0x0229aea8 (ov096 class; ov097 functions are free functions on it)
-class PocketMenu : public MenuProc {
-public:
-    void requestCameraPop();
-
-    /* 0x91 */ u8 unk_91[0x25];
-    /* 0xb6 */ u8 actionTarget;
-    /* 0xb7 */ u8 unk_b7[0xc4 - 0xb7];
-    /* 0xc4 */ s32 fieldRequest;
-    /* 0xc8 */ u8 unk_c8[0x27f0 - 0xc8];
-    /* 0x27f0 */ u8 unk_27f0[0x114];
-};
 
 extern "C" {
 void PocketMenu_ReturnToIdle(class PocketMenu *self);

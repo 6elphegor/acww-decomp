@@ -19,6 +19,8 @@
 #include "talk/MsgString9B.h"
 #include "ui/LabelString.h"
 #include "menu/Keyboard.h"
+#include "menu/MenuBottomButtons.h"
+#include "menu/MenuErrorMessage.h"
 
 // Plain view of the scene object used by the extern "C" helpers (offsets only).
 struct Unk_ov112_02296840 {
@@ -83,38 +85,9 @@ class EncodedString;
 
 
 // ---- ov002 classes ----
-class MenuErrorMessage {
-public:
-    MenuErrorMessage();
-    ~MenuErrorMessage();
-    BOOL update(s32 a);
-    void open(u8 *p, s32 a, u32 b);
-    u32 unk_00[0x108 / 4];
-};
 
 
-class MenuBottomButtonsBody {
-public:
-    u32 unk_00[0x164 / 4];
-    BOOL stepPress();
-    s32 getPressOffset();
-    void disableObjWindow();
-    void enableObjWindow();
-    void setSelected(u8 v);
-    s32 getTargetY(s32 i);
-    s32 getTargetX(s32 i);
-    BOOL isTouched(s32 i);
-    void setLayoutYesNo08(s32 i);
-};
 
-class MenuBottomButtons : public MenuBottomButtonsBody {
-public:
-    MenuBottomButtons();
-    ~MenuBottomButtons();
-    void setLayoutNeverMindConfirm();
-    void drawAt(s32 a);
-    void freeTexts();
-};
 
 
 
@@ -664,9 +637,9 @@ void BbsWriteMenu::transitionAct03() {
 void BbsWriteMenu::transitionAct04() {
     beginDialogDim();
     if (BbsWriteMenu_HasFlags((S *)this, 0x2000)) {
-        bottomButtons.setLayoutYesNo08(0x87);
+        ((MenuBottomButtonsBody *)&bottomButtons)->setLayoutYesNo08(0x87);
     } else {
-        bottomButtons.setLayoutYesNo08(0x22);
+        ((MenuBottomButtonsBody *)&bottomButtons)->setLayoutYesNo08(0x22);
     }
     initSlideIn(5, 0);
     buttonsSlideY = getSlideOffsetY();

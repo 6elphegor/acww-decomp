@@ -20,6 +20,7 @@
 #include "menu/MenuLabelButton.h"
 #include "menu/MenuCursor.h"
 #include "menu/PopupChoiceMenu.h"
+#include "menu/MenuErrorMessage.h"
 
 extern "C" {
 extern u8 gTouchCurX;
@@ -103,13 +104,6 @@ struct Unk_0206d1d4_Src;
 
 
 
-class MenuErrorMessage {
-public:
-    MenuErrorMessage();
-    ~MenuErrorMessage();
-    BOOL update(s32 a);
-    u32 unk_00[0x108 / 4];
-};
 
 
 

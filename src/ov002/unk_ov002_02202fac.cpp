@@ -32,6 +32,7 @@
 #include "menu/MenuBottomButtons.h"
 #include "menu/PopupChoiceMenu.h"
 #include "talk/TalkMsgRequest.h"
+#include "menu/MenuErrorMessage.h"
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Real names of functions of other modules (plain names that are really methods / ctors / dtors)
@@ -223,34 +224,6 @@ typedef void (MenuProc::*Unk_ov002_02200a68_Fn)();
 
 
 
-// Non-polymorphic holder object (members at +0x00 and +0xc0)
-class MenuErrorMessage {
-public:
-    MenuErrorMessage();
-    ~MenuErrorMessage();
-
-    BOOL restoreBrightness();
-    s32 dimSubScreen();
-    BOOL finishTalk();
-    void advanceTalk();
-    BOOL isTalkWaiting();
-    void undim();
-    void hidePromptBalloon();
-    void updatePromptBalloon();
-    void showPromptOnly();
-    BOOL stepClose();
-    void beginClose();
-    BOOL stepOpen();
-    void startTalk(u8 *a, s32 b);
-    BOOL update(s32 a);
-    void openHigh(u8 *a, s32 b, u32 c);
-    void open(u8 *a, s32 b, u32 c);
-
-    /* 0x00 */ TouchPromptBalloon prompt;
-    /* 0xc0 */ TalkMsgRequest talk;
-    /* 0x104 */ u8 state;
-    /* 0x105 */ u8 isFatal;
-};
 
 
 

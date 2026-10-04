@@ -6,6 +6,7 @@
 #include "ui/LabelString.h"
 #include "menu/MenuCursor.h"
 #include "menu/CreatureBookPanel.h"
+#include "menu/MenuTabBar.h"
 
 extern "C" {
 extern u8 gTouchCurX;
@@ -53,11 +54,6 @@ void func_ov114_02296498(void *p);
 class FishBookTab;
 
 
-class MenuTabBar {
-public:
-    void selectTab(u32 a);
-    void onTabMenuClosed();
-};
 
 
 

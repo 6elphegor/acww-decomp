@@ -5,6 +5,8 @@
 #include "save/TownExchangeRecord.h"
 #include "menu/MenuProc.h"
 #include "player/PlayerData.h"
+#include "menu/MenuErrorMessage.h"
+#include "menu/PocketMenu.h"
 
 extern "C" {
 s32 Snd_PlaySe(s32 a);
@@ -68,89 +70,8 @@ s32 PocketMenu_ShowMessage(PocketMenu *self, s32 a, s32 b, s32 c);
 s32 PocketMenu_ReturnToIdle(PocketMenu *self);
 }
 
-// +0x27fc sub-object (0x108 bytes, opaque here)
-class MenuErrorMessage {
-public:
-    void undim();
-    void hidePromptBalloon();
-    void updatePromptBalloon();
-    void showPromptOnly();
-    u8 unk_00[0x108];
-};
 
 
-// Vtable 0x0229aea8, size 0x2d80
-class PocketMenu : public MenuProc {
-public:
-    virtual ~PocketMenu();
-
-    // this group (ov098_000)
-    void mainAct39();
-    void mainAct38();
-    void mainAct37();
-    void mainAct36();
-    void mainAct35();
-    void actionAct21();
-    void sendBottleLetter();
-    void mainAct34();
-    void mainAct33();
-    void actionThrowBottle();
-    void actionPlantItem();
-    void mainAct2E();
-    void mainAct2D();
-    void actionBuryItem();
-    BOOL findBuryHole();
-    s32 *getDirOffset(s16 a);
-    void sendInsectReleasePacket(u8 a, u32 b);
-    void mainAct2C();
-    void actionReleaseInsect();
-    void sendFishReleasePacket(u8 a);
-    void sendReleasePacket(u8 a, u8 b);
-    void mainAct30();
-    void actionReleaseFish();
-    BOOL findWaterNearPlayer(s32 flag);
-    void addBottleOption();
-    void addFieldOptions(u16 v);
-
-    // other groups of this overlay (declarations only)
-    s32 requestCameraPop();
-    s32 hideCursor();
-    s32 clearFlags(u32 a);
-    s32 setFlags(u32 a);
-
-    /* 0x094 */ u32 stateFlags;
-    /* 0x098 */ u32 slideY;
-    /* 0x09c */ u8 unk_9c[8];
-    /* 0x0a4 */ s32 handX;
-    /* 0x0a8 */ s32 handY;
-    /* 0x0ac */ u16 handItem;
-    /* 0x0ae */ u8 auxItem[2];
-    /* 0x0b0 */ u8 handItemFlags;
-    /* 0x0b1 */ u8 unk_b1[3];
-    /* 0x0b4 */ u8 handSource;
-    /* 0x0b5 */ u8 cursorTarget;
-    /* 0x0b6 */ u8 actionTarget;
-    /* 0x0b7 */ u8 placeTarget;
-    /* 0x0b8 */ u8 paperTarget;
-    /* 0x0b9 */ u8 swapTarget;
-    /* 0x0ba */ u8 returnState;
-    /* 0x0bb */ u8 chosenAction;
-    /* 0x0bc */ u8 popupRow;
-    /* 0x0bd */ u8 unk_bd[3];
-    /* 0x0c0 */ u8 useOnPlayerKind;
-    /* 0x0c1 */ u8 unk_c1[3];
-    /* 0x0c4 */ s32 fieldRequest;
-    /* 0x0c8 */ u8 unk_c8[0x27f0 - 0xc8];
-    /* 0x27f0 */ u8 unk_27f0[0xc];
-    /* 0x27fc */ MenuErrorMessage errorMessage;
-    /* 0x2904 */ u8 unk_2904[0x2b84 - 0x2904];
-    /* 0x2b84 */ s32 waterPos;
-    /* 0x2b88 */ s32 waterPosY;
-    /* 0x2b8c */ s32 waterPosZ;
-    /* 0x2b90 */ s32 digUnitX;
-    /* 0x2b94 */ s32 digUnitY;
-    /* 0x2b98 */ u8 unk_2b98[0x2d80 - 0x2b98];
-};
 
 // ---------------------------------------------------------------------------------------------
 

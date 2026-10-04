@@ -16,6 +16,7 @@
 #include "ui/TouchPromptBalloon.h"
 #include "menu/MenuCursor.h"
 #include "menu/PopupChoiceMenu.h"
+#include "menu/MenuErrorMessage.h"
 
 class LostFoundRecycleMenu;
 
@@ -124,13 +125,6 @@ void LetterGrid_LoadPocketLetters(void *a);
 
 
 
-class MenuErrorMessage {
-public:
-    MenuErrorMessage();
-    ~MenuErrorMessage();
-    BOOL update(s32);
-    u32 unk_00[0x108 / 4];
-};
 
 
 

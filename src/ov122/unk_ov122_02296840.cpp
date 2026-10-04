@@ -14,6 +14,9 @@
 #include "talk/MsgString129.h"
 #include "ui/LabelString.h"
 #include "menu/Keyboard.h"
+#include "menu/PopupChoiceMenu.h"
+#include "menu/MenuBottomButtons.h"
+#include "menu/MenuErrorMessage.h"
 
 class EncodedString;
 
@@ -30,34 +33,10 @@ class EncodedString;
 
 
 
-class PopupChoiceMenuBody {
-public:
-    u32 unk_00[0x2f4 / 4];
-};
 
-class PopupChoiceMenu : public PopupChoiceMenuBody {
-public:
-    PopupChoiceMenu();
-    ~PopupChoiceMenu();
-};
 
-class MenuBottomButtonsBody {
-public:
-    u32 unk_00[0x164 / 4];
-};
 
-class MenuBottomButtons : public MenuBottomButtonsBody {
-public:
-    MenuBottomButtons();
-    ~MenuBottomButtons();
-};
 
-class MenuErrorMessage {
-public:
-    MenuErrorMessage();
-    ~MenuErrorMessage();
-    u32 unk_00[0x108 / 4];
-};
 
 
 

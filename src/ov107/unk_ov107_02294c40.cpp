@@ -10,6 +10,7 @@
 #include "menu/MenuCursor.h"
 #include "menu/MenuBottomButtons.h"
 #include "menu/PopupChoiceMenu.h"
+#include "menu/MenuErrorMessage.h"
 
 // ov107: scene overlay (class PocketsFullMenu, vtable 0x02296e78, 0x281c bytes).
 
@@ -91,12 +92,6 @@ struct Unk_ov107_SceneEntry {
 
 
 
-class MenuErrorMessage {
-public:
-    MenuErrorMessage();
-    ~MenuErrorMessage();
-    u32 unk_00[0x108 / 4];
-};
 
 
 struct Unk_ov107_Comm {

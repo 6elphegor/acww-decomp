@@ -14,6 +14,7 @@
 #include "menu/MenuCursor.h"
 #include "menu/MenuBottomButtons.h"
 #include "menu/PopupChoiceMenu.h"
+#include "menu/MenuErrorMessage.h"
 
 extern "C" {
 extern u8 gTouchCurX;
@@ -94,15 +95,6 @@ struct PopupChoiceIdList;
 
 
 
-class MenuErrorMessage {
-public:
-    MenuErrorMessage();
-    ~MenuErrorMessage();
-
-    BOOL update(s32 a);
-
-    u32 unk_00[0x108 / 4];
-};
 
 
 

@@ -10,6 +10,8 @@
 #include "menu/MenuCursor.h"
 #include "player/PlayerData.h"
 #include "menu/MenuBottomButtons.h"
+#include "menu/MenuErrorMessage.h"
+#include "menu/MenuTabBar.h"
 
 extern "C" {
 extern const u8 sKeyDigits[12];
@@ -112,13 +114,6 @@ extern void *data_ov133_02295298[2];
 
 
 
-class MenuTabBar {
-public:
-    void requestSaveOnClose();
-    void showTabs();
-    s32 onTabMenuClosed();
-    void selectTab(u32 v);
-};
 extern "C" CommManager *gCommManager;
 
 
@@ -130,15 +125,6 @@ extern "C" CommManager *gCommManager;
 
 
 
-// Object at +0x1300 (0x108 bytes)
-class MenuErrorMessage {
-public:
-    MenuErrorMessage();
-    ~MenuErrorMessage();
-    BOOL update(s32 a);
-    void open(u8 *a, s32 b, u32 c);
-    u32 unk_00[0x108 / 4];
-};
 
 // Local object with empty out-of-line ctor/dtor (func_02076f74 / func_02076f70)
 class DwcFriendData {

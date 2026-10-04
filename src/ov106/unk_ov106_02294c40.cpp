@@ -20,6 +20,7 @@
 #include "player/PlayerData.h"
 #include "menu/MenuBottomButtons.h"
 #include "menu/PopupChoiceMenu.h"
+#include "menu/MenuErrorMessage.h"
 
 // ov106: scene overlay (class MailboxMenu, vtable 0x02298180, 0x3f80 bytes).
 
@@ -151,17 +152,6 @@ class LetterGrid;
 
 
 
-class MenuErrorMessage {
-public:
-    MenuErrorMessage();
-    ~MenuErrorMessage();
-    s32 stepClose();
-    void beginClose();
-    s32 stepOpen();
-    void startTalk(u8 *, s32);
-    s32 update(s32);
-    u32 unk_00[0x108 / 4];
-};
 
 
 

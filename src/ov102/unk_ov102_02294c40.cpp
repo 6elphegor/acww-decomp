@@ -14,6 +14,7 @@
 #include "ui/TouchPromptBalloon.h"
 #include "menu/MenuCursor.h"
 #include "menu/PopupChoiceMenu.h"
+#include "menu/MenuErrorMessage.h"
 
 extern "C" {
 void Gfx2d_ShowLayer(u32 x);
@@ -124,13 +125,6 @@ class ChestMenu;
 
 
 
-class MenuErrorMessage {
-public:
-    MenuErrorMessage();
-    ~MenuErrorMessage();
-    BOOL update(s32);
-    u32 unk_00[0x108 / 4];
-};
 
 
 

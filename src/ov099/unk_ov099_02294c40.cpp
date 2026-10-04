@@ -14,6 +14,7 @@
 #include "ui/TouchPromptBalloon.h"
 #include "menu/MenuCursor.h"
 #include "menu/PopupChoiceMenu.h"
+#include "menu/MenuErrorMessage.h"
 
 class PocketMenuUnk;
 struct PopupChoiceIdList;
@@ -106,13 +107,6 @@ s32 LetterGrid_GetSlotX(void *p, u32 v);
 
 
 
-class MenuErrorMessage {
-public:
-    MenuErrorMessage();
-    ~MenuErrorMessage();
-    BOOL update(s32 a);
-    u32 unk_00[0x108 / 4];
-};
 
 
 

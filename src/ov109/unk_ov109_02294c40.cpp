@@ -14,6 +14,7 @@
 #include "menu/MenuCursor.h"
 #include "menu/MenuBottomButtons.h"
 #include "menu/PopupChoiceMenu.h"
+#include "menu/MenuErrorMessage.h"
 
 class SongPickMenu;
 struct Unk_ov109_02295570;
@@ -104,14 +105,6 @@ void InventoryBg_DrawSprite(void *p, s32 a);
 
 
 
-class MenuErrorMessage {
-public:
-    MenuErrorMessage();
-    ~MenuErrorMessage();
-    BOOL update(s32 a);
-    void open(u8 *p, s32 a, u32 b);
-    u32 unk_00[0x108 / 4];
-};
 
 
 

@@ -7,6 +7,7 @@
 #include "menu/MenuScrollKnob.h"
 #include "menu/MenuCursor.h"
 #include "menu/MenuBottomButtons.h"
+#include "menu/MenuErrorMessage.h"
 
 class MusicMenu;
 typedef void (MusicMenu::*Unk_ov144_02293db8_Fn)();
@@ -174,12 +175,6 @@ extern "C" u32 data_ov144_02293d70[16] = {0x20508028, 0x50c0, 0x508018, 0x50e0, 
 
 
 
-class MenuErrorMessage {
-public:
-    MenuErrorMessage();
-    ~MenuErrorMessage();
-    u32 unk_00[0x108 / 4];
-};
 
 // Vtable 0x02293db8, size 0x1f04
 class MusicMenu : public MenuProc {

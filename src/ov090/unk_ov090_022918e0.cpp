@@ -15,6 +15,8 @@
 #include "gfx/BgVramTask.h"
 #include "snd/BgmManager.h"
 #include "ui/TouchPromptBalloon.h"
+#include "menu/MenuErrorMessage.h"
+#include "menu/MenuTabBar.h"
 
 extern "C" {
 void Gfx2d_SetWindowRect(s32 a, s32 x0, s32 y0, s32 x1, s32 y1);
@@ -97,15 +99,6 @@ class Unk_02083b0_dummy;
 
 
 
-class MenuErrorMessage {
-public:
-    MenuErrorMessage();
-    ~MenuErrorMessage();
-    void update(s32 a);
-    void open(u8 *p, s32 a, u32 b);
-
-    u32 unk_00[0x42];
-};
 
 
 
@@ -114,52 +107,6 @@ extern "C" BgmManager *data_021c1b3c;
 class MenuTabBar;
 typedef void (MenuTabBar::*Unk_ov090_022921e0_Fn)();
 
-// Vtable 0x022921e0
-class MenuTabBar : public MenuProc {
-public:
-    inline MenuTabBar() {}
-
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
-    virtual BOOL onDraw();
-    virtual BOOL execTransition();
-    virtual BOOL execMain();
-    virtual BOOL execPhase3();
-    virtual BOOL execPhase4();
-    virtual BOOL execClosed();
-
-    BOOL isJustOpened();
-    void requestSaveOnClose();
-    void showTab(u32 idx);
-    void cancelVramTasks();
-    void hideTabs();
-    void showTabs();
-    void releaseResources();
-    void initTabBar();
-    void stateSlideOut();
-    void stateSlideIn();
-    void stateLoad();
-    void updateSaving();
-    void updateOpenTabMenu();
-    void updateIdle();
-    void beginClose();
-    u8 onTabMenuClosed();
-    void selectTab(u32 idx);
-
-    /* 0x91 */ u8 unk_91;
-    /* 0x92 */ u8 slideY;
-    /* 0x93 */ u8 curTab;
-    /* 0x94 */ u8 tabsShown;
-    /* 0x95 */ u8 lrSwitchEnabled;
-    /* 0x96 */ u8 loadedTab;
-    /* 0x97 */ u8 saveState;
-    /* 0x98 */ u8 justOpened;
-    /* 0x9c */ BgVramTaskPair unk_9c[3];
-    /* 0x144 */ u32 unk_144[0x200];
-    /* 0x944 */ u32 unk_944[0x200];
-    /* 0x1144 */ u32 unk_1144[8];
-    /* 0x1164 */ MenuErrorMessage errorMessage;
-};
 
 extern "C" {
 MenuTabBar *MenuTabBar_Create();

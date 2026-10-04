@@ -8,6 +8,7 @@
 #include "menu/MenuLauncher.h"
 #include "menu/MenuCursor.h"
 #include "menu/MenuBottomButtons.h"
+#include "menu/MenuErrorMessage.h"
 
 extern "C" {
 extern u16 gPad[];
@@ -161,15 +162,6 @@ static inline BOOL Unk_ov129_02295000_Both() {
 
 
 
-// Object at +0xb8 (0x108 bytes)
-class MenuErrorMessage {
-public:
-    MenuErrorMessage();
-    ~MenuErrorMessage();
-    BOOL update(s32 a);
-    void open(u8 *a, s32 b, u32 c);
-    u32 unk_00[0x108 / 4];
-};
 
 
 

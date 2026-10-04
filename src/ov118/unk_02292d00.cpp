@@ -8,6 +8,7 @@
 #include "gfx/BgVramTask.h"
 #include "menu/MenuCursor.h"
 #include "menu/MenuScrollKnob.h"
+#include "menu/MenuTabBar.h"
 
 extern "C" {
 BOOL _ZN10HandCursor10isAnimDoneEv(void *self);
@@ -87,12 +88,6 @@ BOOL MenuKeys_HasUp(void *pad);
 
 
 
-class MenuTabBar {
-public:
-    BOOL isJustOpened();
-    void onTabMenuClosed();
-    void selectTab(u32 x);
-};
 
 
 

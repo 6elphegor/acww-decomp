@@ -12,6 +12,7 @@
 #include "menu/GeneralMenuHeader.h"
 #include "menu/MenuBottomButtons.h"
 #include "menu/Keyboard.h"
+#include "menu/MenuErrorMessage.h"
 
 #define ItemName_setFromItem _ZN8ItemName11setFromItemEPt
 #define func_0206260c _ZN8ItemNameD1Ev
@@ -285,13 +286,6 @@ void Keyboard_DrawCaret(void *p, s32 a, s32 b, s32 c);
 
 
 
-// +0x3f80 holder object, 0x108 bytes
-class MenuErrorMessage {
-public:
-    MenuErrorMessage();
-    ~MenuErrorMessage();
-    u32 unk_00[0x108 / 4];
-};
 
 
 

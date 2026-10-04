@@ -3,6 +3,18 @@
 #include "net/CommManager.h"
 #include "ui/UiWidget.h"
 #include "menu/MenuProc.h"
+#include "menu/MenuCursor.h"
+#include "menu/InventoryItemGrid.h"
+#include "menu/LetterGrid.h"
+#include "menu/InventoryBg.h"
+#include "ui/TouchPromptBalloon.h"
+#include "ui/CursorMotion.h"
+#include "ui/LetterRenderer.h"
+#include "item/Letter.h"
+#include "menu/MenuLabelButton.h"
+#include "menu/PopupChoiceMenu.h"
+#include "menu/MenuErrorMessage.h"
+#include "menu/PocketMenu.h"
 
 class PocketMenu;
 typedef void (PocketMenu::*Unk_ov096_0229aea8_Fn)();
@@ -177,7 +189,6 @@ s32 _ZN10LetterView10getPresentEv(void *obj);
 void Letter_MarkRead();
 s32 Letter_InitBottleDraft();
 void Letter_InitDraft(void *p, u8 v);
-void _ZN6LetterC1Ev(void *p);
 void *_ZN6LetterD1Ev(void *p);
 void *_ZN15MenuLabelButtonD1Ev(void *p);
 void *_ZN14LetterRendererD1Ev(void *p);
@@ -193,7 +204,6 @@ void Letter_Copy(void *dst, void *src);
 void _ZN14LetterRenderer4showEP16Unk_0206d1d4_SrcPvS2_i(void *p, void *q, s32 a, s32 b, s32 c);
 void _ZN14LetterRenderer7releaseEv(void *p);
 void _ZN14LetterRenderer8setLayerEi(void *p, s32 a);
-void _ZN14LetterRendererC1Ev(void *p);
 void MenuScreen_UploadClothPattern(void *a, void *b, void *c, void *d);
 BOOL MenuCtrl_IsForceCloseDue();
 void MenuCtrl_TickForceClose();
@@ -240,7 +250,6 @@ void *_ZN10PlayerData12getInventoryEv(void *p);
 s32 Pocket_FindEmpty();
 s32 Inventory_FindEmptyLetter();
 s32 Scene_InHouseRoom();
-void _ZN14BgVramTaskPairC1Ev(void *p);
 void _ZN10BgVramTask6cancelEv(void *p);
 void *ProcBase_GetParent(void *p);
 void ProcBase_RequestDelete(void *p);
@@ -252,7 +261,6 @@ void _ZN18TouchPromptBalloon9queueOpenEv(void *p);
 void _ZN18TouchPromptBalloon10commitOpenEv(void *p);
 void _ZN18TouchPromptBalloon4hideEi(void *self, s32 a);
 s32 _ZN18TouchPromptBalloon12updatePromptEv(void *p);
-void _ZN18TouchPromptBalloonC1Ev(void *p);
 void _ZN8MenuProc16restartKeyRepeatEv(void *p);
 BOOL MenuKeys_HasRight(void *pad);
 BOOL MenuKeys_HasLeft(void *pad);
@@ -286,15 +294,12 @@ void _ZN15PopupChoiceMenu17placeAboveBalloonEP12LabelBalloon(void *self, void *p
 void _ZN15PopupChoiceMenu10placeAboveEii(void *self, s32 a, s32 b);
 void _ZN15PopupChoiceMenu14placeNearPointEii(void *self, s32 a, s32 c);
 void _ZN15PopupChoiceMenu4initEiiPKc(void *p, s32 a, s32 b, s32 c);
-void _ZN15PopupChoiceMenuC1Ev(void *p);
-void _ZN14MenuCursorBuf0C1Ev(void *p);
 void _ZN12CursorMotion11startLinearEiii(void *p, s32 a, s32 b, u32 c);
 void _ZN12CursorMotion6setPosEii(void *p, s32 a, s32 b);
 s32 _ZN12CursorMotion4getYEv(void *p);
 s32 _ZN12CursorMotion4getXEv(void *p);
 s32 _ZN12CursorMotion6updateEv(void *p);
 void _ZN12CursorMotion5resetEv(void *p);
-void _ZN12CursorMotionC1Ev(void *p);
 void _ZN14MenuCursorBase11drawWrappedEv(void *p);
 void _ZN14MenuCursorBase10getScreenXEv(void *p);
 s32 _ZN14MenuCursorBase15getFrameScreenYEv(void *p);
@@ -307,7 +312,6 @@ void _ZN10MenuCursor12setPosePressEv(void *p);
 void _ZN10MenuCursor14switchToAnim0DEv(void *self);
 void _ZN10MenuCursor14switchToAnim01Ev(void *self);
 void _ZN10MenuCursor16setAnimIfChangedEi(void *p, s32 a);
-void _ZN15MenuLabelButtonC1Ev(void *p);
 s32 _ZN15MenuLabelButton9isTouchedEv(void *p);
 void _ZN15MenuLabelButton11showDefaultEi(void *p, s32 a);
 s32 _ZN15MenuLabelButton8stepAnimEv(void *p);
@@ -315,7 +319,6 @@ s32 _ZN15MenuLabelButton10getAnchorYEi(void *p, s32 a);
 s32 _ZN15MenuLabelButton10getAnchorXEi(void *p, s32 a);
 s32 _ZN16MenuErrorMessage6updateEi(void *p, s32 a);
 void _ZN16MenuErrorMessage4openEPhij(void *p, void *q, u32 a, u32 b);
-void _ZN16MenuErrorMessageC1Ev(void *p);
 s32 _ZN10MenuTabBar12isJustOpenedEv();
 s32 MenuTabBar_TabFromX();
 s32 MenuTabBar_NextTab(s32 a);
@@ -348,7 +351,6 @@ void InventoryBg_LoadObjGraphics(void *p);
 void InventoryBg_LoadGraphics(void *p);
 void InventoryBg_LoadBg(void *p, s32 a);
 void InventoryBg_Init(void *p, s32 a);
-void _ZN11InventoryBgC1Ev(void *p);
 s32 InventoryItemGrid_UpdatePresentAnim(void *p);
 s32 InventoryItemGrid_StartPresentAnim(void *p, u16 a, u8 b);
 s32 InventoryItemGrid_IsSlotEmpty(void *p, u32 a);
@@ -375,7 +377,6 @@ s32 InventoryItemGrid_FindPocketSlotAt(void *p);
 void InventoryItemGrid_Exit(void *p);
 void InventoryItemGrid_PreUpdate(void *p);
 void InventoryItemGrid_Init(void *p, s32 a);
-void _ZN17InventoryItemGridC1Ev(void *p);
 s32 LetterGrid_UpdatePopAnim(void *p);
 s32 LetterGrid_StartPopAnim(void *p);
 void LetterGrid_LoadPocketLetters(void *p);
@@ -396,7 +397,6 @@ void _ZN10LetterGrid14showLetterNameEPvi(void *p, void *q, s32 a);
 s32 _ZN10LetterGrid18findPocketLetterAtEii(void *p);
 void _ZN10LetterGrid16updateCursorLiftEv(void *p);
 void _ZN10LetterGrid4initEi(void *p, s32 a);
-void _ZN10LetterGridC1Ev(void *p);
 void *PocketMenu_GetLetter(S *s, u32 id);
 s32 PocketMenu_GetItemFlags(S *s, u32 id);
 u32 PocketMenu_GetItem(S *s, u32 id);
@@ -489,296 +489,7 @@ static inline BOOL Unk_ov096_02299778_Both() {
 }
 
 
-class InventoryItemGrid { public: ~InventoryItemGrid(); u8 pad[0xa60]; };
-class LetterGrid { public: ~LetterGrid(); u8 pad[0x28]; };
-class InventoryBg { public: ~InventoryBg(); u8 pad[0x160]; };
-class TouchPromptBalloon { public: ~TouchPromptBalloon(); u8 pad[0xc0]; };
-class CursorMotion { public: ~CursorMotion(); u8 pad[0x18]; };
-class MenuCursorBuf0 { public: ~MenuCursorBuf0(); u8 pad[0x64]; };
-class PopupChoiceMenu { public: ~PopupChoiceMenu(); u8 pad[0x2f4]; };
-class MenuErrorMessage { public: ~MenuErrorMessage(); u8 pad[0x108]; };
-class LetterRenderer { public: ~LetterRenderer(); u8 pad[0x210]; };
-class MenuLabelButton { public: ~MenuLabelButton(); u8 pad[0x70]; };
-class Letter { public: ~Letter(); u8 pad[0x18]; };
 
-// Vtable 0x0229aea8, size 0x2d80
-class PocketMenu : public MenuProc {
-public:
-    inline PocketMenu();
-
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
-    virtual BOOL onDraw();
-    virtual BOOL execTransition();
-    virtual BOOL execMain();
-    virtual BOOL execPhase3();
-    virtual BOOL execPhase4();
-    virtual BOOL execClosed();
-
-    void clearFlags(u32);
-    void setFlags(u32);
-    BOOL testFlags(u32);
-    BOOL isHoldingShirt();
-    void wearHeldShirt();
-    void updateCameraView();
-    void requestCameraPop();
-    void requestCameraPush();
-    void writeLetterOnPaper();
-    void * getActionLetter();
-    void closeLetterViewAndMenu();
-    void closeLetterView();
-    void actionReadLetter();
-    BOOL moveCursorByPad(void *, s32);
-    void moveCursorInPlayerArea(void *, s32);
-    void moveCursorInTabs(void *, s32);
-    void moveCursorInLetters(void *, s32);
-    void moveCursorInPockets(void *, s32);
-    void func_ov096_022956a0(s32);
-    void func_ov096_022956d0();
-    void openConfirmList();
-    void openTargetOptions(u32, s32);
-    void addTakeOffOptions();
-    void addTakeOutBellsOptions();
-    void addLetterOptions(s32);
-    void addItemOptions(s32);
-    s32 playActionSe();
-    void func_ov096_02295c2c();
-    void cancelOptions();
-    void showOptionList(s32);
-    void runChosenAction();
-    void actionStartCountdown();
-    void actionStopCountdown();
-    void setCountdown(s32);
-    void actionOpenCountdownMenu();
-    void actionAct1A();
-    void actionAct0A();
-    void actionAct09();
-    void actionUnwrapItem();
-    void actionTakeOff();
-    void actionTakeOutBells();
-    void actionAct08();
-    void actionWriteLetter();
-    BOOL allocLetterSlot();
-    void actionTakeAttachment();
-    void actionEditLetter();
-    void actionAct04();
-    void actionDropItem();
-    s32 requestDropItem(s32);
-    BOOL canDropItem(s32);
-    void func_ov096_022965f0(u32);
-    void func_ov096_02296638(u32);
-    void actionAct00();
-    void func_ov096_022966a8();
-    void func_ov096_022966c8();
-    void func_ov096_022966e8();
-    void placeCursorOnTarget();
-    void func_ov096_0229673c();
-    void func_ov096_022967a0();
-    void func_ov096_02296804();
-    void func_ov096_02296854();
-    void hideCursor();
-    s32 getCursorTargetY();
-    s32 getCursorTargetX();
-    void func_ov096_02296910();
-    void func_ov096_02296964();
-    s32 mergeItems(u16 *, s32, u16 *, u8);
-    u32 depositToWallet(u16);
-    void withdrawFromWallet(u16);
-    void setWalletBells(s32);
-    s32 getWalletBells();
-    BOOL isHoldingMoneyBag(s32);
-    BOOL depositHeldBag();
-    void updateHandPrice();
-    void cancelUseOnPlayer();
-    BOOL isUseOnPlayerBusy(s32);
-    BOOL requestUseOnPlayer(s32, u16);
-    u16 swapEquipped(s32, u16);
-    u16 getEquipped(s32);
-    s32 getUseOnPlayerKind();
-    void startUseOnPlayer();
-    void clearHand();
-    BOOL canDropHeldItem();
-    s32 dropHeldItem();
-    s32 placeHandAt(u32);
-    void swapHandWith(u32);
-    void returnHand(u32);
-    void putHandBack(u32, u32);
-    void pickUpItem(u32);
-    void pickUp(u32);
-    void pickUpLetter(u32);
-    void pickUpItemFrom(u32);
-    void setHandItem(u32, u32);
-    void syncHandFromMover();
-    void syncHandFromCursor();
-    void syncHandFromTouch();
-    void drawHand();
-    void updateLabelBalloon();
-    void positionLabelBalloon();
-    BOOL isTouchHeldFor(s32);
-    BOOL hasTouchMoved();
-    void highlightTarget(u32);
-    void clearHighlights();
-    void selectTarget(u32);
-    void clearSelection();
-    s32 canNavToWallet(u32);
-    s32 canNavToDropArea(u32);
-    s32 canNavToPlayer(u32);
-    s32 checkPlaceHand(u32);
-    s32 checkSwap(u32, u32);
-    s32 checkPlace(u32, u32, u32);
-    void mainAct1A();
-    void mainAct19();
-    void mainAct18();
-    void mainAct17();
-    void mainAct16();
-    void mainAct15();
-    void mainAct14();
-    void mainAct13();
-    void mainAct12();
-    void mainAct11();
-    void mainAct10();
-    void mainAct0F();
-    void mainAct0E();
-    void mainAct0D();
-    void mainAct0C();
-    void mainAct0B();
-    void mainAct0A();
-    void mainAct09();
-    void mainAct08();
-    void mainAct07();
-    void mainAct06();
-    void mainAct05();
-    void mainAct04();
-    void mainAct03();
-    void mainAct02();
-    void mainAct01();
-    void mainAct00();
-    void loadObjGraphics();
-    void setupBgLayer();
-    void postStateUpdate();
-    void preStateUpdate();
-    void postInputUpdate();
-    void preInputUpdate();
-    void releaseResources();
-    void initPocketMenu();
-    void hideTabBar();
-    void stateWaitCloseLetterView();
-    void stateCloseLetterView();
-    void stateWaitLetterView();
-    void stateOpenLetterView();
-    void stateWaitSlideOut();
-    void stateSlideOut();
-    void stateWaitSlideIn();
-    void stateSlideIn();
-    void stateLoadObj();
-    void stateLoadBgChars();
-    void stateLoadBg();
-    BOOL requestTab(s32);
-    BOOL handleTabSwitch();
-    void runMainState();
-    void mainAct39();
-    void mainAct38();
-    void mainAct37();
-    void mainAct36();
-    void mainAct35();
-    void actionAct21();
-    void sendBottleLetter();
-    void mainAct34();
-    void mainAct33();
-    void actionThrowBottle();
-    void actionPlantItem();
-    void mainAct2E();
-    void mainAct2D();
-    void actionBuryItem();
-    void findBuryHole();
-    void getDirOffset(s16);
-    void sendInsectReleasePacket(u8, u32);
-    void mainAct2C();
-    void actionReleaseInsect();
-    void sendFishReleasePacket(u8);
-    void sendReleasePacket(u8, u8);
-    void mainAct30();
-    void actionReleaseFish();
-    void findWaterNearPlayer(s32);
-    void addBottleOption();
-    void addFieldOptions(u16);
-    void actionUseWallpaper();
-    void actionUseCarpet();
-    void mainAct29();
-    void mainAct28();
-    void mainAct32();
-    void mainAct31();
-    void mainAct2F();
-    void mainAct2B();
-    void mainAct2A();
-    void mainAct27();
-    void mainAct26();
-    void mainAct25();
-    void mainAct24();
-    void mainAct23();
-    void mainAct22();
-    void mainAct21();
-    void mainAct20();
-    void mainAct1F();
-    void mainAct1E();
-    void mainAct1D();
-    void mainAct1C();
-    void mainAct1B();
-
-    /* 0x091 */ u8 unk_91[3];
-    /* 0x094 */ u32 stateFlags;
-    /* 0x098 */ u32 slideY;
-    /* 0x09c */ s32 grabOffsetX;
-    /* 0x0a0 */ s32 grabOffsetY;
-    /* 0x0a4 */ s32 handX;
-    /* 0x0a8 */ s32 handY;
-    /* 0x0ac */ u16 handItem;
-    /* 0x0ae */ u16 auxItem;
-    /* 0x0b0 */ u8 handItemFlags;
-    /* 0x0b1 */ u8 handKind;
-    /* 0x0b2 */ u8 touchedTarget;
-    /* 0x0b3 */ u8 balloonTarget;
-    /* 0x0b4 */ u8 handSource;
-    /* 0x0b5 */ u8 cursorTarget;
-    /* 0x0b6 */ u8 actionTarget;
-    /* 0x0b7 */ u8 placeTarget;
-    /* 0x0b8 */ u8 paperTarget;
-    /* 0x0b9 */ u8 swapTarget;
-    /* 0x0ba */ u8 returnState;
-    /* 0x0bb */ u8 chosenAction;
-    /* 0x0bc */ u8 popupRow;
-    /* 0x0bd */ u8 addresseePage;
-    /* 0x0be */ u8 addressee;
-    /* 0x0bf */ u8 bellsPanelMode;
-    /* 0x0c0 */ u8 useOnPlayerKind;
-    /* 0x0c1 */ u8 removeBlinkTimer;
-    /* 0x0c2 */ volatile u8 optionsOpenDelay;
-    /* 0x0c3 */ u8 unk_c3;
-    /* 0x0c4 */ s32 fieldRequest;
-    /* 0x0c8 */ u8 unk_c8[0x20];
-    /* 0x0e8 */ u8 unk_e8[0x200];
-    /* 0x2e8 */ u8 unk_2e8[0x38];
-    /* 0x320 */ u8 unk_320[0x38];
-    /* 0x358 */ InventoryItemGrid m_358;
-    /* 0xdb8 */ LetterGrid m_db8;
-    /* 0xde0 */ InventoryBg m_de0;
-    /* 0xf40 */ u8 unk_f40[0x1480];
-    /* 0x23c0 */ TouchPromptBalloon m_23c0;
-    /* 0x2480 */ CursorMotion m_2480;
-    /* 0x2498 */ MenuCursorBuf0 m_2498;
-    /* 0x24fc */ PopupChoiceMenu m_24fc;
-    /* 0x27f0 */ u8 unk_27f0[0xc];
-    /* 0x27fc */ MenuErrorMessage m_27fc;
-    /* 0x2904 */ LetterRenderer m_2904;
-    /* 0x2b14 */ MenuLabelButton m_2b14;
-    /* 0x2b84 */ u8 unk_2b84[0xc];
-    /* 0x2b90 */ u32 digUnitX;
-    /* 0x2b94 */ u32 digUnitY;
-    /* 0x2b98 */ Letter m_2b98;
-    /* 0x2bb0 */ u8 unk_2bb0[0xdc];
-    /* 0x2c8c */ Letter m_2c8c;
-    /* 0x2ca4 */ u8 unk_2ca4[0xdc];
-};
 
 #define unk_358 ((u8 *)&m_358)
 #define unk_db8 ((u8 *)&m_db8)
@@ -791,7 +502,7 @@ public:
 #define unk_2b14 ((u8 *)&m_2b14)
 #define unk_2b98 ((u8 *)&m_2b98)
 #define unk_2c8c ((u8 *)&m_2c8c)
-#define unk_27fc ((u8 *)&m_27fc)
+#define unk_27fc ((u8 *)&errorMessage)
 
 struct Unk_ov096_SceneEntry {
     PocketMenu *(*create)();
@@ -839,27 +550,9 @@ static inline BOOL Unk_ov096_022979f0_InRange(volatile u16 *p, u32 lo, u32 hi) {
     return r;
 }
 
-inline PocketMenu::PocketMenu() {
-    u8 *e = unk_2e8;
-    do {
-        _ZN14BgVramTaskPairC1Ev(e);
-        e += 0x38;
-    } while (e != unk_358);
-    _ZN17InventoryItemGridC1Ev(unk_358);
-    _ZN10LetterGridC1Ev(unk_db8);
-    _ZN11InventoryBgC1Ev(unk_de0);
-    _ZN18TouchPromptBalloonC1Ev(unk_23c0);
-    _ZN12CursorMotionC1Ev(unk_2480);
-    _ZN14MenuCursorBuf0C1Ev(unk_2498);
-    _ZN15PopupChoiceMenuC1Ev(unk_24fc);
-    _ZN16MenuErrorMessageC1Ev(unk_27fc);
-    _ZN14LetterRendererC1Ev(unk_2904);
-    _ZN15MenuLabelButtonC1Ev(unk_2b14);
-    digUnitX = 0;
-    digUnitY = 0;
-    _ZN6LetterC1Ev(unk_2b98);
-    _ZN6LetterC1Ev(unk_2c8c);
-}
+inline PocketMenu::PocketMenu()
+    : bgTasks(), m_358(), m_db8(), m_de0(), m_23c0(), m_2480(), m_2498(), m_24fc(), errorMessage(), m_2904(), m_2b14(),
+      digUnitX(0), digUnitY(0), m_2b98(), m_2c8c() {}
 
 extern "C" PocketMenu *PocketMenu_Create() {
     return new PocketMenu;
@@ -4411,7 +4104,7 @@ void PocketMenu::wearHeldShirt() {
     } l;
     l.a = *_ZN12Unk_02097ff413func_020983ccEv(PlayerData_GetCurrent());
     l.b = handItem;
-    MenuScreen_UploadClothPattern(&l.b, &unk_320, &unk_e8, &unk_c8);
+    MenuScreen_UploadClothPattern(&l.b, &bgTasks[1], &unk_e8, &unk_c8);
     BOOL ok = FALSE;
     volatile u16 *pv = &l.a;
     u16 a = *pv;

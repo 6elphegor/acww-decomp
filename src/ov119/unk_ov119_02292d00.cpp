@@ -7,6 +7,7 @@
 #include "gfx/BgVramTask.h"
 #include "menu/MenuCursor.h"
 #include "menu/PopupChoiceMenu.h"
+#include "menu/MenuErrorMessage.h"
 
 // Calls into other modules' class methods: extern "C" functions named by the real mangled symbol (self first).
 #define LabelString_redrawAligned _ZN11LabelString13redrawAlignedEii
@@ -197,15 +198,6 @@ struct PopupChoiceIdList;
 #define U970_B ((MenuCursor *)&cursor)
 #define U970_C ((HandCursor *)&cursor)
 
-// +0x1ac4 sub-object
-class MenuErrorMessage {
-public:
-    MenuErrorMessage();
-    ~MenuErrorMessage();
-    BOOL update(s32 a);
-    void open(u8 *a, s32 b, u32 c);
-    u32 unk_00[0x108 / 4];
-};
 
 
 // stack helper objects (ctor/dtor are plain calls into main)

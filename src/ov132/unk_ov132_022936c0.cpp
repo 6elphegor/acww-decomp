@@ -5,6 +5,7 @@
 #include "gfx/BgVramTask.h"
 #include "menu/MenuCursor.h"
 #include "menu/MenuBottomButtons.h"
+#include "menu/MenuErrorMessage.h"
 
 extern "C" {
 extern u8 gSaveHouse[];
@@ -79,14 +80,6 @@ void NumberPad_PressKey(void *self);
 
 
 
-class MenuErrorMessage {
-public:
-    MenuErrorMessage();
-    ~MenuErrorMessage();
-    s32 update(s32 a);
-    void open(u8 *a, s32 b, u32 c);
-    u32 unk_00[0x108 / 4];
-};
 
 class BankMenu;
 typedef void (BankMenu::*Unk_ov132_02294390_Fn)();
