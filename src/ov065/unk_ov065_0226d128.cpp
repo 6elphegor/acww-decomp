@@ -43,19 +43,19 @@ struct Unk_ov065_0226d158_Owner {
 };
 
 struct Unk_ov065_02290604_S {
-    u64 unk_00;
-    u64 unk_08;
-    u16 unk_10;
+    u64 userId;
+    u64 tempUserId;
+    u16 password;
 };
 
 struct Unk_ov065_02290600_Obj {
     u8 pad_00[0x24];
-    s32 unk_24;
+    s32 result;
     u8 pad_28[0x938 - 0x28];
-    void *unk_938;
+    void *responseBuffer;
     u8 pad_93c[0x968 - 0x93c];
-    u8 unk_968[0x9d4 - 0x968];
-    s32 unk_9d4;
+    u8 thread[0x9d4 - 0x968];
+    s32 threadId;
 };
 
 struct Unk_ov065_0226dd2c_Cfg {
@@ -64,37 +64,37 @@ struct Unk_ov065_0226dd2c_Cfg {
 
 struct Unk_ov065_02290600_S {
     u32 unk_00;
-    s32 unk_04;
-    s32 unk_08;
-    char unk_0c[4];
-    char unk_10[0xf];
-    char unk_1f[0x33];
-    char unk_52[0x12d];
-    char unk_17f[9];
-    char unk_188[0x41];
+    s32 state;
+    s32 resultCode;
+    char returnCd[4];
+    char datetime[0xf];
+    char locator[0x33];
+    char token[0x12d];
+    char challenge[9];
+    char cookie[0x41];
     u8 pad_1c9[0x1cc - 0x1c9];
-    Unk_ov065_0226dd2c_Cfg unk_1cc;
-    u8 unk_1f8[0x2f8 - 0x1f8];
-    Unk_ov065_02290600_Obj *unk_2f8;
-    u8 unk_2fc[0x368 - 0x2fc];
-    s32 unk_368;
+    Unk_ov065_0226dd2c_Cfg config;
+    u8 httpFields[0x2f8 - 0x1f8];
+    Unk_ov065_02290600_Obj *http;
+    u8 thread[0x368 - 0x2fc];
+    s32 threadId;
     u8 pad_36c[0x3bc - 0x36c];
-    u8 unk_3bc[0x18];
-    s32 unk_3d4;
+    u8 mutex[0x18];
+    s32 isAborting;
     u8 unk_3d8[0x13e0 - 0x3d8];
 };
 
 typedef Unk_ov065_02290600_S S;
 
 struct Unk_ov065_0228b778 {
-    char *unk_00;
-    u32 unk_04;
-    u32 unk_08;
-    u32 unk_0c;
-    Unk_ov065_0226dd2c_Alloc unk_10;
-    Unk_ov065_0226dd2c_Free unk_14;
-    s32 unk_18;
-    s32 unk_1c;
+    char *url;
+    u32 method;
+    u32 userRecvBuffer;
+    u32 recvBufferSize;
+    Unk_ov065_0226dd2c_Alloc allocFunc;
+    Unk_ov065_0226dd2c_Free freeFunc;
+    s32 useTestServer;
+    s32 timeoutMs;
 };
 
 // the same symbol is called with and without its argument
@@ -204,7 +204,7 @@ char *sNasLangCodeTable[7] = {sNasLangCode00, sNasLangCode01, sNasLangCode02,
 extern "C" {
 
 void NasAuth_SetServerUrl(char *s) {
-    sNasHttpParams.unk_00 = s;
+    sNasHttpParams.url = s;
 }
 
 s32 NasAuth_Start(Unk_ov065_0226dd2c_Cfg *cfg, u32 a) {
@@ -217,60 +217,60 @@ s32 NasAuth_Start(Unk_ov065_0226dd2c_Cfg *cfg, u32 a) {
     }
     sNasAuth = (S *)p;
     MI_CpuFill8(p, 0, 0x13e0);
-    sNasAuth->unk_2f8 = (Unk_ov065_02290600_Obj *)a;
-    MI_CpuFill8(&sNasAuth->unk_08, 0, 0x1c4);
-    sNasAuth->unk_08 = -1;
-    sNasAuth->unk_1cc = *cfg;
+    sNasAuth->http = (Unk_ov065_02290600_Obj *)a;
+    MI_CpuFill8(&sNasAuth->resultCode, 0, 0x1c4);
+    sNasAuth->resultCode = -1;
+    sNasAuth->config = *cfg;
     *((u8 *)sNasAuth + 0x1e0) = 0;
     *((u8 *)sNasAuth + 0x1e1) = 0;
     *((u8 *)sNasAuth + 0x1ed) = 0;
-    sNasHttpParams.unk_10 = (Unk_ov065_0226dd2c_Alloc)cfg->v[9];
-    sNasHttpParams.unk_14 = (Unk_ov065_0226dd2c_Free)cfg->v[10];
-    sNasAuth->unk_04 = NasAuth_SendRequest(1);
-    if (sNasAuth->unk_04 == 0) {
+    sNasHttpParams.allocFunc = (Unk_ov065_0226dd2c_Alloc)cfg->v[9];
+    sNasHttpParams.freeFunc = (Unk_ov065_0226dd2c_Free)cfg->v[10];
+    sNasAuth->state = NasAuth_SendRequest(1);
+    if (sNasAuth->state == 0) {
         NasAuth_StartThread();
         return 0;
     }
-    return sNasAuth->unk_04;
+    return sNasAuth->state;
 }
 
 void NasAuth_StartThread(void) {
-    OS_InitMutex(sNasAuth->unk_3bc);
-    sNasAuth->unk_3d4 = 0;
-    if (sNasAuth->unk_368 == 0 || OS_IsThreadTerminated(sNasAuth->unk_2fc) != 0) {
-        OS_CreateThread(sNasAuth->unk_2fc, (s32 (*)(void *))NasAuth_ThreadMain, &sNasAuth,
+    OS_InitMutex(sNasAuth->mutex);
+    sNasAuth->isAborting = 0;
+    if (sNasAuth->threadId == 0 || OS_IsThreadTerminated(sNasAuth->thread) != 0) {
+        OS_CreateThread(sNasAuth->thread, (s32 (*)(void *))NasAuth_ThreadMain, &sNasAuth,
                       (u8 *)sNasAuth + 0x13e0, 0x1000, 0x10);
-        OS_WakeupThreadDirect(sNasAuth->unk_2fc);
+        OS_WakeupThreadDirect(sNasAuth->thread);
     }
 }
 
 void NasAuth_Abort(void) {
     if (sNasAuth != NULL) {
-        OS_LockMutex(sNasAuth->unk_3bc);
-        sNasAuth->unk_3d4 = 1;
-        OS_UnlockMutex(sNasAuth->unk_3bc);
-        if (sNasAuth->unk_2f8) {
+        OS_LockMutex(sNasAuth->mutex);
+        sNasAuth->isAborting = 1;
+        OS_UnlockMutex(sNasAuth->mutex);
+        if (sNasAuth->http) {
             DwcHttp_Abort();
         }
-        if (sNasAuth->unk_368) {
-            OS_JoinThread(sNasAuth->unk_2fc);
+        if (sNasAuth->threadId) {
+            OS_JoinThread(sNasAuth->thread);
         }
     }
 }
 
 void NasAuth_Destroy(void) {
     if (sNasAuth != NULL) {
-        if (sNasAuth->unk_2f8) {
+        if (sNasAuth->http) {
             Unk_ov065_0226e4dc_A::DwcHttp_Destroy();
         }
-        ((Unk_ov065_0226dd2c_Free)sNasAuth->unk_1cc.v[10])("DWCauth", sNasAuth, 0);
+        ((Unk_ov065_0226dd2c_Free)sNasAuth->config.v[10])("DWCauth", sNasAuth, 0);
         sNasAuth = NULL;
     }
 }
 
 void NasAuth_JoinThread(void) {
-    if (sNasAuth->unk_368) {
-        OS_JoinThread(sNasAuth->unk_2fc);
+    if (sNasAuth->threadId) {
+        OS_JoinThread(sNasAuth->thread);
     }
 }
 
@@ -279,9 +279,9 @@ s32 NasAuth_GetState(void) {
     if (sNasAuth == NULL) {
         return 0x15;
     }
-    OS_LockMutex(sNasAuth->unk_3bc);
-    r = sNasAuth->unk_04;
-    OS_UnlockMutex(sNasAuth->unk_3bc);
+    OS_LockMutex(sNasAuth->mutex);
+    r = sNasAuth->state;
+    OS_UnlockMutex(sNasAuth->mutex);
     return r;
 }
 
@@ -289,7 +289,7 @@ void NasAuth_GetResult(s32 *p) {
     if (sNasAuth == NULL) {
         MI_CpuFill8(p, 0, 0x1c4);
     }
-    MI_CpuCopy8(&sNasAuth->unk_08, p, 0x1c4);
+    MI_CpuCopy8(&sNasAuth->resultCode, p, 0x1c4);
     s32 v = p[0];
     if (v >= 0) {
         if (v < 20000 || v >= 30000) {
@@ -301,25 +301,25 @@ void NasAuth_GetResult(s32 *p) {
 }
 
 s32 NasAuth_SendRequest(s32 a) {
-    if (strcmp(sNasHttpParams.unk_00, sNasDefaultUrl)) {
-        sNasHttpParams.unk_18 = 1;
+    if (strcmp(sNasHttpParams.url, sNasDefaultUrl)) {
+        sNasHttpParams.useTestServer = 1;
     }
-    if (DwcHttp_Init((u32)sNasAuth->unk_2f8, &sNasHttpParams)) {
+    if (DwcHttp_Init((u32)sNasAuth->http, &sNasHttpParams)) {
         return 4;
     }
     if (a == 1) {
         func_020ff0bc(&sNasUserId);
     }
-    sNasAuth->unk_04 = NasAuth_BuildRequest(
-        sNasAuth->unk_2f8, (char *)sNasAuth + 0x1e2, (u16 *)((u8 *)sNasAuth + 0x1cc),
+    sNasAuth->state = NasAuth_BuildRequest(
+        sNasAuth->http, (char *)sNasAuth + 0x1e2, (u16 *)((u8 *)sNasAuth + 0x1cc),
         (Unk_ov065_0226d158_Kv *)((u8 *)sNasAuth + 0x1f8), 0x20, 0);
-    if (sNasAuth->unk_04 != 0) {
+    if (sNasAuth->state != 0) {
         return 4;
     }
-    if (DwcHttp_FinishHeaders((u32)sNasAuth->unk_2f8)) {
+    if (DwcHttp_FinishHeaders((u32)sNasAuth->http)) {
         return 4;
     }
-    DwcHttp_StartThread((u32)sNasAuth->unk_2f8);
+    DwcHttp_StartThread((u32)sNasAuth->http);
     return 0;
 }
 
@@ -336,14 +336,14 @@ void NasAuth_ThreadMain(void) {
     S *g;
 
     for (;;) {
-        o = sNasAuth->unk_2f8;
-        if (o->unk_9d4 != 0) {
-            OS_JoinThread(o->unk_968);
+        o = sNasAuth->http;
+        if (o->threadId != 0) {
+            OS_JoinThread(o->thread);
         }
         g = sNasAuth;
-        if (g->unk_2f8->unk_24 != 8) {
-            g->unk_08 = -0x4e84;
-            r = sNasAuth->unk_2f8->unk_24;
+        if (g->http->result != 8) {
+            g->resultCode = -0x4e84;
+            r = sNasAuth->http->result;
             if (r == 7) {
                 NasAuth_SetState(0x13);
                 return;
@@ -367,19 +367,19 @@ void NasAuth_ThreadMain(void) {
             case 0xf:
                 if (tries >= 2) {
                     NasAuth_SetState(0xf);
-                    sNasAuth->unk_08 = -sNasAuth->unk_08;
+                    sNasAuth->resultCode = -sNasAuth->resultCode;
                     return;
                 }
                 tries++;
                 flag = z1;
                 break;
             case 0x10:
-                sNasAuth->unk_08 = -sNasAuth->unk_08;
+                sNasAuth->resultCode = -sNasAuth->resultCode;
                 NasAuth_SetState(r);
                 return;
             default:
                 if (tries >= 2) {
-                    sNasAuth->unk_08 = -sNasAuth->unk_08;
+                    sNasAuth->resultCode = -sNasAuth->resultCode;
                     NasAuth_SetState(r);
                     return;
                 }
@@ -390,25 +390,25 @@ void NasAuth_ThreadMain(void) {
         }
         t0 = OS_GetTick();
         while ((u64)((OS_GetTick() - t0) * 64) / 0x82ea < 0x1388) {
-            OS_LockMutex(sNasAuth->unk_3bc);
-            if (sNasAuth->unk_3d4 == 1) {
-                sNasAuth->unk_08 = -0x4e84;
-                OS_UnlockMutex(sNasAuth->unk_3bc);
+            OS_LockMutex(sNasAuth->mutex);
+            if (sNasAuth->isAborting == 1) {
+                sNasAuth->resultCode = -0x4e84;
+                OS_UnlockMutex(sNasAuth->mutex);
                 NasAuth_SetState(0x13);
                 return;
             }
-            OS_UnlockMutex(sNasAuth->unk_3bc);
+            OS_UnlockMutex(sNasAuth->mutex);
             OS_Sleep(0x1388);
         }
-        Unk_ov065_0226e4dc_B::DwcHttp_Destroy(sNasAuth->unk_2f8);
-        OS_LockMutex(sNasAuth->unk_3bc);
-        sNasAuth->unk_04 = NasAuth_SendRequest(flag);
-        if (sNasAuth->unk_04 != 0) {
-            sNasAuth->unk_08 = -0x4e84;
-            OS_UnlockMutex(sNasAuth->unk_3bc);
+        Unk_ov065_0226e4dc_B::DwcHttp_Destroy(sNasAuth->http);
+        OS_LockMutex(sNasAuth->mutex);
+        sNasAuth->state = NasAuth_SendRequest(flag);
+        if (sNasAuth->state != 0) {
+            sNasAuth->resultCode = -0x4e84;
+            OS_UnlockMutex(sNasAuth->mutex);
             return;
         }
-        OS_UnlockMutex(sNasAuth->unk_3bc);
+        OS_UnlockMutex(sNasAuth->mutex);
     }
 }
 
@@ -418,47 +418,47 @@ s32 NasAuth_HandleResponse(void) {
     void *r;
 
     g = sNasAuth;
-    if (DwcHttp_ParseResponse(g->unk_1f8, 0x20, 0, g->unk_2f8->unk_938) != 1) {
-        sNasAuth->unk_08 = 0x4e84;
+    if (DwcHttp_ParseResponse(g->httpFields, 0x20, 0, g->http->responseBuffer) != 1) {
+        sNasAuth->resultCode = 0x4e84;
         return 0xd;
     }
     if (NasAuth_ParseResponse() != 0) {
         return 0xd;
     }
     g = sNasAuth;
-    s32 st = g->unk_08;
+    s32 st = g->resultCode;
     if (st < 0x4e84) {
         if (st == 0x4e22) {
             m = "bmwork";
-            r = ((Unk_ov065_0226dd2c_Alloc)g->unk_1cc.v[9])(m, 0x71f);
+            r = ((Unk_ov065_0226dd2c_Alloc)g->config.v[9])(m, 0x71f);
             if (r == 0) {
-                sNasAuth->unk_08 = 0x4e84;
+                sNasAuth->resultCode = 0x4e84;
                 return 2;
             }
             if (func_020ff6f4(&sNasUserId, ((u32)r + 0x1f) & ~0x1f) != 1) {
-                ((Unk_ov065_0226dd2c_Free)sNasAuth->unk_1cc.v[10])(m, r, 0);
-                sNasAuth->unk_08 = 0x4e84;
+                ((Unk_ov065_0226dd2c_Free)sNasAuth->config.v[10])(m, r, 0);
+                sNasAuth->resultCode = 0x4e84;
                 return 0xe;
             }
-            ((Unk_ov065_0226dd2c_Free)sNasAuth->unk_1cc.v[10])(m, r, 0);
+            ((Unk_ov065_0226dd2c_Free)sNasAuth->config.v[10])(m, r, 0);
         }
         return 0x14;
     }
     switch (st) {
     case 0x4e88:
         func_020ff5cc(&sNasUserId);
-        sNasAuth->unk_08 = 0x4e88;
+        sNasAuth->resultCode = 0x4e88;
         return 0xf;
     case 0x4e8c:
         m = "bmwork";
-        r = ((Unk_ov065_0226dd2c_Alloc)g->unk_1cc.v[9])(m, 0x71f);
+        r = ((Unk_ov065_0226dd2c_Alloc)g->config.v[9])(m, 0x71f);
         if (r == 0) {
-            sNasAuth->unk_08 = 0x4e8c;
+            sNasAuth->resultCode = 0x4e8c;
             return 0x10;
         }
         func_020ff734(((u32)r + 0x1f) & ~0x1f);
-        ((Unk_ov065_0226dd2c_Free)sNasAuth->unk_1cc.v[10])(m, r, 0);
-        sNasAuth->unk_08 = 0x4e8c;
+        ((Unk_ov065_0226dd2c_Free)sNasAuth->config.v[10])(m, r, 0);
+        sNasAuth->resultCode = 0x4e8c;
         return 0x10;
     default:
         return 0x11;
@@ -469,46 +469,46 @@ s32 NasAuth_ParseResponse(void) {
     char *end = 0;
     S *g;
 
-    DwcHttp_FindField(sNasAuth->unk_1f8, 0x20, "httpresult");
+    DwcHttp_FindField(sNasAuth->httpFields, 0x20, "httpresult");
     s32 st = func_0212b770();
     if (data_0220064c == 0x22) {
-        sNasAuth->unk_08 = 0x4e85;
+        sNasAuth->resultCode = 0x4e85;
         return 0xb;
     }
     if (st != 200) {
-        sNasAuth->unk_08 = st + 0x59d8;
+        sNasAuth->resultCode = st + 0x59d8;
         return 0x11;
     }
     g = sNasAuth;
-    if (DwcHttp_GetFieldDecoded(g->unk_1f8, 0x20, "returncd", g->unk_0c, 4) <= 0) {
-        sNasAuth->unk_08 = 0x4e85;
+    if (DwcHttp_GetFieldDecoded(g->httpFields, 0x20, "returncd", g->returnCd, 4) <= 0) {
+        sNasAuth->resultCode = 0x4e85;
         return 0xd;
     }
-    s32 code = strtol(sNasAuth->unk_0c, &end, 10);
+    s32 code = strtol(sNasAuth->returnCd, &end, 10);
     g = sNasAuth;
-    s32 l = func_0212a438(g->unk_0c);
-    if (end != g->unk_0c + l) {
-        g->unk_08 = 0x4e85;
+    s32 l = func_0212a438(g->returnCd);
+    if (end != g->returnCd + l) {
+        g->resultCode = 0x4e85;
         return 0xb;
     }
-    g->unk_08 = code + 0x4e20;
+    g->resultCode = code + 0x4e20;
     if (code < 100) {
-        sNasAuth->unk_52[0] = 0;
-        sNasAuth->unk_1f[0] = 0;
-        sNasAuth->unk_17f[0] = 0;
-        sNasAuth->unk_10[0] = 0;
-        sNasAuth->unk_188[0] = 0;
+        sNasAuth->token[0] = 0;
+        sNasAuth->locator[0] = 0;
+        sNasAuth->challenge[0] = 0;
+        sNasAuth->datetime[0] = 0;
+        sNasAuth->cookie[0] = 0;
         g = sNasAuth;
-        DwcHttp_GetFieldDecoded(g->unk_1f8, 0x20, "token", g->unk_52, 0x12d);
+        DwcHttp_GetFieldDecoded(g->httpFields, 0x20, "token", g->token, 0x12d);
         g = sNasAuth;
-        DwcHttp_GetFieldDecoded(g->unk_1f8, 0x20, "locator", g->unk_1f, 0x33);
+        DwcHttp_GetFieldDecoded(g->httpFields, 0x20, "locator", g->locator, 0x33);
         g = sNasAuth;
-        DwcHttp_GetFieldDecoded(g->unk_1f8, 0x20, "challenge", g->unk_17f, 9);
+        DwcHttp_GetFieldDecoded(g->httpFields, 0x20, "challenge", g->challenge, 9);
         g = sNasAuth;
-        DwcHttp_GetFieldDecoded(g->unk_1f8, 0x20, "datetime", g->unk_10, 0xf);
+        DwcHttp_GetFieldDecoded(g->httpFields, 0x20, "datetime", g->datetime, 0xf);
         g = sNasAuth;
-        DwcHttp_GetFieldString(g->unk_1f8, 0x20, "Set-Cookie", g->unk_188, 0x41);
-        sNasAuth->unk_188[0x2b] = 0;
+        DwcHttp_GetFieldString(g->httpFields, 0x20, "Set-Cookie", g->cookie, 0x41);
+        sNasAuth->cookie[0x2b] = 0;
     }
     return 0;
 }
@@ -576,7 +576,7 @@ s32 NasAuth_BuildRequest(void *a0, const char *a1, const u16 *a2, Unk_ov065_0226
     form.entries = a3;
     form.capacity = a4;
     if (a5 != 1) {
-        if (sNasUserId.unk_00 == 0) {
+        if (sNasUserId.userId == 0) {
             DwcHttp_AddField(&form, "action", "acctcreate");
         } else {
             if (func_0212a438(a1) == 0) {
@@ -589,13 +589,13 @@ s32 NasAuth_BuildRequest(void *a0, const char *a1, const u16 *a2, Unk_ov065_0226
         func_020ff0bc(&sNasUserId);
     }
     DwcHttp_AddField(&form, "sdkver", "001000");
-    if (sNasUserId.unk_00 != 0) {
-        OS_SNPrintf(userid, 14, "%013llu", sNasUserId.unk_00);
+    if (sNasUserId.userId != 0) {
+        OS_SNPrintf(userid, 14, "%013llu", sNasUserId.userId);
     } else {
-        OS_SNPrintf(userid, 14, "%013llu", sNasUserId.unk_08);
+        OS_SNPrintf(userid, 14, "%013llu", sNasUserId.tempUserId);
     }
     DwcHttp_AddField(&form, "userid", userid);
-    OS_SNPrintf(pw, 4, "%03u", sNasUserId.unk_10);
+    OS_SNPrintf(pw, 4, "%03u", sNasUserId.password);
     DwcHttp_AddField(&form, "passwd", pw);
     OS_SNPrintf(bssid, 13, "%02x%02x%02x%02x%02x%02x", mac2[0], mac2[1], mac2[2], mac2[3], mac2[4], mac2[5]);
     OS_SNPrintf(apinfo, 14, "%02d:0000000-00", WifiAp_GetConnectedApType());
@@ -634,9 +634,9 @@ s32 NasAuth_BuildRequest(void *a0, const char *a1, const u16 *a2, Unk_ov065_0226
 }
 
 void NasAuth_SetState(s32 v) {
-    OS_LockMutex(sNasAuth->unk_3bc);
-    sNasAuth->unk_04 = v;
-    OS_UnlockMutex(sNasAuth->unk_3bc);
+    OS_LockMutex(sNasAuth->mutex);
+    sNasAuth->state = v;
+    OS_UnlockMutex(sNasAuth->mutex);
 }
 
 }

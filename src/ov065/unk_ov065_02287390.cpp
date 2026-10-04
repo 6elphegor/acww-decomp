@@ -2,7 +2,7 @@
 #include "types.h"
 
 struct Unk_ov065_0228e1c0_Raw {
-    s32 unk_00;
+    s32 socket;
     u8 unk_04[0x10c];
 };
 

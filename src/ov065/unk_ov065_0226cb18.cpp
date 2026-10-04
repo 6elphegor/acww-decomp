@@ -62,19 +62,19 @@ struct Unk_ov065_0226d158_Owner {
 };
 
 struct Unk_ov065_02290604_S {
-    u64 unk_00;
-    u64 unk_08;
-    u16 unk_10;
+    u64 userId;
+    u64 tempUserId;
+    u16 password;
 };
 
 struct Unk_ov065_02290600_Obj {
     u8 pad_00[0x24];
-    s32 unk_24;
+    s32 result;
     u8 pad_28[0x938 - 0x28];
-    void *unk_938;
+    void *responseBuffer;
     u8 pad_93c[0x968 - 0x93c];
-    u8 unk_968[0x9d4 - 0x968];
-    s32 unk_9d4;
+    u8 thread[0x9d4 - 0x968];
+    s32 threadId;
 };
 
 typedef void *(*Unk_ov065_02290600_Alloc)(const char *, u32);
@@ -82,22 +82,22 @@ typedef void (*Unk_ov065_02290600_Free)(const char *, void *, u32);
 
 struct Unk_ov065_02290600_S {
     u8 pad_00[4];
-    s32 unk_04;
-    s32 unk_08;
-    char unk_0c[4];
-    char unk_10[0xf];
-    char unk_1f[0x33];
-    char unk_52[0x12d];
-    char unk_17f[9];
-    char unk_188[0x41];
+    s32 state;
+    s32 resultCode;
+    char returnCd[4];
+    char datetime[0xf];
+    char locator[0x33];
+    char token[0x12d];
+    char challenge[9];
+    char cookie[0x41];
     u8 pad_1c9[0x1f0 - 0x1c9];
     Unk_ov065_02290600_Alloc unk_1f0;
     Unk_ov065_02290600_Free unk_1f4;
-    u8 unk_1f8[0x2f8 - 0x1f8];
-    Unk_ov065_02290600_Obj *unk_2f8;
+    u8 httpFields[0x2f8 - 0x1f8];
+    Unk_ov065_02290600_Obj *http;
     u8 pad_2fc[0x3bc - 0x2fc];
-    u8 unk_3bc[0x18];
-    s32 unk_3d4;
+    u8 mutex[0x18];
+    s32 isAborting;
 };
 
 typedef Unk_ov065_02290600_S S;

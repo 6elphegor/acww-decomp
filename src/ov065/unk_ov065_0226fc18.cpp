@@ -138,16 +138,16 @@ typedef void (*Unk_ov065_022700e4_Cb)(s32, s32, s32);
 typedef void (*Unk_ov065_02270710_Cb)(s32, s32, s32, s32, s32, s32);
 
 struct Unk_ov065_02290670 {
-    u32 unk_00;
+    u32 transportSocket;
     u8 pad_04[0x14];
     u32 unk_18_pad;
     u8 unk_1c[0x8];
-    s32 unk_24;
-    s32 unk_28;
-    u8 unk_2c;
-    u8 unk_2d;
+    s32 state;
+    s32 prevState;
+    u8 myAid;
+    u8 isClosingAll;
     u8 pad_2e[2];
-    u32 unk_30;
+    u32 ownProfileId;
     u8 unk_34[0x20];
     u8 pad_54[0x8];
     Unk_ov065_022700e4_Cb unk_5c;
@@ -477,7 +477,7 @@ void *DwcLogin_GetUserData(void);
         DwcCore_SetError(10, 0);                                            \
         Unk_ov065_02290670 *s = G;                                             \
         s->unk_74(10, 0, 1, 0, 0, s->unk_78);                                  \
-        if (G != 0 && G->unk_24 == 5) {                                        \
+        if (G != 0 && G->state == 5) {                                        \
             DwcCore_SetState(3);                                            \
             DwcFriend_SetOwnStatus(1, (void *)"", 0);                             \
             return;                                                            \
@@ -610,10 +610,10 @@ void DwcCore_Process() {
     if (DwcCore_CheckFatalError() != 0) {
         DwcCore_Nop();
     }
-    if (G == 0 || G->unk_24 == 0 || DwcCore_HasError() != 0) {
+    if (G == 0 || G->state == 0 || DwcCore_HasError() != 0) {
         return;
     }
-    switch (G->unk_24) {
+    switch (G->state) {
     case 0:
         break;
     case 1:
@@ -664,7 +664,7 @@ void DwcCore_Process() {
         s = G;
         if (*(volatile u8 *)((u8 *)s + 0x351) == 2 || *(volatile u8 *)((u8 *)s + 0x351) == 3) {
             DwcMatch_Process(1);
-        } else if (s->unk_00 != 0) {
+        } else if (s->transportSocket != 0) {
             DwcMatch_Process(0);
         }
         break;
@@ -684,7 +684,7 @@ void DwcCore_Process() {
 namespace F022700e4 {
 extern "C" {
 void DwcLogin_Start(s32 a, s32 b, Unk_ov065_022700e4_Cb c, s32 d) {
-    if (DwcCore_HasError() == 0 && G->unk_24 == 0) {
+    if (DwcCore_HasError() == 0 && G->state == 0) {
         G->unk_5c = c;
         G->unk_60 = d;
         G->unk_94 = a;
@@ -704,7 +704,7 @@ namespace F022700e4 {
 extern "C" {
 s32 DwcFriend_UpdateServersAsync(char *s, Unk_ov065_022700e4_Cb f1, s32 f2, s32 f3, s32 p5, s32 p6, s32 p7) {
     s32 n;
-    if (G == 0 || DwcCore_HasError() != 0 || G->unk_24 < 3 || G->unk_24 == 4) {
+    if (G == 0 || DwcCore_HasError() != 0 || G->state < 3 || G->state == 4) {
         return 0;
     }
     if (s == 0 || *s == 0) {
@@ -730,11 +730,11 @@ s32 DwcFriend_UpdateServersAsync(char *s, Unk_ov065_022700e4_Cb f1, s32 f2, s32 
 namespace F022700e4 {
 extern "C" {
 void DwcMatch_SetupGameServer(s32 a, Unk_ov065_02270710_Cb b, s32 c, s32 d, s32 e) {
-    if (DwcCore_HasError() == 0 && G->unk_24 == 3) {
+    if (DwcCore_HasError() == 0 && G->state == 3) {
         DwcConn_ClearTables();
         G->unk_74 = b;
         G->unk_78 = c;
-        G->unk_2c = 0;
+        G->myAid = 0;
         DwcCore_SetState(5);
         DwcMatch_StartGameServer((u8)(a - 1), DwcMatch_OnMatchDone, 0, d, e);
     }
@@ -747,7 +747,7 @@ extern "C" {
 void DwcMatch_ConnectToFriendServer(s32 a, Unk_ov065_02270710_Cb cb, s32 arg, s32 d, s32 e) {
     s32 v = -1;
     Unk_ov065_02270710_Buf buf;
-    if (DwcCore_HasError() == 0 && G->unk_24 == 3) {
+    if (DwcCore_HasError() == 0 && G->state == 3) {
         u32 t;
         DwcConn_ClearTables();
         G->unk_74 = cb;
@@ -785,7 +785,7 @@ namespace F022700e4 {
 extern "C" {
 s32 DwcConn_CloseAllConnections() {
     Unk_ov065_02290670 *s;
-    if (G == 0 || DwcCore_HasError() != 0 || (s = G, s->unk_24 != 5 && s->unk_24 != 6)) {
+    if (G == 0 || DwcCore_HasError() != 0 || (s = G, s->state != 5 && s->state != 6)) {
         return -1;
     }
     if (*((u8 *)s + 0x349) == 0) {
@@ -794,9 +794,9 @@ s32 DwcConn_CloseAllConnections() {
         DwcCore_SetState(3);
         return 1;
     }
-    s->unk_2d = 1;
-    GsTransport_CloseAll(G->unk_00);
-    G->unk_2d = 0;
+    s->isClosingAll = 1;
+    GsTransport_CloseAll(G->transportSocket);
+    G->isClosingAll = 0;
     return 0;
 }
 }
@@ -806,7 +806,7 @@ namespace F022700e4 {
 extern "C" {
 s32 DwcConn_CloseConnection(u32 a) {
     u32 r;
-    if (G == 0 || DwcCore_HasError() != 0 || (G->unk_24 != 5 && G->unk_24 != 6)) {
+    if (G == 0 || DwcCore_HasError() != 0 || (G->state != 5 && G->state != 6)) {
         return -1;
     }
     r = DwcConn_FindConnectionByAid(a);
@@ -837,7 +837,7 @@ namespace F022700e4 {
 extern "C" {
 u32 DwcConn_GetMyAid() {
     if (G != 0) {
-        return G->unk_2c;
+        return G->myAid;
     }
     return 0;
 }
@@ -890,7 +890,7 @@ namespace F022700e4 {
 extern "C" {
 s32 DwcCore_GetState() {
     if (G != 0) {
-        return G->unk_24;
+        return G->state;
     }
     return 0;
 }
@@ -903,7 +903,7 @@ s32 DwcConn_CreateGt2Socket() {
     Unk_ov065_02290670 *s;
     u32 h;
     s32 r;
-    if (G->unk_00 != 0) {
+    if (G->transportSocket != 0) {
         return 0;
     }
     h = (u16)(DwcNet_Rand32(0x4000) + 0xc000);
@@ -912,8 +912,8 @@ s32 DwcConn_CreateGt2Socket() {
     if (DwcConn_HandleGt2Result(r) != 0) {
         return r;
     }
-    GsTransport_Listen(G->unk_00, DwcMatch_OnGt2ConnectAttempt);
-    GsTransport_SetUnknownSenderCallback(G->unk_00, DwcMatch_OnUnrecognizedPacket);
+    GsTransport_Listen(G->transportSocket, DwcMatch_OnGt2ConnectAttempt);
+    GsTransport_SetUnknownSenderCallback(G->transportSocket, DwcMatch_OnUnrecognizedPacket);
     return r;
 }
 }
@@ -1036,8 +1036,8 @@ u32 DwcConn_IsAidConnected(u32 v) {
 namespace F022700e4 {
 extern "C" {
 void DwcCore_SetState(s32 s) {
-    G->unk_28 = G->unk_24;
-    G->unk_24 = s;
+    G->prevState = G->state;
+    G->state = s;
 }
 }
 }
@@ -1109,7 +1109,7 @@ s32 DwcCore_HandleGpResult(s32 x) {
         b = -20;
         break;
     }
-    switch (G->unk_24) {
+    switch (G->state) {
     case 1:
         b = b - 0xee48;
         DwcLogin_Fail(a, b);
@@ -1184,7 +1184,7 @@ namespace F022700e4 {
 extern "C" {
 void DwcLogin_OnLoginDone(s32 a, s32 b) {
     if (a == 0) {
-        G->unk_30 = b;
+        G->ownProfileId = b;
         DwcCore_SetState(3);
         DwcFriend_ResetTimer();
     } else {
@@ -1200,7 +1200,7 @@ void DwcLogin_OnLoginDone(s32 a, s32 b) {
 namespace F022700e4 {
 extern "C" {
 void DwcFriend_OnUpdateDone(s32 a, s32 b) {
-    s32 t = G->unk_28;
+    s32 t = G->prevState;
     if (t != 4) {
         DwcCore_SetState(t);
     }

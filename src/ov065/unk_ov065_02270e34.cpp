@@ -333,13 +333,13 @@ s32 DwcFriend_Tick(void);
 namespace F02271da0 {
 struct Unk_ov065_0229080c_Big {
     u8 unk_00[0x214];
-    s32 unk_214;
-    u8 unk_218[0x100];
-    u8 unk_318[0x100];
+    s32 lastStatus;
+    u8 lastStatusString[0x100];
+    u8 lastLocationString[0x100];
 };
 
 struct Unk_ov065_0229080c_Sub {
-    Unk_ov065_0229080c_Big *unk_00;
+    Unk_ov065_0229080c_Big *connection;
 };
 
 struct Unk_ov065_0229080c_Ent {
@@ -347,28 +347,28 @@ struct Unk_ov065_0229080c_Ent {
 };
 
 struct Unk_ov065_0229080c {
-    s32 unk_00;
-    Unk_ov065_0229080c_Sub *unk_04;
-    u32 unk_08;
-    u32 unk_0c;
-    u32 unk_10;
-    s32 unk_14;
-    Unk_ov065_0229080c_Ent *unk_18;
-    u8 unk_1c;
-    u8 unk_1d;
-    u8 unk_1e;
-    u8 unk_1f;
+    s32 updateState;
+    Unk_ov065_0229080c_Sub *gpConnection;
+    u32 tickCount;
+    u32 lastTick;
+    u32 lastProcessTickHi;
+    s32 numFriends;
+    Unk_ov065_0229080c_Ent *friendList;
+    u8 syncIndex;
+    u8 isListChanged;
+    u8 syncPhase;
+    u8 updateStep;
     u32 unk_20;
     u32 unk_24;
-    u32 unk_28;
+    u32 buddyRequestText;
     void (*unk_2c)(s32, u32, s32);
-    s32 unk_30;
+    s32 updateCallbackArg;
     void (*unk_34)(s32, s32, char *, s32);
-    s32 unk_38;
+    s32 statusCallbackArg;
     void (*unk_3c)(void);
     void (*unk_40)(void);
     void (*unk_44)(s32, s32);
-    s32 unk_48;
+    s32 addedCallbackArg;
     u32 unk_4c;
     u32 unk_50;
 };
@@ -399,31 +399,31 @@ struct Unk_ov065_02290814_Sub {
 };
 
 struct Unk_ov065_02290814 {
-    u8 unk_00[4];
-    Unk_ov065_02290814_Sub *unk_04;
-    s32 unk_08;
-    u8 unk_0c;
-    u8 unk_0d;
+    u8 gpConnection[4];
+    Unk_ov065_02290814_Sub *transportSocketPtr;
+    s32 transportCallbacks;
+    u8 connectRetryCount;
+    u8 numClients;
     u8 unk_0e[6];
-    u8 unk_14;
-    volatile u8 unk_15;
+    u8 numPlayers;
+    volatile u8 matchType;
     u8 unk_16[0xde];
-    u32 unk_f4[32];
-    u8 unk_174;
-    u8 unk_175;
-    u8 unk_176[2];
-    u32 unk_178;
-    u32 unk_17c;
-    u32 unk_180;
-    u32 unk_184;
-    u32 unk_188;
+    u32 memberProfileIds[32];
+    u8 nnRetryCount;
+    u8 nnFailCount;
+    u8 nnCookieHigh[2];
+    u32 nnLastCookie;
+    u32 nnRetryTime;
+    u32 nnRetryTimeHi;
+    u32 connectWaitTime;
+    u32 connectWaitTimeHi;
     u8 unk_18c[0xc];
-    s32 unk_198;
+    s32 state;
     u8 unk_19c[0x4c];
-    u32 unk_1e8;
+    u32 profileId;
     u8 unk_1ec[0xc];
-    u32 unk_1f8[32];
-    u16 unk_278[32];
+    u32 memberConnectIps[32];
+    u16 memberConnectPorts[32];
 };
 
 struct Unk_ov065_022726a0_Hdr {
@@ -616,7 +616,7 @@ namespace F02271da0 {
 extern "C" {
 BOOL DwcFriend_IsIdle() {
     if (sDwcFriendControl != NULL) {
-        if ((u8)(sDwcFriendControl->unk_1e + 0xff) <= 1) {
+        if ((u8)(sDwcFriendControl->syncPhase + 0xff) <= 1) {
             return FALSE;
         }
     }
@@ -630,8 +630,8 @@ extern "C" {
 void DwcFriend_DeleteFriend(void *p) {
     if (sDwcFriendControl != NULL && DwcLogin_IsLoggedIn() != 0 && DwcLogin_GetUserData() != 0) {
         s32 t = func_020ffc60(DwcLogin_GetUserData(), p);
-        if (t != 0 && t != -1 && GsGp_IsBuddy(sDwcFriendControl->unk_04, t) != 0) {
-            GsGp_DeleteBuddy(sDwcFriendControl->unk_04, t);
+        if (t != 0 && t != -1 && GsGp_IsBuddy(sDwcFriendControl->gpConnection, t) != 0) {
+            GsGp_DeleteBuddy(sDwcFriendControl->gpConnection, t);
         }
     }
     MI_CpuFill8(p, 0, 12);
@@ -643,31 +643,31 @@ namespace F02271da0 {
 extern "C" {
 void DwcFriend_InitControl(Unk_ov065_0229080c *a, Unk_ov065_0229080c_Sub *b, s32 c, Unk_ov065_0229080c_Ent *d, s32 e) {
     sDwcFriendControl = a;
-    a->unk_00 = 0;
-    sDwcFriendControl->unk_04 = b;
-    sDwcFriendControl->unk_08 = 0;
+    a->updateState = 0;
+    sDwcFriendControl->gpConnection = b;
+    sDwcFriendControl->tickCount = 0;
     {
         Unk_ov065_0229080c *g = sDwcFriendControl;
-        g->unk_0c = 0;
-        g->unk_10 = 0;
-        g->unk_14 = e;
+        g->lastTick = 0;
+        g->lastProcessTickHi = 0;
+        g->numFriends = e;
     }
-    sDwcFriendControl->unk_18 = d;
-    sDwcFriendControl->unk_1c = 0;
-    sDwcFriendControl->unk_1d = 0;
-    sDwcFriendControl->unk_1e = 0;
-    sDwcFriendControl->unk_1f = 0;
+    sDwcFriendControl->friendList = d;
+    sDwcFriendControl->syncIndex = 0;
+    sDwcFriendControl->isListChanged = 0;
+    sDwcFriendControl->syncPhase = 0;
+    sDwcFriendControl->updateStep = 0;
     sDwcFriendControl->unk_20 = 0;
     sDwcFriendControl->unk_24 = 0;
-    sDwcFriendControl->unk_28 = c;
+    sDwcFriendControl->buddyRequestText = c;
     sDwcFriendControl->unk_2c = NULL;
-    sDwcFriendControl->unk_30 = 0;
+    sDwcFriendControl->updateCallbackArg = 0;
     sDwcFriendControl->unk_34 = NULL;
-    sDwcFriendControl->unk_38 = 0;
+    sDwcFriendControl->statusCallbackArg = 0;
     sDwcFriendControl->unk_3c = NULL;
     sDwcFriendControl->unk_40 = NULL;
     sDwcFriendControl->unk_44 = NULL;
-    sDwcFriendControl->unk_48 = 0;
+    sDwcFriendControl->addedCallbackArg = 0;
     sDwcFriendControl->unk_4c = 0;
     sDwcFriendControl->unk_50 = 0;
 }
@@ -680,7 +680,7 @@ void DwcFriend_Process() {
     if (sDwcFriendControl == NULL) {
         return;
     }
-    if (sDwcFriendControl->unk_18 == NULL) {
+    if (sDwcFriendControl->friendList == NULL) {
         return;
     }
     if (DwcCore_HasError() != 0) {
@@ -690,23 +690,23 @@ void DwcFriend_Process() {
         DwcFriend_Fail(6, -0x1194a);
         return;
     }
-    if (sDwcFriendControl->unk_04 != NULL && sDwcFriendControl->unk_04->unk_00 != NULL) {
+    if (sDwcFriendControl->gpConnection != NULL && sDwcFriendControl->gpConnection->connection != NULL) {
         DwcFriend_Tick();
         if (DwcFriend_HandleGpResult() != 0) {
             return;
         }
-        if (sDwcFriendControl->unk_18 != NULL && sDwcFriendControl->unk_1e != 3 && sDwcFriendControl->unk_08 > 7) {
-            if (sDwcFriendControl->unk_1e <= 1) {
-                DwcFriend_SyncList(sDwcFriendControl->unk_18, sDwcFriendControl->unk_14);
+        if (sDwcFriendControl->friendList != NULL && sDwcFriendControl->syncPhase != 3 && sDwcFriendControl->tickCount > 7) {
+            if (sDwcFriendControl->syncPhase <= 1) {
+                DwcFriend_SyncList(sDwcFriendControl->friendList, sDwcFriendControl->numFriends);
             }
-            if (sDwcFriendControl->unk_1c >= sDwcFriendControl->unk_14) {
-                sDwcFriendControl->unk_1e = 3;
-                sDwcFriendControl->unk_1f++;
+            if (sDwcFriendControl->syncIndex >= sDwcFriendControl->numFriends) {
+                sDwcFriendControl->syncPhase = 3;
+                sDwcFriendControl->updateStep++;
             }
         }
     }
-    if (sDwcFriendControl->unk_1f >= 2) {
-        sDwcFriendControl->unk_1f = 0;
+    if (sDwcFriendControl->updateStep >= 2) {
+        sDwcFriendControl->updateStep = 0;
         DwcFriend_FinishUpdate();
     }
 }
@@ -718,17 +718,17 @@ extern "C" {
 void DwcFriend_StartUpdate(s32 a, s32 b, void (*c)(s32, u32, s32), s32 d, void (*e)(s32, s32, char *, s32), s32 f,
                          void (*g)(void), void (*h)(void)) {
     sDwcFriendControl->unk_2c = c;
-    sDwcFriendControl->unk_30 = d;
+    sDwcFriendControl->updateCallbackArg = d;
     sDwcFriendControl->unk_34 = e;
-    sDwcFriendControl->unk_38 = f;
+    sDwcFriendControl->statusCallbackArg = f;
     sDwcFriendControl->unk_3c = g;
     sDwcFriendControl->unk_40 = h;
-    sDwcFriendControl->unk_1d = 0;
-    sDwcFriendControl->unk_1e = 0;
-    sDwcFriendControl->unk_1f = 0;
-    sDwcFriendControl->unk_1c = 0;
-    sDwcFriendControl->unk_00 = 1;
-    sDwcFriendControl->unk_1f++;
+    sDwcFriendControl->isListChanged = 0;
+    sDwcFriendControl->syncPhase = 0;
+    sDwcFriendControl->updateStep = 0;
+    sDwcFriendControl->syncIndex = 0;
+    sDwcFriendControl->updateState = 1;
+    sDwcFriendControl->updateStep++;
 }
 }
 }
@@ -738,8 +738,8 @@ extern "C" {
 void DwcFriend_Fail(s32 a, s32 b) {
     if (sDwcFriendControl != NULL && a != 0) {
         DwcCore_SetError(a, b);
-        if (sDwcFriendControl->unk_00 != 0 && sDwcFriendControl->unk_00 != 2) {
-            sDwcFriendControl->unk_2c(a, sDwcFriendControl->unk_1d, sDwcFriendControl->unk_30);
+        if (sDwcFriendControl->updateState != 0 && sDwcFriendControl->updateState != 2) {
+            sDwcFriendControl->unk_2c(a, sDwcFriendControl->isListChanged, sDwcFriendControl->updateCallbackArg);
         }
         DwcFriend_Abort();
     }
@@ -750,7 +750,7 @@ void DwcFriend_Fail(s32 a, s32 b) {
 namespace F02271da0 {
 extern "C" {
 void DwcFriend_OnBuddyRequest(void *a, u32 *b) {
-    if (sDwcFriendControl->unk_18 != NULL) {
+    if (sDwcFriendControl->friendList != NULL) {
         GsGp_GetInfo(a, b[0], 0, 0, DwcFriend_OnBuddyRequestInfo, 0);
     }
 }
@@ -777,7 +777,7 @@ void DwcFriend_OnBuddyStatus(void *a, u32 *b) {
         s32 i = DwcFriend_FindIndexByProfileId(b[0]);
         if (i != -1) {
             GsGp_GetBuddyStatus(a, b[2], &o);
-            sDwcFriendControl->unk_34(i, (u8)o.status, o.locationString, sDwcFriendControl->unk_38);
+            sDwcFriendControl->unk_34(i, (u8)o.status, o.locationString, sDwcFriendControl->statusCallbackArg);
         }
     }
 }
@@ -787,7 +787,7 @@ void DwcFriend_OnBuddyStatus(void *a, u32 *b) {
 namespace F02271da0 {
 extern "C" {
 s32 DwcFriend_GetProfileId(s32 i) {
-    s32 r = func_020ffc60(DwcLogin_GetUserData(), &sDwcFriendControl->unk_18[i]);
+    s32 r = func_020ffc60(DwcLogin_GetUserData(), &sDwcFriendControl->friendList[i]);
     s32 m = -1;
     if (r == 0 || r == m) {
         r = 0;
@@ -804,7 +804,7 @@ s32 DwcFriend_FindIndexByProfileId(s32 v) {
     if (sDwcFriendControl == NULL || v == 0) {
         return -1;
     }
-    for (i = 0; i < sDwcFriendControl->unk_14; i++) {
+    for (i = 0; i < sDwcFriendControl->numFriends; i++) {
         if (v == DwcFriend_GetProfileId(i)) {
             return i;
         }
@@ -818,11 +818,11 @@ namespace F02271da0 {
 extern "C" {
 void DwcFriend_ResetTimer() {
     if (sDwcFriendControl != NULL) {
-        sDwcFriendControl->unk_08 = 0;
+        sDwcFriendControl->tickCount = 0;
         u64 t = OS_GetTick();
         Unk_ov065_0229080c *g = sDwcFriendControl;
-        g->unk_0c = (u32)t;
-        g->unk_10 = (u32)(t >> 32);
+        g->lastTick = (u32)t;
+        g->lastProcessTickHi = (u32)(t >> 32);
     }
 }
 }
@@ -832,18 +832,18 @@ namespace F02271da0 {
 extern "C" {
 s32 DwcFriend_SetOwnStatus(s32 a, char *b, char *c) {
     Unk_ov065_0229080c_Sub *s;
-    if (sDwcFriendControl == NULL || sDwcFriendControl->unk_04 == NULL) {
+    if (sDwcFriendControl == NULL || sDwcFriendControl->gpConnection == NULL) {
         return 0;
     }
-    s = sDwcFriendControl->unk_04;
+    s = sDwcFriendControl->gpConnection;
     if (a == -1) {
-        a = s->unk_00->unk_214;
+        a = s->connection->lastStatus;
     }
     if (b == NULL) {
-        b = (char *)s->unk_00->unk_218;
+        b = (char *)s->connection->lastStatusString;
     }
     if (c == NULL) {
-        c = (char *)s->unk_00->unk_318;
+        c = (char *)s->connection->lastLocationString;
     }
     return GsGp_SetStatus(s, a, b, c);
 }
@@ -854,12 +854,12 @@ namespace F02271da0 {
 extern "C" {
 void DwcFriend_NotifyAdded(s32 idx) {
     Unk_ov065_0227194c_Out o;
-    if (sDwcFriendControl->unk_44 != NULL && sDwcFriendControl->unk_00 != 1) {
-        sDwcFriendControl->unk_44(idx, sDwcFriendControl->unk_48);
+    if (sDwcFriendControl->unk_44 != NULL && sDwcFriendControl->updateState != 1) {
+        sDwcFriendControl->unk_44(idx, sDwcFriendControl->addedCallbackArg);
     }
     if (sDwcFriendControl->unk_34 != NULL) {
-        s32 r = DwcFriend_GetStatusString(&sDwcFriendControl->unk_18[idx], o.locationString);
-        sDwcFriendControl->unk_34(idx, r, o.locationString, sDwcFriendControl->unk_38);
+        s32 r = DwcFriend_GetStatusString(&sDwcFriendControl->friendList[idx], o.locationString);
+        sDwcFriendControl->unk_34(idx, r, o.locationString, sDwcFriendControl->statusCallbackArg);
     }
 }
 }

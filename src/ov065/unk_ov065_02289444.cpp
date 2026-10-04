@@ -57,23 +57,23 @@ struct Unk_ov065_0228903c_Obj {
 };
 
 struct Unk_ov065_02289578_Pkt {
-    u32 unk_00;
-    u16 unk_04;
+    u32 addr;
+    u16 port;
     u8 pad_06[8];
     u8 unk_0e[6];
-    u8 unk_14;
-    u8 unk_15;
+    u8 stateFlags;
+    u8 listFlags;
 };
 
 struct Unk_ov065_02289720_Sub {
-    s32 unk_00;
+    s32 state;
     u8 pad_04[0x484];
     void (*unk_488)(Unk_ov065_02289720_Sub *, s32, s32, void *);
     u8 pad_48c[8];
-    void *unk_494;
+    void *callbackParam;
     u8 pad_498[0x18];
-    s32 unk_4b0;
-    u32 unk_4b4;
+    s32 socket;
+    u32 lanStartTime;
 };
 
 struct Unk_ov065_02289460_Obj {
@@ -97,7 +97,7 @@ struct Unk_ov065_02289460_Obj {
 
 struct Unk_ov065_02289578_Sub {
     s32 unk_00;
-    void *unk_04;
+    void *servers;
 };
 
 static inline u16 Unk_ov065_02289044_Htons(u16 x) {
@@ -200,34 +200,34 @@ struct Unk_ov065_02289808_B4 {
 };
 
 struct Unk_ov065_02289808_Ctx {
-    s32 unk_00;
+    s32 state;
     u8 unk_04[4];
-    void *unk_08;
+    void *keyList;
     u8 unk_0c[0x70];
-    u8 *unk_7c;
-    s32 unk_80;
-    u32 unk_84[0xff];
-    s32 unk_480;
-    s32 unk_484;
+    u8 *inBuffer;
+    s32 inBufferLen;
+    u32 popularValues[0xff];
+    s32 numPopularValues;
+    s32 expectedCount;
     Unk_ov065_02289808_Cb0 unk_488;
     Unk_ov065_02289808_Cb1 unk_48c;
     Unk_ov065_02289808_Cb2 unk_490;
-    u32 unk_494;
+    u32 callbackParam;
     u8 unk_498[8];
     u8 unk_4a0[8];
-    u16 unk_4a8;
+    u16 defaultPort;
     u16 unk_4aa;
     u32 unk_4ac;
-    s32 unk_4b0;
+    s32 socket;
     u8 unk_4b4[8];
-    u8 unk_4bc[0x108];
-    u32 unk_5c4;
-    s32 unk_5c8;
+    u8 cryptState[0x108];
+    u32 queryOptions;
+    s32 parseState;
 };
 
 struct Unk_ov065_02289808_Elem {
-    void *unk_00;
-    u32 unk_04;
+    void *keyName;
+    u32 keyType;
 };
 
 
@@ -308,8 +308,8 @@ struct Unk_ov065_0228a218_Ent;
 struct Unk_ov065_022786bc_Vec;
 
 struct Unk_ov065_0228a218_Rec {
-    void *unk_00;
-    s32 unk_04;
+    void *keyName;
+    s32 keyType;
 };
 
 struct Unk_ov065_0228a218_B4 {
@@ -321,29 +321,29 @@ struct Unk_ov065_0228a218_B2 {
 };
 
 struct Unk_ov065_0228a218_Ctx {
-    s32 unk_00;
-    void *unk_04;
-    Unk_ov065_022786bc_Vec *unk_08;
-    u8 unk_0c[0x24];
-    u8 unk_30[0x24];
-    s8 unk_54[0x20];
-    s8 unk_74[8];
-    void *unk_7c;
-    void *unk_80;
-    u32 unk_84[0xff];
-    s32 unk_480;
-    s32 unk_484;
+    s32 state;
+    void *servers;
+    Unk_ov065_022786bc_Vec *keyList;
+    u8 queryForGame[0x24];
+    u8 queryFromGame[0x24];
+    s8 secretKey[0x20];
+    s8 challenge[8];
+    void *inBuffer;
+    void *inBufferLen;
+    u32 popularValues[0xff];
+    s32 numPopularValues;
+    s32 expectedCount;
     u8 pad_488[0x4a4 - 0x488];
-    u32 unk_4a4;
-    u16 unk_4a8;
+    u32 altSourceIp;
+    u16 defaultPort;
     u16 pad_4aa;
-    u32 unk_4ac;
-    s32 unk_4b0;
-    u32 unk_4b4;
-    u32 unk_4b8;
-    u8 unk_4bc[0x108];
-    u32 unk_5c4;
-    u32 unk_5c8;
+    u32 errorText;
+    s32 socket;
+    u32 lanStartTime;
+    u32 gameVersion;
+    u8 cryptState[0x108];
+    u32 queryOptions;
+    u32 parseState;
 };
 
 extern "C" {
@@ -407,37 +407,37 @@ namespace F0228ab3c {
 // ov065_070: GameSpy-like server-browser context (0x0228ab3c..0x0228b258)
 
 struct Unk_ov065_0228ad34_Ctx {
-    s32 unk_00;
-    void *unk_04;
-    s32 unk_08;
-    char unk_0c[0x24];
-    char unk_30[0x24];
-    char unk_54[0x28];
-    char *unk_7c;
-    s32 unk_80;
+    s32 state;
+    void *servers;
+    s32 keyList;
+    char queryForGame[0x24];
+    char queryFromGame[0x24];
+    char secretKey[0x28];
+    char *inBuffer;
+    s32 inBufferLen;
     u8 pad_84[0x480 - 0x84];
-    s32 unk_480;
-    s32 unk_484;
+    s32 numPopularValues;
+    s32 expectedCount;
     void (*unk_488)(Unk_ov065_0228ad34_Ctx *, s32, u32, u32);
     s32 unk_48c;
     u32 unk_490;
-    u32 unk_494;
-    char *unk_498;
-    s32 unk_49c;
-    s32 unk_4a0;
-    s32 unk_4a4;
+    u32 callbackParam;
+    char *sortKey;
+    s32 sortAscending;
+    s32 myPublicIp;
+    s32 altSourceIp;
     u8 pad_4a8[0x4b0 - 0x4a8];
-    s32 unk_4b0;
+    s32 socket;
     u8 pad_4b4[0x4b8 - 0x4b4];
-    s32 unk_4b8;
+    s32 gameVersion;
     u8 pad_4bc[0x5cc - 0x4bc];
     s32 unk_5cc;
-    void *unk_5d0;
+    void *deadServers;
 };
 
 struct Unk_ov065_0228ae2c_Ent {
-    char *unk_00;
-    s32 unk_04;
+    char *str;
+    s32 refCount;
 };
 
 struct Unk_ov065_0228ab8c_Ip {
@@ -445,20 +445,20 @@ struct Unk_ov065_0228ab8c_Ip {
 };
 
 struct Unk_ov065_0228ab8c_Sa {
-    u8 unk_0;
-    u8 unk_1;
-    u16 unk_2;
+    u8 len;
+    u8 family;
+    u16 port;
     union {
         u32 w;
         Unk_ov065_0228ab8c_Ip ip;
-    } unk_4;
+    } addr;
 };
 
 struct Unk_ov065_0228ab8c_Host {
-    u32 unk_00;
-    u32 unk_04;
-    u32 unk_08;
-    Unk_ov065_0228ab8c_Ip **unk_0c;
+    u32 hostName;
+    u32 aliases;
+    u32 addrType;
+    Unk_ov065_0228ab8c_Ip **addrList;
 };
 
 typedef Unk_ov065_0228ad34_Ctx Ctx070;
@@ -547,9 +547,9 @@ extern "C" {
 s32 GsSrvList_CompareInt(void **a, void **b) {
     void *ra = *(void *volatile *)a;
     void *rb = *b;
-    s32 r = GsServer_GetIntValue(ra, sGsSrvListSortList->unk_498, 0);
-    r -= GsServer_GetIntValue(rb, sGsSrvListSortList->unk_498, 0);
-    if (sGsSrvListSortList->unk_49c == 0) {
+    s32 r = GsServer_GetIntValue(ra, sGsSrvListSortList->sortKey, 0);
+    r -= GsServer_GetIntValue(rb, sGsSrvListSortList->sortKey, 0);
+    if (sGsSrvListSortList->sortAscending == 0) {
         r = -r;
     }
     return r;
@@ -562,10 +562,10 @@ extern "C" {
 s32 GsSrvList_CompareFloat(void **a, void **b) {
     void *ra = *(void *volatile *)a;
     void *rb = *b;
-    double d1 = GsServer_GetFloatValue(ra, sGsSrvListSortList->unk_498, 0, 0);
-    double d2 = GsServer_GetFloatValue(rb, sGsSrvListSortList->unk_498, 0, 0);
+    double d1 = GsServer_GetFloatValue(ra, sGsSrvListSortList->sortKey, 0, 0);
+    double d2 = GsServer_GetFloatValue(rb, sGsSrvListSortList->sortKey, 0, 0);
     double d = d1 - d2;
-    if (sGsSrvListSortList->unk_49c == 0) {
+    if (sGsSrvListSortList->sortAscending == 0) {
         d = 0 - d;
     }
     if ((float)d > 0) {
@@ -579,10 +579,10 @@ s32 GsSrvList_CompareFloat(void **a, void **b) {
 namespace F0228ab3c {
 extern "C" {
 s32 GsSrvList_CompareString(void **a, void **b) {
-    char *s1 = GsServer_GetStringValue(*a, sGsSrvListSortList->unk_498, "");
-    char *s2 = GsServer_GetStringValue(*b, sGsSrvListSortList->unk_498, "");
+    char *s1 = GsServer_GetStringValue(*a, sGsSrvListSortList->sortKey, "");
+    char *s2 = GsServer_GetStringValue(*b, sGsSrvListSortList->sortKey, "");
     s32 r = strcmp(s1, s2);
-    if (sGsSrvListSortList->unk_49c == 0) {
+    if (sGsSrvListSortList->sortAscending == 0) {
         r = -r;
     }
     return r;
@@ -593,10 +593,10 @@ s32 GsSrvList_CompareString(void **a, void **b) {
 namespace F0228ab3c {
 extern "C" {
 s32 GsSrvList_CompareStringNoCase(void **a, void **b) {
-    char *s1 = GsServer_GetStringValue(*a, sGsSrvListSortList->unk_498, "");
-    char *s2 = GsServer_GetStringValue(*b, sGsSrvListSortList->unk_498, "");
+    char *s1 = GsServer_GetStringValue(*a, sGsSrvListSortList->sortKey, "");
+    char *s2 = GsServer_GetStringValue(*b, sGsSrvListSortList->sortKey, "");
     s32 r = func_02130b04(s1, s2);
-    if (sGsSrvListSortList->unk_49c == 0) {
+    if (sGsSrvListSortList->sortAscending == 0) {
         r = -r;
     }
     return r;
@@ -625,10 +625,10 @@ void GsSrvList_Sort(Ctx070 *c, s32 a, char *b, u32 mode) {
         cmp = (void *)GsSrvList_CompareStringNoCase;
         break;
     }
-    c->unk_498 = b;
-    c->unk_49c = a;
+    c->sortKey = b;
+    c->sortAscending = a;
     sGsSrvListSortList = c;
-    GsArray_Sort(c->unk_04, cmp);
+    GsArray_Sort(c->servers, cmp);
 }
 }
 }
@@ -636,8 +636,8 @@ void GsSrvList_Sort(Ctx070 *c, s32 a, char *b, u32 mode) {
 namespace F0228ab3c {
 extern "C" {
 void GsSrvList_AddServer(Ctx070 *c, s32 a, s32 b, s32 d) {
-    GsArray_Append(c->unk_04, &a);
-    c->unk_488(c, 0, a, c->unk_494);
+    GsArray_Append(c->servers, &a);
+    c->unk_488(c, 0, a, c->callbackParam);
 }
 }
 }
@@ -645,10 +645,10 @@ void GsSrvList_AddServer(Ctx070 *c, s32 a, s32 b, s32 d) {
 namespace F0228ab3c {
 extern "C" {
 s32 GsSrvList_FindServer(Ctx070 *c, u32 key) {
-    s32 n = GsArray_Count(c->unk_04);
+    s32 n = GsArray_Count(c->servers);
     s32 i;
     for (i = 0; i < n; i++) {
-        if (key == *(u32 *)GsArray_At(c->unk_04, i)) {
+        if (key == *(u32 *)GsArray_At(c->servers, i)) {
             return i;
         }
     }
@@ -662,9 +662,9 @@ extern "C" {
 s32 GsSrvList_FindServerByAddress(Ctx070 *c, s32 a, s32 b) {
     void *e;
     s32 i;
-    s32 n = GsArray_Count(c->unk_04);
+    s32 n = GsArray_Count(c->servers);
     for (i = 0; i < n; i++) {
-        e = *(void **)GsArray_At(c->unk_04, i);
+        e = *(void **)GsArray_At(c->servers, i);
         if ((u32)a == GsServer_GetPublicIp(e) && (u32)b == GsServer_GetPortRaw(e)) {
             return i;
         }
@@ -677,13 +677,13 @@ s32 GsSrvList_FindServerByAddress(Ctx070 *c, s32 a, s32 b) {
 namespace F0228ab3c {
 extern "C" {
 void GsSrvList_PushDeadServer(Ctx070 *c, void *x) {
-    void *t = c->unk_5d0;
+    void *t = c->deadServers;
     if (t == NULL) {
         GsServer_SetNextFree(x, NULL);
     } else {
         GsServer_SetNextFree(x, t);
     }
-    c->unk_5d0 = x;
+    c->deadServers = x;
 }
 }
 }
@@ -691,9 +691,9 @@ void GsSrvList_PushDeadServer(Ctx070 *c, void *x) {
 namespace F0228ab3c {
 extern "C" {
 void GsSrvList_RemoveServerAt(Ctx070 *c, s32 i) {
-    u32 v = *(u32 *)GsArray_At(c->unk_04, i);
-    c->unk_488(c, 2, v, c->unk_494);
-    GsArray_DeleteAt(c->unk_04, i);
+    u32 v = *(u32 *)GsArray_At(c->servers, i);
+    c->unk_488(c, 2, v, c->callbackParam);
+    GsArray_DeleteAt(c->servers, i);
     GsSrvList_PushDeadServer(c, (void *)v);
 }
 }
@@ -702,7 +702,7 @@ void GsSrvList_RemoveServerAt(Ctx070 *c, s32 i) {
 namespace F0228ab3c {
 extern "C" {
 s32 GsSrvList_Count(Ctx070 *c) {
-    return GsArray_Count(c->unk_04);
+    return GsArray_Count(c->servers);
 }
 }
 }
@@ -710,7 +710,7 @@ s32 GsSrvList_Count(Ctx070 *c) {
 namespace F0228ab3c {
 extern "C" {
 u32 GsSrvList_GetServer(Ctx070 *c, s32 i) {
-    return *(u32 *)GsArray_At(c->unk_04, i);
+    return *(u32 *)GsArray_At(c->servers, i);
 }
 }
 }
@@ -718,14 +718,14 @@ u32 GsSrvList_GetServer(Ctx070 *c, s32 i) {
 namespace F0228ab3c {
 extern "C" {
 void GsSrvList_FreeDeadServers(Ctx070 *c) {
-    if (c->unk_5d0 != NULL) {
-        void *cur = c->unk_5d0;
+    if (c->deadServers != NULL) {
+        void *cur = c->deadServers;
         while (cur != NULL) {
             void *next = GsServer_GetNextFree(cur);
             GsServer_Free(&cur);
             cur = next;
         }
-        c->unk_5d0 = NULL;
+        c->deadServers = NULL;
     }
 }
 }
@@ -734,13 +734,13 @@ void GsSrvList_FreeDeadServers(Ctx070 *c) {
 namespace F0228ab3c {
 extern "C" {
 void GsSrvList_ClearServers(Ctx070 *c) {
-    s32 n = GsArray_Count(c->unk_04);
+    s32 n = GsArray_Count(c->servers);
     s32 i;
     for (i = 0; i < n; i++) {
-        void *p = GsArray_At(c->unk_04, i);
+        void *p = GsArray_At(c->servers, i);
         GsSrvList_PushDeadServer(c, *(void **)p);
     }
-    GsArray_Clear(c->unk_04);
+    GsArray_Clear(c->servers);
     GsSrvList_FreeDeadServers(c);
 }
 }
@@ -749,8 +749,8 @@ void GsSrvList_ClearServers(Ctx070 *c) {
 namespace F0228ab3c {
 extern "C" {
 void GsSrvList_InitServers(Ctx070 *c) {
-    c->unk_04 = GsArray_New(4, 0x64, 0);
-    c->unk_5d0 = NULL;
+    c->servers = GsArray_New(4, 0x64, 0);
+    c->deadServers = NULL;
 }
 }
 }
@@ -760,16 +760,16 @@ extern "C" {
 u32 GsStrPool_Add(Ctx070 *c, s32 key) {
     Unk_ov065_0228ae2c_Ent l;
     Unk_ov065_0228ae2c_Ent *e;
-    l.unk_00 = (char *)key;
+    l.str = (char *)key;
     e = (Unk_ov065_0228ae2c_Ent *)GsHash_Find(GsStrPool_Get(c), &l);
     if (e != NULL) {
-        e->unk_04++;
-        return (u32)e->unk_00;
+        e->refCount++;
+        return (u32)e->str;
     }
-    l.unk_00 = GsUtil_StrDup((char *)key);
-    l.unk_04 = 1;
+    l.str = GsUtil_StrDup((char *)key);
+    l.refCount = 1;
     GsHash_Insert(GsStrPool_Get(c), &l);
-    return (u32)l.unk_00;
+    return (u32)l.str;
 }
 }
 }
@@ -780,8 +780,8 @@ void GsStrPool_Release(Ctx070 *c, s32 key) {
     s32 k = key;
     Unk_ov065_0228ae2c_Ent *e = (Unk_ov065_0228ae2c_Ent *)GsHash_Find(GsStrPool_Get(c), &k);
     if (e != NULL) {
-        e->unk_04--;
-        if (e->unk_04 == 0) {
+        e->refCount--;
+        if (e->refCount == 0) {
             GsHash_Remove(GsStrPool_Get(c), &k);
         }
     }
@@ -808,25 +808,25 @@ extern "C" {
 void GsSrvList_Init(Ctx070 *c, char *a, char *b, char *d, s32 e, s32 f, void *g, u32 h) {
     if (f != 0 || sGsAvailStatus == 1) {
         s32 neg = -1;
-        c->unk_00 = 1;
+        c->state = 1;
         GsSrvList_InitServers(c);
         GsStrPool_Get(c);
-        func_02127838(c->unk_0c, a);
-        func_02127838(c->unk_30, b);
-        func_02127838(c->unk_54, d);
+        func_02127838(c->queryForGame, a);
+        func_02127838(c->queryFromGame, b);
+        func_02127838(c->secretKey, d);
         c->unk_488 = (void (*)(Ctx070 *, s32, u32, u32))g;
         c->unk_48c = 0;
-        c->unk_494 = h;
-        c->unk_498 = "";
-        c->unk_4a0 = 0;
-        c->unk_4b0 = neg;
-        c->unk_7c = 0;
-        c->unk_80 = 0;
-        c->unk_08 = 0;
-        c->unk_484 = neg;
-        c->unk_480 = 0;
-        c->unk_4a4 = 0;
-        c->unk_4b8 = e;
+        c->callbackParam = h;
+        c->sortKey = "";
+        c->myPublicIp = 0;
+        c->socket = neg;
+        c->inBuffer = 0;
+        c->inBufferLen = 0;
+        c->keyList = 0;
+        c->expectedCount = neg;
+        c->numPopularValues = 0;
+        c->altSourceIp = 0;
+        c->gameVersion = e;
         GsSrvList_SetErrorText(c, "");
         c->unk_5cc = 0;
         srand(GsUtil_GetTimeMs());
@@ -839,15 +839,15 @@ void GsSrvList_Init(Ctx070 *c, char *a, char *b, char *d, s32 e, s32 f, void *g,
 namespace F0228ab3c {
 extern "C" {
 void GsSrvList_ReportError(Ctx070 *c) {
-    if (c->unk_80 > 0 && (u32)c->unk_80 > (u32)STD_GetStringLength(data_ov065_0228e954)) {
+    if (c->inBufferLen > 0 && (u32)c->inBufferLen > (u32)STD_GetStringLength(data_ov065_0228e954)) {
         char *s = data_ov065_0228e954;
         s32 len = STD_GetStringLength(s);
-        if (strncmp(c->unk_7c, s, len) == 0) {
-            GsSrvList_SetErrorText(c, c->unk_7c + STD_GetStringLength(s));
-            c->unk_488(c, 5, data_ov065_022918a8, c->unk_494);
+        if (strncmp(c->inBuffer, s, len) == 0) {
+            GsSrvList_SetErrorText(c, c->inBuffer + STD_GetStringLength(s));
+            c->unk_488(c, 5, data_ov065_022918a8, c->callbackParam);
         }
     }
-    c->unk_488(c, 4, data_ov065_022918a8, c->unk_494);
+    c->unk_488(c, 4, data_ov065_022918a8, c->callbackParam);
     GsSrvList_Disconnect(c);
 }
 }
@@ -880,36 +880,36 @@ s32 GsSrvList_ConnectMaster(Ctx070 *c) {
         Unk_ov065_0228ab8c_Sa sa;
         char host[0x80];
     } l;
-    u32 h = GsSrvList_HashGameName(c->unk_0c, 0x14);
+    u32 h = GsSrvList_HashGameName(c->queryForGame, 0x14);
     if (sGsSrvListMasterOverride != NULL) {
         func_02127838(l.host, sGsSrvListMasterOverride);
     } else {
-        OS_SPrintf(l.host, "%s.ms%d.gs.nintendowifi.net", c->unk_0c, h);
+        OS_SPrintf(l.host, "%s.ms%d.gs.nintendowifi.net", c->queryForGame, h);
     }
-    l.sa.unk_1 = 2;
-    l.sa.unk_2 = 0xee70;
-    l.sa.unk_4.w = GsSock_InetAddr(l.host);
-    if (l.sa.unk_4.w == (u32)-1) {
+    l.sa.family = 2;
+    l.sa.port = 0xee70;
+    l.sa.addr.w = GsSock_InetAddr(l.host);
+    if (l.sa.addr.w == (u32)-1) {
         Unk_ov065_0228ab8c_Host *ent = Sock_GetHostByName(l.host);
         if (ent == NULL) {
             return 2;
         }
-        u8 *d = &l.sa.unk_4.ip.v[0];
-        u8 *s2 = (u8 *)*ent->unk_0c;
+        u8 *d = &l.sa.addr.ip.v[0];
+        u8 *s2 = (u8 *)*ent->addrList;
         d[0] = s2[0];
         d[1] = s2[1];
         d[2] = s2[2];
         d[3] = s2[3];
     }
-    if (c->unk_4b0 == -1) {
-        c->unk_4b0 = GsSock_Socket(2, 1, 0);
-        if (c->unk_4b0 == -1) {
+    if (c->socket == -1) {
+        c->socket = GsSock_Socket(2, 1, 0);
+        if (c->socket == -1) {
             return 1;
         }
     }
-    if (GsSock_Connect(c->unk_4b0, &l.sa, 8) != 0) {
-        GsSock_Close(c->unk_4b0);
-        c->unk_4b0 = -1;
+    if (GsSock_Connect(c->socket, &l.sa, 8) != 0) {
+        GsSock_Close(c->socket);
+        c->socket = -1;
         return 3;
     }
     return 0;
@@ -978,12 +978,12 @@ void GsSrvList_MakeChallenge(Unk_ov065_0228a218_Ctx *ctx)
     s32 acc, i;
     s32 b, a, ta, tb;
 
-    ctx->unk_74[0] = (s8)(rand() % 0x5d + 0x21);
+    ctx->challenge[0] = (s8)(rand() % 0x5d + 0x21);
     acc = 0;
     i = 1;
     do {
-        a = ctx->unk_74[i - 1];
-        b = ctx->unk_74[0];
+        a = ctx->challenge[i - 1];
+        b = ctx->challenge[0];
         ta = a < b;
         tb = b < 0x4f;
         b &= 1;
@@ -992,9 +992,9 @@ void GsSrvList_MakeChallenge(Unk_ov065_0228a218_Ctx *ctx)
         b ^= tb;
         acc = b;
         acc ^= ta;
-        ctx->unk_74[i] = (s8)(rand() % 0x5d + 0x21);
-        if ((acc != 0 && (ctx->unk_74[i] & 1) == 0) || (acc == 0 && (ctx->unk_74[i] & 1) == 1)) {
-            ctx->unk_74[i]++;
+        ctx->challenge[i] = (s8)(rand() % 0x5d + 0x21);
+        if ((acc != 0 && (ctx->challenge[i] & 1) == 0) || (acc == 0 && (ctx->challenge[i] & 1) == 1)) {
+            ctx->challenge[i]++;
         }
         i++;
     } while (i < 8);
@@ -1012,7 +1012,7 @@ s32 GsSrvList_SendToMaster(Unk_ov065_0228a218_Ctx *ctx, void *buf, s32 n)
 
     do {
         tries--;
-        r = GsSock_Send(ctx->unk_4b0, buf, n, 0);
+        r = GsSock_Send(ctx->socket, buf, n, 0);
         if (r > 0) {
             break;
         }
@@ -1062,24 +1062,24 @@ s32 GsSrvList_SendListRequest(Unk_ov065_0228a218_Ctx *ctx, const char *user, con
     if (r != 0) {
         goto end;
     }
-    ctx->unk_5c4 = flags;
+    ctx->queryOptions = flags;
     GsSrvList_MakeChallenge(ctx);
     len = 2;
     cur = &buf[2];
     GsSrvList_PutByte(&cur, 0, &len);
     GsSrvList_PutByte(&cur, 1, &len);
     GsSrvList_PutByte(&cur, 3, &len);
-    GsSrvList_PutU32(&cur, ctx->unk_4b8, &len);
-    GsSrvList_PutString(&cur, (const char *)ctx->unk_0c, &len);
-    GsSrvList_PutString(&cur, (const char *)ctx->unk_30, &len);
-    GsSrvList_PutBytes(&cur, ctx->unk_74, 8, &len);
+    GsSrvList_PutU32(&cur, ctx->gameVersion, &len);
+    GsSrvList_PutString(&cur, (const char *)ctx->queryForGame, &len);
+    GsSrvList_PutString(&cur, (const char *)ctx->queryFromGame, &len);
+    GsSrvList_PutBytes(&cur, ctx->challenge, 8, &len);
     GsSrvList_PutString(&cur, pass, &len);
     GsSrvList_PutString(&cur, user, &len);
     GsSrvList_PutU32(&cur, ((flags >> 24) & 0xff) | ((flags >> 8) & 0xff00) | ((flags << 8) & 0xff0000) | ((flags << 24) & 0xff000000), &len);
-    if (ctx->unk_5c4 & 8) {
-        GsSrvList_PutU32(&cur, ctx->unk_4a4, &len);
+    if (ctx->queryOptions & 8) {
+        GsSrvList_PutU32(&cur, ctx->altSourceIp, &len);
     }
-    if (ctx->unk_5c4 & 0x80) {
+    if (ctx->queryOptions & 0x80) {
         GsSrvList_PutU32(&cur, extra, &len);
     }
     {
@@ -1090,18 +1090,18 @@ s32 GsSrvList_SendListRequest(Unk_ov065_0228a218_Ctx *ctx, const char *user, con
     sp = (u8 *)&tmp;
     *(u8 *)da = sp[0];
     *(u8 *)(da + 1) = sp[1];
-    if (GsSock_Send(ctx->unk_4b0, (u8 *)da, len, 0) <= 0) {
+    if (GsSock_Send(ctx->socket, (u8 *)da, len, 0) <= 0) {
         GsSrvList_Disconnect(ctx);
         return 3;
     }
-    ctx->unk_00 = 3;
-    ctx->unk_5c8 = 0;
-    if (ctx->unk_7c == 0) {
-        ctx->unk_7c = GsUtil_Alloc(0x1000);
-        if (ctx->unk_7c == 0) {
+    ctx->state = 3;
+    ctx->parseState = 0;
+    if (ctx->inBuffer == 0) {
+        ctx->inBuffer = GsUtil_Alloc(0x1000);
+        if (ctx->inBuffer == 0) {
             return 5;
         }
-        ctx->unk_80 = 0;
+        ctx->inBufferLen = 0;
     }
     r = 0;
 end:
@@ -1115,7 +1115,7 @@ extern "C" {
 void GsSrvList_ReleasePopularValues(Unk_ov065_0228a218_Ctx *ctx)
 {
     s32 i = 0;
-    s32 *pn = &ctx->unk_480;
+    s32 *pn = &ctx->numPopularValues;
     u32 *p;
 
     if (*pn > 0) {
@@ -1126,7 +1126,7 @@ void GsSrvList_ReleasePopularValues(Unk_ov065_0228a218_Ctx *ctx)
             i++;
         } while (i < *pn);
     }
-    ctx->unk_480 = 0;
+    ctx->numPopularValues = 0;
 }
 }
 }
@@ -1138,17 +1138,17 @@ void GsSrvList_ReleaseKeyList(Unk_ov065_0228a218_Ctx *ctx)
     s32 i;
     Unk_ov065_0228a218_Rec *rec;
 
-    if (ctx->unk_08 != 0) {
+    if (ctx->keyList != 0) {
         i = 0;
-        if (GsArray_Count(ctx->unk_08) > 0) {
+        if (GsArray_Count(ctx->keyList) > 0) {
             do {
-                rec = (Unk_ov065_0228a218_Rec *)GsArray_At(ctx->unk_08, i);
-                GsStrPool_Release(ctx, rec->unk_00);
+                rec = (Unk_ov065_0228a218_Rec *)GsArray_At(ctx->keyList, i);
+                GsStrPool_Release(ctx, rec->keyName);
                 i++;
-            } while (i < GsArray_Count(ctx->unk_08));
+            } while (i < GsArray_Count(ctx->keyList));
         }
-        GsArray_Free(ctx->unk_08);
-        ctx->unk_08 = 0;
+        GsArray_Free(ctx->keyList);
+        ctx->keyList = 0;
     }
 }
 }
@@ -1158,18 +1158,18 @@ namespace F0228a20c {
 extern "C" {
 void GsSrvList_Disconnect(Unk_ov065_0228a218_Ctx *ctx)
 {
-    if (ctx->unk_7c != 0) {
-        GsUtil_Free(ctx->unk_7c);
+    if (ctx->inBuffer != 0) {
+        GsUtil_Free(ctx->inBuffer);
     }
-    ctx->unk_7c = 0;
-    ctx->unk_80 = 0;
-    if (ctx->unk_4b0 != -1) {
-        GsSock_Close(ctx->unk_4b0);
+    ctx->inBuffer = 0;
+    ctx->inBufferLen = 0;
+    if (ctx->socket != -1) {
+        GsSock_Close(ctx->socket);
     }
-    ctx->unk_4b0 = -1;
-    ctx->unk_00 = 1;
+    ctx->socket = -1;
+    ctx->state = 1;
     GsSrvList_ReleaseKeyList(ctx);
-    ctx->unk_484 = -1;
+    ctx->expectedCount = -1;
     GsSrvList_ReleasePopularValues(ctx);
 }
 }
@@ -1182,10 +1182,10 @@ void GsSrvList_Free(Unk_ov065_0228a218_Ctx *ctx)
     GsSrvList_Disconnect(ctx);
     GsSrvList_ClearServers(ctx);
     GsStrPool_FreeIfEmpty(ctx);
-    if (ctx->unk_04 != 0) {
-        GsArray_Free((Unk_ov065_022786bc_Vec *)ctx->unk_04);
+    if (ctx->servers != 0) {
+        GsArray_Free((Unk_ov065_022786bc_Vec *)ctx->servers);
     }
-    ctx->unk_04 = 0;
+    ctx->servers = 0;
 }
 }
 }
@@ -1199,14 +1199,14 @@ void GsSrvList_InitCrypt(Unk_ov065_0228a218_Ctx *ctx, s8 *key, s32 n)
     s32 i;
     s32 j;
 
-    len = STD_GetStringLength((const char *)ctx->unk_54);
-    pw = ctx->unk_54;
+    len = STD_GetStringLength((const char *)ctx->secretKey);
+    pw = ctx->secretKey;
     for (i = 0; i < n; i++) {
         s32 c = pw[i % len];
         j = (i * c) % 8;
-        ctx->unk_74[j] = (s8)(ctx->unk_74[j] ^ (s8)(ctx->unk_74[i % 8] ^ key[i]));
+        ctx->challenge[j] = (s8)(ctx->challenge[j] ^ (s8)(ctx->challenge[i % 8] ^ key[i]));
     }
-    GsSrvListCrypt_Init(ctx->unk_4bc, ctx->unk_74, 8);
+    GsSrvListCrypt_Init(ctx->cryptState, ctx->challenge, 8);
 }
 }
 }
@@ -1275,12 +1275,12 @@ s32 GsSrvList_CheckKeyValues(Unk_ov065_0228a218_Ctx *ctx, u8 *buf, s32 n)
     u32 c;
     s32 l;
 
-    cnt = GsArray_Count(ctx->unk_08);
+    cnt = GsArray_Count(ctx->keyList);
     i = 0;
     if (cnt > 0) {
         do {
-            rec = (Unk_ov065_0228a218_Rec *)GsArray_At(ctx->unk_08, i);
-            switch (rec->unk_04) {
+            rec = (Unk_ov065_0228a218_Rec *)GsArray_At(ctx->keyList, i);
+            switch (rec->keyType) {
             case 1:
                 buf += 1;
                 n -= 1;
@@ -1345,7 +1345,7 @@ void GsSrvList_ReadServerAddress(Unk_ov065_0228a218_Ctx *ctx, u8 *buf, s32 n, u3
         d[1] = p[1];
         return;
     }
-    *port = ctx->unk_4a8;
+    *port = ctx->defaultPort;
 end:;
 }
 }
@@ -1392,7 +1392,7 @@ s32 GsSrvList_ParseServer(Unk_ov065_0228a218_Ctx *ctx, Unk_ov065_0228a218_Ent *e
         buf += 2;
         n -= 2;
     } else {
-        port = ctx->unk_4a8;
+        port = ctx->defaultPort;
     }
     GsServer_SetPrivateAddress(ent, ip, port);
     if (flags & 8) {
@@ -1406,14 +1406,14 @@ s32 GsSrvList_ParseServer(Unk_ov065_0228a218_Ctx *ctx, Unk_ov065_0228a218_Ent *e
         func_ov065_02288d34(ent, ip);
     }
     if (flags & 0x40) {
-        cnt = GsArray_Count(ctx->unk_08);
+        cnt = GsArray_Count(ctx->keyList);
         i = 0;
         if (cnt > 0) {
             do {
-                rec = (Unk_ov065_0228a218_Rec *)GsArray_At(ctx->unk_08, i);
-                switch (rec->unk_04) {
+                rec = (Unk_ov065_0228a218_Rec *)GsArray_At(ctx->keyList, i);
+                switch (rec->keyType) {
                 case 1:
-                    GsServer_SetIntValue(ent, rec->unk_00, *buf);
+                    GsServer_SetIntValue(ent, rec->keyName, *buf);
                     buf++;
                     n--;
                     break;
@@ -1423,7 +1423,7 @@ s32 GsSrvList_ParseServer(Unk_ov065_0228a218_Ctx *ctx, Unk_ov065_0228a218_Ent *e
                     d[0] = buf[0];
                     d[1] = buf[1];
                     sw = (u16)(((tmp >> 8) & 0xff) | ((tmp << 8) & 0xff00));
-                    GsServer_SetIntValue(ent, rec->unk_00, sw);
+                    GsServer_SetIntValue(ent, rec->keyName, sw);
                     buf += 2;
                     n -= 2;
                     break;
@@ -1439,12 +1439,12 @@ s32 GsSrvList_ParseServer(Unk_ov065_0228a218_Ctx *ctx, Unk_ov065_0228a218_Ent *e
                     }
                     if (c == 0xff) {
                         s32 l;
-                        GsServer_SetStringValue(ent, rec->unk_00, buf);
+                        GsServer_SetStringValue(ent, rec->keyName, buf);
                         l = STD_GetStringLength((const char *)buf) + 1;
                         buf += l;
                         n -= l;
                     } else {
-                        GsServer_SetStringValue(ent, rec->unk_00, (void *)ctx->unk_84[c]);
+                        GsServer_SetStringValue(ent, rec->keyName, (void *)ctx->popularValues[c]);
                     }
                     break;
                 }
@@ -1533,7 +1533,7 @@ namespace F0228a20c {
 extern "C" {
 void GsSrvList_SetErrorText(Unk_ov065_0228a218_Ctx *ctx, u32 v)
 {
-    ctx->unk_4ac = v;
+    ctx->errorText = v;
 }
 }
 }
@@ -1541,13 +1541,13 @@ void GsSrvList_SetErrorText(Unk_ov065_0228a218_Ctx *ctx, u32 v)
 namespace F02289808 {
 extern "C" {
 s32 GsSrvList_ParseListReply(Unk_ov065_02289808_Ctx *c) {
-    u8 *p = c->unk_7c;
-    s32 n = c->unk_80;
+    u8 *p = c->inBuffer;
+    s32 n = c->inBufferLen;
     s32 a, b, l, r;
     u8 *dd;
     u8 *sp;
     Unk_ov065_02289808_Elem e;
-    switch (c->unk_5c8) {
+    switch (c->parseState) {
     case 0:
         if (n < 1) goto end;
         a = (p[0] ^ 0xec) + 2;
@@ -1556,10 +1556,10 @@ s32 GsSrvList_ParseListReply(Unk_ov065_02289808_Ctx *c) {
         b = a + l;
         if (n < b) goto end;
         GsSrvList_InitCrypt(c, p + a, l);
-        c->unk_5c8 = 1;
+        c->parseState = 1;
         p += b;
         n -= b;
-        GsSrvListCrypt_Decrypt(c->unk_4bc, p, n);
+        GsSrvListCrypt_Decrypt(c->cryptState, p, n);
     case 1:
         if (n < 6) goto end;
         dd = c->unk_4a0;
@@ -1567,8 +1567,8 @@ s32 GsSrvList_ParseListReply(Unk_ov065_02289808_Ctx *c) {
         dd[1] = p[1];
         dd[2] = p[2];
         dd[3] = p[3];
-        c->unk_488(c, 6, data_ov065_022918a8, c->unk_494);
-        dd = (u8 *)&c->unk_4a8;
+        c->unk_488(c, 6, data_ov065_022918a8, c->callbackParam);
+        dd = (u8 *)&c->defaultPort;
         sp = p + 4;
         dd[0] = sp[0];
         sp++;
@@ -1576,59 +1576,59 @@ s32 GsSrvList_ParseListReply(Unk_ov065_02289808_Ctx *c) {
         if (*(u16 *)dd == 0xffff) {
             if (GsUtil_StrSizeInBuffer(p + 6, n - 6) == -1) goto end;
             GsSrvList_SetErrorText(c, p + 6);
-            c->unk_488(c, 5, data_ov065_022918a8, c->unk_494);
-            if (c->unk_7c == 0) goto end;
+            c->unk_488(c, 5, data_ov065_022918a8, c->callbackParam);
+            if (c->inBuffer == 0) goto end;
         }
         p += 6;
         n -= 6;
-        if ((c->unk_5c4 & 2) != 0 || c->unk_4a8 == 0xffff) {
-            c->unk_5c8 = 5;
-            c->unk_00 = 2;
+        if ((c->queryOptions & 2) != 0 || c->defaultPort == 0xffff) {
+            c->parseState = 5;
+            c->state = 2;
             goto end;
         }
-        c->unk_5c8 = 2;
-        c->unk_484 = -1;
+        c->parseState = 2;
+        c->expectedCount = -1;
     case 2:
-        if (c->unk_484 == -1) {
+        if (c->expectedCount == -1) {
             if (n < 1) goto end;
-            c->unk_484 = p[0];
-            c->unk_08 = GsArray_New(8, c->unk_484, 0);
-            if (c->unk_08 == 0) return 5;
+            c->expectedCount = p[0];
+            c->keyList = GsArray_New(8, c->expectedCount, 0);
+            if (c->keyList == 0) return 5;
             p++;
             n--;
         }
-        while (c->unk_484 > GsArray_Count(c->unk_08)) {
+        while (c->expectedCount > GsArray_Count(c->keyList)) {
             if (n < 2) break;
             l = GsUtil_StrSizeInBuffer(p + 1, n - 1);
             if (l == -1) break;
-            e.unk_04 = p[0];
-            e.unk_00 = GsStrPool_Add(c, p + 1);
-            GsArray_Append(c->unk_08, &e);
+            e.keyType = p[0];
+            e.keyName = GsStrPool_Add(c, p + 1);
+            GsArray_Append(c->keyList, &e);
             l = l + 1;
             p += l;
             n -= l;
         }
-        if (c->unk_484 > GsArray_Count(c->unk_08)) goto end;
-        c->unk_5c8 = 3;
-        c->unk_484 = -1;
+        if (c->expectedCount > GsArray_Count(c->keyList)) goto end;
+        c->parseState = 3;
+        c->expectedCount = -1;
     case 3:
-        if (c->unk_484 == -1) {
+        if (c->expectedCount == -1) {
             if (n < 1) goto end;
-            c->unk_484 = p[0];
-            c->unk_480 = 0;
+            c->expectedCount = p[0];
+            c->numPopularValues = 0;
             p++;
             n--;
         }
-        while (c->unk_484 > c->unk_480) {
+        while (c->expectedCount > c->numPopularValues) {
             l = GsUtil_StrSizeInBuffer(p, n);
             if (l == -1) break;
             b = (s32)GsStrPool_Add(c, p);
-            c->unk_84[c->unk_480++] = b;
+            c->popularValues[c->numPopularValues++] = b;
             p += l;
             n -= l;
         }
-        if (c->unk_484 > c->unk_480) goto end;
-        c->unk_5c8 = 4;
+        if (c->expectedCount > c->numPopularValues) goto end;
+        c->parseState = 4;
     case 4:
         if (n < 5) goto end;
         r = 0;
@@ -1638,27 +1638,27 @@ s32 GsSrvList_ParseListReply(Unk_ov065_02289808_Ctx *c) {
             if (l == -1) {
                 n -= 5;
                 p += 5;
-                c->unk_5c8 = 5;
-                c->unk_00 = 2;
-                c->unk_488(c, 3, data_ov065_022918a8, c->unk_494);
+                c->parseState = 5;
+                c->state = 2;
+                c->unk_488(c, 3, data_ov065_022918a8, c->callbackParam);
                 goto end;
             }
             p += l;
             n -= l;
-            if (c->unk_7c == 0) l = 0;
+            if (c->inBuffer == 0) l = 0;
         } while (l != 0);
         break;
     default:
         break;
     }
 end:
-    if (c->unk_7c == 0) {
+    if (c->inBuffer == 0) {
         return 0;
     }
     if (n != 0) {
-        memmove(c->unk_7c, p, n);
+        memmove(c->inBuffer, p, n);
     }
-    c->unk_80 = n;
+    c->inBufferLen = n;
     return 0;
 }
 }
@@ -1674,11 +1674,11 @@ s32 GsSrvList_HandleKeyList(Unk_ov065_02289808_Ctx *c, u8 *p, s32 n) {
     cnt = p[0];
     p++;
     n--;
-    if (c->unk_08 != 0) {
+    if (c->keyList != 0) {
         GsSrvList_ReleaseKeyList(c);
     }
-    c->unk_08 = GsArray_New(8, cnt, 0);
-    if (c->unk_08 == 0) {
+    c->keyList = GsArray_New(8, cnt, 0);
+    if (c->keyList == 0) {
         return 5;
     }
     i = 0;
@@ -1691,9 +1691,9 @@ s32 GsSrvList_HandleKeyList(Unk_ov065_02289808_Ctx *c, u8 *p, s32 n) {
             if (l == -1) {
                 return 4;
             }
-            e.unk_04 = p[0];
-            e.unk_00 = GsStrPool_Add(c, p + 1);
-            GsArray_Append(c->unk_08, &e);
+            e.keyType = p[0];
+            e.keyName = GsStrPool_Add(c, p + 1);
+            GsArray_Append(c->keyList, &e);
             l = l + 1;
             p += l;
             n -= l;
@@ -1762,14 +1762,14 @@ s32 GsSrvList_HandleMsg06(Unk_ov065_02289808_Ctx *c, u8 *p, s32 n) {
             if (l2 == -1) {
                 return 4;
             }
-            c->unk_490(c, s1, x, y, z, p, c->unk_494);
+            c->unk_490(c, s1, x, y, z, p, c->callbackParam);
             p += l2;
             n -= l2;
             i++;
         } while (i < cnt);
     }
     if (flag != 0) {
-        c->unk_490(c, 0, 0, 0, 0, 0, c->unk_494);
+        c->unk_490(c, 0, 0, 0, 0, 0, c->callbackParam);
     }
     return 0;
 }
@@ -1836,7 +1836,7 @@ s32 GsSrvList_HandleMsg05(Unk_ov065_02289808_Ctx *c, u8 *p, s32 n) {
     if (c->unk_48c == 0) {
         return 0;
     }
-    c->unk_48c(c, (void *)x, d, i, ptrs, c->unk_494);
+    c->unk_48c(c, (void *)x, d, i, ptrs, c->callbackParam);
     return 0;
 }
 }
@@ -1899,7 +1899,7 @@ s32 GsSrvList_HandleServerUpdate(Unk_ov065_02289808_Ctx *c, u8 *p, s32 n) {
     if (r4 == -1) {
         GsSrvList_AddServer(c, r6);
     }
-    c->unk_488(c, 1, r6, c->unk_494);
+    c->unk_488(c, 1, r6, c->callbackParam);
     return 0;
 }
 }
@@ -1912,19 +1912,19 @@ s32 GsSrvList_ProcessMessages(Unk_ov065_02289808_Ctx *c) {
     s32 r = 0;
     u16 ml;
     u8 *p;
-    while (c->unk_80 >= 3) {
+    while (c->inBufferLen >= 3) {
         {
             d = (u8 *)&ml;
-            Get16(d, c->unk_7c);
+            Get16(d, c->inBuffer);
             ml = HTONS(ml);
             if (ml > 0x1000) {
                 r = 4;
                 break;
             }
-            if (c->unk_80 < ml) {
+            if (c->inBufferLen < ml) {
                 return 0;
             }
-            p = c->unk_7c;
+            p = c->inBuffer;
             switch ((s8)p[2]) {
             case 0:
                 break;
@@ -1935,7 +1935,7 @@ s32 GsSrvList_ProcessMessages(Unk_ov065_02289808_Ctx *c) {
                 r = GsSrvList_HandleServerUpdate(c, p + 3, ml - 3);
                 break;
             case 3:
-                if (GsSock_Send(c->unk_4b0, p, ml, 0) <= 0) {
+                if (GsSock_Send(c->socket, p, ml, 0) <= 0) {
                     return 3;
                 }
                 break;
@@ -1949,9 +1949,9 @@ s32 GsSrvList_ProcessMessages(Unk_ov065_02289808_Ctx *c) {
                 r = GsSrvList_HandleMsg06(c, p + 3, ml - 3);
                 break;
             }
-            c->unk_80 = c->unk_80 - ml;
-            if (c->unk_80 != 0 && c->unk_7c != 0) {
-                memmove(c->unk_7c, c->unk_7c + ml, c->unk_80);
+            c->inBufferLen = c->inBufferLen - ml;
+            if (c->inBufferLen != 0 && c->inBuffer != 0) {
+                memmove(c->inBuffer, c->inBuffer + ml, c->inBufferLen);
             }
         }
         if (r != 0) break;
@@ -1970,27 +1970,27 @@ s32 GsSrvList_Receive(Unk_ov065_02289808_Ctx *c) {
     s32 old;
     s32 r;
     s32 res;
-    if (GsSock_CanRead(c->unk_4b0) == 0) {
+    if (GsSock_CanRead(c->socket) == 0) {
         return 0;
     }
-    old = c->unk_80;
-    r = GsSock_Recv(c->unk_4b0, c->unk_7c + old, 0x1000 - old, 0);
+    old = c->inBufferLen;
+    r = GsSock_Recv(c->socket, c->inBuffer + old, 0x1000 - old, 0);
     if (r == 0 || r == -1) {
         GsSrvList_ReportError(c);
         return 3;
     }
-    c->unk_80 = c->unk_80 + r;
+    c->inBufferLen = c->inBufferLen + r;
     res = 0;
-    if (c->unk_00 == 2 || c->unk_5c8 > 0) {
-        GsSrvListCrypt_Decrypt(c->unk_4bc, c->unk_7c + old, c->unk_80 - old);
+    if (c->state == 2 || c->parseState > 0) {
+        GsSrvListCrypt_Decrypt(c->cryptState, c->inBuffer + old, c->inBufferLen - old);
     }
-    if (c->unk_00 == 3) {
+    if (c->state == 3) {
         res = GsSrvList_ParseListReply(c);
     }
     if (res != 0) {
         return res;
     }
-    if (c->unk_00 == 2 && c->unk_80 > 0) {
+    if (c->state == 2 && c->inBufferLen > 0) {
         return GsSrvList_ProcessMessages(c);
     }
     return 0;
@@ -2009,10 +2009,10 @@ s32 GsSrvList_SendServerMessage(Unk_ov065_02289808_Ctx *c, u32 a1, u32 a2, u8 *d
     u8 *d;
     u8 *sp;
     s32 r;
-    if (c->unk_00 == 1) {
+    if (c->state == 1) {
         GsSrvList_SendListRequest(c, 0, 0, 2, 0);
     }
-    if (c->unk_00 == 1) {
+    if (c->state == 1) {
         return 3;
     }
     l.t = HTONS((u16)(len + 9));
@@ -2033,7 +2033,7 @@ s32 GsSrvList_SendServerMessage(Unk_ov065_02289808_Ctx *c, u32 a1, u32 a2, u8 *d
     d[1] = sp[1];
     r = GsSrvList_SendToMaster(c, l.pkt, 9);
     if (r == 0) {
-        if (GsSock_Send(c->unk_4b0, data, len, 0) < 0) {
+        if (GsSock_Send(c->socket, data, len, 0) < 0) {
             return 3;
         }
         r = 0;
@@ -2080,9 +2080,9 @@ s32 GsSrvList_ThinkLan(Unk_ov065_02289720_Sub *s) {
     s32 r;
     void *e;
     len = 8;
-    if (GsSock_CanRead(s->unk_4b0) != 0) {
+    if (GsSock_CanRead(s->socket) != 0) {
         do {
-            r = GsSock_RecvFrom(s->unk_4b0, buf, 0x5db, 0, &addr, &len);
+            r = GsSock_RecvFrom(s->socket, buf, 0x5db, 0, &addr, &len);
             if (r != -1) {
                 r = GsSrvList_FindServerByAddress(s, addr.ip, addr.port);
                 if (r == -1) {
@@ -2094,13 +2094,13 @@ s32 GsSrvList_ThinkLan(Unk_ov065_02289720_Sub *s) {
                     GsSrvList_AddServer(s, e);
                 }
             }
-        } while (GsSock_CanRead(s->unk_4b0) != 0);
+        } while (GsSock_CanRead(s->socket) != 0);
     }
-    if (GsUtil_GetTimeMs() - s->unk_4b4 > 2000) {
-        GsSock_Close(s->unk_4b0);
-        s->unk_4b0 = -1;
-        s->unk_00 = 1;
-        s->unk_488(s, 3, data_ov065_022918a8, s->unk_494);
+    if (GsUtil_GetTimeMs() - s->lanStartTime > 2000) {
+        GsSock_Close(s->socket);
+        s->socket = -1;
+        s->state = 1;
+        s->unk_488(s, 3, data_ov065_022918a8, s->callbackParam);
     }
     return 0;
 }
@@ -2131,12 +2131,12 @@ void GsSrvBrowser_OnListEvent(Unk_ov065_02289578_Sub *s, s32 code, Unk_ov065_022
     switch (code) {
     case 0:
         o->unk_630(o, 0, p, o->userData);
-        if ((p->unk_14 & 3) != 0) {
-            if ((p->unk_14 & 0x40) != 0) {
+        if ((p->stateFlags & 3) != 0) {
+            if ((p->stateFlags & 0x40) != 0) {
                 break;
             }
         }
-        if ((p->unk_14 & 0x2c) != 0) {
+        if ((p->stateFlags & 0x2c) != 0) {
             break;
         }
         if (o->noAutoQuery != 0) {
@@ -2144,7 +2144,7 @@ void GsSrvBrowser_OnListEvent(Unk_ov065_02289578_Sub *s, s32 code, Unk_ov065_022
         }
         {
             s32 m;
-            if ((p->unk_15 & 1) != 0) {
+            if ((p->listFlags & 1) != 0) {
                 if (o->serverList == 0 || o->numQueryKeys == 0) {
                     m = 1;
                 } else {
@@ -2157,14 +2157,14 @@ void GsSrvBrowser_OnListEvent(Unk_ov065_02289578_Sub *s, s32 code, Unk_ov065_022
         }
         break;
     case 1:
-        if ((p->unk_14 & 0x43) == 0) {
+        if ((p->stateFlags & 0x43) == 0) {
             o->unk_630(o, 2, p, o->userData);
         } else {
             o->unk_630(o, 1, p, o->userData);
         }
         break;
     case 2:
-        if ((p->unk_14 & 0x2c) != 0) {
+        if ((p->stateFlags & 0x2c) != 0) {
             GsSrvQuery_Remove(o, p);
         }
         o->unk_630(o, 3, p, o->userData);
@@ -2173,7 +2173,7 @@ void GsSrvBrowser_OnListEvent(Unk_ov065_02289578_Sub *s, s32 code, Unk_ov065_022
         if (o->disconnectOnComplete != 0) {
             GsSrvList_Disconnect(s);
         }
-        if (GsArray_Count(s->unk_04) == 0 || o->numActiveQueries == 0) {
+        if (GsArray_Count(s->servers) == 0 || o->numActiveQueries == 0) {
             o->unk_630(o, 4, NULL, o->userData);
         }
         break;
@@ -2187,7 +2187,7 @@ void GsSrvBrowser_OnListEvent(Unk_ov065_02289578_Sub *s, s32 code, Unk_ov065_022
         break;
     }
     if (p != NULL) {
-        if (p->unk_00 == o->waitServerIp && p->unk_04 == o->waitServerPort) {
+        if (p->addr == o->waitServerIp && p->port == o->waitServerPort) {
             o->waitServerIp = 0;
         }
     }
@@ -2210,7 +2210,7 @@ void GsSrvBrowser_OnQueryEvent(void *a, s32 code, Unk_ov065_02289578_Pkt *p, Unk
         break;
     }
     if (p != NULL) {
-        if (p->unk_00 == o->waitServerIp && p->unk_04 == o->waitServerPort) {
+        if (p->addr == o->waitServerIp && p->port == o->waitServerPort) {
             o->waitServerIp = 0;
         }
     }

@@ -183,23 +183,23 @@ struct Unk_ov065_0228903c_Obj {
 };
 
 struct Unk_ov065_02289578_Pkt {
-    u32 unk_00;
-    u16 unk_04;
+    u32 addr;
+    u16 port;
     u8 pad_06[8];
     u8 unk_0e[6];
-    u8 unk_14;
-    u8 unk_15;
+    u8 stateFlags;
+    u8 listFlags;
 };
 
 struct Unk_ov065_02289720_Sub {
-    s32 unk_00;
+    s32 state;
     u8 pad_04[0x484];
     void (*unk_488)(Unk_ov065_02289720_Sub *, s32, s32, void *);
     u8 pad_48c[8];
-    void *unk_494;
+    void *callbackParam;
     u8 pad_498[0x18];
-    s32 unk_4b0;
-    u32 unk_4b4;
+    s32 socket;
+    u32 lanStartTime;
 };
 
 struct Unk_ov065_02289460_Obj {
@@ -223,7 +223,7 @@ struct Unk_ov065_02289460_Obj {
 
 struct Unk_ov065_02289578_Sub {
     s32 unk_00;
-    void *unk_04;
+    void *servers;
 };
 
 static inline u16 Unk_ov065_02289044_Htons(u16 x) {

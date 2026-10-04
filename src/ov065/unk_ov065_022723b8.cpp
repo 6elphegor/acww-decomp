@@ -20,13 +20,13 @@ extern "C" {
 
 struct Unk_ov065_0229080c_Big {
     u8 unk_00[0x214];
-    s32 unk_214;
-    u8 unk_218[0x100];
-    u8 unk_318[0x100];
+    s32 lastStatus;
+    u8 lastStatusString[0x100];
+    u8 lastLocationString[0x100];
 };
 
 struct Unk_ov065_0229080c_Sub {
-    Unk_ov065_0229080c_Big *unk_00;
+    Unk_ov065_0229080c_Big *connection;
 };
 
 struct Unk_ov065_0229080c_Ent {
@@ -34,28 +34,28 @@ struct Unk_ov065_0229080c_Ent {
 };
 
 struct Unk_ov065_0229080c {
-    s32 unk_00;
-    Unk_ov065_0229080c_Sub *unk_04;
-    u32 unk_08;
-    u32 unk_0c;
-    u32 unk_10;
-    s32 unk_14;
-    Unk_ov065_0229080c_Ent *unk_18;
-    u8 unk_1c;
-    u8 unk_1d;
-    u8 unk_1e;
-    u8 unk_1f;
+    s32 updateState;
+    Unk_ov065_0229080c_Sub *gpConnection;
+    u32 tickCount;
+    u32 lastTick;
+    u32 lastProcessTickHi;
+    s32 numFriends;
+    Unk_ov065_0229080c_Ent *friendList;
+    u8 syncIndex;
+    u8 isListChanged;
+    u8 syncPhase;
+    u8 updateStep;
     u32 unk_20;
     u32 unk_24;
-    u32 unk_28;
+    u32 buddyRequestText;
     void (*unk_2c)(s32, u32, s32);
-    s32 unk_30;
+    s32 updateCallbackArg;
     void (*unk_34)(s32, s32, char *, s32);
-    s32 unk_38;
+    s32 statusCallbackArg;
     void (*unk_3c)(void);
     void (*unk_40)(void);
     void (*unk_44)(s32, s32);
-    s32 unk_48;
+    s32 addedCallbackArg;
     u32 unk_4c;
     u32 unk_50;
 };
@@ -86,31 +86,31 @@ struct Unk_ov065_02290814_Sub {
 };
 
 struct Unk_ov065_02290814 {
-    u8 unk_00[4];
-    Unk_ov065_02290814_Sub *unk_04;
-    s32 unk_08;
-    u8 unk_0c;
-    u8 unk_0d;
+    u8 gpConnection[4];
+    Unk_ov065_02290814_Sub *transportSocketPtr;
+    s32 transportCallbacks;
+    u8 connectRetryCount;
+    u8 numClients;
     u8 unk_0e[6];
-    u8 unk_14;
-    volatile u8 unk_15;
+    u8 numPlayers;
+    volatile u8 matchType;
     u8 unk_16[0xde];
-    u32 unk_f4[32];
-    u8 unk_174;
-    u8 unk_175;
-    u8 unk_176[2];
-    u32 unk_178;
-    u32 unk_17c;
-    u32 unk_180;
-    u32 unk_184;
-    u32 unk_188;
+    u32 memberProfileIds[32];
+    u8 nnRetryCount;
+    u8 nnFailCount;
+    u8 nnCookieHigh[2];
+    u32 nnLastCookie;
+    u32 nnRetryTime;
+    u32 nnRetryTimeHi;
+    u32 connectWaitTime;
+    u32 connectWaitTimeHi;
     u8 unk_18c[0xc];
-    s32 unk_198;
+    s32 state;
     u8 unk_19c[0x4c];
-    u32 unk_1e8;
+    u32 profileId;
     u8 unk_1ec[0xc];
-    u32 unk_1f8[32];
-    u16 unk_278[32];
+    u32 memberConnectIps[32];
+    u16 memberConnectPorts[32];
 };
 
 struct Unk_ov065_022726a0_Hdr {
@@ -200,45 +200,45 @@ extern "C" {
 
 struct Unk_ov065_02290814_Ctx {
     u8 unk_00[0x0d];
-    u8 unk_0d;
+    u8 numClients;
     u8 unk_0e[6];
-    u8 unk_14;
-    u8 unk_15;
-    u8 unk_16;
+    u8 numPlayers;
+    u8 matchType;
+    u8 maxPlayers;
     u8 unk_17[3];
-    u16 unk_1a;
-    u32 unk_1c;
-    u32 unk_20;
-    u32 unk_24[8];
+    u16 publicPort;
+    u32 publicIp;
+    u32 reservation;
+    u32 memberIps[8];
     u8 unk_44[0x60];
-    u16 unk_a4[8];
+    u16 memberPorts[8];
     u8 unk_b4[0x30];
-    u32 unk_e4;
-    s32 unk_e8;
-    u32 unk_ec;
-    u32 unk_f0;
-    u32 unk_f4[0x20];
-    u8 unk_174;
+    u32 serverBrowser;
+    s32 queryRetryMode;
+    u32 queryRetryTick;
+    u32 queryRetryTickHi;
+    u32 memberProfileIds[0x20];
+    u8 nnRetryCount;
     u8 unk_175[3];
-    u32 unk_178;
-    u32 unk_17c;
-    u32 unk_180;
+    u32 nnLastCookie;
+    u32 nnRetryTime;
+    u32 nnRetryTimeHi;
     u8 unk_184[0x14];
-    s32 unk_198;
+    s32 state;
     u8 unk_19c;
     u8 unk_19d[0x0d];
-    u16 unk_1aa;
-    u32 unk_1ac;
+    u16 targetServerPort;
+    u32 targetServerIp;
     u8 unk_1b0[0x38];
-    u32 unk_1e8;
-    u32 unk_1ec;
+    u32 profileId;
+    u32 serverProfileId;
     u8 unk_1f0[0xc8];
     u8 unk_2b8[8];
     u8 unk_2c0[0xf4];
-    u8 unk_3b4;
+    u8 cmdType;
     u8 unk_3b5[0xa7];
     s32 (*unk_45c)(s32, u32);
-    u32 unk_460;
+    u32 evalCallbackParam;
 };
 
 struct Unk_ov065_02290818_Sm {
@@ -735,87 +735,87 @@ struct Unk_ov065_02275474_Arg {
 };
 
 struct Unk_ov065_02290814 {
-    u32 unk_00;
-    Unk_ov065_02290814_Sub *unk_04;
-    u8 unk_08[4];
-    u8 unk_0c;
-    u8 unk_0d;
-    u8 unk_0e;
+    u32 gpConnection;
+    Unk_ov065_02290814_Sub *transportSocketPtr;
+    u8 transportCallbacks[4];
+    u8 connectRetryCount;
+    u8 numClients;
+    u8 numValidClients;
     u8 unk_0f[5];
-    u8 unk_14;
-    volatile u8 unk_15;
-    u8 unk_16;
+    u8 numPlayers;
+    volatile u8 matchType;
+    u8 maxPlayers;
     u8 unk_17;
     u8 unk_18;
     u8 unk_19;
-    u16 unk_1a;
-    u32 unk_1c;
-    u32 unk_20;
-    u8 unk_24[0x80];
-    u8 unk_a4[0x40];
-    u32 unk_e4;
-    u32 unk_e8;
+    u16 publicPort;
+    u32 publicIp;
+    u32 reservation;
+    u8 memberIps[0x80];
+    u8 memberPorts[0x40];
+    u32 serverBrowser;
+    u32 queryRetryMode;
     u8 unk_ec[8];
-    u32 unk_f4[32];
-    u8 unk_174;
-    u8 unk_175;
-    u16 unk_176;
-    u32 unk_178;
-    u32 unk_17c;
-    u32 unk_180;
-    u32 unk_184;
-    u32 unk_188;
-    Unk_ov065_02275474_Arg unk_18c;
-    s32 unk_198;
+    u32 memberProfileIds[32];
+    u8 nnRetryCount;
+    u8 nnFailCount;
+    u16 nnCookieHigh;
+    u32 nnLastCookie;
+    u32 nnRetryTime;
+    u32 nnRetryTimeHi;
+    u32 connectWaitTime;
+    u32 connectWaitTimeHi;
+    Unk_ov065_02275474_Arg nnRequest;
+    s32 state;
     u8 unk_19c;
     u8 unk_19d;
     u8 unk_19e;
     u8 unk_19f;
-    u8 unk_1a0;
+    u8 closeState;
     u8 unk_1a1;
     u8 unk_1a2;
     u8 unk_1a3;
     u8 unk_1a4;
     u8 unk_1a5;
-    u16 unk_1a6;
+    u16 syncWaitMs;
     u16 unk_1a8;
-    u16 unk_1aa;
-    u32 unk_1ac;
+    u16 targetServerPort;
+    u32 targetServerIp;
     u32 unk_1b0;
     u32 unk_1b4;
     u32 unk_1b8;
     u32 unk_1bc;
     u32 unk_1c0;
     u32 unk_1c4;
-    u32 unk_1c8;
+    u32 syncAckMask;
     u32 unk_1cc;
     u32 unk_1d0;
     u32 unk_1d4;
     u32 unk_1d8;
     u32 unk_1dc;
-    u32 unk_1e0;
-    u32 unk_1e4;
-    u32 unk_1e8;
-    u32 unk_1ec;
-    u32 unk_1f0;
+    u32 waitStartTime;
+    u32 waitStartTimeHi;
+    u32 profileId;
+    u32 serverProfileId;
+    u32 targetProfileId;
     u32 unk_1f4;
-    u32 unk_1f8[32];
-    u16 unk_278[32];
-    u8 unk_2b8[0x20];
-    u32 unk_2d8;
+    u32 memberConnectIps[32];
+    u16 memberConnectPorts[32];
+    u8 aids[0x20];
+    u32 validAidMask;
     u8 unk_2dc[0x54];
     u8 unk_330[0x84];
-    u8 unk_3b4;
+    u8 cmdType;
     u8 unk_3b5;
-    u16 unk_3b6;
-    u32 unk_3b8;
-    u32 unk_3bc[32];
-    u32 unk_43c;
-    u32 unk_440;
-    u32 unk_444;
-    u32 unk_448;
+    u16 cmdPort;
+    u32 cmdIp;
+    u32 cmdArgs[32];
+    u32 cmdProfileId;
+    u32 cmdArgCount;
+    u32 cmdTime;
+    u32 cmdTimeHi;
     u32 unk_44c;
-    u32 unk_450;
+    u32 matchCallbackParam;
     u32 unk_454;
     u32 unk_458;
 };
@@ -931,57 +931,57 @@ struct Unk_ov065_02290814_Sub {
 };
 
 struct Unk_ov065_02290814 {
-    u32 unk_00;
-    Unk_ov065_02290814_Sub *unk_04;
-    u32 unk_08;
-    u8 unk_0c;
-    u8 unk_0d;
-    u8 unk_0e;
+    u32 gpConnection;
+    Unk_ov065_02290814_Sub *transportSocketPtr;
+    u32 transportCallbacks;
+    u8 connectRetryCount;
+    u8 numClients;
+    u8 numValidClients;
     u8 unk_0f;
-    u32 unk_10;
-    volatile u8 unk_14;
-    volatile u8 unk_15;
-    u8 unk_16;
+    u32 qrHandle;
+    volatile u8 numPlayers;
+    volatile u8 matchType;
+    u8 maxPlayers;
     u8 unk_17;
     u8 unk_18[8];
-    u32 unk_20;
-    u32 unk_24[32];
-    u16 unk_a4[32];
-    u32 unk_e4;
-    s32 unk_e8;
-    u32 unk_ec;
-    u32 unk_f0;
-    u32 unk_f4[32];
+    u32 reservation;
+    u32 memberIps[32];
+    u16 memberPorts[32];
+    u32 serverBrowser;
+    s32 queryRetryMode;
+    u32 queryRetryTick;
+    u32 queryRetryTickHi;
+    u32 memberProfileIds[32];
     u32 unk_174[4];
-    u32 unk_184;
-    u32 unk_188;
+    u32 connectWaitTime;
+    u32 connectWaitTimeHi;
     u8 unk_18c[8];
-    u32 unk_194;
-    s32 unk_198;
+    u32 nnCookie;
+    s32 state;
     u8 unk_19c[4];
-    u8 unk_1a0;
+    u8 closeState;
     u8 unk_1a1;
     u8 unk_1a2[4];
-    u16 unk_1a6;
+    u16 syncWaitMs;
     u8 unk_1a8[0x20];
-    u32 unk_1c8;
+    u32 syncAckMask;
     u8 unk_1cc[0x14];
-    u32 unk_1e0;
-    u32 unk_1e4;
-    u32 unk_1e8;
-    u32 unk_1ec;
-    u32 unk_1f0;
+    u32 waitStartTime;
+    u32 waitStartTimeHi;
+    u32 profileId;
+    u32 serverProfileId;
+    u32 targetProfileId;
     u32 unk_1f4;
-    u32 unk_1f8[32];
-    u16 unk_278[32];
-    u8 unk_2b8[0x20];
-    u32 unk_2d8;
+    u32 memberConnectIps[32];
+    u16 memberConnectPorts[32];
+    u8 aids[0x20];
+    u32 validAidMask;
     u8 unk_2dc[0xd8];
-    u8 unk_3b4;
+    u8 cmdType;
     u8 unk_3b5;
     u8 unk_3b6[0x96];
     Unk_ov065_0227627c_Fn unk_44c;
-    u32 unk_450;
+    u32 matchCallbackParam;
 };
 
 struct Unk_ov065_02270344_Rec {
@@ -1150,8 +1150,8 @@ struct Unk_ov065_02276f4c_Pad {
 };
 
 struct Unk_ov065_02290810 {
-    u8 unk_00;
-    u8 unk_01;
+    u8 lockEnabled;
+    u8 isLocked;
     u16 unk_02;
 };
 
@@ -1472,8 +1472,8 @@ void DwcMatch_InitControl(Unk_ov065_02276f4c_Ctx *a0, u32 a1, u32 *a2, u32 a3, u
     g->unk_45c = 0;
     g->unk_460 = 0;
     DwcMatch_ClearUserKeys();
-    sDwcMatchServerLock.unk_00 = 0;
-    sDwcMatchServerLock.unk_01 = 0;
+    sDwcMatchServerLock.lockEnabled = 0;
+    sDwcMatchServerLock.isLocked = 0;
     sDwcMatchServerLock.unk_02 = 0;
     DwcMatch_ResetState(0);
 }
@@ -1532,7 +1532,7 @@ void DwcMatch_StartGameServer(u32 a0, u32 a1, u32 a2, u32 a3, u32 a4) {
     g->unk_f4[0] = g->unk_1e8;
     g->unk_2d8 = 1;
     g->unk_0e = 0;
-    sDwcMatchServerLock.unk_01 = 0;
+    sDwcMatchServerLock.isLocked = 0;
     g->unk_198 = 10;
     DwcMatch_UpdateServerStatus();
     if (DwcMatch_HandleGpResult() == 0) {
@@ -1859,7 +1859,7 @@ extern "C" {
 
 void DwcMatch_OnGt2ConnectAttempt(u32 a0, u32 b, u32 c, u32 d, s32 s0, u8 *e) {
     s32 id;
-    if (g != NULL && g->unk_198 == 7 && g->unk_1a1 == 0) {
+    if (g != NULL && g->state == 7 && g->unk_1a1 == 0) {
     } else {
         GsTransport_Reject(b, (char *)"Init state", -1);
         return;
@@ -1870,11 +1870,11 @@ void DwcMatch_OnGt2ConnectAttempt(u32 a0, u32 b, u32 c, u32 d, s32 s0, u8 *e) {
         DwcMatch_Fail(6, -0x1543c);
         return;
     }
-    if (c != g->unk_1f8[g->unk_0d] || d != g->unk_278[g->unk_0d]) {
+    if (c != g->memberConnectIps[g->numClients] || d != g->memberConnectPorts[g->numClients]) {
         if (*e != 0) {
-            if (g->unk_f4[g->unk_0d] == func_0212b854((char *)e, NULL, 10)) {
-                g->unk_1f8[g->unk_0d] = c;
-                g->unk_278[g->unk_0d] = d;
+            if (g->memberProfileIds[g->numClients] == func_0212b854((char *)e, NULL, 10)) {
+                g->memberConnectIps[g->numClients] = c;
+                g->memberConnectPorts[g->numClients] = d;
                 goto ok;
             }
         }
@@ -1883,26 +1883,26 @@ void DwcMatch_OnGt2ConnectAttempt(u32 a0, u32 b, u32 c, u32 d, s32 s0, u8 *e) {
     }
 ok:
     Unk_ov065_02290814 *gs = g;
-    gs->unk_184 = 0;
-    gs->unk_188 = 0;
-    if (GsTransport_Accept(b, gs->unk_08) == 0) {
+    gs->connectWaitTime = 0;
+    gs->connectWaitTimeHi = 0;
+    if (GsTransport_Accept(b, gs->transportCallbacks) == 0) {
         DwcMatch_Fail(6, -0x13a1a);
         return;
     }
     DwcMatch_ClearPendingCommand();
-    if (g->unk_0d == 0) {
+    if (g->numClients == 0) {
         s32 t = s0 >> 1;
         if (t >= 0xffff) {
             t = 0xffff;
         }
-        g->unk_1a6 = t;
+        g->syncWaitMs = t;
     }
     u32 *p = DwcConn_GetSlot(id);
     Unk_ov065_02270344_Rec *q = DwcConn_GetConnInfo(id);
     *p = b;
-    g->unk_0d++;
+    g->numClients++;
     q->slotIndex = id;
-    q->aid = g->unk_2b8[g->unk_0d - 1];
+    q->aid = g->aids[g->numClients - 1];
     q->unk_02 = 0;
     q->unk_04 = 0;
     GsTransport_SetUserData(b, q);
@@ -1921,35 +1921,35 @@ void DwcMatch_OnGt2Connected(u32 a, u32 b) {
     if (g == NULL) {
         return;
     }
-    if (g->unk_198 != 7 && g->unk_198 != 0xc) {
+    if (g->state != 7 && g->state != 0xc) {
         return;
     }
     switch (b) {
     case 5:
         return;
     case 6: {
-        g->unk_0c++;
-        if (g->unk_0c > 5) {
-            g->unk_0c = 0;
-            DwcMatch_CancelNewClient(g->unk_f4[g->unk_14]);
+        g->connectRetryCount++;
+        if (g->connectRetryCount > 5) {
+            g->connectRetryCount = 0;
+            DwcMatch_CancelNewClient(g->memberProfileIds[g->numPlayers]);
             return;
         }
-        OS_SNPrintf(buf, 12, (char *)"%u", g->unk_1e8);
+        OS_SNPrintf(buf, 12, (char *)"%u", g->profileId);
         Unk_ov065_02290814 *c = g;
-        s32 r0 = GsTransport_AddressToString(c->unk_1f8[c->unk_14], c->unk_278[c->unk_14], 0);
-        s32 r = GsTransport_Connect(g->unk_04->transportSocket, 0, r0, buf, -1, 0x1388, c->unk_08, 0);
+        s32 r0 = GsTransport_AddressToString(c->memberConnectIps[c->numPlayers], c->memberConnectPorts[c->numPlayers], 0);
+        s32 r = GsTransport_Connect(g->transportSocketPtr->transportSocket, 0, r0, buf, -1, 0x1388, c->transportCallbacks, 0);
         if (r == 1) {
             DwcMatch_HandleGt2Result();
             return;
         } else if (r != 0) {
-            if (DwcMatch_CancelNewClient(g->unk_f4[g->unk_14]) == 0) {
+            if (DwcMatch_CancelNewClient(g->memberProfileIds[g->numPlayers]) == 0) {
                 return;
             }
         }
         break;
     }
     default:
-        if (DwcMatch_CancelNewClient(g->unk_f4[g->unk_0d + 1]) == 0) {
+        if (DwcMatch_CancelNewClient(g->memberProfileIds[g->numClients + 1]) == 0) {
             return;
         }
         break;
@@ -1961,13 +1961,13 @@ void DwcMatch_OnGt2Connected(u32 a, u32 b) {
         u32 *p = DwcConn_GetSlot(id);
         Unk_ov065_02270344_Rec *q = DwcConn_GetConnInfo(id);
         *p = a;
-        g->unk_0d++;
+        g->numClients++;
         q->slotIndex = id;
         q->unk_02 = 0;
         q->unk_04 = 0;
-        q->aid = g->unk_2b8[g->unk_0d];
+        q->aid = g->aids[g->numClients];
         GsTransport_SetUserData(a, q);
-        if (g->unk_198 == 0xc) {
+        if (g->state == 0xc) {
             DwcMatch_AdvanceConnect(0);
             return;
         }
@@ -2007,7 +2007,7 @@ extern "C" {
 #define g sDwcMatch
 
 void DwcMatch_ClearPendingCommand(void) {
-    g->unk_3b4 = 0xff;
+    g->cmdType = 0xff;
     g->unk_3b5 = 0;
 }
 #undef g
@@ -2026,7 +2026,7 @@ void DwcMatch_Fail(s32 a, s32 b) {
         Unk_ov065_02290814 *c = g;
         BOOL x;
         BOOL y;
-        if (c->unk_15 == 2) {
+        if (c->matchType == 2) {
             x = TRUE;
         } else {
             x = FALSE;
@@ -2037,7 +2037,7 @@ void DwcMatch_Fail(s32 a, s32 b) {
             y = FALSE;
         }
         s32 t = DwcFriend_FindIndexByProfileId();
-        g->unk_44c(a, 0, y, x, t, c->unk_450);
+        g->unk_44c(a, 0, y, x, t, c->matchCallbackParam);
         DwcMatch_Cleanup();
     }
 }
@@ -2050,10 +2050,10 @@ extern "C" {
 #define g sDwcMatch
 
 void DwcMatch_ResetPlayerCounts(void) {
-    if (g->unk_15 != 2) {
-        g->unk_14 = 0;
-        g->unk_16 = 0;
-        GsQr_SendStateChanged(g->unk_10);
+    if (g->matchType != 2) {
+        g->numPlayers = 0;
+        g->maxPlayers = 0;
+        GsQr_SendStateChanged(g->qrHandle);
     }
 }
 #undef g
@@ -2067,42 +2067,42 @@ extern "C" {
 void DwcMatch_OnSyncPacket(u32 a, s32 b, u8 *c) {
     switch (b) {
     case 2:
-        if (g->unk_198 == 1) {
+        if (g->state == 1) {
             if (c[0] == 1) {
                 g->unk_1f4 = 0;
             }
             u32 x = c[1];
             u8 y = c[2];
-            g->unk_2b8[x] = y;
-            g->unk_f4[x] = g->unk_1e8;
-            if (g->unk_15 == 0 || g->unk_15 == 1) {
-                g->unk_16 = g->unk_0d;
+            g->aids[x] = y;
+            g->memberProfileIds[x] = g->profileId;
+            if (g->matchType == 0 || g->matchType == 1) {
+                g->maxPlayers = g->numClients;
             }
-            g->unk_198 = 9;
+            g->state = 9;
         }
         DwcMatch_SendSyncPacket(a, 3);
         break;
     case 3:
-        if (g->unk_198 == 0x10) {
-            g->unk_1c8 |= 1 << a;
+        if (g->state == 0x10) {
+            g->syncAckMask |= 1 << a;
             s32 v = c[0] | (c[1] << 8);
-            if (v > g->unk_1a6) {
-                g->unk_1a6 = v;
+            if (v > g->syncWaitMs) {
+                g->syncWaitMs = v;
             }
             s32 r = DwcMatch_GetClientAidMask(0);
-            if (g->unk_1c8 == r) {
+            if (g->syncAckMask == r) {
                 s32 i;
-                for (i = 1; i <= g->unk_0d; i++) {
-                    DwcMatch_SendSyncPacket(g->unk_2b8[i], 4);
+                for (i = 1; i <= g->numClients; i++) {
+                    DwcMatch_SendSyncPacket(g->aids[i], 4);
                 }
-                g->unk_198 = 0x11;
+                g->state = 0x11;
             }
         } else {
             DwcMatch_SendSyncPacket(a, 4);
         }
         break;
     case 4:
-        if (g->unk_198 == 9) {
+        if (g->state == 9) {
             DwcMatch_AdvanceConnect(4);
         }
         break;
@@ -2120,36 +2120,36 @@ BOOL DwcMatch_OnConnectionClosed(s32 a, u32 b) {
     if (DwcCore_GetState() != 5) {
         return FALSE;
     }
-    if (g->unk_15 == 2) {
+    if (g->matchType == 2) {
         return TRUE;
     }
     if (a != 0) {
         DwcMatch_Fail(a, b - 0x13880);
         return TRUE;
     }
-    g->unk_2b8[0] = 0;
-    if (g->unk_1a1 == 1 || (u8)(g->unk_1a0 + 0xff) <= 1) {
+    g->aids[0] = 0;
+    if (g->unk_1a1 == 1 || (u8)(g->closeState + 0xff) <= 1) {
         return TRUE;
     }
-    if (g->unk_194 != 0) {
-        GsNatNeg_Cancel(g->unk_194);
-        g->unk_194 = 0;
+    if (g->nnCookie != 0) {
+        GsNatNeg_Cancel(g->nnCookie);
+        g->nnCookie = 0;
     }
-    if (g->unk_0d != 0) {
-        if (g->unk_1a0 == 0) {
-            g->unk_1a0 = 3;
-            GsTransport_CloseAll(g->unk_04->transportSocket);
+    if (g->numClients != 0) {
+        if (g->closeState == 0) {
+            g->closeState = 3;
+            GsTransport_CloseAll(g->transportSocketPtr->transportSocket);
         }
-    } else if (g->unk_15 == 3) {
+    } else if (g->matchType == 3) {
         DwcMatch_Fail(6, -0x13a2e);
-    } else if (g->unk_1f0 != 0) {
+    } else if (g->targetProfileId != 0) {
         DwcMatch_RestartAfterCancel();
-    } else if (g->unk_198 == 1) {
-        g->unk_198 = 0x12;
+    } else if (g->state == 1) {
+        g->state = 0x12;
         u64 t = DwcNet_GetTimeMs();
         Unk_ov065_02290814 *c = g;
-        c->unk_1e0 = (u32)t;
-        c->unk_1e4 = (u32)(t >> 32);
+        c->waitStartTime = (u32)t;
+        c->waitStartTimeHi = (u32)(t >> 32);
     } else {
         DwcMatch_Restart(1);
     }
@@ -2164,7 +2164,7 @@ extern "C" {
 #define g sDwcMatch
 
 void DwcMatch_OnClientDisconnected(u32 a) {
-    if (g->unk_1a0 != 2) {
+    if (g->closeState != 2) {
         DwcMatch_CancelNewClient(a);
     }
 }
@@ -2205,30 +2205,30 @@ u32 DwcMatch_RemoveMemberAt(s32 idx, s32 n) {
     if (g == NULL) {
         return 0;
     }
-    saved = g->unk_f4[idx];
-    g->unk_2d8 &= ~(1 << g->unk_2b8[idx]);
+    saved = g->memberProfileIds[idx];
+    g->validAidMask &= ~(1 << g->aids[idx]);
     DwcMatch_UpdateValidAidCount();
     if (idx < n - 1) {
         s32 i;
         for (i = 0; i < n - idx; i++) {
             s32 j = idx + i;
             s32 k = j + 1;
-            g->unk_24[j] = g->unk_24[k];
-            g->unk_a4[j] = g->unk_a4[k];
-            g->unk_f4[j] = g->unk_f4[k];
-            g->unk_1f8[j] = g->unk_1f8[k];
-            g->unk_278[j] = g->unk_278[k];
-            g->unk_2b8[j] = g->unk_2b8[k];
+            g->memberIps[j] = g->memberIps[k];
+            g->memberPorts[j] = g->memberPorts[k];
+            g->memberProfileIds[j] = g->memberProfileIds[k];
+            g->memberConnectIps[j] = g->memberConnectIps[k];
+            g->memberConnectPorts[j] = g->memberConnectPorts[k];
+            g->aids[j] = g->aids[k];
         }
     }
     if (n > 0) {
         s32 l = n - 1;
-        g->unk_24[l] = 0;
-        g->unk_a4[l] = 0;
-        g->unk_f4[l] = 0;
-        g->unk_1f8[l] = 0;
-        g->unk_278[l] = 0;
-        g->unk_2b8[l] = 0;
+        g->memberIps[l] = 0;
+        g->memberPorts[l] = 0;
+        g->memberProfileIds[l] = 0;
+        g->memberConnectIps[l] = 0;
+        g->memberConnectPorts[l] = 0;
+        g->aids[l] = 0;
     }
     return saved;
 }
@@ -2242,7 +2242,7 @@ extern "C" {
 
 u32 DwcMatch_GetClientCount(void) {
     if (g != NULL) {
-        return g->unk_0d;
+        return g->numClients;
     }
     return 0;
 }
@@ -2256,7 +2256,7 @@ extern "C" {
 
 u32 DwcMatch_GetValidAidCount(void) {
     if (g != NULL) {
-        return g->unk_0e;
+        return g->numValidClients;
     }
     return 0;
 }
@@ -2273,7 +2273,7 @@ void DwcMatch_UpdateValidAidCount(void) {
     n = -1;
     i = 0;
     Unk_ov065_02290814 *c = g;
-    u32 v = c->unk_2d8;
+    u32 v = c->validAidMask;
     for (; i < 32; i++) {
         if ((v & (1 << i)) != 0) {
             n++;
@@ -2282,9 +2282,9 @@ void DwcMatch_UpdateValidAidCount(void) {
     s32 z = 0;
     s32 m1 = ~z;
     if (n == m1) {
-        c->unk_0e = z;
+        c->numValidClients = z;
     } else {
-        c->unk_0e = n;
+        c->numValidClients = n;
     }
 }
 #undef g
@@ -2299,8 +2299,8 @@ s32 DwcMatch_GetAidList(u32 *out) {
     if (g == NULL) {
         return 0;
     }
-    *out = (u32)&g->unk_2b8;
-    return g->unk_0d + 1;
+    *out = (u32)&g->aids;
+    return g->numClients + 1;
 }
 #undef g
 }
@@ -2318,15 +2318,15 @@ s32 DwcMatch_GetValidAidList(u8 **out) {
     }
     MI_CpuFill8(sDwcMatchValidAids, 0, 0x20);
     i = 0;
-    for (; i <= g->unk_0e; i++) {
-        b = g->unk_2b8[i];
-        if ((g->unk_2d8 & (1 << b)) == 0) {
+    for (; i <= g->numValidClients; i++) {
+        b = g->aids[i];
+        if ((g->validAidMask & (1 << b)) == 0) {
             break;
         }
         sDwcMatchValidAids[i] = b;
     }
     *out = sDwcMatchValidAids;
-    return g->unk_0e + 1;
+    return g->numValidClients + 1;
 }
 #undef g
 }
@@ -2339,12 +2339,12 @@ extern "C" {
 s32 DwcMatch_UpdateServerStatus(void) {
     char buf[12];
     char buf2[32];
-    if (g->unk_15 != 2) {
+    if (g->matchType != 2) {
         return 0;
     }
-    OS_SNPrintf(buf, 12, (char *)"%u", g->unk_16 + 1);
+    OS_SNPrintf(buf, 12, (char *)"%u", g->maxPlayers + 1);
     GsUtil_FormatKeyValue((char *)"SCM", buf, buf2, 0x2f);
-    OS_SNPrintf(buf, 12, (char *)"%u", g->unk_0d + 1);
+    OS_SNPrintf(buf, 12, (char *)"%u", g->numClients + 1);
     GsUtil_AppendKeyValue((char *)"SCN", buf, buf2, 0x2f);
     OS_SNPrintf(buf, 12, (char *)"%u", 3);
     GsUtil_AppendKeyValue((char *)"VER", buf, buf2, 0x2f);
@@ -2396,16 +2396,16 @@ extern "C" {
 #define G sDwcMatch
 
 void DwcMatch_ResetState(u32 a) {
-    G->unk_0c = 0;
-    G->unk_174 = 0;
-    G->unk_176 = DwcNet_Rand32(0x10000);
-    G->unk_178 = 0;
+    G->connectRetryCount = 0;
+    G->nnRetryCount = 0;
+    G->nnCookieHigh = DwcNet_Rand32(0x10000);
+    G->nnLastCookie = 0;
     {
         Unk_ov065_02290814 *g = G;
-        g->unk_17c = 0;
-        g->unk_180 = 0;
-        g->unk_184 = 0;
-        g->unk_188 = 0;
+        g->nnRetryTime = 0;
+        g->nnRetryTimeHi = 0;
+        g->connectWaitTime = 0;
+        g->connectWaitTimeHi = 0;
         g->unk_19c = 0;
     }
     G->unk_1a1 = 0;
@@ -2413,34 +2413,34 @@ void DwcMatch_ResetState(u32 a) {
     G->unk_1a3 = 0;
     G->unk_1a4 = 0;
     G->unk_19f = 0;
-    G->unk_1a0 = 0;
+    G->closeState = 0;
     G->unk_1a8 = 0;
-    G->unk_1aa = 0;
-    G->unk_1ac = 0;
+    G->targetServerPort = 0;
+    G->targetServerIp = 0;
     {
         Unk_ov065_02290814 *g = G;
         g->unk_1d0 = 0;
         g->unk_1d4 = 0;
-        g->unk_1e0 = 0;
-        g->unk_1e4 = 0;
-        Unk_ov065_02275984_Clear32(&g->unk_3b4, 0x98);
+        g->waitStartTime = 0;
+        g->waitStartTimeHi = 0;
+        Unk_ov065_02275984_Clear32(&g->cmdType, 0x98);
     }
     if (a == 2) {
-        G->unk_14 = G->unk_0d;
-        if (G->unk_15 == 3) {
-            G->unk_198 = 1;
-        } else if (G->unk_15 == 2) {
-            G->unk_198 = 10;
+        G->numPlayers = G->numClients;
+        if (G->matchType == 3) {
+            G->state = 1;
+        } else if (G->matchType == 2) {
+            G->state = 10;
         }
     } else {
-        G->unk_0d = 0;
-        G->unk_0e = 0;
-        G->unk_14 = 0;
+        G->numClients = 0;
+        G->numValidClients = 0;
+        G->numPlayers = 0;
         G->unk_17 = 0;
-        G->unk_20 = 0;
-        G->unk_e8 = 0;
+        G->reservation = 0;
+        G->queryRetryMode = 0;
         G->unk_19d = 0;
-        G->unk_1a6 = 0;
+        G->syncWaitMs = 0;
         G->unk_1b0 = 0;
         {
             Unk_ov065_02290814 *g = G;
@@ -2452,28 +2452,28 @@ void DwcMatch_ResetState(u32 a) {
             Unk_ov065_02290814 *g = G;
             g->unk_1c0 = 0;
             g->unk_1c4 = 0;
-            g->unk_1c8 = 0;
+            g->syncAckMask = 0;
         }
-        G->unk_1ec = 0;
-        G->unk_1f0 = 0;
-        G->unk_2d8 = 0;
-        Unk_ov065_02275984_Clear32(G->unk_24, 0x80);
-        Unk_ov065_02275984_Clear16(G->unk_a4, 0x40);
-        Unk_ov065_02275984_Clear32(G->unk_f4, 0x80);
-        Unk_ov065_02275984_Clear32(&G->unk_18c, 0xc);
-        Unk_ov065_02275984_Clear32(G->unk_1f8, 0x80);
-        Unk_ov065_02275984_Clear16(G->unk_278, 0x40);
-        MI_CpuFill8(G->unk_2b8, 0, 0x20);
+        G->serverProfileId = 0;
+        G->targetProfileId = 0;
+        G->validAidMask = 0;
+        Unk_ov065_02275984_Clear32(G->memberIps, 0x80);
+        Unk_ov065_02275984_Clear16(G->memberPorts, 0x40);
+        Unk_ov065_02275984_Clear32(G->memberProfileIds, 0x80);
+        Unk_ov065_02275984_Clear32(&G->nnRequest, 0xc);
+        Unk_ov065_02275984_Clear32(G->memberConnectIps, 0x80);
+        Unk_ov065_02275984_Clear16(G->memberConnectPorts, 0x40);
+        MI_CpuFill8(G->aids, 0, 0x20);
         Unk_ov065_02275984_Clear32(G->unk_330, 0x84);
         if (a == 1) {
-            if (G->unk_15 == 0) {
-                G->unk_198 = 3;
-            } else if (G->unk_15 == 1) {
-                G->unk_198 = 4;
+            if (G->matchType == 0) {
+                G->state = 3;
+            } else if (G->matchType == 1) {
+                G->state = 4;
             }
         } else {
-            G->unk_15 = 0;
-            G->unk_16 = 0;
+            G->matchType = 0;
+            G->maxPlayers = 0;
             G->unk_18 = 0;
             G->unk_1f4 = 0;
             G->unk_19e = 0;
@@ -2492,12 +2492,12 @@ extern "C" {
 
 void DwcMatch_Init(u32 a, u32 b, u32 c, u32 d) {
     DwcMatch_ResetState(0);
-    G->unk_15 = a;
-    G->unk_16 = b;
+    G->matchType = a;
+    G->maxPlayers = b;
     G->unk_44c = c;
-    G->unk_450 = d;
-    G->unk_175 = 0;
-    G->unk_2b8[0] = 0;
+    G->matchCallbackParam = d;
+    G->nnFailCount = 0;
+    G->aids[0] = 0;
     GsQr_RegisterKeyName(0x32, (char *)"dwc_pid");
     GsQr_RegisterKeyName(0x33, (char *)"dwc_mtype");
     GsQr_RegisterKeyName(0x34, (char *)"dwc_mresv");
@@ -2514,12 +2514,12 @@ extern "C" {
 
 void DwcMatch_Cleanup(void) {
     if (G != NULL) {
-        if (G->unk_e4 != 0) {
-            GsSrvBrowser_Free(G->unk_e4);
-            G->unk_e4 = 0;
+        if (G->serverBrowser != 0) {
+            GsSrvBrowser_Free(G->serverBrowser);
+            G->serverBrowser = 0;
         }
         GsNatNeg_FreeAll();
-        G->unk_198 = 0;
+        G->state = 0;
         if (sDwcMatchUserFilter != 0) {
             DwcNet_Free(4, sDwcMatchUserFilter);
             sDwcMatchUserFilter = 0;
@@ -2551,7 +2551,7 @@ void DwcMatch_StartServerQuery(u32 a) {
     list[4] = 0x34;
     list[5] = 0x35;
     list[6] = 0x36;
-    if (G->unk_15 == 0 || G->unk_15 == 1) {
+    if (G->matchType == 0 || G->matchType == 1) {
         i = 0;
         e = sDwcMatchUserKeys;
         q = &list[7];
@@ -2563,14 +2563,14 @@ void DwcMatch_StartServerQuery(u32 a) {
             }
         }
     }
-    switch (G->unk_198) {
+    switch (G->state) {
     case 0:
     case 1:
         break;
     case 3:
-        a = G->unk_1f0;
+        a = G->targetProfileId;
         if (a == 0) {
-            DwcMatch_BuildServerFilter(buf, G->unk_1e8, G->unk_16, G->unk_15);
+            DwcMatch_BuildServerFilter(buf, G->profileId, G->maxPlayers, G->matchType);
             if (sDwcMatchUserFilter != 0) {
                 OS_SNPrintf(buf, 0x100, (char *)"%s and (%s)", buf, sDwcMatchUserFilter);
             }
@@ -2581,12 +2581,12 @@ void DwcMatch_StartServerQuery(u32 a) {
     case 4:
     case 5:
         OS_SNPrintf(buf, 0x100, (char *)"%s = %u", (char *)"dwc_pid", a);
-        G->unk_1ec = a;
+        G->serverProfileId = a;
         break;
     }
-    GsSrvBrowser_Clear(G->unk_e4);
+    GsSrvBrowser_Clear(G->serverBrowser);
     for (k = 0; k < 5; k++) {
-        s32 r = GsSrvBrowser_UpdateList(G->unk_e4, 1, 0, list, n, buf, 0x10);
+        s32 r = GsSrvBrowser_UpdateList(G->serverBrowser, 1, 0, list, n, buf, 0x10);
         if (r == 0) break;
         if (r != 2) break;
     }
@@ -2612,15 +2612,15 @@ extern "C" {
 enum Unk_ov065_022754f0_Z { Unk_ov065_022754f0_Z_0 = 0 };
 s32 DwcMatch_StartNatNegotiation(u32 a, u32 b, u32 c) {
     s32 flag;
-    u8 idx = G->unk_14;
+    u8 idx = G->numPlayers;
     s32 ret = 0;
     if (a == 0) {
-        b = (G->unk_1e8 & 0xffff) | (G->unk_176 << 16);
+        b = (G->profileId & 0xffff) | (G->nnCookieHigh << 16);
         if (GsServer_HasPrivateAddress(c) != 0) {
             s32 t = GsServer_GetPublicIp(c);
-            if (t == GsSrvBrowser_GetPublicIp(G->unk_e4)) {
-                G->unk_1f8[idx] = GsServer_GetPrivateIp(c);
-                G->unk_278[idx] = GsServer_GetPrivatePort(c);
+            if (t == GsSrvBrowser_GetPublicIp(G->serverBrowser)) {
+                G->memberConnectIps[idx] = GsServer_GetPrivateIp(c);
+                G->memberConnectPorts[idx] = GsServer_GetPrivatePort(c);
                 flag = 0;
             } else {
                 flag = 1;
@@ -2639,49 +2639,49 @@ s32 DwcMatch_StartNatNegotiation(u32 a, u32 b, u32 c) {
             yes:
                 flag = 1;
             } else {
-                G->unk_1f8[idx] = GsServer_GetPublicIp(c);
-                G->unk_278[idx] = GsServer_GetPublicPort(c);
+                G->memberConnectIps[idx] = GsServer_GetPublicIp(c);
+                G->memberConnectPorts[idx] = GsServer_GetPublicPort(c);
                 flag = 0;
             }
         }
         if (flag != 0) {
-            G->unk_176 = DwcNet_Rand32(0x10000);
-            G->unk_18c.unk_08 = b;
+            G->nnCookieHigh = DwcNet_Rand32(0x10000);
+            G->nnRequest.unk_08 = b;
         } else {
             u32 loc[2];
             s32 x;
             loc[0] = Sock_GetHostId();
-            loc[1] = GsTransport_GetLocalPort(G->unk_04->transportSocket);
+            loc[1] = GsTransport_GetLocalPort(G->transportSocketPtr->transportSocket);
             x = GsServer_GetPublicIp(c);
             b = GsServer_GetPublicPort(c);
-            x = DwcMatch_SendCommand(6, G->unk_f4[idx], x, b, loc, 2);
+            x = DwcMatch_SendCommand(6, G->memberProfileIds[idx], x, b, loc, 2);
             G->unk_3b5 = 0;
             if (x != 0) {
                 return 2;
             }
-            G->unk_18c.unk_08 = 0;
+            G->nnRequest.unk_08 = 0;
         }
-        G->unk_18c.unk_00 = 0;
-        G->unk_18c.unk_01 = 0;
-        G->unk_18c.unk_02 = GsServer_GetPublicPort(c);
-        G->unk_18c.unk_04 = GsServer_GetPublicIp(c);
+        G->nnRequest.unk_00 = 0;
+        G->nnRequest.unk_01 = 0;
+        G->nnRequest.unk_02 = GsServer_GetPublicPort(c);
+        G->nnRequest.unk_04 = GsServer_GetPublicIp(c);
     } else {
         flag = 1;
-        G->unk_18c.unk_00 = 1;
-        G->unk_18c.unk_01 = ret;
-        G->unk_18c.unk_02 = ret;
-        G->unk_18c.unk_04 = ret;
-        G->unk_18c.unk_08 = b;
+        G->nnRequest.unk_00 = 1;
+        G->nnRequest.unk_01 = ret;
+        G->nnRequest.unk_02 = ret;
+        G->nnRequest.unk_04 = ret;
+        G->nnRequest.unk_08 = b;
     }
     if (flag != 0) {
-        ret = DwcMatch_SendNnRequest(&G->unk_18c);
+        ret = DwcMatch_SendNnRequest(&G->nnRequest);
     } else {
         Unk_ov065_02290814 *g = G;
-        DwcMatch_OnNnComplete(0, GsTransport_GetRemoteIp(g->unk_04->transportSocket), 0, &g->unk_18c);
+        DwcMatch_OnNnComplete(0, GsTransport_GetRemoteIp(g->transportSocketPtr->transportSocket), 0, &g->nnRequest);
         Unk_ov065_022754f0_Z z = Unk_ov065_022754f0_Z_0;
         g = G;
-        g->unk_184 = z;
-        g->unk_188 = z;
+        g->connectWaitTime = z;
+        g->connectWaitTimeHi = z;
     }
     return ret;
 }
@@ -2697,13 +2697,13 @@ s32 DwcMatch_SendNnRequest(Unk_ov065_02275474_Arg *p) {
     s32 i;
     s32 r;
     if (p->unk_00 == 0) {
-        GsSrvBrowser_SendNatNegCookie(G->unk_e4, GsTransport_AddressToString(p->unk_04, 0, 0), p->unk_02, p->unk_08);
+        GsSrvBrowser_SendNatNegCookie(G->serverBrowser, GsTransport_AddressToString(p->unk_04, 0, 0), p->unk_02, p->unk_08);
         if (DwcMatch_HandleSbResult() != 0) {
             return 2;
         }
     }
     for (i = 0; i < 5; i++) {
-        r = GsNatNeg_Start(GsTransport_GetRemoteIp(G->unk_04->transportSocket), p->unk_08, p->unk_00, (void *)DwcMatch_OnNnProgress, (void *)DwcMatch_OnNnComplete, p);
+        r = GsNatNeg_Start(GsTransport_GetRemoteIp(G->transportSocketPtr->transportSocket), p->unk_08, p->unk_00, (void *)DwcMatch_OnNnProgress, (void *)DwcMatch_OnNnComplete, p);
         if (r == 0) break;
         if (r != 3) break;
     }
@@ -2724,7 +2724,7 @@ s32 DwcMatch_SendCommand(u32 a, u32 b, u32 c, u32 d, u32 *e, s32 f) {
     s32 i;
     u32 *p;
     r = 0;
-    if (G->unk_15 == 0 || ((G->unk_15 == 3 || G->unk_19e != 0) && a == 6)) {
+    if (G->matchType == 0 || ((G->matchType == 3 || G->unk_19e != 0) && a == 6)) {
         r = DwcMatch_SendSbCommand(a, c, d, e, f);
     } else {
         if (e != NULL && f != 0) {
@@ -2742,21 +2742,21 @@ s32 DwcMatch_SendCommand(u32 a, u32 b, u32 c, u32 d, u32 *e, s32 f) {
             }
         }
         buf[r] = 0;
-        r = DwcMatch_SendGpCommand(G->unk_00, a, b, buf);
+        r = DwcMatch_SendGpCommand(G->gpConnection, a, b, buf);
     }
     if (a == 2 || a == 6 || (u8)(a + 0xf8) <= 1) {
-        G->unk_3b4 = a;
-        G->unk_3b6 = d;
-        G->unk_3b8 = c;
-        G->unk_43c = b;
-        G->unk_440 = f;
+        G->cmdType = a;
+        G->cmdPort = d;
+        G->cmdIp = c;
+        G->cmdProfileId = b;
+        G->cmdArgCount = f;
         {
             Unk_ov065_02290814 *g = G;
             u64 t = DwcNet_GetTimeMs();
-            g->unk_444 = (u32)t;
-            g->unk_448 = (u32)(t >> 32);
+            g->cmdTime = (u32)t;
+            g->cmdTimeHi = (u32)(t >> 32);
             if (e != NULL && f != 0) {
-                MIi_CpuCopy32(e, g->unk_3bc, f * 4);
+                MIi_CpuCopy32(e, g->cmdArgs, f * 4);
             }
         }
     }
@@ -2783,12 +2783,12 @@ s32 DwcMatch_SendSbCommand(u32 a, u32 b, u32 c, u32 *d, s32 e) {
     h.unk_04 = 3;
     h.unk_08 = a;
     h.unk_09 = e * 4;
-    h.unk_0a = G->unk_1a;
-    h.unk_0c = G->unk_1c;
-    h.unk_10 = G->unk_1e8;
+    h.unk_0a = G->publicPort;
+    h.unk_0c = G->publicIp;
+    h.unk_10 = G->profileId;
     i = 0;
     do {
-        r = GsSrvBrowser_SendMessage(G->unk_e4, GsTransport_AddressToString(b, 0, 0), c, &h, h.unk_09 + 0x14);
+        r = GsSrvBrowser_SendMessage(G->serverBrowser, GsTransport_AddressToString(b, 0, 0), c, &h, h.unk_09 + 0x14);
         if (r == 0) break;
         if (r != 2) break;
         i++;
@@ -4398,38 +4398,38 @@ void DwcMatch_ProcessServerSync(void)
         goto end;
     }
     cx = sDwcMatch;
-    if (cx->unk_15 == 2) {
+    if (cx->matchType == 2) {
         goto end;
     }
-    if (*(volatile u8 *)&cx->unk_15 == 3) {
+    if (*(volatile u8 *)&cx->matchType == 3) {
         goto end;
     }
-    st = cx->unk_198;
+    st = cx->state;
     if (st == 0x13) {
         s32 t = DwcMatch_GetClientAidMask(0);
         u32 five;
         s = sDwcMatchSyncOption;
         if (s->answeredAidMask == t) {
             if (s->acceptedAidMask == t) {
-                sDwcMatch->unk_16 = sDwcMatch->unk_0d;
-                sDwcMatch->unk_19c = sDwcMatch->unk_0d - 1;
+                sDwcMatch->maxPlayers = sDwcMatch->numClients;
+                sDwcMatch->unk_19c = sDwcMatch->numClients - 1;
                 DwcMatch_AdvanceConnect(0);
                 goto end;
             }
             s->lastSendTime = DwcNet_GetTimeMs();
             s->answeredAidMask = 0;
-            if (sDwcMatch->unk_15 == 0) {
+            if (sDwcMatch->matchType == 0) {
                 u64 t2;
                 Unk_ov065_02290814_Ctx *cw;
-                sDwcMatch->unk_198 = 3;
-                sDwcMatch->unk_e8 = 2;
+                sDwcMatch->state = 3;
+                sDwcMatch->queryRetryMode = 2;
                 t2 = OS_GetTick();
                 cw = sDwcMatch;
-                cw->unk_ec = (u32)t2;
-                cw->unk_f0 = (u32)(t2 >> 32);
+                cw->queryRetryTick = (u32)t2;
+                cw->queryRetryTickHi = (u32)(t2 >> 32);
                 goto end;
             }
-            sDwcMatch->unk_198 = 4;
+            sDwcMatch->state = 4;
             DwcMatch_TryNextFriend(1, 0);
             goto end;
         }
@@ -4444,12 +4444,12 @@ void DwcMatch_ProcessServerSync(void)
             goto end;
         }
         {
-            for (j = 1; j <= sDwcMatch->unk_0d; j++) {
+            for (j = 1; j <= sDwcMatch->numClients; j++) {
                 u32 bits = sDwcMatchSyncOption->answeredAidMask;
                 Unk_ov065_02290814_Ctx *c2;
                 if ((bits & (1 << (((u8 *)sDwcMatch) + j)[0x2b8])) == 0) {
                     c2 = sDwcMatch;
-                    if (DwcMatch_HandleResult(DwcMatch_SendCommand(0x11, c2->unk_f4[j], c2->unk_24[j], c2->unk_a4[j], 0, 0)) != 0) {
+                    if (DwcMatch_HandleResult(DwcMatch_SendCommand(0x11, c2->memberProfileIds[j], c2->memberIps[j], c2->memberPorts[j], 0, 0)) != 0) {
                         goto end;
                     }
                 }
@@ -4460,7 +4460,7 @@ void DwcMatch_ProcessServerSync(void)
         if ((u32)(st - 3) > 1) {
             goto end;
         }
-        if ((s32)cx->unk_0d < (s32)s->minPlayers - 1) {
+        if ((s32)cx->numClients < (s32)s->minPlayers - 1) {
             goto end;
         }
         if (s->retryCount == 0) {
@@ -4476,16 +4476,16 @@ void DwcMatch_ProcessServerSync(void)
             goto end;
         }
     proceed:
-        if (sDwcMatch->unk_1ec != 0) {
-            if (DwcMatch_HandleResult(DwcMatch_SendReservationCancel(sDwcMatch->unk_1ec)) != 0) {
+        if (sDwcMatch->serverProfileId != 0) {
+            if (DwcMatch_HandleResult(DwcMatch_SendReservationCancel(sDwcMatch->serverProfileId)) != 0) {
                 goto end;
             }
         }
-        sDwcMatch->unk_198 = 0x13;
+        sDwcMatch->state = 0x13;
         {
-            for (j = 1; j <= sDwcMatch->unk_0d; j++) {
+            for (j = 1; j <= sDwcMatch->numClients; j++) {
                 Unk_ov065_02290814_Ctx *c2 = sDwcMatch;
-                if (DwcMatch_HandleResult(DwcMatch_SendCommand(0x11, c2->unk_f4[j], c2->unk_24[j], c2->unk_a4[j], 0, 0)) != 0) {
+                if (DwcMatch_HandleResult(DwcMatch_SendCommand(0x11, c2->memberProfileIds[j], c2->memberIps[j], c2->memberPorts[j], 0, 0)) != 0) {
                     goto end;
                 }
             }
@@ -4758,17 +4758,17 @@ void DwcMatch_OnServerBrowserEvent(u32 list, s32 mode, u32 c)
                 i++;
             } while (i < GsSrvBrowser_GetServerCount(list));
         }
-        switch (sDwcMatch->unk_198) {
+        switch (sDwcMatch->state) {
         case 2: {
             i = 0;
             if (GsSrvBrowser_GetServerCount(list) > 0) {
                 do {
                     u32 e = GsSrvBrowser_GetServer(list, i);
                     Unk_ov065_02290814_Ctx *cx = sDwcMatch;
-                    if (cx->unk_1c != 0) {
-                        if (cx->unk_1c == GsServer_GetPublicIp(e)) {
-                            if (cx->unk_1a != 0) {
-                                if (sDwcMatch->unk_1a == GsServer_GetPublicPort(e)) {
+                    if (cx->publicIp != 0) {
+                        if (cx->publicIp == GsServer_GetPublicIp(e)) {
+                            if (cx->publicPort != 0) {
+                                if (sDwcMatch->publicPort == GsServer_GetPublicPort(e)) {
                                     break;
                                 }
                             }
@@ -4778,19 +4778,19 @@ void DwcMatch_OnServerBrowserEvent(u32 list, s32 mode, u32 c)
                 } while (i < GsSrvBrowser_GetServerCount(list));
             }
             if (i < GsSrvBrowser_GetServerCount(list)) {
-                sDwcMatch->unk_198 = 3;
-                sDwcMatch->unk_1ec = 0;
-                if (DwcMatch_HandleSbResult(DwcMatch_StartServerQuery(sDwcMatch->unk_1ec)) != 0) {
+                sDwcMatch->state = 3;
+                sDwcMatch->serverProfileId = 0;
+                if (DwcMatch_HandleSbResult(DwcMatch_StartServerQuery(sDwcMatch->serverProfileId)) != 0) {
                     return;
                 }
             } else {
                 u64 t;
                 Unk_ov065_02290814_Ctx *cw;
-                sDwcMatch->unk_e8 = 2;
+                sDwcMatch->queryRetryMode = 2;
                 t = OS_GetTick();
                 cw = sDwcMatch;
-                cw->unk_ec = (u32)t;
-                cw->unk_f0 = (u32)(t >> 32);
+                cw->queryRetryTick = (u32)t;
+                cw->queryRetryTickHi = (u32)(t >> 32);
             }
             break;
         }
@@ -4798,25 +4798,25 @@ void DwcMatch_OnServerBrowserEvent(u32 list, s32 mode, u32 c)
             DwcMatch_EvaluateServers(1);
             if (GsSrvBrowser_GetServerCount(list) != 0) {
                 if (DwcMatch_HandleResult(DwcMatch_SendReservation(0, 0)) == 0) {
-                    sDwcMatch->unk_198 = 4;
-                    sDwcMatch->unk_e8 = 0;
+                    sDwcMatch->state = 4;
+                    sDwcMatch->queryRetryMode = 0;
                 }
             } else {
                 u64 t;
                 Unk_ov065_02290814_Ctx *cw;
-                sDwcMatch->unk_e8 = 2;
+                sDwcMatch->queryRetryMode = 2;
                 t = OS_GetTick();
                 cw = sDwcMatch;
-                cw->unk_ec = (u32)t;
-                cw->unk_f0 = (u32)(t >> 32);
+                cw->queryRetryTick = (u32)t;
+                cw->queryRetryTickHi = (u32)(t >> 32);
             }
             break;
         case 5: {
             if (GsSrvBrowser_GetServerCount(list) != 0) {
                 do {
                     u32 e = GsSrvBrowser_GetServer(list, 0);
-                    if (sDwcMatch->unk_1ac == GsServer_GetPublicIp(e)) {
-                        if (sDwcMatch->unk_1aa == GsServer_GetPublicPort(e)) {
+                    if (sDwcMatch->targetServerIp == GsServer_GetPublicIp(e)) {
+                        if (sDwcMatch->targetServerPort == GsServer_GetPublicPort(e)) {
                             break;
                         }
                     }
@@ -4827,36 +4827,36 @@ void DwcMatch_OnServerBrowserEvent(u32 list, s32 mode, u32 c)
                 u32 e = GsSrvBrowser_GetServer(list, 0);
                 u32 h = GsServer_GetIntValue(e, (char *)"dwc_pid", 0);
                 Unk_ov065_02290814_Ctx *cx = sDwcMatch;
-                if (cx->unk_15 == 1 && h == cx->unk_f4[0]) {
+                if (cx->matchType == 1 && h == cx->memberProfileIds[0]) {
                     if (DwcMatch_EvaluateServers(0) != 0) {
-                        if (sDwcMatch->unk_0d != 0) {
-                            if (DwcMatch_HandleResult(DwcMatch_SendCloseOrder(sDwcMatch->unk_0d)) != 0) {
+                        if (sDwcMatch->numClients != 0) {
+                            if (DwcMatch_HandleResult(DwcMatch_SendCloseOrder(sDwcMatch->numClients)) != 0) {
                                 return;
                             }
                         }
                     } else {
-                        if (DwcMatch_HandleResult(DwcMatch_SendReservationCancel(sDwcMatch->unk_f4[0])) != 0) {
+                        if (DwcMatch_HandleResult(DwcMatch_SendReservationCancel(sDwcMatch->memberProfileIds[0])) != 0) {
                             return;
                         }
-                        sDwcMatch->unk_198 = 4;
+                        sDwcMatch->state = 4;
                         if (DwcMatch_HandleResult(DwcMatch_TryNextFriend(0, 0)) != 0) {
                             return;
                         }
                         return;
                     }
                 }
-                sDwcMatch->unk_198 = 6;
+                sDwcMatch->state = 6;
                 if (DwcMatch_HandleNnStartResult(DwcMatch_StartNatNegotiation(0, 0, GsSrvBrowser_GetServer(list, 0))) != 0) {
                     return;
                 }
             } else {
                 u64 t;
                 Unk_ov065_02290814_Ctx *cw;
-                sDwcMatch->unk_e8 = 2;
+                sDwcMatch->queryRetryMode = 2;
                 t = OS_GetTick();
                 cw = sDwcMatch;
-                cw->unk_ec = (u32)t;
-                cw->unk_f0 = (u32)(t >> 32);
+                cw->queryRetryTick = (u32)t;
+                cw->queryRetryTickHi = (u32)(t >> 32);
             }
             break;
         }
@@ -4890,17 +4890,17 @@ BOOL DwcMatch_EvaluateServers(u32 a)
 {
     BOOL flag2 = FALSE;
     s32 i = 0;
-    if (GsSrvBrowser_GetServerCount(sDwcMatch->unk_e4) > 0) {
+    if (GsSrvBrowser_GetServerCount(sDwcMatch->serverBrowser) > 0) {
         do {
-            u32 e = GsSrvBrowser_GetServer(sDwcMatch->unk_e4, i);
+            u32 e = GsSrvBrowser_GetServer(sDwcMatch->serverBrowser, i);
             BOOL found;
-            if (sDwcMatch->unk_15 == 0) {
+            if (sDwcMatch->matchType == 0) {
                 u32 h = GsServer_GetIntValue(e, (char *)"dwc_pid", 0);
                 s32 j;
                 found = FALSE;
-                for (j = 1; j <= sDwcMatch->unk_0d; j++) {
-                    if (h == sDwcMatch->unk_f4[j]) {
-                        GsSrvBrowser_RemoveServer(sDwcMatch->unk_e4, e);
+                for (j = 1; j <= sDwcMatch->numClients; j++) {
+                    if (h == sDwcMatch->memberProfileIds[j]) {
+                        GsSrvBrowser_RemoveServer(sDwcMatch->serverBrowser, e);
                         i--;
                         found = TRUE;
                         break;
@@ -4911,14 +4911,14 @@ BOOL DwcMatch_EvaluateServers(u32 a)
                 }
             }
             if (sDwcMatch->unk_45c != 0) {
-                s32 v = sDwcMatch->unk_45c(i, sDwcMatch->unk_460);
+                s32 v = sDwcMatch->unk_45c(i, sDwcMatch->evalCallbackParam);
                 if (v > 0) {
                     if (v > 0x7fffff) {
                         v = 0x7fffff;
                     }
                     GsServer_SetIntValue(e, (char *)"dwc_eval", (v << 8) | DwcNet_Rand32(0x100));
                 } else {
-                    GsSrvBrowser_RemoveServer(sDwcMatch->unk_e4, e);
+                    GsSrvBrowser_RemoveServer(sDwcMatch->serverBrowser, e);
                     i--;
                     flag2 = TRUE;
                 }
@@ -4927,15 +4927,15 @@ BOOL DwcMatch_EvaluateServers(u32 a)
             }
         next:
             i++;
-        } while (i < GsSrvBrowser_GetServerCount(sDwcMatch->unk_e4));
+        } while (i < GsSrvBrowser_GetServerCount(sDwcMatch->serverBrowser));
     }
     if (a != 0) {
-        if (GsSrvBrowser_GetServerCount(sDwcMatch->unk_e4) != 0) {
-            GsSrvBrowser_Sort(sDwcMatch->unk_e4, 0, (char *)"dwc_eval", 0);
+        if (GsSrvBrowser_GetServerCount(sDwcMatch->serverBrowser) != 0) {
+            GsSrvBrowser_Sort(sDwcMatch->serverBrowser, 0, (char *)"dwc_eval", 0);
         }
     }
     if (flag2 != 0) {
-        if (GsSrvBrowser_GetServerCount(sDwcMatch->unk_e4) == 0) {
+        if (GsSrvBrowser_GetServerCount(sDwcMatch->serverBrowser) == 0) {
             return FALSE;
         }
     }
@@ -4953,19 +4953,19 @@ void DwcMatch_OnQr2ServerKey(s32 a, u32 b)
 {
     switch (a) {
     case 8:
-        GsQr_BufAppendInt(b, sDwcMatch->unk_14);
+        GsQr_BufAppendInt(b, sDwcMatch->numPlayers);
         break;
     case 10:
-        GsQr_BufAppendInt(b, sDwcMatch->unk_16);
+        GsQr_BufAppendInt(b, sDwcMatch->maxPlayers);
         break;
     case 0x32:
         GsQr_BufAppendInt(b, *(s32 *)((u8 *)sDwcMatch + 0x1e8));
         break;
     case 0x33:
-        GsQr_BufAppendInt(b, sDwcMatch->unk_15);
+        GsQr_BufAppendInt(b, sDwcMatch->matchType);
         break;
     case 0x34:
-        GsQr_BufAppendInt(b, sDwcMatch->unk_20);
+        GsQr_BufAppendInt(b, sDwcMatch->reservation);
         break;
     case 0x35:
         GsQr_BufAppendInt(b, 3);
@@ -5076,8 +5076,8 @@ extern "C" {
 
 void DwcMatch_OnQr2PublicAddress(u32 a, u32 b)
 {
-    sDwcMatch->unk_1c = a;
-    sDwcMatch->unk_1a = b;
+    sDwcMatch->publicIp = a;
+    sDwcMatch->publicPort = b;
 }
 
 }
@@ -5089,25 +5089,25 @@ extern "C" {
 
 void DwcMatch_OnQr2NnRequest(u32 a)
 {
-    if (sDwcMatch->unk_198 == 1) {
-        sDwcMatch->unk_198 = 6;
-    } else if (sDwcMatch->unk_198 != 6 && sDwcMatch->unk_198 != 0xb) {
+    if (sDwcMatch->state == 1) {
+        sDwcMatch->state = 6;
+    } else if (sDwcMatch->state != 6 && sDwcMatch->state != 0xb) {
         return;
     }
-    if (sDwcMatch->unk_178 == a) {
-        sDwcMatch->unk_174++;
+    if (sDwcMatch->nnLastCookie == a) {
+        sDwcMatch->nnRetryCount++;
     } else {
-        sDwcMatch->unk_174 = 0;
-        sDwcMatch->unk_178 = a;
+        sDwcMatch->nnRetryCount = 0;
+        sDwcMatch->nnLastCookie = a;
     }
     Unk_ov065_02272734_Z z = Unk_ov065_02272734_Z_0;
     {
         Unk_ov065_02290814_Ctx *c = sDwcMatch;
-        c->unk_17c = z;
-        c->unk_180 = z;
+        c->nnRetryTime = z;
+        c->nnRetryTimeHi = z;
     }
     if (DwcMatch_HandleNnStartResult(DwcMatch_StartNatNegotiation(1, a, z)) == 0) {
-        sDwcMatch->unk_3b4 = 0xff;
+        sDwcMatch->cmdType = 0xff;
     }
 }
 
@@ -5124,7 +5124,7 @@ void DwcMatch_OnQr2ClientMessage(u8 *buf, u32 n) {
     u8 body[0x80];
     if (DwcCore_GetState() == 5 ||
         (DwcCore_GetState() == 6 &&
-         (sDwcMatch->unk_15 == 2 || sDwcMatch->unk_15 == 3))) {
+         (sDwcMatch->matchType == 2 || sDwcMatch->matchType == 3))) {
         while (off + 0x14 <= n) {
             MI_CpuCopy8(buf, &hdr, 0x14);
             if (strncmp(&hdr, (char *)"SBCM", 4) != 0) {
@@ -5161,7 +5161,7 @@ extern "C" {
 
 void DwcMatch_OnNnComplete(s32 a, s32 b, Unk_ov065_02272428_Sub *c, Unk_ov065_02272428_Sub *d) {
     Unk_ov065_02290814 *g;
-    if (sDwcMatch->unk_198 != 6 && sDwcMatch->unk_198 != 0xb) {
+    if (sDwcMatch->state != 6 && sDwcMatch->state != 0xb) {
         return;
     }
     if (d == NULL) {
@@ -5171,24 +5171,24 @@ void DwcMatch_OnNnComplete(s32 a, s32 b, Unk_ov065_02272428_Sub *c, Unk_ov065_02
         s32 idx;
         char buf[12];
         d->cookie = 0;
-        sDwcMatch->unk_14++;
-        idx = sDwcMatch->unk_14;
+        sDwcMatch->numPlayers++;
+        idx = sDwcMatch->numPlayers;
         if (d->clientIndex != 0) {
-            sDwcMatch->unk_1f8[idx] = c->peerIp;
-            sDwcMatch->unk_278[idx] = ((c->peerPort >> 8) & 0xff) | ((c->peerPort << 8) & 0xff00);
-            sDwcMatch->unk_174 = 0;
-            sDwcMatch->unk_178 = 0;
-            *(u64 *)&sDwcMatch->unk_17c = 0;
-            if (sDwcMatch->unk_198 == 0xb) {
-                sDwcMatch->unk_198 = 0xc;
+            sDwcMatch->memberConnectIps[idx] = c->peerIp;
+            sDwcMatch->memberConnectPorts[idx] = ((c->peerPort >> 8) & 0xff) | ((c->peerPort << 8) & 0xff00);
+            sDwcMatch->nnRetryCount = 0;
+            sDwcMatch->nnLastCookie = 0;
+            *(u64 *)&sDwcMatch->nnRetryTime = 0;
+            if (sDwcMatch->state == 0xb) {
+                sDwcMatch->state = 0xc;
             } else {
-                sDwcMatch->unk_198 = 7;
+                sDwcMatch->state = 7;
             }
-            sDwcMatch->unk_0c = 0;
-            OS_SNPrintf(buf, 12, (char *)"%u", sDwcMatch->unk_1e8);
-            s32 r = GsTransport_Connect(sDwcMatch->unk_04->transportSocket, 0,
-                                        GsTransport_AddressToString(sDwcMatch->unk_1f8[idx], sDwcMatch->unk_278[idx], 0),
-                                        buf, -1, 0x1388, sDwcMatch->unk_08, 0);
+            sDwcMatch->connectRetryCount = 0;
+            OS_SNPrintf(buf, 12, (char *)"%u", sDwcMatch->profileId);
+            s32 r = GsTransport_Connect(sDwcMatch->transportSocketPtr->transportSocket, 0,
+                                        GsTransport_AddressToString(sDwcMatch->memberConnectIps[idx], sDwcMatch->memberConnectPorts[idx], 0),
+                                        buf, -1, 0x1388, sDwcMatch->transportCallbacks, 0);
             if (r == 1) {
                 DwcMatch_HandleGt2Result();
                 return;
@@ -5196,22 +5196,22 @@ void DwcMatch_OnNnComplete(s32 a, s32 b, Unk_ov065_02272428_Sub *c, Unk_ov065_02
             if (r == 0) {
                 return;
             }
-            if (DwcMatch_CancelNewClient(sDwcMatch->unk_f4[idx]) != 0) {
+            if (DwcMatch_CancelNewClient(sDwcMatch->memberProfileIds[idx]) != 0) {
                 return;
             }
             return;
         }
         if (c != NULL) {
             s32 i = idx - 1;
-            sDwcMatch->unk_1f8[i] = c->peerIp;
-            sDwcMatch->unk_278[i] = ((c->peerPort >> 8) & 0xff) | ((c->peerPort << 8) & 0xff00);
+            sDwcMatch->memberConnectIps[i] = c->peerIp;
+            sDwcMatch->memberConnectPorts[i] = ((c->peerPort >> 8) & 0xff) | ((c->peerPort << 8) & 0xff00);
         }
         g = sDwcMatch;
         {
             u64 t = DwcNet_GetTimeMs();
-            *(u64 *)&g->unk_184 = t;
+            *(u64 *)&g->connectWaitTime = t;
         }
-        g->unk_198 = 7;
+        g->state = 7;
         return;
     }
     if (d->cookie == 0) {
@@ -5228,7 +5228,7 @@ void DwcMatch_OnNnComplete(s32 a, s32 b, Unk_ov065_02272428_Sub *c, Unk_ov065_02
                 if (DwcMatch_CountNnRetry(0) == 0) {
                     return;
                 }
-                if (DwcMatch_RestartAfterNnFailure(sDwcMatch->unk_f4[sDwcMatch->unk_0d]) != 0) {
+                if (DwcMatch_RestartAfterNnFailure(sDwcMatch->memberProfileIds[sDwcMatch->numClients]) != 0) {
                     return;
                 }
                 return;
@@ -5243,11 +5243,11 @@ void DwcMatch_OnNnComplete(s32 a, s32 b, Unk_ov065_02272428_Sub *c, Unk_ov065_02
         g = sDwcMatch;
         {
             u64 t = DwcNet_GetTimeMs();
-            *(u64 *)&g->unk_17c = t;
+            *(u64 *)&g->nnRetryTime = t;
         }
-        if (r4 == 1 || (r4 == 2 && g->unk_174 >= 1)) {
+        if (r4 == 1 || (r4 == 2 && g->nnRetryCount >= 1)) {
             d->cookie = 0;
-            if (sDwcMatch->unk_15 == 3 || sDwcMatch->unk_15 == 2) {
+            if (sDwcMatch->matchType == 3 || sDwcMatch->matchType == 2) {
                 if (DwcMatch_CountNnRetry(1) == 0) {
                     return;
                 }
@@ -5256,10 +5256,10 @@ void DwcMatch_OnNnComplete(s32 a, s32 b, Unk_ov065_02272428_Sub *c, Unk_ov065_02
                     return;
                 }
             }
-            sDwcMatch->unk_174 = 0;
-            sDwcMatch->unk_178 = 0;
-            *(u64 *)&sDwcMatch->unk_17c = 0;
-            if (DwcMatch_CancelNewClient(sDwcMatch->unk_f4[sDwcMatch->unk_0d + 1]) != 0) {
+            sDwcMatch->nnRetryCount = 0;
+            sDwcMatch->nnLastCookie = 0;
+            *(u64 *)&sDwcMatch->nnRetryTime = 0;
+            if (DwcMatch_CancelNewClient(sDwcMatch->memberProfileIds[sDwcMatch->numClients + 1]) != 0) {
                 return;
             }
         }
@@ -5277,10 +5277,10 @@ s32 DwcMatch_CountNnRetry(s32 a) {
     if (a != 0) {
         return 1;
     }
-    if (sDwcMatch->unk_15 != 3) {
-        sDwcMatch->unk_175++;
+    if (sDwcMatch->matchType != 3) {
+        sDwcMatch->nnFailCount++;
     }
-    if (sDwcMatch->unk_15 == 3 || sDwcMatch->unk_175 >= 5) {
+    if (sDwcMatch->matchType == 3 || sDwcMatch->nnFailCount >= 5) {
         DwcMatch_Fail(6, -0x15194);
         return 0;
     }

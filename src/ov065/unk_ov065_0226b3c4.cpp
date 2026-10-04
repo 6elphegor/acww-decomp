@@ -3,7 +3,7 @@
 
 struct Unk_ov065_0228b31c_Tmpl {
     u32 unk_00[18];
-    const char *unk_48;
+    const char *hostName;
     u32 unk_4c;
     u32 unk_50[2];
 };
