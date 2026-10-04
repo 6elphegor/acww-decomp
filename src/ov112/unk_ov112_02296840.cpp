@@ -151,7 +151,7 @@ public:
     /* 0x98 */ s32 caretX;
     /* 0x9c */ s32 caretY;
     /* 0xa0 */ s32 keyboardSlideY;
-    /* 0xa4 */ s32 unk_a4;
+    /* 0xa4 */ s32 pageSlideY;
     /* 0xa8 */ s32 buttonsSlideY;
     /* 0xac */ u32 flags;
     /* 0xb0 */ s32 lengthGauge;
@@ -542,8 +542,8 @@ void BbsWriteMenu::transitionAct00() {
     applySlideOffset(6, 0, 0);
     setTransitionState(1);
     keyboardSlideY = getSlideOffsetY();
-    unk_a4 = keyboardSlideY;
-    buttonsSlideY = unk_a4;
+    pageSlideY = keyboardSlideY;
+    buttonsSlideY = pageSlideY;
     BbsWriteMenu_SetFlags((S *)this, 0x81);
     bottomButtons.setLayoutNeverMindConfirm();
     BbsWriteMenu_RedrawText((S *)this);
@@ -566,8 +566,8 @@ void BbsWriteMenu::transitionAct01() {
     applySlideOffset(4, 0, -8);
     applySlideOffset(6, 0, 0);
     keyboardSlideY = getSlideOffsetY();
-    unk_a4 = keyboardSlideY;
-    buttonsSlideY = unk_a4;
+    pageSlideY = keyboardSlideY;
+    buttonsSlideY = pageSlideY;
 }
 
 void BbsWriteMenu::transitionAct02() {
@@ -664,8 +664,8 @@ void BbsWriteMenu::transitionAct0A() {
         beginSubSlideOut(2, 0, 0, 0x30);
         applySlideOffset(4, 0, -8);
         setTransitionState(0xb);
-        unk_a4 = getSlideOffsetY();
-        buttonsSlideY = unk_a4;
+        pageSlideY = getSlideOffsetY();
+        buttonsSlideY = pageSlideY;
     }
 }
 
@@ -676,8 +676,8 @@ void BbsWriteMenu::transitionAct0B() {
     } else {
         applySlideOffset(4, 0, -8);
     }
-    unk_a4 = getSlideOffsetY();
-    buttonsSlideY = unk_a4;
+    pageSlideY = getSlideOffsetY();
+    buttonsSlideY = pageSlideY;
 }
 
 void BbsWriteMenu::transitionAct0C() {
@@ -689,8 +689,8 @@ void BbsWriteMenu::transitionAct0C() {
         applySlideOffset(4, 0, -8);
         applySlideOffset(6, 0, -8);
         setTransitionState(0xd);
-        unk_a4 = getSlideOffsetY();
-        buttonsSlideY = unk_a4;
+        pageSlideY = getSlideOffsetY();
+        buttonsSlideY = pageSlideY;
     }
 }
 
@@ -703,9 +703,9 @@ void BbsWriteMenu::transitionAct0D() {
         applySlideOffset(4, 0, -8);
         applySlideOffset(6, 0, -8);
     }
-    unk_a4 = getSlideOffsetY();
-    buttonsSlideY = unk_a4;
-    keyboardSlideY = unk_a4;
+    pageSlideY = getSlideOffsetY();
+    buttonsSlideY = pageSlideY;
+    keyboardSlideY = pageSlideY;
 }
 
 void BbsWriteMenu::init() {

@@ -13,231 +13,234 @@
 // start-up (the NULL members are copied from __ptmf_null) and VillagerTalkTopics_CopyTables copies them into main's tables.
 
 struct TalkTopicMsg;
-class Unk_Menu : public VillagerTalkTopics {};
+// Field-less subclass: the table entries' member pointers are of this type (converting them to it, not to
+// VillagerTalkTopics::*, is what the original __sinit code does; folding it into VillagerTalkTopics does not match).
+class VillagerTalkTopicsSub : public VillagerTalkTopics {};
 
-typedef void (Unk_Menu::*Unk_ov069_Fn)();
-typedef void (VillagerTalkTopics::*Unk_ov069_FnB)();
-struct Unk_ov069_EntB {
-    Unk_ov069_FnB a;
-    Unk_ov069_FnB b;
-    Unk_ov069_FnB c;
+typedef void (VillagerTalkTopicsSub::*VillagerTalkTopicsSubFn)();
+typedef void (VillagerTalkTopics::*VillagerTalkTopicsFn)();
+// VillagerTalkTopicFns (main's topic table entry, three state functions) typed for the topics classes.
+struct VillagerTalkTopicsFns {
+    VillagerTalkTopicsFn a;
+    VillagerTalkTopicsFn b;
+    VillagerTalkTopicsFn c;
 };
-struct Unk_ov069_Ent {
-    Unk_ov069_Fn a;
-    Unk_ov069_Fn b;
-    Unk_ov069_Fn c;
+struct VillagerTalkTopicsSubFns {
+    VillagerTalkTopicsSubFn a;
+    VillagerTalkTopicsSubFn b;
+    VillagerTalkTopicsSubFn c;
 };
 extern "C" void memcpy(void *, const void *, s32);
 
-extern Unk_ov069_Ent sHouseVisitTsuTopicTable[3];
-extern Unk_ov069_Ent sTalkBeginTopics[17];
-extern Unk_ov069_Ent sApSubTopics[13];
-extern Unk_ov069_Ent sConnectTopic[1];
-extern Unk_ov069_Ent sEtcCancelTopicTable[1];
-extern Unk_ov069_Ent sSmallTalkTopicTable[2];
-extern Unk_ov069_Ent sRequestTopicsA[26];
-extern Unk_ov069_Ent sEtcConnectTopicTable[6];
-extern Unk_ov069_Ent sEvKaraokeTopicTable[9];
-extern Unk_ov069_Ent sEvAdmireTopicTable[8];
-extern Unk_ov069_Ent sEvGardeniingTopicTable[4];
-extern Unk_ov069_Ent sEvAcornTopicTable[9];
-extern Unk_ov069_Ent sEvSnowfesTopicTable[4];
-extern Unk_ov069_Ent sEvCountdownTopicTable[8];
-extern Unk_ov069_Ent sEvBirthTopicTable[7];
+extern VillagerTalkTopicsSubFns sHouseVisitTsuTopicTable[3];
+extern VillagerTalkTopicsSubFns sTalkBeginTopics[17];
+extern VillagerTalkTopicsSubFns sApSubTopics[13];
+extern VillagerTalkTopicsSubFns sConnectTopic[1];
+extern VillagerTalkTopicsSubFns sEtcCancelTopicTable[1];
+extern VillagerTalkTopicsSubFns sSmallTalkTopicTable[2];
+extern VillagerTalkTopicsSubFns sRequestTopicsA[26];
+extern VillagerTalkTopicsSubFns sEtcConnectTopicTable[6];
+extern VillagerTalkTopicsSubFns sEvKaraokeTopicTable[9];
+extern VillagerTalkTopicsSubFns sEvAdmireTopicTable[8];
+extern VillagerTalkTopicsSubFns sEvGardeniingTopicTable[4];
+extern VillagerTalkTopicsSubFns sEvAcornTopicTable[9];
+extern VillagerTalkTopicsSubFns sEvSnowfesTopicTable[4];
+extern VillagerTalkTopicsSubFns sEvCountdownTopicTable[8];
+extern VillagerTalkTopicsSubFns sEvBirthTopicTable[7];
 
-Unk_ov069_Ent data_ov069_022613cc[17] = {
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectGreeting, (Unk_ov069_Fn)&VillagerTalkTopics::ensureSpeakerMemory, (Unk_ov069_Fn)&VillagerTalkTopics::continueAfterGreeting},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::select3pTalk, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectApTopic, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectEvKaraokeTalk, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkKaraokeTopics::selectEvFirework, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkKaraokeTopics::selectEvAdmireTalk, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkHobbyTopics::selectEvFishing, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkHobbyTopics::selectEvInsect, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkHobbyTopics::selectEvGardeniingTalk, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkAcornTopics::selectEvAcornTalk, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkAcornTopics::selectEvSnowfesTalk, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkHolidayTopics::selectEvCountdownTalk, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectGreeting, (Unk_ov069_Fn)&VillagerTalkTopics::startGreetingB, (Unk_ov069_Fn)&VillagerTalkTopics::continueGreetingB},
-    {(Unk_ov069_Fn)&VillagerTalkHolidayTopics::selectEvBirthMsg0, 0, (Unk_ov069_Fn)&VillagerTalkHolidayTopics::continueEvBirthMsg0},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectAiFall, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectEtcHit, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectEtcPush, 0, 0},
+VillagerTalkTopicsSubFns data_ov069_022613cc[17] = {
+    {(VillagerTalkTopicsSubFn)&VillagerTalkTopics::selectGreeting, (VillagerTalkTopicsSubFn)&VillagerTalkTopics::ensureSpeakerMemory, (VillagerTalkTopicsSubFn)&VillagerTalkTopics::continueAfterGreeting},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkTopics::select3pTalk, 0, 0},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkTopics::selectApTopic, 0, 0},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkTopics::selectEvKaraokeTalk, 0, 0},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkKaraokeTopics::selectEvFirework, 0, 0},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkKaraokeTopics::selectEvAdmireTalk, 0, 0},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkHobbyTopics::selectEvFishing, 0, 0},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkHobbyTopics::selectEvInsect, 0, 0},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkHobbyTopics::selectEvGardeniingTalk, 0, 0},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkAcornTopics::selectEvAcornTalk, 0, 0},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkAcornTopics::selectEvSnowfesTalk, 0, 0},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkHolidayTopics::selectEvCountdownTalk, 0, 0},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkTopics::selectGreeting, (VillagerTalkTopicsSubFn)&VillagerTalkTopics::startGreetingB, (VillagerTalkTopicsSubFn)&VillagerTalkTopics::continueGreetingB},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkHolidayTopics::selectEvBirthMsg0, 0, (VillagerTalkTopicsSubFn)&VillagerTalkHolidayTopics::continueEvBirthMsg0},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkTopics::selectAiFall, 0, 0},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkTopics::selectEtcHit, 0, 0},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkTopics::selectEtcPush, 0, 0},
 };
-Unk_ov069_EntB data_ov069_02261294[13] = {
-    {0, 0, (Unk_ov069_FnB)&VillagerTalkTopics::openHabitAcceptChoice},
-    {(Unk_ov069_FnB)&VillagerTalkTopics::selectApHabitPart1, 0, (Unk_ov069_FnB)&VillagerTalkTopics::openHabitKeyboard},
-    {(Unk_ov069_FnB)&VillagerTalkTopics::retryHabitInput, 0, 0},
-    {(Unk_ov069_FnB)&VillagerTalkTopics::selectApHabitConfirm, 0, (Unk_ov069_FnB)&VillagerTalkTopics::openHabitConfirmChoice},
-    {(Unk_ov069_FnB)&VillagerTalkTopics::selectApHabitB, 0, 0},
-    {(Unk_ov069_FnB)&VillagerTalkTopics::selectApHabitDeclined, 0, 0},
-    {0, 0, (Unk_ov069_FnB)&VillagerTalkTopics::openNicknameAcceptChoice},
-    {(Unk_ov069_FnB)&VillagerTalkTopics::selectApNicknProposal, (Unk_ov069_FnB)&VillagerTalkTopics::makeNickname, (Unk_ov069_FnB)&VillagerTalkTopics::openNicknameLikeChoice},
-    {(Unk_ov069_FnB)&VillagerTalkTopics::selectApNicknDisliked, 0, (Unk_ov069_FnB)&VillagerTalkTopics::openNicknameKeyboard},
-    {(Unk_ov069_FnB)&VillagerTalkTopics::selectApNicknConfirm, 0, (Unk_ov069_FnB)&VillagerTalkTopics::openNicknameConfirmChoice},
-    {(Unk_ov069_FnB)&VillagerTalkTopics::retryNicknameInput, 0, 0},
-    {(Unk_ov069_FnB)&VillagerTalkTopics::selectApNicknAccepted, 0, 0},
-    {(Unk_ov069_FnB)&VillagerTalkTopics::selectApNicknRefused, 0, 0},
+VillagerTalkTopicsFns data_ov069_02261294[13] = {
+    {0, 0, (VillagerTalkTopicsFn)&VillagerTalkTopics::openHabitAcceptChoice},
+    {(VillagerTalkTopicsFn)&VillagerTalkTopics::selectApHabitPart1, 0, (VillagerTalkTopicsFn)&VillagerTalkTopics::openHabitKeyboard},
+    {(VillagerTalkTopicsFn)&VillagerTalkTopics::retryHabitInput, 0, 0},
+    {(VillagerTalkTopicsFn)&VillagerTalkTopics::selectApHabitConfirm, 0, (VillagerTalkTopicsFn)&VillagerTalkTopics::openHabitConfirmChoice},
+    {(VillagerTalkTopicsFn)&VillagerTalkTopics::selectApHabitB, 0, 0},
+    {(VillagerTalkTopicsFn)&VillagerTalkTopics::selectApHabitDeclined, 0, 0},
+    {0, 0, (VillagerTalkTopicsFn)&VillagerTalkTopics::openNicknameAcceptChoice},
+    {(VillagerTalkTopicsFn)&VillagerTalkTopics::selectApNicknProposal, (VillagerTalkTopicsFn)&VillagerTalkTopics::makeNickname, (VillagerTalkTopicsFn)&VillagerTalkTopics::openNicknameLikeChoice},
+    {(VillagerTalkTopicsFn)&VillagerTalkTopics::selectApNicknDisliked, 0, (VillagerTalkTopicsFn)&VillagerTalkTopics::openNicknameKeyboard},
+    {(VillagerTalkTopicsFn)&VillagerTalkTopics::selectApNicknConfirm, 0, (VillagerTalkTopicsFn)&VillagerTalkTopics::openNicknameConfirmChoice},
+    {(VillagerTalkTopicsFn)&VillagerTalkTopics::retryNicknameInput, 0, 0},
+    {(VillagerTalkTopicsFn)&VillagerTalkTopics::selectApNicknAccepted, 0, 0},
+    {(VillagerTalkTopicsFn)&VillagerTalkTopics::selectApNicknRefused, 0, 0},
 };
-Unk_ov069_Ent data_ov069_02260cc4[1] = {
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectEtcConnect, 0, (Unk_ov069_Fn)&VillagerTalkRequestReplyTopics::openConnectMenu},
+VillagerTalkTopicsSubFns data_ov069_02260cc4[1] = {
+    {(VillagerTalkTopicsSubFn)&VillagerTalkTopics::selectEtcConnect, 0, (VillagerTalkTopicsSubFn)&VillagerTalkRequestReplyTopics::openConnectMenu},
 };
-Unk_ov069_EntB data_ov069_02260cdc[1] = {
-    {(Unk_ov069_FnB)&VillagerTalkTopics::selectEtcCancel, 0, 0},
+VillagerTalkTopicsFns data_ov069_02260cdc[1] = {
+    {(VillagerTalkTopicsFn)&VillagerTalkTopics::selectEtcCancel, 0, 0},
 };
-Unk_ov069_EntB data_ov069_02260cf4[2] = {
-    {(Unk_ov069_FnB)&VillagerTalkTopics::selectTsuTopic, 0, 0},
+VillagerTalkTopicsFns data_ov069_02260cf4[2] = {
+    {(VillagerTalkTopicsFn)&VillagerTalkTopics::selectTsuTopic, 0, 0},
 };
-Unk_ov069_Ent data_ov069_02261564[73] = {
+VillagerTalkTopicsSubFns data_ov069_02261564[73] = {
     {0, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkRequestReplyTopics::selectDeliveryRequest, (Unk_ov069_Fn)&VillagerTalkRequestReplyTopics::pickDeliveryRecipient, (Unk_ov069_Fn)&VillagerTalkRequestReplyTopics::gotoDeliveryTime},
-    {(Unk_ov069_Fn)&VillagerTalkRequestReplyTopics::selectQTime, 0, (Unk_ov069_Fn)&VillagerTalkRequestReplyTopics::openDeliveryAcceptChoice},
-    {(Unk_ov069_Fn)&VillagerTalkRequestReplyTopics::selectQNoB, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkRequestReplyTopics::selectQFull, 0, (Unk_ov069_Fn)&VillagerTalkRequestReplyTopics::continueQFull},
-    {(Unk_ov069_Fn)&VillagerTalkRequestReplyTopics::selectDeliveryAccepted, (Unk_ov069_Fn)&VillagerTalkRequestReplyTopics::acceptDeliveryRequest, (Unk_ov069_Fn)&VillagerTalkRequestReplyTopics::getRequestKind},
-    {(Unk_ov069_Fn)&VillagerTalkRequestReplyTopics::selectDeliveryLate, 0, (Unk_ov069_Fn)&VillagerTalkTopics::continueDeliveryLate},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectDeliveryLateReply, (Unk_ov069_Fn)&VillagerTalkTopics::finishLateDelivery, 0},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectDeliveryLost, (Unk_ov069_Fn)&VillagerTalkTopics::finishLostDelivery, 0},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectDeliveryOpened, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQTimeover, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQIcancel, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectDeliveryReceived, 0, (Unk_ov069_Fn)&VillagerTalkTopics::continueDeliveryReceived},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::openDeliveryItemPicker, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ06Open1, 0, (Unk_ov069_Fn)&VillagerTalkTopics::continuePresentLiked},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ06Open3, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ06Open2, 0, (Unk_ov069_Fn)&VillagerTalkTopics::continuePresentAccepted},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ07Open2, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ07Read, 0, (Unk_ov069_Fn)&VillagerTalkTopics::continueLetterRead},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ07Show, 0, (Unk_ov069_Fn)&VillagerTalkTopics::showLetter},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectDeliveryFin, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectDeliveryReminder, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectDeliveryReport, 0, (Unk_ov069_Fn)&VillagerTalkTopics::continueDeliveryReport},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ06Good, 0, (Unk_ov069_Fn)&VillagerTalkTopics::gotoRewardOrEnd},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ06Normal, 0, (Unk_ov069_Fn)&VillagerTalkTopics::gotoRewardOrEnd},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ06Bad, 0, (Unk_ov069_Fn)&VillagerTalkTopics::gotoRewardOrEnd},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQPreitem, 0, (Unk_ov069_Fn)&VillagerTalkTopics::gotoRewardItem},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQItemC, (Unk_ov069_Fn)&VillagerTalkTopics::giveRewardItem, (Unk_ov069_Fn)&VillagerTalkTopics::gotoDeliveryEnd},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectDeliveryEnd, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectCollectRequest, (Unk_ov069_Fn)&VillagerTalkRequestStartTopics::prepareRequestItem, (Unk_ov069_Fn)&VillagerTalkRequestStartTopics::openRequestChoice},
-    {(Unk_ov069_Fn)&VillagerTalkRequestStartTopics::selectQStart, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkRequestStartTopics::selectQNo, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkRequestStartTopics::selectQCon, 0, (Unk_ov069_Fn)&VillagerTalkRequestStartTopics::gotoQ05Talk},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ05Talk, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::openCatchPicker, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQPwin, 0, (Unk_ov069_Fn)&VillagerTalkTopics::takePlayerCatch},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQPwin2, 0, (Unk_ov069_Fn)&VillagerTalkTopics::handOverRequestReward},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQPlose, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQPdraw, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::checkVillagerCatch, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQNwin, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQNlose, 0, (Unk_ov069_Fn)&VillagerTalkTopics::keepItemThenGotoQPay},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQPay, 0, (Unk_ov069_Fn)&VillagerTalkTopics::handOverRequestReward},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQRevenge, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::openRequestItemPicker, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQMiss, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQMissB, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQThanks, 0, (Unk_ov069_Fn)&VillagerTalkTopics::takeRequestItem},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQPreitemB, 0, (Unk_ov069_Fn)&VillagerTalkRequestItemTopics::gotoQItemB},
-    {(Unk_ov069_Fn)&VillagerTalkRequestItemTopics::selectQItemB, 0, (Unk_ov069_Fn)&VillagerTalkRequestItemTopics::handOverQItemB},
-    {(Unk_ov069_Fn)&VillagerTalkRequestItemTopics::selectQClear, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkRequestItemTopics::selectQEnd, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkRequestItemTopics::selectQReturn, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkRequestItemTopics::selectQComp, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkRequestItemTopics::openArbeitItemPicker, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectEvArbeitReceive, 0, (Unk_ov069_Fn)&VillagerTalkTopics::giveArbeitReward},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectEvArbeitEnd, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ12Other, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ12Report, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ12Thanks, 0, (Unk_ov069_Fn)&VillagerTalkTopics::checkPocketsForQItem},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQItem, 0, (Unk_ov069_Fn)&VillagerTalkTopics::putQItemInPocket},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ12End, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ12Full, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ12FullPart1, 0, (Unk_ov069_Fn)&VillagerTalkTopics::recheckPocketsForQItem},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ12FullPart2, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ10Req, 0, (Unk_ov069_Fn)&VillagerTalkTopics::openQ10ReqChoice},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ10Reserve, 0, (Unk_ov069_Fn)&VillagerTalkTopics::openReserveTimeEntry},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQError1, 0, (Unk_ov069_Fn)&VillagerTalkTopics::openReserveTimeEntry},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQError2, 0, (Unk_ov069_Fn)&VillagerTalkTopics::openReserveTimeEntry},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQError3, 0, (Unk_ov069_Fn)&VillagerTalkTopics::openReserveTimeEntry},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ10Reserved, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ10Con, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ10Leave, 0, 0},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkRequestReplyTopics::selectDeliveryRequest, (VillagerTalkTopicsSubFn)&VillagerTalkRequestReplyTopics::pickDeliveryRecipient, (VillagerTalkTopicsSubFn)&VillagerTalkRequestReplyTopics::gotoDeliveryTime},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkRequestReplyTopics::selectQTime, 0, (VillagerTalkTopicsSubFn)&VillagerTalkRequestReplyTopics::openDeliveryAcceptChoice},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkRequestReplyTopics::selectQNoB, 0, 0},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkRequestReplyTopics::selectQFull, 0, (VillagerTalkTopicsSubFn)&VillagerTalkRequestReplyTopics::continueQFull},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkRequestReplyTopics::selectDeliveryAccepted, (VillagerTalkTopicsSubFn)&VillagerTalkRequestReplyTopics::acceptDeliveryRequest, (VillagerTalkTopicsSubFn)&VillagerTalkRequestReplyTopics::getRequestKind},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkRequestReplyTopics::selectDeliveryLate, 0, (VillagerTalkTopicsSubFn)&VillagerTalkTopics::continueDeliveryLate},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkTopics::selectDeliveryLateReply, (VillagerTalkTopicsSubFn)&VillagerTalkTopics::finishLateDelivery, 0},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkTopics::selectDeliveryLost, (VillagerTalkTopicsSubFn)&VillagerTalkTopics::finishLostDelivery, 0},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkTopics::selectDeliveryOpened, 0, 0},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkTopics::selectQTimeover, 0, 0},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkTopics::selectQIcancel, 0, 0},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkTopics::selectDeliveryReceived, 0, (VillagerTalkTopicsSubFn)&VillagerTalkTopics::continueDeliveryReceived},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkTopics::openDeliveryItemPicker, 0, 0},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkTopics::selectQ06Open1, 0, (VillagerTalkTopicsSubFn)&VillagerTalkTopics::continuePresentLiked},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkTopics::selectQ06Open3, 0, 0},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkTopics::selectQ06Open2, 0, (VillagerTalkTopicsSubFn)&VillagerTalkTopics::continuePresentAccepted},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkTopics::selectQ07Open2, 0, 0},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkTopics::selectQ07Read, 0, (VillagerTalkTopicsSubFn)&VillagerTalkTopics::continueLetterRead},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkTopics::selectQ07Show, 0, (VillagerTalkTopicsSubFn)&VillagerTalkTopics::showLetter},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkTopics::selectDeliveryFin, 0, 0},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkTopics::selectDeliveryReminder, 0, 0},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkTopics::selectDeliveryReport, 0, (VillagerTalkTopicsSubFn)&VillagerTalkTopics::continueDeliveryReport},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkTopics::selectQ06Good, 0, (VillagerTalkTopicsSubFn)&VillagerTalkTopics::gotoRewardOrEnd},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkTopics::selectQ06Normal, 0, (VillagerTalkTopicsSubFn)&VillagerTalkTopics::gotoRewardOrEnd},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkTopics::selectQ06Bad, 0, (VillagerTalkTopicsSubFn)&VillagerTalkTopics::gotoRewardOrEnd},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkTopics::selectQPreitem, 0, (VillagerTalkTopicsSubFn)&VillagerTalkTopics::gotoRewardItem},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkTopics::selectQItemC, (VillagerTalkTopicsSubFn)&VillagerTalkTopics::giveRewardItem, (VillagerTalkTopicsSubFn)&VillagerTalkTopics::gotoDeliveryEnd},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkTopics::selectDeliveryEnd, 0, 0},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkTopics::selectCollectRequest, (VillagerTalkTopicsSubFn)&VillagerTalkRequestStartTopics::prepareRequestItem, (VillagerTalkTopicsSubFn)&VillagerTalkRequestStartTopics::openRequestChoice},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkRequestStartTopics::selectQStart, 0, 0},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkRequestStartTopics::selectQNo, 0, 0},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkRequestStartTopics::selectQCon, 0, (VillagerTalkTopicsSubFn)&VillagerTalkRequestStartTopics::gotoQ05Talk},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkTopics::selectQ05Talk, 0, 0},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkTopics::openCatchPicker, 0, 0},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkTopics::selectQPwin, 0, (VillagerTalkTopicsSubFn)&VillagerTalkTopics::takePlayerCatch},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkTopics::selectQPwin2, 0, (VillagerTalkTopicsSubFn)&VillagerTalkTopics::handOverRequestReward},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkTopics::selectQPlose, 0, 0},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkTopics::selectQPdraw, 0, 0},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkTopics::checkVillagerCatch, 0, 0},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkTopics::selectQNwin, 0, 0},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkTopics::selectQNlose, 0, (VillagerTalkTopicsSubFn)&VillagerTalkTopics::keepItemThenGotoQPay},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkTopics::selectQPay, 0, (VillagerTalkTopicsSubFn)&VillagerTalkTopics::handOverRequestReward},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkTopics::selectQRevenge, 0, 0},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkTopics::openRequestItemPicker, 0, 0},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkTopics::selectQMiss, 0, 0},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkTopics::selectQMissB, 0, 0},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkTopics::selectQThanks, 0, (VillagerTalkTopicsSubFn)&VillagerTalkTopics::takeRequestItem},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkTopics::selectQPreitemB, 0, (VillagerTalkTopicsSubFn)&VillagerTalkRequestItemTopics::gotoQItemB},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkRequestItemTopics::selectQItemB, 0, (VillagerTalkTopicsSubFn)&VillagerTalkRequestItemTopics::handOverQItemB},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkRequestItemTopics::selectQClear, 0, 0},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkRequestItemTopics::selectQEnd, 0, 0},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkRequestItemTopics::selectQReturn, 0, 0},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkRequestItemTopics::selectQComp, 0, 0},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkRequestItemTopics::openArbeitItemPicker, 0, 0},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkTopics::selectEvArbeitReceive, 0, (VillagerTalkTopicsSubFn)&VillagerTalkTopics::giveArbeitReward},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkTopics::selectEvArbeitEnd, 0, 0},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkTopics::selectQ12Other, 0, 0},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkTopics::selectQ12Report, 0, 0},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkTopics::selectQ12Thanks, 0, (VillagerTalkTopicsSubFn)&VillagerTalkTopics::checkPocketsForQItem},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkTopics::selectQItem, 0, (VillagerTalkTopicsSubFn)&VillagerTalkTopics::putQItemInPocket},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkTopics::selectQ12End, 0, 0},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkTopics::selectQ12Full, 0, 0},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkTopics::selectQ12FullPart1, 0, (VillagerTalkTopicsSubFn)&VillagerTalkTopics::recheckPocketsForQItem},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkTopics::selectQ12FullPart2, 0, 0},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkTopics::selectQ10Req, 0, (VillagerTalkTopicsSubFn)&VillagerTalkTopics::openQ10ReqChoice},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkTopics::selectQ10Reserve, 0, (VillagerTalkTopicsSubFn)&VillagerTalkTopics::openReserveTimeEntry},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkTopics::selectQError1, 0, (VillagerTalkTopicsSubFn)&VillagerTalkTopics::openReserveTimeEntry},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkTopics::selectQError2, 0, (VillagerTalkTopicsSubFn)&VillagerTalkTopics::openReserveTimeEntry},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkTopics::selectQError3, 0, (VillagerTalkTopicsSubFn)&VillagerTalkTopics::openReserveTimeEntry},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkTopics::selectQ10Reserved, 0, 0},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkTopics::selectQ10Con, 0, 0},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkTopics::selectQ10Leave, 0, 0},
 };
-Unk_ov069_Ent data_ov069_022611bc[9] = {
-    {(Unk_ov069_Fn)&VillagerTalkTopics::selectEvKaraokeMsg3, 0, (Unk_ov069_Fn)&VillagerTalkTopics::openEvKaraokeChoice},
-    {(Unk_ov069_Fn)&VillagerTalkKaraokeTopics::selectEvKaraokeMsg20, 0, (Unk_ov069_Fn)&VillagerTalkKaraokeTopics::continueEvKaraokeMsg20},
-    {(Unk_ov069_Fn)&VillagerTalkKaraokeTopics::startEvKaraokeAction, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkKaraokeTopics::selectEvKaraokeMsg6, 0, (Unk_ov069_Fn)&VillagerTalkKaraokeTopics::openEvKaraokeMsg6Choice},
-    {(Unk_ov069_Fn)&VillagerTalkKaraokeTopics::selectEvKaraokeMsg8, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkKaraokeTopics::selectEvKaraokeMsg10, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkKaraokeTopics::selectEvKaraokeMsg12, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkKaraokeTopics::selectEvKaraokeMsg14, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkKaraokeTopics::selectEvKaraokeMsg17, 0, (Unk_ov069_Fn)&VillagerTalkKaraokeTopics::openSmallTalkChoice},
+VillagerTalkTopicsSubFns data_ov069_022611bc[9] = {
+    {(VillagerTalkTopicsSubFn)&VillagerTalkTopics::selectEvKaraokeMsg3, 0, (VillagerTalkTopicsSubFn)&VillagerTalkTopics::openEvKaraokeChoice},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkKaraokeTopics::selectEvKaraokeMsg20, 0, (VillagerTalkTopicsSubFn)&VillagerTalkKaraokeTopics::continueEvKaraokeMsg20},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkKaraokeTopics::startEvKaraokeAction, 0, 0},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkKaraokeTopics::selectEvKaraokeMsg6, 0, (VillagerTalkTopicsSubFn)&VillagerTalkKaraokeTopics::openEvKaraokeMsg6Choice},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkKaraokeTopics::selectEvKaraokeMsg8, 0, 0},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkKaraokeTopics::selectEvKaraokeMsg10, 0, 0},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkKaraokeTopics::selectEvKaraokeMsg12, 0, 0},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkKaraokeTopics::selectEvKaraokeMsg14, 0, 0},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkKaraokeTopics::selectEvKaraokeMsg17, 0, (VillagerTalkTopicsSubFn)&VillagerTalkKaraokeTopics::openSmallTalkChoice},
 };
-Unk_ov069_Ent data_ov069_02261024[8] = {
-    {(Unk_ov069_Fn)&VillagerTalkKaraokeTopics::selectEvAdmire, 0, (Unk_ov069_Fn)&VillagerTalkKaraokeTopics::openEvAdmireWordEntry},
-    {(Unk_ov069_Fn)&VillagerTalkKaraokeTopics::selectEvAdmireMsg2, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkKaraokeTopics::selectEvAdmireMsg7, 0, (Unk_ov069_Fn)&VillagerTalkKaraokeTopics::openEvAdmireChoice},
-    {(Unk_ov069_Fn)&VillagerTalkHobbyTopics::selectEvAdmireMsg12, 0, (Unk_ov069_Fn)&VillagerTalkHobbyTopics::openEvAdmireWordEntryB},
-    {(Unk_ov069_Fn)&VillagerTalkHobbyTopics::selectEvAdmireMsg14, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkHobbyTopics::selectEvAdmireMsg10, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkHobbyTopics::selectEvAdmireMsg4, 0, (Unk_ov069_Fn)&VillagerTalkHobbyTopics::continueEvAdmireMsg4},
-    {(Unk_ov069_Fn)&VillagerTalkHobbyTopics::selectEtcConnectAdmire, 0, (Unk_ov069_Fn)&VillagerTalkHobbyTopics::openSmallTalkChoiceAdmire},
+VillagerTalkTopicsSubFns data_ov069_02261024[8] = {
+    {(VillagerTalkTopicsSubFn)&VillagerTalkKaraokeTopics::selectEvAdmire, 0, (VillagerTalkTopicsSubFn)&VillagerTalkKaraokeTopics::openEvAdmireWordEntry},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkKaraokeTopics::selectEvAdmireMsg2, 0, 0},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkKaraokeTopics::selectEvAdmireMsg7, 0, (VillagerTalkTopicsSubFn)&VillagerTalkKaraokeTopics::openEvAdmireChoice},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkHobbyTopics::selectEvAdmireMsg12, 0, (VillagerTalkTopicsSubFn)&VillagerTalkHobbyTopics::openEvAdmireWordEntryB},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkHobbyTopics::selectEvAdmireMsg14, 0, 0},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkHobbyTopics::selectEvAdmireMsg10, 0, 0},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkHobbyTopics::selectEvAdmireMsg4, 0, (VillagerTalkTopicsSubFn)&VillagerTalkHobbyTopics::continueEvAdmireMsg4},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkHobbyTopics::selectEtcConnectAdmire, 0, (VillagerTalkTopicsSubFn)&VillagerTalkHobbyTopics::openSmallTalkChoiceAdmire},
 };
-Unk_ov069_Ent data_ov069_02260d6c[4] = {
-    {(Unk_ov069_Fn)&VillagerTalkHobbyTopics::selectEvGardeniing, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkHobbyTopics::selectEvGardeniingMsg13, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkHobbyTopics::selectEvGardeniingMsg10, 0, (Unk_ov069_Fn)&VillagerTalkHobbyTopics::continueEvGardeniingMsg10},
-    {(Unk_ov069_Fn)&VillagerTalkHobbyTopics::selectEtcConnectGardeniing, 0, (Unk_ov069_Fn)&VillagerTalkAcornTopics::openSmallTalkChoiceGardeniing},
+VillagerTalkTopicsSubFns data_ov069_02260d6c[4] = {
+    {(VillagerTalkTopicsSubFn)&VillagerTalkHobbyTopics::selectEvGardeniing, 0, 0},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkHobbyTopics::selectEvGardeniingMsg13, 0, 0},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkHobbyTopics::selectEvGardeniingMsg10, 0, (VillagerTalkTopicsSubFn)&VillagerTalkHobbyTopics::continueEvGardeniingMsg10},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkHobbyTopics::selectEtcConnectGardeniing, 0, (VillagerTalkTopicsSubFn)&VillagerTalkAcornTopics::openSmallTalkChoiceGardeniing},
 };
-Unk_ov069_Ent data_ov069_022610e4[9] = {
-    {(Unk_ov069_Fn)&VillagerTalkAcornTopics::selectEvAcorn, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkAcornTopics::selectEvAcornMsg10, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkAcornTopics::selectEvAcornMsg7, 0, (Unk_ov069_Fn)&VillagerTalkAcornTopics::continueEvAcornMsg7},
-    {(Unk_ov069_Fn)&VillagerTalkAcornTopics::selectEtcConnectAcorn, 0, (Unk_ov069_Fn)&VillagerTalkAcornTopics::openSmallTalkChoiceAcorn},
-    {(Unk_ov069_Fn)&VillagerTalkAcornTopics::selectEvAcornMsg13, 0, (Unk_ov069_Fn)&VillagerTalkAcornTopics::openEvAcornGiveChoice},
-    {(Unk_ov069_Fn)&VillagerTalkAcornTopics::openAcornPicker, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkAcornTopics::selectEvAcornMsg17, 0, (Unk_ov069_Fn)&VillagerTalkAcornTopics::rollAcornReward},
-    {(Unk_ov069_Fn)&VillagerTalkAcornTopics::selectEvAcornMsg19, (Unk_ov069_Fn)&VillagerTalkAcornTopics::giveAcornReward, 0},
-    {(Unk_ov069_Fn)&VillagerTalkAcornTopics::selectEvAcornMsg15, 0, 0},
+VillagerTalkTopicsSubFns data_ov069_022610e4[9] = {
+    {(VillagerTalkTopicsSubFn)&VillagerTalkAcornTopics::selectEvAcorn, 0, 0},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkAcornTopics::selectEvAcornMsg10, 0, 0},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkAcornTopics::selectEvAcornMsg7, 0, (VillagerTalkTopicsSubFn)&VillagerTalkAcornTopics::continueEvAcornMsg7},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkAcornTopics::selectEtcConnectAcorn, 0, (VillagerTalkTopicsSubFn)&VillagerTalkAcornTopics::openSmallTalkChoiceAcorn},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkAcornTopics::selectEvAcornMsg13, 0, (VillagerTalkTopicsSubFn)&VillagerTalkAcornTopics::openEvAcornGiveChoice},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkAcornTopics::openAcornPicker, 0, 0},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkAcornTopics::selectEvAcornMsg17, 0, (VillagerTalkTopicsSubFn)&VillagerTalkAcornTopics::rollAcornReward},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkAcornTopics::selectEvAcornMsg19, (VillagerTalkTopicsSubFn)&VillagerTalkAcornTopics::giveAcornReward, 0},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkAcornTopics::selectEvAcornMsg15, 0, 0},
 };
-Unk_ov069_Ent data_ov069_02260dcc[4] = {
-    {(Unk_ov069_Fn)&VillagerTalkHolidayTopics::selectEvSnowfes, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkHolidayTopics::selectEvSnowfesB, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkHolidayTopics::selectEvSnowfesC, 0, (Unk_ov069_Fn)&VillagerTalkHolidayTopics::continueEvSnowfesC},
-    {(Unk_ov069_Fn)&VillagerTalkHolidayTopics::selectEtcConnectSnowfes, 0, (Unk_ov069_Fn)&VillagerTalkHolidayTopics::openSmallTalkChoiceSnowfes},
+VillagerTalkTopicsSubFns data_ov069_02260dcc[4] = {
+    {(VillagerTalkTopicsSubFn)&VillagerTalkHolidayTopics::selectEvSnowfes, 0, 0},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkHolidayTopics::selectEvSnowfesB, 0, 0},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkHolidayTopics::selectEvSnowfesC, 0, (VillagerTalkTopicsSubFn)&VillagerTalkHolidayTopics::continueEvSnowfesC},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkHolidayTopics::selectEtcConnectSnowfes, 0, (VillagerTalkTopicsSubFn)&VillagerTalkHolidayTopics::openSmallTalkChoiceSnowfes},
 };
-Unk_ov069_Ent data_ov069_02260f64[8] = {
-    {(Unk_ov069_Fn)&VillagerTalkHolidayTopics::selectGreetingCountdown, 0, (Unk_ov069_Fn)&VillagerTalkHolidayTopics::continueGreetingCountdown},
-    {(Unk_ov069_Fn)&VillagerTalkHolidayTopics::selectEtcConnectCountdownB, 0, (Unk_ov069_Fn)&VillagerTalkHolidayTopics::openEvCountdownChoice},
-    {(Unk_ov069_Fn)&VillagerTalkHolidayTopics::selectEvCountdown, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkHolidayTopics::selectEvCountdownB, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkHolidayTopics::selectEvCountdownMsg14, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkHolidayTopics::selectEvCountdownMsg16, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkHolidayTopics::selectEvCountdownMsg18, 0, (Unk_ov069_Fn)&VillagerTalkHolidayTopics::continueEvCountdownMsg18},
-    {(Unk_ov069_Fn)&VillagerTalkHolidayTopics::selectEtcConnectCountdown, 0, (Unk_ov069_Fn)&VillagerTalkHolidayTopics::openSmallTalkChoiceCountdown},
+VillagerTalkTopicsSubFns data_ov069_02260f64[8] = {
+    {(VillagerTalkTopicsSubFn)&VillagerTalkHolidayTopics::selectGreetingCountdown, 0, (VillagerTalkTopicsSubFn)&VillagerTalkHolidayTopics::continueGreetingCountdown},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkHolidayTopics::selectEtcConnectCountdownB, 0, (VillagerTalkTopicsSubFn)&VillagerTalkHolidayTopics::openEvCountdownChoice},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkHolidayTopics::selectEvCountdown, 0, 0},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkHolidayTopics::selectEvCountdownB, 0, 0},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkHolidayTopics::selectEvCountdownMsg14, 0, 0},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkHolidayTopics::selectEvCountdownMsg16, 0, 0},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkHolidayTopics::selectEvCountdownMsg18, 0, (VillagerTalkTopicsSubFn)&VillagerTalkHolidayTopics::continueEvCountdownMsg18},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkHolidayTopics::selectEtcConnectCountdown, 0, (VillagerTalkTopicsSubFn)&VillagerTalkHolidayTopics::openSmallTalkChoiceCountdown},
 };
-Unk_ov069_EntB data_ov069_02260e2c[6] = {
-    {(Unk_ov069_FnB)&VillagerTalkTopics::selectEtcConnect, 0, (Unk_ov069_FnB)&VillagerTalkTopics::openEtcConnectChoice},
-    {(Unk_ov069_FnB)&VillagerTalkTopics::selectTsuMove1, 0, (Unk_ov069_FnB)&VillagerTalkTopics::openTsuMove1Choice},
-    {(Unk_ov069_FnB)&VillagerTalkTopics::selectTsuMove1B, 0, 0},
-    {(Unk_ov069_FnB)&VillagerTalkTopics::selectTsuMove1Part1, 0, 0},
-    {(Unk_ov069_FnB)&VillagerTalkTopics::selectTsuMove2, 0, 0},
-    {(Unk_ov069_FnB)&VillagerTalkTopics::selectTsuAlwaysEntry, 0, 0},
+VillagerTalkTopicsFns data_ov069_02260e2c[6] = {
+    {(VillagerTalkTopicsFn)&VillagerTalkTopics::selectEtcConnect, 0, (VillagerTalkTopicsFn)&VillagerTalkTopics::openEtcConnectChoice},
+    {(VillagerTalkTopicsFn)&VillagerTalkTopics::selectTsuMove1, 0, (VillagerTalkTopicsFn)&VillagerTalkTopics::openTsuMove1Choice},
+    {(VillagerTalkTopicsFn)&VillagerTalkTopics::selectTsuMove1B, 0, 0},
+    {(VillagerTalkTopicsFn)&VillagerTalkTopics::selectTsuMove1Part1, 0, 0},
+    {(VillagerTalkTopicsFn)&VillagerTalkTopics::selectTsuMove2, 0, 0},
+    {(VillagerTalkTopicsFn)&VillagerTalkTopics::selectTsuAlwaysEntry, 0, 0},
 };
-Unk_ov069_Ent data_ov069_02260d24[3] = {
-    {(Unk_ov069_Fn)&VillagerTalkHolidayTopics::selectTsuAlwaysOnce, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkHolidayTopics::selectTsuSpotOnce, 0, 0},
-    {(Unk_ov069_Fn)&VillagerTalkHolidayTopics::selectTsuFriendOnce, 0, 0},
+VillagerTalkTopicsSubFns data_ov069_02260d24[3] = {
+    {(VillagerTalkTopicsSubFn)&VillagerTalkHolidayTopics::selectTsuAlwaysOnce, 0, 0},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkHolidayTopics::selectTsuSpotOnce, 0, 0},
+    {(VillagerTalkTopicsSubFn)&VillagerTalkHolidayTopics::selectTsuFriendOnce, 0, 0},
 };
-Unk_ov069_EntB data_ov069_02260ebc[7] = {
-    {(Unk_ov069_FnB)&VillagerTalkTopics::selectEvBirthMsg1, 0, (Unk_ov069_FnB)&VillagerTalkTopics::continueEvBirthFriends},
-    {(Unk_ov069_FnB)&VillagerTalkTopics::selectEvBirthMsg5, 0, (Unk_ov069_FnB)&VillagerTalkTopics::continueEvBirthFriends},
-    {(Unk_ov069_FnB)&VillagerTalkTopics::selectEvBirthMsg6, 0, (Unk_ov069_FnB)&VillagerTalkTopics::continueEvBirthMsg6},
-    {(Unk_ov069_FnB)&VillagerTalkTopics::selectEvBirthMsg7, 0, (Unk_ov069_FnB)&VillagerTalkTopics::continueEvBirthMsg7},
-    {(Unk_ov069_FnB)&VillagerTalkTopics::selectEvBirthMsg2, 0, (Unk_ov069_FnB)&VillagerTalkTopics::openEvBirthChoice},
-    {(Unk_ov069_FnB)&VillagerTalkTopics::selectEvBirthMsg3, 0, 0},
-    {(Unk_ov069_FnB)&VillagerTalkTopics::selectEvBirthMsg4, 0, 0},
+VillagerTalkTopicsFns data_ov069_02260ebc[7] = {
+    {(VillagerTalkTopicsFn)&VillagerTalkTopics::selectEvBirthMsg1, 0, (VillagerTalkTopicsFn)&VillagerTalkTopics::continueEvBirthFriends},
+    {(VillagerTalkTopicsFn)&VillagerTalkTopics::selectEvBirthMsg5, 0, (VillagerTalkTopicsFn)&VillagerTalkTopics::continueEvBirthFriends},
+    {(VillagerTalkTopicsFn)&VillagerTalkTopics::selectEvBirthMsg6, 0, (VillagerTalkTopicsFn)&VillagerTalkTopics::continueEvBirthMsg6},
+    {(VillagerTalkTopicsFn)&VillagerTalkTopics::selectEvBirthMsg7, 0, (VillagerTalkTopicsFn)&VillagerTalkTopics::continueEvBirthMsg7},
+    {(VillagerTalkTopicsFn)&VillagerTalkTopics::selectEvBirthMsg2, 0, (VillagerTalkTopicsFn)&VillagerTalkTopics::openEvBirthChoice},
+    {(VillagerTalkTopicsFn)&VillagerTalkTopics::selectEvBirthMsg3, 0, 0},
+    {(VillagerTalkTopicsFn)&VillagerTalkTopics::selectEvBirthMsg4, 0, 0},
 };
 extern "C" void VillagerTalkTopics_CopyTables() {
     memcpy(sHouseVisitTsuTopicTable, data_ov069_02260d24, 72);

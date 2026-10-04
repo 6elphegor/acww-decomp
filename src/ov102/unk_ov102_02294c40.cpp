@@ -51,7 +51,7 @@ void LetterGrid_LoadPocketLetters(void *p);
 void InventoryItemGrid_DrawBox(void *p, s32 a, s32 b);
 void InventoryItemGrid_DrawPockets(void *p, s32 a, s32 b);
 void InventoryBg_DrawSprite(void *p, s32 a);
-BOOL func_ov094_02292414(u32 v);
+BOOL InvItem_IsNonTransferable(u32 v);
 BOOL InvItem_IsTurnipFishOrInsect(u32 v);
 BOOL MenuKeys_HasRight(void *pad);
 BOOL MenuKeys_HasLeft(void *pad);
@@ -1197,7 +1197,7 @@ BOOL ChestMenu_IsItemRejected(S *s, u32 a)
     if (InvItem_IsTurnipFishOrInsect(t)) {
         return TRUE;
     }
-    if (func_ov094_02292414(t)) {
+    if (InvItem_IsNonTransferable(t)) {
         return TRUE;
     }
     return FALSE;

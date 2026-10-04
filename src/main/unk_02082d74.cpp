@@ -1,4 +1,5 @@
 #include "types.h"
+#include "player/PlayerErrandsInviteView.h"
 #include "gfx/VecFx32.h"
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
@@ -85,11 +86,6 @@ struct EventVisitorEntry {
 };
 
 
-struct PlayerErrandsHeadPad { u8 pad[0x88]; };
-struct HouseVisitInviteIdPart { u8 pad[0xc]; };
-struct HouseVisitInviteErrandPart { u8 pad[0x20]; };
-struct HouseVisitInviteLayoutView : HouseVisitInviteIdPart, HouseVisitInviteErrandPart { u8 pad[0x20]; };
-struct PlayerErrandsInviteView : PlayerErrandsHeadPad, HouseVisitInviteLayoutView { u8 pad[8]; };
 struct VillagerSpawnLocals {
     u8 b;
     u16 h[4];

@@ -69,10 +69,6 @@ struct FleaMarketSellerActEntry {
     Unk_ov004_022187b8_Fn b;
 };
 
-struct Unk_ov004_022187fc_Ent {
-    Unk_ov004_022187b8_Fn a;
-    u8 pad[8];
-};
 
 
 extern "C" {
@@ -293,7 +289,7 @@ extern "C" FleaMarketSellerActEntry sFleaMarketSellerActTable[8] = {
     {PM(data_ov004_0224c47c), PM(data_ov004_0224c474)},
     {PM(data_ov004_0224c46c), PM(data_ov004_0224c4ac)},
     {PM(data_ov004_0224c45c), PM(data_ov004_0224c454)}};
-#define data_ov004_02250720 ((Unk_ov004_022187fc_Ent *)((u8 *)sFleaMarketSellerActTable + 8))
+#define data_ov004_02250720 ((FleaMarketSellerActEntry *)((u8 *)sFleaMarketSellerActTable + 8))
 
 // ---------------------------------------------------------------------------------------------------------------------
 static inline BOOL Unk_ov004_02217954_Both() {

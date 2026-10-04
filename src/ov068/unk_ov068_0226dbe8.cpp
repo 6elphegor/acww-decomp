@@ -1,5 +1,6 @@
 // mwcc-version: 1.2/base
 #include "types.h"
+#include "player/PlayerErrandsInviteView.h"
 #include "gfx/VecFx32.h"
 #include "npc/VillagerClothModel.h"
 #include "talk/MsgStringBase.h"
@@ -101,17 +102,6 @@ struct Unk_ov068_0226ee74_Grid {
     u8 *h;
 };
 
-struct Unk_ov068_0226eee0_P0 {
-    u8 pad[0x88];
-};
-struct Unk_ov068_0226eee0_Q0 {
-    u8 pad[0xc];
-};
-struct Unk_ov068_0226eee0_Q1 {
-    u32 pad;
-};
-struct Unk_ov068_0226eee0_Mid : Unk_ov068_0226eee0_Q0, Unk_ov068_0226eee0_Q1 {};
-struct Unk_ov068_0226eee0_Top : Unk_ov068_0226eee0_P0, Unk_ov068_0226eee0_Mid {};
 
 typedef void (HouseVisitVillager::*Unk_ov068_02270afc_Fn)();
 typedef BOOL (HouseVisitVillager::*Unk_ov068_02270afc_BFn)();
@@ -470,11 +460,11 @@ BOOL HouseVisitVillager::preDelete() {
     if (func_0202d928(this) == 0) {
         return FALSE;
     }
-    Unk_ov068_0226eee0_Top *t = (Unk_ov068_0226eee0_Top *)PlayerData_getErrands(PlayerData_GetCurrent());
-    Unk_ov068_0226eee0_Mid &m = *t;
-    Unk_ov068_0226eee0_Q1 &q = m;
+    PlayerErrandsInviteView *t = (PlayerErrandsInviteView *)PlayerData_getErrands(PlayerData_GetCurrent());
+    HouseVisitInviteLayoutView &m = *t;
+    HouseVisitInviteErrandPart &q = m;
     if (ErrandRecord_getStep(&q) == 1) {
-        Unk_ov068_0226eee0_Q1 &q2 = m;
+        HouseVisitInviteErrandPart &q2 = m;
         ErrandRecord_setStep(&q2, 2);
     }
     sHouseVisitVillager = NULL;

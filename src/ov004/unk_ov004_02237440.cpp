@@ -86,13 +86,8 @@ struct MuseumInsectBehavior {
 struct MinuteHour {
     u8 minute;
     u8 hour;
-    u8 unk_02;
-    u8 unk_03;
 };
 
-struct Unk_ov004_022376f8_Mtx {
-    s64 v[6];
-};
 
 // {flag, s16 value} per id
 struct MuseumInsectParam {
@@ -242,7 +237,6 @@ public:
 
 typedef VecFx32 V3_7690;
 
-typedef Unk_ov004_022376f8_Mtx Mtx_7690;
 
 struct MuseumInsectPlaceStackPad {
     u32 v[0xa9];
@@ -267,9 +261,6 @@ struct MuseumInsectPlayerInfo {
     u8 hasPlayer;
 };
 
-struct Unk_ov004_0223b1e8_V3E : VecFx32 {
-    Unk_ov004_0223b1e8_V3E() {}
-};
 
 typedef VecFx32 V3_b1e8;
 
@@ -279,9 +270,6 @@ struct V3z_c8d4 { s32 x, y, z; V3z_c8d4() {} ~V3z_c8d4() {} };
 
 typedef VecFx32 V3_d800;
 
-struct Unk_ov004_0223d85c_V : V3_d800 {
-    Unk_ov004_0223d85c_V(s32 a, s32 b, s32 c) { x = a; y = b; z = c; }
-};
 
 // manager with vtable 0x0224ec80
 class MuseumInsectRoom : public GameProc {
@@ -514,7 +502,7 @@ extern s8 sMuseumScorpionSlot;
 extern s8 sMuseumDungBallSlot;
 extern V3_7690 sMuseumFleaDrawScale;
 extern u8 sMuseumInsectFrame;
-extern Mtx_7690 data_021f47e0;
+extern Mtx43 data_021f47e0;
 extern u8 data_021ed0a0[];
 void func_02133ef8(void *p, s32 n);
 s32 Str_SPrintf(char *buf, const char *fmt, ...);
@@ -869,7 +857,7 @@ extern "C" BOOL MuseumInsect_RevertIfOffFloor(void *o_, void *v_) {
     BOOL r = TRUE;
     BOOL far;
     {
-        Unk_ov004_0223d85c_V a(o->x, 0, v->z);
+        VecFx32Ctor a(o->x, 0, v->z);
         GroundInfo g;
         g.initAtPos((VecFx32 *)(&a), 0, 0);
         if (g.getHeight(0) > 0x200) {
@@ -883,7 +871,7 @@ extern "C" BOOL MuseumInsect_RevertIfOffFloor(void *o_, void *v_) {
         r = FALSE;
     }
     {
-        Unk_ov004_0223d85c_V a(v->x, 0, o->z);
+        VecFx32Ctor a(v->x, 0, o->z);
         GroundInfo g;
         g.initAtPos((VecFx32 *)(&a), 0, 0);
         if (g.getHeight(0) > 0x200) {
@@ -2327,7 +2315,7 @@ extern "C" void MuseumInsect_MothHover(MuseumInsect *o)
     V3_b1e8 *tp = (V3_b1e8 *)o;
     volatile s32 c;
     u8 r7;
-    Unk_ov004_0223b1e8_V3E sv;
+    VecFx32Ctor sv;
     tp = (V3_b1e8 *)((u8 *)tp + 0x40);
     r7 = o->dirFlag;
     *(V3_b1e8 *)&sv = *r4;
@@ -4461,7 +4449,7 @@ void MuseumInsectRoom::updateInsect(MuseumInsect *e) {
         Mtx43_RotateX(&data_021f47e0, r + e->pitch);
         Mtx43_RotateY(&data_021f47e0, e->yaw);
         Mtx43_RotateZ(&data_021f47e0, e->roll);
-        *(Mtx_7690 *)&e->model.mtx = data_021f47e0;
+        e->model.mtx = data_021f47e0;
     }
 }
 

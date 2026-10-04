@@ -154,7 +154,7 @@ public:
     /* 0x8df */ u8 townCount;
     /* 0x8e0 */ u8 rowIcons[6];
     /* 0x8e6 */ u8 labelCount;
-    /* 0x8e7 */ u8 unk_8e7;
+    /* 0x8e7 */ u8 pad_8e7;
     /* 0x8e8 */ MenuTownListPanel listPanel;
     /* 0xf0c */ MenuCursorBuf0 cursor;
     /* 0xf70 */ MenuBottomButtons bottomButtons;

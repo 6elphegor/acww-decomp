@@ -268,7 +268,7 @@ public:
     /* 0x0c4 */ u8 labelCount;
     /* 0x0c5 */ u8 tabFadeLevel;
     /* 0x0c6 */ u8 tabSwitchState;
-    /* 0x0c7 */ u8 unk_c7;
+    /* 0x0c7 */ u8 pad_c7;
     /* 0x0c8 */ MenuCursorBuf0 cursor;
     /* 0x12c */ MenuScrollKnob scrollKnob;
     /* 0x174 */ MenuBottomButtons bottomButtons;

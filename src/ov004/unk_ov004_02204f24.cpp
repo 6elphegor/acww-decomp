@@ -2510,7 +2510,7 @@ BOOL FtrModelRes::loadFiles(void *obj, s32 id) {
     u32 size0;
     u32 size1;
     char name[0x20];
-    Unk_ov004_02206be8_Blk blk;
+    NNSFndArchive blk;
     if (texFile == 0) {
         texFile = File_LoadAlloc(makeTexPath(id), gCurrentHeap, -4, &size0);
         if (keepTexCopy != 0) {

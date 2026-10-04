@@ -250,7 +250,7 @@ public:
     /* 0x0c0 */ u8 cursorSlot;
     /* 0x0c1 */ u8 tabFadeLevel;
     /* 0x0c2 */ u8 tabSwitchState;
-    /* 0x0c3 */ u8 unk_c3;
+    /* 0x0c3 */ u8 pad_c3;
     /* 0x0c4 */ s16 tabOwnedCounts[9];
     /* 0x0d6 */ s16 tabTotalCounts[9];
     /* 0x0e8 */ MenuCursorBuf0 cursor;

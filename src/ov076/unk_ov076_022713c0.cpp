@@ -34,7 +34,7 @@ class SpNpcPascalTalk;
 
 struct SpNpcPascalMsgLocal {
     u8 msgIndex;
-    u8 unk_01;
+    u8 pad_01;
     u16 item;
 };
 

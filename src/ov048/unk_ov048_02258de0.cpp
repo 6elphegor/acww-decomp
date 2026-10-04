@@ -361,7 +361,7 @@ public:
     s32 script;
     u8 *owner;
     /* 0x0b8 */ Pattern pattern;
-    /* 0x2e0 */ u8 unk_2e0[0x14];
+    /* 0x2e0 */ u8 hostGameInfo[0x14];
     /* 0x2f4 */ u8 hostBeacon[0xe0];
     /* 0x3d4 */ s32 hostFriendId;
     // Raw storage: constructed in the ctor body by plain calls after the Pattern member (AxMail_Construct /
@@ -2104,7 +2104,7 @@ void SpNpcCopperTalk::startTownSearch() {
 }
 
 void SpNpcCopperTalk::openTownList() {
-    setSelectionList((u32)hostBeacon, (u32)unk_2e0, 0);
+    setSelectionList((u32)hostBeacon, (u32)hostGameInfo, 0);
     openSubScene(4);
     setScript(3);
 }

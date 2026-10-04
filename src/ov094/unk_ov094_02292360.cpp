@@ -255,7 +255,7 @@ void Inventory_PlayPickUpSe();
 void Inventory_PlayTouchSe();
 void Inventory_PlayPutDownSe();
 BOOL InvItem_IsNotFishInsectOrFlower(u32 v);
-BOOL func_ov094_02292414(u32 v);
+BOOL InvItem_IsNonTransferable(u32 v);
 BOOL InvItem_IsDeliveryParcel(u32 v);
 BOOL InvItem_IsDeliveryItem(u32 v);
 void InventoryBg_ResetHighlight(void *o);
@@ -739,7 +739,7 @@ BOOL InvItem_IsDeliveryParcel(u32 v)
     return FALSE;
 }
 
-BOOL func_ov094_02292414(u32 v)
+BOOL InvItem_IsNonTransferable(u32 v)
 {
     InvItemStackPad pad;
     if (IN(v, 0x155d, 0x155d)) {

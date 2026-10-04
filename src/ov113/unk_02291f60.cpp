@@ -150,7 +150,7 @@ public:
     /* 0x09c */ u8 returnState;
     /* 0x09d */ u8 postCount;
     /* 0x09e */ u8 pageDotsX;
-    /* 0x09f */ u8 unk_9f;
+    /* 0x09f */ u8 pad_9f;
     /* 0x0a0 */ u16 bgScreenBuf[0x400];
     /* 0x8a0 */ u8 lineCharBufs[6][0x500];
     /* 0x26a0 */ BgVramTask bgTasks[2];

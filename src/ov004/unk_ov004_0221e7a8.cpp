@@ -239,15 +239,6 @@ void RoomObjRes::clear() {
 
 namespace ns_0222459c {
 
-class Unk_ov004_022245ac_Msg {
-public:
-    inline Unk_ov004_022245ac_Msg() { _ZN19PlayerActionRequestC1Ev(this); }
-    inline void func_0200e2c0(u32 a, u32 b, u32 c) { _ZN19PlayerActionRequest6assignEiis(this, a, b, c); }
-    u8 pad_00[0xc];
-    u8 args;
-    u8 pad_0d[0x1c - 0xd];
-};
-
 struct GetOutOfBedCheckWork {
     VecFx32 pos;
     u8 flag;
@@ -255,7 +246,7 @@ struct GetOutOfBedCheckWork {
 
 typedef PlayerActor Obj;
 typedef VecFx32 V3;
-typedef Unk_ov004_022245ac_Msg Msg;
+typedef PlayerActionRequest Msg;
 typedef GetOutOfBedCheckWork Rec;
 typedef RoomObjRes Res;
 
@@ -730,10 +721,9 @@ extern "C" void PlayerActor_LieInBedSetArgs(u8 *p, u32 v) {
 
 extern "C" s32 PlayerActor_RequestLieInBed(Obj *o, u32 a, u32 b, u32 c) {
     Msg m;
-    m.func_0200e2c0(8, b, c);
-    PlayerActor_LieInBedSetArgs(&m.args, a);
+    _ZN19PlayerActionRequest6assignEiis(&m, 8, b, c);
+    PlayerActor_LieInBedSetArgs(m.unk_0c_b, a);
     s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
-    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -815,10 +805,9 @@ extern "C" void PlayerActor_GetOutOfBedCheckSetArgs(u8 *p, u32 v) {
 
 extern "C" s32 PlayerActor_RequestGetOutOfBedCheck(Obj *o, u32 a, u32 b, u32 c) {
     Msg m;
-    m.func_0200e2c0(9, b, c);
-    PlayerActor_GetOutOfBedCheckSetArgs(&m.args, a);
+    _ZN19PlayerActionRequest6assignEiis(&m, 9, b, c);
+    PlayerActor_GetOutOfBedCheckSetArgs(m.unk_0c_b, a);
     s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
-    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -843,15 +832,6 @@ struct GetOutOfBedWork {
     u8 getOutSide;
 };
 
-class Unk_ov004_02223c38_Msg {
-public:
-    inline Unk_ov004_02223c38_Msg() { _ZN19PlayerActionRequestC1Ev(this); }
-    inline void func_0200e2c0(s32 a, s32 b, s32 c) { _ZN19PlayerActionRequest6assignEiis(this, a, b, c); }
-    u8 pad_00[0xc];
-    u8 args;
-    u8 pad_0d[0x1c - 0xd];
-};
-
 struct Unk_ov004_02223c38_Bits16 {
     u16 lo : 7;
     u16 mid : 4;
@@ -862,7 +842,7 @@ typedef PlayerActor Obj;
 typedef VecFx32 V3;
 typedef VecFx32CtorDtor V3c;
 typedef GetOutOfBedWork Rec;
-typedef Unk_ov004_02223c38_Msg Msg;
+typedef PlayerActionRequest Msg;
 typedef Unk_ov004_02223c38_Bits16 Bits16;
 
 extern "C" {
@@ -960,7 +940,7 @@ static inline BOOL Unk_ov004_02224284_IsOne(u8 v) {
 }
 
 extern "C" void PlayerActor_SetupGetOutOfBedCheck(Obj *o, Msg *m) {
-    u8 c = m->args;
+    u8 c = m->unk_0c_b[0];
     s32 ang = o->rotY;
     Rec *r = (Rec *)&o->actionWork;
     V3 v;
@@ -1041,10 +1021,9 @@ extern "C" void PlayerActor_GetOutOfBedSetArgs(u8 *p, u32 a, u32 b) {
 
 extern "C" s32 PlayerActor_RequestGetOutOfBed(Obj *o, u32 a, u32 b, s32 c, s32 d) {
     Msg m;
-    m.func_0200e2c0(0xa, c, *(s16 *)&d);
-    PlayerActor_GetOutOfBedSetArgs(&m.args, a, b);
+    _ZN19PlayerActionRequest6assignEiis(&m, 0xa, c, *(s16 *)&d);
+    PlayerActor_GetOutOfBedSetArgs(m.unk_0c_b, a, b);
     s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
-    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -1066,7 +1045,7 @@ extern "C" void PlayerActor_GetOutOfBedGetNetData(u8 *p, u8 *out) {
 extern "C" void PlayerActor_SetupGetOutOfBed(Obj *o, Msg *m) {
     u8 *q0 = (u8 *)m;
     u8 *q = q0 + 0xc;
-    u8 c = m->args;
+    u8 c = m->unk_0c_b[0];
     if (Unk_ov004_02224284_IsOne(gFieldSceneKind)) {
         FtrMgr_PlaySeatSound2At((V3 *)&o->position);
     }
@@ -1172,10 +1151,9 @@ extern "C" void PlayerActor_BedRollCheckSetArgs(u8 *p, u32 v) {
 
 extern "C" s32 PlayerActor_RequestBedRollCheck(Obj *o, u32 a, s32 b, s32 c) {
     Msg m;
-    m.func_0200e2c0(0xb, b, c);
-    PlayerActor_BedRollCheckSetArgs(&m.args, a);
+    _ZN19PlayerActionRequest6assignEiis(&m, 0xb, b, c);
+    PlayerActor_BedRollCheckSetArgs(m.unk_0c_b, a);
     s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
-    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -1193,7 +1171,7 @@ extern "C" void PlayerActor_BedRollCheckGetNetData(u8 *p, u8 *out) {
 }
 
 extern "C" void PlayerActor_SetupBedRollCheck(Obj *o, Msg *m) {
-    u8 c = m->args;
+    u8 c = m->unk_0c_b[0];
     s32 k;
     s32 d;
     s16 ang;
@@ -1265,10 +1243,9 @@ extern "C" void PlayerActor_BedRollBlockedSetArgs(u8 *p, u32 v) {
 
 extern "C" s32 PlayerActor_RequestBedRollBlocked(Obj *o, u32 a, s32 b, s32 c) {
     Msg m;
-    m.func_0200e2c0(0xc, b, c);
-    PlayerActor_BedRollBlockedSetArgs(&m.args, a);
+    _ZN19PlayerActionRequest6assignEiis(&m, 0xc, b, c);
+    PlayerActor_BedRollBlockedSetArgs(m.unk_0c_b, a);
     s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
-    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -1281,7 +1258,7 @@ extern "C" void PlayerActor_BedRollBlockedGetNetData(u8 *p, u8 *out) {
 }
 
 extern "C" void PlayerActor_SetupBedRollBlocked(Obj *o, Msg *m) {
-    u8 c = m->args;
+    u8 c = m->unk_0c_b[0];
     PlayerActor_BedRollBlockedSetNetData(o->netData.bytes, c);
     s32 k;
     if (c != 0) {
@@ -1316,10 +1293,9 @@ extern "C" void PlayerActor_BedRollSetArgs(u8 *p, u32 v) {
 
 extern "C" s32 PlayerActor_RequestBedRoll(Obj *o, u32 a, s32 b, s32 c) {
     Msg m;
-    m.func_0200e2c0(0xd, b, c);
-    PlayerActor_BedRollSetArgs(&m.args, a);
+    _ZN19PlayerActionRequest6assignEiis(&m, 0xd, b, c);
+    PlayerActor_BedRollSetArgs(m.unk_0c_b, a);
     s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
-    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -1337,7 +1313,7 @@ extern "C" void PlayerActor_BedRollGetNetData(u8 *p, u8 *out) {
 }
 
 extern "C" void PlayerActor_SetupBedRoll(Obj *o, Msg *m) {
-    u8 c = m->args;
+    u8 c = m->unk_0c_b[0];
     s32 k;
     s32 d;
     s16 ang;
@@ -1441,21 +1417,12 @@ struct Unk_ov004_02223314_Pl {
     u8 f;
 };
 
-class Unk_ov004_02223314_Msg {
-public:
-    inline Unk_ov004_02223314_Msg() { _ZN19PlayerActionRequestC1Ev(this); }
-    inline void func_0200e2c0(u32 a, u32 b, s32 c) { _ZN19PlayerActionRequest6assignEiis(this, a, b, c); }
-    u8 pad_00[0xc];
-    Unk_ov004_02223314_Pl args;
-    u8 pad_18[4];
-};
-
 typedef PlayerActor Obj;
 typedef Unk_ov004_02223314_Bits Bits;
 typedef VecFx32 V3;
 typedef BedApproachWork Rec;
 typedef PickUpItemWork Rec2;
-typedef Unk_ov004_02223314_Msg Msg;
+typedef PlayerActionRequest Msg;
 typedef Unk_ov004_02223314_Pl Pl;
 
 extern "C" {
@@ -1551,10 +1518,9 @@ static inline BOOL Unk_ov004_02223314_IsOne(u8 v) {
 
 extern "C" s32 PlayerActor_RequestBedApproach(Obj *o, s32 x, s32 z, s32 h, u8 a, s32 b, s32 c) {
     Msg m;
-    m.func_0200e2c0(0xe, b, *(s16 *)&c);
-    PlayerActor_BedApproachSetArgs(&m.args, x, z, h, a, b == 6 ? 1 : 0);
+    _ZN19PlayerActionRequest6assignEiis(&m, 0xe, b, *(s16 *)&c);
+    PlayerActor_BedApproachSetArgs((Pl *)m.unk_0c_b, x, z, h, a, b == 6 ? 1 : 0);
     s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
-    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -1579,7 +1545,7 @@ extern "C" void PlayerActor_BedApproachGetNetData(u8 *src, s32 *x, s32 *z, s16 *
 }
 
 extern "C" void PlayerActor_SetupBedApproach(Obj *o, Msg *m) {
-    Pl *pl = &m->args;
+    Pl *pl = (Pl *)m->unk_0c_b;
     V3 v;
     s16 h;
     V3 tmp;
@@ -1666,10 +1632,9 @@ extern "C" void PlayerActor_GetIntoBedSetArgs(void *out, u8 b, s32 x, s32 z, u8 
 
 extern "C" s32 PlayerActor_RequestGetIntoBed(Obj *o, u8 b, s32 x, s32 z, u8 e, s32 f, s32 g) {
     Msg m;
-    m.func_0200e2c0(0xf, f, *(s16 *)&g);
-    PlayerActor_GetIntoBedSetArgs(&m.args, b, x, z, e);
+    _ZN19PlayerActionRequest6assignEiis(&m, 0xf, f, *(s16 *)&g);
+    PlayerActor_GetIntoBedSetArgs((Pl *)m.unk_0c_b, b, x, z, e);
     s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
-    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -1691,7 +1656,7 @@ extern "C" void PlayerActor_GetIntoBedGetNetData(u8 *src, u8 *out, s32 *x, s32 *
 }
 
 extern "C" void PlayerActor_SetupGetIntoBed(Obj *o, Msg *m) {
-    Pl *pl = &m->args;
+    Pl *pl = (Pl *)m->unk_0c_b;
     u8 k = pl->a;
     Rec *r;
     s32 t, h, x, z;
@@ -1781,9 +1746,8 @@ extern "C" void PlayerActor_MainGetIntoBed(Obj *o) {
 
 extern "C" s32 PlayerActor_RequestAct12(Obj *o, s32 a, s32 b) {
     Msg m;
-    m.func_0200e2c0(0x12, a, b);
+    _ZN19PlayerActionRequest6assignEiis(&m, 0x12, a, b);
     s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
-    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -1822,17 +1786,16 @@ extern "C" s32 PlayerActor_RequestPickUpItem(Obj *o, s32 *p, s32 c, u32 b, s16 d
         s32 x;
         s32 z;
     } v;
-    m.func_0200e2c0(0x1c, b, d);
+    _ZN19PlayerActionRequest6assignEiis(&m, 0x1c, b, d);
     v.x = p[0];
     v.z = p[1];
-    PlayerActor_PickUpItemSetArgs(&m.args, &v.x, c);
+    PlayerActor_PickUpItemSetArgs((Pl *)m.unk_0c_b, &v.x, c);
     s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
-    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
 extern "C" void PlayerActor_SetupPickUpItem(Obj *o, Msg *m) {
-    Pl *pl = &m->args;
+    Pl *pl = (Pl *)m->unk_0c_b;
     s32 b = pl->c;
     Rec2 *r = (Rec2 *)&o->actionWork;
     u8 a;
@@ -1970,18 +1933,6 @@ struct PlayerFtrGrabApproachArgs {
     s16 h;
 };
 
-class Unk_ov004_02222874_Msg {
-public:
-    inline Unk_ov004_02222874_Msg() { _ZN19PlayerActionRequestC1Ev(this); }
-    inline void func_0200e2c0(u32 a, u32 b, u32 c) { _ZN19PlayerActionRequest6assignEiis(this, a, b, c); }
-    u8 pad_00[0xc];
-    union {
-        PlayerFtrGrabApproachArgs t;
-        u8 b[2];
-    } args;
-    u8 pad_18[4];
-};
-
 struct FtrGrabApproachWork {
     s32 x;
     s32 z;
@@ -1994,7 +1945,7 @@ typedef PlayerActor Obj;
 typedef TalkMsgRequest Sec;
 typedef VecFx32 V3;
 typedef PlayerFtrGrabApproachArgs Tgt;
-typedef Unk_ov004_02222874_Msg Msg;
+typedef PlayerActionRequest Msg;
 typedef FtrGrabApproachWork Rec;
 
 extern "C" {
@@ -2306,10 +2257,9 @@ extern "C" void PlayerActor_FtrGrabApproachSetArgs(Tgt *t, s32 x, s32 z, s16 h) 
 
 extern "C" s32 PlayerActor_RequestFtrGrabApproach(Obj *o, s32 x, s32 z, s16 h, u32 a, s32 b) {
     Msg m;
-    m.func_0200e2c0(0x1d, a, *(s16 *)&b);
-    PlayerActor_FtrGrabApproachSetArgs(&m.args.t, x, z, h);
+    _ZN19PlayerActionRequest6assignEiis(&m, 0x1d, a, *(s16 *)&b);
+    PlayerActor_FtrGrabApproachSetArgs((PlayerFtrGrabApproachArgs *)m.unk_0c_b, x, z, h);
     s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
-    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -2398,10 +2348,9 @@ extern "C" void PlayerActor_FtrHoldSetArgs(u8 *p, u32 a, u32 b) {
 
 extern "C" s32 PlayerActor_RequestFtrHold(Obj *o, u32 a, u32 b, u32 c, s32 e) {
     Msg m;
-    m.func_0200e2c0(0x1e, c, *(s16 *)&e);
-    PlayerActor_FtrHoldSetArgs(m.args.b, a, b);
+    _ZN19PlayerActionRequest6assignEiis(&m, 0x1e, c, *(s16 *)&e);
+    PlayerActor_FtrHoldSetArgs(m.unk_0c_b, a, b);
     s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
-    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -2549,15 +2498,14 @@ extern "C" s32 PlayerActor_RequestFtrRotate(Obj *o, u32 a, s32 b, s32 c) {
     }
     if ((a != 0 && _ZN13FtrContactSet15canRotatePlus90Ev(FtrContactSet_GetInstance()) != 0) || (a == 0 && _ZN13FtrContactSet16canRotateMinus90Ev(FtrContactSet_GetInstance()) != 0)) {
         Msg m;
-        m.func_0200e2c0(0x1f, b, c);
-        PlayerActor_FtrRotateSetArgs(m.args.b, a);
+        _ZN19PlayerActionRequest6assignEiis(&m, 0x1f, b, c);
+        PlayerActor_FtrRotateSetArgs(m.unk_0c_b, a);
         if (a != 0) {
             _ZN13FtrContactSet17startRotatePlus90Ev(FtrContactSet_GetInstance());
         } else {
             _ZN13FtrContactSet18startRotateMinus90Ev(FtrContactSet_GetInstance());
         }
         s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
-        _ZN19PlayerActionRequestD1Ev(&m);
         return r;
     }
     if (Scene_InHouseRoom() != 0 && o->sessionSlot == 0) {
@@ -2601,20 +2549,11 @@ struct Unk_ov004_02221ed0_Bits {
     u32 hi : 4;
 };
 
-class Unk_ov004_02221ed0_Msg {
-public:
-    inline Unk_ov004_02221ed0_Msg() { _ZN19PlayerActionRequestC1Ev(this); }
-    inline void func_0200e2c0(s32 a, s32 b, s32 c) { _ZN19PlayerActionRequest6assignEiis(this, a, b, c); }
-    u8 pad_00[0xc];
-    SeatApproachWork args;
-    u8 pad_18[4];
-};
-
 typedef PlayerActor Obj;
 typedef Unk_ov004_02221ed0_Bits Bits;
 typedef VecFx32 V3;
 typedef SeatApproachWork Rec;
-typedef Unk_ov004_02221ed0_Msg Msg;
+typedef PlayerActionRequest Msg;
 
 extern "C" {
 extern void *gCommManager;
@@ -2743,9 +2682,8 @@ extern "C" void PlayerActor_MainFtrRotate(Obj *o) {
 
 extern "C" s32 PlayerActor_RequestFtrPush(Obj *o, s32 a, s32 b) {
     Msg m;
-    m.func_0200e2c0(0x20, a, b);
+    _ZN19PlayerActionRequest6assignEiis(&m, 0x20, a, b);
     s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
-    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -2806,9 +2744,8 @@ extern "C" void PlayerActor_MainFtrPush(Obj *o) {
 
 extern "C" s32 PlayerActor_RequestFtrPull(Obj *o, s32 a, s32 b) {
     Msg m;
-    m.func_0200e2c0(0x21, a, b);
+    _ZN19PlayerActionRequest6assignEiis(&m, 0x21, a, b);
     s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
-    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -2869,9 +2806,8 @@ extern "C" void PlayerActor_MainFtrPull(Obj *o) {
 
 extern "C" s32 PlayerActor_RequestFtrPushMove(Obj *o, s32 a, s32 b) {
     Msg m;
-    m.func_0200e2c0(0x22, a, b);
+    _ZN19PlayerActionRequest6assignEiis(&m, 0x22, a, b);
     s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
-    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -2917,9 +2853,8 @@ extern "C" void PlayerActor_MainFtrPushMove(Obj *o) {
 
 extern "C" s32 PlayerActor_RequestFtrPullMove(Obj *o, s32 a, s32 b) {
     Msg m;
-    m.func_0200e2c0(0x23, a, b);
+    _ZN19PlayerActionRequest6assignEiis(&m, 0x23, a, b);
     s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
-    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -3001,10 +2936,9 @@ extern "C" void PlayerActor_SeatApproachSetArgs(Rec *r, s32 x, s32 z, s16 h, u8 
 
 extern "C" s32 PlayerActor_RequestSeatApproach(Obj *o, s32 x, s32 z, s16 h, u8 d, s32 a, s32 b) {
     Msg m;
-    m.func_0200e2c0(0x24, a, *(s16 *)&b);
-    PlayerActor_SeatApproachSetArgs(&m.args, x, z, h, d);
+    _ZN19PlayerActionRequest6assignEiis(&m, 0x24, a, *(s16 *)&b);
+    PlayerActor_SeatApproachSetArgs((SeatApproachWork *)m.unk_0c_b, x, z, h, d);
     s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
-    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -3028,7 +2962,7 @@ extern "C" void PlayerActor_SeatApproachGetNetData(u8 *self, s32 *x, s32 *z, s16
 }
 
 extern "C" void PlayerActor_SetupSeatApproach(Obj *o, Msg *m) {
-    Rec *p = &m->args;
+    Rec *p = (SeatApproachWork *)m->unk_0c_b;
     s16 h = p->h;
     u8 d = p->d;
     s32 z = p->z;
@@ -3148,18 +3082,6 @@ struct Unk_ov004_022215a8_Bits {
     u32 hi : 4;
 };
 
-class Unk_ov004_022215a8_Msg {
-public:
-    inline Unk_ov004_022215a8_Msg() { _ZN19PlayerActionRequestC1Ev(this); }
-    inline void func_0200e2c0(u32 a, u32 b, u32 c) { _ZN19PlayerActionRequest6assignEiis(this, a, b, c); }
-    u8 pad_00[0xc];
-    union {
-        PlayerSitDownArgs t;
-        u16 h;
-    } args;
-    u8 pad_18[4];
-};
-
 typedef PlayerActor Obj;
 typedef Unk_ov004_022215a8_Bits Bits;
 typedef VecFx32 V3;
@@ -3173,7 +3095,7 @@ struct Unk_ov004_022215a8_V3c {
 };
 typedef Unk_ov004_022215a8_V3c V3c;
 typedef PlayerSitDownArgs Tgt;
-typedef Unk_ov004_022215a8_Msg Msg;
+typedef PlayerActionRequest Msg;
 typedef SitWork Rec;
 typedef TwoLayerAnimModel Sub;
 
@@ -3269,20 +3191,18 @@ static inline BOOL Unk_ov004_022215a8_IsOne(u8 v) {
 extern "C" s32 PlayerActor_RequestSitDownFront(Obj *o, u32 a, u32 b) {
     Msg m;
     V3 v;
-    m.func_0200e2c0(0x25, a, b);
+    _ZN19PlayerActionRequest6assignEiis(&m, 0x25, a, b);
     PlayerActor_OffsetByAngle(&v, o, (V3 *)&o->position, &o->rotY, (u32)(sAct12Pos + 12));
-    PlayerActor_SitDownFrontSetArgs(&m.args.t, v.x, v.z, (s16)(o->rotY + 0x8000));
+    PlayerActor_SitDownFrontSetArgs((PlayerSitDownArgs *)m.unk_0c_b, v.x, v.z, (s16)(o->rotY + 0x8000));
     s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
-    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
 extern "C" s32 PlayerActor_RequestSitDownFrontAt(Obj *o, s32 *x, s32 *z, s16 *h, u32 a, u32 b) {
     Msg m;
-    m.func_0200e2c0(0x25, a, *(s16 *)&b);
-    PlayerActor_SitDownFrontSetArgs(&m.args.t, *x, *z, *h);
+    _ZN19PlayerActionRequest6assignEiis(&m, 0x25, a, *(s16 *)&b);
+    PlayerActor_SitDownFrontSetArgs((PlayerSitDownArgs *)m.unk_0c_b, *x, *z, *h);
     s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
-    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -3370,20 +3290,18 @@ extern "C" void PlayerActor_SitDownSide2SetArgs(Tgt *t, s32 x, s32 z, s16 h) {
 extern "C" s32 PlayerActor_RequestSitDownSide2(Obj *o, u32 a, u32 b) {
     Msg m;
     V3 v;
-    m.func_0200e2c0(0x26, a, b);
+    _ZN19PlayerActionRequest6assignEiis(&m, 0x26, a, b);
     PlayerActor_OffsetByAngle(&v, o, (V3 *)&o->position, &o->rotY, (u32)(sAct12Pos + 12));
-    PlayerActor_SitDownSide2SetArgs(&m.args.t, v.x, v.z, (s16)(o->rotY + 0x4000));
+    PlayerActor_SitDownSide2SetArgs((PlayerSitDownArgs *)m.unk_0c_b, v.x, v.z, (s16)(o->rotY + 0x4000));
     s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
-    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
 extern "C" s32 PlayerActor_RequestSitDownSide2At(Obj *o, s32 *x, s32 *z, s16 *h, u32 a, u32 b) {
     Msg m;
-    m.func_0200e2c0(0x26, a, *(s16 *)&b);
-    PlayerActor_SitDownSide2SetArgs(&m.args.t, *x, *z, *h);
+    _ZN19PlayerActionRequest6assignEiis(&m, 0x26, a, *(s16 *)&b);
+    PlayerActor_SitDownSide2SetArgs((PlayerSitDownArgs *)m.unk_0c_b, *x, *z, *h);
     s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
-    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -3471,20 +3389,18 @@ extern "C" void PlayerActor_SitDownSide1SetArgs(Tgt *t, s32 x, s32 z, s16 h) {
 extern "C" s32 PlayerActor_RequestSitDownSide1(Obj *o, u32 a, u32 b) {
     Msg m;
     V3 v;
-    m.func_0200e2c0(0x27, a, b);
+    _ZN19PlayerActionRequest6assignEiis(&m, 0x27, a, b);
     PlayerActor_OffsetByAngle(&v, o, (V3 *)&o->position, &o->rotY, (u32)(sAct12Pos + 12));
-    PlayerActor_SitDownSide1SetArgs(&m.args.t, v.x, v.z, (s16)(o->rotY - 0x4000));
+    PlayerActor_SitDownSide1SetArgs((PlayerSitDownArgs *)m.unk_0c_b, v.x, v.z, (s16)(o->rotY - 0x4000));
     s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
-    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
 extern "C" s32 PlayerActor_RequestSitDownSide1At(Obj *o, s32 *x, s32 *z, s16 *h, u32 a, u32 b) {
     Msg m;
-    m.func_0200e2c0(0x27, a, *(s16 *)&b);
-    PlayerActor_SitDownSide1SetArgs(&m.args.t, *x, *z, *h);
+    _ZN19PlayerActionRequest6assignEiis(&m, 0x27, a, *(s16 *)&b);
+    PlayerActor_SitDownSide1SetArgs((PlayerSitDownArgs *)m.unk_0c_b, *x, *z, *h);
     s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
-    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -3565,10 +3481,9 @@ extern "C" void PlayerActor_MainSitDownSide1(Obj *o) {
 
 extern "C" s32 PlayerActor_RequestSit(Obj *o, u32 a, u32 b, u32 c) {
     Msg m;
-    m.func_0200e2c0(0x28, b, c);
-    m.args.h = a;
+    _ZN19PlayerActionRequest6assignEiis(&m, 0x28, b, c);
+    m.unk_0c_h = a;
     s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
-    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -3649,9 +3564,8 @@ extern "C" void PlayerActor_MainSit(Obj *o) {
 
 extern "C" s32 PlayerActor_RequestStandUpSide2(Obj *o, u32 a, u32 b) {
     Msg m;
-    m.func_0200e2c0(0x29, a, b);
+    _ZN19PlayerActionRequest6assignEiis(&m, 0x29, a, b);
     s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
-    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -3669,15 +3583,6 @@ struct StorageOpenWork {
     u8 seatSide;
 };
 
-class Unk_ov004_02220c78_Msg {
-public:
-    inline Unk_ov004_02220c78_Msg() { _ZN19PlayerActionRequestC1Ev(this); }
-    inline void func_0200e2c0(s32 a, s32 b, s32 c) { _ZN19PlayerActionRequest6assignEiis(this, a, b, c); }
-    u8 pad_00[0xc];
-    u8 args;
-    u8 pad_0d[0x1c - 0xd];
-};
-
 struct Unk_ov004_02220c78_Bits {
     u32 lo : 12;
     u32 mid : 16;
@@ -3688,7 +3593,7 @@ typedef PlayerActor Obj;
 typedef Unk_ov004_02220c78_Bits Bits;
 typedef VecFx32 V3;
 typedef StorageOpenWork Rec;
-typedef Unk_ov004_02220c78_Msg Msg;
+typedef PlayerActionRequest Msg;
 
 extern "C" {
 extern void *gCommManager;
@@ -3799,9 +3704,8 @@ extern "C" void PlayerActor_MainStandUpSide2(Obj *o) {
 
 extern "C" s32 PlayerActor_RequestStandUpSide1(Obj *o, s32 a, s32 b) {
     Msg m;
-    m.func_0200e2c0(0x2a, a, b);
+    _ZN19PlayerActionRequest6assignEiis(&m, 0x2a, a, b);
     s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
-    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -3839,10 +3743,9 @@ extern "C" void PlayerActor_StandUpCheckSetArgs(u8 *p, u32 v) {
 
 extern "C" s32 PlayerActor_RequestStandUpCheck(Obj *o, u32 a, s32 b, s32 c) {
     Msg m;
-    m.func_0200e2c0(0x2b, b, c);
-    PlayerActor_StandUpCheckSetArgs(&m.args, a);
+    _ZN19PlayerActionRequest6assignEiis(&m, 0x2b, b, c);
+    PlayerActor_StandUpCheckSetArgs(m.unk_0c_b, a);
     s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
-    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -3857,7 +3760,7 @@ extern "C" void PlayerActor_SetupStandUpCheck(Obj *o, Msg *m) {
     V3 pos;
     V3 tmp;
     s16 t;
-    u8 idx = m->args;
+    u8 idx = m->unk_0c_b[0];
     t = o->rotY - sSeatSideAngles[idx];
     PlayerActor_OffsetByAngle(&pos, o, (V3 *)&o->position, &t, (u32)(sAct12Pos + 12));
     tmp.x = pos.x;
@@ -3925,9 +3828,8 @@ extern "C" void PlayerActor_MainStandUpCheck(Obj *o) {
 
 extern "C" s32 PlayerActor_RequestStandUpFront(Obj *o, s32 a, s32 b) {
     Msg m;
-    m.func_0200e2c0(0x2c, a, b);
+    _ZN19PlayerActionRequest6assignEiis(&m, 0x2c, a, b);
     s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
-    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -4012,10 +3914,9 @@ extern "C" void PlayerActor_StorageOpenSetArgs(void *r, u8 d, u32 a, u32 b, s16 
 
 extern "C" s32 PlayerActor_RequestStorageOpen(Obj *o, u8 b, u32 x, u32 y, s16 c, s32 d, s32 e) {
     Msg m;
-    m.func_0200e2c0(0x2d, d, *(s16 *)&e);
-    PlayerActor_StorageOpenSetArgs(&m.args, b, x, y, c);
+    _ZN19PlayerActionRequest6assignEiis(&m, 0x2d, d, *(s16 *)&e);
+    PlayerActor_StorageOpenSetArgs(m.unk_0c_b, b, x, y, c);
     s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
-    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -4040,9 +3941,9 @@ extern "C" void PlayerActor_StorageOpenGetNetData(u8 *self, u8 *o1, s32 *o2, s32
 }
 
 extern "C" void PlayerActor_SetupStorageOpen(Obj *o, Msg *m) {
-    Rec *p = (Rec *)&m->args;
+    Rec *p = (Rec *)m->unk_0c_b;
     u8 d = p->storageKind;
-    u32 a = *(u32 *)&m->args;
+    u32 a = *(u32 *)m->unk_0c_b;
     u32 b = p->targetZ;
     s16 c = p->targetAngle;
     PlayerActor_StorageOpenSetWork((Rec *)&o->actionWork, d, a, b, c);
@@ -4110,10 +4011,9 @@ extern "C" void PlayerActor_StorageHoldSetArgs(u8 *p, u32 v) {
 
 extern "C" s32 PlayerActor_RequestStorageHold(Obj *o, u32 a, s32 b, s32 c) {
     Msg m;
-    m.func_0200e2c0(0x2e, b, c);
-    PlayerActor_StorageHoldSetArgs(&m.args, a);
+    _ZN19PlayerActionRequest6assignEiis(&m, 0x2e, b, c);
+    PlayerActor_StorageHoldSetArgs(m.unk_0c_b, a);
     s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
-    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -4130,11 +4030,11 @@ extern "C" void PlayerActor_StorageHoldGetNetData(u8 *p, u8 *out) {
 }
 
 extern "C" void PlayerActor_SetupStorageHold(Obj *o, Msg *m) {
-    u32 t = m->args;
+    u32 t = m->unk_0c_b[0];
     s32 k;
     PlayerActor_StorageHoldSetWork((u32 *)&o->actionWork, t);
     PlayerActor_StorageHoldSetNetData(o->netData.bytes, t);
-    switch (m->args) {
+    switch (m->unk_0c_b[0]) {
     case 0:
         k = 0x3b;
         break;
@@ -4168,10 +4068,9 @@ extern "C" void PlayerActor_StorageCloseSetArgs(u32 *p, u32 v) {
 
 extern "C" s32 PlayerActor_RequestStorageClose(Obj *o, u32 a, s32 b, s32 c) {
     Msg m;
-    m.func_0200e2c0(0x2f, b, c);
-    PlayerActor_StorageCloseSetArgs((u32 *)&m.args, a);
+    _ZN19PlayerActionRequest6assignEiis(&m, 0x2f, b, c);
+    PlayerActor_StorageCloseSetArgs((u32 *)m.unk_0c_b, a);
     s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
-    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -4218,15 +4117,6 @@ struct Unk_ov004_02220314_Bits {
     u32 hi : 4;
 };
 
-class Unk_ov004_02220314_Msg {
-public:
-    inline Unk_ov004_02220314_Msg() { _ZN19PlayerActionRequestC1Ev(this); }
-    inline void func_0200e2c0(u32 a, u32 b, u32 c) { _ZN19PlayerActionRequest6assignEiis(this, a, b, c); }
-    u8 pad_00[0xc];
-    VecFx32 args;
-    u8 pad_18[4];
-};
-
 static inline BOOL Unk_ov004_02220314_IsZero(u8 v) {
     return v == 0 ? TRUE : FALSE;
 }
@@ -4234,7 +4124,7 @@ static inline BOOL Unk_ov004_02220314_IsZero(u8 v) {
 typedef PlayerActor Obj;
 typedef VecFx32 V3;
 typedef LeaveRoomWork Rec;
-typedef Unk_ov004_02220314_Msg Msg;
+typedef PlayerActionRequest Msg;
 typedef TalkMsgRequest Sec;
 typedef Unk_ov004_02220314_Bits Bits;
 
@@ -4384,13 +4274,12 @@ extern "C" void PlayerActor_Act36SetArgs(void *p, s32 a, u32 b, s32 c, s32 d) {
 
 extern "C" s32 PlayerActor_RequestAct36(Obj *o, u16 *a, s32 b, s32 c, s32 d, s32 e, s32 f, s16 g) {
     Msg m;
-    m.func_0200e2c0(0x36, f, g);
+    _ZN19PlayerActionRequest6assignEiis(&m, 0x36, f, g);
     u16 *p = &o->shownItem;
     *p = *a;
     o->actionItem = *p;
-    PlayerActor_Act36SetArgs(&m.args, b, c, d, e);
+    PlayerActor_Act36SetArgs((VecFx32 *)m.unk_0c_b, b, c, d, e);
     s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
-    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -4431,9 +4320,8 @@ extern "C" void PlayerActor_MainAct36(Obj *o) {
 
 extern "C" s32 PlayerActor_RequestAct37(Obj *o, s32 a, s32 b) {
     Msg m;
-    m.func_0200e2c0(0x37, a, b);
+    _ZN19PlayerActionRequest6assignEiis(&m, 0x37, a, b);
     s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
-    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -4481,10 +4369,9 @@ extern "C" s32 PlayerActor_RequestLeaveRoom(Obj *o, s32 a, s32 b) {
             return 0;
         }
         Msg m;
-        m.func_0200e2c0(0x40, a, b);
-        PlayerActor_LeaveRoomSetArgs(&m.args, y, x);
+        _ZN19PlayerActionRequest6assignEiis(&m, 0x40, a, b);
+        PlayerActor_LeaveRoomSetArgs((VecFx32 *)m.unk_0c_b, y, x);
         s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
-        _ZN19PlayerActionRequestD1Ev(&m);
         return r;
     }
     return 0;
@@ -4701,9 +4588,8 @@ extern "C" void PlayerActor_MainLeaveRoom(Obj *o) {
 
 extern "C" s32 PlayerActor_RequestAct41(Obj *o, s32 a, s32 b) {
     Msg m;
-    m.func_0200e2c0(0x41, a, b);
+    _ZN19PlayerActionRequest6assignEiis(&m, 0x41, a, b);
     s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
-    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -4737,15 +4623,6 @@ struct PlayerHaircutArgs {
     u8 hairColor;
 };
 
-class Unk_ov004_0221fa00_Msg {
-public:
-    inline Unk_ov004_0221fa00_Msg() { _ZN19PlayerActionRequestC1Ev(this); }
-    inline void func_0200e2c0(u32 a, u32 b, u32 c) { _ZN19PlayerActionRequest6assignEiis(this, a, b, c); }
-    u8 pad_00[0xc];
-    PlayerHaircutArgs args;
-    u8 pad_0e[0x1c - 0xe];
-};
-
 struct Unk_ov004_0221fa00_Bits {
     u32 lo : 12;
     u32 mid : 16;
@@ -4759,7 +4636,7 @@ static inline BOOL Unk_ov004_0221fa00_IsZero(u8 v) {
 typedef PlayerActor Obj;
 typedef VecFx32 V3;
 typedef HaircutWork Rec;
-typedef Unk_ov004_0221fa00_Msg Msg;
+typedef PlayerActionRequest Msg;
 typedef Unk_ov004_0221fa00_Bits Bits;
 
 extern "C" {
@@ -4888,9 +4765,8 @@ extern "C" void PlayerActor_MainAct41(Obj *o) {
 
 extern "C" s32 PlayerActor_RequestAct42(Obj *o, s32 a, s32 b) {
     Msg m;
-    m.func_0200e2c0(0x42, a, b);
+    _ZN19PlayerActionRequest6assignEiis(&m, 0x42, a, b);
     s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
-    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -4953,9 +4829,8 @@ extern "C" void PlayerActor_MainAct42(Obj *o) {
 
 extern "C" s32 PlayerActor_RequestAct43(Obj *o, s32 a, s32 b) {
     Msg m;
-    m.func_0200e2c0(0x43, a, b);
+    _ZN19PlayerActionRequest6assignEiis(&m, 0x43, a, b);
     s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
-    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -4995,9 +4870,8 @@ extern "C" void PlayerActor_MainAct43(Obj *o) {
 
 extern "C" s32 PlayerActor_RequestAct44(Obj *o, s32 a, s32 b) {
     Msg m;
-    m.func_0200e2c0(0x44, a, b);
+    _ZN19PlayerActionRequest6assignEiis(&m, 0x44, a, b);
     s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
-    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -5037,12 +4911,11 @@ extern "C" void PlayerActor_MainAct44(Obj *o) {
 
 extern "C" s32 PlayerActor_RequestHaircutStart(Obj *o, u32 a, u32 b, u32 c, s32 e) {
     Msg m;
-    m.func_0200e2c0(0x7a, c, *(s16 *)&e);
-    PlayerHaircutArgs &q = m.args;
+    _ZN19PlayerActionRequest6assignEiis(&m, 0x7a, c, *(s16 *)&e);
+    PlayerHaircutArgs &q = *(PlayerHaircutArgs *)m.unk_0c_b;
     q.hairStyle = a;
     q.hairColor = b;
     s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
-    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -5082,12 +4955,11 @@ extern "C" void PlayerActor_MainHaircutStart(Obj *o) {
 
 extern "C" s32 PlayerActor_RequestHaircutCut(Obj *o, u32 a, u32 b, u32 c, s32 e) {
     Msg m;
-    m.func_0200e2c0(0x7b, c, *(s16 *)&e);
-    PlayerHaircutArgs &q = m.args;
+    _ZN19PlayerActionRequest6assignEiis(&m, 0x7b, c, *(s16 *)&e);
+    PlayerHaircutArgs &q = *(PlayerHaircutArgs *)m.unk_0c_b;
     q.hairStyle = a;
     q.hairColor = b;
     s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
-    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -5117,12 +4989,11 @@ extern "C" void PlayerActor_MainHaircutCut(Obj *o) {
 
 extern "C" s32 PlayerActor_RequestHaircutFinish(Obj *o, u32 a, u32 b, u32 c, s32 e) {
     Msg m;
-    m.func_0200e2c0(0x7c, c, *(s16 *)&e);
-    PlayerHaircutArgs &q = m.args;
+    _ZN19PlayerActionRequest6assignEiis(&m, 0x7c, c, *(s16 *)&e);
+    PlayerHaircutArgs &q = *(PlayerHaircutArgs *)m.unk_0c_b;
     q.hairStyle = a;
     q.hairColor = b;
     s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
-    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -5182,19 +5053,10 @@ struct DoorWalkWork {
     u8 entranceType;
 };
 
-class Unk_ov004_0221f0b8_Msg {
-public:
-    inline Unk_ov004_0221f0b8_Msg() { _ZN19PlayerActionRequestC1Ev(this); }
-    inline void func_0200e2c0(u32 a, u32 b, u32 c) { _ZN19PlayerActionRequest6assignEiis(this, a, b, c); }
-    u8 pad_00[0xc];
-    VecFx32 args;
-    u8 pad_18[4];
-};
-
 typedef PlayerActor Obj;
 typedef VecFx32 V3;
 typedef DoorWalkWork Rec;
-typedef Unk_ov004_0221f0b8_Msg Msg;
+typedef PlayerActionRequest Msg;
 
 extern "C" {
 extern void *gCommManager;
@@ -5289,9 +5151,8 @@ extern "C" void PlayerActor_MainHaircutFinish(Obj *o) {
 
 extern "C" s32 PlayerActor_RequestPhonePickUp(Obj *o, u32 a, u32 b) {
     Msg m;
-    m.func_0200e2c0(0x7d, a, b);
+    _ZN19PlayerActionRequest6assignEiis(&m, 0x7d, a, b);
     s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
-    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -5339,9 +5200,8 @@ extern "C" void PlayerActor_MainPhonePickUp(Obj *o) {
 
 extern "C" s32 PlayerActor_RequestPhoneHold(Obj *o, u32 a, u32 b) {
     Msg m;
-    m.func_0200e2c0(0x7e, a, b);
+    _ZN19PlayerActionRequest6assignEiis(&m, 0x7e, a, b);
     s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
-    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -5363,9 +5223,8 @@ extern "C" void PlayerActor_MainPhoneHold(Obj *o) {
 
 extern "C" s32 PlayerActor_RequestPhoneHangUp(Obj *o, u32 a, u32 b) {
     Msg m;
-    m.func_0200e2c0(0x7f, a, b);
+    _ZN19PlayerActionRequest6assignEiis(&m, 0x7f, a, b);
     s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
-    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -5396,9 +5255,8 @@ extern "C" void PlayerActor_MainPhoneHangUp(Obj *o) {
 
 extern "C" s32 PlayerActor_RequestDrinkCoffee(Obj *o, u32 a, u32 b) {
     Msg m;
-    m.func_0200e2c0(0x8a, a, b);
+    _ZN19PlayerActionRequest6assignEiis(&m, 0x8a, a, b);
     s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
-    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -5440,10 +5298,9 @@ extern "C" void PlayerActor_DoorWalkInSetArgs(V3 *d, V3 v) {
 
 extern "C" s32 PlayerActor_RequestDoorWalkIn(Obj *o, V3 *v, u32 a, u32 b) {
     Msg m;
-    m.func_0200e2c0(0x8b, a, b);
-    PlayerActor_DoorWalkInSetArgs(&m.args, *v);
+    _ZN19PlayerActionRequest6assignEiis(&m, 0x8b, a, b);
+    PlayerActor_DoorWalkInSetArgs((VecFx32 *)m.unk_0c_b, *v);
     s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
-    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -5604,10 +5461,9 @@ extern "C" void PlayerActor_DoorWalkOutSetArgs(V3 *d, V3 v) {
 
 extern "C" s32 PlayerActor_RequestDoorWalkOut(Obj *o, V3 *v, u32 a, u32 b) {
     Msg m;
-    m.func_0200e2c0(0x8c, a, b);
-    PlayerActor_DoorWalkOutSetArgs(&m.args, *v);
+    _ZN19PlayerActionRequest6assignEiis(&m, 0x8c, a, b);
+    PlayerActor_DoorWalkOutSetArgs((VecFx32 *)m.unk_0c_b, *v);
     s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
-    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -5681,20 +5537,11 @@ struct ExitWalkWork {
     u8 entranceType;
 };
 
-class Unk_ov004_0221e7a8_Msg {
-public:
-    inline Unk_ov004_0221e7a8_Msg() { _ZN19PlayerActionRequestC1Ev(this); }
-    inline void func_0200e2c0(u32 a, u32 b, u32 c) { _ZN19PlayerActionRequest6assignEiis(this, a, b, c); }
-    u8 pad_00[0xc];
-    VecFx32 args;
-    u8 pad_18[4];
-};
-
 typedef PlayerActor Obj;
 typedef VecFx32 V3;
 typedef Vec2 Pair;
 typedef ExitWalkWork Rec;
-typedef Unk_ov004_0221e7a8_Msg Msg;
+typedef PlayerActionRequest Msg;
 
 extern "C" {
 extern void *gCommManager;
@@ -5812,10 +5659,9 @@ extern "C" void PlayerActor_ExitWalkOutSetArgs(V3 *d, V3 v) {
 
 extern "C" s32 PlayerActor_RequestExitWalkOut(Obj *o, V3 *v, u32 a, u32 b) {
     Msg m;
-    m.func_0200e2c0(0x8d, a, b);
-    PlayerActor_ExitWalkOutSetArgs(&m.args, *v);
+    _ZN19PlayerActionRequest6assignEiis(&m, 0x8d, a, b);
+    PlayerActor_ExitWalkOutSetArgs((VecFx32 *)m.unk_0c_b, *v);
     s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
-    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -5879,10 +5725,9 @@ extern "C" void PlayerActor_ExitWalkInSetArgs(V3 *d, V3 v) {
 
 extern "C" s32 PlayerActor_RequestExitWalkIn(Obj *o, V3 *v, u32 a, u32 b) {
     Msg m;
-    m.func_0200e2c0(0x8e, a, b);
-    PlayerActor_ExitWalkInSetArgs(&m.args, *v);
+    _ZN19PlayerActionRequest6assignEiis(&m, 0x8e, a, b);
+    PlayerActor_ExitWalkInSetArgs((VecFx32 *)m.unk_0c_b, *v);
     s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
-    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 

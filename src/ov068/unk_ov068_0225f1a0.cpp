@@ -617,17 +617,13 @@ public:
 };
 
 
-struct Unk_ov068_0226506c_Flags {
+// Bits of VillagerState::flags (+0x1d of the Villager_GetState record); f1 is set by VillagerState_SetUnk1dBit1.
+struct VillagerStateFlags {
     u8 pad : 1;
     u8 f1 : 1;
 };
 
 
-struct Unk_ov068_02265324_Flags {
-    u8 pad_00[0x1d];
-    u8 unk_1d_0 : 1;
-    u8 unk_1d_1 : 1;
-};
 
 struct FieldVillagerFocusRange {
     s32 negX, posX, negZ, posZ;
@@ -3669,8 +3665,8 @@ void FieldVillagerAi_StartRoute(FieldVillagerAi *self, s32 a, FieldVillager *o) 
     void *x = o->getVillagerData();
     s32 r4 = 7;
     if (x != 0) {
-        Unk_ov068_02265324_Flags *f = (Unk_ov068_02265324_Flags *)Villager_GetState(x);
-        if (f->unk_1d_1 != 0) {
+        VillagerStateFlags *f = (VillagerStateFlags *)((u8 *)Villager_GetState(x) + 0x1d);
+        if (f->f1 != 0) {
             r4 = 3;
         } else {
             s32 r6;
@@ -3723,7 +3719,7 @@ BOOL FieldVillagerAi_ShouldGoHome(void *self, FieldVillager *o) {
     BOOL f = Unk_ov068_022652d0_B(t);
     void *p = o->getVillagerData();
     BOOL r = TRUE;
-    Unk_ov068_0226506c_Flags *fl = (Unk_ov068_0226506c_Flags *)((u8 *)Villager_GetState(p) + 0x1d);
+    VillagerStateFlags *fl = (VillagerStateFlags *)((u8 *)Villager_GetState(p) + 0x1d);
     if (fl->f1 == 0 && (f != 0 || Villager_IsAsleep(p, 0) == 0)) {
         r = FALSE;
     }
@@ -3836,7 +3832,7 @@ namespace ns_022649f4 {
 extern "C" {
 BOOL FieldVillagerAi_GetRouteTarget(FieldVillagerAiStates *self, VecFx32 *out, FieldVillager *o) {
     if (o->getVillagerData() != 0) {
-        Unk_ov068_0226506c_Flags *fl = (Unk_ov068_0226506c_Flags *)((u8 *)Villager_GetState(o->getVillagerData()) + 0x1d);
+        VillagerStateFlags *fl = (VillagerStateFlags *)((u8 *)Villager_GetState(o->getVillagerData()) + 0x1d);
         if (fl->f1 != 0) {
             if (VillagerRoute_getStage(self->route) != 3) {
                 self->routeTimeout = 0;

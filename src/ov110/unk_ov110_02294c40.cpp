@@ -74,7 +74,7 @@ void PopupChoice_Close(void *p, s32 x);
 void Inventory_PlayPickUpSe();
 void Inventory_PlayTouchSe();
 void Inventory_PlayPutDownSe();
-BOOL func_ov094_02292414(u32 v);
+BOOL InvItem_IsNonTransferable(u32 v);
 BOOL InvItem_IsTurnipFishOrInsect(u32 v);
 void InventoryBg_DrawSprite(void *p, s32 a);
 void InventoryBg_Exit(void *a);
@@ -1316,7 +1316,7 @@ extern "C" BOOL LostFoundRecycleMenu_IsItemRejected(LostFoundRecycleMenu *s, u32
         return TRUE;
     }
     u32 t = LostFoundRecycleMenu_GetSlotItem(s, a);
-    if (func_ov094_02292414(t)) {
+    if (InvItem_IsNonTransferable(t)) {
         return TRUE;
     }
     v = t;

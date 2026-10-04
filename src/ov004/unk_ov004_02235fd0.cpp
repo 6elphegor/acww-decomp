@@ -1,6 +1,7 @@
 // mwcc-version: 1.2/base
 // ov004 TU33: .text 0x02235fd0-0x02237440 (actor 0224ebec "bug" scene object + scene objects 0224eb9c)
 #include "types.h"
+#include "gfx/Mtx43.h"
 #include "gfx/VecFx32.h"
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
@@ -49,9 +50,6 @@
 #pragma opt_loop_invariants off
 
 
-struct Unk_ov004_02236320_Mtx {
-    s64 v[6];
-};
 
 
 // a CollisionState built and destroyed by hand (C1/D1); a real CollisionState local would add implicit calls
@@ -115,7 +113,7 @@ public:
     /* 0x120 */ u8 model[0x5c];
     /* 0x17c */ u32 modelResMdl;
     /* 0x180 */ u8 pad_180[4];
-    /* 0x184 */ Unk_ov004_02236320_Mtx modelMtx;
+    /* 0x184 */ Mtx43 modelMtx;
     /* 0x1b4 */ u8 unk_1b4[0x24];
     /* 0x1d8 */ u8 hitBox[0x3c];
     /* 0x214 */ u8 isHit;
@@ -663,7 +661,7 @@ BOOL HouseRoach::execute() {
         }
     }
     if (F08(this) != 0) {
-        Unk_ov004_02236320_Mtx buf;
+        Mtx43 buf;
         drawTilt = WorldCurve_ToCurved(&drawPos, &position);
         calcModelMatrix(&buf);
         modelMtx = buf;

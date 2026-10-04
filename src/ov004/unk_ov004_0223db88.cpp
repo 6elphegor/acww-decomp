@@ -39,9 +39,6 @@ struct MuseumInfoPointSet {
 typedef VecFx32 V3;
 typedef MuseumInfoPointData Rec;
 
-struct Unk_ov004_0223df20_V : V3 {
-    Unk_ov004_0223df20_V(s32 a, s32 b, s32 c) { x = a; y = b; z = c; }
-};
 
 
 extern "C" MuseumData data_021ed0a0;
@@ -374,8 +371,8 @@ extern "C" void MuseumInfoPoint_Init(Rec *r, V3 *pos, s32 mask, u32 b, s16 c, s3
 }
 
 extern "C" Rec *MuseumInfoPoint_InitFromDef(Rec *r, const MuseumInfoPointDef *d) {
-    Unk_ov004_0223df20_V v(d->pos.x, d->pos.y, d->pos.z);
-    MuseumInfoPoint_Init(r, &v, d->facingMask, d->kind, d->message, (s32)d->itemList, d->itemCount);
+    VecFx32Ctor v(d->pos.x, d->pos.y, d->pos.z);
+    MuseumInfoPoint_Init(r, (V3 *)&v, d->facingMask, d->kind, d->message, (s32)d->itemList, d->itemCount);
     return r;
 }
 

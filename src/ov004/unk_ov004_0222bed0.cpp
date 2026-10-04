@@ -1,4 +1,5 @@
 #include "types.h"
+#include "gfx/Mtx43.h"
 #include "gfx/VecFx32.h"
 #include "Unk_020d8c7c.h"
 #include "room/RoomItemDrop.h"
@@ -35,9 +36,6 @@ struct Unk_ov004_0222bf34_P2 {
 };
 
 
-struct Unk_ov004_0222c570_Mtx {
-    s64 v[6];
-};
 
 
 
@@ -59,7 +57,7 @@ public:
     BOOL loadIconModels();
     void drawGridItems(void *grid);
     Model *setupIconModel(u32 idx, const VecFx32Copy &pos, const VecFx32Copy &scale, s16 rx, s16 ry, s16 rz);
-    void drawIconModel(Model *model, Unk_ov004_0222c570_Mtx m);
+    void drawIconModel(Model *model, Mtx43 m);
     void drawItemModel(u16 id, const VecFx32Copy &pos, const VecFx32Copy &scale, s16 rx, s16 ry, s16 rz);
 
     /* 0x050 */ void *iconModels[0x49];
@@ -167,10 +165,10 @@ BOOL RoomItemIcons::onExecute() {
     return TRUE;
 }
 
-void RoomItemIcons::drawIconModel(Model *model, Unk_ov004_0222c570_Mtx m) {
+void RoomItemIcons::drawIconModel(Model *model, Mtx43 m) {
     if (model != NULL) {
         volatile u16 tmp[2];
-        *(Unk_ov004_0222c570_Mtx *)&model->mtx = m; // s64 copy of the Mtx43
+        model->mtx = m;
         Model_drawShapesDirect(model, 0);
         tmp[0] = SceneLights_GetRoomColor();
         tmp[1] = tmp[0];
@@ -180,14 +178,14 @@ void RoomItemIcons::drawIconModel(Model *model, Unk_ov004_0222c570_Mtx m) {
 
 Model *RoomItemIcons::setupIconModel(u32 idx, const VecFx32Copy &pos, const VecFx32Copy &scale, s16 rx, s16 ry, s16 rz) {
     Model *model = (Model *)iconModels[idx];
-    Unk_ov004_0222c570_Mtx m;
+    Mtx43 m;
     s32 t[3];
     u32 r = WorldCurve_ToCurved(t, (void *)&pos);
     Mtx43_SetTranslate(data_021f47e0, t[0], t[1], t[2]);
     Mtx43_RotateX(data_021f47e0, r);
     Mtx43_RotateXYZ(data_021f47e0, rx, ry, rz);
     Mtx43_Scale(data_021f47e0, scale.x, scale.y, scale.z);
-    m = *(Unk_ov004_0222c570_Mtx *)data_021f47e0;
+    m = *(Mtx43 *)data_021f47e0;
     drawIconModel(model, m);
     return model;
 }

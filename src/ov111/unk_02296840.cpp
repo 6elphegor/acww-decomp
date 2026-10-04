@@ -262,7 +262,7 @@ public:
     /* 0xa0 */ u8 selectionEnd;
     /* 0xa1 */ u8 caretX;
     /* 0xa2 */ u8 emotionTimer;
-    /* 0xa3 */ u8 unk_a3;
+    /* 0xa3 */ u8 pad_a3;
     /* 0xa4 */ u16 flags;
     /* 0xa6 */ u8 unk_a6[2];
     /* 0xa8 */ TextLabel *textLabel;

@@ -162,7 +162,7 @@ public:
     void stateOpening();
     void stateOpen();
 
-    /* 0x091 */ u8 unk_91;
+    /* 0x091 */ u8 pad_91;
     /* 0x092 */ u16 flags;
     /* 0x094 */ u8 returnState;
     /* 0x095 */ u8 cursorSlot;

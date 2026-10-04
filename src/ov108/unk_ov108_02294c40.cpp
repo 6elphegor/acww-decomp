@@ -244,7 +244,7 @@ public:
     /* 0x29c */ u8 popupChoice;
     /* 0x29d */ u8 popupRow;
     /* 0x29e */ u8 touchHoldDelay;
-    /* 0x29f */ u8 unk_29f;
+    /* 0x29f */ u8 pad_29f;
     /* 0x2a0 */ BgVramTaskPair bgTasks[1];
     /* 0x2d8 */ InventoryItemGrid pocketGrid;
     /* 0xd38 */ LetterGrid letterGrid;

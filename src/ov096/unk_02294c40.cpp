@@ -273,7 +273,7 @@ void _ZN10MenuTabBar9selectTabEj(void *p, u32 idx);
 void Inventory_PlayPickUpSe();
 void Inventory_PlayTouchSe();
 void Inventory_PlayPutDownSe();
-BOOL func_ov094_02292414(u32 a);
+BOOL InvItem_IsNonTransferable(u32 a);
 s32 InvItem_IsDeliveryItem(s32 a);
 void InventoryBg_ResetHighlight(void *p);
 void InventoryBg_SetHighlight(void *p, s32 a);
@@ -2322,7 +2322,7 @@ s32 PocketMenu::checkPlace(u32 a, u32 b, u32 c) {
             return 3;
         }
         s32 s = _ZN10LetterView8getStateEv(p);
-        if (s == 7 || s == 8 || func_ov094_02292414(b)) {
+        if (s == 7 || s == 8 || InvItem_IsNonTransferable(b)) {
             return 2;
         }
         if (InvItem_IsTurnipFishOrInsect(b)) {

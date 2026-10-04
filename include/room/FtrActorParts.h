@@ -3,6 +3,7 @@
 
 #include "types.h"
 #include "sys/StackPad.h"
+#include "sys/NNSFndArchive.h"
 #include "gfx/VecFx32.h"
 #include "gfx/NNSG3dResAnmCommon.h"
 
@@ -22,10 +23,6 @@ struct Unk_ov004_02206520_Ent {
 struct Unk_ov004_02205b14_Obj {
     /* 0x00 */ u8 pad[0x18];
     /* 0x18 */ u8 numMat;
-};
-
-struct Unk_ov004_02206be8_Blk {
-    /* 0x00 */ u32 pad[26];
 };
 
 // View of one FtrModelAnim (0x20 bytes: AnimFrameCtrl numFrames 0x04 / curFrame 0x08 / frameStep 0x10, ModelAnim

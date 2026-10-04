@@ -1,6 +1,7 @@
 // mwcc-version: 1.2/base
 // ov004 TU32: .text 0x02233074-0x02235fd0 (furniture/TV resource slots, tile placement helpers, actor tables, scene object 0224e9d8)
 #include "types.h"
+#include "sys/NNSFndArchive.h"
 #include "gfx/VecFx32.h"
 #include "Unk_020d8c7c.h"
 #include "gfx/ModelSlotPool.h"
@@ -102,7 +103,6 @@ struct TvScheduleTime {
     u16 hourMinute;
     u8 minute;
     u8 hour;
-    u32 unk_04;
 };
 
 struct TvWeatherSrcView {
@@ -159,10 +159,6 @@ struct FtrMoveAnim {
 struct FtrModelPath {
     u16 item;
     char path[0x2a];
-};
-
-struct Unk_ov004_022337d4_Arc {
-    u32 unk_00[0x68 / 4];
 };
 
 struct Unk_ov004_02233f3c_P {
@@ -4537,7 +4533,7 @@ extern "C" BOOL FtrMoveAnim_DestroyHeap(FtrMoveAnim *r) {
 
 // @0x22338e0 unk_0223349c.cpp
 extern "C" BOOL FtrMoveAnim_LoadAnims(FtrMoveAnim *r) {
-    Unk_ov004_022337d4_Arc arc;
+    NNSFndArchive arc;
     if (r->anmArc == 0) {
         r->anmArc = File_LoadAlloc("/ftr/anm/anm.arc", r->heap, 4, 0);
         if (r->anmArc == 0) {
@@ -4575,7 +4571,7 @@ extern "C" BOOL FtrMoveAnim_ClearAnims(FtrMoveAnim *r) {
 // @0x22337d4 unk_0223349c.cpp
 extern "C" BOOL FtrMoveAnim_LoadModel(FtrMoveAnim *r) {
     FtrModelPath path;
-    Unk_ov004_022337d4_Arc arc;
+    NNSFndArchive arc;
     if (r->heap == 0) {
         return FALSE;
     }
