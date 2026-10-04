@@ -3076,6 +3076,7 @@ _ZN14MailMsgRequest9setFolderEj kind:function(thumb,size=0x4) addr:0x0203cbd4
 _ZN14MailMsgRequest10getPartDirEv kind:function(thumb,size=0x10) addr:0x0203cbd8
 _ZN14MailMsgRequest12isAppendPartEv kind:function(thumb,size=0xe) addr:0x0203cbe8
 _ZN14MailMsgRequest8vfunc_0cEv kind:function(thumb,size=0x10) addr:0x0203cbf8
+_ZN14MailMsgRequest9vfunc_s0cEv kind:label(thumb) addr:0x0203cbf8
 _ZN14MailMsgRequestD0Ev kind:function(thumb,size=0x20) addr:0x0203cc08
 _ZN14MailMsgRequestD1Ev kind:function(thumb,size=0x18) addr:0x0203cc28
 _ZN14MailMsgRequestC1Ev kind:function(thumb,size=0x24) addr:0x0203cc40
@@ -11410,6 +11411,7 @@ Item_GetBuildingIndex kind:function(thumb,size=0x68) addr:0x020b2bac
 Math_CountBits4 kind:function(thumb,size=0x22) addr:0x020b2c14
 _ZN21FieldObjectShapeQueryD1Ev kind:function(thumb,size=0x18) addr:0x020b2c38
 _ZN16StringMsgRequest8vfunc_0cEv kind:function(thumb,size=0x10) addr:0x020b2c50
+_ZN16StringMsgRequest9vfunc_s0cEv kind:label(thumb) addr:0x020b2c50
 _ZN16StringMsgRequestD0Ev kind:function(thumb,size=0x20) addr:0x020b2c60
 _ZN16StringMsgRequestD1Ev kind:function(thumb,size=0x18) addr:0x020b2c80
 _ZN16StringMsgRequestC1Ev kind:function(thumb,size=0x2c) addr:0x020b2c98

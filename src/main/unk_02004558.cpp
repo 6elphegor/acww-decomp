@@ -132,7 +132,7 @@ public:
     TalkMsgRequest();
     virtual ~TalkMsgRequest();
     virtual void vfunc_08();
-    virtual void vfunc_s0c();
+    virtual const char *vfunc_s0c();
     virtual s32 onMessageStart();
     virtual void onMessageEnd();
     virtual void onChoice();

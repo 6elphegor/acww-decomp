@@ -177,7 +177,7 @@ class StringMsgRequest : public MsgRequest {
 public:
     StringMsgRequest();
     virtual ~StringMsgRequest();
-    virtual u32 vfunc_0c();
+    virtual const char *vfunc_s0c();
 
     /* 0x20 */ u32 dirIndex;
     /* 0x24 */ MsgString *dest;
@@ -1019,7 +1019,7 @@ void StringBank::reset() {
 
 BOOL StringBank::load(StringMsgRequest *req) {
     char path[0x44];
-    func_020639e8(path, "%s/%s.bmg", req->vfunc_0c(), req->fileName);
+    func_020639e8(path, "%s/%s.bmg", req->vfunc_s0c(), req->fileName);
     BOOL ok = reader.open(path);
     BOOL t = ok ? reader.loadMessage(&req->msgIndex) : FALSE;
     ok = ok & t;
@@ -1142,8 +1142,8 @@ StringMsgRequest::StringMsgRequest() : dirIndex(0), dest(0), resolveAltText(0), 
 
 StringMsgRequest::~StringMsgRequest() {}
 
-u32 StringMsgRequest::vfunc_0c() {
+const char *StringMsgRequest::vfunc_s0c() {
     static const char *const tbl[2] = {"/script/ENG/string", "/script/ENG/2d"};
-    return (u32)tbl[dirIndex];
+    return tbl[dirIndex];
 }
 

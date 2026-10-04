@@ -17,6 +17,8 @@
 #include "talk/TalkWindowState.h"
 #include "actor/NpcActor.h"
 #include "actor/VillagerActor.h"
+#include "talk/Unk_020d7710.h"
+#include "talk/VillagerTalk.h"
 
 extern "C" {
 }
@@ -29,34 +31,10 @@ extern "C" {
 
 // ---------------------------------------------------------------------------------------------------------------------
 
-class Unk_020d7710 : public ActorTalkRequest {
-public:
-    virtual void onTag09_4();
-    virtual void onTag09_5();
-    virtual void onTag09_6();
-    virtual void onTag09_7();
-    virtual void onTag09_8();
-};
 
 
 
 
-class VillagerTalk : public Unk_020d7710 {
-public:
-    VillagerTalk();
-    virtual ~VillagerTalk();
-    virtual void onActionTag0();
-    virtual void onActionTag1(u32 a);
-    virtual void onActionTag2(u32 a);
-    virtual void onActionTag3(u32 a);
-    virtual void onActionTag4(u32 a);
-    virtual void onTag09_9();
-    virtual u32 getSpeakerData();
-    virtual void onWindowClose();
-    virtual void runDeferred();
-
-    /* 0xac */ u8 pad_ac[0x1a0 - 0xac];
-};
 
 class BirthdayHostVillager;
 

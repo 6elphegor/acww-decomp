@@ -27,6 +27,8 @@
 #include "talk/ActorTalkRequest.h"
 #include "actor/NpcActor.h"
 #include "actor/SpNpcActor.h"
+#include "talk/Unk_020d7710.h"
+#include "talk/SpNpcTalkRequest.h"
 #define Actor_spawn _ZN5Actor5spawnEPvS0_S0_S0_S0_
 #define NpcTalkCtrl_requestTalk _ZN11NpcTalkCtrl11requestTalkEhh
 #define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
@@ -74,21 +76,7 @@ struct Unk_ov068_0226ce70_Out {
 
 
 
-class Unk_020d7710 : public ActorTalkRequest {
-public:
-    virtual void onTag09_4();
-    virtual void onTag09_5();
-    virtual void onTag09_6();
-    virtual void onTag09_7();
-    virtual void onTag09_8();
-    virtual void onTag09_9();
-};
 
-class SpNpcTalkRequest : public Unk_020d7710 {
-public:
-    SpNpcTalkRequest();
-    virtual ~SpNpcTalkRequest();
-};
 
 
 

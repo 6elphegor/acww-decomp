@@ -31,6 +31,8 @@
 #include "talk/ActorTalkRequest.h"
 #include "actor/NpcActor.h"
 #include "actor/VillagerActor.h"
+#include "talk/Unk_020d7710.h"
+#include "talk/VillagerTalk.h"
 
 class SickVillager;
 
@@ -232,32 +234,7 @@ struct Unk_020d77a4_Vec3;
 
 
 
-class Unk_020d7710 : public ActorTalkRequest {
-public:
-    virtual void onTag09_4();
-    virtual void onTag09_5();
-    virtual void onTag09_6();
-    virtual void onTag09_7();
-    virtual void onTag09_8();
-};
 
-class VillagerTalk : public Unk_020d7710 {
-public:
-    VillagerTalk();
-    virtual ~VillagerTalk();
-    virtual void onActionTag0();
-    virtual void onActionTag1(u32 v);
-    virtual void onActionTag2(u32 v);
-    virtual void onActionTag3(u32 v);
-    virtual void onActionTag4(u32 v);
-    virtual void onTag09_9();
-    virtual u32 getSpeakerData();
-    virtual void onWindowClose();
-    virtual void runDeferred();
-    virtual void update();
-    virtual void onTaskDone(u32 a);
-    u8 pad_ac[0x1a0 - 0xac];
-};
 
 class SickVillagerTalk : public VillagerTalk {
 public:

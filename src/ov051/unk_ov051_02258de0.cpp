@@ -23,6 +23,7 @@
 #include "talk/ActorTalkRequest.h"
 #include "actor/NpcActor.h"
 #include "actor/SpNpcActor.h"
+#include "talk/Unk_020d7710.h"
 
 
 class SpNpcKappn;
@@ -104,17 +105,6 @@ extern u32 __ptmf_null[];
 
 
 
-class Unk_020d7710 : public ActorTalkRequest {
-public:
-    Unk_020d7710();
-    virtual ~Unk_020d7710();
-    virtual void onTag09_4();
-    virtual void onTag09_5();
-    virtual void onTag09_6();
-    virtual void onTag09_7();
-    virtual void onTag09_8();
-    virtual void onTag09_9();
-};
 
 
 

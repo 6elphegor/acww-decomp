@@ -11,6 +11,8 @@
 #include "snd/Unk_0213b938.h"
 #include "game/SkyProc.h"
 #include "actor/SpNpcActor.h"
+#include "talk/SpNpcTalkRequest.h"
+#include "talk/SpNpcKatieTalk.h"
 
 
 static inline void Unk_020bfe30_Set(Unk_020bfe30_Vec *v, s32 x, s32 y, s32 z) {
@@ -594,66 +596,8 @@ extern "C" u8 Weather_GetPrevDayRain() {
 
 // ---------------------------------------------------------------------------------------------------------------------
 
-// Library base class; its ctor and dtor are out of line.
-class SpNpcTalkRequest {
-public:
-    SpNpcTalkRequest();
-    virtual ~SpNpcTalkRequest();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void onMessageStart();
-    virtual void onMessageEnd();
-    virtual void onChoice();
-    virtual void onSignalTag();
-    virtual void onActionTag0();
-    virtual void onActionTag1();
-    virtual void onActionTag2();
-    virtual void onActionTag3();
-    virtual void onActionTag4();
-    virtual void onConditionTag();
-    virtual void onEventTag(void *p);
-    virtual void onTag09_0();
-    virtual void onTag09_1();
-    virtual void onTag09_2();
-    virtual void onTag09_3();
-    virtual void onTag09_4();
-    virtual void onTag09_5();
-    virtual void onTag09_6();
-    virtual void onTag09_7();
-    virtual void onTag09_8();
-    virtual void onTag09_9();
-    virtual void onScannedTag();
-    virtual void getSpeakerData();
-    virtual void getVoiceType();
-    virtual void onWindowClose();
-    virtual void onTalkEnd();
-    virtual void start(Unk_020c0538_Out *out);
-};
 
 
-// Sub-object at 0x658 of SpNpcKatie
-class SpNpcKatieTalk : public SpNpcTalkRequest {
-public:
-    SpNpcKatieTalk();
-    virtual ~SpNpcKatieTalk();
-    virtual void onMessageStart();
-    virtual void onMessageEnd();
-    virtual void onChoice();
-    virtual void onEventTag(void *p);
-    virtual void start(Unk_020c0538_Out *out);
-
-    /* 0x04 */ u8 fileName[0x1a];
-    /* 0x1e */ u8 msgIndex;
-    /* 0x1f */ u8 unk_1f[0x1d];
-    /* 0x3c */ Unk_020c0408_Obj *unk_3c;
-    /* 0x40 */ u8 unk_40[0x6c];
-    /* 0xac */ SpNpcKatie *katie;
-    /* 0xb0 */ s32 topic;
-
-    s32 getTopic();
-    void setTopic(s32 v);
-    void attachOwner(SpNpcKatie *owner);
-};
 
 
 class SpNpcKatie : public SpNpcActor {

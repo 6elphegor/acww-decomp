@@ -33,6 +33,8 @@
 #include "talk/MsgRequest.h"
 #include "talk/TalkMsgRequest.h"
 #include "talk/ActorTalkRequest.h"
+#include "talk/Unk_020d7710.h"
+#include "talk/TalkWindowState.h"
 
 
 // unk_02011580.cpp
@@ -758,108 +760,6 @@ struct TalkSubSceneParams {
       s32 closeMode;
 };
 
-// unk_02014d90.cpp
-class Unk_020d7710 {
-public:
-    virtual void vfunc_00() = 0;
-    virtual void vfunc_04();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void onMessageStart();
-    virtual void onMessageEnd();
-    virtual void onChoice();
-    virtual void onSignalTag();
-    virtual void onActionTag0();
-    virtual void onActionTag1();
-    virtual void onActionTag2();
-    virtual void onActionTag3();
-    virtual void onActionTag4();
-    virtual void onConditionTag();
-    virtual void onEventTag(s32 flag);
-    virtual void onTag09_0();
-    virtual void onTag09_1();
-    virtual void onTag09_2();
-    virtual void onTag09_3();
-    virtual void onTag09_4();
-    virtual void onTag09_5();
-    virtual void onTag09_6();
-    virtual void onTag09_7();
-    virtual void onTag09_8();
-    virtual void onTag09_9();
-    virtual void onScannedTag();
-    virtual void getSpeakerData();
-    virtual void getVoiceType();
-    virtual void onWindowClose();
-    virtual void onTalkEnd();
-    virtual void start();
-    virtual void runDeferred();
-    virtual void update();
-    virtual void onTaskDone(s32 id);
-
-    BOOL giveItemWait();
-    BOOL giveItemStart();
-    BOOL requestGiveItem(u16 *p, u32 b, u32 c, u32 d);
-    BOOL taskCloseWindow();
-    BOOL closeWindowWait();
-    BOOL closeWindowStart();
-    BOOL requestCloseWindow(u32 x);
-    BOOL taskReopenWindow();
-    BOOL requestReopenWindow();
-    BOOL taskSubScene();
-    BOOL subSceneWait();
-    BOOL subSceneOpen();
-    BOOL subSceneCloseWindow();
-    void setSubSceneKind2(u32 a, u32 b, u32 c, u8 d);
-    void setMenu12Arg(u32 a, u32 b);
-    void setSelectionList(u32 a, u32 b, u32 c);
-    void setSubSceneKindArg(u32 a, u32 b, u32 c);
-    void setSubSceneKind(u32 a, u32 b);
-    void setPocketFilter(u32 a, u32 b, u32 c);
-    void setPocketItem(u32 a, u32 b, u32 c);
-    BOOL openSubScene(s32 x);
-    void runTask();
-    BOOL isTaskRunning();
-    BOOL startTask(s32 x);
-    void initSubSceneParams(TalkSubSceneParams *p);
-    void resetTasks();
-    void func_020143fc(s32 x);
-    u8 *func_02015748(u32 x);
-    void makePlayerTurnTo(u8 *p);
-    void makePlayerLookAt(u8 *p);
-
-      u8 pad_04[0x38];
-      Unk_02014d90_Node *unk_3c;
-      u32 unk_40;
-      u32 unk_44;
-      u8 *unk_48;
-      u32 unk_4c;
-      u8 unk_50;
-      u8 pad_51[0x0f];
-      s32 unk_60;
-      s32 subSceneType;
-      u32 menuPtrArg0;
-      u32 menuPtrArg1;
-      u32 menu12Arg;
-      u32 pocketFilter;
-      u16 pocketMask;
-      u16 unk_7a;
-      u32 handOverKind;
-      u8 unk_80;
-      u8 pad_81;
-      u8 launcherMenu;
-      u8 launcherIndex;
-      u8 keepWindowClosed;
-      u8 pad_85[0x0b];
-      u8 handOverMode;
-      u8 pad_91[3];
-      u32 handOverVariant;
-      u32 launcherText;
-      u32 launcherTextSize;
-      u32 unk_a0;
-      u32 closeMode;
-      u8 taskStep;
-      u8 taskRunning;
-};
 
 // unk_02014d90.cpp
 typedef BOOL (Unk_020d7710::*Unk_020d7710_StateFn)();
@@ -8020,7 +7920,7 @@ void *data_020d74b4[2] = {(void *)_ZN12Unk_0201442011taskEatItemEv, 0};
 void Unk_020d7710::runTask() {
     using namespace nG;
     static Unk_020d7710_StateFn tbl[12] = {*(Unk_020d7710_StateFn *)data_020d735c, *(Unk_020d7710_StateFn *)data_020d7384, *(Unk_020d7710_StateFn *)data_020d720c, *(Unk_020d7710_StateFn *)data_020d7404, *(Unk_020d7710_StateFn *)data_020d7444, *(Unk_020d7710_StateFn *)data_020d7474, *(Unk_020d7710_StateFn *)data_020d747c, *(Unk_020d7710_StateFn *)data_020d7494, *(Unk_020d7710_StateFn *)data_020d74ac, *(Unk_020d7710_StateFn *)data_020d74b4, *(Unk_020d7710_StateFn *)data_020d74c4, *(Unk_020d7710_StateFn *)data_020d74d4};
-    if (unk_60 < 12) {
+    if ((s32)unk_60 < 12) {
         if ((this->*tbl[unk_60])()) {
             s32 old = unk_60;
             taskRunning = 0;
@@ -8030,7 +7930,7 @@ void Unk_020d7710::runTask() {
     }
 }
 
-void Unk_020d7710::onTaskDone(s32 id) {
+void Unk_020d7710::onTaskDone(u32 id) {
     using namespace nG;
 }
 
@@ -8263,10 +8163,10 @@ BOOL Unk_020d7710::giveItemStart() {
         if (unk_3c != NULL) {
             _ZN15TalkWindowState11lockAdvanceEv(unk_3c);
         }
-        if (_ZN13NpcActionCtrl9getActionEv(unk_48 + 0x564) == 8 && _ZN13NpcActionCtrl12isActionDoneEv(unk_48 + 0x564) == 0) {
+        if (_ZN13NpcActionCtrl9getActionEv((u8 *)unk_48 + 0x564) == 8 && _ZN13NpcActionCtrl12isActionDoneEv((u8 *)unk_48 + 0x564) == 0) {
             onEventTag(0);
         } else if (unk_3c != NULL) {
-            if (_ZN13NpcActionCtrl15requestGiveItemEiPtjhjj(unk_48 + 0x564, 4, &unk_7a, handOverKind, handOverMode, handOverVariant, unk_44)) {
+            if (_ZN13NpcActionCtrl15requestGiveItemEiPtjhjj((u8 *)unk_48 + 0x564, 4, &unk_7a, handOverKind, handOverMode, handOverVariant, unk_44)) {
                 taskStep = 1;
             }
         }
@@ -8278,7 +8178,7 @@ BOOL Unk_020d7710::giveItemWait() {
     using namespace nG;
     BOOL result = FALSE;
     if (unk_48 != NULL && unk_3c != NULL) {
-        if (_ZN13NpcActionCtrl9getActionEv(unk_48 + 0x564) == 13 && _ZN13NpcActionCtrl12isActionDoneEv(unk_48 + 0x564) != 0) {
+        if (_ZN13NpcActionCtrl9getActionEv((u8 *)unk_48 + 0x564) == 13 && _ZN13NpcActionCtrl12isActionDoneEv((u8 *)unk_48 + 0x564) != 0) {
             _ZN15TalkWindowState13unlockAdvanceEv(unk_3c);
             taskStep = 2;
             result = TRUE;

@@ -21,6 +21,8 @@
 #include "actor/NpcActor.h"
 #include "actor/ActorFollowCollider.h"
 #include "actor/SpNpcActor.h"
+#include "talk/SpNpcTalkRequest.h"
+#include "talk/SpNpcKatieTalk.h"
 
 typedef Unk_020bfe30_Vec Unk_020c0acc_Vec;
 
@@ -125,29 +127,7 @@ static inline BOOL Unk_020c06a0_IsMode2() {
 
 
 
-class SpNpcTalkRequest : public ActorTalkRequest {
-public:
-    SpNpcTalkRequest();
-    virtual ~SpNpcTalkRequest();
-};
 
-class SpNpcKatieTalk : public SpNpcTalkRequest {
-public:
-    SpNpcKatieTalk();
-    virtual ~SpNpcKatieTalk();
-    virtual void onMessageStart(u32 attr);
-    virtual void onMessageEnd(u32 attr);
-    virtual void onChoice(u32 attr);
-    virtual void onEventTag(u32 id);
-    virtual void start(TalkStartMsg *out);
-
-    s32 getTopic();
-    void setTopic(s32 v);
-    void attachOwner(SpNpcKatie *owner);
-
-    SpNpcKatie *katie;
-    s32 topic;
-};
 
 // ---- SpNpcKatie and its bases (scene object derived from NpcActor) ----
 

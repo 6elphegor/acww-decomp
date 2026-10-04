@@ -20,6 +20,7 @@
 #include "talk/TalkWindowState.h"
 #include "actor/NpcActor.h"
 #include "actor/SpNpcActor.h"
+#include "talk/Unk_020d7710.h"
 
 
 struct Unk_0201bc1c;
@@ -293,20 +294,6 @@ s32 NetOverlay_AssertAny();
 
 
 
-class Unk_020d7710 : public ActorTalkRequest {
-public:
-    Unk_020d7710();
-    virtual ~Unk_020d7710();
-    virtual void onTag09_4();
-    virtual void onTag09_5();
-    virtual void onTag09_6();
-    virtual void onTag09_7();
-    virtual void onTag09_8();
-    virtual void onTag09_9();
-    void setSubSceneKind(u32 a, u32 b);
-    void setSelectionList(u32 a, u32 b, u32 c);
-    void openSubScene(s32 v);
-};
 
 struct Unk_ov048_M0 {
     u8 pad_00[0x2e0 - 0xb8];

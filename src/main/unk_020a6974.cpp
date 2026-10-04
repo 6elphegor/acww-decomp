@@ -18,6 +18,7 @@
 #include "talk/MsgQuery.h"
 #include "talk/MsgCopyProcessor.h"
 #include "talk/MsgUiProc.h"
+#include "talk/MsgRequest.h"
 
 inline void *operator new(unsigned long, void *p) { return p; }
 
@@ -430,17 +431,6 @@ class BmgReader;
 
 
 
-class MsgRequest {
-public:
-    virtual ~MsgRequest();
-    virtual void vfunc_08();
-    virtual void vfunc_0c() = 0;
-    MsgRequest();
-    void setFileName(const char *src);
-
-    /* 0x04 */ char fileName[0x1a];
-    /* 0x1e */ u8 msgIndex;
-};
 
 
 // Text drawn by running a script through MsgProcessor

@@ -1,14 +1,10 @@
 #include "types.h"
 #include "talk/TalkMsgRequest.h"
 #include "talk/ActorTalkRequest.h"
+#include "talk/SpNpcTalkRequest.h"
 
 
 
-class SpNpcTalkRequest : public ActorTalkRequest {
-public:
-    SpNpcTalkRequest();
-    virtual ~SpNpcTalkRequest();
-};
 
 SpNpcTalkRequest::SpNpcTalkRequest() {}
 

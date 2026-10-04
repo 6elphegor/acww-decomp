@@ -34,6 +34,8 @@
 #include "talk/ActorTalkRequest.h"
 #include "actor/NpcActor.h"
 #include "actor/VillagerActor.h"
+#include "talk/Unk_020d7710.h"
+#include "talk/VillagerTalk.h"
 #define VillagerId_makeFileName _ZN10VillagerId12makeFileNameEPvjj
 #define Unk_02013474_enableFootsteps _ZN12Unk_0201347415enableFootstepsEv
 #define NpcTalkCtrl_requestTalk _ZN11NpcTalkCtrl11requestTalkEhh
@@ -72,39 +74,8 @@ struct Unk_020d77a4_Vec3;
 
 
 
-class Unk_020d7710 : public ActorTalkRequest {
-public:
-    virtual void onTag09_4();
-    virtual void onTag09_5();
-    virtual void onTag09_6();
-    virtual void onTag09_7();
-    virtual void onTag09_8();
-};
 
 struct Unk_020d8938_Tbl;
-class VillagerTalk : public Unk_020d7710 {
-public:
-    void setTopicFns(Unk_020d8938_Tbl *t);
-    void begin(VillagerActor *owner, u32 idx);
-    VillagerTalk();
-    virtual ~VillagerTalk();
-    virtual void onMessageStart(u32 v);
-    virtual void onMessageEnd(u32 v);
-    virtual void onChoice(u32 v);
-    virtual void start(TalkStartMsg *out);
-    virtual void onActionTag0();
-    virtual void onActionTag1(u32 v);
-    virtual void onActionTag2(u32 v);
-    virtual void onActionTag3(u32 v);
-    virtual void onActionTag4(u32 v);
-    virtual void onTag09_9();
-    virtual u32 getSpeakerData();
-    virtual void onWindowClose();
-    virtual void runDeferred();
-    virtual void update();
-    virtual void onTaskDone(u32 id);
-    u8 pad_ac[0x1a0 - 0xac];
-};
 
 
 // ---------------------------------------------------------------- TU10 classes

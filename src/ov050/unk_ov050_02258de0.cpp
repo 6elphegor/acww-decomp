@@ -19,6 +19,8 @@
 #include "talk/ActorTalkRequest.h"
 #include "actor/NpcActor.h"
 #include "actor/SpNpcActor.h"
+#include "talk/Unk_020d7710.h"
+#include "talk/SpNpcTalkRequest.h"
 
 #define Actor_findByProfile _ZN5Actor13findByProfileEjPS_
 #define VillagerId_getName _ZN10VillagerId7getNameEj
@@ -174,21 +176,7 @@ class SpNpcMabel;
 class SpNpcMabelTalk;
 
 
-class Unk_020d7710 : public ActorTalkRequest {
-public:
-    virtual void onTag09_4();
-    virtual void onTag09_5();
-    virtual void onTag09_6();
-    virtual void onTag09_7();
-    virtual void onTag09_8();
-    virtual void onTag09_9();
-};
 
-class SpNpcTalkRequest : public Unk_020d7710 {
-public:
-    SpNpcTalkRequest();
-    virtual ~SpNpcTalkRequest();
-};
 
 
 

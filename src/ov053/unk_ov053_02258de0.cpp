@@ -25,6 +25,8 @@
 #include "talk/ActorTalkRequest.h"
 #include "actor/NpcActor.h"
 #include "actor/SpNpcActor.h"
+#include "talk/Unk_020d7710.h"
+#include "talk/SpNpcTalkRequest.h"
 
 
 
@@ -49,22 +51,7 @@ struct Unk_ov053_02259428_Ent {
 
 
 
-class Unk_020d7710 : public ActorTalkRequest {
-public:
-    virtual void onTag09_4();
-    virtual void onTag09_5();
-    virtual void onTag09_6();
-    virtual void onTag09_7();
-    virtual void onTag09_8();
-    virtual void onTag09_9();
-    virtual void onTaskDone(u32 id);
-};
 
-class SpNpcTalkRequest : public Unk_020d7710 {
-public:
-    SpNpcTalkRequest();
-    virtual ~SpNpcTalkRequest();
-};
 
 
 

@@ -21,6 +21,7 @@
 #include "talk/ActorTalkRequest.h"
 #include "actor/NpcActor.h"
 #include "actor/SpNpcActor.h"
+#include "talk/Unk_020d7710.h"
 
 // Real (mangled) names of other modules' functions that the unit calls as plain functions taking the object first.
 #define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv
@@ -104,19 +105,6 @@ extern u8 *gCommManager;
 // ---------------------------------------------------------------------------------------------------------------------
 
 
-class Unk_020d7710 : public ActorTalkRequest {
-public:
-    Unk_020d7710();
-    virtual ~Unk_020d7710();
-    virtual void onTag09_4();
-    virtual void onTag09_5();
-    virtual void onTag09_6();
-    virtual void onTag09_7();
-    virtual void onTag09_8();
-    virtual void onTag09_9();
-    void setSubSceneKind(u32 a, u32 b);
-    void openSubScene(s32 a);
-};
 
 struct Unk_ov045_022590e4_Msg {
     u32 msgKey;

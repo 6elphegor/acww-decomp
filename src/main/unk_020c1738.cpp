@@ -22,6 +22,7 @@
 #include "actor/NpcActor.h"
 #include "actor/ActorFollowCollider.h"
 #include "actor/SpNpcActor.h"
+#include "talk/SpNpcTalkRequest.h"
 
 extern "C" {
 void _ZN8NpcActor14setTalkRequestEP12Unk_0201bc1c(void *a, void *b);
@@ -82,11 +83,6 @@ struct Unk_020c1d80_Out {
     u8 msgIndex;
 };
 
-class SpNpcTalkRequest : public ActorTalkRequest {
-public:
-    SpNpcTalkRequest();
-    virtual ~SpNpcTalkRequest();
-};
 
 class SpNpcKaitlinTalk : public SpNpcTalkRequest {
 public:

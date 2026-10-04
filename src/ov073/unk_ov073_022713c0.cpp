@@ -19,6 +19,8 @@
 #include "talk/ActorTalkRequest.h"
 #include "actor/NpcActor.h"
 #include "actor/SpNpcActor.h"
+#include "talk/Unk_020d7710.h"
+#include "talk/SpNpcTalkRequest.h"
 
 
 struct Unk_0201bc1c;
@@ -113,23 +115,7 @@ void _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(void *self, u8 a, s32 b,
 
 
 
-class Unk_020d7710 : public ActorTalkRequest {
-public:
-    void setSubSceneKind(u32 a, u32 b);
-    void openSubScene(s32 a);
-    virtual void onTag09_4();
-    virtual void onTag09_5();
-    virtual void onTag09_6();
-    virtual void onTag09_7();
-    virtual void onTag09_8();
-    virtual void onTag09_9();
-};
 
-class SpNpcTalkRequest : public Unk_020d7710 {
-public:
-    SpNpcTalkRequest();
-    virtual ~SpNpcTalkRequest();
-};
 
 // Sub-object at +0x658 of the scene (vtable 0x02272430)
 class SpNpcJoanTalk : public SpNpcTalkRequest {

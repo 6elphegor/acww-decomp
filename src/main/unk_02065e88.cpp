@@ -408,7 +408,7 @@ public:
     TalkMsgRequest();
     virtual ~TalkMsgRequest();
     virtual void vfunc_08();
-    virtual const char *vfunc_0c();
+    virtual const char *vfunc_s0c();
     virtual void onMessageStart();
     virtual void onMessageEnd();
     virtual void onChoice();
@@ -5263,7 +5263,7 @@ u32 TalkMsgRequest::isNoSpeakerName() {
     using namespace n1; return unk_40; }
 u32 TalkMsgRequest::getNameKind() {
     using namespace n1; return unk_04[(0x2c - 4) / 4]; }
-const char *TalkMsgRequest::vfunc_0c() {
+const char *TalkMsgRequest::vfunc_s0c() {
     using namespace n1; return data_020ddd68; }
 void TalkMsgRequest::onMessageStart() {
     using namespace n1;}

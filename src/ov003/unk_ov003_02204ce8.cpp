@@ -9,6 +9,7 @@
 #include "actor/Character.h"
 #include "talk/TalkMsgRequest.h"
 #include "talk/TalkWindowState.h"
+#include "talk/MsgRequest.h"
 
 // calls into other modules (the old extern "C" declarations keep their local signatures; the call compiles like the method call)
 #define Unk_02007694_getActionDonePriority _ZN12Unk_0200769421getActionDonePriorityEj
@@ -1749,11 +1750,6 @@ struct Unk_ov003_022093bc_Ptr {
     s32 nextState;
 };
 
-class MsgRequest {
-public:
-    MsgRequest();
-    virtual ~MsgRequest();
-};
 
 class Unk_ov003_022093bc_Prim {
 public:
@@ -1779,8 +1775,7 @@ typedef Unk_ov003_022093bc_Sub Sub;
 typedef Unk_ov003_022093bc_Ptr Ptr;
 
 struct Unk_ov003_022093bc_Obj : public Unk_ov003_022093bc_Prim, public MsgRequest {
-    /* 0x0f0 */ u8 pad_f0[0x10a - 0xf0];
-    /* 0x10a */ u8 msgIndex;
+    // 0x0f0..0x10a: MsgRequest (fileName, msgIndex)
     u8 pad_10b[0x128 - 0x10b];
     /* 0x128 */ Ptr *window;
     u8 pad_12c[0x2cc - 0x12c];
@@ -2557,10 +2552,6 @@ struct Unk_ov003_0220bc84_T48 {
 
 
 
-class MsgRequest {
-public:
-    virtual void vfunc_00();
-};
 
 struct Unk_ov003_0220bc84_Bits {
     u32 a : 12;
@@ -2592,8 +2583,7 @@ struct Unk_ov003_0220bc84_State {
 
 class Unk_ov003_0220bc84_Obj : public Character, public MsgRequest {
 public:
-    /* 0x0f0 */ u8 pad_f0[0x10a - 0xf0];
-    /* 0x10a */ u8 msgIndex;
+    // 0x0f0..0x10a: MsgRequest (fileName, msgIndex)
     /* 0x10b */ u8 pad_10b[0x128 - 0x10b];
     /* 0x128 */ Unk_ov003_0220bc84_H *window;
     /* 0x12c */ u8 pad_12c[0x294 - 0x12c];
