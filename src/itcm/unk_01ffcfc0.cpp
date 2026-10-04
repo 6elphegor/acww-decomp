@@ -11,7 +11,7 @@ extern "C" {
 TreeNode *TreeNode_GetNextSkipChildren(TreeNode *n);
 }
 
-// VEC_Add
+// game copy of the SDK VEC_Add (the SDK one is at 0x01ffca8c)
 extern "C" void Vec_Add(VecFx32 *out, VecFx32 *a, VecFx32 *b) {
     s32 ax = a->x, bx = b->x, az = a->z, bz = b->z, ay = a->y, by = b->y;
     out->x = ax + bx;

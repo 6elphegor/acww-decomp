@@ -4,7 +4,7 @@ typedef unsigned char char_map[32];
 #define set_char_map(map, ch) map[(unsigned char)(ch) >> 3] |= (unsigned char)(1 << ((ch)&7))
 #define tst_char_map(map, ch) (map[(unsigned char)(ch) >> 3] & (unsigned char)(1 << ((ch)&7)))
 
-// strcspn (MSL string.c)
+// strspn (MSL string.c)
 size_t strspn(const char *str, const char *set) {
     const unsigned char *p;
     unsigned long c;
