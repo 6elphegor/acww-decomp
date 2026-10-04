@@ -76,8 +76,8 @@ void NookShop_InitNew(void *);
 void LooseSnowballs_Get();
 void _ZN14LooseSnowballs5resetEv();
 void TownStyleRecord_InitNew(void *);
-void func_020b8e90();
-void func_020b8ea0();
+void Weather_RerollRainSlantAlt();
+void Weather_RerollRainSlantAlt2();
 void Weather_InitNew(void *);
 extern u32 gCurrentHeap;
 extern u8 gSaveData[];
@@ -101,7 +101,7 @@ void SaveData::setupNoSave() {
     VillagerStates_SetBirthdayVisitor(-1);
     SaveVillagers_UpdateOutdoor(&villagers, 0);
     _ZN11SaveRecord410clearStateEv(&footer);
-    func_020b8e90();
+    Weather_RerollRainSlantAlt();
     TownSessionState_Get();
     _ZN16ResettiVisitFlag5clearEv(TownSessionState_GetResettiFlag());
 }
@@ -115,7 +115,7 @@ void SaveData::setupLoaded() {
     SaveVillagers_PlaceMissingHouses(&villagers);
     VillagerStates_SetBirthdayVisitor(-1);
     SaveVillagers_UpdateOutdoor(&villagers, 1);
-    func_020b8ea0();
+    Weather_RerollRainSlantAlt2();
     TownSessionState_Get();
     _ZN16ResettiVisitFlag5clearEv(TownSessionState_GetResettiFlag());
     s32 z, i;

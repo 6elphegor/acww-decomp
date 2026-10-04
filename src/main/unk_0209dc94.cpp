@@ -41,7 +41,7 @@ void BottleLetter_WashUpThrownBottle();
 void Constellation_ImportExchanged();
 void LetterDelivery_DeliverReceivedLetter();
 void GameStart_Clear();
-void func_020b8eb0();
+void Weather_RerollRainSlantAlt3();
 void Sky_RequestBirds();
 void _ZN12TurnipMarket12spoilOnResetEv(void *);
 void SaveVillagers_PickPlayerBirthdayVisitor(void *, s32);
@@ -337,7 +337,7 @@ void SaveData::setupContinue() {
     Constellation_ImportExchanged();
     LetterDelivery_DeliverReceivedLetter();
     GameStart_Clear();
-    func_020b8eb0();
+    Weather_RerollRainSlantAlt3();
     Sky_RequestBirds();
     _ZN12TurnipMarket12spoilOnResetEv(&turnipMarket);
     SaveVillagers_PickPlayerBirthdayVisitor(&villagers, 0);

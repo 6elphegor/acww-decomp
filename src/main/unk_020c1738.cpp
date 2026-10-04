@@ -1,4 +1,6 @@
 #include "types.h"
+#include "actor/ActorProfile.h"
+#include "gfx/DebugColor.h"
 #include "game/Unk_020d77a4_Vec3.h"
 #include "npc/NpcTalkCtrl.h"
 #include "npc/NpcAnimCtrl.h"
@@ -108,10 +110,10 @@ struct Unk_020c17f8_Vec {
 };
 
 class SpNpcKaitlin;
-typedef BOOL (SpNpcKaitlin::*Unk_020c2194_Fn)();
-struct Unk_020c2194_Entry {
-    Unk_020c2194_Fn a;
-    Unk_020c2194_Fn b;
+typedef BOOL (SpNpcKaitlin::*SpNpcKaitlinActFn)();
+struct SpNpcKaitlinActEntry {
+    SpNpcKaitlinActFn setup;
+    SpNpcKaitlinActFn main;
 };
 
 class SpNpcKaitlin : public SpNpcActor {
@@ -158,23 +160,14 @@ public:
     BOOL setupAct00();
     void changeAct(s32 state);
 
-    s32 unk_654;
+    s32 act;
     SpNpcKaitlinTalk talk;
     u32 unk_70c;
 };
 
 
-struct Unk_021f4624_Color {
-    u8 v[4];
-    Unk_021f4624_Color(u8 a, u8 b, u8 c, u8 d) {
-        v[0] = a;
-        v[1] = b;
-        v[2] = c;
-        v[3] = d;
-    }
-};
 
-extern Unk_020c2194_Entry sSpNpcKaitlinActTable[10];
+extern SpNpcKaitlinActEntry sSpNpcKaitlinActTable[10];
 extern SpNpcKaitlin *sSpNpcKaitlinInstance;
 extern FxVec3 data_021f4658[2];
 extern char sSpNpcKaitlinKey[16];
@@ -256,8 +249,8 @@ u8 *SpNpcKaitlin::getModelPath() {
 
 BOOL SpNpcKaitlin::updateAct() {
     BOOL result = FALSE;
-    if (sSpNpcKaitlinActTable[unk_654].b != NULL) {
-        result = (this->*sSpNpcKaitlinActTable[unk_654].b)();
+    if (sSpNpcKaitlinActTable[act].main != NULL) {
+        result = (this->*sSpNpcKaitlinActTable[act].main)();
     }
     return result;
 }
@@ -292,11 +285,11 @@ void SpNpcKaitlin::onInteractionEvent(u32 a, u8) {
 
 void SpNpcKaitlin::changeAct(s32 state) {
     BOOL ok = TRUE;
-    if (sSpNpcKaitlinActTable[state].a != NULL) {
-        ok = (this->*sSpNpcKaitlinActTable[state].a)();
+    if (sSpNpcKaitlinActTable[state].setup != NULL) {
+        ok = (this->*sSpNpcKaitlinActTable[state].setup)();
     }
     if (ok) {
-        unk_654 = state;
+        act = state;
     }
 }
 
@@ -677,13 +670,13 @@ BOOL SpNpcKaitlin::mainAct08() {
     return TRUE;
 }
 
-Unk_021f4624_Color data_021f4630(31, 20, 20, 31);
-Unk_021f4624_Color data_021f463c(20, 20, 31, 31);
-Unk_021f4624_Color data_021f4634(31, 31, 20, 31);
-Unk_021f4624_Color data_021f4624(20, 31, 20, 31);
-Unk_021f4624_Color data_021f4628(20, 31, 31, 31);
-Unk_021f4624_Color data_021f462c(20, 24, 24, 31);
-Unk_020c2194_Entry sSpNpcKaitlinActTable[10] = {
+DebugColor data_021f4630(31, 20, 20, 31);
+DebugColor data_021f463c(20, 20, 31, 31);
+DebugColor data_021f4634(31, 31, 20, 31);
+DebugColor data_021f4624(20, 31, 20, 31);
+DebugColor data_021f4628(20, 31, 31, 31);
+DebugColor data_021f462c(20, 24, 24, 31);
+SpNpcKaitlinActEntry sSpNpcKaitlinActTable[10] = {
     { &SpNpcKaitlin::setupAct00, &SpNpcKaitlin::mainAct00 },
     { &SpNpcKaitlin::setupAct01, &SpNpcKaitlin::mainAct01 },
     { &SpNpcKaitlin::setupAct02, &SpNpcKaitlin::mainAct02 },
@@ -701,8 +694,4 @@ char sSpNpcKaitlinKey[] = "sp_npc_missing2";
 const char *sSpNpcKaitlinMsgKey = sSpNpcKaitlinKey;
 char sSpNpcKaitlinModelPath[] = "npc_sp/model/mum.nsbmd";
 char sSpNpcKaitlinTexPath[] = "npc_sp/model/mum_tex.nsbtx";
-struct Unk_020e6a9c_Rec {
-    SpNpcKaitlin *(*fn)();
-    u32 w[5];
-};
-Unk_020e6a9c_Rec sSpNpcKaitlinProfile = { SpNpcKaitlin_Create, { 0x0083007f, 2, 0x5000, 0x5000, 0x3e800 } };
+ActorProfile sSpNpcKaitlinProfile = {(void *(*)())SpNpcKaitlin_Create, 0x7f, 0x83, 2, 0x5000, 0x5000, 0x3e800};

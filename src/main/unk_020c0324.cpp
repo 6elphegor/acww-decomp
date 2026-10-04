@@ -1,4 +1,6 @@
 #include "types.h"
+#include "actor/ActorProfile.h"
+#include "gfx/DebugColor.h"
 #include "net/CommManager.h"
 #include "gfx/Unk_020bfe30_Vec.h"
 #include "game/Unk_020d77a4_Vec3.h"
@@ -136,14 +138,14 @@ static inline BOOL Unk_020c06a0_IsMode2() {
 
 
 
-typedef BOOL (SpNpcKatie::*Unk_020c11b8_Fn)();
-struct Unk_020c11b8_Ent {
-    Unk_020c11b8_Fn a;
-    Unk_020c11b8_Fn b;
+typedef BOOL (SpNpcKatie::*SpNpcKatieActFn)();
+struct SpNpcKatieActEntry {
+    SpNpcKatieActFn setup;
+    SpNpcKatieActFn main;
 };
 
 
-extern Unk_020c11b8_Ent sSpNpcKatieActTable[9];
+extern SpNpcKatieActEntry sSpNpcKatieActTable[9];
 extern SpNpcKatie *sSpNpcKatieInstance;
 extern char sSpNpcKatieKey[16];
 extern char sSpNpcKatieModelPath[23];
@@ -261,8 +263,8 @@ u8 *SpNpcKatie::getModelPath() {
 
 BOOL SpNpcKatie::updateAct() {
     s32 r = 0;
-    if (sSpNpcKatieActTable[act].b != 0) {
-        r = (this->*(sSpNpcKatieActTable[act].b))();
+    if (sSpNpcKatieActTable[act].main != 0) {
+        r = (this->*(sSpNpcKatieActTable[act].main))();
     }
     if (Scene_GetCurrent() == 0) {
         _ZN15KatieVisitState6setPosEP17Unk_02086ec4_Vec3(TownSessionState_GetKatieState(TownSessionState_Get()), &position);
@@ -304,9 +306,9 @@ void SpNpcKatie::onInteractionEvent(u32 state, u8) {
 
 void SpNpcKatie::changeAct(s32 state) {
     BOOL result = TRUE;
-    Unk_020c11b8_Ent *e = &sSpNpcKatieActTable[state];
-    if (e->a != 0) {
-        result = (this->*(e->a))();
+    SpNpcKatieActEntry *e = &sSpNpcKatieActTable[state];
+    if (e->setup != 0) {
+        result = (this->*(e->setup))();
     }
     if (result) {
         if (state != 1 && effectHandle != -1) {
@@ -771,23 +773,14 @@ extern "C" void SpNpcKatie_ChangeAct05() {
     }
 }
 
-struct Unk_021f458c_Color {
-    u8 v[4];
-    Unk_021f458c_Color(u8 a, u8 b, u8 c, u8 d) {
-        v[0] = a;
-        v[1] = b;
-        v[2] = c;
-        v[3] = d;
-    }
-};
-Unk_021f458c_Color data_021f458c(31, 20, 20, 31);
-Unk_021f458c_Color data_021f4580(20, 20, 31, 31);
-Unk_021f458c_Color data_021f4584(31, 31, 20, 31);
-Unk_021f458c_Color data_021f457c(20, 31, 20, 31);
-Unk_021f458c_Color data_021f4590(20, 31, 31, 31);
-Unk_021f458c_Color data_021f4588(20, 24, 24, 31);
+DebugColor data_021f458c(31, 20, 20, 31);
+DebugColor data_021f4580(20, 20, 31, 31);
+DebugColor data_021f4584(31, 31, 20, 31);
+DebugColor data_021f457c(20, 31, 20, 31);
+DebugColor data_021f4590(20, 31, 31, 31);
+DebugColor data_021f4588(20, 24, 24, 31);
 const Unk_020bfe30_Vec sSpNpcKatieReunionWalkPos = { 0x10000, 0, 0x11800 };
-Unk_020c11b8_Ent sSpNpcKatieActTable[9] = {
+SpNpcKatieActEntry sSpNpcKatieActTable[9] = {
     { &SpNpcKatie::setupAct00, &SpNpcKatie::mainAct00 },
     { &SpNpcKatie::setupAct01, &SpNpcKatie::mainAct01 },
     { &SpNpcKatie::setupAct02, &SpNpcKatie::mainAct02 },
@@ -803,8 +796,4 @@ char sSpNpcKatieKey[] = "sp_npc_missing1";
 char *sSpNpcKatieMsgKey = sSpNpcKatieKey;
 char sSpNpcKatieTexPath[] = "npc_sp/model/los_tex.nsbtx";
 char sSpNpcKatieModelPath[] = "npc_sp/model/los.nsbmd";
-struct Unk_020e6858_Rec {
-    SpNpcKatie *(*fn)();
-    u32 w[5];
-};
-Unk_020e6858_Rec sSpNpcKatieProfile = { SpNpcKatie_Create, { 0x0082007e, 2, 0x5000, 0x5000, 0x3e800 } };
+ActorProfile sSpNpcKatieProfile = {(void *(*)())SpNpcKatie_Create, 0x7e, 0x82, 2, 0x5000, 0x5000, 0x3e800};

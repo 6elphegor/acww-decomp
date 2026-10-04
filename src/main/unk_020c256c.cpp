@@ -1,4 +1,5 @@
 #include "types.h"
+#include "actor/ActorProfile.h"
 #include "game/Unk_020d77a4_Vec3.h"
 #include "npc/NpcTalkCtrl.h"
 #include "npc/NpcAnimCtrl.h"
@@ -31,15 +32,11 @@ void _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(void *self, u32 a, u32 b, u32 c);
 
 // ---- SpNpcTestTalk and its bases (vtable 0x020ddcf0 chain) ----
 
-struct Unk_020c270c_Out {
-    const void *vptr;
-    u8 flag;
-};
 
 
 class SpNpcTestTalk;
-typedef void (SpNpcTestTalk::*Unk_020c2620_Fn)(void *);
-typedef void (SpNpcTestTalk::*Unk_020c269c_Fn)(void *);
+typedef void (SpNpcTestTalk::*SpNpcTestTalkEndFn)(void *);
+typedef void (SpNpcTestTalk::*SpNpcTestTalkStartFn)(void *);
 
 class SpNpcTestTalk : public ActorTalkRequest {
 public:
@@ -49,8 +46,8 @@ public:
     virtual void start(TalkStartMsg *out);
 
     void onMessageEndPhase00(void *a);
-    void dispatchStart(Unk_020c270c_Out *out);
-    void startPhase00(Unk_020c270c_Out *out);
+    void dispatchStart(TalkStartMsg *out);
+    void startPhase00(TalkStartMsg *out);
     void setPhase(s32 v);
     void attachOwner(u32 v);
 
@@ -68,10 +65,10 @@ typedef Unk_020d77a4_Vec3 Unk_0203e7a4_Vec;
 
 
 class SpNpcTest;
-typedef BOOL (SpNpcTest::*Unk_020c28b0_Fn)();
-struct Unk_020c28b0_Entry {
-    Unk_020c28b0_Fn a;
-    Unk_020c28b0_Fn b;
+typedef BOOL (SpNpcTest::*SpNpcTestActFn)();
+struct SpNpcTestActEntry {
+    SpNpcTestActFn setup;
+    SpNpcTestActFn main;
 };
 
 class SpNpcTest : public SpNpcActor {
@@ -96,7 +93,7 @@ public:
     BOOL setupAct00();
     void changeAct(s32 state);
 
-    s32 unk_654;
+    s32 act;
     SpNpcTestTalk talk;
     s16 homeAngle;
 };
@@ -107,7 +104,7 @@ extern const char *const sSpNpcModelPaths[];
 }
 
 extern "C" SpNpcTest *SpNpcTest_Create();
-extern Unk_020c28b0_Entry sSpNpcTestActTable[4];
+extern SpNpcTestActEntry sSpNpcTestActTable[4];
 extern char sSpNpcModelLos[23];
 extern char sSpNpcModelWrl[23];
 extern char sSpNpcModelMum[23];
@@ -197,11 +194,7 @@ char sSpNpcTexHgs[] = "npc_sp/model/hgs_tex.nsbtx";
 char sSpNpcTexPga[] = "npc_sp/model/pga_tex.nsbtx";
 char sSpNpcTexPgb[] = "npc_sp/model/pgb_tex.nsbtx";
 char sSpNpcTexPlb[] = "npc_sp/model/plb_tex.nsbtx";
-struct Unk_020e6fbc_Rec {
-    SpNpcTest *(*fn)();
-    u32 w[5];
-};
-Unk_020e6fbc_Rec sSpNpcTestProfile = { SpNpcTest_Create, { 0x0080007c, 2, 0x5000, 0x5000, 0x3e800 } };
+ActorProfile sSpNpcTestProfile = {(void *(*)())SpNpcTest_Create, 0x7c, 0x80, 2, 0x5000, 0x5000, 0x3e800};
 char sSpNpcTexEnd[] = "npc_sp/model/end_tex.nsbtx";
 char sSpNpcModelDnk[] = "npc_sp/model/dnk.nsbmd";
 char sSpNpcModelBpt[] = "npc_sp/model/bpt.nsbmd";
@@ -350,19 +343,19 @@ u8 *SpNpcTest::getModelPath() {
 
 BOOL SpNpcTest::updateAct() {
     BOOL result = FALSE;
-    if (sSpNpcTestActTable[unk_654].b != NULL) {
-        result = (this->*sSpNpcTestActTable[unk_654].b)();
+    if (sSpNpcTestActTable[act].main != NULL) {
+        result = (this->*sSpNpcTestActTable[act].main)();
     }
     return result;
 }
 
 void SpNpcTest::changeAct(s32 state) {
     BOOL ok = TRUE;
-    if (sSpNpcTestActTable[state].a != NULL) {
-        ok = (this->*sSpNpcTestActTable[state].a)();
+    if (sSpNpcTestActTable[state].setup != NULL) {
+        ok = (this->*sSpNpcTestActTable[state].setup)();
     }
     if (ok == 1) {
-        unk_654 = state;
+        act = state;
     }
 }
 
@@ -427,13 +420,13 @@ void SpNpcTestTalk::setPhase(s32 v) {
     phase = v;
 }
 
-void SpNpcTestTalk::startPhase00(Unk_020c270c_Out *out) {
-    out->vptr = sSpNpcTestMsgKey;
-    out->flag = 0;
+void SpNpcTestTalk::startPhase00(TalkStartMsg *out) {
+    out->msgKey = (const char *)sSpNpcTestMsgKey;
+    out->msgIndex = 0;
 }
 
-void SpNpcTestTalk::dispatchStart(Unk_020c270c_Out *out) {
-    static Unk_020c269c_Fn tbl[1] = { (Unk_020c269c_Fn)&SpNpcTestTalk::startPhase00 };
+void SpNpcTestTalk::dispatchStart(TalkStartMsg *out) {
+    static SpNpcTestTalkStartFn tbl[1] = { (SpNpcTestTalkStartFn)&SpNpcTestTalk::startPhase00 };
     if (phase >= 0 && phase < 1) {
         if (tbl[phase]) {
             (this->*tbl[phase])((void *)out);
@@ -442,7 +435,7 @@ void SpNpcTestTalk::dispatchStart(Unk_020c270c_Out *out) {
 }
 
 void SpNpcTestTalk::start(TalkStartMsg *out_) {
-    Unk_020c270c_Out *out = (Unk_020c270c_Out *)out_;
+    TalkStartMsg *out = out_;
     dispatchStart(out);
 }
 
@@ -458,7 +451,7 @@ char sSpNpcModelPlb[] = "npc_sp/model/plb.nsbmd";
 
 void SpNpcTestTalk::onMessageEnd(u32 a_) {
     void *a = (void *)a_;
-    static Unk_020c2620_Fn tbl[1] = { &SpNpcTestTalk::onMessageEndPhase00 };
+    static SpNpcTestTalkEndFn tbl[1] = { &SpNpcTestTalk::onMessageEndPhase00 };
     if (phase >= 0 && phase < 1) {
         if (tbl[phase]) {
             (this->*tbl[phase])(a);
@@ -487,7 +480,7 @@ void SpNpcTest::onInteractionEvent(u32 a, u8) {
     }
 }
 
-Unk_020c28b0_Entry sSpNpcTestActTable[4] = {
+SpNpcTestActEntry sSpNpcTestActTable[4] = {
     { &SpNpcTest::setupAct00, &SpNpcTest::mainAct00 },
     { &SpNpcTest::setupAct01, &SpNpcTest::mainAct01 },
     { 0, &SpNpcTest::mainAct02 },

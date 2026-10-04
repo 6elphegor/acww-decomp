@@ -12,6 +12,7 @@
 #include "game/SceneInfo.h"
 #include "sys/ProcProfile.h"
 #include "gfx/Unk_ov068_0226647c_Cam.h"
+#include "gfx/DebugColor.h"
 
 typedef Unk_0203b350_V V3;
 typedef Unk_0203b350_V Unk_0203a148_Vec;
@@ -39,16 +40,6 @@ struct CameraShakeParam {
     s16 ang, vel;
 };
 
-
-struct GxColorRgba {
-    u8 v[4];
-    GxColorRgba(u8 a, u8 b, u8 c, u8 d) {
-        v[0] = a;
-        v[1] = b;
-        v[2] = c;
-        v[3] = d;
-    }
-};
 
 
 
@@ -1498,12 +1489,12 @@ extern "C" BOOL Camera_ProjectCurvedToScreen(s32 *x, s32 *y, Unk_0203a148_Vec *p
     return Camera_ProjectToScreen(x, y, &v);
 }
 
-GxColorRgba data_021c3060(31, 20, 20, 31);
-GxColorRgba data_021c3074(20, 20, 31, 31);
-GxColorRgba data_021c3064(31, 31, 20, 31);
-GxColorRgba data_021c305c(20, 31, 20, 31);
-GxColorRgba data_021c3058(20, 31, 31, 31);
-GxColorRgba data_021c306c(20, 24, 24, 31);
+DebugColor data_021c3060(31, 20, 20, 31);
+DebugColor data_021c3074(20, 20, 31, 31);
+DebugColor data_021c3064(31, 31, 20, 31);
+DebugColor data_021c305c(20, 31, 20, 31);
+DebugColor data_021c3058(20, 31, 31, 31);
+DebugColor data_021c306c(20, 24, 24, 31);
 FxVec3 gCameraEye;
 FxVec3 gCameraLookAt;
 CameraSetup sCameraSavedSetup;
