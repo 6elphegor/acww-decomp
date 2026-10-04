@@ -1,7 +1,7 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
 #include "net/Unk_ov065_0227c538_Node.h"
-#include "net/Unk_ov065_0227c538_Ctx.h"
+#include "net/GsGpContext.h"
 
 // ov065_048: DWC HTTP/session context (0x0227c538..0x0227ce30)
 
@@ -9,7 +9,7 @@
 
 
 
-typedef Unk_ov065_0227c538_Ctx Ctx0227;
+typedef GsGpContext Ctx0227;
 extern "C" {
 extern s32 sGsAvailStatus;
 
@@ -91,7 +91,7 @@ s32 gpiInitialize(Ctx0227 **h, s32 a, s32 b) {
         c = 0;
         return 1;
     }
-    c->unk_420 = 0;
+    c->diskCache = 0;
     {
         s32 i;
         for (i = 0; i < 6; i++) {

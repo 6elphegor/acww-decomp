@@ -7,7 +7,7 @@
 // (src/ov065/unk_ov065_0227e160.cpp, src/ov065/unk_ov065_0227f2a4.cpp).
 
 struct Unk_ov065_0227f00c_Sa {
-    /* 0x0 */ u8 unk_0;
+    /* 0x0 */ u8 len;
     /* 0x1 */ u8 family;
     /* 0x2 */ u16 port;
     /* 0x4 */ u32 addr;

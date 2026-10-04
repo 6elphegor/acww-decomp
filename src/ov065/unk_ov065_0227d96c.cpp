@@ -1,7 +1,8 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
+#include "net/GsGpOperation.h"
 #include "net/Unk_ov065_0227d8e0_Ctx.h"
-#include "net/Unk_ov065_0227dc48_Conn.h"
+#include "net/GsGpPeer.h"
 
 // ov065_050: DWC HTTP socket send/recv + growable string buffer + callback list (0x0227d8e0..0x0227e1c8)
 
@@ -18,10 +19,6 @@
 
 
 
-typedef Unk_ov065_0227d8e0_Handle Unk_H;
-typedef Unk_ov065_0227d8e0_Ctx Unk_C;
-typedef Unk_ov065_0227d8e0_Buf Unk_B;
-typedef Unk_ov065_0227d8e0_Node Unk_N;
 extern "C" {
 char *func_0212a120(const char *, s32);
 s32 strncmp(const char *, const char *, s32);
@@ -40,7 +37,7 @@ s32 GsUtil_Free(void *);
 s32 GsSock_Recv(s32, void *, s32, s32);
 s32 GsSock_Send(s32, void *, s32, s32);
 s32 GsSock_GetLastError(s32);
-s32 GsArray_Count(s32);
+s32 GsArray_Count(GsArray *);
 s32 GsSock_Shutdown(s32, s32);
 s32 GsSock_Close(s32);
 s32 GsGp_RemoveOperation(void *, void *);
@@ -49,19 +46,19 @@ s32 GsGpProfile_FindIf(void *, s32, s32);
 s32 GsGp_FreeBuddyDataCb(void);
 
 s32 GsGp_SocketSend(void *, s32, char *, s32, s32 *, s32 *, const char *);
-s32 GsGpBuf_AppendInt(Unk_H *, Unk_B *, s32);
-s32 GsGpBuf_AppendString(Unk_H *, Unk_B *, const char *);
-s32 GsGpBuf_Append(Unk_H *, Unk_B *, const char *, s32);
-s32 GsGpBuf_AppendChar(Unk_H *, Unk_B *, char);
-s32 GsGpPeer_Send(Unk_H *, Unk_ov065_0227dc48_Conn *, const char *, s32);
-s32 GsGp_SendBuffer(Unk_H *, s32, Unk_B *, s32 *, s32, const char *);
-s32 GsGp_CallCallback(Unk_H *, Unk_N *);
-s32 GsGp_QueueCallback(Unk_H *, Unk_ov065_0227e0e8_Wrap, Unk_N *, Unk_ov065_0227e0e8_G *, s32);
-void GsGp_CallErrorCallback(Unk_H *, s32, s32);
+s32 GsGpBuf_AppendInt(Unk_ov065_0227d8e0_Handle *, GsGpBuffer *, s32);
+s32 GsGpBuf_AppendString(Unk_ov065_0227d8e0_Handle *, GsGpBuffer *, const char *);
+s32 GsGpBuf_Append(Unk_ov065_0227d8e0_Handle *, GsGpBuffer *, const char *, s32);
+s32 GsGpBuf_AppendChar(Unk_ov065_0227d8e0_Handle *, GsGpBuffer *, char);
+s32 GsGpPeer_Send(Unk_ov065_0227d8e0_Handle *, GsGpPeer *, const char *, s32);
+s32 GsGp_SendBuffer(Unk_ov065_0227d8e0_Handle *, s32, GsGpBuffer *, s32 *, s32, const char *);
+s32 GsGp_CallCallback(Unk_ov065_0227d8e0_Handle *, GsGpQueuedCallback *);
+s32 GsGp_QueueCallback(Unk_ov065_0227d8e0_Handle *, Unk_ov065_0227e0e8_Wrap, GsGpQueuedCallback *, GsGpOperation *, s32);
+void GsGp_CallErrorCallback(Unk_ov065_0227d8e0_Handle *, s32, s32);
 }
 
 extern "C" {
-s32 GsGpBuf_AppendChar(Unk_H *h, Unk_B *b, char c) {
+s32 GsGpBuf_AppendChar(Unk_ov065_0227d8e0_Handle *h, GsGpBuffer *b, char c) {
     s32 len = b->length;
     s32 cap = b->capacity;
     char *data = b->buffer;
@@ -83,7 +80,7 @@ s32 GsGpBuf_AppendChar(Unk_H *h, Unk_B *b, char c) {
 }
 
 extern "C" {
-s32 GsGpBuf_Append(Unk_H *h, Unk_B *b, const char *s, s32 n) {
+s32 GsGpBuf_Append(Unk_ov065_0227d8e0_Handle *h, GsGpBuffer *b, const char *s, s32 n) {
     s32 len;
     s32 cap;
     char *data;
@@ -111,13 +108,13 @@ s32 GsGpBuf_Append(Unk_H *h, Unk_B *b, const char *s, s32 n) {
 }
 
 extern "C" {
-s32 GsGpBuf_AppendString(Unk_H *h, Unk_B *b, const char *s) {
+s32 GsGpBuf_AppendString(Unk_ov065_0227d8e0_Handle *h, GsGpBuffer *b, const char *s) {
     return GsGpBuf_Append(h, b, s, STD_GetStringLength(s));
 }
 }
 
 extern "C" {
-s32 GsGpBuf_AppendInt(Unk_H *h, Unk_B *b, s32 n) {
+s32 GsGpBuf_AppendInt(Unk_ov065_0227d8e0_Handle *h, GsGpBuffer *b, s32 n) {
     char tmp[0x14];
     OS_SPrintf(tmp, "%d", n);
     return GsGpBuf_AppendString(h, b, tmp);
@@ -136,7 +133,7 @@ s32 GsGp_SocketSend(void *h, s32 fd, char *buf, s32 len, s32 *pflag, s32 *pcnt, 
                 return 3;
             }
             GsGp_SetError(h, 5, "There was an error sending on a socket.");
-            GsGp_CallErrorCallback((Unk_H *)h, 3, 0);
+            GsGp_CallErrorCallback((Unk_ov065_0227d8e0_Handle *)h, 3, 0);
             return 3;
         }
         *pcnt = 0;
@@ -154,7 +151,7 @@ s32 GsGp_SocketSend(void *h, s32 fd, char *buf, s32 len, s32 *pflag, s32 *pcnt, 
 }
 
 extern "C" {
-s32 GsGpPeer_SendChar(Unk_H *h, Unk_ov065_0227dc48_Conn *c, char ch) {
+s32 GsGpPeer_SendChar(Unk_ov065_0227d8e0_Handle *h, GsGpPeer *c, char ch) {
     s32 flag;
     s32 cnt;
     s32 r;
@@ -172,7 +169,7 @@ s32 GsGpPeer_SendChar(Unk_H *h, Unk_ov065_0227dc48_Conn *c, char ch) {
 }
 
 extern "C" {
-s32 GsGpPeer_Send(Unk_H *h, Unk_ov065_0227dc48_Conn *c, const char *s, s32 n) {
+s32 GsGpPeer_Send(Unk_ov065_0227d8e0_Handle *h, GsGpPeer *c, const char *s, s32 n) {
     s32 sent = 0;
     s32 flag;
     s32 cnt;
@@ -203,7 +200,7 @@ s32 GsGpPeer_Send(Unk_H *h, Unk_ov065_0227dc48_Conn *c, const char *s, s32 n) {
 }
 
 extern "C" {
-s32 GsGpPeer_SendString(Unk_H *h, Unk_ov065_0227dc48_Conn *c, const char *s) {
+s32 GsGpPeer_SendString(Unk_ov065_0227d8e0_Handle *h, GsGpPeer *c, const char *s) {
     return GsGpPeer_Send(h, c, s, STD_GetStringLength(s));
 }
 }
@@ -217,7 +214,7 @@ __declspec(weak) void Unk_ov065_0227dc00_pool_order(void) {
 }
 
 extern "C" {
-s32 GsGp_RecvToBuffer(Unk_H *h, s32 fd, Unk_B *b, s32 *pout, s32 *pflag, const char *str) {
+s32 GsGp_RecvToBuffer(Unk_ov065_0227d8e0_Handle *h, s32 fd, GsGpBuffer *b, s32 *pout, s32 *pflag, const char *str) {
     char *data = b->buffer;
     s32 len = b->length;
     s32 cap = b->capacity;
@@ -271,7 +268,7 @@ s32 GsGp_RecvToBuffer(Unk_H *h, s32 fd, Unk_B *b, s32 *pout, s32 *pflag, const c
 }
 
 extern "C" {
-s32 GsGp_SendBuffer(Unk_H *h, s32 fd, Unk_B *b, s32 *pout, s32 compact, const char *str) {
+s32 GsGp_SendBuffer(Unk_ov065_0227d8e0_Handle *h, s32 fd, GsGpBuffer *b, s32 *pout, s32 compact, const char *str) {
     char *data = b->buffer;
     s32 len = b->length;
     s32 pos = b->pos;
@@ -312,7 +309,7 @@ s32 GsGp_SendBuffer(Unk_H *h, s32 fd, Unk_B *b, s32 *pout, s32 compact, const ch
 }
 
 extern "C" {
-s32 GsGpPeer_ParseMessage(void *h, Unk_B *b, char **pp, s32 *plen, s32 *pval) {
+s32 GsGpPeer_ParseMessage(void *h, GsGpBuffer *b, char **pp, s32 *plen, s32 *pval) {
     char line[16];
     char *p;
     s32 n;
@@ -354,7 +351,7 @@ s32 GsGpPeer_ParseMessage(void *h, Unk_B *b, char **pp, s32 *plen, s32 *pval) {
 }
 
 extern "C" {
-s32 GsGpBuf_Compact(void *h, Unk_B *b) {
+s32 GsGpBuf_Compact(void *h, GsGpBuffer *b) {
     if (b == NULL || b->buffer == NULL || b->pos == 0) {
         return 0;
     }

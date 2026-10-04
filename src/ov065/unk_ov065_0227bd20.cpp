@@ -2,7 +2,7 @@
 #include "types.h"
 #include "net/Unk_ov065_0227bd20_Ctx.h"
 #include "net/Unk_ov065_0227c538_Node.h"
-#include "net/Unk_ov065_0227c538_Ctx.h"
+#include "net/GsGpContext.h"
 
 namespace Nb {
 // ov065_047: DWC HTTP/GHI-like API wrappers (0x0227bbf4..0x0227c4b0)
@@ -48,7 +48,7 @@ namespace Nc {
 
 
 
-typedef Unk_ov065_0227c538_Ctx Ctx0227;
+typedef GsGpContext Ctx0227;
 extern "C" {
 extern s32 sGsAvailStatus;
 
@@ -392,7 +392,7 @@ extern "C" {
 s32 GsGp_GetBuddyStatus(Unk_ov065_0227bd20_Handle *h, s32 idx, Unk_ov065_0227c05c_Out *out) {
     Unk_ov065_0227bd20_Ctx *c;
     Unk_ov065_0227c05c_Ent *ent;
-    Unk_ov065_0227c05c_Src *s;
+    GsGpBuddyStatusInfo *s;
     s32 n;
     if (h == NULL || (c = h->connection) == NULL) {
         return 2;

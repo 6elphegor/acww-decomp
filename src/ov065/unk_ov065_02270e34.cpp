@@ -7,6 +7,8 @@
 #include "net/DwcFriendControl.h"
 #include "net/DwcMatchControl.h"
 #include "net/DwcControl.h"
+#include "net/GsGpCallbackArgs.h"
+#include "net/GsGpInfoCache.h"
 
 typedef long long s64;
 
@@ -102,12 +104,12 @@ BOOL DwcCore_HasError(void);
 void DwcCore_ClearError(void);
 s32 DwcCore_GetLastError(s32 *out);
 BOOL DwcLogin_IsLoggedIn(void);
-void DwcLogin_OnGpProfileInfo(void *a0, GsGpInfoResponse *x);
+void DwcLogin_OnGpProfileInfo(void *a0, GsGpGetInfoResponse *x);
 void DwcLogin_PollNasAuth(void);
 void DwcLogin_StartNasAuth(DwcNasLoginCallback cb, u32 arg);
 void DwcLogin_GpConnect(const char *a, const char *b, void *c, s32 d);
 void DwcLogin_OnNasAuthDone(const char *a, const char *b);
-void DwcLogin_OnGpConnected(void *a0, GsGpInfoResponse *x);
+void DwcLogin_OnGpConnected(void *a0, GsGpConnectResponse *x);
 void DwcLogin_ResetState(void);
 void DwcLogin_Shutdown(void);
 void DwcLogin_Fail(s32 a, s32 b);
@@ -120,18 +122,6 @@ namespace F02271488 {
 
 
 
-
-struct GsGpProfileSearchMatch {
-    s32 profileId;
-    u8 unk_04[0xa8];
-};
-
-struct GsGpProfileSearchResponse {
-    s32 result;
-    s32 numMatches;
-    s32 searchMore;
-    GsGpProfileSearchMatch *matches;
-};
 
 struct Unk_ov065_02271ba0_Out {
     s32 profileId;
@@ -179,8 +169,8 @@ void DwcLogin_Process(void);
 void DwcLogin_Begin(void);
 void DwcLogin_InitControl(void *mem, void *a, void *b, void *c, void *d, void *e, void *f);
 void *DwcFriend_GetControlField20(void);
-void DwcFriend_OnAuthorizedInfo(void *x, GsGpInfoResponse *p);
-void DwcFriend_OnBuddyRequestInfo(void *x, GsGpInfoResponse *p);
+void DwcFriend_OnAuthorizedInfo(void *x, GsGpGetInfoResponse *p);
+void DwcFriend_OnBuddyRequestInfo(void *x, GsGpGetInfoResponse *p);
 void DwcFriend_OnProfileSearch(void *x, GsGpProfileSearchResponse *p, s32 idx);
 s32 DwcFriend_GetBuddyStatus(void *a, void *b);
 void DwcFriend_FinishUpdate(void);
@@ -906,7 +896,7 @@ void DwcFriend_OnProfileSearch(void *x, GsGpProfileSearchResponse *p, s32 idx)
                     if (DwcFriend_MergeDuplicate(sDwcFriendControl->friendList, idx, p->matches[i].profileId) != 0) {
                         sDwcFriendControl->syncIndex++;
                         sDwcFriendControl->syncPhase = 1;
-                        p->searchMore = 0x601;
+                        p->moreStatus = 0x601;
                         return;
                     }
                 }
@@ -920,11 +910,11 @@ void DwcFriend_OnProfileSearch(void *x, GsGpProfileSearchResponse *p, s32 idx)
                         DwcFriend_NotifyAdded(idx);
                         sDwcFriendControl->syncIndex++;
                         sDwcFriendControl->syncPhase = 1;
-                        p->searchMore = 0x601;
+                        p->moreStatus = 0x601;
                         return;
                     }
                 }
-                if (p->searchMore != 0x600) {
+                if (p->moreStatus != 0x600) {
                     sDwcFriendControl->syncIndex++;
                     sDwcFriendControl->syncPhase = 1;
                     return;
@@ -952,7 +942,7 @@ void DwcFriend_OnProfileSearch(void *x, GsGpProfileSearchResponse *p, s32 idx)
 
 namespace F02271488 {
 extern "C" {
-void DwcFriend_OnBuddyRequestInfo(void *x, GsGpInfoResponse *p)
+void DwcFriend_OnBuddyRequestInfo(void *x, GsGpGetInfoResponse *p)
 {
     s32 i;
     s32 found;
@@ -989,7 +979,7 @@ void DwcFriend_OnBuddyRequestInfo(void *x, GsGpInfoResponse *p)
 
 namespace F02271488 {
 extern "C" {
-void DwcFriend_OnAuthorizedInfo(void *x, GsGpInfoResponse *p)
+void DwcFriend_OnAuthorizedInfo(void *x, GsGpGetInfoResponse *p)
 {
     s32 i;
     s32 found;
@@ -1185,7 +1175,7 @@ s32 DwcLogin_HandleGpResult(s32 r, s32 unused) {
 
 namespace F02270b74 {
 extern "C" {
-void DwcLogin_OnGpConnected(void *a0, GsGpInfoResponse *x) {
+void DwcLogin_OnGpConnected(void *a0, GsGpConnectResponse *x) {
     sDwcLoginControl->gpConnectPending = 0;
     if (x->result == 0) {
         if (sDwcLoginControl->state == 2) {
@@ -1317,7 +1307,7 @@ void DwcLogin_PollNasAuth(void) {
 
 namespace F02270b74 {
 extern "C" {
-void DwcLogin_OnGpProfileInfo(void *a0, GsGpInfoResponse *x) {
+void DwcLogin_OnGpProfileInfo(void *a0, GsGpGetInfoResponse *x) {
     u8 a[0x14];
     u8 b[0x14];
     u8 c[0x1c];

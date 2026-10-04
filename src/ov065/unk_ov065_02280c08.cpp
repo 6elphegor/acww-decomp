@@ -1,15 +1,15 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
 #include "net/GsArray.h"
-#include "net/Unk_ov065_022804b8_Src.h"
+#include "net/GsGpInfoCache.h"
 #include "net/Unk_ov065_02280854_Ctx.h"
-#include "net/Unk_ov065_0228094c_Sub.h"
-#include "net/Unk_ov065_02280a2c_Ctx.h"
-#include "net/Unk_ov065_02280c08_Node.h"
-#include "net/Unk_ov065_02280c84_Src.h"
-#include "net/Unk_ov065_02280cb4_T.h"
+#include "net/Unk_ov065_0227c538_Node.h"
+#include "net/Unk_ov065_0227d8e0_Ctx.h"
+#include "net/GsGpPeer.h"
+#include "net/GsGpTransferId.h"
 #include "net/Unk_ov065_02280d70_P1.h"
 #include "net/Unk_ov065_02280e7c_Ctx.h"
+#include "net/GsGpCallbackArgs.h"
 
 // ov065 TU47: GP gpiPeer.c (0x02280c08..0x0228176c)
 
@@ -40,7 +40,7 @@ s32 GsSock_Shutdown(s32, s32);
 s32 GsSock_Close(s32);
 void GsUtil_Free(void *);
 void *GsUtil_Alloc(u32);
-s32 GsGp_QueueCallback(void *, Unk_ov065_02280a2c_Pair, void *, void *, s32);
+s32 GsGp_QueueCallback(void *, GsGpCallbackPair, void *, void *, s32);
 s32 func_0212899c(void *, s32, u32);
 s32 STD_GetStringLength(const char *);
 s32 OS_SPrintf(char *, const char *, ...);
@@ -73,7 +73,7 @@ s32 GsGp_IsValidDate(s32 day, s32 mon, s32 year);
 
 
 
-void GsGp_FreeOperation(Unk_ov065_02280854_H *h, Unk_ov065_02280854_Node *n);
+void GsGp_FreeOperation(Unk_ov065_02280854_H *h, GsGpOperation *n);
 
 
 
@@ -94,10 +94,10 @@ enum Unk_ov065_02280a2c_Z { Unk_ov065_02280a2c_Z_0 = 0, Unk_ov065_02280a2c_Z_FF 
 
 }
 extern "C" {
-s32 GsGpPeer_SendMessageBody(void *h, Unk_ov065_02280c08_Node *n, char *str, s32 len);
-s32 GsGpPeer_SendTransferHeader(void *h, Unk_ov065_02280c08_Node *n, s32 a, Unk_ov065_02280c84_Src *s);
-s32 GsGpPeer_QueueMessage(void *h, Unk_ov065_02280c08_Node *n, s32 a, const char *b);
-s32 GsGpPeer_Connect(void *h, Unk_ov065_02280854_Node *n);
+s32 GsGpPeer_SendMessageBody(void *h, GsGpPeer *n, char *str, s32 len);
+s32 GsGpPeer_SendTransferHeader(void *h, GsGpPeer *n, s32 a, GsGpTransferId *s);
+s32 GsGpPeer_QueueMessage(void *h, GsGpPeer *n, s32 a, const char *b);
+s32 GsGpPeer_Connect(void *h, GsGpPeer *n);
 }
 }
 
@@ -112,10 +112,10 @@ namespace Nb {
 
 
 typedef Unk_ov065_02280e7c_Ctx Ctx0228;
-typedef Unk_ov065_02280e7c_Node Node0228;
-typedef Unk_ov065_02280e7c_Ent Ent0228;
+typedef GsGpPeer Node0228;
+typedef GsGpProfile Ent0228;
 typedef Unk_ov065_02280e7c_Pair Pair0228;
-typedef Unk_ov065_02280e7c_Sub Sub0228;
+typedef GsGpPeerMessage Sub0228;
 
 
 extern "C" {
@@ -149,15 +149,15 @@ s32 GsSock_SetBlocking(s32, s32);
 s32 GsUtil_StrDup(s32);
 s32 GsGp_SendBuddyMessageEx(Ctx0228 **, s32, s32, s32);
 s32 GsGp_SendServerBuddyMessage(Ctx0228 **, s32, s32, const char *);
-s32 GsGpBuf_Compact(Ctx0228 **, char **);
-s32 GsGpPeer_ParseMessage(Ctx0228 **, char **, s32 *, s32 *, s32 *);
-s32 GsGp_SendBuffer(Ctx0228 **, s32, char **, s32 *, s32, const char *);
-s32 GsGp_RecvToBuffer(Ctx0228 **, s32, char **, s32 *, s32 *, const char *);
-s32 GsGpBuf_AppendInt(Ctx0228 **, char **, s32);
-s32 GsGpBuf_AppendString(Ctx0228 **, char **, const char *);
+s32 GsGpBuf_Compact(Ctx0228 **, GsGpBuffer *);
+s32 GsGpPeer_ParseMessage(Ctx0228 **, GsGpBuffer *, s32 *, s32 *, s32 *);
+s32 GsGp_SendBuffer(Ctx0228 **, s32, GsGpBuffer *, s32 *, s32, const char *);
+s32 GsGp_RecvToBuffer(Ctx0228 **, s32, GsGpBuffer *, s32 *, s32 *, const char *);
+s32 GsGpBuf_AppendInt(Ctx0228 **, GsGpBuffer *, s32);
+s32 GsGpBuf_AppendString(Ctx0228 **, GsGpBuffer *, const char *);
 s32 GsGp_QueueCallback(Ctx0228 **, Pair0228, void *, s32, s32);
-s32 GsGp_SendGetProfile(Ctx0228 **, s32, char *);
-s32 GsGp_AddOperation(Ctx0228 **, s32, s32, Ent0228 **, s32, s32, s32);
+s32 GsGp_SendGetProfile(Ctx0228 **, s32, s32);
+s32 GsGp_AddOperation(Ctx0228 **, s32, s32, GsGpOperation **, s32, s32, s32);
 s32 GsGpPeer_Connect(Ctx0228 **, Node0228 *);
 void GsGpProfile_Remove(Ctx0228 **, Ent0228 *);
 s32 GsGpProfile_Find(Ctx0228 **, s32, Ent0228 **);
@@ -251,7 +251,7 @@ s32 GsGpPeer_ProcessOutgoing(Ctx0228 **h, Node0228 *n) {
             GsGpBuf_AppendString(h, &n->outputBuffer, "\\nick\\");
             GsGpBuf_AppendString(h, &n->outputBuffer, c->nick);
             GsGpBuf_AppendString(h, &n->outputBuffer, "\\sig\\");
-            GsGpBuf_AppendString(h, &n->outputBuffer, e->unk_18);
+            GsGpBuf_AppendString(h, &n->outputBuffer, e->peerSig);
             GsGpBuf_AppendString(h, &n->outputBuffer, "\\final\\");
             {
                 Node0228 *m = c->peerList;
@@ -263,8 +263,8 @@ s32 GsGpPeer_ProcessOutgoing(Ctx0228 **h, Node0228 *n) {
                 }
             }
             if (keep != 0) {
-                GsUtil_Free(e->unk_18);
-                e->unk_18 = NULL;
+                GsUtil_Free(e->peerSig);
+                e->peerSig = NULL;
                 if (GsGpProfile_IsUnused(e) != 0) {
                     GsGpProfile_Remove(h, e);
                 }
@@ -277,11 +277,11 @@ s32 GsGpPeer_ProcessOutgoing(Ctx0228 **h, Node0228 *n) {
         if (r != 0) {
             return r;
         }
-        p = func_02129f1c(n->inputBuffer, "\\final\\");
+        p = func_02129f1c(n->inputBuffer.buffer, "\\final\\");
         if (p != NULL) {
             char *q;
             *p = 0;
-            q = n->inputBuffer;
+            q = n->inputBuffer.buffer;
             if (strncmp(q, "\\anack\\", 7) == 0) {
                 n->nackCount++;
                 if (n->nackCount > 1) {
@@ -297,11 +297,11 @@ s32 GsGpPeer_ProcessOutgoing(Ctx0228 **h, Node0228 *n) {
                 return 3;
             }
             n->peerState = 0x69;
-            n->inputBufferLength = 0;
+            n->inputBuffer.length = 0;
         }
         break;
     }
-    if (n->outputBufferLength > 0) {
+    if (n->outputBuffer.length > 0) {
         r = GsGp_SendBuffer(h, n->sock, &n->outputBuffer, &flag, 1, "PR");
         if (flag != 0 || r != 0) {
             n->peerState = 0x6a;
@@ -335,21 +335,21 @@ s32 GsGpPeer_ProcessIncoming(Ctx0228 **h, Node0228 *n) {
         n->peerState = 0x6a;
         return 0;
     }
-    p = func_02129f1c(n->inputBuffer, "\\final\\");
+    p = func_02129f1c(n->inputBuffer.buffer, "\\final\\");
     if (p != NULL) {
         *p = 0;
-        q = n->inputBuffer;
+        q = n->inputBuffer.buffer;
         if (strncmp(q, "\\auth\\", 6) == 0) {
             if (GsGp_GetValue(q, "\\pid\\", b1, 0x10) == 0) {
                 n->peerState = 0x6a;
                 return 0;
             }
             x = func_0212b770(b1);
-            if (GsGp_GetValue(n->inputBuffer, "\\nick\\", b2, 0x1f) == 0) {
+            if (GsGp_GetValue(n->inputBuffer.buffer, "\\nick\\", b2, 0x1f) == 0) {
                 n->peerState = 0x6a;
                 return 0;
             }
-            if (GsGp_GetValue(n->inputBuffer, "\\sig\\", b3, 0x21) == 0) {
+            if (GsGp_GetValue(n->inputBuffer.buffer, "\\sig\\", b3, 0x21) == 0) {
                 n->peerState = 0x6a;
                 return 0;
             }
@@ -369,7 +369,7 @@ s32 GsGpPeer_ProcessIncoming(Ctx0228 **h, Node0228 *n) {
             n->peerState = 0x6a;
             return 0;
         }
-        n->inputBufferLength = 0;
+        n->inputBuffer.length = 0;
     }
     return 0;
 }
@@ -382,19 +382,19 @@ s32 GsGpPeer_FlushQueue(Ctx0228 **h, Node0228 *n) {
     s32 i;
     s32 flag;
     s32 r;
-    if (n->outputBufferLength != 0) {
+    if (n->outputBuffer.length != 0) {
         return 0;
     }
     if (GsArray_Count(n->messageQueue) != 0) {
         i = 0;
         do {
             Sub0228 *e = (Sub0228 *)GsArray_At(n->messageQueue, i);
-            r = GsGp_SendBuffer(h, n->sock, (char **)e, &flag, i, "PR");
+            r = GsGp_SendBuffer(h, n->sock, &e->buffer, &flag, i, "PR");
             if (flag != 0 || r != 0) {
                 n->peerState = 0x6a;
                 return 0;
             }
-            if (e->sendPos != e->unk_08) {
+            if (e->buffer.pos != e->buffer.length) {
                 break;
             }
             GsArray_DeleteAt(n->messageQueue, i);
@@ -416,14 +416,14 @@ s32 GsGpPeer_ProcessConnected(Ctx0228 **h, Node0228 *n) {
     s32 type;
     s32 ext;
     s32 r;
-    if (n->outputBufferLength != 0) {
+    if (n->outputBuffer.length != 0) {
         r = GsGp_SendBuffer(h, n->sock, &n->outputBuffer, &flag, 1, "PR");
         if (flag != 0 || r != 0) {
             n->peerState = 0x6a;
             return 0;
         }
     }
-    if (n->outputBufferLength == 0) {
+    if (n->outputBuffer.length == 0) {
         r = GsGpPeer_FlushQueue(h, n);
         if (r != 0) {
             return r;
@@ -450,14 +450,14 @@ s32 GsGpPeer_ProcessConnected(Ctx0228 **h, Node0228 *n) {
             case 1:
                 pr = *(Unk_ov065_02280e7c_Pair2 *)&c->buddyMessageCallback;
                 if (pr.p.func != 0) {
-                    Sub0228 *m = (Sub0228 *)GsUtil_Alloc(0xc);
+                    GsGpBuddyMessage *m = (GsGpBuddyMessage *)GsUtil_Alloc(0xc);
                     if (m == NULL) {
                         GsGp_SetErrorString(h, "Out of memory.");
                         return 1;
                     }
-                    m->unk_00 = n->profileId;
-                    m->unk_08 = GsUtil_StrDup(v);
-                    m->unk_04 = GsUtil_GetTimeSeconds(0);
+                    m->profileId = n->profileId;
+                    m->message = (char *)GsUtil_StrDup(v);
+                    m->date = GsUtil_GetTimeSeconds(0);
                     r = GsGp_QueueCallback(h, pr.p, m, 0, 2);
                     if (r != 0) {
                         return r;
@@ -476,7 +476,7 @@ s32 GsGpPeer_ProcessConnected(Ctx0228 **h, Node0228 *n) {
             case 0xce:
             case 0xcf:
             case 0xd0:
-                GsGpPeer_DeclineTransfer(h, n, type, n->inputBuffer, v, ext);
+                GsGpPeer_DeclineTransfer(h, n, type, n->inputBuffer.buffer, v, ext);
                 break;
             }
             GsGpBuf_Compact(h, &n->inputBuffer);
@@ -525,10 +525,10 @@ extern "C" {
 void GsGpPeer_Free(Ctx0228 **h, Node0228 *n) {
     GsSock_Shutdown(n->sock, 2);
     GsSock_Close(n->sock);
-    GsUtil_Free(n->inputBuffer);
-    n->inputBuffer = NULL;
-    GsUtil_Free(n->outputBuffer);
-    n->outputBuffer = NULL;
+    GsUtil_Free(n->inputBuffer.buffer);
+    n->inputBuffer.buffer = NULL;
+    GsUtil_Free(n->outputBuffer.buffer);
+    n->outputBuffer.buffer = NULL;
     if (n->messageQueue != NULL) {
         GsArray_Free(n->messageQueue);
         n->messageQueue = NULL;
@@ -562,7 +562,7 @@ void GsGpPeer_Remove(Ctx0228 **h, Node0228 *n) {
         while (GsArray_Count(n->messageQueue) != 0) {
             Sub0228 *e = (Sub0228 *)GsArray_At(n->messageQueue, i);
             if (e->msgType < 0x64) {
-                GsGp_SendServerBuddyMessage(h, n->profileId, e->msgType, (const char *)(e->unk_00 + e->msgOffset));
+                GsGp_SendServerBuddyMessage(h, n->profileId, e->msgType, e->buffer.buffer + e->msgOffset);
             }
             GsArray_DeleteAt(n->messageQueue, i);
         }
@@ -676,12 +676,12 @@ Node0228 *GsGpPeer_New(Ctx0228 **h, s32 a, s32 b) {
 namespace Nb {
 extern "C" {
 s32 GsGpPeer_RequestSignature(Ctx0228 **h, Node0228 *n) {
-    Ent0228 *e;
+    GsGpOperation *e;
     s32 r = GsGp_AddOperation(h, 2, 0, &e, 0, 0, 0);
     if (r != 0) {
         return r;
     }
-    r = GsGp_SendGetProfile(h, n->profileId, e->unk_18);
+    r = GsGp_SendGetProfile(h, n->profileId, e->id);
     if (r != 0) {
         return r;
     }
@@ -693,41 +693,41 @@ s32 GsGpPeer_RequestSignature(Ctx0228 **h, Node0228 *n) {
 
 namespace Na {
 extern "C" {
-s32 GsGpPeer_Connect(void *h, Unk_ov065_02280854_Node *n) {
+s32 GsGpPeer_Connect(void *h, GsGpPeer *n) {
     Unk_ov065_02280d70_Sa sa;
-    Unk_ov065_02280d70_P1 *p;
+    GsGpProfile *p;
     s32 e;
-    if (GsGpProfile_Find(h, n->unk_0c, &p) == 0) {
+    if (GsGpProfile_Find(h, n->profileId, &p) == 0) {
         GsGp_SetErrorString(h, "Error connecting to a peer.");
         return 3;
     }
-    n->unk_08 = GsSock_Socket(2, 1, 0);
-    if (n->unk_08 == -1) {
+    n->sock = GsSock_Socket(2, 1, 0);
+    if (n->sock == -1) {
         GsGp_SetError(h, 5, "There was an error creating a socket.");
         GsGp_CallErrorCallback(h, 3, 0);
         return 3;
     }
-    if (GsSock_SetBlocking(n->unk_08, 0) == 0) {
+    if (GsSock_SetBlocking(n->sock, 0) == 0) {
         GsGp_SetError(h, 5, "There was an error making a socket non-blocking.");
         GsGp_CallErrorCallback(h, 3, 0);
         return 3;
     }
-    GsGpPeer_SetSocketBuffers(n->unk_08);
+    GsGpPeer_SetSocketBuffers(n->sock);
     u32 ad = (u32)&sa;
     ((Unk_ov065_02280d70_Sa *)ad)->unk_00 = 0;
     ((Unk_ov065_02280d70_Sa *)ad)->addr = 0;
     ((u8 *)&sa)[1] = 2;
     sa.addr = p->buddyStatus->ip;
     *(u16 *)((u8 *)&sa + 2) = p->buddyStatus->port;
-    if (GsSock_Connect(n->unk_08, (Unk_ov065_02280d70_Sa *)ad, 8) == -1) {
-        e = GsSock_GetLastError(n->unk_08);
+    if (GsSock_Connect(n->sock, (Unk_ov065_02280d70_Sa *)ad, 8) == -1) {
+        e = GsSock_GetLastError(n->sock);
         if (e != -6 && e != -0x1a && e != -0x4c) {
             GsGp_SetError(h, 5, "There was an error connecting a socket.");
             GsGp_CallErrorCallback(h, 3, 1);
             return 3;
         }
     }
-    n->unk_00 = 0x67;
+    n->peerState = 0x67;
     return 0;
 }
 }
@@ -735,11 +735,11 @@ s32 GsGpPeer_Connect(void *h, Unk_ov065_02280854_Node *n) {
 
 namespace Na {
 extern "C" {
-s32 GsGpPeer_QueueMessage(void *h, Unk_ov065_02280c08_Node *n, s32 a, const char *b) {
+s32 GsGpPeer_QueueMessage(void *h, GsGpPeer *n, s32 a, const char *b) {
     s32 len = STD_GetStringLength(b);
-    Unk_ov065_02280cb4_T t = {{0, 0, 0, 0, 0, 0}};
+    GsGpPeerMessage t = {{0, 0, 0, 0}, 0, 0};
     s32 r;
-    t.v[4] = a;
+    t.msgType = a;
     r = GsGpBuf_AppendString(h, &t, "\\m\\");
     if (r != 0) {
         return r;
@@ -760,7 +760,7 @@ s32 GsGpPeer_QueueMessage(void *h, Unk_ov065_02280c08_Node *n, s32 a, const char
     if (r != 0) {
         return r;
     }
-    t.v[5] = t.v[2];
+    t.msgOffset = t.buffer.length;
     r = GsGpBuf_Append(h, &t, b, len);
     if (r != 0) {
         return r;
@@ -778,9 +778,9 @@ s32 GsGpPeer_QueueMessage(void *h, Unk_ov065_02280c08_Node *n, s32 a, const char
 
 namespace Na {
 extern "C" {
-s32 GsGpPeer_SendTransferHeader(void *h, Unk_ov065_02280c08_Node *n, s32 a, Unk_ov065_02280c84_Src *s) {
+s32 GsGpPeer_SendTransferHeader(void *h, GsGpPeer *n, s32 a, GsGpTransferId *s) {
     char buf[0x44];
-    OS_SPrintf(buf, "\\m\\%d\\xfer\\%d %u %u", a, s->unk_00, s->unk_04, s->unk_08);
+    OS_SPrintf(buf, "\\m\\%d\\xfer\\%d %u %u", a, s->profileId, s->count, s->time);
     return GsGpPeer_SendString(h, n, buf);
 }
 }
@@ -788,7 +788,7 @@ s32 GsGpPeer_SendTransferHeader(void *h, Unk_ov065_02280c08_Node *n, s32 a, Unk_
 
 namespace Na {
 extern "C" {
-s32 GsGpPeer_SendMessageBody(void *h, Unk_ov065_02280c08_Node *n, char *str, s32 len) {
+s32 GsGpPeer_SendMessageBody(void *h, GsGpPeer *n, char *str, s32 len) {
     char buf[0x24];
     s32 r;
     if (str == 0) {

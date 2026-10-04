@@ -1,12 +1,12 @@
-#ifndef NET_UNK_OV065_022804B8_SRC_H
-#define NET_UNK_OV065_022804B8_SRC_H
+#ifndef NET_GSGPINFOCACHE_H
+#define NET_GSGPINFOCACHE_H
 
 #include "types.h"
 
-// GP user-info record (pointer form) and the flattened profile-info result it is copied into
+// GP profile info cache (cf. GameSpy GP SDK gpiInfo.h GPIInfoCache) and the GsGpGetInfoResponse it is copied into (gp.h)
 // (src/ov065/unk_ov065_0227f2a4.cpp, src/ov065/unk_ov065_02280740.cpp, src/ov065/unk_ov065_02280c08.cpp).
 
-struct Unk_ov065_022804b8_Src {
+struct GsGpInfoCache {
     /* 0x00 */ char *nick;
     /* 0x04 */ char *uniqueNick;
     /* 0x08 */ char *email;
@@ -16,8 +16,8 @@ struct Unk_ov065_022804b8_Src {
     /* 0x18 */ s32 icqUin;
     /* 0x1c */ char zipCode[0xb];
     /* 0x27 */ char countryCode[3];
-    /* 0x2c */ s32 unk_2c;
-    /* 0x30 */ s32 unk_30;
+    /* 0x2c */ s32 longitude;
+    /* 0x30 */ s32 latitude;
     /* 0x34 */ char location[0x80];
     /* 0xb4 */ s32 birthDay;
     /* 0xb8 */ s32 birthMonth;
@@ -36,8 +36,9 @@ struct Unk_ov065_022804b8_Src {
     /* 0xec */ s32 connectionType;
 };
 
-struct Unk_ov065_022804b8_Dst {
-    /* 0x000 */ u8 pad_00[8];
+struct GsGpGetInfoResponse {
+    /* 0x000 */ s32 result;
+    /* 0x004 */ s32 profileId;
     /* 0x008 */ char nick[0x1f];
     /* 0x027 */ char uniqueNick[0x15];
     /* 0x03c */ char email[0x33];
@@ -47,8 +48,8 @@ struct Unk_ov065_022804b8_Dst {
     /* 0x0fc */ s32 icqUin;
     /* 0x100 */ char zipCode[0xb];
     /* 0x10b */ char countryCode[3];
-    /* 0x110 */ s32 unk_110;
-    /* 0x114 */ s32 unk_114;
+    /* 0x110 */ s32 longitude;
+    /* 0x114 */ s32 latitude;
     /* 0x118 */ char location[0x80];
     /* 0x198 */ s32 birthDay;
     /* 0x19c */ s32 birthMonth;

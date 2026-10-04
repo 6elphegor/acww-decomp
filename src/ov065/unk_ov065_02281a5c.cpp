@@ -1,10 +1,12 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
-#include "net/Unk_ov065_02281974_Pair.h"
+#include "net/Unk_ov065_0227c538_Node.h"
+#include "net/Unk_ov065_0227d8e0_Ctx.h"
 #include "net/Unk_ov065_02281790_Ctx.h"
-#include "net/Unk_ov065_02281bf4_Res.h"
-#include "net/Unk_ov065_02282f90_Conn.h"
-#include "net/Unk_ov065_022831c0_Obj.h"
+#include "net/GsGpCallbackArgs.h"
+#include "net/Unk_ov065_02282f90_Ctx.h"
+#include "net/GsGpOperation.h"
+#include "net/Unk_ov065_022831c0_Host.h"
 #include "net/Unk_ov065_022833b4_Pair.h"
 #include "net/GsPersist.h"
 #include "net/Unk_ov065_022833b4_Src.h"
@@ -80,16 +82,15 @@ namespace Na {
 
 
 typedef Unk_ov065_02281790_Ctx Ctx0228;
-typedef Unk_ov065_02281790_Node Node0228;
-typedef Unk_ov065_02281790_Elem Elem0228;
-typedef Unk_ov065_02281790_Conn Conn0228;
+typedef GsGpProfile Elem0228;
+typedef GsGpSearch Conn0228;
 
 
 
 extern "C" {
 extern char sGsGameName[];
 
-typedef s32 (*Unk_ov065_022817c8_Cb)(Ctx0228 **, Node0228 *, void *);
+typedef s32 (*GsGpProfileMapFn)(Ctx0228 **, GsGpProfile *, void *);
 
 s32 GsHash_FindIf(void *, s32 (*)(void *, void *), void *);
 s32 GsHash_Remove(void *, void *);
@@ -104,20 +105,20 @@ s32 GsGp_CheckServerError(Ctx0228 **, char *, s32);
 s32 GsGp_GetValue(char *, const char *, void *, s32);
 s32 GsGp_CheckConnectComplete(Ctx0228 **, s32, void *);
 void GsGp_CallErrorCallback(Ctx0228 **, s32, s32);
-s32 GsGp_QueueCallback(Ctx0228 **, Unk_ov065_02281974_Pair, void *, void *, s32);
-void GsGp_RemoveOperation(Ctx0228 **, Node0228 *);
+s32 GsGp_QueueCallback(Ctx0228 **, GsGpCallbackPair, void *, void *, s32);
+void GsGp_RemoveOperation(Ctx0228 **, GsGpOperation *);
 void GsGp_FreeCachedInfo(void *);
 s32 strncmp(const char *, const char *, s32);
 s32 strcmp(const char *, const char *);
 s32 func_0212b770(void *);
 
-s32 GsGpSearch_Process(Ctx0228 **, Node0228 *);
-s32 GsGpProfile_MatchBuddyIndexCb(Ctx0228 **, Node0228 *, void *);
-s32 GsGpProfile_FindIfAdapter(Node0228 *, void *);
-s32 GsGpProfile_MatchNickEmailCb(Ctx0228 **, Node0228 *, void *);
+s32 GsGpSearch_Process(Ctx0228 **, GsGpOperation *);
+s32 GsGpProfile_MatchBuddyIndexCb(Ctx0228 **, GsGpProfile *, void *);
+s32 GsGpProfile_FindIfAdapter(GsGpProfile *, void *);
+s32 GsGpProfile_MatchNickEmailCb(Ctx0228 **, GsGpProfile *, void *);
 s32 GsGpProfile_Find(Ctx0228 **, s32, void *);
 void GsGpProfile_FreeEntry(void *);
-s32 GsGpProfile_FindIf(Ctx0228 **, Unk_ov065_022817c8_Cb, void *);
+s32 GsGpProfile_FindIf(Ctx0228 **, GsGpProfileMapFn, void *);
 s32 GsGpProfile_CompareId(s32 *, s32 *);
 s32 GsGpProfile_HashId(s32 *, s32);
 
@@ -133,7 +134,7 @@ void *func_0212899c(void *, s32, s32);
 char *func_02127838(char *, const char *);
 char *func_02129f1c(const char *, const char *);
 void GsUtil_Sleep(s32);
-s32 GsGpSearch_ProfileSearch(Ctx0228 **, char *, char *, char *, char *, char *, s32, s32, void *, s32, s32);
+s32 GsGpSearch_ProfileSearch(Ctx0228 **, char *, char *, char *, char *, char *, s32, s32, s32, s32, s32);
 
 
 
@@ -161,8 +162,8 @@ namespace Nb {
 extern "C" {
 s32 GsGpSearch_Connect(void *h0, void *o0) {
     Unk_ov065_02282f90_Handle *h = (Unk_ov065_02282f90_Handle *)h0;
-    Unk_ov065_022831c0_Obj *o = (Unk_ov065_022831c0_Obj *)o0;
-    Unk_ov065_022831c0_Sock *s = o->data;
+    GsGpOperation *o = (GsGpOperation *)o0;
+    GsGpSearch *s = (GsGpSearch *)o->data;
     Unk_ov065_022831c0_Host *ent;
     Unk_ov065_022831c0_Addr sa;
     s32 r;
@@ -209,9 +210,9 @@ s32 GsGpSearch_Connect(void *h0, void *o0) {
 }
 
 s32 GsGpSearch_NewData(void *h0, void *out, s32 p2) {
-    Unk_ov065_02282f90_Conn *cn;
+    GsGpSearch *cn;
     Unk_ov065_02282f90_Handle *h = (Unk_ov065_02282f90_Handle *)h0;
-    cn = (Unk_ov065_02282f90_Conn *)GsUtil_Alloc(0x144);
+    cn = (GsGpSearch *)GsUtil_Alloc(0x144);
     if (cn == NULL) {
         GsGp_SetErrorString(h, "Out of memory.");
         return 1;
@@ -233,13 +234,13 @@ s32 GsGpSearch_NewData(void *h0, void *out, s32 p2) {
     }
     cn->isProcessing = 0;
     cn->isFinished = 0;
-    *(Unk_ov065_02282f90_Conn **)out = cn;
+    *(GsGpSearch **)out = cn;
     return 0;
 }
 
 s32 GsGpSearch_Start(void *h0, void *cn, s32 p2, s32 p3, s32 p4) {
     Unk_ov065_02282f90_Handle *h = (Unk_ov065_02282f90_Handle *)h0;
-    Unk_ov065_022831c0_Obj *o;
+    GsGpOperation *o;
     s32 r;
     *(s32 *)((u8 *)h->connection + 0x210) += 1;
     r = GsGp_AddOperation(h, 3, cn, &o, p2, p3, p4);
@@ -250,7 +251,7 @@ s32 GsGpSearch_Start(void *h0, void *cn, s32 p2, s32 p3, s32 p4) {
     if (r != 0) {
         return r;
     }
-    if (o->isBlocking != 0) {
+    if (o->blocking != 0) {
         r = GsGp_ProcessConnection(h, o->id);
         if (r != 0) {
             return r;
@@ -260,7 +261,7 @@ s32 GsGpSearch_Start(void *h0, void *cn, s32 p2, s32 p3, s32 p4) {
 }
 
 s32 GsGpSearch_ProfileSearch(Unk_ov065_02282f90_Handle *h, char *a, char *b, char *c, char *d, char *e, s32 f, s32 g, s32 p8, s32 p9, s32 p10) {
-    Unk_ov065_02282f90_Conn *cn;
+    GsGpSearch *cn;
     s32 r;
     if ((a == NULL || *a == 0) && (c == NULL || *c == 0) && (d == NULL || *d == 0) && (e == NULL || *e == 0) && f == 0 && (b == NULL || *b == 0)) {
         GsGp_SetErrorString(h, "No search criteria.");
@@ -313,26 +314,26 @@ s32 GsGpSearch_ProfileSearch(Unk_ov065_02282f90_Handle *h, char *a, char *b, cha
 
 namespace Na {
 extern "C" {
-s32 GsGpSearch_Process(Ctx0228 **h, Node0228 *node) {
+s32 GsGpSearch_Process(Ctx0228 **h, GsGpOperation *node) {
     s32 done, save1;
     Ctx0228 *ctx = *h;
     s32 done2;
-    Unk_ov065_02281bf4_Res4 *p4;
-    Unk_ov065_02281bf4_Res7 *p7;
+    GsGpFindPlayersResponse *p4;
+    GsGpReverseBuddiesResponse *p7;
     s32 cnt;
     s32 retry;
-    Conn0228 *c = node->data;
+    Conn0228 *c = (Conn0228 *)node->data;
     s32 r;
     s32 v8c;
     s32 pos;
-    Unk_ov065_02281974_Nest pr1;
+    Unk_ov065_0227e0e8_Wrap pr1;
     s32 vv[2];
-    Unk_ov065_02281974_Nest pr8, pr7, pr6, pr5, pr4, pr3, pr2;
-    Unk_ov065_02281bf4_S1 s1;
+    Unk_ov065_0227e0e8_Wrap pr8, pr7, pr6, pr5, pr4, pr3, pr2;
+    GsGpProfileSearchResponse s1;
     char tok[0x200];
     char buf[0x200];
 
-    if (node->unk_08 != 0) {
+    if (node->blocking != 0) {
         retry = 1;
     } else {
         retry = 0;
@@ -496,11 +497,11 @@ again:
                 }
                 done = 1;
             } else if (strcmp(tok, "bsr") == 0) {
-                Unk_ov065_02281bf4_Rec *e;
+                GsGpProfileSearchMatch *e;
                 s32 idx;
-                Unk_ov065_02281bf4_Rec *base;
+                GsGpProfileSearchMatch *base;
                 s1.numMatches++;
-                base = (Unk_ov065_02281bf4_Rec *)GsUtil_Realloc(s1.matches, s1.numMatches * 0xac);
+                base = (GsGpProfileSearchMatch *)GsUtil_Realloc(s1.matches, s1.numMatches * 0xac);
                 s1.matches = base;
                 if (base == 0) ERRMEM("Out of memory.")
                 idx = s1.numMatches - 1;
@@ -532,12 +533,12 @@ again:
         } while (done == 0);
         {
             s32 t = s1.moreStatus;
-            pr1 = node->unk_0c;
-            if (pr1.p.a != 0) {
-                ((void (*)(Ctx0228 **, void *, s32))pr1.p.a)(h, &s1, pr1.p.b);
+            pr1 = node->callback;
+            if (pr1.p.func != 0) {
+                ((void (*)(Ctx0228 **, void *, s32))pr1.p.func)(h, &s1, pr1.p.param);
             }
             if (t == 0x600 && s1.moreStatus == 0x600) {
-                r = GsGpSearch_ProfileSearch(h, c->nick, c->uniqueNick, c->email, c->firstName, c->lastName, c->icqUin, s1.numMatches + c->skip, node->unk_08, node->unk_0c.p.a, node->unk_0c.p.b);
+                r = GsGpSearch_ProfileSearch(h, c->nick, c->uniqueNick, c->email, c->firstName, c->lastName, c->icqUin, s1.numMatches + c->skip, node->blocking, node->callback.p.func, node->callback.p.param);
                 if (r != 0) {
                     return r;
                 }
@@ -547,14 +548,14 @@ again:
         s1.matches = 0;
         goto done;
     } else if (c->searchType == 2) {
-        Unk_ov065_02281bf4_Res2 *p;
-        pr2 = node->unk_0c;
-        if (pr2.p.a == 0) {
+        GsGpIsValidEmailResponse *p;
+        pr2 = node->callback;
+        if (pr2.p.func == 0) {
             goto done;
         }
         GETTOK(tok)
         if (strcmp(tok, "vr") != 0) ERR3()
-        p = (Unk_ov065_02281bf4_Res2 *)GsUtil_Alloc(0x3c);
+        p = (GsGpIsValidEmailResponse *)GsUtil_Alloc(0x3c);
         if (p == 0) ERRMEM("Out of memory.")
         p->result = 0;
         GsUtil_StrCopyN(p->email, c->email, 0x33);
@@ -569,12 +570,12 @@ again:
         }
         return r;
     } else if (c->searchType == 3) {
-        Unk_ov065_02281bf4_Res3 *p;
-        pr3 = node->unk_0c;
-        if (pr3.p.a == 0) {
+        GsGpUserNicksResponse *p;
+        pr3 = node->callback;
+        if (pr3.p.func == 0) {
             goto done;
         }
-        p = (Unk_ov065_02281bf4_Res3 *)GsUtil_Alloc(0x44);
+        p = (GsGpUserNicksResponse *)GsUtil_Alloc(0x44);
         if (p == 0) ERRMEM("Out of memory.")
         p->result = 0;
         func_02127838(p->email, c->email);
@@ -617,11 +618,11 @@ again:
         }
         return r;
     } else if (c->searchType == 4) {
-        pr4 = node->unk_0c;
-        if (pr4.p.a == 0) {
+        pr4 = node->callback;
+        if (pr4.p.func == 0) {
             goto done;
         }
-        p4 = (Unk_ov065_02281bf4_Res4 *)GsUtil_Alloc(0x10);
+        p4 = (GsGpFindPlayersResponse *)GsUtil_Alloc(0x10);
         if (p4 == 0) ERRMEM("Out of memory.")
         p4->productId = c->productId;
         done = 0;
@@ -633,11 +634,11 @@ again:
             if (strcmp(tok, "psrdone") == 0) {
                 done = 1;
             } else if (strcmp(tok, "psr") == 0) {
-                Unk_ov065_02281bf4_Ent *e;
+                GsGpFindPlayerMatch *e;
                 s32 idx;
-                Unk_ov065_02281bf4_Ent *base;
+                GsGpFindPlayerMatch *base;
                 p4->numMatches++;
-                p4->matches = (Unk_ov065_02281bf4_Ent *)GsUtil_Realloc(p4->matches, p4->numMatches * 0x128);
+                p4->matches = (GsGpFindPlayerMatch *)GsUtil_Realloc(p4->matches, p4->numMatches * 0x128);
                 base = p4->matches;
                 if (base == 0) ERRMEM("Out of memory.")
                 idx = p4->numMatches - 1;
@@ -673,9 +674,9 @@ again:
     } else if (c->searchType == 5) {
         s32 a4;
         s32 a6;
-        Unk_ov065_02281bf4_Res5 *p;
-        pr5 = node->unk_0c;
-        if (pr5.p.a == 0) {
+        GsGpCheckResponse *p;
+        pr5 = node->callback;
+        if (pr5.p.func == 0) {
             goto done;
         }
         GETTOK(tok)
@@ -688,7 +689,7 @@ again:
             if (GsGp_GetValue(c->inputBuffer, "\\pid\\", buf, 0x200) == 0) ERR3()
             a6 = func_0212b770(buf);
         }
-        p = (Unk_ov065_02281bf4_Res5 *)GsUtil_Alloc(8);
+        p = (GsGpCheckResponse *)GsUtil_Alloc(8);
         if (p == 0) ERRMEM("Out of memory.")
         p->result = a4;
         p->profileId = a6;
@@ -700,9 +701,9 @@ again:
     } else if (c->searchType == 6) {
         s32 a4;
         s32 a6;
-        Unk_ov065_02281bf4_Res5 *p;
-        pr6 = node->unk_0c;
-        if (pr6.p.a == 0) {
+        GsGpCheckResponse *p;
+        pr6 = node->callback;
+        if (pr6.p.func == 0) {
             goto done;
         }
         GETTOK(tok)
@@ -717,7 +718,7 @@ again:
         } else {
             a6 = func_0212b770(buf);
         }
-        p = (Unk_ov065_02281bf4_Res5 *)GsUtil_Alloc(8);
+        p = (GsGpCheckResponse *)GsUtil_Alloc(8);
         if (p == 0) ERRMEM("Out of memory.")
         p->result = a4;
         p->profileId = a6;
@@ -727,11 +728,11 @@ again:
         }
         return r;
     } else if (c->searchType == 7) {
-        pr7 = node->unk_0c;
-        if (pr7.p.a == 0) {
+        pr7 = node->callback;
+        if (pr7.p.func == 0) {
             goto done;
         }
-        p7 = (Unk_ov065_02281bf4_Res7 *)GsUtil_Alloc(0xc);
+        p7 = (GsGpReverseBuddiesResponse *)GsUtil_Alloc(0xc);
         if (p7 == 0) ERRMEM("Out of memory.")
         p7->result = 0;
         p7->numProfiles = 0;
@@ -744,12 +745,12 @@ again:
             if (strcmp(tok, "odone") == 0) {
                 done = 1;
             } else if (strcmp(tok, "o") == 0) {
-                Unk_ov065_02281bf4_Rec *e;
+                GsGpProfileSearchMatch *e;
                 s32 idx;
-                Unk_ov065_02281bf4_Rec *base;
+                GsGpProfileSearchMatch *base;
                 void *t = GsUtil_Realloc(p7->profiles, (p7->numProfiles + 1) * 0xac);
                 if (t == 0) ERRMEM("Out of memory.")
-                p7->profiles = (Unk_ov065_02281bf4_Rec *)t;
+                p7->profiles = (GsGpProfileSearchMatch *)t;
                 base = p7->profiles;
                 idx = p7->numProfiles;
                 e = &base[idx];
@@ -785,13 +786,13 @@ again:
         }
         return r;
     } else if (c->searchType == 8) {
-        Unk_ov065_02281bf4_Res8 *p;
-        pr8 = node->unk_0c;
-        if (pr8.p.a == 0) {
+        GsGpSuggestUniqueNickResponse *p;
+        pr8 = node->callback;
+        if (pr8.p.func == 0) {
             goto done;
         }
         cnt = 0;
-        p = (Unk_ov065_02281bf4_Res8 *)GsUtil_Alloc(0xc);
+        p = (GsGpSuggestUniqueNickResponse *)GsUtil_Alloc(0xc);
         if (p == 0) ERRMEM("Out of memory.")
         p->result = 0;
         p->numNicks = 0;
@@ -838,19 +839,19 @@ s32 GsGpSearch_ProcessAll(Ctx0228 **h) {
     Ctx0228 *c = *h;
     s32 n = 0;
     s32 i;
-    Node0228 **arr;
-    Node0228 *nd;
+    GsGpOperation **arr;
+    GsGpOperation *nd;
     s32 z = 0;
     if (c->numSearches > 0) {
-        arr = (Node0228 **)GsUtil_Alloc(c->numSearches * 4);
+        arr = (GsGpOperation **)GsUtil_Alloc(c->numSearches * 4);
         if (arr == 0) {
             GsGp_SetErrorString(h, "Out of memory.");
             return 1;
         }
         for (nd = c->operationList; nd != 0; nd = nd->next) {
-            if (nd->type == 3 && nd->state != 5 && nd->data->isProcessing == 0) {
+            if (nd->type == 3 && nd->state != 5 && ((Conn0228 *)nd->data)->isProcessing == 0) {
                 arr[n++] = nd;
-                nd->data->isProcessing = 1;
+                ((Conn0228 *)nd->data)->isProcessing = 1;
             }
         }
         for (i = 0; i < n; i++) {
@@ -860,7 +861,7 @@ s32 GsGpSearch_ProcessAll(Ctx0228 **h) {
             }
         }
         for (i = 0; i < n; i++) {
-            Conn0228 *s = arr[i]->data;
+            Conn0228 *s = (Conn0228 *)arr[i]->data;
             s->isProcessing = z;
             if (s->isFinished != 0) {
                 GsGp_RemoveOperation(h, arr[i]);

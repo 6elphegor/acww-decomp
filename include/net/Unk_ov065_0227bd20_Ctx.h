@@ -2,8 +2,9 @@
 #define NET_UNK_OV065_0227BD20_CTX_H
 
 #include "types.h"
+#include "net/GsGpProfile.h"
 
-// GameSpy Presence (GsGp_*) view of the GP connection (Unk_ov065_0227c538_Ctx), its handle and buddy status records
+// GameSpy Presence (GsGp_*) view of the GP connection (GsGpContext), its handle and buddy status records
 // (src/ov065/unk_ov065_0227bd20.cpp namespace Nb).
 
 struct Unk_ov065_0227bd20_Ctx {
@@ -31,19 +32,10 @@ struct Unk_ov065_0227bd20_Handle {
     /* 0x0 */ Unk_ov065_0227bd20_Ctx *connection;
 };
 
-struct Unk_ov065_0227c05c_Src {
-    /* 0x00 */ s32 unk_00;
-    /* 0x04 */ s32 status;
-    /* 0x08 */ char *statusString;
-    /* 0x0c */ char *locationString;
-    /* 0x10 */ s32 ip;
-    /* 0x14 */ s32 port;
-};
-
 struct Unk_ov065_0227c05c_Ent {
     /* 0x00 */ s32 profileId;
     /* 0x04 */ s32 unk_04;
-    /* 0x08 */ Unk_ov065_0227c05c_Src *buddyStatus;
+    /* 0x08 */ GsGpBuddyStatusInfo *buddyStatus;
     /* 0x0c */ s32 unk_0c;
     /* 0x10 */ s32 unk_10;
     /* 0x14 */ s32 unk_14;

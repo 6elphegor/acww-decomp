@@ -2,9 +2,11 @@
 #include "types.h"
 #include "net/GsArray.h"
 #include "net/Unk_ov065_02280e7c_Ctx.h"
-#include "net/Unk_ov065_02281974_Pair.h"
+#include "net/GsGpOperation.h"
+#include "net/Unk_ov065_0227c538_Node.h"
+#include "net/Unk_ov065_0227d8e0_Ctx.h"
 #include "net/Unk_ov065_02281790_Ctx.h"
-#include "net/Unk_ov065_02281bf4_Res.h"
+#include "net/GsGpCallbackArgs.h"
 
 // ov065 TU48: GP gpiProfile.c (0x0228176c..0x02281a5c)
 
@@ -19,10 +21,10 @@ namespace Na {
 
 
 typedef Unk_ov065_02280e7c_Ctx Ctx0228;
-typedef Unk_ov065_02280e7c_Node Node0228;
-typedef Unk_ov065_02280e7c_Ent Ent0228;
+typedef GsGpPeer Node0228;
+typedef GsGpProfile Ent0228;
 typedef Unk_ov065_02280e7c_Pair Pair0228;
-typedef Unk_ov065_02280e7c_Sub Sub0228;
+typedef GsGpPeerMessage Sub0228;
 
 extern char data_ov065_0228d928[];
 extern char data_ov065_0228d9c8[];
@@ -78,8 +80,8 @@ s32 GsGp_RecvToBuffer(Ctx0228 **, s32, char **, s32 *, s32 *, const char *);
 s32 GsGpBuf_AppendInt(Ctx0228 **, char **, s32);
 s32 GsGpBuf_AppendString(Ctx0228 **, char **, const char *);
 s32 GsGp_QueueCallback(Ctx0228 **, Pair0228, void *, s32, s32);
-s32 GsGp_SendGetProfile(Ctx0228 **, s32, char *);
-s32 GsGp_AddOperation(Ctx0228 **, s32, s32, Ent0228 **, s32, s32, s32);
+s32 GsGp_SendGetProfile(Ctx0228 **, s32, s32);
+s32 GsGp_AddOperation(Ctx0228 **, s32, s32, GsGpOperation **, s32, s32, s32);
 s32 GsGpPeer_Connect(Ctx0228 **, Node0228 *);
 void GsGpProfile_Remove(Ctx0228 **, Ent0228 *);
 s32 GsGpProfile_Find(Ctx0228 **, s32, Ent0228 **);
@@ -132,16 +134,15 @@ namespace Nb {
 
 
 typedef Unk_ov065_02281790_Ctx Ctx0228;
-typedef Unk_ov065_02281790_Node Node0228;
-typedef Unk_ov065_02281790_Elem Elem0228;
-typedef Unk_ov065_02281790_Conn Conn0228;
+typedef GsGpProfile Elem0228;
+typedef GsGpSearch Conn0228;
 
 
 extern "C" {
 
 extern char data_ov065_0228db1c[];
 
-typedef s32 (*Unk_ov065_022817c8_Cb)(Ctx0228 **, Node0228 *, void *);
+typedef s32 (*GsGpProfileMapFn)(Ctx0228 **, GsGpProfile *, void *);
 
 s32 GsHash_FindIf(void *, s32 (*)(void *, void *), void *);
 s32 GsHash_Remove(void *, void *);
@@ -156,39 +157,39 @@ s32 GsGp_CheckServerError(Ctx0228 **, char *, s32);
 s32 GsGp_GetValue(char *, const char *, void *, s32);
 s32 GsGp_CheckConnectComplete(Ctx0228 **, s32, void *);
 void GsGp_CallErrorCallback(Ctx0228 **, s32, s32);
-s32 GsGp_QueueCallback(Ctx0228 **, Unk_ov065_02281974_Pair, void *, void *, s32);
-void GsGp_RemoveOperation(Ctx0228 **, Node0228 *);
+s32 GsGp_QueueCallback(Ctx0228 **, GsGpCallbackPair, void *, void *, s32);
+void GsGp_RemoveOperation(Ctx0228 **, GsGpOperation *);
 void GsGp_FreeCachedInfo(void *);
 s32 strncmp(const char *, const char *, s32);
 s32 strcmp(const char *, const char *);
 s32 func_0212b770(void *);
 
-s32 GsGpSearch_Process(Ctx0228 **, Node0228 *);
-s32 GsGpProfile_MatchBuddyIndexCb(Ctx0228 **, Node0228 *, void *);
-s32 GsGpProfile_FindIfAdapter(Node0228 *, void *);
-s32 GsGpProfile_MatchNickEmailCb(Ctx0228 **, Node0228 *, void *);
+s32 GsGpSearch_Process(Ctx0228 **, GsGpOperation *);
+s32 GsGpProfile_MatchBuddyIndexCb(Ctx0228 **, GsGpProfile *, void *);
+s32 GsGpProfile_FindIfAdapter(GsGpProfile *, void *);
+s32 GsGpProfile_MatchNickEmailCb(Ctx0228 **, GsGpProfile *, void *);
 s32 GsGpProfile_Find(Ctx0228 **, s32, void *);
 void GsGpProfile_FreeEntry(void *);
-s32 GsGpProfile_FindIf(Ctx0228 **, Unk_ov065_022817c8_Cb, void *);
+s32 GsGpProfile_FindIf(Ctx0228 **, GsGpProfileMapFn, void *);
 s32 GsGpProfile_CompareId(s32 *, s32 *);
 s32 GsGpProfile_HashId(s32 *, s32);
 
 
 
 
-struct Unk_ov065_022817c8_Args {
-    Ctx0228 **h;
-    Unk_ov065_022817c8_Cb cb;
-    void *arg;
+struct GsGpProfileMapArgs {
+    Ctx0228 **connection;
+    GsGpProfileMapFn func;
+    void *data;
 };
 
 
 
-struct Unk_ov065_02281814_L {
-    s32 a;
-    s32 b;
-    s32 *out;
-    s32 f;
+struct GsGpFindProfileByNickArgs {
+    s32 nick;
+    s32 email;
+    s32 *profile;
+    s32 found;
 };
 
 
@@ -283,7 +284,7 @@ void *func_0212899c(void *, s32, s32);
 char *func_02127838(char *, const char *);
 char *func_02129f1c(const char *, const char *);
 void GsUtil_Sleep(s32);
-s32 GsGpSearch_ProfileSearch(Ctx0228 **, char *, char *, char *, char *, char *, s32, s32, void *, s32, s32);
+s32 GsGpSearch_ProfileSearch(Ctx0228 **, char *, char *, char *, char *, char *, s32, s32, s32, s32, s32);
 
 
 
@@ -302,25 +303,25 @@ s32 GsGpSearch_ProfileSearch(Ctx0228 **, char *, char *, char *, char *, char *,
 }
 extern "C" {
 void *GsGpProfile_FindByBuddyIndex(Ctx0228 **h, s32 a);
-s32 GsGpProfile_MatchBuddyIndexCb(Ctx0228 **, Node0228 *n, void *arg);
-s32 GsGpProfile_FindIf(Ctx0228 **h, Unk_ov065_022817c8_Cb cb, void *arg);
-s32 GsGpProfile_FindIfAdapter(Node0228 *n, void *p);
+s32 GsGpProfile_MatchBuddyIndexCb(Ctx0228 **, GsGpProfile *n, void *arg);
+s32 GsGpProfile_FindIf(Ctx0228 **h, GsGpProfileMapFn cb, void *arg);
+s32 GsGpProfile_FindIfAdapter(GsGpProfile *n, void *p);
 s32 GsGpProfile_FindByNickEmail(Ctx0228 **h, s32 a, s32 b, s32 *out);
-s32 GsGpProfile_MatchNickEmailCb(Ctx0228 **, Node0228 *n, void *arg);
+s32 GsGpProfile_MatchNickEmailCb(Ctx0228 **, GsGpProfile *n, void *arg);
 s32 GsGpProfile_Remove(Ctx0228 **h, void *n);
 void GsGpProfile_RemoveById(Ctx0228 **h, s32 a);
 s32 GsGpProfile_Find(Ctx0228 **h, s32 a, void *out);
 s32 GsGpProfile_Add(Ctx0228 **h, s32 a);
-s32 GsGp_ProcessNewProfileReply(Ctx0228 **h, Node0228 *n, char *s);
+s32 GsGp_ProcessNewProfileReply(Ctx0228 **h, GsGpOperation *n, char *s);
 }
 }
 
 namespace Nb {
 extern "C" {
-s32 GsGp_ProcessNewProfileReply(Ctx0228 **h, Node0228 *n, char *s) {
+s32 GsGp_ProcessNewProfileReply(Ctx0228 **h, GsGpOperation *n, char *s) {
     char buf[0x10];
     s32 v;
-    Unk_ov065_02281974_Nest pr;
+    Unk_ov065_0227e0e8_Wrap pr;
     void *p;
     if (GsGp_CheckServerError(h, s, 1) != 0) {
         return 4;
@@ -336,8 +337,8 @@ s32 GsGp_ProcessNewProfileReply(Ctx0228 **h, Node0228 *n, char *s) {
         return 3;
     }
     v = func_0212b770(buf);
-    pr = n->unk_0c;
-    if (pr.p.a != 0) {
+    pr = n->callback;
+    if (pr.p.func != 0) {
         p = GsUtil_Alloc(8);
         if (p == 0) {
             GsGp_SetErrorString(h, "Out of memory.");
@@ -427,14 +428,14 @@ s32 GsGpProfile_Remove(Ctx0228 **h, void *n) {
 
 namespace Nb {
 extern "C" {
-s32 GsGpProfile_MatchNickEmailCb(Ctx0228 **, Node0228 *n, void *arg) {
-    Unk_ov065_02281814_L *l = (Unk_ov065_02281814_L *)arg;
-    char **e = (char **)n->unk_0c.p.a;
+s32 GsGpProfile_MatchNickEmailCb(Ctx0228 **, GsGpProfile *n, void *arg) {
+    GsGpFindProfileByNickArgs *l = (GsGpFindProfileByNickArgs *)arg;
+    char **e = (char **)n->infoCache;
     if (e != 0) {
-        if (strcmp((const char *)l->a, e[0]) == 0) {
-            if (strcmp((const char *)l->b, e[2]) == 0) {
-                *(Node0228 **)l->out = n;
-                l->f = 1;
+        if (strcmp((const char *)l->nick, e[0]) == 0) {
+            if (strcmp((const char *)l->email, e[2]) == 0) {
+                *(GsGpProfile **)l->profile = n;
+                l->found = 1;
                 return 0;
             }
         }
@@ -447,13 +448,13 @@ s32 GsGpProfile_MatchNickEmailCb(Ctx0228 **, Node0228 *n, void *arg) {
 namespace Nb {
 extern "C" {
 s32 GsGpProfile_FindByNickEmail(Ctx0228 **h, s32 a, s32 b, s32 *out) {
-    Unk_ov065_02281814_L l;
-    l.a = a;
-    l.b = b;
-    l.out = out;
-    l.f = 0;
+    GsGpFindProfileByNickArgs l;
+    l.nick = a;
+    l.email = b;
+    l.profile = out;
+    l.found = 0;
     GsGpProfile_FindIf(h, GsGpProfile_MatchNickEmailCb, &l);
-    if (l.f == 0) {
+    if (l.found == 0) {
         *out = 0;
     }
     return 0;
@@ -463,21 +464,21 @@ s32 GsGpProfile_FindByNickEmail(Ctx0228 **h, s32 a, s32 b, s32 *out) {
 
 namespace Nb {
 extern "C" {
-s32 GsGpProfile_FindIfAdapter(Node0228 *n, void *p) {
-    Unk_ov065_022817c8_Args *a = (Unk_ov065_022817c8_Args *)p;
-    return a->cb(a->h, n, a->arg);
+s32 GsGpProfile_FindIfAdapter(GsGpProfile *n, void *p) {
+    GsGpProfileMapArgs *a = (GsGpProfileMapArgs *)p;
+    return a->func(a->connection, n, a->data);
 }
 }
 }
 
 namespace Nb {
 extern "C" {
-s32 GsGpProfile_FindIf(Ctx0228 **h, Unk_ov065_022817c8_Cb cb, void *arg) {
-    Unk_ov065_022817c8_Args a;
+s32 GsGpProfile_FindIf(Ctx0228 **h, GsGpProfileMapFn cb, void *arg) {
+    GsGpProfileMapArgs a;
     Ctx0228 *c = *h;
-    a.h = h;
-    a.cb = cb;
-    a.arg = arg;
+    a.connection = h;
+    a.func = cb;
+    a.data = arg;
     if (GsHash_FindIf(c->profileTable, (s32 (*)(void *, void *))GsGpProfile_FindIfAdapter, &a) == 0) {
         return 1;
     }
@@ -488,10 +489,10 @@ s32 GsGpProfile_FindIf(Ctx0228 **h, Unk_ov065_022817c8_Cb cb, void *arg) {
 
 namespace Nb {
 extern "C" {
-s32 GsGpProfile_MatchBuddyIndexCb(Ctx0228 **, Node0228 *n, void *arg) {
-    Unk_ov065_02281790_L1 *l = (Unk_ov065_02281790_L1 *)arg;
-    if (n->unk_08 != 0 && l->a == n->unk_08->buddyIndex) {
-        l->r = n;
+s32 GsGpProfile_MatchBuddyIndexCb(Ctx0228 **, GsGpProfile *n, void *arg) {
+    GsGpFindBuddyArgs *l = (GsGpFindBuddyArgs *)arg;
+    if (n->buddyStatus != 0 && l->index == n->buddyStatus->buddyIndex) {
+        l->profile = n;
         return 0;
     }
     return 1;
@@ -502,11 +503,11 @@ s32 GsGpProfile_MatchBuddyIndexCb(Ctx0228 **, Node0228 *n, void *arg) {
 namespace Nb {
 extern "C" {
 void *GsGpProfile_FindByBuddyIndex(Ctx0228 **h, s32 a) {
-    Unk_ov065_02281790_L1 l;
-    l.a = a;
-    l.r = 0;
+    GsGpFindBuddyArgs l;
+    l.index = a;
+    l.profile = 0;
     GsGpProfile_FindIf(h, GsGpProfile_MatchBuddyIndexCb, &l);
-    return l.r;
+    return l.profile;
 }
 }
 }
@@ -514,7 +515,7 @@ void *GsGpProfile_FindByBuddyIndex(Ctx0228 **h, s32 a) {
 namespace Na {
 extern "C" {
 s32 GsGpProfile_IsUnused(Ent0228 *e) {
-    if (e != NULL && e->infoCache == 0 && e->buddyStatus == 0 && e->unk_18 == NULL && e->authSig == 0) {
+    if (e != NULL && e->infoCache == 0 && e->buddyStatus == 0 && e->peerSig == NULL && e->authSig == 0) {
         return 1;
     }
     return 0;

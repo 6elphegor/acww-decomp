@@ -1,12 +1,14 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
-#include "net/Unk_ov065_022804b8_Src.h"
+#include "net/GsGpInfoCache.h"
 #include "net/Unk_ov065_02280854_Ctx.h"
-#include "net/Unk_ov065_0228094c_Sub.h"
-#include "net/Unk_ov065_02280a2c_Ctx.h"
-#include "net/Unk_ov065_02280c08_Node.h"
-#include "net/Unk_ov065_02280c84_Src.h"
-#include "net/Unk_ov065_02280cb4_T.h"
+#include "net/GsGpSearch.h"
+#include "net/Unk_ov065_0227c538_Node.h"
+#include "net/Unk_ov065_0227d8e0_Ctx.h"
+#include "net/GsGpContext.h"
+#include "net/GsGpCallbackArgs.h"
+#include "net/GsGpPeer.h"
+#include "net/GsGpTransferId.h"
 #include "net/Unk_ov065_02280d70_P1.h"
 
 // ov065 TU46: GP gpiOperation.c (0x02280740..0x02280c08)
@@ -38,7 +40,7 @@ s32 GsSock_Shutdown(s32, s32);
 s32 GsSock_Close(s32);
 void GsUtil_Free(void *);
 void *GsUtil_Alloc(u32);
-s32 GsGp_QueueCallback(void *, Unk_ov065_02280a2c_Pair, void *, void *, s32);
+s32 GsGp_QueueCallback(void *, GsGpCallbackPair, void *, void *, s32);
 s32 func_0212899c(void *, s32, u32);
 s32 STD_GetStringLength(const char *);
 s32 OS_SPrintf(char *, const char *, ...);
@@ -79,7 +81,7 @@ s32 GsGp_IsValidDate(s32 day, s32 mon, s32 year);
 
 
 
-void GsGp_FreeOperation(Unk_ov065_02280854_H *h, Unk_ov065_02280854_Node *n);
+void GsGp_FreeOperation(Unk_ov065_02280854_H *h, GsGpOperation *n);
 
 
 
@@ -101,28 +103,28 @@ enum Unk_ov065_02280a2c_Z { Unk_ov065_02280a2c_Z_0 = 0, Unk_ov065_02280a2c_Z_FF 
 }
 extern "C" {
 s32 GsGp_IsValidDate(s32 day, s32 mon, s32 year);
-s32 gpiProcessOperation(void *h, Unk_ov065_02280854_Node *n, char *x);
+s32 gpiProcessOperation(void *h, GsGpOperation *n, char *x);
 s32 GsGp_HasBlockingOperation(Unk_ov065_02280854_H *h);
-s32 GsGp_FindOperation(Unk_ov065_02280854_H *h, Unk_ov065_02280854_Node **out, s32 id);
-void GsGp_RemoveOperation(Unk_ov065_02280854_H *h, Unk_ov065_02280854_Node *n);
-void GsGp_FreeOperation(Unk_ov065_02280854_H *h, Unk_ov065_02280854_Node *n);
-s32 GsGp_AddOperation(Unk_ov065_02280854_H *h, s32 a, s32 b, Unk_ov065_02280854_Node **out, s32 e, s32 f, s32 g);
-s32 GsGp_CallFailedCallback(void *h, Unk_ov065_02280854_Node *n);
+s32 GsGp_FindOperation(Unk_ov065_02280854_H *h, GsGpOperation **out, s32 id);
+void GsGp_RemoveOperation(Unk_ov065_02280854_H *h, GsGpOperation *n);
+void GsGp_FreeOperation(Unk_ov065_02280854_H *h, GsGpOperation *n);
+s32 GsGp_AddOperation(Unk_ov065_02280854_H *h, s32 a, void *b, GsGpOperation **out, s32 e, s32 f, s32 g);
+s32 GsGp_CallFailedCallback(void *h, GsGpOperation *n);
 }
 }
 
 namespace Na {
 extern "C" {
-s32 GsGp_CallFailedCallback(void *h, Unk_ov065_02280854_Node *n) {
-    Unk_ov065_02280a2c_Ctx *c = *(Unk_ov065_02280a2c_Ctx **)h;
-    Unk_ov065_02280a2c_Wrap w;
+s32 GsGp_CallFailedCallback(void *h, GsGpOperation *n) {
+    GsGpContext *c = *(GsGpContext **)h;
+    Unk_ov065_0227e0e8_Wrap w;
     s32 r;
-    w = *(Unk_ov065_02280a2c_Wrap *)&n->unk_0c;
+    w = n->callback;
     if (w.p.func != 0) {
         {
-            switch (n->unk_00) {
+            switch (n->type) {
             case 0: {
-                Unk_ov065_02280a2c_M0 *m = (Unk_ov065_02280a2c_M0 *)GsUtil_Alloc(0x20);
+                GsGpConnectResponse *m = (GsGpConnectResponse *)GsUtil_Alloc(0x20);
                 if (m == 0) {
                     GsGp_SetErrorString(h, "Out of memory.");
                     return 1;
@@ -225,16 +227,16 @@ s32 GsGp_CallFailedCallback(void *h, Unk_ov065_02280854_Node *n) {
 
 namespace Na {
 extern "C" {
-s32 GsGp_AddOperation(Unk_ov065_02280854_H *h, s32 a, s32 b, Unk_ov065_02280854_Node **out, s32 e, s32 f, s32 g) {
+s32 GsGp_AddOperation(Unk_ov065_02280854_H *h, s32 a, void *b, GsGpOperation **out, s32 e, s32 f, s32 g) {
     Unk_ov065_02280854_Ctx *c = h->connection;
-    Unk_ov065_02280854_Node *n = (Unk_ov065_02280854_Node *)GsUtil_Alloc(0x24);
+    GsGpOperation *n = (GsGpOperation *)GsUtil_Alloc(0x24);
     if (n == 0) {
         GsGp_SetErrorString(h, "Out of memory.");
         return 1;
     }
-    n->unk_00 = a;
+    n->type = a;
     n->data = b;
-    n->unk_08 = e;
+    n->blocking = e;
     n->state = 0;
     if (a == 0) {
         n->id = 1;
@@ -246,8 +248,8 @@ s32 GsGp_AddOperation(Unk_ov065_02280854_H *h, s32 a, s32 b, Unk_ov065_02280854_
         }
     }
     n->result = 0;
-    n->unk_0c = f;
-    n->callbackParam = g;
+    n->callback.p.func = f;
+    n->callback.p.param = g;
     n->next = c->operationList;
     c->operationList = n;
     *out = n;
@@ -258,10 +260,10 @@ s32 GsGp_AddOperation(Unk_ov065_02280854_H *h, s32 a, s32 b, Unk_ov065_02280854_
 
 namespace Na {
 extern "C" {
-void GsGp_FreeOperation(Unk_ov065_02280854_H *h, Unk_ov065_02280854_Node *n) {
+void GsGp_FreeOperation(Unk_ov065_02280854_H *h, GsGpOperation *n) {
     Unk_ov065_02280854_Ctx *c = h->connection;
-    if (n->unk_00 == 3) {
-        Unk_ov065_0228094c_Sub *s = (Unk_ov065_0228094c_Sub *)n->data;
+    if (n->type == 3) {
+        GsGpSearch *s = (GsGpSearch *)n->data;
         c->numSearches--;
         GsSock_Shutdown(s->sock, 2);
         GsSock_Close(s->sock);
@@ -279,10 +281,10 @@ void GsGp_FreeOperation(Unk_ov065_02280854_H *h, Unk_ov065_02280854_Node *n) {
 
 namespace Na {
 extern "C" {
-void GsGp_RemoveOperation(Unk_ov065_02280854_H *h, Unk_ov065_02280854_Node *n) {
+void GsGp_RemoveOperation(Unk_ov065_02280854_H *h, GsGpOperation *n) {
     Unk_ov065_02280854_Ctx *c = h->connection;
-    Unk_ov065_02280854_Node *p = c->operationList;
-    Unk_ov065_02280854_Node *prev = 0;
+    GsGpOperation *p = c->operationList;
+    GsGpOperation *prev = 0;
     for (; p; prev = p, p = p->next) {
         if (p == n) {
             if (prev == 0) {
@@ -300,8 +302,8 @@ void GsGp_RemoveOperation(Unk_ov065_02280854_H *h, Unk_ov065_02280854_Node *n) {
 
 namespace Na {
 extern "C" {
-s32 GsGp_FindOperation(Unk_ov065_02280854_H *h, Unk_ov065_02280854_Node **out, s32 id) {
-    Unk_ov065_02280854_Node *n = h->connection->operationList;
+s32 GsGp_FindOperation(Unk_ov065_02280854_H *h, GsGpOperation **out, s32 id) {
+    GsGpOperation *n = h->connection->operationList;
     for (; n; n = n->next) {
         if (n->id == id) {
             if (out) {
@@ -321,9 +323,9 @@ s32 GsGp_FindOperation(Unk_ov065_02280854_H *h, Unk_ov065_02280854_Node **out, s
 namespace Na {
 extern "C" {
 s32 GsGp_HasBlockingOperation(Unk_ov065_02280854_H *h) {
-    Unk_ov065_02280854_Node *n = h->connection->operationList;
+    GsGpOperation *n = h->connection->operationList;
     for (; n; n = n->next) {
-        if (n->unk_08 != 0 && n->unk_00 != 3) {
+        if (n->blocking != 0 && n->type != 3) {
             return 1;
         }
     }
@@ -334,9 +336,9 @@ s32 GsGp_HasBlockingOperation(Unk_ov065_02280854_H *h) {
 
 namespace Na {
 extern "C" {
-s32 gpiProcessOperation(void *h, Unk_ov065_02280854_Node *n, char *x) {
+s32 gpiProcessOperation(void *h, GsGpOperation *n, char *x) {
     s32 r = 0;
-    s32 t = n->unk_00;
+    s32 t = n->type;
     switch (t) {
     case 0:
         r = GsGp_ProcessConnectReply(h, n, x);

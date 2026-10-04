@@ -1,18 +1,20 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
-#include "net/Unk_ov065_0227c538_Node.h"
-#include "net/Unk_ov065_0227ee64_Obj.h"
+#include "net/GsGpProfile.h"
+#include "net/GsGpOperation.h"
+#include "net/GsGpCallbackPair.h"
+#include "net/GsGpConnectData.h"
 #include "net/Unk_ov065_0227f00c_Host.h"
 #include "net/Unk_ov065_0227f324_Rec.h"
-#include "net/Unk_ov065_022804b8_Src.h"
+#include "net/GsGpInfoCache.h"
 #include "net/Unk_ov065_02280854_Ctx.h"
-#include "net/Unk_ov065_0228094c_Sub.h"
-#include "net/Unk_ov065_02280a2c_Ctx.h"
-#include "net/Unk_ov065_02280c08_Node.h"
-#include "net/Unk_ov065_02280c84_Src.h"
-#include "net/Unk_ov065_02280cb4_T.h"
+#include "net/GsGpCallbackArgs.h"
+#include "net/Unk_ov065_0227c538_Node.h"
+#include "net/GsGpTransferId.h"
 #include "net/Unk_ov065_02280d70_P1.h"
-#include "net/Unk_ov065_0227c538_Ctx.h"
+#include "net/GsGpContext.h"
+#include "net/GsGpPeer.h"
+#include "net/Unk_ov065_0227d8e0_Ctx.h"
 
 // ov065 TU45: GP gpiInfo.c (0x0227f2a4..0x02280740)
 
@@ -28,9 +30,8 @@ namespace Na {
 
 
 
-typedef Unk_ov065_0227c538_Ctx Ctx0227;
-typedef Unk_ov065_0227c538_Node Node0227;
-typedef Unk_ov065_0227c538_Pair Pair0227;
+typedef GsGpContext Ctx0227;
+typedef GsGpCallbackPair Pair0227;
 
 extern "C" {
 
@@ -57,8 +58,8 @@ void GsUtil_StrToLower(char *);
 void *GsUtil_Alloc(s32);
 void GsUtil_Free(void *);
 char *GsUtil_StrDup(const char *);
-s32 GsGp_AddOperation(Ctx0227 **, s32, void *, Node0227 **, s32, s32, s32);
-void GsGp_CallFailedCallback(Ctx0227 **, Node0227 *);
+s32 GsGp_AddOperation(Ctx0227 **, s32, void *, GsGpOperation **, s32, s32, s32);
+void GsGp_CallFailedCallback(Ctx0227 **, GsGpOperation *);
 s32 GsGp_CloseConnection(Ctx0227 **, s32);
 s32 GsGp_ProcessConnection(Ctx0227 **, s32);
 s32 GsSock_Socket(s32, s32, s32);
@@ -69,10 +70,10 @@ s32 GsSock_Connect(s32, void *, s32);
 s32 GsSock_GetLastError(s32);
 s32 GsSock_SetBlocking(s32, s32);
 Unk_ov065_0227f00c_Host *Sock_GetHostByName(char *);
-s32 GsGpProfile_Find(Ctx0227 **, s32, Node0227 **);
-void GsGp_CopyInfoResult(s32, void *);
-s32 GsGp_RemoveOperation(Ctx0227 **, Node0227 *);
-s32 GsGp_QueueCallback(Ctx0227 **, Pair0227, void *, Node0227 *, s32);
+s32 GsGpProfile_Find(Ctx0227 **, s32, GsGpProfile **);
+void GsGp_CopyInfoResult(GsGpInfoCache *, void *);
+s32 GsGp_RemoveOperation(Ctx0227 **, GsGpOperation *);
+s32 GsGp_QueueCallback(Ctx0227 **, Pair0227, void *, GsGpOperation *, s32);
 s32 GsGpBuf_AppendString(Ctx0227 **, char **, const char *);
 s32 GsGpBuf_AppendInt(Ctx0227 **, char **, s32);
 s32 GsGp_QueueProfileUpdate(Ctx0227 **, const char *, const char *);
@@ -86,7 +87,7 @@ s32 STD_GetStringLength(const char *);
 char *func_02127838(char *, const char *);
 
 s32 GsGp_SendGetProfile(Ctx0227 **, s32, s32);
-s32 GsGp_OpenSockets(Ctx0227 **, Node0227 *);
+s32 GsGp_OpenSockets(Ctx0227 **, GsGpOperation *);
 
 #define GP_FAIL(str) \
     { \
@@ -111,8 +112,8 @@ s32 GsGp_OpenSockets(Ctx0227 **, Node0227 *);
 
 }
 extern "C" {
-void GsGp_FreeCachedInfo(Unk_ov065_0227f324_Owner *p);
-s32 GsGp_CacheProfileInfo(Ctx0227 **h, Unk_ov065_0227f324_Owner *p, Unk_ov065_0227f324_Rec *q);
+void GsGp_FreeCachedInfo(GsGpProfile *p);
+s32 GsGp_CacheProfileInfo(Ctx0227 **h, GsGpProfile *p, GsGpInfoCache *q);
 s32 GsGp_RequestProfileInfo(Ctx0227 **h, s32 a1, s32 a2, s32 a3, s32 a4, s32 a5);
 s32 GsGp_SendGetProfile(Ctx0227 **h, s32 a1, s32 a2);
 s32 GsGp_SetInfoString(Ctx0227 **h, s32 cmd, char *val);
@@ -135,64 +136,9 @@ struct Unk_ov065_0227fe88_Ctx {
     s32 userUpdateBufferLength;
 };
 
-struct Unk_ov065_0227ff90_Pair {
-    s32 func;
-    s32 param;
-};
-
-struct Unk_ov065_0227ff90_Wrap {
-    Unk_ov065_0227ff90_Pair callback;
-};
-
 struct Unk_ov065_0227ff90_Req {
     u8 pad_00[0xc];
-    Unk_ov065_0227ff90_Wrap callback;
-};
-
-struct Unk_ov065_0227ff90_Node {
-    s32 peerState;
-    u8 pad_04[8];
-    s32 profileId;
-    u8 pad_10[0x2c];
-    Unk_ov065_0227ff90_Node *next;
-};
-
-struct Unk_ov065_0227ff90_Ctx {
-    u8 pad_000[0x100];
-    s32 infoCaching;
-    u8 pad_104[0x330];
-    Unk_ov065_0227ff90_Node *peerList;
-};
-
-struct Unk_ov065_0227ff90_Rec {
-    char *nick;
-    char *uniqueNick;
-    char *email;
-    char *firstName;
-    char *lastName;
-    char *homepage;
-    s32 icqUin;
-    char zipCode[0xb];
-    char countryCode[3];
-    u8 pad_2a[2];
-    s32 unk_2c;
-    s32 unk_30;
-    char location[0x80];
-    s32 birthDay;
-    s32 birthMonth;
-    s32 birthYear;
-    s32 sex;
-    s32 publicMask;
-    char *aimName;
-    s32 pic;
-    s32 occupationId;
-    s32 industryId;
-    s32 incomeId;
-    s32 marriedId;
-    s32 childCount;
-    s32 interests1;
-    s32 ownership1;
-    s32 connectionType;
+    Unk_ov065_0227e0e8_Wrap callback;
 };
 
 
@@ -207,9 +153,9 @@ char *GsUtil_StrDup(const char *);
 s32 GsGpBuf_AppendString(void *, char *, const char *);
 s32 GsGpBuf_AppendInt(void *, char *, s32);
 void GsGp_CallErrorCallback(void *, s32, s32);
-s32 GsGp_QueueCallback(void *, Unk_ov065_0227ff90_Pair, void *, void *, s32);
-s32 GsGp_CacheProfileInfo(void *, u32 *, Unk_ov065_0227ff90_Rec *);
-s32 GsGp_CopyInfoResult(Unk_ov065_0227ff90_Rec *, void *);
+s32 GsGp_QueueCallback(void *, GsGpCallbackPair, void *, void *, s32);
+s32 GsGp_CacheProfileInfo(void *, u32 *, GsGpInfoCache *);
+s32 GsGp_CopyInfoResult(GsGpInfoCache *, void *);
 s32 GsGp_UnpackDate(void *, s32, s32 *, s32 *, s32 *);
 void GsGp_RemoveOperation(void *, void *);
 s32 GsGpProfile_Find(void *, s32, u32 **);
@@ -267,7 +213,7 @@ s32 GsSock_Shutdown(s32, s32);
 s32 GsSock_Close(s32);
 void GsUtil_Free(void *);
 void *GsUtil_Alloc(u32);
-s32 GsGp_QueueCallback(void *, Unk_ov065_02280a2c_Pair, void *, void *, s32);
+s32 GsGp_QueueCallback(void *, GsGpCallbackPair, void *, void *, s32);
 s32 func_0212899c(void *, s32, u32);
 s32 STD_GetStringLength(const char *);
 s32 OS_SPrintf(char *, const char *, ...);
@@ -309,7 +255,7 @@ s32 GsGp_IsValidDate(s32 day, s32 mon, s32 year);
 
 
 
-void GsGp_FreeOperation(Unk_ov065_02280854_H *h, Unk_ov065_02280854_Node *n);
+void GsGp_FreeOperation(Unk_ov065_02280854_H *h, GsGpOperation *n);
 
 
 
@@ -330,7 +276,7 @@ enum Unk_ov065_02280a2c_Z { Unk_ov065_02280a2c_Z_0 = 0, Unk_ov065_02280a2c_Z_FF 
 
 }
 extern "C" {
-void GsGp_CopyInfoResult(Unk_ov065_022804b8_Src *s, Unk_ov065_022804b8_Dst *d);
+void GsGp_CopyInfoResult(GsGpInfoCache *s, GsGpGetInfoResponse *d);
 s32 GsGp_UnpackDate(void *ctx, s32 packed, s32 *pa, s32 *pb, s32 *pc);
 }
 }
@@ -355,7 +301,7 @@ s32 GsGp_UnpackDate(void *ctx, s32 packed, s32 *pa, s32 *pb, s32 *pc) {
 
 namespace Nc {
 extern "C" {
-void GsGp_CopyInfoResult(Unk_ov065_022804b8_Src *s, Unk_ov065_022804b8_Dst *d) {
+void GsGp_CopyInfoResult(GsGpInfoCache *s, GsGpGetInfoResponse *d) {
     if (s->nick) {
         GsUtil_StrCopyN(d->nick, s->nick, 0x1f);
     } else {
@@ -389,8 +335,8 @@ void GsGp_CopyInfoResult(Unk_ov065_022804b8_Src *s, Unk_ov065_022804b8_Dst *d) {
     d->icqUin = s->icqUin;
     GsUtil_StrCopyN(d->zipCode, s->zipCode, 0xb);
     GsUtil_StrCopyN(d->countryCode, s->countryCode, 3);
-    d->unk_110 = s->unk_2c;
-    d->unk_114 = s->unk_30;
+    d->longitude = s->longitude;
+    d->latitude = s->latitude;
     if (s->location) {
         GsUtil_StrCopyN(d->location, s->location, 0x80);
     } else {
@@ -407,8 +353,8 @@ void GsGp_CopyInfoResult(Unk_ov065_022804b8_Src *s, Unk_ov065_022804b8_Dst *d) {
         d->aimName[0] = 0;
     }
     d->icqUin = s->icqUin;
-    d->unk_110 = s->unk_2c;
-    d->unk_114 = s->unk_30;
+    d->longitude = s->longitude;
+    d->latitude = s->latitude;
     d->birthDay = s->birthDay;
     d->birthMonth = s->birthMonth;
     d->birthYear = s->birthYear;
@@ -430,10 +376,10 @@ void GsGp_CopyInfoResult(Unk_ov065_022804b8_Src *s, Unk_ov065_022804b8_Dst *d) {
 namespace Nb {
 extern "C" {
 s32 GsGp_ProcessProfileReply(void *h, Unk_ov065_0227ff90_Req *req, char *str) {
-    Unk_ov065_0227ff90_Ctx *ctx = *(Unk_ov065_0227ff90_Ctx **)h;
+    GsGpContext *ctx = *(GsGpContext **)h;
     struct {
         u32 *e;
-        Unk_ov065_0227ff90_Wrap p;
+        Unk_ov065_0227e0e8_Wrap p;
         char buf[0x40];
         char a[0x1f];
         char b[0x15];
@@ -444,7 +390,7 @@ s32 GsGp_ProcessProfileReply(void *h, Unk_ov065_0227ff90_Req *req, char *str) {
     } l;
     s32 r5;
     s32 flag;
-    Unk_ov065_0227ff90_Node *n;
+    GsGpPeer *n;
     void *node;
 
     if (GsGp_CheckServerError(h, str, 1) != 0) {
@@ -462,7 +408,7 @@ s32 GsGp_ProcessProfileReply(void *h, Unk_ov065_0227ff90_Req *req, char *str) {
     }
     r5 = func_0212b770(l.buf);
     GsGpProfile_Find(h, r5, &l.e);
-    Unk_ov065_0227ff90_Rec s = {0};
+    GsGpInfoCache s = {0};
     char f[0x4c];
     s.nick = l.a;
     s.uniqueNick = l.b;
@@ -500,8 +446,8 @@ s32 GsGp_ProcessProfileReply(void *h, Unk_ov065_0227ff90_Req *req, char *str) {
     if (FIND("\\countrycode\\", s.countryCode, 3) == 0) {
         s.countryCode[0] = 0;
     }
-    s.unk_2c = 0;
-    s.unk_30 = 0;
+    s.longitude = 0;
+    s.latitude = 0;
     if (FIND("\\loc\\", s.location, 0x80) == 0) {
         s.location[0] = 0;
     }
@@ -604,7 +550,7 @@ s32 GsGp_ProcessProfileReply(void *h, Unk_ov065_0227ff90_Req *req, char *str) {
         GsGp_CacheProfileInfo(h, l.e, &s);
     }
     l.p = req->callback;
-    if (l.p.callback.func != 0) {
+    if (l.p.p.func != 0) {
         node = GsUtil_Alloc(0x204);
         if (node == NULL) {
             GsGp_SetErrorString(h, "Out of memory.");
@@ -614,7 +560,7 @@ s32 GsGp_ProcessProfileReply(void *h, Unk_ov065_0227ff90_Req *req, char *str) {
         ((s32 *)node)[0] = 0;
         ((s32 *)node)[1] = r5;
         {
-            s32 r = GsGp_QueueCallback(h, l.p.callback, node, req, 0);
+            s32 r = GsGp_QueueCallback(h, l.p.p, node, req, 0);
             if (r != 0) {
                 return r;
             }
@@ -1061,8 +1007,8 @@ namespace Na {
 extern "C" {
 s32 GsGp_RequestProfileInfo(Ctx0227 **h, s32 a1, s32 a2, s32 a3, s32 a4, s32 a5) {
     void *m;
-    Node0227 *n;
-    Node0227 *out2;
+    GsGpProfile *n;
+    GsGpOperation *out2;
     Pair0227 pr;
     s32 ok;
     Ctx0227 *ctx;
@@ -1092,7 +1038,7 @@ s32 GsGp_RequestProfileInfo(Ctx0227 **h, s32 a1, s32 a2, s32 a3, s32 a4, s32 a5)
         if (r != 0) {
             return r;
         }
-        p5 = out2->unk_18;
+        p5 = out2->id;
         r = GsGp_QueueCallback(h, pr, m, out2, 0);
         if (r != 0) {
             return r;
@@ -1103,7 +1049,7 @@ s32 GsGp_RequestProfileInfo(Ctx0227 **h, s32 a1, s32 a2, s32 a3, s32 a4, s32 a5)
         if (r != 0) {
             return r;
         }
-        p5 = out2->unk_18;
+        p5 = out2->id;
         r = GsGp_SendGetProfile(h, a1, p5);
         if (r != 0) {
             return r;
@@ -1122,22 +1068,22 @@ s32 GsGp_RequestProfileInfo(Ctx0227 **h, s32 a1, s32 a2, s32 a3, s32 a4, s32 a5)
 
 namespace Na {
 extern "C" {
-s32 GsGp_CacheProfileInfo(Ctx0227 **h, Unk_ov065_0227f324_Owner *p, Unk_ov065_0227f324_Rec *q) {
-    Unk_ov065_0227f324_Rec *d;
+s32 GsGp_CacheProfileInfo(Ctx0227 **h, GsGpProfile *p, GsGpInfoCache *q) {
+    GsGpInfoCache *d;
     if ((*h)->infoCaching == 0) {
         return 1;
     }
     GsGp_FreeCachedInfo(p);
-    p->infoCache = (Unk_ov065_0227f324_Rec *)GsUtil_Alloc(0xf0);
+    p->infoCache = (GsGpInfoCache *)GsUtil_Alloc(0xf0);
     d = p->infoCache;
     if (d != 0) {
         *(Unk_ov065_0227f324_Copy *)d = *(Unk_ov065_0227f324_Copy *)q;
-        p->infoCache->stringFields[0] = GsUtil_StrDup(q->stringFields[0]);
-        p->infoCache->stringFields[1] = GsUtil_StrDup(q->stringFields[1]);
-        p->infoCache->stringFields[2] = GsUtil_StrDup(q->stringFields[2]);
-        p->infoCache->stringFields[3] = GsUtil_StrDup(q->stringFields[3]);
-        p->infoCache->stringFields[4] = GsUtil_StrDup(q->stringFields[4]);
-        p->infoCache->stringFields[5] = GsUtil_StrDup(q->stringFields[5]);
+        p->infoCache->nick = GsUtil_StrDup(q->nick);
+        p->infoCache->uniqueNick = GsUtil_StrDup(q->uniqueNick);
+        p->infoCache->email = GsUtil_StrDup(q->email);
+        p->infoCache->firstName = GsUtil_StrDup(q->firstName);
+        p->infoCache->lastName = GsUtil_StrDup(q->lastName);
+        p->infoCache->homepage = GsUtil_StrDup(q->homepage);
         p->infoCache->aimName = GsUtil_StrDup(q->aimName);
     }
     if (p->infoCache != 0) {
@@ -1150,20 +1096,20 @@ s32 GsGp_CacheProfileInfo(Ctx0227 **h, Unk_ov065_0227f324_Owner *p, Unk_ov065_02
 
 namespace Na {
 extern "C" {
-void GsGp_FreeCachedInfo(Unk_ov065_0227f324_Owner *p) {
+void GsGp_FreeCachedInfo(GsGpProfile *p) {
     if (p->infoCache != 0) {
-        GsUtil_Free(p->infoCache->stringFields[0]);
-        p->infoCache->stringFields[0] = 0;
-        GsUtil_Free(p->infoCache->stringFields[1]);
-        p->infoCache->stringFields[1] = 0;
-        GsUtil_Free(p->infoCache->stringFields[2]);
-        p->infoCache->stringFields[2] = 0;
-        GsUtil_Free(p->infoCache->stringFields[3]);
-        p->infoCache->stringFields[3] = 0;
-        GsUtil_Free(p->infoCache->stringFields[4]);
-        p->infoCache->stringFields[4] = 0;
-        GsUtil_Free(p->infoCache->stringFields[5]);
-        p->infoCache->stringFields[5] = 0;
+        GsUtil_Free(p->infoCache->nick);
+        p->infoCache->nick = 0;
+        GsUtil_Free(p->infoCache->uniqueNick);
+        p->infoCache->uniqueNick = 0;
+        GsUtil_Free(p->infoCache->email);
+        p->infoCache->email = 0;
+        GsUtil_Free(p->infoCache->firstName);
+        p->infoCache->firstName = 0;
+        GsUtil_Free(p->infoCache->lastName);
+        p->infoCache->lastName = 0;
+        GsUtil_Free(p->infoCache->homepage);
+        p->infoCache->homepage = 0;
         GsUtil_Free(p->infoCache->aimName);
         p->infoCache->aimName = 0;
         GsUtil_Free(p->infoCache);

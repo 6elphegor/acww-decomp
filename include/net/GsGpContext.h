@@ -1,13 +1,16 @@
-#ifndef NET_UNK_OV065_0227C538_CTX_H
-#define NET_UNK_OV065_0227C538_CTX_H
+#ifndef NET_GSGPCONTEXT_H
+#define NET_GSGPCONTEXT_H
 
 #include "types.h"
 #include "net/Unk_ov065_0227c538_Node.h"
+#include "net/GsGpPeer.h"
+#include "net/GsGpCallbackPair.h"
 
-// GameSpy presence (GP) connection context. Initialised in src/ov065/unk_ov065_0227c6f0.cpp; also used by
+// GameSpy Presence connection (cf. GameSpy GP SDK gpi.h GPIConnection, older TCP-peer version). Initialised in
+// src/ov065/unk_ov065_0227c6f0.cpp (gpiInitialize); also used by
 // unk_ov065_0227bd20.cpp, unk_ov065_0227cd34.cpp (namespaces Nc, Nd), unk_ov065_0227f2a4.cpp, unk_ov065_0227e160.cpp.
 
-struct Unk_ov065_0227c538_Ctx {
+struct GsGpContext {
     /* 0x000 */ u8 errorString;
     /* 0x001 */ u8 pad_001[0xff];
     /* 0x100 */ s32 infoCaching;
@@ -22,7 +25,7 @@ struct Unk_ov065_0227c538_Ctx {
     /* 0x198 */ s32 sessKey;
     /* 0x19c */ s32 userId;
     /* 0x1a0 */ s32 profileId;
-    /* 0x1a4 */ Unk_ov065_0227c538_Pair callbacks[6];
+    /* 0x1a4 */ GsGpCallbackPair callbacks[6];
     /* 0x1d4 */ s32 cmSocket;
     /* 0x1d8 */ s32 connectState;
     /* 0x1dc */ char *recvBuffer;
@@ -46,12 +49,12 @@ struct Unk_ov065_0227c538_Ctx {
     /* 0x319 */ u8 pad_319[0xff];
     /* 0x418 */ s32 errorCode;
     /* 0x41c */ s32 fatalError;
-    /* 0x420 */ s32 unk_420;
+    /* 0x420 */ s32 diskCache;
     /* 0x424 */ Unk_ov065_0227c538_Node *operationList;
     /* 0x428 */ void *profileTable;
-    /* 0x42c */ s32 unk_42c;
+    /* 0x42c */ s32 numProfiles;
     /* 0x430 */ s32 numBuddies;
-    /* 0x434 */ s32 peerList;
+    /* 0x434 */ GsGpPeer *peerList;
     /* 0x438 */ s32 callbackList;
     /* 0x43c */ s32 callbackListTail;
     /* 0x440 */ char *profileUpdateBuffer;

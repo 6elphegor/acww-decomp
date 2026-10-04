@@ -2,8 +2,8 @@
 
 #include "types.h"
 #include "net/GsArray.h"
-#include "net/Unk_ov065_02282f90_Conn.h"
-#include "net/Unk_ov065_022831c0_Obj.h"
+#include "net/Unk_ov065_02282f90_Ctx.h"
+#include "net/Unk_ov065_022831c0_Host.h"
 #include "net/Unk_ov065_022833b4_Pair.h"
 #include "net/GsPersist.h"
 #include "net/GsTransport.h"

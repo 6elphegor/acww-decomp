@@ -6,6 +6,8 @@
 #include "net/DwcControl.h"
 #include "net/GsGpBuddyStatus.h"
 #include "net/DwcConnInfo.h"
+#include "net/GsGpInfoCache.h"
+#include "net/GsGpCallbackArgs.h"
 
 typedef long long s64;
 
@@ -267,12 +269,12 @@ BOOL DwcCore_HasError(void);
 void DwcCore_ClearError(void);
 s32 DwcCore_GetLastError(s32 *out);
 BOOL DwcLogin_IsLoggedIn(void);
-void DwcLogin_OnGpProfileInfo(void *a0, GsGpInfoResponse *x);
+void DwcLogin_OnGpProfileInfo(void *a0, GsGpGetInfoResponse *x);
 void DwcLogin_PollNasAuth(void);
 void DwcLogin_StartNasAuth(DwcNasLoginCallback cb, u32 arg);
 void DwcLogin_GpConnect(const char *a, const char *b, void *c, s32 d);
 void DwcLogin_OnNasAuthDone(const char *a, const char *b);
-void DwcLogin_OnGpConnected(void *a0, GsGpInfoResponse *x);
+void DwcLogin_OnGpConnected(void *a0, GsGpConnectResponse *x);
 void DwcLogin_ResetState(void);
 void DwcLogin_Shutdown(void);
 void DwcLogin_Fail(s32 a, s32 b);
