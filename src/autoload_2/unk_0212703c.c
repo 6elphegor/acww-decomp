@@ -28,14 +28,14 @@ extern s32 data_02200274;
 extern s32 data_02200148;
 extern u32 data_0220014c;
 extern void (*data_02200144)(void);
-extern void func_021352b8(void);
-extern void func_02129dcc(u32);
+extern void __destroy_global_chain(void);
+extern void raise(u32);
 extern void (*data_02200150[])(void);
 extern void (*data_02200140)(void);
 extern BOOL OS_TryLockMutex(void *);
 extern void OS_LockMutex(void *);
 extern void OS_UnlockMutex(void *);
-extern void func_02133ae0(void);
+extern void _ExitProcess(void);
 
 extern void CpuSet(void *src, void *dst, u32 mode);
 extern void WaitByLoop(u32);
@@ -104,7 +104,7 @@ extern void _f2d(u32);
 extern void __prep_buffer(FILE *);
 extern void func_02127cb0(u8 *, u32 *);
 extern void func_02127cb4(u8 *, u32 *);
-extern s32 func_0212c11c(FILE *, s32);
+extern s32 fwide(FILE *, s32);
 extern void *memcpy(void *, const void *, u32);
 extern u32 func_0213335c(u32, u32);
 extern s32 __flush_line_buffered_output_files(void);
@@ -155,7 +155,7 @@ u32 func_02127cb8(void *ptr, u32 memb_size, u32 num_memb, FILE *file) {
     s32 ioresult;
     u32 always_buffer;
 
-    if (func_0212c11c(file, 0) == 0) func_0212c11c(file, -1);
+    if (fwide(file, 0) == 0) fwide(file, -1);
     bytes_to_go = memb_size * num_memb;
     if (bytes_to_go == 0 || file->error != 0 || file->mode.file_kind == 0) return 0;
 
@@ -188,7 +188,7 @@ u32 func_02127cb8(void *ptr, u32 memb_size, u32 num_memb, FILE *file) {
     bytes_read = 0;
     if (bytes_to_go != 0 && file->state.io_state >= 3) {
         do {
-            if (func_0212c11c(file, 0) == 1) {
+            if (fwide(file, 0) == 1) {
                 bytes_read += 2;
                 *(u16 *)read_ptr = file->ungetc_wide_buffer[file->state.io_state - 3];
                 bytes_to_go -= 2;
@@ -345,7 +345,7 @@ void nan(void) {
 
 // MSL abort-style exit path
 void abort(void) {
-    func_02129dcc(1);
+    raise(1);
     data_0220014c = 1;
     func_021279a0(1);
 }
@@ -353,7 +353,7 @@ void abort(void) {
 // MSL exit(status)
 void func_021279a0(s32 status) {
     if (data_0220014c == 0) {
-        func_021352b8();
+        __destroy_global_chain();
         if (data_02200144 != NULL) {
             data_02200144();
             data_02200144 = NULL;
@@ -385,7 +385,7 @@ void __exit(s32 status) {
         data_02200140 = NULL;
     }
     fflush(0);
-    func_02133ae0();
+    _ExitProcess();
 }
 
 // strcpy
@@ -697,16 +697,16 @@ void CTRDGi_RestoreAccessCycle(Cycle *p) {
 extern u8 data_0220034c[0x100], data_0220044c[0x100], data_0220054c[0x100]; // their 256-byte buffers (bss, defined below)
 // the console procedures (C++ runtime area); in this FILE layout they sit in the read/write/close slots, one word after
 // position_proc
-int func_02133d44();
-int func_02133d0c(u32 handle, u8 *buf, u32 *count, void *ref);
-int func_02133d04(u32 handle, u8 *buf, u32 *count, void *ref);
+int __read_console();
+int __write_console(u32 handle, u8 *buf, u32 *count, void *ref);
+int __close_console(u32 handle, u8 *buf, u32 *count, void *ref);
 // autoload_3 .bss 0x0220034c-0x0220064c: the console streams' buffers (defined before __files: this order gives the
 // original one after mwcc's size sort)
 u8 data_0220054c[0x100];
 u8 data_0220044c[0x100];
 u8 data_0220034c[0x100];
 FILE data_0213c238[3] = {
-    {0, {0, 1, 1, 2, 0, 0}, {0, 0}, 0, 0, {0}, {0}, {0}, 0, data_0220054c, 0x100, data_0220054c, 0, 0, 0, 0, 0, func_02133d44, func_02133d0c, func_02133d04, 0},
-    {1, {0, 2, 1, 2, 0, 0}, {0, 0}, 0, 0, {0}, {0}, {0}, 0, data_0220044c, 0x100, data_0220044c, 0, 0, 0, 0, 0, func_02133d44, func_02133d0c, func_02133d04, 0},
-    {2, {0, 2, 0, 2, 0, 0}, {0, 0}, 0, 0, {0}, {0}, {0}, 0, data_0220034c, 0x100, data_0220034c, 0, 0, 0, 0, 0, func_02133d44, func_02133d0c, func_02133d04, 0},
+    {0, {0, 1, 1, 2, 0, 0}, {0, 0}, 0, 0, {0}, {0}, {0}, 0, data_0220054c, 0x100, data_0220054c, 0, 0, 0, 0, 0, __read_console, __write_console, __close_console, 0},
+    {1, {0, 2, 1, 2, 0, 0}, {0, 0}, 0, 0, {0}, {0}, {0}, 0, data_0220044c, 0x100, data_0220044c, 0, 0, 0, 0, 0, __read_console, __write_console, __close_console, 0},
+    {2, {0, 2, 0, 2, 0, 0}, {0, 0}, 0, 0, {0}, {0}, {0}, 0, data_0220034c, 0x100, data_0220034c, 0, 0, 0, 0, 0, __read_console, __write_console, __close_console, 0},
 };

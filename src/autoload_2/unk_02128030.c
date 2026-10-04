@@ -63,14 +63,14 @@ int func_02127cb8(const void *, u32, u32, FILE *);
 int func_02127ad0(void);
 int __flush_buffer(FILE *, int);
 s64 frexp(s64 a, s32 *out);
-s64 func_0212f010(s64 a, s32 v);
-u32 func_0212a438(const char *);
-void func_02128a20(void *dst, int val, u32 n);
+s64 ldexp(s64 a, s32 v);
+u32 strlen(const char *);
+void __fill_mem(void *dst, int val, u32 n);
 int _fseek(FILE *, u32, int);
-int func_02128318(FILE *, int, int);
+int fseek(FILE *, int, int);
 int fflush(FILE *);
 int _ftell(FILE *);
-int func_02128908(u16 *, const char *, u32);
+int mbtowc(u16 *, const char *, u32);
 
 // memcpy
 void *memcpy(void *dst, const void *src, u32 n) {
@@ -97,8 +97,8 @@ void *memmove(void *dst, const void *src, u32 n) {
 }
 
 // memset
-void *func_0212899c(void *dst, int val, u32 n) {
-    func_02128a20(dst, val, n);
+void *memset(void *dst, int val, u32 n) {
+    __fill_mem(dst, val, n);
     return dst;
 }
 
@@ -123,12 +123,12 @@ int memcmp(const void *src1, const void *src2, u32 n) {
 }
 
 // _mbtowc
-int func_02128908(u16 *pwc, const char *s, u32 n) {
+int mbtowc(u16 *pwc, const char *s, u32 n) {
     return data_0213c350.ctype->mbtowc(pwc, s, n);
 }
 
 // mbtowc (C locale)
-int func_021288d0(u16 *pwc, const char *s, u32 n) {
+int __mbtowc_noconv(u16 *pwc, const char *s, u32 n) {
     if (s == 0) return 0;
     if (n == 0) return -1;
     if (pwc != 0) *pwc = *(u8 *)s;
@@ -137,21 +137,21 @@ int func_021288d0(u16 *pwc, const char *s, u32 n) {
 }
 
 // wctomb (C locale)
-int func_021288bc(char *s, u16 wc) {
+int __wctomb_noconv(char *s, u16 wc) {
     if (s == 0) return 0;
     *s = (char)wc;
     return 1;
 }
 
 // mbstowcs
-int func_02128824(u16 *pwcs, const char *s, u32 n) {
+int mbstowcs(u16 *pwcs, const char *s, u32 n) {
     int i;
-    int len = func_0212a438(s);
+    int len = strlen(s);
     int r;
     if (pwcs != 0) {
         for (i = 0; i < n; i++) {
             if (*(u8 *)s != 0) {
-                r = func_02128908(pwcs++, s, len);
+                r = mbtowc(pwcs++, s, len);
                 if (r > 0) {
                     s += r;
                     len -= r;
@@ -169,11 +169,11 @@ int func_02128824(u16 *pwcs, const char *s, u32 n) {
     return i;
 }
 
-s64 func_021287f4(s64 a, s32 delta) {
+s64 scalbn(s64 a, s32 delta) {
     s32 v;
     s64 r = frexp(a, &v);
     v += delta;
-    return func_0212f010(r, v);
+    return ldexp(r, v);
 }
 
 // _ftell
@@ -192,7 +192,7 @@ int _ftell(FILE *file) {
 }
 
 // ftell
-int func_02128650(FILE *file) {
+int ftell(FILE *file) {
     int idx;
     OSMutex *m;
     int r;
@@ -260,7 +260,7 @@ int _fseek(FILE *file, u32 offset, int whence) {
 }
 
 // fseek (locking wrapper)
-int func_02128318(FILE *file, int offset, int whence) {
+int fseek(FILE *file, int offset, int whence) {
     int idx;
     OSMutex *m;
     int r;
@@ -289,12 +289,12 @@ int func_02128318(FILE *file, int offset, int whence) {
 // rewind
 void rewind(FILE *file) {
     file->error = 0;
-    func_02128318(file, 0, 0);
+    fseek(file, 0, 0);
     file->error = 0;
 }
 
 // fclose core (__close_file)
-int func_02128250(FILE *file) {
+int fclose(FILE *file) {
     int r, r2;
     if (file == 0) return -1;
     if (file->mode.file_kind == 0) return 0;
@@ -328,7 +328,7 @@ int fflush(FILE *file) {
     return 0;
 }
 
-u32 func_02128030(const void *ptr, u32 size, u32 n, FILE *file) {
+u32 fread(const void *ptr, u32 size, u32 n, FILE *file) {
     int idx;
     OSMutex *m;
     u32 r;
@@ -359,8 +359,8 @@ extern LocaleCase data_0213c378;
 extern LocaleCtype data_0213c33c;
 extern u16 data_0213c400[58];
 extern char *data_0213c388[8];
-int func_021288d0(u16 *pwc, const char *s, u32 n);
-int func_021288bc(char *s, u16 wc);
+int __mbtowc_noconv(u16 *pwc, const char *s, u32 n);
+int __wctomb_noconv(char *s, u16 wc);
 u16 data_0213c400[58] = {
     2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32,
     34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 0, 0, 0, 0, 0, 0,
@@ -368,7 +368,7 @@ u16 data_0213c400[58] = {
     33, 35, 37, 39, 41, 43, 45, 47, 49, 51,
 };
 LocaleCase data_0213c378 = {0x41, 0x3a, 0, data_0213c400};
-LocaleCtype data_0213c33c = {func_021288d0, func_021288bc};
+LocaleCtype data_0213c33c = {__mbtowc_noconv, __wctomb_noconv};
 LocaleCmpt data_0213c350 = {data_0213c388, &data_0213c378, &data_0213c33c};
 char *data_0213c388[8] = {
     "AM|PM",

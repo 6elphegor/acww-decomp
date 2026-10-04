@@ -156,7 +156,7 @@ s32 func_0202d948(void *self);
 s32 func_0202dab0(void *self);
 s32 func_0202d928(void *self);
 void NpcFootstepFx_enableFootsteps(void *p);
-void func_01ffd070(VecFx32 *out, void *a, void *b);
+void Vec_Add(VecFx32 *out, void *a, void *b);
 void NpcActor_setTalkRequest(void *self, void *p);
 void *NpcActor_getPlayerActor(void *self, s32 n);
 void ActorTalkRequest_setTalkPlayer(void *p, void *q);
@@ -258,7 +258,7 @@ BOOL BirthdayHostVillager::preCreate() {
     u32 i;
     for (i = 0; i < 6; i++) {
         VecFx32 t;
-        func_01ffd070(&t, &position, &vs[i]);
+        Vec_Add(&t, &position, &vs[i]);
         if (!FtrMgr_GetSurfaceHeightAtPos(&t)) {
             position.x = t.x;
             position.y = t.y;

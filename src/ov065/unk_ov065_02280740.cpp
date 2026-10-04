@@ -41,7 +41,7 @@ s32 GsSock_Close(s32);
 void GsUtil_Free(void *);
 void *GsUtil_Alloc(u32);
 s32 GsGp_QueueCallback(void *, GsGpCallbackPair, void *, void *, s32);
-s32 func_0212899c(void *, s32, u32);
+s32 memset(void *, s32, u32);
 s32 STD_GetStringLength(const char *);
 s32 OS_SPrintf(char *, const char *, ...);
 s32 GsGpPeer_SendString(void *, void *, const char *);
@@ -129,7 +129,7 @@ s32 GsGp_CallFailedCallback(void *h, GsGpOperation *n) {
                     GsGp_SetErrorString(h, "Out of memory.");
                     return 1;
                 }
-                func_0212899c(m, 0, 0x20);
+                memset(m, 0, 0x20);
                 m->result = n->result;
                 if (c->errorCode == 0x201) {
                     m->profileId = c->profileId;
@@ -168,7 +168,7 @@ s32 GsGp_CallFailedCallback(void *h, GsGpOperation *n) {
                     GsGp_SetErrorString(h, "Out of memory.");
                     return 1;
                 }
-                func_0212899c(m, 0, 0x204);
+                memset(m, 0, 0x204);
                 *(s32 *)m = n->result;
                 r = GsGp_QueueCallback(h, w.p, m, n, 0);
                 if (r == 0) {

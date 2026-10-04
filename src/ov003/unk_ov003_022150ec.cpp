@@ -71,7 +71,7 @@ void func_02094030(void *p);
 void func_02094018(void *p);
 void Npc_GetName(void *p, void *q);
 void *Heap_Alloc(u32 heap, u32 size);
-void func_0212899c(void *p, s32 v, u32 n);
+void memset(void *p, s32 v, u32 n);
 }
 
 
@@ -100,7 +100,7 @@ CountdownDigit::~CountdownDigit() {}
 
 void *CountdownDigit::operator new(unsigned long size) {
     void *p = Heap_Alloc(gFieldStructureHeap, size);
-    func_0212899c(p, 0, size);
+    memset(p, 0, size);
     return p;
 }
 

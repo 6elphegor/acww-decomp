@@ -44,12 +44,12 @@ void func_021279a0(int);
 const char *parse_format(const char *format_string, scan_format *format);
 u32 __strtoul(int base, int max_width, ReadProc read, void *arg, int *num_chars, int *negative, int *overflow); // __strtoul
 u64 __strtoull(int base, int max_width, ReadProc read, void *arg, int *num_chars, int *negative, int *overflow); // __strtoull
-double func_0212a454(int max_width, ReadProc read, void *arg, int *num_chars, int *overflow);                       // __strtod
+double __strtold(int max_width, ReadProc read, void *arg, int *num_chars, int *overflow);                       // __strtod
 float _d2f(double);
-int func_02128908(u16 *, const char *, u32);
-int func_02128dac(ReadProc read, void *arg, const char *format_str, va_list ap);
-int func_02128d34(void *ctx, int ch, int action);
-int func_02128cd4(const char *s, const char *fmt, va_list ap);
+int mbtowc(u16 *, const char *, u32);
+int __sformatter(ReadProc read, void *arg, const char *format_str, va_list ap);
+int __StringRead(void *ctx, int ch, int action);
+int vsscanf(const char *s, const char *fmt, va_list ap);
 
 static inline int isspace_(int c) {
     return (c < 0 || c >= 128) ? 0 : (data_0213a510[c] & 0x100);
@@ -58,7 +58,7 @@ static inline int isspace_(int c) {
 #define IS_NUM(c) (((c) < 0 || (c) >= 128) ? 0 : (data_0213a510[c] & 8))
 
 // strcspn
-u32 strspn(const char *str, const char *set) {
+u32 strcspn(const char *str, const char *set) {
     u8 tset[32] = {0};
     const u8 *p;
     u32 c;
@@ -79,7 +79,7 @@ u32 strspn(const char *str, const char *set) {
 }
 
 // strstr
-char *func_02129f1c(const char *str, const char *pat) {
+char *strstr(const char *str, const char *pat) {
     const u8 *s1 = (const u8 *)str;
     const u8 *p1 = (const u8 *)pat;
     u32 firstc, c1, c2;
@@ -97,7 +97,7 @@ char *func_02129f1c(const char *str, const char *pat) {
 }
 
 // raise
-int func_02129dcc(int sig) {
+int raise(int sig) {
     void (*handler)(int);
     OSThread *t;
     if (sig < 1 || sig > 7) return -1;
@@ -280,7 +280,7 @@ const char *parse_format(const char *format_string, scan_format *format) {
 }
 
 // __sformatter
-int func_02128dac(ReadProc read, void *arg, const char *format_str, va_list ap) {
+int __sformatter(ReadProc read, void *arg, const char *format_str, va_list ap) {
     s32 s;
     s64 sll;
     int items_assigned, conversions;
@@ -440,7 +440,7 @@ int func_02128dac(ReadProc read, void *arg, const char *format_str, va_list ap) 
         case 'F':
         case 'g':
         case 'G': {
-            double ld = func_0212a454(format.field_width, read, arg, &num_chars, &overflow);
+            double ld = __strtold(format.field_width, read, arg, &num_chars, &overflow);
             if (!num_chars) goto end;
             chars_read += num_chars;
             if (arg_ptr) {
@@ -469,7 +469,7 @@ int func_02128dac(ReadProc read, void *arg, const char *format_str, va_list ap) 
                     if (format.argument_options != 10) {
                         *arg_ptr++ = c;
                     } else {
-                        func_02128908((u16 *)arg_ptr, (const char *)&c, 1);
+                        mbtowc((u16 *)arg_ptr, (const char *)&c, 1);
                         arg_ptr++;
                     }
                     num_chars++;
@@ -514,7 +514,7 @@ int func_02128dac(ReadProc read, void *arg, const char *format_str, va_list ap) 
                     if (format.argument_options != 10) {
                         *arg_ptr++ = c;
                     } else {
-                        func_02128908((u16 *)arg_ptr, (const char *)&c, 1);
+                        mbtowc((u16 *)arg_ptr, (const char *)&c, 1);
                         arg_ptr += 2;
                     }
                     num_chars++;
@@ -581,7 +581,7 @@ end:
 }
 
 // __StringRead
-int func_02128d34(void *ctx, int ch, int action) {
+int __StringRead(void *ctx, int ch, int action) {
     struct { const u8 *cur; int flag; } *c = ctx;
     switch (action) {
     case 0: {
@@ -607,19 +607,19 @@ int func_02128d34(void *ctx, int ch, int action) {
 }
 
 // vsscanf
-int func_02128cd4(const char *s, const char *fmt, va_list ap) {
+int vsscanf(const char *s, const char *fmt, va_list ap) {
     struct { const char *cur; int flag; } ctx;
     ctx.cur = s;
     if (s == 0 || *(u8 *)s == 0) return -1;
     ctx.flag = 0;
-    return func_02128dac(func_02128d34, &ctx, fmt, ap);
+    return __sformatter(__StringRead, &ctx, fmt, ap);
 }
 
 // sscanf
-int func_02128ca4(const char *s, const char *fmt, ...) {
+int sscanf(const char *s, const char *fmt, ...) {
     va_list ap;
     va_start(ap, fmt);
-    return func_02128cd4(s, fmt, ap);
+    return vsscanf(s, fmt, ap);
 }
 
 // rand

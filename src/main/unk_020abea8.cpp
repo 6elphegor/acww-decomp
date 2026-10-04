@@ -32,7 +32,7 @@ s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 void NNS_G3dGeFlushBuffer(void);
 void G3_LoadMtx43(void *p);
-void func_01ffd070(VecFx32 *out, VecFx32 *a, VecFx32 *b);
+void Vec_Add(VecFx32 *out, VecFx32 *a, VecFx32 *b);
 u32 _s32_div_f(u32 a, u32 b);
 void *Heap_Alloc(s32 heap, u32 size);
 void Heap_Free(s32 heap, void *p);
@@ -260,7 +260,7 @@ extern "C" void ObjShadow_DrawTree(VecFx32 *p, u32 n) {
     if (n >= 2) {
         static Vec3Z v;
         VecFx32 out;
-        func_01ffd070(&out, p, (VecFx32 *)&v);
+        Vec_Add(&out, p, (VecFx32 *)&v);
         if (n == 2) {
             sTreeShadowStage2.draw(&out);
         } else if (n == 3) {
@@ -281,7 +281,7 @@ extern "C" void ObjShadow_DrawSign(VecFx32 *p) {
     local.x = 0x166;
     local.y = 0;
     local.z = 0xc80;
-    func_01ffd070(&out, p, &local);
+    Vec_Add(&out, p, &local);
     sSignShadow.draw(&out);
 }
 

@@ -159,7 +159,7 @@ extern const FtrFootprintShape *sFtrFootprintTables[3];
 extern s32 sSpotReserveResult;
 
 extern "C" {
-long long func_01ffd028(void *a, void *b);
+long long Vec_DistSq(void *a, void *b);
 }
 
 SpotReservation::SpotReservation() { clear(); }
@@ -205,7 +205,7 @@ BOOL SpotReservationTable::isFree(s32 idx, u32 tag, VecFx32 *p) {
         for (u32 i = 0; i < 4; i++) {
             SpotReservation *e = &slots[i];
             if ((s32)i != idx && e->active != 0 && tag == e->sceneId) {
-                if (func_01ffd028(&e->posX, p) < 0x2400) return FALSE;
+                if (Vec_DistSq(&e->posX, p) < 0x2400) return FALSE;
             }
         }
         return TRUE;

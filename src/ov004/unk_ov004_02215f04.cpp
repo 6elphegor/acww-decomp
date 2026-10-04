@@ -208,7 +208,7 @@ void VillagerTalk_begin(void *, void *, u32);
 s32 func_0202d948(void *self);
 s32 func_0202dab0(void *self);
 s32 func_0202d928(void *self);
-void func_01ffd070(VecFx32 *out, void *a, void *b);
+void Vec_Add(VecFx32 *out, void *a, void *b);
 void NpcActor_setTalkRequest(void *self, void *p);
 void *func_0201bc4c(void *self, s32 n);
 void func_02015ab0(void *p, void *q);

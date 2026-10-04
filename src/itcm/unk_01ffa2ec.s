@@ -31,10 +31,10 @@ OS_DisableInterrupts_IrqAndFiq:
 	bx lr
 
 ; OS_EnableInterrupts
-	.global func_01ffa314
-	.type func_01ffa314, @function
-	.size func_01ffa314, 0x14
-func_01ffa314:
+	.global OS_EnableInterrupts
+	.type OS_EnableInterrupts, @function
+	.size OS_EnableInterrupts, 0x14
+OS_EnableInterrupts:
 	mrs r0, cpsr
 	bic r1, r0, #0x80
 	msr cpsr_c, r1

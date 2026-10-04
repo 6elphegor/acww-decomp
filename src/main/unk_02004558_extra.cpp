@@ -157,7 +157,7 @@ void SndMgr_init(void *a, void *b, u32 c, void *d, s32 e);
 void Heap_Free(void *heap, void *p);
 void *Heap_AllocAligned(void *heap, unsigned long size, s32 align);
 s32 PlayerActor_GetObjectAlign(void);
-void func_0212899c(void *p, s32 v, unsigned long n);
+void memset(void *p, s32 v, unsigned long n);
 BOOL _ZN11PlayerActor8doCreateEv(void *self);
 void _ZN11PlayerActor9doExecuteEv(void *self);
 void Effect_End(s32 v);

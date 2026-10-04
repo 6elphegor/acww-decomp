@@ -196,7 +196,7 @@ void MenuCtrl_ReturnChosenItems(s32);
 s32 Random_GlobalBelow(s32 n);
 void ActorTalkRequest_setSubSceneKind(void *self, u32 a, u32 b);
 BOOL GameStart_IsActive();
-u32 func_0212a438(const char *s);
+u32 strlen(const char *s);
 s32 strncmp(void *a, const char *b, u32 n);
 BOOL ParcelErrand_IsFor(void *a, void *b);
 void ActorTalkRequest_setItemNameSlot(void *self, void *a, s32 b, s32 c);
@@ -1211,7 +1211,7 @@ void SpNpcMabelTalk::onMessageEnd(u32 a) {
             *(SpNpcMabelTalk::Fn *)data_ov049_0225bae8,
         };
         char *s = sSpNpcMabelMsgKeys[0];
-        u32 n = func_0212a438(s);
+        u32 n = strlen(s);
         BOOL r;
         if (strncmp((u8 *)this + 4, s, n) != 0) {
             r = TRUE;
@@ -1387,7 +1387,7 @@ void SpNpcMabelTalk::onChoice(u32 a) {
             *(SpNpcMabelTalk::Fn *)data_ov049_0225baf0,
         };
         char *s = sSpNpcMabelMsgKeys[0];
-        u32 n = func_0212a438(s);
+        u32 n = strlen(s);
         BOOL r;
         if (strncmp((u8 *)this + 4, s, n) != 0) {
             r = TRUE;

@@ -51,12 +51,12 @@ extern char sRootCaRsaSecureServer[];
 extern u32 gOwnIp;
 extern Unk_ov065_0226eacc_Tbl data_021fcc2c;
 
-s32 func_0212a438(const char *s);
-char *func_02129f1c(const char *hay, const char *needle);
+s32 strlen(const char *s);
+char *strstr(const char *hay, const char *needle);
 void MI_CpuFill8(void *dst, u32 v, u32 n);
 void MI_CpuCopy8(const void *src, void *dst, u32 n);
 void memmove(void *dst, void *src, u32 n);
-s32 func_0212b770(const char *s);
+s32 atol(const char *s);
 s32 OS_SNPrintf(char *buf, s32 size, const char *fmt, ...);
 void OS_Sleep(s32 ms);
 void OS_GetLowEntropyData(void *p);
@@ -70,8 +70,8 @@ s32 OS_WakeupThreadDirect(void *t);
 s32 OS_CreateThread(void *t, s32 (*fn)(void *), void *arg, void *stack, u32 size, u32 prio);
 u64 OS_GetTick(void);
 s32 strcmp(const char *a, const char *b);
-char *func_0212a360(char *dst, const char *src);
-char *func_0212a2ec(char *dst, const char *src, u32 n);
+char *strcpy(char *dst, const char *src);
+char *strncpy(char *dst, const char *src, u32 n);
 s32 strncmp(const char *a, const char *b, u32 n);
 
 // other TUs
@@ -152,7 +152,7 @@ s32 DwcHttp_FinishHeaders(DwcHttp *c) {
     if (DwcHttp_AddHeader(c, "Connection", "close") != 0) {
         return 1;
     }
-    n = func_0212a438(func_02129f1c((char *)c->requestBuffer.base, "\r\n\r\n") + 4);
+    n = strlen(strstr((char *)c->requestBuffer.base, "\r\n\r\n") + 4);
     if (n != 0) {
         OS_SNPrintf(buf, 7, "%d", n);
         if (DwcHttp_AddHeader(c, "Content-Length", buf) != 0) {
@@ -279,7 +279,7 @@ void DwcHttp_ThreadMain(DwcHttp *c) {
     }
     c->requestBuffer.cur = c->requestBuffer.base;
     p = (char *)c->requestBuffer.base;
-    c->requestBuffer.limit = (u8 *)p + func_0212a438(p);
+    c->requestBuffer.limit = (u8 *)p + strlen(p);
     if (c->requestBuffer.cur < c->requestBuffer.limit) {
         do {
             if (gOwnIp == 0) {
@@ -362,16 +362,16 @@ void DwcHttp_ThreadMain(DwcHttp *c) {
                 *rb->cur = 0;
                 if (hdr != 1) {
                     p = (char *)rb->base;
-                    if (func_02129f1c(p, "\r\n\r\n") != NULL) {
+                    if (strstr(p, "\r\n\r\n") != NULL) {
                         hdr = 1;
-                        c->bodyStart = func_02129f1c(p, "\r\n\r\n") + 4;
-                        q = func_02129f1c((char *)rb->base, "Content-Length: ");
+                        c->bodyStart = strstr(p, "\r\n\r\n") + 4;
+                        q = strstr((char *)rb->base, "Content-Length: ");
                         if (q != NULL) {
-                            q = q + func_0212a438("Content-Length: ");
-                            q2 = func_02129f1c(q, "\r\n");
+                            q = q + strlen("Content-Length: ");
+                            q2 = strstr(q, "\r\n");
                             ch = q2[0];
                             q2[0] = 0;
-                            c->contentLength = func_0212b770(q);
+                            c->contentLength = atol(q);
                             q2[0] = ch;
                         }
                     }
@@ -450,8 +450,8 @@ s32 DwcHttp_BuildRequestLine(DwcHttp *c) {
     DwcHttpBuffer *b = &c->requestBuffer;
     const char *fmt = c->method == 0 ? "POST /%s HTTP/1.0\r\nContent-type: application/x-www-form-urlencoded\r\nHost: %s\r\n\r\n" : "GET /%s HTTP/1.0\r\nHost: %s\r\n\r\n";
     s32 n, r, sz;
-    n = func_0212a438(c->hostName);
-    n += func_0212a438(fmt) - 4 + func_0212a438(c->path);
+    n = strlen(c->hostName);
+    n += strlen(fmt) - 4 + strlen(c->path);
     sz = n + 0x400;
     if (DwcHttp_AllocBuffer(c, &c->requestBuffer, sz) != 1) {
         return 1;
@@ -466,17 +466,17 @@ s32 DwcHttp_AddHeader(DwcHttp *c, const char *a1, const char *a2) {
     DwcHttpBuffer *b = &c->requestBuffer;
     char *p;
     s8 saved;
-    n = func_0212a438(a2);
-    n += func_0212a438("%s: %s\r\n") - 4 + func_0212a438(a1);
+    n = strlen(a2);
+    n += strlen("%s: %s\r\n") - 4 + strlen(a1);
     avail = b->limit - b->cur;
     if (n + 1 > avail) {
         if (DwcHttp_GrowBuffer(c, b, n - avail + 1) == 0) {
             return 1;
         }
     }
-    p = func_02129f1c((char *)b->base, "\r\n\r\n") + 2;
+    p = strstr((char *)b->base, "\r\n\r\n") + 2;
     saved = p[0];
-    memmove(p + n, p, func_0212a438(p) + 1);
+    memmove(p + n, p, strlen(p) + 1);
     s32 r = OS_SNPrintf(p, n + 1, "%s: %s\r\n", a1, a2);
     p[r] = saved;
     b->cur = b->cur + n;
@@ -489,8 +489,8 @@ s32 DwcHttp_AddFormParam(DwcHttp *c, const char *a1, void *a2, s32 a3) {
     s32 r7, len, tot, avail, r;
     c->numFormParams++;
     r7 = NasBase64_Encode(a2, a3, NULL, 0);
-    len = func_0212a438(fmt);
-    tot = r7 + (len - 2 + func_0212a438(a1));
+    len = strlen(fmt);
+    tot = r7 + (len - 2 + strlen(a1));
     avail = b->limit - b->cur;
     if (tot > avail) {
         if (DwcHttp_GrowBuffer(c, b, tot - avail + 1) == 0) {
@@ -511,7 +511,7 @@ s32 DwcHttp_AddFormParam(DwcHttp *c, const char *a1, void *a2, s32 a3) {
 s32 DwcHttp_AppendBody(DwcHttp *c, const char *s) {
     s32 n, avail, r;
     DwcHttpBuffer *b = &c->requestBuffer;
-    n = func_0212a438(s);
+    n = strlen(s);
     avail = b->limit - b->cur;
     if (n > avail) {
         if (DwcHttp_GrowBuffer(c, b, n - avail + 1) == 0) {
@@ -579,26 +579,26 @@ s32 DwcHttp_GrowBuffer(DwcHttp *c, DwcHttpBuffer *b, s32 n) {
 s32 DwcHttp_ParseUrl(DwcHttp *c, char *s) {
     char *q;
     u32 n;
-    if ((u32)func_0212a438(s) >= 0x80) {
+    if ((u32)strlen(s) >= 0x80) {
         return 0;
     }
-    func_0212a2ec(c->urlBuffer, s, 0x80);
-    n = func_0212a438(s);
-    if (n != (u32)func_0212a438(c->urlBuffer)) {
+    strncpy(c->urlBuffer, s, 0x80);
+    n = strlen(s);
+    if (n != (u32)strlen(c->urlBuffer)) {
         return 0;
     }
-    if (func_02129f1c(c->urlBuffer, "http://")) {
+    if (strstr(c->urlBuffer, "http://")) {
         c->hostName = c->urlBuffer + 7;
         c->isHttps = 0;
     } else {
-        q = func_02129f1c(c->urlBuffer, "https://");
+        q = strstr(c->urlBuffer, "https://");
         if (q == NULL) {
             return 0;
         }
         c->hostName = q + 8;
         c->isHttps = 1;
     }
-    q = func_02129f1c(c->hostName, "/");
+    q = strstr(c->hostName, "/");
     if (q == NULL) {
         c->path = NULL;
     } else {
@@ -630,12 +630,12 @@ s32 DwcHttp_ParseResponse(DwcHttpField *tbl, s32 n, s32 flag, char *text) {
     l.capacity = n;
     l.count = 0;
     MI_CpuFill8(tbl, 0, n * 8);
-    p = func_02129f1c(text, "\r\n\r\n");
+    p = strstr(text, "\r\n\r\n");
     if (p == NULL) {
         return 0;
     }
-    end = p + 4 + func_0212a438(p + 4);
-    q = func_02129f1c(text, " ");
+    end = p + 4 + strlen(p + 4);
+    q = strstr(text, " ");
     if (q == NULL) {
         return 0;
     }
@@ -650,20 +650,20 @@ s32 DwcHttp_ParseResponse(DwcHttpField *tbl, s32 n, s32 flag, char *text) {
         }
         return 1;
     }
-    q = func_02129f1c(r + 4, "\r\n");
+    q = strstr(r + 4, "\r\n");
     if (q == NULL) {
         return 0;
     }
     tx = q + 2;
     while (tx[0] != 0xd && tx[1] != 0xa) {
-        q = func_02129f1c(tx, ": ");
+        q = strstr(tx, ": ");
         if (q == NULL) {
             break;
         }
         q[1] = 0;
         q[0] = q[1];
         t = q + 2;
-        q = func_02129f1c(t, "\r\n");
+        q = strstr(t, "\r\n");
         if (q == NULL) {
             break;
         }
@@ -672,19 +672,19 @@ s32 DwcHttp_ParseResponse(DwcHttpField *tbl, s32 n, s32 flag, char *text) {
         if (DwcHttp_AddField(&l, tx, t) != 1) {
             return 0;
         }
-        tx = t + func_0212a438(t) + 2;
+        tx = t + strlen(t) + 2;
     }
     t = p + 4;
     while ((u32)t < (u32)end) {
-        q = func_02129f1c(t, "=");
+        q = strstr(t, "=");
         if (q == NULL) {
             break;
         }
         q[0] = 0;
         tx = q + 1;
-        q = func_02129f1c(tx, "&");
+        q = strstr(tx, "&");
         if (q == NULL) {
-            q = func_02129f1c(tx, "\r\n");
+            q = strstr(tx, "\r\n");
         }
         if (q != NULL) {
             q[0] = 0;
@@ -692,7 +692,7 @@ s32 DwcHttp_ParseResponse(DwcHttpField *tbl, s32 n, s32 flag, char *text) {
         if (DwcHttp_AddField(&l, t, tx) != 1) {
             return 0;
         }
-        t = tx + func_0212a438(tx) + 1;
+        t = tx + strlen(tx) + 1;
     }
     return 1;
 }
@@ -721,7 +721,7 @@ s32 DwcHttp_GetFieldDecoded(DwcHttpField *tbl, s32 n, const char *key, char *dst
     if (s == NULL) {
         return 0;
     }
-    s32 r = NasBase64_Decode(s, func_0212a438(s), dst, size);
+    s32 r = NasBase64_Decode(s, strlen(s), dst, size);
     if (r != -1 && (u32)r < size) {
         dst[r] = 0;
     }
@@ -733,10 +733,10 @@ s32 DwcHttp_GetFieldString(DwcHttpField *tbl, s32 n, const char *key, char *dst,
     if (s == NULL) {
         return 0;
     }
-    if (func_0212a438(s) >= size) {
+    if (strlen(s) >= size) {
         return 0;
     }
-    func_0212a360(dst, s);
+    strcpy(dst, s);
     return 1;
 }
 

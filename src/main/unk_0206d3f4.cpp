@@ -55,7 +55,7 @@ void Gfx2d_LoadScreenFile(char *s, u32 a, u32 b);
 s32 CrashScreen_Run(void);
 void func_02114cd8(s32 a, s32 b);
 u32 OS_DisableInterrupts(void);
-void func_01ffa3c0(void);
+void OS_Halt(void);
 void OS_RestoreInterrupts(u32 v);
 void OS_DisableIrqMask(s32 v);
 void OS_ResetRequestIrqMask(s32 v);

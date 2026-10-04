@@ -10,7 +10,7 @@ void OS_SetIrqMask(u32);
 void OS_ResetRequestIrqMask(s32);
 s32 OS_GetIrqFunction(s32);
 void OS_SetIrqFunction(s32, void *);
-void func_01ffa314(s32);
+void OS_EnableInterrupts(s32);
 void WfcIrq_VBlank();
 void WfcIrq_Restore();
 void WfcIrq_Init();
@@ -31,7 +31,7 @@ void WfcIrq_Init()
     OS_ResetRequestIrqMask(1);
     u16 t = *(volatile u16 *)0x4000208;
     *(volatile u16 *)0x4000208 = 1;
-    func_01ffa314(1);
+    OS_EnableInterrupts(1);
 }
 
 void WfcIrq_Restore()

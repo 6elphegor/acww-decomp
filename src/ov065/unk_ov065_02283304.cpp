@@ -59,14 +59,14 @@ s32 GsArray_Count(void *);
 void GsArray_Free(void *);
 void *GsArray_At(void *, s32);
 void GsArray_DeleteAt(void *, s32);
-char *func_0212a2ec(char *dst, const char *src, u32 n);
-char *func_02129f1c(const char *, const char *);
+char *strncpy(char *dst, const char *src, u32 n);
+char *strstr(const char *, const char *);
 s32 STD_GetStringLength(const char *);
 s32 strncmp(const char *, const char *, u32);
 s32 OS_SPrintf(char *buf, const char *fmt, ...);
-s32 func_02128ca4(const char *, const char *, ...);
-s32 func_0212b770(const char *);
-s32 func_0212899c(void *, s32, u32);
+s32 sscanf(const char *, const char *, ...);
+s32 atol(const char *);
+s32 memset(void *, s32, u32);
 
 void GsGp_SetErrorString(void *, const char *);
 void GsGp_SetError(void *, s32, const char *);
@@ -130,13 +130,13 @@ s32 GsGp_CheckServerError(void *h, const char *str, s32 flag) {
     char buf[16];
     if (strncmp(str, "\\error\\", 7) == 0) {
         if (GsGp_GetValue(str, "\\err\\", buf, 0x10) != 0) {
-            ctx->errorCode = func_0212b770(buf);
+            ctx->errorCode = atol(buf);
         }
         if (GsGp_GetValue(str, "\\errmsg\\", ctx->errorString, 0x100) == 0) {
             ctx->errorString[0] = 0;
         }
         if (flag != 0) {
-            BOOL t = Unk_ov065_02283684_B(func_02129f1c(str, "\\fatal\\"));
+            BOOL t = Unk_ov065_02283684_B(strstr(str, "\\fatal\\"));
             GsGp_CallErrorCallback(h, 4, t ? 1 : 0);
         }
         return 1;
@@ -150,7 +150,7 @@ namespace Na {
 extern "C" {
 s32 GsGp_GetValue(const char *hay, const char *needle, char *out, s32 n) {
     s32 c = *needle;
-    char *p = func_02129f1c(hay, needle);
+    char *p = strstr(hay, needle);
     s32 i;
     s32 ch;
     if (p == NULL) {
@@ -336,7 +336,7 @@ void GsGpPeer_DeclineTransfer(void *h, s32 p1, s32 p2, const char *p3) {
     char buf[0x40];
     s32 v[3];
     if (GsGp_GetValue(p3, "\\xfer\\", buf, 0x40) != 0) {
-        if (func_02128ca4(buf, "%d %u %u", &v[0], &v[1], &v[2]) == 3) {
+        if (sscanf(buf, "%d %u %u", &v[0], &v[1], &v[2]) == 3) {
             GsGpPeer_SendTransferReply(h, v, p1, 2, NULL);
         }
     }

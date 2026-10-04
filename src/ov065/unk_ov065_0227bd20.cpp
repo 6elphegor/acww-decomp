@@ -18,10 +18,10 @@ typedef void (*GsGpCallback)(void *, void *, void *);
 extern "C" {
 s32 strcmp(const char *, const char *);
 s32 strncmp(const char *, const char *, s32);
-s32 strspn(const char *, const char *);
-char *func_0212a120(const char *, s32);
-s32 func_0212b770(const char *);
-void *func_0212899c(void *, s32, s32);
+s32 strcspn(const char *, const char *);
+char *strchr(const char *, s32);
+s32 atol(const char *);
+void *memset(void *, s32, s32);
 char *GsUtil_StrDup(const char *);
 void GsGp_SetErrorString(void *, const char *);
 void GsUtil_StrCopyN(char *, const char *, s32);
@@ -91,12 +91,12 @@ void GsUtil_Free(void *);
 void *GsUtil_Alloc(s32);
 void GsHash_Free(void *);
 
-char *func_02129f1c(const char *, const char *);
+char *strstr(const char *, const char *);
 void memcpy(void *, const void *, s32);
 void memmove(void *, void *, u32);
-s32 func_0212b770(const char *);
+s32 atol(const char *);
 s32 strncmp(const char *, const char *, u32);
-void func_0212899c(void *, s32, u32);
+void memset(void *, s32, u32);
 void srand();
 
 s32 GsGp_ResetConnection(Ctx0227 **h);
@@ -398,7 +398,7 @@ s32 GsGp_GetBuddyStatus(Unk_ov065_0227bd20_Handle *h, s32 idx, Unk_ov065_0227c05
         return 2;
     }
     if (c->simulation != 0) {
-        func_0212899c(out, 0, 0x210);
+        memset(out, 0, 0x210);
         return 0;
     }
     if (out == NULL) {

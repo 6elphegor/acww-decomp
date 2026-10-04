@@ -1208,7 +1208,7 @@ s32 PlayerInventory_GetBellsRoom(void *p, s32 a, s32 b);
 s32 PlayerInventory_CanAddBells(void *p, s32 v, s32 n, s32 m);
 u32 _ZN8BlockMap17getWalkLinksAtPosEPv(void *g, VecFx32 *v);
 void FieldPos_SnapToUnitCenter(VecFx32 *out, VecFx32 *in);
-void func_01ffd070(VecFx32 *out, VecFx32 *a, VecFx32 *b);
+void Vec_Add(VecFx32 *out, VecFx32 *a, VecFx32 *b);
 s32 Vec_DistXZ(VecFx32 *a, VecFx32 *b);
 void Vec_Equal(VecFx32 *a, VecFx32 *b);
 s32 TownMap_IsPosWalkable(VecFx32 *v, s32 a);
@@ -2503,7 +2503,7 @@ extern "C" void NpcActor_FindFreeUnitNear(V3 *out, NpcActor *self, V3 *in) {
         bestDist = best;
         i1 = z0 = best;
         for (i1 = i1; i1 < 4; i1++) {
-            func_01ffd070(&t1, &a, (V3 *)(data_020c6dcc + i1 * 12));
+            Vec_Add(&t1, &a, (V3 *)(data_020c6dcc + i1 * 12));
             cand1 = t1;
             d1 = Vec_DistXZ((V3 *)((u8 *)self + 0x5c), &cand1);
             if (_ZN8BlockMap17getWalkLinksAtPosEPv(g, &cand1) && TownMap_IsPosWalkable(&cand1, z0)) {
@@ -2514,7 +2514,7 @@ extern "C" void NpcActor_FindFreeUnitNear(V3 *out, NpcActor *self, V3 *in) {
             }
         }
         if (bestDist != 0) {
-            func_01ffd070(&t2, &a, (V3 *)(data_020c6dcc + best * 12));
+            Vec_Add(&t2, &a, (V3 *)(data_020c6dcc + best * 12));
             *out = t2;
         } else {
             *out = *in;
@@ -2551,7 +2551,7 @@ extern "C" void NpcActor_FindFreeUnitNear(V3 *out, NpcActor *self, V3 *in) {
         }
         z2 = z3 = 0;
         for (i = z2; i < 4; i++) {
-            func_01ffd070(&t3, &a, (V3 *)(data_020c6dcc + i * 12));
+            Vec_Add(&t3, &a, (V3 *)(data_020c6dcc + i * 12));
             cand2 = t3;
             d = Vec_DistXZ(in, &cand2);
             if (i == dir0) {
@@ -2572,7 +2572,7 @@ extern "C" void NpcActor_FindFreeUnitNear(V3 *out, NpcActor *self, V3 *in) {
         if (m1 == 0 && best2 > d0) {
             *out = *(V3 *)((u8 *)self + 0x5c);
         } else {
-            func_01ffd070(&t4, &a, (V3 *)(data_020c6dcc + best * 12));
+            Vec_Add(&t4, &a, (V3 *)(data_020c6dcc + best * 12));
             *out = t4;
         }
     }

@@ -256,7 +256,7 @@ void FS_InitFile(void *file);
 }
 
 extern "C" {
-char *func_0212a2ec(char *dst, const char *src, u32 n);
+char *strncpy(char *dst, const char *src, u32 n);
 }
 
 extern "C" {
@@ -987,7 +987,7 @@ void ChoiceEntry::setValue(const u8 *p) { value = *p; }
 
 void ChoiceEntry::setName(const char *src) {
     name[0x19] = 0;
-    func_0212a2ec(name, src, 0x19);
+    strncpy(name, src, 0x19);
 }
 
 void ChoiceEntry::setSeType(s32 v) { seType = v; }
@@ -1084,7 +1084,7 @@ void ChoiceList::pick(s32 idx) {
     resultText.copy(e->getText());
     char *src = e->getName();
     resultName[0x19] = 0;
-    func_0212a2ec(resultName, src, 0x19);
+    strncpy(resultName, src, 0x19);
     BmgMsgAttr_Copy(&resultAttr, BmgMsgAttr_Get(e->getAttr()));
 }
 

@@ -82,7 +82,7 @@ void GsUtil_Free(void *p);
 void OS_Sleep(s32 ms);
 u64 OS_GetTick();
 void memcpy(void *d, const void *s, u32 n);
-void func_0212899c(void *d, s32 v, u32 n);
+void memset(void *d, s32 v, u32 n);
 s32 OS_SPrintf(char *buf, const char *fmt, ...);
 
 s32 GsSock_CheckResult(s32 a, s32 b);

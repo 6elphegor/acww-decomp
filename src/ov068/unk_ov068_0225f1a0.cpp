@@ -1377,7 +1377,7 @@ void *PlayerActor_GetCharacter(s32);
 void *TalkRequest_GetTalkTarget();
 void Vec_Sub(void *, void *, void *);
 void Vec_ShiftRight(void *, s32);
-void func_01ffd070(void *, void *, void *);
+void Vec_Add(void *, void *, void *);
 void Vec_RotateY(void *, s32);
 s32 Vec_NotEqual(void *, void *);
 s32 func_01ffcb0c(s32, s32);
@@ -3817,7 +3817,7 @@ BOOL FieldVillagerAi_IsNearPlayerTalkSpot(void *self, void *v, s32 lim) {
             VecFx32 t2;
             Vec_Sub(&t1, a + 0x5c, b + 0x5c);
             Vec_ShiftRight(&t1, 1);
-            func_01ffd070(&t2, a + 0x5c, &t1);
+            Vec_Add(&t2, a + 0x5c, &t1);
             s32 d = Vec_DistXZ(v, &t2);
             if (d < 0) {
                 d = -d;

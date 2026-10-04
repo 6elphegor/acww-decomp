@@ -70,10 +70,10 @@ MTX_RotY43_:
 	.short 0x0000
 
 ; MTX_RotZ43_(pDst, sinVal, cosVal)
-	.global func_01ffb87c
-	.type func_01ffb87c, @function
-	.size func_01ffb87c, 0x1a
-func_01ffb87c:
+	.global MTX_RotZ43_
+	.type MTX_RotZ43_, @function
+	.size MTX_RotZ43_, 0x1a
+MTX_RotZ43_:
 	stmia r0!, {r2}
 	mov r3, #0
 	stmia r0!, {r1, r3}

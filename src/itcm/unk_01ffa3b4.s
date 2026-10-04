@@ -17,10 +17,10 @@ OS_GetProcMode:
 	bx lr
 
 ; OS_Halt
-	.global func_01ffa3c0
-	.type func_01ffa3c0, @function
-	.size func_01ffa3c0, 0xc
-func_01ffa3c0:
+	.global OS_Halt
+	.type OS_Halt, @function
+	.size OS_Halt, 0xc
+OS_Halt:
 	mov r0, #0
 	mcr p15, 0, r0, c7, c0, 4
 	bx lr

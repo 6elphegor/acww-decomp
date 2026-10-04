@@ -34,7 +34,7 @@ u64 OS_GetTick(void);
 void MI_CpuCopy8(void *, void *, s32);
 void MI_CpuFill8(void *, s32, s32);
 s32 memcmp(void *, const void *, s32);
-void func_0212a2ec(void *, const void *, s32);
+void strncpy(void *, const void *, s32);
 void OS_GetMacAddress(void *);
 
 s32 DwcNet_GetSendSpace(s32 id);
@@ -191,7 +191,7 @@ void DwcNet_SetMaxChunkSize(u32 v) {
 
 void DwcNet_BuildHeader(void *p, u32 a, u32 b) {
     DwcNetFrameHeader *h = (DwcNetFrameHeader *)p;
-    func_0212a2ec(h->magic, "DT", 2);
+    strncpy(h->magic, "DT", 2);
     h->frameType = a;
     h->dataSize = b;
 }

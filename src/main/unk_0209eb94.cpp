@@ -287,8 +287,8 @@ s32 _Z21NetOverlay_AssertWifiv(void);
 s32 Net_IsUploadDone(s32 a);
 s32 Net_IsDownloadDone(s32 a);
 s32 _ZN8SaveData8testFlagEj(void *p, u32 n);
-char *func_0212a360(char *dst, const char *src);
-char *func_0212a2bc(char *dst, const char *src);
+char *strcpy(char *dst, const char *src);
+char *strcat(char *dst, const char *src);
 void Net_GetBrid(char *p);
 s32 Net_HttpDownload(char *a, void *b, u32 c, u32 d);
 s32 Net_GameStatsDownload(void *a, void *b, u32 c, u32 d);
@@ -5101,11 +5101,11 @@ extern "C" BOOL AxMail_DownloadMail(void) {
     if (NB::_ZN8SaveData8testFlagEj(NB::gSaveData, 0x14) != 0) {
         return FALSE;
     }
-    NB::func_0212a360(buf, NB::sAxMailBaseUrl);
-    NB::func_0212a2bc(buf, NB::sAxMailFileName);
+    NB::strcpy(buf, NB::sAxMailBaseUrl);
+    NB::strcat(buf, NB::sAxMailFileName);
     NB::Net_GetBrid(a);
-    NB::func_0212a2bc(buf, "?brid=");
-    NB::func_0212a2bc(buf, a);
+    NB::strcat(buf, "?brid=");
+    NB::strcat(buf, a);
     u32 t = NB::sNetRegion;
     NB::_Z21NetOverlay_AssertWifiv();
     if (NB::Net_HttpDownload(buf, NB::sAxMailBuf, 0x108, t) != 0) {
@@ -5120,11 +5120,11 @@ extern "C" BOOL AxMail_DownloadBbs(void) {
     if (NB::_ZN8SaveData8testFlagEj(NB::gSaveData, 0x14) != 0) {
         return FALSE;
     }
-    NB::func_0212a360(buf, NB::sAxMailBaseUrl);
-    NB::func_0212a2bc(buf, NB::sAxBbsFileName);
+    NB::strcpy(buf, NB::sAxMailBaseUrl);
+    NB::strcat(buf, NB::sAxBbsFileName);
     NB::Net_GetBrid(a);
-    NB::func_0212a2bc(buf, "?brid=");
-    NB::func_0212a2bc(buf, a);
+    NB::strcat(buf, "?brid=");
+    NB::strcat(buf, a);
     u32 t = NB::sNetRegion;
     NB::_Z21NetOverlay_AssertWifiv();
     if (NB::Net_HttpDownload(buf, NB::sAxBbsBuf, 0xd2, t) != 0) {

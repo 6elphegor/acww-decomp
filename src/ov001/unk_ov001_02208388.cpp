@@ -7,7 +7,7 @@ extern "C" {
 extern void *gWfcMsgBank;
 
 extern void DC_FlushRange(void *, u32);
-extern void *func_0212a2ec(void *, void *, u32);
+extern void *strncpy(void *, void *, u32);
 
 extern void *WfcText_CreateBgCanvas(s32, s32);
 extern void *WfcMsg_GetString(void *, s32);
@@ -39,7 +39,7 @@ u8 sWfcPathBuf[0x40];
 #pragma thumb off
 
 extern "C" u8 *WfcUtil_LocalizePath(u8 *p) {
-    func_0212a2ec(sWfcPathBuf, p, 0x3f);
+    strncpy(sWfcPathBuf, p, 0x3f);
     if (p[5] == 0x78) return sWfcPathBuf;
     u32 r = WfcUtil_GetLanguage();
     if (p[5] == 0x79) {

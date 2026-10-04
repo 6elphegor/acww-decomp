@@ -32,7 +32,7 @@ s32 func_02133150(s32, s32); // _s32_div_f (called by the compiler for the s16 d
 s32 FX_Div(s32, s32); // FX_Div
 s32 VEC_Mag(const VecFx32 *v); // VEC_Mag
 void VEC_Add(const VecFx32 *a, const VecFx32 *b, VecFx32 *dst); // VEC_Add
-void func_01ffb87c(MtxFx43 *m, s32 sin, s32 cos); // MTX_RotZ43_ (Thumb)
+void MTX_RotZ43_(MtxFx43 *m, s32 sin, s32 cos); // MTX_RotZ43_ (Thumb)
 void MTX_RotY43_(MtxFx43 *m, s32 sin, s32 cos); // MTX_RotY43_ (Thumb)
 void MTX_RotX43_(MtxFx43 *m, s32 sin, s32 cos); // MTX_RotX43_ (Thumb)
 void MTX_Scale43_(MtxFx43 *m, s32 x, s32 y, s32 z); // MTX_Scale43_ (Thumb)

@@ -65,8 +65,8 @@ void GsHttpBuf_AppendChar(void *, s32);
 BOOL GsHttpBuf_Append(void *, const void *, s32);
 s32 OS_SPrintf(char *, const char *, ...);
 s32 STD_GetStringLength(const char *);
-s32 func_0212a120(const char *, s32);
-s32 func_02128030(void *, s32, s32, u32);
+s32 strchr(const char *, s32);
+s32 fread(void *, s32, s32, u32);
 
 s32 GsHttp_Step(GsHttpConnection *);
 void GsHttp_SetResultFromStatus(GsHttpConnection *);
@@ -118,16 +118,16 @@ void GsHttp_CallProgressCallback(void *, u32, u32);
 s32 GsSock_GetLastError(s32);
 s32 GsHttp_ProcessBodyData(void *, u8 *, s32);
 u32 STD_GetStringLength(const char *);
-void func_02128250(s32);
-s32 func_02128318(s32, s32, s32);
-s32 func_02128650(s32);
+void fclose(s32);
+s32 fseek(s32, s32, s32);
+s32 ftell(s32);
 void rewind(s32);
 void memmove(void *, void *, s32);
-char *func_02129f1c(char *, char *);
-u32 func_0212a060(char *, char *);
-char *func_0212a120(char *, s32);
+char *strstr(char *, char *);
+u32 strspn(char *, char *);
+char *strchr(char *, s32);
 s32 strncmp(char *, char *, s32);
-s32 func_0212b770(char *);
+s32 atol(char *);
 s32 OS_SPrintf(char *, char *, ...);
 
 s32 GsHttp_GetPostLength(GsHttpConnection *self);
@@ -180,10 +180,10 @@ extern char *sGsHttpProxyHost;
 extern u16 sGsHttpProxyPort;
 extern u16 data_0213a510[];
 
-char *func_0212a120(const char *, s32);
+char *strchr(const char *, s32);
 void memcpy(void *, const void *, s32);
-s32 func_02128ca4(const char *, const char *, ...);
-char *func_02129f1c(const char *hay, const char *needle);
+s32 sscanf(const char *, const char *, ...);
+char *strstr(const char *hay, const char *needle);
 s32 strncmp(const char *, const char *, u32);
 s32 OS_SPrintf(char *buf, const char *fmt, ...);
 
@@ -262,10 +262,10 @@ typedef void (*GsGpCallback)(void *, void *, void *);
 extern "C" {
 s32 strcmp(const char *, const char *);
 s32 strncmp(const char *, const char *, s32);
-s32 strspn(const char *, const char *);
-char *func_0212a120(const char *, s32);
-s32 func_0212b770(const char *);
-void *func_0212899c(void *, s32, s32);
+s32 strcspn(const char *, const char *);
+char *strchr(const char *, s32);
+s32 atol(const char *);
+void *memset(void *, s32, s32);
 char *GsUtil_StrDup(const char *);
 void GsGp_SetErrorString(void *, const char *);
 void GsUtil_StrCopyN(char *, const char *, s32);
@@ -317,7 +317,7 @@ BOOL GsHttp_ParseUrl(GsHttpConnection *u) {
     } else {
         return FALSE;
     }
-    n = strspn(p, ":/");
+    n = strcspn(p, ":/");
     e = p + n;
     saved = p[n];
     p[n] = 0;
@@ -329,7 +329,7 @@ BOOL GsHttp_ParseUrl(GsHttpConnection *u) {
     p += n;
     if (*p == ':') {
         p++;
-        u->serverPort = func_0212b770(p);
+        u->serverPort = atol(p);
         if (u->serverPort == 0) {
             return FALSE;
         }
@@ -346,11 +346,11 @@ BOOL GsHttp_ParseUrl(GsHttpConnection *u) {
     }
     u->requestPath = GsUtil_StrDup(p);
     p = u->requestPath;
-    q = func_0212a120(p, 0x20);
+    q = strchr(p, 0x20);
     while (q != NULL) {
         *q = '+';
         p = u->requestPath;
-        q = func_0212a120(p, 0x20);
+        q = strchr(p, 0x20);
     }
     if (p != NULL) {
         return TRUE;
@@ -528,7 +528,7 @@ void GsHttp_StepSendRequest(GsHttpConnection *self) {
             GsHttpBuf_AppendInt(b, self->serverPort);
             GsHttpBuf_Append(b, "\r\n", 2);
         }
-        if (self->extraHeaders == 0 || func_02129f1c(self->extraHeaders, "User-Agent") == 0) {
+        if (self->extraHeaders == 0 || strstr(self->extraHeaders, "User-Agent") == 0) {
             GsHttpBuf_AppendHeader(b, "User-Agent", "GameSpyHTTP/1.0");
         }
         if (self->keepAlive != 0) {
@@ -606,7 +606,7 @@ extern "C" {
 s32 GsHttp_ParseStatusLine(GsHttpConnection *self) {
     s32 a, b, c, d;
     s32 r;
-    r = func_02128ca4(self->recvBuf.data, "HTTP/%d.%d %d%n", &a, &b, &c, &d);
+    r = sscanf(self->recvBuf.data, "HTTP/%d.%d %d%n", &a, &b, &c, &d);
     while (self->recvBuf.data[d] != 0 && Unk_ov065_0227b5d4_Chk(self->recvBuf.data, d) != 0) {
         d++;
     }
@@ -645,7 +645,7 @@ void GsHttp_StepRecvStatus(GsHttpConnection *self) {
             return;
         }
     }
-    char *e = func_02129f1c(self->recvBuf.data, "\r\n");
+    char *e = strstr(self->recvBuf.data, "\r\n");
     if (e != 0) {
         s32 d;
         *e = 0;
@@ -705,7 +705,7 @@ namespace Nb {
 extern "C" {
 s32 GsHttp_ParseChunkSize(GsHttpConnection *self) {
     s32 v;
-    if (func_02128ca4(self->chunkHeader, "%x", &v) != 1) {
+    if (sscanf(self->chunkHeader, "%x", &v) != 1) {
         return -1;
     }
     return v;
@@ -735,7 +735,7 @@ s32 GsHttp_ProcessBodyData(GsHttpConnection *self, char *p, s32 n) {
     if (self->isChunked != 0) {
         while (n > 0) {
             if (self->chunkState == 0) {
-                char *nl = func_0212a120(p, 10);
+                char *nl = strchr(p, 10);
                 if (nl != 0) {
                     GsHttp_AppendChunkSizeText(self, p, nl - p);
                     s32 k = nl + 1 - p;
@@ -772,7 +772,7 @@ s32 GsHttp_ProcessBodyData(GsHttpConnection *self, char *p, s32 n) {
                     self->chunkState = 2;
                 }
             } else if (self->chunkState == 2) {
-                char *nl = func_0212a120(p, 10);
+                char *nl = strchr(p, 10);
                 if (nl == 0) {
                     return 1;
                 }
@@ -825,9 +825,9 @@ void GsHttp_StepRecvHeaders(GsHttpConnection *self) {
     off = self->recvBuf.readPos;
     p = (u8 *)self->recvBuf.data + off;
     self->headersIndex = off;
-    q = func_02129f1c((char *)p, "\r\n\r\n");
+    q = strstr((char *)p, "\r\n\r\n");
     if (q == NULL) {
-        q = func_02129f1c((char *)p, "\n\n");
+        q = strstr((char *)p, "\n\n");
     }
     if (q == NULL) {
         goto nomatch;
@@ -857,7 +857,7 @@ void GsHttp_StepRecvHeaders(GsHttpConnection *self) {
             self->result = 0xb;
             return;
         }
-        q = func_02129f1c((char *)p, "Location:");
+        q = strstr((char *)p, "Location:");
         if (q != NULL) {
             char *d = q + 9;
             s32 c;
@@ -914,7 +914,7 @@ void GsHttp_StepRecvHeaders(GsHttpConnection *self) {
             return;
         }
     }
-    q = func_02129f1c((char *)p, "Content-Length:");
+    q = strstr((char *)p, "Content-Length:");
     if (q != NULL) {
         s32 n;
         char *d0;
@@ -941,9 +941,9 @@ void GsHttp_StepRecvHeaders(GsHttpConnection *self) {
                 return;
             }
         }
-        self->contentLength = func_0212b770(e);
+        self->contentLength = atol(e);
     }
-    self->isChunked = func_02129f1c((char *)p, "Transfer-Encoding: chunked") != NULL ? 1 : 0;
+    self->isChunked = strstr((char *)p, "Transfer-Encoding: chunked") != NULL ? 1 : 0;
     if (self->isChunked != 0) {
         self->chunkHeader[0] = 0;
         self->chunkHeaderLength = 0;
@@ -1102,13 +1102,13 @@ s32 GsHttpPost_AddStringPart(GsHttpPost *self, char *a, char *b) {
     len = STD_GetStringLength(b);
     item.string.length = len;
     item.string.needsEscaping = 0;
-    c = func_0212a060(b, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_@-.*");
+    c = strspn(b, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_@-.*");
     if (c != len) {
         cnt = 0;
         item.string.needsEscaping = 1;
         for (i = 0; b[i] != 0; i++) {
             c = b[i];
-            if (func_0212a120("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_@-.*", c) == NULL && c != 0x20) {
+            if (strchr("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_@-.*", c) == NULL && c != 0x20) {
                 cnt++;
             }
         }
@@ -1228,10 +1228,10 @@ s32 GsHttp_OpenPostPart(GsHttpPostPartState *it) {
         if (it->file == 0) {
             return z;
         }
-        if (func_02128318(it->file, z, 2) != 0) {
+        if (fseek(it->file, z, 2) != 0) {
             return 0;
         }
-        it->fileLength = func_02128650(it->file);
+        it->fileLength = ftell(it->file);
         if (it->fileLength == -1) {
             return 0;
         }
@@ -1253,7 +1253,7 @@ void GsHttp_ClosePostPart(GsHttpPostPartState *it) {
         break;
     case 1:
         if (it->file != 0) {
-            func_02128250(it->file);
+            fclose(it->file);
         }
         it->file = 0;
         break;
@@ -1353,7 +1353,7 @@ s32 GsHttp_SendPostPartString(GsHttpPostPartState *st, GsHttpConnection *c) {
         char ch = s[i];
         if (ch != 0) {
             do {
-                if (func_0212a120("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_@-.*", ch) != 0) {
+                if (strchr("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_@-.*", ch) != 0) {
                     GsHttpBuf_AppendChar(&c->sendBuf, ch);
                 } else if (ch == 0x20) {
                     GsHttpBuf_AppendChar(&c->sendBuf, 0x2b);
@@ -1388,7 +1388,7 @@ s32 GsHttp_SendPostPartFile(GsHttpPostPartState *st, GsHttpConnection *c) {
     char buf[0x1000];
     s32 r;
     do {
-        s32 n = func_02128030(buf, 1, 0x1000, st->file);
+        s32 n = fread(buf, 1, 0x1000, st->file);
         if (n <= 0) {
             c->completed = 1;
             c->result = 14;

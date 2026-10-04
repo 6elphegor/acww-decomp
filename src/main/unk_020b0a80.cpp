@@ -227,7 +227,7 @@ void GX_DisableBankForLCDC(void);
 }
 
 extern "C" {
-u32 func_01ffa314(void);
+u32 OS_EnableInterrupts(void);
 }
 
 extern "C" {
@@ -275,7 +275,7 @@ void Fatal_Trap(void);
 }
 
 extern "C" {
-void func_01ffcb28(void);
+void FX_Init(void);
 }
 
 extern "C" {
@@ -563,7 +563,7 @@ extern "C" void Main_InitStub(void) {}
 
 extern "C" void Main_Init(void) {
     Main_InitStub();
-    func_01ffcb28();
+    FX_Init();
     Math_InitSqrt64();
     HBlank_Init();
     Main_InitVBlank();
@@ -571,7 +571,7 @@ extern "C" void Main_Init(void) {
     OS_EnableIrqMask(3);
     *(vu16 *)0x4000208;
     *(vu16 *)0x4000208 = 1;
-    func_01ffa314();
+    OS_EnableInterrupts();
     GX_VBlankIntr(1);
     GX_HBlankIntr(1);
     Backup_InitDefault();
@@ -637,7 +637,7 @@ extern "C" void NitroStartUp(void) {
     GX_DisableBankForLCDC();
     old = *ime;
     *ime = 1;
-    r5 = func_01ffa314();
+    r5 = OS_EnableInterrupts();
     sWvrStartUpDone = 0;
     WVR_StartUpAsync(8, Startup_OnWvrStartUp, 0);
     while (sWvrStartUpDone == 0) {

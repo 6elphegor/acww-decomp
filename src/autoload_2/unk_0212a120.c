@@ -3,7 +3,7 @@ typedef unsigned char u8;
 typedef unsigned int u32;
 
 // strlen
-u32 func_0212a438(const char *s) {
+u32 strlen(const char *s) {
     const u8 *p = (const u8 *)s;
     u32 len = -1;
     do {
@@ -13,7 +13,7 @@ u32 func_0212a438(const char *s) {
 }
 
 // strcpy
-char *func_0212a360(char *dst, const char *src) {
+char *strcpy(char *dst, const char *src) {
     register u8 *destb, *fromb = (u8 *)src;
     register u32 w, t, align;
     destb = (u8 *)dst;
@@ -47,7 +47,7 @@ bytecopy:
 }
 
 // strncpy
-char *func_0212a2ec(char *d, const char *s0, u32 n) {
+char *strncpy(char *d, const char *s0, u32 n) {
     const u8 *s = (const u8 *)s0;
     u8 *p = (u8 *)d;
     u8 *t;
@@ -64,7 +64,7 @@ char *func_0212a2ec(char *d, const char *s0, u32 n) {
 }
 
 // strcat
-char *func_0212a2bc(char *d, const char *s0) {
+char *strcat(char *d, const char *s0) {
     const u8 *s = (const u8 *)s0;
     u8 *p = (u8 *)d;
     u32 c;
@@ -144,7 +144,7 @@ int strncmp(const char *a, const char *b, u32 n) {
 }
 
 // strchr
-char *func_0212a120(const char *s, int c) {
+char *strchr(const char *s, int c) {
     const u8 *p = (const u8 *)s;
     u32 ch = (u8)c;
     u32 t;

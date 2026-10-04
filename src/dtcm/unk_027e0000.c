@@ -6,7 +6,7 @@
 // initialiser in .bss. ITCM code also uses the name as the DTCM start address.
 typedef void (*OSIrqFunction)(void);
 
-void func_01ff8160(void); // OS_IrqDummy
+void OS_IrqDummy(void); // OS_IrqDummy
 void OSi_IrqDma0(void);
 void OSi_IrqDma1(void);
 void OSi_IrqDma2(void);
@@ -17,26 +17,26 @@ void OSi_IrqTimer2(void);
 void OSi_IrqTimer3(void);
 
 OSIrqFunction data_027e0000[22] = {
-    func_01ff8160,  // V-blank
-    func_01ff8160,  // H-blank
-    func_01ff8160,  // V-counter
+    OS_IrqDummy,  // V-blank
+    OS_IrqDummy,  // H-blank
+    OS_IrqDummy,  // V-counter
     OSi_IrqTimer0,
     OSi_IrqTimer1,
     OSi_IrqTimer2,
     OSi_IrqTimer3,
-    func_01ff8160,  // serial
+    OS_IrqDummy,  // serial
     OSi_IrqDma0,
     OSi_IrqDma1,
     OSi_IrqDma2,
     OSi_IrqDma3,
-    func_01ff8160,  // keypad
-    func_01ff8160,  // cartridge
-    func_01ff8160,
-    func_01ff8160,
-    func_01ff8160,
-    func_01ff8160,
-    func_01ff8160,
-    func_01ff8160,
-    func_01ff8160,
-    func_01ff8160,
+    OS_IrqDummy,  // keypad
+    OS_IrqDummy,  // cartridge
+    OS_IrqDummy,
+    OS_IrqDummy,
+    OS_IrqDummy,
+    OS_IrqDummy,
+    OS_IrqDummy,
+    OS_IrqDummy,
+    OS_IrqDummy,
+    OS_IrqDummy,
 };

@@ -1,6 +1,6 @@
 // mwcc-flags: -nothumb -O4,p -Cpp_exceptions on -char unsigned
 // Metrowerks ARM C++ exception runtime (exception handler), autoload_2 0x02133b68-0x02133ccc. Built as C++ with
-// exceptions on like the original: func_02133b68 and func_02133bc0 own their .exceptix index entries in main
+// exceptions on like the original: __SkipUnwindInfo and __SetupFrameInfo own their .exceptix index entries in main
 // (0x020c2bbc-0x020c2bd4); __FindExceptionTable and __PopStackFrame make no calls and get none.
 #include "types.h"
 
@@ -46,7 +46,7 @@ typedef struct ThrowContext {
 extern char __exception_table_start__[];
 extern char __exception_table_end__[];
 
-extern "C" char *func_02133da8(char *p, u32 *value);
+extern "C" char *__DecodeUnsignedNumber(char *p, u32 *value);
 
 // __PopStackFrame-like: restore the registers a frame saved (mask from the function header, highest first) and step to the caller:
 // returns the frame's saved lr.
@@ -65,7 +65,7 @@ extern "C" u32 __PopStackFrame(ThrowContext *context, ExceptionInfo *info) {
 }
 
 // Decode the function header of the current exception record into the context.
-extern "C" void func_02133bc0(ThrowContext *context, ExceptionInfo *info) {
+extern "C" void __SetupFrameInfo(ThrowContext *context, ExceptionInfo *info) {
     char *p = info->exception_record;
     u8 flags = p[0];
     u32 has_fp = flags & 0x40;
@@ -77,9 +77,9 @@ extern "C" void func_02133bc0(ThrowContext *context, ExceptionInfo *info) {
     context->state.fp_is_r7 = fp_is_r7 ? 1 : 0;
     context->state.regmask = (u8)p[1] << 4;
     context->state.regmask |= 0x4000;
-    p = func_02133da8(p + 2, &context->state.frame_size);
+    p = __DecodeUnsignedNumber(p + 2, &context->state.frame_size);
     if (has_fp) {
-        func_02133da8(p, &context->state.frame_adjust);
+        __DecodeUnsignedNumber(p, &context->state.frame_adjust);
     }
     if (has_fp) {
         if (fp_is_r7) {
@@ -101,14 +101,14 @@ extern "C" int __FindExceptionTable(ExceptionInfo *info, char *retaddr) {
 
 // Skip a function header (flags byte, register byte, frame size, frame adjust if flag 0x40): returns the action
 // table.
-extern "C" char *func_02133b68(char *p) {
+extern "C" char *__SkipUnwindInfo(char *p) {
     u8 flags = *p;
     u32 value;
 
     p += 2;
-    p = func_02133da8(p, &value);
+    p = __DecodeUnsignedNumber(p, &value);
     if (flags & 0x40) {
-        p = func_02133da8(p, &value);
+        p = __DecodeUnsignedNumber(p, &value);
     }
     return p;
 }

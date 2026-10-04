@@ -89,7 +89,7 @@ s32 SceneId_GetVillagerHouse(u32 a);
 s32 VillagerId_GetPersonality(void *);
 
 s32 Str_SPrintf(char *buf, const char *fmt, ...);
-void func_01ffd070(VecFx32 *out, void *a, void *b);
+void Vec_Add(VecFx32 *out, void *a, void *b);
 void NNS_G3dBindMdlTex(void *a, s32 b);
 void _ZN5Actor5spawnEPvS0_S0_S0_S0_(s32 a, s32 b, void *c, s32 d, void *e);
 void _ZN10VillagerId7getNameEj(void *self, void *x);
@@ -196,7 +196,7 @@ BOOL VillagerHouse::initBuilding() {
     s32 idx = Unk_ov003_02215c7c_Idx(this);
     static FxVec3 v(-0x2000, 0x1000, 0x2000);
     VecFx32 tmp;
-    func_01ffd070(&tmp, &position, &v);
+    Vec_Add(&tmp, &position, &v);
     Actor_spawn(0x18, idx, &tmp, 0, this);
     sVillagerHouses[idx] = (u32)this;
     s32 k = getHouseVariant();

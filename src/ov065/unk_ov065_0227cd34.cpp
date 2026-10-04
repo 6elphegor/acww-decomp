@@ -57,12 +57,12 @@ void GsUtil_Free(void *);
 void *GsUtil_Alloc(s32);
 void GsHash_Free(void *);
 
-char *func_02129f1c(const char *, const char *);
+char *strstr(const char *, const char *);
 void memcpy(void *, const void *, s32);
 void memmove(void *, void *, u32);
-s32 func_0212b770(const char *);
+s32 atol(const char *);
 s32 strncmp(const char *, const char *, u32);
-void func_0212899c(void *, s32, u32);
+void memset(void *, s32, u32);
 void srand();
 
 s32 GsGp_ResetConnection(Ctx0227 **h);
@@ -107,10 +107,10 @@ char *GsUtil_StrDup(const char *);
 s32 GsGp_QueueCallback(Ctx0227 **, GsGpCallbackPair, void *, s32, s32);
 GsGpProfile *GsGpProfile_Add(Ctx0227 **, s32);
 
-s32 func_0212b770(const char *);
+s32 atol(const char *);
 s32 STD_GetStringLength(const char *);
 char *func_02127838(char *, const char *);
-char *func_02129f1c(const char *, const char *);
+char *strstr(const char *, const char *);
 
 s32 GsGp_SendServerBuddyMessage(Ctx0227 **h, s32 a, s32 b, const char *s);
 s32 GsGp_SendBuddyMessageEx(Ctx0227 **h, s32 id, s32 b, s32 t);
@@ -134,9 +134,9 @@ namespace Nf {
 
 
 extern "C" {
-char *func_0212a120(const char *, s32);
+char *strchr(const char *, s32);
 s32 strncmp(const char *, const char *, s32);
-s32 func_0212b770(const char *);
+s32 atol(const char *);
 u32 STD_GetStringLength(const char *);
 void memmove(void *, void *, s32);
 void memcpy(void *, const void *, s32);
@@ -226,13 +226,13 @@ s32 GsGp_ProcessBuddyMessage(Ctx0227 **h, const char *s) {
     if (GsGp_GetValue(s, "\\bm\\", buf, 0x1000) == 0) {
         ERR3();
     }
-    code = func_0212b770(buf);
+    code = atol(buf);
     if (GsGp_GetValue(s, "\\f\\", buf, 0x1000) == 0) {
         ERR3();
     }
-    v = func_0212b770(buf);
+    v = atol(buf);
     if (GsGp_GetValue(s, "\\date\\", buf, 0x1000) != 0) {
-        w = func_0212b770(buf);
+        w = atol(buf);
     } else {
         w = GsUtil_GetTimeSeconds(0);
     }
@@ -275,7 +275,7 @@ s32 GsGp_ProcessBuddyMessage(Ctx0227 **h, const char *s) {
         if (GsGp_GetValue(s, "\\msg\\", buf, 0x1000) == 0) {
             ERR3();
         }
-        t = func_02129f1c(buf, "|signed|");
+        t = strstr(buf, "|signed|");
         if (t == NULL) {
             ERR3();
         }
@@ -342,7 +342,7 @@ s32 GsGp_ProcessBuddyMessage(Ctx0227 **h, const char *s) {
         if (GsGp_GetValue(buf, "|s|", tmp, 0x10) == 0) {
             ERR3();
         }
-        r5->status = func_0212b770(tmp);
+        r5->status = atol(tmp);
         GsUtil_Free(r5->statusString);
         r5->statusString = NULL;
         if (GsGp_GetValue(buf, "|ss|", buf3, 0x100) == 0) {
@@ -364,12 +364,12 @@ s32 GsGp_ProcessBuddyMessage(Ctx0227 **h, const char *s) {
         if (GsGp_GetValue(buf, "|ip|", tmp, 0x10) == 0) {
             r5->ip = 0;
         } else {
-            r5->ip = SWAP32((u32)func_0212b770(tmp));
+            r5->ip = SWAP32((u32)atol(tmp));
         }
         if (GsGp_GetValue(buf, "|p|", tmp, 0x10) == 0) {
             r5->port = 0;
         } else {
-            r5->port = Swap16(func_0212b770(tmp));
+            r5->port = Swap16(atol(tmp));
         }
         p3 = *(Unk_ov065_0227e0e8_Wrap *)&c->callbacks[2];
         if (p3.p.func == 0) {
@@ -400,15 +400,15 @@ s32 GsGp_ProcessBuddyMessage(Ctx0227 **h, const char *s) {
         if (GsGp_GetValue(s, "\\msg\\", buf, 0x1000) == 0) {
             ERR3();
         }
-        t = func_02129f1c(buf, "|p|");
+        t = strstr(buf, "|p|");
         if (t == NULL) {
             ERR3();
         }
         if (t[3] == 0) {
             ERR3();
         }
-        q = func_0212b770(t + 3);
-        t2 = func_02129f1c(buf, "|l|");
+        q = atol(t + 3);
+        t2 = strstr(buf, "|l|");
         if (t2 != NULL) {
             GsUtil_StrCopyN(buf3, t2 + 3, 0x100);
         } else {

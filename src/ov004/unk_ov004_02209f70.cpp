@@ -151,7 +151,7 @@ extern const char data_ov004_0224bb44[];
 void *FtrActorHeap_GetInstance(void);
 void _ZN12FtrActorHeap4freeEPv(void *heap, void *p);
 void *_ZN12FtrActorHeap5allocEv(void *heap, u32 size);
-void *func_0212899c(void *p, s32 v, u32 n);
+void *memset(void *p, s32 v, u32 n);
 
 void _ZN8FtrActorC1Ev(void *);
 void _ZN8FtrActorC2Ev(void *);

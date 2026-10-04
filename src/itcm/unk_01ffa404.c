@@ -206,8 +206,8 @@ extern u8 data_027e0000[];                // DTCM start (OSi_IrqFunctionTable)
 
 extern u32 OS_DisableInterrupts(void);                            // OS_DisableInterrupts (assembly)
 extern u32 OS_RestoreInterrupts(u32 enabled);                     // OS_RestoreInterrupts (assembly)
-extern u32 func_01ffa314(void);                            // OS_EnableInterrupts (assembly)
-extern void func_01ffa3c0(void);                           // OS_Halt (assembly)
+extern u32 OS_EnableInterrupts(void);                            // OS_EnableInterrupts (assembly)
+extern void OS_Halt(void);                           // OS_Halt (assembly)
 extern u32 OS_EnableIrqMask(u32 intr);                        // OS_EnableIrqMask
 
 extern volatile u64 data_021fcf24;

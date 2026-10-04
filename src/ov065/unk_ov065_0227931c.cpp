@@ -59,7 +59,7 @@ void OS_Sleep(s32 ms);
 u64 OS_GetTick();
 u64 func_02132ef8(u64 a, u32 b, u32 c);
 void memcpy(void *d, const void *s, u32 n);
-void func_0212899c(void *d, s32 v, u32 n);
+void memset(void *d, s32 v, u32 n);
 s32 OS_SPrintf(char *buf, const char *fmt, ...);
 
 s32 GsSock_CheckResult(s32 a, s32 b);
@@ -122,7 +122,7 @@ void GsHttp_FreePostState(void *);
 BOOL GsHttpPost_GetAutoFree(void *);
 void GsHttpPost_Free(void *);
 void memmove(void *, void *, u32);
-void func_0212899c(void *, s32, u32);
+void memset(void *, s32, u32);
 
 void GsHttp_LeaveCritical();
 void GsHttp_EnterCritical();
@@ -206,8 +206,8 @@ void GsHttpBuf_AppendChar(void *, s32);
 BOOL GsHttpBuf_Append(void *, const void *, s32);
 s32 OS_SPrintf(char *, const char *, ...);
 s32 STD_GetStringLength(const char *);
-s32 func_0212a120(const char *, s32);
-s32 func_02128030(void *, s32, s32, u32);
+s32 strchr(const char *, s32);
+s32 fread(void *, s32, s32, u32);
 
 s32 GsHttp_Step(GsHttpConnection *);
 void GsHttp_SetResultFromStatus(GsHttpConnection *);
@@ -487,7 +487,7 @@ GsHttpConnection *GsHttp_NewConnection() {
         return 0;
     }
     s = sGsHttpConnections[idx];
-    func_0212899c(s, 0, 0x184);
+    memset(s, 0, 0x184);
     s->inUse = 1;
     s->requestId = idx;
     s->serial = sGsHttpSerial++;
@@ -990,7 +990,7 @@ void GsHttpBuf_Free(GsHttpBuffer *o) {
         if (o->keepData == 0) {
             GsUtil_Free(o->data);
         }
-        func_0212899c(o, 0, 0x24);
+        memset(o, 0, 0x24);
     }
 }
 }

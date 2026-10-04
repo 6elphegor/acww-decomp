@@ -75,12 +75,12 @@ typedef struct {
 
 extern void *memcpy(void *, const void *, u32);
 extern void *memchr(const void *s, s32 c, u32 n);
-extern s32 func_02128908(wchar_t *pwc, const char *s, u32 n);
-extern s32 func_02128824(wchar_t *dst, const char *src, u32 n);
-extern u32 func_0212a438(const char *s);
+extern s32 mbtowc(wchar_t *pwc, const char *s, u32 n);
+extern s32 mbstowcs(wchar_t *dst, const char *src, u32 n);
+extern u32 strlen(const char *s);
 extern wchar_t *wcschr(const wchar_t *s, wchar_t c);
-extern u32 func_0212dcb4(const wchar_t *s);
-extern wchar_t *func_0212d78c(wchar_t *format_string, va_list *arg, print_format *format);
+extern u32 wcslen(const wchar_t *s);
+extern wchar_t *parse_format__wide(wchar_t *format_string, va_list *arg, print_format *format);
 
 typedef struct {
     unsigned char sign;
@@ -98,17 +98,17 @@ typedef struct {
 } decform;
 
 extern u16 data_0213a610[]; /* ctype table (u16 per char) */
-extern void func_0212fa54(decform *form, double x, decimal *d); /* __num2dec */
+extern void __num2dec(decform *form, double x, decimal *d); /* __num2dec */
 extern wchar_t *wcscpy(wchar_t *dst, const wchar_t *src); /* wcscpy */
 #define iswupper(c) (((c) >= 128) ? 0 : (data_0213a610[c] & 0x200))
 
 extern void *wmemchr(const wchar_t *s, s32 c, u32 n);
 extern void *wmemcpy(void *d, const void *s, u32 n);
 
-extern s32 func_0212c2b0(void *(*)(void *, const wchar_t *, u32), void *, const wchar_t *, va_list);
+extern s32 __wpformatter(void *(*)(void *, const wchar_t *, u32), void *, const wchar_t *, va_list);
 
 // long2str (wide)
-wchar_t *func_0212d524(s32 num, wchar_t *buff, print_format format) {
+wchar_t *long2str__wide(s32 num, wchar_t *buff, print_format format) {
     u32 unsigned_num, base;
     wchar_t *p;
     s32 n, digits;
@@ -178,7 +178,7 @@ wchar_t *func_0212d524(s32 num, wchar_t *buff, print_format format) {
 }
 
 // longlong2str (wide)
-wchar_t *func_0212d238(s64 num, wchar_t *buff, print_format format) {
+wchar_t *longlong2str__wide(s64 num, wchar_t *buff, print_format format) {
     u64 unsigned_num;
     u64 base;
     wchar_t *p;
@@ -249,7 +249,7 @@ wchar_t *func_0212d238(s64 num, wchar_t *buff, print_format format) {
 }
 
 // round_decimal
-void func_0212d108(decimal *dec, s32 new_length) {
+void round_decimal__wide(decimal *dec, s32 new_length) {
     u8 c;
     u8 *p, *t;
     s32 carry;
@@ -299,7 +299,7 @@ void func_0212d108(decimal *dec, s32 new_length) {
 }
 
 // float2str (wide)
-wchar_t *func_0212cb28(double num, wchar_t *buff, print_format format) {
+wchar_t *float2str__wide(double num, wchar_t *buff, print_format format) {
     decform form;
     decimal dec;
     char tbuf[512];
@@ -312,7 +312,7 @@ wchar_t *func_0212cb28(double num, wchar_t *buff, print_format format) {
     if (format.precision > 509) return 0;
     form.style = 0;
     form.digits = 32;
-    func_0212fa54(&form, num, &dec);
+    __num2dec(&form, num, &dec);
     q = dec.sig.text + dec.sig.length;
     while (dec.sig.length > 1 && *--q == '0') {
         --dec.sig.length;
@@ -344,7 +344,7 @@ wchar_t *func_0212cb28(double num, wchar_t *buff, print_format format) {
     switch (format.conversion_char) {
     case 'g':
     case 'G':
-        if (dec.sig.length > format.precision) func_0212d108(&dec, format.precision);
+        if (dec.sig.length > format.precision) round_decimal__wide(&dec, format.precision);
         if (dec.exp < -4 || dec.exp >= format.precision) {
             if (format.alternate_form) --format.precision;
             else format.precision = dec.sig.length - 1;
@@ -362,7 +362,7 @@ wchar_t *func_0212cb28(double num, wchar_t *buff, print_format format) {
     case 'e':
     case 'E':
     e_format:
-        if (dec.sig.length > format.precision + 1) func_0212d108(&dec, format.precision + 1);
+        if (dec.sig.length > format.precision + 1) round_decimal__wide(&dec, format.precision + 1);
         {
             exp = dec.exp;
             sign = '+';
@@ -406,7 +406,7 @@ wchar_t *func_0212cb28(double num, wchar_t *buff, print_format format) {
         frac = dec.sig.length - dec.exp - 1;
         if (frac < 0) frac = 0;
         if (frac > format.precision) {
-            func_0212d108(&dec, dec.sig.length - (frac - format.precision));
+            round_decimal__wide(&dec, dec.sig.length - (frac - format.precision));
             frac = dec.sig.length - dec.exp - 1;
             if (frac < 0) frac = 0;
         }
@@ -432,15 +432,15 @@ wchar_t *func_0212cb28(double num, wchar_t *buff, print_format format) {
     }
     }
     {
-        u32 len = func_0212a438(p);
+        u32 len = strlen(p);
         wchar_t *out = (wchar_t *)((char *)buff - len * 2) - 1;
-        func_02128824(out, p, func_0212a438(p));
+        mbstowcs(out, p, strlen(p));
         return out;
     }
 }
 
 // __wpformatter
-s32 func_0212c2b0(void *(*WriteProc)(void *, const wchar_t *, u32), void *WriteProcArg, const wchar_t *format_str, va_list arg) {
+s32 __wpformatter(void *(*WriteProc)(void *, const wchar_t *, u32), void *WriteProcArg, const wchar_t *format_str, va_list arg) {
     s32 num_chars, chars_written, field_width;
     const wchar_t *format_ptr;
     const wchar_t *curr_format;
@@ -461,7 +461,7 @@ s32 func_0212c2b0(void *(*WriteProc)(void *, const wchar_t *, u32), void *WriteP
 
     while (*format_ptr) {
         if (!(curr_format = wcschr(format_ptr, '%'))) {
-            num_chars = func_0212dcb4(format_ptr);
+            num_chars = wcslen(format_ptr);
             chars_written += num_chars;
             if (num_chars && !WriteProc(WriteProcArg, format_ptr, num_chars)) return -1;
             break;
@@ -470,7 +470,7 @@ s32 func_0212c2b0(void *(*WriteProc)(void *, const wchar_t *, u32), void *WriteP
         chars_written += num_chars;
         if (num_chars && !WriteProc(WriteProcArg, format_ptr, num_chars)) return -1;
         format_ptr = curr_format;
-        format_ptr = func_0212d78c((wchar_t *)format_ptr, &arg, &format);
+        format_ptr = parse_format__wide((wchar_t *)format_ptr, &arg, &format);
         switch (format.conversion_char) {
         case 'd':
         case 'i':
@@ -483,9 +483,9 @@ s32 func_0212c2b0(void *(*WriteProc)(void *, const wchar_t *, u32), void *WriteP
             }
             if (format.argument_options == short_argument) long_num = (s16)long_num;
             if (format.argument_options == long_long_argument) {
-                if (!(buff_ptr = func_0212d238(long_long_num, buff + 512, format))) goto conversion_error;
+                if (!(buff_ptr = longlong2str__wide(long_long_num, buff + 512, format))) goto conversion_error;
             } else {
-                if (!(buff_ptr = func_0212d524(long_num, buff + 512, format))) goto conversion_error;
+                if (!(buff_ptr = long2str__wide(long_num, buff + 512, format))) goto conversion_error;
             }
             num_chars = buff + 511 - buff_ptr;
             break;
@@ -502,9 +502,9 @@ s32 func_0212c2b0(void *(*WriteProc)(void *, const wchar_t *, u32), void *WriteP
             }
             if (format.argument_options == short_argument) long_num = (u16)long_num;
             if (format.argument_options == long_long_argument) {
-                if (!(buff_ptr = func_0212d238(long_long_num, buff + 512, format))) goto conversion_error;
+                if (!(buff_ptr = longlong2str__wide(long_long_num, buff + 512, format))) goto conversion_error;
             } else {
-                if (!(buff_ptr = func_0212d524(long_num, buff + 512, format))) goto conversion_error;
+                if (!(buff_ptr = long2str__wide(long_num, buff + 512, format))) goto conversion_error;
             }
             num_chars = buff + 511 - buff_ptr;
             break;
@@ -519,7 +519,7 @@ s32 func_0212c2b0(void *(*WriteProc)(void *, const wchar_t *, u32), void *WriteP
             } else {
                 long_double_num = *(double *)(arg += 8, arg - 8);
             }
-            if (!(buff_ptr = func_0212cb28(long_double_num, buff + 512, format))) goto conversion_error;
+            if (!(buff_ptr = float2str__wide(long_double_num, buff + 512, format))) goto conversion_error;
             num_chars = buff + 511 - buff_ptr;
             break;
         case 's':
@@ -533,7 +533,7 @@ s32 func_0212c2b0(void *(*WriteProc)(void *, const wchar_t *, u32), void *WriteP
                     num_chars = format.precision;
                     if ((wcs_ptr = wmemchr(buff_ptr, 0, num_chars)) != 0) num_chars = wcs_ptr - buff_ptr;
                 } else {
-                    num_chars = func_0212dcb4(buff_ptr);
+                    num_chars = wcslen(buff_ptr);
                 }
             } else {
                 s = *(char **)(arg += 4, arg - 4);
@@ -545,9 +545,9 @@ s32 func_0212c2b0(void *(*WriteProc)(void *, const wchar_t *, u32), void *WriteP
                     n = format.precision;
                     if ((cp = memchr(s, 0, n)) != 0) n = cp - s;
                 } else {
-                    n = func_0212a438(s);
+                    n = strlen(s);
                 }
-                if ((num_chars = func_02128824(buff, s, n)) < 0) goto conversion_error;
+                if ((num_chars = mbstowcs(buff, s, n)) < 0) goto conversion_error;
                 buff_ptr = buff;
             }
             break;
@@ -567,7 +567,7 @@ s32 func_0212c2b0(void *(*WriteProc)(void *, const wchar_t *, u32), void *WriteP
                 *buff_ptr = *(s32 *)(arg += 4, arg - 4);
             } else {
                 cc = *(s32 *)(arg += 4, arg - 4);
-                num_chars = func_02128908(buff_ptr, &cc, 1);
+                num_chars = mbtowc(buff_ptr, &cc, 1);
             }
             break;
         case '%':
@@ -578,7 +578,7 @@ s32 func_0212c2b0(void *(*WriteProc)(void *, const wchar_t *, u32), void *WriteP
         case 0xFFFF:
         default:
         conversion_error:
-            num_chars = func_0212dcb4(curr_format);
+            num_chars = wcslen(curr_format);
             chars_written += num_chars;
             if (num_chars && !WriteProc(WriteProcArg, curr_format, num_chars)) return -1;
             return chars_written;
@@ -617,23 +617,23 @@ void *__wStringWrite(void *osc, const wchar_t *buf, u32 n) {
 }
 
 // vswprintf (declared before swprintf, defined below it)
-s32 func_0212c1c8(wchar_t *s, u32 n, const wchar_t *fmt, va_list args);
+s32 vswprintf(wchar_t *s, u32 n, const wchar_t *fmt, va_list args);
 
 // swprintf
-s32 func_0212c234(wchar_t *s, u32 n, const wchar_t *fmt, ...) {
+s32 swprintf(wchar_t *s, u32 n, const wchar_t *fmt, ...) {
     va_list va;
     va_start(va, fmt);
-    return func_0212c1c8(s, n, fmt, va);
+    return vswprintf(s, n, fmt, va);
 }
 
 // vswprintf
-s32 func_0212c1c8(wchar_t *s, u32 n, const wchar_t *fmt, va_list args) {
+s32 vswprintf(wchar_t *s, u32 n, const wchar_t *fmt, va_list args) {
     s32 end;
     __wOutStr osc;
     osc.CharStr = s;
     osc.MaxCharCount = n;
     osc.CharsWritten = 0;
-    end = func_0212c2b0(__wStringWrite, &osc, fmt, args);
+    end = __wpformatter(__wStringWrite, &osc, fmt, args);
     if (end < 0) return end;
     if (end < n) {
         s[end] = 0;
@@ -661,7 +661,7 @@ void *wmemchr(const wchar_t *s, s32 c, u32 n) {
 }
 
 // fwide
-s32 func_0212c11c(FILE *f, s32 mode) {
+s32 fwide(FILE *f, s32 mode) {
     if (f == NULL || f->mode.file_kind == 0) return 0;
     switch (f->mode.file_orientation) {
     case 0:

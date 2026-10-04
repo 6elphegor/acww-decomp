@@ -277,7 +277,7 @@ s32 Gfx2d_IsMainScreenLayer(u32 id);
 }
 
 extern "C" {
-void func_01ffb46c(void *a, void *b);
+void MTX_Copy33To43_(void *a, void *b);
 }
 
 extern "C" {

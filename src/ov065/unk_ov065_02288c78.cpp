@@ -32,7 +32,7 @@ extern u32 data_ov065_022918a8;
 extern u8 data_0213a410[];
 
 u32 func_0213335c(u32 a, u32 b);
-s32 func_02129f1c(void *a, void *b);
+s32 strstr(void *a, void *b);
 s32 func_02130b04(void *a, void *b);
 
 u32 GsUtil_GetTimeMs(void);
@@ -114,7 +114,7 @@ extern s32 data_ov065_022918a8;
 s32 strcmp(const char *, const char *);
 u32 STD_GetStringLength(const char *);
 s32 OS_SPrintf(char *, const char *, ...);
-s32 func_0212b770(char *);
+s32 atol(char *);
 s32 func_02130b04(char *, char *);
 
 s32 GsUtil_Free(void *);
@@ -434,7 +434,7 @@ s32 GsServer_GetIntValue(void *a, char *b, s32 c) {
     }
     return c;
 call:
-    return func_0212b770(v);
+    return atol(v);
 }
 }
 }
@@ -766,7 +766,7 @@ void GsServer_SetPrivateAddress(Ent *e, u32 addr, u32 port) {
 
 namespace F022884fc {
 extern "C" {
-void func_ov065_02288d34(Ent *e, s32 v) {
+void GsServer_SetIcmpIp(Ent *e, s32 v) {
     e->altAddr = v;
 }
 }

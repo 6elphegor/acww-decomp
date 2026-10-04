@@ -160,7 +160,7 @@ s32 BuildingLights_isLit(void *);
 void AnimModel_drawAnimated(void *, u32);
 s32 Math_Atan2(s32, s32);
 s32 func_01ffcb0c(s32, s32);
-void func_01ffd070(VecFx32 *, void *, VecFx32 *);
+void Vec_Add(VecFx32 *, void *, VecFx32 *);
 void *TriangleTrigger_getCenter(void *);
 BOOL Item_IsFurniture(u16 *);
 s32 Item_GetFurnitureIndex(u16 *);
@@ -983,9 +983,9 @@ void BuildingActor::createColliders(Mtx43 *m) {
                     Building_LocalToWorld(&wa, (s32)&a, (s32)m);
                     Building_LocalToWorld(&wb, (s32)&b, (s32)m);
                     Building_LocalToWorld(&wc, (s32)&c, (s32)m);
-                    func_01ffd070(&la, &position, &a);
-                    func_01ffd070(&lb, &position, &b);
-                    func_01ffd070(&lc, &position, &c);
+                    Vec_Add(&la, &position, &a);
+                    Vec_Add(&lb, &position, &b);
+                    Vec_Add(&lc, &position, &c);
                     e6 = new (e6) TouchPickTriangle;
                     Scene_GetTouchPicker()->addTriangle(e6, (VecFx32 *)&wa, (VecFx32 *)&wb, (VecFx32 *)&wc, 7, k);
                     e4 = new (e4) BuildingCollider;
@@ -1679,7 +1679,7 @@ BOOL BuildingActor::getDoorPos(VecFx32 *out, s16 *ang) {
         }
         if (out != NULL) {
             VecFx32 r;
-            func_01ffd070(&r, TriangleTrigger_getCenter(colliders), &v);
+            Vec_Add(&r, TriangleTrigger_getCenter(colliders), &v);
             out->x = r.x;
             out->y = r.y;
             out->z = r.z;

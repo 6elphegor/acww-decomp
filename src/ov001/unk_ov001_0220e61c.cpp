@@ -48,7 +48,7 @@ void WfcOptions_Enter();
 void WfcButtonBar_Close();
 void *WfcText_CreateBgCanvas(s32, s32);
 void OS_GetMacAddress(void *);
-void func_0212c234(void *, s32, void *, ...);
+void swprintf(void *, s32, void *, ...);
 void WfcText_DrawTextRect(void *, u32, u32, u32, u32, s32, u32, void *);
 void DWCi_BM_GetWiFiInfo(void *);
 void WfcText_RequestTransfer(void *);
@@ -140,7 +140,7 @@ extern "C" void WfcSysInfo_DrawInfo() {
     u32 d[4];
     char buf[0x2c];
     OS_GetMacAddress(dt);
-    func_0212c234(buf, 0x14, data_ov001_0222acd8, dt[0], dt[1], dt[2], dt[3], dt[4], dt[5]);
+    swprintf(buf, 0x14, data_ov001_0222acd8, dt[0], dt[1], dt[2], dt[3], dt[4], dt[5]);
     WfcText_DrawTextRect(obj, data_ov001_02229fb0[0], data_ov001_02229fb0[1], data_ov001_02229fb0[2], data_ov001_02229fb0[3], 2, 0x480, buf);
     DWCi_BM_GetWiFiInfo(&tick);
     u64 t = tick;
@@ -152,9 +152,9 @@ extern "C" void WfcSysInfo_DrawInfo() {
             d[2 - i] = (u32)(t % 10000);
             t = t / 10000;
         }
-        func_0212c234(buf, 0x14, data_ov001_0222ad14, d[0], d[1], d[2], d[3]);
+        swprintf(buf, 0x14, data_ov001_0222ad14, d[0], d[1], d[2], d[3]);
     } else {
-        func_0212c234(buf, 0x14, data_ov001_0222ad3c);
+        swprintf(buf, 0x14, data_ov001_0222ad3c);
     }
     WfcText_DrawTextRect(obj, data_ov001_02229fb8[0], data_ov001_02229fb8[1], data_ov001_02229fb8[2], data_ov001_02229fb8[3], 2, 0x480, buf);
     WfcText_RequestTransfer(obj);

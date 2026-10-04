@@ -22,7 +22,7 @@ void DC_FlushRange(void *ptr, u32 size);
 void MI_CpuFill8(void *dst, u32 value, u32 size);
 void MI_CpuCopy8(const void *src, void *dst, u32 size);
 void *File_LoadF(const char *fmt, ...);
-char *func_0212a2ec(char *dst, const char *src, u32 n);
+char *strncpy(char *dst, const char *src, u32 n);
 void MailCheck_LoadWordList(void);
 
 // autoload_2: copies of the tile buffer to VRAM, one per target
@@ -259,7 +259,7 @@ BOOL StrBuf_SetCString(StrBuf *buf, const char *src) {
     char *end = data + last;
     BOOL ok;
     data[last] = 0;
-    func_0212a2ec(data, src, size);
+    strncpy(data, src, size);
     ok = data[last] == 0;
     if (!ok) {
         *end = 0;

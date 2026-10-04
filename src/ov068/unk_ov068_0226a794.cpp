@@ -233,7 +233,7 @@ void Effect_SetPosition(s32, void *, s32, s32);
 s32 Effect_Create(s32, void *, s32, s32);
 VecFx32Copy *PlayerActor_GetBodyPos(s32);
 void Vec_Sub(VecFx32Copy *, VecFx32Copy *, VecFx32Copy *);
-void func_01ffd070(VecFx32Copy *, void *, VecFx32Copy *);
+void Vec_Add(VecFx32Copy *, void *, VecFx32Copy *);
 s32 Math_Atan2(s32, s32);
 s32 FX_Div(s32, s32);
 void Taxi_ClearArriving();
@@ -347,7 +347,7 @@ void KappnTaxi::onJointCalcPost(u32 a, void *b) {
         v.x = pv->x;
         v.y = pv->y;
         v.z = pv->z;
-        func_01ffd070(&out, &position, &v);
+        Vec_Add(&out, &position, &v);
         carPos.x = out.x;
         carPos.y = out.y;
         carPos.z = out.z;

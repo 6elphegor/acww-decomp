@@ -129,7 +129,7 @@ void Camera_SetSwayPattern(void *o, s32 a);
 V3 *PlayerActor_GetBodyPos(s32 a);
 s32 Scene_GetCurrent();
 void Vec_Sub(void *out, void *a, void *b);
-void func_01ffd070(void *out, void *a, void *b);
+void Vec_Add(void *out, void *a, void *b);
 void Vec_ShiftRightTo(void *out, void *in, s32 s);
 s32 VEC_Mag(void *v);
 void MTX_MultVec33(void *a, void *b, void *c);
@@ -734,13 +734,13 @@ void Camera::updateBlend()
         a = Math_EaseRampProgress(M(s32, 0xc8), a, b, c, d);
         Vec_Sub(&t1, (V3 *)&M(u8, 0x110), (V3 *)&M(u8, 0x15c));
         Vec_Scale(&t1, a);
-        func_01ffd070(&o1, (V3 *)&M(u8, 0x15c), &t1);
+        Vec_Add(&o1, (V3 *)&M(u8, 0x15c), &t1);
         M(s32, 0x15c) = o1.x;
         M(s32, 0x160) = o1.y;
         M(s32, 0x164) = o1.z;
         Vec_Sub(&t2, (V3 *)&M(u8, 0x104), (V3 *)&M(u8, 0x150));
         Vec_Scale(&t2, a);
-        func_01ffd070(&o2, (V3 *)&M(u8, 0x150), &t2);
+        Vec_Add(&o2, (V3 *)&M(u8, 0x150), &t2);
         M(s32, 0x150) = o2.x;
         M(s32, 0x154) = o2.y;
         M(s32, 0x158) = o2.z;
@@ -771,7 +771,7 @@ void Camera::setLookAtOrbit(V3 *a, s32 r, s32 s, s32 z)
     t.z = z;
     Vec_RotateX(&t, (s16)-r);
     Vec_RotateY(&t, s);
-    func_01ffd070(&o, a, &t);
+    Vec_Add(&o, a, &t);
     M(s32, 0x168) = o.x;
     M(s32, 0x16c) = o.y;
     M(s32, 0x170) = o.z;
@@ -984,7 +984,7 @@ void Camera::updateMode1() {
             r.z = z;
             Vec_RotateX(&r, (s16)-getPitch());
             Vec_RotateY(&r, getYaw());
-            func_01ffd070(&o, &v, &r);
+            Vec_Add(&o, &v, &r);
             e.x = o.x;
             e.y = o.y;
             e.z = o.z;
@@ -1204,7 +1204,7 @@ extern "C" s32 Camera_CalcPointSpan(VecFx32 *a, VecFx32 *b, VecFx32 *c, s32 *d) 
     v2.z = func_01ffcb0c(*(volatile s32 *)&sub.z, sCameraSpanDepthScale);
     len = VEC_Mag(&v2);
     if (c != NULL) {
-        func_01ffd070(&t1, a, b);
+        Vec_Add(&t1, a, b);
         Vec_ShiftRightTo(&t2, &t1, 1);
         c->x = t2.x;
         c->y = t2.y;
@@ -1258,7 +1258,7 @@ extern "C" s32 Camera_CalcTriangleSpan(VecFx32 *a, VecFx32 *b, VecFx32 *c, VecFx
         r = z;
     }
     if (d != NULL) {
-        func_01ffd070(&t1, &lo, &hi);
+        Vec_Add(&t1, &lo, &hi);
         Vec_ShiftRightTo(&t2, &t1, 1);
         d->x = t2.x;
         d->y = t2.y;

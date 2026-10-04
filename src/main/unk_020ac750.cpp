@@ -2392,7 +2392,7 @@ extern "C" {
 void G3_LoadMtx43(void *p);
 }
 extern "C" {
-void func_01ffd070(VecFx32 *out, VecFx32 *a, VecFx32 *b);
+void Vec_Add(VecFx32 *out, VecFx32 *a, VecFx32 *b);
 }
 extern "C" {
 u32 _s32_div_f(u32 a, u32 b);

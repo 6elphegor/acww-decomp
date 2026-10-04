@@ -2,7 +2,7 @@
 typedef unsigned int u32;
 typedef int s32;
 
-extern double func_0212dcd0(double, double);
+extern double __ieee754_pow(double, double);
 extern double copysign(double, double);
 
 static inline int __fpclassifyd(double x) {
@@ -18,13 +18,13 @@ static inline int __fpclassifyd(double x) {
     }
 }
 
-// pow (wrapper around func_0212dcd0 = __ieee754_pow)
-double func_0212f2f4(double x, double y) {
-    return func_0212dcd0(x, y);
+// pow (wrapper around __ieee754_pow)
+double pow(double x, double y) {
+    return __ieee754_pow(x, y);
 }
 
-// scalbn
-double func_0212f010(double x, int n) {
+// ldexp (MSL s_ldexp.c: the fdlibm scalbn body)
+double ldexp(double x, int n) {
     static const double two54 = 1.80143985094819840000e+16;
     static const double twom54 = 5.55111512312578270212e-17;
     static const double huge = 1.0e+300;
@@ -79,7 +79,7 @@ double frexp(double x, int *eptr) {
 }
 
 // fabs
-double func_0212ef2c(double x) {
+double fabs(double x) {
     *(1 + (s32 *)&x) &= 0x7fffffff;
     return x;
 }

@@ -28,10 +28,10 @@ typedef void *(*DwcFreeHookFn)(s32, void *, s32);
 extern "C" {
 
 u64 OS_GetTick();
-char *func_0212a120(const char *, s32);
+char *strchr(const char *, s32);
 s32 STD_GetStringLength(const char *);
 s32 strncmp(const char *, const char *, s32);
-void func_0212a2ec(void *, const void *, s32);
+void strncpy(void *, const void *, s32);
 s32 OS_SNPrintf(char *, s32, const char *, ...);
 void MI_CpuCopy8(void *, void *, s32);
 void MI_CpuFill8(void *, s32, s32);
@@ -298,7 +298,7 @@ s32 GsUtil_FormatKeyValue(s32 a, s32 b, char *dst, s32 d) {
 }
 
 s32 GsUtil_AppendKeyValue(s32 a, s32 b, char *s, s32 d) {
-    char *e = func_0212a120(s, 0);
+    char *e = strchr(s, 0);
     GsUtil_FormatKeyValue(a, b, e, d);
     return STD_GetStringLength(s);
 }
@@ -310,7 +310,7 @@ s32 GsUtil_GetKeyValue(char *key, char *out, char *src, s32 sep) {
     if (out == NULL) {
         return -1;
     }
-    p = func_0212a120(src, sep);
+    p = strchr(src, sep);
     if (p == NULL) {
         return -1;
     }
@@ -320,26 +320,26 @@ s32 GsUtil_GetKeyValue(char *key, char *out, char *src, s32 sep) {
                 break;
             }
         }
-        q = func_0212a120(p + 1, sep);
+        q = strchr(p + 1, sep);
         if (q == NULL) {
             return -1;
         }
-        p = func_0212a120(q + 1, sep);
+        p = strchr(q + 1, sep);
         if (p == NULL) {
             return -1;
         }
     }
-    p = func_0212a120(p + 1, sep);
+    p = strchr(p + 1, sep);
     if (p == NULL) {
         return -1;
     }
-    q = func_0212a120(p + 1, sep);
+    q = strchr(p + 1, sep);
     if (q != NULL) {
         len = q - (p + 1);
     } else {
         len = STD_GetStringLength(p + 1);
     }
-    func_0212a2ec(out, p + 1, len);
+    strncpy(out, p + 1, len);
     out[len] = 0;
     return len;
 }

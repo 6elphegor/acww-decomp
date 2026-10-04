@@ -41,7 +41,7 @@ extern Unk_ov065_02266c90_Os data_021fcc2c;
 void MI_CpuCopy8(const void *, void *, u32);
 void MI_CpuFill8(void *, s32, u32);
 s32 _s32_div_f(s32, s32);
-u32 func_0212a438(const char *);
+u32 strlen(const char *);
 s32 memcmp(const void *, const void *, u32);
 void RTC_GetDate(Unk_ov065_02266948_Date *);
 u32 OS_GetThreadPriority(u32);
@@ -174,7 +174,7 @@ s32 SslCert_ParseAsn1(Ctx *c, u8 **pp, s32 depth, s32 idx, s32 mode) {
         op = p;
         do {
             oe = *tbl;
-            if (memcmp(op, oe, func_0212a438(oe)) == 0) {
+            if (memcmp(op, oe, strlen(oe)) == 0) {
                 switch (oi) {
                 case 0:
                     break;
@@ -608,7 +608,7 @@ void Ssl_DeriveSecretPart(u8 *out, char *label, Ctx *c) {
     u8 tmp[0x14];
     u8 *h = c->sha1Work;
     SslSha1_Init(h);
-    SslSha1_Update(h, label, func_0212a438(label));
+    SslSha1_Update(h, label, strlen(label));
     SslSha1_Update(h, c->session->masterSecret, 0x30);
     SslSha1_Update(h, c->clientRandom, 0x20);
     SslSha1_Update(h, c->serverRandom, 0x20);

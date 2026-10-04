@@ -49,14 +49,14 @@ s32 GsArray_Count(void *);
 void GsArray_Free(void *);
 void *GsArray_At(void *, s32);
 void GsArray_DeleteAt(void *, s32);
-char *func_0212a2ec(char *dst, const char *src, u32 n);
-char *func_02129f1c(const char *, const char *);
+char *strncpy(char *dst, const char *src, u32 n);
+char *strstr(const char *, const char *);
 s32 STD_GetStringLength(const char *);
 s32 strncmp(const char *, const char *, u32);
 s32 OS_SPrintf(char *buf, const char *fmt, ...);
-s32 func_02128ca4(const char *, const char *, ...);
-s32 func_0212b770(const char *);
-s32 func_0212899c(void *, s32, u32);
+s32 sscanf(const char *, const char *, ...);
+s32 atol(const char *);
+s32 memset(void *, s32, u32);
 
 void GsGp_SetErrorString(void *, const char *);
 void GsGp_SetError(void *, s32, const char *);
@@ -110,7 +110,7 @@ void GsGp_RemoveOperation(Ctx0228 **, GsGpOperation *);
 void GsGp_FreeCachedInfo(void *);
 s32 strncmp(const char *, const char *, s32);
 s32 strcmp(const char *, const char *);
-s32 func_0212b770(void *);
+s32 atol(void *);
 
 s32 GsGpSearch_Process(Ctx0228 **, GsGpOperation *);
 s32 GsGpProfile_MatchBuddyIndexCb(Ctx0228 **, GsGpProfile *, void *);
@@ -130,9 +130,9 @@ s32 GsGp_SendBuffer(Ctx0228 **, s32, char **, s32 *, s32, const char *);
 s32 GsGp_RecvToBuffer(Ctx0228 **, s32, char **, s32 *, s32 *, const char *);
 void *GsUtil_Realloc(void *, s32);
 void GsUtil_StrCopyN(char *, const char *, s32);
-void *func_0212899c(void *, s32, s32);
+void *memset(void *, s32, s32);
 char *func_02127838(char *, const char *);
-char *func_02129f1c(const char *, const char *);
+char *strstr(const char *, const char *);
 void GsUtil_Sleep(s32);
 s32 GsGpSearch_ProfileSearch(Ctx0228 **, char *, char *, char *, char *, char *, s32, s32, s32, s32, s32);
 
@@ -217,7 +217,7 @@ s32 GsGpSearch_NewData(void *h0, void *out, s32 p2) {
         GsGp_SetErrorString(h, "Out of memory.");
         return 1;
     }
-    func_0212899c(cn, 0, 0x144);
+    memset(cn, 0, 0x144);
     cn->searchType = p2;
     cn->sock = -1;
     cn->inputBuffer = 0;
@@ -471,7 +471,7 @@ again:
         GsGp_CallErrorCallback(h, 3, 0);
         return 3;
     }
-    if (func_02129f1c(c->inputBuffer, "\\final\\") == 0) {
+    if (strstr(c->inputBuffer, "\\final\\") == 0) {
         goto endchk;
     }
     pos = 0;
@@ -506,8 +506,8 @@ again:
                 if (base == 0) ERRMEM("Out of memory.")
                 idx = s1.numMatches - 1;
                 e = &base[idx];
-                func_0212899c(e, 0, 0xac);
-                base[idx].profileId = func_0212b770(buf);
+                memset(e, 0, 0xac);
+                base[idx].profileId = atol(buf);
                 done2 = 0;
                 do {
                     save1 = pos;
@@ -643,9 +643,9 @@ again:
                 if (base == 0) ERRMEM("Out of memory.")
                 idx = p4->numMatches - 1;
                 e = &base[idx];
-                func_0212899c(e, 0, 0x128);
+                memset(e, 0, 0x128);
                 e->statusCode = 1;
-                base[idx].profileId = func_0212b770(buf);
+                base[idx].profileId = atol(buf);
                 done2 = 0;
                 do {
                     save1 = pos;
@@ -656,7 +656,7 @@ again:
                         GsUtil_StrCopyN(e->nick, buf, 0x1f);
                     }
                     if (strcmp(tok, "statuscode") == 0) {
-                        e->statusCode = func_0212b770(buf);
+                        e->statusCode = atol(buf);
                     } else if (strcmp(tok, "psr") == 0 || strcmp(tok, "psrdone") == 0) {
                         done2 = 1;
                         pos = save1;
@@ -681,13 +681,13 @@ again:
         }
         GETTOK(tok)
         if (strcmp(tok, "cur") != 0) ERR3()
-        a4 = func_0212b770(buf);
+        a4 = atol(buf);
         if (a4 != 0) {
             ctx->errorCode = a4;
             a6 = 0;
         } else {
             if (GsGp_GetValue(c->inputBuffer, "\\pid\\", buf, 0x200) == 0) ERR3()
-            a6 = func_0212b770(buf);
+            a6 = atol(buf);
         }
         p = (GsGpCheckResponse *)GsUtil_Alloc(8);
         if (p == 0) ERRMEM("Out of memory.")
@@ -708,7 +708,7 @@ again:
         }
         GETTOK(tok)
         if (strcmp(tok, "nur") != 0) ERR3()
-        a4 = func_0212b770(buf);
+        a4 = atol(buf);
         if (a4 != 0) {
             ctx->errorCode = a4;
         }
@@ -716,7 +716,7 @@ again:
             if (a4 == 0) ERR3()
             a6 = 0;
         } else {
-            a6 = func_0212b770(buf);
+            a6 = atol(buf);
         }
         p = (GsGpCheckResponse *)GsUtil_Alloc(8);
         if (p == 0) ERRMEM("Out of memory.")
@@ -754,9 +754,9 @@ again:
                 base = p7->profiles;
                 idx = p7->numProfiles;
                 e = &base[idx];
-                func_0212899c(e, 0, 0xac);
+                memset(e, 0, 0xac);
                 p7->numProfiles++;
-                base[idx].profileId = func_0212b770(buf);
+                base[idx].profileId = atol(buf);
                 done2 = 0;
                 do {
                     save1 = pos;
@@ -799,7 +799,7 @@ again:
         p->nicks = 0;
         GETTOK(tok)
         if (strcmp(tok, "us") != 0) ERR3()
-        p->numNicks = func_0212b770(buf);
+        p->numNicks = atol(buf);
         p->nicks = (char **)GsUtil_Alloc(p->numNicks * 4);
         if (p->nicks == 0) ERRMEM("Out of memory.")
         done = 0;

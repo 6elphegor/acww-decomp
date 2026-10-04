@@ -114,7 +114,7 @@ extern void FX_DivAsync(s32, s32);
 extern s32 FX_GetDivResult(void);
 extern u32 OS_DisableInterrupts(void);
 extern void OS_RestoreInterrupts(u32);
-extern void func_01ff9f5c(void);
+extern void AlarmCallback__stream(void);
 extern u32 _u32_div_f();
 extern void NNSi_SndCaptureEndSleep(void);
 extern void NNSi_SndCaptureBeginSleep(void);
@@ -236,7 +236,7 @@ BOOL NNS_SndStrmSetup(Strm *st, s32 fmt, u32 buf, u32 size, s32 timer, s32 inter
         data_021fb6f4[ch].pos = 0;
         SND_SetupChannelPcm(ch, fmt, data_021fb6f4[ch].buf, 1, 0, st->blockSize >> 2, 127, 0, timer << 5, 64);
     }
-    SND_SetupAlarm(st->alarm, period, period, func_01ff9f5c, st);
+    SND_SetupAlarm(st->alarm, period, period, AlarmCallback__stream, st);
     NNS_FndAppendListObject(&data_021fb6a8, st);
     st->fmt = fmt;
     st->blkCount = interval;

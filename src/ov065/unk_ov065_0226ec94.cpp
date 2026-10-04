@@ -48,10 +48,10 @@ void OS_Sleep(s32 t);
 s32 OS_DisableInterrupts(void);
 void OS_RestoreInterrupts(s32 v);
 void DWCi_BM_GetWiFiInfo(u64 *out);
-s32 func_0212b770(const char *s);
-s32 func_0212a438(const char *s);
+s32 atol(const char *s);
+s32 strlen(const char *s);
 s32 strcmp(const char *a, const char *b);
-void func_0212a2ec(char *dst, const char *src, u32 n);
+void strncpy(char *dst, const char *src, u32 n);
 void MI_CpuFill8(void *p, u32 v, u32 n);
 void MI_CpuCopy8(const void *src, void *dst, u32 n);
 s32 OS_IsThreadTerminated(void *);
@@ -227,7 +227,7 @@ void NetCheck_ThreadMain(void) {
             NetCheck_SetState(2);
             goto end;
         }
-        v = func_0212b770(DwcHttp_FindField(sNetCheck->responseFields, 0x20, "httpresult"));
+        v = atol(DwcHttp_FindField(sNetCheck->responseFields, 0x20, "httpresult"));
         if (data_0220064c == 0x22) {
             NetCheck_SetState(2);
             goto end;
@@ -270,13 +270,13 @@ void NetCheck_ThreadMain(void) {
                 MI_CpuCopy8(WifiLink_GetConnectedSsid(0), bb.buf, pn.ssidLength);
                 OS_RestoreInterrupts(ie);
             }
-            if (DwcHttp_AddFormParam(sNetCheckHttp, "ssid", bb.buf, func_0212a438(bb.buf))) {
+            if (DwcHttp_AddFormParam(sNetCheckHttp, "ssid", bb.buf, strlen(bb.buf))) {
                 DwcHttp_Destroy(sNetCheckHttp);
                 NetCheck_SetState(8);
                 goto end;
             }
             p = sNetCheck->bodyWayport;
-            if (DwcHttp_AddFormParam(sNetCheckHttp, "HotSpotResponse", p, func_0212a438(p))) {
+            if (DwcHttp_AddFormParam(sNetCheckHttp, "HotSpotResponse", p, strlen(p))) {
                 DwcHttp_Destroy(sNetCheckHttp);
                 NetCheck_SetState(8);
                 goto end;
@@ -312,14 +312,14 @@ void NetCheck_ThreadMain(void) {
                 goto end;
             }
             sNetCheck->body302 =
-                (char *)sNetCheck->allocFunc("DWCnetcheck->body_302", func_0212a438(loc1) + 1);
+                (char *)sNetCheck->allocFunc("DWCnetcheck->body_302", strlen(loc1) + 1);
             p1 = sNetCheck->body302;
             if (p1 == 0) {
                 DwcHttp_Destroy(sNetCheckHttp);
                 NetCheck_SetState(4);
                 goto end;
             }
-            func_0212a2ec(p1, loc1, func_0212a438(loc1));
+            strncpy(p1, loc1, strlen(loc1));
         }
         } else {
             DwcHttp_Destroy(sNetCheckHttp);
@@ -391,13 +391,13 @@ void NetCheck_ThreadMain(void) {
             MI_CpuCopy8(WifiLink_GetConnectedSsid(0), bb.buf, pn.ssidLength);
             OS_RestoreInterrupts(ie);
         }
-        if (DwcHttp_AddFormParam(sNetCheckHttp, "ssid", bb.buf, func_0212a438(bb.buf))) {
+        if (DwcHttp_AddFormParam(sNetCheckHttp, "ssid", bb.buf, strlen(bb.buf))) {
             DwcHttp_Destroy(sNetCheckHttp);
             NetCheck_SetState(8);
             goto end;
         }
         p = sNetCheck->body302;
-        if (DwcHttp_AddFormParam(sNetCheckHttp, "HTML", p, func_0212a438(p))) {
+        if (DwcHttp_AddFormParam(sNetCheckHttp, "HTML", p, strlen(p))) {
             DwcHttp_Destroy(sNetCheckHttp);
             NetCheck_SetState(8);
             goto end;
@@ -429,7 +429,7 @@ void NetCheck_ThreadMain(void) {
             NetCheck_SetState(2);
             goto end;
         }
-        v = func_0212b770(DwcHttp_FindField(sNetCheck->responseFields, 0x20, "httpresult"));
+        v = atol(DwcHttp_FindField(sNetCheck->responseFields, 0x20, "httpresult"));
         if (data_0220064c == 0x22) {
             DwcHttp_Destroy(sNetCheckHttp);
             NetCheck_SetState(2);
@@ -445,7 +445,7 @@ void NetCheck_ThreadMain(void) {
             NetCheck_SetState(9);
             goto end;
         }
-        v = func_0212b770(pn.returnCd);
+        v = atol(pn.returnCd);
         if (data_0220064c == 0x22) {
             DwcHttp_Destroy(sNetCheckHttp);
             NetCheck_SetState(9);
@@ -512,7 +512,7 @@ void NetCheck_ThreadMain(void) {
                 goto end;
             }
             c[n] = 0;
-            t = func_0212b770(c);
+            t = atol(c);
             if (data_0220064c == 0x22) {
                 DwcHttp_Destroy(sNetCheckHttp);
                 NetCheck_SetState(9);
@@ -574,14 +574,14 @@ void NetCheck_ThreadMain(void) {
             goto end;
         }
         sNetCheck->bodyWayport =
-            (char *)sNetCheck->allocFunc("DWCnetcheck->body_wayport", func_0212a438(loc2) + 1);
+            (char *)sNetCheck->allocFunc("DWCnetcheck->body_wayport", strlen(loc2) + 1);
         p2 = sNetCheck->bodyWayport;
         if (p2 == 0) {
             DwcHttp_Destroy(sNetCheckHttp);
             NetCheck_SetState(4);
             goto end;
         }
-        func_0212a2ec(p2, loc2, func_0212a438(loc2));
+        strncpy(p2, loc2, strlen(loc2));
         DwcHttp_Destroy(sNetCheckHttp);
         OS_Sleep(t);
     }
@@ -619,11 +619,11 @@ s32 NetCheck_GetErrorCode(void) {
 // Not in the original binary (unreferenced, not in symbols.txt: dead-stripped by the link). Defined last so that it is compiled
 // first: it creates the five buffer tags in the order the original literal pool has them (the original pool starts with them).
 __declspec(weak) void Unk_ov065_0226ecfc_pool_order(void) {
-    func_0212a438("DWCnetcheck->body_302");
-    func_0212a438("url");
-    func_0212a438("data");
-    func_0212a438("wait");
-    func_0212a438("DWCnetcheck->body_wayport");
+    strlen("DWCnetcheck->body_302");
+    strlen("url");
+    strlen("data");
+    strlen("wait");
+    strlen("DWCnetcheck->body_wayport");
 }
 
 }

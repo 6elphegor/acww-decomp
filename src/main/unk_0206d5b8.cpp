@@ -148,7 +148,7 @@ u32 OS_DisableInterrupts(void);
 }
 
 extern "C" {
-void func_01ffa3c0(void);
+void OS_Halt(void);
 }
 
 extern "C" {

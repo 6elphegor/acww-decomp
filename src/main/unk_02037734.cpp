@@ -86,7 +86,7 @@ void _ZN11CachedModel10loadCachedEPvS0_(void *p, u32 a, void *b);
 void String_Load2d(void *o, u8 *p, u32 x);
 void Str_SPrintf(void *buf, void *fmt, u32 a);
 void CommCaution_CopyString(void *a, void *b);
-void func_0212a360(void *a, void *b);
+void strcpy(void *a, void *b);
 s32 Net_GetLastErrorCode();
 s32 Net_GetMode();
 }
@@ -277,7 +277,7 @@ extern "C" void CommCaution_SaveErrorCode() {
 }
 
 extern "C" void CommCaution_CopyString(void *a, void *b) {
-    func_0212a360(a, b);
+    strcpy(a, b);
 }
 
 u8 *CommCaution_FormatErrorCode() {

@@ -114,7 +114,7 @@ extern void FX_DivAsync(s32, s32);
 extern s32 FX_GetDivResult(void);
 extern u32 OS_DisableInterrupts(void);
 extern void OS_RestoreInterrupts(u32);
-extern void func_01ff9f5c(void);
+extern void AlarmCallback__stream(void);
 extern u32 _u32_div_f();
 extern void NNSi_SndCaptureEndSleep(void);
 extern void NNSi_SndCaptureBeginSleep(void);

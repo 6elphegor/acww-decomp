@@ -63,7 +63,7 @@ s32 WfcObj_CreateSingle(s32, s32);
 s32 DWC_BACKUPlCheckAddress(void *a);
 s32 MI_CpuCopy8(void *a, void *b, u32 c);
 s32 MI_CpuFill8(void *a, u32 b, u32 c);
-s32 func_0212b770(void *a);
+s32 atol(void *a);
 s32 memcmp(void *, const char *, s32);
 s32 GX_LoadBG2Char(void);
 s32 GX_LoadBGPltt(void);
@@ -304,7 +304,7 @@ s32 WfcAddrEdit_IsOctetFull(s32 n) {
         if (*q != 0) break;
         *q++ = 0x20;
     }
-    if (func_0212b770(buf) >= n) return 1;
+    if (atol(buf) >= n) return 1;
     return 0;
 }
 

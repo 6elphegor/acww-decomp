@@ -215,7 +215,7 @@ BOOL FS_OpenFile(void *file, const char *path);
 }
 
 extern "C" {
-char *func_0212a120(char *s, s32 c);
+char *strchr(char *s, s32 c);
 }
 
 extern "C" {
@@ -223,15 +223,15 @@ int strcmp(const u8 *a, const u8 *b);
 }
 
 extern "C" {
-char *func_0212a2ec(char *dst, const char *src, u32 n);
+char *strncpy(char *dst, const char *src, u32 n);
 }
 
 extern "C" {
-char *func_0212a360(char *dst, const char *src);
+char *strcpy(char *dst, const char *src);
 }
 
 extern "C" {
-u32 func_0212a438(const char *s);
+u32 strlen(const char *s);
 }
 
 extern "C" {

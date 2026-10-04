@@ -5709,7 +5709,7 @@ s32 Vec_DistXZ(void *a, void *b);
 s32 Math_Atan2(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 void VEC_Add(void *a, void *b, void *c);
-void func_01ffd070(void *a, void *b, void *c);
+void Vec_Add(void *a, void *b, void *c);
 void PlayerActor_ApproachValue(s32 *p, s32 a, s32 b, s32 c, s32 d);
 s32 PlayerActor_Decelerate(s32 a, s32 b);
 s32 PlayerActor_Accelerate(s32 a, s32 b);
@@ -5939,7 +5939,7 @@ extern "C" void PlayerActor_SetupExitWalkIn(Obj *o, Obj *arg) {
         cur.x = r5->x;
         cur.y = r5->y;
         cur.z = r5->z;
-        func_01ffd070(&tmp, &cur, &w);
+        Vec_Add(&tmp, &cur, &w);
         V3 *pv = (V3 *)&o->position;
         pv->x = tmp.x;
         pv->y = tmp.y;

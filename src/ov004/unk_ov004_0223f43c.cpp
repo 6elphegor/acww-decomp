@@ -61,7 +61,7 @@ s32 FX_Div(s32 a, s32 b);
 void Camera_GetLookAtPoint(void *out, Camera *o);
 void VEC_Subtract(void *a, void *b, void *c);
 void VEC_Add(void *a, void *b, void *c);
-void func_01ffd070(void *out, void *a, void *b);
+void Vec_Add(void *out, void *a, void *b);
 void Vec_ShiftRightTo(void *out, void *in, s32 s);
 void Vec_RotateY(void *v, s32 a);
 void Camera_StartBlend(void);
@@ -301,7 +301,7 @@ void Camera_UpdateMode16(Camera *o) {
     VecFx32 *p = PlayerActor_GetBodyPos(4);
     VecFx32 a, b;
     s32 d;
-    func_01ffd070(&a, p, &o->focusPointA);
+    Vec_Add(&a, p, &o->focusPointA);
     Vec_ShiftRightTo(&b, &a, 1);
     o->targetFocus.x = b.x;
     o->targetFocus.y = b.y;

@@ -71,8 +71,8 @@ void Task_InsertByPriority(QList *l, QNode *n);
 void CmdSeq_Undo(void *p);
 BOOL CmdSeq_Poll(void *p);
 void MI_CpuFill8(void *dst, u32 v, u32 n); // MI_CpuFill8
-TreeNode *func_01ffcfc0(TreeNode *n);
-TreeNode *func_01ffcffc(TreeNode *n);
+TreeNode *TreeNode_GetNextSkipChildren(TreeNode *n);
+TreeNode *TreeNode_GetNextPreOrder(TreeNode *n);
 u32 ProcBase_RunPhase(void *p, P2 a, P2 b, P2 c);
 
 void Mem_FreeForDelete(void *p);
@@ -408,11 +408,11 @@ extern "C" u32 ProcBase_taskDelete(ProcBase *self) {
 
 extern "C" BOOL ProcBase_HasCreatingChild(ProcBase *self) {
     TreeNode *root = &self->treeNode;
-    TreeNode *end = func_01ffcfc0(root);
+    TreeNode *end = TreeNode_GetNextSkipChildren(root);
     TreeNode *n = root->child;
     while (n != NULL && n != end) {
         if (isZero(n->owner->state)) return TRUE;
-        n = func_01ffcffc(n);
+        n = TreeNode_GetNextPreOrder(n);
     }
     return FALSE;
 }

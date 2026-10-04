@@ -3596,7 +3596,7 @@ extern "C" { s32 _ZN10ChoiceMenu14setListChoicesEP10ChoiceList(void *p, void *q)
 extern "C" { s32 _ZN10ChoiceMenu4openEv(void *p); }
 extern "C" { s32 _ZN9MsgString4copyEPS_(void *p, void *q); }
 extern "C" { s32 String_Load(void *p, s32 a, s32 b); }
-extern "C" { s32 func_0212a2ec(void *d, void *s, s32 n); }
+extern "C" { s32 strncpy(void *d, void *s, s32 n); }
 extern "C" { s32 MI_CpuFill8(void *d, s32 v, s32 n); }
 extern "C" { s32 Input_IsTouchTrigInRect(s32 a, s32 b, s32 c, s32 d); }
 extern "C" { s32 Input_IsBHeld(); }
@@ -3683,7 +3683,7 @@ void TalkWindowState::setNextMessage(u8 *src, void *s) {
     using namespace n7;
     nextMsgIndex = *src;
     if (s) {
-        func_0212a2ec(nextFileName, s, 0x19);
+        strncpy(nextFileName, s, 0x19);
     } else {
         MI_CpuFill8(nextFileName, 0, 0x1a);
     }
@@ -4069,7 +4069,7 @@ extern "C" { extern s8 sTalkFriendshipDeltas[]; }
 extern "C" { extern u16 data_020cba10[]; }
 extern "C" { extern u8 gSaveData[]; }
 extern "C" { s32 strncmp(const char *a, const char *b, u32 n); }
-extern "C" { u32 func_0212a438(const char *s); }
+extern "C" { u32 strlen(const char *s); }
 extern "C" { char *Str_SPrintf(char *buf, const char *fmt, ...); }
 extern "C" { void TownId_GetNameString(void *dst, void *src); }
 extern "C" { void Snd_PlaySe(void); }
@@ -4433,10 +4433,10 @@ char *TalkWindowMsg::buildMessagePath(const char *a, const char *b) {
     const char *r5 = a ? a : (const char *)request + 4;
     const char *r7 = matchDirPrefix(r5);
     if (r7 != 0) {
-        r5 += func_0212a438(r7) + 1;
+        r5 += strlen(r7) + 1;
         const char *r4 = matchSubdirPrefix(r5);
         if (r4 != 0) {
-            const char *e = r5 + (func_0212a438(r4) + 1);
+            const char *e = r5 + (strlen(r4) + 1);
             Str_SPrintf(sTalkMessagePath, data_020ddd7c, r6, r7, r4, e);
         } else {
             Str_SPrintf(sTalkMessagePath, data_020ddd90, r6, r7, r5);
@@ -4451,7 +4451,7 @@ const char *TalkWindowMsg::matchDirPrefix(const char *s) {
     const char **p;
     const char *e;
     for (p = sTalkMessageDirs; (e = *p) != 0; p++) {
-        u32 n = func_0212a438(e);
+        u32 n = strlen(e);
         if (strncmp(s, e, n) == 0 && s[n] == '_') {
             break;
         }
@@ -4463,7 +4463,7 @@ const char *TalkWindowMsg::matchSubdirPrefix(const char *s) {
     const char **p;
     const char *e;
     for (p = sTalkMessageSubdirs; (e = *p) != 0; p++) {
-        u32 n = func_0212a438(e);
+        u32 n = strlen(e);
         if (strncmp(s, e, n) == 0 && s[n] == '_') {
             break;
         }

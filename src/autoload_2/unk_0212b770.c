@@ -7,7 +7,7 @@ typedef unsigned long long u64;
 extern u16 data_0213a510[]; // __ctype_map
 extern u8 data_0213a490[];  // __upper_map
 extern int data_0220064c;   // errno
-int func_02128d34(void *arg, int ch, int action); // __StringRead
+int __StringRead(void *arg, int ch, int action); // __StringRead
 u32 _u32_div_f(u32 a, u32 b);
 
 #define isspace_(c) (((c) < 0 || (c) >= 128) ? 0 : (data_0213a510[(c)] & 0x100))
@@ -190,13 +190,13 @@ typedef struct {
 } __InStrCtrl;
 
 // strtoul
-u32 func_0212b854(const char *str, char **end, int base) {
+u32 strtoul(const char *str, char **end, int base) {
     u32 value;
     int count, negative, overflow;
     __InStrCtrl isc;
     isc.NextChar = (char *)str;
     isc.NullCharDetected = 0;
-    value = __strtoul(base, 0x7fffffff, (int (*)(void *, int, int))func_02128d34, &isc, &count, &negative, &overflow);
+    value = __strtoul(base, 0x7fffffff, (int (*)(void *, int, int))__StringRead, &isc, &count, &negative, &overflow);
     if (end) *end = (char *)str + count;
     if (overflow) {
         value = 0xffffffff;
@@ -214,7 +214,7 @@ int strtol(const char *str, char **end, int base) {
     __InStrCtrl isc;
     isc.NextChar = (char *)str;
     isc.NullCharDetected = 0;
-    value = __strtoul(base, 0x7fffffff, (int (*)(void *, int, int))func_02128d34, &isc, &count, &negative, &overflow);
+    value = __strtoul(base, 0x7fffffff, (int (*)(void *, int, int))__StringRead, &isc, &count, &negative, &overflow);
     if (end) *end = (char *)str + count;
     if (overflow || (!negative && value > 0x7fffffff) || (negative && value > 0x80000000)) {
         value = negative ? 0x80000000 : 0x7fffffff;
@@ -226,6 +226,6 @@ int strtol(const char *str, char **end, int base) {
 }
 
 // atol (strtol(str, NULL, 10))
-int func_0212b770(const char *str) {
+int atol(const char *str) {
     return strtol(str, 0, 10);
 }

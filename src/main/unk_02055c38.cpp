@@ -50,8 +50,8 @@ extern "C" void VEC_CrossProduct(void *a, void *b, void *c);
 extern "C" u8 *NNSi_G3dGetTexPatAnmFV(u8 *p, s32 z, u32 v);
 extern "C" u8 *NNSi_G3dGetTexPatAnmTexNameByIdx(u8 *p, u32 v);
 extern "C" u8 *NNSi_G3dGetTexPatAnmPlttNameByIdx(u8 *p, u32 v);
-extern "C" u32 func_0212a438(const char *s);
-extern "C" void func_0212a360(void *p);
+extern "C" u32 strlen(const char *s);
+extern "C" void strcpy(void *p);
 extern "C" void operator delete(void *p);
 extern "C" void Anim_NormalizeVec(VecFx32 *v);
 extern "C" void Anim_LerpVec(VecFx32 *a, VecFx32 *b, VecFx32 *out, s32 t);
@@ -119,7 +119,7 @@ s32 G3dRes_FindDictIdx(void *p, s32 a) {
     buf[1] = 0;
     buf[2] = 0;
     buf[3] = 0;
-    func_0212a360(buf);
+    strcpy(buf);
     return NNS_G3dGetResDictIdxByName(p, buf);
 }
 
@@ -320,7 +320,7 @@ ResName16::~ResName16() {}
 
 void ResName16::set(const char *src) {
     if (src != NULL) {
-        u32 n = func_0212a438(src) + 1;
+        u32 n = strlen(src) + 1;
         for (u32 i = 0; i < 0x11; i++) {
             if (i < n) {
                 chars[i] = src[i];

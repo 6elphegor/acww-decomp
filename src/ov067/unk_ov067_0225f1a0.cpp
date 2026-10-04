@@ -152,7 +152,7 @@ struct WlxWork {
 
 extern "C" {
 s32 OS_DisableInterrupts(void);
-s32 func_01ffa314(void);
+s32 OS_EnableInterrupts(void);
 void OS_RestoreInterrupts(s32);
 u64 OS_GetTick(void);
 s32 WM_GetNextTgid(void);
@@ -1423,7 +1423,7 @@ extern "C" void WlxWm_ScanStep(WlxWmMsg *m) {
 }
 
 extern "C" void WlxWm_Init(WlxWmWork *c, WMParentParam *s, WlxWmEventFn cb, u32 v) {
-    s32 r = func_01ffa314();
+    s32 r = OS_EnableInterrupts();
     WM_GetNextTgid();
     OS_RestoreInterrupts(r);
     sWlxWm = c;

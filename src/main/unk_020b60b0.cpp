@@ -49,7 +49,7 @@ s32 func_0203bc3c(s32 a);
 s32 FX_Div(s32 a, s32 b);
 void Vec_SafeNormalize(VecFx32 *v);
 void Vec_Scale(VecFx32 *v, s32 s);
-void func_01ffd070(VecFx32 *out, VecFx32 *a, VecFx32 *b);
+void Vec_Add(VecFx32 *out, VecFx32 *a, VecFx32 *b);
 void MTX_Inverse43(Mtx43 *a, Mtx43 *b);
 void MTX_MultVec43(VecFx32 *v, Mtx43 *m, VecFx32 *out);
 void Vec_Sub(VecFx32 *out, VecFx32 *a, VecFx32 *b);
@@ -350,7 +350,7 @@ extern "C" void TouchPick_Cast(TouchPicker *self, s32 sx, s32 sy, u8 flag) {
                 l.b = *pc;
                 s32 h = data_020c8cb8;
                 Vec_Scale(&l.b, h << 2);
-                func_01ffd070(&l.c, &p0, &l.b);
+                Vec_Add(&l.c, &p0, &l.b);
                 s32 k = data_020c8cbc;
                 VecFx32 q[4];
                 q[0].x = l.a.x - k;

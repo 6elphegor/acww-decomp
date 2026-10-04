@@ -78,8 +78,8 @@ void GX_LoadBG3Scr();
 s32 GX_LoadOBJPltt();
 void GX_LoadBGPltt();
 void * MI_CpuFill8(void *, s32, u32);
-s32 func_0212899c(void *, s32, s32);
-void func_0212c234(void *, s32, void *, ...);
+s32 memset(void *, s32, s32);
+void swprintf(void *, s32, void *, ...);
 s32 WfcUtil_HideTopMessage();
 void WfcUtil_ShowTopMessage(s32, s32, s32);
 void WfcUtil_ShowStepIndicator(s32);
@@ -639,7 +639,7 @@ extern "C" s32 WfcManualSetup_DrawRowValue(s32 idx, s32 arg) {
         }
         if (slot->wepMode.wepAscii == 1) n = n / 2;
         MI_CpuFill8(buf, 0, 0x21);
-        func_0212899c(buf, 0x2a, n);
+        memset(buf, 0x2a, n);
         WfcManualSetup_DrawString(buf, arg);
         return;
     }
@@ -803,7 +803,7 @@ extern "C" void WfcManualSetup_DrawString(u8 *a, s32 b) {
 
 extern "C" void WfcManualSetup_DrawAddress(u8 *a, s32 b) {
     u16 buf[17];
-    func_0212c234(buf, 0x10, sWfcAddressFormat, a[0], a[1], a[2], a[3]);
+    swprintf(buf, 0x10, sWfcAddressFormat, a[0], a[1], a[2], a[3]);
     WfcText_DrawMonospace(sWfcManualSetup->textCanvas, 0x5f, b * 0x1d + 8, 2, 7, buf, 1);
 }
 

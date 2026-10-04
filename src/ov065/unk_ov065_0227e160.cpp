@@ -52,9 +52,9 @@ extern char data_ov065_0228d170[];
 extern char data_ov065_0228d194[];
 
 extern "C" {
-char *func_0212a120(const char *, s32);
+char *strchr(const char *, s32);
 s32 strncmp(const char *, const char *, s32);
-s32 func_0212b770(const char *);
+s32 atol(const char *);
 u32 STD_GetStringLength(const char *);
 void memmove(void *, void *, s32);
 void memcpy(void *, const void *, s32);
@@ -151,12 +151,12 @@ typedef GsGpConnectData Req0227;
 extern "C" {
 
 s32 strncmp(const char *, const char *, s32);
-char *func_02129f1c(const char *, const char *);
-s32 func_0212b770(const char *);
+char *strstr(const char *, const char *);
+s32 atol(const char *);
 s32 STD_GetStringLength(const char *);
 s32 OS_SPrintf(char *, const char *, ...);
 s32 memcmp(const void *, const void *, s32);
-void *func_0212899c(void *, s32, s32);
+void *memset(void *, s32, s32);
 void GsUtil_Free(void *);
 void *GsUtil_Alloc(s32);
 void GsUtil_SeedRand(u32);
@@ -274,9 +274,9 @@ s32 GsGp_QueueProfileUpdate(Ctx0227 **, const char *, const char *);
 s32 GsGp_QueueUserUpdate(Ctx0227 **, const char *, const char *);
 s32 GsGp_SetInfoInt(Ctx0227 **, s32, s32);
 
-void *func_0212899c(void *, s32, u32);
+void *memset(void *, s32, u32);
 u32 rand(void);
-s32 func_0212b770(const char *);
+s32 atol(const char *);
 s32 STD_GetStringLength(const char *);
 char *func_02127838(char *, const char *);
 
@@ -409,7 +409,7 @@ s32 GsGp_Connect(Ctx0227 **h, const char *a1, const char *a2, const char *a3, co
         GsGp_SetErrorString(h, "Out of memory.");
         return 1;
     }
-    func_0212899c(obj, 0, 0x308);
+    memset(obj, 0, 0x308);
     obj->isNewUser = a9;
     if (*a5 != 0 && *a6 != 0) {
         GsUtil_StrCopyN(obj->authToken, a5, 0x100);
@@ -605,10 +605,10 @@ s32 GsGp_ProcessConnectReply(Ctx0227 **h, GsGpOperation *n, char *line) {
             c->profileId = 0;
         } else if (t == 0x201) {
             if (GsGp_GetValue(line, "\\pid\\", b3, 0x200) != 0) {
-                c->profileId = func_0212b770(b3);
+                c->profileId = atol(b3);
             }
         }
-        if (func_02129f1c(line, "\\fatal\\") != 0) {
+        if (strstr(line, "\\fatal\\") != 0) {
             GsGp_SetError(h, c->errorCode, c);
             GsGp_CallErrorCallback(h, 4, 1);
             return 4;
@@ -655,13 +655,13 @@ s32 GsGp_ProcessConnectReply(Ctx0227 **h, GsGpOperation *n, char *line) {
             GsGp_CallErrorCallback(h, 3, 1);
             return 3;
         }
-        c->userId = func_0212b770(b3);
+        c->userId = atol(b3);
         if (GsGp_GetValue(line, "\\profileid\\", b3, 0x200) == 0) {
             GsGp_SetError(h, 1, "Unexepected data was received from the server.");
             GsGp_CallErrorCallback(h, 3, 1);
             return 3;
         }
-        c->profileId = func_0212b770(b3);
+        c->profileId = atol(b3);
         t = GsGp_SendLogin(h, req);
         if (t != 0) {
             return t;
@@ -679,19 +679,19 @@ s32 GsGp_ProcessConnectReply(Ctx0227 **h, GsGpOperation *n, char *line) {
             GsGp_CallErrorCallback(h, 3, 1);
             return 3;
         }
-        c->sessKey = func_0212b770(b3);
+        c->sessKey = atol(b3);
         if (GsGp_GetValue(line, "\\userid\\", b3, 0x200) == 0) {
             GsGp_SetError(h, 1, "Unexepected data was received from the server.");
             GsGp_CallErrorCallback(h, 3, 1);
             return 3;
         }
-        c->userId = func_0212b770(b3);
+        c->userId = atol(b3);
         if (GsGp_GetValue(line, "\\profileid\\", b3, 0x200) == 0) {
             GsGp_SetError(h, 1, "Unexepected data was received from the server.");
             GsGp_CallErrorCallback(h, 3, 1);
             return 3;
         }
-        c->profileId = func_0212b770(b3);
+        c->profileId = atol(b3);
         if (GsGp_GetValue(line, "\\uniquenick\\", b2, 0x15) == 0) {
             b2[0] = 0;
         }
@@ -731,7 +731,7 @@ s32 GsGp_ProcessConnectReply(Ctx0227 **h, GsGpOperation *n, char *line) {
                 GsGp_SetErrorString(h, "Out of memory.");
                 return 1;
             }
-            func_0212899c(q, 0, 0x20);
+            memset(q, 0, 0x20);
             q[1] = c->profileId;
             q[0] = 0;
             GsUtil_StrCopyN(q + 2, b2, 0x15);

@@ -8,7 +8,7 @@
 
 	.text
 
-	.extern func_01ff8000
+	.extern CPi_RestoreContext
 	.arm
 
 ; OS_LoadContext(context): does not return
@@ -33,4 +33,4 @@ OS_LoadContext:
 	nop
 	subs pc, lr, #4
 L_01ff81a4:
-	.word func_01ff8000
+	.word CPi_RestoreContext

@@ -34,7 +34,7 @@ extern TaskList gTaskCreateList;
 extern TaskList gTaskExecuteList;
 extern TaskList4 gProcTree;
 extern const char *const sTaskPhaseNames[];
-void *func_01ffcffc(void *);
+void *TreeNode_GetNextPreOrder(void *);
 extern void *gSndHeap;
 extern void *gSndCaptureBuffer;
 extern u8 gSndDefaultHandle[];

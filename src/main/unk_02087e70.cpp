@@ -23,7 +23,7 @@ s32 Oam_GetObjHeight(u32 *p);
 s32 Oam_GetObjWidth(u32 *p);
 s32 WorldCurve_Apply(VecFx32 *out, void *in);
 void Vec_Sub(VecFx32 *out, VecFx32 *a, VecFx32 *b);
-s64 func_01ffd028(void *v, void *p);
+s64 Vec_DistSq(void *v, void *p);
 void MIi_CpuCopy32(void *a, void *b, u32 c);
 void MIi_CpuCopyFast(void *a, void *b, u32 c);
 void DC_FlushRange(void *a, u32 b);
@@ -102,7 +102,7 @@ extern "C" BOOL BugNet_HitTest(void *a, void *b, s32 rad, u8 *out) {
         p->isHit = 0;
         s32 len = func_01ffcb0c(rad + p->hitRadius, rad + p->hitRadius);
         for (i = 0; i < 6; i++) {
-            if ((s64)len >= func_01ffd028(&pts[i], p)) {
+            if ((s64)len >= Vec_DistSq(&pts[i], p)) {
                 p->isHit = 1;
                 result = TRUE;
                 if (out) {

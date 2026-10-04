@@ -330,7 +330,7 @@ BOOL FtrMoveAnim_Step(void *o, void *a, s32 *out);
 s32 Math_StepAngle(s16 *v, s32 target, s32 step);
 s32 func_01ffcb0c(s32 a, s32 b);
 void Vec_RotateY(VecFx32 *v, s16 a);
-void func_01ffd070(VecFx32 *out, VecFx32 *a, VecFx32 *b);
+void Vec_Add(VecFx32 *out, VecFx32 *a, VecFx32 *b);
 s32 G3dResAccess_findNodeIdx(void *p, u32 id);
 void *PlayerActor_GetActor(s32 a);
 u16 Item_MakeFurniture(s32 a, s32 b);
@@ -527,7 +527,7 @@ extern const char data_ov004_0224bb44[];
 void *FtrActorHeap_GetInstance(void);
 void FtrActorHeap_free(void *heap, void *p);
 void *FtrActorHeap_alloc(void *heap, u32 size);
-void *func_0212899c(void *p, s32 v, u32 n);
+void *memset(void *p, s32 v, u32 n);
 void *FtrContactSet_findContact(void *, void *);
 s32 *FtrContact_getClampedContactPoint(void);
 u32 FtrContact_getPushAngle(void *);
@@ -798,7 +798,7 @@ void *FtrActor::operator new(unsigned long size) {
     if (p == 0) {
         return 0;
     }
-    func_0212899c(p, 0, size);
+    memset(p, 0, size);
     return p;
 }
 
@@ -3598,7 +3598,7 @@ BOOL FtrActor::startPush(s16 a) {
     Vec_RotateY(&v, a);
     if (canMoveBy((s32)&v)) {
         VecFx32 w;
-        func_01ffd070(&w, (VecFx32 *)&position, &v);
+        Vec_Add(&w, (VecFx32 *)&position, &v);
         targetPos[0] = w.x;
         targetPos[1] = w.y;
         targetPos[2] = w.z;
@@ -3622,7 +3622,7 @@ BOOL FtrActor::startPull(s16 a) {
     Vec_RotateY(&v, (s16)(a + 0x8000));
     if (canMoveBy((s32)&v)) {
         VecFx32 w;
-        func_01ffd070(&w, (VecFx32 *)&position, &v);
+        Vec_Add(&w, (VecFx32 *)&position, &v);
         targetPos[0] = w.x;
         targetPos[1] = w.y;
         targetPos[2] = w.z;

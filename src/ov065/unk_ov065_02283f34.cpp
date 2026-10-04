@@ -32,8 +32,8 @@ extern char data_ov065_0228e128[];
 extern char data_ov065_0228e108[];
 
 s32 strncmp(const char *, const char *, u32);
-s32 func_0212b770(const char *);
-char *func_02129f1c(const char *, const char *);
+s32 atol(const char *);
+char *strstr(const char *, const char *);
 u32 STD_GetStringLength(const char *);
 void func_021277a4(char *, const char *);
 void memmove(void *, void *, u32);

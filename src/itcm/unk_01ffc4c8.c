@@ -55,7 +55,7 @@ void FX_InvAsync(fx32 x);      // FX_InvAsync
 fx64c FX_GetDivResultFx64c(void);       // FX_GetDivResultFx64c
 
 // FX_InvSqrt (fx_cp.c)
-fx32 func_01ffc4c8(fx32 x) {
+fx32 FX_InvSqrt(fx32 x) {
     if (x > 0) {
         fx64c inv;
         fx64c sqrt;

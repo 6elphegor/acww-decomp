@@ -340,7 +340,7 @@ void FieldPos_FromUnitCenter(void *out, s32 x, s32 y);
 void SndSeEmitter_callStop(void *);
 void SndSeEmitter_callUpdateRelative(void *, void *);
 void SndSeEmitter_callInit(void *);
-void func_01ffd070(V3 *, void *, void *);
+void Vec_Add(V3 *, void *, void *);
 s32 WorldCurve_ToCurved(V3 *, V3 *);
 void Mtx43_SetTranslate(Blk *m, s32 x, s32 y, s32 z);
 void Mtx43_RotateX(Blk *m, s32 a);
@@ -489,7 +489,7 @@ extern s32 sItemPopScaleY[];
 void GroundInfo_initAtPos(Unk_ov003_0221a4a0_Buf *b, void *pos, s32 a, s32 c);
 void GroundInfo_Destruct(Unk_ov003_0221a4a0_Buf *b);
 void VEC_Add(void *a, void *b, void *out);
-void func_01ffd070(VecFx32 *out, void *m, VecFx32 *v);
+void Vec_Add(VecFx32 *out, void *m, VecFx32 *v);
 s32 EffectSpl_CreateOneShot(s32 id, void *v, s32 c, void *cb);
 void EffectModel_Start(s32 a, void *fn);
 void Sky_PlayBalloonDropSe(s32 a);
@@ -723,7 +723,7 @@ s32 CommManager_isOnline(void *p);
 void *PlayerData_GetCurrent(void);
 s32 PlayerData_testFlag(void *p, s32 a);
 void FieldPos_FromUnitCenter(VecFx32 *out, s32 x, s32 z);
-void func_01ffd070(VecFx32 *out, VecFx32 *a, void *m);
+void Vec_Add(VecFx32 *out, VecFx32 *a, void *m);
 void FieldItemFx_StartBeeHiveDrop(TreeAnim *o, s32 id, VecXZ *a, VecFx32 *b);
 s32 PendingUnit_FindBySlot(u8 a, u8 b);
 void *PendingUnit_Get(void);
@@ -973,7 +973,7 @@ s32 WorldCurve_ToCurved(V3 *out, V3 *in);
 void Mtx43_SetTranslate(Blk *m, s32 x, s32 y, s32 z);
 void Mtx43_RotateX(Blk *m, s32 a);
 u16 *BlockMap_GetItemPtrAtPos(void *g, V3 *pos, s32 layer);
-s32 func_01ffcbd8(void *g, s32 x, s32 z);
+s32 TownBlockMap_IsBuried(void *g, s32 x, s32 z);
 s32 Item_GetInfoUnk07(u16 *c);
 void FieldObj_DrawModel(O *o, void *p, Blk m);
 void FieldObj_DrawDesign(O *o, u16 *t, Blk m);
@@ -4790,7 +4790,7 @@ void FieldObj_DrawUnits(O *o, void *g) {
                             }
                             if (k2 || (*cell) == 0x88 || (*cell) == 0x89 || (*cell) == 0xa4) {
                                 FieldObj_DrawSpecialFlower(o, cell, l.m);
-                            } else if (func_01ffcbd8(g, l.x + i, l.z + j)) {
+                            } else if (TownBlockMap_IsBuried(g, l.x + i, l.z + j)) {
                                 FieldObj_DrawCrack(o, cell, l.m);
                             } else {
                                 BOOL k3 = FALSE;
@@ -4809,7 +4809,7 @@ void FieldObj_DrawUnits(O *o, void *g) {
             case 1:
             case 3:
             case 4:
-                if (func_01ffcbd8(g, l.x + i, l.z + j)) {
+                if (TownBlockMap_IsBuried(g, l.x + i, l.z + j)) {
                     FieldObj_DrawCrack(o, cell, l.m);
                 } else {
                     idx = Item_GetInfoUnk07(cell);
@@ -6136,7 +6136,7 @@ void Tree_DropBeeHive(TreeAnim *o, s32 *p) {
         FieldPos_FromUnitCenter(&b, p[0], p[1]);
         VecFx32 *t = data_ov003_0223291c[0];
         t = t + Tree_GetDropSide(o, &b);
-        func_01ffd070(&e, &b, t);
+        Vec_Add(&e, &b, t);
         c.x = e.x;
         c.y = e.y;
         c.z = e.z;
@@ -7025,7 +7025,7 @@ extern "C" void FieldItemFx_UpdateStrikeShake(Unk_ov003_0221a4a0 *self)
     v.x = (h * data_02135f44[((u16)self->startArg >> 4) * 2]) >> 12;
     v.y = 0;
     v.z = (h * data_02135f44[((u16)self->startArg >> 4) * 2 + 1]) >> 12;
-    func_01ffd070(&out, &self->origin, &v);
+    Vec_Add(&out, &self->origin, &v);
     self->posX = out.x;
     self->posY = out.y;
     self->posZ = out.z;
@@ -7247,7 +7247,7 @@ void FieldItemFxTable_Draw(Ent *e) {
     } l;
     for (;;) {
         if (e->active != 0 && e->item != 0xfff1) {
-            func_01ffd070(&l.v74, &e->pos, &e->offset);
+            Vec_Add(&l.v74, &e->pos, &e->offset);
             l.v5c.x = l.v74.x;
             l.v5c.y = l.v74.y;
             l.v5c.z = l.v74.z;

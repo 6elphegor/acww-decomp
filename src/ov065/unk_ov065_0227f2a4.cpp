@@ -80,9 +80,9 @@ s32 GsGp_QueueProfileUpdate(Ctx0227 **, const char *, const char *);
 s32 GsGp_QueueUserUpdate(Ctx0227 **, const char *, const char *);
 s32 GsGp_SetInfoInt(Ctx0227 **, s32, s32);
 
-void *func_0212899c(void *, s32, u32);
+void *memset(void *, s32, u32);
 u32 rand(void);
-s32 func_0212b770(const char *);
+s32 atol(const char *);
 s32 STD_GetStringLength(const char *);
 char *func_02127838(char *, const char *);
 
@@ -145,7 +145,7 @@ struct Unk_ov065_0227ff90_Req {
 extern "C" {
 
 s32 strncmp(const char *, const char *, s32);
-s32 func_0212b770(const char *);
+s32 atol(const char *);
 s32 OS_SPrintf(char *, const char *, ...);
 void GsUtil_Free(void *);
 void *GsUtil_Alloc(s32);
@@ -214,7 +214,7 @@ s32 GsSock_Close(s32);
 void GsUtil_Free(void *);
 void *GsUtil_Alloc(u32);
 s32 GsGp_QueueCallback(void *, GsGpCallbackPair, void *, void *, s32);
-s32 func_0212899c(void *, s32, u32);
+s32 memset(void *, s32, u32);
 s32 STD_GetStringLength(const char *);
 s32 OS_SPrintf(char *, const char *, ...);
 s32 GsGpPeer_SendString(void *, void *, const char *);
@@ -406,7 +406,7 @@ s32 GsGp_ProcessProfileReply(void *h, Unk_ov065_0227ff90_Req *req, char *str) {
         GsGp_CallErrorCallback(h, 3, 1);
         return 3;
     }
-    r5 = func_0212b770(l.buf);
+    r5 = atol(l.buf);
     GsGpProfile_Find(h, r5, &l.e);
     GsGpInfoCache s = {0};
     char f[0x4c];
@@ -435,7 +435,7 @@ s32 GsGp_ProcessProfileReply(void *h, Unk_ov065_0227ff90_Req *req, char *str) {
     if (FIND("\\icquin\\", l.buf, 0x40) == 0) {
         s.icqUin = -1;
     } else {
-        s.icqUin = func_0212b770(l.buf);
+        s.icqUin = atol(l.buf);
     }
     if (FIND("\\homepage\\", s.homepage, 0x4c) == 0) {
         s.homepage[0] = 0;
@@ -456,7 +456,7 @@ s32 GsGp_ProcessProfileReply(void *h, Unk_ov065_0227ff90_Req *req, char *str) {
         s.birthMonth = 0;
         s.birthYear = 0;
     } else {
-        s32 r = GsGp_UnpackDate(h, func_0212b770(l.buf), &s.birthDay, &s.birthMonth, &s.birthYear);
+        s32 r = GsGp_UnpackDate(h, atol(l.buf), &s.birthDay, &s.birthMonth, &s.birthYear);
         if (r != 0) {
             return r;
         }
@@ -473,7 +473,7 @@ s32 GsGp_ProcessProfileReply(void *h, Unk_ov065_0227ff90_Req *req, char *str) {
     if (FIND("\\pmask\\", l.buf, 0x40) == 0) {
         s.publicMask = -1;
     } else {
-        s.publicMask = func_0212b770(l.buf);
+        s.publicMask = atol(l.buf);
     }
     if (FIND("\\aim\\", s.aimName, 0x33) == 0) {
         s.aimName[0] = 0;
@@ -481,47 +481,47 @@ s32 GsGp_ProcessProfileReply(void *h, Unk_ov065_0227ff90_Req *req, char *str) {
     if (FIND("\\pic\\", l.buf, 0x40) == 0) {
         s.pic = 0;
     } else {
-        s.pic = func_0212b770(l.buf);
+        s.pic = atol(l.buf);
     }
     if (FIND("\\occ\\", l.buf, 0x40) == 0) {
         s.occupationId = 0;
     } else {
-        s.occupationId = func_0212b770(l.buf);
+        s.occupationId = atol(l.buf);
     }
     if (FIND("\\ind\\", l.buf, 0x40) == 0) {
         s.industryId = 0;
     } else {
-        s.industryId = func_0212b770(l.buf);
+        s.industryId = atol(l.buf);
     }
     if (FIND("\\inc\\", l.buf, 0x40) == 0) {
         s.incomeId = 0;
     } else {
-        s.incomeId = func_0212b770(l.buf);
+        s.incomeId = atol(l.buf);
     }
     if (FIND("\\mar\\", l.buf, 0x40) == 0) {
         s.marriedId = 0;
     } else {
-        s.marriedId = func_0212b770(l.buf);
+        s.marriedId = atol(l.buf);
     }
     if (FIND("\\chc\\", l.buf, 0x40) == 0) {
         s.childCount = 0;
     } else {
-        s.childCount = func_0212b770(l.buf);
+        s.childCount = atol(l.buf);
     }
     if (FIND("\\i1\\", l.buf, 0x40) == 0) {
         s.interests1 = 0;
     } else {
-        s.interests1 = func_0212b770(l.buf);
+        s.interests1 = atol(l.buf);
     }
     if (FIND("\\o1\\", l.buf, 0x40) == 0) {
         s.ownership1 = 0;
     } else {
-        s.ownership1 = func_0212b770(l.buf);
+        s.ownership1 = atol(l.buf);
     }
     if (FIND("\\conn\\", l.buf, 0x40) == 0) {
         s.connectionType = 0;
     } else {
-        s.connectionType = func_0212b770(l.buf);
+        s.connectionType = atol(l.buf);
     }
     if (FIND("\\sig\\", l.buf, 0x40) == 0) {
         GsGp_SetError(h, 1, "Unexpected data was received from the server.");
@@ -888,11 +888,11 @@ s32 GsGp_SetInfoString(Ctx0227 **h, s32 cmd, char *val) {
         if (r != 0) return r;
         break;
     case 0x70d:
-        r = GsGp_SetInfoInt(h, 0x70d, func_0212b770(val));
+        r = GsGp_SetInfoInt(h, 0x70d, atol(val));
         if (r != 0) return r;
         break;
     case 0x70e:
-        r = GsGp_SetInfoInt(h, 0x70e, func_0212b770(val));
+        r = GsGp_SetInfoInt(h, 0x70e, atol(val));
         if (r != 0) return r;
         break;
     case 0x70f:
@@ -901,7 +901,7 @@ s32 GsGp_SetInfoString(Ctx0227 **h, s32 cmd, char *val) {
         if (r != 0) return r;
         break;
     case 0x710:
-        r = GsGp_SetInfoInt(h, 0x710, func_0212b770(val));
+        r = GsGp_SetInfoInt(h, 0x710, atol(val));
         if (r != 0) return r;
         break;
     case 0x711:
@@ -910,15 +910,15 @@ s32 GsGp_SetInfoString(Ctx0227 **h, s32 cmd, char *val) {
         if (r != 0) return r;
         break;
     case 0x712:
-        r = GsGp_SetInfoInt(h, 0x712, func_0212b770(val));
+        r = GsGp_SetInfoInt(h, 0x712, atol(val));
         if (r != 0) return r;
         break;
     case 0x714:
-        r = GsGp_SetInfoInt(h, 0x714, func_0212b770(val));
+        r = GsGp_SetInfoInt(h, 0x714, atol(val));
         if (r != 0) return r;
         break;
     case 0x715:
-        r = GsGp_SetInfoInt(h, 0x715, func_0212b770(val));
+        r = GsGp_SetInfoInt(h, 0x715, atol(val));
         if (r != 0) return r;
         break;
     case 0x716:

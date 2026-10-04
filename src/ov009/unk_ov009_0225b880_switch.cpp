@@ -157,7 +157,7 @@ void BuildingLights_isLit(void *);
 void AnimModel_drawAnimated(void *, u32);
 s32 Math_Atan2(s32, s32);
 s32 func_01ffcb0c(s32, s32);
-void func_01ffd070(VecFx32 *, void *, VecFx32 *);
+void Vec_Add(VecFx32 *, void *, VecFx32 *);
 void *TriangleTrigger_getCenter(void *);
 BOOL Item_IsFurniture(u16 *);
 s32 Item_GetFurnitureIndex(u16 *);

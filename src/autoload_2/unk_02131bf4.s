@@ -55,10 +55,10 @@ func_02131c3c:
 	bx lr
 
 ; float compare, x in r0, y in r1: x != y (_fneq; unordered -> 1, +0 == -0).
-	.global func_02131c7c
-	.type func_02131c7c, @function
-	.size func_02131c7c, 0x3c
-func_02131c7c:
+	.global _fneq
+	.type _fneq, @function
+	.size _fneq, 0x3c
+_fneq:
 	mov r3, #0xff000000
 	cmp r3, r0, lsl #1
 	movcc r0, #1
@@ -76,10 +76,10 @@ func_02131c7c:
 	bx lr
 
 ; float compare, x in r0, y in r1: x == y (_feq; unordered -> 0, +0 == -0).
-	.global func_02131cb8
-	.type func_02131cb8, @function
-	.size func_02131cb8, 0x3c
-func_02131cb8:
+	.global _feq
+	.type _feq, @function
+	.size _feq, 0x3c
+_feq:
 	mov r3, #0xff000000
 	cmp r3, r0, lsl #1
 	movcc r0, #0

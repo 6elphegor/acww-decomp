@@ -53,7 +53,7 @@ extern u8 data_021ff4dc[];
 extern u8 data_021ff500[];
 extern u32 data_0213c1fc;
 
-extern void func_01ff8000(void);
+extern void CPi_RestoreContext(void);
 extern u32 OS_DisableInterrupts(void);
 extern void OS_RestoreInterrupts(u32);
 extern void OS_SetIrqFunction(u32, void (*)(void));

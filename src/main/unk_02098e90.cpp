@@ -2173,7 +2173,7 @@ void _ZN12ItemPickSpec3setEii(void *, u32, u32);
 void ItemPickSpec_Destruct(void *);
 void ItemPick_One(u16 *, void *, u32, u32, u32, u32, u32);
 s32 func_01ffcb0c(s32, s32);
-s32 func_01ffc4c8(s32);
+s32 FX_InvSqrt(s32);
 void *MI_CpuFill8(void *, s32, u32);
 s32 memcmp(void *, void *, u32);
 s32 MI_CpuCopy8(void *, void *, u32);
@@ -2488,7 +2488,7 @@ extern "C" void Quat_Normalize(s32 *q) {
     sum += (s64)q[1] * q[1];
     sum += (s64)q[2] * q[2];
     sum += (s64)q[3] * q[3];
-    s32 len = func_01ffc4c8((s32)(sum >> 12));
+    s32 len = FX_InvSqrt((s32)(sum >> 12));
     q[0] = (s32)(((s64)len * q[0] + 0x800) >> 12);
     q[1] = (s32)(((s64)len * q[1] + 0x800) >> 12);
     q[2] = (s32)(((s64)len * q[2] + 0x800) >> 12);

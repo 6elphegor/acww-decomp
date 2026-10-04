@@ -154,7 +154,7 @@ u32 PlayerSession_FindFreeGfxSlot();
 void PlayerSession_SetGfxSlot(u32, u32);
 void PlayerActor_Spawn(u32, VecFx32 *, Vec3s *, u32);
 void Vec_RotateY(VecFx32 *, s32);
-void func_01ffd070(VecFx32 *, VecFx32 *, VecFx32 *);
+void Vec_Add(VecFx32 *, VecFx32 *, VecFx32 *);
 
 struct Data020cbb18 {
     u8 pad[0x64];
@@ -222,7 +222,7 @@ BOOL ScenePlayerSpawn::getSpawn(u32 i, BOOL mode, VecFx32 *pos, Vec3s *rot_, u32
                     Vec_RotateY(&v, SceneWarp_GetAngle(Scene_GetWarpRequest()));
                 }
                 VecFx32 t;
-                func_01ffd070(&t, SceneWarp_GetPos(Scene_GetWarpRequest()), &v);
+                Vec_Add(&t, SceneWarp_GetPos(Scene_GetWarpRequest()), &v);
                 pos->x = t.x;
                 pos->y = t.y;
                 pos->z = t.z;

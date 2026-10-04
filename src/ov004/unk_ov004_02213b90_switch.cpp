@@ -90,7 +90,7 @@ s32 Math_AngleDiffAbs(s32 a, s32 b);
 TouchPicker *Scene_GetTouchPicker(void);
 s32 Scene_GetCurrent(void);
 Actor *PlayerActor_GetCharacter(u32);
-void func_01ffd070(void *, void *, void *);
+void Vec_Add(void *, void *, void *);
 }
 
 

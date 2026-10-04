@@ -179,10 +179,10 @@ void GsTransport_FreeSocket(Sock062 *c);
 void *GsTransport_AllocConnection();
 void GsTransport_FixMessage(char **s, s32 *len);
 s32 GsTransport_ParseAddress(char *s, u32 *ip, u16 *port);
-void func_0212899c(void *p, s32 v, u32 n);
+void memset(void *p, s32 v, u32 n);
 void memcpy(void *d, void *s, u32 n);
-char *func_0212a120(char *s, s32 c);
-s32 func_0212b770(char *s);
+char *strchr(char *s, s32 c);
+s32 atol(char *s);
 u32 STD_GetStringLength(char *s);
 }
 
@@ -359,7 +359,7 @@ BOOL GsTransport_ParseAddress(char *s, u32 *pip, u16 *pport) {
         ip = 0;
         port = 0;
     } else {
-        colon = func_0212a120(s, ':');
+        colon = strchr(s, ':');
         port = (u32)colon;
         if (colon == 0) {
             port = 0;
@@ -389,7 +389,7 @@ BOOL GsTransport_ParseAddress(char *s, u32 *pip, u16 *pport) {
                     c = *q;
                 } while (c != 0);
             }
-            r = func_0212b770(colon + 1);
+            r = atol(colon + 1);
             if (r < 0 || r > 0xffff) {
                 return FALSE;
             }
@@ -492,7 +492,7 @@ s32 GsTransport_CreateSocketImpl(Sock062 **out, char *addr, u32 rsz, u32 ssz, s3
     if (c == 0) {
         return 1;
     }
-    func_0212899c(c, 0, 0x44);
+    memset(c, 0, 0x44);
     c->sock = -1;
     c->incomingBufferSize = ssz;
     c->outgoingBufferSize = rsz;
@@ -577,7 +577,7 @@ s32 GsTransport_NewConnection(Sock062 *c, Conn062 **out, u32 ip, u16 port) {
     }
     p = (Conn062 *)GsTransport_AllocConnection();
     if (p != 0) {
-        func_0212899c(p, 0, 0xa0);
+        memset(p, 0, 0xa0);
         p->remoteIp = ip;
         p->remotePort = port;
         p->socket = c;

@@ -52,12 +52,12 @@ void GsUtil_Free(void *);
 void *GsUtil_Alloc(s32);
 void GsHash_Free(void *);
 
-char *func_02129f1c(const char *, const char *);
+char *strstr(const char *, const char *);
 void memcpy(void *, const void *, s32);
 void memmove(void *, void *, u32);
-s32 func_0212b770(const char *);
+s32 atol(const char *);
 s32 strncmp(const char *, const char *, u32);
-void func_0212899c(void *, s32, u32);
+void memset(void *, s32, u32);
 void srand();
 
 s32 GsGp_ResetConnection(Ctx0227 **h);
@@ -77,7 +77,7 @@ s32 gpiInitialize(Ctx0227 **h, s32 a, s32 b) {
     if (c == NULL) {
         return 1;
     }
-    func_0212899c(c, 0, 0x490);
+    memset(c, 0, 0x490);
     c->errorString = 0;
     c->errorCode = 0;
     c->infoCaching = 1;
@@ -222,7 +222,7 @@ s32 GsGp_ProcessCmMessages(Ctx0227 **h) {
             }
             return r;
         }
-        p = func_02129f1c(c->recvBuffer, "\\final\\");
+        p = strstr(c->recvBuffer, "\\final\\");
         if (p != NULL) {
             do {
                 *p = 0;
@@ -245,9 +245,9 @@ s32 GsGp_ProcessCmMessages(Ctx0227 **h) {
                 c->recvBufferLength = c->recvBufferLength - ((p + 7) - c->recvBuffer);
                 memmove(c->recvBuffer, p + 7, c->recvBufferLength + 1);
                 char *q = c->inputBuffer;
-                char *f = func_02129f1c(q, "\\id\\");
+                char *f = strstr(q, "\\id\\");
                 if (f != NULL) {
-                    q = (char *)func_0212b770(f + 4);
+                    q = (char *)atol(f + 4);
                     if (GsGp_FindOperation(h, &rec, (s32)q) == 0) {
                         GsGp_DebugLog(h, "No matching operation found for id %d\n", q);
                     } else {
@@ -270,7 +270,7 @@ s32 GsGp_ProcessCmMessages(Ctx0227 **h) {
                         GsGp_DebugLog(h, "Received an unrecognized, unsolicited message.\n");
                     }
                 }
-                p = func_02129f1c(c->recvBuffer, "\\final\\");
+                p = strstr(c->recvBuffer, "\\final\\");
             } while (p != NULL);
         }
         if (flag != 0) {

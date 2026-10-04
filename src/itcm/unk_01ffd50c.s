@@ -13,8 +13,8 @@
 	.extern data_021fcc2c
 	.extern data_027e0000
 	.extern data_027e0450
-	.extern func_01ff8000
-	.extern func_01ff806c
+	.extern CPi_RestoreContext
+	.extern CP_SaveContext
 	.arm
 
 ; OS_IrqHandler
@@ -147,6 +147,6 @@ L_01ffd6b0:
 L_01ffd6b4:
 	.word data_021fcc2c
 L_01ffd6b8:
-	.word func_01ff806c
+	.word CP_SaveContext
 L_01ffd6bc:
-	.word func_01ff8000
+	.word CPi_RestoreContext

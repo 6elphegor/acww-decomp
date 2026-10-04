@@ -549,7 +549,7 @@ s32 Vec_NotEqual(VecFx32 *a, void *b);
 s32 Vec_Equal(VecFx32 *a, void *b);
 void Vec_Sub(void *out, void *a, void *b);
 s32 strncmp(const char *a, const char *b, s32 n);
-s32 func_0212a438(const char *s);
+s32 strlen(const char *s);
 void *FtrActorGrid_getActor(void *self, s32 a, s32 b, s32 c);
 void *FtrActorGrid_GetInstance();
 u16 *ShopStock_GetItemAt(s32 a, s32 b);
@@ -3019,7 +3019,7 @@ void SpNpcNookShopTalk::onMessageEnd(u32) {
         return;
     }
     if (ownerNpc->isNook()) {
-        if (strncmp((char *)this + 4, sSpNpcNookShopKey, func_0212a438(sSpNpcNookShopKey)) != 0) {
+        if (strncmp((char *)this + 4, sSpNpcNookShopKey, strlen(sSpNpcNookShopKey)) != 0) {
             return;
         }
     }

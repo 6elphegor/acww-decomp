@@ -88,7 +88,7 @@ void Gfx2d_DisableSubWindows(s32 a);
 void Gfx2d_DisableMainWindows(s32 a);
 void *Heap_AllocTail(void *heap, u32 size);
 void Heap_Free(void *heap, void *p);
-void *func_0212899c(void *p, s32 v, u32 n);
+void *memset(void *p, s32 v, u32 n);
 void *ProcBase_GetParent(void *p);
 void ProcBase_SetExecutePriority(void *p, u32 v);
 void ProcBase_SetDrawPriority(void *p, u32 v);

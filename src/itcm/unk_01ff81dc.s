@@ -7,7 +7,7 @@
 
 	.text
 
-	.extern func_01ff806c
+	.extern CP_SaveContext
 	.arm
 
 ; OS_SaveContext(context): returns 0 now and 1 when resumed by OS_LoadContext (r0 is saved as 1)
@@ -34,4 +34,4 @@ OS_SaveContext:
 	mov r0, #0
 	bx lr
 L_01ff8224:
-	.word func_01ff806c
+	.word CP_SaveContext

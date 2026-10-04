@@ -7,7 +7,7 @@ class ProcBase;
 
 // Intrusive tree node (parent / first child / sibling links) of the process tree; ProcBase embeds one.
 // Linked and walked by the helpers in src/autoload_2/unk_020e7500.cpp (TreeNode_Attach / TreeNode_Detach / TreeNode_Init / TreeNode_Construct)
-// and src/itcm/unk_01ffcfc0.cpp (func_01ffcfc0 / 01ffcffc).
+// and src/itcm/unk_01ffcfc0.cpp (TreeNode_GetNextSkipChildren / 01ffcffc).
 struct TreeNode {
     /* 0x00 */ TreeNode *parent;
     /* 0x04 */ TreeNode *child; // first child

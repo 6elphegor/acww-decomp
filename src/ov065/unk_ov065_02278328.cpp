@@ -46,7 +46,7 @@ s32 GsSock_CheckResult(s32, s32);
 void WifiAp_HashReset(void *);
 void WifiAp_HashSetSource(void *, void *, s32);
 void WifiAp_HashGetDigest(void *, void *);
-void func_02128acc(void *, s32, s32, GsCompareFn);
+void qsort(void *, s32, s32, GsCompareFn);
 void memmove(void *, void *, s32);
 void memcpy(void *, void *, s32);
 s32 OS_SPrintf(char *, char *, s32);
@@ -349,7 +349,7 @@ void GsArray_ReplaceAt(GsArray *v, void *x, s32 i) {
 }
 
 void GsArray_Sort(GsArray *v, GsCompareFn cmp) {
-    func_02128acc(v->elems, v->count, v->elemSize, cmp);
+    qsort(v->elems, v->count, v->elemSize, cmp);
 }
 
 s32 GsArray_Search(GsArray *v, void *key, GsCompareFn cmp, s32 start, s32 sorted) {

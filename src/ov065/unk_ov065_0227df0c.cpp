@@ -21,9 +21,9 @@
 
 
 extern "C" {
-char *func_0212a120(const char *, s32);
+char *strchr(const char *, s32);
 s32 strncmp(const char *, const char *, s32);
-s32 func_0212b770(const char *);
+s32 atol(const char *);
 u32 STD_GetStringLength(const char *);
 void memmove(void *, void *, s32);
 void memcpy(void *, const void *, s32);

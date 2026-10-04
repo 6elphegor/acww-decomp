@@ -17,7 +17,7 @@
 	.extern OS_IrqHandler
 	.extern NitroStartUp
 	.extern _fp_init
-	.extern func_02135310
+	.extern __call_static_initializers
 	.arm
 
 ; _start
@@ -86,7 +86,7 @@ L_020008b0: ; flush_bss
 	str r0, [r1, #0]
 	bl _fp_init
 	blx NitroStartUp ; NitroStartUp (Thumb)
-	bl func_02135310
+	bl __call_static_initializers
 	ldr r1, L_02000918
 	ldr lr, L_0200091c ; HW_RESET_VECTOR
 	bx r1

@@ -54,7 +54,7 @@ s32 DWCi_Acc_IsValidFriendData(void *);
 s32 strcmp(const char *, const char *);
 s32 STD_GetStringLength(const char *);
 void func_02127838(char *, const char *);
-s32 func_0212b854(const char *, char **, s32);
+s32 strtoul(const char *, char **, s32);
 void MI_CpuFill8(void *, s32, u32);
 void MI_CpuCopy8(const void *, void *, u32);
 s32 strncmp(const void *, const void *, u32);
@@ -291,7 +291,7 @@ s32 DwcMatch_SendReservation(s32, s32);
 u64 OS_GetTick(void);
 s32 DWC_GetGsProfileId(s32, u8 *);
 s32 DWCi_Acc_IsValidFriendData(u8 *);
-s32 func_0212b854(void *, s32, s32);
+s32 strtoul(void *, s32, s32);
 
 void DwcMatch_AbortAndRestart(void);
 void DwcMatch_Restart(s32 a);
@@ -412,7 +412,7 @@ extern DwcMatchUserKey sDwcMatchUserKeys[];
 
 extern "C" {
 
-char *func_0212a120(const char *, s32);
+char *strchr(const char *, s32);
 s32 STD_GetStringLength(const char *);
 void func_02127838(char *, const char *);
 void MI_CpuCopy8(const void *, void *, u32);
@@ -507,7 +507,7 @@ extern u8 sDwcMatchValidAids[];
 extern "C" {
 void OS_SNPrintf(char *, s32, const char *, ...);
 void MI_CpuFill8(void *, s32, s32);
-u32 func_0212b854(const char *, char **, s32);
+u32 strtoul(const char *, char **, s32);
 
 void DwcNet_Free(s32, u32, s32);
 void DwcMatch_ClearUserKeys(void);
@@ -704,7 +704,7 @@ u64 OS_GetTick(void);
 void MI_CpuCopy8(void *, void *, s32);
 void MI_CpuFill8(void *, s32, s32);
 s32 memcmp(void *, void *, s32);
-void func_0212a2ec(void *, void *, s32);
+void strncpy(void *, void *, s32);
 void OS_GetMacAddress(void *);
 u64 func_02132ef8(u64, u64);
 
@@ -1262,7 +1262,7 @@ void DwcMatch_OnGt2ConnectAttempt(u32 a0, u32 b, u32 c, u32 d, s32 s0, u8 *e) {
     }
     if (c != g->memberConnectIps[g->numClients] || d != g->memberConnectPorts[g->numClients]) {
         if (*e != 0) {
-            if (g->memberProfileIds[g->numClients] == func_0212b854((char *)e, NULL, 10)) {
+            if (g->memberProfileIds[g->numClients] == strtoul((char *)e, NULL, 10)) {
                 g->memberConnectIps[g->numClients] = c;
                 g->memberConnectPorts[g->numClients] = d;
                 goto ok;
@@ -1384,7 +1384,7 @@ void DwcMatch_OnGpMatchCommand(u32 a, u32 b, const char *s) {
         if (r == ~z) {
             break;
         }
-        arr[i] = func_0212b854(tmp, NULL, 10);
+        arr[i] = strtoul(tmp, NULL, 10);
     }
     DwcMatch_HandleCommand(*(u8 *)s, b, 0, 0, arr, i);
 }
@@ -2217,18 +2217,18 @@ extern "C" {
 #define G sDwcMatch
 
 s32 DwcMatch_GetArgField(char *out, const char *s, s32 n) {
-    char *end = func_0212a120(s, 0);
+    char *end = strchr(s, 0);
     s32 i;
     char *p;
     s32 len;
     for (i = 0; i < n; i++) {
-        p = func_0212a120(s, '/');
+        p = strchr(s, '/');
         if (p == NULL) {
             return -1;
         }
         s = p + 1;
     }
-    p = func_0212a120(s, '/');
+    p = strchr(s, '/');
     if (p == NULL) {
         p = end;
     }
@@ -2937,8 +2937,8 @@ s32 DwcMatch_TryNextFriend(s32 a, s32 b) {
         if (n1 <= 0) continue;
         if (l.n2 <= 0) continue;
         if (n3 <= 0) continue;
-        if (func_0212b854(l.buf20, 0, 10) != 3) continue;
-        if ((*gp)->maxPlayers != func_0212b854(l.buf14 + 2, 0, 10)) continue;
+        if (strtoul(l.buf20, 0, 10) != 3) continue;
+        if ((*gp)->maxPlayers != strtoul(l.buf14 + 2, 0, 10)) continue;
         return DwcMatch_SendReservation(x, av);
     }
 }

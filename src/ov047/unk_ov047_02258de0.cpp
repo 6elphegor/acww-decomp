@@ -101,7 +101,7 @@ BOOL GameStart_IsActive();
 BOOL NetArea_IsLocalOwner();
 s32 Math_CountDownU16(void *p);
 s32 strncmp(const char *a, const char *b, u32 n);
-u32 func_0212a438(const char *s);
+u32 strlen(const char *s);
 
 // methods of other modules, called as free functions with the object first (mangled-name trick)
 BOOL _ZN11CommManager8isOnlineEv(void *g);
@@ -1117,7 +1117,7 @@ void SpNpcBlathersTalk::onMessageEnd(u32) {
     if (GameStart_IsActive()) {
         goto end;
     }
-    if (strncmp((char *)&fileName, sSpNpcBlathersKey, func_0212a438(sSpNpcBlathersKey)) != 0) {
+    if (strncmp((char *)&fileName, sSpNpcBlathersKey, strlen(sSpNpcBlathersKey)) != 0) {
         goto end;
     }
     if ((s32)msgIndex < 0xc) {

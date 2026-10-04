@@ -1,7 +1,7 @@
 // mwcc-flags: -nothumb -O4,p
 // fdlibm (MSL) __ieee754_pow, autoload_2 0x0212dcd0-0x0212ef04, with its constant tables bp/dp_h/dp_l (.rodata
 // 0x0213a710-0x0213a740). The text is MSL's e_pow.c (fdlibm 5.2 with MSL's EDOM/NAN for a negative base and a
-// non-integer exponent, ldexp for subnormal results). Two details come from the code: x is copied to a local (`xx`)
+// non-integer exponent, scalbn for subnormal results). Two details come from the code: x is copied to a local (`xx`)
 // that fabs() and the |y| > 2**31 branch use, which keeps x in r5/fp; and z takes |x| directly (MSL's later `qqq`
 // temporary is absent).
 typedef int s32;
@@ -12,14 +12,12 @@ typedef unsigned int u32;
 #define errno data_0220064c
 #define EDOM 33
 #define NAN data_0213c320
-#define fabs func_0212ef2c
-#define ldexp func_021287f4
 #define sqrt _dsqrt
 
 extern int data_0220064c;   // errno
 extern float data_0213c320; // __float_nan
 extern double fabs(double x);
-extern double ldexp(double x, int n);
+extern double scalbn(double x, int n);
 extern double _dsqrt(double x);
 
 static const double
@@ -55,7 +53,7 @@ ivln2    =  1.44269504088896338700e+00, /* 0x3FF71547, 0x652B82FE =1/ln2 */
 ivln2_h  =  1.44269502162933349609e+00, /* 0x3FF71547, 0x60000000 =24b 1/ln2*/
 ivln2_l  =  1.92596299112661746887e-08; /* 0x3E54AE0B, 0xF85DDF44 =1/ln2 tail*/
 
-double func_0212dcd0(double x, double y) // __ieee754_pow
+double __ieee754_pow(double x, double y) // __ieee754_pow
 {
 	double z, ax, z_h, z_l, p_h, p_l;
 	double y1, t1, t2, r, s, t, u, v, w;
@@ -294,7 +292,7 @@ double func_0212dcd0(double x, double y) // __ieee754_pow
 	j       = __HI(z);
 	j += (n << 20);
 	if ((j >> 20) <= 0)
-		z = ldexp(z, n); /* subnormal output */
+		z = scalbn(z, n); /* subnormal output */
 	else
 		__HI(z) += (n << 20);
 	return s * z;

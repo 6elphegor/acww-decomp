@@ -47,8 +47,8 @@ extern const GroundAttrEntry sGroundAttrTable[0x7c];
 
 extern "C" {
 s32 func_01ffcb0c(s32 a, s32 b);
-s32 func_01ffcb2c(...);
-void func_01ffd070(void *out, void *a, void *b);
+s32 Ground_GetUnitAttr(...);
+void Vec_Add(void *out, void *a, void *b);
 void VEC_Subtract(void *a, void *b, void *c);
 void Vec_Sub(void *out, void *a, void *b);
 s32 Vec_SafeNormalize(void *v);
@@ -130,7 +130,7 @@ struct FloorBoundsRange { s32 lo, hi; };
 struct FloorBoundsStackPad { s32 v[6]; FloorBoundsStackPad() {} ~FloorBoundsStackPad() {} };
 
 class CollisionBlockRef;
-extern "C" CollisionBlockRef *func_01ffcb5c(s32 x, s32 z);
+extern "C" CollisionBlockRef *CollisionMap_GetBlockRef(s32 x, s32 z);
 extern "C" void Ground_SetWalkLinks(s32 x, s32 z, s32 v);
 extern "C" void Ground_ClearWalkLinks(s32 x, s32 z, s32 v);
 #define TB(i, f, d) ((i) < 0x7c ? sGroundAttrTable[i].f : (d))
@@ -253,7 +253,7 @@ struct BoxColliderX {
     void setupBox(s32 a, s32 b, s32 c, VecFx32* p, s16 s, VecFx32* q);
     void resetBox();
 };
-extern "C" s64 func_01ffd028(void* v, void* p);
+extern "C" s64 Vec_DistSq(void* v, void* p);
 extern "C" void Collision_CalcTriangleNormal(void* out, VecFx32* a, VecFx32* b, VecFx32* c);
 extern "C" void _ZN17CollisionTriangle3setEP15Unk_0202f2ac_V3S1_S1_S1_(void* self, VecFx32* a, VecFx32* b, VecFx32* c, void* d);
 struct CollisionTagView {
@@ -891,7 +891,7 @@ GroundCell *GroundCell::loadAtPos(VecFx32 *p, s32 flag)
 void GroundCell::load(s32 x, s32 y, s32 flag)
 {
     if (flag == 0) {
-        unitAttr = func_01ffcb2c(x, y);
+        unitAttr = Ground_GetUnitAttr(x, y);
         s32 a = unitAttr;
         quadAttr0 = a < 0x7c ? sGroundAttrTable[a].quadAttr0Q0 : 0;
         s32 b0 = quadAttr0;
@@ -906,7 +906,7 @@ void GroundCell::load(s32 x, s32 y, s32 flag)
         s32 b3 = quadAttr3;
         quadHeight3 = b3 < 0x7c ? sGroundAttrTable[b3].height << 8 : 0;
     } else {
-        unitAttr = func_01ffcb2c(x, y);
+        unitAttr = Ground_GetUnitAttr(x, y);
         s32 a = unitAttr;
         quadAttr0 = a < 0x7c ? sGroundAttrTable[a].quadAttr1Q0 : 0;
         s32 b0 = quadAttr0;
@@ -1096,7 +1096,7 @@ void GroundInfoCalc::compute(Unk_0202f2ac_V3 *pos, s32 flag, s32 arg) {
     queryPos.z = pos->z;
     unitX = pos->x >> 13;
     unitZ = pos->z >> 13;
-    r = func_01ffcb2c(unitX, unitZ);
+    r = Ground_GetUnitAttr(unitX, unitZ);
     s32 k = Ground_GetUnitQuadrant((VecFx32 *)(pos));
     if (flag != 0) {
         attr = Ground_GetQuadAttr1(unitX, unitZ, k);
@@ -2007,7 +2007,7 @@ extern "C" void TriangleTrigger_CheckAll(s32* a, s32 b, s32 c) {
     p = sTriangleTriggerList;
     if (p != NULL) {
         for (; p != NULL; p = p->next) {
-            if ((s64)p->radiusSq >= func_01ffd028(&p->center, a)) {
+            if ((s64)p->radiusSq >= Vec_DistSq(&p->center, a)) {
                 p->onActorNear((VecFx32 *)a, (Actor *)c, b);
             }
         }
@@ -2224,7 +2224,7 @@ extern "C" BOOL Collision_IsSegmentOutsideBox(VecFx32 *a, VecFx32 *b, VecFx32 *c
     pts[0] = c;
     pts[1] = d;
     Vec_Sub(&mn, a, b);
-    func_01ffd070(&mx, a, b);
+    Vec_Add(&mx, a, b);
     mask = 0xff;
     for (i = 0; i < 2; i++) {
         VecFx32 *p = pts[i];
@@ -2361,7 +2361,7 @@ extern "C" u32 GroundAttr_GetQuadAttr0Q0(s32 t) { return t < 0x7c ? sGroundAttrT
 
 extern "C" u32 Ground_GetQuadAttr0(s32 x, s32 y, u32 c)
 {
-    return sGroundQuadAttr0Getters[c & 3](func_01ffcb2c(x, y));
+    return sGroundQuadAttr0Getters[c & 3](Ground_GetUnitAttr(x, y));
 }
 
 extern "C" u32 GroundAttr_GetQuadAttr1Q3(s32 t) { return t < 0x7c ? sGroundAttrTable[t].quadAttr1Q3 : 0; }
@@ -2374,7 +2374,7 @@ extern "C" u32 GroundAttr_GetQuadAttr1Q0(s32 t) { return t < 0x7c ? sGroundAttrT
 
 extern "C" u32 Ground_GetQuadAttr1(s32 x, s32 y, u32 c)
 {
-    return sGroundQuadAttr1Getters[c & 3](func_01ffcb2c(x, y));
+    return sGroundQuadAttr1Getters[c & 3](Ground_GetUnitAttr(x, y));
 }
 
 extern "C" UnitShapeQueryX *Collision_GetShapeQuery()
@@ -2421,21 +2421,21 @@ extern "C" BOOL Ground_IsRaisedOrOccupied(VecFx32 *v)
 
 extern "C" BOOL Ground_IsPond(s32 x, s32 y)
 {
-    s32 t = func_01ffcb2c(x, y);
+    s32 t = Ground_GetUnitAttr(x, y);
     if (t == 7) return TRUE;
     return FALSE;
 }
 
 extern "C" BOOL Ground_IsGrassUnit(s32 x, s32 y)
 {
-    s32 t = func_01ffcb2c(x, y);
+    s32 t = Ground_GetUnitAttr(x, y);
     if (t == 3 || t == 0x1d) return TRUE;
     return FALSE;
 }
 
 extern "C" s32 Ground_GetWaterKind(s32 x, s32 y)
 {
-    s32 t = func_01ffcb2c(x, y);
+    s32 t = Ground_GetUnitAttr(x, y);
     if (t == 8) return 1;
     if (t == 7 || (t >= 0xb && t <= 0x12)) return 2;
     return 0;
@@ -2443,35 +2443,35 @@ extern "C" s32 Ground_GetWaterKind(s32 x, s32 y)
 
 extern "C" s32 Ground_CanPlaceItem(s32 x, s32 y)
 {
-    s32 t = func_01ffcb2c(x, y);
+    s32 t = Ground_GetUnitAttr(x, y);
     if (t < 0x7c) return sGroundAttrTable[t].itemPlaceable;
     return 0;
 }
 
 extern "C" s32 Ground_IsGrassSurface(s32 x, s32 y)
 {
-    s32 t = func_01ffcb2c(x, y);
+    s32 t = Ground_GetUnitAttr(x, y);
     if (t < 0x7c) return sGroundAttrTable[t].grassSurface;
     return 0;
 }
 
 extern "C" s32 Ground_IsWalkable(s32 x, s32 y)
 {
-    s32 t = func_01ffcb2c(x, y);
+    s32 t = Ground_GetUnitAttr(x, y);
     if (t < 0x7c) return sGroundAttrTable[t].walkable;
     return 0;
 }
 
 extern "C" s32 Ground_GetDigKind(s32 x, s32 y)
 {
-    s32 t = func_01ffcb2c(x, y);
+    s32 t = Ground_GetUnitAttr(x, y);
     if (t < 0x7c) return sGroundAttrTable[t].digKind;
     return 2;
 }
 
 extern "C" s32 Ground_GetPlantFlag(s32 x, s32 y)
 {
-    s32 t = func_01ffcb2c(x, y);
+    s32 t = Ground_GetUnitAttr(x, y);
     if (t < 0x7c) {
         s32 v = sGroundAttrTable[t].plantFlag;
         if (v > 0) v = 1;
@@ -2482,20 +2482,20 @@ extern "C" s32 Ground_GetPlantFlag(s32 x, s32 y)
 
 extern "C" BOOL Ground_IsShore(s32 x, s32 y)
 {
-    s32 t = func_01ffcb2c(x, y);
+    s32 t = Ground_GetUnitAttr(x, y);
     u32 v = t < 0x7c ? sGroundAttrTable[t].isShore : 0;
     return v != 0 ? TRUE : FALSE;
 }
 
 extern "C" BOOL Ground_IsSandAboveSea(s32 a, s32 b)
 {
-    if (func_01ffcb2c(a, b) == 0x1e && func_01ffcb2c(a, b + 1) == 8) return TRUE;
+    if (Ground_GetUnitAttr(a, b) == 0x1e && Ground_GetUnitAttr(a, b + 1) == 8) return TRUE;
     return FALSE;
 }
 
 extern "C" u32 Ground_GetWalkLinks(s32 x, s32 y)
 {
-    CollisionBlockRef *p = func_01ffcb5c(x >> 4, y >> 4);
+    CollisionBlockRef *p = CollisionMap_GetBlockRef(x >> 4, y >> 4);
     if (p) {
         s32 i, b;
         x &= 15;
@@ -2526,7 +2526,7 @@ extern "C" BOOL Ground_IsFreeGrass(s32 a, s32 b)
 
 extern "C" BOOL Ground_GetMapColors(u8 *out, s32 a, s32 b)
 {
-    s32 i = func_01ffcb2c(a, b);
+    s32 i = Ground_GetUnitAttr(a, b);
     if (i < 0x7c) {
         out[0] = sGroundAttrTable[i].mapColor0;
         out[1] = sGroundAttrTable[i].mapColor1;
@@ -2624,7 +2624,7 @@ extern "C" BOOL Ground_IsWaterAround(VecFx32 *pos, s32 r, s32 *out, s32 flags)
         { s32 *q = (s32 *)&d[7]; q[0] = z; q[1] = z; q[2] = nr; }
         best = z;
         for (i = 0; i < 8; i++) {
-            func_01ffd070(&tmp, pos, &d[i]);
+            Vec_Add(&tmp, pos, &d[i]);
             GroundInfo b((VecFx32 *)&tmp, z, flags);
             if (!b.waterKind) return FALSE;
             best = a.waterSurfaceY;
@@ -2687,7 +2687,7 @@ extern "C" s32 Ground_FindTerrainMarker(s32 *a, s32 *b, s32 c, s32 d)
 {
     s32 bx, bz, j, i;
     GroundCellView X, Y, Z;
-    if (func_01ffcb5c(c, d) == 0) return 4;
+    if (CollisionMap_GetBlockRef(c, d) == 0) return 4;
     bx = c << 4;
     bz = d << 4;
     for (j = 0; j < 16; j++) {
@@ -2719,7 +2719,7 @@ extern "C" s32 Ground_FindTerrainMarker(s32 *a, s32 *b, s32 c, s32 d)
 
 extern "C" s32 Ground_GetSpecialPieceKind()
 {
-    s32 r = func_01ffcb2c();
+    s32 r = Ground_GetUnitAttr();
     if (r >= 0x6f && r <= 0x70) return r - 0x6f;
     return -1;
 }
@@ -2902,12 +2902,12 @@ extern "C" void Collision_Query(VecFx32 *a, VecFx32 *b, CollisionVisitor *visito
     s32 x1, x2, z1, z2;
     BOOL f4 = (flags & 4) ? TRUE : FALSE;
     Vec_Sub(&v18, a, &sCollisionQueryMargin);
-    func_01ffd070(&v24, b, &sCollisionQueryMargin);
+    Vec_Add(&v24, b, &sCollisionQueryMargin);
     x1 = v18.x >> 13;
     z1 = v18.z >> 13;
     x2 = v24.x >> 13;
     z2 = v24.z >> 13;
-    func_01ffd070(&v30, &v18, &v24);
+    Vec_Add(&v30, &v18, &v24);
     v30.x >>= 1;
     v30.y >>= 1;
     v30.z >>= 1;
@@ -2973,7 +2973,7 @@ extern "C" void Collision_AddDigHole(s32 a, s32 b) {
 }
 
 extern "C" void Ground_SetWalkLinks(s32 x, s32 z, s32 v) {
-    CollisionBlockRef *ch = func_01ffcb5c(x >> 4, z >> 4);
+    CollisionBlockRef *ch = CollisionMap_GetBlockRef(x >> 4, z >> 4);
     if (ch) {
         s32 n;
         u8 *p;
@@ -3046,7 +3046,7 @@ extern "C" void Ground_SetWaveLevel(s32 v) {
 }
 
 extern "C" BOOL Ground_ClearPlantFlag(s32 x, s32 z) {
-    CollisionBlockRef *ch = func_01ffcb5c(x >> 4, z >> 4);
+    CollisionBlockRef *ch = CollisionMap_GetBlockRef(x >> 4, z >> 4);
     if (ch) {
         u8 *base = ch->attrs;
         s32 i;
@@ -3088,7 +3088,7 @@ extern "C" BOOL Ground_ClearPlantFlag(s32 x, s32 z) {
 }
 
 extern "C" BOOL Ground_SetQuadrantsBlocked(s32 x, s32 z, s32 mask) {
-    CollisionBlockRef *ch = func_01ffcb5c(x >> 4, z >> 4);
+    CollisionBlockRef *ch = CollisionMap_GetBlockRef(x >> 4, z >> 4);
     if (ch) {
         s32 c;
         s32 old;
@@ -3134,7 +3134,7 @@ extern "C" void Ground_UnlinkUnit(s32 x, s32 z) {
 }
 
 extern "C" s32 Ground_GetExitAt(s32 x, s32 z) {
-    s32 i = func_01ffcb2c(x, z);
+    s32 i = Ground_GetUnitAttr(x, z);
     if (i >= 0x68 && i <= 0x6e) i -= 0x68; else i = -1;
     if (i < 0 || i == gCurCollisionMap->lockedExit) return -1;
     return i;
@@ -3155,7 +3155,7 @@ extern "C" BOOL Ground_LockExit(s32 v) {
 }
 
 extern "C" BOOL Ground_IsOnLockedExit(VecFx32 *p) {
-    s32 i = func_01ffcb2c(p->x >> 13, p->z >> 13);
+    s32 i = Ground_GetUnitAttr(p->x >> 13, p->z >> 13);
     if (i >= 0x68 && i <= 0x6e) i -= 0x68; else i = -1;
     if (i >= 0) {
         if (i == gCurCollisionMap->lockedExit) return TRUE;
@@ -3184,7 +3184,7 @@ extern "C" BOOL Ground_GetFloorBounds(s32 *a, s32 *b, s32 *c, s32 *d) {
         l.yr = l.xr;
         for (y = 0; y < 0x20; y++) {
             for (x = 0; x < 0x20; x++) {
-                if (func_01ffcb2c(x, y) != 0x15) {
+                if (Ground_GetUnitAttr(x, y) != 0x15) {
                     if (x < l.xr.lo) {
                         l.xr.lo = x;
                     } else if (x > l.xr.hi) {

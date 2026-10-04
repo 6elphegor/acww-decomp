@@ -129,7 +129,7 @@ extern void FS_CloseFile(void *file);                   // FS_CloseFile
 extern BOOL FS_UnloadArchive(void *arc);
 extern void FS_ReleaseArchiveName(void *arc);                    // FS_ReleaseArchiveName
 extern void FS_InitArchive(void *arc);                    // FS_InitArchive
-extern u32 func_0212a438(const char *s);                 // strlen
+extern u32 strlen(const char *s);                 // strlen
 extern BOOL FS_RegisterArchiveName(void *arc, const char *name, u32 len);   // FS_RegisterArchiveName
 extern BOOL FS_LoadArchive(void *arc, u32 base, u32 fat, u32 fatSize, u32 fnt, u32 fntSize, u32 rd, u32 wr);   // FS_LoadArchive
 

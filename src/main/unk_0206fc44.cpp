@@ -277,7 +277,7 @@ s32 Gfx2d_IsMainScreenLayer(u32 id);
 }
 
 extern "C" {
-void func_01ffb46c(void *a, void *b);
+void MTX_Copy33To43_(void *a, void *b);
 }
 
 extern "C" {
@@ -432,7 +432,7 @@ void CpuMtx_MultRotScaledTrans(void *a, VecFx32 *v, VecFx32 *w);
 
 void CpuMtx_MultRotTrans(void *a, VecFx32 *v) {
     Mtx43 m;
-    func_01ffb46c(a, &m);
+    MTX_Copy33To43_(a, &m);
     m.m[9] = v->x;
     m.m[10] = v->y;
     m.m[11] = v->z;
@@ -450,13 +450,13 @@ void CpuMtx_MultTrans(VecFx32 *v) {
 
 void CpuMtx_MultRot(void *a) {
     Mtx43 m;
-    func_01ffb46c(a, &m);
+    MTX_Copy33To43_(a, &m);
     MTX_Concat43(&m, &data_021cb69c, &data_021cb69c);
 }
 
 void CpuMtx_MultRotScaledTrans(void *a, VecFx32 *v, VecFx32 *w) {
     Mtx43 m;
-    func_01ffb46c(a, &m);
+    MTX_Copy33To43_(a, &m);
     if (w == NULL) {
         m.m[9] = v->x;
         m.m[10] = v->y;

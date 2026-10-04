@@ -31,7 +31,7 @@ struct PrioNodeB { void *a, *b, *c; u16 priority; };
 
 
 extern "C" {
-void *func_01ffcffc(void *);
+void *TreeNode_GetNextPreOrder(void *);
 BOOL List_PushBack(List *list, ListNode *node);
 BOOL List_InsertAfter(List *list, ListNode *node, ListNode *after);
 void Task_RunDrawPhase(void);
@@ -81,7 +81,7 @@ BOOL TaskTree::run() {
     n = head;
     while (n != NULL) {
         TreeNode *cur = n;
-        n = (TreeNode *)func_01ffcffc(cur);
+        n = (TreeNode *)TreeNode_GetNextPreOrder(cur);
         (cur->owner->*fn)();
     }
     return TRUE;

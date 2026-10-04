@@ -129,7 +129,7 @@ extern void FS_CloseFile(void *file);                   // FS_CloseFile
 extern BOOL FS_UnloadArchive(void *arc);
 extern void FS_ReleaseArchiveName(void *arc);                    // FS_ReleaseArchiveName
 extern void FS_InitArchive(void *arc);                    // FS_InitArchive
-extern u32 func_0212a438(const char *s);                 // strlen
+extern u32 strlen(const char *s);                 // strlen
 extern BOOL FS_RegisterArchiveName(void *arc, const char *name, u32 len);   // FS_RegisterArchiveName
 extern BOOL FS_LoadArchive(void *arc, u32 base, u32 fat, u32 fatSize, u32 fnt, u32 fntSize, u32 rd, u32 wr);   // FS_LoadArchive
 
@@ -264,7 +264,7 @@ BOOL NNS_FndMountArchive(u32 *arc, const char *name, u32 *narc) {
     arc[24] = (u32)fat;
     base = (u32)img + 8;
     arc[25] = base;
-    if (FS_RegisterArchiveName(arc, name, func_0212a438(name)) == 0) return 0;
+    if (FS_RegisterArchiveName(arc, name, strlen(name)) == 0) return 0;
     if (FS_LoadArchive(arc, base, (u32)fat + 12 - base, ((u32 *)fat)[1] - 12, (u32)fnt + 8 - base, ((u32 *)fnt)[1] - 8, 0, 0) != 0) return 1;
     FS_ReleaseArchiveName(arc);
     return 0;

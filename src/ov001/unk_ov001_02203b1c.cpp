@@ -41,7 +41,6 @@ struct SimpleStartConfigView { u8 pad[0x2c]; s32 securityType; s32 unk_30; u8 pa
 struct SimpleStartExchangeKey { u8 v[8]; };
 
 extern "C" {
-void *memset(void *, int, unsigned long);
 u32 OS_DisableInterrupts(void);
 void OS_RestoreInterrupts(u32 v);
 u64 OS_GetTick();
@@ -62,9 +61,9 @@ void OS_CreateAlarm(void *p);
 void OS_SetAlarm(void *p, s32 a, s32 b, void *cb, s32 prio);
 void OS_GetMacAddress();
 s32 memcmp(const void *a, const void *b, u32 n);
-void func_0212899c(void *d, s32 v, u32 n);
-void func_0212a360(void *d, void *s);
-u32 func_0212a438(const void *s);
+void memset(void *d, s32 v, u32 n);
+void strcpy(void *d, void *s);
+u32 strlen(const void *s);
 
 s32 WifiLink_CleanupAsync(void);
 s32 WifiLink_DisconnectAsync(void);
@@ -1458,7 +1457,7 @@ BOOL SimpleStart_FindSetupAp(SimpleStartApList *a, SimpleStartApList *b, s32 *ou
                         u32 c = e1->name[0];
                         if (c == 0 || c == 0x20) break;
                     }
-                    u32 n = func_0212a438(buf);
+                    u32 n = strlen(buf);
                     if (memcmp(buf, e2->name, n) == 0 && memcmp(e1->bssid, e2->bssid, 4) == 0 &&
                         e1->privacy != e2->privacy && e1->privacy == 0) {
                         found = TRUE;
@@ -1484,7 +1483,7 @@ BOOL SimpleStart_FindSetupAp(SimpleStartApList *a, SimpleStartApList *b, s32 *ou
             do {
                 memcpy(buf2, e2->name, 0x20);
                 buf2[e2->len] = flagA;
-                u32 n = func_0212a438(sSimpleStartSetupSsid);
+                u32 n = strlen(sSimpleStartSetupSsid);
                 if (memcmp(buf2, sSimpleStartSetupSsid, n) == 0 && e2->privacy == 0) {
                     flagB = TRUE;
                     break;
@@ -1499,10 +1498,10 @@ BOOL SimpleStart_FindSetupAp(SimpleStartApList *a, SimpleStartApList *b, s32 *ou
             do {
                 memcpy(buf2, e1->name, 0x20);
                 buf2[e1->len] = zz;
-                u32 x = func_0212a438(buf2);
-                u32 y = func_0212a438(sSimpleStartSetupSsid);
+                u32 x = strlen(buf2);
+                u32 y = strlen(sSimpleStartSetupSsid);
                 if (x == y) {
-                    u32 n = func_0212a438(sSimpleStartSetupSsid);
+                    u32 n = strlen(sSimpleStartSetupSsid);
                     if (memcmp(buf2, sSimpleStartSetupSsid, n) == 0 && e1->privacy == 0) {
                         flagA = TRUE;
                         break;
@@ -1607,7 +1606,7 @@ s32 SimpleStart_SearchAp() {
             if (SimpleStart_FindSetupAp(buf1, buf2, &idx) != 0) {
                 SimpleStartApEntry *e = &buf1->e[idx];
                 data_ov001_0222c868 = idx;
-                func_0212a360(data_ov001_0222c964, e->name);
+                strcpy(data_ov001_0222c964, e->name);
                 {
                     u8 *md = data_ov001_0222c8dc;
                     const u8 *ms = e->bssid;
@@ -1710,7 +1709,7 @@ u8 *SimpleStart_PutTlv(u8 *out, u32 id0, u8 *data, u32 len) {
     pad = ((len + 11) & ~7) - 4;
     *(u16 *)(out + 2) = Bswap((u16)len);
     out += 4;
-    func_0212899c(out, 0, pad);
+    memset(out, 0, pad);
     memcpy(out, data, len);
     out += pad;
     return out;
@@ -1857,7 +1856,7 @@ s32 SimpleStart_ParseConfigTlvs(u8 *p)
             data_ov001_0222cc30.unk_30 = Unk_ov001_0220607c_Swap(r);
             break;
         case 0x206: case 0x207: case 0x208: case 0x209: {
-            func_0212899c(data_ov001_0222cc94 + (type - 0x206) * 0x28, 0, 0x20);
+            memset(data_ov001_0222cc94 + (type - 0x206) * 0x28, 0, 0x20);
             if (data_ov001_0222cc30.unk_5c == 1) {
                 u8 *dd = data_ov001_0222cc94 + (type - 0x206) * 0x28;
                 for (i = 0; i < (s32)len; i++) {
@@ -1911,7 +1910,7 @@ s32 SimpleStart_BuildResult()
 {
     s32 ret = 1;
 
-    func_0212a360(&CA48_A, &data_ov001_0222cc30);
+    strcpy(&CA48_A, &data_ov001_0222cc30);
     switch (data_ov001_0222cc30.securityType) {
     case 0:
         CA48_A.securityType = 0;
@@ -1932,7 +1931,7 @@ s32 SimpleStart_BuildResult()
             for (; i < 4; i++) {
                 memcpy(bp, src, 0x20);
                 buf[0x20] = 0;
-                switch (func_0212a438(bp)) {
+                switch (strlen(bp)) {
                 case 5:
                     a->securityType = 1;
                     *(SimpleStartWep40Key *)dst = *(SimpleStartWep40Key *)bp;
@@ -2605,7 +2604,7 @@ void *SimpleStart_Calloc(u32 n, u32 m) {
     u32 size = n * m;
     void *p = sSimpleStartAllocFunc(size);
     if (p != NULL) {
-        func_0212899c(p, 0, size);
+        memset(p, 0, size);
     }
     return p;
 }

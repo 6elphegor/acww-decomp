@@ -293,7 +293,7 @@ extern "C" {
 void *_ZN11CommManager15getConfirmedSeqEv(CommManager *);
 }
 extern "C" {
-void func_01ffa314();
+void OS_EnableInterrupts();
 }
 extern "C" {
 void OS_DisableInterrupts();
@@ -442,7 +442,7 @@ extern "C" void Comm_EnterCritical() {
     OS_DisableInterrupts();
 }
 extern "C" void Comm_LeaveCritical() {
-    func_01ffa314();
+    OS_EnableInterrupts();
 }
 extern "C" void Comm_OnReceive(u32 a, u8 *b, u32 c) {
     DC_FlushAll(a);

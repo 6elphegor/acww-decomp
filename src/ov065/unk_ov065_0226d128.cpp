@@ -58,13 +58,13 @@ extern u32 OS_DisableInterrupts(void);
 extern void OS_RestoreInterrupts(u32 v);
 extern s32 OS_SPrintf(char *buf, const char *fmt, ...);
 extern s32 OS_SNPrintf(char *buf, u32 n, const char *fmt, ...);
-extern s32 func_0212a438(const char *s);
-extern s32 func_0212dcb4(const void *s);
+extern s32 strlen(const char *s);
+extern s32 wcslen(const void *s);
 extern void DWCi_BM_GetWiFiInfo(void *p);
 extern void OS_LockMutex(void *m);
 extern void OS_UnlockMutex(void *m);
 extern s32 OS_InitMutex(void *m);
-extern s32 func_0212b770(void);
+extern s32 atol(void);
 extern s32 strtol(const char *s, char **end, s32 base);
 extern s32 DWCi_AUTH_UpDateWiFiID(void *p, u32 v);
 extern void DWCi_AUTH_RemakeWiFiID(void *p);
@@ -76,7 +76,7 @@ extern s32 OS_CreateThread(void *t, s32 (*fn)(void *), void *arg, void *stack, u
 extern s64 OS_GetTick(void);
 extern void OS_Sleep(u32 ms);
 extern s32 strcmp(const char *a, const char *b);
-extern char *func_0212a360(char *dst, const char *src);
+extern char *strcpy(char *dst, const char *src);
 
 extern void WifiAp_GetNdwcshapApInfo(void *a, void *dst);
 extern u8 *WifiLink_GetConnectedBssid(void);
@@ -397,7 +397,7 @@ s32 NasAuth_ParseResponse(void) {
     S *g;
 
     DwcHttp_FindField(sNasAuth->httpFields, 0x20, "httpresult");
-    s32 st = func_0212b770();
+    s32 st = atol();
     if (data_0220064c == 0x22) {
         sNasAuth->resultCode = 0x4e85;
         return 0xb;
@@ -413,7 +413,7 @@ s32 NasAuth_ParseResponse(void) {
     }
     s32 code = strtol(sNasAuth->returnCd, &end, 10);
     g = sNasAuth;
-    s32 l = func_0212a438(g->returnCd);
+    s32 l = strlen(g->returnCd);
     if (end != g->returnCd + l) {
         g->resultCode = 0x4e85;
         return 0xb;
@@ -506,7 +506,7 @@ s32 NasAuth_BuildRequest(void *a0, const char *a1, const u16 *a2, DwcHttpField *
         if (sNasUserId.userId == 0) {
             DwcHttp_AddField(&form, "action", "acctcreate");
         } else {
-            if (func_0212a438(a1) == 0) {
+            if (strlen(a1) == 0) {
                 return 6;
             }
             DwcHttp_AddField(&form, "action", "login");
@@ -545,15 +545,15 @@ s32 NasAuth_BuildRequest(void *a0, const char *a1, const u16 *a2, DwcHttpField *
     i = 0;
     for (; a3->key != 0; a3++, i++) {
         const char *v = a3->value;
-        if (DwcHttp_AddFormParam(a0, a3->key, v, func_0212a438(v)) != 0) {
+        if (DwcHttp_AddFormParam(a0, a3->key, v, strlen(v)) != 0) {
             return 8;
         }
     }
     if (DwcHttp_AddFormParam(a0, "devname", nick, 0x14) != 0) {
         return 8;
     }
-    if (func_0212dcb4(a2) != 0) {
-        if (DwcHttp_AddFormParam(a0, "ingamesn", (const char *)a2, func_0212dcb4(a2) * 2) != 0) {
+    if (wcslen(a2) != 0) {
+        if (DwcHttp_AddFormParam(a0, "ingamesn", (const char *)a2, wcslen(a2) * 2) != 0) {
             return 8;
         }
     }

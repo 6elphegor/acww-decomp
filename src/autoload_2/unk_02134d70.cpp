@@ -49,17 +49,17 @@ typedef struct ActionIterator {
 #define GET_LONG(p) ((p)[0] | ((p)[1] << 8) | ((p)[2] << 16) | ((p)[3] << 24))
 
 extern "C" {
-void func_02133bc0(ThrowContext *context, ExceptionInfo *info); // __SetupFrameInfo
+void __SetupFrameInfo(ThrowContext *context, ExceptionInfo *info); // __SetupFrameInfo
 u32 __PopStackFrame(ThrowContext *context, ExceptionInfo *info);
-void func_02135578(void); // terminate
-u8 *func_02133da8(u8 *p, u32 *value); // __DecodeUnsignedNumber
-u8 *func_02133e50(u8 *p, s32 *value); // __DecodeSignedNumber
-void func_02135128(char *retaddr, ExceptionInfo *info); // FindExceptionRecord
+void _ZSt9terminatev(void); // terminate
+u8 *__DecodeUnsignedNumber(u8 *p, u32 *value); // __DecodeUnsignedNumber
+u8 *__DecodeSignedNumber(u8 *p, s32 *value); // __DecodeSignedNumber
+void FindExceptionRecord(char *retaddr, ExceptionInfo *info); // FindExceptionRecord
 }
 
 inline void Branch(ExceptionInfo *info, ThrowContext *context) {
     s32 target;
-    func_02133e50(info->action_pointer + 1, &target);
+    __DecodeSignedNumber(info->action_pointer + 1, &target);
     info->action_pointer += target;
 }
 
@@ -72,11 +72,11 @@ extern "C" u8 NextAction(ActionIterator *iter) {
 
     for (;;) {
         if (!info->action_pointer || *info->action_pointer & 0x80) {
-            func_02135128((char *)__PopStackFrame(context, info), info);
+            FindExceptionRecord((char *)__PopStackFrame(context, info), info);
             if (info->exception_record == 0) {
-                func_02135578();
+                _ZSt9terminatev();
             }
-            func_02133bc0(context, info);
+            __SetupFrameInfo(context, info);
             if (info->action_pointer == 0) {
                 continue;
             }
@@ -85,19 +85,19 @@ extern "C" u8 NextAction(ActionIterator *iter) {
         switch (*info->action_pointer & EXCEPTION_ACTION_MASK) {
         case 2: {
             s32 local;
-            info->action_pointer = func_02133e50(info->action_pointer + 1, &local) + 4;
+            info->action_pointer = __DecodeSignedNumber(info->action_pointer + 1, &local) + 4;
             break;
         }
         case 3: {
             s32 cond;
             s32 local;
             info->action_pointer =
-                func_02133e50(func_02133e50(info->action_pointer + 1, &cond), &local) + 4;
+                __DecodeSignedNumber(__DecodeSignedNumber(info->action_pointer + 1, &cond), &local) + 4;
             break;
         }
         case 4: {
             s32 pointer;
-            info->action_pointer = func_02133e50(info->action_pointer + 1, &pointer) + 4;
+            info->action_pointer = __DecodeSignedNumber(info->action_pointer + 1, &pointer) + 4;
             break;
         }
         case 5: {
@@ -105,29 +105,29 @@ extern "C" u8 NextAction(ActionIterator *iter) {
             u32 count;
             u32 size;
             info->action_pointer =
-                func_02133da8(func_02133da8(func_02133e50(info->action_pointer + 1, &local), &count), &size) + 4;
+                __DecodeUnsignedNumber(__DecodeUnsignedNumber(__DecodeSignedNumber(info->action_pointer + 1, &local), &count), &size) + 4;
             break;
         }
         case 6: {
             s32 object;
             s32 offset;
             info->action_pointer =
-                func_02133e50(func_02133e50(info->action_pointer + 1, &object), &offset) + 4;
+                __DecodeSignedNumber(__DecodeSignedNumber(info->action_pointer + 1, &object), &offset) + 4;
             break;
         }
         case 7: {
             s32 object;
             s32 offset;
             info->action_pointer =
-                func_02133e50(func_02133e50(info->action_pointer + 1, &object), &offset) + 4;
+                __DecodeSignedNumber(__DecodeSignedNumber(info->action_pointer + 1, &object), &offset) + 4;
             break;
         }
         case 8: {
             s32 cond;
             s32 object;
             s32 offset;
-            info->action_pointer = func_02133e50(
-                func_02133e50(func_02133e50(info->action_pointer + 1, &cond), &object), &offset) + 4;
+            info->action_pointer = __DecodeSignedNumber(
+                __DecodeSignedNumber(__DecodeSignedNumber(info->action_pointer + 1, &cond), &object), &offset) + 4;
             break;
         }
         case 9: {
@@ -135,40 +135,40 @@ extern "C" u8 NextAction(ActionIterator *iter) {
             s32 offset;
             u32 count;
             u32 size;
-            info->action_pointer = func_02133da8(func_02133da8(
-                func_02133e50(func_02133e50(info->action_pointer + 1, &object), &offset), &count), &size) + 4;
+            info->action_pointer = __DecodeUnsignedNumber(__DecodeUnsignedNumber(
+                __DecodeSignedNumber(__DecodeSignedNumber(info->action_pointer + 1, &object), &offset), &count), &size) + 4;
             break;
         }
         case 10: {
             s32 pointer;
-            info->action_pointer = func_02133e50(info->action_pointer + 1, &pointer) + 4;
+            info->action_pointer = __DecodeSignedNumber(info->action_pointer + 1, &pointer) + 4;
             break;
         }
         case 11: {
             s32 cond;
             s32 pointer;
             info->action_pointer =
-                func_02133e50(func_02133e50(info->action_pointer + 1, &cond), &pointer) + 4;
+                __DecodeSignedNumber(__DecodeSignedNumber(info->action_pointer + 1, &cond), &pointer) + 4;
             break;
         }
         case 12: {
             u32 catch_pcoffset;
             s32 cinfo_ref;
             info->action_pointer =
-                func_02133e50(func_02133da8(info->action_pointer + 5, &catch_pcoffset), &cinfo_ref);
+                __DecodeSignedNumber(__DecodeUnsignedNumber(info->action_pointer + 5, &catch_pcoffset), &cinfo_ref);
             break;
         }
         case 13: {
             s32 cinfo_ref;
-            info->action_pointer = func_02133e50(info->action_pointer + 1, &cinfo_ref);
+            info->action_pointer = __DecodeSignedNumber(info->action_pointer + 1, &cinfo_ref);
             break;
         }
         case 15: {
             u32 specs;
             u32 pcoffset;
             s32 cinfo_ref;
-            u8 *p = func_02133e50(
-                func_02133da8(func_02133da8(info->action_pointer + 1, &specs), &pcoffset), &cinfo_ref);
+            u8 *p = __DecodeSignedNumber(
+                __DecodeUnsignedNumber(__DecodeUnsignedNumber(info->action_pointer + 1, &specs), &pcoffset), &cinfo_ref);
             info->action_pointer = p + specs * 4;
             break;
         }
@@ -179,9 +179,9 @@ extern "C" u8 NextAction(ActionIterator *iter) {
                 s32 offset2;
                 u32 base2;
             } s;
-            u8 *p = func_02133e50(func_02133e50(info->action_pointer + 1, &object), &offset);
+            u8 *p = __DecodeSignedNumber(__DecodeSignedNumber(info->action_pointer + 1, &object), &offset);
             s.base2 = GET_LONG(p);
-            info->action_pointer = func_02133e50(p + 4, &s.offset2) + 4;
+            info->action_pointer = __DecodeSignedNumber(p + 4, &s.offset2) + 4;
             break;
         }
         case 17: {
@@ -189,25 +189,25 @@ extern "C" u8 NextAction(ActionIterator *iter) {
             s32 object2;
             s32 offset1;
             s32 offset2;
-            u8 *p = func_02133e50(func_02133e50(info->action_pointer + 1, &object1), &offset1);
-            info->action_pointer = func_02133e50(func_02133e50(p + 1, &object2), &offset2) + 4;
+            u8 *p = __DecodeSignedNumber(__DecodeSignedNumber(info->action_pointer + 1, &object1), &offset1);
+            info->action_pointer = __DecodeSignedNumber(__DecodeSignedNumber(p + 1, &object2), &offset2) + 4;
             break;
         }
         case 18: {
             s32 object;
             s32 bytes;
             u32 size;
-            u8 *p = func_02133e50(info->action_pointer + 1, &object);
-            info->action_pointer = func_02133da8(func_02133e50(p + 1, &bytes), &size) + 4;
+            u8 *p = __DecodeSignedNumber(info->action_pointer + 1, &object);
+            info->action_pointer = __DecodeUnsignedNumber(__DecodeSignedNumber(p + 1, &bytes), &size) + 4;
             break;
         }
         case 19: {
             s32 offset;
-            info->action_pointer = func_02133e50(info->action_pointer + 1, &offset);
+            info->action_pointer = __DecodeSignedNumber(info->action_pointer + 1, &offset);
             break;
         }
         default:
-            func_02135578();
+            _ZSt9terminatev();
             break;
         }
         break;

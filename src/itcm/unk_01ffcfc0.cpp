@@ -8,11 +8,11 @@
 
 
 extern "C" {
-TreeNode *func_01ffcfc0(TreeNode *n);
+TreeNode *TreeNode_GetNextSkipChildren(TreeNode *n);
 }
 
 // VEC_Add
-extern "C" void func_01ffd070(VecFx32 *out, VecFx32 *a, VecFx32 *b) {
+extern "C" void Vec_Add(VecFx32 *out, VecFx32 *a, VecFx32 *b) {
     s32 ax = a->x, bx = b->x, az = a->z, bz = b->z, ay = a->y, by = b->y;
     out->x = ax + bx;
     out->y = ay + by;
@@ -20,22 +20,22 @@ extern "C" void func_01ffd070(VecFx32 *out, VecFx32 *a, VecFx32 *b) {
 }
 
 // squared distance in fx32 (s64 >> 12)
-extern "C" s64 func_01ffd028(VecFx32 *a, VecFx32 *b) {
+extern "C" s64 Vec_DistSq(VecFx32 *a, VecFx32 *b) {
     s64 s = (s64)(a->x - b->x) * (a->x - b->x);
     s += (s64)(a->y - b->y) * (a->y - b->y);
     s += (s64)(a->z - b->z) * (a->z - b->z);
     return s >> 12;
 }
 
-extern "C" TreeNode *func_01ffcffc(TreeNode *n) {
+extern "C" TreeNode *TreeNode_GetNextPreOrder(TreeNode *n) {
     TreeNode *r = n->child;
     if (r == 0) {
-        r = func_01ffcfc0(n);
+        r = TreeNode_GetNextSkipChildren(n);
     }
     return r;
 }
 
-extern "C" TreeNode *func_01ffcfc0(TreeNode *n) {
+extern "C" TreeNode *TreeNode_GetNextSkipChildren(TreeNode *n) {
     if (n->next != 0) {
         return n->next;
     }

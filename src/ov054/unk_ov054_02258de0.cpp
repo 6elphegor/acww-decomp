@@ -308,7 +308,7 @@ void ActorTalkRequest_setTalkPlayer(void *self, s32 v);
 s32 NpcTalkCtrl_isBusy(void *self);
 s32 NpcActor_netGetSlots(void *self, s32 *a, s32 *b);
 
-s32 func_0212a438(const char *s);
+s32 strlen(const char *s);
 s32 strncmp(const void *a, const char *b, s32 n);
 BOOL GameStart_IsActive();
 BOOL GameStart_IsNewTown();
@@ -1551,7 +1551,7 @@ void SpNpcPellyPhyllisTalk::onMessageEnd(u32 a_) {
         *(Unk_ov054_0225b9c4_FnI *)data_ov054_0225b790,
     };
     char *s = *(char **)((u8 *)sSpNpcPellyPhyllisMsgKeys + owner->sister * 12);
-    s32 r = strncmp((u8 *)this + 4, s, func_0212a438(s));
+    s32 r = strncmp((u8 *)this + 4, s, strlen(s));
     s32 i;
     if (GameStart_IsActive()) {
         i = 2;
@@ -1793,7 +1793,7 @@ void SpNpcPellyPhyllisTalk::onChoice(u32 a_) {
         *(Unk_ov054_0225b9c4_FnI *)data_ov054_0225b768,
     };
     char *s = *(char **)((u8 *)sSpNpcPellyPhyllisMsgKeys + owner->sister * 12);
-    s32 r = strncmp((u8 *)this + 4, s, func_0212a438(s));
+    s32 r = strncmp((u8 *)this + 4, s, strlen(s));
     s32 i;
     if (GameStart_IsActive()) {
         i = 2;

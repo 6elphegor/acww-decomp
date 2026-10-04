@@ -105,7 +105,7 @@ extern u8 data_ov065_022917a0[];
 s32 func_02133150(s32, s32);
 u32 STD_GetStringLength(const char *);
 void func_02127838(char *, const char *);
-s32 func_02128ca4(const char *, const char *, ...);
+s32 sscanf(const char *, const char *, ...);
 void memcpy(void *, const void *, s32);
 s32 OS_SPrintf(char *, const char *, ...);
 s32 strcmp(const char *, const char *);
@@ -604,7 +604,7 @@ void GsQr_ParsePublicAddress(GsQrContext *q, const char *s) {
     u32 ip;
     u32 port;
     u32 pt;
-    func_02128ca4(s, "%08X%04X", &ip, &port);
+    sscanf(s, "%08X%04X", &ip, &port);
     pt = (u16)port;
     ip = ((ip << 24) & 0xff000000) | (((ip << 8) & 0xff0000) | (((ip >> 24) & 0xff) | ((ip >> 8) & 0xff00)));
     if (ip != 0 && pt != 0) {

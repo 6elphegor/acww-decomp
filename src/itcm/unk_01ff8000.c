@@ -367,11 +367,11 @@ extern void OSi_EnterDmaCallback(u32 dmaNo, void (*callback)(void *), void *arg)
 extern void Fatal_Trap(void);                           // OS_Terminate (Thumb, main)
 
 /* PROTOS */
-void func_01ff8000(const CPContext *context);
-void func_01ff806c(CPContext *context);
+void CPi_RestoreContext(const CPContext *context);
+void CP_SaveContext(CPContext *context);
 u32 OS_DisableIrqMask(u32 intr);
 u32 OS_EnableIrqMask(u32 intr);
-void func_01ff8160(void);
+void OS_IrqDummy(void);
 u32 OS_ResetRequestIrqMask(u32 intr);
 u32 OS_SetIrqMask(u32 intr);
 void OSi_IrqCallback(int index);
@@ -391,8 +391,8 @@ void texmtxCalc_flagTRS_(MtxFx44 *m, const MatAnm *a);
 void texmtxCalc_flagTR_(MtxFx44 *m, const MatAnm *a);
 void texmtxCalc_flagTS_(MtxFx44 *m, const MatAnm *a);
 void texmtxCalc_flagT_(MtxFx44 *m, const MatAnm *a);
-void func_01ff8740(MtxFx44 *m, const MatAnm *a);
-void func_01ff8858(u32 *vec, const AnmObj *anm);
+void texmtxCalc_flag_(MtxFx44 *m, const MatAnm *a);
+void updateHintVec___kernel(u32 *vec, const AnmObj *anm);
 void G3dDrawInternal_(RS *rs, RenderObj *obj);
 void G3dDrawInternal_Loop_(RS *rs);
 void NNS_G3dDraw(RenderObj *obj);
@@ -405,15 +405,15 @@ void NNSi_G3dFuncSbc_MAT_InternalDefault(RS *rs, u32 opt, const ResMatData *mat,
 void NNSi_G3dFuncSbc_MTX(RS *rs, u32 opt);
 void NNSi_G3dFuncSbc_NODE(RS *rs, u32 opt);
 void NNSi_G3dFuncSbc_NODEDESC(RS *rs, u32 opt);
-void func_01ff99c8(RS *rs, u32 opt);
-void func_01ff99f4(RS *rs, u32 opt);
-void func_01ff9a60(RS *rs, u32 opt);
+void NNSi_G3dFuncSbc_NOP(RS *rs, u32 opt);
+void NNSi_G3dFuncSbc_POSSCALE(RS *rs, u32 opt);
+void NNSi_G3dFuncSbc_RET(RS *rs, u32 opt);
 void NNSi_G3dFuncSbc_SHP(RS *rs, u32 opt);
 void NNSi_G3dFuncSbc_SHP_InternalDefault(RS *rs, u32 opt, const ResShpData *shp, u32 idxShp);
 void NNSi_G3dGetJointScaleMaya(JntAnm *pResult, const fx32 *p, const u8 *cmd, u32 srtflag);
 void NNSi_G3dSendJointSRTMaya(JntAnm *pResult);
-void func_01ff9e10(MatAnm *pResult);
-void func_01ff9f5c(void *p);
+void NNSi_G3dSendTexSRTMaya(MatAnm *pResult);
+void AlarmCallback__stream(void *p);
 void MI_SendGXCommandAsync(u32 dmaNo, const void *src, u32 commandLength, void (*callback)(void *), void *arg);
 void MI_WaitDma(u32 dmaNo);
 void MIi_CheckDma0SourceAddress(u32 dmaNo, u32 src, u32 size, u32 dir);
@@ -422,7 +422,7 @@ void MIi_DmaSetParams(u32 dmaNo, u32 src, u32 dest, u32 ctrl);
 void MIi_FIFOCallback(void);
 
 // (empty function)
-void func_01ff8160(void) {
+void OS_IrqDummy(void) {
 }
 
 // OS_EnableIrqMask
@@ -444,7 +444,7 @@ u32 OS_DisableIrqMask(u32 intr) {
 }
 
 // CP_SaveContext
-void func_01ff806c(CPContext *context) {
+void CP_SaveContext(CPContext *context) {
     context->div_numer = reg_CP_DIV_NUMER;
     context->div_denom = reg_CP_DIV_DENOM;
     context->div_mode = (u16)(reg_CP_DIVCNT & 3);
@@ -455,7 +455,7 @@ void func_01ff806c(CPContext *context) {
 /* END PROTOS */
 
 // CPi_RestoreContext
-void func_01ff8000(const CPContext *context) {
+void CPi_RestoreContext(const CPContext *context) {
     reg_CP_DIV_NUMER = context->div_numer;
     reg_CP_DIV_DENOM = context->div_denom;
     reg_CP_DIVCNT = context->div_mode;

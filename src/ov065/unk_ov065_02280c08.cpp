@@ -41,7 +41,7 @@ s32 GsSock_Close(s32);
 void GsUtil_Free(void *);
 void *GsUtil_Alloc(u32);
 s32 GsGp_QueueCallback(void *, GsGpCallbackPair, void *, void *, s32);
-s32 func_0212899c(void *, s32, u32);
+s32 memset(void *, s32, u32);
 s32 STD_GetStringLength(const char *);
 s32 OS_SPrintf(char *, const char *, ...);
 s32 GsGpPeer_SendString(void *, void *, const char *);
@@ -121,12 +121,12 @@ typedef GsGpPeerMessage Sub0228;
 extern "C" {
 
 s32 strncmp(const char *, const char *, s32);
-char *func_02129f1c(const char *, const char *);
+char *strstr(const char *, const char *);
 s32 strcmp(const char *, const char *);
-s32 func_0212b770(const char *);
+s32 atol(const char *);
 s32 STD_GetStringLength(const char *);
 s32 OS_SPrintf(char *, const char *, ...);
-void *func_0212899c(void *, s32, s32);
+void *memset(void *, s32, s32);
 
 void GsUtil_Free(void *);
 void *GsUtil_Alloc(s32);
@@ -277,7 +277,7 @@ s32 GsGpPeer_ProcessOutgoing(Ctx0228 **h, Node0228 *n) {
         if (r != 0) {
             return r;
         }
-        p = func_02129f1c(n->inputBuffer.buffer, "\\final\\");
+        p = strstr(n->inputBuffer.buffer, "\\final\\");
         if (p != NULL) {
             char *q;
             *p = 0;
@@ -335,7 +335,7 @@ s32 GsGpPeer_ProcessIncoming(Ctx0228 **h, Node0228 *n) {
         n->peerState = 0x6a;
         return 0;
     }
-    p = func_02129f1c(n->inputBuffer.buffer, "\\final\\");
+    p = strstr(n->inputBuffer.buffer, "\\final\\");
     if (p != NULL) {
         *p = 0;
         q = n->inputBuffer.buffer;
@@ -344,7 +344,7 @@ s32 GsGpPeer_ProcessIncoming(Ctx0228 **h, Node0228 *n) {
                 n->peerState = 0x6a;
                 return 0;
             }
-            x = func_0212b770(b1);
+            x = atol(b1);
             if (GsGp_GetValue(n->inputBuffer.buffer, "\\nick\\", b2, 0x1f) == 0) {
                 n->peerState = 0x6a;
                 return 0;
@@ -659,7 +659,7 @@ Node0228 *GsGpPeer_New(Ctx0228 **h, s32 a, s32 b) {
     if (n == NULL) {
         return NULL;
     }
-    func_0212899c(n, 0, 0x40);
+    memset(n, 0, 0x40);
     n->peerState = 0x64;
     n->isOutgoing = b;
     n->sock = -1;

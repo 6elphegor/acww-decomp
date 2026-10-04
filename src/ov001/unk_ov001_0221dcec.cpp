@@ -20,7 +20,7 @@ extern void *WfcHeap_Alloc(s32, s32);
 extern void MI_CpuFill8(void *, s32, u32);
 extern void MI_CpuCopy8(void *, void *, u32);
 extern void MIi_CpuClear16(u32, void *, u32);
-extern s32 func_0212b770(void *);
+extern s32 atol(void *);
 extern u32 MATH_CalcCRC16(void *, void *, u32);
 extern void DWCi_BACKUPlWritePage(void *, void *, void *);
 extern void DWCi_AUTH_GetNewWiFiInfo(void *);
@@ -382,7 +382,7 @@ void WfcUtil_ParseIpDigits(u8 *s, u8 *out) {
             j++;
             *p++ = 0x20;
         } while (j < 3);
-        out[i] = func_0212b770(&tmp);
+        out[i] = atol(&tmp);
     }
 }
 

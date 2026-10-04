@@ -199,7 +199,7 @@ s32 DWCi_Acc_IsValidFriendData(void *);
 s32 strcmp(const char *, const char *);
 s32 STD_GetStringLength(const char *);
 void func_02127838(char *, const char *);
-s32 func_0212b854(const char *, char **, s32);
+s32 strtoul(const char *, char **, s32);
 void MI_CpuFill8(void *, s32, u32);
 void MI_CpuCopy8(const void *, void *, u32);
 s32 strncmp(const void *, const void *, u32);
@@ -271,14 +271,14 @@ s32 DwcFriend_GetStatus(void *a, u8 *p1, u8 *p2, char *dst) {
         if (o.status == 6) {
             if (p1 != NULL) {
                 if (GsUtil_GetKeyValue((char *)"SCM", tmp, o.statusString, 0x2f) > 0) {
-                    *p1 = func_0212b854(tmp, NULL, 10);
+                    *p1 = strtoul(tmp, NULL, 10);
                 } else {
                     *p1 = 0;
                 }
             }
             if (p2 != NULL) {
                 if (GsUtil_GetKeyValue((char *)"SCN", tmp, o.statusString, 0x2f) > 0) {
-                    *p2 = func_0212b854(tmp, NULL, 10);
+                    *p2 = strtoul(tmp, NULL, 10);
                 } else {
                     *p2 = 0;
                 }

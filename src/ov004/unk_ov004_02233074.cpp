@@ -366,7 +366,7 @@ extern u8 *sHouseRoachVillager;
 void MTX_MultVec43(void *v, void *m, void *out);
 void VEC_Add(void *, void *, void *);
 s32 func_01ffcb0c(s32 a, s32 b);
-s32 func_01ffd028(void *, void *);
+s32 Vec_DistSq(void *, void *);
 s32 Math_AngleXZ(void *a, void *b);
 s32 Actor_spawn(u32, void *, s32, s32, u32);
 void TvSound_callRelease(void *);
@@ -3733,7 +3733,7 @@ extern "C" void FtrMgr_NotifyNearestCabinClock(void *) {
                 v0c.x = t.x;
                 v0c.y = t.y;
                 v0c.z = t.z;
-                s32 d = func_01ffd028(&v0c, &v0);
+                s32 d = Vec_DistSq(&v0c, &v0);
                 if (d < minv) {
                     best = i;
                     minv = d;
@@ -3770,7 +3770,7 @@ extern "C" void FtrMgr_NotifyNearestSoundingClock(void *) {
                 v0c.x = t.x;
                 v0c.y = t.y;
                 v0c.z = t.z;
-                s32 d = func_01ffd028(&v0c, &v0);
+                s32 d = Vec_DistSq(&v0c, &v0);
                 if (d < minv) {
                     best = i;
                     minv = d;
@@ -3812,7 +3812,7 @@ extern "C" void FurnitureManager_UpdateTvSound(FurnitureManager *self) {
                     v20.x = t.x;
                     v20.y = t.y;
                     v20.z = t.z;
-                    s32 d = func_01ffd028(&v20, &v14);
+                    s32 d = Vec_DistSq(&v20, &v14);
                     if (d < minv) {
                         best = i;
                         minv = d;

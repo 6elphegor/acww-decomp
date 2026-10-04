@@ -35,7 +35,7 @@ typedef struct TexData {
 
 extern u32 data_0213bcd4, data_0213bcd0, data_0213bccc;
 extern void MIi_CpuClear32(u32, void *, u32);   // MIi_CpuClear32
-extern void func_01ff8858(void *);
+extern void updateHintVec___kernel(void *);
 extern void GX_BeginLoadTexPltt(void);                // GX_BeginLoadTex
 extern void GX_LoadTexPltt(void *, u32, u32);    // GX_LoadTex
 extern void GX_EndLoadTexPltt(void);                // GX_EndLoadTex

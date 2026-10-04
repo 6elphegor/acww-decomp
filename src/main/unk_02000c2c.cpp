@@ -54,7 +54,7 @@ void OS_InitAlarm(void);
 void OS_InitThread(void);
 void func_02114cd8(void (*fn)(void), void *p);
 void Fatal_ExceptionCallback(void);
-void func_01ffa314(void);
+void OS_EnableInterrupts(void);
 void Main_InitDwc(void);
 void Main_RunWifiUtility(void);
 void OS_ResetSystem(u32 a);
@@ -392,7 +392,7 @@ void NitroMain(void) {
     ime = (vu16 *)0x4000208;
     (void)*ime;
     *ime = 1;
-    func_01ffa314();
+    OS_EnableInterrupts();
     Main_InitDwc();
     if (*(u32 *)0x27ffc20 == 1) {
         Main_RunWifiUtility();

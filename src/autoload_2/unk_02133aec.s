@@ -12,10 +12,10 @@
 
 ; Resume at a landing pad: restore r4-r11 from the context, sp = throwSP - adjust, jump to r2.
 ; (context, unused, landing pad address)
-	.global func_02133aec
-	.type func_02133aec, @function
-	.size func_02133aec, 0x30
-func_02133aec:
+	.global __TransferControl
+	.type __TransferControl, @function
+	.size __TransferControl, 0x30
+__TransferControl:
 	ldr r4, [r0, #0x2c]
 	ldr r5, [r0, #0x30]
 	ldr r6, [r0, #0x34]

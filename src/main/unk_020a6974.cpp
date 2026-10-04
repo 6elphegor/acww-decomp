@@ -216,7 +216,7 @@ BOOL FS_OpenFile(void *file, const char *path);
 }
 
 extern "C" {
-char *func_0212a120(char *s, s32 c);
+char *strchr(char *s, s32 c);
 }
 
 extern "C" {
@@ -224,15 +224,15 @@ int strcmp(const u8 *a, const u8 *b);
 }
 
 extern "C" {
-char *func_0212a2ec(char *dst, const char *src, u32 n);
+char *strncpy(char *dst, const char *src, u32 n);
 }
 
 extern "C" {
-char *func_0212a360(char *dst, const char *src);
+char *strcpy(char *dst, const char *src);
 }
 
 extern "C" {
-u32 func_0212a438(const char *s);
+u32 strlen(const char *s);
 }
 
 extern "C" {
@@ -625,7 +625,7 @@ BmgReader::~BmgReader() {
 }
 
 u8 BmgReader::open(const char *path) {
-    func_0212a2ec((char *)filePath, path, 0x3e);
+    strncpy((char *)filePath, path, 0x3e);
     isOpen = FS_OpenFile(file, path) ? 1 : 0;
     return isOpen;
 }
@@ -1264,16 +1264,16 @@ BOOL MsgString::fromEncoded(EncodedString *src, BOOL a, BOOL b) {
                 if (c == 0) {
                     done = TRUE;
                     if (b) {
-                        func_0212a360(tmp, Text_GetSpecialCharStr3());
-                        n = func_0212a438(tmp);
+                        strcpy(tmp, Text_GetSpecialCharStr3());
+                        n = strlen(tmp);
                         if (pos + n > dstSize) {
                             over = done;
                         }
                     }
                 } else if (a) {
                     if (c == 0xa) {
-                        func_0212a360(tmp, Text_GetSpecialCharStr2());
-                        n = func_0212a438(tmp);
+                        strcpy(tmp, Text_GetSpecialCharStr2());
+                        n = strlen(tmp);
                         if (pos + n > dstSize) {
                             over = TRUE;
                         }
@@ -1656,7 +1656,7 @@ void MsgTag::getStrings2(char **a, char **b) {
     *b = NULL;
     s = args;
     if (s[0] != 0) *a = s;
-    p = func_0212a120(s, 0);
+    p = strchr(s, 0);
     p++;
     if ((u32)(p - args) < argLen) *b = p;
 }
@@ -1670,9 +1670,9 @@ void MsgTag::getStrings3(char **a, char **b, char **c) {
     *c = NULL;
     s = args;
     if (s[0] != 0) *a = s;
-    p = func_0212a120(s, 0);
+    p = strchr(s, 0);
     if (p[1] != 0) *b = p + 1;
-    q = func_0212a120(p + 1, 0);
+    q = strchr(p + 1, 0);
     q++;
     if ((u32)(q - args) < argLen) *c = q;
 }
@@ -1759,7 +1759,7 @@ void MsgRequest::resetMsg() {
 }
 
 void MsgRequest::setFileName(const char *src) {
-    func_0212a2ec(fileName, src, 0x19);
+    strncpy(fileName, src, 0x19);
 }
 
 extern "C" BOOL Input_IsTouchTrig() {

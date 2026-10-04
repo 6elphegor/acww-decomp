@@ -1,5 +1,5 @@
 // mwcc-flags: -nothumb -O4,p
-// MSL C library strtold.c: __strtold (func_0212a454), autoload_2 0x0212a454-0x0212b770, with the "NAN(" and
+// MSL C library strtold.c: __strtold, autoload_2 0x0212a454-0x0212b770, with the "NAN(" and
 // "INFINITY" initialisers of its local model[] arrays (.data 0x0213c528-0x0213c53c). ARM code, mwcc 1.2/base.
 // The text is MSL's C99 strtold.c (decimal, INF/NAN(...) and hex-float scanning) in the version this library has:
 // '.' as the radix (no locale), exponents bounded by SHRT_MIN/SHRT_MAX, the exponent added before the range check,
@@ -23,9 +23,8 @@ extern u16 data_0213a510[];
 extern u8 data_0213a490[];
 extern float data_0213c31c;
 extern double data_0213c324;
-extern double func_0212f300(const decimal *d);
+extern double __dec2num(const decimal *d);
 extern double nan(const char *);
-#define __dec2num func_0212f300
 #define HUGE_VALF data_0213c31c
 #define HUGE_VAL data_0213c324
 #define isspace(c) (((c) < 0 || (c) >= 128) ? 0 : (data_0213a510[c] & 0x100))
@@ -89,7 +88,7 @@ enum hex_scan_states {
 #define fetch() (count++, (*ReadProc)(ReadProcArg, 0, __GetAChar))
 #define unfetch(c) (*ReadProc)(ReadProcArg, c, __UngetAChar)
 
-double func_0212a454(int max_width, int (*ReadProc)(void*, int, int), void* ReadProcArg, int* chars_scanned,
+double __strtold(int max_width, int (*ReadProc)(void*, int, int), void* ReadProcArg, int* chars_scanned,
                       int* overflow) {
     int scan_state = start;
     int hex_scan_state = not_hex;

@@ -68,7 +68,7 @@ void Math_ApproachS32Max(void *, s32, s32, s32);
 s32 Vec_MagXZ(void *);
 Actor *PlayerActor_GetActor(s32);
 extern s32 data_020c7c1c;
-void func_01ffd070(VecFx32 *out, void *a, void *b);
+void Vec_Add(VecFx32 *out, void *a, void *b);
 void Effect_Create(s32 a, void *v, s32 b, void *h);
 void FieldFish_ScareAround(void *a, s32 b);
 void *func_0209c0ac(void *);
@@ -151,7 +151,7 @@ extern "C" s32 Snowball_GetSizeRatioRank(s32 v) {
 void Unk_ov068_02268214::spawnSnowballBreak() {
     VecFx32 v;
     u16 h;
-    func_01ffd070(&v, &position, unk_304);
+    Vec_Add(&v, &position, unk_304);
     v.y = v.y + (radius - 0x400);
     h = FX_Div(radius, 0x1000);
     Effect_Create(0x3e, &v, 0, &h);

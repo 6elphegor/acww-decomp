@@ -58,7 +58,7 @@ u32 OS_GetProcMode(void);
 u32 OS_IsRunOnEmulator(void);
 void OS_LoadContext(OSThread *t);
 BOOL OS_SaveContext(OSThread *t);
-void func_01ffa4ec(void *);
+void OSi_IdleThreadProc(void *);
 void Fatal_Trap(void);
 u32 OS_GetLockID(void);
 u32 OS_ReadOwnerOfLockWord(u32 addr);

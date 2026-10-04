@@ -193,7 +193,7 @@ extern const s16 sSnowmanNeighbourOffsets[16];
 s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 VEC_Mag(void *v);
-void func_01ffd070(void *out, void *a, void *b);
+void Vec_Add(void *out, void *a, void *b);
 void MTX_Concat43(void *a, void *b, void *out);
 s32 Vec_DistXZ(void *a, void *b);
 s32 Math_Atan2(s32 a, s32 b);
@@ -236,7 +236,7 @@ BOOL TalkRequest_SetTargetDone(void *p);
 void TalkRequest_AddPlayerTalk6(void *self, s32 a);
 void *Heap_Alloc(void *heap, u32 size);
 void Heap_Free(void *heap, void *p);
-void *func_0212899c(void *p, s32 v, u32 n);
+void *memset(void *p, s32 v, u32 n);
 #define SndSeEmitter_dtor _ZN12SndSeEmitterD1Ev
 void SndSeEmitter_dtor(void *p);
 #define SndSeEmitter_ctor _ZN12SndSeEmitterC1Ev
@@ -325,7 +325,7 @@ extern "C" s32 Snowball_GetMaxRadius() { return 0x1400; }
 
 void *Snowball::operator new(unsigned long size) {
     void *p = Heap_Alloc(gBgHeap, size);
-    func_0212899c(p, 0, size);
+    memset(p, 0, size);
     return p;
 }
 
@@ -491,7 +491,7 @@ extern "C" void Snowball_UpdateMatrix(Obj *o, s32 a, s32 b)
             Quat_Normalize(&o->rotationQuat);
         }
     }
-    func_01ffd070(&ex, &o->position, &o->drawOffset);
+    Vec_Add(&ex, &o->position, &o->drawOffset);
     ex.y = ex.y + o->radius;
     ex.y = ex.y - 0x400;
     s32 ang = WorldCurve_ToCurved(&pv, &ex);

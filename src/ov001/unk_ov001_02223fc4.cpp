@@ -20,7 +20,7 @@ void *WfcHeap_Alloc(s32, s32);
 void *WfcHeap_AllocClear(s32, s32);
 void *WfcPool_CreateFrom(s32, void *, s32);
 
-s32 func_0212a438(void *);
+s32 strlen(void *);
 s32 memcmp(void *, void *, s32);
 void FS_InitFile(void *);
 s32 FS_OpenFile(void *, void *);
@@ -169,8 +169,8 @@ extern "C" void WfcFs_FreeFile(void *p, ...) {
 }
 
 extern "C" BOOL WfcUtil_StrEndsWith(void *a, void *b, s32 n) {
-    s32 la = func_0212a438(a);
-    s32 lb = func_0212a438(b);
+    s32 la = strlen(a);
+    s32 lb = strlen(b);
     if (la < n || lb < n) {
         return FALSE;
     }

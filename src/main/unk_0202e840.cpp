@@ -12,11 +12,11 @@ extern "C" {
 s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 FX_Sqrt(...);
-s32 func_01ffcb2c(s32 x, s32 y);
+s32 Ground_GetUnitAttr(s32 x, s32 y);
 s32 VEC_DotProduct(void *a, void *b);
 void VEC_Add(void *o, void *a, void *b);
-void func_01ffd070(void *o, void *a, void *b);
-s64 func_01ffd028(void *a, void *b);
+void Vec_Add(void *o, void *a, void *b);
+s64 Vec_DistSq(void *a, void *b);
 void Vec_RotateY(void *v, s16 a);
 void Vec_Sub(void *o, void *a, void *b);
 void Vec_CrossCopy(void *o, void *a, void *b, void *c);
@@ -64,8 +64,8 @@ BOOL HitSphere::intersectSegment(VecFx32Ctor *out, CollisionSegment *cap) {
         s32 x = centerX + func_01ffcb0c(cap->dir.x, radius);
         VecFx32Ctor a(x, y, z);
         VecFx32Ctor b(centerX - x, centerY - y, centerZ - z);
-        s64 s1 = func_01ffd028(cap, &a);
-        s64 s2 = func_01ffd028(cap, &b);
+        s64 s1 = Vec_DistSq(cap, &a);
+        s64 s2 = Vec_DistSq(cap, &b);
         if (s1 < s2) {
             out->x = a.x;
             out->y = a.y;

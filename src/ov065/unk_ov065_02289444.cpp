@@ -41,7 +41,7 @@ extern s32 data_ov065_022918a8;
 s32 strcmp(const char *, const char *);
 u32 STD_GetStringLength(const char *);
 s32 OS_SPrintf(char *, const char *, ...);
-s32 func_0212b770(char *);
+s32 atol(char *);
 s32 func_02130b04(char *, char *);
 
 s32 GsUtil_Free(void *);
@@ -204,7 +204,7 @@ void GsSock_Close(s32);
 void GsSrvListCrypt_Init(void *, void *, s32);
 u32 GsServer_GetFlags(GsServer *);
 void GsServer_SetFlags(GsServer *, u8);
-void func_ov065_02288d34(GsServer *, u32);
+void GsServer_SetIcmpIp(GsServer *, u32);
 void GsServer_SetPrivateAddress(GsServer *, u32, u32);
 void GsServer_SetListFlags(GsServer *, u32);
 GsServer *GsServer_New(GsSrvList *, u32, u32);
@@ -1210,7 +1210,7 @@ s32 GsSrvList_ParseServer(GsSrvList *ctx, GsServer *ent, u8 *buf, s32 n, s32 fla
         d[3] = buf[3];
         buf += 4;
         n -= 4;
-        func_ov065_02288d34(ent, ip);
+        GsServer_SetIcmpIp(ent, ip);
     }
     if (flags & 0x40) {
         cnt = GsArray_Count(ctx->keyList);

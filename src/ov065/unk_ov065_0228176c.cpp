@@ -45,12 +45,12 @@ extern char data_ov065_0228da68[];
 extern "C" {
 
 s32 strncmp(const char *, const char *, s32);
-char *func_02129f1c(const char *, const char *);
+char *strstr(const char *, const char *);
 s32 strcmp(const char *, const char *);
-s32 func_0212b770(const char *);
+s32 atol(const char *);
 s32 STD_GetStringLength(const char *);
 s32 OS_SPrintf(char *, const char *, ...);
-void *func_0212899c(void *, s32, s32);
+void *memset(void *, s32, s32);
 
 void GsUtil_Free(void *);
 void *GsUtil_Alloc(s32);
@@ -162,7 +162,7 @@ void GsGp_RemoveOperation(Ctx0228 **, GsGpOperation *);
 void GsGp_FreeCachedInfo(void *);
 s32 strncmp(const char *, const char *, s32);
 s32 strcmp(const char *, const char *);
-s32 func_0212b770(void *);
+s32 atol(void *);
 
 s32 GsGpSearch_Process(Ctx0228 **, GsGpOperation *);
 s32 GsGpProfile_MatchBuddyIndexCb(Ctx0228 **, GsGpProfile *, void *);
@@ -280,9 +280,9 @@ s32 GsGp_SendBuffer(Ctx0228 **, s32, char **, s32 *, s32, const char *);
 s32 GsGp_RecvToBuffer(Ctx0228 **, s32, char **, s32 *, s32 *, const char *);
 void *GsUtil_Realloc(void *, s32);
 void GsUtil_StrCopyN(char *, const char *, s32);
-void *func_0212899c(void *, s32, s32);
+void *memset(void *, s32, s32);
 char *func_02127838(char *, const char *);
-char *func_02129f1c(const char *, const char *);
+char *strstr(const char *, const char *);
 void GsUtil_Sleep(s32);
 s32 GsGpSearch_ProfileSearch(Ctx0228 **, char *, char *, char *, char *, char *, s32, s32, s32, s32, s32);
 
@@ -336,7 +336,7 @@ s32 GsGp_ProcessNewProfileReply(Ctx0228 **h, GsGpOperation *n, char *s) {
         GsGp_CallErrorCallback(h, 3, 1);
         return 3;
     }
-    v = func_0212b770(buf);
+    v = atol(buf);
     pr = n->callback;
     if (pr.p.func != 0) {
         p = GsUtil_Alloc(8);

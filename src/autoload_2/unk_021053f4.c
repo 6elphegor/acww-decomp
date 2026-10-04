@@ -296,12 +296,12 @@ void NNSi_G3dFuncSbc_NODEMIX();
 void NNSi_G3dFuncSbc_PRJMAP();
 void NNSi_G3dFuncSbc_SHP();
 void NNSi_G3dFuncSbc_SHP_InternalDefault();
-void func_01ff99c8();
-void func_01ff99f4();
-void func_01ff9a60();
+void NNSi_G3dFuncSbc_NOP();
+void NNSi_G3dFuncSbc_POSSCALE();
+void NNSi_G3dFuncSbc_RET();
 void (*data_0213be50[32])() = { // NNS_G3dFuncSbcTable
-    func_01ff99c8,
-    func_01ff9a60,
+    NNSi_G3dFuncSbc_NOP,
+    NNSi_G3dFuncSbc_RET,
     NNSi_G3dFuncSbc_NODE,
     NNSi_G3dFuncSbc_MTX,
     NNSi_G3dFuncSbc_MAT,
@@ -311,7 +311,7 @@ void (*data_0213be50[32])() = { // NNS_G3dFuncSbcTable
     NNSi_G3dFuncSbc_BBY,
     NNSi_G3dFuncSbc_NODEMIX,
     NNSi_G3dFuncSbc_CALLDL,
-    func_01ff99f4,
+    NNSi_G3dFuncSbc_POSSCALE,
     NNSi_G3dFuncSbc_ENVMAP,
     NNSi_G3dFuncSbc_PRJMAP,
     0,

@@ -20,9 +20,9 @@
 
 
 extern "C" {
-char *func_0212a120(const char *, s32);
+char *strchr(const char *, s32);
 s32 strncmp(const char *, const char *, s32);
-s32 func_0212b770(const char *);
+s32 atol(const char *);
 u32 STD_GetStringLength(const char *);
 void memmove(void *, void *, s32);
 void memcpy(void *, const void *, s32);
@@ -319,7 +319,7 @@ s32 GsGpPeer_ParseMessage(void *h, GsGpBuffer *b, char **pp, s32 *plen, s32 *pva
         return 0;
     }
     {
-        p = func_0212a120(b->buffer, 10);
+        p = strchr(b->buffer, 10);
         if (p != NULL) {
             if (strncmp(p - 5, "\\msg\\", 5) != 0) {
                 return 3;
@@ -328,11 +328,11 @@ s32 GsGpPeer_ParseMessage(void *h, GsGpBuffer *b, char **pp, s32 *plen, s32 *pva
             if (GsGp_GetValue(b->buffer, "\\m\\", line, 16) == 0) {
                 return 3;
             }
-            *plen = func_0212b770(line);
+            *plen = atol(line);
             if (GsGp_GetValue(b->buffer, "\\len\\", line, 16) == 0) {
                 return 3;
             }
-            n = func_0212b770(line);
+            n = atol(line);
             k = n + 1;
             if (b->length > k + (p - b->buffer)) {
                 if (p[k] != 0) {

@@ -32,7 +32,7 @@ extern s32 data_020c7c1c;
 extern u8 *gSceneBlockMap;
 s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
-void func_01ffd070(VecFx32 *out, void *a, void *b);
+void Vec_Add(VecFx32 *out, void *a, void *b);
 void Effect_Create(s32 a, void *v, s32 b, void *h);
 void Snd_SeEmitterPlayOneShot(void *a, s32 b, s32 c, s32 d);
 void FieldFish_ScareAround(void *a, s32 b);

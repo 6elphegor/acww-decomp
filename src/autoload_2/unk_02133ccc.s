@@ -8,10 +8,10 @@
 	.arm
 
 ; SYS_WRITEC (3): write the character at *p to the debugger console
-	.global func_02133ccc
-	.type func_02133ccc, @function
-	.size func_02133ccc, 0x14
-func_02133ccc:
+	.global sys_writec
+	.type sys_writec, @function
+	.size sys_writec, 0x14
+sys_writec:
 	str lr, [sp, #-4]!
 	mov r1, r0
 	mov r0, #3
@@ -19,10 +19,10 @@ func_02133ccc:
 	ldr pc, [sp], #4
 
 ; SYS_READC (7): read one character from the debugger console
-	.global func_02133ce0
-	.type func_02133ce0, @function
-	.size func_02133ce0, 0x14
-func_02133ce0:
+	.global sys_readc
+	.type sys_readc, @function
+	.size sys_readc, 0x14
+sys_readc:
 	str lr, [sp, #-4]!
 	mov r1, #0
 	mov r0, #7
@@ -30,10 +30,10 @@ func_02133ce0:
 	ldr pc, [sp], #4
 
 ; SYS_EXIT (0x18, angel_SWIreason_ReportException): end the program under the debugger
-	.global func_02133cf4
-	.type func_02133cf4, @function
-	.size func_02133cf4, 0x10
-func_02133cf4:
+	.global sys_exit
+	.type sys_exit, @function
+	.size sys_exit, 0x10
+sys_exit:
 	mov r1, #0
 	mov r0, #0x18
 	swi 0x123456

@@ -83,14 +83,14 @@ s32 GsArray_Count(void *);
 void GsArray_Free(void *);
 void *GsArray_At(void *, s32);
 void GsArray_DeleteAt(void *, s32);
-char *func_0212a2ec(char *dst, const char *src, u32 n);
-char *func_02129f1c(const char *, const char *);
+char *strncpy(char *dst, const char *src, u32 n);
+char *strstr(const char *, const char *);
 s32 STD_GetStringLength(const char *);
 s32 strncmp(const char *, const char *, u32);
 s32 OS_SPrintf(char *buf, const char *fmt, ...);
-s32 func_02128ca4(const char *, const char *, ...);
-s32 func_0212b770(const char *);
-s32 func_0212899c(void *, s32, u32);
+s32 sscanf(const char *, const char *, ...);
+s32 atol(const char *);
+s32 memset(void *, s32, u32);
 
 void GsGp_SetErrorString(void *, const char *);
 void GsGp_SetError(void *, s32, const char *);
@@ -161,8 +161,8 @@ extern char *sGsPersistXorKey;
 
 
 s32 strncmp(const char *, const char *, u32);
-s32 func_0212b770(const char *);
-char *func_02129f1c(const char *, const char *);
+s32 atol(const char *);
+char *strstr(const char *, const char *);
 u32 STD_GetStringLength(const char *);
 void func_021277a4(char *, const char *);
 void memmove(void *, void *, u32);
@@ -364,7 +364,7 @@ char *GsPersist_GetValue(char *s, char *key) {
     data_ov065_022910fc ^= 1;
     func_021277a4(buf, key);
     func_021277a4(buf, "\\");
-    f = func_02129f1c(s, buf);
+    f = strstr(s, buf);
     if (f == 0) {
         return 0;
     }
@@ -437,8 +437,8 @@ s32 GsPersist_FindRequest(s32 a, s32 b, s32 c) {
 extern "C" u8 data_ov065_0228df9c[16] = {0x00, 0x72, 0x6f, 0x6a, 0x65, 0x63, 0x74, 0x41, 0x70, 0x68, 0x65, 0x78, 0, 0, 0, 0}; //@
 namespace N022838c4 { extern "C" {
 void GsPersist_HandleAuthReply(char *s, s32 len) {
-    s32 a = func_0212b770(GsPersist_GetValueOrEmpty(s, "pauthr"));
-    s32 b = func_0212b770(GsPersist_GetValueOrEmpty(s, "lid"));
+    s32 a = atol(GsPersist_GetValueOrEmpty(s, "pauthr"));
+    s32 b = atol(GsPersist_GetValueOrEmpty(s, "lid"));
     char *m = GsPersist_GetValueOrEmpty(s, "errmsg");
     s32 i = GsPersist_FindRequest(0, b, 0);
     if (i != -1) {
@@ -452,8 +452,8 @@ void GsPersist_HandleAuthReply(char *s, s32 len) {
 namespace N022838c4 { extern "C" {
 void GsPersist_HandleGetPidReply(char *s, s32 len) {
     s32 i;
-    s32 a = func_0212b770(GsPersist_GetValueOrEmpty(s, "getpidr"));
-    s32 b = func_0212b770(GsPersist_GetValueOrEmpty(s, "lid"));
+    s32 a = atol(GsPersist_GetValueOrEmpty(s, "getpidr"));
+    s32 b = atol(GsPersist_GetValueOrEmpty(s, "lid"));
     i = GsPersist_FindRequest(3, b, 0);
     if (i != -1) {
         s32 *e = (s32 *)GsArray_At(sGsPersistRequests, i);
@@ -466,14 +466,14 @@ void GsPersist_HandleGetPidReply(char *s, s32 len) {
 extern "C" { s32 data_ov065_022910f8; } //@
 namespace N022838c4 { extern "C" {
 void GsPersist_HandleGetReply(char *s, s32 len) {
-    s32 a = func_0212b770(GsPersist_GetValueOrEmpty(s, "getpdr"));
-    s32 b = func_0212b770(GsPersist_GetValueOrEmpty(s, "lid"));
-    s32 c = func_0212b770(GsPersist_GetValueOrEmpty(s, "pid"));
-    s32 d = func_0212b770(GsPersist_GetValueOrEmpty(s, "mod"));
+    s32 a = atol(GsPersist_GetValueOrEmpty(s, "getpdr"));
+    s32 b = atol(GsPersist_GetValueOrEmpty(s, "lid"));
+    s32 c = atol(GsPersist_GetValueOrEmpty(s, "pid"));
+    s32 d = atol(GsPersist_GetValueOrEmpty(s, "mod"));
     s32 i = GsPersist_FindRequest(1, b, c);
     if (i != -1) {
-        s32 e = func_0212b770(GsPersist_GetValueOrEmpty(s, "length"));
-        char *p = func_02129f1c(s, "\\data\\");
+        s32 e = atol(GsPersist_GetValueOrEmpty(s, "length"));
+        char *p = strstr(s, "\\data\\");
         char *q;
         if (p == 0) {
             e = 0;
@@ -488,10 +488,10 @@ void GsPersist_HandleGetReply(char *s, s32 len) {
 
 namespace N022838c4 { extern "C" {
 s32 GsPersist_HandleSetReply(char *s, s32 len) {
-    s32 a = func_0212b770(GsPersist_GetValueOrEmpty(s, "setpdr"));
-    s32 b = func_0212b770(GsPersist_GetValueOrEmpty(s, "pid"));
-    s32 c = func_0212b770(GsPersist_GetValueOrEmpty(s, "lid"));
-    s32 d = func_0212b770(GsPersist_GetValueOrEmpty(s, "mod"));
+    s32 a = atol(GsPersist_GetValueOrEmpty(s, "setpdr"));
+    s32 b = atol(GsPersist_GetValueOrEmpty(s, "pid"));
+    s32 c = atol(GsPersist_GetValueOrEmpty(s, "lid"));
+    s32 d = atol(GsPersist_GetValueOrEmpty(s, "mod"));
     s32 i = GsPersist_FindRequest(2, c, b);
     if (i != -1) {
         GsPersist_CompleteRequest(i, a, d, 0, 0);
@@ -587,7 +587,7 @@ void GsPersist_FailAllRequests(void) {
 
 namespace N02282f90 { extern "C" {
 void GsUtil_StrCopyN(char *dst, const char *src, s32 n) {
-    func_0212a2ec(dst, src, n);
+    strncpy(dst, src, n);
     *(dst + n - 1) = 0;
 }
 } }

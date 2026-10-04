@@ -37,7 +37,7 @@ s32 WfcUtil_GetTextFlags();
 s32 WfcText_DrawTextRect(s32, s32, s32, s32, s32, s32, s32, s32);
 s32 WfcText_RequestTransfer(s32);
 s32 WfcManualSetup_SetMode(s32);
-s32 func_0212c234(void *, s32, void *, s32);
+s32 swprintf(void *, s32, void *, s32);
 void GX_LoadBG2Scr(void *, s32, u32);
 void WfcConnSelect_Enter();
 void WfcManualSetup_Enter();
@@ -121,7 +121,7 @@ void WfcError_DrawMessage() {
     else r4 = 0;
     s32 r5 = WfcText_CreateBgCanvas(0, sWfcErrorCodeFont[WfcUtil_GetLanguage()]);
     s32 r4b = WfcMsg_GetString(gWfcMsgBank, r4);
-    func_0212c234(buf, 8, sWfcErrorCodeFormat, -sWfcErrorCode);
+    swprintf(buf, 8, sWfcErrorCodeFormat, -sWfcErrorCode);
     u32 a = sWfcErrorCodePos[WfcUtil_GetLanguage()][1];
     u32 b = sWfcErrorCodePos[WfcUtil_GetLanguage()][0];
     WfcText_DrawMonospace(r5, b, a, 2, 10, buf, 0);

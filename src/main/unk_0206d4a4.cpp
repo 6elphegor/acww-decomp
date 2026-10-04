@@ -10,7 +10,7 @@ extern u8 data_021fccfc[];
 extern u8 gOverlayHandle[];
 extern u8 sFatalEntered;
 u32 OS_DisableInterrupts(void);
-void func_01ffa3c0(void);
+void OS_Halt(void);
 void OS_RestoreInterrupts(u32 v);
 void OS_DisableIrqMask(s32 v);
 void OS_ResetRequestIrqMask(s32 v);
@@ -79,7 +79,7 @@ extern "C" void Fatal_Handler(void *arg) {
     }
     while (sFatalEntered != 0) {
         OS_DisableInterrupts();
-        func_01ffa3c0();
+        OS_Halt();
     }
 }
 

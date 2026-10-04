@@ -6,7 +6,7 @@ typedef u16 wchar_t;
 #define NULL ((void *)0)
 
 // wcslen
-u32 func_0212dcb4(const wchar_t *s) {
+u32 wcslen(const wchar_t *s) {
     const wchar_t *p = s;
     u32 len = -1;
     do {

@@ -50,7 +50,7 @@ extern void GXS_SetGraphicsMode(s32);
 extern void GX_DispOn();
 extern s32 OS_IsTickAvailable();
 extern s32 OS_IsAlarmAvailable();
-extern void func_01ffcb28();
+extern void FX_Init();
 extern void FS_Init(s32);
 extern void TP_Init();
 extern void RTC_Init();
@@ -134,7 +134,7 @@ s32 WfcUtil_InitSystem() {
     if (OS_IsTickAvailable() == 0) Fatal_Trap();
     if (OS_IsAlarmAvailable() == 0) Fatal_Trap();
     GX_VBlankIntr(0);
-    func_01ffcb28();
+    FX_Init();
     FS_Init(-1);
     TP_Init();
     RTC_Init();

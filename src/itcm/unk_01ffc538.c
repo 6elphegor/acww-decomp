@@ -128,7 +128,7 @@ extern void FX_DivAsync(fx32 numer, fx32 denom); // FX_DivAsync (I003d)
 extern void FX_InvAsync(fx32 x); // FX_InvAsync (I003d)
 extern fx32 FX_GetDivResult(void); // FX_GetDivResult (I003d)
 /* PROTOS */
-void func_01ffcb28(void);
+void FX_Init(void);
 fx32 func_01ffcb0c(fx32 v1, fx32 v2);
 fx32 FX_Modf(fx32 x, fx32 *iPtr);
 void VEC_Add(const VecFx32 *a, const VecFx32 *b, VecFx32 *ab);
@@ -147,7 +147,7 @@ fx32 FX_Sqrt(fx32 x);
 /* END PROTOS */
 
 // empty function
-void func_01ffcb28(void) {
+void FX_Init(void) {
 }
 
 // FX_Mul

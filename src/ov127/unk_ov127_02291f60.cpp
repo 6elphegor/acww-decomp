@@ -48,7 +48,7 @@ void Vec_Sub(VecFx32 *out, VecFx32 *a, VecFx32 *b);
 s32 Vec_MagXZ(VecFx32 *v);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 FX_Div(s32 a, s32 b);
-void func_01ffd070(VecFx32 *out, VecFx32 *a, VecFx32 *b);
+void Vec_Add(VecFx32 *out, VecFx32 *a, VecFx32 *b);
 void MI_CpuCopy8(const void *src, void *dst, u32 n);
 
 void StarSky_CollectStars(ConstellationRecord *p, u8 *out);
@@ -425,7 +425,7 @@ extern "C" void StarSky_StepToTarget(StarSkyView *s)
         }
         l.c.x = FX_Div(func_01ffcb0c(l.c.x, t), len);
         l.c.z = FX_Div(func_01ffcb0c(l.c.z, t), len);
-        func_01ffd070(&l.f, &l.a, &l.c);
+        Vec_Add(&l.f, &l.a, &l.c);
         l.b.x = l.f.x;
         l.b.y = l.f.y;
         l.b.z = l.f.z;

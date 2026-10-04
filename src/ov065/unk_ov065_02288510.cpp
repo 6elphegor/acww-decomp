@@ -20,7 +20,7 @@ extern s32 sGsAvailStatus;
 extern u8 data_0213a410[];
 
 u32 func_0213335c(u32 a, u32 b);
-s32 func_02129f1c(void *a, void *b);
+s32 strstr(void *a, void *b);
 s32 func_02130b04(void *a, void *b);
 
 u32 GsUtil_GetTimeMs(void);
@@ -222,7 +222,7 @@ void GsSrvQuery_HandleQr2Reply(Mgr *m, Ent *e, u8 *buf, s32 n) {
 
 void GsSrvQuery_HandleQr1Reply(Mgr *m, Ent *e, u8 *buf, s32 n) {
     BOOL found;
-    if (func_02129f1c(buf, (void *)"\\final\\") != 0) {
+    if (strstr(buf, (void *)"\\final\\") != 0) {
         found = TRUE;
     } else {
         found = FALSE;

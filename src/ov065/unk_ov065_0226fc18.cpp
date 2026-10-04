@@ -75,9 +75,9 @@ s32 func_02133150(s32, s32);
 u32 func_0213335c(u32, u32);
 u32 STD_GetStringLength(void *);
 s32 memcmp(void *, void *, u32);
-char *func_0212a120(void *, s32);
-void func_0212a2ec(void *, void *, u32);
-s32 func_0212b854(void *, u32, u32);
+char *strchr(void *, s32);
+void strncpy(void *, void *, u32);
+s32 strtoul(void *, u32, u32);
 void DwcConn_OnGt2SocketError();
 void DwcConn_OnGt2Ping(s32 a, s32 b);
 void DwcConn_OnGt2Closed(s32 a0, s32 a1);
@@ -1088,11 +1088,11 @@ void DwcMatch_OnGpBuddyMessage(void *a, u32 *b, u32 c) {
     if (DwcFriend_HandleAuthorizedMessage(a, b, c) == 0) {
         if (memcmp(s, (void *)"GPCM", STD_GetStringLength((void *)"GPCM")) == 0) {
             s += STD_GetStringLength((void *)"GPCM");
-            e = func_0212a120(s, 0x76);
+            e = strchr(s, 0x76);
             n = e - s;
-            func_0212a2ec(buf, s, n);
+            strncpy(buf, s, n);
             if (n <= 10) {
-                if (func_0212b854(buf, 0, 10) == 3) {
+                if (strtoul(buf, 0, 10) == 3) {
                     s += n + 1;
                     if (memcmp(s, (void *)"MAT", STD_GetStringLength((void *)"MAT")) == 0) {
                         g = sDwcControl;

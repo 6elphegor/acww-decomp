@@ -90,7 +90,7 @@ s32 Math_AngleDiffAbs(s32 a, s32 b);
 TouchPicker *Scene_GetTouchPicker(void);
 s32 Scene_GetCurrent(void);
 Actor *PlayerActor_GetCharacter(u32);
-void func_01ffd070(void *, void *, void *);
+void Vec_Add(void *, void *, void *);
 }
 
 
@@ -554,7 +554,7 @@ BOOL MuseumExhibitInfo::onCreate() {
                 v[0] = data_02135f44[idx];
                 v[1] = 0;
                 v[2] = data_02135f44[idx + 1];
-                func_01ffd070(out, &o->position, v);
+                Vec_Add(out, &o->position, v);
                 position.x = out[0];
                 position.y = out[1];
                 position.z = out[2];
