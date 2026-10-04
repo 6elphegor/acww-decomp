@@ -3,8 +3,8 @@
 #include "types.h"
 // The no-argument vfunc_08 of the base is widened locally: NpcActor::postCreate takes one argument.
 #include "Unk_020d8c7c.h"
-#include "gfx/Unk_ov004_Quad.h"
-#include "actor/Unk_ov004_SceneEntry.h"
+#include "gfx/DebugColor.h"
+#include "actor/ActorProfile.h"
 #include "game/Unk_020d77a4_Vec3.h"
 #include "actor/Unk_ov004_022146ec_Actor.h"
 #include "game/Unk_ov004_02215c94_V.h"
@@ -188,13 +188,13 @@ extern s32 data_020c8cb8;
 extern "C" BirthdayHostVillager *BirthdayHostVillager_Create();
 extern "C" void _ZN20BirthdayHostVillager9drawModelEv();
 extern "C" void *data_ov004_0224befc[2];
-extern "C" Unk_ov004_Quad data_ov004_022503c0(0x1f, 0x14, 0x14, 0x1f);
-extern "C" Unk_ov004_Quad data_ov004_022503dc(0x14, 0x14, 0x1f, 0x1f);
-extern "C" Unk_ov004_Quad data_ov004_022503c4(0x1f, 0x1f, 0x14, 0x1f);
-extern "C" Unk_ov004_Quad data_ov004_022503bc(0x14, 0x1f, 0x14, 0x1f);
-extern "C" Unk_ov004_Quad data_ov004_022503cc(0x14, 0x1f, 0x1f, 0x1f);
-extern "C" Unk_ov004_Quad data_ov004_022503d0(0x14, 0x18, 0x18, 0x1f);
-extern "C" Unk_ov004_SceneEntry sBirthdayHostVillagerProfile = { (void *(*)())BirthdayHostVillager_Create, 0x80, 0x84, 2, 0x5000, 0x5000, 0x3e800 };
+extern "C" DebugColor data_ov004_022503c0(0x1f, 0x14, 0x14, 0x1f);
+extern "C" DebugColor data_ov004_022503dc(0x14, 0x14, 0x1f, 0x1f);
+extern "C" DebugColor data_ov004_022503c4(0x1f, 0x1f, 0x14, 0x1f);
+extern "C" DebugColor data_ov004_022503bc(0x14, 0x1f, 0x14, 0x1f);
+extern "C" DebugColor data_ov004_022503cc(0x14, 0x1f, 0x1f, 0x1f);
+extern "C" DebugColor data_ov004_022503d0(0x14, 0x18, 0x18, 0x1f);
+extern "C" ActorProfile sBirthdayHostVillagerProfile = { (void *(*)())BirthdayHostVillager_Create, 0x80, 0x84, 2, 0x5000, 0x5000, 0x3e800 };
 extern "C" {
 BirthdayHostVillager *sBirthdayHostVillager;
 }

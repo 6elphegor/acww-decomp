@@ -72,8 +72,6 @@ class TextLabel;
 
 // ---- ov002 scene base (vtable 0x022044e4) ----
 
-typedef MsgString9B Unk_ov145_02292600_A;
-typedef ItemName Unk_ov145_02292600_B;
 
 extern "C" {
 extern u8 gFieldSceneKind;
@@ -892,8 +890,8 @@ void DonationMenu::resetTextLabels() {
 }
 
 void DonationMenu::drawEntryNames() {
-    Unk_ov145_02292600_A a;
-    Unk_ov145_02292600_B b;
+    MsgString9B a;
+    ItemName b;
     u16 s[2];
     s32 k;
     LabelString *w;

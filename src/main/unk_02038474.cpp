@@ -11,6 +11,7 @@
 #include "talk/EncodedString.h"
 #include "talk/ChatBalloonText.h"
 #include "talk/MsgString9B.h"
+#include "sys/ProcProfile.h"
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Classes owned by other units (declarations only, no inline bodies)
@@ -341,12 +342,7 @@ const u32 sChatBalloonTextSeqs[4] = {10, 11, 12, 13};
 s32 sChatQuickMsgCooldown;
 // 0x020d90d4: scene registration record of ChatBalloonProc_Create (referenced only from the table word 0x020e2158)
 extern "C" ChatBalloonProc *ChatBalloonProc_Create();
-struct Unk_020d90d4_Rec {
-    ChatBalloonProc *(*create)();
-    s16 executePriority;
-    s16 drawPriority;
-};
-Unk_020d90d4_Rec sChatBalloonProcProfile = {ChatBalloonProc_Create, 0xcb, 0x8d};
+ProcProfile sChatBalloonProcProfile = {(void *(*)())ChatBalloonProc_Create, 0xcb, 0x8d};
 ChatBalloonList *sChatBalloonList;
 
 void ChatBalloon::updateSlideOffset() {

@@ -1,7 +1,7 @@
 // mwcc-version: 1.2/sp2
 // ov003 TU07 (helper 02214e04 + actor 022312f4): .text 0x02214dfc-0x022150ec
 #include "types.h"
-#include "actor/Unk_ov003_SceneEntry.h"
+#include "actor/ActorProfile.h"
 #include "game/Unk_ov003_Vec.h"
 #include "talk/TalkWindowState.h"
 #include "sys/ProcBase.h"
@@ -114,7 +114,7 @@ char data_ov003_02235204[0x24];
 }
 
 // Declarations for data defined further down (definition order sets the data layout)
-extern "C" Unk_ov003_SceneEntry sGateHouseProfile;
+extern "C" ActorProfile sGateHouseProfile;
 extern "C" char data_ov003_022312a4[12];
 extern "C" u32 sGateHouseModelNames[3];
 extern "C" char data_ov003_022312b0[12];
@@ -165,7 +165,7 @@ extern "C" u32 GateHouse_GetModelName() {
     return sGateHouseModelNames[GateHouse_GetDesign()];
 }
 
-extern "C" Unk_ov003_SceneEntry sGateHouseProfile = { (void *(*)())GateHouse_Create, 0x1c, 0x22, 0, 0xc8000, 0x12c000, 0x258000 };
+extern "C" ActorProfile sGateHouseProfile = { (void *(*)())GateHouse_Create, 0x1c, 0x22, 0, 0xc8000, 0x12c000, 0x258000 };
 
 char *GateHouse::getArcPath() {
     u32 x = GateHouse_GetModelName();

@@ -8,6 +8,7 @@
 #include "field/Unk_ov003_02224bc4_Actor.h"
 #include "gfx/AnimModel.h"
 #include "gfx/PooledModel.h"
+#include "sys/ProcProfile.h"
 
 // TU23 of ov003 (fish actors, scene classes 0223498c / 02234a94): 0x0221ffb8-0x02224e68, static initialiser 0x354 bytes.
 // Merged from ten unit files; every view of the shared objects (sFishShadows etc.) is reached through casts.
@@ -1162,12 +1163,6 @@ struct Unk_ov003_022349d4_Rec {
     u16 h;
 };
 
-struct Unk_ov003_02234860_Ent {
-    void *factory;
-    u16 a;
-    u16 b;
-};
-
 // ================= objects defined by this unit, in creation order (see notes) =================
 extern "C" {
 FishShadow sFishShadows[6];
@@ -1283,7 +1278,7 @@ Unk_ov003_022348c0_Ent sFishRodParams[2] = {
 };
 void *data_ov003_02234870[2] = {(void *)FishShadow_EnterWaitInView, 0};
 void *data_ov003_022347c8[2] = {(void *)FishShadow_MoveRest, 0};
-Unk_ov003_02234860_Ent sFieldFishManagerProfile = {(void *)FieldFishManager_Create, 0xc1, 7};
+ProcProfile sFieldFishManagerProfile = {(void *(*)())FieldFishManager_Create, 0xc1, 7};
 void *data_ov003_02234858[2] = {(void *)FishShadow_BiteInspect, 0};
 void *data_ov003_02234850[2] = {(void *)FishShadow_EnterSwim, 0};
 char sFishFinAnimPathStr[] = "/fish/03/fish_hire.nsbca";

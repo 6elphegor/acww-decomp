@@ -25,7 +25,7 @@
 #include "actor/SpNpcActor.h"
 #include "talk/ActorTalkRequest.h"
 #include "talk/SpNpcTalkRequest.h"
-#include "actor/Unk_ov004_SceneEntry.h"
+#include "actor/ActorProfile.h"
 
 
 class SpNpcLyle;
@@ -259,7 +259,7 @@ extern const Unk_ov071_0227297c_Ent sSpNpcLyleTopicMsgs[3];
 extern u8 sSpNpcLyleKey[17];
 extern u8 sSpNpcLyleModelPath[23];
 extern u8 sSpNpcLyleTexturePath[27];
-extern Unk_ov004_SceneEntry sSpNpcLyleProfile;
+extern ActorProfile sSpNpcLyleProfile;
 extern Unk_ov071_022726c4_Ent sSpNpcLyleActTable[6];
 extern s16 sSpNpcLyleFrontAngle;
 extern FxVec3 sSpNpcLyleSidestepOffsets[2];
@@ -810,7 +810,7 @@ const Unk_ov071_0227297c_Ent sSpNpcLyleTopicMsgs[3] = {
 
 void *data_ov071_02272b18[2] = {(void *)_ZN9SpNpcLyle10act01Step1Ev, 0};
 
-Unk_ov004_SceneEntry sSpNpcLyleProfile = {(void *(*)())SpNpcLyle_Create, 0x69, 0x6f, 2, 0x5000, 0x5000, 0x3e800};
+ActorProfile sSpNpcLyleProfile = {(void *(*)())SpNpcLyle_Create, 0x69, 0x6f, 2, 0x5000, 0x5000, 0x3e800};
 
 void *data_ov071_02272af8[2] = {(void *)_ZN9SpNpcLyle9mainAct04Ev, 0};
 

@@ -1,7 +1,7 @@
 // mwcc-version: 1.2/sp2
 // mwcc-flags: -str reuse
 #include "types.h"
-#include "actor/Unk_ov003_SceneEntry.h"
+#include "actor/ActorProfile.h"
 #include "game/Unk_ov003_Vec.h"
 #include "talk/TalkWindowState.h"
 #include "sys/ProcBase.h"
@@ -190,4 +190,4 @@ BOOL ShopBuilding::playsDoorMelody() {
     return TRUE;
 }
 
-extern "C" Unk_ov003_SceneEntry sShopBuildingProfile = {(void *(*)())ShopBuilding_Create, 0x21, 0x27, 0, 0xc8000, 0x12c000, 0x258000};
+extern "C" ActorProfile sShopBuildingProfile = {(void *(*)())ShopBuilding_Create, 0x21, 0x27, 0, 0xc8000, 0x12c000, 0x258000};

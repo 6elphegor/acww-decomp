@@ -19,7 +19,8 @@
 #include "actor/SpNpcActor.h"
 #include "talk/ActorTalkRequest.h"
 #include "talk/SpNpcTalkRequest.h"
-#include "actor/Unk_ov004_SceneEntry.h"
+#include "actor/ActorProfile.h"
+#include "net/CommManager.h"
 
 #define NpcTalkCtrl_requestTurnAndTalk _ZN11NpcTalkCtrl18requestTurnAndTalkEssh
 #define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
@@ -94,11 +95,6 @@ struct Unk_ov049_0225aba8_Vec {
     s32 x, y, z;
 };
 
-struct Unk_020cbb18_Ov049 {
-    u8 pad_00[0x64];
-    s32 myAid;
-};
-
 
 struct Unk_ov049_0225a714_Name {
     u8 b[8];
@@ -121,7 +117,7 @@ struct Unk_ov049_022594e0_Rec {
 extern "C" {
 void _ZN8NpcActor18onInteractionEventEi(void *self, u32 cmd, s32 arg);
 s32 _ZN8NpcActor11netGetSlotsEii(void *self, s32 *a, s32 *b);
-extern Unk_020cbb18_Ov049 *gCommManager;
+extern CommManager *gCommManager;
 extern u8 gTouchPrevHeld[];
 extern u8 gTouchPrevChanged[];
 extern u16 gPad[];
@@ -625,7 +621,7 @@ extern "C" Unk_ov049_0225b458_Ent sSpNpcMabelActTable[16];
 extern "C" void *data_ov049_0225ba68[2];
 extern "C" const u8 sSpNpcMabelDramaMsgTable[28];
 extern "C" void *data_ov049_0225bb18[2];
-extern "C" Unk_ov004_SceneEntry sSpNpcMabelProfile;
+extern "C" ActorProfile sSpNpcMabelProfile;
 
 extern "C" void *data_ov049_0225bba8[2] = {(void *)_ZN10SpNpcMabel9mainAct09Ev, 0};
 
@@ -1988,7 +1984,7 @@ BOOL SpNpcMabel::acceptsSelfRequestedInteraction(void *) {
 }
 
 void SpNpcMabel::onInteractionEvent(u32 cmd, u8 arg) {
-    Unk_020cbb18_Ov049 *g;
+    CommManager *g;
     s32 a, b;
     switch (cmd) {
     case 3:
@@ -2236,4 +2232,4 @@ extern "C" const u8 sSpNpcMabelDramaMsgTable[28] = {0x00, 0x01, 0x02, 0x03, 0xfe
 
 extern "C" void *data_ov049_0225bb18[2] = {(void *)_ZN14SpNpcMabelTalk22dispatchShopMessageEndEv, 0};
 
-extern "C" Unk_ov004_SceneEntry sSpNpcMabelProfile = {(void *(*)())SpNpcMabel_Create, 0x79, 0x7d, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" ActorProfile sSpNpcMabelProfile = {(void *(*)())SpNpcMabel_Create, 0x79, 0x7d, 2, 0x5000, 0x5000, 0x3e800};

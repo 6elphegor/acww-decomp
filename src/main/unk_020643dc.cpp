@@ -5,6 +5,9 @@
 #include "gfx/Mtx43.h"
 #include "sys/ListNode.h"
 #include "sys/PrioListNode.h"
+#include "sys/ProcProfile.h"
+#include "gfx/DebugColor.h"
+#include "gfx/Rgb555.h"
 
 struct Unk_02064674_Vec { s32 x, y, z; };
 
@@ -117,13 +120,6 @@ struct IdListNode {
     /* 0x08 */ s32 id;
 };
 
-struct Unk_02064d6c_Rgb {
-    u16 r : 5;
-    u16 g : 5;
-    u16 b : 5;
-    u16 x : 1;
-};
-
 class SceneLights : public GameProc {
 public:
     virtual BOOL onCreate();
@@ -147,11 +143,6 @@ public:
 };
 
 // Object filled with a constant colour by __sinit.
-struct Unk_021c9f40_Color {
-    u8 a, b, c, d;
-    Unk_021c9f40_Color(u8 a_, u8 b_, u8 c_, u8 d_) { a = a_; b = b_; c = c_; d = d_; }
-};
-
 // Flags and values at sLightSwitchState (0x14 bytes).
 struct LightSwitchState {
     u8 isOn[2];
@@ -159,12 +150,6 @@ struct LightSwitchState {
     u32 fadeFrames[2];
 };
 
-// Scene registration entry: constructor, two halfwords.
-struct Unk_020dd3b8 {
-    SceneLights *(*unk_00)(void);
-    s16 executePriority;
-    s16 drawPriority;
-};
 
 struct Unk_020b22ac_Dummy;
 
@@ -217,7 +202,7 @@ inline BOOL IsOne(u8 v) { return v == 1 ? TRUE : FALSE; }
 extern "C" u8 Sky_GetLightParam(u32 x);
 
 // ---- SceneLights::updateBaseColor
-static inline void Unk_02064d6c_Adjust(Unk_02064d6c_Rgb *c) {
+static inline void Unk_02064d6c_Adjust(Rgb555 *c) {
     s32 r = c->r + 10;
     s32 g = c->g + 10;
     s32 b = c->b + 7;
@@ -426,7 +411,7 @@ extern "C" s16 SceneLights_GetBaseColor(void) {
 void SceneLights::updateBaseColor() {
     struct {
         volatile u16 a;
-        Unk_02064d6c_Rgb c;
+        Rgb555 c;
         volatile u16 b;
         u16 pad;
     } l;
@@ -470,8 +455,8 @@ extern "C" s16 SceneLights_GetRoomColor(void) {
     case 2:
     case 3: {
         s32 t = o->roomLightLevel->getLevel();
-        Unk_02064d6c_Rgb *x = (Unk_02064d6c_Rgb *)&gSceneLights->roomColorOff;
-        Unk_02064d6c_Rgb *y = (Unk_02064d6c_Rgb *)&gSceneLights->roomColorOn;
+        Rgb555 *x = (Rgb555 *)&gSceneLights->roomColorOff;
+        Rgb555 *y = (Rgb555 *)&gSceneLights->roomColorOn;
         s32 b = x->b + (((y->b - x->b) * t) >> 12);
         s32 r = x->r + (((y->r - x->r) * t) >> 12);
         s32 g = x->g + (((y->g - x->g) * t) >> 12);
@@ -1036,7 +1021,7 @@ extern const SceneLightDef sSceneLightDefSwitchL0 = {3, 0, 0, 1, 0x1000, 0x1000}
 const SceneLightDef *sSceneLightSetup2Defs[1] = {&sSceneLightDefSwitchL0};
 extern const u16 sThunderSeIdsAlt[2] = {0x07f3, 0};
 // ---- .bss (in __sinit construction order)
-Unk_021c9f40_Color data_021c9f58(31, 20, 20, 31);
+DebugColor data_021c9f58(31, 20, 20, 31);
 extern const SceneLightDefList sSceneLightSetup1 = {3, sSceneLightSetup1Defs};
 extern const SceneLightDefList sSceneLightSetup0 = {3, sSceneLightSetup0Defs};
 const SceneLightDef *sSceneLightSetup0Defs[3] = {&sSceneLightDefSky0L0, &sSceneLightDefSky1L3, &sSceneLightDefSky2L1};
@@ -1054,16 +1039,16 @@ extern const SceneLightDef sSceneLightDefSwitchL3 = {3, 3, 0, 1, 0x1000, 0x1000}
 extern const SceneLightDef sSceneLightDefWarmL1 = {5, 1, 0, 1, 0x1000, 0x1000};
 extern const SceneLightDefList sSceneLightSetup3 = {2, sSceneLightSetup3Defs};
 extern const u16 sFlashLightColors[8] = {0x0922, 0x08c9, 0x30c3, 0x30a9, 0x1224, 0x1192, 0x5da6, 0x5531};
-Unk_020dd3b8 sSceneLightsProfile = {SceneLights_Create, 7, 5};
-Unk_021c9f40_Color data_021c9f54(20, 20, 31, 31);
-Unk_021c9f40_Color data_021c9f50(31, 31, 20, 31);
+ProcProfile sSceneLightsProfile = {(void *(*)())SceneLights_Create, 7, 5};
+DebugColor data_021c9f54(20, 20, 31, 31);
+DebugColor data_021c9f50(31, 31, 20, 31);
 extern const SceneLightDefList sSceneLightSetup2 = {1, sSceneLightSetup2Defs};
 const SceneLightDef *sSceneLightSetup3Defs[2] = {&sSceneLightDefLampL0, &sSceneLightDefWarmL1};
-Unk_021c9f40_Color data_021c9f48(20, 31, 20, 31);
+DebugColor data_021c9f48(20, 31, 20, 31);
 LightSwitchState sLightSwitchState;
 extern const SceneLightDef sSceneLightDefSky0L0 = {0, 0, 0, 0, 0, 0};
-Unk_021c9f40_Color data_021c9f4c(20, 31, 31, 31);
-Unk_021c9f40_Color data_021c9f40(20, 24, 24, 31);
+DebugColor data_021c9f4c(20, 31, 31, 31);
+DebugColor data_021c9f40(20, 24, 24, 31);
 extern const SceneLightDef sSceneLightDefLampL0 = {4, 0, 0, 1, 0x1000, 0x1000};
 extern const SceneLightDef sSceneLightDefSky1L3 = {1, 3, 0, 0, 0, 0};
 SceneLights *gSceneLights;

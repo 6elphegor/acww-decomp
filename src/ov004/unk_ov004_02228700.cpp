@@ -1,6 +1,6 @@
 // mwcc-version: 1.2/base
 #include "types.h"
-#include "actor/Unk_ov004_SceneEntry.h"
+#include "actor/ActorProfile.h"
 #include "actor/CharacterListNode.h"
 #include "game/Unk_ov004_02224ee4_Vec.h"
 #include "gfx/Mtx43.h"
@@ -165,7 +165,7 @@ typedef void (SewingMachine::*Unk_ov004_022288c0_Fn)();
 typedef BOOL (SewingMachine::*Unk_ov004_0222894c_Fn)();
 
 // ---------------------------------------------------------------- data
-extern "C" Unk_ov004_Scene_Entry sSewingMachineProfile = {(void *(*)())SewingMachine_Create, 0x78, 0x15, 0, 0xc8000, 0x12c000, 0x258000};
+extern "C" ActorProfile sSewingMachineProfile = {(void *(*)())SewingMachine_Create, 0x78, 0x15, 0, 0xc8000, 0x12c000, 0x258000};
 extern "C" SewingMachine *sSewingMachine = 0;
 Unk_ov004_02250f6c_Obj sSewingMachineCloth;
 

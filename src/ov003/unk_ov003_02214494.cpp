@@ -2,7 +2,7 @@
 // mwcc-flags: -O4,s -str reuse
 #include "types.h"
 #include "field/Unk_ov003_02214494_Views.h"
-#include "actor/Unk_ov003_SceneEntry.h"
+#include "actor/ActorProfile.h"
 #include "game/Unk_ov009_0225b880_Vec3.h"
 #include "talk/TalkWindowState.h"
 #include "game/ReddPassword.h"
@@ -13,25 +13,16 @@
 #include "talk/TalkMsgRequest.h"
 #include "town/BuildingActor.h"
 #include "town/ReddTent.h"
-struct Unk_ov003_Color {
-    u8 a, b, c, d;
-    Unk_ov003_Color(u8 a_, u8 b_, u8 c_, u8 d_) {
-        a = a_;
-        b = b_;
-        c = c_;
-        d = d_;
-    }
-};
-
+#include "gfx/DebugColor.h"
 
 extern "C" void ReddTent_Create();
-extern "C" Unk_ov003_Color data_ov003_02235144(0x1f, 0x14, 0x14, 0x1f);
-extern "C" Unk_ov003_Color data_ov003_02235160(0x14, 0x14, 0x1f, 0x1f);
-extern "C" Unk_ov003_Color data_ov003_0223514c(0x1f, 0x1f, 0x14, 0x1f);
-extern "C" Unk_ov003_Color data_ov003_02235158(0x14, 0x1f, 0x14, 0x1f);
-extern "C" Unk_ov003_Color data_ov003_0223515c(0x14, 0x1f, 0x1f, 0x1f);
-extern "C" Unk_ov003_Color data_ov003_02235148(0x14, 0x18, 0x18, 0x1f);
-extern "C" Unk_ov003_SceneEntry sReddTentProfile = {(void *(*)())ReddTent_Create, 0x1b, 0x21, 0, 0xc8000, 0x12c000, 0x258000};
+extern "C" DebugColor data_ov003_02235144(0x1f, 0x14, 0x14, 0x1f);
+extern "C" DebugColor data_ov003_02235160(0x14, 0x14, 0x1f, 0x1f);
+extern "C" DebugColor data_ov003_0223514c(0x1f, 0x1f, 0x14, 0x1f);
+extern "C" DebugColor data_ov003_02235158(0x14, 0x1f, 0x14, 0x1f);
+extern "C" DebugColor data_ov003_0223515c(0x14, 0x1f, 0x1f, 0x1f);
+extern "C" DebugColor data_ov003_02235148(0x14, 0x18, 0x18, 0x1f);
+extern "C" ActorProfile sReddTentProfile = {(void *(*)())ReddTent_Create, 0x1b, 0x21, 0, 0xc8000, 0x12c000, 0x258000};
 
 
 

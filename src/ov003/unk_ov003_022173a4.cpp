@@ -1,6 +1,6 @@
 // mwcc-version: 1.2/sp2
 #include "types.h"
-#include "actor/Unk_ov003_SceneEntry.h"
+#include "actor/ActorProfile.h"
 #include "game/Unk_ov003_Vec.h"
 #include "talk/TalkWindowState.h"
 #include "sys/ProcBase.h"
@@ -94,4 +94,4 @@ BOOL TownSign::isOpen() {
     return FALSE;
 }
 
-extern "C" Unk_ov003_SceneEntry sTownSignProfile = {(void *(*)())TownSign_Create, 0x20, 0x26, 0, 0xc8000, 0x12c000, 0x258000};
+extern "C" ActorProfile sTownSignProfile = {(void *(*)())TownSign_Create, 0x20, 0x26, 0, 0xc8000, 0x12c000, 0x258000};

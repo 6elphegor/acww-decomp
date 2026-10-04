@@ -5,7 +5,7 @@
 #include "field/Unk_ov003_02215748_Ent.h"
 #include "gfx/Unk_ov003_02215a04_Obj.h"
 #include "field/Unk_ov003_02215ad8_Str.h"
-#include "actor/Unk_ov003_SceneEntry.h"
+#include "actor/ActorProfile.h"
 #include "game/Unk_ov003_Vec.h"
 #include "talk/TalkWindowState.h"
 #include "sys/ProcBase.h"
@@ -37,8 +37,8 @@ class Unk_020b1ddc;
 class CountdownDigit; class CountdownSign;
 extern "C" CountdownDigit *CountdownDigit_Create();
 extern "C" CountdownSign *CountdownSign_Create();
-extern "C" Unk_ov003_SceneEntry sCountdownDigitProfile = {(void *(*)())CountdownDigit_Create, 0x26, 0x2c, 0, 0xc8000, 0x12c000, 0x258000};
-extern "C" Unk_ov003_SceneEntry sCountdownSignProfile = {(void *(*)())CountdownSign_Create, 0x25, 0x2b, 0, 0xc8000, 0x12c000, 0x258000};
+extern "C" ActorProfile sCountdownDigitProfile = {(void *(*)())CountdownDigit_Create, 0x26, 0x2c, 0, 0xc8000, 0x12c000, 0x258000};
+extern "C" ActorProfile sCountdownSignProfile = {(void *(*)())CountdownSign_Create, 0x25, 0x2b, 0, 0xc8000, 0x12c000, 0x258000};
 extern "C" u8 sCountdownSpawnIndex;
 extern "C" u32 sCountdownHours;
 extern "C" u32 sCountdownSeconds;

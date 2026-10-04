@@ -3,7 +3,7 @@
 #include "game/Unk_0203e4f0_Vec.h"
 #include "talk/TalkRequestEntry.h"
 #include "game/CharacterList.h"
-#include "net/Unk_0203e938_Net.h"
+#include "net/CommManager.h"
 #include "sys/ProcBase.h"
 #include "actor/Character.h"
 
@@ -38,7 +38,7 @@ extern u32 sTalkRequestList;
 }
 
 extern "C" {
-extern Unk_0203e938_Net *volatile gCommManager;
+extern CommManager *volatile gCommManager;
 }
 
 extern "C" {
@@ -210,7 +210,7 @@ extern "C" void CharInteractSync_Reset(void) {
 }
 
 extern "C" void CharInteractSync_SendReply(u8 a, u32 aid, ...) {
-    Unk_0203e938_Net *o = gCommManager;
+    CommManager *o = gCommManager;
     _ZN11CommManager11beginRecordEv(o);
     _ZN11CommManager11writeRecordEPhj(o, &a, 1);
     _ZN11CommManager9endRecordEjj(o, 0x17, aid);
@@ -236,7 +236,7 @@ extern "C" void CharInteractSync_ClearLock(u32 idx) {
 }
 
 extern "C" s32 CharInteractSync_Check(u32 id) {
-    Unk_0203e938_Net *o = gCommManager;
+    CommManager *o = gCommManager;
     if (!_ZN11CommManager8isOnlineEv(o)) {
         return 2;
     }
@@ -250,7 +250,7 @@ extern "C" s32 CharInteractSync_Check(u32 id) {
 }
 
 extern "C" void CharInteractSync_RequestLock(u32 id) {
-    Unk_0203e938_Net *o = gCommManager;
+    CommManager *o = gCommManager;
     if (_ZN11CommManager8isOnlineEv(o)) {
         if (o->myAid == 0) {
             sCharInteractLockIds[o->myAid] = id;
@@ -262,7 +262,7 @@ extern "C" void CharInteractSync_RequestLock(u32 id) {
             buf[2] = id >> 8;
             buf[3] = id >> 16;
             buf[4] = id >> 24;
-            Unk_0203e938_Net *p = gCommManager;
+            CommManager *p = gCommManager;
             _ZN11CommManager11beginRecordEv(p);
             _ZN11CommManager11writeRecordEPhj(p, buf, 5);
             _ZN11CommManager9endRecordEjj(p, 0x17, 0);
@@ -271,7 +271,7 @@ extern "C" void CharInteractSync_RequestLock(u32 id) {
 }
 
 extern "C" void CharInteractSync_ReleaseLock(void) {
-    Unk_0203e938_Net *o = gCommManager;
+    CommManager *o = gCommManager;
     if (_ZN11CommManager8isOnlineEv(o)) {
         if (o->myAid == 0) {
             CharInteractSync_ClearLock(0);
@@ -309,7 +309,7 @@ extern "C" void CharInteractSync_SendCharMsg(u32 id, u8 x, u8 mode) {
         buf[3] = id >> 16;
         buf[4] = id >> 24;
         buf[5] = x;
-        Unk_0203e938_Net *o = gCommManager;
+        CommManager *o = gCommManager;
         _ZN11CommManager11beginRecordEv(o);
         _ZN11CommManager11writeRecordEPhj(o, buf, 6);
         _ZN11CommManager9endRecordEjj(o, 0x17, 6);

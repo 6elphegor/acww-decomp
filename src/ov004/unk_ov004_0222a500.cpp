@@ -9,6 +9,7 @@
 #include "gfx/AnimModel.h"
 #include "gfx/ModelAnim.h"
 #include "sys/ProcProfile.h"
+#include "gfx/Rgb555.h"
 
 // ---------------------------------------------------------------- real symbol names of main-module methods
 // (called as free functions with the object as first argument; the mangled name is the symbols.txt name)
@@ -1239,17 +1240,10 @@ extern "C" void RoomShell_SpawnBoardSigns(void *self) {
     }
 }
 
-struct Unk_ov004_0222a560_Col {
-    u16 r : 5;
-    u16 g : 5;
-    u16 b : 5;
-    u16 x : 1;
-};
-
 extern "C" s16 RoomShell_CalcWdColor(void *self) {
-    Unk_ov004_0222a560_Col a;
-    Unk_ov004_0222a560_Col c;
-    Unk_ov004_0222a560_Col b;
+    Rgb555 a;
+    Rgb555 c;
+    Rgb555 b;
     u16 *p = Sky_GetCurrentPalette();
     *(u16 *)&c = 0xffff;
     if (p != 0) {

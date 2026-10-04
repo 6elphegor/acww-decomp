@@ -21,7 +21,7 @@
 #include "actor/SpNpcActor.h"
 #include "talk/ActorTalkRequest.h"
 #include "talk/SpNpcTalkRequest.h"
-#include "actor/Unk_ov004_SceneEntry.h"
+#include "actor/ActorProfile.h"
 
 
 class ActorTalkRequest;
@@ -462,7 +462,7 @@ extern char sSpNpcPellyPhyllisSequence4Key[];
 extern void *sSpNpcPellyPhyllisMenus[5];
 extern u8 sSpNpcPellyModelPath[];
 extern u8 sSpNpcPhyllisModelPath[];
-extern Unk_ov004_SceneEntry sSpNpcPellyPhyllisProfile;
+extern ActorProfile sSpNpcPellyPhyllisProfile;
 extern u32 sSpNpcPellyPhyllisMsgKeys[2][3];
 extern u8 sSpNpcPellyTexturePath[];
 extern u8 sSpNpcPhyllisTexturePath[];
@@ -2360,7 +2360,7 @@ s32 SpNpcPellyPhyllis::isOnline() {
 }
 
 // Data, second part (see the note at the first part)
-extern "C" Unk_ov004_SceneEntry sSpNpcPellyPhyllisProfile = {(void *(*)())SpNpcPellyPhyllis_Create, 0x7a, 0x7e, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" ActorProfile sSpNpcPellyPhyllisProfile = {(void *(*)())SpNpcPellyPhyllis_Create, 0x7a, 0x7e, 2, 0x5000, 0x5000, 0x3e800};
 extern "C" void *data_ov054_0225b7c8[2] = {(void *)_ZN17SpNpcPellyPhyllis9mainAct03Ev, 0};
 extern "C" void *data_ov054_0225b7c0[2] = {(void *)_ZN21SpNpcPellyPhyllisTalk11endHandItemEv, 0};
 extern "C" u8 *sSpNpcPellyPhyllisModelPaths[2] = {sSpNpcPellyModelPath, sSpNpcPhyllisModelPath};

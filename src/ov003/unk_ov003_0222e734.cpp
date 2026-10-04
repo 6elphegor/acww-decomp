@@ -1,5 +1,6 @@
 // mwcc-version: 1.2/base
 #include "types.h"
+#include "net/CommManager.h"
 
 // TU27 of ov003: free functions (spawn-position search over a 4x4 pool of 16x16 bitmaps, object slot table)
 struct UnitMaskChunk {
@@ -51,11 +52,6 @@ struct Unk_ov003_0222ed20_V3 {
     s32 x, y, z;
 };
 
-struct Unk_ov003_0222ed20_Sess {
-    u8 pad_00[0x64];
-    u32 myAid;
-};
-
 struct Unk_ov003_0222ed20_St {
     Unk_ov003_0222ed20_V3 a;
     u32 pad_0c;
@@ -78,7 +74,7 @@ struct Unk_ov003_0222ed20_Loc {
 
 extern "C" {
 extern Unk_ov003_0222e734_Grid *gSceneBlockMap;
-extern Unk_ov003_0222ed20_Sess *gCommManager;
+extern CommManager *gCommManager;
 extern u8 data_021ed2e6[];
 
 BOOL CommManager_isSlotActive(void *, u32);

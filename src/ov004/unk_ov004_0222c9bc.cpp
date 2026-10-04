@@ -59,8 +59,6 @@
 #define func_020b6e10 _ZN12TouchPickBoxC2Ev
 #define func_02133150 _s32_div_f
 
-typedef GameProc Unk_ov004_Base;
-
 // ---------------------------------------------------------------------------------------------------------------
 
 struct Mtx {

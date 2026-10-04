@@ -3,8 +3,8 @@
 // MuseumExhibitInfo::buildItemList needs mwcc 1.2/base and is in the _switch file (object order).
 #include "types.h"
 #include "Unk_020d8c7c.h"
-#include "gfx/Unk_ov004_Quad.h"
-#include "actor/Unk_ov004_SceneEntry.h"
+#include "gfx/DebugColor.h"
+#include "actor/ActorProfile.h"
 #include "game/Unk_ov004_022091fc_Vec.h"
 #include "actor/Unk_ov004_022142fc_Actor.h"
 #include "actor/Unk_ov004_022146ec_Actor.h"
@@ -119,13 +119,13 @@ void MuseumExhibitInfo_ClearRegistry(void);
 
 // ---------------------------------------------------------------- data
 // The six 4-byte objects are initialised by __sinit_ov004_02246b8c in this order.
-extern "C" Unk_ov004_Quad data_ov004_022502f4(0x1f, 0x14, 0x14, 0x1f);
-extern "C" Unk_ov004_Quad data_ov004_022502e4(0x14, 0x14, 0x1f, 0x1f);
-extern "C" Unk_ov004_Quad data_ov004_022502ec(0x1f, 0x1f, 0x14, 0x1f);
-extern "C" Unk_ov004_Quad data_ov004_022502dc(0x14, 0x1f, 0x14, 0x1f);
-extern "C" Unk_ov004_Quad data_ov004_022502d0(0x14, 0x1f, 0x1f, 0x1f);
-extern "C" Unk_ov004_Quad data_ov004_022502e0(0x14, 0x18, 0x18, 0x1f);
-extern "C" Unk_ov004_SceneEntry sMuseumExhibitInfoProfile = { (void *(*)())MuseumExhibitInfo_Create, 0x19, 0x1e, 0, 0xc8000, 0x12c000, 0x258000 };
+extern "C" DebugColor data_ov004_022502f4(0x1f, 0x14, 0x14, 0x1f);
+extern "C" DebugColor data_ov004_022502e4(0x14, 0x14, 0x1f, 0x1f);
+extern "C" DebugColor data_ov004_022502ec(0x1f, 0x1f, 0x14, 0x1f);
+extern "C" DebugColor data_ov004_022502dc(0x14, 0x1f, 0x14, 0x1f);
+extern "C" DebugColor data_ov004_022502d0(0x14, 0x1f, 0x1f, 0x1f);
+extern "C" DebugColor data_ov004_022502e0(0x14, 0x18, 0x18, 0x1f);
+extern "C" ActorProfile sMuseumExhibitInfoProfile = { (void *(*)())MuseumExhibitInfo_Create, 0x19, 0x1e, 0, 0xc8000, 0x12c000, 0x258000 };
 extern "C" {
 s16 sMuseumExhibitSpawnMsg = -1;
 char sMuseumExhibitMsgFile[] = "obj_etc_museum";

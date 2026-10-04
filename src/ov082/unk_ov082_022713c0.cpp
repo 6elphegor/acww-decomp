@@ -24,7 +24,7 @@
 #include "actor/SpNpcActor.h"
 #include "talk/ActorTalkRequest.h"
 #include "talk/SpNpcTalkRequest.h"
-#include "actor/Unk_ov004_SceneEntry.h"
+#include "actor/ActorProfile.h"
 
 
 class ActorTalkRequest;
@@ -90,7 +90,7 @@ u32 Insect_GetSpawnTable(u32 v);
 s32 InsectPick_PickAnyHour(u16 *a, s32 *b, s32 *c, s32 d, void *tbl, s32 *arr, s32 cnt);
 s32 SaveVillagers_PickRandomExcept(void *p, u32 a, u32 b);
 void *_ZN12VillagerData13getVillagerIdEv();
-void _ZN13ContestRecord17setHolderVillagerEP16Unk_02085810_Rec(void *g, void *p);
+void _ZN13ContestRecord17setHolderVillagerEP10VillagerId(void *g, void *p);
 void ThreeLayerAnimModel_AssignJointsToLayer2(void *p, s32 a, s32 b);
 void _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(void *p, void *owner, s32 a, s32 b, s32 s0, s32 s1, s32 s2, s32 s3);
 BOOL _ZN11NpcTalkCtrl6isBusyEv(void *self);
@@ -249,7 +249,7 @@ BOOL SpNpcTortimerBugOff::onCreate() {
         ContestRecord_GetItem(&l.s4, g);
         if (Unk_ov082_InRange(&l.s4, 0x12b0, 0x12e7)) {
             if (SaveVillagers_PickRandomExcept(gSaveVillagers, 0, 0) != 0) {
-                _ZN13ContestRecord17setHolderVillagerEP16Unk_02085810_Rec(g, _ZN12VillagerData13getVillagerIdEv());
+                _ZN13ContestRecord17setHolderVillagerEP10VillagerId(g, _ZN12VillagerData13getVillagerIdEv());
                 _ZN13ContestRecord7setKindEj(g, 2);
                 _ZN8SaveData7setFlagEj(gSaveData, 0xf);
             }
@@ -325,10 +325,10 @@ void SpNpcTortimerBugOffTalk::onTaskDone(u32) {
 }// Declarations for data defined further down (definition order sets the data layout)
 extern Unk_ov082_02271ce4_Ent sSpNpcTortimerBugOffActTable[3];
 extern "C" u8 sSpNpcTortimerBugOffTexturePath[];
-extern "C" Unk_ov004_SceneEntry sSpNpcTortimerBugOffProfile;
+extern "C" ActorProfile sSpNpcTortimerBugOffProfile;
 extern "C" u8 sSpNpcTortimerBugOffModelPath[];
 
-extern "C" Unk_ov004_SceneEntry sSpNpcTortimerBugOffProfile = {(void *(*)())SpNpcTortimerBugOff_Create, 0x58, 0x5f, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" ActorProfile sSpNpcTortimerBugOffProfile = {(void *(*)())SpNpcTortimerBugOff_Create, 0x58, 0x5f, 2, 0x5000, 0x5000, 0x3e800};
 
 extern "C" u8 sSpNpcTortimerBugOffTexturePath[] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 't', 't', 'l', '_', 't', 'e', 'x', '.', 'n', 's', 'b', 't', 'x', 0};
 

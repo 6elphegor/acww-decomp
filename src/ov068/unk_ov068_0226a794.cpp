@@ -1,6 +1,6 @@
 // mwcc-version: 1.2/sp2
 #include "types.h"
-#include "actor/Unk_ov068_SceneEntry.h"
+#include "actor/ActorProfile.h"
 #include "game/Unk_ov003_Vec.h"
 #include "talk/TalkWindowState.h"
 #include "player/PlayerActionRequest.h"
@@ -11,6 +11,7 @@
 #include "talk/MsgRequest.h"
 #include "talk/TalkMsgRequest.h"
 #include "town/BuildingActor.h"
+#include "gfx/DebugColor.h"
 
 struct Unk_ov068_0226acf8_Vec {
     s32 x, y, z;
@@ -193,16 +194,6 @@ public:
     s32 requestTaxiGetOut(s32 a, s32 b);
 };
 
-struct Unk_ov068_02270110_Color {
-    u8 a, b, c, d;
-    Unk_ov068_02270110_Color(u8 a_, u8 b_, u8 c_, u8 d_) {
-        a = a_;
-        b = b_;
-        c = c_;
-        d = d_;
-    }
-};
-
 extern "C" {
 extern s16 sKappnTaxiLeaveTimer;
 extern u8 gSaveData[];
@@ -284,13 +275,13 @@ s32 _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(void *, void *);
 
 extern "C" void KappnTaxi_Create();
 
-extern "C" Unk_ov068_02270110_Color data_ov068_02271090(0x1f, 0x14, 0x14, 0x1f);
-extern "C" Unk_ov068_02270110_Color data_ov068_02271098(0x14, 0x14, 0x1f, 0x1f);
-extern "C" Unk_ov068_02270110_Color data_ov068_022710a4(0x1f, 0x1f, 0x14, 0x1f);
-extern "C" Unk_ov068_02270110_Color data_ov068_022710a0(0x14, 0x1f, 0x14, 0x1f);
-extern "C" Unk_ov068_02270110_Color data_ov068_02271094(0x14, 0x1f, 0x1f, 0x1f);
-extern "C" Unk_ov068_02270110_Color data_ov068_0227109c(0x14, 0x18, 0x18, 0x1f);
-extern "C" Unk_ov068_SceneEntry sKappnTaxiProfile = {(void *(*)())KappnTaxi_Create, 0x23, 0x29, 0, 0xc8000, 0x12c000, 0x258000};
+extern "C" DebugColor data_ov068_02271090(0x1f, 0x14, 0x14, 0x1f);
+extern "C" DebugColor data_ov068_02271098(0x14, 0x14, 0x1f, 0x1f);
+extern "C" DebugColor data_ov068_022710a4(0x1f, 0x1f, 0x14, 0x1f);
+extern "C" DebugColor data_ov068_022710a0(0x14, 0x1f, 0x14, 0x1f);
+extern "C" DebugColor data_ov068_02271094(0x14, 0x1f, 0x1f, 0x1f);
+extern "C" DebugColor data_ov068_0227109c(0x14, 0x18, 0x18, 0x1f);
+extern "C" ActorProfile sKappnTaxiProfile = {(void *(*)())KappnTaxi_Create, 0x23, 0x29, 0, 0xc8000, 0x12c000, 0x258000};
 
 extern "C" void KappnTaxi_Create() {
     new KappnTaxi();

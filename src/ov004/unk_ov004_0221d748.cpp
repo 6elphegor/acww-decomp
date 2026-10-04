@@ -2,8 +2,8 @@
 
 
 #include "types.h"
-#include "actor/Unk_ov004_SceneEntry.h"
-#include "talk/Unk_ov004_0221b6d4_Out.h"
+#include "actor/ActorProfile.h"
+#include "talk/TalkTopicMsg.h"
 #include "net/CommManager.h"
 #include "game/Unk_ov004_0221b954_Vec.h"
 #include "talk/TalkWindowState.h"
@@ -750,7 +750,7 @@ extern "C" u8 data_ov004_0224d224[27] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm',
 extern "C" u32 sSpNpcBookerMsgFiles[1] = {(u32)data_ov004_0224d1e0};
 extern "C" u8 *sSpNpcBookerModelPath = data_ov004_0224d1f4;
 extern "C" u8 *sSpNpcBookerTexturePath = data_ov004_0224d224;
-extern "C" Unk_ov004_SceneEntry sSpNpcBookerProfile = {(void *(*)())SpNpcBooker_Create, 0x73, 0x78, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" ActorProfile sSpNpcBookerProfile = {(void *(*)())SpNpcBooker_Create, 0x73, 0x78, 2, 0x5000, 0x5000, 0x3e800};
 extern "C" void *data_ov004_0224d1d8[2] = {(void *)_ZN11SpNpcBooker9mainAct06Ev, 0};
 extern "C" void *data_ov004_0224d1d0[2] = {(void *)_ZN11SpNpcBooker10setupAct00Ev, 0};
 extern "C" void *data_ov004_0224d1c8[2] = {(void *)_ZN11SpNpcBooker9mainAct00Ev, 0};

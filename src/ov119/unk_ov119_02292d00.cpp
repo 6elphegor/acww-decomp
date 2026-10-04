@@ -9,6 +9,7 @@
 #include "menu/PopupChoiceMenu.h"
 #include "menu/MenuErrorMessage.h"
 #include "sys/ProcProfile.h"
+#include "net/CommManager.h"
 
 // Calls into other modules' class methods: extern "C" functions named by the real mangled symbol (self first).
 #define LabelString_redrawAligned _ZN11LabelString13redrawAlignedEii
@@ -160,11 +161,7 @@ void _ZN15EncodedString8BD1Ev(void *self);
 void _ZN11MsgString9BC1Ev(void *self);
 void _ZN11MsgString9BD1Ev(void *self);
 
-struct Unk_ov119_Comm {
-    u32 unk_00[0x64 / 4];
-    s32 myAid;
-};
-extern Unk_ov119_Comm *gCommManager;
+extern CommManager *gCommManager;
 extern u8 *data_ov119_02295648[6];
 extern u32 data_ov119_02295660[8];
 extern u32 data_ov119_02295680[10];
@@ -1286,7 +1283,7 @@ void FriendRosterTab::openRegisterChoices()
 {
     registerButtonPalette = 7;
     ChoiceIdList_Clear(U3D0, 0xa);
-    Unk_ov119_Comm *g = gCommManager;
+    CommManager *g = gCommManager;
     if (CommManager_isOnline(g)) {
         s32 skip = g->myAid;
         s32 i = 0;
@@ -1671,7 +1668,7 @@ void FriendRosterTab::drawPresentPage() {
     s32 cur;
     void *a;
     void *b;
-    Unk_ov119_Comm *g;
+    CommManager *g;
     s32 pos = 0xc3;
     g = gCommManager;
     cur = g->myAid;

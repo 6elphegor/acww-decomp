@@ -3,6 +3,7 @@
 #include "game/Unk_020b4f8c_Vec.h"
 #include "game/SceneWarp.h"
 #include "game/FxVec3.h"
+#include "game/SceneInfo.h"
 
 // ov021: map scene tables (a scene record, its entry list, the id grid, the static map objects).
 // Generated from the original image; the definition order below
@@ -13,77 +14,40 @@
 
 // 0x1c-byte map object: constructor 0x020b4f8c, destructor 0x020b4fc0 (both in main)
 
-struct Unk_ov021_Entry {  // one list of the scene: kind 2 = ids (u32), 1 and 0 = 20-byte records
-    u8 kind;
-    u8 count;
-    u16 pad;
-    void *list;
-};
-
-struct Unk_ov021_Head {
-    u32 count;
-    Unk_ov021_Entry *entries;
-};
-
-struct Unk_ov021_Grid {  // width x height ids
-    u32 *ids;
-    u8 width;
-    u8 height;
-    u16 pad;
-};
-
-struct Unk_ov021_Objs {
-    SceneWarp *objs;
-    u32 count;
-};
-
-struct Unk_ov021_Rec {
-    u32 w[5];
-};
-
-struct Unk_ov021_Scene {  // 24 bytes; main's table sSceneInfoTable points to it
-    Unk_ov021_Head *head;
-    s32 isOutdoor;
-    Unk_ov021_Grid *grid;
-    Unk_ov021_Objs *objs;
-    s32 infoOverlayA;
-    s32 infoOverlayB;
-};
-
 extern u8 sRoomCommonProfileCount;  // copied into the entry table by __sinit
 extern u32 sRoomCommonProfiles[];
 
 // Declarations for data defined further down (definition order sets the data layout)
-extern Unk_ov021_Objs data_ov021_02258c0c;
+extern SceneWarpList data_ov021_02258c0c;
 extern u32 data_ov021_02258c00[1];
-extern Unk_ov021_Rec data_ov021_02258c24[1];
-extern Unk_ov021_Entry data_ov021_02258c64[4];
-extern Unk_ov021_Head data_ov021_02258c04;
-extern Unk_ov021_Scene data_ov021_02258c4c;
+extern SceneSpawnRecord data_ov021_02258c24[1];
+extern SceneSpawnGroup data_ov021_02258c64[4];
+extern SceneSpawnList data_ov021_02258c04;
+extern SceneInfo data_ov021_02258c4c;
 extern u32 data_ov021_02258c14[2];
 extern FxVec3 data_ov021_02258cc4;
 extern SceneWarp data_ov021_02258d0c[7];
-extern Unk_ov021_Rec data_ov021_02258c38[1];
-extern Unk_ov021_Grid data_ov021_02258c1c;
+extern SceneSpawnRecord data_ov021_02258c38[1];
+extern SceneMapInfo data_ov021_02258c1c;
 
-Unk_ov021_Objs data_ov021_02258c0c = {data_ov021_02258d0c, 7};
+SceneWarpList data_ov021_02258c0c = {data_ov021_02258d0c, 7};
 
 u32 data_ov021_02258c00[1] = {0x101d};
 
-Unk_ov021_Rec data_ov021_02258c24[1] = {
+SceneSpawnRecord data_ov021_02258c24[1] = {
     {0x1000009, 0x1a00002, 0x80000000, 0, 0x800000},
 };
 
-Unk_ov021_Entry data_ov021_02258c64[4] = {
+SceneSpawnGroup data_ov021_02258c64[4] = {
     {2, sRoomCommonProfileCount, 0, sRoomCommonProfiles},
     {2, 2, 0, data_ov021_02258c14},
     {1, 1, 0, data_ov021_02258c24},
     {0, 1, 0, data_ov021_02258c38},
 };
 
-Unk_ov021_Head data_ov021_02258c04 = {4, data_ov021_02258c64};
+SceneSpawnList data_ov021_02258c04 = {4, 0, data_ov021_02258c64};
 
-Unk_ov021_Scene data_ov021_02258c4c = {&data_ov021_02258c04, 0, &data_ov021_02258c1c, &data_ov021_02258c0c, 0x2f, -1};
+SceneInfo data_ov021_02258c4c = {&data_ov021_02258c04, 0, &data_ov021_02258c1c, &data_ov021_02258c0c, 0x2f, -1};
 
 u32 data_ov021_02258c14[2] = {0x100c2, 0x51};
 
@@ -99,8 +63,8 @@ SceneWarp data_ov021_02258d0c[7] = {
     SceneWarp(0x23, Unk_020b4f8c_Vec(0x5000, 0, 0x1a000), 0x23800000, 0x4000, 2, 2, 0x4000, 3),
 };
 
-Unk_ov021_Rec data_ov021_02258c38[1] = {
+SceneSpawnRecord data_ov021_02258c38[1] = {
     {0xf0006e, 0x1500000, 0, 0, 0xd00c},
 };
 
-Unk_ov021_Grid data_ov021_02258c1c = {data_ov021_02258c00, 1, 1};
+SceneMapInfo data_ov021_02258c1c = {data_ov021_02258c00, 1, 1};

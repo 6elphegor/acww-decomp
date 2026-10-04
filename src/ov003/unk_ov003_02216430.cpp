@@ -2,7 +2,7 @@
 // ov003 TU11 (actor 02231aa8): .text 0x02216430-0x022165d0
 #include "types.h"
 #include "game/Unk_020b1ddc.h"
-#include "actor/Unk_ov003_SceneEntry.h"
+#include "actor/ActorProfile.h"
 #include "game/Unk_ov003_Vec.h"
 #include "talk/TalkWindowState.h"
 #include "sys/ProcBase.h"
@@ -91,7 +91,7 @@ public:
 };
 
 
-extern "C" Unk_ov003_SceneEntry sTownHallProfile = { (void *(*)())TownHall_Create, 0x1e, 0x24, 0, 0xc8000, 0x12c000, 0x258000 };
+extern "C" ActorProfile sTownHallProfile = { (void *(*)())TownHall_Create, 0x1e, 0x24, 0, 0xc8000, 0x12c000, 0x258000 };
 
 extern "C" void TownHall_Create() {
     new TownHall();

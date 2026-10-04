@@ -1,7 +1,7 @@
 // mwcc-version: 1.2/sp2
 // ov003 TU12 (actor 02231c14): .text 0x022165d0-0x02216824
 #include "types.h"
-#include "actor/Unk_ov003_SceneEntry.h"
+#include "actor/ActorProfile.h"
 #include "game/Unk_ov003_Vec.h"
 #include "talk/TalkWindowState.h"
 #include "sys/ProcBase.h"
@@ -108,7 +108,7 @@ public:
 
 
 extern "C" const s8 sHexDigits[16] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
-extern "C" Unk_ov003_SceneEntry sPlayerHouseProfile = { (void *(*)())PlayerHouse_Create, 0x1f, 0x25, 0, 0xc8000, 0x12c000, 0x258000 };
+extern "C" ActorProfile sPlayerHouseProfile = { (void *(*)())PlayerHouse_Create, 0x1f, 0x25, 0, 0xc8000, 0x12c000, 0x258000 };
 extern "C" {
 char data_ov003_02235358[0x20];
 }

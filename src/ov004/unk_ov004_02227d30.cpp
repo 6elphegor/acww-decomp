@@ -1,6 +1,6 @@
 // mwcc-version: 1.2/base
 #include "types.h"
-#include "actor/Unk_ov004_SceneEntry.h"
+#include "actor/ActorProfile.h"
 #include "actor/CharacterListNode.h"
 #include "game/Unk_ov004_02224ee4_Vec.h"
 #include "gfx/AnimFrameCtrl.h"
@@ -91,7 +91,7 @@ s32 _ZN9AnimModel8stepAnimEv(void *);
 }
 
 extern "C" BarberPole *BarberPole_Create();
-extern "C" Unk_ov004_Scene_Entry sBarberPoleProfile = {(void *(*)())BarberPole_Create, 0x16, 0x1a, 0, 0xc8000, 0x12c000, 0x258000};
+extern "C" ActorProfile sBarberPoleProfile = {(void *(*)())BarberPole_Create, 0x16, 0x1a, 0, 0xc8000, 0x12c000, 0x258000};
 
 extern "C" BarberPole *BarberPole_Create() {
     return new BarberPole();

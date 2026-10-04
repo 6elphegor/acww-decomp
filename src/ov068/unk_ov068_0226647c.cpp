@@ -2,6 +2,7 @@
 #include "types.h"
 #include "gfx/Unk_ov068_0226647c_Cam.h"
 #include "game/Unk_ov068_Vec.h"
+#include "gfx/DebugColor.h"
 
 
 class CameraEventModes;
@@ -25,16 +26,6 @@ struct Unk_ov068_022667c4_Ent {
 };
 
 
-
-struct Unk_ov068_02266680_Color {
-    u8 a, b, c, d;
-    Unk_ov068_02266680_Color(u8 a_, u8 b_, u8 c_, u8 d_) {
-        a = a_;
-        b = b_;
-        c = c_;
-        d = d_;
-    }
-};
 
 extern "C" {
 extern Unk_ov068_02266680_Vec gVec3Zero;
@@ -116,24 +107,24 @@ extern "C" void *sTownTourOffsets[7] = {&sTownTourOffsetPlayerHouse, sTownTourOf
                                            &sTownTourOffsetMuseum, &sTownTourOffsetAbleSisters, &sTownTourOffsetTownHall,
                                            &sTownTourOffsetGateHouse};
 extern "C" Unk_ov068_02266680_Vec sTownTourOffsetVillagerHouse = {-0xc00, 0, 0x1c00};
-extern "C" Unk_ov068_02266680_Color data_ov068_02270fd4(0x1f, 0x14, 0x14, 0x1f);
+extern "C" DebugColor data_ov068_02270fd4(0x1f, 0x14, 0x14, 0x1f);
 extern "C" const u32 sTownTourBuildingAttrs[7] = {1, 2, 0, 0x800, 2, 0x200, 0x400};
 extern "C" Unk_ov068_02266680_Vec sTownTourOffsetsNookShop[4] = {{-0xc00, 0, 0x2400}, {-0xc00, 0, 0x1400},
                                                             {-0x2000, 0, 0x2400}, {-0x2c00, 0, 0x2400}};
-extern "C" Unk_ov068_02266680_Color data_ov068_02270fd0(0x14, 0x14, 0x1f, 0x1f);
-extern "C" Unk_ov068_02266680_Color data_ov068_02270fc4(0x1f, 0x1f, 0x14, 0x1f);
-extern "C" Unk_ov068_02266680_Color data_ov068_02270fc8(0x14, 0x1f, 0x14, 0x1f);
+extern "C" DebugColor data_ov068_02270fd0(0x14, 0x14, 0x1f, 0x1f);
+extern "C" DebugColor data_ov068_02270fc4(0x1f, 0x1f, 0x14, 0x1f);
+extern "C" DebugColor data_ov068_02270fc8(0x14, 0x1f, 0x14, 0x1f);
 extern "C" Unk_ov068_02266680_Vec sTownTourOffsetTownHall = {0, 0, 0x1c00};
 extern "C" s32 data_ov068_0226fc44 = 0x80;
 extern "C" Unk_ov068_02266680_Vec sTownTourOffsetMuseum = {0, 0, 0xc00};
-extern "C" Unk_ov068_02266680_Color data_ov068_02270fd8(0x14, 0x1f, 0x1f, 0x1f);
+extern "C" DebugColor data_ov068_02270fd8(0x14, 0x1f, 0x1f, 0x1f);
 extern "C" Unk_ov068_02266680_Vec sTownTourOffsetAbleSisters = {-0xc00, 0, 0x2400};
 extern "C" Unk_ov068_02266680_Vec sTownTourOffsetPlayerHouse = {0, 0, 0x1c00};
 extern "C" Unk_ov068_02266680_Vec sTownTourOffsetGateHouse = {0x1000, 0, 0x1000};
 extern "C" u16 sTownTourBuildings[14] = {0x5014, 0x501a, 0x500d, 0x500d, 0x5001, 0x5001, 0x5011,
                                           0x5011, 0x500c, 0x500c, 0x5000, 0x5000, 0x500b, 0x500b};
 extern "C" s32 data_ov068_0226fc40 = 1;
-extern "C" Unk_ov068_02266680_Color data_ov068_02270fcc(0x14, 0x18, 0x18, 0x1f);
+extern "C" DebugColor data_ov068_02270fcc(0x14, 0x18, 0x18, 0x1f);
 
 BOOL CameraEventModes::initModeFollowTarget() {
     _ZN6Camera8loadPoseEiP10CameraPose(this, 0, 0);

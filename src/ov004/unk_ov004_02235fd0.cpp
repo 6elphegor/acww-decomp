@@ -6,6 +6,8 @@
 #include "actor/ActorListNode.h"
 #include "actor/Actor.h"
 #include "room/HouseData.h"
+#include "actor/ActorProfile.h"
+#include "sys/ProcProfile.h"
 
 // main / runtime symbols by their real names
 #define func_02000c8c _ZN6FxVec3D1Ev
@@ -243,25 +245,9 @@ BOOL HouseRoach_LoadCount(void *self);
 BOOL HouseRoach_SpawnInitial(void *owner);
 }
 
-struct Unk_ov004_0224eb5c_Entry {
-    void *(*create)();
-    u16 executePriority;
-    u16 drawPriority;
-};
-
-struct Unk_ov004_0224eb7c_Entry {
-    void *(*create)();
-    u16 executePriority;
-    u16 drawPriority;
-    u32 actorFlags;
-    u32 cullHeight;
-    u32 cullRadius;
-    u32 cullDepth;
-};
-
-extern "C" Unk_ov004_0224eb5c_Entry sHouseRoachManagerProfile;
+extern "C" ProcProfile sHouseRoachManagerProfile;
 extern "C" char sHouseRoachModelPath[0x18];
-extern "C" Unk_ov004_0224eb7c_Entry sHouseRoachProfile;
+extern "C" ActorProfile sHouseRoachProfile;
 extern "C" s8 sHouseRoachTurnCounter;
 extern "C" volatile u8 sHouseRoachActiveCount;
 extern "C" void *sHouseRoachManager;
@@ -1043,11 +1029,11 @@ BOOL HouseRoach::onDelete() {
 
 // Declarations for data defined further down (definition order sets the data layout)
 
-extern "C" Unk_ov004_0224eb5c_Entry sHouseRoachManagerProfile = {(void *(*)())HouseRoachManager_Create, 0xbf, 0xc2};
+extern "C" ProcProfile sHouseRoachManagerProfile = {(void *(*)())HouseRoachManager_Create, 0xbf, 0xc2};
 
 extern "C" char sHouseRoachModelPath[0x18] = "/insect/51/bug52.nsbmd";
 
-extern "C" Unk_ov004_0224eb7c_Entry sHouseRoachProfile = {(void *(*)())HouseRoach_Create, 0xc0, 0xc3, 2, 0x50000, 0x50000, 0x140000};
+extern "C" ActorProfile sHouseRoachProfile = {(void *(*)())HouseRoach_Create, 0xc0, 0xc3, 2, 0x50000, 0x50000, 0x140000};
 
 extern "C" s8 sHouseRoachTurnCounter = 0;
 

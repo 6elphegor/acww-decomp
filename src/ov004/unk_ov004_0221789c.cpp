@@ -1,7 +1,7 @@
 // mwcc-version: 1.2/base
 // mwcc-flags: -str reuse
 #include "types.h"
-#include "actor/Unk_ov004_SceneEntry.h"
+#include "actor/ActorProfile.h"
 #include "npc/VillagerClothModel.h"
 #include "npc/VillagerMood.h"
 #include "snd/SndSeEmitter.h"
@@ -26,6 +26,7 @@
 #include "actor/VillagerActor.h"
 #include "talk/ActorTalkRequest.h"
 #include "talk/VillagerTalk.h"
+#include "talk/TalkTopicMsg.h"
 
 class FleaMarketSellerVillager;
 
@@ -82,11 +83,6 @@ struct Unk_ov004_0221841c_Vec {
     ~Unk_ov004_0221841c_Vec() {}
 };
 
-
-struct Unk_ov004_0224c4e4_Out {
-    void *fileName;
-    u8 msgIndex;
-};
 
 extern "C" {
 extern u16 data_020c6cc8;
@@ -261,7 +257,7 @@ public:
 
 // ---------------------------------------------------------------------------------------------------------------------
 extern "C" FleaMarketSellerVillager *FleaMarketSellerVillager_Create();
-extern "C" Unk_ov004_SceneEntry sFleaMarketSellerVillagerProfile = {(void *(*)())FleaMarketSellerVillager_Create, 0x86, 0x8a, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" ActorProfile sFleaMarketSellerVillagerProfile = {(void *(*)())FleaMarketSellerVillager_Create, 0x86, 0x8a, 2, 0x5000, 0x5000, 0x3e800};
 extern "C" {
 u8 data_ov004_022506c8[0x28];
 u8 data_ov004_022506f0[0x28];
@@ -622,14 +618,14 @@ void FleaMarketSellerVillagerTalk::sellFurniture() {
 }
 
 void FleaMarketSellerVillagerTalk::start(TalkStartMsg *out_) {
-    Unk_ov004_0224c4e4_Out *out = (Unk_ov004_0224c4e4_Out *)out_;
+    TalkTopicMsg *out = (TalkTopicMsg *)out_;
     void *r7 = Villager_FindOrCreateMemory(villager->villagerData, PlayerData_getPlayerId(PlayerData_GetCurrent()));
     if (r7) {
         VillagerMemory_RecordTalk(r7, 0, 0, 0);
     }
     if (villager->talkStage == 3) {
         VillagerId_makeFileName(VillagerData_getVillagerId(villager->villagerData), data_ov004_022506f0, 0x28, "ev_fmarket2");
-        out->fileName = data_ov004_022506f0;
+        out->fileName = (u32)data_ov004_022506f0;
         out->msgIndex = Random_GlobalBelow(3) + 3;
         return;
     }
@@ -682,7 +678,7 @@ void FleaMarketSellerVillagerTalk::start(TalkStartMsg *out_) {
         } else {
             VillagerId_makeFileName(VillagerData_getVillagerId(villager->villagerData), data_ov004_022506f0, 0x28, "q11_trade3");
         }
-        out->fileName = data_ov004_022506f0;
+        out->fileName = (u32)data_ov004_022506f0;
         out->msgIndex = Random_GlobalBelow(3);
     } else {
         switch (villager->talkStage) {
@@ -699,7 +695,7 @@ void FleaMarketSellerVillagerTalk::start(TalkStartMsg *out_) {
             out->msgIndex = Random_GlobalBelow(3) + 6;
             break;
         }
-        out->fileName = data_ov004_022506f0;
+        out->fileName = (u32)data_ov004_022506f0;
     }
 }
 

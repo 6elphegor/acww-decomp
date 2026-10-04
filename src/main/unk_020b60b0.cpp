@@ -9,6 +9,7 @@
 #include "game/CollisionCylinder.h"
 #include "game/TouchPickCylinder.h"
 #include "game/TouchPickTriangle.h"
+#include "gfx/DebugColor.h"
 
 
 
@@ -235,22 +236,12 @@ BOOL TouchPicker::addTriangle(TouchPickTriangle *o, Vec3 *a, Vec3 *b, Vec3 *c, s
 }
 
 // six file-scope 4-byte objects built by the unit's __sinit (nothing reads them)
-struct Unk_021ef474 {
-    u8 red, green, blue, alpha;
-    Unk_021ef474(u8 a, u8 b, u8 c, u8 d) {
-        red = a;
-        green = b;
-        blue = c;
-        alpha = d;
-    }
-};
-
-Unk_021ef474 sColorPaleRed(31, 20, 20, 31);
-Unk_021ef474 sColorPaleBlue(20, 20, 31, 31);
-Unk_021ef474 sColorPaleYellow(31, 31, 20, 31);
-Unk_021ef474 sColorPaleGreen(20, 31, 20, 31);
-Unk_021ef474 sColorPaleCyan(20, 31, 31, 31);
-Unk_021ef474 sColorGreyCyan(20, 24, 24, 31);
+DebugColor sColorPaleRed(31, 20, 20, 31);
+DebugColor sColorPaleBlue(20, 20, 31, 31);
+DebugColor sColorPaleYellow(31, 31, 20, 31);
+DebugColor sColorPaleGreen(20, 31, 20, 31);
+DebugColor sColorPaleCyan(20, 31, 31, 31);
+DebugColor sColorGreyCyan(20, 24, 24, 31);
 
 // Data order: this unit is placed object by object (see object_order.txt).
 

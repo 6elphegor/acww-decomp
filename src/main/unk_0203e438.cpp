@@ -2,7 +2,7 @@
 #include "actor/CharacterListNode.h"
 #include "talk/TalkRequestEntry.h"
 #include "game/CharacterList.h"
-#include "net/Unk_0203e938_Net.h"
+#include "net/CommManager.h"
 #include "sys/ProcBase.h"
 #include "talk/TalkRequestQueue.h"
 #include "actor/Actor.h"
@@ -39,7 +39,7 @@ extern u32 sTalkRequestList;
 }
 
 extern "C" {
-extern Unk_0203e938_Net *volatile gCommManager;
+extern CommManager *volatile gCommManager;
 }
 
 extern "C" {

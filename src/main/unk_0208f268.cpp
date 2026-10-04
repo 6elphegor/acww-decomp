@@ -4,6 +4,7 @@
 #include "gfx/AnimModel.h"
 #include "gfx/ModelAnim.h"
 #include "gfx/P.h"
+#include "gfx/Rgb555.h"
 
 struct Unk_0209002c_Handle;
 
@@ -155,16 +156,9 @@ struct Unk_0208ffe4_V {
     }
 };
 
-struct Unk_0208fe0c_Col {
-    u16 r : 5;
-    u16 g : 5;
-    u16 b : 5;
-    u16 x : 1;
-};
-
 union EffectTintColor {
     u16 v;
-    Unk_0208fe0c_Col c;
+    Rgb555 c;
 };
 
 struct Unk_0209002c_Handle {

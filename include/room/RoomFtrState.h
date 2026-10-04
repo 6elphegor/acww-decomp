@@ -4,6 +4,7 @@
 // Per-room furniture state (0x48 bytes): two 16x16 switch bit grids and the gyroid beat table. Methods defined in
 // src/main/unk_020514a4.cpp; the constructor is called from src/main/unk_02060034.cpp.
 #include "types.h"
+#include "game/NibblePair.h"
 
 // 16 x u16 bit matrix
 class FtrSwitchGrid {
@@ -16,15 +17,10 @@ public:
     void reset();
 };
 
-// small 4-slot table
-struct Unk_0205276c_Slot {
-    u8 lo : 4;
-    u8 hi : 4;
-};
 
 class GyroidBeatTable {
 public:
-    /* 0x0 */ Unk_0205276c_Slot positions[4];
+    /* 0x0 */ NibblePair positions[4];
     /* 0x4 */ u8 usedMask[1];
     /* 0x5 */ u8 beats[2];
     GyroidBeatTable();

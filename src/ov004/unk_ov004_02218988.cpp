@@ -1,7 +1,7 @@
 // mwcc-version: 1.2/base
 // mwcc-flags: -str reuse
 #include "types.h"
-#include "actor/Unk_ov004_SceneEntry.h"
+#include "actor/ActorProfile.h"
 #include "npc/VillagerClothModel.h"
 #include "npc/VillagerMood.h"
 #include "snd/SndSeEmitter.h"
@@ -26,6 +26,7 @@
 #include "actor/VillagerActor.h"
 #include "talk/ActorTalkRequest.h"
 #include "talk/VillagerTalk.h"
+#include "talk/TalkTopicMsg.h"
 
 class FleaMarketBuyerVillagerTalk;
 class FleaMarketBuyerVillager;
@@ -79,11 +80,6 @@ struct Unk_ov004_0224c740_Ent {
 struct Unk_ov004_0224c7d0_Ent {
     Unk_ov004_0224c7d0_Fn a;
     Unk_ov004_0224c7d0_Fn b;
-};
-
-struct Unk_ov004_022191f8_Out {
-    u32 fileName;
-    u8 msgIndex;
 };
 
 struct Unk_ov004_02218cdc_Rec {
@@ -322,7 +318,7 @@ public:
 
 // ---------------------------------------------------------------------------------------------------------------------
 extern "C" FleaMarketBuyerVillager *FleaMarketBuyerVillager_Create();
-extern "C" Unk_ov004_SceneEntry sFleaMarketBuyerVillagerProfile = {(void *(*)())FleaMarketBuyerVillager_Create, 0x87, 0x8b, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" ActorProfile sFleaMarketBuyerVillagerProfile = {(void *(*)())FleaMarketBuyerVillager_Create, 0x87, 0x8b, 2, 0x5000, 0x5000, 0x3e800};
 extern "C" {
 u8 data_ov004_02250828[0x28];
 u8 data_ov004_022507b0[0x28];
@@ -947,7 +943,7 @@ void FleaMarketBuyerVillagerTalk::completePurchase() {
 }
 
 void FleaMarketBuyerVillagerTalk::start(TalkStartMsg *arg) {
-    Unk_ov004_022191f8_Out *out = (Unk_ov004_022191f8_Out *)arg;
+    TalkTopicMsg *out = (TalkTopicMsg *)arg;
     u16 tmp;
     void *q = PlayerData_getPlayerId(PlayerData_GetCurrent());
     void *o = Villager_FindOrCreateMemory(villager->villagerData, q);

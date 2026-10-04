@@ -1,5 +1,6 @@
 #include "types.h"
 #include "net/CommManager.h"
+#include "game/NibblePair.h"
 #include "room/Unk_0209c41c_Actor.h"
 
 // TU185: 0x0209c3e0-0x0209c4a8. Three flag bytes in .bss (autoload_3 0x021d7274-0x021d7278) and their accessors.
@@ -23,7 +24,7 @@ extern "C" BOOL RoomObjSync_ChangeState(Unk_0209c41c_Actor *self, u8 v) {
             u8 idx = *((u8 *)self + 0xea);
             if (idx < 3) {
                 if (gCommManager->isOnline()) {
-                    Unk_0209c41c_Pack pk;
+                    NibblePair pk;
                     pk.lo = idx;
                     pk.hi = v;
                     CommManager *g = gCommManager;

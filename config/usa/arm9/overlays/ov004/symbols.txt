@@ -1169,7 +1169,7 @@ _ZN28FleaMarketSellerVillagerTalk12onMessageEndEv kind:function(thumb,size=0x2) 
 _ZN28FleaMarketSellerVillagerTalk12onMessageEndEj kind:label(thumb) addr:0x02217dfc
 _ZN24FleaMarketSellerVillager18onTalkMelodyPlayedEv kind:function(thumb,size=0xc) addr:0x02217e00
 _ZN24FleaMarketSellerVillager17canPlayTalkMelodyEv kind:function(thumb,size=0x2c) addr:0x02217e0c
-_ZN28FleaMarketSellerVillagerTalk5startEP22Unk_ov004_0224c4e4_Out kind:function(thumb,size=0x2a8) addr:0x02217e38
+_ZN28FleaMarketSellerVillagerTalk5startEP12TalkTopicMsg kind:function(thumb,size=0x2a8) addr:0x02217e38
 _ZN28FleaMarketSellerVillagerTalk5startEP12TalkStartMsg kind:label(thumb) addr:0x02217e38
 _ZN28FleaMarketSellerVillagerTalk13sellFurnitureEv kind:function(thumb,size=0xe4) addr:0x022180e0
 _ZN28FleaMarketSellerVillagerTalk11attachOwnerEP24FleaMarketSellerVillager kind:function(thumb,size=0x28) addr:0x022181c4
@@ -1311,7 +1311,7 @@ _ZN16SickVillagerTalk12onMessageEndEv kind:function(thumb,size=0x164) addr:0x022
 _ZN16SickVillagerTalk12onMessageEndEj kind:label(thumb) addr:0x0221ad80
 _ZN16SickVillagerTalk14onMessageStartEv kind:function(thumb,size=0x38) addr:0x0221aee4
 _ZN16SickVillagerTalk14onMessageStartEj kind:label(thumb) addr:0x0221aee4
-_ZN16SickVillagerTalk5startEP22Unk_ov004_0221af1c_Out kind:function(thumb,size=0xa8) addr:0x0221af1c
+_ZN16SickVillagerTalk5startEP12TalkTopicMsg kind:function(thumb,size=0xa8) addr:0x0221af1c
 _ZN16SickVillagerTalk5startEP12TalkStartMsg kind:label(thumb) addr:0x0221af1c
 _ZN16SickVillagerTalk6updateEv kind:function(thumb,size=0xa0) addr:0x0221afc4
 _ZN16SickVillagerTalk10onTaskDoneEj kind:function(thumb,size=0x18) addr:0x0221b064
@@ -1345,7 +1345,7 @@ _ZN14SpNpcSableTalk8onChoiceEv kind:function(thumb,size=0x2) addr:0x0221b6cc
 _ZN14SpNpcSableTalk8onChoiceEj kind:label(thumb) addr:0x0221b6cc
 _ZN14SpNpcSableTalk12onMessageEndEv kind:function(thumb,size=0x2) addr:0x0221b6d0
 _ZN14SpNpcSableTalk12onMessageEndEj kind:label(thumb) addr:0x0221b6d0
-_ZN14SpNpcSableTalk5startEP22Unk_ov004_0221b6d4_Out kind:function(thumb,size=0x1b4) addr:0x0221b6d4
+_ZN14SpNpcSableTalk5startEP12TalkTopicMsg kind:function(thumb,size=0x1b4) addr:0x0221b6d4
 _ZN14SpNpcSableTalk5startEP12TalkStartMsg kind:label(thumb) addr:0x0221b6d4
 _ZN14SpNpcSableTalk11attachOwnerEP24Unk_ov004_0221b6d4_Owner kind:function(thumb,size=0x1a) addr:0x0221b888
 _ZN14SpNpcSableTalkD0Ev kind:function(thumb,size=0x20) addr:0x0221b8a4

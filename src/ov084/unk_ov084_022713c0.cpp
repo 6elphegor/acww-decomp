@@ -24,7 +24,7 @@
 #include "actor/SpNpcActor.h"
 #include "talk/ActorTalkRequest.h"
 #include "talk/SpNpcTalkRequest.h"
-#include "actor/Unk_ov004_SceneEntry.h"
+#include "actor/ActorProfile.h"
 
 #pragma opt_loop_invariants off
 
@@ -173,7 +173,7 @@ extern "C" char sSpNpcTortimerFireworksFortuneStrKey[];
 extern "C" char sSpNpcTortimerFireworksFortuneStr2Key[];
 extern "C" u32 data_ov084_02271d44 = 0xe;
 extern "C" u8 sSpNpcTortimerFireworksTexturePath[] = {'n','p','c','_','s','p','/','m','o','d','e','l','/','t','t','l','_','t','e','x','.','n','s','b','t','x',0};
-extern "C" Unk_ov004_SceneEntry sSpNpcTortimerFireworksProfile = {(void *(*)())SpNpcTortimerFireworks_Create, 0x5a, 0x61, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" ActorProfile sSpNpcTortimerFireworksProfile = {(void *(*)())SpNpcTortimerFireworks_Create, 0x5a, 0x61, 2, 0x5000, 0x5000, 0x3e800};
 extern "C" char sSpNpcTortimerFireworksFortuneStrKey[] = "st_fortune";
 extern "C" const Unk_ov084_02271478_Ent sSpNpcTortimerFireworksFortuneLines[4] = {
     {sSpNpcTortimerFireworksFortuneStrKey, 0}, {sSpNpcTortimerFireworksFortuneStr2Key, 1}, {sSpNpcTortimerFireworksFortuneStr2Key, 2}, {sSpNpcTortimerFireworksFortuneStr2Key, 3},

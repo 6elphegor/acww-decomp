@@ -22,6 +22,7 @@
 #include "talk/MsgTextLabel.h"
 #include "talk/MsgString.h"
 #include "talk/MsgString33.h"
+#include "sys/ProcProfile.h"
 
 inline void *operator new(unsigned long, void *p) { return p; }
 
@@ -369,12 +370,6 @@ struct Unk_020082a8 {
     ~Unk_020082a8();
 };
 
-// scene registration record
-struct Unk_020e29e0_Rec {
-    void *unk_00;
-    s16 unk_04;
-    s16 unk_06;
-};
 
 extern Unk_020082a8 gU8None;
 extern Unk_020082a8 gTalkMsgIndexNone;
@@ -383,7 +378,7 @@ extern const u8 sColorTags[10][7];
 extern const u32 sBmgMsgAttrTableA[25];
 extern const u32 sBmgMsgAttrTableB[25];
 extern const u32 sBmgMsgAttrTableC[25];
-extern Unk_020e29e0_Rec sMsgUiProcProfile;
+extern ProcProfile sMsgUiProcProfile;
 
 class MsgString;
 
@@ -2053,7 +2048,7 @@ Unk_020082a8 gTalkMsgIndexNone(0xff);
 const u32 sBmgMsgAttrTableA[25] = {0, 0, 0, 0, 0, 0, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6};
 const u32 sBmgMsgAttrTableB[25] = {0, 0, 1, 1, 2, 2, 1, 0, 1, 2, 0, 2, 1, 0, 1, 0, 1, 0, 0, 1, 1, 0, 0, 1, 1};
 Unk_020082a8 gTalkMsgIndexEnd(0xfe);
-Unk_020e29e0_Rec sMsgUiProcProfile = {(void *)MsgUiProc_Create, 0xc9, 0xc7};
+ProcProfile sMsgUiProcProfile = {(void *(*)())MsgUiProc_Create, 0xc9, 0xc7};
 BmgDatHeader sBmgDatHeader;
 
 void MsgQuery::onTag(u8 *cmd) {

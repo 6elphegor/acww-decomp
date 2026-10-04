@@ -1,17 +1,12 @@
 #include "types.h"
 #include "item/ItemId.h"
 #include "player/PlayerData.h"
+#include "net/CommManager.h"
 
 
 struct Unk_02097ac4 {
     u8 pad[0x9f8];
     s32 wallet;
-};
-
-struct Unk_020973e4_Pl {
-    u8 pad[0x64];
-    u32 myAid;
-    u32 localSlot;
 };
 
 
@@ -27,7 +22,7 @@ extern "C" {
 extern u8 gSavePlayers[];
 extern u8 data_021e935c[];
 extern u8 gSaveDressers[];
-extern Unk_020973e4_Pl *gCommManager;
+extern CommManager *gCommManager;
 
 s32 PlayerData_IsResidentIndex(u32 idx);
 s32 PlayerDataArray_IsUsed(u8 *base, s32 idx);

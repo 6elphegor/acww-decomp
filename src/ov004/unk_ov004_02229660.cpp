@@ -3,8 +3,8 @@
 // (RoomTelephone::onChoice) needs mwcc 1.2/base and is in the _switch file (object order).
 #include "types.h"
 #include "room/RoomTelephoneActEntry.h"
-#include "gfx/Unk_ov004_Quad.h"
-#include "actor/Unk_ov004_SceneEntry.h"
+#include "gfx/DebugColor.h"
+#include "actor/ActorProfile.h"
 #include "actor/CharacterListNode.h"
 #include "game/Unk_ov004_02224ee4_Vec.h"
 #include "room/RoomTelephoneTypes.h"
@@ -220,12 +220,12 @@ RoomTelephone *RoomTelephone_Create();
 
 // ---------------------------------------------------------------- data
 // The six 4-byte objects and the state table are initialised by __sinit_ov004_022475a0 in this order.
-extern "C" Unk_ov004_Quad data_ov004_02251294(0x1f, 0x14, 0x14, 0x1f);
-extern "C" Unk_ov004_Quad data_ov004_02251284(0x14, 0x14, 0x1f, 0x1f);
-extern "C" Unk_ov004_Quad data_ov004_0225128c(0x1f, 0x1f, 0x14, 0x1f);
-extern "C" Unk_ov004_Quad data_ov004_02251280(0x14, 0x1f, 0x14, 0x1f);
-extern "C" Unk_ov004_Quad data_ov004_0225127c(0x14, 0x1f, 0x1f, 0x1f);
-extern "C" Unk_ov004_Quad data_ov004_02251290(0x14, 0x18, 0x18, 0x1f);
+extern "C" DebugColor data_ov004_02251294(0x1f, 0x14, 0x14, 0x1f);
+extern "C" DebugColor data_ov004_02251284(0x14, 0x14, 0x1f, 0x1f);
+extern "C" DebugColor data_ov004_0225128c(0x1f, 0x1f, 0x14, 0x1f);
+extern "C" DebugColor data_ov004_02251280(0x14, 0x1f, 0x14, 0x1f);
+extern "C" DebugColor data_ov004_0225127c(0x14, 0x1f, 0x1f, 0x1f);
+extern "C" DebugColor data_ov004_02251290(0x14, 0x18, 0x18, 0x1f);
 
 // State table: {function run on entering the state, function run every frame}.
 extern "C" RoomTelephoneActEntry sRoomTelephoneActTable[15] = {
@@ -264,7 +264,7 @@ char sRoomTelephoneArcPath[] = "/roomObj/obj_telephone.arc";
 char sRoomTelephoneTexPath[] = "/roomObj/obj_telephone.nsbtx";
 RoomTelephone *volatile sRoomTelephone;
 }
-extern "C" Unk_ov004_SceneEntry sRoomTelephoneProfile = { (void *(*)())RoomTelephone_Create, 0x2d, 0x33, 0, 0xc8000, 0x12c000, 0x258000 };
+extern "C" ActorProfile sRoomTelephoneProfile = { (void *(*)())RoomTelephone_Create, 0x2d, 0x33, 0, 0xc8000, 0x12c000, 0x258000 };
 
 // ---------------------------------------------------------------- 0x02229660
 extern "C" void RoomTelephone_PlayAnimHold() {

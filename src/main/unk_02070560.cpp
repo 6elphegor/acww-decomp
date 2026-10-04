@@ -12,6 +12,7 @@
 #include "room/HouseData.h"
 #include "save/SaveData.h"
 #include "town/TownBlockMap.h"
+#include "net/CommManager.h"
 
 // U125: design (pattern) storage and display helpers, 0x02070560-0x020720f8
 
@@ -26,11 +27,6 @@ extern "C" BOOL _ZN8PlayerId6equalsEPS_(Unk_020942c8 *self, Unk_020942c8 *o);
 
 // ======== types of unk_0206fe80.cpp ========
 
-// ======== types of unk_02070790.cpp ========
-struct Unk_02070790_Game {
-    u8 pad[0x64];
-    s32 myAid;
-};
 struct Unk_02070e4c_Bits {
     u32 a : 4;
     u32 b : 10;
@@ -1218,7 +1214,7 @@ static inline BOOL Unk_02070fbc_In(volatile u16 *p, u32 lo, u32 hi) {
     return r;
 }
 extern "C" {
-extern Unk_02070790_Game *gCommManager;
+extern CommManager *gCommManager;
 }
 extern "C" {
 extern u8 gSaveVillagers[];
@@ -1490,7 +1486,7 @@ extern "C" BOOL PatternSrc_Copy(u32 a, u32 b, u32 c, u32 d, u32 e) {
             bits.d = d;
             bits.e = 0;
             bits.f = 0;
-            Unk_02070790_Game *g = gCommManager;
+            CommManager *g = gCommManager;
             _ZN11CommManager11beginRecordEv(g);
             _ZN11CommManager11writeRecordEPhj(g, &bits, 4);
             _ZN11CommManager9endRecordEjj(g, 0x15, 4);
@@ -1499,7 +1495,7 @@ extern "C" BOOL PatternSrc_Copy(u32 a, u32 b, u32 c, u32 d, u32 e) {
     return TRUE;
 }
 extern "C" s32 PatternSrc_ResolveKind(s32 t) {
-    Unk_02070790_Game *g = gCommManager;
+    CommManager *g = gCommManager;
     if (_ZN11CommManager8isOnlineEv(g) && t == 9) {
         return g->myAid;
     }
@@ -1528,7 +1524,7 @@ extern "C" BOOL PatternSrc_Swap(u32 a, u32 b, u32 c, u32 d, u32 e) {
             bits.d = d;
             bits.e = 1;
             bits.f = 0;
-            Unk_02070790_Game *g = gCommManager;
+            CommManager *g = gCommManager;
             _ZN11CommManager11beginRecordEv(g);
             _ZN11CommManager11writeRecordEPhj(g, &bits, 4);
             _ZN11CommManager9endRecordEjj(g, 0x15, 4);

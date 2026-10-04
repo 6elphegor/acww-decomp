@@ -2,7 +2,7 @@
 // ov003 TU06 (actor 02231168): .text 0x02214ce0-0x02214dfc
 #include "types.h"
 #include "field/Unk_ov003_02214494_Views.h"
-#include "actor/Unk_ov003_SceneEntry.h"
+#include "actor/ActorProfile.h"
 #include "game/Unk_ov003_Vec.h"
 #include "talk/TalkWindowState.h"
 #include "sys/ProcBase.h"
@@ -74,7 +74,7 @@ public:
 
 extern "C" void GracieCar_Create();
 extern "C" u32 sGracieCarVisitorProfile = 0x6c;
-extern "C" Unk_ov003_SceneEntry sGracieCarProfile = { (void *(*)())GracieCar_Create, 0x29, 0x2f, 0, 0xc8000, 0x12c000, 0x258000 };
+extern "C" ActorProfile sGracieCarProfile = { (void *(*)())GracieCar_Create, 0x29, 0x2f, 0, 0xc8000, 0x12c000, 0x258000 };
 
 static inline BOOL Unk_ov003_02214ce0_Chk(void *m) {
     if (Event_GetState(0x40, m, 0)) {

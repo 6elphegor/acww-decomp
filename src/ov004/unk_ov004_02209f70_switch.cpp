@@ -61,9 +61,6 @@
 typedef Vec3 Unk_ov004_Vec3;
 typedef Vec3 Unk_ov004_022077a4_Vec3;
 typedef Vec3 Unk_ov004_02208284_V3;
-typedef Mtx43 Unk_ov004_02208284_M;
-typedef Mtx43 Unk_ov004_022077a4_Mtx;
-typedef Mtx43 Unk_ov004_02205eb0_Mtx;
 
 
 // ================================================================ library chain (as tu01, but slot 08/14 as this class overrides them)

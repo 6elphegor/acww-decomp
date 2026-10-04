@@ -28,7 +28,8 @@
 #include "actor/SpNpcActor.h"
 #include "talk/ActorTalkRequest.h"
 #include "talk/SpNpcTalkRequest.h"
-#include "actor/Unk_ov004_SceneEntry.h"
+#include "actor/ActorProfile.h"
+#include "gfx/DebugColor.h"
 
 
 class ActorTalkRequest;
@@ -196,17 +197,6 @@ struct Unk_ov088_02272144_Ent {
     BOOL (SpNpcShrunk::*exit)();
 };
 
-struct Unk_ov088_Rgba {
-    u8 r, g, b, a;
-    Unk_ov088_Rgba(u8 r_, u8 g_, u8 b_, u8 a_) {
-        r = r_;
-        g = g_;
-        b = b_;
-        a = a_;
-    }
-};
-
-
 extern "C" SpNpcShrunk *SpNpcShrunk_Create();
 
 typedef void (SpNpcShrunkTalk::*Unk_ov088_02272618_Fn)();
@@ -247,11 +237,11 @@ extern u8 sSpNpcShrunkTexturePath[];
 }
 
 // Definition order is the original creation order (see notes.txt).
-extern "C" Unk_ov088_Rgba data_ov088_022727b4(31, 20, 20, 31);
-extern "C" Unk_ov088_Rgba data_ov088_022727a8(20, 20, 31, 31);
-extern "C" Unk_ov088_Rgba data_ov088_022727a4(31, 31, 20, 31);
+extern "C" DebugColor data_ov088_022727b4(31, 20, 20, 31);
+extern "C" DebugColor data_ov088_022727a8(20, 20, 31, 31);
+extern "C" DebugColor data_ov088_022727a4(31, 31, 20, 31);
 extern "C" void *data_ov088_02272570[2] = {(void *)_ZN15SpNpcShrunkTalk23scriptOpenEmotionChoiceEv, 0};
-extern "C" Unk_ov088_Rgba data_ov088_022727a0(20, 31, 20, 31);
+extern "C" DebugColor data_ov088_022727a0(20, 31, 20, 31);
 extern "C" void *data_ov088_02272528[2] = {(void *)_ZN11SpNpcShrunk9mainAct02Ev, 0};
 extern "C" void *data_ov088_02272580[2] = {(void *)_ZN11SpNpcShrunk9mainAct03Ev, 0};
 extern "C" void *data_ov088_02272550[2] = {(void *)_ZN11SpNpcShrunk10setupAct04Ev, 0};
@@ -260,11 +250,11 @@ extern "C" void *data_ov088_02272540[2] = {(void *)_ZN11SpNpcShrunk9mainAct01Ev,
 extern "C" void *data_ov088_02272578[2] = {(void *)_ZN11SpNpcShrunk9mainAct00Ev, 0};
 extern "C" u8 sSpNpcShrunkModelPath[] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 'u', 'p', 'a', '.', 'n', 's', 'b', 'm', 'd', 0};
 extern "C" void *data_ov088_02272568[2] = {(void *)_ZN11SpNpcShrunk10setupAct00Ev, 0};
-extern "C" Unk_ov088_Rgba data_ov088_022727b0(20, 31, 31, 31);
-extern "C" Unk_ov004_SceneEntry sSpNpcShrunkProfile = {(void *(*)())SpNpcShrunk_Create, 0x62, 0x69, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" DebugColor data_ov088_022727b0(20, 31, 31, 31);
+extern "C" ActorProfile sSpNpcShrunkProfile = {(void *(*)())SpNpcShrunk_Create, 0x62, 0x69, 2, 0x5000, 0x5000, 0x3e800};
 extern "C" void *data_ov088_02272520[2] = {(void *)_ZN11SpNpcShrunk10setupAct02Ev, 0};
 extern "C" void *data_ov088_02272548[2] = {(void *)_ZN15SpNpcShrunkTalk26scriptCheckTriggerReactionEv, 0};
-extern "C" Unk_ov088_Rgba data_ov088_022727ac(20, 24, 24, 31);
+extern "C" DebugColor data_ov088_022727ac(20, 24, 24, 31);
 extern "C" void *data_ov088_02272538[2] = {(void *)_ZN15SpNpcShrunkTalk17scriptFirstLessonEv, 0};
 
 Unk_ov088_022725d4_Ent sSpNpcShrunkTalkScripts[5] = {

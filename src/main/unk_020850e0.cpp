@@ -1,4 +1,5 @@
 #include "types.h"
+#include "npc/VillagerId.h"
 #include "save/Unk_02085810_Rec.h"
 #include "save/ContestRecord.h"
 #include "game/GroundInfo.h"
@@ -42,7 +43,7 @@ extern "C" {
 void *_ZN13ContestRecord17getHolderVillagerEv(void *self);
 void _ZN13ContestRecord15getHolderPlayerEv(void *self);
 void _ZN13ContestRecord15setHolderPlayerEP17Unk_02085810_Base(void *self, void *src);
-void _ZN13ContestRecord17setHolderVillagerEP16Unk_02085810_Rec(void *self, void *src);
+void _ZN13ContestRecord17setHolderVillagerEP10VillagerId(void *self, void *src);
 void _ZN13ContestRecord10resetTodayEv(void *self);
 void MI_CpuFill8(void *p, u32 v, u32 n);
 s32 MI_CpuCopy8(void *, void *, s32);
@@ -141,15 +142,15 @@ void ContestRecord::setHolderPlayer(Unk_02085810_Base *src) { holderPlayer = *sr
 
 void ContestRecord::getHolderPlayer() {}
 
-void ContestRecord::setHolderVillager(Unk_02085810_Rec *src) { holderVillager = *src; _ZN8PlayerId5clearEv(this); }
+void ContestRecord::setHolderVillager(VillagerId *src) { holderVillager = *src; _ZN8PlayerId5clearEv(this); }
 
-Unk_02085810_Rec *ContestRecord::getHolderVillager() { return &holderVillager; }
+VillagerId *ContestRecord::getHolderVillager() { return &holderVillager; }
 
 void ContestRecord::clearVotedVillager() { VillagerId_Clear(&votedVillager); }
 
-void ContestRecord::setVotedVillager(Unk_02085810_Rec *src) { votedVillager = *src; }
+void ContestRecord::setVotedVillager(VillagerId *src) { votedVillager = *src; }
 
-Unk_02085810_Rec *ContestRecord::getVotedVillager() { return &votedVillager; }
+VillagerId *ContestRecord::getVotedVillager() { return &votedVillager; }
 
 extern "C" void ContestRecord_SetItem(ContestRecord *o, u16 *in) { o->item = *in; }
 
@@ -435,7 +436,7 @@ extern "C" void ContestRecord_JudgeGardens(void *self)
             } else {
                 void *o = SaveVillagers_Get(gSaveVillagers, Random_PickSetBit(mask, cnt, 8));
                 if (o != NULL && _ZN10VillagerId7isValidEv(_ZN12VillagerData13getVillagerIdEv(o)) != 0) {
-                    _ZN13ContestRecord17setHolderVillagerEP16Unk_02085810_Rec(self, _ZN12VillagerData13getVillagerIdEv(o));
+                    _ZN13ContestRecord17setHolderVillagerEP10VillagerId(self, _ZN12VillagerData13getVillagerIdEv(o));
                 }
             }
         }

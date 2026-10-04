@@ -1,4 +1,5 @@
 #include "types.h"
+#include "game/NibblePair.h"
 #include "room/Unk_0209c41c_Actor.h"
 
 // TU184: 0x0209c390-0x0209c3e0. Two state bytes in .bss (autoload_3 0x021d726c-0x021d7274).
@@ -13,7 +14,7 @@ BOOL RoomObjSync_SetState(u32 idx, u8 v);
 u8 gSoftResetRequested;
 u8 sSoftResetHeld;
 
-extern "C" BOOL RoomObjSync_OnRecv(Unk_0209c3cc_Nib *p) {
+extern "C" BOOL RoomObjSync_OnRecv(NibblePair *p) {
     return RoomObjSync_SetState(p->lo, p->hi);
 }
 

@@ -25,7 +25,7 @@
 #include "actor/SpNpcActor.h"
 #include "talk/ActorTalkRequest.h"
 #include "talk/SpNpcTalkRequest.h"
-#include "actor/Unk_ov004_SceneEntry.h"
+#include "actor/ActorProfile.h"
 
 
 class ActorTalkRequest;
@@ -107,7 +107,7 @@ u32 Insect_GetSpawnTable(u32 v);
 s32 InsectPick_PickAnyHour(u16 *a, s32 *b, s32 *c, s32 d, void *tbl, s32 *arr, s32 cnt);
 s32 SaveVillagers_PickRandomExcept(void *p, u32 a, u32 b);
 void *_ZN12VillagerData13getVillagerIdEv();
-void _ZN13ContestRecord17setHolderVillagerEP16Unk_02085810_Rec(void *g, void *p);
+void _ZN13ContestRecord17setHolderVillagerEP10VillagerId(void *g, void *p);
 void ThreeLayerAnimModel_AssignJointsToLayer2(void *p, s32 a, s32 b);
 void _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(void *p, void *owner, s32 a, s32 b, s32 s0, s32 s1, s32 s2, s32 s3);
 BOOL _ZN11NpcTalkCtrl6isBusyEv(void *self);
@@ -233,7 +233,7 @@ extern "C" void *data_ov081_02272078[2];
 extern "C" void *data_ov081_02272080[2];
 extern "C" void *data_ov081_02272088[2];
 extern "C" void *data_ov081_02272090[2];
-extern "C" Unk_ov004_SceneEntry sSpNpcTortimerFishingTourneyProfile;
+extern "C" ActorProfile sSpNpcTortimerFishingTourneyProfile;
 
 // ---------------------------------------------------------------------------------------------------------------------
 SpNpcTortimerFishingTourney *SpNpcTortimerFishingTourney_Create() {
@@ -279,7 +279,7 @@ BOOL SpNpcTortimerFishingTourney::onCreate() {
         entrySize = Contest_GetCatchSize(&l.a);
         _ZN13ContestRecord7setSizeEi(g, *(volatile s32 *)&entrySize);
         if (SaveVillagers_PickRandomExcept(gSaveVillagers, 0, 0) != 0) {
-            _ZN13ContestRecord17setHolderVillagerEP16Unk_02085810_Rec(g, _ZN12VillagerData13getVillagerIdEv());
+            _ZN13ContestRecord17setHolderVillagerEP10VillagerId(g, _ZN12VillagerData13getVillagerIdEv());
             _ZN13ContestRecord7setKindEj(g, 1);
             _ZN8SaveData7setFlagEj(gSaveData, 0xf);
         }
@@ -351,7 +351,7 @@ void SpNpcTortimerFishingTourneyTalk::onTaskDone(u32) {
     }
 }
 
-extern "C" Unk_ov004_SceneEntry sSpNpcTortimerFishingTourneyProfile;
+extern "C" ActorProfile sSpNpcTortimerFishingTourneyProfile;
 
 
 
@@ -361,7 +361,7 @@ extern "C" void *data_ov081_02272078[2] = {(void *)_ZN27SpNpcTortimerFishingTour
 
 extern "C" void *data_ov081_02272070[2] = {(void *)_ZN31SpNpcTortimerFishingTourneyTalk17scriptCatchChosenEv, 0};
 
-extern "C" Unk_ov004_SceneEntry sSpNpcTortimerFishingTourneyProfile = {(void *(*)())SpNpcTortimerFishingTourney_Create, 0x57, 0x5e, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" ActorProfile sSpNpcTortimerFishingTourneyProfile = {(void *(*)())SpNpcTortimerFishingTourney_Create, 0x57, 0x5e, 2, 0x5000, 0x5000, 0x3e800};
 
 void SpNpcTortimerFishingTourneyTalk::pickScript(Fn *slot, s32 i) {
     static Fn tbl[2] = {*(Fn *)data_ov081_02272070, *(Fn *)data_ov081_02272068};

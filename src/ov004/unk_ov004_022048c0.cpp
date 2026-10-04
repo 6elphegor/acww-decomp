@@ -1,6 +1,6 @@
 // mwcc-version: 1.2/sp2
 #include "types.h"
-#include "actor/Unk_ov004_SceneEntry.h"
+#include "actor/ActorProfile.h"
 #include "actor/ActorListNode.h"
 #include "actor/CharacterListNode.h"
 #include "game/Vec3.h"
@@ -200,7 +200,7 @@ extern "C" char *sAtmStringBankPtr;
 extern "C" char sAtmMsgFile[12];
 extern "C" char *sAtmMsgFilePtr;
 extern "C" char sAtmStringBank[8];
-extern "C" Unk_ov004_Scene_Entry sAtmProfile;
+extern "C" ActorProfile sAtmProfile;
 
 extern "C" Atm *sAtmInstance = 0;
 
@@ -212,7 +212,7 @@ extern "C" char *sAtmMsgFilePtr = sAtmMsgFile;
 
 extern "C" char sAtmStringBank[8] = "st_atm";
 
-extern "C" Unk_ov004_Scene_Entry sAtmProfile = {(void *(*)())Atm_Create, 0x2c, 0x32, 0, 0xc8000, 0x12c000, 0x258000};
+extern "C" ActorProfile sAtmProfile = {(void *(*)())Atm_Create, 0x2c, 0x32, 0, 0xc8000, 0x12c000, 0x258000};
 
 BOOL Atm::setTalkAct(s32 m) {
     static Unk_02204b04_Fn tbl[3] = { (Unk_02204b04_Fn)&Atm::enterTalkAct00, (Unk_02204b04_Fn)&Atm::enterTalkAct01, (Unk_02204b04_Fn)&Atm::enterTalkAct02 };

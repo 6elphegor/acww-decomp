@@ -6,6 +6,7 @@
 #include "gfx/Mtx43.h"
 #include "field/Unk_ov003_02217910_V3D.h"
 #include "gfx/Model.h"
+#include "gfx/DebugColor.h"
 
 // TU17 of ov003: ground helper free functions 0x02217908..0x02217b10 and the six colour constants of its header
 
@@ -50,16 +51,6 @@ struct Unk_ov003_02217a84_Sub {
 };
 
 // 4-byte colour constructors (unreferenced except by __sinit)
-struct Unk_ov003_02235460_Col {
-    u8 r, g, b, a;
-    Unk_ov003_02235460_Col(u8 r_, u8 g_, u8 b_, u8 a_) {
-        r = r_;
-        g = g_;
-        b = b_;
-        a = a_;
-    }
-};
-
 extern "C" {
 extern void *gSceneBlockMap;
 extern void *gCamera;
@@ -75,12 +66,12 @@ extern "C" {
 }
 
 extern "C" {
-Unk_ov003_02235460_Col data_ov003_02235460(31, 20, 20, 31);
-Unk_ov003_02235460_Col data_ov003_02235474(20, 20, 31, 31);
-Unk_ov003_02235460_Col data_ov003_02235470(31, 31, 20, 31);
-Unk_ov003_02235460_Col data_ov003_0223546c(20, 31, 20, 31);
-Unk_ov003_02235460_Col data_ov003_02235468(20, 31, 31, 31);
-Unk_ov003_02235460_Col data_ov003_02235464(20, 24, 24, 31);
+DebugColor data_ov003_02235460(31, 20, 20, 31);
+DebugColor data_ov003_02235474(20, 20, 31, 31);
+DebugColor data_ov003_02235470(31, 31, 20, 31);
+DebugColor data_ov003_0223546c(20, 31, 20, 31);
+DebugColor data_ov003_02235468(20, 31, 31, 31);
+DebugColor data_ov003_02235464(20, 24, 24, 31);
 // Data order: this unit is placed object by object (see object_order.txt).
 }
 

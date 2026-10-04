@@ -240,8 +240,7 @@ _ZN18SpNpcNookIntroTalk8onChoiceEv kind:function(thumb,size=0x2) addr:0x02266e08
 _ZN18SpNpcNookIntroTalk8onChoiceEj kind:label(thumb) addr:0x02266e08
 _ZN18SpNpcNookIntroTalk12onMessageEndEv kind:function(thumb,size=0x124) addr:0x02266e0c
 _ZN18SpNpcNookIntroTalk12onMessageEndEj kind:label(thumb) addr:0x02266e0c
-_ZN18SpNpcNookIntroTalk5startEP22Unk_ov068_02266f30_Out kind:function(thumb,size=0x28) addr:0x02266f30
-_ZN18SpNpcNookIntroTalk5startEP12TalkStartMsg kind:label(thumb) addr:0x02266f30
+_ZN18SpNpcNookIntroTalk5startEP12TalkStartMsg kind:function(thumb,size=0x28) addr:0x02266f30
 _ZN18SpNpcNookIntroTalk11attachOwnerEP13FieldVillager kind:function(thumb,size=0x1a) addr:0x02266f58
 _ZN18SpNpcNookIntroTalkD0Ev kind:function(thumb,size=0x20) addr:0x02266f74
 _ZN18SpNpcNookIntroTalkD1Ev kind:function(thumb,size=0x18) addr:0x02266f94
@@ -461,8 +460,7 @@ _ZN19SpNpcRoostGuestTalk12onMessageEndEj kind:label(thumb) addr:0x0226cdac
 _ZN19SpNpcRoostGuestTalk14fillKkSongNameEi kind:function(thumb,size=0x84) addr:0x0226cdcc
 _ZN19SpNpcRoostGuestTalk14onMessageStartEi kind:function(thumb,size=0x20) addr:0x0226ce50
 _ZN19SpNpcRoostGuestTalk14onMessageStartEj kind:label(thumb) addr:0x0226ce50
-_ZN19SpNpcRoostGuestTalk5startEP22Unk_ov068_0226ce70_Out kind:function(thumb,size=0x200) addr:0x0226ce70
-_ZN19SpNpcRoostGuestTalk5startEP12TalkStartMsg kind:label(thumb) addr:0x0226ce70
+_ZN19SpNpcRoostGuestTalk5startEP12TalkStartMsg kind:function(thumb,size=0x200) addr:0x0226ce70
 _ZN19SpNpcRoostGuestTalk11getTalkModeEv kind:function(thumb,size=0x6) addr:0x0226d070
 _ZN19SpNpcRoostGuestTalk11setTalkModeEi kind:function(thumb,size=0x6) addr:0x0226d078
 _ZN19SpNpcRoostGuestTalk11attachOwnerEP24Unk_ov068_0226ccd4_Owner kind:function(thumb,size=0x1a) addr:0x0226d080

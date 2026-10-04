@@ -3,8 +3,8 @@
 
 
 #include "types.h"
-#include "actor/Unk_ov004_SceneEntry.h"
-#include "talk/Unk_ov004_0221b6d4_Out.h"
+#include "actor/ActorProfile.h"
+#include "talk/TalkTopicMsg.h"
 #include "net/CommManager.h"
 #include "game/Unk_ov004_0221b954_Vec.h"
 #include "talk/TalkWindowState.h"
@@ -425,7 +425,7 @@ void SpNpcSableTalk::attachOwner(Unk_ov004_0221b6d4_Owner *o) {
 }
 
 void SpNpcSableTalk::start(TalkStartMsg *out_) {
-    Unk_ov004_0221b6d4_Out *out = (Unk_ov004_0221b6d4_Out *)out_;
+    TalkTopicMsg *out = (TalkTopicMsg *)out_;
     u32 idx = SpNpcSable_GetTalkCount(owner);
     void *g = gCommManager;
     if (CommManager_isOnline(g) != 0 || *(s16 *)DebugVar_GetPtr(0, 0x4a) != 0) {
@@ -593,7 +593,7 @@ extern "C" u8 data_ov004_0224cd24[17] = {'s', 'p', '_', 'e', 't', 'c', '_', 's',
 extern "C" u32 sSpNpcSableMsgFiles[3] = {(u32)data_ov004_0224cd14, (u32)data_ov004_0224cd04, (u32)data_ov004_0224cd24};
 extern "C" u8 sSpNpcSableModelPath[23] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 'h', 'g', 's', '.', 'n', 's', 'b', 'm', 'd', 0};
 extern "C" u8 sSpNpcSableTexturePath[27] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 'h', 'g', 's', '_', 't', 'e', 'x', '.', 'n', 's', 'b', 't', 'x', 0};
-extern "C" Unk_ov004_SceneEntry sSpNpcSableProfile = {(void *(*)())SpNpcSable_Create, 0x77, 0x7c, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" ActorProfile sSpNpcSableProfile = {(void *(*)())SpNpcSable_Create, 0x77, 0x7c, 2, 0x5000, 0x5000, 0x3e800};
 extern "C" void _ZN10SpNpcSable10setupAct05Ev();
 extern "C" void _ZN10SpNpcSable9mainAct05Ev();
 extern "C" void _ZN10SpNpcSable9mainAct00Ev();

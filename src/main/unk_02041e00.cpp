@@ -300,7 +300,6 @@ s32 ChopCount_Get(FieldActionState *m, Unk_020422c0_Pos *p);
 void FieldActions_Update(u8 *p);
 void FieldActions_Init(u8 *p);
 BOOL MoneyRock_TrySpawnBagAt(MoneyRockState *self, void *m, Unk_020422c0_Pos *p);
-struct Unk_020423fc_Sz { s32 w, h; };
 void MoneyRock_SpawnBag(MoneyRockState *self, Unk_020422c0_Pos *p);
 void MoneyRock_OnHit(MoneyRockState *self, Unk_020422c0_Pos *p);
 void MoneyRock_Update(MoneyRockState *self);
@@ -802,9 +801,6 @@ struct Unk_02045d40_Ent {
 };
 struct Unk_02046a0_Ts {
     s32 w[4];
-};
-struct Unk_020463fc_Sz {
-    s32 w, h;
 };
 struct Unk_02046230_Ts {
     s32 a, b;
@@ -5268,7 +5264,7 @@ extern "C" s32 Town_WashUpBottle(void *p) {
 namespace nH {
 extern "C" void BlockMap_SpoilTurnips(void *p, TownBlockMap *q) {
     if (q != 0) {
-        Unk_020463fc_Sz *sp = (Unk_020463fc_Sz *)&q->unitsX;
+        Unk_0204da0c_Size *sp = (Unk_0204da0c_Size *)&q->unitsX;
         s32 h, j, i, w, ih;
         w = sp->w;
         h = sp->h;
@@ -8496,7 +8492,7 @@ namespace nB {
 extern "C" void MoneyRock_SpawnBag(MoneyRockState *self, Unk_020422c0_Pos *p) {
     TownBlockMap *m = (TownBlockMap *)TownBlockMap_Get();
     if (m != NULL) {
-        Unk_020423fc_Sz *sz = (Unk_020423fc_Sz *)&m->width;
+        Unk_0204da0c_Size *sz = (Unk_0204da0c_Size *)&m->width;
         s32 w = sz->w << 4;
         s32 h = sz->h << 4;
         u8 *d = sNeighborOffsets8;

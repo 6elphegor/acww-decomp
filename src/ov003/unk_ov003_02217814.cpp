@@ -1,6 +1,6 @@
 // mwcc-version: 1.2/sp2
 #include "types.h"
-#include "actor/Unk_ov003_SceneEntry.h"
+#include "actor/ActorProfile.h"
 #include "game/Unk_ov003_Vec.h"
 #include "talk/TalkWindowState.h"
 #include "sys/ProcBase.h"
@@ -70,4 +70,4 @@ BOOL GulliverShip::onDelete() {
 }
 
 extern "C" u32 sGulliverShipVisitorProfile = 0x60;
-extern "C" Unk_ov003_SceneEntry sGulliverShipProfile = {(void *(*)())GulliverShip_Create, 0x27, 0x2d, 0, 0xc8000, 0x12c000, 0x258000};
+extern "C" ActorProfile sGulliverShipProfile = {(void *(*)())GulliverShip_Create, 0x27, 0x2d, 0, 0xc8000, 0x12c000, 0x258000};

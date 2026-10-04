@@ -1,7 +1,7 @@
 // mwcc-version: 1.2/sp2
 // ov003 TU10 (actor 022318e8): .text 0x02215c74-0x02216430
 #include "types.h"
-#include "actor/Unk_ov003_SceneEntry.h"
+#include "actor/ActorProfile.h"
 #include "game/Unk_ov003_Vec.h"
 #include "gfx/AnimFrameCtrl.h"
 #include "talk/TalkWindowState.h"
@@ -185,13 +185,13 @@ VillagerHouse::VillagerHouse() {
 VillagerHouse::~VillagerHouse() {
 }// Declarations for data defined further down (definition order sets the data layout)
 extern "C" const u8 sVillagerHouseClosedMsgsAlt[8];
-extern "C" Unk_ov003_SceneEntry sVillagerHouseProfile;
+extern "C" ActorProfile sVillagerHouseProfile;
 extern "C" const u8 sVillagerHouseClosedMsgs[8];
 
 extern "C" const u8 sVillagerHouseClosedMsgsAlt[8] = { 0x0a, 0x0b, 0x0c, 0x08, 0x09, 0x0d, 0, 0 };
 extern "C" const u8 sVillagerHouseClosedMsgs[8] = { 0x10, 0x11, 0x12, 0x0e, 0x0f, 0x13, 0, 0 };
 
-extern "C" Unk_ov003_SceneEntry sVillagerHouseProfile = { (void *(*)())VillagerHouse_Create, 0x1d, 0x23, 0, 0xc8000, 0x12c000, 0x258000 };
+extern "C" ActorProfile sVillagerHouseProfile = { (void *(*)())VillagerHouse_Create, 0x1d, 0x23, 0, 0xc8000, 0x12c000, 0x258000 };
 
 BOOL VillagerHouse::initBuilding() {
     s32 idx = Unk_ov003_02215c7c_Idx(this);

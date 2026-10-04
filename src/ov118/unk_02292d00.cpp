@@ -112,7 +112,6 @@ public:
 #define A8V (*(volatile u8 *)&blinkTimer)
 #define ACV (*(volatile u8 *)&cursorTarget)
 
-typedef struct MapTab Unk_ov118_022955c8_fwd;
 class MapTab;
 typedef void (MapTab::*Unk_ov118_022955c8_Fn)();
 

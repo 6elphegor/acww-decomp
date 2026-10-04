@@ -5,6 +5,7 @@
 #include "game/Unk_ov004_0223d800_Vec.h"
 #include "item/ItemId.h"
 #include "save/MuseumData.h"
+#include "sys/ProcProfile.h"
 
 
 // Spawn-definition record (0x1c bytes).
@@ -92,11 +93,6 @@ public:
     virtual BOOL setupExhibits();
 };
 
-struct Unk_ov004_0224f078_Entry {
-    void *(*create)();
-    u16 a;
-    u16 b;
-};
 extern "C" MuseumRoom *MuseumRoom_Create();
 extern "C" MuseumRoomUnk53 *MuseumRoomUnk53_Create();
 extern "C" MuseumFossilRoom *MuseumFossilRoom_Create();
@@ -260,7 +256,7 @@ const u8 data_ov004_02244110[1] = {0x5};
 const u8 data_ov004_02244184[6] = {0xe, 0x19, 0x1e, 0x25, 0x33, 0x34};
 const u8 data_ov004_02244118[1] = {0};
 const u8 data_ov004_0224416c[4] = {0x30, 0x31, 0x32, 0x33};
-Unk_ov004_0224f078_Entry sMuseumFossilRoomProfile = {(void *(*)())MuseumFossilRoom_Create, 0x52, 0x59};
+ProcProfile sMuseumFossilRoomProfile = {(void *(*)())MuseumFossilRoom_Create, 0x52, 0x59};
 const u8 data_ov004_0224418c[6] = {0x1f, 0x27, 0x28, 0x29, 0x2a, 0x2c};
 const u8 data_ov004_02244130[1] = {0x7};
 const u8 data_ov004_02244150[3] = {0x15, 0x16, 0x17};
@@ -269,7 +265,7 @@ const u8 data_ov004_02244194[6] = {0x12, 0x13, 0x14, 0x21, 0x22, 0x26};
 const u8 data_ov004_022441d0[9] = {0, 0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8};
 const u8 data_ov004_022440d0[1] = {0x12};
 MuseumInfoPoint sMuseumFossilPoints26[12] = {MuseumInfoPoint(sMuseumFossilPointDefs26[0]), MuseumInfoPoint(sMuseumFossilPointDefs26[1]), MuseumInfoPoint(sMuseumFossilPointDefs26[2]), MuseumInfoPoint(sMuseumFossilPointDefs26[3]), MuseumInfoPoint(sMuseumFossilPointDefs26[4]), MuseumInfoPoint(sMuseumFossilPointDefs26[5]), MuseumInfoPoint(sMuseumFossilPointDefs26[6]), MuseumInfoPoint(sMuseumFossilPointDefs26[7]), MuseumInfoPoint(sMuseumFossilPointDefs26[8]), MuseumInfoPoint(sMuseumFossilPointDefs26[9]), MuseumInfoPoint(sMuseumFossilPointDefs26[10]), MuseumInfoPoint(sMuseumFossilPointDefs26[11])};
-Unk_ov004_0224f078_Entry sMuseumRoomProfile = {(void *(*)())MuseumRoom_Create, 0x51, 0x58};
+ProcProfile sMuseumRoomProfile = {(void *(*)())MuseumRoom_Create, 0x51, 0x58};
 const u8 data_ov004_022440ec[1] = {0xb};
 const u8 data_ov004_02244104[1] = {0};
 const u8 data_ov004_0224417c[6] = {0, 0x1, 0x2, 0x3, 0x4, 0x8};
@@ -325,7 +321,7 @@ const MuseumInfoPointSet sMuseumInfoPointsByScene[7] = {
 const u8 data_ov004_0224413c[2] = {0x10, 0x11};
 const u8 data_ov004_02244174[5] = {0x15, 0x16, 0x17, 0x23, 0x31};
 const u8 data_ov004_02244148[3] = {0x18, 0x19, 0x1a};
-Unk_ov004_0224f078_Entry sMuseumRoomUnk53Profile = {(void *(*)())MuseumRoomUnk53_Create, 0x53, 0x5a};
+ProcProfile sMuseumRoomUnk53Profile = {(void *(*)())MuseumRoomUnk53_Create, 0x53, 0x5a};
 const u8 data_ov004_0224419c[6] = {0x5, 0x6, 0x7, 0xf, 0x30, 0x32};
 const u8 data_ov004_0224414c[3] = {0x2d, 0x2e, 0x2f};
 const u8 data_ov004_0224410c[1] = {0x9};

@@ -1,6 +1,8 @@
 // mwcc-version: 1.2/base
 #include "types.h"
 #include "Unk_020d8c7c.h"
+#include "sys/ProcProfile.h"
+#include "gfx/DebugColor.h"
 
 // TU28 of ov003: scene 0x02234f10 (+ the camera update 0x0222ef10) and the six colour constants of its header
 struct Unk_ov003_0222ef10_Cam {
@@ -16,16 +18,6 @@ struct Unk_ov003_0222ef10_Cam {
 };
 
 // 4-byte colour constructors (unreferenced except by __sinit)
-struct Unk_ov003_0225b738_Col {
-    u8 r, g, b, a;
-    Unk_ov003_0225b738_Col(u8 r_, u8 g_, u8 b_, u8 a_) {
-        r = r_;
-        g = g_;
-        b = b_;
-        a = a_;
-    }
-};
-
 class SnowballSpawner : public GameProc {
 public:
     SnowballSpawner();
@@ -51,21 +43,16 @@ void SnowballSpawner_SpawnLooseBalls(void *self);
 SnowballSpawner *SnowballSpawner_Create();
 }
 
-// scene registration entry {factory, 0xf, 0x11}
-struct Unk_ov003_02234f00_Entry {
-    void *factory;
-    u16 a, b;
-};
 
 extern "C" {
 // Data order: this unit is placed object by object (see object_order.txt).
-Unk_ov003_02234f00_Entry sSnowballSpawnerProfile = {(void *)SnowballSpawner_Create, 0xf, 0x11};
-Unk_ov003_0225b738_Col data_ov003_0225b748(31, 20, 20, 31);
-Unk_ov003_0225b738_Col data_ov003_0225b744(20, 20, 31, 31);
-Unk_ov003_0225b738_Col data_ov003_0225b740(31, 31, 20, 31);
-Unk_ov003_0225b738_Col data_ov003_0225b73c(20, 31, 20, 31);
-Unk_ov003_0225b738_Col data_ov003_0225b738(20, 31, 31, 31);
-Unk_ov003_0225b738_Col data_ov003_0225b74c(20, 24, 24, 31);
+ProcProfile sSnowballSpawnerProfile = {(void *(*)())SnowballSpawner_Create, 0xf, 0x11};
+DebugColor data_ov003_0225b748(31, 20, 20, 31);
+DebugColor data_ov003_0225b744(20, 20, 31, 31);
+DebugColor data_ov003_0225b740(31, 31, 20, 31);
+DebugColor data_ov003_0225b73c(20, 31, 20, 31);
+DebugColor data_ov003_0225b738(20, 31, 31, 31);
+DebugColor data_ov003_0225b74c(20, 24, 24, 31);
 }
 
 // ---- functions ----

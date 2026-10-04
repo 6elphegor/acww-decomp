@@ -26,7 +26,8 @@
 #include "actor/SpNpcActor.h"
 #include "talk/ActorTalkRequest.h"
 #include "talk/SpNpcTalkRequest.h"
-#include "actor/Unk_ov004_SceneEntry.h"
+#include "actor/ActorProfile.h"
+#include "gfx/DebugColor.h"
 
 
 class ActorTalkRequest;
@@ -87,7 +88,7 @@ u32 Insect_GetSpawnTable(u32 v);
 s32 InsectPick_PickAnyHour(u16 *a, s32 *b, s32 *c, s32 d, void *tbl, s32 *arr, s32 cnt);
 s32 SaveVillagers_PickRandomExcept(void *p, u32 a, u32 b);
 void *_ZN12VillagerData13getVillagerIdEv();
-void _ZN13ContestRecord17setHolderVillagerEP16Unk_02085810_Rec(void *g, void *p);
+void _ZN13ContestRecord17setHolderVillagerEP10VillagerId(void *g, void *p);
 void ThreeLayerAnimModel_AssignJointsToLayer2(void *p, s32 a, s32 b);
 void _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(void *p, void *owner, s32 a, s32 b, s32 s0, s32 s1, s32 s2, s32 s3);
 BOOL _ZN11NpcTalkCtrl6isBusyEv(void *self);
@@ -145,17 +146,6 @@ struct Unk_ov079_Vec3 {
     s32 x, y, z;
 };
 
-struct Unk_ov079_Rgba {
-    u8 r, g, b, a;
-    Unk_ov079_Rgba(u8 r_, u8 g_, u8 b_, u8 a_) {
-        r = r_;
-        g = g_;
-        b = b_;
-        a = a_;
-    }
-};
-
-
 class SpNpcWendell : public SpNpcActor {
 public:
     SpNpcWendell() {}
@@ -201,7 +191,7 @@ extern "C" {
 extern Unk_ov079_022725f4_Ent sSpNpcWendellActTable[5];
 extern u8 sSpNpcWendellModelPath[];
 extern u8 sSpNpcWendellTexturePath[];
-extern Unk_ov004_SceneEntry sSpNpcWendellProfile;
+extern ActorProfile sSpNpcWendellProfile;
 SpNpcWendell *SpNpcWendell_Create();
 BOOL SpNpcWendell_AcceptAnyItem(u16 *p, s32 x);
 }
@@ -629,25 +619,25 @@ extern "C" void *data_ov079_02272988[2] = {(void *)_ZN16SpNpcWendellTalk15result
 
 extern "C" u8 sSpNpcWendellTexturePath[] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 'w', 'r', 'l', '_', 't', 'e', 'x', '.', 'n', 's', 'b', 't', 'x', 0};
 
-extern "C" Unk_ov004_SceneEntry sSpNpcWendellProfile = {(void *(*)())SpNpcWendell_Create, 0x6b, 0x71, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" ActorProfile sSpNpcWendellProfile = {(void *(*)())SpNpcWendell_Create, 0x6b, 0x71, 2, 0x5000, 0x5000, 0x3e800};
 
-extern "C" Unk_ov079_Rgba data_ov079_02272b80(31, 20, 20, 31);
+extern "C" DebugColor data_ov079_02272b80(31, 20, 20, 31);
 
-extern "C" Unk_ov079_Rgba data_ov079_02272b8c(20, 20, 31, 31);
+extern "C" DebugColor data_ov079_02272b8c(20, 20, 31, 31);
 
 extern "C" void *data_ov079_022729b8[2] = {(void *)_ZN12SpNpcWendell10setupAct02Ev, 0};
 
 extern "C" void *data_ov079_022729d8[2] = {(void *)_ZN12SpNpcWendell9mainAct03Ev, 0};
 
-extern "C" Unk_ov079_Rgba data_ov079_02272b94(31, 31, 20, 31);
+extern "C" DebugColor data_ov079_02272b94(31, 31, 20, 31);
 
-extern "C" Unk_ov079_Rgba data_ov079_02272b98(20, 31, 20, 31);
+extern "C" DebugColor data_ov079_02272b98(20, 31, 20, 31);
 
-extern "C" Unk_ov079_Rgba data_ov079_02272b88(20, 31, 31, 31);
+extern "C" DebugColor data_ov079_02272b88(20, 31, 31, 31);
 
 extern "C" void *data_ov079_022729c0[2] = {(void *)_ZN12SpNpcWendell9mainAct02Ev, 0};
 
-extern "C" Unk_ov079_Rgba data_ov079_02272b90(20, 24, 24, 31);
+extern "C" DebugColor data_ov079_02272b90(20, 24, 24, 31);
 
 extern "C" Unk_ov079_022725f4_Ent sSpNpcWendellActTable[5] = {
     {*(Unk_ov079_02272ac4_Fn *)data_ov079_022729d0, *(Unk_ov079_02272ac4_Fn *)data_ov079_022729a8},

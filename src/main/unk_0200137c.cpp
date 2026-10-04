@@ -1,7 +1,6 @@
 #include "types.h"
-#include "sys/Unk_02000fc0_Col.h"
+#include "sys/DebugText.h"
 #include "sys/OSThread.h"
-#include "sys/Unk_02000fc0_Cfg.h"
 #include "sys/QNode.h"
 
 typedef volatile u16 vu16;
@@ -204,11 +203,11 @@ void MIi_CpuClearFast(u32 a);
 }
 
 extern "C" {
-void DebugText_Printf(Unk_02000fc0_Col *c, u8 *dst, const char *fmt, ...);
+void DebugText_Printf(DebugText *c, u8 *dst, const char *fmt, ...);
 }
 
 extern "C" {
-void DebugText_Print(Unk_02000fc0_Col *c, u8 *dst, const char *fmt);
+void DebugText_Print(DebugText *c, u8 *dst, const char *fmt);
 }
 
 extern "C" {

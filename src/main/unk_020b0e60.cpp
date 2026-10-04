@@ -8,6 +8,7 @@
 #include "game/UnitShapeQueryX.h"
 #include "game/FxVec3.h"
 #include "town/TownUnitShapeQuery.h"
+#include "game/NibblePair.h"
 
 inline void *operator new(unsigned long, void *p) { return p; }
 
@@ -28,11 +29,6 @@ extern s32 gFrameCounter;
 extern u32 data_027e0148[];
 }
 
-
-struct NibblePair {
-    u8 lo : 4;
-    u8 hi : 4;
-};
 
 struct Bits {
     u8 a : 2;

@@ -1,7 +1,7 @@
 // mwcc-version: 1.2/base
 // mwcc-flags: -str reuse
 #include "types.h"
-#include "actor/Unk_ov004_SceneEntry.h"
+#include "actor/ActorProfile.h"
 #include "npc/VillagerClothModel.h"
 #include "npc/VillagerMood.h"
 #include "snd/SndSeEmitter.h"
@@ -26,6 +26,7 @@
 #include "actor/VillagerActor.h"
 #include "talk/ActorTalkRequest.h"
 #include "talk/VillagerTalk.h"
+#include "talk/TalkTopicMsg.h"
 
 class CafeVillager;
 
@@ -48,11 +49,6 @@ typedef BOOL (CafeVillager::*Unk_ov004_0224c994_Fn)();
 struct Unk_ov004_0224c994_Ent {
     Unk_ov004_0224c994_Fn a;
     Unk_ov004_0224c994_Fn b;
-};
-
-struct Unk_ov004_0221a2d8_Out {
-    void *fileName;
-    u8 msgIndex;
 };
 
 
@@ -126,7 +122,7 @@ public:
 
 // ---------------------------------------------------------------------------------------------------------------------
 extern "C" CafeVillager *CafeVillager_Create();
-extern "C" Unk_ov004_SceneEntry sCafeVillagerProfile = {(void *(*)())CafeVillager_Create, 0x88, 0x8c, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" ActorProfile sCafeVillagerProfile = {(void *(*)())CafeVillager_Create, 0x88, 0x8c, 2, 0x5000, 0x5000, 0x3e800};
 extern "C" {
 u8 data_ov004_022508e0[0x28];
 void _ZN12CafeVillager10setupAct00Ev();
@@ -228,9 +224,9 @@ void CafeVillagerTalk::attachOwner(CafeVillager *owner) {
 }
 
 void CafeVillagerTalk::start(TalkStartMsg *arg) {
-    Unk_ov004_0221a2d8_Out *out = (Unk_ov004_0221a2d8_Out *)arg;
+    TalkTopicMsg *out = (TalkTopicMsg *)arg;
     VillagerId_makeFileName(VillagerData_getVillagerId(villager->villagerData), data_ov004_022508e0, 0x28, "ai_shop3");
-    out->fileName = data_ov004_022508e0;
+    out->fileName = (u32)data_ov004_022508e0;
     out->msgIndex = Random_GlobalBelow(5);
 }
 

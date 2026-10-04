@@ -51,8 +51,7 @@ _ZN17SpNpcNookShopTalk19onSafeOfferDeclinedEv kind:function(thumb,size=0xa) addr
 _ZN17SpNpcNookShopTalk15giveGlamourShotEv kind:function(thumb,size=0x44) addr:0x0225a69c
 _ZN17SpNpcNookShopTalk12onMessageEndEv kind:function(thumb,size=0x1a8) addr:0x0225a6e0
 _ZN17SpNpcNookShopTalk12onMessageEndEj kind:label(thumb) addr:0x0225a6e0
-_ZN17SpNpcNookShopTalk5startEP22Unk_ov050_0225a888_Out kind:function(thumb,size=0x74c) addr:0x0225a888
-_ZN17SpNpcNookShopTalk5startEP12TalkStartMsg kind:label(thumb) addr:0x0225a888
+_ZN17SpNpcNookShopTalk5startEP12TalkStartMsg kind:function(thumb,size=0x74c) addr:0x0225a888
 _ZN17SpNpcNookShopTalk20arbeitPushPlayerBackEPv kind:function(thumb,size=0x10) addr:0x0225afd4
 _ZN17SpNpcNookShopTalk12arbeitFinishEPv kind:function(thumb,size=0x32) addr:0x0225afe4
 _ZN17SpNpcNookShopTalk16arbeitReduceLoanEPv kind:function(thumb,size=0x70) addr:0x0225b018
@@ -77,9 +76,9 @@ _ZN17SpNpcNookShopTalk17arbeitGiveUniformEPv kind:function(thumb,size=0x3c) addr
 _ZN17SpNpcNookShopTalk18onArbeitMessageEndEv kind:function(thumb,size=0x200) addr:0x0225b5a8
 _ZN13SpNpcNookShop18onTalkMelodyPlayedEv kind:function(thumb,size=0xc) addr:0x0225b7a8
 _ZN13SpNpcNookShop17canPlayTalkMelodyEv kind:function(thumb,size=0x40) addr:0x0225b7b4
-_ZN17SpNpcNookShopTalk20pickArbeitStartMsg12EP22Unk_ov050_0225b7f4_Out kind:function(thumb,size=0x5c) addr:0x0225b7f4
-_ZN17SpNpcNookShopTalk20pickArbeitStartMsg11EP22Unk_ov050_0225b7f4_Out kind:function(thumb,size=0x5c) addr:0x0225b850
-_ZN17SpNpcNookShopTalk20pickArbeitStartMsg10EP22Unk_ov050_0225b7f4_Out kind:function(thumb,size=0x5c) addr:0x0225b8ac
+_ZN17SpNpcNookShopTalk20pickArbeitStartMsg12EP12TalkStartMsg kind:function(thumb,size=0x5c) addr:0x0225b7f4
+_ZN17SpNpcNookShopTalk20pickArbeitStartMsg11EP12TalkStartMsg kind:function(thumb,size=0x5c) addr:0x0225b850
+_ZN17SpNpcNookShopTalk20pickArbeitStartMsg10EP12TalkStartMsg kind:function(thumb,size=0x5c) addr:0x0225b8ac
 _ZN17SpNpcNookShopTalk20pickArbeitStartMsg0FEP22Unk_ov050_0225b908_Out kind:function(thumb,size=0xe0) addr:0x0225b908
 _ZN17SpNpcNookShopTalk20pickArbeitStartMsg0EEP22Unk_ov050_0225b908_Out kind:function(thumb,size=0x5c) addr:0x0225b9e8
 _ZN17SpNpcNookShopTalk20pickArbeitStartMsg0DEP22Unk_ov050_0225b908_Out kind:function(thumb,size=0x88) addr:0x0225ba44

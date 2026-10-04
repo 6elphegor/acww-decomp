@@ -1,7 +1,7 @@
 // mwcc-version: 1.2/sp2
 #include "types.h"
 #include "game/Unk_0203389c_Vec.h"
-#include "actor/Unk_ov003_SceneEntry.h"
+#include "actor/ActorProfile.h"
 #include "actor/ActorCollider.h"
 #include "talk/TalkWindowState.h"
 #include "game/CollisionState.h"
@@ -48,7 +48,6 @@ struct Unk_ov003_02212a5c_Bits {
     u16 h : 1;
     u16 i : 1;
 };
-typedef Unk_ov003_02212a5c_Bits Unk_ov003_022135c4_Fl;
 
 struct Unk_ov003_022135c4_Q4 {
     s32 x, y, z, w;
@@ -67,13 +66,6 @@ struct Unk_ov003_02212f04_Pos {
     s32 v[3];
 };
 typedef Unk_ov003_02212f04_Pos Pos;
-
-class Unk_ov003_02212830_Ctl {
-public:
-    u8 pad_00[4];
-    /* 0x04 */ s32 state;
-    /* 0x08 */ s32 nextState;
-};
 
 class Unk_ov003_02212888_Str {
 public:
@@ -427,7 +419,7 @@ BOOL Snowball::onExecute() {
     Snowball_RunState(this);
     runTalkAct();
     Snowball_UpdateRolling(this);
-    Unk_ov003_022135c4_Fl *fl = &snowballFlags;
+    Unk_ov003_02212a5c_Bits *fl = &snowballFlags;
     fl->f = fl->e;
     fl->e = 0;
     fl->h = 0;
@@ -966,7 +958,7 @@ extern "C" BOOL Snowball_DropDisplacedItem(u16 *p) {
     return FALSE;
 }
 
-extern "C" Unk_ov003_SceneEntry sSnowballProfile = {(void *(*)())Snowball_Create, 0xbd, 0x10, 0, 0xc8000, 0x12c000, 0x258000};
+extern "C" ActorProfile sSnowballProfile = {(void *(*)())Snowball_Create, 0xbd, 0x10, 0, 0xc8000, 0x12c000, 0x258000};
 extern "C" const s16 sSnowmanNeighbourOffsets[16] = {-1, -1, 0, -1, 0, -1, -1, 0, 1, 0, -1, 1, 0, 1, 1, 1};
 
 extern "C" BOOL Snowball_ChangeState(Obj *o, s32 st) {
@@ -1098,7 +1090,7 @@ BOOL Snowball::setupTalk() {
     }
     setFileName("sp_npc_snowman");
     msgIndex = r;
-    ((Unk_ov003_02212830_Ctl *)window)->nextState = 1;
+    ((TalkWindowState *)window)->nextState = 1;
     u8 c = 0x26;
     u32 buf[0x46];
     _ZN12MsgString256C1Ev(buf);
@@ -1111,7 +1103,7 @@ BOOL Snowball::setupTalk() {
 
 void Snowball::mainTalk() {
     if (window) {
-        if (((Unk_ov003_02212830_Ctl *)window)->state) {
+        if (((TalkWindowState *)window)->state) {
             changeTalkAct(2);
         }
     }
@@ -1123,7 +1115,7 @@ BOOL Snowball::setupTalkEnd() {
 
 void Snowball::mainTalkEnd() {
     if (window) {
-        if (((Unk_ov003_02212830_Ctl *)window)->state == 0) {
+        if (((TalkWindowState *)window)->state == 0) {
             _ZN9Character17detachTalkRequestEi(this, this);
             TalkRequest_SetTargetDone(this);
         }

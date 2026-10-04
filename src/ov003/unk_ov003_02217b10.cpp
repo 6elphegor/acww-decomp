@@ -6,6 +6,7 @@
 #include "field/Unk_ov003_02217b78_Ent.h"
 #include "field/FieldGroundBackdrop.h"
 #include "gfx/Model.h"
+#include "gfx/DebugColor.h"
 
 // TU18 of ov003: ground helper class FieldGroundBackdrop (0x02217b10-0x02217be8) and the six colour constants of its header
 
@@ -18,16 +19,6 @@ struct NNSG3dResMdl;
 
 
 // 4-byte colour constructors (unreferenced except by __sinit)
-struct Unk_ov003_02235478_Col {
-    u8 r, g, b, a;
-    Unk_ov003_02235478_Col(u8 r_, u8 g_, u8 b_, u8 a_) {
-        r = r_;
-        g = g_;
-        b = b_;
-        a = a_;
-    }
-};
-
 
 // other modules' methods are reached through their real mangled symbols (object first)
 #define BgModelCache_getGroundTex _ZN12BgModelCache12getGroundTexEv
@@ -49,13 +40,13 @@ s32 BgModelCache_getGroundTex(void *self);
 }
 
 extern "C" {
-Unk_ov003_02235478_Col data_ov003_02235478(31, 20, 20, 31);
-Unk_ov003_02235478_Col data_ov003_0223547c(20, 20, 31, 31);
+DebugColor data_ov003_02235478(31, 20, 20, 31);
+DebugColor data_ov003_0223547c(20, 20, 31, 31);
 // Data order: this unit is placed object by object (see object_order.txt).
-Unk_ov003_02235478_Col data_ov003_02235488(31, 31, 20, 31);
-Unk_ov003_02235478_Col data_ov003_02235484(20, 31, 20, 31);
-Unk_ov003_02235478_Col data_ov003_02235480(20, 31, 31, 31);
-Unk_ov003_02235478_Col data_ov003_0223548c(20, 24, 24, 31);
+DebugColor data_ov003_02235488(31, 31, 20, 31);
+DebugColor data_ov003_02235484(20, 31, 20, 31);
+DebugColor data_ov003_02235480(20, 31, 31, 31);
+DebugColor data_ov003_0223548c(20, 24, 24, 31);
 }
 
 // ---- functions ----

@@ -3,7 +3,7 @@
 #include "types.h"
 #include "sys/Unk_0209d498_Time.h"
 #include "field/Unk_ov003_02215ad8_Str.h"
-#include "actor/Unk_ov003_SceneEntry.h"
+#include "actor/ActorProfile.h"
 #include "game/Unk_ov003_Vec.h"
 #include "talk/TalkWindowState.h"
 #include "sys/ProcBase.h"
@@ -71,7 +71,7 @@ void KatrinaTent_Create();
 
 
 
-extern "C" Unk_ov003_SceneEntry sKatrinaTentProfile = { (void *(*)())KatrinaTent_Create, 0x28, 0x2e, 0, 0xc8000, 0x12c000, 0x258000 };
+extern "C" ActorProfile sKatrinaTentProfile = { (void *(*)())KatrinaTent_Create, 0x28, 0x2e, 0, 0xc8000, 0x12c000, 0x258000 };
 
 extern "C" void KatrinaTent_Create() {
     new KatrinaTent;

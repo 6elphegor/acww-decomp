@@ -4,6 +4,7 @@
 #include "game/Unk_02095774_Ent.h"
 #include "net/PlayerNetSync.h"
 #include "item/ItemPickSpec.h"
+#include "sys/ProcProfile.h"
 
 
 
@@ -287,12 +288,6 @@ inline BOOL Unk_02095dcc_R(u16 *p, u32 lo, u32 hi) {
     return r;
 }
 
-struct Unk_020e1c78_Rec {
-    GameProc *(*fn)();
-    s16 a;
-    s16 b;
-};
-
 class RemotePlayerSpawner : public GameProc {
 public:
     static GameProc *create();
@@ -310,7 +305,7 @@ static inline void Unk_0209579c_Set(s16 *d, s16 a, s16 b, s16 c) {
     d[2] = c;
 }
 
-Unk_020e1c78_Rec sRemotePlayerSpawnerProfile = {&RemotePlayerSpawner::create, 8, 12};
+ProcProfile sRemotePlayerSpawnerProfile = {(void *(*)())&RemotePlayerSpawner::create, 8, 12};
 
 GameProc *RemotePlayerSpawner::create() { return new RemotePlayerSpawner(); }
 

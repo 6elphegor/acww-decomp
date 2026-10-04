@@ -4,6 +4,7 @@
 #include "types.h"
 #include "gfx/NNSG3dRS.h"
 #include "town/BuildingInfo.h"
+#include "gfx/DebugColor.h"
 
 // Helper records of the ov009 building actor unit (unk_ov009_0225b880.cpp and its _switch twin).
 class BuildingActor;
@@ -17,16 +18,6 @@ struct BuildingEntryFlags {
     /* 0x0 */ u8 f0 : 1;
     /* 0x0 */ u8 f1 : 1;
     /* 0x0 */ u8 rest : 6;
-};
-
-struct Unk_ov009_0225e4e0_Col {
-    /* 0x0 */ u8 r, g, b, a;
-    Unk_ov009_0225e4e0_Col(u8 r_, u8 g_, u8 b_, u8 a_) {
-        r = r_;
-        g = g_;
-        b = b_;
-        a = a_;
-    }
 };
 
 struct Unk_ov009_0225bce0_Pad {

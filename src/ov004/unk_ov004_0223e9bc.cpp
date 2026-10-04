@@ -3,6 +3,7 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "item/ItemId.h"
+#include "sys/ProcProfile.h"
 
 class ShopStockPlacer;
 
@@ -139,13 +140,7 @@ ShopStockPlacer::ShopStockPlacer() {}
 
 ShopStockPlacer::~ShopStockPlacer() {}
 
-// scene registration entry (referenced from main by address only)
-struct Unk_ov004_0224f26c_Entry {
-    void *(*create)();
-    u16 a;
-    u16 b;
-};
-Unk_ov004_0224f26c_Entry sShopStockPlacerProfile = {(void *(*)())ShopStockPlacer_Create, 0xc6, 0xd3};
+ProcProfile sShopStockPlacerProfile = {(void *(*)())ShopStockPlacer_Create, 0xc6, 0xd3};
 
 const u32 sNookShopLayouts[1536] = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,

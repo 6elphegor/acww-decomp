@@ -4,6 +4,7 @@
 #include "gfx/SpriteAnim.h"
 #include "ui/UiWidget.h"
 #include "ui/InputModeIcon.h"
+#include "sys/ProcProfile.h"
 
 extern "C" {
 void Oam_DrawCell(u32 a, u32 h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
@@ -25,11 +26,7 @@ extern const u8 sCommIconHideDelays[4];
 extern const u16 sBusyIconSe[2];
 
 
-struct Unk_0208e9d4_Ptr {
-    u8 pad[0xc];
-    u16 profile;
-};
-extern "C" Unk_0208e9d4_Ptr *gActorDefaultParent;
+extern "C" ProcBase *gActorDefaultParent;
 
 extern "C" CommManager *gCommManager;
 
@@ -119,12 +116,7 @@ typedef void (TransitionCommIcon::*Unk_020e10f8_Fn)();
 
 typedef void (TalkBusyIcon::*Unk_020e10dc_Fn)();
 
-struct Unk_020e10bc_Rec {
-    TransitionCommIconProc *(*fn)();
-    s16 executePriority;
-    s16 drawPriority;
-};
-extern Unk_020e10bc_Rec sTransitionCommIconProfile;
+extern ProcProfile sTransitionCommIconProfile;
 
 BOOL InputModeIcon::isDrawBlocked() {
     BOOL r = FALSE;
@@ -428,4 +420,4 @@ BOOL TransitionCommIconProc::onDraw() {
 
 
 TransitionCommIcon sTransitionCommIcon;
-Unk_020e10bc_Rec sTransitionCommIconProfile = {TransitionCommIconProc_Create, 0xcc, 0xc8};
+ProcProfile sTransitionCommIconProfile = {(void *(*)())TransitionCommIconProc_Create, 0xcc, 0xc8};

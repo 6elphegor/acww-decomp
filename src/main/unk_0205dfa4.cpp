@@ -1,7 +1,7 @@
 // mwcc-flags: -str reuse
 #include "types.h"
 #include "sys/PrioListNode.h"
-#include "net/Unk_0205f6f8_Cfg.h"
+#include "net/CommManager.h"
 #include "gfx/AnimFrameCtrl.h"
 #include "gfx/TexVramSlot.h"
 #include "item/ItemId.h"
@@ -84,7 +84,7 @@ extern char sHeldItemTexAnimPathBuf[0x1c];
 extern HeldItemModelBank sHeldItemModelBank;
 extern void *gHeldItemAnimHeap;
 extern void *gHeldItemModelHeap;
-extern Unk_0205f6f8_Cfg *gCommManager;
+extern CommManager *gCommManager;
 
 s32 Str_SPrintf(char *buf, const char *fmt, ...);
 s32 File_LoadToBuffer(void *path, void *dst, u32 size);

@@ -19,7 +19,8 @@
 #include "actor/SpNpcActor.h"
 #include "talk/ActorTalkRequest.h"
 #include "talk/SpNpcTalkRequest.h"
-#include "actor/Unk_ov004_SceneEntry.h"
+#include "actor/ActorProfile.h"
+#include "gfx/DebugColor.h"
 
 
 class ActorTalkRequest;
@@ -27,22 +28,6 @@ class ActorTalkRequest;
 struct Unk_ov073_Vec {
     s32 x, y, z;
 };
-
-struct Unk_ov073_Out {
-    const char *msgKey;
-    u8 msgIndex;
-};
-
-struct Unk_ov073_02272208_Ent {
-    const char *msgKey;
-    u8 msgIndex;
-};
-
-struct Unk_ov073_ColorCtor {
-    u8 a, b, c, d;
-    Unk_ov073_ColorCtor(u8 a, u8 b, u8 c, u8 d) : a(a), b(b), c(c), d(d) {}
-};
-
 
 class SpNpcJoan;
 class SpNpcJoanTalk;
@@ -195,7 +180,7 @@ extern "C" {
 extern char sSpNpcJoanKey[12];
 extern u8 sSpNpcJoanModelPath[23];
 extern u8 sSpNpcJoanTexturePath[27];
-extern const Unk_ov073_02272208_Ent sSpNpcJoanTopicMsgs[3];
+extern const TalkStartMsg sSpNpcJoanTopicMsgs[3];
 s32 SpNpcJoan_IsEmptyItem(u16 *p);
 SpNpcJoan *SpNpcJoan_Create();
 }
@@ -203,7 +188,7 @@ typedef BOOL (SpNpcJoan::*Unk_ov073_022724c0_Fn)();
 extern Unk_ov073_02271fcc_Ent sSpNpcJoanActTable[5];
 extern FxVec3 sSpNpcJoanSidestepOffsets[2];   // [1] is at 0x022725c8
 extern "C" {
-extern Unk_ov004_SceneEntry sSpNpcJoanProfile;
+extern ActorProfile sSpNpcJoanProfile;
 extern void *data_ov073_02272388[2];
 extern void *data_ov073_02272390[2];
 extern void *data_ov073_02272398[2];
@@ -515,7 +500,7 @@ void SpNpcJoanTalk::onTaskDone(u32) {
 void *data_ov073_022723c8[2] = {(void *)_ZN9SpNpcJoan9mainAct03Ev, 0};
 void *data_ov073_022723b0[2] = {(void *)_ZN9SpNpcJoan10setupAct02Ev, 0};
 void *data_ov073_022723b8[2] = {(void *)_ZN9SpNpcJoan9mainAct02Ev, 0};
-Unk_ov073_ColorCtor data_ov073_02272584(31, 20, 20, 31);
+DebugColor data_ov073_02272584(31, 20, 20, 31);
 
 void SpNpcJoanTalk::setResultHandler(s32 i) {
     static Fn tbl[1] = { &SpNpcJoanTalk::onAmountEntered };
@@ -523,19 +508,19 @@ void SpNpcJoanTalk::setResultHandler(s32 i) {
 }
 
 void *data_ov073_02272390[2] = {(void *)_ZN9SpNpcJoan9mainAct04Ev, 0};
-Unk_ov073_ColorCtor data_ov073_02272598(20, 20, 31, 31);
+DebugColor data_ov073_02272598(20, 20, 31, 31);
 u8 sSpNpcJoanTexturePath[27] = "npc_sp/model/boa_tex.nsbtx";
 char sSpNpcJoanKey[12] = "sp_npc_boar";
 u8 sSpNpcJoanModelPath[23] = "npc_sp/model/boa.nsbmd";
 void *data_ov073_022723c0[2] = {(void *)_ZN9SpNpcJoan10setupAct03Ev, 0};
-Unk_ov073_ColorCtor data_ov073_0227258c(31, 31, 20, 31);
+DebugColor data_ov073_0227258c(31, 31, 20, 31);
 void *data_ov073_022723a8[2] = {(void *)_ZN9SpNpcJoan9mainAct01Ev, 0};
 void *data_ov073_022723a0[2] = {(void *)_ZN9SpNpcJoan9mainAct00Ev, 0};
 void *data_ov073_02272398[2] = {(void *)_ZN9SpNpcJoan10setupAct04Ev, 0};
-Unk_ov004_SceneEntry sSpNpcJoanProfile = {(void *(*)())SpNpcJoan_Create, 0x6f, 0x75, 2, 0x5000, 0x5000, 0x3e800};
-Unk_ov073_ColorCtor data_ov073_02272594(20, 31, 20, 31);
-Unk_ov073_ColorCtor data_ov073_02272580(20, 31, 31, 31);
-Unk_ov073_ColorCtor data_ov073_02272588(20, 24, 24, 31);
+ActorProfile sSpNpcJoanProfile = {(void *(*)())SpNpcJoan_Create, 0x6f, 0x75, 2, 0x5000, 0x5000, 0x3e800};
+DebugColor data_ov073_02272594(20, 31, 20, 31);
+DebugColor data_ov073_02272580(20, 31, 31, 31);
+DebugColor data_ov073_02272588(20, 24, 24, 31);
 Unk_ov073_02271fcc_Ent sSpNpcJoanActTable[5] = {
     {*(Unk_ov073_022724c0_Fn *)data_ov073_02272388, *(Unk_ov073_022724c0_Fn *)data_ov073_022723a0},
     {NULL, *(Unk_ov073_022724c0_Fn *)data_ov073_022723a8},
@@ -543,7 +528,7 @@ Unk_ov073_02271fcc_Ent sSpNpcJoanActTable[5] = {
     {*(Unk_ov073_022724c0_Fn *)data_ov073_022723c0, *(Unk_ov073_022724c0_Fn *)data_ov073_022723c8},
     {*(Unk_ov073_022724c0_Fn *)data_ov073_02272398, *(Unk_ov073_022724c0_Fn *)data_ov073_02272390},
 };
-const Unk_ov073_02272208_Ent sSpNpcJoanTopicMsgs[3] = {
+const TalkStartMsg sSpNpcJoanTopicMsgs[3] = {
     {sSpNpcJoanKey, 0},
     {sSpNpcJoanKey, 4},
     {NULL, 0},
@@ -626,7 +611,7 @@ void SpNpcJoanTalk::attachOwner(s32 v) {
 }
 
 void SpNpcJoanTalk::start(TalkStartMsg *p) {
-    Unk_ov073_Out *out = (Unk_ov073_Out *)p;
+    TalkStartMsg *out = (TalkStartMsg *)p;
     if (topic == 0) {
         if (Talk_CheckAndSetPlayerFlag(3, 1)) {
             topic = 1;

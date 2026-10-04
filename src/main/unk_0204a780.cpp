@@ -307,9 +307,6 @@ s32 Item_GetFishIndex(u16 *p);
 namespace nC {
 extern "C" {
 
-struct Unk_0204c0f4_Date {
-    u8 a, b, c, d;
-};
 struct Unk_0204c084_Data {
     u8 pad[0x15];
     s8 perfectStreak;
@@ -346,8 +343,8 @@ u16 *_ZN10PlayerData13getNookPointsEv(void *p);
 void *PlayerData_GetCurrent();
 s32 FtrInfo_GetPrice(s32 x);
 s32 PlayerData_GetCurrentIndex();
-s32 Clock_GetDate(Unk_0204c0f4_Date *d);
-s32 Date_DaysBetween(Unk_0204c0f4_Date *a, Unk_0204c0f4_Date *b);
+s32 Clock_GetDate(ClockDate *d);
+s32 Date_DaysBetween(ClockDate *a, ClockDate *b);
 s32 Clock_GetYear();
 void Event_GetRange(s32 *a, s32 *b, u32 c);
 s32 _ZN11CommManager8isOnlineEv(void *p);
@@ -381,7 +378,7 @@ BOOL Item_Equals(u16 *a, u16 *b);
 s32 NookPoints_GetRankOf(u16 *p);
 s32 TownState_FindEvent(s32 x, u32 id);
 TownEventRecord *TownState_GetEvent(s32 i);
-Unk_0204c0f4_Date *TownState_GetPlayerDate(u8 *p, s32 i);
+ClockDate *TownState_GetPlayerDate(u8 *p, s32 i);
 static inline BOOL Unk_0204b9c0_R(u16 *p, u32 lo, u32 hi) {
     BOOL r = FALSE;
     if (*p >= lo && *p <= hi) r = TRUE;
@@ -431,7 +428,7 @@ void TownState_UpdatePerfectStreak(TownState *p, s32 k, s32 add);
 BOOL TownState_IsPerfectStreak15();
 BOOL TownState_IsPlayerDateNotToday(u8 *p);
 void TownState_SetPlayerDateToday(u8 *p);
-Unk_0204c0f4_Date *TownState_GetPlayerDate(u8 *p, s32 i);
+ClockDate *TownState_GetPlayerDate(u8 *p, s32 i);
 s32 TownState_AddEvent(s32 x, u32 id);
 s32 TownState_FindEvent(s32 x, u32 id);
 void TownState_RemoveEvent(s32 x, u32 id);
@@ -568,7 +565,7 @@ extern "C" s32 TownState_AddEvent(s32 x, u32 id) {
 }
 
 namespace nC {
-extern "C" Unk_0204c0f4_Date *TownState_GetPlayerDate(u8 *p, s32 i) { return (Unk_0204c0f4_Date *)(p + 0x58) + i; }
+extern "C" ClockDate *TownState_GetPlayerDate(u8 *p, s32 i) { return (ClockDate *)(p + 0x58) + i; }
 }
 
 namespace nC {
@@ -579,10 +576,10 @@ namespace nC {
 extern "C" BOOL TownState_IsPlayerDateNotToday(u8 *p) {
     BOOL r = FALSE;
     s32 i = PlayerData_GetCurrentIndex();
-    Unk_0204c0f4_Date t;
+    ClockDate t;
     Clock_GetDate(&t);
     p += 0x58;
-    if (Date_DaysBetween(&t, (Unk_0204c0f4_Date *)p + i)) r = TRUE;
+    if (Date_DaysBetween(&t, (ClockDate *)p + i)) r = TRUE;
     return r;
 }
 }

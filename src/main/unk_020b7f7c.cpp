@@ -1,4 +1,5 @@
 #include "types.h"
+#include "sys/DebugText.h"
 
 extern "C" {
 void NNS_GfdInitFrmTexVramManager(u32 a, u32 b);
@@ -17,16 +18,11 @@ extern u32 (*data_0213bc18)(u32);
 extern u32 sPlttVramUsed, sTexVramTexelBHi, sTexVramIdxBHi, sTexVramIdxAHi, sTexVramTexelAHi, sTexVramTexelBLo, sTexVramIdxBLo;
 extern u32 sTexVramIdxALo, sTexVramTexelALo, sPlttVramSize;
 
-struct Unk_020b82b8_Str {
-    u16 unk_00;
-    u16 charBase;
-};
-
 extern "C" void DebugText_PutChar(u16 *dst, u32 base, s32 c);
 extern "C" void DebugText_PutString(u16 *dst, u32 base, const char *s);
 extern "C" void DebugText_VPrintf(u16 *a, u32 b, const char *fmt, char *ap);
-extern "C" void DebugText_Print(Unk_020b82b8_Str *self, u16 *dst, const char *s);
-extern "C" void DebugText_Printf(Unk_020b82b8_Str *self, u16 *a, const char *fmt, ...);
+extern "C" void DebugText_Print(DebugText *self, u16 *dst, const char *s);
+extern "C" void DebugText_Printf(DebugText *self, u16 *a, const char *fmt, ...);
 extern "C" void TexVram_Alloc4x4(u32 *o0, u32 *o1, u32 size);
 extern "C" void TexVram_AllocNormal(u32 *o, u32 size);
 extern "C" u32 PlttVram_AllocRaw(u32 a);
@@ -53,11 +49,11 @@ extern "C" void DebugText_VPrintf(u16 *a, u32 b, const char *fmt, char *ap) {
     DebugText_PutString(a, b, buf);
 }
 
-extern "C" void DebugText_Print(Unk_020b82b8_Str *self, u16 *dst, const char *s) {
+extern "C" void DebugText_Print(DebugText *self, u16 *dst, const char *s) {
     DebugText_PutString(dst, self->charBase, s);
 }
 
-extern "C" void DebugText_Printf(Unk_020b82b8_Str *self, u16 *a, const char *fmt, ...) {
+extern "C" void DebugText_Printf(DebugText *self, u16 *a, const char *fmt, ...) {
     char *ap = (char *)(((u32)&fmt) & ~3) + 4;
     DebugText_VPrintf(a, self->charBase, fmt, ap);
 }

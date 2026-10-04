@@ -29,6 +29,7 @@
 #include "town/BuildingCollider.h"
 #include "game/TouchPickTriangle.h"
 #include "game/CollisionTriangle.h"
+#include "gfx/DebugColor.h"
 
 
 
@@ -360,12 +361,12 @@ BuildingResources::~BuildingResources() {}
 
 
 extern "C" {
-Unk_ov009_0225e4e0_Col data_ov009_0225e4fc(31, 20, 20, 31);
-Unk_ov009_0225e4e0_Col data_ov009_0225e4e0(20, 20, 31, 31);
-Unk_ov009_0225e4e0_Col data_ov009_0225e4f4(31, 31, 20, 31);
-Unk_ov009_0225e4e0_Col data_ov009_0225e4f0(20, 31, 20, 31);
-Unk_ov009_0225e4e0_Col data_ov009_0225e500(20, 31, 31, 31);
-Unk_ov009_0225e4e0_Col data_ov009_0225e4f8(20, 24, 24, 31);
+DebugColor data_ov009_0225e4fc(31, 20, 20, 31);
+DebugColor data_ov009_0225e4e0(20, 20, 31, 31);
+DebugColor data_ov009_0225e4f4(31, 31, 20, 31);
+DebugColor data_ov009_0225e4f0(20, 31, 20, 31);
+DebugColor data_ov009_0225e500(20, 31, 31, 31);
+DebugColor data_ov009_0225e4f8(20, 24, 24, 31);
 BuildingResources sBuildingResources[0x22];
 }
 

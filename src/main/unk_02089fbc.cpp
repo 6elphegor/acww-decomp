@@ -317,6 +317,7 @@ public:
 
 
 #include "ui/HudProc.h"
+#include "sys/ProcProfile.h"
 extern "C" HudProc *HudProc_Create();
 
 
@@ -2371,11 +2372,6 @@ const u8 kHudCameraGridCells[18] = {1, 1, 0, 0, 1, 0, 2, 0, 0, 1, 2, 1, 0, 2, 1,
 extern const s32 kNameLabelBalloonKindAnims[5];
 const s32 kNameLabelBalloonKindAnims[5] = {10, 11, 12, 13, 0x28};
 
-struct Unk_020e0e74_Rec {
-    HudProc *(*create)();
-    s16 executePriority;
-    s16 drawPriority;
-};
-Unk_020e0e74_Rec sHudProcProfile = {HudProc_Create, 0xca, 0x8e};
+ProcProfile sHudProcProfile = {(void *(*)())HudProc_Create, 0xca, 0x8e};
 
 HudController gHud;

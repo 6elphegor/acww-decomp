@@ -1,7 +1,7 @@
 // mwcc-version: 1.2/base
 #include "types.h"
-#include "gfx/Unk_ov004_Rgba.h"
-#include "actor/Unk_ov004_SceneEntry.h"
+#include "gfx/DebugColor.h"
+#include "actor/ActorProfile.h"
 #include "actor/CharacterListNode.h"
 #include "game/Unk_ov004_02224ee4_Vec.h"
 #include "gfx/AnimFrameCtrl.h"
@@ -141,49 +141,49 @@ void Item_MakeInsect();
 
 #define F(T, off) (*(T *)((u8 *)this + off))
 // declarations (definition order below sets the data layout)
-extern "C" { extern Unk_ov004_Rgba data_ov004_02250e08; }
-extern "C" { extern Unk_ov004_Rgba data_ov004_02250e18; }
+extern "C" { extern DebugColor data_ov004_02250e08; }
+extern "C" { extern DebugColor data_ov004_02250e18; }
 extern "C" { extern char sMuseumPictureTexPath[0x20]; }
 extern "C" { extern char sMuseumDisplayNodeName[0x28]; }
-extern "C" { extern Unk_ov004_Rgba data_ov004_02250e14; }
+extern "C" { extern DebugColor data_ov004_02250e14; }
 extern "C" { extern char sMuseumInsectTexPath[0x20]; }
 extern "C" { extern char sMuseumInsectArcPath[0x1c]; }
-extern "C" { extern Unk_ov004_Rgba data_ov004_02250e1c; }
-extern "C" { extern Unk_ov004_Rgba data_ov004_02250e10; }
+extern "C" { extern DebugColor data_ov004_02250e1c; }
+extern "C" { extern DebugColor data_ov004_02250e10; }
 extern "C" { extern const Unk_ov004_02227728_Rec sMuseumDisplayKinds[2]; }
-extern "C" { extern Unk_ov004_Rgba data_ov004_02250e0c; }
+extern "C" { extern DebugColor data_ov004_02250e0c; }
 extern "C" { extern char sMuseumPictureArcPath[0x1c]; }
-extern "C" { extern Unk_ov004_Scene_Entry sMuseumDisplayProfile; }
+extern "C" { extern ActorProfile sMuseumDisplayProfile; }
 
-extern "C" Unk_ov004_Rgba data_ov004_02250e08(31, 20, 20, 31);
+extern "C" DebugColor data_ov004_02250e08(31, 20, 20, 31);
 
-extern "C" Unk_ov004_Rgba data_ov004_02250e18(20, 20, 31, 31);
+extern "C" DebugColor data_ov004_02250e18(20, 20, 31, 31);
 
 extern "C" char sMuseumPictureTexPath[0x20] = "/roomObj/obj_ms_picture.nsbtx";
 
 extern "C" char sMuseumDisplayNodeName[0x28] = {0};
 
-extern "C" Unk_ov004_Rgba data_ov004_02250e14(31, 31, 20, 31);
+extern "C" DebugColor data_ov004_02250e14(31, 31, 20, 31);
 
 extern "C" char sMuseumInsectTexPath[0x20] = "/roomObj/obj_ms_insectA.nsbtx";
 
 extern "C" char sMuseumInsectArcPath[0x1c] = "/roomObj/obj_ms_insectA.arc";
 
-extern "C" Unk_ov004_Rgba data_ov004_02250e1c(20, 31, 20, 31);
+extern "C" DebugColor data_ov004_02250e1c(20, 31, 20, 31);
 
-extern "C" Unk_ov004_Rgba data_ov004_02250e10(20, 31, 31, 31);
+extern "C" DebugColor data_ov004_02250e10(20, 31, 31, 31);
 
 extern "C" const Unk_ov004_02227728_Rec sMuseumDisplayKinds[2] = {
     {MuseumDisplay_GetPaintingItem, 0x14, sMuseumPictureArcPath, sMuseumPictureTexPath},
     {(u16 (*)(u32))Item_MakeInsect, 0x38, sMuseumInsectArcPath, sMuseumInsectTexPath},
 };
 
-extern "C" Unk_ov004_Rgba data_ov004_02250e0c(20, 24, 24, 31);
+extern "C" DebugColor data_ov004_02250e0c(20, 24, 24, 31);
 
 // ---------------------------------------------------------------- data
 extern "C" char sMuseumPictureArcPath[0x1c] = "/roomObj/obj_ms_picture.arc";
 
-extern "C" Unk_ov004_Scene_Entry sMuseumDisplayProfile = {(void *(*)())MuseumDisplay_Create, 0x14, 0x18, 0, 0xc8000, 0x12c000, 0x258000};
+extern "C" ActorProfile sMuseumDisplayProfile = {(void *(*)())MuseumDisplay_Create, 0x14, 0x18, 0, 0xc8000, 0x12c000, 0x258000};
 
 extern "C" MuseumDisplay *MuseumDisplay_Create() {
     return new MuseumDisplay();

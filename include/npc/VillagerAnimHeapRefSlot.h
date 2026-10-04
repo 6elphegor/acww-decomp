@@ -11,7 +11,6 @@ struct VillagerAnimHeapRef {
     VillagerAnimHeapRef();
     ~VillagerAnimHeapRef();
 };
-typedef VillagerAnimHeapRef Unk_02082af0_X;
 
 struct VillagerAnimHeapRefSlot : NpcResSlot {
     VillagerAnimHeapRefSlot();

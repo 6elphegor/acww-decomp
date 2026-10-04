@@ -1,6 +1,6 @@
 // mwcc-version: 1.2/base
 #include "types.h"
-#include "actor/Unk_ov004_SceneEntry.h"
+#include "actor/ActorProfile.h"
 #include "npc/VillagerClothModel.h"
 #include "room/RoomFreeUnitMap.h"
 #include "npc/VillagerMood.h"
@@ -201,7 +201,7 @@ public:
 
 // ---------------------------------------------------------------------------------------------------------------------
 extern "C" HouseOwnerVillager *HouseOwnerVillager_Create();
-extern "C" Unk_ov004_SceneEntry sHouseOwnerVillagerProfile = {(void *(*)())HouseOwnerVillager_Create, 0x85, 0x89, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" ActorProfile sHouseOwnerVillagerProfile = {(void *(*)())HouseOwnerVillager_Create, 0x85, 0x89, 2, 0x5000, 0x5000, 0x3e800};
 extern "C" const u8 data_ov004_02240090[4] = {0x28, 0x1e, 0x14, 0x0a};
 #define data_ov004_0225065c ((Unk_ov004_0221745c_Dir *)((u8 *)sHouseOwnerStepDirs + 4))
 

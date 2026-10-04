@@ -22,7 +22,8 @@
 #include "actor/SpNpcActor.h"
 #include "talk/ActorTalkRequest.h"
 #include "talk/SpNpcTalkRequest.h"
-#include "actor/Unk_ov004_SceneEntry.h"
+#include "actor/ActorProfile.h"
+#include "gfx/DebugColor.h"
 
 
 class ActorTalkRequest;
@@ -253,17 +254,6 @@ struct Unk_ov074_02272130_Ent {
 };
 
 
-struct Unk_ov074_Col {
-    u8 r, g, b, a;
-    Unk_ov074_Col(u8 r_, u8 g_, u8 b_, u8 a_) {
-        r = r_;
-        g = g_;
-        b = b_;
-        a = a_;
-    }
-};
-
-
 extern "C" {
 SpNpcBlanca *SpNpcBlanca_Create();
 void SpNpcBlanca_ChangeAct(SpNpcBlanca *self, s32 state);
@@ -276,13 +266,13 @@ s32 SpNpcBlanca_IsInFocusBox(void *self, void *a, void *b);
 extern u8 sSpNpcBlancaModelPath[];
 extern Unk_ov074_02272130_Ent sSpNpcBlancaActTable[5];
 extern FxVec3 sSpNpcBlancaSidestepOffsets[2];
-extern Unk_ov004_SceneEntry sSpNpcBlancaProfile;
-extern Unk_ov074_Col data_ov074_022726e4;
-extern Unk_ov074_Col data_ov074_022726f4;
-extern Unk_ov074_Col data_ov074_022726e0;
-extern Unk_ov074_Col data_ov074_022726f8;
-extern Unk_ov074_Col data_ov074_022726e8;
-extern Unk_ov074_Col data_ov074_022726f0;
+extern ActorProfile sSpNpcBlancaProfile;
+extern DebugColor data_ov074_022726e4;
+extern DebugColor data_ov074_022726f4;
+extern DebugColor data_ov074_022726e0;
+extern DebugColor data_ov074_022726f8;
+extern DebugColor data_ov074_022726e8;
+extern DebugColor data_ov074_022726f0;
 extern u32 sSpNpcBlancaFaceMaterialName;
 }
 
@@ -618,7 +608,7 @@ void SpNpcBlancaTalk::onTaskDone(u32) {
 extern u32 *data_ov074_022724e4;
 extern u32 sSpNpcBlancaFaceMaterialName;
 extern u8 sSpNpcBlancaModelPath[];
-extern Unk_ov004_SceneEntry sSpNpcBlancaProfile;
+extern ActorProfile sSpNpcBlancaProfile;
 extern void *data_ov074_022724e8[2];
 extern void *data_ov074_022724f0[2];
 extern void *data_ov074_022724f8[2];
@@ -650,15 +640,15 @@ extern FxVec3 sSpNpcBlancaSidestepOffsets[2];
 
 
 
-Unk_ov074_Col data_ov074_022726e4(31, 20, 20, 31);
+DebugColor data_ov074_022726e4(31, 20, 20, 31);
 void *data_ov074_022724f8[2] = {(void *)_ZN11SpNpcBlanca9mainAct00Ev, 0};
-Unk_ov074_Col data_ov074_022726f4(20, 20, 31, 31);
-Unk_ov074_Col data_ov074_022726e0(31, 31, 20, 31);
+DebugColor data_ov074_022726f4(20, 20, 31, 31);
+DebugColor data_ov074_022726e0(31, 31, 20, 31);
 void *data_ov074_022724f0[2] = {(void *)_ZN15SpNpcBlancaTalk15onConceptChosenEv, 0};
-Unk_ov074_Col data_ov074_022726f8(20, 31, 20, 31);
-Unk_ov004_SceneEntry sSpNpcBlancaProfile = {(void *(*)())SpNpcBlanca_Create, 0x67, 0x6d, 2, 0x5000, 0x5000, 0x3e800};
-Unk_ov074_Col data_ov074_022726e8(20, 31, 31, 31);
-Unk_ov074_Col data_ov074_022726f0(20, 24, 24, 31);
+DebugColor data_ov074_022726f8(20, 31, 20, 31);
+ActorProfile sSpNpcBlancaProfile = {(void *(*)())SpNpcBlanca_Create, 0x67, 0x6d, 2, 0x5000, 0x5000, 0x3e800};
+DebugColor data_ov074_022726e8(20, 31, 31, 31);
+DebugColor data_ov074_022726f0(20, 24, 24, 31);
 void *data_ov074_02272518[2] = {(void *)_ZN11SpNpcBlanca10setupAct03Ev, 0};
 u32 sSpNpcBlancaFaceMaterialName = 0x66;
 void *data_ov074_02272520[2] = {(void *)_ZN11SpNpcBlanca9mainAct03Ev, 0};

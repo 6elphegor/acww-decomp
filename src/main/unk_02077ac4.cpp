@@ -195,6 +195,7 @@ public:
 
 
 #include "talk/MsgString17.h"
+#include "save/TownId.h"
 class EncodedString16 : public EncodedString {
 public:
     EncodedString16();
@@ -255,7 +256,6 @@ struct ClockDateTime {
 namespace nA {
 extern "C" {
 
-typedef u32 Unk_02077a54_Fn;
 extern void *gCommManager;
 extern void *sSpNpcAnimHeapPool[];
 extern void *sVillagerAnimHeapPool[];
@@ -1281,10 +1281,6 @@ void SaveVillagers_UpdateHistory(void *, SaveVillagers *);
 s32 SaveVillagers_FindJustMovedIn(VillagerData *p);
 s32 SaveVillagers_FindMovingOutDue(SaveVillagers *self, void *name);
 s32 SaveVillagers_FindMovingOut(SaveVillagers *self);
-struct Unk_0207b238_Id {
-    u16 id;
-    u8 name[8];
-};
 void SaveVillagers_ProcessTransfer(SaveVillagers *self, void *arg);
 void SaveVillagers_MoveOut(SaveVillagers *self, void *a, void *b, s32 idx, void *out);
 void SaveVillagers_MoveIn(SaveVillagers *self, void *a, s32 idx, void *b, u8 c, void *out);
@@ -2264,11 +2260,7 @@ struct VillagerInfo {
     u8 trendTable[0x18];
     u8 personality;
 };
-struct Unk_02080de0 {
-    u16 townId;
-    u8 townName[8];
-};
-BOOL VillagerMemory_MatchesPlayer(Unk_02080de0 *a, Unk_02080de0 *b);
+BOOL VillagerMemory_MatchesPlayer(TownId *a, TownId *b);
 }
 }
 
@@ -3674,7 +3666,7 @@ extern "C" void *VillagerMemory_GetPlayerId(void *p) {
 }
 
 namespace nP {
-extern "C" BOOL VillagerMemory_MatchesPlayer(Unk_02080de0 *a, Unk_02080de0 *b) {
+extern "C" BOOL VillagerMemory_MatchesPlayer(TownId *a, TownId *b) {
     if (a->townId == b->townId && memcmp(a->townName, b->townName, 8) == 0 && _ZN8PlayerId6equalsEPS_(a, b) != 0) return TRUE;
     return FALSE;
 }
@@ -8128,9 +8120,9 @@ extern "C" void SaveVillagers_ProcessTransfer(SaveVillagers *self, void *arg) {
         goto nomatch;
     }
     {
-        Unk_0207b238_Id *g = (Unk_0207b238_Id *)gSaveTownId;
-        Unk_0207b238_Id *h = (Unk_0207b238_Id *)_ZN20VillagerDataItemView18getMovedFromTownIdEv(r7);
-        if (h->id == g->id && memcmp(h->name, g->name, 8) == 0) {
+        TownId *g = (TownId *)gSaveTownId;
+        TownId *h = (TownId *)_ZN20VillagerDataItemView18getMovedFromTownIdEv(r7);
+        if (h->townId == g->townId && memcmp(h->townName, g->townName, 8) == 0) {
             if (r4 == 0) {
                 return;
             }

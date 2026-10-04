@@ -1,6 +1,6 @@
 // mwcc-version: 1.2/sp2
 #include "types.h"
-#include "actor/Unk_ov004_SceneEntry.h"
+#include "actor/ActorProfile.h"
 #include "actor/CharacterListNode.h"
 #include "game/Unk_ov004_02224ee4_Vec.h"
 #include "gfx/AnimFrameCtrl.h"
@@ -93,7 +93,7 @@ typedef Unk_ov004_02224ee4_Vec Vec;
 
 extern "C" BarberMachine *BarberMachine_Create();
 // Declarations for data defined further down (definition order sets the data layout)
-extern "C" Unk_ov004_Scene_Entry sBarberMachineProfile;
+extern "C" ActorProfile sBarberMachineProfile;
 extern "C" BarberMachine *volatile sBarberMachine;
 
 struct Unk_ov004_022255ec_Pad {
@@ -161,7 +161,7 @@ void BarberMachine::getSoundPos(Vec *out) {
     out->z = 0x17000;
 }
 
-extern "C" Unk_ov004_Scene_Entry sBarberMachineProfile = {(void *(*)())BarberMachine_Create, 0x15, 0x19, 0, 0xc8000, 0x12c000, 0x258000};
+extern "C" ActorProfile sBarberMachineProfile = {(void *(*)())BarberMachine_Create, 0x15, 0x19, 0, 0xc8000, 0x12c000, 0x258000};
 
 extern "C" BarberMachine *volatile sBarberMachine = 0;
 

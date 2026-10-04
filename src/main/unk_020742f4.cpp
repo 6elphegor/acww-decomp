@@ -18,7 +18,6 @@
 
 // ======== types of unk_02074c4c.cpp ========
 
-struct Unk_02074c4c_G { u8 pad[0x64]; u32 myAid; u32 localSlot; };
 // ======== types of unk_02075558.cpp ========
 
 struct Unk_02075558_Obj {
@@ -35,8 +34,6 @@ struct VillagerShirtRecvStackPad {
     VillagerShirtRecvStackPad() {}
     ~VillagerShirtRecvStackPad() {}
 };
-// ======== types of unk_02075e60.cpp ========
-struct Unk_02075e98_Nib { u8 lo : 4; u8 hi : 4; };
 
 // ======== types of unk_020767f8.cpp ========
 struct FriendEntry;
@@ -88,11 +85,12 @@ public:
 
 
 #include "sys/OverlayHandle.h"
+#include "game/NibblePair.h"
 
 // ======== unk_02077a54.cpp ========
 namespace n7 {
 
-typedef u32 Unk_02077a54_Fn;extern "C" {
+extern "C" {
 extern void *gCommManager;
 }
 extern "C" {
@@ -2895,7 +2893,7 @@ extern "C" void CommRecv_Act04(s32 a, s32 b, s32 c, s32 d) {
 // ======== unk_02074c4c.cpp ========
 namespace n2 {
 extern "C" {
-extern Unk_02074c4c_G *gCommManager;
+extern CommManager *gCommManager;
 }
 extern "C" {
 extern void (*sCommRecvHandlers[])(u32, u32, u32, u32);
@@ -3127,7 +3125,7 @@ extern "C" void CommRecv_Act0B(u32 a, u32 b, u32 c, u32 d) {
 extern "C" void CommRecv_Act0C(u32 a, u32 b, u32 c, u32 d) {
     s32 v[5];
     NetSyncMsg_Init(v);
-    Unk_02074c4c_G *g = gCommManager;
+    CommManager *g = gCommManager;
     _ZN11CommManager10readRecordEPhj(g, v, 1);
     NetSyncMsg_Unpack(v, v + 1, v + 2, v + 3);
     if (d == 0) NetSession_SetMemberSyncReply(g->myAid, v[1]);

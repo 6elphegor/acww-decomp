@@ -9,6 +9,8 @@
 #include "gfx/TexPatVramAnim.h"
 #include "field/FieldGroundBackdrop.h"
 #include "gfx/Model.h"
+#include "sys/ProcProfile.h"
+#include "gfx/DebugColor.h"
 
 // TU19 of ov003: ground part classes 0x02217be8 / 0x02217dbc and the scene 0x02232418 (0x02217be8-0x022187f8)
 
@@ -77,16 +79,6 @@ public:
 };
 
 // 4-byte colour constructors (unreferenced except by __sinit)
-struct Unk_ov003_02235498_Col {
-    u8 r, g, b, a;
-    Unk_ov003_02235498_Col(u8 r_, u8 g_, u8 b_, u8 a_) {
-        r = r_;
-        g = g_;
-        b = b_;
-        a = a_;
-    }
-};
-
 // ---- scene ----
 struct Unk_ov003_02218478_V3 {
     s32 x, y, z;
@@ -231,29 +223,24 @@ s32 FieldGround_DrawBackdrop(void *p);
 
 }
 
-// scene registration entry {factory, 0xd, 0x9}
-struct Unk_ov003_022323ec_Entry {
-    void *factory;
-    u16 a, b;
-};
 
 extern "C" FieldGround *FieldGround_Create();
 
 extern "C" {
 // the six header colours first (in __sinit store order), then the unit's own data
-Unk_ov003_02235498_Col data_ov003_022354a4(31, 20, 20, 31);
-Unk_ov003_02235498_Col data_ov003_022354a8(20, 20, 31, 31);
-Unk_ov003_02235498_Col data_ov003_02235498(31, 31, 20, 31);
-Unk_ov003_02235498_Col data_ov003_022354a0(20, 31, 20, 31);
-Unk_ov003_02235498_Col data_ov003_0223549c(20, 31, 31, 31);
-Unk_ov003_02235498_Col data_ov003_022354ac(20, 24, 24, 31);
+DebugColor data_ov003_022354a4(31, 20, 20, 31);
+DebugColor data_ov003_022354a8(20, 20, 31, 31);
+DebugColor data_ov003_02235498(31, 31, 20, 31);
+DebugColor data_ov003_022354a0(20, 31, 20, 31);
+DebugColor data_ov003_0223549c(20, 31, 31, 31);
+DebugColor data_ov003_022354ac(20, 24, 24, 31);
 const s32 sFieldGroundPieceAcres[2] = {0x84, 0x85};
 u8 data_ov003_02235490;
 s32 data_ov003_02235494;
 char data_ov003_022323f4[0xc] = "m_grd_riv";
 char data_ov003_02232400[0x10] = "m_grd_sea085";
 u32 sWaterMatNames[2] = {(u32)data_ov003_022323f4, (u32)data_ov003_02232400};
-Unk_ov003_022323ec_Entry sFieldGroundProfile = {(void *)FieldGround_Create, 0xd, 0x9};
+ProcProfile sFieldGroundProfile = {(void *(*)())FieldGround_Create, 0xd, 0x9};
 }
 
 // ---- functions ----

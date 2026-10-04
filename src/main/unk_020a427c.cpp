@@ -5,16 +5,12 @@
 #include "game/FxVec3.h"
 #include "sys/ProcBase.h"
 #include "sys/SceneBase.h"
+#include "save/TownId.h"
 
 
 
 
 
-
-struct Unk_020a4778_Id {
-    u16 townId;
-    u8 townName[8];
-};
 
 
 
@@ -175,7 +171,7 @@ extern u8 gScreenTransition;
 extern u8 data_021c3cb8;
 extern u8 gSoftResetRequested;
 extern u32 gGameRoot;
-extern Unk_020a4778_Id gSaveTownId;
+extern TownId gSaveTownId;
 }
 
 static inline BOOL Unk_020a42c4_IsTwo(u8 v) { return v == 2 ? TRUE : FALSE; }

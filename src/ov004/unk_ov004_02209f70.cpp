@@ -2,7 +2,7 @@
 #include "types.h"
 #include "room/Unk_ov004_0224882c_Buf.h"
 #include "gfx/Mtx43.h"
-#include "actor/Unk_ov004_SceneEntry.h"
+#include "actor/ActorProfile.h"
 #include "room/FtrActorViews.h"
 #include "actor/ActorListNode.h"
 #include "actor/CharacterListNode.h"
@@ -51,6 +51,7 @@
 #include "room/FtrHeadwear.h"
 #include "room/FtrKind25.h"
 #include "room/FtrCarpetSample.h"
+#include "net/CommManager.h"
 // ov004 translation unit 0x02209f70-0x022136d0 (34 classes derived from FtrActor). Built by two compilers:
 // this file's thunks need mwcc 1.2/sp2, FtrSingingInsect::updateActive / vfunc_7c (in the _switch file) need 1.2/base;
 // the functions and data objects are placed by address (config/usa/arm9/overlays/ov004/object_order.txt).
@@ -65,9 +66,6 @@
 typedef Vec3 Unk_ov004_Vec3;
 typedef Vec3 Unk_ov004_022077a4_Vec3;
 typedef Vec3 Unk_ov004_02208284_V3;
-typedef Mtx43 Unk_ov004_02208284_M;
-typedef Mtx43 Unk_ov004_022077a4_Mtx;
-typedef Mtx43 Unk_ov004_02205eb0_Mtx;
 
 
 // ================================================================ library chain (as tu01, but slot 08/14 as this class overrides them)
@@ -826,14 +824,9 @@ void FtrActor_PlayAnimsFromLastFrame(void *self, s32 a, s32 b, s32 c);
 #define BASE_S32(o) (*(s32 *)((u8 *)this + (o)))
 #define PT(o) ((void *)((u8 *)this + (o)))
 
-struct Unk_020cbb18_G {
-    u8 pad_00[0x68];
-    s32 localSlot;
-};
-
 namespace p12 {
 extern "C" {
-extern Unk_020cbb18_G *gCommManager;
+extern CommManager *gCommManager;
 extern u8 data_ov004_02240064[];
 extern u8 data_ov004_0224bb60[];
 
@@ -1200,12 +1193,6 @@ void FtrPiggyBank::execFtrAct() {
 
 // ---- part 13: from unk_0220baf4.cpp
 
-struct Unk_ov004_0220bdbc_P {
-    u32 unk_00;
-    u32 state;
-    u32 nextState;
-};
-
 struct Unk_ov004_0220c0bc_Mtx {
     s32 m[9];
 };
@@ -1221,14 +1208,10 @@ struct Unk_ov004_0220c0bc_Obj {
     /* 0xb4 */ Unk_ov004_0220c0bc_B *pJntAnmResult;
 };
 
-struct Unk_ov004_0220c0bc_Actor {
-    u8 pad_00[0x8e];
-    /* 0x8e */ s16 rotY;
-};
 namespace p13 {
 extern "C" {
 u32 FtrActor_GetFtrIndex(void *self);
-Unk_ov004_0220c0bc_Actor *FtrActor_GetParent(void *self);
+Actor *FtrActor_GetParent(void *self);
 }
 }
 
@@ -1404,8 +1387,8 @@ typedef BOOL (FtrVillagerPic::*Unk_ov004_0224a500_Fn)();
 typedef void (FtrVillagerPic::*Unk_ov004_0220bec8_Fn)();
 
 void FtrVillagerPic::execTalkAct03() {
-    if (((Unk_ov004_0220bdbc_P *)window)) {
-        if (((Unk_ov004_0220bdbc_P *)window)->state == 0) {
+    if (((TalkWindowState *)window)) {
+        if (((TalkWindowState *)window)->state == 0) {
             p13::_ZN9Character17detachTalkRequestEi(this, this);
             p13::TalkRequest_SetTargetDone(this);
         }
@@ -1417,8 +1400,8 @@ BOOL FtrVillagerPic::enterTalkAct03() {
 }
 
 void FtrVillagerPic::execTalkAct02() {
-    if (((Unk_ov004_0220bdbc_P *)window)) {
-        if (((Unk_ov004_0220bdbc_P *)window)->state) {
+    if (((TalkWindowState *)window)) {
+        if (((TalkWindowState *)window)->state) {
             setTalkAct(3);
         }
     }
@@ -1441,7 +1424,7 @@ BOOL FtrVillagerPic::enterTalkAct02() {
     volatile u16 va[2];
     s32 idx;
     p13::_ZN9Character17attachTalkRequestEi(this, this);
-    ((Unk_ov004_0220bdbc_P *)window)->nextState = 1;
+    ((TalkWindowState *)window)->nextState = 1;
     va[1] = p13::Item_MakeFurniture(p13::FtrActor_GetFtrIndex(this), 0);
     BOOL r = FALSE;
     u32 t = va[1];
@@ -1558,7 +1541,7 @@ void FtrCompass::onJointCalcPost(s32 a, void *b) {
         s32 t = p13::func_01ffcb0c(p13::FX_Div(needleAngle, 0x168000), 0x10000000);
         s32 r = (t << 4) >> 16;
         s32 ang;
-        Unk_ov004_0220c0bc_Actor *act = p13::FtrActor_GetParent(this);
+        Actor *act = p13::FtrActor_GetParent(this);
         if (act) {
             s32 e = act->rotY;
             ang = (s16)(r - (e + p13::_ZN12FtrStackLink11getRelAngleEv(b13_f_178)));
@@ -2159,11 +2142,6 @@ u32 FtrActor_GetLayer(void *self);
 }
 }
 
-struct Unk_ov004_02208ba8_Rec {
-    /* 0x00 */ u32 unk_00;
-    /* 0x04 */ u16 numFrame;
-};
-
 class FtrKind19 : public FtrActor {
 public:
     FtrKind19();
@@ -2197,11 +2175,11 @@ BOOL _ZN9FtrSwitch10isChangingEv(void *);
 BOOL _ZN9FtrSwitch4isOnEv(void *);
 BOOL _ZN12FtrModelAnim9getAnmObjEv(void *);
 void *_ZN11FtrModelRes10getAnimSetEv(void *);
-Unk_ov004_02208ba8_Rec *_ZN10FtrAnimSet6getBvaEj(void *, u32);
-Unk_ov004_02208ba8_Rec *_ZN10FtrAnimSet6getBmaEj(void *, u32);
-Unk_ov004_02208ba8_Rec *_ZN10FtrAnimSet6getBtaEj(void *, u32);
-Unk_ov004_02208ba8_Rec *_ZN10FtrAnimSet6getBtpEj(void *, u32);
-Unk_ov004_02208ba8_Rec *_ZN10FtrAnimSet6getBcaEj(void *, u32);
+Unk_ov004_02208a18_Rec *_ZN10FtrAnimSet6getBvaEj(void *, u32);
+Unk_ov004_02208a18_Rec *_ZN10FtrAnimSet6getBmaEj(void *, u32);
+Unk_ov004_02208a18_Rec *_ZN10FtrAnimSet6getBtaEj(void *, u32);
+Unk_ov004_02208a18_Rec *_ZN10FtrAnimSet6getBtpEj(void *, u32);
+Unk_ov004_02208a18_Rec *_ZN10FtrAnimSet6getBcaEj(void *, u32);
 void *_ZN11FtrModelRes10getTextureEv(void *);
 BOOL FtrMgr_IsShopScene(void);
 
@@ -2258,7 +2236,7 @@ void FtrKind19::execFtrAct03() {
 BOOL FtrKind19::enterFtrAct03() {
     p15::_ZN9FtrSwitch3setEji(b15_f_73c, 0, 0);
     if (p15::_ZN10FtrAnimSet6getBmaEj(p15::_ZN11FtrModelRes10getAnimSetEv(b15_f_6c8), 0) != NULL) {
-        Unk_ov004_02208ba8_Rec *r = p15::_ZN10FtrAnimSet6getBmaEj(p15::_ZN11FtrModelRes10getAnimSetEv(b15_f_6c8), 0);
+        Unk_ov004_02208a18_Rec *r = p15::_ZN10FtrAnimSet6getBmaEj(p15::_ZN11FtrModelRes10getAnimSetEv(b15_f_6c8), 0);
         if (p15::_ZN12FtrModelAnim9getAnmObjEv(&b15_unk_7c0[0])) {
             p15::_ZN9ModelAnim7replaceEiiiit(&b15_unk_7c0[0], p15::_ZN5Model12getRenderObjEv(b15_f_534), r, 3, 0x1000, (u16)(r->numFrame - 1));
         }
@@ -2278,7 +2256,7 @@ void FtrKind19::execFtrAct02() {
 BOOL FtrKind19::enterFtrAct02() {
     p15::_ZN9FtrSwitch3setEji(b15_f_73c, 1, 0);
     if (p15::_ZN10FtrAnimSet6getBmaEj(p15::_ZN11FtrModelRes10getAnimSetEv(b15_f_6c8), 0) != NULL) {
-        Unk_ov004_02208ba8_Rec *r = p15::_ZN10FtrAnimSet6getBmaEj(p15::_ZN11FtrModelRes10getAnimSetEv(b15_f_6c8), 0);
+        Unk_ov004_02208a18_Rec *r = p15::_ZN10FtrAnimSet6getBmaEj(p15::_ZN11FtrModelRes10getAnimSetEv(b15_f_6c8), 0);
         p15::_ZN9ModelAnim7replaceEiiiit(&b15_unk_7c0[0], p15::_ZN5Model12getRenderObjEv(b15_f_534), r, 1, 0x1000, (u16)(r->numFrame - 1));
     }
     return TRUE;
@@ -2301,7 +2279,7 @@ void FtrKind19::execFtrAct01() {
 BOOL FtrKind19::enterFtrAct01() {
     p15::_ZN9FtrSwitch3setEji(b15_f_73c, 1, 0);
     if (p15::_ZN10FtrAnimSet6getBmaEj(p15::_ZN11FtrModelRes10getAnimSetEv(b15_f_6c8), 0) != NULL) {
-        Unk_ov004_02208ba8_Rec *r = p15::_ZN10FtrAnimSet6getBmaEj(p15::_ZN11FtrModelRes10getAnimSetEv(b15_f_6c8), 0);
+        Unk_ov004_02208a18_Rec *r = p15::_ZN10FtrAnimSet6getBmaEj(p15::_ZN11FtrModelRes10getAnimSetEv(b15_f_6c8), 0);
         if (p15::_ZN12FtrModelAnim9getAnmObjEv(&b15_unk_7c0[0])) {
             p15::_ZN9ModelAnim7replaceEiiiit(&b15_unk_7c0[0], p15::_ZN5Model12getRenderObjEv(b15_f_534), r, 1, 0x1000, 0);
         }
@@ -2319,7 +2297,7 @@ void FtrKind19::execFtrAct00() {
 BOOL FtrKind19::enterFtrAct00() {
     p15::_ZN9FtrSwitch3setEji(b15_f_73c, 0, 0);
     if (p15::_ZN10FtrAnimSet6getBmaEj(p15::_ZN11FtrModelRes10getAnimSetEv(b15_f_6c8), 0) != NULL) {
-        Unk_ov004_02208ba8_Rec *r = p15::_ZN10FtrAnimSet6getBmaEj(p15::_ZN11FtrModelRes10getAnimSetEv(b15_f_6c8), 0);
+        Unk_ov004_02208a18_Rec *r = p15::_ZN10FtrAnimSet6getBmaEj(p15::_ZN11FtrModelRes10getAnimSetEv(b15_f_6c8), 0);
         p15::_ZN9ModelAnim7replaceEiiiit(&b15_unk_7c0[0], p15::_ZN5Model12getRenderObjEv(b15_f_534), r, 3, 0x1000, 0);
     }
     return TRUE;
@@ -2413,7 +2391,7 @@ BOOL FtrKind19::initModel() {
     if (p15::_ZN10FtrAnimSet6getBtpEj(p15::_ZN11FtrModelRes10getAnimSetEv(b15_f_6c8), 0) != NULL) {
         u32 t = b15_unk_590;
         if (p15::_ZN9ModelAnim11allocMatAnmEjPv(&b15_unk_7c0[2], t, p15::_ZN9ModelSlot7getHeapEv(r4))) {
-            Unk_ov004_02208ba8_Rec *r = p15::_ZN10FtrAnimSet6getBtpEj(p15::_ZN11FtrModelRes10getAnimSetEv(b15_f_6c8), 0);
+            Unk_ov004_02208a18_Rec *r = p15::_ZN10FtrAnimSet6getBtpEj(p15::_ZN11FtrModelRes10getAnimSetEv(b15_f_6c8), 0);
             p15::_ZN9ModelAnim11initWithTexEiiiit(&b15_unk_7c0[2], r, p15::_ZN11FtrModelRes10getTextureEv(b15_f_6c8), 0, 0x1000, 0);
             p15::_ZN9ModelAnim14addToRenderObjEj(&b15_unk_7c0[2], p15::_ZN5Model12getRenderObjEv(b15_f_534));
         }
@@ -4401,8 +4379,8 @@ BOOL FtrBed::enterFtrAct0B() {
 }
 
 void FtrBed::execFtrAct0A() {
-    if (((Unk_ov004_0220bdbc_P *)window)) {
-        if (((Unk_ov004_0220bdbc_P *)window)->state == 0) {
+    if (((TalkWindowState *)window)) {
+        if (((TalkWindowState *)window)->state == 0) {
             if (p21::MenuCtrl_OpenPocketSelect(p21::MenuCtrl_BuildPocketMask(FtrBed_IsDma06Is5), 0x28)) {
                 changeAct(0xb, 0xff);
             }
@@ -4415,8 +4393,8 @@ BOOL FtrBed::enterFtrAct0A() {
 }
 
 void FtrBed::execFtrAct09() {
-    if (((Unk_ov004_0220bdbc_P *)window)) {
-        if (((Unk_ov004_0220bdbc_P *)window)->state == 0) {
+    if (((TalkWindowState *)window)) {
+        if (((TalkWindowState *)window)->state == 0) {
             p21::_ZN9Character17detachTalkRequestEi(this, this);
             p21::TalkRequest_SetTargetDone(this);
         }
@@ -4433,7 +4411,7 @@ void FtrBed::execFtrAct08() {
 BOOL FtrBed::enterFtrAct08() {
     Unk_ov004_022105d8_Pad pad;
     p21::_ZN9Character17attachTalkRequestEi(this, this);
-    ((Unk_ov004_0220bdbc_P *)window)->nextState = 1;
+    ((TalkWindowState *)window)->nextState = 1;
     MsgRequest::setFileName(p21::data_ov004_0224bbb0);
     msgIndex = 4;
     return TRUE;
@@ -4448,8 +4426,8 @@ BOOL FtrBed::enterFtrAct07() {
 }
 
 void FtrBed::execFtrAct06() {
-    if (((Unk_ov004_0220bdbc_P *)window)) {
-        if (((Unk_ov004_0220bdbc_P *)window)->state == 0) {
+    if (((TalkWindowState *)window)) {
+        if (((TalkWindowState *)window)->state == 0) {
             p21::_ZN9Character17detachTalkRequestEi(this, this);
             p21::TalkRequest_SetTargetDone(this);
             p21::SceneWarp_RequestFade(p21::Scene_GetWarpRequest(), 0x2e, 2, 0);
@@ -4463,8 +4441,8 @@ BOOL FtrBed::enterFtrAct06() {
 }
 
 void FtrBed::execFtrAct05() {
-    if (((Unk_ov004_0220bdbc_P *)window)) {
-        if (((Unk_ov004_0220bdbc_P *)window)->state == 0) {
+    if (((TalkWindowState *)window)) {
+        if (((TalkWindowState *)window)->state == 0) {
             p21::PlayerActor_LocalRequestGetOutOfBed(inLeftHalf, 0);
             p21::_ZN9Character17detachTalkRequestEi(this, this);
             p21::TalkRequest_SetTargetDone(this);
@@ -4482,7 +4460,7 @@ void FtrBed::execFtrAct04() {
 BOOL FtrBed::enterFtrAct04() {
     Unk_ov004_022105d8_Pad pad;
     p21::_ZN9Character17attachTalkRequestEi(this, this);
-    ((Unk_ov004_0220bdbc_P *)window)->nextState = 1;
+    ((TalkWindowState *)window)->nextState = 1;
     if (p21::GameStart_IsNewTown() || p21::GameStart_IsNewResident()) {
         MsgRequest::setFileName(p21::data_ov004_0224bbd0);
         msgIndex = 0x19;
@@ -6672,40 +6650,40 @@ FxVec3 *data_ov004_02249028[3] = {0, data_ov004_0224fc84, data_ov004_0224fc9c};
 
 // ---- .data: the 34 registration entries {factory, id range, 0, 0xc8000, 0x12c000, 0x258000}; main refers to them by address only
 extern "C" {
-Unk_ov004_SceneEntry sFtrCompassProfile = {(void *(*)())FtrCompass_Create, 0x44, 0x4b, 0x0, 0xc8000, 0x12c000, 0x258000};
-Unk_ov004_SceneEntry sFtrVillagerPicProfile = {(void *(*)())FtrVillagerPic_Create, 0x45, 0x4c, 0x0, 0xc8000, 0x12c000, 0x258000};
-Unk_ov004_SceneEntry sFtrPhoneProfile = {(void *(*)())FtrPhone_Create, 0x4f, 0x56, 0x0, 0xc8000, 0x12c000, 0x258000};
-Unk_ov004_SceneEntry sFtrClockProfile = {(void *(*)())FtrClock_Create, 0x39, 0x40, 0x0, 0xc8000, 0x12c000, 0x258000};
-Unk_ov004_SceneEntry sFtrStereoProfile = {(void *(*)())FtrStereo_Create, 0x3a, 0x41, 0x0, 0xc8000, 0x12c000, 0x258000};
-Unk_ov004_SceneEntry sFtrInstrumentProfile = {(void *(*)())FtrInstrument_Create, 0x46, 0x4d, 0x0, 0xc8000, 0x12c000, 0x258000};
-Unk_ov004_SceneEntry sFtrPiggyBankProfile = {(void *(*)())FtrPiggyBank_Create, 0x47, 0x4e, 0x0, 0xc8000, 0x12c000, 0x258000};
-Unk_ov004_SceneEntry sFtrMetronomeProfile = {(void *(*)())FtrMetronome_Create, 0x48, 0x4f, 0x0, 0xc8000, 0x12c000, 0x258000};
-Unk_ov004_SceneEntry sFtrBasicProfile = {(void *(*)())FtrBasic_Create, 0x2f, 0x36, 0x0, 0xc8000, 0x12c000, 0x258000};
-Unk_ov004_SceneEntry sFtrTvProfile = {(void *(*)())FtrTv_Create, 0x3b, 0x42, 0x0, 0xc8000, 0x12c000, 0x258000};
-Unk_ov004_SceneEntry sFtrKind02Profile = {(void *(*)())FtrKind02_Create, 0x30, 0x37, 0x0, 0xc8000, 0x12c000, 0x258000};
-Unk_ov004_SceneEntry sFtrKind03Profile = {(void *(*)())FtrKind03_Create, 0x31, 0x38, 0x0, 0xc8000, 0x12c000, 0x258000};
-Unk_ov004_SceneEntry sFtrTvVcrProfile = {(void *(*)())FtrTvVcr_Create, 0x3c, 0x43, 0x0, 0xc8000, 0x12c000, 0x258000};
-Unk_ov004_SceneEntry sFtrKind04Profile = {(void *(*)())FtrKind04_Create, 0x32, 0x39, 0x0, 0xc8000, 0x12c000, 0x258000};
-Unk_ov004_SceneEntry sFtrKind05Profile = {(void *(*)())FtrKind05_Create, 0x33, 0x3a, 0x0, 0xc8000, 0x12c000, 0x258000};
-Unk_ov004_SceneEntry sFtrCartProfile = {(void *(*)())FtrCart_Create, 0x3d, 0x44, 0x0, 0xc8000, 0x12c000, 0x258000};
-Unk_ov004_SceneEntry sFtrGyroidProfile = {(void *(*)())FtrGyroid_Create, 0x3e, 0x45, 0x0, 0xc8000, 0x12c000, 0x258000};
-Unk_ov004_SceneEntry sFtrWallpaperSampleProfile = {(void *(*)())FtrWallpaperSample_Create, 0x49, 0x50, 0x0, 0xc8000, 0x12c000, 0x258000};
-Unk_ov004_SceneEntry sFtrKind06Profile = {(void *(*)())FtrKind06_Create, 0x34, 0x3b, 0x0, 0xc8000, 0x12c000, 0x258000};
-Unk_ov004_SceneEntry sFtrCarpetSampleProfile = {(void *(*)())FtrCarpetSample_Create, 0x4a, 0x51, 0x0, 0xc8000, 0x12c000, 0x258000};
-Unk_ov004_SceneEntry sFtrKind25Profile = {(void *(*)())FtrKind25_Create, 0x4b, 0x52, 0x0, 0xc8000, 0x12c000, 0x258000};
-Unk_ov004_SceneEntry sFtrHeadwearProfile = {(void *(*)())FtrHeadwear_Create, 0x4c, 0x53, 0x0, 0xc8000, 0x12c000, 0x258000};
-Unk_ov004_SceneEntry sFtrKind07Profile = {(void *(*)())FtrKind07_Create, 0x35, 0x3c, 0x0, 0xc8000, 0x12c000, 0x258000};
-Unk_ov004_SceneEntry sFtrKind19Profile = {(void *(*)())FtrKind19_Create, 0x3f, 0x46, 0x0, 0xc8000, 0x12c000, 0x258000};
-Unk_ov004_SceneEntry sFtrSeatProfile = {(void *(*)())FtrSeat_Create, 0x36, 0x3d, 0x0, 0xc8000, 0x12c000, 0x258000};
-Unk_ov004_SceneEntry sFtrBedProfile = {(void *(*)())FtrBed_Create, 0x37, 0x3e, 0x0, 0xc8000, 0x12c000, 0x258000};
-Unk_ov004_SceneEntry sFtrCannonProfile = {(void *(*)())FtrCannon_Create, 0x40, 0x47, 0x0, 0xc8000, 0x12c000, 0x258000};
-Unk_ov004_SceneEntry sFtrComputerProfile = {(void *(*)())FtrComputer_Create, 0x4d, 0x54, 0x0, 0xc8000, 0x12c000, 0x258000};
-Unk_ov004_SceneEntry sFtrNookwayProfile = {(void *(*)())FtrNookway_Create, 0x50, 0x57, 0x0, 0xc8000, 0x12c000, 0x258000};
-Unk_ov004_SceneEntry sFtrShirtProfile = {(void *(*)())FtrShirt_Create, 0x41, 0x48, 0x0, 0xc8000, 0x12c000, 0x258000};
-Unk_ov004_SceneEntry sFtrStorageProfile = {(void *(*)())FtrStorage_Create, 0x38, 0x3f, 0x0, 0xc8000, 0x12c000, 0x258000};
-Unk_ov004_SceneEntry sFtrMyDesignProfile = {(void *(*)())FtrMyDesign_Create, 0x42, 0x49, 0x0, 0xc8000, 0x12c000, 0x258000};
-Unk_ov004_SceneEntry sFtrSingingInsectProfile = {(void *(*)())FtrSingingInsect_Create, 0x4e, 0x55, 0x0, 0xc8000, 0x12c000, 0x258000};
-Unk_ov004_SceneEntry sFtrDesignDisplayProfile = {(void *(*)())FtrDesignDisplay_Create, 0x43, 0x4a, 0x0, 0xc8000, 0x12c000, 0x258000};
+ActorProfile sFtrCompassProfile = {(void *(*)())FtrCompass_Create, 0x44, 0x4b, 0x0, 0xc8000, 0x12c000, 0x258000};
+ActorProfile sFtrVillagerPicProfile = {(void *(*)())FtrVillagerPic_Create, 0x45, 0x4c, 0x0, 0xc8000, 0x12c000, 0x258000};
+ActorProfile sFtrPhoneProfile = {(void *(*)())FtrPhone_Create, 0x4f, 0x56, 0x0, 0xc8000, 0x12c000, 0x258000};
+ActorProfile sFtrClockProfile = {(void *(*)())FtrClock_Create, 0x39, 0x40, 0x0, 0xc8000, 0x12c000, 0x258000};
+ActorProfile sFtrStereoProfile = {(void *(*)())FtrStereo_Create, 0x3a, 0x41, 0x0, 0xc8000, 0x12c000, 0x258000};
+ActorProfile sFtrInstrumentProfile = {(void *(*)())FtrInstrument_Create, 0x46, 0x4d, 0x0, 0xc8000, 0x12c000, 0x258000};
+ActorProfile sFtrPiggyBankProfile = {(void *(*)())FtrPiggyBank_Create, 0x47, 0x4e, 0x0, 0xc8000, 0x12c000, 0x258000};
+ActorProfile sFtrMetronomeProfile = {(void *(*)())FtrMetronome_Create, 0x48, 0x4f, 0x0, 0xc8000, 0x12c000, 0x258000};
+ActorProfile sFtrBasicProfile = {(void *(*)())FtrBasic_Create, 0x2f, 0x36, 0x0, 0xc8000, 0x12c000, 0x258000};
+ActorProfile sFtrTvProfile = {(void *(*)())FtrTv_Create, 0x3b, 0x42, 0x0, 0xc8000, 0x12c000, 0x258000};
+ActorProfile sFtrKind02Profile = {(void *(*)())FtrKind02_Create, 0x30, 0x37, 0x0, 0xc8000, 0x12c000, 0x258000};
+ActorProfile sFtrKind03Profile = {(void *(*)())FtrKind03_Create, 0x31, 0x38, 0x0, 0xc8000, 0x12c000, 0x258000};
+ActorProfile sFtrTvVcrProfile = {(void *(*)())FtrTvVcr_Create, 0x3c, 0x43, 0x0, 0xc8000, 0x12c000, 0x258000};
+ActorProfile sFtrKind04Profile = {(void *(*)())FtrKind04_Create, 0x32, 0x39, 0x0, 0xc8000, 0x12c000, 0x258000};
+ActorProfile sFtrKind05Profile = {(void *(*)())FtrKind05_Create, 0x33, 0x3a, 0x0, 0xc8000, 0x12c000, 0x258000};
+ActorProfile sFtrCartProfile = {(void *(*)())FtrCart_Create, 0x3d, 0x44, 0x0, 0xc8000, 0x12c000, 0x258000};
+ActorProfile sFtrGyroidProfile = {(void *(*)())FtrGyroid_Create, 0x3e, 0x45, 0x0, 0xc8000, 0x12c000, 0x258000};
+ActorProfile sFtrWallpaperSampleProfile = {(void *(*)())FtrWallpaperSample_Create, 0x49, 0x50, 0x0, 0xc8000, 0x12c000, 0x258000};
+ActorProfile sFtrKind06Profile = {(void *(*)())FtrKind06_Create, 0x34, 0x3b, 0x0, 0xc8000, 0x12c000, 0x258000};
+ActorProfile sFtrCarpetSampleProfile = {(void *(*)())FtrCarpetSample_Create, 0x4a, 0x51, 0x0, 0xc8000, 0x12c000, 0x258000};
+ActorProfile sFtrKind25Profile = {(void *(*)())FtrKind25_Create, 0x4b, 0x52, 0x0, 0xc8000, 0x12c000, 0x258000};
+ActorProfile sFtrHeadwearProfile = {(void *(*)())FtrHeadwear_Create, 0x4c, 0x53, 0x0, 0xc8000, 0x12c000, 0x258000};
+ActorProfile sFtrKind07Profile = {(void *(*)())FtrKind07_Create, 0x35, 0x3c, 0x0, 0xc8000, 0x12c000, 0x258000};
+ActorProfile sFtrKind19Profile = {(void *(*)())FtrKind19_Create, 0x3f, 0x46, 0x0, 0xc8000, 0x12c000, 0x258000};
+ActorProfile sFtrSeatProfile = {(void *(*)())FtrSeat_Create, 0x36, 0x3d, 0x0, 0xc8000, 0x12c000, 0x258000};
+ActorProfile sFtrBedProfile = {(void *(*)())FtrBed_Create, 0x37, 0x3e, 0x0, 0xc8000, 0x12c000, 0x258000};
+ActorProfile sFtrCannonProfile = {(void *(*)())FtrCannon_Create, 0x40, 0x47, 0x0, 0xc8000, 0x12c000, 0x258000};
+ActorProfile sFtrComputerProfile = {(void *(*)())FtrComputer_Create, 0x4d, 0x54, 0x0, 0xc8000, 0x12c000, 0x258000};
+ActorProfile sFtrNookwayProfile = {(void *(*)())FtrNookway_Create, 0x50, 0x57, 0x0, 0xc8000, 0x12c000, 0x258000};
+ActorProfile sFtrShirtProfile = {(void *(*)())FtrShirt_Create, 0x41, 0x48, 0x0, 0xc8000, 0x12c000, 0x258000};
+ActorProfile sFtrStorageProfile = {(void *(*)())FtrStorage_Create, 0x38, 0x3f, 0x0, 0xc8000, 0x12c000, 0x258000};
+ActorProfile sFtrMyDesignProfile = {(void *(*)())FtrMyDesign_Create, 0x42, 0x49, 0x0, 0xc8000, 0x12c000, 0x258000};
+ActorProfile sFtrSingingInsectProfile = {(void *(*)())FtrSingingInsect_Create, 0x4e, 0x55, 0x0, 0xc8000, 0x12c000, 0x258000};
+ActorProfile sFtrDesignDisplayProfile = {(void *(*)())FtrDesignDisplay_Create, 0x43, 0x4a, 0x0, 0xc8000, 0x12c000, 0x258000};
 }
 
 // ---- .data: names (model / animation / sound resource names used by the classes above)

@@ -2,8 +2,8 @@
 #include "types.h"
 #include "actor/CharacterListNode.h"
 #include "game/Unk_ov004_02224ee4_Vec.h"
-#include "gfx/Unk_ov068_022708fc_Color.h"
-#include "actor/Unk_ov068_SceneEntry.h"
+#include "gfx/DebugColor.h"
+#include "actor/ActorProfile.h"
 #include "gfx/AnimFrameCtrl.h"
 #include "room/RoomObjRes.h"
 #include "gfx/CachedModel.h"
@@ -111,14 +111,14 @@ public:
 };
 
 // colour constants (sinit store order = definition order), the registration entry, the instance pointer
-extern "C" Unk_ov068_022708fc_Color data_ov068_02271268(0x1f, 0x14, 0x14, 0x1f);
-extern "C" Unk_ov068_022708fc_Color data_ov068_02271264(0x14, 0x14, 0x1f, 0x1f);
-extern "C" Unk_ov068_022708fc_Color data_ov068_02271254(0x1f, 0x1f, 0x14, 0x1f);
-extern "C" Unk_ov068_022708fc_Color data_ov068_0227126c(0x14, 0x1f, 0x14, 0x1f);
-extern "C" Unk_ov068_022708fc_Color data_ov068_02271258(0x14, 0x1f, 0x1f, 0x1f);
-extern "C" Unk_ov068_022708fc_Color data_ov068_0227125c(0x14, 0x18, 0x18, 0x1f);
+extern "C" DebugColor data_ov068_02271268(0x1f, 0x14, 0x14, 0x1f);
+extern "C" DebugColor data_ov068_02271264(0x14, 0x14, 0x1f, 0x1f);
+extern "C" DebugColor data_ov068_02271254(0x1f, 0x1f, 0x14, 0x1f);
+extern "C" DebugColor data_ov068_0227126c(0x14, 0x1f, 0x14, 0x1f);
+extern "C" DebugColor data_ov068_02271258(0x14, 0x1f, 0x1f, 0x1f);
+extern "C" DebugColor data_ov068_0227125c(0x14, 0x18, 0x18, 0x1f);
 extern "C" RoostCafeSet *RoostCafeSet_Create();
-extern "C" Unk_ov068_Scene_Entry sRoostCafeSetProfile = {(void *(*)())RoostCafeSet_Create, 0x10, 0x12, 0, 0xc8000, 0x12c000, 0x258000};
+extern "C" ActorProfile sRoostCafeSetProfile = {(void *(*)())RoostCafeSet_Create, 0x10, 0x12, 0, 0xc8000, 0x12c000, 0x258000};
 extern "C" {
 RoostCafeSet *sRoostCafeSet;
 }

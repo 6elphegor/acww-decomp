@@ -38,6 +38,7 @@
 #include "npc/NpcFootstepFx.h"
 #include "actor/NpcActor.h"
 #include "nitro/mtx.h"
+#include "net/CommManager.h"
 
 
 struct Unk_02006d14_TalkBase;
@@ -236,13 +237,8 @@ struct Unk_02014420_Vec2 {
 // unk_02014420.cpp
 typedef BOOL (ActorTalkRequest::*Unk_02014420_Fn)();
 
-struct Unk_020155e4_Ret;
+struct Actor;
 
-// unk_02014d90.cpp
-struct Unk_020155e4_Ret {
-    u8 pad_00[0x8e];
-    s16 rotY;
-};
 
 // unk_02014d90.cpp
 struct TalkSubSceneParams {
@@ -433,11 +429,6 @@ struct Unk_020d77a4_Vec {
     s32 x, y, z;
 };
 
-// unk_0201b690.cpp
-struct Unk_020d77a4_Global {
-    u8 pad_00[0x64];
-    s32 myAid;
-};
 
 
 // unk_0201b690.cpp
@@ -790,7 +781,7 @@ s32 Math_AngleXZ(u32 a, u8 *b);
 void PlayerActor_SetHeadTilt(u32 a, s16 b, u32 c);
 void PlayerActor_RequestTurnTo(s32 a, u32 b);
 void PlayerActor_SetNoFaceTalkTarget(u32 a, u32 b);
-Unk_020155e4_Ret *PlayerActor_GetCharacter(u32 a);
+Actor *PlayerActor_GetCharacter(u32 a);
 s32 _ZN8NpcActor10getAngleToEPS_(u8 *a, u8 *b);
 s32 _ZN8NpcActor16getAngleToPlayerEj(u8 *a, u32 b);
 void _ZN13NpcActionCtrl13requestActionEjiiissiitt(u8 *p, u32 a, u32 b, u32 c, u32 d, u32 e, s32 f, u32 g, u32 h, u32 i, u32 j);
@@ -1320,7 +1311,7 @@ void NpcActor_FindFreeUnitNear(V3 *out, NpcActor *self, V3 *in);
 namespace nR {
 extern "C" {
 
-extern Unk_020d77a4_Global *gCommManager;
+extern CommManager *gCommManager;
 extern u16 data_020c6cc8;
 extern s32 data_020c6d60[];
 extern s32 data_020c6d48[];
@@ -1347,8 +1338,8 @@ u8 Npc_GetInfoByte2(void *p);
 u8 *NpcNetRecord_GetVar(void *p);
 s32 Scene_GetCurrent();
 void NpcNetRecord_SetState(void *a, s32 b, void *c, s32 d, void *e, void *f);
-BOOL _ZN11CommManager12isSlotActiveEi(Unk_020d77a4_Global *g, s32 v);
-BOOL _ZN11CommManager8isOnlineEv(Unk_020d77a4_Global *g);
+BOOL _ZN11CommManager12isSlotActiveEi(CommManager *g, s32 v);
+BOOL _ZN11CommManager8isOnlineEv(CommManager *g);
 void CommSyncVar_SetVar(s32 a, void *args, s32 b, s32 c);
 void NpcNetRecord_SetSlots(void *a, u32 b, u32 c);
 s32 NpcNetRecord_GetSlots(s32 a, s32 b, void *c);
@@ -2142,7 +2133,7 @@ void NpcActor::addMood(u32, s32) {
 
 BOOL NpcActor::isNetOwner() {
     using namespace nR;
-    Unk_020d77a4_Global *g = gCommManager;
+    CommManager *g = gCommManager;
     if (_ZN11CommManager8isOnlineEv(g) != 0 && netSyncOff == 0) {
         u8 *p = NpcNetRecord_GetVar(&npcHandle);
         if (p != NULL && p[0] != 0) {
@@ -9234,7 +9225,7 @@ void HeldToolModel::update(Unk_02006d14 *p) {
     HeldItemModel *r = _ZN16NpcResHandleView16getHeldItemModelEv(&modelHandle);
     if (r) {
         u32 v = p->modelAnimFrameStep;
-        Unk_0205dfa4_9c &s = *HeldItemModel_GetModel(r);
+        Unk_0205dfa4_Sub &s = *HeldItemModel_GetModel(r);
         s.frameStep = v;
         HeldItemModel_Update(r);
     }

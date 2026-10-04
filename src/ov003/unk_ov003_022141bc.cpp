@@ -1,6 +1,6 @@
 // mwcc-version: 1.2/sp2
 #include "types.h"
-#include "actor/Unk_ov003_SceneEntry.h"
+#include "actor/ActorProfile.h"
 #include "game/Unk_ov003_Vec.h"
 #include "talk/TalkWindowState.h"
 #include "sys/ProcBase.h"
@@ -9,6 +9,7 @@
 #include "talk/MsgRequest.h"
 #include "talk/TalkMsgRequest.h"
 #include "town/BuildingActor.h"
+#include "gfx/DebugColor.h"
 
 
 
@@ -21,17 +22,6 @@
 
 
 class Unk_020b1ddc;
-
-
-struct Unk_ov003_02230df4_Color {
-    u8 a, b, c, d;
-    Unk_ov003_02230df4_Color(u8 a_, u8 b_, u8 c_, u8 d_) {
-        a = a_;
-        b = b_;
-        c = c_;
-        d = d_;
-    }
-};
 
 
 extern "C" {
@@ -69,13 +59,13 @@ extern "C" void BulletinBoard_Create();
 typedef void (BulletinBoard::*Unk_02214208_Fn)();
 typedef BOOL (BulletinBoard::*Unk_02214284_Fn)();
 
-extern "C" Unk_ov003_02230df4_Color data_ov003_02235110(0x1f, 0x14, 0x14, 0x1f);
-extern "C" Unk_ov003_02230df4_Color data_ov003_02235100(0x14, 0x14, 0x1f, 0x1f);
-extern "C" Unk_ov003_02230df4_Color data_ov003_02235104(0x1f, 0x1f, 0x14, 0x1f);
-extern "C" Unk_ov003_02230df4_Color data_ov003_022350fc(0x14, 0x1f, 0x14, 0x1f);
-extern "C" Unk_ov003_02230df4_Color data_ov003_022350f8(0x14, 0x1f, 0x1f, 0x1f);
-extern "C" Unk_ov003_02230df4_Color data_ov003_022350f4(0x14, 0x18, 0x18, 0x1f);
-extern "C" Unk_ov003_SceneEntry sBulletinBoardProfile = {(void *(*)())BulletinBoard_Create, 0x22, 0x28, 0, 0xc8000, 0x12c000, 0x258000};
+extern "C" DebugColor data_ov003_02235110(0x1f, 0x14, 0x14, 0x1f);
+extern "C" DebugColor data_ov003_02235100(0x14, 0x14, 0x1f, 0x1f);
+extern "C" DebugColor data_ov003_02235104(0x1f, 0x1f, 0x14, 0x1f);
+extern "C" DebugColor data_ov003_022350fc(0x14, 0x1f, 0x14, 0x1f);
+extern "C" DebugColor data_ov003_022350f8(0x14, 0x1f, 0x1f, 0x1f);
+extern "C" DebugColor data_ov003_022350f4(0x14, 0x18, 0x18, 0x1f);
+extern "C" ActorProfile sBulletinBoardProfile = {(void *(*)())BulletinBoard_Create, 0x22, 0x28, 0, 0xc8000, 0x12c000, 0x258000};
 
 extern "C" void BulletinBoard_Create() {
     new BulletinBoard;

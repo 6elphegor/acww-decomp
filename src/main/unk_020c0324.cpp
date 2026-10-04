@@ -1,7 +1,6 @@
 #include "types.h"
 #include "net/CommManager.h"
 #include "gfx/Unk_020bfe30_Vec.h"
-#include "npc/Unk_020c0538_Out.h"
 #include "game/Unk_020d77a4_Vec3.h"
 #include "npc/NpcAnimCtrl.h"
 #include "npc/NpcSpeechState.h"
@@ -669,9 +668,9 @@ void SpNpcKatieTalk::onEventTag(u32 p_) {
 }
 
 void SpNpcKatieTalk::start(TalkStartMsg *out_) {
-    Unk_020c0538_Out *out = (Unk_020c0538_Out *)out_;
+    TalkStartMsg *out = (TalkStartMsg *)out_;
     void *t = PlayerData_GetCurrent();
-    out->msgKey = (u32)sSpNpcKatieMsgKey;
+    out->msgKey = (const char *)sSpNpcKatieMsgKey;
     switch (getTopic()) {
     case 0:
         _ZN12Unk_02097ff47setFlagEj(t, 0x33);

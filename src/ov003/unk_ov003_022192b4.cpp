@@ -7,6 +7,7 @@
 #include "game/UnitShapeQueryX.h"
 #include "gfx/CachedModel.h"
 #include "field/FieldObjectShapeQuery.h"
+#include "gfx/Unk_02093dc8_Obj.h"
 
 // ================================================================ other modules' real names
 #define CommManager_isOnline _ZN11CommManager8isOnlineEv
@@ -887,14 +888,8 @@ struct Unk_ov003_0221ca7c_P {
     u16 unk_06;
     s16 unk_08;
 };
-struct Unk_ov003_0221c91c_A {
-    s32 unk_00;
-    s32 posX;
-    s32 posY;
-    s32 posZ;
-};
 struct Unk_ov003_0221c91c_B {
-    Unk_ov003_0221c91c_A *header;
+    Unk_02093dc8_Root *header;
 };
 struct Unk_ov003_0221c91c_Tgt {
     u8 pad_00[0x18];

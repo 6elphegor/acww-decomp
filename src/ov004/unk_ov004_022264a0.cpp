@@ -1,7 +1,7 @@
 // mwcc-version: 1.2/base
 // mwcc-flags: -str reuse
 #include "types.h"
-#include "actor/Unk_ov004_SceneEntry.h"
+#include "actor/ActorProfile.h"
 #include "actor/CharacterListNode.h"
 #include "game/Unk_ov004_02224ee4_Vec.h"
 #include "gfx/AnimFrameCtrl.h"
@@ -350,7 +350,7 @@ extern "C" { extern void *data_ov004_0224d938[2]; }
 extern "C" { extern void *data_ov004_0224d958[2]; }
 extern "C" { extern void *data_ov004_0224d928[2]; }
 extern "C" { extern void *data_ov004_0224d8c8[2]; }
-extern "C" { extern Unk_ov004_Scene_Entry sCafeCoffeeSetProfile; }// declarations (definition order below sets the data layout)
+extern "C" { extern ActorProfile sCafeCoffeeSetProfile; }// declarations (definition order below sets the data layout)
 extern "C" { extern FxVec3 data_ov004_02250d2c; }
 extern "C" { extern FxVec3 data_ov004_02250d44; }
 extern "C" { extern void *data_ov004_0224d938[2]; }
@@ -378,7 +378,7 @@ extern "C" { extern void *data_ov004_0224d920[2]; }
 extern "C" { extern void *data_ov004_0224d8d8[2]; }
 extern "C" { extern void *volatile sCafeCoffeeSet; }
 extern "C" { extern void *data_ov004_0224d8c8[2]; }
-extern "C" { extern Unk_ov004_Scene_Entry sCafeCoffeeSetProfile; }
+extern "C" { extern ActorProfile sCafeCoffeeSetProfile; }
 
 extern "C" FxVec3 data_ov004_02250d2c(0, 0, 0);
 
@@ -680,7 +680,7 @@ void CafeCoffeeSet_UpdateState(ObjB *o) {
 // ---------------------------------------------------------------- data
 extern "C" void *data_ov004_0224d8c8[2] = {(void *)CafeCoffeeSet_EnterState00, 0};
 
-extern "C" Unk_ov004_Scene_Entry sCafeCoffeeSetProfile = {(void *(*)())CafeCoffeeSet_Create, 0x64, 0x13, 0, 0xc8000, 0x12c000, 0x258000};
+extern "C" ActorProfile sCafeCoffeeSetProfile = {(void *(*)())CafeCoffeeSet_Create, 0x64, 0x13, 0, 0xc8000, 0x12c000, 0x258000};
 
 // @222700c
 BOOL CafeCoffeeSet_EnterState00(ObjB *o) {

@@ -7,6 +7,7 @@
 #include "game/TouchPicker.h"
 #include "sys/SceneBase.h"
 #include "game/SceneWarp.h"
+#include "sys/ProcProfile.h"
 
 #define reg_4000358 (*(u32 *)0x4000358)
 #define reg_4000008 (*(u16 *)0x4000008)
@@ -85,12 +86,6 @@ struct Unk_020d0d28_Ent {
 };
 
 struct B5890 { u8 pad[0x14]; u8 lo : 2; u8 idx : 6; };
-
-struct Unk_020b5d5c_Rec {
-    void *f;
-    u16 a;
-    u16 b;
-};
 
 
 
@@ -558,7 +553,7 @@ u8 sSceneFieldKinds[0x34] = {
     0x01, 0x00, 0x01, 0x00,
 };
 
-Unk_020b5d5c_Rec sFieldSceneProfile = {(void *)FieldScene_Create, 6, 0xd4};
+ProcProfile sFieldSceneProfile = {(void *(*)())FieldScene_Create, 6, 0xd4};
 
 const u8 sSceneSkyKinds[0x34] = {
     0x01, 0x02, 0x02, 0x02, 0x02, 0x02, 0x00, 0x02, 0x02, 0x02, 0x02, 0x02, 0x00, 0x00, 0x00, 0x02,

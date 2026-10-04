@@ -21,7 +21,7 @@
 #include "actor/SpNpcActor.h"
 #include "talk/ActorTalkRequest.h"
 #include "talk/SpNpcTalkRequest.h"
-#include "actor/Unk_ov004_SceneEntry.h"
+#include "actor/ActorProfile.h"
 
 // Real (mangled) names of other modules' functions that the unit calls as plain functions taking the object first.
 #define NpcAnimCtrl_playAnim _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti
@@ -136,7 +136,7 @@ extern "C" SpNpcTortimer *SpNpcTortimer_Create();
 extern "C" {
 u8 sSpNpcTortimerTexturePath[27] = "npc_sp/model/ttl_tex.nsbtx";
 u8 sSpNpcTortimerModelPath[23] = "npc_sp/model/ttl.nsbmd";
-Unk_ov004_SceneEntry sSpNpcTortimerProfile = {(void *(*)())SpNpcTortimer_Create, 0x56, 0x5d, 2, 0x5000, 0x5000, 0x3e800};
+ActorProfile sSpNpcTortimerProfile = {(void *(*)())SpNpcTortimer_Create, 0x56, 0x5d, 2, 0x5000, 0x5000, 0x3e800};
 }
 
 

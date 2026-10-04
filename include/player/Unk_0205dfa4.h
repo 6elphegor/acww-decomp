@@ -6,12 +6,10 @@
 
 // Held-item model (HeldItemModel_GetModel): an opaque 0x9c-byte base followed by the animation-frame counter.
 // Used in src/main/unk_02004558.cpp (+ _extra.cpp) and src/main/unk_020119cc.cpp, which named the two bases
-// Unk_0205dfa4_Prim / Unk_0205dfa4_9c (same layouts, kept as typedefs).
+// Unk_0205dfa4_Base / Unk_0205dfa4_Sub (same layouts, kept as typedefs).
 
 struct Unk_0205dfa4 : Unk_0205dfa4_Base, Unk_0205dfa4_Sub {
 };
 
-typedef Unk_0205dfa4_Base Unk_0205dfa4_Prim;
-typedef Unk_0205dfa4_Sub Unk_0205dfa4_9c;
 
 #endif

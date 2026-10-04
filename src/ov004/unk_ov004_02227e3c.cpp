@@ -1,7 +1,7 @@
 // mwcc-version: 1.2/sp2
 #include "types.h"
-#include "gfx/Unk_ov004_Rgba.h"
-#include "actor/Unk_ov004_SceneEntry.h"
+#include "gfx/DebugColor.h"
+#include "actor/ActorProfile.h"
 #include "actor/CharacterListNode.h"
 #include "game/Unk_ov004_02224ee4_Vec.h"
 #include "gfx/AnimFrameCtrl.h"
@@ -179,30 +179,30 @@ s32 _ZN12RoomObjActor14storeSyncStateEv(void *self, s32 a);
 RecycleBox *RecycleBox_Create();
 RecycleBox *RecycleBox_GetInstance();
 }// declarations (definition order below sets the data layout)
-extern "C" { extern Unk_ov004_Rgba data_ov004_02250e70; }
-extern "C" { extern Unk_ov004_Rgba data_ov004_02250e64; }
-extern "C" { extern Unk_ov004_Rgba data_ov004_02250e60; }
-extern "C" { extern Unk_ov004_Rgba data_ov004_02250e6c; }
-extern "C" { extern Unk_ov004_Rgba data_ov004_02250e5c; }
-extern "C" { extern Unk_ov004_Rgba data_ov004_02250e4c; }
-extern "C" { extern Unk_ov004_Scene_Entry sRecycleBoxProfile; }
+extern "C" { extern DebugColor data_ov004_02250e70; }
+extern "C" { extern DebugColor data_ov004_02250e64; }
+extern "C" { extern DebugColor data_ov004_02250e60; }
+extern "C" { extern DebugColor data_ov004_02250e6c; }
+extern "C" { extern DebugColor data_ov004_02250e5c; }
+extern "C" { extern DebugColor data_ov004_02250e4c; }
+extern "C" { extern ActorProfile sRecycleBoxProfile; }
 extern "C" { extern char sRecycleBoxMsgFile[0x10]; }
 extern "C" { extern char *sRecycleBoxMsgFilePtr; }
 extern "C" { extern RecycleBox *sRecycleBox; }
 
-extern "C" Unk_ov004_Rgba data_ov004_02250e70(31, 20, 20, 31);
+extern "C" DebugColor data_ov004_02250e70(31, 20, 20, 31);
 
-extern "C" Unk_ov004_Rgba data_ov004_02250e64(20, 20, 31, 31);
+extern "C" DebugColor data_ov004_02250e64(20, 20, 31, 31);
 
-extern "C" Unk_ov004_Rgba data_ov004_02250e60(31, 31, 20, 31);
+extern "C" DebugColor data_ov004_02250e60(31, 31, 20, 31);
 
-extern "C" Unk_ov004_Rgba data_ov004_02250e6c(20, 31, 20, 31);
+extern "C" DebugColor data_ov004_02250e6c(20, 31, 20, 31);
 
-extern "C" Unk_ov004_Rgba data_ov004_02250e5c(20, 31, 31, 31);
+extern "C" DebugColor data_ov004_02250e5c(20, 31, 31, 31);
 
-extern "C" Unk_ov004_Rgba data_ov004_02250e4c(20, 24, 24, 31);
+extern "C" DebugColor data_ov004_02250e4c(20, 24, 24, 31);
 
-extern "C" Unk_ov004_Scene_Entry sRecycleBoxProfile = {(void *(*)())RecycleBox_Create, 0x12, 0x16, 0, 0xc8000, 0x12c000, 0x258000};
+extern "C" ActorProfile sRecycleBoxProfile = {(void *(*)())RecycleBox_Create, 0x12, 0x16, 0, 0xc8000, 0x12c000, 0x258000};
 
 // ---------------------------------------------------------------- data
 extern "C" char sRecycleBoxMsgFile[0x10] = "sp_npc_trash";

@@ -8,6 +8,7 @@
 #include "game/GroundInfoBase.h"
 #include "gfx/ModelAnim.h"
 #include "game/GroundInfo.h"
+#include "sys/ProcProfile.h"
 
 // ---- main / runtime symbols by their real names
 #define func_02000c8c _ZN6FxVec3D1Ev
@@ -1072,12 +1073,6 @@ void Vec_RotateY(void *v, s32 a);
 void func_ov004_02237690(void *p);
 }
 
-// ---- data (original order is set by definition order)
-struct Unk_ov004_0224ec54 {
-    void *(*create)();
-    u16 executePriority;
-    u16 drawPriority;
-};
 
 extern "C" {
 void _ZN18Unk_ov004_0223943415setupLanternFlyEv(void *self);
@@ -1119,7 +1114,7 @@ void _ZN18Unk_ov004_0223943420setupCommonButterflyEv(void *self);
 void _ZN18Unk_ov004_0223943415updateButterflyEv(void *self);
 }
 
-extern "C" Unk_ov004_0224ec54 sMuseumInsectRoomProfile = {MuseumInsectRoom_Create, 0xbe, 0xc1};
+extern "C" ProcProfile sMuseumInsectRoomProfile = {MuseumInsectRoom_Create, 0xbe, 0xc1};
 extern "C" s8 sMuseumScorpionSlot = -1;
 extern "C" s8 sMuseumDungBallSlot = -1;
 extern "C" V3_7690 sMuseumFleaDrawScale = {0x2000, 0x2000, 0x2000};

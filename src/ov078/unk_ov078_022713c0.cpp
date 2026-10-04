@@ -29,7 +29,8 @@
 #include "actor/SpNpcActor.h"
 #include "talk/ActorTalkRequest.h"
 #include "talk/SpNpcTalkRequest.h"
-#include "actor/Unk_ov004_SceneEntry.h"
+#include "actor/ActorProfile.h"
+#include "gfx/DebugColor.h"
 
 
 class ActorTalkRequest;
@@ -181,16 +182,6 @@ struct Unk_ov078_02272030_Ent {
 typedef BOOL (SpNpcSaharah::*Unk_ov078_Fn)();
 
 
-struct Unk_ov078_Col {
-    u8 a, b, c, d;
-    Unk_ov078_Col(u8 a_, u8 b_, u8 c_, u8 d_) {
-        a = a_;
-        b = b_;
-        c = c_;
-        d = d_;
-    }
-};
-
 extern "C" {
 void _ZN12SpNpcSaharah10setupAct00Ev();
 extern void *data_ov078_022723f8[2];
@@ -211,33 +202,33 @@ extern void *data_ov078_022723e8[2];
 void _ZN12SpNpcSaharah9mainAct04Ev();
 extern void *data_ov078_022723f0[2];
 extern Unk_ov078_02272030_Ent sSpNpcSaharahActTable[5];
-extern Unk_ov078_Col data_ov078_022725c4;
-extern Unk_ov078_Col data_ov078_022725d0;
-extern Unk_ov078_Col data_ov078_022725d4;
-extern Unk_ov078_Col data_ov078_022725c8;
-extern Unk_ov078_Col data_ov078_022725cc;
-extern Unk_ov078_Col data_ov078_022725c0;
+extern DebugColor data_ov078_022725c4;
+extern DebugColor data_ov078_022725d0;
+extern DebugColor data_ov078_022725d4;
+extern DebugColor data_ov078_022725c8;
+extern DebugColor data_ov078_022725cc;
+extern DebugColor data_ov078_022725c0;
 extern FxVec3 sSpNpcSaharahSideStepOffsets[2];
 extern u8 sSpNpcSaharahModelPath[];
 extern u8 sSpNpcSaharahTexturePath[];
-extern Unk_ov004_SceneEntry sSpNpcSaharahProfile;
+extern ActorProfile sSpNpcSaharahProfile;
 SpNpcSaharah *SpNpcSaharah_Create();
 }
 
-Unk_ov078_Col data_ov078_022725c4(0x1f, 0x14, 0x14, 0x1f);
+DebugColor data_ov078_022725c4(0x1f, 0x14, 0x14, 0x1f);
 extern "C" void *data_ov078_022723e0[2] = {(void *)_ZN12SpNpcSaharah9mainAct01Ev, 0};
 extern "C" void *data_ov078_022723d8[2] = {(void *)_ZN12SpNpcSaharah9mainAct03Ev, 0};
-extern "C" Unk_ov004_SceneEntry sSpNpcSaharahProfile = {(void *(*)())SpNpcSaharah_Create, 0x6a, 0x70, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" ActorProfile sSpNpcSaharahProfile = {(void *(*)())SpNpcSaharah_Create, 0x6a, 0x70, 2, 0x5000, 0x5000, 0x3e800};
 extern "C" void *data_ov078_022723c0[2] = {(void *)_ZN12SpNpcSaharah10setupAct02Ev, 0};
 extern "C" void *data_ov078_022723d0[2] = {(void *)_ZN12SpNpcSaharah10setupAct03Ev, 0};
-Unk_ov078_Col data_ov078_022725d0(0x14, 0x14, 0x1f, 0x1f);
-Unk_ov078_Col data_ov078_022725d4(0x1f, 0x1f, 0x14, 0x1f);
-Unk_ov078_Col data_ov078_022725c8(0x14, 0x1f, 0x14, 0x1f);
+DebugColor data_ov078_022725d0(0x14, 0x14, 0x1f, 0x1f);
+DebugColor data_ov078_022725d4(0x1f, 0x1f, 0x14, 0x1f);
+DebugColor data_ov078_022725c8(0x14, 0x1f, 0x14, 0x1f);
 extern "C" u8 sSpNpcSaharahModelPath[] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 'c', 'm', 'l', '.', 'n', 's', 'b', 'm', 'd', 0};
 extern "C" u8 sSpNpcSaharahTexturePath[] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 'c', 'm', 'l', '_', 't', 'e', 'x', '.', 'n', 's', 'b', 't', 'x', 0};
 extern "C" void *data_ov078_022723e8[2] = {(void *)_ZN12SpNpcSaharah10setupAct04Ev, 0};
-Unk_ov078_Col data_ov078_022725cc(0x14, 0x1f, 0x1f, 0x1f);
-Unk_ov078_Col data_ov078_022725c0(0x14, 0x18, 0x18, 0x1f);
+DebugColor data_ov078_022725cc(0x14, 0x1f, 0x1f, 0x1f);
+DebugColor data_ov078_022725c0(0x14, 0x18, 0x18, 0x1f);
 Unk_ov078_02272030_Ent sSpNpcSaharahActTable[5] = {
     {*(Unk_ov078_Fn *)data_ov078_022723f8, *(Unk_ov078_Fn *)data_ov078_02272400},
     {NULL, *(Unk_ov078_Fn *)data_ov078_022723e0},

@@ -25,7 +25,7 @@
 #include "actor/SpNpcActor.h"
 #include "talk/ActorTalkRequest.h"
 #include "talk/SpNpcTalkRequest.h"
-#include "actor/Unk_ov004_SceneEntry.h"
+#include "actor/ActorProfile.h"
 
 
 
@@ -41,11 +41,6 @@ struct Unk_ov053_02258e7c_Loc : Unk_ov053_Vec {
     Unk_ov053_02258e7c_Loc() {}
 };
 
-
-struct Unk_ov053_02259428_Ent {
-    const void *p;
-    u8 v;
-};
 
 
 
@@ -160,7 +155,7 @@ extern const void *sSpNpcHarrietMsgKey;
 extern char sSpNpcHarrietKey[];
 extern u8 sSpNpcHarrietModelPath[];
 extern u8 sSpNpcHarrietTexturePath[];
-extern Unk_ov004_SceneEntry sSpNpcHarrietProfile;
+extern ActorProfile sSpNpcHarrietProfile;
 extern Unk_ov053_02259ee4_Ent sSpNpcHarrietActTable[11];
 #define data_ov053_0225a62c ((Unk_ov053_02259ee4_Ent *)((u8 *)sSpNpcHarrietActTable + 8))
 SpNpcHarriet *SpNpcHarriet_Create();
@@ -283,7 +278,7 @@ extern "C" void *data_ov053_0225a3e4[2];
 extern "C" void *data_ov053_0225a3ec[2];
 
 extern "C" void *data_ov053_0225a374[2] = {(void *)_ZN12SpNpcHarriet10setupAct09Ev, 0};
-extern "C" Unk_ov004_SceneEntry sSpNpcHarrietProfile = {(void *(*)())SpNpcHarriet_Create, 0x61, 0x68, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" ActorProfile sSpNpcHarrietProfile = {(void *(*)())SpNpcHarriet_Create, 0x61, 0x68, 2, 0x5000, 0x5000, 0x3e800};
 extern "C" void *data_ov053_0225a39c[2] = {(void *)_ZN12SpNpcHarriet9mainAct06Ev, 0};
 extern "C" void *data_ov053_0225a38c[2] = {(void *)_ZN12SpNpcHarriet9mainAct0AEv, 0};
 extern "C" const void *sSpNpcHarrietMsgKey = sSpNpcHarrietKey;
@@ -715,15 +710,15 @@ s32 SpNpcHarrietTalk::getTopic() {
 
 void SpNpcHarrietTalk::start(TalkStartMsg *out) {
     void *p = PlayerData_GetCurrent();
-    static Unk_ov053_02259428_Ent tbl[14] = {
-        {sSpNpcHarrietMsgKey, 0x43}, {sSpNpcHarrietMsgKey, 0},    {sSpNpcHarrietMsgKey, 2},
-        {sSpNpcHarrietMsgKey, 0x40}, {sSpNpcHarrietMsgKey, 0x3e}, {sSpNpcHarrietMsgKey, 0xd},
-        {sSpNpcHarrietMsgKey, 0x3d}, {sSpNpcHarrietMsgKey, 0x45}, {sSpNpcHarrietMsgKey, 0x42},
-        {sSpNpcHarrietMsgKey, 0x41}, {sSpNpcHarrietMsgKey, 0x46}, {sSpNpcHarrietMsgKey, 5},
-        {sSpNpcHarrietMsgKey, 6},    {sSpNpcHarrietMsgKey, 7},
+    static TalkStartMsg tbl[14] = {
+        {(const char *)sSpNpcHarrietMsgKey, 0x43}, {(const char *)sSpNpcHarrietMsgKey, 0},    {(const char *)sSpNpcHarrietMsgKey, 2},
+        {(const char *)sSpNpcHarrietMsgKey, 0x40}, {(const char *)sSpNpcHarrietMsgKey, 0x3e}, {(const char *)sSpNpcHarrietMsgKey, 0xd},
+        {(const char *)sSpNpcHarrietMsgKey, 0x3d}, {(const char *)sSpNpcHarrietMsgKey, 0x45}, {(const char *)sSpNpcHarrietMsgKey, 0x42},
+        {(const char *)sSpNpcHarrietMsgKey, 0x41}, {(const char *)sSpNpcHarrietMsgKey, 0x46}, {(const char *)sSpNpcHarrietMsgKey, 5},
+        {(const char *)sSpNpcHarrietMsgKey, 6},    {(const char *)sSpNpcHarrietMsgKey, 7},
     };
     if (getTopic() == 4) {
-        out->msgKey = (const char *)tbl[topic].p;
+        out->msgKey = (const char *)tbl[topic].msgKey;
         out->msgIndex = getQuestionsStartMsg();
     } else {
         if (getTopic() != 0 && getTopic() != 3 && getTopic() != 5 &&
@@ -745,8 +740,8 @@ void SpNpcHarrietTalk::start(TalkStartMsg *out) {
             }
         }
         if (topic >= 0 && topic < 0xe) {
-            out->msgIndex = tbl[topic].v;
-            out->msgKey = (const char *)tbl[topic].p;
+            out->msgIndex = tbl[topic].msgIndex;
+            out->msgKey = (const char *)tbl[topic].msgKey;
         }
     }
 }

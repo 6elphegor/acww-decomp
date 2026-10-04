@@ -12,6 +12,7 @@
 #include "actor/Character.h"
 #include "gfx/AnimModel.h"
 #include "room/RoomObjActor.h"
+#include "talk/TalkWindowState.h"
 
 extern "C" {
 void _ZN19PlayerActionRequestC1Ev(void *self);
@@ -2080,12 +2081,6 @@ struct Unk_ov004_02222874_Tgt {
     s16 h;
 };
 
-struct Unk_ov004_02222874_Rt {
-    u32 unk_00;
-    u32 state;
-    u32 nextState;
-};
-
 class Unk_ov004_02222874_Msg {
 public:
     inline Unk_ov004_02222874_Msg() { _ZN19PlayerActionRequestC1Ev(this); }
@@ -2114,7 +2109,7 @@ public:
     u8 pad_04[0x1e - 4];
     u8 msgIndex;
     u8 pad_1f[0x3c - 0x1f];
-    Unk_ov004_02222874_Rt *window;
+    TalkWindowState *window;
     u8 pad_40[0x51 - 0x40];
     u8 actionHeld;
     u8 pad_52[0x60 - 0x52];
@@ -4501,12 +4496,6 @@ struct Unk_ov004_02220314_Bits {
     u32 hi : 4;
 };
 
-struct Unk_ov004_02220314_Ptr {
-    s32 unk_00;
-    s32 state;
-    s32 nextState;
-};
-
 struct Unk_ov004_02220314_Msgp {
     u8 pad_00[0xc];
     Unk_ov004_02220314_Pay args;
@@ -4534,7 +4523,7 @@ struct Unk_ov004_02220314_Obj {
     u8 pad_90[0x10a - 0x90];
     u8 msgIndex;
     u8 pad_10b[0x128 - 0x10b];
-    Unk_ov004_02220314_Ptr *window;
+    TalkWindowState *window;
     u8 pad_12c[0x2cc - 0x12c];
     u32 bodyAnimCtrl;
     u32 bodyAnimNumFrames;
@@ -4990,7 +4979,7 @@ extern "C" void PlayerActor_LeaveRoomCheckArrive(Obj *o) {
             break;
         }
         case 3: {
-            Unk_ov004_02220314_Ptr *q = o->window;
+            TalkWindowState *q = o->window;
             if (q != 0) {
                 if (q->state != 0) {
                     *st = *st + 1;
@@ -4999,7 +4988,7 @@ extern "C" void PlayerActor_LeaveRoomCheckArrive(Obj *o) {
             break;
         }
         case 4: {
-            Unk_ov004_02220314_Ptr *q = o->window;
+            TalkWindowState *q = o->window;
             if (q != 0) {
                 if (q->state == 0) {
                     struct { u32 pad; V3 a; V3 b; } l;

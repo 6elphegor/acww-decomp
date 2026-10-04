@@ -23,18 +23,14 @@
 #include "actor/SpNpcActor.h"
 #include "talk/ActorTalkRequest.h"
 #include "talk/SpNpcTalkRequest.h"
-#include "actor/Unk_ov004_SceneEntry.h"
+#include "actor/ActorProfile.h"
+#include "net/CommManager.h"
 
 
 class ActorTalkRequest;
 class NpcActor;
 class SpNpcBlathers;
 class SpNpcBlathersTalk;
-
-struct Unk_ov047_02258e34_Global {
-    u8 pad_00[0x64];
-    s32 myAid;
-};
 
 
 struct Unk_ov047_0225a074_Buf {
@@ -64,7 +60,7 @@ typedef BOOL (*Unk_ov047_Cb)(u16 *p, s32 m);
 typedef BOOL (SpNpcBlathers::*Unk_ov047_0225aeb4_Fn)();
 
 extern "C" {
-extern Unk_ov047_02258e34_Global *gCommManager;
+extern CommManager *gCommManager;
 extern u16 data_020c6cc8;
 extern s32 data_020c6d1c;
 extern Unk_ov046_0225a11c_Vec gVec3Zero;
@@ -460,7 +456,7 @@ extern "C" void SpNpcBlathersTalk_GetScript(SpNpcBlathersTalk *self, SpNpcBlathe
 extern "C" u8 sSpNpcBlathersModelPath[];
 extern "C" u8 sSpNpcBlathersTexturePath[];
 extern "C" const u8 sSpNpcBlathersDramaMsgTable[32];
-extern "C" Unk_ov004_SceneEntry sSpNpcBlathersProfile;
+extern "C" ActorProfile sSpNpcBlathersProfile;
 extern Unk_ov047_0225aeb4_Ent sSpNpcBlathersActTable[9];
 
 struct Unk_ov047_022592b8_Byte {
@@ -1111,7 +1107,7 @@ extern "C" void *data_ov047_0225b520[2] = {(void *)_ZN17SpNpcBlathersTalk20retur
 extern "C" void *data_ov047_0225b518[2] = {(void *)_ZN17SpNpcBlathersTalk24scriptDonationItemChosenEv, 0};
 extern "C" void *data_ov047_0225b510[2] = {(void *)_ZN17SpNpcBlathersTalk25scriptAppraisalItemChosenEv, 0};
 extern "C" void *data_ov047_0225b508[2] = {(void *)_ZN17SpNpcBlathersTalk24scriptDeliveryItemChosenEv, 0};
-extern "C" Unk_ov004_SceneEntry sSpNpcBlathersProfile = {(void *(*)())SpNpcBlathers_Create, 0x6e, 0x74, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" ActorProfile sSpNpcBlathersProfile = {(void *(*)())SpNpcBlathers_Create, 0x6e, 0x74, 2, 0x5000, 0x5000, 0x3e800};
 extern "C" void *data_ov047_0225b4f8[2] = {(void *)_ZN17SpNpcBlathersTalk21scriptCloseItemSelectEv, 0};
 extern "C" void *data_ov047_0225b400[2] = {(void *)_ZN17SpNpcBlathersTalk15openExhibitListEv, 0};
 
@@ -1773,7 +1769,7 @@ void SpNpcBlathers::onInteractionEvent(u32 cmd, u8 arg) {
     case 8:
         if (arg == 4) {
             if (NetArea_IsLocalOwner()) {
-                Unk_ov047_02258e34_Global *gl = gCommManager;
+                CommManager *gl = gCommManager;
                 netSetSlotsIfOwner(1, gl->myAid, 4);
                 if (CommManager_isOnline(gl) || *DebugVar_GetPtr(0, 0x4a) != 0) {
                     changeAct(0);

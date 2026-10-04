@@ -19,7 +19,8 @@
 #include "actor/SpNpcActor.h"
 #include "talk/ActorTalkRequest.h"
 #include "talk/SpNpcTalkRequest.h"
-#include "actor/Unk_ov004_SceneEntry.h"
+#include "actor/ActorProfile.h"
+#include "net/CommManager.h"
 
 #define Actor_findByProfile _ZN5Actor13findByProfileEjPS_
 #define VillagerId_getName _ZN10VillagerId7getNameEj
@@ -103,29 +104,14 @@ struct Unk_ov050_02258f80_Loc : Unk_ov050_022590f8_Vec {
     Unk_ov050_02258f80_Loc() {}
 };
 
-struct Unk_020cbb18_Ov050 {
-    u8 pad_00[0x64];
-    s32 myAid;
-};
-
 struct Unk_ov050_022598e0_Buf {
     u8 a;
     u8 b;
     u8 pad[6];
 };
 
-struct Unk_ov050_0225a888_Out {
-    const void *msgKey;
-    u8 msgIndex;
-};
-
 struct Unk_ov050_0225b908_Out {
     u8 *msgKey;
-    u8 msgIndex;
-};
-
-struct Unk_ov050_0225b7f4_Out {
-    const void *msgKey;
     u8 msgIndex;
 };
 
@@ -155,12 +141,6 @@ struct Unk_ov050_0225c0a0_Msg {
     u16 unk_04;
 };
 
-
-struct Unk_ov050_MsgRow {
-    const char *name;
-    u8 id;
-    u8 pad[3];
-};
 
 
 
@@ -197,9 +177,9 @@ public:
     virtual void pickArbeitStartMsg0D(Unk_ov050_0225b908_Out *out);
     virtual void pickArbeitStartMsg0E(Unk_ov050_0225b908_Out *out);
     virtual void pickArbeitStartMsg0F(Unk_ov050_0225b908_Out *out);
-    virtual void pickArbeitStartMsg10(Unk_ov050_0225b7f4_Out *out);
-    virtual void pickArbeitStartMsg11(Unk_ov050_0225b7f4_Out *out);
-    virtual void pickArbeitStartMsg12(Unk_ov050_0225b7f4_Out *out);
+    virtual void pickArbeitStartMsg10(TalkStartMsg *out);
+    virtual void pickArbeitStartMsg11(TalkStartMsg *out);
+    virtual void pickArbeitStartMsg12(TalkStartMsg *out);
     virtual void onArbeitMessageEnd();
 
     s32 buySelectedItem();
@@ -380,7 +360,7 @@ struct Unk_ov050_0225b5a8_Row {
 
 extern "C" {
 extern u16 data_020c6cc8;
-extern Unk_020cbb18_Ov050 *gCommManager;
+extern CommManager *gCommManager;
 extern u8 gFieldSceneKind;
 extern s16 data_02135f44[];
 extern u32 data_0213a740[];
@@ -404,7 +384,7 @@ extern const s32 data_ov050_0225da40[3];
 extern const u8 sSpNpcNookShopRoofColorChoices[16];
 extern const u8 sSpNpcNookShopDramaMsgTable[32];
 extern const s32 sSpNpcNookShopItemTopicTable[6][2];
-extern const Unk_ov050_MsgRow sSpNpcNookShopTopicTable[31];
+extern const TalkStartMsg sSpNpcNookShopTopicTable[31];
 extern char sSpNpcNookShopTwinsKey[];
 extern char sSpNpcNookShopDramaKey[];
 extern char sSpNpcNookShopKey[];
@@ -1569,7 +1549,7 @@ extern "C" void *data_ov050_0225dff0[2];
 extern "C" void *data_ov050_0225dfe8[2];
 extern "C" char sSpNpcNookShopTwinsKey[];
 extern "C" char sSpNpcNookShopDramaKey[];
-extern "C" const Unk_ov050_MsgRow sSpNpcNookShopTopicTable[31];
+extern "C" const TalkStartMsg sSpNpcNookShopTopicTable[31];
 extern "C" void *data_ov050_0225dfa8[2];
 extern "C" void *data_ov050_0225dfb8[2];
 extern "C" void *data_ov050_0225e040[2];
@@ -1626,9 +1606,9 @@ extern "C" void *data_ov050_0225dee8[2];
 extern "C" void *data_ov050_0225dfe0[2];
 extern "C" void *data_ov050_0225dfd0[2];
 extern "C" void *data_ov050_0225e178[2];
-extern "C" Unk_ov004_SceneEntry sSpNpcNookShopProfile;
-extern "C" Unk_ov004_SceneEntry sSpNpcTimmyProfile;
-extern "C" Unk_ov004_SceneEntry sSpNpcTommyProfile;
+extern "C" ActorProfile sSpNpcNookShopProfile;
+extern "C" ActorProfile sSpNpcTimmyProfile;
+extern "C" ActorProfile sSpNpcTommyProfile;
 extern "C" Unk_ov050_0225d1d4_Ent sSpNpcNookShopActTable[19];// Declarations for data defined further down (definition order sets the data layout)
 extern "C" void *data_ov050_0225de48[2];
 extern "C" void *data_ov050_0225de10[2];
@@ -1646,9 +1626,9 @@ extern "C" void *data_ov050_0225de98[2];
 extern "C" char sSpNpcNookShopKey[];
 extern "C" char *sSpNpcNookShopTexturePaths[5];
 extern "C" char *sSpNpcNookShopModelPaths[5];
-extern "C" Unk_ov004_SceneEntry sSpNpcNookShopProfile;
-extern "C" Unk_ov004_SceneEntry sSpNpcTimmyProfile;
-extern "C" Unk_ov004_SceneEntry sSpNpcTommyProfile;
+extern "C" ActorProfile sSpNpcNookShopProfile;
+extern "C" ActorProfile sSpNpcTimmyProfile;
+extern "C" ActorProfile sSpNpcTommyProfile;
 extern "C" Unk_ov050_0225d1d4_Ent sSpNpcNookShopActTable[19];
 extern "C" void *data_ov050_0225dec0[2];
 extern "C" void *data_ov050_0225e090[2];
@@ -1670,7 +1650,7 @@ extern "C" char data_ov050_0225e308[];
 extern "C" char data_ov050_0225e324[];
 extern "C" char data_ov050_0225e340[];
 extern "C" const u8 sSpNpcNookShopDramaMsgTable[32];
-extern "C" const Unk_ov050_MsgRow sSpNpcNookShopTopicTable[31];
+extern "C" const TalkStartMsg sSpNpcNookShopTopicTable[31];
 extern "C" void *data_ov050_0225e138[2];
 extern "C" void *data_ov050_0225e130[2];
 extern "C" void *data_ov050_0225e128[2];
@@ -1818,7 +1798,7 @@ extern "C" void *data_ov050_0225e160[2];
 extern "C" void *data_ov050_0225e158[2];
 extern "C" void *data_ov050_0225e150[2];
 extern "C" char sSpNpcNookShopKey[];
-extern "C" const Unk_ov050_MsgRow sSpNpcNookShopTopicTable[31];
+extern "C" const TalkStartMsg sSpNpcNookShopTopicTable[31];
 extern "C" void *data_ov050_0225e128[2];
 extern "C" void *data_ov050_0225df60[2];
 extern "C" void *data_ov050_0225e118[2];
@@ -1889,9 +1869,9 @@ extern "C" void *data_ov050_0225def8[2];
 extern "C" void *data_ov050_0225de48[2];
 extern "C" void *data_ov050_0225dee8[2];
 extern "C" char sSpNpcNookShopTwinsKey[];
-extern "C" Unk_ov004_SceneEntry sSpNpcNookShopProfile;
-extern "C" Unk_ov004_SceneEntry sSpNpcTimmyProfile;
-extern "C" Unk_ov004_SceneEntry sSpNpcTommyProfile;
+extern "C" ActorProfile sSpNpcNookShopProfile;
+extern "C" ActorProfile sSpNpcTimmyProfile;
+extern "C" ActorProfile sSpNpcTommyProfile;
 extern "C" void *data_ov050_0225deb0[2];
 extern "C" void *data_ov050_0225dfa0[2];
 extern "C" void *data_ov050_0225e0a0[2];
@@ -2396,7 +2376,7 @@ void SpNpcNookShopTalk::pickArbeitStartMsg0F(Unk_ov050_0225b908_Out *out) {
     }
 }
 
-void SpNpcNookShopTalk::pickArbeitStartMsg10(Unk_ov050_0225b7f4_Out *out) {
+void SpNpcNookShopTalk::pickArbeitStartMsg10(TalkStartMsg *out) {
     if (func_ov050_0225bd54_self(this) == 0) {
         void *h = PlayerData_getErrands(PlayerData_GetCurrent());
         if (ErrandRecord_getStep(PlayerErrandSlot_GetRecord(PlayerErrands_GetSlot(h, 0))) == 1) {
@@ -2410,7 +2390,7 @@ void SpNpcNookShopTalk::pickArbeitStartMsg10(Unk_ov050_0225b7f4_Out *out) {
     }
 }
 
-void SpNpcNookShopTalk::pickArbeitStartMsg11(Unk_ov050_0225b7f4_Out *out) {
+void SpNpcNookShopTalk::pickArbeitStartMsg11(TalkStartMsg *out) {
     if (func_ov050_0225bd54_self(this) == 0) {
         void *h = PlayerData_getErrands(PlayerData_GetCurrent());
         if (ErrandRecord_getStep(PlayerErrandSlot_GetRecord(PlayerErrands_GetSlot(h, 0))) == 1) {
@@ -2424,7 +2404,7 @@ void SpNpcNookShopTalk::pickArbeitStartMsg11(Unk_ov050_0225b7f4_Out *out) {
     }
 }
 
-void SpNpcNookShopTalk::pickArbeitStartMsg12(Unk_ov050_0225b7f4_Out *out) {
+void SpNpcNookShopTalk::pickArbeitStartMsg12(TalkStartMsg *out) {
     if (func_ov050_0225bd54_self(this) == 0) {
         void *h = PlayerData_getErrands(PlayerData_GetCurrent());
         if (ErrandRecord_getStep(PlayerErrandSlot_GetRecord(PlayerErrands_GetSlot(h, 0))) == 1) {
@@ -2495,7 +2475,7 @@ extern "C" void *data_ov050_0225e150[2] = {(void *)_ZN13SpNpcNookShop9mainAct10E
 
 extern "C" char sSpNpcNookShopKey[] = "sp_npc_raccoon";
 
-extern "C" const Unk_ov050_MsgRow sSpNpcNookShopTopicTable[31] = {
+extern "C" const TalkStartMsg sSpNpcNookShopTopicTable[31] = {
     {sSpNpcNookShopKey, 0x00}, {sSpNpcNookShopKey, 0x01}, {sSpNpcNookShopKey, 0x32}, {sSpNpcNookShopKey, 0x33},
     {sSpNpcNookShopKey, 0x34}, {sSpNpcNookShopKey, 0x06}, {sSpNpcNookShopKey, 0x57}, {sSpNpcNookShopKey, 0x02},
     {sSpNpcNookShopKey, 0x31}, {sSpNpcNookShopKey, 0x1e}, {sSpNpcNookShopKey, 0x2a}, {sSpNpcNookShopKey, 0x2b},
@@ -2777,7 +2757,7 @@ void SpNpcNookShopTalk::arbeitPushPlayerBack(void *h) {
 }
 
 void SpNpcNookShopTalk::start(TalkStartMsg *out_) {
-    Unk_ov050_0225a888_Out *out = (Unk_ov050_0225a888_Out *)out_;
+    TalkStartMsg *out = (TalkStartMsg *)out_;
     s32 flag;
     void *x;
     Unk_ov050_0225a888_Buf l;
@@ -2812,13 +2792,13 @@ void SpNpcNookShopTalk::start(TalkStartMsg *out_) {
             return;
         }
         if (ErrandRecord_getKind(ev) == 0x12) {
-            pickArbeitStartMsg12((Unk_ov050_0225b7f4_Out *)out);
+            pickArbeitStartMsg12((TalkStartMsg *)out);
         }
         if (ErrandRecord_getKind(ev) == 0x11) {
-            pickArbeitStartMsg11((Unk_ov050_0225b7f4_Out *)out);
+            pickArbeitStartMsg11((TalkStartMsg *)out);
         }
         if (ErrandRecord_getKind(ev) == 0x10) {
-            pickArbeitStartMsg10((Unk_ov050_0225b7f4_Out *)out);
+            pickArbeitStartMsg10((TalkStartMsg *)out);
         }
         if (ErrandRecord_getKind(ev) == 0xf) {
             pickArbeitStartMsg0F((Unk_ov050_0225b908_Out *)out);
@@ -2996,7 +2976,7 @@ void SpNpcNookShopTalk::start(TalkStartMsg *out_) {
     }
     if (topic >= 0 && topic < 0x1f) {
         out->msgIndex = (((u8 (*)[8])((u8 *)sSpNpcNookShopTopicTable + 4))[topic][0]);
-        out->msgKey = (char *)sSpNpcNookShopTopicTable[topic].name;
+        out->msgKey = (char *)sSpNpcNookShopTopicTable[topic].msgKey;
         if (topic == 0x12) {
             void *r = Actor_findByProfile(ownerNpc->getOtherTwinProfile(), 0);
             if (r) {
@@ -3347,11 +3327,11 @@ extern "C" void *data_ov050_0225dee8[2] = {(void *)_ZN17SpNpcNookShopTalk16onMai
 
 extern "C" char sSpNpcNookShopTwinsKey[] = "sp_npc_twins";
 
-extern "C" Unk_ov004_SceneEntry sSpNpcNookShopProfile = {(void *(*)())SpNpcNookShop_Create, 0x76, 0x7b, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" ActorProfile sSpNpcNookShopProfile = {(void *(*)())SpNpcNookShop_Create, 0x76, 0x7b, 2, 0x5000, 0x5000, 0x3e800};
 
-extern "C" Unk_ov004_SceneEntry sSpNpcTimmyProfile = {(void *(*)())SpNpcNookShop_CreateTimmy, 0x75, 0x7a, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" ActorProfile sSpNpcTimmyProfile = {(void *(*)())SpNpcNookShop_CreateTimmy, 0x75, 0x7a, 2, 0x5000, 0x5000, 0x3e800};
 
-extern "C" Unk_ov004_SceneEntry sSpNpcTommyProfile = {(void *(*)())SpNpcNookShop_CreateTommy, 0x74, 0x79, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" ActorProfile sSpNpcTommyProfile = {(void *(*)())SpNpcNookShop_CreateTommy, 0x74, 0x79, 2, 0x5000, 0x5000, 0x3e800};
 
 void SpNpcNookShopTalk::onShopChoice() {
     ActorTalkRequest_getChoiceList(this);
@@ -3778,7 +3758,7 @@ BOOL SpNpcNookShop::acceptsSelfRequestedInteraction(void *) {
 }
 
 void SpNpcNookShop::onInteractionEvent(u32 cmd, u8 arg) {
-    Unk_020cbb18_Ov050 *g;
+    CommManager *g;
     s32 a, b;
     switch (cmd) {
     case 3:

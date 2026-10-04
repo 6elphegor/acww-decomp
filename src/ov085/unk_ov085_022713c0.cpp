@@ -24,7 +24,7 @@
 #include "actor/SpNpcActor.h"
 #include "talk/ActorTalkRequest.h"
 #include "talk/SpNpcTalkRequest.h"
-#include "actor/Unk_ov004_SceneEntry.h"
+#include "actor/ActorProfile.h"
 
 #pragma opt_loop_invariants off
 
@@ -151,8 +151,8 @@ void *SaveVillagers_Get(void *tbl, s32 idx);
 void *_ZN12VillagerData13getVillagerIdEv(void *p);
 BOOL _ZN10VillagerId7isValidEv(void *p);
 void _ZN10VillagerId7getNameEj(void *p, MsgString9B *o);
-void _ZN13ContestRecord17setHolderVillagerEP16Unk_02085810_Rec(void *a, void *b);
-void _ZN13ContestRecord16setVotedVillagerEP16Unk_02085810_Rec(void *a, void *b);
+void _ZN13ContestRecord17setHolderVillagerEP10VillagerId(void *a, void *b);
+void _ZN13ContestRecord16setVotedVillagerEP10VillagerId(void *a, void *b);
 void *_ZN13ContestRecord17getHolderVillagerEv(void *a);
 void *_ZN13ContestRecord16getVotedVillagerEv(void *a);
 void *Item_GetSaveData();
@@ -187,7 +187,7 @@ Unk_ov085_02271aac_Ent sSpNpcTortimerBrightNightsActTable[3] = {
 };
 extern "C" u8 sSpNpcTortimerBrightNightsTexturePath[] = {'n','p','c','_','s','p','/','m','o','d','e','l','/','t','t','l','_','t','e','x','.','n','s','b','t','x',0};
 extern "C" u8 sSpNpcTortimerBrightNightsModelPath[] = {'n','p','c','_','s','p','/','m','o','d','e','l','/','t','t','l','.','n','s','b','m','d',0};
-extern "C" Unk_ov004_SceneEntry sSpNpcTortimerBrightNightsProfile = {(void *(*)())SpNpcTortimerBrightNights_Create, 0x5b, 0x62, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" ActorProfile sSpNpcTortimerBrightNightsProfile = {(void *(*)())SpNpcTortimerBrightNights_Create, 0x5b, 0x62, 2, 0x5000, 0x5000, 0x3e800};
 
 extern "C" SpNpcTortimerBrightNights *SpNpcTortimerBrightNights_Create() {
     return new SpNpcTortimerBrightNights();
@@ -405,7 +405,7 @@ void SpNpcTortimerBrightNightsTalk::onMessageEnd(u32) {
                 PlayerData_GetCurrent();
                 void *q = SaveVillagers_FindBestFriendOf((u8 *)b + 0x8a3c, _ZN10PlayerData11getPlayerIdEv());
                 if (_ZN10VillagerId7isValidEv(_ZN12VillagerData13getVillagerIdEv(q))) {
-                    _ZN13ContestRecord17setHolderVillagerEP16Unk_02085810_Rec(gContestRecord, _ZN12VillagerData13getVillagerIdEv(q));
+                    _ZN13ContestRecord17setHolderVillagerEP10VillagerId(gContestRecord, _ZN12VillagerData13getVillagerIdEv(q));
                     r = _ZN13ContestRecord17getHolderVillagerEv(gContestRecord);
                 }
             }
@@ -476,9 +476,9 @@ void SpNpcTortimerBrightNightsTalk::onChoice(u32) {
                     window->setSlot(0, &o);
                 }
                 if (Random_GlobalBelow(2) == 0) {
-                    _ZN13ContestRecord17setHolderVillagerEP16Unk_02085810_Rec(g, _ZN12VillagerData13getVillagerIdEv(e));
+                    _ZN13ContestRecord17setHolderVillagerEP10VillagerId(g, _ZN12VillagerData13getVillagerIdEv(e));
                 }
-                _ZN13ContestRecord16setVotedVillagerEP16Unk_02085810_Rec(g, _ZN12VillagerData13getVillagerIdEv(e));
+                _ZN13ContestRecord16setVotedVillagerEP10VillagerId(g, _ZN12VillagerData13getVillagerIdEv(e));
                 msg = (u8)(Random_GlobalBelow(2) + 9);
             } else if (k != 0x14) {
                 msg = 0x14;

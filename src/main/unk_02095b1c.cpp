@@ -4,6 +4,7 @@
 #include "game/Unk_02095774_Ent.h"
 #include "net/PlayerNetSync.h"
 #include "item/ItemPickSpec.h"
+#include "sys/ProcProfile.h"
 
 
 
@@ -287,19 +288,13 @@ inline BOOL Unk_02095dcc_R(u16 *p, u32 lo, u32 hi) {
     return r;
 }
 
-struct Unk_020e1cd0_Rec {
-    GameProc *(*fn)();
-    s16 a;
-    s16 b;
-};
-
 static inline void Unk_0209579c_Set(s16 *d, s16 a, s16 b, s16 c) {
     d[0] = a;
     d[1] = b;
     d[2] = c;
 }
 
-Unk_020e1cd0_Rec sPlayerNetSyncProfile = {&PlayerNetSync::create, 10, 14};
+ProcProfile sPlayerNetSyncProfile = {(void *(*)())&PlayerNetSync::create, 10, 14};
 
 GameProc *PlayerNetSync::create() { return new PlayerNetSync(); }
 

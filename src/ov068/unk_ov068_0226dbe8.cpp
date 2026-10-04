@@ -2,8 +2,8 @@
 #include "types.h"
 #include "npc/VillagerClothModel.h"
 #include "talk/MsgStringBase.h"
-#include "gfx/Unk_ov068_022708fc_Color.h"
-#include "actor/Unk_ov068_SceneEntry.h"
+#include "gfx/DebugColor.h"
+#include "actor/ActorProfile.h"
 #include "npc/VillagerMood.h"
 #include "talk/TalkWindowState.h"
 #include "snd/SndSeEmitter.h"
@@ -76,11 +76,6 @@ struct VillagerTalkTopicFns;
 
 // ---------------------------------------------------------------- TU10 classes
 class HouseVisitVillager;
-
-struct Unk_ov068_02270a6c_Out {
-    void *msgKey;
-    u8 msgIndex;
-};
 
 struct Unk_ov068_02270a6c_Buf {
     u8 b[16];
@@ -664,8 +659,8 @@ void HouseVisitVillagerTalk::attachOwner(HouseVisitVillager *owner) {
 
 void HouseVisitVillagerTalk::start(TalkStartMsg *arg) {
     using namespace sB;
-    Unk_ov068_02270a6c_Out *out = (Unk_ov068_02270a6c_Out *)arg;
-    out->msgKey = sHouseVisitMsgFileName;
+    TalkStartMsg *out = (TalkStartMsg *)arg;
+    out->msgKey = (const char *)sHouseVisitMsgFileName;
     if (unk_1a0->visitState == 1) {
         unk_1a0->talkTopic = 1;
         SPEAK((void *)"q10_call");
@@ -679,14 +674,14 @@ void HouseVisitVillagerTalk::start(TalkStartMsg *arg) {
     if (unk_1a0->wantsToLeave != 0) {
         unk_1a0->talkTopic = 6;
         SPEAK((void *)"q10_back");
-        out->msgKey = sHouseVisitMsgFileName;
+        out->msgKey = (const char *)sHouseVisitMsgFileName;
         out->msgIndex = Random_GlobalBelow(3);
         return;
     }
     if (unk_1a0->playerAtExit != 0) {
         unk_1a0->talkTopic = 8;
         SPEAK((void *)"q10_wait");
-        out->msgKey = sHouseVisitMsgFileName;
+        out->msgKey = (const char *)sHouseVisitMsgFileName;
         out->msgIndex = Random_GlobalBelow(2);
         return;
     }
@@ -700,7 +695,7 @@ void HouseVisitVillagerTalk::start(TalkStartMsg *arg) {
     if (HouseVisit_IsFirstTalkPending(this)) {
         unk_1a0->talkTopic = 5;
         SPEAK((void *)"q10_first");
-        out->msgKey = sHouseVisitMsgFileName;
+        out->msgKey = (const char *)sHouseVisitMsgFileName;
         out->msgIndex = Random_GlobalBelow(3);
         HouseVisit_SetFirstTalkDone(this);
         return;
@@ -725,14 +720,14 @@ void HouseVisitVillagerTalk::start(TalkStartMsg *arg) {
     if (rnd < 30 && v != -1) {
         unk_1a0->talkTopic = 3;
         SPEAK((void *)"q10_furniture");
-        out->msgKey = sHouseVisitMsgFileName;
+        out->msgKey = (const char *)sHouseVisitMsgFileName;
         out->msgIndex = v;
         return;
     }
     if (rnd < 50) {
         unk_1a0->talkTopic = 4;
         SPEAK((void *)"q10_layout");
-        out->msgKey = sHouseVisitMsgFileName;
+        out->msgKey = (const char *)sHouseVisitMsgFileName;
         u32 f = unk_1a0->roomRateFlags;
         if (f & 1) {
             out->msgIndex = Random_GlobalBelow(2);
@@ -824,7 +819,7 @@ BOOL HouseVisitVillager::setVisitState(s32 idx) {
 extern "C" void *data_ov068_02270a2c[2] = {(void *)_ZN18HouseVisitVillager16execVisitOutsideEv, 0};
 extern "C" void *data_ov068_02270a34[2] = {(void *)_ZN18HouseVisitVillager13execVisitTalkEv, 0};
 extern "C" void *data_ov068_022709fc[2] = {(void *)_ZN18HouseVisitVillager18enterVisitDoorOpenEv, 0};
-extern "C" Unk_ov068_022708fc_Color data_ov068_022712a8(0x1f, 0x14, 0x14, 0x1f);
+extern "C" DebugColor data_ov068_022712a8(0x1f, 0x14, 0x14, 0x1f);
 extern "C" void *data_ov068_02270a1c[2] = {(void *)_ZN18HouseVisitVillager17execVisitTalkWaitEv, 0};
 extern "C" void *data_ov068_02270a14[2] = {(void *)_ZN18HouseVisitVillager13execVisitCallEv, 0};
 extern "C" void *data_ov068_02270a0c[2] = {(void *)_ZN18HouseVisitVillager17enterVisitOutsideEv, 0};
@@ -837,20 +832,20 @@ extern "C" void *data_ov068_022709ec[2] = {(void *)_ZN18HouseVisitVillager18ente
 extern "C" void *data_ov068_0227098c[2] = {(void *)_ZN18HouseVisitVillager14enterVisitStayEv, 0};
 extern "C" void *data_ov068_022709dc[2] = {(void *)_ZN18HouseVisitVillager16enterVisitWanderEv, 0};
 extern "C" void *data_ov068_022709b4[2] = {(void *)_ZN18HouseVisitVillager13execVisitStayEv, 0};
-extern "C" Unk_ov068_Scene_Entry sHouseVisitVillagerProfile = {(void *(*)())HouseVisitVillager_Create, 0x82, 0x86, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" ActorProfile sHouseVisitVillagerProfile = {(void *(*)())HouseVisitVillager_Create, 0x82, 0x86, 2, 0x5000, 0x5000, 0x3e800};
 extern "C" void *data_ov068_022709c4[2] = {(void *)_ZN18HouseVisitVillager18enterVisitTalkWaitEv, 0};
-extern "C" Unk_ov068_022708fc_Color data_ov068_02271298(0x14, 0x14, 0x1f, 0x1f);
-extern "C" Unk_ov068_022708fc_Color data_ov068_022712b0(0x1f, 0x1f, 0x14, 0x1f);
+extern "C" DebugColor data_ov068_02271298(0x14, 0x14, 0x1f, 0x1f);
+extern "C" DebugColor data_ov068_022712b0(0x1f, 0x1f, 0x14, 0x1f);
 extern "C" void *data_ov068_022709e4[2] = {(void *)_ZN18HouseVisitVillager15enterVisitLeaveEv, 0};
 extern "C" void *data_ov068_02270a04[2] = {(void *)_ZN18HouseVisitVillager14execVisitIdle7Ev, 0};
 extern "C" void *data_ov068_0227099c[2] = {(void *)_ZN18HouseVisitVillager9drawModelEv, 0};
 extern "C" void *data_ov068_0227097c[2] = {(void *)_ZN18HouseVisitVillager17execVisitDoorOpenEv, 0};
-extern "C" Unk_ov068_022708fc_Color data_ov068_022712a0(0x14, 0x1f, 0x14, 0x1f);
+extern "C" DebugColor data_ov068_022712a0(0x14, 0x1f, 0x14, 0x1f);
 extern "C" void *data_ov068_022709a4[2] = {(void *)_ZN18HouseVisitVillager17execVisitGreetEndEv, 0};
-extern "C" Unk_ov068_022708fc_Color data_ov068_0227129c(0x14, 0x1f, 0x1f, 0x1f);
+extern "C" DebugColor data_ov068_0227129c(0x14, 0x1f, 0x1f, 0x1f);
 extern "C" Unk_ov068_02270a6c_Buf data_ov068_02270a3c = {{0xdd, 0xdd, 0xdd, 0xdd, 0xdd, 0xdd, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}};
 extern "C" void *data_ov068_022709d4[2] = {(void *)_ZN18HouseVisitVillager15enterVisitIdle7Ev, 0};
-extern "C" Unk_ov068_022708fc_Color data_ov068_022712a4(0x14, 0x18, 0x18, 0x1f);
+extern "C" DebugColor data_ov068_022712a4(0x14, 0x18, 0x18, 0x1f);
 extern "C" {
 u8 data_ov068_022712b8[0x28];
 }

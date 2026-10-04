@@ -1,5 +1,6 @@
 #include "types.h"
 #include "game/Random.h"
+#include "gfx/DebugColor.h"
 
 extern u32 OVERLAY_1_ID[];
 extern u32 OVERLAY_65_ID[];
@@ -28,11 +29,6 @@ void Random_SetSeed(void *st, u32 v);
 }
 
 // 4-byte colour constants (constructed by __sinit)
-struct Unk_021cb3c4_Col {
-    u8 r, g, b, a;
-    Unk_021cb3c4_Col(u8 r_, u8 g_, u8 b_, u8 a_) : r(r_), g(g_), b(b_), a(a_) {}
-};
-
 
 extern "C" void *Main_DwcAlloc(u32 a, void *p, u32 n);
 extern "C" void Main_DwcFree(u32 a, void *p);
@@ -87,15 +83,15 @@ extern "C" void Fatal_Handler(void *arg) {
     }
 }
 
-Unk_021cb3c4_Col data_021cb3d8(31, 20, 20, 31);
+DebugColor data_021cb3d8(31, 20, 20, 31);
 u8 sFatalEntered;
-Unk_021cb3c4_Col data_021cb3e0(20, 20, 31, 31);
+DebugColor data_021cb3e0(20, 20, 31, 31);
 s32 sVBlankCount;
-Unk_021cb3c4_Col data_021cb3c8(31, 31, 20, 31);
+DebugColor data_021cb3c8(31, 31, 20, 31);
 u32 gFrameWaitQueue[2];
-Unk_021cb3c4_Col data_021cb3c4(20, 31, 20, 31);
-Unk_021cb3c4_Col data_021cb3cc(20, 31, 31, 31);
-Unk_021cb3c4_Col data_021cb3d0(20, 24, 24, 31);
+DebugColor data_021cb3c4(20, 31, 20, 31);
+DebugColor data_021cb3cc(20, 31, 31, 31);
+DebugColor data_021cb3d0(20, 24, 24, 31);
 u32 gVBlankQueue[2];
 Random data_021cb3d4;
 u8 sVBlankReady;

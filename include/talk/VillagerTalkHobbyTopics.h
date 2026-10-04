@@ -6,29 +6,29 @@
 
 // Villager talk topic state functions: gardening / insect / fishing / admire topics. Views of the VillagerTalk object; base of the next topic class (ov069 chain).
 // Members defined in src/main/unk_0201c050.cpp. The member-pointer fields are typed with VillagerTalkRequestItemTopics; that unit casts them to its per-class types.
-struct Unk_0201ef00_Out;
+struct TalkTopicMsg;
 
 class VillagerTalkHobbyTopics : public VillagerTalkAcornTopics {
 public:
     void selectEtcConnectGardeniing();
     void continueEvGardeniingMsg10();
-    void selectEvGardeniingMsg10(Unk_0201ef00_Out *out);
-    void selectEvGardeniingMsg13(Unk_0201ef00_Out *out);
-    void selectEvGardeniing(Unk_0201ef00_Out *out);
+    void selectEvGardeniingMsg10(TalkTopicMsg *out);
+    void selectEvGardeniingMsg13(TalkTopicMsg *out);
+    void selectEvGardeniing(TalkTopicMsg *out);
     void selectEvGardeniingTalk(void *arg);
     void endEvInsect();
-    void selectEvInsect(Unk_0201ef00_Out *out);
+    void selectEvInsect(TalkTopicMsg *out);
     void endEvFishing();
-    void selectEvFishing(Unk_0201ef00_Out *out);
+    void selectEvFishing(TalkTopicMsg *out);
     void openSmallTalkChoiceAdmire();
     void selectEtcConnectAdmire();
     void continueEvAdmireMsg4();
-    void selectEvAdmireMsg4(Unk_0201ef00_Out *out);
-    void selectEvAdmireMsg10(Unk_0201ef00_Out *out);
-    void selectEvAdmireMsg14(Unk_0201ef00_Out *out);
+    void selectEvAdmireMsg4(TalkTopicMsg *out);
+    void selectEvAdmireMsg10(TalkTopicMsg *out);
+    void selectEvAdmireMsg14(TalkTopicMsg *out);
     void onEvAdmireWordEnteredB();
     void openEvAdmireWordEntryB();
-    void selectEvAdmireMsg12(Unk_0201ef00_Out *out);
+    void selectEvAdmireMsg12(TalkTopicMsg *out);
 };
 
 #endif

@@ -23,7 +23,7 @@
 #include "actor/SpNpcActor.h"
 #include "talk/ActorTalkRequest.h"
 #include "talk/SpNpcTalkRequest.h"
-#include "actor/Unk_ov004_SceneEntry.h"
+#include "actor/ActorProfile.h"
 
 
 class ActorTalkRequest;
@@ -224,20 +224,14 @@ struct Unk_ov052_0225a2cc_Ent {
 };
 
 
-struct Unk_ov052_MsgRow {
-    const char *name;
-    u8 id;
-    u8 pad[3];
-};
-
 extern "C" {
 extern char sSpNpcReddKey[];
-extern const Unk_ov052_MsgRow sSpNpcReddTopicMsgs[13];
+extern const TalkStartMsg sSpNpcReddTopicMsgs[13];
 extern Unk_ov052_0225a2cc_Ent sSpNpcReddActTable[11];
 #define MSG_ID(i) (((u8 (*)[8])((u8 *)sSpNpcReddTopicMsgs + 4))[i][0])
 extern u8 sSpNpcReddModelPath[];
 extern u8 sSpNpcReddTexturePath[];
-extern Unk_ov004_SceneEntry sSpNpcReddProfile;
+extern ActorProfile sSpNpcReddProfile;
 SpNpcRedd *SpNpcRedd_Create();
 BOOL SpNpcRedd_IsSoldOut(void *self);
 s32 SpNpcRedd_PickUnusedFlag(void *self, u8 *buf, s32 n);
@@ -679,7 +673,7 @@ void SpNpcReddTalk::start(TalkStartMsg *out) {
     void *h = PlayerData_GetCurrent();
     if (topic == 0xc) {
         out->msgIndex = MSG_ID(topic);
-        out->msgKey = (const char *)sSpNpcReddTopicMsgs[topic].name;
+        out->msgKey = (const char *)sSpNpcReddTopicMsgs[topic].msgKey;
         return;
     }
     if (topic != 0 && topic != 1 && topic != 2) {
@@ -762,7 +756,7 @@ void SpNpcReddTalk::start(TalkStartMsg *out) {
             }
         }
     }
-    out->msgKey = (const char *)sSpNpcReddTopicMsgs[topic].name;
+    out->msgKey = (const char *)sSpNpcReddTopicMsgs[topic].msgKey;
 }
 
 void SpNpcReddTalk::onMessageEnd(u32) {
@@ -1046,14 +1040,14 @@ BOOL SpNpcRedd::tryClosingTimeTalk() {
 extern "C" char sSpNpcReddKey[] = "sp_npc_fox";
 extern "C" u8 sSpNpcReddModelPath[] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 'f', 'o', 'x', '.', 'n', 's', 'b', 'm', 'd', 0};
 extern "C" u8 sSpNpcReddTexturePath[] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 'f', 'o', 'x', '_', 't', 'e', 'x', '.', 'n', 's', 'b', 't', 'x', 0};
-extern "C" Unk_ov004_SceneEntry sSpNpcReddProfile = {(void *(*)())SpNpcRedd_Create, 0x55, 0x5c, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" ActorProfile sSpNpcReddProfile = {(void *(*)())SpNpcRedd_Create, 0x55, 0x5c, 2, 0x5000, 0x5000, 0x3e800};
 
-extern "C" const Unk_ov052_MsgRow sSpNpcReddTopicMsgs[13] = {
-    {sSpNpcReddKey, 0x06, {0, 0, 0}}, {sSpNpcReddKey, 0x1c, {0, 0, 0}}, {sSpNpcReddKey, 0x1b, {0, 0, 0}},
-    {sSpNpcReddKey, 0x07, {0, 0, 0}}, {sSpNpcReddKey, 0x12, {0, 0, 0}}, {sSpNpcReddKey, 0x2c, {0, 0, 0}},
-    {sSpNpcReddKey, 0x1a, {0, 0, 0}}, {sSpNpcReddKey, 0x14, {0, 0, 0}}, {sSpNpcReddKey, 0x16, {0, 0, 0}},
-    {sSpNpcReddKey, 0x15, {0, 0, 0}}, {sSpNpcReddKey, 0x17, {0, 0, 0}}, {sSpNpcReddKey, 0x1e, {0, 0, 0}},
-    {sSpNpcReddKey, 0x33, {0, 0, 0}},
+extern "C" const TalkStartMsg sSpNpcReddTopicMsgs[13] = {
+    {sSpNpcReddKey, 0x06}, {sSpNpcReddKey, 0x1c}, {sSpNpcReddKey, 0x1b},
+    {sSpNpcReddKey, 0x07}, {sSpNpcReddKey, 0x12}, {sSpNpcReddKey, 0x2c},
+    {sSpNpcReddKey, 0x1a}, {sSpNpcReddKey, 0x14}, {sSpNpcReddKey, 0x16},
+    {sSpNpcReddKey, 0x15}, {sSpNpcReddKey, 0x17}, {sSpNpcReddKey, 0x1e},
+    {sSpNpcReddKey, 0x33},
 };
 
 extern "C" void _ZN9SpNpcRedd9mainAct0AEv();

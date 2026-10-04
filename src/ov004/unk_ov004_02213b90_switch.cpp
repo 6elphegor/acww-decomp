@@ -3,8 +3,8 @@
 // MuseumExhibitInfo::buildItemList needs mwcc 1.2/base and is in the _switch file (object order).
 #include "types.h"
 #include "Unk_020d8c7c.h"
-#include "gfx/Unk_ov004_Quad.h"
-#include "actor/Unk_ov004_SceneEntry.h"
+#include "gfx/DebugColor.h"
+#include "actor/ActorProfile.h"
 #include "game/Unk_ov004_022091fc_Vec.h"
 #include "actor/Unk_ov004_022142fc_Actor.h"
 #include "actor/Unk_ov004_022146ec_Actor.h"

@@ -24,7 +24,7 @@
 #include "actor/SpNpcActor.h"
 #include "talk/ActorTalkRequest.h"
 #include "talk/SpNpcTalkRequest.h"
-#include "actor/Unk_ov004_SceneEntry.h"
+#include "actor/ActorProfile.h"
 
 
 class ActorTalkRequest;
@@ -149,7 +149,7 @@ extern "C" u8 sSpNpcTortimerFlowerFestTexturePath[] = {'n', 'p', 'c', '_', 's', 
 extern "C" u8 sSpNpcTortimerFlowerFestModelPath[] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 't', 't', 'l', '.', 'n', 's', 'b', 'm', 'd', 0};
 
 extern "C" SpNpcTortimerFlowerFest *SpNpcTortimerFlowerFest_Create();
-extern "C" Unk_ov004_SceneEntry sSpNpcTortimerFlowerFestProfile = {(void *(*)())SpNpcTortimerFlowerFest_Create, 0x59, 0x60, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" ActorProfile sSpNpcTortimerFlowerFestProfile = {(void *(*)())SpNpcTortimerFlowerFest_Create, 0x59, 0x60, 2, 0x5000, 0x5000, 0x3e800};
 
 
 extern "C" SpNpcTortimerFlowerFest *SpNpcTortimerFlowerFest_Create() {

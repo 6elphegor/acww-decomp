@@ -1,6 +1,6 @@
 #include "types.h"
-#include "sys/Unk_02000fc0_Col.h"
-#include "sys/Unk_02000fc0_Cfg.h"
+#include "sys/DebugText.h"
+#include "sys/ProcBase.h"
 #include "sys/QNode.h"
 #include "sys/OSThread.h"
 
@@ -86,8 +86,8 @@ u32 G2_GetBG1ScrPtr(void);
 u32 G2S_GetBG1ScrPtr(void);
 void GX_DispOn(void);
 void MIi_CpuClearFast(u32 a);
-void DebugText_Printf(Unk_02000fc0_Col *c, u8 *dst, const char *fmt, ...);
-void DebugText_Print(Unk_02000fc0_Col *c, u8 *dst, const char *fmt);
+void DebugText_Printf(DebugText *c, u8 *dst, const char *fmt, ...);
+void DebugText_Print(DebugText *c, u8 *dst, const char *fmt);
 u32 Task_GetPhaseName(u32 a);
 u32 func_021122b0(void);
 u32 func_02113438(OSThread *a);
@@ -125,7 +125,7 @@ BOOL CrashScreen_IsValidAddress(u32 addr, u32 len) {
 
 void CrashScreen_DumpWords(u8 *dst, u32 src, u32 size) {
     u16 color = 0xd000;
-    Unk_02000fc0_Col col;
+    DebugText col;
     u32 *p;
     u32 end;
     col.unk_00 = color;
@@ -147,7 +147,7 @@ void CrashScreen_DumpWords(u8 *dst, u32 src, u32 size) {
 
 void CrashScreen_DrawStack(void) {
     u8 *buf = (u8 *)sCrashScreenSub;
-    Unk_02000fc0_Col col;
+    DebugText col;
     OSContext *ctx;
     u32 v;
     col.unk_00 = 0xd000;
@@ -166,7 +166,7 @@ void CrashScreen_DrawStack(void) {
 
 void CrashScreen_DrawMain(void) {
     u8 *buf = (u8 *)sCrashScreenMain;
-    Unk_02000fc0_Col col;
+    DebugText col;
     u32 n;
     u32 v;
     QNode *pp;
@@ -187,7 +187,7 @@ void CrashScreen_DrawMain(void) {
     v = 0xffff;
     pp = gTaskCurrentNode;
     if (pp != NULL) {
-        Unk_02000fc0_Cfg *cfg = (Unk_02000fc0_Cfg *)pp->owner;
+        ProcBase *cfg = (ProcBase *)pp->owner;
         if (cfg != NULL) {
             v = cfg->profile;
         }

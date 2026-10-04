@@ -50,8 +50,6 @@ public:
     /* 0x12 */ u8 text[0x100];
 };
 
-typedef Mtx43 Unk_020dbd34_Mtx;
-
 
 extern "C" {
 void _ZN5Model10drawScaledEPi(void *self, void *p);
@@ -96,7 +94,7 @@ extern u8 sCommCautionNumberGap[];
 extern u8 sCommCautionShowErrorCode;
 extern u32 sCommCautionErrorCode;
 extern u8 sCommCautionErrorCodeText[];
-extern Unk_020dbd34_Mtx data_021f47e0;
+extern Mtx43 data_021f47e0;
 extern u8 gFieldSceneKind;
 extern u8 gFontA[];
 

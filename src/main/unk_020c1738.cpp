@@ -76,11 +76,6 @@ extern s32 data_020c6cf0;
 // ---- SpNpcKaitlinTalk and its bases (vtable 0x020ddcf0 chain) ----
 
 
-struct Unk_020c1d80_Out {
-    const char *msgKey;
-    u8 msgIndex;
-};
-
 
 class SpNpcKaitlinTalk : public SpNpcTalkRequest {
 public:
@@ -430,7 +425,7 @@ s32 SpNpcKaitlinTalk::getTopic() {
 }
 
 void SpNpcKaitlinTalk::start(TalkStartMsg *outp) {
-    Unk_020c1d80_Out *out = (Unk_020c1d80_Out *)outp;
+    TalkStartMsg *out = (TalkStartMsg *)outp;
     void *p = PlayerData_GetCurrent();
     out->msgKey = sSpNpcKaitlinMsgKey;
     if (_ZN12Unk_02097ff48testFlagEj(p, 0x33) == 0) {

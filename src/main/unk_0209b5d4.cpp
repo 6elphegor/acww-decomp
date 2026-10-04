@@ -4,11 +4,9 @@
 // TU179: 0x0209b5d4-0x0209b63c. Fills the inner 4x4 cells of the 6x6 grid from a cached record and remembers the
 // record number in .bss (autoload_3 0x021d7128).
 
-typedef TownAcreCell Unk_0209c060;
-
 extern "C" {
 s32 Random_GlobalBelow(s32);
-BOOL _ZN12TownAcreCell7setTypeEi(Unk_0209c060 *, s32);
+BOOL _ZN12TownAcreCell7setTypeEi(TownAcreCell *, s32);
 void *_ZN10RecordFile9getRecordEj(void *, s32);
 }
 

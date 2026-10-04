@@ -2,7 +2,7 @@
 #include "types.h"
 #include "actor/CharacterListNode.h"
 #include "game/Unk_ov004_02224ee4_Vec.h"
-#include "actor/Unk_ov068_SceneEntry.h"
+#include "actor/ActorProfile.h"
 #include "gfx/AnimFrameCtrl.h"
 #include "room/RoomObjRes.h"
 #include "gfx/CachedModel.h"
@@ -100,7 +100,7 @@ class TaxiInterior;
 
 
 extern "C" TaxiInterior *sTaxiInterior;
-extern "C" Unk_ov068_Scene_Entry sTaxiInteriorProfile;
+extern "C" ActorProfile sTaxiInteriorProfile;
 
 struct Unk_ov068_0226c298_Arg;
 typedef void (*Unk_ov068_0226c298_Fn)(Unk_ov068_0226c298_Arg *);
@@ -194,7 +194,7 @@ public:
 };
 
 extern "C" TaxiInterior *TaxiInterior_Create();
-extern "C" Unk_ov068_Scene_Entry sTaxiInteriorProfile = {(void *(*)())TaxiInterior_Create, 0x13, 0x17, 0, 0xc8000, 0x12c000, 0x258000};
+extern "C" ActorProfile sTaxiInteriorProfile = {(void *(*)())TaxiInterior_Create, 0x13, 0x17, 0, 0xc8000, 0x12c000, 0x258000};
 extern "C" {
 TaxiInterior *sTaxiInterior;
 }

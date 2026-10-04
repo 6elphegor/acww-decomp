@@ -1,7 +1,7 @@
 // mwcc-version: 1.2/base
 // mwcc-flags: -str reuse
 #include "types.h"
-#include "actor/Unk_ov004_SceneEntry.h"
+#include "actor/ActorProfile.h"
 #include "npc/VillagerClothModel.h"
 #include "room/RoomFreeUnitMap.h"
 #include "npc/VillagerMood.h"
@@ -27,6 +27,9 @@
 #include "actor/VillagerActor.h"
 #include "talk/ActorTalkRequest.h"
 #include "talk/VillagerTalk.h"
+#include "talk/TalkTopicMsg.h"
+#include "talk/TalkWindowState.h"
+#include "gfx/DebugColor.h"
 
 class SickVillager;
 
@@ -84,18 +87,8 @@ struct Unk_ov004_0221a650_Msg {
     u32 openMode;
 };
 
-struct Unk_ov004_0221af1c_Out {
-    u32 fileName;
-    u8 msgIndex;
-};
-
 struct Unk_ov004_0221a7d4_Vec {
     s32 x, y, z;
-};
-
-struct Unk_ov004_0221afc4_Msg {
-    u8 pad_00[8];
-    s32 nextState;
 };
 
 struct Unk_ov004_0221b1e8_Map {
@@ -109,17 +102,6 @@ struct Unk_ov004_0221b0f0_Vec {
     Unk_ov004_0221b0f0_Vec() {}
     ~Unk_ov004_0221b0f0_Vec() {}
 };
-
-struct Unk_ov004_Col {
-    u8 r, g, b, a;
-    Unk_ov004_Col(u8 r_, u8 g_, u8 b_, u8 a_) {
-        r = r_;
-        g = g_;
-        b = b_;
-        a = a_;
-    }
-};
-
 
 extern SickVillager *sSickVillager;
 extern "C" {
@@ -322,23 +304,23 @@ void _ZN12SickVillager9mainAct04Ev();
 #define PMV(x) (*(Unk_ov004_0224cb98_VFn *)(x))
 #define PMB(x) (*(Unk_ov004_0224cb98_BFn *)(x))
 // Definition order (colours, ptmf constants, buffers, entry) reproduces the original object order; see notes.txt.
-Unk_ov004_Col data_ov004_02250938(31, 20, 20, 31);
-Unk_ov004_Col data_ov004_02250940(20, 20, 31, 31);
+DebugColor data_ov004_02250938(31, 20, 20, 31);
+DebugColor data_ov004_02250940(20, 20, 31, 31);
 extern "C" {
 u8 data_ov004_0225095c[0x28];
 }
-Unk_ov004_Col data_ov004_02250948(31, 31, 20, 31);
+DebugColor data_ov004_02250948(31, 31, 20, 31);
 extern "C" void *data_ov004_0224ca60[2] = {(void *)_ZN12SickVillager9mainAct05Ev, 0};
-Unk_ov004_Col data_ov004_02250944(20, 31, 20, 31);
+DebugColor data_ov004_02250944(20, 31, 20, 31);
 extern "C" void *data_ov004_0224cae0[2] = {(void *)_ZN12SickVillager9mainAct04Ev, 0};
 extern "C" void *data_ov004_0224cad8[2] = {(void *)_ZN12SickVillager10setupAct06Ev, 0};
 extern "C" void *data_ov004_0224ca70[2] = {(void *)_ZN12SickVillager9mainAct00Ev, 0};
 extern "C" void *data_ov004_0224ca78[2] = {(void *)_ZN12SickVillager9mainAct06Ev, 0};
 extern "C" void *data_ov004_0224cac0[2] = {(void *)_ZN12SickVillager9mainAct01Ev, 0};
-Unk_ov004_Col data_ov004_02250954(20, 31, 31, 31);
+DebugColor data_ov004_02250954(20, 31, 31, 31);
 extern "C" void *data_ov004_0224cab0[2] = {(void *)_ZN12SickVillager10setupAct01Ev, 0};
 extern "C" void *data_ov004_0224ca90[2] = {(void *)_ZN12SickVillager10setupAct02Ev, 0};
-Unk_ov004_Col data_ov004_02250958(20, 24, 24, 31);
+DebugColor data_ov004_02250958(20, 24, 24, 31);
 extern "C" void *data_ov004_0224caa0[2] = {(void *)_ZN12SickVillager10setupAct03Ev, 0};
 extern "C" void *data_ov004_0224cab8[2] = {(void *)_ZN12SickVillager10setupAct00Ev, 0};
 extern "C" void *data_ov004_0224cac8[2] = {(void *)_ZN12SickVillager9mainAct03Ev, 0};
@@ -526,7 +508,7 @@ void SickVillagerTalk::attachOwner(SickVillager *owner) {
 void SickVillagerTalk::onTaskDone(u32 a) {
     if (a == 4) {
         SickVillager_SetCurrentVisitor();
-        ((Unk_ov004_0221afc4_Msg *)window)->nextState = 1;
+        ((TalkWindowState *)window)->nextState = 1;
     }
 }
 
@@ -536,7 +518,7 @@ void SickVillagerTalk::update() {
     if (o->act == 6) {
         if (MenuCtrl_IsFinished()) {
             if (MenuCtrl_IsResultOk() == 0) {
-                ((Unk_ov004_0221afc4_Msg *)window)->nextState = 1;
+                ((TalkWindowState *)window)->nextState = 1;
                 buf[0] = Random_GlobalBelow(3) + 13;
                 TalkWindowState_setNextMessage(window, buf, 0);
                 villager->changeAct(4);
@@ -554,7 +536,7 @@ void SickVillagerTalk::update() {
 }
 
 void SickVillagerTalk::start(TalkStartMsg *out_) {
-    Unk_ov004_0221af1c_Out *out = (Unk_ov004_0221af1c_Out *)out_;
+    TalkTopicMsg *out = (TalkTopicMsg *)out_;
     out->fileName = (u32)data_ov004_0225095c;
     getSickStage();
     if (villager->mood.severeSickness == 0) {
@@ -699,7 +681,7 @@ BOOL SickVillager::changeAct(s32 s) {
 
 extern "C" void *data_ov004_0224ca68[2] = {(void *)_ZN12SickVillager9drawModelEv, 0};
 extern "C" void *data_ov004_0224ca80[2] = {(void *)_ZN12SickVillager10setupAct07Ev, 0};
-extern "C" Unk_ov004_SceneEntry sSickVillagerProfile = {(void *(*)())SickVillager_Create, 0x83, 0x87, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" ActorProfile sSickVillagerProfile = {(void *(*)())SickVillager_Create, 0x83, 0x87, 2, 0x5000, 0x5000, 0x3e800};
 extern "C" void *data_ov004_0224ca98[2] = {(void *)_ZN12SickVillager9mainAct02Ev, 0};
 extern "C" void *data_ov004_0224caa8[2] = {(void *)_ZN12SickVillager10setupAct04Ev, 0};
 extern "C" void *data_ov004_0224cad0[2] = {(void *)_ZN12SickVillager10setupAct05Ev, 0};

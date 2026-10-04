@@ -1,7 +1,7 @@
 // mwcc-version: 1.2/base
 #include "types.h"
 #include "game/Unk_ov068_Vec.h"
-#include "actor/Unk_ov068_SceneEntry.h"
+#include "actor/ActorProfile.h"
 #include "item/ItemId.h"
 #include "npc/NpcResHandleView.h"
 #include "npc/NpcLookAt.h"
@@ -51,18 +51,6 @@ class SpNpcNookIntroTalk;
 #define TalkWindowState_setNextMessage _ZN15TalkWindowState14setNextMessageEPhPv
 #define Unk_02097ff4_clearFlag _ZN12Unk_02097ff49clearFlagEj
 
-
-struct Unk_ov068_02266bd0_Scene {
-    u8 pad_00[4];
-    s32 state, unk_08;
-    u8 pad_0c[8];
-    s32 unk_14;
-};
-
-struct Unk_ov068_02266f30_Out {
-    void *msgKey;
-    u8 msgIndex;
-};
 
 struct Unk_ov068_02266bd0_Owner {
     u8 pad_00[0x5c];
@@ -311,7 +299,7 @@ extern "C" void *data_ov068_0226fd60[2] = {(void *)_ZN14SpNpcNookIntro10setupAct
 extern "C" void *data_ov068_0226fd28[2] = {(void *)_ZN14SpNpcNookIntro9mainAct03Ev, 0};
 extern "C" void *sNookIntroMsgFilePtr = sNookIntroMsgFile;
 extern "C" char sNookTexRcs[0x1c] = "npc_sp/model/rcs_tex.nsbtx";
-extern "C" Unk_ov068_SceneEntry sSpNpcNookIntroProfile = {(void *(*)())SpNpcNookIntro_Create, 0x7d, 0x81, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" ActorProfile sSpNpcNookIntroProfile = {(void *(*)())SpNpcNookIntro_Create, 0x7d, 0x81, 2, 0x5000, 0x5000, 0x3e800};
 extern "C" void *data_ov068_0226fd20[2] = {(void *)_ZN14SpNpcNookIntro10setupAct04Ev, 0};
 
 BOOL SpNpcNookIntro::onCreate() {
@@ -471,23 +459,23 @@ void SpNpcNookIntroTalk::attachOwner(FieldVillager *o) {
 }
 
 void SpNpcNookIntroTalk::start(TalkStartMsg *out_) {
-    Unk_ov068_02266f30_Out *out = (Unk_ov068_02266f30_Out *)out_;
+    TalkStartMsg *out = (TalkStartMsg *)out_;
     void *p = PlayerData_GetCurrent();
     if (p != 0) {
         Unk_02097ff4_clearFlag(p, 0x23);
     }
-    out->msgKey = sNookIntroMsgFilePtr;
+    out->msgKey = (const char *)sNookIntroMsgFilePtr;
     out->msgIndex = 0x22;
 }
 
 void SpNpcNookIntroTalk::onMessageEnd(u32) {
-    Unk_ov068_02266bd0_Scene *sc = (Unk_ov068_02266bd0_Scene *)window;
+    TalkWindowState *sc = (TalkWindowState *)window;
     volatile u8 buf = gU8None;
     buf = 0;
     switch (msgIndex) {
     case 0x22:
         TalkWindowState_setNextMessage(sc, gTalkMsgIndexEnd, 0);
-        sc->unk_14 = 0;
+        sc->openMode = 0;
         setScript(1);
         break;
     case 10:
@@ -591,7 +579,7 @@ void SpNpcNookIntroTalk::runWalkScript() {
         if (NpcActionCtrl_isActionDone(o->actionCtrl) != 0) {
             o = (Unk_ov068_02266bd0_Owner *)owner;
             if (NpcActionCtrl_getAction(o->actionCtrl) == 0) {
-                Unk_ov068_02266bd0_Scene *sc = (Unk_ov068_02266bd0_Scene *)window;
+                TalkWindowState *sc = (TalkWindowState *)window;
                 volatile u8 buf = gU8None;
                 if (GameStart_IsNewTown() != 0) {
                     buf = 0xd;
@@ -599,7 +587,7 @@ void SpNpcNookIntroTalk::runWalkScript() {
                     buf = 0xa;
                 }
                 TalkWindowState_setNextMessage(sc, (u8 *)&buf, sNookIntroMsgFilePtr);
-                sc->unk_08 = 1;
+                sc->nextState = 1;
                 o = (Unk_ov068_02266bd0_Owner *)owner;
                 Unk_ov068_02266680_Vec t;
                 Unk_ov068_02266680_Vec *pt = &o->position;

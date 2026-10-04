@@ -19,6 +19,7 @@
 #include "game/BugNetTarget.h"
 #include "gfx/PooledModel.h"
 #include "town/BuildingActor.h"
+#include "sys/ProcProfile.h"
 
 // ---- main-module library classes shared by several functions of this unit (global: their methods are called by symbol)
 
@@ -191,12 +192,6 @@ public:
     u32 pad[3];
 };
 
-// ---- TU25 own data (global definitions; the segments below access them through their own typed views)
-struct Unk_ov003_02234a9c_Entry {
-    void *create;
-    u16 executePriority;
-    u16 drawPriority;
-};
 
 extern "C" void InsectManager_Create();
 extern "C" {
@@ -289,7 +284,7 @@ extern "C" u16 sInsectModelParams[180] = {
 };
 extern "C" { u16 sFieldInsectPurgeTimer; }
 extern "C" { u8 sInsectCatchResult; }
-extern "C" Unk_ov003_02234a9c_Entry sInsectManagerProfile = {(void *)InsectManager_Create, 0xbc, 0xc0};
+extern "C" ProcProfile sInsectManagerProfile = {(void *(*)())InsectManager_Create, 0xbc, 0xc0};
 extern "C" void *sInsectBehaviours[120] = {
     (void *)Insect_InitButterfly, (void *)Insect_UpdateButterfly,
     (void *)Insect_InitButterfly, (void *)Insect_UpdateButterfly,
@@ -387,11 +382,6 @@ struct Unk_ov003_02225d38_Ent {
     u8 pad_05[3];
 };
 
-struct Unk_ov003_02225dbc_Data {
-    u8 pad_00[0x64];
-    u32 myAid;
-};
-
 struct Unk_ov003_02226058_Buf {
     u8 unk_00;
     u8 unk_01;
@@ -410,7 +400,7 @@ extern u8 sInsectSpawnMaskDry[];
 extern u8 sInsectSpawnMaskLand[];
 extern Unk_ov003_02225cb0_Ent sFieldInsects[];
 extern Unk_ov003_02225d38_Ent *gInsectSpawnTables[];
-extern Unk_ov003_02225dbc_Data *gCommManager;
+extern CommManager *gCommManager;
 extern u8 data_0213b91c[];
 extern u8 data_0213b954[];
 typedef void *(*Unk_ov003_02225ed0_Fn)(void *);
@@ -682,17 +672,12 @@ struct Unk_ov003_0225980c_Obj {
 
 typedef Unk_ov003_0225980c_Obj Obj;
 
-struct Unk_ov003_02226d54_Net {
-    u8 pad_00[0x64];
-    s32 myAid;
-};
-
 extern "C" {
 extern Obj sFieldInsects[];
 extern Obj sSpecialInsects[];
 extern Obj sHeldInsects[];
 extern u8 sInsectCatchResult;
-extern Unk_ov003_02226d54_Net *gCommManager;
+extern CommManager *gCommManager;
 extern Blk data_021f47e0;
 extern s16 data_02135f44[];
 s32 InsectPool_Draw(Obj *self, void *a, s32 n);
@@ -10275,9 +10260,9 @@ namespace s02 {
 // 0x2227074
 extern "C" void HeldInsect_Remove(u8 id, s32 flag) {
     Obj *o = &sHeldInsects[id];
-    Unk_ov003_02226d54_Net *g = gCommManager;
+    CommManager *g = gCommManager;
     if (CommManager_isSlotActive(g, g->myAid) && flag && CommManager_isMyAid(g, id)) {
-        Unk_ov003_02226d54_Net *g2 = gCommManager;
+        CommManager *g2 = gCommManager;
         CommManager_beginRecord(g2);
         CommManager_writeRecord(g2, &id, 1);
         CommManager_endRecord(g2, 0x30, 4);
@@ -10316,7 +10301,7 @@ extern "C" s32 Insect_FinishCatch(u8 id) {
     o->stateTimer = 0;
     o->lifeState = 4;
     if (CommManager_isSlotActive(gCommManager, gCommManager->myAid)) {
-        Unk_ov003_02226d54_Net *g = gCommManager;
+        CommManager *g = gCommManager;
         CommManager_beginRecord(g);
         CommManager_writeRecord(g, &id, 1);
         CommManager_endRecord(g, 0x30, 4);
@@ -10373,7 +10358,7 @@ extern "C" s32 Insect_GetCatchResult(s32 id) {
         b = id;
         if (CommManager_isSlotActive(gCommManager, gCommManager->myAid)) {
             if (!NetArea_IsLocalOwner()) {
-                Unk_ov003_02226d54_Net *g = gCommManager;
+                CommManager *g = gCommManager;
                 CommManager_beginRecord(g);
                 CommManager_writeRecord(g, &b, 1);
                 CommManager_endRecord(g, 0x2f, 4);
@@ -10453,7 +10438,7 @@ extern "C" s32 Insect_TryCatch(u8 id) {
     if (CommManager_isSlotActive(gCommManager, gCommManager->myAid)) {
         if (!NetArea_IsLocalOwner()) {
             sInsectCatchResult = 2;
-            Unk_ov003_02226d54_Net *g = gCommManager;
+            CommManager *g = gCommManager;
             CommManager_beginRecord(g);
             CommManager_writeRecord(g, &id, 1);
             CommManager_endRecord(g, 0x28, 6);
@@ -11520,7 +11505,7 @@ namespace s00 {
 // 0x2225dbc
 extern "C" BOOL Insect_IsAllowedOnline(s32 a)
 {
-    Unk_ov003_02225dbc_Data *p = gCommManager;
+    CommManager *p = gCommManager;
     if (!CommManager_isSlotActive(p, p->myAid)) {
         return TRUE;
     }

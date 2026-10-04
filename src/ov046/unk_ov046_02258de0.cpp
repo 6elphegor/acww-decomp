@@ -26,7 +26,8 @@
 #include "actor/SpNpcActor.h"
 #include "talk/ActorTalkRequest.h"
 #include "talk/SpNpcTalkRequest.h"
-#include "actor/Unk_ov004_SceneEntry.h"
+#include "actor/ActorProfile.h"
+#include "gfx/DebugColor.h"
 
 
 class ActorTalkRequest;
@@ -36,10 +37,6 @@ typedef void (SpNpcCelesteTalk::*Unk_ov046_0225aa0c_Fn)();
 typedef void (SpNpcCelesteTalk::*Unk_ov046_02259480_Fn)(s32);
 
 
-struct Unk_ov046_0225a650_Entry {
-    const void *p;
-    u8 v;
-};
 struct Unk_ov046_02258e68_Vec {
     s32 x, y, z;
 };
@@ -235,25 +232,16 @@ struct Unk_ov046_0225a398_Ent {
 
 
 extern "C" void *SpNpcCeleste_Create();
-struct Unk_ov046_Quad {
-    u8 a, b, c, d;
-    Unk_ov046_Quad(u8 a_, u8 b_, u8 c_, u8 d_) {
-        a = a_;
-        b = b_;
-        c = c_;
-        d = d_;
-    }
-};
-extern "C" Unk_ov046_Quad data_ov046_0225ae04;
-extern "C" Unk_ov046_Quad data_ov046_0225ae08;
-extern "C" Unk_ov046_Quad data_ov046_0225ae20;
-extern "C" Unk_ov046_Quad data_ov046_0225ae10;
-extern "C" Unk_ov046_Quad data_ov046_0225ae00;
-extern "C" Unk_ov046_Quad data_ov046_0225ae0c;
+extern "C" DebugColor data_ov046_0225ae04;
+extern "C" DebugColor data_ov046_0225ae08;
+extern "C" DebugColor data_ov046_0225ae20;
+extern "C" DebugColor data_ov046_0225ae10;
+extern "C" DebugColor data_ov046_0225ae00;
+extern "C" DebugColor data_ov046_0225ae0c;
 extern "C" u8 sSpNpcCelesteModelPath[];
 extern "C" u8 sSpNpcCelesteTexturePath[];
-extern "C" const Unk_ov046_0225a650_Entry sSpNpcCelesteTopicMsgs[5];
-extern "C" Unk_ov004_SceneEntry sSpNpcCelesteProfile;
+extern "C" const TalkStartMsg sSpNpcCelesteTopicMsgs[5];
+extern "C" ActorProfile sSpNpcCelesteProfile;
 extern Unk_ov046_0225a398_Ent sSpNpcCelesteActTable[5];
 extern "C" u8 sSpNpcCelesteKey[];
 
@@ -467,31 +455,31 @@ void SpNpcCelesteTalk::onTaskDone(u32) {
     }
 }// Declarations for data defined further down (definition order sets the data layout)
 
-extern "C" Unk_ov046_Quad data_ov046_0225ae04 = Unk_ov046_Quad(31, 20, 20, 31);
+extern "C" DebugColor data_ov046_0225ae04 = DebugColor(31, 20, 20, 31);
 
-extern "C" Unk_ov046_Quad data_ov046_0225ae08 = Unk_ov046_Quad(20, 20, 31, 31);
+extern "C" DebugColor data_ov046_0225ae08 = DebugColor(20, 20, 31, 31);
 
-extern "C" Unk_ov046_Quad data_ov046_0225ae20 = Unk_ov046_Quad(31, 31, 20, 31);
+extern "C" DebugColor data_ov046_0225ae20 = DebugColor(31, 31, 20, 31);
 
-extern "C" Unk_ov046_Quad data_ov046_0225ae10 = Unk_ov046_Quad(20, 31, 20, 31);
+extern "C" DebugColor data_ov046_0225ae10 = DebugColor(20, 31, 20, 31);
 
-extern "C" Unk_ov046_Quad data_ov046_0225ae00 = Unk_ov046_Quad(20, 31, 31, 31);
+extern "C" DebugColor data_ov046_0225ae00 = DebugColor(20, 31, 31, 31);
 
-extern "C" Unk_ov046_Quad data_ov046_0225ae0c = Unk_ov046_Quad(20, 24, 24, 31);
+extern "C" DebugColor data_ov046_0225ae0c = DebugColor(20, 24, 24, 31);
 
 extern "C" u8 sSpNpcCelesteModelPath[] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 'o', 'w', 's', '.', 'n', 's', 'b', 'm', 'd', 0};
 
 extern "C" u8 sSpNpcCelesteTexturePath[] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 'o', 'w', 's', '_', 't', 'e', 'x', '.', 'n', 's', 'b', 't', 'x', 0};
 
-extern "C" const Unk_ov046_0225a650_Entry sSpNpcCelesteTopicMsgs[5] = {
-    {sSpNpcCelesteKey, 0},
-    {sSpNpcCelesteKey, 0x2c},
-    {sSpNpcCelesteKey, 0x2d},
-    {sSpNpcCelesteKey, 0x2e},
-    {sSpNpcCelesteKey, 4},
+extern "C" const TalkStartMsg sSpNpcCelesteTopicMsgs[5] = {
+    {(const char *)sSpNpcCelesteKey, 0},
+    {(const char *)sSpNpcCelesteKey, 0x2c},
+    {(const char *)sSpNpcCelesteKey, 0x2d},
+    {(const char *)sSpNpcCelesteKey, 0x2e},
+    {(const char *)sSpNpcCelesteKey, 4},
 };
 
-extern "C" Unk_ov004_SceneEntry sSpNpcCelesteProfile = {(void *(*)())SpNpcCeleste_Create, 0x6d, 0x73, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" ActorProfile sSpNpcCelesteProfile = {(void *(*)())SpNpcCeleste_Create, 0x6d, 0x73, 2, 0x5000, 0x5000, 0x3e800};
 
 Unk_ov046_0225a398_Ent sSpNpcCelesteActTable[5] = {
     {&SpNpcCeleste::setupAct00, &SpNpcCeleste::mainAct00},
@@ -651,8 +639,8 @@ void SpNpcCelesteTalk::start(TalkStartMsg *out) {
         }
         out->msgKey = (const char *)sSpNpcCelesteKey;
     } else if (t >= 0 && t < 5) {
-        out->msgIndex = sSpNpcCelesteTopicMsgs[t].v;
-        out->msgKey = (const char *)sSpNpcCelesteTopicMsgs[topic].p;
+        out->msgIndex = sSpNpcCelesteTopicMsgs[t].msgIndex;
+        out->msgKey = (const char *)sSpNpcCelesteTopicMsgs[topic].msgKey;
     }
 }
 

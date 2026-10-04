@@ -23,7 +23,7 @@
 #include "actor/SpNpcActor.h"
 #include "talk/ActorTalkRequest.h"
 #include "talk/SpNpcTalkRequest.h"
-#include "actor/Unk_ov004_SceneEntry.h"
+#include "actor/ActorProfile.h"
 
 
 
@@ -191,7 +191,7 @@ extern Unk_ov055_02259234_Ent sSpNpcRoverTalkScripts[4];
 #define data_ov055_022598d4 ((Unk_ov055_02259234_Flag *)((u8 *)sSpNpcRoverTalkScripts + 8))
 extern u8 sSpNpcRoverModelPath[];
 extern u8 sSpNpcRoverTexturePath[];
-extern Unk_ov004_SceneEntry sSpNpcRoverProfile;
+extern ActorProfile sSpNpcRoverProfile;
 void _ZN14SpNpcRoverTalk15waitTagModeStopEv();
 void _ZN14SpNpcRoverTalk11waitLidOpenEv();
 void _ZN14SpNpcRoverTalk10runTagModeEv();
@@ -216,7 +216,7 @@ extern "C" char sSpNpcRoverKey[] = "sp_etc_sequence1";
 extern "C" const void *sSpNpcRoverMsgKey = sSpNpcRoverKey;
 extern "C" u8 sSpNpcRoverModelPath[] = "npc_sp/model/xct.nsbmd";
 extern "C" u8 sSpNpcRoverTexturePath[] = "npc_sp/model/xct_tex.nsbtx";
-extern "C" Unk_ov004_SceneEntry sSpNpcRoverProfile = {(void *(*)())SpNpcRover_Create, 0x5e, 0x65, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" ActorProfile sSpNpcRoverProfile = {(void *(*)())SpNpcRover_Create, 0x5e, 0x65, 2, 0x5000, 0x5000, 0x3e800};
 extern "C" Unk_ov055_02259234_Ent sSpNpcRoverTalkScripts[4] = {
     {0, 0},
     {*(Unk_ov055_02259904_Fn *)data_ov055_02259844, 1},

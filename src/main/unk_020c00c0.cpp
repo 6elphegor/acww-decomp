@@ -3,7 +3,6 @@
 #include "net/CommManager.h"
 #include "gfx/Unk_020bfe30_Vec.h"
 #include "game/EventDayEntry.h"
-#include "npc/Unk_020c0538_Out.h"
 #include "player/Unk_02097ff4.h"
 #include "snd/SndEnvChannel.h"
 #include "game/WeatherRecord.h"

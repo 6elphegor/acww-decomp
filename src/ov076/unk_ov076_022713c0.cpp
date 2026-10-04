@@ -23,7 +23,7 @@
 #include "talk/ActorTalkRequest.h"
 #include "talk/SpNpcTalkRequest.h"
 #include "item/ItemPickSpec.h"
-#include "actor/Unk_ov004_SceneEntry.h"
+#include "actor/ActorProfile.h"
 
 
 class ActorTalkRequest;
@@ -33,11 +33,6 @@ class SpNpcPascalTalk;
 
 struct Unk_ov076_Vec {
     s32 x, y, z;
-};
-
-struct Unk_ov076_02271744_Out {
-    u32 msgKey;
-    u8 msgIndex;
 };
 
 struct Unk_ov076_02271864_Msg {
@@ -432,7 +427,7 @@ void SpNpcPascalTalk::attachOwner(SpNpcPascal *o) {
 }
 
 void SpNpcPascalTalk::start(TalkStartMsg *a) {
-    Unk_ov076_02271744_Out *out = (Unk_ov076_02271744_Out *)a;
+    TalkStartMsg *out = (TalkStartMsg *)a;
     if (MenuCtrl_BuildPocketMask(SpNpcPascal_IsScallop)) {
         topic = 0;
     } else if (Random_GlobalBelow(2) == 0) {
@@ -442,7 +437,7 @@ void SpNpcPascalTalk::start(TalkStartMsg *a) {
     }
     if (topic >= 0 && topic < 3) {
         out->msgIndex = sSpNpcPascalTopicMsgs[topic].b;
-        out->msgKey = (u32)sSpNpcPascalTopicMsgs[topic].a;
+        out->msgKey = (const char *)sSpNpcPascalTopicMsgs[topic].a;
     }
 }
 
@@ -615,7 +610,7 @@ extern "C" u8 sSpNpcPascalKey[16] = {'s', 'p', '_', 'n', 'p', 'c', '_', 'o', 't'
 
 extern "C" u8 sSpNpcPascalModelPath[24] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 's', 'e', 'o', '.', 'n', 's', 'b', 'm', 'd', 0};
 
-extern "C" Unk_ov004_SceneEntry sSpNpcPascalProfile = {(void *(*)())SpNpcPascal_Create, 0x68, 0x6e, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" ActorProfile sSpNpcPascalProfile = {(void *(*)())SpNpcPascal_Create, 0x68, 0x6e, 2, 0x5000, 0x5000, 0x3e800};
 
 extern "C" u8 sSpNpcPascalTexturePath[28] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 's', 'e', 'o', '_', 't', 'e', 'x', '.', 'n', 's', 'b', 't', 'x', 0};
 

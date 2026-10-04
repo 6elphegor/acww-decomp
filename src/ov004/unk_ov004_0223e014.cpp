@@ -5,6 +5,8 @@
 #include "ui/HandCursor.h"
 #include "ui/NameLabelBalloon.h"
 #include "talk/MsgString9B.h"
+#include "sys/ProcProfile.h"
+#include "net/CommManager.h"
 
 // ---- sub-object declarations (defined in src/main/unk_0208d154.cpp etc.) ----
 
@@ -46,11 +48,6 @@ struct Unk_ov004_0223e10c_Pair {
     s32 a, b;
 };
 
-struct Unk_ov004_0223e2f4_G {
-    u8 pad_00[0x68];
-    s32 localSlot;
-};
-
 struct Unk_ov004_0223e2f4_Pad {
     u16 unk_00;
     u16 pressed;
@@ -65,7 +62,7 @@ extern u8 gTouchPrevChanged;
 extern u8 gSaveData[];
 extern u8 gSavePlayers[];
 extern Unk_ov004_0223e2f4_Pad gPad;
-extern Unk_ov004_0223e2f4_G *gCommManager;
+extern CommManager *gCommManager;
 extern const Unk_ov004_0223e10c_Pair sResidentLabelOffsets[];
 extern const Unk_ov004_0223e10c_Pair sResidentExtraLabelPos;
 extern const s32 sResidentCursorExtraOffset[];
@@ -173,14 +170,8 @@ public:
     /* 0x338 */ MsgString9B phoneLabel;
 };
 
-// scene registration entry (referenced from main by address only)
-struct Unk_ov004_0224f194_Entry {
-    void *(*create)();
-    u16 a;
-    u16 b;
-};
 extern "C" ResidentSelect *ResidentSelect_Create();
-Unk_ov004_0224f194_Entry sResidentSelectProfile = {(void *(*)())ResidentSelect_Create, 0xd3, 0xce};
+ProcProfile sResidentSelectProfile = {(void *(*)())ResidentSelect_Create, 0xd3, 0xce};
 
 // state table (enter, exit) filled by __sinit from the 14 member-function-pointer constants
 Unk_ov004_0223e6bc_Ent sResidentSelectStates[7] = {
@@ -348,7 +339,7 @@ void ResidentSelect::enterPadSelect() {
 }
 
 void ResidentSelect::updatePadSelect() {
-    Unk_ov004_0223e2f4_G *g;
+    CommManager *g;
     u8 st;
     if (!Unk_ov004_0223e2f4_IsMode2()) {
         return;

@@ -2,8 +2,8 @@
 #include "types.h"
 #include "room/Unk_ov004_0224882c_Buf.h"
 #include "gfx/Mtx43.h"
-#include "gfx/Unk_ov004_Rgba.h"
-#include "actor/Unk_ov004_SceneEntry.h"
+#include "gfx/DebugColor.h"
+#include "actor/ActorProfile.h"
 #include "actor/ActorListNode.h"
 #include "actor/CharacterListNode.h"
 #include "game/Unk_0203e4f0_Vec.h"
@@ -45,9 +45,6 @@
 typedef Vec3 Unk_ov004_Vec3;
 typedef Vec3 Unk_ov004_022077a4_Vec3;
 typedef Vec3 Unk_ov004_02208284_V3;
-typedef Mtx43 Unk_ov004_02208284_M;
-typedef Mtx43 Unk_ov004_022077a4_Mtx;
-typedef Mtx43 Unk_ov004_02205eb0_Mtx;
 
 // main class 0x02000c8c (3 words, registered for destruction through __register_global_object)
 struct FxVec3 {
@@ -445,7 +442,7 @@ BOOL Item_IsFurniture(u16 *p);
 u32 Item_GetFurnitureIndex(u16 *p);
 void *NNS_G3dGetTex(void *p);
 extern void *gSceneBlockMap;
-extern Unk_ov004_02205eb0_Mtx data_021f47e0;
+extern Mtx43 data_021f47e0;
 extern void *gCurrentHeap;
 void Gfx3d_LoadTexAndPltt(void *a, s32 b);
 void *Gfx3d_CopyTex(void *a, s32 b);
@@ -852,17 +849,17 @@ extern char data_ov004_02248718[6];
 extern char data_ov004_02248720[6];
 extern char *sFtrGlowMatNames[3];
 extern char *sFtrVisNodeNames[4];
-extern Unk_ov004_Scene_Entry sFtrActorProfile;
+extern ActorProfile sFtrActorProfile;
 extern s16 sFtrPreviewYaw;
 extern s16 sFtrPreviewPitch;
 extern char sFtrArcPathBuf[0x28];
 extern char sFtrTexPathBuf[0x28];
-extern Unk_ov004_Rgba data_ov004_0224f60c;
-extern Unk_ov004_Rgba data_ov004_0224f62c;
-extern Unk_ov004_Rgba data_ov004_0224f63c;
-extern Unk_ov004_Rgba data_ov004_0224f608;
-extern Unk_ov004_Rgba data_ov004_0224f61c;
-extern Unk_ov004_Rgba data_ov004_0224f618;
+extern DebugColor data_ov004_0224f60c;
+extern DebugColor data_ov004_0224f62c;
+extern DebugColor data_ov004_0224f63c;
+extern DebugColor data_ov004_0224f608;
+extern DebugColor data_ov004_0224f61c;
+extern DebugColor data_ov004_0224f618;
 extern FxVec3 data_ov004_0224f88c[4];
 extern FxVec3 data_ov004_0224f8bc[4];
 extern FxVec3 data_ov004_0224f8ec[4];
@@ -1309,19 +1306,19 @@ void FtrActor::onRotateStart() {}
 void FtrActor::onRotateUpdate() {}
 
 // data
-Unk_ov004_Rgba data_ov004_0224f60c(31, 20, 20, 31);
+DebugColor data_ov004_0224f60c(31, 20, 20, 31);
 // data
-Unk_ov004_Rgba data_ov004_0224f62c(20, 20, 31, 31);
+DebugColor data_ov004_0224f62c(20, 20, 31, 31);
 // data
-Unk_ov004_Rgba data_ov004_0224f63c(31, 31, 20, 31);
+DebugColor data_ov004_0224f63c(31, 31, 20, 31);
 // data
-Unk_ov004_Rgba data_ov004_0224f608(20, 31, 20, 31);
+DebugColor data_ov004_0224f608(20, 31, 20, 31);
 // data
-Unk_ov004_Rgba data_ov004_0224f61c(20, 31, 31, 31);
+DebugColor data_ov004_0224f61c(20, 31, 31, 31);
 // data
-Unk_ov004_Rgba data_ov004_0224f618(20, 24, 24, 31);
+DebugColor data_ov004_0224f618(20, 24, 24, 31);
 // data
-Unk_ov004_Scene_Entry sFtrActorProfile = {(void *(*)())FtrActor_Create, 0x2e, 0x35, 0, 0xc8000, 0x12c000, 0x258000};
+ActorProfile sFtrActorProfile = {(void *(*)())FtrActor_Create, 0x2e, 0x35, 0, 0xc8000, 0x12c000, 0x258000};
 // data
 FxVec3 data_ov004_0224f88c[4] = {FxVec3(-0x1000, 0, -0x1000), FxVec3(-0x1000, 0, 0x1000),
                                        FxVec3(0x1000, 0, 0x1000), FxVec3(0x1000, 0, -0x1000)};
@@ -1603,7 +1600,7 @@ extern "C" u32 FtrActor_GetHeap(Self *self) {
 
 // @02208938
 extern "C" void FtrActor_LocalToWorld(Self *self, void *out, void *src) {
-    data_021f47e0 = *(Unk_ov004_02208284_M *)PT(0x250);
+    data_021f47e0 = *(Mtx43 *)PT(0x250);
     MTX_MultVec43(src, &data_021f47e0, out);
 }
 
@@ -1733,7 +1730,7 @@ extern "C" s32 FtrActor_CalcWorldMtx(Self *self, s32 a, s32 b) {
         if (a != 0 || b != 0) {
             FtrActor_CalcWorldMtx(q, a, b);
         } else {
-            data_021f47e0 = *(Unk_ov004_02208284_M *)((u8 *)q + 0x250);
+            data_021f47e0 = *(Mtx43 *)((u8 *)q + 0x250);
         }
         r6 = ((FtrStackLink *)(PT(0x178)))->getRelPos()->z;
         r4 = ((FtrStackLink *)(PT(0x178)))->getRelPos()->y;
@@ -1768,14 +1765,14 @@ extern "C" void FtrActor_UpdateMtx(Self *self) {
         FtrActor_GetFtrIndex(self);
         s32 y = FtrInfo_GetDmaUnk06() * 100 - 0x258;
         Mtx43_Translate(&data_021f47e0, 0, y, 0);
-        *(Unk_ov004_02208284_M *)PT(0x598) = data_021f47e0;
+        *(Mtx43 *)PT(0x598) = data_021f47e0;
     } else {
         FtrActor_CalcWorldMtx(self, 0, 0);
-        *(Unk_ov004_02208284_M *)PT(0x250) = data_021f47e0;
+        *(Mtx43 *)PT(0x250) = data_021f47e0;
         if (S32(0x780) == 1) {
             Mtx43_Translate(&data_021f47e0, func_01ffcb0c(0x1000 - S32(0x14c), 0x1000), 0, 0);
         }
-        *(Unk_ov004_02208284_M *)PT(0x598) = data_021f47e0;
+        *(Mtx43 *)PT(0x598) = data_021f47e0;
     }
 }
 

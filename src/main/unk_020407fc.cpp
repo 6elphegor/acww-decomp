@@ -2,6 +2,9 @@
 
 #include "Unk_020d8c7c.h"
 #include "talk/TalkMsgRequest.h"
+#include "net/CommManager.h"
+#include "talk/TalkWindowState.h"
+#include "sys/ProcProfile.h"
 
 
 class EventAnnouncer : public GameProc {
@@ -30,10 +33,8 @@ struct EventAnnounceState {
     s32 nextEvent;
 };
 
-struct Unk_02040974_Obj { u8 pad[0x64]; s32 myAid; };
 struct Unk_02040974_Rtc { s32 a; s32 b; };
-struct Unk_02040a84_Obj { s32 unk_00; s32 state; s32 nextState; };
-static inline s32 Unk_02040a84_Get(Unk_02040a84_Obj *p)
+static inline s32 Unk_02040a84_Get(TalkWindowState *p)
 {
     s32 v = p->state;
     return v;
@@ -42,10 +43,6 @@ static inline BOOL Unk_02040ad8_IsTwo(u8 v)
 {
     return v == 2 ? TRUE : FALSE;
 }
-struct Unk_02040d80_Obj {
-    u8 pad[0xc];
-    u16 profile;
-};
 
 extern "C" {
 s32 Random_GlobalBelow(s32);
@@ -117,11 +114,10 @@ BOOL EventAnnounce_IsBlockedScene(void);
 void EventAnnounce_Request(s32 a, s32 b, s32 c);
 }
 
-extern Unk_02040974_Obj *gCommManager;
+extern CommManager *gCommManager;
 extern u8 gScreenTransition;
 extern "C" EventAnnouncer *EventAnnouncer_Create();
-struct Unk_020da224_Rec { void *(*unk_00)(); s16 executePriority; s16 drawPriority; };
-extern Unk_02040d80_Obj *gActorDefaultParent;
+extern ProcBase *gActorDefaultParent;
 extern u8 data_021ed170[];
 extern u8 gSaveData[];
 extern u8 *data_021c1b3c;
@@ -132,7 +128,7 @@ static inline u8 Unk_02040cac_B2(u8 *p)
 }
 
 s32 sEventAnnounceBusy;
-Unk_020da224_Rec sEventAnnouncerProfile = { (void *(*)())EventAnnouncer_Create, 0xd6, 0xd1 };
+ProcProfile sEventAnnouncerProfile = { (void *(*)())EventAnnouncer_Create, 0xd6, 0xd1 };
 const char *sEventAnnounceMsgFiles[2] = { "obj_ev_start", "obj_ev_end" };
 s32 sEventAnnounceWasOnline;
 s32 sEventAnnounceBgmCode;
@@ -485,7 +481,7 @@ extern "C" void EventAnnounce_RunWarp(s32)
 extern "C" void EventAnnounce_RunShowMessage(EventAnnouncer *o)
 {
     if (Unk_02040ad8_IsTwo(gScreenTransition)) {
-        Unk_02040a84_Obj *p = (Unk_02040a84_Obj *)TalkWindow_Get(0);
+        TalkWindowState *p = (TalkWindowState *)TalkWindow_Get(0);
         o->msgRequest.resetMsg();
         _ZN10MsgRequest11setFileNameEPKc(&o->msgRequest, (void *)sEventAnnounceMsgFiles[sEventAnnounceState.isEnd]);
         *((u8 *)o + 0x72) = sEventAnnounceState.msgIndex;
@@ -497,7 +493,7 @@ extern "C" void EventAnnounce_RunShowMessage(EventAnnouncer *o)
 
 extern "C" void EventAnnounce_RunWaitMessageEnd(s32)
 {
-    Unk_02040a84_Obj *p = (Unk_02040a84_Obj *)TalkWindow_Get(0);
+    TalkWindowState *p = (TalkWindowState *)TalkWindow_Get(0);
     if (p->state == 0) {
         _ZN15TalkWindowState13detachRequestEv(p);
         SceneWarp_RequestExit(Scene_GetWarpRequest(), 20);

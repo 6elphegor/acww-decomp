@@ -2,7 +2,7 @@
 
 #include "Unk_020d8c7c.h"
 #include "town/SceneMapInfo.h"
-#include "town/Unk_0204c3c0_Ver.h"
+#include "sys/ClockDate.h"
 #include "game/Unk_0204da0c_Size.h"
 #include "town/Unk_0204e858_Grid.h"
 #include "item/ItemId.h"

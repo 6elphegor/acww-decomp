@@ -1,6 +1,6 @@
 // mwcc-version: 1.2/base
 #include "types.h"
-#include "actor/Unk_ov068_SceneEntry.h"
+#include "actor/ActorProfile.h"
 #include "game/Unk_ov083_Vec.h"
 #include "talk/TalkWindowState.h"
 #include "snd/BgmBeatPhase.h"
@@ -63,11 +63,6 @@
 
 class ActorTalkRequest;
 
-
-struct Unk_ov068_0226ce70_Out {
-    const char *msgKey;
-    u8 msgIndex;
-};
 
 
 
@@ -179,8 +174,6 @@ struct Unk_ov068_0226d39c_Entry {
     Unk_ov068_0226d39c_Fn b;
 };
 
-typedef BgmBeatPhase Unk_ov068_0226c63c_Msg;
-
 struct Unk_ov068_0226c3b4_Vec {
     s32 x, y, z;
 };
@@ -286,7 +279,7 @@ extern char sRoostModelMof[23];
 extern char sRoostTexMof[27];
 extern char sRoostModelEnd[23];
 extern char sRoostTexEnd[27];
-extern Unk_ov068_Scene_Entry sSpNpcRoostGuestProfile;
+extern ActorProfile sSpNpcRoostGuestProfile;
 SpNpcRoostGuest *SpNpcRoostGuest_Create();
 extern char *sKkMouthTextures[6];
 extern const char *sRoostGuestMsgFiles[9];
@@ -315,7 +308,7 @@ void Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 void Bgm_Release(u16 a);
 void LightSwitch_SetOff(s32 a, s32 b);
 void LightSwitch_SetOn(s32 a, s32 b, s32 c);
-Unk_ov068_0226c63c_Msg *Snd_GetBeatState();
+BgmBeatPhase *Snd_GetBeatState();
 void NpcFaceAnim_setMouthTexture(void *self, u32 a);
 void NpcFaceAnim_resumeMouthMaterial(void *self);
 void NpcActionCtrl_requestPlayAnim(void *self, s32 a, s32 b, u32 c, u16 d, u16 e);
@@ -731,7 +724,7 @@ s32 SpNpcRoostGuestTalk::getTalkMode() {
     using namespace sB; return talkMode; }
 
 void SpNpcRoostGuestTalk::start(TalkStartMsg *out_) {
-    Unk_ov068_0226ce70_Out *out = (Unk_ov068_0226ce70_Out *)out_;
+    TalkStartMsg *out = (TalkStartMsg *)out_;
     using namespace sB;
     u16 h0, h2, h4, h6;
     lastBeatState.seqVar4 = -1;
@@ -871,7 +864,7 @@ extern "C" void *data_ov068_02270384[2] = {(void *)_ZN19SpNpcRoostGuestTalk17onK
 extern "C" void *data_ov068_022703a4[2] = {(void *)_ZN15SpNpcRoostGuest10setupAct01Ev, 0};
 extern "C" void *data_ov068_022703b4[2] = {(void *)_ZN15SpNpcRoostGuest9mainAct03Ev, 0};
 extern "C" char sRoostModelWip[23] = "npc_sp/model/wip.nsbmd";
-extern "C" Unk_ov068_Scene_Entry sSpNpcRoostGuestProfile = {(void *(*)())SpNpcRoostGuest_Create, 0x66, 0x6c, 0, 0x5000, 0x5000, 0x3e800};
+extern "C" ActorProfile sSpNpcRoostGuestProfile = {(void *(*)())SpNpcRoostGuest_Create, 0x66, 0x6c, 0, 0x5000, 0x5000, 0x3e800};
 extern const u8 sKkTalkModeMessages[4] = {0x00, 0x09, 0x06, 0x00};
 extern "C" void *data_ov068_0227042c[2] = {(void *)_ZN19SpNpcRoostGuestTalk13onKkStartShowEv, 0};
 extern "C" char sRoostMsgCf2[11] = "sp_npc_cf2";
@@ -1097,7 +1090,7 @@ void SpNpcRoostGuestTalk::scriptStartPerformance() {
 
 void SpNpcRoostGuestTalk::scriptPerform() {
     using namespace sA;
-    Unk_ov068_0226c63c_Msg *p = Snd_GetBeatState();
+    BgmBeatPhase *p = Snd_GetBeatState();
     KkShowFx_Update();
     if (p != NULL) {
         if (p->seqVar2 == 1 && lastBeatState.seqVar2 == 1) {

@@ -1,6 +1,6 @@
 // mwcc-version: 1.2/sp2
 #include "types.h"
-#include "actor/Unk_ov003_SceneEntry.h"
+#include "actor/ActorProfile.h"
 #include "game/Unk_ov003_Vec.h"
 #include "gfx/AnimFrameCtrl.h"
 #include "talk/TalkWindowState.h"
@@ -16,6 +16,7 @@
 #include "snd/BuildingSeEmitter.h"
 #include "town/BuildingActor.h"
 #include "game/TouchPickSphere.h"
+#include "gfx/DebugColor.h"
 
 
 
@@ -34,17 +35,6 @@ class Unk_020b1ddc;
 
 
 
-
-
-struct Unk_ov003_02231e4c_Color {
-    u8 a, b, c, d;
-    Unk_ov003_02231e4c_Color(u8 a_, u8 b_, u8 c_, u8 d_) {
-        a = a_;
-        b = b_;
-        c = c_;
-        d = d_;
-    }
-};
 
 
 struct Unk_ov003_02216824_Rec {
@@ -149,13 +139,13 @@ typedef BOOL (Mailbox::*Unk_ov003_02216cf8_Fn)();
 typedef s32 (Mailbox::*Unk_ov003_02231e4c_Fn)();
 
 // colour constants (sinit store order = definition order), then the registration entry
-extern "C" Unk_ov003_02231e4c_Color data_ov003_02235380(0x1f, 0x14, 0x14, 0x1f);
-extern "C" Unk_ov003_02231e4c_Color data_ov003_0223537c(0x14, 0x14, 0x1f, 0x1f);
-extern "C" Unk_ov003_02231e4c_Color data_ov003_02235390(0x1f, 0x1f, 0x14, 0x1f);
-extern "C" Unk_ov003_02231e4c_Color data_ov003_02235394(0x14, 0x1f, 0x14, 0x1f);
-extern "C" Unk_ov003_02231e4c_Color data_ov003_0223538c(0x14, 0x1f, 0x1f, 0x1f);
-extern "C" Unk_ov003_02231e4c_Color data_ov003_02235388(0x14, 0x18, 0x18, 0x1f);
-extern "C" Unk_ov003_SceneEntry sMailboxProfile = {(void *(*)())Mailbox_Create, 0x24, 0x2a, 0, 0xc8000, 0x12c000, 0x258000};
+extern "C" DebugColor data_ov003_02235380(0x1f, 0x14, 0x14, 0x1f);
+extern "C" DebugColor data_ov003_0223537c(0x14, 0x14, 0x1f, 0x1f);
+extern "C" DebugColor data_ov003_02235390(0x1f, 0x1f, 0x14, 0x1f);
+extern "C" DebugColor data_ov003_02235394(0x14, 0x1f, 0x14, 0x1f);
+extern "C" DebugColor data_ov003_0223538c(0x14, 0x1f, 0x1f, 0x1f);
+extern "C" DebugColor data_ov003_02235388(0x14, 0x18, 0x18, 0x1f);
+extern "C" ActorProfile sMailboxProfile = {(void *(*)())Mailbox_Create, 0x24, 0x2a, 0, 0xc8000, 0x12c000, 0x258000};
 
 extern "C" void Mailbox_Create() {
     new Mailbox;

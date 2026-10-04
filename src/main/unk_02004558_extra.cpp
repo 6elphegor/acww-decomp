@@ -14,7 +14,6 @@
 #include "player/Unk_02006d14_Vec.h"
 #include "player/Unk_02006d14_Vec3.h"
 #include "player/Unk_02006d14_V3.h"
-#include "player/Unk_02006d14_Data.h"
 #include "player/Unk_02006d14_Trip.h"
 #include "player/Unk_02006d14_St7d0.h"
 #include "player/Unk_02006d14_Sub7d0.h"
@@ -330,11 +329,11 @@ namespace nD {
 extern "C" {
 
 typedef void (PlayerActor::*Unk_02006d14_Fn)(PlayerActionRequest*, u32);
-extern Unk_02006d14_Data* gCommManager;
+extern CommManager* gCommManager;
 extern u32 data_020c6a18[];
-BOOL _ZN11CommManager12isSlotActiveEi(Unk_02006d14_Data* p, u32 v);
-BOOL _ZN11CommManager11isLocalSlotEj(Unk_02006d14_Data* p, u32 v);
-s32 _ZN11CommManager10getSendSeqEv(Unk_02006d14_Data* p);
+BOOL _ZN11CommManager12isSlotActiveEi(CommManager* p, u32 v);
+BOOL _ZN11CommManager11isLocalSlotEj(CommManager* p, u32 v);
+s32 _ZN11CommManager10getSendSeqEv(CommManager* p);
 void _ZN12Unk_020076949endActionEj(void *, u32 a);
 void _ZN12Unk_0200769415clearActionWorkEv(void *);
 void _ZN12Unk_0200769421stopMovementForActionEj(void *, u32 id);
@@ -539,7 +538,7 @@ namespace nH {
 extern "C" {
 
 extern u8 gFieldSceneKind;
-extern Unk_02006d14_Data* gCommManager;
+extern CommManager* gCommManager;
 extern s16 data_02135f44[];
 extern u32 data_020d5e4c[];
 s32 func_01ffcb0c(s32 a, s32 b);
@@ -548,7 +547,7 @@ s32 Math_Atan2(s32 a, s32 b);
 s32 Math_AngleDiffAbs(s32 a, s32 b);
 u16 NetBuf_ReadU16(void* p);
 void NetBuf_WriteU16(void* p, u32 v);
-BOOL _ZN11CommManager11isLocalSlotEj(Unk_02006d14_Data* p, u32 v);
+BOOL _ZN11CommManager11isLocalSlotEj(CommManager* p, u32 v);
 void _ZN10PlayerData11setHeldItemEPt(void* p, void* q);
 BOOL _ZN13AnimFrameCtrl10isFinishedEv(void* p);
 BOOL _ZN13AnimFrameCtrl14hasPassedFrameEi(void* p, u32 v);
@@ -622,12 +621,12 @@ void PlayerActor_SetArgsPickUpFanfareStow(Unk_0200a0a0_Bytes* dst, Unk_02006d14_
 void PlayerActor_NetReadPickUpFanfare(Unk_0200a63c_St* s, Unk_02006d14_Pair* out, u16* h, u8* b);
 void PlayerActor_NetWritePickUpFanfare(Unk_0200a63c_St* s, Unk_02006d14_Pair* p, u16 h, u8 b);
 void PlayerActor_SetArgsPickUpFanfare(Unk_0200a728_St* s, Unk_02006d14_Pair* p, u16 h, u8 b);
-extern Unk_02006d14_Data* gCommManager;
+extern CommManager* gCommManager;
 extern u8 gFieldSceneKind[];
 extern u8 sPlayerActorErrorMsgFile[];
 extern u8 sPlayerActorMsgFile[];
 extern void* gSceneBlockMap;
-BOOL _ZN11CommManager11isLocalSlotEj(Unk_02006d14_Data* p, u32 v);
+BOOL _ZN11CommManager11isLocalSlotEj(CommManager* p, u32 v);
 void _ZN19PlayerActionRequestC1Ev(Unk_0200a050_Obj* o);
 void _ZN19PlayerActionRequest6assignEiis(Unk_0200a050_Obj* o, u32 a, u32 b, s16 c);
 void _ZN19PlayerActionRequestD1Ev(Unk_0200a050_Obj* o);
@@ -1070,7 +1069,6 @@ BOOL _ZN11PlayerActor15getHeldToolKindEv(void *);
 namespace nO {
 extern "C" {
 
-typedef PlayerActionRequest Unk_0200e248_Rec;
 s32 PlayerActor_ParamGetSlot(s32);
 s32 PlayerActor_ParamGetAction(s32);
 void PlayerSession_SetActor(s32, void *);

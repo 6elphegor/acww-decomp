@@ -8,6 +8,8 @@
 #include "talk/MsgRequest.h"
 #include "ui/HudWallet.h"
 #include "talk/TalkMsgRequest.h"
+#include "sys/ProcProfile.h"
+#include "game/NibblePair.h"
 
 // ---- declarations shared by the merged files
 class TalkMsgRequest;
@@ -15,11 +17,6 @@ class TalkMsgRequest;
 
 
 
-
-struct Unk_020e2824_Nib {
-    u8 lo : 4;
-    u8 hi : 4;
-};
 
 // vtable 0x020e281c: the message object inside the scene (size 0x48)
 class SaveManagerTalk : public TalkMsgRequest {
@@ -110,8 +107,8 @@ public:
     /* 0x103 */ u8 transferReceived[4];
     /* 0x107 */ u8 noSaveData;
     /* 0x108 */ u8 unk_108;
-    /* 0x109 */ Unk_020e2824_Nib slotStatus;
-    /* 0x10a */ Unk_020e2824_Nib slotOrder;
+    /* 0x109 */ NibblePair slotStatus;
+    /* 0x10a */ NibblePair slotOrder;
 };
 
 // the three file-scope objects of __sinit (constructors and destructors are functions of other units)
@@ -129,12 +126,6 @@ public:
     u8 unk_00[0xd2];
 };
 
-
-struct Unk_020a4238_Entry {
-    void *unk_00;
-    u16 unk_04;
-    u16 unk_06;
-};
 
 // the 4-byte record class of the previous file (constructor 0x0209eb90, destructor 0x0209eb8c)
 extern "C" void _ZN11SaveRecord49constructEv(void *p);
@@ -5359,7 +5350,7 @@ extern "C" u32 JoinHistory_GetLatest() {
 
 void *data_020e2534[2] = {(void *)NT::SaveManager_ExecAct15, 0};
 
-Unk_020a4238_Entry data_020e254c = {(void *)SaveManager_Create, 0xc7, 0xc5};
+ProcProfile sSaveManagerProfile = {(void *(*)())SaveManager_Create, 0xc7, 0xc5};
 
 void *data_020e25bc[2] = {(void *)NT::_ZN11SaveManager10enterAct01Ev, 0};
 

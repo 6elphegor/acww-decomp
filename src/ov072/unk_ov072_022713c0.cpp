@@ -24,7 +24,8 @@
 #include "actor/SpNpcActor.h"
 #include "talk/ActorTalkRequest.h"
 #include "talk/SpNpcTalkRequest.h"
-#include "actor/Unk_ov004_SceneEntry.h"
+#include "actor/ActorProfile.h"
+#include "gfx/DebugColor.h"
 
 
 class ActorTalkRequest;
@@ -33,11 +34,6 @@ class ActorTalkRequest;
 struct Unk_02071a58_Grid {
     u8 *cells;
     u32 w, h;
-};
-
-struct Unk_ov072_02272234_Ent {
-    const char *msgKey;
-    u8 msgIndex;
 };
 
 
@@ -52,12 +48,6 @@ struct Unk_ov072_022718d0_Ent {
     void (SpNpcGulliverTalk::*f)();
     u8 flag;
 };
-
-struct Unk_ov072_ColorCtor {
-    u8 a, b, c, d;
-    Unk_ov072_ColorCtor(u8 a, u8 b, u8 c, u8 d) : a(a), b(b), c(c), d(d) {}
-};
-
 
 extern "C" {
 extern u8 data_021e58a6;
@@ -175,19 +165,19 @@ extern "C" {
 extern u8 sSpNpcGulliverKey[12];
 extern u8 sSpNpcGulliverModelPath[23];
 extern u8 sSpNpcGulliverTexturePath[27];
-extern const Unk_ov072_02272234_Ent sSpNpcGulliverTopicMsgs[8];
+extern const TalkStartMsg sSpNpcGulliverTopicMsgs[8];
 extern Unk_ov072_022718d0_Ent sSpNpcGulliverTalkScripts[2];
 extern Unk_ov072_02271fe8_Ent sSpNpcGulliverActTable[4];
 s32 SpNpcGulliver_TickTimer(void *self, s32 *p);
 SpNpcGulliver *SpNpcGulliver_Create();
 }
 
-Unk_ov072_ColorCtor data_ov072_02272590(31, 20, 20, 31);
-Unk_ov072_ColorCtor data_ov072_02272580(20, 20, 31, 31);
-Unk_ov072_ColorCtor data_ov072_0227258c(31, 31, 20, 31);
-Unk_ov072_ColorCtor data_ov072_02272594(20, 31, 20, 31);
-Unk_ov072_ColorCtor data_ov072_02272584(20, 31, 31, 31);
-Unk_ov072_ColorCtor data_ov072_02272588(20, 24, 24, 31);
+DebugColor data_ov072_02272590(31, 20, 20, 31);
+DebugColor data_ov072_02272580(20, 20, 31, 31);
+DebugColor data_ov072_0227258c(31, 31, 20, 31);
+DebugColor data_ov072_02272594(20, 31, 20, 31);
+DebugColor data_ov072_02272584(20, 31, 31, 31);
+DebugColor data_ov072_02272588(20, 24, 24, 31);
 
 extern "C" {
 u8 sSpNpcGulliverKey[12] = {'s', 'p', '_', 'n', 'p', 'c', '_', 'g', 'u', 'l', 'l', 0};
@@ -207,9 +197,9 @@ Unk_ov072_02271fe8_Ent sSpNpcGulliverActTable[4] = {
     {NULL, &SpNpcGulliver::mainAct03},
 };
 
-extern "C" Unk_ov004_SceneEntry sSpNpcGulliverProfile = {(void *(*)())SpNpcGulliver_Create, 0x60, 0x67, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" ActorProfile sSpNpcGulliverProfile = {(void *(*)())SpNpcGulliver_Create, 0x60, 0x67, 2, 0x5000, 0x5000, 0x3e800};
 extern "C" {
-const Unk_ov072_02272234_Ent sSpNpcGulliverTopicMsgs[8] = {
+const TalkStartMsg sSpNpcGulliverTopicMsgs[8] = {
     {(const char *)sSpNpcGulliverKey, 0},
     {(const char *)sSpNpcGulliverKey, 5},
     {(const char *)sSpNpcGulliverKey, 0x1e},

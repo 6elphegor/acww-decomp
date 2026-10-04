@@ -2,6 +2,7 @@
 #include "Unk_020d8c7c.h"
 #include "game/FxVec3.h"
 #include "actor/Character.h"
+#include "sys/ProcProfile.h"
 
 struct Unk_020dc034_V {
     s32 x, y, z;
@@ -208,12 +209,6 @@ extern const s32 data_020ca874[0x30];
 extern const s32 data_020ca934[0x30];
 extern const s32 data_020ca9f4[0x30];
 extern const s32 data_020caab4[0x30];
-
-struct Unk_020dbeb4_Entry {
-    void *create;
-    u16 executePriority;
-    u16 drawPriority;
-};
 
 extern "C" HandOverItem *HandOverItem_Create();
 extern FishHoldOffsets *sFishHoldOffsetSets[6];
@@ -1494,7 +1489,7 @@ extern "C" s32 HandOverItem_SetNextMode(u8 a, s32 b) {
     return r;
 }
 
-Unk_020dbeb4_Entry sHandOverItemProfile = { (void *)HandOverItem_Create, 0xd1, 0xcd };
+ProcProfile sHandOverItemProfile = { (void *(*)())HandOverItem_Create, 0xd1, 0xcd };
 FishHoldOffsets *sFishHoldOffsetSets[6] = { (FishHoldOffsets *)data_020caab4, (FishHoldOffsets *)data_020ca6f4, (FishHoldOffsets *)data_020ca7b4, (FishHoldOffsets *)data_020ca874, (FishHoldOffsets *)data_020ca934, (FishHoldOffsets *)data_020ca9f4 };
 
 const u8 sHandOverTakeTimeout[4] = { 0x28, 0x0, 0x0, 0x0 };

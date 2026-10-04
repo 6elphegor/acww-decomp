@@ -29,7 +29,8 @@
 #include "talk/ActorTalkRequest.h"
 #include "talk/SpNpcTalkRequest.h"
 #include "item/ItemPickSpec.h"
-#include "actor/Unk_ov004_SceneEntry.h"
+#include "actor/ActorProfile.h"
+#include "gfx/DebugColor.h"
 
 
 class ActorTalkRequest;
@@ -66,20 +67,6 @@ struct Unk_ov070_Name {
     u8 b_byte;
     u8 b_pad[3];
 };
-
-
-
-
-
-
-struct Unk_ov070_Color {
-    u8 a, b, c, d;
-    Unk_ov070_Color(u8 a, u8 b, u8 c, u8 d) : a(a), b(b), c(c), d(d) {}
-};
-
-
-
-
 
 
 
@@ -202,21 +189,21 @@ void _ZN13NpcActionCtrl13requestActionEjiiissiitt(void *self, u32 a, u32 b, u32 
 }
 
 // Declarations for data defined further down (definition order sets the data layout)
-extern "C" Unk_ov070_Color data_ov070_022728c8;
+extern "C" DebugColor data_ov070_022728c8;
 extern "C" u8 sSpNpcGracieTexturePath[];
-extern "C" Unk_ov004_SceneEntry sSpNpcGracieProfile;
+extern "C" ActorProfile sSpNpcGracieProfile;
 extern "C" u8 sSpNpcGracieModelPath[];
 extern "C" u32 data_ov070_022726e4[1];
 extern "C" u32 data_ov070_022726e0[1];
-extern "C" Unk_ov070_Color data_ov070_022728d4;
+extern "C" DebugColor data_ov070_022728d4;
 extern "C" const Unk_ov070_022717f0_Ent sSpNpcGracieOutfitTiers[7];
 extern "C" Unk_ov070_02272334_Ent sSpNpcGracieActTable[3];
-extern "C" Unk_ov070_Color data_ov070_022728c4;
-extern "C" Unk_ov070_Color data_ov070_022728c0;
-extern "C" Unk_ov070_Color data_ov070_022728d8;
+extern "C" DebugColor data_ov070_022728c4;
+extern "C" DebugColor data_ov070_022728c0;
+extern "C" DebugColor data_ov070_022728d8;
 extern "C" u8 sSpNpcGracieKey[];
 extern "C" const Unk_ov070_Name sSpNpcGracieTopicMsgs[7];
-extern "C" Unk_ov070_Color data_ov070_022728cc;
+extern "C" DebugColor data_ov070_022728cc;
 extern "C" SpNpcGracie *SpNpcGracie_Create();
 
 static inline BOOL Unk_ov070_IsNone(u16 *p) {
@@ -349,11 +336,11 @@ void SpNpcGracieTalk::setResultHandler(s32 idx) {
     resultHandler = tbl[idx];
 }
 
-extern "C" Unk_ov070_Color data_ov070_022728c0 = Unk_ov070_Color(0x1f, 0x14, 0x14, 0x1f);
+extern "C" DebugColor data_ov070_022728c0 = DebugColor(0x1f, 0x14, 0x14, 0x1f);
 
-extern "C" Unk_ov070_Color data_ov070_022728c8 = Unk_ov070_Color(0x14, 0x14, 0x1f, 0x1f);
+extern "C" DebugColor data_ov070_022728c8 = DebugColor(0x14, 0x14, 0x1f, 0x1f);
 
-extern "C" Unk_ov070_Color data_ov070_022728d8 = Unk_ov070_Color(0x1f, 0x1f, 0x14, 0x1f);
+extern "C" DebugColor data_ov070_022728d8 = DebugColor(0x1f, 0x1f, 0x14, 0x1f);
 
 extern "C" const Unk_ov070_Name sSpNpcGracieTopicMsgs[7] = {
     {sSpNpcGracieKey, 0x00}, {sSpNpcGracieKey, 0x09}, {sSpNpcGracieKey, 0x4c}, {sSpNpcGracieKey, 0x29},
@@ -362,7 +349,7 @@ extern "C" const Unk_ov070_Name sSpNpcGracieTopicMsgs[7] = {
 
 extern "C" u32 data_ov070_022726e4[1] = {0x10};
 
-extern "C" Unk_ov070_Color data_ov070_022728d4 = Unk_ov070_Color(0x14, 0x1f, 0x14, 0x1f);
+extern "C" DebugColor data_ov070_022728d4 = DebugColor(0x14, 0x1f, 0x14, 0x1f);
 
 extern "C" const Unk_ov070_022717f0_Ent sSpNpcGracieOutfitTiers[7] = {
     {{0x144c, 0x13b7, 0x1452}, {1, 0, 1}, 0x05, {0, 0}, 200},
@@ -378,13 +365,13 @@ extern "C" u8 sSpNpcGracieTexturePath[] = "npc_sp/model/grf_tex.nsbtx";
 
 extern "C" u32 data_ov070_022726e0[1] = {5};
 
-extern "C" Unk_ov070_Color data_ov070_022728cc = Unk_ov070_Color(0x14, 0x1f, 0x1f, 0x1f);
+extern "C" DebugColor data_ov070_022728cc = DebugColor(0x14, 0x1f, 0x1f, 0x1f);
 
-extern "C" Unk_ov070_Color data_ov070_022728c4 = Unk_ov070_Color(0x14, 0x18, 0x18, 0x1f);
+extern "C" DebugColor data_ov070_022728c4 = DebugColor(0x14, 0x18, 0x18, 0x1f);
 
 extern "C" u8 sSpNpcGracieModelPath[] = "npc_sp/model/grf.nsbmd";
 
-extern "C" Unk_ov004_SceneEntry sSpNpcGracieProfile = {(void *(*)())SpNpcGracie_Create, 0x6c, 0x72, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" ActorProfile sSpNpcGracieProfile = {(void *(*)())SpNpcGracie_Create, 0x6c, 0x72, 2, 0x5000, 0x5000, 0x3e800};
 
 extern "C" Unk_ov070_02272334_Ent sSpNpcGracieActTable[3] = {
     {&SpNpcGracie::setupAct00, &SpNpcGracie::mainAct00},

@@ -1,11 +1,10 @@
 #include "types.h"
+#include "net/CommManager.h"
 
 #define ALIGN4(x) (((x) + 3) & ~3)
 static inline u32 AL(u32 v, u32 a) {
     return (v + a - 1) & ~(a - 1);
 }
-
-struct Unk_0205b848_Cfg { u8 pad[0x6c]; u8 memberCount; };
 
 // sCharaAnimCache object
 struct CharaAnimCache {
@@ -66,7 +65,7 @@ extern u8 gFieldSceneKind;
 extern u32 data_020cbf94, data_020cbf98, data_020cbf9c, data_020cbfa0, data_020cbfa4;
 extern u32 data_020c8b9c;
 extern u32 data_020c8ba0;
-extern Unk_0205b848_Cfg *gCommManager;
+extern CommManager *gCommManager;
 extern const u8 sJointGroup3Ranges[4];
 extern const u8 sJointGroup1Ranges[4];
 extern const u8 sJointGroup0Ranges[4];

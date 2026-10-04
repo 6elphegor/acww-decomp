@@ -5,6 +5,7 @@
 #include "save/SaveRecord4.h"
 #include "talk/MsgRequest.h"
 #include "talk/TalkMsgRequest.h"
+#include "sys/ProcProfile.h"
 
 
 
@@ -56,17 +57,11 @@ struct Unk_0209e840_Ent {
     Unk_020e23fc_Fn update;
 };
 
-struct Unk_0209ea1c_Entry {
-    void *create;
-    u16 executePriority;
-    u16 drawPriority;
-};
-
 extern "C" SaveMenu *SaveMenu_Create();
 extern "C" void _ZN15TalkWindowState13attachRequestEP14TalkMsgRequest(TalkWindowState *o, TalkMsgRequest *p);
 extern "C" void _ZN15TalkWindowState12showBusyIconEv(TalkWindowState *o, s32 v);
 
-Unk_0209ea1c_Entry sSaveMenuProfile = {(void *)SaveMenu_Create, 0xd5, 0xd0};
+ProcProfile sSaveMenuProfile = {(void *(*)())SaveMenu_Create, 0xd5, 0xd0};
 
 extern const s32 sSaveMenuDebugDonationLevels[22];
 const s32 sSaveMenuDebugDonationLevels[22] = {0, 10000, 50000, 100000, 200000, 300000, 400000, 500000, 600000, 700000, 800000, 900000, 1000000, 1100000, 1200000, 1300000, 1400000, 1500000, 1600000, 3200000, 6400000, 9999999};

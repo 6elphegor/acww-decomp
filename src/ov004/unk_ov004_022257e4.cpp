@@ -1,7 +1,7 @@
 // mwcc-version: 1.2/base
 #include "types.h"
-#include "gfx/Unk_ov004_Rgba.h"
-#include "actor/Unk_ov004_SceneEntry.h"
+#include "gfx/DebugColor.h"
+#include "actor/ActorProfile.h"
 #include "actor/CharacterListNode.h"
 #include "game/Unk_ov004_02224ee4_Vec.h"
 #include "gfx/AnimFrameCtrl.h"
@@ -175,12 +175,12 @@ extern "C" const u8 data_ov004_0224016c[];
 
 extern "C" CheckInGate *CheckInGate_Create();
 extern "C" CheckInGate *CheckInGate_Create();// declarations (definition order below sets the data layout)
-extern "C" { extern Unk_ov004_Rgba data_ov004_02250c48; }
-extern "C" { extern Unk_ov004_Rgba data_ov004_02250c4c; }
-extern "C" { extern Unk_ov004_Rgba data_ov004_02250c40; }
-extern "C" { extern Unk_ov004_Rgba data_ov004_02250c44; }
+extern "C" { extern DebugColor data_ov004_02250c48; }
+extern "C" { extern DebugColor data_ov004_02250c4c; }
+extern "C" { extern DebugColor data_ov004_02250c40; }
+extern "C" { extern DebugColor data_ov004_02250c44; }
 extern "C" { extern char data_ov004_0224d7ac[]; }
-extern "C" { extern Unk_ov004_Rgba data_ov004_02250c50; }
+extern "C" { extern DebugColor data_ov004_02250c50; }
 extern "C" { extern char *sCheckInGateGroundMats[7]; }
 extern "C" { extern Cls *sCheckInGate; }
 extern "C" { extern char data_ov004_0224d7b8[]; }
@@ -189,8 +189,8 @@ extern "C" { extern char data_ov004_0224d7c4[]; }
 extern "C" { extern char data_ov004_0224d788[]; }
 extern "C" { extern char data_ov004_0224d794[]; }
 extern "C" { extern char data_ov004_0224d7a0[]; }
-extern "C" { extern Unk_ov004_Rgba data_ov004_02250c38; }
-extern "C" { extern Unk_ov004_Scene_Entry sCheckInGateProfile; }
+extern "C" { extern DebugColor data_ov004_02250c38; }
+extern "C" { extern ActorProfile sCheckInGateProfile; }
 extern "C" { extern const u8 sCheckInGateHourLight[0x20]; }
 extern "C" { extern const u8 data_ov004_0224016c[0x104]; }
 
@@ -457,11 +457,11 @@ extern "C" Cls *sCheckInGate = 0;
 
 extern "C" char data_ov004_0224d788[] = "m_grd_g_s";
 
-extern "C" Unk_ov004_Rgba data_ov004_02250c48(31, 20, 20, 31);
+extern "C" DebugColor data_ov004_02250c48(31, 20, 20, 31);
 
-extern "C" Unk_ov004_Rgba data_ov004_02250c4c(20, 20, 31, 31);
+extern "C" DebugColor data_ov004_02250c4c(20, 20, 31, 31);
 
-extern "C" Unk_ov004_Rgba data_ov004_02250c40(31, 31, 20, 31);
+extern "C" DebugColor data_ov004_02250c40(31, 31, 20, 31);
 
 extern "C" const u8 data_ov004_0224016c[0x104] = {
     0xcd, 0x04, 0x00, 0x00, 0x1f, 0x1f, 0x0e, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -496,11 +496,11 @@ extern "C" const u8 sCheckInGateHourLight[0x20] = {
     0x1f, 0x1f, 0x0e, 0x00, 0x00, 0x00, 0x00, 0x00
 };
 
-extern "C" Unk_ov004_Rgba data_ov004_02250c44(20, 31, 20, 31);
+extern "C" DebugColor data_ov004_02250c44(20, 31, 20, 31);
 
 extern "C" char data_ov004_0224d794[] = "m_grd_grs";
 
-extern "C" Unk_ov004_Rgba data_ov004_02250c50(20, 31, 31, 31);
+extern "C" DebugColor data_ov004_02250c50(20, 31, 31, 31);
 
 extern "C" char data_ov004_0224d7a0[] = "m_grd_s_s";
 
@@ -509,11 +509,11 @@ extern "C" char data_ov004_0224d7c4[] = "m_grd_clf3";
 extern "C" char *sCheckInGateGroundMats[7] = {data_ov004_0224d77c, data_ov004_0224d7b8, data_ov004_0224d7c4, data_ov004_0224d788,
                                            data_ov004_0224d794, data_ov004_0224d7a0, data_ov004_0224d7ac};
 
-extern "C" Unk_ov004_Rgba data_ov004_02250c38(20, 24, 24, 31);
+extern "C" DebugColor data_ov004_02250c38(20, 24, 24, 31);
 
 extern "C" char data_ov004_0224d77c[] = "m_grd_clf";
 
-extern "C" Unk_ov004_Scene_Entry sCheckInGateProfile = {(void *(*)())CheckInGate_Create, 0x11, 0x14, 0, 0xc8000, 0x12c000, 0x258000};
+extern "C" ActorProfile sCheckInGateProfile = {(void *(*)())CheckInGate_Create, 0x11, 0x14, 0, 0xc8000, 0x12c000, 0x258000};
 
 // @2225ba8
 BOOL CheckInGate::changeSyncState(u32 a) {

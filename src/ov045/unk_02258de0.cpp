@@ -21,7 +21,7 @@
 #include "actor/SpNpcActor.h"
 #include "talk/ActorTalkRequest.h"
 #include "talk/MsgString.h"
-#include "actor/Unk_ov004_SceneEntry.h"
+#include "actor/ActorProfile.h"
 
 // Real (mangled) names of other modules' functions that the unit calls as plain functions taking the object first.
 #define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv
@@ -105,11 +105,6 @@ extern u8 *gCommManager;
 // ---------------------------------------------------------------------------------------------------------------------
 
 
-
-struct Unk_ov045_022590e4_Msg {
-    u32 msgKey;
-    u8 msgIndex;
-};
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Message buffer classes (see src/main/unk_02062fd4.cpp)
@@ -293,7 +288,7 @@ const Unk_ov045_02258ee4_Ent sSpNpcKatrinaBadFortuneCards[21] = {
     {0x15, 1},
 };
 SpNpcKatrina *sSpNpcKatrinaInstance;
-extern "C" Unk_ov004_SceneEntry sSpNpcKatrinaProfile = {(void *(*)())SpNpcKatrina_Create, 0x70, 0x76, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" ActorProfile sSpNpcKatrinaProfile = {(void *(*)())SpNpcKatrina_Create, 0x70, 0x76, 2, 0x5000, 0x5000, 0x3e800};
 BOOL SpNpcKatrina::preCreate() {
     if (!SpNpcActor::preCreate()) {
         return FALSE;
@@ -446,8 +441,8 @@ void SpNpcKatrinaTalk::attachOwner(SpNpcKatrina *o) {
 }
 
 void SpNpcKatrinaTalk::start(TalkStartMsg *arg) {
-    Unk_ov045_022590e4_Msg *out = (Unk_ov045_022590e4_Msg *)arg;
-    out->msgKey = (u32)sSpNpcKatrinaMsgKey;
+    TalkStartMsg *out = (TalkStartMsg *)arg;
+    out->msgKey = (const char *)sSpNpcKatrinaMsgKey;
     s32 a = Talk_CheckAndSetPlayerFlag(4, 0);
     s32 b = Talk_CheckAndSetPlayerFlag(5, 0);
     s32 c = Talk_CheckAndSetPlayerFlag(6, 0);

@@ -3,12 +3,12 @@
 
 #include "types.h"
 
-struct Unk_020238b0_Out;
+struct TalkTopicMsg;
 class VillagerActor;
 class VillagerTalkRequestItemTopics;
 
 typedef void (VillagerTalkRequestItemTopics::*Unk_020238b0_Fn)();
-typedef void (VillagerTalkRequestItemTopics::*Unk_020238b0_OutFn)(Unk_020238b0_Out *);
+typedef void (VillagerTalkRequestItemTopics::*Unk_020238b0_OutFn)(TalkTopicMsg *);
 
 // Villager talk topics of the item request / errand chain (Q* states: hand over item, return, clear, reward); the
 // root of the ov069 topic chain (... <- Hobby <- Holiday <- RequestReply <- Topics). All of them are views of the
@@ -18,14 +18,14 @@ class VillagerTalkRequestItemTopics {
 public:
     void openArbeitItemPicker();
     void clearRequest();
-    void selectQComp(Unk_020238b0_Out *out);
-    void selectQReturn(Unk_020238b0_Out *out);
+    void selectQComp(TalkTopicMsg *out);
+    void selectQReturn(TalkTopicMsg *out);
     void finishRequestChain();
-    void selectQEnd(Unk_020238b0_Out *out);
-    void selectQClear(Unk_020238b0_Out *out);
+    void selectQEnd(TalkTopicMsg *out);
+    void selectQClear(TalkTopicMsg *out);
     void gotoQClearOrEnd();
     void handOverQItemB();
-    void selectQItemB(Unk_020238b0_Out *out);
+    void selectQItemB(TalkTopicMsg *out);
     void pickRequestReward();
     void gotoQItemB();
 

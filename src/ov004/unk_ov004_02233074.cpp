@@ -12,6 +12,7 @@
 #include "game/GroundInfoBase.h"
 #include "game/GroundInfo.h"
 #include "room/FtrActor.h"
+#include "sys/ProcProfile.h"
 
 // other modules' symbols by their real names
 #define Actor_spawn _ZN5Actor5spawnEPvS0_S0_S0_S0_
@@ -67,12 +68,6 @@
 
 struct Unk_ov004_02235528_V3 {
     s32 x, y, z;
-};
-
-struct Unk_ov004_0224e98c_Entry {
-    void *(*create)();
-    u16 executePriority;
-    u16 drawPriority;
 };
 
 extern s32 data_020c8cb8;
@@ -221,7 +216,6 @@ struct Unk_ov004_02233f3c_World {
     void *cells;
     u32 w, h;
 };
-typedef Unk_ov004_02233f3c_World Unk_ov004_02234a48_Grid;
 
 struct Unk_ov004_02233f3c_V3 {
     s32 x, y, z;
@@ -759,7 +753,7 @@ extern "C" char data_ov004_0224e96c[8];
 extern "C" char data_ov004_0224e974[8];
 extern "C" char data_ov004_0224e97c[8];
 extern "C" char data_ov004_0224e984[8];
-extern "C" Unk_ov004_0224e98c_Entry sFurnitureManagerProfile;
+extern "C" ProcProfile sFurnitureManagerProfile;
 extern "C" char sFtrMoveAnimModelName[0x10];
 extern "C" const char *sFtrMoveAnimModelNamePtr;
 extern "C" const char *sTvWeatherNames[11];
@@ -3557,7 +3551,7 @@ extern "C" const u8 sTvScheduleDay5[0x50] = {8, 0, 0, 6, 1, 0, 1, 3, 0, 0, 4, 0,
 
 extern "C" const u16 sFtrKindProfiles[0x30] = {0x2f, 0x2f, 0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x36, 0x37, 0x38, 0x38, 0x38, 0x38, 0x38, 0x39, 0x39, 0x3a, 0x3a, 0x3b, 0x3c, 0x3d, 0x3d, 0x3e, 0x3f, 0x40, 0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0x4a, 0x4b, 0x36, 0x4c, 0x4d, 0x3a, 0x37, 0x39, 0x36, 0x4f, 0x4e, 0x50};
 
-extern "C" Unk_ov004_0224e98c_Entry sFurnitureManagerProfile = {(void *(*)())FurnitureManager_Create, 0xc5, 0x34};
+extern "C" ProcProfile sFurnitureManagerProfile = {(void *(*)())FurnitureManager_Create, 0xc5, 0x34};
 
 extern "C" char data_ov004_0224e96c[8] = "tv_cf";
 
@@ -3755,7 +3749,7 @@ extern "C" void func_ov004_02234ad0(void *) {
 
 // @0x2234a48 unk_02234774.cpp
 extern "C" void FtrMgr_SpawnAllFromMap(void *) {
-    Unk_ov004_02234a48_Grid *g = gSceneBlockMap;
+    Unk_ov004_02233f3c_World *g = gSceneBlockMap;
     void *cells;
     if ((u8 *)g->w > (u8 *)0 && (u8 *)g->h > (u8 *)0 && g->cells != NULL) {
         cells = g->cells;

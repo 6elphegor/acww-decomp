@@ -6,25 +6,25 @@
 
 // Villager talk topic state functions: delivery request / Q-time replies and the connect menu. Views of the VillagerTalk object; base of the next topic class (ov069 chain).
 // Members defined in src/main/unk_0201c050.cpp. The member-pointer fields are typed with VillagerTalkRequestItemTopics; that unit casts them to its per-class types.
-struct Unk_02027a34_Out;
+struct TalkTopicMsg;
 
 class VillagerTalkRequestReplyTopics : public VillagerTalkHolidayTopics {
 public:
-    void selectDeliveryLate(Unk_02027a34_Out *out);
+    void selectDeliveryLate(TalkTopicMsg *out);
     s32 getRequestKind();
     void acceptDeliveryRequest();
     void setDeliveryDeadline();
-    void selectDeliveryAccepted(Unk_02027a34_Out *out);
+    void selectDeliveryAccepted(TalkTopicMsg *out);
     void continueQFull();
-    void selectQFull(Unk_02027a34_Out *out);
+    void selectQFull(TalkTopicMsg *out);
     void cancelRequest();
-    void selectQNoB(Unk_02027a34_Out *out);
+    void selectQNoB(TalkTopicMsg *out);
     void openDeliveryAcceptChoice();
-    void selectQTime(Unk_02027a34_Out *out);
+    void selectQTime(TalkTopicMsg *out);
     void gotoDeliveryTime();
     void pickDeliveryRecipient();
-    void selectDeliveryRequest(Unk_02027a34_Out *out);
-    void runChosenTopic(Unk_02027a34_Out *, u32 idx);
+    void selectDeliveryRequest(TalkTopicMsg *out);
+    void runChosenTopic(TalkTopicMsg *, u32 idx);
     void openConnectMenu();
     BOOL tryAddSickVillagerChoice(void *arg);
     BOOL tryOfferNewRequest(void *a, void *b);

@@ -22,7 +22,8 @@
 #include "actor/SpNpcActor.h"
 #include "talk/ActorTalkRequest.h"
 #include "talk/SpNpcTalkRequest.h"
-#include "actor/Unk_ov004_SceneEntry.h"
+#include "actor/ActorProfile.h"
+#include "gfx/DebugColor.h"
 
 
 // Real (mangled) names of other modules' functions that the unit calls as plain functions taking the object first.
@@ -210,17 +211,6 @@ struct Unk_ov075_022722f0_Ent {
 };
 
 
-struct Unk_ov075_Col {
-    u8 r, g, b, a;
-    Unk_ov075_Col(u8 r_, u8 g_, u8 b_, u8 a_) {
-        r = r_;
-        g = g_;
-        b = b_;
-        a = a_;
-    }
-};
-
-
 extern "C" {
 SpNpcPete *SpNpcPete_Create();
 void _ZN13SpNpcPeteTalk12scriptWakeUpEv();
@@ -249,17 +239,17 @@ void _ZN9SpNpcPete9mainAct05Ev();
 extern void *data_ov075_022722a8[2];
 extern u8 sSpNpcPeteModelPath[];
 extern u8 sSpNpcPeteTexturePath[];
-extern Unk_ov075_Col data_ov075_0227248c;
-extern Unk_ov075_Col data_ov075_02272494;
-extern Unk_ov075_Col data_ov075_02272490;
-extern Unk_ov075_Col data_ov075_02272484;
-extern Unk_ov075_Col data_ov075_02272488;
-extern Unk_ov075_Col data_ov075_02272480;
+extern DebugColor data_ov075_0227248c;
+extern DebugColor data_ov075_02272494;
+extern DebugColor data_ov075_02272490;
+extern DebugColor data_ov075_02272484;
+extern DebugColor data_ov075_02272488;
+extern DebugColor data_ov075_02272480;
 extern Unk_ov075_022722f0_Ent sSpNpcPeteTalkScripts[2];
 extern u8 data_ov075_022722f8[];
 extern Unk_ov075_02271e78_Ent sSpNpcPeteActTable[6];
 extern FxVec3 sSpNpcPeteSidestepOffsets[2];
-extern Unk_ov004_SceneEntry sSpNpcPeteProfile;
+extern ActorProfile sSpNpcPeteProfile;
 }
 
 typedef BOOL (SpNpcPete::*Unk_ov075_Fn)();
@@ -269,20 +259,20 @@ typedef void (SpNpcPeteTalk::*Unk_ov075_InnerFn)();
 void *data_ov075_02272278[2] = {(void *)_ZN9SpNpcPete9mainAct04Ev, 0};
 u8 sSpNpcPeteTexturePath[] = "npc_sp/model/plb_tex.nsbtx";
 void *data_ov075_02272270[2] = {(void *)_ZN9SpNpcPete10setupAct04Ev, 0};
-Unk_ov004_SceneEntry sSpNpcPeteProfile = {(void *(*)())SpNpcPete_Create, 0x54, 0x5b, 2, 0x5000, 0x5000, 0x3e800};
+ActorProfile sSpNpcPeteProfile = {(void *(*)())SpNpcPete_Create, 0x54, 0x5b, 2, 0x5000, 0x5000, 0x3e800};
 void *data_ov075_02272260[2] = {(void *)_ZN9SpNpcPete9mainAct02Ev, 0};
-Unk_ov075_Col data_ov075_0227248c(31, 20, 20, 31);
-Unk_ov075_Col data_ov075_02272494(20, 20, 31, 31);
+DebugColor data_ov075_0227248c(31, 20, 20, 31);
+DebugColor data_ov075_02272494(20, 20, 31, 31);
 u8 sSpNpcPeteModelPath[] = "npc_sp/model/plb.nsbmd";
-Unk_ov075_Col data_ov075_02272490(31, 31, 20, 31);
-Unk_ov075_Col data_ov075_02272484(20, 31, 20, 31);
-Unk_ov075_Col data_ov075_02272488(20, 31, 31, 31);
+DebugColor data_ov075_02272490(31, 31, 20, 31);
+DebugColor data_ov075_02272484(20, 31, 20, 31);
+DebugColor data_ov075_02272488(20, 31, 31, 31);
 void *data_ov075_022722a8[2] = {(void *)_ZN9SpNpcPete9mainAct05Ev, 0};
 void *data_ov075_022722b0[2] = {(void *)_ZN9SpNpcPete10setupAct01Ev, 0};
 void *data_ov075_02272298[2] = {(void *)_ZN9SpNpcPete10setupAct00Ev, 0};
 void *data_ov075_02272290[2] = {(void *)_ZN9SpNpcPete10setupAct05Ev, 0};
 void *data_ov075_022722a0[2] = {(void *)_ZN9SpNpcPete9mainAct00Ev, 0};
-Unk_ov075_Col data_ov075_02272480(20, 24, 24, 31);
+DebugColor data_ov075_02272480(20, 24, 24, 31);
 Unk_ov075_022722f0_Ent sSpNpcPeteTalkScripts[2] = {
     {NULL, 0},
     {*(Unk_ov075_InnerFn *)data_ov075_02272280, 1},

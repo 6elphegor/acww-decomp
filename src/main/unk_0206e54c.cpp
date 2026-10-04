@@ -1,6 +1,7 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "item/Letter.h"
+#include "sys/ProcProfile.h"
 
 
 // 8-byte list head sOpenMenuList: inline constructor, no destructor
@@ -24,12 +25,6 @@ public:
     ~Unk_021cb4f0();
     u32 a;
     u32 b;
-};
-
-struct Unk_020de060 {
-    void *f;
-    u16 a;
-    u16 b;
 };
 
 class MenuManager : public GameProc {
@@ -291,7 +286,7 @@ extern u32 kMenuOverlayList09[2];
 extern u32 kMenuOverlayList2D[2];
 extern u32 kMenuOverlayList0C[2];
 extern u32 kMenuOverlayList0B[2];
-extern Unk_020de060 sMenuManagerProfile;
+extern ProcProfile sMenuManagerProfile;
 extern u32 kMenuOverlayList00[2];
 extern u32 kMenuOverlayList03[2];
 extern u32 kMenuOverlayList24[2];
@@ -348,7 +343,7 @@ u32 sMenuPtrArg1;
 u8 sChatDraft[32];
 u32 sMenuHandBells;
 u32 kMenuOverlayList2A[3] = {0x8a, 0x86, 0xffffffff};
-Unk_020de060 sMenuManagerProfile = {(void *)MenuManager_Create, 0x8e, 0x92};
+ProcProfile sMenuManagerProfile = {(void *(*)())MenuManager_Create, 0x8e, 0x92};
 u32 kMenuOverlayList00[2] = {0x5a, 0xffffffff};
 u8 sMenuSavedSlot;
 u32 kMenuOverlayList2D[2] = {0x92, 0xffffffff};

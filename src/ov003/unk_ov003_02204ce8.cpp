@@ -11,6 +11,7 @@
 #include "talk/TalkWindowState.h"
 #include "talk/MsgRequest.h"
 #include "player/PlayerActor.h"
+#include "net/CommManager.h"
 
 // calls into other modules (the old extern "C" declarations keep their local signatures; the call compiles like the method call)
 #define Unk_02007694_getActionDonePriority _ZN12Unk_0200769421getActionDonePriorityEj
@@ -1576,12 +1577,6 @@ struct Unk_ov003_022093bc_Sub {
     u8 unk_04;
 };
 
-struct Unk_ov003_022093bc_Ptr {
-    u32 unk_00;
-    u32 state;
-    s32 nextState;
-};
-
 
 class Unk_ov003_022093bc_Prim {
 public:
@@ -1604,12 +1599,11 @@ typedef PlayerActionRequest Msg;
 extern "C" void _ZN19PlayerActionRequest6assignEiis(Msg *self, s32 a, s32 b, s16 c);
 typedef Unk_ov003_022093bc_Pay Pay;
 typedef Unk_ov003_022093bc_Sub Sub;
-typedef Unk_ov003_022093bc_Ptr Ptr;
 
 struct Unk_ov003_022093bc_Obj : public Unk_ov003_022093bc_Prim, public MsgRequest {
     // 0x0f0..0x10a: MsgRequest (fileName, msgIndex)
     u8 pad_10b[0x128 - 0x10b];
-    /* 0x128 */ Ptr *window;
+    /* 0x128 */ TalkWindowState *window;
     u8 pad_12c[0x2cc - 0x12c];
     /* 0x2cc */ u32 bodyAnimCtrl[2];
     /* 0x2d4 */ s32 bodyAnimFrame;
@@ -3397,12 +3391,6 @@ public:
     virtual void vfunc_60(u16 *p);
 };
 
-struct Unk_ov003_0220e970_S128 {
-    u8 pad_00[4];
-    s32 state;
-    s32 nextState;
-};
-
 struct Unk_ov003_0220e970_P0 {
     virtual void vfunc_00();
     u8 pad_04[0x5c - 4];
@@ -3418,7 +3406,7 @@ struct Unk_ov003_0220e970_Obj : Unk_ov003_0220e970_P0, Unk_ov003_0220e970_Sec {
     u8 pad_f0[0x10a - 0xf0];
     u8 msgIndex;
     u8 pad_10b[0x128 - 0x10b];
-    Unk_ov003_0220e970_S128 *window;
+    TalkWindowState *window;
     u8 pad_12c[0x164 - 0x12c];
     Unk_ov003_0220e970_Q *toolHitActor;
     u8 toolHitKind;
@@ -4516,22 +4504,17 @@ typedef Unk_ov003_02212140_V3 V3;
 typedef Unk_ov003_02212140_V3D V3D;
 typedef Unk_ov003_02212140_Pair Pair;
 
-struct Unk_ov003_02212190_Gs {
-    u8 pad_00[0x68];
-    s32 localSlot;
-};
-
 enum Unk_ov003_0221227c_Limit { UNK_ov003_0221227c_5 = 5 };
 
 extern "C" {
-extern Unk_ov003_02212190_Gs *gCommManager;
+extern CommManager *gCommManager;
 
 Obj *PlayerActor_Get(s32 id);
 void TalkRequest_FinishSlingshot();
 s32 Unk_02007694_getActionDonePriority(Obj *o, s32 a);
 s32 PlayerActor_requestWait(Obj *o, s32 a, s32 b, s32 c);
 void PlayerActor_SetHeadTilt(s32 a, s32 b, s32 c);
-s32 CommManager_isLocalSlot(Unk_ov003_02212190_Gs *g, s32 a);
+s32 CommManager_isLocalSlot(CommManager *g, s32 a);
 s32 PlayerActor_RequestSlingshotWatch(Obj *o, s32 a, s32 b);
 s32 PlayerActor_RequestThrowBottle(Obj *o, s32 a, s32 b);
 s32 PlayerActor_RequestAct11(Obj *o, s32 a, s32 b, s32 c);

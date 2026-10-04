@@ -3,7 +3,7 @@
 
 // Field/room camera (vtable 0x020d93b0): CameraBase + a 4x3 view matrix, follow/blend offsets, poses and modes.
 // Defined in src/main/unk_0203a0cc.cpp; Unk_0203b350_V is the vector type of its method signatures. The global
-// pointer gCamera points to it; Unk_021c3070 is the name of that view (the extern "C" camera functions of main and ov004).
+// pointer gCamera points to it; Camera is the name of that view (the extern "C" camera functions of main and ov004).
 // ov004 reads the 4-word mode parameter block at 0x21c as its own struct (by cast), main as {len, ang, vel}.
 #include "types.h"
 #include "sys/CameraBase.h"
@@ -108,7 +108,5 @@ public:
     /* 0x21c */ s32 modeParam;
     /* 0x220 */ u8 pad_220[0x14];
 };
-
-typedef Camera Unk_021c3070;
 
 #endif // GFX_CAMERA_H

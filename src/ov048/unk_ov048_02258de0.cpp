@@ -19,7 +19,8 @@
 #include "actor/NpcActor.h"
 #include "actor/SpNpcActor.h"
 #include "talk/ActorTalkRequest.h"
-#include "actor/Unk_ov004_SceneEntry.h"
+#include "actor/ActorProfile.h"
+#include "net/CommManager.h"
 
 
 class ActorTalkRequest;
@@ -33,19 +34,6 @@ struct Unk_ov048_Vec {
 
 struct Unk_ov048_Vec_Loc : Unk_ov048_Vec {
     Unk_ov048_Vec_Loc() {}
-};
-
-struct Unk_ov048_Global {
-    u8 pad_00[0x64];
-    s32 myAid;
-};
-
-struct Unk_ov048_Owner {
-    u8 pad_00[4];
-    s32 state;
-    s32 unk_08;
-    u8 pad_0c[8];
-    s32 unk_14;
 };
 
 struct Unk_ov048_0225b278_Vec {
@@ -68,10 +56,6 @@ struct Unk_ov048_Rec {
     u8 pad_00[4];
     s32 state;
 };
-struct Unk_ov048_0225ae04_Out {
-    const void *msgKey;
-    u8 msgIndex;
-};
 // Two-step storage for the three model/sequence name pointers (their strings are named arrays below).
 extern "C" {
 extern char sSpNpcCopperSequence4Key[];
@@ -88,7 +72,7 @@ extern const Unk_ov048_Vec sCopperSendOffWalkPos;
 extern const Unk_ov048_Vec sCopperSendOffExitPos;
 extern const Unk_ov048_Vec sCopperArrivalWalkPos;
 extern const Unk_ov048_Vec sCopperDepartWalkPos;
-extern Unk_ov048_Global *gCommManager;
+extern CommManager *gCommManager;
 extern u8 gScreenTransition;
 extern u16 data_020c6cc8;
 extern u8 gSaveTownId[];
@@ -1357,7 +1341,7 @@ extern "C" void *sSpNpcCopperModelPathPtr;
 extern "C" const Unk_ov048_Vec sCopperTurnBackPos;
 extern "C" const Unk_ov048_Vec sCopperSendOffExitPos;
 extern "C" char sSpNpcCopperTexturePath[];
-extern "C" Unk_ov004_SceneEntry sSpNpcCopperProfile;
+extern "C" ActorProfile sSpNpcCopperProfile;
 extern "C" const Unk_ov048_Vec sCopperSendOffWalkPos;
 extern "C" const Unk_ov048_Vec sCopperArrivalWalkPos;
 
@@ -2046,7 +2030,7 @@ BOOL SpNpcCopperTalk::hasFriends() {
 }
 
 void SpNpcCopperTalk::start(TalkStartMsg *arg) {
-    Unk_ov048_0225ae04_Out *out = (Unk_ov048_0225ae04_Out *)arg;
+    TalkStartMsg *out = (TalkStartMsg *)arg;
     static Unk_ov048_0225ae04_Row tbl[11] = {
         {sSpNpcCopperMsgKey, 0}, {sSpNpcCopperMsgKey, 4}, {sSpNpcCopperMsgKey, 5},
         {sSpNpcCopperMsgKey, 6}, {sSpNpcCopperMsgKey, 7}, {sSpNpcCopperMsgKey, 0xa},
@@ -2076,7 +2060,7 @@ void SpNpcCopperTalk::start(TalkStartMsg *arg) {
     }
     if (topic >= 0 && topic < 0xb) {
         out->msgIndex = tbl[topic].id;
-        out->msgKey = tbl[topic].name;
+        out->msgKey = (const char *)tbl[topic].name;
     }
 }
 
@@ -2378,7 +2362,7 @@ void SpNpcCopperTalk::onChoiceMainMenu(s32 p) {
         if (_ZN12Unk_02097ff48testFlagEj(h, 1)) {
             id = 8;
         } else {
-            Unk_ov048_Global *g = gCommManager;
+            CommManager *g = gCommManager;
             if (_ZN11CommManager8isOnlineEv(g) && _ZN11CommManager7isMyAidEj(g, 0)) {
                 id = 0x50;
             } else if (_ZN11CommManager12isSlotActiveEi(gCommManager, gCommManager->myAid)) {
@@ -2433,7 +2417,7 @@ void SpNpcCopperTalk::onChoiceHostMenu(s32 p) {
         if (_ZN12Unk_02097ff48testFlagEj(h, 1)) {
             id = 8;
         } else {
-            Unk_ov048_Global *g = gCommManager;
+            CommManager *g = gCommManager;
             if (_ZN11CommManager8isOnlineEv(g) && _ZN11CommManager7isMyAidEj(g, 0)) {
                 id = 0x50;
             } else if (_ZN11CommManager12isSlotActiveEi(gCommManager, gCommManager->myAid)) {
@@ -2521,9 +2505,9 @@ void SpNpcCopperTalk::onChoiceRetryWifi(s32 p) {
 }
 
 void SpNpcCopperTalk::onChoiceSaveAndQuit(s32 p) {
-    Unk_ov048_Owner *o = (Unk_ov048_Owner *)window;
+    TalkWindowState *o = (TalkWindowState *)window;
     if (p == 0) {
-        o->unk_14 = 0;
+        o->openMode = 0;
         SpNpcCopper_ChangeAct(owner, 0xe);
     } else if (p == 1) {
         u8 v = getAnythingElseMsg();
@@ -2550,7 +2534,7 @@ void SpNpcCopperTalk::onChoiceUnk5F(s32 p) {
 }
 extern "C" char sSpNpcCopperTexturePath[] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 'p', 'l', 'c', '_', 't', 'e', 'x', '.', 'n', 's', 'b', 't', 'x', 0};
 
-extern "C" Unk_ov004_SceneEntry sSpNpcCopperProfile = {(void *(*)())SpNpcCopper_Create, 0x72, 0x77, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" ActorProfile sSpNpcCopperProfile = {(void *(*)())SpNpcCopper_Create, 0x72, 0x77, 2, 0x5000, 0x5000, 0x3e800};
 
 extern "C" const Unk_ov048_Vec sCopperSendOffWalkPos = {0x10000, 0x0, 0x13000};
 
@@ -3126,13 +3110,13 @@ void SpNpcCopperTalk::requestGoHome() {
 }
 
 void SpNpcCopperTalk::waitGoHomeAccepted() {
-    Unk_ov048_Owner *o = (Unk_ov048_Owner *)window;
+    TalkWindowState *o = (TalkWindowState *)window;
     s32 t = Comm_GetSyncState();
     if ((u32)(t - 5) <= 1) {
         unlockWindow();
         setScript(0);
         if (t == 5) {
-            o->unk_14 = 0;
+            o->openMode = 0;
             SpNpcCopper_ChangeAct(owner, 0xd);
             NetSession_SetSyncKind(1);
             NetSession_SetActiveSyncKind(1);
@@ -3334,7 +3318,7 @@ void SpNpcCopper::onInteractionEvent(u32 cmd, u8 arg) {
 }
 
 BOOL SpNpcCopper::checkPlayerAtGate() {
-    Unk_ov048_Global *g = gCommManager;
+    CommManager *g = gCommManager;
     Unk_ov048_Vec_Loc v;
     if (_ZN11CommManager8isOnlineEv(g)) {
         return FALSE;

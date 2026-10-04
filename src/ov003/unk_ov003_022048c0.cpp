@@ -1,6 +1,6 @@
 // mwcc-version: 1.2/sp2
 #include "types.h"
-#include "actor/Unk_ov003_SceneEntry.h"
+#include "actor/ActorProfile.h"
 #include "game/Unk_ov003_Vec.h"
 #include "npc/VillagerId.h"
 #include "talk/TalkWindowState.h"
@@ -11,6 +11,7 @@
 #include "talk/MsgRequest.h"
 #include "talk/TalkMsgRequest.h"
 #include "game/TouchPickSphere.h"
+#include "gfx/DebugColor.h"
 
 
 
@@ -30,17 +31,6 @@ struct Unk_02204930_Pad {
 
 
 struct TouchPicker;
-
-struct Unk_ov003_022309d0_Color {
-    u8 a, b, c, d;
-    Unk_ov003_022309d0_Color(u8 a_, u8 b_, u8 c_, u8 d_) {
-        a = a_;
-        b = b_;
-        c = c_;
-        d = d_;
-    }
-};
-
 
 extern "C" {
 extern u8 gSaveVillagers[];
@@ -92,12 +82,12 @@ extern "C" VillagerBoard *VillagerBoard_Create();
 
 extern "C" VillagerBoard *sVillagerBoards[8];
 
-extern "C" Unk_ov003_022309d0_Color data_ov003_02234f80(0x1f, 0x14, 0x14, 0x1f);
-extern "C" Unk_ov003_022309d0_Color data_ov003_02234f64(0x14, 0x14, 0x1f, 0x1f);
-extern "C" Unk_ov003_022309d0_Color data_ov003_02234f68(0x1f, 0x1f, 0x14, 0x1f);
-extern "C" Unk_ov003_022309d0_Color data_ov003_02234f70(0x14, 0x1f, 0x14, 0x1f);
-extern "C" Unk_ov003_022309d0_Color data_ov003_02234f6c(0x14, 0x1f, 0x1f, 0x1f);
-extern "C" Unk_ov003_022309d0_Color data_ov003_02234f74(0x14, 0x18, 0x18, 0x1f);
+extern "C" DebugColor data_ov003_02234f80(0x1f, 0x14, 0x14, 0x1f);
+extern "C" DebugColor data_ov003_02234f64(0x14, 0x14, 0x1f, 0x1f);
+extern "C" DebugColor data_ov003_02234f68(0x1f, 0x1f, 0x14, 0x1f);
+extern "C" DebugColor data_ov003_02234f70(0x14, 0x1f, 0x14, 0x1f);
+extern "C" DebugColor data_ov003_02234f6c(0x14, 0x1f, 0x1f, 0x1f);
+extern "C" DebugColor data_ov003_02234f74(0x14, 0x18, 0x18, 0x1f);
 extern "C" {
 u8 sVillagerBoardCount;
 }
@@ -190,7 +180,7 @@ void VillagerBoard::runAct() {
     }
 }
 
-extern "C" Unk_ov003_SceneEntry sVillagerBoardProfile = {(void *(*)())VillagerBoard_Create, 0x18, 0x1d, 0, 0xc8000, 0x12c000, 0x258000};
+extern "C" ActorProfile sVillagerBoardProfile = {(void *(*)())VillagerBoard_Create, 0x18, 0x1d, 0, 0xc8000, 0x12c000, 0x258000};
 extern "C" {
 VillagerBoard *sVillagerBoards[8];
 }

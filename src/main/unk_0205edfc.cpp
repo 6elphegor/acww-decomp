@@ -1,5 +1,5 @@
 #include "types.h"
-#include "net/Unk_0205f6f8_Cfg.h"
+#include "net/CommManager.h"
 #include "player/PlayerBodyWorkRef.h"
 
 
@@ -12,7 +12,7 @@ struct PlayerBodyWorkPool {
 
 extern "C" {
 extern void *gPlayerBodyAnimHeap;
-extern Unk_0205f6f8_Cfg *gCommManager;
+extern CommManager *gCommManager;
 extern void PlayerBodyAnimHeap_Create(void);
 extern s32 PlayerBodyAnimHeap_Destroy(void);
 #define Heap_freeAll _ZN4Heap7freeAllEv

@@ -1,6 +1,6 @@
 // mwcc-version: 1.2/base
 #include "types.h"
-#include "actor/Unk_ov004_SceneEntry.h"
+#include "actor/ActorProfile.h"
 #include "actor/CharacterListNode.h"
 #include "game/Unk_ov004_02224ee4_Vec.h"
 #include "gfx/Mtx43.h"
@@ -186,7 +186,7 @@ TarotProps *TarotProps_Create();
 #define F(T, off) (*(T *)((u8 *)this + off))
 
 // ---------------------------------------------------------------- data
-extern "C" Unk_ov004_Scene_Entry sTarotPropsProfile = {(void *(*)())TarotProps_Create, 0x71, 0x1b, 0, 0xc8000, 0x12c000, 0x258000};
+extern "C" ActorProfile sTarotPropsProfile = {(void *(*)())TarotProps_Create, 0x71, 0x1b, 0, 0xc8000, 0x12c000, 0x258000};
 extern "C" TarotProps *sTarotProps = 0;
 
 extern "C" TarotProps *TarotProps_Create() {

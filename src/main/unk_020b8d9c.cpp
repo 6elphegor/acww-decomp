@@ -3,7 +3,6 @@
 #include "net/CommManager.h"
 #include "gfx/Unk_020bfe30_Vec.h"
 #include "game/EventDayEntry.h"
-#include "npc/Unk_020c0538_Out.h"
 #include "game/Unk_021eff48.h"
 #include "item/PickedItem.h"
 #include "gfx/StarTwinkle.h"
@@ -115,7 +114,7 @@ struct Mtx43;
 class Unk_020bfe30;
 struct WeatherRecord;
 struct EventDayEntry;
-struct Unk_020c0538_Out;
+struct TalkStartMsg;
 class SpNpcTalkRequest;
 class SpNpcKatieTalk;
 class SpNpcActor;

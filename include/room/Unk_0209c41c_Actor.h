@@ -2,6 +2,7 @@
 #define ROOM_UNK_0209C41C_ACTOR_H
 
 #include "types.h"
+#include "game/NibblePair.h"
 
 // Room object sync helpers: nibble-packed state bytes, sync record, and the actor interface whose vfunc_60 changes
 // state (src/main/unk_0209c08c.cpp, unk_0209c390.cpp, unk_0209c3e0.cpp, unk_0209c4a8.cpp).
@@ -10,16 +11,6 @@ struct SceneExitResult {
     /* 0x00 */ u8 a, b, c, d;
     /* 0x04 */ u16 e;
     /* 0x06 */ s16 f;
-};
-
-struct Unk_0209c3cc_Nib {
-    u8 lo : 4;
-    u8 hi : 4;
-};
-
-struct Unk_0209c41c_Pack {
-    u8 lo : 4;
-    u8 hi : 4;
 };
 
 class Unk_0209c41c_Actor {

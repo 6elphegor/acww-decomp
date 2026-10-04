@@ -2,12 +2,12 @@
 #define TOWN_TOWNSTATE_H
 
 #include "types.h"
-#include "town/Unk_0204c3c0_Ver.h"
+#include "sys/ClockDate.h"
 
 // Town calendar state (last update, native fruit, weekly/event update dates, per-player dates).
 // Used by src/main/unk_0204c318.cpp, unk_0204c50c.cpp, unk_0204cc1c.cpp (3 identical copies).
 struct TownState {
-    /* 0x00 */ Unk_0204c3c0_Ver lastUpdate;
+    /* 0x00 */ ClockDate lastUpdate;
     /* 0x04 */ s32 nativeFruit;
     /* 0x08 */ u8 nextWeekDay;
     /* 0x09 */ u8 nextWeekMonth;
@@ -21,7 +21,7 @@ struct TownState {
     /* 0x55 */ u8 eventUpdateMonth;
     /* 0x56 */ u8 eventUpdateYear;
     /* 0x57 */ u8 unk_57;
-    /* 0x58 */ Unk_0204c3f4_Slot playerDates[4];
+    /* 0x58 */ ClockDate playerDates[4];
     /* 0x68 */ u8 unk_68;
     /* 0x69 */ u8 unk_69;
     /* 0x6a */ u8 unk_6a;

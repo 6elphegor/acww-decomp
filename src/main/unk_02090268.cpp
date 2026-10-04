@@ -6,6 +6,7 @@
 #include "gfx/EffectSlot.h"
 #include "gfx/EffectSplEmitter.h"
 #include "game/GroundInfo.h"
+#include "gfx/Rgb555.h"
 
 typedef Unk_0203389c_Vec Unk_02093aa8_Vec;
 typedef Unk_0203389c_Vec Unk_02093748_Vec;
@@ -104,13 +105,6 @@ struct Unk_02090a80_Arg {
     Unk_02090a80_Idx idx;
 };
 
-struct Unk_02090bd8_Sub {
-    s32 unk_00;
-    s32 posX;
-    s32 posY;
-    s32 posZ;
-};
-
 struct Unk_02090bd8_Vec { s32 x, y, z; };
 
 struct Unk_02090bd8_V {
@@ -125,7 +119,7 @@ struct Unk_02090bd8_Obj {
     /* 0x00 */ u8 unk_00[0x0c];
     /* 0x0c */ u8 *unk_0c;
     /* 0x10 */ u8 unk_10[8];
-    /* 0x18 */ Unk_02090bd8_Sub **resource;
+    /* 0x18 */ Unk_02093dc8_Root **resource;
     /* 0x1c */ s32 unk_1c;
     /* 0x20 */ s32 posX;
     /* 0x24 */ s32 posY;
@@ -165,13 +159,6 @@ struct Unk_02091404_V {
     s32 x, y, z;
 };
 
-struct Unk_02091404_Sub {
-    s32 unk_00;
-    s32 posX;
-    s32 posY;
-    s32 posZ;
-};
-
 struct Unk_02091404_Node {
     /* 0x00 */ Unk_02091404_Node *next;
     /* 0x04 */ u8 unk_04[0x1c];
@@ -187,7 +174,7 @@ struct Unk_02091404_Obj {
     /* 0x00 */ u8 unk_00[8];
     /* 0x08 */ Unk_02091404_Node *particles;
     /* 0x0c */ u8 unk_0c[0x0c];
-    /* 0x18 */ Unk_02091404_Sub **resource;
+    /* 0x18 */ Unk_02093dc8_Root **resource;
     /* 0x1c */ s32 unk_1c;
     /* 0x20 */ s32 posX;
     /* 0x24 */ s32 posY;
@@ -223,15 +210,8 @@ struct Unk_02092388_Data {
     s16 ang;
 };
 
-struct Unk_02092388_Sub {
-    s32 unk_00;
-    s32 posX;
-    s32 posY;
-    s32 posZ;
-};
-
 struct Unk_02092388_Sub2 {
-    Unk_02092388_Sub *header;
+    Unk_02093dc8_Root *header;
 };
 
 struct Unk_02092388_Node {
@@ -289,13 +269,6 @@ struct Unk_02092528_Entry {
     s32 unk_18;
 };
 
-struct Unk_02091fa4_Color {
-    u16 r : 5;
-    u16 g : 5;
-    u16 b : 5;
-    u16 x : 1;
-};
-
 struct Unk_020926d4_Obj {
     u32 unk_00;
     Unk_02092388_Vec position;
@@ -311,9 +284,7 @@ extern "C" s32 EffectKind35_InitParams(Unk_02092528_Outer *o, u8 a, s32 b, s32 c
 
 struct Unk_02092e98_Vec { s32 x, y, z; };
 
-struct Unk_02092da4_Y { s32 unk_00; s32 posX; s32 posY; s32 posZ; };
-
-struct Unk_02092da4_X { Unk_02092da4_Y *header; };
+struct Unk_02092da4_X { Unk_02093dc8_Root *header; };
 
 struct Unk_02092da4_B {
     u8 pad_00[0xc];
@@ -2386,7 +2357,7 @@ extern "C" s32 Effect_CreateKind31(s32 a, s32 b, s32 c, s32 d) {
 
 namespace R4 {
 extern "C" void EffectKind32_InitEmitter0(u8 *p) {
-    Unk_02091fa4_Color col[4];
+    Rgb555 col[4];
     EffectCb_InitOneShot(p);
     *(u16 *)&col[0] = Sky_GetLightColor(3);
     col[3] = col[0];

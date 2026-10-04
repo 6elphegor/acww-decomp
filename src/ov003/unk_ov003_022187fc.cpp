@@ -1,6 +1,7 @@
 // mwcc-version: 1.2/base
 #include "types.h"
 #include "Unk_020d8c7c.h"
+#include "sys/ProcProfile.h"
 
 // TU21 of ov003: house models, scene 0x022324ec (0x022187fc-0x02219294)
 // mwcc samples optimiser pragmas at the end of the file, so this applies to the whole TU
@@ -172,11 +173,6 @@ s32 PlayerHouseTex_Load(void **out);
 void PlayerHouseTex_Release(void *p);
 }
 
-// scene registration entry {factory, 0xc4, 0x1f}
-struct Unk_ov003_022324dc_Entry {
-    void *factory;
-    u16 a, b;
-};
 
 extern "C" void *FieldStructureMgr_Create();
 
@@ -185,7 +181,7 @@ extern "C" {
 PlayerHouseTex sPlayerHouseTex;
 VillagerHouseTex sVillagerHouseTex;
 HouseLightUpDeco sHouseLightUpDeco;
-Unk_ov003_022324dc_Entry sFieldStructureMgrProfile = {(void *)FieldStructureMgr_Create, 0xc4, 0x1f};
+ProcProfile sFieldStructureMgrProfile = {(void *(*)())FieldStructureMgr_Create, 0xc4, 0x1f};
 u8 sDoorExitMode;
 u16 sSpawnedBuildingCount1;
 char data_ov003_02235888[0x28];

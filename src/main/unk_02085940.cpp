@@ -1,5 +1,6 @@
 #include "types.h"
 #include "player/PlayerSpNpcRecord.h"
+#include "npc/VillagerId.h"
 #include "save/Unk_02085810_Rec.h"
 #include "save/BlancaFaceRecord.h"
 #include "save/LostChildRecord.h"
@@ -436,11 +437,11 @@ extern char data_020e0c70[];
 extern char data_020e0c7c[];
 extern char data_020e0c88[];
 extern char data_020e0c98[];
-s32 VillagerId_Clear(Unk_02085810_Rec *p);
+s32 VillagerId_Clear(VillagerId *p);
 void _ZN8PlayerId5clearEv(void *p);
 void Clock_GetDate(u8 *p);
-void VillagerId_Destruct(Unk_02085810_Rec *p);
-void VillagerId_Construct(Unk_02085810_Rec *p);
+void VillagerId_Destruct(VillagerId *p);
+void VillagerId_Construct(VillagerId *p);
 void _ZN8PlayerIdC1Ev(void *p);
 void _ZN8PlayerIdC1EPv(void *p);
 void _ZN11MsgString9BC1Ev(void *p);

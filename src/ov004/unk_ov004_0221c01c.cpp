@@ -2,8 +2,8 @@
 
 
 #include "types.h"
-#include "actor/Unk_ov004_SceneEntry.h"
-#include "talk/Unk_ov004_0221b6d4_Out.h"
+#include "actor/ActorProfile.h"
+#include "talk/TalkTopicMsg.h"
 #include "net/CommManager.h"
 #include "game/Unk_ov004_0221b954_Vec.h"
 #include "talk/TalkWindowState.h"
@@ -545,7 +545,7 @@ void SpNpcBrewsterTalk::attachOwner(s32 v) {
 }
 
 void SpNpcBrewsterTalk::start(TalkStartMsg *arg) {
-    Unk_ov004_0221b6d4_Out *out = (Unk_ov004_0221b6d4_Out *)arg;
+    TalkTopicMsg *out = (TalkTopicMsg *)arg;
     void *h = PlayerData_getSpNpcRecord(PlayerData_GetCurrent());
     if (GameStart_IsActive() != 0) {
         out->fileName = sSpNpcBrewsterMsgFiles[1];
@@ -1064,7 +1064,7 @@ extern "C" u8 data_ov004_0224cf78[17] = {'s', 'p', '_', 'e', 't', 'c', '_', 's',
 extern "C" void *data_ov004_0224cf24[2] = {(void *)_ZN13SpNpcBrewster9mainAct03Ev, 0};
 extern "C" u8 sSpNpcBrewsterModelPath[23] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 'p', 'g', 'e', '.', 'n', 's', 'b', 'm', 'd', 0};
 extern "C" u8 sSpNpcBrewsterTexturePath[27] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 'p', 'g', 'e', '_', 't', 'e', 'x', '.', 'n', 's', 'b', 't', 'x', 0};
-extern "C" Unk_ov004_SceneEntry sSpNpcBrewsterProfile = {(void *(*)())SpNpcBrewster_Create, 0x63, 0x6a, 0, 0x5000, 0x5000, 0x3e800};
+extern "C" ActorProfile sSpNpcBrewsterProfile = {(void *(*)())SpNpcBrewster_Create, 0x63, 0x6a, 0, 0x5000, 0x5000, 0x3e800};
 extern "C" void *data_ov004_0224cf0c[2] = {(void *)_ZN13SpNpcBrewster10setupAct05Ev, 0};
 extern "C" void *data_ov004_0224cf5c[2] = {(void *)_ZN13SpNpcBrewster10setupAct00Ev, 0};
 extern "C" u32 sSpNpcBrewsterMsgFiles[2] = {(u32)data_ov004_0224cf6c, (u32)data_ov004_0224cf78};

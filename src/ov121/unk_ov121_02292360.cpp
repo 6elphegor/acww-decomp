@@ -11,6 +11,7 @@
 #include "menu/PopupChoiceMenu.h"
 #include "menu/MenuErrorMessage.h"
 #include "sys/ProcProfile.h"
+#include "net/CommManager.h"
 
 #define func_020624c0 _ZN18EncodedString16BufD1Ev
 #define func_02062510 _ZN18EncodedString16BufC1Ev
@@ -75,11 +76,7 @@
 #define MenuTabBar_selectTab _ZN10MenuTabBar9selectTabEj
 
 extern "C" {
-struct Unk_ov121_Comm {
-    u32 unk_00[0x64 / 4];
-    s32 myAid;
-};
-extern Unk_ov121_Comm *gCommManager;
+extern CommManager *gCommManager;
 extern u8 gTouchCurY;
 extern u8 gTouchCurX;
 extern u8 gTouchPressY;
@@ -676,7 +673,7 @@ void DesignTab::initDesignTab() {
         disableTarget(9);
         disableTarget(0xa);
         disableTarget(0xb);
-        Unk_ov121_Comm *g = gCommManager;
+        CommManager *g = gCommManager;
         if (CommManager_isOnline(g) && g->myAid != 0) {
             disableTarget(0xf);
         }
@@ -698,7 +695,7 @@ void DesignTab::initDesignTab() {
 
 BOOL DesignTab::canDecorateRoom() {
     if (Scene_InHouseRoom()) {
-        Unk_ov121_Comm *g = gCommManager;
+        CommManager *g = gCommManager;
         if (CommManager_isOnline(g) && g->myAid != 0) {
             return FALSE;
         }
@@ -1966,7 +1963,7 @@ BOOL DesignTab::isWearDone(s32 k) {
 }
 
 BOOL DesignTab::isRoomEditAllowed() {
-    Unk_ov121_Comm *c = gCommManager;
+    CommManager *c = gCommManager;
     if (CommManager_isOnline(c)) {
         if (c->myAid != 0 || Room_CountOccupants() > 1) {
             return FALSE;

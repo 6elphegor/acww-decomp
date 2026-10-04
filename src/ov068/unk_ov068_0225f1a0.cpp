@@ -9,7 +9,7 @@
 // the registration entry sFieldVillagerProfile is defined inside ns_02265d34 (next to the factory it points to), the vtable comes last.
 #include "types.h"
 #include "gfx/Unk_ov068_0226647c_Cam.h"
-#include "actor/Unk_ov068_SceneEntry.h"
+#include "actor/ActorProfile.h"
 #include "player/HeldToolModel.h"
 #include "sys/ProcBase.h"
 #include "talk/MsgString11.h"
@@ -142,7 +142,7 @@
 #define VillagerMemory_getFriendship _ZN14VillagerMemory13getFriendshipEv
 #define ContestRecord_getSize _ZN13ContestRecord7getSizeEv
 #define ContestRecord_setSize _ZN13ContestRecord7setSizeEi
-#define ContestRecord_setHolderVillager _ZN13ContestRecord17setHolderVillagerEP16Unk_02085810_Rec
+#define ContestRecord_setHolderVillager _ZN13ContestRecord17setHolderVillagerEP10VillagerId
 #define ActorCollider_isHitByGroup _ZN13ActorCollider12isHitByGroupEj
 #define PlayerId_isValid _ZN8PlayerId7isValidEv
 #define Unk_02097ff4_testFlag _ZN12Unk_02097ff48testFlagEj
@@ -2896,7 +2896,7 @@ void *data_ov068_0226f870[2] = {(void *)_ZN13FieldVillager11drawDefaultEv, 0};
 }
 namespace ns_02265d34 {
 extern "C" {
-Unk_ov068_Scene_Entry sFieldVillagerProfile = {(void *(*)())FieldVillager_Create, 0x84, 0x88, 2, 0x5000, 0x5000, 0x3e800};
+ActorProfile sFieldVillagerProfile = {(void *(*)())FieldVillager_Create, 0x84, 0x88, 2, 0x5000, 0x5000, 0x3e800};
 }
 }
 namespace nsD {

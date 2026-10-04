@@ -263,19 +263,19 @@ public:
     /* 0x2b01 */ u8 popupRow;
 };
 
-typedef char Unk_ov103_size_Unk_ov103_02296da0[(sizeof(PocketLettersMenu) == 0x2b04) ? 1 : -1];
-typedef char Unk_ov103_size_Unk_ov002_02204468[(sizeof(TouchPromptBalloon) == 0xc0) ? 1 : -1];
-typedef char Unk_ov103_size_Unk_ov002_02204614[(sizeof(MenuCursorBuf0) == 0x64) ? 1 : -1];
-typedef char Unk_ov103_size_Unk_ov002_02204558[(sizeof(PopupChoiceMenu) == 0x2f4) ? 1 : -1];
-typedef char Unk_ov103_size_Unk_ov002_02204738[(sizeof(MenuLabelButton) == 0x70) ? 1 : -1];
-typedef char Unk_ov103_size_Unk_020dd458[(sizeof(Letter) == 0xf4) ? 1 : -1];
-typedef char Unk_ov103_size_Unk_ov094_02292d6c[(sizeof(InventoryBg) == 0x15e0) ? 1 : -1];
-typedef char Unk_ov103_size_Unk_0206d0a0[(sizeof(LetterRenderer) == 0x210) ? 1 : -1];
-typedef char Unk_ov103_size_Unk_ov002_022040ec[(sizeof(MenuErrorMessage) == 0x108) ? 1 : -1];
-typedef char Unk_ov103_size_Unk_ov002_02204604[(sizeof(CursorMotion) == 0x18) ? 1 : -1];
-typedef char Unk_ov103_size_Unk_ov094_02294a50[(sizeof(InventoryItemGrid) == 0xa60) ? 1 : -1];
-typedef char Unk_ov103_size_Unk_ov094_02294bd4[(sizeof(LetterGrid) == 0x28) ? 1 : -1];
-typedef char Unk_ov103_size_Unk_020e4608[(sizeof(BgVramTaskPair) == 0x38) ? 1 : -1];
+typedef char PocketLettersMenu_SizeCheck[(sizeof(PocketLettersMenu) == 0x2b04) ? 1 : -1];
+typedef char TouchPromptBalloon_SizeCheck[(sizeof(TouchPromptBalloon) == 0xc0) ? 1 : -1];
+typedef char MenuCursorBuf0_SizeCheck[(sizeof(MenuCursorBuf0) == 0x64) ? 1 : -1];
+typedef char PopupChoiceMenu_SizeCheck[(sizeof(PopupChoiceMenu) == 0x2f4) ? 1 : -1];
+typedef char MenuLabelButton_SizeCheck[(sizeof(MenuLabelButton) == 0x70) ? 1 : -1];
+typedef char Letter_SizeCheck[(sizeof(Letter) == 0xf4) ? 1 : -1];
+typedef char InventoryBg_SizeCheck[(sizeof(InventoryBg) == 0x15e0) ? 1 : -1];
+typedef char LetterRenderer_SizeCheck[(sizeof(LetterRenderer) == 0x210) ? 1 : -1];
+typedef char MenuErrorMessage_SizeCheck[(sizeof(MenuErrorMessage) == 0x108) ? 1 : -1];
+typedef char CursorMotion_SizeCheck[(sizeof(CursorMotion) == 0x18) ? 1 : -1];
+typedef char InventoryItemGrid_SizeCheck[(sizeof(InventoryItemGrid) == 0xa60) ? 1 : -1];
+typedef char LetterGrid_SizeCheck[(sizeof(LetterGrid) == 0x28) ? 1 : -1];
+typedef char BgVramTaskPair_SizeCheck[(sizeof(BgVramTaskPair) == 0x38) ? 1 : -1];
 
 static inline BOOL Unk_ov103_02295f10_Both()
 {

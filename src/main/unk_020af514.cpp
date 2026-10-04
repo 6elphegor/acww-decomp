@@ -3,6 +3,7 @@
 #include "game/Vec3.h"
 #include "town/TownBlockCell.h"
 #include "town/SceneMapInfo.h"
+#include "game/SceneInfo.h"
 
 extern "C" {
 u32 GroundSeason_IsSnowPhase(u32);
@@ -96,43 +97,12 @@ extern "C" BOOL SceneSpawnGroup_SpawnActors(SceneSpawnGroup *, u8 *, u32, u32);
 extern "C" BOOL _ZN15SceneSpawnGroup21spawnPlayersAndCameraEPhjj(SceneSpawnGroup *, u8 *, u32, u32);
 extern "C" BOOL _ZN15SceneSpawnGroup11createProcsEPhy(SceneSpawnGroup *, u8 *, u32, u32);
 
-class SceneSpawnList;
-
-class SceneSpawnGroup {
-public:
-    BOOL createProcs(u8 *idx, u64 start);
-    BOOL spawnPlayersAndCamera(u8 *idx, u32 lo, u32 hi);
-
-    u8 type;
-    u8 count;
-    u16 unk_02;
-    void *ptr;
-};
-
-class SceneSpawnList {
-public:
-    BOOL run(u8 *entryIdx, u8 *subIdx, u64 start);
-
-    u16 count;
-    u16 unk_02;
-    SceneSpawnGroup *entries;
-};
 
 struct EntryPair {
     u16 a;
     u16 b;
 };
 
-// gCurSceneInfo (B56); only the two methods of this unit are declared.
-class SceneInfo {
-public:
-    BOOL runSpawnList(u8 *entryIdx, u8 *subIdx, u64 start);
-    void createSceneMapModule();
-
-    SceneSpawnList *spawnList;
-    void *unk_04;
-    SceneMapInfo *mapInfo;
-};
 
 // one of the 2 rollable loose snowballs of gLooseSnowballs
 class LooseSnowball {
@@ -269,7 +239,7 @@ BOOL ScenePlayerSpawn::getSpawn(u32 i, BOOL mode, Vec3 *pos, Vec3s *rot_, u32 *o
 }
 
 BOOL SceneSpawnGroup::spawnPlayersAndCamera(u8 *idx, u32 lo, u32 hi) {
-    ScenePlayerSpawn *items = (ScenePlayerSpawn *)ptr;
+    ScenePlayerSpawn *items = (ScenePlayerSpawn *)list;
     if (items != NULL && Scene_GetCurrent() != 0xd && Scene_GetCurrent() != 0xe && Scene_GetCurrent() != 0x2f) {
         if (Scene_InUnk6Or7()) {
             _ZN11CommManager12isSlotActiveEi(gCommManager, gCommManager->myAid);
@@ -299,7 +269,7 @@ BOOL SceneSpawnGroup::spawnPlayersAndCamera(u8 *idx, u32 lo, u32 hi) {
 
 BOOL SceneSpawnGroup::createProcs(u8 *idx, u64 start) {
     u32 i = idx != NULL ? *idx : 0;
-    EntryPair *p = (EntryPair *)ptr + i;
+    EntryPair *p = (EntryPair *)list + i;
     BOOL ok = TRUE;
     for (;;) {
         GameProc_CreateChild(p->a, gActorDefaultParent, p->b, 0);
@@ -327,11 +297,11 @@ BOOL SceneSpawnGroup::createProcs(u8 *idx, u64 start) {
 
 BOOL SceneSpawnList::run(u8 *entryIdx, u8 *subIdx, u64 start) {
     s32 i = entryIdx != NULL ? *entryIdx : 0;
-    SceneSpawnGroup *e = entries + i;
+    SceneSpawnGroup *e = groups + i;
     BOOL result = TRUE;
     for (; i < count;) {
         BOOL r = result;
-        EntryFn f = sSceneSpawnGroupHandlers[e->type];
+        EntryFn f = sSceneSpawnGroupHandlers[e->kind];
         if (f != NULL) {
             r = f(e, subIdx, (u32)start, (u32)(start >> 32));
         }

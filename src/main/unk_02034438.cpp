@@ -8,6 +8,7 @@
 #include "gfx/BgModelCache.h"
 #include "snd/BgmVolumeMixer.h"
 #include "snd/BgmManager.h"
+#include "sys/ProcProfile.h"
 
 extern "C" {
 extern u8 gFieldSceneKind;
@@ -205,12 +206,6 @@ void BgmTracks_Update(void *);
 }
 }
 
-struct Unk_020d8dbc_Rec {
-    BgmProc *(*fn)();
-    s16 a;
-    s16 b;
-};
-
 
 class BgmRequest;
 
@@ -241,11 +236,6 @@ public:
     u8 currentScene;
     u8 pad_09;
     u16 sceneBgm;
-};
-
-struct Unk_020355dc_Data {
-    u8 pad_00[0xc];
-    u16 profile;
 };
 
 
@@ -317,7 +307,7 @@ void Snd_FadeOutBgmTracks(s32 a);
 void PlayerActor_GetSlotHeldItem(void *p, s32 n);
 s32 Item_IsFurniture(void *p);
 s32 Item_GetFurnitureIndex(void *p);
-extern Unk_020355dc_Data *gActorDefaultParent;
+extern ProcBase *gActorDefaultParent;
 s32 PlayerActor_GetActionOrSpawnAction(void);
 s32 _ZN7RoomBgm7setKeepEj(void *p, s32 a);
 s32 _ZN8FieldBgm7setKeepEj(void *p, s32 a);
@@ -387,7 +377,7 @@ extern const u16 sSceneBgmTable[0x3a];
 extern u16 sNewYearEveDate[2];
 extern u16 sNewYearEveTime[2];
 extern u16 sNewYearDayDate[2];
-extern Unk_020d8dbc_Rec sBgmProcProfile;
+extern ProcProfile sBgmProcProfile;
 extern const u8 sBgmSceneFadeDelays[8];
 extern const s32 sBgmMenuDuckStates[3];
 extern const u16 sHourlyBgmIds[0x18];
@@ -1366,7 +1356,7 @@ u16 sNewYearEveTime[2] = {0x173b, 0};
 u16 sNewYearDayDate[2] = {0x101, 0};
 
 //DEF sBgmProcProfile
-Unk_020d8dbc_Rec sBgmProcProfile = {&BgmProc::create, 0xcf, 0xcb};
+ProcProfile sBgmProcProfile = {(void *(*)())&BgmProc::create, 0xcf, 0xcb};
 
 void BgmVolumeMixer::updateChannels() {
     static Unk_02035758_Fn tbl[8] = {

@@ -1,5 +1,5 @@
 #include "types.h"
-#include "town/Unk_0204c3c0_Ver.h"
+#include "sys/ClockDate.h"
 #include "game/Unk_0204da0c_Size.h"
 #include "game/Unk_0204da0c_Map.h"
 #include "town/TownState.h"
@@ -51,7 +51,7 @@ extern "C" void TownState_InitNew(TownState *p) {
     Town_SetNativeFruitTrees(p);
     Town_ReplaceSouthCedars(p);
     TownState_ClearEvents(p);
-    Unk_0204c3f4_Slot *s;
+    ClockDate *s;
     s32 i;
     for (s = p->playerDates, i = 0; i < 4; i++) {
         s->day = 1;
@@ -83,7 +83,7 @@ extern "C" void TownState_Reset(TownState *p) {
     TownState_ClearUnk0c(p);
     TownState_ClearUnk16(p);
     TownState_ClearEvents(p);
-    Unk_0204c3f4_Slot *s;
+    ClockDate *s;
     s32 i;
     for (s = p->playerDates, i = 0; i < 4; i++) {
         s->day = 1;
@@ -99,8 +99,8 @@ extern "C" void TownState_Reset(TownState *p) {
     p->unk_57 = 0;
 }
 
-extern "C" void TownState_ClampDate(Unk_0204c3c0_Ver *p) {
-    Unk_0204c3c0_Ver t;
+extern "C" void TownState_ClampDate(ClockDate *p) {
+    ClockDate t;
     Clock_GetDate(&t);
     if (Date_IsAfterOrEqual(&t, p) == 0) {
         p->day = t.day;

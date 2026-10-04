@@ -5,15 +5,11 @@
 #include "item/ItemId.h"
 #include "item/Letter.h"
 #include "save/Pattern.h"
+#include "game/NibblePair.h"
 
 // One player's save record (0x228c bytes; gSavePlayers holds four, gGuestPlayers three): patterns, inventory, catalog,
 // letters, errands, friend list, appearance, ... Defined in src/main/unk_02097d1c.cpp (0x02097ff4..0x02098668).
 class PlayerId;
-
-struct Unk_0209865c_Nib {
-    u8 lo : 4;
-    u8 hi : 4;
-};
 
 struct Unk_0209865c_Tri {
     u8 lo : 3;
@@ -62,7 +58,7 @@ public:
     /* 0x221a */ u8 spNpcRecord[0x11];
     /* 0x222b */ u8 dramaRecord[5];
     /* 0x2230 */ u8 lostChildRecord[0xc];
-    /* 0x223c */ Unk_0209865c_Nib faceHair;
+    /* 0x223c */ NibblePair faceHair;
     /* 0x223d */ Unk_0209865c_Tri hairColorTanFortune;
     /* 0x223e */ u8 motherLetterState[0x15];
     /* 0x2253 */ u8 birthdayTalkYear;
