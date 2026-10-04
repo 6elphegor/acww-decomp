@@ -2,15 +2,10 @@
 #define NPC_NPCRESPOOL_H
 
 #include "types.h"
+#include "npc/NpcResSlot.h"
 
 // Fixed-size pools of NPC resource slots (vtable _ZTV10NpcResPool). Constructor/destructor defined in
 // src/main/unk_02082d2c.cpp, the other methods and the derived pools in src/main/unk_020821c4.cpp.
-
-struct NpcResSlot {
-    /* 0x0 */ u8 inUse;
-    NpcResSlot();
-    ~NpcResSlot();
-};
 
 class NpcResPool {
 public:
