@@ -11,7 +11,7 @@
 
 typedef GsGpContext Ctx0227;
 extern "C" {
-extern s32 sGsAvailStatus;
+extern s32 __GSIACResult;
 
 
 typedef s32 (*GsGpConnectCallback)(Ctx0227 **, void *, s32);
@@ -21,7 +21,7 @@ void GsGp_SetErrorString(Ctx0227 **, const char *);
 s32 GsGp_Connect(Ctx0227 **, const char *, const char *, const char *, const char *, const char *,
                         const char *, s32, s32, s32, s32, GsGpConnectCallback, s32);
 s32 GsGp_CheckConnected(Ctx0227 **);
-void GsUtil_Sleep(s32);
+void msleep(s32);
 s32 GsGp_FindOperation(Ctx0227 **, Unk_ov065_0227c538_Node **, s32);
 s32 GsGp_CallPendingCallbacks(Ctx0227 **, s32);
 s32 GsGpPeer_ProcessAll(Ctx0227 **);
@@ -46,11 +46,11 @@ void GsGpBuf_AppendInt(Ctx0227 **, char **, s32);
 s32 GsGpProfile_IsUnused(Unk_ov065_0227c538_Node *);
 void GsGpProfile_Remove(Ctx0227 **, Unk_ov065_0227c538_Node *);
 s32 GsGpProfile_InitTable(Ctx0227 **);
-void GsSock_StartupStub();
-void GsUtil_GetTimeMs();
+void SocketStartUp();
+void current_time();
 void GsUtil_Free(void *);
 void *GsUtil_Alloc(s32);
-void GsHash_Free(void *);
+void TableFree(void *);
 
 char *strstr(const char *, const char *);
 void memcpy(void *, const void *, s32);
@@ -108,8 +108,8 @@ s32 gpiInitialize(Ctx0227 **h, s32 a, s32 b) {
             return r;
         }
     }
-    GsSock_StartupStub();
-    GsUtil_GetTimeMs();
+    SocketStartUp();
+    current_time();
     srand();
     *h = c;
     return 0;
@@ -122,7 +122,7 @@ s32 GsGp_DestroyConnection(Ctx0227 **h) {
     GsGp_CloseConnection(h, 1);
     GsUtil_Free(c->unk_460);
     c->unk_460 = 0;
-    GsHash_Free(c->profileTable);
+    TableFree(c->profileTable);
     GsUtil_Free(c);
     *h = 0;
     return 0;
@@ -281,7 +281,7 @@ s32 GsGp_ProcessCmMessages(Ctx0227 **h) {
         }
         r = GsGp_HasBlockingOperation(h);
         if (r != 0) {
-            GsUtil_Sleep(10);
+            msleep(10);
         }
         if (r == 0) {
             return 0;
@@ -306,7 +306,7 @@ s32 GsGp_ProcessConnection(Ctx0227 **h, s32 arg) {
                 k = zero;
             }
             if (k != 0) {
-                GsUtil_Sleep(10);
+                msleep(10);
             }
         } while (k != 0);
         if (r != 0) {

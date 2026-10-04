@@ -1,7 +1,7 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
-#include "net/GsSrvListCryptState.h"
-#include "net/GsSrvQueryEngine.h"
+#include "net/sb_crypt.h"
+#include "net/sb_internal.h"
 
 // ov065_066: GameSpy transport (RC4-like cipher, connection manager) 0x022884fc..0x02288df0
 
@@ -9,96 +9,96 @@
 
 
 
-struct GsSrvQueryEngine;
+struct SBQueryEngine;
 
 
 
 
 extern "C" {
-extern u32 gGsKeyNames[];
-extern s32 sGsAvailStatus;
+extern u32 qr2_registered_key_list[];
+extern s32 __GSIACResult;
 extern u8 data_0213a410[];
 
 u32 func_0213335c(u32 a, u32 b);
 s32 strstr(void *a, void *b);
 s32 func_02130b04(void *a, void *b);
 
-u32 GsUtil_GetTimeMs(void);
-void GsSock_StartupStub(void);
-s32 GsSock_CanRead(s32 s);
-s32 GsSock_RecvFrom(s32 s, void *buf, s32 len, u32 flags, void *sa, s32 *salen);
-s32 GsSock_SendTo(s32 s, void *buf, s32 len, u32 flags, void *sa, s32 salen);
-s32 GsSock_Close(s32 s);
-s32 GsSock_Socket(s32 a, s32 b, s32 c);
+u32 current_time(void);
+void SocketStartUp(void);
+s32 CanReceiveOnSocket(s32 s);
+s32 recvfrom(s32 s, void *buf, s32 len, u32 flags, void *sa, s32 *salen);
+s32 sendto(s32 s, void *buf, s32 len, u32 flags, void *sa, s32 salen);
+s32 closesocket(s32 s);
+s32 socket(s32 a, s32 b, s32 c);
 void *GsUtil_Alloc(u32 n);
 void GsUtil_Free(void *p);
-void *GsHash_NewEx(s32 a, s32 b, s32 c, void *cmp, void *hash, void *free);
-s32 GsUtil_StrSizeInBuffer(u8 *buf, s32 n);
-void GsStrPool_Release(s32 a, void *p);
-void GsServer_SetStringValue(void *e, u32 v, u8 *buf);
-void GsServer_ParseQr2Reply(void *e, u8 *buf, s32 n);
-void GsServer_ParseQr1Reply(void *e, u8 *buf);
+void *TableNew2(s32 a, s32 b, s32 c, void *cmp, void *hash, void *free);
+s32 NTSLengthSB(u8 *buf, s32 n);
+void SBReleaseStr(s32 a, void *p);
+void SBServerAddKeyValue(void *e, u32 v, u8 *buf);
+void SBServerParseQR2FullKeysSingle(void *e, u8 *buf, s32 n);
+void SBServerParseKeyVals(void *e, u8 *buf);
 }
 
-typedef GsSrvListCryptState Cipher;
-typedef GsSrvQueryEngine Mgr;
-typedef GsServer Ent;
-typedef GsSrvQueue List;
+typedef GOACryptState Cipher;
+typedef SBQueryEngine Mgr;
+typedef _SBServer Ent;
+typedef SBServerFIFO List;
 typedef Unk_ov065_02288b60_Sa Sa;
 
 extern "C" {
-u32 GsSrvListCrypt_NextByte(Cipher *c, u32 x);
-void GsSrvListCrypt_InitDefault(Cipher *c);
-u32 GsSrvListCrypt_KeyIndex(Cipher *c, u32 n, u8 *key, u32 keylen, u8 *j, u32 *idx);
-s32 GsSrvQueue_Remove(List *l, Ent *e);
-void GsSrvQuery_ReceiveAll(Mgr *m, s32 flag);
-void GsSrvQuery_CheckTimeouts(Mgr *m);
-void GsSrvQuery_StartPending(Mgr *m);
-void GsSrvQuery_SendQuery(Mgr *m, Ent *e);
-s32 GsSrvQuery_HandleAltReplyStub(Mgr *m, Ent *e, u8 *buf, s32 n);
-void GsSrvQuery_HandleQr1Reply(Mgr *m, Ent *e, u8 *buf, s32 n);
-void GsSrvQuery_HandleQr2Reply(Mgr *m, Ent *e, u8 *buf, s32 n);
-void GsSrvQueue_Init(List *l);
-Ent *GsSrvQueue_PopFront(List *l);
-void GsSrvQueue_PushFront(List *l, Ent *e);
-void GsSrvQueue_PushBack(List *l, Ent *e);
-void GsServer_CompareKeyCb(u32 *a, u32 *b);
-u32 GsServer_HashKeyCb(u32 *p, u32 n);
-void GsServer_FreeKeyCb(u32 *p);
-u32 GsUtil_StrHashNoCase(u8 *s, u32 n);
+u32 GOADecryptByte(Cipher *c, u32 x);
+void GOAHashInit(Cipher *c);
+u32 keyrand(Cipher *c, u32 n, u8 *key, u32 keylen, u8 *j, u32 *idx);
+s32 FIFORemove(List *l, Ent *e);
+void ProcessIncomingReplies(Mgr *m, s32 flag);
+void TimeoutOldQueries(Mgr *m);
+void QueueNextQueries(Mgr *m);
+void QEStartQuery(Mgr *m, Ent *e);
+s32 ParseSingleICMPReply(Mgr *m, Ent *e, u8 *buf, s32 n);
+void ParseSingleGOAReply(Mgr *m, Ent *e, u8 *buf, s32 n);
+void ParseSingleQR2Reply(Mgr *m, Ent *e, u8 *buf, s32 n);
+void FIFOClear(List *l);
+Ent *FIFOGetFirst(List *l);
+void FIFOAddFront(List *l, Ent *e);
+void FIFOAddRear(List *l, Ent *e);
+void KeyValCompareKey(u32 *a, u32 *b);
+u32 KeyValHashKey(u32 *p, u32 n);
+void KeyValFree(u32 *p);
+u32 StringHash(u8 *s, u32 n);
 
-void GsSrvQuery_SendQuery(Mgr *m, Ent *e) {
+void QEStartQuery(Mgr *m, Ent *e) {
     Sa sa;
     u8 buf[0x100];
     s32 len;
-    GsSrvQueue_PushBack(&m->active, e);
-    e->ping = GsUtil_GetTimeMs();
+    FIFOAddRear(&m->querylist, e);
+    e->updatetime = current_time();
     sa.family = 2;
-    if ((e->stateFlags & 0x20) == 0) {
-        if (m->mode == 1) {
+    if ((e->state & 0x20) == 0) {
+        if (m->queryversion == 1) {
             buf[0] = 0xfe;
             buf[1] = 0xfd;
             buf[2] = 0;
             {
                 u8 *q = &buf[3];
-                u8 *t = (u8 *)&e->ping;
+                u8 *t = (u8 *)&e->updatetime;
                 q[0] = t[0];
                 q[1] = t[1];
                 q[2] = t[2];
                 q[3] = t[3];
             }
-            if (e->stateFlags & 4) {
+            if (e->state & 4) {
                 s32 i = 0;
-                buf[7] = m->keycount;
-                if (m->keycount > 0) {
+                buf[7] = m->numserverkeys;
+                if (m->numserverkeys > 0) {
                     do {
-                        buf[i + 8] = m->key[i];
+                        buf[i + 8] = m->serverkeys[i];
                         i++;
-                    } while (i < m->keycount);
+                    } while (i < m->numserverkeys);
                 }
-                buf[m->keycount + 8] = 0;
-                buf[m->keycount + 9] = 0;
-                len = m->keycount + 10;
+                buf[m->numserverkeys + 8] = 0;
+                buf[m->numserverkeys + 9] = 0;
+                len = m->numserverkeys + 10;
             } else {
                 buf[7] = 0xff;
                 buf[8] = 0xff;
@@ -106,7 +106,7 @@ void GsSrvQuery_SendQuery(Mgr *m, Ent *e) {
                 len = 10;
             }
         } else {
-            if (e->stateFlags & 4) {
+            if (e->state & 4) {
                 u8 *d = buf;
                 u8 *sp = (u8 *)"\\basic\\\\info\\";
                 u8 *k = (u8 *)13;
@@ -126,50 +126,50 @@ void GsSrvQuery_SendQuery(Mgr *m, Ent *e) {
                 len = 8;
             }
         }
-        if (e->addr == m->publicIp && (e->listFlags & 2) != 0) {
-            sa.addr = e->addr2;
-            sa.port = e->port2;
+        if (e->publicip == m->mypublicip && (e->flags & 2) != 0) {
+            sa.addr = e->privateip;
+            sa.port = e->privateport;
         } else {
-            sa.addr = e->addr;
-            sa.port = e->port;
+            sa.addr = e->publicip;
+            sa.port = e->publicport;
         }
-        GsSock_SendTo(m->sock, buf, len, 0, &sa, 8);
+        sendto(m->querysock, buf, len, 0, &sa, 8);
     }
 }
 
-void GsSrvQuery_Init(Mgr *m, s32 max, s32 mode, s32 force, GsSrvQueryEngineCallback cb, void *user) {
-    if (force != 0 || sGsAvailStatus == 1) {
-        GsSock_StartupStub();
-        m->mode = mode;
-        m->max = max;
-        m->keycount = 0;
-        m->cb = cb;
-        m->user = user;
-        m->publicIp = 0;
-        m->sock = GsSock_Socket(2, 2, 0);
-        GsSrvQueue_Init(&m->pending);
-        GsSrvQueue_Init(&m->active);
+void SBQueryEngineInit(Mgr *m, s32 max, s32 mode, s32 force, SBEngineCallbackFn cb, void *user) {
+    if (force != 0 || __GSIACResult == 1) {
+        SocketStartUp();
+        m->queryversion = mode;
+        m->maxupdates = max;
+        m->numserverkeys = 0;
+        m->ListCallback = cb;
+        m->instance = user;
+        m->mypublicip = 0;
+        m->querysock = socket(2, 2, 0);
+        FIFOClear(&m->pendinglist);
+        FIFOClear(&m->querylist);
     }
 }
 
-void GsSrvQuery_SetPublicIp(Mgr *m, u32 v) {
-    m->publicIp = v;
+void SBQueryEngineSetPublicIP(Mgr *m, u32 v) {
+    m->mypublicip = v;
 }
 
-void GsSrvQuery_Clear(Mgr *m) {
-    GsSrvQueue_Init(&m->pending);
-    GsSrvQueue_Init(&m->active);
+void SBEngineHaltUpdates(Mgr *m) {
+    FIFOClear(&m->pendinglist);
+    FIFOClear(&m->querylist);
 }
 
-void GsSrvQuery_Shutdown(Mgr *m) {
-    GsSock_Close(m->sock);
-    m->sock = -1;
-    GsSrvQueue_Init(&m->pending);
-    GsSrvQueue_Init(&m->active);
+void SBEngineCleanup(Mgr *m) {
+    closesocket(m->querysock);
+    m->querysock = -1;
+    FIFOClear(&m->pendinglist);
+    FIFOClear(&m->querylist);
 }
 
-void GsSrvQuery_Add(Mgr *m, Ent *e, s32 front, s32 code) {
-    u8 *p = &e->stateFlags;
+void SBQueryEngineUpdateServer(Mgr *m, Ent *e, s32 front, s32 code) {
+    u8 *p = &e->state;
     *p &= 0xc3;
     if (code == 0) {
         *p |= 4;
@@ -178,74 +178,74 @@ void GsSrvQuery_Add(Mgr *m, Ent *e, s32 front, s32 code) {
     } else if (code == 2) {
         return;
     }
-    if (m->active.count < m->max) {
-        GsSrvQuery_SendQuery(m, e);
+    if (m->querylist.count < m->maxupdates) {
+        QEStartQuery(m, e);
         return;
     }
     if (front != 0) {
-        GsSrvQueue_PushFront(&m->pending, e);
+        FIFOAddFront(&m->pendinglist, e);
         return;
     }
-    GsSrvQueue_PushBack(&m->pending, e);
+    FIFOAddRear(&m->pendinglist, e);
 }
 
-void GsSrvQuery_HandleQr2Reply(Mgr *m, Ent *e, u8 *buf, s32 n) {
+void ParseSingleQR2Reply(Mgr *m, Ent *e, u8 *buf, s32 n) {
     s32 i = 0;
     s32 r;
     if (*(s8 *)buf == 0) {
         buf += 5;
         n -= 5;
-        if (e->stateFlags & 4) {
-            if (m->keycount > 0) {
+        if (e->state & 4) {
+            if (m->numserverkeys > 0) {
                 do {
-                    r = GsUtil_StrSizeInBuffer(buf, n);
+                    r = NTSLengthSB(buf, n);
                     if (r < 0) {
                         break;
                     }
-                    GsServer_SetStringValue(e, gGsKeyNames[m->key[i]], buf);
+                    SBServerAddKeyValue(e, qr2_registered_key_list[m->serverkeys[i]], buf);
                     buf += r;
                     n -= r;
                     i++;
-                } while (i < m->keycount);
+                } while (i < m->numserverkeys);
             }
-            e->stateFlags |= 0x41;
+            e->state |= 0x41;
         } else {
-            GsServer_ParseQr2Reply(e, buf, n);
-            e->stateFlags |= 0x43;
+            SBServerParseQR2FullKeysSingle(e, buf, n);
+            e->state |= 0x43;
         }
-        e->stateFlags &= 0xf3;
-        e->ping = GsUtil_GetTimeMs() - e->ping;
-        GsSrvQueue_Remove(&m->active, e);
-        m->cb(m, 0, e, m->user);
+        e->state &= 0xf3;
+        e->updatetime = current_time() - e->updatetime;
+        FIFORemove(&m->querylist, e);
+        m->ListCallback(m, 0, e, m->instance);
     }
 }
 
-void GsSrvQuery_HandleQr1Reply(Mgr *m, Ent *e, u8 *buf, s32 n) {
+void ParseSingleGOAReply(Mgr *m, Ent *e, u8 *buf, s32 n) {
     BOOL found;
     if (strstr(buf, (void *)"\\final\\") != 0) {
         found = TRUE;
     } else {
         found = FALSE;
     }
-    GsServer_ParseQr1Reply(e, buf);
+    SBServerParseKeyVals(e, buf);
     if (found) {
-        if (e->stateFlags & 4) {
-            e->stateFlags |= 0x41;
+        if (e->state & 4) {
+            e->state |= 0x41;
         } else {
-            e->stateFlags |= 0x42;
+            e->state |= 0x42;
         }
-        e->stateFlags &= 0xf3;
-        e->ping = GsUtil_GetTimeMs() - e->ping;
-        GsSrvQueue_Remove(&m->active, e);
-        m->cb(m, 0, e, m->user);
+        e->state &= 0xf3;
+        e->updatetime = current_time() - e->updatetime;
+        FIFORemove(&m->querylist, e);
+        m->ListCallback(m, 0, e, m->instance);
     }
 }
 
-s32 GsSrvQuery_HandleAltReplyStub(Mgr *m, Ent *e, u8 *buf, s32 n) {
+s32 ParseSingleICMPReply(Mgr *m, Ent *e, u8 *buf, s32 n) {
     return 1;
 }
 
-void GsSrvQuery_ReceiveAll(Mgr *m, s32 flag) {
+void ProcessIncomingReplies(Mgr *m, s32 flag) {
     s32 sock;
     Sa sa;
     s32 len = 8;
@@ -253,40 +253,40 @@ void GsSrvQuery_ReceiveAll(Mgr *m, s32 flag) {
     s32 n;
     Ent *e;
     if (flag != 0) {
-        sock = m->sock2;
+        sock = m->icmpsock;
     } else {
-        sock = m->sock;
+        sock = m->querysock;
     }
-    while (GsSock_CanRead(sock) != 0) {
-        n = GsSock_RecvFrom(sock, buf, 0x7ff, 0, &sa, &len);
+    while (CanReceiveOnSocket(sock) != 0) {
+        n = recvfrom(sock, buf, 0x7ff, 0, &sa, &len);
         if (n == -1) {
             break;
         }
         buf[n] = 0;
-        for (e = m->active.head; e != 0; e = e->next) {
-            if (flag != 0 && (e->listFlags & 8) != 0 && e->altAddr == sa.addr) {
+        for (e = m->querylist.first; e != 0; e = e->next) {
+            if (flag != 0 && (e->flags & 8) != 0 && e->icmpip == sa.addr) {
                 goto match;
             }
-            if (e->addr == sa.addr) {
-                if (e->port == sa.port) {
+            if (e->publicip == sa.addr) {
+                if (e->publicport == sa.port) {
                     goto match;
                 }
                 if (flag != 0) {
                     goto match;
                 }
             }
-            if (e->addr == m->publicIp && (e->listFlags & 2) != 0 && e->addr2 == sa.addr && e->port2 == sa.port) {
+            if (e->publicip == m->mypublicip && (e->flags & 2) != 0 && e->privateip == sa.addr && e->privateport == sa.port) {
             match:
                 if (flag != 0) {
-                    if (GsSrvQuery_HandleAltReplyStub(m, e, buf, n) != 0) {
+                    if (ParseSingleICMPReply(m, e, buf, n) != 0) {
                         break;
                     }
                     continue;
                 }
-                if (m->mode == 1) {
-                    GsSrvQuery_HandleQr2Reply(m, e, buf, n);
+                if (m->queryversion == 1) {
+                    ParseSingleQR2Reply(m, e, buf, n);
                 } else {
-                    GsSrvQuery_HandleQr1Reply(m, e, buf, n);
+                    ParseSingleGOAReply(m, e, buf, n);
                 }
                 break;
             }
@@ -294,59 +294,59 @@ void GsSrvQuery_ReceiveAll(Mgr *m, s32 flag) {
     }
 }
 
-void GsSrvQuery_CheckTimeouts(Mgr *m) {
-    u32 now = GsUtil_GetTimeMs();
-    Ent *e = m->active.head;
+void TimeoutOldQueries(Mgr *m) {
+    u32 now = current_time();
+    Ent *e = m->querylist.first;
     if (e != 0) {
         do {
-            if (now <= e->ping + 0x9c4) {
+            if (now <= e->updatetime + 0x9c4) {
                 return;
             }
-            e->listFlags |= 0x10;
-            m->active.head->ping = 0x9c4;
-            m->active.head->listFlags &= 0xd3;
-            m->cb(m, 1, m->active.head, m->user);
-            GsSrvQueue_PopFront(&m->active);
-            e = m->active.head;
+            e->flags |= 0x10;
+            m->querylist.first->updatetime = 0x9c4;
+            m->querylist.first->flags &= 0xd3;
+            m->ListCallback(m, 1, m->querylist.first, m->instance);
+            FIFOGetFirst(&m->querylist);
+            e = m->querylist.first;
         } while (e != 0);
     }
 }
 
-void GsSrvQuery_StartPending(Mgr *m) {
-    while (m->active.count < m->max && m->pending.count > 0) {
-        Ent *e = GsSrvQueue_PopFront(&m->pending);
-        GsSrvQuery_SendQuery(m, e);
+void QueueNextQueries(Mgr *m) {
+    while (m->querylist.count < m->maxupdates && m->pendinglist.count > 0) {
+        Ent *e = FIFOGetFirst(&m->pendinglist);
+        QEStartQuery(m, e);
     }
 }
 
-void GsSrvQuery_Think(Mgr *m) {
-    if (m->active.count != 0) {
-        GsSrvQuery_ReceiveAll(m, 0);
-        GsSrvQuery_CheckTimeouts(m);
-        if (m->pending.count > 0) {
-            GsSrvQuery_StartPending(m);
+void SBQueryEngineThink(Mgr *m) {
+    if (m->querylist.count != 0) {
+        ProcessIncomingReplies(m, 0);
+        TimeoutOldQueries(m);
+        if (m->pendinglist.count > 0) {
+            QueueNextQueries(m);
         }
-        if (m->active.count == 0) {
-            m->cb(m, 2, 0, m->user);
+        if (m->querylist.count == 0) {
+            m->ListCallback(m, 2, 0, m->instance);
         }
     }
 }
 
-void GsSrvQuery_AddKey(Mgr *m, u32 b) {
-    s32 k = m->keycount;
+void SBQueryEngineAddQueryKey(Mgr *m, u32 b) {
+    s32 k = m->numserverkeys;
     if (k < 0x14) {
-        m->keycount = k + 1;
-        m->key[k] = b;
+        m->numserverkeys = k + 1;
+        m->serverkeys[k] = b;
     }
 }
 
-void GsSrvQuery_Remove(Mgr *m, Ent *e) {
-    if (GsSrvQueue_Remove(&m->active, e) == 0) {
-        GsSrvQueue_Remove(&m->pending, e);
+void SBQueryEngineRemoveServerFromFIFOs(Mgr *m, Ent *e) {
+    if (FIFORemove(&m->querylist, e) == 0) {
+        FIFORemove(&m->pendinglist, e);
     }
 }
 
-u32 GsSrvListCrypt_KeyIndex(Cipher *c, u32 n, u8 *key, u32 keylen, u8 *j, u32 *idx) {
+u32 keyrand(Cipher *c, u32 n, u8 *key, u32 keylen, u8 *j, u32 *idx) {
     u32 r;
     u32 mask;
     u32 cnt;
@@ -362,7 +362,7 @@ u32 GsSrvListCrypt_KeyIndex(Cipher *c, u32 n, u8 *key, u32 keylen, u8 *j, u32 *i
     }
     do {
         u32 t = (*idx)++;
-        *j = c->s[*j] + key[t];
+        *j = c->cards[*j] + key[t];
         if (*idx >= keylen) {
             *idx = 0;
             *j = *j + keylen;
@@ -376,69 +376,69 @@ u32 GsSrvListCrypt_KeyIndex(Cipher *c, u32 n, u8 *key, u32 keylen, u8 *j, u32 *i
     return (u8)r;
 }
 
-void GsSrvListCrypt_InitDefault(Cipher *c) {
+void GOAHashInit(Cipher *c) {
     s32 i;
     s32 v;
-    c->i = 1;
-    c->j = 3;
-    c->k = 5;
-    c->l = 7;
-    c->m = 0xb;
+    c->rotor = 1;
+    c->ratchet = 3;
+    c->avalanche = 5;
+    c->last_plain = 7;
+    c->last_cipher = 0xb;
     for (i = 0, v = 0xff; i < 0x100; i++, v--) {
-        c->s[i] = v;
+        c->cards[i] = v;
     }
 }
 
-void GsSrvListCrypt_Init(Cipher *c, u8 *key, u32 keylen) {
+void GOACryptInit(Cipher *c, u8 *key, u32 keylen) {
     s32 i;
     u32 idx;
     u8 j;
     if (keylen < 1) {
-        GsSrvListCrypt_InitDefault(c);
+        GOAHashInit(c);
         return;
     }
     for (i = 0; i < 0x100; i++) {
-        c->s[i] = i;
+        c->cards[i] = i;
     }
     idx = 0;
     j = 0;
     for (i = 0xff; i >= 0; i--) {
-        u32 r = GsSrvListCrypt_KeyIndex(c, i, key, keylen, &j, &idx);
-        u8 t = c->s[i];
-        c->s[i] = c->s[r];
-        c->s[r] = t;
+        u32 r = keyrand(c, i, key, keylen, &j, &idx);
+        u8 t = c->cards[i];
+        c->cards[i] = c->cards[r];
+        c->cards[r] = t;
     }
-    c->i = c->s[1];
-    c->j = c->s[3];
-    c->k = c->s[5];
-    c->l = c->s[7];
-    c->m = c->s[j];
+    c->rotor = c->cards[1];
+    c->ratchet = c->cards[3];
+    c->avalanche = c->cards[5];
+    c->last_plain = c->cards[7];
+    c->last_cipher = c->cards[j];
     j = 0;
     idx = 0;
 }
 
-u32 GsSrvListCrypt_NextByte(Cipher *c, u32 x) {
-    u8 a = c->i;
-    c->i = a + 1;
-    c->j = c->j + c->s[a];
-    u8 t = c->m;
-    u8 old = c->s[t];
-    c->s[t] = c->s[c->j];
-    c->s[c->j] = c->s[c->l];
-    c->s[c->l] = c->s[c->i];
-    c->s[c->i] = old;
-    c->k = c->k + c->s[old];
-    u32 v = x ^ c->s[(c->s[c->k] + c->s[c->i]) & 0xff];
-    v ^= c->s[c->s[(c->s[c->j] + (c->s[c->l] + c->s[c->m])) & 0xff]];
-    c->l = v;
-    c->m = x;
-    return c->l;
+u32 GOADecryptByte(Cipher *c, u32 x) {
+    u8 a = c->rotor;
+    c->rotor = a + 1;
+    c->ratchet = c->ratchet + c->cards[a];
+    u8 t = c->last_cipher;
+    u8 old = c->cards[t];
+    c->cards[t] = c->cards[c->ratchet];
+    c->cards[c->ratchet] = c->cards[c->last_plain];
+    c->cards[c->last_plain] = c->cards[c->rotor];
+    c->cards[c->rotor] = old;
+    c->avalanche = c->avalanche + c->cards[old];
+    u32 v = x ^ c->cards[(c->cards[c->avalanche] + c->cards[c->rotor]) & 0xff];
+    v ^= c->cards[c->cards[(c->cards[c->ratchet] + (c->cards[c->last_plain] + c->cards[c->last_cipher])) & 0xff]];
+    c->last_plain = v;
+    c->last_cipher = x;
+    return c->last_plain;
 }
 
-void GsSrvListCrypt_Decrypt(Cipher *c, u8 *buf, s32 n) {
+void GOADecrypt(Cipher *c, u8 *buf, s32 n) {
     s32 i;
     for (i = 0; i < n; i++) {
-        buf[i] = GsSrvListCrypt_NextByte(c, buf[i]);
+        buf[i] = GOADecryptByte(c, buf[i]);
     }
 }
 }

@@ -1,12 +1,12 @@
 // mwcc-flags: -O4,p -str reuse
 
 #include "types.h"
-#include "net/GsArray.h"
+#include "net/darray.h"
 #include "net/Unk_ov065_02282f90_Ctx.h"
 #include "net/Unk_ov065_022831c0_Host.h"
 #include "net/Unk_ov065_022833b4_Pair.h"
 #include "net/GsPersist.h"
-#include "net/GsTransport.h"
+#include "net/gt2Main.h"
 #include "net/Unk_ov065_022833b4_Src.h"
 
 extern "C" u8 data_ov065_0228df8c[16];
@@ -63,26 +63,26 @@ extern "C" {
 void GsPersist_XorCrypt(char *, s32);
 s32 GsPersist_DispatchReply(char *, s32);
 s32 GsPersist_FindFinal(char *, s32);
-void GsUtil_StrToLower(char *);
+void _strlwr(char *);
 s32 GsGp_AddOperation(void *, s32, void *, void *, s32, s32, s32);
 s32 GsGp_ProcessConnection(void *, s32);
 void *GsUtil_Alloc(u32);
-s32 GsSock_Socket(s32, s32, s32);
-s32 GsSock_SetBlocking(s32, s32);
+s32 socket(s32, s32, s32);
+s32 SetSockBlocking(s32, s32);
 Unk_ov065_022831c0_Host *Sock_GetHostByName(const char *);
-s32 GsSock_Connect(s32, void *, s32);
-s32 GsSock_GetLastError(s32);
+s32 connect(s32, void *, s32);
+s32 GOAGetLastError(s32);
 void GsGp_CallErrorCallback(void *, s32, s32);
 s32 GsGpPeer_SendTransferHeader(void *, s32, s32, void *);
 s32 GsGpPeer_SendString(void *, s32, char *);
 s32 GsGpPeer_SendMessageBody(void *, s32, const char *, s32);
 s32 GsGp_QueueCallback(void *, Unk_ov065_022833b4_Pair, void *, void *, s32);
 void GsGp_RemoveOperation(void *, void *);
-s32 GsSock_Select(s32, s32, s32 *, s32 *);
-s32 GsArray_Count(void *);
-void GsArray_Free(void *);
-void *GsArray_At(void *, s32);
-void GsArray_DeleteAt(void *, s32);
+s32 GSISocketSelect(s32, s32, s32 *, s32 *);
+s32 ArrayLength(void *);
+void ArrayFree(void *);
+void *ArrayNth(void *, s32);
+void ArrayDeleteAt(void *, s32);
 char *strncpy(char *dst, const char *src, u32 n);
 char *strstr(const char *, const char *);
 s32 STD_GetStringLength(const char *);
@@ -148,7 +148,7 @@ extern "C" {
 
 
 extern "C" {
-extern GsArray *sGsPersistRequests;
+extern DArrayImplementation *sGsPersistRequests;
 extern s32 sGsPersistSocket;
 extern s32 data_ov065_022910f8;
 extern char *data_ov065_022910f0;
@@ -171,20 +171,20 @@ s32 rand();
 void srand(s32);
 s32 abs(s32);
 
-void *GsArray_At(GsArray *, s32);
-s32 GsArray_Count(GsArray *);
+void *ArrayNth(DArrayImplementation *, s32);
+s32 ArrayLength(DArrayImplementation *);
 void GsPersist_CompleteRequest(s32, s32, s32, char *, s32);
 s32 GsPersist_ProcessReceived(char *, s32);
 void GsPersist_FailAllRequests();
-s32 GsSock_CanRead(s32);
-s32 GsSock_Recv(s32, char *, s32, s32);
-void GsSock_Shutdown(s32, s32);
-void GsSock_Close(s32);
+s32 CanReceiveOnSocket(s32);
+s32 recv(s32, char *, s32, s32);
+void shutdown(s32, s32);
+void closesocket(s32);
 void GsUtil_Free(void *);
 void *GsUtil_Realloc(void *, s32);
 void *GsUtil_Alloc(s32);
-s32 GsUtil_GetTimeMs(u8 *);
-void GsTransport_FreeSocket(GsTransportSocket *);
+s32 current_time(u8 *);
+void gti2CloseSocket(GTI2Socket *);
 
 void GsPersist_HandleAuthReply(char *, s32);
 void GsPersist_HandleGetPidReply(char *, s32);
@@ -195,7 +195,7 @@ char *GsPersist_GetValueOrEmpty(char *, char *);
 char *GsPersist_GetValue(char *, char *);
 s32 GsPersist_CanRead(s32);
 void GsPersist_Disconnect();
-s32 GsTransport_IsValidChallenge(u8 *);
+s32 gti2VerifyChallenge(u8 *);
 
 
 
@@ -229,13 +229,13 @@ s32 GsTransport_IsValidChallenge(u8 *);
 }
 
 namespace N022838c4 { extern "C" {
-char *GsUtil_MakeResponse32(char *out, char *in) {
+char *gti2GetResponse(char *out, char *in) {
     s32 ok;
     s32 klen;
     s32 i;
     s32 j;
     klen = STD_GetStringLength("3b8dd8995f7c40a9a5c5b7dd5b481341");
-    ok = GsTransport_IsValidChallenge((u8 *)in);
+    ok = gti2VerifyChallenge((u8 *)in);
     i = 0;
     j = 0;
     for (; i < 0x20; i++) {
@@ -263,7 +263,7 @@ char *GsUtil_MakeResponse32(char *out, char *in) {
 extern "C" char *sGsPersistXorKey = (char *)data_ov065_0228df8c; //@
 extern "C" { s32 data_ov065_02291100; } //@
 namespace N022838c4 { extern "C" {
-BOOL GsUtil_CompareResponse32(u8 *a, u8 *b) {
+BOOL gti2CheckResponse(u8 *a, u8 *b) {
     s32 i;
     for (i = 0; i < 0x20; i++) {
         if (i == 0 || i == 0xd) {
@@ -281,8 +281,8 @@ extern "C" u8 data_ov065_0228df7c[16] = {0x13, 0x1d, 0x01, 0x04, 0x00, 0x00, 0x0
 namespace N022838c4 { extern "C" {
 void GsPersist_Disconnect() {
     if (sGsPersistSocket != -1) {
-        GsSock_Shutdown(sGsPersistSocket, 2);
-        GsSock_Close(sGsPersistSocket);
+        shutdown(sGsPersistSocket, 2);
+        closesocket(sGsPersistSocket);
     }
     sGsPersistSocket = -1;
     GsPersist_FailAllRequests();
@@ -318,7 +318,7 @@ s32 GsPersist_Process() {
                     return 0;
                 }
             }
-            r = GsSock_Recv(sGsPersistSocket, data_ov065_022910f0 + data_ov065_022910ec, data_ov065_02291100 - data_ov065_022910ec, 0);
+            r = recv(sGsPersistSocket, data_ov065_022910f0 + data_ov065_022910ec, data_ov065_02291100 - data_ov065_022910ec, 0);
             if (r <= 0) {
                 GsPersist_Disconnect();
                 return 0;
@@ -394,7 +394,7 @@ char *GsPersist_GetValueOrEmpty(char *s, char *key) {
 
 namespace N022838c4 { extern "C" {
 s32 GsPersist_CanRead(s32 a) {
-    return GsSock_CanRead(a);
+    return CanReceiveOnSocket(a);
 }
 } }
 
@@ -421,14 +421,14 @@ s32 GsPersist_FindRequest(s32 a, s32 b, s32 c) {
         return -1;
     }
     i = 0;
-    if (i < GsArray_Count(sGsPersistRequests)) {
+    if (i < ArrayLength(sGsPersistRequests)) {
         do {
-            s32 *e = (s32 *)GsArray_At(sGsPersistRequests, i);
+            s32 *e = (s32 *)ArrayNth(sGsPersistRequests, i);
             if (e[0] == a && e[1] == b && e[2] == c) {
                 return i;
             }
             i++;
-        } while (i < GsArray_Count(sGsPersistRequests));
+        } while (i < ArrayLength(sGsPersistRequests));
     }
     return -1;
 }
@@ -442,7 +442,7 @@ void GsPersist_HandleAuthReply(char *s, s32 len) {
     char *m = GsPersist_GetValueOrEmpty(s, "errmsg");
     s32 i = GsPersist_FindRequest(0, b, 0);
     if (i != -1) {
-        s32 *e = (s32 *)GsArray_At(sGsPersistRequests, i);
+        s32 *e = (s32 *)ArrayNth(sGsPersistRequests, i);
         e[2] = a;
         GsPersist_CompleteRequest(i, a > 0 ? 1 : 0, 0, m, 0);
     }
@@ -456,7 +456,7 @@ void GsPersist_HandleGetPidReply(char *s, s32 len) {
     s32 b = atol(GsPersist_GetValueOrEmpty(s, "lid"));
     i = GsPersist_FindRequest(3, b, 0);
     if (i != -1) {
-        s32 *e = (s32 *)GsArray_At(sGsPersistRequests, i);
+        s32 *e = (s32 *)ArrayNth(sGsPersistRequests, i);
         e[2] = a;
         GsPersist_CompleteRequest(i, a > 0 ? 1 : 0, 0, 0, 0);
     }
@@ -540,8 +540,8 @@ s32 GsPersist_ProcessReceived(char *p, s32 n) {
 
 namespace N02282f90 { extern "C" {
 s32 GsPersist_CompleteRequest(s32 idx, s32 a, s32 b, void *p3, s32 p4) {
-    if (idx >= 0 && idx < GsArray_Count(sGsPersistRequests)) {
-        GsPersistRequest *e = (GsPersistRequest *)GsArray_At(sGsPersistRequests, idx);
+    if (idx >= 0 && idx < ArrayLength(sGsPersistRequests)) {
+        GsPersistRequest *e = (GsPersistRequest *)ArrayNth(sGsPersistRequests, idx);
         void *cb = e->callback;
         if (cb != NULL) {
             switch (e->requestType) {
@@ -559,7 +559,7 @@ s32 GsPersist_CompleteRequest(s32 idx, s32 a, s32 b, void *p3, s32 p4) {
                 break;
             }
         }
-        GsArray_DeleteAt(sGsPersistRequests, idx);
+        ArrayDeleteAt(sGsPersistRequests, idx);
     }
 }
 } }
@@ -569,7 +569,7 @@ extern "C" { char *data_ov065_022910f0; } //@
 namespace N02282f90 { extern "C" {
 void GsPersist_FailAllRequests(void) {
     if (sGsPersistRequests != NULL) {
-        s32 i = GsArray_Count(sGsPersistRequests) - 1;
+        s32 i = ArrayLength(sGsPersistRequests) - 1;
         if (i >= 0) {
             do {
                 GsPersistErrorMsg buf = *(GsPersistErrorMsg *)data_ov065_0228df7c;
@@ -579,7 +579,7 @@ void GsPersist_FailAllRequests(void) {
                 i--;
             } while (i >= 0);
         }
-        GsArray_Free(sGsPersistRequests);
+        ArrayFree(sGsPersistRequests);
         sGsPersistRequests = NULL;
     }
 }

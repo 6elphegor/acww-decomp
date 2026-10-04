@@ -1,13 +1,13 @@
 // mwcc-flags: -O4,p -str reuse
 
 #include "types.h"
-#include "net/GsArray.h"
+#include "net/darray.h"
 #include "net/GsInAddr.h"
-#include "net/GsNatNeg.h"
+#include "net/natneg.h"
 #include "net/Unk_ov065_02286f04_Hostent.h"
 #include "net/Unk_ov065_022871ac_List.h"
 #include "net/Unk_ov065_02287200_Sa.h"
-#include "net/GsQr.h"
+#include "net/qr2.h"
 #include "net/GsBytes.h"
 
 
@@ -39,17 +39,17 @@ extern char data_ov065_02291508[];
 
 
 
-extern u8 data_ov065_0228e16c[];
+extern u8 NNMagicData[];
 
 
 
-extern char sGsGameName[];
-extern s32 sGsAvailStatus;
-extern u32 data_ov065_02291534;
-extern u32 data_ov065_02291538;
-extern u32 sGsNatNegServer2;
-extern u32 sGsNatNegServer1;
-extern void *sGsNatNegList;
+extern char __GSIACGamename[];
+extern s32 __GSIACResult;
+extern u32 Matchup2Hostname;
+extern u32 Matchup1Hostname;
+extern u32 matchup2ip;
+extern u32 matchup1ip;
+extern void *negotiateList;
 extern u8 data_ov065_02291548[];
 
 s32 OS_SPrintf(char *buf, const char *fmt, ...);
@@ -59,37 +59,37 @@ u32 STD_GetStringLength(const char *s);
 
 char *Sock_InetNtoA(GsInAddr a);
 Unk_ov065_02286f04_Hostent *Sock_GetHostByName(const char *name);
-s32 GsArray_At(void *list, s32 i);
-s32 GsArray_Count(void *list);
-s32 GsSock_InetAddr(const char *s);
-s32 GsSock_GetSockName(s32 fd, Unk_ov065_02286c74_Sa *sa, s32 *len);
-s32 GsSock_RecvFrom(s32 fd, void *buf, s32 n, s32 flags, Unk_ov065_02286c74_Sa *from, s32 *len);
-s32 GsSock_Close(s32 fd);
-s32 GsSock_Socket(s32 a, s32 b, s32 c);
-Unk_ov065_022871ac_List *GsSock_GetLocalHost();
-s32 GsSock_IsPrivateAddress(void *p);
-s32 GsSock_CanRead(s32 fd);
-u32 GsUtil_GetTimeMs();
-s32 GsNatNeg_HasMagic();
-s32 GsNatNeg_SendTo(s32 fd, u32 addr, u32 port, void *buf, s32 len);
-s32 GsNatNeg_Remove(GsNatNegotiator *ctx);
-s32 GsNatNeg_Add();
-GsNatNegotiator *GsNatNeg_FindByCookie(u32 cookie);
+s32 ArrayNth(void *list, s32 i);
+s32 ArrayLength(void *list);
+s32 inet_addr(const char *s);
+s32 getsockname(s32 fd, Unk_ov065_02286c74_Sa *sa, s32 *len);
+s32 recvfrom(s32 fd, void *buf, s32 n, s32 flags, Unk_ov065_02286c74_Sa *from, s32 *len);
+s32 closesocket(s32 fd);
+s32 socket(s32 a, s32 b, s32 c);
+Unk_ov065_022871ac_List *getlocalhost();
+s32 IsPrivateIP(void *p);
+s32 CanReceiveOnSocket(s32 fd);
+u32 current_time();
+s32 CheckMagic();
+s32 SendPacket__natneg(s32 fd, u32 addr, u32 port, void *buf, s32 len);
+s32 RemoveNegotiator(_NATNegotiator *ctx);
+s32 AddNegotiator();
+_NATNegotiator *FindNegotiatorForCookie(u32 cookie);
 
-u32 GsNatNeg_GetLocalIp();
-u32 GsNatNeg_GetLocalPort(s32 fd);
-void GsNatNeg_SendInit(GsNatNegotiator *ctx);
-void GsNatNeg_SendPeerPing(GsNatNegotiator *ctx);
-u32 GsNatNeg_ResolveHost(const char *name);
-u32 GsNatNeg_ResolveServer(const char *name, const char *s);
-s32 GsNatNeg_ResolveServers();
-void GsNatNeg_Cancel(u32 cookie);
-void GsNatNeg_Process(GsNatNegotiator *ctx);
-void GsNatNeg_SendConnectAck(GsNatNegotiator *ctx, Unk_ov065_02286c74_Sa *sa);
-void GsNatNeg_HandleConnect(GsNatNegotiator *ctx, u8 *pkt, Unk_ov065_02286c74_Sa *sa);
-void GsNatNeg_HandlePeerPing(GsNatNegotiator *ctx, u8 *pkt, Unk_ov065_02286c74_Sa *sa);
-void GsNatNeg_HandleServerReply(GsNatNegotiator *ctx, u8 *pkt, Unk_ov065_02286c74_Sa *sa);
-void GsNatNeg_HandlePacket(u8 *pkt, s32 len, Unk_ov065_02286c74_Sa *sa);
+u32 GetLocalIP();
+u32 GetLocalPort(s32 fd);
+void SendInitPackets(_NATNegotiator *ctx);
+void SendPingPacket(_NATNegotiator *ctx);
+u32 NameToIp(const char *name);
+u32 ResolveServer(const char *name, const char *s);
+s32 ResolveServers();
+void NNCancel(u32 cookie);
+void NegotiateThink(_NATNegotiator *ctx);
+void SendConnectAck(_NATNegotiator *ctx, Unk_ov065_02286c74_Sa *sa);
+void ProcessConnectPacket(_NATNegotiator *ctx, u8 *pkt, Unk_ov065_02286c74_Sa *sa);
+void ProcessPingPacket(_NATNegotiator *ctx, u8 *pkt, Unk_ov065_02286c74_Sa *sa);
+void ProcessInitPacket(_NATNegotiator *ctx, u8 *pkt, Unk_ov065_02286c74_Sa *sa);
+void NNProcessData(u8 *pkt, s32 len, Unk_ov065_02286c74_Sa *sa);
 }
 
 
@@ -126,14 +126,14 @@ extern "C" {
 
 
 
-typedef GsQrContext Qr;
-typedef GsQrBuffer Buf;
-typedef GsNatNegotiator Ent;
-typedef GsArray Vec;
+typedef qr2_implementation_s Qr;
+typedef qr2_buffer_s Buf;
+typedef _NATNegotiator Ent;
+typedef DArrayImplementation Vec;
 
 extern "C" {
-extern u8 data_ov065_0228e16c[];
-extern Qr *sGsQrDefault;
+extern u8 NNMagicData[];
+extern Qr *current_rec;
 extern u8 data_ov065_0228e1b8[];
 extern char data_ov065_0228e2d0[];
 extern char data_ov065_0228e2dc[];
@@ -148,37 +148,37 @@ extern char data_ov065_0228e32c[];
 extern char data_ov065_0228e340[];
 extern char data_ov065_0228e348[];
 extern char data_ov065_0228e34c[];
-extern char *gGsKeyNames[];
-extern Vec *sGsNatNegList;
-extern s32 sGsQrLocalAddrCount;
-extern u32 sGsQrLocalAddrs[];
+extern char *qr2_registered_key_list[];
+extern Vec *negotiateList;
+extern s32 num_local_ips;
+extern u32 local_ip_list[];
 
 s32 memcmp(const void *, const void *, s32);
 void memcpy(void *, const void *, s32);
 s32 OS_SPrintf(char *, const char *, ...);
-s32 GsSock_SendTo(s32, void *, s32, s32, void *, s32);
-s32 GsSock_Close(s32);
-s32 GsUtil_GetTimeMs(void);
-void GsArray_Free(Vec *);
-s32 GsArray_Count(Vec *);
-void *GsArray_At(Vec *, s32);
-void GsArray_Append(Vec *, void *);
-void GsArray_RemoveAt(Vec *, s32);
-Vec *GsArray_New(s32, s32, void *);
+s32 sendto(s32, void *, s32, s32, void *, s32);
+s32 closesocket(s32);
+s32 current_time(void);
+void ArrayFree(Vec *);
+s32 ArrayLength(Vec *);
+void *ArrayNth(Vec *, s32);
+void ArrayAppend(Vec *, void *);
+void ArrayRemoveAt(Vec *, s32);
+Vec *ArrayNew(s32, s32, void *);
 char *Sock_InetNtoA(GsInAddr);
-void GsQr_BeginPacket(Buf *, s32, u8 *);
-void GsQr_BufAppendString(Buf *, const char *);
-void GsQr_BufAppendInt(Buf *, s32);
-void GsQr_AppendAllKeyValues(Qr *, Buf *, u32, u8 *, u32, u8 *, u32, u8 *);
-void GsQr_ParsePublicAddress(Qr *, u8 *);
-void GsQr_AppendChallengeResponse(Qr *, Buf *, u8 *, s32);
+void qr_add_packet_header(Buf *, s32, u8 *);
+void qr2_buffer_addA(Buf *, const char *);
+void qr2_buffer_add_int(Buf *, s32);
+void qr_build_query_reply(Qr *, Buf *, u32, u8 *, u32, u8 *, u32, u8 *);
+void handle_public_address(Qr *, u8 *);
+void compute_challenge_response(Qr *, Buf *, u8 *, s32);
 
 void GsNatNeg_FreeEntry(Ent *e);
-void GsQr_AppendQr1Keys(Qr *q, Buf *buf, s32 kind);
-void GsQr_BuildQr1Reply(Qr *q, Buf *buf);
-BOOL GsQr_IsDuplicateMessage(Qr *q, u32 v);
-void GsQr_HandleClientMessage(Qr *q, u8 *p, s32 n);
-void GsQr_HandleQuery(Qr *q, Buf *buf, u8 *p, s32 n);
+void qr_build_partial_old_query_reply(Qr *q, Buf *buf, s32 kind);
+void qr_process_old_query(Qr *q, Buf *buf);
+BOOL qr_got_recent_message(Qr *q, u32 v);
+void qr_process_client_message(Qr *q, u8 *p, s32 n);
+void qr_process_query(Qr *q, Buf *buf, u8 *p, s32 n);
 
 #define HTONS(x) ((u16)((((x) >> 8) & 0xff) | (((x) << 8) & 0xff00)))
 #define HTONL(x) (((x) >> 24 & 0xff) | ((x) >> 8 & 0xff00) | ((x) << 8 & 0xff0000) | ((x) << 24 & 0xff000000))
@@ -203,17 +203,17 @@ void GsQr_HandleQuery(Qr *q, Buf *buf, u8 *p, s32 n);
 }
 }
 
-extern "C" { u32 data_ov065_02291538; } //@
-extern "C" { void *sGsNatNegList; } //@
+extern "C" { u32 Matchup1Hostname; } //@
+extern "C" { void *negotiateList; } //@
 namespace N02287200 { extern "C" {
-Ent *GsNatNeg_FindByCookie(s32 x) {
+Ent *FindNegotiatorForCookie(s32 x) {
     s32 i;
     Ent *e;
-    if (sGsNatNegList == NULL) {
+    if (negotiateList == NULL) {
         return NULL;
     }
-    for (i = 0; i < GsArray_Count(sGsNatNegList); i++) {
-        e = (Ent *)GsArray_At(sGsNatNegList, i);
+    for (i = 0; i < ArrayLength(negotiateList); i++) {
+        e = (Ent *)ArrayNth(negotiateList, i);
         if (e->cookie == x) {
             return e;
         }
@@ -224,32 +224,32 @@ Ent *GsNatNeg_FindByCookie(s32 x) {
 
 namespace N02287200 { extern "C" {
 void GsNatNeg_FreeEntry(Ent *e) {
-    if (e->negSock != -1) {
-        GsSock_Close(e->negSock);
+    if (e->negotiateSock != -1) {
+        closesocket(e->negotiateSock);
     }
-    e->negSock = -1;
+    e->negotiateSock = -1;
     e->state = 4;
 }
 } }
 
-extern "C" { u32 sGsNatNegServer1; } //@
+extern "C" { u32 matchup1ip; } //@
 namespace N02287200 { extern "C" {
-void *GsNatNeg_Add(void) {
+void *AddNegotiator(void) {
     Ent z = {0};
-    if (sGsNatNegList == NULL) {
-        sGsNatNegList = GsArray_New(0x40, 4, (void *)GsNatNeg_FreeEntry);
+    if (negotiateList == NULL) {
+        negotiateList = ArrayNew(0x40, 4, (void *)GsNatNeg_FreeEntry);
     }
-    GsArray_Append(sGsNatNegList, &z);
-    return GsArray_At(sGsNatNegList, GsArray_Count(sGsNatNegList) - 1);
+    ArrayAppend(negotiateList, &z);
+    return ArrayNth(negotiateList, ArrayLength(negotiateList) - 1);
 }
 } }
 
 namespace N02287200 { extern "C" {
-void GsNatNeg_Remove(void *key) {
+void RemoveNegotiator(void *key) {
     s32 i;
-    for (i = 0; i < GsArray_Count(sGsNatNegList); i++) {
-        if (key == GsArray_At(sGsNatNegList, i)) {
-            GsArray_RemoveAt(sGsNatNegList, i);
+    for (i = 0; i < ArrayLength(negotiateList); i++) {
+        if (key == ArrayNth(negotiateList, i)) {
+            ArrayRemoveAt(negotiateList, i);
             return;
         }
     }
@@ -257,17 +257,17 @@ void GsNatNeg_Remove(void *key) {
 } }
 
 namespace N02287200 { extern "C" {
-void GsNatNeg_FreeAll(void) {
-    if (sGsNatNegList != NULL) {
-        GsArray_Free(sGsNatNegList);
-        sGsNatNegList = NULL;
+void NNFreeNegotiateList(void) {
+    if (negotiateList != NULL) {
+        ArrayFree(negotiateList);
+        negotiateList = NULL;
     }
 }
 } }
 
 namespace N02287200 { extern "C" {
-BOOL GsNatNeg_HasMagic(void *p) {
-    if (memcmp(p, data_ov065_0228e16c, 6) == 0) {
+BOOL CheckMagic(void *p) {
+    if (memcmp(p, NNMagicData, 6) == 0) {
         return TRUE;
     }
     return FALSE;
@@ -276,19 +276,19 @@ BOOL GsNatNeg_HasMagic(void *p) {
 
 extern "C" { u8 data_ov065_02291548[0x200]; } //@
 namespace N02287200 { extern "C" {
-s32 GsNatNeg_SendTo(s32 sock, u32 ip, s32 port, void *buf, s32 len) {
+s32 SendPacket__natneg(s32 sock, u32 ip, s32 port, void *buf, s32 len) {
     Unk_ov065_02287200_Sa sa;
     sa.family = 2;
     sa.port = HTONS(port);
     sa.addr = ip;
-    return GsSock_SendTo(sock, buf, len, 0, &sa, 8);
+    return sendto(sock, buf, len, 0, &sa, 8);
 }
 } }
 
 namespace N022868b0 { extern "C" {
-extern "C" u32 GsNatNeg_GetLocalIp() {
+extern "C" u32 GetLocalIP() {
     u32 r = 0;
-    Unk_ov065_022871ac_List *list = GsSock_GetLocalHost();
+    Unk_ov065_022871ac_List *list = getlocalhost();
     if (list == NULL) {
         return r;
     }
@@ -304,7 +304,7 @@ extern "C" u32 GsNatNeg_GetLocalIp() {
             continue;
         }
         r = *e;
-        if (GsSock_IsPrivateAddress(e) != 0) {
+        if (IsPrivateIP(e) != 0) {
             return r;
         }
     }
@@ -312,12 +312,12 @@ extern "C" u32 GsNatNeg_GetLocalIp() {
 }
 } }
 
-extern "C" u8 data_ov065_0228e16c[6] = {0xfd, 0xfc, 0x1e, 0x66, 0x6a, 0xb2}; //@
+extern "C" u8 NNMagicData[6] = {0xfd, 0xfc, 0x1e, 0x66, 0x6a, 0xb2}; //@
 namespace N022868b0 { extern "C" {
-extern "C" u32 GsNatNeg_GetLocalPort(s32 fd) {
+extern "C" u32 GetLocalPort(s32 fd) {
     Unk_ov065_02286c74_Sa sa;
     s32 len = 8;
-    s32 r = GsSock_GetSockName(fd, &sa, &len);
+    s32 r = getsockname(fd, &sa, &len);
     u32 port = 0;
     if (r != -1) {
         port = sa.port;
@@ -327,10 +327,10 @@ extern "C" u32 GsNatNeg_GetLocalPort(s32 fd) {
 } }
 
 namespace N022868b0 { extern "C" {
-extern "C" void GsNatNeg_SendInit(GsNatNegotiator *ctx) {
+extern "C" void SendInitPackets(_NATNegotiator *ctx) {
     GsNatNegInitPacket pkt;
     u8 *p = (u8 *)&pkt;
-    const u8 *m = (const u8 *)data_ov065_0228e16c;
+    const u8 *m = (const u8 *)NNMagicData;
     p[0] = m[0];
     p[1] = m[1];
     p[2] = m[2];
@@ -339,7 +339,7 @@ extern "C" void GsNatNeg_SendInit(GsNatNegotiator *ctx) {
     p[5] = m[5];
     p[6] = 2;
     p[7] = 0;
-    p[0xd] = ctx->clientIndex;
+    p[0xd] = ctx->clientindex;
     u32 c = ctx->cookie;
     *(u32 *)(p + 8) = SWAP32(c);
     u8 flag = 0;
@@ -347,41 +347,41 @@ extern "C" void GsNatNeg_SendInit(GsNatNegotiator *ctx) {
         flag = 1;
     }
     p[0xe] = flag;
-    u32 ip = SWAP32(GsNatNeg_GetLocalIp());
+    u32 ip = SWAP32(GetLocalIP());
     pkt.localIp0 = ip >> 24;
     pkt.localIp1 = ip >> 16;
     pkt.localIp2 = ip >> 8;
     pkt.localIp3 = ip;
     pkt.localPortHi = 0;
     pkt.localPortLo = 0;
-    STD_CopyString(pkt.name, sGsGameName);
-    s32 len = STD_GetStringLength(sGsGameName) + 0x16;
-    if (p[0xe] != 0 && ctx->initAcked[0] == 0) {
+    STD_CopyString(pkt.name, __GSIACGamename);
+    s32 len = STD_GetStringLength(__GSIACGamename) + 0x16;
+    if (p[0xe] != 0 && ctx->initAckRecv[0] == 0) {
         p[0xc] = 0;
-        GsNatNeg_SendTo(ctx->gameSock, sGsNatNegServer1, 0x6cfd, p, len);
+        SendPacket__natneg(ctx->gameSock, matchup1ip, 0x6cfd, p, len);
     }
-    if (ctx->initAcked[1] == 0) {
+    if (ctx->initAckRecv[1] == 0) {
         p[0xc] = 1;
-        GsNatNeg_SendTo(ctx->negSock, sGsNatNegServer1, 0x6cfd, p, len);
+        SendPacket__natneg(ctx->negotiateSock, matchup1ip, 0x6cfd, p, len);
     }
-    s32 port = SWAP16((s32)GsNatNeg_GetLocalPort(p[0xe] != 0 ? ctx->gameSock : ctx->negSock));
+    s32 port = SWAP16((s32)GetLocalPort(p[0xe] != 0 ? ctx->gameSock : ctx->negotiateSock));
     port = (u16)port;
     pkt.localPortHi = port >> 8;
     pkt.localPortLo = port;
-    if (ctx->initAcked[2] == 0) {
+    if (ctx->initAckRecv[2] == 0) {
         p[0xc] = 2;
-        GsNatNeg_SendTo(ctx->negSock, sGsNatNegServer2, 0x6cfd, p, len);
+        SendPacket__natneg(ctx->negotiateSock, matchup2ip, 0x6cfd, p, len);
     }
-    ctx->retryTime = GsUtil_GetTimeMs() + 0x1f4;
-    ctx->maxRetries = 0x1e;
+    ctx->retryTime = current_time() + 0x1f4;
+    ctx->maxRetryCount = 0x1e;
 }
 } }
 
 namespace N022868b0 { extern "C" {
-extern "C" void GsNatNeg_SendPeerPing(GsNatNegotiator *ctx) {
+extern "C" void SendPingPacket(_NATNegotiator *ctx) {
     GsNatNegPacket pkt;
     u8 *d = (u8 *)&pkt;
-    const u8 *m = (const u8 *)data_ov065_0228e16c;
+    const u8 *m = (const u8 *)NNMagicData;
     d[0] = m[0];
     d[1] = m[1];
     d[2] = m[2];
@@ -392,27 +392,27 @@ extern "C" void GsNatNeg_SendPeerPing(GsNatNegotiator *ctx) {
     pkt.type = 7;
     u32 c = ctx->cookie;
     pkt.cookie = SWAP32(c);
-    *(u32 *)&pkt.peerIp = ctx->peerIp;
-    u16 p = ctx->peerPort;
+    *(u32 *)&pkt.peerIp = ctx->guessedIP;
+    u16 p = ctx->guessedPort;
     *(u16 *)&pkt.peerPort = SWAP16(p);
-    pkt.gotPeerPing = ctx->gotPeerPing;
+    pkt.gotPeerPing = ctx->gotRemoteData;
     pkt.finished = ctx->state == 2 ? 0 : 1;
     s32 fd = ctx->gameSock;
     if (fd == -1) {
-        fd = ctx->negSock;
+        fd = ctx->negotiateSock;
     }
-    GsNatNeg_SendTo(fd, ctx->peerIp, ctx->peerPort, &pkt, 0x14);
-    ctx->retryTime = GsUtil_GetTimeMs() + 0x2bc;
-    ctx->maxRetries = 0xc;
-    if (ctx->gotPeerPing != 0) {
-        ctx->sentGotPeerPing = 1;
+    SendPacket__natneg(fd, ctx->guessedIP, ctx->guessedPort, &pkt, 0x14);
+    ctx->retryTime = current_time() + 0x2bc;
+    ctx->maxRetryCount = 0xc;
+    if (ctx->gotRemoteData != 0) {
+        ctx->sendGotRemoteData = 1;
     }
 }
 } }
 
 namespace N022868b0 { extern "C" {
-extern "C" u32 GsNatNeg_ResolveHost(const char *name) {
-    u32 r = GsSock_InetAddr(name);
+extern "C" u32 NameToIp(const char *name) {
+    u32 r = inet_addr(name);
     if (r == (u32)-1) {
         Unk_ov065_02286f04_Hostent *h = Sock_GetHostByName(name);
         if (h == NULL) {
@@ -425,25 +425,25 @@ extern "C" u32 GsNatNeg_ResolveHost(const char *name) {
 } }
 
 namespace N022868b0 { extern "C" {
-extern "C" u32 GsNatNeg_ResolveServer(const char *name, const char *s) {
+extern "C" u32 ResolveServer(const char *name, const char *s) {
     char buf[0x80];
     if (name == NULL) {
-        OS_SNPrintf(buf, 0x80, "%s.%s", sGsGameName, s);
+        OS_SNPrintf(buf, 0x80, "%s.%s", __GSIACGamename, s);
         name = buf;
     }
-    return GsNatNeg_ResolveHost(name);
+    return NameToIp(name);
 }
 } }
 
 namespace N022868b0 { extern "C" {
-extern "C" s32 GsNatNeg_ResolveServers() {
-    if (sGsNatNegServer1 == 0) {
-        sGsNatNegServer1 = GsNatNeg_ResolveServer((const char *)data_ov065_02291538, "natneg1.gs.nintendowifi.net");
+extern "C" s32 ResolveServers() {
+    if (matchup1ip == 0) {
+        matchup1ip = ResolveServer((const char *)Matchup1Hostname, "natneg1.gs.nintendowifi.net");
     }
-    if (sGsNatNegServer2 == 0) {
-        sGsNatNegServer2 = GsNatNeg_ResolveServer((const char *)data_ov065_02291534, "natneg2.gs.nintendowifi.net");
+    if (matchup2ip == 0) {
+        matchup2ip = ResolveServer((const char *)Matchup2Hostname, "natneg2.gs.nintendowifi.net");
     }
-    if (sGsNatNegServer1 == 0 || sGsNatNegServer2 == 0) {
+    if (matchup1ip == 0 || matchup2ip == 0) {
         return 0;
     }
     return 1;
@@ -451,130 +451,130 @@ extern "C" s32 GsNatNeg_ResolveServers() {
 } }
 
 namespace N022868b0 { extern "C" {
-extern "C" s32 GsNatNeg_Start(u32 a, u32 b, s32 c, s32 d, void *e, void *f) {
-    if (sGsAvailStatus != 1) {
+extern "C" s32 NNBeginNegotiationWithSocket(u32 a, u32 b, s32 c, s32 d, void *e, void *f) {
+    if (__GSIACResult != 1) {
         return 2;
     }
-    if (GsNatNeg_ResolveServers() == 0) {
+    if (ResolveServers() == 0) {
         return 3;
     }
-    GsNatNegotiator *ctx = (GsNatNegotiator *)GsNatNeg_Add();
+    _NATNegotiator *ctx = (_NATNegotiator *)AddNegotiator();
     if (ctx == NULL) {
         return 1;
     }
     ctx->gameSock = a;
-    ctx->clientIndex = c;
+    ctx->clientindex = c;
     ctx->cookie = b;
-    ctx->progressCallback = (GsNatNegProgressCallback)d;
-    ctx->completedCallback = (GsNatNegCompletedCallback)e;
-    ctx->userData = f;
-    ctx->negSock = GsSock_Socket(2, 2, 0);
+    ctx->progressCallback = (NegotiateProgressFunc)d;
+    ctx->completedCallback = (NegotiateCompletedFunc)e;
+    ctx->userdata = f;
+    ctx->negotiateSock = socket(2, 2, 0);
     ctx->retryCount = 0;
-    ctx->gotPeerPing = 0;
-    ctx->sentGotPeerPing = 0;
-    ctx->peerIp = 0;
-    ctx->peerPort = 0;
-    ctx->maxRetries = 0;
-    if (ctx->negSock == -1) {
-        GsNatNeg_Remove(ctx);
+    ctx->gotRemoteData = 0;
+    ctx->sendGotRemoteData = 0;
+    ctx->guessedIP = 0;
+    ctx->guessedPort = 0;
+    ctx->maxRetryCount = 0;
+    if (ctx->negotiateSock == -1) {
+        RemoveNegotiator(ctx);
         return 2;
     }
-    GsNatNeg_SendInit(ctx);
+    SendInitPackets(ctx);
     return 0;
 }
 } }
 
-extern "C" { u32 sGsNatNegServer2; } //@
+extern "C" { u32 matchup2ip; } //@
 namespace N022868b0 { extern "C" {
-extern "C" void GsNatNeg_Cancel(u32 cookie) {
-    GsNatNegotiator *ctx = GsNatNeg_FindByCookie(cookie);
+extern "C" void NNCancel(u32 cookie) {
+    _NATNegotiator *ctx = FindNegotiatorForCookie(cookie);
     if (ctx != NULL) {
-        if (ctx->negSock != -1) {
-            GsSock_Close(ctx->negSock);
+        if (ctx->negotiateSock != -1) {
+            closesocket(ctx->negotiateSock);
         }
-        ctx->negSock = -1;
+        ctx->negotiateSock = -1;
         ctx->state = 4;
     }
 }
 } }
 
 namespace N022868b0 { extern "C" {
-extern "C" void GsNatNeg_Process(GsNatNegotiator *ctx) {
+extern "C" void NegotiateThink(_NATNegotiator *ctx) {
     Unk_ov065_02286c74_Sa from;
     s32 len;
     Unk_ov065_02286c74_Sa out;
     len = 8;
     if (ctx->state == 4) {
-        GsNatNeg_Remove(ctx);
+        RemoveNegotiator(ctx);
         return;
     }
-    while (ctx->negSock != -1) {
-        if (GsSock_CanRead(ctx->negSock) == 0) {
+    while (ctx->negotiateSock != -1) {
+        if (CanReceiveOnSocket(ctx->negotiateSock) == 0) {
             break;
         }
-        s32 n = GsSock_RecvFrom(ctx->negSock, data_ov065_02291548, 0x200, 0, &from, &len);
+        s32 n = recvfrom(ctx->negotiateSock, data_ov065_02291548, 0x200, 0, &from, &len);
         if (n == -1) {
             break;
         }
-        GsNatNeg_HandlePacket(data_ov065_02291548, n, &from);
+        NNProcessData(data_ov065_02291548, n, &from);
         if (ctx->state == 4) {
             break;
         }
     }
     if (ctx->state == 0 || ctx->state == 2) {
-        if (GsUtil_GetTimeMs() > ctx->retryTime) {
+        if (current_time() > ctx->retryTime) {
             s32 a = ctx->retryCount;
-            if (a > ctx->maxRetries) {
-                ctx->completedCallback(2, -1, 0, ctx->userData);
-                GsNatNeg_Cancel(ctx->cookie);
+            if (a > ctx->maxRetryCount) {
+                ctx->completedCallback(2, -1, 0, ctx->userdata);
+                NNCancel(ctx->cookie);
             } else {
                 ctx->retryCount = a + 1;
                 if (ctx->state == 0) {
-                    GsNatNeg_SendInit(ctx);
+                    SendInitPackets(ctx);
                 } else {
-                    GsNatNeg_SendPeerPing(ctx);
+                    SendPingPacket(ctx);
                 }
             }
         }
     }
     if (ctx->state == 3) {
-        if (GsUtil_GetTimeMs() > ctx->retryTime) {
+        if (current_time() > ctx->retryTime) {
             if (ctx->gameSock == -1) {
                 out.family = 2;
-                u16 p = ctx->peerPort;
+                u16 p = ctx->guessedPort;
                 out.port = SWAP16(p);
-                out.addr = ctx->peerIp;
-                ctx->completedCallback(0, ctx->negSock, &out, ctx->userData);
-                ctx->negSock = -1;
+                out.addr = ctx->guessedIP;
+                ctx->completedCallback(0, ctx->negotiateSock, &out, ctx->userdata);
+                ctx->negotiateSock = -1;
             }
-            GsNatNeg_Cancel(ctx->cookie);
+            NNCancel(ctx->cookie);
         }
     }
     if (ctx->state == 1) {
-        if (GsUtil_GetTimeMs() > ctx->retryTime) {
-            ctx->completedCallback(1, -1, 0, ctx->userData);
-            GsNatNeg_Cancel(ctx->cookie);
+        if (current_time() > ctx->retryTime) {
+            ctx->completedCallback(1, -1, 0, ctx->userdata);
+            NNCancel(ctx->cookie);
         }
     }
 }
 } }
 
 namespace N022868b0 { extern "C" {
-extern "C" void GsNatNeg_ProcessAll() {
-    if (sGsNatNegList != NULL) {
+extern "C" void NNThink() {
+    if (negotiateList != NULL) {
         s32 i;
-        for (i = GsArray_Count(sGsNatNegList) - 1; i >= 0; i--) {
-            GsNatNeg_Process((GsNatNegotiator *)GsArray_At(sGsNatNegList, i));
+        for (i = ArrayLength(negotiateList) - 1; i >= 0; i--) {
+            NegotiateThink((_NATNegotiator *)ArrayNth(negotiateList, i));
         }
     }
 }
 } }
 
 namespace N022868b0 { extern "C" {
-extern "C" void GsNatNeg_SendConnectAck(GsNatNegotiator *ctx, Unk_ov065_02286c74_Sa *sa) {
+extern "C" void SendConnectAck(_NATNegotiator *ctx, Unk_ov065_02286c74_Sa *sa) {
     GsNatNegPacket pkt;
     u8 *d = (u8 *)&pkt;
-    const u8 *m = data_ov065_0228e16c;
+    const u8 *m = NNMagicData;
     d[0] = m[0];
     d[1] = m[1];
     d[2] = m[2];
@@ -583,19 +583,19 @@ extern "C" void GsNatNeg_SendConnectAck(GsNatNegotiator *ctx, Unk_ov065_02286c74
     d[5] = m[5];
     pkt.version = 2;
     pkt.type = 6;
-    pkt.clientIndex = ctx->clientIndex;
+    pkt.clientIndex = ctx->clientindex;
     u32 c = ctx->cookie;
     pkt.cookie = SWAP32(c);
     u16 p = sa->port;
-    GsNatNeg_SendTo(ctx->negSock, sa->addr, (u16)SWAP16(p), d, 0x15);
+    SendPacket__natneg(ctx->negotiateSock, sa->addr, (u16)SWAP16(p), d, 0x15);
 }
 } }
 
-extern "C" { u32 data_ov065_02291534; } //@
+extern "C" { u32 Matchup2Hostname; } //@
 namespace N022868b0 { extern "C" {
-extern "C" void GsNatNeg_HandleConnect(GsNatNegotiator *ctx, u8 *pkt, Unk_ov065_02286c74_Sa *sa) {
+extern "C" void ProcessConnectPacket(_NATNegotiator *ctx, u8 *pkt, Unk_ov065_02286c74_Sa *sa) {
     if (pkt[0x13] == 0) {
-        GsNatNeg_SendConnectAck(ctx, sa);
+        SendConnectAck(ctx, sa);
     }
     if (ctx->state < 2) {
         u32 r = pkt[0x13];
@@ -606,60 +606,60 @@ extern "C" void GsNatNeg_HandleConnect(GsNatNegotiator *ctx, u8 *pkt, Unk_ov065_
             } else if (r == 2) {
                 code = 2;
             }
-            ctx->completedCallback(code, -1, 0, ctx->userData);
-            GsNatNeg_Cancel(ctx->cookie);
+            ctx->completedCallback(code, -1, 0, ctx->userdata);
+            NNCancel(ctx->cookie);
         } else {
-            ctx->peerIp = *(u32 *)&pkt[0xc];
+            ctx->guessedIP = *(u32 *)&pkt[0xc];
             u16 p = *(u16 *)&pkt[0x10];
-            ctx->peerPort = SWAP16(p);
+            ctx->guessedPort = SWAP16(p);
             ctx->retryCount = 0;
             ctx->state = 2;
-            ctx->progressCallback(ctx->state, ctx->userData);
-            GsNatNeg_SendPeerPing(ctx);
+            ctx->progressCallback(ctx->state, ctx->userdata);
+            SendPingPacket(ctx);
         }
     }
 }
 } }
 
 namespace N022868b0 { extern "C" {
-extern "C" void GsNatNeg_HandlePeerPing(GsNatNegotiator *ctx, u8 *pkt, Unk_ov065_02286c74_Sa *sa) {
+extern "C" void ProcessPingPacket(_NATNegotiator *ctx, u8 *pkt, Unk_ov065_02286c74_Sa *sa) {
     if (ctx->state >= 2) {
-        ctx->peerIp = sa->addr;
+        ctx->guessedIP = sa->addr;
         u16 p = sa->port;
-        ctx->peerPort = SWAP16(p);
-        ctx->gotPeerPing = 1;
+        ctx->guessedPort = SWAP16(p);
+        ctx->gotRemoteData = 1;
         if (pkt[0x12] == 0) {
-            GsNatNeg_SendPeerPing(ctx);
+            SendPingPacket(ctx);
             return;
         }
         if (ctx->state == 2) {
-            if (ctx->sentGotPeerPing == 0) {
-                GsNatNeg_SendPeerPing(ctx);
+            if (ctx->sendGotRemoteData == 0) {
+                SendPingPacket(ctx);
             }
             ctx->state = 3;
-            ctx->retryTime = GsUtil_GetTimeMs() + 5000;
+            ctx->retryTime = current_time() + 5000;
             if (ctx->gameSock != -1) {
-                ctx->completedCallback(0, ctx->gameSock, sa, ctx->userData);
+                ctx->completedCallback(0, ctx->gameSock, sa, ctx->userdata);
             }
         } else if (pkt[0x13] == 0) {
-            GsNatNeg_SendPeerPing(ctx);
+            SendPingPacket(ctx);
         }
     }
 }
 } }
 
 namespace N022868b0 { extern "C" {
-extern "C" void GsNatNeg_HandleServerReply(GsNatNegotiator *ctx, u8 *pkt, Unk_ov065_02286c74_Sa *sa) {
+extern "C" void ProcessInitPacket(_NATNegotiator *ctx, u8 *pkt, Unk_ov065_02286c74_Sa *sa) {
     switch (pkt[7]) {
     case 1: {
         u32 i = pkt[0xc];
         if (i <= 2) {
-            ctx->initAcked[i] = 1;
-            if (ctx->state == 0 && ctx->initAcked[1] != 0 && ctx->initAcked[2] != 0) {
-                if (ctx->gameSock == -1 || ctx->initAcked[0] != 0) {
+            ctx->initAckRecv[i] = 1;
+            if (ctx->state == 0 && ctx->initAckRecv[1] != 0 && ctx->initAckRecv[2] != 0) {
+                if (ctx->gameSock == -1 || ctx->initAckRecv[0] != 0) {
                     ctx->state = 1;
-                    ctx->retryTime = GsUtil_GetTimeMs() + 10000;
-                    ctx->progressCallback(ctx->state, ctx->userData);
+                    ctx->retryTime = current_time() + 10000;
+                    ctx->progressCallback(ctx->state, ctx->userdata);
                 }
             }
         }
@@ -668,7 +668,7 @@ extern "C" void GsNatNeg_HandleServerReply(GsNatNegotiator *ctx, u8 *pkt, Unk_ov
     case 2: {
         pkt[7] = 3;
         u16 p = sa->port;
-        GsNatNeg_SendTo(ctx->negSock, sa->addr, (u16)SWAP16(p), pkt, 0x15);
+        SendPacket__natneg(ctx->negotiateSock, sa->addr, (u16)SWAP16(p), pkt, 0x15);
         break;
     }
     }
@@ -676,10 +676,10 @@ extern "C" void GsNatNeg_HandleServerReply(GsNatNegotiator *ctx, u8 *pkt, Unk_ov
 } }
 
 namespace N022868b0 { extern "C" {
-extern "C" void GsNatNeg_HandlePacket(u8 *pkt, s32 len, Unk_ov065_02286c74_Sa *sa) {
+extern "C" void NNProcessData(u8 *pkt, s32 len, Unk_ov065_02286c74_Sa *sa) {
     GsNatNegConnectPktBuf h;
     GsNatNegReplyPktBuf g;
-    if (GsNatNeg_HasMagic() == 0) {
+    if (CheckMagic() == 0) {
         return;
     }
     u32 type = pkt[7];
@@ -689,14 +689,14 @@ extern "C" void GsNatNeg_HandlePacket(u8 *pkt, s32 len, Unk_ov065_02286c74_Sa *s
         }
         h = *(GsNatNegConnectPktBuf *)pkt;
         u32 c = *(u32 *)&h.b[8];
-        GsNatNegotiator *ctx = GsNatNeg_FindByCookie(SWAP32(c));
+        _NATNegotiator *ctx = FindNegotiatorForCookie(SWAP32(c));
         if (ctx == NULL) {
             return;
         }
         if (type == 5) {
-            GsNatNeg_HandleConnect(ctx, h.b, sa);
+            ProcessConnectPacket(ctx, h.b, sa);
         } else {
-            GsNatNeg_HandlePeerPing(ctx, h.b, sa);
+            ProcessPingPacket(ctx, h.b, sa);
         }
     } else {
         if (len < 0x15) {
@@ -704,11 +704,11 @@ extern "C" void GsNatNeg_HandlePacket(u8 *pkt, s32 len, Unk_ov065_02286c74_Sa *s
         }
         g = *(GsNatNegReplyPktBuf *)pkt;
         u32 c = *(u32 *)&g.b[8];
-        GsNatNegotiator *ctx = GsNatNeg_FindByCookie(SWAP32(c));
+        _NATNegotiator *ctx = FindNegotiatorForCookie(SWAP32(c));
         if (ctx == NULL) {
             return;
         }
-        GsNatNeg_HandleServerReply(ctx, g.b, sa);
+        ProcessInitPacket(ctx, g.b, sa);
     }
 }
 } }

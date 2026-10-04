@@ -9,32 +9,32 @@ typedef long long s64;
 
 
 extern "C" {
-extern const char data_ov065_0228b394[4] = "[]_";
-extern const char data_ov065_0228b398[4] = "-_=";
-extern const char data_ov065_0228b39c[4] = "+/=";
-s32 sGsRandSeed = 1;
-s32 sGsSockLastError;
+extern const char alternateEncoding[4] = "[]_";
+extern const char urlSafeEncodeing[4] = "-_=";
+extern const char defaultEncoding[4] = "+/=";
+s32 randomnum = 1;
+s32 GSINitroErrno;
 u8 data_ov065_0229107c[4];
-GsHostEnt sGsLocalHostEnt;
+GsHostEnt localhost;
 GsHostAddr data_ov065_02291094;
 GsHostAddrList data_ov065_022910a8;
 }
 
 namespace FA {
 extern "C" {
-extern const char data_ov065_0228b394[];
-extern const char data_ov065_0228b398[];
-extern const char data_ov065_0228b39c[];
-extern s32 sGsRandSeed;
-extern s32 sGsSockLastError;
+extern const char alternateEncoding[];
+extern const char urlSafeEncodeing[];
+extern const char defaultEncoding[];
+extern s32 randomnum;
+extern s32 GSINitroErrno;
 s32 Sock_InetAtoN(s32, u32 *);
 s32 Sock_GetSockName(s32, void *);
-s32 GsSock_CheckResult(s32, s32);
+s32 CheckRcode(s32, s32);
 u64 OS_GetTick(void);
-s32 GsUtil_Rand(void);
-u32 GsUtil_ParkMillerNext(u32);
-void GsUtil_Base64EncodeBlock(char *, char *, s32);
-s32 GsSock_InetAddr(s32);
+s32 longrand(void);
+u32 nextlongrand(u32);
+void TripToQuart(char *, char *, s32);
+s32 inet_addr(s32);
 s32 OS_SPrintf(char *, char *, s32);
 }
 }
@@ -50,10 +50,10 @@ namespace FB {
 
 
 extern "C" {
-extern s32 sGsSockLastError;
+extern s32 GSINitroErrno;
 extern GsHostAddr data_ov065_02291094;
 extern u8 data_0213a410[];
-extern GsHostEnt sGsLocalHostEnt;
+extern GsHostEnt localhost;
 extern GsHostAddrList data_ov065_022910a8;
 extern u8 data_ov065_0229107c[];
 void MI_CpuFill8(void *p, s32 v, s32 n);
@@ -72,7 +72,7 @@ s32 Sock_Poll(GsPollFd *arr, u32 n, s64 timeout);
 s32 Sock_Fcntl(s32 a, s32 cmd, u32 flags);
 u32 SockCore_GetHostIp();
 s32 IpAddr_StoreBe32(u32 v, u32 *p);
-u32 GsSock_GetLastError(s32 s);
+u32 GOAGetLastError(s32 s);
 s32 GsHttp_SocketSend(GsHttpConnection *o, char *buf, s32 n);
 u32 STD_GetStringLength(const char *s);
 char *STD_CopyString(char *d, const char *s);
@@ -85,10 +85,10 @@ void memcpy(void *d, const void *s, u32 n);
 void memset(void *d, s32 v, u32 n);
 s32 OS_SPrintf(char *buf, const char *fmt, ...);
 
-s32 GsSock_CheckResult(s32 a, s32 b);
-s32 GsSock_SetSockOpt(s32 a, s32 b, s32 c, s32 d, s32 e);
-s32 GsSock_GetSockOpt(s32 a, s32 b, s32 c, void *val, s32 *len);
-s32 GsSock_Select(s32 sock, s32 *rd, s32 *wr, s32 *ex);
+s32 CheckRcode(s32 a, s32 b);
+s32 setsockopt(s32 a, s32 b, s32 c, s32 d, s32 e);
+s32 getsockopt(s32 a, s32 b, s32 c, void *val, s32 *len);
+s32 GSISocketSelect(s32 sock, s32 *rd, s32 *wr, s32 *ex);
 s32 GsHttpBuf_Append(GsHttpBuffer *o, char *s, s32 len);
 s32 GsHttpBuf_Grow(GsHttpBuffer *o, s32 n);
 }
@@ -154,11 +154,11 @@ s32 GsHttp_FlushSendBuffer(GsHttpConnection *o) {
     s32 w, e;
     s32 r;
     do {
-        s32 t = GsSock_Select(o->socketHandle, (s32 *)z, &w, &e);
+        s32 t = GSISocketSelect(o->socketHandle, (s32 *)z, &w, &e);
         if (t == ~z || e != 0) {
             o->completed = 1;
             o->result = 5;
-            o->socketError = GsSock_GetLastError(o->socketHandle);
+            o->socketError = GOAGetLastError(o->socketHandle);
             return FALSE;
         }
         if (w == 0) {
@@ -201,7 +201,7 @@ s32 GsHttpBuf_Read(GsHttpBuffer *o, char *dst, s32 *len) {
 
 namespace FB {
 extern "C" {
-u32 GsUtil_GetTimeMs() {
+u32 current_time() {
     return (OS_GetTick() << 6) / 0x82ea;
 }
 }
@@ -209,7 +209,7 @@ u32 GsUtil_GetTimeMs() {
 
 namespace FB {
 extern "C" {
-void GsUtil_Sleep(s32 ms) {
+void msleep(s32 ms) {
     OS_Sleep(ms);
 }
 }
@@ -217,21 +217,21 @@ void GsUtil_Sleep(s32 ms) {
 
 namespace FB {
 extern "C" {
-void GsSock_StartupStub() {
+void SocketStartUp() {
 }
 }
 }
 
 namespace FB {
 extern "C" {
-void GsSock_CleanupStub() {
+void SocketShutDown() {
 }
 }
 }
 
 namespace FB {
 extern "C" {
-char *GsUtil_StrDup(const char *s) {
+char *goastrdup(const char *s) {
     char *r;
     if (s == 0) {
         return 0;
@@ -247,7 +247,7 @@ char *GsUtil_StrDup(const char *s) {
 
 namespace FB {
 extern "C" {
-char *GsUtil_StrToLower(char *s) {
+char *_strlwr(char *s) {
     s32 c;
     char *r = s;
     c = *s;
@@ -268,7 +268,7 @@ char *GsUtil_StrToLower(char *s) {
 
 namespace FB {
 extern "C" {
-s32 GsSock_SetBlocking(s32 sock, s32 flag) {
+s32 SetSockBlocking(s32 sock, s32 flag) {
     u32 v = Sock_Fcntl(sock, 3, 0);
     if (flag) {
         v = v & ~4;
@@ -285,8 +285,8 @@ s32 GsSock_SetBlocking(s32 sock, s32 flag) {
 
 namespace FB {
 extern "C" {
-s32 GsSock_SetRecvBufSize(s32 sock, s32 val) {
-    s32 t = GsSock_SetSockOpt(sock, 0xffff, 0x1002, (s32)&val, 4);
+s32 SetReceiveBufferSize(s32 sock, s32 val) {
+    s32 t = setsockopt(sock, 0xffff, 0x1002, (s32)&val, 4);
     BOOL r = FALSE;
     if (t != -1) {
         r = TRUE;
@@ -298,8 +298,8 @@ s32 GsSock_SetRecvBufSize(s32 sock, s32 val) {
 
 namespace FB {
 extern "C" {
-s32 GsSock_SetSendBufSize(s32 sock, s32 val) {
-    s32 t = GsSock_SetSockOpt(sock, 0xffff, 0x1001, (s32)&val, 4);
+s32 SetSendBufferSize(s32 sock, s32 val) {
+    s32 t = setsockopt(sock, 0xffff, 0x1001, (s32)&val, 4);
     BOOL r = FALSE;
     if (t != -1) {
         r = TRUE;
@@ -311,10 +311,10 @@ s32 GsSock_SetSendBufSize(s32 sock, s32 val) {
 
 namespace FB {
 extern "C" {
-s32 GsSock_GetRecvBufSize(s32 sock) {
+s32 GetReceiveBufferSize(s32 sock) {
     s32 v;
     s32 len = 4;
-    s32 r = GsSock_GetSockOpt(sock, 0xffff, 0x1002, &v, &len);
+    s32 r = getsockopt(sock, 0xffff, 0x1002, &v, &len);
     s32 m = -1;
     if (r != m) {
         m = v;
@@ -326,10 +326,10 @@ s32 GsSock_GetRecvBufSize(s32 sock) {
 
 namespace FB {
 extern "C" {
-s32 GsSock_GetSendBufSize(s32 sock) {
+s32 GetSendBufferSize(s32 sock) {
     s32 v;
     s32 len = 4;
-    s32 r = GsSock_GetSockOpt(sock, 0xffff, 0x1001, &v, &len);
+    s32 r = getsockopt(sock, 0xffff, 0x1001, &v, &len);
     s32 m = -1;
     if (r != m) {
         m = v;
@@ -341,7 +341,7 @@ s32 GsSock_GetSendBufSize(s32 sock) {
 
 namespace FB {
 extern "C" {
-s32 GsSock_Select(s32 sock, s32 *rd, s32 *wr, s32 *ex) {
+s32 GSISocketSelect(s32 sock, s32 *rd, s32 *wr, s32 *ex) {
     GsPollFd pfd;
     s32 r;
     pfd.fd = sock;
@@ -385,9 +385,9 @@ s32 GsSock_Select(s32 sock, s32 *rd, s32 *wr, s32 *ex) {
 
 namespace FB {
 extern "C" {
-s32 GsSock_CanRead(s32 a) {
+s32 CanReceiveOnSocket(s32 a) {
     s32 out = 0;
-    if (GsSock_Select(a, &out, 0, 0) == 1) {
+    if (GSISocketSelect(a, &out, 0, 0) == 1) {
         return out;
     }
     return 0;
@@ -397,9 +397,9 @@ s32 GsSock_CanRead(s32 a) {
 
 namespace FB {
 extern "C" {
-s32 GsSock_CanWrite(s32 a) {
+s32 CanSendOnSocket(s32 a) {
     s32 out = 0;
-    if (GsSock_Select(a, 0, &out, 0) == 1) {
+    if (GSISocketSelect(a, 0, &out, 0) == 1) {
         return out;
     }
     return 0;
@@ -409,21 +409,21 @@ s32 GsSock_CanWrite(s32 a) {
 
 namespace FB {
 extern "C" {
-s32 GsSock_GetLocalHost() {
-    sGsLocalHostEnt.hostName = (u32)"localhost";
-    sGsLocalHostEnt.aliases = (u32)data_ov065_0229107c;
-    sGsLocalHostEnt.addrType = 2;
-    sGsLocalHostEnt.addrLength = 0;
-    sGsLocalHostEnt.addrList = (u32)&data_ov065_022910a8;
+s32 getlocalhost() {
+    localhost.hostName = (u32)"localhost";
+    localhost.aliases = (u32)data_ov065_0229107c;
+    localhost.addrType = 2;
+    localhost.addrLength = 0;
+    localhost.addrList = (u32)&data_ov065_022910a8;
     data_ov065_02291094.hostIp = 0;
     IpAddr_StoreBe32(SockCore_GetHostIp(), (u32 *)&data_ov065_02291094);
     if (data_ov065_02291094.hostIp == 0) {
         return 0;
     }
     data_ov065_022910a8.firstAddr = (u32 *)&data_ov065_02291094;
-    sGsLocalHostEnt.addrLength = 4;
+    localhost.addrLength = 4;
     data_ov065_022910a8.listEnd = 0;
-    return (s32)&sGsLocalHostEnt;
+    return (s32)&localhost;
 }
 }
 }
@@ -434,7 +434,7 @@ static inline u32 Unk_ov065_02278dfc_Ntohl(u32 x) {
     return ((x << 24) & 0xff000000) | (((x << 8) & 0xff0000) | (((x >> 24) & 0xff) | ((x >> 8) & 0xff00)));
 }
 
-s32 GsSock_IsPrivateAddress(u32 *p) {
+s32 IsPrivateIP(u32 *p) {
     u32 v = Unk_ov065_02278dfc_Ntohl(*p);
     u32 a = (v >> 24) & 0xff;
     s32 b = (v >> 16) & 0xff;
@@ -454,11 +454,11 @@ s32 GsSock_IsPrivateAddress(u32 *p) {
 
 namespace FB {
 extern "C" {
-s32 GsSock_CheckResult(s32 a, s32 b) {
+s32 CheckRcode(s32 a, s32 b) {
     if (a >= 0) {
         return a;
     }
-    sGsSockLastError = a;
+    GSINitroErrno = a;
     return b;
 }
 }
@@ -466,143 +466,143 @@ s32 GsSock_CheckResult(s32 a, s32 b) {
 
 namespace FB {
 extern "C" {
-s32 GsSock_Socket(s32 a, s32 b) {
-    return GsSock_CheckResult(Sock_Create(a, b), -1);
+s32 socket(s32 a, s32 b) {
+    return CheckRcode(Sock_Create(a, b), -1);
 }
 }
 }
 
 namespace FB {
 extern "C" {
-s32 GsSock_Close(s32 a, s32 b, s32 c) {
-    return GsSock_CheckResult(Sock_Close(a, b, c), -1);
+s32 closesocket(s32 a, s32 b, s32 c) {
+    return CheckRcode(Sock_Close(a, b, c), -1);
 }
 }
 }
 
 namespace FB {
 extern "C" {
-s32 GsSock_Shutdown(s32 a, s32 b, s32 c) {
-    return GsSock_CheckResult(Sock_Shutdown(a, b, c), -1);
+s32 shutdown(s32 a, s32 b, s32 c) {
+    return CheckRcode(Sock_Shutdown(a, b, c), -1);
 }
 }
 }
 
 namespace FB {
 extern "C" {
-s32 GsSock_Bind(s32 a, GsSockAddr *src, u32 len) {
+s32 bind(s32 a, GsSockAddr *src, u32 len) {
     GsSockAddr l;
     if (*(u16 *)&src->b[2] == 0) {
         return 0;
     }
     l = *src;
     l.b[0] = len;
-    return GsSock_CheckResult(Sock_Bind(a, &l), -1);
+    return CheckRcode(Sock_Bind(a, &l), -1);
 }
 }
 }
 
 namespace FB {
 extern "C" {
-s32 GsSock_Connect(s32 a, GsSockAddr *src, u32 len) {
+s32 connect(s32 a, GsSockAddr *src, u32 len) {
     GsSockAddr l;
     l = *src;
     l.b[0] = len;
-    return GsSock_CheckResult(Sock_Connect(a, &l), -1);
+    return CheckRcode(Sock_Connect(a, &l), -1);
 }
 }
 }
 
 namespace FB {
 extern "C" {
-s32 GsSock_Listen(s32 a, s32 b, s32 c) {
-    return GsSock_CheckResult(Sock_Listen(a, b, c), -1);
+s32 listen(s32 a, s32 b, s32 c) {
+    return CheckRcode(Sock_Listen(a, b, c), -1);
 }
 }
 }
 
 namespace FB {
 extern "C" {
-s32 GsSock_Accept(s32 a, u8 *sa, s32 *len) {
+s32 accept(s32 a, u8 *sa, s32 *len) {
     s32 r;
     *sa = *len;
     r = Sock_Accept(a, sa);
     *len = *sa;
-    return GsSock_CheckResult(r, -1);
+    return CheckRcode(r, -1);
 }
 }
 }
 
 namespace FB {
 extern "C" {
-s32 GsSock_Recv(s32 a, s32 b, s32 c, u32 d) {
-    return GsSock_CheckResult(Sock_Recv(a, b, c, d), -1);
+s32 recv(s32 a, s32 b, s32 c, u32 d) {
+    return CheckRcode(Sock_Recv(a, b, c, d), -1);
 }
 }
 }
 
 namespace FB {
 extern "C" {
-s32 GsSock_RecvFrom(s32 a, s32 b, s32 c, u32 d, u8 *sa, s32 *len) {
+s32 recvfrom(s32 a, s32 b, s32 c, u32 d, u8 *sa, s32 *len) {
     s32 r;
     *sa = *len;
     r = Sock_RecvFrom(a, b, c, d, sa);
     *len = *sa;
-    return GsSock_CheckResult(r, -1);
+    return CheckRcode(r, -1);
 }
 }
 }
 
 namespace FB {
 extern "C" {
-s32 GsSock_Send(s32 a, s32 b, s32 c, u32 d) {
-    return GsSock_CheckResult(Sock_Send(a, b, c, d), -1);
+s32 send(s32 a, s32 b, s32 c, u32 d) {
+    return CheckRcode(Sock_Send(a, b, c, d), -1);
 }
 }
 }
 
 namespace FB {
 extern "C" {
-s32 GsSock_SendTo(s32 a, s32 b, s32 c, u32 d, GsSockAddr *addr, u32 len) {
+s32 sendto(s32 a, s32 b, s32 c, u32 d, GsSockAddr *addr, u32 len) {
     GsSockAddr l;
     *(len ? &l : &l) = *addr;
     l.b[0] = len;
-    return GsSock_CheckResult(Sock_SendTo(a, b, c, d, &l), -1);
+    return CheckRcode(Sock_SendTo(a, b, c, d, &l), -1);
 }
 }
 }
 
 namespace FB {
 extern "C" {
-s32 GsSock_GetSockOpt(s32 a, s32 b, s32 c, void *val, s32 *len) {
+s32 getsockopt(s32 a, s32 b, s32 c, void *val, s32 *len) {
     MI_CpuFill8(val, 0, *len);
-    return GsSock_CheckResult(0, -1);
+    return CheckRcode(0, -1);
 }
 }
 }
 
 namespace FB {
 extern "C" {
-s32 GsSock_SetSockOpt(s32 a, s32 b, s32 c, s32 d, s32 e) {
-    return GsSock_CheckResult(0, -1);
+s32 setsockopt(s32 a, s32 b, s32 c, s32 d, s32 e) {
+    return CheckRcode(0, -1);
 }
 }
 }
 
 namespace FA {
 extern "C" {
-s32 GsSock_GetSockName(s32 a, u8 *p1, u32 *p2) {
+s32 getsockname(s32 a, u8 *p1, u32 *p2) {
     *p1 = *p2;
     a = Sock_GetSockName(a, p1);
     *p2 = *p1;
-    return GsSock_CheckResult(a, -1);
+    return CheckRcode(a, -1);
 }
 }
 }
 
 namespace FA {
 extern "C" {
-s32 GsSock_InetAddr(s32 a) {
+s32 inet_addr(s32 a) {
     u32 v;
     if (Sock_InetAtoN(a, &v) == 0) {
         return -1;
@@ -614,15 +614,15 @@ s32 GsSock_InetAddr(s32 a) {
 
 namespace FA {
 extern "C" {
-u32 GsSock_GetLastError(void) {
-    return sGsSockLastError;
+u32 GOAGetLastError(void) {
+    return GSINitroErrno;
 }
 }
 }
 
 namespace FA {
 extern "C" {
-void GsUtil_GetTimeSeconds(u32 *out) {
+void time(u32 *out) {
     u64 t = OS_GetTick();
     u64 v = (t << 6) / 0x1ff6210;
     if (out != NULL) {
@@ -634,7 +634,7 @@ void GsUtil_GetTimeSeconds(u32 *out) {
 
 namespace FA {
 extern "C" {
-u32 GsUtil_ParkMillerNext(u32 x) {
+u32 nextlongrand(u32 x) {
     u32 hi;
     u32 r = (x & 0xffff) * 0x41a7;
     hi = (x >> 16) * 0x41a7;
@@ -653,9 +653,9 @@ u32 GsUtil_ParkMillerNext(u32 x) {
 
 namespace FA {
 extern "C" {
-s32 GsUtil_Rand(void) {
-    s32 r = GsUtil_ParkMillerNext(sGsRandSeed);
-    sGsRandSeed = r;
+s32 longrand(void) {
+    s32 r = nextlongrand(randomnum);
+    randomnum = r;
     return r;
 }
 }
@@ -663,25 +663,25 @@ s32 GsUtil_Rand(void) {
 
 namespace FA {
 extern "C" {
-void GsUtil_SeedRand(u32 seed) {
+void Util_RandSeed(u32 seed) {
     if (seed != 0) {
         seed &= 0x7fffffff;
     } else {
         seed = 1;
     }
-    sGsRandSeed = seed;
+    randomnum = seed;
 }
 }
 }
 
 namespace FA {
 extern "C" {
-s32 GsUtil_RandRange(s32 a, s32 b) {
+s32 Util_RandInt(s32 a, s32 b) {
     s32 d = b - a;
     if (d == 0) {
         return a;
     }
-    s32 q = GsUtil_Rand();
+    s32 q = longrand();
     s32 m = q % d;
     return m + a;
 }
@@ -690,7 +690,7 @@ s32 GsUtil_RandRange(s32 a, s32 b) {
 
 namespace FA {
 extern "C" {
-void GsUtil_Base64EncodeBlock(char *in, char *out, s32 n) {
+void TripToQuart(char *in, char *out, s32 n) {
     u8 buf[3];
     s32 i = 0;
     u8 *p;
@@ -720,7 +720,7 @@ void GsUtil_Base64EncodeBlock(char *in, char *out, s32 n) {
 
 namespace FA {
 extern "C" {
-void GsUtil_Base64Encode(char *in, char *out, s32 n, s32 mode) {
+void B64Encode(char *in, char *out, s32 n, s32 mode) {
     char *start = out;
     s32 rem = n;
     const char *tbl;
@@ -728,17 +728,17 @@ void GsUtil_Base64Encode(char *in, char *out, s32 n, s32 mode) {
     s32 m;
     switch (mode) {
     case 1:
-        tbl = data_ov065_0228b394;
+        tbl = alternateEncoding;
         break;
     case 2:
-        tbl = data_ov065_0228b398;
+        tbl = urlSafeEncodeing;
         break;
     default:
-        tbl = data_ov065_0228b39c;
+        tbl = defaultEncoding;
         break;
     }
     while (rem > 0) {
-        GsUtil_Base64EncodeBlock(in, out, n >= 3 ? 3 : n);
+        TripToQuart(in, out, n >= 3 ? 3 : n);
         out += 4;
         in += 3;
         rem -= 3;

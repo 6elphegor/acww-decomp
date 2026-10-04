@@ -66,12 +66,12 @@ void GsGp_DebugLog(void *, const char *, ...);
 void *GsUtil_Realloc(void *, s32);
 void *GsUtil_Alloc(s32);
 s32 GsUtil_Free(void *);
-s32 GsSock_Recv(s32, void *, s32, s32);
-s32 GsSock_Send(s32, void *, s32, s32);
-s32 GsSock_GetLastError(s32);
-s32 GsArray_Count(s32);
-s32 GsSock_Shutdown(s32, s32);
-s32 GsSock_Close(s32);
+s32 recv(s32, void *, s32, s32);
+s32 send(s32, void *, s32, s32);
+s32 GOAGetLastError(s32);
+s32 ArrayLength(s32);
+s32 shutdown(s32, s32);
+s32 closesocket(s32);
 s32 GsGp_RemoveOperation(void *, void *);
 s32 GsGpPeer_Free(void *, void *);
 s32 GsGpProfile_FindIf(void *, s32, s32);
@@ -110,7 +110,7 @@ void GsGp_CallErrorCallback(Unk_ov065_0227d8e0_Handle *, s32, s32);
 }
 
 namespace Nb {
-extern "C" char sGsGameName[];
+extern "C" char __GSIACGamename[];
 // ov065_051: DWC/GameSpy-like response parser (0x0227e350..0x0227eb60)
 
 
@@ -159,10 +159,10 @@ s32 memcmp(const void *, const void *, s32);
 void *memset(void *, s32, s32);
 void GsUtil_Free(void *);
 void *GsUtil_Alloc(s32);
-void GsUtil_SeedRand(u32);
-s32 GsUtil_RandRange(s32, s32);
-void GsUtil_Md5Hex(char *, s32, char *);
-void GsUtil_Base64Encode(char *, char *, s32, s32);
+void Util_RandSeed(u32);
+s32 Util_RandInt(s32, s32);
+void MD5Digest(char *, s32, char *);
+void B64Encode(char *, char *, s32, s32);
 s32 GsGpBuf_AppendString(Ctx0227 **, char *, const char *);
 s32 GsGpBuf_AppendInt(Ctx0227 **, char *, s32);
 void GsGp_CallErrorCallback(Ctx0227 **, s32, s32);
@@ -248,21 +248,21 @@ void GsGp_SetErrorString(Ctx0227 **, const char *);
 void GsGp_SetError(Ctx0227 **, s32, const char *);
 void GsGp_CallErrorCallback(Ctx0227 **, s32, s32);
 void GsUtil_StrCopyN(char *, const char *, s32);
-void GsUtil_StrToLower(char *);
+void _strlwr(char *);
 void *GsUtil_Alloc(s32);
 void GsUtil_Free(void *);
-char *GsUtil_StrDup(const char *);
+char *goastrdup(const char *);
 s32 GsGp_AddOperation(Ctx0227 **, s32, void *, GsGpOperation **, s32, s32, s32);
 void GsGp_CallFailedCallback(Ctx0227 **, GsGpOperation *);
 s32 GsGp_CloseConnection(Ctx0227 **, s32);
 s32 GsGp_ProcessConnection(Ctx0227 **, s32);
-s32 GsSock_Socket(s32, s32, s32);
-s32 GsSock_Bind(s32, void *, s32);
-s32 GsSock_Listen(s32, s32);
-s32 GsSock_GetSockName(s32, void *, s32 *);
-s32 GsSock_Connect(s32, void *, s32);
-s32 GsSock_GetLastError(s32);
-s32 GsSock_SetBlocking(s32, s32);
+s32 socket(s32, s32, s32);
+s32 bind(s32, void *, s32);
+s32 listen(s32, s32);
+s32 getsockname(s32, void *, s32 *);
+s32 connect(s32, void *, s32);
+s32 GOAGetLastError(s32);
+s32 SetSockBlocking(s32, s32);
 Unk_ov065_0227f00c_Host *Sock_GetHostByName(char *);
 s32 GsGpProfile_Find(Ctx0227 **, s32, GsGpProfile **);
 void GsGp_CopyInfoResult(s32, void *);
@@ -329,27 +329,27 @@ s32 GsGp_OpenSockets(Ctx0227 **h, GsGpOperation *n) {
     s32 e;
     u32 *w;
     if (ctx->firewall == 0) {
-        ctx->peerSocket = GsSock_Socket(2, 1, 0);
+        ctx->peerSocket = socket(2, 1, 0);
         if (-1 == ctx->peerSocket) GP_FAIL("There was an error creating a socket.")
-        if (GsSock_SetBlocking(ctx->peerSocket, 0) == 0) GP_FAIL("There was an error making a socket non-blocking.")
+        if (SetSockBlocking(ctx->peerSocket, 0) == 0) GP_FAIL("There was an error making a socket non-blocking.")
         w = (u32 *)&sa;
         w[0] = 0;
         w[1] = 0;
         sa.family = 2;
-        if (GsSock_Bind(ctx->peerSocket, w, 8) == -1) GP_FAIL("There was an error binding a socket.")
-        if (GsSock_Listen(ctx->peerSocket, 5) == -1) GP_FAIL("There was an error listening on a socket.")
+        if (bind(ctx->peerSocket, w, 8) == -1) GP_FAIL("There was an error binding a socket.")
+        if (listen(ctx->peerSocket, 5) == -1) GP_FAIL("There was an error listening on a socket.")
         len = 8;
-        if (GsSock_GetSockName(ctx->peerSocket, &sa, &len) == -1) GP_FAIL("There was an error getting a socket's addres.")
+        if (getsockname(ctx->peerSocket, &sa, &len) == -1) GP_FAIL("There was an error getting a socket's addres.")
         ctx->peerPort = sa.port;
     } else {
         ctx->peerSocket = -1;
         ctx->peerPort = 0;
     }
     {
-        ctx->cmSocket = GsSock_Socket(2, 1, 0);
+        ctx->cmSocket = socket(2, 1, 0);
         if (-1 == ctx->cmSocket) GP_FAIL("There was an error creating a socket.")
     }
-    if (GsSock_SetBlocking(ctx->cmSocket, 0) == 0) GP_FAIL("There was an error making a socket non-blocking.")
+    if (SetSockBlocking(ctx->cmSocket, 0) == 0) GP_FAIL("There was an error making a socket non-blocking.")
     host = Sock_GetHostByName(data_ov065_0228d1a4);
     if (host == 0) GP_FAIL("Could not resolve connection mananger host name.")
     w = (u32 *)&sa;
@@ -358,8 +358,8 @@ s32 GsGp_OpenSockets(Ctx0227 **h, GsGpOperation *n) {
     sa.family = 2;
     sa.addr = **host->addrList;
     sa.port = 0xcc74;
-    if (GsSock_Connect(ctx->cmSocket, &sa, 8) == -1) {
-        e = GsSock_GetLastError(ctx->cmSocket);
+    if (connect(ctx->cmSocket, &sa, 8) == -1) {
+        e = GOAGetLastError(ctx->cmSocket);
         if (e != -6 && e != -0x1a && e != -0x4c) GP_FAIL("There was an error connecting a socket.")
     }
     n->state = 1;
@@ -403,7 +403,7 @@ s32 GsGp_Connect(Ctx0227 **h, const char *a1, const char *a2, const char *a3, co
     GsUtil_StrCopyN(ctx->uniqueNick, a2, 0x15);
     GsUtil_StrCopyN(ctx->email, a3, 0x33);
     GsUtil_StrCopyN(ctx->password, a4, 0x1f);
-    GsUtil_StrToLower(ctx->email);
+    _strlwr(ctx->email);
     obj = (GsGpConnectData *)GsUtil_Alloc(0x308);
     if (obj == 0) {
         GsGp_SetErrorString(h, "Out of memory.");
@@ -456,7 +456,7 @@ s32 GsGp_SendLogin(Ctx0227 **h, Req0227 *req) {
     } else {
         p = c->password;
     }
-    GsUtil_Md5Hex(p, STD_GetStringLength(p), req->passwordHash);
+    MD5Digest(p, STD_GetStringLength(p), req->passwordHash);
     if (req->authToken[0] != 0) {
         q = req->authToken;
     } else if (c->uniqueNick[0] != 0) {
@@ -466,7 +466,7 @@ s32 GsGp_SendLogin(Ctx0227 **h, Req0227 *req) {
         q = b3;
     }
     OS_SPrintf(b2, "%s%s%s%s%s%s", req->passwordHash, "                                                ", q, req->clientChallenge, req, req->passwordHash);
-    GsUtil_Md5Hex(b2, STD_GetStringLength(b2), b1);
+    MD5Digest(b2, STD_GetStringLength(b2), b1);
     if (c->infoCaching != 0) {
         GsGpProfile_FindByNickEmail(h, c->nick, c->email, &out);
         if (out != NULL) {
@@ -511,7 +511,7 @@ s32 GsGp_SendLogin(Ctx0227 **h, Req0227 *req) {
     GsGpBuf_AppendString(h, c->outputBuffer, "\\productid\\");
     GsGpBuf_AppendInt(h, c->outputBuffer, c->productId);
     GsGpBuf_AppendString(h, c->outputBuffer, "\\gamename\\");
-    GsGpBuf_AppendString(h, c->outputBuffer, sGsGameName);
+    GsGpBuf_AppendString(h, c->outputBuffer, __GSIACGamename);
     GsGpBuf_AppendString(h, c->outputBuffer, "\\namespaceid\\");
     GsGpBuf_AppendInt(h, c->outputBuffer, c->namespaceId);
     GsGpBuf_AppendString(h, c->outputBuffer, "\\id\\1");
@@ -534,18 +534,18 @@ s32 GsGp_SendNewUser(Ctx0227 **h, Req0227 *req) {
     u32 len;
     u32 i;
     len = STD_GetStringLength(c->password);
-    GsUtil_SeedRand(0x79707367);
+    Util_RandSeed(0x79707367);
     i = 0;
     if (i < len) {
         char *p = a1;
         z0 = i;
         do {
-            s8 r = GsUtil_RandRange(z0, 0xff);
+            s8 r = Util_RandInt(z0, 0xff);
             *p++ = r ^ c->password[i];
         } while (++i < len);
     }
     a1[i] = 0;
-    GsUtil_Base64Encode(a1, b1, len, 1);
+    B64Encode(a1, b1, len, 1);
     GsGpBuf_AppendString(h, c->outputBuffer, "\\newuser\\");
     GsGpBuf_AppendString(h, c->outputBuffer, "\\email\\");
     GsGpBuf_AppendString(h, c->outputBuffer, c->email);
@@ -556,25 +556,25 @@ s32 GsGp_SendNewUser(Ctx0227 **h, Req0227 *req) {
     GsGpBuf_AppendString(h, c->outputBuffer, "\\productid\\");
     GsGpBuf_AppendInt(h, c->outputBuffer, c->productId);
     GsGpBuf_AppendString(h, c->outputBuffer, "\\gamename\\");
-    GsGpBuf_AppendString(h, c->outputBuffer, sGsGameName);
+    GsGpBuf_AppendString(h, c->outputBuffer, __GSIACGamename);
     GsGpBuf_AppendString(h, c->outputBuffer, "\\namespaceid\\");
     GsGpBuf_AppendInt(h, c->outputBuffer, c->namespaceId);
     GsGpBuf_AppendString(h, c->outputBuffer, "\\uniquenick\\");
     GsGpBuf_AppendString(h, c->outputBuffer, c->uniqueNick);
     if (req->cdKey[0] != 0) {
         len = STD_GetStringLength(req->cdKey);
-        GsUtil_SeedRand(0x79707367);
+        Util_RandSeed(0x79707367);
         i = 0;
         if (i < len) {
             char *p = a2;
             z1 = i;
             do {
-                s8 r = GsUtil_RandRange(z1, 0xff);
+                s8 r = Util_RandInt(z1, 0xff);
                 *p++ = r ^ req->cdKey[i];
             } while (++i < len);
         }
         a2[i] = 0;
-        GsUtil_Base64Encode(a2, b2, len, 1);
+        B64Encode(a2, b2, len, 1);
         GsGpBuf_AppendString(h, c->outputBuffer, "\\cdkeyenc\\");
         GsGpBuf_AppendString(h, c->outputBuffer, b2);
     }
@@ -707,7 +707,7 @@ s32 GsGp_ProcessConnectReply(Ctx0227 **h, GsGpOperation *n, char *line) {
             p = b4;
         }
         OS_SPrintf(b3, "%s%s%s%s%s%s", req->passwordHash, "                                                ", p, req, req->clientChallenge, req->passwordHash);
-        GsUtil_Md5Hex(b3, STD_GetStringLength(b3), b1);
+        MD5Digest(b3, STD_GetStringLength(b3), b1);
         if (GsGp_GetValue(line, "\\proof\\", b3, 0x200) == 0) {
             GsGp_SetError(h, 1, "Unexepected data was received from the server.");
             GsGp_CallErrorCallback(h, 3, 1);
@@ -817,13 +817,13 @@ s32 GsGp_CloseConnection(Unk_ov065_0227d8e0_Handle *h, s32 a) {
         }
         GsGp_SendBuffer(h, ctx->cmSocket, &ctx->outputBuffer, &out, 1, "CM");
         if (ctx->cmSocket != -1) {
-            GsSock_Shutdown(ctx->cmSocket, 2);
-            GsSock_Close(ctx->cmSocket);
+            shutdown(ctx->cmSocket, 2);
+            closesocket(ctx->cmSocket);
             ctx->cmSocket = -1;
         }
         if (ctx->peerSocket != -1) {
-            GsSock_Shutdown(ctx->peerSocket, 2);
-            GsSock_Close(ctx->peerSocket);
+            shutdown(ctx->peerSocket, 2);
+            closesocket(ctx->peerSocket);
             ctx->peerSocket = -1;
         }
         ctx->connectState = 4;

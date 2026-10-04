@@ -29,26 +29,26 @@ extern "C" {
 void GsPersist_XorCrypt(char *, s32);
 s32 GsPersist_DispatchReply(char *, s32);
 s32 GsPersist_FindFinal(char *, s32);
-void GsUtil_StrToLower(char *);
+void _strlwr(char *);
 s32 GsGp_AddOperation(void *, s32, void *, void *, s32, s32, s32);
 s32 GsGp_ProcessConnection(void *, s32);
 void *GsUtil_Alloc(u32);
-s32 GsSock_Socket(s32, s32, s32);
-s32 GsSock_SetBlocking(s32, s32);
+s32 socket(s32, s32, s32);
+s32 SetSockBlocking(s32, s32);
 Unk_ov065_022831c0_Host *Sock_GetHostByName(const char *);
-s32 GsSock_Connect(s32, void *, s32);
-s32 GsSock_GetLastError(s32);
+s32 connect(s32, void *, s32);
+s32 GOAGetLastError(s32);
 void GsGp_CallErrorCallback(void *, s32, s32);
 s32 GsGpPeer_SendTransferHeader(void *, s32, s32, void *);
 s32 GsGpPeer_SendString(void *, s32, char *);
 s32 GsGpPeer_SendMessageBody(void *, s32, const char *, s32);
 s32 GsGp_QueueCallback(void *, Unk_ov065_022833b4_Pair, void *, void *, s32);
 void GsGp_RemoveOperation(void *, void *);
-s32 GsSock_Select(s32, s32, s32 *, s32 *);
-s32 GsArray_Count(void *);
-void GsArray_Free(void *);
-void *GsArray_At(void *, s32);
-void GsArray_DeleteAt(void *, s32);
+s32 GSISocketSelect(s32, s32, s32 *, s32 *);
+s32 ArrayLength(void *);
+void ArrayFree(void *);
+void *ArrayNth(void *, s32);
+void ArrayDeleteAt(void *, s32);
 char *strncpy(char *dst, const char *src, u32 n);
 char *strstr(const char *, const char *);
 s32 STD_GetStringLength(const char *);
@@ -88,15 +88,15 @@ typedef GsGpSearch Conn0228;
 
 
 extern "C" {
-extern char sGsGameName[];
+extern char __GSIACGamename[];
 
 typedef s32 (*GsGpProfileMapFn)(Ctx0228 **, GsGpProfile *, void *);
 
-s32 GsHash_FindIf(void *, s32 (*)(void *, void *), void *);
-s32 GsHash_Remove(void *, void *);
-void *GsHash_Find(void *, void *);
-s32 GsHash_Insert(void *, void *);
-void *GsHash_New(s32, s32, s32 (*)(s32 *, s32), s32 (*)(s32 *, s32 *), void (*)(void *));
+s32 TableMapSafe2(void *, s32 (*)(void *, void *), void *);
+s32 TableRemove(void *, void *);
+void *TableLookup(void *, void *);
+s32 TableEnter(void *, void *);
+void *TableNew(s32, s32, s32 (*)(s32 *, s32), s32 (*)(s32 *, s32 *), void (*)(void *));
 void GsUtil_Free(void *);
 void *GsUtil_Alloc(s32);
 void GsGp_SetErrorString(Ctx0228 **, const char *);
@@ -133,7 +133,7 @@ void GsUtil_StrCopyN(char *, const char *, s32);
 void *memset(void *, s32, s32);
 char *STD_CopyString(char *, const char *);
 char *strstr(const char *, const char *);
-void GsUtil_Sleep(s32);
+void msleep(s32);
 s32 GsGpSearch_ProfileSearch(Ctx0228 **, char *, char *, char *, char *, char *, s32, s32, s32, s32, s32);
 
 
@@ -174,13 +174,13 @@ s32 GsGpSearch_Connect(void *h0, void *o0) {
         GsGp_SetErrorString(h, "Out of memory.");
         return 1;
     }
-    s->sock = GsSock_Socket(2, 1, 0);
+    s->sock = socket(2, 1, 0);
     if (s->sock == -1) {
         GsGp_SetError(h, 5, "There was an error creating a socket.");
         GsGp_CallErrorCallback(h, 3, 1);
         return 3;
     }
-    if (GsSock_SetBlocking(s->sock, 0) == 0) {
+    if (SetSockBlocking(s->sock, 0) == 0) {
         GsGp_SetError(h, 5, "There was an error making a socket non-blocking.");
         GsGp_CallErrorCallback(h, 3, 1);
         return 3;
@@ -197,8 +197,8 @@ s32 GsGpSearch_Connect(void *h0, void *o0) {
     sa.family = 2;
     sa.addr = **ent->addrList;
     sa.port = 0xcd74;
-    if (GsSock_Connect(s->sock, &sa, 8) == -1) {
-        r = GsSock_GetLastError(s->sock);
+    if (connect(s->sock, &sa, 8) == -1) {
+        r = GOAGetLastError(s->sock);
         if (r != -6 && r != -0x1a && r != -0x4c) {
             GsGp_SetError(h, 5, "There was an error connecting a socket.");
             GsGp_CallErrorCallback(h, 3, 1);
@@ -286,7 +286,7 @@ s32 GsGpSearch_ProfileSearch(Unk_ov065_02282f90_Handle *h, char *a, char *b, cha
     } else {
         GsUtil_StrCopyN(cn->email, c, 0x33);
     }
-    GsUtil_StrToLower(cn->email);
+    _strlwr(cn->email);
     if (d == NULL) {
         cn->firstName[0] = 0;
     } else {
@@ -454,7 +454,7 @@ again:
             GsGpBuf_AppendInt(h, &c->outputBuffer, ctx->namespaceId);
         }
         GsGpBuf_AppendString(h, &c->outputBuffer, "\\gamename\\");
-        GsGpBuf_AppendString(h, &c->outputBuffer, sGsGameName);
+        GsGpBuf_AppendString(h, &c->outputBuffer, __GSIACGamename);
         GsGpBuf_AppendString(h, &c->outputBuffer, "\\final\\");
         node->state = 4;
         goto endchk;
@@ -827,7 +827,7 @@ done:
     retry = 0;
 endchk:
     if (retry != 0) {
-        GsUtil_Sleep(10);
+        msleep(10);
     }
     if (retry != 0) {
         goto again;
@@ -901,7 +901,7 @@ s32 GsGpProfile_InitTable(Ctx0228 **h) {
     Ctx0228 *c = *h;
     c->numBuddies = 0;
     c->numProfiles = 0;
-    c->profileTable = GsHash_New(0x1c, 4, GsGpProfile_HashId, GsGpProfile_CompareId, GsGpProfile_FreeEntry);
+    c->profileTable = TableNew(0x1c, 4, GsGpProfile_HashId, GsGpProfile_CompareId, GsGpProfile_FreeEntry);
     if (c->profileTable != 0) {
         return 1;
     }

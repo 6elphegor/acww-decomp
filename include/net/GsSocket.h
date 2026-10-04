@@ -3,14 +3,16 @@
 
 #include "types.h"
 
-// GameSpy socket helpers (GsSock_*, src/ov065/unk_ov065_022789fc.cpp namespace FB, src/ov065/unk_ov065_0227931c.cpp
-// namespace Ng): sockaddr copy, the local hostent sGsLocalHostEnt with its address list and address, poll fd.
+// Socket types of the GameSpy nonport layer (views of NitroWiFi SOSockAddr / SOHostEnt / SOPollFD used by
+// bind/connect/sendto, getlocalhost and GSISocketSelect in src/ov065/unk_ov065_022789fc.cpp namespace FB and
+// src/ov065/unk_ov065_0227931c.cpp namespace Ng): sockaddr copy, the hostent localhost with its address list
+// and address, poll fd.
 
 struct GsSockAddr {
     /* 0x0 */ u8 b[8];
 };
 
-// sGsLocalHostEnt (BSD hostent layout)
+// localhost (BSD hostent layout)
 struct GsHostEnt {
     /* 0x0 */ u32 hostName;
     /* 0x4 */ u32 aliases;

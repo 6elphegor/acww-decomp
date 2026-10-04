@@ -1,14 +1,14 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
 #include "net/GsBytes.h"
-#include "net/GsArray.h"
-#include "net/GsSrvBrowser.h"
+#include "net/darray.h"
+#include "net/sb_internal.h"
 
 extern "C" {
 char *data_ov065_0228e954 = "Query Error: ";
-char *sGsSrvListMasterOverride;
-void *sGsSrvListSortList;
-u32 data_ov065_022918a8;
+char *SBOverrideMasterServer;
+void *g_sortserverlist;
+u32 SBNullServer;
 }
 
 namespace F02288e2c {
@@ -33,10 +33,10 @@ static inline u16 Unk_ov065_02289044_Htons(u16 x) {
 
 extern "C" {
 extern char *data_ov065_0228e928[2];
-extern char *gGsKeyNames[];
+extern char *qr2_registered_key_list[];
 extern u16 data_0213a510[];
-extern s32 sGsAvailStatus;
-extern s32 data_ov065_022918a8;
+extern s32 __GSIACResult;
+extern s32 SBNullServer;
 
 s32 strcmp(const char *, const char *);
 u32 STD_GetStringLength(const char *);
@@ -46,64 +46,64 @@ s32 func_02130b04(char *, char *);
 
 s32 GsUtil_Free(void *);
 void *GsUtil_Alloc(s32);
-s32 GsArray_Count(void *);
-void *GsHash_Find(void *, void *);
-s32 GsHash_Insert(void *, void *);
-s32 GsHash_Count(void *);
-s32 GsHash_Free(void *);
-void *GsHash_NewEx(s32, s32, s32, void *, void *, void *);
-s32 GsSock_InetAddr(s32);
-s32 GsSock_RecvFrom(s32, void *, s32, s32, void *, void *);
-s32 GsSock_Close(s32);
-s32 GsSock_CanRead(s32);
-s32 GsUtil_Sleep(s32);
-u32 GsUtil_GetTimeMs();
-s32 GsSrvQuery_Remove(void *, void *);
-s32 GsSrvQuery_AddKey(void *, s32);
-s32 GsSrvQuery_Think(void *);
-s32 GsSrvQuery_Add(void *, void *, s32, s32);
-s32 GsSrvQuery_Shutdown(void *);
-s32 GsSrvQuery_Clear(void *);
-s32 GsSrvQuery_SetPublicIp(void *, s32);
-s32 GsSrvQuery_Init(void *, s32, s32, s32, void *, void *);
-s32 GsServer_IsNull(void *);
-s32 GsServer_SetListFlags(void *, s32);
-void *GsServer_New(void *, u32, u32);
-s32 GsServer_GetPing(void *);
-s32 GsUtil_StrHashNoCase(void *);
-s32 GsSrvList_Free(void *);
-s32 GsSrvList_Disconnect(void *);
-s32 GsSrvList_SendListRequest(void *, char *, s32, s32, s32);
-s32 GsSrvList_Init(void *, s32, s32, s32, s32, s32, void *, void *);
-s32 GsUtil_StrSizeInBuffer(char *, s32);
-s32 GsStrPool_Add(s32, char *);
-s32 GsSrvList_ClearServers(void *);
-s32 GsSrvList_FreeDeadServers(void *);
-s32 GsSrvList_GetServer(void *);
-s32 GsSrvList_Count(void *);
-s32 GsSrvList_RemoveServerAt(void *, s32);
-s32 GsSrvList_FindServerByAddress(void *, u32, u32);
-s32 GsSrvList_FindServer(void *);
-s32 GsSrvList_AddServer(void *, void *);
-s32 GsSrvList_Sort(void *);
-s32 GsSrvList_Receive(void *);
-s32 GsSrvList_SendNatNegCookie(void *, s32, s32, s32);
-s32 GsSrvList_SendServerMessage(void *, s32, s32, s32, s32);
+s32 ArrayLength(void *);
+void *TableLookup(void *, void *);
+s32 TableEnter(void *, void *);
+s32 TableCount(void *);
+s32 TableFree(void *);
+void *TableNew2(s32, s32, s32, void *, void *, void *);
+s32 inet_addr(s32);
+s32 recvfrom(s32, void *, s32, s32, void *, void *);
+s32 closesocket(s32);
+s32 CanReceiveOnSocket(s32);
+s32 msleep(s32);
+u32 current_time();
+s32 SBQueryEngineRemoveServerFromFIFOs(void *, void *);
+s32 SBQueryEngineAddQueryKey(void *, s32);
+s32 SBQueryEngineThink(void *);
+s32 SBQueryEngineUpdateServer(void *, void *, s32, s32);
+s32 SBEngineCleanup(void *);
+s32 SBEngineHaltUpdates(void *);
+s32 SBQueryEngineSetPublicIP(void *, s32);
+s32 SBQueryEngineInit(void *, s32, s32, s32, void *, void *);
+s32 SBIsNullServer(void *);
+s32 SBServerSetFlags(void *, s32);
+void *SBAllocServer(void *, u32, u32);
+s32 SBServerGetPing(void *);
+s32 StringHash(void *);
+s32 SBServerListCleanup(void *);
+s32 SBServerListDisconnect(void *);
+s32 SBServerListConnectAndQuery(void *, char *, s32, s32, s32);
+s32 SBServerListInit(void *, s32, s32, s32, s32, s32, void *, void *);
+s32 NTSLengthSB(char *, s32);
+s32 SBRefStr(s32, char *);
+s32 SBServerListClear(void *);
+s32 SBFreeDeadList(void *);
+s32 SBServerListNth(void *);
+s32 SBServerListCount(void *);
+s32 SBServerListRemoveAt(void *, s32);
+s32 SBServerListFindServerByIP(void *, u32, u32);
+s32 SBServerListFindServer(void *);
+s32 SBServerListAppendServer(void *, void *);
+s32 SBServerListSort(void *);
+s32 ProcessIncomingData(void *);
+s32 SBSendNatNegotiateCookieToServer(void *, s32, s32, s32);
+s32 SBSendMessageToServer(void *, s32, s32, s32, s32);
 
-s32 GsServer_SetStringValue(GsServer *a, char *k, char *v);
-char *GsUtil_StrTok(char *s, s32 ch);
-s32 GsServer_IsKeyAllowed(char *s);
-s32 GsServer_GetStringValue(void *a, char *k, s32 d);
-s32 GsSrvBrowser_Halt(void *o);
-s32 GsSrvBrowser_Think(void *o);
-s32 GsSrvBrowser_UpdateListEx(void *o, s32 a, s32 b, u8 *data, s32 n, s32 c, s32 d, s32 e);
-void GsSrvBrowser_OnQueryEvent(void *, s32, GsServer *, GsSrvBrowser *);
-void GsSrvBrowser_OnListEvent(GsSrvList *, s32, GsServer *, GsSrvBrowser *);
-s32 GsSrvList_Think(void *);
-s32 GsSrvList_ThinkLan(GsSrvList *);
-s32 GsStrPool_CompareCb(char **, char **);
-s32 GsStrPool_FreeEntryCb(void **);
-s32 GsStrPool_HashCb(void **);
+s32 SBServerAddKeyValue(_SBServer *a, char *k, char *v);
+char *mytok(char *s, s32 ch);
+s32 CheckValidKey(char *s);
+s32 SBServerGetStringValueA(void *a, char *k, s32 d);
+s32 ServerBrowserHalt(void *o);
+s32 ServerBrowserThink(void *o);
+s32 ServerBrowserBeginUpdate2(void *o, s32 a, s32 b, u8 *data, s32 n, s32 c, s32 d, s32 e);
+void EngineCallback(void *, s32, _SBServer *, _ServerBrowser *);
+void ListCallback(SBServerList *, s32, _SBServer *, _ServerBrowser *);
+s32 SBListThink(void *);
+s32 ProcessLanData(SBServerList *);
+s32 RefStringCompare(char **, char **);
+s32 RefStringFree(void **);
+s32 RefStringHash(void **);
 
 }
 }
@@ -114,42 +114,42 @@ namespace F02289808 {
 
 
 extern "C" {
-extern u32 data_ov065_022918a8;
-s32 GsSrvList_SendListRequest(GsSrvList *, s32, s32, s32, s32);
-s32 GsSrvList_SendToMaster(GsSrvList *, u8 *, s32);
-s32 GsSock_Send(s32, void *, s32, s32);
-s32 GsSock_Recv(s32, void *, s32, s32);
-s32 GsSock_CanRead(s32);
-void GsSrvList_ReportError(GsSrvList *);
-void GsSrvListCrypt_Decrypt(void *, void *, s32);
+extern u32 SBNullServer;
+s32 SBServerListConnectAndQuery(SBServerList *, s32, s32, s32, s32);
+s32 SendWithRetry(SBServerList *, u8 *, s32);
+s32 send(s32, void *, s32, s32);
+s32 recv(s32, void *, s32, s32);
+s32 CanReceiveOnSocket(s32);
+void ErrorDisconnect(SBServerList *);
+void GOADecrypt(void *, void *, s32);
 void memmove(void *, void *, s32);
-s32 GsSrvList_ReadServerAddress(GsSrvList *, u8 *, s32, u32 *, u16 *);
-s32 GsSrvList_FindServerByAddress(GsSrvList *, u32, u32);
-s32 GsServer_New(GsSrvList *, u32, u32);
-s32 GsServer_IsNull();
-s32 GsSrvList_GetServer(GsSrvList *, s32);
-s32 GsSrvList_RemoveServerAt(GsSrvList *, s32);
-s32 GsSrvList_ParseServer(GsSrvList *, s32, u8 *, s32, s32);
-s32 GsSrvList_AddServer(GsSrvList *, s32);
-s32 GsUtil_StrSizeInBuffer(u8 *, s32);
-void *GsStrPool_Add(GsSrvList *, u8 *);
-s32 GsSrvList_ReleaseKeyList(GsSrvList *);
-void *GsArray_New(s32, s32, s32);
-s32 GsArray_Append(void *, void *);
-s32 GsArray_Count(void *);
-s32 GsSrvList_InitCrypt(GsSrvList *, u8 *, s32);
-s32 GsSrvList_SetErrorText(GsSrvList *, u8 *);
-s32 GsSrvList_ParseListServer(GsSrvList *, u8 *, s32);
+s32 ParseServerIPPort(SBServerList *, u8 *, s32, u32 *, u16 *);
+s32 SBServerListFindServerByIP(SBServerList *, u32, u32);
+s32 SBAllocServer(SBServerList *, u32, u32);
+s32 SBIsNullServer();
+s32 SBServerListNth(SBServerList *, s32);
+s32 SBServerListRemoveAt(SBServerList *, s32);
+s32 ParseServer(SBServerList *, s32, u8 *, s32, s32);
+s32 SBServerListAppendServer(SBServerList *, s32);
+s32 NTSLengthSB(u8 *, s32);
+void *SBRefStr(SBServerList *, u8 *);
+s32 FreeKeyList(SBServerList *);
+void *ArrayNew(s32, s32, s32);
+s32 ArrayAppend(void *, void *);
+s32 ArrayLength(void *);
+s32 InitCryptKey(SBServerList *, u8 *, s32);
+s32 SBSetLastListErrorPtr(SBServerList *, u8 *);
+s32 IncomingListParseServer(SBServerList *, u8 *, s32);
 
-s32 GsSrvList_SendServerMessage(GsSrvList *c, u32 a1, u32 a2, u8 *data, s32 len);
-s32 GsSrvList_ProcessMessages(GsSrvList *c);
+s32 SBSendMessageToServer(SBServerList *c, u32 a1, u32 a2, u8 *data, s32 len);
+s32 ProcessAdHocData(SBServerList *c);
 
-s32 GsSrvList_HandleServerUpdate(GsSrvList *c, u8 *p, s32 n);
-s32 GsSrvList_HandleServerDelete(GsSrvList *c, u8 *p, s32 n);
-s32 GsSrvList_HandleMsg05(GsSrvList *c, u8 *p, s32 n);
-s32 GsSrvList_HandleMsg06(GsSrvList *c, u8 *p, s32 n);
-s32 GsSrvList_HandleKeyList(GsSrvList *c, u8 *p, s32 n);
-s32 GsSrvList_ParseListReply(GsSrvList *c);
+s32 ProcessPushServer(SBServerList *c, u8 *p, s32 n);
+s32 ProcessDeleteServer(SBServerList *c, u8 *p, s32 n);
+s32 ProcessMaploop(SBServerList *c, u8 *p, s32 n);
+s32 ProcessPlayerSearch(SBServerList *c, u8 *p, s32 n);
+s32 ProcessPushKeyList(SBServerList *c, u8 *p, s32 n);
+s32 ProcessMainListData(SBServerList *c);
 }
 
 static inline void Cpy2(u8 *d, u8 *s) {
@@ -196,48 +196,48 @@ s32 func_02133150(s32, s32);
 
 void *GsUtil_Alloc(u32);
 void GsUtil_Free(void *);
-void *GsArray_At(void *, s32);
-s32 GsArray_Count(void *);
-void GsArray_Free(void *);
-s32 GsSock_Send(s32, void *, s32, s32);
-void GsSock_Close(s32);
-void GsSrvListCrypt_Init(void *, void *, s32);
-u32 GsServer_GetFlags(GsServer *);
-void GsServer_SetFlags(GsServer *, u8);
-void GsServer_SetIcmpIp(GsServer *, u32);
-void GsServer_SetPrivateAddress(GsServer *, u32, u32);
-void GsServer_SetListFlags(GsServer *, u32);
-GsServer *GsServer_New(GsSrvList *, u32, u32);
-s32 GsServer_IsNull(GsServer *);
-void GsServer_SetIntValue(GsServer *, void *, u32);
-void GsServer_SetStringValue(GsServer *, void *, void *);
-void GsStrPool_FreeIfEmpty(GsSrvList *);
-void GsSrvList_AddServer(GsSrvList *, GsServer *);
-s32 GsSrvList_PutByte(u8 **, u32, s32 *);
-void GsSrvList_PutString(u8 **, const char *, s32 *);
-s32 GsSrvList_ConnectMaster(GsSrvList *);
-void GsSrvList_ReportError(GsSrvList *);
-s32 GsUtil_StrSizeInBuffer(void *, s32);
-void GsStrPool_Release(GsSrvList *, void *);
-void GsSrvList_ClearServers(GsSrvList *);
+void *ArrayNth(void *, s32);
+s32 ArrayLength(void *);
+void ArrayFree(void *);
+s32 send(s32, void *, s32, s32);
+void closesocket(s32);
+void GOACryptInit(void *, void *, s32);
+u32 SBServerGetState(_SBServer *);
+void SBServerSetState(_SBServer *, u8);
+void SBServerSetICMPIP(_SBServer *, u32);
+void SBServerSetPrivateAddr(_SBServer *, u32, u32);
+void SBServerSetFlags(_SBServer *, u32);
+_SBServer *SBAllocServer(SBServerList *, u32, u32);
+s32 SBIsNullServer(_SBServer *);
+void SBServerAddIntKeyValue(_SBServer *, void *, u32);
+void SBServerAddKeyValue(_SBServer *, void *, void *);
+void SBRefStrHashCleanup(SBServerList *);
+void SBServerListAppendServer(SBServerList *, _SBServer *);
+s32 BufferAddByte(u8 **, u32, s32 *);
+void BufferAddNTS(u8 **, const char *, s32 *);
+s32 ServerListConnect(SBServerList *);
+void ErrorDisconnect(SBServerList *);
+s32 NTSLengthSB(void *, s32);
+void SBReleaseStr(SBServerList *, void *);
+void SBServerListClear(SBServerList *);
 
-void GsSrvList_SetErrorText(GsSrvList *ctx, u32 v);
-s32 GsSrvList_ParseListServer(GsSrvList *ctx, u8 *buf, s32 n);
-s32 GsSrvList_ParseServer(GsSrvList *ctx, GsServer *ent, u8 *buf, s32 n, s32 flag);
-void GsSrvList_ReadServerAddress(GsSrvList *ctx, u8 *buf, s32 n, u32 *ip, u16 *volatile port);
-s32 GsSrvList_CheckKeyValues(GsSrvList *ctx, u8 *buf, s32 n);
-s32 GsSrvList_CheckExtraPairs(u8 *buf, s32 n);
-s32 GsSrvList_GetRecordHeaderSize(u32 flags);
-void GsSrvList_InitCrypt(GsSrvList *ctx, s8 *key, s32 n);
-void GsSrvList_Free(GsSrvList *ctx);
-void GsSrvList_Disconnect(GsSrvList *ctx);
-void GsSrvList_ReleaseKeyList(GsSrvList *ctx);
-void GsSrvList_ReleasePopularValues(GsSrvList *ctx);
-s32 GsSrvList_SendListRequest(GsSrvList *ctx, const char *user, const char *pass, u32 flags, u32 extra);
-s32 GsSrvList_SendToMaster(GsSrvList *ctx, void *buf, s32 n);
-void GsSrvList_MakeChallenge(GsSrvList *ctx);
-void GsSrvList_PutBytes(u8 **cur, const void *src, s32 n, s32 *len);
-void GsSrvList_PutU32(u8 **cur, u32 v, s32 *len);
+void SBSetLastListErrorPtr(SBServerList *ctx, u32 v);
+s32 IncomingListParseServer(SBServerList *ctx, u8 *buf, s32 n);
+s32 ParseServer(SBServerList *ctx, _SBServer *ent, u8 *buf, s32 n, s32 flag);
+void ParseServerIPPort(SBServerList *ctx, u8 *buf, s32 n, u32 *ip, u16 *volatile port);
+s32 AllKeysPresent(SBServerList *ctx, u8 *buf, s32 n);
+s32 FullRulesPresent(u8 *buf, s32 n);
+s32 ServerSizeForFlags(u32 flags);
+void InitCryptKey(SBServerList *ctx, s8 *key, s32 n);
+void SBServerListCleanup(SBServerList *ctx);
+void SBServerListDisconnect(SBServerList *ctx);
+void FreeKeyList(SBServerList *ctx);
+void FreePopularValues(SBServerList *ctx);
+s32 SBServerListConnectAndQuery(SBServerList *ctx, const char *user, const char *pass, u32 flags, u32 extra);
+s32 SendWithRetry(SBServerList *ctx, void *buf, s32 n);
+void SetupListChallenge(SBServerList *ctx);
+void BufferAddData(u8 **cur, const void *src, s32 n, s32 *len);
+void BufferAddInt(u8 **cur, u32 v, s32 *len);
 
 }
 }
@@ -246,9 +246,9 @@ namespace F0228ab3c {
 
 // ov065_070: GameSpy-like server-browser context (0x0228ab3c..0x0228b258)
 
-struct GsStrPoolEntry {
+struct SBRefString {
     char *str;
-    s32 refCount;
+    s32 refcount;
 };
 
 struct Unk_ov065_0228ab8c_Sa {
@@ -268,7 +268,7 @@ struct Unk_ov065_0228ab8c_Host {
     GsBytes4 **addrList;
 };
 
-typedef GsSrvList Ctx070;
+typedef SBServerList Ctx070;
 
 static inline void Cp4(GsBytes4 *d, GsBytes4 *s) {
     *d = *s;
@@ -276,11 +276,11 @@ static inline void Cp4(GsBytes4 *d, GsBytes4 *s) {
 
 
 extern "C" {
-extern char *sGsSrvListMasterOverride;
+extern char *SBOverrideMasterServer;
 extern char *data_ov065_0228e954;
-extern u32 data_ov065_022918a8;
-extern s32 sGsAvailStatus;
-extern Ctx070 *sGsSrvListSortList;
+extern u32 SBNullServer;
+extern s32 __GSIACResult;
+extern Ctx070 *g_sortserverlist;
 extern u8 data_0213a410[];
 s32 STD_GetStringLength(const char *s);
 void *memcpy(void *d, const void *s, u32 n);
@@ -291,72 +291,72 @@ s32 strcmp(const char *a, const char *b);
 s32 func_02130b04(const char *a, const char *b);
 void srand(u32 seed);
 
-s32 GsSock_InetAddr(char *s);
+s32 inet_addr(char *s);
 Unk_ov065_0228ab8c_Host *Sock_GetHostByName(char *name);
-s32 GsSock_Socket(s32 a, s32 b, s32 c);
-s32 GsSock_Close(s32 fd);
-s32 GsSock_Connect(s32 fd, void *sa, s32 len);
-s32 GsSrvList_SetErrorText(Ctx070 *c, ...);
-void GsSrvList_Disconnect(Ctx070 *c);
-void *GsStrPool_Get(Ctx070 *c);
-void *GsHash_Find(void *t, void *key);
-void GsHash_Remove(void *t, void *key);
-void GsHash_Insert(void *t, void *key);
-char *GsUtil_StrDup(char *s);
-void *GsArray_New(s32 a, s32 b, s32 c);
-void *GsArray_At(void *v, s32 i);
-s32 GsArray_Count(void *v);
-void GsArray_Clear(void *v);
-void GsArray_DeleteAt(void *v, s32 i);
-void GsArray_Append(void *v, s32 *p);
-void GsArray_Sort(void *v, void *cmp);
-void *GsServer_GetNextFree(void *p);
-void GsServer_Free(void *p);
-void GsServer_SetNextFree(void *a, void *b);
-u32 GsServer_GetPublicIp(void *e);
-u32 GsServer_GetPortRaw(void *e);
-char *GsServer_GetStringValue(void *rec, char *key, char *dflt);
-double GsServer_GetFloatValue(void *rec, char *key, s32 a, s32 b);
-s32 GsServer_GetIntValue(void *rec, char *key, s32 a);
-u32 GsUtil_GetTimeMs();
-void GsSock_StartupStub();
+s32 socket(s32 a, s32 b, s32 c);
+s32 closesocket(s32 fd);
+s32 connect(s32 fd, void *sa, s32 len);
+s32 SBSetLastListErrorPtr(Ctx070 *c, ...);
+void SBServerListDisconnect(Ctx070 *c);
+void *SBRefStrHash(Ctx070 *c);
+void *TableLookup(void *t, void *key);
+void TableRemove(void *t, void *key);
+void TableEnter(void *t, void *key);
+char *goastrdup(char *s);
+void *ArrayNew(s32 a, s32 b, s32 c);
+void *ArrayNth(void *v, s32 i);
+s32 ArrayLength(void *v);
+void ArrayClear(void *v);
+void ArrayDeleteAt(void *v, s32 i);
+void ArrayAppend(void *v, s32 *p);
+void ArraySort(void *v, void *cmp);
+void *SBServerGetNext(void *p);
+void SBServerFree(void *p);
+void SBServerSetNext(void *a, void *b);
+u32 SBServerGetPublicInetAddress(void *e);
+u32 SBServerGetPublicQueryPortNBO(void *e);
+char *SBServerGetStringValueA(void *rec, char *key, char *dflt);
+double SBServerGetFloatValueA(void *rec, char *key, s32 a, s32 b);
+s32 SBServerGetIntValueA(void *rec, char *key, s32 a);
+u32 current_time();
+void SocketStartUp();
 
-void GsSrvList_PutByte(char **p, u8 c, s32 *n);
-void GsSrvList_PutString(char **p, char *s, s32 *n);
-s32 GsSrvList_ConnectMaster(Ctx070 *c);
-u32 GsSrvList_HashGameName(const char *s, u32 n);
-void GsSrvList_ReportError(Ctx070 *c);
-void GsSrvList_Init(Ctx070 *c, char *a, char *b, char *d, s32 e, s32 f, void *g, u32 h);
-s32 GsUtil_StrSizeInBuffer(const char *s, s32 n);
-void GsStrPool_Release(Ctx070 *c, s32 key);
-u32 GsStrPool_Add(Ctx070 *c, s32 key);
-void GsSrvList_InitServers(Ctx070 *c);
-void GsSrvList_ClearServers(Ctx070 *c);
-void GsSrvList_FreeDeadServers(Ctx070 *c);
-u32 GsSrvList_GetServer(Ctx070 *c, s32 i);
-s32 GsSrvList_Count(Ctx070 *c);
-void GsSrvList_RemoveServerAt(Ctx070 *c, s32 i);
-void GsSrvList_PushDeadServer(Ctx070 *c, void *x);
-s32 GsSrvList_FindServerByAddress(Ctx070 *c, s32 a, s32 b);
-s32 GsSrvList_FindServer(Ctx070 *c, u32 key);
-void GsSrvList_AddServer(Ctx070 *c, s32 a, s32 b, s32 d);
-void GsSrvList_Sort(Ctx070 *c, s32 a, char *b, u32 mode);
-s32 GsSrvList_CompareStringNoCase(void **a, void **b);
-s32 GsSrvList_CompareString(void **a, void **b);
-s32 GsSrvList_CompareFloat(void **a, void **b);
-s32 GsSrvList_CompareInt(void **a, void **b);
+void BufferAddByte(char **p, u8 c, s32 *n);
+void BufferAddNTS(char **p, char *s, s32 *n);
+s32 ServerListConnect(Ctx070 *c);
+u32 StringHash__sb_serverlist(const char *s, u32 n);
+void ErrorDisconnect(Ctx070 *c);
+void SBServerListInit(Ctx070 *c, char *a, char *b, char *d, s32 e, s32 f, void *g, u32 h);
+s32 NTSLengthSB(const char *s, s32 n);
+void SBReleaseStr(Ctx070 *c, s32 key);
+u32 SBRefStr(Ctx070 *c, s32 key);
+void SBAllocateServerList(Ctx070 *c);
+void SBServerListClear(Ctx070 *c);
+void SBFreeDeadList(Ctx070 *c);
+u32 SBServerListNth(Ctx070 *c, s32 i);
+s32 SBServerListCount(Ctx070 *c);
+void SBServerListRemoveAt(Ctx070 *c, s32 i);
+void AddServerToDeadlist(Ctx070 *c, void *x);
+s32 SBServerListFindServerByIP(Ctx070 *c, s32 a, s32 b);
+s32 SBServerListFindServer(Ctx070 *c, u32 key);
+void SBServerListAppendServer(Ctx070 *c, s32 a, s32 b, s32 d);
+void SBServerListSort(Ctx070 *c, s32 a, char *b, u32 mode);
+s32 StrNoCaseKeyCompare(void **a, void **b);
+s32 StrCaseKeyCompare(void **a, void **b);
+s32 FloatKeyCompare(void **a, void **b);
+s32 IntKeyCompare(void **a, void **b);
 
 }
 }
 
 namespace F0228ab3c {
 extern "C" {
-s32 GsSrvList_CompareInt(void **a, void **b) {
+s32 IntKeyCompare(void **a, void **b) {
     void *ra = *(void *volatile *)a;
     void *rb = *b;
-    s32 r = GsServer_GetIntValue(ra, sGsSrvListSortList->sortKey, 0);
-    r -= GsServer_GetIntValue(rb, sGsSrvListSortList->sortKey, 0);
-    if (sGsSrvListSortList->sortAscending == 0) {
+    s32 r = SBServerGetIntValueA(ra, g_sortserverlist->sortkey, 0);
+    r -= SBServerGetIntValueA(rb, g_sortserverlist->sortkey, 0);
+    if (g_sortserverlist->sortascending == 0) {
         r = -r;
     }
     return r;
@@ -366,13 +366,13 @@ s32 GsSrvList_CompareInt(void **a, void **b) {
 
 namespace F0228ab3c {
 extern "C" {
-s32 GsSrvList_CompareFloat(void **a, void **b) {
+s32 FloatKeyCompare(void **a, void **b) {
     void *ra = *(void *volatile *)a;
     void *rb = *b;
-    double d1 = GsServer_GetFloatValue(ra, sGsSrvListSortList->sortKey, 0, 0);
-    double d2 = GsServer_GetFloatValue(rb, sGsSrvListSortList->sortKey, 0, 0);
+    double d1 = SBServerGetFloatValueA(ra, g_sortserverlist->sortkey, 0, 0);
+    double d2 = SBServerGetFloatValueA(rb, g_sortserverlist->sortkey, 0, 0);
     double d = d1 - d2;
-    if (sGsSrvListSortList->sortAscending == 0) {
+    if (g_sortserverlist->sortascending == 0) {
         d = 0 - d;
     }
     if ((float)d > 0) {
@@ -385,11 +385,11 @@ s32 GsSrvList_CompareFloat(void **a, void **b) {
 
 namespace F0228ab3c {
 extern "C" {
-s32 GsSrvList_CompareString(void **a, void **b) {
-    char *s1 = GsServer_GetStringValue(*a, sGsSrvListSortList->sortKey, "");
-    char *s2 = GsServer_GetStringValue(*b, sGsSrvListSortList->sortKey, "");
+s32 StrCaseKeyCompare(void **a, void **b) {
+    char *s1 = SBServerGetStringValueA(*a, g_sortserverlist->sortkey, "");
+    char *s2 = SBServerGetStringValueA(*b, g_sortserverlist->sortkey, "");
     s32 r = strcmp(s1, s2);
-    if (sGsSrvListSortList->sortAscending == 0) {
+    if (g_sortserverlist->sortascending == 0) {
         r = -r;
     }
     return r;
@@ -399,11 +399,11 @@ s32 GsSrvList_CompareString(void **a, void **b) {
 
 namespace F0228ab3c {
 extern "C" {
-s32 GsSrvList_CompareStringNoCase(void **a, void **b) {
-    char *s1 = GsServer_GetStringValue(*a, sGsSrvListSortList->sortKey, "");
-    char *s2 = GsServer_GetStringValue(*b, sGsSrvListSortList->sortKey, "");
+s32 StrNoCaseKeyCompare(void **a, void **b) {
+    char *s1 = SBServerGetStringValueA(*a, g_sortserverlist->sortkey, "");
+    char *s2 = SBServerGetStringValueA(*b, g_sortserverlist->sortkey, "");
     s32 r = func_02130b04(s1, s2);
-    if (sGsSrvListSortList->sortAscending == 0) {
+    if (g_sortserverlist->sortascending == 0) {
         r = -r;
     }
     return r;
@@ -413,49 +413,49 @@ s32 GsSrvList_CompareStringNoCase(void **a, void **b) {
 
 namespace F0228ab3c {
 extern "C" {
-void GsSrvList_Sort(Ctx070 *c, s32 a, char *b, u32 mode) {
+void SBServerListSort(Ctx070 *c, s32 a, char *b, u32 mode) {
     void *cmp;
     switch (mode) {
     case 0:
-        cmp = (void *)GsSrvList_CompareInt;
+        cmp = (void *)IntKeyCompare;
         break;
     case 1:
-        cmp = (void *)GsSrvList_CompareFloat;
+        cmp = (void *)FloatKeyCompare;
         break;
     case 2:
-        cmp = (void *)GsSrvList_CompareString;
+        cmp = (void *)StrCaseKeyCompare;
         break;
     case 3:
-        cmp = (void *)GsSrvList_CompareStringNoCase;
+        cmp = (void *)StrNoCaseKeyCompare;
         break;
     default:
-        cmp = (void *)GsSrvList_CompareStringNoCase;
+        cmp = (void *)StrNoCaseKeyCompare;
         break;
     }
-    c->sortKey = b;
-    c->sortAscending = a;
-    sGsSrvListSortList = c;
-    GsArray_Sort(c->servers, cmp);
+    c->sortkey = b;
+    c->sortascending = a;
+    g_sortserverlist = c;
+    ArraySort(c->servers, cmp);
 }
 }
 }
 
 namespace F0228ab3c {
 extern "C" {
-void GsSrvList_AddServer(Ctx070 *c, s32 a, s32 b, s32 d) {
-    GsArray_Append(c->servers, &a);
-    c->listCallback(c, 0, a, c->callbackParam);
+void SBServerListAppendServer(Ctx070 *c, s32 a, s32 b, s32 d) {
+    ArrayAppend(c->servers, &a);
+    c->ListCallback(c, 0, a, c->instance);
 }
 }
 }
 
 namespace F0228ab3c {
 extern "C" {
-s32 GsSrvList_FindServer(Ctx070 *c, u32 key) {
-    s32 n = GsArray_Count(c->servers);
+s32 SBServerListFindServer(Ctx070 *c, u32 key) {
+    s32 n = ArrayLength(c->servers);
     s32 i;
     for (i = 0; i < n; i++) {
-        if (key == *(u32 *)GsArray_At(c->servers, i)) {
+        if (key == *(u32 *)ArrayNth(c->servers, i)) {
             return i;
         }
     }
@@ -466,13 +466,13 @@ s32 GsSrvList_FindServer(Ctx070 *c, u32 key) {
 
 namespace F0228ab3c {
 extern "C" {
-s32 GsSrvList_FindServerByAddress(Ctx070 *c, s32 a, s32 b) {
+s32 SBServerListFindServerByIP(Ctx070 *c, s32 a, s32 b) {
     void *e;
     s32 i;
-    s32 n = GsArray_Count(c->servers);
+    s32 n = ArrayLength(c->servers);
     for (i = 0; i < n; i++) {
-        e = *(void **)GsArray_At(c->servers, i);
-        if ((u32)a == GsServer_GetPublicIp(e) && (u32)b == GsServer_GetPortRaw(e)) {
+        e = *(void **)ArrayNth(c->servers, i);
+        if ((u32)a == SBServerGetPublicInetAddress(e) && (u32)b == SBServerGetPublicQueryPortNBO(e)) {
             return i;
         }
     }
@@ -483,56 +483,56 @@ s32 GsSrvList_FindServerByAddress(Ctx070 *c, s32 a, s32 b) {
 
 namespace F0228ab3c {
 extern "C" {
-void GsSrvList_PushDeadServer(Ctx070 *c, void *x) {
-    void *t = c->deadServers;
+void AddServerToDeadlist(Ctx070 *c, void *x) {
+    void *t = c->deadlist;
     if (t == NULL) {
-        GsServer_SetNextFree(x, NULL);
+        SBServerSetNext(x, NULL);
     } else {
-        GsServer_SetNextFree(x, t);
+        SBServerSetNext(x, t);
     }
-    c->deadServers = x;
+    c->deadlist = x;
 }
 }
 }
 
 namespace F0228ab3c {
 extern "C" {
-void GsSrvList_RemoveServerAt(Ctx070 *c, s32 i) {
-    u32 v = *(u32 *)GsArray_At(c->servers, i);
-    c->listCallback(c, 2, v, c->callbackParam);
-    GsArray_DeleteAt(c->servers, i);
-    GsSrvList_PushDeadServer(c, (void *)v);
+void SBServerListRemoveAt(Ctx070 *c, s32 i) {
+    u32 v = *(u32 *)ArrayNth(c->servers, i);
+    c->ListCallback(c, 2, v, c->instance);
+    ArrayDeleteAt(c->servers, i);
+    AddServerToDeadlist(c, (void *)v);
 }
 }
 }
 
 namespace F0228ab3c {
 extern "C" {
-s32 GsSrvList_Count(Ctx070 *c) {
-    return GsArray_Count(c->servers);
+s32 SBServerListCount(Ctx070 *c) {
+    return ArrayLength(c->servers);
 }
 }
 }
 
 namespace F0228ab3c {
 extern "C" {
-u32 GsSrvList_GetServer(Ctx070 *c, s32 i) {
-    return *(u32 *)GsArray_At(c->servers, i);
+u32 SBServerListNth(Ctx070 *c, s32 i) {
+    return *(u32 *)ArrayNth(c->servers, i);
 }
 }
 }
 
 namespace F0228ab3c {
 extern "C" {
-void GsSrvList_FreeDeadServers(Ctx070 *c) {
-    if (c->deadServers != NULL) {
-        void *cur = c->deadServers;
+void SBFreeDeadList(Ctx070 *c) {
+    if (c->deadlist != NULL) {
+        void *cur = c->deadlist;
         while (cur != NULL) {
-            void *next = GsServer_GetNextFree(cur);
-            GsServer_Free(&cur);
+            void *next = SBServerGetNext(cur);
+            SBServerFree(&cur);
             cur = next;
         }
-        c->deadServers = NULL;
+        c->deadlist = NULL;
     }
 }
 }
@@ -540,42 +540,42 @@ void GsSrvList_FreeDeadServers(Ctx070 *c) {
 
 namespace F0228ab3c {
 extern "C" {
-void GsSrvList_ClearServers(Ctx070 *c) {
-    s32 n = GsArray_Count(c->servers);
+void SBServerListClear(Ctx070 *c) {
+    s32 n = ArrayLength(c->servers);
     s32 i;
     for (i = 0; i < n; i++) {
-        void *p = GsArray_At(c->servers, i);
-        GsSrvList_PushDeadServer(c, *(void **)p);
+        void *p = ArrayNth(c->servers, i);
+        AddServerToDeadlist(c, *(void **)p);
     }
-    GsArray_Clear(c->servers);
-    GsSrvList_FreeDeadServers(c);
+    ArrayClear(c->servers);
+    SBFreeDeadList(c);
 }
 }
 }
 
 namespace F0228ab3c {
 extern "C" {
-void GsSrvList_InitServers(Ctx070 *c) {
-    c->servers = GsArray_New(4, 0x64, 0);
-    c->deadServers = NULL;
+void SBAllocateServerList(Ctx070 *c) {
+    c->servers = ArrayNew(4, 0x64, 0);
+    c->deadlist = NULL;
 }
 }
 }
 
 namespace F0228ab3c {
 extern "C" {
-u32 GsStrPool_Add(Ctx070 *c, s32 key) {
-    GsStrPoolEntry l;
-    GsStrPoolEntry *e;
+u32 SBRefStr(Ctx070 *c, s32 key) {
+    SBRefString l;
+    SBRefString *e;
     l.str = (char *)key;
-    e = (GsStrPoolEntry *)GsHash_Find(GsStrPool_Get(c), &l);
+    e = (SBRefString *)TableLookup(SBRefStrHash(c), &l);
     if (e != NULL) {
-        e->refCount++;
+        e->refcount++;
         return (u32)e->str;
     }
-    l.str = GsUtil_StrDup((char *)key);
-    l.refCount = 1;
-    GsHash_Insert(GsStrPool_Get(c), &l);
+    l.str = goastrdup((char *)key);
+    l.refcount = 1;
+    TableEnter(SBRefStrHash(c), &l);
     return (u32)l.str;
 }
 }
@@ -583,13 +583,13 @@ u32 GsStrPool_Add(Ctx070 *c, s32 key) {
 
 namespace F0228ab3c {
 extern "C" {
-void GsStrPool_Release(Ctx070 *c, s32 key) {
+void SBReleaseStr(Ctx070 *c, s32 key) {
     s32 k = key;
-    GsStrPoolEntry *e = (GsStrPoolEntry *)GsHash_Find(GsStrPool_Get(c), &k);
+    SBRefString *e = (SBRefString *)TableLookup(SBRefStrHash(c), &k);
     if (e != NULL) {
-        e->refCount--;
-        if (e->refCount == 0) {
-            GsHash_Remove(GsStrPool_Get(c), &k);
+        e->refcount--;
+        if (e->refcount == 0) {
+            TableRemove(SBRefStrHash(c), &k);
         }
     }
 }
@@ -598,7 +598,7 @@ void GsStrPool_Release(Ctx070 *c, s32 key) {
 
 namespace F0228ab3c {
 extern "C" {
-s32 GsUtil_StrSizeInBuffer(const char *s, s32 n) {
+s32 NTSLengthSB(const char *s, s32 n) {
     s32 i;
     for (i = 0; i < n; i++) {
         if (s[i] == 0) {
@@ -612,32 +612,32 @@ s32 GsUtil_StrSizeInBuffer(const char *s, s32 n) {
 
 namespace F0228ab3c {
 extern "C" {
-void GsSrvList_Init(Ctx070 *c, char *a, char *b, char *d, s32 e, s32 f, void *g, u32 h) {
-    if (f != 0 || sGsAvailStatus == 1) {
+void SBServerListInit(Ctx070 *c, char *a, char *b, char *d, s32 e, s32 f, void *g, u32 h) {
+    if (f != 0 || __GSIACResult == 1) {
         s32 neg = -1;
         c->state = 1;
-        GsSrvList_InitServers(c);
-        GsStrPool_Get(c);
-        STD_CopyString(c->queryForGame, a);
-        STD_CopyString(c->queryFromGame, b);
-        STD_CopyString(c->secretKey, d);
-        c->listCallback = (void (*)(Ctx070 *, s32, u32, u32))g;
-        c->maploopCallback = 0;
-        c->callbackParam = h;
-        c->sortKey = "";
-        c->myPublicIp = 0;
-        c->socket = neg;
-        c->inBuffer = 0;
-        c->inBufferLen = 0;
-        c->keyList = 0;
-        c->expectedCount = neg;
-        c->numPopularValues = 0;
-        c->altSourceIp = 0;
-        c->gameVersion = e;
-        GsSrvList_SetErrorText(c, "");
+        SBAllocateServerList(c);
+        SBRefStrHash(c);
+        STD_CopyString(c->queryforgamename, a);
+        STD_CopyString(c->queryfromgamename, b);
+        STD_CopyString(c->queryfromkey, d);
+        c->ListCallback = (void (*)(Ctx070 *, s32, u32, u32))g;
+        c->MaploopCallback = 0;
+        c->instance = h;
+        c->sortkey = "";
+        c->mypublicip = 0;
+        c->slsocket = neg;
+        c->inbuffer = 0;
+        c->inbufferlen = 0;
+        c->keylist = 0;
+        c->expectedelements = neg;
+        c->numpopularvalues = 0;
+        c->srcip = 0;
+        c->fromgamever = e;
+        SBSetLastListErrorPtr(c, "");
         c->unk_5cc = 0;
-        srand(GsUtil_GetTimeMs());
-        GsSock_StartupStub();
+        srand(current_time());
+        SocketStartUp();
     }
 }
 }
@@ -645,24 +645,24 @@ void GsSrvList_Init(Ctx070 *c, char *a, char *b, char *d, s32 e, s32 f, void *g,
 
 namespace F0228ab3c {
 extern "C" {
-void GsSrvList_ReportError(Ctx070 *c) {
-    if (c->inBufferLen > 0 && (u32)c->inBufferLen > (u32)STD_GetStringLength(data_ov065_0228e954)) {
+void ErrorDisconnect(Ctx070 *c) {
+    if (c->inbufferlen > 0 && (u32)c->inbufferlen > (u32)STD_GetStringLength(data_ov065_0228e954)) {
         char *s = data_ov065_0228e954;
         s32 len = STD_GetStringLength(s);
-        if (strncmp((char *)c->inBuffer, s, len) == 0) {
-            GsSrvList_SetErrorText(c, (char *)c->inBuffer + STD_GetStringLength(s));
-            c->listCallback(c, 5, data_ov065_022918a8, c->callbackParam);
+        if (strncmp((char *)c->inbuffer, s, len) == 0) {
+            SBSetLastListErrorPtr(c, (char *)c->inbuffer + STD_GetStringLength(s));
+            c->ListCallback(c, 5, SBNullServer, c->instance);
         }
     }
-    c->listCallback(c, 4, data_ov065_022918a8, c->callbackParam);
-    GsSrvList_Disconnect(c);
+    c->ListCallback(c, 4, SBNullServer, c->instance);
+    SBServerListDisconnect(c);
 }
 }
 }
 
 namespace F0228ab3c {
 extern "C" {
-u32 GsSrvList_HashGameName(const char *s, u32 n) {
+u32 StringHash__sb_serverlist(const char *s, u32 n) {
     s32 ch;
     u32 h = 0;
     ch = *s;
@@ -682,20 +682,20 @@ u32 GsSrvList_HashGameName(const char *s, u32 n) {
 
 namespace F0228ab3c {
 extern "C" {
-s32 GsSrvList_ConnectMaster(Ctx070 *c) {
+s32 ServerListConnect(Ctx070 *c) {
     struct {
         Unk_ov065_0228ab8c_Sa sa;
         char host[0x80];
     } l;
-    u32 h = GsSrvList_HashGameName(c->queryForGame, 0x14);
-    if (sGsSrvListMasterOverride != NULL) {
-        STD_CopyString(l.host, sGsSrvListMasterOverride);
+    u32 h = StringHash__sb_serverlist(c->queryforgamename, 0x14);
+    if (SBOverrideMasterServer != NULL) {
+        STD_CopyString(l.host, SBOverrideMasterServer);
     } else {
-        OS_SPrintf(l.host, "%s.ms%d.gs.nintendowifi.net", c->queryForGame, h);
+        OS_SPrintf(l.host, "%s.ms%d.gs.nintendowifi.net", c->queryforgamename, h);
     }
     l.sa.family = 2;
     l.sa.port = 0xee70;
-    l.sa.addr.w = GsSock_InetAddr(l.host);
+    l.sa.addr.w = inet_addr(l.host);
     if (l.sa.addr.w == (u32)-1) {
         Unk_ov065_0228ab8c_Host *ent = Sock_GetHostByName(l.host);
         if (ent == NULL) {
@@ -708,15 +708,15 @@ s32 GsSrvList_ConnectMaster(Ctx070 *c) {
         d[2] = s2[2];
         d[3] = s2[3];
     }
-    if (c->socket == -1) {
-        c->socket = GsSock_Socket(2, 1, 0);
-        if (c->socket == -1) {
+    if (c->slsocket == -1) {
+        c->slsocket = socket(2, 1, 0);
+        if (c->slsocket == -1) {
             return 1;
         }
     }
-    if (GsSock_Connect(c->socket, &l.sa, 8) != 0) {
-        GsSock_Close(c->socket);
-        c->socket = -1;
+    if (connect(c->slsocket, &l.sa, 8) != 0) {
+        closesocket(c->slsocket);
+        c->slsocket = -1;
         return 3;
     }
     return 0;
@@ -726,7 +726,7 @@ s32 GsSrvList_ConnectMaster(Ctx070 *c) {
 
 namespace F0228ab3c {
 extern "C" {
-void GsSrvList_PutString(char **p, char *s, s32 *n) {
+void BufferAddNTS(char **p, char *s, s32 *n) {
     s32 len;
     if (s == NULL) {
         s = "";
@@ -741,7 +741,7 @@ void GsSrvList_PutString(char **p, char *s, s32 *n) {
 
 namespace F0228ab3c {
 extern "C" {
-void GsSrvList_PutByte(char **p, u8 c, s32 *n) {
+void BufferAddByte(char **p, u8 c, s32 *n) {
     **p = c;
     ++*n;
     ++*p;
@@ -751,7 +751,7 @@ void GsSrvList_PutByte(char **p, u8 c, s32 *n) {
 
 namespace F0228a20c {
 extern "C" {
-void GsSrvList_PutU32(u8 **cur, u32 v, s32 *len)
+void BufferAddInt(u8 **cur, u32 v, s32 *len)
 {
     u8 *d = *cur;
     u8 *sp = (u8 *)&v;
@@ -767,7 +767,7 @@ void GsSrvList_PutU32(u8 **cur, u32 v, s32 *len)
 
 namespace F0228a20c {
 extern "C" {
-void GsSrvList_PutBytes(u8 **cur, const void *src, s32 n, s32 *len)
+void BufferAddData(u8 **cur, const void *src, s32 n, s32 *len)
 {
     memcpy(*cur, src, n);
     *len += n;
@@ -778,19 +778,19 @@ void GsSrvList_PutBytes(u8 **cur, const void *src, s32 n, s32 *len)
 
 namespace F0228a20c {
 extern "C" {
-void GsSrvList_MakeChallenge(GsSrvList *ctx)
+void SetupListChallenge(SBServerList *ctx)
 {
     // No volatiles: the eight stack slots are the loop's literal 0/1 constants, hoisted out of the
     // loop and spilled (no free register); the ninth slot is the spilled temp of (i ^ a) & 1.
     s32 acc, i;
     s32 b, a, ta, tb;
 
-    ctx->challenge[0] = (s8)(rand() % 0x5d + 0x21);
+    ctx->mychallenge[0] = (s8)(rand() % 0x5d + 0x21);
     acc = 0;
     i = 1;
     do {
-        a = ctx->challenge[i - 1];
-        b = ctx->challenge[0];
+        a = ctx->mychallenge[i - 1];
+        b = ctx->mychallenge[0];
         ta = a < b;
         tb = b < 0x4f;
         b &= 1;
@@ -799,9 +799,9 @@ void GsSrvList_MakeChallenge(GsSrvList *ctx)
         b ^= tb;
         acc = b;
         acc ^= ta;
-        ctx->challenge[i] = (s8)(rand() % 0x5d + 0x21);
-        if ((acc != 0 && (ctx->challenge[i] & 1) == 0) || (acc == 0 && (ctx->challenge[i] & 1) == 1)) {
-            ctx->challenge[i]++;
+        ctx->mychallenge[i] = (s8)(rand() % 0x5d + 0x21);
+        if ((acc != 0 && (ctx->mychallenge[i] & 1) == 0) || (acc == 0 && (ctx->mychallenge[i] & 1) == 1)) {
+            ctx->mychallenge[i]++;
         }
         i++;
     } while (i < 8);
@@ -811,7 +811,7 @@ void GsSrvList_MakeChallenge(GsSrvList *ctx)
 
 namespace F0228a20c {
 extern "C" {
-s32 GsSrvList_SendToMaster(GsSrvList *ctx, void *buf, s32 n)
+s32 SendWithRetry(SBServerList *ctx, void *buf, s32 n)
 {
     s32 tries = 1;
     s32 r;
@@ -819,17 +819,17 @@ s32 GsSrvList_SendToMaster(GsSrvList *ctx, void *buf, s32 n)
 
     do {
         tries--;
-        r = GsSock_Send(ctx->socket, buf, n, 0);
+        r = send(ctx->slsocket, buf, n, 0);
         if (r > 0) {
             break;
         }
         if (tries < 0) {
             break;
         }
-        GsSrvList_Disconnect(ctx);
-        res = GsSrvList_SendListRequest(ctx, 0, 0, 2, 0);
+        SBServerListDisconnect(ctx);
+        res = SBServerListConnectAndQuery(ctx, 0, 0, 2, 0);
         if (res != 0) {
-            GsSrvList_ReportError(ctx);
+            ErrorDisconnect(ctx);
             return res;
         }
     } while (tries >= 0);
@@ -843,7 +843,7 @@ s32 GsSrvList_SendToMaster(GsSrvList *ctx, void *buf, s32 n)
 
 namespace F0228a20c {
 extern "C" {
-s32 GsSrvList_SendListRequest(GsSrvList *ctx, const char *user, const char *pass, u32 flags, u32 extra)
+s32 SBServerListConnectAndQuery(SBServerList *ctx, const char *user, const char *pass, u32 flags, u32 extra)
 {
     u16 tmp;
     s32 len;
@@ -865,29 +865,29 @@ s32 GsSrvList_SendListRequest(GsSrvList *ctx, const char *user, const char *pass
     if (STD_GetStringLength(pass) > 0x100) {
         return 6;
     }
-    r = GsSrvList_ConnectMaster(ctx);
+    r = ServerListConnect(ctx);
     if (r != 0) {
         goto end;
     }
-    ctx->queryOptions = flags;
-    GsSrvList_MakeChallenge(ctx);
+    ctx->queryoptions = flags;
+    SetupListChallenge(ctx);
     len = 2;
     cur = &buf[2];
-    GsSrvList_PutByte(&cur, 0, &len);
-    GsSrvList_PutByte(&cur, 1, &len);
-    GsSrvList_PutByte(&cur, 3, &len);
-    GsSrvList_PutU32(&cur, ctx->gameVersion, &len);
-    GsSrvList_PutString(&cur, (const char *)ctx->queryForGame, &len);
-    GsSrvList_PutString(&cur, (const char *)ctx->queryFromGame, &len);
-    GsSrvList_PutBytes(&cur, ctx->challenge, 8, &len);
-    GsSrvList_PutString(&cur, pass, &len);
-    GsSrvList_PutString(&cur, user, &len);
-    GsSrvList_PutU32(&cur, ((flags >> 24) & 0xff) | ((flags >> 8) & 0xff00) | ((flags << 8) & 0xff0000) | ((flags << 24) & 0xff000000), &len);
-    if (ctx->queryOptions & 8) {
-        GsSrvList_PutU32(&cur, ctx->altSourceIp, &len);
+    BufferAddByte(&cur, 0, &len);
+    BufferAddByte(&cur, 1, &len);
+    BufferAddByte(&cur, 3, &len);
+    BufferAddInt(&cur, ctx->fromgamever, &len);
+    BufferAddNTS(&cur, (const char *)ctx->queryforgamename, &len);
+    BufferAddNTS(&cur, (const char *)ctx->queryfromgamename, &len);
+    BufferAddData(&cur, ctx->mychallenge, 8, &len);
+    BufferAddNTS(&cur, pass, &len);
+    BufferAddNTS(&cur, user, &len);
+    BufferAddInt(&cur, ((flags >> 24) & 0xff) | ((flags >> 8) & 0xff00) | ((flags << 8) & 0xff0000) | ((flags << 24) & 0xff000000), &len);
+    if (ctx->queryoptions & 8) {
+        BufferAddInt(&cur, ctx->srcip, &len);
     }
-    if (ctx->queryOptions & 0x80) {
-        GsSrvList_PutU32(&cur, extra, &len);
+    if (ctx->queryoptions & 0x80) {
+        BufferAddInt(&cur, extra, &len);
     }
     {
         u16 l = (u16)*(volatile s32 *)&len;
@@ -897,18 +897,18 @@ s32 GsSrvList_SendListRequest(GsSrvList *ctx, const char *user, const char *pass
     sp = (u8 *)&tmp;
     *(u8 *)da = sp[0];
     *(u8 *)(da + 1) = sp[1];
-    if (GsSock_Send(ctx->socket, (u8 *)da, len, 0) <= 0) {
-        GsSrvList_Disconnect(ctx);
+    if (send(ctx->slsocket, (u8 *)da, len, 0) <= 0) {
+        SBServerListDisconnect(ctx);
         return 3;
     }
     ctx->state = 3;
-    ctx->parseState = 0;
-    if (ctx->inBuffer == 0) {
-        ctx->inBuffer = (u8 *)GsUtil_Alloc(0x1000);
-        if (ctx->inBuffer == 0) {
+    ctx->pstate = 0;
+    if (ctx->inbuffer == 0) {
+        ctx->inbuffer = (u8 *)GsUtil_Alloc(0x1000);
+        if (ctx->inbuffer == 0) {
             return 5;
         }
-        ctx->inBufferLen = 0;
+        ctx->inbufferlen = 0;
     }
     r = 0;
 end:
@@ -919,43 +919,43 @@ end:
 
 namespace F0228a20c {
 extern "C" {
-void GsSrvList_ReleasePopularValues(GsSrvList *ctx)
+void FreePopularValues(SBServerList *ctx)
 {
     s32 i = 0;
-    s32 *pn = &ctx->numPopularValues;
+    s32 *pn = &ctx->numpopularvalues;
     u32 *p;
 
     if (*pn > 0) {
         p = (u32 *)ctx;
         do {
-            GsStrPool_Release(ctx, (void *)p[0x84 / 4]);
+            SBReleaseStr(ctx, (void *)p[0x84 / 4]);
             p++;
             i++;
         } while (i < *pn);
     }
-    ctx->numPopularValues = 0;
+    ctx->numpopularvalues = 0;
 }
 }
 }
 
 namespace F0228a20c {
 extern "C" {
-void GsSrvList_ReleaseKeyList(GsSrvList *ctx)
+void FreeKeyList(SBServerList *ctx)
 {
     s32 i;
-    GsSrvListKey *rec;
+    KeyInfo *rec;
 
-    if (ctx->keyList != 0) {
+    if (ctx->keylist != 0) {
         i = 0;
-        if (GsArray_Count(ctx->keyList) > 0) {
+        if (ArrayLength(ctx->keylist) > 0) {
             do {
-                rec = (GsSrvListKey *)GsArray_At(ctx->keyList, i);
-                GsStrPool_Release(ctx, rec->keyName);
+                rec = (KeyInfo *)ArrayNth(ctx->keylist, i);
+                SBReleaseStr(ctx, rec->keyName);
                 i++;
-            } while (i < GsArray_Count(ctx->keyList));
+            } while (i < ArrayLength(ctx->keylist));
         }
-        GsArray_Free(ctx->keyList);
-        ctx->keyList = 0;
+        ArrayFree(ctx->keylist);
+        ctx->keylist = 0;
     }
 }
 }
@@ -963,34 +963,34 @@ void GsSrvList_ReleaseKeyList(GsSrvList *ctx)
 
 namespace F0228a20c {
 extern "C" {
-void GsSrvList_Disconnect(GsSrvList *ctx)
+void SBServerListDisconnect(SBServerList *ctx)
 {
-    if (ctx->inBuffer != 0) {
-        GsUtil_Free(ctx->inBuffer);
+    if (ctx->inbuffer != 0) {
+        GsUtil_Free(ctx->inbuffer);
     }
-    ctx->inBuffer = 0;
-    ctx->inBufferLen = 0;
-    if (ctx->socket != -1) {
-        GsSock_Close(ctx->socket);
+    ctx->inbuffer = 0;
+    ctx->inbufferlen = 0;
+    if (ctx->slsocket != -1) {
+        closesocket(ctx->slsocket);
     }
-    ctx->socket = -1;
+    ctx->slsocket = -1;
     ctx->state = 1;
-    GsSrvList_ReleaseKeyList(ctx);
-    ctx->expectedCount = -1;
-    GsSrvList_ReleasePopularValues(ctx);
+    FreeKeyList(ctx);
+    ctx->expectedelements = -1;
+    FreePopularValues(ctx);
 }
 }
 }
 
 namespace F0228a20c {
 extern "C" {
-void GsSrvList_Free(GsSrvList *ctx)
+void SBServerListCleanup(SBServerList *ctx)
 {
-    GsSrvList_Disconnect(ctx);
-    GsSrvList_ClearServers(ctx);
-    GsStrPool_FreeIfEmpty(ctx);
+    SBServerListDisconnect(ctx);
+    SBServerListClear(ctx);
+    SBRefStrHashCleanup(ctx);
     if (ctx->servers != 0) {
-        GsArray_Free((GsArray *)ctx->servers);
+        ArrayFree((DArrayImplementation *)ctx->servers);
     }
     ctx->servers = 0;
 }
@@ -999,28 +999,28 @@ void GsSrvList_Free(GsSrvList *ctx)
 
 namespace F0228a20c {
 extern "C" {
-void GsSrvList_InitCrypt(GsSrvList *ctx, s8 *key, s32 n)
+void InitCryptKey(SBServerList *ctx, s8 *key, s32 n)
 {
     s32 len;
     s8 *pw;
     s32 i;
     s32 j;
 
-    len = STD_GetStringLength((const char *)ctx->secretKey);
-    pw = (s8 *)ctx->secretKey;
+    len = STD_GetStringLength((const char *)ctx->queryfromkey);
+    pw = (s8 *)ctx->queryfromkey;
     for (i = 0; i < n; i++) {
         s32 c = pw[i % len];
         j = (i * c) % 8;
-        ctx->challenge[j] = (s8)(ctx->challenge[j] ^ (s8)(ctx->challenge[i % 8] ^ key[i]));
+        ctx->mychallenge[j] = (s8)(ctx->mychallenge[j] ^ (s8)(ctx->mychallenge[i % 8] ^ key[i]));
     }
-    GsSrvListCrypt_Init(&ctx->cryptState, ctx->challenge, 8);
+    GOACryptInit(&ctx->cryptkey, ctx->mychallenge, 8);
 }
 }
 }
 
 namespace F0228a20c {
 extern "C" {
-s32 GsSrvList_GetRecordHeaderSize(u32 flags)
+s32 ServerSizeForFlags(u32 flags)
 {
     s32 sz = 5;
     if (flags & 2) {
@@ -1042,19 +1042,19 @@ s32 GsSrvList_GetRecordHeaderSize(u32 flags)
 
 namespace F0228a20c {
 extern "C" {
-s32 GsSrvList_CheckExtraPairs(u8 *buf, s32 n)
+s32 FullRulesPresent(u8 *buf, s32 n)
 {
     s32 l;
     s32 z = 0;
 
     while (n > 0 && ((s8 *)buf)[z] != 0) {
-        l = GsUtil_StrSizeInBuffer(buf, n);
+        l = NTSLengthSB(buf, n);
         if (l < 0) {
             return 0;
         }
         buf += l;
         n -= l;
-        l = GsUtil_StrSizeInBuffer(buf, n);
+        l = NTSLengthSB(buf, n);
         if (l < 0) {
             return 0;
         }
@@ -1074,19 +1074,19 @@ s32 GsSrvList_CheckExtraPairs(u8 *buf, s32 n)
 
 namespace F0228a20c {
 extern "C" {
-s32 GsSrvList_CheckKeyValues(GsSrvList *ctx, u8 *buf, s32 n)
+s32 AllKeysPresent(SBServerList *ctx, u8 *buf, s32 n)
 {
     s32 cnt;
     s32 i;
-    GsSrvListKey *rec;
+    KeyInfo *rec;
     u32 c;
     s32 l;
 
-    cnt = GsArray_Count(ctx->keyList);
+    cnt = ArrayLength(ctx->keylist);
     i = 0;
     if (cnt > 0) {
         do {
-            rec = (GsSrvListKey *)GsArray_At(ctx->keyList, i);
+            rec = (KeyInfo *)ArrayNth(ctx->keylist, i);
             switch (rec->keyType) {
             case 1:
                 buf += 1;
@@ -1104,7 +1104,7 @@ s32 GsSrvList_CheckKeyValues(GsSrvList *ctx, u8 *buf, s32 n)
                 buf++;
                 n--;
                 if (c == 0xff) {
-                    l = GsUtil_StrSizeInBuffer(buf, n);
+                    l = NTSLengthSB(buf, n);
                     if (l == -1) {
                         return 0;
                     }
@@ -1128,7 +1128,7 @@ s32 GsSrvList_CheckKeyValues(GsSrvList *ctx, u8 *buf, s32 n)
 
 namespace F0228a20c {
 extern "C" {
-void GsSrvList_ReadServerAddress(GsSrvList *ctx, u8 *buf, s32 n, u32 *ip, u16 *volatile port)
+void ParseServerIPPort(SBServerList *ctx, u8 *buf, s32 n, u32 *ip, u16 *volatile port)
 {
     u32 f;
     u8 *p;
@@ -1152,7 +1152,7 @@ void GsSrvList_ReadServerAddress(GsSrvList *ctx, u8 *buf, s32 n, u32 *ip, u16 *v
         d[1] = p[1];
         return;
     }
-    *port = ctx->defaultPort;
+    *port = ctx->defaultport;
 end:;
 }
 }
@@ -1160,7 +1160,7 @@ end:;
 
 namespace F0228a20c {
 extern "C" {
-s32 GsSrvList_ParseServer(GsSrvList *ctx, GsServer *ent, u8 *buf, s32 n, s32 flag)
+s32 ParseServer(SBServerList *ctx, _SBServer *ent, u8 *buf, s32 n, s32 flag)
 {
     s32 cnt;
     s32 orig;
@@ -1170,11 +1170,11 @@ s32 GsSrvList_ParseServer(GsSrvList *ctx, GsServer *ent, u8 *buf, s32 n, s32 fla
     u16 port;
     u32 ip;
     u8 *d;
-    GsSrvListKey *rec;
+    KeyInfo *rec;
 
     orig = n;
     flags = buf[0];
-    GsServer_SetListFlags(ent, flags);
+    SBServerSetFlags(ent, flags);
     buf += 5;
     n -= 5;
     if (flags & 0x10) {
@@ -1199,9 +1199,9 @@ s32 GsSrvList_ParseServer(GsSrvList *ctx, GsServer *ent, u8 *buf, s32 n, s32 fla
         buf += 2;
         n -= 2;
     } else {
-        port = ctx->defaultPort;
+        port = ctx->defaultport;
     }
-    GsServer_SetPrivateAddress(ent, ip, port);
+    SBServerSetPrivateAddr(ent, ip, port);
     if (flags & 8) {
         d = (u8 *)&ip;
         d[0] = buf[0];
@@ -1210,17 +1210,17 @@ s32 GsSrvList_ParseServer(GsSrvList *ctx, GsServer *ent, u8 *buf, s32 n, s32 fla
         d[3] = buf[3];
         buf += 4;
         n -= 4;
-        GsServer_SetIcmpIp(ent, ip);
+        SBServerSetICMPIP(ent, ip);
     }
     if (flags & 0x40) {
-        cnt = GsArray_Count(ctx->keyList);
+        cnt = ArrayLength(ctx->keylist);
         i = 0;
         if (cnt > 0) {
             do {
-                rec = (GsSrvListKey *)GsArray_At(ctx->keyList, i);
+                rec = (KeyInfo *)ArrayNth(ctx->keylist, i);
                 switch (rec->keyType) {
                 case 1:
-                    GsServer_SetIntValue(ent, rec->keyName, *buf);
+                    SBServerAddIntKeyValue(ent, rec->keyName, *buf);
                     buf++;
                     n--;
                     break;
@@ -1230,7 +1230,7 @@ s32 GsSrvList_ParseServer(GsSrvList *ctx, GsServer *ent, u8 *buf, s32 n, s32 fla
                     d[0] = buf[0];
                     d[1] = buf[1];
                     sw = (u16)(((tmp >> 8) & 0xff) | ((tmp << 8) & 0xff00));
-                    GsServer_SetIntValue(ent, rec->keyName, sw);
+                    SBServerAddIntKeyValue(ent, rec->keyName, sw);
                     buf += 2;
                     n -= 2;
                     break;
@@ -1246,12 +1246,12 @@ s32 GsSrvList_ParseServer(GsSrvList *ctx, GsServer *ent, u8 *buf, s32 n, s32 fla
                     }
                     if (c == 0xff) {
                         s32 l;
-                        GsServer_SetStringValue(ent, rec->keyName, buf);
+                        SBServerAddKeyValue(ent, rec->keyName, buf);
                         l = STD_GetStringLength((const char *)buf) + 1;
                         buf += l;
                         n -= l;
                     } else {
-                        GsServer_SetStringValue(ent, rec->keyName, (void *)ctx->popularValues[c]);
+                        SBServerAddKeyValue(ent, rec->keyName, (void *)ctx->popularvalues[c]);
                     }
                     break;
                 }
@@ -1259,7 +1259,7 @@ s32 GsSrvList_ParseServer(GsSrvList *ctx, GsServer *ent, u8 *buf, s32 n, s32 fla
                 i++;
             } while (i < cnt);
         }
-        GsServer_SetFlags(ent, (u8)(GsServer_GetFlags(ent) | 1));
+        SBServerSetState(ent, (u8)(SBServerGetState(ent) | 1));
     }
     flags = flags & 0x80;
     if (flags) {
@@ -1271,7 +1271,7 @@ s32 GsSrvList_ParseServer(GsSrvList *ctx, GsServer *ent, u8 *buf, s32 n, s32 fla
             l = STD_GetStringLength((const char *)buf) + 1;
             buf += l;
             n -= l;
-            GsServer_SetStringValue(ent, p, buf);
+            SBServerAddKeyValue(ent, p, buf);
             l = STD_GetStringLength((const char *)buf) + 1;
             buf += l;
             n -= l;
@@ -1284,7 +1284,7 @@ s32 GsSrvList_ParseServer(GsSrvList *ctx, GsServer *ent, u8 *buf, s32 n, s32 fla
             }
         }
         n--;
-        GsServer_SetFlags(ent, (u8)(GsServer_GetFlags(ent) | 2));
+        SBServerSetState(ent, (u8)(SBServerGetState(ent) | 2));
     }
     return orig - n;
 }
@@ -1293,44 +1293,44 @@ s32 GsSrvList_ParseServer(GsSrvList *ctx, GsServer *ent, u8 *buf, s32 n, s32 fla
 
 namespace F0228a20c {
 extern "C" {
-s32 GsSrvList_ParseListServer(GsSrvList *ctx, u8 *buf, s32 n)
+s32 IncomingListParseServer(SBServerList *ctx, u8 *buf, s32 n)
 {
     s32 off;
     u32 flags;
     u32 ip;
     u16 port;
-    GsServer *ent;
+    _SBServer *ent;
     s32 r;
 
     if (n < 1) {
         return 0;
     }
     flags = buf[0];
-    off = GsSrvList_GetRecordHeaderSize(flags);
+    off = ServerSizeForFlags(flags);
     if (n < off) {
         return 0;
     }
     if (flags & 0x40) {
-        if (GsSrvList_CheckKeyValues(ctx, buf + off, n - off) == 0) {
+        if (AllKeysPresent(ctx, buf + off, n - off) == 0) {
             return 0;
         }
     }
     flags = flags & 0x80;
     if (flags) {
-        if (GsSrvList_CheckExtraPairs(buf + off, n - off) == 0) {
+        if (FullRulesPresent(buf + off, n - off) == 0) {
             return 0;
         }
     }
     if (memcmp(buf + 1, (void *)"\377\377\377\377", 4) == 0) {
         return -1;
     }
-    GsSrvList_ReadServerAddress(ctx, buf, n, &ip, &port);
-    ent = GsServer_New(ctx, ip, port);
-    if (GsServer_IsNull(ent) != 0) {
+    ParseServerIPPort(ctx, buf, n, &ip, &port);
+    ent = SBAllocServer(ctx, ip, port);
+    if (SBIsNullServer(ent) != 0) {
         return -2;
     }
-    r = GsSrvList_ParseServer(ctx, ent, buf, n, 1);
-    GsSrvList_AddServer(ctx, ent);
+    r = ParseServer(ctx, ent, buf, n, 1);
+    SBServerListAppendServer(ctx, ent);
     return r;
 }
 }
@@ -1338,23 +1338,23 @@ s32 GsSrvList_ParseListServer(GsSrvList *ctx, u8 *buf, s32 n)
 
 namespace F0228a20c {
 extern "C" {
-void GsSrvList_SetErrorText(GsSrvList *ctx, u32 v)
+void SBSetLastListErrorPtr(SBServerList *ctx, u32 v)
 {
-    ctx->errorText = (char *)v;
+    ctx->lasterror = (char *)v;
 }
 }
 }
 
 namespace F02289808 {
 extern "C" {
-s32 GsSrvList_ParseListReply(GsSrvList *c) {
-    u8 *p = c->inBuffer;
-    s32 n = c->inBufferLen;
+s32 ProcessMainListData(SBServerList *c) {
+    u8 *p = c->inbuffer;
+    s32 n = c->inbufferlen;
     s32 a, b, l, r;
     u8 *dd;
     u8 *sp;
-    GsSrvListKey e;
-    switch (c->parseState) {
+    KeyInfo e;
+    switch (c->pstate) {
     case 0:
         if (n < 1) goto end;
         a = (p[0] ^ 0xec) + 2;
@@ -1362,110 +1362,110 @@ s32 GsSrvList_ParseListReply(GsSrvList *c) {
         l = p[a - 1] ^ 0xea;
         b = a + l;
         if (n < b) goto end;
-        GsSrvList_InitCrypt(c, p + a, l);
-        c->parseState = 1;
+        InitCryptKey(c, p + a, l);
+        c->pstate = 1;
         p += b;
         n -= b;
-        GsSrvListCrypt_Decrypt(&c->cryptState, p, n);
+        GOADecrypt(&c->cryptkey, p, n);
     case 1:
         if (n < 6) goto end;
-        dd = (u8 *)&c->myPublicIp;
+        dd = (u8 *)&c->mypublicip;
         dd[0] = p[0];
         dd[1] = p[1];
         dd[2] = p[2];
         dd[3] = p[3];
-        c->listCallback(c, 6, data_ov065_022918a8, c->callbackParam);
-        dd = (u8 *)&c->defaultPort;
+        c->ListCallback(c, 6, SBNullServer, c->instance);
+        dd = (u8 *)&c->defaultport;
         sp = p + 4;
         dd[0] = sp[0];
         sp++;
         dd[1] = sp[0];
         if (*(u16 *)dd == 0xffff) {
-            if (GsUtil_StrSizeInBuffer(p + 6, n - 6) == -1) goto end;
-            GsSrvList_SetErrorText(c, p + 6);
-            c->listCallback(c, 5, data_ov065_022918a8, c->callbackParam);
-            if (c->inBuffer == 0) goto end;
+            if (NTSLengthSB(p + 6, n - 6) == -1) goto end;
+            SBSetLastListErrorPtr(c, p + 6);
+            c->ListCallback(c, 5, SBNullServer, c->instance);
+            if (c->inbuffer == 0) goto end;
         }
         p += 6;
         n -= 6;
-        if ((c->queryOptions & 2) != 0 || c->defaultPort == 0xffff) {
-            c->parseState = 5;
+        if ((c->queryoptions & 2) != 0 || c->defaultport == 0xffff) {
+            c->pstate = 5;
             c->state = 2;
             goto end;
         }
-        c->parseState = 2;
-        c->expectedCount = -1;
+        c->pstate = 2;
+        c->expectedelements = -1;
     case 2:
-        if (c->expectedCount == -1) {
+        if (c->expectedelements == -1) {
             if (n < 1) goto end;
-            c->expectedCount = p[0];
-            c->keyList = GsArray_New(8, c->expectedCount, 0);
-            if (c->keyList == 0) return 5;
+            c->expectedelements = p[0];
+            c->keylist = ArrayNew(8, c->expectedelements, 0);
+            if (c->keylist == 0) return 5;
             p++;
             n--;
         }
-        while (c->expectedCount > GsArray_Count(c->keyList)) {
+        while (c->expectedelements > ArrayLength(c->keylist)) {
             if (n < 2) break;
-            l = GsUtil_StrSizeInBuffer(p + 1, n - 1);
+            l = NTSLengthSB(p + 1, n - 1);
             if (l == -1) break;
             e.keyType = p[0];
-            e.keyName = GsStrPool_Add(c, p + 1);
-            GsArray_Append(c->keyList, &e);
+            e.keyName = SBRefStr(c, p + 1);
+            ArrayAppend(c->keylist, &e);
             l = l + 1;
             p += l;
             n -= l;
         }
-        if (c->expectedCount > GsArray_Count(c->keyList)) goto end;
-        c->parseState = 3;
-        c->expectedCount = -1;
+        if (c->expectedelements > ArrayLength(c->keylist)) goto end;
+        c->pstate = 3;
+        c->expectedelements = -1;
     case 3:
-        if (c->expectedCount == -1) {
+        if (c->expectedelements == -1) {
             if (n < 1) goto end;
-            c->expectedCount = p[0];
-            c->numPopularValues = 0;
+            c->expectedelements = p[0];
+            c->numpopularvalues = 0;
             p++;
             n--;
         }
-        while (c->expectedCount > c->numPopularValues) {
-            l = GsUtil_StrSizeInBuffer(p, n);
+        while (c->expectedelements > c->numpopularvalues) {
+            l = NTSLengthSB(p, n);
             if (l == -1) break;
-            b = (s32)GsStrPool_Add(c, p);
-            c->popularValues[c->numPopularValues++] = b;
+            b = (s32)SBRefStr(c, p);
+            c->popularvalues[c->numpopularvalues++] = b;
             p += l;
             n -= l;
         }
-        if (c->expectedCount > c->numPopularValues) goto end;
-        c->parseState = 4;
+        if (c->expectedelements > c->numpopularvalues) goto end;
+        c->pstate = 4;
     case 4:
         if (n < 5) goto end;
         r = 0;
         do {
-            l = GsSrvList_ParseListServer(c, p, n);
+            l = IncomingListParseServer(c, p, n);
             if (l == -2) return 5;
             if (l == -1) {
                 n -= 5;
                 p += 5;
-                c->parseState = 5;
+                c->pstate = 5;
                 c->state = 2;
-                c->listCallback(c, 3, data_ov065_022918a8, c->callbackParam);
+                c->ListCallback(c, 3, SBNullServer, c->instance);
                 goto end;
             }
             p += l;
             n -= l;
-            if (c->inBuffer == 0) l = 0;
+            if (c->inbuffer == 0) l = 0;
         } while (l != 0);
         break;
     default:
         break;
     }
 end:
-    if (c->inBuffer == 0) {
+    if (c->inbuffer == 0) {
         return 0;
     }
     if (n != 0) {
-        memmove(c->inBuffer, p, n);
+        memmove(c->inbuffer, p, n);
     }
-    c->inBufferLen = n;
+    c->inbufferlen = n;
     return 0;
 }
 }
@@ -1473,19 +1473,19 @@ end:
 
 namespace F02289808 {
 extern "C" {
-s32 GsSrvList_HandleKeyList(GsSrvList *c, u8 *p, s32 n) {
+s32 ProcessPushKeyList(SBServerList *c, u8 *p, s32 n) {
     s32 cnt;
     s32 i;
     s32 l;
-    GsSrvListKey e;
+    KeyInfo e;
     cnt = p[0];
     p++;
     n--;
-    if (c->keyList != 0) {
-        GsSrvList_ReleaseKeyList(c);
+    if (c->keylist != 0) {
+        FreeKeyList(c);
     }
-    c->keyList = GsArray_New(8, cnt, 0);
-    if (c->keyList == 0) {
+    c->keylist = ArrayNew(8, cnt, 0);
+    if (c->keylist == 0) {
         return 5;
     }
     i = 0;
@@ -1494,13 +1494,13 @@ s32 GsSrvList_HandleKeyList(GsSrvList *c, u8 *p, s32 n) {
             if (n < 2) {
                 return 4;
             }
-            l = GsUtil_StrSizeInBuffer(p + 1, n - 1);
+            l = NTSLengthSB(p + 1, n - 1);
             if (l == -1) {
                 return 4;
             }
             e.keyType = p[0];
-            e.keyName = GsStrPool_Add(c, p + 1);
-            GsArray_Append(c->keyList, &e);
+            e.keyName = SBRefStr(c, p + 1);
+            ArrayAppend(c->keylist, &e);
             l = l + 1;
             p += l;
             n -= l;
@@ -1514,7 +1514,7 @@ s32 GsSrvList_HandleKeyList(GsSrvList *c, u8 *p, s32 n) {
 
 namespace F02289808 {
 extern "C" {
-s32 GsSrvList_HandleMsg06(GsSrvList *c, u8 *p, s32 n) {
+s32 ProcessPlayerSearch(SBServerList *c, u8 *p, s32 n) {
     s32 l;
     u32 flag;
     s32 i;
@@ -1537,7 +1537,7 @@ s32 GsSrvList_HandleMsg06(GsSrvList *c, u8 *p, s32 n) {
     if (cnt > 0) {
         do {
             s1 = p;
-            l = GsUtil_StrSizeInBuffer(p, n);
+            l = NTSLengthSB(p, n);
             if (l == -1) {
                 return 4;
             }
@@ -1565,18 +1565,18 @@ s32 GsSrvList_HandleMsg06(GsSrvList *c, u8 *p, s32 n) {
             z = HTONL(z);
             p += 10;
             n -= 10;
-            l2 = GsUtil_StrSizeInBuffer(p, n);
+            l2 = NTSLengthSB(p, n);
             if (l2 == -1) {
                 return 4;
             }
-            c->playerSearchCallback(c, s1, x, y, z, p, c->callbackParam);
+            c->PlayerSearchCallback(c, s1, x, y, z, p, c->instance);
             p += l2;
             n -= l2;
             i++;
         } while (i < cnt);
     }
     if (flag != 0) {
-        c->playerSearchCallback(c, 0, 0, 0, 0, 0, c->callbackParam);
+        c->PlayerSearchCallback(c, 0, 0, 0, 0, 0, c->instance);
     }
     return 0;
 }
@@ -1585,7 +1585,7 @@ s32 GsSrvList_HandleMsg06(GsSrvList *c, u8 *p, s32 n) {
 
 namespace F02289808 {
 extern "C" {
-s32 GsSrvList_HandleMsg05(GsSrvList *c, u8 *p, s32 n) {
+s32 ProcessMaploop(SBServerList *c, u8 *p, s32 n) {
     u16 b;
     u32 d;
     u32 a;
@@ -1610,11 +1610,11 @@ s32 GsSrvList_HandleMsg05(GsSrvList *c, u8 *p, s32 n) {
     dd[0] = s[0];
     s++;
     dd[1] = s[0];
-    r = GsSrvList_FindServerByAddress(c, a, b);
+    r = SBServerListFindServerByIP(c, a, b);
     if (r == -1) {
         return 0;
     }
-    x = GsSrvList_GetServer(c, r);
+    x = SBServerListNth(c, r);
     dd = (u8 *)&d;
     s = p + 6;
     dd[0] = s[0];
@@ -1631,7 +1631,7 @@ s32 GsSrvList_HandleMsg05(GsSrvList *c, u8 *p, s32 n) {
         if (n < 1) {
             break;
         }
-        l = GsUtil_StrSizeInBuffer(p, n);
+        l = NTSLengthSB(p, n);
         if (l == -1) {
             return 4;
         }
@@ -1640,10 +1640,10 @@ s32 GsSrvList_HandleMsg05(GsSrvList *c, u8 *p, s32 n) {
         n -= l;
         i++;
     }
-    if (c->maploopCallback == 0) {
+    if (c->MaploopCallback == 0) {
         return 0;
     }
-    c->maploopCallback(c, (void *)x, d, i, ptrs, c->callbackParam);
+    c->MaploopCallback(c, (void *)x, d, i, ptrs, c->instance);
     return 0;
 }
 }
@@ -1651,7 +1651,7 @@ s32 GsSrvList_HandleMsg05(GsSrvList *c, u8 *p, s32 n) {
 
 namespace F02289808 {
 extern "C" {
-s32 GsSrvList_HandleServerDelete(GsSrvList *c, u8 *p, s32 n) {
+s32 ProcessDeleteServer(SBServerList *c, u8 *p, s32 n) {
     u32 a;
     u16 b;
     u8 *d;
@@ -1670,9 +1670,9 @@ s32 GsSrvList_HandleServerDelete(GsSrvList *c, u8 *p, s32 n) {
     d[0] = s[0];
     s++;
     d[1] = s[0];
-    r = GsSrvList_FindServerByAddress(c, a, b);
+    r = SBServerListFindServerByIP(c, a, b);
     if (r != -1) {
-        GsSrvList_RemoveServerAt(c, r);
+        SBServerListRemoveAt(c, r);
         return 0;
     }
     return 0;
@@ -1682,7 +1682,7 @@ s32 GsSrvList_HandleServerDelete(GsSrvList *c, u8 *p, s32 n) {
 
 namespace F02289808 {
 extern "C" {
-s32 GsSrvList_HandleServerUpdate(GsSrvList *c, u8 *p, s32 n) {
+s32 ProcessPushServer(SBServerList *c, u8 *p, s32 n) {
     u32 a;
     u16 b;
     s32 r4;
@@ -1690,23 +1690,23 @@ s32 GsSrvList_HandleServerUpdate(GsSrvList *c, u8 *p, s32 n) {
     if (n < 5) {
         return 4;
     }
-    GsSrvList_ReadServerAddress(c, p, n, &a, &b);
-    r4 = GsSrvList_FindServerByAddress(c, a, b);
+    ParseServerIPPort(c, p, n, &a, &b);
+    r4 = SBServerListFindServerByIP(c, a, b);
     if (r4 == -1) {
-        r6 = GsServer_New(c, a, b);
-        if (GsServer_IsNull() != 0) {
+        r6 = SBAllocServer(c, a, b);
+        if (SBIsNullServer() != 0) {
             return 5;
         }
     } else {
-        r6 = GsSrvList_GetServer(c, r4);
+        r6 = SBServerListNth(c, r4);
     }
-    if (GsSrvList_ParseServer(c, r6, p, n, 0) < 0) {
+    if (ParseServer(c, r6, p, n, 0) < 0) {
         return 4;
     }
     if (r4 == -1) {
-        GsSrvList_AddServer(c, r6);
+        SBServerListAppendServer(c, r6);
     }
-    c->listCallback(c, 1, r6, c->callbackParam);
+    c->ListCallback(c, 1, r6, c->instance);
     return 0;
 }
 }
@@ -1714,57 +1714,57 @@ s32 GsSrvList_HandleServerUpdate(GsSrvList *c, u8 *p, s32 n) {
 
 namespace F02289808 {
 extern "C" {
-s32 GsSrvList_ProcessMessages(GsSrvList *c) {
+s32 ProcessAdHocData(SBServerList *c) {
     u8 *d;
     s32 r = 0;
     u16 ml;
     u8 *p;
-    while (c->inBufferLen >= 3) {
+    while (c->inbufferlen >= 3) {
         {
             d = (u8 *)&ml;
-            Get16(d, c->inBuffer);
+            Get16(d, c->inbuffer);
             ml = HTONS(ml);
             if (ml > 0x1000) {
                 r = 4;
                 break;
             }
-            if (c->inBufferLen < ml) {
+            if (c->inbufferlen < ml) {
                 return 0;
             }
-            p = c->inBuffer;
+            p = c->inbuffer;
             switch ((s8)p[2]) {
             case 0:
                 break;
             case 1:
-                r = GsSrvList_HandleKeyList(c, p + 3, ml - 3);
+                r = ProcessPushKeyList(c, p + 3, ml - 3);
                 break;
             case 2:
-                r = GsSrvList_HandleServerUpdate(c, p + 3, ml - 3);
+                r = ProcessPushServer(c, p + 3, ml - 3);
                 break;
             case 3:
-                if (GsSock_Send(c->socket, p, ml, 0) <= 0) {
+                if (send(c->slsocket, p, ml, 0) <= 0) {
                     return 3;
                 }
                 break;
             case 4:
-                r = GsSrvList_HandleServerDelete(c, p + 3, ml - 3);
+                r = ProcessDeleteServer(c, p + 3, ml - 3);
                 break;
             case 5:
-                r = GsSrvList_HandleMsg05(c, p + 3, ml - 3);
+                r = ProcessMaploop(c, p + 3, ml - 3);
                 break;
             case 6:
-                r = GsSrvList_HandleMsg06(c, p + 3, ml - 3);
+                r = ProcessPlayerSearch(c, p + 3, ml - 3);
                 break;
             }
-            c->inBufferLen = c->inBufferLen - ml;
-            if (c->inBufferLen != 0 && c->inBuffer != 0) {
-                memmove(c->inBuffer, c->inBuffer + ml, c->inBufferLen);
+            c->inbufferlen = c->inbufferlen - ml;
+            if (c->inbufferlen != 0 && c->inbuffer != 0) {
+                memmove(c->inbuffer, c->inbuffer + ml, c->inbufferlen);
             }
         }
         if (r != 0) break;
     }
     if (r != 0) {
-        GsSrvList_ReportError(c);
+        ErrorDisconnect(c);
     }
     return r;
 }
@@ -1773,32 +1773,32 @@ s32 GsSrvList_ProcessMessages(GsSrvList *c) {
 
 namespace F02289808 {
 extern "C" {
-s32 GsSrvList_Receive(GsSrvList *c) {
+s32 ProcessIncomingData(SBServerList *c) {
     s32 old;
     s32 r;
     s32 res;
-    if (GsSock_CanRead(c->socket) == 0) {
+    if (CanReceiveOnSocket(c->slsocket) == 0) {
         return 0;
     }
-    old = c->inBufferLen;
-    r = GsSock_Recv(c->socket, c->inBuffer + old, 0x1000 - old, 0);
+    old = c->inbufferlen;
+    r = recv(c->slsocket, c->inbuffer + old, 0x1000 - old, 0);
     if (r == 0 || r == -1) {
-        GsSrvList_ReportError(c);
+        ErrorDisconnect(c);
         return 3;
     }
-    c->inBufferLen = c->inBufferLen + r;
+    c->inbufferlen = c->inbufferlen + r;
     res = 0;
-    if (c->state == 2 || c->parseState > 0) {
-        GsSrvListCrypt_Decrypt(&c->cryptState, c->inBuffer + old, c->inBufferLen - old);
+    if (c->state == 2 || c->pstate > 0) {
+        GOADecrypt(&c->cryptkey, c->inbuffer + old, c->inbufferlen - old);
     }
     if (c->state == 3) {
-        res = GsSrvList_ParseListReply(c);
+        res = ProcessMainListData(c);
     }
     if (res != 0) {
         return res;
     }
-    if (c->state == 2 && c->inBufferLen > 0) {
-        return GsSrvList_ProcessMessages(c);
+    if (c->state == 2 && c->inbufferlen > 0) {
+        return ProcessAdHocData(c);
     }
     return 0;
 }
@@ -1807,7 +1807,7 @@ s32 GsSrvList_Receive(GsSrvList *c) {
 
 namespace F02289808 {
 extern "C" {
-s32 GsSrvList_SendServerMessage(GsSrvList *c, u32 a1, u32 a2, u8 *data, s32 len) {
+s32 SBSendMessageToServer(SBServerList *c, u32 a1, u32 a2, u8 *data, s32 len) {
     struct {
         u16 t;
         u8 pkt[9];
@@ -1817,7 +1817,7 @@ s32 GsSrvList_SendServerMessage(GsSrvList *c, u32 a1, u32 a2, u8 *data, s32 len)
     u8 *sp;
     s32 r;
     if (c->state == 1) {
-        GsSrvList_SendListRequest(c, 0, 0, 2, 0);
+        SBServerListConnectAndQuery(c, 0, 0, 2, 0);
     }
     if (c->state == 1) {
         return 3;
@@ -1838,9 +1838,9 @@ s32 GsSrvList_SendServerMessage(GsSrvList *c, u32 a1, u32 a2, u8 *data, s32 len)
     sp = (u8 *)&a2;
     d[0] = sp[0];
     d[1] = sp[1];
-    r = GsSrvList_SendToMaster(c, l.pkt, 9);
+    r = SendWithRetry(c, l.pkt, 9);
     if (r == 0) {
-        if (GsSock_Send(c->socket, data, len, 0) < 0) {
+        if (send(c->slsocket, data, len, 0) < 0) {
             return 3;
         }
         r = 0;
@@ -1852,7 +1852,7 @@ s32 GsSrvList_SendServerMessage(GsSrvList *c, u32 a1, u32 a2, u8 *data, s32 len)
 
 namespace F02289808 {
 extern "C" {
-s32 GsSrvList_SendNatNegCookie(GsSrvList *c, u32 a1, u32 a2, u32 ip) {
+s32 SBSendNatNegotiateCookieToServer(SBServerList *c, u32 a1, u32 a2, u32 ip) {
     u8 buf[10];
     u8 *d;
     u8 *s;
@@ -1869,14 +1869,14 @@ s32 GsSrvList_SendNatNegCookie(GsSrvList *c, u32 a1, u32 a2, u32 ip) {
     d[1] = s[1];
     d[2] = s[2];
     d[3] = s[3];
-    return GsSrvList_SendServerMessage(c, a1, a2, buf, 10);
+    return SBSendMessageToServer(c, a1, a2, buf, 10);
 }
 }
 }
 
 namespace F02288e2c {
 extern "C" {
-s32 GsSrvList_ThinkLan(GsSrvList *s) {
+s32 ProcessLanData(SBServerList *s) {
     struct Unk_ov065_02289720_Addr {
         u16 fam;
         u16 port;
@@ -1887,27 +1887,27 @@ s32 GsSrvList_ThinkLan(GsSrvList *s) {
     s32 r;
     void *e;
     len = 8;
-    if (GsSock_CanRead(s->socket) != 0) {
+    if (CanReceiveOnSocket(s->slsocket) != 0) {
         do {
-            r = GsSock_RecvFrom(s->socket, buf, 0x5db, 0, &addr, &len);
+            r = recvfrom(s->slsocket, buf, 0x5db, 0, &addr, &len);
             if (r != -1) {
-                r = GsSrvList_FindServerByAddress(s, addr.ip, addr.port);
+                r = SBServerListFindServerByIP(s, addr.ip, addr.port);
                 if (r == -1) {
-                    e = GsServer_New(s, addr.ip, addr.port);
-                    if (GsServer_IsNull(e) != 0) {
+                    e = SBAllocServer(s, addr.ip, addr.port);
+                    if (SBIsNullServer(e) != 0) {
                         return 5;
                     }
-                    GsServer_SetListFlags(e, 0x11);
-                    GsSrvList_AddServer(s, e);
+                    SBServerSetFlags(e, 0x11);
+                    SBServerListAppendServer(s, e);
                 }
             }
-        } while (GsSock_CanRead(s->socket) != 0);
+        } while (CanReceiveOnSocket(s->slsocket) != 0);
     }
-    if (GsUtil_GetTimeMs() - s->lanStartTime > 2000) {
-        GsSock_Close(s->socket);
-        s->socket = -1;
+    if (current_time() - s->lanstarttime > 2000) {
+        closesocket(s->slsocket);
+        s->slsocket = -1;
         s->state = 1;
-        s->listCallback(s, 3, data_ov065_022918a8, s->callbackParam);
+        s->ListCallback(s, 3, SBNullServer, s->instance);
     }
     return 0;
 }
@@ -1916,14 +1916,14 @@ s32 GsSrvList_ThinkLan(GsSrvList *s) {
 
 namespace F02288e2c {
 extern "C" {
-s32 GsSrvList_Think(void *sub) {
-    GsSrvList_FreeDeadServers(sub);
+s32 SBListThink(void *sub) {
+    SBFreeDeadList(sub);
     switch (*(s32 *)sub) {
     case 2:
     case 3:
-        return GsSrvList_Receive(sub);
+        return ProcessIncomingData(sub);
     case 0:
-        return GsSrvList_ThinkLan((GsSrvList *)sub);
+        return ProcessLanData((SBServerList *)sub);
     case 1:
         break;
     }
@@ -1934,25 +1934,25 @@ s32 GsSrvList_Think(void *sub) {
 
 namespace F02288e2c {
 extern "C" {
-void GsSrvBrowser_OnListEvent(GsSrvList *s, s32 code, GsServer *p, GsSrvBrowser *o) {
+void ListCallback(SBServerList *s, s32 code, _SBServer *p, _ServerBrowser *o) {
     switch (code) {
     case 0:
-        o->browserCallback(o, 0, p, o->userData);
-        if ((p->stateFlags & 3) != 0) {
-            if ((p->stateFlags & 0x40) != 0) {
+        o->BrowserCallback(o, 0, p, o->instance);
+        if ((p->state & 3) != 0) {
+            if ((p->state & 0x40) != 0) {
                 break;
             }
         }
-        if ((p->stateFlags & 0x2c) != 0) {
+        if ((p->state & 0x2c) != 0) {
             break;
         }
-        if (o->noAutoQuery != 0) {
+        if (o->dontUpdate != 0) {
             break;
         }
         {
             s32 m;
-            if ((p->listFlags & 1) != 0) {
-                if (o->list.state == 0 || o->engine.keycount == 0) {
+            if ((p->flags & 1) != 0) {
+                if (o->list.state == 0 || o->engine.numserverkeys == 0) {
                     m = 1;
                 } else {
                     m = 0;
@@ -1960,42 +1960,42 @@ void GsSrvBrowser_OnListEvent(GsSrvList *s, s32 code, GsServer *p, GsSrvBrowser 
             } else {
                 m = 2;
             }
-            GsSrvQuery_Add(o, p, 0, m);
+            SBQueryEngineUpdateServer(o, p, 0, m);
         }
         break;
     case 1:
-        if ((p->stateFlags & 0x43) == 0) {
-            o->browserCallback(o, 2, p, o->userData);
+        if ((p->state & 0x43) == 0) {
+            o->BrowserCallback(o, 2, p, o->instance);
         } else {
-            o->browserCallback(o, 1, p, o->userData);
+            o->BrowserCallback(o, 1, p, o->instance);
         }
         break;
     case 2:
-        if ((p->stateFlags & 0x2c) != 0) {
-            GsSrvQuery_Remove(o, p);
+        if ((p->state & 0x2c) != 0) {
+            SBQueryEngineRemoveServerFromFIFOs(o, p);
         }
-        o->browserCallback(o, 3, p, o->userData);
+        o->BrowserCallback(o, 3, p, o->instance);
         break;
     case 3:
-        if (o->disconnectOnComplete != 0) {
-            GsSrvList_Disconnect(s);
+        if (o->disconnectFlag != 0) {
+            SBServerListDisconnect(s);
         }
-        if (GsArray_Count(s->servers) == 0 || o->engine.active.count == 0) {
-            o->browserCallback(o, 4, NULL, o->userData);
+        if (ArrayLength(s->servers) == 0 || o->engine.querylist.count == 0) {
+            o->BrowserCallback(o, 4, NULL, o->instance);
         }
         break;
     case 4:
         break;
     case 5:
-        o->browserCallback(o, 5, NULL, o->userData);
+        o->BrowserCallback(o, 5, NULL, o->instance);
         break;
     case 6:
-        GsSrvQuery_SetPublicIp(o, o->list.myPublicIp);
+        SBQueryEngineSetPublicIP(o, o->list.mypublicip);
         break;
     }
     if (p != NULL) {
-        if (p->addr == o->waitServerIp && p->port == o->waitServerPort) {
-            o->waitServerIp = 0;
+        if (p->publicip == o->triggerIP && p->publicport == o->triggerPort) {
+            o->triggerIP = 0;
         }
     }
 }
@@ -2004,21 +2004,21 @@ void GsSrvBrowser_OnListEvent(GsSrvList *s, s32 code, GsServer *p, GsSrvBrowser 
 
 namespace F02288e2c {
 extern "C" {
-void GsSrvBrowser_OnQueryEvent(void *a, s32 code, GsServer *p, GsSrvBrowser *o) {
+void EngineCallback(void *a, s32 code, _SBServer *p, _ServerBrowser *o) {
     switch (code) {
     case 1:
-        o->browserCallback(o, 2, p, o->userData);
+        o->BrowserCallback(o, 2, p, o->instance);
         break;
     case 0:
-        o->browserCallback(o, 1, p, o->userData);
+        o->BrowserCallback(o, 1, p, o->instance);
         break;
     case 2:
-        o->browserCallback(o, 4, p, o->userData);
+        o->BrowserCallback(o, 4, p, o->instance);
         break;
     }
     if (p != NULL) {
-        if (p->addr == o->waitServerIp && p->port == o->waitServerPort) {
-            o->waitServerIp = 0;
+        if (p->publicip == o->triggerIP && p->publicport == o->triggerPort) {
+            o->triggerIP = 0;
         }
     }
 }
@@ -2027,20 +2027,20 @@ void GsSrvBrowser_OnQueryEvent(void *a, s32 code, GsServer *p, GsSrvBrowser *o) 
 
 namespace F02288e2c {
 extern "C" {
-GsSrvBrowser *GsSrvBrowser_New(s32 a, s32 b, s32 c, s32 d, s32 s5, s32 s6, s32 s7, void *s8, void *s9) {
-    GsSrvBrowser *o;
-    if (s7 == 0 && sGsAvailStatus != 1) {
+_ServerBrowser *ServerBrowserNewA(s32 a, s32 b, s32 c, s32 d, s32 s5, s32 s6, s32 s7, void *s8, void *s9) {
+    _ServerBrowser *o;
+    if (s7 == 0 && __GSIACResult != 1) {
         return NULL;
     }
-    o = (GsSrvBrowser *)GsUtil_Alloc(0x638);
+    o = (_ServerBrowser *)GsUtil_Alloc(0x638);
     if (o == NULL) {
         return NULL;
     }
-    o->browserCallback = (void (*)(GsSrvBrowser *, s32, void *, void *))s8;
-    o->userData = s9;
-    o->noAutoQuery = 0;
-    GsSrvList_Init(&o->list, a, b, c, d, s7, (void *)GsSrvBrowser_OnListEvent, o);
-    GsSrvQuery_Init(o, s5, s6, s7, (void *)GsSrvBrowser_OnQueryEvent, o);
+    o->BrowserCallback = (void (*)(_ServerBrowser *, s32, void *, void *))s8;
+    o->instance = s9;
+    o->dontUpdate = 0;
+    SBServerListInit(&o->list, a, b, c, d, s7, (void *)ListCallback, o);
+    SBQueryEngineInit(o, s5, s6, s7, (void *)EngineCallback, o);
     return o;
 }
 }
@@ -2048,9 +2048,9 @@ GsSrvBrowser *GsSrvBrowser_New(s32 a, s32 b, s32 c, s32 d, s32 s5, s32 s6, s32 s
 
 namespace F02288e2c {
 extern "C" {
-void GsSrvBrowser_Free(GsSrvBrowser *o) {
-    GsSrvList_Free(&o->list);
-    GsSrvQuery_Shutdown(o);
+void ServerBrowserFree(_ServerBrowser *o) {
+    SBServerListCleanup(&o->list);
+    SBEngineCleanup(o);
     GsUtil_Free(o);
 }
 }

@@ -22,7 +22,7 @@ s32 strcspn(const char *, const char *);
 char *strchr(const char *, s32);
 s32 atol(const char *);
 void *memset(void *, s32, s32);
-char *GsUtil_StrDup(const char *);
+char *goastrdup(const char *);
 void GsGp_SetErrorString(void *, const char *);
 void GsUtil_StrCopyN(char *, const char *, s32);
 s32 GsGp_SendBuddyMessageEx(void *, s32, s32, s32);
@@ -50,7 +50,7 @@ namespace Nc {
 
 typedef GsGpContext Ctx0227;
 extern "C" {
-extern s32 sGsAvailStatus;
+extern s32 __GSIACResult;
 
 
 typedef s32 (*GsGpConnectCallback)(Ctx0227 **, void *, s32);
@@ -60,7 +60,7 @@ void GsGp_SetErrorString(Ctx0227 **, const char *);
 s32 GsGp_Connect(Ctx0227 **, const char *, const char *, const char *, const char *, const char *,
                         const char *, s32, s32, s32, s32, GsGpConnectCallback, s32);
 s32 GsGp_CheckConnected(Ctx0227 **);
-void GsUtil_Sleep(s32);
+void msleep(s32);
 s32 GsGp_FindOperation(Ctx0227 **, Unk_ov065_0227c538_Node **, s32);
 s32 GsGp_CallPendingCallbacks(Ctx0227 **, s32);
 s32 GsGpPeer_ProcessAll(Ctx0227 **);
@@ -85,11 +85,11 @@ void GsGpBuf_AppendInt(Ctx0227 **, char **, s32);
 s32 GsGpProfile_IsUnused(Unk_ov065_0227c538_Node *);
 void GsGpProfile_Remove(Ctx0227 **, Unk_ov065_0227c538_Node *);
 s32 GsGpProfile_InitTable(Ctx0227 **);
-void GsSock_StartupStub();
-void GsUtil_GetTimeMs();
+void SocketStartUp();
+void current_time();
 void GsUtil_Free(void *);
 void *GsUtil_Alloc(s32);
-void GsHash_Free(void *);
+void TableFree(void *);
 
 char *strstr(const char *, const char *);
 void memcpy(void *, const void *, s32);
@@ -112,7 +112,7 @@ s32 GsGp_FixBuddyIndexCb(Ctx0227 **h, Unk_ov065_0227c538_Node *n, s32 m);
 namespace Nc {
 extern "C" {
 s32 GsGp_Initialize(Ctx0227 **h, s32 a, s32 b) {
-    if (sGsAvailStatus != 1) {
+    if (__GSIACResult != 1) {
         return 2;
     }
     if (h == NULL) {

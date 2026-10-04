@@ -3,7 +3,7 @@
 
 #include "types.h"
 
-// GT2 connection user data (sDwcConnInfo[32], DwcConn_GetConnInfo / GsTransport_GetUserData;
+// GT2 connection user data (sDwcConnInfo[32], DwcConn_GetConnInfo / gt2GetConnectionData;
 // src/ov065/unk_ov065_0226fc18.cpp, src/ov065/unk_ov065_022723b8.cpp).
 struct DwcConnInfo {
     /* 0x0 */ u8 slotIndex;

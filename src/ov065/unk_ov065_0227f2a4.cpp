@@ -54,21 +54,21 @@ void GsGp_SetErrorString(Ctx0227 **, const char *);
 void GsGp_SetError(Ctx0227 **, s32, const char *);
 void GsGp_CallErrorCallback(Ctx0227 **, s32, s32);
 void GsUtil_StrCopyN(char *, const char *, s32);
-void GsUtil_StrToLower(char *);
+void _strlwr(char *);
 void *GsUtil_Alloc(s32);
 void GsUtil_Free(void *);
-char *GsUtil_StrDup(const char *);
+char *goastrdup(const char *);
 s32 GsGp_AddOperation(Ctx0227 **, s32, void *, GsGpOperation **, s32, s32, s32);
 void GsGp_CallFailedCallback(Ctx0227 **, GsGpOperation *);
 s32 GsGp_CloseConnection(Ctx0227 **, s32);
 s32 GsGp_ProcessConnection(Ctx0227 **, s32);
-s32 GsSock_Socket(s32, s32, s32);
-s32 GsSock_Bind(s32, void *, s32);
-s32 GsSock_Listen(s32, s32);
-s32 GsSock_GetSockName(s32, void *, s32 *);
-s32 GsSock_Connect(s32, void *, s32);
-s32 GsSock_GetLastError(s32);
-s32 GsSock_SetBlocking(s32, s32);
+s32 socket(s32, s32, s32);
+s32 bind(s32, void *, s32);
+s32 listen(s32, s32);
+s32 getsockname(s32, void *, s32 *);
+s32 connect(s32, void *, s32);
+s32 GOAGetLastError(s32);
+s32 SetSockBlocking(s32, s32);
 Unk_ov065_0227f00c_Host *Sock_GetHostByName(char *);
 s32 GsGpProfile_Find(Ctx0227 **, s32, GsGpProfile **);
 void GsGp_CopyInfoResult(GsGpInfoCache *, void *);
@@ -149,7 +149,7 @@ s32 atol(const char *);
 s32 OS_SPrintf(char *, const char *, ...);
 void GsUtil_Free(void *);
 void *GsUtil_Alloc(s32);
-char *GsUtil_StrDup(const char *);
+char *goastrdup(const char *);
 s32 GsGpBuf_AppendString(void *, char *, const char *);
 s32 GsGpBuf_AppendInt(void *, char *, s32);
 void GsGp_CallErrorCallback(void *, s32, s32);
@@ -209,8 +209,8 @@ s32 GsGp_ProcessConnectReply(void *, void *, char *);
 s32 GsGp_ProcessNewProfileReply(void *, void *, char *);
 s32 GsGp_ProcessProfileReply(void *, void *, char *);
 s32 GsGp_ProcessRnReply(void *, void *, char *);
-s32 GsSock_Shutdown(s32, s32);
-s32 GsSock_Close(s32);
+s32 shutdown(s32, s32);
+s32 closesocket(s32);
 void GsUtil_Free(void *);
 void *GsUtil_Alloc(u32);
 s32 GsGp_QueueCallback(void *, GsGpCallbackPair, void *, void *, s32);
@@ -220,18 +220,18 @@ s32 OS_SPrintf(char *, const char *, ...);
 s32 GsGpPeer_SendString(void *, void *, const char *);
 s32 GsGpPeer_Send(void *, void *, const char *, s32);
 s32 GsGpPeer_SendChar(void *, void *, s32);
-s32 GsUtil_GetTimeSeconds(s32);
+s32 time(s32);
 s32 GsGpBuf_AppendString(void *, void *, const char *);
 s32 GsGpBuf_AppendInt(void *, void *, s32);
 s32 GsGpBuf_Append(void *, void *, const char *, s32);
 s32 GsGpBuf_AppendChar(void *, void *, s32);
-void GsArray_Append(void *, void *);
+void ArrayAppend(void *, void *);
 s32 GsGpProfile_Find(void *, s32, void *);
-s32 GsSock_Socket(s32, s32, s32);
-s32 GsSock_SetBlocking(s32, s32);
+s32 socket(s32, s32, s32);
+s32 SetSockBlocking(s32, s32);
 void GsGpPeer_SetSocketBuffers(s32);
-s32 GsSock_Connect(s32, void *, s32);
-s32 GsSock_GetLastError(s32);
+s32 connect(s32, void *, s32);
+s32 GOAGetLastError(s32);
 void GsGp_CallErrorCallback(void *, s32, s32);
 
 extern char data_ov065_0228d894[];
@@ -544,7 +544,7 @@ s32 GsGp_ProcessProfileReply(void *h, Unk_ov065_0227ff90_Req *req, char *str) {
     if (flag != 0) {
         GsUtil_Free((void *)l.e[6]);
         l.e[6] = 0;
-        l.e[6] = (u32)GsUtil_StrDup(l.buf);
+        l.e[6] = (u32)goastrdup(l.buf);
     }
     if (ctx->infoCaching != 0) {
         GsGp_CacheProfileInfo(h, l.e, &s);
@@ -825,7 +825,7 @@ s32 GsGp_SetInfoString(Ctx0227 **h, s32 cmd, char *val) {
     case 0x702:
         CK_NONEMPTY
         GsUtil_StrCopyN(buf, val, 0x33);
-        GsUtil_StrToLower(buf);
+        _strlwr(buf);
         GsUtil_StrCopyN(ctx->email, buf, 0x33);
         r = GsGp_QueueUserUpdate(h, "\\email\\", buf);
         if (r != 0) return r;
@@ -1078,13 +1078,13 @@ s32 GsGp_CacheProfileInfo(Ctx0227 **h, GsGpProfile *p, GsGpInfoCache *q) {
     d = p->infoCache;
     if (d != 0) {
         *(Unk_ov065_0227f324_Copy *)d = *(Unk_ov065_0227f324_Copy *)q;
-        p->infoCache->nick = GsUtil_StrDup(q->nick);
-        p->infoCache->uniqueNick = GsUtil_StrDup(q->uniqueNick);
-        p->infoCache->email = GsUtil_StrDup(q->email);
-        p->infoCache->firstName = GsUtil_StrDup(q->firstName);
-        p->infoCache->lastName = GsUtil_StrDup(q->lastName);
-        p->infoCache->homepage = GsUtil_StrDup(q->homepage);
-        p->infoCache->aimName = GsUtil_StrDup(q->aimName);
+        p->infoCache->nick = goastrdup(q->nick);
+        p->infoCache->uniqueNick = goastrdup(q->uniqueNick);
+        p->infoCache->email = goastrdup(q->email);
+        p->infoCache->firstName = goastrdup(q->firstName);
+        p->infoCache->lastName = goastrdup(q->lastName);
+        p->infoCache->homepage = goastrdup(q->homepage);
+        p->infoCache->aimName = goastrdup(q->aimName);
     }
     if (p->infoCache != 0) {
         return 1;

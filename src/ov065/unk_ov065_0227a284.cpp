@@ -1,7 +1,7 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
 #include "net/SockHostEnt.h"
-#include "net/GsArray.h"
+#include "net/darray.h"
 #include "net/GsHttpConnection.h"
 
 // ov065 TU38: ghttp (2): request post / process / response handlers (0x0227a284..0x0227bd20)
@@ -31,11 +31,11 @@ extern char data_ov065_0228ca58[4];
 s32 GsHttpPost_AddStringPart(void *, const char *, const char *);
 s32 GsHttpPost_New();
 void GsHttp_ForEachConnection(s32 (*)(GsHttpConnection *));
-char *GsUtil_StrDup(const char *);
+char *goastrdup(const char *);
 GsHttpConnection *GsHttp_NewConnection();
 BOOL GsHttp_FreeConnection(GsHttpConnection *);
 BOOL GsHttp_InitPostState(GsHttpConnection *);
-void GsUtil_Sleep(s32);
+void msleep(s32);
 void GsHttp_StepHostLookup(GsHttpConnection *);
 void GsHttp_StepConnect(GsHttpConnection *);
 void GsHttp_StepEncryption(GsHttpConnection *);
@@ -53,8 +53,8 @@ void GsHttp_FreeCritical();
 void GsHttp_InitCritical();
 void GsHttp_FreeAllConnections();
 void GsUtil_Free(void *);
-s32 GsArray_Count(void *);
-GsHttpPostPartState *GsArray_At(void *, s32);
+s32 ArrayLength(void *);
+GsHttpPostPartState *ArrayNth(void *, s32);
 s32 GsHttp_FlushSendBuffer(GsHttpConnection *);
 void GsHttpBuf_Reset(void *);
 s32 GsHttp_SendOrQueue(GsHttpConnection *, const void *, s32);
@@ -88,7 +88,7 @@ s32 GsHttp_SendPostPartString(GsHttpPostPartState *st, GsHttpConnection *c);
 }
 
 namespace Na {
-typedef void (*GsElemFreeFn)(void *);
+typedef void (*ArrayElementFreeFn)(void *);
 
 
 struct Unk_ov065_0227ae94_Blk {
@@ -102,20 +102,20 @@ extern volatile s32 data_ov065_022910e0;
 extern volatile s32 data_ov065_022910dc;
 extern u16 data_0213a510[];
 
-s32 GsArray_Count(GsArray *);
-void *GsArray_At(GsArray *, s32);
-void GsArray_Free(GsArray *);
-void GsArray_Append(GsArray *, void *);
-GsArray *GsArray_New(s32, s32, GsElemFreeFn);
+s32 ArrayLength(DArrayImplementation *);
+void *ArrayNth(DArrayImplementation *, s32);
+void ArrayFree(DArrayImplementation *);
+void ArrayAppend(DArrayImplementation *, void *);
+DArrayImplementation *ArrayNew(s32, s32, ArrayElementFreeFn);
 void *GsUtil_Alloc(s32);
 void GsUtil_Free(void *);
-char *GsUtil_StrDup(const char *);
-s32 GsUtil_GetTimeMs(void);
+char *goastrdup(const char *);
+s32 current_time(void);
 s32 GsHttp_SocketRecv(void *, u8 *, s32 *);
 s32 GsHttpBuf_Append(void *, u8 *, s32);
 void GsHttpBuf_Reset(void *);
 void GsHttp_CallProgressCallback(void *, u32, u32);
-s32 GsSock_GetLastError(s32);
+s32 GOAGetLastError(s32);
 s32 GsHttp_ProcessBodyData(void *, u8 *, s32);
 u32 STD_GetStringLength(const char *);
 void fclose(s32);
@@ -187,14 +187,14 @@ char *strstr(const char *hay, const char *needle);
 s32 strncmp(const char *, const char *, u32);
 s32 OS_SPrintf(char *buf, const char *fmt, ...);
 
-s32 GsSock_GetLastError(s32);
-s32 GsSock_InetAddr(char *);
-s32 GsSock_Connect(s32 a, void *src, u32 len);
-s32 GsSock_Socket(s32 a, s32 b, s32 c);
-s32 GsSock_Select(s32 sock, s32 *rd, s32 *wr, s32 *ex);
-s32 GsSock_SetRecvBufSize(s32 sock, s32 val);
-s32 GsSock_SetBlocking(s32 sock, s32 flag);
-s32 GsSock_StartupStub();
+s32 GOAGetLastError(s32);
+s32 inet_addr(char *);
+s32 connect(s32 a, void *src, u32 len);
+s32 socket(s32 a, s32 b, s32 c);
+s32 GSISocketSelect(s32 sock, s32 *rd, s32 *wr, s32 *ex);
+s32 SetReceiveBufferSize(s32 sock, s32 val);
+s32 SetSockBlocking(s32 sock, s32 flag);
+s32 SocketStartUp();
 s32 GsHttp_FlushSendBuffer(GsHttpConnection *);
 s32 GsHttpBuf_Reset(void *);
 s32 GsHttpBuf_AppendInt(GsHttpBuffer *, s32);
@@ -266,7 +266,7 @@ s32 strcspn(const char *, const char *);
 char *strchr(const char *, s32);
 s32 atol(const char *);
 void *memset(void *, s32, s32);
-char *GsUtil_StrDup(const char *);
+char *goastrdup(const char *);
 void GsGp_SetErrorString(void *, const char *);
 void GsUtil_StrCopyN(char *, const char *, s32);
 s32 GsGp_SendBuddyMessageEx(void *, s32, s32, s32);
@@ -321,7 +321,7 @@ BOOL GsHttp_ParseUrl(GsHttpConnection *u) {
     e = p + n;
     saved = p[n];
     p[n] = 0;
-    u->serverHost = GsUtil_StrDup(p);
+    u->serverHost = goastrdup(p);
     if (u->serverHost == NULL) {
         return FALSE;
     }
@@ -344,7 +344,7 @@ BOOL GsHttp_ParseUrl(GsHttpConnection *u) {
     if (*p == 0) {
         p = "/";
     }
-    u->requestPath = GsUtil_StrDup(p);
+    u->requestPath = goastrdup(p);
     p = u->requestPath;
     q = strchr(p, 0x20);
     while (q != NULL) {
@@ -365,7 +365,7 @@ extern "C" {
 void GsHttp_StepHostLookup(GsHttpConnection *self) {
     char *h;
     GsHttp_CallProgressCallback(self, 0, 0);
-    GsSock_StartupStub();
+    SocketStartUp();
     if (GsHttp_ParseUrl(self) == 0) {
         self->completed = 1;
         self->result = 3;
@@ -378,7 +378,7 @@ void GsHttp_StepHostLookup(GsHttpConnection *self) {
             h = self->serverHost;
         }
     }
-    self->serverIp = GsSock_InetAddr(h);
+    self->serverIp = inet_addr(h);
     if (self->serverIp == -1) {
         SockHostEnt *he = Sock_GetHostByName(h);
         if (he == 0) {
@@ -401,21 +401,21 @@ void GsHttp_StepConnect(GsHttpConnection *self) {
     s32 r;
     s32 w[2];
     if (self->socketHandle == -1) {
-        self->socketHandle = GsSock_Socket(2, 1, 0);
+        self->socketHandle = socket(2, 1, 0);
         if (self->socketHandle == -1) {
             self->completed = 1;
             self->result = 5;
-            self->socketError = GsSock_GetLastError(self->socketHandle);
+            self->socketError = GOAGetLastError(self->socketHandle);
             return;
         }
-        if (GsSock_SetBlocking(self->socketHandle, 0) == 0) {
+        if (SetSockBlocking(self->socketHandle, 0) == 0) {
             self->completed = 1;
             self->result = 5;
-            self->socketError = GsSock_GetLastError(self->socketHandle);
+            self->socketError = GOAGetLastError(self->socketHandle);
             return;
         }
         if (self->isThrottled != 0) {
-            GsSock_SetRecvBufSize(self->socketHandle, sGsHttpThrottleBytes);
+            SetReceiveBufferSize(self->socketHandle, sGsHttpThrottleBytes);
         }
         u32 *z = (u32 *)&sa;
         z[0] = 0;
@@ -429,9 +429,9 @@ void GsHttp_StepConnect(GsHttpConnection *self) {
             sa.port = HTONS(self->serverPort);
         }
         sa.addr = self->serverIp;
-        r = GsSock_Connect(self->socketHandle, &sa, 8);
+        r = connect(self->socketHandle, &sa, 8);
         if (r == -1) {
-            s32 e = GsSock_GetLastError(self->socketHandle);
+            s32 e = GOAGetLastError(self->socketHandle);
             if (e != -6 && e != -26 && e != -76) {
                 self->completed = 1;
                 self->result = 6;
@@ -440,12 +440,12 @@ void GsHttp_StepConnect(GsHttpConnection *self) {
             }
         }
     }
-    r = GsSock_Select(self->socketHandle, 0, &w[0], &w[1]) > 0 ? 1 : 0;
+    r = GSISocketSelect(self->socketHandle, 0, &w[0], &w[1]) > 0 ? 1 : 0;
     if (r == -1 || w[1] != 0) {
         self->completed = 1;
         self->result = 6;
         if (r == 0) {
-            self->socketError = GsSock_GetLastError(self->socketHandle);
+            self->socketError = GOAGetLastError(self->socketHandle);
         }
         return;
     }
@@ -587,10 +587,10 @@ namespace Nb {
 extern "C" {
 void GsHttp_StepWaitReply(GsHttpConnection *self) {
     s32 v[2];
-    if (GsSock_Select(self->socketHandle, v, 0, 0) == -1) {
+    if (GSISocketSelect(self->socketHandle, v, 0, 0) == -1) {
         self->completed = 1;
         self->result = 5;
-        self->socketError = GsSock_GetLastError(self->socketHandle);
+        self->socketError = GOAGetLastError(self->socketHandle);
         return;
     }
     if (v[0] != 0) {
@@ -662,7 +662,7 @@ void GsHttp_StepRecvStatus(GsHttpConnection *self) {
     if (r == 2) {
         self->completed = 1;
         self->result = 7;
-        self->socketError = GsSock_GetLastError(self->socketHandle);
+        self->socketError = GOAGetLastError(self->socketHandle);
     }
 }
 }
@@ -905,7 +905,7 @@ void GsHttp_StepRecvHeaders(GsHttpConnection *self) {
                 OS_SPrintf(self->redirectUrl, "http://%s:%d%s", self->serverHost, self->serverPort, d);
                 return;
             }
-            self->redirectUrl = GsUtil_StrDup(d);
+            self->redirectUrl = goastrdup(d);
             if (self->redirectUrl != NULL) {
                 return;
             }
@@ -969,7 +969,7 @@ nomatch:
     if (r4 == 2) {
         self->completed = 1;
         self->result = 7;
-        self->socketError = GsSock_GetLastError(self->socketHandle);
+        self->socketError = GOAGetLastError(self->socketHandle);
     }
 }
 }
@@ -990,7 +990,7 @@ extern "C" {
 void GsHttp_StepRecvBody(GsHttpConnection *self) {
     s32 len;
     u8 buf[0x2000];
-    s32 start = GsUtil_GetTimeMs();
+    s32 start = current_time();
     u32 elapsed = 0;
     s32 r;
     while (self->completed == 0 && elapsed < self->recvTimeSliceMs) {
@@ -1010,7 +1010,7 @@ void GsHttp_StepRecvBody(GsHttpConnection *self) {
         if (GsHttp_ProcessBodyData(self, buf, len) == 0) {
             break;
         }
-        elapsed = GsUtil_GetTimeMs() - start;
+        elapsed = current_time() - start;
     }
 }
 }
@@ -1054,7 +1054,7 @@ GsHttpPost *GsHttpPost_New(void) {
         k--;
     } while (k != NULL);
     t->autoFree = 1;
-    t->parts = GsArray_New(0x18, 0, (GsElemFreeFn)GsHttpPost_FreePart);
+    t->parts = ArrayNew(0x18, 0, (ArrayElementFreeFn)GsHttpPost_FreePart);
     if (t->parts == NULL) {
         GsUtil_Free(t);
         return NULL;
@@ -1075,7 +1075,7 @@ s32 GsHttpPost_GetAutoFree(GsHttpPost *t) {
 namespace Na {
 extern "C" {
 void GsHttpPost_Free(GsHttpPost *t) {
-    GsArray_Free(t->parts);
+    ArrayFree(t->parts);
     GsUtil_Free(t);
 }
 }
@@ -1088,8 +1088,8 @@ s32 GsHttpPost_AddStringPart(GsHttpPost *self, char *a, char *b) {
     s32 cnt;
     s32 i;
     s32 c;
-    a = GsUtil_StrDup(a);
-    b = GsUtil_StrDup(b);
+    a = goastrdup(a);
+    b = goastrdup(b);
     if (a == NULL || b == NULL) {
         GsUtil_Free(a);
         GsUtil_Free(b);
@@ -1114,7 +1114,7 @@ s32 GsHttpPost_AddStringPart(GsHttpPost *self, char *a, char *b) {
         }
         item.string.numEscapedChars = cnt;
     }
-    GsArray_Append(self->parts, &item);
+    ArrayAppend(self->parts, &item);
     return 1;
 }
 }
@@ -1141,14 +1141,14 @@ s32 GsHttp_GetUrlEncodedLength(GsHttpConnection *self) {
     s32 sum = 0;
     s32 n;
     s32 i;
-    n = GsArray_Count(t->parts);
+    n = ArrayLength(t->parts);
     if (n == 0) {
         return sum;
     }
     i = sum;
     if (i < n) {
         do {
-            GsHttpPostPart *r = (GsHttpPostPart *)GsArray_At(t->parts, i);
+            GsHttpPostPart *r = (GsHttpPostPart *)ArrayNth(t->parts, i);
             s32 l = STD_GetStringLength(r->partName);
             s32 t = sum + l;
             s32 u = t + r->string.length;
@@ -1175,9 +1175,9 @@ s32 GsHttp_GetMultipartLength(GsHttpConnection *self) {
         data_ov065_022910e0 = l + 0x4c;
         data_ov065_022910dc = l + 4;
     }
-    n = GsArray_Count(t->parts);
+    n = ArrayLength(t->parts);
     for (i = 0; i < n; i++) {
-        GsHttpPostPart *r = (GsHttpPostPart *)GsArray_At(t->parts, i);
+        GsHttpPostPart *r = (GsHttpPostPart *)ArrayNth(t->parts, i);
         if (r->type == 0) {
             sum += data_ov065_022910e4;
             sum += STD_GetStringLength(r->partName);
@@ -1187,7 +1187,7 @@ s32 GsHttp_GetMultipartLength(GsHttpConnection *self) {
             sum += STD_GetStringLength(r->partName);
             sum += STD_GetStringLength(r->file.reportName);
             sum += STD_GetStringLength(r->file.contentType);
-            sum += ((GsHttpPostPartState *)GsArray_At(self->postParts, i))->fileLength;
+            sum += ((GsHttpPostPartState *)ArrayNth(self->postParts, i))->fileLength;
         } else if (r->type == 2) {
             sum += data_ov065_022910e0;
             sum += STD_GetStringLength(r->partName);
@@ -1276,8 +1276,8 @@ s32 GsHttp_InitPostState(GsHttpConnection *self) {
     self->postTotalBytes = 0;
     self->postCallback = self->post->postCallback;
     self->postCallbackParam = self->post->postCallbackParam;
-    n = GsArray_Count(self->post->parts);
-    self->postParts = GsArray_New(0x10, n, NULL);
+    n = ArrayLength(self->post->parts);
+    self->postParts = ArrayNew(0x10, n, NULL);
     if (self->postParts == NULL) {
         return 0;
     }
@@ -1286,7 +1286,7 @@ s32 GsHttp_InitPostState(GsHttpConnection *self) {
         GsHttpPostPartState *pi = &item;
         volatile s32 z = 0;
         do {
-            GsHttpPostPart *rec = (GsHttpPostPart *)GsArray_At(self->post->parts, i);
+            GsHttpPostPart *rec = (GsHttpPostPart *)ArrayNth(self->post->parts, i);
             s32 t = z;
             pi->part = (GsHttpPostPart *)t;
             pi->pos = t;
@@ -1295,13 +1295,13 @@ s32 GsHttp_InitPostState(GsHttpConnection *self) {
             item.part = rec;
             if (GsHttp_OpenPostPart(pi) == 0) {
                 for (i--; i >= 0; i--) {
-                    GsHttp_ClosePostPart((GsHttpPostPartState *)GsArray_At(self->postParts, i));
+                    GsHttp_ClosePostPart((GsHttpPostPartState *)ArrayNth(self->postParts, i));
                 }
-                GsArray_Free(self->postParts);
+                ArrayFree(self->postParts);
                 self->postParts = NULL;
                 return 0;
             }
-            GsArray_Append(self->postParts, pi);
+            ArrayAppend(self->postParts, pi);
             i++;
         } while (i < n);
     }
@@ -1315,15 +1315,15 @@ namespace Na {
 extern "C" {
 void GsHttp_FreePostState(GsHttpConnection *self) {
     if (self->postParts != NULL) {
-        s32 n = GsArray_Count(self->postParts);
+        s32 n = ArrayLength(self->postParts);
         s32 i = 0;
         if (i < n) {
             do {
-                GsHttp_ClosePostPart((GsHttpPostPartState *)GsArray_At(self->postParts, i));
+                GsHttp_ClosePostPart((GsHttpPostPartState *)ArrayNth(self->postParts, i));
                 i++;
             } while (i < n);
         }
-        GsArray_Free(self->postParts);
+        ArrayFree(self->postParts);
         self->postParts = NULL;
     }
     if (self->post != NULL) {
@@ -1495,7 +1495,7 @@ namespace Nm {
 extern "C" {
 s32 GsHttp_SendPostData(GsHttpConnection *c) {
     Unk_ov065_0227a3f4_List *l = (Unk_ov065_0227a3f4_List *)&c->postParts;
-    s32 cnt = GsArray_Count(l->postParts);
+    s32 cnt = ArrayLength(l->postParts);
     if (c->sendBuf.length != 0) {
         if (GsHttp_FlushSendBuffer(c) == 0) {
             return 0;
@@ -1509,7 +1509,7 @@ s32 GsHttp_SendPostData(GsHttpConnection *c) {
         }
     }
     for (; l->postPartIndex < cnt; l->postPartIndex++) {
-        GsHttpPostPartState *s = GsArray_At(l->postParts, l->postPartIndex);
+        GsHttpPostPartState *s = ArrayNth(l->postParts, l->postPartIndex);
         s32 r = GsHttp_SendPostPart(s, c, l->postPartIndex == 0 ? 1 : 0);
         if (r == 0) {
             return 0;

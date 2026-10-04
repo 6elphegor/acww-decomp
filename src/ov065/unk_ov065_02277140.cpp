@@ -25,10 +25,10 @@ s32 DwcConn_GetAidList(u8 **);
 s32 DwcConn_GetMyAid(void);
 s32 DwcConn_IsAidValid(s32);
 s32 DwcConn_IsAidConnected(s32);
-s32 GsTransport_GetSendFreeSpace(s32);
-s32 GsTransport_GetState(s32);
-s32 GsTransport_Ping(s32);
-void GsTransport_Send(s32, void *, s32, s32);
+s32 gt2GetOutgoingBufferFreeSpace(s32);
+s32 gt2GetConnectionState(s32);
+s32 gt2Ping(s32);
+void gt2Send(s32, void *, s32, s32);
 void DwcMatch_OnSyncPacket(s32, s32, s32);
 u64 OS_GetTick(void);
 void MI_CpuCopy8(void *, void *, s32);
@@ -165,8 +165,8 @@ BOOL DwcNet_SetRecvBuffer(s32 id, u8 *buf, s32 n) {
 
 void DwcNet_PingAid(s32 id) {
     s32 h = DwcConn_FindConnectionByAid(id);
-    if (id != DwcConn_GetMyAid() && h != 0 && GsTransport_GetState(h) == 1 && DwcCore_HasError() == 0) {
-        GsTransport_Ping(h);
+    if (id != DwcConn_GetMyAid() && h != 0 && gt2GetConnectionState(h) == 1 && DwcCore_HasError() == 0) {
+        gt2Ping(h);
     }
 }
 
@@ -322,7 +322,7 @@ u32 DwcNet_GetRecvState(s32 id) {
 }
 
 void DwcNet_SendToAid(s32 id, void *buf, s32 n, s32 f) {
-    GsTransport_Send(DwcConn_FindConnectionByAid(id), buf, n, f);
+    gt2Send(DwcConn_FindConnectionByAid(id), buf, n, f);
 }
 
 void DwcNet_RecvReliable(s32 a, void *buf, s32 n) {
@@ -443,7 +443,7 @@ void DwcNet_RecvControlBody(s32 a, void *b, s32 c) {
 }
 
 s32 DwcNet_GetSendSpace(s32 id) {
-    s32 t = GsTransport_GetSendFreeSpace(DwcConn_FindConnectionByAid(id)) - 0x207;
+    s32 t = gt2GetOutgoingBufferFreeSpace(DwcConn_FindConnectionByAid(id)) - 0x207;
     if (t <= 0) {
         t = 0;
     }

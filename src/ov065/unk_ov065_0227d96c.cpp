@@ -34,12 +34,12 @@ void GsGp_DebugLog(void *, const char *, ...);
 void *GsUtil_Realloc(void *, s32);
 void *GsUtil_Alloc(s32);
 s32 GsUtil_Free(void *);
-s32 GsSock_Recv(s32, void *, s32, s32);
-s32 GsSock_Send(s32, void *, s32, s32);
-s32 GsSock_GetLastError(s32);
-s32 GsArray_Count(GsArray *);
-s32 GsSock_Shutdown(s32, s32);
-s32 GsSock_Close(s32);
+s32 recv(s32, void *, s32, s32);
+s32 send(s32, void *, s32, s32);
+s32 GOAGetLastError(s32);
+s32 ArrayLength(DArrayImplementation *);
+s32 shutdown(s32, s32);
+s32 closesocket(s32);
 s32 GsGp_RemoveOperation(void *, void *);
 s32 GsGpPeer_Free(void *, void *);
 s32 GsGpProfile_FindIf(void *, s32, s32);
@@ -125,9 +125,9 @@ extern "C" {
 s32 GsGp_SocketSend(void *h, s32 fd, char *buf, s32 len, s32 *pflag, s32 *pcnt, const char *str) {
     s32 n;
     s32 e;
-    n = GsSock_Send(fd, buf, len, 0);
+    n = send(fd, buf, len, 0);
     if (n == -1) {
-        e = GsSock_GetLastError(fd);
+        e = GOAGetLastError(fd);
         if (e != -6 && e != -0x1a && e != -0x4c) {
             if (str[0] == 'P' && str[1] == 'R') {
                 return 3;
@@ -155,7 +155,7 @@ s32 GsGpPeer_SendChar(Unk_ov065_0227d8e0_Handle *h, GsGpPeer *c, char ch) {
     s32 flag;
     s32 cnt;
     s32 r;
-    if (c->outputBuffer.length - c->outputBuffer.pos == 0 && GsArray_Count(c->messageQueue) == 0) {
+    if (c->outputBuffer.length - c->outputBuffer.pos == 0 && ArrayLength(c->messageQueue) == 0) {
         r = GsGp_SocketSend(h, c->sock, &ch, 1, &flag, &cnt, "PT");
         if (r != 0) {
             return r;
@@ -177,7 +177,7 @@ s32 GsGpPeer_Send(Unk_ov065_0227d8e0_Handle *h, GsGpPeer *c, const char *s, s32 
     if (n == 0) {
         return sent;
     }
-    if (c->outputBuffer.length - c->outputBuffer.pos == 0 && GsArray_Count(c->messageQueue) == 0) {
+    if (c->outputBuffer.length - c->outputBuffer.pos == 0 && ArrayLength(c->messageQueue) == 0) {
         do {
             r = GsGp_SocketSend(h, c->sock, (char *)s + sent, n, &flag, &cnt, "PT");
             if (r != 0) {
@@ -235,9 +235,9 @@ s32 GsGp_RecvToBuffer(Unk_ov065_0227d8e0_Handle *h, s32 fd, GsGpBuffer *b, s32 *
                 return 1;
             }
         }
-        n = GsSock_Recv(fd, data + len, cap - len, z0);
+        n = recv(fd, data + len, cap - len, z0);
         if (n == ~z2) {
-            e = GsSock_GetLastError(fd);
+            e = GOAGetLastError(fd);
             if (e != -6 && e != -0x1a && e != -0x4c) {
                 GsGp_SetErrorString(h, "There was an error reading from a socket.");
                 return 3;

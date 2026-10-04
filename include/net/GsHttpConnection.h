@@ -7,7 +7,7 @@
 // GameSpy HTTP connection (GsHttp_*) with its post object and post part records
 // (src/ov065/unk_ov065_0227931c.cpp, src/ov065/unk_ov065_0227a284.cpp, src/ov065/unk_ov065_022789fc.cpp).
 
-struct GsArray;
+struct DArrayImplementation;
 struct GsHttpConnection;
 
 typedef void (*GsHttpPostCallback)(u32, u32, u32, u32, u32, u32);
@@ -45,7 +45,7 @@ struct GsHttpPostPart {
 
 // GsHttpPost_New (0x14 bytes)
 struct GsHttpPost {
-    /* 0x00 */ GsArray *parts;
+    /* 0x00 */ DArrayImplementation *parts;
     /* 0x04 */ GsHttpPostCallback postCallback;
     /* 0x08 */ u32 postCallbackParam;
     /* 0x0c */ s32 isMultipart;
@@ -112,7 +112,7 @@ struct GsHttpConnection {
     /* 0x134 */ u32 isThrottled;
     /* 0x138 */ u32 lastThrottleRecvTime;
     /* 0x13c */ GsHttpPost *post;
-    /* 0x140 */ GsArray *postParts;
+    /* 0x140 */ DArrayImplementation *postParts;
     /* 0x144 */ s32 postPartIndex;
     /* 0x148 */ s32 postBytesSent;
     /* 0x14c */ s32 postTotalBytes;

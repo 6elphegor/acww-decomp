@@ -1,6 +1,6 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
-#include "net/GsArray.h"
+#include "net/darray.h"
 #include "net/Unk_ov065_02280e7c_Ctx.h"
 #include "net/GsGpOperation.h"
 #include "net/Unk_ov065_0227c538_Node.h"
@@ -54,23 +54,23 @@ void *memset(void *, s32, s32);
 
 void GsUtil_Free(void *);
 void *GsUtil_Alloc(s32);
-GsArray *GsArray_New(s32, s32, void (*)(void *));
-void GsArray_DeleteAt(GsArray *, s32);
-void *GsArray_At(GsArray *, s32);
-s32 GsArray_Count(GsArray *);
-void GsArray_Free(GsArray *);
-void GsUtil_Md5Hex(char *, s32, char *);
-s32 GsUtil_GetTimeSeconds(s32);
-s32 GsSock_Accept(s32, s32, s32);
-s32 GsSock_Shutdown(s32, s32);
-s32 GsSock_Close(s32);
-s32 GsSock_CanRead(s32 fd);
-s32 GsSock_GetSendBufSize(s32);
-s32 GsSock_GetRecvBufSize(s32);
-s32 GsSock_SetSendBufSize(s32, s32);
-s32 GsSock_SetRecvBufSize(s32, s32);
-s32 GsSock_SetBlocking(s32, s32);
-s32 GsUtil_StrDup(s32);
+DArrayImplementation *ArrayNew(s32, s32, void (*)(void *));
+void ArrayDeleteAt(DArrayImplementation *, s32);
+void *ArrayNth(DArrayImplementation *, s32);
+s32 ArrayLength(DArrayImplementation *);
+void ArrayFree(DArrayImplementation *);
+void MD5Digest(char *, s32, char *);
+s32 time(s32);
+s32 accept(s32, s32, s32);
+s32 shutdown(s32, s32);
+s32 closesocket(s32);
+s32 CanReceiveOnSocket(s32 fd);
+s32 GetSendBufferSize(s32);
+s32 GetReceiveBufferSize(s32);
+s32 SetSendBufferSize(s32, s32);
+s32 SetReceiveBufferSize(s32, s32);
+s32 SetSockBlocking(s32, s32);
+s32 goastrdup(s32);
 s32 GsGp_SendBuddyMessageEx(Ctx0228 **, s32, s32, s32);
 s32 GsGp_SendServerBuddyMessage(Ctx0228 **, s32, s32, const char *);
 s32 GsGpBuf_Compact(Ctx0228 **, char **);
@@ -144,11 +144,11 @@ extern char data_ov065_0228db1c[];
 
 typedef s32 (*GsGpProfileMapFn)(Ctx0228 **, GsGpProfile *, void *);
 
-s32 GsHash_FindIf(void *, s32 (*)(void *, void *), void *);
-s32 GsHash_Remove(void *, void *);
-void *GsHash_Find(void *, void *);
-s32 GsHash_Insert(void *, void *);
-void *GsHash_New(s32, s32, s32 (*)(s32 *, s32), s32 (*)(s32 *, s32 *), void (*)(void *));
+s32 TableMapSafe2(void *, s32 (*)(void *, void *), void *);
+s32 TableRemove(void *, void *);
+void *TableLookup(void *, void *);
+s32 TableEnter(void *, void *);
+void *TableNew(s32, s32, s32 (*)(s32 *, s32), s32 (*)(s32 *, s32 *), void (*)(void *));
 void GsUtil_Free(void *);
 void *GsUtil_Alloc(s32);
 void GsGp_SetErrorString(Ctx0228 **, const char *);
@@ -270,7 +270,7 @@ extern char data_ov065_0228dd70[];
 extern char data_ov065_0228dd78[];
 extern char data_ov065_0228dd7c[];
 extern char data_ov065_0228db2c[];
-extern char sGsGameName[];
+extern char __GSIACGamename[];
 extern char data_ov065_0228db1c[];
 
 s32 GsGp_ReadKeyValue(Ctx0228 **, char *, s32 *, char *, char *);
@@ -283,7 +283,7 @@ void GsUtil_StrCopyN(char *, const char *, s32);
 void *memset(void *, s32, s32);
 char *STD_CopyString(char *, const char *);
 char *strstr(const char *, const char *);
-void GsUtil_Sleep(s32);
+void msleep(s32);
 s32 GsGpSearch_ProfileSearch(Ctx0228 **, char *, char *, char *, char *, char *, s32, s32, s32, s32, s32);
 
 
@@ -377,7 +377,7 @@ s32 GsGpProfile_Add(Ctx0228 **h, s32 a) {
     tmp.authSig = 0;
     tmp.peerSig = 0;
     tmp.requestCount = 0;
-    GsHash_Insert(*t, (Elem0228 *)ad);
+    TableEnter(*t, (Elem0228 *)ad);
     ((s32 *)t)[1]++;
     if (GsGpProfile_Find(h, a, &out) != 0) {
         return (s32)out;
@@ -394,7 +394,7 @@ s32 GsGpProfile_Find(Ctx0228 **h, s32 a, void *out) {
     void *r;
     Ctx0228 *c = *h;
     key.profileId = a;
-    r = GsHash_Find(c->profileTable, &key);
+    r = TableLookup(c->profileTable, &key);
     if (out != 0) {
         *(void **)out = r;
     }
@@ -412,7 +412,7 @@ void GsGpProfile_RemoveById(Ctx0228 **h, s32 a) {
     Ctx0228 *c = *h;
     void *out;
     if (GsGpProfile_Find(h, a, &out) != 0) {
-        GsHash_Remove(c->profileTable, out);
+        TableRemove(c->profileTable, out);
     }
 }
 }
@@ -421,7 +421,7 @@ void GsGpProfile_RemoveById(Ctx0228 **h, s32 a) {
 namespace Nb {
 extern "C" {
 s32 GsGpProfile_Remove(Ctx0228 **h, void *n) {
-    return GsHash_Remove((*h)->profileTable, n);
+    return TableRemove((*h)->profileTable, n);
 }
 }
 }
@@ -479,7 +479,7 @@ s32 GsGpProfile_FindIf(Ctx0228 **h, GsGpProfileMapFn cb, void *arg) {
     a.connection = h;
     a.func = cb;
     a.data = arg;
-    if (GsHash_FindIf(c->profileTable, (s32 (*)(void *, void *))GsGpProfile_FindIfAdapter, &a) == 0) {
+    if (TableMapSafe2(c->profileTable, (s32 (*)(void *, void *))GsGpProfile_FindIfAdapter, &a) == 0) {
         return 1;
     }
     return 0;

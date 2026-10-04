@@ -5,16 +5,17 @@
 // ov065 TU34: GameSpy gsAvailable (0x02277e70..0x02278328)
 
 
+// The SDK's anonymous `static struct {...} AC` (sock, address, packet[64], packetLen, sendTime, retryCount).
 struct GsAvailQuery {
-    s32 socket;
+    s32 sock;
     u8 serverAddr[2];
     u16 serverPort;
     u8 serverIp[4];
     u8 queryPacket;
     u8 unk_0d[4];
     char gameName[0x3b];
-    u32 packetLength;
-    u32 lastSendTime;
+    u32 packetLen;
+    u32 sendTime;
     u32 retryCount;
 };
 
@@ -26,11 +27,11 @@ s32 memcmp(const void *, const void *, s32);
 void memcpy(void *, const void *, s32);
 s32 OS_SPrintf(char *, const char *, ...);
 
-extern s32 sGsAvailStatus;
-extern char sGsAvailHostOverride[];
-extern char sGsGameName[];
+extern s32 __GSIACResult;
+extern char GSIACHostname[];
+extern char __GSIACGamename[];
 
-GsAvailQuery sGsAvailQuery;
+GsAvailQuery AC;
 
 void *DwcNet_Free(s32 a, void *b, s32 c);
 void *DwcNet_Alloc(s32 a, s32 b);
@@ -41,63 +42,63 @@ s32 GsHttp_NewPost();
 void GsHttp_ProcessAll();
 void GsHttp_Cleanup();
 void GsHttp_Startup();
-s32 GsSock_CanRead(s32 fd);
-s32 GsSock_RecvFrom(s32, void *, s32, s32, void *, void *);
-void GsSock_Close(s32);
-u32 GsUtil_GetTimeMs();
-void GsSock_StartupStub();
-s32 GsSock_Socket(s32, s32, s32);
-s32 GsSock_ResolveAddress(const char *, s32, void *);
+s32 CanReceiveOnSocket(s32 fd);
+s32 recvfrom(s32, void *, s32, s32, void *, void *);
+void closesocket(s32);
+u32 current_time();
+void SocketStartUp();
+s32 socket(s32, s32, s32);
+s32 get_sockaddrin(const char *, s32, void *);
 
 void DwcCore_SetError(s32, s32);
 s32 DwcGsHttp_ReportError(s32 e);
 s32 DwcGsHttp_OnRequestDone(s32, s32, s32, s32, DwcGsHttpCallbackCtx *);
-s32 GsAvail_ParseReply(s8 *, s32, u8 *, u32 *);
-void GsAvail_SendQuery();
-s32 GsSock_SendTo(s32, void *, s32, s32, void *, s32);
+s32 HandlePacket(s8 *, s32, u8 *, u32 *);
+void SendPacket();
+s32 sendto(s32, void *, s32, s32, void *, s32);
 }
 
 extern "C" {
 
-void GsAvail_SendQuery() {
-    GsSock_SendTo(sGsAvailQuery.socket, &sGsAvailQuery.queryPacket, sGsAvailQuery.packetLength, 0,
-                        sGsAvailQuery.serverAddr, 8);
-    sGsAvailQuery.lastSendTime = GsUtil_GetTimeMs();
+void SendPacket() {
+    sendto(AC.sock, &AC.queryPacket, AC.packetLen, 0,
+                        AC.serverAddr, 8);
+    AC.sendTime = current_time();
 }
 
-void GsAvail_Start(char *url) {
+void GSIStartAvailableCheckA(char *url) {
     char buf[0x44];
     s8 c;
-    STD_CopyString(sGsGameName, url);
-    sGsAvailQuery.socket = -1;
-    GsSock_StartupStub();
-    c = sGsAvailHostOverride[0];
+    STD_CopyString(__GSIACGamename, url);
+    AC.sock = -1;
+    SocketStartUp();
+    c = GSIACHostname[0];
     if (c == 0) {
         OS_SPrintf(buf, "%s.available.gs.nintendowifi.net", url);
     }
-    if (GsSock_ResolveAddress(c != 0 ? sGsAvailHostOverride : buf, 0x6cfc, sGsAvailQuery.serverAddr) != 0) {
-        s32 s = GsSock_Socket(2, 2, 0);
-        sGsAvailQuery.socket = s;
+    if (get_sockaddrin(c != 0 ? GSIACHostname : buf, 0x6cfc, AC.serverAddr) != 0) {
+        s32 s = socket(2, 2, 0);
+        AC.sock = s;
         if (s != -1) {
             s32 n;
-            sGsAvailQuery.queryPacket = 9;
+            AC.queryPacket = 9;
             n = STD_GetStringLength(url);
-            memcpy(sGsAvailQuery.gameName, url, n + 1);
-            sGsAvailQuery.packetLength = n + 6;
-            GsAvail_SendQuery();
-            sGsAvailQuery.retryCount = 0;
+            memcpy(AC.gameName, url, n + 1);
+            AC.packetLen = n + 6;
+            SendPacket();
+            AC.retryCount = 0;
         }
     }
 }
 
-s32 GsAvail_ParseReply(s8 *b, s32 n, u8 *addr, u32 *out) {
+s32 HandlePacket(s8 *b, s32 n, u8 *addr, u32 *out) {
     if (n < 7) {
         return 1;
     }
-    if (memcmp(addr + 4, sGsAvailQuery.serverIp, 4) != 0) {
+    if (memcmp(addr + 4, AC.serverIp, 4) != 0) {
         return 1;
     }
-    if (*(u16 *)(addr + 2) != sGsAvailQuery.serverPort) {
+    if (*(u16 *)(addr + 2) != AC.serverPort) {
         return 1;
     }
     if (memcmp(b, "\xfe\xfd\x09", 3) != 0) {
@@ -111,38 +112,38 @@ s32 GsAvail_ParseReply(s8 *b, s32 n, u8 *addr, u32 *out) {
     return 0;
 }
 
-s32 GsAvail_Poll() {
+s32 GSIAvailableCheckThink() {
     u32 addr[2];
     s32 len;
     u32 flags;
     u8 buf[0x40];
     len = 8;
-    if (sGsAvailQuery.socket == -1) {
-        sGsAvailStatus = 1;
+    if (AC.sock == -1) {
+        __GSIACResult = 1;
         return 1;
     }
-    if (GsSock_CanRead(sGsAvailQuery.socket) != 0) {
-        s32 n = GsSock_RecvFrom(sGsAvailQuery.socket, buf, 0x40, 0, addr, &len);
-        if (GsAvail_ParseReply((s8 *)buf, n, (u8 *)addr, &flags) == 0) {
-            GsSock_Close(sGsAvailQuery.socket);
+    if (CanReceiveOnSocket(AC.sock) != 0) {
+        s32 n = recvfrom(AC.sock, buf, 0x40, 0, addr, &len);
+        if (HandlePacket((s8 *)buf, n, (u8 *)addr, &flags) == 0) {
+            closesocket(AC.sock);
             if ((flags & 1) != 0) {
-                sGsAvailStatus = 2;
+                __GSIACResult = 2;
             } else if ((flags & 2) != 0) {
-                sGsAvailStatus = 3;
+                __GSIACResult = 3;
             } else {
-                sGsAvailStatus = 1;
+                __GSIACResult = 1;
             }
-            return sGsAvailStatus;
+            return __GSIACResult;
         }
     }
-    if (GsUtil_GetTimeMs() > sGsAvailQuery.lastSendTime + 0x7d0) {
-        if (sGsAvailQuery.retryCount == 1) {
-            GsSock_Close(sGsAvailQuery.socket);
-            sGsAvailStatus = 1;
+    if (current_time() > AC.sendTime + 0x7d0) {
+        if (AC.retryCount == 1) {
+            closesocket(AC.sock);
+            __GSIACResult = 1;
             return 1;
         }
-        GsAvail_SendQuery();
-        sGsAvailQuery.retryCount++;
+        SendPacket();
+        AC.retryCount++;
     }
     return 0;
 }

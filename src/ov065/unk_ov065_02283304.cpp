@@ -39,26 +39,26 @@ extern "C" {
 void GsPersist_XorCrypt(char *, s32);
 s32 GsPersist_DispatchReply(char *, s32);
 s32 GsPersist_FindFinal(char *, s32);
-void GsUtil_StrToLower(char *);
+void _strlwr(char *);
 s32 GsGp_AddOperation(void *, s32, void *, void *, s32, s32, s32);
 s32 GsGp_ProcessConnection(void *, s32);
 void *GsUtil_Alloc(u32);
-s32 GsSock_Socket(s32, s32, s32);
-s32 GsSock_SetBlocking(s32, s32);
+s32 socket(s32, s32, s32);
+s32 SetSockBlocking(s32, s32);
 Unk_ov065_022831c0_Host *Sock_GetHostByName(const char *);
-s32 GsSock_Connect(s32, void *, s32);
-s32 GsSock_GetLastError(s32);
+s32 connect(s32, void *, s32);
+s32 GOAGetLastError(s32);
 void GsGp_CallErrorCallback(void *, s32, s32);
 s32 GsGpPeer_SendTransferHeader(void *, s32, s32, void *);
 s32 GsGpPeer_SendString(void *, s32, char *);
 s32 GsGpPeer_SendMessageBody(void *, s32, const char *, s32);
 s32 GsGp_QueueCallback(void *, Unk_ov065_022833b4_Pair, void *, void *, s32);
 void GsGp_RemoveOperation(void *, void *);
-s32 GsSock_Select(s32, s32, s32 *, s32 *);
-s32 GsArray_Count(void *);
-void GsArray_Free(void *);
-void *GsArray_At(void *, s32);
-void GsArray_DeleteAt(void *, s32);
+s32 GSISocketSelect(s32, s32, s32 *, s32 *);
+s32 ArrayLength(void *);
+void ArrayFree(void *);
+void *ArrayNth(void *, s32);
+void ArrayDeleteAt(void *, s32);
 char *strncpy(char *dst, const char *src, u32 n);
 char *strstr(const char *, const char *);
 s32 STD_GetStringLength(const char *);
@@ -173,7 +173,7 @@ extern "C" {
 s32 GsGp_CheckConnectComplete(void *h, s32 x, s32 *out) {
     s32 a = 0;
     s32 b = 0;
-    s32 r = GsSock_Select(x, 0, &a, &b);
+    s32 r = GSISocketSelect(x, 0, &a, &b);
     if (r == -1) {
         GsGp_DebugLog(h, "Error connecting\n");
         GsGp_SetError(h, 5, "There was an error checking for a completed connection.");

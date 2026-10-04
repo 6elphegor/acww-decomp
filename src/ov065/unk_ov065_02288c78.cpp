@@ -1,13 +1,12 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
-#include "net/GsSrvListCryptState.h"
-#include "net/GsSrvQueryEngine.h"
-#include "net/GsSrvBrowser.h"
+#include "net/sb_crypt.h"
+#include "net/sb_internal.h"
 
 extern "C" {
 char *data_ov065_0228e928[2] = {"queryid", "final"};
-void *sGsStrPool;
-char *sGsStrTokPos;
+void *g_SBRefStrList;
+char *thestr;
 }
 
 namespace F022884fc {
@@ -23,61 +22,61 @@ namespace F022884fc {
 
 
 extern "C" {
-extern u32 gGsKeyNames[];
+extern u32 qr2_registered_key_list[];
 extern u8 data_ov065_0228e8fc[];
 extern GsSrvQueryBasicInfoStr data_ov065_0228e904;
 extern GsSrvQueryStatusStr data_ov065_0228e914;
-extern s32 sGsAvailStatus;
-extern u32 data_ov065_022918a8;
+extern s32 __GSIACResult;
+extern u32 SBNullServer;
 extern u8 data_0213a410[];
 
 u32 func_0213335c(u32 a, u32 b);
 s32 strstr(void *a, void *b);
 s32 func_02130b04(void *a, void *b);
 
-u32 GsUtil_GetTimeMs(void);
-void GsSock_StartupStub(void);
-s32 GsSock_CanRead(s32 s);
-s32 GsSock_RecvFrom(s32 s, void *buf, s32 len, u32 flags, void *sa, s32 *salen);
-s32 GsSock_SendTo(s32 s, void *buf, s32 len, u32 flags, void *sa, s32 salen);
-s32 GsSock_Close(s32 s);
-s32 GsSock_Socket(s32 a, s32 b, s32 c);
+u32 current_time(void);
+void SocketStartUp(void);
+s32 CanReceiveOnSocket(s32 s);
+s32 recvfrom(s32 s, void *buf, s32 len, u32 flags, void *sa, s32 *salen);
+s32 sendto(s32 s, void *buf, s32 len, u32 flags, void *sa, s32 salen);
+s32 closesocket(s32 s);
+s32 socket(s32 a, s32 b, s32 c);
 void *GsUtil_Alloc(u32 n);
 void GsUtil_Free(void *p);
-void *GsHash_NewEx(s32 a, s32 b, s32 c, void *cmp, void *hash, void *free);
-s32 GsUtil_StrSizeInBuffer(u8 *buf, s32 n);
-void GsStrPool_Release(s32 a, void *p);
-void GsServer_SetStringValue(void *e, u32 v, u8 *buf);
-void GsServer_ParseQr2Reply(void *e, u8 *buf, s32 n);
-void GsServer_ParseQr1Reply(void *e, u8 *buf);
+void *TableNew2(s32 a, s32 b, s32 c, void *cmp, void *hash, void *free);
+s32 NTSLengthSB(u8 *buf, s32 n);
+void SBReleaseStr(s32 a, void *p);
+void SBServerAddKeyValue(void *e, u32 v, u8 *buf);
+void SBServerParseQR2FullKeysSingle(void *e, u8 *buf, s32 n);
+void SBServerParseKeyVals(void *e, u8 *buf);
 }
 
-typedef GsSrvListCryptState Cipher;
-typedef GsSrvQueryEngine Mgr;
-typedef GsServer Ent;
-typedef GsSrvQueue List;
+typedef GOACryptState Cipher;
+typedef SBQueryEngine Mgr;
+typedef _SBServer Ent;
+typedef SBServerFIFO List;
 typedef Unk_ov065_02288b60_Sa Sa;
 
 extern "C" {
-u32 GsSrvListCrypt_NextByte(Cipher *c, u32 x);
-void GsSrvListCrypt_InitDefault(Cipher *c);
-u32 GsSrvListCrypt_KeyIndex(Cipher *c, u32 n, u8 *key, u32 keylen, u8 *j, u32 *idx);
-s32 GsSrvQueue_Remove(List *l, Ent *e);
-void GsSrvQuery_ReceiveAll(Mgr *m, s32 flag);
-void GsSrvQuery_CheckTimeouts(Mgr *m);
-void GsSrvQuery_StartPending(Mgr *m);
-void GsSrvQuery_SendQuery(Mgr *m, Ent *e);
-s32 GsSrvQuery_HandleAltReplyStub(Mgr *m, Ent *e, u8 *buf, s32 n);
-void GsSrvQuery_HandleQr1Reply(Mgr *m, Ent *e, u8 *buf, s32 n);
-void GsSrvQuery_HandleQr2Reply(Mgr *m, Ent *e, u8 *buf, s32 n);
-void GsSrvQueue_Init(List *l);
-Ent *GsSrvQueue_PopFront(List *l);
-void GsSrvQueue_PushFront(List *l, Ent *e);
-void GsSrvQueue_PushBack(List *l, Ent *e);
-void GsServer_CompareKeyCb(u32 *a, u32 *b);
-u32 GsServer_HashKeyCb(u32 *p, u32 n);
-void GsServer_FreeKeyCb(u32 *p);
-u32 GsUtil_StrHashNoCase(u8 *s, u32 n);
+u32 GOADecryptByte(Cipher *c, u32 x);
+void GOAHashInit(Cipher *c);
+u32 keyrand(Cipher *c, u32 n, u8 *key, u32 keylen, u8 *j, u32 *idx);
+s32 FIFORemove(List *l, Ent *e);
+void ProcessIncomingReplies(Mgr *m, s32 flag);
+void TimeoutOldQueries(Mgr *m);
+void QueueNextQueries(Mgr *m);
+void QEStartQuery(Mgr *m, Ent *e);
+s32 ParseSingleICMPReply(Mgr *m, Ent *e, u8 *buf, s32 n);
+void ParseSingleGOAReply(Mgr *m, Ent *e, u8 *buf, s32 n);
+void ParseSingleQR2Reply(Mgr *m, Ent *e, u8 *buf, s32 n);
+void FIFOClear(List *l);
+Ent *FIFOGetFirst(List *l);
+void FIFOAddFront(List *l, Ent *e);
+void FIFOAddRear(List *l, Ent *e);
+void KeyValCompareKey(u32 *a, u32 *b);
+u32 KeyValHashKey(u32 *p, u32 n);
+void KeyValFree(u32 *p);
+u32 StringHash(u8 *s, u32 n);
 
 }
 }
@@ -103,13 +102,13 @@ static inline u16 Unk_ov065_02289044_Htons(u16 x) {
 }
 
 extern "C" {
-extern char *sGsStrTokPos;
-extern void *sGsStrPool;
+extern char *thestr;
+extern void *g_SBRefStrList;
 extern char *data_ov065_0228e928[2];
-extern char *gGsKeyNames[];
+extern char *qr2_registered_key_list[];
 extern u16 data_0213a510[];
-extern s32 sGsAvailStatus;
-extern s32 data_ov065_022918a8;
+extern s32 __GSIACResult;
+extern s32 SBNullServer;
 
 s32 strcmp(const char *, const char *);
 u32 STD_GetStringLength(const char *);
@@ -119,98 +118,98 @@ s32 func_02130b04(char *, char *);
 
 s32 GsUtil_Free(void *);
 void *GsUtil_Alloc(s32);
-s32 GsArray_Count(void *);
-void *GsHash_Find(void *, void *);
-s32 GsHash_Insert(void *, void *);
-s32 GsHash_Count(void *);
-s32 GsHash_Free(void *);
-void *GsHash_NewEx(s32, s32, s32, void *, void *, void *);
-s32 GsSock_InetAddr(s32);
-s32 GsSock_RecvFrom(s32, void *, s32, s32, void *, void *);
-s32 GsSock_Close(s32);
-s32 GsSock_CanRead(s32);
-s32 GsUtil_Sleep(s32);
-u32 GsUtil_GetTimeMs();
-s32 GsSrvQuery_Remove(void *, void *);
-s32 GsSrvQuery_AddKey(void *, s32);
-s32 GsSrvQuery_Think(void *);
-s32 GsSrvQuery_Add(void *, void *, s32, s32);
-s32 GsSrvQuery_Shutdown(void *);
-s32 GsSrvQuery_Clear(void *);
-s32 GsSrvQuery_SetPublicIp(void *, s32);
-s32 GsSrvQuery_Init(void *, s32, s32, s32, void *, void *);
-s32 GsServer_IsNull(void *);
-s32 GsServer_SetListFlags(void *, s32);
-void *GsServer_New(void *, u32, u32);
-s32 GsServer_GetPing(void *);
-s32 GsUtil_StrHashNoCase(void *);
-s32 GsSrvList_Free(void *);
-s32 GsSrvList_Disconnect(void *);
-s32 GsSrvList_SendListRequest(void *, char *, s32, s32, s32);
-s32 GsSrvList_Init(void *, s32, s32, s32, s32, s32, void *, void *);
-s32 GsUtil_StrSizeInBuffer(char *, s32);
-s32 GsStrPool_Add(s32, char *);
-s32 GsSrvList_ClearServers(void *);
-s32 GsSrvList_FreeDeadServers(void *);
-s32 GsSrvList_GetServer(void *);
-s32 GsSrvList_Count(void *);
-s32 GsSrvList_RemoveServerAt(void *, s32);
-s32 GsSrvList_FindServerByAddress(void *, u32, u32);
-s32 GsSrvList_FindServer(void *);
-s32 GsSrvList_AddServer(void *, void *);
-s32 GsSrvList_Sort(void *);
-s32 GsSrvList_Receive(void *);
-s32 GsSrvList_SendNatNegCookie(void *, s32, s32, s32);
-s32 GsSrvList_SendServerMessage(void *, s32, s32, s32, s32);
+s32 ArrayLength(void *);
+void *TableLookup(void *, void *);
+s32 TableEnter(void *, void *);
+s32 TableCount(void *);
+s32 TableFree(void *);
+void *TableNew2(s32, s32, s32, void *, void *, void *);
+s32 inet_addr(s32);
+s32 recvfrom(s32, void *, s32, s32, void *, void *);
+s32 closesocket(s32);
+s32 CanReceiveOnSocket(s32);
+s32 msleep(s32);
+u32 current_time();
+s32 SBQueryEngineRemoveServerFromFIFOs(void *, void *);
+s32 SBQueryEngineAddQueryKey(void *, s32);
+s32 SBQueryEngineThink(void *);
+s32 SBQueryEngineUpdateServer(void *, void *, s32, s32);
+s32 SBEngineCleanup(void *);
+s32 SBEngineHaltUpdates(void *);
+s32 SBQueryEngineSetPublicIP(void *, s32);
+s32 SBQueryEngineInit(void *, s32, s32, s32, void *, void *);
+s32 SBIsNullServer(void *);
+s32 SBServerSetFlags(void *, s32);
+void *SBAllocServer(void *, u32, u32);
+s32 SBServerGetPing(void *);
+s32 StringHash(void *);
+s32 SBServerListCleanup(void *);
+s32 SBServerListDisconnect(void *);
+s32 SBServerListConnectAndQuery(void *, char *, s32, s32, s32);
+s32 SBServerListInit(void *, s32, s32, s32, s32, s32, void *, void *);
+s32 NTSLengthSB(char *, s32);
+s32 SBRefStr(s32, char *);
+s32 SBServerListClear(void *);
+s32 SBFreeDeadList(void *);
+s32 SBServerListNth(void *);
+s32 SBServerListCount(void *);
+s32 SBServerListRemoveAt(void *, s32);
+s32 SBServerListFindServerByIP(void *, u32, u32);
+s32 SBServerListFindServer(void *);
+s32 SBServerListAppendServer(void *, void *);
+s32 SBServerListSort(void *);
+s32 ProcessIncomingData(void *);
+s32 SBSendNatNegotiateCookieToServer(void *, s32, s32, s32);
+s32 SBSendMessageToServer(void *, s32, s32, s32, s32);
 
-s32 GsServer_SetStringValue(GsServer *a, char *k, char *v);
-char *GsUtil_StrTok(char *s, s32 ch);
-s32 GsServer_IsKeyAllowed(char *s);
-s32 GsServer_GetStringValue(void *a, char *k, s32 d);
-s32 GsSrvBrowser_Halt(void *o);
-s32 GsSrvBrowser_Think(void *o);
-s32 GsSrvBrowser_UpdateListEx(void *o, s32 a, s32 b, u8 *data, s32 n, s32 c, s32 d, s32 e);
-void GsSrvBrowser_OnQueryEvent(void *, s32, GsServer *, GsSrvBrowser *);
-void GsSrvBrowser_OnListEvent(GsSrvList *, s32, GsServer *, GsSrvBrowser *);
-s32 GsSrvList_Think(void *);
-s32 GsSrvList_ThinkLan(GsSrvList *);
-s32 GsStrPool_CompareCb(char **, char **);
-s32 GsStrPool_FreeEntryCb(void **);
-s32 GsStrPool_HashCb(void **);
+s32 SBServerAddKeyValue(_SBServer *a, char *k, char *v);
+char *mytok(char *s, s32 ch);
+s32 CheckValidKey(char *s);
+s32 SBServerGetStringValueA(void *a, char *k, s32 d);
+s32 ServerBrowserHalt(void *o);
+s32 ServerBrowserThink(void *o);
+s32 ServerBrowserBeginUpdate2(void *o, s32 a, s32 b, u8 *data, s32 n, s32 c, s32 d, s32 e);
+void EngineCallback(void *, s32, _SBServer *, _ServerBrowser *);
+void ListCallback(SBServerList *, s32, _SBServer *, _ServerBrowser *);
+s32 SBListThink(void *);
+s32 ProcessLanData(SBServerList *);
+s32 RefStringCompare(char **, char **);
+s32 RefStringFree(void **);
+s32 RefStringHash(void **);
 
 }
 }
 
 namespace F02288e2c {
 extern "C" {
-s32 GsSrvBrowser_UpdateListEx(void *op, s32 a, s32 b, u8 *data, s32 n, s32 c, s32 d, s32 e) {
-    GsSrvBrowser *o = (GsSrvBrowser *)op;
+s32 ServerBrowserBeginUpdate2(void *op, s32 a, s32 b, u8 *data, s32 n, s32 c, s32 d, s32 e) {
+    _ServerBrowser *o = (_ServerBrowser *)op;
     char buf[0x100] = {0};
     s32 i;
     s32 j;
     s32 r;
     s32 t;
     i = 0;
-    o->disconnectOnComplete = b;
-    o->engine.keycount = 0;
+    o->disconnectFlag = b;
+    o->engine.numserverkeys = 0;
     j = 0;
     if (n > 0) {
         do {
             u8 *pj = data + j;
-            if (i + (s32)STD_GetStringLength(gGsKeyNames[*pj]) + 1 >= 0x100) {
+            if (i + (s32)STD_GetStringLength(qr2_registered_key_list[*pj]) + 1 >= 0x100) {
                 break;
             }
-            i += OS_SPrintf(buf + i, "\\%s", gGsKeyNames[*pj]);
-            GsSrvQuery_AddKey(o, *pj);
+            i += OS_SPrintf(buf + i, "\\%s", qr2_registered_key_list[*pj]);
+            SBQueryEngineAddQueryKey(o, *pj);
             j++;
         } while (j < n);
     }
-    r = GsSrvList_SendListRequest(&o->list, buf, c, d, e);
+    r = SBServerListConnectAndQuery(&o->list, buf, c, d, e);
     if (r == 0 && a == 0) {
         t = 10;
-        while (o->list.state == 3 || (o->engine.active.count > 0 && r == 0)) {
-            GsUtil_Sleep(t);
-            r = GsSrvBrowser_Think(o);
+        while (o->list.state == 3 || (o->engine.querylist.count > 0 && r == 0)) {
+            msleep(t);
+            r = ServerBrowserThink(o);
         }
     }
 }
@@ -219,36 +218,36 @@ s32 GsSrvBrowser_UpdateListEx(void *op, s32 a, s32 b, u8 *data, s32 n, s32 c, s3
 
 namespace F02288e2c {
 extern "C" {
-s32 GsSrvBrowser_UpdateList(void *o, s32 a, s32 b, u8 *c, s32 e, s32 f, s32 g) {
-    return GsSrvBrowser_UpdateListEx(o, a, b, c, e, f, 0x80, g);
+s32 ServerBrowserLimitUpdateA(void *o, s32 a, s32 b, u8 *c, s32 e, s32 f, s32 g) {
+    return ServerBrowserBeginUpdate2(o, a, b, c, e, f, 0x80, g);
 }
 }
 }
 
 namespace F02288e2c {
 extern "C" {
-s32 GsSrvBrowser_SendMessage(GsSrvBrowser *o, s32 a, u16 b, s32 c, s32 e) {
-    s32 x = GsSock_InetAddr(a);
-    return GsSrvList_SendServerMessage(&o->list, x, Unk_ov065_02289044_Htons(b), c, e);
+s32 ServerBrowserSendMessageToServerA(_ServerBrowser *o, s32 a, u16 b, s32 c, s32 e) {
+    s32 x = inet_addr(a);
+    return SBSendMessageToServer(&o->list, x, Unk_ov065_02289044_Htons(b), c, e);
 }
 }
 }
 
 namespace F02288e2c {
 extern "C" {
-s32 GsSrvBrowser_SendNatNegCookie(GsSrvBrowser *o, s32 a, u16 b, s32 c) {
-    s32 x = GsSock_InetAddr(a);
-    return GsSrvList_SendNatNegCookie(&o->list, x, Unk_ov065_02289044_Htons(b), c);
+s32 ServerBrowserSendNatNegotiateCookieToServerA(_ServerBrowser *o, s32 a, u16 b, s32 c) {
+    s32 x = inet_addr(a);
+    return SBSendNatNegotiateCookieToServer(&o->list, x, Unk_ov065_02289044_Htons(b), c);
 }
 }
 }
 
 namespace F02288e2c {
 extern "C" {
-void GsSrvBrowser_RemoveServer(GsSrvBrowser *o) {
-    s32 r = GsSrvList_FindServer(&o->list);
+void ServerBrowserRemoveServer(_ServerBrowser *o) {
+    s32 r = SBServerListFindServer(&o->list);
     if (r != -1) {
-        GsSrvList_RemoveServerAt(&o->list, r);
+        SBServerListRemoveAt(&o->list, r);
     }
 }
 }
@@ -256,75 +255,75 @@ void GsSrvBrowser_RemoveServer(GsSrvBrowser *o) {
 
 namespace F02288e2c {
 extern "C" {
-s32 GsSrvBrowser_Think(void *o) {
-    GsSrvQuery_Think(o);
-    return GsSrvList_Think(&((GsSrvBrowser *)o)->list);
+s32 ServerBrowserThink(void *o) {
+    SBQueryEngineThink(o);
+    return SBListThink(&((_ServerBrowser *)o)->list);
 }
 }
 }
 
 namespace F02288e2c {
 extern "C" {
-s32 GsSrvBrowser_Halt(void *o) {
-    GsSrvList_Disconnect(&((GsSrvBrowser *)o)->list);
-    return GsSrvQuery_Clear(o);
+s32 ServerBrowserHalt(void *o) {
+    SBServerListDisconnect(&((_ServerBrowser *)o)->list);
+    return SBEngineHaltUpdates(o);
 }
 }
 }
 
 namespace F02288e2c {
 extern "C" {
-void GsSrvBrowser_Clear(GsSrvBrowser *o) {
-    GsSrvBrowser_Halt(o);
-    GsSrvList_ClearServers(&o->list);
+void ServerBrowserClear(_ServerBrowser *o) {
+    ServerBrowserHalt(o);
+    SBServerListClear(&o->list);
 }
 }
 }
 
 namespace F02288e2c {
 extern "C" {
-s32 GsSrvBrowser_GetServer(GsSrvBrowser *o) {
-    return GsSrvList_GetServer(&o->list);
+s32 ServerBrowserGetServer(_ServerBrowser *o) {
+    return SBServerListNth(&o->list);
 }
 }
 }
 
 namespace F02288e2c {
 extern "C" {
-s32 GsSrvBrowser_GetServerCount(GsSrvBrowser *o) {
-    return GsSrvList_Count(&o->list);
+s32 ServerBrowserCount(_ServerBrowser *o) {
+    return SBServerListCount(&o->list);
 }
 }
 }
 
 namespace F02288e2c {
 extern "C" {
-s32 GsSrvBrowser_Sort(GsSrvBrowser *o) {
+s32 ServerBrowserSortA(_ServerBrowser *o) {
     GsSrvSortStackPad pad;
-    GsSrvList_Sort(&o->list);
+    SBServerListSort(&o->list);
 }
 }
 }
 
 namespace F02288e2c {
 extern "C" {
-s32 GsSrvBrowser_GetPublicIp(GsSrvBrowser *o) {
-    return o->list.myPublicIp;
+s32 ServerBrowserGetMyPublicIPAddr(_ServerBrowser *o) {
+    return o->list.mypublicip;
 }
 }
 }
 
 namespace F02288e2c {
 extern "C" {
-s32 GsStrPool_HashCb(void **p) {
-    return GsUtil_StrHashNoCase(*p);
+s32 RefStringHash(void **p) {
+    return StringHash(*p);
 }
 }
 }
 
 namespace F02288e2c {
 extern "C" {
-s32 GsStrPool_CompareCb(char **a, char **b) {
+s32 RefStringCompare(char **a, char **b) {
     return func_02130b04(*a, *b);
 }
 }
@@ -332,7 +331,7 @@ s32 GsStrPool_CompareCb(char **a, char **b) {
 
 namespace F02288e2c {
 extern "C" {
-s32 GsStrPool_FreeEntryCb(void **p) {
+s32 RefStringFree(void **p) {
     return GsUtil_Free(*p);
 }
 }
@@ -340,22 +339,22 @@ s32 GsStrPool_FreeEntryCb(void **p) {
 
 namespace F02288e2c {
 extern "C" {
-void *GsStrPool_Get() {
-    if (sGsStrPool == NULL) {
-        sGsStrPool = GsHash_NewEx(8, 100, 2, (void *)GsStrPool_HashCb, (void *)GsStrPool_CompareCb, (void *)GsStrPool_FreeEntryCb);
+void *SBRefStrHash() {
+    if (g_SBRefStrList == NULL) {
+        g_SBRefStrList = TableNew2(8, 100, 2, (void *)RefStringHash, (void *)RefStringCompare, (void *)RefStringFree);
     }
-    return sGsStrPool;
+    return g_SBRefStrList;
 }
 }
 }
 
 namespace F02288e2c {
 extern "C" {
-void GsStrPool_FreeIfEmpty() {
-    if (sGsStrPool != NULL) {
-        if (GsHash_Count(sGsStrPool) == 0) {
-            GsHash_Free(sGsStrPool);
-            sGsStrPool = NULL;
+void SBRefStrHashCleanup() {
+    if (g_SBRefStrList != NULL) {
+        if (TableCount(g_SBRefStrList) == 0) {
+            TableFree(g_SBRefStrList);
+            g_SBRefStrList = NULL;
         }
     }
 }
@@ -364,10 +363,10 @@ void GsStrPool_FreeIfEmpty() {
 
 namespace F02288e2c {
 extern "C" {
-void GsServer_Free(GsServer **pp) {
-    GsServer *q = *pp;
-    GsHash_Free(q->keyValues);
-    q->keyValues = NULL;
+void SBServerFree(_SBServer **pp) {
+    _SBServer *q = *pp;
+    TableFree(q->keyvals);
+    q->keyvals = NULL;
     GsUtil_Free(q);
 }
 }
@@ -375,35 +374,35 @@ void GsServer_Free(GsServer **pp) {
 
 namespace F02288e2c {
 extern "C" {
-s32 GsServer_SetStringValue(GsServer *a, char *k, char *v) {
-    GsServerKeyValue kv;
-    kv.key = GsStrPool_Add(0, k);
-    kv.value = GsStrPool_Add(0, v);
-    return GsHash_Insert(a->keyValues, &kv);
+s32 SBServerAddKeyValue(_SBServer *a, char *k, char *v) {
+    SBKeyValuePair kv;
+    kv.key = SBRefStr(0, k);
+    kv.value = SBRefStr(0, v);
+    return TableEnter(a->keyvals, &kv);
 }
 }
 }
 
 namespace F02288e2c {
 extern "C" {
-void GsServer_SetIntValue(void *a, char *b) {
+void SBServerAddIntKeyValue(void *a, char *b) {
     char buf[0x14];
     OS_SPrintf(buf, "%d");
-    GsServer_SetStringValue((GsServer *)a, b, buf);
+    SBServerAddKeyValue((_SBServer *)a, b, buf);
 }
 }
 }
 
 namespace F02288e2c {
 extern "C" {
-s32 GsServer_GetStringValue(void *a, char *k, s32 d) {
-    GsServerKeyValue *e;
+s32 SBServerGetStringValueA(void *a, char *k, s32 d) {
+    SBKeyValuePair *e;
     s32 key[2];
     if (a == NULL) {
         return 0;
     }
     key[0] = (s32)k;
-    e = (GsServerKeyValue *)GsHash_Find(((GsServer *)a)->keyValues, key);
+    e = (SBKeyValuePair *)TableLookup(((_SBServer *)a)->keyvals, key);
     if (e != NULL) {
         d = e->value;
     }
@@ -414,13 +413,13 @@ s32 GsServer_GetStringValue(void *a, char *k, s32 d) {
 
 namespace F02288e2c {
 extern "C" {
-s32 GsServer_GetIntValue(void *a, char *b, s32 c) {
+s32 SBServerGetIntValueA(void *a, char *b, s32 c) {
     char *v;
     s32 t;
     if (strcmp(b, "ping") == 0) {
-        return GsServer_GetPing(a);
+        return SBServerGetPing(a);
     }
-    v = (char *)GsServer_GetStringValue(a, b, 0);
+    v = (char *)SBServerGetStringValueA(a, b, 0);
     if (v != NULL) {
         s32 ch = *(u8 *)v;
         if (ch < 0 || ch >= 0x80) {
@@ -441,8 +440,8 @@ call:
 
 namespace F02288e2c {
 extern "C" {
-u64 GsServer_GetFloatValue(void *a, char *b, u64 v) {
-    GsServer_GetStringValue(a, b, 0);
+u64 SBServerGetFloatValueA(void *a, char *b, u64 v) {
+    SBServerGetStringValueA(a, b, 0);
     return v;
 }
 }
@@ -450,7 +449,7 @@ u64 GsServer_GetFloatValue(void *a, char *b, u64 v) {
 
 namespace F02288e2c {
 extern "C" {
-s32 GsServer_GetPublicIp(s32 *o) {
+s32 SBServerGetPublicInetAddress(s32 *o) {
     return o[0];
 }
 }
@@ -458,24 +457,24 @@ s32 GsServer_GetPublicIp(s32 *o) {
 
 namespace F02288e2c {
 extern "C" {
-u16 GsServer_GetPublicPort(GsServer *o) {
-    return Unk_ov065_02289044_Htons(o->port);
+u16 SBServerGetPublicQueryPort(_SBServer *o) {
+    return Unk_ov065_02289044_Htons(o->publicport);
 }
 }
 }
 
 namespace F02288e2c {
 extern "C" {
-u16 GsServer_GetPortRaw(GsServer *o) {
-    return o->port;
+u16 SBServerGetPublicQueryPortNBO(_SBServer *o) {
+    return o->publicport;
 }
 }
 }
 
 namespace F02288e2c {
 extern "C" {
-BOOL GsServer_HasPrivateAddress(GsServer *o) {
-    if ((o->listFlags & 2) == 2) {
+BOOL SBServerHasPrivateAddress(_SBServer *o) {
+    if ((o->flags & 2) == 2) {
         return TRUE;
     }
     return FALSE;
@@ -485,7 +484,7 @@ BOOL GsServer_HasPrivateAddress(GsServer *o) {
 
 namespace F02288e2c {
 extern "C" {
-s32 GsServer_GetPrivateIp(s32 *o) {
+s32 SBServerGetPrivateInetAddress(s32 *o) {
     return o[2];
 }
 }
@@ -493,23 +492,23 @@ s32 GsServer_GetPrivateIp(s32 *o) {
 
 namespace F02288e2c {
 extern "C" {
-u16 GsServer_GetPrivatePort(GsServer *o) {
-    return Unk_ov065_02289044_Htons(o->port2);
+u16 SBServerGetPrivateQueryPort(_SBServer *o) {
+    return Unk_ov065_02289044_Htons(o->privateport);
 }
 }
 }
 
 namespace F02288e2c {
 extern "C" {
-void GsServer_SetNextFree(GsServer *o, s32 v) {
-    o->next = (GsServer *)v;
+void SBServerSetNext(_SBServer *o, s32 v) {
+    o->next = (_SBServer *)v;
 }
 }
 }
 
 namespace F02288e2c {
 extern "C" {
-s32 GsServer_GetNextFree(GsServer *o) {
+s32 SBServerGetNext(_SBServer *o) {
     return (s32)o->next;
 }
 }
@@ -517,7 +516,7 @@ s32 GsServer_GetNextFree(GsServer *o) {
 
 namespace F02288e2c {
 extern "C" {
-s32 GsServer_IsKeyAllowed(char *s) {
+s32 CheckValidKey(char *s) {
     GsServerIgnoredKeys l = *(GsServerIgnoredKeys *)data_ov065_0228e928;
     u32 i;
     char **p = l.v;
@@ -534,19 +533,19 @@ s32 GsServer_IsKeyAllowed(char *s) {
 
 namespace F02288e2c {
 extern "C" {
-char *GsUtil_StrTok(char *s, s32 ch) {
+char *mytok(char *s, s32 ch) {
     char *start;
     char *p;
     s8 c;
     if (s != NULL) {
-        sGsStrTokPos = s;
+        thestr = s;
     }
-    start = sGsStrTokPos;
+    start = thestr;
     goto test;
 loop:
-    sGsStrTokPos++;
+    thestr++;
 test:
-    p = sGsStrTokPos;
+    p = thestr;
     c = *p;
     if (c == 0) {
         goto out;
@@ -559,7 +558,7 @@ out:
         start = NULL;
     }
     if (c != 0) {
-        sGsStrTokPos++;
+        thestr++;
         *p = 0;
     }
     return start;
@@ -569,20 +568,20 @@ out:
 
 namespace F02288e2c {
 extern "C" {
-void GsServer_ParseQr1Reply(GsServer *c, char *s) {
+void SBServerParseKeyVals(_SBServer *c, char *s) {
     char *k;
     char *v;
-    k = GsUtil_StrTok(s + 1, 0x5c);
+    k = mytok(s + 1, 0x5c);
     if (k != NULL) {
         do {
-            v = GsUtil_StrTok(NULL, 0x5c);
+            v = mytok(NULL, 0x5c);
             if (v == NULL) {
                 v = "";
             }
-            if (GsServer_IsKeyAllowed(k) != 0) {
-                GsServer_SetStringValue(c, k, v);
+            if (CheckValidKey(k) != 0) {
+                SBServerAddKeyValue(c, k, v);
             }
-            k = GsUtil_StrTok(NULL, 0x5c);
+            k = mytok(NULL, 0x5c);
         } while (k != NULL);
     }
 }
@@ -591,7 +590,7 @@ void GsServer_ParseQr1Reply(GsServer *c, char *s) {
 
 namespace F02288e2c {
 extern "C" {
-void GsServer_ParseQr2Reply(GsServer *c, char *p, s32 len) {
+void SBServerParseQR2FullKeysSingle(_SBServer *c, char *p, s32 len) {
     s32 r;
     char *q;
     char *name;
@@ -604,21 +603,21 @@ void GsServer_ParseQr2Reply(GsServer *c, char *p, s32 len) {
     s32 k;
     char buf[0x80];
     while (*p != 0) {
-        r = GsUtil_StrSizeInBuffer(p, len);
+        r = NTSLengthSB(p, len);
         if (r < 0) {
             return;
         }
         name = p;
         p += r;
         len -= r;
-        r = GsUtil_StrSizeInBuffer(p, len);
+        r = NTSLengthSB(p, len);
         if (r < 0) {
             return;
         }
         val = p;
         p += r;
         len -= r;
-        GsServer_SetStringValue(c, name, val);
+        SBServerAddKeyValue(c, name, val);
     }
     p++;
     len--;
@@ -637,7 +636,7 @@ void GsServer_ParseQr2Reply(GsServer *c, char *p, s32 len) {
         q = p;
         n = 0;
         while (*p != 0) {
-            r = GsUtil_StrSizeInBuffer(p, len);
+            r = NTSLengthSB(p, len);
             if (r < 0 || r > 100) {
                 return;
             }
@@ -650,12 +649,12 @@ void GsServer_ParseQr2Reply(GsServer *c, char *p, s32 len) {
         for (j = 0; j < cnt; j++) {
             s = q;
             for (k = 0; k < n; k++) {
-                r = GsUtil_StrSizeInBuffer(p, len);
+                r = NTSLengthSB(p, len);
                 if (r < 0) {
                     return;
                 }
                 OS_SPrintf(buf, "%s%d", s, j);
-                GsServer_SetStringValue(c, buf, p);
+                SBServerAddKeyValue(c, buf, p);
                 p += r;
                 len -= r;
                 s += STD_GetStringLength(s) + 1;
@@ -668,7 +667,7 @@ void GsServer_ParseQr2Reply(GsServer *c, char *p, s32 len) {
 
 namespace F022884fc {
 extern "C" {
-u32 GsUtil_StrHashNoCase(u8 *s, u32 n) {
+u32 StringHash(u8 *s, u32 n) {
     s32 c;
     u32 h = 0;
     c = *(s8 *)s;
@@ -690,24 +689,24 @@ u32 GsUtil_StrHashNoCase(u8 *s, u32 n) {
 
 namespace F022884fc {
 extern "C" {
-void GsServer_FreeKeyCb(u32 *p) {
-    GsStrPool_Release(0, (void *)p[0]);
-    GsStrPool_Release(0, (void *)p[1]);
+void KeyValFree(u32 *p) {
+    SBReleaseStr(0, (void *)p[0]);
+    SBReleaseStr(0, (void *)p[1]);
 }
 }
 }
 
 namespace F022884fc {
 extern "C" {
-u32 GsServer_HashKeyCb(u32 *p, u32 n) {
-    return GsUtil_StrHashNoCase((u8 *)*p, n);
+u32 KeyValHashKey(u32 *p, u32 n) {
+    return StringHash((u8 *)*p, n);
 }
 }
 }
 
 namespace F022884fc {
 extern "C" {
-void GsServer_CompareKeyCb(u32 *a, u32 *b) {
+void KeyValCompareKey(u32 *a, u32 *b) {
     func_02130b04((void *)*a, (void *)*b);
 }
 }
@@ -715,33 +714,33 @@ void GsServer_CompareKeyCb(u32 *a, u32 *b) {
 
 namespace F022884fc {
 extern "C" {
-u32 GsServer_GetPing(Ent *e) {
-    return e->ping;
+u32 SBServerGetPing(Ent *e) {
+    return e->updatetime;
 }
 }
 }
 
 namespace F022884fc {
 extern "C" {
-Ent *GsServer_New(s32 unused, u32 addr, u32 port) {
+Ent *SBAllocServer(s32 unused, u32 addr, u32 port) {
     Ent *e = (Ent *)GsUtil_Alloc(0x24);
     if (e == 0) {
         return 0;
     }
-    e->keyValues = GsHash_NewEx(8, 8, 4, (void *)GsServer_HashKeyCb, (void *)GsServer_CompareKeyCb, (void *)GsServer_FreeKeyCb);
-    if (e->keyValues == 0) {
+    e->keyvals = TableNew2(8, 8, 4, (void *)KeyValHashKey, (void *)KeyValCompareKey, (void *)KeyValFree);
+    if (e->keyvals == 0) {
         GsUtil_Free(e);
         return 0;
     }
-    e->stateFlags = 0;
-    e->listFlags = 0;
+    e->state = 0;
+    e->flags = 0;
     e->next = 0;
-    e->ping = 0;
-    e->altAddr = 0;
-    e->addr = addr;
-    e->port = port;
-    e->addr2 = 0;
-    e->port2 = 0;
+    e->updatetime = 0;
+    e->icmpip = 0;
+    e->publicip = addr;
+    e->publicport = port;
+    e->privateip = 0;
+    e->privateport = 0;
     return e;
 }
 }
@@ -749,49 +748,49 @@ Ent *GsServer_New(s32 unused, u32 addr, u32 port) {
 
 namespace F022884fc {
 extern "C" {
-void GsServer_SetListFlags(Ent *e, u32 v) {
-    e->listFlags = v;
+void SBServerSetFlags(Ent *e, u32 v) {
+    e->flags = v;
 }
 }
 }
 
 namespace F022884fc {
 extern "C" {
-void GsServer_SetPrivateAddress(Ent *e, u32 addr, u32 port) {
-    e->addr2 = addr;
-    e->port2 = port;
+void SBServerSetPrivateAddr(Ent *e, u32 addr, u32 port) {
+    e->privateip = addr;
+    e->privateport = port;
 }
 }
 }
 
 namespace F022884fc {
 extern "C" {
-void GsServer_SetIcmpIp(Ent *e, s32 v) {
-    e->altAddr = v;
+void SBServerSetICMPIP(Ent *e, s32 v) {
+    e->icmpip = v;
 }
 }
 }
 
 namespace F022884fc {
 extern "C" {
-void GsServer_SetFlags(Ent *e, u32 v) {
-    e->stateFlags = v;
+void SBServerSetState(Ent *e, u32 v) {
+    e->state = v;
 }
 }
 }
 
 namespace F022884fc {
 extern "C" {
-u32 GsServer_GetFlags(Ent *e) {
-    return e->stateFlags;
+u32 SBServerGetState(Ent *e) {
+    return e->state;
 }
 }
 }
 
 namespace F022884fc {
 extern "C" {
-BOOL GsServer_IsNull(u32 v) {
-    if (v == data_ov065_022918a8) {
+BOOL SBIsNullServer(u32 v) {
+    if (v == SBNullServer) {
         return TRUE;
     }
     return FALSE;
@@ -801,14 +800,14 @@ BOOL GsServer_IsNull(u32 v) {
 
 namespace F022884fc {
 extern "C" {
-void GsSrvQueue_PushBack(List *l, Ent *e) {
-    if (l->tail != 0) {
-        l->tail->next = e;
+void FIFOAddRear(List *l, Ent *e) {
+    if (l->last != 0) {
+        l->last->next = e;
     }
-    l->tail = e;
+    l->last = e;
     e->next = 0;
-    if (l->head == 0) {
-        l->head = e;
+    if (l->first == 0) {
+        l->first = e;
     }
     l->count = l->count + 1;
 }
@@ -817,11 +816,11 @@ void GsSrvQueue_PushBack(List *l, Ent *e) {
 
 namespace F022884fc {
 extern "C" {
-void GsSrvQueue_PushFront(List *l, Ent *e) {
-    e->next = l->head;
-    l->head = e;
-    if (l->tail == 0) {
-        l->tail = e;
+void FIFOAddFront(List *l, Ent *e) {
+    e->next = l->first;
+    l->first = e;
+    if (l->last == 0) {
+        l->last = e;
     }
     l->count = l->count + 1;
 }
@@ -830,12 +829,12 @@ void GsSrvQueue_PushFront(List *l, Ent *e) {
 
 namespace F022884fc {
 extern "C" {
-Ent *GsSrvQueue_PopFront(List *l) {
-    Ent *e = l->head;
+Ent *FIFOGetFirst(List *l) {
+    Ent *e = l->first;
     if (e != 0) {
-        l->head = e->next;
-        if (l->head == 0) {
-            l->tail = 0;
+        l->first = e->next;
+        if (l->first == 0) {
+            l->last = 0;
         }
         l->count = l->count - 1;
     }
@@ -846,22 +845,22 @@ Ent *GsSrvQueue_PopFront(List *l) {
 
 namespace F022884fc {
 extern "C" {
-s32 GsSrvQueue_Remove(List *l, Ent *e) {
+s32 FIFORemove(List *l, Ent *e) {
     Ent *cur;
     Ent *prev;
     prev = 0;
-    cur = l->head;
+    cur = l->first;
     if (cur != 0) {
         do {
             if (cur == e) {
                 if (prev != 0) {
                     prev->next = cur->next;
                 }
-                if (l->head == cur) {
-                    l->head = cur->next;
+                if (l->first == cur) {
+                    l->first = cur->next;
                 }
-                if (l->tail == cur) {
-                    l->tail = prev;
+                if (l->last == cur) {
+                    l->last = prev;
                 }
                 l->count = l->count - 1;
                 return 1;
@@ -877,9 +876,9 @@ s32 GsSrvQueue_Remove(List *l, Ent *e) {
 
 namespace F022884fc {
 extern "C" {
-void GsSrvQueue_Init(List *l) {
-    l->tail = 0;
-    l->head = l->tail;
+void FIFOClear(List *l) {
+    l->last = 0;
+    l->first = l->last;
     l->count = 0;
 }
 }

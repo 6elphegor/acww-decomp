@@ -7,7 +7,7 @@
 // GP peer connection (cf. GameSpy GP SDK gpiPeer.h GPIPeer, older TCP version with a socket instead of ip/port) and its queued
 // message (GsGpPeerMessage) (src/ov065/unk_ov065_02280c08.cpp gpiPeer.c, unk_ov065_0227d96c.cpp, unk_ov065_0228176c.cpp).
 
-struct GsArray;
+struct DArrayImplementation;
 
 struct GsGpPeer {
     /* 0x00 */ s32 peerState;
@@ -18,7 +18,7 @@ struct GsGpPeer {
     /* 0x14 */ s32 nackCount;
     /* 0x18 */ GsGpBuffer inputBuffer;
     /* 0x28 */ GsGpBuffer outputBuffer;
-    /* 0x38 */ GsArray *messageQueue;
+    /* 0x38 */ DArrayImplementation *messageQueue;
     /* 0x3c */ GsGpPeer *next;
 };
 

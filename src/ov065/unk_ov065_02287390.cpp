@@ -1,20 +1,20 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
-#include "net/GsArray.h"
+#include "net/darray.h"
 #include "net/Unk_ov065_02287200_Sa.h"
 #include "net/GsInAddr.h"
-#include "net/GsNatNeg.h"
-#include "net/GsQr.h"
+#include "net/natneg.h"
+#include "net/qr2.h"
 #include "net/GsBytes.h"
 
 extern "C" {
-extern GsQrContext data_ov065_0228e1c0;
-GsQrContext *sGsQrDefault = &data_ov065_0228e1c0;
+extern qr2_implementation_s static_qr2_rec;
+qr2_implementation_s *current_rec = &static_qr2_rec;
 u8 data_ov065_0228e1b8[8] = {0xfd, 0xfc, 0x1e, 0x66, 0x6a, 0xb2, 0, 0};
-GsQrContext data_ov065_0228e1c0 = {-1};
-s32 sGsQrLocalAddrCount;
-u32 sGsQrLocalAddrs[5];
-char sGsQrMasterOverride[0x40];
+qr2_implementation_s static_qr2_rec = {-1};
+s32 num_local_ips;
+u32 local_ip_list[5];
+char qr2_hostname[0x40];
 u8 data_ov065_022917a0[0x100];
 }
 
@@ -30,44 +30,44 @@ namespace F02287200 {
 
 
 
-typedef GsQrContext Qr;
-typedef GsQrBuffer Buf;
-typedef GsNatNegotiator Ent;
-typedef GsArray Vec;
+typedef qr2_implementation_s Qr;
+typedef qr2_buffer_s Buf;
+typedef _NATNegotiator Ent;
+typedef DArrayImplementation Vec;
 
 extern "C" {
-extern Qr *sGsQrDefault;
+extern Qr *current_rec;
 extern u8 data_ov065_0228e1b8[];
-extern char *gGsKeyNames[];
-extern s32 sGsQrLocalAddrCount;
-extern u32 sGsQrLocalAddrs[];
+extern char *qr2_registered_key_list[];
+extern s32 num_local_ips;
+extern u32 local_ip_list[];
 
 s32 memcmp(const void *, const void *, s32);
 void memcpy(void *, const void *, s32);
 s32 OS_SPrintf(char *, const char *, ...);
-s32 GsSock_SendTo(s32, void *, s32, s32, void *, s32);
-s32 GsSock_Close(s32);
-s32 GsUtil_GetTimeMs(void);
-void GsArray_Free(Vec *);
-s32 GsArray_Count(Vec *);
-void *GsArray_At(Vec *, s32);
-void GsArray_Append(Vec *, void *);
-void GsArray_RemoveAt(Vec *, s32);
-Vec *GsArray_New(s32, s32, void *);
+s32 sendto(s32, void *, s32, s32, void *, s32);
+s32 closesocket(s32);
+s32 current_time(void);
+void ArrayFree(Vec *);
+s32 ArrayLength(Vec *);
+void *ArrayNth(Vec *, s32);
+void ArrayAppend(Vec *, void *);
+void ArrayRemoveAt(Vec *, s32);
+Vec *ArrayNew(s32, s32, void *);
 char *Sock_InetNtoA(GsInAddr);
-void GsQr_BeginPacket(Buf *, s32, u8 *);
-void GsQr_BufAppendString(Buf *, const char *);
-void GsQr_BufAppendInt(Buf *, s32);
-void GsQr_AppendAllKeyValues(Qr *, Buf *, u32, u8 *, u32, u8 *, u32, u8 *);
-void GsQr_ParsePublicAddress(Qr *, u8 *);
-void GsQr_AppendChallengeResponse(Qr *, Buf *, u8 *, s32);
+void qr_add_packet_header(Buf *, s32, u8 *);
+void qr2_buffer_addA(Buf *, const char *);
+void qr2_buffer_add_int(Buf *, s32);
+void qr_build_query_reply(Qr *, Buf *, u32, u8 *, u32, u8 *, u32, u8 *);
+void handle_public_address(Qr *, u8 *);
+void compute_challenge_response(Qr *, Buf *, u8 *, s32);
 
 void GsNatNeg_FreeEntry(Ent *e);
-void GsQr_AppendQr1Keys(Qr *q, Buf *buf, s32 kind);
-void GsQr_BuildQr1Reply(Qr *q, Buf *buf);
-BOOL GsQr_IsDuplicateMessage(Qr *q, u32 v);
-void GsQr_HandleClientMessage(Qr *q, u8 *p, s32 n);
-void GsQr_HandleQuery(Qr *q, Buf *buf, u8 *p, s32 n);
+void qr_build_partial_old_query_reply(Qr *q, Buf *buf, s32 kind);
+void qr_process_old_query(Qr *q, Buf *buf);
+BOOL qr_got_recent_message(Qr *q, u32 v);
+void qr_process_client_message(Qr *q, u8 *p, s32 n);
+void qr_process_query(Qr *q, Buf *buf, u8 *p, s32 n);
 
 #define HTONS(x) ((u16)((((x) >> 8) & 0xff) | (((x) << 8) & 0xff00)))
 #define HTONL(x) (((x) >> 24 & 0xff) | ((x) >> 8 & 0xff00) | ((x) << 8 & 0xff0000) | ((x) << 24 & 0xff000000))
@@ -94,12 +94,12 @@ struct Unk_ov065_0228804c_List {
 };
 
 extern "C" {
-extern const char *gGsKeyNames[];
-extern GsQrContext *sGsQrDefault;
-extern GsQrContext data_ov065_0228e1c0;
-extern volatile s32 sGsQrLocalAddrCount;
-extern GsBytes4 sGsQrLocalAddrs[];
-extern char sGsQrMasterOverride[];
+extern const char *qr2_registered_key_list[];
+extern qr2_implementation_s *current_rec;
+extern qr2_implementation_s static_qr2_rec;
+extern volatile s32 num_local_ips;
+extern GsBytes4 local_ip_list[];
+extern char qr2_hostname[];
 extern u8 data_ov065_022917a0[];
 
 s32 func_02133150(s32, s32);
@@ -114,104 +114,104 @@ s32 rand();
 
 void *GsUtil_Alloc(s32);
 void GsUtil_Free(void *);
-Unk_ov065_0228804c_List *GsSock_GetLocalHost();
-s32 GsSock_InetAddr(const char *);
-s32 GsSock_RecvFrom(s32, void *, s32, s32, Unk_ov065_02287fcc_Sa *, s32 *);
-s32 GsSock_Close(s32);
-s32 GsSock_CanRead(s32);
-s32 GsSock_CleanupStub();
-u32 GsUtil_GetTimeMs();
+Unk_ov065_0228804c_List *getlocalhost();
+s32 inet_addr(const char *);
+s32 recvfrom(s32, void *, s32, s32, Unk_ov065_02287fcc_Sa *, s32 *);
+s32 closesocket(s32);
+s32 CanReceiveOnSocket(s32);
+s32 SocketShutDown();
+u32 current_time();
 Unk_ov065_02287fcc_Host *Sock_GetHostByName(const char *);
-void GsQr_SendHeartbeat(GsQrContext *, s32);
-void GsQr_SendKeepAlive(GsQrContext *);
-s32 GsQr_HandlePacket(GsQrContext *, u8 *, s32, Unk_ov065_02287fcc_Sa *);
+void send_heartbeat(qr2_implementation_s *, s32);
+void send_keepalive(qr2_implementation_s *);
+s32 qr2_parse_queryA(qr2_implementation_s *, u8 *, s32, Unk_ov065_02287fcc_Sa *);
 
-void GsQr_AppendAllKeyValues(GsQrContext *q, GsQrBuffer *b, s32 c0, u8 *l0, s32 c1, u8 *l1, s32 c2, u8 *l2);
-void GsQr_AppendKeyValues(GsQrContext *q, GsQrBuffer *b, s32 type, s32 count, u8 *list);
-void GsQr_ParsePublicAddress(GsQrContext *q, const char *s);
-void GsQr_AppendChallengeResponse(GsQrContext *q, GsQrBuffer *b, const char *s, s32 n);
-void GsQr_BeginPacket(GsQrBuffer *b, s32 c, u8 *ip);
-void GsQr_Rc4Crypt(u8 *key, s32 keylen, u8 *data, s32 datalen);
-void GsQr_Base64Encode(u8 *in, s32 len, u8 *out);
-u8 GsQr_Base64Char(u8 c);
-void GsQr_SwapBytes(u8 *a, u8 *b);
-s32 GsQr_ResolveAddress(const char *name, u32 port, Unk_ov065_02287fcc_Sa *sa, Unk_ov065_02287fcc_Host **hp);
-void GsQr_GetLocalAddresses();
-void GsQr_BufAppendString(GsQrBuffer *b, const char *s);
-void GsQr_BufAppendInt(GsQrBuffer *b, s32 v);
-void GsQr_KeyBufferAdd(GsQrKeyBuffer *k, s32 c);
-void GsQr_Shutdown(GsQrContext *q);
-void GsQr_SendStateChanged(GsQrContext *q);
-void GsQr_CheckHeartbeat(GsQrContext *q);
-void GsQr_ReceiveAll(GsQrContext *q);
-void GsQr_Think(GsQrContext *q);
-void GsQr_SetPublicAddressCallback(GsQrContext *q, GsQrPublicAddressCallback cb);
-void GsQr_SetClientMessageCallback(GsQrContext *q, s32 v);
-void GsQr_SetNatNegCallback(GsQrContext *q, s32 v);
-s32 GsQr_Init(GsQrContext **out, s32 fd, s32 a2, const char *name, const char *secret, s32 a5, s32 a6, GsQrServerKeyCallback cb88,
-                        GsQrIndexedKeyCallback cb8c, GsQrIndexedKeyCallback cb90, GsQrKeyListCallback cb94, GsQrCountCallback cb98,
-                        GsQrAddErrorCallback cb9c, void *ud);
+void qr_build_query_reply(qr2_implementation_s *q, qr2_buffer_s *b, s32 c0, u8 *l0, s32 c1, u8 *l1, s32 c2, u8 *l2);
+void qr_build_partial_query_reply(qr2_implementation_s *q, qr2_buffer_s *b, s32 type, s32 count, u8 *list);
+void handle_public_address(qr2_implementation_s *q, const char *s);
+void compute_challenge_response(qr2_implementation_s *q, qr2_buffer_s *b, const char *s, s32 n);
+void qr_add_packet_header(qr2_buffer_s *b, s32 c, u8 *ip);
+void gs_encrypt(u8 *key, s32 keylen, u8 *data, s32 datalen);
+void gs_encode(u8 *in, s32 len, u8 *out);
+u8 encode_ct(u8 c);
+void swap_byte(u8 *a, u8 *b);
+s32 get_sockaddrin__qr2(const char *name, u32 port, Unk_ov065_02287fcc_Sa *sa, Unk_ov065_02287fcc_Host **hp);
+void enum_local_ips();
+void qr2_buffer_addA(qr2_buffer_s *b, const char *s);
+void qr2_buffer_add_int(qr2_buffer_s *b, s32 v);
+void qr2_keybuffer_add(qr2_keybuffer_s *k, s32 c);
+void qr2_shutdown(qr2_implementation_s *q);
+void qr2_send_statechanged(qr2_implementation_s *q);
+void qr2_check_send_heartbeat(qr2_implementation_s *q);
+void qr2_check_queries(qr2_implementation_s *q);
+void qr2_think(qr2_implementation_s *q);
+void qr2_register_publicaddress_callback(qr2_implementation_s *q, qr2_publicaddresscallback_t cb);
+void qr2_register_clientmessage_callback(qr2_implementation_s *q, s32 v);
+void qr2_register_natneg_callback(qr2_implementation_s *q, s32 v);
+s32 qr2_init_socketA(qr2_implementation_s **out, s32 fd, s32 a2, const char *name, const char *secret, s32 a5, s32 a6, qr2_serverkeycallback_t cb88,
+                        qr2_playerteamkeycallback_t cb8c, qr2_playerteamkeycallback_t cb90, qr2_keylistcallback_t cb94, qr2_countcallback_t cb98,
+                        qr2_adderrorcallback_t cb9c, void *ud);
 
 }
 }
 
 namespace F02287b18 {
 extern "C" {
-s32 GsQr_Init(GsQrContext **out, s32 fd, s32 a2, const char *name, const char *secret, s32 a5, s32 a6, GsQrServerKeyCallback cb88,
-                        GsQrIndexedKeyCallback cb8c, GsQrIndexedKeyCallback cb90, GsQrKeyListCallback cb94, GsQrCountCallback cb98,
-                        GsQrAddErrorCallback cb9c, void *ud) {
+s32 qr2_init_socketA(qr2_implementation_s **out, s32 fd, s32 a2, const char *name, const char *secret, s32 a5, s32 a6, qr2_serverkeycallback_t cb88,
+                        qr2_playerteamkeycallback_t cb8c, qr2_playerteamkeycallback_t cb90, qr2_keylistcallback_t cb94, qr2_countcallback_t cb98,
+                        qr2_adderrorcallback_t cb9c, void *ud) {
     s32 i;
-    GsQrContext *q;
+    qr2_implementation_s *q;
     char buf[0x40];
     s32 ok;
     if (out == NULL) {
-        q = &data_ov065_0228e1c0;
+        q = &static_qr2_rec;
     } else {
-        *out = (GsQrContext *)GsUtil_Alloc(0x110);
+        *out = (qr2_implementation_s *)GsUtil_Alloc(0x110);
         q = *out;
     }
-    srand(GsUtil_GetTimeMs());
-    STD_CopyString(q->gameName, name);
-    STD_CopyString(q->secretKey, secret);
-    q->localPort = a2;
+    srand(current_time());
+    STD_CopyString(q->gamename, name);
+    STD_CopyString(q->secret_key, secret);
+    q->qport = a2;
     i = 0;
-    q->lastHeartbeatTime = 0;
-    q->lastKeepAliveTime = 0;
-    q->sock = fd;
-    q->masterState = 1;
-    q->userData = ud;
-    q->serverKeyCallback = cb88;
-    q->playerKeyCallback = cb8c;
-    q->teamKeyCallback = cb90;
-    q->keyListCallback = cb94;
-    q->countCallback = cb98;
-    q->addErrorCallback = cb9c;
-    q->natNegCallback = (GsQrNatNegCallback)i;
-    q->clientMessageCallback = (GsQrClientMessageCallback)i;
-    q->rawPacketCallback = i;
-    q->isPublic = a5;
-    q->ownsSocket = i;
-    q->natNegEnabled = a6;
-    q->publicIp = i;
-    q->publicPort = i;
-    q->publicAddressCallback = NULL;
-    q->stateChangePending = i;
+    q->lastheartbeat = 0;
+    q->lastka = 0;
+    q->hbsock = fd;
+    q->listed_state = 1;
+    q->udata = ud;
+    q->server_key_callback = cb88;
+    q->player_key_callback = cb8c;
+    q->team_key_callback = cb90;
+    q->key_list_callback = cb94;
+    q->playerteam_count_callback = cb98;
+    q->adderror_callback = cb9c;
+    q->nn_callback = (qr2_natnegcallback_t)i;
+    q->cm_callback = (qr2_clientmessagecallback_t)i;
+    q->cdkeyprocess = i;
+    q->ispublic = a5;
+    q->read_socket = i;
+    q->nat_negotiate = a6;
+    q->publicip = i;
+    q->publicport = i;
+    q->pa_callback = NULL;
+    q->userstatechangerequested = i;
     for (; i < 4; i++) {
-        q->instanceKey[i] = rand() % 0xff;
+        q->instance_key[i] = rand() % 0xff;
     }
     for (i = 0; i < 10; i++) {
-        q->recentMessageKeys[i] = -1;
+        q->client_message_keys[i] = -1;
     }
-    q->messageKeyIndex = 0;
-    if (sGsQrLocalAddrCount == 0) {
-        GsQr_GetLocalAddresses();
+    q->cur_message_key = 0;
+    if (num_local_ips == 0) {
+        enum_local_ips();
     }
     if (a5 != 0) {
-        char c = sGsQrMasterOverride[0];
+        char c = qr2_hostname[0];
         if (c == 0) {
             OS_SPrintf(buf, "%s.master.gs.nintendowifi.net", name);
         }
-        ok = GsQr_ResolveAddress(c != 0 ? sGsQrMasterOverride : buf, 0x6cfc, &q->masterAddr, NULL);
+        ok = get_sockaddrin__qr2(c != 0 ? qr2_hostname : buf, 0x6cfc, &q->hbaddr, NULL);
     } else {
         ok = 1;
     }
@@ -225,69 +225,69 @@ s32 GsQr_Init(GsQrContext **out, s32 fd, s32 a2, const char *name, const char *s
 
 namespace F02287b18 {
 extern "C" {
-void GsQr_SetNatNegCallback(GsQrContext *q, s32 v) {
+void qr2_register_natneg_callback(qr2_implementation_s *q, s32 v) {
     if (q == NULL) {
-        q = sGsQrDefault;
+        q = current_rec;
     }
-    q->natNegCallback = (GsQrNatNegCallback)v;
+    q->nn_callback = (qr2_natnegcallback_t)v;
 }
 }
 }
 
 namespace F02287b18 {
 extern "C" {
-void GsQr_SetClientMessageCallback(GsQrContext *q, s32 v) {
+void qr2_register_clientmessage_callback(qr2_implementation_s *q, s32 v) {
     if (q == NULL) {
-        q = sGsQrDefault;
+        q = current_rec;
     }
-    q->clientMessageCallback = (GsQrClientMessageCallback)v;
+    q->cm_callback = (qr2_clientmessagecallback_t)v;
 }
 }
 }
 
 namespace F02287b18 {
 extern "C" {
-void GsQr_SetPublicAddressCallback(GsQrContext *q, GsQrPublicAddressCallback cb) {
+void qr2_register_publicaddress_callback(qr2_implementation_s *q, qr2_publicaddresscallback_t cb) {
     if (q == NULL) {
-        q = sGsQrDefault;
+        q = current_rec;
     }
-    q->publicAddressCallback = cb;
+    q->pa_callback = cb;
 }
 }
 }
 
 namespace F02287b18 {
 extern "C" {
-void GsQr_Think(GsQrContext *q) {
+void qr2_think(qr2_implementation_s *q) {
     if (q == NULL) {
-        q = sGsQrDefault;
+        q = current_rec;
     }
-    if (q->isPublic != 0) {
-        GsQr_CheckHeartbeat(q);
+    if (q->ispublic != 0) {
+        qr2_check_send_heartbeat(q);
     }
-    GsQr_ReceiveAll(q);
+    qr2_check_queries(q);
 }
 }
 }
 
 namespace F02287b18 {
 extern "C" {
-void GsQr_ReceiveAll(GsQrContext *q) {
+void qr2_check_queries(qr2_implementation_s *q) {
     struct {
         Unk_ov065_02287fcc_Sa sa;
         s32 len;
     } l;
     s32 z = 0;
     l.len = 8;
-    if (q->ownsSocket != 0) {
-        if (GsSock_CanRead(q->sock) != 0) {
+    if (q->read_socket != 0) {
+        if (CanReceiveOnSocket(q->hbsock) != 0) {
             do {
-                s32 r = GsSock_RecvFrom(q->sock, data_ov065_022917a0, 0xff, z, &l.sa, &l.len);
+                s32 r = recvfrom(q->hbsock, data_ov065_022917a0, 0xff, z, &l.sa, &l.len);
                 if (r != ~z) {
                     data_ov065_022917a0[r] = z;
-                    GsQr_HandlePacket(q, data_ov065_022917a0, r, &l.sa);
+                    qr2_parse_queryA(q, data_ov065_022917a0, r, &l.sa);
                 }
-            } while (GsSock_CanRead(q->sock) != 0);
+            } while (CanReceiveOnSocket(q->hbsock) != 0);
         }
     }
 }
@@ -296,28 +296,28 @@ void GsQr_ReceiveAll(GsQrContext *q) {
 
 namespace F02287b18 {
 extern "C" {
-void GsQr_CheckHeartbeat(GsQrContext *q) {
-    u32 now = GsUtil_GetTimeMs();
-    if (q->sock != -1) {
-        s32 r = q->masterState;
-        if (r > 0 && now - q->lastHeartbeatTime > 0x2710) {
+void qr2_check_send_heartbeat(qr2_implementation_s *q) {
+    u32 now = current_time();
+    if (q->hbsock != -1) {
+        s32 r = q->listed_state;
+        if (r > 0 && now - q->lastheartbeat > 0x2710) {
             if (r >= 4) {
-                q->masterState = 0;
-                q->addErrorCallback(5, "No challenge value was received from the master server.", q->userData);
+                q->listed_state = 0;
+                q->adderror_callback(5, "No challenge value was received from the master server.", q->udata);
                 return;
             }
-            GsQr_SendHeartbeat(q, 3);
-            q->masterState = q->masterState + 1;
-        } else if (q->stateChangePending != 0 && now - q->lastHeartbeatTime > 0x2710) {
-            GsQr_SendHeartbeat(q, 1);
+            send_heartbeat(q, 3);
+            q->listed_state = q->listed_state + 1;
+        } else if (q->userstatechangerequested != 0 && now - q->lastheartbeat > 0x2710) {
+            send_heartbeat(q, 1);
         } else {
-            u32 a = q->lastHeartbeatTime;
+            u32 a = q->lastheartbeat;
             if (now - a > 0xea60 || a == 0 || now < a) {
-                GsQr_SendHeartbeat(q, 0);
+                send_heartbeat(q, 0);
             }
         }
-        if (now - q->lastKeepAliveTime > 0x4e20) {
-            GsQr_SendKeepAlive(q);
+        if (now - q->lastka > 0x4e20) {
+            send_keepalive(q);
         }
     }
 }
@@ -326,18 +326,18 @@ void GsQr_CheckHeartbeat(GsQrContext *q) {
 
 namespace F02287b18 {
 extern "C" {
-void GsQr_SendStateChanged(GsQrContext *q) {
+void qr2_send_statechanged(qr2_implementation_s *q) {
     if (q == NULL) {
-        q = sGsQrDefault;
+        q = current_rec;
     }
-    if (q->isPublic != 0) {
-        u32 d = GsUtil_GetTimeMs() - q->lastHeartbeatTime;
+    if (q->ispublic != 0) {
+        u32 d = current_time() - q->lastheartbeat;
         if (d < 0x2710) {
-            q->stateChangePending = 1;
+            q->userstatechangerequested = 1;
             return;
         }
-        GsQr_SendHeartbeat(q, 1);
-        q->stateChangePending = 0;
+        send_heartbeat(q, 1);
+        q->userstatechangerequested = 0;
     }
 }
 }
@@ -345,22 +345,22 @@ void GsQr_SendStateChanged(GsQrContext *q) {
 
 namespace F02287b18 {
 extern "C" {
-void GsQr_Shutdown(GsQrContext *q) {
+void qr2_shutdown(qr2_implementation_s *q) {
     if (q == NULL) {
-        q = sGsQrDefault;
+        q = current_rec;
     }
-    if (q->isPublic != 0) {
-        GsQr_SendHeartbeat(q, 2);
+    if (q->ispublic != 0) {
+        send_heartbeat(q, 2);
     }
-    if (q->sock != -1 && q->ownsSocket != 0) {
-        GsSock_Close(q->sock);
+    if (q->hbsock != -1 && q->read_socket != 0) {
+        closesocket(q->hbsock);
     }
-    q->sock = -1;
-    q->lastHeartbeatTime = 0;
-    if (q->ownsSocket != 0) {
-        GsSock_CleanupStub();
+    q->hbsock = -1;
+    q->lastheartbeat = 0;
+    if (q->read_socket != 0) {
+        SocketShutDown();
     }
-    if (q != &data_ov065_0228e1c0) {
+    if (q != &static_qr2_rec) {
         GsUtil_Free(q);
     }
 }
@@ -369,10 +369,10 @@ void GsQr_Shutdown(GsQrContext *q) {
 
 namespace F02287b18 {
 extern "C" {
-void GsQr_KeyBufferAdd(GsQrKeyBuffer *k, s32 c) {
-    s32 n = k->numKeys;
+void qr2_keybuffer_add(qr2_keybuffer_s *k, s32 c) {
+    s32 n = k->numkeys;
     if (n < 0xfe && c >= 1 && c <= 0xfe) {
-        k->numKeys = n + 1;
+        k->numkeys = n + 1;
         k->keys[n] = c;
     }
 }
@@ -381,17 +381,17 @@ void GsQr_KeyBufferAdd(GsQrKeyBuffer *k, s32 c) {
 
 namespace F02287b18 {
 extern "C" {
-void GsQr_BufAppendInt(GsQrBuffer *b, s32 v) {
+void qr2_buffer_add_int(qr2_buffer_s *b, s32 v) {
     char t[0x18];
     OS_SPrintf(t, "%d", v);
-    GsQr_BufAppendString(b, t);
+    qr2_buffer_addA(b, t);
 }
 }
 }
 
 namespace F02287b18 {
 extern "C" {
-void GsQr_BufAppendString(GsQrBuffer *b, const char *s) {
+void qr2_buffer_addA(qr2_buffer_s *b, const char *s) {
     s32 n = STD_GetStringLength(s) + 1;
     s32 len = b->len;
     s32 avail = 0x800 - len;
@@ -399,9 +399,9 @@ void GsQr_BufAppendString(GsQrBuffer *b, const char *s) {
         n = avail;
     }
     if (n != 0) {
-        memcpy(&b->data[len], s, n);
+        memcpy(&b->buffer[len], s, n);
         b->len += n;
-        b->data[b->len - 1] = 0;
+        b->buffer[b->len - 1] = 0;
     }
 }
 }
@@ -409,20 +409,20 @@ void GsQr_BufAppendString(GsQrBuffer *b, const char *s) {
 
 namespace F02287b18 {
 extern "C" {
-void GsQr_GetLocalAddresses() {
-    Unk_ov065_0228804c_List *l = GsSock_GetLocalHost();
+void enum_local_ips() {
+    Unk_ov065_0228804c_List *l = getlocalhost();
     if (l != NULL) {
-        sGsQrLocalAddrCount = 0;
+        num_local_ips = 0;
         s32 t;
         do {
-            s32 i = sGsQrLocalAddrCount;
+            s32 i = num_local_ips;
             u8 *e = l->addrList[i];
             if (e == NULL) {
                 break;
             }
-            sGsQrLocalAddrs[i] = *(GsBytes4 *)e;
-            t = sGsQrLocalAddrCount + 1;
-            sGsQrLocalAddrCount = t;
+            local_ip_list[i] = *(GsBytes4 *)e;
+            t = num_local_ips + 1;
+            num_local_ips = t;
         } while (t < 5);
     }
 }
@@ -431,7 +431,7 @@ void GsQr_GetLocalAddresses() {
 
 namespace F02287b18 {
 extern "C" {
-s32 GsQr_ResolveAddress(const char *name, u32 port, Unk_ov065_02287fcc_Sa *sa, Unk_ov065_02287fcc_Host **hp) {
+s32 get_sockaddrin__qr2(const char *name, u32 port, Unk_ov065_02287fcc_Sa *sa, Unk_ov065_02287fcc_Host **hp) {
     Unk_ov065_02287fcc_Host *h = NULL;
     s32 v;
     sa->family = 2;
@@ -440,7 +440,7 @@ s32 GsQr_ResolveAddress(const char *name, u32 port, Unk_ov065_02287fcc_Sa *sa, U
     if (name == NULL) {
         sa->addr = 0;
     } else {
-        sa->addr = GsSock_InetAddr(name);
+        sa->addr = inet_addr(name);
     }
     if (sa->addr == (u32)-1) {
         if (strcmp(name, "255.255.255.255") != 0) {
@@ -461,7 +461,7 @@ s32 GsQr_ResolveAddress(const char *name, u32 port, Unk_ov065_02287fcc_Sa *sa, U
 
 namespace F02287b18 {
 extern "C" {
-void GsQr_SwapBytes(u8 *a, u8 *b) {
+void swap_byte(u8 *a, u8 *b) {
     u8 t = *a;
     *a = *b;
     *b = t;
@@ -471,7 +471,7 @@ void GsQr_SwapBytes(u8 *a, u8 *b) {
 
 namespace F02287b18 {
 extern "C" {
-u8 GsQr_Base64Char(u8 c) {
+u8 encode_ct(u8 c) {
     if (c < 0x1a) {
         return c + 0x41;
     }
@@ -494,7 +494,7 @@ u8 GsQr_Base64Char(u8 c) {
 
 namespace F02287b18 {
 extern "C" {
-void GsQr_Base64Encode(u8 *in, s32 len, u8 *out) {
+void gs_encode(u8 *in, s32 len, u8 *out) {
     u8 t[7];
     s32 k;
     u8 *tp;
@@ -520,7 +520,7 @@ void GsQr_Base64Encode(u8 *in, s32 len, u8 *out) {
                 t[6] = c & 0x3f;
             }
             for (k = 0, tp = &t[3]; k <= 3; out++, tp++, k++) {
-                *out = GsQr_Base64Char(*tp);
+                *out = encode_ct(*tp);
             }
         } while (n < len);
     }
@@ -531,7 +531,7 @@ void GsQr_Base64Encode(u8 *in, s32 len, u8 *out) {
 
 namespace F02287b18 {
 extern "C" {
-void GsQr_Rc4Crypt(u8 *key, s32 keylen, u8 *data, s32 datalen) {
+void gs_encrypt(u8 *key, s32 keylen, u8 *data, s32 datalen) {
     u8 state[0x100];
     s16 i;
     s16 k;
@@ -550,7 +550,7 @@ void GsQr_Rc4Crypt(u8 *key, s32 keylen, u8 *data, s32 datalen) {
     for (; i < 0x100; i++) {
         j = (*q + key[x] + j) % 0x100;
         x = (x + 1) % keylen;
-        GsQr_SwapBytes(q, p + j);
+        swap_byte(q, p + j);
         q++;
     }
     {
@@ -561,7 +561,7 @@ void GsQr_Rc4Crypt(u8 *key, s32 keylen, u8 *data, s32 datalen) {
             a = (a + data[k] + 1) % 0x100;
             pa = &state[a];
             c = (state[a] + c) % 0x100;
-            GsQr_SwapBytes(pa, &state[c]);
+            swap_byte(pa, &state[c]);
             data[k] ^= state[(u8)((state[a] + state[c]) % 0x100)];
         }
     }
@@ -571,10 +571,10 @@ void GsQr_Rc4Crypt(u8 *key, s32 keylen, u8 *data, s32 datalen) {
 
 namespace F02287b18 {
 extern "C" {
-void GsQr_BeginPacket(GsQrBuffer *b, s32 c, u8 *ip) {
+void qr_add_packet_header(qr2_buffer_s *b, s32 c, u8 *ip) {
     u8 *d;
-    b->data[0] = c;
-    d = b->data + 1;
+    b->buffer[0] = c;
+    d = b->buffer + 1;
     d[-1 + 1] = ip[0];
     d[1] = ip[1];
     d[2] = ip[2];
@@ -586,12 +586,12 @@ void GsQr_BeginPacket(GsQrBuffer *b, s32 c, u8 *ip) {
 
 namespace F02287b18 {
 extern "C" {
-void GsQr_AppendChallengeResponse(GsQrContext *q, GsQrBuffer *b, const char *s, s32 n) {
+void compute_challenge_response(qr2_implementation_s *q, qr2_buffer_s *b, const char *s, s32 n) {
     char tmp[0x44];
     if (n >= 1 && n <= 0x41 && s[n - 1] == 0) {
         STD_CopyString(tmp, s);
-        GsQr_Rc4Crypt((u8 *)q->secretKey, STD_GetStringLength(q->secretKey), (u8 *)tmp, n - 1);
-        GsQr_Base64Encode((u8 *)tmp, n - 1, (u8 *)b + b->len);
+        gs_encrypt((u8 *)q->secret_key, STD_GetStringLength(q->secret_key), (u8 *)tmp, n - 1);
+        gs_encode((u8 *)tmp, n - 1, (u8 *)b + b->len);
         b->len += STD_GetStringLength((char *)b + b->len) + 1;
     }
 }
@@ -600,7 +600,7 @@ void GsQr_AppendChallengeResponse(GsQrContext *q, GsQrBuffer *b, const char *s, 
 
 namespace F02287b18 {
 extern "C" {
-void GsQr_ParsePublicAddress(GsQrContext *q, const char *s) {
+void handle_public_address(qr2_implementation_s *q, const char *s) {
     u32 ip;
     u32 port;
     u32 pt;
@@ -608,10 +608,10 @@ void GsQr_ParsePublicAddress(GsQrContext *q, const char *s) {
     pt = (u16)port;
     ip = ((ip << 24) & 0xff000000) | (((ip << 8) & 0xff0000) | (((ip >> 24) & 0xff) | ((ip >> 8) & 0xff00)));
     if (ip != 0 && pt != 0) {
-        if (q->publicIp != ip || q->publicPort != pt) {
-            q->publicIp = ip;
-            q->publicPort = pt;
-            q->publicAddressCallback(ip, pt, q->userData);
+        if (q->publicip != ip || q->publicport != pt) {
+            q->publicip = ip;
+            q->publicport = pt;
+            q->pa_callback(ip, pt, q->udata);
         }
     }
 }
@@ -620,12 +620,12 @@ void GsQr_ParsePublicAddress(GsQrContext *q, const char *s) {
 
 namespace F02287b18 {
 extern "C" {
-void GsQr_AppendKeyValues(GsQrContext *q, GsQrBuffer *b, s32 type, s32 count, u8 *list) {
-    GsQrKeyBuffer kb;
+void qr_build_partial_query_reply(qr2_implementation_s *q, qr2_buffer_s *b, s32 type, s32 count, u8 *list) {
+    qr2_keybuffer_s kb;
     s32 n;
     s32 i;
     s32 j;
-    kb.numKeys = 0;
+    kb.numkeys = 0;
     if (count == 0) {
         return;
     }
@@ -636,10 +636,10 @@ void GsQr_AppendKeyValues(GsQrContext *q, GsQrBuffer *b, s32 type, s32 count, u8
         if (avail < 2) {
             return;
         }
-        n = q->countCallback(type, q->userData);
+        n = q->playerteam_count_callback(type, q->udata);
         v = (u16)n;
         t = (u16)(((v >> 8) & 0xff) | ((v << 8) & 0xff00));
-        u8 *d = b->data + b->len;
+        u8 *d = b->buffer + b->len;
         u8 *sp = (u8 *)&t;
         d[0] = sp[0];
         d[1] = sp[1];
@@ -648,26 +648,26 @@ void GsQr_AppendKeyValues(GsQrContext *q, GsQrBuffer *b, s32 type, s32 count, u8
         n = 1;
     }
     if (count == 0xff) {
-        q->keyListCallback(type, &kb, q->userData);
-        for (j = 0; j < kb.numKeys; j++) {
-            const char *s = gGsKeyNames[kb.keys[j]];
+        q->key_list_callback(type, &kb, q->udata);
+        for (j = 0; j < kb.numkeys; j++) {
+            const char *s = qr2_registered_key_list[kb.keys[j]];
             if (s == NULL) {
                 s = "unknown";
             }
-            GsQr_BufAppendString(b, s);
+            qr2_buffer_addA(b, s);
             if (type == 0) {
                 s32 sv = b->len;
-                q->serverKeyCallback(kb.keys[j], b, q->userData);
+                q->server_key_callback(kb.keys[j], b, q->udata);
                 if (sv == b->len) {
-                    GsQr_BufAppendString(b, "");
+                    qr2_buffer_addA(b, "");
                 }
             }
         }
         if (0x800 - b->len < 1) {
             return;
         }
-        b->data[b->len++] = 0;
-        count = kb.numKeys;
+        b->buffer[b->len++] = 0;
+        count = kb.numkeys;
         list = kb.keys;
         if (type == 0) {
             return;
@@ -677,14 +677,14 @@ void GsQr_AppendKeyValues(GsQrContext *q, GsQrBuffer *b, s32 type, s32 count, u8
         for (j = 0; j < count; j++) {
             s32 save = b->len;
             if (type == 0) {
-                q->serverKeyCallback(list[j], b, q->userData);
+                q->server_key_callback(list[j], b, q->udata);
             } else if (type == 1) {
-                q->playerKeyCallback(list[j], i, b, q->userData);
+                q->player_key_callback(list[j], i, b, q->udata);
             } else if (type == 2) {
-                q->teamKeyCallback(list[j], i, b, q->userData);
+                q->team_key_callback(list[j], i, b, q->udata);
             }
             if (save == b->len) {
-                GsQr_BufAppendString(b, "");
+                qr2_buffer_addA(b, "");
             }
         }
     }
@@ -694,17 +694,17 @@ void GsQr_AppendKeyValues(GsQrContext *q, GsQrBuffer *b, s32 type, s32 count, u8
 
 namespace F02287b18 {
 extern "C" {
-void GsQr_AppendAllKeyValues(GsQrContext *q, GsQrBuffer *b, s32 c0, u8 *l0, s32 c1, u8 *l1, s32 c2, u8 *l2) {
-    GsQr_AppendKeyValues(q, b, 0, c0, l0);
-    GsQr_AppendKeyValues(q, b, 1, c1, l1);
-    GsQr_AppendKeyValues(q, b, 2, c2, l2);
+void qr_build_query_reply(qr2_implementation_s *q, qr2_buffer_s *b, s32 c0, u8 *l0, s32 c1, u8 *l1, s32 c2, u8 *l2) {
+    qr_build_partial_query_reply(q, b, 0, c0, l0);
+    qr_build_partial_query_reply(q, b, 1, c1, l1);
+    qr_build_partial_query_reply(q, b, 2, c2, l2);
 }
 }
 }
 
 namespace F02287200 {
 extern "C" {
-void GsQr_HandleQuery(Qr *q, Buf *buf, u8 *p, s32 n) {
+void qr_process_query(Qr *q, Buf *buf, u8 *p, s32 n) {
     u32 l1, l2, l3;
     u8 *p1 = NULL;
     u8 *p2 = p1;
@@ -733,7 +733,7 @@ void GsQr_HandleQuery(Qr *q, Buf *buf, u8 *p, s32 n) {
                     n -= l3;
                 }
                 if (n >= 0) {
-                    GsQr_AppendAllKeyValues(q, buf, l1, p1, l2, p2, l3, p3);
+                    qr_build_query_reply(q, buf, l1, p1, l2, p2, l3, p3);
                 }
             }
         }
@@ -744,7 +744,7 @@ void GsQr_HandleQuery(Qr *q, Buf *buf, u8 *p, s32 n) {
 
 namespace F02287200 {
 extern "C" {
-void GsQr_AppendQr1Keys(Qr *q, Buf *buf, s32 kind) {
+void qr_build_partial_old_query_reply(Qr *q, Buf *buf, s32 kind) {
     char tmp[0x80];
     struct Keys {
         u8 b[0x100];
@@ -758,43 +758,43 @@ void GsQr_AppendQr1Keys(Qr *q, Buf *buf, s32 kind) {
     u8 *p;
     k.n = 0;
     if ((u32)(kind - 1) <= 1) {
-        cnt = q->countCallback(kind, q->userData);
+        cnt = q->playerteam_count_callback(kind, q->udata);
     } else {
         cnt = 1;
     }
-    q->keyListCallback(kind, (GsQrKeyBuffer *)&k, q->userData);
+    q->key_list_callback(kind, (qr2_keybuffer_s *)&k, q->udata);
     i = 0;
     if (i < k.n) {
       p = k.b;
       do {
-        name = gGsKeyNames[*p];
+        name = qr2_registered_key_list[*p];
         if (name == NULL) {
             name = "unknown";
         }
         if (kind == 0) {
-            GsQr_BufAppendString(buf, name);
-            buf->data[buf->len - 1] = 0x5c;
+            qr2_buffer_addA(buf, name);
+            buf->buffer[buf->len - 1] = 0x5c;
             mark = buf->len;
-            q->serverKeyCallback(*p, buf, q->userData);
+            q->server_key_callback(*p, buf, q->udata);
             if (mark == buf->len) {
-                GsQr_BufAppendString(buf, "");
+                qr2_buffer_addA(buf, "");
             }
-            buf->data[buf->len - 1] = 0x5c;
+            buf->buffer[buf->len - 1] = 0x5c;
         } else {
             for (j = 0; j < cnt; j++) {
                 OS_SPrintf(tmp, "%s%d", name, j);
-                GsQr_BufAppendString(buf, tmp);
-                buf->data[buf->len - 1] = 0x5c;
+                qr2_buffer_addA(buf, tmp);
+                buf->buffer[buf->len - 1] = 0x5c;
                 mark = buf->len;
                 if (kind == 1) {
-                    q->playerKeyCallback(*p, j, buf, q->userData);
+                    q->player_key_callback(*p, j, buf, q->udata);
                 } else if (kind == 2) {
-                    q->teamKeyCallback(*p, j, buf, q->userData);
+                    q->team_key_callback(*p, j, buf, q->udata);
                 }
                 if (mark == buf->len) {
-                    GsQr_BufAppendString(buf, "");
+                    qr2_buffer_addA(buf, "");
                 }
-                buf->data[buf->len - 1] = 0x5c;
+                buf->buffer[buf->len - 1] = 0x5c;
             }
         }
         p++;
@@ -806,13 +806,13 @@ void GsQr_AppendQr1Keys(Qr *q, Buf *buf, s32 kind) {
 
 namespace F02287200 {
 extern "C" {
-void GsQr_BuildQr1Reply(Qr *q, Buf *buf) {
+void qr_process_old_query(Qr *q, Buf *buf) {
     buf->len = 1;
-    buf->data[0] = 0x5c;
-    GsQr_AppendQr1Keys(q, buf, 0);
-    GsQr_AppendQr1Keys(q, buf, 1);
-    GsQr_AppendQr1Keys(q, buf, 2);
-    GsQr_BufAppendString(buf, "final\\\\queryid\\1.1");
+    buf->buffer[0] = 0x5c;
+    qr_build_partial_old_query_reply(q, buf, 0);
+    qr_build_partial_old_query_reply(q, buf, 1);
+    qr_build_partial_old_query_reply(q, buf, 2);
+    qr2_buffer_addA(buf, "final\\\\queryid\\1.1");
     buf->len--;
 }
 }
@@ -820,7 +820,7 @@ void GsQr_BuildQr1Reply(Qr *q, Buf *buf) {
 
 namespace F02287200 {
 extern "C" {
-void GsQr_HandleClientMessage(Qr *q, u8 *p, s32 n) {
+void qr_process_client_message(Qr *q, u8 *p, s32 n) {
     struct Hdr {
         u8 b[6];
     };
@@ -845,22 +845,22 @@ void GsQr_HandleClientMessage(Qr *q, u8 *p, s32 n) {
         ok = FALSE;
     }
     if (ok) {
-        GsQrNatNegCallback cb;
+        qr2_natnegcallback_t cb;
         u32 a = (u32)&l;
         B4 *s = (B4 *)(p + 6);
         ((B4 *)a)->b[0] = s->b[0];
         ((B4 *)a)->b[1] = s->b[1];
         ((B4 *)a)->b[2] = s->b[2];
         ((B4 *)a)->b[3] = s->b[3];
-        cb = q->natNegCallback;
+        cb = q->nn_callback;
         if (cb != NULL) {
             u32 v = l;
-            cb(HTONL(v), q->userData);
+            cb(HTONL(v), q->udata);
         }
     } else {
-        GsQrClientMessageCallback cb = q->clientMessageCallback;
+        qr2_clientmessagecallback_t cb = q->cm_callback;
         if (cb != NULL) {
-            cb(p, n, q->userData);
+            cb(p, n, q->udata);
         }
     }
 }
@@ -869,15 +869,15 @@ void GsQr_HandleClientMessage(Qr *q, u8 *p, s32 n) {
 
 namespace F02287200 {
 extern "C" {
-BOOL GsQr_IsDuplicateMessage(Qr *q, u32 v) {
+BOOL qr_got_recent_message(Qr *q, u32 v) {
     s32 i;
     for (i = 0; i < 10; i++) {
-        if (v == q->recentMessageKeys[i]) {
+        if (v == q->client_message_keys[i]) {
             return TRUE;
         }
     }
-    q->messageKeyIndex = (q->messageKeyIndex + 1) % 10;
-    q->recentMessageKeys[q->messageKeyIndex] = v;
+    q->cur_message_key = (q->cur_message_key + 1) % 10;
+    q->client_message_keys[q->cur_message_key] = v;
     return FALSE;
 }
 }
@@ -885,7 +885,7 @@ BOOL GsQr_IsDuplicateMessage(Qr *q, u32 v) {
 
 namespace F02287200 {
 extern "C" {
-void GsQr_HandlePacket(Qr *q, s8 *data, s32 n, void *addr) {
+void qr2_parse_queryA(Qr *q, s8 *data, s32 n, void *addr) {
     struct {
         s32 x;
         Buf out;
@@ -894,11 +894,11 @@ void GsQr_HandlePacket(Qr *q, s8 *data, s32 n, void *addr) {
     s32 c;
     l.out.len = 0;
     if (q == NULL) {
-        q = sGsQrDefault;
+        q = current_rec;
     }
     c = data[0];
     if (c == 0x3b) {
-        GsQrClientMessageCallback cb = (GsQrClientMessageCallback)q->rawPacketCallback;
+        qr2_clientmessagecallback_t cb = (qr2_clientmessagecallback_t)q->cdkeyprocess;
         if (cb != NULL) {
             cb((u8 *)data, n, addr);
             return;
@@ -906,8 +906,8 @@ void GsQr_HandlePacket(Qr *q, s8 *data, s32 n, void *addr) {
         return;
     }
     if (c == 0x5c) {
-        GsQr_BuildQr1Reply(q, &l.out);
-        GsSock_SendTo(q->sock, &l.out, l.out.len, 0, addr, 8);
+        qr_process_old_query(q, &l.out);
+        sendto(q->hbsock, &l.out, l.out.len, 0, addr, 8);
         return;
     }
     if (n < 7) {
@@ -919,40 +919,40 @@ void GsQr_HandlePacket(Qr *q, s8 *data, s32 n, void *addr) {
     if (((u8 *)data)[1] != 0xfd) {
         return;
     }
-    if (q->masterState > 0) {
-        q->masterState = 0;
+    if (q->listed_state > 0) {
+        q->listed_state = 0;
     }
     type = data[2];
     {
         s8 *hdr = data + 3;
         s8 *body = data + 7;
         n -= 7;
-        GsQr_BeginPacket(&l.out, type, (u8 *)hdr);
+        qr_add_packet_header(&l.out, type, (u8 *)hdr);
         switch (type) {
         case 0:
-            GsQr_HandleQuery(q, &l.out, (u8 *)body, n);
+            qr_process_query(q, &l.out, (u8 *)body, n);
             break;
         case 1:
-            if (n >= 13 && q->publicAddressCallback != 0) {
-                GsQr_ParsePublicAddress(q, (u8 *)body + n - 13);
+            if (n >= 13 && q->pa_callback != 0) {
+                handle_public_address(q, (u8 *)body + n - 13);
             }
-            GsQr_AppendChallengeResponse(q, &l.out, (u8 *)body, n);
+            compute_challenge_response(q, &l.out, (u8 *)body, n);
             break;
         case 2:
             if (n > 0x20) {
                 n = 0x20;
             }
-            l.out.data[0] = 5;
-            memcpy(l.out.data + l.out.len, body, n);
+            l.out.buffer[0] = 5;
+            memcpy(l.out.buffer + l.out.len, body, n);
             l.out.len += n;
             break;
         case 4: {
-            if (q->masterState == -1) {
+            if (q->listed_state == -1) {
                 return;
             }
             l.x = 0;
             do {
-                if (hdr[l.x] != ((s8 *)q->instanceKey)[l.x]) {
+                if (hdr[l.x] != ((s8 *)q->instance_key)[l.x]) {
                     return;
                 }
                 l.x++;
@@ -960,14 +960,14 @@ void GsQr_HandlePacket(Qr *q, s8 *data, s32 n, void *addr) {
             if (n < 2) {
                 return;
             }
-            q->masterState = -1;
-            q->addErrorCallback(body[0], (const char *)body + 1, q->userData);
+            q->listed_state = -1;
+            q->adderror_callback(body[0], (const char *)body + 1, q->udata);
             return;
         }
         case 6: {
             l.x = 0;
             do {
-                if (hdr[l.x] != ((s8 *)q->instanceKey)[l.x]) {
+                if (hdr[l.x] != ((s8 *)q->instance_key)[l.x]) {
                     return;
                 }
                 l.x++;
@@ -975,12 +975,12 @@ void GsQr_HandlePacket(Qr *q, s8 *data, s32 n, void *addr) {
             if (n < 4) {
                 return;
             }
-            l.out.data[0] = 7;
-            *(n ? (GsBytes4 *)(l.out.data + l.out.len) : (GsBytes4 *)(l.out.data + l.out.len)) = *(GsBytes4 *)body;
+            l.out.buffer[0] = 7;
+            *(n ? (GsBytes4 *)(l.out.buffer + l.out.len) : (GsBytes4 *)(l.out.buffer + l.out.len)) = *(GsBytes4 *)body;
             l.out.len = l.out.len + 4;
             *(n ? (GsBytes4 *)&l.x : (GsBytes4 *)&l.x) = *(GsBytes4 *)body;
-            if (GsQr_IsDuplicateMessage(q, l.x) == 0) {
-                GsQr_HandleClientMessage(q, (u8 *)body + 4, n - 4);
+            if (qr_got_recent_message(q, l.x) == 0) {
+                qr_process_client_message(q, (u8 *)body + 4, n - 4);
             }
             break;
         }
@@ -992,7 +992,7 @@ void GsQr_HandlePacket(Qr *q, s8 *data, s32 n, void *addr) {
         default:
             return;
         }
-        GsSock_SendTo(q->sock, &l.out, l.out.len, 0, addr, 8);
+        sendto(q->hbsock, &l.out, l.out.len, 0, addr, 8);
     }
 }
 }
@@ -1000,61 +1000,61 @@ void GsQr_HandlePacket(Qr *q, s8 *data, s32 n, void *addr) {
 
 namespace F02287200 {
 extern "C" {
-void GsQr_SendKeepAlive(Qr *q) {
+void send_keepalive(Qr *q) {
     Buf buf;
     buf.len = 0;
-    GsQr_BeginPacket(&buf, 8, q->instanceKey);
-    GsSock_SendTo(q->sock, &buf, buf.len, 0, &q->masterAddr, 8);
-    q->lastKeepAliveTime = GsUtil_GetTimeMs();
+    qr_add_packet_header(&buf, 8, q->instance_key);
+    sendto(q->hbsock, &buf, buf.len, 0, &q->hbaddr, 8);
+    q->lastka = current_time();
 }
 }
 }
 
 namespace F02287200 {
 extern "C" {
-void GsQr_SendHeartbeat(Qr *q, s32 mode) {
+void send_heartbeat(Qr *q, s32 mode) {
     Buf buf;
     char tmp[20];
     s32 i;
     u32 *p;
     buf.len = 0;
-    GsQr_BeginPacket(&buf, 3, q->instanceKey);
+    qr_add_packet_header(&buf, 3, q->instance_key);
     i = 0;
-    if (i < sGsQrLocalAddrCount) {
-        p = sGsQrLocalAddrs;
+    if (i < num_local_ips) {
+        p = local_ip_list;
         do {
             OS_SPrintf(tmp, "localip%d", i);
-            GsQr_BufAppendString(&buf, tmp);
-            GsQr_BufAppendString(&buf, Sock_InetNtoA(*(GsInAddr *)p));
+            qr2_buffer_addA(&buf, tmp);
+            qr2_buffer_addA(&buf, Sock_InetNtoA(*(GsInAddr *)p));
             p++;
-        } while (++i < sGsQrLocalAddrCount);
+        } while (++i < num_local_ips);
     }
-    GsQr_BufAppendString(&buf, "localport");
-    GsQr_BufAppendInt(&buf, q->localPort);
-    GsQr_BufAppendString(&buf, "natneg");
-    GsQr_BufAppendString(&buf, q->natNegEnabled != 0 ? "1" : "0");
+    qr2_buffer_addA(&buf, "localport");
+    qr2_buffer_add_int(&buf, q->qport);
+    qr2_buffer_addA(&buf, "natneg");
+    qr2_buffer_addA(&buf, q->nat_negotiate != 0 ? "1" : "0");
     if (mode != 0) {
-        GsQr_BufAppendString(&buf, "statechanged");
-        GsQr_BufAppendInt(&buf, mode);
+        qr2_buffer_addA(&buf, "statechanged");
+        qr2_buffer_add_int(&buf, mode);
     }
-    GsQr_BufAppendString(&buf, "gamename");
-    GsQr_BufAppendString(&buf, (char *)q->gameName);
-    if (q->publicAddressCallback != 0) {
-        GsQr_BufAppendString(&buf, "publicip");
-        GsQr_BufAppendInt(&buf, q->publicIp);
-        GsQr_BufAppendString(&buf, "publicport");
-        GsQr_BufAppendInt(&buf, q->publicPort);
+    qr2_buffer_addA(&buf, "gamename");
+    qr2_buffer_addA(&buf, (char *)q->gamename);
+    if (q->pa_callback != 0) {
+        qr2_buffer_addA(&buf, "publicip");
+        qr2_buffer_add_int(&buf, q->publicip);
+        qr2_buffer_addA(&buf, "publicport");
+        qr2_buffer_add_int(&buf, q->publicport);
     }
     if (mode != 2) {
-        GsQr_AppendAllKeyValues(q, &buf, 0xff, NULL, 0xff, NULL, 0xff, NULL);
+        qr_build_query_reply(q, &buf, 0xff, NULL, 0xff, NULL, 0xff, NULL);
     } else if (0x800 - buf.len >= 1) {
-        buf.data[buf.len++] = 0;
+        buf.buffer[buf.len++] = 0;
     }
-    GsSock_SendTo(q->sock, &buf, buf.len, 0, &q->masterAddr, 8);
-    q->lastHeartbeatTime = GsUtil_GetTimeMs();
-    q->lastKeepAliveTime = q->lastHeartbeatTime;
+    sendto(q->hbsock, &buf, buf.len, 0, &q->hbaddr, 8);
+    q->lastheartbeat = current_time();
+    q->lastka = q->lastheartbeat;
     if (mode != 0) {
-        q->stateChangePending = 0;
+        q->userstatechangerequested = 0;
     }
 }
 }

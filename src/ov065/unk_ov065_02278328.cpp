@@ -1,21 +1,21 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
-#include "net/GsArray.h"
+#include "net/darray.h"
 
 // ov065_041: generic vector / hash table / base64 / md5 hex / PRNG (0x022782f4..0x02278c14)
 
-typedef s32 (*GsCompareFn)(void *, void *);
+typedef s32 (*ArrayCompareFn)(void *, void *);
 typedef s32 (*GsArrayMapFn)(void *, void *);
-typedef void (*GsElemFreeFn)(void *);
-typedef s32 (*GsHashFn)(void *, s32);
+typedef void (*ArrayElementFreeFn)(void *);
+typedef s32 (*TableHashFn)(void *, s32);
 
 
-struct GsHashTable {
-    GsArray **buckets;
-    s32 numBuckets;
-    GsElemFreeFn freeElemFn;
-    GsHashFn hashFn;
-    GsCompareFn compareFn;
+struct HashImplementation {
+    DArrayImplementation **buckets;
+    s32 nbuckets;
+    ArrayElementFreeFn freefn;
+    TableHashFn hashfn;
+    ArrayCompareFn compfn;
 };
 
 struct Unk_ov065_02278328_Addr {
@@ -31,83 +31,83 @@ struct Unk_ov065_02278328_Host {
 };
 
 extern "C" {
-extern u32 sGsSockLastError;
-extern s32 sGsRandSeed;
+extern u32 GSINitroErrno;
+extern s32 randomnum;
 
-s32 GsSock_SendTo(s32, void *, s32, s32, void *, s32);
-s32 GsUtil_GetTimeMs(void);
+s32 sendto(s32, void *, s32, s32, void *, s32);
+s32 current_time(void);
 Unk_ov065_02278328_Host *Sock_GetHostByName(s32);
 void *GsUtil_Alloc(s32);
 void *GsUtil_Realloc(void *, s32);
 void GsUtil_Free(void *);
 s32 Sock_InetAtoN(s32, u32 *);
 s32 Sock_GetSockName(s32, void *);
-s32 GsSock_CheckResult(s32, s32);
+s32 CheckRcode(s32, s32);
 void WifiAp_HashReset(void *);
 void WifiAp_HashSetSource(void *, void *, s32);
 void WifiAp_HashGetDigest(void *, void *);
-void qsort(void *, s32, s32, GsCompareFn);
+void qsort(void *, s32, s32, ArrayCompareFn);
 void memmove(void *, void *, s32);
 void memcpy(void *, void *, s32);
 s32 OS_SPrintf(char *, char *, s32);
 u64 OS_GetTick(void);
 u64 func_02132ef8(u64, u64);
 
-s32 GsSock_InetAddr(s32);
-void GsUtil_DigestToHex(u8 *, char *);
-void *GsArray_At(GsArray *, s32);
-s32 GsArray_Count(GsArray *);
-void GsArray_CopyTo(GsArray *, void *, s32);
-void GsArray_Grow(GsArray *);
-void GsArray_DestroyElement(GsArray *, s32);
-void GsArray_Free(GsArray *);
-void GsArray_Append(GsArray *, void *);
-void GsUtil_Base64EncodeBlock(char *, char *, s32);
-s32 GsUtil_Rand(void);
-void GsArray_DeleteAt(GsArray *, s32);
-void GsArray_RemoveAt(GsArray *, s32);
-void GsArray_InsertAt(GsArray *, void *, s32);
-u32 GsUtil_ParkMillerNext(u32);
+s32 inet_addr(s32);
+void MD5Print(u8 *, char *);
+void *ArrayNth(DArrayImplementation *, s32);
+s32 ArrayLength(DArrayImplementation *);
+void SetElement(DArrayImplementation *, void *, s32);
+void ArrayGrow(DArrayImplementation *);
+void FreeElement(DArrayImplementation *, s32);
+void ArrayFree(DArrayImplementation *);
+void ArrayAppend(DArrayImplementation *, void *);
+void TripToQuart(char *, char *, s32);
+s32 longrand(void);
+void ArrayDeleteAt(DArrayImplementation *, s32);
+void ArrayRemoveAt(DArrayImplementation *, s32);
+void ArrayInsertAt(DArrayImplementation *, void *, s32);
+u32 nextlongrand(u32);
 }
 
 extern "C" {
-void GsUtil_DigestToHex(u8 *digest, char *out);
-void GsUtil_Md5Hex(void *a, s32 b, char *out);
-GsHashTable *GsHash_New(s32 esize, s32 n, GsHashFn hash, GsCompareFn cmp, GsElemFreeFn dtor);
-GsHashTable *GsHash_NewEx(s32 esize, s32 n, s32 cap, GsHashFn hash, GsCompareFn cmp, GsElemFreeFn dtor);
-void GsHash_Free(GsHashTable *t);
-s32 GsHash_Count(GsHashTable *t);
-void GsHash_Insert(GsHashTable *t, void *key);
-s32 GsHash_Remove(GsHashTable *t, void *key);
-void *GsHash_Find(GsHashTable *t, void *key);
-void GsHash_ForEach(GsHashTable *t, GsArrayMapFn cb, void *arg);
-void *GsHash_FindIf(GsHashTable *t, GsArrayMapFn cb, void *arg);
-void GsArray_DestroyElement(GsArray *v, s32 i);
-void GsArray_Grow(GsArray *v);
-void GsArray_CopyTo(GsArray *v, void *x, s32 i);
-GsArray *GsArray_New(s32 size, s32 cap, GsElemFreeFn dtor);
-void GsArray_Free(GsArray *v);
-s32 GsArray_Count(GsArray *v);
-void *GsArray_At(GsArray *v, s32 i);
-void GsArray_Append(GsArray *v, void *x);
-void GsArray_InsertAt(GsArray *v, void *x, s32 i);
-void GsArray_InsertSorted(GsArray *v, void *key, GsCompareFn cmp);
-void GsArray_RemoveAt(GsArray *v, s32 i);
-void GsArray_DeleteAt(GsArray *v, s32 i);
-void GsArray_ReplaceAt(GsArray *v, void *x, s32 i);
-void GsArray_Sort(GsArray *v, GsCompareFn cmp);
-s32 GsArray_Search(GsArray *v, void *key, GsCompareFn cmp, s32 start, s32 sorted);
-void GsArray_ForEachBackward(GsArray *v, GsArrayMapFn cb, void *arg);
-void *GsArray_FindBackward(GsArray *v, GsArrayMapFn cb, void *arg);
-void GsArray_Clear(GsArray *v);
-u8 *GsUtil_LinearSearch(void *key, u8 *base, s32 n, s32 size, GsCompareFn cmp);
-u8 *GsUtil_BinarySearch(void *key, u8 *base, s32 n, s32 size, GsCompareFn cmp, s32 *found);
-s32 GsSock_ResolveAddress(s32 a, u32 port, Unk_ov065_02278328_Addr *out);
+void MD5Print(u8 *digest, char *out);
+void MD5Digest(void *a, s32 b, char *out);
+HashImplementation *TableNew(s32 esize, s32 n, TableHashFn hash, ArrayCompareFn cmp, ArrayElementFreeFn dtor);
+HashImplementation *TableNew2(s32 esize, s32 n, s32 cap, TableHashFn hash, ArrayCompareFn cmp, ArrayElementFreeFn dtor);
+void TableFree(HashImplementation *t);
+s32 TableCount(HashImplementation *t);
+void TableEnter(HashImplementation *t, void *key);
+s32 TableRemove(HashImplementation *t, void *key);
+void *TableLookup(HashImplementation *t, void *key);
+void TableMapSafe(HashImplementation *t, GsArrayMapFn cb, void *arg);
+void *TableMapSafe2(HashImplementation *t, GsArrayMapFn cb, void *arg);
+void FreeElement(DArrayImplementation *v, s32 i);
+void ArrayGrow(DArrayImplementation *v);
+void SetElement(DArrayImplementation *v, void *x, s32 i);
+DArrayImplementation *ArrayNew(s32 size, s32 cap, ArrayElementFreeFn dtor);
+void ArrayFree(DArrayImplementation *v);
+s32 ArrayLength(DArrayImplementation *v);
+void *ArrayNth(DArrayImplementation *v, s32 i);
+void ArrayAppend(DArrayImplementation *v, void *x);
+void ArrayInsertAt(DArrayImplementation *v, void *x, s32 i);
+void ArrayInsertSorted(DArrayImplementation *v, void *key, ArrayCompareFn cmp);
+void ArrayRemoveAt(DArrayImplementation *v, s32 i);
+void ArrayDeleteAt(DArrayImplementation *v, s32 i);
+void ArrayReplaceAt(DArrayImplementation *v, void *x, s32 i);
+void ArraySort(DArrayImplementation *v, ArrayCompareFn cmp);
+s32 ArraySearch(DArrayImplementation *v, void *key, ArrayCompareFn cmp, s32 start, s32 sorted);
+void ArrayMapBackwards(DArrayImplementation *v, GsArrayMapFn cb, void *arg);
+void *ArrayMapBackwards2(DArrayImplementation *v, GsArrayMapFn cb, void *arg);
+void ArrayClear(DArrayImplementation *v);
+u8 *mylsearch(void *key, u8 *base, s32 n, s32 size, ArrayCompareFn cmp);
+u8 *mybsearch(void *key, u8 *base, s32 n, s32 size, ArrayCompareFn cmp, s32 *found);
+s32 get_sockaddrin(s32 a, u32 port, Unk_ov065_02278328_Addr *out);
 }
 
 extern "C" {
 
-void GsUtil_DigestToHex(u8 *digest, char *out) {
+void MD5Print(u8 *digest, char *out) {
     u32 i = 0;
     s32 off = 0;
     do {
@@ -117,130 +117,130 @@ void GsUtil_DigestToHex(u8 *digest, char *out) {
     } while (i < 16);
 }
 
-void GsUtil_Md5Hex(void *a, s32 b, char *out) {
+void MD5Digest(void *a, s32 b, char *out) {
     u8 digest[16];
     u8 ctx[0x58];
     WifiAp_HashReset(ctx);
     WifiAp_HashSetSource(ctx, a, b);
     WifiAp_HashGetDigest(digest, ctx);
-    GsUtil_DigestToHex(digest, out);
+    MD5Print(digest, out);
 }
 
-GsHashTable *GsHash_New(s32 esize, s32 n, GsHashFn hash, GsCompareFn cmp,
-                                            GsElemFreeFn dtor) {
-    return GsHash_NewEx(esize, n, 4, hash, cmp, dtor);
+HashImplementation *TableNew(s32 esize, s32 n, TableHashFn hash, ArrayCompareFn cmp,
+                                            ArrayElementFreeFn dtor) {
+    return TableNew2(esize, n, 4, hash, cmp, dtor);
 }
 
-GsHashTable *GsHash_NewEx(s32 esize, s32 n, s32 cap, GsHashFn hash, GsCompareFn cmp,
-                                            GsElemFreeFn dtor) {
-    GsHashTable *t = (GsHashTable *)GsUtil_Alloc(0x14);
+HashImplementation *TableNew2(s32 esize, s32 n, s32 cap, TableHashFn hash, ArrayCompareFn cmp,
+                                            ArrayElementFreeFn dtor) {
+    HashImplementation *t = (HashImplementation *)GsUtil_Alloc(0x14);
     s32 i;
-    t->buckets = (GsArray **)GsUtil_Alloc(n * 4);
+    t->buckets = (DArrayImplementation **)GsUtil_Alloc(n * 4);
     i = 0;
     if (n > 0) {
         s32 off = i;
         do {
-            GsArray *v = GsArray_New(esize, cap, dtor);
-            *(GsArray **)((u8 *)t->buckets + off) = v;
+            DArrayImplementation *v = ArrayNew(esize, cap, dtor);
+            *(DArrayImplementation **)((u8 *)t->buckets + off) = v;
             off += 4;
             i++;
         } while (i < n);
     }
-    t->numBuckets = n;
-    t->freeElemFn = dtor;
-    t->compareFn = cmp;
-    t->hashFn = hash;
+    t->nbuckets = n;
+    t->freefn = dtor;
+    t->compfn = cmp;
+    t->hashfn = hash;
     return t;
 }
 
-void GsHash_Free(GsHashTable *t) {
+void TableFree(HashImplementation *t) {
     if (t != NULL) {
         s32 i = 0;
-        if (t->numBuckets > 0) {
+        if (t->nbuckets > 0) {
             s32 off = i;
             do {
-                GsArray_Free(*(GsArray **)((u8 *)t->buckets + off));
+                ArrayFree(*(DArrayImplementation **)((u8 *)t->buckets + off));
                 off += 4;
                 i++;
-            } while (i < t->numBuckets);
+            } while (i < t->nbuckets);
         }
         GsUtil_Free(t->buckets);
         GsUtil_Free(t);
     }
 }
 
-s32 GsHash_Count(GsHashTable *t) {
+s32 TableCount(HashImplementation *t) {
     s32 sum = 0;
     s32 i;
     if (t == NULL) {
         return sum;
     }
     i = sum;
-    if (t->numBuckets > 0) {
+    if (t->nbuckets > 0) {
         s32 off = sum;
         do {
-            sum += GsArray_Count(*(GsArray **)((u8 *)t->buckets + off));
+            sum += ArrayLength(*(DArrayImplementation **)((u8 *)t->buckets + off));
             off += 4;
             i++;
-        } while (i < t->numBuckets);
+        } while (i < t->nbuckets);
     }
     return sum;
 }
 
-void GsHash_Insert(GsHashTable *t, void *key) {
+void TableEnter(HashImplementation *t, void *key) {
     s32 h;
     s32 r;
     if (t != NULL) {
-        h = t->hashFn(key, t->numBuckets) * 4;
-        r = GsArray_Search(*(GsArray **)((u8 *)t->buckets + h), key, t->compareFn, 0, 0);
+        h = t->hashfn(key, t->nbuckets) * 4;
+        r = ArraySearch(*(DArrayImplementation **)((u8 *)t->buckets + h), key, t->compfn, 0, 0);
         if (r == -1) {
-            GsArray_Append(*(GsArray **)((u8 *)t->buckets + h), key);
+            ArrayAppend(*(DArrayImplementation **)((u8 *)t->buckets + h), key);
             return;
         }
-        GsArray_ReplaceAt(*(GsArray **)((u8 *)t->buckets + h), key, r);
+        ArrayReplaceAt(*(DArrayImplementation **)((u8 *)t->buckets + h), key, r);
     }
 }
 
-s32 GsHash_Remove(GsHashTable *t, void *key) {
+s32 TableRemove(HashImplementation *t, void *key) {
     s32 h;
     s32 r;
     if (t == NULL) {
         return 0;
     }
-    h = t->hashFn(key, t->numBuckets) * 4;
-    r = GsArray_Search(*(GsArray **)((u8 *)t->buckets + h), key, t->compareFn, 0, 0);
+    h = t->hashfn(key, t->nbuckets) * 4;
+    r = ArraySearch(*(DArrayImplementation **)((u8 *)t->buckets + h), key, t->compfn, 0, 0);
     if (r != -1) {
-        GsArray_DeleteAt(*(GsArray **)((u8 *)t->buckets + h), r);
+        ArrayDeleteAt(*(DArrayImplementation **)((u8 *)t->buckets + h), r);
         return 1;
     }
     return 0;
 }
 
-void *GsHash_Find(GsHashTable *t, void *key) {
+void *TableLookup(HashImplementation *t, void *key) {
     s32 h;
     s32 r;
     if (t == NULL) {
         return NULL;
     }
-    h = t->hashFn(key, t->numBuckets) * 4;
-    r = GsArray_Search(*(GsArray **)((u8 *)t->buckets + h), key, t->compareFn, 0, 0);
+    h = t->hashfn(key, t->nbuckets) * 4;
+    r = ArraySearch(*(DArrayImplementation **)((u8 *)t->buckets + h), key, t->compfn, 0, 0);
     if (r != -1) {
-        return GsArray_At(*(GsArray **)((u8 *)t->buckets + h), r);
+        return ArrayNth(*(DArrayImplementation **)((u8 *)t->buckets + h), r);
     }
     return NULL;
 }
 
-void GsHash_ForEach(GsHashTable *t, GsArrayMapFn cb, void *arg) {
+void TableMapSafe(HashImplementation *t, GsArrayMapFn cb, void *arg) {
     s32 i;
-    for (i = 0; i < t->numBuckets; i++) {
-        GsArray_ForEachBackward(t->buckets[i], cb, arg);
+    for (i = 0; i < t->nbuckets; i++) {
+        ArrayMapBackwards(t->buckets[i], cb, arg);
     }
 }
 
-void *GsHash_FindIf(GsHashTable *t, GsArrayMapFn cb, void *arg) {
+void *TableMapSafe2(HashImplementation *t, GsArrayMapFn cb, void *arg) {
     s32 i;
-    for (i = 0; i < t->numBuckets; i++) {
-        void *r = GsArray_FindBackward(t->buckets[i], cb, arg);
+    for (i = 0; i < t->nbuckets; i++) {
+        void *r = ArrayMapBackwards2(t->buckets[i], cb, arg);
         if (r != NULL) {
             return r;
         }
@@ -248,111 +248,111 @@ void *GsHash_FindIf(GsHashTable *t, GsArrayMapFn cb, void *arg) {
     return NULL;
 }
 
-void GsArray_DestroyElement(GsArray *v, s32 i) {
-    if (v->freeElemFn != NULL) {
-        v->freeElemFn(GsArray_At(v, i));
+void FreeElement(DArrayImplementation *v, s32 i) {
+    if (v->elemfreefn != NULL) {
+        v->elemfreefn(ArrayNth(v, i));
     }
 }
 
-void GsArray_Grow(GsArray *v) {
-    v->capacity = v->capacity + v->growBy;
-    v->elems = (u8 *)GsUtil_Realloc(v->elems, v->capacity * v->elemSize);
+void ArrayGrow(DArrayImplementation *v) {
+    v->capacity = v->capacity + v->growby;
+    v->list = (u8 *)GsUtil_Realloc(v->list, v->capacity * v->elemsize);
 }
 
-void GsArray_CopyTo(GsArray *v, void *x, s32 i) {
-    memcpy(GsArray_At(v, i), x, v->elemSize);
+void SetElement(DArrayImplementation *v, void *x, s32 i) {
+    memcpy(ArrayNth(v, i), x, v->elemsize);
 }
 
-GsArray *GsArray_New(s32 size, s32 cap, GsElemFreeFn dtor) {
-    GsArray *v = (GsArray *)GsUtil_Alloc(0x18);
+DArrayImplementation *ArrayNew(s32 size, s32 cap, ArrayElementFreeFn dtor) {
+    DArrayImplementation *v = (DArrayImplementation *)GsUtil_Alloc(0x18);
     if (cap == 0) {
         cap = 8;
     }
     v->count = 0;
     v->capacity = cap;
-    v->elemSize = size;
-    v->growBy = cap;
-    v->freeElemFn = dtor;
+    v->elemsize = size;
+    v->growby = cap;
+    v->elemfreefn = dtor;
     if (v->capacity != 0) {
-        v->elems = (u8 *)GsUtil_Alloc(v->capacity * v->elemSize);
+        v->list = (u8 *)GsUtil_Alloc(v->capacity * v->elemsize);
     } else {
-        v->elems = NULL;
+        v->list = NULL;
     }
     return v;
 }
 
-void GsArray_Free(GsArray *v) {
+void ArrayFree(DArrayImplementation *v) {
     s32 i;
     for (i = 0; i < v->count; i++) {
-        GsArray_DestroyElement(v, i);
+        FreeElement(v, i);
     }
-    GsUtil_Free(v->elems);
+    GsUtil_Free(v->list);
     GsUtil_Free(v);
 }
 
-s32 GsArray_Count(GsArray *v) {
+s32 ArrayLength(DArrayImplementation *v) {
     return v->count;
 }
 
-void *GsArray_At(GsArray *v, s32 i) {
+void *ArrayNth(DArrayImplementation *v, s32 i) {
     if (i < 0 || i >= v->count) {
         return NULL;
     }
-    return v->elems + v->elemSize * i;
+    return v->list + v->elemsize * i;
 }
 
-void GsArray_Append(GsArray *v, void *x) {
+void ArrayAppend(DArrayImplementation *v, void *x) {
     if (v != NULL) {
-        GsArray_InsertAt(v, x, v->count);
+        ArrayInsertAt(v, x, v->count);
     }
 }
 
-void GsArray_InsertAt(GsArray *v, void *x, s32 i) {
+void ArrayInsertAt(DArrayImplementation *v, void *x, s32 i) {
     s32 last;
     if (v->count == v->capacity) {
-        GsArray_Grow(v);
+        ArrayGrow(v);
     }
     v->count = v->count + 1;
     last = v->count - 1;
     if (i < last) {
-        void *dst = GsArray_At(v, i + 1);
-        void *src = GsArray_At(v, i);
-        memmove(dst, src, v->elemSize * (last - i));
+        void *dst = ArrayNth(v, i + 1);
+        void *src = ArrayNth(v, i);
+        memmove(dst, src, v->elemsize * (last - i));
     }
-    GsArray_CopyTo(v, x, i);
+    SetElement(v, x, i);
 }
 
-void GsArray_InsertSorted(GsArray *v, void *key, GsCompareFn cmp) {
+void ArrayInsertSorted(DArrayImplementation *v, void *key, ArrayCompareFn cmp) {
     s32 found;
-    u8 *r = GsUtil_BinarySearch(key, v->elems, v->count, v->elemSize, cmp, &found);
-    GsArray_InsertAt(v, key, (s32)(r - v->elems) / v->elemSize);
+    u8 *r = mybsearch(key, v->list, v->count, v->elemsize, cmp, &found);
+    ArrayInsertAt(v, key, (s32)(r - v->list) / v->elemsize);
 }
 
-void GsArray_RemoveAt(GsArray *v, s32 i) {
+void ArrayRemoveAt(DArrayImplementation *v, s32 i) {
     s32 last = v->count - 1;
     if (i < last) {
-        void *a = GsArray_At(v, i);
-        void *b = GsArray_At(v, i + 1);
-        memmove(a, b, v->elemSize * (last - i));
+        void *a = ArrayNth(v, i);
+        void *b = ArrayNth(v, i + 1);
+        memmove(a, b, v->elemsize * (last - i));
     }
     v->count = v->count - 1;
 }
 
-void GsArray_DeleteAt(GsArray *v, s32 i) {
-    GsArray_DestroyElement(v, i);
-    GsArray_RemoveAt(v, i);
+void ArrayDeleteAt(DArrayImplementation *v, s32 i) {
+    FreeElement(v, i);
+    ArrayRemoveAt(v, i);
 }
 
-void GsArray_ReplaceAt(GsArray *v, void *x, s32 i) {
-    GsArray_DestroyElement(v, i);
-    GsArray_CopyTo(v, x, i);
+void ArrayReplaceAt(DArrayImplementation *v, void *x, s32 i) {
+    FreeElement(v, i);
+    SetElement(v, x, i);
 }
 
-void GsArray_Sort(GsArray *v, GsCompareFn cmp) {
-    qsort(v->elems, v->count, v->elemSize, cmp);
+void ArraySort(DArrayImplementation *v, ArrayCompareFn cmp) {
+    qsort(v->list, v->count, v->elemsize, cmp);
 }
 
-s32 GsArray_Search(GsArray *v, void *key, GsCompareFn cmp, s32 start, s32 sorted) {
+s32 ArraySearch(DArrayImplementation *v, void *key, ArrayCompareFn cmp, s32 start, s32 sorted) {
     s32 found = 1;
     s32 n;
     u8 *r;
@@ -360,27 +360,27 @@ s32 GsArray_Search(GsArray *v, void *key, GsCompareFn cmp, s32 start, s32 sorted
         return -1;
     }
     if (sorted != 0) {
-        r = GsUtil_BinarySearch(key, (u8 *)GsArray_At(v, start), n - start, v->elemSize, cmp, &found);
+        r = mybsearch(key, (u8 *)ArrayNth(v, start), n - start, v->elemsize, cmp, &found);
     } else {
-        r = GsUtil_LinearSearch(key, (u8 *)GsArray_At(v, start), n - start, v->elemSize, cmp);
+        r = mylsearch(key, (u8 *)ArrayNth(v, start), n - start, v->elemsize, cmp);
     }
     if (r != NULL && found != 0) {
-        return (s32)(r - v->elems) / v->elemSize;
+        return (s32)(r - v->list) / v->elemsize;
     }
     return -1;
 }
 
-void GsArray_ForEachBackward(GsArray *v, GsArrayMapFn cb, void *arg) {
+void ArrayMapBackwards(DArrayImplementation *v, GsArrayMapFn cb, void *arg) {
     s32 i;
     for (i = v->count - 1; i >= 0; i--) {
-        cb(GsArray_At(v, i), arg);
+        cb(ArrayNth(v, i), arg);
     }
 }
 
-void *GsArray_FindBackward(GsArray *v, GsArrayMapFn cb, void *arg) {
+void *ArrayMapBackwards2(DArrayImplementation *v, GsArrayMapFn cb, void *arg) {
     s32 i;
     for (i = v->count - 1; i >= 0; i--) {
-        void *p = GsArray_At(v, i);
+        void *p = ArrayNth(v, i);
         if (cb(p, arg) == 0) {
             return p;
         }
@@ -388,14 +388,14 @@ void *GsArray_FindBackward(GsArray *v, GsArrayMapFn cb, void *arg) {
     return NULL;
 }
 
-void GsArray_Clear(GsArray *v) {
+void ArrayClear(DArrayImplementation *v) {
     s32 i;
-    for (i = GsArray_Count(v) - 1; i >= 0; i--) {
-        GsArray_DeleteAt(v, i);
+    for (i = ArrayLength(v) - 1; i >= 0; i--) {
+        ArrayDeleteAt(v, i);
     }
 }
 
-u8 *GsUtil_LinearSearch(void *key, u8 *base, s32 n, s32 size, GsCompareFn cmp) {
+u8 *mylsearch(void *key, u8 *base, s32 n, s32 size, ArrayCompareFn cmp) {
     s32 i = 0;
     s32 off;
     if (n > 0) {
@@ -411,7 +411,7 @@ u8 *GsUtil_LinearSearch(void *key, u8 *base, s32 n, s32 size, GsCompareFn cmp) {
     return NULL;
 }
 
-u8 *GsUtil_BinarySearch(void *key, u8 *base, s32 n, s32 size, GsCompareFn cmp, s32 *found) {
+u8 *mybsearch(void *key, u8 *base, s32 n, s32 size, ArrayCompareFn cmp, s32 *found) {
     s32 lo = 0;
     s32 hi = n - 1;
     *found = 0;
@@ -430,12 +430,12 @@ u8 *GsUtil_BinarySearch(void *key, u8 *base, s32 n, s32 size, GsCompareFn cmp, s
     return base + lo * size;
 }
 
-s32 GsSock_ResolveAddress(s32 a, u32 port, Unk_ov065_02278328_Addr *out) {
+s32 get_sockaddrin(s32 a, u32 port, Unk_ov065_02278328_Addr *out) {
     s32 p;
     out->family = 2;
     p = (u16)port;
     out->port = (u16)(((p >> 8) & 0xff) | ((p << 8) & 0xff00));
-    out->addr = GsSock_InetAddr(a);
+    out->addr = inet_addr(a);
     if (out->addr == -1) {
         Unk_ov065_02278328_Host *h = Sock_GetHostByName(a);
         if (h == NULL) {
