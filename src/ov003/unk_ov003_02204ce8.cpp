@@ -1904,12 +1904,6 @@ struct Unk_ov003_0220bc84_Bits {
     u32 b : 4;
 };
 
-struct Unk_ov003_0220bc84_H {
-    s32 index;
-    s32 state;
-    s32 nextState;
-};
-
 struct InsectShowCatchWork {
     /* 0x0 */ s32 effect;
     /* 0x4 */ u16 unk_04;
@@ -2315,12 +2309,6 @@ struct FishShowCatchWork {
     u8 fishId;
     u8 showMode;
     u8 catalogWasFull;
-};
-
-struct Unk_ov003_0220d6f4_Net {
-    u32 pad_00;
-    s32 state;
-    s32 nextState;
 };
 
 
