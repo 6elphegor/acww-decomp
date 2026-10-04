@@ -1,6 +1,7 @@
 // mwcc-flags: -O4,p
 #include "types.h"
 
+#include "nitro/os_alarm.h"
 #include "nitro/wm.h"
 
 // Local wireless layer over NitroSDK WM (B33 LocalWl_*): four heap work areas, sLocalWl (LocalWlWork),
@@ -183,17 +184,13 @@ struct LocalWlBeacon {
     /* 0x20 */ WMBssDesc bssDesc;
 };
 
-struct LocalWlAlarm {
-    u32 data[0x2c / 4];
-};
-
 struct LocalWlBeaconList {
     u8 listId;
     u8 numUsed;
     u8 capacity;
     u8 pad;
     LocalWlBeacon *entries;
-    LocalWlAlarm *alarms;
+    OSAlarm *alarms;
     void (*changeCallback)(LocalWlBeacon *); // called when an entry is added or expires (never set in this unit)
 };
 
@@ -208,8 +205,8 @@ struct LocalWlScanWork {
     /* 0x04 */ WMBssDesc *scanBuffer;
     /* 0x08 */ LocalWlBeaconList *beaconLists;
     /* 0x0c */ LocalWlScanFlags scanFlags;
-    /* 0x10 */ LocalWlAlarm scanTimer;
-    /* 0x3c */ LocalWlAlarm stopTimer;
+    /* 0x10 */ OSAlarm scanTimer;
+    /* 0x3c */ OSAlarm stopTimer;
     /* 0x68 */ u32 unk_68;
     /* 0x6c */ s32 (*beaconFilter)(void *);
 };
@@ -218,19 +215,6 @@ struct LocalWlScanWork {
 struct LocalWlMacAddr {
     u8 b[6];
 };
-
-// NitroSDK WM status block and ARM9 system buffer (the WM_Init work), declared as far as this unit uses them. Same
-// names and field names as the (still TU-local) copies in the autoload_2 WM units; one nitro/wm.h definition waits
-// for those copies to be merged.
-typedef struct {
-    u8 _00[0x17e];
-    u16 f17e; // connected aid bitmap (WM_GetConnectedAIDs reads it the same way)
-} WMStatus;
-
-typedef struct {
-    void *w0;
-    WMStatus *status;
-} WMArm9Buf;
 
 struct LocalWlControlHdr {
     u16 type;
@@ -1195,7 +1179,7 @@ void LocalWlBcn_Init(LocalWlBeaconList *o, u32 id, s32 n) {
     o->capacity = n;
     o->changeCallback = NULL;
     o->entries = (LocalWlBeacon *)LocalWl_Alloc(size, 0x20);
-    o->alarms = (LocalWlAlarm *)LocalWl_Alloc(n * 0x2c, 0x20);
+    o->alarms = (OSAlarm *)LocalWl_Alloc(n * 0x2c, 0x20);
     z = 0;
     MIi_CpuClearFast(z, o->entries, size);
     DC_StoreRange(o->entries, size);

@@ -1,6 +1,7 @@
 // mwcc-flags: -O4,p
 #include "types.h"
 #include "net/WfcRect.h"
+#include "sys/StackPad.h"
 
 #pragma thumb off
 
@@ -35,12 +36,6 @@ void WfcHeap_Init(void *buf);
 
 void *sWfcHeap;
 }
-
-struct Unk_ov001_02225ae8_Pad {
-    s32 v;
-    Unk_ov001_02225ae8_Pad() {}
-    ~Unk_ov001_02225ae8_Pad() {}
-};
 
 static inline void Unk_ov001_02225ae8_Set(u32 ha, u32 va, WfcRect *r) {
     u32 x1 = r->left;
@@ -113,7 +108,7 @@ void WfcGx_HidePlanes(u32 eng, u32 m) {
 }
 
 void WfcGx_SetWindowRect(u32 eng, u32 which, WfcRect *r) {
-    Unk_ov001_02225ae8_Pad pad;
+    StackPad4 pad;
     if (eng == 1) {
         if (which == 0) {
             Unk_ov001_02225ae8_Set(0x4001040, 0x4001044, r);

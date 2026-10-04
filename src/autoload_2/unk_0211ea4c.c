@@ -1,5 +1,5 @@
 #include "sys/CardCommon.h"
-#include "nitro/wm_status.h"
+#include "nitro/wm.h"
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK CARD pulled-out detection (card_pullOut.c), autoload_2 0x0211ea4c-0x0211eb00, with its bss (autoload_3
 // 0x021ff460-0x021ff468). Split from unk_0211e558.c by the files' bss. ARM code, mwcc 1.2/base.

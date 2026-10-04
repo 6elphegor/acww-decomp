@@ -1,6 +1,7 @@
 // mwcc-flags: -O4,p
 #include "types.h"
 #include "net/AossParam.h"
+#include "nitro/wm.h"
 
 typedef void *(*AossAllocFunc)(u32);
 typedef void (*AossFreeFunc)(void *);
@@ -11,19 +12,6 @@ struct AossApConfig {
     s32 unk_24;
     s32 wepKeyLength;
     u8 wepKey[1];
-};
-
-struct AossBssDesc {
-    u8 pad_00[4];
-    u8 bssid[6];
-    u16 ssidLength;
-    u8 ssid[0x20];
-    u16 capaInfo;
-    u16 basicRateSet;
-    u16 supportRateSet;
-    u16 beaconPeriod;
-    u8 pad_34[2];
-    u16 channel;
 };
 
 struct AossRateEntry {
@@ -83,13 +71,13 @@ s32 WifiLink_CleanupAsync();
 void Aoss_WcmCallback(void);
 void Aoss_PostAlarmMsg(s32);
 void Aoss_PostWcmMsg(s32);
-void Aoss_ConvertBssDesc(AossBssDesc *, AossApInfo *);
+void Aoss_ConvertBssDesc(WMBssDesc *, AossApInfo *);
 
 }
 
 enum Loop_02203004 { LOOP_02203004_0 = 0 };
 
-extern "C" void Aoss_ConvertBssDesc(AossBssDesc *a, AossApInfo *b) {
+extern "C" void Aoss_ConvertBssDesc(WMBssDesc *a, AossApInfo *b) {
     b->ssidLength = a->ssidLength;
     MIi_CpuCopy16(a->ssid, b->ssid, 0x20);
     b->channel = a->channel;
@@ -100,9 +88,9 @@ extern "C" void Aoss_ConvertBssDesc(AossBssDesc *a, AossApInfo *b) {
     i = 0;
     AossRateEntry *e = sAossRateTable;
     for (; i < 12; e++, i++) {
-        if (a->supportRateSet & e->mask) {
+        if (a->rateSet.support & e->mask) {
             b->rates[n] = e->val;
-            if (a->basicRateSet & e->mask) {
+            if (a->rateSet.basic & e->mask) {
                 b->rates[n] |= 0x80;
             }
             n++;
@@ -129,7 +117,7 @@ extern "C" void Aoss_SetBssDescSsid(void *a, void *b) {
 
 extern "C" void Aoss_StoreConnectResult(void *a, void *b, s32 c) {
     *(s32 *)a = c;
-    Aoss_ConvertBssDesc((AossBssDesc *)b, (AossApInfo *)((u8 *)a + 4));
+    Aoss_ConvertBssDesc((WMBssDesc *)b, (AossApInfo *)((u8 *)a + 4));
 }
 
 extern "C" void Aoss_PostWcmMsg(s32 a) {
@@ -356,7 +344,7 @@ extern "C" s32 Aoss_ScanAps(void **out) {
             if (r7 > 0) {
                 u8 *q = p + 4;
                 do {
-                    Aoss_ConvertBssDesc((AossBssDesc *)r4, (AossApInfo *)q);
+                    Aoss_ConvertBssDesc((WMBssDesc *)r4, (AossApInfo *)q);
                     r4 += 0xc0;
                     q += 0x54;
                     r6++;

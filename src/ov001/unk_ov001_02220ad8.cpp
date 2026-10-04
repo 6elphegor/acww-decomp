@@ -1,6 +1,7 @@
 // mwcc-flags: -O4,p
 #include "types.h"
-#include "net/Unk_ov001_02221734_B.h"
+#include "net/Unk_ov001_02221734_D.h"
+#include "nitro/os_rtc.h"
 #include "net/WfcMoveMbWork.h"
 
 #pragma thumb off
@@ -60,7 +61,7 @@ void WfcMoveMb_SetWork(void *p) {
 
 void WfcMoveMb_Init(s32 a, s32 b) {
     Unk_ov001_02221734_D d;
-    Unk_ov001_02221734_B buf;
+    OSOwnerInfo buf;
     OS_GetOwnerInfo(&buf);
     d.lo = buf.favoriteColor;
     d.b1 = buf.nickNameLength;

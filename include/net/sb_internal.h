@@ -69,11 +69,6 @@ struct GsSrvSortStackPad {
     ~GsSrvSortStackPad() {}
 };
 
-struct Unk_ov065_0228909c_P {
-    /* 0x00 */ u32 a;
-    /* 0x04 */ u32 b;
-};
-
 // Entry of a server's key/value hash table.
 struct SBKeyValuePair {
     /* 0x00 */ s32 key;

@@ -21,9 +21,4 @@ struct Unk_ov065_0227c538_Node {
     /* 0x20 */ Unk_ov065_0227c538_Node *next;
 };
 
-struct Unk_ov065_0227c564_Z {
-    /* 0x0 */ s32 x;
-    /* 0x4 */ s32 y;
-};
-
 #endif

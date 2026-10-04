@@ -1,6 +1,7 @@
 // mwcc-flags: -O4,p
 #include "types.h"
 #include "nitro/wm.h"
+#include "nitro/os_rtc.h"
 
 #pragma thumb off
 
@@ -14,32 +15,13 @@ struct WfcUsbScanParamCopy {
     u32 v[17];
 };
 
-struct Unk_ov001_0221fd14_Info {
-    u32 unk_00;
-    u8 nickName[0x14];
-    u16 nickNameLength;
-    u8 unk_1a[0x3a];
-};
-
-struct Unk_ov001_0222df00_Buf {
-    u16 status;
-    u8 rest[0x3c];
-};
-
 struct WfcUsbScanWork {
     u8 pad_0000[0xf00];
     u8 scanBuf[0x400];
     WfcUsbFoundAp foundAps[16];
     void (*unk_1370)(s32);
-    u8 scanParam[8];
-    u16 scanMaxChannelTime;
-    u8 pad_137e[0x1388 - 0x137e];
-    u8 scanSsid[8];
-    u8 unk_1390;
-    u8 unk_1391;
-    u8 pad_1392[2];
-    u8 scanSsidUserName[0x24];
-    u8 pad_13b8[0x1b74 - 0x13b8];
+    WMScanExParam scanParam; // ssid: "NWCUSBAP", byte 9 = 1, owner nickname from byte 12
+    u8 pad_13b8[0x1b74 - 0x13b8]; // starts with the WM_ReadStatus buffer (WMStatus)
     u64 startTick;
     u32 timeoutTask;
     u8 stopState;
@@ -83,7 +65,7 @@ s32 WfcUsbScan_Start(void (*)(s32));
 s32 WfcUsbScan_Start(void (*cb)(s32))
 {
     WfcUsbScanWork *g;
-    Unk_ov001_0221fd14_Info info;
+    OSOwnerInfo info;
     g = (WfcUsbScanWork *)WfcHeap_AllocClear(0x1ba0, 0x20);
     sWfcUsbScan = g;
     g->unk_1370 = cb;
@@ -93,15 +75,15 @@ s32 WfcUsbScan_Start(void (*cb)(s32))
         do {
             WM_ReadStatus((u8 *)sWfcUsbScan + 0x13b8);
             g = sWfcUsbScan;
-        } while (((Unk_ov001_0222df00_Buf *)((u8 *)g + 0x13b8))->status != 2);
-        *(WfcUsbScanParamCopy *)g->scanParam = *(const WfcUsbScanParamCopy *)sWfcUsbScanParam;
-        *(void **)g->scanParam = g->scanBuf;
+        } while (((WMStatus *)((u8 *)g + 0x13b8))->state != 2);
+        *(WfcUsbScanParamCopy *)&g->scanParam = *(const WfcUsbScanParamCopy *)sWfcUsbScanParam;
+        g->scanParam.scanBuf = (WMBssDesc *)g->scanBuf;
         u16 v = WM_GetDispersionScanPeriod();
-        sWfcUsbScan->scanMaxChannelTime = v;
+        sWfcUsbScan->scanParam.maxChannelTime = v;
         OS_GetOwnerInfo(&info);
-        MI_CpuCopy8(sWfcUsbApSsid, sWfcUsbScan->scanSsid, 8);
-        sWfcUsbScan->unk_1391 = 1;
-        MI_CpuCopy8(info.nickName, sWfcUsbScan->scanSsidUserName, info.nickNameLength * 2);
+        MI_CpuCopy8(sWfcUsbApSsid, sWfcUsbScan->scanParam.ssid, 8);
+        sWfcUsbScan->scanParam.ssid[9] = 1;
+        MI_CpuCopy8(info.nickName, sWfcUsbScan->scanParam.ssid + 12, info.nickNameLength * 2);
         if (WfcUsbScan_StartScan() != 0) {
             sWfcUsbScan->timeoutTask = WfcTask_Add(0, (void *)WfcUsbScan_TimeoutTask, 0, 0x78);
             return 1;
@@ -113,7 +95,7 @@ s32 WfcUsbScan_Start(void (*cb)(s32))
 
 s32 WfcUsbScan_StartScan()
 {
-    return WM_StartScanEx((void *)WfcUsbScan_WmCallback, (u8 *)sWfcUsbScan + 0x1374) == 2 ? 1 : 0;
+    return WM_StartScanEx((void *)WfcUsbScan_WmCallback, &sWfcUsbScan->scanParam) == 2 ? 1 : 0;
 }
 
 s32 WfcUsbScan_Stop()
@@ -121,13 +103,13 @@ s32 WfcUsbScan_Stop()
     WfcUsbScanWork *g = sWfcUsbScan;
     g->stopState = 1;
     WM_ReadStatus((u8 *)sWfcUsbScan + 0x13b8);
-    if (((Unk_ov001_0222df00_Buf *)((u8 *)sWfcUsbScan + 0x13b8))->status != 2) {
+    if (((WMStatus *)((u8 *)sWfcUsbScan + 0x13b8))->state != 2) {
         if (WM_Reset((void *)WfcUsbScan_WmCallback) != 2) {
             return 0;
         }
         do {
             WM_ReadStatus((u8 *)sWfcUsbScan + 0x13b8);
-        } while (((Unk_ov001_0222df00_Buf *)((u8 *)sWfcUsbScan + 0x13b8))->status != 2);
+        } while (((WMStatus *)((u8 *)sWfcUsbScan + 0x13b8))->state != 2);
     }
     if (WM_End((void *)WfcUsbScan_WmCallback) != 2) {
         return 0;

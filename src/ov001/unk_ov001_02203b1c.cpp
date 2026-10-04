@@ -2,6 +2,7 @@
 #pragma opt_dead_assignments off
 #include "types.h"
 #include "net/SockAddrIn.h"
+#include "nitro/wm.h"
 
 typedef void (*SimpleStartWcmNotifyFunc)(...);
 
@@ -765,19 +766,6 @@ extern "C" u8 sSimpleStartPacketBuf[0x800] = {0};
 
 struct SimpleStartKeyWrapBlock { u8 b[8]; };
 
-struct SimpleStartMacAddr {
-    u8 b[6];
-};
-
-struct SimpleStartBssDesc {
-    u8 unk_00[4];
-    SimpleStartMacAddr mac;
-    u16 len;
-    u8 name[0x20];
-    u16 flags;
-    u8 pad[0xc0 - 0x2c - 2];
-};
-
 struct SimpleStartSecurityList {
     u8 b[7];
 };
@@ -1528,7 +1516,7 @@ s32 SimpleStart_SearchAp() {
     u32 size;
     SimpleStartApList *buf1;
     SimpleStartApList *buf2 = 0;
-    SimpleStartBssDesc *src;
+    WMBssDesc *src;
     s32 idx = 0;
     u8 unkbuf[0x20];
     u8 name[0x30];
@@ -1589,13 +1577,13 @@ s32 SimpleStart_SearchAp() {
             result = -6;
             goto cleanup;
         }
-        for (i = 0, src = (SimpleStartBssDesc *)data_ov001_0222c8ac; i < result; i++, src++) {
-            memcpy(buf1->e[j].name, src->name, 0x20);
-            buf1->e[j].len = src->len;
-            buf1->e[j].name[src->len] = 0;
-            buf1->e[j].privacy = (src->flags & 0x10) ? 1 : 0;
+        for (i = 0, src = (WMBssDesc *)data_ov001_0222c8ac; i < result; i++, src++) {
+            memcpy(buf1->e[j].name, src->ssid, 0x20);
+            buf1->e[j].len = src->ssidLength;
+            buf1->e[j].name[src->ssidLength] = 0;
+            buf1->e[j].privacy = (src->capaInfo & 0x10) ? 1 : 0;
             {
-                const u8 *ms = src->mac.b;
+                const u8 *ms = src->bssid;
                 u8 *md = buf1->e[j].bssid;
                 md[0] = ms[0]; md[1] = ms[1]; md[2] = ms[2]; md[3] = ms[3]; md[4] = ms[4]; md[5] = ms[5];
             }

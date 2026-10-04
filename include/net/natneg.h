@@ -38,10 +38,6 @@ struct _NATNegotiator {
     /* 0x3c */ void *userdata;
 };
 
-struct Unk_ov065_02286bb4_Magic {
-    /* 0x00 */ u8 b[6];
-};
-
 // Peer ping (type 7) / connect ack (type 6) packet: magic fd fc 1e 66 6a b2, version 2, type, cookie; the
 // address fields are accessed as u32/u16 through casts.
 struct GsNatNegPacket {

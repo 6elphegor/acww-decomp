@@ -1,5 +1,5 @@
 #include "sys/CardCommon.h"
-#include "nitro/wm_status.h"
+#include "nitro/wm.h"
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK CARD (card_rom.c, end: DMA / cache / task thread), autoload_2 0x0211e558-0x0211ea4c. The former unit
 // 0x0211e558-0x0211eeec is split into its files by their bss. ARM code, mwcc 1.2/base.

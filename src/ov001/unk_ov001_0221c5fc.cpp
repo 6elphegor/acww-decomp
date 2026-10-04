@@ -1,9 +1,9 @@
 // mwcc-flags: -O4,p
 #include "types.h"
+#include "nitro/os_rtc.h"
 
 #pragma thumb off
 
-struct Unk_ov001_0221ccb4_S { u8 pad_00[4]; u8 nickName[0x14]; u16 nickNameLength; u8 pad_1a[0x3a]; };
 
 extern "C" {
 s32 GX_LoadBG2Scr();
@@ -80,7 +80,7 @@ extern "C" s32 WfcUsbWait_IsLidClosed() {
 extern "C" void WfcUsbWait_Enter() {
     volatile u16 z;
     u8 b[0x16];
-    Unk_ov001_0221ccb4_S s;
+    OSOwnerInfo s;
     sWfcUsbWaitResult = 0;
     WfcUsbWait_LoadBg();
     WfcHighlight_Set(8);

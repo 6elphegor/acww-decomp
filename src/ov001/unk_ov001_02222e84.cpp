@@ -23,7 +23,7 @@ struct WfcMoveWork {
     u8 configHead[0x40];
     u8 state;
     u8 prevState;
-    u8 unk_a92;
+    u8 languageCode;
     u8 isHandshakeDone;
     u32 ackCount;
     u32 mbFrameCount;
@@ -118,7 +118,7 @@ extern "C" void WfcMove_Init(WfcMoveWork *self, u32 *a) {
     sWfcMove->iconCharPathp = a[3];
     sWfcMove->iconPalettePathp = a[4];
     sWfcMove->ggid = a[5];
-    sWfcMove->unk_a92 = *(u8 *)&a[6];
+    sWfcMove->languageCode = *(u8 *)&a[6];
     sWfcMove->maxPlayerNum = 2;
     OS_GetTick();
     DWCi_BACKUPlRead(sWfcMove->configBuf);
@@ -456,7 +456,7 @@ extern "C" void WfcMove_SendBlock(u32 a, u32 b, void *src) {
     } else {
         h->failCount = h->failCount + 1;
         *(u16 *)H->sendBuffer = 0xbc;
-        *((u8 *)H->sendBuffer + 4) = H->unk_a92;
+        *((u8 *)H->sendBuffer + 4) = H->languageCode;
     }
     if (WfcMoveWh_GetSysState() != 5) {
         return;

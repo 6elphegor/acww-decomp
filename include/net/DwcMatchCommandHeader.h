@@ -3,14 +3,8 @@
 
 #include "types.h"
 
-// DWC matching: sent-command record and the "SBCM" matching command header
+// DWC matching: the "SBCM" matching command header
 // (src/ov065/unk_ov065_022723b8.cpp, src/ov065/unk_ov065_02270e34.cpp; namespace F02271da0 there).
-
-struct Unk_ov065_02272428_Rec {
-    /* 0x0 */ u32 unk_00;
-    /* 0x4 */ u16 unk_04;
-    /* 0x6 */ u16 unk_06;
-};
 
 struct DwcMatchCommandHeader {
     /* 0x00 */ u8 magic[4];

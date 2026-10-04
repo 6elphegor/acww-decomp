@@ -1,4 +1,4 @@
-#include "nitro/wm_status.h"
+#include "nitro/wm.h"
 // mwcc-flags: -nothumb -O4,p
 // MB/WH-style peer module: MBi_CommParentSendBlock (send next child block / cache miss -> task load), autoload_2 0x02121e5c-0x02122114.
 // ARM code, mwcc 1.2/base, flags -nothumb -O4,p. Header = S015b/unit.c header (prototypes fixed: MBi_MakeParentSendBuffer / MBi_BlockHeaderEnd).

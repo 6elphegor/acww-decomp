@@ -1,4 +1,4 @@
-#include "nitro/wm_status.h"
+#include "nitro/wm.h"
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK WM (wireless manager) data sharing callbacks, autoload_2 0x02120c98-0x02120ed4.
 // ARM code, mwcc 1.2/base, flags -nothumb -O4,p.

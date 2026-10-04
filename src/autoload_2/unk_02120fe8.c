@@ -1,4 +1,4 @@
-#include "nitro/wm_status.h"
+#include "nitro/wm.h"
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK WM data sharing / request API plus an unidentified slot-cache helper, autoload_2 0x02120fe8-0x02121e5c.
 // ARM code, mwcc 1.2/base, flags -nothumb -O4,p.

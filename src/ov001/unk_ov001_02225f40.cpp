@@ -4,9 +4,8 @@
 
 #pragma thumb off
 
-
-
-struct Unk_ov001_02225f40_W {
+// WfcPoint copied as one word (a plain WfcPoint assignment compiles to two halfword copies)
+struct WfcPointCopy {
     WfcPoint p;
 };
 
@@ -54,7 +53,7 @@ void TP_RequestAutoSamplingStartAsync(s32, s32, void *, s32);
 BOOL WfcInput_IsTouchPressedIn(WfcRect *r);
 void WfcInput_UpdateTouch();
 BOOL WfcInput_GetTouchPos(WfcPoint *out);
-BOOL WfcInput_IsTouchPressedInBox(WfcRect *r);
+BOOL WfcInput_IsTouchPressedInBox(WfcPosSize *r);
 BOOL WfcInput_IsTouchReleasedIn(WfcRect *r);
 BOOL WfcInput_IsTouchRepeatIn(WfcRect *r);
 BOOL WfcInput_IsTouchPressedIn(WfcRect *r);
@@ -145,7 +144,7 @@ void WfcInput_UpdateTouch() {
     u32 n = TP_GetLatestIndexInAuto();
     i = found;
     WfcInputState *s = sWfcInput;
-    *(Unk_ov001_02225f40_W *)&s->pos1 = *(Unk_ov001_02225f40_W *)&s->pos0;
+    *(WfcPointCopy *)&s->pos1 = *(WfcPointCopy *)&s->pos0;
     do {
         TPData *e = &sWfcInput->ent[n];
         if (e->touch == 1 && e->validity == 0) {
@@ -243,22 +242,22 @@ BOOL WfcInput_IsTouchReleasedIn(WfcRect *r) {
     return r->bottom >= y;
 }
 
-BOOL WfcInput_IsTouchPressedInBox(WfcRect *r) {
+BOOL WfcInput_IsTouchPressedInBox(WfcPosSize *r) {
     WfcRect t;
-    t.left = r->left;
-    t.top = r->top;
-    t.right = r->left + r->right;
-    t.bottom = r->top + r->bottom;
+    t.left = r->pos.x;
+    t.top = r->pos.y;
+    t.right = r->pos.x + r->size.x;
+    t.bottom = r->pos.y + r->size.y;
     return WfcInput_IsTouchPressedIn(&t);
 }
 
 BOOL WfcInput_GetTouchPos(WfcPoint *out) {
     WfcInputState *s = sWfcInput;
     if (!s->flag0) {
-        *(Unk_ov001_02225f40_W *)out = *(Unk_ov001_02225f40_W *)&s->pos1;
+        *(WfcPointCopy *)out = *(WfcPointCopy *)&s->pos1;
         return FALSE;
     }
-    *(Unk_ov001_02225f40_W *)out = *(Unk_ov001_02225f40_W *)&s->pos0;
+    *(WfcPointCopy *)out = *(WfcPointCopy *)&s->pos0;
     return TRUE;
 }
 

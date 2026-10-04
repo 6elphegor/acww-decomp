@@ -205,12 +205,6 @@ void WfcNumPad_SlideInStep0(void *self);
 }
 
 namespace N_0ba08 {
-struct WfcPosSize { WfcPoint pos; WfcPoint size; };
-}
-
-
-
-namespace N_0ba08 {
 extern "C" {
 void WfcNumPad_Create();
 void WfcNumPad_Close();

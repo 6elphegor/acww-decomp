@@ -1,5 +1,5 @@
 #include "sys/CardCommon.h"
-#include "nitro/wm_status.h"
+#include "nitro/wm.h"
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK CARD (ROM read) + WM (wireless manager) region, autoload_2 0x0211e3fc-0x0211f800. ARM code, mwcc 1.2/base.
 typedef unsigned char u8;

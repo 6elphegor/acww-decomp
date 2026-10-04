@@ -18,4 +18,11 @@ struct WfcPoint {
     /* 0x2 */ u16 y;
 };
 
+// Box as position + size (WfcInput_IsTouchPressedInBox, the WfcNumPad position table; WfcUtil_RectFromPosSize takes
+// the two points separately).
+struct WfcPosSize {
+    /* 0x0 */ WfcPoint pos;
+    /* 0x4 */ WfcPoint size;
+};
+
 #endif
