@@ -10,6 +10,7 @@
 #include "item/LetterView.h"
 #include "talk/MsgString9B.h"
 #include "gfx/BgVramTask.h"
+#include "player/PlayerData.h"
 
 struct TitleChoiceSet {
     u8 *msgIds;
@@ -41,10 +42,6 @@ public:
 class TalkMsgRequest;
 
 
-class PlayerData {
-public:
-    void *getPlayerId();
-};
 
 
 

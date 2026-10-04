@@ -32,6 +32,7 @@
 #include "room/FtrTopItems.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
+#include "gfx/ModelResource.h"
 
 // ================================================================ plain value types
 
@@ -170,20 +171,6 @@ public:
 // ---- 0x022069ec / 0x02206e38 (model loader, member at 0x6c8)
 class TexVramSlot;
 
-class ModelResource {
-public:
-    u32 fileData;
-    u32 pad[10];
-    u8 loadState;
-    u8 unk_31;
-    u8 pad2[2];
-
-    ModelResource();
-    virtual ~ModelResource();
-    u32 loadTexture(void *a, TexVramSlot *b, void *c);
-    void release(void);
-    void *getTexture(void);
-};
 
 
 struct FtrModelRes {

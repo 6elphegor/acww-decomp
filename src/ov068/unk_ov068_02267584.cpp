@@ -3,6 +3,7 @@
 #include "game/Unk_ov068_Vec.h"
 #include "game/Unk_ov068_02268214_Flags.h"
 #include "game/Unk_ov068_02268214.h"
+#include "field/SnowballStateViews.h"
 
 #define GroundInfoBase_getHeight _ZN14GroundInfoBase9getHeightEi
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
@@ -122,105 +123,7 @@ void _ZN18Unk_ov068_0226821419applySnowballMotionEv(void *);
 s32 Snowball_GetSizeRatioRank(s32 v);
 }
 
-class SnowballStateView1 {
-public:
-    void execSnowballCrumble2();
-    BOOL enterSnowballCrumble2();
-    void execSnowballCrumble();
-    BOOL enterSnowballCrumble();
-    void execSnowballSettle();
-    BOOL enterSnowballSettle();
-    void execSnowballStack();
 
-    u8 pad_00[0x5c];
-    s32 position;
-    s32 positionY;
-    s32 positionZ;
-    u8 pad_68[0xa8 - 0x68];
-    s32 velocityY;
-    u8 pad_ac[0x268 - 0xac];
-    s32 radius;
-    s32 collisionRadius;
-    u8 pad_270[0x304 - 0x270];
-    s32 drawOffset;
-    s32 drawOffsetY;
-    s32 drawOffsetZ;
-    s32 stepX;
-    s32 stepZ;
-    u8 pad_318[0x374 - 0x318];
-    u16 snowballFlags;
-    u16 pad_376;
-    s32 targetPosX;
-    s32 targetPosY;
-    s32 targetPosZ;
-    u8 pad_384[0x392 - 0x384];
-    s16 wobblePhase;
-    u8 crumbleTimer;
-    u8 stepCount;
-};
-
-class SnowballStateView2 {
-public:
-    /* 0x00 */ u8 pad_00[8];
-    /* 0x08 */ u32 param;
-    /* 0x0c */ u8 pad_0c[0x50];
-    /* 0x5c */ s32 position;
-    /* 0x60 */ s32 positionY;
-    /* 0x64 */ s32 positionZ;
-    /* 0x68 */ s32 prevPosition;
-    /* 0x6c */ u8 pad_6c[4];
-    /* 0x70 */ s32 prevPositionZ;
-    /* 0x74 */ u8 pad_74[0x34];
-    /* 0xa8 */ s32 velocityY;
-    /* 0xac */ u8 pad_ac[0x268 - 0xac];
-    /* 0x268 */ s32 radius;
-    /* 0x26c */ s32 collisionRadius;
-    /* 0x270 */ s32 collisionState;
-    /* 0x274 */ s32 collisionFlags;
-    /* 0x278 */ u8 pad_278[0x2ec - 0x278];
-    /* 0x2ec */ s32 rollVelX;
-    /* 0x2f0 */ s32 rollVelZ;
-    /* 0x2f4 */ u8 pad_2f4[0x304 - 0x2f4];
-    /* 0x304 */ u32 drawOffset;
-    /* 0x308 */ s32 drawOffsetY;
-    /* 0x30c */ u32 drawOffsetZ;
-    /* 0x310 */ s32 stepX;
-    /* 0x314 */ s32 stepZ;
-    /* 0x318 */ u8 pad_318[0x324 - 0x318];
-    /* 0x324 */ u8 seEmitter[0x364 - 0x324];
-    /* 0x364 */ u8 fallFrames;
-    /* 0x365 */ u8 pad_365[0x374 - 0x365];
-    /* 0x374 */ u16 unk_374_lo : 2;
-    u16 unk_374_b2 : 2;
-    u16 unk_374_b4 : 1;
-    u16 unk_374_b5 : 1;
-    /* 0x376 */ u8 pad_376[2];
-    /* 0x378 */ s32 targetPosX;
-    /* 0x37c */ s32 targetPosY;
-    /* 0x380 */ s32 targetPosZ;
-    /* 0x384 */ s32 holePos[3];
-    /* 0x390 */ u8 pad_390[2];
-    /* 0x392 */ u16 wobblePhase;
-    /* 0x394 */ u8 pad_394;
-    /* 0x395 */ u8 stepCount;
-    /* 0x396 */ u16 displacedItem;
-
-    s32 enterSnowballStack();
-    void execSnowballToSnowman();
-    s32 enterSnowballToSnowman();
-    void execSnowballSplash();
-    s32 enterSnowballSplash();
-    void execSnowball05();
-    s32 enterSnowball05();
-    void execSnowballHole();
-    s32 enterSnowballHole();
-    void execSnowballBreak();
-    s32 enterSnowballBreak();
-    void execSnowballSink();
-    s32 enterSnowballSink();
-    void execSnowballFall();
-    s32 enterSnowballFall();
-};
 
 #define FX32_CONST(x) ((s32)((x) > 0 ? (x) * 4096.0f + 0.5f : (x) * 4096.0f - 0.5f))
 

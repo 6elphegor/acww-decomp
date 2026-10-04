@@ -9,6 +9,7 @@
 #include "game/WeatherRecord.h"
 #include "gfx/Unk_020bfe30.h"
 #include "snd/Unk_0213b938.h"
+#include "game/SkyProc.h"
 
 
 static inline void Unk_020bfe30_Set(Unk_020bfe30_Vec *v, s32 x, s32 y, s32 z) {
@@ -436,12 +437,6 @@ static inline void Unk_020bfe38_Add(s32 *dst, s32 v) {
 // ---------------------------------------------------------------------------------------------------------------------
 
 
-class SkyProc : public GameProc {
-public:
-    virtual void postCreate(s32 status);
-
-    /* 0x50 */ Unk_0213b938 envSndChannel;
-};
 
 
 // prototypes

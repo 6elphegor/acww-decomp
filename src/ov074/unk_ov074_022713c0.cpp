@@ -17,6 +17,7 @@
 #include "gfx/MatTexVramTask.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
+#include "player/PlayerData.h"
 
 
 struct Unk_0201bc1c;
@@ -62,10 +63,6 @@ struct Unk_ov074_02272020_V {
     s32 x, y, z;
 };
 
-class PlayerData {
-public:
-    void *getPlayerId();
-};
 
 // Other modules' methods are called through their mangled symbol names (self first).
 #define Unk_02013474_disableFootsteps _ZN12Unk_0201347416disableFootstepsEv

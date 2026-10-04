@@ -3,6 +3,7 @@
 #include "talk/VillagerTalkRequestItemTopics.h"
 #include "talk/VillagerTalkRequestStartTopics.h"
 #include "talk/VillagerTalkKaraokeTopics.h"
+#include "talk/VillagerTalkAcornTopics.h"
 
 // ov069: the state tables of the menu object (three pointers to member functions per entry). They are built at
 // start-up (the NULL members are copied from __ptmf_null) and func_ov069_0225f1a0 copies them into main's tables.
@@ -15,26 +16,6 @@ struct Unk_0201f7d0_Out;
 struct Unk_020238b0_Out;
 struct Unk_020254ec_Out;
 struct Unk_02027a34_Out;
-class VillagerTalkAcornTopics : public VillagerTalkKaraokeTopics {
-public:
-    void selectEvSnowfesTalk(u32);
-    void selectEvAcornMsg15(Unk_0201e5a4_Out *);
-    void giveAcornReward();
-    void selectEvAcornMsg19(Unk_0201e5a4_Out *);
-    void rollAcornReward();
-    void selectEvAcornMsg17(Unk_0201e5a4_Out *);
-    void openAcornPicker();
-    void openEvAcornGiveChoice();
-    void selectEvAcornMsg13(Unk_0201e5a4_Out *);
-    void openSmallTalkChoiceAcorn();
-    void selectEtcConnectAcorn();
-    void continueEvAcornMsg7();
-    void selectEvAcornMsg7(Unk_0201e5a4_Out *);
-    void selectEvAcornMsg10(Unk_0201e5a4_Out *);
-    void selectEvAcorn(Unk_0201e5a4_Out *);
-    void selectEvAcornTalk(u32);
-    void openSmallTalkChoiceGardeniing();
-};
 class VillagerTalkHobbyTopics : public VillagerTalkAcornTopics {
 public:
     void selectEtcConnectGardeniing();

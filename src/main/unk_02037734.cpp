@@ -6,6 +6,7 @@
 #include "talk/MsgString.h"
 #include "gfx/TexVramTask.h"
 #include "talk/MsgString25.h"
+#include "gfx/CachedModel.h"
 
 // ---- Classes defined in other files (declarations only) ----
 
@@ -48,21 +49,8 @@ public:
     /* 0x14 */ u8 text[0x100];
 };
 
-struct Unk_020dbd34_Mtx {
-    s32 m[12];
-};
+typedef Mtx43 Unk_020dbd34_Mtx;
 
-class CachedModel {
-public:
-    CachedModel();
-    ~CachedModel();
-
-    u8 pad_00[0x5c];
-    /* 0x5c */ u8 *unk_5c;
-    /* 0x60 */ u32 pad_60;
-    /* 0x64 */ Unk_020dbd34_Mtx unk_64;
-    u8 pad_94[8];
-};
 
 extern "C" {
 void _ZN5Model10drawScaledEPi(void *self, void *p);
@@ -443,7 +431,7 @@ void CommCautionWindow::updateBlendRegs() {
 
 void CommCautionWindow::setupModelMatrix() {
     func_020e8388(&data_021f47e0, 0, 0, -0x1000, 0, 0, -0x1000);
-    model.unk_64 = data_021f47e0;
+    model.mtx = data_021f47e0;
 }
 
 void CommCautionWindow::uploadLine(s32 i) {

@@ -8,6 +8,7 @@
 #include "save/Pattern.h"
 #include "room/HouseRoom.h"
 #include "talk/EncodedString16Buf.h"
+#include "room/HouseData.h"
 
 // U125: design (pattern) storage and display helpers, 0x02070560-0x020720f8
 
@@ -61,10 +62,6 @@ struct Unk_020707ec_Rooms {
 };
 class HouseData;
 class HouseRoom;
-class HouseData {
-public:
-    HouseRoom *getRoom(s32 idx);
-};
 
 // ======== types of unk_0207116c.cpp ========
 struct Unk_02071460_Tbl { u8 pad[0xc]; u8 t[1]; };

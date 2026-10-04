@@ -26,6 +26,7 @@
 #include "actor/Actor.h"
 #include "actor/Character.h"
 #include "talk/ConstellationEncodedString16.h"
+#include "talk/VillagerTalkAcornTopics.h"
 
 
 class VillagerTalk;
@@ -1676,43 +1677,6 @@ public:
     void *memory;
 };
 
-class VillagerTalkAcornTopics {
-public:
-    u8 pad_00[0x3c];
-    Unk_0201e5a4_Msg *window;
-    u8 pad_40[0xac - 0x40];
-    Unk_0201e5a4_Fn selectFn;
-    u8 pad_b4[0xfc - 0xb4];
-    Unk_0201e5a4_Owner *actor;
-    u8 topicFile[0x1e];
-    u8 topicIndex;
-    u8 pad_11f;
-    u16 itemFromPlayer;
-    u8 pad_122[2];
-    s32 memoryIndex;
-    u32 memory;
-    u8 pad_12c[0x198 - 0x12c];
-    u16 itemToPlayer;
-    void selectEvSnowfesTalk(u32 arg);
-    void selectEvAcornMsg15(Unk_0201e5a4_Out *out);
-    void giveAcornReward();
-    void selectEvAcornMsg19(Unk_0201e5a4_Out *out);
-    void rollAcornReward();
-    void selectEvAcornMsg17(Unk_0201e5a4_Out *out);
-    void continueAcornReceived();
-    void onAcornPicked();
-    void openAcornPicker();
-    void openEvAcornGiveChoice();
-    void selectEvAcornMsg13(Unk_0201e5a4_Out *out);
-    void openSmallTalkChoiceAcorn();
-    void selectEtcConnectAcorn();
-    void continueEvAcornMsg7();
-    void selectEvAcornMsg7(Unk_0201e5a4_Out *out);
-    void selectEvAcornMsg10(Unk_0201e5a4_Out *out);
-    void selectEvAcorn(Unk_0201e5a4_Out *out);
-    void selectEvAcornTalk(u32 arg);
-    void openSmallTalkChoiceGardeniing();
-};
 
 class Unk_020d7710 {
 public:
@@ -13012,7 +12976,7 @@ extern "C" BOOL Talk_AcornPickerFilter(u16 *p, s32 a) {
 }
 
 void VillagerTalkAcornTopics::selectEvAcornTalk(u32 arg) {
-    u32 r4 = actor->villagerData;
+    u32 r4 = (u32)actor->villagerData;
     u32 r6 = Random_GlobalBelow(10) & 1;
     u32 r7 = Random_GlobalBelow(10) & 1;
     u32 tmp;
@@ -13034,7 +12998,7 @@ void VillagerTalkAcornTopics::selectEvAcornTalk(u32 arg) {
         ((VillagerTalk *)this)->setTopicFns((Unk_020d8938_Tbl *)((u8 *)&nZ::sEvAcornTopicTable[1]));
     }
     if (selectFn) {
-        (this->*selectFn)(arg);
+        (this->*(Unk_0201e5a4_Fn)selectFn)(arg);
     }
     VillagerTalk_EnsureMemory((u8 *)this, (s32 *)(&memory), &memoryIndex, r4, 0);
     if (memory != 0) {
@@ -13128,7 +13092,7 @@ void VillagerTalkAcornTopics::onAcornPicked() {
     } else {
         ((VillagerTalk *)this)->setTopicFns((Unk_020d8938_Tbl *)((u8 *)&nZ::sEvAcornTopicTable[8]));
         if (window != NULL) {
-            window->nextState = 1;
+            ((Unk_0201e5a4_Msg *)window)->nextState = 1;
         }
         if (selectFn) {
             (this->*(Unk_0201e5a4_RetFn)selectFn)(&t);
@@ -13143,7 +13107,7 @@ void VillagerTalkAcornTopics::continueAcornReceived() {
     Unk_0201e5a4_Ret t;
     ((VillagerTalk *)this)->setTopicFns((Unk_020d8938_Tbl *)((u8 *)&nZ::sEvAcornTopicTable[6]));
     if (window != NULL) {
-        window->nextState = 1;
+        ((Unk_0201e5a4_Msg *)window)->nextState = 1;
     }
     if (selectFn) {
         (this->*(Unk_0201e5a4_RetFn)selectFn)(&t);
@@ -13232,7 +13196,7 @@ void VillagerTalkAcornTopics::selectEvAcornMsg15(Unk_0201e5a4_Out *out) {
 }
 
 void VillagerTalkAcornTopics::selectEvSnowfesTalk(u32 arg) {
-    u32 r6 = actor->villagerData;
+    u32 r6 = (u32)actor->villagerData;
     u32 v = ((u32)_ZN13ContestRecord16getVotedVillagerEv(gContestRecord));
     u32 r5 = 2;
     if (((VillagerTalkTopics *)this)->selectSituationGreeting((Unk_0201d2d0_Out *)arg)) {
@@ -13251,7 +13215,7 @@ void VillagerTalkAcornTopics::selectEvSnowfesTalk(u32 arg) {
         ((VillagerTalk *)this)->setTopicFns((Unk_020d8938_Tbl *)((u8 *)&nZ::sEvSnowfesTopicTable[2]));
     }
     if (selectFn) {
-        (this->*selectFn)(arg);
+        (this->*(Unk_0201e5a4_Fn)selectFn)(arg);
     }
     VillagerTalk_EnsureMemory((u8 *)this, (s32 *)(&memory), &memoryIndex, r6, 0);
     if (memory != 0) {

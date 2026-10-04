@@ -19,6 +19,8 @@
 #include "actor/Actor.h"
 #include "actor/Character.h"
 #include "snd/BgmManager.h"
+#include "snd/SndSeEmitter.h"
+#include "snd/Unk_0213b9c4.h"
 
 
 
@@ -139,20 +141,7 @@ public:
 struct Unk_ov009_0225df84_Obj;
 struct Unk_ov009_0225df94_Target;
 
-// Sub-object at +0x234 (Unk_0213b9c4 + flag byte, 0x44 bytes); its destructor is emitted in this overlay.
-class SndSeEmitter {
-public:
-    virtual ~SndSeEmitter();
-};
 
-// Vtable 0x0213b9c4 (ctor func_020f3e50 in main); its destructor is emitted in this overlay.
-class Unk_0213b9c4 : public SndSeEmitter {
-public:
-    Unk_0213b9c4();
-    virtual ~Unk_0213b9c4();
-
-    /* 0x04 */ u8 pad_04[0x3c];
-};
 
 class BuildingSeEmitter {
 public:
@@ -164,8 +153,7 @@ public:
     void setPosition(Unk_ov009_0225b880_Vec3 *v);
     void activate();
 
-    /* 0x00 */ Unk_0213b9c4 unk_00;
-    /* 0x40 */ u8 isActive;
+    /* 0x00 */ Unk_0213b9c4 unk_00; // the active flag is unk_00.b40 (0x40)
 };
 
 class BuildingActor : public Character, public TalkMsgRequest {

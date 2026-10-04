@@ -5,6 +5,7 @@
 #include "field/Unk_ov003_02217910_V3D.h"
 #include "field/Unk_ov003_02217b78_Ent.h"
 #include "field/FieldGroundBackdrop.h"
+#include "gfx/Model.h"
 
 // TU18 of ov003: ground helper class FieldGroundBackdrop (0x02217b10-0x02217be8) and the six colour constants of its header
 
@@ -12,10 +13,6 @@
 struct Unk_020553f8_Res;
 
 
-class Model : public CachedModel {
-public:
-    void setResourceAndBind(Unk_020553f8_Res *r, u32 a);
-};
 
 
 

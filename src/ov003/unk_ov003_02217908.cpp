@@ -5,22 +5,11 @@
 #include "snd/Unk_02003c40.h"
 #include "gfx/Unk_ov003_02215c7c_Blk.h"
 #include "field/Unk_ov003_02217910_V3D.h"
+#include "gfx/Model.h"
 
 // TU17 of ov003: ground helper free functions 0x02217908..0x02217b10 and the six colour constants of its header
 
 
-class Model {
-public:
-    Model();
-    virtual ~Model();
-    void drawScaled(s32 *p);
-    void clearResource();
-
-    u8 pad_04[0x64 - 4];
-    Unk_ov003_02215c7c_Blk unk_64;
-    u8 pad_94[4];
-    u32 unk_98;
-};
 
 
 typedef Unk_02003a6c_Vec Unk_ov003_02217910_V3;

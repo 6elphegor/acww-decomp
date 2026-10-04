@@ -12,6 +12,7 @@
 #include "gfx/VramTask.h"
 #include "town/TownAcreGrid.h"
 #include "gfx/TexVramTask.h"
+#include "gfx/ModelResource.h"
 
 inline void *operator new(unsigned long, void *p) { return p; }
 
@@ -64,24 +65,6 @@ extern "C" {
 
 
 
-class ModelResource {
-public:
-    u32 fileData;
-    void *fileHeap;
-    void *model;
-    void *texture;
-    TexVramTask texVramTask;
-    u8 loadState;
-    u8 unk_31;
-
-    ModelResource();
-    virtual ~ModelResource();
-    u32 loadTexture(void *a, TexVramSlot *b, void *c);
-    u32 loadModel(void *res, TexVramSlot *b, void *tex, void *heap);
-    void release(void);
-    void *getTexture(void);
-    void *getModel(void);
-};
 
 // ---- pool entry (0x1c bytes)
 class ModelSlot {

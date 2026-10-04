@@ -12,6 +12,7 @@
 #include "talk/MsgProcessor.h"
 #include "talk/TalkBmgReader.h"
 #include "talk/MsgWalker.h"
+#include "room/HouseData.h"
 
 class MsgRequest;
 class MsgString;
@@ -914,10 +915,6 @@ struct Unk_02068848_Owner {
     /* 0x1710 */ u32 weekday;
 };
 
-class HouseData {
-public:
-    s32 getLevel();
-};
 
 // Script command handlers: member functions reached through pointer tables at 0x020dd6b4..0x020ddbf8
 class TalkParserCondTags : public MsgParser {

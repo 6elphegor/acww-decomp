@@ -51,6 +51,7 @@
 #include "player/Unk_02009a78_Locals.h"
 #include "player/Unk_02009d5c_Sub.h"
 #include "player/Unk_02009f68_Bytes.h"
+#include "player/Unk_02006d14_7d0.h"
 #include "actor/Character.h"
 #include "actor/Actor.h"
 #include "gfx/MatTexVramTask.h"
@@ -989,14 +990,6 @@ static inline BOOL Unk_02008858_IsZero(u8 v) {
 namespace nG {
 extern "C" {
 
-struct Unk_02006d14_7d0 {
-    union {
-        struct { s16 unk_00; u8 unk_02, unk_03, unk_04, unk_05, unk_06; };
-        struct { s32 w0; s32 w4; s32 w8; s32 wc; s32 w10; s32 w14; };
-        struct { u16 h0, h2; u16 h4; u8 b6; };
-    };
-    void set_h2(s16 v) { h2 = v; }
-};
 inline s32 Unk_0200905c_abs(s32 x) { return x < 0 ? -x : x; }
 class Unk_02006d14 {
 public:
@@ -1571,12 +1564,6 @@ static inline void func_0200bc78_sub(Unk_02006d14_Vec *o, Unk_02006d14_Vec *a, U
     o->x = a->x - b->x;
     o->z = a->z - b->z;
 }
-struct Unk_02006d14_7d0 {
-    union {
-        struct { s32 w0; u8 b4, b5, b6; };
-        struct { u8 c0, c1; };
-    };
-};
 class Unk_02006d14 {
 public:
       u8 pad_000[0x5c];
@@ -1598,8 +1585,7 @@ public:
       s32 animId;
       u8 pad_704[0x7d0 - 0x704];
       Unk_02006d14_7d0 actionWork;
-      s32 unk_7d8;
-      u8 pad_7dc[0x7ec - 0x7dc];
+      u8 pad_7e8[0x7ec - 0x7e8];
       u32 action;
       u8 pad_7f0[8];
       s32 actionPriority;

@@ -13,6 +13,7 @@
 #include "ui/LabelString.h"
 #include "gfx/BgVramTask.h"
 #include "menu/MenuCursor.h"
+#include "player/PlayerData.h"
 
 enum Unk_ov111_022970cc_Status { UNK_OV111_ST_0 = 0, UNK_OV111_ST_1 = 1, UNK_OV111_ST_2 = 2, UNK_OV111_ST_3 = 3 };
 
@@ -28,10 +29,6 @@ public:
 
 
 
-class PlayerData {
-public:
-    void *getPlayerId();
-};
 
 
 extern "C" {

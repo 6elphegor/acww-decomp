@@ -17,6 +17,7 @@
 #include "game/FxVec3.h"
 #include "snd/Unk_0213b938.h"
 #include "snd/Unk_0213b970.h"
+#include "game/SkyProc.h"
 
 // ======== class types (global scope) ========
 struct Unk_021f4400;
@@ -125,15 +126,6 @@ struct Unk_020b8ec0_Time { u8 second; u8 unk_01; u8 hour; u8 pad[5]; };
 struct Unk_02095204 { u8 pad[0x5c]; struct { u32 unk_00; u32 unk_04; u32 unk_08; } unk_5c; };
 struct Unk_021efc08 { u8 pad[4]; u16 unk_04; };
 struct Unk_021efa88 { u8 pad[2]; u16 unk_02; };
-class SkyProc : public GameProc {
-public:
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
-    virtual BOOL onExecute();
-    virtual BOOL onDraw();
-
-    /* 0x50 */ Unk_0213b938 envSndChannel;
-};
 struct Unk_020b96b8_Ent {
     s32 a;
     s32 b;

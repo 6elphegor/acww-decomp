@@ -21,6 +21,7 @@
 #include "talk/MsgString25.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
+#include "player/PlayerData.h"
 
 
 struct Unk_0201bc1c;
@@ -63,18 +64,6 @@ struct Unk_ov070_Name {
     u8 b_pad[3];
 };
 
-class PlayerData {
-public:
-    void *getSpNpcRecord();
-    u16 *getHat();
-    u16 *getFaceItem();
-    u16 *getShirt();
-    void setFaceItem(u16 *v);
-    void setHat(u16 *v);
-    void setShirt(u16 *v);
-    void *getPlayerId();
-    void *getCatalog();
-};
 
 
 

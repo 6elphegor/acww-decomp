@@ -8,6 +8,7 @@
 #include "gfx/ModelAnim.h"
 #include "gfx/TexPatVramAnim.h"
 #include "field/FieldGroundBackdrop.h"
+#include "gfx/Model.h"
 
 // TU19 of ov003: ground part classes 0x02217be8 / 0x02217dbc and the scene 0x02232418 (0x02217be8-0x022187f8)
 
@@ -17,14 +18,6 @@ struct Unk_020553f8_Res;
 
 // ---- main-module helper classes ----
 
-class Model : public CachedModel {
-public:
-    void setInitCallback(s32 a, s32 b);
-    u32 getRenderObj();
-    void drawScaled(s32 *p);
-    void clearResource();
-    void setResourceAndBind(Unk_020553f8_Res *r, u32 a);
-};
 
 
 
@@ -584,11 +577,11 @@ BOOL FieldGroundPiece::setup(Unk_ov003_02217910_V3 *pos, s32 idx) {
     ((Model *)&model)->setResourceAndBind(res, t);
     if (matAnims[0].allocMatAnm((u32)res, gBgHeap)) {
         matAnims[0].init(BgModelCache_getGroundMatAnm(BgModelCache_Get()), 0, 0x1000, 0);
-        matAnims[0].addToRenderObj(((Model *)&model)->getRenderObj());
+        matAnims[0].addToRenderObj((u32)((Model *)&model)->getRenderObj());
     }
     if (matAnims[1].allocMatAnm((u32)res, gBgHeap)) {
         matAnims[1].init(BgModelCache_getGroundTexSrtAnm(BgModelCache_Get()), 0, 0x1000, 0);
-        matAnims[1].addToRenderObj(((Model *)&model)->getRenderObj());
+        matAnims[1].addToRenderObj((u32)((Model *)&model)->getRenderObj());
     }
     Unk_ov003_02217910_V3 tmp;
     curveAngle = WorldCurve_ToCurved((Unk_ov003_02218478_V3 *)&tmp, (Unk_ov003_02218478_V3 *)&position);
@@ -649,11 +642,11 @@ BOOL FieldGroundBlock::init(Unk_ov003_02217c3c_Obj *o, s32 a, s32 b) {
     ((Model *)&model)->setResourceAndBind(res, t);
     if (matAnims[0].allocMatAnm((u32)res, gBgHeap)) {
         matAnims[0].init(BgModelCache_getGroundMatAnm(BgModelCache_Get()), 0, 0x1000, 0);
-        matAnims[0].addToRenderObj(((Model *)&model)->getRenderObj());
+        matAnims[0].addToRenderObj((u32)((Model *)&model)->getRenderObj());
     }
     if (matAnims[1].allocMatAnm((u32)res, gBgHeap)) {
         matAnims[1].init(BgModelCache_getGroundTexSrtAnm(BgModelCache_Get()), 0, 0x1000, 0);
-        matAnims[1].addToRenderObj(((Model *)&model)->getRenderObj());
+        matAnims[1].addToRenderObj((u32)((Model *)&model)->getRenderObj());
     }
     func_020e8388(data_021f47e0, a * data_020c8cbc, 0, 0);
     s16 ang = b * WorldCurve_GetAngleScale();

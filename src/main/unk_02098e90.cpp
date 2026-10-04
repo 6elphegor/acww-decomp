@@ -2,6 +2,7 @@
 #include "item/Unk_02098f30_Out.h"
 #include "item/ItemId.h"
 #include "npc/VillagerId.h"
+#include "player/PlayerData.h"
 
 // Entry of the const table at 0x020d0604 (8 bytes): name, random range
 struct Unk_0209b570_Ent {
@@ -2676,11 +2677,6 @@ extern "C" s32 Pocket_CountKind(PocketMatches *self, s32 v) {
 }
 
 // ======== unk_0209865c.cpp (0x02098e90..0x02098f90) ========
-class PlayerData {
-public:
-    void *getErrands();
-    void *getInventory();
-};
 namespace n1 {
 extern "C" {
 PlayerData *PlayerData_GetCurrent();

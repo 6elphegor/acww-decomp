@@ -2,6 +2,7 @@
 #include "gfx/AnimFrameCtrl.h"
 #include "gfx/TexVramSlot.h"
 #include "gfx/ModelAnim.h"
+#include "gfx/Model.h"
 
 struct Unk_020553f8_Res {
     u32 unk_00;
@@ -32,45 +33,7 @@ struct Unk_02055820_Slot {
 };
 
 
-// Declaration-only twin of Unk_020dbe14: the original vtable order (e14, e24, e34) is the heapsort of the declaration
-// order e24, e34, e14, which needs Model declared before its real base. aliases.txt maps the twin's names.
-class Unk_020dbe14b {
-public:
-    Unk_020dbe14b();
-    virtual ~Unk_020dbe14b();
-};
 
-class Model : public Unk_020dbe14b {
-public:
-    Model();
-    virtual ~Model();
-    void setAlpha(u32 v);
-    void setPolygonId(u32 v);
-    void setInitCallback(s32 a, s32 b);
-    void setCallback(s32 a, s32 b, s32 c, s32 d, s32 e);
-    void *getRenderObj();
-    void draw();
-    void applyTransform(s32 *p);
-    void drawNoGeCmd();
-    void drawScaled(s32 *p);
-    void drawShapesDirect(s32 *p);
-    BOOL clearResource();
-    BOOL setResource(Unk_020553f8_Res *a, u32 b);
-    BOOL setResourceAndBind(Unk_020553f8_Res *a, u32 b);
-    void initRenderObj();
-    void reset();
-
-    /* 0x04 */ u16 modelFlags;
-    /* 0x06 */ u16 unk_06;
-    /* 0x08 */ u8 unk_08[0x2c];
-    /* 0x34 */ s32 renderUserPtr;
-    /* 0x38 */ u8 unk_38[0x24];
-    /* 0x5c */ Unk_020553f8_Res *unk_5c;
-    /* 0x60 */ u32 resTex;
-    /* 0x64 */ u8 unk_64[0x24];
-    /* 0x88 */ u8 baseTrans[0xc];
-    /* 0x94 */ u32 texVramSlot;
-};
 
 class Unk_020dbe14 {
 public:

@@ -9,6 +9,7 @@
 #include "gfx/VecFx32.h"
 #include "gfx/V3.h"
 #include "snd/Unk_0213b954.h"
+#include "actor/StaticCollider.h"
 
 // ---------------------------------------------------------------------------------------------------------------
 // Calls into other modules: the old stand-in names are #defined to the real symbols (mangled method names).
@@ -98,14 +99,6 @@ struct Rec {
 
 // ---- collision sub-object chain (main: ActorCollider <- StaticCollider), derived class in this overlay
 
-class StaticCollider : public ActorCollider {
-public:
-    StaticCollider();
-    ~StaticCollider();
-    virtual Vec3 *getPos();
-    virtual u32 getOwnerId();
-    /* 0x40 */ V3 position;
-};
 
 class AquariumFish;
 

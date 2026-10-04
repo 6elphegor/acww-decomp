@@ -1,7 +1,6 @@
 // mwcc-version: 1.2/base
 #include "types.h"
 #include "actor/Unk_0203e5d0_Node.h"
-#include "gfx/Unk_02055704.h"
 #include "game/Unk_ov004_02224ee4_Vec.h"
 #include "room/Unk_ov004_02224d60_B.h"
 #include "gfx/Unk_ov068_022708fc_Color.h"

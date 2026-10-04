@@ -12,6 +12,7 @@
 #include "gfx/ModelAnim.h"
 #include "gfx/TexVramTask.h"
 #include "player/HeldItemModel.h"
+#include "gfx/Model.h"
 
 // ---- helper classes (declared elsewhere) ----
 
@@ -30,10 +31,6 @@ public:
     void onJointCalcPre(BlendAnimModel *x);
 };
 
-class Model {
-public:
-    void *getRenderObj();
-};
 
 
 

@@ -17,6 +17,7 @@
 #include "ui/TouchPromptBalloon.h"
 #include "menu/MenuLabelButton.h"
 #include "menu/MenuCursor.h"
+#include "player/PlayerData.h"
 
 // ov106: scene overlay (class MailboxMenu, vtable 0x02298180, 0x3f80 bytes).
 
@@ -185,10 +186,6 @@ public:
 
 
 
-class PlayerData {
-public:
-    void * getCatalog();
-};
 
 
 

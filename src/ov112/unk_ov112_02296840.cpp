@@ -13,6 +13,7 @@
 #include "talk/EncodedString41.h"
 #include "menu/MenuCursor.h"
 #include "menu/MenuScrollKnob.h"
+#include "player/PlayerData.h"
 
 // Plain view of the scene object used by the extern "C" helpers (offsets only).
 struct Unk_ov112_02296840 {
@@ -102,11 +103,6 @@ public:
 // comm/session singleton (gCommManager)
 
 
-class PlayerData {
-public:
-    void getErrands();
-    PlayerId *getPlayerId();
-};
 
 
 

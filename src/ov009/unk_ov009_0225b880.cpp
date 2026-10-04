@@ -19,6 +19,8 @@
 #include "actor/Actor.h"
 #include "actor/Character.h"
 #include "snd/BgmManager.h"
+#include "snd/SndSeEmitter.h"
+#include "snd/Unk_0213b9c4.h"
 
 
 
@@ -139,20 +141,7 @@ public:
 struct Unk_ov009_0225df84_Obj;
 struct Unk_ov009_0225df94_Target;
 
-// Sub-object at +0x234 (Unk_0213b9c4 + flag byte, 0x44 bytes); its destructor is emitted in this overlay.
-class SndSeEmitter {
-public:
-    virtual ~SndSeEmitter();
-};
 
-// Vtable 0x0213b9c4 (ctor func_020f3e50 in main); its destructor is emitted in this overlay.
-class Unk_0213b9c4 : public SndSeEmitter {
-public:
-    Unk_0213b9c4();
-    virtual ~Unk_0213b9c4();
-
-    /* 0x04 */ u8 pad_04[0x3c];
-};
 
 class BuildingSeEmitter {
 public:
@@ -164,8 +153,7 @@ public:
     void setPosition(Unk_ov009_0225b880_Vec3 *v);
     void activate();
 
-    /* 0x00 */ Unk_0213b9c4 unk_00;
-    /* 0x40 */ u8 isActive;
+    /* 0x00 */ Unk_0213b9c4 unk_00; // the active flag is unk_00.b40 (0x40)
 };
 
 class BuildingActor : public Character, public TalkMsgRequest {
@@ -2058,7 +2046,7 @@ void BuildingActor::callIsLit() { BuildingLights_isLit(unk_1f0); }
 
 
 BuildingSeEmitter::BuildingSeEmitter() {
-    isActive = 0;
+    unk_00.b40 = 0;
 }
 
 extern "C" void *_ZN12Unk_0213b9c4D1Ev(void *p) {
@@ -2068,14 +2056,14 @@ extern "C" void *_ZN12Unk_0213b9c4D1Ev(void *p) {
 }
 
 void BuildingSeEmitter::activate() {
-    if (isActive == 0) {
+    if (unk_00.b40 == 0) {
         func_02003ecc(this);
-        isActive = 1;
+        unk_00.b40 = 1;
     }
 }
 
 void BuildingSeEmitter::setPosition(Unk_ov009_0225b880_Vec3 *v) {
-    if (isActive != 0) {
+    if (unk_00.b40 != 0) {
         Unk_ov009_0225b880_Vec3 t;
         t.x = v->x;
         t.y = v->y;
@@ -2085,20 +2073,20 @@ void BuildingSeEmitter::setPosition(Unk_ov009_0225b880_Vec3 *v) {
 }
 
 void BuildingSeEmitter::deactivate() {
-    if (isActive != 0) {
+    if (unk_00.b40 != 0) {
         func_02003e50(this);
-        isActive = 0;
+        unk_00.b40 = 0;
     }
 }
 
 void BuildingSeEmitter::playSe(u32 a) {
-    if (isActive != 0) {
+    if (unk_00.b40 != 0) {
         func_02003e70(this, a, 0x7f, 0);
     }
 }
 
 void BuildingSeEmitter::playSeHeld(u32 a) {
-    if (isActive != 0) {
+    if (unk_00.b40 != 0) {
         Snd_SeEmitterPlayHeld(this, a, 0x7f, 0);
     }
 }

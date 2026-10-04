@@ -18,6 +18,7 @@
 #include "ui/LabelBalloon.h"
 #include "gfx/BgVramTask.h"
 #include "ui/TouchPromptBalloon.h"
+#include "player/PlayerData.h"
 
 class PostOfficeMenu;
 class MenuLauncher;
@@ -140,10 +141,6 @@ public:
     MsgString9B();
     virtual ~MsgString9B();
     u32 unk_04[7];
-};
-class PlayerData {
-public:
-    void *getPlayerId();
 };
 
 struct Unk_0206d1d4_Src;

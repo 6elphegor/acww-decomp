@@ -6,6 +6,7 @@
 #include "actor/Unk_02002cb0_Vec.h"
 #include "actor/Unk_02002f14_Node.h"
 #include "actor/Actor.h"
+#include "room/HouseData.h"
 
 // main / runtime symbols by their real names
 #define func_02000c8c _ZN6FxVec3D1Ev
@@ -81,11 +82,6 @@ struct Unk_ov004_0223717c_Vec {
 };
 
 
-class HouseData {
-public:
-    u8 getRoachCount();
-    void setRoachCount(u8 v);
-};
 
 extern "C" {
 void func_02031c48(void *p);

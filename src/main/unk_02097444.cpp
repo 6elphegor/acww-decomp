@@ -1,5 +1,6 @@
 #include "types.h"
 #include "item/ItemId.h"
+#include "player/PlayerData.h"
 
 
 struct Unk_02097ac4 {
@@ -13,13 +14,6 @@ struct Unk_020973e4_Pl {
     u32 localSlot;
 };
 
-// 0x228c-byte element (constructor 0x02098be4 and destructor 0x02098af0 belong to another unit)
-class PlayerData {
-public:
-    PlayerData();
-    ~PlayerData();
-    u8 pad[0x228c];
-};
 
 // the three-element object at gGuestPlayers (constructor func_020975c4, destructor func_020975a4)
 class GuestPlayerArray {

@@ -9,6 +9,7 @@
 #include "sys/ProcBase.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
+#include "room/HouseData.h"
 
 // shared_actor.h.txt -- declarations shared by the ov003 actor units (class family of ov009 BuildingActor).
 // Written by the agent that owns ov003 TU06/07/09/10/11/12 (all 1.2/sp2).  Paste unchanged after `#include "types.h"`
@@ -178,12 +179,6 @@ public:
     /* 0x2b0 */
 };
 
-class HouseData {
-public:
-    BOOL hasRoomFlags();
-    u8 getRoofColor();
-    u8 pad[0x15a4];
-};
 
 extern "C" {
 extern u32 gCurrentHeap;

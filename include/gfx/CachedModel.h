@@ -1,12 +1,11 @@
 #ifndef GFX_CACHEDMODEL_H
 #define GFX_CACHEDMODEL_H
 
-// Model with a cached resource tag at 0x98 (0x9c bytes). Defined in src/main/unk_02053848.cpp, which (like
-// unk_020abbcc.cpp) keeps its own declaration on the real Model base; here the base is the Model view Unk_02055704.
+// Model with a cached resource tag at 0x98 (0x9c bytes). Defined in src/main/unk_02053848.cpp.
 #include "types.h"
-#include "gfx/Unk_02055704.h"
+#include "gfx/Model.h"
 
-class CachedModel : public Unk_02055704 {
+class CachedModel : public Model {
 public:
     CachedModel();
     virtual ~CachedModel();

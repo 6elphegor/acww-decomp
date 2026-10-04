@@ -39,6 +39,7 @@
 #include "room/FtrModelAnim.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
+#include "gfx/ModelResource.h"
 // ov004 translation unit 0x02209f70-0x022136d0 (34 classes derived from FtrActor). Built by two compilers:
 // this file's thunks need mwcc 1.2/sp2, FtrSingingInsect::updateActive / vfunc_7c (in the _switch file) need 1.2/base;
 // the functions and data objects are placed by address (config/usa/arm9/overlays/ov004/object_order.txt).
@@ -157,20 +158,6 @@ public:
 // ---- 0x022069ec / 0x02206e38 (model loader, member at 0x6c8)
 class TexVramSlot;
 
-class ModelResource {
-public:
-    u32 fileData;
-    u32 pad[10];
-    u8 loadState;
-    u8 unk_31;
-    u8 pad2[2];
-
-    ModelResource();
-    virtual ~ModelResource();
-    u32 loadTexture(void *a, TexVramSlot *b, void *c);
-    void release(void);
-    void *getTexture(void);
-};
 
 
 struct FtrModelRes {

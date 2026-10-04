@@ -3,6 +3,7 @@
 #include "item/ItemId.h"
 #include "item/Letter.h"
 #include "save/Pattern.h"
+#include "player/PlayerData.h"
 
 class PlayerInventory;
 class Unk_02097ff4;
@@ -155,106 +156,10 @@ public:
 
 
 
-struct Unk_0209865c_Nib {
-    u8 lo : 4;
-    u8 hi : 4;
-};
 
-struct Unk_0209865c_Tri {
-    u8 lo : 3;
-    u8 mid : 3;
-    u8 hi : 2;
-};
 
-struct Unk_0209865c_Bits {
-    u16 a : 7;
-    u16 b : 4;
-    u16 c : 5;
-};
 
-struct Unk_0209865c_Grp {
-    Letter a[10];
-    u8 gap[0x52];
-    ItemId b[15];
-};
 
-class PlayerData : public PlayerPatterns {
-public:
-    PlayerData();
-    ~PlayerData();
-
-    /* 0x1148 */ Unk_0209865c_Grp inventory;
-    /* 0x1b40 */ u8 wallet[8];
-    /* 0x1b48 */ u8 catalog[0x123];
-    /* 0x1c6b */ u8 options[1];
-    /* 0x1c6c */ u8 futureLetter[0xf8];
-    /* 0x1d64 */ u8 errands[0xac];
-    /* 0x1e10 */ u8 wifiUserData[0x50];
-    /* 0x1e60 */ u8 friendList[0x384];
-    /* 0x21e4 */ u8 bank[8];
-    /* 0x21ec */ u8 emotions[4];
-    /* 0x21f0 */ u8 dailyTalkFlags[0x18];
-    /* 0x2208 */ u8 nookPoints[2];
-    /* 0x220a */ u16 heldItem;
-    /* 0x220c */ u16 shirt;
-    /* 0x220e */ u16 hat;
-    /* 0x2210 */ u16 faceItem;
-    /* 0x2212 */ u16 bed;
-    /* 0x2214 */ u16 inventoryBackground;
-    /* 0x2216 */ s16 lastPlayDate;
-    /* 0x2218 */ u8 birthday[2];
-    /* 0x221a */ u8 spNpcRecord[0x11];
-    /* 0x222b */ u8 dramaRecord[5];
-    /* 0x2230 */ u8 lostChildRecord[0xc];
-    /* 0x223c */ Unk_0209865c_Nib faceHair;
-    /* 0x223d */ Unk_0209865c_Tri hairColorTanFortune;
-    /* 0x223e */ u8 motherLetterState[0x15];
-    /* 0x2253 */ u8 birthdayTalkYear;
-    /* 0x2254 */ u8 unk_2254[8];
-    /* 0x225c */ u8 foreignVillagerRecord[0x1a];
-    /* 0x2276 */ u8 id[0x16];
-
-    void *getErrands();
-    void *func_02098668();
-    void *getFriendList();
-    void *getWifiUserData();
-    void *getSpNpcRecord();
-    void *getDailyTalkFlags();
-    void *getLostChildRecord();
-    void *getDramaRecord();
-    void *getNookPoints();
-    void *getCatalog();
-    void getPatterns();
-    void setBed(u16 *v);
-    void *getBed();
-    void setFaceItem(u16 *v);
-    void *getFaceItem();
-    void setHat(u16 *v);
-    void *getHat();
-    void setShirt(u16 *v);
-    void *getShirt();
-    void setHeldItem(u16 *v);
-    void *getHeldItem();
-    void *getInventory();
-    void setFortune(u8 v);
-    u32 getFortune();
-    void setLastPlayDate(Unk_0209865c_Bits v);
-    s32 getLastPlayDate();
-    void setTan(u8 v);
-    u32 getTan();
-    void setHairColor(u8 v);
-    u32 getHairColor();
-    void setHairStyle(u8 v);
-    u32 getHairStyle();
-    void setFaceType(u8 v);
-    u32 getFaceType();
-    void getIndex();
-    void setupNew(u32 p1, u32 p2, u32 p3, u32 s0, u8 s1, u8 s2, u8 s3, u8 s4, u8 s5, u32 s6, u16 *s7);
-    BOOL isUsed();
-    void reset();
-    void fillZero();
-    void *getPlayerId();
-};
 
 
 extern "C" {
@@ -366,7 +271,7 @@ void PlayerData::setupNew(u32 p1, u32 p2, u32 p3, u32 s0, u8 s1, u8 s2, u8 s3, u
     MI_CpuFill8(&unk_2254, 0xff, 8);
 }
 
-void *PlayerData::getPlayerId() { return &id; }
+PlayerId *PlayerData::getPlayerId() { return (PlayerId *)&id; }
 
 void PlayerData::getIndex() { PlayerId_FindResidentIndex(getPlayerId()); }
 
@@ -406,23 +311,23 @@ extern "C" void PlayerData_SetStungFace(void *p, u32 flag) {
 
 void *PlayerData::getInventory() { return &inventory; }
 
-void *PlayerData::getHeldItem() { return &heldItem; }
+u16 *PlayerData::getHeldItem() { return &heldItem; }
 
 void PlayerData::setHeldItem(u16 *v) { heldItem = *v; }
 
-void *PlayerData::getShirt() { return &shirt; }
+u16 *PlayerData::getShirt() { return &shirt; }
 
 void PlayerData::setShirt(u16 *v) { shirt = *v; }
 
-void *PlayerData::getHat() { return &hat; }
+u16 *PlayerData::getHat() { return &hat; }
 
 void PlayerData::setHat(u16 *v) { hat = *v; }
 
-void *PlayerData::getFaceItem() { return &faceItem; }
+u16 *PlayerData::getFaceItem() { return &faceItem; }
 
 void PlayerData::setFaceItem(u16 *v) { faceItem = *v; }
 
-void *PlayerData::getBed() { return &bed; }
+u16 *PlayerData::getBed() { return &bed; }
 
 void PlayerData::setBed(u16 *v) { bed = *v; }
 

@@ -8,6 +8,7 @@
 #include "ui/LabelString.h"
 #include "gfx/BgVramTask.h"
 #include "menu/MenuCursor.h"
+#include "player/PlayerData.h"
 
 extern "C" {
 extern const u8 sKeyDigits[12];
@@ -108,12 +109,6 @@ extern void *data_ov133_02295298[2];
 }
 
 
-class PlayerData {
-public:
-    void *getFriendList();
-    void *getWifiUserData();
-    void *getPlayerId();
-};
 
 
 class MenuTabBar {

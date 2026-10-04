@@ -4,31 +4,15 @@
 #include "game/Vec3.h"
 #include "gfx/SceneLightsCol.h"
 #include "gfx/Mtx43.h"
+#include "gfx/Model.h"
+#include "gfx/CachedModel.h"
 
 
 
 
 
 
-class Model {
-public:
-    Model();
-    virtual ~Model();
-    u8 pad_04[0x58];
-    void *unk_5c;
-    u8 pad_60[4];
-    void drawScaled(s32 *scale);
-};
 
-class CachedModel : public Model {
-public:
-    CachedModel();
-    virtual ~CachedModel();
-    u8 unk_64[0x34];
-    u32 unk_98;
-    BOOL release(void);
-    BOOL load(void *res, void *name);
-};
 
 extern "C" {
 s32 FX_Div(s32 a, s32 b);

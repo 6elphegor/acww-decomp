@@ -11,6 +11,7 @@
 #include "item/PlayerMailbox.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
+#include "gfx/Model.h"
 
 
 
@@ -152,10 +153,6 @@ public:
 // ---- main-module helper classes ----
 
 
-class Model {
-public:
-    void *getRenderObj();
-};
 
 // Member at +0x2d4: the original constructs it with the base-object constructor (C1 here; the member is built with the complete-object ctor at 0x020b6a94), which a member declaration
 // cannot do, so it is raw storage plus explicit calls through the real symbol names.

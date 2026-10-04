@@ -4,6 +4,7 @@
 #include "player/Unk_02097ff4.h"
 #include "save/TownExchangeRecord.h"
 #include "menu/MenuProc.h"
+#include "player/PlayerData.h"
 
 extern "C" {
 s32 Snd_PlaySe(s32 a);
@@ -66,9 +67,6 @@ s32 func_ov096_02298320(PocketMenu *self);
 s32 PocketMenu_ShowMessage(PocketMenu *self, s32 a, s32 b, s32 c);
 s32 PocketMenu_ReturnToIdle(PocketMenu *self);
 }
-struct PlayerData {
-    u16 *getHeldItem();
-};
 
 // +0x27fc sub-object (0x108 bytes, opaque here)
 class MenuErrorMessage {

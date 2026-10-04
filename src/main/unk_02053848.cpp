@@ -60,45 +60,9 @@ struct Unk_0205415c_Obj {
     Unk_0205415c_Item *renderAnmJnt;
 };
 
-class Model {
-public:
-    Model();
-    virtual ~Model();
-    u16 modelFlags;
-    u8 pad_06[2];
-    u32 renderObj;
-    u8 *renderResMdl;
-    u8 pad_10[8];
-    Unk_02054584_Data *renderAnmJnt;
-    s32 unk_1c;
-    Unk_02054584_Data *renderAnmVis;
-    u8 pad_24[0x18];
-    void *renderJntRecord;
-    u8 pad_40[0x1c];
-    void *unk_5c;
-    u8 pad_60[0x34];
-    void *texVramSlot;
 
-    BOOL clearResource(void);
-    void initRenderObj(void);
-};
 
-class CachedModel : public Model {
-public:
-    CachedModel();
-    virtual ~CachedModel();
-    u32 unk_98;
-    BOOL release(void);
-    BOOL allocJointRecord(void *heap);
-    void setFromFile(void *a);
-    BOOL loadWithSharedTex(void *a, void *b, void *c);
-    BOOL loadCached(void *a, void *b);
-    BOOL loadWithTex(void *res, void *name, void *tex, void *d, u32 *e, s32 f);
-    BOOL load(void *res, void *name);
-    BOOL loadWithTexKeyed(void *res, void *name, void *tex, void *d, u32 *e, s32 f, u32 tag);
-    BOOL loadKeyed(void *res, void *name, u32 tag);
-};
-
+#include "gfx/CachedModel.h"
 // included here, not at the top: the vtable emission order (CachedModel before Unk_020dbd44) follows declaration order
 #include "gfx/Unk_020dbd44.h"
 
@@ -268,12 +232,12 @@ BOOL CachedModel::loadKeyed(void *res, void *name, u32 tag) {
     u8 *p = Unk_02054b70_Off((u8 *)NNS_G3dGetMdlSet(h));
     void *q = NNS_G3dGetTex(h);
     if (name != NULL) {
-        unk_5c = Gfx3d_CopyModel(p, name);
+        unk_5c = (Unk_020553f8_Res *)Gfx3d_CopyModel(p, name);
     } else {
-        unk_5c = ResCache_GetModel(p, tag);
+        unk_5c = (Unk_020553f8_Res *)ResCache_GetModel(p, tag);
     }
     if (q != NULL) {
-        Gfx3d_LoadTexAndPltt(q, texVramSlot);
+        Gfx3d_LoadTexAndPltt(q, (void *)texVramSlot);
         NNS_G3dBindMdlTex(unk_5c, q);
         NNS_G3dBindMdlPltt(unk_5c, q);
     }
@@ -290,16 +254,16 @@ BOOL CachedModel::loadWithTexKeyed(void *res, void *name, void *tex, void *d, u3
     }
     u8 *p = Unk_02054b70_Off((u8 *)NNS_G3dGetMdlSet(h));
     if (name != NULL) {
-        unk_5c = Gfx3d_CopyModel(p, name);
+        unk_5c = (Unk_020553f8_Res *)Gfx3d_CopyModel(p, name);
     } else {
-        unk_5c = ResCache_GetModel(p, tag);
+        unk_5c = (Unk_020553f8_Res *)ResCache_GetModel(p, tag);
     }
     if (tex != NULL) {
         NNS_G3dBindMdlTex(unk_5c, tex);
     } else {
         void *q = NNS_G3dGetTex(h);
         if (q != NULL) {
-            Gfx3d_LoadTexAndPltt(q, texVramSlot);
+            Gfx3d_LoadTexAndPltt(q, (void *)texVramSlot);
             NNS_G3dBindMdlTex(unk_5c, q);
         }
     }
@@ -323,7 +287,7 @@ BOOL CachedModel::loadWithTex(void *res, void *name, void *tex, void *d, u32 *e,
 }
 
 BOOL CachedModel::loadCached(void *a, void *b) {
-    unk_5c = ResCache_FindModel(a);
+    unk_5c = (Unk_020553f8_Res *)ResCache_FindModel(a);
     if (unk_5c != NULL) {
         initRenderObj();
         return TRUE;
@@ -339,7 +303,7 @@ BOOL CachedModel::loadWithSharedTex(void *a, void *b, void *c) {
         return FALSE;
     }
     u8 *p = Unk_02054b70_Off((u8 *)NNS_G3dGetMdlSet(h));
-    unk_5c = ResCache_GetModel(p, 0x4e554c4c);
+    unk_5c = (Unk_020553f8_Res *)ResCache_GetModel(p, 0x4e554c4c);
     void *r = _ZN15PatternTexCache15getPlayerTexKeyEii(PatternTexCache_Get(), b, c);
     func_02103978(unk_5c, r, 0, 0);
     func_021037b4(unk_5c, r, 0, 0);
@@ -351,7 +315,7 @@ BOOL CachedModel::loadWithSharedTex(void *a, void *b, void *c) {
 void CachedModel::setFromFile(void *a) {
     u8 *p = Unk_02054b70_Off((u8 *)NNS_G3dGetMdlSet(a));
     void *q = NNS_G3dGetTex(a);
-    unk_5c = p;
+    unk_5c = (Unk_020553f8_Res *)p;
     NNS_G3dBindMdlTex(unk_5c, q);
     NNS_G3dBindMdlPltt(unk_5c, q);
     initRenderObj();

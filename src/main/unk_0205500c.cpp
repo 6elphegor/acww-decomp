@@ -4,6 +4,7 @@
 #include "gfx/TexTransfer.h"
 #include "gfx/VramTask.h"
 #include "gfx/TexVramTask.h"
+#include "gfx/ModelResource.h"
 
 extern "C" {
 void *File_LoadAlloc(void *a, void *heap, s32 b, s32 c);
@@ -46,24 +47,6 @@ extern void *gCurrentHeap;
 
 
 
-class ModelResource {
-public:
-    u32 fileData;
-    void *fileHeap;
-    void *model;
-    void *texture;
-    TexVramTask texVramTask;
-    u8 loadState;
-    u8 unk_31;
-
-    ModelResource();
-    virtual ~ModelResource();
-    u32 loadTexture(void *a, TexVramSlot *b, void *c);
-    u32 loadModel(void *res, TexVramSlot *b, void *tex, void *heap);
-    void release(void);
-    void *getTexture(void);
-    void *getModel(void);
-};
 
 static inline u8 *Unk_02054b70_Off(u8 *p) {
     return p + *(u32 *)(p + *(u16 *)(p + 0xe) + 0xc);
