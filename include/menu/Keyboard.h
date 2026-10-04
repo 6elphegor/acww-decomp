@@ -16,7 +16,9 @@ public:
     /* 0x0002 */ u8 page;
     /* 0x0003 */ u8 selectedEmotion;
     /* 0x0004 */ u8 emotionCount;
-    /* 0x0005 */ u8 unk_05[3];
+    /* 0x0005 */ u8 copyKeyPalette;
+    /* 0x0006 */ u8 pasteKeyPalette;
+    /* 0x0007 */ u8 mode;
     /* 0x0008 */ u8 pressTimer;
     /* 0x0009 */ u8 unk_09[3];
     /* 0x000c */ s32 disabledSlots;
@@ -26,7 +28,8 @@ public:
     /* 0x001c */ s32 cursorY;
     /* 0x0020 */ s32 knobGripX;
     /* 0x0024 */ s32 knobGripY;
-    /* 0x0028 */ u8 unk_28[5];
+    /* 0x0028 */ u8 emotionSlots[4];
+    /* 0x002c */ u8 keyRepeatTimer;
     /* 0x002d */ u8 typedRunLength;
     /* 0x002e */ u8 layout;
     /* 0x002f */ u8 cursorWrap;

@@ -24,7 +24,7 @@ public:
     void drawAt(s32 a);
     void freeTexts();
 
-    /* 0x004 */ MenuTextButton unk_04[2];
+    /* 0x004 */ MenuTextButton buttons[2];
     /* 0x0a4 */ MenuTitleBalloon title;
     /* 0x160 */ u8 layout;
     /* 0x161 */ u8 selectedTarget;

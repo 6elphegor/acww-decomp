@@ -15,7 +15,7 @@ public:
     u32 getLastWifiMailId();                // 0x02097084
     void clear();                           // 0x02097090
 
-    /* 0x000 */ Letter unk_00[10];
+    /* 0x000 */ Letter letters[10];
     /* 0x988 */ u16 lastWifiMailId;
     /* 0x98a */ u16 pad_98a;
 };

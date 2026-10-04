@@ -7,7 +7,6 @@
 #include "actor/Unk_ov004_SceneEntry.h"
 #include "game/Unk_020d77a4_Vec3.h"
 #include "actor/Unk_ov004_022146ec_Actor.h"
-#include "npc/Unk_ov004_0221572c_Sub.h"
 #include "game/Unk_ov004_02215c94_V.h"
 #include "game/FxVec3.h"
 #include "actor/Actor.h"
@@ -200,7 +199,6 @@ extern "C" {
 BirthdayHostVillager *sBirthdayHostVillager;
 }
 
-typedef Unk_ov004_0221572c_Sub Unk_ov004_02214a4c_Obj;
 
 static inline BOOL Unk_ov004_022158c4_Range(u16 *p, u32 lo, u32 hi) {
     BOOL r = FALSE;
@@ -920,7 +918,7 @@ void BirthdayHostVillager::mainAct05() {
 BOOL BirthdayHostVillager::setupAct06() { return TRUE; }
 
 void BirthdayHostVillager::mainAct06() {
-    Unk_ov004_02214a4c_Obj *o = (Unk_ov004_02214a4c_Obj *)talk.unk_3c;
+    TalkWindowState *o = talk.unk_3c;
     if (o != 0) {
         if (o->state == 0) {
             TalkRequest_SetTargetDone(this);
@@ -977,7 +975,7 @@ void BirthdayHostVillager::mainAct08() {
 BOOL BirthdayHostVillager::setupAct09() { return TRUE; }
 
 void BirthdayHostVillager::mainAct09() {
-    Unk_ov004_02214a4c_Obj *o = (Unk_ov004_02214a4c_Obj *)talk.unk_3c;
+    TalkWindowState *o = talk.unk_3c;
     if (o != 0) {
         if (o->state == 0) {
             TalkRequest_SetTargetDone(this);

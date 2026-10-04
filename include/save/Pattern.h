@@ -2,7 +2,7 @@
 #define SAVE_PATTERN_H
 
 #include "types.h"
-#include "net/Unk_020720f8_Data.h"
+#include "save/EncodedName8.h"
 #include "save/PatternOrder.h"
 #include "save/Unk_020942c8.h"
 
@@ -16,7 +16,7 @@ class PatternInfo : public Unk_020942c8 {
 public:
     PatternInfo();
     ~PatternInfo();
-    /* 0x16 */ Unk_02071b10_Id16 title;
+    /* 0x16 */ EncodedTitle16 title;
     /* 0x26 */ struct {
         u8 lo : 4;
         u8 hi : 4;

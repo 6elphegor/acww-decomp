@@ -1,5 +1,5 @@
 #include "types.h"
-#include "item/Unk_02098f30_Out.h"
+#include "item/PocketMatches.h"
 #include "item/ItemId.h"
 #include "npc/VillagerId.h"
 #include "player/PlayerData.h"
@@ -42,11 +42,6 @@ struct ErrandRecord {
 };
 
 // ======== types of unk_02098f90.cpp ========
-
-struct PocketMatches {
-    u16 pocketMask;
-    u8 count;
-};
 
 struct Unk_020030d8_R256 {
     u8 pad[0xc];
@@ -2688,7 +2683,7 @@ s32 Item_GetFurnitureIndex(void *);
 void PocketMatches_Init(void *);
 }
 
-extern "C" s32 Pocket_CountMatching(Unk_02098f30_Out *out, s32 (*fn)(u16 *)) {
+extern "C" s32 Pocket_CountMatching(PocketMatches *out, s32 (*fn)(u16 *)) {
     PlayerData *o = PlayerData_GetCurrent();
     PocketMatches_Init(out);
     u16 *p = _ZN15PlayerInventory9getPocketEi(o->getInventory(), 0);
@@ -2696,7 +2691,7 @@ extern "C" s32 Pocket_CountMatching(Unk_02098f30_Out *out, s32 (*fn)(u16 *)) {
     for (i = 0; i < 15; i++) {
         if (_ZN15PlayerInventory18isPocketFlagsClearEi(o->getInventory(), i)) {
             if (fn(p + i)) {
-                out->flags |= 1 << i;
+                out->pocketMask |= 1 << i;
                 out->count++;
             }
         }

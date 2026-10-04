@@ -8,9 +8,9 @@
 #include "ui/LabelString.h"
 #include "menu/MenuScrollKnob.h"
 
-struct Unk_ov134_Date8 {
+struct PickerDateTime {
     u8 b[8];
-    Unk_ov134_Date8() {
+    PickerDateTime() {
         *(u32 *)&b[0] = 0;
         *(u32 *)&b[4] = 0;
     }
@@ -96,10 +96,10 @@ public:
     /* 0xb5 */ u8 windowTop;
     /* 0xb6 */ u8 windowBottom;
     /* 0xb7 */ s8 listKeyHoldCount;
-    /* 0xb8 */ Unk_ov134_Date8 dateTime;
-    /* 0xc0 */ Unk_ov134_Date8 dragDateTime;
-    /* 0xc8 */ Unk_ov134_Date8 minDateTime;
-    /* 0xd0 */ Unk_ov134_Date8 maxDateTime;
+    /* 0xb8 */ PickerDateTime dateTime;
+    /* 0xc0 */ PickerDateTime dragDateTime;
+    /* 0xc8 */ PickerDateTime minDateTime;
+    /* 0xd0 */ PickerDateTime maxDateTime;
     /* 0xd8 */ LabelString labels[0x11];
     /* 0x518 */ BgVramTask fieldScreenTask;
     /* 0x53c */ BgVramTask listScreenTask;

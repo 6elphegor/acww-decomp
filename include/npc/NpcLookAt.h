@@ -3,8 +3,8 @@
 
 #include "types.h"
 
-// NPC head/look-at controller (methods 0x0201a334..0x0201a78c, unk_0201a334.cpp part of src/main/unk_020119cc.cpp)
-// and Unk_0201a794, the NpcActor member type named after its constructor (ctor 0x0201a794, dtor label 0x0201a78c).
+// NPC head/look-at controller, NpcActor::lookAt (methods 0x0201a334..0x0201a7e8, unk_0201a334.cpp part of
+// src/main/unk_020119cc.cpp; ctor 0x0201a794, dtor label 0x0201a78c).
 
 struct Unk_0201a334_Vec3 { s32 x, y, z; };
 struct Unk_0201a334_Scene;
@@ -12,6 +12,9 @@ struct Unk_0201a734_Obj;
 
 class NpcLookAt {
 public:
+    NpcLookAt();
+    ~NpcLookAt();
+
     u8 lookType;
     u8 pad_01[3];
     Unk_0201a734_Obj *targetActor;
@@ -53,15 +56,9 @@ public:
     void setPitchLimit(s16 v);
     void disable();
     void clearTargetActor();
-    void func_0201a794();
     u8 getObstacleBits();
 };
 
 // size 0x68
-
-struct Unk_0201a794 : NpcLookAt {
-    Unk_0201a794();
-    ~Unk_0201a794();
-};
 
 #endif

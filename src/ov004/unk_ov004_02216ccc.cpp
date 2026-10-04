@@ -2,11 +2,7 @@
 #include "types.h"
 #include "actor/Unk_ov004_SceneEntry.h"
 #include "npc/Unk_0201a13c.h"
-#include "npc/Unk_0202d7f4.h"
-#include "npc/Unk_020323b0.h"
-#include "npc/Unk_02053d3c.h"
-#include "npc/Unk_02082088.h"
-#include "npc/Unk_0202d5e8.h"
+#include "npc/VillagerClothModel.h"
 #include "actor/Unk_02088d00.h"
 #include "room/RoomFreeUnitMap.h"
 #include "npc/VillagerMood.h"
@@ -15,14 +11,14 @@
 #include "npc/NpcSpeechState.h"
 #include "npc/NpcLookAt.h"
 #include "npc/NpcObstacleProbe.h"
-#include "npc/Unk_0201ac88.h"
+#include "npc/NpcMoveCtrl.h"
 #include "npc/NpcMoveAnimSet.h"
 #include "npc/Unk_0201ad18.h"
-#include "npc/Unk_020135e4.h"
+#include "npc/NpcFootstepFx.h"
 #include "sys/ProcBase.h"
 #include "npc/NpcActionCtrl.h"
 #include "snd/SndSeEmitterKind1.h"
-#include "npc/Unk_02014254.h"
+#include "npc/NpcTalkCtrl.h"
 #include "npc/NpcFaceAnim.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
@@ -220,7 +216,7 @@ BOOL HouseOwnerVillager::preCreate() {
         return FALSE;
     }
     NpcActor_setTalkRequest(this, &villagerTalk);
-    villagerTalk.obj.resetMsg();
+    villagerTalk.resetMsg();
     RoomFreeUnitMap_Build(&freeUnitMap);
     talkKind = 0;
     talkMelodyPlayed = 0;

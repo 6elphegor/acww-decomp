@@ -62,8 +62,8 @@ public:
     /* 0x1280 */ s32 listBlendMask;
     /* 0x1284 */ s32 pictureBlendMask;
     /* 0x1288 */ u16 flags;
-    /* 0x128a */ u8 unk_128a[2];
-    /* 0x128c */ u8 unk_128c;
+    /* 0x128a */ u8 pageButtonFlashTimers[2];
+    /* 0x128c */ u8 descPageCount;
     /* 0x128d */ u8 mainLayer;
     /* 0x128e */ u8 listLayer;
     /* 0x128f */ u8 pictureLayer;

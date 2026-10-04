@@ -1,6 +1,6 @@
 #include "types.h"
 #include "net/CommManager.h"
-#include "net/Unk_020a647c_Buf.h"
+#include "net/NetStateBlockHeader.h"
 #include "net/NetSessionParts.h"
 
 
@@ -207,7 +207,7 @@ extern "C" void NetArea_BuildStateA() {
     u8 *base = (u8 *)g->getAuxBufA();
     u8 *p = base + 2;
     s32 m = Scene_GetCurrent();
-    Unk_020a647c_Buf b;
+    NetStateBlockHeader b;
     u32 i;
     for (i = 0; i < 2; i++) {
         g->auxWritePtrA = p + 4;

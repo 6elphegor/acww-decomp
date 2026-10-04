@@ -16,7 +16,7 @@ public:
     void setFlag(u32 mask);                 // 0x02096fb8
     u8 *getLastDeliveryTime();              // 0x02096fc8
 
-    /* 0x000 */ Letter unk_00[10];
+    /* 0x000 */ Letter letters[10];
     /* 0x988 */ u8 lastDeliveryDay;
     /* 0x989 */ u8 lastDeliveryMonth;
     /* 0x98a */ u8 lastDeliveryYear;

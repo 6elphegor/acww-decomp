@@ -3454,12 +3454,12 @@ void PocketMenu::actionAct1A() {
 }
 
 void PocketMenu::actionOpenCountdownMenu() {
-    ChoiceIdList_Clear(unk_27f0, 0x22);
-    ChoiceIdList_Add(unk_27f0, 0xdd, 0x1d);
-    ChoiceIdList_Add(unk_27f0, 0xde, 0x1e);
-    ChoiceIdList_Add(unk_27f0, 0xdf, 0x1f);
-    ChoiceIdList_Add(unk_27f0, 0xe0, 0x20);
-    ChoiceIdList_Add(unk_27f0, 0x2, 0x22);
+    ChoiceIdList_Clear(optionList, 0x22);
+    ChoiceIdList_Add(optionList, 0xdd, 0x1d);
+    ChoiceIdList_Add(optionList, 0xde, 0x1e);
+    ChoiceIdList_Add(optionList, 0xdf, 0x1f);
+    ChoiceIdList_Add(optionList, 0xe0, 0x20);
+    ChoiceIdList_Add(optionList, 0x2, 0x22);
     hideCursor();
     showOptionList(0);
 }
@@ -3531,7 +3531,7 @@ void PocketMenu::runChosenAction() {
 void PocketMenu::showOptionList(s32 a) {
     u32 r6;
     s32 r2;
-    _ZN19PopupChoiceMenuBody14setRowsFromIdsEP17PopupChoiceIdListi(unk_24fc, unk_27f0, testFlags(0x40000));
+    _ZN19PopupChoiceMenuBody14setRowsFromIdsEP17PopupChoiceIdListi(unk_24fc, optionList, testFlags(0x40000));
     r6 = PocketMenu_GetTargetX((S *)this, actionTarget);
     r2 = PocketMenu_GetTargetY((S *)this, actionTarget);
     if (actionTarget == 0x25) {
@@ -3593,7 +3593,7 @@ s32 PocketMenu::playActionSe() {
 void PocketMenu::addItemOptions(s32 a) {
     volatile u16 v;
     if (MenuCtrl_IsButtons()) {
-        ChoiceIdList_Add(unk_27f0, 0, 0);
+        ChoiceIdList_Add(optionList, 0, 0);
     }
     s32 r4 = PocketMenu_GetItemFlags((S *)this, a);
     a = PocketMenu_GetItem((S *)this, a);
@@ -3601,16 +3601,16 @@ void PocketMenu::addItemOptions(s32 a) {
     if (r4 == 0) {
         if (Unk_ov096_02295a44_Range(&v, 0x156c, 0x156c)) {
             if (_ZN12HudCountdown9isStoppedEv(Hud_GetCountdown())) {
-                ChoiceIdList_Add(unk_27f0, 0xdc, 0x1b);
+                ChoiceIdList_Add(optionList, 0xdc, 0x1b);
             } else {
-                ChoiceIdList_Add(unk_27f0, 0xe1, 0x1c);
+                ChoiceIdList_Add(optionList, 0xe1, 0x1c);
             }
         }
     }
     switch (r4) {
     case 0:
         if (canDropItem(a)) {
-            ChoiceIdList_Add(unk_27f0, Unk_ov096_0229590c_IsZero(gFieldSceneKind) ? 1 : 0xa, 2);
+            ChoiceIdList_Add(optionList, Unk_ov096_0229590c_IsZero(gFieldSceneKind) ? 1 : 0xa, 2);
         }
         if (Unk_ov096_0229590c_IsZero(gFieldSceneKind)) {
             _ZN10PocketMenu15addFieldOptionsEt(this, a);
@@ -3623,18 +3623,18 @@ void PocketMenu::addItemOptions(s32 a) {
             u32 b = v;
             if (b >= 0x1000 && a <= 0x10ff) r = TRUE;
             if (r) {
-                ChoiceIdList_Add(unk_27f0, 0x1c, 7);
+                ChoiceIdList_Add(optionList, 0x1c, 7);
             } else if (a >= 0x151f && a <= 0x151f) {
-                ChoiceIdList_Add(unk_27f0, 0x1c, 8);
+                ChoiceIdList_Add(optionList, 0x1c, 8);
             }
         }
         break;
     case 1:
-        ChoiceIdList_Add(unk_27f0, 9, 0x14);
+        ChoiceIdList_Add(optionList, 9, 0x14);
         break;
     case 2:
         if (InvItem_IsDeliveryItem(a) == 0) {
-            ChoiceIdList_Add(unk_27f0, 0x17, 0x14);
+            ChoiceIdList_Add(optionList, 0x17, 0x14);
         }
         break;
     }
@@ -3643,42 +3643,42 @@ void PocketMenu::addItemOptions(s32 a) {
 void PocketMenu::addLetterOptions(s32 a) {
     void *o = PocketMenu_GetLetter((S *)this, a);
     if (MenuCtrl_IsButtons()) {
-        ChoiceIdList_Add(unk_27f0, 0, 1);
+        ChoiceIdList_Add(optionList, 0, 1);
     }
     s32 t = _ZN10LetterView8getStateEv(o);
     clearFlags(8);
     switch (t) {
     case 1:
-        ChoiceIdList_Add(unk_27f0, 0x16, 5);
-        ChoiceIdList_Add(unk_27f0, 0x20, 4);
+        ChoiceIdList_Add(optionList, 0x16, 5);
+        ChoiceIdList_Add(optionList, 0x20, 4);
         break;
     case 4:
         if (Unk_ov096_0229590c_IsZero(gFieldSceneKind)) {
             _ZN10PocketMenu15addBottleOptionEv(this);
         }
-        ChoiceIdList_Add(unk_27f0, 0x16, 5);
+        ChoiceIdList_Add(optionList, 0x16, 5);
         if (testFlags(8) == 0) {
             if (_ZN10LetterView10getPresentEv(o) == 0xfff1) {
                 if (Unk_ov096_0229590c_IsZero(gFieldSceneKind)) {
-                    ChoiceIdList_Add(unk_27f0, 0x15, 0xa);
+                    ChoiceIdList_Add(optionList, 0x15, 0xa);
                 }
             }
         }
         break;
     case 7:
-        ChoiceIdList_Add(unk_27f0, 0x17, 3);
+        ChoiceIdList_Add(optionList, 0x17, 3);
         break;
     case 0:
         break;
     default:
-        ChoiceIdList_Add(unk_27f0, 0x14, 3);
+        ChoiceIdList_Add(optionList, 0x14, 3);
         break;
     }
     if (_ZN10LetterView10getPresentEv(o) != 0xfff1) {
-        ChoiceIdList_Add(unk_27f0, 0x18, 6);
+        ChoiceIdList_Add(optionList, 0x18, 6);
     } else if (t == 1 || t == 3 || t == 6) {
         if (Unk_ov096_0229590c_IsZero(gFieldSceneKind)) {
-            ChoiceIdList_Add(unk_27f0, 0x15, 0xa);
+            ChoiceIdList_Add(optionList, 0x15, 0xa);
         }
     }
 }
@@ -3686,33 +3686,33 @@ void PocketMenu::addLetterOptions(s32 a) {
 void PocketMenu::addTakeOutBellsOptions() {
     s32 r = getWalletBells();
     if (r >= 0x64) {
-        ChoiceIdList_Add(unk_27f0, 0x6e, 0xb);
-        ChoiceIdList_Add(unk_27f0, 0x6f, 0xc);
+        ChoiceIdList_Add(optionList, 0x6e, 0xb);
+        ChoiceIdList_Add(optionList, 0x6f, 0xc);
     }
     if (r >= 0x3e8) {
-        ChoiceIdList_Add(unk_27f0, 0x70, 0xd);
+        ChoiceIdList_Add(optionList, 0x70, 0xd);
     }
     if (r >= 0x2710) {
-        ChoiceIdList_Add(unk_27f0, 0x71, 0xe);
+        ChoiceIdList_Add(optionList, 0x71, 0xe);
     }
 }
 
 void PocketMenu::addTakeOffOptions() {
     if (getEquipped(5) != 0xfff1) {
-        ChoiceIdList_Add(unk_27f0, 0x75, 0x11);
+        ChoiceIdList_Add(optionList, 0x75, 0x11);
     }
     if (getEquipped(4) != 0xfff1) {
-        ChoiceIdList_Add(unk_27f0, 0x76, 0x10);
+        ChoiceIdList_Add(optionList, 0x76, 0x10);
     }
     if (getEquipped(3) != 0xfff1) {
-        ChoiceIdList_Add(unk_27f0, 0x77, 0xf);
+        ChoiceIdList_Add(optionList, 0x77, 0xf);
     }
 }
 
 void PocketMenu::openTargetOptions(u32 a, s32 b) {
     clearFlags(0x40000);
     actionTarget = a;
-    ChoiceIdList_Clear(unk_27f0, 0x22);
+    ChoiceIdList_Clear(optionList, 0x22);
     if (PocketMenu_IsPocketTarget((S *)this, a)) {
         addItemOptions(a);
     } else if (PocketMenu_IsLetterTarget((S *)this, a)) {
@@ -3724,17 +3724,17 @@ void PocketMenu::openTargetOptions(u32 a, s32 b) {
     } else if (a != 0x27) {
         return;
     }
-    if (ChoiceIdList_Count(unk_27f0) == 0) {
+    if (ChoiceIdList_Count(optionList) == 0) {
         if (PocketMenu_IsPocketTarget((S *)this, a) || PocketMenu_IsLetterTarget((S *)this, a)) {
-            ChoiceIdList_Add(unk_27f0, 0x7c, 0x22);
+            ChoiceIdList_Add(optionList, 0x7c, 0x22);
         } else if (a == 0x25 || a == 0x27) {
-            ChoiceIdList_Add(unk_27f0, 0x7b, 0x22);
+            ChoiceIdList_Add(optionList, 0x7b, 0x22);
             actionTarget = 0x25;
         } else if (a == 0x24) {
-            ChoiceIdList_Add(unk_27f0, 0x7a, 0x22);
+            ChoiceIdList_Add(optionList, 0x7a, 0x22);
         }
     } else {
-        ChoiceIdList_Add(unk_27f0, 2, 0x22);
+        ChoiceIdList_Add(optionList, 2, 0x22);
     }
     hideCursor();
     if (b == 0) {
@@ -3748,10 +3748,10 @@ void PocketMenu::openTargetOptions(u32 a, s32 b) {
 
 void PocketMenu::openConfirmList() {
     setFlags(0x40000);
-    ChoiceIdList_Clear(unk_27f0, 0x22);
-    ChoiceIdList_Add(unk_27f0, 0x1a, 0x22);
-    ChoiceIdList_Add(unk_27f0, 0x15, 9);
-    ChoiceIdList_Add(unk_27f0, 0x19, 0x22);
+    ChoiceIdList_Clear(optionList, 0x22);
+    ChoiceIdList_Add(optionList, 0x1a, 0x22);
+    ChoiceIdList_Add(optionList, 0x15, 9);
+    ChoiceIdList_Add(optionList, 0x19, 0x22);
     showOptionList(0);
 }
 
@@ -4100,7 +4100,7 @@ void PocketMenu::wearHeldShirt() {
     } l;
     l.a = *_ZN12Unk_02097ff413func_020983ccEv(PlayerData_GetCurrent());
     l.b = handItem;
-    MenuScreen_UploadClothPattern(&l.b, &bgTasks[1], &unk_e8, &unk_c8);
+    MenuScreen_UploadClothPattern(&l.b, &bgTasks[1], &clothImage, &clothPalette);
     BOOL ok = FALSE;
     volatile u16 *pv = &l.a;
     u16 a = *pv;

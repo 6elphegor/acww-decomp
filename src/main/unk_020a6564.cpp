@@ -1,6 +1,6 @@
 #include "types.h"
 #include "net/CommManager.h"
-#include "net/Unk_020a647c_Buf.h"
+#include "net/NetStateBlockHeader.h"
 
 // TU198: 0x020a6564-0x020a65fc. Dispatches received records to two handlers through a table in .rodata
 // (0x020d07a8-0x020d07b0).
@@ -43,7 +43,7 @@ extern "C" void NetArea_ParseStateA() {
     CommManager *g = gCommManager;
     CommManager *sg = g;
     u8 *p = (u8 *)g->getAuxBufA();
-    Unk_020a647c_Buf b;
+    NetStateBlockHeader b;
     u32 n;
     MI_CpuCopy8(p, &b.total, 2);
     u32 total = b.total;

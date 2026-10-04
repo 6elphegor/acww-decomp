@@ -12,7 +12,7 @@
 #include "player/Unk_0205dfa4.h"
 #include "npc/NpcLookAt.h"
 #include "npc/NpcObstacleProbe.h"
-#include "npc/Unk_0201ac88.h"
+#include "npc/NpcMoveCtrl.h"
 #include "npc/NpcMoveAnimSet.h"
 #include "npc/Unk_0201ad18.h"
 #include "game/FxVec3.h"
@@ -35,7 +35,7 @@
 #include "talk/ActorTalkRequest.h"
 #include "talk/Unk_020d7710.h"
 #include "talk/TalkWindowState.h"
-#include "npc/Unk_020135e4.h"
+#include "npc/NpcFootstepFx.h"
 #include "actor/NpcActor.h"
 
 
@@ -402,7 +402,7 @@ struct Unk_02013474_Half { s16 a; s16 b; };
 
 // unk_020131a4.cpp
 // Method-set view named after the symbols (Unk_02013474::*). The footstep functions run on NpcActor::footstepFx
-// (Unk_020135e4, 8 bytes: footstepsEnabled, prevMoveMode); the setupState/stateNStep/mainState functions are the
+// (NpcFootstepFx, 8 bytes: footstepsEnabled, prevMoveMode); the setupState/stateNStep/mainState functions are the
 // NpcTalkCtrl state functions of talk states 1, 3 and 4 (sNpcTalkCtrlStates) and use NpcTalkCtrl's fields 0x8..0xd.
 struct Unk_02013474 {
     u8 footstepsEnabled;
@@ -1476,41 +1476,6 @@ class NpcObstacleProbe;
 
 
 
-// unk_0201a334.cpp
-class NpcMoveCtrl {
-public:
-    Unk_0201a334_Vec3 curSpeedPreset;
-    Unk_0201a334_Vec3 speedPresets[3];
-    s32 moveMode;
-    s16 targetAngle;
-    s16 turnSpeed;
-    Unk_0201a334_Vec3 waypoint;
-    Unk_0201a334_Vec3 destination;
-    s32 arriveDistance;
-    u8 keepAnimFrame;
-    u8 turnMode;
-
-    void storeHeadMtx(Unk_02006d14 *p);
-    void setTurnMode(u8 v);
-    void func_0201a8cc();
-    void setSpeedPreset(s32 idx, s32 x, s32 y, s32 z);
-    void resetDestination();
-    s32 hasNextLeg();
-    Unk_0201a334_Vec3 *getDestination();
-    void setDestination(Unk_0201a334_Vec3 *v);
-    s32 getTurnSpeed();
-    s32 getTargetAngle();
-    void setTargetAngle(s16 v);
-    BOOL hasArrived(Unk_0201a334_Scene *scene, s32 which);
-    Unk_0201a334_Vec3 *getDestinationB();
-    void setWaypoint(Unk_0201a334_Vec3 *v);
-    void updateTurn(Unk_0201a334_Scene *scene);
-    s32 stepAngle(s16 *p, s16 target, s16 step, u8 mode);
-    void aimAtDestination(Unk_0201a334_Scene *scene);
-    s32 getMoveMode();
-    void setMoveMode(Unk_0201a334_Scene *scene, s32 mode, s16 ang, u16 extra);
-    void applyMovement(Unk_0201a334_Scene *scene);
-};
 
 
 // unk_0201ac80.cpp
@@ -1843,7 +1808,7 @@ u8 *_ZN8NpcActor16getSpeakerGenderEv(void *p);
 extern u16 data_020c6cc8;
 extern Unk_02014040_Ent sNpcTalkCtrlStates[5];
 void NpcTalkCtrl_Destroy(void);
-void _ZN12Unk_02014254C1Ev(void);
+void _ZN11NpcTalkCtrlC1Ev(void);
 }
 }
 
@@ -2443,7 +2408,7 @@ s32 _ZN9Character9setCharIdEj(void *self, u32 v);
 BOOL _ZN11NpcMoveCtrl14setTargetAngleEs(void *p, s32 v);
 void _ZN14NpcSpeechState5resetEv(void *p);
 void _ZN12NpcEmotionFx5resetEv(void *p);
-void _ZN12Unk_0201ac885resetEv(void *p);
+void _ZN11NpcMoveCtrl5resetEv(void *p);
 void _ZN12Unk_02003c3013callSeInitAltEv(void *p);
 void _ZN11NpcTalkCtrl5resetEv(void *p);
 void _ZN12Unk_0201347414resetFootstepsEv(void *p);
@@ -3383,7 +3348,7 @@ BOOL NpcActor::preCreate() {
     _ZN11NpcTalkCtrl5resetEv(&talkCtrl);
     _ZN12NpcEmotionFx5resetEv(&emotionFx);
     partnerPlayer = 0;
-    _ZN12Unk_0201ac885resetEv(&moveCtrl);
+    _ZN11NpcMoveCtrl5resetEv(&moveCtrl);
     talkLockHeld = 0;
     MI_CpuFill8(netUserBytes, 0, 4);
     _ZN12Unk_02003c3013callSeInitAltEv(&seEmitter);
@@ -3458,9 +3423,9 @@ BOOL NpcActor::onExecute() {
                     _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 0x15, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
                 }
                 if ((u32)(L.a - 1) <= 1) {
-                    actionCtrl.unk_00 = L.a;
+                    actionCtrl.netMoveMode = L.a;
                 } else {
-                    actionCtrl.unk_00 = 0;
+                    actionCtrl.netMoveMode = 0;
                 }
             } else {
                 cur = L.a;
@@ -3766,7 +3731,7 @@ extern "C" void NpcActor_PayPlayer(void *self, s32 v) {
 }
 }
 
-Unk_0201ad3c::Unk_0201ad3c() {
+NpcMoveAnimSet::NpcMoveAnimSet() {
     using namespace nQ;
     standAnim = 0;
     walkAnim = 1;
@@ -3815,37 +3780,37 @@ s32 Unk_0201acf8::func_0201acfc() {
 void Unk_0201acf8::func_0201acf8(u16 v) {
     using namespace nQ; unk_02 = v; }
 
-Unk_0201accc::Unk_0201accc() {
+NpcMoveCtrl::NpcMoveCtrl() {
     using namespace nQ;
-    curSpeedPreset = 0x1000;
-    curSpeedPresetY = 0;
-    curSpeedPresetZ = 0;
+    curSpeedPreset.x = 0x1000;
+    curSpeedPreset.y = 0;
+    curSpeedPreset.z = 0;
     moveMode = 5;
-    waypoint = 0;
-    waypointY = 0;
-    waypointZ = 0;
-    destination = 0;
-    destinationY = 0;
-    destinationZ = 0;
+    waypoint.x = 0;
+    waypoint.y = 0;
+    waypoint.z = 0;
+    destination.x = 0;
+    destination.y = 0;
+    destination.z = 0;
     keepAnimFrame = 0;
     turnMode = 0;
 }
 
-void Unk_0201ac88::func_0201acc8() {
+void NpcMoveCtrl::func_0201acc8() {
     using namespace nQ;}
 
-void Unk_0201ac88::reset() {
+void NpcMoveCtrl::reset() {
     using namespace nQ;
-    curSpeedPreset = 0x1000;
-    curSpeedPresetY = 0;
-    curSpeedPresetZ = 0;
+    curSpeedPreset.x = 0x1000;
+    curSpeedPreset.y = 0;
+    curSpeedPreset.z = 0;
     moveMode = 5;
-    waypoint = 0;
-    waypointY = 0;
-    waypointZ = 0;
-    destination = 0;
-    destinationY = 0;
-    destinationZ = 0;
+    waypoint.x = 0;
+    waypoint.y = 0;
+    waypoint.z = 0;
+    destination.x = 0;
+    destination.y = 0;
+    destination.z = 0;
     keepAnimFrame = 0;
     turnMode = 0;
     MI_CpuCopy8(sNpcMoveSpeedPresets, speedPresets, 0x24);
@@ -4080,7 +4045,7 @@ void NpcMoveCtrl::setTurnMode(u8 v) {
     turnMode = v;
 }
 
-Unk_0201a8bc::Unk_0201a8bc() {
+NpcObstacleProbe::NpcObstacleProbe() {
     using namespace nP;
     blockedBits = 0;
 }
@@ -4130,7 +4095,7 @@ u8 NpcLookAt::getObstacleBits() {
     return lookType;
 }
 
-Unk_0201a794::Unk_0201a794() {
+NpcLookAt::NpcLookAt() {
     using namespace nP;
     lookType = 1;
     targetActor = 0;
@@ -8609,7 +8574,7 @@ BOOL Unk_02014258::taskSwitchSpeaker() {
 }
 
 namespace nE {
-extern "C" void _ZN12Unk_02014254C1Ev(void) {}
+extern "C" void _ZN11NpcTalkCtrlC1Ev(void) {}
 }
 
 namespace nE {
@@ -8621,10 +8586,10 @@ void NpcTalkCtrl::reset() {
     state = 5;
     requestedState = 5;
     step = 0;
-    unk_04 = 0;
+    turnSpeed = 0;
     turnAngle = 0;
     clearActorFlagOnEnd = 0;
-    unk_00 = 5;
+    act07Variant = 5;
     stopAction = 1;
     keepCamera = 0;
     unk_0e = 0;
@@ -8668,9 +8633,9 @@ BOOL NpcTalkCtrl::request(u8 b, u32 c, s16 d, s16 e, u8 f, u8 g) {
     BOOL r = FALSE;
     if (requestedState == 5) {
         requestedState = b;
-        unk_04 = d;
+        turnSpeed = d;
         turnAngle = e;
-        unk_00 = c;
+        act07Variant = c;
         stopAction = f;
         keepCamera = g;
         r = TRUE;
@@ -8731,7 +8696,7 @@ void NpcTalkCtrl::setupState0(Unk_02013b10_Ctx *ctx) {
     v.x = pv->x;
     v.y = pv->y;
     v.z = pv->z;
-    _ZN13NpcActionCtrl13requestActionEjiiissiitt(ctx->actionCtrl, 3, 2, 0, 0, unk_04, turnAngle, 0, 0, data_020c6cc8, 0);
+    _ZN13NpcActionCtrl13requestActionEjiiissiitt(ctx->actionCtrl, 3, 2, 0, 0, turnSpeed, turnAngle, 0, 0, data_020c6cc8, 0);
     if (keepCamera == 0) {
         Unk_02013b10_Obj *o = ctx->talkRequest;
         if (o != 0 && _ZN16ActorTalkRequest15getPartnerActorEv(o) != 0) {
@@ -8843,7 +8808,7 @@ void NpcTalkCtrl::setupState2(Unk_02013b10_Ctx *ctx) {
     v.x = pv->x;
     v.y = pv->y;
     v.z = pv->z;
-    _ZN13NpcActionCtrl13requestActionEjiiissiitt(ctx->actionCtrl, 3, 2, 0, 0, unk_04, turnAngle, 0, 0, data_020c6cc8, 0);
+    _ZN13NpcActionCtrl13requestActionEjiiissiitt(ctx->actionCtrl, 3, 2, 0, 0, turnSpeed, turnAngle, 0, 0, data_020c6cc8, 0);
     if (!(ctx->colliderFlags & 2)) clearActorFlagOnEnd = 1;
     ctx->colliderFlags |= 2;
     if (ctx->vfunc_7c()) {
@@ -9158,7 +9123,7 @@ void Unk_02013474::mainState4(Unk_020133cc_Player* p) {
     }
 }
 
-Unk_020135e4::Unk_020135e4() {
+NpcFootstepFx::NpcFootstepFx() {
     using namespace nD;
     footstepsEnabled = 0;
 }

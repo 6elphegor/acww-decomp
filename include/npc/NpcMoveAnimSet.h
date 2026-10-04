@@ -3,10 +3,13 @@
 
 #include "types.h"
 
-// Stand/walk/run animation ids of an NPC (unk_0201ac80.cpp part of src/main/unk_020119cc.cpp) and Unk_0201ad3c,
-// the NpcActor member type (moveAnimSet) named after its constructor (ctor 0x0201ad3c, dtor label 0x0201ad38).
+// Stand/walk/run animation ids of an NPC, NpcActor::moveAnimSet (unk_0201ac80.cpp part of src/main/unk_020119cc.cpp;
+// ctor 0x0201ad3c, dtor label 0x0201ad38).
 
 struct NpcMoveAnimSet {
+    NpcMoveAnimSet();
+    ~NpcMoveAnimSet();
+
     s32 standAnim;
     s32 walkAnim;
     s32 runAnim;
@@ -18,12 +21,6 @@ struct NpcMoveAnimSet {
     void setWalkAnim(s32 v);
     void setStandAnim(s32 v);
     void func_0201ad38();
-    void func_0201ad3c();
-};
-
-struct Unk_0201ad3c : NpcMoveAnimSet {
-    Unk_0201ad3c();
-    ~Unk_0201ad3c();
 };
 
 #endif

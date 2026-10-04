@@ -131,7 +131,7 @@ void PocketMenu::addFieldOptions(u16 v) {
         f1 = TRUE;
     }
     if (f1 || (a >= 0x12e8 && a <= 0x131f)) {
-        ChoiceIdList_Add(unk_27f0, 0x1b, 0x21);
+        ChoiceIdList_Add(optionList, 0x1b, 0x21);
     }
     BOOL f2 = FALSE;
     u16 c = *(volatile u16 *)&l.a;
@@ -140,16 +140,16 @@ void PocketMenu::addFieldOptions(u16 v) {
         f2 = TRUE;
     }
     if (f2) {
-        ChoiceIdList_Add(unk_27f0, 8, 0x15);
+        ChoiceIdList_Add(optionList, 8, 0x15);
     } else if (c >= 0x12e8 && c <= 0x131f) {
         if (findWaterNearPlayer(0)) {
-            ChoiceIdList_Add(unk_27f0, 8, 0x18);
+            ChoiceIdList_Add(optionList, 8, 0x18);
         }
     } else if ((c >= 0x137c && c <= 0x137c) || (c >= 0x1408 && c <= 0x1428) || (c >= 0x1471 && c <= 0x1491) ||
                (c >= 0x14fe && c <= 0x1517) || (c >= 0x151d && c <= 0x151e) || (c >= 0x1567 && c <= 0x1567)) {
-        ChoiceIdList_Add(unk_27f0, 6, 0x17);
+        ChoiceIdList_Add(optionList, 6, 0x17);
     } else if (findBuryHole()) {
-        ChoiceIdList_Add(unk_27f0, 7, 0x16);
+        ChoiceIdList_Add(optionList, 7, 0x16);
     }
 }
 
@@ -157,7 +157,7 @@ void PocketMenu::addBottleOption() {
     clearFlags(8);
     if (!gCommManager->isOnline()) {
         if (findWaterNearPlayer(1)) {
-            ChoiceIdList_Add(unk_27f0, 0x11, 0x19);
+            ChoiceIdList_Add(optionList, 0x11, 0x19);
             setFlags(8);
         }
     }

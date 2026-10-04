@@ -7,7 +7,6 @@
 #include "actor/Unk_ov004_SceneEntry.h"
 #include "game/Unk_020d77a4_Vec3.h"
 #include "town/Unk_0204e858_Grid.h"
-#include "npc/Unk_ov004_0221572c_Sub.h"
 #include "game/Unk_ov004_02215c94_V.h"
 #include "talk/MsgString9B.h"
 #include "actor/Actor.h"

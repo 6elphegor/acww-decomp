@@ -747,7 +747,7 @@ extern "C" void MenuButtons_LoadTextColors() { GXS_LoadOBJPltt(sMenuButtonTextCo
 
 void MenuBottomButtons::freeTexts() {
     for (s32 i = 0; i < 2; i++) {
-        unk_04[i].freeText();
+        buttons[i].freeText();
     }
 }
 
@@ -756,26 +756,26 @@ void MenuBottomButtons::drawAt(s32 a) {
     case 0:
         break;
     case 1:
-        unk_04[1].drawAt(0, a + 0xac, -1);
+        buttons[1].drawAt(0, a + 0xac, -1);
         break;
     case 2:
-        unk_04[0].drawAt(0, a + 0xac, -1);
-        unk_04[1].drawAt(0, a + 0xac, -1);
+        buttons[0].drawAt(0, a + 0xac, -1);
+        buttons[1].drawAt(0, a + 0xac, -1);
         break;
     case 3:
-        unk_04[1].drawAt(0x3c, a + 0x35, -1);
-        unk_04[0].drawAt(0x3c, a + 0x48, -1);
+        buttons[1].drawAt(0x3c, a + 0x35, -1);
+        buttons[0].drawAt(0x3c, a + 0x48, -1);
         break;
     case 4:
-        unk_04[1].drawAt(0x3c, a + 0x4c, -1);
-        unk_04[0].drawAt(-0x7c, a + 0x4c, -1);
+        buttons[1].drawAt(0x3c, a + 0x4c, -1);
+        buttons[0].drawAt(-0x7c, a + 0x4c, -1);
         break;
     case 5:
-        unk_04[1].drawAt(0x3c, a + 0x4c, -1);
+        buttons[1].drawAt(0x3c, a + 0x4c, -1);
         break;
     case 6:
-        unk_04[1].drawAt(0x3c, a + 0x4c, -1);
-        unk_04[0].drawAt(-0xc, a + 0x4c, -1);
+        buttons[1].drawAt(0x3c, a + 0x4c, -1);
+        buttons[0].drawAt(-0xc, a + 0x4c, -1);
         break;
     case 7:
     case 9:
@@ -786,11 +786,11 @@ void MenuBottomButtons::drawAt(s32 a) {
         }
         s32 b = a >> 2;
         if (layout == 7) {
-            unk_04[0].drawAt(0, b, -1);
-            unk_04[1].drawAt(0, b, -1);
+            buttons[0].drawAt(0, b, -1);
+            buttons[1].drawAt(0, b, -1);
         } else {
-            unk_04[0].drawAt(-0x50, b + 0x44, -1);
-            unk_04[1].drawAt(0x10, b + 0x44, -1);
+            buttons[0].drawAt(-0x50, b + 0x44, -1);
+            buttons[1].drawAt(0x10, b + 0x44, -1);
         }
         break;
     }
@@ -801,32 +801,32 @@ void MenuBottomButtons::drawAt(s32 a) {
             title.draw();
         }
         a = (a >> 1) - 0x1e;
-        unk_04[0].drawAt(0, a, -1);
-        unk_04[1].drawAt(0, a, -1);
+        buttons[0].drawAt(0, a, -1);
+        buttons[1].drawAt(0, a, -1);
         break;
     }
     case 11: {
         s32 b = a >> 1;
         title.setPos(0, -b);
         title.draw();
-        unk_04[0].drawAt(-0x50, b + 0x44, -1);
-        unk_04[1].drawAt(0x10, b + 0x44, -1);
+        buttons[0].drawAt(-0x50, b + 0x44, -1);
+        buttons[1].drawAt(0x10, b + 0x44, -1);
         break;
     }
     case 12: {
         s32 b = a >> 1;
         title.setPos(0, -b);
         title.draw();
-        unk_04[0].drawAt(-0x50, b + 0x24, -1);
-        unk_04[1].drawAt(0x10, b + 0x24, -1);
+        buttons[0].drawAt(-0x50, b + 0x24, -1);
+        buttons[1].drawAt(0x10, b + 0x24, -1);
         break;
     }
     case 13: {
         s32 b = a >> 1;
         title.setPos(0, -b);
         title.draw();
-        unk_04[0].drawAt(-0x50, b + 0x36, -1);
-        unk_04[1].drawAt(0x10, b + 0x36, -1);
+        buttons[0].drawAt(-0x50, b + 0x36, -1);
+        buttons[1].drawAt(0x10, b + 0x36, -1);
         break;
     }
     }
@@ -835,54 +835,54 @@ void MenuBottomButtons::drawAt(s32 a) {
 void MenuBottomButtons::hide() { layout = 0; }
 
 void MenuBottomButtons::setLayoutNeverMindConfirm() {
-    unk_04[0].setup(sButtonCellsW8, 8, 2);
-    unk_04[0].setLabelWithShadow(2);
-    unk_04[1].setup(sButtonCellsW6Single, 6, 1);
-    unk_04[1].setLabelWithShadow(0x21);
+    buttons[0].setup(sButtonCellsW8, 8, 2);
+    buttons[0].setLabelWithShadow(2);
+    buttons[1].setup(sButtonCellsW6Single, 6, 1);
+    buttons[1].setLabelWithShadow(0x21);
     layout = 2;
 }
 
 void MenuBottomButtons::setLayoutChangeAddressee() {
-    unk_04[0].setup(sButtonCellsW12, 0xc, 3);
-    unk_04[0].setLabelWithShadow(0x20);
-    unk_04[1].setup(sButtonCellsW6Single, 6, 1);
-    unk_04[1].setLabelWithShadow(0x21);
+    buttons[0].setup(sButtonCellsW12, 0xc, 3);
+    buttons[0].setLabelWithShadow(0x20);
+    buttons[1].setup(sButtonCellsW6Single, 6, 1);
+    buttons[1].setLabelWithShadow(0x21);
     layout = 2;
 }
 
 void MenuBottomButtons::setLayoutConfirm() {
-    unk_04[1].setup(sButtonCellsW6Single, 6, 1);
-    unk_04[1].setLabelWithShadow(0x21);
+    buttons[1].setup(sButtonCellsW6Single, 6, 1);
+    buttons[1].setLabelWithShadow(0x21);
     layout = 1;
 }
 
 void MenuBottomButtons::setLayoutConfirmQuit03() {
-    unk_04[1].setup(sButtonCellsW6A, 6, 2);
-    unk_04[1].setLabelWithShadow(0x21);
-    unk_04[0].setup(sButtonCellsW6B, 6, 2);
-    unk_04[0].setLabelWithShadow(0x65);
+    buttons[1].setup(sButtonCellsW6A, 6, 2);
+    buttons[1].setLabelWithShadow(0x21);
+    buttons[0].setup(sButtonCellsW6B, 6, 2);
+    buttons[0].setLabelWithShadow(0x65);
     layout = 3;
 }
 
 void MenuBottomButtons::setLayoutConfirmQuit04() {
-    unk_04[1].setup(sButtonCellsW6A, 6, 2);
-    unk_04[1].setLabelWithShadow(0x21);
-    unk_04[0].setup(sButtonCellsW6B, 6, 2);
-    unk_04[0].setLabelWithShadow(0x65);
+    buttons[1].setup(sButtonCellsW6A, 6, 2);
+    buttons[1].setLabelWithShadow(0x21);
+    buttons[0].setup(sButtonCellsW6B, 6, 2);
+    buttons[0].setLabelWithShadow(0x65);
     layout = 4;
 }
 
 void MenuBottomButtons::setLayoutSingle05(s32 v) {
-    unk_04[1].setup(sButtonCellsW6A, 6, 2);
-    unk_04[1].setLabelWithShadow(v);
+    buttons[1].setup(sButtonCellsW6A, 6, 2);
+    buttons[1].setLabelWithShadow(v);
     layout = 5;
 }
 
 void MenuBottomButtons::setLayoutConfirmAnd06(u8 v) {
-    unk_04[1].setup(sButtonCellsW6A, 6, 2);
-    unk_04[1].setLabelWithShadow(0x21);
-    unk_04[0].setup(sButtonCellsW6B, 6, 2);
-    unk_04[0].setLabelWithShadow(v);
+    buttons[1].setup(sButtonCellsW6A, 6, 2);
+    buttons[1].setLabelWithShadow(0x21);
+    buttons[0].setup(sButtonCellsW6B, 6, 2);
+    buttons[0].setLabelWithShadow(v);
     layout = 6;
 }
 
@@ -890,10 +890,10 @@ void MenuBottomButtonsBody::setLayoutYesNo07(s32 x) {
     title.hideNow();
     _ZN16MenuTitleBalloon8showTextEhii(&title, x, 0x80, 4);
     title.hideLayer2();
-    unk_04[0].setup(sButtonCellsW4B, 4, 1);
-    unk_04[0].setLabelWithShadow(4);
-    unk_04[1].setup(sButtonCellsW4A, 4, 1);
-    unk_04[1].setLabelWithShadow(0x13);
+    buttons[0].setup(sButtonCellsW4B, 4, 1);
+    buttons[0].setLabelWithShadow(4);
+    buttons[1].setup(sButtonCellsW4A, 4, 1);
+    buttons[1].setLabelWithShadow(0x13);
     layout = 7;
 }
 
@@ -901,18 +901,18 @@ void MenuBottomButtonsBody::setLayoutYesNo08(s32 x) {
     title.hideNow();
     _ZN16MenuTitleBalloon8showTextEhii(&title, x, 0x80, 0x11);
     title.hideLayer2();
-    unk_04[0].setup(sButtonCellsW4B, 4, 1);
-    unk_04[0].setLabelWithShadow(4);
-    unk_04[1].setup(sButtonCellsW4A, 4, 1);
-    unk_04[1].setLabelWithShadow(0x13);
+    buttons[0].setup(sButtonCellsW4B, 4, 1);
+    buttons[0].setLabelWithShadow(4);
+    buttons[1].setup(sButtonCellsW4A, 4, 1);
+    buttons[1].setLabelWithShadow(0x13);
     layout = 8;
 }
 
 void MenuBottomButtonsBody::setYesNoButtons() {
-    unk_04[0].setup(sButtonCellsW6A, 6, 2);
-    unk_04[0].setLabelWithShadow(4);
-    unk_04[1].setup(sButtonCellsW6B, 6, 2);
-    unk_04[1].setLabelWithShadow(0x13);
+    buttons[0].setup(sButtonCellsW6A, 6, 2);
+    buttons[0].setLabelWithShadow(4);
+    buttons[1].setup(sButtonCellsW6B, 6, 2);
+    buttons[1].setLabelWithShadow(0x13);
 }
 
 void MenuBottomButtonsBody::setLayoutYesNo09(s32 x) {
@@ -924,10 +924,10 @@ void MenuBottomButtonsBody::setLayoutYesNo09(s32 x) {
 }
 
 void MenuBottomButtonsBody::setLayoutTossKeep() {
-    unk_04[0].setup(sButtonCellsW6A, 6, 2);
-    unk_04[0].setLabelWithShadow(0x15);
-    unk_04[1].setup(sButtonCellsW6B, 6, 2);
-    unk_04[1].setLabelWithShadow(0x19);
+    buttons[0].setup(sButtonCellsW6A, 6, 2);
+    buttons[0].setLabelWithShadow(0x15);
+    buttons[1].setup(sButtonCellsW6B, 6, 2);
+    buttons[1].setLabelWithShadow(0x19);
     layout = 0xa;
 }
 
@@ -1064,24 +1064,24 @@ void MenuBottomButtonsBody::setSelected(u8 v) {
 }
 
 BOOL MenuBottomButtonsBody::stepPress() {
-    return unk_04[getButtonOfTarget(-1)].stepPress();
+    return buttons[getButtonOfTarget(-1)].stepPress();
 }
 
 s32 MenuBottomButtonsBody::getPressOffset() {
-    return unk_04[getButtonOfTarget(-1)].getPressOffset();
+    return buttons[getButtonOfTarget(-1)].getPressOffset();
 }
 
 void MenuBottomButtonsBody::enableObjWindow() {
     title.enableObjWindow();
     for (s32 i = 0; i < 2; i++) {
-        unk_04[i].enableObjWindow();
+        buttons[i].enableObjWindow();
     }
 }
 
 void MenuBottomButtonsBody::disableObjWindow() {
     title.disableObjWindow();
     for (s32 i = 0; i < 2; i++) {
-        unk_04[i].disableObjWindow();
+        buttons[i].disableObjWindow();
     }
 }
 
@@ -1093,13 +1093,13 @@ s32 MenuBottomButtonsBody::getButtonOfTarget(s32 idx) {
 }
 
 void MenuBottomButtonsBody::disableButton(s32 idx) {
-    unk_04[getButtonOfTarget(idx)].setDisabled();
+    buttons[getButtonOfTarget(idx)].setDisabled();
 }
 
 void MenuBottomButtonsBody::enableButton(s32 idx) {
-    unk_04[getButtonOfTarget(idx)].setEnabled();
+    buttons[getButtonOfTarget(idx)].setEnabled();
 }
 
 BOOL MenuBottomButtonsBody::isButtonDisabled(s32 idx) {
-    return unk_04[getButtonOfTarget(idx)].isDisabled();
+    return buttons[getButtonOfTarget(idx)].isDisabled();
 }

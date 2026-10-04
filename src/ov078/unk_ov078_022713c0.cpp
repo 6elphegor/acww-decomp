@@ -11,14 +11,14 @@
 #include "npc/NpcResHandleView.h"
 #include "npc/NpcLookAt.h"
 #include "npc/NpcObstacleProbe.h"
-#include "npc/Unk_0201ac88.h"
+#include "npc/NpcMoveCtrl.h"
 #include "npc/Unk_0201ad18.h"
-#include "npc/Unk_020135e4.h"
+#include "npc/NpcFootstepFx.h"
 #include "game/FxVec3.h"
 #include "sys/ProcBase.h"
 #include "npc/NpcActionCtrl.h"
 #include "snd/SndSeEmitterKind1.h"
-#include "npc/Unk_02014254.h"
+#include "npc/NpcTalkCtrl.h"
 #include "npc/Unk_0201a13c.h"
 #include "talk/MsgString9B.h"
 #include "actor/Actor.h"
@@ -407,7 +407,7 @@ BOOL SpNpcSaharah::getOffsetPosIfFree(Unk_ov078_Vec *out, Unk_ov078_Vec *p) {
 
 BOOL SpNpcSaharah::handleCollision() {
     NpcActionCtrl *p = &actionCtrl;
-    Unk_0201accc *q = &moveCtrl;
+    NpcMoveCtrl *q = &moveCtrl;
     s32 r6 = _ZN9NpcLookAt15getObstacleBitsEv(&obstacleProbe);
     BOOL r = FALSE;
     Unk_ov078_Vec v;

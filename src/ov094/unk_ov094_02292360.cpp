@@ -1,6 +1,6 @@
 #include "types.h"
 #include "item/ItemIconCache.h"
-#include "menu/Unk_ov094_Views.h"
+#include "menu/InventoryGridTypes.h"
 #include "menu/InventoryItemGrid.h"
 #include "menu/LetterGrid.h"
 #include "menu/InventoryBg.h"
@@ -12,8 +12,8 @@
 
 
 
-typedef Unk_ov094_02292d6c_Ent8 Ent8;
-typedef Unk_ov094_02292d6c_Rec Rec;
+typedef OamObjTemplate Ent8;
+typedef OamObjTemplateBits Rec;
 
 void operator delete(void *p);
 
@@ -144,7 +144,7 @@ extern const u8 sLetterKindMsgIds[];
 extern u8 sInventoryBgSprite[];
 extern u8 sHeldItemSprite[];
 extern u8 sItemGridMarkSprites[];
-extern Unk_ov094_02292d6c_Ent8 sItemGridSlotSprites[];
+extern OamObjTemplate sItemGridSlotSprites[];
 extern u8 sLetterGridColumnX[];
 extern u8 sLetterIconSprite[];
 extern u8 sLetterIconPalettes[];
@@ -234,17 +234,17 @@ BOOL LetterGrid_TestBit(u32 *bits, s32 i);
 void LetterGrid_ClearBit(u32 *bits, s32 i);
 void LetterGrid_SetBit(u32 *bits, s32 i);
 void LetterGrid_ClearBits(u32 *bits);
-u8 LetterGrid_GetPopScale(Unk_ov094_02293c04_Rec *o);
-BOOL LetterGrid_UpdatePopAnim(Unk_ov094_02293c04_Rec *o);
-void LetterGrid_ResetScale(Unk_ov094_02293c04_Rec *o);
-void LetterGrid_StartPopAnim(Unk_ov094_02293c04_Rec *o);
+u8 LetterGrid_GetPopScale(LetterGrid *o);
+BOOL LetterGrid_UpdatePopAnim(LetterGrid *o);
+void LetterGrid_ResetScale(LetterGrid *o);
+void LetterGrid_StartPopAnim(LetterGrid *o);
 s32 LetterGrid_GetIconIndex(void *o, s32 h);
-void LetterGrid_SetLetterArray(Unk_ov094_02293ca0_Obj *o, u8 *p, s32 m, s32 n);
+void LetterGrid_SetLetterArray(LetterGrid *o, u8 *p, s32 m, s32 n);
 void LetterGrid_SetLetters23(void *o, u8 *p);
 void LetterGrid_SetLetters0A(void *o, u8 *p);
 void LetterGrid_SetLetters2D(void *o, u8 *p);
-void LetterGrid_LoadPocketLetters(Unk_ov094_02293ca0_Obj *o);
-BOOL LetterGrid_IsSlotEmpty(Unk_ov094_02293ca0_Obj *o, s32 i);
+void LetterGrid_LoadPocketLetters(LetterGrid *o);
+BOOL LetterGrid_IsSlotEmpty(LetterGrid *o, s32 i);
 s32 LetterGrid_GetSlotY(void *o, s32 i);
 s32 LetterGrid_GetSlotX(void *o, s32 i);
 void LetterGrid_DrawSlot(InventoryItemGrid *o, s32 a1, s32 idx, s32 x, s32 y0);
@@ -291,11 +291,11 @@ void InventoryBg_LoadGraphics(void *o);
 
 
 
-static inline void Unk_ov094_SetPal(Unk_ov094_02294bb4_Bits *o, s32 pal) {
+static inline void Unk_ov094_SetPal(OamObjTemplateAttr2 *o, s32 pal) {
     o->v = (u16)((o->v & 0xffff0fff) | ((pal & 0xf) << 12));
 }
 
-static inline void Unk_ov094_SetName(Unk_ov094_02294bb4_Bits *o, s32 name) {
+static inline void Unk_ov094_SetName(OamObjTemplateAttr2 *o, s32 name) {
     o->v = (u16)((o->v & 0xfffffc00) | (name & 0x3ff));
 }
 
@@ -348,7 +348,7 @@ void InventoryBg_LoadBg(InventoryBg *s, s32 flag) {
 
 void InventoryBg_LoadGraphics(void *o)
 {
-    Unk_ov094_02292360_Obj *p = (Unk_ov094_02292360_Obj *)o;
+    InventoryBg *p = (InventoryBg *)o;
     Gfx2d_LoadCharFile(data_ov094_02294928, gCurrentHeap, p->bgId, 0x200, 0x200, 0x2ff);
     InventoryBg_SetupTextWindows(p);
     InventoryBg_ResetBells(p);
@@ -362,7 +362,7 @@ void InventoryBg_LoadGraphics(void *o)
 
 void InventoryBg_SetupTextWindows(void *o)
 {
-    Unk_ov094_02292360_Obj *p = (Unk_ov094_02292360_Obj *)o;
+    InventoryBg *p = (InventoryBg *)o;
     u8 buf[0x1c];
     u8 buf2[0x1c];
     PlayerData_GetCurrent();
@@ -410,7 +410,7 @@ void InventoryBg_Exit(void *o)
 {
     InventoryBg_CancelUploads(o);
     InventoryBg_ClearTextWindows(o);
-    if (((Unk_ov094_02292360_Obj *)o)->bellRollTimer != 0) {
+    if (((InventoryBg *)o)->bellRollTimer != 0) {
         Snd_StopSe(0x2d, 1);
     }
 }
@@ -435,7 +435,7 @@ void InventoryBg_ClearTextWindows(void *o)
 
 void InventoryBg_UploadScreen(void *o)
 {
-    Unk_ov094_02292360_Obj *p = (Unk_ov094_02292360_Obj *)o;
+    InventoryBg *p = (InventoryBg *)o;
     if (InventoryBg_IsDirty(p, 1)) {
         if (BgVramTask_requestScreen((u8 *)p + 0x38, (u8 *)p + 0x160, p->bgId, 0x800, 0)) {
             InventoryBg_ClearDirty(p, 1);
@@ -491,7 +491,7 @@ void InventoryBg_LoadPictureForHeldItem(void *o)
 
 void InventoryBg_LoadPicture(void *o, s32 a, s32 b)
 {
-    Unk_ov094_02292360_Obj *p = (Unk_ov094_02292360_Obj *)o;
+    InventoryBg *p = (InventoryBg *)o;
     char buf[0x2c];
     if (b == 0) {
         func_020639e8(buf, data_ov094_02294888, a);
@@ -505,7 +505,7 @@ void InventoryBg_LoadPicture(void *o, s32 a, s32 b)
 
 void InventoryBg_UploadPicture(void *o)
 {
-    Unk_ov094_02292360_Obj *p = (Unk_ov094_02292360_Obj *)o;
+    InventoryBg *p = (InventoryBg *)o;
     if (InventoryBg_IsDirty(p, 4)) {
         if (BgVramTask_requestChars((u8 *)p + 0x70, (u8 *)p + 0x960, p->bgId, 0x35, 0x35, 0x98)) {
             InventoryBg_ClearDirty(p, 4);
@@ -529,14 +529,14 @@ void InventoryBg_DrawSprite(s32 a, void *o)
 
 void InventoryBg_StartBlink(void *o, u32 v)
 {
-    Unk_ov094_02292360_Obj *p = (Unk_ov094_02292360_Obj *)o;
+    InventoryBg *p = (InventoryBg *)o;
     p->blinkHighlight = v;
     p->blinkTimer = 14;
 }
 
 BOOL InventoryBg_UpdateBlink(void *o)
 {
-    Unk_ov094_02292360_Obj *p = (Unk_ov094_02292360_Obj *)o;
+    InventoryBg *p = (InventoryBg *)o;
     if (p->blinkTimer != 0) {
         p->blinkTimer = p->blinkTimer - 1;
         switch (p->blinkTimer % 5) {
@@ -556,13 +556,13 @@ zero:
 
 void InventoryBg_StopBlink(void *o)
 {
-    ((Unk_ov094_02292360_Obj *)o)->blinkTimer = 0;
+    ((InventoryBg *)o)->blinkTimer = 0;
     InventoryBg_ResetHighlight(o);
 }
 
 void InventoryBg_StartBellRoll(void *o, u32 v)
 {
-    Unk_ov094_02292360_Obj *p = (Unk_ov094_02292360_Obj *)o;
+    InventoryBg *p = (InventoryBg *)o;
     s32 t = InventoryBg_GetTotalBells();
     s32 c = p->shownBells;
     if (t != c) {
@@ -591,7 +591,7 @@ void InventoryBg_StartBellRoll(void *o, u32 v)
 
 void InventoryBg_SetBellsPanelMode(void *o, u32 n)
 {
-    Unk_ov094_02292360_Obj *p = (Unk_ov094_02292360_Obj *)o;
+    InventoryBg *p = (InventoryBg *)o;
     s32 x = 7;
     s32 y = 9;
     s32 z = 9;
@@ -632,7 +632,7 @@ s32 InventoryBg_GetTotalBells()
 
 void InventoryBg_ResetBells(void *o)
 {
-    Unk_ov094_02292360_Obj *p = (Unk_ov094_02292360_Obj *)o;
+    InventoryBg *p = (InventoryBg *)o;
     p->shownBells = InventoryBg_GetTotalBells();
     p->bellRollTimer = 0;
     InventoryBg_SetDirty(p, 2);
@@ -640,7 +640,7 @@ void InventoryBg_ResetBells(void *o)
 
 void InventoryBg_UpdateBells(void *o)
 {
-    Unk_ov094_02292360_Obj *p = (Unk_ov094_02292360_Obj *)o;
+    InventoryBg *p = (InventoryBg *)o;
     s32 t = InventoryBg_GetTotalBells();
     if (p->bellRollTimer != 0) {
         p->bellRollTimer = p->bellRollTimer - 1;
@@ -684,7 +684,7 @@ void InventoryBg_UpdateBells(void *o)
 
 BOOL InvItem_IsTurnipFishOrInsect(u32 v)
 {
-    Unk_ov094_022923a4_Pad pad;
+    InvItemStackPad pad;
     if (IN(v, 0x1531, 0x153a) || IN(v, 0x153b, 0x1541) || IN(v, 0x154a, 0x1553) ||
         IN(v, 0x12e8, 0x131f) || IN(v, 0x12b0, 0x12e7)) {
         return TRUE;
@@ -694,7 +694,7 @@ BOOL InvItem_IsTurnipFishOrInsect(u32 v)
 
 void InventoryBg_UpdateHighlight(void *o)
 {
-    Unk_ov094_02292360_Obj *p = (Unk_ov094_02292360_Obj *)o;
+    InventoryBg *p = (InventoryBg *)o;
     u32 a = p->highlight;
     if (a != p->paintedHighlight) {
         p->paintedHighlight = a;
@@ -713,17 +713,17 @@ void InventoryBg_UpdateHighlight(void *o)
 
 void InventoryBg_SetHighlight(void *o, u32 v)
 {
-    ((Unk_ov094_02292360_Obj *)o)->highlight = v;
+    ((InventoryBg *)o)->highlight = v;
 }
 
 void InventoryBg_ResetHighlight(void *o)
 {
-    ((Unk_ov094_02292360_Obj *)o)->highlight = 2;
+    ((InventoryBg *)o)->highlight = 2;
 }
 
 BOOL InvItem_IsDeliveryItem(u32 v)
 {
-    Unk_ov094_022923a4_Pad pad;
+    InvItemStackPad pad;
     if (IN(v, 0x155f, 0x1560) || IN(v, 0x1561, 0x1564)) {
         return TRUE;
     }
@@ -732,7 +732,7 @@ BOOL InvItem_IsDeliveryItem(u32 v)
 
 BOOL InvItem_IsDeliveryParcel(u32 v)
 {
-    Unk_ov094_022923a4_Pad pad;
+    InvItemStackPad pad;
     if (IN(v, 0x155f, 0x1560)) {
         return TRUE;
     }
@@ -741,7 +741,7 @@ BOOL InvItem_IsDeliveryParcel(u32 v)
 
 BOOL func_ov094_02292414(u32 v)
 {
-    Unk_ov094_022923a4_Pad pad;
+    InvItemStackPad pad;
     if (IN(v, 0x155d, 0x155d)) {
         return TRUE;
     }
@@ -750,7 +750,7 @@ BOOL func_ov094_02292414(u32 v)
 
 BOOL InvItem_IsNotFishInsectOrFlower(u32 v)
 {
-    Unk_ov094_022923a4_Pad pad;
+    InvItemStackPad pad;
     if (IN(v, 0x12e8, 0x131f) || IN(v, 0x12b0, 0x12e7)) {
         return FALSE;
     }
@@ -777,7 +777,7 @@ void Inventory_PlayPickUpSe()
 
 s32 InventoryBg_IsDirty(void *o, u32 m)
 {
-    Unk_ov094_02292360_Obj *p = (Unk_ov094_02292360_Obj *)o;
+    InventoryBg *p = (InventoryBg *)o;
     if (p->dirtyFlags & m) {
         return TRUE;
     }
@@ -786,12 +786,12 @@ s32 InventoryBg_IsDirty(void *o, u32 m)
 
 void InventoryBg_SetDirty(void *o, u32 m)
 {
-    Unk_ov094_02292360_Obj *p = (Unk_ov094_02292360_Obj *)o;
+    InventoryBg *p = (InventoryBg *)o;
     p->dirtyFlags = p->dirtyFlags | m;
 }
 
 void InventoryBg_ClearDirty(void *o, u32 m)
 {
-    Unk_ov094_02292360_Obj *p = (Unk_ov094_02292360_Obj *)o;
+    InventoryBg *p = (InventoryBg *)o;
     p->dirtyFlags = p->dirtyFlags & ~m;
 }

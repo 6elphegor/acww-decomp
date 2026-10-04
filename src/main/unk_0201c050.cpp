@@ -1,9 +1,10 @@
 // mwcc-flags: -str reuse
 #include "types.h"
+#include "item/PocketMatches.h"
 #include "net/CommManager.h"
 #include "game/Unk_0202368c_Obj.h"
 #include "game/Unk_020d77a4_Vec3.h"
-#include "npc/Unk_0202d7f4.h"
+#include "npc/VillagerClothModel.h"
 #include "talk/MsgStringBase.h"
 #include "npc/VillagerId.h"
 #include "npc/VillagerMood.h"
@@ -15,12 +16,12 @@
 #include "talk/EncodedStringBase.h"
 #include "npc/NpcObstacleProbe.h"
 #include "npc/Unk_0201ad18.h"
-#include "npc/Unk_020135e4.h"
+#include "npc/NpcFootstepFx.h"
 #include "talk/VillagerTalkRequestStartTopics.h"
 #include "sys/ProcBase.h"
 #include "npc/NpcResHandleView.h"
 #include "talk/EncodedString.h"
-#include "npc/Unk_02014254.h"
+#include "npc/NpcTalkCtrl.h"
 #include "talk/VillagerTalkKaraokeTopics.h"
 #include "npc/Unk_0201a13c.h"
 #include "actor/Actor.h"
@@ -44,7 +45,6 @@
 #include "snd/SndSeEmitterKind1.h"
 #include "actor/NpcActor.h"
 #include "actor/VillagerActor.h"
-#include "npc/Unk_0202d5e8.h"
 #include "talk/VillagerTalkHobbyTopics.h"
 #include "talk/VillagerTalkHolidayTopics.h"
 #include "talk/VillagerTalkRequestReplyTopics.h"
@@ -164,24 +164,16 @@ class VillagerActor;
 class VillagerClothModel;
 struct Unk_020d8938_Tbl;
 class Unk_02015b54;
-struct Unk_02053d3c;
-struct Unk_0201ad3c;
+struct NpcMoveAnimSet;
 struct NpcFaceAnim;
 struct NpcAnimCtrl;
-struct Unk_0201accc;
-struct Unk_0201a8bc;
 struct Unk_0201ad18;
-struct Unk_0201a794;
 struct NpcSpeechState;
 struct Unk_0201a13c;
-struct Unk_020323b0;
 struct Unk_02088d00;
-struct Unk_020135e4;
+struct NpcFootstepFx;
 struct NpcActionCtrl;
-struct Unk_02014254;
 class SndSeEmitter;
-struct Unk_0202d7f4;
-struct Unk_0202d5e8;
 struct VillagerAnimHeapHandle;
 struct VillagerMood;
 struct Unk_02082014;
@@ -573,11 +565,6 @@ struct Unk_02029a88_Pair {
 
 typedef s32 (VillagerTalkTopics::*Unk_0202a750_Fn)();
 
-struct PocketMatches {
-    u16 pocketMask;
-    u8 count;
-};
-
 struct Unk_0202b208_Obj {
     u8 pad_00[0x88];
     u8 unk_88[0x18];
@@ -875,20 +862,6 @@ public:
     Unk_0202ce90_Parent *actor;
 };
 
-class VillagerClothModel {
-public:
-    u16 *getItem();
-    void release();
-    BOOL change(VillagerActor *parent, u16 *id);
-    void *buildTexture(VillagerActor *parent, u16 *id);
-    BOOL init(VillagerActor *parent, u16 *id);
-    VillagerClothModel *destruct();
-    VillagerClothModel *construct();
-    u8 pad_00[0x28];
-    u16 clothItem;
-    u8 pad_2a[2];
-    u8 texPatBuf[4];
-};
 
 extern "C" {
 extern void (*sRequestFossilPickers[])(u16 *, s32, void *);
@@ -3059,7 +3032,7 @@ BOOL VillagerActor::preCreate() {
     }
     attachVillagerData();
     talkPartnerId = 0;
-    villagerTalk.habitTopicKind = ((u32)Random_GlobalBelow(2));
+    habitTopicKind = ((u32)Random_GlobalBelow(2));
     mood.start();
     ((VillagerTalk *)this)->refreshEventKind();
     return TRUE;
@@ -4832,7 +4805,7 @@ void VillagerTalkTopics::select3pTalk(Unk_0201d2d0_Out *out) {
 
 BOOL VillagerTalkTopics::selectApHabit() {
     VillagerActor *p = actor;
-    Talk_SelectTopicMessage(this, &topicFile, &topicIndex, 30, VillagerId_GetPersonality(_ZN12VillagerData13getVillagerIdEv(p->villagerData)), sTalkTopicApHabit.key, 9, p->villagerTalk.habitTopicKind & 1, sTalkTopicApHabit.variantCount);
+    Talk_SelectTopicMessage(this, &topicFile, &topicIndex, 30, VillagerId_GetPersonality(_ZN12VillagerData13getVillagerIdEv(p->villagerData)), sTalkTopicApHabit.key, 9, p->habitTopicKind & 1, sTalkTopicApHabit.variantCount);
     ((VillagerTalk *)this)->setTopicFns((Unk_020d8938_Tbl *)sApSubTopics);
     return TRUE;
 }
@@ -5498,7 +5471,7 @@ void VillagerTalkTopics::selectApHabitPart1(Unk_0201d2d0_Out *out) {
 
 void VillagerTalkTopics::openHabitKeyboard(s32) {
     MI_CpuFill8(((u8 *)&sTalkInputBuffer), 0, 0x20);
-    if (actor->villagerTalk.habitTopicKind == 0) {
+    if (actor->habitTopicKind == 0) {
         _ZN12Unk_020d771016setSubSceneKind2Ejjjh(this, 0x15, ((u8 *)&sTalkInputBuffer), 10, 0);
     } else {
         _ZN12Unk_020d771016setSubSceneKind2Ejjjh(this, 0x16, ((u8 *)&sTalkInputBuffer), 16, 0);
@@ -5514,7 +5487,7 @@ void VillagerTalkTopics::onHabitEntered() {
     if (MenuCtrl_IsResultOk()) {
         p = actor->villagerData;
         ((VillagerTalk *)this)->setTopicFns((Unk_020d8938_Tbl *)((u8 *)&nZ::sApSubTopics[3]));
-        if (actor->villagerTalk.habitTopicKind == 0) {
+        if (actor->habitTopicKind == 0) {
             Villager_SetCatchphrase(p, MenuCtrl_GetText(), 10);
         } else if (memory != 0 && VillagerMemory_IsUsed((void *)memory)) {
             _ZN14VillagerMemory11setGreetingEPvi((void *)memory, MenuCtrl_GetText(), 16);
@@ -5536,7 +5509,7 @@ void VillagerTalkTopics::retryHabitInput() {
 
 void VillagerTalkTopics::selectApHabitConfirm(Unk_0201d2d0_Out *out) {
     Villager_MakePersonalityFileName(&topicFile, 30, sTalkTopicApHabit.key, VillagerId_GetPersonality(_ZN12VillagerData13getVillagerIdEv(actor->villagerData)));
-    if (actor->villagerTalk.habitTopicKind == 0) {
+    if (actor->habitTopicKind == 0) {
         topicIndex = 6;
     } else {
         topicIndex = 11;
@@ -5559,16 +5532,16 @@ void VillagerTalkTopics::openHabitConfirmChoice() {
 
 void VillagerTalkTopics::selectApHabitB(Unk_0201d2d0_Out *out) {
     VillagerActor *p = actor;
-    Talk_SelectTopicMessage(this, &topicFile, &topicIndex, 30, VillagerId_GetPersonality(_ZN12VillagerData13getVillagerIdEv(p->villagerData)), sTalkTopicApHabit.key, 5, p->villagerTalk.habitTopicKind & 1, sTalkTopicApHabit.variantCount);
+    Talk_SelectTopicMessage(this, &topicFile, &topicIndex, 30, VillagerId_GetPersonality(_ZN12VillagerData13getVillagerIdEv(p->villagerData)), sTalkTopicApHabit.key, 5, p->habitTopicKind & 1, sTalkTopicApHabit.variantCount);
     topicIndex += 7;
     out->fileName = (u32)&topicFile;
     out->msgIndex = topicIndex;
-    actor->villagerTalk.habitTopicKind = (actor->villagerTalk.habitTopicKind + 1) & 1;
+    actor->habitTopicKind = (actor->habitTopicKind + 1) & 1;
 }
 
 void VillagerTalkTopics::selectApHabitDeclined(Unk_0201d2d0_Out *out) {
     Villager_MakePersonalityFileName(&topicFile, 30, sTalkTopicApHabit.key, VillagerId_GetPersonality(_ZN12VillagerData13getVillagerIdEv(actor->villagerData)));
-    if (actor->villagerTalk.habitTopicKind == 0) {
+    if (actor->habitTopicKind == 0) {
         topicIndex = 2;
     } else {
         topicIndex = 3;

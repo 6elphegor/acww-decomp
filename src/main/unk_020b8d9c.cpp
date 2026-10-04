@@ -5,7 +5,7 @@
 #include "game/EventDayEntry.h"
 #include "npc/Unk_020c0538_Out.h"
 #include "game/Unk_021eff48.h"
-#include "item/Unk_02062f94_Ret.h"
+#include "item/PickedItem.h"
 #include "gfx/StarTwinkle.h"
 #include "item/ItemPickSpec.h"
 #include "snd/SndEnvChannel.h"
@@ -65,7 +65,7 @@ struct Unk_020bca5c_Elem;
 struct Unk_020bc754_Vec;
 struct Letter;
 struct ItemPickSpec;
-struct Unk_02062f94_Ret;
+struct PickedItem;
 struct Unk_020bc99c_Loc;
 struct Unk_020bcb04_Ent;
 class Unk_020bc58c;
@@ -117,7 +117,6 @@ struct WeatherRecord;
 struct EventDayEntry;
 struct Unk_020c0538_Out;
 class SpNpcTalkRequest;
-struct Unk_020c0408_Obj;
 class SpNpcKatieTalk;
 class SpNpcActor;
 class SpNpcKatie;

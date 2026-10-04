@@ -3160,7 +3160,7 @@ BOOL FieldVillager::preCreate() {
         return FALSE;
     }
     NpcActor_setTalkRequest(this, &villagerTalk);
-    villagerTalk.obj.resetMsg();
+    villagerTalk.resetMsg();
     talkPartner = NULL;
     talkType = 0;
     talkReason = 3;

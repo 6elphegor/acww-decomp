@@ -39,7 +39,7 @@ public:
     u8 onTabMenuClosed();
     void selectTab(u32 idx);
 
-    /* 0x91 */ u8 unk_91;
+    /* 0x91 */ u8 visible;
     /* 0x92 */ u8 slideY;
     /* 0x93 */ u8 curTab;
     /* 0x94 */ u8 tabsShown;
@@ -47,10 +47,10 @@ public:
     /* 0x96 */ u8 loadedTab;
     /* 0x97 */ u8 saveState;
     /* 0x98 */ u8 justOpened;
-    /* 0x9c */ BgVramTaskPair unk_9c[3];
-    /* 0x144 */ u32 unk_144[0x200];
-    /* 0x944 */ u32 unk_944[0x200];
-    /* 0x1144 */ u32 unk_1144[8];
+    /* 0x9c */ BgVramTaskPair vramTasks[3];
+    /* 0x144 */ u32 commonObjChars[0x200];
+    /* 0x944 */ u32 tabObjChars[0x200];
+    /* 0x1144 */ u32 tabPalette[8];
     /* 0x1164 */ MenuErrorMessage errorMessage;
 };
 

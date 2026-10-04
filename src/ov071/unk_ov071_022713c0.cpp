@@ -8,14 +8,14 @@
 #include "npc/NpcResHandleView.h"
 #include "npc/NpcLookAt.h"
 #include "npc/NpcObstacleProbe.h"
-#include "npc/Unk_0201ac88.h"
+#include "npc/NpcMoveCtrl.h"
 #include "npc/Unk_0201ad18.h"
-#include "npc/Unk_020135e4.h"
+#include "npc/NpcFootstepFx.h"
 #include "game/FxVec3.h"
 #include "sys/ProcBase.h"
 #include "npc/NpcActionCtrl.h"
 #include "snd/SndSeEmitterKind1.h"
-#include "npc/Unk_02014254.h"
+#include "npc/NpcTalkCtrl.h"
 #include "npc/Unk_0201a13c.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
@@ -508,7 +508,7 @@ void SpNpcLyle::act01Step0() {
 }
 
 void SpNpcLyle::act01Step1() {
-    Unk_0201accc *q = &moveCtrl;
+    NpcMoveCtrl *q = &moveCtrl;
     if (tickTimer(&stepTimer) != 0 && chaseTarget != NULL) {
         if (isPlayerInFront(0x3000) != 0) {
             s32 id = getAct0BAnimB();
@@ -613,7 +613,7 @@ BOOL SpNpcLyle::findSidestepPos(Unk_ov071_02271f54_Vec *out, void *unused) {
 
 BOOL SpNpcLyle::steerAroundObstacle() {
     NpcActionCtrl *p = &actionCtrl;
-    Unk_0201accc *q = &moveCtrl;
+    NpcMoveCtrl *q = &moveCtrl;
     s32 k = _ZN9NpcLookAt15getObstacleBitsEv(&obstacleProbe);
     BOOL r = FALSE;
     Unk_ov071_02271f54_Vec v;

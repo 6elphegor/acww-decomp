@@ -56,7 +56,7 @@ struct NpcActionCtrl {
     void startAction(u8 *o, s32 a, s32 b, s32 s0, s32 s1, s16 s2, s32 s3, s32 s4);
     void func_02019854();
 
-    /* 0x00 */ s32 unk_00;    // move kind (1/2) of the net-synced move action 0x15 (NpcActor::onExecute)
+    /* 0x00 */ s32 netMoveMode;    // move kind (1/2) of the net-synced move action 0x15 (NpcActor::onExecute)
     /* 0x04 */ u8 netAction;
     /* 0x05 */ u8 netPriority;
     /* 0x06 */ u8 netArgs[0xe];

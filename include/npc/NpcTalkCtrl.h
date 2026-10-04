@@ -5,12 +5,16 @@
 
 struct Unk_02013b10_Ctx;
 
-// 0x10-byte NPC talk controller (turn-and-talk state machine). Defined in main, unk_020119cc.cpp (the unk_02013b10.cpp
-// part, 0x02013b10..0x02014234). NpcActor's fields from 0x628 follow its talkCtrl at 0x618.
+// 0x10-byte NPC talk controller (turn-and-talk state machine), NpcActor::talkCtrl (+0x618). Defined in main,
+// unk_020119cc.cpp (the unk_02013b10.cpp part, 0x02013b10..0x02014254; empty C1 0x02014254, D1 label 0x02014250 =
+// NpcTalkCtrl_Destroy). NpcActor's fields from 0x628 follow it.
 class NpcTalkCtrl {
 public:
-    /* 0x00 */ s32 unk_00;
-    /* 0x04 */ s16 unk_04;
+    NpcTalkCtrl();
+    ~NpcTalkCtrl();
+
+    /* 0x00 */ s32 act07Variant;
+    /* 0x04 */ s16 turnSpeed;
     /* 0x06 */ s16 turnAngle;
     /* 0x08 */ u8 state;
     /* 0x09 */ u8 requestedState;

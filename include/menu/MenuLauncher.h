@@ -25,7 +25,7 @@ public:
     void onChildClosed();
     void setNextRequest(s32 a, s32 b);
 
-    /* 0x91 */ u8 unk_91;
+    /* 0x91 */ u8 requestedMode;
 };
 
 #endif

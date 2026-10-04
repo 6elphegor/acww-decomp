@@ -1,6 +1,6 @@
 #include "types.h"
 #include "item/ItemIconCache.h"
-#include "menu/Unk_ov094_Views.h"
+#include "menu/InventoryGridTypes.h"
 #include "menu/InventoryItemGrid.h"
 #include "menu/LetterGrid.h"
 #include "menu/InventoryBg.h"
@@ -12,8 +12,8 @@
 
 
 
-typedef Unk_ov094_02292d6c_Ent8 Ent8;
-typedef Unk_ov094_02292d6c_Rec Rec;
+typedef OamObjTemplate Ent8;
+typedef OamObjTemplateBits Rec;
 
 void operator delete(void *p);
 
@@ -144,7 +144,7 @@ extern const u8 sLetterKindMsgIds[];
 extern u8 sInventoryBgSprite[];
 extern u8 sHeldItemSprite[];
 extern u8 sItemGridMarkSprites[];
-extern Unk_ov094_02292d6c_Ent8 sItemGridSlotSprites[];
+extern OamObjTemplate sItemGridSlotSprites[];
 extern u8 sLetterGridColumnX[];
 extern u8 sLetterIconSprite[];
 extern u8 sLetterIconPalettes[];
@@ -218,17 +218,17 @@ BOOL LetterGrid_TestBit(u32 *bits, s32 i);
 void LetterGrid_ClearBit(u32 *bits, s32 i);
 void LetterGrid_SetBit(u32 *bits, s32 i);
 void LetterGrid_ClearBits(u32 *bits);
-u8 LetterGrid_GetPopScale(Unk_ov094_02293c04_Rec *o);
-BOOL LetterGrid_UpdatePopAnim(Unk_ov094_02293c04_Rec *o);
-void LetterGrid_ResetScale(Unk_ov094_02293c04_Rec *o);
-void LetterGrid_StartPopAnim(Unk_ov094_02293c04_Rec *o);
+u8 LetterGrid_GetPopScale(LetterGrid *o);
+BOOL LetterGrid_UpdatePopAnim(LetterGrid *o);
+void LetterGrid_ResetScale(LetterGrid *o);
+void LetterGrid_StartPopAnim(LetterGrid *o);
 s32 LetterGrid_GetIconIndex(void *o, s32 h);
-void LetterGrid_SetLetterArray(Unk_ov094_02293ca0_Obj *o, u8 *p, s32 m, s32 n);
+void LetterGrid_SetLetterArray(LetterGrid *o, u8 *p, s32 m, s32 n);
 void LetterGrid_SetLetters23(void *o, u8 *p);
 void LetterGrid_SetLetters0A(void *o, u8 *p);
 void LetterGrid_SetLetters2D(void *o, u8 *p);
-void LetterGrid_LoadPocketLetters(Unk_ov094_02293ca0_Obj *o);
-BOOL LetterGrid_IsSlotEmpty(Unk_ov094_02293ca0_Obj *o, s32 i);
+void LetterGrid_LoadPocketLetters(LetterGrid *o);
+BOOL LetterGrid_IsSlotEmpty(LetterGrid *o, s32 i);
 s32 LetterGrid_GetSlotY(void *o, s32 i);
 s32 LetterGrid_GetSlotX(void *o, s32 i);
 void LetterGrid_DrawSlot(InventoryItemGrid *o, s32 a1, s32 idx, s32 x, s32 y0);
@@ -275,11 +275,11 @@ void InventoryBg_LoadGraphics(void *o);
 
 
 
-static inline void Unk_ov094_SetPal(Unk_ov094_02294bb4_Bits *o, s32 pal) {
+static inline void Unk_ov094_SetPal(OamObjTemplateAttr2 *o, s32 pal) {
     o->v = (u16)((o->v & 0xffff0fff) | ((pal & 0xf) << 12));
 }
 
-static inline void Unk_ov094_SetName(Unk_ov094_02294bb4_Bits *o, s32 name) {
+static inline void Unk_ov094_SetName(OamObjTemplateAttr2 *o, s32 name) {
     o->v = (u16)((o->v & 0xfffffc00) | (name & 0x3ff));
 }
 
@@ -632,8 +632,8 @@ void LetterGrid::drawLetterIcon(s32 a, s32 b, u32 c, void *e, void *f) {
     s32 idx = LetterGrid_GetIconIndex((void *)this, (s32)e);
     s32 m1 = -1;
     if (idx != m1) {
-        Unk_ov094_SetPal((Unk_ov094_02294bb4_Bits *)sLetterIconSprite, (u8)c);
-        Unk_ov094_SetName((Unk_ov094_02294bb4_Bits *)sLetterIconSprite, sLetterIconChars[idx]);
+        Unk_ov094_SetPal((OamObjTemplateAttr2 *)sLetterIconSprite, (u8)c);
+        Unk_ov094_SetName((OamObjTemplateAttr2 *)sLetterIconSprite, sLetterIconChars[idx]);
         Oam_DrawObj(1, sLetterIconSprite, a, b, m1, objPriority, f);
     }
 }
@@ -738,24 +738,24 @@ s32 LetterGrid_GetSlotY(void *o, s32 i)
     return 0;
 }
 
-BOOL LetterGrid_IsSlotEmpty(Unk_ov094_02293ca0_Obj *o, s32 i)
+BOOL LetterGrid_IsSlotEmpty(LetterGrid *o, s32 i)
 {
-    if (LetterGrid_TestBit(o->occupiedBits, i) == 0) {
+    if (LetterGrid_TestBit(o->occupiedBits.words, i) == 0) {
         return TRUE;
     }
     return FALSE;
 }
 
-void LetterGrid_LoadPocketLetters(Unk_ov094_02293ca0_Obj *o)
+void LetterGrid_LoadPocketLetters(LetterGrid *o)
 {
     s32 q = (s32)PlayerInventory_getLetter(PlayerData_getInventory(PlayerData_GetCurrent()), 0);
     s32 k = 0;
     s32 i = 0;
     do {
         if (LetterGrid_GetIconIndex(o, q) != -1) {
-            LetterGrid_SetBit(o->occupiedBits, k);
+            LetterGrid_SetBit(o->occupiedBits.words, k);
         } else {
-            LetterGrid_ClearBit(o->occupiedBits, k);
+            LetterGrid_ClearBit(o->occupiedBits.words, k);
         }
         q += 0xf4;
         k++;
@@ -765,29 +765,29 @@ void LetterGrid_LoadPocketLetters(Unk_ov094_02293ca0_Obj *o)
 
 void LetterGrid_SetLetters2D(void *o, u8 *p)
 {
-    LetterGrid_SetLetterArray((Unk_ov094_02293ca0_Obj *)o, p, 0x2d, 0xa);
+    LetterGrid_SetLetterArray((LetterGrid *)o, p, 0x2d, 0xa);
 }
 
 void LetterGrid_SetLetters0A(void *o, u8 *p)
 {
-    LetterGrid_SetLetterArray((Unk_ov094_02293ca0_Obj *)o, p, 0xa, 0x19);
+    LetterGrid_SetLetterArray((LetterGrid *)o, p, 0xa, 0x19);
 }
 
 void LetterGrid_SetLetters23(void *o, u8 *p)
 {
-    LetterGrid_SetLetterArray((Unk_ov094_02293ca0_Obj *)o, p, 0x23, 0xa);
+    LetterGrid_SetLetterArray((LetterGrid *)o, p, 0x23, 0xa);
 }
 
-void LetterGrid_SetLetterArray(Unk_ov094_02293ca0_Obj *o, u8 *p, s32 m, s32 n)
+void LetterGrid_SetLetterArray(LetterGrid *o, u8 *p, s32 m, s32 n)
 {
     s32 i;
     o->letterArray = p;
-    u8 *q = o->letterArray;
+    u8 *q = *(u8 *volatile *)&o->letterArray;
     for (i = 0; i < n; i++) {
         if (LetterGrid_GetIconIndex(o, (s32)q) != -1) {
-            LetterGrid_SetBit(o->occupiedBits, m);
+            LetterGrid_SetBit(o->occupiedBits.words, m);
         } else {
-            LetterGrid_ClearBit(o->occupiedBits, m);
+            LetterGrid_ClearBit(o->occupiedBits.words, m);
         }
         q += 0xf4;
         m++;
@@ -807,21 +807,21 @@ s32 LetterGrid_GetIconIndex(void *o, s32 h)
     return t;
 }
 
-void LetterGrid_StartPopAnim(Unk_ov094_02293c04_Rec *o)
+void LetterGrid_StartPopAnim(LetterGrid *o)
 {
     o->popTimer = 4;
     o->heldScale = 10;
 }
 
-void LetterGrid_ResetScale(Unk_ov094_02293c04_Rec *o)
+void LetterGrid_ResetScale(LetterGrid *o)
 {
     o->heldScale = 10;
 }
 
-BOOL LetterGrid_UpdatePopAnim(Unk_ov094_02293c04_Rec *o)
+BOOL LetterGrid_UpdatePopAnim(LetterGrid *o)
 {
-    if (o->popTimer != 0) {
-        o->popTimer = o->popTimer - 1;
+    if (*(volatile u8 *)&o->popTimer != 0) {
+        o->popTimer = *(volatile u8 *)&o->popTimer - 1;
         o->heldScale = LetterGrid_GetPopScale(o);
         return FALSE;
     }
@@ -829,9 +829,9 @@ BOOL LetterGrid_UpdatePopAnim(Unk_ov094_02293c04_Rec *o)
     return TRUE;
 }
 
-u8 LetterGrid_GetPopScale(Unk_ov094_02293c04_Rec *o)
+u8 LetterGrid_GetPopScale(LetterGrid *o)
 {
-    u32 v = o->popTimer;
+    u32 v = *(volatile u8 *)&o->popTimer;
     if (v >= 4) {
         return 10;
     }

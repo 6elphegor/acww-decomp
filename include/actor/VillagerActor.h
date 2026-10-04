@@ -3,13 +3,13 @@
 
 #include "types.h"
 #include "actor/NpcActor.h"
-#include "npc/Unk_0202d7f4.h"
-#include "npc/Unk_0202d5e8.h"
+#include "npc/VillagerClothModel.h"
+#include "talk/VillagerTalk.h"
 #include "npc/NpcResHandleView.h"
 #include "npc/VillagerMood.h"
 
 // Base of the town villagers (0x894 bytes). Defined in src/main/unk_0201c050.cpp (ctor, dtor, vtable, overrides
-// 0x0202daf8..). The member at 0x680 is a VillagerTalk plus one byte (npc/Unk_0202d5e8.h).
+// 0x0202daf8..).
 class VillagerActor : public NpcActor {
 public:
     VillagerActor();
@@ -45,8 +45,10 @@ public:
     /* 0x640 */ u8 eventKind;
     /* 0x644 */ u32 talkPartnerId;
     /* 0x648 */ u8 invitedByPartner;
-    /* 0x64c */ Unk_0202d7f4 clothModel;
-    /* 0x680 */ Unk_0202d5e8 villagerTalk;
+    /* 0x64c */ VillagerClothModel clothModel;
+    /* 0x680 */ VillagerTalk villagerTalk;
+    /* 0x820 */ u8 habitTopicKind; // which habit topic set the villager talks about next (random 0/1, toggled)
+    /* 0x821 */ u8 pad_821[3];
     /* 0x824 */ VillagerAnimHeapHandle animHeapHandle;
     /* 0x82c */ void *villagerData;
     /* 0x830 */ void *villagerState;

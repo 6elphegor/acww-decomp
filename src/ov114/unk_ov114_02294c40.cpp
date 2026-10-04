@@ -242,9 +242,9 @@ void CreatureBookPanel::init(u8 a, u8 b, u8 c, u8 d) {
     scrollMax = (listLength - 8) * 0x1b;
     pendingScroll = 0;
     scrollKnob.show();
-    u8 *p = &unk_128a[1];
+    u8 *p = &pageButtonFlashTimers[1];
     *p = 0;
-    unk_128a[0] = *p;
+    pageButtonFlashTimers[0] = *p;
     _ZN9MsgString5clearEv(&descText);
     touchTarget = 4;
 }

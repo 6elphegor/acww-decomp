@@ -14,7 +14,7 @@ public:
     void setMessageUsed(s32 i);
     void clearRecord();
 
-    /* 0xf4 */ u8 unk_f4[5];
+    /* 0xf4 */ u8 usedMessageBits[5];
 };
 
 #endif

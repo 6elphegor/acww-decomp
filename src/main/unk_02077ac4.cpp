@@ -1,13 +1,13 @@
 // mwcc-flags: -str reuse
 #include "types.h"
 #include "net/CommManager.h"
-#include "npc/Unk_020781ec_Elem.h"
+#include "npc/VillagerState.h"
 #include "talk/MsgStringBase.h"
 #include "talk/MsgStringAttr.h"
 #include "npc/VillagerId.h"
 #include "npc/VillagerDataItemView.h"
 #include "talk/EncodedStringBase.h"
-#include "npc/Unk_020781ec_Data.h"
+#include "npc/VillagerStateTable.h"
 #include "talk/MsgString.h"
 #include "talk/EncodedString.h"
 #include "talk/MsgString9B.h"
@@ -222,15 +222,6 @@ public:
 };
 
 
-struct VillagerState {
-    u8 b[0x2c];
-    VillagerState();
-    ~VillagerState();
-};
-struct VillagerStateTable {
-    VillagerState entries[8];
-    u8 unk_160[0x10];
-};
 struct SpNpcAnimHeapPool {
     void *p[4];
     SpNpcAnimHeapPool();
@@ -312,7 +303,7 @@ BOOL Item_IsTreeStage0(void *);
 s32 NpcRegistry_FindAt(s32, s32);
 void *PlayerActor_GetBodyPos(s32);
 s32 PlayerActor_GetCharacter(s32);
-struct Unk_020781ec_Data *VillagerStates_Get();
+struct VillagerStateTable *VillagerStates_Get();
 void *VillagerState_GetTalkRepeat(void *);
 s32 TalkRepeat_Reset(void *);
 s32 VillagerStateTable_ResetRuntime(void *);
@@ -5229,9 +5220,9 @@ s32 VillagerDataItemView::getSlotFromLayoutCode(u16 *pp) {
     return idx;
 }
 
-Unk_0207efac_Item VillagerDataItemView::getFurnitureAt(s32 idx) {
+PlacedFurnitureItem VillagerDataItemView::getFurnitureAt(s32 idx) {
     using namespace nM;
-    Unk_0207efac_Item out;
+    PlacedFurnitureItem out;
     out.v = 0xfff1;
     if (isValidFurnitureIndex(idx)) {
         out.v = furniture[idx];
@@ -10886,7 +10877,7 @@ extern "C" void VillagerStates_ResetRuntime() {
 
 namespace nA {
 extern "C" void VillagerStates_ClearUnk1dBit0() {
-    Unk_020781ec_Elem *e = VillagerStates_Get()->entries;
+    VillagerState *e = VillagerStates_Get()->entries;
     s32 i;
     for (i = 0; i < 8; e++, i++) {
         e->flags &= ~1;
@@ -10896,7 +10887,7 @@ extern "C" void VillagerStates_ClearUnk1dBit0() {
 
 namespace nA {
 extern "C" void VillagerStates_ClearUnk1dBit2() {
-    Unk_020781ec_Elem *e = VillagerStates_Get()->entries;
+    VillagerState *e = VillagerStates_Get()->entries;
     s32 i;
     for (i = 0; i < 8; e++, i++) {
         e->flags &= ~4;

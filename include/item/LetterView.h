@@ -24,7 +24,7 @@ public:
     u8 getPresentFlags();                   // 0x020655c0
     u16 getPresent();                       // 0x020655d0
 
-    /* 0x00 */ u32 unk_00;
+    /* 0x00 */ u32 vtable;
     /* 0x04 */ LetterParty recipient;
     /* 0x1c */ LetterParty sender;
     /* 0x34 */ u8 greeting[0x18];

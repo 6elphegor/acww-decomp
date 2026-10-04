@@ -1,6 +1,6 @@
 #include "types.h"
 #include "net/CommManager.h"
-#include "net/Unk_020a647c_Buf.h"
+#include "net/NetStateBlockHeader.h"
 
 
 extern "C" {
@@ -31,7 +31,7 @@ extern "C" void NetArea_BuildStateB() {
     u8 *start = g->auxWritePtrB;
     sNetStateBWriters[0](m);
     u8 *cur = g->auxWritePtrB;
-    Unk_020a647c_Buf b;
+    NetStateBlockHeader b;
     s32 diff = cur - start;
     if (diff != 0) {
         b.len = diff;
@@ -51,7 +51,7 @@ extern "C" void NetArea_ParseStateB() {
     CommManager *g = gCommManager;
     CommManager *sg = g;
     u8 *p = (u8 *)g->getAuxBufB();
-    Unk_020a647c_Buf b;
+    NetStateBlockHeader b;
     u32 n;
     MI_CpuCopy8(p, &b.total, 2);
     u32 total = b.total;

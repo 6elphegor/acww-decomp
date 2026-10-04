@@ -1,10 +1,10 @@
 #include "types.h"
 #include "net/CommManager.h"
-#include "npc/Unk_020781ec_Elem.h"
+#include "npc/VillagerState.h"
 #include "talk/MsgStringBase.h"
 #include "talk/MsgStringAttr.h"
 #include "save/BbsPost.h"
-#include "npc/Unk_020781ec_Data.h"
+#include "npc/VillagerStateTable.h"
 #include "save/BbsBoard.h"
 #include "talk/MsgString.h"
 #include "talk/EncodedString.h"
@@ -104,13 +104,7 @@ public:
 
 
 
-class OverlayHandle {
-public:
-    s32 overlayId;
-    u8 pad_04[0x78];
-    OverlayHandle() { overlayId = -1; }
-    ~OverlayHandle();
-};
+#include "sys/OverlayHandle.h"
 
 // ======== unk_02077a54.cpp ========
 namespace n7 {
@@ -281,7 +275,7 @@ extern "C" {
 s32 PlayerActor_GetCharacter(s32);
 }
 extern "C" {
-struct Unk_020781ec_Data *VillagerStates_Get();
+struct VillagerStateTable *VillagerStates_Get();
 }
 extern "C" {
 void *VillagerState_GetTalkRepeat(void *);

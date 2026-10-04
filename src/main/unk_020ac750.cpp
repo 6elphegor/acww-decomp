@@ -7,7 +7,7 @@
 #include "gfx/ObjShadowTexDef.h"
 #include "game/Unk_021c47c4.h"
 #include "gfx/NNSG3dResMatData.h"
-#include "item/Unk_02062f94_Ret.h"
+#include "item/PickedItem.h"
 #include "game/Vec3.h"
 #include "item/ItemId.h"
 #include "item/ItemPickSpec.h"
@@ -1712,7 +1712,7 @@ extern "C" {
 u32 Random_GlobalBelow(u32 n);
 }
 extern "C" {
-Unk_02062f94_Ret ItemPick_One(ItemPickSpec *q, u32 a, u32 b, u32 c, u32 d, u32 e);
+PickedItem ItemPick_One(ItemPickSpec *q, u32 a, u32 b, u32 c, u32 d, u32 e);
 }
 extern "C" {
 u32 _ZN22DateSeededRandomSource6randomEj(void *p, u32 v);

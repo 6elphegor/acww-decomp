@@ -1,7 +1,8 @@
 #include "types.h"
 #include "save/PatternOrder.h"
 #include "game/Unk_020702ec_Date.h"
-#include "net/Unk_020720f8_Data.h"
+#include "save/EncodedName8.h"
+#include "sys/OverlayHandle.h"
 #include "save/MuseumData.h"
 #include "sys/RecordFile.h"
 #include "save/Unk_020942c8.h"
@@ -151,7 +152,7 @@ extern "C" {
 extern CommManager *gCommManager;
 }
 extern "C" {
-extern Unk_020720f8_Data gOverlayHandle;
+extern OverlayHandle gOverlayHandle;
 }
 extern "C" {
 void *Mem_Alloc(u32 n);
@@ -313,7 +314,7 @@ namespace n4 {
 }
 void PatternInfo::getTitleRaw(u8 *dst) {
     using namespace n4;
-    *(Unk_02071b10_Id16 *)dst = *(Unk_02071b10_Id16 *)&title;
+    *(EncodedTitle16 *)dst = *(EncodedTitle16 *)&title;
 }
 namespace n4 {
 }
@@ -333,7 +334,7 @@ namespace n4 {
 }
 void PatternInfo::setTitleRaw(u8 *src) {
     using namespace n4;
-    *(Unk_02071b10_Id16 *)&title = *(Unk_02071b10_Id16 *)src;
+    *(EncodedTitle16 *)&title = *(EncodedTitle16 *)src;
 }
 namespace n4 {
 }

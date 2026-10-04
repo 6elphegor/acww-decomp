@@ -271,8 +271,8 @@ public:
     /* 0x0c2 */ volatile u8 optionsOpenDelay;
     /* 0x0c3 */ u8 unk_c3;
     /* 0x0c4 */ s32 fieldRequest;
-    /* 0x0c8 */ u8 unk_c8[0x20];
-    /* 0x0e8 */ u8 unk_e8[0x200];
+    /* 0x0c8 */ u8 clothPalette[0x20];
+    /* 0x0e8 */ u8 clothImage[0x200];
     /* 0x2e8 */ BgVramTaskPair bgTasks[2];
     /* 0x358 */ InventoryItemGrid m_358;
     /* 0xdb8 */ LetterGrid m_db8;
@@ -281,7 +281,7 @@ public:
     /* 0x2480 */ CursorMotion m_2480;
     /* 0x2498 */ MenuCursorBuf0 m_2498;
     /* 0x24fc */ PopupChoiceMenu m_24fc;
-    /* 0x27f0 */ u8 unk_27f0[0xc];          // owner's PopupChoiceIdList for m_24fc (ChoiceIdList_* take it raw)
+    /* 0x27f0 */ u8 optionList[0xc];          // owner's PopupChoiceIdList for m_24fc (ChoiceIdList_* take it raw)
     /* 0x27fc */ MenuErrorMessage errorMessage;
     /* 0x2904 */ LetterRenderer m_2904;
     /* 0x2b14 */ MenuLabelButton m_2b14;

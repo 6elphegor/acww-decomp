@@ -8,9 +8,9 @@ class VillagerDataItemView;
 typedef BOOL (VillagerDataItemView::*Unk_0207ed1c_Fn)(u16 *);
 
 // furniture slot value returned by VillagerDataItemView::getFurnitureAt
-struct Unk_0207efac_Item {
+struct PlacedFurnitureItem {
     u16 v;
-    Unk_0207efac_Item() {}
+    PlacedFurnitureItem() {}
 };
 
 // Item / house part of a villager's save data (0x6f3 bytes): furniture slots, house position, moved-from town,
@@ -40,7 +40,7 @@ public:
     s32 pickEmptySlot(s32 lo, s32 hi);
     BOOL getSlotRange(s32 *lo, s32 *hi, s32 mode, s32 type, u8 flag);
     u16 *getFurniture();
-    Unk_0207efac_Item getFurnitureAt(s32 idx);
+    PlacedFurnitureItem getFurnitureAt(s32 idx);
     s32 getSlotFromLayoutCode(u16 *p);
     BOOL isValidFurnitureIndex(s32 idx);
     s32 getInfo28Item();

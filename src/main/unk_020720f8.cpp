@@ -5,7 +5,8 @@
 
 #include "net/CommManager.h"
 #include "save/PatternOrder.h"
-#include "net/Unk_020720f8_Data.h"
+#include "save/EncodedName8.h"
+#include "sys/OverlayHandle.h"
 #include "save/Unk_020942c8.h"
 #include "save/Pattern.h"
 #include "talk/EncodedString16Buf.h"
@@ -2195,7 +2196,7 @@ extern "C" {
 extern CommManager *gCommManager;
 }
 extern "C" {
-extern Unk_020720f8_Data gOverlayHandle;
+extern OverlayHandle gOverlayHandle;
 }
 extern "C" {
 void *Mem_Alloc(u32 n);
@@ -2404,7 +2405,7 @@ namespace n1 {
 void NetOverlay_AssertWifi() {
     using namespace n1;
     u32 x;
-    if (gOverlayHandle.f) x = (u32)-1; else x = gOverlayHandle.v;
+    if (gOverlayHandle.isLoading) x = (u32)-1; else x = gOverlayHandle.overlayId;
     BOOL ok;
     if ((u32)OVERLAY_65_ID == x) ok = TRUE; else ok = FALSE;
     if (!ok) Fatal_Trap();
@@ -2414,7 +2415,7 @@ namespace n1 {
 void NetOverlay_AssertWireless() {
     using namespace n1;
     u32 x;
-    if (gOverlayHandle.f) x = (u32)-1; else x = gOverlayHandle.v;
+    if (gOverlayHandle.isLoading) x = (u32)-1; else x = gOverlayHandle.overlayId;
     BOOL ok;
     if ((u32)OVERLAY_66_ID == x) ok = TRUE; else ok = FALSE;
     if (!ok) Fatal_Trap();
@@ -2424,7 +2425,7 @@ namespace n1 {
 void NetOverlay_AssertOv067() {
     using namespace n1;
     u32 x;
-    if (gOverlayHandle.f) x = (u32)-1; else x = gOverlayHandle.v;
+    if (gOverlayHandle.isLoading) x = (u32)-1; else x = gOverlayHandle.overlayId;
     BOOL ok;
     if ((u32)OVERLAY_67_ID == x) ok = TRUE; else ok = FALSE;
     if (!ok) Fatal_Trap();
@@ -2434,7 +2435,7 @@ namespace n1 {
 void NetOverlay_AssertAny() {
     using namespace n1;
     u32 x;
-    if (gOverlayHandle.f) x = (u32)-1; else x = gOverlayHandle.v;
+    if (gOverlayHandle.isLoading) x = (u32)-1; else x = gOverlayHandle.overlayId;
     BOOL ok;
     Unk_020720f8_Id a = (Unk_020720f8_Id)(u32)OVERLAY_65_ID;
     Unk_020720f8_Id b = (Unk_020720f8_Id)(u32)OVERLAY_66_ID;

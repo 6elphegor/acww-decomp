@@ -82,7 +82,7 @@ BOOL MenuLauncher::execClosed() {
 }
 
 void MenuLauncher::setNextRequest(s32 a, s32 b) {
-    unk_91 = a;
+    requestedMode = a;
     switch (a) {
     case 0:
         break;
@@ -104,7 +104,7 @@ void MenuLauncher::setNextRequest(s32 a, s32 b) {
 }
 
 void MenuLauncher::onChildClosed() {
-    switch (unk_91) {
+    switch (requestedMode) {
     case 0x43:
         setPhase(5);
         break;
@@ -124,7 +124,7 @@ void MenuLauncher::onChildClosed() {
     case 0x36:
     case 0x40:
         mainState = 1;
-        MenuCtrl_SetMode(unk_91);
+        MenuCtrl_SetMode(requestedMode);
         break;
     }
 }
@@ -150,7 +150,7 @@ void MenuLauncher::updateIdle() {}
 // dcd as misaligned. The `_arg_*` and `_in_range` names are the targets the table entries/constants encode.
 #ifdef NONMATCHING
 void MenuLauncher::updateOpenRequested() {
-    switch (unk_91) {
+    switch (requestedMode) {
     case 0:
     case 1:
     case 0x18:
@@ -170,7 +170,7 @@ void MenuLauncher::updateOpenRequested() {
     case 0x21:
         break;
     }
-    switch (unk_91) {
+    switch (requestedMode) {
     case 0x0: MenuCtrl_RequestOpenNested(0xb); break;
     case 0x1: MenuCtrl_RequestOpenNested(0xa); break;
     case 0x2: case 0x3: MenuCtrl_RequestOpenNested(0xd); break;
@@ -451,16 +451,16 @@ void MenuLauncher::stateStart() {
 }
 
 void MenuLauncher::initLauncher() {
-    unk_91 = MenuCtrl_GetMode();
+    requestedMode = MenuCtrl_GetMode();
     mainState = 1;
-    if (unk_91 == 0) {
+    if (requestedMode == 0) {
         setPhase(2);
     } else {
         transitionState = 0;
         setPhase(0);
         MenuScreen_BeginOpen();
     }
-    switch (unk_91) {
+    switch (requestedMode) {
     case 0x2d:
     case 0x2e:
         MenuScreen_SetBackgroundKind(3);
@@ -478,7 +478,7 @@ void MenuLauncher::initLauncher() {
         MenuScreen_SetBackgroundKind(0);
         break;
     }
-    switch (unk_91) {
+    switch (requestedMode) {
     case 0:
         Snd_PlaySe(0x11);
         break;
@@ -489,7 +489,7 @@ void MenuLauncher::initLauncher() {
         Snd_SetSceneBankVariant(1);
         break;
     }
-    switch (unk_91) {
+    switch (requestedMode) {
     case 0x2d:
     case 0x2e:
         ((BgmVolumeMixer *)(data_021c1b3c + 0x1c4))->setMenuDuck(1);

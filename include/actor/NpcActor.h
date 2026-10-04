@@ -7,7 +7,7 @@
 #include "npc/NpcMoveAnimSet.h"
 #include "npc/NpcFaceAnim.h"
 #include "npc/NpcAnimCtrl.h"
-#include "npc/Unk_0201ac88.h"
+#include "npc/NpcMoveCtrl.h"
 #include "npc/NpcObstacleProbe.h"
 #include "npc/Unk_0201ad18.h"
 #include "npc/NpcLookAt.h"
@@ -18,9 +18,9 @@
 #include "game/CollisionState.h"
 #include "actor/ActorFollowCollider.h"
 #include "snd/SndSeEmitterKind1.h"
-#include "npc/Unk_020135e4.h"
+#include "npc/NpcFootstepFx.h"
 #include "npc/NpcActionCtrl.h"
-#include "npc/Unk_02014254.h"
+#include "npc/NpcTalkCtrl.h"
 
 struct Unk_020d77a4_Vec3;
 struct Unk_020d77a4_Vec;
@@ -95,13 +95,13 @@ public:
 
     /* 0x0ea */ u16 npcHandle;
     /* 0x0ec */ ThreeLayerAnimModel model;
-    /* 0x2a0 */ Unk_0201ad3c moveAnimSet;
+    /* 0x2a0 */ NpcMoveAnimSet moveAnimSet;
     /* 0x2ac */ NpcFaceAnim faceAnim;
     /* 0x334 */ NpcAnimCtrl animCtrl;
-    /* 0x350 */ Unk_0201accc moveCtrl;
-    /* 0x3a8 */ Unk_0201a8bc obstacleProbe;
+    /* 0x350 */ NpcMoveCtrl moveCtrl;
+    /* 0x3a8 */ NpcObstacleProbe obstacleProbe;
     /* 0x3aa */ Unk_0201ad18 unk_3aa;
-    /* 0x3b0 */ Unk_0201a794 lookAt;
+    /* 0x3b0 */ NpcLookAt lookAt;
     /* 0x418 */ NpcSpeechState speechState;
     /* 0x420 */ NpcEmotionFx emotionFx;
     /* 0x448 */ Mtx43 jointMtx;       // world matrix of model joint 0xb (onDraw); its translation is vfunc_5c's position
@@ -112,13 +112,13 @@ public:
     /* 0x511 */ u8 shadowEnabled;
     /* 0x512 */ u8 pad_512[2];
     /* 0x514 */ SndSeEmitterKind1 seEmitter;
-    /* 0x558 */ Unk_020135e4 footstepFx;
+    /* 0x558 */ NpcFootstepFx footstepFx;
     /* 0x560 */ u8 partnerPlayer;
     /* 0x561 */ u8 updateEnabled;     // isUpdating(); onExecute does nothing else while 0
     /* 0x562 */ u8 drawEnabled;
     /* 0x563 */ u8 netSyncOff;        // no NPC net-record sync while set
     /* 0x564 */ NpcActionCtrl actionCtrl;
-    /* 0x618 */ Unk_02014254 talkCtrl;
+    /* 0x618 */ NpcTalkCtrl talkCtrl;
     /* 0x628 */ void *curHeldTool; // HeldToolModel shown in the NPC's hand
     /* 0x62c */ u8 talkLockHeld;
     /* 0x62d */ u8 netUserBytes[3];

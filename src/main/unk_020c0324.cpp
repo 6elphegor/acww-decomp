@@ -9,7 +9,7 @@
 #include "npc/NpcResHandleView.h"
 #include "npc/NpcObstacleProbe.h"
 #include "npc/Unk_0201ad18.h"
-#include "npc/Unk_020135e4.h"
+#include "npc/NpcFootstepFx.h"
 #include "sys/ProcBase.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"

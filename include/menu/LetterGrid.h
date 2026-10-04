@@ -2,7 +2,7 @@
 #define MENU_LETTERGRID_H
 
 #include "types.h"
-#include "menu/Unk_ov094_Views.h"
+#include "menu/InventoryGridTypes.h"
 
 // 0x28-byte letter grid of the letter/inventory menus (vtable 0x02294bd4 in ov094).
 // Defined in src/ov094/unk_ov094_02293b90.cpp; member of the ov096..ov110 menus.
@@ -44,9 +44,9 @@ public:
     void init(s32 x);
 
     /* 0x04 */ u8 *letterArray;
-    /* 0x08 */ Unk_ov094_Bits8 occupiedBits;
-    /* 0x10 */ Unk_ov094_Bits8 markedBits;
-    /* 0x18 */ Unk_ov094_Bits8 highlightedBits;
+    /* 0x08 */ Bitset64 occupiedBits;
+    /* 0x10 */ Bitset64 markedBits;
+    /* 0x18 */ Bitset64 highlightedBits;
     /* 0x20 */ s32 objPriority;
     /* 0x24 */ u8 cursorSlot;
     /* 0x25 */ u8 cursorLiftTimer;

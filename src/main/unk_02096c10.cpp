@@ -47,7 +47,7 @@ PlayerMailbox::~PlayerMailbox() {}
 
 Letter *PlayerMailbox::getLetter(s32 i) {
     if (i >= 0 && i < 10) {
-        return &unk_00[i];
+        return &letters[i];
     }
     return NULL;
 }
@@ -55,7 +55,7 @@ Letter *PlayerMailbox::getLetter(s32 i) {
 void PlayerMailbox::clear() {
     s32 i;
     for (i = 0; i < 10; i++) {
-        Letter_Clear(&unk_00[i]);
+        Letter_Clear(&letters[i]);
     }
     lastWifiMailId = 0;
 }
@@ -74,7 +74,7 @@ LetterOutbox::~LetterOutbox() {}
 
 Letter *LetterOutbox::getLetter(s32 i) {
     if (i >= 0 && i < 10) {
-        return &unk_00[i];
+        return &letters[i];
     }
     return NULL;
 }
@@ -82,7 +82,7 @@ Letter *LetterOutbox::getLetter(s32 i) {
 void LetterOutbox::clear() {
     s32 i;
     for (i = 0; i < 10; i++) {
-        Letter_Clear(&unk_00[i]);
+        Letter_Clear(&letters[i]);
     }
     flags = 0;
     lastDeliveryDay = 1;
@@ -138,14 +138,14 @@ void BottleLetterRecord::clearRecord() {
 }
 
 void BottleLetterRecord::setMessageUsed(s32 i) {
-    u8 *p = unk_f4;
+    u8 *p = usedMessageBits;
     s32 k = i >> 3;
     p[k] |= (1 << (i & 7));
 }
 
 BOOL BottleLetterRecord::isMessageUsed(s32 i) {
     BOOL r = TRUE;
-    if (((r << (i & 7)) & unk_f4[i >> 3]) == 0) {
+    if (((r << (i & 7)) & usedMessageBits[i >> 3]) == 0) {
         r = FALSE;
     }
     return r;
@@ -154,7 +154,7 @@ BOOL BottleLetterRecord::isMessageUsed(s32 i) {
 void BottleLetterRecord::clearUsedMessages() {
     s32 i;
     for (i = 0; i < 5; i++) {
-        unk_f4[i] = 0;
+        usedMessageBits[i] = 0;
     }
 }
 

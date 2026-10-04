@@ -1,6 +1,6 @@
 #include "types.h"
 #include "player/PlayerSpNpcRecord.h"
-#include "item/Unk_02098f30_Out.h"
+#include "item/PocketMatches.h"
 #include "actor/Unk_02088d00.h"
 #include "item/ItemId.h"
 #include "talk/TalkStartMsg.h"
@@ -10,13 +10,13 @@
 #include "player/PlayerId.h"
 #include "npc/NpcResHandleView.h"
 #include "npc/NpcObstacleProbe.h"
-#include "npc/Unk_0201ac88.h"
+#include "npc/NpcMoveCtrl.h"
 #include "npc/Unk_0201ad18.h"
-#include "npc/Unk_020135e4.h"
+#include "npc/NpcFootstepFx.h"
 #include "sys/ProcBase.h"
 #include "npc/NpcActionCtrl.h"
 #include "snd/SndSeEmitterKind1.h"
-#include "npc/Unk_02014254.h"
+#include "npc/NpcTalkCtrl.h"
 #include "npc/Unk_0201a13c.h"
 #include "talk/MsgString25.h"
 #include "actor/Actor.h"
@@ -185,7 +185,7 @@ void Pocket_AddItem(u16 *, s32);
 BOOL Item_IsFurniture(u16 *);
 s32 Item_GetFurnitureIndex(u16 *);
 s32 Item_GetPrice(u16 *);
-s32 Pocket_CountMatching(Unk_02098f30_Out *out, s32 (*fn)(u16 *));
+s32 Pocket_CountMatching(PocketMatches *out, s32 (*fn)(u16 *));
 void *TownSessionState_Get();
 BOOL TownSessionState_TestFlag(void *p, s32 v);
 void TownSessionState_SetFlag(void *p, s32 v);
@@ -586,7 +586,7 @@ extern "C" BOOL SpNpcGracie_IsEmptyItem(u16 *p) {
 }
 
 BOOL SpNpcGracieTalk::hasPocketRoomForOutfit() {
-    Unk_02098f30_Out o;
+    PocketMatches o;
     u8 n;
     Pocket_CountMatching(&o, SpNpcGracie_IsEmptyItem);
     n = 0;

@@ -106,9 +106,9 @@ extern "C" void PocketMenu_AddRoomItemOptions(PocketMenu *self, s32 a) {
             r = TRUE;
         }
         if (r) {
-            ChoiceIdList_Add(self->unk_27f0, 0xc, 0x13);
+            ChoiceIdList_Add(self->optionList, 0xc, 0x13);
         } else if (x >= 0x1100 && x <= 0x1143) {
-            ChoiceIdList_Add(self->unk_27f0, 0xb, 0x12);
+            ChoiceIdList_Add(self->optionList, 0xb, 0x12);
         }
     }
 }

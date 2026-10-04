@@ -156,7 +156,7 @@ BOOL MenuTabBar::onDelete() {
 }
 
 BOOL MenuTabBar::onDraw() {
-    if (unk_91 == 0) {
+    if (visible == 0) {
         return FALSE;
     }
     s32 i;
@@ -215,7 +215,7 @@ BOOL MenuTabBar::execMain() {
         }
     } else if (slideY != 0) {
         if (slideY <= 4) {
-            unk_91 = 0;
+            visible = 0;
             slideY = 0;
         } else {
             slideY = *(volatile u8 *)&slideY - 4;
@@ -366,10 +366,10 @@ void MenuTabBar::updateSaving() { errorMessage.update(0); }
 
 void MenuTabBar::stateLoad() {
     Gfx2d_LoadPaletteFile((u32)"menu/tag/obj.bpl", gCurrentHeap, 8, 0xf, 0xf, 0xf);
-    File_LoadToBuffer("menu/tag/obj1.bch", unk_144, 0x800);
-    File_LoadToBuffer("menu/tag/obj2.bch", unk_944, 0x800);
+    File_LoadToBuffer("menu/tag/obj1.bch", commonObjChars, 0x800);
+    File_LoadToBuffer("menu/tag/obj2.bch", tabObjChars, 0x800);
     showTab(MenuCtrl_GetMode());
-    unk_91 = 1;
+    visible = 1;
     slideY = 0;
     transitionState = 1;
     Gfx2d_SetSubBgModeState(0);
@@ -382,7 +382,7 @@ void MenuTabBar::stateSlideIn() {
 
 void MenuTabBar::stateSlideOut() {
     if (*(volatile u8 *)&slideY <= 4) {
-        unk_91 = 0;
+        visible = 0;
         setPhase(0);
     } else {
         slideY = slideY - 4;
@@ -390,7 +390,7 @@ void MenuTabBar::stateSlideOut() {
 }
 
 void MenuTabBar::initTabBar() {
-    unk_91 = 0;
+    visible = 0;
     slideY = 0;
     tabsShown = 0;
     lrSwitchEnabled = 0;
@@ -424,7 +424,7 @@ extern "C" s32 MenuTabBar_HitTestTouch() {
 
 void MenuTabBar::showTabs() {
     tabsShown = 1;
-    unk_91 = 1;
+    visible = 1;
 }
 
 void MenuTabBar::hideTabs() { tabsShown = 0; }
@@ -461,7 +461,7 @@ extern "C" u8 MenuTabBar_NextTab(u8 a) {
 void MenuTabBar::cancelVramTasks() {
     s32 i;
     for (i = 0; i < 3; i++) {
-        unk_9c[i].cancel();
+        vramTasks[i].cancel();
     }
 }
 
@@ -470,13 +470,13 @@ void MenuTabBar::showTab(u32 idx) {
     if (idx <= 7) {
         if (idx != loadedTab) {
             char buf[0x24];
-            unk_9c[0].requestChars((u32)unk_144, 8, 0x80, 0x80, 0xbf);
-            u32 a = (u32)unk_944 + idx * 0x60;
+            vramTasks[0].requestChars((u32)commonObjChars, 8, 0x80, 0x80, 0xbf);
+            u32 a = (u32)tabObjChars + idx * 0x60;
             u32 t = idx * 3 + 0x80;
-            unk_9c[1].requestCharPair(a, a + 0x400, 8, t, t + 2, t + 0x20, t + 0x22);
+            vramTasks[1].requestCharPair(a, a + 0x400, 8, t, t + 2, t + 0x20, t + 0x22);
             func_020639e8(buf, "menu/tag/obj%d.bpl", idx);
-            File_LoadToBuffer(buf, unk_1144, 0x20);
-            unk_9c[2].requestPalette((u32)unk_1144, 8, 0xf);
+            File_LoadToBuffer(buf, tabPalette, 0x20);
+            vramTasks[2].requestPalette((u32)tabPalette, 8, 0xf);
             loadedTab = idx;
         }
     }

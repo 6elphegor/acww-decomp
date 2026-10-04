@@ -6,7 +6,7 @@
 // Communication manager: one instance (gCommManagerInstance), reached through the constant pointer gCommManager.
 // Defined in src/main/unk_020720f8.cpp.
 
-struct Unk_02072408_Row {
+struct CommRecvLenRow {
     u32 v[3];
 };
 
@@ -27,7 +27,7 @@ public:
     /* 0x018 */ u32 ackCounts[3];
     /* 0x024 */ u8 *recvBufs;
     /* 0x028 */ union {
-        Unk_02072408_Row unk_28[4];
+        CommRecvLenRow unk_28[4];
         Unk_02072408_Tail unk_28t;
     };
     /* 0x064 */ s32 myAid;

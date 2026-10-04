@@ -533,10 +533,10 @@ void Keyboard_ClearHighlight(Keyboard *s)
 
 void Keyboard_UpdateShiftKey(Keyboard *s)
 {
-    if (s->unk_05[2] != 3) {
+    if (s->mode != 3) {
         Keyboard_ClearFlags(s, 0x20);
     }
-    if (s->unk_05[2] != 2 && s->unk_05[2] == 3) {
+    if (s->mode != 2 && s->mode == 3) {
         if (Keyboard_TestFlags(s, 0x20)) {
             Keyboard_SetPage1KeyPalette(s, 0x5d, 0xd);
         } else {
@@ -716,9 +716,9 @@ body:
             break;
         }
         if (a == 0xdb) {
-            s->unk_05[0] = b;
+            s->copyKeyPalette = b;
         } else {
-            s->unk_05[1] = b;
+            s->pasteKeyPalette = b;
         }
     }
     return 0;
@@ -1059,7 +1059,7 @@ s32 Keyboard_GetKeyCode(Keyboard *s, s32 a, u32 b)
 {
     s32 r;
     if (b >= 8) {
-        b = s->unk_05[2];
+        b = s->mode;
     }
     r = Keyboard_GetSpecialKeyCode(s, a);
     if (r >= 0) {
@@ -1109,7 +1109,7 @@ void Keyboard_SetMode(Keyboard *s, s32 mode, s32 a, s32 c)
         Gfx2d_LoadPaletteFile((void *)"menu/chat2/b_cht_bg.bpl", g, a, 1, 7, 7);
         Gfx2d_LoadPaletteFile((void *)"menu/chat2/b_cht_bg.bpl", g, a, 1, 9, 9);
     }
-    if (s->unk_05[2] == mode && c != 0) {
+    if (s->mode == mode && c != 0) {
         goto end;
     }
     File_LoadToBuffer((void *)sKeyboardModeCharFiles[mode], (u8 *)s + 0x34, 0x22c0);
@@ -1123,8 +1123,8 @@ void Keyboard_SetMode(Keyboard *s, s32 mode, s32 a, s32 c)
     Keyboard_MarkScreenDirty(s);
     Heap_Free(g, (void *)h);
     _ZN10BgVramTask12requestCharsEjhjjj((u8 *)s + 0x22f4, (u8 *)s + 0x34, a, 0x1ea, 0x1ea, 0x2ff);
-    s->unk_05[2] = mode;
-    switch (s->unk_05[2]) {
+    s->mode = mode;
+    switch (s->mode) {
     case 0:
         Keyboard_DisableKey(s, 1);
         Keyboard_EnableKey(s, 2);
@@ -1165,7 +1165,7 @@ end:
 
 void Keyboard_Reload(Keyboard *s, s32 a)
 {
-    Keyboard_SetMode(s, s->unk_05[2], a, 0);
+    Keyboard_SetMode(s, s->mode, a, 0);
     Keyboard_EndFrame(s, a);
 }
 
@@ -1188,10 +1188,10 @@ void Keyboard_SelectPageByCode(Keyboard *s, s32 a, s32 b)
 void Keyboard_ToggleCapsLock(Keyboard *s, s32 a)
 {
     if (Keyboard_TestFlags(s, 0x20) != 0) {
-        s->unk_05[2] = 2;
+        s->mode = 2;
         Keyboard_ClearFlags(s, 0x20);
     }
-    switch (s->unk_05[2]) {
+    switch (s->mode) {
     case 2:
         Keyboard_SetMode(s, 3, a, 1);
         break;
@@ -1224,7 +1224,7 @@ void Keyboard_Init(Keyboard *s, s32 a)
 {
     KeyboardTabCells *r;
     s->disabledSlots = 0;
-    s->unk_05[2] = 8;
+    s->mode = 8;
     s->pressedKey = -1;
     s->flags = 0;
     s->selectedEmotion = 0xff;
@@ -1240,8 +1240,8 @@ void Keyboard_Init(Keyboard *s, s32 a)
         s->tabCells = (u8 *)data_ov095_02295d74;
     }
     s->layout = a;
-    s->unk_05[0] = 0xc;
-    s->unk_05[1] = 0xc;
+    s->copyKeyPalette = 0xc;
+    s->pasteKeyPalette = 0xc;
     s->page = 1;
     r = (KeyboardTabCells *)s->tabCells;
     r->tab0Attr2 = (r->tab0Attr2 & ~0x3ff) | 0x103;
@@ -1320,7 +1320,7 @@ s32 Keyboard_UpdatePressedKey(Keyboard *s)
 void Keyboard_StartKeyRepeat(Keyboard *s)
 {
     s->pressTimer = 5;
-    s->unk_28[4] = 0xd;
+    s->keyRepeatTimer = 0xd;
 }
 
 BOOL Keyboard_TickKeyRepeat(Keyboard *s)
@@ -1328,10 +1328,10 @@ BOOL Keyboard_TickKeyRepeat(Keyboard *s)
     if (s->pressTimer > 1) {
         s->pressTimer--;
     }
-    if (*(volatile u8 *)&s->unk_28[4] != 0) {
-        s->unk_28[4] = *(volatile u8 *)&s->unk_28[4] - 1;
+    if (*(volatile u8 *)&s->keyRepeatTimer != 0) {
+        s->keyRepeatTimer = *(volatile u8 *)&s->keyRepeatTimer - 1;
     } else {
-        s->unk_28[4] = 1;
+        s->keyRepeatTimer = 1;
         return TRUE;
     }
     return FALSE;
@@ -1651,11 +1651,11 @@ void Keyboard_LoadEmotionIcons(Keyboard *s)
     u32 p;
     s->emotionCount = Emotion_CountLearned();
     for (i = 0; i < s->emotionCount; i++) {
-        s->unk_28[i] = Emotion_GetSlot(i);
+        s->emotionSlots[i] = Emotion_GetSlot(i);
     }
     File_LoadToBuffer((void *)"menu/chat2/ten0.bch", s->emotionIconBuf, 0x1000);
     for (i = 0; i < s->emotionCount; i++) {
-        v = s->unk_28[i] - 1;
+        v = s->emotionSlots[i] - 1;
         off = ((v & 0xf) << 6) + ((v >> 4) << 11);
         p = i * 2 + 0x109;
         Gfx2d_LoadCharRange(s->emotionIconBuf + off, 8, p, p, p + 1);
@@ -1793,7 +1793,7 @@ s32 Keyboard_GetSelectedEmotion(Keyboard *s)
     if (i >= 4) {
         return 0xff;
     }
-    return s->unk_28[i];
+    return s->emotionSlots[i];
 }
 
 void Keyboard_DrawCaret(void *s, s32 x, s32 y, s32 z)
@@ -1803,14 +1803,14 @@ void Keyboard_DrawCaret(void *s, s32 x, s32 y, s32 z)
 
 void Keyboard_DrawCopyPasteKeysChat(Keyboard *s, s32 x, s32 y)
 {
-    Oam_DrawCell(1, data_ov095_02295894, x, y, s->unk_05[0], 2, 0x1000, 0x1000, 0, -1, 0, 0);
-    Oam_DrawCell(1, data_ov095_022958bc, x, y, s->unk_05[1], 2, 0x1000, 0x1000, 0, -1, 0, 0);
+    Oam_DrawCell(1, data_ov095_02295894, x, y, s->copyKeyPalette, 2, 0x1000, 0x1000, 0, -1, 0, 0);
+    Oam_DrawCell(1, data_ov095_022958bc, x, y, s->pasteKeyPalette, 2, 0x1000, 0x1000, 0, -1, 0, 0);
 }
 
 void Keyboard_DrawCopyPasteKeys(Keyboard *s, s32 x, s32 y)
 {
-    Oam_DrawCell(1, data_ov095_02295da4, x, y, s->unk_05[0], 1, 0x1000, 0x1000, 0, -1, 0, 0);
-    Oam_DrawCell(1, data_ov095_02295dd4, x, y, s->unk_05[1], 1, 0x1000, 0x1000, 0, -1, 0, 0);
+    Oam_DrawCell(1, data_ov095_02295da4, x, y, s->copyKeyPalette, 1, 0x1000, 0x1000, 0, -1, 0, 0);
+    Oam_DrawCell(1, data_ov095_02295dd4, x, y, s->pasteKeyPalette, 1, 0x1000, 0x1000, 0, -1, 0, 0);
 }
 
 s32 Keyboard_DrawLengthGauge(void *s, s32 x, s32 y, s32 idx)
