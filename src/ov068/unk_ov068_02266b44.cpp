@@ -153,8 +153,8 @@ public:
 
 typedef BOOL (SpNpcNookIntro::*SpNpcNookIntroActFn)();
 struct SpNpcNookIntroActEntry {
-    SpNpcNookIntroActFn a;
-    SpNpcNookIntroActFn b;
+    SpNpcNookIntroActFn enter;
+    SpNpcNookIntroActFn exit;
 };
 typedef void (SpNpcNookIntroTalk::*SpNpcNookIntroTalkScriptFn)();
 struct SpNpcNookIntroTalkScript {
@@ -331,16 +331,16 @@ u8 *SpNpcNookIntro::getModelPath() {
 
 BOOL SpNpcNookIntro::updateAct() {
     BOOL result = FALSE;
-    if (sSpNpcNookIntroActTable[act].b != NULL) {
-        result = (this->*sSpNpcNookIntroActTable[act].b)();
+    if (sSpNpcNookIntroActTable[act].exit != NULL) {
+        result = (this->*sSpNpcNookIntroActTable[act].exit)();
     }
     return result;
 }
 
 void SpNpcNookIntro::changeAct(s32 state) {
     BOOL ok = TRUE;
-    if (sSpNpcNookIntroActTable[state].a != NULL) {
-        ok = (this->*sSpNpcNookIntroActTable[state].a)();
+    if (sSpNpcNookIntroActTable[state].enter != NULL) {
+        ok = (this->*sSpNpcNookIntroActTable[state].enter)();
     }
     if (ok) {
         act = state;

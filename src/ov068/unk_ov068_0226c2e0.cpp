@@ -169,8 +169,8 @@ public:
 
 typedef BOOL (SpNpcRoostGuest::*SpNpcRoostGuestActFn)();
 struct SpNpcRoostGuestActEntry {
-    SpNpcRoostGuestActFn a;
-    SpNpcRoostGuestActFn b;
+    SpNpcRoostGuestActFn enter;
+    SpNpcRoostGuestActFn exit;
 };
 
 struct Unk_ov068_0226c3b4_Vec {
@@ -590,8 +590,8 @@ u8 *SpNpcRoostGuest::getModelPath() {
 BOOL SpNpcRoostGuest::updateAct() {
     using namespace sB;
     BOOL result = FALSE;
-    if (sSpNpcRoostGuestActTable[act].b != NULL) {
-        result = (this->*sSpNpcRoostGuestActTable[act].b)();
+    if (sSpNpcRoostGuestActTable[act].exit != NULL) {
+        result = (this->*sSpNpcRoostGuestActTable[act].exit)();
     }
     return result;
 }
@@ -599,8 +599,8 @@ BOOL SpNpcRoostGuest::updateAct() {
 void SpNpcRoostGuest::changeAct(s32 state) {
     using namespace sB;
     BOOL ok = TRUE;
-    if (sSpNpcRoostGuestActTable[state].a != NULL) {
-        ok = (this->*sSpNpcRoostGuestActTable[state].a)();
+    if (sSpNpcRoostGuestActTable[state].enter != NULL) {
+        ok = (this->*sSpNpcRoostGuestActTable[state].enter)();
     }
     if (ok) {
         act = state;
