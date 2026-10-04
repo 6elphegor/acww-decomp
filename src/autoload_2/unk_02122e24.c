@@ -13,7 +13,7 @@ typedef int BOOL;
 
 extern u8 *data_0220001c;
 extern u8 data_0213c200;
-extern u32 data_0213a3ec[];
+extern const u32 data_0213a3ec[3];
 extern u32 OS_DisableInterrupts(void);
 extern void OS_RestoreInterrupts(u32);
 extern void MI_CpuFill8(void *, u32, u32);
@@ -249,3 +249,6 @@ void MBi_CommChangeParentStateCallbackOnly(u32 a, u32 b, void *c) {
     void (*cb)() = (void (*)())W32(data_0220001c + 0x1000, 0x4e4);
     if (cb != 0) cb(a, b, c);
 }
+
+// ---- file-scope objects (.rodata 0x0213a3ec-0x0213a3f8): region type by segment index (also used by unk_02123444.c)
+const u32 data_0213a3ec[3] = {2, 0, 1};

@@ -457,3 +457,8 @@ extern "C" BOOL SndSeSystem_LoadGroup(Player *o) {
     return TRUE;
 }
 
+// ---- file-scope objects (autoload_3 .bss 0x021f5b3c-0x021f5b48; this definition order gives the original order after
+// mwcc's size heapsort)
+s32 (*gSndListenerPanCallback)(PlayCtx *);
+s32 (*gSndListenerDistanceCallback)(PlayCtx *);
+s32 (*gSndListenerVolumeCallback)(PlayCtx *);

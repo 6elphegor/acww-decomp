@@ -25,7 +25,6 @@ extern int FSi_ReadMemoryCore(FSArc *, void *, u32, u32);
 extern int FSi_ReadMemCallback(FSArc *, void *, u32, u32);
 extern int FSi_WriteMemCallback(FSArc *, void *, u32, u32);
 extern int (*data_0213a388[])(FSFile *);
-extern char data_0213bff4[];
 extern FSArc *data_021fea68;
 extern FSDirPos data_021fea6c;
 
@@ -260,7 +259,7 @@ int FSi_GetPathCommand(FSFile *file) {
     u32 n = FSi_NameLen2(arc->name);
     MI_CpuCopy8(arc, buf + pos, n);
     pos += n;
-    MI_CpuCopy8(data_0213bff4, buf + pos, 2);
+    MI_CpuCopy8(":/", buf + pos, 2);
     pos += 2;
     }
     FSi_SeekDirDirect(&tmp, dir);

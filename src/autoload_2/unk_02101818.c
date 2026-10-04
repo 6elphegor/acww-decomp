@@ -267,3 +267,5 @@ void func_02101818(void) {
     data_021f5cb4.tail = data_021f5cb4.size;
 }
 
+// ---- file-scope objects (autoload_3 .bss 0x021f5cb4-0x021f5cc0)
+FrmPlttMan data_021f5cb4;

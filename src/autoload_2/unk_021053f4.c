@@ -70,9 +70,9 @@ extern void MIi_CpuSend32(void *, void *, u32);
 extern s32 data_0213be38[3];
 extern s32 data_0213be44[3];
 extern s32 data_0213be14[9];
-extern u8 data_0213be0c[], data_0213be08[];
+extern u8 data_0213be0c[]; extern u32 data_0213be08[18];
 extern s32 data_0213bdf0[3], data_0213bdfc[3];
-extern u8 data_0213bdc4[], data_0213bdcc[], data_0213bdc0[];
+extern u8 data_0213bdc4[], data_0213bdcc[]; extern u32 data_0213bdc0[18];
 
 // marks (in a bit set) every table slot flagged 0x100 in a linked list of nodes
 void updateHintVec_(u32 *bits, Cb *n)
@@ -274,3 +274,102 @@ void NNSi_G3dFuncSbc_BBY(RS *rs, u32 opt)
     }
     rs->c += cmdlen;
 }
+
+// ---- file-scope objects (.data 0x0213bd50-0x0213bed0): the rest of sbc.c's data: the PRJMAP / ENVMAP command packets and
+// matrix, the material / shape / command function tables (the functions are partly in ITCM) and the geometry command
+// packets of the billboard functions (packed command bytes, then their parameters: two words, a 3x3 rotation,
+// translation and scale). The parts the code uses separately (data_0213bd54, data_0213bd5c, data_0213bdc4/bdcc/bdf0/bdfc,
+// data_0213be0c/be14/be38/be44) are interior labels (autoload_2 lcf_symbols.txt). This definition order gives the
+// original order after mwcc's size sort.
+// .rodata 0x02135d18-0x02135d5c: the material colour bit masks and the pivot index table of the billboard / pivot
+// matrices (data_02135d39 / d3a / d3b: interior labels), used by the SBC functions in ITCM.
+void NNSi_G3dFuncSbc_BB();
+void NNSi_G3dFuncSbc_BBY();
+void NNSi_G3dFuncSbc_CALLDL();
+void NNSi_G3dFuncSbc_ENVMAP();
+void NNSi_G3dFuncSbc_MAT();
+void NNSi_G3dFuncSbc_MAT_InternalDefault();
+void NNSi_G3dFuncSbc_MTX();
+void NNSi_G3dFuncSbc_NODE();
+void NNSi_G3dFuncSbc_NODEDESC();
+void NNSi_G3dFuncSbc_NODEMIX();
+void NNSi_G3dFuncSbc_PRJMAP();
+void NNSi_G3dFuncSbc_SHP();
+void NNSi_G3dFuncSbc_SHP_InternalDefault();
+void func_01ff99c8();
+void func_01ff99f4();
+void func_01ff9a60();
+void (*data_0213be50[32])() = { // NNS_G3dFuncSbcTable
+    func_01ff99c8,
+    func_01ff9a60,
+    NNSi_G3dFuncSbc_NODE,
+    NNSi_G3dFuncSbc_MTX,
+    NNSi_G3dFuncSbc_MAT,
+    NNSi_G3dFuncSbc_SHP,
+    NNSi_G3dFuncSbc_NODEDESC,
+    NNSi_G3dFuncSbc_BB,
+    NNSi_G3dFuncSbc_BBY,
+    NNSi_G3dFuncSbc_NODEMIX,
+    NNSi_G3dFuncSbc_CALLDL,
+    func_01ff99f4,
+    NNSi_G3dFuncSbc_ENVMAP,
+    NNSi_G3dFuncSbc_PRJMAP,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+};
+u32 data_0213bdc0[18] = {
+    0x1b171012, 0x00000001, 0x00000002, 0x00001000, 0x00000000, 0x00000000,
+    0x00000000, 0x00001000, 0x00000000, 0x00000000, 0x00000000, 0x00001000,
+    0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
+};
+u32 data_0213be08[18] = {
+    0x1b171012, 0x00000001, 0x00000002, 0x00001000, 0x00000000, 0x00000000,
+    0x00000000, 0x00001000, 0x00000000, 0x00000000, 0x00000000, 0x00001000,
+    0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
+};
+u32 data_0213bd80[16] = {
+    0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
+    0x00000000, 0x00000000, 0x00010000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00010000,
+};
+const u8 data_02135d38[9][4] = {
+    {4, 5, 7, 8}, {3, 5, 6, 8}, {3, 4, 6, 7},
+    {1, 2, 7, 8}, {0, 2, 6, 8}, {0, 1, 6, 7},
+    {1, 2, 4, 5}, {0, 2, 3, 5}, {0, 1, 3, 4},
+};
+const u32 data_02135d18[8] = {0x00000000, 0x00007fff, 0x7fff0000, 0x7fff7fff, 0x00008000, 0x0000ffff, 0x7fff8000, 0x7fffffff};
+void (*data_0213bd60[4])() = { // NNS_G3dFuncSbcMatTable
+    NNSi_G3dFuncSbc_MAT_InternalDefault,
+    0,
+    0,
+    0,
+};
+void (*data_0213bd70[4])() = { // NNS_G3dFuncSbcShpTable
+    NNSi_G3dFuncSbc_SHP_InternalDefault,
+    0,
+    0,
+    0,
+};
+u32 data_0213bd58[2] = {0x2a, 0};
+u32 data_0213bd50[2] = {0x2a, 0};
+
+// autoload_3 .bss 0x021f5cc0-0x021f70c4: NNS_G3dRS (the current render state) and NNS_G3dRSOnGlb (the render state with
+// its material and joint-scale caches; data_021f61ff and data_021f6ac4 .. data_021f6ad8 are interior labels), used by
+// the SBC and G3D functions in autoload_2 and ITCM.
+void *data_021f5cc0;
+u32 data_021f5cc4[0x500];

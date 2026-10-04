@@ -1,17 +1,21 @@
 // mwcc-flags: -nothumb -O4,p
 // RC_020f44f0: autoload_2 0x020f44f0-0x020f4904 (11 functions). mwcc 1.2/base, C++, ARM, -O4,p. PARTIAL, unchanged code of G012a
 // (src/autoload_2/unk_020f3e50.cpp) minus the channel-object classes 0x020f3e50-0x020f44f0, which RC_020f3e50 now builds as real
-// classes. This is the start of the NEXT source file (sound-position pan / volume curve, listener callbacks; its .data byte
-// data_0213b9d8, bss 0x021f5bfc-0x021f5c2c and main's __sinit 0x020c6094 (FX_Div constants, Ramp clear SndVolumeCurve_Clear) belong to it, see PLAN.md); it stays
-// PARTIAL until that file is reconstructed whole (it continues with G012b 0x020f4a5c-0x020f5b9c and needs Snd_CalcListenerDistance).
+// classes. This is the sound-position pan / volume curve file (listener callbacks). It owns its bss (autoload_3
+// 0x021f5bfc-0x021f5c28) and its __sinit (main .init 0x020c6094-0x020c6108, .ctor 0x020d1f54), see the end of the file.
+// The file ends with Snd_CalcListenerDistance (0x020f4904-0x020f4a5c), which is not built yet; the .data byte data_0213b9d8 and the
+// bss from 0x021f5c28 on belong to the next file (unk_020f4a5c.cpp).
 #include "types.h"
 #include "game/Vec3.h"
 #include "snd/PlayCtx.h"
 
 
 
+struct Ramp;
+extern "C" void SndVolumeCurve_Clear(Ramp *r);
 struct Ramp {
     s32 w0, w4, w8, wc, w10, w14, w18;
+    Ramp() { SndVolumeCurve_Clear(this); } // the pan curve starts cleared (the file's __sinit)
 };
 
 extern "C" {
@@ -166,3 +170,11 @@ extern "C" void func_020f44f0(u8 v) {
     data_021f5bfc = v;
 }
 
+// ---- file-scope objects (autoload_3 .bss 0x021f5bfc-0x021f5c28) and their initialisation, the file's __sinit (main .init
+// 0x020c6094-0x020c6108, .ctor 0x020d1f54): clear the pan curve, then the three slopes of the default curve. This
+// definition order gives the original order after mwcc's size sort.
+Ramp gSndVolumeCurve;
+u8 data_021f5bfc;
+s32 data_021f5c00 = FX_Div(0x7f000, 0x99a);
+s32 data_021f5c08 = FX_Div(0x7f000, 0x666);
+s32 data_021f5c04 = FX_Div(0x7f000, 0x333);

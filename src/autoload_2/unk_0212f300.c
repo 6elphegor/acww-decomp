@@ -14,8 +14,7 @@ typedef struct {
     } sig;
 } decimal;
 
-extern u8 data_0213c5b4[];
-extern double data_0213c574[];
+extern double data_0213c574[8];
 extern float data_0213c31c;
 extern void func_02130628(decimal *, const u8 *, short);
 extern int func_02130030(const decimal *, const decimal *);
@@ -34,7 +33,7 @@ extern double copysign(double, double);
 #define __num2dec_internal func_0212fb1c
 #define INFINITY data_0213c31c
 #define pow_10 data_0213c574
-#define max_dbl_str data_0213c5b4
+#define max_dbl_str "179769313486231580793728714053034151"
 #define DBL_MAX 1.7976931348623157e308
 #define isinf(x) (__fpclassifyd(x) == 2)
 
@@ -79,7 +78,7 @@ double func_0212f300(const decimal *d) {
         exponent = dec.exp;
         {
             decimal max;
-            __str2dec(&max, max_dbl_str, 308);
+            __str2dec(&max, (const u8 *)max_dbl_str, 308);
             if (__less_dec(&max, &dec)) return copysign((double)INFINITY, d->sign == 0 ? 1.0 : -1.0);
         }
         i = dec.sig.text;
@@ -147,3 +146,6 @@ double func_0212f300(const decimal *d) {
         return first_guess;
     }
 }
+
+// ---- file-scope objects (.data 0x0213c574-0x0213c5b4, then the string literal up to 0x0213c5dc)
+double data_0213c574[8] = {1e1, 1e2, 1e3, 1e4, 1e5, 1e6, 1e7, 1e8}; // pow_10

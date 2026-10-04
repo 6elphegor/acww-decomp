@@ -73,8 +73,6 @@ typedef struct {
     u32 CharsWritten;
 } __wOutStr;
 
-extern wchar_t data_0213c53c[]; /* L"(null)" */
-extern char data_0213c540[];    /* "(null)" */
 extern void *memcpy(void *, const void *, u32);
 extern void *memchr(const void *s, s32 c, u32 n);
 extern s32 func_02128908(wchar_t *pwc, const char *s, u32 n);
@@ -100,11 +98,6 @@ typedef struct {
 } decform;
 
 extern u16 data_0213a610[]; /* ctype table (u16 per char) */
-extern wchar_t data_0213c544[]; /* L"-INF" */
-extern wchar_t data_0213c550[]; /* L"-inf" */
-extern wchar_t data_0213c55c[]; /* L"INF" */
-extern wchar_t data_0213c564[]; /* L"inf" */
-extern wchar_t data_0213c56c[]; /* L"NAN" */
 extern void func_0212fa54(decform *form, double x, decimal *d); /* __num2dec */
 extern wchar_t *wcscpy(wchar_t *dst, const wchar_t *src); /* wcscpy */
 #define iswupper(c) (((c) >= 128) ? 0 : (data_0213a610[c] & 0x200))
@@ -332,17 +325,17 @@ wchar_t *func_0212cb28(double num, wchar_t *buff, print_format format) {
     case 'I':
         if (num < 0) {
             p = (char *)buff - 10;
-            if (iswupper(format.conversion_char)) wcscpy((wchar_t *)p, data_0213c544);
-            else wcscpy((wchar_t *)p, data_0213c550);
+            if (iswupper(format.conversion_char)) wcscpy((wchar_t *)p, L"-INF");
+            else wcscpy((wchar_t *)p, L"-inf");
         } else {
             p = (char *)buff - 8;
-            if (iswupper(format.conversion_char)) wcscpy((wchar_t *)p, data_0213c55c);
-            else wcscpy((wchar_t *)p, data_0213c564);
+            if (iswupper(format.conversion_char)) wcscpy((wchar_t *)p, L"INF");
+            else wcscpy((wchar_t *)p, L"inf");
         }
         return (wchar_t *)p;
     case 'N':
         p = (char *)buff - 8;
-        wcscpy((wchar_t *)p, data_0213c56c);
+        wcscpy((wchar_t *)p, L"NaN");
         return (wchar_t *)p;
     }
     dec.exp += dec.sig.length - 1;
@@ -532,7 +525,7 @@ s32 func_0212c2b0(void *(*WriteProc)(void *, const wchar_t *, u32), void *WriteP
         case 's':
             if (format.argument_options == wchar_argument) {
                 buff_ptr = *(wchar_t **)(arg += 4, arg - 4);
-                if (buff_ptr == 0) buff_ptr = data_0213c53c;
+                if (buff_ptr == 0) buff_ptr = L"";
                 if (format.alternate_form) {
                     num_chars = (u8)*buff_ptr++;
                     if (format.precision_specified && num_chars > format.precision) num_chars = format.precision;
@@ -544,7 +537,7 @@ s32 func_0212c2b0(void *(*WriteProc)(void *, const wchar_t *, u32), void *WriteP
                 }
             } else {
                 s = *(char **)(arg += 4, arg - 4);
-                if (s == 0) s = data_0213c540;
+                if (s == 0) s = "";
                 if (format.alternate_form) {
                     n = (u8)*buff_ptr;
                     if (format.precision_specified && n > format.precision) n = format.precision;

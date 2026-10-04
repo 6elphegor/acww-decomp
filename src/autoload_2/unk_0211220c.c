@@ -6,7 +6,7 @@ typedef int s32;
 
 extern u32 data_021fcbf4, data_021fcc00, data_021fcc04, data_021fcc08;
 typedef struct { u16 x, y, z; } T6;
-extern T6 data_02139f54[], data_02139f56[], data_02139f58[];
+extern const T6 data_02139f54[16], data_02139f56[], data_02139f58[]; // f56 / f58: the y / z members (interior labels)
 s32 GX_ResetBankForTex(void);
 
 // GX_BeginLoadTex
@@ -18,3 +18,10 @@ void GX_BeginLoadTex(void) {
     data_021fcc08 = (u32)data_02139f58[i].x << 12;
 }
 
+// ---- file-scope objects (.rodata 0x02139f54-0x02139fb4)
+const T6 data_02139f54[16] = {
+    {0x0000, 0x0000, 0x0000}, {0x6800, 0x0000, 0x0000}, {0x6820, 0x0000, 0x0000}, {0x6800, 0x0000, 0x0000},
+    {0x6840, 0x0000, 0x0000}, {0x6800, 0x6840, 0x0020}, {0x6820, 0x0000, 0x0000}, {0x6800, 0x0000, 0x0000},
+    {0x6860, 0x0000, 0x0000}, {0x6800, 0x6860, 0x0020}, {0x6820, 0x6860, 0x0020}, {0x6800, 0x6860, 0x0040},
+    {0x6840, 0x0000, 0x0000}, {0x6800, 0x6840, 0x0020}, {0x6820, 0x0000, 0x0000}, {0x6800, 0x0000, 0x0000},
+};

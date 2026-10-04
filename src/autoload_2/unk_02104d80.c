@@ -88,8 +88,8 @@ extern u8 data_0213be0c[], data_0213be08[];
 extern s32 data_0213bdf0[3], data_0213bdfc[3];
 extern u8 data_0213bdc4[], data_0213bdcc[], data_0213bdc0[];
 typedef struct MtxEnt { s32 m[25]; } MtxEnt;
-extern MtxEnt data_021f70c4[];
-extern MtxEnt data_021f7104[];
+extern u32 data_021f70c4[16];
+extern u8 data_021f7104[0x18c0];
 extern void MIi_CpuClearFast(u32, void *, u32);
 extern void G3_MultMtx43(void *);
 extern void G3_MultMtx33(void *);
@@ -192,3 +192,8 @@ void NNSi_G3dFuncSbc_NODEMIX(RS *rs)
     *(volatile u32 *)0x0400044c = rs->c[1];
     rs->c += (rs->c[2] + 1) * 3;
 }
+
+// ---- file-scope objects (autoload_3 .bss 0x021f70c4-0x021f89c4): the NODEMIX work areas (per-matrix flags and the
+// blended matrix cache), addressed by byte offset as MtxEnt records
+u32 data_021f70c4[16];
+u8 data_021f7104[0x18c0];

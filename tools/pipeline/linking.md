@@ -706,6 +706,45 @@ First unit: GX_SetGraphicsMode/GXS_SetGraphicsMode, 0x0210f0c4-0x0210f154.
 SDK functions that use numbers of the SDK's linker script (stack sizes, arena starts) need the names of
 `config/usa/arm9/abs_symbols.txt`: see "Absolute symbols" under "Names the linker script defines".
 
+## Data of library units
+
+What the data ownership of the library modules (batch M5) found; it applies to main units as well.
+
+* **Size order per file.** All data objects of one file (`.data`, `.rodata` and `.bss` together) are heapsorted by
+  size, so in every section a file's objects appear in ascending size. A run of objects that is not ascending is
+  several files. Many early library units were cut by code only and are several original files: they are split at
+  function boundaries with `tools/pipeline/split_unit.py` (the declarations are copied into every part), and each
+  part owns its file's ranges. A unit that turned out to be one file cut into several is merged; when the parts
+  declare the same objects or functions with different types, each part's declarations and code can be kept in a
+  namespace of its own (everything `extern "C"`, so no symbol name changes; mwcc accepts differing `extern "C"`
+  declarations in different namespaces): `src/autoload_2/unk_020e9a08.cpp`.
+* **Creation order.** For C++ files the model of `linkprep.py data` holds (objects created at their definition, the
+  reversed list heapsorted). For C files mwcc heapsorts the creation list itself, not reversed: write the C
+  definitions in the reverse of the C++ order (checked on the NitroSDK SND command file, the NNS sound main file and
+  others). A file-scope `static` or tentative definition near the top creates its object there, and the objects an
+  initialiser refers to (the string literals of a pointer table, for example) are created with it and take part in
+  the sort. String literals used inside functions are not sorted: they follow the sorted objects in the order of the
+  functions in the ROM. When a definition order is not obvious, permuting the definitions of one size and running
+  `check` is quick.
+* **Adding an object reorders the others.** An extra object changes the heap, so equal-size objects elsewhere in the
+  file can swap; adding a profile or a constant to an otherwise finished unit can make its bss wrong although the
+  new object is in place. Search the definition order again (or give up on the object).
+* **One link order for all sections.** dsd sorts the units by one order over all sections of a module (`dsd lcf`:
+  "Link order cycle detected"): a unit that owns `.text` and data must not have its data before the data of a unit
+  whose `.text` comes before its own. Units with data only (no `.text`) are free; they work in `autoload_2`,
+  `main` and `dtcm` (`src/dtcm/`), named after their first address.
+* **Interior labels and views.** dsd made labels for members and element addresses (`array + 0x1000`, the field of
+  a record); the unit defines the whole object and `vtable_rename.py --interior <module> <label> <object>` (works for
+  `autoload_2`, `autoload_3`, `itcm` too) records the label in `lcf_symbols.txt`. Declared types are often views:
+  check a definition's size against the gap to the next object, and look for an unlabelled thread stack after an
+  `OSThread` (its end is the next object's label, which `OS_CreateThread` gets as the stack top).
+* **Details.** `__attribute__((aligned(32)))` reproduces the SDK's `ATTRIBUTE_ALIGN(32)` buffers. Explicit zero
+  initialisers go to `.bss`, so zero data inside an original `.data` range (the DTCM objects) cannot be written as
+  plain C. Two library files were built with string pooling (`-str reuse` in the file's `mwcc-flags` line): MSL's
+  decimal conversion (`unk_0212fa54.c`) and the network file. A static initialiser of a library file is owned with a
+  `unk_<start>.main.<ext>` placeholder in main's `delinks.txt` (`.init`, `.ctor`), as before. An ITCM unit's bss is
+  owned with the same `.bss` placeholder as an `autoload_2` unit's.
+
 Not supported / open:
 
 * `tools/object_order.py` (units placed object by object, two compilers in one unit) refuses an

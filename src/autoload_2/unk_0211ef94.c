@@ -63,8 +63,8 @@ extern int (*data_021ff464)(void);
 extern u32 data_021ff460;
 extern WMArm9Buf *data_021ff46c;
 extern u16 data_021ff468;
-extern u8 data_021ff470[];
-extern u8 data_021ff490[];
+extern u8 data_021ff470[0x20];
+extern u8 data_021ff490[0x28];
 extern WMMsg data_021ff4b8;
 extern u8 data_021ff4cc[];
 extern u8 data_021ff4dc[];
@@ -265,3 +265,12 @@ u32 WMi_CheckIdle(void) {
     return data_021ff46c->status->state <= 1 ? 3 : 0;
 }
 
+// ---- file-scope objects (.data 0x0213c1fc-0x0213c200)
+u32 data_0213c1fc = 0x10000;
+
+// ---- file-scope objects (autoload_3 .bss 0x021ff468-0x021ff4b8; this definition order gives the original order after mwcc's size
+// sort)
+u16 data_021ff468;
+WMArm9Buf *data_021ff46c;
+u8 data_021ff470[0x20];
+u8 data_021ff490[0x28];

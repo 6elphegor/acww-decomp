@@ -74,3 +74,7 @@ void *OS_GetArenaLo(s32 id) {
     return ARENA_LO(id);
 }
 
+// ---- file-scope objects (autoload_3 .bss 0x021fce84-0x021fce8c; this definition order gives the original order after mwcc's size
+// sort)
+s32 data_021fce88;
+s32 data_021fce84; // OSi_ArenaInitialized

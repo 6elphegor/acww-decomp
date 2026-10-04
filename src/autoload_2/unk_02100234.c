@@ -427,3 +427,7 @@ void *NNS_FndGetPrevListObject(NNSFndList *list, void *obj) {
     if (obj == 0) return list->tail;
     return ((NNSFndLink *)((u8 *)obj + list->offset))->prev;
 }
+
+// ---- file-scope objects (autoload_3 .bss 0x021f5ca0-0x021f5cb0)
+u32 data_021f5ca0;               // sRootListInitialized
+NNSFndList data_021f5ca4;        // sRootList

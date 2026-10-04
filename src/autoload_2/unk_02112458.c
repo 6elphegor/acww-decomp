@@ -163,3 +163,5 @@ void func_02112458(void) {
     OS_SpinWait(0x1000);
 }
 
+// ---- file-scope objects (autoload_3 .bss 0x021fcc10-0x021fcc14)
+s32 data_021fcc10;

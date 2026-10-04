@@ -128,7 +128,7 @@ extern NNSFndList data_021fbdb4;
 extern u8 data_021fbdc0[0x18];
 extern Job data_021fbdd8[8];
 extern void *data_021fbdb0;
-extern u8 data_021fbf60[];
+extern u8 data_021fbf60[0x200];
 extern EffCtl data_0213bf10;
 extern s32 data_0213bf28[];
 extern s16 data_02139fb4[];
@@ -696,3 +696,16 @@ void func_0210da28(Ctx *c)
     }
     c->fl.f = 0;
 }
+
+// ---- file-scope objects (autoload_3 .bss 0x021fbda8-0x021fcbd0). data_021fc62c / data_021fc644 are the mutex and the
+// command list inside data_021fc160 (interior labels). This definition order gives the original order after mwcc's
+// size sort.
+s32 data_021fbda8;
+void *data_021fbdb0;
+ThreadInfo *data_021fbdac;
+NNSFndList data_021fbdb4;
+u8 data_021fbdc0[0x18];
+Job data_021fbdd8[8];
+u8 data_021fbf60[0x200] __attribute__((aligned(32)));
+ThreadInfo data_021fc160;
+Ctx data_021fc650[4];

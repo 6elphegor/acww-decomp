@@ -367,3 +367,7 @@ void func_0210ec0c(s16 *l, s16 *r, u32 len, EffCtl *c)
         c->u.w[i] = tmp[i];
     }
 }
+
+// ---- file-scope objects (.data 0x0213bf10-0x0213bfe8): the capture-effect control block. data_0213bf28 (its sample
+// work area u.w) is an interior label (autoload_2 lcf_symbols.txt).
+EffCtl data_0213bf10 = {-1};

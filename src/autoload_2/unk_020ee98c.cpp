@@ -437,3 +437,19 @@ tail:
     }
 }
 
+// ---- file-scope objects (autoload_3 .bss 0x021f5b48-0x021f5b80: ten u8, three u16, one s32). mwcc heapsorts a
+// file's objects by size (unstable); this definition order gives the original order.
+s32 sVoicePendingPitch;
+u16 sVoicePendingSyllable;
+u16 data_021f5b74;
+u16 data_021f5b78;
+u8 data_021f5b68;
+u8 data_021f5b64;
+u8 data_021f5b60;
+u8 data_021f5b48;
+u8 data_021f5b4c;
+u8 data_021f5b6c;
+u8 data_021f5b50;
+u8 sVoicePendingVolume;
+u8 data_021f5b54;
+u8 data_021f5b58;

@@ -50,3 +50,10 @@ extern "C" void func_020fe4b4(u32 tag, u32 data) {
         cb(arg, lo);
     }
 }
+
+// ---- file-scope objects (autoload_3 .bss 0x021f5c40-0x021f5c50; this definition order gives the original order after
+// mwcc's size sort)
+void (*data_021f5c4c)(u32, u32);
+u32 data_021f5c48;
+volatile u16 data_021f5c44;
+volatile u16 data_021f5c40;

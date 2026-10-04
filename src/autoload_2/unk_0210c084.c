@@ -63,7 +63,7 @@ extern void FreeCommandBuffer();
 extern void func_0210da28();
 extern u32 _u32_div_f();
 
-extern u8 data_021fbd6c[];
+extern u8 data_021fbd6c[0x3c];
 extern u32 LoadSingleWaves();
 extern u32 LoadSingleWave();
 extern void SingleWaveDisposeCallback();
@@ -668,3 +668,6 @@ u32 LoadSingleWaves(u32 wa, u32 bank, u32 arcNo, u32 file, u32 heap)
     }
     return 1;
 }
+
+// ---- file-scope objects (autoload_3 .bss 0x021fbd6c-0x021fbda8)
+u8 data_021fbd6c[0x3c];

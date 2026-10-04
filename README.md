@@ -13,13 +13,15 @@ Supported version:
 
 Every overlay and all of main are built from source, and the build reproduces the original ROM byte for byte.
 
-| Module | Code built from source |
-|---|--:|
-| ARM9 main | 100% of functions |
-| Overlays (148) | 100% |
-| ITCM | 97.0% |
-| `autoload_2` (libraries) | 97.4% |
-| **Total** | **99.6%** |
+| Module | Code built from source | Data owned by a source file |
+|---|--:|--:|
+| ARM9 main | 100% of functions | 99.6% |
+| Overlays (148) | 100% | 100% |
+| ITCM | 97.0% | (code only) |
+| `autoload_2` (libraries) | 97.4% | 98.6% |
+| `autoload_3` (bss of main and the libraries) | | 99.9% |
+| DTCM | | 9.3% |
+| **Total** | **99.6%** | **99.8%** |
 
 The 14 functions still taken from the original image, and the data no source file owns yet, are listed in
 [`docs/unmatched.md`](docs/unmatched.md). Most names are still placeholders (`func_<address>`, `Unk_<address>`);

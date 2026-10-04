@@ -32,3 +32,6 @@ s32 func_021122b0(void) {
     }
     return 0;
 }
+
+// ---- file-scope objects (autoload_3 .bss 0x021fcc0c-0x021fcc10)
+u32 data_021fcc0c;       // OSi_IrqStackWarningOffset

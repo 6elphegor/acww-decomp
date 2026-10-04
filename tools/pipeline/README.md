@@ -13,6 +13,7 @@ Tools for turning matched source into `complete` units of the build. Run everyth
 | `mainbatch.sh` | Install prepared units (`[--commit] [--module M] <unit dir>...`), reconfigure, build once, and keep them only if the ROM matches; otherwise revert and show why |
 | `maindis.py` | Disassemble original code of main, `autoload_2` or ITCM at an address, with relocation targets |
 | `ovdump.py` | Dump an overlay's `.data` as words with relocation targets and labels |
+| `split_unit.py` | Split a unit into several units at function addresses (the declarations are copied into every part; linking.md, "Data of library units") |
 | `realnames.py` | Rewrite `func_XXXXXXXX` callees in a unit to their current `symbols.txt` names (`-n` only reports) |
 | `vtable_rename.py` | Name a vtable at its real start and rewrite relocations to it (`to:<start> add:0x8`); `--interior` / `--section` record labels inside objects |
 | `alias.py` | Give an existing function symbol a second name (zero-size label), e.g. a C1/C2 constructor pair |

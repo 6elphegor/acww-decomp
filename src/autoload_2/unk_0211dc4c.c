@@ -63,7 +63,7 @@ typedef struct {
     u32 f8;
     u32 fc;
     u32 f10, f14, f18, f1c;
-    u32 buf[512];
+    u32 buf[128];           // 0x20: the 512-byte page cache
 } RomDev;
 
 extern RTCWork data_021feb90;
@@ -376,3 +376,8 @@ void CARD_CancelBackupAsync(void) {
     data_021fec00.flag |= 0x40;
     OS_RestoreInterrupts(irq);
 }
+
+// ---- file-scope objects (autoload_3 .bss 0x021ff220-0x021ff460; this definition order gives the original order after mwcc's size
+// sort)
+u32 data_021ff220;
+RomDev data_021ff240 __attribute__((aligned(32)));

@@ -1,5 +1,6 @@
 // mwcc-flags: -nothumb -O4,p
-// NitroSDK OS exception init / OS tick (os_exception.c, os_tick.c): autoload_2 0x02114cd8-0x02114ee4. ARM code, mwcc 1.2/base.
+// NitroSDK OS exception init (os_exception.c), autoload_2 0x02114cd8-0x02114d84 (the former unit 0x02114cd8-0x02114ee4
+// split into its two files by their bss; os_tick.c is unk_02114d84.c). ARM code, mwcc 1.2/base.
 typedef unsigned short u16;
 typedef unsigned int u32;
 typedef unsigned long long u64;
@@ -23,48 +24,6 @@ void OSi_SetTimerReserved(s32 n);
 
 #define reg_OS_TM0CNT_L (*(volatile u16 *)0x04000100)
 #define reg_OS_TM0CNT_H (*(volatile u16 *)0x04000102)
-
-// OS_InitTick
-void OS_InitTick(void) {
-    if (data_021fcf1c) return;
-    data_021fcf1c = 1;
-    OSi_SetTimerReserved(0);
-    data_021fcf24 = 0;
-    reg_OS_TM0CNT_H = 0;
-    reg_OS_TM0CNT_L = 0;
-    reg_OS_TM0CNT_H = 0xc1;
-    OS_SetIrqFunction(8, OSi_CountUpTick);
-    OS_EnableIrqMask(8);
-    data_021fcf20 = 0;
-}
-
-// OS_IsTickAvailable
-u16 OS_IsTickAvailable(void) {
-    return data_021fcf1c;
-}
-
-// OSi_CountUpTick
-void OSi_CountUpTick(void) {
-    data_021fcf24++;
-    if (data_021fcf20) {
-        reg_OS_TM0CNT_H = 0;
-        reg_OS_TM0CNT_L = 0;
-        reg_OS_TM0CNT_H = 0xc1;
-        data_021fcf20 = 0;
-    }
-    OSi_EnterTimerCallback(0, OSi_CountUpTick, 0);
-}
-
-// OS_GetTick (low 16 bits)
-u16 OS_GetTickLo(void) {
-    return reg_OS_TM0CNT_L;
-}
-
-// OSi_SetTimerReserved
-void OSi_SetTimerReserved(s32 n) {
-    data_021fcf18 |= 1 << n;
-}
-
 // OS_InitException
 void OS_InitException(void) {
     void *buf = *(void **)0x027ffd9c;
@@ -86,3 +45,10 @@ void func_02114cd8(void *handler, void *arg) {
     data_021fce8c = handler;
     data_021fce90 = arg;
 }
+
+// ---- file-scope objects (autoload_3 .bss 0x021fce8c-0x021fcf18; this definition order gives the original order after mwcc's size
+// sort)
+void *data_021fce8c; // OSi_UserExceptionHandler
+void *data_021fce94; // OSi_ExceptionHandlerBuf
+void *data_021fce90; // OSi_UserExceptionHandlerArg
+u32 data_021fce98[32]; // exception context (used by the handler in unk_02114b54.s)

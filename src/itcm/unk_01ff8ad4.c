@@ -995,3 +995,8 @@ void NNS_G3dDraw(RenderObj *obj) {
     }
 }
 
+// ---- file-scope objects (autoload_3 .bss 0x021f89c4-0x021f89d0: the geometry command buffer state of gecom.c; this
+// definition order gives the original order after mwcc's size sort)
+int data_021f89cc;                 // use the fast GX DMA
+GeBuffer *data_021f89c4;           // NNS_G3dGeBuffer
+volatile int data_021f89c8;        // DL send busy flag

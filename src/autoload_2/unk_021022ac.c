@@ -15,7 +15,7 @@ static inline u32 MATH_ILog2(u32 x) { return 31 - MATH_CountLeadingZerosInline(x
 
 // OBJ size (log2 of the width and height in characters) for an area of 2^hs x 2^ws characters
 typedef struct ObjShift { u8 w; u8 h; } ObjShift;
-extern ObjShift data_02135cb8[4][4];
+extern const ObjShift data_02135cb8[4][4];
 
 // The canvas's 32-bit parameter: for the OBJ 1D canvas the OBJ size, for the BG canvas the area width
 typedef union CharCanvasParam { u32 u; ObjShift objShift; } CharCanvasParam;

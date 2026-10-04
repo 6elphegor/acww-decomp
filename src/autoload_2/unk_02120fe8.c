@@ -73,7 +73,7 @@ extern u32 MATH_CountPopulation(u32);
 extern u32 WM_SetMPDataToPortEx(WMCallback cb, void *arg, void *sendData, u16 size, u16 destBitmap, u16 port, u16 prio);
 extern u32 WmGetSharedDataAddress(void *base, u32 x, void *y, u32 n);
 extern void WmDataSharingSendDataSet(WMPool *ds, BOOL flag);
-extern u8 data_021fff00[];
+extern u8 data_021fff00[0x80];
 extern u32 MBi_CommChangeParentStateCallbackOnly(u32, u32, u16 *);
 
 void WmDataSharingReceiveData(WMPool *ds, u32 n, u16 *buf);
@@ -540,3 +540,5 @@ void func_02120fe8(WMMsg *msg) {
     ds->f81c = 5;
 }
 
+// ---- file-scope objects (autoload_3 .bss 0x021fff00-0x021fff80)
+u8 data_021fff00[0x80];

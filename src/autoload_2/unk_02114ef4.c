@@ -1,5 +1,6 @@
 // mwcc-flags: -nothumb -O4,p
-// NitroSDK OS alarm / reset / owner info (os_alarm.c, os_reset.c, os_system.c): autoload_2 0x02114ef4-0x0211565c. ARM code, mwcc 1.2/base.
+// NitroSDK OS alarm (os_alarm.c), autoload_2 0x02114ef4-0x021153f8 (the former unit 0x02114ef4-0x0211565c split into its files by
+// their bss). ARM code, mwcc 1.2/base.
 typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
@@ -89,77 +90,6 @@ void OSi_SendToPxi(u32 data);
 
 #define reg_OS_TM1CNT_L (*(volatile u16 *)0x04000104)
 #define reg_OS_TM1CNT_H (*(volatile u16 *)0x04000106)
-
-// OS_GetMacAddress
-void OS_GetMacAddress(u8 *macAddr) {
-    MI_CpuCopy8((void *)0x027ffcf4, macAddr, 6);
-}
-
-// OS_GetOwnerInfo
-void OS_GetOwnerInfo(OSOwnerInfo *info) {
-    OSSharedUserInfo *src = (OSSharedUserInfo *)0x027ffc80;
-    info->favoriteColor = src->favoriteColor;
-    info->birthMonth = src->birthMonth;
-    info->birthDay = src->birthDay;
-    info->unk3 = src->unk4;
-    info->nickNameLength = src->nickNameLength;
-    info->commentLength = src->commentLength;
-    MIi_CpuCopy16(src->nickName, info->nickName, 20);
-    MIi_CpuCopy16(src->comment, info->comment, 52);
-}
-
-// OS_InitReset
-void OS_InitReset(void) {
-    if (data_021fcf4c) return;
-    data_021fcf4c = 1;
-    PXI_Init();
-    while (!PXI_IsCallbackReady(12, 1)) {
-    }
-    PXI_SetFifoRecvCallback(12, OSi_CommonCallback);
-}
-
-// OSi_CommonCallback
-void OSi_CommonCallback(u32 tag, u32 data, s32 err) {
-    u16 command = (u16)((data & 0x7f00) >> 8);
-    if (command == 0x10) {
-        data_021fcf50 = 1;
-        return;
-    }
-    Fatal_Trap();
-}
-
-// OSi_SendToPxi
-void OSi_SendToPxi(u32 data) {
-    while (PXI_SendWordByFifo(12, data << 8, 0) != 0) {
-    }
-}
-
-// OS_ResetSystem
-void OS_ResetSystem(u32 parameter) {
-    if (*(volatile u16 *)0x027ffc40 == 2) Fatal_Trap();
-    CARD_LockRom((u16)OS_GetLockID());
-    MI_StopDma(0);
-    MI_StopDma(1);
-    MI_StopDma(2);
-    MI_StopDma(3);
-    OS_SetIrqMask(0x40000);
-    OS_ResetRequestIrqMask(0xffffffff);
-    *(volatile u32 *)0x027ffc20 = parameter;
-    OSi_SendToPxi(0x10);
-    OSi_DoResetSystem();
-}
-
-// OS_InitVAlarm
-void OS_InitVAlarm(void) {
-    if (data_021fcf38) return;
-    data_021fcf38 = 1;
-    data_021fcf44[0] = 0;
-    data_021fcf44[1] = 0;
-    OS_DisableIrqMask(4);
-    data_021fcf40 = 0;
-    data_021fcf3c = 0;
-}
-
 // OSi_SetTimer
 void OSi_SetTimer(OSAlarm *alarm) {
     s64 delta;
@@ -330,3 +260,8 @@ void func_02114ef4(u32 tag) {
     }
     OS_RestoreInterrupts(enabled);
 }
+
+// ---- file-scope objects (autoload_3 .bss 0x021fcf2c-0x021fcf38; this definition order gives the original order after mwcc's size
+// sort)
+u16 data_021fcf2c;          // OSi_AlarmInitialized
+OSAlarmQueue data_021fcf30; // OSi_AlarmQueue

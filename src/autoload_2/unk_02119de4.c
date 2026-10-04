@@ -56,7 +56,6 @@ extern u32 data_021fea80;
 extern FSOvtCache data_021fea84;
 extern FSOvtCache data_021fea8c;
 extern FSArc data_021fea94;
-extern char data_0213bff8[];
 extern u8 *data_0213bffc;
 extern u32 data_0213c000;
 extern DtorEntry *data_0220066c;
@@ -151,7 +150,7 @@ void FSi_InitRom(u32 dma) {
     data_021fea8c.size = 0;
     CARD_Init();
     FS_InitArchive(&data_021fea94);
-    FS_RegisterArchiveName(&data_021fea94, data_0213bff8, 3);
+    FS_RegisterArchiveName(&data_021fea94, "rom", 3);
     if (REG_BOOTTYPE == 2) {
         data_021fea84.ptr = (u8 *)-1;
         data_021fea84.size = 0;
@@ -171,3 +170,11 @@ void FSi_InitRom(u32 dma) {
         }
     }
 }
+
+// ---- file-scope objects (autoload_3 .bss 0x021fea7c-0x021feaf0; this definition order gives the original order after mwcc's size
+// sort)
+u32 data_021fea80;
+u32 data_021fea7c;
+FSOvtCache data_021fea84;
+FSOvtCache data_021fea8c;
+FSArc data_021fea94;

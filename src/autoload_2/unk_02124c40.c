@@ -568,3 +568,13 @@ void MB_End(void) {
     OS_RestoreInterrupts(e);
 }
 
+// ---- file-scope objects (.data 0x0213c20c-0x0213c238; data_0213c220 is used by unk_02125c94.c). This definition order
+// gives the original order after mwcc's size sort.
+extern u16 data_0213c224[10];
+u16 data_0213c224[10] = {'m', 'u', 'l', 't', 'i', 'b', 'o', 'o', 't', 0}; // UTF-16 "multiboot"
+u16 *data_0213c21c = data_0213c224;
+u32 data_0213c220 = 1;
+u16 data_0213c214 = 40;
+u16 data_0213c20c = 0xffff;
+u16 data_0213c218 = 0xffff;
+u16 data_0213c210 = 40;

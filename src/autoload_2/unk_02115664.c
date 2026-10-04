@@ -32,3 +32,8 @@ void OSi_UnlockVram(u32 mask, u16 data) {
     }
     OS_RestoreInterrupts(enabled);
 }
+
+// ---- file-scope objects (autoload_3 .bss 0x021fcf54-0x021fcf6c; this definition order gives the original order after mwcc's size
+// sort)
+u32 data_021fcf54;      // bit mask table state
+u16 data_021fcf58[9];   // owner table

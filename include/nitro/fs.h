@@ -144,7 +144,6 @@ struct FSArc {
     /* 0x50 */ FSIoFunc read;
     /* 0x54 */ int (*proc)(FSFile *, u32);
     /* 0x58 */ u32 proc_mask;
-    /* 0x5c */ u32 pad5c[2];
 };
 
 #endif

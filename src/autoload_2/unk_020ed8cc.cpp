@@ -176,3 +176,12 @@ extern "C" void CmdSeq_Undo(CmdSeq *o) {
     }
 }
 
+// ---- file-scope objects (autoload_3 .bss 0x021f59e8-0x021f5b3c). mwcc sorts a file's bss by size; the 0x28-byte
+// gSndSeSystem sits between this file's 4-byte and 0x90-byte objects, so it is this file's object although only other
+// units use it.
+void *gSndHeap;
+u8 gSndDefaultHandle[4]; // NNSSndHandle
+void *gSndCaptureBuffer;
+Player gSndSeSystem;
+u8 data_021f5a1c[0x90];
+u8 data_021f5aac[0x90];

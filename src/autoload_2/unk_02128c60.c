@@ -29,7 +29,7 @@ typedef struct scan_format {
 typedef int (*ReadProc)(void *, int, int);
 
 extern u32 data_0213c4fc;                 // rand seed
-extern const scan_format data_0213c500;   // default_scan_format {0,0,0,0, 0x7fffffff, zeros}
+extern scan_format data_0213c500;         // default_scan_format {0,0,0,0, 0x7fffffff, zeros}
 extern const u16 data_0213a510[];         // __ctype_map
 extern OSMutex data_02200324;             // signal-table mutex (data_02200298[7])
 extern u32 data_02200250[];
@@ -632,3 +632,7 @@ int rand(void) {
 void srand(u32 seed) {
     data_0213c4fc = seed;
 }
+
+// ---- file-scope objects (.data 0x0213c4fc-0x0213c528)
+u32 data_0213c4fc = 1; // rand seed
+scan_format data_0213c500 = {0, 0, 0, 0, 0x7fffffff}; // default_scan_format

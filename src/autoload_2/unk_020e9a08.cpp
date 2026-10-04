@@ -1,10 +1,260 @@
-// mwcc-flags: -nothumb -O4,p
+// mwcc-flags: -nothumb -O4,p -str reuse
+// The network file (WFC / GameSpy stats glue, local wireless; calls into overlays 65/66/67), autoload_2
+// 0x020e9a08-0x020ec848, mwcc 1.2/base, C++, ARM, -O4,p, built with -str reuse (the original has one copy of each string
+// literal that several functions use: the stats secret, the game name). The four former units unk_020e9a08.cpp (the
+// tail of RC_020e92f4), unk_020ea0b4.cpp, unk_020ea34c.cpp (G002c) and unk_020ea960.cpp (G003a) are merged unchanged:
+// each keeps its own declarations in a namespace (NetA..NetD; everything is extern "C", so no symbol name changes) because
+// the parts declare the same objects and functions with different types. Its .data (0x0213b058-0x0213b120) and bss
+// (autoload_3 0x021f488c-0x021f5974) are defined at the end of the file.
+#include "types.h"
+#include "gfx/VecFx32.h"
+#include "net/HexTable.h"
+#include "net/WifiPingState.h"
+
+namespace NetA { // declarations as seen by the code of the former unit unk_020e9a08.cpp
+// RC_020e92f4 (companion of RC_020e8558): G002b without its first four functions (those belong to the heap file, now RC_020e8558).
+// The (probable) vector helper file (0x020e92f4-0x020e9a08) and the start of the network file (0x020e9a08-0x020ea0b4).
+// autoload_2 0x020e92f4-0x020ea0b4, 39 functions. mwcc 1.2/base, C++, ARM, -O4,p. PARTIAL, code unchanged from G002b, all data extern.
+
+typedef volatile u64 vu64;
+
+extern "C" {
+void VEC_Normalize(VecFx32 *v); // VEC_Normalize
+void VEC_CrossProduct(const VecFx32 *a, const VecFx32 *b, VecFx32 *out); // VEC_CrossProduct
+s32 FX_Div(s32 a, s32 b); // FX_Div
+s32 Math_Sqrt64(u64 x);
+void Math_InitSqrt64(void);
+void Vec_NormalizeCopy(VecFx32 *out, VecFx32 *in);
+extern const s16 data_02135f44[]; // FX_SinCosTable_
+}
+
+static inline s32 FX_Mul(s32 a, s32 b) {
+    return (s32)(((s64)a * b + 0x800) >> 12);
+}
+
+#define FX_SinIdx(a) data_02135f44[((a) >> 4) * 2]
+#define FX_CosIdx(a) data_02135f44[((a) >> 4) * 2 + 1]
+
+extern "C" {
+void *Net_Alloc(u32 size, u32 align); // alloc via hook data_021f48f4
+void Net_Free(void *p); // free via hook sFreeHook
+void MI_CpuFill8(void *dst, u32 v, u32 n); // MI_CpuFill8
+void MI_CpuCopy8(const void *src, void *dst, u32 n); // MI_CpuCopy8
+void OS_SNPrintf(char *dst, u32 len, const char *fmt, ...); // OS_SPrintf
+
+s32 Wlx_GetState(void);
+s32 Wlx_StopExchange(void *p);
+s32 Wlx_StartExchange(void *p);
+void Wlx_Init(void *p, void *cb, u32 n);
+void Wlx_SetPacketSizes(u32 a, u32 b, u32 c);
+void Wlx_RegisterData(void *h, void *cb, void *a, u32 b, u32 c, u32 d);
+void DwcMatch_ClearServerLock(void);
+s32 DwcFriend_IsIdle(void);
+void DwcFriend_DeleteFriend(void *p);
+s32 DwcFriend_UpdateServersAsync(u32 a, void *b, u32 c, void *d, u32 e, void *f, u32 g);
+void DwcGsHttp_Get(void *a, void *b, void *c);
+void func_020fff48(void *a, u32 b, void *c);
+void Net_OnWlxStopped(void);
+void Net_OnWlxExchangeDone(void);
+void Net_OnGameStatsChallenge(void);
+void Net_OnWifiFriendDeleted(void);
+void Net_OnWifiServersUpdated(void);
+void Net_OnWifiFriendStatus(void);
+void Net_OnHttpDownloadDone(void);
+s64 Net_GetOwnFriendKey(void *p);
+s32 func_021000fc(void *p);
+s32 func_021000f4(void *p);
+s32 func_020ffad0(void *p, void *q);
+s32 func_020ffd78(void *p);
+
+extern u16 sWifiConnectStep;
+extern u8 sNetMode;
+extern u8 *sWifiFriendList;
+extern u8 *sWifiUserData;
+extern u32 data_021f48e8;
+extern u32 data_021f48e0;
+extern void *data_021f48c0;
+extern void *data_021f48b8;
+extern u32 data_021f489c;
+extern u32 data_021f48cc;
+extern s32 data_0213b06c;
+extern s32 data_0213b068;
+extern s32 data_0213b064;
+extern u32 data_021f48dc;
+extern u32 data_021f48a4;
+extern u32 data_021f48b4;
+extern u32 data_021f48c4;
+extern u32 data_021f48ac;
+extern u32 data_021f48a8;
+extern u32 data_021f48e4;
+}
+} // namespace NetA
+
+namespace NetB { // declarations as seen by the code of the former unit unk_020ea0b4.cpp
+extern "C" {
+void *Net_Alloc(u32 size, u32 align); // alloc via hook data_021f48f4
+void Net_Free(void *p); // free via hook sFreeHook
+void MI_CpuFill8(void *dst, u32 v, u32 n); // MI_CpuFill8
+void MI_CpuCopy8(const void *src, void *dst, u32 n); // MI_CpuCopy8
+void OS_SNPrintf(char *dst, u32 len, const char *fmt, ...); // OS_SPrintf
+u32 STD_GetStringLength(const char *s); // strlen
+void func_02127838(char *dst, const char *src); // strcpy
+void MATH_CalcSHA1(void *dst, const void *src, u32 n); // memcpy
+
+s32 Wlx_GetState(void);
+s32 Wlx_StopExchange(void *p);
+s32 Wlx_StartExchange(void *p);
+void Wlx_Init(void *p, void *cb, u32 n);
+void Wlx_SetPacketSizes(u32 a, u32 b, u32 c);
+void Wlx_RegisterData(void *h, void *cb, void *a, u32 b, u32 c, u32 d);
+void DwcMatch_ClearServerLock(void);
+s32 DwcFriend_IsIdle(void);
+void DwcFriend_DeleteFriend(void *p);
+s32 DwcFriend_UpdateServersAsync(u32 a, void *b, u32 c, void *d, u32 e, void *f, u32 g);
+void DwcGsHttp_Get(void *a, void *b, void *c);
+s32 NasBase64_Encode(void *a, u32 b, void *c, u32 d);
+void DwcGsHttp_PostCreate(void *p);
+void DwcGsHttp_PostAddString(void *p, const char *fmt, const void *arg);
+void DwcGsHttp_Post(void *a, void *b, void *c, u32 d);
+void func_020fff48(void *a, u32 b, void *c);
+void Net_OnWlxStopped(void);
+void Net_OnWlxExchangeDone(void);
+void Net_OnGameStatsChallenge(void);
+void Net_OnWifiFriendDeleted(void);
+void Net_OnWifiServersUpdated(void);
+void Net_OnWifiFriendStatus(void);
+void Net_OnHttpDownloadDone(void);
+void Net_OnGameStatsUploadDone(void);
+s64 Net_GetOwnFriendKey(void *p);
+s32 func_021000fc(void *p);
+s32 func_021000f4(void *p);
+s32 func_020ffad0(void *p, void *q);
+s32 func_020ffd78(void *p);
+s64 func_020ffc40(void *p);
+s32 func_020ffbd0(void *p, void *q);
+s32 func_020ffdfc(void *p);
+u64 func_020ffcc4(u32 a);
+s32 func_02100050(u32 ctx, u32 lo, u32 hi);
+void func_020ffc18(void *out, u32 lo, u32 hi);
+s32 func_020ffc60(u32 ctx, void *out);
+BOOL func_020ffd20(void *p);
+void func_020ffce8(void *p);
+void func_020ffdd0(void *p, u32 v);
+void DwcMatch_ConnectToFriendServer(u32 a, void *b, u32 c, void *d, u32 e);
+void DwcNet_SetSendDoneCallback(void *p);
+void DwcNet_SetRecvCallback(void *p);
+void DwcConn_SetClosedCallback(void *p, u32 v);
+void DwcMatch_SetupGameServer(u32 a, void *b, u32 c, void *d, u32 e);
+s32 DwcFriend_GetProfileId(void);
+s32 DwcFriend_FindIndexByProfileId(void);
+s32 LocalWl_GetState(void);
+s32 LocalWl_ConnectToParent(void *p, u32 a, u32 b);
+void *LocalWl_GetBeacon(u32 a, u32 b);
+s32 LocalWl_IsBeaconValid(void *p);
+s32 LocalWl_GetBeaconGameInfoSize(void *p);
+s32 LocalWl_GetBeaconGameInfo(void *p);
+s32 LocalWl_SetGameInfo(void);
+s32 DwcCore_ClearError(void);
+s32 DwcCore_GetLastError(void);
+u32 Net_WifiFindFriend(void);
+u32 Net_GetLocalError(void);
+u32 Net_GetWifiError(void);
+void Net_OnWifiClientMatched(void);
+void Net_WifiCallbackNop(void);
+void Net_OnWifiSendDone(void);
+void Net_OnWifiRecv(void);
+void Net_OnWifiClosedNop(void);
+void Net_OnWifiHostMatched(void);
+extern u8 data_021f488c;
+extern u8 data_021f49e0[];
+extern u32 data_021f4910[];
+extern u32 sLastErrorCode;
+extern u32 sWifiPingState[];
+extern const HexTable data_0213b084;
+
+extern u16 sWifiConnectStep;
+extern u8 sNetMode;
+extern u8 *sWifiFriendList;
+extern u8 *sWifiUserData;
+extern u32 data_021f48e8;
+extern u32 data_021f48e0;
+extern void *data_021f48c0;
+extern void *data_021f48b8;
+extern u32 data_021f489c;
+extern u32 data_021f48cc;
+extern s32 data_0213b06c;
+extern s32 data_0213b068;
+extern s32 data_0213b064;
+extern u32 data_021f48dc;
+extern u32 data_021f48a4;
+extern u32 data_021f48b4;
+extern char *data_021f48c4;
+extern u32 data_021f48ac;
+extern u32 data_021f48a8;
+extern u32 data_021f48e4;
+}
+} // namespace NetB
+
+namespace NetC { // declarations as seen by the code of the former unit unk_020ea34c.cpp
+// G002c: network file (WFC / GameSpy stats glue calling overlays 65, 66, 67), autoload_2 0x020ea34c-0x020ea960
+// (21 functions). mwcc 1.2/base, C++, ARM, -O4,p. PARTIAL unit: no data defined, everything extern. Continues at 0x020ea960.
+
+extern "C" {
+void MI_CpuFill8(void *dst, u32 v, u32 n); // MI_CpuFill8
+void MI_CpuCopy8(const void *src, void *dst, u32 n); // MI_CpuCopy8
+
+s64 Net_GetOwnFriendKey(void *p);
+s64 func_020ffc40(void *p);
+s32 func_020ffbd0(void *p, void *q);
+s32 func_020ffdfc(void *p);
+u64 func_020ffcc4(u32 a);
+s32 func_02100050(u32 ctx, u32 lo, u32 hi);
+void func_020ffc18(void *out, u32 lo, u32 hi);
+s32 func_020ffc60(u32 ctx, void *out);
+BOOL func_020ffd20(void *p);
+void func_020ffce8(void *p);
+void func_020ffdd0(void *p, u32 v);
+void DwcMatch_ConnectToFriendServer(u32 a, void *b, u32 c, void *d, u32 e);
+void DwcNet_SetSendDoneCallback(void *p);
+void DwcNet_SetRecvCallback(void *p);
+void DwcConn_SetClosedCallback(void *p, u32 v);
+void DwcMatch_SetupGameServer(u32 a, void *b, u32 c, void *d, u32 e);
+s32 DwcFriend_GetProfileId(u32 a);
+s32 DwcFriend_FindIndexByProfileId(u32 a);
+s32 LocalWl_GetState(void);
+s32 LocalWl_ConnectToParent(void *p, u32 a, u32 b);
+void *LocalWl_GetBeacon(u32 a, u32 b);
+s32 LocalWl_IsBeaconValid(void *p);
+s32 LocalWl_GetBeaconGameInfoSize(void *p);
+s32 LocalWl_GetBeaconGameInfo(void *p);
+s32 LocalWl_SetGameInfo(void);
+s32 DwcCore_ClearError(void);
+s32 DwcCore_GetLastError(u32 *p);
+s32 Net_WifiFindFriend(u32 a);
+u32 Net_GetLocalError(void);
+u32 Net_GetWifiError(void);
+void Net_OnWifiClientMatched(void);
+void Net_WifiCallbackNop(void);
+void Net_OnWifiSendDone(void);
+void Net_OnWifiRecv(void);
+void Net_OnWifiClosedNop(void);
+void Net_OnWifiHostMatched(void);
+extern u8 data_021f488c;
+extern u8 data_021f49e0[];
+extern u32 data_021f4910[];
+extern u32 sLastErrorCode;
+extern Ent sWifiPingState[];
+
+extern u16 sWifiConnectStep;
+extern u8 sNetMode;
+extern u8 *sWifiFriendList;
+}
+} // namespace NetC
+
+namespace NetD { // declarations as seen by the code of the former unit unk_020ea960.cpp
 // G003a: network file (WFC / GameSpy stats glue, overlays 65/66/67), autoload_2 0x020ea960-0x020ec848 (64 functions).
 // mwcc 1.2/base, C++, ARM, -O4,p. PARTIAL unit: no data defined, no vtable, everything extern.
 // Continues G002c (0x020ea34c-0x020ea960); the file ends at 0x020ec848 (tail-call stubs from there on are another file).
-#include "types.h"
-#include "net/HexTable.h"
-#include "net/WifiPingState.h"
 
 extern "C" {
 void MI_CpuFill8(void *dst, u32 v, u32 n); // MI_CpuFill8
@@ -123,8 +373,6 @@ u32 Net_GetConnectedMask(void);
 BOOL Net_IsLocalConnected(void);
 BOOL Net_WifiConnectStep(void);
 extern u8 data_021f48f4[];
-extern u8 sDwcGameName[];
-extern u8 sDwcSecretKey[];
 extern u8 data_021f4bc0[];
 extern u8 *sWifiUserData;
 extern u32 data_0213b064;
@@ -171,9 +419,7 @@ void Net_OnWifiServersUpdated(u32 a);
 void Net_OnWifiPingReply(u32 a, u32 i);
 void Net_OnWifiLogin(u32 a, u32 b, u32 c);
 extern u8 data_0213b058;
-extern u8 sGameStatsSecret[];
 extern HexTable data_0213b070;
-extern u8 data_0213b100[];
 extern u32 data_021f48e8;
 extern u32 data_021f48ac;
 extern u32 data_021f48a8;
@@ -197,7 +443,9 @@ BOOL Net_QueueSendPerAid(u32 a, u32 b, u32 c, u32 d);
 BOOL Net_QueueSend(u32 a, u32 b, u32 c, u32 d);
 extern NetSlot sSendSlots[];
 }
+} // namespace NetD
 
+namespace NetD { // functions of the former unit unk_020ea960.cpp
 extern "C" void Net_WaitFrame(void) {
     Net_Update();
     Main_WaitVBlank();
@@ -401,9 +649,9 @@ extern "C" void Net_OnHttpDownloadDone(void *a, void *b, u32 c, void *d) {
 extern "C" void Net_OnGameStatsChallenge(const char *a, u32 b, u32 c, char *d) {
     u32 i;
     if (a != NULL && b != 0 && c == 0) {
-        func_02127838(d, (const char *)sGameStatsSecret);
+        func_02127838(d, "gOAkBaBav5XHlGyUKOOD");
         func_021277a4(d, a);
-        MATH_CalcSHA1(data_021f48a4 + 20, d, b + STD_GetStringLength((const char *)sGameStatsSecret));
+        MATH_CalcSHA1(data_021f48a4 + 20, d, b + STD_GetStringLength("gOAkBaBav5XHlGyUKOOD"));
         HexTable hex = data_0213b070;
         u8 *src = data_021f48a4 + 20;
         for (i = 0; i < 20; i++) {
@@ -411,7 +659,7 @@ extern "C" void Net_OnGameStatsChallenge(const char *a, u32 b, u32 c, char *d) {
             ((HexPair *)data_021f48a4)[i].lo = hex.c[src[i] & 15];
         }
         data_021f48a4[40] = 0;
-        OS_SNPrintf(data_021f48dc, 0x100, (const char *)data_0213b100, data_021f48e4, Net_GetOwnFriendKey(sWifiUserData + 16), data_021f48a4, data_021f48a8);
+        OS_SNPrintf(data_021f48dc, 0x100, "%s?pid=%llu&hash=%s&region=%s", data_021f48e4, Net_GetOwnFriendKey(sWifiUserData + 16), data_021f48a4, data_021f48a8);
         DwcGsHttp_Get(data_021f48dc, (void *)Net_OnGameStatsDownloadDone, d);
     } else {
         data_0213b068 = 1;
@@ -575,10 +823,10 @@ extern "C" BOOL Net_WifiConnectStep(void) {
         }
         break;
     case 2:
-        DwcGsHttp_Startup(sDwcGameName);
+        DwcGsHttp_Startup((void *)"acrossingds");
         data_0213b064 = 1;
         data_0213b06c = 1;
-        DwcCore_Init(data_021f4bc0, sWifiUserData + 16, 0x299e, sDwcGameName, sDwcSecretKey, 0, 0, sWifiFriendList, 32);
+        DwcCore_Init(data_021f4bc0, sWifiUserData + 16, 0x299e, (u8 *)"acrossingds", (u8 *)"h2P9x6", 0, 0, sWifiFriendList, 32);
         DwcLogin_Start(0, 0, (void *)Net_OnWifiLogin, 0);
         sWifiConnectStep = 3;
         break;
@@ -908,4 +1156,418 @@ extern "C" u32 Net_GetLocalError(void) {
     if (sLocalPeerState[0] == 0xff) return 0x80ff;
     return 0;
 }
+} // namespace NetD
 
+namespace NetC { // functions of the former unit unk_020ea34c.cpp
+extern "C" u32 Net_GetWifiError(void) {
+    u32 err = DwcCore_GetLastError(&sLastErrorCode);
+    u32 i;
+    if (err != 0) {
+        switch (err) {
+        case 1:
+            return 0x4001;
+        case 2:
+            return 0x4002;
+        case 3:
+            return 0x4003;
+        case 4:
+            return 0x4004;
+        case 5:
+            return 0x4005;
+        case 6:
+            return 0x4006;
+        case 9:
+            return 0x4009;
+        case 10:
+            return 0x400a;
+        case 7:
+            return 0x4007;
+        case 11:
+            return 0x400b;
+        case 8:
+            return 0x4008;
+        default:
+            return 0xffff;
+        }
+    }
+    for (i = 0; i < 16; i++) {
+        if (sWifiPingState[i].b > 30) {
+            sLastErrorCode = 1000000;
+            return 0x4007;
+        }
+    }
+    return 0;
+}
+
+extern "C" u32 Net_GetError(void) {
+    u32 st = sNetMode;
+    sLastErrorCode = 0;
+    if ((u8)(st + 255) <= 1) return Net_GetLocalError();
+    if ((u8)(st + 253) <= 1) return Net_GetWifiError();
+    if (st != 5) return 0xffff;
+    return 0;
+}
+
+extern "C" u32 Net_GetLastErrorCode(void) {
+    return sLastErrorCode;
+}
+
+extern "C" s32 Net_ClearWifiError(void) {
+    return DwcCore_ClearError();
+}
+
+extern "C" s32 Net_SetLocalGameInfo(void) {
+    return LocalWl_SetGameInfo();
+}
+
+extern "C" s32 Net_GetBeaconGameInfo(void *p) {
+    if (p == NULL) return 0;
+    return LocalWl_GetBeaconGameInfo(p);
+}
+
+extern "C" s32 Net_GetBeaconGameInfoSize(void *p) {
+    if (p == NULL) return 0;
+    return LocalWl_GetBeaconGameInfoSize(p);
+}
+
+extern "C" u32 *Net_GetScanResults(void) {
+    u32 i;
+    u32 n;
+    MI_CpuFill8(data_021f4910, 0, 32);
+    if (LocalWl_GetState() == 7) {
+        n = i = 0;
+        for (; i < 8; i++) {
+            void *r = LocalWl_GetBeacon(0, i & 0xff);
+            if (LocalWl_IsBeaconValid(r) != 0) data_021f4910[n++] = (u32)r;
+        }
+    }
+    return data_021f4910;
+}
+
+extern "C" s32 Net_ConnectToParent(void *p) {
+    if (LocalWl_GetState() == 7 && p != NULL) {
+        MI_CpuCopy8(p, data_021f49e0, 0xe0);
+        return LocalWl_ConnectToParent(data_021f49e0, 0, 0);
+    }
+    return 0;
+}
+
+extern "C" s32 Net_WifiFindFriend(u32 a) {
+    if (sWifiConnectStep < 4) return -1;
+    return DwcFriend_FindIndexByProfileId(a);
+}
+
+extern "C" s32 Net_WifiGetFriendProfileId(u32 a) {
+    if (sWifiConnectStep < 4) return -1;
+    return DwcFriend_GetProfileId(a);
+}
+
+extern "C" u8 *Net_GetWifiFriendList(void) {
+    if (sWifiConnectStep < 4) return NULL;
+    return sWifiFriendList;
+}
+
+extern "C" BOOL Net_WifiStartHost(void) {
+    if (sWifiConnectStep < 4) return FALSE;
+    sNetMode = 3;
+    DwcMatch_SetupGameServer(data_021f488c, (void *)Net_OnWifiHostMatched, 0, (void *)Net_WifiCallbackNop, 0);
+    DwcNet_SetSendDoneCallback((void *)Net_OnWifiSendDone);
+    DwcNet_SetRecvCallback((void *)Net_OnWifiRecv);
+    DwcConn_SetClosedCallback((void *)Net_OnWifiClosedNop, 0);
+    return TRUE;
+}
+
+extern "C" BOOL Net_WifiConnectToHost(u32 a) {
+    u32 r;
+    if (sWifiConnectStep != 4) return FALSE;
+    sNetMode = 4;
+    r = Net_WifiFindFriend(a);
+    if (r == (u32)-1) return FALSE;
+    DwcMatch_ConnectToFriendServer(r, (void *)Net_OnWifiClientMatched, 0, (void *)Net_WifiCallbackNop, 0);
+    DwcNet_SetSendDoneCallback((void *)Net_OnWifiSendDone);
+    DwcNet_SetRecvCallback((void *)Net_OnWifiRecv);
+    DwcConn_SetClosedCallback((void *)Net_OnWifiClosedNop, 0);
+    return TRUE;
+}
+
+extern "C" void Net_CreateUserData(void *p, u32 v) {
+    func_020ffdd0(p, v);
+    func_020ffce8(p);
+}
+
+extern "C" BOOL Net_CheckUserDataChanged(void *p) {
+    if (func_020ffd20(p) == 0) return FALSE;
+    func_020ffce8(p);
+    return TRUE;
+}
+
+extern "C" s32 Net_HasWifiUserId(void *p) {
+    return func_020ffdfc(p);
+}
+
+extern "C" s32 Net_MakeOwnFriendData(void *p, void *q) {
+    return func_020ffbd0(p, q);
+}
+
+extern "C" s64 Net_GetOwnFriendKey(void *p) {
+    return func_020ffc40(p);
+}
+
+extern "C" BOOL Net_FriendKeyToFriendData(u32 ctx, void *out, u64 key) {
+    if (func_02100050(ctx, (u32)key, (u32)(key >> 32)) != 0) {
+        func_020ffc18(out, (u32)key, (u32)(key >> 32));
+        if (func_020ffc60(ctx, out) > 0) return TRUE;
+    }
+    return FALSE;
+}
+
+extern "C" u64 Net_GetFriendKey(u32 a) {
+    return func_020ffcc4(a);
+}
+} // namespace NetC
+
+namespace NetB { // functions of the former unit unk_020ea0b4.cpp
+extern "C" BOOL Net_GameStatsUpload(char *a, void *b, u32 c, u32 d) {
+    u32 builder;
+    HexTable hex;
+    char buf[16];
+    u32 sz;
+    u32 enc;
+    u32 len;
+    u8 *dg;
+    u32 i;
+    if (sWifiConnectStep < 4) return FALSE;
+    if (data_0213b064 != 0) {
+        enc = ((c + 2) / 3) * 4 + 1;
+        sz = STD_GetStringLength("gOAkBaBav5XHlGyUKOOD");
+        data_021f48b4 = (u32)Net_Alloc(sz + enc, 4);
+        if (data_021f48b4 == 0) return FALSE;
+        data_021f48c4 = (char *)Net_Alloc(0x29, 4);
+        if (data_021f48c4 == NULL) {
+            Net_Free((void *)data_021f48b4);
+            data_021f48b4 = 0;
+            return FALSE;
+        }
+        func_02127838((char *)data_021f48b4, "gOAkBaBav5XHlGyUKOOD");
+        len = NasBase64_Encode(b, c, (char *)data_021f48b4 + sz, enc);
+        MATH_CalcSHA1(data_021f48c4 + 0x14, (void *)data_021f48b4, sz + len);
+        hex = data_0213b084;
+        dg = (u8 *)data_021f48c4 + 0x14;
+        for (i = 0; i < 20; i++) {
+            ((HexPair *)data_021f48c4)[i].hi = hex.c[dg[i] >> 4];
+            ((HexPair *)data_021f48c4)[i].lo = hex.c[dg[i] & 15];
+        }
+        data_021f48c4[0x28] = 0;
+        data_0213b064 = 0;
+        MI_CpuFill8(buf, 0, 16);
+        OS_SNPrintf(buf, 16, "%llu", Net_GetOwnFriendKey(sWifiUserData + 0x10));
+        DwcGsHttp_PostCreate(&builder);
+        DwcGsHttp_PostAddString(&builder, "pid", buf);
+        DwcGsHttp_PostAddString(&builder, "hash", data_021f48c4);
+        DwcGsHttp_PostAddString(&builder, "data", (char *)data_021f48b4 + 0x14);
+        DwcGsHttp_PostAddString(&builder, "region", (void *)d);
+        DwcGsHttp_Post(a, &builder, (void *)Net_OnGameStatsUploadDone, 0);
+        return TRUE;
+    }
+    return FALSE;
+}
+} // namespace NetB
+
+namespace NetA { // functions of the former unit unk_020e9a08.cpp
+extern "C" BOOL Net_IsUploadDone(s32 a) {
+    if (sWifiConnectStep < 4) return FALSE;
+    if (data_0213b064 != 0) {
+        if (data_021f48b4 != 0) {
+            Net_Free((void *)data_021f48b4);
+            Net_Free((void *)data_021f48c4);
+            data_021f48b4 = 0;
+            data_021f48c4 = 0;
+        }
+        return TRUE;
+    }
+    return FALSE;
+}
+
+extern "C" BOOL Net_GameStatsDownload(u32 a, void *b, u32 c, u32 d) {
+    if (sWifiConnectStep < 4) return FALSE;
+    if (data_0213b068 != 0) {
+        data_021f48dc = (u32)Net_Alloc(0x100, 4);
+        if (data_021f48dc == 0) return FALSE;
+        data_021f48a4 = (u32)Net_Alloc(0x29, 4);
+        if (data_021f48a4 == 0) {
+            Net_Free((void *)data_021f48dc);
+            data_021f48dc = 0;
+            return FALSE;
+        }
+        data_0213b068 = 0;
+        data_021f48e4 = a;
+        data_021f48ac = c;
+        data_021f48a8 = d;
+        OS_SNPrintf((char *)data_021f48dc, 0x100, "%s?pid=%llu&region=%s", data_021f48e4, Net_GetOwnFriendKey(sWifiUserData + 0x10), d);
+        DwcGsHttp_Get((void *)data_021f48dc, (void *)Net_OnGameStatsChallenge, b);
+        return TRUE;
+    }
+    return FALSE;
+}
+
+extern "C" BOOL Net_HttpDownload(void *a, void *b, u32 c, u32 d) {
+    if (sWifiConnectStep < 4) return FALSE;
+    if (data_0213b068 == 0) return FALSE;
+    data_021f48ac = c;
+    data_0213b068 = 0;
+    DwcGsHttp_Get(a, (void *)Net_OnHttpDownloadDone, b);
+    return TRUE;
+}
+
+extern "C" BOOL Net_IsDownloadDone(s32 a) {
+    if (sWifiConnectStep < 4) return FALSE;
+    if (data_0213b068 != 0) {
+        if (data_021f48dc != 0) {
+            Net_Free((void *)data_021f48dc);
+            Net_Free((void *)data_021f48a4);
+            data_021f48dc = 0;
+            data_021f48a4 = 0;
+        }
+        return TRUE;
+    }
+    return FALSE;
+}
+
+extern "C" s32 Net_IsWifiConfigValid(void *p) {
+    return func_020ffd78(p);
+}
+
+extern "C" s32 Net_IsSameFriendData(void *p, void *q) {
+    return func_020ffad0(p, q);
+}
+
+extern "C" BOOL Net_GetFriendDataType(void *p) {
+    return func_021000f4(p);
+}
+
+extern "C" s32 func_020e9d70(void *p) {
+    return func_021000fc(p);
+}
+
+extern "C" s32 Net_WifiAddFriend(u32 a, void *b) {
+    s32 r;
+    u32 t;
+    if (DwcFriend_IsIdle() == 0 || sWifiConnectStep < 5 || data_0213b06c != 0) return 0;
+    MI_CpuCopy8(b, sWifiFriendList + a * 12, 12);
+    t = a * 19;
+    MI_CpuFill8(sWifiFriendList + 0x180 + t, 0, 19);
+    (sWifiFriendList + t)[0x190] = 0;
+    data_0213b06c = 1;
+    r = DwcFriend_UpdateServersAsync(0, (void *)Net_OnWifiServersUpdated, 0, (void *)Net_OnWifiFriendStatus, 0, (void *)Net_OnWifiFriendDeleted, 0);
+    if (r == 0) data_0213b06c = 0;
+    return r;
+}
+
+extern "C" BOOL Net_WifiDeleteFriend(u32 a) {
+    u32 t;
+    u32 u;
+    if (DwcFriend_IsIdle() == 0 || sWifiConnectStep < 5 || data_0213b06c != 0) return FALSE;
+    u = a * 12;
+    DwcFriend_DeleteFriend(sWifiFriendList + u);
+    MI_CpuFill8(sWifiFriendList + u, 0, 12);
+    t = a * 19;
+    MI_CpuFill8(sWifiFriendList + 0x180 + t, 0, 19);
+    (sWifiFriendList + t)[0x190] = 0;
+    return TRUE;
+}
+
+extern "C" BOOL Net_WifiHostKeepAlive(void) {
+    if (sNetMode == 3) {
+        data_021f48cc = 0;
+        DwcMatch_ClearServerLock();
+    }
+    return TRUE;
+}
+
+extern "C" BOOL Net_GetBrid(u8 *out) {
+    u8 buf[24];
+    if (sWifiConnectStep < 4) return FALSE;
+    func_020fff48(sWifiUserData + 0x20, data_021f489c, buf);
+    MI_CpuCopy8(buf + 9, out, 12);
+    return TRUE;
+}
+
+extern "C" void Net_StartOv067(void *a, void *b, u32 n) {
+    sNetMode = 5;
+    data_021f48e0 = 0;
+    data_021f48e8 = 0;
+    data_021f48c0 = Net_Alloc(0xa000, 32);
+    Wlx_Init(data_021f48c0, (void *)Net_OnWlxStopped, 2);
+    Wlx_SetPacketSizes(60, 60, 1);
+    Wlx_RegisterData(data_021f48b8, (void *)Net_OnWlxExchangeDone, a, n, (u32)b, n);
+}
+
+extern "C" s32 Net_WlxStartExchange(void *p) {
+    return Wlx_StartExchange(p);
+}
+
+extern "C" s32 Net_WlxStopExchange(void *p) {
+    return Wlx_StopExchange(p);
+}
+
+extern "C" BOOL Net_WlxIsReady(void *p) {
+    return Wlx_GetState() == 2;
+}
+
+extern "C" u32 Net_WlxIsExchangeDone(void *p) {
+    return data_021f48e8;
+}
+} // namespace NetA
+
+// ---- the file's data (.data 0x0213b058-0x0213b120: the named objects, then the string literals of the code, which this
+// file pools: it is built with -str reuse, see the first line) and bss (autoload_3 0x021f488c-0x021f5974), defined once
+// with plain types: the four parts above keep the declarations their code was matched with (they differ: u32 / pointer
+// views of the same words), so the definitions are in a namespace of their own. This definition order gives the
+// original order after mwcc's size sort.
+namespace NetDefs {
+extern "C" {
+u8 data_021f4bc0[0xdb4];
+u8 sSendSlots[0x100]; // send slots (data_021f4ac4 / 4ac8 / 4acc: interior labels)
+u8 data_021f49e0[0xe0];
+u8 sWifiPingState[0x50]; // ping state records (data_021f4992: interior label)
+u8 data_021f4950[0x40];
+u32 data_021f4910[8];
+u8 sSendQueue[0x20];
+HexTable data_0213b070 = {"0123456789abcdef"};
+HexTable data_0213b084 = {"0123456789abcdef"};
+u8 sLocalPeerState[0x10];
+u8 data_021f48f4[0xc];
+u32 sRecvCallback;
+u32 data_021f48e8;
+u32 data_021f48e4;
+u32 data_021f48e0;
+u32 data_021f48dc;
+u32 sWifiUserData;
+u32 sWifiFriendList;
+u32 data_021f489c;
+s32 data_0213b064 = 1;
+u32 data_021f48c8;
+u32 data_021f48c4;
+u32 data_021f48b0;
+u32 data_021f48ac;
+u32 sLastErrorCode;
+u32 data_021f48b8;
+u32 data_021f48ec;
+u32 data_021f48cc;
+u32 data_021f48a8;
+u32 data_021f48a4;
+u32 sAllocHook;
+s32 data_0213b068 = 1;
+s32 data_0213b06c = 1;
+u32 data_021f48c0;
+u32 data_021f48b4;
+u32 sFreeHook;
+u32 data_0213b060 = 10000;
+u16 sWifiShutdownStep;
+u16 sWifiConnectStep;
+u8 sNetMode;
+u8 data_0213b05c = 0xff;
+u8 data_021f488c;
+u8 data_0213b058 = 0xff;
+}
+} // namespace NetDefs

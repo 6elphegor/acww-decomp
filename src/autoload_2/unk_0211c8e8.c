@@ -160,7 +160,7 @@ extern u32 data_021feb34;
 extern PMCbInfo *data_021feb38;
 extern u32 data_021feb3c;
 extern PMCbInfo *data_021feb40;
-extern u8 data_021feb54[];
+extern u8 data_021feb54[0x18];
 extern PMFlag data_021feb6c[4];
 extern PMDest data_021feb70[4];
 extern RTCWork data_021feb90;
@@ -301,3 +301,14 @@ u32 PM_SendUtilityCommandAsync(u32 cmd, PMCallback cb, void *arg) {
     PMi_SendPxiData((cmd & 0xffff) | 0x01010000);
     return 0;
 }
+
+// ---- file-scope objects (autoload_3 .bss 0x021feb2c-0x021feb6c; this definition order gives the original order after mwcc's size
+// sort)
+u16 data_021feb2c;
+u32 data_021feb3c;
+PMCbInfo *data_021feb40;
+u32 data_021feb34;
+PMCbInfo *data_021feb38;
+u32 data_021feb30;
+PMWork data_021feb44;
+u8 data_021feb54[0x18];

@@ -249,3 +249,8 @@ BOOL FS_LoadArchive(FSArc *arc, u32 base, u32 fat, u32 fat_size, u32 fnt, u32 fn
     arc->flag |= 2;
     return 1;
 }
+
+// ---- file-scope objects (autoload_3 .bss 0x021fea68-0x021fea78; this definition order gives the original order after mwcc's size
+// sort)
+FSArc *data_021fea68;
+FSDirPos data_021fea6c;

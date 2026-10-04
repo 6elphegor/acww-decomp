@@ -250,3 +250,7 @@ void DGT_Hash1SetSource(MD5Context *ctx, const void *data, u32 len) {
         MI_CpuCopy8(p, ctx->buffer, len & 63);
     }
 }
+
+// ---- file-scope objects (.data 0x0213c1c8-0x0213c1cc)
+void DGTi_hash2_arm4_small(SHA1Context *ctx, const void *data, u32 len);
+SHA1Compress data_0213c1c8 = DGTi_hash2_arm4_small;

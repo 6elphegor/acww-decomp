@@ -1,5 +1,7 @@
 // mwcc-flags: -nothumb -O4,p
-// NitroSDK RTC (rtc.c) + CARD common/rom (card_common.c, card_rom.c), autoload_2 0x0211d20c-0x0211da74. ARM code, mwcc 1.2/base -O4,p.
+// NitroSDK RTC (rtc.c), autoload_2 0x0211d20c-0x0211d680, with its month table (.data 0x0213c1cc-0x0213c1fc) and bss
+// (autoload_3 0x021feb8c-0x021febb4). The former unit 0x0211d20c-0x0211da74 is split into rtc.c and the CARD part
+// (unk_0211d680.c) by the files' bss. ARM code, mwcc 1.2/base -O4,p.
 // Functions are in reverse address order (mwcc emits in reverse source order).
 typedef unsigned char u8;
 typedef unsigned short u16;
@@ -74,7 +76,7 @@ extern u8 data_021febc0[];
 extern u32 data_021ff220;
 extern RomDev data_021ff240;
 extern u32 data_021fcc2c[];
-extern u32 data_0213c1c8[];
+extern u32 data_0213c1cc[12];
 
 u32 OS_DisableInterrupts(void);
 void OS_RestoreInterrupts(u32);
@@ -136,146 +138,12 @@ BOOL CARDi_WaitAsync(void);
 
 #define REG_MCCNT1 (*(volatile u32 *)0x040001a4)
 #define REG_MCD1 (*(volatile u32 *)0x04100010)
-
-// CARDi_SetTask
-void CARDi_SetTask(void (*task)(CARDCommon *)) {
-    CARDCommon *const c = &data_021fec00;
-    OS_SetThreadPriority(&c->thread, c->priority);
-    c->curThread = &c->thread;
-    c->task = task;
-    c->flag |= 8;
-    OS_WakeupThreadDirect(&c->thread);
-}
-
-// CARDi_LockResource (lock id, target)
-void CARDi_LockResource(u32 id, u32 type) {
-    CARDCommon *const c = &data_021fec00;
-    u32 irq = OS_DisableInterrupts();
-    if (c->lockOwner == id) {
-        if (c->lockType != type) Fatal_Trap();
-    } else {
-        while (c->lockOwner != (u32)-3) OS_SleepThread(&c->queue);
-        c->lockOwner = id;
-        c->lockType = type;
-    }
-    c->lockCount++;
-    c->cmd->result = 0;
-    OS_RestoreInterrupts(irq);
-}
-
-// CARDi_UnlockResource (lock id, target)
-void CARDi_UnlockResource(u32 id, u32 type) {
-    CARDCommon *c = &data_021fec00;
-    u32 irq = OS_DisableInterrupts();
-    if (c->lockOwner != id || c->lockCount == 0) {
-        Fatal_Trap();
-    } else {
-        if (c->lockType != type) Fatal_Trap();
-        c->lockCount--;
-        if (c->lockCount == 0) {
-            c->lockOwner = (u32)-3;
-            c->lockType = 0;
-            OS_WakeupThread(&c->queue);
-        }
-    }
-    c->cmd->result = 0;
-    OS_RestoreInterrupts(irq);
-}
-
-// CARDi_InitCommon
-void CARDi_InitCommon(void) {
-    CARDCommon *const c = &data_021fec00;
-    volatile u32 zero; // MI_CpuClear32 inline: vu32 data = 0
-    data_021fec00.lockOwner = (u32)-3;
-    data_021fec00.lockCount = 0;
-    zero = 0;
-    data_021fec00.lockType = 0;
-    data_021fec00.cmd = (CARDCmd *)data_021febc0;
-    MIi_CpuClearFast(zero, data_021febc0, 64);
-    DC_FlushRange(data_021febc0, 64);
-    if (*(u16 *)0x027ffc40 != 2) MI_CpuCopy8((void *)0x027ffe00, (void *)0x027ffa80, 0x160);
-    c->queue.head = c->queue.tail = 0;
-    c->tq.head = c->tq.tail = 0;
-    c->priority = 4;
-    OS_CreateThread(&c->thread, CARDi_TaskThread, 0, &data_021ff220, 0x400, c->priority);
-    OS_WakeupThreadDirect(&c->thread);
-    PXI_SetFifoRecvCallback(11, CARDi_OnFifoRecv);
-    if (*(u16 *)0x027ffc40 != 2) CARD_Enable(1);
-}
-
-// CARD_IsEnabled
-u32 CARD_IsEnabled(void) {
-    return data_021febb4;
-}
-
-// CARD_CheckEnabled
-void CARD_CheckEnabled(void) {
-    if (CARD_IsEnabled()) return;
-    Fatal_Trap();
-}
-
-// CARD_Enable
-void CARD_Enable(u32 v) {
-    data_021febb4 = v;
-}
-
-// CARDi_WaitAsync
-BOOL CARDi_WaitAsync(void) {
-    CARDCommon *const c = &data_021fec00;
-    u32 irq = OS_DisableInterrupts();
-    while (c->flag & 4) OS_SleepThread(&c->tq);
-    OS_RestoreInterrupts(irq);
-    return c->cmd->result == 0;
-}
-
-// CARD_TryWaitBackupAsync~ (card idle test)
-BOOL CARDi_TryWaitAsync(void) {
-    return !(data_021fec00.flag & 4);
-}
-
-// func_0211d704
-BOOL func_0211d704(void) {
-    return data_021fec00.flag != 0;
-}
-
-// CARD_GetResultCode
-u32 func_0211d6f0(void) {
-    return data_021fec00.cmd->result;
-}
-
-// CARD_GetThreadPriority
-u32 func_0211d6e0(void) {
-    return data_021fec00.priority;
-}
-
-// CARD_LockRom
-void CARD_LockRom(u32 id) {
-    CARDi_LockResource(id, 1);
-    OS_LockCard(id);
-}
-
-// CARD_UnlockRom
-void CARD_UnlockRom(u32 id) {
-    OS_UnlockCard(id);
-    CARDi_UnlockResource(id, 1);
-}
-
-// CARD_LockBackup
-void CARD_LockBackup(u32 id) {
-    CARDi_LockResource(id, 2);
-}
-
-// CARD_UnlockBackup
-void CARD_UnlockBackup(u32 id) {
-    CARDi_UnlockResource(id, 2);
-}
-
 // RTC_ConvertDateToDay
 s32 RTC_ConvertDateToDay(RTCDate *date) {
     s32 days;
     if (date->year >= 100 || date->month < 1 || date->month > 12 || date->day < 1 || date->day > 31 || date->week >= 7 || date->month < 1 || date->month > 12)
         return -1;
-    days = date->day - 1 + data_0213c1c8[date->month];
+    days = date->day - 1 + (data_0213c1cc - 1)[date->month];
     if (date->month >= 3 && (date->year & 3) == 0) days++;
     return date->year * 365 + days + ((date->year + 3) >> 2);
 }
@@ -410,3 +278,11 @@ u32 RTC_GetDateTime(u32 a, u32 b) {
     if (!r) RtcWaitBusy();
     return data_021feb90.result;
 }
+
+// ---- file-scope objects (.data 0x0213c1cc-0x0213c1fc): days before each month
+u32 data_0213c1cc[12] = {0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334};
+
+// ---- file-scope objects (autoload_3 .bss 0x021feb8c-0x021febb4; this definition order gives the original order after mwcc's size
+// sort)
+u16 data_021feb8c;
+RTCWork data_021feb90;

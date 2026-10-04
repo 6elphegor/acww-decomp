@@ -285,3 +285,6 @@ void func_02122114(WArg *arg) {
     if (job->fc == 2) return;
     Fatal_Trap();
 }
+
+// ---- file-scope objects (.data 0x0213c200-0x0213c204)
+u8 data_0213c200 = 0xff;

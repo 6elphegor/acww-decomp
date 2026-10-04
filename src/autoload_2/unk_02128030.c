@@ -46,12 +46,15 @@ typedef struct FILE {
 } FILE;
 
 extern FILE data_0213c238, data_0213c284, data_0213c2d0; // stdout/stdin/stderr style FILE objects (locks 2..4)
-extern OSMutex data_02200298[]; // per-file mutexes (autoload_3 bss)
-extern u32 data_02200250[];     // mutex owner thread ids
-extern s32 data_02200274[];     // mutex lock counts
+extern OSMutex data_02200298[9]; // the critical-region mutexes (autoload_3 bss, defined below)
+extern u32 data_02200250[9];     // mutex owner thread ids
+extern s32 data_02200274[9];     // mutex lock counts
 extern struct { u32 a; u32 b; OSThread *cur; } data_021fcc2c; // OS thread info (current thread at +8)
 extern int data_0220064c;       // errno
-extern struct { u32 a; u32 b; struct { int (*mbtowc)(u16 *, const char *, u32); } *ctype; } data_0213c350; // current locale
+typedef struct LocaleCtype { int (*mbtowc)(u16 *, const char *, u32); int (*wctomb)(char *, u16); } LocaleCtype;
+typedef struct LocaleCase { u32 a; u32 b; u32 c; u16 *map; } LocaleCase;
+typedef struct LocaleCmpt { char **time; LocaleCase *chars; LocaleCtype *ctype; } LocaleCmpt;
+extern LocaleCmpt data_0213c350; // current locale
 
 int OS_TryLockMutex(OSMutex *);
 void OS_LockMutex(OSMutex *);
@@ -347,3 +350,39 @@ u32 func_02128030(const void *ptr, u32 size, u32 n, FILE *file) {
     if (data_02200274[idx] == 0) OS_UnlockMutex(m);
     return r;
 }
+
+// ---- file-scope objects (.data 0x0213c32c-0x0213c4fc): the "C" locale (time component with its format strings and day
+// and month names, the character-case component, the multibyte functions). The string literals of the time component
+// are created with it and sorted by size together with the named objects. This definition order (with the critical
+// regions below) gives the original order after mwcc's size sort.
+extern LocaleCase data_0213c378;
+extern LocaleCtype data_0213c33c;
+extern u16 data_0213c400[58];
+extern char *data_0213c388[8];
+int func_021288d0(u16 *pwc, const char *s, u32 n);
+int func_021288bc(char *s, u16 wc);
+u16 data_0213c400[58] = {
+    2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32,
+    34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 0, 0, 0, 0, 0, 0,
+    1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31,
+    33, 35, 37, 39, 41, 43, 45, 47, 49, 51,
+};
+LocaleCase data_0213c378 = {0x41, 0x3a, 0, data_0213c400};
+LocaleCtype data_0213c33c = {func_021288d0, func_021288bc};
+LocaleCmpt data_0213c350 = {data_0213c388, &data_0213c378, &data_0213c33c};
+char *data_0213c388[8] = {
+    "AM|PM",
+    "%a %b %e %T %Y",
+    "%I:%M:%S %p",
+    "%m/%d/%y",
+    "%T",
+    "Sun|Sunday|Mon|Monday|Tue|Tuesday|Wed|Wednesday|Thu|Thursday|Fri|Friday|Sat|Saturday",
+    "Jan|January|Feb|February|Mar|March|Apr|April|May|May|Jun|June|Jul|July|Aug|August|Sep|September|Oct|October|Nov|November|Dec|December",
+    "",
+};
+
+// autoload_3 .bss 0x02200250-0x0220034c: the critical regions (owner thread, lock count and mutex of each of the nine
+// regions; data_02200324, the signal-table mutex used by unk_02128c60.c, is the eighth mutex, an interior label)
+u32 data_02200250[9];
+s32 data_02200274[9];
+OSMutex data_02200298[9];

@@ -692,3 +692,21 @@ void CTRDGi_RestoreAccessCycle(Cycle *p) {
     REG204 = (u16)((p->c2 << 4) | (REG204 & ~0x10));
 }
 
+// ---- file-scope objects (.data 0x0213c238-0x0213c31c): __files, the console streams stdin, stdout and stderr (handles
+// 0, 1, 2; data_0213c284 / data_0213c2d0 are the 2nd and 3rd element, interior labels used by unk_02128030.c)
+extern u8 data_0220034c[0x100], data_0220044c[0x100], data_0220054c[0x100]; // their 256-byte buffers (bss, defined below)
+// the console procedures (C++ runtime area); in this FILE layout they sit in the read/write/close slots, one word after
+// position_proc
+int func_02133d44();
+int func_02133d0c(u32 handle, u8 *buf, u32 *count, void *ref);
+int func_02133d04(u32 handle, u8 *buf, u32 *count, void *ref);
+// autoload_3 .bss 0x0220034c-0x0220064c: the console streams' buffers (defined before __files: this order gives the
+// original one after mwcc's size sort)
+u8 data_0220054c[0x100];
+u8 data_0220044c[0x100];
+u8 data_0220034c[0x100];
+FILE data_0213c238[3] = {
+    {0, {0, 1, 1, 2, 0, 0}, {0, 0}, 0, 0, {0}, {0}, {0}, 0, data_0220054c, 0x100, data_0220054c, 0, 0, 0, 0, 0, func_02133d44, func_02133d0c, func_02133d04, 0},
+    {1, {0, 2, 1, 2, 0, 0}, {0, 0}, 0, 0, {0}, {0}, {0}, 0, data_0220044c, 0x100, data_0220044c, 0, 0, 0, 0, 0, func_02133d44, func_02133d0c, func_02133d04, 0},
+    {2, {0, 2, 0, 2, 0, 0}, {0, 0}, 0, 0, {0}, {0}, {0}, 0, data_0220034c, 0x100, data_0220034c, 0, 0, 0, 0, 0, func_02133d44, func_02133d0c, func_02133d04, 0},
+};

@@ -440,3 +440,6 @@ int FSi_ExecuteSyncCommand(FSFile *file) {
     }
     return file->error == 0;
 }
+
+// ---- file-scope objects (autoload_3 .bss 0x021fea78-0x021fea7c)
+u32 data_021fea78;

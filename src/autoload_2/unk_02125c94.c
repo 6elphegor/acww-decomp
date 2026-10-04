@@ -629,3 +629,9 @@ void func_02125c94(WMsg2 *m) {
     if (m->sub != 21) return;
     data_02200018->cb(9, m);
 }
+
+// ---- file-scope objects (autoload_3 .bss 0x02200040-0x02200054; this definition order gives the original order after
+// mwcc's size sort)
+u8 *data_02200044;
+WSys *data_02200040;
+WQCfg data_02200048;

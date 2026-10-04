@@ -314,3 +314,7 @@ void GX_DispOn(void) {
         reg_GX_DISPCNT |= 0x10000;
     }
 }
+
+// ---- file-scope objects (autoload_3 .bss 0x021fcbd8-0x021fcbf4): the VRAM bank assignment record of gx_vramcnt.c;
+// data_021fcbda .. data_021fcbf0 are its members (interior labels, autoload_3 lcf_symbols.txt)
+u16 data_021fcbd8[13];

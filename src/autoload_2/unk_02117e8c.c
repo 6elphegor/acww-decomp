@@ -84,3 +84,6 @@ BOOL PXI_IsCallbackReady(s32 tag, s32 proc) {
     OSSystemWork *p = OS_GetSystemWork();
     return (p->pxiHandleChecker[proc] & (1 << tag)) ? 1 : 0;
 }
+
+// ---- file-scope objects (autoload_3 .bss 0x021fea64-0x021fea68)
+u16 data_021fea64;                 // FifoCtrlInit

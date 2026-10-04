@@ -552,13 +552,49 @@ src/main/unk_020c256c.bss.cpp:
     complete
     .bss        start:0x021f4710 end:0x021f4768
 
+src/autoload_2/unk_020e7500.bss.cpp:
+    complete
+    .bss        start:0x021f4768 end:0x021f4770
+
+src/autoload_2/unk_020e7fd4.bss.cpp:
+    complete
+    .bss        start:0x021f4770 end:0x021f47d0
+
+src/autoload_2/unk_020e8208.bss.cpp:
+    complete
+    .bss        start:0x021f47d0 end:0x021f47e0
+
+src/autoload_2/unk_020e82bc.bss.cpp:
+    complete
+    .bss        start:0x021f47e0 end:0x021f4810
+
 src/autoload_2/unk_020e8558.bss.cpp:
     complete
     .bss        start:0x021f4810 end:0x021f4874
 
+src/autoload_2/unk_020e92f4.bss.cpp:
+    complete
+    .bss        start:0x021f4874 end:0x021f488c
+
+src/autoload_2/unk_020e9a08.bss.cpp:
+    complete
+    .bss        start:0x021f488c end:0x021f5974
+
 src/autoload_2/unk_020ed4bc.bss.cpp:
     complete
     .bss        start:0x021f5994 end:0x021f59e4
+
+src/autoload_2/unk_020ed8cc.bss.cpp:
+    complete
+    .bss        start:0x021f59e8 end:0x021f5b3c
+
+src/autoload_2/unk_020ede18.bss.cpp:
+    complete
+    .bss        start:0x021f5b3c end:0x021f5b48
+
+src/autoload_2/unk_020ee98c.bss.cpp:
+    complete
+    .bss        start:0x021f5b48 end:0x021f5b80
 
 src/autoload_2/unk_020f0dec.bss.cpp:
     complete
@@ -568,6 +604,10 @@ src/autoload_2/unk_020f30fc.bss.cpp:
     complete
     .bss        start:0x021f5bf8 end:0x021f5bfc
 
+src/autoload_2/unk_020f44f0.bss.cpp:
+    complete
+    .bss        start:0x021f5bfc end:0x021f5c28
+
 src/autoload_2/unk_020f4a5c.bss.cpp:
     complete
     .bss        start:0x021f5c28 end:0x021f5c30
@@ -575,6 +615,202 @@ src/autoload_2/unk_020f4a5c.bss.cpp:
 src/autoload_2/unk_020f7a5c.bss.cpp:
     complete
     .bss        start:0x021f5c30 end:0x021f5c38
+
+src/autoload_2/unk_020f8b44.bss.cpp:
+    complete
+    .bss        start:0x021f5c38 end:0x021f5c3c
+
+src/autoload_2/unk_020fc984.bss.cpp:
+    complete
+    .bss        start:0x021f5c3c end:0x021f5c40
+
+src/autoload_2/unk_020fe4b4.bss.cpp:
+    complete
+    .bss        start:0x021f5c40 end:0x021f5c50
+
+src/autoload_2/unk_02100234.bss.c:
+    complete
+    .bss        start:0x021f5ca0 end:0x021f5cb0
+
+src/autoload_2/unk_02101508.bss.c:
+    complete
+    .bss        start:0x021f5cb0 end:0x021f5cb4
+
+src/autoload_2/unk_02101818.bss.c:
+    complete
+    .bss        start:0x021f5cb4 end:0x021f5cc0
+
+src/autoload_2/unk_021053f4.bss.c:
+    complete
+    .bss        start:0x021f5cc0 end:0x021f70c4
+
+src/autoload_2/unk_02104d80.bss.c:
+    complete
+    .bss        start:0x021f70c4 end:0x021f89c4
+
+src/itcm/unk_01ff8ad4.bss.c:
+    complete
+    .bss        start:0x021f89c4 end:0x021f89d0
+
+src/autoload_2/unk_021093f4.bss.c:
+    complete
+    .bss        start:0x021f89d0 end:0x021fadc0
+
+src/autoload_2/unk_021096d4.bss.c:
+    complete
+    .bss        start:0x021fadc0 end:0x021fadcc
+
+src/autoload_2/unk_02109830.bss.c:
+    complete
+    .bss        start:0x021fadcc end:0x021fb6a4
+
+src/autoload_2/unk_0210a478.bss.c:
+    complete
+    .bss        start:0x021fb6a4 end:0x021fb774
+
+src/autoload_2/unk_0210b1b0.bss.c:
+    complete
+    .bss        start:0x021fb774 end:0x021fbd68
+
+src/autoload_2/unk_0210b448.bss.c:
+    complete
+    .bss        start:0x021fbd68 end:0x021fbd6c
+
+src/autoload_2/unk_0210c084.bss.c:
+    complete
+    .bss        start:0x021fbd6c end:0x021fbda8
+
+src/autoload_2/unk_0210da28.bss.c:
+    complete
+    .bss        start:0x021fbda8 end:0x021fcbd0
+
+src/autoload_2/unk_0210f0c4.bss.c:
+    complete
+    .bss        start:0x021fcbd0 end:0x021fcbd8
+
+src/autoload_2/unk_0210f154.bss.c:
+    complete
+    .bss        start:0x021fcbd8 end:0x021fcbf4
+
+src/autoload_2/unk_02111ccc.bss.c:
+    complete
+    .bss        start:0x021fcbf4 end:0x021fcc0c
+
+src/autoload_2/unk_021122b0.bss.c:
+    complete
+    .bss        start:0x021fcc0c end:0x021fcc10
+
+src/autoload_2/unk_02112458.bss.c:
+    complete
+    .bss        start:0x021fcc10 end:0x021fcc14
+
+src/autoload_2/unk_02113088.bss.c:
+    complete
+    .bss        start:0x021fcc14 end:0x021fce84
+
+src/autoload_2/unk_02114940.bss.c:
+    complete
+    .bss        start:0x021fce84 end:0x021fce8c
+
+src/autoload_2/unk_02114cd8.bss.c:
+    complete
+    .bss        start:0x021fce8c end:0x021fcf18
+
+src/autoload_2/unk_02114d84.bss.c:
+    complete
+    .bss        start:0x021fcf18 end:0x021fcf2c
+
+src/autoload_2/unk_02114ef4.bss.c:
+    complete
+    .bss        start:0x021fcf2c end:0x021fcf38
+
+src/autoload_2/unk_021153f8.bss.c:
+    complete
+    .bss        start:0x021fcf38 end:0x021fcf4c
+
+src/autoload_2/unk_02115468.bss.c:
+    complete
+    .bss        start:0x021fcf4c end:0x021fcf54
+
+src/autoload_2/unk_02115664.bss.c:
+    complete
+    .bss        start:0x021fcf54 end:0x021fcf6c
+
+src/autoload_2/unk_02116c0c.bss.c:
+    complete
+    .bss        start:0x021fcf6c end:0x021fcf88
+
+src/autoload_2/unk_02116d24.bss.c:
+    complete
+    .bss        start:0x021fcf88 end:0x021fea60
+
+src/autoload_2/unk_02117598.bss.c:
+    complete
+    .bss        start:0x021fea60 end:0x021fea64
+
+src/autoload_2/unk_02117e8c.bss.c:
+    complete
+    .bss        start:0x021fea64 end:0x021fea68
+
+src/autoload_2/unk_02119020.bss.c:
+    complete
+    .bss        start:0x021fea68 end:0x021fea78
+
+src/autoload_2/unk_02119434.bss.c:
+    complete
+    .bss        start:0x021fea78 end:0x021fea7c
+
+src/autoload_2/unk_02119de4.bss.c:
+    complete
+    .bss        start:0x021fea7c end:0x021feaf0
+
+src/autoload_2/unk_0211b68c.bss.c:
+    complete
+    .bss        start:0x021feaf0 end:0x021feb2c
+
+src/autoload_2/unk_0211c8e8.bss.c:
+    complete
+    .bss        start:0x021feb2c end:0x021feb6c
+
+src/autoload_2/unk_0211d20c.bss.c:
+    complete
+    .bss        start:0x021feb8c end:0x021febb4
+
+src/autoload_2/unk_0211d680.bss.c:
+    complete
+    .bss        start:0x021febb4 end:0x021ff220
+
+src/autoload_2/unk_0211dc4c.bss.c:
+    complete
+    .bss        start:0x021ff220 end:0x021ff460
+
+src/autoload_2/unk_0211ea4c.bss.c:
+    complete
+    .bss        start:0x021ff460 end:0x021ff468
+
+src/autoload_2/unk_0211ef94.bss.c:
+    complete
+    .bss        start:0x021ff468 end:0x021ff4b8
+
+src/autoload_2/unk_0211eb00.bss.c:
+    complete
+    .bss        start:0x021ff4cc end:0x021fff00
+
+src/autoload_2/unk_02120fe8.bss.c:
+    complete
+    .bss        start:0x021fff00 end:0x021fff80
+
+src/autoload_2/unk_02125c94.bss.c:
+    complete
+    .bss        start:0x02200040 end:0x02200054
+
+src/autoload_2/unk_02128030.bss.c:
+    complete
+    .bss        start:0x02200250 end:0x0220034c
+
+src/autoload_2/unk_0212703c.bss.c:
+    complete
+    .bss        start:0x0220034c end:0x0220064c
 
 src/autoload_2/unk_0213510c.bss.cpp:
     complete

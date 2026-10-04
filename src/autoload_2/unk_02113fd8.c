@@ -250,3 +250,5 @@ u32 func_02113fd8(void) {
     return data_0213bff0;
 }
 
+// ---- file-scope objects (.data 0x0213bff0-0x0213bff4)
+u32 data_0213bff0 = 0xffffffff;

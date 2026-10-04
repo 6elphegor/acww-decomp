@@ -24,7 +24,7 @@ extern int FSi_ExecuteSyncCommand(FSFile *);
 extern int FSi_ReadMemoryCore(FSArc *, void *, u32, u32);
 extern int FSi_ReadMemCallback(FSArc *, void *, u32, u32);
 extern int FSi_WriteMemCallback(FSArc *, void *, u32, u32);
-extern int (*data_0213a388[])(FSFile *);
+extern int (*const data_0213a388[9])(FSFile *);
 extern char data_0213bff4[];
 extern FSArc *data_021fea68;
 extern FSDirPos data_021fea6c;
@@ -188,3 +188,16 @@ int FSi_TranslateCommand(FSFile *file, u32 cmd) {
     }
     return ret;
 }
+
+// ---- file-scope objects (.rodata 0x0213a388-0x0213a3ac): the archive command functions by command number
+int (*const data_0213a388[9])(FSFile *) = {
+    FSi_ReadFileCommand,
+    FSi_WriteFileCommand,
+    FSi_SeekDirCommand,
+    func_02118894,
+    FSi_FindPathCommand,
+    FSi_GetPathCommand,
+    FSi_OpenFileFastCommand,
+    FSi_OpenFileDirectCommand,
+    (int (*)(FSFile *))FSi_CloseFileCommand, // takes no argument
+};

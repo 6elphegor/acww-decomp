@@ -1,4 +1,6 @@
-// mwcc-flags: -nothumb -O4,p
+// mwcc-flags: -nothumb -O4,p -str reuse
+// -str reuse: the original shares the literals "2" and "5" of __two_exp's default case with its case 1 / case -1
+// (one copy of each in .data), so this MSL file was built with string pooling.
 typedef unsigned int u32;
 typedef int s32;
 typedef unsigned char u8;
@@ -19,11 +21,6 @@ typedef struct {
 } decform;
 
 extern u8 data_0213a410[];
-extern u8 data_0213c5dc[], data_0213c60c[], data_0213c634[], data_0213c64c[], data_0213c65c[], data_0213c664[],
-    data_0213c66c[], data_0213c674[], data_0213c67c[], data_0213c680[], data_0213c684[], data_0213c688[],
-    data_0213c68c[], data_0213c690[], data_0213c694[], data_0213c698[], data_0213c69c[], data_0213c6a0[],
-    data_0213c6a4[], data_0213c6a8[], data_0213c6ac[];
-
 extern double frexp(double, int *);
 extern double func_0212f010(double, int);
 extern int func_02130b10(const char *, const char *);
@@ -240,36 +237,36 @@ up:
 void func_02130248(decimal *result, int exp) {
     decimal temp, temp2;
     switch (exp) {
-    case -64: func_02130628(result, data_0213c5dc, -20); break;
-    case -53: func_02130628(result, data_0213c60c, -16); break;
-    case -32: func_02130628(result, data_0213c634, -10); break;
-    case -16: func_02130628(result, data_0213c64c, -5); break;
-    case -8: func_02130628(result, data_0213c65c, -3); break;
-    case -7: func_02130628(result, data_0213c664, -3); break;
-    case -6: func_02130628(result, data_0213c66c, -2); break;
-    case -5: func_02130628(result, data_0213c674, -2); break;
-    case -4: func_02130628(result, data_0213c67c, -2); break;
-    case -3: func_02130628(result, data_0213c680, -1); break;
-    case -2: func_02130628(result, data_0213c684, -1); break;
-    case -1: func_02130628(result, data_0213c688, -1); break;
-    case 0: func_02130628(result, data_0213c68c, 0); break;
-    case 1: func_02130628(result, data_0213c690, 0); break;
-    case 2: func_02130628(result, data_0213c694, 0); break;
-    case 3: func_02130628(result, data_0213c698, 0); break;
-    case 4: func_02130628(result, data_0213c69c, 1); break;
-    case 5: func_02130628(result, data_0213c6a0, 1); break;
-    case 6: func_02130628(result, data_0213c6a4, 1); break;
-    case 7: func_02130628(result, data_0213c6a8, 2); break;
-    case 8: func_02130628(result, data_0213c6ac, 2); break;
+    case -64: func_02130628(result, (u8 *)"542101086242752217003726400434970855712890625", -20); break;
+    case -53: func_02130628(result, (u8 *)"11102230246251565404236316680908203125", -16); break;
+    case -32: func_02130628(result, (u8 *)"23283064365386962890625", -10); break;
+    case -16: func_02130628(result, (u8 *)"152587890625", -5); break;
+    case -8: func_02130628(result, (u8 *)"390625", -3); break;
+    case -7: func_02130628(result, (u8 *)"78125", -3); break;
+    case -6: func_02130628(result, (u8 *)"15625", -2); break;
+    case -5: func_02130628(result, (u8 *)"3125", -2); break;
+    case -4: func_02130628(result, (u8 *)"625", -2); break;
+    case -3: func_02130628(result, (u8 *)"125", -1); break;
+    case -2: func_02130628(result, (u8 *)"25", -1); break;
+    case -1: func_02130628(result, (u8 *)"5", -1); break;
+    case 0: func_02130628(result, (u8 *)"1", 0); break;
+    case 1: func_02130628(result, (u8 *)"2", 0); break;
+    case 2: func_02130628(result, (u8 *)"4", 0); break;
+    case 3: func_02130628(result, (u8 *)"8", 0); break;
+    case 4: func_02130628(result, (u8 *)"16", 1); break;
+    case 5: func_02130628(result, (u8 *)"32", 1); break;
+    case 6: func_02130628(result, (u8 *)"64", 1); break;
+    case 7: func_02130628(result, (u8 *)"128", 2); break;
+    case 8: func_02130628(result, (u8 *)"256", 2); break;
     default:
         func_02130248(&temp, (s32)(exp + ((exp & 0x80000000) >> 31)) >> 1);
         func_021306ec(result, &temp, &temp);
         if (exp & 1) {
             temp2 = *result;
             if (exp > 0)
-                func_02130628(&temp, data_0213c690, 0);
+                func_02130628(&temp, (u8 *)"2", 0);
             else
-                func_02130628(&temp, data_0213c688, -1);
+                func_02130628(&temp, (u8 *)"5", -1);
             func_021306ec(result, &temp2, &temp);
         }
         break;

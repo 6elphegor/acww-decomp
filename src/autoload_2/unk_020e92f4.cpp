@@ -1,9 +1,11 @@
 // mwcc-flags: -nothumb -O4,p
-// RC_020e92f4 (companion of RC_020e8558): G002b without its first four functions (those belong to the heap file, now RC_020e8558).
-// The (probable) vector helper file (0x020e92f4-0x020e9a08) and the start of the network file (0x020e9a08-0x020ea0b4).
-// autoload_2 0x020e92f4-0x020ea0b4, 39 functions. mwcc 1.2/base, C++, ARM, -O4,p. PARTIAL, code unchanged from G002b, all data extern.
+// RC_020e92f4: the vector helper file, autoload_2 0x020e92f4-0x020e9a08 (the former unit 0x020e92f4-0x020ea0b4 split at the
+// start of the network file, unk_020e9a08.cpp). mwcc 1.2/base, C++, ARM, -O4,p. It owns gVec3Zero (autoload_3 .bss
+// 0x021f4874-0x021f488c: the destructor registration record, then the vector) and the __sinit that builds it (main .init
+// 0x020c5f6c-0x020c5fa0, .ctor 0x020d1f44).
 #include "types.h"
 #include "gfx/VecFx32.h"
+#include "game/FxVec3.h"
 
 typedef volatile u64 vu64;
 
@@ -77,153 +79,7 @@ extern u32 data_021f48ac;
 extern u32 data_021f48a8;
 extern u32 data_021f48e4;
 extern char data_0213b098[];
-}
-
-extern "C" BOOL Net_IsUploadDone(s32 a) {
-    if (sWifiConnectStep < 4) return FALSE;
-    if (data_0213b064 != 0) {
-        if (data_021f48b4 != 0) {
-            Net_Free((void *)data_021f48b4);
-            Net_Free((void *)data_021f48c4);
-            data_021f48b4 = 0;
-            data_021f48c4 = 0;
-        }
-        return TRUE;
-    }
-    return FALSE;
-}
-
-extern "C" BOOL Net_GameStatsDownload(u32 a, void *b, u32 c, u32 d) {
-    if (sWifiConnectStep < 4) return FALSE;
-    if (data_0213b068 != 0) {
-        data_021f48dc = (u32)Net_Alloc(0x100, 4);
-        if (data_021f48dc == 0) return FALSE;
-        data_021f48a4 = (u32)Net_Alloc(0x29, 4);
-        if (data_021f48a4 == 0) {
-            Net_Free((void *)data_021f48dc);
-            data_021f48dc = 0;
-            return FALSE;
-        }
-        data_0213b068 = 0;
-        data_021f48e4 = a;
-        data_021f48ac = c;
-        data_021f48a8 = d;
-        OS_SNPrintf((char *)data_021f48dc, 0x100, data_0213b098, data_021f48e4, Net_GetOwnFriendKey(sWifiUserData + 0x10), d);
-        DwcGsHttp_Get((void *)data_021f48dc, (void *)Net_OnGameStatsChallenge, b);
-        return TRUE;
-    }
-    return FALSE;
-}
-
-extern "C" BOOL Net_HttpDownload(void *a, void *b, u32 c, u32 d) {
-    if (sWifiConnectStep < 4) return FALSE;
-    if (data_0213b068 == 0) return FALSE;
-    data_021f48ac = c;
-    data_0213b068 = 0;
-    DwcGsHttp_Get(a, (void *)Net_OnHttpDownloadDone, b);
-    return TRUE;
-}
-
-extern "C" BOOL Net_IsDownloadDone(s32 a) {
-    if (sWifiConnectStep < 4) return FALSE;
-    if (data_0213b068 != 0) {
-        if (data_021f48dc != 0) {
-            Net_Free((void *)data_021f48dc);
-            Net_Free((void *)data_021f48a4);
-            data_021f48dc = 0;
-            data_021f48a4 = 0;
-        }
-        return TRUE;
-    }
-    return FALSE;
-}
-
-extern "C" s32 Net_IsWifiConfigValid(void *p) {
-    return func_020ffd78(p);
-}
-
-extern "C" s32 Net_IsSameFriendData(void *p, void *q) {
-    return func_020ffad0(p, q);
-}
-
-extern "C" BOOL Net_GetFriendDataType(void *p) {
-    return func_021000f4(p);
-}
-
-extern "C" s32 func_020e9d70(void *p) {
-    return func_021000fc(p);
-}
-
-extern "C" s32 Net_WifiAddFriend(u32 a, void *b) {
-    s32 r;
-    u32 t;
-    if (DwcFriend_IsIdle() == 0 || sWifiConnectStep < 5 || data_0213b06c != 0) return 0;
-    MI_CpuCopy8(b, sWifiFriendList + a * 12, 12);
-    t = a * 19;
-    MI_CpuFill8(sWifiFriendList + 0x180 + t, 0, 19);
-    (sWifiFriendList + t)[0x190] = 0;
-    data_0213b06c = 1;
-    r = DwcFriend_UpdateServersAsync(0, (void *)Net_OnWifiServersUpdated, 0, (void *)Net_OnWifiFriendStatus, 0, (void *)Net_OnWifiFriendDeleted, 0);
-    if (r == 0) data_0213b06c = 0;
-    return r;
-}
-
-extern "C" BOOL Net_WifiDeleteFriend(u32 a) {
-    u32 t;
-    u32 u;
-    if (DwcFriend_IsIdle() == 0 || sWifiConnectStep < 5 || data_0213b06c != 0) return FALSE;
-    u = a * 12;
-    DwcFriend_DeleteFriend(sWifiFriendList + u);
-    MI_CpuFill8(sWifiFriendList + u, 0, 12);
-    t = a * 19;
-    MI_CpuFill8(sWifiFriendList + 0x180 + t, 0, 19);
-    (sWifiFriendList + t)[0x190] = 0;
-    return TRUE;
-}
-
-extern "C" BOOL Net_WifiHostKeepAlive(void) {
-    if (sNetMode == 3) {
-        data_021f48cc = 0;
-        DwcMatch_ClearServerLock();
-    }
-    return TRUE;
-}
-
-extern "C" BOOL Net_GetBrid(u8 *out) {
-    u8 buf[24];
-    if (sWifiConnectStep < 4) return FALSE;
-    func_020fff48(sWifiUserData + 0x20, data_021f489c, buf);
-    MI_CpuCopy8(buf + 9, out, 12);
-    return TRUE;
-}
-
-extern "C" void Net_StartOv067(void *a, void *b, u32 n) {
-    sNetMode = 5;
-    data_021f48e0 = 0;
-    data_021f48e8 = 0;
-    data_021f48c0 = Net_Alloc(0xa000, 32);
-    Wlx_Init(data_021f48c0, (void *)Net_OnWlxStopped, 2);
-    Wlx_SetPacketSizes(60, 60, 1);
-    Wlx_RegisterData(data_021f48b8, (void *)Net_OnWlxExchangeDone, a, n, (u32)b, n);
-}
-
-extern "C" s32 Net_WlxStartExchange(void *p) {
-    return Wlx_StartExchange(p);
-}
-
-extern "C" s32 Net_WlxStopExchange(void *p) {
-    return Wlx_StopExchange(p);
-}
-
-extern "C" BOOL Net_WlxIsReady(void *p) {
-    return Wlx_GetState() == 2;
-}
-
-extern "C" u32 Net_WlxIsExchangeDone(void *p) {
-    return data_021f48e8;
-}
-
-extern "C" s32 Math_Sqrt64(u64 x) {
+}extern "C" s32 Math_Sqrt64(u64 x) {
     *(vu16 *)0x040002b0 = 1;
     *(vu64 *)0x040002b8 = x << 2;
     while (*(vu16 *)0x040002b0 & 0x8000) {
@@ -388,3 +244,6 @@ extern "C" void Vec_RotateZ(VecFx32 *v, s32 angle) {
     v->x = FX_Mul(c, x) - FX_Mul(s, y);
     v->y = FX_Mul(s, x) + FX_Mul(c, y);
 }
+
+// ---- file-scope objects
+FxVec3 gVec3Zero(0, 0, 0);

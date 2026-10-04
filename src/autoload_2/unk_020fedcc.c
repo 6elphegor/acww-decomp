@@ -40,16 +40,16 @@ extern s32 MATH_CalcCRC8(void *table, void *data, u32 len);
 extern void OSi_ReferSymbol(void *p);
 extern s32 OS_SNPrintf(char *buf, u32 size, const char *fmt, ...);
 
-extern const u32 data_0213bba8[];
-extern const u8 data_02135ca8[];
-extern const u8 data_02135ca0[];
+extern u32 data_0213bba8[];
+extern const u8 data_02135ca8[16];
+extern const u8 data_02135ca0[8];
 extern u8 data_021f5c62[];
 extern u8 data_021f5c5c[], data_021f5c61[], data_021f5c66[], data_021f5c68[];
 extern u32 data_021f5c58;
 extern u16 data_021f5c50;
 extern u32 data_021f5c54;
 extern u8 data_021f5c80[];
-extern const u8 data_02135c9c[];
+extern const u8 data_02135c9c[4];
 extern s32 memcmp(const void *a, const void *b, u32 n);
 extern s32 PXI_IsCallbackReady(u32 tag, u32 x);
 extern void PXI_SetFifoRecvCallback(u32 tag, void *cb);
@@ -62,8 +62,6 @@ extern void WaitByLoop(u32 n);
 extern s32 PXI_SendWordByFifo(u32 tag, u32 data, s32 err);
 extern void Fatal_Trap(void);
 extern void MI_CpuCopy8(const void *src, void *dst, u32 len);
-extern const char data_0213bbdc[];
-extern const char data_0213bbec[];
 
 u32 func_02100144(FD *p);
 u32 func_02100130(FD *p);
@@ -364,7 +362,7 @@ void func_020fffac(u64 v, s32 nbits, char *out) {
     s32 i, n;
     const char *tbl;
     n = (nbits + 4) / 5;
-    tbl = data_0213bbec;
+    tbl = "0123456789abcdefghijklmnopqrstuv";
     for (i = 0; i < n; i++) {
         *(out + n - 1 - i) = tbl[(u32)v & 0x1f];
         v >>= 5;
@@ -378,7 +376,7 @@ void func_020fff48(FD *fd, u32 gamecode, char *out) {
     char s2[24];
     func_020fffac(func_021001a0(fd), 43, s1);
     func_020fffac(func_0210019c(fd), 32, &s2[1]);
-    OS_SNPrintf(out, 21, data_0213bbdc, s1, (u8)(gamecode >> 24), (u8)(gamecode >> 16), (u8)(gamecode >> 8),
+    OS_SNPrintf(out, 21, "%s%c%c%c%c%s", s1, (u8)(gamecode >> 24), (u8)(gamecode >> 16), (u8)(gamecode >> 8),
                   (u8)gamecode, &s2[1]);
 }
 
@@ -1146,3 +1144,10 @@ BOOL func_020fedcc(u8 *p) {
     }
     return 1;
 }
+
+// ---- file-scope objects (.rodata 0x02135c9c-0x02135cb8, .data 0x0213bba8-0x0213bbdc; the two string literals follow in
+// .data up to 0x0213bc10)
+const u8 data_02135c9c[4] = {0, 0, 0, 0};
+const u8 data_02135ca0[8] = {1, 2, 0, 4, 3, 5, 6, 7};
+const u8 data_02135ca8[16] = {5, 9, 1, 14, 12, 2, 10, 0, 11, 13, 3, 4, 8, 6, 15, 7};
+u32 data_0213bba8[13] = {0, 0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334};

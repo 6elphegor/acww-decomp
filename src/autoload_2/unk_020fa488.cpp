@@ -213,3 +213,12 @@ extern "C" void func_020fa488(Mg2 *m, Nd *p, PosCb cb) {
     }
     data_0213bb94[m->cur->res->p14->k11](m->cur->s100, m->cur->s102, 0, 0);
 }
+
+// ---- file-scope objects (.data 0x0213bb94-0x0213bba4): the plane-draw and rotation function tables (functions in
+// unk_020fac28.cpp)
+extern "C" void drawXYPlane(s32 a, s32 b, s32 c, s32 d);
+extern "C" void drawXZPlane(s32 a, s32 b, s32 c, s32 d);
+extern "C" void rotTypeY(s32 a, s32 b, s32 *m);
+extern "C" void rotTypeXYZ(s32 a, s32 b, s32 *m);
+SetFn data_0213bb94[2] = {drawXYPlane, drawXZPlane};
+MkFn data_0213bb9c[2] = {(MkFn)rotTypeY, (MkFn)rotTypeXYZ};

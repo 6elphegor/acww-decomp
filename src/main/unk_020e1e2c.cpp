@@ -1,0 +1,445 @@
+// The game's process-profile table: sProfileTableMain[id] is the ProcProfile of process id (Main_Init in
+// src/main/unk_020b0a80.cpp installs it as gProfileTable; Proc_Create looks profiles up in it). A data-only file of main:
+// .data 0x020e1e2c-0x020e218c (216 entries), between the data of the files at 0x02097d1c and 0x02098e90. Most profiles
+// live in overlays; entries 0x9f and 0xa0 are sFishBookTabProfile (ov115) and sInsectBookTabProfile (ov116), which share
+// one address (relocs.txt had them as ov147 bss + 0x2e8c).
+#include "types.h"
+#include "sys/ProcProfile.h"
+
+extern ProcProfile sGameRootProfile;
+extern ProcProfile data_020e3fd4;
+extern ProcProfile sSceneBaseProfile;
+extern ProcProfile sDummyScene3Profile;
+extern ProcProfile sDummyScene4Profile;
+extern ProcProfile sFieldEntrySceneProfile;
+extern ProcProfile sFieldSceneProfile;
+extern ProcProfile sSceneLightsProfile;
+extern ProcProfile sRemotePlayerSpawnerProfile;
+extern ProcProfile sPlayerActorProfile;
+extern ProcProfile sPlayerNetSyncProfile;
+extern ProcProfile sCameraProfile;
+extern ProcProfile data_020da3c4;
+extern ProcProfile sFieldGroundProfile;
+extern ProcProfile sRoomShellProfile;
+extern ProcProfile sSnowballSpawnerProfile;
+extern ProcProfile sRoostCafeSetProfile;
+extern ProcProfile sCheckInGateProfile;
+extern ProcProfile sRecycleBoxProfile;
+extern ProcProfile sTaxiInteriorProfile;
+extern ProcProfile sMuseumDisplayProfile;
+extern ProcProfile sBarberMachineProfile;
+extern ProcProfile sBarberPoleProfile;
+extern ProcProfile sRoomBoardSignProfile;
+extern ProcProfile sVillagerBoardProfile;
+extern ProcProfile sMuseumExhibitInfoProfile;
+extern ProcProfile sBuildingActorProfile;
+extern ProcProfile sReddTentProfile;
+extern ProcProfile sGateHouseProfile;
+extern ProcProfile sVillagerHouseProfile;
+extern ProcProfile sTownHallProfile;
+extern ProcProfile sPlayerHouseProfile;
+extern ProcProfile sTownSignProfile;
+extern ProcProfile sShopBuildingProfile;
+extern ProcProfile sBulletinBoardProfile;
+extern ProcProfile sKappnTaxiProfile;
+extern ProcProfile sMailboxProfile;
+extern ProcProfile sCountdownSignProfile;
+extern ProcProfile sCountdownDigitProfile;
+extern ProcProfile sGulliverShipProfile;
+extern ProcProfile sKatrinaTentProfile;
+extern ProcProfile sGracieCarProfile;
+extern ProcProfile sNewYearCountdownProfile;
+extern ProcProfile sPlayerBedSetterProfile;
+extern ProcProfile sAtmProfile;
+extern ProcProfile sRoomTelephoneProfile;
+extern ProcProfile sFtrActorProfile;
+extern ProcProfile sFtrBasicProfile;
+extern ProcProfile sFtrKind02Profile;
+extern ProcProfile sFtrKind03Profile;
+extern ProcProfile sFtrKind04Profile;
+extern ProcProfile sFtrKind05Profile;
+extern ProcProfile sFtrKind06Profile;
+extern ProcProfile sFtrKind07Profile;
+extern ProcProfile sFtrSeatProfile;
+extern ProcProfile sFtrBedProfile;
+extern ProcProfile sFtrStorageProfile;
+extern ProcProfile sFtrClockProfile;
+extern ProcProfile sFtrStereoProfile;
+extern ProcProfile sFtrTvProfile;
+extern ProcProfile sFtrTvVcrProfile;
+extern ProcProfile sFtrCartProfile;
+extern ProcProfile sFtrGyroidProfile;
+extern ProcProfile sFtrKind19Profile;
+extern ProcProfile sFtrCannonProfile;
+extern ProcProfile sFtrShirtProfile;
+extern ProcProfile sFtrMyDesignProfile;
+extern ProcProfile sFtrDesignDisplayProfile;
+extern ProcProfile sFtrCompassProfile;
+extern ProcProfile sFtrVillagerPicProfile;
+extern ProcProfile sFtrInstrumentProfile;
+extern ProcProfile sFtrPiggyBankProfile;
+extern ProcProfile sFtrMetronomeProfile;
+extern ProcProfile sFtrWallpaperSampleProfile;
+extern ProcProfile sFtrCarpetSampleProfile;
+extern ProcProfile sFtrKind25Profile;
+extern ProcProfile sFtrHeadwearProfile;
+extern ProcProfile sFtrComputerProfile;
+extern ProcProfile sFtrSingingInsectProfile;
+extern ProcProfile sFtrPhoneProfile;
+extern ProcProfile sFtrNookwayProfile;
+extern ProcProfile sMuseumRoomProfile;
+extern ProcProfile sMuseumFossilRoomProfile;
+extern ProcProfile sMuseumRoomUnk53Profile;
+extern ProcProfile sSpNpcPeteProfile;
+extern ProcProfile sSpNpcReddProfile;
+extern ProcProfile sSpNpcTortimerProfile;
+extern ProcProfile sSpNpcTortimerFishingTourneyProfile;
+extern ProcProfile sSpNpcTortimerBugOffProfile;
+extern ProcProfile sSpNpcTortimerFlowerFestProfile;
+extern ProcProfile sSpNpcTortimerFireworksProfile;
+extern ProcProfile sSpNpcTortimerBrightNightsProfile;
+extern ProcProfile sSpNpcTortimerCountdownProfile;
+extern ProcProfile sSpNpcTortimer2Profile;
+extern ProcProfile sSpNpcRoverProfile;
+extern ProcProfile sSpNpcCornimerProfile;
+extern ProcProfile sSpNpcGulliverProfile;
+extern ProcProfile sSpNpcHarrietProfile;
+extern ProcProfile sSpNpcShrunkProfile;
+extern ProcProfile sSpNpcBrewsterProfile;
+extern ProcProfile sCafeCoffeeSetProfile;
+extern ProcProfile sSpNpcResettiProfile;
+extern ProcProfile sSpNpcRoostGuestProfile;
+extern ProcProfile sSpNpcBlancaProfile;
+extern ProcProfile sSpNpcPascalProfile;
+extern ProcProfile sSpNpcLyleProfile;
+extern ProcProfile sSpNpcSaharahProfile;
+extern ProcProfile sSpNpcWendellProfile;
+extern ProcProfile sSpNpcGracieProfile;
+extern ProcProfile sSpNpcCelesteProfile;
+extern ProcProfile sSpNpcBlathersProfile;
+extern ProcProfile sSpNpcJoanProfile;
+extern ProcProfile sSpNpcKatrinaProfile;
+extern ProcProfile sTarotPropsProfile;
+extern ProcProfile sSpNpcCopperProfile;
+extern ProcProfile sSpNpcBookerProfile;
+extern ProcProfile sSpNpcTommyProfile;
+extern ProcProfile sSpNpcTimmyProfile;
+extern ProcProfile sSpNpcNookShopProfile;
+extern ProcProfile sSpNpcSableProfile;
+extern ProcProfile sSewingMachineProfile;
+extern ProcProfile sSpNpcMabelProfile;
+extern ProcProfile sSpNpcPellyPhyllisProfile;
+extern ProcProfile sSpNpcKappnProfile;
+extern ProcProfile sSpNpcTestProfile;
+extern ProcProfile sSpNpcNookIntroProfile;
+extern ProcProfile sSpNpcKatieProfile;
+extern ProcProfile sSpNpcKaitlinProfile;
+extern ProcProfile sBirthdayHostVillagerProfile;
+extern ProcProfile sBirthdayGuestVillagerProfile;
+extern ProcProfile sHouseVisitVillagerProfile;
+extern ProcProfile sSickVillagerProfile;
+extern ProcProfile sFieldVillagerProfile;
+extern ProcProfile sHouseOwnerVillagerProfile;
+extern ProcProfile sFleaMarketSellerVillagerProfile;
+extern ProcProfile sFleaMarketBuyerVillagerProfile;
+extern ProcProfile sCafeVillagerProfile;
+extern ProcProfile sSkyProcProfile;
+extern ProcProfile sFieldObjectManagerProfile;
+extern ProcProfile sRoomItemIconsProfile;
+extern ProcProfile data_020d96ec;
+extern ProcProfile data_020e1da0;
+extern ProcProfile sMenuManagerProfile;
+extern ProcProfile sMenuTabBarProfile;
+extern ProcProfile sMenuLauncherProfile;
+extern ProcProfile sPocketMenuProfile;
+extern ProcProfile sPocketMenuUnkProfile;
+extern ProcProfile sShopSellMenuProfile;
+extern ProcProfile sPocketItemSelectMenuProfile;
+extern ProcProfile sChestMenuProfile;
+extern ProcProfile sPocketLettersMenuProfile;
+extern ProcProfile sPostOfficeMenuProfile;
+extern ProcProfile sLetterStorageMenuProfile;
+extern ProcProfile sMailboxMenuProfile;
+extern ProcProfile sPocketsFullMenuProfile;
+extern ProcProfile sLetterGiveMenuProfile;
+extern ProcProfile sSongPickMenuProfile;
+extern ProcProfile sLostFoundRecycleMenuProfile;
+extern ProcProfile data_ov111_02298920;
+extern ProcProfile sFishBookTabProfile;
+extern ProcProfile sInsectBookTabProfile;
+extern ProcProfile sMapTabProfile;
+extern ProcProfile sFriendRosterTabProfile;
+extern ProcProfile sMapViewerMenuProfile;
+extern ProcProfile sDesignTabProfile;
+extern ProcProfile data_ov122_0229a130;
+extern ProcProfile data_ov112_022999b8;
+extern ProcProfile data_ov113_022935c8;
+extern ProcProfile sLetterViewMenuProfile;
+extern ProcProfile sPatternEditorMenuProfile;
+extern ProcProfile sPatternSelectMenuProfile;
+extern ProcProfile data_ov126_022999e0;
+extern ProcProfile sStargazingMenuProfile;
+extern ProcProfile sConstellationEditorMenuProfile;
+extern ProcProfile sClockAdjustMenuProfile;
+extern ProcProfile sTimeSelectMenuProfile;
+extern ProcProfile sBirthdayMenuProfile;
+extern ProcProfile sDateSelectMenuProfile;
+extern ProcProfile sAmountEntryMenuProfile;
+extern ProcProfile sBankMenuProfile;
+extern ProcProfile sFriendCodeMenuProfile;
+extern ProcProfile sDistantTownsMenuProfile;
+extern ProcProfile sNearbyTownsMenuProfile;
+extern ProcProfile sCatalogMenuProfile;
+extern ProcProfile sMelodyMenuProfile;
+extern ProcProfile sMusicMenuProfile;
+extern ProcProfile sDonationMenuProfile;
+extern ProcProfile sWfcFriendListMenuProfile;
+extern ProcProfile sInsectManagerProfile;
+extern ProcProfile sSnowballProfile;
+extern ProcProfile sMuseumInsectRoomProfile;
+extern ProcProfile sHouseRoachManagerProfile;
+extern ProcProfile sHouseRoachProfile;
+extern ProcProfile sFieldFishManagerProfile;
+extern ProcProfile sFishDisplayProfile;
+extern ProcProfile sMuseumAquariumProfile;
+extern ProcProfile sFieldStructureMgrProfile;
+extern ProcProfile sFurnitureManagerProfile;
+extern ProcProfile sShopStockPlacerProfile;
+extern ProcProfile sSaveManagerProfile;
+extern ProcProfile sDummyProcC8Profile;
+extern ProcProfile sMsgUiProcProfile;
+extern ProcProfile sHudProcProfile;
+extern ProcProfile sChatBalloonProcProfile;
+extern ProcProfile sTransitionCommIconProfile;
+extern ProcProfile data_ov056_02258e60;
+extern ProcProfile sTextSystemModuleProfile;
+extern ProcProfile sBgmProcProfile;
+extern ProcProfile sNpcSpawnerProfile;
+extern ProcProfile sHandOverItemProfile;
+extern ProcProfile data_020e1178;
+extern ProcProfile sResidentSelectProfile;
+extern ProcProfile sTitleScreenProfile;
+extern ProcProfile sSaveMenuProfile;
+extern ProcProfile sEventAnnouncerProfile;
+extern ProcProfile data_020d9520;
+
+extern ProcProfile *sProfileTableMain[216];
+
+ProcProfile *sProfileTableMain[216] = {
+    &sGameRootProfile, // 0x00
+    &data_020e3fd4, // 0x01
+    &sSceneBaseProfile, // 0x02
+    &sDummyScene3Profile, // 0x03
+    &sDummyScene4Profile, // 0x04
+    &sFieldEntrySceneProfile, // 0x05
+    &sFieldSceneProfile, // 0x06
+    &sSceneLightsProfile, // 0x07
+    &sRemotePlayerSpawnerProfile, // 0x08
+    &sPlayerActorProfile, // 0x09
+    &sPlayerNetSyncProfile, // 0x0a
+    &sCameraProfile, // 0x0b
+    &data_020da3c4, // 0x0c
+    &sFieldGroundProfile, // 0x0d
+    &sRoomShellProfile, // 0x0e
+    &sSnowballSpawnerProfile, // 0x0f
+    &sRoostCafeSetProfile, // 0x10
+    &sCheckInGateProfile, // 0x11
+    &sRecycleBoxProfile, // 0x12
+    &sTaxiInteriorProfile, // 0x13
+    &sMuseumDisplayProfile, // 0x14
+    &sBarberMachineProfile, // 0x15
+    &sBarberPoleProfile, // 0x16
+    &sRoomBoardSignProfile, // 0x17
+    &sVillagerBoardProfile, // 0x18
+    &sMuseumExhibitInfoProfile, // 0x19
+    &sBuildingActorProfile, // 0x1a
+    &sReddTentProfile, // 0x1b
+    &sGateHouseProfile, // 0x1c
+    &sVillagerHouseProfile, // 0x1d
+    &sTownHallProfile, // 0x1e
+    &sPlayerHouseProfile, // 0x1f
+    &sTownSignProfile, // 0x20
+    &sShopBuildingProfile, // 0x21
+    &sBulletinBoardProfile, // 0x22
+    &sKappnTaxiProfile, // 0x23
+    &sMailboxProfile, // 0x24
+    &sCountdownSignProfile, // 0x25
+    &sCountdownDigitProfile, // 0x26
+    &sGulliverShipProfile, // 0x27
+    &sKatrinaTentProfile, // 0x28
+    &sGracieCarProfile, // 0x29
+    &sNewYearCountdownProfile, // 0x2a
+    &sPlayerBedSetterProfile, // 0x2b
+    &sAtmProfile, // 0x2c
+    &sRoomTelephoneProfile, // 0x2d
+    &sFtrActorProfile, // 0x2e
+    &sFtrBasicProfile, // 0x2f
+    &sFtrKind02Profile, // 0x30
+    &sFtrKind03Profile, // 0x31
+    &sFtrKind04Profile, // 0x32
+    &sFtrKind05Profile, // 0x33
+    &sFtrKind06Profile, // 0x34
+    &sFtrKind07Profile, // 0x35
+    &sFtrSeatProfile, // 0x36
+    &sFtrBedProfile, // 0x37
+    &sFtrStorageProfile, // 0x38
+    &sFtrClockProfile, // 0x39
+    &sFtrStereoProfile, // 0x3a
+    &sFtrTvProfile, // 0x3b
+    &sFtrTvVcrProfile, // 0x3c
+    &sFtrCartProfile, // 0x3d
+    &sFtrGyroidProfile, // 0x3e
+    &sFtrKind19Profile, // 0x3f
+    &sFtrCannonProfile, // 0x40
+    &sFtrShirtProfile, // 0x41
+    &sFtrMyDesignProfile, // 0x42
+    &sFtrDesignDisplayProfile, // 0x43
+    &sFtrCompassProfile, // 0x44
+    &sFtrVillagerPicProfile, // 0x45
+    &sFtrInstrumentProfile, // 0x46
+    &sFtrPiggyBankProfile, // 0x47
+    &sFtrMetronomeProfile, // 0x48
+    &sFtrWallpaperSampleProfile, // 0x49
+    &sFtrCarpetSampleProfile, // 0x4a
+    &sFtrKind25Profile, // 0x4b
+    &sFtrHeadwearProfile, // 0x4c
+    &sFtrComputerProfile, // 0x4d
+    &sFtrSingingInsectProfile, // 0x4e
+    &sFtrPhoneProfile, // 0x4f
+    &sFtrNookwayProfile, // 0x50
+    &sMuseumRoomProfile, // 0x51
+    &sMuseumFossilRoomProfile, // 0x52
+    &sMuseumRoomUnk53Profile, // 0x53
+    &sSpNpcPeteProfile, // 0x54
+    &sSpNpcReddProfile, // 0x55
+    &sSpNpcTortimerProfile, // 0x56
+    &sSpNpcTortimerFishingTourneyProfile, // 0x57
+    &sSpNpcTortimerBugOffProfile, // 0x58
+    &sSpNpcTortimerFlowerFestProfile, // 0x59
+    &sSpNpcTortimerFireworksProfile, // 0x5a
+    &sSpNpcTortimerBrightNightsProfile, // 0x5b
+    &sSpNpcTortimerCountdownProfile, // 0x5c
+    &sSpNpcTortimer2Profile, // 0x5d
+    &sSpNpcRoverProfile, // 0x5e
+    &sSpNpcCornimerProfile, // 0x5f
+    &sSpNpcGulliverProfile, // 0x60
+    &sSpNpcHarrietProfile, // 0x61
+    &sSpNpcShrunkProfile, // 0x62
+    &sSpNpcBrewsterProfile, // 0x63
+    &sCafeCoffeeSetProfile, // 0x64
+    &sSpNpcResettiProfile, // 0x65
+    &sSpNpcRoostGuestProfile, // 0x66
+    &sSpNpcBlancaProfile, // 0x67
+    &sSpNpcPascalProfile, // 0x68
+    &sSpNpcLyleProfile, // 0x69
+    &sSpNpcSaharahProfile, // 0x6a
+    &sSpNpcWendellProfile, // 0x6b
+    &sSpNpcGracieProfile, // 0x6c
+    &sSpNpcCelesteProfile, // 0x6d
+    &sSpNpcBlathersProfile, // 0x6e
+    &sSpNpcJoanProfile, // 0x6f
+    &sSpNpcKatrinaProfile, // 0x70
+    &sTarotPropsProfile, // 0x71
+    &sSpNpcCopperProfile, // 0x72
+    &sSpNpcBookerProfile, // 0x73
+    &sSpNpcTommyProfile, // 0x74
+    &sSpNpcTimmyProfile, // 0x75
+    &sSpNpcNookShopProfile, // 0x76
+    &sSpNpcSableProfile, // 0x77
+    &sSewingMachineProfile, // 0x78
+    &sSpNpcMabelProfile, // 0x79
+    &sSpNpcPellyPhyllisProfile, // 0x7a
+    &sSpNpcKappnProfile, // 0x7b
+    &sSpNpcTestProfile, // 0x7c
+    &sSpNpcNookIntroProfile, // 0x7d
+    &sSpNpcKatieProfile, // 0x7e
+    &sSpNpcKaitlinProfile, // 0x7f
+    &sBirthdayHostVillagerProfile, // 0x80
+    &sBirthdayGuestVillagerProfile, // 0x81
+    &sHouseVisitVillagerProfile, // 0x82
+    &sSickVillagerProfile, // 0x83
+    &sFieldVillagerProfile, // 0x84
+    &sHouseOwnerVillagerProfile, // 0x85
+    &sFleaMarketSellerVillagerProfile, // 0x86
+    &sFleaMarketBuyerVillagerProfile, // 0x87
+    &sCafeVillagerProfile, // 0x88
+    &sSkyProcProfile, // 0x89
+    &sFieldObjectManagerProfile, // 0x8a
+    &sRoomItemIconsProfile, // 0x8b
+    &data_020d96ec, // 0x8c
+    &data_020e1da0, // 0x8d
+    &sMenuManagerProfile, // 0x8e
+    &sMenuTabBarProfile, // 0x8f
+    &sMenuLauncherProfile, // 0x90
+    &sPocketMenuProfile, // 0x91
+    &sPocketMenuUnkProfile, // 0x92
+    &sShopSellMenuProfile, // 0x93
+    &sPocketItemSelectMenuProfile, // 0x94
+    &sChestMenuProfile, // 0x95
+    &sPocketLettersMenuProfile, // 0x96
+    &sPostOfficeMenuProfile, // 0x97
+    &sLetterStorageMenuProfile, // 0x98
+    &sMailboxMenuProfile, // 0x99
+    &sPocketsFullMenuProfile, // 0x9a
+    &sLetterGiveMenuProfile, // 0x9b
+    &sSongPickMenuProfile, // 0x9c
+    &sLostFoundRecycleMenuProfile, // 0x9d
+    &data_ov111_02298920, // 0x9e
+    &sFishBookTabProfile, // 0x9f
+    &sInsectBookTabProfile, // 0xa0
+    &sMapTabProfile, // 0xa1
+    &sFriendRosterTabProfile, // 0xa2
+    &sMapViewerMenuProfile, // 0xa3
+    &sDesignTabProfile, // 0xa4
+    &data_ov122_0229a130, // 0xa5
+    &data_ov112_022999b8, // 0xa6
+    &data_ov113_022935c8, // 0xa7
+    &sLetterViewMenuProfile, // 0xa8
+    &sPatternEditorMenuProfile, // 0xa9
+    &sPatternSelectMenuProfile, // 0xaa
+    &data_ov126_022999e0, // 0xab
+    &sStargazingMenuProfile, // 0xac
+    &sConstellationEditorMenuProfile, // 0xad
+    &sClockAdjustMenuProfile, // 0xae
+    &sTimeSelectMenuProfile, // 0xaf
+    &sBirthdayMenuProfile, // 0xb0
+    &sDateSelectMenuProfile, // 0xb1
+    &sAmountEntryMenuProfile, // 0xb2
+    &sBankMenuProfile, // 0xb3
+    &sFriendCodeMenuProfile, // 0xb4
+    &sDistantTownsMenuProfile, // 0xb5
+    &sNearbyTownsMenuProfile, // 0xb6
+    &sCatalogMenuProfile, // 0xb7
+    &sMelodyMenuProfile, // 0xb8
+    &sMusicMenuProfile, // 0xb9
+    &sDonationMenuProfile, // 0xba
+    &sWfcFriendListMenuProfile, // 0xbb
+    &sInsectManagerProfile, // 0xbc
+    &sSnowballProfile, // 0xbd
+    &sMuseumInsectRoomProfile, // 0xbe
+    &sHouseRoachManagerProfile, // 0xbf
+    &sHouseRoachProfile, // 0xc0
+    &sFieldFishManagerProfile, // 0xc1
+    &sFishDisplayProfile, // 0xc2
+    &sMuseumAquariumProfile, // 0xc3
+    &sFieldStructureMgrProfile, // 0xc4
+    &sFurnitureManagerProfile, // 0xc5
+    &sShopStockPlacerProfile, // 0xc6
+    &sSaveManagerProfile, // 0xc7
+    &sDummyProcC8Profile, // 0xc8
+    &sMsgUiProcProfile, // 0xc9
+    &sHudProcProfile, // 0xca
+    &sChatBalloonProcProfile, // 0xcb
+    &sTransitionCommIconProfile, // 0xcc
+    &data_ov056_02258e60, // 0xcd
+    &sTextSystemModuleProfile, // 0xce
+    &sBgmProcProfile, // 0xcf
+    &sNpcSpawnerProfile, // 0xd0
+    &sHandOverItemProfile, // 0xd1
+    &data_020e1178, // 0xd2
+    &sResidentSelectProfile, // 0xd3
+    &sTitleScreenProfile, // 0xd4
+    &sSaveMenuProfile, // 0xd5
+    &sEventAnnouncerProfile, // 0xd6
+    &data_020d9520, // 0xd7
+};

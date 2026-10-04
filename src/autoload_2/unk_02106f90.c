@@ -36,7 +36,7 @@ typedef struct JOut {
 
 extern RS *data_021f5cc0;
 extern u32 data_0213bcbc;
-extern u8 data_02135e5c[][4], data_02135e5d[][4], data_02135e5e[][4], data_02135e5f[][4];
+extern const u8 data_02135e5c[9][4], data_02135e5d[][4], data_02135e5e[][4], data_02135e5f[][4]; // e5d..e5f: interior labels
 extern void MI_Zero36B(void *);
 extern void MIi_CpuClear16(u32, void *, u32);   // MI_CpuClear16 (data, dest, size)
 
@@ -291,3 +291,12 @@ void getTransDataEx_(s32 *out, s32 frame, u32 *ent, u8 *hdr)
         *out = (a * mul + ((t * (b - a)) >> 12)) >> sh;
     }
 }
+
+// ---- file-scope objects (.rodata 0x02135e5c-0x02135e80): for each of the 9 compressed-rotation kinds the matrix
+// element indices of its four entries (also read by getRotDataByIdx_ in ITCM). data_02135e5d / e5e / e5f are interior
+// labels (autoload_2 lcf_symbols.txt).
+const u8 data_02135e5c[9][4] = {
+    {4, 5, 7, 8}, {3, 5, 6, 8}, {3, 4, 6, 7},
+    {1, 2, 7, 8}, {0, 2, 6, 8}, {0, 1, 6, 7},
+    {1, 2, 4, 5}, {0, 2, 3, 5}, {0, 1, 3, 4},
+};

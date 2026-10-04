@@ -11,7 +11,7 @@ void MI_DmaCopy16(s32 dmaNo, const void *src, void *dest, u32 size); // MI_DmaCo
 void MIi_CpuCopy16(const void *src, void *dest, u32 size);            // MI_CpuCopy16
 extern u32 data_021fcbf8;
 extern s32 data_021fcbfc;
-extern u16 data_02139f44[];
+extern const u16 data_02139f44[8];
 extern u32 data_021fcbf4, data_021fcc00, data_021fcc04, data_021fcc08;
 void MI_WaitDma(s32 dmaNo);                                   // MI_WaitDma
 void GX_SetBankForTexPltt(s32 bank);
@@ -104,3 +104,14 @@ void GXS_LoadOAM(const void *src, u32 offset, u32 size) {
     copy32(data_0213bfec, src, (u8 *)0x7000400 + offset, size);
 }
 
+// ---- file-scope objects (.rodata 0x02139f44-0x02139f54)
+const u16 data_02139f44[8] = {0x0000, 0x6880, 0x6890, 0x6880, 0x6894, 0x0000, 0x6890, 0x6880};
+
+// ---- file-scope objects (autoload_3 .bss 0x021fcbf4-0x021fcc0c; this definition order gives the original order after mwcc's size
+// sort)
+u32 data_021fcbf8;
+u32 data_021fcbf4;
+u32 data_021fcc08;
+s32 data_021fcbfc;
+u32 data_021fcc00;
+u32 data_021fcc04;

@@ -149,7 +149,7 @@ extern void DC_WaitWriteBufferEmpty(void);
 extern void MI_CpuFill8(void *dst, u32 value, u32 size);
 extern void MI_CpuCopy8(const void *src, void *dst, u32 size);
 extern void Fatal_Trap(void);
-extern u32 data_0213a3ec[3];
+extern const u32 data_0213a3ec[3];
 extern void func_021235fc(MBSegInfo *dst, const MBRomHeader *rom);
 extern void func_02123444(const MBRomHeader *rom, const u32 *mode, MBRange *out, u32 *limit);
 extern void func_021267d4(void *ctx);

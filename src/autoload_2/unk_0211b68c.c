@@ -87,3 +87,9 @@ void TP_WaitBusy(u32 mask) {
 u32 TP_CheckError(u32 mask) {
     return data_021feaf4.state & mask;
 }
+
+// ---- file-scope objects (autoload_3 .bss 0x021feaf0-0x021feb2c; this definition order gives the original order after mwcc's size
+// sort; data_021feb0c is the calibration inside the work
+// record, an interior label)
+u16 data_021feaf0; // used by TP_Init (unk_0211bcdc.c)
+TPWork data_021feaf4;

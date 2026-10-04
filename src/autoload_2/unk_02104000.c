@@ -24,7 +24,7 @@ typedef struct AnmObjInitFunc {
     void (*func)(AnmObj *, void *, const void *);
 } AnmObjInitFunc;
 extern u32 data_0213bcb4;               // NNS_G3dAnmFmtNum
-extern AnmObjInitFunc data_0213bcd8[];  // NNS_G3dAnmObjInitFuncArray
+extern AnmObjInitFunc data_0213bcd8[10];  // NNS_G3dAnmObjInitFuncArray
 
 // NNS_G3dAnmObjInit
 void NNS_G3dAnmObjInit(AnmObj *pAnmObj, void *pResAnm, const void *pResMdl, const void *pResTex)
@@ -45,3 +45,42 @@ void NNS_G3dAnmObjInit(AnmObj *pAnmObj, void *pResAnm, const void *pResMdl, cons
         }
     }
 }
+
+// ---- file-scope objects (.data 0x0213bcb4-0x0213bd28): the animation format count, the default animation calculation
+// and blend functions (NNS_G3dFuncAnm*Default / NNS_G3dFuncBlend*Default; used by the units of the formats and by
+// NNS_G3dRenderObjInit) and NNS_G3dAnmObjInitFuncArray. This definition order gives the original order after mwcc's size
+// sort.
+void NNSi_G3dAnmBlendJnt();
+void NNSi_G3dAnmBlendMat();
+void NNSi_G3dAnmCalcNsBca();
+void NNSi_G3dAnmCalcNsBma();
+void NNSi_G3dAnmCalcNsBta();
+void NNSi_G3dAnmCalcNsBtp();
+void NNSi_G3dAnmCalcNsBva();
+void NNSi_G3dAnmObjInitNsBma();
+void NNSi_G3dAnmObjInitNsBta();
+void NNSi_G3dAnmObjInitNsBtp();
+void NNSi_G3dAnmObjInitNsBva();
+void func_021044a4();
+void func_021074c8();
+AnmObjInitFunc data_0213bcd8[10] = { // NNS_G3dAnmObjInitFuncArray
+    {'M', 0, 'M' << 8 | 'A', NNSi_G3dAnmObjInitNsBma},
+    {'M', 0, 'T' << 8 | 'P', NNSi_G3dAnmObjInitNsBtp},
+    {'M', 0, 'T' << 8 | 'A', NNSi_G3dAnmObjInitNsBta},
+    {'V', 0, 'V' << 8 | 'A', NNSi_G3dAnmObjInitNsBva},
+    {'J', 0, 'C' << 8 | 'A', func_021074c8},
+    {0, 0, 0, 0},
+    {0, 0, 0, 0},
+    {0, 0, 0, 0},
+    {0, 0, 0, 0},
+    {0, 0, 0, 0},
+};
+void *data_0213bcd0 = (void *)NNSi_G3dAnmBlendJnt;
+void *data_0213bccc = (void *)func_021044a4;
+void *data_0213bcc8 = (void *)NNSi_G3dAnmCalcNsBma;
+void *data_0213bcc4 = (void *)NNSi_G3dAnmCalcNsBtp;
+void *data_0213bcd4 = (void *)NNSi_G3dAnmBlendMat;
+void *data_0213bcbc = (void *)NNSi_G3dAnmCalcNsBca;
+void *data_0213bcb8 = (void *)NNSi_G3dAnmCalcNsBva;
+void *data_0213bcc0 = (void *)NNSi_G3dAnmCalcNsBta;
+u32 data_0213bcb4 = 5; // NNS_G3dAnmFmtNum

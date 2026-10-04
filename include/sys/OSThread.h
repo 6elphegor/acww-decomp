@@ -43,6 +43,7 @@ struct OSThread {
     void *alarm;            // 0xb0
     void (*destructor)(void *); // 0xb4
     u32 parameter;          // 0xb8
+    u32 systemErrno;        // 0xbc
 };
 
 struct OSMutex {

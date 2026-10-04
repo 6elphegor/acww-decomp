@@ -370,3 +370,11 @@ void NNS_FndFreeToFrmHeap(HeapHead *heap, u32 mode) {
     if (mode & 1) FreeHead(heap);
     if (mode & 2) FreeTail(heap);
 }
+
+// ---- file-scope objects (.data 0x0213bc10-0x0213bc20): the default texture / palette VRAM manager functions
+// (NNS_GfdDefaultFuncAllocTexVram, ...FreeTexVram, ...AllocPlttVram, ...FreePlttVram), set to the dummies above. This
+// definition order gives the original order after mwcc's size sort.
+s32 (*data_0213bc18)() = func_021014f8;
+s32 (*data_0213bc14)() = func_021014e0;
+s32 (*data_0213bc10)() = func_021014e8;
+s32 (*data_0213bc1c)() = func_021014f0;

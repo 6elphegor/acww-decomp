@@ -601,3 +601,6 @@ extern "C" void spl_gen_ptcl(E *e, PList *freeList) {
         i++;
     } while (i < count);
 }
+
+// ---- file-scope objects (autoload_3 .bss 0x021f5c3c-0x021f5c40)
+u32 data_021f5c3c;

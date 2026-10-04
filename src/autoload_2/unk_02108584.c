@@ -183,3 +183,22 @@ void NNSi_G3dSendJointSRTSi3d(u32 *a)
     }
 }
 
+// ---- file-scope objects (.data 0x0213bed0-0x0213bef0): the texture-matrix calculators by SRT flag bits
+void func_02108c2c();
+void texmtxCalc_flagS___3dsmax();
+void texmtxCalc_flagR___3dsmax();
+void texmtxCalc_flagRS___3dsmax();
+void texmtxCalc_flagT___3dsmax();
+void texmtxCalc_flagTS___3dsmax();
+void texmtxCalc_flagTR___3dsmax();
+void texmtxCalc_flagTRS___3dsmax();
+void (*data_0213bed0[8])(s32 *, u32 *) = {
+    (void (*)(s32 *, u32 *))func_02108c2c,
+    (void (*)(s32 *, u32 *))texmtxCalc_flagS___3dsmax,
+    (void (*)(s32 *, u32 *))texmtxCalc_flagR___3dsmax,
+    (void (*)(s32 *, u32 *))texmtxCalc_flagRS___3dsmax,
+    (void (*)(s32 *, u32 *))texmtxCalc_flagT___3dsmax,
+    (void (*)(s32 *, u32 *))texmtxCalc_flagTS___3dsmax,
+    (void (*)(s32 *, u32 *))texmtxCalc_flagTR___3dsmax,
+    (void (*)(s32 *, u32 *))texmtxCalc_flagTRS___3dsmax,
+};

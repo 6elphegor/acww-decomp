@@ -409,3 +409,5 @@ extern "C" void func_020f8b44(Mgr *m, Entry *e, Fx3 *v) {
     func_020f9690(e, (u8 *)m + 20);
 }
 
+// ---- file-scope objects (autoload_3 .bss 0x021f5c38-0x021f5c3c)
+u16 data_021f5c38;

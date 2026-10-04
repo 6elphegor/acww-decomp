@@ -499,3 +499,16 @@ void OS_SNPrintf(char *dst, u32 len, const char *fmt, ...) {
     va_end(va);
 }
 
+// ---- file-scope objects (autoload_3 .bss 0x021fcc14-0x021fce84; this definition order gives the original order after mwcc's size
+// sort). data_021fcc30 is a member of the thread info
+// (interior label); the idle thread's 200-byte stack ends at data_021fce84 (unk_02113b6c.c uses that name).
+u32 data_021fcc14;
+void (*data_021fcc20)(OSThread *, OSThread *);
+u32 data_021fcc28;
+u32 data_021fcc18;
+u32 data_021fcc1c;
+OSThread **data_021fcc24;
+OSThreadInfo data_021fcc2c;
+OSThread data_021fccfc;
+OSThread data_021fcc3c;
+u32 data_021fcdbc[50]; // the idle thread's stack

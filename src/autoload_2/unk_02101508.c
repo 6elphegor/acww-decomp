@@ -279,3 +279,16 @@ u32 NNS_GfdAllocFrmTexVram(u32 szByte, BOOL is4x4, u32 opt) {
     if (result) return ((addr >> 3) & 0xffff) | ((sz >> 4) << 16) | (is4x4 << 31);
     return 0;
 }
+
+// ---- file-scope objects (.data 0x0213bc20-0x0213bcb4, autoload_3 .bss 0x021f5cb0-0x021f5cb4): the frame texture VRAM
+// manager's slot regions and the region lists by texture kind (also used by unk_0210169c.c). This definition order gives
+// the original order after mwcc's size sort.
+extern GfdMan data_0213bc84, data_0213bc9c;
+GfdMan data_0213bc84 = {0xffffffff, 0xffffffff, 0, 0, 3, 0xffff, 262144};
+GfdMan data_0213bc6c = {0xffffffff, 0xffffffff, 0, 1, 2, 0xffff, 196608};
+GfdMan data_0213bc3c[1] = {{0xffffffff, 0xffffffff, 0, 0, 0, 0xffff, 0}};
+GfdMan data_0213bc54 = {0xffffffff, 0xffffffff, 0, 1, 1, 0xffff, 131072};
+GfdMan data_0213bc9c = {0xffffffff, 0xffffffff, 0, 0, 4, 0xffff, 393216};
+GfdMan *data_0213bc28[5] = {&data_0213bc9c, &data_0213bc84, data_0213bc3c, &data_0213bc6c, &data_0213bc54};
+GfdMan *data_0213bc20[2] = {data_0213bc3c, &data_0213bc84};
+u16 data_021f5cb0;

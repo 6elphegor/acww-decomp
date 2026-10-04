@@ -22,13 +22,16 @@ Data sections owned by a source file:
 
 | Module | Bytes | Owned by a unit | Not owned |
 |---|--:|--:|--:|
-| ARM9 main (`.rodata`, `.data`, `.init`, `.ctor`, `.exception`, `.exceptix`) | 150,004 | 124,376 (82.9%) | 25,628 |
-| `autoload_2` (`.rodata`, `.data`) | 28,076 | 3,512 (12.5%) | 24,564 |
-| `autoload_3` (bss of main and the libraries) | 802,752 | 754,072 (93.9%) | 48,680 |
-| DTCM (`.data`) | 1,120 | 0 | 1,120 |
+| ARM9 main (`.rodata`, `.data`, `.init`, `.ctor`, `.exception`, `.exceptix`) | 150,004 | 149,360 (99.6%) | 644 |
+| `autoload_2` (`.rodata`, `.data`) | 28,076 | 27,692 (98.6%) | 384 |
+| `autoload_3` (bss of main and the libraries) | 802,752 | 801,752 (99.9%) | 1,000 |
+| DTCM (`.data`) | 1,120 | 104 (9.3%) | 1,016 |
 | Overlays (all sections; 39 overlays are data only) | 505,636 | 505,636 (100%) | 0 |
 
-Most library units were linked with their code only, so most library data is still the original's.
+Data with no code of its own (sprite tables, the crash-screen font, the process-profile table, NitroSDK/NitroSystem/MSL
+tables such as the sine table and the character-class maps, OS_IRQTable) is built by data-only units. Library units
+that were several original files are split by file where their data needed it (each file's data and bss are sorted
+by size on their own, see `tools/pipeline/linking.md`, "Data of library units").
 
 ## Functions not built from source
 
@@ -62,28 +65,33 @@ Most library units were linked with their code only, so most library data is sti
 
 | Range | Size | Contents |
 |---|--:|---|
-| `.text` 0x02000b48-0x02000b6c | 0x24 | `BuildInfo` (`_start_ModuleParams`, the SDK's module parameter block right after crt0) |
+| `.text` 0x02000b48-0x02000b6c | 0x24 | `BuildInfo`: NitroSDK crt0.c's `_start_ModuleParams`, a C array (`void *const _start_ModuleParams[]`: the autoload list and its end, the autoload start, the static bss start and end from the linker script, the compressed-static end, the SDK version, the two NITRO code words). It is in `.text` because the SDK linker script places `crt0.o (.rodata)` right after `crt0.o (.text)`; mwcc 1.2 puts the C array in `.rodata`, so a C unit cannot own it in main's `.text` range, and dsd needs the symbol named `BuildInfo` |
 | `.text` 0x02000b6c-0x02000b7c | 0x10 | A 16-byte key; `AxMail_GetDigestKey` (built from source) returns its address |
 | `.text` 0x02000b84-0x02000c2c | 0xa8 | The `.version` block: the middleware tag strings `[SDK+...]` (DWC, BACKUP, Wi-Fi, CPS, SSL) that `OSi_ReferSymbol` callers pass to keep them linked |
-| `.init` 0x020c5f68-0x020c5fa4, 0x020c6094-0x020c6108; `.ctor` 0x020d1f40-0x020d1f4c, 0x020d1f54-0x020d1f58 | 0xb0 + 0x10 | Four ARM static initialisers of library-area files whose owners are not settled: `0x020c5f68` (empty), `0x020c5f6c` (constructs a global vector at bss 0x021f4880 and registers its destructor), `0x020c5fa0` (empty), `0x020c6094` (calls `SndVolumeCurve_Clear` and `FX_Div` three times; bss 0x021f5c00-0x021f5c0c) |
-| `.rodata` 13 small ranges between 0x020c8b9c and 0x020d0c0c | 520 | Constants used by several units, not yet assigned to one |
-| `.data` 0x020d2024-0x020d5d44 | 15,648 | A block of cross-linked tables (354 labels) used by many game units, with no code of its own |
-| `.data` 0x020de408-0x020e0468 | 8,288 | Two objects |
-| `.data` 0x020e1e2c-0x020e218c | 864 | One object |
-| `.data` 13 small objects between units, and 0x020e74ec-0x020e7500 | 116 | Objects not yet assigned to a unit |
+| `.init` 0x020c5fa0-0x020c5fa4, `.ctor` 0x020d1f48-0x020d1f4c | 4 + 4 | An empty ARM static initialiser of a library-area file between the network file (0x020e9a08) and the task manager (0x020ed4bc); probably `ProcBase`'s file (next section) |
+| `.rodata` 13 small ranges between 0x020c8b9c and 0x020d0c0c | 520 | Constants used by several units, not yet assigned to one. The largest, the building records `data_020d0a7c` (0x154, right after the rodata of `unk_020b0e60.cpp`, the only user), fits that file's size order, but adding it reorders the file's bss (no definition order found) |
+| `.data` 11 objects of 8 bytes between units | 88 | Process profiles (`ProcProfile`), each right before the data of the file whose create function it names; adding one reorders that file's bss the same way (tried on `unk_0203d4d8.cpp`) |
+| `.data` 0x020dc520, 0x020ddf8c, 0x020e74ec-0x020e7500 | 28 | `gVBlanksPerFrame`, a word of -1, and 20 zero bytes after the last unit's data |
 
 ### Libraries
 
-* `autoload_2` `.rodata` 0x02135914-0x02135964, 0x02135c9c-0x0213a710 and 0x0213a740-0x0213a748 (19,148 bytes)
-  and `.data` (5,416 bytes in six ranges between 0x0213a748 and 0x0213c6c0): constant tables and data of library files whose
-  code is linked without them.
-* `autoload_3` (48,680 bytes): mostly library bss from 0x021f4768 to the end, plus a few small objects of main.
-* DTCM `.data` 0x027e0000-0x027e0460.
-* ITCM `.text` 0x01ff8ab4-0x01ff8ad4: a table of the eight NitroSystem texture-SRT functions inside `.text`, right after
-  the code of its file (`src/itcm/unk_01ff8228.c`). mwcc puts a `const` table in `.rodata` even under
-  `#pragma define_section`/`#pragma section` (checked), and the ITCM module has no `.rodata` range, so the C unit
-  cannot emit it in place yet.
-* ITCM `.text` 0x01ffd0b4-0x01ffd0e4: six pointer-to-member constants of `ProcBase`'s file (next section).
+| Range | Size | Contents |
+|---|--:|---|
+| `autoload_2` `.rodata` 0x02135e80-0x02135f44 | 196 | Two tables of the wave-stream block reader `0x0210d174` (not built) |
+| `autoload_2` `.rodata` 0x0213a3f8-0x0213a410, `.data` 0x0213c204-0x0213c20c | 24 + 8 | Data of `MB_ReadSegment` (`0x021239ec`, not built): a table and the word pointing to it, and the string `"rom"` |
+| `autoload_2` `.rodata` 0x0213a740-0x0213a748 | 8 | `__ptmf_null` of the C++ runtime |
+| `autoload_2` `.data` 0x0213b120-0x0213b1a4 | 132 | `ProcBase` (next section) |
+| `autoload_2` `.data` 0x0213bba4 | 4 | A constant of the SPL unit `unk_020fc984.cpp`; the code copies it as a 6-byte `VecFx16`, so its declaration is not the original object |
+| `autoload_2` `.data` 0x0213c6b4-0x0213c6c0 | 12 | Zero bytes after the runtime's data; no reference |
+| `autoload_3` 0x021c1b3c, 0x021c47bc, 0x021c5384, 0x021cb69c, 0x021ce63c, 0x021ef5c8 | 84 | Small bss objects of main between units (BGM clock, `gGfxMainOnTop`, the CPU matrix stack, `gTouchHoldFrames`, ...) |
+| `autoload_3` 0x021f5974-0x021f5994, 0x021f59e4 | 32 + 4 | `ProcBase`'s factory state; `gProfileTable` (its file is not settled: after the task manager's bss, before the sound system's) |
+| `autoload_3` 0x021f5c50-0x021f5ca0 | 80 | NVRAM / DWC account state: unaligned members shared by `unk_020fe848.c`, `unk_020fea34.c` and `unk_020fedcc.c`; not in one size order |
+| `autoload_3` 0x021feb6c-0x021feb8c, 0x021ff4b8-0x021ff4cc | 32 + 20 | A PM register record and a WM message whose declared types are views, not the objects |
+| `autoload_3` 0x021fff80-0x02200040 | 192 | MB game-info and WM-state bss: not one size order across their units; the WM-state words could not be ordered together with the `.data` of `unk_02124c40.c` |
+| `autoload_3` 0x02200054-0x02200250, 0x0220064c-0x0220066c, 0x02200670-0x02200680 | 508 + 32 + 16 | CTRDG and MSL (`abort`/`exit`) bss of `unk_0212703c.c`, which is several files (it owns the console-stream data); `errno` and the signal table; 16 bytes at the end |
+| DTCM `.data` 0x027e0058-0x027e00b8, 0x027e00c8-0x027e0460 | 96 + 920 | Zero-initialised SDK and game objects placed in DTCM (the IRQ callback records, the sound alarm array, `sMenuWipeLine`/`sMenuWipeEdge`, ...). The original placed them with the SDK's DTCM section pragma, which keeps them in the data image; plain C puts a zero initialiser in `.bss`. `OS_IRQTable` and the callback index table are built (`src/dtcm/`) |
+| ITCM `.text` 0x01ff8ab4-0x01ff8ad4 | 0x20 | A table of the eight NitroSystem texture-SRT functions inside `.text`, right after the code of its file (`src/itcm/unk_01ff8228.c`). mwcc puts a `const` table in `.rodata` even under `#pragma define_section`/`#pragma section` (checked), and the ITCM module has no `.rodata` range, so the C unit cannot emit it in place yet |
+| ITCM `.text` 0x01ffd0b4-0x01ffd0e4 | 0x30 | Six pointer-to-member constants of `ProcBase`'s file (next section) |
 
 ## `ProcBase`
 
