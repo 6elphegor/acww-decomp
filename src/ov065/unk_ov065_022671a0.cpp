@@ -68,7 +68,7 @@ void SslMd5_Transform(Unk_ov065_02267480_Md5 *ctx, const u8 *block);
 #define Unk_ov065_02267540_H(b, c, d) ((b) ^ (c) ^ (d))
 #define Unk_ov065_02267540_I(b, c, d) ((c) ^ ((b) | ~(d)))
 #define Unk_ov065_02267540_STEP(f, a, b, c, d, k, sh) \
-    a += f(b, c, d) + DoorLight[sSslMd5WordIndex[k]] + sSslMd5SineTable[k]; \
+    a += f(b, c, d) + X[sSslMd5WordIndex[k]] + sSslMd5SineTable[k]; \
     a = b + Unk_ov065_02267540_ROL(a, sh);
 
 void SslMd5_Transform(Unk_ov065_02267480_Md5 *ctx, const u8 *block)
@@ -77,10 +77,10 @@ void SslMd5_Transform(Unk_ov065_02267480_Md5 *ctx, const u8 *block)
     u32 b = ctx->st[1];
     u32 c = ctx->st[2];
     u32 d = ctx->st[3];
-    u32 DoorLight[16];
+    u32 X[16];
     s32 t;
     s32 i;
-    SslMd5_Decode(DoorLight, block, 0x40);
+    SslMd5_Decode(X, block, 0x40);
     t = 0;
     for (i = 0; i < 4; i++) {
         Unk_ov065_02267540_STEP(Unk_ov065_02267540_F, a, b, c, d, t + 0, 7)

@@ -2787,7 +2787,7 @@ GroundCell::~GroundCell()
 extern "C" s32 Ground_FindTerrainMarker(s32 *a, s32 *b, s32 c, s32 d)
 {
     s32 bx, bz, j, i;
-    Unk_02033b94 DoorLight, Y, Z;
+    Unk_02033b94 X, Y, Z;
     if (func_01ffcb5c(c, d) == 0) return 4;
     bx = c << 4;
     bz = d << 4;
@@ -2795,16 +2795,16 @@ extern "C" s32 Ground_FindTerrainMarker(s32 *a, s32 *b, s32 c, s32 d)
         for (i = 0; i < 16; i++) {
             *a = bx + i;
             *b = bz + j;
-            _ZN10GroundCell4loadEiii(&DoorLight, *a, *b, 0);
+            _ZN10GroundCell4loadEiii(&X, *a, *b, 0);
             _ZN10GroundCell4loadEiii(&Y, *a + 1, *b, 0);
-            if (Unk_02030be4_A(&DoorLight)) {
+            if (Unk_02030be4_A(&X)) {
                 if (Unk_02030be4_B(&Y)) {
                     _ZN10GroundCell4loadEiii(&Z, *a + 2, *b, 0);
                     if (Unk_02030be4_B(&Z)) return 1;
                     return 0;
                 }
             }
-            if (DoorLight.unk_10[0] != 0x14 && DoorLight.unk_10[1] != 0x14 && DoorLight.unk_10[2] == 0x14 && DoorLight.unk_10[3] == 0x14
+            if (X.unk_10[0] != 0x14 && X.unk_10[1] != 0x14 && X.unk_10[2] == 0x14 && X.unk_10[3] == 0x14
                 && Y.unk_10[0] != 0x14 && Y.unk_10[1] == 0x14 && Y.unk_10[2] == 0x14 && Y.unk_10[3] != 0x14) {
                 s32 idx = Y.unk_10[3];
                 s32 v;

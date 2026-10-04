@@ -477,7 +477,7 @@ void SslBigNum_Sub(u16 *, u16 *, u16 *, u32);
 #define R1(a, b, c, d, e, x) e += ROL(a, 5) + F1(b, c, d) + (x) + 0x6ed9eba1; b = ROL(b, 30);
 #define R2(a, b, c, d, e, x) e += ROL(a, 5) + F2(b, c, d) + (x) + 0x8f1bbcdc; b = ROL(b, 30);
 #define R3(a, b, c, d, e, x) e += ROL(a, 5) + F1(b, c, d) + (x) + 0xca62c1d6; b = ROL(b, 30);
-#define DoorLight(k) SslSha1_ExpandWord((k), w)
+#define X(k) SslSha1_ExpandWord((k), w)
 
 void SslSha1_LoadBe32(u32 *dst, u8 *src, u32 n);
 u32 SslSha1_ExpandWord(s32 i, u32 *w);
@@ -667,41 +667,41 @@ void SslSha1_Transform(u32 *ctx, u8 *data) {
     }
     R0(a, b, c, d, e, w[15]);
     i = 0;
-    R0(e, a, b, c, d, DoorLight(i));
-    R0(d, e, a, b, c, DoorLight(i + 1));
-    R0(c, d, e, a, b, DoorLight(i + 2));
-    R0(b, c, d, e, a, DoorLight(i + 3));
+    R0(e, a, b, c, d, X(i));
+    R0(d, e, a, b, c, X(i + 1));
+    R0(c, d, e, a, b, X(i + 2));
+    R0(b, c, d, e, a, X(i + 3));
     i = 4;
     {
         for (j = 0; j < 4; j++) {
-            R1(a, b, c, d, e, DoorLight(i));
-            R1(e, a, b, c, d, DoorLight(i + 1));
+            R1(a, b, c, d, e, X(i));
+            R1(e, a, b, c, d, X(i + 1));
             i = (i + 2) & 15;
-            R1(d, e, a, b, c, DoorLight(i));
-            R1(c, d, e, a, b, DoorLight(i + 1));
-            R1(b, c, d, e, a, DoorLight(i + 2));
+            R1(d, e, a, b, c, X(i));
+            R1(c, d, e, a, b, X(i + 1));
+            R1(b, c, d, e, a, X(i + 2));
             i += 3;
         }
     }
     {
         for (j = 0; j < 4; j++) {
-            R2(a, b, c, d, e, DoorLight(i));
-            R2(e, a, b, c, d, DoorLight(i + 1));
-            R2(d, e, a, b, c, DoorLight(i + 2));
+            R2(a, b, c, d, e, X(i));
+            R2(e, a, b, c, d, X(i + 1));
+            R2(d, e, a, b, c, X(i + 2));
             i = (i + 3) & 15;
-            R2(c, d, e, a, b, DoorLight(i));
-            R2(b, c, d, e, a, DoorLight(i + 1));
+            R2(c, d, e, a, b, X(i));
+            R2(b, c, d, e, a, X(i + 1));
             i += 2;
         }
     }
     {
         for (j = 0; j < 4; j++) {
-            R3(a, b, c, d, e, DoorLight(i));
-            R3(e, a, b, c, d, DoorLight(i + 1));
-            R3(d, e, a, b, c, DoorLight(i + 2));
-            R3(c, d, e, a, b, DoorLight(i + 3));
+            R3(a, b, c, d, e, X(i));
+            R3(e, a, b, c, d, X(i + 1));
+            R3(d, e, a, b, c, X(i + 2));
+            R3(c, d, e, a, b, X(i + 3));
             i = (i + 4) & 15;
-            R3(b, c, d, e, a, DoorLight(i));
+            R3(b, c, d, e, a, X(i));
             i += 1;
         }
     }

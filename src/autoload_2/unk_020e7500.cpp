@@ -81,7 +81,7 @@ static inline s32 FX_Mul(s32 a, s32 b) {
     return (s32)(((s64)a * b + 0x800) >> 12);
 }
 
-// PAD_Read / PAD_DetectFold of the SDK (REG_KEYINPUT 0x04000130, shared work DoorLight/Y/fold word 0x027fffa8)
+// PAD_Read / PAD_DetectFold of the SDK (REG_KEYINPUT 0x04000130, shared work X/Y/fold word 0x027fffa8)
 static inline u16 PAD_Read(void) {
     return (u16)(((*(vu16 *)0x04000130 | *(vu16 *)0x027fffa8) ^ 0x2fff) & 0x2fff);
 }

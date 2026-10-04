@@ -1589,19 +1589,19 @@ extern "C" void PlayerErrandSlot_ComposeLetter(PlayerErrandSlot *self, void *arg
     u8 b[5];
     u32 cnt;
     u8 buf[0x1e];
-    u32 DoorLight[7];
+    u32 X[7];
     u32 Y[13];
     s32 i;
     s32 r;
     if (_ZN10VillagerId7isValidEv(self->villagers[0]) && _ZN10VillagerId7isValidEv(self->villagers[1])) {
-        _ZN11MsgString9BC1Ev(DoorLight);
+        _ZN11MsgString9BC1Ev(X);
         _ZN11MsgString33C1Ev(Y);
         cnt = 0;
-        _ZN10VillagerId7getNameEj(self->villagers[1], DoorLight);
-        MailText_SetSlot(0, DoorLight);
-        _ZN9MsgString5clearEv(DoorLight);
-        _ZN10VillagerId7getNameEj(self->villagers[0], DoorLight);
-        MailText_SetSlot(1, DoorLight);
+        _ZN10VillagerId7getNameEj(self->villagers[1], X);
+        MailText_SetSlot(0, X);
+        _ZN9MsgString5clearEv(X);
+        _ZN10VillagerId7getNameEj(self->villagers[0], X);
+        MailText_SetSlot(1, X);
         for (i = 0; i < 6; i++) {
             r = TopicWord_PickRandom(&cnt, i);
             _ZN9MsgString5clearEv(Y);
@@ -1616,7 +1616,7 @@ extern "C" void PlayerErrandSlot_ComposeLetter(PlayerErrandSlot *self, void *arg
         b[4] = Random_GlobalBelow(10);
         Letter_ComposeVillagerToVillagerZ(arg, &b[1], &b[2], &b[3], &b[4], buf, data_020e218c, self->villagers[0], self->villagers[1], 1);
         _ZN11MsgString33D1Ev(Y);
-        _ZN11MsgString9BD1Ev(DoorLight);
+        _ZN11MsgString9BD1Ev(X);
     }
 }
 
