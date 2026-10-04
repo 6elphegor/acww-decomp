@@ -151,14 +151,14 @@ public:
     /* 0xb4 */ FieldVillager *owner;
 };
 
-typedef BOOL (SpNpcNookIntro::*Unk_ov068_02267238_Fn)();
-struct Unk_ov068_02267238_Entry {
-    Unk_ov068_02267238_Fn a;
-    Unk_ov068_02267238_Fn b;
+typedef BOOL (SpNpcNookIntro::*SpNpcNookIntroActFn)();
+struct SpNpcNookIntroActEntry {
+    SpNpcNookIntroActFn a;
+    SpNpcNookIntroActFn b;
 };
-typedef void (SpNpcNookIntroTalk::*Unk_ov068_0226fea4_Fn)();
-struct Unk_ov068_0226fea4_Ent {
-    Unk_ov068_0226fea4_Fn fn;
+typedef void (SpNpcNookIntroTalk::*SpNpcNookIntroTalkScriptFn)();
+struct SpNpcNookIntroTalkScript {
+    SpNpcNookIntroTalkScriptFn fn;
     u8 flag;
     u8 pad[3];
 };
@@ -188,7 +188,7 @@ public:
     BOOL setupAct00();
     void changeAct(s32 state);
 
-    /* 0x654 */ u32 unk_654;
+    /* 0x654 */ u32 act;
     SpNpcNookIntroTalk talk;
     u16 startAngle;
     u8 pad_712[2];
@@ -201,8 +201,8 @@ public:
 
 extern "C" SpNpcNookIntro *SpNpcNookIntro_Create();
 #define data_ov068_0226fe1c ((Unk_ov068_0226fea4_Flag *)((u8 *)sNookIntroTalkScripts + 8))
-#define PMA(x) (*(Unk_ov068_0226fea4_Fn *)(x))
-#define PMB(x) (*(Unk_ov068_02267238_Fn *)(x))
+#define PMA(x) (*(SpNpcNookIntroTalkScriptFn *)(x))
+#define PMB(x) (*(SpNpcNookIntroActFn *)(x))
 extern "C" {
 void _ZN14SpNpcNookIntro10setupAct03Ev();
 void _ZN14SpNpcNookIntro9mainAct01Ev();
@@ -239,13 +239,13 @@ extern char sNookTexRcn[0x1c];
 extern char sNookTexRcc[0x1c];
 extern char sNookTexRcs[0x1c];
 extern char sNookTexRcd[0x1c];
-extern Unk_ov068_0226fea4_Ent sNookIntroTalkScripts[2];
-extern Unk_ov068_02267238_Entry sSpNpcNookIntroActTable[6];
+extern SpNpcNookIntroTalkScript sNookIntroTalkScripts[2];
+extern SpNpcNookIntroActEntry sSpNpcNookIntroActTable[6];
 }
 
 // data definitions before the function with the local static table (creation order)
 extern "C" char sNookTexRcd[0x1c] = "npc_sp/model/rcd_tex.nsbtx";
-extern "C" Unk_ov068_0226fea4_Ent sNookIntroTalkScripts[2] = {{0, 0}, {PMA(data_ov068_0226fd30), 1}};
+extern "C" SpNpcNookIntroTalkScript sNookIntroTalkScripts[2] = {{0, 0}, {PMA(data_ov068_0226fd30), 1}};
 extern "C" void *data_ov068_0226fd30[2] = {(void *)_ZN18SpNpcNookIntroTalk13runWalkScriptEv, 0};
 
 extern "C" SpNpcNookIntro *SpNpcNookIntro_Create() {
@@ -273,7 +273,7 @@ extern "C" const char *sNookModelPaths[4] = {sNookModelRcn, sNookModelRcc, sNook
 extern "C" char sNookModelRcn[0x18] = "npc_sp/model/rcn.nsbmd";
 extern "C" void *data_ov068_0226fd40[2] = {(void *)_ZN14SpNpcNookIntro10setupAct05Ev, 0};
 extern "C" void *data_ov068_0226fd00[2] = {(void *)_ZN14SpNpcNookIntro10setupAct03Ev, 0};
-extern "C" Unk_ov068_02267238_Entry sSpNpcNookIntroActTable[6] = {
+extern "C" SpNpcNookIntroActEntry sSpNpcNookIntroActTable[6] = {
     {PMB(data_ov068_0226fd10), PMB(data_ov068_0226fd18)},
     {PMB(data_ov068_0226fd58), PMB(data_ov068_0226fd08)},
     {PMB(data_ov068_0226fd60), PMB(data_ov068_0226fd48)},
@@ -331,8 +331,8 @@ u8 *SpNpcNookIntro::getModelPath() {
 
 BOOL SpNpcNookIntro::updateAct() {
     BOOL result = FALSE;
-    if (sSpNpcNookIntroActTable[unk_654].b != NULL) {
-        result = (this->*sSpNpcNookIntroActTable[unk_654].b)();
+    if (sSpNpcNookIntroActTable[act].b != NULL) {
+        result = (this->*sSpNpcNookIntroActTable[act].b)();
     }
     return result;
 }
@@ -343,7 +343,7 @@ void SpNpcNookIntro::changeAct(s32 state) {
         ok = (this->*sSpNpcNookIntroActTable[state].a)();
     }
     if (ok) {
-        unk_654 = state;
+        act = state;
     }
 }
 
@@ -606,7 +606,7 @@ void SpNpcNookIntroTalk::runWalkScript() {
 
 BOOL SpNpcNookIntro::acceptsInteraction(void *) {
     BOOL r = FALSE;
-    if (unk_654 == 0) {
+    if (act == 0) {
         r = TRUE;
     }
     return r;

@@ -75,12 +75,6 @@ extern u8 gSaveData[];
 
 
 
-struct Unk_ov083_02271bbc_Fill {
-    u16 a;
-    u8 b;
-    u8 c;
-    u32 d;
-};
 
 class SpNpcTortimerFlowerFestTalk : public SpNpcTalkRequest {
 public:
@@ -124,22 +118,22 @@ public:
     BOOL setupAct00();
     void changeAct(s32 state);
 
-    s32 unk_654;
+    s32 judgeTimer;
     s32 act;
     SpNpcTortimerFlowerFestTalk talk;
     u8 festDay;
 };
 
-struct Unk_ov083_02271858_Ent {
+struct SpNpcTortimerFlowerFestActEntry {
     BOOL (SpNpcTortimerFlowerFest::*enter)();
     BOOL (SpNpcTortimerFlowerFest::*exit)();
 };
 
 extern "C" {
-extern Unk_ov083_02271858_Ent sSpNpcTortimerFlowerFestActTable[3];
+extern SpNpcTortimerFlowerFestActEntry sSpNpcTortimerFlowerFestActTable[3];
 }
 
-Unk_ov083_02271858_Ent sSpNpcTortimerFlowerFestActTable[3] = {
+SpNpcTortimerFlowerFestActEntry sSpNpcTortimerFlowerFestActTable[3] = {
     {&SpNpcTortimerFlowerFest::setupAct00, &SpNpcTortimerFlowerFest::mainAct00},
     {&SpNpcTortimerFlowerFest::setupAct01, &SpNpcTortimerFlowerFest::mainAct01},
     {NULL, &SpNpcTortimerFlowerFest::mainAct02},
@@ -206,10 +200,10 @@ BOOL SpNpcTortimerFlowerFest::setupAct00() {
 }
 
 BOOL SpNpcTortimerFlowerFest::mainAct00() {
-    if (tickTimer(&unk_654)) {
+    if (tickTimer(&judgeTimer)) {
         return TRUE;
     }
-    unk_654 = 0x258;
+    judgeTimer = 0x258;
     u8 *const g = gContestRecord;
     ContestRecord_JudgeGardens(g);
     _ZN13ContestRecord7setKindEj(g, 3);

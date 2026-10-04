@@ -463,7 +463,7 @@ _ZN19SpNpcRoostGuestTalk14onMessageStartEj kind:label(thumb) addr:0x0226ce50
 _ZN19SpNpcRoostGuestTalk5startEP12TalkStartMsg kind:function(thumb,size=0x200) addr:0x0226ce70
 _ZN19SpNpcRoostGuestTalk11getTalkModeEv kind:function(thumb,size=0x6) addr:0x0226d070
 _ZN19SpNpcRoostGuestTalk11setTalkModeEi kind:function(thumb,size=0x6) addr:0x0226d078
-_ZN19SpNpcRoostGuestTalk11attachOwnerEP24Unk_ov068_0226ccd4_Owner kind:function(thumb,size=0x1a) addr:0x0226d080
+_ZN19SpNpcRoostGuestTalk11attachOwnerEP15SpNpcRoostGuest kind:function(thumb,size=0x1a) addr:0x0226d080
 _ZN19SpNpcRoostGuestTalkD0Ev kind:function(thumb,size=0x20) addr:0x0226d09c
 _ZN19SpNpcRoostGuestTalkD1Ev kind:function(thumb,size=0x18) addr:0x0226d0bc
 _ZN19SpNpcRoostGuestTalkC1Ev kind:function(thumb,size=0x20) addr:0x0226d0d4

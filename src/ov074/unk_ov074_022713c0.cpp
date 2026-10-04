@@ -1,5 +1,6 @@
 // mwcc-flags: -str reuse
 #include "types.h"
+#include "gfx/VecFx32.h"
 #include "game/Unk_0201acf8.h"
 #include "talk/TalkStartMsg.h"
 #include "npc/NpcAnimCtrl.h"
@@ -57,9 +58,6 @@ struct Unk_ov074_02271564_B {
 };
 
 
-struct Unk_ov074_02271be8_V {
-    s32 v[3];
-};
 
 struct Unk_ov074_02271e54_V {
     s32 x, y, z, w;
@@ -157,7 +155,7 @@ s32 NpcActionCtrl_isActionDone(void *p);
 s32 NpcActionCtrl_getAction(void *p);
 s32 NpcActionCtrl_requestAction(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j);
 s32 Math_AngleXZ(void *a, s32 *b);
-Unk_ov074_02271be8_V *NpcMoveCtrl_getDestination(void *p);
+VecFx32 *NpcMoveCtrl_getDestination(void *p);
 s32 MatTexVramTask_request(void *p, u32 a, u32 *b, u32 c, s32 d, s32 e);
 void NpcFootstepFx_disableFootsteps(void *p);
 void NpcFootstepFx_enableFootsteps(void *p);
@@ -243,12 +241,12 @@ public:
     BOOL mainAct02();
     BOOL setupAct02();
 
-    /* 0x654 */ s32 unk_654;
+    /* 0x654 */ s32 act;
     /* 0x658 */ SpNpcBlancaTalk talk;
     /* 0x710 */ SpNpcBlancaFaceTexture faceTexture;
 };
 
-struct Unk_ov074_02272130_Ent {
+struct SpNpcBlancaActEntry {
     BOOL (SpNpcBlanca::*enter)();
     BOOL (SpNpcBlanca::*exit)();
 };
@@ -264,7 +262,7 @@ s32 SpNpcBlanca_FindSidestepPos(void *self, void *out, void *x);
 s32 SpNpcBlanca_PickWanderTarget(void *self, s32 *a, s32 *b);
 s32 SpNpcBlanca_IsInFocusBox(void *self, void *a, void *b);
 extern u8 sSpNpcBlancaModelPath[];
-extern Unk_ov074_02272130_Ent sSpNpcBlancaActTable[5];
+extern SpNpcBlancaActEntry sSpNpcBlancaActTable[5];
 extern FxVec3 sSpNpcBlancaSidestepOffsets[2];
 extern ActorProfile sSpNpcBlancaProfile;
 extern DebugColor data_ov074_022726e4;
@@ -276,7 +274,7 @@ extern DebugColor data_ov074_022726f0;
 extern u32 sSpNpcBlancaFaceMaterialName;
 }
 
-typedef BOOL (SpNpcBlanca::*Unk_ov074_Fn)();
+typedef BOOL (SpNpcBlanca::*SpNpcBlancaActFn)();
 extern "C" {
 void _ZN11SpNpcBlanca9mainAct04Ev();
 extern void *data_ov074_022724e8[2];
@@ -301,7 +299,7 @@ extern void *data_ov074_02272530[2];
 void _ZN11SpNpcBlanca10setupAct00Ev();
 extern void *data_ov074_02272538[2];
 }
-#define PM(a) (*(Unk_ov074_Fn *)data_ov074_##a)
+#define PM(a) (*(SpNpcBlancaActFn *)data_ov074_##a)
 
 
 #define F(T, o) (*(T *)((u8 *)this + (o)))
@@ -347,8 +345,8 @@ u8 *SpNpcBlanca::getModelPath() { return sSpNpcBlancaModelPath; }
 
 BOOL SpNpcBlanca::updateAct() {
     BOOL result = FALSE;
-    if (sSpNpcBlancaActTable[unk_654].exit != NULL) {
-        result = (this->*sSpNpcBlancaActTable[unk_654].exit)();
+    if (sSpNpcBlancaActTable[act].exit != NULL) {
+        result = (this->*sSpNpcBlancaActTable[act].exit)();
     }
     return result;
 }
@@ -359,7 +357,7 @@ extern "C" void SpNpcBlanca_ChangeAct(SpNpcBlanca *self, s32 state) {
         ok = (self->*sSpNpcBlancaActTable[state].enter)();
     }
     if (ok) {
-        self->unk_654 = state;
+        self->act = state;
     }
 }
 
@@ -497,8 +495,8 @@ extern "C" BOOL SpNpcBlanca_TryAvoidObstacle(void *self) {
 
 BOOL SpNpcBlanca::mainAct02() {
     s32 r6;
-    Unk_ov074_02271be8_V v;
-    Unk_ov074_02271be8_V w;
+    VecFx32 v;
+    VecFx32 w;
     void *r4 = P(0x564);
 
     r6 = SpNpcBlanca_IsInCameraBox(this);
@@ -509,23 +507,23 @@ BOOL SpNpcBlanca::mainAct02() {
                 if (((Unk_0201acf8 *)P(0x3aa))->getLevel() == 2) {
                     NpcActionCtrl_requestAction(r4, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
                 } else if ((Random_Next(gRandom) & 7) == 0) {
-                    v.v[0] = gVec3Zero[0];
-                    v.v[1] = gVec3Zero[1];
-                    v.v[2] = gVec3Zero[2];
-                    if (SpNpcBlanca_PickWanderTarget(this, &v.v[0], &v.v[2]) != 0) {
-                        r6 = Math_AngleXZ(P(0x5c), &v.v[0]);
+                    v.x = gVec3Zero[0];
+                    v.y = gVec3Zero[1];
+                    v.z = gVec3Zero[2];
+                    if (SpNpcBlanca_PickWanderTarget(this, &v.x, &v.z) != 0) {
+                        r6 = Math_AngleXZ(P(0x5c), &v.x);
                         if (NpcActor_IsFrontAngle(r6 - F(s16, 0x8e)) != 0) {
                             r6 = 1;
                             if (Random_GlobalBelow(4) == 0) {
                                 r6 = 2;
                             }
                             if (r6 != NpcActionCtrl_getAction(P(0x564))) {
-                                NpcActionCtrl_requestAction(r4, r6, 1, v.v[0], v.v[2], 0, 0, 0, 0, data_020c6cc8, 0);
+                                NpcActionCtrl_requestAction(r4, r6, 1, v.x, v.z, 0, 0, 0, 0, data_020c6cc8, 0);
                                 F(u8, 0x651) = 0x64;
                             }
                         } else {
                             if (NpcActionCtrl_getAction(P(0x564)) != 4) {
-                                NpcActionCtrl_requestAction(r4, 4, 1, v.v[0], v.v[2], 0, r6, 0, 0, data_020c6cc8, 0);
+                                NpcActionCtrl_requestAction(r4, 4, 1, v.x, v.z, 0, r6, 0, 0, data_020c6cc8, 0);
                                 F(u8, 0x651) = 0x50;
                             }
                         }
@@ -541,11 +539,11 @@ BOOL SpNpcBlanca::mainAct02() {
                         if (F(u8, 0x651) == 0) {
                             NpcActionCtrl_requestAction(r4, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
                         } else {
-                            Unk_ov074_02271be8_V *src = NpcMoveCtrl_getDestination(P(0x350));
-                            w.v[0] = src->v[0];
-                            w.v[1] = src->v[1];
-                            w.v[2] = src->v[2];
-                            if (NpcActor_IsFrontAngle(Math_AngleXZ(P(0x5c), &w.v[0]) - F(s16, 0x8e)) == 0) {
+                            VecFx32 *src = NpcMoveCtrl_getDestination(P(0x350));
+                            w.x = src->x;
+                            w.y = src->y;
+                            w.z = src->z;
+                            if (NpcActor_IsFrontAngle(Math_AngleXZ(P(0x5c), &w.x) - F(s16, 0x8e)) == 0) {
                                 NpcActionCtrl_requestAction(r4, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
                             }
                         }
@@ -620,7 +618,7 @@ extern void *data_ov074_02272520[2];
 extern void *data_ov074_02272528[2];
 extern void *data_ov074_02272530[2];
 extern void *data_ov074_02272538[2];
-extern Unk_ov074_02272130_Ent sSpNpcBlancaActTable[5];
+extern SpNpcBlancaActEntry sSpNpcBlancaActTable[5];
 extern FxVec3 sSpNpcBlancaSidestepOffsets[2];
 
 
@@ -657,7 +655,7 @@ void *data_ov074_02272530[2] = {(void *)_ZN15SpNpcBlancaTalk11onFaceDrawnEv, 0};
 void *data_ov074_02272508[2] = {(void *)_ZN11SpNpcBlanca10setupAct02Ev, 0};
 void *data_ov074_02272500[2] = {(void *)_ZN11SpNpcBlanca9mainAct01Ev, 0};
 u8 sSpNpcBlancaModelPath[] = "npc_sp/model/mka.nsbmd";
-Unk_ov074_02272130_Ent sSpNpcBlancaActTable[5] = {
+SpNpcBlancaActEntry sSpNpcBlancaActTable[5] = {
     {PM(02272538), PM(022724f8)},
     {NULL, PM(02272500)},
     {PM(02272508), PM(02272510)},

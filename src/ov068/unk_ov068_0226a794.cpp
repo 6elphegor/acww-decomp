@@ -141,9 +141,9 @@ struct Unk_ov068_0226a940_Words {
     u32 a, b;
 };
 
-struct Unk_ov068_0226a940_Loc {
+struct KappnNpcIdBuf {
     u16 pad;
-    u16 h;
+    u16 npcId;
 };
 
 
@@ -568,10 +568,10 @@ BOOL KappnTaxi::enterTaxiTalk() {
     msgIndex = r;
     _ZN15TalkWindowState13attachRequestEP14TalkMsgRequest(rec, (TalkMsgRequest *)this);
     rec[2] = 1;
-    Unk_ov068_0226a940_Loc l;
+    KappnNpcIdBuf l;
     MsgString9B o;
-    l.h = 0xd014;
-    Npc_GetName(&o, &l.h);
+    l.npcId = 0xd014;
+    Npc_GetName(&o, &l.npcId);
     MsgString9B *po = (MsgString9B *)(u8 *)&o;
     this->setSpeakerName(po->data(), 0);
     return TRUE;
@@ -849,7 +849,7 @@ s32 PlayerActTaxiGetOut::requestTaxiGetOut(s32 a, s32 b) {
 }
 
 void PlayerActTaxiGetOut::setupTaxiGetOut() {
-    Unk_ov068_0226a940_Loc l;
+    KappnNpcIdBuf l;
     Unk_ov068_0226a940_Words w;
     _ZN11PlayerActor13startAnimOnceEijt(this, 0x82, 0, 0);
     rotY = 0;

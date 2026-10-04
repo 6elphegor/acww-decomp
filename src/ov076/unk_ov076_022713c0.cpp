@@ -35,7 +35,7 @@ struct Unk_ov076_Vec {
     s32 x, y, z;
 };
 
-struct Unk_ov076_02271864_Msg {
+struct SpNpcPascalMsgLocal {
     u8 msgIndex;
     u8 unk_01;
     u16 item;
@@ -149,7 +149,7 @@ public:
     void changeAct(s32 state);
 
     u8 pad_652[2];
-    s32 unk_654;
+    s32 act;
     SpNpcPascalTalk talk;
     u8 giftGiven;
     u8 pad_719;
@@ -159,17 +159,12 @@ public:
     u8 pad_722[2];
 };
 
-struct Unk_ov076_02271d20_Ent {
+struct SpNpcPascalActEntry {
     BOOL (SpNpcPascal::*enter)();
     BOOL (SpNpcPascal::*exit)();
 };
 
 
-struct Unk_ov076_02271f44_Ent {
-    const char *a;
-    u8 b;
-    u8 pad[3];
-};
 
 static inline BOOL Unk_ov076_IsItem(u16 *p, u16 k) {
     BOOL ok;
@@ -191,16 +186,16 @@ static inline BOOL Unk_ov076_IsItem(u16 *p, u16 k) {
 }
 
 extern "C" {
-extern Unk_ov076_02271d20_Ent sSpNpcPascalActTable[6];
+extern SpNpcPascalActEntry sSpNpcPascalActTable[6];
 extern u8 sSpNpcPascalKey[];
 extern u8 sSpNpcPascalModelPath[];
 extern u8 sSpNpcPascalTexturePath[];
-extern const Unk_ov076_02271f44_Ent sSpNpcPascalTopicMsgs[3];
+extern const TalkStartMsg sSpNpcPascalTopicMsgs[3];
 BOOL SpNpcPascal_IsScallop(u16 *p, s32 x);
 SpNpcPascal *SpNpcPascal_Create();
 }
 
-typedef BOOL (SpNpcPascal::*Unk_ov076_Fn)();
+typedef BOOL (SpNpcPascal::*SpNpcPascalActFn)();
 extern "C" {
 void _ZN11SpNpcPascal9mainAct03Ev();
 void _ZN11SpNpcPascal10setupAct05Ev();
@@ -245,8 +240,8 @@ u8 *SpNpcPascal::getModelPath() { return sSpNpcPascalModelPath; }
 
 BOOL SpNpcPascal::updateAct() {
     BOOL result = FALSE;
-    if (sSpNpcPascalActTable[unk_654].exit != NULL) {
-        result = (this->*sSpNpcPascalActTable[unk_654].exit)();
+    if (sSpNpcPascalActTable[act].exit != NULL) {
+        result = (this->*sSpNpcPascalActTable[act].exit)();
     }
     return result;
 }
@@ -257,7 +252,7 @@ void SpNpcPascal::changeAct(s32 state) {
         ok = (this->*sSpNpcPascalActTable[state].enter)();
     }
     if (ok) {
-        unk_654 = state;
+        act = state;
     }
 }
 
@@ -395,7 +390,7 @@ extern "C" BOOL SpNpcPascal_IsScallop(u16 *p, s32 x) {
 
 void SpNpcPascalTalk::onScallopPicked() {
     TalkWindowState *r4 = window;
-    Unk_ov076_02271864_Msg m;
+    SpNpcPascalMsgLocal m;
     m.msgIndex = 5;
     if (MenuCtrl_IsResultOk()) {
         if (MenuCtrl_GetIndex() >= 0) {
@@ -436,8 +431,8 @@ void SpNpcPascalTalk::start(TalkStartMsg *a) {
         topic = 2;
     }
     if (topic >= 0 && topic < 3) {
-        out->msgIndex = sSpNpcPascalTopicMsgs[topic].b;
-        out->msgKey = (const char *)sSpNpcPascalTopicMsgs[topic].a;
+        out->msgIndex = sSpNpcPascalTopicMsgs[topic].msgIndex;
+        out->msgKey = (const char *)sSpNpcPascalTopicMsgs[topic].msgKey;
     }
 }
 
@@ -602,7 +597,7 @@ void SpNpcPascal::onInteractionEvent(u32 a, u8) {
 }
 
 // Data (definition order sets the layout)
-extern "C" const Unk_ov076_02271f44_Ent sSpNpcPascalTopicMsgs[3] = {
+extern "C" const TalkStartMsg sSpNpcPascalTopicMsgs[3] = {
     {(const char *)sSpNpcPascalKey, 2}, {(const char *)sSpNpcPascalKey, 0}, {(const char *)sSpNpcPascalKey, 1},
 };
 
@@ -626,11 +621,11 @@ void *data_ov076_02272020[2] = {(void *)_ZN11SpNpcPascal9mainAct03Ev, 0};
 void *data_ov076_02272030[2] = {(void *)_ZN11SpNpcPascal10setupAct05Ev, 0};
 void *data_ov076_02272040[2] = {(void *)_ZN11SpNpcPascal9mainAct04Ev, 0};
 
-Unk_ov076_02271d20_Ent sSpNpcPascalActTable[6] = {
-    {*(Unk_ov076_Fn *)data_ov076_02272068, *(Unk_ov076_Fn *)data_ov076_02272078},
-    {*(Unk_ov076_Fn *)data_ov076_02272070, *(Unk_ov076_Fn *)data_ov076_02272048},
-    {NULL, *(Unk_ov076_Fn *)data_ov076_02272060},
-    {*(Unk_ov076_Fn *)data_ov076_02272058, *(Unk_ov076_Fn *)data_ov076_02272020},
-    {*(Unk_ov076_Fn *)data_ov076_02272050, *(Unk_ov076_Fn *)data_ov076_02272040},
-    {*(Unk_ov076_Fn *)data_ov076_02272030, *(Unk_ov076_Fn *)data_ov076_02272038},
+SpNpcPascalActEntry sSpNpcPascalActTable[6] = {
+    {*(SpNpcPascalActFn *)data_ov076_02272068, *(SpNpcPascalActFn *)data_ov076_02272078},
+    {*(SpNpcPascalActFn *)data_ov076_02272070, *(SpNpcPascalActFn *)data_ov076_02272048},
+    {NULL, *(SpNpcPascalActFn *)data_ov076_02272060},
+    {*(SpNpcPascalActFn *)data_ov076_02272058, *(SpNpcPascalActFn *)data_ov076_02272020},
+    {*(SpNpcPascalActFn *)data_ov076_02272050, *(SpNpcPascalActFn *)data_ov076_02272040},
+    {*(SpNpcPascalActFn *)data_ov076_02272030, *(SpNpcPascalActFn *)data_ov076_02272038},
 };

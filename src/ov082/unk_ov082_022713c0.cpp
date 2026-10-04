@@ -162,12 +162,12 @@ public:
     void changeAct(s32 state);
 
     u8 pad_652[2];
-    s32 unk_654;
+    s32 act;
     SpNpcTortimerBugOffTalk talk;
     s32 entrySize;
 };
 
-struct Unk_ov082_02271ce4_Ent {
+struct SpNpcTortimerBugOffActEntry {
     BOOL (SpNpcTortimerBugOff::*enter)();
     BOOL (SpNpcTortimerBugOff::*exit)();
 };
@@ -190,7 +190,7 @@ static inline BOOL Unk_ov082_Neg(s32 v) {
 }
 
 extern "C" {
-extern Unk_ov082_02271ce4_Ent sSpNpcTortimerBugOffActTable[3];
+extern SpNpcTortimerBugOffActEntry sSpNpcTortimerBugOffActTable[3];
 extern u8 sSpNpcTortimerBugOffTexturePath[];
 extern u8 sSpNpcTortimerBugOffModelPath[];
 BOOL SpNpcTortimerBugOff_IsInsect(u16 *p, s32 x);
@@ -269,8 +269,8 @@ u8 *SpNpcTortimerBugOff::getModelPath() { return sSpNpcTortimerBugOffModelPath; 
 
 BOOL SpNpcTortimerBugOff::updateAct() {
     BOOL result = FALSE;
-    if (sSpNpcTortimerBugOffActTable[unk_654].exit != NULL) {
-        result = (this->*sSpNpcTortimerBugOffActTable[unk_654].exit)();
+    if (sSpNpcTortimerBugOffActTable[act].exit != NULL) {
+        result = (this->*sSpNpcTortimerBugOffActTable[act].exit)();
     }
     return result;
 }
@@ -281,7 +281,7 @@ void SpNpcTortimerBugOff::changeAct(s32 state) {
         ok = (this->*sSpNpcTortimerBugOffActTable[state].enter)();
     }
     if (ok) {
-        unk_654 = state;
+        act = state;
     }
 }
 
@@ -323,7 +323,7 @@ void SpNpcTortimerBugOffTalk::onTaskDone(u32) {
         }
     }
 }// Declarations for data defined further down (definition order sets the data layout)
-extern Unk_ov082_02271ce4_Ent sSpNpcTortimerBugOffActTable[3];
+extern SpNpcTortimerBugOffActEntry sSpNpcTortimerBugOffActTable[3];
 extern "C" u8 sSpNpcTortimerBugOffTexturePath[];
 extern "C" ActorProfile sSpNpcTortimerBugOffProfile;
 extern "C" u8 sSpNpcTortimerBugOffModelPath[];
@@ -336,7 +336,7 @@ extern "C" u8 sSpNpcTortimerBugOffTexturePath[] = {'n', 'p', 'c', '_', 's', 'p',
 
 extern "C" u8 sSpNpcTortimerBugOffModelPath[] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 't', 't', 'l', '.', 'n', 's', 'b', 'm', 'd', 0};
 
-Unk_ov082_02271ce4_Ent sSpNpcTortimerBugOffActTable[3] = {
+SpNpcTortimerBugOffActEntry sSpNpcTortimerBugOffActTable[3] = {
     {&SpNpcTortimerBugOff::setupAct00, &SpNpcTortimerBugOff::mainAct00},
     {&SpNpcTortimerBugOff::setupAct01, &SpNpcTortimerBugOff::mainAct01},
     {NULL, &SpNpcTortimerBugOff::mainAct02},

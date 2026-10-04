@@ -46,7 +46,7 @@ struct Unk_ov070_02271478_Save {
 
 
 
-struct Unk_ov070_02271524_Out {
+struct SpNpcGracieLetterVars {
     u8 letterLevel;
     u8 msgIndex;
     u16 giftItem;
@@ -54,19 +54,14 @@ struct Unk_ov070_02271524_Out {
 };
 
 
-struct Unk_ov070_022717f0_Ent {
+struct SpNpcGracieOutfitTier {
     u16 items[3];
-    u8 unk_06[3];
+    u8 wornAsFaceItem[3];
     u8 bonusChance;
     u8 pad_0a[2];
     s32 maxFee;
 };
 
-struct Unk_ov070_Name {
-    const u8 *a;
-    u8 b_byte;
-    u8 b_pad[3];
-};
 
 
 
@@ -78,7 +73,7 @@ struct Unk_020d77a4_Vec3;
 
 
 
-typedef void (SpNpcGracieTalk::*Unk_ov070_0227277c_Fn)();
+typedef void (SpNpcGracieTalk::*SpNpcGracieTalkResultFn)();
 
 class SpNpcGracieTalk : public SpNpcTalkRequest {
 public:
@@ -100,7 +95,7 @@ public:
 
     s32 topic;
     SpNpcGracie *ownerNpc;
-    Unk_ov070_0227277c_Fn resultHandler;
+    SpNpcGracieTalkResultFn resultHandler;
     s32 fee;
     ItemId wornItems[3];
     u8 pad_c6[2];
@@ -127,11 +122,11 @@ public:
     BOOL setupAct00();
     void changeAct(s32 state);
 
-    s32 unk_654;
+    s32 act;
     SpNpcGracieTalk talk;
 };
 
-struct Unk_ov070_02272334_Ent {
+struct SpNpcGracieActEntry {
     BOOL (SpNpcGracie::*enter)();
     BOOL (SpNpcGracie::*exit)();
 };
@@ -140,8 +135,8 @@ extern "C" {
 extern u8 sSpNpcGracieKey[];
 extern u8 sSpNpcGracieModelPath[];
 extern u8 sSpNpcGracieTexturePath[];
-extern const Unk_ov070_Name sSpNpcGracieTopicMsgs[];
-extern const Unk_ov070_022717f0_Ent sSpNpcGracieOutfitTiers[];
+extern const TalkStartMsg sSpNpcGracieTopicMsgs[];
+extern const SpNpcGracieOutfitTier sSpNpcGracieOutfitTiers[];
 extern u16 data_020c6cc8;
 
 PlayerData *PlayerData_GetCurrent();
@@ -196,13 +191,13 @@ extern "C" u8 sSpNpcGracieModelPath[];
 extern "C" u32 data_ov070_022726e4[1];
 extern "C" u32 data_ov070_022726e0[1];
 extern "C" DebugColor data_ov070_022728d4;
-extern "C" const Unk_ov070_022717f0_Ent sSpNpcGracieOutfitTiers[7];
-extern "C" Unk_ov070_02272334_Ent sSpNpcGracieActTable[3];
+extern "C" const SpNpcGracieOutfitTier sSpNpcGracieOutfitTiers[7];
+extern "C" SpNpcGracieActEntry sSpNpcGracieActTable[3];
 extern "C" DebugColor data_ov070_022728c4;
 extern "C" DebugColor data_ov070_022728c0;
 extern "C" DebugColor data_ov070_022728d8;
 extern "C" u8 sSpNpcGracieKey[];
-extern "C" const Unk_ov070_Name sSpNpcGracieTopicMsgs[7];
+extern "C" const TalkStartMsg sSpNpcGracieTopicMsgs[7];
 extern "C" DebugColor data_ov070_022728cc;
 extern "C" SpNpcGracie *SpNpcGracie_Create();
 
@@ -272,8 +267,8 @@ u8 *SpNpcGracie::getModelPath() { return sSpNpcGracieModelPath; }
 
 BOOL SpNpcGracie::updateAct() {
     BOOL result = FALSE;
-    if (sSpNpcGracieActTable[unk_654].exit != NULL) {
-        result = (this->*sSpNpcGracieActTable[unk_654].exit)();
+    if (sSpNpcGracieActTable[act].exit != NULL) {
+        result = (this->*sSpNpcGracieActTable[act].exit)();
     }
     return result;
 }
@@ -284,7 +279,7 @@ void SpNpcGracie::changeAct(s32 state) {
         ok = (this->*sSpNpcGracieActTable[state].enter)();
     }
     if (ok == 1) {
-        unk_654 = state;
+        act = state;
     }
 }
 
@@ -332,7 +327,7 @@ void SpNpcGracieTalk::onTaskDone(u32) {
 
 
 void SpNpcGracieTalk::setResultHandler(s32 idx) {
-    static Unk_ov070_0227277c_Fn tbl[1] = {&SpNpcGracieTalk::onFeeEntered};
+    static SpNpcGracieTalkResultFn tbl[1] = {&SpNpcGracieTalk::onFeeEntered};
     resultHandler = tbl[idx];
 }
 
@@ -342,16 +337,16 @@ extern "C" DebugColor data_ov070_022728c8 = DebugColor(0x14, 0x14, 0x1f, 0x1f);
 
 extern "C" DebugColor data_ov070_022728d8 = DebugColor(0x1f, 0x1f, 0x14, 0x1f);
 
-extern "C" const Unk_ov070_Name sSpNpcGracieTopicMsgs[7] = {
-    {sSpNpcGracieKey, 0x00}, {sSpNpcGracieKey, 0x09}, {sSpNpcGracieKey, 0x4c}, {sSpNpcGracieKey, 0x29},
-    {sSpNpcGracieKey, 0x28}, {sSpNpcGracieKey, 0x31}, {sSpNpcGracieKey, 0x27},
+extern "C" const TalkStartMsg sSpNpcGracieTopicMsgs[7] = {
+    {(const char *)sSpNpcGracieKey, 0x00}, {(const char *)sSpNpcGracieKey, 0x09}, {(const char *)sSpNpcGracieKey, 0x4c}, {(const char *)sSpNpcGracieKey, 0x29},
+    {(const char *)sSpNpcGracieKey, 0x28}, {(const char *)sSpNpcGracieKey, 0x31}, {(const char *)sSpNpcGracieKey, 0x27},
 };
 
 extern "C" u32 data_ov070_022726e4[1] = {0x10};
 
 extern "C" DebugColor data_ov070_022728d4 = DebugColor(0x14, 0x1f, 0x14, 0x1f);
 
-extern "C" const Unk_ov070_022717f0_Ent sSpNpcGracieOutfitTiers[7] = {
+extern "C" const SpNpcGracieOutfitTier sSpNpcGracieOutfitTiers[7] = {
     {{0x144c, 0x13b7, 0x1452}, {1, 0, 1}, 0x05, {0, 0}, 200},
     {{0x1456, 0x13b0, 0x1450}, {1, 0, 1}, 0x0a, {0, 0}, 1000},
     {{0x144e, 0x13b8, 0x13f2}, {1, 0, 0}, 0x23, {0, 0}, 2000},
@@ -373,7 +368,7 @@ extern "C" u8 sSpNpcGracieModelPath[] = "npc_sp/model/grf.nsbmd";
 
 extern "C" ActorProfile sSpNpcGracieProfile = {(void *(*)())SpNpcGracie_Create, 0x6c, 0x72, 2, 0x5000, 0x5000, 0x3e800};
 
-extern "C" Unk_ov070_02272334_Ent sSpNpcGracieActTable[3] = {
+extern "C" SpNpcGracieActEntry sSpNpcGracieActTable[3] = {
     {&SpNpcGracie::setupAct00, &SpNpcGracie::mainAct00},
     {&SpNpcGracie::setupAct01, &SpNpcGracie::mainAct01},
     {NULL, &SpNpcGracie::mainAct02},
@@ -469,7 +464,7 @@ void SpNpcGracieTalk::start(TalkStartMsg *out) {
         }
     }
     if (topic >= 0 && topic < 7) {
-        out->msgIndex = (&sSpNpcGracieTopicMsgs[0].b_byte)[topic * 8];
+        out->msgIndex = (&sSpNpcGracieTopicMsgs[0].msgIndex)[topic * 8];
         if (topic == 2) {
             out->msgIndex = ownerNpc->talk.questionCount + 0x4c;
             ownerNpc->talk.questionCount++;
@@ -620,7 +615,7 @@ BOOL SpNpcGracieTalk::dressUpPlayer() {
     if (t4 < 3) {
         u16 b = 0xfff1;
         r7->setFaceItem(&b);
-        const u8 *p6 = &sSpNpcGracieOutfitTiers[0].unk_06[0] + idx * 16;
+        const u8 *p6 = &sSpNpcGracieOutfitTiers[0].wornAsFaceItem[0] + idx * 16;
         if (p6[t4] == 0) {
             u16 val = ((const u16 *)((const u8 *)sSpNpcGracieOutfitTiers + idx * 16))[t4];
             u16 g = val;
@@ -696,7 +691,7 @@ BOOL SpNpcGracieTalk::dressUpPlayer() {
 }
 
 void SpNpcGracieTalk::onMessageEnd(u32) {
-    Unk_ov070_02271524_Out s;
+    SpNpcGracieLetterVars s;
     u8 code = 0xff;
     PlayerData *r7 = PlayerData_GetCurrent();
     s32 c = msgIndex;

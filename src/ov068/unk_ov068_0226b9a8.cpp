@@ -4,6 +4,7 @@
 #include "game/Unk_ov004_02224ee4_Vec.h"
 #include "actor/ActorProfile.h"
 #include "gfx/AnimFrameCtrl.h"
+#include "gfx/NNSG3dRS.h"
 #include "room/RoomObjRes.h"
 #include "gfx/CachedModel.h"
 #include "sys/ProcBase.h"
@@ -90,10 +91,6 @@ struct Unk_ov068_022702b4_Bits {
     u32 hi : 4;
 };
 
-union Unk_ov068_022702b4_Word {
-    u32 v;
-    Unk_ov068_022702b4_Bits b;
-};
 
 
 class TaxiInterior;
@@ -102,27 +99,7 @@ class TaxiInterior;
 extern "C" TaxiInterior *sTaxiInterior;
 extern "C" ActorProfile sTaxiInteriorProfile;
 
-struct Unk_ov068_0226c298_Arg;
-typedef void (*Unk_ov068_0226c298_Fn)(Unk_ov068_0226c298_Arg *);
-struct Unk_ov068_0226c298_Arg {
-    /* 0x00 */ u8 pad_00[0x1c];
-    /* 0x1c */ Unk_ov068_0226c298_Fn matCallback;
-    /* 0x20 */ u8 pad_20[0x70];
-    /* 0x90 */ u8 matCallbackTiming;
-};
-
-struct Unk_ov068_0226c2a8_Inner {
-    u8 pad_00;
-    u8 matIdx;
-};
-struct Unk_ov068_0226c2a8_Owner {
-    u8 pad_00[0x2c];
-    void *ptrUser;
-};
-struct Unk_ov068_0226c2a8_Arg {
-    Unk_ov068_0226c2a8_Inner *c;
-    Unk_ov068_0226c2a8_Owner *pRenderObj;
-};
+typedef void (*NNSG3dSbcCallBackFunc)(NNSG3dRS *);
 
 extern "C" {
 extern void *gBgHeap;
@@ -150,7 +127,7 @@ s32 SpNpcKappn_GetAnimFrame();
 void TaxiInterior_SetPartAnim(void *self, u8 k, void *a, void *b, u8 s0, u32 s1, u16 s2, u16 s3);
 void TaxiInterior_OnModelNode(void *p, u32 b, void *c);
 void NNS_G3dMdlSetMdlAlpha(u32 p, s32 a, u8 b);
-void Model_setInitCallback(void *m, void (*fn)(Unk_ov068_0226c298_Arg *), void *self);
+void Model_setInitCallback(void *m, NNSG3dSbcCallBackFunc fn, void *self);
 s32 G3dResAccess_findMatIdx(u32 a, const char *s);
 }
 
@@ -199,8 +176,8 @@ extern "C" {
 TaxiInterior *sTaxiInterior;
 }
 
-extern "C" void TaxiInterior_InitModelCallback(Unk_ov068_0226c298_Arg *p);
-extern "C" void TaxiInterior_ModelCallback(Unk_ov068_0226c2a8_Arg *p);
+extern "C" void TaxiInterior_InitModelCallback(NNSG3dRS *p);
+extern "C" void TaxiInterior_ModelCallback(NNSG3dRS *p);
 
 extern "C" {
 s32 BlendAnimModel_getAnmRes(void *p);
@@ -211,16 +188,16 @@ extern "C" TaxiInterior *TaxiInterior_Create() {
     return new TaxiInterior;
 }
 
-extern "C" void TaxiInterior_ModelCallback(Unk_ov068_0226c2a8_Arg *p) {
-    void *o = p->pRenderObj->ptrUser;
+extern "C" void TaxiInterior_ModelCallback(NNSG3dRS *p) {
+    void *o = (void *)p->pRenderObj->ptrUser;
     if (o) {
-        TaxiInterior_OnModelNode(o, p->c->matIdx, p);
+        TaxiInterior_OnModelNode(o, p->c[1], p);
     }
 }
 
-extern "C" void TaxiInterior_InitModelCallback(Unk_ov068_0226c298_Arg *p) {
-    p->matCallback = (Unk_ov068_0226c298_Fn)TaxiInterior_ModelCallback;
-    p->matCallbackTiming = 2;
+extern "C" void TaxiInterior_InitModelCallback(NNSG3dRS *p) {
+    p->cbVecFunc[4] = (void *)TaxiInterior_ModelCallback;
+    p->cbVecTiming[4] = 2;
 }
 
 TaxiInterior::TaxiInterior() {}

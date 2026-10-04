@@ -66,7 +66,7 @@ struct Unk_ov075_Vec3 {
     s32 x, y, z;
 };
 
-struct Unk_ov075_Vec4 {
+struct SpNpcPeteSidestepPos {
     s32 v[4];
 };
 
@@ -193,21 +193,21 @@ public:
     BOOL mainAct00();
     BOOL setupAct00();
 
-    /* 0x654 */ s32 unk_654;
+    /* 0x654 */ s32 act;
     /* 0x658 */ SpNpcPeteTalk talk;
     /* 0x710 */ u32 unk_710;
     /* 0x714 */ u8 isUp;
     /* 0x715 */ u8 moveTimer;
 };
 
-struct Unk_ov075_02271e78_Ent {
+struct SpNpcPeteActEntry {
     BOOL (SpNpcPete::*enter)();
     BOOL (SpNpcPete::*exit)();
 };
 
-struct Unk_ov075_022722f0_Ent {
+struct SpNpcPeteTalkScript {
     void (SpNpcPeteTalk::*fn)();
-    u8 kind;
+    u8 flag;
 };
 
 
@@ -245,16 +245,16 @@ extern DebugColor data_ov075_02272490;
 extern DebugColor data_ov075_02272484;
 extern DebugColor data_ov075_02272488;
 extern DebugColor data_ov075_02272480;
-extern Unk_ov075_022722f0_Ent sSpNpcPeteTalkScripts[2];
+extern SpNpcPeteTalkScript sSpNpcPeteTalkScripts[2];
 extern u8 data_ov075_022722f8[];
-extern Unk_ov075_02271e78_Ent sSpNpcPeteActTable[6];
+extern SpNpcPeteActEntry sSpNpcPeteActTable[6];
 extern FxVec3 sSpNpcPeteSidestepOffsets[2];
 extern ActorProfile sSpNpcPeteProfile;
 }
 
-typedef BOOL (SpNpcPete::*Unk_ov075_Fn)();
-typedef void (SpNpcPeteTalk::*Unk_ov075_InnerFn)();
-#define PM(i) (*(Unk_ov075_Fn *)data_ov075_##i)
+typedef BOOL (SpNpcPete::*SpNpcPeteActFn)();
+typedef void (SpNpcPeteTalk::*SpNpcPeteTalkScriptFn)();
+#define PM(i) (*(SpNpcPeteActFn *)data_ov075_##i)
 
 void *data_ov075_02272278[2] = {(void *)_ZN9SpNpcPete9mainAct04Ev, 0};
 u8 sSpNpcPeteTexturePath[] = "npc_sp/model/plb_tex.nsbtx";
@@ -273,11 +273,11 @@ void *data_ov075_02272298[2] = {(void *)_ZN9SpNpcPete10setupAct00Ev, 0};
 void *data_ov075_02272290[2] = {(void *)_ZN9SpNpcPete10setupAct05Ev, 0};
 void *data_ov075_022722a0[2] = {(void *)_ZN9SpNpcPete9mainAct00Ev, 0};
 DebugColor data_ov075_02272480(20, 24, 24, 31);
-Unk_ov075_022722f0_Ent sSpNpcPeteTalkScripts[2] = {
+SpNpcPeteTalkScript sSpNpcPeteTalkScripts[2] = {
     {NULL, 0},
-    {*(Unk_ov075_InnerFn *)data_ov075_02272280, 1},
+    {*(SpNpcPeteTalkScriptFn *)data_ov075_02272280, 1},
 };
-Unk_ov075_02271e78_Ent sSpNpcPeteActTable[6] = {
+SpNpcPeteActEntry sSpNpcPeteActTable[6] = {
     {PM(02272298), PM(022722a0)},
     {PM(022722b0), PM(022722b8)},
     {PM(02272288), PM(02272260)},
@@ -335,8 +335,8 @@ u8 *SpNpcPete::getModelPath() { return sSpNpcPeteModelPath; }
 
 BOOL SpNpcPete::updateAct() {
     BOOL result = FALSE;
-    if (sSpNpcPeteActTable[unk_654].exit != NULL) {
-        result = (this->*sSpNpcPeteActTable[unk_654].exit)();
+    if (sSpNpcPeteActTable[act].exit != NULL) {
+        result = (this->*sSpNpcPeteActTable[act].exit)();
     }
     return result;
 }
@@ -348,7 +348,7 @@ extern "C" void SpNpcPete_ChangeAct(void *self, s32 state) {
         ok = (o->*sSpNpcPeteActTable[state].enter)();
     }
     if (ok) {
-        o->unk_654 = state;
+        o->act = state;
     }
 }
 
@@ -459,7 +459,7 @@ BOOL SpNpcPete::pickWanderTarget(s32 *px, s32 *pz) {
 
 BOOL SpNpcPete::findSidestepPos(Unk_ov075_Vec3 *out, void *p) {
     BOOL r = FALSE;
-    Unk_ov075_Vec4 t;
+    SpNpcPeteSidestepPos t;
     Npc_RotateOffsetXZ(&t, &position, p, moveAngleY);
     if (Npc_IsPosBlocked(&t) != 1) {
         out->x = t.v[0];
@@ -612,8 +612,8 @@ BOOL SpNpcPete::mainAct03() {
 
 void SpNpcPeteTalk::update() {
     s32 i = script * 12;
-    if (((u8 *)&sSpNpcPeteTalkScripts[0].kind)[i] != 0) {
-        Unk_ov075_022722f0_Ent *e = (Unk_ov075_022722f0_Ent *)((u8 *)sSpNpcPeteTalkScripts + i);
+    if (((u8 *)&sSpNpcPeteTalkScripts[0].flag)[i] != 0) {
+        SpNpcPeteTalkScript *e = (SpNpcPeteTalkScript *)((u8 *)sSpNpcPeteTalkScripts + i);
         if (e->fn != 0) {
             (this->*e->fn)();
         }
@@ -622,8 +622,8 @@ void SpNpcPeteTalk::update() {
 
 void SpNpcPeteTalk::onTaskDone(u32) {
     s32 i = script * 12;
-    if (((u8 *)&sSpNpcPeteTalkScripts[0].kind)[i] == 0) {
-        Unk_ov075_022722f0_Ent *e = (Unk_ov075_022722f0_Ent *)((u8 *)sSpNpcPeteTalkScripts + i);
+    if (((u8 *)&sSpNpcPeteTalkScripts[0].flag)[i] == 0) {
+        SpNpcPeteTalkScript *e = (SpNpcPeteTalkScript *)((u8 *)sSpNpcPeteTalkScripts + i);
         if (e->fn != 0) {
             (this->*e->fn)();
             setScript(0);

@@ -13,7 +13,7 @@ struct Unk_ov068_02266ab8_Owner {
 };
 
 // Camera-mode sub-state at +0x21c of the camera
-struct Unk_ov068_02266680_Sub {
+struct CameraTownTourState {
     u16 holdTimer;
     s16 buildingIndex;
     s32 buildingX, buildingY, buildingZ;
@@ -21,7 +21,7 @@ struct Unk_ov068_02266680_Sub {
     s32 speed;
 };
 
-struct Unk_ov068_022667c4_Ent {
+struct TownTourBuildingRange {
     u16 lo, hi;
 };
 
@@ -72,7 +72,7 @@ public:
     u8 pad_11c[0x1fc - 0x11c];
     s32 prevMode;
     u8 pad_200[0x21c - 0x200];
-    Unk_ov068_02266680_Sub townTour;
+    CameraTownTourState townTour;
 };
 
 extern "C" {
@@ -157,7 +157,7 @@ BOOL CameraEventModes::initModeTownTour() {
     Camera_FinishBlend();
     void *g = gSceneBlockMap;
     s32 a = 0, b = 0, c = 0, d = 0;
-    Unk_ov068_02266680_Sub *s = &townTour;
+    CameraTownTourState *s = &townTour;
     s->holdTimer = 0x3c;
     s->buildingIndex = 0;
     if (g) {
@@ -183,7 +183,7 @@ BOOL CameraEventModes::initModeTownTour() {
 }
 
 void CameraEventModes::updateModeTownTour() {
-    Unk_ov068_02266680_Sub *s = &townTour;
+    CameraTownTourState *s = &townTour;
     Unk_ov068_02266680_Vec v;
     v.x = s->buildingX;
     v.y = s->buildingY;
@@ -201,9 +201,9 @@ void CameraEventModes::updateModeTownTour() {
             struct { u16 a, b; } out;
             s32 a = 0, b = 0, c = 0, d = 0;
             if (g != 0) {
-                Unk_ov068_022667c4_Ent *tbl = (Unk_ov068_022667c4_Ent *)sTownTourBuildings;
+                TownTourBuildingRange *tbl = (TownTourBuildingRange *)sTownTourBuildings;
                 do {
-                    Unk_ov068_022667c4_Ent *e = &tbl[s->buildingIndex];
+                    TownTourBuildingRange *e = &tbl[s->buildingIndex];
                     u16 t = e->lo;
                     BOOL r1;
                     if (t >= 0x5001 && t <= 0x5008) {

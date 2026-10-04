@@ -10,7 +10,7 @@
 #include "talk/VillagerTalkTopics.h"
 
 // ov069: the state tables of the menu object (three pointers to member functions per entry). They are built at
-// start-up (the NULL members are copied from __ptmf_null) and func_ov069_0225f1a0 copies them into main's tables.
+// start-up (the NULL members are copied from __ptmf_null) and VillagerTalkTopics_CopyTables copies them into main's tables.
 
 struct TalkTopicMsg;
 class Unk_Menu : public VillagerTalkTopics {};
@@ -239,7 +239,7 @@ Unk_ov069_EntB data_ov069_02260ebc[7] = {
     {(Unk_ov069_FnB)&VillagerTalkTopics::selectEvBirthMsg3, 0, 0},
     {(Unk_ov069_FnB)&VillagerTalkTopics::selectEvBirthMsg4, 0, 0},
 };
-extern "C" void func_ov069_0225f1a0() {
+extern "C" void VillagerTalkTopics_CopyTables() {
     memcpy(sHouseVisitTsuTopicTable, data_ov069_02260d24, 72);
     memcpy(sTalkBeginTopics, data_ov069_022613cc, 408);
     memcpy(sApSubTopics, data_ov069_02261294, 312);
@@ -259,7 +259,7 @@ extern "C" void func_ov069_0225f1a0() {
 
 // An empty object whose inline constructor runs the copy once all the tables are built (the call ends __sinit; the object
 // itself is the one byte of .bss in front of the tables).
-struct Unk_ov069_Init {
-    Unk_ov069_Init() { func_ov069_0225f1a0(); }
+struct VillagerTalkTopicsTableInit {
+    VillagerTalkTopicsTableInit() { VillagerTalkTopics_CopyTables(); }
 };
-Unk_ov069_Init data_ov069_02260cc0;  // named (symbols.txt) so that the link keeps it: nothing refers to it
+VillagerTalkTopicsTableInit data_ov069_02260cc0;  // named (symbols.txt) so that the link keeps it: nothing refers to it

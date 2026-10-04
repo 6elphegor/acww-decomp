@@ -211,7 +211,7 @@ extern ProcProfile sMsgUiProcProfile;
 extern ProcProfile sHudProcProfile;
 extern ProcProfile sChatBalloonProcProfile;
 extern ProcProfile sTransitionCommIconProfile;
-extern ProcProfile data_ov056_02258e60;
+extern ProcProfile sDummyProcCDProfile;
 extern ProcProfile sTextSystemModuleProfile;
 extern ProcProfile sBgmProcProfile;
 extern ProcProfile sNpcSpawnerProfile;
@@ -431,7 +431,7 @@ ProcProfile *sProfileTableMain[216] = {
     &sHudProcProfile, // 0xca
     &sChatBalloonProcProfile, // 0xcb
     &sTransitionCommIconProfile, // 0xcc
-    &data_ov056_02258e60, // 0xcd
+    &sDummyProcCDProfile, // 0xcd
     &sTextSystemModuleProfile, // 0xce
     &sBgmProcProfile, // 0xcf
     &sNpcSpawnerProfile, // 0xd0

@@ -171,15 +171,15 @@ public:
     BOOL mainAct01();
     BOOL setupAct00();
 
-    s32 unk_654;
+    s32 act;
     SpNpcSaharahTalk talk;
 };
 
-struct Unk_ov078_02272030_Ent {
+struct SpNpcSaharahActEntry {
     BOOL (SpNpcSaharah::*enter)();
     BOOL (SpNpcSaharah::*exit)();
 };
-typedef BOOL (SpNpcSaharah::*Unk_ov078_Fn)();
+typedef BOOL (SpNpcSaharah::*SpNpcSaharahActFn)();
 
 
 extern "C" {
@@ -201,7 +201,7 @@ void _ZN12SpNpcSaharah10setupAct04Ev();
 extern void *data_ov078_022723e8[2];
 void _ZN12SpNpcSaharah9mainAct04Ev();
 extern void *data_ov078_022723f0[2];
-extern Unk_ov078_02272030_Ent sSpNpcSaharahActTable[5];
+extern SpNpcSaharahActEntry sSpNpcSaharahActTable[5];
 extern DebugColor data_ov078_022725c4;
 extern DebugColor data_ov078_022725d0;
 extern DebugColor data_ov078_022725d4;
@@ -229,12 +229,12 @@ extern "C" u8 sSpNpcSaharahTexturePath[] = {'n', 'p', 'c', '_', 's', 'p', '/', '
 extern "C" void *data_ov078_022723e8[2] = {(void *)_ZN12SpNpcSaharah10setupAct04Ev, 0};
 DebugColor data_ov078_022725cc(0x14, 0x1f, 0x1f, 0x1f);
 DebugColor data_ov078_022725c0(0x14, 0x18, 0x18, 0x1f);
-Unk_ov078_02272030_Ent sSpNpcSaharahActTable[5] = {
-    {*(Unk_ov078_Fn *)data_ov078_022723f8, *(Unk_ov078_Fn *)data_ov078_02272400},
-    {NULL, *(Unk_ov078_Fn *)data_ov078_022723e0},
-    {*(Unk_ov078_Fn *)data_ov078_022723c0, *(Unk_ov078_Fn *)data_ov078_022723c8},
-    {*(Unk_ov078_Fn *)data_ov078_022723d0, *(Unk_ov078_Fn *)data_ov078_022723d8},
-    {*(Unk_ov078_Fn *)data_ov078_022723e8, *(Unk_ov078_Fn *)data_ov078_022723f0},
+SpNpcSaharahActEntry sSpNpcSaharahActTable[5] = {
+    {*(SpNpcSaharahActFn *)data_ov078_022723f8, *(SpNpcSaharahActFn *)data_ov078_02272400},
+    {NULL, *(SpNpcSaharahActFn *)data_ov078_022723e0},
+    {*(SpNpcSaharahActFn *)data_ov078_022723c0, *(SpNpcSaharahActFn *)data_ov078_022723c8},
+    {*(SpNpcSaharahActFn *)data_ov078_022723d0, *(SpNpcSaharahActFn *)data_ov078_022723d8},
+    {*(SpNpcSaharahActFn *)data_ov078_022723e8, *(SpNpcSaharahActFn *)data_ov078_022723f0},
 };
 extern "C" void *data_ov078_022723f8[2] = {(void *)_ZN12SpNpcSaharah10setupAct00Ev, 0};
 extern "C" void *data_ov078_02272400[2] = {(void *)_ZN12SpNpcSaharah9mainAct00Ev, 0};
@@ -279,8 +279,8 @@ u8 *SpNpcSaharah::getModelPath() { return sSpNpcSaharahModelPath; }
 
 BOOL SpNpcSaharah::updateAct() {
     BOOL result = FALSE;
-    if (sSpNpcSaharahActTable[unk_654].exit != NULL) {
-        result = (this->*sSpNpcSaharahActTable[unk_654].exit)();
+    if (sSpNpcSaharahActTable[act].exit != NULL) {
+        result = (this->*sSpNpcSaharahActTable[act].exit)();
     }
     return result;
 }
@@ -291,7 +291,7 @@ void SpNpcSaharah::changeAct(s32 state) {
         ok = (this->*sSpNpcSaharahActTable[state].enter)();
     }
     if (ok) {
-        unk_654 = state;
+        act = state;
     }
 }
 

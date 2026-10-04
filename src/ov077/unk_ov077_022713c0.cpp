@@ -80,9 +80,9 @@ extern u32 __ptmf_null[];
 
 
 
-struct Unk_ov077_022717e0_Rec {
+struct SpNpcResettiTalkScript {
     void (SpNpcResettiTalk::*fn)();
-    u32 pad;
+    u32 flag;
 };
 
 class SpNpcResettiTalk : public SpNpcTalkRequest {
@@ -161,7 +161,7 @@ public:
     BOOL mainAct00();
     BOOL setupAct00();
 
-    s32 unk_654;
+    s32 act;
     SpNpcResettiTalk talk;
     u8 lastApologyPhrase;
     u8 pad_715[3];
@@ -170,7 +170,7 @@ public:
     s32 effectHandle;
 };
 
-struct Unk_ov077_02271d18_Ent {
+struct SpNpcResettiActEntry {
     BOOL (SpNpcResetti::*enter)();
     BOOL (SpNpcResetti::*exit)();
 };
@@ -182,8 +182,8 @@ extern u8 sSpNpcResettiKey[13];
 extern u8 *sSpNpcResettiMsgKey;
 extern u8 sSpNpcResettiModelPath[23];
 extern u8 sSpNpcResettiTexturePath[27];
-extern Unk_ov077_022717e0_Rec sSpNpcResettiTalkScripts[3];
-extern Unk_ov077_02271d18_Ent sSpNpcResettiActTable[6];
+extern SpNpcResettiTalkScript sSpNpcResettiTalkScripts[3];
+extern SpNpcResettiActEntry sSpNpcResettiActTable[6];
 SpNpcResetti *SpNpcResetti_Create();
 }
 
@@ -212,8 +212,8 @@ void _ZN12SpNpcResetti9mainAct03Ev();
 void _ZN12SpNpcResetti9mainAct05Ev();
 }
 
-typedef BOOL (SpNpcResetti::*Unk_ov077_Fn)();
-typedef void (SpNpcResettiTalk::*Unk_ov077_RFn)();
+typedef BOOL (SpNpcResetti::*SpNpcResettiActFn)();
+typedef void (SpNpcResettiTalk::*SpNpcResettiTalkScriptFn)();
 
 void *data_ov077_02272104[2] = {(void *)_ZN12SpNpcResetti9mainAct01Ev, 0};
 void *data_ov077_022720cc[2] = {(void *)_ZN12SpNpcResetti10setupAct03Ev, 0};
@@ -230,14 +230,14 @@ void *data_ov077_0227211c[2] = {(void *)_ZN12SpNpcResetti10setupAct05Ev, 0};
 void *data_ov077_022720e4[2] = {(void *)_ZN12SpNpcResetti9mainAct03Ev, 0};
 void *data_ov077_022720f4[2] = {(void *)_ZN12SpNpcResetti9mainAct05Ev, 0};
 
-Unk_ov077_022717e0_Rec sSpNpcResettiTalkScripts[3] = {
+SpNpcResettiTalkScript sSpNpcResettiTalkScripts[3] = {
     {NULL, 0},
-    {*(Unk_ov077_RFn *)data_ov077_022720fc, 0},
-    {*(Unk_ov077_RFn *)data_ov077_022720d4, 1},
+    {*(SpNpcResettiTalkScriptFn *)data_ov077_022720fc, 0},
+    {*(SpNpcResettiTalkScriptFn *)data_ov077_022720d4, 1},
 };
 
-#define T(a) *(Unk_ov077_Fn *)data_ov077_##a
-Unk_ov077_02271d18_Ent sSpNpcResettiActTable[6] = {
+#define T(a) *(SpNpcResettiActFn *)data_ov077_##a
+SpNpcResettiActEntry sSpNpcResettiActTable[6] = {
     {T(022720dc), T(0227212c)},
     {T(02272124), T(02272104)},
     {T(02272114), T(0227210c)},
@@ -295,7 +295,7 @@ BOOL SpNpcResetti::onDelete() {
 }
 
 BOOL SpNpcResetti::onDraw() {
-    if (unk_654 != 3) {
+    if (act != 3) {
         NpcActor::onDraw();
     }
     return TRUE;
@@ -307,8 +307,8 @@ u8 *SpNpcResetti::getModelPath() { return sSpNpcResettiModelPath; }
 
 BOOL SpNpcResetti::updateAct() {
     BOOL r = FALSE;
-    if (sSpNpcResettiActTable[unk_654].exit != NULL) {
-        r = (this->*sSpNpcResettiActTable[unk_654].exit)();
+    if (sSpNpcResettiActTable[act].exit != NULL) {
+        r = (this->*sSpNpcResettiActTable[act].exit)();
     }
     return r;
 }
@@ -319,7 +319,7 @@ void SpNpcResetti::changeAct(s32 state) {
         r = (this->*sSpNpcResettiActTable[state].enter)();
     }
     if (r) {
-        unk_654 = state;
+        act = state;
     }
 }
 
@@ -504,18 +504,18 @@ BOOL SpNpcResetti::mainAct05() {
 
 void SpNpcResettiTalk::update() {
     s32 i = script * 12;
-    if (((u8 *)&sSpNpcResettiTalkScripts[0].pad)[i] != 0) {
-        if (((Unk_ov077_022717e0_Rec *)((u8 *)sSpNpcResettiTalkScripts + i))->fn != NULL) {
-            (this->*((Unk_ov077_022717e0_Rec *)((u8 *)sSpNpcResettiTalkScripts + i))->fn)();
+    if (((u8 *)&sSpNpcResettiTalkScripts[0].flag)[i] != 0) {
+        if (((SpNpcResettiTalkScript *)((u8 *)sSpNpcResettiTalkScripts + i))->fn != NULL) {
+            (this->*((SpNpcResettiTalkScript *)((u8 *)sSpNpcResettiTalkScripts + i))->fn)();
         }
     }
 }
 
 void SpNpcResettiTalk::onTaskDone(u32) {
     s32 i = script * 12;
-    if (((u8 *)&sSpNpcResettiTalkScripts[0].pad)[i] == 0) {
-        if (((Unk_ov077_022717e0_Rec *)((u8 *)sSpNpcResettiTalkScripts + i))->fn != NULL) {
-            (this->*((Unk_ov077_022717e0_Rec *)((u8 *)sSpNpcResettiTalkScripts + i))->fn)();
+    if (((u8 *)&sSpNpcResettiTalkScripts[0].flag)[i] == 0) {
+        if (((SpNpcResettiTalkScript *)((u8 *)sSpNpcResettiTalkScripts + i))->fn != NULL) {
+            (this->*((SpNpcResettiTalkScript *)((u8 *)sSpNpcResettiTalkScripts + i))->fn)();
             setScript(0);
         }
     }

@@ -77,7 +77,7 @@ struct VillagerTalkTopicFns;
 // ---------------------------------------------------------------- TU10 classes
 class HouseVisitVillager;
 
-struct Unk_ov068_02270a6c_Buf {
+struct HouseVisitStarText {
     u8 b[16];
 };
 
@@ -127,7 +127,7 @@ typedef BOOL (HouseVisitVillager::*Unk_ov068_02270afc_BFn)();
 
 
 
-#define SPEAK(str) VillagerId_makeFileName(VillagerData_getVillagerId(unk_1a0->villagerData), sHouseVisitMsgFileName, 0x28, (void *)str)
+#define SPEAK(str) VillagerId_makeFileName(VillagerData_getVillagerId(ownerVillager->villagerData), sHouseVisitMsgFileName, 0x28, (void *)str)
 
 // Menu/dialog sub-object at +0x898 of the owner (vtable 0x02270a6c)
 class HouseVisitVillagerTalk : public VillagerTalk {
@@ -140,7 +140,7 @@ public:
 
     void attachOwner(HouseVisitVillager *owner);
 
-    /* 0x1a0 */ HouseVisitVillager *unk_1a0;
+    /* 0x1a0 */ HouseVisitVillager *ownerVillager;
 };
 
 // Owner (vtable 0x02270afc, size 0xa74)
@@ -261,7 +261,7 @@ extern void *data_ov068_02270a34[2];
 extern HouseVisitVillager *sHouseVisitVillager;
 extern u8 data_ov068_022712b8[0x28];
 extern u8 sHouseVisitMsgFileName[0x28];
-extern Unk_ov068_02270a6c_Buf data_ov068_02270a3c;
+extern HouseVisitStarText data_ov068_02270a3c;
 HouseVisitVillager *HouseVisitVillager_Create();
 }
 
@@ -654,62 +654,62 @@ extern "C" void HouseVisit_SetFirstTalkDone(void *) {
 void HouseVisitVillagerTalk::attachOwner(HouseVisitVillager *owner) {
     using namespace sC;
     begin((VillagerActor *)owner, 0x11);
-    unk_1a0 = owner;
+    ownerVillager = owner;
 }
 
 void HouseVisitVillagerTalk::start(TalkStartMsg *arg) {
     using namespace sB;
     TalkStartMsg *out = (TalkStartMsg *)arg;
     out->msgKey = (const char *)sHouseVisitMsgFileName;
-    if (unk_1a0->visitState == 1) {
-        unk_1a0->talkTopic = 1;
+    if (ownerVillager->visitState == 1) {
+        ownerVillager->talkTopic = 1;
         SPEAK((void *)"q10_call");
         out->msgIndex = Random_GlobalBelow(3);
         HouseVisit_SetCalled(this);
         return;
     }
-    if (unk_1a0->wantsToLeave != 0 && unk_1a0->playerAtExit != 0) {
-        unk_1a0->wantsToLeave = 0;
+    if (ownerVillager->wantsToLeave != 0 && ownerVillager->playerAtExit != 0) {
+        ownerVillager->wantsToLeave = 0;
     }
-    if (unk_1a0->wantsToLeave != 0) {
-        unk_1a0->talkTopic = 6;
+    if (ownerVillager->wantsToLeave != 0) {
+        ownerVillager->talkTopic = 6;
         SPEAK((void *)"q10_back");
         out->msgKey = (const char *)sHouseVisitMsgFileName;
         out->msgIndex = Random_GlobalBelow(3);
         return;
     }
-    if (unk_1a0->playerAtExit != 0) {
-        unk_1a0->talkTopic = 8;
+    if (ownerVillager->playerAtExit != 0) {
+        ownerVillager->talkTopic = 8;
         SPEAK((void *)"q10_wait");
         out->msgKey = (const char *)sHouseVisitMsgFileName;
         out->msgIndex = Random_GlobalBelow(2);
         return;
     }
     if (HouseVisit_IsDoorTalkDone(this) == 0) {
-        unk_1a0->talkTopic = 2;
+        ownerVillager->talkTopic = 2;
         SPEAK((void *)"q10_door");
         out->msgIndex = Random_GlobalBelow(3);
         HouseVisit_SetDoorTalkDone(this);
         return;
     }
     if (HouseVisit_IsFirstTalkPending(this)) {
-        unk_1a0->talkTopic = 5;
+        ownerVillager->talkTopic = 5;
         SPEAK((void *)"q10_first");
         out->msgKey = (const char *)sHouseVisitMsgFileName;
         out->msgIndex = Random_GlobalBelow(3);
         HouseVisit_SetFirstTalkDone(this);
         return;
     }
-    if (unk_1a0->talksLeft != 0) {
-        unk_1a0->talksLeft = unk_1a0->talksLeft - 1;
+    if (ownerVillager->talksLeft != 0) {
+        ownerVillager->talksLeft = ownerVillager->talksLeft - 1;
     }
     u32 rnd = Random_GlobalBelow(100);
-    s32 v = FtrMgr_PickFurnitureComment(VillagerId_GetPersonality(VillagerData_getVillagerId(unk_1a0->villagerData)));
-    u32 n = unk_1a0->roomStars;
+    s32 v = FtrMgr_PickFurnitureComment(VillagerId_GetPersonality(VillagerData_getVillagerId(ownerVillager->villagerData)));
+    u32 n = ownerVillager->roomStars;
     if (n >= 5) {
         n = 5;
     }
-    Unk_ov068_02270a6c_Buf buf = data_ov068_02270a3c;
+    HouseVisitStarText buf = data_ov068_02270a3c;
     for (u32 i = n; i < 16; i++) {
         buf.b[i] = 0;
     }
@@ -718,17 +718,17 @@ void HouseVisitVillagerTalk::start(TalkStartMsg *arg) {
     obj2.fromEncoded(&obj1, 0, 0);
     window->setSlot(3, &obj2);
     if (rnd < 30 && v != -1) {
-        unk_1a0->talkTopic = 3;
+        ownerVillager->talkTopic = 3;
         SPEAK((void *)"q10_furniture");
         out->msgKey = (const char *)sHouseVisitMsgFileName;
         out->msgIndex = v;
         return;
     }
     if (rnd < 50) {
-        unk_1a0->talkTopic = 4;
+        ownerVillager->talkTopic = 4;
         SPEAK((void *)"q10_layout");
         out->msgKey = (const char *)sHouseVisitMsgFileName;
-        u32 f = unk_1a0->roomRateFlags;
+        u32 f = ownerVillager->roomRateFlags;
         if (f & 1) {
             out->msgIndex = Random_GlobalBelow(2);
         } else if (f & 2) {
@@ -744,11 +744,11 @@ void HouseVisitVillagerTalk::start(TalkStartMsg *arg) {
         }
         ((Unk_ov068_02270a6c_Bits *)((u8 *)PlayerData_getErrands(PlayerData_GetCurrent()) + 0xa8))->lo = n;
     } else if (rnd < 70) {
-        unk_1a0->talkTopic = 0;
+        ownerVillager->talkTopic = 0;
         setTopicFns((VillagerTalkTopicFns *)sHouseVisitTsuTopicTable);
         VillagerTalk::start((TalkStartMsg *)out);
     } else {
-        unk_1a0->talkTopic = 0;
+        ownerVillager->talkTopic = 0;
         setTopicFns((VillagerTalkTopicFns *)data_021be810);
         VillagerTalk::start((TalkStartMsg *)out);
     }
@@ -756,7 +756,7 @@ void HouseVisitVillagerTalk::start(TalkStartMsg *arg) {
 
 void HouseVisitVillagerTalk::onMessageStart(u32 a) {
     using namespace sB;
-    if (unk_1a0->talkTopic == 0) {
+    if (ownerVillager->talkTopic == 0) {
         VillagerTalk::onMessageStart(a);
     }
 }
@@ -764,7 +764,7 @@ void HouseVisitVillagerTalk::onMessageStart(u32 a) {
 void HouseVisitVillagerTalk::onMessageEnd(u32 a) {
     using namespace sB;
     u8 buf[2];
-    HouseVisitVillager *o = unk_1a0;
+    HouseVisitVillager *o = ownerVillager;
     u32 st = o->talkTopic;
     if (st == 0) {
         VillagerTalk::onMessageEnd(a);
@@ -773,13 +773,13 @@ void HouseVisitVillagerTalk::onMessageEnd(u32 a) {
             o->setVisitState(2);
         } else if (st == 6 || st == 8) {
             o->talkTopic = 7;
-            VillagerId_makeFileName(VillagerData_getVillagerId(unk_1a0->villagerData), data_ov068_022712b8, 0x28, (void *)"q_bye");
+            VillagerId_makeFileName(VillagerData_getVillagerId(ownerVillager->villagerData), data_ov068_022712b8, 0x28, (void *)"q_bye");
             buf[0] = Random_GlobalBelow(3);
-            unk_1a0->talk.window->setNextMessageIfUnset(buf, data_ov068_022712b8);
+            ownerVillager->talk.window->setNextMessageIfUnset(buf, data_ov068_022712b8);
         } else if (st == 7) {
             buf[1] = gTalkMsgIndexEnd;
-            unk_1a0->talk.window->setNextMessage(&buf[1], 0);
-            unk_1a0->setVisitState(10);
+            ownerVillager->talk.window->setNextMessage(&buf[1], 0);
+            ownerVillager->setVisitState(10);
             Snd_PlaySe(0x5f);
         }
     }
@@ -787,7 +787,7 @@ void HouseVisitVillagerTalk::onMessageEnd(u32 a) {
 
 void HouseVisitVillagerTalk::onChoice(u32 a) {
     using namespace sB;
-    if (unk_1a0->talkTopic == 0) {
+    if (ownerVillager->talkTopic == 0) {
         VillagerTalk::onChoice(a);
     }
 }
@@ -843,7 +843,7 @@ extern "C" void *data_ov068_0227097c[2] = {(void *)_ZN18HouseVisitVillager17exec
 extern "C" DebugColor data_ov068_022712a0(0x14, 0x1f, 0x14, 0x1f);
 extern "C" void *data_ov068_022709a4[2] = {(void *)_ZN18HouseVisitVillager17execVisitGreetEndEv, 0};
 extern "C" DebugColor data_ov068_0227129c(0x14, 0x1f, 0x1f, 0x1f);
-extern "C" Unk_ov068_02270a6c_Buf data_ov068_02270a3c = {{0xdd, 0xdd, 0xdd, 0xdd, 0xdd, 0xdd, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}};
+extern "C" HouseVisitStarText data_ov068_02270a3c = {{0xdd, 0xdd, 0xdd, 0xdd, 0xdd, 0xdd, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}};
 extern "C" void *data_ov068_022709d4[2] = {(void *)_ZN18HouseVisitVillager15enterVisitIdle7Ev, 0};
 extern "C" DebugColor data_ov068_022712a4(0x14, 0x18, 0x18, 0x1f);
 extern "C" {

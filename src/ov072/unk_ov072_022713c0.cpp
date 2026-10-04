@@ -1,5 +1,6 @@
 // mwcc-flags: -str reuse
 #include "types.h"
+#include "item/ItemPickSpec.h"
 #include "talk/TalkStartMsg.h"
 #include "talk/TalkWindowState.h"
 #include "npc/NpcAnimCtrl.h"
@@ -37,14 +38,11 @@ struct Unk_02071a58_Grid {
 };
 
 
-struct Unk_ov072_02271a58_Obj {
-    u32 v[2];
-};
 
 class SpNpcGulliver;
 class SpNpcGulliverTalk;
 
-struct Unk_ov072_022718d0_Ent {
+struct SpNpcGulliverTalkScript {
     void (SpNpcGulliverTalk::*f)();
     u8 flag;
 };
@@ -70,9 +68,7 @@ s32 Pocket_FindItem(u16 *p);
 void Pocket_RemoveItem(s32 a);
 void Pocket_AddItem(u16 *p, s32 a);
 u32 Random_GlobalBelow(u32 n);
-void _ZN12ItemPickSpec3setEii(Unk_ov072_02271a58_Obj *o, s32 a, s32 b);
-void ItemPickSpec_Destruct(Unk_ov072_02271a58_Obj *o);
-void ItemPick_One(u16 *out, Unk_ov072_02271a58_Obj *o, s32 a, s32 b, s32 c, s32 d, s32 e);
+void ItemPick_One(u16 *out, ItemPickSpec *o, s32 a, s32 b, s32 c, s32 d, s32 e);
 void *TownBlockMap_Get();
 void *MapBlock_GetItemPtr(void *cell, s32 a, s32 b, s32 c);
 void MapBlock_SetItem(void *cell, u16 *h, s32 a, s32 b, s32 c);
@@ -147,7 +143,7 @@ public:
     BOOL setupAct00();
     void changeAct(s32 s);
 
-    s32 unk_654;
+    s32 act;
     SpNpcGulliverTalk talk;
     u8 repairing;
     u8 pad_715[0x718 - 0x715];
@@ -155,7 +151,7 @@ public:
     s32 gestureTimer;
 };
 
-struct Unk_ov072_02271fe8_Ent {
+struct SpNpcGulliverActEntry {
     BOOL (SpNpcGulliver::*enter)();
     BOOL (SpNpcGulliver::*exit)();
 };
@@ -166,8 +162,8 @@ extern u8 sSpNpcGulliverKey[12];
 extern u8 sSpNpcGulliverModelPath[23];
 extern u8 sSpNpcGulliverTexturePath[27];
 extern const TalkStartMsg sSpNpcGulliverTopicMsgs[8];
-extern Unk_ov072_022718d0_Ent sSpNpcGulliverTalkScripts[2];
-extern Unk_ov072_02271fe8_Ent sSpNpcGulliverActTable[4];
+extern SpNpcGulliverTalkScript sSpNpcGulliverTalkScripts[2];
+extern SpNpcGulliverActEntry sSpNpcGulliverActTable[4];
 s32 SpNpcGulliver_TickTimer(void *self, s32 *p);
 SpNpcGulliver *SpNpcGulliver_Create();
 }
@@ -185,12 +181,12 @@ u8 sSpNpcGulliverTexturePath[27] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o',
 u8 sSpNpcGulliverModelPath[23] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 's', 'e', 'g', '.', 'n', 's', 'b', 'm', 'd', 0};
 }
 
-Unk_ov072_022718d0_Ent sSpNpcGulliverTalkScripts[2] = {
+SpNpcGulliverTalkScript sSpNpcGulliverTalkScripts[2] = {
     {NULL, 0},
     {&SpNpcGulliverTalk::scriptWakeUp, 1},
 };
 
-Unk_ov072_02271fe8_Ent sSpNpcGulliverActTable[4] = {
+SpNpcGulliverActEntry sSpNpcGulliverActTable[4] = {
     {&SpNpcGulliver::setupAct00, &SpNpcGulliver::mainAct00},
     {&SpNpcGulliver::setupAct01, &SpNpcGulliver::mainAct01},
     {&SpNpcGulliver::setupAct02, &SpNpcGulliver::mainAct02},
@@ -315,8 +311,8 @@ u8 *SpNpcGulliver::getModelPath() {
 
 BOOL SpNpcGulliver::updateAct() {
     BOOL result = FALSE;
-    if (sSpNpcGulliverActTable[unk_654].exit != NULL) {
-        result = (this->*sSpNpcGulliverActTable[unk_654].exit)();
+    if (sSpNpcGulliverActTable[act].exit != NULL) {
+        result = (this->*sSpNpcGulliverActTable[act].exit)();
     }
     return result;
 }
@@ -327,7 +323,7 @@ void SpNpcGulliver::changeAct(s32 s) {
         ok = (this->*sSpNpcGulliverActTable[s].enter)();
     }
     if (ok) {
-        unk_654 = s;
+        act = s;
     }
 }
 
@@ -695,7 +691,6 @@ void SpNpcGulliverTalk::onMessageEnd(u32) {
     u16 h0;
     u16 h1;
     u16 h2;
-    Unk_ov072_02271a58_Obj o;
     u8 *const g = &data_021e58a6;
     h0 = 0xfff1;
     u8 *const m = sSpNpcGulliverKey;
@@ -723,11 +718,12 @@ void SpNpcGulliverTalk::onMessageEnd(u32) {
         break;
     case 0x17:
         break;
-    case 0x18:
-        _ZN12ItemPickSpec3setEii(&o, 0, 0x13);
+    case 0x18: {
+        ItemPickSpec o;
+        o.set(0, 0x13);
         ItemPick_One(&h2, &o, 0, 0, 1, 1, 0);
         h0 = h2;
-        ItemPickSpec_Destruct(&o);
+    }
         _ZN16ActorTalkRequest15requestGiveItemEPtjjj(this, &h0, 0, 5, 0);
         Pocket_AddItem(&h0, 0);
         r = 0x19;

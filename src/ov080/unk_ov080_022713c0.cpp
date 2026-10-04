@@ -115,16 +115,16 @@ public:
     BOOL setupAct00();
     void changeAct(s32 state);
 
-    s32 unk_654;
+    s32 act;
     SpNpcTortimerTalk talk;
 };
 
-struct Unk_ov080_022718c0_Ent {
+struct SpNpcTortimerActEntry {
     BOOL (SpNpcTortimer::*enter)();
     BOOL (SpNpcTortimer::*exit)();
 };
 
-Unk_ov080_022718c0_Ent sSpNpcTortimerActTable[3] = {
+SpNpcTortimerActEntry sSpNpcTortimerActTable[3] = {
     {&SpNpcTortimer::setupAct00, &SpNpcTortimer::mainAct00},
     {&SpNpcTortimer::setupAct01, &SpNpcTortimer::mainAct01},
     {NULL, &SpNpcTortimer::mainAct02},
@@ -141,15 +141,15 @@ ActorProfile sSpNpcTortimerProfile = {(void *(*)())SpNpcTortimer_Create, 0x56, 0
 
 
 
-struct Unk_ov080_02271648_Buf {
-    u8 t[2];
-    u16 v[8];
+struct SpNpcTortimerMsgEndLocal {
+    u8 msgIndices[2];
+    u16 items[8];
 };
 
-struct Unk_ov080_02271478_Buf {
-    u8 t;
+struct SpNpcTortimerChoiceLocal {
+    u8 msgIndex;
     u8 pad_01;
-    u16 v;
+    u16 item;
 };
 
 extern "C" SpNpcTortimer *SpNpcTortimer_Create() {
@@ -192,8 +192,8 @@ u8 *SpNpcTortimer::getModelPath() { return sSpNpcTortimerModelPath; }
 
 BOOL SpNpcTortimer::updateAct() {
     BOOL result = FALSE;
-    if (sSpNpcTortimerActTable[unk_654].exit != NULL) {
-        result = (this->*sSpNpcTortimerActTable[unk_654].exit)();
+    if (sSpNpcTortimerActTable[act].exit != NULL) {
+        result = (this->*sSpNpcTortimerActTable[act].exit)();
     }
     return result;
 }
@@ -204,7 +204,7 @@ void SpNpcTortimer::changeAct(s32 state) {
         ok = (this->*sSpNpcTortimerActTable[state].enter)();
     }
     if (ok) {
-        unk_654 = state;
+        act = state;
     }
 }
 
@@ -302,19 +302,19 @@ void SpNpcTortimerTalk::start(TalkStartMsg *out) {
 }
 
 void SpNpcTortimerTalk::onMessageEnd(u32) {
-    Unk_ov080_02271648_Buf buf;
+    SpNpcTortimerMsgEndLocal buf;
     u32 r = 0xff;
     if (massageChairSlot >= 0) {
         if (msgIndex == 1 || msgIndex == 4) {
             massageChairSlot = -2;
         }
         if (msgIndex == 2) {
-            buf.v[0] = 0x1559;
-            this->requestGiveItem(&buf.v[0], 0, 5, 0);
-            buf.v[1] = 0x1559;
-            Pocket_AddItem(&buf.v[1], 0);
-            buf.t[0] = 4;
-            window->setNextMessage(&buf.t[0], (u8 *)"sp_npc_turtle");
+            buf.items[0] = 0x1559;
+            this->requestGiveItem(&buf.items[0], 0, 5, 0);
+            buf.items[1] = 0x1559;
+            Pocket_AddItem(&buf.items[1], 0);
+            buf.msgIndices[0] = 4;
+            window->setNextMessage(&buf.msgIndices[0], (u8 *)"sp_npc_turtle");
         }
     } else {
         void *g = PlayerData_GetCurrent();
@@ -326,39 +326,39 @@ void SpNpcTortimerTalk::onMessageEnd(u32) {
             switch (msgIndex) {
             case 0:
             case 2:
-                buf.v[2] = 0x1375;
-                if (Pocket_AddItem(&buf.v[2], 0)) {
-                    buf.v[3] = 0x1375;
-                    this->requestGiveItem(&buf.v[3], 0, 5, 0);
+                buf.items[2] = 0x1375;
+                if (Pocket_AddItem(&buf.items[2], 0)) {
+                    buf.items[3] = 0x1375;
+                    this->requestGiveItem(&buf.items[3], 0, 5, 0);
                     Unk_02097ff4_setFlag(g, 0x21);
-                    buf.v[4] = 0x1375;
-                    this->setItemNameSlot((u32)&buf.v[4], 0, 7);
+                    buf.items[4] = 0x1375;
+                    this->setItemNameSlot((u32)&buf.items[4], 0, 7);
                     r = 1;
                 }
                 break;
             case 3:
             case 5:
-                buf.v[5] = 0x1377;
-                if (Pocket_AddItem(&buf.v[5], 0)) {
-                    buf.v[6] = 0x1377;
-                    this->requestGiveItem(&buf.v[6], 0, 5, 0);
+                buf.items[5] = 0x1377;
+                if (Pocket_AddItem(&buf.items[5], 0)) {
+                    buf.items[6] = 0x1377;
+                    this->requestGiveItem(&buf.items[6], 0, 5, 0);
                     Unk_02097ff4_setFlag(g, 0x22);
-                    buf.v[7] = 0x1377;
-                    this->setItemNameSlot((u32)&buf.v[7], 0, 7);
+                    buf.items[7] = 0x1377;
+                    this->setItemNameSlot((u32)&buf.items[7], 0, 7);
                     r = 4;
                 }
                 break;
             }
         }
         if (r != 0xff) {
-            buf.t[1] = r;
-            window->setNextMessage(&buf.t[1], str);
+            buf.msgIndices[1] = r;
+            window->setNextMessage(&buf.msgIndices[1], str);
         }
     }
 }
 
 void SpNpcTortimerTalk::onChoice(u32) {
-    Unk_ov080_02271478_Buf buf;
+    SpNpcTortimerChoiceLocal buf;
     getChoiceList();
     s32 t = ChoiceList_getResult();
     void *g = PlayerData_GetCurrent();
@@ -368,14 +368,14 @@ void SpNpcTortimerTalk::onChoice(u32) {
         if (msgIndex == 0 && t == 0) {
             if (massageChairSlot >= 0) {
                 Pocket_RemoveItem(massageChairSlot);
-                buf.v = 0x37e0;
-                ActorTalkRequest_requestTakeItem(this, &buf.v, 0, 5, 0);
+                buf.item = 0x37e0;
+                ActorTalkRequest_requestTakeItem(this, &buf.item, 0, 5, 0);
             }
             r = 2;
         }
         if (r != 0xff) {
-            buf.t = r;
-            window->setNextMessage(&buf.t, str);
+            buf.msgIndex = r;
+            window->setNextMessage(&buf.msgIndex, str);
         }
     } else {
         Unk_02097ff4_testFlag(g, 1);

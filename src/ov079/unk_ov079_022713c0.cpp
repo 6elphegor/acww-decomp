@@ -177,18 +177,18 @@ public:
     void changeAct(s32 state);
 
     u8 pad_652[2];
-    s32 unk_654;
+    s32 act;
     SpNpcWendellTalk talk;
 };
 
-struct Unk_ov079_022725f4_Ent {
+struct SpNpcWendellActEntry {
     BOOL (SpNpcWendell::*enter)();
     BOOL (SpNpcWendell::*exit)();
 };
 
 
 extern "C" {
-extern Unk_ov079_022725f4_Ent sSpNpcWendellActTable[5];
+extern SpNpcWendellActEntry sSpNpcWendellActTable[5];
 extern u8 sSpNpcWendellModelPath[];
 extern u8 sSpNpcWendellTexturePath[];
 extern ActorProfile sSpNpcWendellProfile;
@@ -256,10 +256,10 @@ extern s16 data_02135f44[];
 extern FxVec3 sSpNpcWendellSideStepOffsets[2];
 }
 
-struct Unk_ov079_02271718_Buf {
-    u8 t;
+struct SpNpcWendellMsgLocal {
+    u8 msgIndex;
     u8 pad_01;
-    u16 v[16];
+    u16 items[16];
 };
 
 static inline BOOL Unk_ov079_Rng(u16 *p, u32 lo, u32 hi) {
@@ -330,8 +330,8 @@ u8 *SpNpcWendell::getModelPath() { return sSpNpcWendellModelPath; }
 
 BOOL SpNpcWendell::updateAct() {
     BOOL result = FALSE;
-    if (sSpNpcWendellActTable[unk_654].exit != NULL) {
-        result = (this->*sSpNpcWendellActTable[unk_654].exit)();
+    if (sSpNpcWendellActTable[act].exit != NULL) {
+        result = (this->*sSpNpcWendellActTable[act].exit)();
     }
     return result;
 }
@@ -342,7 +342,7 @@ void SpNpcWendell::changeAct(s32 state) {
         ok = (this->*sSpNpcWendellActTable[state].enter)();
     }
     if (ok) {
-        unk_654 = state;
+        act = state;
     }
 }
 
@@ -609,7 +609,7 @@ extern void *data_ov079_022729d0[2];
 void _ZN12SpNpcWendell9mainAct03Ev();
 extern void *data_ov079_022729d8[2];
 }
-typedef BOOL (SpNpcWendell::*Unk_ov079_02272ac4_Fn)();
+typedef BOOL (SpNpcWendell::*SpNpcWendellActFn)();
 
 extern "C" void *data_ov079_022729a0[2] = {(void *)_ZN16SpNpcWendellTalk19onPatternSlotPickedEv, 0};
 
@@ -639,12 +639,12 @@ extern "C" void *data_ov079_022729c0[2] = {(void *)_ZN12SpNpcWendell9mainAct02Ev
 
 extern "C" DebugColor data_ov079_02272b90(20, 24, 24, 31);
 
-extern "C" Unk_ov079_022725f4_Ent sSpNpcWendellActTable[5] = {
-    {*(Unk_ov079_02272ac4_Fn *)data_ov079_022729d0, *(Unk_ov079_02272ac4_Fn *)data_ov079_022729a8},
-    {NULL, *(Unk_ov079_02272ac4_Fn *)data_ov079_022729b0},
-    {*(Unk_ov079_02272ac4_Fn *)data_ov079_022729b8, *(Unk_ov079_02272ac4_Fn *)data_ov079_022729c0},
-    {*(Unk_ov079_02272ac4_Fn *)data_ov079_022729c8, *(Unk_ov079_02272ac4_Fn *)data_ov079_022729d8},
-    {*(Unk_ov079_02272ac4_Fn *)data_ov079_02272998, *(Unk_ov079_02272ac4_Fn *)data_ov079_02272990},
+extern "C" SpNpcWendellActEntry sSpNpcWendellActTable[5] = {
+    {*(SpNpcWendellActFn *)data_ov079_022729d0, *(SpNpcWendellActFn *)data_ov079_022729a8},
+    {NULL, *(SpNpcWendellActFn *)data_ov079_022729b0},
+    {*(SpNpcWendellActFn *)data_ov079_022729b8, *(SpNpcWendellActFn *)data_ov079_022729c0},
+    {*(SpNpcWendellActFn *)data_ov079_022729c8, *(SpNpcWendellActFn *)data_ov079_022729d8},
+    {*(SpNpcWendellActFn *)data_ov079_02272998, *(SpNpcWendellActFn *)data_ov079_02272990},
 };
 
 extern "C" void *data_ov079_022729a8[2] = {(void *)_ZN12SpNpcWendell9mainAct00Ev, 0};
@@ -730,35 +730,35 @@ void SpNpcWendellTalk::resultHandler01() {
 
 void SpNpcWendellTalk::onPatternSlotPicked() {
     TalkWindowState *m = window;
-    Unk_ov079_02271718_Buf buf;
+    SpNpcWendellMsgLocal buf;
     u32 r4;
-    buf.t = 0xd;
+    buf.msgIndex = 0xd;
     if (MenuCtrl_IsResultOk()) {
         void *g = PlayerData_GetCurrent();
         u32 a0 = MenuCtrl_GetIndex();
         u32 r6 = _ZN12PatternOrder7getSlotEj(_ZN14PlayerPatterns15getPatternOrderEv(_ZN10PlayerData11getPatternsEv(g)), a0);
         r4 = 0;
-        if (Unk_ov079_02271718_Chk(this, &buf.v[4], 0x131f)) {
+        if (Unk_ov079_02271718_Chk(this, &buf.items[4], 0x131f)) {
             r4 = 0x15;
-        } else if (Unk_ov079_02271718_Chk(this, &buf.v[5], 0x12ff)) {
+        } else if (Unk_ov079_02271718_Chk(this, &buf.items[5], 0x12ff)) {
             r4 = 0x16;
-        } else if (Unk_ov079_02271718_Chk(this, &buf.v[6], 0x12f6)) {
+        } else if (Unk_ov079_02271718_Chk(this, &buf.items[6], 0x12f6)) {
             r4 = 0x17;
-        } else if (Unk_ov079_02271718_Chk(this, &buf.v[7], 0x12f8)) {
+        } else if (Unk_ov079_02271718_Chk(this, &buf.items[7], 0x12f8)) {
             r4 = 0x18;
-        } else if (Unk_ov079_02271718_Chk(this, &buf.v[8], 0x12fc)) {
+        } else if (Unk_ov079_02271718_Chk(this, &buf.items[8], 0x12fc)) {
             r4 = 0x19;
-        } else if (Unk_ov079_02271718_Chk(this, &buf.v[9], 0x1309)) {
+        } else if (Unk_ov079_02271718_Chk(this, &buf.items[9], 0x1309)) {
             r4 = 0x1a;
-        } else if (Unk_ov079_02271718_Chk(this, &buf.v[10], 0x1312)) {
+        } else if (Unk_ov079_02271718_Chk(this, &buf.items[10], 0x1312)) {
             r4 = 0x1b;
-        } else if (Unk_ov079_02271718_Chk(this, &buf.v[11], 0x131c) ||
-                   Unk_ov079_02271718_Chk(this, &buf.v[12], 0x131d) ||
-                   Unk_ov079_02271718_Chk(this, &buf.v[13], 0x131e)) {
+        } else if (Unk_ov079_02271718_Chk(this, &buf.items[11], 0x131c) ||
+                   Unk_ov079_02271718_Chk(this, &buf.items[12], 0x131d) ||
+                   Unk_ov079_02271718_Chk(this, &buf.items[13], 0x131e)) {
             r4 = 0x1d;
-        } else if (Unk_ov079_02271718_Chk(this, &buf.v[14], 0x1302)) {
+        } else if (Unk_ov079_02271718_Chk(this, &buf.items[14], 0x1302)) {
             r4 = 0x1e;
-        } else if (Unk_ov079_02271718_Chk(this, &buf.v[15], 0x1303)) {
+        } else if (Unk_ov079_02271718_Chk(this, &buf.items[15], 0x1303)) {
             r4 = 0x1f;
         } else {
             BOOL f = FALSE;
@@ -783,9 +783,9 @@ void SpNpcWendellTalk::onPatternSlotPicked() {
             }
         }
         PatternSrc_Copy(7, r4, 9, r6, 1);
-        buf.t = 5;
-        buf.v[0] = 0x3530;
-        _ZN16ActorTalkRequest15requestGiveItemEPtjjj(this, &buf.v[0], 0, 5, 0);
+        buf.msgIndex = 5;
+        buf.items[0] = 0x3530;
+        _ZN16ActorTalkRequest15requestGiveItemEPtjjj(this, &buf.items[0], 0, 5, 0);
         u32 a, b, c;
         if (r6 < 8) {
             a = (u16)(r6 + 0x12a8);
@@ -807,20 +807,20 @@ void SpNpcWendellTalk::onPatternSlotPicked() {
         u32 z = *_ZN10PlayerData11getHeldItemEv(g);
         if (a == x) {
             if (Unk_ov079_Rng(_ZN10PlayerData8getShirtEv(g), 0x12a8, 0x12af)) {
-                buf.v[1] = a;
-                PlayerActor_RequestWearShirtAlt(&buf.v[1]);
+                buf.items[1] = a;
+                PlayerActor_RequestWearShirtAlt(&buf.items[1]);
             }
         }
         if (b == y) {
             if (Unk_ov079_Rng(_ZN10PlayerData6getHatEv(g), 0x1429, 0x1430)) {
-                buf.v[2] = b;
-                PlayerActor_RequestWearHatAlt(&buf.v[2]);
+                buf.items[2] = b;
+                PlayerActor_RequestWearHatAlt(&buf.items[2]);
             }
         }
         if (c == z) {
             if (Unk_ov079_Rng(_ZN10PlayerData11getHeldItemEv(g), 0x13a0, 0x13a7)) {
-                buf.v[3] = c;
-                PlayerActor_RequestChangeHeldItem(&buf.v[3]);
+                buf.items[3] = c;
+                PlayerActor_RequestChangeHeldItem(&buf.items[3]);
             }
         }
         void *h = _ZN14PlayerPatterns10getPatternEh(_ZN10PlayerData11getPatternsEv(g), r6);
@@ -830,7 +830,7 @@ void SpNpcWendellTalk::onPatternSlotPicked() {
         window->setNamedSlot(1, obj, 7);
         _ZN8ItemNameD1Ev(obj);
     }
-    m->setNextMessage(&buf.t, (u8 *)"sp_npc_walrus");
+    m->setNextMessage(&buf.msgIndex, (u8 *)"sp_npc_walrus");
 }
 
 SpNpcWendellTalk::SpNpcWendellTalk() {

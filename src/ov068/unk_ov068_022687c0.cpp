@@ -13,8 +13,8 @@ struct BVec {
 struct BS50 {
     u8 pad_00[0x9c];
     u32 frameCtrl;
-    u32 unk_a0;
-    u32 unk_a4;
+    u32 numFrames;
+    u32 curFrame;
     u8 pad_a8[0x8];
 };
 
@@ -101,10 +101,10 @@ struct DObj {
     /* 0x257 */ u8 moveSpeed;
 };
 
-struct Unk_ov068_02269e54_Pad {
+struct MothLightStackPad {
     s32 v[3];
-    Unk_ov068_02269e54_Pad() {}
-    ~Unk_ov068_02269e54_Pad() {}
+    MothLightStackPad() {}
+    ~MothLightStackPad() {}
 };
 
 struct Unk_ov068_0226a004_Save {
@@ -657,7 +657,7 @@ s32 Moth_FindNearestLight(DObj *o, DVec *out) {
                     for (j = zj; j < cnt; j++) {
                         if (_ZN12StrBSizeData12getLightUnitEPiS0_j(obj, &px, &pz, j) != 0 && _ZN13BuildingActor9callIsLitEv(q) == 1) {
                             DVec t;
-                            Unk_ov068_02269e54_Pad pad;
+                            MothLightStackPad pad;
                             s32 d;
                             s32 tx = px + _ZN13BuildingActor8getGridXEv(q);
                             s32 tz = pz + _ZN13BuildingActor8getGridZEv(q);
@@ -1042,7 +1042,7 @@ void Unk_ov068_02268214::beeChasePlayer() {
 
 
 void Bee_UpdateSwarmAnim(BVec *a, BS50 *b, s32 d) {
-    s32 ang = (s16)((u32)(b->unk_a4 << 4) >> 16);
+    s32 ang = (s16)((u32)(b->curFrame << 4) >> 16);
     s32 t = d;
     if (d < 0) t = -d;
     if (t > 0x38e) {
@@ -1220,7 +1220,7 @@ s32 Stinger_Threaten(BObj *o, u32 mode, u32 q) {
             } else if (mode == 0) {
                 o->stateTimer = 0x3c;
                 if (o->kind == 0x37) {
-                    if ((u32)(s->unk_a4 << 4) >> 16 < 4 && (u32)(s->unk_a0 << 4) >> 16 < 0xb) {
+                    if ((u32)(s->curFrame << 4) >> 16 < 4 && (u32)(s->numFrames << 4) >> 16 < 0xb) {
                         Insect_PlaySe(o, 1, 0);
                     }
                 }
@@ -1236,11 +1236,11 @@ s32 Stinger_Threaten(BObj *o, u32 mode, u32 q) {
         }
     }
     if (o->kind == 0x37) {
-        s32 a = (s32)s->unk_a0 >> 12;
-        if ((u16)a == 0xe && (u32)(s->unk_a4 << 4) >> 16 == 0xd) {
-            s->unk_a4 = 0xa000;
+        s32 a = (s32)s->numFrames >> 12;
+        if ((u16)a == 0xe && (u32)(s->curFrame << 4) >> 16 == 0xd) {
+            s->curFrame = 0xa000;
         } else {
-            s32 b = (s32)s->unk_a4 >> 12;
+            s32 b = (s32)s->curFrame >> 12;
             if ((u16)b < 4 && (u16)a < 0xb) {
                 _ZN13AnimFrameCtrl5setupEihit(&s->frameCtrl, 0xb, 1, 0x1000, 4);
             } else if ((u16)a == 0xb && (u16)b == 0xa) {
@@ -1261,7 +1261,7 @@ s32 Stinger_TryAttack(BObj *o, u32 mode, u32 q, s16 *p) {
                 if (PlayerActor_LocalFaint(o->kind == 0x37 ? 1 : 0)) {
                     o->behaviorState = 0x13;
                     o->unk_24c = 1;
-                    _ZN13AnimFrameCtrl5setupEihit(&o->animModel.frameCtrl, 0, 2, 0x1000, (u32)(o->animModel.unk_a4 << 4) >> 16);
+                    _ZN13AnimFrameCtrl5setupEihit(&o->animModel.frameCtrl, 0, 2, 0x1000, (u32)(o->animModel.curFrame << 4) >> 16);
                 } else {
                     s32 t = *pp;
                     if (t > 0 && o->kind == 0x36) {

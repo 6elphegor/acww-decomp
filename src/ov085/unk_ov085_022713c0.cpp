@@ -126,12 +126,12 @@ public:
     void changeAct(s32 state);
 
     u8 pad_652[2];
-    s32 unk_654;
+    s32 act;
     SpNpcTortimerBrightNightsTalk talk;
     u8 festDay;
 };
 
-struct Unk_ov085_02271aac_Ent {
+struct SpNpcTortimerBrightNightsActEntry {
     BOOL (SpNpcTortimerBrightNights::*enter)();
     BOOL (SpNpcTortimerBrightNights::*exit)();
 };
@@ -176,11 +176,11 @@ s32 SaveVillagers_Count(void *p);
 extern u8 gSaveVillagers[];
 extern u8 sSpNpcTortimerBrightNightsModelPath[];
 extern u8 sSpNpcTortimerBrightNightsTexturePath[];
-extern Unk_ov085_02271aac_Ent sSpNpcTortimerBrightNightsActTable[3];
+extern SpNpcTortimerBrightNightsActEntry sSpNpcTortimerBrightNightsActTable[3];
 }
 
 extern "C" SpNpcTortimerBrightNights *SpNpcTortimerBrightNights_Create();
-Unk_ov085_02271aac_Ent sSpNpcTortimerBrightNightsActTable[3] = {
+SpNpcTortimerBrightNightsActEntry sSpNpcTortimerBrightNightsActTable[3] = {
     {&SpNpcTortimerBrightNights::setupAct00, &SpNpcTortimerBrightNights::mainAct00},
     {&SpNpcTortimerBrightNights::setupAct01, &SpNpcTortimerBrightNights::mainAct01},
     {NULL, &SpNpcTortimerBrightNights::mainAct02},
@@ -225,8 +225,8 @@ u8 *SpNpcTortimerBrightNights::getModelPath() { return sSpNpcTortimerBrightNight
 
 BOOL SpNpcTortimerBrightNights::updateAct() {
     BOOL result = FALSE;
-    if (sSpNpcTortimerBrightNightsActTable[unk_654].exit != NULL) {
-        result = (this->*sSpNpcTortimerBrightNightsActTable[unk_654].exit)();
+    if (sSpNpcTortimerBrightNightsActTable[act].exit != NULL) {
+        result = (this->*sSpNpcTortimerBrightNightsActTable[act].exit)();
     }
     return result;
 }
@@ -237,7 +237,7 @@ void SpNpcTortimerBrightNights::changeAct(s32 state) {
         ok = (this->*sSpNpcTortimerBrightNightsActTable[state].enter)();
     }
     if (ok) {
-        unk_654 = state;
+        act = state;
     }
 }
 

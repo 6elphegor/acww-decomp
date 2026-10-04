@@ -166,11 +166,11 @@ public:
     BOOL setupAct02();
     void changeAct(s32 state);
 
-    /* 0x654 */ s32 unk_654;
+    /* 0x654 */ s32 act;
     /* 0x658 */ SpNpcJoanTalk talk;
 };
 
-struct Unk_ov073_02271fcc_Ent {
+struct SpNpcJoanActEntry {
     BOOL (SpNpcJoan::*enter)();
     BOOL (SpNpcJoan::*exit)();
 };
@@ -184,8 +184,8 @@ extern const TalkStartMsg sSpNpcJoanTopicMsgs[3];
 s32 SpNpcJoan_IsEmptyItem(u16 *p);
 SpNpcJoan *SpNpcJoan_Create();
 }
-typedef BOOL (SpNpcJoan::*Unk_ov073_022724c0_Fn)();
-extern Unk_ov073_02271fcc_Ent sSpNpcJoanActTable[5];
+typedef BOOL (SpNpcJoan::*SpNpcJoanActFn)();
+extern SpNpcJoanActEntry sSpNpcJoanActTable[5];
 extern FxVec3 sSpNpcJoanSidestepOffsets[2];   // [1] is at 0x022725c8
 extern "C" {
 extern ActorProfile sSpNpcJoanProfile;
@@ -247,8 +247,8 @@ u8 *SpNpcJoan::getModelPath() { return sSpNpcJoanModelPath; }
 
 BOOL SpNpcJoan::updateAct() {
     BOOL result = FALSE;
-    if (sSpNpcJoanActTable[unk_654].exit != NULL) {
-        result = (this->*sSpNpcJoanActTable[unk_654].exit)();
+    if (sSpNpcJoanActTable[act].exit != NULL) {
+        result = (this->*sSpNpcJoanActTable[act].exit)();
     }
     return result;
 }
@@ -259,7 +259,7 @@ void SpNpcJoan::changeAct(s32 state) {
         ok = (this->*sSpNpcJoanActTable[state].enter)();
     }
     if (ok) {
-        unk_654 = state;
+        act = state;
     }
 }
 
@@ -521,12 +521,12 @@ ActorProfile sSpNpcJoanProfile = {(void *(*)())SpNpcJoan_Create, 0x6f, 0x75, 2, 
 DebugColor data_ov073_02272594(20, 31, 20, 31);
 DebugColor data_ov073_02272580(20, 31, 31, 31);
 DebugColor data_ov073_02272588(20, 24, 24, 31);
-Unk_ov073_02271fcc_Ent sSpNpcJoanActTable[5] = {
-    {*(Unk_ov073_022724c0_Fn *)data_ov073_02272388, *(Unk_ov073_022724c0_Fn *)data_ov073_022723a0},
-    {NULL, *(Unk_ov073_022724c0_Fn *)data_ov073_022723a8},
-    {*(Unk_ov073_022724c0_Fn *)data_ov073_022723b0, *(Unk_ov073_022724c0_Fn *)data_ov073_022723b8},
-    {*(Unk_ov073_022724c0_Fn *)data_ov073_022723c0, *(Unk_ov073_022724c0_Fn *)data_ov073_022723c8},
-    {*(Unk_ov073_022724c0_Fn *)data_ov073_02272398, *(Unk_ov073_022724c0_Fn *)data_ov073_02272390},
+SpNpcJoanActEntry sSpNpcJoanActTable[5] = {
+    {*(SpNpcJoanActFn *)data_ov073_02272388, *(SpNpcJoanActFn *)data_ov073_022723a0},
+    {NULL, *(SpNpcJoanActFn *)data_ov073_022723a8},
+    {*(SpNpcJoanActFn *)data_ov073_022723b0, *(SpNpcJoanActFn *)data_ov073_022723b8},
+    {*(SpNpcJoanActFn *)data_ov073_022723c0, *(SpNpcJoanActFn *)data_ov073_022723c8},
+    {*(SpNpcJoanActFn *)data_ov073_02272398, *(SpNpcJoanActFn *)data_ov073_02272390},
 };
 const TalkStartMsg sSpNpcJoanTopicMsgs[3] = {
     {sSpNpcJoanKey, 0},

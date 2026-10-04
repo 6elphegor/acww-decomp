@@ -92,7 +92,7 @@ public:
 
     SpNpcTortimerFireworks *ownerNpc;
     s32 massageChairSlot;
-    u16 unk_b4;
+    u16 giftItem;
     u8 pad_b6[2];
 };
 
@@ -123,17 +123,17 @@ public:
     void changeAct(s32 state);
 
     u8 pad_652[2];
-    s32 unk_654;
+    s32 act;
     SpNpcTortimerFireworksTalk talk;
     u8 showWeek;
 };
 
-struct Unk_ov084_02271a40_Ent {
+struct SpNpcTortimerFireworksActEntry {
     BOOL (SpNpcTortimerFireworks::*enter)();
     BOOL (SpNpcTortimerFireworks::*exit)();
 };
 
-struct Unk_ov084_02271478_Ent {
+struct SpNpcTortimerFireworksFortuneLine {
     const char *a;
     s32 b;
 };
@@ -164,8 +164,8 @@ extern u8 sSpNpcTortimerFireworksModelPath[];
 extern u8 sSpNpcTortimerFireworksTexturePath[];
 extern u32 data_ov084_02271d40;
 extern u32 data_ov084_02271d44;
-extern const Unk_ov084_02271478_Ent sSpNpcTortimerFireworksFortuneLines[4];
-extern Unk_ov084_02271a40_Ent sSpNpcTortimerFireworksActTable[3];
+extern const SpNpcTortimerFireworksFortuneLine sSpNpcTortimerFireworksFortuneLines[4];
+extern SpNpcTortimerFireworksActEntry sSpNpcTortimerFireworksActTable[3];
 }
 
 extern "C" SpNpcTortimerFireworks *SpNpcTortimerFireworks_Create();
@@ -175,10 +175,10 @@ extern "C" u32 data_ov084_02271d44 = 0xe;
 extern "C" u8 sSpNpcTortimerFireworksTexturePath[] = {'n','p','c','_','s','p','/','m','o','d','e','l','/','t','t','l','_','t','e','x','.','n','s','b','t','x',0};
 extern "C" ActorProfile sSpNpcTortimerFireworksProfile = {(void *(*)())SpNpcTortimerFireworks_Create, 0x5a, 0x61, 2, 0x5000, 0x5000, 0x3e800};
 extern "C" char sSpNpcTortimerFireworksFortuneStrKey[] = "st_fortune";
-extern "C" const Unk_ov084_02271478_Ent sSpNpcTortimerFireworksFortuneLines[4] = {
+extern "C" const SpNpcTortimerFireworksFortuneLine sSpNpcTortimerFireworksFortuneLines[4] = {
     {sSpNpcTortimerFireworksFortuneStrKey, 0}, {sSpNpcTortimerFireworksFortuneStr2Key, 1}, {sSpNpcTortimerFireworksFortuneStr2Key, 2}, {sSpNpcTortimerFireworksFortuneStr2Key, 3},
 };
-Unk_ov084_02271a40_Ent sSpNpcTortimerFireworksActTable[3] = {
+SpNpcTortimerFireworksActEntry sSpNpcTortimerFireworksActTable[3] = {
     {&SpNpcTortimerFireworks::setupAct00, &SpNpcTortimerFireworks::mainAct00},
     {&SpNpcTortimerFireworks::setupAct01, &SpNpcTortimerFireworks::mainAct01},
     {NULL, &SpNpcTortimerFireworks::mainAct02},
@@ -234,8 +234,8 @@ u8 *SpNpcTortimerFireworks::getModelPath() { return sSpNpcTortimerFireworksModel
 
 BOOL SpNpcTortimerFireworks::updateAct() {
     BOOL result = FALSE;
-    if (sSpNpcTortimerFireworksActTable[unk_654].exit != NULL) {
-        result = (this->*sSpNpcTortimerFireworksActTable[unk_654].exit)();
+    if (sSpNpcTortimerFireworksActTable[act].exit != NULL) {
+        result = (this->*sSpNpcTortimerFireworksActTable[act].exit)();
     }
     return result;
 }
@@ -246,7 +246,7 @@ void SpNpcTortimerFireworks::changeAct(s32 state) {
         ok = (this->*sSpNpcTortimerFireworksActTable[state].enter)();
     }
     if (ok) {
-        unk_654 = state;
+        act = state;
     }
 }
 
@@ -278,7 +278,7 @@ BOOL SpNpcTortimerFireworks::mainAct01() {
 BOOL SpNpcTortimerFireworks::mainAct02() { return TRUE; }
 
 SpNpcTortimerFireworksTalk::SpNpcTortimerFireworksTalk() {
-    unk_b4 = 0xfff1;
+    giftItem = 0xfff1;
 }
 
 SpNpcTortimerFireworksTalk::~SpNpcTortimerFireworksTalk() {}
@@ -483,9 +483,9 @@ void SpNpcTortimerFireworksTalk::onChoice(u32) {
                     u32 v = base;
                 loop0:
                     buf[0] = v;
-                    v = (u32)&((Unk_ov084_02271478_Ent *)sSpNpcTortimerFireworksFortuneLines)[i];
-                    String_Load(&o, &buf[0], (s32)((Unk_ov084_02271478_Ent *)sSpNpcTortimerFireworksFortuneLines)[i].a);
-                    MailText_SetSlot((void *)((Unk_ov084_02271478_Ent *)v)->b, &o);
+                    v = (u32)&((SpNpcTortimerFireworksFortuneLine *)sSpNpcTortimerFireworksFortuneLines)[i];
+                    String_Load(&o, &buf[0], (s32)((SpNpcTortimerFireworksFortuneLine *)sSpNpcTortimerFireworksFortuneLines)[i].a);
+                    MailText_SetSlot((void *)((SpNpcTortimerFireworksFortuneLine *)v)->b, &o);
                     v = (base - 8) * 4;
                     v = v + Random_GlobalBelow(4);
                     v = v + i * 16;

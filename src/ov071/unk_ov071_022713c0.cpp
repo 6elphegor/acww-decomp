@@ -37,33 +37,29 @@ struct Unk_ov071_02271f54_Vec {
     s32 x, y, z;
 };
 
-struct Unk_ov071_02271f54_Tmp {
+struct SpNpcLyleSidestepPos {
     u32 v[4];
 };
 
 
 // Message sent to the scene (func_02067a84): id byte, then two halfwords.
-struct Unk_ov071_0227160c_Msg {
-    u8 id;
+struct SpNpcLyleMsgLocal {
+    u8 msgIndex;
     u8 pad;
-    u16 a;
-    u16 b;
+    u16 item;
+    u16 item2;
 };
 
 struct Unk_ov071_02271ca0_Vec {
     s32 x, y, z;
 };
 
-struct Unk_0209cf88_Obj {
+struct SpNpcLyleDateBuf {
     u32 pad[2];
 };
 
-struct Unk_ov071_0227297c_Ent {
-    const char *msgKey;
-    u32 msgIndex;
-};
 
-struct Unk_ov071_022726c4_Ent;
+struct SpNpcLyleActEntry;
 
 
 
@@ -137,8 +133,8 @@ s32 _ZN8NpcActor18getRelativeAngleToEPS_(void *self, void *p);
 void _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(void *self, void *owner, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
 void _ZN10VisitorPos13pickRandomPosEv();
 
-void Npc_RotateOffsetXZ(Unk_ov071_02271f54_Tmp *t, void *pos, void *p, s32 ang);
-BOOL Npc_IsPosBlocked(Unk_ov071_02271f54_Tmp *t);
+void Npc_RotateOffsetXZ(SpNpcLyleSidestepPos *t, void *pos, void *p, s32 ang);
+BOOL Npc_IsPosBlocked(SpNpcLyleSidestepPos *t);
 void TalkRequest_SetTargetDone(void *self);
 s32 Vec_Distance(void *a, void *b);
 s32 func_01ffcb0c(s32 a, s32 b);
@@ -156,7 +152,7 @@ BOOL SpNpcLyle_IsForgedPainting(u16 *p, s32 x);
 
 
 
-typedef void (SpNpcLyleTalk::*Unk_ov071_02272ba8_Fn)();
+typedef void (SpNpcLyleTalk::*SpNpcLyleTalkScriptFn)();
 
 // Menu-state sub-object at +0x658 of the scene (vtable 0x02272ba8)
 class SpNpcLyleTalk : public SpNpcTalkRequest {
@@ -174,14 +170,14 @@ public:
     void onClaimItemChosen();
     void setNextScript(s32 idx);
     void setScript(s32 idx);
-    void getScript(Unk_ov071_02272ba8_Fn *out, s32 idx);
+    void getScript(SpNpcLyleTalkScriptFn *out, s32 idx);
 
     /* 0xac */ s32 topic;
     /* 0xb0 */ SpNpcLyle *owner;
     /* 0xb4 */ u8 questionCount;
     /* 0xb5 */ u8 pad_b5[3];
-    /* 0xb8 */ Unk_ov071_02272ba8_Fn script;
-    /* 0xc0 */ Unk_ov071_02272ba8_Fn nextScript;
+    /* 0xb8 */ SpNpcLyleTalkScriptFn script;
+    /* 0xc0 */ SpNpcLyleTalkScriptFn nextScript;
 };
 
 
@@ -234,7 +230,7 @@ public:
     BOOL isInFocusBox(Unk_ov071_02271f54_Vec *a, Unk_ov071_02271f54_Vec *b, s32 m);
     void changeAct(s32 state);
 
-    s32 unk_654;
+    s32 act;
     SpNpcLyleTalk talk;
     u8 askedQuestions[5];
     u8 act01Step;
@@ -245,22 +241,22 @@ public:
     Unk_ov071_02271f54_Vec chaseStart;
 };
 
-typedef BOOL (SpNpcLyle::*Unk_ov071_02272c38_Fn)();
+typedef BOOL (SpNpcLyle::*SpNpcLyleActFn)();
 typedef void (SpNpcLyle::*Unk_ov071_02272198_Fn)();
 
-struct Unk_ov071_022726c4_Ent {
-    Unk_ov071_02272c38_Fn enter;
-    Unk_ov071_02272c38_Fn exit;
+struct SpNpcLyleActEntry {
+    SpNpcLyleActFn enter;
+    SpNpcLyleActFn exit;
 };
 
 
 extern "C" {
-extern const Unk_ov071_0227297c_Ent sSpNpcLyleTopicMsgs[3];
+extern const TalkStartMsg sSpNpcLyleTopicMsgs[3];
 extern u8 sSpNpcLyleKey[17];
 extern u8 sSpNpcLyleModelPath[23];
 extern u8 sSpNpcLyleTexturePath[27];
 extern ActorProfile sSpNpcLyleProfile;
-extern Unk_ov071_022726c4_Ent sSpNpcLyleActTable[6];
+extern SpNpcLyleActEntry sSpNpcLyleActTable[6];
 extern s16 sSpNpcLyleFrontAngle;
 extern FxVec3 sSpNpcLyleSidestepOffsets[2];
 SpNpcLyle *SpNpcLyle_Create();
@@ -366,8 +362,8 @@ s32 SpNpcLyle::getAct0BAnimB() {
 
 BOOL SpNpcLyle::updateAct() {
     BOOL r = FALSE;
-    if (sSpNpcLyleActTable[unk_654].exit != NULL) {
-        r = (this->*sSpNpcLyleActTable[unk_654].exit)();
+    if (sSpNpcLyleActTable[act].exit != NULL) {
+        r = (this->*sSpNpcLyleActTable[act].exit)();
     }
     return r;
 }
@@ -378,7 +374,7 @@ void SpNpcLyle::changeAct(s32 state) {
         ok = (this->*sSpNpcLyleActTable[state].enter)();
     }
     if (ok) {
-        unk_654 = state;
+        act = state;
     }
 }
 
@@ -598,7 +594,7 @@ BOOL SpNpcLyle::pickWanderTarget(s32 *x, s32 *z) {
 
 BOOL SpNpcLyle::findSidestepPos(Unk_ov071_02271f54_Vec *out, void *unused) {
     BOOL r = FALSE;
-    Unk_ov071_02271f54_Tmp t;
+    SpNpcLyleSidestepPos t;
     Npc_RotateOffsetXZ(&t, &position, unused, moveAngleY);
     if (Npc_IsPosBlocked(&t) != 1) {
         out->x = t.v[0];
@@ -758,7 +754,7 @@ BOOL SpNpcLyle::mainAct02() {
 void SpNpcLyleTalk::onTaskDone(u32) {
     if (script) {
         (this->*script)();
-        Unk_ov071_02272ba8_Fn t = *(Unk_ov071_02272ba8_Fn *)__ptmf_null;
+        SpNpcLyleTalkScriptFn t = *(SpNpcLyleTalkScriptFn *)__ptmf_null;
         script = t;
         if (nextScript) {
             script = nextScript;
@@ -781,19 +777,19 @@ void *data_ov071_02272b30[2] = {(void *)_ZN13SpNpcLyleTalk17onClaimItemChosenEv,
 
 void *data_ov071_02272b28[2] = {(void *)_ZN9SpNpcLyle10act01Step2Ev, 0};
 
-void SpNpcLyleTalk::getScript(Unk_ov071_02272ba8_Fn *out, s32 idx) {
-    static Unk_ov071_02272ba8_Fn tbl[2] = {*(Unk_ov071_02272ba8_Fn *)data_ov071_02272b30,
-                                           *(Unk_ov071_02272ba8_Fn *)data_ov071_02272af0};
+void SpNpcLyleTalk::getScript(SpNpcLyleTalkScriptFn *out, s32 idx) {
+    static SpNpcLyleTalkScriptFn tbl[2] = {*(SpNpcLyleTalkScriptFn *)data_ov071_02272b30,
+                                           *(SpNpcLyleTalkScriptFn *)data_ov071_02272af0};
     *out = tbl[idx];
 }
 
-Unk_ov071_022726c4_Ent sSpNpcLyleActTable[6] = {
-    {*(Unk_ov071_02272c38_Fn *)data_ov071_02272ae0, *(Unk_ov071_02272c38_Fn *)data_ov071_02272ad8},
-    {*(Unk_ov071_02272c38_Fn *)data_ov071_02272ac0, *(Unk_ov071_02272c38_Fn *)data_ov071_02272b38},
-    {NULL, *(Unk_ov071_02272c38_Fn *)data_ov071_02272ac8},
-    {*(Unk_ov071_02272c38_Fn *)data_ov071_02272ad0, *(Unk_ov071_02272c38_Fn *)data_ov071_02272ae8},
-    {*(Unk_ov071_02272c38_Fn *)data_ov071_02272b20, *(Unk_ov071_02272c38_Fn *)data_ov071_02272af8},
-    {*(Unk_ov071_02272c38_Fn *)data_ov071_02272b00, *(Unk_ov071_02272c38_Fn *)data_ov071_02272b08},
+SpNpcLyleActEntry sSpNpcLyleActTable[6] = {
+    {*(SpNpcLyleActFn *)data_ov071_02272ae0, *(SpNpcLyleActFn *)data_ov071_02272ad8},
+    {*(SpNpcLyleActFn *)data_ov071_02272ac0, *(SpNpcLyleActFn *)data_ov071_02272b38},
+    {NULL, *(SpNpcLyleActFn *)data_ov071_02272ac8},
+    {*(SpNpcLyleActFn *)data_ov071_02272ad0, *(SpNpcLyleActFn *)data_ov071_02272ae8},
+    {*(SpNpcLyleActFn *)data_ov071_02272b20, *(SpNpcLyleActFn *)data_ov071_02272af8},
+    {*(SpNpcLyleActFn *)data_ov071_02272b00, *(SpNpcLyleActFn *)data_ov071_02272b08},
 };
 
 FxVec3 sSpNpcLyleSidestepOffsets[2] = {FxVec3(0x800, 0, 0x1000), FxVec3(-0x800, 0, 0x1000)};
@@ -802,7 +798,7 @@ u8 sSpNpcLyleKey[17] = {'s', 'p', '_', 'n', 'p', 'c', '_', 'i', 'n', 's', 'u', '
 
 u8 sSpNpcLyleTexturePath[27] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 'o', 't', 't', '_', 't', 'e', 'x', '.', 'n', 's', 'b', 't', 'x', 0};
 
-const Unk_ov071_0227297c_Ent sSpNpcLyleTopicMsgs[3] = {
+const TalkStartMsg sSpNpcLyleTopicMsgs[3] = {
     {(const char *)sSpNpcLyleKey, 5},
     {(const char *)sSpNpcLyleKey, 7},
     {(const char *)sSpNpcLyleKey, 0x20},
@@ -843,21 +839,21 @@ extern "C" BOOL SpNpcLyle_IsForgedPainting(u16 *p, s32 x) {
 
 void SpNpcLyleTalk::onClaimItemChosen() {
     TalkWindowState *scene = window;
-    Unk_ov071_0227160c_Msg m;
-    m.id = 0x24;
+    SpNpcLyleMsgLocal m;
+    m.msgIndex = 0x24;
     if (MenuCtrl_IsResultOk() != 0) {
         s32 r4 = MenuCtrl_GetIndex();
-        m.a = Pocket_GetItem();
+        m.item = Pocket_GetItem();
         BOOL same;
-        if (Item_IsFurniture(&m.a) != 0) {
-            m.b = 0xfff1;
-            if (Item_GetFurnitureIndex(&m.a) == Item_GetFurnitureIndex(&m.b)) {
+        if (Item_IsFurniture(&m.item) != 0) {
+            m.item2 = 0xfff1;
+            if (Item_GetFurnitureIndex(&m.item) == Item_GetFurnitureIndex(&m.item2)) {
                 same = TRUE;
             } else {
                 same = FALSE;
             }
         } else {
-            if (m.a == 0xfff1) {
+            if (m.item == 0xfff1) {
                 same = TRUE;
             } else {
                 same = FALSE;
@@ -865,9 +861,9 @@ void SpNpcLyleTalk::onClaimItemChosen() {
         }
         if (same == 0) {
             void *w = _ZN10PlayerData14getSpNpcRecordEv(PlayerData_GetCurrent());
-            m.id = 0x25;
+            m.msgIndex = 0x25;
             _ZN17PlayerSpNpcRecord17addInsuranceClaimEv(w);
-            _ZN16ActorTalkRequest15requestTakeItemEPtjjj(this, &m.a, 0, 4, 0);
+            _ZN16ActorTalkRequest15requestTakeItemEPtjjj(this, &m.item, 0, 4, 0);
             if (r4 >= 0) {
                 Pocket_RemoveItem(r4);
             }
@@ -878,7 +874,7 @@ void SpNpcLyleTalk::onClaimItemChosen() {
     } else {
         requestReopenWindow();
     }
-    scene->setNextMessage(&m.id, sSpNpcLyleKey);
+    scene->setNextMessage(&m.msgIndex, sSpNpcLyleKey);
 }
 
 void SpNpcLyleTalk::scriptCloseItemSelect() {
@@ -919,7 +915,7 @@ SpNpcLyleTalk::~SpNpcLyleTalk() {}
 
 void SpNpcLyleTalk::resetMsg() {
     SpNpcTalkRequest::resetMsg();
-    Unk_ov071_02272ba8_Fn t = *(Unk_ov071_02272ba8_Fn *)__ptmf_null;
+    SpNpcLyleTalkScriptFn t = *(SpNpcLyleTalkScriptFn *)__ptmf_null;
     script = t;
     nextScript = t;
 }
@@ -937,7 +933,7 @@ void SpNpcLyleTalk::start(TalkStartMsg *out) {
     void *h = PlayerData_GetCurrent();
     if (_ZN12Unk_02097ff48testFlagEj(h, 0x17) != 0) {
         s32 v = PlayerSpNpcRecord_GetInsuranceDate(_ZN10PlayerData14getSpNpcRecordEv(h));
-        Unk_0209cf88_Obj obj;
+        SpNpcLyleDateBuf obj;
         Clock_GetDate(&obj);
         if (Date_DaysBetween(&obj, v) < 1) {
             topic = 1;
@@ -969,7 +965,7 @@ void SpNpcLyleTalk::start(TalkStartMsg *out) {
 // ---------------------------------------------------------------------------------------------------------------------
 void SpNpcLyleTalk::onMessageEnd(u32) {
     u8 *const name = sSpNpcLyleKey;
-    Unk_ov071_0227160c_Msg m;
+    SpNpcLyleMsgLocal m;
     s32 r5 = 0xff;
     void *h = PlayerData_GetCurrent();
     switch (msgIndex) {
@@ -1023,8 +1019,8 @@ void SpNpcLyleTalk::onMessageEnd(u32) {
         }
         break;
     case 0x19:
-        m.a = 0x149d;
-        _ZN16ActorTalkRequest15requestTakeItemEPtjjj(this, &m.a, 0, 5, 0);
+        m.item = 0x149d;
+        _ZN16ActorTalkRequest15requestTakeItemEPtjjj(this, &m.item, 0, 5, 0);
         NpcActor_ChargePlayer(owner, 0xbb8);
         r5 = 0x1a;
         _ZN12Unk_02097ff47setFlagEj(h, 0x17);
@@ -1036,8 +1032,8 @@ void SpNpcLyleTalk::onMessageEnd(u32) {
         Hud_Show();
         break;
     case 0x1e:
-        m.b = 0x14a0;
-        _ZN16ActorTalkRequest15requestTakeItemEPtjjj(this, &m.b, 0, 5, 0);
+        m.item2 = 0x14a0;
+        _ZN16ActorTalkRequest15requestTakeItemEPtjjj(this, &m.item2, 0, 5, 0);
         NpcActor_ChargePlayer(owner, 0x1770);
         r5 = 0x1f;
         _ZN12Unk_02097ff47setFlagEj(h, 0x18);
@@ -1057,8 +1053,8 @@ void SpNpcLyleTalk::onMessageEnd(u32) {
         break;
     }
     if (r5 != 0xff) {
-        m.id = r5;
-        window->setNextMessage(&m.id, name);
+        m.msgIndex = r5;
+        window->setNextMessage(&m.msgIndex, name);
     }
 }
 

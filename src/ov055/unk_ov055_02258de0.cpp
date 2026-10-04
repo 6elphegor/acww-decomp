@@ -94,7 +94,7 @@ void Camera_SetMode20At(void *p);
 }
 void *NetOverlay_AssertOv067();
 class SpNpcRoverTalk;
-typedef void (SpNpcRoverTalk::*Unk_ov055_02259904_Fn)();
+typedef void (SpNpcRoverTalk::*SpNpcRoverTalkScriptFn)();
 
 class SpNpcRoverTalk : public SpNpcTalkRequest {
 public:
@@ -116,8 +116,8 @@ public:
     /* 0xb0 */ s32 script;
 };
 
-struct Unk_ov055_02259234_Ent {
-    Unk_ov055_02259904_Fn fn;
+struct SpNpcRoverTalkScript {
+    SpNpcRoverTalkScriptFn fn;
     u8 flag;
     u8 pad[3];
 };
@@ -139,11 +139,11 @@ struct SpNpcRoverTransfer {
 };
 
 class SpNpcRover;
-typedef BOOL (SpNpcRover::*Unk_ov055_02259994_Fn)();
+typedef BOOL (SpNpcRover::*SpNpcRoverActFn)();
 
-struct Unk_ov055_022594e0_Ent {
-    Unk_ov055_02259994_Fn enter;
-    Unk_ov055_02259994_Fn exit;
+struct SpNpcRoverActEntry {
+    SpNpcRoverActFn enter;
+    SpNpcRoverActFn exit;
 };
 
 class SpNpcRover : public SpNpcActor {
@@ -173,7 +173,7 @@ public:
     BOOL setupAct00();
     void changeAct(s32 state);
 
-    /* 0x654 */ s32 unk_654;
+    /* 0x654 */ s32 act;
     /* 0x658 */ SpNpcRoverTalk talk;
     /* 0x70c */ u8 saveFailed;
     /* 0x70d */ u8 lidClosed;
@@ -185,9 +185,9 @@ public:
 
 extern "C" {
 SpNpcRover *SpNpcRover_Create();
-extern Unk_ov055_022594e0_Ent sSpNpcRoverActTable[3];
-#define data_ov055_02259a4c ((Unk_ov055_022594e0_Ent *)((u8 *)sSpNpcRoverActTable + 8))
-extern Unk_ov055_02259234_Ent sSpNpcRoverTalkScripts[4];
+extern SpNpcRoverActEntry sSpNpcRoverActTable[3];
+#define data_ov055_02259a4c ((SpNpcRoverActEntry *)((u8 *)sSpNpcRoverActTable + 8))
+extern SpNpcRoverTalkScript sSpNpcRoverTalkScripts[4];
 #define data_ov055_022598d4 ((Unk_ov055_02259234_Flag *)((u8 *)sSpNpcRoverTalkScripts + 8))
 extern u8 sSpNpcRoverModelPath[];
 extern u8 sSpNpcRoverTexturePath[];
@@ -217,16 +217,16 @@ extern "C" const void *sSpNpcRoverMsgKey = sSpNpcRoverKey;
 extern "C" u8 sSpNpcRoverModelPath[] = "npc_sp/model/xct.nsbmd";
 extern "C" u8 sSpNpcRoverTexturePath[] = "npc_sp/model/xct_tex.nsbtx";
 extern "C" ActorProfile sSpNpcRoverProfile = {(void *(*)())SpNpcRover_Create, 0x5e, 0x65, 2, 0x5000, 0x5000, 0x3e800};
-extern "C" Unk_ov055_02259234_Ent sSpNpcRoverTalkScripts[4] = {
+extern "C" SpNpcRoverTalkScript sSpNpcRoverTalkScripts[4] = {
     {0, 0},
-    {*(Unk_ov055_02259904_Fn *)data_ov055_02259844, 1},
-    {*(Unk_ov055_02259904_Fn *)data_ov055_02259854, 1},
-    {*(Unk_ov055_02259904_Fn *)data_ov055_02259824, 1},
+    {*(SpNpcRoverTalkScriptFn *)data_ov055_02259844, 1},
+    {*(SpNpcRoverTalkScriptFn *)data_ov055_02259854, 1},
+    {*(SpNpcRoverTalkScriptFn *)data_ov055_02259824, 1},
 };
-extern "C" Unk_ov055_022594e0_Ent sSpNpcRoverActTable[3] = {
-    {*(Unk_ov055_02259994_Fn *)data_ov055_02259834, *(Unk_ov055_02259994_Fn *)data_ov055_0225985c},
-    {*(Unk_ov055_02259994_Fn *)data_ov055_0225982c, *(Unk_ov055_02259994_Fn *)data_ov055_02259864},
-    {*(Unk_ov055_02259994_Fn *)data_ov055_0225984c, *(Unk_ov055_02259994_Fn *)data_ov055_0225983c},
+extern "C" SpNpcRoverActEntry sSpNpcRoverActTable[3] = {
+    {*(SpNpcRoverActFn *)data_ov055_02259834, *(SpNpcRoverActFn *)data_ov055_0225985c},
+    {*(SpNpcRoverActFn *)data_ov055_0225982c, *(SpNpcRoverActFn *)data_ov055_02259864},
+    {*(SpNpcRoverActFn *)data_ov055_0225984c, *(SpNpcRoverActFn *)data_ov055_0225983c},
 };
 extern "C" SpNpcRover *sSpNpcRoverInstance = 0;
 
@@ -277,8 +277,8 @@ u8 *SpNpcRover::getModelPath() { return sSpNpcRoverModelPath; }
 
 BOOL SpNpcRover::updateAct() {
     BOOL r = FALSE;
-    if (data_ov055_02259a4c[unk_654].enter) {
-        r = (this->*sSpNpcRoverActTable[unk_654].exit)();
+    if (data_ov055_02259a4c[act].enter) {
+        r = (this->*sSpNpcRoverActTable[act].exit)();
     }
     return r;
 }
@@ -289,7 +289,7 @@ void SpNpcRover::changeAct(s32 state) {
         ok = (this->*sSpNpcRoverActTable[state].enter)();
     }
     if (ok) {
-        unk_654 = state;
+        act = state;
     }
 }
 

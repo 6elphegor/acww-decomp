@@ -36,18 +36,18 @@ class SpNpcTortimerFishingTourneyTalk;
 
 
 
-struct Unk_0209d498_Obj {
+struct SpNpcTortimerFishingTourneyDateTime {
     u32 w[2];
 };
 
-struct Unk_ov081_02271d40_Loc {
-    u16 a;
-    u16 b;
+struct SpNpcTortimerFishingTourneyEntryLocal {
+    u16 entryFish;
+    u16 contestItem;
     s32 x;
     s32 y;
     s32 z;
     s32 w;
-    Unk_ov081_02271d40_Loc() {}
+    SpNpcTortimerFishingTourneyEntryLocal() {}
 };
 
 extern "C" {
@@ -179,12 +179,12 @@ public:
     void changeAct(s32 state);
 
     u8 pad_652[2];
-    s32 unk_654;
+    s32 act;
     SpNpcTortimerFishingTourneyTalk talk;
     s32 entrySize;
 };
 
-struct Unk_ov081_02271ca0_Ent {
+struct SpNpcTortimerFishingTourneyActEntry {
     BOOL (SpNpcTortimerFishingTourney::*enter)();
     BOOL (SpNpcTortimerFishingTourney::*exit)();
 };
@@ -207,7 +207,7 @@ static inline BOOL Unk_ov081_Neg(s32 v) {
 }
 
 extern "C" {
-extern Unk_ov081_02271ca0_Ent sSpNpcTortimerFishingTourneyActTable[3];
+extern SpNpcTortimerFishingTourneyActEntry sSpNpcTortimerFishingTourneyActTable[3];
 extern u8 sSpNpcTortimerFishingTourneyTexturePath[];
 extern u8 sSpNpcTortimerFishingTourneyModelPath[];
 BOOL SpNpcTortimerFishingTourney_IsFish(u16 *p, s32 x);
@@ -224,7 +224,7 @@ void _ZN27SpNpcTortimerFishingTourney9mainAct02Ev();
 void _ZN31SpNpcTortimerFishingTourneyTalk17scriptCatchChosenEv();
 void _ZN31SpNpcTortimerFishingTourneyTalk21scriptCloseItemSelectEv();
 }
-typedef BOOL (SpNpcTortimerFishingTourney::*Unk_ov081_StateFn)();
+typedef BOOL (SpNpcTortimerFishingTourney::*SpNpcTortimerFishingTourneyActFn)();
 
 extern "C" void *data_ov081_02272060[2];
 extern "C" void *data_ov081_02272068[2];
@@ -250,22 +250,22 @@ BOOL SpNpcTortimerFishingTourney::preCreate() {
 }
 
 BOOL SpNpcTortimerFishingTourney::onCreate() {
-    Unk_ov081_02271d40_Loc l;
+    SpNpcTortimerFishingTourneyEntryLocal l;
     if (!SpNpcActor::onCreate()) {
         return FALSE;
     }
     changeAct(0);
     void *g = gContestRecord;
     ContestRecord_BeginContestDay(g, 1);
-    ContestRecord_GetItem(&l.b, g);
-    if (!Unk_ov081_InRange(&l.b, 0x12e8, 0x131f)) {
+    ContestRecord_GetItem(&l.contestItem, g);
+    if (!Unk_ov081_InRange(&l.contestItem, 0x12e8, 0x131f)) {
         _ZN13ContestRecord15getHolderPlayerEv(g);
         s32 r6 = Random_GlobalBelow(2);
         l.x = 0;
         l.y = 0;
         l.z = 0;
         l.w = 0;
-        l.a = 0xfff1;
+        l.entryFish = 0xfff1;
         Clock_GetDateTime(&l.z);
         u32 b4 = ((u8 *)&l.w)[0];
         u32 b3 = ((u8 *)&l.z)[3];
@@ -275,8 +275,8 @@ BOOL SpNpcTortimerFishingTourney::onCreate() {
                 FishPick_PickAnyHour(&l, &l.x, &l.y, (r6 + 1) & 1, t);
             }
         }
-        ContestRecord_SetItem(g, &l.a);
-        entrySize = Contest_GetCatchSize(&l.a);
+        ContestRecord_SetItem(g, &l.entryFish);
+        entrySize = Contest_GetCatchSize(&l.entryFish);
         _ZN13ContestRecord7setSizeEi(g, *(volatile s32 *)&entrySize);
         if (SaveVillagers_PickRandomExcept(gSaveVillagers, 0, 0) != 0) {
             _ZN13ContestRecord17setHolderVillagerEP10VillagerId(g, _ZN12VillagerData13getVillagerIdEv());
@@ -296,8 +296,8 @@ u8 *SpNpcTortimerFishingTourney::getModelPath() { return sSpNpcTortimerFishingTo
 
 BOOL SpNpcTortimerFishingTourney::updateAct() {
     BOOL result = FALSE;
-    if (sSpNpcTortimerFishingTourneyActTable[unk_654].exit != NULL) {
-        result = (this->*sSpNpcTortimerFishingTourneyActTable[unk_654].exit)();
+    if (sSpNpcTortimerFishingTourneyActTable[act].exit != NULL) {
+        result = (this->*sSpNpcTortimerFishingTourneyActTable[act].exit)();
     }
     return result;
 }
@@ -308,7 +308,7 @@ void SpNpcTortimerFishingTourney::changeAct(s32 state) {
         ok = (this->*sSpNpcTortimerFishingTourneyActTable[state].enter)();
     }
     if (ok) {
-        unk_654 = state;
+        act = state;
     }
 }
 
@@ -372,10 +372,10 @@ extern "C" void *data_ov081_02272090[2] = {(void *)_ZN27SpNpcTortimerFishingTour
 
 extern "C" u8 sSpNpcTortimerFishingTourneyTexturePath[] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 't', 't', 'l', '_', 't', 'e', 'x', '.', 'n', 's', 'b', 't', 'x', 0};
 
-Unk_ov081_02271ca0_Ent sSpNpcTortimerFishingTourneyActTable[3] = {
-    {*(Unk_ov081_StateFn *)data_ov081_02272060, *(Unk_ov081_StateFn *)data_ov081_02272078},
-    {*(Unk_ov081_StateFn *)data_ov081_02272090, *(Unk_ov081_StateFn *)data_ov081_02272088},
-    {NULL, *(Unk_ov081_StateFn *)data_ov081_02272080},
+SpNpcTortimerFishingTourneyActEntry sSpNpcTortimerFishingTourneyActTable[3] = {
+    {*(SpNpcTortimerFishingTourneyActFn *)data_ov081_02272060, *(SpNpcTortimerFishingTourneyActFn *)data_ov081_02272078},
+    {*(SpNpcTortimerFishingTourneyActFn *)data_ov081_02272090, *(SpNpcTortimerFishingTourneyActFn *)data_ov081_02272088},
+    {NULL, *(SpNpcTortimerFishingTourneyActFn *)data_ov081_02272080},
 };
 
 extern "C" u8 sSpNpcTortimerFishingTourneyModelPath[] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 't', 't', 'l', '.', 'n', 's', 'b', 'm', 'd', 0};
@@ -451,7 +451,7 @@ void SpNpcTortimerFishingTourneyTalk::attachOwner(SpNpcTortimerFishingTourney *o
 void SpNpcTortimerFishingTourneyTalk::start(TalkStartMsg *out) {
     struct {
         u16 h[5];
-        Unk_0209d498_Obj o;
+        SpNpcTortimerFishingTourneyDateTime o;
     } l;
     _ZN10PlayerData10getErrandsEv(PlayerData_GetCurrent());
     out->msgKey = "sp_npc_turtle1";
