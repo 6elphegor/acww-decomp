@@ -5,7 +5,9 @@ _ZN25SpNpcTortimerBrightNights8vfunc_4cEjh kind:label(thumb) addr:0x02271414
 _ZN25SpNpcTortimerBrightNights8vfunc_48Ev kind:function(thumb,size=0x20) addr:0x02271458
 _ZN25SpNpcTortimerBrightNights8vfunc_48EPv kind:label(thumb) addr:0x02271458
 _ZN29SpNpcTortimerBrightNightsTalk8onChoiceEv kind:function(thumb,size=0x15c) addr:0x02271478
+_ZN29SpNpcTortimerBrightNightsTalk8onChoiceEj kind:label(thumb) addr:0x02271478
 _ZN29SpNpcTortimerBrightNightsTalk12onMessageEndEv kind:function(thumb,size=0x154) addr:0x022715d4
+_ZN29SpNpcTortimerBrightNightsTalk12onMessageEndEj kind:label(thumb) addr:0x022715d4
 _ZN29SpNpcTortimerBrightNightsTalk5startEP12TalkStartMsg kind:function(thumb,size=0x150) addr:0x02271728
 _ZN29SpNpcTortimerBrightNightsTalk11attachOwnerEP25SpNpcTortimerBrightNights kind:function(thumb,size=0x24) addr:0x02271878
 _ZN29SpNpcTortimerBrightNightsTalkD0Ev kind:function(thumb,size=0x20) addr:0x0227189c

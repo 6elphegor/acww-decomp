@@ -34,6 +34,8 @@
 #include "actor/Character.h"
 #include "gfx/ModelResource.h"
 #include "room/FtrModelRes.h"
+#include "talk/MsgRequest.h"
+#include "talk/TalkMsgRequest.h"
 
 // ================================================================ plain value types
 
@@ -65,54 +67,7 @@ struct FxVec3 {
 
 
 // ---------------------------------------------------------------- secondary base at +0xec (vtable 0x020ddcf0 in main)
-class MsgRequest {
-public:
-    MsgRequest();
-    virtual ~MsgRequest();
-    virtual void vfunc_s08();
-    void setFileName(const char *src);
 
-    /* 0x04 */ char fileName[0x1a];
-    /* 0x1e */ u8 msgIndex;
-};
-
-class TalkMsgRequest : public MsgRequest {
-public:
-    TalkMsgRequest();
-    virtual ~TalkMsgRequest();
-    virtual void vfunc_s08();
-    virtual void vfunc_s0c();
-    virtual void onMessageStart();
-    virtual void onMessageEnd();
-    virtual void onChoice();
-    virtual void onSignalTag();
-    virtual void onActionTag0();
-    virtual void onActionTag1();
-    virtual void onActionTag2();
-    virtual void onActionTag3();
-    virtual void onActionTag4();
-    virtual void onConditionTag();
-    virtual void onEventTag(u32 a);
-    virtual void onTag09_0();
-    virtual void onTag09_1();
-    virtual void onTag09_2();
-    virtual void onTag09_3();
-    virtual void onTag09_4();
-    virtual void onTag09_5();
-    virtual void onTag09_6();
-    virtual void onTag09_7();
-    virtual void onTag09_8();
-    virtual void onTag09_9();
-    virtual void onScannedTag();
-    virtual void getSpeakerData();
-    virtual void getVoiceType();
-    virtual void onWindowClose();
-    virtual void onTalkEnd();
-
-    u8 pad_20[0x1c];
-    /* 0x3c */ void *unk_3c;
-    /* 0x40 */ u8 unk_40;
-};
 
 // ================================================================ helper object types (members of / used by the 0224882c object)
 

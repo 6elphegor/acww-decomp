@@ -15,6 +15,8 @@
 #include "actor/Actor.h"
 #include "actor/Character.h"
 #include "gfx/ThreeLayerAnimModel.h"
+#include "talk/TalkMsgRequest.h"
+#include "talk/ActorTalkRequest.h"
 
 #define NpcTalkCtrl_requestTurnAndTalk _ZN11NpcTalkCtrl18requestTurnAndTalkEssh
 #define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
@@ -290,67 +292,9 @@ struct Unk_ov049_0225a714_Pair {
     }
 };
 
-// Menu-state machine root (main's ActorTalkRequest / TalkMsgRequest / Unk_020d7710 / SpNpcTalkRequest chain).
-class ActorTalkRequest {
-public:
-    ActorTalkRequest();
-    virtual ~ActorTalkRequest();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void onMessageStart();
-    virtual void onMessageEnd(u32 a);
-    virtual void onChoice(u32 a);
-    virtual void onSignalTag();
-    virtual void onActionTag0();
-    virtual void onActionTag1();
-    virtual void onActionTag2();
-    virtual void onActionTag3();
-    virtual void onActionTag4();
-    virtual void onConditionTag();
-    virtual void onEventTag(u32 v);
-    virtual void onTag09_0();
-    virtual void onTag09_1();
-    virtual void onTag09_2();
-    virtual void onTag09_3();
-    virtual void onTag09_4();
-    virtual void onTag09_5();
-    virtual void onTag09_6();
-    virtual void onTag09_7();
-    virtual void onTag09_8();
-    virtual void onTag09_9();
-    virtual void onScannedTag();
-    virtual void getSpeakerData();
-    virtual void getVoiceType();
-    virtual void onWindowClose();
-    virtual void onTalkEnd();
-    virtual void start(TalkStartMsg *out);
-    virtual void runDeferred();
-    virtual void update();
-    virtual void onTaskDone();
-    u8 pad_04[0x1a];
-    u8 msgIndex;
-    u8 pad_1f[0x3c - 0x1f];
-    void *unk_3c;
-    u8 pad_40[0xac - 0x40];
-};
 
-class TalkMsgRequest : public ActorTalkRequest {
-public:
-    virtual void vfunc_0c();
-    virtual void onMessageStart();
-    virtual void onSignalTag();
-    virtual void onActionTag0();
-    virtual void onActionTag1();
-    virtual void onActionTag2();
-    virtual void onActionTag3();
-    virtual void onActionTag4();
-    virtual void onScannedTag();
-    virtual void getSpeakerData();
-    virtual void onWindowClose();
-    virtual void onTalkEnd();
-};
 
-class Unk_020d7710 : public TalkMsgRequest {
+class Unk_020d7710 : public ActorTalkRequest {
 public:
     virtual void onTag09_4();
     virtual void onTag09_5();
@@ -377,7 +321,7 @@ public:
     virtual void onChoice(u32 a);
     virtual void start(TalkStartMsg *out);
     virtual void update();
-    virtual void onTaskDone();
+    virtual void onTaskDone(u32 id);
 
     void sellItemToPlayer();
     void openChoiceMenu(void *rec, s32 x);
@@ -1892,7 +1836,7 @@ void SpNpcMabelTalk::update() {
     }
 }
 
-void SpNpcMabelTalk::onTaskDone() {
+void SpNpcMabelTalk::onTaskDone(u32) {
     s32 i = script;
     if (sSpNpcMabelTalkScripts[i].flag == 0) {
         if (sSpNpcMabelTalkScripts[i].fn != 0) {

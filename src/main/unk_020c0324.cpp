@@ -14,6 +14,9 @@
 #include "actor/Actor.h"
 #include "actor/Character.h"
 #include "gfx/ThreeLayerAnimModel.h"
+#include "talk/TalkMsgRequest.h"
+#include "talk/ActorTalkRequest.h"
+#include "talk/TalkWindowState.h"
 
 typedef Unk_020bfe30_Vec Unk_020c0acc_Vec;
 
@@ -116,71 +119,7 @@ static inline BOOL Unk_020c06a0_IsMode2() {
 // ---- SpNpcKatieTalk and its bases (vtable 0x020ddcf0 chain) ----
 
 
-class TalkMsgRequest {
-public:
-    TalkMsgRequest();
-    virtual ~TalkMsgRequest();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void onMessageStart();
-    virtual void onMessageEnd();
-    virtual void onChoice();
-    virtual void onSignalTag();
-    virtual void onActionTag0();
-    virtual void onActionTag1();
-    virtual void onActionTag2();
-    virtual void onActionTag3();
-    virtual void onActionTag4();
-    virtual void onConditionTag();
-    virtual void onEventTag(void *a);
-    virtual void onTag09_0();
-    virtual void onTag09_1();
-    virtual void onTag09_2();
-    virtual void onTag09_3();
-    virtual void onTag09_4();
-    virtual void onTag09_5();
-    virtual void onTag09_6();
-    virtual void onTag09_7();
-    virtual void onTag09_8();
-    virtual void onTag09_9();
-    virtual void onScannedTag();
-    virtual void getSpeakerData();
-    virtual s32 getVoiceType();
-    virtual void onWindowClose();
-    virtual void onTalkEnd();
 
-    /* 0x04 */ u8 fileName[0x1a];
-    /* 0x1e */ u8 msgIndex;
-    /* 0x1f */ u8 unk_1f[0x1d];
-    /* 0x3c */ Unk_020c0408_Obj *unk_3c;
-    /* 0x40 */ u8 unk_40;
-};
-
-class ActorTalkRequest : public TalkMsgRequest {
-public:
-    ActorTalkRequest();
-    virtual ~ActorTalkRequest();
-    virtual void vfunc_08();
-    virtual void onConditionTag();
-    virtual void onEventTag(void *a);
-    virtual void onTag09_0();
-    virtual void onTag09_1();
-    virtual void onTag09_2();
-    virtual void onTag09_3();
-    virtual void onTag09_4();
-    virtual void onTag09_5();
-    virtual void onTag09_6();
-    virtual void onTag09_7();
-    virtual void onTag09_8();
-    virtual void onTag09_9();
-    virtual s32 getVoiceType();
-    virtual void start(Unk_020c0538_Out *out) = 0;
-    virtual void runDeferred();
-    virtual void update();
-    virtual void onTaskDone();
-
-    u32 pad_44[(0xac - 0x44) / 4];
-};
 
 class SpNpcTalkRequest : public ActorTalkRequest {
 public:
@@ -192,11 +131,11 @@ class SpNpcKatieTalk : public SpNpcTalkRequest {
 public:
     SpNpcKatieTalk();
     virtual ~SpNpcKatieTalk();
-    virtual void onMessageStart();
-    virtual void onMessageEnd();
-    virtual void onChoice();
-    virtual void onEventTag(void *p);
-    virtual void start(Unk_020c0538_Out *out);
+    virtual void onMessageStart(u32 attr);
+    virtual void onMessageEnd(u32 attr);
+    virtual void onChoice(u32 attr);
+    virtual void onEventTag(u32 id);
+    virtual void start(TalkStartMsg *out);
 
     s32 getTopic();
     void setTopic(s32 v);
@@ -769,7 +708,7 @@ BOOL SpNpcKatie::mainAct08() {
         }
         break;
     case 3:
-        if (talk.unk_3c->unk_04 == 5) {
+        if (talk.unk_3c->state == 5) {
             _ZN15TalkWindowState11lockAdvanceEv(talk.unk_3c);
             _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 2, 2, 0xea00, 0x12e00, 0, 0, 0, 0, data_020c6cc8, 0);
             SpNpcKaitlin_ChangeAct04();
@@ -787,7 +726,7 @@ BOOL SpNpcKatie::mainAct08() {
             }
             buf = 10;
             _ZN15TalkWindowState14setNextMessageEPhPv(talk.unk_3c, &buf, (u32)sSpNpcKatieMsgKey);
-            talk.unk_3c->unk_08 = 1;
+            talk.unk_3c->nextState = 1;
             _ZN15TalkWindowState13unlockAdvanceEv(talk.unk_3c);
             reunionStep = 5;
         }
@@ -873,13 +812,15 @@ s32 SpNpcKatieTalk::getTopic() {
     return topic;
 }
 
-void SpNpcKatieTalk::onEventTag(void *p) {
+void SpNpcKatieTalk::onEventTag(u32 p_) {
+    void *p = (void *)p_;
     _ZN14NpcMoveAnimSet12setStandAnimEi(&katie->moveAnimSet, 0);
     _ZN14NpcMoveAnimSet11setWalkAnimEi(&katie->moveAnimSet, 1);
     _ZN16ActorTalkRequest10onEventTagEj(this, p);
 }
 
-void SpNpcKatieTalk::start(Unk_020c0538_Out *out) {
+void SpNpcKatieTalk::start(TalkStartMsg *out_) {
+    Unk_020c0538_Out *out = (Unk_020c0538_Out *)out_;
     void *t = PlayerData_GetCurrent();
     out->msgKey = (u32)sSpNpcKatieMsgKey;
     switch (getTopic()) {
@@ -911,19 +852,19 @@ void SpNpcKatieTalk::start(Unk_020c0538_Out *out) {
     katie->escortDeclined = 0;
 }
 
-void SpNpcKatieTalk::onMessageStart() {
+void SpNpcKatieTalk::onMessageStart(u32) {
     s32 a = _ZN10PlayerData18getLostChildRecordEv(PlayerData_GetCurrent());
     _ZN16ActorTalkRequest15setTownNameSlotEjj(this, _ZN15LostChildRecord9getTownIdEv((void *)a), 0);
     _ZN16ActorTalkRequest15setTownNameSlotEjj(this, _ZN15LostChildRecord9getTownIdEv((void *)a), 1);
 }
 
-void SpNpcKatieTalk::onMessageEnd() {
+void SpNpcKatieTalk::onMessageEnd(u32) {
     if (msgIndex == 0x14) {
         unk_3c->openMode = 0;
     }
 }
 
-void SpNpcKatieTalk::onChoice() {
+void SpNpcKatieTalk::onChoice(u32) {
     switch (msgIndex) {
     case 0: case 1: case 2: case 3: case 4: case 5: case 6: case 7: case 8: case 9:
     case 25: case 26: case 27:

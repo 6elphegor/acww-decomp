@@ -17,6 +17,8 @@
 #include "actor/Actor.h"
 #include "actor/Character.h"
 #include "gfx/ThreeLayerAnimModel.h"
+#include "talk/TalkMsgRequest.h"
+#include "talk/ActorTalkRequest.h"
 
 // Real (mangled) names of other modules' functions that the unit calls as plain functions taking the object first.
 #define NpcAnimCtrl_playAnim _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti
@@ -63,72 +65,9 @@ extern u8 sSpNpcTortimerTexturePath[];
 
 struct TalkStartMsg;
 
-// Chain for the vtable of SpNpcTortimerTalk: slot owners are ActorTalkRequest (root, declares every slot),
-// TalkMsgRequest and Unk_020d7710 (override by name; 7710's names are shifted by one slot in symbols.txt).
-class ActorTalkRequest {
-public:
-    ActorTalkRequest();
-    virtual ~ActorTalkRequest();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void onMessageStart();
-    virtual void onMessageEnd();
-    virtual void onChoice();
-    virtual void onSignalTag();
-    virtual void onActionTag0();
-    virtual void onActionTag1();
-    virtual void onActionTag2();
-    virtual void onActionTag3();
-    virtual void onActionTag4();
-    virtual void onConditionTag();
-    virtual void onEventTag(u32 a);
-    virtual void onTag09_0();
-    virtual void onTag09_1();
-    virtual void onTag09_2();
-    virtual void onTag09_3();
-    virtual void onTag09_4();
-    virtual void onTag09_5();
-    virtual void onTag09_6();
-    virtual void onTag09_7();
-    virtual void onTag09_8();
-    virtual void onTag09_9();
-    virtual void onScannedTag();
-    virtual void getSpeakerData();
-    virtual void getVoiceType();
-    virtual void onWindowClose();
-    virtual void onTalkEnd();
-    virtual void start(TalkStartMsg *out);
-    virtual void runDeferred();
-    virtual void update();
-    virtual void onTaskDone();
-    void *func_02015aac();
-    void getChoiceList();
-    void setItemNameSlot(u32 a, u32 b, u32 c);
-    void func_02015ab0(u32 a);
-    u8 pad_04[0x1a];
-    u8 msgIndex;
-    u8 pad_1f[0x1d];
-    TalkWindowState *unk_3c;
-    u8 pad_40[0xac - 0x40];
-};
 
-class TalkMsgRequest : public ActorTalkRequest {
-public:
-    virtual void vfunc_0c();
-    virtual void onMessageStart();
-    virtual void onSignalTag();
-    virtual void onActionTag0();
-    virtual void onActionTag1();
-    virtual void onActionTag2();
-    virtual void onActionTag3();
-    virtual void onActionTag4();
-    virtual void onScannedTag();
-    virtual void getSpeakerData();
-    virtual void onWindowClose();
-    virtual void onTalkEnd();
-};
 
-class Unk_020d7710 : public TalkMsgRequest {
+class Unk_020d7710 : public ActorTalkRequest {
 public:
     virtual void onTag09_4();
     virtual void onTag09_5();
@@ -136,7 +75,7 @@ public:
     virtual void onTag09_7();
     virtual void onTag09_8();
     virtual void onTag09_9();
-    virtual void onTaskDone();
+    virtual void onTaskDone(u32 id);
     void requestGiveItem(u16 *p, u32 a, u32 b, u32 c);
 };
 
@@ -151,8 +90,8 @@ class SpNpcTortimerTalk : public SpNpcTalkRequest {
 public:
     SpNpcTortimerTalk();
     virtual ~SpNpcTortimerTalk();
-    virtual void onMessageEnd();
-    virtual void onChoice();
+    virtual void onMessageEnd(u32 attr);
+    virtual void onChoice(u32 attr);
     virtual void start(TalkStartMsg *out);
 
     void attachOwner(SpNpcTortimer *owner);
@@ -465,7 +404,7 @@ void SpNpcTortimerTalk::start(TalkStartMsg *out) {
     }
 }
 
-void SpNpcTortimerTalk::onMessageEnd() {
+void SpNpcTortimerTalk::onMessageEnd(u32) {
     Unk_ov080_02271648_Buf buf;
     u32 r = 0xff;
     if (massageChairSlot >= 0) {
@@ -521,7 +460,7 @@ void SpNpcTortimerTalk::onMessageEnd() {
     }
 }
 
-void SpNpcTortimerTalk::onChoice() {
+void SpNpcTortimerTalk::onChoice(u32) {
     Unk_ov080_02271478_Buf buf;
     getChoiceList();
     s32 t = ChoiceList_getResult();

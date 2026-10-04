@@ -5,7 +5,9 @@ _ZN13SpNpcTortimer8vfunc_4cEjh kind:label(thumb) addr:0x02271414
 _ZN13SpNpcTortimer8vfunc_48Ev kind:function(thumb,size=0x20) addr:0x02271458
 _ZN13SpNpcTortimer8vfunc_48EPv kind:label(thumb) addr:0x02271458
 _ZN17SpNpcTortimerTalk8onChoiceEv kind:function(thumb,size=0x78) addr:0x02271478
+_ZN17SpNpcTortimerTalk8onChoiceEj kind:label(thumb) addr:0x02271478
 _ZN17SpNpcTortimerTalk12onMessageEndEv kind:function(thumb,size=0x158) addr:0x022714f0
+_ZN17SpNpcTortimerTalk12onMessageEndEj kind:label(thumb) addr:0x022714f0
 _ZN17SpNpcTortimerTalk5startEP12TalkStartMsg kind:function(thumb,size=0x164) addr:0x02271648
 _ZN17SpNpcTortimerTalk11attachOwnerEP13SpNpcTortimer kind:function(thumb,size=0x24) addr:0x022717ac
 _ZN17SpNpcTortimerTalkD0Ev kind:function(thumb,size=0x20) addr:0x022717d0

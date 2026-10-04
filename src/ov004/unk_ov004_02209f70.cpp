@@ -41,6 +41,8 @@
 #include "actor/Character.h"
 #include "gfx/ModelResource.h"
 #include "room/FtrModelRes.h"
+#include "talk/MsgRequest.h"
+#include "talk/TalkMsgRequest.h"
 // ov004 translation unit 0x02209f70-0x022136d0 (34 classes derived from FtrActor). Built by two compilers:
 // this file's thunks need mwcc 1.2/sp2, FtrSingingInsect::updateActive / vfunc_7c (in the _switch file) need 1.2/base;
 // the functions and data objects are placed by address (config/usa/arm9/overlays/ov004/object_order.txt).
@@ -68,54 +70,7 @@ typedef Unk_ov004_Mtx Unk_ov004_02205eb0_Mtx;
 
 
 // ---------------------------------------------------------------- secondary base at +0xec (vtable 0x020ddcf0 in main)
-class MsgRequest {
-public:
-    MsgRequest();
-    virtual ~MsgRequest();
-    virtual void vfunc_s08();
-    void setFileName(const char *src);
 
-    /* 0x04 */ char fileName[0x1a];
-    /* 0x1e */ u8 msgIndex;
-};
-
-class TalkMsgRequest : public MsgRequest {
-public:
-    TalkMsgRequest();
-    virtual ~TalkMsgRequest();
-    virtual void vfunc_s08();
-    virtual void vfunc_s0c();
-    virtual void onMessageStart();
-    virtual void onMessageEnd();
-    virtual void onChoice();
-    virtual void onSignalTag();
-    virtual void onActionTag0();
-    virtual void onActionTag1();
-    virtual void onActionTag2();
-    virtual void onActionTag3();
-    virtual void onActionTag4();
-    virtual void onConditionTag();
-    virtual void onEventTag(u32 a);
-    virtual void onTag09_0();
-    virtual void onTag09_1();
-    virtual void onTag09_2();
-    virtual void onTag09_3();
-    virtual void onTag09_4();
-    virtual void onTag09_5();
-    virtual void onTag09_6();
-    virtual void onTag09_7();
-    virtual void onTag09_8();
-    virtual void onTag09_9();
-    virtual void onScannedTag();
-    virtual void getSpeakerData();
-    virtual void getVoiceType();
-    virtual void onWindowClose();
-    virtual void onTalkEnd();
-
-    u8 pad_20[0x1c];
-    /* 0x3c */ TalkWindowState *unk_3c;
-    /* 0x40 */ u8 unk_40;
-};
 
 // ================================================================ helper object types (members of / used by the 0224882c object)
 
@@ -4885,8 +4840,8 @@ public:
     virtual BOOL initModel();
     virtual BOOL updateActive();
     // overrides of slots 0x14 / 0x18 of the secondary base TalkMsgRequest (new slots at the end of the vtable + thunks)
-    virtual void onMessageEnd();
-    virtual void onChoice();
+    virtual void onMessageEnd(u32 attr);
+    virtual void onChoice(u32 attr);
 
     void execFtrAct0D();
     BOOL enterFtrAct0D();
@@ -7036,7 +6991,7 @@ BOOL FtrStorage::setTalkAct(s32 s) {
     return FALSE;
 }
 
-void FtrBed::onChoice() {
+void FtrBed::onChoice(u32) {
     u32 r = p20::_ZN10ChoiceList9getResultEv(p20::_ZN15TalkWindowState13getChoiceListEv(((u32)unk_3c)));
     if (useMode == 1) {
         switch (r) {
@@ -7062,7 +7017,7 @@ void FtrBed::onChoice() {
     }
 }
 
-void FtrBed::onMessageEnd() {
+void FtrBed::onMessageEnd(u32) {
     if (msgIndex == 0) {
         u32 o = ((u32)unk_3c);
         u32 h = p20::_ZN15TalkWindowState13getChoiceListEv(o);

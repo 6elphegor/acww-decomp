@@ -4,9 +4,10 @@
 // The player object (PlayerActor, 0xc9c bytes, vtable 0x020d6dec) and the two method sets of the same object that
 // symbols.txt names Unk_02006d14 / Unk_02008040. All of it is defined in src/main/unk_02004558.cpp and
 // unk_02004558_extra.cpp (one translation unit built by two compilers).
-// The including unit declares MsgRequest / TalkMsgRequest (the copies whose slots 0x08/0x0c are named vfunc_s08 /
-// vfunc_s0c) and SndSeEmitterKind1 / SndSeEmitterKind99 (SndSeEmitterKind1 with the inline destructor whose link-once
-// D1/D0 that unit emits) before including this header.
+// The including unit includes talk/MsgRequest.h and declares its own TalkMsgRequest (slots without parameters, slot
+// 0x0c named vfunc_s0c: PlayerActor::onMessageStart returns a value, which talk/TalkMsgRequest.h's slot cannot) and
+// SndSeEmitterKind1 / SndSeEmitterKind99 (SndSeEmitterKind1 with the inline destructor whose link-once D1/D0 that unit
+// emits) before including this header.
 #include "types.h"
 #include "actor/Character.h"
 #include "actor/ActorPlacedCollider.h"

@@ -21,6 +21,7 @@
 #include "snd/BgmManager.h"
 #include "snd/SndSeEmitter.h"
 #include "snd/Unk_0213b9c4.h"
+#include "talk/TalkMsgRequest.h"
 
 
 
@@ -32,45 +33,6 @@
 
 
 
-// Secondary base at +0xec (vtable 0x020ddcf0 in main)
-class TalkMsgRequest : public MsgRequest {
-public:
-    TalkMsgRequest();
-    virtual ~TalkMsgRequest();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void onMessageStart();
-    virtual void onMessageEnd();
-    virtual void onChoice();
-    virtual void onSignalTag();
-    virtual void onActionTag0();
-    virtual void onActionTag1();
-    virtual void onActionTag2();
-    virtual void onActionTag3();
-    virtual void onActionTag4();
-    virtual void onConditionTag();
-    virtual void onEventTag(u32 a);
-    virtual void onTag09_0();
-    virtual void onTag09_1();
-    virtual void onTag09_2();
-    virtual void onTag09_3();
-    virtual void onTag09_4();
-    virtual void onTag09_5();
-    virtual void onTag09_6();
-    virtual void onTag09_7();
-    virtual void onTag09_8();
-    virtual void onTag09_9();
-    virtual void onScannedTag();
-    virtual void getSpeakerData();
-    virtual void getVoiceType();
-    virtual void onWindowClose();
-    virtual void onTalkEnd();
-
-    /* 0x1f */ u8 pad_1f[0x3c - 0x1f];
-    /* 0x3c */ Unk_ov009_0225b880_Target *unk_3c;
-    /* 0x40 */ u8 pad_40[2];
-    /* 0x42 */ u16 unk_42;
-};
 
 
 
@@ -178,7 +140,7 @@ public:
     virtual void vfunc_7c();
     virtual void vfunc_80();
     virtual void vfunc_84();
-    virtual void onMessageEnd();
+    virtual void onMessageEnd(u32 attr);
     virtual BOOL vfunc_8c();
     virtual BOOL vfunc_90();
     virtual BOOL vfunc_94();
@@ -263,6 +225,7 @@ public:
     void execEntryTalkOpen();
     BOOL enterEntryTalkOpen();
 
+    /* 0x12e */ u16 unk_12e;    // in TalkMsgRequest's tail padding (door-close SE delay in ov009)
     /* 0x130 */ u8 doorState;
     /* 0x131 */ u8 pad_131;
     /* 0x132 */ u16 itemId;

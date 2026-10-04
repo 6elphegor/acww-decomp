@@ -16,10 +16,12 @@ _ZN9TitleTalk15chooseNeverMindEv kind:function(thumb,size=0xc) addr:0x02291dbc
 _ZN9TitleTalk14chooseContinueEv kind:function(thumb,size=0xc) addr:0x02291dc8
 _ZN9TitleTalk13chooseNewGameEv kind:function(thumb,size=0x16) addr:0x02291dd4
 _ZN9TitleTalk8onChoiceEv kind:function(thumb,size=0x26c) addr:0x02291dec
+_ZN9TitleTalk8onChoiceEj kind:label(thumb) addr:0x02291dec
 _ZN9TitleTalk13onWindowCloseEv kind:function(thumb,size=0x1a) addr:0x02292058
 _ZN9TitleTalk19openResidentChoicesEv kind:function(thumb,size=0xc8) addr:0x02292074
 _ZN9TitleTalk13openChoiceSetEP14TitleChoiceSet kind:function(thumb,size=0x70) addr:0x0229213c
 _ZN9TitleTalk12onMessageEndEv kind:function(thumb,size=0x2c0) addr:0x022921ac
+_ZN9TitleTalk12onMessageEndEj kind:label(thumb) addr:0x022921ac
 _ZN9TitleTalk8setOwnerEPv kind:function(thumb,size=0x4) addr:0x0229246c
 _ZN9TitleTalkD0Ev kind:function(thumb,size=0x20) addr:0x02292470
 _ZN9TitleTalkD1Ev kind:function(thumb,size=0x18) addr:0x02292490

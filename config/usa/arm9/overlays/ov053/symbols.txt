@@ -12,7 +12,9 @@ _ZN12SpNpcHarriet8vfunc_48Ev kind:function(thumb,size=0x20) addr:0x022590fc
 _ZN12SpNpcHarriet8vfunc_48EPv kind:label(thumb) addr:0x022590fc
 _ZN16SpNpcHarrietTalk20getQuestionsStartMsgEv kind:function(thumb,size=0x32) addr:0x0225911c
 _ZN16SpNpcHarrietTalk8onChoiceEv kind:function(thumb,size=0x104) addr:0x02259150
+_ZN16SpNpcHarrietTalk8onChoiceEj kind:label(thumb) addr:0x02259150
 _ZN16SpNpcHarrietTalk12onMessageEndEv kind:function(thumb,size=0x168) addr:0x02259254
+_ZN16SpNpcHarrietTalk12onMessageEndEj kind:label(thumb) addr:0x02259254
 _ZN16SpNpcHarrietTalk13onWindowCloseEv kind:function(thumb,size=0x1a) addr:0x022593bc
 _ZN16SpNpcHarrietTalk9onTalkEndEv kind:function(thumb,size=0x4e) addr:0x022593d8
 _ZN16SpNpcHarrietTalk5startEP12TalkStartMsg kind:function(thumb,size=0x140) addr:0x02259428

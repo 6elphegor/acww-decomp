@@ -22,6 +22,7 @@ _ZN16SpNpcCelesteTalk19func_ov046_022592a4Ei kind:function(thumb,size=0x30) addr
 _ZN16SpNpcCelesteTalk25onConstellationListChoiceEi kind:function(thumb,size=0x198) addr:0x022592d4
 _ZN16SpNpcCelesteTalk19onViewingTimeChoiceEi kind:function(thumb,size=0x14) addr:0x0225946c
 _ZN16SpNpcCelesteTalk8onChoiceEv kind:function(thumb,size=0x214) addr:0x02259480
+_ZN16SpNpcCelesteTalk8onChoiceEj kind:label(thumb) addr:0x02259480
 _ZN16SpNpcCelesteTalk15startStargazingEv kind:function(thumb,size=0x22) addr:0x02259694
 _ZN16SpNpcCelesteTalk16startRenameEntryEv kind:function(thumb,size=0x22) addr:0x022596b8
 _ZN16SpNpcCelesteTalk14startNameEntryEv kind:function(thumb,size=0x22) addr:0x022596dc
@@ -32,6 +33,7 @@ _ZN16SpNpcCelesteTalk24startConstellationEditorEv kind:function(thumb,size=0x44)
 _ZN16SpNpcCelesteTalk17showTelescopeMenuEv kind:function(thumb,size=0x58) addr:0x022597a0
 _ZN16SpNpcCelesteTalk25announceNewConstellationsEv kind:function(thumb,size=0x88) addr:0x022597f8
 _ZN16SpNpcCelesteTalk12onMessageEndEv kind:function(thumb,size=0x240) addr:0x02259880
+_ZN16SpNpcCelesteTalk12onMessageEndEj kind:label(thumb) addr:0x02259880
 _ZN16SpNpcCelesteTalk18getFollowUpMenuMsgEv kind:function(thumb,size=0x5c) addr:0x02259ac0
 _ZN16SpNpcCelesteTalk5startEP12TalkStartMsg kind:function(thumb,size=0x110) addr:0x02259b1c
 _ZN16SpNpcCelesteTalk8setTopicEi kind:function(thumb,size=0x6) addr:0x02259c2c
@@ -47,6 +49,7 @@ _ZN16SpNpcCelesteTalk20onConstellationDrawnEv kind:function(thumb,size=0xcc) add
 _ZN16SpNpcCelesteTalk16onStargazingDoneEv kind:function(thumb,size=0x20) addr:0x02259eb4
 _ZN16SpNpcCelesteTalk16setResultHandlerEi kind:function(thumb,size=0x88) addr:0x02259ed4
 _ZN16SpNpcCelesteTalk10onTaskDoneEv kind:function(thumb,size=0x44) addr:0x02259f5c
+_ZN16SpNpcCelesteTalk10onTaskDoneEj kind:label(thumb) addr:0x02259f5c
 _ZN16SpNpcCelesteTalk21openConstellationPageEv kind:function(thumb,size=0x134) addr:0x02259fa0
 _ZN12SpNpcCeleste9mainAct04Ev kind:function(thumb,size=0x4) addr:0x0225a0d4
 _ZN12SpNpcCeleste9mainAct03Ev kind:function(thumb,size=0x44) addr:0x0225a0d8

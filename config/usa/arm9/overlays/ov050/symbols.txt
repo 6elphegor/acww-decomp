@@ -39,6 +39,7 @@ _ZN17SpNpcNookShopTalk16onDeliveryChoiceEi kind:function(thumb,size=0x34) addr:0
 _ZN17SpNpcNookShopTalk16onMainMenuChoiceEi kind:function(thumb,size=0x98) addr:0x02259e80
 _ZN17SpNpcNookShopTalk12onShopChoiceEv kind:function(thumb,size=0x2d0) addr:0x02259f18
 _ZN17SpNpcNookShopTalk8onChoiceEi kind:function(thumb,size=0xa0) addr:0x0225a1e8
+_ZN17SpNpcNookShopTalk8onChoiceEj kind:label(thumb) addr:0x0225a1e8
 _ZN17SpNpcNookShopTalk12setRoofColorEii kind:function(thumb,size=0x38) addr:0x0225a288
 _ZN17SpNpcNookShopTalk15ackHouseUpgradeEv kind:function(thumb,size=0x10) addr:0x0225a2c0
 _ZN17SpNpcNookShopTalk21showFirstPurchaseHintEv kind:function(thumb,size=0x2a0) addr:0x0225a2d0
@@ -49,7 +50,9 @@ _ZN17SpNpcNookShopTalk12openSellMenuEv kind:function(thumb,size=0x22) addr:0x022
 _ZN17SpNpcNookShopTalk19onSafeOfferDeclinedEv kind:function(thumb,size=0xa) addr:0x0225a690
 _ZN17SpNpcNookShopTalk15giveGlamourShotEv kind:function(thumb,size=0x44) addr:0x0225a69c
 _ZN17SpNpcNookShopTalk12onMessageEndEv kind:function(thumb,size=0x1a8) addr:0x0225a6e0
+_ZN17SpNpcNookShopTalk12onMessageEndEj kind:label(thumb) addr:0x0225a6e0
 _ZN17SpNpcNookShopTalk5startEP22Unk_ov050_0225a888_Out kind:function(thumb,size=0x74c) addr:0x0225a888
+_ZN17SpNpcNookShopTalk5startEP12TalkStartMsg kind:label(thumb) addr:0x0225a888
 _ZN17SpNpcNookShopTalk20arbeitPushPlayerBackEPv kind:function(thumb,size=0x10) addr:0x0225afd4
 _ZN17SpNpcNookShopTalk12arbeitFinishEPv kind:function(thumb,size=0x32) addr:0x0225afe4
 _ZN17SpNpcNookShopTalk16arbeitReduceLoanEPv kind:function(thumb,size=0x70) addr:0x0225b018
@@ -99,6 +102,7 @@ _ZN17SpNpcNookShopTalk17handleCatalogMenuEv kind:function(thumb,size=0xec) addr:
 _ZN17SpNpcNookShopTalk14handleSellMenuEv kind:function(thumb,size=0x268) addr:0x0225c294
 _ZN17SpNpcNookShopTalk21setPendingMenuHandlerEi kind:function(thumb,size=0x68) addr:0x0225c4fc
 _ZN17SpNpcNookShopTalk10onTaskDoneEv kind:function(thumb,size=0x44) addr:0x0225c564
+_ZN17SpNpcNookShopTalk10onTaskDoneEj kind:label(thumb) addr:0x0225c564
 _ZN13SpNpcNookShop9mainAct10Ev kind:function(thumb,size=0x118) addr:0x0225c5a8
 _ZN13SpNpcNookShop10setupAct10Ev kind:function(thumb,size=0x40) addr:0x0225c6c0
 _ZN13SpNpcNookShop9mainAct0FEv kind:function(thumb,size=0x4) addr:0x0225c700

@@ -34,6 +34,7 @@ _ZN13BuildingActor8vfunc_80Ev kind:function(thumb,size=0x2) addr:0x0225bcd8
 _ZN13BuildingActor8vfunc_7cEv kind:function(thumb,size=0x2) addr:0x0225bcdc
 _ZN13BuildingActor8vfunc_78Ev kind:function(thumb,size=0x24) addr:0x0225bce0
 _ZN13BuildingActor12onMessageEndEv kind:function(thumb,size=0x68) addr:0x0225bd04
+_ZN13BuildingActor12onMessageEndEj kind:label(thumb) addr:0x0225bd04
 _ZN13BuildingActor8vfunc_4cEjh kind:function(thumb,size=0x64) addr:0x0225bd6c
 _ZN13BuildingActor8vfunc_48EP9Character kind:function(thumb,size=0xd4) addr:0x0225bdd0
 _ZN13BuildingActor8vfunc_48EPv kind:label(thumb) addr:0x0225bdd0

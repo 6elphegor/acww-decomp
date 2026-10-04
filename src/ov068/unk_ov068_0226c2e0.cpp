@@ -23,6 +23,8 @@
 #include "talk/EncodedString16Buf.h"
 #include "talk/ChoiceList.h"
 #include "gfx/ThreeLayerAnimModel.h"
+#include "talk/TalkMsgRequest.h"
+#include "talk/ActorTalkRequest.h"
 #define Actor_spawn _ZN5Actor5spawnEPvS0_S0_S0_S0_
 #define NpcTalkCtrl_requestTalk _ZN11NpcTalkCtrl11requestTalkEhh
 #define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
@@ -68,69 +70,9 @@ struct Unk_ov068_0226ce70_Out {
 
 
 
-class ActorTalkRequest {
-public:
-    ActorTalkRequest();
-    virtual ~ActorTalkRequest();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void onMessageStart(s32 a);
-    virtual void onMessageEnd(s32 a);
-    virtual void onChoice(s32 a);
-    virtual void onSignalTag();
-    virtual void onActionTag0();
-    virtual void onActionTag1();
-    virtual void onActionTag2();
-    virtual void onActionTag3();
-    virtual void onActionTag4();
-    virtual void onConditionTag();
-    virtual void onEventTag(u32 v);
-    virtual void onTag09_0();
-    virtual void onTag09_1();
-    virtual void onTag09_2();
-    virtual void onTag09_3();
-    virtual void onTag09_4();
-    virtual void onTag09_5();
-    virtual void onTag09_6();
-    virtual void onTag09_7();
-    virtual void onTag09_8();
-    virtual void onTag09_9();
-    virtual void onScannedTag();
-    virtual void getSpeakerData();
-    virtual void getVoiceType();
-    virtual void onWindowClose();
-    virtual void onTalkEnd();
-    virtual void start(Unk_ov068_0226ce70_Out *out);
-    virtual void runDeferred();
-    virtual void update();
-    virtual void onTaskDone();
-    void *func_02015aac();
-    void func_02015ab0(u32 p);
-    void setItemNameSlot(u32 a, u32 b, u32 c);
-    ChoiceList *getChoiceList();
-    u8 pad_04[0x1a];
-    u8 msgIndex;
-    u8 pad_1f[0x3c - 0x1f];
-    TalkWindowState *unk_3c;
-    u8 pad_40[0xac - 0x40];
-};
 
-class TalkMsgRequest : public ActorTalkRequest {
-public:
-    virtual void vfunc_0c();
-    virtual void onSignalTag();
-    virtual void onActionTag0();
-    virtual void onActionTag1();
-    virtual void onActionTag2();
-    virtual void onActionTag3();
-    virtual void onActionTag4();
-    virtual void onScannedTag();
-    virtual void getSpeakerData();
-    virtual void onWindowClose();
-    virtual void onTalkEnd();
-};
 
-class Unk_020d7710 : public TalkMsgRequest {
+class Unk_020d7710 : public ActorTalkRequest {
 public:
     virtual void onTag09_4();
     virtual void onTag09_5();
@@ -250,12 +192,12 @@ class SpNpcRoostGuestTalk : public SpNpcTalkRequest {
 public:
     SpNpcRoostGuestTalk();
     virtual ~SpNpcRoostGuestTalk();
-    virtual void onMessageStart(s32 a);
-    virtual void onMessageEnd(s32 a);
-    virtual void onChoice(s32 a);
-    virtual void start(Unk_ov068_0226ce70_Out *out);
+    virtual void onMessageStart(u32 attr);
+    virtual void onMessageEnd(u32 attr);
+    virtual void onChoice(u32 attr);
+    virtual void start(TalkStartMsg *out);
     virtual void update();
-    virtual void onTaskDone();
+    virtual void onTaskDone(u32 id);
 
     void scriptRestoreLook();
     void scriptEndPerformance();
@@ -877,7 +819,8 @@ void SpNpcRoostGuestTalk::setTalkMode(s32 v) {
 s32 SpNpcRoostGuestTalk::getTalkMode() {
     using namespace sB; return talkMode; }
 
-void SpNpcRoostGuestTalk::start(Unk_ov068_0226ce70_Out *out) {
+void SpNpcRoostGuestTalk::start(TalkStartMsg *out_) {
+    Unk_ov068_0226ce70_Out *out = (Unk_ov068_0226ce70_Out *)out_;
     using namespace sB;
     u16 h0, h2, h4, h6;
     lastBeatState.seqVar4 = -1;
@@ -953,7 +896,8 @@ void SpNpcRoostGuestTalk::start(Unk_ov068_0226ce70_Out *out) {
     }
 }
 
-void SpNpcRoostGuestTalk::onMessageStart(s32 a) {
+void SpNpcRoostGuestTalk::onMessageStart(u32 a_) {
+    s32 a = (s32)a_;
     using namespace sB;
     if (owner->guestType == 7) {
         fillKkSongName(a);
@@ -980,7 +924,8 @@ void SpNpcRoostGuestTalk::fillKkSongName(s32 a) {
     }
 }
 
-void SpNpcRoostGuestTalk::onMessageEnd(s32 a) {
+void SpNpcRoostGuestTalk::onMessageEnd(u32 a_) {
+    s32 a = (s32)a_;
     using namespace sB;
     if (owner->guestType == 7) {
         dispatchKkMessageEnd(a);
@@ -1035,7 +980,8 @@ void SpNpcRoostGuestTalk::onKkStartShow() {
     setScript(2);
 }
 
-void SpNpcRoostGuestTalk::onChoice(s32 a) {
+void SpNpcRoostGuestTalk::onChoice(u32 a_) {
+    s32 a = (s32)a_;
     using namespace sA;
     if (owner->guestType == 7) {
         dispatchKkChoice(a);
@@ -1146,7 +1092,7 @@ void SpNpcRoostGuestTalk::update() {
     }
 }
 
-void SpNpcRoostGuestTalk::onTaskDone() {
+void SpNpcRoostGuestTalk::onTaskDone(u32) {
     using namespace sA;
     s32 i = script;
     if (((u8 *)&sKkShowScripts[0].flag)[i * 12] == 0) {

@@ -11,6 +11,8 @@
 #include "talk/MsgString9B.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
+#include "talk/MsgRequest.h"
+#include "talk/TalkMsgRequest.h"
 
 
 
@@ -18,61 +20,9 @@ typedef Unk_0203389c_Vec Unk_ov003_Vec;
 
 
 
-// Secondary base at +0xec (vtable main 0x020ddcf0 chain).
-class MsgRequest {
-public:
-    MsgRequest();
-    virtual ~MsgRequest();
-    virtual void vfunc_s08();
-
-    void setFileName(const char *src);
-
-    /* 0x04 */ char fileName[0x1a];
-    /* 0x1e */ u8 msgIndex;
-};
 
 
 
-class TalkMsgRequest : public MsgRequest {
-public:
-    TalkMsgRequest();
-    virtual ~TalkMsgRequest();
-    virtual void vfunc_s08();
-    virtual void vfunc_s0c();
-    virtual void onMessageStart();
-    virtual void onMessageEnd();
-    virtual void onChoice();
-    virtual void onSignalTag();
-    virtual void onActionTag0();
-    virtual void onActionTag1();
-    virtual void onActionTag2();
-    virtual void onActionTag3();
-    virtual void onActionTag4();
-    virtual void onConditionTag();
-    virtual void onEventTag(u32 a);
-    virtual void onTag09_0();
-    virtual void onTag09_1();
-    virtual void onTag09_2();
-    virtual void onTag09_3();
-    virtual void onTag09_4();
-    virtual void onTag09_5();
-    virtual void onTag09_6();
-    virtual void onTag09_7();
-    virtual void onTag09_8();
-    virtual void onTag09_9();
-    virtual void onScannedTag();
-    virtual void getSpeakerData();
-    virtual void getVoiceType();
-    virtual void onWindowClose();
-    virtual void onTalkEnd();
-
-    void setSpeakerName(u8 *a, u32 b);
-
-    u8 pad_20[0x1c];
-    /* 0x3c */ TalkWindowState *unk_3c;
-    /* 0x40 */ u8 unk_40;
-    u8 pad_41[3];
-};
 
 // ---------------------------------------------------------------- types of the merged unit (old files 02212140 / 02212a5c / 022135c4 / 02213f70)
 struct Unk_ov003_02212a5c_V3 {

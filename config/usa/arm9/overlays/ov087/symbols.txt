@@ -5,7 +5,9 @@ _ZN13SpNpcCornimer8vfunc_4cEjh kind:label(thumb) addr:0x02271414
 _ZN13SpNpcCornimer8vfunc_48Ev kind:function(thumb,size=0x20) addr:0x02271458
 _ZN13SpNpcCornimer8vfunc_48EPv kind:label(thumb) addr:0x02271458
 _ZN17SpNpcCornimerTalk8onChoiceEv kind:function(thumb,size=0x1f8) addr:0x02271478
+_ZN17SpNpcCornimerTalk8onChoiceEj kind:label(thumb) addr:0x02271478
 _ZN17SpNpcCornimerTalk12onMessageEndEv kind:function(thumb,size=0x254) addr:0x02271670
+_ZN17SpNpcCornimerTalk12onMessageEndEj kind:label(thumb) addr:0x02271670
 SpNpcCornimer_IsAcorn kind:function(thumb,size=0x28) addr:0x022718c4
 _ZN17SpNpcCornimerTalk5startEP12TalkStartMsg kind:function(thumb,size=0x74) addr:0x022718ec
 _ZN17SpNpcCornimerTalk11attachOwnerEP13SpNpcCornimer kind:function(thumb,size=0x1a) addr:0x02271960

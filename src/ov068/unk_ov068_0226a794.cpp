@@ -10,6 +10,8 @@
 #include "talk/MsgString9B.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
+#include "talk/MsgRequest.h"
+#include "talk/TalkMsgRequest.h"
 
 struct Unk_ov068_0226acf8_Vec {
     s32 x, y, z;
@@ -30,61 +32,8 @@ struct Unk_ov068_0226b12c_Vec3 {
 
 
 
-// Secondary base at +0xec (vtable main 0x020ddcf0 chain).  Slot names are TalkMsgRequest's; slot 0x14
-// (onMessageEnd) is overridden by BuildingActor.
-class MsgRequest {
-public:
-    MsgRequest();
-    virtual ~MsgRequest();
-    virtual void vfunc_s08();
-
-    void setFileName(const char *src);
-
-    /* 0x04 */ char fileName[0x1a];
-    /* 0x1e */ u8 msgIndex;
-};
 
 
-class TalkMsgRequest : public MsgRequest {
-public:
-    TalkMsgRequest();
-    virtual ~TalkMsgRequest();
-    virtual void vfunc_s08();
-    virtual void vfunc_s0c();
-    virtual void onMessageStart();
-    virtual void onMessageEnd();
-    virtual void onChoice();
-    virtual void onSignalTag();
-    virtual void onActionTag0();
-    virtual void onActionTag1();
-    virtual void onActionTag2();
-    virtual void onActionTag3();
-    virtual void onActionTag4();
-    virtual void onConditionTag();
-    virtual void onEventTag(u32 a);
-    virtual void onTag09_0();
-    virtual void onTag09_1();
-    virtual void onTag09_2();
-    virtual void onTag09_3();
-    virtual void onTag09_4();
-    virtual void onTag09_5();
-    virtual void onTag09_6();
-    virtual void onTag09_7();
-    virtual void onTag09_8();
-    virtual void onTag09_9();
-    virtual void onScannedTag();
-    virtual void getSpeakerData();
-    virtual s32 getVoiceType();
-    virtual void onWindowClose();
-    virtual void onTalkEnd();
-
-    void setSpeakerName(u8 *a, u32 b);
-
-    u8 pad_20[0x1c];
-    /* 0x3c */ TalkWindowState *unk_3c;
-    /* 0x40 */ u8 unk_40;
-    u8 pad_41[3];
-};
 
 struct Unk_ov068_0226b5a4_Bits {
     u32 lo : 12;
@@ -119,7 +68,7 @@ public:
     virtual void vfunc_7c();
     virtual void vfunc_80();
     virtual void vfunc_84();
-    virtual void onMessageEnd();
+    virtual void onMessageEnd(u32 attr);
     virtual BOOL vfunc_8c();
     virtual BOOL vfunc_90();
     virtual BOOL vfunc_94();
@@ -136,6 +85,7 @@ public:
     s32 getBtaAnim(u32 a);
     s32 getBca2Anim();
 
+    /* 0x12e */ u16 unk_12e;    // in TalkMsgRequest's tail padding (door-close SE delay in ov009)
     /* 0x130 */ u8 doorState;
     /* 0x131 */ u8 pad_131;
     /* 0x132 */ u16 itemId;
@@ -160,7 +110,7 @@ public:
     virtual BOOL onDraw();
     virtual void vfunc_60(u32 a, void *b);
     virtual BOOL vfunc_70();
-    virtual void onMessageEnd();
+    virtual void onMessageEnd(u32 attr);
     virtual BOOL vfunc_b0();
     virtual Unk_ov068_0226b12c_Vec3 vfunc_b4();
     virtual s32 getVoiceType();
@@ -496,7 +446,7 @@ s32 KappnTaxi::getVoiceType() {
     return 0;
 }
 
-void KappnTaxi::onMessageEnd() {
+void KappnTaxi::onMessageEnd(u32) {
 }
 
 Unk_ov068_0226b12c_Vec3 KappnTaxi::getDoorPoint() {
@@ -672,7 +622,7 @@ void KappnTaxi::execTaxiPlayerGetOut() {
 
 BOOL KappnTaxi::enterTaxiTalk() {
     u32 *rec = TalkWindow_Get(0);
-    this->TalkMsgRequest::vfunc_s08();
+    this->TalkMsgRequest::vfunc_08();
     this->setFileName("sp_etc_sequence4");
     BOOL r;
     if (PlayerData_GetCurrent() != 0 && (_ZN10PlayerData11getPlayerIdEv(), _ZN8PlayerId9getGenderEv() == 1)) {

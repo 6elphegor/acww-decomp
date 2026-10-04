@@ -5,9 +5,12 @@ _ZN19SpNpcTortimerBugOff8vfunc_4cEjh kind:label(thumb) addr:0x02271414
 _ZN19SpNpcTortimerBugOff8vfunc_48Ev kind:function(thumb,size=0x20) addr:0x02271458
 _ZN19SpNpcTortimerBugOff8vfunc_48EPv kind:label(thumb) addr:0x02271458
 _ZN23SpNpcTortimerBugOffTalk8onChoiceEv kind:function(thumb,size=0xac) addr:0x02271478
+_ZN23SpNpcTortimerBugOffTalk8onChoiceEj kind:label(thumb) addr:0x02271478
 _ZN23SpNpcTortimerBugOffTalk12onMessageEndEv kind:function(thumb,size=0x288) addr:0x02271524
+_ZN23SpNpcTortimerBugOffTalk12onMessageEndEj kind:label(thumb) addr:0x02271524
 _ZN23SpNpcTortimerBugOffTalk15getRecordHolderEv kind:function(thumb,size=0x104) addr:0x022717ac
 _ZN23SpNpcTortimerBugOffTalk5startEP22Unk_ov082_022718b0_Rec kind:function(thumb,size=0x128) addr:0x022718b0
+_ZN23SpNpcTortimerBugOffTalk5startEP12TalkStartMsg kind:label(thumb) addr:0x022718b0
 _ZN23SpNpcTortimerBugOffTalk11attachOwnerEP19SpNpcTortimerBugOff kind:function(thumb,size=0x2a) addr:0x022719d8
 _ZN23SpNpcTortimerBugOffTalkD0Ev kind:function(thumb,size=0x20) addr:0x02271a04
 _ZN23SpNpcTortimerBugOffTalkD1Ev kind:function(thumb,size=0x18) addr:0x02271a24
@@ -19,6 +22,7 @@ _ZN23SpNpcTortimerBugOffTalk13setNextScriptEi kind:function(thumb,size=0x10) add
 _ZN23SpNpcTortimerBugOffTalk9setScriptEi kind:function(thumb,size=0x10) addr:0x02271b60
 _ZN23SpNpcTortimerBugOffTalk10pickScriptEPMS_FvvEi kind:function(thumb,size=0x54) addr:0x02271b70
 _ZN23SpNpcTortimerBugOffTalk10onTaskDoneEv kind:function(thumb,size=0x80) addr:0x02271bc4
+_ZN23SpNpcTortimerBugOffTalk10onTaskDoneEj kind:label(thumb) addr:0x02271bc4
 _ZN19SpNpcTortimerBugOff9mainAct02Ev kind:function(thumb,size=0x4) addr:0x02271c44
 _ZN19SpNpcTortimerBugOff9mainAct01Ev kind:function(thumb,size=0x2c) addr:0x02271c48
 _ZN19SpNpcTortimerBugOff10setupAct01Ev kind:function(thumb,size=0x38) addr:0x02271c74

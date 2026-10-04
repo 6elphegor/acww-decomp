@@ -4,46 +4,10 @@
 #include "talk/TalkWindowState.h"
 #include "save/SaveRecord4.h"
 #include "talk/MsgRequest.h"
+#include "talk/TalkMsgRequest.h"
 
 
 
-class TalkMsgRequest : public MsgRequest {
-public:
-    TalkMsgRequest();
-    virtual ~TalkMsgRequest();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void onMessageStart();
-    virtual void onMessageEnd();
-    virtual void onChoice();
-    virtual void onSignalTag();
-    virtual void onActionTag0();
-    virtual void onActionTag1();
-    virtual void onActionTag2();
-    virtual void onActionTag3();
-    virtual void onActionTag4();
-    virtual void onConditionTag();
-    virtual void onEventTag(u32 a);
-    virtual void onTag09_0();
-    virtual void onTag09_1();
-    virtual void onTag09_2();
-    virtual void onTag09_3();
-    virtual void onTag09_4();
-    virtual void onTag09_5();
-    virtual void onTag09_6();
-    virtual void onTag09_7();
-    virtual void onTag09_8();
-    virtual void onTag09_9();
-    virtual void onScannedTag();
-    virtual void getSpeakerData();
-    virtual void getVoiceType();
-    virtual void onWindowClose();
-    virtual void onTalkEnd();
-
-    u8 pad_20[0x1c];
-    /* 0x3c */ u32 unk_3c;
-    /* 0x40 */ u8 unk_40;
-};
 
 class SaveMenu;
 
@@ -52,8 +16,8 @@ class SaveMenuTalk : public TalkMsgRequest {
 public:
     SaveMenuTalk();
     virtual ~SaveMenuTalk();
-    virtual void onMessageEnd();
-    virtual void onChoice();
+    virtual void onMessageEnd(u32 attr);
+    virtual void onChoice(u32 attr);
 
     void setOwner(SaveMenu *owner);
 
@@ -624,7 +588,7 @@ void SaveMenuTalk::setOwner(SaveMenu *owner) {
     unk_44 = owner;
 }
 
-void SaveMenuTalk::onMessageEnd() {
+void SaveMenuTalk::onMessageEnd(u32) {
     if (msgIndex == 0) {
         TalkWindowState *o = (TalkWindowState *)unk_3c;
         void *h = o->getChoiceList();
@@ -643,7 +607,7 @@ void SaveMenuTalk::onMessageEnd() {
 
 // SaveMenuTalk
 
-void SaveMenuTalk::onChoice() {
+void SaveMenuTalk::onChoice(u32) {
     TalkWindowState *o = (TalkWindowState *)unk_3c;
     s32 r = _ZN10ChoiceList9getResultEv(o->getChoiceList());
     switch (msgIndex) {

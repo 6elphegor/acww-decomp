@@ -19,6 +19,8 @@
 #include "actor/Character.h"
 #include "gfx/AnimModel.h"
 #include "room/RoomObjActor.h"
+#include "talk/MsgRequest.h"
+#include "talk/TalkMsgRequest.h"
 
 // shared_0224d4e8.h.txt -- final declaration of class RoomObjActor (defined in ov004 TU17, 0x0221e7a8-0x02225290).
 // Paste this block unchanged into TU18..TU26 (it is the base of 0224d618 (TU18), 0224d80c (TU19), 0224dd98 (TU23),
@@ -77,58 +79,8 @@ void RoomObj_ActivateSe(void *self);
 
 
 // ---------------------------------------------------------------- secondary base at +0x290 (vtable main 0x020ddcf0)
-// RoomTelephone overrides its slots 0x10, 0x14 and 0x18 with the functions its own vtable has at 0x68, 0x6c and
-// 0x70: onMessageStart / onMessageEnd / onChoice (thunks _ZThn656_N13RoomTelephone14onMessageStartEv ...).
-// Every other slot is named vfunc_sXX: main has a label _ZN14TalkMsgRequest9vfunc_sXXEv for each of them.
-class MsgRequest {
-public:
-    MsgRequest();
-    virtual ~MsgRequest();
-    virtual void vfunc_s08();
-    void setFileName(const char *src);
-
-    /* 0x04 */ char fileName[0x1a];
-    /* 0x1e */ u8 msgIndex;
-};
 
 
-class TalkMsgRequest : public MsgRequest {
-public:
-    TalkMsgRequest();
-    virtual ~TalkMsgRequest();
-    virtual void vfunc_s08();
-    virtual void vfunc_s0c();
-    virtual void onMessageStart();
-    virtual void onMessageEnd();
-    virtual void onChoice(u32 a, u8 b);
-    virtual void onSignalTag();
-    virtual void onActionTag0();
-    virtual void onActionTag1();
-    virtual void onActionTag2();
-    virtual void onActionTag3();
-    virtual void onActionTag4();
-    virtual void onConditionTag();
-    virtual void onEventTag(u32 a);
-    virtual void onTag09_0();
-    virtual void onTag09_1();
-    virtual void onTag09_2();
-    virtual void onTag09_3();
-    virtual void onTag09_4();
-    virtual void onTag09_5();
-    virtual void onTag09_6();
-    virtual void onTag09_7();
-    virtual void onTag09_8();
-    virtual void onTag09_9();
-    virtual void onScannedTag();
-    virtual void getSpeakerData();
-    virtual void getVoiceType();
-    virtual void onWindowClose();
-    virtual void onTalkEnd();
-
-    u8 pad_20[0x1c];
-    /* 0x3c */ TalkWindowState *unk_3c;
-    /* 0x40 */ u8 unk_40;
-};
 
 
 
@@ -245,9 +197,9 @@ public:
     virtual BOOL vfunc_48(void *a);
     virtual void vfunc_4c(u32 a, u8 b);
     virtual VecFx32 *getInteractionPos();
-    virtual void onMessageStart();
-    virtual void onMessageEnd();
-    virtual void onChoice(u32 a, u8 b);
+    virtual void onMessageStart(u32 attr);
+    virtual void onMessageEnd(u32 attr);
+    virtual void onChoice(u32 attr);
 
     void openTalk(const char *name, u32 flag);
     void execAct0E();
@@ -413,7 +365,7 @@ extern "C" BOOL RoomTelephone_IsTalking() {
 
 void RoomTelephone::openTalk(const char *name, u32 flag) {
     TalkWindowState *p = (TalkWindowState *)TalkWindow_Get(0);
-    vfunc_s08();
+    vfunc_08();
     setFileName(name);
     msgIndex = flag;
     TalkWindowState_attachRequest(p, this);
@@ -664,7 +616,7 @@ void RoomTelephone::openChoices(PhoneChoiceSet *p, s32 v) {
     TalkWindowState_openChoices(m, 1);
 }
 
-void RoomTelephone::onMessageEnd() {
+void RoomTelephone::onMessageEnd(u32) {
     TalkWindowState *m = unk_3c;
     switch (msgIndex) {
     case 0x1b:
@@ -693,7 +645,7 @@ void RoomTelephone::onMessageEnd() {
     }
 }
 
-void RoomTelephone::onMessageStart() {
+void RoomTelephone::onMessageStart(u32) {
     TalkWindowState *m = unk_3c;
     switch (msgIndex) {
     case 0xe:

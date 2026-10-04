@@ -5,7 +5,9 @@ _ZN9SpNpcLyle8vfunc_4cEjh kind:label(thumb) addr:0x02271414
 _ZN9SpNpcLyle8vfunc_48Ev kind:function(thumb,size=0x20) addr:0x02271464
 _ZN9SpNpcLyle8vfunc_48EPv kind:label(thumb) addr:0x02271464
 _ZN13SpNpcLyleTalk8onChoiceEv kind:function(thumb,size=0x188) addr:0x02271484
+_ZN13SpNpcLyleTalk8onChoiceEj kind:label(thumb) addr:0x02271484
 _ZN13SpNpcLyleTalk12onMessageEndEv kind:function(thumb,size=0x1f4) addr:0x0227160c
+_ZN13SpNpcLyleTalk12onMessageEndEj kind:label(thumb) addr:0x0227160c
 _ZN13SpNpcLyleTalk5startEP12TalkStartMsg kind:function(thumb,size=0xdc) addr:0x02271800
 _ZN13SpNpcLyleTalk11attachOwnerEP9SpNpcLyle kind:function(thumb,size=0x28) addr:0x022718dc
 _ZN13SpNpcLyleTalk8vfunc_08Ev kind:function(thumb,size=0x3c) addr:0x02271904
@@ -21,6 +23,7 @@ _ZN13SpNpcLyleTalk13setNextScriptEi kind:function(thumb,size=0x10) addr:0x02271a
 _ZN13SpNpcLyleTalk9setScriptEi kind:function(thumb,size=0x10) addr:0x02271ae8
 _ZN13SpNpcLyleTalk9getScriptEPMS_FvvEi kind:function(thumb,size=0x54) addr:0x02271af8
 _ZN13SpNpcLyleTalk10onTaskDoneEv kind:function(thumb,size=0x80) addr:0x02271b4c
+_ZN13SpNpcLyleTalk10onTaskDoneEj kind:label(thumb) addr:0x02271b4c
 _ZN9SpNpcLyle9mainAct02Ev kind:function(thumb,size=0x4) addr:0x02271bcc
 _ZN9SpNpcLyle9mainAct04Ev kind:function(thumb,size=0x80) addr:0x02271bd0
 _ZN9SpNpcLyle10setupAct04Ev kind:function(thumb,size=0x50) addr:0x02271c50

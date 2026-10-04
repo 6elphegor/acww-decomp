@@ -12,6 +12,8 @@
 #include "npc/Unk_0201a13c.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
+#include "talk/TalkMsgRequest.h"
+#include "talk/ActorTalkRequest.h"
 
 extern "C" {
 u32 _ZN8NpcActor14getPlayerActorEj(void *p, s32 n);
@@ -26,77 +28,12 @@ void _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(void *self, u32 a, u32 b, u32 c);
 
 
 // ---- SpNpcTestTalk and its bases (vtable 0x020ddcf0 chain) ----
-class TalkMsgRequest {
-public:
-    TalkMsgRequest();
-    virtual ~TalkMsgRequest();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void onMessageStart();
-    virtual void onMessageEnd(void *a);
-    virtual void onChoice();
-    virtual void onSignalTag();
-    virtual void onActionTag0();
-    virtual void onActionTag1();
-    virtual void onActionTag2();
-    virtual void onActionTag3();
-    virtual void onActionTag4();
-    virtual void onConditionTag();
-    virtual void onEventTag(u32 a);
-    virtual void onTag09_0();
-    virtual void onTag09_1();
-    virtual void onTag09_2();
-    virtual void onTag09_3();
-    virtual void onTag09_4();
-    virtual void onTag09_5();
-    virtual void onTag09_6();
-    virtual void onTag09_7();
-    virtual void onTag09_8();
-    virtual void onTag09_9();
-    virtual void onScannedTag();
-    virtual void getSpeakerData();
-    virtual s32 getVoiceType();
-    virtual void onWindowClose();
-    virtual void onTalkEnd();
-
-    /* 0x04 */ u32 fileName[0x38 / 4];
-    /* 0x3c */ u32 unk_3c;
-    /* 0x40 */ u8 unk_40;
-};
 
 struct Unk_020c270c_Out {
     const void *vptr;
     u8 flag;
 };
 
-class ActorTalkRequest : public TalkMsgRequest {
-public:
-    ActorTalkRequest();
-    virtual ~ActorTalkRequest();
-    virtual void vfunc_08();
-    virtual void onConditionTag();
-    virtual void onEventTag(u32 a);
-    virtual void onTag09_0();
-    virtual void onTag09_1();
-    virtual void onTag09_2();
-    virtual void onTag09_3();
-    virtual void onTag09_4();
-    virtual void onTag09_5();
-    virtual void onTag09_6();
-    virtual void onTag09_7();
-    virtual void onTag09_8();
-    virtual void onTag09_9();
-    virtual s32 getVoiceType();
-    virtual void start(Unk_020c270c_Out *out) = 0;
-    virtual void runDeferred();
-    virtual void update();
-    virtual void onTaskDone();
-
-    void *func_02015aac();
-    void func_02015ab0(u32 a);
-
-    u32 pad_44[(0xac - 0x44) / 4];
-};
 
 class SpNpcTestTalk;
 typedef void (SpNpcTestTalk::*Unk_020c2620_Fn)(void *);
@@ -106,8 +43,8 @@ class SpNpcTestTalk : public ActorTalkRequest {
 public:
     SpNpcTestTalk();
     virtual ~SpNpcTestTalk();
-    virtual void onMessageEnd(void *a);
-    virtual void start(Unk_020c270c_Out *out);
+    virtual void onMessageEnd(u32 attr);
+    virtual void start(TalkStartMsg *out);
 
     void onMessageEndPhase00(void *a);
     void dispatchStart(Unk_020c270c_Out *out);
@@ -588,7 +525,8 @@ void SpNpcTestTalk::dispatchStart(Unk_020c270c_Out *out) {
     }
 }
 
-void SpNpcTestTalk::start(Unk_020c270c_Out *out) {
+void SpNpcTestTalk::start(TalkStartMsg *out_) {
+    Unk_020c270c_Out *out = (Unk_020c270c_Out *)out_;
     dispatchStart(out);
 }
 
@@ -602,7 +540,8 @@ char sSpNpcModelCml[] = "npc_sp/model/cml.nsbmd";
 char sSpNpcModelPgb[] = "npc_sp/model/pgb.nsbmd";
 char sSpNpcModelPlb[] = "npc_sp/model/plb.nsbmd";
 
-void SpNpcTestTalk::onMessageEnd(void *a) {
+void SpNpcTestTalk::onMessageEnd(u32 a_) {
+    void *a = (void *)a_;
     static Unk_020c2620_Fn tbl[1] = { &SpNpcTestTalk::onMessageEndPhase00 };
     if (phase >= 0 && phase < 1) {
         if (tbl[phase]) {

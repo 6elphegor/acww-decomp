@@ -15,6 +15,8 @@
 #include "npc/Unk_0201a13c.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
+#include "talk/TalkMsgRequest.h"
+#include "talk/ActorTalkRequest.h"
 
 extern "C" {
 void _ZN8NpcActor14setTalkRequestEP12Unk_0201bc1c(void *a, void *b);
@@ -68,72 +70,7 @@ extern s32 data_020c6cf0;
 
 
 // ---- SpNpcKaitlinTalk and its bases (vtable 0x020ddcf0 chain) ----
-class TalkMsgRequest {
-public:
-    TalkMsgRequest();
-    virtual ~TalkMsgRequest();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void onMessageStart();
-    virtual void onMessageEnd();
-    virtual void onChoice();
-    virtual void onSignalTag();
-    virtual void onActionTag0();
-    virtual void onActionTag1();
-    virtual void onActionTag2();
-    virtual void onActionTag3();
-    virtual void onActionTag4();
-    virtual void onConditionTag();
-    virtual void onEventTag(u32 a);
-    virtual void onTag09_0();
-    virtual void onTag09_1();
-    virtual void onTag09_2();
-    virtual void onTag09_3();
-    virtual void onTag09_4();
-    virtual void onTag09_5();
-    virtual void onTag09_6();
-    virtual void onTag09_7();
-    virtual void onTag09_8();
-    virtual void onTag09_9();
-    virtual void onScannedTag();
-    virtual void getSpeakerData();
-    virtual s32 getVoiceType();
-    virtual void onWindowClose();
-    virtual void onTalkEnd();
 
-    /* 0x04 */ u32 fileName[0x38 / 4];
-    /* 0x3c */ u32 unk_3c;
-    /* 0x40 */ u8 unk_40;
-};
-
-class ActorTalkRequest : public TalkMsgRequest {
-public:
-    ActorTalkRequest();
-    virtual ~ActorTalkRequest();
-    virtual void vfunc_08();
-    virtual void onConditionTag();
-    virtual void onEventTag(u32 a);
-    virtual void onTag09_0();
-    virtual void onTag09_1();
-    virtual void onTag09_2();
-    virtual void onTag09_3();
-    virtual void onTag09_4();
-    virtual void onTag09_5();
-    virtual void onTag09_6();
-    virtual void onTag09_7();
-    virtual void onTag09_8();
-    virtual void onTag09_9();
-    virtual s32 getVoiceType();
-    virtual void start(void *out) = 0;
-    virtual void runDeferred();
-    virtual void update();
-    virtual void onTaskDone();
-
-    void *func_02015aac();
-    void func_02015ab0(u32 a);
-
-    u32 pad_44[(0xac - 0x44) / 4];
-};
 
 struct Unk_020c1d80_Out {
     const char *msgKey;
@@ -150,10 +87,10 @@ class SpNpcKaitlinTalk : public SpNpcTalkRequest {
 public:
     SpNpcKaitlinTalk();
     virtual ~SpNpcKaitlinTalk();
-    virtual void onMessageStart();
-    virtual void onMessageEnd();
-    virtual void onChoice();
-    virtual void start(void *out);
+    virtual void onMessageStart(u32 attr);
+    virtual void onMessageEnd(u32 attr);
+    virtual void onChoice(u32 attr);
+    virtual void start(TalkStartMsg *out);
 
     s32 getTopic();
     void setTopic(s32 v);
@@ -583,7 +520,7 @@ s32 SpNpcKaitlinTalk::getTopic() {
     return topic;
 }
 
-void SpNpcKaitlinTalk::start(void *outp) {
+void SpNpcKaitlinTalk::start(TalkStartMsg *outp) {
     Unk_020c1d80_Out *out = (Unk_020c1d80_Out *)outp;
     void *p = PlayerData_GetCurrent();
     out->msgKey = sSpNpcKaitlinMsgKey;
@@ -619,16 +556,16 @@ void SpNpcKaitlinTalk::start(void *outp) {
     }
 }
 
-void SpNpcKaitlinTalk::onMessageStart() {
+void SpNpcKaitlinTalk::onMessageStart(u32) {
     PlayerData_GetCurrent();
     void *r4 = _ZN10PlayerData18getLostChildRecordEv();
     _ZN16ActorTalkRequest15setTownNameSlotEjj(this, _ZN15LostChildRecord9getTownIdEv(r4), 0);
     _ZN16ActorTalkRequest15setTownNameSlotEjj(this, _ZN15LostChildRecord9getTownIdEv(r4), 1);
 }
 
-void SpNpcKaitlinTalk::onMessageEnd() {}
+void SpNpcKaitlinTalk::onMessageEnd(u32) {}
 
-void SpNpcKaitlinTalk::onChoice() {}
+void SpNpcKaitlinTalk::onChoice(u32) {}
 
 BOOL SpNpcKaitlin::setupAct07() {
     unk_651 = 0;

@@ -26,6 +26,8 @@
 #include "npc/NpcFaceAnim.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
+#include "talk/TalkMsgRequest.h"
+#include "talk/ActorTalkRequest.h"
 
 class FleaMarketBuyerVillagerTalk;
 class FleaMarketBuyerVillager;
@@ -307,60 +309,9 @@ public:
     /* 0x838 */ VillagerMood mood;
 };
 
-// Dialog sub-object at +0x914 of FleaMarketBuyerVillager. Its vtable (0x0224c740) names every slot after the class that last overrides it;
-// declared here slot by slot so that each slot mangles to that symbol.
-class ActorTalkRequest {
-public:
-    ActorTalkRequest();
-    virtual ~ActorTalkRequest();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void onMessageStart(u32 v);
-    virtual void onMessageEnd();
-    virtual void onChoice();
-    virtual void onSignalTag();
-    virtual void onActionTag0();
-    virtual void onActionTag1(u32 v);
-    virtual void onActionTag2(u32 v);
-    virtual void onActionTag3(u32 v);
-    virtual void onActionTag4(u32 v);
-    virtual void onConditionTag();
-    virtual void onEventTag(u32 v);
-    virtual void onTag09_0();
-    virtual void onTag09_1();
-    virtual void onTag09_2();
-    virtual void onTag09_3();
-    virtual void onTag09_4();
-    virtual void onTag09_5();
-    virtual void onTag09_6();
-    virtual void onTag09_7();
-    virtual void onTag09_8();
-    virtual void onTag09_9();
-    virtual void onScannedTag();
-    virtual void getSpeakerData();
-    virtual void getVoiceType();
-    virtual void onWindowClose();
-    virtual void onTalkEnd();
-    virtual void start(void *arg);
-    virtual void runDeferred();
-    virtual void update();
-    virtual void onTaskDone();
-    u8 pad_04[0x1a];
-    u8 msgIndex;
-    u8 pad_1f[0x3c - 0x1f];
-    void *unk_3c;
-    u8 pad_40[0xac - 0x40];
-};
 
-class TalkMsgRequest : public ActorTalkRequest {
-public:
-    virtual void vfunc_0c();
-    virtual void onSignalTag();
-    virtual void onScannedTag();
-    virtual void onTalkEnd();
-};
 
-class Unk_020d7710 : public TalkMsgRequest {
+class Unk_020d7710 : public ActorTalkRequest {
 public:
     virtual void onTag09_4();
     virtual void onTag09_5();
@@ -380,11 +331,11 @@ public:
     virtual void onActionTag3(u32 v);
     virtual void onActionTag4(u32 v);
     virtual void onTag09_9();
-    virtual void getSpeakerData();
+    virtual u32 getSpeakerData();
     virtual void onWindowClose();
     virtual void runDeferred();
     virtual void update();
-    virtual void onTaskDone();
+    virtual void onTaskDone(u32 id);
     u8 pad_ac[0x1a0 - 0xac];
 };
 
@@ -392,11 +343,11 @@ class FleaMarketBuyerVillagerTalk : public VillagerTalk {
 public:
     FleaMarketBuyerVillagerTalk();
     virtual ~FleaMarketBuyerVillagerTalk();
-    virtual void onMessageEnd();
-    virtual void onChoice();
-    virtual void start(void *arg);
+    virtual void onMessageEnd(u32 attr);
+    virtual void onChoice(u32 attr);
+    virtual void start(TalkStartMsg *out);
     virtual void update();
-    virtual void onTaskDone();
+    virtual void onTaskDone(u32 id);
 
     void clearOffer();
     void completePurchase();
@@ -1020,7 +971,7 @@ void FleaMarketBuyerVillagerTalk::update() {
     }
 }
 
-void FleaMarketBuyerVillagerTalk::onTaskDone() {
+void FleaMarketBuyerVillagerTalk::onTaskDone(u32) {
     s32 i = scriptIndex;
     if (sFleaMarketBuyerTalkScripts[i].flag == 0) {
         if (sFleaMarketBuyerTalkScripts[i].fn) {
@@ -1101,7 +1052,7 @@ void FleaMarketBuyerVillagerTalk::completePurchase() {
     }
 }
 
-void FleaMarketBuyerVillagerTalk::start(void *arg) {
+void FleaMarketBuyerVillagerTalk::start(TalkStartMsg *arg) {
     Unk_ov004_022191f8_Out *out = (Unk_ov004_022191f8_Out *)arg;
     u16 tmp;
     void *q = PlayerData_getPlayerId(PlayerData_GetCurrent());
@@ -1171,7 +1122,7 @@ void FleaMarketBuyerVillager::onTalkMelodyPlayed() {
     talkMelodyPlayed = 1;
 }
 
-void FleaMarketBuyerVillagerTalk::onMessageEnd() {
+void FleaMarketBuyerVillagerTalk::onMessageEnd(u32) {
     u8 buf;
     FleaMarketBuyerVillager *b = villager;
     u32 st = b->visitStage;
@@ -1237,7 +1188,7 @@ void FleaMarketBuyerVillagerTalk::clearOffer() {
     villager->targetItem = 0xfff1;
 }
 
-void FleaMarketBuyerVillagerTalk::onChoice() {
+void FleaMarketBuyerVillagerTalk::onChoice(u32) {
     u8 buf;
     u16 tmp;
     u32 sel;

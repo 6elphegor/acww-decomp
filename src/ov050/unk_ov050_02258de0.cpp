@@ -15,6 +15,8 @@
 #include "actor/Actor.h"
 #include "actor/Character.h"
 #include "gfx/ThreeLayerAnimModel.h"
+#include "talk/TalkMsgRequest.h"
+#include "talk/ActorTalkRequest.h"
 
 #define Actor_findByProfile _ZN5Actor13findByProfileEjPS_
 #define VillagerId_getName _ZN10VillagerId7getNameEj
@@ -168,67 +170,9 @@ struct Unk_0201bc1c;
 class NpcActor;
 class SpNpcMabel;
 class SpNpcMabelTalk;
-// Menu-state machine root (main's ActorTalkRequest / TalkMsgRequest / Unk_020d7710 / SpNpcTalkRequest chain).
-class ActorTalkRequest {
-public:
-    ActorTalkRequest();
-    virtual ~ActorTalkRequest();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void onMessageStart();
-    virtual void onMessageEnd();
-    virtual void onChoice(s32 a);
-    virtual void onSignalTag();
-    virtual void onActionTag0();
-    virtual void onActionTag1();
-    virtual void onActionTag2();
-    virtual void onActionTag3();
-    virtual void onActionTag4();
-    virtual void onConditionTag();
-    virtual void onEventTag(u32 v);
-    virtual void onTag09_0();
-    virtual void onTag09_1();
-    virtual void onTag09_2();
-    virtual void onTag09_3();
-    virtual void onTag09_4();
-    virtual void onTag09_5();
-    virtual void onTag09_6();
-    virtual void onTag09_7();
-    virtual void onTag09_8();
-    virtual void onTag09_9();
-    virtual void onScannedTag();
-    virtual void getSpeakerData();
-    virtual void getVoiceType();
-    virtual void onWindowClose();
-    virtual void onTalkEnd();
-    virtual void start(Unk_ov050_0225a888_Out *out);
-    virtual void runDeferred();
-    virtual void update();
-    virtual void onTaskDone();
-    u8 pad_04[0x1a];
-    u8 msgIndex;
-    u8 pad_1f[0x3c - 0x1f];
-    void *unk_3c;
-    u8 pad_40[0xac - 0x40];
-};
 
-class TalkMsgRequest : public ActorTalkRequest {
-public:
-    virtual void vfunc_0c();
-    virtual void onMessageStart();
-    virtual void onSignalTag();
-    virtual void onActionTag0();
-    virtual void onActionTag1();
-    virtual void onActionTag2();
-    virtual void onActionTag3();
-    virtual void onActionTag4();
-    virtual void onScannedTag();
-    virtual void getSpeakerData();
-    virtual void onWindowClose();
-    virtual void onTalkEnd();
-};
 
-class Unk_020d7710 : public TalkMsgRequest {
+class Unk_020d7710 : public ActorTalkRequest {
 public:
     virtual void onTag09_4();
     virtual void onTag09_5();
@@ -350,10 +294,10 @@ public:
     SpNpcNookShopTalk();
     virtual ~SpNpcNookShopTalk();
     virtual void vfunc_08();
-    virtual void onMessageEnd();
-    virtual void onChoice(s32 a);
-    virtual void start(Unk_ov050_0225a888_Out *out);
-    virtual void onTaskDone();
+    virtual void onMessageEnd(u32 attr);
+    virtual void onChoice(u32 attr);
+    virtual void start(TalkStartMsg *out);
+    virtual void onTaskDone(u32 id);
     virtual void pickArbeitStartMsg0B(Unk_ov050_0225b908_Out *out);
     virtual void pickArbeitStartMsg0C(Unk_ov050_0225b908_Out *out);
     virtual void pickArbeitStartMsg0D(Unk_ov050_0225b908_Out *out);
@@ -1641,7 +1585,7 @@ BOOL SpNpcNookShop::mainAct10() {
     return TRUE;
 }
 
-void SpNpcNookShopTalk::onTaskDone() {
+void SpNpcNookShopTalk::onTaskDone(u32) {
     if (pendingMenuHandler) {
         (this->*pendingMenuHandler)();
         pendingMenuHandler = *(Fn *)data_0213a740;
@@ -2939,7 +2883,8 @@ void SpNpcNookShopTalk::arbeitPushPlayerBack(void *h) {
     ownerNpc->changeAct(0x11);
 }
 
-void SpNpcNookShopTalk::start(Unk_ov050_0225a888_Out *out) {
+void SpNpcNookShopTalk::start(TalkStartMsg *out_) {
+    Unk_ov050_0225a888_Out *out = (Unk_ov050_0225a888_Out *)out_;
     s32 flag;
     void *x;
     Unk_ov050_0225a888_Buf l;
@@ -3206,7 +3151,7 @@ extern "C" const s32 data_ov050_0225da40[3] = {0x10000, 0, 0x8000};
 
 extern "C" const u8 sSpNpcNookShopDramaMsgTable[32] = {0x00, 0x01, 0x02, 0x03, 0x00, 0x00, 0x04, 0x05, 0x06, 0x00, 0x00, 0x00, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x00, 0x0c, 0x0d, 0x0e, 0x0f, 0x10, 0x11, 0x12, 0x13, 0x14, 0x00, 0x00, 0x00, 0x00, 0x00};
 
-void SpNpcNookShopTalk::onMessageEnd() {
+void SpNpcNookShopTalk::onMessageEnd(u32) {
     void *h = PlayerData_GetCurrent();
     PlayerData_getErrands(h);
     if (Unk_02097ff4_testFlag(h, 1)) {
@@ -3442,7 +3387,8 @@ extern "C" Unk_ov050_0225d1d4_Ent sSpNpcNookShopActTable[19] = {
 
 // ---------------------------------------------------------------------------------------------------------------------
 
-void SpNpcNookShopTalk::onChoice(s32 a) {
+void SpNpcNookShopTalk::onChoice(u32 a_) {
+    s32 a = (s32)a_;
     static Unk_ov050_0225e4b4_ArgFn tbl[3] = {
         *(SpNpcNookShopTalk::ArgFn *)data_ov050_0225df10,
         *(SpNpcNookShopTalk::ArgFn *)data_ov050_0225e0a0,

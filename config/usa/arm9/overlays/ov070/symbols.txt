@@ -5,7 +5,9 @@ _ZN11SpNpcGracie8vfunc_4cEjh kind:label(thumb) addr:0x02271414
 _ZN11SpNpcGracie8vfunc_48Ev kind:function(thumb,size=0x20) addr:0x02271458
 _ZN11SpNpcGracie8vfunc_48EPv kind:label(thumb) addr:0x02271458
 _ZN15SpNpcGracieTalk8onChoiceEv kind:function(thumb,size=0xac) addr:0x02271478
+_ZN15SpNpcGracieTalk8onChoiceEj kind:label(thumb) addr:0x02271478
 _ZN15SpNpcGracieTalk12onMessageEndEv kind:function(thumb,size=0x2cc) addr:0x02271524
+_ZN15SpNpcGracieTalk12onMessageEndEj kind:label(thumb) addr:0x02271524
 _ZN15SpNpcGracieTalk13dressUpPlayerEv kind:function(thumb,size=0x29c) addr:0x022717f0
 _ZN15SpNpcGracieTalk22hasPocketRoomForOutfitEv kind:function(thumb,size=0x158) addr:0x02271a8c
 SpNpcGracie_IsEmptyItem kind:function(thumb,size=0x14) addr:0x02271be4
@@ -22,6 +24,7 @@ SpNpcGracie_CountUnaskedQuestions kind:function(thumb,size=0x1e) addr:0x02272118
 _ZN15SpNpcGracieTalk12onFeeEnteredEv kind:function(thumb,size=0xa8) addr:0x02272138
 _ZN15SpNpcGracieTalk16setResultHandlerEi kind:function(thumb,size=0x4c) addr:0x022721e0
 _ZN15SpNpcGracieTalk10onTaskDoneEv kind:function(thumb,size=0x44) addr:0x0227222c
+_ZN15SpNpcGracieTalk10onTaskDoneEj kind:label(thumb) addr:0x0227222c
 _ZN15SpNpcGracieTalk8vfunc_08Ev kind:function(thumb,size=0x24) addr:0x02272270
 _ZN11SpNpcGracie9mainAct02Ev kind:function(thumb,size=0x4) addr:0x02272294
 _ZN11SpNpcGracie9mainAct01Ev kind:function(thumb,size=0x2c) addr:0x02272298

@@ -6,13 +6,15 @@
 #include "gfx/Unk_ov004_Quad.h"
 #include "actor/Unk_ov004_SceneEntry.h"
 #include "game/Unk_020d77a4_Vec3.h"
-#include "talk/Unk_02015b54.h"
 #include "town/Unk_0204e858_Grid.h"
 #include "npc/Unk_ov004_0221572c_Sub.h"
 #include "game/Unk_ov004_02215c94_V.h"
 #include "talk/MsgString9B.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
+#include "talk/TalkMsgRequest.h"
+#include "talk/ActorTalkRequest.h"
+#include "talk/TalkWindowState.h"
 
 extern "C" {
 struct Unk_ov004_02215c94_S : Unk_ov004_02215c94_V {
@@ -99,7 +101,7 @@ public:
 
 // ---------------------------------------------------------------------------------------------------------------------
 
-class Unk_020d7710 : public Unk_02015b54 {
+class Unk_020d7710 : public ActorTalkRequest {
 public:
     virtual void onTag09_4();
     virtual void onTag09_5();
@@ -108,28 +110,10 @@ public:
     virtual void onTag09_8();
 };
 
-class ActorTalkRequest : public Unk_020d7710 {
-public:
-    virtual void vfunc_08();
-    virtual void onConditionTag();
-    virtual void onEventTag(u32 a);
-    virtual void onTag09_0();
-    virtual void onTag09_1();
-    virtual void onTag09_2();
-    virtual void onTag09_3();
-    virtual void getVoiceType();
-};
-
-class TalkMsgRequest : public ActorTalkRequest {
-public:
-    virtual void vfunc_0c();
-    virtual void onSignalTag();
-    virtual void onScannedTag();
-    virtual void onTalkEnd();
-};
 
 
-class VillagerTalk : public TalkMsgRequest {
+
+class VillagerTalk : public Unk_020d7710 {
 public:
     VillagerTalk();
     virtual ~VillagerTalk();
@@ -139,17 +123,13 @@ public:
     virtual void onActionTag3(u32 a);
     virtual void onActionTag4(u32 a);
     virtual void onTag09_9();
-    virtual void getSpeakerData();
+    virtual u32 getSpeakerData();
     virtual void onWindowClose();
     virtual void runDeferred();
     virtual void update();
-    virtual void onTaskDone();
+    virtual void onTaskDone(u32 id);
 
-    u8 pad_04[0x1e - 4];
-    u8 msgIndex;
-    u8 pad_1f[0x3c - 0x1f];
-    Unk_ov004_0221572c_Sub *unk_3c;
-    u8 pad_40[0x1a0 - 0x40];
+    /* 0xac */ u8 pad_ac[0x1a0 - 0xac];
 };
 
 class BirthdayGuestVillager;
@@ -157,10 +137,10 @@ class BirthdayGuestVillager;
 class BirthdayGuestVillagerTalk : public VillagerTalk {
 public:
     BirthdayGuestVillagerTalk() {}
-    virtual void onMessageStart();
-    virtual void onMessageEnd();
-    virtual void onChoice();
-    virtual void start(void *arg);
+    virtual void onMessageStart(u32 attr);
+    virtual void onMessageEnd(u32 attr);
+    virtual void onChoice(u32 attr);
+    virtual void start(TalkStartMsg *out);
 
     void attachOwner(VillagerActor *owner);
     void setTalked();
@@ -588,7 +568,7 @@ void BirthdayGuestVillagerTalk::attachOwner(VillagerActor *owner) {
     villager = (BirthdayGuestVillager *)owner;
 }
 
-void BirthdayGuestVillagerTalk::start(void *arg) {
+void BirthdayGuestVillagerTalk::start(TalkStartMsg *arg) {
     BirthdayGuestVillager *o = villager;
     u32 *out = (u32 *)arg;
     VillagerId_makeFileName(VillagerData_getVillagerId(o->villagerData), sBirthdayGuestMsgFile, 0x28, (u32)"ev_nbirth");
@@ -629,11 +609,11 @@ void BirthdayGuestVillagerTalk::start(void *arg) {
     }
 }
 
-void BirthdayGuestVillagerTalk::onMessageStart() {}
+void BirthdayGuestVillagerTalk::onMessageStart(u32) {}
 
-void BirthdayGuestVillagerTalk::onMessageEnd() {}
+void BirthdayGuestVillagerTalk::onMessageEnd(u32) {}
 
-void BirthdayGuestVillagerTalk::onChoice() {}
+void BirthdayGuestVillagerTalk::onChoice(u32) {}
 
 BOOL BirthdayGuestVillager::changeAct(s32 idx) {
     static Unk_ov004_0224c228_BFn tbl[7] = {

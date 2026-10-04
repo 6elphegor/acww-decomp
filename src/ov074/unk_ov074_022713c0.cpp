@@ -18,6 +18,8 @@
 #include "actor/Actor.h"
 #include "actor/Character.h"
 #include "player/PlayerData.h"
+#include "talk/TalkMsgRequest.h"
+#include "talk/ActorTalkRequest.h"
 
 
 struct Unk_0201bc1c;
@@ -170,70 +172,9 @@ BOOL TownMap_IsPosWalkable(void *a, s32 b);
 void NpcLookAt_setTarget(void *p, s32 a, s32 b, s32 c, s32 *d, s32 e, s32 f, s32 g);
 }
 
-class ActorTalkRequest {
-public:
-    ActorTalkRequest();
-    virtual ~ActorTalkRequest();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void onMessageStart();
-    virtual void onMessageEnd();
-    virtual void onChoice();
-    virtual void onSignalTag();
-    virtual void onActionTag0();
-    virtual void onActionTag1();
-    virtual void onActionTag2();
-    virtual void onActionTag3();
-    virtual void onActionTag4();
-    virtual void onConditionTag();
-    virtual void onEventTag(u32 v);
-    virtual void onTag09_0();
-    virtual void onTag09_1();
-    virtual void onTag09_2();
-    virtual void onTag09_3();
-    virtual void onTag09_4();
-    virtual void onTag09_5();
-    virtual void onTag09_6();
-    virtual void onTag09_7();
-    virtual void onTag09_8();
-    virtual void onTag09_9();
-    virtual void onScannedTag();
-    virtual void getSpeakerData();
-    virtual void getVoiceType();
-    virtual void onWindowClose();
-    virtual void onTalkEnd();
-    virtual void start(TalkStartMsg *out);
-    virtual void runDeferred();
-    virtual void update();
-    s32 getChoiceList();
-    void func_02015ab0(u32 a);
-    u32 func_02015aac();
-    void setPlayerNameSlot(u32 a, u32 b);
-    void setTownNameSlot(u32 a, u32 b);
-    u8 pad_04[0x1a];
-    u8 msgIndex;
-    u8 pad_1f[0x3c - 0x1f];
-    void *unk_3c;
-    u8 pad_40[0xac - 0x40];
-};
 
-class TalkMsgRequest : public ActorTalkRequest {
-public:
-    virtual void vfunc_0c();
-    virtual void onMessageStart();
-    virtual void onSignalTag();
-    virtual void onActionTag0();
-    virtual void onActionTag1();
-    virtual void onActionTag2();
-    virtual void onActionTag3();
-    virtual void onActionTag4();
-    virtual void onScannedTag();
-    virtual void getSpeakerData();
-    virtual void onWindowClose();
-    virtual void onTalkEnd();
-};
 
-class Unk_020d7710 : public TalkMsgRequest {
+class Unk_020d7710 : public ActorTalkRequest {
 public:
     virtual void onTag09_4();
     virtual void onTag09_5();
@@ -270,10 +211,10 @@ public:
 
     SpNpcBlancaTalk();
     virtual ~SpNpcBlancaTalk();
-    virtual void onMessageEnd();
-    virtual void onChoice();
+    virtual void onMessageEnd(u32 attr);
+    virtual void onChoice(u32 attr);
     virtual void start(TalkStartMsg *out);
-    virtual void onTaskDone();
+    virtual void onTaskDone(u32 id);
 
     void attachOwner(SpNpcBlanca *o);
     BOOL onConceptChosen();
@@ -757,7 +698,7 @@ BOOL SpNpcBlanca::mainAct00() {
 BOOL SpNpcBlanca::mainAct01() { return TRUE; }
 
 BOOL SpNpcBlanca::setupAct04() {
-    u32 a = talk.func_02015aac();
+    u32 a = (u32)talk.func_02015aac();
     s32 b = rotY;
     if (a != 0) {
         b = NpcActor_getAngleTo(this, a);
@@ -768,7 +709,7 @@ BOOL SpNpcBlanca::setupAct04() {
 
 BOOL SpNpcBlanca::mainAct04() { return TRUE; }
 
-void SpNpcBlancaTalk::onTaskDone() {
+void SpNpcBlancaTalk::onTaskDone(u32) {
     if (resultHandler != 0) {
         (this->*resultHandler)();
         resultHandler = *(Fn *)__ptmf_null;
@@ -917,7 +858,7 @@ next:
     func_02072064(&l);
 }
 
-void SpNpcBlancaTalk::onMessageEnd() {
+void SpNpcBlancaTalk::onMessageEnd(u32) {
     u8 buf[1];
     char *name = ((char *)"sp_npc_mysterycat");
     s32 t = 0xff;
@@ -949,7 +890,7 @@ void SpNpcBlancaTalk::onMessageEnd() {
     }
 }
 
-void SpNpcBlancaTalk::onChoice() {
+void SpNpcBlancaTalk::onChoice(u32) {
     u8 buf[1];
     Unk_ov074_02271564_A l;
     Unk_ov074_02271564_B m;

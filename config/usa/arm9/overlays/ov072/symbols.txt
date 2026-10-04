@@ -5,7 +5,9 @@ _ZN13SpNpcGulliver8vfunc_4cEjh kind:label(thumb) addr:0x02271414
 _ZN13SpNpcGulliver8vfunc_48Ev kind:function(thumb,size=0x20) addr:0x02271474
 _ZN13SpNpcGulliver8vfunc_48EPv kind:label(thumb) addr:0x02271474
 _ZN17SpNpcGulliverTalk8onChoiceEv kind:function(thumb,size=0x12) addr:0x02271494
+_ZN17SpNpcGulliverTalk8onChoiceEj kind:label(thumb) addr:0x02271494
 _ZN17SpNpcGulliverTalk12onMessageEndEv kind:function(thumb,size=0x114) addr:0x022714a8
+_ZN17SpNpcGulliverTalk12onMessageEndEj kind:label(thumb) addr:0x022714a8
 _ZN17SpNpcGulliverTalk5startEP12TalkStartMsg kind:function(thumb,size=0x158) addr:0x022715bc
 _ZN17SpNpcGulliverTalk11attachOwnerEP13SpNpcGulliver kind:function(thumb,size=0x22) addr:0x02271714
 _ZN17SpNpcGulliverTalkD0Ev kind:function(thumb,size=0x20) addr:0x02271738
@@ -14,6 +16,7 @@ _ZN17SpNpcGulliverTalkC1Ev kind:function(thumb,size=0x18) addr:0x02271770
 _ZN17SpNpcGulliverTalk12scriptWakeUpEv kind:function(thumb,size=0x138) addr:0x02271788
 _ZN17SpNpcGulliverTalk9setScriptEi kind:function(thumb,size=0xe) addr:0x022718c0
 _ZN17SpNpcGulliverTalk10onTaskDoneEv kind:function(thumb,size=0x50) addr:0x022718d0
+_ZN17SpNpcGulliverTalk10onTaskDoneEj kind:label(thumb) addr:0x022718d0
 _ZN17SpNpcGulliverTalk6updateEv kind:function(thumb,size=0x44) addr:0x02271920
 _ZN13SpNpcGulliver9mainAct03Ev kind:function(thumb,size=0x4) addr:0x02271964
 _ZN13SpNpcGulliver9mainAct02Ev kind:function(thumb,size=0x68) addr:0x02271968

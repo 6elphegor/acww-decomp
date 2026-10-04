@@ -15,6 +15,8 @@
 #include "actor/Actor.h"
 #include "actor/Character.h"
 #include "gfx/ThreeLayerAnimModel.h"
+#include "talk/TalkMsgRequest.h"
+#include "talk/ActorTalkRequest.h"
 
 
 struct Unk_0201bc1c;
@@ -107,68 +109,9 @@ void _ZN11NpcMoveCtrl16resetDestinationEv(void *p);
 void _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(void *self, u8 a, s32 b, s32 c, Unk_ov073_Vec *v, s32 d, s32 e, u8 f);
 }
 
-class ActorTalkRequest {
-public:
-    ActorTalkRequest();
-    virtual ~ActorTalkRequest();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void onMessageStart();
-    virtual void onMessageEnd();
-    virtual void onChoice();
-    virtual void onSignalTag();
-    virtual void onActionTag0();
-    virtual void onActionTag1();
-    virtual void onActionTag2();
-    virtual void onActionTag3();
-    virtual void onActionTag4();
-    virtual void onConditionTag();
-    virtual void onEventTag(u32 v);
-    virtual void onTag09_0();
-    virtual void onTag09_1();
-    virtual void onTag09_2();
-    virtual void onTag09_3();
-    virtual void onTag09_4();
-    virtual void onTag09_5();
-    virtual void onTag09_6();
-    virtual void onTag09_7();
-    virtual void onTag09_8();
-    virtual void onTag09_9();
-    virtual void onScannedTag();
-    virtual void getSpeakerData();
-    virtual void getVoiceType();
-    virtual void onWindowClose();
-    virtual void onTalkEnd();
-    virtual void start(void *out);
-    virtual void runDeferred();
-    virtual void update();
-    virtual void onTaskDone();   // vtable slot 0x84 (Unk_020d7710 labels used to call it vfunc_88); always overridden here
-    void *func_02015aac();
-    void func_02015ab0(u32 a);
-    /* 0x04 */ u8 pad_04[0x1a];
-    /* 0x1e */ u8 msgIndex;
-    /* 0x1f */ u8 pad_1f[0x1d];
-    /* 0x3c */ void *unk_3c;
-    /* 0x40 */ u8 pad_40[0x6c];
-};
 
-class TalkMsgRequest : public ActorTalkRequest {
-public:
-    virtual void vfunc_0c();
-    virtual void onMessageStart();
-    virtual void onSignalTag();
-    virtual void onActionTag0();
-    virtual void onActionTag1();
-    virtual void onActionTag2();
-    virtual void onActionTag3();
-    virtual void onActionTag4();
-    virtual void onScannedTag();
-    virtual void getSpeakerData();
-    virtual void onWindowClose();
-    virtual void onTalkEnd();
-};
 
-class Unk_020d7710 : public TalkMsgRequest {
+class Unk_020d7710 : public ActorTalkRequest {
 public:
     void setSubSceneKind(u32 a, u32 b);
     void openSubScene(s32 a);
@@ -194,10 +137,10 @@ public:
     SpNpcJoanTalk();
     virtual ~SpNpcJoanTalk();
     virtual void vfunc_08();
-    virtual void onMessageEnd();
-    virtual void onChoice();
-    virtual void start(void *out);
-    virtual void onTaskDone();
+    virtual void onMessageEnd(u32 attr);
+    virtual void onChoice(u32 attr);
+    virtual void start(TalkStartMsg *out);
+    virtual void onTaskDone(u32 id);
 
     void attachOwner(s32 v);
     BOOL giveTurnips();
@@ -656,7 +599,7 @@ BOOL SpNpcJoan::mainAct04() {
     return TRUE;
 }
 
-void SpNpcJoanTalk::onTaskDone() {
+void SpNpcJoanTalk::onTaskDone(u32) {
     if (resultHandler) {
         (this->*resultHandler)();
         resultHandler = *(Fn *)__ptmf_null;
@@ -781,7 +724,7 @@ void SpNpcJoanTalk::attachOwner(s32 v) {
     boughtSeeds = 0;
 }
 
-void SpNpcJoanTalk::start(void *p) {
+void SpNpcJoanTalk::start(TalkStartMsg *p) {
     Unk_ov073_Out *out = (Unk_ov073_Out *)p;
     if (topic == 0) {
         if (Talk_CheckAndSetPlayerFlag(3, 1)) {
@@ -794,7 +737,7 @@ void SpNpcJoanTalk::start(void *p) {
     }
 }
 
-void SpNpcJoanTalk::onMessageEnd() {
+void SpNpcJoanTalk::onMessageEnd(u32) {
     u8 buf[2];
     s32 cmd;
     const char *str = sSpNpcJoanKey;
@@ -830,7 +773,7 @@ void SpNpcJoanTalk::onMessageEnd() {
 // overlay. Around the block mwcc generates the original prologue and epilogue itself (`push {r4-r6, lr}; sub sp, #16`
 // ... `add sp, #16; pop {r4-r6}; pop {r3}; bx r3`) from the registers the block writes and the 16-byte local.
 #ifdef NONMATCHING
-void SpNpcJoanTalk::onChoice() {
+void SpNpcJoanTalk::onChoice(u32) {
     u8 buf[2];
     u16 a, b, c;
     s32 res;
@@ -981,7 +924,7 @@ end:
     }
 }
 #else
-void SpNpcJoanTalk::onChoice() {
+void SpNpcJoanTalk::onChoice(u32) {
     u32 frame[4];   // sp+0: two outgoing stack arguments, sp+8: u8 buf[2], sp+10/12/14: three u16 temporaries
     asm {
     mov r5, r0

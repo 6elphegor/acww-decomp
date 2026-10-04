@@ -19,6 +19,8 @@
 #include "actor/Actor.h"
 #include "actor/Character.h"
 #include "gfx/ThreeLayerAnimModel.h"
+#include "talk/TalkMsgRequest.h"
+#include "talk/ActorTalkRequest.h"
 
 
 
@@ -26,68 +28,9 @@ struct Unk_0201bc1c;
 class SpNpcRover;
 
 
-class ActorTalkRequest {
-public:
-    ActorTalkRequest();
-    virtual ~ActorTalkRequest();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void onMessageStart();
-    virtual void onMessageEnd();
-    virtual void onChoice();
-    virtual void onSignalTag();
-    virtual void onActionTag0();
-    virtual void onActionTag1();
-    virtual void onActionTag2();
-    virtual void onActionTag3();
-    virtual void onActionTag4();
-    virtual void onConditionTag();
-    virtual void onEventTag(u32 v);
-    virtual void onTag09_0();
-    virtual void onTag09_1();
-    virtual void onTag09_2();
-    virtual void onTag09_3();
-    virtual void onTag09_4();
-    virtual void onTag09_5();
-    virtual void onTag09_6();
-    virtual void onTag09_7();
-    virtual void onTag09_8();
-    virtual void onTag09_9();
-    virtual void onScannedTag();
-    virtual void getSpeakerData();
-    virtual void getVoiceType();
-    virtual void onWindowClose();
-    virtual void onTalkEnd();
-    virtual void start(TalkStartMsg *out);
-    virtual void runDeferred();
-    virtual void update();
-    virtual void onTaskDone();
-    void *func_02015aac();
-    void func_02015ab0(u32 p);
-    u8 pad_04[0x1a];
-    u8 msgIndex;
-    u8 pad_1f[0x3c - 0x1f];
-    TalkWindowState *unk_3c;
-    u8 pad_40[0xac - 0x40];
-};
 
-class TalkMsgRequest : public ActorTalkRequest {
-public:
-    virtual void vfunc_0c();
-    virtual void onMessageStart();
-    virtual void onSignalTag();
-    virtual void onActionTag0();
-    virtual void onActionTag1();
-    virtual void onActionTag2();
-    virtual void onActionTag3();
-    virtual void onActionTag4();
-    virtual void onScannedTag();
-    virtual void getSpeakerData();
-    virtual void onWindowClose();
-    virtual void onTalkEnd();
-};
 
-class Unk_020d7710 : public TalkMsgRequest {
+class Unk_020d7710 : public ActorTalkRequest {
 public:
     virtual void onTag09_4();
     virtual void onTag09_5();
@@ -251,11 +194,11 @@ class SpNpcRoverTalk : public SpNpcTalkRequest {
 public:
     SpNpcRoverTalk();
     virtual ~SpNpcRoverTalk();
-    virtual void onMessageEnd();
-    virtual void onChoice();
+    virtual void onMessageEnd(u32 attr);
+    virtual void onChoice(u32 attr);
     virtual void start(TalkStartMsg *out);
     virtual void update();
-    virtual void onTaskDone();
+    virtual void onTaskDone(u32 id);
 
     void waitTagModeStop();
     void waitLidOpen();
@@ -492,7 +435,7 @@ void SpNpcRoverTalk::start(TalkStartMsg *out) {
     out->msgIndex = 0x38;
 }
 
-void SpNpcRoverTalk::onMessageEnd() {
+void SpNpcRoverTalk::onMessageEnd(u32) {
     u8 m[4];
     void *r6 = unk_3c;
     switch (msgIndex) {
@@ -523,7 +466,7 @@ void SpNpcRoverTalk::onMessageEnd() {
     }
 }
 
-void SpNpcRoverTalk::onChoice() {
+void SpNpcRoverTalk::onChoice(u32) {
     s32 t = _ZN10ChoiceList9getResultEv(_ZN15TalkWindowState13getChoiceListEv(unk_3c));
     if (msgIndex == 0x3a && t == 1) {
         Comm_EndOv067Mode();
@@ -539,7 +482,7 @@ void SpNpcRoverTalk::update() {
     }
 }
 
-void SpNpcRoverTalk::onTaskDone() {
+void SpNpcRoverTalk::onTaskDone(u32) {
     u32 i = script;
     if (data_ov055_022598d4[i].flag == 0) {
         if (sSpNpcRoverTalkScripts[i].fn) {

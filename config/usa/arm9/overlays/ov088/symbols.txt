@@ -7,7 +7,9 @@ _ZN11SpNpcShrunk8vfunc_4cEjh kind:label(thumb) addr:0x0227144c
 _ZN11SpNpcShrunk8vfunc_48Ev kind:function(thumb,size=0x20) addr:0x0227149c
 _ZN11SpNpcShrunk8vfunc_48EPv kind:label(thumb) addr:0x0227149c
 _ZN15SpNpcShrunkTalk8onChoiceEv kind:function(thumb,size=0xa8) addr:0x022714bc
+_ZN15SpNpcShrunkTalk8onChoiceEj kind:label(thumb) addr:0x022714bc
 _ZN15SpNpcShrunkTalk12onMessageEndEv kind:function(thumb,size=0x94) addr:0x02271564
+_ZN15SpNpcShrunkTalk12onMessageEndEj kind:label(thumb) addr:0x02271564
 _ZN15SpNpcShrunkTalk5startEP12TalkStartMsg kind:function(thumb,size=0x5c) addr:0x022715f8
 _ZN15SpNpcShrunkTalk11attachOwnerEP11SpNpcShrunk kind:function(thumb,size=0x44) addr:0x02271654
 _ZN15SpNpcShrunkTalkD0Ev kind:function(thumb,size=0x20) addr:0x02271698
@@ -19,6 +21,7 @@ _ZN15SpNpcShrunkTalk23scriptOpenEmotionChoiceEv kind:function(thumb,size=0x3a) a
 _ZN15SpNpcShrunkTalk17scriptFirstLessonEv kind:function(thumb,size=0xa8) addr:0x02271824
 _ZN15SpNpcShrunkTalk9setScriptEi kind:function(thumb,size=0xe) addr:0x022718cc
 _ZN15SpNpcShrunkTalk10onTaskDoneEv kind:function(thumb,size=0x50) addr:0x022718dc
+_ZN15SpNpcShrunkTalk10onTaskDoneEj kind:label(thumb) addr:0x022718dc
 _ZN15SpNpcShrunkTalk6updateEv kind:function(thumb,size=0x44) addr:0x0227192c
 _ZN15SpNpcShrunkTalk15openEmotionPageEi kind:function(thumb,size=0x150) addr:0x02271970
 _ZN15SpNpcShrunkTalk26pickRandomUnlearnedEmotionEPhi kind:function(thumb,size=0x3c) addr:0x02271ac0

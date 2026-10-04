@@ -18,6 +18,8 @@
 #include "actor/Actor.h"
 #include "actor/Character.h"
 #include "gfx/ThreeLayerAnimModel.h"
+#include "talk/TalkMsgRequest.h"
+#include "talk/ActorTalkRequest.h"
 
 
 // Real (mangled) names of other modules' functions that the unit calls as plain functions taking the object first.
@@ -125,69 +127,9 @@ s32 SpNpcPete_IsInFocusBox(void *self, void *a, void *b);
 }
 
 
-class ActorTalkRequest {
-public:
-    ActorTalkRequest();
-    virtual ~ActorTalkRequest();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void onMessageStart();
-    virtual void onMessageEnd();
-    virtual void onChoice();
-    virtual void onSignalTag();
-    virtual void onActionTag0();
-    virtual void onActionTag1();
-    virtual void onActionTag2();
-    virtual void onActionTag3();
-    virtual void onActionTag4();
-    virtual void onConditionTag();
-    virtual void onEventTag(u32 v);
-    virtual void onTag09_0();
-    virtual void onTag09_1();
-    virtual void onTag09_2();
-    virtual void onTag09_3();
-    virtual void onTag09_4();
-    virtual void onTag09_5();
-    virtual void onTag09_6();
-    virtual void onTag09_7();
-    virtual void onTag09_8();
-    virtual void onTag09_9();
-    virtual void onScannedTag();
-    virtual void getSpeakerData();
-    virtual void getVoiceType();
-    virtual void onWindowClose();
-    virtual void onTalkEnd();
-    virtual void start(TalkStartMsg *out);
-    virtual void runDeferred();
-    virtual void update();
-    virtual void onTaskDone();
-    void *func_02015aac();
-    void func_02015ab0(u32 p);
-    void getChoiceList();
-    u8 pad_04[0x1a];
-    u8 msgIndex;
-    u8 pad_1f[0x3c - 0x1f];
-    TalkWindowState *unk_3c;
-    u8 pad_40[0xac - 0x40];
-};
 
-class TalkMsgRequest : public ActorTalkRequest {
-public:
-    virtual void vfunc_0c();
-    virtual void onMessageStart();
-    virtual void onSignalTag();
-    virtual void onActionTag0();
-    virtual void onActionTag1();
-    virtual void onActionTag2();
-    virtual void onActionTag3();
-    virtual void onActionTag4();
-    virtual void onScannedTag();
-    virtual void getSpeakerData();
-    virtual void onWindowClose();
-    virtual void onTalkEnd();
-};
 
-class Unk_020d7710 : public TalkMsgRequest {
+class Unk_020d7710 : public ActorTalkRequest {
 public:
     virtual void onTag09_4();
     virtual void onTag09_5();
@@ -207,11 +149,11 @@ class SpNpcPeteTalk : public SpNpcTalkRequest {
 public:
     SpNpcPeteTalk();
     virtual ~SpNpcPeteTalk();
-    virtual void onMessageEnd();
-    virtual void onChoice();
+    virtual void onMessageEnd(u32 attr);
+    virtual void onChoice(u32 attr);
     virtual void start(TalkStartMsg *out);
     virtual void update();
-    virtual void onTaskDone();
+    virtual void onTaskDone(u32 id);
 
     void attachOwner(void *owner);
     void scriptWakeUp();
@@ -783,7 +725,7 @@ void SpNpcPeteTalk::update() {
     }
 }
 
-void SpNpcPeteTalk::onTaskDone() {
+void SpNpcPeteTalk::onTaskDone(u32) {
     s32 i = script * 12;
     if (((u8 *)&sSpNpcPeteTalkScripts[0].kind)[i] == 0) {
         Unk_ov075_022722f0_Ent *e = (Unk_ov075_022722f0_Ent *)((u8 *)sSpNpcPeteTalkScripts + i);
@@ -861,7 +803,7 @@ void SpNpcPeteTalk::start(TalkStartMsg *out) {
     out->msgKey = "sp_npc_mpelican";
 }
 
-void SpNpcPeteTalk::onMessageEnd() {
+void SpNpcPeteTalk::onMessageEnd(u32) {
     PlayerData_GetCurrent();
     if (msgIndex == 0x1a) {
         Unk_020d7710_requestCloseWindow(this, 0);
@@ -869,7 +811,7 @@ void SpNpcPeteTalk::onMessageEnd() {
     }
 }
 
-void SpNpcPeteTalk::onChoice() {
+void SpNpcPeteTalk::onChoice(u32) {
     getChoiceList();
     s32 r = ChoiceList_getResult();
 }

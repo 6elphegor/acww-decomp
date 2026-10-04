@@ -30,6 +30,8 @@
 #include "actor/Actor.h"
 #include "actor/Character.h"
 #include "talk/EncodedString16Buf.h"
+#include "talk/TalkMsgRequest.h"
+#include "talk/ActorTalkRequest.h"
 #define VillagerId_makeFileName _ZN10VillagerId12makeFileNameEPvjj
 #define Unk_02013474_enableFootsteps _ZN12Unk_0201347415enableFootstepsEv
 #define NpcTalkCtrl_requestTalk _ZN11NpcTalkCtrl11requestTalkEhh
@@ -144,60 +146,9 @@ public:
     /* 0x838 */ VillagerMood mood;
 };
 
-// Dialog sub-object at +0x914 of FleaMarketBuyerVillager. Its vtable (0x0224c740) names every slot after the class that last overrides it;
-// declared here slot by slot so that each slot mangles to that symbol.
-class ActorTalkRequest {
-public:
-    ActorTalkRequest();
-    virtual ~ActorTalkRequest();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void onMessageStart(u32 v);
-    virtual void onMessageEnd(u32 v);
-    virtual void onChoice(u32 v);
-    virtual void onSignalTag();
-    virtual void onActionTag0();
-    virtual void onActionTag1(u32 v);
-    virtual void onActionTag2(u32 v);
-    virtual void onActionTag3(u32 v);
-    virtual void onActionTag4(u32 v);
-    virtual void onConditionTag();
-    virtual void onEventTag(u32 v);
-    virtual void onTag09_0();
-    virtual void onTag09_1();
-    virtual void onTag09_2();
-    virtual void onTag09_3();
-    virtual void onTag09_4();
-    virtual void onTag09_5();
-    virtual void onTag09_6();
-    virtual void onTag09_7();
-    virtual void onTag09_8();
-    virtual void onTag09_9();
-    virtual void onScannedTag();
-    virtual void getSpeakerData();
-    virtual void getVoiceType();
-    virtual void onWindowClose();
-    virtual void onTalkEnd();
-    virtual void start(void *arg);
-    virtual void runDeferred();
-    virtual void update();
-    virtual void onTaskDone();
-    u8 pad_04[0x1a];
-    u8 msgIndex;
-    u8 pad_1f[0x3c - 0x1f];
-    TalkWindowState *unk_3c;
-    u8 pad_40[0xac - 0x40];
-};
 
-class TalkMsgRequest : public ActorTalkRequest {
-public:
-    virtual void vfunc_0c();
-    virtual void onSignalTag();
-    virtual void onScannedTag();
-    virtual void onTalkEnd();
-};
 
-class Unk_020d7710 : public TalkMsgRequest {
+class Unk_020d7710 : public ActorTalkRequest {
 public:
     virtual void onTag09_4();
     virtual void onTag09_5();
@@ -216,18 +167,18 @@ public:
     virtual void onMessageStart(u32 v);
     virtual void onMessageEnd(u32 v);
     virtual void onChoice(u32 v);
-    virtual void start(void *arg);
+    virtual void start(TalkStartMsg *out);
     virtual void onActionTag0();
     virtual void onActionTag1(u32 v);
     virtual void onActionTag2(u32 v);
     virtual void onActionTag3(u32 v);
     virtual void onActionTag4(u32 v);
     virtual void onTag09_9();
-    virtual void getSpeakerData();
+    virtual u32 getSpeakerData();
     virtual void onWindowClose();
     virtual void runDeferred();
     virtual void update();
-    virtual void onTaskDone();
+    virtual void onTaskDone(u32 id);
     u8 pad_ac[0x1a0 - 0xac];
 };
 
@@ -313,7 +264,7 @@ public:
     virtual void onMessageStart(u32 a);
     virtual void onMessageEnd(u32 a);
     virtual void onChoice(u32 a);
-    virtual void start(void *arg);
+    virtual void start(TalkStartMsg *out);
 
     void attachOwner(HouseVisitVillager *owner);
 
@@ -834,7 +785,7 @@ void HouseVisitVillagerTalk::attachOwner(HouseVisitVillager *owner) {
     unk_1a0 = owner;
 }
 
-void HouseVisitVillagerTalk::start(void *arg) {
+void HouseVisitVillagerTalk::start(TalkStartMsg *arg) {
     using namespace sB;
     Unk_ov068_02270a6c_Out *out = (Unk_ov068_02270a6c_Out *)arg;
     out->msgKey = sHouseVisitMsgFileName;
@@ -923,11 +874,11 @@ void HouseVisitVillagerTalk::start(void *arg) {
     } else if (rnd < 70) {
         unk_1a0->talkTopic = 0;
         setTopicFns((Unk_020d8938_Tbl *)sHouseVisitTsuTopicTable);
-        VillagerTalk::start(out);
+        VillagerTalk::start((TalkStartMsg *)out);
     } else {
         unk_1a0->talkTopic = 0;
         setTopicFns((Unk_020d8938_Tbl *)data_021be810);
-        VillagerTalk::start(out);
+        VillagerTalk::start((TalkStartMsg *)out);
     }
 }
 

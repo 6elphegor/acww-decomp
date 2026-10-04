@@ -15,63 +15,14 @@
 #include "item/ItemName.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
+#include "talk/MsgRequest.h"
+#include "talk/TalkMsgRequest.h"
 
 
 
 
 
-// Secondary base at +0xec (vtable main 0x020ddcf0). MuseumExhibitInfo overrides its slots 0x10, 0x14 and 0x18 with
-// the functions its own vtable has at 0x60, 0x64 and 0x68, so those three slots carry the derived names onMessageStart/onMessageEnd/onChoice here
-// (the thunks are _ZThn236_N17MuseumExhibitInfo14onMessageStartEv ...). The other slots keep the TalkMsgRequest names.
-class MsgRequest {
-public:
-    MsgRequest();
-    virtual ~MsgRequest();
-    virtual void vfunc_s08();
-    void setFileName(const char *src);
 
-    /* 0x04 */ char fileName[0x1a];
-    /* 0x1e */ u8 msgIndex;
-};
-
-class TalkMsgRequest : public MsgRequest {
-public:
-    TalkMsgRequest();
-    virtual ~TalkMsgRequest();
-    virtual void vfunc_s08();
-    virtual void vfunc_s0c();
-    virtual void onMessageStart();
-    virtual BOOL onMessageEnd();
-    virtual BOOL onChoice();
-    virtual void onSignalTag();
-    virtual void onActionTag0();
-    virtual void onActionTag1();
-    virtual void onActionTag2();
-    virtual void onActionTag3();
-    virtual void onActionTag4();
-    virtual void onConditionTag();
-    virtual void onEventTag(u32 a);
-    virtual void onTag09_0();
-    virtual void onTag09_1();
-    virtual void onTag09_2();
-    virtual void onTag09_3();
-    virtual void onTag09_4();
-    virtual void onTag09_5();
-    virtual void onTag09_6();
-    virtual void onTag09_7();
-    virtual void onTag09_8();
-    virtual void onTag09_9();
-    virtual void onScannedTag();
-    virtual void getSpeakerData();
-    virtual void getVoiceType();
-    virtual void onWindowClose();
-    virtual void onTalkEnd();
-
-    u8 pad_20[0x1c];
-    /* 0x3c */ TalkWindowState *unk_3c;
-    /* 0x40 */ u8 unk_40;
-    u8 pad_41[3];
-};
 
 // Member at +0x134: the original constructs it with the complete-object constructor (C1), which a member declaration
 // cannot do, so it is raw storage plus explicit calls through the real symbol names (as in TU04).
@@ -157,9 +108,9 @@ public:
     virtual ~MuseumExhibitInfo();
     virtual BOOL vfunc_48(void *a);
     virtual void vfunc_4c(u32 a, u8 b);
-    virtual void onMessageStart();
-    virtual BOOL onMessageEnd();
-    virtual BOOL onChoice();
+    virtual void onMessageStart(u32 attr);
+    virtual void onMessageEnd(u32 attr);
+    virtual void onChoice(u32 attr);
 
     void mainAct03();
     BOOL setupAct03();
@@ -390,7 +341,7 @@ BOOL MuseumExhibitInfo::changeAct(s32 idx) {
     return FALSE;
 }
 
-BOOL MuseumExhibitInfo::onChoice() {
+void MuseumExhibitInfo::onChoice(u32) {
     if (isAutoTalkKind() == 0) {
         u8 a0, a1, a2, a3;
         u16 sel;
@@ -415,7 +366,7 @@ BOOL MuseumExhibitInfo::onChoice() {
     }
 }
 
-BOOL MuseumExhibitInfo::onMessageEnd() {
+void MuseumExhibitInfo::onMessageEnd(u32) {
     u8 b[7];
     if (isAutoTalkKind() == 0) {
         if (kind == 3) {
@@ -455,7 +406,7 @@ BOOL MuseumExhibitInfo::onMessageEnd() {
     }
 }
 
-void MuseumExhibitInfo::onMessageStart() {
+void MuseumExhibitInfo::onMessageStart(u32) {
     if (isAutoTalkKind() == 0) {
         u16 w1, w2;
         if (kind <= 1) {

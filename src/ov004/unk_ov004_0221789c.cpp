@@ -26,6 +26,8 @@
 #include "npc/NpcFaceAnim.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
+#include "talk/TalkMsgRequest.h"
+#include "talk/ActorTalkRequest.h"
 
 class FleaMarketSellerVillager;
 
@@ -270,60 +272,9 @@ public:
     /* 0x838 */ VillagerMood mood;
 };
 
-// Dialog sub-object at +0x8a4 of FleaMarketSellerVillager. Its vtable (0x0224c4e4) names every slot after the class that last overrides it;
-// declared here slot by slot so that each slot mangles to that symbol.
-class ActorTalkRequest {
-public:
-    ActorTalkRequest();
-    virtual ~ActorTalkRequest();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void onMessageStart(u32 v);
-    virtual void onMessageEnd();
-    virtual void onChoice();
-    virtual void onSignalTag();
-    virtual void onActionTag0();
-    virtual void onActionTag1(u32 v);
-    virtual void onActionTag2(u32 v);
-    virtual void onActionTag3(u32 v);
-    virtual void onActionTag4(u32 v);
-    virtual void onConditionTag();
-    virtual void onEventTag(u32 v);
-    virtual void onTag09_0();
-    virtual void onTag09_1();
-    virtual void onTag09_2();
-    virtual void onTag09_3();
-    virtual void onTag09_4();
-    virtual void onTag09_5();
-    virtual void onTag09_6();
-    virtual void onTag09_7();
-    virtual void onTag09_8();
-    virtual void onTag09_9();
-    virtual void onScannedTag();
-    virtual void getSpeakerData();
-    virtual void getVoiceType();
-    virtual void onWindowClose();
-    virtual void onTalkEnd();
-    virtual void start(Unk_ov004_0224c4e4_Out *out);
-    virtual void runDeferred();
-    virtual void update();
-    virtual void onTaskDone();
-    u8 pad_04[0x1a];
-    u8 msgIndex;
-    u8 pad_1f[0x3c - 0x1f];
-    void *unk_3c;
-    u8 pad_40[0xac - 0x40];
-};
 
-class TalkMsgRequest : public ActorTalkRequest {
-public:
-    virtual void vfunc_0c();
-    virtual void onSignalTag();
-    virtual void onScannedTag();
-    virtual void onTalkEnd();
-};
 
-class Unk_020d7710 : public TalkMsgRequest {
+class Unk_020d7710 : public ActorTalkRequest {
 public:
     virtual void onTag09_4();
     virtual void onTag09_5();
@@ -343,11 +294,11 @@ public:
     virtual void onActionTag3(u32 v);
     virtual void onActionTag4(u32 v);
     virtual void onTag09_9();
-    virtual void getSpeakerData();
+    virtual u32 getSpeakerData();
     virtual void onWindowClose();
     virtual void runDeferred();
     virtual void update();
-    virtual void onTaskDone();
+    virtual void onTaskDone(u32 id);
     u8 pad_ac[0x1a0 - 0xac];
 };
 
@@ -355,9 +306,9 @@ class FleaMarketSellerVillagerTalk : public VillagerTalk {
 public:
     FleaMarketSellerVillagerTalk();
     virtual ~FleaMarketSellerVillagerTalk();
-    virtual void onMessageEnd();
-    virtual void onChoice();
-    virtual void start(Unk_ov004_0224c4e4_Out *out);
+    virtual void onMessageEnd(u32 attr);
+    virtual void onChoice(u32 attr);
+    virtual void start(TalkStartMsg *out);
 
     void sellFurniture();
     void attachOwner(FleaMarketSellerVillager *owner);
@@ -776,7 +727,8 @@ void FleaMarketSellerVillagerTalk::sellFurniture() {
     }
 }
 
-void FleaMarketSellerVillagerTalk::start(Unk_ov004_0224c4e4_Out *out) {
+void FleaMarketSellerVillagerTalk::start(TalkStartMsg *out_) {
+    Unk_ov004_0224c4e4_Out *out = (Unk_ov004_0224c4e4_Out *)out_;
     void *r7 = Villager_FindOrCreateMemory(villager->villagerData, PlayerData_getPlayerId(PlayerData_GetCurrent()));
     if (r7) {
         VillagerMemory_RecordTalk(r7, 0, 0, 0);
@@ -868,9 +820,9 @@ BOOL FleaMarketSellerVillager::canPlayTalkMelody() {
 void FleaMarketSellerVillager::onTalkMelodyPlayed() { talkMelodyPlayed = 1; }
 
 // ---------------------------------------------------------------------------------------------------------------------
-void FleaMarketSellerVillagerTalk::onMessageEnd() {}
+void FleaMarketSellerVillagerTalk::onMessageEnd(u32) {}
 
-void FleaMarketSellerVillagerTalk::onChoice() {
+void FleaMarketSellerVillagerTalk::onChoice(u32) {
     void *r6 = ChoiceList_getResult(ActorTalkRequest_getChoiceList(this));
     u32 r4 = 0xff;
     u8 *s;

@@ -6,13 +6,15 @@
 #include "gfx/Unk_ov004_Quad.h"
 #include "actor/Unk_ov004_SceneEntry.h"
 #include "game/Unk_020d77a4_Vec3.h"
-#include "talk/Unk_02015b54.h"
 #include "actor/Unk_ov004_022146ec_Actor.h"
 #include "npc/Unk_ov004_0221572c_Sub.h"
 #include "game/Unk_ov004_02215c94_V.h"
 #include "game/FxVec3.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
+#include "talk/TalkMsgRequest.h"
+#include "talk/ActorTalkRequest.h"
+#include "talk/TalkWindowState.h"
 
 extern "C" {
 }
@@ -91,7 +93,7 @@ public:
 
 // ---------------------------------------------------------------------------------------------------------------------
 
-class Unk_020d7710 : public Unk_02015b54 {
+class Unk_020d7710 : public ActorTalkRequest {
 public:
     virtual void onTag09_4();
     virtual void onTag09_5();
@@ -100,28 +102,10 @@ public:
     virtual void onTag09_8();
 };
 
-class ActorTalkRequest : public Unk_020d7710 {
-public:
-    virtual void vfunc_08();
-    virtual void onConditionTag();
-    virtual void onEventTag(u32 a);
-    virtual void onTag09_0();
-    virtual void onTag09_1();
-    virtual void onTag09_2();
-    virtual void onTag09_3();
-    virtual void getVoiceType();
-};
-
-class TalkMsgRequest : public ActorTalkRequest {
-public:
-    virtual void vfunc_0c();
-    virtual void onSignalTag();
-    virtual void onScannedTag();
-    virtual void onTalkEnd();
-};
 
 
-class VillagerTalk : public TalkMsgRequest {
+
+class VillagerTalk : public Unk_020d7710 {
 public:
     VillagerTalk();
     virtual ~VillagerTalk();
@@ -131,15 +115,11 @@ public:
     virtual void onActionTag3(u32 a);
     virtual void onActionTag4(u32 a);
     virtual void onTag09_9();
-    virtual void getSpeakerData();
+    virtual u32 getSpeakerData();
     virtual void onWindowClose();
     virtual void runDeferred();
 
-    u8 pad_04[0x1e - 4];
-    u8 msgIndex;
-    u8 pad_1f[0x3c - 0x1f];
-    Unk_ov004_0221572c_Sub *unk_3c;
-    u8 pad_40[0x1a0 - 0x40];
+    /* 0xac */ u8 pad_ac[0x1a0 - 0xac];
 };
 
 class BirthdayHostVillager;
@@ -147,12 +127,12 @@ class BirthdayHostVillager;
 class BirthdayHostVillagerTalk : public VillagerTalk {
 public:
     BirthdayHostVillagerTalk() {}
-    virtual void onMessageStart();
-    virtual void onMessageEnd();
-    virtual void onChoice();
-    virtual void start(void *arg);
+    virtual void onMessageStart(u32 attr);
+    virtual void onMessageEnd(u32 attr);
+    virtual void onChoice(u32 attr);
+    virtual void start(TalkStartMsg *out);
     virtual void update();
-    virtual void onTaskDone();
+    virtual void onTaskDone(u32 id);
 
     void attachOwner(BirthdayHostVillager *owner);
     void *getFriendship();
@@ -688,9 +668,9 @@ void *BirthdayHostVillagerTalk::getFriendship() {
     return 0;
 }
 
-void BirthdayHostVillagerTalk::onTaskDone() {
+void BirthdayHostVillagerTalk::onTaskDone(u32) {
     if (villager->act == 0xc) {
-        unk_3c->unk_08 = 1;
+        unk_3c->nextState = 1;
     }
 }
 
@@ -700,7 +680,7 @@ void BirthdayHostVillagerTalk::update() {
     if (villager->act == 0xb) {
         if (MenuCtrl_IsFinished()) {
             if (MenuCtrl_IsResultOk() == 0) {
-                unk_3c->unk_08 = 1;
+                unk_3c->nextState = 1;
                 b0 = Random_GlobalBelow(2) + 7;
                 TalkWindowState_setNextMessage(unk_3c, &b0, 0);
                 villager->changeAct(6);
@@ -737,7 +717,7 @@ void BirthdayHostVillagerTalk::attachOwner(BirthdayHostVillager *owner) {
     villager = owner;
 }
 
-void BirthdayHostVillagerTalk::start(void *arg) {
+void BirthdayHostVillagerTalk::start(TalkStartMsg *arg) {
     u8 *out = (u8 *)arg;
     VillagerId_makeFileName(VillagerData_getVillagerId(villager->villagerData), sBirthdayHostMsgFile, 0x28, (void *)"ev_nbirth");
     *(u32 *)out = (u32)sBirthdayHostMsgFile;
@@ -827,7 +807,7 @@ extern "C" u16 BirthdayHost_PickReturnGift(s32 n) {
     return w0;
 }
 
-void BirthdayHostVillagerTalk::onMessageStart() {
+void BirthdayHostVillagerTalk::onMessageStart(u32) {
     switch (msgIndex) {
     case 0xf:
     case 0x10: {
@@ -840,7 +820,7 @@ void BirthdayHostVillagerTalk::onMessageStart() {
     }
 }
 
-void BirthdayHostVillagerTalk::onMessageEnd() {
+void BirthdayHostVillagerTalk::onMessageEnd(u32) {
     u8 b[3];
     switch (msgIndex) {
     case 4:
@@ -883,7 +863,7 @@ void BirthdayHostVillagerTalk::onMessageEnd() {
     }
 }
 
-void BirthdayHostVillagerTalk::onChoice() {
+void BirthdayHostVillagerTalk::onChoice(u32) {
     u8 b[3];
     s32 r = ChoiceList_getResult(TalkWindowState_getChoiceList(villager->talk.unk_3c));
     switch (msgIndex) {
@@ -1112,7 +1092,7 @@ void BirthdayHostVillager::mainAct05() {
 BOOL BirthdayHostVillager::setupAct06() { return TRUE; }
 
 void BirthdayHostVillager::mainAct06() {
-    Unk_ov004_02214a4c_Obj *o = talk.unk_3c;
+    Unk_ov004_02214a4c_Obj *o = (Unk_ov004_02214a4c_Obj *)talk.unk_3c;
     if (o != 0) {
         if (o->state == 0) {
             TalkRequest_SetTargetDone(this);
@@ -1169,7 +1149,7 @@ void BirthdayHostVillager::mainAct08() {
 BOOL BirthdayHostVillager::setupAct09() { return TRUE; }
 
 void BirthdayHostVillager::mainAct09() {
-    Unk_ov004_02214a4c_Obj *o = talk.unk_3c;
+    Unk_ov004_02214a4c_Obj *o = (Unk_ov004_02214a4c_Obj *)talk.unk_3c;
     if (o != 0) {
         if (o->state == 0) {
             TalkRequest_SetTargetDone(this);
@@ -1178,7 +1158,7 @@ void BirthdayHostVillager::mainAct09() {
 }
 
 BOOL BirthdayHostVillager::setupAct0A() {
-    talk.unk_3c->unk_14 = 1;
+    talk.unk_3c->openMode = 1;
     return TRUE;
 }
 

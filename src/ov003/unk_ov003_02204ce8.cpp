@@ -7,6 +7,8 @@
 #include "Unk_020d8c7c.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
+#include "talk/TalkMsgRequest.h"
+#include "talk/TalkWindowState.h"
 
 // calls into other modules (the old extern "C" declarations keep their local signatures; the call compiles like the method call)
 #define Unk_02007694_getActionDonePriority _ZN12Unk_0200769421getActionDonePriorityEj
@@ -776,25 +778,6 @@ struct Unk_ov003_022067c4_Shared {
     /* 0x08 */ s32 nextState;
 };
 
-class TalkMsgRequest {
-public:
-    TalkMsgRequest();
-    virtual ~TalkMsgRequest();
-    virtual void vfunc_s08();
-    virtual void vfunc_s0c();
-    virtual void onMessageStart();
-    virtual void onMessageEnd();
-    virtual void onChoice();
-    virtual void onSignalTag();
-
-    void MsgRequest_setFileName(const char *src);
-
-    /* 0x04 */ char fileName[0x1a];
-    /* 0x1e */ u8 msgIndex;
-    /* 0x1f */ u8 pad_1f[0x3c - 0x1f];
-    /* 0x3c */ Unk_ov003_022067c4_Shared *unk_3c;
-    /* 0x40 */ u8 pad_40[4];
-};
 
 struct Unk_ov003_02206c04_St {
     /* 0x00 */ s32 f0;
@@ -817,7 +800,7 @@ enum Unk_ov003_02206a84_Three { Unk_ov003_02206a84_THREE = 3 };
 
 class Unk_ov003_02206574_Obj : public Character, public TalkMsgRequest {
 public:
-    /* 0x130 */ u8 pad_130[0x2cc - 0x130];
+    /* 0x12d */ u8 pad_12d[0x2cc - 0x12d];
     /* 0x2cc */ u8 anim[8];
     /* 0x2d4 */ u8 pad_2d4[0x2dc - 0x2d4];
     /* 0x2dc */ s32 animSpeed;
@@ -2179,29 +2162,10 @@ struct Unk_ov003_0220a684_Shared {
     /* 0x08 */ s32 unk_08;
 };
 
-class TalkMsgRequest {
-public:
-    TalkMsgRequest();
-    virtual ~TalkMsgRequest();
-    virtual void vfunc_s08();
-    virtual void vfunc_s0c();
-    virtual void onMessageStart();
-    virtual void onMessageEnd();
-    virtual void onChoice();
-    virtual void onSignalTag();
-
-    void MsgRequest_setFileName(const char *src);
-
-    /* 0x04 */ char fileName[0x1a];
-    /* 0x1e */ u8 msgIndex;
-    /* 0x1f */ u8 pad_1f[0x3c - 0x1f];
-    /* 0x3c */ Unk_ov003_0220a684_Shared *unk_3c;
-    /* 0x40 */ u8 pad_40[4];
-};
 
 class Unk_ov003_0220a684_Obj : public Character, public TalkMsgRequest {
 public:
-    /* 0x130 */ u8 pad_130[0x164 - 0x130];
+    /* 0x12d */ u8 pad_12d[0x164 - 0x12d];
     /* 0x164 */ Unk_ov003_0220a684_Item *toolHitActor;
     /* 0x168 */ u8 toolHitKind;
     /* 0x169 */ u8 pad_169[0x2cc - 0x169];

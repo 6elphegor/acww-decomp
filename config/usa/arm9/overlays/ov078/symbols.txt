@@ -5,7 +5,9 @@ _ZN12SpNpcSaharah8vfunc_4cEjh kind:label(thumb) addr:0x02271414
 _ZN12SpNpcSaharah8vfunc_48Ev kind:function(thumb,size=0x20) addr:0x022714a0
 _ZN12SpNpcSaharah8vfunc_48EPv kind:label(thumb) addr:0x022714a0
 _ZN16SpNpcSaharahTalk8onChoiceEv kind:function(thumb,size=0xe0) addr:0x022714c0
+_ZN16SpNpcSaharahTalk8onChoiceEj kind:label(thumb) addr:0x022714c0
 _ZN16SpNpcSaharahTalk12onMessageEndEv kind:function(thumb,size=0x238) addr:0x022715a0
+_ZN16SpNpcSaharahTalk12onMessageEndEj kind:label(thumb) addr:0x022715a0
 _ZN16SpNpcSaharahTalk5startEP12TalkStartMsg kind:function(thumb,size=0x15c) addr:0x022717d8
 _ZN16SpNpcSaharahTalk11attachOwnerEP12SpNpcSaharah kind:function(thumb,size=0x3c) addr:0x02271934
 _ZN16SpNpcSaharahTalkD0Ev kind:function(thumb,size=0x34) addr:0x02271970

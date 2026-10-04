@@ -17,6 +17,8 @@
 #include "actor/Actor.h"
 #include "actor/Character.h"
 #include "gfx/ThreeLayerAnimModel.h"
+#include "talk/TalkMsgRequest.h"
+#include "talk/ActorTalkRequest.h"
 
 // Real (mangled) names of other modules' functions that the unit calls as plain functions taking the object first.
 #define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv
@@ -98,66 +100,7 @@ extern u8 *gCommManager;
 
 
 // ---------------------------------------------------------------------------------------------------------------------
-// Chain for the vtable of SpNpcKatrinaTalk. Its constructor and destructor call ActorTalkRequest's, so that is the most
-// derived base; symbols.txt names the slots after TalkMsgRequest (root, declares every slot), Unk_020d7710 (names
-// shifted by one slot) and ActorTalkRequest.
-class TalkMsgRequest {
-public:
-    TalkMsgRequest();
-    virtual ~TalkMsgRequest();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void onMessageStart();
-    virtual void onMessageEnd();
-    virtual void onChoice();
-    virtual void onSignalTag();
-    virtual void onActionTag0();
-    virtual void onActionTag1();
-    virtual void onActionTag2();
-    virtual void onActionTag3();
-    virtual void onActionTag4();
-    virtual void onConditionTag();
-    virtual void onEventTag(s32 a);
-    virtual void onTag09_0();
-    virtual void onTag09_1();
-    virtual void onTag09_2();
-    virtual void onTag09_3();
-    virtual void onTag09_4();
-    virtual void onTag09_5();
-    virtual void onTag09_6();
-    virtual void onTag09_7();
-    virtual void onTag09_8();
-    virtual void onTag09_9();
-    virtual void onScannedTag();
-    virtual void getSpeakerData();
-    virtual void getVoiceType();
-    virtual void onWindowClose();
-    virtual void onTalkEnd();
-    u8 pad_04[0x1a];
-    u8 msgIndex;
-    u8 pad_1f[0x1d];
-    TalkWindowState *unk_3c;
-    u8 pad_40[0xac - 0x40];
-};
 
-class ActorTalkRequest : public TalkMsgRequest {
-public:
-    virtual ~ActorTalkRequest();
-    virtual void vfunc_08();
-    virtual void onConditionTag();
-    virtual void onTag09_0();
-    virtual void onTag09_1();
-    virtual void onTag09_2();
-    virtual void onTag09_3();
-    virtual void getVoiceType();
-    virtual void start(void *out);
-    virtual void runDeferred();
-    virtual void update();
-    virtual void onTaskDone();
-    void *func_02015aac();
-    void getChoiceList();
-    void func_02015ab0(u32 a);
-};
 
 class Unk_020d7710 : public ActorTalkRequest {
 public:
@@ -223,13 +166,13 @@ class SpNpcKatrinaTalk : public Unk_020d7710 {
 public:
     SpNpcKatrinaTalk();
     virtual ~SpNpcKatrinaTalk();
-    virtual void onMessageStart();
-    virtual void onMessageEnd();
-    virtual void onChoice();
-    virtual void onEventTag(s32 a);
-    virtual void start(void *arg);
+    virtual void onMessageStart(u32 attr);
+    virtual void onMessageEnd(u32 attr);
+    virtual void onChoice(u32 attr);
+    virtual void onEventTag(u32 id);
+    virtual void start(TalkStartMsg *out);
     virtual void update();
-    virtual void onTaskDone();
+    virtual void onTaskDone(u32 id);
 
     void scriptReadPartnerName();
     void setScript(s32 v);
@@ -589,7 +532,8 @@ SpNpcKatrinaTalk::SpNpcKatrinaTalk() {}
 
 SpNpcKatrinaTalk::~SpNpcKatrinaTalk() {}
 
-void SpNpcKatrinaTalk::onEventTag(s32 a) {
+void SpNpcKatrinaTalk::onEventTag(u32 a_) {
+    s32 a = (s32)a_;
     if (a != NpcActionCtrl_getEmotionId(&owner->actionCtrl) || NpcActionCtrl_getAction(&owner->actionCtrl) != 8) {
         switch (a) {
         case 0x1e:
@@ -612,7 +556,7 @@ void SpNpcKatrinaTalk::attachOwner(SpNpcKatrina *o) {
     owner = o;
 }
 
-void SpNpcKatrinaTalk::start(void *arg) {
+void SpNpcKatrinaTalk::start(TalkStartMsg *arg) {
     Unk_ov045_022590e4_Msg *out = (Unk_ov045_022590e4_Msg *)arg;
     out->msgKey = (u32)sSpNpcKatrinaMsgKey;
     s32 a = Talk_CheckAndSetPlayerFlag(4, 0);
@@ -636,7 +580,7 @@ void SpNpcKatrinaTalk::start(void *arg) {
     }
 }
 
-void SpNpcKatrinaTalk::onMessageEnd() {
+void SpNpcKatrinaTalk::onMessageEnd(u32) {
     void *h = PlayerData_GetCurrent();
     u8 *gp = gSaveData;
     u32 sel = 0xff;
@@ -759,13 +703,13 @@ void SpNpcKatrinaTalk::onMessageEnd() {
     }
 }
 
-void SpNpcKatrinaTalk::onMessageStart() {
+void SpNpcKatrinaTalk::onMessageStart(u32) {
     if (msgIndex == 0xe || msgIndex == 0x17) {
         Bgm_RequestSilence(0x10, 0, 0);
     }
 }
 
-void SpNpcKatrinaTalk::onChoice() {
+void SpNpcKatrinaTalk::onChoice(u32) {
     u8 buf;
     u32 sel;
     s32 st;
@@ -838,7 +782,7 @@ void SpNpcKatrinaTalk::update() {
     }
 }
 
-void SpNpcKatrinaTalk::onTaskDone() {
+void SpNpcKatrinaTalk::onTaskDone(u32) {
     s32 i = script;
     if (sSpNpcKatrinaTalkScripts[i].flag == 0) {
         if (sSpNpcKatrinaTalkScripts[i].fn != 0) {

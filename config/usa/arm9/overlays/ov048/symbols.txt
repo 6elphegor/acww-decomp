@@ -46,8 +46,10 @@ _ZN15SpNpcCopperTalk17startMailDownloadEv kind:function(thumb,size=0x2c) addr:0x
 _ZN15SpNpcCopperTalk13waitWifiLoginEv kind:function(thumb,size=0x4c) addr:0x0225a02c
 _ZN15SpNpcCopperTalk9setScriptEi kind:function(thumb,size=0x6) addr:0x0225a078
 _ZN15SpNpcCopperTalk10onTaskDoneEv kind:function(thumb,size=0x44) addr:0x0225a080
+_ZN15SpNpcCopperTalk10onTaskDoneEj kind:label(thumb) addr:0x0225a080
 _ZN15SpNpcCopperTalk6updateEv kind:function(thumb,size=0x44) addr:0x0225a0c4
 _ZN15SpNpcCopperTalk8onChoiceEv kind:function(thumb,size=0x224) addr:0x0225a108
+_ZN15SpNpcCopperTalk8onChoiceEj kind:label(thumb) addr:0x0225a108
 _ZN15SpNpcCopperTalk13onChoiceUnk5FEi kind:function(thumb,size=0x40) addr:0x0225a32c
 _ZN15SpNpcCopperTalk23onChoiceGateAlreadyOpenEi kind:function(thumb,size=0x2) addr:0x0225a36c
 _ZN15SpNpcCopperTalk19onChoiceSaveAndQuitEi kind:function(thumb,size=0x40) addr:0x0225a370
@@ -71,6 +73,7 @@ _ZN15SpNpcCopperTalk19onChoiceConnectWifiEi kind:function(thumb,size=0x58) addr:
 _ZN15SpNpcCopperTalk17onChoiceVisitTownEi kind:function(thumb,size=0x12) addr:0x0225a890
 _ZN15SpNpcCopperTalk20onChoiceUpdateWifiIdEi kind:function(thumb,size=0x30) addr:0x0225a8a4
 _ZN15SpNpcCopperTalk12onMessageEndEv kind:function(thumb,size=0x200) addr:0x0225a8d4
+_ZN15SpNpcCopperTalk12onMessageEndEj kind:label(thumb) addr:0x0225a8d4
 _ZN15SpNpcCopperTalk11startGoHomeEv kind:function(thumb,size=0x28) addr:0x0225aad4
 _ZN15SpNpcCopperTalk21showWifiIdSavedResultEv kind:function(thumb,size=0x64) addr:0x0225aafc
 _ZN15SpNpcCopperTalk20showAnythingElseMenuEv kind:function(thumb,size=0x28) addr:0x0225ab60
@@ -90,6 +93,7 @@ _ZN15SpNpcCopperTalk9closeGateEv kind:function(thumb,size=0x38) addr:0x0225ad78
 _ZN15SpNpcCopperTalk12showMainMenuEv kind:function(thumb,size=0x3c) addr:0x0225adb0
 _ZN15SpNpcCopperTalk9startSaveEv kind:function(thumb,size=0x18) addr:0x0225adec
 _ZN15SpNpcCopperTalk5startEPv kind:function(thumb,size=0x108) addr:0x0225ae04
+_ZN15SpNpcCopperTalk5startEP12TalkStartMsg kind:label(thumb) addr:0x0225ae04
 _ZN15SpNpcCopperTalk10hasFriendsEv kind:function(thumb,size=0x3a) addr:0x0225af0c
 _ZN15SpNpcCopperTalk17setFriendCodeArgsEx kind:function(thumb,size=0x90) addr:0x0225af48
 _ZN15SpNpcCopperTalk9startCommEii kind:function(thumb,size=0x40) addr:0x0225afd8

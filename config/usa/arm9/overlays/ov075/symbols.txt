@@ -5,7 +5,9 @@ _ZN9SpNpcPete8vfunc_4cEjh kind:label(thumb) addr:0x02271414
 _ZN9SpNpcPete8vfunc_48Ev kind:function(thumb,size=0x2c) addr:0x02271480
 _ZN9SpNpcPete8vfunc_48EPv kind:label(thumb) addr:0x02271480
 _ZN13SpNpcPeteTalk8onChoiceEv kind:function(thumb,size=0x12) addr:0x022714ac
+_ZN13SpNpcPeteTalk8onChoiceEj kind:label(thumb) addr:0x022714ac
 _ZN13SpNpcPeteTalk12onMessageEndEv kind:function(thumb,size=0x24) addr:0x022714c0
+_ZN13SpNpcPeteTalk12onMessageEndEj kind:label(thumb) addr:0x022714c0
 _ZN13SpNpcPeteTalk5startEP12TalkStartMsg kind:function(thumb,size=0x40) addr:0x022714e4
 _ZN13SpNpcPeteTalk11attachOwnerEPv kind:function(thumb,size=0x1a) addr:0x02271524
 _ZN13SpNpcPeteTalkD0Ev kind:function(thumb,size=0x20) addr:0x02271540
@@ -14,6 +16,7 @@ _ZN13SpNpcPeteTalkC1Ev kind:function(thumb,size=0x18) addr:0x02271578
 _ZN13SpNpcPeteTalk12scriptWakeUpEv kind:function(thumb,size=0x174) addr:0x02271590
 _ZN13SpNpcPeteTalk9setScriptEi kind:function(thumb,size=0xe) addr:0x02271704
 _ZN13SpNpcPeteTalk10onTaskDoneEv kind:function(thumb,size=0x50) addr:0x02271714
+_ZN13SpNpcPeteTalk10onTaskDoneEj kind:label(thumb) addr:0x02271714
 _ZN13SpNpcPeteTalk6updateEv kind:function(thumb,size=0x44) addr:0x02271764
 _ZN9SpNpcPete9mainAct03Ev kind:function(thumb,size=0x4) addr:0x022717a8
 _ZN9SpNpcPete9mainAct02Ev kind:function(thumb,size=0x2c) addr:0x022717ac

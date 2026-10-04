@@ -32,6 +32,7 @@
 #include "menu/PopupChoiceRow.h"
 #include "menu/MenuBottomButtons.h"
 #include "menu/PopupChoiceMenu.h"
+#include "talk/TalkMsgRequest.h"
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Real names of functions of other modules (plain names that are really methods / ctors / dtors)
@@ -182,12 +183,6 @@ void _ZN8UiWidget9setOriginEii();
 
 
 
-class TalkMsgRequest : public MsgRequest {
-public:
-    TalkMsgRequest();
-    virtual ~TalkMsgRequest();
-    virtual void vfunc_08();
-};
 
 extern "C" TalkWindowState *TalkWindow_Get(s32 a);
 
@@ -253,9 +248,6 @@ public:
 
     /* 0x00 */ TouchPromptBalloon prompt;
     /* 0xc0 */ TalkMsgRequest talk;
-    /* 0xe0 */ u8 unk_e0[0x1c];
-    /* 0xfc */ TalkWindowState *unk_fc;
-    /* 0x100 */ u8 unk_100[4];
     /* 0x104 */ u8 state;
     /* 0x105 */ u8 isFatal;
 };

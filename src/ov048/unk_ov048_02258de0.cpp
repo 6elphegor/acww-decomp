@@ -15,6 +15,9 @@
 #include "actor/Actor.h"
 #include "actor/Character.h"
 #include "gfx/ThreeLayerAnimModel.h"
+#include "talk/TalkMsgRequest.h"
+#include "talk/ActorTalkRequest.h"
+#include "talk/TalkWindowState.h"
 
 
 struct Unk_0201bc1c;
@@ -286,70 +289,9 @@ s32 NetOverlay_AssertWifi();
 s32 NetOverlay_AssertWireless();
 s32 NetOverlay_AssertAny();
 
-class ActorTalkRequest {
-public:
-    ActorTalkRequest();
-    virtual ~ActorTalkRequest();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void onMessageStart();
-    virtual void onMessageEnd();
-    virtual void onChoice();
-    virtual void onSignalTag();
-    virtual void onActionTag0();
-    virtual void onActionTag1();
-    virtual void onActionTag2();
-    virtual void onActionTag3();
-    virtual void onActionTag4();
-    virtual void onConditionTag();
-    virtual void onEventTag(u32 v);
-    virtual void onTag09_0();
-    virtual void onTag09_1();
-    virtual void onTag09_2();
-    virtual void onTag09_3();
-    virtual void onTag09_4();
-    virtual void onTag09_5();
-    virtual void onTag09_6();
-    virtual void onTag09_7();
-    virtual void onTag09_8();
-    virtual void onTag09_9();
-    virtual void onScannedTag();
-    virtual void getSpeakerData();
-    virtual void getVoiceType();
-    virtual void onWindowClose();
-    virtual void onTalkEnd();
-    virtual void start(void *out);
-    virtual void runDeferred();
-    virtual void update();
-    NpcActor *func_02015aac();
-    void func_02015ab0(u32 p);
-    void setNumberSlot(s32 a, u32 b, s32 c, s32 d, s32 e);
-    u8 pad_04[0x1a];
-    u8 msgIndex;
-    u8 pad_1f[0x3c - 0x1f];
-    Unk_ov048_Owner *unk_3c;
-    u8 pad_40[0xaa - 0x40];
-    u8 unk_aa;
-    u8 pad_ab[0xac - 0xab];
-};
 
-class TalkMsgRequest : public ActorTalkRequest {
-public:
-    virtual void vfunc_0c();
-    virtual void onMessageStart();
-    virtual void onSignalTag();
-    virtual void onActionTag0();
-    virtual void onActionTag1();
-    virtual void onActionTag2();
-    virtual void onActionTag3();
-    virtual void onActionTag4();
-    virtual void onScannedTag();
-    virtual void getSpeakerData();
-    virtual void onWindowClose();
-    virtual void onTalkEnd();
-};
 
-class Unk_020d7710 : public TalkMsgRequest {
+class Unk_020d7710 : public ActorTalkRequest {
 public:
     Unk_020d7710();
     virtual ~Unk_020d7710();
@@ -382,11 +324,11 @@ public:
 
     SpNpcCopperTalk();
     virtual ~SpNpcCopperTalk();
-    virtual void onMessageEnd();
-    virtual void onChoice();
-    virtual void start(void *out);
+    virtual void onMessageEnd(u32 attr);
+    virtual void onChoice(u32 attr);
+    virtual void start(TalkStartMsg *out);
     virtual void update();
-    virtual void onTaskDone();
+    virtual void onTaskDone(u32 id);
 
     void waitGoHomeAccepted();
     void requestGoHome();
@@ -957,7 +899,7 @@ BOOL SpNpcCopper::mainAct01() {
 }
 
 BOOL SpNpcCopper::setupAct02() {
-    NpcActor *o = talk.func_02015aac();
+    NpcActor *o = (NpcActor *)talk.func_02015aac();
     s32 r = 0;
     if (o) {
         r = getAngleTo(o);
@@ -2205,7 +2147,7 @@ BOOL SpNpcCopperTalk::hasFriends() {
     return FALSE;
 }
 
-void SpNpcCopperTalk::start(void *arg) {
+void SpNpcCopperTalk::start(TalkStartMsg *arg) {
     Unk_ov048_0225ae04_Out *out = (Unk_ov048_0225ae04_Out *)arg;
     static Unk_ov048_0225ae04_Row tbl[11] = {
         {sSpNpcCopperMsgKey, 0}, {sSpNpcCopperMsgKey, 4}, {sSpNpcCopperMsgKey, 5},
@@ -2386,7 +2328,7 @@ extern "C" const Unk_ov048_Vec sCopperTurnBackPos = {0x10000, 0x0, 0x11800};
 
 extern "C" const Unk_ov048_Vec sCopperSendOffExitPos = {0x10000, 0x0, 0x2000};
 
-void SpNpcCopperTalk::onMessageEnd() {
+void SpNpcCopperTalk::onMessageEnd(u32) {
     static Unk_ov048_0225a8d4_Row tbl[28] = {
         {0x00, *(SpNpcCopperTalk::Fn *)data_ov048_0225c97c},
         {0x04, *(SpNpcCopperTalk::Fn *)data_ov048_0225ca8c},
@@ -2681,7 +2623,7 @@ void SpNpcCopperTalk::onChoiceRetryWifi(s32 p) {
 }
 
 void SpNpcCopperTalk::onChoiceSaveAndQuit(s32 p) {
-    Unk_ov048_Owner *o = unk_3c;
+    Unk_ov048_Owner *o = (Unk_ov048_Owner *)unk_3c;
     if (p == 0) {
         o->unk_14 = 0;
         SpNpcCopper_ChangeAct(owner, 0xe);
@@ -2716,7 +2658,7 @@ extern "C" const Unk_ov048_Vec sCopperSendOffWalkPos = {0x10000, 0x0, 0x13000};
 
 extern "C" const Unk_ov048_Vec sCopperArrivalWalkPos = {0x10000, 0x0, 0x11800};
 
-void SpNpcCopperTalk::onChoice() {
+void SpNpcCopperTalk::onChoice(u32) {
     if (GameStart_IsActive() == 0) {
         static Unk_ov048_0225a108_Row tbl[29] = {
             {0x15, *(SpNpcCopperTalk::ArgFn *)data_ov048_0225c89c},
@@ -2772,7 +2714,7 @@ void SpNpcCopperTalk::update() {
     }
 }
 
-void SpNpcCopperTalk::onTaskDone() {
+void SpNpcCopperTalk::onTaskDone(u32) {
     if (sSpNpcCopperTalkScripts[script].flag == 0) {
         if (sSpNpcCopperTalkScripts[script].f) {
             (this->*sSpNpcCopperTalkScripts[script].f)();
@@ -3264,7 +3206,7 @@ void SpNpcCopperTalk::waitJoinAccepted() {
                 Net_GetMyAid();
                 Net_SetJoiningAid();
                 Comm_ClearSyncState();
-                unk_3c->unk_14 = 0;
+                unk_3c->openMode = 0;
                 unlockWindow();
                 setScript(0);
                 SpNpcCopper_ChangeAct(owner, 0xc);
@@ -3286,7 +3228,7 @@ void SpNpcCopperTalk::requestGoHome() {
 }
 
 void SpNpcCopperTalk::waitGoHomeAccepted() {
-    Unk_ov048_Owner *o = unk_3c;
+    Unk_ov048_Owner *o = (Unk_ov048_Owner *)unk_3c;
     s32 t = Comm_GetSyncState();
     if ((u32)(t - 5) <= 1) {
         unlockWindow();

@@ -1,13 +1,8 @@
 #include "types.h"
 
 #include "Unk_020d8c7c.h"
+#include "talk/TalkMsgRequest.h"
 
-class TalkMsgRequest {
-public:
-    TalkMsgRequest();
-    ~TalkMsgRequest();
-    u8 unk_00[0x44];
-};
 
 class EventAnnouncer : public GameProc {
 public:

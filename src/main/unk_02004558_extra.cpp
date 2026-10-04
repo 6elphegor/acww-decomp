@@ -51,6 +51,7 @@
 #include "player/Unk_02009a78_Locals.h"
 #include "player/Unk_02009d5c_Sub.h"
 #include "player/Unk_02009f68_Bytes.h"
+#include "talk/MsgRequest.h"
 #include "player/Unk_02006d14_7d0.h"
 #include "actor/Character.h"
 #include "actor/Actor.h"
@@ -122,24 +123,12 @@ typedef void (*PMF)();
 
 
 
-// secondary base at +0xec. Its virtuals have the names symbols.txt gives them as second names (vfunc_sNN); the four
-// slots the object overrides are named after the object's functions (slot 0x10, 0x14, 0x18, 0x70).
-class MsgRequest {
-public:
-    MsgRequest();
-    virtual ~MsgRequest();
-    virtual void vfunc_s08();
-    void setFileName(const char *src);
-
-    /* 0x04 */ char fileName[0x1a];
-    /* 0x1e */ u8 msgIndex;
-};
 
 class TalkMsgRequest : public MsgRequest {
 public:
     TalkMsgRequest();
     virtual ~TalkMsgRequest();
-    virtual void vfunc_s08();
+    virtual void vfunc_08();
     virtual void vfunc_s0c();
     virtual s32 onMessageStart();
     virtual void onMessageEnd();

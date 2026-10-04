@@ -16,6 +16,9 @@
 #include "actor/Actor.h"
 #include "actor/Character.h"
 #include "gfx/ThreeLayerAnimModel.h"
+#include "talk/TalkMsgRequest.h"
+#include "talk/ActorTalkRequest.h"
+#include "talk/TalkWindowState.h"
 
 
 struct Unk_0201bc1c;
@@ -76,68 +79,9 @@ struct Unk_ov054_0225a7c4_Bits {
     u8 hi : 3;
 };
 
-// Dialog base chain (main): ActorTalkRequest <- TalkMsgRequest <- Unk_020d7710 <- SpNpcTalkRequest, size 0xac.
-class ActorTalkRequest {
-public:
-    ActorTalkRequest();
-    virtual ~ActorTalkRequest();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void onMessageStart();
-    virtual void onMessageEnd(s32 a);
-    virtual void onChoice(s32 a);
-    virtual void onSignalTag();
-    virtual void onActionTag0();
-    virtual void onActionTag1();
-    virtual void onActionTag2();
-    virtual void onActionTag3();
-    virtual void onActionTag4();
-    virtual void onConditionTag();
-    virtual void onEventTag(u32 v);
-    virtual void onTag09_0();
-    virtual void onTag09_1();
-    virtual void onTag09_2();
-    virtual void onTag09_3();
-    virtual void onTag09_4();
-    virtual void onTag09_5();
-    virtual void onTag09_6();
-    virtual void onTag09_7();
-    virtual void onTag09_8();
-    virtual void onTag09_9();
-    virtual void onScannedTag();
-    virtual void getSpeakerData();
-    virtual void getVoiceType();
-    virtual void onWindowClose();
-    virtual void onTalkEnd();
-    virtual void start(TalkStartMsg *out);
-    virtual void runDeferred();
-    virtual void update();
-    virtual void onTaskDone();
 
-    /* 0x04 */ u8 pad_04[0x1a];
-    /* 0x1e */ u8 msgIndex;
-    /* 0x1f */ u8 pad_1f[0x3c - 0x1f];
-    /* 0x3c */ Unk_ov054_02258e58_Sub *unk_3c;
-    /* 0x40 */ u8 pad_40[0xac - 0x40];
-};
 
-class TalkMsgRequest : public ActorTalkRequest {
-public:
-    virtual void vfunc_0c();
-    virtual void onMessageStart();
-    virtual void onSignalTag();
-    virtual void onActionTag0();
-    virtual void onActionTag1();
-    virtual void onActionTag2();
-    virtual void onActionTag3();
-    virtual void onActionTag4();
-    virtual void onScannedTag();
-    virtual void getSpeakerData();
-    virtual void onWindowClose();
-    virtual void onTalkEnd();
-};
-
-class Unk_020d7710 : public TalkMsgRequest {
+class Unk_020d7710 : public ActorTalkRequest {
 public:
     virtual void onTag09_4();
     virtual void onTag09_5();
@@ -272,12 +216,12 @@ public:
 
     SpNpcPellyPhyllisTalk();
     virtual ~SpNpcPellyPhyllisTalk();
-    virtual void onMessageStart();
-    virtual void onMessageEnd(s32 a);
-    virtual void onChoice(s32 a);
+    virtual void onMessageStart(u32 attr);
+    virtual void onMessageEnd(u32 attr);
+    virtual void onChoice(u32 attr);
     virtual void start(TalkStartMsg *out);
     virtual void update();
-    virtual void onTaskDone();
+    virtual void onTaskDone(u32 id);
 
     void updateDonationLevel(s32 a);
     void askSavings();
@@ -1311,7 +1255,7 @@ void SpNpcPellyPhyllisTalk::update() {
     }
 }
 
-void SpNpcPellyPhyllisTalk::onTaskDone() {
+void SpNpcPellyPhyllisTalk::onTaskDone(u32) {
     s32 i = script;
     if (data_ov054_0225bb08[i].flag == 0) {
         Unk_ov054_0225b9c4_Ent *e = &sSpNpcPellyPhyllisTalkScripts[i];
@@ -1695,7 +1639,7 @@ void SpNpcPellyPhyllisTalk::waitMoveSave() {
     }
 }
 
-void SpNpcPellyPhyllisTalk::onMessageStart() {
+void SpNpcPellyPhyllisTalk::onMessageStart(u32) {
     if (msgIndex == 0xf) {
         u8 *p = FutureLetter_getDeliveryDate(PlayerData_GetFutureLetter(PlayerData_GetCurrent()));
         u32 b1 = p[1];
@@ -1724,7 +1668,8 @@ void SpNpcPellyPhyllisTalk::onMessageStart() {
     }
 }
 
-void SpNpcPellyPhyllisTalk::onMessageEnd(s32 a) {
+void SpNpcPellyPhyllisTalk::onMessageEnd(u32 a_) {
+    s32 a = (s32)a_;
     static Unk_ov054_0225b9c4_FnI tbl[3] = {
         *(Unk_ov054_0225b9c4_FnI *)data_ov054_0225b6b0,
         *(Unk_ov054_0225b9c4_FnI *)data_ov054_0225b798,
@@ -1965,7 +1910,8 @@ void SpNpcPellyPhyllisTalk::onSequence4MsgEnd(s32 a) {
     }
 }
 
-void SpNpcPellyPhyllisTalk::onChoice(s32 a) {
+void SpNpcPellyPhyllisTalk::onChoice(u32 a_) {
+    s32 a = (s32)a_;
     static Unk_ov054_0225b9c4_FnI tbl[3] = {
         *(Unk_ov054_0225b9c4_FnI *)data_ov054_0225b778,
         *(Unk_ov054_0225b9c4_FnI *)data_ov054_0225b770,
@@ -1990,7 +1936,7 @@ void SpNpcPellyPhyllisTalk::onChoice(s32 a) {
 // compare tree rooted at 0x52, the original has a 10-entry table for cases 0..9 under a tree rooted at 0x39).
 #ifdef NONMATCHING
 void SpNpcPellyPhyllisTalk::onPostOfficeChoice(s32 a) {
-    Unk_ov054_02258e58_Sub *o = unk_3c;
+    Unk_ov054_02258e58_Sub *o = (Unk_ov054_02258e58_Sub *)unk_3c;
     s32 r = ChoiceList_getResult(ActorTalkRequest_getChoiceList(this));
     void *g = PlayerData_GetCurrent();
     u32 id = 0xff;
@@ -2283,7 +2229,7 @@ void SpNpcPellyPhyllisTalk::onPostOfficeChoice(s32 a) {
 #endif
 
 void SpNpcPellyPhyllisTalk::onDramaChoice(s32 a) {
-    Unk_ov054_02258e58_Sub *o = unk_3c;
+    Unk_ov054_02258e58_Sub *o = (Unk_ov054_02258e58_Sub *)unk_3c;
     s32 r = ChoiceList_getResult(ActorTalkRequest_getChoiceList(this));
     u32 id = 0xff;
     u32 k = 1;
@@ -2321,7 +2267,7 @@ void SpNpcPellyPhyllisTalk::onSequence4Choice(s32 a) {
 }
 
 void SpNpcPellyPhyllisTalk::openPostOfficeMenu(s32 a) {
-    Unk_ov054_02258e58_Sub *o = unk_3c;
+    Unk_ov054_02258e58_Sub *o = (Unk_ov054_02258e58_Sub *)unk_3c;
     void *g = PlayerData_GetCurrent();
     menuKind = 0;
     if (!Talk_IsInOwnTown()) {
@@ -2505,7 +2451,7 @@ void SpNpcPellyPhyllis::vfunc_4c(u32 cmd, u8 arg) {
 }
 
 BOOL SpNpcPellyPhyllis::canStartSave() {
-    if (faceAnim.getMouthAnim() == 0xba && SpNpcTortimer2_IsIdle() && talk.unk_3c->unk_04 == 2) {
+    if (faceAnim.getMouthAnim() == 0xba && SpNpcTortimer2_IsIdle() && talk.unk_3c->state == 2) {
         return TRUE;
     }
     return FALSE;

@@ -12,6 +12,9 @@
 #include "game/TouchPicker.h"
 #include "talk/MsgRequest.h"
 #include "gfx/AnimModel.h"
+#include "talk/TalkMsgRequest.h"
+#include "talk/TalkWindowState.h"
+#include "sys/ProcBase.h"
 
 // shared_0224d4e8.h.txt -- final declaration of class RoomObjActor (defined in ov004 TU17, 0x0221e7a8-0x02225290).
 // Paste this block unchanged into TU18..TU26 (it is the base of 0224d618 (TU18), 0224d80c (TU19), 0224dd98 (TU23),
@@ -34,40 +37,7 @@
 //  * Names a derived class must not reuse: unk_ea (u8, 0xff = none), unk_ec (AnimModel), unk_1a4, unk_248, unk_250.
 // Layout: M is 0x290 bytes; TalkMsgRequest (secondary base of the derived classes) starts at 0x290.
 
-// Library base class chain (header GameProc.h rebuilt so that the vtable names the real symbols:
-// slot 08 is Character::postCreate(s32), slot 20 takes a u32).
-class ProcBase {
-public:
-    static void *operator new(unsigned long size);
-    static void operator delete(void *ptr);
 
-    ProcBase();
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual void postCreate(s32 v);
-    virtual BOOL func_ov004_02228478();
-    virtual BOOL preDelete();
-    virtual BOOL vfunc_14();
-    virtual BOOL onExecute();
-    virtual BOOL preExecute();
-    virtual void vfunc_20(u32 a);
-    virtual BOOL onDraw();
-    virtual BOOL preDraw();
-    virtual BOOL postDraw();
-    virtual BOOL vfunc_30();
-    virtual BOOL createHeapFitted();
-    virtual BOOL createHeap();
-    virtual BOOL vfunc_3c();
-    virtual ~ProcBase();
-};
-
-class GameProc : public ProcBase {
-public:
-    GameProc() {}
-    virtual ~GameProc() {}
-
-    /* 0x04 */ u8 unk_04[0x4c];
-};
 
 
 
@@ -76,11 +46,11 @@ public:
     Actor();
     virtual BOOL vfunc_04();
     virtual BOOL preDelete();
-    virtual BOOL vfunc_14();
+    virtual BOOL vfunc_14(s32 status);
     virtual BOOL preExecute();
-    virtual void vfunc_20(u32 a);
+    virtual BOOL vfunc_20(u32 a);
     virtual BOOL preDraw();
-    virtual BOOL postDraw();
+    virtual BOOL postDraw(s32 status);
     virtual ~Actor();
 
     /* 0x50 */ u8 unk_50[0xc];
@@ -146,7 +116,7 @@ public:
     virtual BOOL vfunc_04();
     virtual BOOL preDelete();
     virtual BOOL preExecute();
-    virtual void vfunc_20(u32 a);
+    virtual BOOL vfunc_20(u32 a);
     virtual BOOL changeSyncState(u32 v);
     virtual void getSoundPos(Unk_ov004_02224ee4_Vec *out);
 
@@ -172,45 +142,6 @@ struct Unk_ov004_0224dd98_Rec {
     s32 unk_08;
 };
 
-// Slots 0x10 / 0x14 / 0x18 are overridden by the derived class's three new virtuals (named after their addresses), which
-// is what makes the five _ZThn656 thunks.
-class TalkMsgRequest : public MsgRequest {
-public:
-    TalkMsgRequest();
-    virtual ~TalkMsgRequest();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void onMessageStart();
-    virtual void onMessageEnd();
-    virtual void onChoice(u32 a, u8 b);
-    virtual void onSignalTag();
-    virtual void onActionTag0();
-    virtual void onActionTag1();
-    virtual void onActionTag2();
-    virtual void onActionTag3();
-    virtual void onActionTag4();
-    virtual void onConditionTag();
-    virtual void onEventTag(u32 a);
-    virtual void onTag09_0();
-    virtual void onTag09_1();
-    virtual void onTag09_2();
-    virtual void onTag09_3();
-    virtual void onTag09_4();
-    virtual void onTag09_5();
-    virtual void onTag09_6();
-    virtual void onTag09_7();
-    virtual void onTag09_8();
-    virtual void onTag09_9();
-    virtual void onScannedTag();
-    virtual void getSpeakerData();
-    virtual void getVoiceType();
-    virtual void onWindowClose();
-    virtual void onTalkEnd();
-
-    u8 pad_20[0x1c];
-    /* 0x3c */ Unk_ov004_0224dd98_Rec *unk_3c;
-    /* 0x40 */ u8 unk_40;
-};
 
 struct Unk_ov004_02227fb8_Pad {
     s32 v[2];
@@ -232,15 +163,15 @@ public:
     RecycleBox();
     virtual ~RecycleBox();
     virtual BOOL vfunc_00();
-    virtual BOOL func_ov004_02228478();
+    virtual BOOL vfunc_0c();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
     virtual BOOL vfunc_48(void *a);
     virtual void vfunc_4c(u32 a, u8 b);
     virtual BOOL changeSyncState(u32 idx);
-    virtual void onMessageStart();
-    virtual void onMessageEnd();
-    virtual void onChoice(u32 a, u8 b);
+    virtual void onMessageStart(u32 attr);
+    virtual void onMessageEnd(u32 attr);
+    virtual void onChoice(u32 attr);
 
     void removeCollision();
     void initCollision();
@@ -388,7 +319,7 @@ BOOL RecycleBox::onDraw() {
     return TRUE;
 }
 
-BOOL RecycleBox::func_ov004_02228478() {
+BOOL RecycleBox::vfunc_0c() {
     removeCollision();
     releaseResources();
     sRecycleBox = 0;
@@ -534,13 +465,13 @@ BOOL RecycleBox::enterAct01() {
     _ZN9Character17attachTalkRequestEi(this, (TalkMsgRequest *)this);
     MsgRequest::setFileName(sRecycleBoxMsgFilePtr);
     MsgRequest::msgIndex = 0;
-    TalkMsgRequest::unk_3c->unk_08 = 1;
+    TalkMsgRequest::unk_3c->nextState = 1;
     return TRUE;
 }
 
 void RecycleBox::execAct01() {
     if (TalkMsgRequest::unk_3c != 0) {
-        if (TalkMsgRequest::unk_3c->unk_04 != 0) {
+        if (TalkMsgRequest::unk_3c->state != 0) {
             changeAct(2);
         }
     }
@@ -552,7 +483,7 @@ BOOL RecycleBox::enterAct02() {
 
 void RecycleBox::execAct02() {
     if (TalkMsgRequest::unk_3c != 0) {
-        if (TalkMsgRequest::unk_3c->unk_04 == 0) {
+        if (TalkMsgRequest::unk_3c->state == 0) {
             _ZN9Character17detachTalkRequestEi(this, (TalkMsgRequest *)this);
             changeAct(3);
         }
@@ -594,13 +525,13 @@ void RecycleBox::execAct05() {
     }
 }
 
-void RecycleBox::onMessageStart() {}
+void RecycleBox::onMessageStart(u32) {}
 
-void RecycleBox::onMessageEnd() {
+void RecycleBox::onMessageEnd(u32) {
     ((u32 *)data_021c1b3c)[0x248 / 4] = 0x1a;
 }
 
-void RecycleBox::onChoice(u32 a, u8 b) {}
+void RecycleBox::onChoice(u32 a) {}
 
 void RecycleBox::initCollision() {
     BoxCollider_Register(collider, 0x2000, 0x4000, 0x2000, (u8 *)this + 0x5c, 0, 0);

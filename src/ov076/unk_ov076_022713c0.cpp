@@ -18,6 +18,8 @@
 #include "actor/Character.h"
 #include "talk/ChoiceList.h"
 #include "gfx/ThreeLayerAnimModel.h"
+#include "talk/TalkMsgRequest.h"
+#include "talk/ActorTalkRequest.h"
 
 
 struct Unk_0201bc1c;
@@ -95,68 +97,9 @@ extern u32 __ptmf_null[];
 }
 
 
-class ActorTalkRequest {
-public:
-    ActorTalkRequest();
-    virtual ~ActorTalkRequest();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void onMessageStart();
-    virtual void onMessageEnd();
-    virtual void onChoice();
-    virtual void onSignalTag();
-    virtual void onActionTag0();
-    virtual void onActionTag1();
-    virtual void onActionTag2();
-    virtual void onActionTag3();
-    virtual void onActionTag4();
-    virtual void onConditionTag();
-    virtual void onEventTag(u32 v);
-    virtual void onTag09_0();
-    virtual void onTag09_1();
-    virtual void onTag09_2();
-    virtual void onTag09_3();
-    virtual void onTag09_4();
-    virtual void onTag09_5();
-    virtual void onTag09_6();
-    virtual void onTag09_7();
-    virtual void onTag09_8();
-    virtual void onTag09_9();
-    virtual void onScannedTag();
-    virtual void getSpeakerData();
-    virtual void getVoiceType();
-    virtual void onWindowClose();
-    virtual void onTalkEnd();
-    virtual void start(void *a);
-    virtual void runDeferred();
-    virtual void update();
-    void *func_02015aac();
-    void func_02015ab0(u32 p);
-    ChoiceList *getChoiceList();
-    u8 pad_04[0x1a];
-    u8 msgIndex;
-    u8 pad_1f[0x3c - 0x1f];
-    TalkWindowState *unk_3c;
-    u8 pad_40[0xac - 0x40];
-};
 
-class TalkMsgRequest : public ActorTalkRequest {
-public:
-    virtual void vfunc_0c();
-    virtual void onMessageStart();
-    virtual void onSignalTag();
-    virtual void onActionTag0();
-    virtual void onActionTag1();
-    virtual void onActionTag2();
-    virtual void onActionTag3();
-    virtual void onActionTag4();
-    virtual void onScannedTag();
-    virtual void getSpeakerData();
-    virtual void onWindowClose();
-    virtual void onTalkEnd();
-};
 
-class Unk_020d7710 : public TalkMsgRequest {
+class Unk_020d7710 : public ActorTalkRequest {
 public:
     virtual void onTag09_4();
     virtual void onTag09_5();
@@ -179,10 +122,10 @@ public:
     SpNpcPascalTalk();
     virtual ~SpNpcPascalTalk();
     virtual void vfunc_08();
-    virtual void onMessageEnd();
-    virtual void onChoice();
-    virtual void start(void *a);
-    virtual void onTaskDone();
+    virtual void onMessageEnd(u32 attr);
+    virtual void onChoice(u32 attr);
+    virtual void start(TalkStartMsg *out);
+    virtual void onTaskDone(u32 id);
 
     void attachOwner(SpNpcPascal *o);
     void onScallopPicked();
@@ -537,7 +480,7 @@ BOOL SpNpcPascal::mainAct05() {
     return TRUE;
 }
 
-void SpNpcPascalTalk::onTaskDone() {
+void SpNpcPascalTalk::onTaskDone(u32) {
     if (resultHandler) {
         (this->*resultHandler)();
         resultHandler = *(Fn *)__ptmf_null;
@@ -589,7 +532,7 @@ void SpNpcPascalTalk::attachOwner(SpNpcPascal *o) {
     topic = 0;
 }
 
-void SpNpcPascalTalk::start(void *a) {
+void SpNpcPascalTalk::start(TalkStartMsg *a) {
     Unk_ov076_02271744_Out *out = (Unk_ov076_02271744_Out *)a;
     if (MenuCtrl_BuildPocketMask(SpNpcPascal_IsScallop)) {
         topic = 0;
@@ -604,7 +547,7 @@ void SpNpcPascalTalk::start(void *a) {
     }
 }
 
-void SpNpcPascalTalk::onMessageEnd() {
+void SpNpcPascalTalk::onMessageEnd(u32) {
     u8 *tag = sSpNpcPascalKey;
     u8 code = 0xff;
     u8 msg;
@@ -699,7 +642,7 @@ void SpNpcPascalTalk::onMessageEnd() {
     }
 }
 
-void SpNpcPascalTalk::onChoice() {
+void SpNpcPascalTalk::onChoice(u32) {
     s32 mode = getChoiceList()->getResult();
     u8 *tag = sSpNpcPascalKey;
     u8 code = 0xff;

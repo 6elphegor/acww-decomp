@@ -17,6 +17,9 @@
 #include "actor/Actor.h"
 #include "actor/Character.h"
 #include "gfx/ThreeLayerAnimModel.h"
+#include "talk/TalkMsgRequest.h"
+#include "talk/ActorTalkRequest.h"
+#include "talk/TalkWindowState.h"
 
 
 class FieldVillager;
@@ -192,67 +195,9 @@ public:
     u32 unk_654;
 };
 
-// Dialog sub-object at +0x658 (vtable 0x0226fea4): chain ActorTalkRequest <- TalkMsgRequest <- Unk_020d7710 <- SpNpcTalkRequest <- 0226fea4
-class ActorTalkRequest {
-public:
-    ActorTalkRequest();
-    virtual ~ActorTalkRequest();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void onMessageStart();
-    virtual void onMessageEnd();
-    virtual void onChoice();
-    virtual void onSignalTag();
-    virtual void onActionTag0();
-    virtual void onActionTag1();
-    virtual void onActionTag2();
-    virtual void onActionTag3();
-    virtual void onActionTag4();
-    virtual void onConditionTag();
-    virtual void onEventTag(u32 v);
-    virtual void onTag09_0();
-    virtual void onTag09_1();
-    virtual void onTag09_2();
-    virtual void onTag09_3();
-    virtual void onTag09_4();
-    virtual void onTag09_5();
-    virtual void onTag09_6();
-    virtual void onTag09_7();
-    virtual void onTag09_8();
-    virtual void onTag09_9();
-    virtual void onScannedTag();
-    virtual void getSpeakerData();
-    virtual void getVoiceType();
-    virtual void onWindowClose();
-    virtual void onTalkEnd();
-    virtual void start(Unk_ov068_02266f30_Out *out);
-    virtual void runDeferred();
-    virtual void update();
-    virtual void onTaskDone();
-    u8 pad_04[0x1a];
-    u8 msgIndex;
-    u8 pad_1f[0x3c - 0x1f];
-    Unk_ov068_02266bd0_Scene *unk_3c;
-    u8 pad_40[0xac - 0x40];
-};
 
-class TalkMsgRequest : public ActorTalkRequest {
-public:
-    virtual void vfunc_0c();
-    virtual void onMessageStart();
-    virtual void onSignalTag();
-    virtual void onActionTag0();
-    virtual void onActionTag1();
-    virtual void onActionTag2();
-    virtual void onActionTag3();
-    virtual void onActionTag4();
-    virtual void onScannedTag();
-    virtual void getSpeakerData();
-    virtual void onWindowClose();
-    virtual void onTalkEnd();
-};
 
-class Unk_020d7710 : public TalkMsgRequest {
+class Unk_020d7710 : public ActorTalkRequest {
 public:
     virtual void onTag09_4();
     virtual void onTag09_5();
@@ -277,11 +222,11 @@ class SpNpcNookIntroTalk : public SpNpcTalkRequest {
 public:
     SpNpcNookIntroTalk();
     virtual ~SpNpcNookIntroTalk();
-    virtual void onMessageEnd();
-    virtual void onChoice();
-    virtual void start(Unk_ov068_02266f30_Out *out);
+    virtual void onMessageEnd(u32 attr);
+    virtual void onChoice(u32 attr);
+    virtual void start(TalkStartMsg *out);
     virtual void update();
-    virtual void onTaskDone();
+    virtual void onTaskDone(u32 id);
 
     void runWalkScript();
     void setScript(s32 a);
@@ -599,7 +544,8 @@ void SpNpcNookIntroTalk::attachOwner(FieldVillager *o) {
     owner = o;
 }
 
-void SpNpcNookIntroTalk::start(Unk_ov068_02266f30_Out *out) {
+void SpNpcNookIntroTalk::start(TalkStartMsg *out_) {
+    Unk_ov068_02266f30_Out *out = (Unk_ov068_02266f30_Out *)out_;
     void *p = PlayerData_GetCurrent();
     if (p != 0) {
         Unk_02097ff4_clearFlag(p, 0x23);
@@ -608,8 +554,8 @@ void SpNpcNookIntroTalk::start(Unk_ov068_02266f30_Out *out) {
     out->msgIndex = 0x22;
 }
 
-void SpNpcNookIntroTalk::onMessageEnd() {
-    Unk_ov068_02266bd0_Scene *sc = unk_3c;
+void SpNpcNookIntroTalk::onMessageEnd(u32) {
+    Unk_ov068_02266bd0_Scene *sc = (Unk_ov068_02266bd0_Scene *)unk_3c;
     volatile u8 buf = gU8None;
     buf = 0;
     switch (msgIndex) {
@@ -657,7 +603,7 @@ void SpNpcNookIntroTalk::onMessageEnd() {
     }
 }
 
-void SpNpcNookIntroTalk::onChoice() {
+void SpNpcNookIntroTalk::onChoice(u32) {
 }
 
 void SpNpcNookIntroTalk::update() {
@@ -668,7 +614,7 @@ void SpNpcNookIntroTalk::update() {
     }
 }
 
-void SpNpcNookIntroTalk::onTaskDone() {
+void SpNpcNookIntroTalk::onTaskDone(u32) {
     if (data_ov068_0226fe1c[script].flag == 0) {
         if (sNookIntroTalkScripts[script].fn) {
             (this->*sNookIntroTalkScripts[script].fn)();
@@ -719,7 +665,7 @@ void SpNpcNookIntroTalk::runWalkScript() {
         if (NpcActionCtrl_isActionDone(o->actionCtrl) != 0) {
             o = (Unk_ov068_02266bd0_Owner *)owner;
             if (NpcActionCtrl_getAction(o->actionCtrl) == 0) {
-                Unk_ov068_02266bd0_Scene *sc = unk_3c;
+                Unk_ov068_02266bd0_Scene *sc = (Unk_ov068_02266bd0_Scene *)unk_3c;
                 volatile u8 buf = gU8None;
                 if (GameStart_IsNewTown() != 0) {
                     buf = 0xd;

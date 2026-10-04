@@ -30,6 +30,9 @@
 #include "actor/Actor.h"
 #include "actor/Character.h"
 #include "npc/NpcEmotionFx.h"
+#include "talk/MsgRequest.h"
+#include "talk/TalkMsgRequest.h"
+#include "talk/ActorTalkRequest.h"
 
 
 // unk_02011580.cpp
@@ -38,7 +41,7 @@ struct Unk_02081d4c {
     u32 scale;
 };
 
-struct MsgRequest;
+struct Unk_02006d14_TalkBase;
 
 struct Unk_02006d14;
 
@@ -908,108 +911,7 @@ public:
     virtual void vfunc_8c();
 };
 
-// unk_020156ac.cpp
-class TalkMsgRequest {
-public:
-    TalkMsgRequest();
-    virtual ~TalkMsgRequest();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void onMessageStart();
-    virtual void onMessageEnd();
-    virtual void onChoice();
-    virtual void onSignalTag();
-    virtual void onActionTag0();
-    virtual void onActionTag1();
-    virtual void onActionTag2();
-    virtual void onActionTag3();
-    virtual void onActionTag4();
-    virtual void onConditionTag();
-    virtual void onEventTag(u32 a);
-    virtual void onTag09_0();
-    virtual void onTag09_1();
-    virtual void onTag09_2();
-    virtual void onTag09_3();
-    virtual void onTag09_4();
-    virtual void onTag09_5();
-    virtual void onTag09_6();
-    virtual void onTag09_7();
-    virtual void onTag09_8();
-    virtual void onTag09_9();
-    virtual void onScannedTag();
-    virtual void getSpeakerData();
-    virtual s32 getVoiceType();
-    virtual void onWindowClose();
-    virtual void onTalkEnd();
 
-      u32 fileName[0x38 / 4];
-      u32 unk_3c;
-      u8 unk_40;
-};
-
-// unk_020156ac.cpp
-class ActorTalkRequest : public TalkMsgRequest {
-public:
-    ActorTalkRequest();
-    virtual ~ActorTalkRequest();
-    virtual void vfunc_08();
-    virtual void onConditionTag();
-    virtual void onEventTag(u32 a);
-    virtual void onTag09_0();
-    virtual void onTag09_1();
-    virtual void onTag09_2();
-    virtual void onTag09_3();
-    virtual void onTag09_4();
-    virtual void onTag09_5();
-    virtual void onTag09_6();
-    virtual void onTag09_7();
-    virtual void onTag09_8();
-    virtual void onTag09_9();
-    virtual s32 getVoiceType();
-    virtual void start() = 0;
-    virtual void runDeferred();
-    virtual void update();
-    virtual void onTaskDone();
-
-    u8 getSpeakerIndex();
-    Unk_02015b8c_Scene *getSpeakerActor();
-    Unk_02015b8c_Scene *getActorB(u32 idx);
-    Unk_02015b8c_Scene *getActionActor();
-    Unk_02015b8c_Scene *getActor(u32 idx);
-    void setSlotFromString(u32 a, u32 b, u32 c);
-    void setItemNameSlot(u32 a, u32 b, u32 c);
-    void setVillagerNameSlot(u32 a, u32 b);
-    void setPlayerNameSlot(u32 a, u32 b);
-    void setTownNameSlot(u32 a, u32 b);
-    void setDaySlot(u32 a, u32 b);
-    void setMonthSlot(u32 a, u32 b);
-    void setFixedPointSlot(s32 a, u32 b, s32 c);
-    void setNumberNamedSlot(s32 a, u32 b, s32 c, u8 d, s32 e, s32 f);
-    void setNumberSlot(s32 a, u32 b, s32 c, s32 d, s32 e);
-    BOOL isItemActionBusy();
-    void clearItemActionBusy();
-    void setItemActionBusy();
-    void playEmotion(u32 a, u32 b);
-    s32 getChoiceList();
-    void setOwnerActor(Unk_02015b8c_Scene *p);
-    Unk_02015b8c_Scene *getPartnerActor();
-    void setPartnerActor(Unk_02015b8c_Scene *p);
-    u32 func_02015aac();
-    void func_02015ab0(u32 a);
-    void tick();
-
-      u32 unk_44;
-      Unk_02015b8c_Scene *unk_48;
-      Unk_02015b8c_Scene *unk_4c;
-      u8 unk_50;
-      u8 speakerIndex;
-      u8 pad_52[6];
-      u32 lastEmotion;
-      u8 itemActionBusy;
-      u32 unk_60;
-      u8 pad_64[0x16];
-      u16 unk_7a;
-};
 
 // unk_020156ac.cpp
 class Unk_02015b8c {
@@ -1107,10 +1009,11 @@ struct Unk_02006d14_Prim {
     s16 rotY;
     u8 pad_090[0xec - 0x90];
 };
-struct MsgRequest {
+// PlayerActor view: the secondary (TalkMsgRequest) base at +0xec, as far as this unit uses it
+struct Unk_02006d14_TalkBase {
     Unk_02016a44_S0ec unk_ec;
 };
-class Unk_02006d14 : public Unk_02006d14_Prim, public MsgRequest {
+class Unk_02006d14 : public Unk_02006d14_Prim, public Unk_02006d14_TalkBase {
 public:
     u8 pad_0f0[0x198 - 0xf0];
     u32 modelAnimFrameStep;
@@ -1967,7 +1870,7 @@ void func_020f43c8(void *p);
 Unk_02081d4c *_ZN16NpcResHandleView16getHeldItemModelEv(void *p);
 void HeldItemModel_SetAnimSpeed(Unk_02081d4c *p, u32 v);
 Unk_0205dfa4 *HeldItemModel_GetModel(Unk_02081d4c *p);
-void Model_GetJointWorldMtx(MsgRequest *dst, void *src, u32 n);
+void Model_GetJointWorldMtx(Unk_02006d14_TalkBase *dst, void *src, u32 n);
 void HeldItemModel_Draw(Unk_02081d4c *p, void *src);
 void HeldItemModel_Update(Unk_02081d4c *p);
 void _ZN12NpcResHandle7releaseEv(void *p);
@@ -2229,9 +2132,9 @@ extern u16 data_020c6cc8;
 s32 Scene_GetCurrent(void);
 s32 Net_GetJoiningAid(void);
 s32 PlayerActor_GetLocalSessionSlot(void);
-s32 _ZN15TalkWindowState17setSlotFromStringEiii(u32 a, u32 b, u32 c, u32 d);
-s32 _ZN15TalkWindowState12setNamedSlotEiPvj(u32 a, u32 b, void *c, u32 d);
-s32 _ZN15TalkWindowState7setSlotEiPv(u32 a, u32 b, void *c);
+s32 _ZN15TalkWindowState17setSlotFromStringEiii(TalkWindowState *a, u32 b, u32 c, u32 d);
+s32 _ZN15TalkWindowState12setNamedSlotEiPvj(TalkWindowState *a, u32 b, void *c, u32 d);
+s32 _ZN15TalkWindowState7setSlotEiPv(TalkWindowState *a, u32 b, void *c);
 u32 _ZN15TalkWindowState13getChoiceListEv(u32 a);
 void _ZN10VillagerId7getNameEj(u32 a, void *b);
 void _ZN8PlayerId13getNameStringEP9MsgString(u32 a, void *b);
@@ -2637,7 +2540,7 @@ void _ZN5Actor14updatePositionEP16Unk_02002cb0_Vec(void *a, void *b);
 s32 _ZN12Unk_0201a13c16isWithinYawLimitEi(NpcLookAt *self, s32 v);
 BOOL Npc_IsPosBlocked(Unk_0201a334_Vec3 *pos);
 void Npc_RotateOffsetXZ(Unk_0201a334_Vec3 *out, Unk_0201a334_Vec3 *base, Unk_0201a334_Vec3 *off, u32 ang);
-s32 Model_GetJointWorldMtx(MsgRequest *dst, void *src, u32 n);
+s32 Model_GetJointWorldMtx(Unk_02006d14_TalkBase *dst, void *src, u32 n);
 s32 WorldCurve_FromCurved(void *v);
 s32 Ground_GetExitAtPos(s32 id);
 BOOL FtrMgr_GetSurfaceHeightAtPos(s32 id);
@@ -4480,7 +4383,7 @@ void NpcLookAt::disable() {
 void NpcMoveCtrl::storeHeadMtx(Unk_02006d14 *p) {
     using namespace nP;
     if (p != 0) {
-        MsgRequest &s = *p;
+        Unk_02006d14_TalkBase &s = *p;
         Model_GetJointWorldMtx(&s, (u8 *)this + 0x2c, 0xf);
     }
 }
@@ -7671,9 +7574,9 @@ void ActorTalkRequest::func_02015ab0(u32 a) {
     unk_44 = a;
 }
 
-u32 ActorTalkRequest::func_02015aac() {
+void *ActorTalkRequest::func_02015aac() {
     using namespace nH;
-    return unk_44;
+    return (void *)unk_44;
 }
 
 void ActorTalkRequest::setPartnerActor(Unk_02015b8c_Scene *p) {
@@ -7698,11 +7601,11 @@ void ActorTalkRequest::setOwnerActor(Unk_02015b8c_Scene *p) {
     unk_48 = p;
 }
 
-s32 ActorTalkRequest::getChoiceList() {
+ChoiceList *ActorTalkRequest::getChoiceList() {
     using namespace nH;
-    s32 r = 0;
+    ChoiceList *r = 0;
     if (unk_3c != 0) {
-        r = _ZN15TalkWindowState13getChoiceListEv(unk_3c);
+        r = (ChoiceList *)_ZN15TalkWindowState13getChoiceListEv((u32)unk_3c);
     }
     return r;
 }
@@ -10666,7 +10569,7 @@ void HeldToolModel::draw(Unk_02006d14 *p) {
     if (visible != 0) {
         Unk_02081d4c *r = _ZN16NpcResHandleView16getHeldItemModelEv(&modelHandle);
         if (p) {
-            MsgRequest &s = *p;
+            Unk_02006d14_TalkBase &s = *p;
             Model_GetJointWorldMtx(&s, handMtx, 0xe);
         }
         if (r) HeldItemModel_Draw(r, handMtx);

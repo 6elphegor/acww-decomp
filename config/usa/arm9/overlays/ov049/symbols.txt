@@ -23,6 +23,7 @@ _ZN14SpNpcMabelTalk13onDesignNamedEv kind:function(thumb,size=0x20) addr:0x02259
 _ZN14SpNpcMabelTalk18onDesignEditorDoneEv kind:function(thumb,size=0x44) addr:0x02259a48
 _ZN14SpNpcMabelTalk9setScriptEi kind:function(thumb,size=0x6) addr:0x02259a8c
 _ZN14SpNpcMabelTalk10onTaskDoneEv kind:function(thumb,size=0x50) addr:0x02259a94
+_ZN14SpNpcMabelTalk10onTaskDoneEj kind:label(thumb) addr:0x02259a94
 _ZN14SpNpcMabelTalk6updateEv kind:function(thumb,size=0x44) addr:0x02259ae4
 _ZN14SpNpcMabelTalk17onDramaMenuChoiceEv kind:function(thumb,size=0x98) addr:0x02259b28
 _ZN14SpNpcMabelTalk16onDeliveryChoiceEi kind:function(thumb,size=0x2c) addr:0x02259bc0

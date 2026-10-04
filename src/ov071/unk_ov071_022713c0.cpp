@@ -21,6 +21,8 @@
 #include "actor/Character.h"
 #include "talk/ChoiceList.h"
 #include "gfx/ThreeLayerAnimModel.h"
+#include "talk/TalkMsgRequest.h"
+#include "talk/ActorTalkRequest.h"
 
 
 class SpNpcLyle;
@@ -147,70 +149,9 @@ BOOL SpNpcLyle_IsForgedPainting(u16 *p, s32 x);
 }
 
 
-class ActorTalkRequest {
-public:
-    ActorTalkRequest();
-    virtual ~ActorTalkRequest();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void onMessageStart();
-    virtual void onMessageEnd();
-    virtual void onChoice();
-    virtual void onSignalTag();
-    virtual void onActionTag0();
-    virtual void onActionTag1();
-    virtual void onActionTag2();
-    virtual void onActionTag3();
-    virtual void onActionTag4();
-    virtual void onConditionTag();
-    virtual void onEventTag(u32 v);
-    virtual void onTag09_0();
-    virtual void onTag09_1();
-    virtual void onTag09_2();
-    virtual void onTag09_3();
-    virtual void onTag09_4();
-    virtual void onTag09_5();
-    virtual void onTag09_6();
-    virtual void onTag09_7();
-    virtual void onTag09_8();
-    virtual void onTag09_9();
-    virtual void onScannedTag();
-    virtual void getSpeakerData();
-    virtual void getVoiceType();
-    virtual void onWindowClose();
-    virtual void onTalkEnd();
-    virtual void start(TalkStartMsg *out);
-    virtual void runDeferred();
-    virtual void update();
-    virtual void onTaskDone();
-    void setNumberSlot(s32 a, u32 b, s32 c, s32 d, s32 e);
-    void *func_02015aac();
-    void func_02015ab0(u32 p);
-    ChoiceList *getChoiceList();
-    u8 pad_04[0x1a];
-    u8 msgIndex;
-    u8 pad_1f[0x3c - 0x1f];
-    TalkWindowState *unk_3c;
-    u8 pad_40[0xac - 0x40];
-};
 
-class TalkMsgRequest : public ActorTalkRequest {
-public:
-    virtual void vfunc_0c();
-    virtual void onMessageStart();
-    virtual void onSignalTag();
-    virtual void onActionTag0();
-    virtual void onActionTag1();
-    virtual void onActionTag2();
-    virtual void onActionTag3();
-    virtual void onActionTag4();
-    virtual void onScannedTag();
-    virtual void getSpeakerData();
-    virtual void onWindowClose();
-    virtual void onTalkEnd();
-};
 
-class Unk_020d7710 : public TalkMsgRequest {
+class Unk_020d7710 : public ActorTalkRequest {
 public:
     void requestCloseWindow(u32 a);
     s32 requestReopenWindow();
@@ -220,7 +161,7 @@ public:
     virtual void onTag09_7();
     virtual void onTag09_8();
     virtual void onTag09_9();
-    virtual void onTaskDone();
+    virtual void onTaskDone(u32 id);
 };
 
 class SpNpcTalkRequest : public Unk_020d7710 {
@@ -237,10 +178,10 @@ public:
     SpNpcLyleTalk();
     virtual ~SpNpcLyleTalk();
     virtual void vfunc_08();
-    virtual void onMessageEnd();
-    virtual void onChoice();
+    virtual void onMessageEnd(u32 attr);
+    virtual void onChoice(u32 attr);
     virtual void start(TalkStartMsg *out);
-    virtual void onTaskDone();
+    virtual void onTaskDone(u32 id);
 
     void attachOwner(SpNpcLyle *o);
     void scriptCloseItemSelect();
@@ -912,7 +853,7 @@ BOOL SpNpcLyle::mainAct02() {
     return TRUE;
 }
 
-void SpNpcLyleTalk::onTaskDone() {
+void SpNpcLyleTalk::onTaskDone(u32) {
     if (script) {
         (this->*script)();
         Unk_ov071_02272ba8_Fn t = *(Unk_ov071_02272ba8_Fn *)__ptmf_null;
@@ -1124,7 +1065,7 @@ void SpNpcLyleTalk::start(TalkStartMsg *out) {
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
-void SpNpcLyleTalk::onMessageEnd() {
+void SpNpcLyleTalk::onMessageEnd(u32) {
     u8 *const name = sSpNpcLyleKey;
     Unk_ov071_0227160c_Msg m;
     s32 r5 = 0xff;
@@ -1219,7 +1160,7 @@ void SpNpcLyleTalk::onMessageEnd() {
     }
 }
 
-void SpNpcLyleTalk::onChoice() {
+void SpNpcLyleTalk::onChoice(u32) {
     u8 m;
     s32 t = getChoiceList()->getResult();
     u8 *const name = sSpNpcLyleKey;

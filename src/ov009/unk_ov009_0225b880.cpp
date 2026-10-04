@@ -21,6 +21,8 @@
 #include "snd/BgmManager.h"
 #include "snd/SndSeEmitter.h"
 #include "snd/Unk_0213b9c4.h"
+#include "talk/TalkMsgRequest.h"
+#include "talk/TalkWindowState.h"
 
 
 
@@ -32,45 +34,6 @@
 
 
 
-// Secondary base at +0xec (vtable 0x020ddcf0 in main)
-class TalkMsgRequest : public MsgRequest {
-public:
-    TalkMsgRequest();
-    virtual ~TalkMsgRequest();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void onMessageStart();
-    virtual void onMessageEnd();
-    virtual void onChoice();
-    virtual void onSignalTag();
-    virtual void onActionTag0();
-    virtual void onActionTag1();
-    virtual void onActionTag2();
-    virtual void onActionTag3();
-    virtual void onActionTag4();
-    virtual void onConditionTag();
-    virtual void onEventTag(u32 a);
-    virtual void onTag09_0();
-    virtual void onTag09_1();
-    virtual void onTag09_2();
-    virtual void onTag09_3();
-    virtual void onTag09_4();
-    virtual void onTag09_5();
-    virtual void onTag09_6();
-    virtual void onTag09_7();
-    virtual void onTag09_8();
-    virtual void onTag09_9();
-    virtual void onScannedTag();
-    virtual void getSpeakerData();
-    virtual void getVoiceType();
-    virtual void onWindowClose();
-    virtual void onTalkEnd();
-
-    /* 0x1f */ u8 pad_1f[0x3c - 0x1f];
-    /* 0x3c */ Unk_ov009_0225b880_Target *unk_3c;
-    /* 0x40 */ u8 pad_40[2];
-    /* 0x42 */ u16 unk_42;
-};
 
 
 
@@ -178,7 +141,7 @@ public:
     virtual void vfunc_7c();
     virtual void vfunc_80();
     virtual void vfunc_84();
-    virtual void onMessageEnd();
+    virtual void onMessageEnd(u32 attr);
     virtual BOOL vfunc_8c();
     virtual BOOL vfunc_90();
     virtual BOOL vfunc_94();
@@ -263,6 +226,7 @@ public:
     void execEntryTalkOpen();
     BOOL enterEntryTalkOpen();
 
+    /* 0x12e */ u16 unk_12e;    // in TalkMsgRequest's tail padding (door-close SE delay in ov009)
     /* 0x130 */ u8 doorState;
     /* 0x131 */ u8 pad_131;
     /* 0x132 */ u16 itemId;
@@ -1576,7 +1540,7 @@ void BuildingActor::execDoorSlideOpen() {
 }
 
 BOOL BuildingActor::enterDoorSlideClose() {
-    unk_42 = 0x1a;
+    unk_12e = 0x1a;
     void *r = (void *)func_ov009_0225d6f0();
     if (r) {
         BlendAnimModel_initAnim(unk_138, r, 1, 0x1000, 0, 0);
@@ -1586,9 +1550,9 @@ BOOL BuildingActor::enterDoorSlideClose() {
 }
 
 void BuildingActor::execDoorSlideClose() {
-    if (unk_42 != 0) {
-        unk_42--;
-        if (unk_42 == 0) {
+    if (unk_12e != 0) {
+        unk_12e--;
+        if (unk_12e == 0) {
             if (Item_IsNookShop(&itemId)) {
                 ((BuildingSeEmitter *)unk_234)->playSe(0x807);
             } else {
@@ -1596,7 +1560,7 @@ void BuildingActor::execDoorSlideClose() {
             }
         }
     }
-    if (unk_42 == 0) {
+    if (unk_12e == 0) {
         AnimModel_stepAnim(unk_138);
         if (AnimFrameCtrl_isFinished(unk_1d4)) {
             vfunc_6c(0);
@@ -1678,13 +1642,13 @@ BOOL BuildingActor::execEntryCheck() {
 
 BOOL BuildingActor::enterEntryTalkOpen() {
     _ZN9Character17attachTalkRequestEi(this, this);
-    unk_3c->unk_08 = 1;
+    unk_3c->nextState = 1;
     vfunc_78();
     return TRUE;
 }
 
 void BuildingActor::execEntryTalkOpen() {
-    if (unk_3c != NULL && unk_3c->unk_04 != 0) {
+    if (unk_3c != NULL && unk_3c->state != 0) {
         vfunc_7c();
         setEntryState(3);
     }
@@ -1693,7 +1657,7 @@ void BuildingActor::execEntryTalkOpen() {
 BOOL BuildingActor::enterEntryTalk() { return TRUE; }
 
 void BuildingActor::execEntryTalk() {
-    if (unk_3c != NULL && unk_3c->unk_04 == 0) {
+    if (unk_3c != NULL && unk_3c->state == 0) {
         vfunc_84();
         _ZN9Character17detachTalkRequestEi(this, this);
         TalkRequest_SetTargetDone(this);
@@ -1850,7 +1814,7 @@ BOOL BuildingActor::vfunc_48(void *other) {
 }
 
 
-void BuildingActor::onMessageEnd() {
+void BuildingActor::onMessageEnd(u32) {
     BOOL ok;
     if (Item_IsFurniture(&itemId)) {
         u16 v = 0x500a;

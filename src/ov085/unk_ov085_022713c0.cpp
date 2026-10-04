@@ -20,6 +20,8 @@
 #include "actor/Character.h"
 #include "talk/ChoiceList.h"
 #include "gfx/ThreeLayerAnimModel.h"
+#include "talk/TalkMsgRequest.h"
+#include "talk/ActorTalkRequest.h"
 
 #pragma opt_loop_invariants off
 
@@ -72,69 +74,9 @@ extern u8 gSaveData[];
 
 
 
-class ActorTalkRequest {
-public:
-    ActorTalkRequest();
-    virtual ~ActorTalkRequest();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void onMessageStart();
-    virtual void onMessageEnd();
-    virtual void onChoice();
-    virtual void onSignalTag();
-    virtual void onActionTag0();
-    virtual void onActionTag1();
-    virtual void onActionTag2();
-    virtual void onActionTag3();
-    virtual void onActionTag4();
-    virtual void onConditionTag();
-    virtual void onEventTag(u32 v);
-    virtual void onTag09_0();
-    virtual void onTag09_1();
-    virtual void onTag09_2();
-    virtual void onTag09_3();
-    virtual void onTag09_4();
-    virtual void onTag09_5();
-    virtual void onTag09_6();
-    virtual void onTag09_7();
-    virtual void onTag09_8();
-    virtual void onTag09_9();
-    virtual void onScannedTag();
-    virtual void getSpeakerData();
-    virtual void getVoiceType();
-    virtual void onWindowClose();
-    virtual void onTalkEnd();
-    virtual void start(TalkStartMsg *out);
-    virtual void runDeferred();
-    virtual void update();
-    virtual void onTaskDone();
-    void *func_02015aac();
-    void func_02015ab0(u32 p);
-    ChoiceList *getChoiceList();
-    u8 pad_04[0x1a];
-    u8 msgIndex;
-    u8 pad_1f[0x3c - 0x1f];
-    TalkWindowState *unk_3c;
-    u8 pad_40[0xac - 0x40];
-};
 
-class TalkMsgRequest : public ActorTalkRequest {
-public:
-    virtual void vfunc_0c();
-    virtual void onMessageStart();
-    virtual void onSignalTag();
-    virtual void onActionTag0();
-    virtual void onActionTag1();
-    virtual void onActionTag2();
-    virtual void onActionTag3();
-    virtual void onActionTag4();
-    virtual void onScannedTag();
-    virtual void getSpeakerData();
-    virtual void onWindowClose();
-    virtual void onTalkEnd();
-};
 
-class Unk_020d7710 : public TalkMsgRequest {
+class Unk_020d7710 : public ActorTalkRequest {
 public:
     virtual void onTag09_4();
     virtual void onTag09_5();
@@ -142,7 +84,7 @@ public:
     virtual void onTag09_7();
     virtual void onTag09_8();
     virtual void onTag09_9();
-    virtual void onTaskDone();
+    virtual void onTaskDone(u32 id);
 };
 
 class SpNpcTalkRequest : public Unk_020d7710 {
@@ -155,8 +97,8 @@ class SpNpcTortimerBrightNightsTalk : public SpNpcTalkRequest {
 public:
     SpNpcTortimerBrightNightsTalk();
     virtual ~SpNpcTortimerBrightNightsTalk();
-    virtual void onMessageEnd();
-    virtual void onChoice();
+    virtual void onMessageEnd(u32 attr);
+    virtual void onChoice(u32 attr);
     virtual void start(TalkStartMsg *out);
     virtual void openVillagerPage();
 
@@ -532,7 +474,7 @@ void SpNpcTortimerBrightNightsTalk::start(TalkStartMsg *out) {
     }
 }
 
-void SpNpcTortimerBrightNightsTalk::onMessageEnd() {
+void SpNpcTortimerBrightNightsTalk::onMessageEnd(u32) {
     u8 b0, b1;
     u16 h0, h1;
     u8 *s = (u8 *)"sp_npc_turtle5";
@@ -586,7 +528,7 @@ void SpNpcTortimerBrightNightsTalk::onMessageEnd() {
     }
 }
 
-void SpNpcTortimerBrightNightsTalk::onChoice() {
+void SpNpcTortimerBrightNightsTalk::onChoice(u32) {
     u8 b0, b1;
     u16 h;
     s32 t = getChoiceList()->getResult();

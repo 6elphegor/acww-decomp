@@ -19,6 +19,8 @@
 #include "actor/Character.h"
 #include "talk/ChoiceList.h"
 #include "gfx/ThreeLayerAnimModel.h"
+#include "talk/TalkMsgRequest.h"
+#include "talk/ActorTalkRequest.h"
 
 
 class SpNpcKappn;
@@ -98,61 +100,7 @@ extern u32 __ptmf_null[];
 }
 
 
-class TalkMsgRequest {
-public:
-    TalkMsgRequest();
-    virtual ~TalkMsgRequest();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void onMessageStart();
-    virtual void onMessageEnd();
-    virtual void onChoice();
-    virtual void onSignalTag(s32 a);
-    virtual void onActionTag0();
-    virtual void onActionTag1();
-    virtual void onActionTag2();
-    virtual void onActionTag3();
-    virtual void onActionTag4();
-    virtual void onConditionTag();
-    virtual void onEventTag(u32 v);
-    virtual void onTag09_0();
-    virtual void onTag09_1();
-    virtual void onTag09_2();
-    virtual void onTag09_3();
-    virtual void onTag09_4();
-    virtual void onTag09_5();
-    virtual void onTag09_6();
-    virtual void onTag09_7();
-    virtual void onTag09_8();
-    virtual void onTag09_9();
-    virtual void onScannedTag();
-    virtual void getSpeakerData();
-    virtual void getVoiceType();
-    virtual void onWindowClose();
-    virtual void onTalkEnd();
-    u8 pad_04[0x1a];
-    u8 msgIndex;
-    u8 pad_1f[0x3c - 0x1f];
-    TalkWindowState *unk_3c;
-    u8 pad_40[0xac - 0x40];
-};
 
-class ActorTalkRequest : public TalkMsgRequest {
-public:
-    virtual void vfunc_08();
-    virtual void onConditionTag();
-    virtual void onEventTag(u32 v);
-    virtual void onTag09_0();
-    virtual void onTag09_1();
-    virtual void onTag09_2();
-    virtual void onTag09_3();
-    virtual void getVoiceType();
-    virtual void start(TalkStartMsg *out);
-    virtual void runDeferred();
-    virtual void update();
-    virtual void onTaskDone();
-    ChoiceList *getChoiceList();
-};
 
 class Unk_020d7710 : public ActorTalkRequest {
 public:
@@ -260,12 +208,12 @@ public:
 
     SpNpcKappnTalk();
     virtual ~SpNpcKappnTalk();
-    virtual void onMessageStart();
-    virtual void onMessageEnd();
-    virtual void onChoice();
+    virtual void onMessageStart(u32 attr);
+    virtual void onMessageEnd(u32 attr);
+    virtual void onChoice(u32 attr);
     virtual void onSignalTag(s32 a);
     virtual void start(TalkStartMsg *out);
-    virtual void onTaskDone();
+    virtual void onTaskDone(u32 id);
 
     u8 genderMsg(u32 v);
     void onMoneyChoice(u32 sel);
@@ -620,7 +568,7 @@ void SpNpcKappnTalk::start(TalkStartMsg *out) {
     }
 }
 
-void SpNpcKappnTalk::onTaskDone() {
+void SpNpcKappnTalk::onTaskDone(u32) {
     if (resultHandler) {
         (this->*resultHandler)();
         resultHandler = *(Fn *)__ptmf_null;
@@ -661,7 +609,7 @@ void SpNpcKappnTalk::onClockSet() {
     unk_3c->setNextMessage(m, sSpNpcKappnMsgKey);
 }
 
-void SpNpcKappnTalk::onMessageStart() {
+void SpNpcKappnTalk::onMessageStart(u32) {
     struct {
         u8 msg;
         u8 pad[3];
@@ -814,7 +762,7 @@ extern "C" void *data_ov051_0225a07c[2] = {(void *)_ZN14SpNpcKappnTalk12onRainCh
 extern "C" void *data_ov051_0225a124[2] = {(void *)_ZN10SpNpcKappn9mainAct04Ev, 0};
 extern "C" void *data_ov051_0225a11c[2] = {(void *)_ZN14SpNpcKappnTalk16askMoneyOrArriveEv, 0};
 
-void SpNpcKappnTalk::onMessageEnd() {
+void SpNpcKappnTalk::onMessageEnd(u32) {
     static Unk_ov051_022592e8_Ent tbl[32] = {
         {0x01, *(Fn *)data_ov051_02259fec},
         {0x04, *(Fn *)data_ov051_0225a0c4},
@@ -1056,7 +1004,7 @@ extern "C" void *data_ov051_02259f9c[2] = {(void *)_ZN14SpNpcKappnTalk15onPurpos
 extern "C" void *data_ov051_02259fb4[2] = {(void *)_ZN14SpNpcKappnTalk15onPurposeChoiceEj, 0};
 extern "C" void *data_ov051_0225a02c[2] = {(void *)_ZN14SpNpcKappnTalk12onRainChoiceEj, 0};
 
-void SpNpcKappnTalk::onChoice() {
+void SpNpcKappnTalk::onChoice(u32) {
     static Unk_ov051_02258e68_Ent tbl[14] = {
         {0x05, *(FnU *)data_ov051_0225a02c},
         {0x03, *(FnU *)data_ov051_0225a06c},

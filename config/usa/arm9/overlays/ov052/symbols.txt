@@ -12,7 +12,9 @@ _ZN9SpNpcRedd8vfunc_48Ev kind:function(thumb,size=0x34) addr:0x02259240
 _ZN9SpNpcRedd8vfunc_48EPv kind:label(thumb) addr:0x02259240
 _ZN13SpNpcReddTalk16completePurchaseEv kind:function(thumb,size=0xa8) addr:0x02259274
 _ZN13SpNpcReddTalk8onChoiceEv kind:function(thumb,size=0x184) addr:0x0225931c
+_ZN13SpNpcReddTalk8onChoiceEj kind:label(thumb) addr:0x0225931c
 _ZN13SpNpcReddTalk12onMessageEndEv kind:function(thumb,size=0x13c) addr:0x022594a0
+_ZN13SpNpcReddTalk12onMessageEndEj kind:label(thumb) addr:0x022594a0
 _ZN13SpNpcReddTalk5startEP12TalkStartMsg kind:function(thumb,size=0x43c) addr:0x022595dc
 SpNpcRedd_IsSoldOut kind:function(thumb,size=0x70) addr:0x02259a18
 _ZN13SpNpcReddTalk8getTopicEv kind:function(thumb,size=0x6) addr:0x02259a88

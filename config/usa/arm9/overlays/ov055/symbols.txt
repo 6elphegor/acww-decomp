@@ -17,9 +17,12 @@ _ZN14SpNpcRoverTalk11waitLidOpenEv kind:function(thumb,size=0x34) addr:0x0225912
 _ZN14SpNpcRoverTalk10runTagModeEv kind:function(thumb,size=0xd0) addr:0x0225915c
 _ZN14SpNpcRoverTalk9setScriptEi kind:function(thumb,size=0x6) addr:0x0225922c
 _ZN14SpNpcRoverTalk10onTaskDoneEv kind:function(thumb,size=0x50) addr:0x02259234
+_ZN14SpNpcRoverTalk10onTaskDoneEj kind:label(thumb) addr:0x02259234
 _ZN14SpNpcRoverTalk6updateEv kind:function(thumb,size=0x44) addr:0x02259284
 _ZN14SpNpcRoverTalk8onChoiceEv kind:function(thumb,size=0x22) addr:0x022592c8
+_ZN14SpNpcRoverTalk8onChoiceEj kind:label(thumb) addr:0x022592c8
 _ZN14SpNpcRoverTalk12onMessageEndEv kind:function(thumb,size=0xc4) addr:0x022592ec
+_ZN14SpNpcRoverTalk12onMessageEndEj kind:label(thumb) addr:0x022592ec
 _ZN14SpNpcRoverTalk5startEP12TalkStartMsg kind:function(thumb,size=0x10) addr:0x022593b0
 _ZN14SpNpcRoverTalk11attachOwnerEP10SpNpcRover kind:function(thumb,size=0x1a) addr:0x022593c0
 _ZN14SpNpcRoverTalkD0Ev kind:function(thumb,size=0x20) addr:0x022593dc

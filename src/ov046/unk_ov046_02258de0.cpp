@@ -22,6 +22,8 @@
 #include "talk/ConstellationMsgString17.h"
 #include "talk/ChoiceList.h"
 #include "gfx/ThreeLayerAnimModel.h"
+#include "talk/TalkMsgRequest.h"
+#include "talk/ActorTalkRequest.h"
 
 
 struct Unk_0201bc1c;
@@ -110,72 +112,9 @@ void _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(void *self, u8 a, s32 b,
 #define NpcActionCtrl_isActionDone _ZN13NpcActionCtrl12isActionDoneEv
 #define NpcLookAt_setTarget _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih
 
-class ActorTalkRequest {
-public:
-    ActorTalkRequest();
-    virtual ~ActorTalkRequest();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void onMessageStart();
-    virtual void onMessageEnd();
-    virtual void onChoice();
-    virtual void onSignalTag();
-    virtual void onActionTag0();
-    virtual void onActionTag1();
-    virtual void onActionTag2();
-    virtual void onActionTag3();
-    virtual void onActionTag4();
-    virtual void onConditionTag();
-    virtual void onEventTag(u32 v);
-    virtual void onTag09_0();
-    virtual void onTag09_1();
-    virtual void onTag09_2();
-    virtual void onTag09_3();
-    virtual void onTag09_4();
-    virtual void onTag09_5();
-    virtual void onTag09_6();
-    virtual void onTag09_7();
-    virtual void onTag09_8();
-    virtual void onTag09_9();
-    virtual void onScannedTag();
-    virtual void getSpeakerData();
-    virtual void getVoiceType();
-    virtual void onWindowClose();
-    virtual void onTalkEnd();
-    virtual void start(TalkStartMsg *out);
-    virtual void runDeferred();
-    virtual void update();
-    virtual void onTaskDone();
-    void *func_02015aac();
-    void func_02015ab0(u32 p);
-    void setDaySlot(u32 a, u32 b);
-    void setMonthSlot(u32 a, u32 b);
-    void setNumberSlot(s32 a, u32 b, s32 c, s32 d, s32 e);
-    ChoiceList *getChoiceList();
-    u8 pad_04[0x1a];
-    u8 msgIndex;
-    u8 pad_1f[0x3c - 0x1f];
-    TalkWindowState *unk_3c;
-    u8 pad_40[0xac - 0x40];
-};
 
-class TalkMsgRequest : public ActorTalkRequest {
-public:
-    virtual void vfunc_0c();
-    virtual void onMessageStart();
-    virtual void onSignalTag();
-    virtual void onActionTag0();
-    virtual void onActionTag1();
-    virtual void onActionTag2();
-    virtual void onActionTag3();
-    virtual void onActionTag4();
-    virtual void onScannedTag();
-    virtual void getSpeakerData();
-    virtual void onWindowClose();
-    virtual void onTalkEnd();
-};
 
-class Unk_020d7710 : public TalkMsgRequest {
+class Unk_020d7710 : public ActorTalkRequest {
 public:
     void setSubSceneKindArg(u32 a, u32 b, u32 c);
     void setSubSceneKind(u32 a, u32 b);
@@ -298,10 +237,10 @@ public:
     SpNpcCelesteTalk();
     virtual ~SpNpcCelesteTalk();
     virtual void vfunc_08();
-    virtual void onMessageEnd();
-    virtual void onChoice();
+    virtual void onMessageEnd(u32 attr);
+    virtual void onChoice(u32 attr);
     virtual void start(TalkStartMsg *out);
-    virtual void onTaskDone();
+    virtual void onTaskDone(u32 id);
     virtual void openConstellationPage();
 
     void onRenameChoice(s32 a);
@@ -621,7 +560,7 @@ void SpNpcCelesteTalk::openConstellationPage() {
     unk_3c->openChoices(1);
 }
 
-void SpNpcCelesteTalk::onTaskDone() {
+void SpNpcCelesteTalk::onTaskDone(u32) {
     if (resultHandler) {
         (this->*resultHandler)();
         resultHandler = NULL;
@@ -835,7 +774,7 @@ extern "C" u8 sSpNpcCelesteKey[] = {'s', 'p', '_', 'n', 'p', 'c', '_', 'a', 's',
 
 // Data order: this unit is placed object by object (see object_order.txt).
 
-void SpNpcCelesteTalk::onMessageEnd() {
+void SpNpcCelesteTalk::onMessageEnd(u32) {
     if (GameStart_IsActive() == 0) {
         PlayerData_GetCurrent();
         nextMsg = 0xff;
@@ -973,7 +912,7 @@ void SpNpcCelesteTalk::startStargazing() {
     setResultHandler(0);
 }
 
-void SpNpcCelesteTalk::onChoice() {
+void SpNpcCelesteTalk::onChoice(u32) {
     s32 t = getChoiceList()->getResult();
     nextMsg = 0xff;
     static Unk_ov046_02259480_Ent tbl[26] = {

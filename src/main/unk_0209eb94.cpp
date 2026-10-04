@@ -7,6 +7,7 @@
 #include "town/TownBlockMap.h"
 #include "talk/MsgRequest.h"
 #include "ui/HudWallet.h"
+#include "talk/TalkMsgRequest.h"
 
 // ---- declarations shared by the merged files
 class TalkMsgRequest;
@@ -14,43 +15,6 @@ class TalkMsgRequest;
 
 
 
-class TalkMsgRequest : public MsgRequest {
-public:
-    TalkMsgRequest();
-    virtual ~TalkMsgRequest();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void onMessageStart();
-    virtual void onMessageEnd();
-    virtual void onChoice();
-    virtual void onSignalTag();
-    virtual void onActionTag0();
-    virtual void onActionTag1();
-    virtual void onActionTag2();
-    virtual void onActionTag3();
-    virtual void onActionTag4();
-    virtual void onConditionTag();
-    virtual void onEventTag(u32 a);
-    virtual void onTag09_0();
-    virtual void onTag09_1();
-    virtual void onTag09_2();
-    virtual void onTag09_3();
-    virtual void onTag09_4();
-    virtual void onTag09_5();
-    virtual void onTag09_6();
-    virtual void onTag09_7();
-    virtual void onTag09_8();
-    virtual void onTag09_9();
-    virtual void onScannedTag();
-    virtual void getSpeakerData();
-    virtual void getVoiceType();
-    virtual void onWindowClose();
-    virtual void onTalkEnd();
-
-    /* 0x20 */ u8 pad_20[0x1c];
-    /* 0x3c */ u32 unk_3c;
-    /* 0x40 */ u8 unk_40;
-};
 
 struct Unk_020e2824_Nib {
     u8 lo : 4;
@@ -62,8 +26,8 @@ class SaveManagerTalk : public TalkMsgRequest {
 public:
     SaveManagerTalk();
     virtual ~SaveManagerTalk();
-    virtual void onMessageEnd();
-    virtual void onChoice();
+    virtual void onMessageEnd(u32 attr);
+    virtual void onChoice(u32 attr);
 
     void setOwner(u32 v);
 
@@ -3415,7 +3379,7 @@ void SaveManagerTalk::setOwner(u32 v) {
     unk_44 = v;
 }
 
-void SaveManagerTalk::onMessageEnd() {
+void SaveManagerTalk::onMessageEnd(u32) {
     void *o = NF::TalkWindow_Get(0);
     switch (((u8 *)fileName)[0x1a]) {
     case 0xa:
@@ -3437,7 +3401,7 @@ void SaveManagerTalk::onMessageEnd() {
     }
 }
 
-void SaveManagerTalk::onChoice() {
+void SaveManagerTalk::onChoice(u32) {
 }
 
 extern "C" void Save_StoreCurrentPlayerToResident(void) {

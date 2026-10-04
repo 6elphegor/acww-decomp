@@ -35,6 +35,7 @@ _ZN17SpNpcBlathersTalk21returnItemAndShowMenuEv kind:function(thumb,size=0x14) a
 _ZN17SpNpcBlathersTalk19openAppraisalPickerEv kind:function(thumb,size=0x28) addr:0x02259a3c
 _ZN17SpNpcBlathersTalk18openDonationPickerEv kind:function(thumb,size=0x28) addr:0x02259a64
 _ZN17SpNpcBlathersTalk12onMessageEndEv kind:function(thumb,size=0x54c) addr:0x02259a8c
+_ZN17SpNpcBlathersTalk12onMessageEndEj kind:label(thumb) addr:0x02259a8c
 _ZN17SpNpcBlathersTalk14commitDonationEv kind:function(thumb,size=0x9c) addr:0x02259fd8
 _ZN17SpNpcBlathersTalk5startEP12TalkStartMsg kind:function(thumb,size=0x218) addr:0x0225a074
 _ZN17SpNpcBlathersTalk11attachOwnerEP13SpNpcBlathers kind:function(thumb,size=0x3c) addr:0x0225a28c
@@ -56,6 +57,7 @@ _ZN17SpNpcBlathersTalk13setNextScriptEi kind:function(thumb,size=0x10) addr:0x02
 _ZN17SpNpcBlathersTalk9setScriptEi kind:function(thumb,size=0x10) addr:0x0225a944
 SpNpcBlathersTalk_GetScript kind:function(thumb,size=0x80) addr:0x0225a954
 _ZN17SpNpcBlathersTalk10onTaskDoneEv kind:function(thumb,size=0x80) addr:0x0225a9d4
+_ZN17SpNpcBlathersTalk10onTaskDoneEj kind:label(thumb) addr:0x0225a9d4
 _ZN13SpNpcBlathers9mainAct08Ev kind:function(thumb,size=0x4) addr:0x0225aa54
 _ZN13SpNpcBlathers10setupAct08Ev kind:function(thumb,size=0x4) addr:0x0225aa58
 _ZN13SpNpcBlathers9mainAct07Ev kind:function(thumb,size=0x58) addr:0x0225aa5c

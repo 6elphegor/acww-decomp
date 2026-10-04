@@ -5,8 +5,11 @@ _ZN9SpNpcJoan8vfunc_4cEjh kind:label(thumb) addr:0x02271414
 _ZN9SpNpcJoan8vfunc_48Ev kind:function(thumb,size=0x20) addr:0x02271464
 _ZN9SpNpcJoan8vfunc_48EPv kind:label(thumb) addr:0x02271464
 _ZN13SpNpcJoanTalk8onChoiceEv kind:function(thumb,size=0x1e0) addr:0x02271484
+_ZN13SpNpcJoanTalk8onChoiceEj kind:label(thumb) addr:0x02271484
 _ZN13SpNpcJoanTalk12onMessageEndEv kind:function(thumb,size=0x64) addr:0x02271664
+_ZN13SpNpcJoanTalk12onMessageEndEj kind:label(thumb) addr:0x02271664
 _ZN13SpNpcJoanTalk5startEPv kind:function(thumb,size=0x58) addr:0x022716c8
+_ZN13SpNpcJoanTalk5startEP12TalkStartMsg kind:label(thumb) addr:0x022716c8
 _ZN13SpNpcJoanTalk11attachOwnerEi kind:function(thumb,size=0x34) addr:0x02271720
 _ZN13SpNpcJoanTalk11giveTurnipsEv kind:function(thumb,size=0xb0) addr:0x02271754
 SpNpcJoan_IsEmptyItem kind:function(thumb,size=0x14) addr:0x02271804
@@ -17,6 +20,7 @@ _ZN13SpNpcJoanTalkC1Ev kind:function(thumb,size=0x18) addr:0x02271874
 _ZN13SpNpcJoanTalk15onAmountEnteredEv kind:function(thumb,size=0x84) addr:0x0227188c
 _ZN13SpNpcJoanTalk16setResultHandlerEi kind:function(thumb,size=0x4c) addr:0x02271910
 _ZN13SpNpcJoanTalk10onTaskDoneEv kind:function(thumb,size=0x44) addr:0x0227195c
+_ZN13SpNpcJoanTalk10onTaskDoneEj kind:label(thumb) addr:0x0227195c
 _ZN9SpNpcJoan9mainAct04Ev kind:function(thumb,size=0x4) addr:0x022719a0
 _ZN9SpNpcJoan10setupAct04Ev kind:function(thumb,size=0x3c) addr:0x022719a4
 _ZN9SpNpcJoan9mainAct01Ev kind:function(thumb,size=0x4) addr:0x022719e0

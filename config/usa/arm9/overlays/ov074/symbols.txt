@@ -11,7 +11,9 @@ _ZN11SpNpcBlanca8vfunc_4cEjh kind:label(thumb) addr:0x022714f4
 _ZN11SpNpcBlanca8vfunc_48Ev kind:function(thumb,size=0x20) addr:0x02271544
 _ZN11SpNpcBlanca8vfunc_48EPv kind:label(thumb) addr:0x02271544
 _ZN15SpNpcBlancaTalk8onChoiceEv kind:function(thumb,size=0x19c) addr:0x02271564
+_ZN15SpNpcBlancaTalk8onChoiceEj kind:label(thumb) addr:0x02271564
 _ZN15SpNpcBlancaTalk12onMessageEndEv kind:function(thumb,size=0xa4) addr:0x02271700
+_ZN15SpNpcBlancaTalk12onMessageEndEj kind:label(thumb) addr:0x02271700
 _ZN15SpNpcBlancaTalk5startEP12TalkStartMsg kind:function(thumb,size=0x1bc) addr:0x022717a4
 _ZN15SpNpcBlancaTalk11attachOwnerEP11SpNpcBlanca kind:function(thumb,size=0x1a) addr:0x02271960
 _ZN15SpNpcBlancaTalkD0Ev kind:function(thumb,size=0x20) addr:0x0227197c
@@ -21,6 +23,7 @@ _ZN15SpNpcBlancaTalk15onConceptChosenEv kind:function(thumb,size=0x5c) addr:0x02
 _ZN15SpNpcBlancaTalk11onFaceDrawnEv kind:function(thumb,size=0x44) addr:0x02271a28
 _ZN15SpNpcBlancaTalk16setResultHandlerEi kind:function(thumb,size=0x58) addr:0x02271a6c
 _ZN15SpNpcBlancaTalk10onTaskDoneEv kind:function(thumb,size=0x44) addr:0x02271ac4
+_ZN15SpNpcBlancaTalk10onTaskDoneEj kind:label(thumb) addr:0x02271ac4
 _ZN11SpNpcBlanca9mainAct04Ev kind:function(thumb,size=0x4) addr:0x02271b08
 _ZN11SpNpcBlanca10setupAct04Ev kind:function(thumb,size=0x3c) addr:0x02271b0c
 _ZN11SpNpcBlanca9mainAct01Ev kind:function(thumb,size=0x4) addr:0x02271b48
