@@ -1,18 +1,14 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
+#include "nitro/wm.h"
 
-struct Unk_ov067_0225f1a0_Ent {
+struct WlxBlockEntry {
     u32 ggid;
-    u32 doneCallback;
+    void (*doneCallback)(u32, void *);
     u32 bufferInfo[8];
 };
 
-struct Unk_ov067_0225f1a0_Cb {
-    u32 ggid;
-    void (*doneCallback)(u32, void *);
-};
-
-struct Unk_ov067_0225f1a0_W {
+struct WlxBlock {
     u8 reqSeq;
     u8 reqKind;
     u16 reqSegment;
@@ -35,11 +31,11 @@ struct Unk_ov067_0225f1a0_W {
     u32 numRecvSegments;
     u32 numMissingSegments;
     u16 lastReqSegments[2];
-    Unk_ov067_0225f1a0_Cb *curEntry;
-    Unk_ov067_0225f1a0_Ent entries[16];
+    WlxBlockEntry *curEntry;
+    WlxBlockEntry entries[16];
 };
 
-struct Unk_ov067_0225f3fc_Hdr {
+struct WlxBlockPacketHdr {
     u8 reqSeq;
     u8 reqKind;
     u16 reqSegment;
@@ -48,52 +44,51 @@ struct Unk_ov067_0225f3fc_Hdr {
     u16 ackSegment;
 };
 
-struct Unk_ov067_0225f3fc_Pair {
-    u16 a;
-    u16 b;
+// the (seq, kind, segment) triple of WlxBlockPacketHdr / WlxBlock, copied as two halfwords
+struct WlxBlockSeqWords {
+    u16 w0;
+    u16 w1;
 };
 
-struct Unk_ov067_0225f3fc_Wrap {
-    Unk_ov067_0225f3fc_Pair p;
+struct WlxBlockSeqCopy {
+    WlxBlockSeqWords words;
 };
 
-struct Unk_ov067_0225f3fc_Msg {
-    Unk_ov067_0225f3fc_Hdr *packet;
+// argument of Wlx_OnWmEvent events 7 (packet to send) and 8 (received packet)
+struct WlxMpPacket {
+    WlxBlockPacketHdr *packet;
     u16 length;
+    u16 aidMask;
 };
 
-struct Unk_ov067_0225facc_Msg {
+struct WlxWmMsg {
     u16 apiid;
     u16 errcode;
     u16 mpState;
     u16 unk_06;
-    u16 unk_08;
-    u16 unk_0a;
-    u16 unk_0c;
-    u16 unk_0e;
-    u16 aid;
+    union {
+        u16 state;   // 0x08: StartParent / StartConnect / scan state
+        u16 channel; // 0x08: measured channel
+    };
+    union {
+        u16 myAid;     // 0x0a: StartConnect: own aid
+        u16 busyRatio; // 0x0a: measured busy ratio
+        u16 mac01;     // 0x0a: StartParent: MAC of the child
+    };
+    union {
+        u16 unk_0c;
+        u16 mac23;
+    };
+    union {
+        u16 numBeacons; // 0x0e: scan: number of BSS descriptions
+        u16 mac45;
+    };
+    u16 aid; // 0x10: StartParent: aid of the child
 };
 
-struct Unk_ov067_0225facc_Sub {
-    u32 unk_00;
-    u32 unk_04;
-    u32 ggid;
-    u16 tgid;
-    u16 entryFlag;
-    u16 unk_10;
-    u16 unk_12;
-    u16 unk_14;
-    u16 csFlag;
-    u16 beaconPeriod;
-    u8 pad_1a[0x32 - 0x1a];
-    u16 channel;
-    u16 parentMaxSize;
-};
+typedef s32 (*WlxWmEventFn)(u32, void *);
 
-typedef s32 (*Unk_ov067_022604c0_Fn)(u32, void *);
-typedef Unk_ov067_022604c0_Fn Unk_ov067_0225facc_Cb;
-
-struct Unk_ov067_0225facc_Ctx {
+struct WlxWmWork {
     u8 pad_0000[0x4ee0];
     u8 mpSendData[0x200];
     u16 dmaNo;
@@ -105,8 +100,8 @@ struct Unk_ov067_0225facc_Ctx {
     s32 isSending;
     s32 state;
     s32 requestedState;
-    Unk_ov067_0225facc_Cb unk_50f8;
-    Unk_ov067_0225facc_Sub *parentParam;
+    WlxWmEventFn eventCallback;
+    WMParentParam *parentParam;
     s32 needMeasureChannel;
     s32 bestChannelBusy;
     s32 numBeacons;
@@ -125,32 +120,8 @@ struct Unk_ov067_0225facc_Ctx {
     u8 pad_5614[0x5640 - 0x5614];
 };
 
-typedef Unk_ov067_0225facc_Msg Msg;
-typedef Unk_ov067_0225facc_Ctx Ctx;
-typedef Unk_ov067_0225facc_Sub Sub;
-typedef Ctx Unk_ov067_022604c0_S;
-typedef Ctx Unk_ov067_02260de4_S;
-typedef Ctx Unk_ov067_02261484_Ctx;
-typedef Sub Unk_ov067_0226fc_Sub;
-typedef Unk_ov067_0225f1a0_W Unk_ov067_02261484_W;
 
-struct Unk_ov067_022604c0_Msg {
-    u16 apiid;
-    u16 errcode;
-    u16 state;
-    u8 pad_06[6];
-    u32 data;
-    u16 length;
-    u16 aid;
-};
-
-struct Unk_ov067_022608c0_Cb {
-    u32 a;
-    u16 b;
-    u16 c;
-};
-
-struct Unk_ov067_02260f58_P {
+struct WlxRole {
     s32 column;
     s32 row;
     s32 reseedRow;
@@ -158,50 +129,25 @@ struct Unk_ov067_02260f58_P {
     s32 pattern[4][4];
 };
 
-struct Unk_ov067_02261048_Ent {
-    u32 ggid;
-    u32 doneCallback;
-    u32 bufferInfo[8];
-};
-
-struct Unk_ov067_02261484_Rec {
+struct WlxMember {
     u16 aid;
     u16 mac01;
     u16 mac23;
     u16 mac45;
 };
 
-struct Unk_ov067_02261484_Msg {
-    u8 pad_00[0xa];
-    u16 mac01;
-    u16 mac23;
-    u16 mac45;
-    u16 aid;
-};
+typedef s32 (*WlxEventFn)(s32, void *);
 
-typedef s32 (*Unk_ov067_02261484_Fn)(s32, void *);
-
-struct Unk_ov067_02261484_G {
+struct WlxWork {
     u32 dmaNo;
-    Unk_ov067_02261484_Fn eventCallback;
-    Unk_ov067_02260f58_P role;
-    Unk_ov067_02261484_Rec members[16];
+    WlxEventFn eventCallback;
+    WlxRole role;
+    WlxMember members[16];
     u8 idleMpCount;
     u8 pad_d9[0xe0 - 0xd9];
-    u32 parentParam;
-    u32 unk_e4;
-    u32 parentGgid;
-    u8 pad_ec[0xf0 - 0xec];
-    u16 parentMaxEntry;
-    u16 unk_f2;
-    u16 unk_f4;
-    u16 parentCsFlag;
-    u8 pad_f8[0x114 - 0xf8];
-    u16 parentMaxSize;
-    u16 childMaxSize;
-    u8 pad_118[0x120 - 0x118];
-    Unk_ov067_0225facc_Ctx wm;
-    Unk_ov067_0225f1a0_W block;
+    WMParentParam parentParam;
+    WlxWmWork wm;
+    WlxBlock block;
 };
 
 extern "C" {
@@ -210,18 +156,18 @@ s32 func_01ffa314(void);
 void OS_RestoreInterrupts(s32);
 u64 OS_GetTick(void);
 s32 WM_GetNextTgid(void);
-s32 WM_EndScan(void (*)(Msg *));
+s32 WM_EndScan(void (*)(WlxWmMsg *));
 void MIi_CpuClear32(u32, void *, u32);
 void MIi_CpuCopy32(const void *, void *, u32);
 void OS_GetMacAddress(void *);
 void MI_CpuFill8(void *, u32, u32);
 u32 WM_GetAllowedChannel(void);
-s32 WM_StartScanEx(void (*)(Msg *), void *);
-s32 func_0211fcbc(void (*)(Msg *), void *, u32, u32, u32);
-s32 func_021218d0(void (*)(Msg *), u32, u32, u32, u32);
-s32 func_021206b4(void (*)(Msg *), void *, u32, void *, u32, u32, u32, u32, u32, u32, u32);
-s32 WM_SetParentParameter(void (*)(Msg *), void *);
-s32 WM_StartParent(void (*)(Msg *));
+s32 WM_StartScanEx(void (*)(WlxWmMsg *), void *);
+s32 func_0211fcbc(void (*)(WlxWmMsg *), void *, u32, u32, u32);
+s32 func_021218d0(void (*)(WlxWmMsg *), u32, u32, u32, u32);
+s32 func_021206b4(void (*)(WlxWmMsg *), void *, u32, void *, u32, u32, u32, u32, u32, u32, u32);
+s32 WM_SetParentParameter(void (*)(WlxWmMsg *), void *);
+s32 WM_StartParent(void (*)(WlxWmMsg *));
 void DC_InvalidateRange(void *, u32);
 void MI_CpuCopy8(void *, void *, u32);
 void Fatal_Trap(void);
@@ -239,9 +185,9 @@ s32 func_0211f188(void);
 s32 WM_SetMPDataToPortEx(void *, u32, void *, ...);
 
 // data
-extern Ctx *sWlxWm;
+extern WlxWmWork *sWlxWm;
 extern s32 sWlxState;
-extern Unk_ov067_02261484_G *sWlx;
+extern WlxWork *sWlx;
 extern const u32 sWlxRoleTable[16];
 
 // functions of this overlay
@@ -253,41 +199,41 @@ char *WlxDebug_GetWmApiName(s32 n);
 void WlxDebug_Printf(const char *fmt, ...);
 void WlxBlock_OnDisconnectStub(void *, u32);
 void WlxBlock_OnConnectStub(void *, u32);
-BOOL WlxBlock_Receive(Unk_ov067_0225f1a0_W *w, Unk_ov067_0225f3fc_Msg *msg);
-void WlxBlock_StoreSegment(Unk_ov067_0225f1a0_W *w, s32 idx, void *src);
-void WlxBlock_BuildSend(Unk_ov067_0225f1a0_W *w, Unk_ov067_0225f3fc_Msg *msg);
-BOOL WlxBlock_SelectByBeacon(Unk_ov067_0225f1a0_W *w, u32 *x);
+BOOL WlxBlock_Receive(WlxBlock *w, WlxMpPacket *msg);
+void WlxBlock_StoreSegment(WlxBlock *w, s32 idx, void *src);
+void WlxBlock_BuildSend(WlxBlock *w, WlxMpPacket *msg);
+BOOL WlxBlock_SelectByBeacon(WlxBlock *w, u32 *x);
 void WlxBlock_OnMpEndStub(void *, void *);
-void WlxBlock_SetCurrent(Unk_ov067_0225f1a0_W *w, void *p);
-void *WlxBlock_GetCurrent(Unk_ov067_0225f1a0_W *w);
-void *WlxBlock_FindEntry(Unk_ov067_0225f1a0_W *w, void *start, u32 key, u32 flag);
-void WlxBlock_StartSend(Unk_ov067_0225f1a0_W *w, u32 p, u32 q, u32 r, u32 s);
-void WlxBlock_Reset(Unk_ov067_0225f1a0_W *w, u32 a, u32 b);
-void WlxBlock_Init(Unk_ov067_0225f1a0_W *w);
-void WlxWm_RequestState(Ctx *x, u32 v);
-void WlxWm_Init(Ctx *c, Sub *s, Unk_ov067_0225facc_Cb cb, u32 v);
-void WlxWm_ScanStep(Msg *m);
-void WlxWm_MeasureChannelStep(Msg *m);
-void WlxWm_ConnectStep(Msg *m);
-void WlxWm_OnChildEvent(Msg *m);
-void WlxWm_StartParentStep(Msg *m);
-void WlxWm_OnParentEvent(Msg *m);
-void WlxWm_ResetStep(Unk_ov067_022604c0_Msg *m);
-void WlxWm_DisableStep(Unk_ov067_022604c0_Msg *m);
-void WlxWm_PowerOffStep(Unk_ov067_022604c0_Msg *m);
-void WlxWm_PowerOnStep(Unk_ov067_022604c0_Msg *m);
-void WlxWm_EnableStep(Unk_ov067_022604c0_Msg *m);
-void WlxWm_OnPortRecv(Unk_ov067_022604c0_Msg *m);
-void WlxWm_OnIndication(Unk_ov067_022604c0_Msg *m);
+void WlxBlock_SetCurrent(WlxBlock *w, void *p);
+void *WlxBlock_GetCurrent(WlxBlock *w);
+void *WlxBlock_FindEntry(WlxBlock *w, void *start, u32 key, u32 flag);
+void WlxBlock_StartSend(WlxBlock *w, u32 p, u32 q, u32 r, u32 s);
+void WlxBlock_Reset(WlxBlock *w, u32 a, u32 b);
+void WlxBlock_Init(WlxBlock *w);
+void WlxWm_RequestState(WlxWmWork *x, u32 v);
+void WlxWm_Init(WlxWmWork *c, WMParentParam *s, WlxWmEventFn cb, u32 v);
+void WlxWm_ScanStep(WlxWmMsg *m);
+void WlxWm_MeasureChannelStep(WlxWmMsg *m);
+void WlxWm_ConnectStep(WlxWmMsg *m);
+void WlxWm_OnChildEvent(WlxWmMsg *m);
+void WlxWm_StartParentStep(WlxWmMsg *m);
+void WlxWm_OnParentEvent(WlxWmMsg *m);
+void WlxWm_ResetStep(WMPortRecvCallback *m);
+void WlxWm_DisableStep(WMPortRecvCallback *m);
+void WlxWm_PowerOffStep(WMPortRecvCallback *m);
+void WlxWm_PowerOnStep(WMPortRecvCallback *m);
+void WlxWm_EnableStep(WMPortRecvCallback *m);
+void WlxWm_OnPortRecv(WMPortRecvCallback *m);
+void WlxWm_OnIndication(WMPortRecvCallback *m);
 void WlxWm_OnMpDataSent(void *m);
-void WlxWm_SetState(Ctx *s, s32 st, u32 arg);
-void WlxWm_SendMpData(Ctx *s);
-s32 WlxWm_CheckCallback(Ctx *s, void *m);
-s32 WlxWm_CheckApiCall(Ctx *s, u32 id, u32 arg);
-void WlxWm_HandleError(Ctx *s, s32 id, u32 arg);
-void WlxWm_Fail(Ctx *s);
-s32 WlxRole_NextIsParent(Unk_ov067_02260f58_P *p);
-void WlxRole_Init(Unk_ov067_02260f58_P *p);
+void WlxWm_SetState(WlxWmWork *s, s32 st, u32 arg);
+void WlxWm_SendMpData(WlxWmWork *s);
+s32 WlxWm_CheckCallback(WlxWmWork *s, void *m);
+s32 WlxWm_CheckApiCall(WlxWmWork *s, u32 id, u32 arg);
+void WlxWm_HandleError(WlxWmWork *s, s32 id, u32 arg);
+void WlxWm_Fail(WlxWmWork *s);
+s32 WlxRole_NextIsParent(WlxRole *p);
+void WlxRole_Init(WlxRole *p);
 u16 Wlx_GetConnectedMask(void);
 s32 Wlx_IsParent(void);
 s32 Wlx_GetState(void);
@@ -427,11 +373,11 @@ extern "C" char *sWmApiNames[44] = {
 
 extern "C" char data_ov067_02261a74[9] = "WM_Reset";
 
-extern "C" Ctx *sWlxWm = 0;
+extern "C" WlxWmWork *sWlxWm = 0;
 
 extern "C" char data_ov067_02261ac8[12] = "WM_StartDCF";
 
-extern "C" Unk_ov067_02261484_G *sWlx = 0;
+extern "C" WlxWork *sWlx = 0;
 
 extern "C" char data_ov067_02261a68[9] = "WM_EndMP";
 
@@ -582,12 +528,12 @@ extern "C" void Wlx_SelectNextEntry(void) {
         r = (u32 *)WlxBlock_FindEntry(&sWlx->block, 0, 0, 1);
     }
     WlxBlock_SetCurrent(&sWlx->block, r);
-    sWlx->parentGgid = *r;
+    sWlx->parentParam.ggid = *r;
 }
 
 extern "C" s32 Wlx_OnWmEvent(u32 cmd, void *arg) {
     s32 ret = 0;
-    Unk_ov067_02261484_Msg *m = (Unk_ov067_02261484_Msg *)arg;
+    WlxWmMsg *m = (WlxWmMsg *)arg;
     switch (cmd) {
     case 5:
         if (Wlx_GetState() == 3) {
@@ -607,14 +553,14 @@ extern "C" s32 Wlx_OnWmEvent(u32 cmd, void *arg) {
         ret = WlxBlock_SelectByBeacon(&sWlx->block, (u32 *)arg);
         if (ret != 0) {
             u32 *e = (u32 *)WlxBlock_GetCurrent(&sWlx->block);
-            sWlx->parentGgid = e[0];
+            sWlx->parentParam.ggid = e[0];
         }
         break;
     case 0: {
-        Unk_ov067_02261484_G *g = sWlx;
+        WlxWork *g = sWlx;
         s32 ie = OS_DisableInterrupts();
         sWlxState = 0;
-        Unk_ov067_02261484_Fn cb = sWlx->eventCallback;
+        WlxEventFn cb = sWlx->eventCallback;
         if (cb != NULL) {
             cb(0, g);
         }
@@ -624,7 +570,7 @@ extern "C" s32 Wlx_OnWmEvent(u32 cmd, void *arg) {
     case 2: {
         s32 ie = OS_DisableInterrupts();
         sWlxState = 2;
-        Unk_ov067_02261484_Fn cb = sWlx->eventCallback;
+        WlxEventFn cb = sWlx->eventCallback;
         if (cb != NULL) {
             cb(2, 0);
         }
@@ -647,9 +593,9 @@ extern "C" s32 Wlx_OnWmEvent(u32 cmd, void *arg) {
         }
         sWlx->idleMpCount = 0;
         {
-            Unk_ov067_02261484_G *g = sWlx;
+            WlxWork *g = sWlx;
             u16 i = g->wm.aid;
-            Unk_ov067_02261484_Rec *r = &g->members[i];
+            WlxMember *r = &g->members[i];
             r->aid = i;
             OS_GetMacAddress(&r->mac01);
         }
@@ -659,9 +605,9 @@ extern "C" s32 Wlx_OnWmEvent(u32 cmd, void *arg) {
             WlxWm_RequestState(&sWlx->wm, 0);
         }
         {
-            Unk_ov067_02261484_G *g = sWlx;
+            WlxWork *g = sWlx;
             u16 i = g->wm.aid;
-            Unk_ov067_02261484_Rec *r = &g->members[i];
+            WlxMember *r = &g->members[i];
             r->aid = i;
             OS_GetMacAddress(&r->mac01);
         }
@@ -671,20 +617,20 @@ extern "C" s32 Wlx_OnWmEvent(u32 cmd, void *arg) {
         s32 f = Wlx_IsParent();
         u32 x, y, idx;
         if (f != 0) {
-            x = sWlx->parentMaxSize;
+            x = sWlx->parentParam.parentMaxSize;
         } else {
             x = sWlx->wm.bssParentMaxSize;
         }
         if (f != 0) {
-            y = sWlx->childMaxSize;
+            y = sWlx->parentParam.childMaxSize;
         } else {
             y = sWlx->wm.bssChildMaxSize;
         }
         idx = (u16)(f != 0 ? m->aid : 0);
-        Unk_ov067_02261484_G *g = sWlx;
-        Unk_ov067_02261484_Rec *tbl = g->members;
+        WlxWork *g = sWlx;
+        WlxMember *tbl = g->members;
         u32 off = idx * 8;
-        Unk_ov067_02261484_Rec *r = (Unk_ov067_02261484_Rec *)((u8 *)tbl + idx * 8);
+        WlxMember *r = (WlxMember *)((u8 *)tbl + idx * 8);
         WlxBlock_Reset(&g->block, x, y);
         *(u16 *)((u8 *)tbl + off) = idx;
         if (f != 0) {
@@ -704,7 +650,7 @@ extern "C" s32 Wlx_OnWmEvent(u32 cmd, void *arg) {
         }
         WlxBlock_OnConnectStub(&sWlx->block, (u16)(1 << idx));
         if (sWlx->block.reqKind != 5) {
-            Unk_ov067_02261484_Fn cb = sWlx->eventCallback;
+            WlxEventFn cb = sWlx->eventCallback;
             if (cb != NULL) {
                 cb(4, r);
             }
@@ -726,10 +672,10 @@ extern "C" s32 Wlx_OnWmEvent(u32 cmd, void *arg) {
         }
         break;
     case 7:
-        WlxBlock_BuildSend(&sWlx->block, (Unk_ov067_0225f3fc_Msg *)arg);
+        WlxBlock_BuildSend(&sWlx->block, (WlxMpPacket *)arg);
         break;
     case 8:
-        ret = WlxBlock_Receive(&sWlx->block, (Unk_ov067_0225f3fc_Msg *)arg);
+        ret = WlxBlock_Receive(&sWlx->block, (WlxMpPacket *)arg);
         break;
     default:
         Fatal_Trap();
@@ -746,23 +692,23 @@ extern "C" void Wlx_Init(u32 a, u32 b, u32 c) {
             Fatal_Trap();
         }
         z = 0;
-        sWlx = (Unk_ov067_02261484_G *)a;
+        sWlx = (WlxWork *)a;
         MIi_CpuClear32(z, (void *)a, 0x5b74);
         sWlx->dmaNo = c;
-        sWlx->eventCallback = (Unk_ov067_02261484_Fn)b;
+        sWlx->eventCallback = (WlxEventFn)b;
         WlxRole_Init(&sWlx->role);
         WlxBlock_Init(&sWlx->block);
-        sWlx->parentMaxEntry = 1;
-        sWlx->parentMaxSize = 0x200;
-        sWlx->childMaxSize = 0x200;
-        sWlx->parentCsFlag = 1;
+        sWlx->parentParam.maxEntry = 1;
+        sWlx->parentParam.parentMaxSize = 0x200;
+        sWlx->parentParam.childMaxSize = 0x200;
+        sWlx->parentParam.CS_Flag = 1;
         {
-            Unk_ov067_02261484_G *g = sWlx;
-            WlxWm_Init(&g->wm, (Sub *)&g->parentParam, Wlx_OnWmEvent, g->dmaNo);
+            WlxWork *g = sWlx;
+            WlxWm_Init(&g->wm, &g->parentParam, Wlx_OnWmEvent, g->dmaNo);
         }
         s32 ie2 = OS_DisableInterrupts();
         sWlxState = 2;
-        Unk_ov067_02261484_Fn cb = sWlx->eventCallback;
+        WlxEventFn cb = sWlx->eventCallback;
         if (cb != NULL) {
             cb(2, 0);
         }
@@ -778,8 +724,8 @@ extern "C" s32 Wlx_SetPacketSizes(u32 a, u32 b, u32 c) {
         s32 t = 0x14a + (a + 0x26) * 4 + c * ((b + 0x20) * 4 + 0x70);
         if (t < 0x15e0) {
             r = 1;
-            sWlx->parentMaxSize = a;
-            sWlx->childMaxSize = b;
+            sWlx->parentParam.parentMaxSize = a;
+            sWlx->parentParam.childMaxSize = b;
         }
     }
     return r;
@@ -791,7 +737,7 @@ extern "C" void Wlx_StartExchange(void) {
         WlxWm_RequestState(&sWlx->wm, 3);
         s32 ie2 = OS_DisableInterrupts();
         sWlxState = 3;
-        Unk_ov067_02261484_Fn cb = sWlx->eventCallback;
+        WlxEventFn cb = sWlx->eventCallback;
         if (cb != NULL) {
             cb(3, 0);
         }
@@ -818,7 +764,7 @@ extern "C" void Wlx_Stop(void) {
     case 3: {
         s32 ie2 = OS_DisableInterrupts();
         sWlxState = 1;
-        Unk_ov067_02261484_Fn cb = sWlx->eventCallback;
+        WlxEventFn cb = sWlx->eventCallback;
         if (cb != NULL) {
             cb(1, 0);
         }
@@ -853,14 +799,14 @@ extern "C" u16 Wlx_GetConnectedMask(void) {
 
 extern "C" void Wlx_RegisterData(u32 a0, u32 a1, u32 a2, u32 a3, u32 a4, u32 a5) {
     s32 ie = OS_DisableInterrupts();
-    Unk_ov067_02261048_Ent *e = (Unk_ov067_02261048_Ent *)WlxBlock_FindEntry(&sWlx->block, 0, a0, 1);
+    WlxBlockEntry *e = (WlxBlockEntry *)WlxBlock_FindEntry(&sWlx->block, 0, a0, 1);
     if (e == NULL) {
-        e = (Unk_ov067_02261048_Ent *)WlxBlock_FindEntry(&sWlx->block, 0, 0, 1);
+        e = (WlxBlockEntry *)WlxBlock_FindEntry(&sWlx->block, 0, 0, 1);
         if (e == NULL) {
             Fatal_Trap();
         } else {
             e->ggid = a0;
-            e->doneCallback = a1;
+            e->doneCallback = (void (*)(u32, void *))a1;
             e->bufferInfo[0] = a2;
             e->bufferInfo[1] = a3;
             e->bufferInfo[4] = a4;
@@ -870,7 +816,7 @@ extern "C" void Wlx_RegisterData(u32 a0, u32 a1, u32 a2, u32 a3, u32 a4, u32 a5)
     OS_RestoreInterrupts(ie);
 }
 
-extern "C" void WlxRole_Init(Unk_ov067_02260f58_P *p) {
+extern "C" void WlxRole_Init(WlxRole *p) {
     p->column = (u32)OS_GetTick() & 3;
     p->row = (u32)(OS_GetTick() >> 2) & 3;
     p->reseedRow = 0;
@@ -878,7 +824,7 @@ extern "C" void WlxRole_Init(Unk_ov067_02260f58_P *p) {
     MIi_CpuCopy32(sWlxRoleTable, p->pattern, 0x40);
 }
 
-extern "C" s32 WlxRole_NextIsParent(Unk_ov067_02260f58_P *p) {
+extern "C" s32 WlxRole_NextIsParent(WlxRole *p) {
     p->column++;
     if (p->column >= 4) {
         p->column = 0;
@@ -899,14 +845,14 @@ extern "C" s32 WlxRole_NextIsParent(Unk_ov067_02260f58_P *p) {
     return 0;
 }
 
-extern "C" void WlxWm_Fail(Unk_ov067_02260de4_S *s) {
+extern "C" void WlxWm_Fail(WlxWmWork *s) {
     if (s->state == 1) {
         s->state = s->requestedState;
     }
     WlxWm_RequestState(s, 0);
 }
 
-extern "C" void WlxWm_HandleError(Unk_ov067_02260de4_S *s, s32 id, u32 arg) {
+extern "C" void WlxWm_HandleError(WlxWmWork *s, s32 id, u32 arg) {
     if (arg == 0) {
         return;
     }
@@ -945,7 +891,7 @@ extern "C" void WlxWm_HandleError(Unk_ov067_02260de4_S *s, s32 id, u32 arg) {
     }
 }
 
-extern "C" s32 WlxWm_CheckApiCall(Unk_ov067_022604c0_S *s, u32 id, u32 arg) {
+extern "C" s32 WlxWm_CheckApiCall(WlxWmWork *s, u32 id, u32 arg) {
     s32 r = WlxDebug_CheckApiResult(id, arg);
     if (r == 0) {
         WlxWm_HandleError(s, id, arg);
@@ -953,7 +899,7 @@ extern "C" s32 WlxWm_CheckApiCall(Unk_ov067_022604c0_S *s, u32 id, u32 arg) {
     return r;
 }
 
-extern "C" s32 WlxWm_CheckCallback(Unk_ov067_022604c0_S *s, void *m) {
+extern "C" s32 WlxWm_CheckCallback(WlxWmWork *s, void *m) {
     s32 r = WlxDebug_CheckCallbackResult((u16 *)m);
     if (r == 0) {
         WlxWm_HandleError(s, ((u16 *)m)[0], ((u16 *)m)[1]);
@@ -961,7 +907,7 @@ extern "C" s32 WlxWm_CheckCallback(Unk_ov067_022604c0_S *s, void *m) {
     return r;
 }
 
-extern "C" void WlxWm_SendMpData(Unk_ov067_022604c0_S *s) {
+extern "C" void WlxWm_SendMpData(WlxWmWork *s) {
     struct {
         void *d;
         u16 e;
@@ -980,8 +926,8 @@ extern "C" void WlxWm_SendMpData(Unk_ov067_022604c0_S *s) {
     l.e = v;
     l.d = (void *)((u8 *)s + 0x4ee0);
     l.f = fl;
-    if (s->unk_50f8 != NULL) {
-        s->unk_50f8(7, &l.d);
+    if (s->eventCallback != NULL) {
+        s->eventCallback(7, &l.d);
     }
     if (l.e > v) {
         return;
@@ -989,7 +935,7 @@ extern "C" void WlxWm_SendMpData(Unk_ov067_022604c0_S *s) {
     s->isSending = WlxWm_CheckApiCall(s, 0xf, WM_SetMPDataToPortEx((void *)WlxWm_OnMpDataSent, 0, l.d, l.e, l.f, 4, 2));
 }
 
-extern "C" void WlxWm_SetState(Unk_ov067_022604c0_S *s, s32 st, u32 arg) {
+extern "C" void WlxWm_SetState(WlxWmWork *s, s32 st, u32 arg) {
     s->state = st;
     s32 prev = s->requestedState;
     if (prev == st) {
@@ -998,32 +944,32 @@ extern "C" void WlxWm_SetState(Unk_ov067_022604c0_S *s, s32 st, u32 arg) {
         case 1:
             break;
         case 2:
-            if (s->unk_50f8 == NULL) {
+            if (s->eventCallback == NULL) {
                 return;
             }
-            s->unk_50f8(2, 0);
+            s->eventCallback(2, 0);
             return;
         case 3:
-            if (s->unk_50f8 == NULL) {
+            if (s->eventCallback == NULL) {
                 return;
             }
-            s->unk_50f8(1, 0);
+            s->eventCallback(1, 0);
             return;
         case 4:
             s->isSending = 0;
-            if (s->unk_50f8 == NULL) {
+            if (s->eventCallback == NULL) {
                 return;
             }
-            s->unk_50f8(3, 0);
+            s->eventCallback(3, 0);
             return;
         case 5:
             s->isSending = 0;
-            if (s->unk_50f8 != NULL) {
-                s->unk_50f8(4, 0);
+            if (s->eventCallback != NULL) {
+                s->eventCallback(4, 0);
             }
             s->connectedMask |= 1;
-            if (s->unk_50f8 != NULL) {
-                s->unk_50f8(9, (void *)arg);
+            if (s->eventCallback != NULL) {
+                s->eventCallback(9, (void *)arg);
             }
             WlxWm_SendMpData(s);
             return;
@@ -1080,7 +1026,7 @@ extern "C" void WlxWm_SetState(Unk_ov067_022604c0_S *s, s32 st, u32 arg) {
 }
 
 extern "C" void WlxWm_OnMpDataSent(void *m) {
-    Unk_ov067_022604c0_S *s = sWlxWm;
+    WlxWmWork *s = sWlxWm;
     WlxWm_CheckCallback(s, m);
     s->isSending = 0;
     if (s->connectedMask == 0) {
@@ -1089,8 +1035,8 @@ extern "C" void WlxWm_OnMpDataSent(void *m) {
     WlxWm_SendMpData(s);
 }
 
-extern "C" void WlxWm_OnIndication(Unk_ov067_022604c0_Msg *m) {
-    Unk_ov067_022604c0_S *s = sWlxWm;
+extern "C" void WlxWm_OnIndication(WMPortRecvCallback *m) {
+    WlxWmWork *s = sWlxWm;
     if (m->errcode != 8) {
         return;
     }
@@ -1099,23 +1045,23 @@ extern "C" void WlxWm_OnIndication(Unk_ov067_022604c0_Msg *m) {
     s->state = 6;
 }
 
-extern "C" void WlxWm_OnPortRecv(Unk_ov067_022604c0_Msg *m) {
-    Unk_ov067_022604c0_S *s = sWlxWm;
+extern "C" void WlxWm_OnPortRecv(WMPortRecvCallback *m) {
+    WlxWmWork *s = sWlxWm;
     if (WlxWm_CheckCallback(s, m) == 0) {
         return;
     }
     u32 t = m->state;
-    Unk_ov067_022608c0_Cb c;
+    WlxMpPacket c;
     switch (t) {
     case 7:
         return;
     case 0x15: {
         s32 r = 0;
-        c.c = 1 << m->aid;
-        c.b = m->length;
-        c.a = m->data;
-        if (s->unk_50f8 != NULL) {
-            r = s->unk_50f8(8, &c);
+        c.aidMask = 1 << m->aid;
+        c.length = m->length;
+        c.packet = (WlxBlockPacketHdr *)m->data;
+        if (s->eventCallback != NULL) {
+            r = s->eventCallback(8, &c);
         }
         if (r == 0) {
             return;
@@ -1124,7 +1070,7 @@ extern "C" void WlxWm_OnPortRecv(Unk_ov067_022604c0_Msg *m) {
         return;
     }
     case 9: {
-        Unk_ov067_022604c0_Fn cb = s->unk_50f8;
+        WlxWmEventFn cb = s->eventCallback;
         u32 sh = 1 << m->aid;
         if (cb == NULL) {
             return;
@@ -1135,8 +1081,8 @@ extern "C" void WlxWm_OnPortRecv(Unk_ov067_022604c0_Msg *m) {
     }
 }
 
-extern "C" void WlxWm_EnableStep(Unk_ov067_022604c0_Msg *m) {
-    Unk_ov067_022604c0_S *s = sWlxWm;
+extern "C" void WlxWm_EnableStep(WMPortRecvCallback *m) {
+    WlxWmWork *s = sWlxWm;
     if (m != NULL) {
         if (WlxWm_CheckCallback(s, m) == 0) {
             return;
@@ -1161,8 +1107,8 @@ extern "C" void WlxWm_EnableStep(Unk_ov067_022604c0_Msg *m) {
     WlxWm_SetState(s, 2, 0);
 }
 
-extern "C" void WlxWm_PowerOnStep(Unk_ov067_022604c0_Msg *m) {
-    Unk_ov067_022604c0_S *s = sWlxWm;
+extern "C" void WlxWm_PowerOnStep(WMPortRecvCallback *m) {
+    WlxWmWork *s = sWlxWm;
     if (m != NULL) {
         if (WlxWm_CheckCallback(s, m) == 0) {
             return;
@@ -1179,8 +1125,8 @@ extern "C" void WlxWm_PowerOnStep(Unk_ov067_022604c0_Msg *m) {
     WlxWm_SetState(s, 3, 0);
 }
 
-extern "C" void WlxWm_PowerOffStep(Unk_ov067_022604c0_Msg *m) {
-    Unk_ov067_022604c0_S *s = sWlxWm;
+extern "C" void WlxWm_PowerOffStep(WMPortRecvCallback *m) {
+    WlxWmWork *s = sWlxWm;
     if (m != NULL) {
         if (WlxWm_CheckCallback(s, m) == 0) {
             return;
@@ -1197,8 +1143,8 @@ extern "C" void WlxWm_PowerOffStep(Unk_ov067_022604c0_Msg *m) {
     WlxWm_SetState(s, 2, 0);
 }
 
-extern "C" void WlxWm_DisableStep(Unk_ov067_022604c0_Msg *m) {
-    Unk_ov067_022604c0_S *s = sWlxWm;
+extern "C" void WlxWm_DisableStep(WMPortRecvCallback *m) {
+    WlxWmWork *s = sWlxWm;
     if (m != NULL) {
         if (WlxWm_CheckCallback(s, m) == 0) {
             return;
@@ -1217,14 +1163,14 @@ extern "C" void WlxWm_DisableStep(Unk_ov067_022604c0_Msg *m) {
     }
     sWlxWm = NULL;
     s->state = 0;
-    if (s->unk_50f8 == NULL) {
+    if (s->eventCallback == NULL) {
         return;
     }
-    s->unk_50f8(0, 0);
+    s->eventCallback(0, 0);
 }
 
-extern "C" void WlxWm_ResetStep(Unk_ov067_022604c0_Msg *m) {
-    Unk_ov067_022604c0_S *s = sWlxWm;
+extern "C" void WlxWm_ResetStep(WMPortRecvCallback *m) {
+    WlxWmWork *s = sWlxWm;
     if (m != NULL) {
         if (WlxWm_CheckCallback(s, m) == 0) {
             return;
@@ -1242,9 +1188,9 @@ extern "C" void WlxWm_ResetStep(Unk_ov067_022604c0_Msg *m) {
     WlxWm_SetState(s, 3, 0);
 }
 
-extern "C" void WlxWm_OnParentEvent(Msg *m) {
-    Ctx *c;
-    s32 t = m->unk_08;
+extern "C" void WlxWm_OnParentEvent(WlxWmMsg *m) {
+    WlxWmWork *c;
+    s32 t = m->state;
     c = sWlxWm;
     if (t == 0) {
         WlxWm_StartParentStep(m);
@@ -1260,8 +1206,8 @@ extern "C" void WlxWm_OnParentEvent(Msg *m) {
         BOOL first = c->connectedMask == 0 ? TRUE : FALSE;
         WlxDebug_Printf("connected(%02X+=%02X)\n", c->connectedMask, 1 << m->aid);
         c->connectedMask = c->connectedMask | (u16)(1 << m->aid);
-        if (c->unk_50f8 != NULL) {
-            c->unk_50f8(9, m);
+        if (c->eventCallback != NULL) {
+            c->eventCallback(9, m);
         }
         if (first) {
             WlxWm_SendMpData(c);
@@ -1271,7 +1217,7 @@ extern "C" void WlxWm_OnParentEvent(Msg *m) {
     case 9:
         WlxDebug_Printf("disconnected(%02X-=%02X)\n", c->connectedMask, 1 << m->aid);
         c->connectedMask = c->connectedMask & (u16)~(1 << m->aid);
-        Unk_ov067_0225facc_Cb cb = c->unk_50f8;
+        WlxWmEventFn cb = c->eventCallback;
         u32 a = 1 << m->aid;
         if (cb != NULL) {
             cb(0xa, (void *)a);
@@ -1279,16 +1225,16 @@ extern "C" void WlxWm_OnParentEvent(Msg *m) {
         return;
     case 2: {
         void *a = c->parentParam;
-        if (c->unk_50f8 != NULL) {
-            c->unk_50f8(5, a);
+        if (c->eventCallback != NULL) {
+            c->eventCallback(5, a);
         }
         return;
     }
     }
 }
 
-extern "C" void WlxWm_StartParentStep(Msg *m) {
-    Ctx *c = sWlxWm;
+extern "C" void WlxWm_StartParentStep(WlxWmMsg *m) {
+    WlxWmWork *c = sWlxWm;
     if (m != NULL) {
         if (WlxWm_CheckCallback(c, m) == 0) {
             return;
@@ -1310,7 +1256,7 @@ extern "C" void WlxWm_StartParentStep(Msg *m) {
         BOOL b = FALSE;
         c->aid = b;
         c->connectedMask = b;
-        if (c->parentParam->csFlag == 0) {
+        if (c->parentParam->CS_Flag == 0) {
             b = TRUE;
         }
         WlxWm_CheckApiCall(c, 0xe, func_021206b4(WlxWm_StartParentStep, (u8 *)c + 0x1120, c->recvBufSize, (u8 *)c + 0xf00, c->sendBufSize, (u16)b, 0, 0, 0, 0, 0));
@@ -1325,12 +1271,12 @@ extern "C" void WlxWm_StartParentStep(Msg *m) {
     WlxWm_SetState(c, 4, 0);
 }
 
-extern "C" void WlxWm_OnChildEvent(Msg *m) {
-    Ctx *c = sWlxWm;
+extern "C" void WlxWm_OnChildEvent(WlxWmMsg *m) {
+    WlxWmWork *c = sWlxWm;
     if (WlxWm_CheckCallback(c, m) == 0) {
         return;
     }
-    switch (m->unk_08) {
+    switch (m->state) {
     case 7:
         if (c->state == 5) {
             return;
@@ -1354,8 +1300,8 @@ extern "C" void WlxWm_OnChildEvent(Msg *m) {
     }
 }
 
-extern "C" void WlxWm_ConnectStep(Msg *m) {
-    Ctx *c = sWlxWm;
+extern "C" void WlxWm_ConnectStep(WlxWmMsg *m) {
+    WlxWmWork *c = sWlxWm;
     if (m != NULL) {
         if (WlxWm_CheckCallback(c, m) == 0) {
             return;
@@ -1367,8 +1313,8 @@ extern "C" void WlxWm_ConnectStep(Msg *m) {
         return;
     }
     if (m->apiid == 0xc) {
-        c->aid = m->unk_0a;
-        BOOL b = c->parentParam->csFlag == 0 ? TRUE : FALSE;
+        c->aid = m->myAid;
+        BOOL b = c->parentParam->CS_Flag == 0 ? TRUE : FALSE;
         WlxWm_CheckApiCall(c, 0xe, func_021206b4(WlxWm_ConnectStep, (u8 *)c + 0x1120, c->recvBufSize, (u8 *)c + 0xf00, c->sendBufSize, (u16)b, 0, 0, 0, 0, 0));
         return;
     }
@@ -1381,17 +1327,17 @@ extern "C" void WlxWm_ConnectStep(Msg *m) {
     WlxWm_SetState(c, 5, (u32)m);
 }
 
-extern "C" void WlxWm_MeasureChannelStep(Msg *m) {
-    Ctx *c = sWlxWm;
+extern "C" void WlxWm_MeasureChannelStep(WlxWmMsg *m) {
+    WlxWmWork *c = sWlxWm;
     u32 v = 0;
     if (m == NULL) {
         c->state = 1;
         c->channel = v;
         c->bestChannelBusy = 0x65;
     } else if (WlxWm_CheckCallback(c, m) != 0) {
-        v = m->unk_08;
-        if (c->bestChannelBusy > m->unk_0a) {
-            c->bestChannelBusy = m->unk_0a;
+        v = m->channel;
+        if (c->bestChannelBusy > m->busyRatio) {
+            c->bestChannelBusy = m->busyRatio;
             c->channel = v;
         }
         if (v == 32 - Clz(WM_GetAllowedChannel())) {
@@ -1408,8 +1354,8 @@ extern "C" void WlxWm_MeasureChannelStep(Msg *m) {
     WlxWm_CheckApiCall(c, 0x1e, func_021218d0(WlxWm_MeasureChannelStep, 3, 0x11, a, 0x1e));
 }
 
-extern "C" void WlxWm_ScanStep(Msg *m) {
-    Ctx *c = sWlxWm;
+extern "C" void WlxWm_ScanStep(WlxWmMsg *m) {
+    WlxWmWork *c = sWlxWm;
     if (m != NULL) {
         if (WlxWm_CheckCallback(c, m) == 0) {
             return;
@@ -1430,9 +1376,9 @@ extern "C" void WlxWm_ScanStep(Msg *m) {
         return;
     }
     if (m->apiid == 0x26) {
-        if (m->unk_08 == 5) {
+        if (m->state == 5) {
             DC_InvalidateRange((u8 *)c + 0x51e0, 0x400);
-            c->numBeacons = m->unk_0e;
+            c->numBeacons = m->numBeacons;
         }
         WlxWm_CheckApiCall(c, 0xb, WM_EndScan(WlxWm_ScanStep));
         return;
@@ -1452,8 +1398,8 @@ extern "C" void WlxWm_ScanStep(Msg *m) {
                 WlxDebug_Printf("   GGID=%08X(%2dch:%3dBYTE)\n", n >= 0x48 ? *(s32 *)(p + 0x44) : -1, *(u16 *)(p + 0x36), n);
                 if (n >= 0x48) {
                     found = FALSE;
-                    if (c->unk_50f8 != NULL) {
-                        found = ((s32 (*)(u32, void *))c->unk_50f8)(6, p);
+                    if (c->eventCallback != NULL) {
+                        found = ((s32 (*)(u32, void *))c->eventCallback)(6, p);
                     }
                     if (found) {
                         WlxDebug_Printf("     -> matched!\n");
@@ -1476,7 +1422,7 @@ extern "C" void WlxWm_ScanStep(Msg *m) {
     WlxWm_SetState(c, 3, 0);
 }
 
-extern "C" void WlxWm_Init(Ctx *c, Sub *s, Unk_ov067_0225facc_Cb cb, u32 v) {
+extern "C" void WlxWm_Init(WlxWmWork *c, WMParentParam *s, WlxWmEventFn cb, u32 v) {
     s32 r = func_01ffa314();
     WM_GetNextTgid();
     OS_RestoreInterrupts(r);
@@ -1485,7 +1431,7 @@ extern "C" void WlxWm_Init(Ctx *c, Sub *s, Unk_ov067_0225facc_Cb cb, u32 v) {
     MIi_CpuClear32(z, c, 0x5640);
     c->aid = 0;
     c->isSending = 1;
-    c->unk_50f8 = cb;
+    c->eventCallback = cb;
     c->dmaNo = v;
     c->sendBufSize = 0x220;
     c->recvBufSize = 0x3dc0;
@@ -1496,7 +1442,7 @@ extern "C" void WlxWm_Init(Ctx *c, Sub *s, Unk_ov067_0225facc_Cb cb, u32 v) {
     c->parentParam->channel = 1;
 }
 
-extern "C" void WlxWm_RequestState(Ctx *x, u32 v) {
+extern "C" void WlxWm_RequestState(WlxWmWork *x, u32 v) {
     x->requestedState = v;
     u32 cur = x->state;
     if (cur == 1) {
@@ -1508,14 +1454,14 @@ extern "C" void WlxWm_RequestState(Ctx *x, u32 v) {
     WlxWm_SetState(x, cur, 0);
 }
 
-extern "C" void WlxBlock_Init(Unk_ov067_0225f1a0_W *w) {
+extern "C" void WlxBlock_Init(WlxBlock *w) {
     volatile u32 tmp;
     w->curEntry = 0;
     tmp = 0;
     MIi_CpuClear32(tmp, w, 4);
 }
 
-extern "C" void WlxBlock_Reset(Unk_ov067_0225f1a0_W *w, u32 a, u32 b) {
+extern "C" void WlxBlock_Reset(WlxBlock *w, u32 a, u32 b) {
     volatile u32 tmp;
     w->sendSegSize = a - 8;
     w->recvSegSize = b - 8;
@@ -1534,7 +1480,7 @@ extern "C" void WlxBlock_Reset(Unk_ov067_0225f1a0_W *w, u32 a, u32 b) {
     w->numRecvSegments = 0;
 }
 
-extern "C" void WlxBlock_StartSend(Unk_ov067_0225f1a0_W *w, u32 p, u32 q, u32 r, u32 s) {
+extern "C" void WlxBlock_StartSend(WlxBlock *w, u32 p, u32 q, u32 r, u32 s) {
     if (w->reqKind != 0) {
         return;
     }
@@ -1546,12 +1492,12 @@ extern "C" void WlxBlock_StartSend(Unk_ov067_0225f1a0_W *w, u32 p, u32 q, u32 r,
     w->recvBufSize = (u16)s;
 }
 
-extern "C" void *WlxBlock_FindEntry(Unk_ov067_0225f1a0_W *w, void *start, u32 key, u32 flag) {
-    Unk_ov067_0225f1a0_Ent *s = (Unk_ov067_0225f1a0_Ent *)start;
-    Unk_ov067_0225f1a0_Ent *p;
+extern "C" void *WlxBlock_FindEntry(WlxBlock *w, void *start, u32 key, u32 flag) {
+    WlxBlockEntry *s = (WlxBlockEntry *)start;
+    WlxBlockEntry *p;
 
-    Unk_ov067_0225f1a0_Ent *e;
-    Unk_ov067_0225f1a0_Ent *b;
+    WlxBlockEntry *e;
+    WlxBlockEntry *b;
     if (s == 0) {
         s = &w->entries[15];
     }
@@ -1581,18 +1527,18 @@ done:
     return p;
 }
 
-extern "C" void *WlxBlock_GetCurrent(Unk_ov067_0225f1a0_W *w) {
+extern "C" void *WlxBlock_GetCurrent(WlxBlock *w) {
     return w->curEntry;
 }
 
-extern "C" void WlxBlock_SetCurrent(Unk_ov067_0225f1a0_W *w, void *p) {
-    w->curEntry = (Unk_ov067_0225f1a0_Cb *)p;
+extern "C" void WlxBlock_SetCurrent(WlxBlock *w, void *p) {
+    w->curEntry = (WlxBlockEntry *)p;
 }
 
 extern "C" void WlxBlock_OnMpEndStub(void *, void *) {
 }
 
-extern "C" BOOL WlxBlock_SelectByBeacon(Unk_ov067_0225f1a0_W *w, u32 *x) {
+extern "C" BOOL WlxBlock_SelectByBeacon(WlxBlock *w, u32 *x) {
     BOOL r = FALSE;
     if (x[0x44 / 4] != 0) {
         void *p = WlxBlock_FindEntry(w, 0, x[0x44 / 4], 1);
@@ -1604,11 +1550,11 @@ extern "C" BOOL WlxBlock_SelectByBeacon(Unk_ov067_0225f1a0_W *w, u32 *x) {
     return r;
 }
 
-extern "C" void WlxBlock_BuildSend(Unk_ov067_0225f1a0_W *w, Unk_ov067_0225f3fc_Msg *msg) {
-    Unk_ov067_0225f3fc_Hdr *h = msg->packet;
+extern "C" void WlxBlock_BuildSend(WlxBlock *w, WlxMpPacket *msg) {
+    WlxBlockPacketHdr *h = msg->packet;
     WlxDebug_Printf("--SEND:ACK=(%3d,%d,%04X),REQ=(%3d,%d,%04X)\n", w->ackSeq, w->ackKind, w->ackSegment, w->reqSeq, w->reqKind, w->reqSegment);
-    *(Unk_ov067_0225f3fc_Wrap *)&h->reqSeq = *(Unk_ov067_0225f3fc_Wrap *)&w->reqSeq;
-    *(Unk_ov067_0225f3fc_Wrap *)&h->ackSeq = *(Unk_ov067_0225f3fc_Wrap *)&w->ackSeq;
+    *(WlxBlockSeqCopy *)&h->reqSeq = *(WlxBlockSeqCopy *)&w->reqSeq;
+    *(WlxBlockSeqCopy *)&h->ackSeq = *(WlxBlockSeqCopy *)&w->ackSeq;
     if (w->ackSeq == w->reqSeq) {
         u16 *p = (u16 *)((u8 *)msg->packet + 8);
         switch (w->ackKind) {
@@ -1632,7 +1578,7 @@ extern "C" void WlxBlock_BuildSend(Unk_ov067_0225f1a0_W *w, Unk_ov067_0225f3fc_M
     msg->length = (w->sendSegSize + 9) & ~1;
 }
 
-extern "C" void WlxBlock_StoreSegment(Unk_ov067_0225f1a0_W *w, s32 idx, void *src) {
+extern "C" void WlxBlock_StoreSegment(WlxBlock *w, s32 idx, void *src) {
     u32 *bm;
     u32 rem;
     s32 j;
@@ -1703,15 +1649,15 @@ extern "C" void WlxBlock_StoreSegment(Unk_ov067_0225f1a0_W *w, s32 idx, void *sr
     w->reqSegment = w->lastReqSegments[0];
 }
 
-extern "C" BOOL WlxBlock_Receive(Unk_ov067_0225f1a0_W *w, Unk_ov067_0225f3fc_Msg *msg) {
-    Unk_ov067_0225f3fc_Hdr *h;
+extern "C" BOOL WlxBlock_Receive(WlxBlock *w, WlxMpPacket *msg) {
+    WlxBlockPacketHdr *h;
     BOOL r6;
     h = msg->packet;
     r6 = FALSE;
     if (msg->length >= w->recvSegSize) {
         WlxDebug_Printf("--RECV:REQ=(%3d,%d,%04X),ACK=(%3d,%d,%04X)\n", h->reqSeq, h->reqKind, h->reqSegment, h->ackSeq, h->ackKind, h->ackSegment);
         if (h->reqSeq == w->reqSeq) {
-            *(Unk_ov067_0225f3fc_Wrap *)&w->ackSeq = *(Unk_ov067_0225f3fc_Wrap *)&h->reqSeq;
+            *(WlxBlockSeqCopy *)&w->ackSeq = *(WlxBlockSeqCopy *)&h->reqSeq;
         }
         if (h->ackSeq == w->reqSeq) {
             u16 *p2 = (u16 *)((u8 *)msg->packet + 8);
@@ -1736,7 +1682,7 @@ extern "C" BOOL WlxBlock_Receive(Unk_ov067_0225f1a0_W *w, Unk_ov067_0225f3fc_Msg
         if (h->ackSeq == w->reqSeq) {
             if (h->ackKind == 4) {
                 if (w->ackKind == 4) {
-                    Unk_ov067_0225f1a0_Cb *cb = w->curEntry;
+                    WlxBlockEntry *cb = w->curEntry;
                     void (*fn)(u32, void *) = cb->doneCallback;
                     u32 *e = (u32 *)WlxBlock_GetCurrent(w);
                     struct {
