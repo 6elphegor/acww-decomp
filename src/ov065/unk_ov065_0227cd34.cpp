@@ -109,7 +109,7 @@ GsGpProfile *GsGpProfile_Add(Ctx0227 **, s32);
 
 s32 atol(const char *);
 s32 STD_GetStringLength(const char *);
-char *func_02127838(char *, const char *);
+char *STD_CopyString(char *, const char *);
 char *strstr(const char *, const char *);
 
 s32 GsGp_SendServerBuddyMessage(Ctx0227 **h, s32 a, s32 b, const char *s);
@@ -254,7 +254,7 @@ s32 GsGp_ProcessBuddyMessage(Ctx0227 **h, const char *s) {
         if (r5->message == NULL) {
             ERR1();
         }
-        func_02127838(r5->message, buf);
+        STD_CopyString(r5->message, buf);
         r5->profileId = v;
         r5->date = w;
         {
@@ -424,7 +424,7 @@ s32 GsGp_ProcessBuddyMessage(Ctx0227 **h, const char *s) {
         }
         r5->profileId = v;
         r5->productId = q;
-        func_02127838(r5->location, buf3);
+        STD_CopyString(r5->location, buf3);
         {
             s32 r = GsGp_QueueCallback(h, p4.p, r5, 0, 0);
             if (r != 0) {

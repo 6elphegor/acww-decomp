@@ -80,7 +80,7 @@ int FSi_OpenFileDirectCommand(FSFile *file);
 int FSi_OpenFileFastCommand(FSFile *file);
 int FSi_GetPathCommand(FSFile *file);
 int FSi_FindPathCommand(FSFile *file);
-int func_02118894(FSFile *file);
+int FSi_ReadDirCommand(FSFile *file);
 int FSi_SeekDirCommand(FSFile *file);
 int FSi_WriteFileCommand(FSFile *file);
 int FSi_WriteFileCommand(FSFile *file);
@@ -266,7 +266,7 @@ int FSi_SeekDirCommand(FSFile *file) {
     return 0;
 }
 
-int func_02118894(FSFile *file) {
+int FSi_ReadDirCommand(FSFile *file) {
     FSEntry *ent = (FSEntry *)file->arg.w.w30;
     u8 b;
     u16 id;

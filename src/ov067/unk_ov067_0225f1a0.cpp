@@ -163,16 +163,16 @@ void OS_GetMacAddress(void *);
 void MI_CpuFill8(void *, u32, u32);
 u32 WM_GetAllowedChannel(void);
 s32 WM_StartScanEx(void (*)(WlxWmMsg *), void *);
-s32 func_0211fcbc(void (*)(WlxWmMsg *), void *, u32, u32, u32);
-s32 func_021218d0(void (*)(WlxWmMsg *), u32, u32, u32, u32);
-s32 func_021206b4(void (*)(WlxWmMsg *), void *, u32, void *, u32, u32, u32, u32, u32, u32, u32);
+s32 WM_StartConnectEx(void (*)(WlxWmMsg *), void *, u32, u32, u32);
+s32 WM_MeasureChannel(void (*)(WlxWmMsg *), u32, u32, u32, u32);
+s32 WM_StartMPEx(void (*)(WlxWmMsg *), void *, u32, void *, u32, u32, u32, u32, u32, u32, u32);
 s32 WM_SetParentParameter(void (*)(WlxWmMsg *), void *);
 s32 WM_StartParent(void (*)(WlxWmMsg *));
 void DC_InvalidateRange(void *, u32);
 void MI_CpuCopy8(void *, void *, u32);
 void Fatal_Trap(void);
 u32 _u32_div_f(u32, u32);
-u16 func_021276e0(u32, u32);
+u16 MATH_CalcChecksum8(u32, u32);
 s32 WM_Reset(void *);
 s32 WM_Disable(void *);
 s32 WM_PowerOff(void *);
@@ -180,8 +180,8 @@ s32 WM_PowerOn(void *);
 s32 WM_Init(void *, u32);
 s32 WM_Enable(void *);
 s32 WM_SetIndCallback(void *);
-s32 func_0211fb0c(u32, void *, u32);
-s32 func_0211f188(void);
+s32 WM_SetPortCallback(u32, void *, u32);
+s32 WM_Finish(void);
 s32 WM_SetMPDataToPortEx(void *, u32, void *, ...);
 
 // data
@@ -1101,7 +1101,7 @@ extern "C" void WlxWm_EnableStep(WMPortRecvCallback *m) {
     if (WlxWm_CheckApiCall(s, 0x80, WM_SetIndCallback((void *)WlxWm_OnIndication)) == 0) {
         return;
     }
-    if (WlxWm_CheckApiCall(s, 0x81, func_0211fb0c(4, (void *)WlxWm_OnPortRecv, 0)) == 0) {
+    if (WlxWm_CheckApiCall(s, 0x81, WM_SetPortCallback(4, (void *)WlxWm_OnPortRecv, 0)) == 0) {
         return;
     }
     WlxWm_SetState(s, 2, 0);
@@ -1158,7 +1158,7 @@ extern "C" void WlxWm_DisableStep(WMPortRecvCallback *m) {
     if (m->apiid != 4) {
         return;
     }
-    if (WlxWm_CheckApiCall(s, 2, func_0211f188()) == 0) {
+    if (WlxWm_CheckApiCall(s, 2, WM_Finish()) == 0) {
         return;
     }
     sWlxWm = NULL;
@@ -1259,7 +1259,7 @@ extern "C" void WlxWm_StartParentStep(WlxWmMsg *m) {
         if (c->parentParam->CS_Flag == 0) {
             b = TRUE;
         }
-        WlxWm_CheckApiCall(c, 0xe, func_021206b4(WlxWm_StartParentStep, (u8 *)c + 0x1120, c->recvBufSize, (u8 *)c + 0xf00, c->sendBufSize, (u16)b, 0, 0, 0, 0, 0));
+        WlxWm_CheckApiCall(c, 0xe, WM_StartMPEx(WlxWm_StartParentStep, (u8 *)c + 0x1120, c->recvBufSize, (u8 *)c + 0xf00, c->sendBufSize, (u16)b, 0, 0, 0, 0, 0));
         return;
     }
     if (m->apiid != 0xe) {
@@ -1309,13 +1309,13 @@ extern "C" void WlxWm_ConnectStep(WlxWmMsg *m) {
     }
     if (m == NULL) {
         c->state = 1;
-        WlxWm_CheckApiCall(c, 0xc, func_0211fcbc(WlxWm_OnChildEvent, (u8 *)c + 0x5120, 0, 1, 0));
+        WlxWm_CheckApiCall(c, 0xc, WM_StartConnectEx(WlxWm_OnChildEvent, (u8 *)c + 0x5120, 0, 1, 0));
         return;
     }
     if (m->apiid == 0xc) {
         c->aid = m->myAid;
         BOOL b = c->parentParam->CS_Flag == 0 ? TRUE : FALSE;
-        WlxWm_CheckApiCall(c, 0xe, func_021206b4(WlxWm_ConnectStep, (u8 *)c + 0x1120, c->recvBufSize, (u8 *)c + 0xf00, c->sendBufSize, (u16)b, 0, 0, 0, 0, 0));
+        WlxWm_CheckApiCall(c, 0xe, WM_StartMPEx(WlxWm_ConnectStep, (u8 *)c + 0x1120, c->recvBufSize, (u8 *)c + 0xf00, c->sendBufSize, (u16)b, 0, 0, 0, 0, 0));
         return;
     }
     if (m->apiid != 0xe) {
@@ -1351,7 +1351,7 @@ extern "C" void WlxWm_MeasureChannelStep(WlxWmMsg *m) {
         return;
     }
     u32 a = WlxWm_NextAllowedChannel(v);
-    WlxWm_CheckApiCall(c, 0x1e, func_021218d0(WlxWm_MeasureChannelStep, 3, 0x11, a, 0x1e));
+    WlxWm_CheckApiCall(c, 0x1e, WM_MeasureChannel(WlxWm_MeasureChannelStep, 3, 0x11, a, 0x1e));
 }
 
 extern "C" void WlxWm_ScanStep(WlxWmMsg *m) {
@@ -1487,7 +1487,7 @@ extern "C" void WlxBlock_StartSend(WlxBlock *w, u32 p, u32 q, u32 r, u32 s) {
     w->reqKind = 1;
     w->sendData = p;
     w->sendSize = (u16)q;
-    w->sendCheck = func_021276e0(p, q);
+    w->sendCheck = MATH_CalcChecksum8(p, q);
     w->recvData = r;
     w->recvBufSize = (u16)s;
 }

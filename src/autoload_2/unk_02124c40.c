@@ -138,30 +138,30 @@ extern void MI_CpuFill8(void *, u32, u32);
 extern void MI_CpuCopy8(void *, void *, u32);
 extern u32 PXI_IsCallbackReady(u32, u32);
 extern u32 WM_GetNextTgid(void);
-extern u32 func_0211fb0c(u32, void *, u32);
+extern u32 WM_SetPortCallback(u32, void *, u32);
 extern u32 WM_SetIndCallback(WCb);
 extern u32 WM_Disconnect(WCb, u32);
-extern u32 func_0211fcbc(WCb, u32, u32, u32, u32);
+extern u32 WM_StartConnectEx(WCb, u32, u32, u32, u32);
 extern u32 WM_StartScan(WCb, void *);
 extern u32 WM_End(WCb);
 extern u32 WM_Reset(WCb);
 extern u32 WM_Initialize(void *, WCb, u32);
 extern u32 WM_SetMPDataToPortEx(u32, u32, u32, u32, u32, u32, u32);
-extern u32 func_021206b4(WCb, void *, u32, void *, u32, u32, u32, u32, u32, u32, u32);
+extern u32 WM_StartMPEx(WCb, void *, u32, void *, u32, u32, u32, u32, u32, u32, u32);
 extern u32 WM_SetLifeTime(WCb, u32, u32, u32, u32);
 extern void MB_CommSetParentStateCallback(void *);
-extern void func_0212454c(void);
-extern u32 func_021265dc(void);
+extern void MB_InitSendGameInfoStatus(void);
+extern u32 MBi_IsSendEnabled(void);
 extern u32 changeScanChannel(void *);
 extern u32 MBi_OnInitializeDone(void);
 extern void MBi_EndTaskThread(void *);
 extern u32 MBi_IsTaskAvailable(void);
 extern void MBi_ClearParentPieceBuffer(u32);
 extern void MBi_SetParentPieceBuffer(void *);
-extern void func_02126ef4(u32);
-extern void func_02125d0c(void *);
+extern void MBi_SetChildMPMaxSize(u32);
+extern void MBi_ParentCallback(void *);
 extern void MBi_CommParentCallback(u32, void *);
-extern void func_02125c94(void *);
+extern void MBi_ChildPortCallback(void *);
 
 void MBi_CheckWmErrcode(u32 id, u32 res);
 void MBi_SetMaxScanTime(u32 t);
@@ -169,14 +169,14 @@ u32 MBi_SetMPData(WCb cb, void *a, u32 b, u32 c, u16 d);
 BOOL MBi_CommEnd(void);
 BOOL MBi_OnReset(void);
 BOOL MBi_CallReset(void);
-u32 func_02124d74(u32 a);
+u32 MBi_StartParentCore(u32 a);
 u32 MBi_StartCommon(void);
 BOOL MBi_IsCommSizeValid(u32 a, u32 c, u32 d);
-u32 func_021253a4(void);
-void func_0212541c(void *arg);
+u32 MBi_GetBeaconPeriodDispersion(void);
+void MBi_ChildCallback(void *arg);
 
 // WM completion callback: switch on the API id, forwards to cb51c(code, msg)
-void func_0212541c(void *arg) {
+void MBi_ChildCallback(void *arg) {
     WMsg *msg = arg;
     WCtl *g = data_02200018;
     int i;
@@ -187,7 +187,7 @@ void func_0212541c(void *arg) {
             return;
         }
         g->cb51c(21, msg);
-        MBi_CheckWmErrcode(29, WM_SetLifeTime(func_0212541c, data_0213c218, data_0213c210, data_0213c20c, data_0213c214));
+        MBi_CheckWmErrcode(29, WM_SetLifeTime(MBi_ChildCallback, data_0213c218, data_0213c210, data_0213c20c, data_0213c214));
         return;
     case 29:
         if (msg->f2 != 0) {
@@ -205,7 +205,7 @@ void func_0212541c(void *arg) {
         data_02200020.bssid[5] = 0xff;
         g->f5e4 = 1;
         g->f5e8 = 1;
-        MBi_CheckWmErrcode(10, WM_StartScan(func_0212541c, &data_02200020));
+        MBi_CheckWmErrcode(10, WM_StartScan(MBi_ChildCallback, &data_02200020));
         return;
     case 10:
         if (msg->f2 != 0) {
@@ -247,7 +247,7 @@ void func_0212541c(void *arg) {
             if (g->f5e8 != 0) {
                 if (changeScanChannel(&data_02200020) == 0) MBi_CommEnd();
             }
-            MBi_CheckWmErrcode(10, WM_StartScan(func_0212541c, &data_02200020));
+            MBi_CheckWmErrcode(10, WM_StartScan(MBi_ChildCallback, &data_02200020));
             return;
         }
         case 4:
@@ -256,7 +256,7 @@ void func_0212541c(void *arg) {
             if (g->f5e8 != 0) {
                 if (changeScanChannel(&data_02200020) == 0) MBi_CommEnd();
             }
-            MBi_CheckWmErrcode(10, WM_StartScan(func_0212541c, &data_02200020));
+            MBi_CheckWmErrcode(10, WM_StartScan(MBi_ChildCallback, &data_02200020));
             return;
         default:
             g->cb51c(0x100, msg);
@@ -267,7 +267,7 @@ void func_0212541c(void *arg) {
             g->cb51c(0x100, msg);
             return;
         }
-        MBi_CheckWmErrcode(12, func_0211fcbc(func_0212541c, g->f520, 0, 1, 0));
+        MBi_CheckWmErrcode(12, WM_StartConnectEx(MBi_ChildCallback, g->f520, 0, 1, 0));
         return;
     case 12:
         if (msg->f2 != 0) {
@@ -284,8 +284,8 @@ void func_0212541c(void *arg) {
             g->f5e2 = ((u16 *)msg)[5];
             g->cb51c(6, msg);
             g->f52a = 1;
-            if (func_0211fb0c(1, func_02125c94, 0) != 0) return;
-            MBi_CheckWmErrcode(14, func_021206b4(func_0212541c, g->f504, g->f51a, (u8 *)g + 0x40, g->f518, (u16)(g->f52c == 0), 0, 0, 0, 1, 1));
+            if (WM_SetPortCallback(1, MBi_ChildPortCallback, 0) != 0) return;
+            MBi_CheckWmErrcode(14, WM_StartMPEx(MBi_ChildCallback, g->f504, g->f51a, (u8 *)g + 0x40, g->f518, (u16)(g->f52c == 0), 0, 0, 0, 1, 1));
             return;
         case 9:
             g->cb51c(10, msg);
@@ -300,7 +300,7 @@ void func_0212541c(void *arg) {
         switch (msg->f4) {
         case 10:
             g->f528 = 1;
-            if (func_021265dc() == 0) return;
+            if (MBi_IsSendEnabled() == 0) return;
             g->cb51c(25, 0);
             return;
         case 12:
@@ -330,7 +330,7 @@ void func_0212541c(void *arg) {
         }
         g->f52a = 0;
         data_02200018->f528 = 0;
-        MBi_CheckWmErrcode(2, WM_End(func_0212541c));
+        MBi_CheckWmErrcode(2, WM_End(MBi_ChildCallback));
         return;
     case 2:
         if (msg->f2 != 0) {
@@ -343,7 +343,7 @@ void func_0212541c(void *arg) {
         g->cb51c(17, msg);
         return;
     case 21:
-        if (func_021265dc() == 0) return;
+        if (MBi_IsSendEnabled() == 0) return;
         g->cb51c(25, 0);
         return;
     case 128:
@@ -364,7 +364,7 @@ void func_0212541c(void *arg) {
 }
 
 // pseudo-random seed from the MAC address and the tick (0x027ffc3c): (sum(mac) + tick) * 7 % 20
-u32 func_021253a4(void) {
+u32 MBi_GetBeaconPeriodDispersion(void) {
     u8 mac[6];
     u32 sum;
     int i;
@@ -375,7 +375,7 @@ u32 func_021253a4(void) {
 }
 
 // library setup (probably WC_Initialize front half): aligns the work buffer, clears G and W, copies the channel list
-u32 func_021251ac(u8 *buf, WChList *list, u32 a, u32 b, u32 dma) {
+u32 MB_Init(u8 *buf, WChList *list, u32 a, u32 b, u32 dma) {
     WCtl *g;
     WWork *w;
     u32 e;
@@ -422,7 +422,7 @@ u32 func_021251ac(u8 *buf, WChList *list, u32 a, u32 b, u32 dma) {
     g->f14 = 0;
     g->f08 = a;
     g->f0c = b;
-    g->f18 = func_021253a4() + 200;
+    g->f18 = MBi_GetBeaconPeriodDispersion() + 200;
     g->f10 = 15;
     g->f50c = 0;
     g->f50d = 0;
@@ -484,7 +484,7 @@ u32 MBi_StartCommon(void) {
 }
 
 // library initialiser (probably WC_Initialize): sets up G (data_02200018) and W (data_0220001c) fields, starts WM
-u32 func_02124d74(u32 a) {
+u32 MBi_StartParentCore(u32 a) {
     u32 e;
     u32 r;
     void (*cb)();
@@ -499,7 +499,7 @@ u32 func_02124d74(u32 a) {
     MIi_CpuClear16(zero1, data_0220001c->ent, 0x69c0);
     MB_CommSetParentStateCallback((void *)cb);
     data_0220001c->f1318 = data_02200018->f500 - 6;
-    func_02126ef4(data_02200018->f502);
+    MBi_SetChildMPMaxSize(data_02200018->f502);
     MBi_SetParentPieceBuffer((u8 *)data_0220001c + 0x1538);
     for (i = 0; i < 15; i++) {
         data_0220001c->state[i] = 0;
@@ -511,22 +511,22 @@ u32 func_02124d74(u32 a) {
     MI_CpuFill8((u8 *)data_0220001c + 0x1754, 0, 30);
     data_02200018->f524 = 1;
     data_02200018->cb51c = MBi_CommParentCallback;
-    data_02200018->cb508 = func_02125d0c;
+    data_02200018->cb508 = MBi_ParentCallback;
     data_02200018->f34 = data_02200018->f500;
     data_02200018->f518 = (data_02200018->f34 + 35) & ~31;
     data_02200018->f36 = data_02200018->f502;
     data_02200018->f51a = (((data_02200018->f36 + 14) * 15 + 41) & ~31) << 1;
-    func_0212454c();
+    MB_InitSendGameInfoStatus();
     r = MBi_StartCommon();
     OS_RestoreInterrupts(e);
     *(u32 *)((u8 *)data_0220001c + 0x74c8) = PXI_IsCallbackReady(15, 1);
     return r;
 }
 
-// set flag 0x1320 then tail-call the initialiser func_02124d74
+// set flag 0x1320 then tail-call the initialiser MBi_StartParentCore
 u32 MB_StartParentFromIdle(u32 a) {
     data_0220001c->f1320 = 1;
-    return func_02124d74(a);
+    return MBi_StartParentCore(a);
 }
 
 // WM_End-like step: WM_Reset (WM_End), report result

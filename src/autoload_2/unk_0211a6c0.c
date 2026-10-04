@@ -44,7 +44,7 @@ extern void DC_InvalidateRange(u32 addr, u32 len);
 extern void IC_InvalidateRange(u32 addr, u32 len);
 extern void MIi_UncompressBackward(u32 addr);
 extern void Fatal_Trap(void);
-extern void func_0211aeb4(void *digest, const void *data, u32 len, const void *key, u32 keylen);
+extern void DGT_Hash2CalcHmac(void *digest, const void *data, u32 len, const void *key, u32 keylen);
 extern void DGT_Hash1Reset(MD5Context *ctx);
 extern void DGT_Hash1SetSource(MD5Context *ctx, const void *data, u32 len);
 extern void DGT_Hash1GetDigest_R(void *digest, MD5Context *ctx);
@@ -137,7 +137,7 @@ void FS_ClearOverlayImage(FSOverlayInfoHeader *h);
 u32 FSi_GetOverlayBinarySize(const FSOverlayInfoHeader *h);
 
 // MATH_CalcHMACMD5
-void func_0211a748(u8 *digest, const u8 *data, u32 dataLen, const u8 *key, int keyLen) {
+void DGT_Hash1CalcHmac(u8 *digest, const u8 *data, u32 dataLen, const u8 *key, int keyLen) {
     u8 ipad[64];
     u8 opad[64];
     u8 hash[16];

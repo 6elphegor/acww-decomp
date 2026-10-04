@@ -59,8 +59,8 @@ extern LocaleCmpt data_0213c350; // current locale
 int OS_TryLockMutex(OSMutex *);
 void OS_LockMutex(OSMutex *);
 void OS_UnlockMutex(OSMutex *);
-int func_02127cb8(const void *, u32, u32, FILE *);
-int func_02127ad0(void);
+int __fread(const void *, u32, u32, FILE *);
+int __flush_all(void);
 int __flush_buffer(FILE *, int);
 s64 frexp(s64 a, s32 *out);
 s64 ldexp(s64 a, s32 v);
@@ -308,7 +308,7 @@ int fclose(FILE *file) {
 
 // fflush
 int fflush(FILE *file) {
-    if (file == 0) return func_02127ad0();
+    if (file == 0) return __flush_all();
     if (file->error || file->mode.file_kind == 0) return -1;
     if (file->mode.io_mode == 1) return 0;
     if (file->state.io_state >= 3) file->state.io_state = 2;
@@ -345,7 +345,7 @@ u32 fread(const void *ptr, u32 size, u32 n, FILE *file) {
         data_02200250[idx] = data_021fcc2c.cur->id;
         data_02200274[idx] = 1;
     }
-    r = func_02127cb8(ptr, size, n, file);
+    r = __fread(ptr, size, n, file);
     data_02200274[idx]--;
     if (data_02200274[idx] == 0) OS_UnlockMutex(m);
     return r;

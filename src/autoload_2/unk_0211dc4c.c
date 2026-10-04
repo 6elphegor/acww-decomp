@@ -124,7 +124,7 @@ void CARDi_InitCommon(void);
 void CARDi_UnlockResource(u32, u32);
 void CARDi_LockResource(u32, u32);
 void CARDi_SetTask(void (*)(CARDCommon *));
-void func_0211da74(s32);
+void CARDi_IdentifyBackupCore(s32);
 void CARDi_RequestStreamCommandCore(CARDCommon *);
 void *CARDi_GetRomAccessor(void);
 BOOL CARD_WaitRomAsync(void);
@@ -346,7 +346,7 @@ BOOL CARD_IdentifyBackup(u32 op) {
     c->callback = 0;
     c->cbArg = 0;
     OS_RestoreInterrupts(irq);
-    func_0211da74(op);
+    CARDi_IdentifyBackupCore(op);
     data_021fec00.curThread = (OST *)data_021fcc2c[1];
     CARDi_Request(c, 2, 1);
     c->cmd->srcBuf = 0;

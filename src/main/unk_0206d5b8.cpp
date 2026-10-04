@@ -140,7 +140,7 @@ s32 CrashScreen_Run(void);
 }
 
 extern "C" {
-void func_02114cd8(s32 a, s32 b);
+void OS_SetUserExceptionHandler(s32 a, s32 b);
 }
 
 extern "C" {
@@ -563,7 +563,7 @@ RecordFile *InfoTableSet::getDma() {
 }
 
 extern "C" void Fatal_ExceptionCallback(void *arg, void *p) {
-    func_02114cd8(0, 0);
+    OS_SetUserExceptionHandler(0, 0);
     sCrashContext = (u32)arg;
     CrashScreen_Run();
 }

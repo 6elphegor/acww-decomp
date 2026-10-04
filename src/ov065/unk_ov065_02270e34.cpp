@@ -79,7 +79,7 @@ void NasAuth_GetResult(s32 *);
 void NasAuth_Destroy(void);
 void NasAuth_Abort(void);
 s32 NasAuth_Start(void *, void *);
-void func_02127838(char *, const char *);
+void STD_CopyString(char *, const char *);
 void MI_CpuFill8(void *, s32, u32);
 u64 OS_GetTick(void);
 u64 func_02132ef8(u64, u32);
@@ -198,7 +198,7 @@ s32 DWC_GetGsProfileId(s32, void *);
 s32 DWCi_Acc_IsValidFriendData(void *);
 s32 strcmp(const char *, const char *);
 s32 STD_GetStringLength(const char *);
-void func_02127838(char *, const char *);
+void STD_CopyString(char *, const char *);
 s32 strtoul(const char *, char **, s32);
 void MI_CpuFill8(void *, s32, u32);
 void MI_CpuCopy8(const void *, void *, u32);
@@ -292,7 +292,7 @@ s32 DwcFriend_GetStatus(void *a, u8 *p1, u8 *p2, char *dst) {
             }
         }
         if (dst != NULL) {
-            func_02127838(dst, o.locationString);
+            STD_CopyString(dst, o.locationString);
         }
         return (u8)o.status;
     }
@@ -1216,8 +1216,8 @@ void DwcLogin_OnNasAuthDone(const char *a, const char *b) {
 namespace F02270b74 {
 extern "C" {
 void DwcLogin_GpConnect(const char *a, const char *b, void *c, s32 d) {
-    func_02127838(sDwcLoginControl->authToken, a);
-    func_02127838(sDwcLoginControl->authChallenge, b);
+    STD_CopyString(sDwcLoginControl->authToken, a);
+    STD_CopyString(sDwcLoginControl->authChallenge, b);
     DwcLoginControl *g = sDwcLoginControl;
     u64 t = OS_GetTick();
     g->gpConnectStartTick = t;
@@ -1252,7 +1252,7 @@ void DwcLogin_StartNasAuth(DwcNasLoginCallback cb, u32 arg) {
         }
         DWCi_Acc_LoginIdToUserName(&sDwcLoginControl->loginId, sDwcLoginControl->gameCode, sDwcLoginControl->loginIdText);
     }
-    func_02127838(cfg.gsbrcd, sDwcLoginControl->gsbrcd);
+    STD_CopyString(cfg.gsbrcd, sDwcLoginControl->gsbrcd);
     cfg.allocFunc = (DwcAllocFunc)DwcNet_Alloc;
     cfg.freeFunc = (DwcFreeFunc)DwcNet_Free;
     void *p = DwcNet_AllocAligned(0, 0x1a60, 4);
@@ -1272,8 +1272,8 @@ void DwcLogin_PollNasAuth(void) {
     NasAuthResult s2;
     if (NasAuth_GetState() == 0x14) {
         NasAuth_GetResult(&s1.result);
-        func_02127838(sDwcLoginControl->authToken, s1.token);
-        func_02127838(sDwcLoginControl->authChallenge, s1.challenge);
+        STD_CopyString(sDwcLoginControl->authToken, s1.token);
+        STD_CopyString(sDwcLoginControl->authChallenge, s1.challenge);
         NasAuth_Destroy();
         DwcNet_Free(0, sDwcLoginControl->nasAuthWork, 0);
         sDwcLoginControl->nasAuthWork = NULL;
@@ -1295,7 +1295,7 @@ void DwcLogin_PollNasAuth(void) {
         } else {
             NasAuth_Destroy();
             MI_CpuFill8(&cfg, 0, 0x2c);
-            func_02127838(cfg.gsbrcd, sDwcLoginControl->gsbrcd);
+            STD_CopyString(cfg.gsbrcd, sDwcLoginControl->gsbrcd);
             cfg.allocFunc = (DwcAllocFunc)DwcNet_Alloc;
             cfg.freeFunc = (DwcFreeFunc)DwcNet_Free;
             NasAuth_Start(&cfg, sDwcLoginControl->nasAuthWork);

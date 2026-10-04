@@ -4,7 +4,7 @@
 
 extern "C" Backup gBackup;
 
-extern "C" s32 func_0211d704(void);
+extern "C" s32 CARD_IsAvailable(void);
 extern "C" void CARD_Init(void);
 extern "C" s32 OS_GetLockID(void);
 extern "C" void CARD_LockBackup(u16 v);
@@ -21,7 +21,7 @@ const char sBackupGameName[] = "forest";
 
 extern "C" void Backup_Init(Backup *g, s32 n, const char *name) {
     s32 t;
-    if (func_0211d704() == 0) {
+    if (CARD_IsAvailable() == 0) {
         CARD_Init();
     }
     t = OS_GetLockID();

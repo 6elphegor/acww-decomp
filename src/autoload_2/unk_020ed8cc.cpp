@@ -25,10 +25,10 @@ extern u8 data_021f5aac[];
 extern u8 data_021f5a1c[];
 void NNS_SndHandleInit(void *p);
 void NNS_SndPlayerStopSeq(void *p, u32 x);
-void func_0210cebc(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
+void NNS_SndArcPlayerStartSeqArcEx(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
 void NNS_SndArcPlayerStartSeqArc(void *a, u32 b, void *c);
 void NNS_SndHeapLoadState(void *a, u32 b);
-void *func_0210bd4c(void *a);
+void *NNS_SndHeapGetCurrentLevel(void *a);
 s32 NNS_SndArcLoadGroup(u32 a, void *b);
 s32 NNS_SndHeapSaveState(void *a);
 void *NNS_SndHeapAlloc(void *a, u32 b, void (*c)(void), u32 d, u32 e);
@@ -37,7 +37,7 @@ void NNS_SndArcInit(void *a, u32 b, void *c, u32 d);
 void NNS_SndArcInitOnMemory(void *a, u32 b);
 s32 NNS_SndArcPlayerSetup(void *a);
 void NNS_SndInit(void);
-void func_0210ef44(u32 a, u32 b, u32 c);
+void NNS_SndCaptureStartOutputEffect(u32 a, u32 b, u32 c);
 s32 NNS_SndMain(void);
 
 }
@@ -107,7 +107,7 @@ extern "C" void Snd_CaptureBufferDisposeCallback(void) {
 
 extern "C" void Snd_StartOutputEffect(u32 a) {
     if (gSndCaptureBuffer == NULL) Fatal_Trap();
-    func_0210ef44(((u32)gSndCaptureBuffer + 31) & ~31, 0x1000, a);
+    NNS_SndCaptureStartOutputEffect(((u32)gSndCaptureBuffer + 31) & ~31, 0x1000, a);
 }
 
 extern "C" void Snd_AllocCaptureBuffer(void) {
@@ -130,7 +130,7 @@ extern "C" void Snd_StartSeqArc(s32 a, void *b, void *c) {
 
 extern "C" void Snd_StartSeqArcEx(void *a, s32 b, s32 c, s32 d, s32 e, s32 f) {
     if (a == NULL) Fatal_Trap();
-    func_0210cebc(a, b, c, d, e, f);
+    NNS_SndArcPlayerStartSeqArcEx(a, b, c, d, e, f);
 }
 
 extern "C" void Snd_InitHandle(void *a) {
@@ -159,7 +159,7 @@ extern "C" void *Snd_RestoreHeapLevel(u32 a) {
 }
 
 extern "C" void *Snd_GetHeapLevel(void) {
-    return func_0210bd4c(gSndHeap);
+    return NNS_SndHeapGetCurrentLevel(gSndHeap);
 }
 
 // PROTOS-END

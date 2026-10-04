@@ -37,7 +37,7 @@ void MI_CpuCopy8(void *, void *, s32);
 void MI_CpuFill8(void *, s32, s32);
 void OS_Sleep(s32);
 s32 memcmp(const void *, const void *, s32);
-void func_02127838(void *, const void *);
+void STD_CopyString(void *, const void *);
 s32 OS_SPrintf(char *, const char *, ...);
 void memcpy(void *, const void *, s32);
 

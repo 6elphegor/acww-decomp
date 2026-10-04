@@ -208,7 +208,7 @@ extern u8 sAxBbsBuf[];
 void MI_CpuCopy8(void *src, void *dst, s32 n);
 void AxBbsNotice_Construct(void *p);
 void *AxBbsNotice_GetDigest(void *p);
-void func_0211a748(void *a, void *b, s32 c, s32 d, s32 e);
+void DGT_Hash1CalcHmac(void *a, void *b, s32 c, s32 d, s32 e);
 void MI_CpuFill8(void *p, s32 v, s32 n);
 s32 AxMail_GetDigestKey();
 s32 Mem_Differs(void *a, void *b, s32 n);
@@ -274,7 +274,7 @@ BOOL AxMail_Deliver(u8 *p);
 s32 AxMail_GetDigestKey(void);
 void MI_CpuFill8(void *p, u32 v, u32 n);
 void MI_CpuCopy8(const void *src, void *dst, u32 n);
-void func_0211a748(void *a, void *b, u32 c, s32 d, u32 e);
+void DGT_Hash1CalcHmac(void *a, void *b, u32 c, s32 d, u32 e);
 s32 Mem_Differs(u8 *a, u8 *b, u32 n);
 s32 Save_Sum16(void *a, u32 n);
 void _ZN16BlancaFaceRecord8setStateEj(void *p, u32 v);
@@ -314,9 +314,9 @@ void OS_ExitThread(void);
 void *SaveManager_GetTownCompressBuf(void);
 void *SaveManager_GetTownCompressThread(void);
 void *SaveManager_GetTownTransferBuf(void);
-void func_021163b0(void *a, void *b, void *c);
-void func_021162b0(void *a, void *b, u32 c);
-s32 func_021164ec(void *a, u32 b, void *c);
+void MI_InitUncompContextLZ(void *a, void *b, void *c);
+void MI_ReadUncompLZ8(void *a, void *b, u32 c);
+s32 MI_CompressLZ(void *a, u32 b, void *c);
 void OverlayHandle_Unload(void *p);
 void OverlayHandle_Load(void *p, u32 v);
 s32 _ZN11CommManager17getWifiFriendListEv(void *p);
@@ -4984,7 +4984,7 @@ extern "C" void NetOverlay_Restore(void) {
 }
 
 void TownCompressBuffer::compress() {
-    s32 r = NB::func_021164ec(NB::gSaveData, 0x15fe0, data);
+    s32 r = NB::MI_CompressLZ(NB::gSaveData, 0x15fe0, data);
     if (r == 0) {
         size = 0;
         NB::MI_CpuCopy8(NB::gSaveData, data, 0x15fe0);
@@ -4997,8 +4997,8 @@ void TownCompressBuffer::decompress() {
     void *dst = NB::SaveManager_GetTownTransferBuf();
     if (size != 0) {
         u8 ctx[0x10];
-        NB::func_021163b0(ctx, dst, data);
-        NB::func_021162b0(ctx, dataBody, size - 4);
+        NB::MI_InitUncompContextLZ(ctx, dst, data);
+        NB::MI_ReadUncompLZ8(ctx, dataBody, size - 4);
     } else {
         NB::MI_CpuCopy8(data, dst, 0x15fe0);
     }
@@ -5187,7 +5187,7 @@ extern "C" void AxMail_ApplyMail(void) {
         NB::AxMail_Construct(obj);
         NB::MI_CpuCopy8(NB::sAxMailBuf, obj, 0x108);
         NB::MI_CpuFill8(NB::AxMail_GetDigest((u8 *)obj), 0, 0x10);
-        NB::func_0211a748(buf, obj, 0x108, NB::AxMail_GetDigestKey(), 0x10);
+        NB::DGT_Hash1CalcHmac(buf, obj, 0x108, NB::AxMail_GetDigestKey(), 0x10);
         if (NB::Mem_Differs(NB::AxMail_GetDigest(NB::sAxMailBuf), (u8 *)buf, 0x10) == 0) {
             NB::AxMail_Deliver(NB::sAxMailBuf);
         }
@@ -5204,7 +5204,7 @@ extern "C" void AxMail_ApplyBbs() {
         NA::AxBbsNotice_Construct(b);
         NA::MI_CpuCopy8(NA::sAxBbsBuf, b, 0xd2);
         NA::MI_CpuFill8(NA::AxBbsNotice_GetDigest(b), 0, 0x10);
-        NA::func_0211a748(a, b, 0xd2, NA::AxMail_GetDigestKey(), 0x10);
+        NA::DGT_Hash1CalcHmac(a, b, 0xd2, NA::AxMail_GetDigestKey(), 0x10);
         if (NA::Mem_Differs(NA::AxBbsNotice_GetDigest(NA::sAxBbsBuf), a, 0x10) == 0) {
             NA::AxBbsNotice_Post(NA::sAxBbsBuf);
         }

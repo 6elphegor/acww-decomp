@@ -52,7 +52,7 @@ u32 sCrashScreenSub;
 void OS_InitTick(void);
 void OS_InitAlarm(void);
 void OS_InitThread(void);
-void func_02114cd8(void (*fn)(void), void *p);
+void OS_SetUserExceptionHandler(void (*fn)(void), void *p);
 void Fatal_ExceptionCallback(void);
 void OS_EnableInterrupts(void);
 void Main_InitDwc(void);
@@ -89,8 +89,8 @@ void MIi_CpuClearFast(u32 a);
 void DebugText_Printf(DebugText *c, u8 *dst, const char *fmt, ...);
 void DebugText_Print(DebugText *c, u8 *dst, const char *fmt);
 u32 Task_GetPhaseName(u32 a);
-u32 func_021122b0(void);
-u32 func_02113438(OSThread *a);
+u32 OS_GetIrqStackStatus(void);
+u32 OS_GetStackStatus(OSThread *a);
 #define Heap_dump _ZN4Heap4dumpEv
 void Heap_dump(u32 a);
 void BlockMap_DebugStub(void);
@@ -219,14 +219,14 @@ void CrashScreen_DrawMain(void) {
     thr = data_021fcc2c[1];
     DebugText_Printf(&col, buf + 0x80, "ID:%u mode:%02x", thr->id, r);
     DebugText_Printf(&col, buf + 0xc0, "S:%08x-%08x", thr->stackTop, thr->stackBottom);
-    r = func_021122b0();
+    r = OS_GetIrqStackStatus();
     if (r != 0) {
         DebugText_Printf(&col, buf + 0x100, "IrqStkErr%u", r);
     } else {
         node = data_021fcc2c[2];
         r = 0;
         while (node != NULL) {
-            r = func_02113438(node);
+            r = OS_GetStackStatus(node);
             if (r != 0) {
                 break;
             }
@@ -388,7 +388,7 @@ void NitroMain(void) {
     OS_InitTick();
     OS_InitAlarm();
     OS_InitThread();
-    func_02114cd8(Fatal_ExceptionCallback, data_021fccfc);
+    OS_SetUserExceptionHandler(Fatal_ExceptionCallback, data_021fccfc);
     ime = (vu16 *)0x4000208;
     (void)*ime;
     *ime = 1;

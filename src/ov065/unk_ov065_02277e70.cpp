@@ -21,7 +21,7 @@ struct GsAvailQuery {
 extern "C" {
 
 s32 STD_GetStringLength(const char *);
-void func_02127838(void *, const void *);
+void STD_CopyString(void *, const void *);
 s32 memcmp(const void *, const void *, s32);
 void memcpy(void *, const void *, s32);
 s32 OS_SPrintf(char *, const char *, ...);
@@ -68,7 +68,7 @@ void GsAvail_SendQuery() {
 void GsAvail_Start(char *url) {
     char buf[0x44];
     s8 c;
-    func_02127838(sGsGameName, url);
+    STD_CopyString(sGsGameName, url);
     sGsAvailQuery.socket = -1;
     GsSock_StartupStub();
     c = sGsAvailHostOverride[0];

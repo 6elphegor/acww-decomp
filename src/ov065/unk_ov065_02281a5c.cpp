@@ -131,7 +131,7 @@ s32 GsGp_RecvToBuffer(Ctx0228 **, s32, char **, s32 *, s32 *, const char *);
 void *GsUtil_Realloc(void *, s32);
 void GsUtil_StrCopyN(char *, const char *, s32);
 void *memset(void *, s32, s32);
-char *func_02127838(char *, const char *);
+char *STD_CopyString(char *, const char *);
 char *strstr(const char *, const char *);
 void GsUtil_Sleep(s32);
 s32 GsGpSearch_ProfileSearch(Ctx0228 **, char *, char *, char *, char *, char *, s32, s32, s32, s32, s32);
@@ -578,7 +578,7 @@ again:
         p = (GsGpUserNicksResponse *)GsUtil_Alloc(0x44);
         if (p == 0) ERRMEM("Out of memory.")
         p->result = 0;
-        func_02127838(p->email, c->email);
+        STD_CopyString(p->email, c->email);
         p->numNicks = 0;
         p->nicks = 0;
         p->uniqueNicks = 0;

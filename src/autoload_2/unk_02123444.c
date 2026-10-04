@@ -122,7 +122,7 @@ extern u8 data_021fff80;
 extern u32 OS_DisableInterrupts(void);
 extern void OS_RestoreInterrupts(u32 irq);
 extern BOOL MBi_IsStarted(void);
-extern BOOL func_02123368(void *dst, void *seg);
+extern BOOL MBi_MakeBlockInfoTable(void *dst, void *seg);
 extern BOOL MBi_IsTaskAvailable(void);
 extern void MBi_InitTaskInfo(void *p);
 extern void MBi_InitTaskThread(void *p, u32 len);
@@ -150,9 +150,9 @@ extern void MI_CpuFill8(void *dst, u32 value, u32 size);
 extern void MI_CpuCopy8(const void *src, void *dst, u32 size);
 extern void Fatal_Trap(void);
 extern const u32 data_0213a3ec[3];
-extern void func_021235fc(MBSegInfo *dst, const MBRomHeader *rom);
-extern void func_02123444(const MBRomHeader *rom, const u32 *mode, MBRange *out, u32 *limit);
-extern void func_021267d4(void *ctx);
+extern void MBi_MakeDownloadFileInfo(MBSegInfo *dst, const MBRomHeader *rom);
+extern void MBi_SetSegmentInfo(const MBRomHeader *rom, const u32 *mode, MBRange *out, u32 *limit);
+extern void MBi_InitCache(void *ctx);
 extern void MBi_AttachCacheBuffer(void *ctx, u32 addr, u32 len, void *data, u32 mode);
 extern void DC_FlushRange(void *addr, u32 len);
 typedef struct MBRegion {
@@ -164,17 +164,17 @@ extern char data_0213c208[];
 extern u8 AutoloadCallback[];
 extern void *FS_FindArchive(const char *name, int len);
 extern BOOL FS_OpenFileDirect(FSFile *file, void *arc, u32 top, u32 bottom, int id);
-extern void func_02124930(void *p, u32 a, u32 b);
+extern void MBi_SendMP(void *p, u32 a, u32 b);
 extern void FS_CloseFile(FSFile *file);
 extern u32 mystrlen(const u16 *s);
 extern BOOL MBi_ReadIconInfo(const char *path, void *dst, u32 isChar);
 
-extern void func_02124528(void);
-extern BOOL func_02124408(void);
-extern void func_021243bc(void);
-extern void func_0212423c(u32 a, u32 b, u32 c);
+extern void MBi_ClearSendStatus(void);
+extern BOOL MBi_ReadyBeaconSendStatus(void);
+extern void MBi_InitSendFixedBeacon(void);
+extern void MBi_SendFixedBeacon(u32 a, u32 b, u32 c);
 extern void MBi_InitSendVolatBeacon(void);
-extern void func_02123f60(u32 a, u32 b, u32 c);
+extern void MBi_SendVolatBeacon(u32 a, u32 b, u32 c);
 extern void MBi_ReadSegmentHeader(u32 *seg, u32 lo, u32 hi, int clear);
 
 extern void MBi_MakeGameInfo(MBBuf *b, const u32 *info, const void *name);
@@ -182,22 +182,22 @@ extern BOOL MBi_ReadIconInfo(const char *path, void *dst, u32 isChar);
 extern void MB_UpdateGameInfoMember(MBBuf *b, const void *src, u32 mask, u32 w);
 extern u32 mystrlen(const u16 *s);
 extern void MB_AddGameInfo(MBBuf *b);
-extern void func_0212454c(void);
-extern void func_02124528(void);
+extern void MB_InitSendGameInfoStatus(void);
+extern void MBi_ClearSendStatus(void);
 extern void MB_SendGameInfoBeacon(u32 a, u32 b, u32 c);
-extern BOOL func_02124408(void);
-extern void func_021243bc(void);
-extern void func_0212423c(u32 a, u32 b, u32 c);
+extern BOOL MBi_ReadyBeaconSendStatus(void);
+extern void MBi_InitSendFixedBeacon(void);
+extern void MBi_SendFixedBeacon(u32 a, u32 b, u32 c);
 extern void MBi_InitSendVolatBeacon(void);
-extern void func_02123f60(u32 a, u32 b, u32 c);
+extern void MBi_SendVolatBeacon(u32 a, u32 b, u32 c);
 extern void MBi_BlockHeaderEnd(u32 a, u32 b, void *c);
 extern u32 MBi_calc_cksum(const u16 *p, int len);
 extern u32 MB_GetSegmentLength(FSFile *file);
 extern BOOL MB_ReadSegment(FSFile *file, u32 *buf, u32 size);
 extern void MBi_ReadSegmentHeader(u32 *seg, u32 lo, u32 hi, int clear);
 extern BOOL MB_RegisterFile(const u8 *key, const MBRomHeader *info);
-extern void func_021235fc(MBSegInfo *dst, const MBRomHeader *rom);
-extern void func_02123444(const MBRomHeader *rom, const u32 *mode, MBRange *out, u32 *limit);
+extern void MBi_MakeDownloadFileInfo(MBSegInfo *dst, const MBRomHeader *rom);
+extern void MBi_SetSegmentInfo(const MBRomHeader *rom, const u32 *mode, MBRange *out, u32 *limit);
 
 // MB parent: clamp [lo, hi) to the segment, then fill/copy it
 void MBi_ReadSegmentHeader(u32 *seg, u32 lo, u32 hi, int clear) {
@@ -248,9 +248,9 @@ BOOL MB_RegisterFile(const u8 *key, const MBRomHeader *info) {
     off = idx * sizeof(MBEnt);
     data_0220001c->ent[idx].key = key;
     e = (MBEnt *)((u8 *)data_0220001c + 0x1788 + off);
-    func_021235fc(&e->seg, info);
+    MBi_MakeDownloadFileInfo(&e->seg, info);
     MI_CpuCopy8(key + 0x1c, e->name, 0x20);
-    if (func_02123368((u8 *)data_0220001c + 0x1d2c + off, e) == 0) {
+    if (MBi_MakeBlockInfoTable((u8 *)data_0220001c + 0x1d2c + off, e) == 0) {
         OS_RestoreInterrupts(irq);
         return 0;
     }
@@ -277,7 +277,7 @@ BOOL MB_RegisterFile(const u8 *key, const MBRomHeader *info) {
 }
 
 // MB parent: build the segment table of a ROM header
-void func_021235fc(MBSegInfo *dst, const MBRomHeader *rom) {
+void MBi_MakeDownloadFileInfo(MBSegInfo *dst, const MBRomHeader *rom) {
     u32 limit = 0x22c0000;
     const u32 *m;
     MBRange *o;
@@ -289,7 +289,7 @@ void func_021235fc(MBSegInfo *dst, const MBRomHeader *rom) {
     o = dst->r;
     m = data_0213a3ec;
     for (i = 0; i < 3; i++) {
-        func_02123444(rom, m, o, &limit);
+        MBi_SetSegmentInfo(rom, m, o, &limit);
         o++;
         m++;
     }
@@ -297,7 +297,7 @@ void func_021235fc(MBSegInfo *dst, const MBRomHeader *rom) {
 }
 
 // MB parent: validate one segment of the ROM header
-void func_02123444(const MBRomHeader *rom, const u32 *mode, MBRange *out, u32 *limit) {
+void MBi_SetSegmentInfo(const MBRomHeader *rom, const u32 *mode, MBRange *out, u32 *limit) {
     switch (*mode) {
     case 0: {
         const MBSeg *p = &rom->arm9;

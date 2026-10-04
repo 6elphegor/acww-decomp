@@ -61,9 +61,9 @@ extern void OS_RestoreInterrupts(u32);
 extern u32 WMi_CheckIdle(void);
 extern u32 WMi_CheckStateEx(int n, ...);
 extern WMArm9Buf *WMi_GetSystemWork(void);
-extern u32 func_0211f01c(u32 id, u16 paramNum, ...);
+extern u32 WMi_SendCommand(u32 id, u16 paramNum, ...);
 extern void WMi_SetCallbackTable(u32 idx, WMCallback cb);
-extern u32 func_0211fb0c(u32 port, WMCallback cb, void *arg);
+extern u32 WM_SetPortCallback(u32 port, WMCallback cb, void *arg);
 extern void DC_InvalidateRange(void *, u32);
 extern void DC_StoreRange(void *, u32);
 extern void MIi_CpuClear16(u32, void *, u32);
@@ -77,19 +77,19 @@ extern u8 data_021fff00[];
 extern u32 MBi_CommChangeParentStateCallbackOnly(u32, u32, u16 *);
 
 void WmDataSharingReceiveData(WMPool *ds, u32 n, u16 *buf);
-void func_02120da4(WMMsg *msg);
+void WmDataSharingReceiveCallback_Child(WMMsg *msg);
 void WmDataSharingReceiveCallback_Parent(WMMsg *msg);
-void func_02120fe8(WMMsg *msg);
-u32 func_021214b4(WMPool *ds);
+void WmDataSharingSetDataCallback(WMMsg *msg);
+u32 WM_EndDataSharing(WMPool *ds);
 u32 WM_StartDataSharing(WMPool *ds, u32 port, u32 aidBitmap, u32 dataLength, BOOL doubleMode);
 
 extern void WmDataSharingReceiveCallback_Parent(WMMsg *msg);
-extern void func_02120fe8(WMMsg *msg);
-extern u32 func_021214b4(WMPool *ds);
+extern void WmDataSharingSetDataCallback(WMMsg *msg);
+extern u32 WM_EndDataSharing(WMPool *ds);
 extern u32 WM_EndKeySharing(WMPool *ds);
 extern u32 WM_StartKeySharing(WMPool *ds, u32 port);
 extern u32 WM_SetEntry(WMCallback cb, u32 arg);
-extern u32 func_021218d0(WMCallback cb, u32 tableNumber, u32 camInterval, u32 frameInterval, u16 beaconInterval);
+extern u32 WM_MeasureChannel(WMCallback cb, u32 tableNumber, u32 camInterval, u32 frameInterval, u16 beaconInterval);
 extern u32 WM_SetLifeTime(WMCallback cb, u32 ccaMode, u32 edThreshold, u32 channel, u16 measureTime);
 extern u32 WM_SetBeaconIndication(WMCallback cb, u32 flag);
 extern u32 WM_SetGameInfo(WMCallback cb, void *userGameInfo, u32 size, u32 ggid, u16 tgid, u8 attr);
@@ -100,12 +100,12 @@ extern u32 WM_StepDataSharing(WMPool *ds, u16 *data, u16 *out);
 extern u32 MBi_CommCallParentError(u32 a, u32 b);
 extern BOOL IsChildAidValid(u32 x);
 extern u32 MBi_calc_nextsendblock(u32 a, u32 b);
-extern void func_02121c60(u32 idx);
+extern void MBi_calc_sendblock(u32 idx);
 extern u32 MBi_CommParentSendData(void);
 extern u32 MBi_CommParentSendBlock(void);
 
 // WM data sharing: child-side MP receive callback
-void func_02120da4(WMMsg *msg) {
+void WmDataSharingReceiveCallback_Child(WMMsg *msg) {
     WMStatus *st;
     WMPool *ds;
     u32 len;
@@ -222,7 +222,7 @@ extern u32 MBi_IsTaskBusy(void *);
 extern void MBi_SetTask(void *, void *, u32, u32);
 extern u32 MBi_BlockHeaderEnd(u32, u32, void *);
 extern void Fatal_Trap(void);
-extern u32 func_02122114(void);
+extern u32 MBi_ReloadCache(void);
 u32 MBi_CommParentSendBlock(void);
-void func_02121c60(u32 idx);
+void MBi_calc_sendblock(u32 idx);
 

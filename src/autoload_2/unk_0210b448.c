@@ -83,7 +83,7 @@ extern void NNSi_SndFaderUpdate(void *);
 extern u32 NNSi_SndFaderIsFinished(void *);
 extern s32 NNSi_SndFaderGet(void *);
 extern void NNSi_SndCaptureStop(void);
-extern void func_0210aadc(void *);
+extern void CaptureThread(void *);
 extern void OS_InitMessageQueue(void *, void *, s32);
 extern void OS_CreateThread(void *, void *, void *, void *, u32, u32);
 extern void OS_WakeupThreadDirect(void *);
@@ -101,7 +101,7 @@ extern BOOL FS_OpenFileFast(void *, FSFileID);
 extern void *NNS_FndAllocFromFrmHeapEx(void *, u32, u32);
 extern void NNS_FndAppendListObject(NNSFndList *, void *);
 extern void InitHeapSection(NNSFndList *);
-extern BOOL func_0210b9e4(Arc *, void *, BOOL);
+extern BOOL NNS_SndArcSetup(Arc *, void *, BOOL);
 extern void *NNS_SndArcGetSeqArcInfo(s32);
 extern u32 NNS_SndArcGetFileAddress(u32);
 extern void SymbolDisposeCallback(void *, u32, void *, u32);
@@ -241,7 +241,7 @@ void NNS_SndHeapLoadState(SndHeap *h, s32 level)
 }
 
 // NNS_SndHeapGetCurrentLevel
-s32 func_0210bd4c(SndHeap *h)
+s32 NNS_SndHeapGetCurrentLevel(SndHeap *h)
 {
     return h->list.num - 1;
 }
@@ -293,13 +293,13 @@ void NNS_SndArcInit(Arc *arc, void *path, void *heap, BOOL loadSymb)
         return;
     }
     arc->fromFile = 1;
-    if (func_0210b9e4(arc, heap, loadSymb)) {
+    if (NNS_SndArcSetup(arc, heap, loadSymb)) {
         data_021fbd68 = arc;
     }
 }
 
 // NNS_SndArcLoadTables (from file)
-BOOL func_0210b9e4(Arc *arc, void *heap, BOOL loadSymb)
+BOOL NNS_SndArcSetup(Arc *arc, void *heap, BOOL loadSymb)
 {
     s32 n;
     if (FS_SeekFile(&arc->file, 0, 0) == 0) {
@@ -380,7 +380,7 @@ Arc *NNS_SndArcGetCurrent(void)
 }
 
 // NNS_SndArcGetSeqArcSeq
-void *func_0210b8a0(u32 seqArc, u32 idx)
+void *NNS_SndArcGetSeqArcSeqParam(u32 seqArc, u32 idx)
 {
     u32 *info = (u32 *)NNS_SndArcGetSeqArcInfo(seqArc);
     u8 *data;
@@ -564,7 +564,7 @@ void *NNS_SndArcGetPlayerInfo(s32 idx)
 }
 
 // NNS_SndArc info record (0x20)
-void *func_0210b5e4(s32 idx)
+void *NNS_SndArcGetStrmPlayerInfo(s32 idx)
 {
     Arc *arc = data_021fbd68;
     u8 *info = arc->info;
@@ -620,7 +620,7 @@ void *NNS_SndArcGetGroupInfo(s32 idx)
 }
 
 // NNS_SndArcGetFileOffset
-u32 func_0210b558(u32 idx)
+u32 NNS_SndArcGetFileOffset(u32 idx)
 {
     Fat *fat = data_021fbd68->fat;
     if (idx >= fat->count) {

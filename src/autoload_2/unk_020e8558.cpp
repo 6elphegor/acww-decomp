@@ -122,8 +122,8 @@ u32 OS_GetArenaLo(u32); // OS_GetArenaLo(id)
 u32 OS_GetArenaHi(u32);
 void *OS_AllocFromArenaLo(u32, u32, u32);
 ThreadHook OS_SetSwitchThreadCallback(ThreadHook);
-void func_0211320c(void *thread, void *v);
-void *func_02113204(void *thread);
+void OS_SetThreadParameter(void *thread, void *v);
+void *OS_GetThreadParameter(void *thread);
 
 extern OSThreadInfo_View data_021fcc2c; // OSi_ThreadInfo
 
@@ -148,9 +148,9 @@ Heap *gRootHeap; // main heap
 // ---- functions, highest address first
 
 extern "C" void Heap_OnThreadSwitch(void *a, void *b) {
-    func_0211320c(a, gCurrentHeap);
-    gCurrentHeap = (Heap *)func_02113204(b);
-    func_0211320c(b, NULL);
+    OS_SetThreadParameter(a, gCurrentHeap);
+    gCurrentHeap = (Heap *)OS_GetThreadParameter(b);
+    OS_SetThreadParameter(b, NULL);
     if (sPrevThreadSwitchCallback != NULL) sPrevThreadSwitchCallback(a, b);
 }
 
@@ -158,7 +158,7 @@ extern "C" Heap *Heap_SetCurrent(Heap *heap);
 
 extern "C" Heap *Heap_SetThreadHeap(void *thread, Heap *heap) {
     if (thread == data_021fcc2c.current) return Heap_SetCurrent(heap);
-    func_0211320c(thread, heap);
+    OS_SetThreadParameter(thread, heap);
 }
 
 extern "C" void Heap_InstallThreadSwitchCallback(void) {

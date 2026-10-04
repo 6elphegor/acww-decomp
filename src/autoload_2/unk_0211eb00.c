@@ -92,7 +92,7 @@ extern void MIi_CpuClear16(u32, void *, u32);
 extern void OS_GetMacAddress(u8 *);
 extern void RTC_Init(void);
 extern int RTC_GetTime(u32 *);
-extern void func_0211fb0c(u16, u32, u32);
+extern void WM_SetPortCallback(u16, u32, u32);
 
 BOOL func_0211f7e4(void);
 u32 WM_GetLinkLevel(void);
@@ -101,22 +101,22 @@ u32 WM_GetDispersionScanPeriod(void);
 WMOtherElements WM_GetOtherElements(WMBssDesc *b);
 u32 WM_GetNextTgid(void);
 u32 WM_Init(void *buf, u16 dmaNo);
-u32 func_0211f1fc(void *buf, u16 dmaNo, u32 size);
-u32 func_0211f188(void);
+u32 WmInitCore(void *buf, u16 dmaNo, u32 size);
+u32 WM_Finish(void);
 void WMi_SetCallbackTable(u32 idx, void (*cb)(WMMsg *));
-u32 func_0211f01c(u32 id, u16 paramNum, ...);
+u32 WMi_SendCommand(u32 id, u16 paramNum, ...);
 WMArm9Buf *WMi_GetSystemWork(void);
 u32 WMi_CheckInitialized(void);
 u32 WMi_CheckIdle(void);
 u32 WMi_CheckStateEx(int n, ...);
-void func_0211eb4c(u32 tag, WMMsg *m, BOOL err);
+void WmReceiveFifo(u32 tag, WMMsg *m, BOOL err);
 void WmClearFifoRecvFlag(void);
 u32 WMi_GetStatusAddress(void);
 void CARD_InitPulledOutCallback(void);
 void CARDi_PulledOutCallback(u32 tag, u32 data, BOOL err);
-void func_0211ea4c(int (*cb)(void));
-void func_0211ea0c(void);
-void func_0211e9a8(u32 data, u32 n);
+void CARD_SetPulledOutCallback(int (*cb)(void));
+void CARD_TerminateForPulledOut(void);
+void CARDi_SendtoPxi(u32 data, u32 n);
 void CARDi_OnFifoRecv(u32 tag, u32 data, BOOL err);
 void CARDi_TaskThread(void);
 BOOL CARDi_Request(CardCommon *c, u32 arg, int retry);
@@ -124,7 +124,7 @@ BOOL CARDi_ReadFromCache(u8 *cache);
 void CARDi_SetRomOp(u32 hi, u32 lo);
 void CARDi_SetCardDma(void);
 void CARDi_OnReadCard(void);
-BOOL CARDi_TryReadCardDma(CardCommon *req);void func_0211eb4c(u32 tag, WMMsg *m, BOOL err) {
+BOOL CARDi_TryReadCardDma(CardCommon *req);void WmReceiveFifo(u32 tag, WMMsg *m, BOOL err) {
     if (err != 0) return;
     DC_InvalidateRange(data_021ff46c->f10, 0x100);
     if (data_021ff46c->f16 == 0) DC_InvalidateRange(data_021ff46c->status, 0x800);
@@ -154,7 +154,7 @@ BOOL CARDi_TryReadCardDma(CardCommon *req);void func_0211eb4c(u32 tag, WMMsg *m,
             DC_InvalidateRange((void *)m->f08, data_021ff46c->status->f46);
         if (m->id == 2 && m->errcode == 0) {
             cb = data_021ff46c->cb18[m->id];
-            func_0211f188();
+            WM_Finish();
             if (cb != 0) cb(m);
             return;
         }

@@ -94,7 +94,7 @@ OSThread *OS_SelectThread(void);
 void OSi_UnlockAllMutex(OSThread *t);
 void OSi_EnqueueTail(OSThread *t, OSMutex *m);
 OSMutex *OSi_RemoveMutexLinkFromQueue(OSMutex **q);
-u32 func_02113f04(void);
+u32 OSi_DetectDeviceType(void);
 BOOL func_02113ed0(void);
 u32 OSi_GetUnusedThreadId(void);
 void OSi_SleepAlarmCallback(OSThread **p);

@@ -102,30 +102,30 @@ extern s32 fflush(FILE *);
 extern u32 data_0213c320;
 extern void _f2d(u32);
 extern void __prep_buffer(FILE *);
-extern void func_02127cb0(u8 *, u32 *);
-extern void func_02127cb4(u8 *, u32 *);
+extern void __convert_to_newlines(u8 *, u32 *);
+extern void __convert_from_newlines(u8 *, u32 *);
 extern s32 fwide(FILE *, s32);
 extern void *memcpy(void *, const void *, u32);
 extern u32 func_0213335c(u32, u32);
 extern s32 __flush_line_buffered_output_files(void);
 extern s32 __load_buffer(FILE *, u32 *, s32);
 /* prototypes */
-u32 func_02127cb8(void *ptr, u32 memb_size, u32 num_memb, FILE *file);
-void func_02127cb4(u8 *buf, u32 *count);
-void func_02127cb0(u8 *buf, u32 *count);
+u32 __fread(void *ptr, u32 memb_size, u32 num_memb, FILE *file);
+void __convert_from_newlines(u8 *buf, u32 *count);
+void __convert_to_newlines(u8 *buf, u32 *count);
 void __prep_buffer(FILE *file);
 s32 __load_buffer(FILE *file, u32 *bytes_loaded, s32 alignment);
 s32 __flush_buffer(FILE *file, u32 *bytes_flushed);
 s32 abs(s32 x);
-s32 func_02127ad0(void);
+s32 __flush_all(void);
 s32 __flush_line_buffered_output_files(void);
 void nan(void);
 void abort(void);
-void func_021279a0(s32 status);
+void exit(s32 status);
 void __exit(s32 status);
-void func_021277fc(char *dst, const char *src, s32 n);
+void STD_CopyLString(char *dst, const char *src, s32 n);
 u32 STD_GetStringLength(const char *s);
-u8 func_021276e0(const u8 *p, u32 len);
+u8 MATH_CalcChecksum8(const u8 *p, u32 len);
 void MATHi_CRC8InitTable(u8 *table, u32 poly);
 void MATHi_CRC8Update(const u8 *table, u8 *crc, const u8 *data, u32 len);
 void MATHi_CRC16InitTableRev(u16 *table, u32 poly);
@@ -140,14 +140,14 @@ u32 MATH_CountPopulation(u32 x);
 void CTRDG_Init(void);
 void CTRDGi_InitModuleInfo(void);
 void CTRDGi_CallbackForInitModuleInfo(u32 tag, u32 data);
-void func_02127118(u32 tag, u32 data);
+void CTRDGi_PulledOutCallback(u32 tag, u32 data);
 void CTRDG_TerminateForPulledOut(void);
 void CTRDGi_InitCommon(void);
 void CTRDGi_ChangeLatestAccessCycle(Cycle *p);
 void CTRDGi_RestoreAccessCycle(Cycle *p);
 
 // fread
-u32 func_02127cb8(void *ptr, u32 memb_size, u32 num_memb, FILE *file) {
+u32 __fread(void *ptr, u32 memb_size, u32 num_memb, FILE *file) {
     u8 *read_ptr = ptr;
     u32 num_bytes;
     u32 bytes_to_go;
@@ -259,11 +259,11 @@ u32 func_02127cb8(void *ptr, u32 memb_size, u32 num_memb, FILE *file) {
 }
 
 // __convert_from_newlines
-void func_02127cb4(u8 *buf, u32 *count) {
+void __convert_from_newlines(u8 *buf, u32 *count) {
 }
 
 // __convert_to_newlines
-void func_02127cb0(u8 *buf, u32 *count) {
+void __convert_to_newlines(u8 *buf, u32 *count) {
 }
 
 // __prep_buffer
@@ -284,7 +284,7 @@ s32 __load_buffer(FILE *file, u32 *bytes_loaded, s32 alignment) {
     if (bytes_loaded) *bytes_loaded = file->buffer_len;
     if (ret != 0) return ret;
     file->position += file->buffer_len;
-    if (!file->mode.binary_io) func_02127cb0(file->buffer, &file->buffer_len);
+    if (!file->mode.binary_io) __convert_to_newlines(file->buffer, &file->buffer_len);
     return 0;
 }
 
@@ -294,7 +294,7 @@ s32 __flush_buffer(FILE *file, u32 *bytes_flushed) {
     u32 n = file->buffer_ptr - file->buffer;
     if (n != 0) {
         file->buffer_len = n;
-        if (!file->mode.binary_io) func_02127cb4(file->buffer, &file->buffer_len);
+        if (!file->mode.binary_io) __convert_from_newlines(file->buffer, &file->buffer_len);
         ret = file->write_proc(file->handle, file->buffer, &file->buffer_len, file->ref_con);
         if (bytes_flushed) *bytes_flushed = file->buffer_len;
         if (ret != 0) return ret;
@@ -311,7 +311,7 @@ s32 abs(s32 x) {
 }
 
 // __flush_all
-s32 func_02127ad0(void) {
+s32 __flush_all(void) {
     s32 result = 0;
     s32 i = 1;
     FILE *file = &data_0213c238[0];
@@ -347,11 +347,11 @@ void nan(void) {
 void abort(void) {
     raise(1);
     data_0220014c = 1;
-    func_021279a0(1);
+    exit(1);
 }
 
 // MSL exit(status)
-void func_021279a0(s32 status) {
+void exit(s32 status) {
     if (data_0220014c == 0) {
         __destroy_global_chain();
         if (data_02200144 != NULL) {
@@ -389,7 +389,7 @@ void __exit(s32 status) {
 }
 
 // strcpy
-char *func_02127838(char *dst, const char *src) {
+char *STD_CopyString(char *dst, const char *src) {
     char *r = dst;
     while (*src != 0) {
         *dst++ = *src++;
@@ -399,7 +399,7 @@ char *func_02127838(char *dst, const char *src) {
 }
 
 // STD_CopyLString-like
-void func_021277fc(char *dst, const char *src, s32 n) {
+void STD_CopyLString(char *dst, const char *src, s32 n) {
     s32 i = 0;
     s32 m = n - 1;
     if (m > 0) {
@@ -422,8 +422,8 @@ u32 STD_GetStringLength(const char *s) {
 }
 
 // STD_ConcatenateString-like (strcat)
-char *func_021277a4(char *dst, const char *src) {
-    func_02127838(dst + STD_GetStringLength(dst), src);
+char *STD_ConcatenateString(char *dst, const char *src) {
+    STD_CopyString(dst + STD_GetStringLength(dst), src);
     return dst;
 }
 
@@ -434,7 +434,7 @@ static inline u32 fold16(u32 s) {
     return (u16)s;
 }
 
-u8 func_021276e0(const u8 *p, u32 len) {
+u8 MATH_CalcChecksum8(const u8 *p, u32 len) {
     u32 k;
     u32 n;
     u32 blk;
@@ -596,7 +596,7 @@ void CTRDG_Init(void) {
     PXI_SetFifoRecvCallback(13, CTRDGi_CallbackForInitModuleInfo);
     CTRDGi_InitModuleInfo();
     PXI_SetFifoRecvCallback(13, 0);
-    PXI_SetFifoRecvCallback(13, func_02127118);
+    PXI_SetFifoRecvCallback(13, CTRDGi_PulledOutCallback);
     data_02200060 = 0;
 }
 
@@ -654,7 +654,7 @@ void CTRDGi_CallbackForInitModuleInfo(u32 tag, u32 data) {
 }
 
 // PXI callback (tag 13): command 0x11
-void func_02127118(u32 tag, u32 data) {
+void CTRDGi_PulledOutCallback(u32 tag, u32 data) {
     if ((data & 0x3f) == 0x11) {
         BOOL r = 0;
         if (data_02200060) r = data_02200060();

@@ -60,7 +60,7 @@ extern WfcMoveMbWork *sWfcMoveMb;
 s32 MB_CommResponseRequest(s32, s32);
 s32 OS_DisableInterrupts();
 void OS_RestoreInterrupts(s32);
-void func_02124a94(s32);
+void MB_DisconnectChild(s32);
 void FS_InitFile(void *);
 s32 FS_OpenFile(void *, s32);
 s32 MB_GetSegmentLength(void *);
@@ -72,7 +72,7 @@ s32 MB_StartParentFromIdle(s32);
 void Fatal_Trap();
 void OS_GetOwnerInfo(void *);
 void MI_CpuCopy8(void *, void *, u32);
-s32 func_021251ac(void *, void *, s32, s32, s32);
+s32 MB_Init(void *, void *, s32, s32, s32);
 void MB_SetParentCommParam(u32, u32);
 void MB_CommSetParentStateCallback(void *);
 void WfcMoveMb_ParentStateCallback();
@@ -87,12 +87,12 @@ s32 WM_Disconnect(void *, s32);
 s32 WM_EndMP(void *);
 s32 WM_EndKeySharing(void *);
 s32 WM_EndParent(void *);
-s32 func_021218d0(void *, s32, s32, s32, s32);
+s32 WM_MeasureChannel(void *, s32, s32, s32, s32);
 s32 WM_GetAllowedChannel();
 void OS_GetMacAddress(u16 *);
 s32 WM_StartKeySharing(void *, s32);
 s32 WM_StartDataSharing(void *, s32, s32, s32, s32);
-s32 func_021206b4(void *, void *, s32, void *, s32, s32, s32, s32, s32, s32, s32);
+s32 WM_StartMPEx(void *, void *, s32, void *, s32, s32, s32, s32, s32, s32, s32);
 s32 WM_StartParent(void *);
 s32 WM_SetWEPKey(void *, s32, void *);
 s32 WM_SetParentParameter(void *, void *);
@@ -309,7 +309,7 @@ extern "C" s32 WfcMoveWh_StateInStartParentMp() {
     WfcMoveWh_ChangeSysState(4);
     {
         WfcMoveWhWork *g = G;
-        r = func_021206b4((void *)WfcMoveWh_StateOutStartParentMp, g->recvBuffer, (u16)g->recvBufferSize, g->sendBuffer, (u16)g->sendBufferSize, 1, 0, 0, 0, 0, 0);
+        r = WM_StartMPEx((void *)WfcMoveWh_StateOutStartParentMp, g->recvBuffer, (u16)g->recvBufferSize, g->sendBuffer, (u16)g->sendBufferSize, 1, 0, 0, 0, 0, 0);
     }
     if (r == 2) {
         return TRUE;
@@ -582,7 +582,7 @@ extern "C" void WfcMoveWh_StateOutMeasureChannel(WMMeasureChannelCallback *a) {
 }
 
 extern "C" s32 WfcMoveWh_StateInMeasureChannel(void *cb, s32 x) {
-    return func_021218d0(cb, 3, 0x11, x, 0x1e);
+    return WM_MeasureChannel(cb, 3, 0x11, x, 0x1e);
 }
 
 extern "C" u16 WfcMoveWh_DecideChannel() {

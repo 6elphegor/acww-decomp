@@ -84,7 +84,7 @@ void *memset(void *, s32, u32);
 u32 rand(void);
 s32 atol(const char *);
 s32 STD_GetStringLength(const char *);
-char *func_02127838(char *, const char *);
+char *STD_CopyString(char *, const char *);
 
 s32 GsGp_SendGetProfile(Ctx0227 **, s32, s32);
 s32 GsGp_OpenSockets(Ctx0227 **, GsGpOperation *);
@@ -873,11 +873,11 @@ s32 GsGp_SetInfoString(Ctx0227 **h, s32 cmd, char *val) {
         }
         ch = c;
         if (ch == 0x4d) {
-            func_02127838(buf, "0");
+            STD_CopyString(buf, "0");
         } else if (ch == 0x46) {
-            func_02127838(buf, "1");
+            STD_CopyString(buf, "1");
         } else {
-            func_02127838(buf, "2");
+            STD_CopyString(buf, "2");
         }
         r = GsGp_QueueProfileUpdate(h, "\\sex\\", buf);
         if (r != 0) return r;

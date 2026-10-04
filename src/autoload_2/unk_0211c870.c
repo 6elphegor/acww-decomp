@@ -181,7 +181,7 @@ void PMi_AppendList(PMCbInfo **head, PMCbInfo *info);
 void PMi_PrependList(PMCbInfo **head, PMCbInfo *info);
 u32 PM_GetLEDPatternAsync(u32 *out, PMCallback cb, void *arg);
 void PMi_DummyCallback(u32 result, void *arg);
-void func_0211cb68(void);
+void PMi_WaitBusy(void);
 BOOL PMi_Lock(void);
 void PMi_SendPxiData(u32 data);
 u32 PMi_SendLEDPatternCommandAsync(u32 a, PMCallback cb, void *arg);

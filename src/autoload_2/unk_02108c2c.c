@@ -21,7 +21,7 @@ extern void FX_DivAsync(s32, s32);    // FX_DivAsync
 extern s32 FX_GetDivResult(void);         // FX_GetDivResult
 static inline s32 FxMul(s32 a, s32 b) { return (s32)(((s64)a * b) >> 12); }
 
-void func_02108c2c(s32 *m, const MatAnmResult *anm)
+void texmtxCalc_flag___3dsmax(s32 *m, const MatAnmResult *anm)
 {
     s32 ss_cos, ss_sin, st_cos, st_sin;
     s32 A, B;

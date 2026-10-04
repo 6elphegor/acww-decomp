@@ -53,7 +53,7 @@ s32 Text_GetLength(void *p, s32 n);
 s32 Text_MeasureWidth(void *p, s32 n);
 void Gfx2d_LoadScreenFile(char *s, u32 a, u32 b);
 s32 CrashScreen_Run(void);
-void func_02114cd8(s32 a, s32 b);
+void OS_SetUserExceptionHandler(s32 a, s32 b);
 u32 OS_DisableInterrupts(void);
 void OS_Halt(void);
 void OS_RestoreInterrupts(u32 v);

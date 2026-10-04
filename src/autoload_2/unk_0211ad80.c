@@ -34,7 +34,7 @@ extern void MI_CpuCopy8(const void *src, void *dest, u32 size); // MI_CpuCopy8
 void DGT_Hash2Reset(SHA1Context *ctx);
 void DGT_Hash2SetSource(SHA1Context *ctx, const void *data, u32 len);
 void DGT_Hash2GetDigest(SHA1Context *ctx, u8 *hash, ...);
-void func_0211aeb4(u8 *out, const u8 *data, u32 dataLen, const u8 *key, s32 keyLen);
+void DGT_Hash2CalcHmac(u8 *out, const u8 *data, u32 dataLen, const u8 *key, s32 keyLen);
 void DGT_Hash1Reset(MD5Context *ctx);
 void DGT_Hash1SetSource(MD5Context *ctx, const void *data, u32 len);
 void DGT_Hash1GetDigest_R(u8 *out, MD5Context *ctx);
@@ -176,7 +176,7 @@ void DGT_Hash2GetDigest(SHA1Context *ctx, u8 *hash, ...) {
 }
 
 // MATH_CalcHMACSHA1
-void func_0211aeb4(u8 *out, const u8 *data, u32 dataLen, const u8 *key, s32 keyLen) {
+void DGT_Hash2CalcHmac(u8 *out, const u8 *data, u32 dataLen, const u8 *key, s32 keyLen) {
     u8 ipad[64];
     u8 opad[64];
     u8 digest[20];

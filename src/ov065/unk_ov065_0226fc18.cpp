@@ -244,7 +244,7 @@ void NasAuth_GetResult(s32 *);
 void NasAuth_Destroy(void);
 void NasAuth_Abort(void);
 s32 NasAuth_Start(void *, void *);
-void func_02127838(char *, const char *);
+void STD_CopyString(char *, const char *);
 void MI_CpuFill8(void *, s32, u32);
 u64 OS_GetTick(void);
 u64 func_02132ef8(u64, u32);

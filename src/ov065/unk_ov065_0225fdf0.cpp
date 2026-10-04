@@ -81,7 +81,7 @@ s32 OS_RestoreInterrupts(s32);
 s32 OS_Sleep(s32);
 s32 MI_CpuCopy8(s32, void *, s32);
 s32 OS_SNPrintf(char *, u32, const char *, ...);
-s32 func_021277fc(char *, s32, s32);
+s32 STD_CopyLString(char *, s32, s32);
 s64 func_02133100(s64, s64);
 
 // same overlay, out of range
@@ -208,7 +208,7 @@ SockHostEnt *Sock_GetHostByName(s32 x) {
     if (ip == 0) {
         return NULL;
     }
-    func_021277fc(sHostentName, x, 0x101);
+    STD_CopyLString(sHostentName, x, 0x101);
     SockHostEnt *h = &sHostent;
     h->hostName = sHostentName;
     h->aliases = NULL;

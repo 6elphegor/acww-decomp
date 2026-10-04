@@ -39,7 +39,7 @@ typedef struct TexSrt {
 } TexSrt;
 #define FXM(a, b) ((s32)(((s64)(a) * (b)) >> 12))
 // g3d texture SRT -> texture matrix (elements 0,1,4,5,12,13): scale + rotation + translation
-void func_02109294(s32 *m, TexSrt *t)
+void texmtxCalc_flag___xsi(s32 *m, TexSrt *t)
 {
     s32 h, w, sn, sy, cs, sx, x, y, e;
     s64 q, d;
@@ -164,7 +164,7 @@ void texmtxCalc_flagTRS___xsi(s32 *o)
 }
 
 // NNS g3d: build the 4x4 texture matrix, variant that forces unit scale / zero rotation / zero translation per flag bits
-void func_02108d44(u32 *a)
+void NNSi_G3dSendTexSRTXsi(u32 *a)
 {
     GeBuf4 s;
     if (a[0] & 8) {
@@ -211,7 +211,7 @@ void func_02108d44(u32 *a)
 }
 
 // ---- file-scope objects (.data 0x0213bef0-0x0213bf10): the texture-matrix calculators by SRT flag bits
-void func_02109294();
+void texmtxCalc_flag___xsi();
 void texmtxCalc_flagS___xsi();
 void texmtxCalc_flagR___xsi();
 void texmtxCalc_flagRS___xsi();
@@ -220,7 +220,7 @@ void texmtxCalc_flagTS___xsi();
 void texmtxCalc_flagTR___xsi();
 void texmtxCalc_flagTRS___xsi();
 void (*data_0213bef0[8])(s32 *, u32 *) = {
-    (void (*)(s32 *, u32 *))func_02109294,
+    (void (*)(s32 *, u32 *))texmtxCalc_flag___xsi,
     (void (*)(s32 *, u32 *))texmtxCalc_flagS___xsi,
     (void (*)(s32 *, u32 *))texmtxCalc_flagR___xsi,
     (void (*)(s32 *, u32 *))texmtxCalc_flagRS___xsi,

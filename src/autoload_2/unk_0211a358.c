@@ -44,7 +44,7 @@ extern void DC_InvalidateRange(u32 addr, u32 len);
 extern void IC_InvalidateRange(u32 addr, u32 len);
 extern void MIi_UncompressBackward(u32 addr);
 extern void Fatal_Trap(void);
-extern void func_0211aeb4(void *digest, const void *data, u32 len, const void *key, u32 keylen);
+extern void DGT_Hash2CalcHmac(void *digest, const void *data, u32 len, const void *key, u32 keylen);
 extern void DGT_Hash1Reset(MD5Context *ctx);
 extern void DGT_Hash1SetSource(MD5Context *ctx, const void *data, u32 len);
 extern void DGT_Hash1GetDigest_R(void *digest, MD5Context *ctx);
@@ -160,7 +160,7 @@ BOOL FSi_CompareDigest(const u8 *expected, const void *data, u32 len) {
     u32 i;
     MI_CpuFill8(digest, 0, 20);
     MI_CpuCopy8(data_0213bffc, key, data_0213c000);
-    func_0211aeb4(digest, data, len, key, data_0213c000);
+    DGT_Hash2CalcHmac(digest, data, len, key, data_0213c000);
     for (i = 0; i < 20; i += 4) {
         if (*(u32 *)(digest + i) != *(u32 *)(expected + i)) break;
     }

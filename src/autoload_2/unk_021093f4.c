@@ -144,7 +144,7 @@ extern void SND_StartTimer(u32, u32, u32, u32);
 extern void SND_SetTrackAllocatableChannel();
 extern void SND_SetTrackPan();
 extern void SND_SetTrackPitch();
-extern void func_02116b54();
+extern void SND_SetTrackVolume();
 extern void SND_SetPlayerGlobalVariable();
 extern void SND_SetPlayerLocalVariable();
 extern void SND_SetPlayerChannelPriority();
@@ -160,9 +160,9 @@ extern u32 SND_WaitForCommandProc(u32);
 extern u32 SND_FlushCommand(u32);
 extern u32 SND_RecvCommandReply(u32);
 extern u32 SND_ReadTrackInfo();
-extern u32 func_0211777c();
-extern s32 func_02117844(s32);
-extern s32 func_02117884();
+extern u32 SND_ReadPlayerInfo();
+extern s32 SND_GetPlayerGlobalVariable(s32);
+extern s32 SND_GetPlayerLocalVariable();
 extern u32 SND_GetPlayerStatus(void);
 extern s32 SND_CalcChannelVolume(s32);
 extern void SND_SetMasterVolume(u32);
@@ -181,7 +181,7 @@ Seq *AllocSeqPlayer(s32);
 void NNS_SndHandleReleaseSeq(Handle *);
 void StrmCallback(Strm *, s32);
 void ShutdownStrm(Strm *);
-void func_0210a630(Strm *);
+void ForceStopStrm(Strm *);
 void NNS_SndStrmStop(Strm *);
 void NNS_SndFreeAlarm(s32);
 s32 NNS_SndAllocAlarm(void);
@@ -192,7 +192,7 @@ void NNSi_SndPlayerMain(void);
 void NNSi_SndPlayerInit(void);
 void NNSi_SndInitResourceMgr(void);
 u32 BeginSleep(void);
-u32 NNS_SndReadDriverChannelInfo(u32, u32);
+u32 NNSi_SndReadDriverPlayerInfo(u32, u32);
 u32 NNSi_SndReadDriverTrackInfo(u32, u32, u32);
 void EndSleep(void);
 
@@ -250,7 +250,7 @@ void NNS_SndSetMasterVolume(u32 a)
 }
 
 // NNS_SndUpdateDriverInfo-like (double-buffered SND_UpdateDriverInfo)
-BOOL func_021094f8(void)
+BOOL NNS_SndUpdateDriverInfo(void)
 {
     if (data_021f89d4 == 0) {
         if (SND_IsFinishedCommandTag(data_021f89d8) == 0) {
@@ -276,8 +276,8 @@ BOOL func_021094f8(void)
     }
 }
 
-// read channel info from the current driver info buffer
-u32 NNS_SndReadDriverChannelInfo(u32 a, u32 b)
+// read player info (SND_ReadPlayerInfo) from the current driver info buffer
+u32 NNSi_SndReadDriverPlayerInfo(u32 a, u32 b)
 {
     SndBuf *p;
     if (data_021f89d0 < 0) {
@@ -288,7 +288,7 @@ u32 NNS_SndReadDriverChannelInfo(u32 a, u32 b)
     if (p == 0) {
         return 0;
     }
-    return func_0211777c(p, a, b);
+    return SND_ReadPlayerInfo(p, a, b);
 }
 
 // read track/player info from the current driver info buffer

@@ -14,7 +14,7 @@ extern u16 data_021fcf1c;   // OSi_UseTick
 extern s32 data_021fcf20;   // OSi_NeedResetTimer
 extern volatile u64 data_021fcf24;   // OSi_TickCounter
 
-u32 func_02113fd8(void);                               // OS_GetConsoleType
+u32 OS_GetConsoleType(void);                               // OS_GetConsoleType
 void OSi_EnterTimerCallback(s32 n, void *callback, void *arg);  // OS_SetIrqFunction-like (OSi_Entry)
 void OS_SetIrqFunction(u32 mask, void *func);              // OS_SetIrqFunction
 void OS_EnableIrqMask(u32 mask);                          // OS_EnableIrqMask

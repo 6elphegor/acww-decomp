@@ -14,7 +14,7 @@ extern u16 data_021fcf1c;   // OSi_UseTick
 extern s32 data_021fcf20;   // OSi_NeedResetTimer
 extern volatile u64 data_021fcf24;   // OSi_TickCounter
 
-u32 func_02113fd8(void);                               // OS_GetConsoleType
+u32 OS_GetConsoleType(void);                               // OS_GetConsoleType
 void OSi_EnterTimerCallback(s32 n, void *callback, void *arg);  // OS_SetIrqFunction-like (OSi_Entry)
 void OS_SetIrqFunction(u32 mask, void *func);              // OS_SetIrqFunction
 void OS_EnableIrqMask(u32 mask);                          // OS_EnableIrqMask
@@ -32,7 +32,7 @@ void OS_InitException(void) {
     } else {
         data_021fce94 = 0;
     }
-    if (data_021fce94 == 0 || (func_02113fd8() & 0x40000000) == 0) {
+    if (data_021fce94 == 0 || (OS_GetConsoleType() & 0x40000000) == 0) {
         u32 *vec = (u32 *)0x027e3000;
         *(void **)0x027ffd9c = (void *)OSi_ExceptionHandler;
         vec[0xfdc / 4] = (u32)OSi_ExceptionHandler;
@@ -41,7 +41,7 @@ void OS_InitException(void) {
 }
 
 // OS_SetUserExceptionHandler
-void func_02114cd8(void *handler, void *arg) {
+void OS_SetUserExceptionHandler(void *handler, void *arg) {
     data_021fce8c = handler;
     data_021fce90 = arg;
 }

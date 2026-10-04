@@ -173,17 +173,17 @@ extern u32 PXI_IsCallbackReady(u32 tag, u32 proc);u32 SND_GetPlayerStatus(void) 
     return data_021fea60->f4;
 }
 
-s32 func_02117884(s32 a, s32 b) {
+s32 SND_GetPlayerLocalVariable(s32 a, s32 b) {
     DC_InvalidateRange(&data_021fea60->t[a].v[b], 2);
     return data_021fea60->t[a].v[b];
 }
 
-s32 func_02117844(s32 idx) {
+s32 SND_GetPlayerGlobalVariable(s32 idx) {
     DC_InvalidateRange(&data_021fea60->u[idx], 2);
     return data_021fea60->u[idx];
 }
 
-u32 func_0211777c(u8 *w, s32 ch, ChOut *out) {
+u32 SND_ReadPlayerInfo(u8 *w, s32 ch, ChOut *out) {
     ChRec *p;
     s32 i;
     if (ch < 0 || ch > 15) {

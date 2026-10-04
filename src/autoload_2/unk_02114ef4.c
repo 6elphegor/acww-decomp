@@ -234,12 +234,12 @@ void OSi_ArrangeTimer(void) {
 }
 
 // OS_SetAlarmTag
-void func_02114f74(OSAlarm *alarm, u32 tag) {
+void OS_SetAlarmTag(OSAlarm *alarm, u32 tag) {
     alarm->tag = tag;
 }
 
 // OS_CancelAlarms
-void func_02114ef4(u32 tag) {
+void OS_CancelAlarms(u32 tag) {
     u32 enabled;
     OSAlarm *alarm;
     OSAlarm *next;

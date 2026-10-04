@@ -284,7 +284,7 @@ extern Ctx070 *sGsSrvListSortList;
 extern u8 data_0213a410[];
 s32 STD_GetStringLength(const char *s);
 void *memcpy(void *d, const void *s, u32 n);
-char *func_02127838(char *d, const char *s);
+char *STD_CopyString(char *d, const char *s);
 s32 OS_SPrintf(char *buf, const char *fmt, ...);
 s32 strncmp(const char *a, const char *b, u32 n);
 s32 strcmp(const char *a, const char *b);
@@ -618,9 +618,9 @@ void GsSrvList_Init(Ctx070 *c, char *a, char *b, char *d, s32 e, s32 f, void *g,
         c->state = 1;
         GsSrvList_InitServers(c);
         GsStrPool_Get(c);
-        func_02127838(c->queryForGame, a);
-        func_02127838(c->queryFromGame, b);
-        func_02127838(c->secretKey, d);
+        STD_CopyString(c->queryForGame, a);
+        STD_CopyString(c->queryFromGame, b);
+        STD_CopyString(c->secretKey, d);
         c->listCallback = (void (*)(Ctx070 *, s32, u32, u32))g;
         c->maploopCallback = 0;
         c->callbackParam = h;
@@ -689,7 +689,7 @@ s32 GsSrvList_ConnectMaster(Ctx070 *c) {
     } l;
     u32 h = GsSrvList_HashGameName(c->queryForGame, 0x14);
     if (sGsSrvListMasterOverride != NULL) {
-        func_02127838(l.host, sGsSrvListMasterOverride);
+        STD_CopyString(l.host, sGsSrvListMasterOverride);
     } else {
         OS_SPrintf(l.host, "%s.ms%d.gs.nintendowifi.net", c->queryForGame, h);
     }

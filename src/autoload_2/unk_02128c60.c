@@ -40,7 +40,7 @@ extern u32 data_02200650[];               // signal handler table
 int OS_TryLockMutex(OSMutex *);
 void OS_LockMutex(OSMutex *);
 void OS_UnlockMutex(OSMutex *);
-void func_021279a0(int);
+void exit(int);
 const char *parse_format(const char *format_string, scan_format *format);
 u32 __strtoul(int base, int max_width, ReadProc read, void *arg, int *num_chars, int *negative, int *overflow); // __strtoul
 u64 __strtoull(int base, int max_width, ReadProc read, void *arg, int *num_chars, int *negative, int *overflow); // __strtoull
@@ -115,7 +115,7 @@ int raise(int sig) {
     if ((u32)handler != 1) data_02200650[sig - 1] = 0;
     if (--data_02200274[7] == 0) OS_UnlockMutex(&data_02200324);
     if ((u32)handler == 1 || ((u32)handler == 0 && sig == 1)) return 0;
-    if (handler == 0) func_021279a0(0);
+    if (handler == 0) exit(0);
     handler(sig);
     return 0;
 }

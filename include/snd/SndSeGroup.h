@@ -28,7 +28,7 @@ struct Group {
     /* 0x36 */ u8 numVoices;
 };
 
-// sequence info record (func_0210b8a0)
+// sequence info record (NNS_SndArcGetSeqArcSeqParam)
 struct InfoB {
     /* 0x0 */ u8 pad[4];
     /* 0x4 */ u8 unk_04;

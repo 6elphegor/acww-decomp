@@ -51,7 +51,7 @@ void Snd_StartSeqArcEx(void *p, u32 a, s32 b, s32 c, u32 d, u32 e);
 void Snd_StartSeqArcDefault(u16 a, u16 b);
 void NNS_SndPlayerSetTrackPan(void *p, u32 a, u32 b);
 void NNS_SndPlayerSetTrackPitch(void *p, u32 a, u32 b);
-void func_0210a148(void *p, u32 a, u32 b);
+void NNS_SndPlayerSetTrackVolume(void *p, u32 a, u32 b);
 void NNS_SndPlayerSetVolume(void *p, u32 a);
 void NNS_SndPlayerSetPlayerVolume(u32 a, u32 b);
 void NNS_SndPlayerStopSeq(void *p);
@@ -71,9 +71,9 @@ void SndMgr_SetPlayerVolumes(SndMgr *self, s32 a, s32 b);
 void SndMgr_ApplyPan(SndMgr *self, u32 flag);
 void SndMgr_StopSe(SndMgr *self, s32 a, u32 b);
 void NNS_SndPlayerMoveVolume(void *p, s32 v, u32 w);
-void func_0210e6b8(void *p, s32 v, u32 w);
-void func_0210e704(void *p, s32 v);
-void func_0210e730(void *p, u32 a, u32 b);
+void NNS_SndArcStrmMoveVolume(void *p, s32 v, u32 w);
+void NNS_SndArcStrmStop(void *p, s32 v);
+void NNS_SndArcStrmStart(void *p, u32 a, u32 b);
 s32 func_0210e5fc(void *p);
 void NNS_SndArcLoadBank(void *a, u32 b);
 u32 Snd_GetHeap(void);
@@ -205,7 +205,7 @@ extern "C" void SndMgr_PlayBgm(SndMgr *self, u32 k) {
     switch (k) {
         case 0:
         case 1:
-            func_0210e730(&self->strmHandle, k, 0);
+            NNS_SndArcStrmStart(&self->strmHandle, k, 0);
             if (k != 0) {
                 return;
             }
@@ -232,7 +232,7 @@ extern "C" void SndMgr_StopBgm(SndMgr *self, s32 v) {
         if (self->scene->id == 51) {
             v += 1;
         }
-        func_0210e704(&self->strmHandle, v);
+        NNS_SndArcStrmStop(&self->strmHandle, v);
         return;
     }
     SndMgr_StopBgmSeq(self);
@@ -247,7 +247,7 @@ extern "C" void SndMgr_MoveBgmVolume(SndMgr *self, s32 v, u32 w) {
     }
     SndHandle *h = self->strmHandle;
     if (isSet(h)) {
-        func_0210e6b8(&self->strmHandle, v, w);
+        NNS_SndArcStrmMoveVolume(&self->strmHandle, v, w);
         return;
     }
     NNS_SndPlayerMoveVolume(&self->bgmHandle, v, w);
@@ -293,7 +293,7 @@ extern "C" void SndMgr_FadeOutBgmTracks(SndMgr *self, s32 k) {
             return;
     }
     if (k >= 6) {
-        func_0210a148(&self->bgmHandle, self->trackMask, 0);
+        NNS_SndPlayerSetTrackVolume(&self->bgmHandle, self->trackMask, 0);
         return;
     }
     SndRamp_Start(&self->fadeRamp, 0, 15);
@@ -436,7 +436,7 @@ extern "C" void SndMgr_SetBgmTrackVariant(SndMgr *self, u32 st) {
     if (flag == 0) {
         return;
     }
-    func_0210a148(&self->bgmHandle, (u16)~mask, 0);
+    NNS_SndPlayerSetTrackVolume(&self->bgmHandle, (u16)~mask, 0);
     self->variantDirty = 0;
 }
 
@@ -457,7 +457,7 @@ extern "C" void SndMgr_UpdateTrackRamps(SndMgr *self) {
     s32 t = o->id;
     if (t >= 40 && t < 50) {
         if (self->fadeRamp.frames != 0) {
-            func_0210a148(&self->bgmHandle, self->trackMask, SndRamp_Step(&self->fadeRamp));
+            NNS_SndPlayerSetTrackVolume(&self->bgmHandle, self->trackMask, SndRamp_Step(&self->fadeRamp));
         }
     }
     if (t != 1 && t != 3) {
@@ -475,8 +475,8 @@ extern "C" void SndMgr_UpdateTrackRamps(SndMgr *self) {
         return;
     }
     s32 v = SndRamp_Step(&self->fadeRamp);
-    func_0210a148(&self->bgmHandle, self->trackMask, v);
-    func_0210a148(&self->bgmHandle, self->crossTrackMask, 127 - v);
+    NNS_SndPlayerSetTrackVolume(&self->bgmHandle, self->trackMask, v);
+    NNS_SndPlayerSetTrackVolume(&self->bgmHandle, self->crossTrackMask, 127 - v);
 }
 
 extern "C" void SndMgr_UpdateVolumeRamps(SndMgr *self) {

@@ -144,7 +144,7 @@ extern void SND_StartTimer(u32, u32, u32, u32);
 extern void SND_SetTrackAllocatableChannel();
 extern void SND_SetTrackPan();
 extern void SND_SetTrackPitch();
-extern void func_02116b54();
+extern void SND_SetTrackVolume();
 extern void SND_SetPlayerGlobalVariable();
 extern void SND_SetPlayerLocalVariable();
 extern void SND_SetPlayerChannelPriority();
@@ -160,9 +160,9 @@ extern u32 SND_WaitForCommandProc(u32);
 extern u32 SND_FlushCommand(u32);
 extern u32 SND_RecvCommandReply(u32);
 extern u32 SND_ReadTrackInfo();
-extern u32 func_0211777c();
-extern s32 func_02117844(s32);
-extern s32 func_02117884();
+extern u32 SND_ReadPlayerInfo();
+extern s32 SND_GetPlayerGlobalVariable(s32);
+extern s32 SND_GetPlayerLocalVariable();
 extern u32 SND_GetPlayerStatus(void);
 extern s32 SND_CalcChannelVolume(s32);
 extern void SND_SetMasterVolume(u32);
@@ -181,7 +181,7 @@ Seq *AllocSeqPlayer(s32);
 void NNS_SndHandleReleaseSeq(Handle *);
 void StrmCallback(Strm *, s32);
 void ShutdownStrm(Strm *);
-void func_0210a630(Strm *);
+void ForceStopStrm(Strm *);
 void NNS_SndStrmStop(Strm *);
 void NNS_SndFreeAlarm(s32);
 s32 NNS_SndAllocAlarm(void);
@@ -192,7 +192,7 @@ void NNSi_SndPlayerMain(void);
 void NNSi_SndPlayerInit(void);
 void NNSi_SndInitResourceMgr(void);
 u32 BeginSleep(void);
-u32 NNS_SndReadDriverChannelInfo(u32, u32);
+u32 NNSi_SndReadDriverPlayerInfo(u32, u32);
 u32 NNSi_SndReadDriverTrackInfo(u32, u32, u32);
 void EndSleep(void);
 
@@ -271,7 +271,7 @@ void NNS_SndStrmStop(Strm *st)
     if (!st->f.setup) {
         return;
     }
-    func_0210a630(st);
+    ForceStopStrm(st);
 }
 
 // NNS_SndStrmSetPlayPosition-like: per-channel pan/vol update from the position table
@@ -293,8 +293,8 @@ void NNS_SndStrmSetVolume(Strm *st, u32 timer)
     } while (i < st->chCount);
 }
 
-// NNS_SndStrmSetChannelVolume (ch, vol)
-void func_0210a6b0(Strm *st, s32 ch, u32 v)
+// NNS_SndStrmSetChannelPan (ch, pan)
+void NNS_SndStrmSetChannelPan(Strm *st, s32 ch, u32 v)
 {
     if (ch > st->chCount - 1) {
         return;
@@ -303,7 +303,7 @@ void func_0210a6b0(Strm *st, s32 ch, u32 v)
 }
 
 // NNSi_SndStrmFree: stop timer, remove PM callbacks, drop from list
-void func_0210a630(Strm *st)
+void ForceStopStrm(Strm *st)
 {
     u32 t;
     if (st->f.started) {

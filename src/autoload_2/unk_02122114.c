@@ -47,7 +47,7 @@ typedef struct { u32 a[3]; u16 b[4]; } WDst;
 BOOL IsAbleToLoad(u32 idx, u32 addr, u32 size);
 BOOL MBi_IsAbleToRecv(u32 idx, u32 addr, u32 size);
 void MBi_CommChangeParentStateCallbackOnly(u32 a, u32 b, void *c);
-void func_0212244c(u8 *msg, u32 aid);
+void MBi_CommParentRecvDataPerChild(u8 *msg, u32 aid);
 typedef struct { u8 id; u16 aid; u16 pad; } WMsg;
 typedef struct { u32 f0, f4, f8, fc; } WJob;
 typedef struct { u8 pad[0x14]; u32 f14; } WObj;
@@ -97,7 +97,7 @@ static inline void wsave(u32 idx, u8 *buf, u32 aid) {
 
 #define PEER(x) ((u8 *)data_0220001c + (x) * 0x5d4)
 // (per-aid message handler state machine; message type in buf[0], aid 1..15)
-void func_0212244c(u8 *msg, u32 aid) {
+void MBi_CommParentRecvDataPerChild(u8 *msg, u32 aid) {
     u8 buf[56];
     u8 x;
     u8 type;
@@ -209,7 +209,7 @@ void func_0212244c(u8 *msg, u32 aid) {
         break;
     }
 }
-// (clear per-peer fields, then run func_0212244c for aids 1..15)
+// (clear per-peer fields, then run MBi_CommParentRecvDataPerChild for aids 1..15)
 void MBi_CommParentRecvData(void *arg) {
     u16 i;
     u8 *w;
@@ -219,7 +219,7 @@ void MBi_CommParentRecvData(void *arg) {
     }
     for (i = 1; i <= 15; i++) {
         u16 *p = (u16 *)WM_ReadMPData(arg, i);
-        if (p != 0 && *p != 0xffff && *p != 0) func_0212244c((u8 *)p, i);
+        if (p != 0 && *p != 0xffff && *p != 0) MBi_CommParentRecvDataPerChild((u8 *)p, i);
     }
 }
 
@@ -267,7 +267,7 @@ u32 MBi_CommParentSendDLFileInfo(void) {
     return MBi_BlockHeaderEnd(0xea, mask, data_0220001c);
 }
 // (job completion: run transfer step, job state = 2 on success, else OS_Terminate)
-void func_02122114(WArg *arg) {
+void MBi_ReloadCache(WArg *arg) {
     u8 buf[72];
     WJob *job;
     WObj *obj;

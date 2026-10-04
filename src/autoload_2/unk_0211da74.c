@@ -1,6 +1,6 @@
 // mwcc-flags: -nothumb -O4,p
 #include "nitro/os_rtc.h"
-// NitroSDK CARD (card_common.c): CARDi_IdentifyBackupCore (func_0211da74), autoload_2 0x0211da74-0x0211dc4c. ARM, mwcc 1.2/base -O4,p.
+// NitroSDK CARD (card_common.c): CARDi_IdentifyBackupCore (CARDi_IdentifyBackupCore), autoload_2 0x0211da74-0x0211dc4c. ARM, mwcc 1.2/base -O4,p.
 typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
@@ -123,7 +123,7 @@ void CARDi_InitCommon(void);
 void CARDi_UnlockResource(u32, u32);
 void CARDi_LockResource(u32, u32);
 void CARDi_SetTask(void (*)(CARDCommon *));
-void func_0211da74(s32);
+void CARDi_IdentifyBackupCore(s32);
 void CARDi_RequestStreamCommandCore(CARDCommon *);
 void *CARDi_GetRomAccessor(void);
 BOOL CARD_WaitRomAsync(void);
@@ -138,7 +138,7 @@ typedef struct {
 } Spec;
 typedef struct { u32 result; s32 type; u32 id, src, dst, len; Spec spec; } Arg;
 // CARDi_IdentifyBackupCore (SDK text shape: nested spec struct, switch with default: goto invalid_type first)
-void func_0211da74(s32 type) {
+void CARDi_IdentifyBackupCore(s32 type) {
     Arg *const p = (Arg *)data_021fec00.cmd;
     MI_CpuFill8(&p->spec, 0, sizeof(p->spec));
     p->type = type;

@@ -98,7 +98,7 @@ void TP_RequestAutoSamplingStopAsync(void) {
     }
 }
 
-void func_0211ba68(u32 unused, u32 data) {
+void TP_RequestSetStabilityAsync(u32 unused, u32 data) {
     u32 e = OS_DisableInterrupts();
     u32 ok = PXI_SendWordByFifo(6, data | 0x03000300, 0) >= 0;
     if (!ok) {

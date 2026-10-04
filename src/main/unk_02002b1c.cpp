@@ -105,7 +105,7 @@ void GX_SetBankForTexPltt(u32 a);
 }
 
 extern "C" {
-void func_02114b00(void);
+void OS_EnableDTCM(void);
 }
 
 extern "C" {

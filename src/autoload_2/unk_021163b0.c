@@ -16,7 +16,7 @@ void PushCommand_impl(u32 cmd, u32 a, u32 b, u32 c, u32 d);
 void SNDi_SetPlayerParam(u32 a, u32 b, u32 c, u32 d);
 void SNDi_SetTrackParam(u32 a, u32 b, u32 c, u32 d, u32 e);
 
-u32 func_021163e0(const u8 *startp, const u8 *nextp, u32 remainSize, u16 *offp);
+u32 SearchLZ(const u8 *startp, const u8 *nextp, u32 remainSize, u16 *offp);
 
 typedef struct {
     u8 *destp;
@@ -38,7 +38,7 @@ void SND_SetPlayerLocalVariable(u32 a, u32 b, u32 c) { PushCommand_impl(10, a, b
 
 void SND_SetPlayerGlobalVariable(u32 a, u32 b) { PushCommand_impl(11, a, b, 0, 0); }
 
-void func_02116b54(u32 a, u32 b, u32 c) { SNDi_SetTrackParam(a, b, 10, c, 2); }
+void SND_SetTrackVolume(u32 a, u32 b, u32 c) { SNDi_SetTrackParam(a, b, 10, c, 2); }
 
 void SND_SetTrackPitch(u32 a, u32 b, u32 c) { SNDi_SetTrackParam(a, b, 12, c, 2); }
 
@@ -115,7 +115,7 @@ void MI_Init(void) {
 }
 
 // MI_CompressLZ
-u32 func_021164ec(const u8 *srcp, u32 size, u8 *dstp) {
+u32 MI_CompressLZ(const u8 *srcp, u32 size, u8 *dstp) {
     const u8 *src0 = srcp;
     u32 LZDstCount;
     u8 LZCompFlags;
@@ -136,7 +136,7 @@ u32 func_021164ec(const u8 *srcp, u32 size, u8 *dstp) {
         for (i = 0; i < 8; i++) {
             LZCompFlags <<= 1;
             if (size > 0) {
-                lastLength = func_021163e0(src0, srcp, size, &lastOffset);
+                lastLength = SearchLZ(src0, srcp, size, &lastOffset);
                 if (lastLength != 0) {
                     LZCompFlags |= 1;
                     if (LZDstCount + 2 >= dstMax) return 0;
@@ -163,7 +163,7 @@ u32 func_021164ec(const u8 *srcp, u32 size, u8 *dstp) {
     return LZDstCount;
 }
 
-u32 func_021163e0(const u8 *startp, const u8 *nextp, u32 remainSize, u16 *offp) {
+u32 SearchLZ(const u8 *startp, const u8 *nextp, u32 remainSize, u16 *offp) {
     const u8 *searchp;
     const u8 *headp;
     const u8 *searchHeadp;
@@ -204,7 +204,7 @@ done:
 }
 
 // MI_InitUncompContextLZ
-void func_021163b0(UncompContextLZ *ctx, u8 *dest, const u32 *src) {
+void MI_InitUncompContextLZ(UncompContextLZ *ctx, u8 *dest, const u32 *src) {
     ctx->destp = dest;
     ctx->destCount = (int)(*src >> 8);
     ctx->b0b = 0;

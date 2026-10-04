@@ -84,7 +84,7 @@ extern void NNSi_SndFaderUpdate(void *);
 extern u32 NNSi_SndFaderIsFinished(void *);
 extern s32 NNSi_SndFaderGet(void *);
 extern void NNSi_SndCaptureStop(void);
-extern void func_0210aadc(void *);
+extern void CaptureThread(void *);
 extern void OS_InitMessageQueue(void *, void *, s32);
 extern void OS_CreateThread(void *, void *, void *, void *, u32, u32);
 extern void OS_WakeupThreadDirect(void *);
@@ -102,7 +102,7 @@ extern BOOL FS_OpenFileFast(void *, FSFileID);
 extern void *NNS_FndAllocFromFrmHeapEx(void *, u32, u32);
 extern void NNS_FndAppendListObject(NNSFndList *, void *);
 extern void InitHeapSection(NNSFndList *);
-extern BOOL func_0210b9e4(Arc *, void *, BOOL);
+extern BOOL NNS_SndArcSetup(Arc *, void *, BOOL);
 extern void *NNS_SndArcGetSeqArcInfo(s32);
 extern u32 NNS_SndArcGetFileAddress(u32);
 extern void SymbolDisposeCallback(void *, u32, void *, u32);
@@ -162,14 +162,14 @@ void NNS_SndCaptureStopEffect(void)
 }
 
 // NNS_SndCaptureInit(threadPrio)
-void func_0210b280(u32 prio)
+void NNS_SndCaptureCreateThread(u32 prio)
 {
     if (data_027e038c != 0) {
         return;
     }
     data_027e0390 = 0;
     OS_InitMessageQueue(data_021fb774, data_021fb794, 8);
-    OS_CreateThread(data_021fb8a8, (void *)func_0210aadc, 0, sCaptureThreadStack + 128, 1024, prio);
+    OS_CreateThread(data_021fb8a8, (void *)CaptureThread, 0, sCaptureThreadStack + 128, 1024, prio);
     data_027e038c = 1;
     OS_WakeupThreadDirect(data_021fb8a8);
 }

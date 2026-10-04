@@ -94,7 +94,7 @@ OSThread *OS_SelectThread(void);
 void OSi_UnlockAllMutex(OSThread *t);
 void OSi_EnqueueTail(OSThread *t, OSMutex *m);
 OSMutex *OSi_RemoveMutexLinkFromQueue(OSMutex **q);
-u32 func_02113f04(void);
+u32 OSi_DetectDeviceType(void);
 BOOL func_02113ed0(void);
 u32 OSi_GetUnusedThreadId(void);
 void OSi_SleepAlarmCallback(OSThread **p);
@@ -237,9 +237,9 @@ BOOL OS_ReadMessage(OSMessageQueue *mq, void **msg, s32 flags) {
 }
 
 // OS_GetConsoleType
-u32 func_02113fd8(void) {
+u32 OS_GetConsoleType(void) {
     if (data_0213bff0 == 0xffffffff) {
-        u32 base = func_02113f04();
+        u32 base = OSi_DetectDeviceType();
         u32 v;
         if (OS_IsRunOnEmulator() != 0) v = base | 0x10000000;
         else if (func_02113ed0() != 0) v = base | 0x40000000;

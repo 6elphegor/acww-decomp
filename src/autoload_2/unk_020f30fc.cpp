@@ -125,17 +125,17 @@ void Snd_StopHandle(void *p, u32 a);
 void Snd_InitHandle(void *p);
 void Snd_StartSeqArc(u16 a, u16 b, void *out);
 void NNS_FndInitList(void *list, u16 offset);
-void func_02109fd0(void *p, u32 a, s32 b);
+void NNS_SndPlayerWriteVariable(void *p, u32 a, s32 b);
 void NNS_SndPlayerSetTrackPan(void *p, u32 a, s32 b);
 void NNS_SndHandleReleaseSeq(void *p);
-SeqInfo *func_0210b8a0(u32 a, u32 b);
+SeqInfo *NNS_SndArcGetSeqArcSeqParam(u32 a, u32 b);
 s32 Snd_CalcListenerDistance(VecFx32 *p, s32 m);
 s32 Snd_DistanceToVolume(s32 x);
 s32 Snd_CalcPan(VecFx32 *p, s32 m);
 Pan4500 *Snd_GetVolumeCurve(void);
 void Snd_CalcDepthVolumes(s32 z, s32 *a, s32 *b);
-void func_0210a1e8(void *p, s32 v);
-void func_0210a148(void *p, u32 a, s32 b);
+void NNS_SndPlayerSetPlayerPriority(void *p, s32 v);
+void NNS_SndPlayerSetTrackVolume(void *p, u32 a, s32 b);
 }
 
 // the list of positional sources in use (set by SndPosNode::init; bss 0x021f5bf8, this file's only bss object: the 4-byte object
@@ -438,7 +438,7 @@ void SndPosNode::playOnce(u32 v, VecFx32 *p) {
 }
 
 void SndPosNode::setPitch(s32 v) {
-    return func_02109fd0(&h, 0, v);
+    return NNS_SndPlayerWriteVariable(&h, 0, v);
 }
 
 void SndPosNode::setBgmPan(VecFx32 *p) {
@@ -564,7 +564,7 @@ void SndEnvChannel::request(u32 nv) {
 
 // volume of a sound id at distance volume b (sequence info byte +4 is the base volume, 100 = neutral), clamped to 0..127
 extern "C" s32 Snd_CalcSeVolume(s32 a, s32 b) {
-    SeqInfo *inf = func_0210b8a0(a / 1000, a % 1000);
+    SeqInfo *inf = NNS_SndArcGetSeqArcSeqParam(a / 1000, a % 1000);
     if (inf == NULL) Fatal_Trap();
     s32 v = b + (inf->unk_04 - 100);
     if (v > 0) {
@@ -640,7 +640,7 @@ void SndEnvChannel::update(VecFx32 *pos) {
             }
         }
         if (notNull(h.p)) {
-            if (v != 2103) func_0210a1e8(&h, Snd_CalcSeVolume(v, t));
+            if (v != 2103) NNS_SndPlayerSetPlayerPriority(&h, Snd_CalcSeVolume(v, t));
             switch (v) {
             case 2059:
                 w = Snd_CalcPan(pos, 1);
@@ -677,8 +677,8 @@ void SndEnvChannel::update(VecFx32 *pos) {
             }
             if (v == 1230 || v == 2058) {
                 Snd_CalcDepthVolumes(pos->z, &a, &b);
-                func_0210a148(&h, 3, a);
-                func_0210a148(&h, 12, b);
+                NNS_SndPlayerSetTrackVolume(&h, 3, a);
+                NNS_SndPlayerSetTrackVolume(&h, 12, b);
             } else {
                 NNS_SndPlayerSetVolume(&h, t);
                 NNS_SndPlayerSetTrackPan(&h, gSndPanTrackMask, w);

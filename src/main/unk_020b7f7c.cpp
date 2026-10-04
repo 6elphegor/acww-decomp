@@ -4,7 +4,7 @@
 extern "C" {
 void NNS_GfdInitFrmTexVramManager(u32 a, u32 b);
 void NNS_GfdInitFrmPlttVramManager(u32 a, u32 b);
-u32 func_0210f460(void);
+u32 GX_GetSizeOfTexPltt(void);
 u32 GX_GetBankForTex(void);
 void Fatal_Trap(void);
 void OS_VSNPrintf(char *buf, u32 size, const char *fmt, char *ap);
@@ -165,7 +165,7 @@ extern "C" void TexVram_InitManagers(void) {
     data_0213bc10 = TexVram_Alloc;
     data_0213bc18 = PlttVram_Alloc;
     sPlttVramUsed = 0;
-    sPlttVramSize = func_0210f460();
+    sPlttVramSize = GX_GetSizeOfTexPltt();
     sTexVramTexelBLo = 0;
     sTexVramIdxBLo = 0;
     sTexVramIdxALo = 0;

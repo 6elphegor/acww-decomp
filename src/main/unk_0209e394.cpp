@@ -272,7 +272,7 @@ void *AxBbsNotice_GetDigest(void *p);
 }
 
 extern "C" {
-void func_0211a748(void *a, void *b, s32 c, s32 d, s32 e);
+void DGT_Hash1CalcHmac(void *a, void *b, s32 c, s32 d, s32 e);
 }
 
 extern "C" {

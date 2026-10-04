@@ -45,7 +45,7 @@ void TP_GetCalibratedPoint(TPData *dst, const TPData *src); // TP_GetCalibratedP
 void TP_Init(void); // TP_Init
 BOOL TP_GetUserInfo(TPCalibrateParam *p); // TP_GetUserInfo
 void TP_SetCalibrateParam(const TPCalibrateParam *p); // TP_SetCalibrateParam
-void func_0211ba68(u32, u32);
+void TP_RequestSetStabilityAsync(u32, u32);
 void TP_WaitBusy(u32); // TP_WaitBusy
 u32 TP_CheckError(u32); // TP_CheckError
 void TP_RequestAutoSamplingStartAsync(u32, u32, TPData *, u32); // TP_RequestAutoSamplingStartAsync

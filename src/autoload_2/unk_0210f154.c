@@ -60,8 +60,8 @@ u32 GX_DisableBankForSubOBJ(void);
 u32 GX_DisableBankForSubBGExtPltt(void);
 u32 GX_DisableBankForSubOBJExtPltt(void);
 u32 GX_GetBankForTex(void);
-u32 func_0210f478(u32 mask);
-u32 func_0210f460(void);
+u32 getBankSize_(u32 mask);
+u32 GX_GetSizeOfTexPltt(void);
 void GX_InitGXState(void);
 void GX_Init(void);
 BOOL GX_HBlankIntr(BOOL enable);
@@ -200,7 +200,7 @@ u32 GX_DisableBankForSubOBJExtPltt(void) {
 u32 GX_GetBankForTex(void) { return data_021fcbd8[4]; }
 
 // GXi_GetBankSize (total size in bytes of a VRAM bank mask)
-u32 func_0210f478(u32 mask) {
+u32 getBankSize_(u32 mask) {
     u32 size = 0;
     if (mask & 1) size += 0x20000;
     if (mask & 2) size += 0x20000;
@@ -215,7 +215,7 @@ u32 func_0210f478(u32 mask) {
 }
 
 // GX_GetSizeOfTexPltt
-u32 func_0210f460(void) { return func_0210f478(data_021fcbd8[5]); }
+u32 GX_GetSizeOfTexPltt(void) { return getBankSize_(data_021fcbd8[5]); }
 
 // GXi_InitVRamState (clears the bank state and VRAMCNT_A..I; called by GX_Init)
 void GX_InitGXState(void) {

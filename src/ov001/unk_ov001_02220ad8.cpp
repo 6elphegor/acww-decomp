@@ -15,7 +15,7 @@ void MI_CpuCopy8(void *, void *, u32);
 s32 MB_CommResponseRequest(s32, s32);
 s32 MB_CommIsBootable(s32);
 s32 MB_CommGetChildUser(s32);
-void func_02124a94(s32);
+void MB_DisconnectChild(s32);
 void MB_End();
 void Fatal_Trap();
 void FS_InitFile(void *);
@@ -26,7 +26,7 @@ s32 MB_RegisterFile(void *, void *);
 void FS_CloseFile(void *);
 s32 MB_StartParentFromIdle(s32);
 void OS_GetOwnerInfo(void *);
-s32 func_021251ac(void *, void *, s32, s32, s32);
+s32 MB_Init(void *, void *, s32, s32, s32);
 void MB_SetParentCommParam(u32, u32);
 void MB_CommSetParentStateCallback(void *);
 void WfcMoveWh_SetWork(void *);
@@ -76,7 +76,7 @@ void WfcMoveMb_Init(s32 a, s32 b) {
     zp->v[6] = 0;
     *(WfcMoveMbStateCopy *)sWfcMoveMb = *zp;
     sWfcMoveMb->mbWork = (u8 *)sWfcMoveMb + 0x10040;
-    if (func_021251ac(sWfcMoveMb->mbWork, &d, a, b, 2) != 0) Fatal_Trap();
+    if (MB_Init(sWfcMoveMb->mbWork, &d, a, b, 2) != 0) Fatal_Trap();
     MB_SetParentCommParam(0x100, 1);
     MB_CommSetParentStateCallback((void *)WfcMoveMb_ParentStateCallback);
     WfcMoveMb_SetState(1);
@@ -127,7 +127,7 @@ void WfcMoveMb_AcceptChild(u32 n) {
     sWfcMoveMb->childMasks[4] &= m;
     sWfcMoveMb->childMasks[5] &= m;
     OS_RestoreInterrupts(e);
-    func_02124a94(n);
+    MB_DisconnectChild(n);
 }
 
 void WfcMoveMb_KickChild(u32 n) {
@@ -141,7 +141,7 @@ void WfcMoveMb_KickChild(u32 n) {
         sWfcMoveMb->childMasks[4] &= m;
         sWfcMoveMb->childMasks[5] &= m;
         OS_RestoreInterrupts(e);
-        func_02124a94(n);
+        MB_DisconnectChild(n);
     } else {
         s32 e = OS_DisableInterrupts();
         u32 m = ~(1 << n);
@@ -163,7 +163,7 @@ void WfcMoveMb_StartDownload(u32 id)
         sWfcMoveMb->childMasks[4] &= k;
         sWfcMoveMb->childMasks[5] &= k;
         OS_RestoreInterrupts(r);
-        func_02124a94(id);
+        MB_DisconnectChild(id);
     } else {
         u32 r = OS_DisableInterrupts();
         u32 one = 1;
@@ -193,7 +193,7 @@ void WfcMoveMb_StartDownloadAll()
                     sWfcMoveMb->childMasks[4] &= k;
                     sWfcMoveMb->childMasks[5] &= k;
                     OS_RestoreInterrupts(r);
-                    func_02124a94(i);
+                    MB_DisconnectChild(i);
                 } else {
                     WfcMoveMb_StartDownload(i);
                 }
@@ -233,7 +233,7 @@ void WfcMoveMb_StartRebootAll()
                 sWfcMoveMb->childMasks[4] &= k;
                 sWfcMoveMb->childMasks[5] &= k;
                 OS_RestoreInterrupts(r);
-                func_02124a94(i);
+                MB_DisconnectChild(i);
             }
         }
     }

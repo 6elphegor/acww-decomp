@@ -19,7 +19,7 @@ extern "C" {
 void Fatal_Trap(void);
 void NNS_SndHandleInit(void *p);
 void NNS_SndPlayerStopSeq(void *p, u32 x);
-void func_0210cebc(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
+void NNS_SndArcPlayerStartSeqArcEx(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
 void NNS_SndHandleReleaseSeq(void *p);
 BOOL SndSeVoice_IsHeld(Ent *e);
 void SndSeVoice_Stop(Ent *e, s32 a);
@@ -32,11 +32,11 @@ void SndSeVoice_Start(Ent *e, u32 a, u32 b, s32 c, s16 d);
 void SndSeGroup_SetFlag(Group *g, s32 bit, s32 on);
 void SndSeVoice_Init(Ent *e);
 void SndSeGroup_EvalListener(PlayCtx *c);
-InfoB *func_0210b8a0(u32 a, u32 b);
+InfoB *NNS_SndArcGetSeqArcSeqParam(u32 a, u32 b);
 void NNS_SndPlayerSetVolume(void *p, s32 v);
-void func_0210a1e8(void *p, s32 v);
+void NNS_SndPlayerSetPlayerPriority(void *p, s32 v);
 void NNS_SndPlayerSetTrackPan(void *p, u32 a, s32 v);
-void func_0210a148(void *p, u32 a, u32 b);
+void NNS_SndPlayerSetTrackVolume(void *p, u32 a, u32 b);
 void NNS_SndPlayerSetTrackPitch(void *p, u32 a, s32 b);
 extern Player gSndSeSystem;
 void *NNS_FndGetPrevListObject(void *list, void *obj);
@@ -110,13 +110,13 @@ extern "C" void *SndList_GetLast(void **p) {
 extern "C" void SndSeGroup_StartVoice(Group *g, s32 i, s32 v) {
     Ent *e = &g->voices[i];
     if (g->numVoices == 0) Fatal_Trap();
-    func_0210cebc(e, -1, -1, v, e->seqArc, e->index);
+    NNS_SndArcPlayerStartSeqArcEx(e, -1, -1, v, e->seqArc, e->index);
 }
 
 extern "C" void SndSeGroup_ApplyVoiceParams(Group *g, s32 i) {
     Ent *e = &g->voices[i];
     if (g->numVoices == 0) Fatal_Trap();
-    func_0210a148(e, gSndPanTrackMask, e->trackVolume);
+    NNS_SndPlayerSetTrackVolume(e, gSndPanTrackMask, e->trackVolume);
     NNS_SndPlayerSetTrackPitch(e, gSndPanTrackMask, e->trackPitch);
 }
 
@@ -297,7 +297,7 @@ extern "C" void SndSeGroup_Update(Group *g, void *src) {
                 }
                 if (ctx.volume > 0) {
                     s32 base = ctx.baseVolume;
-                    InfoB *inf = func_0210b8a0(e->seqArc, e->index);
+                    InfoB *inf = NNS_SndArcGetSeqArcSeqParam(e->seqArc, e->index);
                     if (inf == NULL) Fatal_Trap();
                     vol = base + (inf->unk_04 - 64);
                     if (vol > 0) {
@@ -324,7 +324,7 @@ extern "C" void SndSeGroup_Update(Group *g, void *src) {
                 }
                 if (vol == -1) {
                     s32 base = ctx.baseVolume;
-                    InfoB *inf = func_0210b8a0(e->seqArc, e->index);
+                    InfoB *inf = NNS_SndArcGetSeqArcSeqParam(e->seqArc, e->index);
                     if (inf == NULL) Fatal_Trap();
                     vol = base + (inf->unk_04 - 64);
                     if (vol > 0) {
@@ -335,7 +335,7 @@ extern "C" void SndSeGroup_Update(Group *g, void *src) {
                 }
                 if (!inited) Fatal_Trap();
                 NNS_SndPlayerSetVolume(e, ctx.volume);
-                func_0210a1e8(e, vol);
+                NNS_SndPlayerSetPlayerPriority(e, vol);
                 NNS_SndPlayerSetTrackPan(e, gSndPanTrackMask, ctx.pan);
                 g->applyParamsFn(g, i, vol);
             }

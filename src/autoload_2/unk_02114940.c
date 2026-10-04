@@ -6,7 +6,7 @@ typedef int s32;
 extern s32 data_021fce88;
 extern s32 data_021fce84; // OSi_ArenaInitialized
 
-u32 func_02113fd8(void); // OS_GetConsoleType
+u32 OS_GetConsoleType(void); // OS_GetConsoleType
 void OS_SetProtectionRegion1(u32 v);
 void OS_SetProtectionRegion2(u32 v);
 
@@ -59,7 +59,7 @@ void OS_InitArena(void) {
 void OS_InitArenaEx(void) {
     OS_SetArenaHi(2, OS_GetInitArenaHi(2));
     OS_SetArenaLo(2, OS_GetInitArenaLo(2));
-    if (data_021fce88 != 0 && (func_02113fd8() & 3) != 1) return;
+    if (data_021fce88 != 0 && (OS_GetConsoleType() & 3) != 1) return;
     OS_SetProtectionRegion1(0x0200002b);
     OS_SetProtectionRegion2(0x023e0021);
 }

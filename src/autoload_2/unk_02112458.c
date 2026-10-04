@@ -16,7 +16,7 @@ s32 OSi_DoTryLockByWord(u32 lockID, void *lockp, void (*ctrl)(void), s32 disable
 s32 OSi_DoUnlockByWord(u32 lockID, void *lockp, void (*ctrl)(void), s32 disable_irq);
 s32 OS_LockByWord(u32 lockID, void *lockp, void (*ctrl)(void));
 s32 OS_UnlockByWord(u32 lockID, void *lockp, void (*ctrl)(void));
-void func_02112458(void);
+void OSi_WaitByLoop(void);
 void OSi_FreeCardBus(void);
 void OSi_AllocateCardBus(void);
 void OSi_FreeCartridgeBus(void);
@@ -32,7 +32,7 @@ void OS_InitLock(void) {
     *(volatile u32 *)0x027ffff0 = 0;
     OS_LockByWord(0x7e, (void *)0x027ffff0, 0);
     while (lock[3] != 0) {
-        func_02112458();
+        OSi_WaitByLoop();
     }
     *(volatile u32 *)0x027fffb0 = 0xffffffff;
     *(volatile u32 *)0x027fffb4 = 0xffff0000;
@@ -50,7 +50,7 @@ void OS_InitLock(void) {
 s32 OSi_DoLockByWord(u32 lockID, void *lockp, void (*ctrl)(void), s32 disable_irq) {
     s32 lastLockFlag;
     while ((lastLockFlag = OSi_DoTryLockByWord(lockID, lockp, ctrl, disable_irq)) > 0) {
-        func_02112458();
+        OSi_WaitByLoop();
     }
     return lastLockFlag;
 }
@@ -159,7 +159,7 @@ u16 OS_ReadOwnerOfLockWord(void *p) {
 }
 
 // OS_SpinWait(0x1000) wrapper
-void func_02112458(void) {
+void OSi_WaitByLoop(void) {
     OS_SpinWait(0x1000);
 }
 

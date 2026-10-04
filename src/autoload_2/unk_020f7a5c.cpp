@@ -20,7 +20,7 @@
 #include "snd/SndBgmHd.h"
 
 
-// gSndBgmHandle: BGM info handle, first word = pointer to Hd, queried with func_0210a024(&handle, selector, &out)
+// gSndBgmHandle: BGM info handle, first word = pointer to Hd, queried with NNS_SndPlayerReadVariable(&handle, selector, &out)
 struct Hr {
     Hd *p;
 };
@@ -83,25 +83,25 @@ extern "C" {
 extern Mg gSndMgr;
 extern Hr gSndBgmHandle;
 s32 FX_Div(s32 a, s32 b);
-void func_0210a024(void *p, u32 sel, void *out);
-void func_0210a008(u32 sel, void *out);
+void NNS_SndPlayerReadVariable(void *p, u32 sel, void *out);
+void NNS_SndPlayerReadGlobalVariable(u32 sel, void *out);
 void NNS_SndArcPlayerStartSeq(void *p, u32 v);
 void Snd_StopHandle(void *p, u32 v);
 void Snd_InitHandle(void *p);
 void NNS_SndHandleReleaseSeq(void *p);
 void NNS_SndPlayerSetVolume(void *p, s32 v);
 void NNS_SndPlayerSetTrackPan(void *p, u32 a, s32 b);
-void func_0210a0b8(void *p, s32 v);
-void func_02109fd0(void *p, u32 a, s32 b);
-void func_02109fb4(u32 a, s32 b);
+void NNS_SndPlayerSetTempoRatio(void *p, s32 v);
+void NNS_SndPlayerWriteVariable(void *p, u32 a, s32 b);
+void NNS_SndPlayerWriteGlobalVariable(u32 a, s32 b);
 s32 Snd_CalcListenerDistance(u32 a, u32 b);
 s32 Snd_DistanceToVolume(s32 d);
 s32 Snd_CalcPan(u32 a, u32 b);
 u32 SND_RecvCommandReply(u32 a);
-void func_021094f8(void);
+void NNS_SndUpdateDriverInfo(void);
 void SND_FlushCommand(u32 a);
-s32 func_02109f80(void *p, void *out);
-s32 func_02109f4c(void *p, u32 a, void *out);
+s32 NNS_SndPlayerReadDriverPlayerInfo(void *p, void *out);
+s32 NNS_SndPlayerReadDriverTrackInfo(void *p, u32 a, void *out);
 void BgmSyncSnd_ReadHeader(Rb *r);
 void BgmSyncSnd_ReadVars(Rb *r);
 void BgmSyncSnd_SelectStep(Rb *r);
@@ -149,7 +149,7 @@ extern "C" void BgmSyncSnd_SetState(Rb *r, u32 mode) {
 
 extern "C" u32 BgmSyncSnd_ReadBeat(void) {
     s16 v;
-    func_0210a008(2, &v);
+    NNS_SndPlayerReadGlobalVariable(2, &v);
     data_021f5c30 = v;
     return (u8)v;
 }
@@ -184,7 +184,7 @@ extern "C" s32 BgmSyncSnd_Update(Rb *r, void *arg) {
         break;
     case 2: {
         s16 v;
-        func_0210a008(2, &v);
+        NNS_SndPlayerReadGlobalVariable(2, &v);
         data_021f5c30 = v;
         if (v == r->c11) BgmSyncSnd_SetState(r, 1);
         break;
@@ -212,18 +212,18 @@ extern "C" void BgmSyncSnd_SelectStep(Rb *r) {
         }
     }
     r->c13 = 15 - j;
-    func_02109fd0(r, 12, r->c13);
+    NNS_SndPlayerWriteVariable(r, 12, r->c13);
 }
 
 extern "C" void BgmSyncSnd_ReadVars(Rb *r) {
     s16 a[6];
     if (r->c9 <= 0) BgmSyncSnd_ReadHeader(r);
-    func_0210a008(2, &a[0]);
-    func_0210a008(1, &a[1]);
-    func_0210a024(r, 8, &a[2]);
-    func_0210a024(r, 7, &a[3]);
-    func_0210a024(r, 12, &a[4]);
-    func_0210a024(r, 6, &a[5]);
+    NNS_SndPlayerReadGlobalVariable(2, &a[0]);
+    NNS_SndPlayerReadGlobalVariable(1, &a[1]);
+    NNS_SndPlayerReadVariable(r, 8, &a[2]);
+    NNS_SndPlayerReadVariable(r, 7, &a[3]);
+    NNS_SndPlayerReadVariable(r, 12, &a[4]);
+    NNS_SndPlayerReadVariable(r, 6, &a[5]);
     data_021f5c30 = a[0];
     data_021f5c34 = a[1];
     r->c11 = a[2];
@@ -242,12 +242,12 @@ extern "C" void BgmSyncSnd_ReadHeader(Rb *r) {
     } q;
     s32 i;
     if (!nz(r->w0)) return;
-    func_0210a024(r, 0, &q.s0);
-    func_0210a024(r, 1, &q.v[0]);
-    func_0210a024(r, 2, &q.v[1]);
-    func_0210a024(r, 3, &q.v[2]);
-    func_0210a024(r, 4, &q.v[3]);
-    func_0210a024(r, 5, &q.s5);
+    NNS_SndPlayerReadVariable(r, 0, &q.s0);
+    NNS_SndPlayerReadVariable(r, 1, &q.v[0]);
+    NNS_SndPlayerReadVariable(r, 2, &q.v[1]);
+    NNS_SndPlayerReadVariable(r, 3, &q.v[2]);
+    NNS_SndPlayerReadVariable(r, 4, &q.v[3]);
+    NNS_SndPlayerReadVariable(r, 5, &q.s5);
     r->c9 = q.s0;
     r->c10 = q.s5;
     if (q.v[0] < 0) return;
@@ -267,7 +267,7 @@ extern "C" void BgmSyncSnd_UpdatePosition(Rb *r, void *arg) {
     s32 x = FX_Div(gSndMgr.q->s16v << 20, 0x78000) >> 12;
     if (!nz((u32)gSndMgr.h)) return;
     if (gSndMgr.h->id == 240) x >>= 1;
-    func_0210a0b8(r, x);
+    NNS_SndPlayerSetTempoRatio(r, x);
 }
 
 extern "C" s32 BgmSyncSnd_CalcPhase(Rb *r) {
@@ -297,8 +297,8 @@ extern "C" s32 BgmSyncSnd_CalcPhase(Rb *r) {
             if (rv > 0x40000) rv -= 0x40000;
         }
     } else {
-    func_0210a024(r, 7, &a);
-    func_0210a024(r, 12, &b);
+    NNS_SndPlayerReadVariable(r, 7, &a);
+    NNS_SndPlayerReadVariable(r, 12, &b);
     d = data_021f5c30 - a;
     if (d < 0) d += 16;
     switch (r->c10) {
@@ -351,8 +351,8 @@ BgmTempoTracker::BgmTempoTracker() {
     c12 = -1;
     h14 = 120;
     c16 = -1;
-    func_02109fb4(2, -1);
-    func_02109fb4(1, -1);
+    NNS_SndPlayerWriteGlobalVariable(2, -1);
+    NNS_SndPlayerWriteGlobalVariable(1, -1);
 }
 
 BgmTempoTracker::~BgmTempoTracker() {
@@ -376,9 +376,9 @@ void BgmTempoTracker::setMode(u8 v) {
 void BgmTempoTracker::update() {
     s16 a[3];
     if (!nz((u32)gSndMgr.h)) NNS_SndArcPlayerStartSeq(&gSndBgmHandle, 248);
-    func_0210a008(1, &a[0]);
-    func_0210a008(2, &a[1]);
-    func_0210a024(&gSndBgmHandle, 6, &a[2]);
+    NNS_SndPlayerReadGlobalVariable(1, &a[0]);
+    NNS_SndPlayerReadGlobalVariable(2, &a[1]);
+    NNS_SndPlayerReadVariable(&gSndBgmHandle, 6, &a[2]);
     c10 = (a[1] != c16);
     c16 = a[1];
     h18 = a[2];
@@ -391,9 +391,9 @@ void BgmTempoTracker::syncTempo() {
     u16 buf[8];
     while (SND_RecvCommandReply(0) != 0)
         ;
-    func_021094f8();
+    NNS_SndUpdateDriverInfo();
     SND_FlushCommand(0);
-    if (func_02109f80(h, buf) == 0) return;
+    if (NNS_SndPlayerReadDriverPlayerInfo(h, buf) == 0) return;
     h14 = buf[3];
     w4 = FX_Div(0x258000, (s32)h14 << 12);
 }
@@ -436,7 +436,7 @@ void BgmBeatSync::update() {
         Hr *h = &gSndBgmHandle;
         s32 id;
         if (!nz((u32)h->p)) return;
-        func_0210a024(h, 4, &v);
+        NNS_SndPlayerReadVariable(h, 4, &v);
         sub.seqVar4 = v;
         sub.beatFrame = 0;
         sub.loopFrame20 = 0;
@@ -487,7 +487,7 @@ void BgmBeatSync::pickAnim() {
     u8 buf[28];
     sub.trackAnim = -1;
     for (i = 2; i <= 13; i++) {
-        if (func_02109f4c(h, i, buf) == 0) continue;
+        if (NNS_SndPlayerReadDriverTrackInfo(h, i, buf) == 0) continue;
         if (i == 10) continue;
         if (buf[9] == 0) continue;
         switch (i) {
@@ -525,10 +525,10 @@ void BgmBeatSync::readTempo() {
     Hr *const h = &gSndBgmHandle;
     s16 v[4];
     if (!nz((u32)h->p)) return;
-    func_0210a024(h, 1, &v[0]);
-    func_0210a024(h, 0, &v[1]);
-    func_0210a024(h, 2, &v[2]);
-    func_0210a024(h, 3, &v[3]);
+    NNS_SndPlayerReadVariable(h, 1, &v[0]);
+    NNS_SndPlayerReadVariable(h, 0, &v[1]);
+    NNS_SndPlayerReadVariable(h, 2, &v[2]);
+    NNS_SndPlayerReadVariable(h, 3, &v[3]);
     sub.seqVar0 = v[1];
     sub.seqVar2 = v[2];
     sub.seqVar3 = v[3];

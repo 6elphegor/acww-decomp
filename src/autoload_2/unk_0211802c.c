@@ -80,7 +80,7 @@ int FSi_OpenFileDirectCommand(FSFile *file);
 int FSi_OpenFileFastCommand(FSFile *file);
 int FSi_GetPathCommand(FSFile *file);
 int FSi_FindPathCommand(FSFile *file);
-int func_02118894(FSFile *file);
+int FSi_ReadDirCommand(FSFile *file);
 int FSi_SeekDirCommand(FSFile *file);
 int FSi_WriteFileCommand(FSFile *file);
 int FSi_WriteFileCommand(FSFile *file);
@@ -194,7 +194,7 @@ int (*const data_0213a388[9])(FSFile *) = {
     FSi_ReadFileCommand,
     FSi_WriteFileCommand,
     FSi_SeekDirCommand,
-    func_02118894,
+    FSi_ReadDirCommand,
     FSi_FindPathCommand,
     FSi_GetPathCommand,
     FSi_OpenFileFastCommand,

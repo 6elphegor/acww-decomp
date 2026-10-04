@@ -164,13 +164,13 @@ extern "C" {
 extern Mg gSndMgr;
 extern s16 data_021f5c30;
 extern s16 data_021f5c34;
-void func_0210a024(void *p, u32 sel, void *out);
-void func_0210a008(u32 sel, void *out);
+void NNS_SndPlayerReadVariable(void *p, u32 sel, void *out);
+void NNS_SndPlayerReadGlobalVariable(u32 sel, void *out);
 void NNS_SndArcPlayerStartSeq(void *p, u32 v);
 void Snd_StopHandle(void *p, u32 v);
 void Snd_InitHandle(void *p);
 void NNS_SndHandleReleaseSeq(void *p);
-void func_02109fd0(void *p, u32 a, s32 b);
+void NNS_SndPlayerWriteVariable(void *p, u32 a, s32 b);
 void BgmSyncSnd_ReadHeader(Rb *r);
 void BgmSyncSnd_ReadVars(Rb *r);
 void BgmSyncSnd_SelectStep(Rb *r);

@@ -181,7 +181,7 @@ void PMi_AppendList(PMCbInfo **head, PMCbInfo *info);
 void PMi_PrependList(PMCbInfo **head, PMCbInfo *info);
 u32 PM_GetLEDPatternAsync(u32 *out, PMCallback cb, void *arg);
 void PMi_DummyCallback(u32 result, void *arg);
-void func_0211cb68(void);
+void PMi_WaitBusy(void);
 BOOL PMi_Lock(void);
 void PMi_SendPxiData(u32 data);
 u32 PMi_SendLEDPatternCommandAsync(u32 a, PMCallback cb, void *arg);
@@ -205,7 +205,7 @@ u32 PMi_ReadRegister(u32 type, u16 *out) {
     if (r != 0) {
         return r;
     }
-    func_0211cb68();
+    PMi_WaitBusy();
     return result;
 }
 
@@ -239,7 +239,7 @@ u32 PMi_SetLED(u32 a) {
     if (r != 0) {
         return r;
     }
-    func_0211cb68();
+    PMi_WaitBusy();
     return result;
 }
 
@@ -281,7 +281,7 @@ u32 PM_SetBackLight(u32 a, u32 b) {
     if (r != 0) {
         return r;
     }
-    func_0211cb68();
+    PMi_WaitBusy();
     return result;
 }
 
@@ -297,12 +297,12 @@ u32 PM_ForceToPowerOff(void) {
     if (r != 0) {
         return r;
     }
-    func_0211cb68();
+    PMi_WaitBusy();
     return result;
 }
 
-// PM_GetBattery? (PMIC register 1 bit 0)
-u32 func_0211c618(u32 *p) {
+// PM_GetBattery (PMIC register 1 bit 0: battery low)
+u32 PM_GetBattery(u32 *p) {
     u16 v;
     u32 r = PMi_ReadRegister(1, &v);
     if (r != 0) {
@@ -400,7 +400,7 @@ u32 PMi_SendLEDPatternCommand(u32 a) {
     if (r != 0) {
         return r;
     }
-    func_0211cb68();
+    PMi_WaitBusy();
     return result;
 }
 
@@ -423,7 +423,7 @@ u32 PM_GetLEDPattern(u32 *out) {
     if (r != 0) {
         return r;
     }
-    func_0211cb68();
+    PMi_WaitBusy();
     return result;
 }
 

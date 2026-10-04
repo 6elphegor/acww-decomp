@@ -58,9 +58,9 @@ extern void NNS_SndPlayerSetSeqNo();
 extern u32 NNS_SndPlayerCreateHeap();
 extern void NNS_SndPlayerSetAllocatableChannel();
 extern void NNS_SndPlayerSetPlayableSeqCount();
-extern u32 func_0210ddf0();
+extern u32 PopCommandBuffer();
 extern void FreeCommandBuffer();
-extern void func_0210da28();
+extern void RequestNextStrm();
 extern u32 _u32_div_f();
 
 extern u8 data_021fbd6c[0x3c];
@@ -97,7 +97,7 @@ typedef struct BankRec { u32 fileId; u16 wa[4]; } BankRec;
 
 
 // stream/wave decode thread entry (never returns)
-void func_0210d10c(u8 *obj)
+void StrmThreadProc(u8 *obj)
 {
     u8 *queue;
     u8 *mutex = obj + 0x4cc;
@@ -108,7 +108,7 @@ void func_0210d10c(u8 *obj)
         OS_SleepThread(queue);
         for (;;) {
             OS_LockMutex(mutex);
-            item = func_0210ddf0(list);
+            item = PopCommandBuffer(list);
             if (item == 0) {
                 OS_UnlockMutex(mutex);
                 break;
@@ -175,7 +175,7 @@ u32 NNS_SndArcPlayerStartSeqArc(u32 handle, u32 arcNo, u32 idx)
 }
 
 // NNS_SndArcPlayerStartSeqArcEx(handle, player, bank, prio, seqArc, idx)
-u32 func_0210cebc(u32 handle, s32 player, s32 bank, s32 prio, u32 arcNo, u32 idx)
+u32 NNS_SndArcPlayerStartSeqArcEx(u32 handle, s32 player, s32 bank, s32 prio, u32 arcNo, u32 idx)
 {
     SeqRec *rec = (SeqRec *)NNS_SndArcGetSeqArcInfo(arcNo);
     u8 *data;
@@ -259,7 +259,7 @@ BOOL NNS_SndArcLoadGroup(u32 a, u32 b)
 }
 
 // NNS_SndArcLoadSeqArc(id, heap): TRUE on success
-BOOL func_0210cc84(u32 id, u32 heap)
+BOOL NNS_SndArcLoadSeqArc(u32 id, u32 heap)
 {
     return NNSi_SndArcLoadSeqArc(id, 255, heap, 1, 0) == 0;
 }

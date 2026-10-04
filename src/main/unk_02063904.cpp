@@ -203,11 +203,11 @@ void DC_FlushAll();
 }
 
 extern "C" {
-void func_021163b0(void *st, void *dst, void *src);
+void MI_InitUncompContextLZ(void *st, void *dst, void *src);
 }
 
 extern "C" {
-s32 func_021162b0(void *st, void *p, s32 n);
+s32 MI_ReadUncompLZ8(void *st, void *p, s32 n);
 }
 
 extern "C" {

@@ -62,7 +62,7 @@ BOOL SndSeSystem_Setup(Player *o, u32 a, u32 b, Bytes4 s);
 void SndSeSystem_Shutdown(Player *p, s32 v);
 void NNS_SndHeapSaveState(void *p);
 void NNS_SndHeapLoadState(void *a, u32 b);
-void *func_0210bd4c(void *a);
+void *NNS_SndHeapGetCurrentLevel(void *a);
 void NNS_SndArcLoadWaveArc(s32 a, void *b);
 void NNS_SndPlayerCreateHeap(s32 a, void *b, u32 c);
 void NNS_SndPlayerSetPlayerVolume(s32 a, s32 b);
@@ -633,7 +633,7 @@ void SndScene10::load() {
     void *t = Snd_GetHeap();
     NNS_SndArcLoadWaveArc(9, t);
     NNS_SndHeapSaveState(t);
-    f1d = (u8)(u32)func_0210bd4c(t);
+    f1d = (u8)(u32)NNS_SndHeapGetCurrentLevel(t);
     SndMgr_LoadBank(&gSndMgr, 144);
     createPlayer12Heaps();
     NNS_SndHeapSaveState(t);

@@ -15,7 +15,7 @@ void OS_UnlockCartridge(u32 id);       // OS_UnlockCartridge
 
 // device detection for OS_GetConsoleType (os_emulator.c): cartridge header magic "NINTENDO" at 0x08000000 read under
 // the cartridge lock -> 0x01000000 (cartridge) / 0x02000000 (card). Loops until the lock was obtained (as original).
-u32 func_02113f04(void) {
+u32 OSi_DetectDeviceType(void) {
     u32 result;
     BOOL done;
     u32 id;

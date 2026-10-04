@@ -19,12 +19,12 @@ extern "C" {
 void Fatal_Trap(void); // Thumb, in main: fatal stop
 void *NNS_SndHeapCreate(u32 a, u32 b);
 void Snd_InitSystem(u32 a, u32 b, u32 c, u32 d);
-u32 func_0211d6e0(void);
-void func_0210b280(u32 a);
+u32 CARD_GetThreadPriority(void);
+void NNS_SndCaptureCreateThread(u32 a);
 void NNS_SndSetMasterVolume(u32 a);
 void *Snd_GetHeap(void);
-void func_0210e8bc(u32 a, void *b);
-void func_0210e6ac(void *p);
+void NNS_SndArcStrmInit(u32 a, void *b);
+void NNS_SndStrmHandleInit(void *p);
 void Snd_LoadGroup(u32 a);
 void Snd_InitHandle(void *p);
 u32 OS_GetTick(void);
@@ -33,7 +33,7 @@ void SndMgr_UpdateVoice(SndMgr *self);
 void SndMgr_UpdateTrackRamps(SndMgr *self);
 void SndMgr_UpdateVolumeRamps(SndMgr *self);
 void Snd_StartOutputEffect(u32 a);
-void func_0210ee4c(u32 a);
+void NNS_SndCaptureChangeOutputEffect(u32 a);
 void NNS_SndCaptureStopEffect(SndMgr *self);
 }
 
@@ -52,12 +52,12 @@ void SndMgr::init(u32 a, u32 b, u32 c) {
     subHeap = NNS_SndHeapCreate(a, 0x339c);
     if (subHeap == NULL) Fatal_Trap();
     Snd_InitSystem(a + 0x339c, b - 0x339c, c, 0);
-    func_0210b280(func_0211d6e0() - 1);
+    NNS_SndCaptureCreateThread(CARD_GetThreadPriority() - 1);
     outputMode = 1;
     startOutputEffect();
     NNS_SndSetMasterVolume(127);
-    func_0210e8bc(10, Snd_GetHeap());
-    func_0210e6ac(&strmHandle);
+    NNS_SndArcStrmInit(10, Snd_GetHeap());
+    NNS_SndStrmHandleInit(&strmHandle);
     Snd_LoadGroup(0);
     Snd_InitHandle(&voiceHandle);
     Snd_InitHandle(&seHandle);
@@ -89,7 +89,7 @@ void SndMgr::volumeOn() {
 
 void SndMgr::setOutputMode(u32 v) {
     outputMode = v;
-    func_0210ee4c(outputMode);
+    NNS_SndCaptureChangeOutputEffect(outputMode);
 }
 
 void SndMgr::startOutputEffect() {

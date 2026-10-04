@@ -125,7 +125,7 @@ void CARDi_InitCommon(void);
 void CARDi_UnlockResource(u32, u32);
 void CARDi_LockResource(u32, u32);
 void CARDi_SetTask(void (*)(CARDCommon *));
-void func_0211da74(s32);
+void CARDi_IdentifyBackupCore(s32);
 void CARDi_RequestStreamCommandCore(CARDCommon *);
 void *CARDi_GetRomAccessor(void);
 BOOL CARD_WaitRomAsync(void);
@@ -232,18 +232,18 @@ BOOL CARDi_TryWaitAsync(void) {
     return !(data_021fec00.flag & 4);
 }
 
-// func_0211d704
-BOOL func_0211d704(void) {
+// CARD_IsAvailable
+BOOL CARD_IsAvailable(void) {
     return data_021fec00.flag != 0;
 }
 
 // CARD_GetResultCode
-u32 func_0211d6f0(void) {
+u32 CARD_GetResultCode(void) {
     return data_021fec00.cmd->result;
 }
 
 // CARD_GetThreadPriority
-u32 func_0211d6e0(void) {
+u32 CARD_GetThreadPriority(void) {
     return data_021fec00.priority;
 }
 

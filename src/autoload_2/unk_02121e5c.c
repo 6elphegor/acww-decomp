@@ -61,9 +61,9 @@ extern void OS_RestoreInterrupts(u32);
 extern u32 WMi_CheckIdle(void);
 extern u32 WMi_CheckStateEx(int n, ...);
 extern WMArm9Buf *WMi_GetSystemWork(void);
-extern u32 func_0211f01c(u32 id, u16 paramNum, ...);
+extern u32 WMi_SendCommand(u32 id, u16 paramNum, ...);
 extern void WMi_SetCallbackTable(u32 idx, WMCallback cb);
-extern u32 func_0211fb0c(u32 port, WMCallback cb, void *arg);
+extern u32 WM_SetPortCallback(u32 port, WMCallback cb, void *arg);
 extern void DC_InvalidateRange(void *, u32);
 extern void DC_StoreRange(void *, u32);
 extern void MIi_CpuClear16(u32, void *, u32);
@@ -77,14 +77,14 @@ extern u8 data_021fff00[];
 extern u32 MBi_CommChangeParentStateCallbackOnly(u32, u32, u16 *);
 
 void WmDataSharingReceiveData(WMPool *ds, u32 n, u16 *buf);
-void func_02120da4(WMMsg *msg);
+void WmDataSharingReceiveCallback_Child(WMMsg *msg);
 void WmDataSharingReceiveCallback_Parent(WMMsg *msg);
-void func_02120fe8(WMMsg *msg);
-u32 func_021214b4(WMPool *ds);
+void WmDataSharingSetDataCallback(WMMsg *msg);
+u32 WM_EndDataSharing(WMPool *ds);
 u32 WM_StartDataSharing(WMPool *ds, u32 port, u32 aidBitmap, u32 dataLength, BOOL doubleMode);
 
 extern void WmDataSharingReceiveData(WMPool *ds, u32 n, u16 *buf);
-extern void func_02120da4(WMMsg *msg);
+extern void WmDataSharingReceiveCallback_Child(WMMsg *msg);
 extern void WmDataSharingReceiveCallback_Parent(WMMsg *msg);
 extern u32 MBi_CommParentSendBlock(void);
 
@@ -145,9 +145,9 @@ extern u32 MBi_IsTaskBusy(void *);
 extern void MBi_SetTask(void *, void *, u32, u32);
 extern u32 MBi_BlockHeaderEnd(u32, u32, void *);
 extern void Fatal_Trap(void);
-extern u32 func_02122114(void);
+extern u32 MBi_ReloadCache(void);
 u32 MBi_CommParentSendBlock(void);
-void func_02121c60(u32 idx);
+void MBi_calc_sendblock(u32 idx);
 
 typedef struct {
     u32 f0;
@@ -166,7 +166,7 @@ u32 MBi_CommParentSendBlock(void) {
         if (ENT(data_0220001c, data_0220001c->cur)->f1d52 != 0 && ENT(data_0220001c, data_0220001c->cur)->f1d4c != 0) break;
     }
     if (i == 16) return 21;
-    func_02121c60(data_0220001c->cur);
+    MBi_calc_sendblock(data_0220001c->cur);
     if (MBi_get_blockinfo(&out, (u8 *)data_0220001c + 0x1d2c + data_0220001c->cur * 0x5d4, ENT(data_0220001c, data_0220001c->cur)->f1d48,
                       (u8 *)data_0220001c + 0x1788 + data_0220001c->cur * 0x5d4) == 0) {
         return 21;
@@ -197,7 +197,7 @@ u32 MBi_CommParentSendBlock(void) {
                 best->f0 = addr & ~31;
                 ((u32 *)job)[4] = (u32)best;
                 ((u32 *)job)[5] = (u32)buf;
-                MBi_SetTask(job, func_02122114, 0, 4);
+                MBi_SetTask(job, MBi_ReloadCache, 0, 4);
             }
             return 21;
         } else {

@@ -104,7 +104,7 @@ extern u8 data_ov065_022917a0[];
 
 s32 func_02133150(s32, s32);
 u32 STD_GetStringLength(const char *);
-void func_02127838(char *, const char *);
+void STD_CopyString(char *, const char *);
 s32 sscanf(const char *, const char *, ...);
 void memcpy(void *, const void *, s32);
 s32 OS_SPrintf(char *, const char *, ...);
@@ -171,8 +171,8 @@ s32 GsQr_Init(GsQrContext **out, s32 fd, s32 a2, const char *name, const char *s
         q = *out;
     }
     srand(GsUtil_GetTimeMs());
-    func_02127838(q->gameName, name);
-    func_02127838(q->secretKey, secret);
+    STD_CopyString(q->gameName, name);
+    STD_CopyString(q->secretKey, secret);
     q->localPort = a2;
     i = 0;
     q->lastHeartbeatTime = 0;
@@ -589,7 +589,7 @@ extern "C" {
 void GsQr_AppendChallengeResponse(GsQrContext *q, GsQrBuffer *b, const char *s, s32 n) {
     char tmp[0x44];
     if (n >= 1 && n <= 0x41 && s[n - 1] == 0) {
-        func_02127838(tmp, s);
+        STD_CopyString(tmp, s);
         GsQr_Rc4Crypt((u8 *)q->secretKey, STD_GetStringLength(q->secretKey), (u8 *)tmp, n - 1);
         GsQr_Base64Encode((u8 *)tmp, n - 1, (u8 *)b + b->len);
         b->len += STD_GetStringLength((char *)b + b->len) + 1;

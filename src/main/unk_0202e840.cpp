@@ -27,7 +27,7 @@ s32 Vec_DistXZ(void *a, void *b);
 s32 _ZN16CollisionSegment10distanceToEP7VecFx32(void *a, void *b);
 void Proc_CreateRoot();
 s32 Proc_CreateChild(u32 a, void *b, u32 c, u32 d);
-s32 func_0211c618(s32 *out);
+s32 PM_GetBattery(s32 *out);
 void ProcBase_RequestDelete();
 void _ZN8ProcBase10postCreateEi(void *self, int a);
 }
@@ -86,7 +86,7 @@ extern "C" BOOL LowBattery_Poll() {
         if (--sLowBatteryPollTimer <= 0) {
             s32 v;
             sLowBatteryPollTimer = 0x14;
-            if (func_0211c618(&v) == 0 && v == 1) {
+            if (PM_GetBattery(&v) == 0 && v == 1) {
                 r = TRUE;
             }
         }

@@ -278,7 +278,7 @@ void *memset(void *, s32, u32);
 u32 rand(void);
 s32 atol(const char *);
 s32 STD_GetStringLength(const char *);
-char *func_02127838(char *, const char *);
+char *STD_CopyString(char *, const char *);
 
 s32 GsGp_SendGetProfile(Ctx0227 **, s32, s32);
 s32 GsGp_OpenSockets(Ctx0227 **, GsGpOperation *);

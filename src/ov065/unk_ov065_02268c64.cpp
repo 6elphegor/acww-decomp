@@ -252,7 +252,7 @@ s32 WM_StartScanEx(void *, void *);
 s32 WM_PowerOff(void *);
 s32 WM_Init(void *, u32);
 s32 WM_GetAllowedChannel(void);
-s32 func_0211f188(void);
+s32 WM_Finish(void);
 s32 WM_SetIndCallback(void *);
 s32 WM_Enable(void *);
 s32 OS_IsTickAvailable(void);
@@ -731,7 +731,7 @@ s32 WifiLink_StartupAsync(void *a, void *b)
         break;
     }
     if (WM_GetAllowedChannel() == 0) {
-        if (func_0211f188() != 0) {
+        if (WM_Finish() != 0) {
             WifiLink_SetPhase(0xb);
             OS_RestoreInterrupts(e);
             return 7;
@@ -935,7 +935,7 @@ s32 WM_Reset(void *);
 u32 WM_GetDispersionScanPeriod();
 u16 *WMi_GetStatusAddress();
 void DC_InvalidateRange(void *, u32);
-s32 func_0211f188();
+s32 WM_Finish();
 s32 WM_Disable(void *);
 s32 WM_PowerOff(void *);
 s32 WM_EndDCF(void *);
@@ -1144,7 +1144,7 @@ s32 WifiLink_TerminateAsync() {
             DC_InvalidateRange(p, 2);
             switch (*p) {
             case 0:
-                r = func_0211f188();
+                r = WM_Finish();
                 if (r == 0) {
                     WifiLink_SetPhase(1);
                     sWifiLinkWork->pendingRequest = 0;
@@ -1429,11 +1429,11 @@ s32 WM_StartDCF(void *, void *, u32);
 s32 WM_StartScanEx(void *, void *);
 s32 WM_EndScan(void *);
 s32 WM_PowerOn(void *);
-s32 func_0211f188();
+s32 WM_Finish();
 s32 WM_Disable(void *);
 s32 WM_SetBeaconIndication(void *, u32);
 s32 WM_SetWEPKeyEx(void *, u32, u32, void *);
-s32 func_0211fcbc(void *, void *, u32, u32, u32);
+s32 WM_StartConnectEx(void *, void *, u32, u32, u32);
 
 void WifiLink_OnEndDcf(Unk_ov065_02268ec8_Msg *m);
 void WifiLink_OnDcfEvent(Unk_ov065_02268ec8_Msg *m);
@@ -1480,7 +1480,7 @@ void WifiLink_OnWmCommand(Unk_ov065_02268ec8_Msg *m) {
             res = WM_PowerOn((void *)WifiLink_OnWmCommand);
             break;
         case 4: {
-            s32 r = func_0211f188();
+            s32 r = WM_Finish();
             switch (r) {
             case 0:
                 WifiLink_SetPhase(1);
@@ -1516,7 +1516,7 @@ void WifiLink_OnWmCommand(Unk_ov065_02268ec8_Msg *m) {
             if ((t & 0xc0000) == 0xc0000) a0 = 1; else a0 = 0;
             u16 a = a0;
             if ((t & 0x30000) != 0x30000) b = 1; else b = 0;
-            res = func_0211fcbc((void *)WifiLink_OnConnectEvent, g->targetBss, 0, b, a);
+            res = WM_StartConnectEx((void *)WifiLink_OnConnectEvent, g->targetBss, 0, b, a);
             break;
         }
         }
@@ -1842,7 +1842,7 @@ s32 WifiLink_SetPhase(s32 a);
 s32 WifiLink_NotifyRequest(s32 a, void *b, u32 c, u32 d);
 s32 WifiLink_OnConnectEvent(void *);
 s32 WifiLink_OnWmCommand(void *);
-s32 func_0211fcbc(void *cb, void *buf, u32 a, u32 b, u32 c);
+s32 WM_StartConnectEx(void *cb, void *buf, u32 a, u32 b, u32 c);
 s32 WM_PowerOff(void *cb);
 
 void WifiLink_OnReset(WMMsg *m)
@@ -1884,7 +1884,7 @@ void WifiLink_OnReset(WMMsg *m)
                     } else {
                         y = 1;
                     }
-                    r = func_0211fcbc((void *)WifiLink_OnConnectEvent, sWifiLinkWork->targetBss, 0, y, xs);
+                    r = WM_StartConnectEx((void *)WifiLink_OnConnectEvent, sWifiLinkWork->targetBss, 0, y, xs);
                     if (r == 2) {
                         break;
                     }

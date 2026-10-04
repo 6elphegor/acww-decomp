@@ -11,13 +11,13 @@ void NNSi_G3dSendJointSRTSi3d();
 void NNSi_G3dSendTexSRTSi3d();
 void NNSi_G3dSendTexSRTMaya();
 void NNSi_G3dSendTexSRT3dsMax();
-void func_02108d44();
+void NNSi_G3dSendTexSRTXsi();
 
 void (*data_0213bd40[4])() = { // NNS_G3dSendTexSRT_FuncArray
     NNSi_G3dSendTexSRTMaya,
     NNSi_G3dSendTexSRTSi3d,
     NNSi_G3dSendTexSRT3dsMax,
-    func_02108d44,
+    NNSi_G3dSendTexSRTXsi,
 };
 void (*data_0213bd28[3])() = { // NNS_G3dSendJointSRT_FuncArray
     NNSi_G3dSendJointSRTBasic,

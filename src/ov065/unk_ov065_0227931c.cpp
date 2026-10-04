@@ -51,7 +51,7 @@ s32 IpAddr_StoreBe32(u32 v, u32 *p);
 u32 GsSock_GetLastError(s32 s);
 s32 GsHttp_SocketSend(GsHttpConnection *o, char *buf, s32 n);
 u32 STD_GetStringLength(const char *s);
-char *func_02127838(char *d, const char *s);
+char *STD_CopyString(char *d, const char *s);
 void *GsUtil_Alloc(u32 n);
 void *GsUtil_Realloc(void *p, s32 n);
 void GsUtil_Free(void *p);

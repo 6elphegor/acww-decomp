@@ -215,11 +215,11 @@ u32 Task_GetPhaseName(u32 a);
 }
 
 extern "C" {
-u32 func_021122b0(void);
+u32 OS_GetIrqStackStatus(void);
 }
 
 extern "C" {
-u32 func_02113438(OSThread *a);
+u32 OS_GetStackStatus(OSThread *a);
 }
 
 extern "C" {

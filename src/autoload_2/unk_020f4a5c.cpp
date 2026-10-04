@@ -88,16 +88,16 @@ extern Glob gSndMgr;
 u32 SndMgr_Rand(void *g, u32 n);
 void NNS_SndPlayerSetVolume(void *p, s32 v);
 void NNS_SndHandleReleaseSeq(void *p);
-void func_0210a148(void *p, u32 a, s32 b);
+void NNS_SndPlayerSetTrackVolume(void *p, u32 a, s32 b);
 void NNS_SndPlayerSetTrackPan(void *p, u32 a, s32 b);
-void func_0210a0b8(void *p, s32 v);
-void func_0210a024(void *p, u32 a, void *out);
+void NNS_SndPlayerSetTempoRatio(void *p, s32 v);
+void NNS_SndPlayerReadVariable(void *p, u32 a, void *out);
 void Snd_StopHandle(void *p, u32 v);
 void Snd_InitHandle(void *p);
 void Snd_StartSeqArc(u16 a, u16 b, void *out);
 void *Snd_GetHeap(void);
 void NNS_SndHeapLoadState(void *a, u32 b);
-void func_0210cc84(u32 id, void *h);
+void NNS_SndArcLoadSeqArc(u32 id, void *h);
 void NNS_SndArcLoadBank(u32 id, void *h);
 BOOL NNS_SndArcPlayerStartSeqArc(void *a, u32 b, u32 c);
 s32 FX_Div(s32 a, s32 b);
@@ -207,10 +207,10 @@ extern "C" void MelodyTrack_ReadParams(Seq2 *self) {
     c = -1;
     b = -1;
     a = -1;
-    func_0210a024(self, 0, &a);
-    func_0210a024(self, 1, &b);
-    func_0210a024(self, 2, &c);
-    func_0210a024(self, 3, &d);
+    NNS_SndPlayerReadVariable(self, 0, &a);
+    NNS_SndPlayerReadVariable(self, 1, &b);
+    NNS_SndPlayerReadVariable(self, 2, &c);
+    NNS_SndPlayerReadVariable(self, 3, &d);
     self->s14 = a;
     self->s15 = b;
     self->s16 = c;
@@ -275,14 +275,14 @@ extern "C" void MelodyTrack_PlayStep(Seq2 *self) {
     switch (v) {
     case 13:
         Snd_StartSeqArc(v + 1 + SndMgr_Rand(&gSndMgr, 6), self->id, self);
-        func_0210a0b8(self, d);
+        NNS_SndPlayerSetTempoRatio(self, d);
         break;
     case 14:
     case 15:
         break;
     default:
         Snd_StartSeqArc(v + 1, self->id, self);
-        func_0210a0b8(self, d);
+        NNS_SndPlayerSetTempoRatio(self, d);
         break;
     }
     if (self->s16 != 3) return;
@@ -308,7 +308,7 @@ extern "C" void MelodyTrack_PlayStep(Seq2 *self) {
     }
     {
         Ctl2 *c = gSndMgr.f30;
-        func_0210a148(self, 0xff, c->b39);
+        NNS_SndPlayerSetTrackVolume(self, 0xff, c->b39);
         NNS_SndPlayerSetTrackPan(self, 0xff, c->b3a);
     }
 }
@@ -533,7 +533,7 @@ extern "C" void MelodyPlayer_LoadBank(void *c, u32 id) {
 
 // start sound id in the stream of the sound manager (gSndMgr+0x28)
 extern "C" void MelodyPlayer_LoadSeqArc(void *c, u32 id) {
-    func_0210cc84(id, gSndMgr.f28);
+    NNS_SndArcLoadSeqArc(id, gSndMgr.f28);
 }
 
 // empty
@@ -597,7 +597,7 @@ extern "C" void MelodyBeat_Start(Seq1 *self, u16 id) {
     }
     {
         u32 sid = self->id;
-        func_0210cc84(sid, h);
+        NNS_SndArcLoadSeqArc(sid, h);
         NNS_SndArcLoadBank(sid + 0x1db, h);
     }
 }
@@ -645,8 +645,8 @@ extern "C" void MelodyBeat_ReadParams(Seq1 *self) {
     s16 a, b;
     b = -1;
     a = -1;
-    func_0210a024(self, 4, &a);
-    func_0210a024(self, 3, &b);
+    NNS_SndPlayerReadVariable(self, 4, &a);
+    NNS_SndPlayerReadVariable(self, 3, &b);
     self->v8 = a;
     self->v9 = b;
 }
@@ -695,7 +695,7 @@ extern "C" BOOL MelodyBeat_EndStep(Seq1 *self) {
 extern "C" void MelodyBeat_ApplyPosition(void *obj, VecFx32 *pos) {
     s32 a = Snd_DistanceToVolume(Snd_CalcListenerDistance(pos, 0));
     s32 b = Snd_CalcPan(pos, 0);
-    func_0210a148(obj, 15, a);
+    NNS_SndPlayerSetTrackVolume(obj, 15, a);
     NNS_SndPlayerSetTrackPan(obj, 15, b);
 }
 

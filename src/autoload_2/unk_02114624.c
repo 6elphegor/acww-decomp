@@ -6,7 +6,7 @@ typedef int s32;
 extern s32 data_021fce88;
 extern s32 data_021fce84; // OSi_ArenaInitialized
 
-u32 func_02113fd8(void); // OS_GetConsoleType
+u32 OS_GetConsoleType(void); // OS_GetConsoleType
 void OS_SetProtectionRegion1(u32 v);
 void OS_SetProtectionRegion2(u32 v);
 

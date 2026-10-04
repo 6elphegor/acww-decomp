@@ -122,7 +122,7 @@ extern u8 data_021fff80;
 extern u32 OS_DisableInterrupts(void);
 extern void OS_RestoreInterrupts(u32 irq);
 extern BOOL MBi_IsStarted(void);
-extern BOOL func_02123368(void *dst, void *seg);
+extern BOOL MBi_MakeBlockInfoTable(void *dst, void *seg);
 extern BOOL MBi_IsTaskAvailable(void);
 extern void MBi_InitTaskInfo(void *p);
 extern void MBi_InitTaskThread(void *p, u32 len);
@@ -150,9 +150,9 @@ extern void MI_CpuFill8(void *dst, u32 value, u32 size);
 extern void MI_CpuCopy8(const void *src, void *dst, u32 size);
 extern void Fatal_Trap(void);
 extern u32 data_0213a3ec[3];
-extern void func_021235fc(MBSegInfo *dst, const MBRomHeader *rom);
-extern void func_02123444(const MBRomHeader *rom, const u32 *mode, MBRange *out, u32 *limit);
-extern void func_021267d4(void *ctx);
+extern void MBi_MakeDownloadFileInfo(MBSegInfo *dst, const MBRomHeader *rom);
+extern void MBi_SetSegmentInfo(const MBRomHeader *rom, const u32 *mode, MBRange *out, u32 *limit);
+extern void MBi_InitCache(void *ctx);
 extern void MBi_AttachCacheBuffer(void *ctx, u32 addr, u32 len, void *data, u32 mode);
 extern void DC_FlushRange(void *addr, u32 len);
 typedef struct MBRegion {
@@ -164,17 +164,17 @@ extern char data_0213c208[];
 extern u8 AutoloadCallback[];
 extern void *FS_FindArchive(const char *name, int len);
 extern BOOL FS_OpenFileDirect(FSFile *file, void *arc, u32 top, u32 bottom, int id);
-extern void func_02124930(void *p, u32 a, u32 b);
+extern void MBi_SendMP(void *p, u32 a, u32 b);
 extern void FS_CloseFile(FSFile *file);
 extern u32 mystrlen(const u16 *s);
 extern BOOL MBi_ReadIconInfo(const char *path, void *dst, u32 isChar);
 
-extern void func_02124528(void);
-extern BOOL func_02124408(void);
-extern void func_021243bc(void);
-extern void func_0212423c(u32 a, u32 b, u32 c);
+extern void MBi_ClearSendStatus(void);
+extern BOOL MBi_ReadyBeaconSendStatus(void);
+extern void MBi_InitSendFixedBeacon(void);
+extern void MBi_SendFixedBeacon(u32 a, u32 b, u32 c);
 extern void MBi_InitSendVolatBeacon(void);
-extern void func_02123f60(u32 a, u32 b, u32 c);
+extern void MBi_SendVolatBeacon(u32 a, u32 b, u32 c);
 extern void MBi_ReadSegmentHeader(u32 *seg, u32 lo, u32 hi, int clear);
 
 extern void MBi_MakeGameInfo(MBBuf *b, const u32 *info, const void *name);
@@ -182,24 +182,24 @@ extern BOOL MBi_ReadIconInfo(const char *path, void *dst, u32 isChar);
 extern void MB_UpdateGameInfoMember(MBBuf *b, const void *src, u32 mask, u32 w);
 extern u32 mystrlen(const u16 *s);
 extern void MB_AddGameInfo(MBBuf *b);
-extern void func_0212454c(void);
-extern void func_02124528(void);
+extern void MB_InitSendGameInfoStatus(void);
+extern void MBi_ClearSendStatus(void);
 extern void MB_SendGameInfoBeacon(u32 a, u32 b, u32 c);
-extern BOOL func_02124408(void);
-extern void func_021243bc(void);
-extern void func_0212423c(u32 a, u32 b, u32 c);
+extern BOOL MBi_ReadyBeaconSendStatus(void);
+extern void MBi_InitSendFixedBeacon(void);
+extern void MBi_SendFixedBeacon(u32 a, u32 b, u32 c);
 extern void MBi_InitSendVolatBeacon(void);
-extern void func_02123f60(u32 a, u32 b, u32 c);
+extern void MBi_SendVolatBeacon(u32 a, u32 b, u32 c);
 extern void MBi_BlockHeaderEnd(u32 a, u32 b, void *c);
 extern u32 MBi_calc_cksum(const u16 *p, int len);
 extern u32 MB_GetSegmentLength(FSFile *file);
 extern BOOL MB_ReadSegment(FSFile *file, u32 *buf, u32 size);
 extern void MBi_ReadSegmentHeader(u32 *seg, u32 lo, u32 hi, int clear);
 extern BOOL MB_RegisterFile(const u8 *key, const MBRomHeader *info);
-extern void func_021235fc(MBSegInfo *dst, const MBRomHeader *rom);
-extern void func_02123444(const MBRomHeader *rom, const u32 *mode, MBRange *out, u32 *limit);
+extern void MBi_MakeDownloadFileInfo(MBSegInfo *dst, const MBRomHeader *rom);
+extern void MBi_SetSegmentInfo(const MBRomHeader *rom, const u32 *mode, MBRange *out, u32 *limit);
 
-void func_021243bc(void) {
+void MBi_InitSendFixedBeacon(void) {
     MBBuf *c;
     if (data_021fff8c.state != 2) return;
     c = data_021fff8c.cur;
@@ -214,7 +214,7 @@ void func_021243bc(void) {
 }
 
 // MB parent: build and send one data packet
-void func_0212423c(u32 a, u32 b, u32 c) {
+void MBi_SendFixedBeacon(u32 a, u32 b, u32 c) {
     u8 *end;
     u8 *p8;
     end = (u8 *)data_021fff8c.cur + 0x358;
@@ -253,7 +253,7 @@ void MBi_InitSendVolatBeacon(void) {
 }
 
 // MB parent: send one beacon with the pending entries
-void func_02123f60(u32 a, u32 b, u32 c) {
+void MBi_SendVolatBeacon(u32 a, u32 b, u32 c) {
     u32 cnt;
     u8 *dst;
     int off;
@@ -304,7 +304,7 @@ void func_02123f60(u32 a, u32 b, u32 c) {
 void MBi_BlockHeaderEnd(u32 a, u32 b, void *c) {
     DC_FlushRange(c, (a + 31) & ~31);
     DC_WaitWriteBufferEmpty();
-    func_02124930(c, a, b);
+    MBi_SendMP(c, a, b);
 }
 
 // 16-bit one's complement checksum

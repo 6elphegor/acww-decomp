@@ -52,7 +52,7 @@ void OS_Sleep(s32 n);
 s32 OS_IsThreadTerminated(void *a);
 void OS_WakeupThreadDirect(void *a);
 void OS_JoinThread(void *a);
-s32 func_021131f4(void);
+s32 OS_IsThreadAvailable(void);
 void OS_CreateThread(void *a, void *fn, u32 b, void *c, u32 d, u32 e);
 void OS_UnlockMutex(void *p);
 void OS_LockMutex(void *p);
@@ -2672,7 +2672,7 @@ s32 SimpleStart_Start(s32 a0, s32 a1, s32 a2, s32 a3, s32 a4, s32 a5) {
         sSimpleStartResultCode = r;
         return r;
     }
-    if (func_021131f4() != 1) {
+    if (OS_IsThreadAvailable() != 1) {
         r = -9;
         sSimpleStartResultCode = r;
         return r;

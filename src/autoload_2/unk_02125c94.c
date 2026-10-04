@@ -92,23 +92,23 @@ extern void OS_SpinWait(u32);
 extern u32 WM_SetParentParameter(void *, void *);
 extern u32 WM_SetBeaconIndication(void *, u32);
 extern u32 WMi_StartParentEx(void *, u32);
-extern u32 func_021206b4(void *, u32, u32, void *, u32, u32, u32, u32, u32, u32, u32);
+extern u32 WM_StartMPEx(void *, u32, u32, void *, u32, u32, u32, u32, u32, u32, u32);
 extern u32 WM_End(void *);
-extern void func_0211fb0c(u32, u32, u32);
+extern void WM_SetPortCallback(u32, u32, u32);
 typedef struct { u8 _0[0x131c]; u32 f131c; u32 f1320; u8 _1324[0x1340-0x1324]; u8 _1340[0x14e8-0x1340]; u32 state[15]; } WWork;
 typedef struct { u16 id; u16 res; u16 sub; u16 f6; u16 f8; u16 fa; u16 fc; u16 fe; u16 f10; } WMsg2;
 
 extern void MBi_CheckWmErrcode(u32, u32);
 extern u32 WM_SetLifeTime(void *, u32, u32, u32, u32);
-void func_02125d0c(WMsg2 *m);
+void MBi_ParentCallback(WMsg2 *m);
 void MBi_OnInitializeDone(void);
 
 void MBi_InitTaskInfo(void *p);
 BOOL MBi_IsTaskAvailable(void);
 BOOL MBi_IsTaskBusy(WJob *job);
 void MBi_SetTask(WJob *job, void (*pre)(WJob *), void (*post)(WJob *), u32 prio);
-BOOL func_02126bb4(u32 n);
-u8 *func_02126c14(u8 *msg, u32 aid);
+BOOL IsGetAllRequestData(u32 n);
+u8 *MBi_ReceiveRequestDataPiece(u8 *msg, u32 aid);
 void MBi_TaskThread(WSys *sys);
 typedef struct { u8 pad[4]; u16 cur; } WRot;
 
@@ -140,7 +140,7 @@ void CTRDGi_SendtoPxi(u32 x) {
 }
 
 // chunk reassembly: configure chunk size n-2 and count 30/(n-2)
-void func_02126ef4(s32 n) {
+void MBi_SetChildMPMaxSize(s32 n) {
     data_02200048.size = n - 2;
     data_02200048.count = _s32_div_f(30, n - 2);
     data_02200048.total = 30;
@@ -190,11 +190,11 @@ u8 *MBi_SetRecvBufferFromChild(u8 *src, u8 *dst, u32 aid) {
     dst[0] = src[0];
     switch (dst[0]) {
     case 7:
-        if (func_02126bb4(aid) != 0) return data_02200044 + (aid - 1) * 32;
+        if (IsGetAllRequestData(aid) != 0) return data_02200044 + (aid - 1) * 32;
         dst[2] = src[1];
         if (dst[2] > data_02200048.count) return 0;
         MI_CpuCopy8(src + 2, dst + 3, data_02200048.size);
-        ret = func_02126c14(dst, aid);
+        ret = MBi_ReceiveRequestDataPiece(dst, aid);
         break;
     case 8:
         ret = src + 3;
@@ -215,7 +215,7 @@ u8 *MBi_SetRecvBufferFromChild(u8 *src, u8 *dst, u32 aid) {
 }
 
 // chunk reassembly: store chunk msg[2] of entry aid
-u8 *func_02126c14(u8 *msg, u32 aid) {
+u8 *MBi_ReceiveRequestDataPiece(u8 *msg, u32 aid) {
     u32 j; u32 off; s32 i; u32 *w;
     u8 *base = data_02200044;
     if (base == 0) return 0;
@@ -225,12 +225,12 @@ u8 *func_02126c14(u8 *msg, u32 aid) {
     off = j << 5;
     MI_CpuCopy8(msg + 3, base + j * 32 + i * data_02200048.size, data_02200048.size);
     ((u32 *)(data_02200044 + 0x1e0))[j] |= 1 << i;
-    if (func_02126bb4(aid) != 0) return data_02200044 + off;
+    if (IsGetAllRequestData(aid) != 0) return data_02200044 + off;
     return 0;
 }
 
 // chunk reassembly: have all chunks of entry n arrived (bit mask check)
-BOOL func_02126bb4(u32 n) {
+BOOL IsGetAllRequestData(u32 n) {
     u16 i = 0;
     if (data_02200048.count > 0) {
         u32 m = *(u32 *)(data_02200044 + (n - 1) * 4 + 0x1e0);
@@ -367,7 +367,7 @@ void MBi_EndTaskThread(void (*post)(WJob *)) {
 }
 
 // slot table: clear (MI_CpuFill8 0, 0x70)
-void func_021267d4(void *p) {
+void MBi_InitCache(void *p) {
     MI_CpuFill8(p, 0, 0x70);
 }
 
@@ -435,7 +435,7 @@ BOOL changeScanChannel(WRot *p) {
 }
 
 // wireless helper: BOOL query on state flags (f528==1 && f50c==0 && f526==0 && f52a!=0)
-BOOL func_021265dc(void) {
+BOOL MBi_IsSendEnabled(void) {
     BOOL r = 0;
     BOOL b = 0;
     BOOL a = 0;
@@ -452,14 +452,14 @@ BOOL func_021265dc(void) {
     return r;
 }
 
-// wireless helper: start sequence (issues WM calls with func_02125d0c as callback)
+// wireless helper: start sequence (issues WM calls with MBi_ParentCallback as callback)
 void MBi_OnInitializeDone(void) {
-    MBi_CheckWmErrcode(0x80, WM_SetIndCallback((void *)func_02125d0c));
-    MBi_CheckWmErrcode(0x1d, WM_SetLifeTime((void *)func_02125d0c, data_0213c218, data_0213c210, data_0213c20c, data_0213c214));
+    MBi_CheckWmErrcode(0x80, WM_SetIndCallback((void *)MBi_ParentCallback));
+    MBi_CheckWmErrcode(0x1d, WM_SetLifeTime((void *)MBi_ParentCallback, data_0213c218, data_0213c210, data_0213c20c, data_0213c214));
 }
 
 // wireless helper (WH-style) WM completion callback; switch on WM API id (0 INITIALIZE, 1 RESET, 2 END, 7, 8, 13, 14, 15, 25, 29, 0x80 INDICATION)
-void func_02125d0c(WMsg2 *m) {
+void MBi_ParentCallback(WMsg2 *m) {
     switch (m->id) {
     case 0:
         if (m->res != 0) {
@@ -473,18 +473,18 @@ void func_02125d0c(WMsg2 *m) {
             data_02200018->cb(0x100, m);
             return;
         }
-        MBi_CheckWmErrcode(7, WM_SetParentParameter((void *)func_02125d0c, data_02200018));
+        MBi_CheckWmErrcode(7, WM_SetParentParameter((void *)MBi_ParentCallback, data_02200018));
         return;
     case 7:
         data_02200018->cb(21, m);
-        MBi_CheckWmErrcode(25, WM_SetBeaconIndication((void *)func_02125d0c, 1));
+        MBi_CheckWmErrcode(25, WM_SetBeaconIndication((void *)MBi_ParentCallback, 1));
         return;
     case 25:
         if (m->res != 0) {
             data_02200018->cb(0x100, m);
             return;
         }
-        MBi_CheckWmErrcode(8, WMi_StartParentEx((void *)func_02125d0c, data_0213c220));
+        MBi_CheckWmErrcode(8, WMi_StartParentEx((void *)MBi_ParentCallback, data_0213c220));
         return;
     case 8:
         if (m->res != 0) {
@@ -504,10 +504,10 @@ void func_02125d0c(WMsg2 *m) {
                 u16 x;
                 ((WWork *)data_0220001c)->f131c = 1;
                 x = (data_02200018->f52c == 0) ? 1 : 0;
-                MBi_CheckWmErrcode(14, func_021206b4((void *)func_02125d0c, data_02200018->f504, data_02200018->f51a, data_02200018->f40, data_02200018->f518, x, 0, 0, 0, 1, 1));
+                MBi_CheckWmErrcode(14, WM_StartMPEx((void *)MBi_ParentCallback, data_02200018->f504, data_02200018->f51a, data_02200018->f40, data_02200018->f518, x, 0, 0, 0, 1, 1));
                 return;
             }
-            if (func_021265dc() == 0) return;
+            if (MBi_IsSendEnabled() == 0) return;
             data_02200018->cb(25, 0);
             return;
         case 9:
@@ -573,10 +573,10 @@ void func_02125d0c(WMsg2 *m) {
             }
             data_02200018->f52a = 0;
             data_02200018->f528 = 0;
-            MBi_CheckWmErrcode(2, WM_End((void *)func_02125d0c));
+            MBi_CheckWmErrcode(2, WM_End((void *)MBi_ParentCallback));
             return;
         }
-        func_0211fb0c(1, 0, 0);
+        WM_SetPortCallback(1, 0, 0);
         WM_SetIndCallback(0);
     case 2:
         if (m->res != 0) {
@@ -622,7 +622,7 @@ void func_02125d0c(WMsg2 *m) {
 }
 
 // WM callback filter: on api 0x15 result 0 (excluding sub 7/9) forwards event 9 to the user callback
-void func_02125c94(WMsg2 *m) {
+void MBi_ChildPortCallback(WMsg2 *m) {
     if (m->res != 0) return;
     if (m->sub == 7) return;
     if (m->sub == 9) return;

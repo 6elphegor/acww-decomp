@@ -151,11 +151,11 @@ extern void MIi_CpuClear16(u32, void *, u32);
 extern void MIi_CpuCopyFast();
 extern void DC_FlushRange(void *, u32);
 extern void SND_SetSurroundDecay(u32);
-extern void func_021198c4(void *);
+extern void FS_CancelFile(void *);
 extern void FS_CloseFile(void *);
 extern void FS_InitFile(void *);
 extern BOOL FS_OpenFileFast(void *, FSFileID);
-extern void func_0210a6b0(Ctx *, s32, s32);
+extern void NNS_SndStrmSetChannelPan(Ctx *, s32, s32);
 extern void NNS_SndStrmSetVolume(Ctx *, s32);
 extern void NNS_SndStrmStop(Ctx *);
 extern void NNS_SndStrmStart(Ctx *);
@@ -166,39 +166,39 @@ extern void NNS_SndStrmInit(Ctx *);
 extern void NNS_SndCaptureStartEffect();
 extern FSFileID func_0210b48c(void);
 extern s32 NNS_SndArcReadFile();
-extern u32 func_0210b558();
-extern u8 *func_0210b5e4();
+extern u32 NNS_SndArcGetFileOffset();
+extern u8 *NNS_SndArcGetStrmPlayerInfo();
 extern SInfo *NNS_SndArcGetStrmInfo();
 extern void *NNS_SndHeapAlloc();
-extern void func_0210d10c();
+extern void StrmThreadProc();
 
 // in-unit prototypes
-void func_0210da28(Ctx *);
-void func_0210db74(s32, s32, u32 *, u32, s32, Ctx *);
-void func_0210dcc0(void *, u32, Ctx *);
+void RequestNextStrm(Ctx *);
+void StrmDataCallback(s32, s32, u32 *, u32, s32, Ctx *);
+void StrmBufDisposeCallback(void *, u32, Ctx *);
 void FreeCommandBuffer(Job *);
-Job *func_0210dda4(void);
-Job *func_0210ddf0(NNSFndList *);
+Job *AllocCommandBuffer(void);
+Job *PopCommandBuffer(NNSFndList *);
 void RemoveCommandByPlayer(NNSFndList *, Ctx *);
-void func_0210deb8(ThreadInfo *, u32);
+void CreateStrmThread(ThreadInfo *, u32);
 void FreeChannel(Ctx *);
-BOOL func_0210df74();
-void func_0210dfb4(Ctx *);
-void func_0210e024(Ctx *);
-void func_0210e0c4(Ctx *, s32);
-BOOL func_0210e128();
+BOOL AllocChannel();
+void ShutdownPlayer__sndarc_stream(Ctx *);
+void ForceStopStrm__sndarc_stream(Ctx *);
+void StopStrm(Ctx *, s32);
+BOOL PrepareStrmCore();
 void FreePlayer(Ctx *);
-Ctx *func_0210e43c(Ctx **, s32, s32);
-void func_0210e694(Ctx **);
-void func_0210e760(Ctx **);
-BOOL func_0210e778(Ctx **, s32, s32);
-BOOL func_0210e7e0(void *);
+Ctx *AllocPlayer(Ctx **, s32, s32);
+void NNS_SndStrmHandleRelease(Ctx **);
+void NNS_SndArcStrmStartPrepared(Ctx **);
+BOOL NNS_SndArcStrmPrepare(Ctx **, s32, s32);
+BOOL SetupStrmPlayers(void *);
 void func_0210ea0c();
-void func_0210e9c0();
-void func_0210ec0c();
-void func_0210edb0(void);
-void func_0210edb4();
-void func_0210ee4c(s32);
+void OutputEffectMono();
+void OutputEffectSurround();
+void OutputEffectNormal(void);
+void OutputEffectCallback();
+void NNS_SndCaptureChangeOutputEffect(s32);
 BOOL NNSi_SndFaderIsFinished(Fader *);
 void NNSi_SndFaderInit(Fader *);
 s32 NNSi_SndFaderGet(Fader *);
@@ -266,14 +266,14 @@ void *NNSi_SndSeqArcGetSeqInfo(ArcTbl *t, s32 i)
 }
 
 // NNS_SndCaptureStartEffect-like (select effect and start the capture)
-void func_0210ef44(void *a, void *b, s32 effect)
+void NNS_SndCaptureStartOutputEffect(void *a, void *b, s32 effect)
 {
-    func_0210ee4c(effect);
-    NNS_SndCaptureStartEffect(a, b, 0, 32000, 2, func_0210edb4, &data_0213bf10);
+    NNS_SndCaptureChangeOutputEffect(effect);
+    NNS_SndCaptureStartEffect(a, b, 0, 32000, 2, OutputEffectCallback, &data_0213bf10);
 }
 
 // NNS_SndCaptureSetEffect-like (select effect 0..3, clear state)
-void func_0210ee4c(s32 effect)
+void NNS_SndCaptureChangeOutputEffect(s32 effect)
 {
     u32 irq;
     volatile u16 zero;
@@ -285,19 +285,19 @@ void func_0210ee4c(s32 effect)
     data_0213bf10.type = effect;
     switch (effect) {
     case 1:
-        data_0213bf10.fn = func_0210ec0c;
+        data_0213bf10.fn = OutputEffectSurround;
         break;
     case 2:
         data_0213bf10.fn = func_0210ea0c;
         break;
     case 3:
-        data_0213bf10.fn = func_0210e9c0;
+        data_0213bf10.fn = OutputEffectMono;
         break;
     case 0:
-        data_0213bf10.fn = func_0210edb0;
+        data_0213bf10.fn = OutputEffectNormal;
         break;
     default:
-        data_0213bf10.fn = func_0210edb0;
+        data_0213bf10.fn = OutputEffectNormal;
         break;
     }
     OS_RestoreInterrupts(irq);
@@ -306,7 +306,7 @@ void func_0210ee4c(s32 effect)
 }
 
 // NNSi_SndCaptureCallback-like (pre callback, effect, post callback, flush)
-void func_0210edb4(void *l, void *r, u32 len, s32 fmt, EffCtl *c)
+void OutputEffectCallback(void *l, void *r, u32 len, s32 fmt, EffCtl *c)
 {
     if (c->pre != 0) c->pre(l, r, len, fmt, c->preArg);
     c->fn(l, r, len, c);
@@ -316,12 +316,12 @@ void func_0210edb4(void *l, void *r, u32 len, s32 fmt, EffCtl *c)
 }
 
 // empty capture effect (effect 0)
-void func_0210edb0(void)
+void OutputEffectNormal(void)
 {
 }
 
 // NNSi_SndCaptureEffect side-signal-like (capture effect 1)
-void func_0210ec0c(s16 *l, s16 *r, u32 len, EffCtl *c)
+void OutputEffectSurround(s16 *l, s16 *r, u32 len, EffCtl *c)
 {
     s16 tmp[2];
     u32 n = len >> 1;

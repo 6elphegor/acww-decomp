@@ -104,7 +104,7 @@ void GX_SetBankForTexPltt(u32 a);
 }
 
 extern "C" {
-void func_02114b00(void);
+void OS_EnableDTCM(void);
 }
 
 extern "C" {
@@ -281,7 +281,7 @@ extern "C" void Gfx3d_Init(void) {
     Gfx3d_InitEngine();
     GX_SetBankForTex(6);
     GX_SetBankForTexPltt(0x10);
-    func_02114b00();
+    OS_EnableDTCM();
     *(vu16 *)0x4000060 = (*(vu16 *)0x4000060 & 0xffffcfff) | 4;
     *(vu16 *)0x4000340 = 0;
     *(vu16 *)0x4000060 = (*(vu16 *)0x4000060 & 0xffffcfff) | 8;

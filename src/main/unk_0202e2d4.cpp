@@ -32,7 +32,7 @@ s32 sSpNpcWalkAnimSpeedScale = data_020c6cf0 - 0x8000;
 extern "C" {
 void Proc_CreateRoot();
 s32 Proc_CreateChild(u32 a, void *b, u32 c, u32 d);
-s32 func_0211c618(s32 *out);
+s32 PM_GetBattery(s32 *out);
 void ProcBase_RequestDelete();
 void _ZN8ProcBase10postCreateEi(void *self, int a);
 s32 SpNpc_GetInfoByte0(u16 *p);

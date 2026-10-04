@@ -8,10 +8,10 @@
 	.arm
 
 ; OS_EnableDTCM: CP15 control register |= 0x10000 (DTCM enable)
-	.global func_02114b00
-	.type func_02114b00, @function
-	.size func_02114b00, 0x10
-func_02114b00:
+	.global OS_EnableDTCM
+	.type OS_EnableDTCM, @function
+	.size OS_EnableDTCM, 0x10
+OS_EnableDTCM:
 	mrc p15, 0, r0, c1, c0, 0
 	orr r0, r0, #0x10000
 	mcr p15, 0, r0, c1, c0, 0

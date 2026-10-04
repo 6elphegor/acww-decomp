@@ -20,7 +20,7 @@ void OS_SetIrqStackChecker(void) {
 }
 
 // OS_GetIrqStackStatus: 0 ok, 1 overflow, 2 about to overflow, 3 underflow
-s32 func_021122b0(void) {
+s32 OS_GetIrqStackStatus(void) {
     if (*(u32 *)(OSi_IRQ_STACK_TOP) != 0x7bf9dd5b) {
         return 1;
     }

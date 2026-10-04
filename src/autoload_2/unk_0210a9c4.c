@@ -77,7 +77,7 @@ extern s32 data_027e0390;
 extern CapMsg data_021fb808[];
 extern u32 data_021fb774;
 extern void NNSi_SndCaptureStop(void);
-extern void func_0210aadc(void *);
+extern void CaptureThread(void *);
 
 // NNS_SndCaptureStop
 void NNSi_SndCaptureStop(void)
@@ -182,7 +182,7 @@ void AlarmCallback(Cap *cap)
 }
 
 // capture thread
-void func_0210aadc(void *arg)
+void CaptureThread(void *arg)
 {
     void *m;
     CapMsg *msg;

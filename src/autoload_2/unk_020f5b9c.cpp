@@ -79,12 +79,12 @@ void Fatal_Trap(void);
 u32 SndMgr_Rand(void *g, u32 n);
 void NNS_SndArcPlayerStartSeqArc(void *slot, u32 a, s32 b);
 void NNS_SndArcPlayerStartSeq(void *p, u32 v);
-void func_02109fd0(void *p, u32 a, u32 b);
+void NNS_SndPlayerWriteVariable(void *p, u32 a, u32 b);
 void NNS_SndPlayerSetVolume(void *p, s32 v);
 void NNS_SndHandleReleaseSeq(void *p);
 void NNS_SndHandleInit(void *p);
 void Snd_StopHandle(void *p, u32 v);
-void func_0210a148(void *p, u32 a, u32 b);
+void NNS_SndPlayerSetTrackVolume(void *p, u32 a, u32 b);
 void NNS_SndPlayerSetTrackPan(void *p, u32 a, u32 b);
 void NNS_SndPlayerMoveVolume(void *p, u32 a, u32 b);
 void NNS_SndPlayerStopSeq(void *p, u32 a);
@@ -184,21 +184,21 @@ void TvSoundProgram2::vfunc_08(s32 id, void *arg) {
         }
         break;
     case 40:
-        func_02109fd0(&a, 1, 1);
+        NNS_SndPlayerWriteVariable(&a, 1, 1);
         break;
     case 50:
-        func_02109fd0(&a, 0, 2);
+        NNS_SndPlayerWriteVariable(&a, 0, 2);
         break;
     case 150:
         startSe(0x4f3, &b);
-        func_02109fd0(&a, 0, 0);
+        NNS_SndPlayerWriteVariable(&a, 0, 0);
         break;
     case 200:
         startSe(0x4f4, &b);
-        func_02109fd0(&a, 1, 2);
+        NNS_SndPlayerWriteVariable(&a, 1, 2);
         break;
     case 300:
-        func_02109fd0(&a, 0, 3);
+        NNS_SndPlayerWriteVariable(&a, 0, 3);
         break;
     case 375:
         startSe(0x4f5, &b);
@@ -209,15 +209,15 @@ void TvSoundProgram2::vfunc_08(s32 id, void *arg) {
     }
     switch (d13) {
     case 0:
-        func_0210a148(&a, 0xfff, 127);
-        func_0210a148(&b, 0xfff, 127);
+        NNS_SndPlayerSetTrackVolume(&a, 0xfff, 127);
+        NNS_SndPlayerSetTrackVolume(&b, 0xfff, 127);
         break;
     case 1:
-        func_0210a148(&a, 0xfff, 100);
-        func_0210a148(&b, 0xfff, 0);
+        NNS_SndPlayerSetTrackVolume(&a, 0xfff, 100);
+        NNS_SndPlayerSetTrackVolume(&b, 0xfff, 0);
         break;
     case 2:
-        func_0210a148(&b, 0xfff, 100);
+        NNS_SndPlayerSetTrackVolume(&b, 0xfff, 100);
         break;
     }
     updatePosition(arg);
@@ -265,42 +265,42 @@ void TvSoundProgram5::vfunc_08(s32 id, void *arg) {
         if (!nz(b)) startSe(0x500, &b);
         break;
     case 70:
-        func_02109fd0(&b, 1, 1);
+        NNS_SndPlayerWriteVariable(&b, 1, 1);
         break;
     case 210:
-        func_02109fd0(&b, 2, 1);
+        NNS_SndPlayerWriteVariable(&b, 2, 1);
         break;
     case 220:
-        func_02109fd0(&b, 1, 0);
+        NNS_SndPlayerWriteVariable(&b, 1, 0);
         break;
     case 230:
         if (d13 == 0) startSe(0x4fe, &a);
         else startSe(0x4ff, &a);
         break;
     case 253:
-        if (d13 == 1) func_02109fd0(&b, 2, 2);
+        if (d13 == 1) NNS_SndPlayerWriteVariable(&b, 2, 2);
         break;
     case 258:
-        if (d13 == 0) func_02109fd0(&b, 2, 2);
+        if (d13 == 0) NNS_SndPlayerWriteVariable(&b, 2, 2);
         break;
     case 280:
-        func_02109fd0(&b, 1, 1);
+        NNS_SndPlayerWriteVariable(&b, 1, 1);
         break;
     case 370:
-        func_02109fd0(&b, 1, 0);
-        func_02109fd0(&b, 2, 1);
+        NNS_SndPlayerWriteVariable(&b, 1, 0);
+        NNS_SndPlayerWriteVariable(&b, 2, 1);
         break;
     case 383:
-        if (d13 == 1) func_02109fd0(&a, 0, 2);
+        if (d13 == 1) NNS_SndPlayerWriteVariable(&a, 0, 2);
         break;
     case 390:
-        if (d13 == 0) func_02109fd0(&a, 0, 2);
+        if (d13 == 0) NNS_SndPlayerWriteVariable(&a, 0, 2);
         break;
     case 405:
-        if (d13 == 1) func_02109fd0(&b, 2, 3);
+        if (d13 == 1) NNS_SndPlayerWriteVariable(&b, 2, 3);
         break;
     case 425:
-        if (d13 == 0) func_02109fd0(&b, 2, 3);
+        if (d13 == 0) NNS_SndPlayerWriteVariable(&b, 2, 3);
         break;
     case 479:
         d13++;
@@ -324,24 +324,24 @@ void TvSoundProgram9::vfunc_08(s32 id, void *arg) {
     case 4:
         if (!nz(a)) startSe(0x501, &a);
         if (!nz(b)) startSe(0x502, &b);
-        func_02109fd0(&a, 0, 1);
-        func_02109fd0(&b, 0, 1);
+        NNS_SndPlayerWriteVariable(&a, 0, 1);
+        NNS_SndPlayerWriteVariable(&b, 0, 1);
         break;
     case 90:
-        func_02109fd0(&a, 0, 2);
-        func_02109fd0(&b, 0, 2);
+        NNS_SndPlayerWriteVariable(&a, 0, 2);
+        NNS_SndPlayerWriteVariable(&b, 0, 2);
         break;
     case 140:
-        func_02109fd0(&a, 0, 3);
+        NNS_SndPlayerWriteVariable(&a, 0, 3);
         break;
     case 225:
-        func_02109fd0(&a, 0, 4);
+        NNS_SndPlayerWriteVariable(&a, 0, 4);
         break;
     case 235:
-        func_02109fd0(&a, 0, 5);
+        NNS_SndPlayerWriteVariable(&a, 0, 5);
         break;
     case 245:
-        func_02109fd0(&b, 0, 3);
+        NNS_SndPlayerWriteVariable(&b, 0, 3);
         break;
     }
     updatePosition(arg);

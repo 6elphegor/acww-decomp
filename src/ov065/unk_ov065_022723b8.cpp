@@ -53,7 +53,7 @@ s32 DWC_GetGsProfileId(s32, void *);
 s32 DWCi_Acc_IsValidFriendData(void *);
 s32 strcmp(const char *, const char *);
 s32 STD_GetStringLength(const char *);
-void func_02127838(char *, const char *);
+void STD_CopyString(char *, const char *);
 s32 strtoul(const char *, char **, s32);
 void MI_CpuFill8(void *, s32, u32);
 void MI_CpuCopy8(const void *, void *, u32);
@@ -414,7 +414,7 @@ extern "C" {
 
 char *strchr(const char *, s32);
 s32 STD_GetStringLength(const char *);
-void func_02127838(char *, const char *);
+void STD_CopyString(char *, const char *);
 void MI_CpuCopy8(const void *, void *, u32);
 void MIi_CpuCopy32(const void *, void *, u32);
 void MIi_CpuClear32(u32, void *, u32);
@@ -2169,7 +2169,7 @@ s32 DwcMatch_SendSbCommand(u32 a, u32 b, u32 c, u32 *d, s32 e) {
     } else {
         e = 0;
     }
-    func_02127838(h.magic, (char *)"SBCM");
+    STD_CopyString(h.magic, (char *)"SBCM");
     h.version = 3;
     h.command = a;
     h.argsSize = e * 4;

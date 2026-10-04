@@ -138,30 +138,30 @@ extern void MI_CpuFill8(void *, u32, u32);
 extern void MI_CpuCopy8(void *, void *, u32);
 extern u32 PXI_IsCallbackReady(u32, u32);
 extern u32 WM_GetNextTgid(void);
-extern u32 func_0211fb0c(u32, void *, u32);
+extern u32 WM_SetPortCallback(u32, void *, u32);
 extern u32 WM_SetIndCallback(WCb);
 extern u32 WM_Disconnect(WCb, u32);
-extern u32 func_0211fcbc(WCb, u32, u32, u32, u32);
+extern u32 WM_StartConnectEx(WCb, u32, u32, u32, u32);
 extern u32 WM_StartScan(WCb, void *);
 extern u32 WM_End(WCb);
 extern u32 WM_Reset(WCb);
 extern u32 WM_Initialize(void *, WCb, u32);
 extern u32 WM_SetMPDataToPortEx(u32, u32, u32, u32, u32, u32, u32);
-extern u32 func_021206b4(WCb, void *, u32, void *, u32, u32, u32, u32, u32, u32, u32);
+extern u32 WM_StartMPEx(WCb, void *, u32, void *, u32, u32, u32, u32, u32, u32, u32);
 extern u32 WM_SetLifeTime(WCb, u32, u32, u32, u32);
 extern void MB_CommSetParentStateCallback(void *);
-extern void func_0212454c(void);
-extern u32 func_021265dc(void);
+extern void MB_InitSendGameInfoStatus(void);
+extern u32 MBi_IsSendEnabled(void);
 extern u32 changeScanChannel(void *);
 extern u32 MBi_OnInitializeDone(void);
 extern void MBi_EndTaskThread(void *);
 extern u32 MBi_IsTaskAvailable(void);
 extern void MBi_ClearParentPieceBuffer(u32);
 extern void MBi_SetParentPieceBuffer(void *);
-extern void func_02126ef4(u32);
-extern void func_02125d0c(void *);
+extern void MBi_SetChildMPMaxSize(u32);
+extern void MBi_ParentCallback(void *);
 extern void MBi_CommParentCallback(u32, void *);
-extern void func_02125c94(void *);
+extern void MBi_ChildPortCallback(void *);
 
 void MBi_CheckWmErrcode(u32 id, u32 res);
 void MBi_SetMaxScanTime(u32 t);
@@ -169,11 +169,11 @@ u32 MBi_SetMPData(WCb cb, void *a, u32 b, u32 c, u16 d);
 BOOL MBi_CommEnd(void);
 BOOL MBi_OnReset(void);
 BOOL MBi_CallReset(void);
-u32 func_02124d74(u32 a);
+u32 MBi_StartParentCore(u32 a);
 u32 MBi_StartCommon(void);
 BOOL MBi_IsCommSizeValid(u32 a, u32 c, u32 d);
-u32 func_021253a4(void);
-void func_0212541c(void *arg);
+u32 MBi_GetBeaconPeriodDispersion(void);
+void MBi_ChildCallback(void *arg);
 
 // set WMScanParam.maxChannelTime of data_02200020
 void MBi_SetMaxScanTime(u32 t) {
@@ -188,7 +188,7 @@ u32 MBi_SetMPData(WCb cb, void *a, u32 b, u32 c, u16 d) {
 }
 
 // send step (probably WC_SetMPData-like): wraps MBi_SetMPData in the MP state of the control block
-u32 func_02124930(void *a, u32 b0, u32 c0) {
+u32 MBi_SendMP(void *a, u32 b0, u32 c0) {
     WCtl *g = data_02200018;
     u16 b = b0;
     u16 c = c0;
@@ -201,7 +201,7 @@ u32 func_02124930(void *a, u32 b0, u32 c0) {
         if (r == 2) r = 0;
         return r;
     case 2:
-        r = MBi_SetMPData(func_0212541c, a, b, 0, c);
+        r = MBi_SetMPData(MBi_ChildCallback, a, b, 0, c);
         if (r == 2) data_02200018->f50c = 1;
         if (r == 2) r = 0;
         return r;

@@ -94,7 +94,7 @@ OSThread *OS_SelectThread(void);
 void OSi_UnlockAllMutex(OSThread *t);
 void OSi_EnqueueTail(OSThread *t, OSMutex *m);
 OSMutex *OSi_RemoveMutexLinkFromQueue(OSMutex **q);
-u32 func_02113f04(void);
+u32 OSi_DetectDeviceType(void);
 BOOL func_02113ed0(void);
 u32 OSi_GetUnusedThreadId(void);
 void OSi_SleepAlarmCallback(OSThread **p);
@@ -332,7 +332,7 @@ void OS_YieldThread(void) {
 }
 
 // OS_CheckStack
-u32 func_02113438(OSThread *t) {
+u32 OS_GetStackStatus(OSThread *t) {
     u32 *top = (u32 *)t->stackTop;
     if (*top != 0x7bf9dd5b) return 1;
     if (t->stackWarningOffset != 0) {
@@ -431,17 +431,17 @@ void OS_SetThreadDestructor(OSThread *t, void (*d)(void *)) {
 }
 
 // OS_SetThreadParameter (thread+0xb8)
-void func_0211320c(OSThread *t, u32 v) {
+void OS_SetThreadParameter(OSThread *t, u32 v) {
     t->parameter = v;
 }
 
 // OS_GetThreadParameter (thread+0xb8)
-u32 func_02113204(OSThread *t) {
+u32 OS_GetThreadParameter(OSThread *t) {
     return t->parameter;
 }
 
 // OS_IsThreadAvailable
-u32 func_021131f4(void) {
+u32 OS_IsThreadAvailable(void) {
     return data_021fcc28;
 }
 

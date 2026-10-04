@@ -47,7 +47,7 @@ typedef struct { u32 a[3]; u16 b[4]; } WDst;
 BOOL IsAbleToLoad(u32 idx, u32 addr, u32 size);
 BOOL MBi_IsAbleToRecv(u32 idx, u32 addr, u32 size);
 void MBi_CommChangeParentStateCallbackOnly(u32 a, u32 b, void *c);
-void func_0212244c(u8 *msg, u32 aid);
+void MBi_CommParentRecvDataPerChild(u8 *msg, u32 aid);
 typedef struct { u8 id; u16 aid; u16 pad; } WMsg;
 typedef struct { u32 f0, f4, f8, fc; } WJob;
 typedef struct { u8 pad[0x14]; u32 f14; } WObj;
@@ -89,7 +89,7 @@ typedef struct {
 #define WK2 ((WWork *)data_0220001c)
 void MBi_CommParentRecvData(void *arg);
 // (wireless data-transfer table builder: prefix sums of 3 segment sizes, per-segment sector counts, uses IsAbleToLoad range check)
-BOOL func_02123368(WDst *dst, WSrc *src) {
+BOOL MBi_MakeBlockInfoTable(WDst *dst, WSrc *src) {
     u16 *tab = dst->b;
     u8 i;
     u32 sum;

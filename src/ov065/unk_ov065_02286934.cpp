@@ -54,7 +54,7 @@ extern u8 data_ov065_02291548[];
 
 s32 OS_SPrintf(char *buf, const char *fmt, ...);
 s32 OS_SNPrintf(char *buf, s32 n, const char *fmt, ...);
-char *func_02127838(char *dst, const char *src);
+char *STD_CopyString(char *dst, const char *src);
 u32 STD_GetStringLength(const char *s);
 
 char *Sock_InetNtoA(GsInAddr a);
@@ -354,7 +354,7 @@ extern "C" void GsNatNeg_SendInit(GsNatNegotiator *ctx) {
     pkt.localIp3 = ip;
     pkt.localPortHi = 0;
     pkt.localPortLo = 0;
-    func_02127838(pkt.name, sGsGameName);
+    STD_CopyString(pkt.name, sGsGameName);
     s32 len = STD_GetStringLength(sGsGameName) + 0x16;
     if (p[0xe] != 0 && ctx->initAcked[0] == 0) {
         p[0xc] = 0;

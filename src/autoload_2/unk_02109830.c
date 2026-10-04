@@ -144,7 +144,7 @@ extern void SND_StartTimer(u32, u32, u32, u32);
 extern void SND_SetTrackAllocatableChannel();
 extern void SND_SetTrackPan();
 extern void SND_SetTrackPitch();
-extern void func_02116b54();
+extern void SND_SetTrackVolume();
 extern void SND_SetPlayerGlobalVariable();
 extern void SND_SetPlayerLocalVariable();
 extern void SND_SetPlayerChannelPriority();
@@ -160,9 +160,9 @@ extern u32 SND_WaitForCommandProc(u32);
 extern u32 SND_FlushCommand(u32);
 extern u32 SND_RecvCommandReply(u32);
 extern u32 SND_ReadTrackInfo();
-extern u32 func_0211777c();
-extern s32 func_02117844(s32);
-extern s32 func_02117884();
+extern u32 SND_ReadPlayerInfo();
+extern s32 SND_GetPlayerGlobalVariable(s32);
+extern s32 SND_GetPlayerLocalVariable();
 extern u32 SND_GetPlayerStatus(void);
 extern s32 SND_CalcChannelVolume(s32);
 extern void SND_SetMasterVolume(u32);
@@ -181,7 +181,7 @@ Seq *AllocSeqPlayer(s32);
 void NNS_SndHandleReleaseSeq(Handle *);
 void StrmCallback(Strm *, s32);
 void ShutdownStrm(Strm *);
-void func_0210a630(Strm *);
+void ForceStopStrm(Strm *);
 void NNS_SndStrmStop(Strm *);
 void NNS_SndFreeAlarm(s32);
 s32 NNS_SndAllocAlarm(void);
@@ -192,7 +192,7 @@ void NNSi_SndPlayerMain(void);
 void NNSi_SndPlayerInit(void);
 void NNSi_SndInitResourceMgr(void);
 u32 BeginSleep(void);
-u32 NNS_SndReadDriverChannelInfo(u32, u32);
+u32 NNSi_SndReadDriverPlayerInfo(u32, u32);
 u32 NNSi_SndReadDriverTrackInfo(u32, u32, u32);
 void EndSleep(void);
 
@@ -328,7 +328,7 @@ void NNS_SndPlayerMoveVolume(Handle *h, s32 v, s32 frames)
 }
 
 // NNS_SndHandleSetPriority
-void func_0210a1e8(Handle *h, u8 prio)
+void NNS_SndPlayerSetPlayerPriority(Handle *h, u8 prio)
 {
     if (h->seq == 0) {
         return;
@@ -346,7 +346,7 @@ void NNS_SndPlayerSetChannelPriority(Handle *h, u32 b)
 }
 
 // NNS_SndHandleSetTrackPitch-like
-void func_0210a188(Handle *h, u32 b, u32 c)
+void NNS_SndPlayerSetTrackMute(Handle *h, u32 b, u32 c)
 {
     if (h->seq == 0) {
         return;
@@ -355,12 +355,12 @@ void func_0210a188(Handle *h, u32 b, u32 c)
 }
 
 // NNS_SndHandleSetTrackPan-like (volume table lookup)
-void func_0210a148(Handle *h, u32 b, s32 c)
+void NNS_SndPlayerSetTrackVolume(Handle *h, u32 b, s32 c)
 {
     if (h->seq == 0) {
         return;
     }
-    func_02116b54(h->seq->id, b, data_02139fb4[c]);
+    SND_SetTrackVolume(h->seq->id, b, data_02139fb4[c]);
 }
 
 // NNS_SndHandleSetTrackModDepth-like
@@ -382,7 +382,7 @@ void NNS_SndPlayerSetTrackPan(Handle *h, u32 b, u32 c)
 }
 
 // NNS_SndHandleSetTempo-like
-void func_0210a0b8(Handle *h, u32 b)
+void NNS_SndPlayerSetTempoRatio(Handle *h, u32 b)
 {
     if (h->seq == 0) {
         return;
@@ -413,7 +413,7 @@ void NNS_SndPlayerSetSeqArcNo(Handle *h, u16 a, u16 b)
 }
 
 // NNS_SndHandleReadVariable-like
-BOOL func_0210a024(Handle *h, s32 b, s16 *out)
+BOOL NNS_SndPlayerReadVariable(Handle *h, s32 b, s16 *out)
 {
     Seq *s = h->seq;
     if (s == 0) {
@@ -423,19 +423,19 @@ BOOL func_0210a024(Handle *h, s32 b, s16 *out)
         *out = -1;
         return 1;
     }
-    *out = func_02117884(s->id, b);
+    *out = SND_GetPlayerLocalVariable(s->id, b);
     return 1;
 }
 
 // NNS_SndReadGlobalVariable-like
-BOOL func_0210a008(s32 a, u16 *out)
+BOOL NNS_SndPlayerReadGlobalVariable(s32 a, u16 *out)
 {
-    *out = func_02117844(a);
+    *out = SND_GetPlayerGlobalVariable(a);
     return 1;
 }
 
 // NNS_SndHandleSetTrackMute
-BOOL func_02109fd0(Handle *h, u32 b, u32 c)
+BOOL NNS_SndPlayerWriteVariable(Handle *h, u32 b, u32 c)
 {
     if (h->seq == 0) {
         return 0;
@@ -445,23 +445,23 @@ BOOL func_02109fd0(Handle *h, u32 b, u32 c)
 }
 
 // NNS_SndSetGlobalVariable-like
-BOOL func_02109fb4(u32 a, u32 b)
+BOOL NNS_SndPlayerWriteGlobalVariable(u32 a, u32 b)
 {
     SND_SetPlayerGlobalVariable(a, b);
     return 1;
 }
 
 // NNS_SndHandleGetChannelInfo-like
-u32 func_02109f80(Handle *h, u32 b)
+u32 NNS_SndPlayerReadDriverPlayerInfo(Handle *h, u32 b)
 {
     if (h->seq == 0) {
         return 0;
     }
-    return NNS_SndReadDriverChannelInfo(h->seq->id, b);
+    return NNSi_SndReadDriverPlayerInfo(h->seq->id, b);
 }
 
 // NNS_SndHandleGetTrackInfo-like
-u32 func_02109f4c(Handle *h, u32 b, u32 c)
+u32 NNS_SndPlayerReadDriverTrackInfo(Handle *h, u32 b, u32 c)
 {
     if (h->seq == 0) {
         return 0;

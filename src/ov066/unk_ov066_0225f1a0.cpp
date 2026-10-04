@@ -320,8 +320,8 @@ s32 Fatal_Trap(void);
 void DC_InvalidateRange(void *p, s32 v);
 s32 DC_StoreRange(void *, s32);
 s32 OS_InitTick(void);
-s32 func_02114ef4(u32);
-s32 func_02114f74(void *, u32);
+s32 OS_CancelAlarms(u32);
+s32 OS_SetAlarmTag(void *, u32);
 s32 OS_CancelAlarm(void *);
 s32 OS_SetAlarm(void *, s64, void *, void *);
 s32 OS_CreateAlarm(void *);
@@ -331,16 +331,16 @@ s32 MIi_CpuClearFast(s32, void *, s32);
 s32 MIi_CpuCopyFast(void *, void *, s32);
 void MI_CpuFill8(void *p, u32 v, u32 n);
 s32 MI_CpuCopy8(void *, void *, s32);
-s32 func_0211f188(void);
+s32 WM_Finish(void);
 s32 WM_Init(void *p, s32 v);
 u32 WM_GetDispersionBeaconPeriod(void);
 s32 WM_GetLinkLevel(void);
 s32 func_0211f7e4(void);
 u32 WM_GetAllowedChannel(void);
-s32 func_0211fb0c(u32, void *, s32);
+s32 WM_SetPortCallback(u32, void *, s32);
 s32 WM_SetIndCallback(void *);
 s32 WM_Disconnect(void *, u32);
-s32 func_0211fcbc(void *, u32, u32, u32, u32);
+s32 WM_StartConnectEx(void *, u32, u32, u32, u32);
 s32 WM_EndScan(void *);
 s32 WM_StartScan(void *, s32);
 s32 WM_EndParent(void *);
@@ -349,9 +349,9 @@ s32 WM_SetParentParameter(void *, u32);
 s32 WM_Reset(void);
 s32 WM_EndMP(void *);
 s32 WM_SetMPDataToPortEx(void *, u32, u32, u32, u32, u32, u32);
-s32 func_021206b4(void *, u32, u32, u32, u32, u32, u32, s32, s32, s32, s32);
+s32 WM_StartMPEx(void *, u32, u32, u32, u32, u32, u32, s32, s32, s32, s32);
 s32 WM_SetEntry(void *, u32);
-s32 func_021218d0(void *, s32, s32, u32, s32);
+s32 WM_MeasureChannel(void *, s32, s32, u32, s32);
 s32 WM_SetGameInfo(void *, u32, u32, u32, u32, u8);
 u32 MATH_CountPopulation(void);
 u32 func_0213335c(u32 a, u32 b);
@@ -637,8 +637,8 @@ void LocalWlMp_Start(u8 *msg) {
     sLocalWlMp->recvCursors = (LocalWlMpFrame **)LocalWl_Alloc(n, 4);
     MI_CpuFill8(sLocalWlMp->recvCursors, 0, n);
     sLocalWlMp->recordSize = msg[6];
-    func_0211fb0c(0xc, (void *)LocalWl_OnControlRecv, 0);
-    func_0211fb0c(0xd, (void *)LocalWlMp_OnDataRecv, 0);
+    WM_SetPortCallback(0xc, (void *)LocalWl_OnControlRecv, 0);
+    WM_SetPortCallback(0xd, (void *)LocalWlMp_OnDataRecv, 0);
     WM_SetIndCallback((void *)LocalWlMp_OnIndicationStub);
     LocalWlMp_Reset();
 }
@@ -647,8 +647,8 @@ void LocalWlMp_Shutdown(void) {
     if (sLocalWlMp == NULL) {
         return;
     }
-    func_0211fb0c(0xc, 0, 0);
-    func_0211fb0c(0xd, 0, 0);
+    WM_SetPortCallback(0xc, 0, 0);
+    WM_SetPortCallback(0xd, 0, 0);
     LocalWl_Free(sLocalWlMp->recvCursors);
     LocalWl_Free((void *)sLocalWlMp->recvRing);
     LocalWl_Free((void *)sLocalWlMp->sendRing);
@@ -1207,7 +1207,7 @@ void LocalWlBcn_Init(LocalWlBeaconList *o, u32 id, s32 n) {
 void LocalWlBcn_Free(LocalWlBeaconList *o) {
     o->numUsed = 0;
     o->capacity = 0;
-    func_02114ef4(o->listId + 0x80);
+    OS_CancelAlarms(o->listId + 0x80);
     LocalWl_Free(o->alarms);
     LocalWl_Free(o->entries);
 }
@@ -1249,7 +1249,7 @@ s32 LocalWlBcn_Add(LocalWlBeaconList *o, s32 a, u8 *b, u32 c, u16 d, void *e) {
                 OS_RestoreInterrupts(t);
                 soff = i * 0x2c;
                 OS_SetAlarm((u8 *)o->alarms + soff, a * 0x82ea / 64, (void *)LocalWlBcn_OnExpire, &o->entries[i]);
-                func_02114f74((u8 *)o->alarms + soff, o->listId + 0x80);
+                OS_SetAlarmTag((u8 *)o->alarms + soff, o->listId + 0x80);
                 return TRUE;
             }
         }
@@ -1283,7 +1283,7 @@ s32 LocalWlBcn_Add(LocalWlBeaconList *o, s32 a, u8 *b, u32 c, u16 d, void *e) {
             OS_CancelAlarm(&o->alarms[i2]);
             off = i2 * 0xe0;
             OS_SetAlarm(&o->alarms[i2], a * 0x82ea / 64, (void *)LocalWlBcn_OnExpire, (u8 *)o->entries + off);
-            func_02114f74(&o->alarms[i2], o->listId + 0x80);
+            OS_SetAlarmTag(&o->alarms[i2], o->listId + 0x80);
             if (o->changeCallback != NULL) {
                 o->changeCallback((LocalWlBeacon *)((u8 *)o->entries + off));
             }
@@ -1320,7 +1320,7 @@ LocalWlBeacon *LocalWlBcn_Get(LocalWlBeaconList *o, u32 i) {
 }
 
 void LocalWlBcn_CancelAlarms(LocalWlBeaconList *o) {
-    func_02114ef4(o->listId + 0x80);
+    OS_CancelAlarms(o->listId + 0x80);
 }
 
 void LocalWlBcn_Clear(LocalWlBeaconList *o) {
@@ -1342,7 +1342,7 @@ void LocalWlBcn_RefreshTimeouts(LocalWlBeaconList *o, s32 x) {
             if (o->entries[i].inUse == 1) {
                 OS_CancelAlarm(&o->alarms[i]);
                 OS_SetAlarm(&o->alarms[i], q, (void *)LocalWlBcn_OnExpire, &o->entries[i]);
-                func_02114f74(&o->alarms[i], o->listId + 0x80);
+                OS_SetAlarmTag(&o->alarms[i], o->listId + 0x80);
             }
             i++;
         } while (i < o->capacity);
@@ -1391,7 +1391,7 @@ u32 LocalWl_NextAllowedChannel(u32 a) {
 }
 
 s32 LocalWl_MeasureChannel(u32 a) {
-    s32 r = func_021218d0((void *)LocalWl_OnMeasureChannel, 3, 0x11, a, 0x1e);
+    s32 r = WM_MeasureChannel((void *)LocalWl_OnMeasureChannel, 3, 0x11, a, 0x1e);
     if (r == 2) {
         return TRUE;
     }
@@ -1549,7 +1549,7 @@ void LocalWl_InitWm(void) {
 
 void LocalWl_FinishWm(void) {
     if (sLocalWl->state == 2) {
-        if (func_0211f188() != 0) {
+        if (WM_Finish() != 0) {
             return;
         }
         LocalWl_FreeScanWork();
@@ -2052,7 +2052,7 @@ void LocalWl_OnEndParent(LocalWlEventMsg *m) {
 }
 
 void LocalWl_StartConnect(u32 a) {
-    s32 r = func_0211fcbc((void *)LocalWl_OnChildConnectEvent, a, 0, 1, 0);
+    s32 r = WM_StartConnectEx((void *)LocalWl_OnChildConnectEvent, a, 0, 1, 0);
     if (r == 2) {
         return;
     }
@@ -2144,7 +2144,7 @@ void LocalWl_OnSetGameInfo(LocalWlEventMsg *m) {
 }
 
 void LocalWl_StartMp(void) {
-    s32 r = func_021206b4((void *)LocalWl_OnMpEvent, (u32)sLocalWlSession->recvBuf, sLocalWlSession->recvBufSize,
+    s32 r = WM_StartMPEx((void *)LocalWl_OnMpEvent, (u32)sLocalWlSession->recvBuf, sLocalWlSession->recvBufSize,
                           (u32)sLocalWlSession->sendBuf, sLocalWlSession->sendBufSize, sLocalWl->mpFreq, 4,
                           sLocalWl->bits.f0, sLocalWl->bits.f1, 1,
                           sLocalWl->bits.f2);

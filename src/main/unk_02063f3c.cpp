@@ -25,8 +25,8 @@ void Heap_Free(void *h, void *p);
 void *Heap_AllocAligned(void *heap, u32 size, s32 align);
 void DC_StoreAll();
 void DC_FlushAll();
-void func_021163b0(void *st, void *dst, void *src);
-s32 func_021162b0(void *st, void *p, s32 n);
+void MI_InitUncompContextLZ(void *st, void *dst, void *src);
+s32 MI_ReadUncompLZ8(void *st, void *p, s32 n);
 s32 Str_VSNPrintf(char *buf, u32 n, const char *fmt, va_list va);
 extern void *gCurrentHeap;
 extern void *gRootHeap;
@@ -100,11 +100,11 @@ void *File_LoadAlloc(u32 path, void *heap, s32 align, u32 *outSize) {
                     size = Heap_getMaxFreeBlockSize(h);
                     p = Heap_Alloc(h, size);
                     if (p) {
-                        func_021163b0(st, ret, &hdr[1]);
+                        MI_InitUncompContextLZ(st, ret, &hdr[1]);
                         do {
                             r = FS_ReadFile(&f, p, size);
                             if (r == -1) break;
-                            if (func_021162b0(st, p, r) == 0) break;
+                            if (MI_ReadUncompLZ8(st, p, r) == 0) break;
                         } while (1);
                     }
                 }
@@ -172,11 +172,11 @@ s32 File_ReadAll(FSFile *f, void *dst, u32 n) {
                 size = Heap_getMaxFreeBlockSize(h);
                 n = (u32)Heap_Alloc(h, size);
                 if (n) {
-                    func_021163b0(st, dst, &hdr[1]);
+                    MI_InitUncompContextLZ(st, dst, &hdr[1]);
                     do {
                         s32 r = FS_ReadFile(f, (void *)n, size);
                         if (r == -1) break;
-                        if (func_021162b0(st, (void *)n, r) == 0) break;
+                        if (MI_ReadUncompLZ8(st, (void *)n, r) == 0) break;
                     } while (1);
                 }
             }

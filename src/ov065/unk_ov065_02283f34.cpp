@@ -35,7 +35,7 @@ s32 strncmp(const char *, const char *, u32);
 s32 atol(const char *);
 char *strstr(const char *, const char *);
 u32 STD_GetStringLength(const char *);
-void func_021277a4(char *, const char *);
+void STD_ConcatenateString(char *, const char *);
 void memmove(void *, void *, u32);
 void memcpy(void *, const void *, s32);
 s32 rand();

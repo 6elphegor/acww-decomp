@@ -98,7 +98,7 @@ void MI_CpuFill8(void *dst, u32 v, u32 n); // MI_CpuFill8
 void MI_CpuCopy8(const void *src, void *dst, u32 n); // MI_CpuCopy8
 void OS_SNPrintf(char *dst, u32 len, const char *fmt, ...); // OS_SPrintf
 u32 STD_GetStringLength(const char *s); // strlen
-void func_02127838(char *dst, const char *src); // strcpy
+void STD_CopyString(char *dst, const char *src); // strcpy
 void MATH_CalcSHA1(void *dst, const void *src, u32 n); // memcpy
 
 s32 Wlx_GetState(void);
@@ -405,8 +405,8 @@ void DwcFriend_SetStatusData(void *p, u32 n);
 void DwcFriend_UpdateServersAsync(u32 a, void *b, u32 c, void *d, u32 e, void *f, u32 g);
 u32 DwcFriend_GetStatusData(u8 *a, u8 *b, u8 *c, u8 *d, u32 *e);
 BOOL DWC_IsValidFriendData(void *p);
-char *func_02127838(char *dst, const char *src);
-char *func_021277a4(char *dst, const char *src);
+char *STD_CopyString(char *dst, const char *src);
+char *STD_ConcatenateString(char *dst, const char *src);
 u32 STD_GetStringLength(const char *s);
 void *MATH_CalcSHA1(void *dst, const void *src, u32 n);
 void OS_SNPrintf(char *dst, u32 len, const char *fmt, ...);
@@ -649,8 +649,8 @@ extern "C" void Net_OnHttpDownloadDone(void *a, void *b, u32 c, void *d) {
 extern "C" void Net_OnGameStatsChallenge(const char *a, u32 b, u32 c, char *d) {
     u32 i;
     if (a != NULL && b != 0 && c == 0) {
-        func_02127838(d, "gOAkBaBav5XHlGyUKOOD");
-        func_021277a4(d, a);
+        STD_CopyString(d, "gOAkBaBav5XHlGyUKOOD");
+        STD_ConcatenateString(d, a);
         MATH_CalcSHA1(data_021f48a4 + 20, d, b + STD_GetStringLength("gOAkBaBav5XHlGyUKOOD"));
         HexTable hex = data_0213b070;
         u8 *src = data_021f48a4 + 20;
@@ -1348,7 +1348,7 @@ extern "C" BOOL Net_GameStatsUpload(char *a, void *b, u32 c, u32 d) {
             data_021f48b4 = 0;
             return FALSE;
         }
-        func_02127838((char *)data_021f48b4, "gOAkBaBav5XHlGyUKOOD");
+        STD_CopyString((char *)data_021f48b4, "gOAkBaBav5XHlGyUKOOD");
         len = NasBase64_Encode(b, c, (char *)data_021f48b4 + sz, enc);
         MATH_CalcSHA1(data_021f48c4 + 0x14, (void *)data_021f48b4, sz + len);
         hex = data_0213b084;

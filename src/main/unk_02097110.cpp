@@ -40,7 +40,7 @@ s32 _s32_div_f(s32, s32);
 u32 _ZN10LetterView10setPresentEtj(void *, u32, u32);
 void Letter_ComposeFromMail(void *, void *, void *, void *, void *, s32);
 BOOL LetterDelivery_PutInAddresseeMailbox(Letter *e);
-void func_0211ea4c(s32 (*f)());
+void CARD_SetPulledOutCallback(s32 (*f)());
 s32 Startup_OnCardPulledOut();
 void PlayerBank_SetBalance(PlayerBank *p, u32 v);
 u32 PlayerBank_GetBalance(PlayerBank *p);
@@ -59,7 +59,7 @@ extern "C" s32 Startup_OnCardPulledOut() {
     return 1;
 }
 
-extern "C" void Startup_SetCardPulledOutCallback() { func_0211ea4c(Startup_OnCardPulledOut); }
+extern "C" void Startup_SetCardPulledOutCallback() { CARD_SetPulledOutCallback(Startup_OnCardPulledOut); }
 
 extern "C" void PlayerBank_Construct() {}
 

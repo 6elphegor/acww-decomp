@@ -7,7 +7,7 @@ extern "C" Backup gBackup;
 extern "C" s32 OS_GetTick(void);
 extern "C" void CARD_CancelBackupAsync(void);
 extern "C" s32 CARD_TryWaitBackupAsync(void);
-extern "C" s32 func_0211d6f0(void);
+extern "C" s32 CARD_GetResultCode(void);
 extern "C" void CARD_UnlockBackup(u16 v);
 extern "C" void OS_ReleaseLockID(u16 v);
 extern "C" s32 OS_GetLockID(void);
@@ -110,7 +110,7 @@ extern "C" s32 Backup_GetStatus(Backup *g) {
         r = 4;
     } else if (CARD_TryWaitBackupAsync() == 0) {
         r = 3;
-    } else if (func_0211d6f0() == 0) {
+    } else if (CARD_GetResultCode() == 0) {
         r = 0;
     } else {
         r = 1;
