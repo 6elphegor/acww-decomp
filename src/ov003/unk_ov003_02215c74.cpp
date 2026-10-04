@@ -131,7 +131,7 @@ static inline s32 Unk_ov003_02215c7c_Idx(BuildingActor *o) {
     return -1;
 }
 
-struct Unk_ov003_02215fc0_Rec {
+struct VillagerHouseStyleBits {
     u8 f : 5;
 };
 
@@ -257,14 +257,14 @@ BOOL VillagerHouse::onDelete() {
 s32 VillagerHouse::getHouseStyle() {
     u8 *g = gSaveVillagers;
     s32 idx = Unk_ov003_02215c7c_Idx(this);
-    Unk_ov003_02215fc0_Rec *r = (Unk_ov003_02215fc0_Rec *)VillagerDataProfileView_getInfo28(SaveVillagers_Get(g, idx));
+    VillagerHouseStyleBits *r = (VillagerHouseStyleBits *)VillagerDataProfileView_getInfo28(SaveVillagers_Get(g, idx));
     return r->f;
 }
 
 u8 VillagerHouse::getHouseVariant() {
     u8 *g = gSaveVillagers;
     s32 idx = Unk_ov003_02215c7c_Idx(this);
-    Unk_ov003_02215fc0_Rec *r = (Unk_ov003_02215fc0_Rec *)VillagerDataProfileView_getInfo28(SaveVillagers_Get(g, idx));
+    VillagerHouseStyleBits *r = (VillagerHouseStyleBits *)VillagerDataProfileView_getInfo28(SaveVillagers_Get(g, idx));
     return r->f & 3;
 }
 

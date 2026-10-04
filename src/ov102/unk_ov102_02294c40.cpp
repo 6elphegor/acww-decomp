@@ -825,7 +825,7 @@ void ChestMenu::updateCursorRelease() {
 }
 
 void ChestMenu::mainAct08() {
-    if (((MenuCursorBase *)&cursor)->func_ov002_02202928()) {
+    if (((MenuCursorBase *)&cursor)->isGripping()) {
         ChestMenu_PickUpWithHand(this, cursorSlot);
         setMainState(9);
     }
@@ -839,7 +839,7 @@ void ChestMenu::mainAct09() {
 }
 
 void ChestMenu::mainAct0A() {
-    if (!((MenuCursorBase *)&cursor)->func_ov002_02202928()) {
+    if (!((MenuCursorBase *)&cursor)->isGripping()) {
         u32 a = actionSlot;
         if (cursorSlot == a) {
             ChestMenu_DropHeldItem(this, a);
@@ -869,7 +869,7 @@ void ChestMenu::mainAct0C() {
     if (((HandCursor *)&cursor)->isAnimDone()) {
         setMainState(returnState);
     }
-    if (((MenuCursorBase *)&cursor)->func_ov002_02202928()) {
+    if (((MenuCursorBase *)&cursor)->isGripping()) {
         if (testFlags(0x40)) {
             clearFlags(0x40);
             Inventory_PlayPickUpSe();

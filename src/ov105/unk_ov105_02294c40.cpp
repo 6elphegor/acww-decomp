@@ -1247,7 +1247,7 @@ void LetterStorageMenu::mainAct0F() {
 
 void LetterStorageMenu::mainAct10() {
     S *s = this;
-    if (s->cursor.func_ov002_02202928()) {
+    if (s->cursor.isGripping()) {
         s->pickUpAtSlot(s->cursorSlot);
         s->setMainState(0x11);
     }
@@ -1263,7 +1263,7 @@ void LetterStorageMenu::mainAct11() {
 
 void LetterStorageMenu::mainAct12() {
     S *s = this;
-    if (s->cursor.func_ov002_02202928() == 0) {
+    if (s->cursor.isGripping() == 0) {
         u32 a = s->targetSlot;
         if (s->cursorSlot == a) {
             _ZN17LetterStorageMenu14dropHeldOnSlotEj(s);
@@ -1295,7 +1295,7 @@ void LetterStorageMenu::mainAct14() {
     if (s->cursor.isAnimDone()) {
         s->setMainState(s->returnState);
     }
-    if (s->cursor.func_ov002_02202928()) {
+    if (s->cursor.isGripping()) {
         if (s->testFlags(0x40)) {
             s->clearFlags(0x40);
             Inventory_PlayPickUpSe();

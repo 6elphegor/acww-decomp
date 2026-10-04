@@ -1,6 +1,6 @@
 _ZN18TouchPromptBalloon15isOpenOrOpeningEv kind:function(thumb,size=0x22) addr:0x02200680
 _ZN18TouchPromptBalloon17setAutoCloseTimerEh kind:function(thumb,size=0x6) addr:0x022006a4
-_ZN18TouchPromptBalloon19func_ov002_022006acEi kind:function(thumb,size=0x4) addr:0x022006ac
+_ZN18TouchPromptBalloon11setPriorityEi kind:function(thumb,size=0x4) addr:0x022006ac
 _ZN18TouchPromptBalloon16cancelQueuedOpenEv kind:function(thumb,size=0x8) addr:0x022006b0
 _ZN18TouchPromptBalloon9queueOpenEv kind:function(thumb,size=0x8) addr:0x022006b8
 _ZN18TouchPromptBalloon10commitOpenEv kind:function(thumb,size=0x22) addr:0x022006c0
@@ -193,7 +193,7 @@ _ZN14MenuCursorBase15getFrameScreenYEv kind:function(thumb,size=0x26) addr:0x022
 _ZN14MenuCursorBase15getFrameScreenXEv kind:function(thumb,size=0x26) addr:0x022028c8
 _ZN14MenuCursorBase8isMovingEv kind:function(thumb,size=0xc) addr:0x022028f0
 _ZN14MenuCursorBase19func_ov002_022028fcEv kind:function(thumb,size=0x2c) addr:0x022028fc
-_ZN14MenuCursorBase19func_ov002_02202928Ev kind:function(thumb,size=0x62) addr:0x02202928
+_ZN14MenuCursorBase10isGrippingEv kind:function(thumb,size=0x62) addr:0x02202928
 _ZN14MenuCursorBase10moveToNearEiiih kind:function(thumb,size=0x5c) addr:0x0220298c
 _ZN14MenuCursorBase10moveToEaseEiiii kind:function(thumb,size=0x2e) addr:0x022029e8
 _ZN14MenuCursorBase12moveToLinearEiii kind:function(thumb,size=0x28) addr:0x02202a18

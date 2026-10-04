@@ -1095,7 +1095,7 @@ void MailboxMenu::mainAct0F() {
 }
 
 void MailboxMenu::mainAct10() {
-    if (((MenuCursorBase *)&cursor)->func_ov002_02202928()) {
+    if (((MenuCursorBase *)&cursor)->isGripping()) {
         pickUpAtSlot(cursorSlot);
         setMainState(0x11);
     }
@@ -1109,7 +1109,7 @@ void MailboxMenu::mainAct11() {
 }
 
 void MailboxMenu::mainAct12() {
-    if (((MenuCursorBase *)&cursor)->func_ov002_02202928() == 0) {
+    if (((MenuCursorBase *)&cursor)->isGripping() == 0) {
         u32 a = targetSlot;
         if (cursorSlot == a) {
             dropHeldOnSlot(a);
@@ -1139,7 +1139,7 @@ void MailboxMenu::mainAct14() {
     if (((HandCursor *)&cursor)->isAnimDone()) {
         setMainState(returnState);
     }
-    if (((MenuCursorBase *)&cursor)->func_ov002_02202928()) {
+    if (((MenuCursorBase *)&cursor)->isGripping()) {
         if (testFlags(0x40)) {
             clearFlags(0x40);
             Inventory_PlayPickUpSe();

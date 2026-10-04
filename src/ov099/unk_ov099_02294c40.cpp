@@ -635,7 +635,7 @@ void PocketMenuUnk::mainAct0A() {
 }
 
 void PocketMenuUnk::mainAct0B() {
-    if (cursor.func_ov002_02202928()) {
+    if (cursor.isGripping()) {
         PocketMenuUnk_StartButtonDrag(this, cursorTarget);
         setMainState(0xc);
     }
@@ -649,7 +649,7 @@ void PocketMenuUnk::mainAct0C() {
 }
 
 void PocketMenuUnk::mainAct0D() {
-    if (!cursor.func_ov002_02202928()) {
+    if (!cursor.isGripping()) {
         u32 a = placeTarget;
         if (cursorTarget == a) {
             PocketMenuUnk_DropItemAt(this, a);
@@ -678,7 +678,7 @@ void PocketMenuUnk::mainAct0F() {
     if (cursor.isAnimDone()) {
         setMainState(returnState);
     }
-    if (cursor.func_ov002_02202928()) {
+    if (cursor.isGripping()) {
         clearFlags(0x40);
         syncHandFromCursor();
     }

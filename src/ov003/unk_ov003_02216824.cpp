@@ -37,8 +37,8 @@ class Unk_020b1ddc;
 
 
 
-struct Unk_ov003_02216824_Rec {
-    u32 pad_00;
+struct NNSG3dResAnmCommon {
+    u32 anmHeader;
     u16 numFrame;
 };
 
@@ -393,7 +393,7 @@ void Mailbox::updateDoorState() {
 }
 
 BOOL Mailbox::enterNoMail() {
-    Unk_ov003_02216824_Rec *b = (Unk_ov003_02216824_Rec *)getDoorInAnim();
+    NNSG3dResAnmCommon *b = (NNSG3dResAnmCommon *)getDoorInAnim();
     _ZN14BlendAnimModel8initAnimEiiitt(model, b, 1, 0x1000, 0, 0);
     void *r4 = ((Model *)model)->getRenderObj();
     void *r2 = getBtaAnim(0);
@@ -408,7 +408,7 @@ void Mailbox::execNoMail() {
 }
 
 BOOL Mailbox::enterMailArrive() {
-    Unk_ov003_02216824_Rec *b = (Unk_ov003_02216824_Rec *)getDoorInAnim();
+    NNSG3dResAnmCommon *b = (NNSG3dResAnmCommon *)getDoorInAnim();
     _ZN14BlendAnimModel8initAnimEiiitt(model, b, 1, 0x1000, 0, 0);
     return TRUE;
 }
@@ -422,8 +422,8 @@ void Mailbox::execMailArrive() {
 }
 
 BOOL Mailbox::enterHasMail() {
-    Unk_ov003_02216824_Rec *a = (Unk_ov003_02216824_Rec *)getDoorInAnim();
-    Unk_ov003_02216824_Rec *b = (Unk_ov003_02216824_Rec *)getDoorInAnim();
+    NNSG3dResAnmCommon *a = (NNSG3dResAnmCommon *)getDoorInAnim();
+    NNSG3dResAnmCommon *b = (NNSG3dResAnmCommon *)getDoorInAnim();
     _ZN14BlendAnimModel8initAnimEiiitt(model, b, 1, 0x1000, a->numFrame - 1, 0);
     void *r5 = ((Model *)model)->getRenderObj();
     void *r2 = getBtaAnim(0);
@@ -437,7 +437,7 @@ void Mailbox::execHasMail() {
 }
 
 BOOL Mailbox::enterLidOpen() {
-    Unk_ov003_02216824_Rec *b = (Unk_ov003_02216824_Rec *)getDoorOutAnim();
+    NNSG3dResAnmCommon *b = (NNSG3dResAnmCommon *)getDoorOutAnim();
     _ZN14BlendAnimModel8initAnimEiiitt(model, b, 1, 0x1000, 0, 0);
     ((BuildingSeEmitter *)seEmitter)->playSe(0x819);
     return TRUE;
@@ -453,8 +453,8 @@ void Mailbox::execLidOpen() {
 }
 
 BOOL Mailbox::enterLidOpened() {
-    Unk_ov003_02216824_Rec *a = (Unk_ov003_02216824_Rec *)getDoorOutAnim();
-    Unk_ov003_02216824_Rec *b = (Unk_ov003_02216824_Rec *)getDoorOutAnim();
+    NNSG3dResAnmCommon *a = (NNSG3dResAnmCommon *)getDoorOutAnim();
+    NNSG3dResAnmCommon *b = (NNSG3dResAnmCommon *)getDoorOutAnim();
     _ZN14BlendAnimModel8initAnimEiiitt(model, b, 1, 0x1000, a->numFrame - 1, 0);
     return TRUE;
 }
@@ -465,8 +465,8 @@ void Mailbox::execLidOpened() {
 }
 
 BOOL Mailbox::enterLidClose() {
-    Unk_ov003_02216824_Rec *a = (Unk_ov003_02216824_Rec *)getDoorOutAnim();
-    Unk_ov003_02216824_Rec *b = (Unk_ov003_02216824_Rec *)getDoorOutAnim();
+    NNSG3dResAnmCommon *a = (NNSG3dResAnmCommon *)getDoorOutAnim();
+    NNSG3dResAnmCommon *b = (NNSG3dResAnmCommon *)getDoorOutAnim();
     _ZN14BlendAnimModel8initAnimEiiitt(model, b, 3, 0x1000, a->numFrame - 1, 0);
     ((BuildingSeEmitter *)seEmitter)->playSe(0x81a);
     return TRUE;
@@ -487,8 +487,8 @@ void Mailbox::execLidClose() {
 }
 
 BOOL Mailbox::enterMailGone() {
-    Unk_ov003_02216824_Rec *a = (Unk_ov003_02216824_Rec *)getDoorInAnim();
-    Unk_ov003_02216824_Rec *b = (Unk_ov003_02216824_Rec *)getDoorInAnim();
+    NNSG3dResAnmCommon *a = (NNSG3dResAnmCommon *)getDoorInAnim();
+    NNSG3dResAnmCommon *b = (NNSG3dResAnmCommon *)getDoorInAnim();
     _ZN14BlendAnimModel8initAnimEiiitt(model, b, 3, 0x1000, a->numFrame - 1, 0);
     ((BuildingSeEmitter *)seEmitter)->playSe(0x81b);
     return TRUE;

@@ -361,7 +361,7 @@ void TouchPromptBalloon::queueOpen() { openQueued = 1; }
 
 void TouchPromptBalloon::cancelQueuedOpen() { openQueued = 0; }
 
-void TouchPromptBalloon::func_ov002_022006ac(s32 v) { priority = v; }
+void TouchPromptBalloon::setPriority(s32 v) { priority = v; }
 
 void TouchPromptBalloon::setAutoCloseTimer(u8 v) { autoCloseTimer = v; }
 

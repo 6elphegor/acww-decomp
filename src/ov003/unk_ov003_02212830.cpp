@@ -95,7 +95,7 @@ public:
     SnowballCollider();
     ~SnowballCollider();
     virtual void onCollide(u32 a, u32 b, u32 c);
-    /* 0x44 */ u8 unk_44;
+    /* 0x44 */ u8 hitThisFrame;
 };
 
 
@@ -320,18 +320,18 @@ extern "C" void Snowball_Create() {
 // ================================================================
 // class Snowball
 SnowballCollider::SnowballCollider() {
-    unk_44 = 0;
+    hitThisFrame = 0;
 }
 
 SnowballCollider::~SnowballCollider() {
-    unk_44 = 0;
+    hitThisFrame = 0;
 }
 
 // ================================================================
 // class SnowballCollider
 void SnowballCollider::onCollide(u32 a, u32 b, u32 c) {
     if (c & 4) {
-        unk_44 = 1;
+        hitThisFrame = 1;
     }
 }
 
@@ -424,7 +424,7 @@ BOOL Snowball::onExecute() {
     fl->e = 0;
     fl->h = 0;
     fl->i = 0;
-    collider.unk_44 = 0;
+    collider.hitThisFrame = 0;
     prevPosition.x = position.x;
     prevPosition.y = position.y;
     prevPosition.z = position.z;
@@ -645,7 +645,7 @@ extern "C" s32 Snowball_UpdateRolling(Obj *o)
 
 extern "C" BOOL Snowball_TrySetPos(Obj *o, V3P *v)
 {
-    if (o->snowballFlags.i == 0 && o->snowballFlags.e == 0 && o->collider.unk_44 == 0) {
+    if (o->snowballFlags.i == 0 && o->snowballFlags.e == 0 && o->collider.hitThisFrame == 0) {
         o->position.x = v->x;
         o->position.y = v->y;
         o->position.z = v->z;

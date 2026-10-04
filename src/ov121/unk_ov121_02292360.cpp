@@ -60,7 +60,7 @@
 #define MenuCursorBase_getFrameScreenY _ZN14MenuCursorBase15getFrameScreenYEv
 #define MenuCursorBase_getFrameScreenX _ZN14MenuCursorBase15getFrameScreenXEv
 #define MenuCursorBase_isMoving _ZN14MenuCursorBase8isMovingEv
-#define func_ov002_02202928 _ZN14MenuCursorBase19func_ov002_02202928Ev
+#define MenuCursorBase_isGripping _ZN14MenuCursorBase10isGrippingEv
 #define MenuCursorBase_moveToEase _ZN14MenuCursorBase10moveToEaseEiiii
 #define MenuCursorBase_moveToLinear _ZN14MenuCursorBase12moveToLinearEiii
 #define MenuCursorBase_warpTo _ZN14MenuCursorBase6warpToEii
@@ -198,7 +198,7 @@ s32 MenuCursorBase_getScreenX(void *p);
 BOOL MenuCursorBase_isMoving(void *p);
 s32 MenuCursorBase_getFrameScreenY(void *p);
 s32 MenuCursorBase_getFrameScreenX(void *p);
-BOOL func_ov002_02202928(void *p);
+BOOL MenuCursorBase_isGripping(void *p);
 void MenuCursorBase_moveToEase(void *p, s32 a, s32 b, s32 c, s32 d);
 void MenuCursorBase_moveToLinear(void *p, s32 a, s32 b, s32 c);
 void MenuCursorBase_warpTo(void *p, s32 a, s32 b);
@@ -950,7 +950,7 @@ void DesignTab::updateCursorRelease() {
 }
 
 void DesignTab::updateGrab() {
-    if (func_ov002_02202928(&cursor)) {
+    if (MenuCursorBase_isGripping(&cursor)) {
         setMainState(0xa);
         heldSlot = cursorSlot;
         setFlags(4);
@@ -963,7 +963,7 @@ void DesignTab::updateCarryMove() {
 }
 
 void DesignTab::updateDrop() {
-    if (!func_ov002_02202928(&cursor)) {
+    if (!MenuCursorBase_isGripping(&cursor)) {
         clearFlags(4);
         if (testFlags(0x80)) {
             updateNameLabel();

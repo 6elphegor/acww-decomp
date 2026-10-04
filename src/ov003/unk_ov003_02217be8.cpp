@@ -98,7 +98,7 @@ struct Unk_ov003_02217948 {
     u32 pad[0xc / 4];
 };
 
-struct Unk_ov003_022179b8_Rec {
+struct GroundSoundSrcView {
     u32 pad[0x1c / 4];
 };
 
@@ -467,7 +467,7 @@ void FieldGround::updateAmbientSe() {
     data_ov003_02235490 = 0;
     if (gCamera != 0) {
         Unk_ov003_02218478_V3 v = gCameraLookAt;
-        Unk_ov003_022179b8_Rec q;
+        GroundSoundSrcView q;
         FieldGround_FindSoundSrc(&q, &v);
         void *r6 = (void *)FieldGround_GetSoundSrcPos(&q);
         if (r6 != 0) {

@@ -645,7 +645,7 @@ void LetterGiveMenu::mainAct0C() {
 }
 
 void LetterGiveMenu::mainAct0D() {
-    if (((MenuCursorBase *)&cursor)->func_ov002_02202928()) {
+    if (((MenuCursorBase *)&cursor)->isGripping()) {
         carryFromSlot(cursorSlot);
         setMainState(0xe);
     }
@@ -659,7 +659,7 @@ void LetterGiveMenu::mainAct0E() {
 }
 
 void LetterGiveMenu::mainAct0F() {
-    if (((MenuCursorBase *)&cursor)->func_ov002_02202928() == 0) {
+    if (((MenuCursorBase *)&cursor)->isGripping() == 0) {
         u32 a = targetSlot;
         if (cursorSlot == a) {
             dropOnSlot(a);
@@ -688,7 +688,7 @@ void LetterGiveMenu::mainAct11() {
     if (((HandCursor *)&cursor)->isAnimDone()) {
         setMainState(returnState);
     }
-    if (((MenuCursorBase *)&cursor)->func_ov002_02202928()) {
+    if (((MenuCursorBase *)&cursor)->isGripping()) {
         clearFlags(0x40);
         setCarryPosFromCursor();
     }

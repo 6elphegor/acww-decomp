@@ -256,7 +256,7 @@ void *ProcBase_GetParent(void *p);
 void ProcBase_RequestDelete(void *p);
 s32 _ZN18TouchPromptBalloon15isOpenOrOpeningEv(void *p);
 void _ZN18TouchPromptBalloon17setAutoCloseTimerEh(void *p, s32 a);
-void _ZN18TouchPromptBalloon19func_ov002_022006acEi(void *p, s32 a);
+void _ZN18TouchPromptBalloon11setPriorityEi(void *p, s32 a);
 void _ZN18TouchPromptBalloon16cancelQueuedOpenEv(void *p);
 void _ZN18TouchPromptBalloon9queueOpenEv(void *p);
 void _ZN18TouchPromptBalloon10commitOpenEv(void *p);
@@ -307,7 +307,7 @@ s32 _ZN14MenuCursorBase15getFrameScreenYEv(void *p);
 s32 _ZN14MenuCursorBase15getFrameScreenXEv(void *p);
 BOOL _ZN14MenuCursorBase8isMovingEv(void *p);
 BOOL _ZN14MenuCursorBase19func_ov002_022028fcEv(void *p);
-BOOL _ZN14MenuCursorBase19func_ov002_02202928Ev(void *p);
+BOOL _ZN14MenuCursorBase10isGrippingEv(void *p);
 void _ZN14MenuCursorBase6warpToEii(void *p, s32 a, s32 b);
 void _ZN10MenuCursor12setPosePressEv(void *p);
 void _ZN10MenuCursor14switchToAnim0DEv(void *self);
@@ -875,7 +875,7 @@ void PocketMenu::initPocketMenu() {
     _ZN10LetterGrid4initEi(unk_db8, 2);
     InventoryBg_Init(unk_de0, 6);
     balloonTarget = 0x26;
-    _ZN18TouchPromptBalloon19func_ov002_022006acEi(unk_23c0, 2);
+    _ZN18TouchPromptBalloon11setPriorityEi(unk_23c0, 2);
     _ZN12CursorMotion5resetEv(unk_2480);
     clearHand();
     cursorTarget = MenuCtrl_GetSavedSlot();
@@ -1399,7 +1399,7 @@ void PocketMenu::mainAct11() {
 }
 
 void PocketMenu::mainAct12() {
-    if (_ZN14MenuCursorBase19func_ov002_02202928Ev(unk_2498)) {
+    if (_ZN14MenuCursorBase10isGrippingEv(unk_2498)) {
         PocketMenu_StartButtonDrag((S *)this, cursorTarget);
         setMainState(0x13);
     }
@@ -1413,7 +1413,7 @@ void PocketMenu::mainAct13() {
 }
 
 void PocketMenu::mainAct14() {
-    if (_ZN14MenuCursorBase19func_ov002_02202928Ev(unk_2498) == 0) {
+    if (_ZN14MenuCursorBase10isGrippingEv(unk_2498) == 0) {
         u32 a = placeTarget;
         u32 b = cursorTarget;
         if (b == a) {
@@ -1451,7 +1451,7 @@ void PocketMenu::mainAct16() {
     if (_ZN10HandCursor10isAnimDoneEv(unk_2498)) {
         setMainState(returnState);
     }
-    if (_ZN14MenuCursorBase19func_ov002_02202928Ev(unk_2498)) {
+    if (_ZN14MenuCursorBase10isGrippingEv(unk_2498)) {
         if (testFlags(0x40)) {
             clearFlags(0x40);
             Inventory_PlayPickUpSe();

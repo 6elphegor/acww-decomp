@@ -103,7 +103,7 @@ public:
     void loadHouseTex();
 
     /* 0x2b0 */ void *roofTex;
-    /* 0x2b4 */ void *unk_2b4;
+    /* 0x2b4 */ void *extraTex;
 };
 
 
@@ -164,9 +164,9 @@ void PlayerHouse::bindHouseTex() {
     if (roofTex) {
         NNS_G3dBindMdlTex(modelRes, roofTex);
     }
-    if (unk_2b4) {
-        NNS_G3dBindMdlTex(modelRes, unk_2b4);
-        NNS_G3dBindMdlPltt(modelRes, unk_2b4);
+    if (extraTex) {
+        NNS_G3dBindMdlTex(modelRes, extraTex);
+        NNS_G3dBindMdlPltt(modelRes, extraTex);
     }
 }
 

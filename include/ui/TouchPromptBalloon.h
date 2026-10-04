@@ -13,7 +13,7 @@ public:
 
     BOOL isOpenOrOpening();                     // 0x02200680
     void setAutoCloseTimer(u8 v);               // 0x022006a4
-    void func_ov002_022006ac(s32 v);            // 0x022006ac
+    void setPriority(s32 v);            // 0x022006ac
     void cancelQueuedOpen();                    // 0x022006b0
     void queueOpen();                           // 0x022006b8
     void commitOpen();                          // 0x022006c0

@@ -343,7 +343,7 @@ static inline s32 func_ov002_022028a0(void *p) { return ((MenuCursorBase *)p)->g
 static inline s32 func_ov002_022028c8(void *p) { return ((MenuCursorBase *)p)->getFrameScreenX(); }
 static inline BOOL func_ov002_022028f0(void *p) { return ((MenuCursorBase *)p)->isMoving(); }
 static inline BOOL func_ov002_022028fc(void *p) { return ((MenuCursorBase *)p)->func_ov002_022028fc(); }
-static inline BOOL func_ov002_02202928(void *p) { return ((MenuCursorBase *)p)->func_ov002_02202928(); }
+static inline BOOL MenuCursor_IsGripping(void *p) { return ((MenuCursorBase *)p)->isGripping(); }
 static inline void func_ov002_022029e8(void *p, s32 a, s32 b, s32 c, s32 d) { ((MenuCursorBase *)p)->moveToEase((s32)a, (s32)b, (s32)c, (s32)d); }
 static inline void func_ov002_02202a18(void *p, s32 a, s32 b, s32 c) { ((MenuCursorBase *)p)->moveToLinear((s32)a, (s32)b, (s32)c); }
 static inline void func_ov002_02202a40(void *p, s32 a, s32 b) { ((MenuCursorBase *)p)->warpTo((s32)a, (s32)b); }
@@ -1027,7 +1027,7 @@ void LostFoundRecycleMenu::updateCursorRelease() {
 
 void LostFoundRecycleMenu::mainAct0B() {
     S *s = (S *)this;
-    if (::func_ov002_02202928(s->cursor)) {
+    if (::MenuCursor_IsGripping(s->cursor)) {
         ::LostFoundRecycleMenu_PickUpWithHand(s, s->cursorSlot);
         ::func_ov002_02200a58(s, 0xc);
     }
@@ -1043,7 +1043,7 @@ void LostFoundRecycleMenu::mainAct0C() {
 
 void LostFoundRecycleMenu::mainAct0D() {
     S *s = (S *)this;
-    if (!::func_ov002_02202928(s->cursor)) {
+    if (!::MenuCursor_IsGripping(s->cursor)) {
         u32 a = s->actionSlot;
         if (s->cursorSlot == a) {
             ::LostFoundRecycleMenu_DropHeldItem(s, a);
@@ -1075,7 +1075,7 @@ void LostFoundRecycleMenu::mainAct0F() {
     if (::func_0208d4fc(s->cursor)) {
         ::func_ov002_02200a58(s, s->returnState);
     }
-    if (::func_ov002_02202928(s->cursor)) {
+    if (::MenuCursor_IsGripping(s->cursor)) {
         if (::func_ov110_02294d88(s, 0x40)) {
             ::func_ov110_02294d68(s, 0x40);
             ::Inventory_PlayPickUpSe();

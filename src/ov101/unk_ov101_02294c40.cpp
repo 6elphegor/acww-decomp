@@ -675,7 +675,7 @@ void PocketItemSelectMenu::mainAct0C() {
 }
 
 void PocketItemSelectMenu::mainAct0D() {
-    if (cursor.func_ov002_02202928()) {
+    if (cursor.isGripping()) {
         pickUpAtSlot(cursorSlot);
         setMainState(0xe);
     }
@@ -689,7 +689,7 @@ void PocketItemSelectMenu::mainAct0E() {
 }
 
 void PocketItemSelectMenu::mainAct0F() {
-    if (!cursor.func_ov002_02202928()) {
+    if (!cursor.isGripping()) {
         u32 a = targetSlot;
         if (cursorSlot == a) {
             dropHeldOnSlot(a);
@@ -718,7 +718,7 @@ void PocketItemSelectMenu::mainAct11() {
     if (cursor.isAnimDone()) {
         setMainState(returnState);
     }
-    if (cursor.func_ov002_02202928()) {
+    if (cursor.isGripping()) {
         clearFlags(0x20);
         getHandPos();
     }

@@ -374,7 +374,7 @@ void MenuErrorMessage::open(u8 *a, s32 b, u32 c) {
     prompt.setPos(0, 0x40);
     prompt.queueOpen();
     prompt.enableObjWindow();
-    prompt.func_ov002_022006ac(0);
+    prompt.setPriority(0);
 }
 
 void MenuErrorMessage::openHigh(u8 *a, s32 b, u32 c) {
@@ -386,7 +386,7 @@ void MenuErrorMessage::openHigh(u8 *a, s32 b, u32 c) {
     prompt.setPos(0, 0x30);
     prompt.queueOpen();
     prompt.enableObjWindow();
-    prompt.func_ov002_022006ac(0);
+    prompt.setPriority(0);
 }
 
 BOOL MenuErrorMessage::update(s32 a) {
@@ -478,7 +478,7 @@ void MenuErrorMessage::showPromptOnly() {
     prompt.setPos(0, 0x40);
     prompt.queueOpen();
     prompt.enableObjWindow();
-    prompt.func_ov002_022006ac(0);
+    prompt.setPriority(0);
     dimSubScreen();
     prompt.commitOpen();
 }

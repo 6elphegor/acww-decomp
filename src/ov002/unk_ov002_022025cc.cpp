@@ -516,7 +516,7 @@ void MenuCursorBase::moveToNear(s32 x, s32 y, s32 n, u8 e) {
     motion.startEase(x, y, n);
 }
 
-BOOL MenuCursorBase::func_ov002_02202928() {
+BOOL MenuCursorBase::isGripping() {
     switch (getAnim()) {
     case 4:
     case 10:

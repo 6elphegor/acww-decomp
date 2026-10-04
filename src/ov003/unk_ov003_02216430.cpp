@@ -12,6 +12,7 @@
 #include "talk/MsgRequest.h"
 #include "talk/TalkMsgRequest.h"
 #include "town/BuildingActor.h"
+#include "gfx/NNSG3dRS.h"
 
 // shared_actor.h.txt -- declarations shared by the ov003 actor units (class family of ov009 BuildingActor).
 // Written by the agent that owns ov003 TU06/07/09/10/11/12 (all 1.2/sp2).  Paste unchanged after `#include "types.h"`
@@ -63,17 +64,7 @@ s32 _ZN12G3dResAccess11findNodeIdxEi(void *self, s32 i);
 }
 #define G3dResAccess_findNodeIdx _ZN12G3dResAccess11findNodeIdxEi
 
-struct Unk_ov003_0221655c_Owner {
-    u8 pad_00[0x2c];
-    BuildingActor *ptrUser;
-};
-
-struct Unk_ov003_0221655c_Src {
-    u8 *c;
-    Unk_ov003_0221655c_Owner *pRenderObj;
-};
-
-extern "C" void TownHall_NodeCallback(Unk_ov003_0221655c_Src *a);
+extern "C" void TownHall_NodeCallback(NNSG3dRS *a);
 extern "C" void TownHall_Create();
 
 class TownHall : public BuildingActor {
@@ -97,8 +88,8 @@ extern "C" void TownHall_Create() {
     new TownHall();
 }
 
-extern "C" void TownHall_NodeCallback(Unk_ov003_0221655c_Src *a) {
-    BuildingActor *o = a->pRenderObj->ptrUser;
+extern "C" void TownHall_NodeCallback(NNSG3dRS *a) {
+    BuildingActor *o = (BuildingActor *)a->pRenderObj->ptrUser;
     if (o) {
         o->onJointCalcPost(a->c[1], a);
     }

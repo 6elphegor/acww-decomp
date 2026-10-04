@@ -21,7 +21,7 @@ public:
     s32 getFrameScreenX();                      // 0x022028c8
     BOOL isMoving();                            // 0x022028f0
     BOOL func_ov002_022028fc();                 // 0x022028fc
-    BOOL func_ov002_02202928();                 // 0x02202928
+    BOOL isGripping();                 // 0x02202928
     void moveToNear(s32 x, s32 y, s32 n, u8 e); // 0x0220298c
     void moveToEase(s32 x, s32 y, s32 n, s32 f); // 0x022029e8
     void moveToLinear(s32 x, s32 y, s32 n);     // 0x02202a18

@@ -18,7 +18,7 @@ typedef Unk_02003a6c_Vec Unk_ov003_02217910_V3;
 
 
 
-struct Unk_ov003_02217970_Rec {
+struct GroundSoundSrc {
     u8 found;
     s32 posX;
     s32 posY;
@@ -77,10 +77,10 @@ DebugColor data_ov003_02235464(20, 24, 24, 31);
 
 // ---- functions ----
 extern "C" {
-void FieldGround_ResetSoundSrc(Unk_ov003_02217970_Rec *r);
-s32 FieldGround_ConsiderSoundSrc(Unk_ov003_02217970_Rec *r, s32 d, Unk_ov003_02217910_V3 *p, s32 k);
-void *FieldGround_GetBlockBgObjects(Unk_ov003_02217970_Rec *r, u32 x, u32 y);
-void *FieldGround_GetBlockAcre(Unk_ov003_02217970_Rec *r, u32 x, u32 y);
+void FieldGround_ResetSoundSrc(GroundSoundSrc *r);
+s32 FieldGround_ConsiderSoundSrc(GroundSoundSrc *r, s32 d, Unk_ov003_02217910_V3 *p, s32 k);
+void *FieldGround_GetBlockBgObjects(GroundSoundSrc *r, u32 x, u32 y);
+void *FieldGround_GetBlockAcre(GroundSoundSrc *r, u32 x, u32 y);
 }
 
 extern "C" BOOL FieldGround_DrawBackdrop(Model *p) {
@@ -96,7 +96,7 @@ extern "C" BOOL FieldGround_ReleaseBackdrop(Model *p) {
     return TRUE;
 }
 
-extern "C" void *FieldGround_GetBlockAcre(Unk_ov003_02217970_Rec *r, u32 x, u32 y) {
+extern "C" void *FieldGround_GetBlockAcre(GroundSoundSrc *r, u32 x, u32 y) {
     Unk_ov003_02217a9c_Grid *g = (Unk_ov003_02217a9c_Grid *)gSceneBlockMap;
     if (g != 0) {
         Unk_ov003_02217a9c_Cell *c;
@@ -112,7 +112,7 @@ extern "C" void *FieldGround_GetBlockAcre(Unk_ov003_02217970_Rec *r, u32 x, u32 
     return 0;
 }
 
-extern "C" void *FieldGround_GetBlockBgObjects(Unk_ov003_02217970_Rec *r, u32 x, u32 y) {
+extern "C" void *FieldGround_GetBlockBgObjects(GroundSoundSrc *r, u32 x, u32 y) {
     Unk_ov003_02217a84_Sub *s = (Unk_ov003_02217a84_Sub *)FieldGround_GetBlockAcre(r, x, y);
     if (s != 0) {
         return s->bgObjects;
@@ -120,7 +120,7 @@ extern "C" void *FieldGround_GetBlockBgObjects(Unk_ov003_02217970_Rec *r, u32 x,
     return 0;
 }
 
-extern "C" Unk_ov003_02217970_Rec *FieldGround_FindSoundSrc(Unk_ov003_02217970_Rec *out, Unk_ov003_02217910_V3 *pos) {
+extern "C" GroundSoundSrc *FieldGround_FindSoundSrc(GroundSoundSrc *out, Unk_ov003_02217910_V3 *pos) {
     u8 *obj;
     u32 n;
     FieldGround_ResetSoundSrc(out);
@@ -158,7 +158,7 @@ extern "C" Unk_ov003_02217970_Rec *FieldGround_FindSoundSrc(Unk_ov003_02217970_R
     return out;
 }
 
-extern "C" BOOL FieldGround_ConsiderSoundSrc(Unk_ov003_02217970_Rec *r, s32 d, Unk_ov003_02217910_V3 *p, s32 k) {
+extern "C" BOOL FieldGround_ConsiderSoundSrc(GroundSoundSrc *r, s32 d, Unk_ov003_02217910_V3 *p, s32 k) {
     if (d < r->distance) {
         r->posX = p->x;
         r->posY = p->y;
@@ -174,7 +174,7 @@ extern "C" BOOL FieldGround_ConsiderSoundSrc(Unk_ov003_02217970_Rec *r, s32 d, U
 extern "C" void FieldGround_EndSoundSrc() {
 }
 
-extern "C" void FieldGround_ResetSoundSrc(Unk_ov003_02217970_Rec *r) {
+extern "C" void FieldGround_ResetSoundSrc(GroundSoundSrc *r) {
     r->found = 0;
     r->posX = 0;
     r->posY = 0;
@@ -183,14 +183,14 @@ extern "C" void FieldGround_ResetSoundSrc(Unk_ov003_02217970_Rec *r) {
     r->distance = data_020c8cbc << 3;
 }
 
-extern "C" s32 *FieldGround_GetSoundSrcPos(Unk_ov003_02217970_Rec *r) {
+extern "C" s32 *FieldGround_GetSoundSrcPos(GroundSoundSrc *r) {
     if (r->found != 0) {
         return &r->posX;
     }
     return 0;
 }
 
-extern "C" s32 FieldGround_GetSoundSrcKind(Unk_ov003_02217970_Rec *r) {
+extern "C" s32 FieldGround_GetSoundSrcKind(GroundSoundSrc *r) {
     return r->kind;
 }
 

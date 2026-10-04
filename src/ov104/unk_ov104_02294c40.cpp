@@ -1051,7 +1051,7 @@ void PostOfficeMenu::mainAct0F() {
 }
 
 void PostOfficeMenu::mainAct10() {
-    if (cursor.func_ov002_02202928()) {
+    if (cursor.isGripping()) {
         pickUpAtSlot(cursorSlot);
         setMainState(0x11);
     }
@@ -1065,7 +1065,7 @@ void PostOfficeMenu::mainAct11() {
 }
 
 void PostOfficeMenu::mainAct12() {
-    if (cursor.func_ov002_02202928() == 0) {
+    if (cursor.isGripping() == 0) {
         u32 a = targetSlot;
         if (cursorSlot == a) {
             dropHeldOnSlot(a);
@@ -1095,7 +1095,7 @@ void PostOfficeMenu::mainAct14() {
     if (cursor.isAnimDone()) {
         setMainState(returnState);
     }
-    if (cursor.func_ov002_02202928()) {
+    if (cursor.isGripping()) {
         if (testFlags(0x40)) {
             clearFlags(0x40);
             Inventory_PlayPickUpSe();

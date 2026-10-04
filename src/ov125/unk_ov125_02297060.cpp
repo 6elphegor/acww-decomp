@@ -352,7 +352,7 @@ void PatternSelectMenu::initPatternSelect() {
     u32 z = 0;
     cursorSlot = z;
     MenuCtrl_SetResult(z);
-    nameBalloon.func_ov002_022006ac(2);
+    nameBalloon.setPriority(2);
 }
 
 void PatternSelectMenu::releaseResources() {

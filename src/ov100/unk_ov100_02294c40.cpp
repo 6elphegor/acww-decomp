@@ -853,7 +853,7 @@ void ShopSellMenu::updateCursorRelease() {
 
 void ShopSellMenu::mainAct0B() {
     S *const s = this;
-    if (((MenuCursorBase *)&s->cursor)->func_ov002_02202928()) {
+    if (((MenuCursorBase *)&s->cursor)->isGripping()) {
         ShopSellMenu_PickUpWithHand(s, s->cursorSlot);
         s->setMainState(0xc);
     }
@@ -869,7 +869,7 @@ void ShopSellMenu::mainAct0C() {
 
 void ShopSellMenu::mainAct0D() {
     S *const s = this;
-    if (!((MenuCursorBase *)&s->cursor)->func_ov002_02202928()) {
+    if (!((MenuCursorBase *)&s->cursor)->isGripping()) {
         u32 a = s->actionSlot;
         if (s->cursorSlot == a) {
             ShopSellMenu_DropHeldItem(s, a);
@@ -901,7 +901,7 @@ void ShopSellMenu::mainAct0F() {
     if (((HandCursor *)&s->cursor)->isAnimDone()) {
         s->setMainState(s->returnState);
     }
-    if (((MenuCursorBase *)&s->cursor)->func_ov002_02202928()) {
+    if (((MenuCursorBase *)&s->cursor)->isGripping()) {
         if (s->testFlags(0x40)) {
             s->clearFlags(0x40);
             Inventory_PlayPickUpSe();
