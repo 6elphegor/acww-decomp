@@ -282,7 +282,7 @@ BOOL Comm_RequestSync(u32);
 void NetSession_SetSyncKind(u32);
 void NetSession_SetActiveSyncKind(u32);
 void * TownSessionState_GetKatieState(void *);
-BOOL _ZN12Unk_02086f8411isFollowingEv(void *);
+BOOL _ZN15KatieVisitState11isFollowingEv(void *);
 void _ZN15LostChildRecord12setEscortingEv(void *);
 s32 NetSession_GetSyncMemberMask();
 BOOL CommSend_PlayerData(void *, s32);
@@ -3086,7 +3086,7 @@ void SpNpcCopperTalk::waitJoinAccepted() {
     }
     if (checkNetError(b)) {
         Comm_ClearSyncState();
-        if (_ZN12Unk_02086f8411isFollowingEv(TownSessionState_GetKatieState(TownSessionState_Get()))) {
+        if (_ZN15KatieVisitState11isFollowingEv(TownSessionState_GetKatieState(TownSessionState_Get()))) {
             if (_ZN15LostChildRecord11isEscortingEv(_ZN10PlayerData18getLostChildRecordEv(PlayerData_GetCurrent()))) {
                 _ZN15LostChildRecord14clearEscortingEv(_ZN10PlayerData18getLostChildRecordEv(PlayerData_GetCurrent()));
             }
@@ -3094,7 +3094,7 @@ void SpNpcCopperTalk::waitJoinAccepted() {
     } else {
         s32 t = Comm_GetSyncState();
         if (t == 5) {
-            if (_ZN12Unk_02086f8411isFollowingEv(TownSessionState_GetKatieState(TownSessionState_Get()))) {
+            if (_ZN15KatieVisitState11isFollowingEv(TownSessionState_GetKatieState(TownSessionState_Get()))) {
                 if (_ZN15LostChildRecord11isEscortingEv(_ZN10PlayerData18getLostChildRecordEv(PlayerData_GetCurrent())) == 0) {
                     _ZN15LostChildRecord12setEscortingEv(_ZN10PlayerData18getLostChildRecordEv(PlayerData_GetCurrent()));
                 }

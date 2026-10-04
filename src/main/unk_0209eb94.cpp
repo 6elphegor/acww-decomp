@@ -236,8 +236,8 @@ void func_0211a748(void *a, void *b, u32 c, s32 d, u32 e);
 s32 Mem_Differs(u8 *a, u8 *b, u32 n);
 s32 Save_Sum16(void *a, u32 n);
 void _ZN16BlancaFaceRecord8setStateEj(void *p, u32 v);
-void _ZN16BlancaFaceRecord13func_02087230Ej(void *p, s32 v);
-s32 _ZN16BlancaFaceRecord13func_02087224Ev(void *p);
+void _ZN16BlancaFaceRecord11setChecksumEj(void *p, s32 v);
+s32 _ZN16BlancaFaceRecord11getChecksumEv(void *p);
 s32 Save_CalcChecksum(void *p, u32 n, s32 v);
 s32 _ZN16BlancaFaceRecord8getStateEv(void *p);
 void _ZN16BlancaFaceRecord5resetEv(void *p);
@@ -5175,8 +5175,8 @@ extern "C" s32 Wifi_EndSession(void) {
 extern "C" BOOL GameStats_Upload(void) {
     u8 *p = NB::gSaveBlancaFace;
     if (NB::_ZN16BlancaFaceRecord8getStateEv(p) == 3) {
-        s32 v = NB::_ZN16BlancaFaceRecord13func_02087224Ev(p);
-        NB::_ZN16BlancaFaceRecord13func_02087230Ej(p, NB::Save_CalcChecksum(p, 0x22c, v));
+        s32 v = NB::_ZN16BlancaFaceRecord11getChecksumEv(p);
+        NB::_ZN16BlancaFaceRecord11setChecksumEj(p, NB::Save_CalcChecksum(p, 0x22c, v));
         u32 t = NB::sNetRegion;
         NB::_Z21NetOverlay_AssertWifiv();
         NB::Net_GameStatsUpload((u8 *)"http://gamestats.gs.nintendowifi.net/acrossingds/upload.asp", p, 0x22c, t);
@@ -5277,7 +5277,7 @@ extern "C" void GameStats_ApplyDownload(void) {
             NB::MI_CpuCopy8(NB::sGameStatsBuf, dst, 0x22c);
         }
         NB::MI_CpuFill8(NB::sGameStatsBuf, 0, 0x22c);
-        NB::_ZN16BlancaFaceRecord13func_02087230Ej(NB::sGameStatsBuf, 1);
+        NB::_ZN16BlancaFaceRecord11setChecksumEj(NB::sGameStatsBuf, 1);
     }
 }
 

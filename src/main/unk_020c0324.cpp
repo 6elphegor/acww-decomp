@@ -56,11 +56,11 @@ BOOL _ZN11NpcAnimCtrl13isPlayingAnimEiPv(void *a, s32 b, void *c);
 s32 Effect_Create(s32 a, void *b, void *c, s32 d);
 void Effect_SetPosition(s32 a, void *b, void *c, s32 d);
 void Effect_End(s32 a);
-void _ZN12Unk_02086f8414clearFollowingEv(void *a);
-void _ZN12Unk_02086f8412setFollowingEv(void *a);
-s32 _ZN12Unk_02086f8411isFollowingEv(void *a);
-void _ZN12Unk_02086f846getPosEP17Unk_02086ec4_Vec3(void *a, void *b);
-void _ZN12Unk_02086f846setPosEP17Unk_02086ec4_Vec3(void *a, void *b);
+void _ZN15KatieVisitState14clearFollowingEv(void *a);
+void _ZN15KatieVisitState12setFollowingEv(void *a);
+s32 _ZN15KatieVisitState11isFollowingEv(void *a);
+void _ZN15KatieVisitState6getPosEP17Unk_02086ec4_Vec3(void *a, void *b);
+void _ZN15KatieVisitState6setPosEP17Unk_02086ec4_Vec3(void *a, void *b);
 void Snd_SeEmitterPlayOneShot(void *a, s32 b, s32 c, s32 d);
 void *PlayerData_GetCurrent(void);
 void *TownSessionState_Get(void);
@@ -200,7 +200,7 @@ BOOL SpNpcKatie::onCreate() {
             position.x += 0x2000;
             position.z += 0x2000;
         }
-        if (_ZN12Unk_02086f8411isFollowingEv(TownSessionState_GetKatieState(TownSessionState_Get())) != 0) {
+        if (_ZN15KatieVisitState11isFollowingEv(TownSessionState_GetKatieState(TownSessionState_Get())) != 0) {
             if (Scene_GetPrevious() == 0xb) {
                 Town_FindGateHouse(TownBlockMap_Get(), (Unk_020bfe30_Vec *)&position, 0, 0);
                 position.z -= 0x2000;
@@ -231,7 +231,7 @@ BOOL SpNpcKatie::onCreate() {
         changeAct(5);
         collisionEnabled = 0;
     } else if (Scene_GetCurrent() == 0xc) {
-        _ZN12Unk_02086f846getPosEP17Unk_02086ec4_Vec3(TownSessionState_GetKatieState(TownSessionState_Get()), &position);
+        _ZN15KatieVisitState6getPosEP17Unk_02086ec4_Vec3(TownSessionState_GetKatieState(TownSessionState_Get()), &position);
         talk.setTopic(3);
         changeAct(5);
     } else if (Scene_GetCurrent() == 0x2f) {
@@ -267,11 +267,11 @@ BOOL SpNpcKatie::updateAct() {
         r = (this->*(sSpNpcKatieActTable[act].b))();
     }
     if (Scene_GetCurrent() == 0) {
-        _ZN12Unk_02086f846setPosEP17Unk_02086ec4_Vec3(TownSessionState_GetKatieState(TownSessionState_Get()), &position);
+        _ZN15KatieVisitState6setPosEP17Unk_02086ec4_Vec3(TownSessionState_GetKatieState(TownSessionState_Get()), &position);
     }
     if (Scene_GetCurrent() == 0xb) {
         if (_ZN15LostChildRecord11isEscortingEv(_ZN10PlayerData18getLostChildRecordEv(PlayerData_GetCurrent()))) {
-            _ZN12Unk_02086f846setPosEP17Unk_02086ec4_Vec3(TownSessionState_GetKatieState(TownSessionState_Get()), &position);
+            _ZN15KatieVisitState6setPosEP17Unk_02086ec4_Vec3(TownSessionState_GetKatieState(TownSessionState_Get()), &position);
         }
     }
     return r;
@@ -293,7 +293,7 @@ void SpNpcKatie::onInteractionEvent(u32 state, u8) {
         break;
     case 8:
         talk.setTopic(3);
-        if (_ZN12Unk_02086f8411isFollowingEv(TownSessionState_GetKatieState(TownSessionState_Get())) != 0) {
+        if (_ZN15KatieVisitState11isFollowingEv(TownSessionState_GetKatieState(TownSessionState_Get())) != 0) {
             changeAct(5);
         } else if (escortDeclined != 0) {
             changeAct(2);
@@ -485,7 +485,7 @@ BOOL SpNpcKatie::mainAct05() {
 
 BOOL SpNpcKatie::setupAct06() {
     if (Scene_GetCurrent() == 0) {
-        _ZN12Unk_02086f8414clearFollowingEv(TownSessionState_GetKatieState(TownSessionState_Get()));
+        _ZN15KatieVisitState14clearFollowingEv(TownSessionState_GetKatieState(TownSessionState_Get()));
     }
     _ZN13NpcActionCtrl15requestPlayAnimEiijtt(&actionCtrl, 1, 0x122, 1, data_020c6cc8, 0);
     talk.setTopic(4);
@@ -725,13 +725,13 @@ void SpNpcKatieTalk::onChoice(u32) {
         case 0:
             v[0] = Random_GlobalBelow(3) + 0x1c;
             _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, &v[0], (u32)sSpNpcKatieMsgKey);
-            _ZN12Unk_02086f8412setFollowingEv(TownSessionState_GetKatieState(TownSessionState_Get()));
+            _ZN15KatieVisitState12setFollowingEv(TownSessionState_GetKatieState(TownSessionState_Get()));
             break;
         case 1:
             v[1] = Random_GlobalBelow(3) + 0x1f;
             _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, &v[1], (u32)sSpNpcKatieMsgKey);
             if (Scene_GetCurrent() == 0) {
-                _ZN12Unk_02086f8414clearFollowingEv(TownSessionState_GetKatieState(TownSessionState_Get()));
+                _ZN15KatieVisitState14clearFollowingEv(TownSessionState_GetKatieState(TownSessionState_Get()));
             }
             katie->escortDeclined = 1;
             break;

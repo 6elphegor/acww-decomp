@@ -71,23 +71,23 @@ s32 Catalog_HasAllFish();
 s32 Catalog_HasAllInsects();
 void Clock_GetDateTime(void *);
 s32 Event_GetState(s32, void *, s32);
-void _ZN12Unk_02086f8416clearClosingTimeEv(void *);
+void _ZN15ShopClosingTime16clearClosingTimeEv(void *);
 void _ZN17VisitorSpawnFlags5clearEv(void *);
 void VisitorPos_Clear(void *);
-void _ZN17VisitorSpawnFlags13func_02086bfcEv(void *);
-void _ZN16ResettiVisitFlag13func_02086f30Ev(void *);
-void _ZN13PeteFallState13func_02086ee8Ev(void *);
-void _ZN15TownTravelState13func_02086f0cEv(void *);
-void _ZN12Unk_02086f8413func_02086f8cEv(void *);
-void _ZN15KatieVisitState13func_0208721cEv(void *);
-void func_02086ae8(void *);
-void func_02086aec(void *);
-void _ZN15KatieVisitState13func_02087220Ev(void *);
-void _ZN12Unk_02086f8413func_02086f90Ev(void *);
-void _ZN15TownTravelState13func_02086f10Ev(void *);
-void _ZN13PeteFallState13func_02086eecEv(void *);
-void _ZN16ResettiVisitFlag13func_02086f34Ev(void *);
-void _ZN17VisitorSpawnFlags13func_02086c00Ev(void *);
+void _ZN17VisitorSpawnFlags8destructEv(void *);
+void _ZN16ResettiVisitFlag8destructEv(void *);
+void _ZN13PeteFallState8destructEv(void *);
+void _ZN15TownTravelState8destructEv(void *);
+void _ZN15ShopClosingTime8destructEv(void *);
+void _ZN15KatieVisitState8destructEv(void *);
+void VisitorPos_Destruct(void *);
+void VisitorPos_Construct(void *);
+void _ZN15KatieVisitState9constructEv(void *);
+void _ZN15ShopClosingTime9constructEv(void *);
+void _ZN15TownTravelState9constructEv(void *);
+void _ZN13PeteFallState9constructEv(void *);
+void _ZN16ResettiVisitFlag9constructEv(void *);
+void _ZN17VisitorSpawnFlags9constructEv(void *);
 void VillagerId_Clear(...);
 void _ZN8PlayerId5clearEv(...);
 s32 Random_GlobalBelow(s32);
@@ -445,30 +445,30 @@ extern "C" void ContestRecord_JudgeGardens(void *self)
 TownSessionState::TownSessionState()
 {
     u8 *self = (u8 *)this;
-    func_02086aec(self + 4);
-    _ZN15KatieVisitState13func_02087220Ev(self + 0xc);
-    _ZN12Unk_02086f8413func_02086f90Ev(self + 0x18);
-    _ZN15TownTravelState13func_02086f10Ev(self + 0x20);
-    _ZN13PeteFallState13func_02086eecEv(self + 0x24);
-    _ZN16ResettiVisitFlag13func_02086f34Ev(self + 0x30);
-    _ZN17VisitorSpawnFlags13func_02086c00Ev(self + 0x31);
+    VisitorPos_Construct(self + 4);
+    _ZN15KatieVisitState9constructEv(self + 0xc);
+    _ZN15ShopClosingTime9constructEv(self + 0x18);
+    _ZN15TownTravelState9constructEv(self + 0x20);
+    _ZN13PeteFallState9constructEv(self + 0x24);
+    _ZN16ResettiVisitFlag9constructEv(self + 0x30);
+    _ZN17VisitorSpawnFlags9constructEv(self + 0x31);
 }
 
 TownSessionState::~TownSessionState()
 {
     u8 *self = (u8 *)this;
-    _ZN17VisitorSpawnFlags13func_02086bfcEv(self + 0x31);
-    _ZN16ResettiVisitFlag13func_02086f30Ev(self + 0x30);
-    _ZN13PeteFallState13func_02086ee8Ev(self + 0x24);
-    _ZN15TownTravelState13func_02086f0cEv(self + 0x20);
-    _ZN12Unk_02086f8413func_02086f8cEv(self + 0x18);
-    _ZN15KatieVisitState13func_0208721cEv(self + 0xc);
-    func_02086ae8(self + 4);
+    _ZN17VisitorSpawnFlags8destructEv(self + 0x31);
+    _ZN16ResettiVisitFlag8destructEv(self + 0x30);
+    _ZN13PeteFallState8destructEv(self + 0x24);
+    _ZN15TownTravelState8destructEv(self + 0x20);
+    _ZN15ShopClosingTime8destructEv(self + 0x18);
+    _ZN15KatieVisitState8destructEv(self + 0xc);
+    VisitorPos_Destruct(self + 4);
 }
 
 extern "C" void *TownSessionState_Reset(u8 *self)
 {
-    _ZN12Unk_02086f8416clearClosingTimeEv(self + 0x18);
+    _ZN15ShopClosingTime16clearClosingTimeEv(self + 0x18);
     MI_CpuFill8(self, 0, 4);
     _ZN17VisitorSpawnFlags5clearEv(self + 0x31);
     VisitorPos_Clear(self + 4);

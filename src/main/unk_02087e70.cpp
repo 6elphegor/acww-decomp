@@ -5,7 +5,7 @@
 #include "game/BugNetTarget.h"
 
 
-struct Unk_02087e70_Ent {
+struct OamCellEntry {
     u32 w0;
     u32 w1lo : 10;
     u32 w1pri : 2;
@@ -13,10 +13,11 @@ struct Unk_02087e70_Ent {
     u32 w1id : 16;
 };
 
-struct Unk_02087e70_Oam {
-    u32 a01;
-    u16 a2;
-    u16 pad;
+// NitroSDK GXOamAttr layout (attr0/1 word, attr2, affine parameter slot).
+struct GXOamAttr {
+    u32 attr01;
+    u16 attr2;
+    u16 _3;
 };
 
 
@@ -49,27 +50,27 @@ extern s32 sOamAffineCountA;
 extern s32 sOamCountA;
 extern s32 sOamAffineCountB;
 extern s32 sOamCountB;
-extern Unk_02087e70_Oam sOamBufferA[0x80];
-extern Unk_02087e70_Oam sOamBufferB[0x80];
+extern GXOamAttr sOamBufferA[0x80];
+extern GXOamAttr sOamBufferB[0x80];
 
 enum Unk_02087e70_Mode_ { Unk_02087e70_Mode_0 = 0, Unk_02087e70_Mode_1 = 1, Unk_02087e70_Mode_2 = 2, Unk_02087e70_Mode_3 = 3 };
 
-static inline void Unk_02087e70_SetAttr(Unk_02087e70_Oam *oam, s32 x, s32 y, s32 priority, Unk_02087e70_Mode_ mode, u32 mosaic, s32 effect, u32 shape, u32 color, u32 charName, s32 cParam, s32 rsParam)
+static inline void Unk_02087e70_SetAttr(GXOamAttr *oam, s32 x, s32 y, s32 priority, Unk_02087e70_Mode_ mode, u32 mosaic, s32 effect, u32 shape, u32 color, u32 charName, s32 cParam, s32 rsParam)
 {
     if (effect == 0x100 || effect == 0x300) {
         if (mode == 3) {
-            oam->a01 = effect | (((x & 0x1ff) << 16) | (shape | ((mosaic << 12) | ((mode << 10) | ((rsParam << 25) | (y & 0xff))))));
+            oam->attr01 = effect | (((x & 0x1ff) << 16) | (shape | ((mosaic << 12) | ((mode << 10) | ((rsParam << 25) | (y & 0xff))))));
         } else {
-            oam->a01 = effect | (((x & 0x1ff) << 16) | (shape | ((mosaic << 12) | ((mode << 10) | ((y & 0xff) | ((rsParam << 25) | (color << 13)))))));
+            oam->attr01 = effect | (((x & 0x1ff) << 16) | (shape | ((mosaic << 12) | ((mode << 10) | ((y & 0xff) | ((rsParam << 25) | (color << 13)))))));
         }
     } else {
         if (mode == 3) {
-            oam->a01 = effect | (((x & 0x1ff) << 16) | (shape | ((mosaic << 12) | ((y & 0xff) | (mode << 10)))));
+            oam->attr01 = effect | (((x & 0x1ff) << 16) | (shape | ((mosaic << 12) | ((y & 0xff) | (mode << 10)))));
         } else {
-            oam->a01 = effect | (((x & 0x1ff) << 16) | (shape | ((mosaic << 12) | ((mode << 10) | ((color << 13) | (y & 0xff))))));
+            oam->attr01 = effect | (((x & 0x1ff) << 16) | (shape | ((mosaic << 12) | ((mode << 10) | ((color << 13) | (y & 0xff))))));
         }
     }
-    oam->a2 = (cParam << 12) | (charName | (priority << 10));
+    oam->attr2 = (cParam << 12) | (charName | (priority << 10));
 }
 
 BugNetTarget::BugNetTarget() {
@@ -140,8 +141,8 @@ extern "C" void Oam_FlushBuffers() {
 }
 
 extern "C" void Oam_ResetBuffers() {
-    sOamBufferA[0].a01 = 0xc0;
-    sOamBufferA[0].a2 = 0;
+    sOamBufferA[0].attr01 = 0xc0;
+    sOamBufferA[0].attr2 = 0;
     MIi_CpuCopy32(sOamBufferA, &sOamBufferA[1], 0x18);
     MIi_CpuCopyFast(sOamBufferA, &sOamBufferA[4], 0x3e0);
     MIi_CpuCopyFast(sOamBufferA, sOamBufferB, 0x400);
@@ -152,7 +153,7 @@ extern "C" void Oam_ResetBuffers() {
 }
 
 extern "C" s32 Oam_DrawObj(s32 mode, u32 *info, s32 x, s32 y, s32 pal, s32 pri, s32 *rect) {
-    Unk_02087e70_Oam *ent;
+    GXOamAttr *ent;
     s32 *cntp;
     s32 *othp;
     s32 idx, c;
@@ -223,9 +224,9 @@ extern "C" s32 Oam_DrawObj(s32 mode, u32 *info, s32 x, s32 y, s32 pal, s32 pri, 
     return 1;
 }
 
-extern "C" Unk_02087e70_Oam *Oam_DrawObjRotated(u32 mode, Unk_02087e70_Ent *e, s32 dx, s32 dy, s32 pal, s32 pri, s32 scale, s32 rot, s32 sz)
+extern "C" GXOamAttr *Oam_DrawObjRotated(u32 mode, OamCellEntry *e, s32 dx, s32 dy, s32 pal, s32 pri, s32 scale, s32 rot, s32 sz)
 {
-    Unk_02087e70_Oam *oam;
+    GXOamAttr *oam;
     s32 *cnt;
     s32 *aux;
     s32 x, y, w, h;
@@ -351,7 +352,7 @@ extern "C" Unk_02087e70_Oam *Oam_DrawObjRotated(u32 mode, Unk_02087e70_Ent *e, s
         }
     } else {
         idx = 0;
-        flags = ((volatile Unk_02087e70_Ent *)e)->w0 & 0x30000000;
+        flags = ((volatile OamCellEntry *)e)->w0 & 0x30000000;
     }
     w1lo = e->w1lo;
     b13 = (e->w0 << 18) >> 31;
@@ -360,9 +361,9 @@ extern "C" Unk_02087e70_Oam *Oam_DrawObjRotated(u32 mode, Unk_02087e70_Ent *e, s
     return oam;
 }
 
-extern "C" void Oam_DrawCell(u32 mode, Unk_02087e70_Ent *e, s32 dx, s32 dy, s32 pal, s32 pri, s32 sx, s32 sy, s32 rot, s32 sz, s32 fx, s32 fy)
+extern "C" void Oam_DrawCell(u32 mode, OamCellEntry *e, s32 dx, s32 dy, s32 pal, s32 pri, s32 sx, s32 sy, s32 rot, s32 sz, s32 fx, s32 fy)
 {
-    Unk_02087e70_Oam *oam;
+    GXOamAttr *oam;
     s32 priv;
     s32 palv;
     s32 w;
@@ -569,18 +570,18 @@ end:;
 }
 
 // Declarations for data defined further down (definition order sets the data layout)
-extern Unk_02087e70_Oam sOamBufferA[0x80];
+extern GXOamAttr sOamBufferA[0x80];
 extern s32 sOamCountB;
-extern Unk_02087e70_Oam sOamBufferB[0x80];
+extern GXOamAttr sOamBufferB[0x80];
 extern s32 sOamCountA;
 extern s32 sOamAffineCountB;
 extern s32 sOamAffineCountA;
 
-Unk_02087e70_Oam sOamBufferA[0x80];
+GXOamAttr sOamBufferA[0x80];
 
 s32 sOamCountB;
 
-Unk_02087e70_Oam sOamBufferB[0x80];
+GXOamAttr sOamBufferB[0x80];
 
 s32 sOamCountA;
 

@@ -91,7 +91,7 @@ void _ZN11SaveRecord49resetDateEv(void *);
 void _ZN14SnowmanRecords8clearAllEv(void *);
 void EventWeekSlots_Reset(void *);
 void _ZN15LostChildRecord5clearEv(void *);
-void _ZN12Unk_0208620c13func_0208620cEv(void *);
+void _ZN14RoostGuestRoll5clearEv(void *);
 void TownExchange_Clear(void *);
 void PlayerDataArray_Destruct(void *);
 void SaveVillagers_Clear(void *);
@@ -109,10 +109,10 @@ void _ZN19AbleSistersPatternsD1Ev(void *);
 void _ZN8BbsBoardD1Ev(void *);
 void SaveVillagers_Destruct(void *);
 void _ZN13ContestRecord8destructEv(void *);
-void func_02086230(void *);
-void func_02086290(void *);
+void RoostGuestRoll_Destruct(void *);
+void GulliverQuest_Destruct(void *);
 void _ZN12ReddLastSaleD1Ev(void *);
-void func_020868c4(void *);
+void TurnipMarket_Destruct(void *);
 void _ZN16BlancaFaceRecord8destructEv(void *);
 void LostChildRecord_Destruct(void *);
 void _ZN19ReceivedLetterBlockD1Ev(void *);
@@ -146,7 +146,7 @@ SaveData::~SaveData() {
     AbleShop_Destruct(&ableShop);
     _ZN8ReddShopD1Ev(&reddShop);
     Weather_Destruct(&weather);
-    func_020868c4(&turnipMarket);
+    TurnipMarket_Destruct(&turnipMarket);
     _ZN12ReddLastSaleD1Ev(&reddLastSale);
     _ZN13ContestRecord8destructEv(&contestRecord);
     RecycleBin_Destruct(&recycleBin);
@@ -167,8 +167,8 @@ SaveData::~SaveData() {
     _ZN18TownExchangeRecordD1Ev(&townExchange);
     _ZN19AbleSistersPatternsD1Ev(&ableSistersPatterns);
     _ZN9HouseDataD1Ev(&house);
-    func_02086230(&roostGuestRoll);
-    func_02086290(&gulliverQuest);
+    RoostGuestRoll_Destruct(&roostGuestRoll);
+    GulliverQuest_Destruct(&gulliverQuest);
     _ZN7TownMapD1Ev(&townMap);
     SaveVillagers_Destruct(&villagers);
     PlayerDataArray_Destruct(&players);
@@ -248,7 +248,7 @@ void SaveData::reset() {
     _ZN14SnowmanRecords8clearAllEv(&snowmen);
     EventWeekSlots_Reset(&eventWeekSlots);
     _ZN15LostChildRecord5clearEv(&lostChild);
-    _ZN12Unk_0208620c13func_0208620cEv(&roostGuestRoll);
+    _ZN14RoostGuestRoll5clearEv(&roostGuestRoll);
     TownExchange_Clear(&townExchange);
 }
 

@@ -1287,8 +1287,8 @@ u32 FurnitureTaste_GetTextIndex(void *);
 void NpcRegistry_RemoveVillager(void *);
 s32 NpcRegistry_AddVillager(void *, void *);
 void ContestRecord_GetItem(void *, ContestRecord *);
-s32 func_020874e8(u32, u32, u32, void *);
-void func_020877a0(void *, u32);
+s32 Drama_GetAvailablePart(u32, u32, u32, void *);
+void DramaRecord_SetLastPart(void *, u32);
 s32 Effect_Create(u32, void *, void *, u32);
 s32 PlayerId_FindResidentIndex(void *);
 u16 * PlayerId_GetTownId(void *);
@@ -2906,7 +2906,7 @@ extern "C" BOOL Talk_IsDramaPending(void *unused, u8 *p, u32 mode) {
     buf.unk_04 = 0;
     Clock_GetDateTime(&buf);
     u8 *b = (u8 *)&buf;
-    if (((u32)func_020874e8(b[5], b[4], b[3], p))) {
+    if (((u32)Drama_GetAvailablePart(b[5], b[4], b[3], p))) {
         if (((u32)(*p << 30) >> 30) == mode) {
             return TRUE;
         }
@@ -2915,7 +2915,7 @@ extern "C" BOOL Talk_IsDramaPending(void *unused, u8 *p, u32 mode) {
 }
 
 extern "C" void Talk_AdvanceDrama(void *unused, u32 a) {
-    func_020877a0(_ZN10PlayerData14getDramaRecordEv(PlayerData_GetCurrent()), a);
+    DramaRecord_SetLastPart(_ZN10PlayerData14getDramaRecordEv(PlayerData_GetCurrent()), a);
 }
 
 extern "C" BOOL Talk_IsInOwnTown() {
@@ -11064,7 +11064,7 @@ u32 VillagerTalkTopics::selectTsuDrama() {
     r4 = -1;
     flag = 0;
     Clock_GetDateTime(t);
-    if (func_020874e8(((u8 *)t)[5], ((u8 *)t)[4], ((u8 *)t)[3], &bits) != 0) {
+    if (Drama_GetAvailablePart(((u8 *)t)[5], ((u8 *)t)[4], ((u8 *)t)[3], &bits) != 0) {
         if (bits.a == 2 && bits.b == 3) {
             r4 = 1;
         } else {

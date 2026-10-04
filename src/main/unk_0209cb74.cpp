@@ -109,7 +109,7 @@ void Town_OnLoad(void);
 void NookShop_UpdateDaily(void *, s32);
 void Melody_SetPacked(void *);
 void TownSessionState_GetKatieState(void);
-void _ZN12Unk_02086f8412pickKatiePosEv(void);
+void _ZN15KatieVisitState12pickKatiePosEv(void);
 void TownSessionState_GetPeteFall(void);
 void _ZN13PeteFallState5clearEv(void);
 void TownSessionState_CheckTortimerReward(void);
@@ -183,7 +183,7 @@ extern "C" void SaveData_Apply(u8 *p) {
     Melody_SetPacked(p + 0x15fa8);
     TownSessionState_Get();
     TownSessionState_GetKatieState();
-    _ZN12Unk_02086f8412pickKatiePosEv();
+    _ZN15KatieVisitState12pickKatiePosEv();
     TownSessionState_Get();
     TownSessionState_GetPeteFall();
     _ZN13PeteFallState5clearEv();

@@ -270,12 +270,12 @@ void *TownSessionState_GetVisitorFlags(void *p);
 void *TownSessionState_GetVisitorPos(void *p);
 void *TownSessionState_GetPeteFall(void *p);
 void *TownSessionState_GetKatieState(void *p);
-void _ZN12Unk_02086af016getGulliverSpawnEPvPtP17Unk_020868cc_Vec3(void *a, void *b, u16 *c, void *d);
+void _ZN17VisitorSpawnFlags16getGulliverSpawnEPvPtP17Unk_020868cc_Vec3(void *a, void *b, u16 *c, void *d);
 void _ZNK10VisitorPos6getPosEP17Unk_020868cc_Vec3(void *a, void *b);
 void _ZN13PeteFallState6getPosEP17Unk_02086ec4_Vec3(void *a, void *b);
 s32 _ZN13PeteFallState9getFacingEv(void *a);
-void _ZN12Unk_02086f846getPosEP17Unk_02086ec4_Vec3(void *a, void *b);
-s32 _ZN12Unk_02086f8412pickKatiePosEv(void *a);
+void _ZN15KatieVisitState6getPosEP17Unk_02086ec4_Vec3(void *a, void *b);
+s32 _ZN15KatieVisitState12pickKatiePosEv(void *a);
 s32 Random_GlobalBelow(s32 a);
 s32 PlayerData_GetCurrent();
 void *_ZN10PlayerData17getDailyTalkFlagsEv();
@@ -342,8 +342,8 @@ s32 TownSessionState_Get();
 s32 TownSessionState_GetKatieState(s32);
 s32 TownSessionState_GetResettiFlag(s32);
 s32 TownSessionState_TestFlag(s32, s32);
-s32 _ZN12Unk_02086f846getPosEP17Unk_02086ec4_Vec3(s32, void *);
-s32 _ZN12Unk_02086f8411isFollowingEv(s32);
+s32 _ZN15KatieVisitState6getPosEP17Unk_02086ec4_Vec3(s32, void *);
+s32 _ZN15KatieVisitState11isFollowingEv(s32);
 s32 _ZN16ResettiVisitFlag5isSetEv(s32);
 s32 LostChild_IsKatieDue();
 s32 Event_IsActive(u32, void *);
@@ -1908,13 +1908,13 @@ extern "C" BOOL Visitor_FindKatie(s32 flag)
             }
         }
     c2:
-        if (F2::_ZN12Unk_02086f8411isFollowingEv(F2::TownSessionState_GetKatieState(F2::TownSessionState_Get())) != 0) {
+        if (F2::_ZN15KatieVisitState11isFollowingEv(F2::TownSessionState_GetKatieState(F2::TownSessionState_Get())) != 0) {
             if (F2::Scene_GetCurrent() == 0xb) {
                 if (F2::_ZN11CommManager8isOnlineEv(F2::gCommManager) == 0)
                     goto fe;
             }
         }
-        if (F2::_ZN12Unk_02086f8411isFollowingEv(F2::TownSessionState_GetKatieState(F2::TownSessionState_Get())) != 0) {
+        if (F2::_ZN15KatieVisitState11isFollowingEv(F2::TownSessionState_GetKatieState(F2::TownSessionState_Get())) != 0) {
             if (F2::Scene_GetCurrent() == 0xc) {
             fe:
                 k = 0xd022;
@@ -1934,7 +1934,7 @@ extern "C" BOOL VisitorPlace_Katie(s32 a, Unk_02083314_V3 *p)
 {
     BOOL c = F2::gFieldSceneKind == 0 ? TRUE : FALSE;
     if (c) {
-        F2::_ZN12Unk_02086f846getPosEP17Unk_02086ec4_Vec3(F2::TownSessionState_GetKatieState(F2::TownSessionState_Get()), p);
+        F2::_ZN15KatieVisitState6getPosEP17Unk_02086ec4_Vec3(F2::TownSessionState_GetKatieState(F2::TownSessionState_Get()), p);
         return TRUE;
     }
     F2::FieldPos_FromUnitCenter(p, 6, 0x11);
@@ -1947,7 +1947,7 @@ extern "C" void NpcSpawner_RepickKatiePosOnline() {
         if (F1::Visitor_IsNookJobActive() == 0) {
             if (F1::LostChild_IsKatieDue() != 0) {
                 if (F1::Unk_02083058_IsA()) {
-                    F1::_ZN12Unk_02086f8412pickKatiePosEv(F1::TownSessionState_GetKatieState(F1::TownSessionState_Get()));
+                    F1::_ZN15KatieVisitState12pickKatiePosEv(F1::TownSessionState_GetKatieState(F1::TownSessionState_Get()));
                 }
             }
         }
@@ -1976,7 +1976,7 @@ extern "C" BOOL Visitor_CheckKaitlin() {
 }
 
 extern "C" BOOL VisitorPlace_Kaitlin(void *self, void *b) {
-    F1::_ZN12Unk_02086f846getPosEP17Unk_02086ec4_Vec3(F1::TownSessionState_GetKatieState(F1::TownSessionState_Get()), b);
+    F1::_ZN15KatieVisitState6getPosEP17Unk_02086ec4_Vec3(F1::TownSessionState_GetKatieState(F1::TownSessionState_Get()), b);
     return TRUE;
 }
 
@@ -2148,7 +2148,7 @@ extern "C" BOOL VisitorPlace_AtVisitorPos(void *self, void *b, u16 *out) {
 }
 
 extern "C" BOOL VisitorPlace_Gulliver(void *self, void *b, u16 *out, void *d) {
-    F1::_ZN12Unk_02086af016getGulliverSpawnEPvPtP17Unk_020868cc_Vec3(F1::TownSessionState_GetVisitorFlags(F1::TownSessionState_Get()), b, out + 1, d);
+    F1::_ZN17VisitorSpawnFlags16getGulliverSpawnEPvPtP17Unk_020868cc_Vec3(F1::TownSessionState_GetVisitorFlags(F1::TownSessionState_Get()), b, out + 1, d);
     return TRUE;
 }
 

@@ -226,7 +226,7 @@ public:
     /* 0xc4 */ s32 slideSpeed;
     /* 0xc8 */ s32 slideDelay;
     /* 0xcc */ u32 lastTickTime;
-    /* 0xd0 */ u32 unk_d0;
+    /* 0xd0 */ u32 lastTickTimeHi;
 };
 
 
@@ -312,14 +312,6 @@ public:
     /* 0xb0 */ Unk_0208c478_Obj minuteText;
 };
 
-
-struct Unk_0208a328_Pa {
-    u8 unk_00;
-    u8 unk_01;
-    u8 pad[0x12];
-    u8 hideRequest;
-    u8 hideRequestB;
-};
 
 
 
@@ -1260,11 +1252,11 @@ void HudCountdownLabels::updateRemaining() {
                         }
                     }
                     lastTickTime = (u32)now;
-                    unk_d0 = (u32)(now >> 32);
+                    lastTickTimeHi = (u32)(now >> 32);
                 } else if (b0 >= 0xb) {
                     u64 now = OS_GetTick();
                     lastTickTime = (u32)now;
-                    unk_d0 = (u32)(now >> 32);
+                    lastTickTimeHi = (u32)(now >> 32);
                 }
             }
         }
@@ -2113,11 +2105,11 @@ extern "C" void Hud_Update() { gHud.update(); }
 
 extern "C" void Hud_Draw() { gHud.draw(); }
 
-extern "C" void Hud_Hide() { ((Unk_0208a328_Pa *)((u8 *)&gHud + 0x300))->hideRequest = 1; }
+extern "C" void Hud_Hide() { gHud.hideRequest = 1; }
 
-extern "C" void Hud_Show() { ((Unk_0208a328_Pa *)((u8 *)&gHud + 0x300))->hideRequest = 0; }
+extern "C" void Hud_Show() { gHud.hideRequest = 0; }
 
-extern "C" void Hud_ClearHideB() { ((Unk_0208a328_Pa *)((u8 *)&gHud + 0x300))->hideRequestB = 0; }
+extern "C" void Hud_ClearHideB() { gHud.hideRequestB = 0; }
 
 extern "C" void *Hud_GetCountdown() { return &gHud.countdown; }
 

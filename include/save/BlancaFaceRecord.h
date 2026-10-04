@@ -9,8 +9,8 @@ class BlancaFaceRecord {
 public:
     BlancaFaceRecord();
     ~BlancaFaceRecord();
-    u16 func_02087224();
-    void func_02087230(u32 v);
+    u16 getChecksum();
+    void setChecksum(u32 v);
     BOOL isBlancaDue();
     u8 getConcept();
     void setConcept(u32 v);

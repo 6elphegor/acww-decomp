@@ -18,7 +18,7 @@ void MI_CpuFill8(void *p, s32 v, u32 n);
 
 extern u8 data_021e7f8c[];
 
-struct Unk_0208f238_Bits {
+struct TownExchangeFlagBits {
     u8 b0 : 1;
 };
 
@@ -65,7 +65,7 @@ s32 TownExchangeRecord::isValid() { return 1; }
 
 void TownExchangeRecord::setUnkFlag(u32 v) { flags = (flags & ~1) | (v & 1); }
 
-u32 TownExchangeRecord::getUnkFlag() { return ((Unk_0208f238_Bits *)&flags)->b0; }
+u32 TownExchangeRecord::getUnkFlag() { return ((TownExchangeFlagBits *)&flags)->b0; }
 
 void *TownExchangeRecord::getLostChildRecord() { return lostChild; }
 

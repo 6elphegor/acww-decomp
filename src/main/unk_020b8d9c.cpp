@@ -1437,10 +1437,10 @@ extern "C" {
 void TownSessionState_GetKatieState(void);
 }
 extern "C" {
-void _ZN12Unk_02086f8412setFollowingEv(void);
+void _ZN15KatieVisitState12setFollowingEv(void);
 }
 extern "C" {
-void _ZN12Unk_02086f8414clearFollowingEv(void);
+void _ZN15KatieVisitState14clearFollowingEv(void);
 }
 extern "C" {
 s32 _ZN10PlayerData18getLostChildRecordEv(s32 a);

@@ -61,10 +61,10 @@
 #define TalkWindowState_setNextMessage _ZN15TalkWindowState14setNextMessageEPhPv
 #define CommManager_isOnline _ZN11CommManager8isOnlineEv
 #define TurnipMarket_getPrice _ZN12TurnipMarket8getPriceEv
-#define ResettiVisitFlag_isPastClosingTime _ZN16ResettiVisitFlag17isPastClosingTimeEv
-#define ResettiVisitFlag_setClosingTimeToday _ZN16ResettiVisitFlag19setClosingTimeTodayEv
-#define func_02086f80 _ZN12Unk_02086f8413func_02086f80Ev
-#define Unk_02086f84_clearClosingTime _ZN12Unk_02086f8416clearClosingTimeEv
+#define ShopClosingTime_isPastClosingTime _ZN15ShopClosingTime17isPastClosingTimeEv
+#define ShopClosingTime_setClosingTimeToday _ZN15ShopClosingTime19setClosingTimeTodayEv
+#define ShopClosingTime_getTime _ZN15ShopClosingTime7getTimeEv
+#define ShopClosingTime_clearClosingTime _ZN15ShopClosingTime16clearClosingTimeEv
 #define PlayerSpNpcRecord_stampArbeitDate _ZN17PlayerSpNpcRecord15stampArbeitDateEv
 #define PlayerSpNpcRecord_getArbeitDate _ZN17PlayerSpNpcRecord13getArbeitDateEv
 #define func_02094018 _ZN11MsgString9BD1Ev
@@ -495,10 +495,10 @@ void *TownSessionState_GetClosingTime(void *p);
 void TownSessionState_SetFlag(void *p, s32 v);
 s32 TownSessionState_TestFlag(void *p, s32 a);
 s32 TurnipMarket_getPrice(void *p);
-s32 ResettiVisitFlag_isPastClosingTime(void *p);
-s32 ResettiVisitFlag_setClosingTimeToday(void *p);
-s32 func_02086f80(void *p);
-s32 Unk_02086f84_clearClosingTime(void *p);
+s32 ShopClosingTime_isPastClosingTime(void *p);
+s32 ShopClosingTime_setClosingTimeToday(void *p);
+s32 ShopClosingTime_getTime(void *p);
+s32 ShopClosingTime_clearClosingTime(void *p);
 s32 PlayerSpNpcRecord_stampArbeitDate(void *p);
 u8 *PlayerSpNpcRecord_getArbeitDate(void *p);
 void func_02094018(void *p);
@@ -881,9 +881,9 @@ BOOL SpNpcNookShop::onCreate() {
     if (CommManager_isOnline(gCommManager) != 0 || *DebugVar_GetPtr(0, 0x4a) != 0) {
         collider.groups |= 2;
         if (NetArea_IsLocalOwner()) {
-            func_02086f80(TownSessionState_GetClosingTime(TownSessionState_Get()));
+            ShopClosingTime_getTime(TownSessionState_GetClosingTime(TownSessionState_Get()));
             if (DateTime_IsInvalid()) {
-                ResettiVisitFlag_setClosingTimeToday(TownSessionState_GetClosingTime(TownSessionState_Get()));
+                ShopClosingTime_setClosingTimeToday(TownSessionState_GetClosingTime(TownSessionState_Get()));
             }
             rotY = 0;
             moveAngleY = 0;
@@ -893,9 +893,9 @@ BOOL SpNpcNookShop::onCreate() {
         }
         return TRUE;
     }
-    func_02086f80(TownSessionState_GetClosingTime(TownSessionState_Get()));
+    ShopClosingTime_getTime(TownSessionState_GetClosingTime(TownSessionState_Get()));
     if (DateTime_IsInvalid()) {
-        ResettiVisitFlag_setClosingTimeToday(TownSessionState_GetClosingTime(TownSessionState_Get()));
+        ShopClosingTime_setClosingTimeToday(TownSessionState_GetClosingTime(TownSessionState_Get()));
     }
     void *h = TownSessionState_GetClosingTime(TownSessionState_Get());
     void *p = PlayerData_GetCurrent();
@@ -905,8 +905,8 @@ BOOL SpNpcNookShop::onCreate() {
         void *m = PlayerErrandSlot_GetRecord();
         Ground_LockExit(1);
         talk.setTopic(5);
-        ResettiVisitFlag_setClosingTimeToday(h);
-        if (ResettiVisitFlag_isPastClosingTime(h)) {
+        ShopClosingTime_setClosingTimeToday(h);
+        if (ShopClosingTime_isPastClosingTime(h)) {
             RoomBgm_forceClosingMusic(data_021c1b3c + 0x2a0);
         }
         if (ErrandRecord_isActive(m) && (ErrandRecord_getStep(m) >= 1 || ErrandRecord_getKind(m) >= 0xc)) {
@@ -917,22 +917,22 @@ BOOL SpNpcNookShop::onCreate() {
         return TRUE;
     }
     if (isTommy() && Scene_GetPrevious() == 0x1d) {
-        ResettiVisitFlag_setClosingTimeToday(h);
+        ShopClosingTime_setClosingTimeToday(h);
         changeAct(0);
     } else if (isTimmy() && Scene_GetPrevious() == 0x1d) {
         changeAct(0xa);
     } else if (isNook() && Scene_GetPrevious() == 0) {
-        ResettiVisitFlag_setClosingTimeToday(h);
+        ShopClosingTime_setClosingTimeToday(h);
         changeAct(0);
     } else {
         if (Scene_GetPrevious() != 0x1e) {
-            ResettiVisitFlag_setClosingTimeToday(h);
+            ShopClosingTime_setClosingTimeToday(h);
         }
         changeAct(1);
     }
     Ground_LockExit(0);
     if (isNook()) {
-        if (ResettiVisitFlag_isPastClosingTime(h)) {
+        if (ShopClosingTime_isPastClosingTime(h)) {
             RoomBgm_forceClosingMusic(data_021c1b3c + 0x2a0);
         }
         if (Talk_IsDramaPending(this, &v, 3)) {
@@ -1208,7 +1208,7 @@ BOOL SpNpcNookShop::setupAct05() {
     }
     NpcTalkCtrl_requestTurnAndTalk(&talkCtrl, 0, r, 1);
     if (isNook()) {
-        Unk_02086f84_clearClosingTime(TownSessionState_GetClosingTime(TownSessionState_Get()));
+        ShopClosingTime_clearClosingTime(TownSessionState_GetClosingTime(TownSessionState_Get()));
     }
     return TRUE;
 }
@@ -1216,7 +1216,7 @@ BOOL SpNpcNookShop::setupAct05() {
 BOOL SpNpcNookShop::mainAct05() {
     if (NpcTalkCtrl_isBusy(&talkCtrl) == 0) {
         void *h = TownSessionState_GetClosingTime(TownSessionState_Get());
-        if (isTwin() && ResettiVisitFlag_isPastClosingTime(h)) {
+        if (isTwin() && ShopClosingTime_isPastClosingTime(h)) {
             SceneWarp_RequestExit(Scene_GetWarpRequest(), 1);
         } else {
             SceneWarp_RequestExit(Scene_GetWarpRequest(), 0);
@@ -4054,7 +4054,7 @@ BOOL SpNpcNookShop::tryClosingTimeTalk() {
     if (Unk_02097ff4_testFlag(PlayerData_GetCurrent(), 1)) {
         return FALSE;
     }
-    if (ResettiVisitFlag_isPastClosingTime(TownSessionState_GetClosingTime(TownSessionState_Get()))) {
+    if (ShopClosingTime_isPastClosingTime(TownSessionState_GetClosingTime(TownSessionState_Get()))) {
         if (isNook()) {
             talk.setTopic(6);
         } else if (isTommy()) {

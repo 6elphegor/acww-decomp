@@ -3,6 +3,7 @@
 #include "gfx/EffectSplEmitter.h"
 #include "gfx/AnimModel.h"
 #include "gfx/ModelAnim.h"
+#include "gfx/P.h"
 
 struct Unk_0209002c_Handle;
 
@@ -65,20 +66,6 @@ s32 SPL_LoadTexPlttByVRAMManager(u32 h);
 }
 
 
-class Unk_020dbe7c_Anim {
-public:
-    virtual ~Unk_020dbe7c_Anim();
-    /* 0x04 */ u32 numFrames;
-    /* 0x08 */ u32 unk_08;
-    /* 0x0c */ u32 prevFrame;
-    /* 0x10 */ u32 frameStep;
-    /* 0x14 */ u32 playMode;
-};
-
-
-struct Unk_0208f480_Mtx {
-    s64 v[6];
-};
 
 class EffectModelGroup;
 
@@ -123,12 +110,6 @@ public:
 struct EffectEmitterEntry;
 
 
-struct Unk_0208f8fc_Obj {
-    u8 unk_00[8];
-    void *unk_08;
-    u8 unk_0c[0x10];
-    u32 stateFlags;
-};
 
 
 
@@ -138,17 +119,7 @@ struct EffectSplPool {
     /* 0x04 */ EffectEmitterEntry entries[32];
 };
 
-struct Unk_0208fb20_Sub {
-    u8 unk_00[0x20];
-    s16 unk_20;
-};
 
-struct Unk_0208fb20_Obj {
-    u8 unk_00[8];
-    Unk_0208fb20_Sub *unk_08;
-    u8 unk_0c[0x10];
-    u32 stateFlags;
-};
 
 struct EffectSplResEntry {
     u32 unk_00_0 : 1;
@@ -191,7 +162,7 @@ struct Unk_0208fe0c_Col {
     u16 x : 1;
 };
 
-union Unk_0208fe0c_U {
+union EffectTintColor {
     u16 v;
     Unk_0208fe0c_Col c;
 };
@@ -201,17 +172,13 @@ struct Unk_0209002c_Handle {
     u32 unk_30;
 };
 
-struct Unk_02090140_Arg {
+struct EffectSplArchive {
     u8 pad[0x18];
     u32 resDataSize;
     u32 unk_1c;
     u8 resData[1];
 };
 
-struct Unk_02090168_Arg {
-    u8 pad[0x50];
-    u32 splManager;
-};
 
 class EffectSplProc : public GameProc {
 public:
@@ -297,9 +264,9 @@ s16 EffectSpl_GetSeasonTintVariant(EffectSplEmitter *o);
 void EffectSpl_ApplySceneTint(EffectSplEmitter *o);
 void EffectSpl_InitEmitterAtPos(EffectSplEmitter *o);
 u16 EffectSpl_ToCurvedPos(void *a0, volatile s32 a1, volatile s32 a2, volatile s32 a3);
-BOOL EffectSpl_LoadTextures(Unk_02090168_Arg *p);
+BOOL EffectSpl_LoadTextures(EffectSplProc *p);
 s32 EffectSpl_LoadArchive(void *unused);
-void *EffectSpl_CopyResourceData(void *unused, Unk_02090140_Arg *p);
+void *EffectSpl_CopyResourceData(void *unused, EffectSplArchive *p);
 }
 
 extern const EffectSplResEntry sEffectResTable[152];
@@ -853,16 +820,16 @@ extern "C" s32 EffectSpl_LoadArchive(void *unused) {
     return File_Load((void *)"/spl/spl.spa");
 }
 
-extern "C" BOOL EffectSpl_LoadTextures(Unk_02090168_Arg *p) {
-    if (SPL_LoadTexByVRAMManager(p->splManager)) {
-        if (SPL_LoadTexPlttByVRAMManager(p->splManager)) {
+extern "C" BOOL EffectSpl_LoadTextures(EffectSplProc *p) {
+    if (SPL_LoadTexByVRAMManager((u32)p->splManager)) {
+        if (SPL_LoadTexPlttByVRAMManager((u32)p->splManager)) {
             return TRUE;
         }
     }
     return FALSE;
 }
 
-extern "C" void *EffectSpl_CopyResourceData(void *unused, Unk_02090140_Arg *p) {
+extern "C" void *EffectSpl_CopyResourceData(void *unused, EffectSplArchive *p) {
     u32 size = p->resDataSize;
     void *r = EffectSpl_Alloc(size);
     if (r) {
@@ -891,8 +858,8 @@ BOOL EffectSplProc::onCreate()
             h = (void *)EffectSpl_LoadArchive(this);
             if (h != NULL) {
                 func_020f92d4(splManager, h);
-                if (EffectSpl_LoadTextures((Unk_02090168_Arg *)this) != 0) {
-                    r = (s32)EffectSpl_CopyResourceData(this, (Unk_02090140_Arg *)h);
+                if (EffectSpl_LoadTextures(this) != 0) {
+                    r = (s32)EffectSpl_CopyResourceData(this, (EffectSplArchive *)h);
                     if (r != 0) {
                         SPL_Load(splManager, r);
                         result = TRUE;
@@ -973,7 +940,7 @@ extern "C" void EffectSpl_ApplySceneTint(EffectSplEmitter *o)
 {
     u32 f = ((Unk_0208fdcc_B *)o->resource)->header->tintFlags;
     if ((f & 0x80) != 0) {
-        volatile Unk_0208fe0c_U l0, l2, l4, l6, l8, la, lc, le;
+        volatile EffectTintColor l0, l2, l4, l6, l8, la, lc, le;
         l4.v = SceneLights_GetBaseColor();
         la.v = l4.v;
         l6.v = la.v;
@@ -1029,11 +996,11 @@ extern "C" s32 EffectSpl_CreateOneShot(s32 idx, s32 p1, s16 *p2, u32 *p3)
     u32 *ids;
     s32 i;
     void *ctx;
-    Unk_0208fb20_Sub *sub;
+    P *sub;
     s32 zero14;
     s32 zero18;
-    Unk_0208fb20_Obj *o;
-    Unk_0208fb20_Obj *h;
+    EffectSplEmitter *o;
+    EffectSplEmitter *h;
 
     if (p1 == 0) {
         return 0;
@@ -1057,24 +1024,24 @@ extern "C" s32 EffectSpl_CreateOneShot(s32 idx, s32 p1, s16 *p2, u32 *p3)
         zero18 = 0;
         zero14 = 0;
         for (; i < count; i++) {
-            o = (Unk_0208fb20_Obj *)_ZN19EffectSplEmitterMap4findEi(ctx, *ids);
+            o = (EffectSplEmitter *)_ZN19EffectSplEmitterMap4findEi(ctx, *ids);
             if (o == NULL) {
-                h = (Unk_0208fb20_Obj *)SPL_CreateWithInitialize(sEffectSplProc->splManager, *ids, *p3);
+                h = (EffectSplEmitter *)SPL_CreateWithInitialize(sEffectSplProc->splManager, *ids, *p3);
                 if (h != NULL) {
                     if (_ZN19EffectSplEmitterMap3addEii(ctx, *ids, h) != 0) {
                         h->stateFlags |= 2;
                         func_020f8b44(sEffectSplProc->splManager, h, p1);
-                        sub = h->unk_08;
+                        sub = (P *)h->particles;
                         if (p2 != NULL) {
-                            sub->unk_20 = p2[zero14];
+                            sub->rot0 = p2[zero14];
                         }
                     }
                 }
             } else {
                 func_020f8b44(sEffectSplProc->splManager, o, p1);
-                sub = o->unk_08;
+                sub = (P *)o->particles;
                 if (p2 != NULL) {
-                    sub->unk_20 = p2[zero18];
+                    sub->rot0 = p2[zero18];
                 }
             }
             ids++;
@@ -1488,7 +1455,7 @@ void EffectModel::draw() {
         Mtx43_RotateX(data_021f47e0, r);
         Mtx43_RotateXYZ(data_021f47e0, rotX, rotY, rotZ);
         Mtx43_Scale(data_021f47e0, scaleX, scaleY, scaleZ);
-        *(Unk_0208f480_Mtx *)model.unk_64 = *(Unk_0208f480_Mtx *)data_021f47e0;
+        model.mtx = *(Mtx43 *)data_021f47e0;
         _ZN9AnimModel12drawAnimatedEPv(&model, 0);
         volatile u16 a, b;
         a = SceneLights_GetRoomColor();

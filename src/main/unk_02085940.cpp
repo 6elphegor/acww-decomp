@@ -5,6 +5,11 @@
 #include "save/LostChildRecord.h"
 #include "town/VisitorPos.h"
 #include "save/ContestRecord.h"
+#include "talk/MsgString9B.h"
+#include "talk/MsgString25.h"
+#include "item/ItemName.h"
+#include "item/Letter.h"
+#include "town/TownBlockMap.h"
 #pragma opt_loop_invariants off
 #define LB(o) (((u8 *)&l)[o])
 extern "C" {
@@ -122,24 +127,6 @@ extern u8 gSaveData[];
 
 extern u32 sContestResultBbsFiles[4];
 
-struct Unk_02085df0_Rec {
-    u32 unk_00[7];
-    Unk_02085df0_Rec() { _ZN11MsgString9BC1Ev(this); }
-    ~Unk_02085df0_Rec() { _ZN11MsgString9BD1Ev(this); }
-};
-
-struct Unk_02085df0_Num {
-    u32 unk_00[11];
-    Unk_02085df0_Num() { _ZN11MsgString25C1Ev(this); }
-    ~Unk_02085df0_Num() { _ZN11MsgString25D1Ev(this); }
-};
-
-struct Unk_02085df0_Str {
-    u32 unk_00[9];
-    Unk_02085df0_Str(u16 *v) { _ZN8ItemNameC1EPt(this, v); }
-    ~Unk_02085df0_Str() { _ZN8ItemNameD1Ev(this); }
-};
-
 extern u8 gSavePlayers[];
 
 extern u8 data_020e0c48[];
@@ -148,26 +135,16 @@ extern u8 data_020e0c50[];
 
 extern void *sContestResultMailFiles[4];
 
-struct Unk_020859b4_Pair {
-    s32 unk_00;
-    s32 unk_04;
-};
-
-struct Unk_020859b4_Loc {
+struct ContestLetterLocals {
     /* 0x00 */ u8 letterVariant;
     /* 0x02 */ u16 trophy;
     /* 0x04 */ u16 emptyItem;
     /* 0x06 */ u8 today[3];
     /* 0x0c */ u32 contestTime[2];
     /* 0x14 */ u32 now;
-    /* 0x18 */ u32 unk_18;
+    /* 0x18 */ u32 nowHi;
 };
 
-struct Unk_020859b4_Buf {
-    u32 unk_00[0x3d];
-    Unk_020859b4_Buf() { _ZN6LetterC1Ev(this); }
-    ~Unk_020859b4_Buf() { _ZN6LetterD1Ev(this); }
-};
 
 
 class RoostGuestRoll {
@@ -177,10 +154,11 @@ public:
     u32 getNoonGuest();
     BOOL hasMorningGuest();
     void roll();
-    u8 unk_00_0 : 1;
-    u8 unk_00_1 : 3;
-    u8 unk_00_2 : 3;
-    u8 unk_00_3 : 1;
+    void clear();
+    u8 morningGuest : 1;
+    u8 noonGuest : 3;
+    u8 afternoonGuest : 3;
+    u8 lateGuest : 1;
 };
 
 extern u8 data_021ed104[];
@@ -193,20 +171,7 @@ struct Unk_020868cc_Vec3 {
     s32 x, y, z;
 };
 
-struct Unk_020868e4_Ctx {
-    s32 unk_00;
-    s32 v[2];
-};
-
 // ---- bitfield byte objects ----
-struct Unk_0208620c {
-    u8 a : 1;
-    u8 b : 3;
-    u8 c : 3;
-    u8 d : 1;
-    void func_0208620c();
-};
-
 struct GulliverQuest {
     u8 cnt : 3;
     u8 flag : 1;
@@ -219,15 +184,15 @@ struct GulliverQuest {
 extern "C" void GulliverQuest_Clear(void *p);
 
 // ---- 0x18-byte record ----
-struct Unk_02086328_B8 {
+struct ReddSaleName {
     u8 b[8];
 };
 
 struct ReddLastSale {
     u16 townId;
-    Unk_02086328_B8 townName;
+    ReddSaleName townName;
     u16 playerId;
-    Unk_02086328_B8 playerName;
+    ReddSaleName playerName;
     s8 gender;
     u8 unk_15;
     u16 item;
@@ -266,15 +231,6 @@ struct TurnipMarket {
 // ---- position pair ----
 
 // ---- tail ----
-struct Unk_02086af0 {
-    u8 f0 : 1;
-    u8 f1 : 1;
-    u8 c : 2;
-    u8 d : 2;
-    u8 e : 2;
-    void getGulliverSpawn(void *v, u16 *out, Unk_020868cc_Vec3 *p);
-};
-
 struct Unk_02086af0_Off {
     s32 x, z;
 };
@@ -300,13 +256,14 @@ public:
     BOOL isVisitorSpawned();
     void rollGulliverSpot();
     void clear();
-    void func_02086bfc();
-    void func_02086c00();
+    void destruct();
+    void construct();
+    void getGulliverSpawn(void *v, u16 *out, Unk_020868cc_Vec3 *p);
 
-    u8 unk_00_0 : 1;
-    u8 unk_00_1 : 1;
-    u8 unk_00_2 : 2;
-    u8 unk_00_4 : 2;
+    u8 visitorSpawned : 1;
+    u8 gulliverSpotRolled : 1;
+    u8 gulliverSpot : 2;
+    u8 gulliverFacing : 2;
 };
 
 // ---- 0x02086c04: 12-byte position record with flag byte at +8
@@ -323,14 +280,14 @@ public:
     void getPos(Unk_02086ec4_Vec3 *out);
     void setPos(Unk_02086ec4_Vec3 *v);
     void clear();
-    void func_02086ee8();
-    void func_02086eec();
+    void destruct();
+    void construct();
 
     s32 fallPosX;
     s32 fallPosZ;
-    u8 unk_08_0 : 1;
-    u8 unk_08_1 : 1;
-    u8 unk_08_2 : 2;
+    u8 fallPosValid : 1;
+    u8 visitorActive : 1;
+    u8 facing : 2;
 };
 
 struct Unk_02086c04_Map {
@@ -350,58 +307,61 @@ public:
     u8 getMode();
     void setMode(u32 v);
     void clearMode();
-    void func_02086f0c();
-    void func_02086f10();
+    void destruct();
+    void construct();
 
     s16 angle;
     u8 mode;
 };
 
-// ---- 0x02086f14: three bytes
+// ---- 0x02086f14: one byte (TownSessionState+0x30)
 class ResettiVisitFlag {
 public:
     void set(u32 v);
     BOOL isSet();
     void clear();
-    void func_02086f30();
-    void func_02086f34();
-    BOOL isPastClosingTime();
-    void setClosingTimeToday();
+    void destruct();
+    void construct();
 
     u8 isPending;
-    u8 unk_01;
-    u8 unk_02;
 };
 
 struct Unk_02086f38_Buf {
     s32 a, b;
 };
 
-// ---- 0x02086f84: 2 words + byte
-class Unk_02086f84 {
+// ---- 0x02086f38: the shop's closing time, a DateTime (TownSessionState+0x18, TownSessionState_GetClosingTime)
+class ShopClosingTime {
 public:
-    void func_02086f80();
+    BOOL isPastClosingTime();
+    void setClosingTimeToday();
+    void getTime();
     void clearClosingTime();
-    void func_02086f8c();
-    void func_02086f90();
+    void destruct();
+    void construct();
+
+    union {
+        struct {
+            /* 0x0 */ u8 second;
+            /* 0x1 */ u8 minute;
+            /* 0x2 */ u8 hour;
+        };
+        /* 0x0 */ s32 raw[2];
+    };
+};
+
+// ---- 0x02086f98: Katie's position and follow flag (TownSessionState+0xc, TownSessionState_GetKatieState)
+class KatieVisitState {
+public:
     void clearFollowing();
     void setFollowing();
     BOOL isFollowing();
     void getPos(Unk_02086ec4_Vec3 *out);
     void setPos(Unk_02086ec4_Vec3 *v);
     void pickKatiePos();
-
-    s32 posX;
-    s32 posZ;
-    u8 following;
-};
-
-// ---- 0x02087210
-class KatieVisitState {
-public:
     void clear();
-    void func_0208721c();
-    void func_02087220();
+    void destruct();
+    void construct();
 
     s32 posX;
     s32 posZ;
@@ -418,7 +378,7 @@ struct Unk_020874e8_Bits {
     u8 c : 3;
 };
 
-struct Unk_02087650_E {
+struct DramaScheduleEntry {
     u8 a;
     u8 b;
     u8 pad[2];
@@ -450,15 +410,15 @@ public:
 };
 
 
-extern "C" BOOL func_02087650(s32 lim, s32 b, s32 c, Unk_020874e8_Bits *out);
+extern "C" BOOL Drama_FindScheduledPart(s32 lim, s32 b, s32 c, Unk_020874e8_Bits *out);
 
-extern "C" u8 *func_0208779c(u8 *p);
+extern "C" u8 *DramaRecord_GetDate(u8 *p);
 
-extern "C" void func_020877c0(void *a, void *b);
+extern "C" void DramaRecord_GetLastPart(void *a, void *b);
 
 enum Unk_020874e8_K { UNK_020874E8_K = 0x15db4 };
 
-struct Unk_02087a20_L {
+struct MissingLetterLocals {
     u8 a;
     u8 b;
     u16 h;
@@ -590,15 +550,15 @@ extern s32 gGfxMainOnTop;
 // own functions
 extern "C" {
 void RoostGuestRoll_Init(void *p);
-void func_02086230();
-void func_02086234();
-void func_02086290();
-void func_02086294();
+void RoostGuestRoll_Destruct();
+void RoostGuestRoll_Construct();
+void GulliverQuest_Destruct();
+void GulliverQuest_Construct();
 void ReddLastSale_GetBuyer();
-void func_020868c4();
-void func_020868c8();
-void func_02086ae8();
-void func_02086aec();
+void TurnipMarket_Destruct();
+void TurnipMarket_Construct();
+void VisitorPos_Destruct();
+void VisitorPos_Construct();
 void GulliverQuest_Init(void *p);
 void GulliverQuest_Clear(void *p);
 void VisitorPos_Clear(void *p);
@@ -614,25 +574,25 @@ BOOL LostChild_IsKatieDue();
 void LostChild_AdvanceDays(s32 n);
 void *LostChildRecord_Destruct(void *p);
 void *LostChildRecord_Construct(void *p);
-BOOL func_020874e8(s32 a, s32 b, s32 c, Unk_020874e8_Bits *d);
-BOOL func_02087650(s32 lim, s32 b, s32 c, Unk_020874e8_Bits *out);
-void func_020877a0(s32 a, void *b);
-void func_020877cc(void *a);
-void func_020877d8();
-void func_020877dc();
+BOOL Drama_GetAvailablePart(s32 a, s32 b, s32 c, Unk_020874e8_Bits *d);
+BOOL Drama_FindScheduledPart(s32 lim, s32 b, s32 c, Unk_020874e8_Bits *out);
+void DramaRecord_SetLastPart(s32 a, void *b);
+void DramaRecord_Clear(void *a);
+void DramaRecord_Destruct();
+void DramaRecord_Construct();
 void PlayerDailyTalkFlags_Destruct();
 void PlayerDailyTalkFlags_Construct();
 void PlayerSpNpcRecord_SendMissingLetter();
 void PlayerSpNpcRecord_GetInsuranceDate();
-void func_02087c80();
+void PlayerSpNpcRecord_InitNop();
 void PlayerSpNpcRecord_Destruct();
 void PlayerSpNpcRecord_Construct();
 BOOL Oam_UseBufferA(s32 t);
 s32 Oam_AllocAffine(u8 *self, s32 *cnt, s32 *v);
 s32 Cell_HitTestList(void *p, s32 n, s32 c, s32 d, s32 e, s32 f);
 BOOL Cell_HitTest(void *p, s32 a, s32 b, s32 c, s32 d);
-u8 *func_0208779c(u8 *p);
-void func_020877c0(void *a, void *b);
+u8 *DramaRecord_GetDate(u8 *p);
+void DramaRecord_GetLastPart(void *a, void *b);
 }
 
 namespace Ns_02086204 {
@@ -780,7 +740,7 @@ extern "C" void PlayerSpNpcRecord_Construct() {}
 
 extern "C" void PlayerSpNpcRecord_Destruct() {}
 
-extern "C" void func_02087c80() {}
+extern "C" void PlayerSpNpcRecord_InitNop() {}
 
 u8 *PlayerSpNpcRecord::getArbeitDate() { return serviceDates + 4; }
 
@@ -886,7 +846,7 @@ void PlayerSpNpcRecord::addInsuranceClaim() {
 
 extern "C" void PlayerSpNpcRecord_SendMissingLetter() {
     u8 big[0xf4];
-    Unk_02087a20_L l;
+    MissingLetterLocals l;
     u8 obj[8];
     void *r4 = PlayerData_GetCurrent();
     if (r4 != NULL && _ZN12Unk_02097ff48testFlagEj(r4, 0x36)) {
@@ -1021,34 +981,34 @@ void PlayerDailyTalkFlags::clear(u32 i) {
     }
 }
 
-extern "C" void func_020877dc() {}
+extern "C" void DramaRecord_Construct() {}
 
-extern "C" void func_020877d8() {}
+extern "C" void DramaRecord_Destruct() {}
 
-extern "C" void func_020877cc(void *a) {
+extern "C" void DramaRecord_Clear(void *a) {
     Ns_020874d8::MI_CpuFill8(a, 0xff, 1);
 }
 
-extern "C" void func_020877c0(void *a, void *b) {
+extern "C" void DramaRecord_GetLastPart(void *a, void *b) {
     Ns_020874d8::MI_CpuCopy8(a, b, 1);
 }
 
-extern "C" void func_020877a0(s32 a, void *b) {
+extern "C" void DramaRecord_SetLastPart(s32 a, void *b) {
     Ns_020874d8::Clock_GetDate((void *)(a + 1));
     Ns_020874d8::MI_CpuCopy8(b, (void *)a, 1);
 }
 
-extern "C" u8 *func_0208779c(u8 *p) {
+extern "C" u8 *DramaRecord_GetDate(u8 *p) {
     return p + 1;
 }
 
-extern "C" BOOL func_02087650(s32 lim, s32 b, s32 c, Unk_020874e8_Bits *out) {
+extern "C" BOOL Drama_FindScheduledPart(s32 lim, s32 b, s32 c, Unk_020874e8_Bits *out) {
     Unk_02087650_S s1, s2;
     s32 r4, r7, r6;
     u32 x4, x8, xc;
     s32 j;
     s32 v;
-    Unk_02087650_E *t1;
+    DramaScheduleEntry *t1;
     const u8 *t2;
     u32 *t3;
     s1.z[0] = 0;
@@ -1064,11 +1024,11 @@ loop4:
         goto test7;
     loop7:
         r6 = 0;
-        t1 = (Unk_02087650_E *)(data_020cf288 + r7 * 0x28);
+        t1 = (DramaScheduleEntry *)(data_020cf288 + r7 * 0x28);
         t2 = data_020cf328 + r7 * 0x8c;
         goto test6;
     loop6:
-        Unk_02087650_E *e;
+        DramaScheduleEntry *e;
         e = &t1[r6];
         x8 = t1[r6].a;
         if (x8 != 0) {
@@ -1117,7 +1077,7 @@ test4:
     return FALSE;
 }
 
-extern "C" BOOL func_020874e8(s32 a, s32 b, s32 c, Unk_020874e8_Bits *d) {
+extern "C" BOOL Drama_GetAvailablePart(s32 a, s32 b, s32 c, Unk_020874e8_Bits *d) {
     if (_ZN11CommManager8isOnlineEv(gCommManager)) {
         return FALSE;
     }
@@ -1125,12 +1085,12 @@ extern "C" BOOL func_020874e8(s32 a, s32 b, s32 c, Unk_020874e8_Bits *d) {
     if (_ZN12Unk_02097ff48testFlagEj(o, 1)) {
         return FALSE;
     }
-    if (!func_02087650(a, b, c, d)) {
+    if (!Drama_FindScheduledPart(a, b, c, d)) {
         return FALSE;
     }
     Unk_020874e8_Bits t;
-    func_020877c0(_ZN10PlayerData14getDramaRecordEv(o), &t);
-    u8 *p = func_0208779c((u8 *)_ZN10PlayerData14getDramaRecordEv(o));
+    DramaRecord_GetLastPart(_ZN10PlayerData14getDramaRecordEv(o), &t);
+    u8 *p = DramaRecord_GetDate((u8 *)_ZN10PlayerData14getDramaRecordEv(o));
     if (d->a == t.a && d->b == t.b && d->c == t.c) {
         if ((p[2] == a && p[1] == b && p[0] == c) || (p[2] == 0 && p[1] == 0 && p[0] == 0)) {
             return TRUE;
@@ -1296,13 +1256,13 @@ BOOL BlancaFaceRecord::isBlancaDue() {
     return FALSE;
 }
 
-void BlancaFaceRecord::func_02087230(u32 v) { checksum = v; }
+void BlancaFaceRecord::setChecksum(u32 v) { checksum = v; }
 
-u16 BlancaFaceRecord::func_02087224() { return checksum; }
+u16 BlancaFaceRecord::getChecksum() { return checksum; }
 
-void KatieVisitState::func_02087220() {}
+void KatieVisitState::construct() {}
 
-void KatieVisitState::func_0208721c() {}
+void KatieVisitState::destruct() {}
 
 void KatieVisitState::clear() {
     posX = 0;
@@ -1332,7 +1292,7 @@ fail:
     return FALSE;
 }
 
-void Unk_02086f84::pickKatiePos() {
+void KatieVisitState::pickKatiePos() {
     void *map = TownBlockMap_Get();
     if (map != 0) {
         s32 cnt = 0;
@@ -1387,47 +1347,47 @@ end:
     following = 0;
 }
 
-void Unk_02086f84::setPos(Unk_02086ec4_Vec3 *v) {
+void KatieVisitState::setPos(Unk_02086ec4_Vec3 *v) {
     posX = v->x;
     posZ = v->z;
 }
 
-void Unk_02086f84::getPos(Unk_02086ec4_Vec3 *out) {
+void KatieVisitState::getPos(Unk_02086ec4_Vec3 *out) {
     out->x = posX;
     out->z = posZ;
 }
 
-BOOL Unk_02086f84::isFollowing() {
+BOOL KatieVisitState::isFollowing() {
     if (following != 0) return TRUE;
     return FALSE;
 }
 
-void Unk_02086f84::setFollowing() { following = 1; }
+void KatieVisitState::setFollowing() { following = 1; }
 
-void Unk_02086f84::clearFollowing() { following = 0; }
+void KatieVisitState::clearFollowing() { following = 0; }
 
-void Unk_02086f84::func_02086f90() {
-    posX = 0;
-    posZ = 0;
+void ShopClosingTime::construct() {
+    raw[0] = 0;
+    raw[1] = 0;
 }
 
-void Unk_02086f84::func_02086f8c() {}
+void ShopClosingTime::destruct() {}
 
-void Unk_02086f84::clearClosingTime() {
-    posX = 0;
-    posZ = 0;
+void ShopClosingTime::clearClosingTime() {
+    raw[0] = 0;
+    raw[1] = 0;
 }
 
-void Unk_02086f84::func_02086f80() {}
+void ShopClosingTime::getTime() {}
 
-void ResettiVisitFlag::setClosingTimeToday() {
+void ShopClosingTime::setClosingTimeToday() {
     Clock_GetDateTime(this);
-    unk_02 = 0x17;
-    unk_01 = 0;
-    isPending = 0;
+    hour = 0x17;
+    minute = 0;
+    second = 0;
 }
 
-BOOL ResettiVisitFlag::isPastClosingTime() {
+BOOL ShopClosingTime::isPastClosingTime() {
     Unk_02086f38_Buf buf;
     buf.a = 0;
     buf.b = 0;
@@ -1438,9 +1398,9 @@ BOOL ResettiVisitFlag::isPastClosingTime() {
     return r;
 }
 
-void ResettiVisitFlag::func_02086f34() {}
+void ResettiVisitFlag::construct() {}
 
-void ResettiVisitFlag::func_02086f30() {}
+void ResettiVisitFlag::destruct() {}
 
 void ResettiVisitFlag::clear() { isPending = 0; }
 
@@ -1451,9 +1411,9 @@ BOOL ResettiVisitFlag::isSet() {
 
 void ResettiVisitFlag::set(u32 v) { isPending = v; }
 
-void TownTravelState::func_02086f10() {}
+void TownTravelState::construct() {}
 
-void TownTravelState::func_02086f0c() {}
+void TownTravelState::destruct() {}
 
 void TownTravelState::clearMode() { mode = 0; }
 
@@ -1465,9 +1425,9 @@ void TownTravelState::setAngle(s32 v) { angle = v; }
 
 s16 TownTravelState::getAngle() { return angle; }
 
-void PeteFallState::func_02086eec() {}
+void PeteFallState::construct() {}
 
-void PeteFallState::func_02086ee8() {}
+void PeteFallState::destruct() {}
 
 void PeteFallState::clear() { MI_CpuFill8(this, 0, 12); }
 
@@ -1482,24 +1442,24 @@ void PeteFallState::getPos(Unk_02086ec4_Vec3 *out) {
 }
 
 BOOL PeteFallState::hasFallPos() {
-    if (unk_08_0) return TRUE;
+    if (fallPosValid) return TRUE;
     return FALSE;
 }
 
-void PeteFallState::markFallPos() { unk_08_0 = 1; }
+void PeteFallState::markFallPos() { fallPosValid = 1; }
 
-void PeteFallState::unmarkFallPos() { unk_08_0 = 0; }
+void PeteFallState::unmarkFallPos() { fallPosValid = 0; }
 
 BOOL PeteFallState::isVisitorActive() {
-    if (unk_08_1) return TRUE;
+    if (visitorActive) return TRUE;
     return FALSE;
 }
 
-void PeteFallState::clearVisitorActive() { unk_08_1 = 0; }
+void PeteFallState::clearVisitorActive() { visitorActive = 0; }
 
-void PeteFallState::setVisitorActive() { unk_08_1 = 1; }
+void PeteFallState::setVisitorActive() { visitorActive = 1; }
 
-s16 PeteFallState::getFacing() { return (s16)(unk_08_2 << 14); }
+s16 PeteFallState::getFacing() { return (s16)(facing << 14); }
 
 extern "C" BOOL Field_IsClearSpotYX(s32 x, s32 y, void *map) { return Field_IsClearSpot(y, x, map); }
 
@@ -1622,7 +1582,7 @@ done:
     if (sel != 0) {
         Ns_02086b7c::FieldPos_FromUnitCenter(&v, sel->a, sel->b);
         setPos(&v);
-        unk_08_2 = Ns_02086b7c::Random_GlobalBelow(4);
+        facing = Ns_02086b7c::Random_GlobalBelow(4);
         markFallPos();
         return TRUE;
     }
@@ -1630,50 +1590,50 @@ done:
     return FALSE;
 }
 
-void VisitorSpawnFlags::func_02086c00() {}
+void VisitorSpawnFlags::construct() {}
 
-void VisitorSpawnFlags::func_02086bfc() {}
+void VisitorSpawnFlags::destruct() {}
 
 void VisitorSpawnFlags::clear() { MI_CpuFill8(this, 0, 1); }
 
 void VisitorSpawnFlags::rollGulliverSpot() {
-    unk_00_2 = Ns_02086b7c::Random_GlobalBelow(3);
-    unk_00_4 = Ns_02086b7c::Random_GlobalBelow(4);
-    unk_00_1 = 1;
+    gulliverSpot = Ns_02086b7c::Random_GlobalBelow(3);
+    gulliverFacing = Ns_02086b7c::Random_GlobalBelow(4);
+    gulliverSpotRolled = 1;
 }
 
 BOOL VisitorSpawnFlags::isVisitorSpawned() {
-    if (unk_00_0) return TRUE;
+    if (visitorSpawned) return TRUE;
     return FALSE;
 }
 
-void VisitorSpawnFlags::clearVisitorSpawned() { unk_00_0 = 0; }
+void VisitorSpawnFlags::clearVisitorSpawned() { visitorSpawned = 0; }
 
-void VisitorSpawnFlags::setVisitorSpawned() { unk_00_0 = 1; }
+void VisitorSpawnFlags::setVisitorSpawned() { visitorSpawned = 1; }
 
-void Unk_02086af0::getGulliverSpawn(void *v, u16 *out, Unk_020868cc_Vec3 *p) {
-    if (f1 == 0) _ZN17VisitorSpawnFlags16rollGulliverSpotEv(this);
+void VisitorSpawnFlags::getGulliverSpawn(void *v, u16 *out, Unk_020868cc_Vec3 *p) {
+    if (gulliverSpotRolled == 0) _ZN17VisitorSpawnFlags16rollGulliverSpotEv(this);
     Unk_020868cc_Vec3 t;
     const Unk_02086af0_Off *tb = sGulliverSpotOffsets;
-    const Unk_02086af0_Off *e = &tb[c];
+    const Unk_02086af0_Off *e = &tb[gulliverSpot];
     s32 z = p->z + e->z;
-    s32 x = p->x + tb[c].x;
+    s32 x = p->x + tb[gulliverSpot].x;
     t.x = x;
     t.y = 0;
     t.z = z;
     FieldPos_SnapToUnitCenter(v, &t);
     if (data_021e58a6.getPartCount() >= 5) {
-        *out = sGulliverRepairedAngles[c];
+        *out = sGulliverRepairedAngles[gulliverSpot];
     } else if (data_021e58a6.isStarted()) {
         *out = 0;
     } else {
-        *out = d << 14;
+        *out = gulliverFacing << 14;
     }
 }
 
-extern "C" void func_02086aec() {}
+extern "C" void VisitorPos_Construct() {}
 
-extern "C" void func_02086ae8() {}
+extern "C" void VisitorPos_Destruct() {}
 
 extern "C" void VisitorPos_Clear(void *p) {
     MI_CpuFill8(p, 0, 8);
@@ -1733,12 +1693,12 @@ BOOL VisitorPos::pickRandomPos() {
     s32 xy[2];
     Unk_020868cc_Vec3 out;
     s32 n;
-    Unk_020868e4_Ctx *o = (Unk_020868e4_Ctx *)TownBlockMap_Get();
+    TownBlockMap *o = (TownBlockMap *)TownBlockMap_Get();
     if (o != NULL) {
         n = 0;
         xy[0] = 0;
         xy[1] = 0;
-        s32 *s = o->v;
+        s32 *s = &o->width;
         s32 w = s[0];
         s32 h = s[1];
         MI_CpuFill8(buf, 0, 4);
@@ -1780,9 +1740,9 @@ void VisitorPos::getPos(Unk_020868cc_Vec3 *out) const {
     out->y = 0;
 }
 
-extern "C" void func_020868c8() {}
+extern "C" void TurnipMarket_Construct() {}
 
-extern "C" void func_020868c4() {}
+extern "C" void TurnipMarket_Destruct() {}
 
 void TurnipMarket::clear() {
     pattern = 0xff;
@@ -2064,9 +2024,9 @@ void ReddLastSale::copyItemFrom(const ReddLastSale *o) {
     townId = o->item;
 }
 
-extern "C" void func_02086294() {}
+extern "C" void GulliverQuest_Construct() {}
 
-extern "C" void func_02086290() {}
+extern "C" void GulliverQuest_Destruct() {}
 
 extern "C" void GulliverQuest_Clear(void *p) {
     MI_CpuFill8(p, 0, 1);
@@ -2093,15 +2053,15 @@ void GulliverQuest::start() {
     flag = 1;
 }
 
-extern "C" void func_02086234() {}
+extern "C" void RoostGuestRoll_Construct() {}
 
-extern "C" void func_02086230() {}
+extern "C" void RoostGuestRoll_Destruct() {}
 
-void Unk_0208620c::func_0208620c() {
-    a = 0;
-    b = 0;
-    c = 0;
-    d = 0;
+void RoostGuestRoll::clear() {
+    morningGuest = 0;
+    noonGuest = 0;
+    afternoonGuest = 0;
+    lateGuest = 0;
 }
 
 extern "C" void RoostGuestRoll_Init(void *p) {
@@ -2110,51 +2070,51 @@ extern "C" void RoostGuestRoll_Init(void *p) {
 
 void RoostGuestRoll::roll() {
     u32 a, b, c;
-    unk_00_0 = Random_GlobalBelow(2);
-    unk_00_3 = 1;
+    morningGuest = Random_GlobalBelow(2);
+    lateGuest = 1;
     a = Random_GlobalBelow(100);
     b = Random_GlobalBelow(100);
     c = Random_GlobalBelow(100);
     switch (Clock_GetWeekday()) {
     case 6:
-        if (Math_IsInRange(a, 0, 0x4a)) unk_00_1 = 0;
-        else if (Math_IsInRange(a, 0x4b, 0x54)) unk_00_1 = 1;
-        else unk_00_1 = 2;
-        if (Math_IsInRange(b, 0, 0x4a)) unk_00_2 = 0;
-        else if (Math_IsInRange(b, 0x4b, 0x54)) unk_00_2 = 1;
-        else unk_00_2 = 2;
+        if (Math_IsInRange(a, 0, 0x4a)) noonGuest = 0;
+        else if (Math_IsInRange(a, 0x4b, 0x54)) noonGuest = 1;
+        else noonGuest = 2;
+        if (Math_IsInRange(b, 0, 0x4a)) afternoonGuest = 0;
+        else if (Math_IsInRange(b, 0x4b, 0x54)) afternoonGuest = 1;
+        else afternoonGuest = 2;
         break;
     case 0:
-        if (Math_IsInRange(a, 0, 0x31)) unk_00_1 = 0;
-        else if (Math_IsInRange(a, 0x32, 0x3b)) unk_00_1 = 1;
-        else if (Math_IsInRange(a, 0x3c, 0x46)) unk_00_1 = 2;
-        else unk_00_1 = 4;
-        if (Math_IsInRange(b, 0, 0x4a)) unk_00_2 = 0;
-        else if (Math_IsInRange(b, 0x4b, 0x54)) unk_00_2 = 1;
-        else if (Math_IsInRange(b, 0x55, 0x5e)) unk_00_2 = 2;
-        else unk_00_2 = 3;
+        if (Math_IsInRange(a, 0, 0x31)) noonGuest = 0;
+        else if (Math_IsInRange(a, 0x32, 0x3b)) noonGuest = 1;
+        else if (Math_IsInRange(a, 0x3c, 0x46)) noonGuest = 2;
+        else noonGuest = 4;
+        if (Math_IsInRange(b, 0, 0x4a)) afternoonGuest = 0;
+        else if (Math_IsInRange(b, 0x4b, 0x54)) afternoonGuest = 1;
+        else if (Math_IsInRange(b, 0x55, 0x5e)) afternoonGuest = 2;
+        else afternoonGuest = 3;
         break;
     default:
-        if (Math_IsInRange(a, 0, 0x4a)) unk_00_1 = 0;
-        else if (Math_IsInRange(a, 0x4b, 0x55)) unk_00_1 = 1;
-        else unk_00_1 = 2;
-        if (Math_IsInRange(b, 0, 0x4a)) unk_00_2 = 0;
-        else if (Math_IsInRange(b, 0x4b, 0x55)) unk_00_2 = 1;
-        else unk_00_2 = 2;
-        if (Math_IsInRange(c, 0, 0x1d) && NookShop_GetLevel(data_021ed104) == 3) unk_00_3 = 1;
-        else unk_00_3 = 0;
+        if (Math_IsInRange(a, 0, 0x4a)) noonGuest = 0;
+        else if (Math_IsInRange(a, 0x4b, 0x55)) noonGuest = 1;
+        else noonGuest = 2;
+        if (Math_IsInRange(b, 0, 0x4a)) afternoonGuest = 0;
+        else if (Math_IsInRange(b, 0x4b, 0x55)) afternoonGuest = 1;
+        else afternoonGuest = 2;
+        if (Math_IsInRange(c, 0, 0x1d) && NookShop_GetLevel(data_021ed104) == 3) lateGuest = 1;
+        else lateGuest = 0;
         break;
     }
-    if (unk_00_1 == unk_00_2) unk_00_2 = 0;
+    if (noonGuest == afternoonGuest) afternoonGuest = 0;
 }
 
-BOOL RoostGuestRoll::hasMorningGuest() { if (unk_00_0) return TRUE; return FALSE; }
+BOOL RoostGuestRoll::hasMorningGuest() { if (morningGuest) return TRUE; return FALSE; }
 
-u32 RoostGuestRoll::getNoonGuest() { return unk_00_1; }
+u32 RoostGuestRoll::getNoonGuest() { return noonGuest; }
 
-u32 RoostGuestRoll::getAfternoonGuest() { return unk_00_2; }
+u32 RoostGuestRoll::getAfternoonGuest() { return afternoonGuest; }
 
-BOOL RoostGuestRoll::hasLateGuest() { if (unk_00_3) return TRUE; return FALSE; }
+BOOL RoostGuestRoll::hasLateGuest() { if (lateGuest) return TRUE; return FALSE; }
 
 void ContestRecord::postResultNotice() {
     if (_ZN8PlayerId7isValidEv(this) == 0 && _ZN10VillagerId7isValidEv(&holderVillager) == 0) {
@@ -2163,7 +2123,7 @@ void ContestRecord::postResultNotice() {
     }
     if (kind != 1 && kind != 2 && kind != 3) return;
     if (_ZN8SaveData8testFlagEj(gSaveData, 0xf) == 0) return;
-    Unk_02085df0_Rec rec;
+    MsgString9B rec;
     if (_ZN8PlayerId7isValidEv(this) != 0) _ZN8PlayerId13getNameStringEP9MsgString(this, &rec);
     else _ZN10VillagerId7getNameEj(&holderVillager, &rec);
     if ((u8)(kind + 0xff) <= 1) {
@@ -2171,7 +2131,7 @@ void ContestRecord::postResultNotice() {
         MailText_SetSlotDayOrdinal(1, dateDay);
         MailText_SetSlot(4, &rec);
         if (size > 0) {
-            Unk_02085df0_Num num;
+            MsgString25 num;
             if (kind == 1) String_FormatFixedPoint(&num, size, 1);
             else String_FormatNumber(&num, size >> 12, 3, 0, 0, 0);
             MailText_SetSlot(3, &num);
@@ -2185,7 +2145,7 @@ void ContestRecord::postResultNotice() {
             if (item == 0xfff1) same = TRUE; else same = FALSE;
         }
         if (same == 0) {
-            Unk_02085df0_Str str(&item);
+            ItemName str(&item);
             MailText_SetSlot(2, &str);
         }
     } else {
@@ -2201,14 +2161,14 @@ void ContestRecord::postResultNotice() {
 void ContestRecord::sendResultLetters() {
     if (_ZN8PlayerId7isValidEv(this) == 0 && _ZN10VillagerId7isValidEv(&holderVillager) == 0) return;
     if (kind != 1 && kind != 2 && kind != 3) return;
-    Unk_020859b4_Loc l;
+    ContestLetterLocals l;
     Clock_GetDate(l.today);
     if (dateYear == 0) return;
     if (dateMonth == 0) return;
     if (dateDay == 0) return;
     DateTime_Make(l.contestTime, &dateDay, 6, 0, 0);
     l.now = 0;
-    l.unk_18 = 0;
+    l.nowHi = 0;
     Clock_GetDateTime(&l.now);
     if (((u8 *)&l.now)[2] < 6) {
         DateTime_SubDays(&l.now, 1);
@@ -2240,11 +2200,11 @@ void ContestRecord::sendResultLetters() {
         clear();
         return;
     }
-    Unk_02085df0_Num n1;
-    Unk_02085df0_Num n2;
-    Unk_02085df0_Num n3;
-    Unk_020859b4_Buf buf;
-    Unk_02085df0_Rec rec;
+    MsgString25 n1;
+    MsgString25 n2;
+    MsgString25 n3;
+    Letter buf;
+    MsgString9B rec;
     s32 i = 0;
     s32 ok, z10, z14, z1c, z20, z24, z2c;
     l.letterVariant = 0;
@@ -2267,7 +2227,7 @@ void ContestRecord::sendResultLetters() {
                 f = (item == 0xfff1) ? 1 : z20;
             }
             if (f == 0) {
-                Unk_02085df0_Str str(&item);
+                ItemName str(&item);
                 MailText_SetSlot(2, &str);
             }
             if (size > 0) {
