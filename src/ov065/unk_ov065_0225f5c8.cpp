@@ -1,5 +1,6 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
+#include "net/Unk_ov065_0225fd18_Counters.h"
 
 // ---- types of the former unk_0225f1a0.cpp part (functions 0x0225f5c8..0x0225fa6c)
 
@@ -165,10 +166,6 @@ struct Unk_ov065_0225faf4_Job {
 
 typedef Unk_ov065_0225faf4_Job Job;
 
-struct Unk_ov065_0225fd18_Counters {
-    u32 noMemDrops;
-    u32 queueFullDrops;
-};
 
 typedef Unk_ov065_0225f378_Obj Obj;
 typedef Unk_ov065_0225f4d4_Msg Msg;

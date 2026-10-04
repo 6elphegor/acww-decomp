@@ -1,5 +1,10 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
+#include "net/Unk_ov065_0226f924_Cfg.h"
+#include "net/Unk_ov065_02270ba4_Sub.h"
+#include "net/Unk_ov065_02270eb0_X.h"
+#include "net/Unk_ov065_02270fd4_S.h"
+#include "net/Unk_ov065_0227112c_Cfg.h"
 
 typedef long long s64;
 
@@ -11,15 +16,7 @@ u8 sDwcConnInfo[0x100];
 }
 
 namespace F0226f7c8 {
-struct Unk_ov065_0226f924_Blob {
-    s32 v[3];
-};
 
-struct Unk_ov065_0226f924_Cfg {
-    void *(*unk_00)(void *, u32);
-    void (*unk_04)(void *, void *, u32);
-    u32 unk_08;
-};
 
 struct Unk_ov065_0226f7c8_Ctx {
     u8 state[4];
@@ -273,9 +270,6 @@ namespace F02270b74 {
 typedef void (*Unk_ov065_02270c94_Cb)(s32, s32, u32);
 typedef void (*Unk_ov065_02271440_Cb)(void *, void *, u32);
 
-struct Unk_ov065_02270ba4_Sub {
-    void *instance;
-};
 
 struct Unk_ov065_02270ba4_G {
     void *transportSocket;
@@ -318,20 +312,7 @@ struct Unk_ov065_02270ba4_G {
     u8 netChannelTable[4];
 };
 
-struct Unk_ov065_02270eb0_Tri {
-    u32 v[3];
-};
 
-struct Unk_ov065_02270eb0_P {
-    u8 unk_00[4];
-    u32 unk_04;
-    u8 unk_08[0xc];
-    u32 unk_14;
-    u8 unk_18[4];
-    u32 profileId;
-    u8 unk_20[4];
-    u32 gameCode;
-};
 
 struct Unk_ov065_02270eb0_H {
     void *gpConnection;
@@ -354,32 +335,9 @@ struct Unk_ov065_02270eb0_H {
     char gsbrcd[0x100];
 };
 
-struct Unk_ov065_02270eb0_X {
-    s32 result;
-    u32 profileId;
-    u8 unk_08[0x86];
-    s8 uniqueNick[1];
-};
 
-struct Unk_ov065_0227112c_Pair {
-    u32 hi;
-    u32 lo;
-};
 
-struct Unk_ov065_02270fd4_S {
-    s32 result;
-    u8 unk_04[0x46];
-    char token[0x100];
-    u8 unk_14a[0x2d];
-    char challenge[0x4d];
-};
 
-struct Unk_ov065_0227112c_Cfg {
-    u8 inGameName[0x16];
-    char gsbrcd[14];
-    void *allocFunc;
-    void *freeFunc;
-};
 
 namespace Unk_ov065_0227138c_Ns {
 extern "C" s32 DwcLogin_HandleGpResult(s32 r);

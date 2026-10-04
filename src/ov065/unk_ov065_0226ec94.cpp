@@ -1,5 +1,6 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
+#include "net/Unk_ov065_0226f924_Cfg.h"
 
 typedef unsigned long long u64;
 typedef long long s64;
@@ -53,15 +54,7 @@ struct Unk_ov065_0226ecfc_Out {
     void (*unk_28)(const void *tag, void *p, u32 z);
 };
 
-struct Unk_ov065_0226f924_Blob {
-    s32 v[3];
-};
 
-struct Unk_ov065_0226f924_Cfg {
-    void *(*unk_00)(const void *, u32);
-    void (*unk_04)(const void *, void *, u32);
-    u32 unk_08;
-};
 
 struct Unk_ov065_0226ecfc_Tk {
     u64 tick;

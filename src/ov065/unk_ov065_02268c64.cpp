@@ -1,5 +1,10 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
+#include "net/Unk_ov065_0226ab40_Glb.h"
+#include "net/Unk_ov065_0226ab5c_Conn.h"
+#include "net/Unk_ov065_0226aed4_Fc.h"
+#include "net/Unk_ov065_0226b27c_Cfg.h"
+#include "net/Unk_ov065_0226b3c4_Rec.h"
 
 extern "C" {
 
@@ -22,75 +27,16 @@ namespace N_ab40 {
 
 // ov065_019: network library, connection/event state (0x0226ab40..0x0226b3c4)
 
-struct Unk_ov065_0226ab5c_Conn {
-    u8 unk_0000[0xf00];
-    u8 sendBuf[0x1244];
-    u8 targetBssid[6];
-    u16 targetSsidLength;
-    u8 targetSsid[0x114];
-    s32 phase;
-    u8 unk_2264[7];
-    u8 isResetting;
-};
 
 typedef void (*Unk_ov065_0226ac54_Cb)(void *, void *, void *, u32);
 
-struct Unk_ov065_0226ab40_Glb {
-    u8 initialized;
-    u8 unk_01[3];
-    u32 unk_04;
-    u32 unk_08;
-    u8 unk_0c[0x18];
-    u32 sendResult;
-    Unk_ov065_0226ac54_Cb recvCallback;
-};
 
-struct Unk_ov065_0226aed4_Fc {
-    void *(*unk_00)(u32, u32);
-    void (*unk_04)(u32, void *, u32);
-    u8 allocMask;
-    u8 state;
-    u8 errorState;
-    u8 anyApFound;
-    u32 errorCode;
-    u8 unk_10[4];
-    u8 furthestApStatus;
-    u8 furthestApIndex;
-    u8 furthestState;
-    u8 connectedApType;
-};
 
-struct Unk_ov065_0226b27c_Cfg {
-    void *(*unk_00)(u32, u32);
-    void (*unk_04)(u32, void *, u32);
-    u8 dmaNo;
-    u8 powerMode;
-    u8 apFilter;
-    u8 netCheckMode;
-};
 
-struct Unk_ov065_0226b27c_F8 {
-    void *(*unk_00)(u32, u32);
-    void (*unk_04)(u32, void *, u32);
-    u32 unk_08;
-};
 
-struct Unk_ov065_0226b27c_B0b {
-    u8 lo : 2;
-};
 
-struct Unk_ov065_0226b27c_B0c {
-    u8 lo : 4;
-    u8 mid : 2;
-};
 
-struct Unk_ov065_0226b3c4_Key {
-    u8 info[4];
-};
 
-struct Unk_ov065_0226b3c4_Rec {
-    u8 unk_00[0xc0];
-};
 
 extern "C" {
 

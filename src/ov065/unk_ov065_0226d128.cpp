@@ -1,5 +1,6 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
+#include "net/Unk_ov065_0226d158_Owner.h"
 
 typedef unsigned long long u64;
 typedef long long s64;
@@ -7,40 +8,10 @@ typedef long long s64;
 typedef void *(*Unk_ov065_0226dd2c_Alloc)(const char *, u32);
 typedef void (*Unk_ov065_0226dd2c_Free)(const char *, void *, u32);
 
-struct Unk_ov065_0226d158_Form {
-    void *entries;
-    s32 capacity;
-    s32 count;
-};
 
-struct Unk_ov065_0226d158_Date {
-    s32 year;
-    s32 month;
-    s32 day;
-    s32 week;
-};
 
-struct Unk_ov065_0226d158_Time {
-    s32 hour;
-    s32 minute;
-    s32 second;
-};
 
-struct Unk_ov065_0226d158_Kv {
-    const char *key;
-    const char *val;
-};
 
-struct Unk_ov065_0226d158_Owner {
-    u8 language;
-    u8 unk_01;
-    u8 birthMonth;
-    u8 birthDay;
-    u16 nickName[10];
-    u16 nickNameLength;
-    u16 comment[26];
-    u16 commentLength;
-};
 
 struct Unk_ov065_02290604_S {
     u64 userId;

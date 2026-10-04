@@ -1,6 +1,10 @@
 // mwcc-version: 1.2/sp2p3
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
+#include "net/Unk_ov065_02264a48_Cfg.h"
+#include "net/Unk_ov065_02264c44_Thr.h"
+#include "net/Unk_ov065_02264d24_Ent.h"
+#include "net/Unk_ov065_02264d80_Obj.h"
 
 namespace Unk_ov065_0226650c_Ns {
 
@@ -1792,83 +1796,14 @@ namespace Unk_ov065_0226482c_Ns {
 
 // ov065_009: socket/SSL library: checksum, init, record send/receive buffering (0x0226482c..0x02265074)
 
-struct Unk_ov065_02264a48_Cfg {
-    u32 stackFlags;
-    void *(*unk_04)(u32);
-    void (*unk_08)(void *);
-    s32 (*unk_0c)(void);
-    s32 (*unk_10)(void);
-    u32 randSeed;
-    u32 randSeedHi;
-    u32 recvRingBuf;
-    u32 recvRingSize;
-    u32 mss;
-    u32 requestedIp;
-    u32 yieldMode;
-};
 
-struct Unk_ov065_02264a48_Rng {
-    u64 value;
-    u64 multiplier;
-    u64 increment;
-};
 
-struct Unk_ov065_02264c44_Ent {
-    u8 unk_00[4];
-    u16 cnt;
-    u8 unk_06[0x2e];
-    void *buf;
-};
 
-struct Unk_ov065_02264c44_Sub {
-    void *ownerThread;
-    void *waitReason;
-    u8 state;
-    u8 useSsl;
-};
 
-struct Unk_ov065_02264c44_Thr {
-    u8 unk_00[0x68];
-    Unk_ov065_02264c44_Thr *next;
-    u8 unk_6c[0x38];
-    Unk_ov065_02264c44_Sub *sess;
-};
 
-struct Unk_ov065_02264c44_Info {
-    u32 unk_00;
-    Unk_ov065_02264c44_Thr *cur;
-    Unk_ov065_02264c44_Thr *list;
-};
 
-struct Unk_ov065_02264d24_Ent {
-    u8 unk_00[0x50];
-    s32 lastUsed;
-    u8 unk_54[6];
-    u8 inUse;
-    u8 unk_5b;
-};
 
-struct Unk_ov065_02264d80_Conn {
-    u8 unk_000[0x2c0];
-    u8 unk_2c0[0xb8];
-    u8 unk_378[0xb0];
-    u8 unk_428;
-    u8 handshakeState;
-    u8 recordReady;
-    u8 unk_42b[0x3cd];
-    u8 *recordBuf;
-    u32 recordLen;
-    u32 recordPos;
-};
 
-struct Unk_ov065_02264d80_Obj {
-    u8 unk_00[8];
-    u8 state;
-    u8 unk_09[3];
-    Unk_ov065_02264d80_Conn *sslCtx;
-    u8 unk_10[0x34];
-    u32 rxLen;
-};
 
 extern "C" {
 extern u32 sGateway;

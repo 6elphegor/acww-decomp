@@ -1,6 +1,12 @@
 // mwcc-version: 1.2/sp2p3
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
+#include "net/Unk_ov065_02261638_Rng.h"
+#include "net/Unk_ov065_02262240_Sess.h"
+#include "net/Unk_ov065_02264a48_Cfg.h"
+#include "net/Unk_ov065_02264c44_Thr.h"
+#include "net/Unk_ov065_02264d24_Ent.h"
+#include "net/Unk_ov065_02264d80_Obj.h"
 
 extern "C" u8 data_ov065_0228f3c0[0x800] = {0};
 extern "C" u8 sIpRecvThreadStack[0x800] = {0};
@@ -54,83 +60,14 @@ namespace Unk_ov065_0226482c_Ns {
 
 // ov065_009: socket/SSL library: checksum, init, record send/receive buffering (0x0226482c..0x02265074)
 
-struct Unk_ov065_02264a48_Cfg {
-    u32 stackFlags;
-    void *(*unk_04)(u32);
-    void (*unk_08)(void *);
-    s32 (*unk_0c)(void);
-    s32 (*unk_10)(void);
-    u32 randSeed;
-    u32 randSeedHi;
-    u32 recvRingBuf;
-    u32 recvRingSize;
-    u32 mss;
-    u32 requestedIp;
-    u32 yieldMode;
-};
 
-struct Unk_ov065_02264a48_Rng {
-    u64 value;
-    u64 multiplier;
-    u64 increment;
-};
 
-struct Unk_ov065_02264c44_Ent {
-    u8 unk_00[4];
-    u16 cnt;
-    u8 unk_06[0x2e];
-    void *buf;
-};
 
-struct Unk_ov065_02264c44_Sub {
-    void *ownerThread;
-    void *waitReason;
-    u8 state;
-    u8 useSsl;
-};
 
-struct Unk_ov065_02264c44_Thr {
-    u8 unk_00[0x68];
-    Unk_ov065_02264c44_Thr *next;
-    u8 unk_6c[0x38];
-    Unk_ov065_02264c44_Sub *sess;
-};
 
-struct Unk_ov065_02264c44_Info {
-    u32 unk_00;
-    Unk_ov065_02264c44_Thr *cur;
-    Unk_ov065_02264c44_Thr *list;
-};
 
-struct Unk_ov065_02264d24_Ent {
-    u8 unk_00[0x50];
-    s32 lastUsed;
-    u8 unk_54[6];
-    u8 inUse;
-    u8 unk_5b;
-};
 
-struct Unk_ov065_02264d80_Conn {
-    u8 unk_000[0x2c0];
-    u8 unk_2c0[0xb8];
-    u8 unk_378[0xb0];
-    u8 unk_428;
-    u8 handshakeState;
-    u8 recordReady;
-    u8 unk_42b[0x3cd];
-    u8 *recordBuf;
-    u32 recordLen;
-    u32 recordPos;
-};
 
-struct Unk_ov065_02264d80_Obj {
-    u8 unk_00[8];
-    u8 state;
-    u8 unk_09[3];
-    Unk_ov065_02264d80_Conn *sslCtx;
-    u8 unk_10[0x34];
-    u32 rxLen;
-};
 
 extern "C" {
 extern u32 sGateway;
@@ -978,48 +915,9 @@ void Icmp_SendEchoRequest(u32 a, u32 b, Unk_ov065_02263f24_Pkt *c)
 
 namespace Unk_ov065_02263578_Ns {
 
-struct Unk_ov065_02262240_Sess;
 
-struct Unk_ov065_02262240_Thr {
-    u8 pad_00[0x68];
-    Unk_ov065_02262240_Thr *next;
-    u8 pad_6c[0xa4 - 0x6c];
-    Unk_ov065_02262240_Sess *sess;
-};
 
-struct Unk_ov065_02262240_Sess {
-    u32 ownerThread;
-    u32 waitReason;
-    u8 state;
-    u8 useSsl;
-    u16 localPort;
-    u8 pad_0c[4];
-    u32 handshakeTime;
-    u32 localAddr;
-    u16 remotePort;
-    u16 boundRemotePort;
-    u32 remoteAddr;
-    u32 boundRemoteAddr;
-    u32 recvNext;
-    u32 sendNext;
-    u16 peerWindow;
-    u16 peerMss;
-    u32 ackedSeq;
-    u32 rxSegmentCount;
-    u32 udpCallback;
-    u32 rxBufSize;
-    u8 *rxBuf;
-    u32 rxLen;
-    u32 txBufSize;
-    u8 *txBuf;
-    u8 pad_50[0x64 - 0x50];
-};
 
-struct Unk_ov065_02262240_Os {
-    u32 unk_00;
-    Unk_ov065_02262240_Thr *cur;
-    Unk_ov065_02262240_Thr *list;
-};
 
 typedef Unk_ov065_02262240_Sess Sess;
 typedef Unk_ov065_02262240_Thr Thr;
@@ -1241,7 +1139,7 @@ void Icmp_DeliverEchoReply(u8 *a, u8 *b, u32 c) {
     Thr *t;
     for (t = data_021fcc2c.list; t != 0; t = t->next) {
         Sess *s = t->sess;
-        if (s != 0 && s->ownerThread != 0 && s->state == 11 && (u16)s->ownerThread == *(u16 *)(b + 4)
+        if (s != 0 && s->ownerThread != 0 && s->state == 11 && (u16)(u32)s->ownerThread == *(u16 *)(b + 4)
             && s->localPort == *(u16 *)(b + 6) && s->rxLen == 0 && s->remoteAddr == Swap32(a + 0xc)) {
             u32 m = s->rxBufSize;
             c -= 8;
@@ -1253,7 +1151,7 @@ void Icmp_DeliverEchoReply(u8 *a, u8 *b, u32 c) {
             MI_CpuCopy8(b + 8, s->rxBuf, s->rxLen);
             if (s->waitReason == 3) {
                 s->waitReason = 0;
-                OS_WakeupThreadDirect(s->ownerThread);
+                OS_WakeupThreadDirect((u32)s->ownerThread);
             }
             return;
         }
@@ -1884,48 +1782,9 @@ u8 *Ip_Reassemble(Unk_ov065_02262c5c_Ip *p, s32 *out) {
 
 namespace Unk_ov065_02262240_Ns {
 
-struct Unk_ov065_02262240_Sess;
 
-struct Unk_ov065_02262240_Thr {
-    u8 pad_00[0x68];
-    Unk_ov065_02262240_Thr *next;
-    u8 pad_6c[0xa4 - 0x6c];
-    Unk_ov065_02262240_Sess *sess;
-};
 
-struct Unk_ov065_02262240_Sess {
-    Unk_ov065_02262240_Thr *ownerThread;
-    u32 waitReason;
-    u8 state;
-    u8 useSsl;
-    u16 localPort;
-    u8 pad_0c[4];
-    u32 handshakeTime;
-    u32 localAddr;
-    u16 remotePort;
-    u16 boundRemotePort;
-    u32 remoteAddr;
-    u32 boundRemoteAddr;
-    u8 pad_24[4];
-    u32 sendNext;
-    u16 peerWindow;
-    u16 peerMss;
-    u32 ackedSeq;
-    u32 rxSegmentCount;
-    u32 udpCallback;
-    u8 pad_3c[4];
-    u8 *rxBuf;
-    u32 rxLen;
-    u8 pad_48[0x5c - 0x48];
-    u8 *pendingTx;
-    u32 pendingTxLen;
-};
 
-struct Unk_ov065_02262240_Os {
-    u32 unk_00;
-    Unk_ov065_02262240_Thr *cur;
-    Unk_ov065_02262240_Thr *list;
-};
 
 struct Unk_ov065_02262a54_Rng {
     s64 value;
@@ -3287,11 +3146,6 @@ s32 Dns_QueryServer(const u8 *a, const u8 *b, s32 c) {
 
 namespace Unk_ov065_02260de4_Ns {
 
-struct Unk_ov065_02261638_Rng {
-    u64 value;
-    s64 multiplier;
-    s64 increment;
-};
 
 extern "C" {
 s64 _ll_mul(s64, s64);

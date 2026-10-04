@@ -1,6 +1,7 @@
 // mwcc-version: 1.2/sp2p3
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
+#include "net/Unk_ov065_022679f8_Sha1.h"
 #pragma opt_strength_reduction off
 
 namespace Unk_ov065_02268470_Ns {
@@ -715,12 +716,6 @@ void SslSha1_Transform(u32 *ctx, u8 *data) {
 }
 
 namespace Unk_ov065_022671a0_Ns {
-struct Unk_ov065_022679f8_Sha1 {
-    u32 st[5];
-    u32 hi;
-    u32 lo;
-    u8 buf[64];
-};
 
 extern "C" {
 

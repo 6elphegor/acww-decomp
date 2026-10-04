@@ -1,5 +1,8 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
+#include "net/Unk_ov065_0225fd18_Counters.h"
+#include "net/Unk_ov065_02261408_Hostent.h"
+#include "net/Unk_ov065_02261638_Rng.h"
 
 namespace Unk_ov065_02260de4_Ns {
 
@@ -83,13 +86,6 @@ struct Unk_ov065_02261118_Src {
     u32 recvWindow;
 };
 
-struct Unk_ov065_02261408_Hostent {
-    char *hostName;
-    char **aliases;
-    s16 addrType;
-    s16 addrLength;
-    char **addrList;
-};
 
 typedef void (*Unk_ov065_02261118_Free)(s32, void *, u32);
 typedef void *(*Unk_ov065_02261118_Alloc)(s32, u32);
@@ -141,11 +137,6 @@ BOOL SockCore_IsInClosedList(Unk_ov065_02260de4 *n);
 char *Sock_InetNtoP(s32 mode, s32 x, char *buf, u32 len);
 void IpAddr_StoreBe32(u32 v, u8 *p);
 
-struct Unk_ov065_02261638_Rng {
-    u64 value;
-    s64 multiplier;
-    s64 increment;
-};
 extern Unk_ov065_02261638_Rng sIpRandState;
 
 static inline u32 HTONL(u32 x) {
@@ -1294,10 +1285,6 @@ typedef Unk_ov065_0225faf4_Job Job;
 typedef Unk_ov065_0225ff64_Job RJob;
 typedef Unk_ov065_022603bc_Job WJob;
 
-struct Unk_ov065_0225fd18_Counters {
-    u32 noMemDrops;
-    u32 queueFullDrops;
-};
 
 extern "C" {
 extern s32 sSockConnectInProgressError;

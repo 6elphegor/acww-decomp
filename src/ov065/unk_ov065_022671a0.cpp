@@ -1,6 +1,7 @@
 // mwcc-version: 1.2/sp2p3
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
+#include "net/Unk_ov065_022679f8_Sha1.h"
 
 struct Unk_ov065_022672a0_Tbl {
     u8 pad_000[0x7e8];
@@ -35,12 +36,6 @@ struct Unk_ov065_02267480_Md5 {
     u8 buf[64];
 };
 
-struct Unk_ov065_022679f8_Sha1 {
-    u32 st[5];
-    u32 hi;
-    u32 lo;
-    u8 buf[64];
-};
 
 extern u32 data_021fcc2c[];
 

@@ -1,5 +1,6 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
+#include "net/Unk_ov065_0227194c_Out.h"
 
 typedef long long s64;
 
@@ -60,12 +61,6 @@ struct Unk_ov065_0229080c {
     u32 unk_50;
 };
 
-struct Unk_ov065_0227194c_Out {
-    u32 profileId;
-    u32 status;
-    char statusString[0x100];
-    char locationString[0x108];
-};
 
 struct Unk_ov065_02272428_Sub {
     u8 clientIndex;

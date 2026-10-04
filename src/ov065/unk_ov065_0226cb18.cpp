@@ -1,5 +1,8 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
+#include "net/Unk_ov065_0226b488_Rec.h"
+#include "net/Unk_ov065_0226cfe4_Buf.h"
+#include "net/Unk_ov065_0226d158_Owner.h"
 #pragma opt_strength_reduction off
 
 extern "C" {
@@ -26,40 +29,10 @@ extern "C" {
 typedef unsigned long long u64;
 typedef long long s64;
 
-struct Unk_ov065_0226d158_Form {
-    void *entries;
-    s32 capacity;
-    s32 count;
-};
 
-struct Unk_ov065_0226d158_Date {
-    s32 year;
-    s32 month;
-    s32 day;
-    s32 week;
-};
 
-struct Unk_ov065_0226d158_Time {
-    s32 hour;
-    s32 minute;
-    s32 second;
-};
 
-struct Unk_ov065_0226d158_Kv {
-    const char *key;
-    const char *val;
-};
 
-struct Unk_ov065_0226d158_Owner {
-    u8 language;
-    u8 unk_01;
-    u8 birthMonth;
-    u8 birthDay;
-    u16 nickName[10];
-    u16 nickNameLength;
-    u16 comment[26];
-    u16 commentLength;
-};
 
 struct Unk_ov065_02290604_S {
     u64 userId;
@@ -246,27 +219,7 @@ void WifiAp_GetUsbApWepKey(u8 *p) {
 namespace N_c750 {
 extern "C" {
 
-struct Unk_ov065_0226b488_Rec {
-    u8 unk_00;
-    u8 unk_01;
-    u16 rssi;
-    u8 bssid[6];
-    u16 ssidLength;
-    u8 ssid[0x2c - 0xc];
-    u16 capaInfo;
-    u8 pad2e[0x36 - 0x2e];
-    u16 channel;
-    u8 pad38[0xc0 - 0x38];
-};
 
-struct Unk_ov065_0226b488_Entry {
-    u8 lo : 4;
-    u8 hi : 4;
-    u8 apType;
-    u8 channelIndex;
-    u8 ssidLength;
-    u8 ssid[0x20];
-};
 
 struct Unk_ov065_0226b488_Ctx {
     u8 pad000[0x300];
@@ -295,9 +248,6 @@ struct Unk_ov065_0226b488_Ctx {
     u16 foundChannelMask;
 };
 
-struct Unk_ov065_0226cfe4_Buf {
-    u8 b[24];
-};
 
 extern u8 gWifiLinkAnyBssid[];
 extern u8 gWifiLinkAnySsid[];

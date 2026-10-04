@@ -1,5 +1,6 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
+#include "net/Unk_ov065_02261408_Hostent.h"
 
 // ov065 TU38: ghttp (2): request post / process / response handlers (0x0227a284..0x0227bd20)
 
@@ -417,10 +418,6 @@ struct Unk_ov065_0227b9c4_Addr {
     u32 addr;
 };
 
-struct Unk_ov065_02261408_Hostent {
-    u8 pad_00[0x0c];
-    u32 **addrList;
-};
 
 extern "C" {
 extern s32 sGsHttpThrottleBytes;
@@ -697,7 +694,7 @@ void GsHttp_StepHostLookup(Unk_ov065_0227b2a8_Obj *self) {
             self->result = 4;
             return;
         }
-        self->serverIp = **he->addrList;
+        self->serverIp = *(u32 *)*he->addrList;
     }
     self->state = 1;
     GsHttp_CallProgressCallback(self, 0, 0);
