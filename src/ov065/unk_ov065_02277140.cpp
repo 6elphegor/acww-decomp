@@ -1,21 +1,13 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
 #include "net/Unk_ov065_02277418_Rec.h"
+#include "net/Unk_ov065_02290f78.h"
 
 typedef long long s64;
 
 // ov065_039: DWC-like send/receive channel table (0x0227702c..0x022778b0)
 
 
-struct Unk_ov065_02290f78 {
-    Unk_ov065_02277418_Rec channels[32];
-    void (*unk_600)(...);
-    void (*unk_604)(...);
-    void (*unk_608)(...);
-    void (*unk_60c)(...);
-    u16 maxChunkSize;
-    u16 unk_612;
-};
 
 
 

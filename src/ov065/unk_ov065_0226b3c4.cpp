@@ -7,6 +7,7 @@
 #include "net/Unk_ov065_0226b3c4_Rec.h"
 #include "net/Unk_ov065_0226b488_Rec.h"
 #include "net/Unk_ov065_0226cfe4_Buf.h"
+#include "net/Unk_ov065_0226b488_Ctx.h"
 
 struct Unk_ov065_0228b31c_Tmpl {
     u32 unk_00[18];
@@ -39,32 +40,6 @@ extern "C" {
 
 
 
-struct Unk_ov065_0226b488_Ctx {
-    u8 pad000[0x300];
-    Unk_ov065_0226b488_Entry searchEntries[9];
-    u8 foundApInfo[0x2c];
-    Unk_ov065_0226b488_Rec foundApBss[11];
-    u32 stepStartTick;
-    u32 stepStartTickHi;
-    u8 wepSetting[0x52];
-    u8 padd0a;
-    u8 unk_d0b_lo : 2;
-    u8 unk_d0b_hi : 2;
-    u8 unk_d0b_pad : 4;
-    u8 unk_d0c_st : 4;
-    u8 unk_d0c_mid : 2;
-    u8 unk_d0c_mode : 2;
-    u8 apType;
-    u8 resumeState;
-    u8 searchIndex;
-    u8 numSearchEntries;
-    s8 scanChannel;
-    u8 numFoundAps;
-    u8 selectedAp;
-    u8 connectFailKind;
-    u8 stepCount;
-    u16 foundChannelMask;
-};
 
 
 extern u8 gWifiLinkAnyBssid[];
@@ -869,31 +844,6 @@ extern "C" {
 
 
 
-struct Unk_ov065_0226b488_Ctx {
-    u8 pad000[0x300];
-    Unk_ov065_0226b488_Entry searchEntries[9];
-    u8 foundApInfo[0x2c];
-    Unk_ov065_0226b488_Rec foundApBss[11];
-    u32 stepStartTick;
-    u32 stepStartTickHi;
-    u8 wepSetting[0x52];
-    u8 padd0a;
-    u8 unk_d0b_lo : 2;
-    u8 unk_d0b_hi : 2;
-    u8 unk_d0b_pad : 4;
-    u8 unk_d0c_st : 4;
-    u8 unk_d0c_pad : 2;
-    u8 unk_d0c_mode : 2;
-    u8 apType;
-    u8 resumeState;
-    u8 searchIndex;
-    u8 numSearchEntries;
-    s8 scanChannel;
-    u8 numFoundAps;
-    u8 selectedAp;
-    u8 connectFailKind;
-    u8 stepCount;
-};
 
 struct Unk_ov065_0226b78c_Msg {
     s16 unk_00;

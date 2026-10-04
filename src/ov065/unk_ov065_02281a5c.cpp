@@ -8,6 +8,7 @@
 #include "net/Unk_ov065_022833b4_Pair.h"
 #include "net/Unk_ov065_02283744_Buf.h"
 #include "net/Unk_ov065_022837bc_Ent.h"
+#include "net/Unk_ov065_022833b4_Src.h"
 
 // ov065 TU49: GP gpiSearch.c (0x02281a5c..0x02283304)
 
@@ -20,10 +21,6 @@ namespace Nb {
 
 
 
-struct Unk_ov065_022833b4_Src {
-    u8 pad_00[0xc];
-    Unk_ov065_022833b4_Pair callback;
-};
 
 
 

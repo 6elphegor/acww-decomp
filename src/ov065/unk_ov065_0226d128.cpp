@@ -2,6 +2,7 @@
 #include "types.h"
 #include "net/Unk_ov065_0226d158_Owner.h"
 #include "net/Unk_ov065_02290600_Obj.h"
+#include "net/Unk_ov065_02290600_S.h"
 
 typedef unsigned long long u64;
 typedef long long s64;
@@ -16,31 +17,7 @@ typedef void (*Unk_ov065_0226dd2c_Free)(const char *, void *, u32);
 
 
 
-struct Unk_ov065_0226dd2c_Cfg {
-    u32 v[11];
-};
 
-struct Unk_ov065_02290600_S {
-    u32 unk_00;
-    s32 state;
-    s32 resultCode;
-    char returnCd[4];
-    char datetime[0xf];
-    char locator[0x33];
-    char token[0x12d];
-    char challenge[9];
-    char cookie[0x41];
-    u8 pad_1c9[0x1cc - 0x1c9];
-    Unk_ov065_0226dd2c_Cfg config;
-    u8 httpFields[0x2f8 - 0x1f8];
-    Unk_ov065_02290600_Obj *http;
-    u8 thread[0x368 - 0x2fc];
-    s32 threadId;
-    u8 pad_36c[0x3bc - 0x36c];
-    u8 mutex[0x18];
-    s32 isAborting;
-    u8 unk_3d8[0x13e0 - 0x3d8];
-};
 
 typedef Unk_ov065_02290600_S S;
 

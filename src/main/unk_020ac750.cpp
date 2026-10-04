@@ -17,6 +17,7 @@
 #include "game/ShopAckCounter.h"
 #include "item/Letter.h"
 #include "gfx/ObjShadowBits.h"
+#include "gfx/Unk_020ac2e8_V.h"
 struct MsgString25 {
     MsgString25();
     ~MsgString25();
@@ -111,10 +112,6 @@ struct Bits {
 };
 
 
-struct Unk_020ac2e8_V : Vec3 {
-    Unk_020ac2e8_V() {}
-    ~Unk_020ac2e8_V() {}
-};
 // ======== types of unk_020acf38.cpp ========
 
 // ---- externs ----

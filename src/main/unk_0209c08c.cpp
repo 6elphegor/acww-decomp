@@ -8,6 +8,7 @@
 #include "gfx/TexTransfer.h"
 #include "sys/RecordFile.h"
 #include "town/TownAcreCell.h"
+#include "room/Unk_0209c614_Actor.h"
 
 inline void *operator new(unsigned long, void *p) { return p; }
 
@@ -39,9 +40,6 @@ struct Unk_0209c614_Actor;
 }
 
 extern "C" {
-struct Unk_0209c614_Vec {
-    s32 x, y, z;
-};
 }
 
 extern "C" {
@@ -355,9 +353,3 @@ extern "C" u32 Scene_GetSavedFadeIn() {
 
 
 
-struct Unk_0209c614_Actor {
-    u8 pad_00[0x5c];
-    Unk_0209c614_Vec position;
-    u8 pad_68[0x8e - 0x68];
-    s16 rotY;
-};

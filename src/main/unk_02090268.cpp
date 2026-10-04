@@ -3,6 +3,7 @@
 #include "Unk_020d8c7c.h"
 #include "game/Unk_0203389c_Vec.h"
 #include "gfx/Unk_02093dc8_Obj.h"
+#include "gfx/Unk_02093c28_Obj.h"
 
 typedef Unk_0203389c_Vec Unk_02093aa8_Vec;
 typedef Unk_0203389c_Vec Unk_02093748_Vec;
@@ -502,13 +503,6 @@ static inline BOOL Unk_020935e8_IsOne(u8 v)
 
 
 
-// Particle object
-struct Unk_02093c28_Obj {
-    /* 0x00 */ u32 unk_00;
-    /* 0x04 */ Unk_02093c28_Handle tag;
-    /* 0x08 */ u32 unk_08;
-    /* 0x0c */ struct Unk_02093dc8_Obj *emitter;
-};
 
 
 

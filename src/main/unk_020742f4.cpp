@@ -4,6 +4,7 @@
 #include "talk/MsgStringBase.h"
 #include "talk/MsgStringAttr.h"
 #include "save/BbsPost.h"
+#include "npc/Unk_020781ec_Data.h"
 
 // ======== types of unk_020742f4.cpp ========
 
@@ -144,17 +145,6 @@ public:
 
 
 
-struct Unk_020781ec_Data {
-    Unk_020781ec_Elem entries[8];
-    s8 fleaVillager;
-    s8 greeter;
-    s8 birthdayHost;
-    s8 birthdayGuest;
-    s8 fleaMarketBuyer;
-    u8 pad_165[3];
-    s32 idleFrames;
-    s8 birthdayVisitor;
-};
 
 class OverlayHandle {
 public:

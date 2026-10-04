@@ -9,6 +9,7 @@
 #include "net/Unk_ov065_022837bc_Ent.h"
 #include "net/Unk_ov065_02284100_Buf.h"
 #include "net/Unk_ov065_0228412c_Obj.h"
+#include "net/Unk_ov065_022833b4_Src.h"
 
 extern "C" u8 data_ov065_0228df8c[16];
 
@@ -28,10 +29,6 @@ extern "C" {
 
 
 
-struct Unk_ov065_022833b4_Src {
-    u8 pad_00[0xc];
-    Unk_ov065_022833b4_Pair callback;
-};
 
 
 

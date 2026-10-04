@@ -1,11 +1,8 @@
 #include "types.h"
 #include "game/Unk_0202f2ac_V3.h"
 #include "game/CollisionVec2.h"
+#include "game/Unk_0202f7b8_V3.h"
 
-struct Unk_0202f7b8_V3 : Unk_0202f660_V3 {
-    Unk_0202f7b8_V3() {}
-    Unk_0202f7b8_V3(s32 a, s32 b, s32 c) { x = a; y = b; z = c; }
-};
 
 extern "C" {
 s32 FX_Div(s32 a, s32 b);

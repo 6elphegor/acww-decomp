@@ -10,6 +10,7 @@
 #include "net/Unk_ov065_02286f04_Hostent.h"
 #include "net/Unk_ov065_02287000_Pkt.h"
 #include "net/Unk_ov065_022871ac_List.h"
+#include "net/Unk_ov065_02285630_Conn.h"
 
 
 extern "C" { s32 data_ov065_02291504; } //@
@@ -25,29 +26,6 @@ extern "C" {
 
 
 
-struct Unk_ov065_02285630_Conn {
-    s32 remoteIp;
-    u16 remotePort;
-    u8 pad_06[2];
-    Unk_ov065_02285630_Peer *socket;
-    s32 state;
-    u8 pad_10[0x24];
-    s32 pingCallback;
-    void *initialMessage;
-    s32 initialMessageLen;
-    u8 pad_40[4];
-    Unk_ov065_02285630_Buf incomingBuffer;
-    s32 incomingBufferLen;
-    u8 pad_50[0xc];
-    void *incomingMessages;
-    void *outgoingMessages;
-    u8 pad_64[2];
-    u16 expectedSerialNumber;
-    u8 response[0x24];
-    s32 challengeTime;
-    s32 pendingAck;
-    s32 pendingAckTime;
-};
 
 
 typedef Unk_ov065_02285630_Conn Cn;

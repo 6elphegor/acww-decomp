@@ -10,6 +10,7 @@
 #include "game/Unk_02031e10_Vec.h"
 #include "gfx/Unk_ov009_0225bc88_Blk.h"
 #include "town/Unk_ov009_0225b880.h"
+#include "game/Unk_ov009_0225cb4c_V3.h"
 
 // Library base class chain (header GameProc.h rebuilt so that the vtable names the real symbols:
 // slot 08 is Character::postCreate(int)).
@@ -48,14 +49,6 @@ public:
 
 
 
-struct Unk_ov009_0225cb4c_V3 : Unk_ov009_0225b880_Vec3 {
-    Unk_ov009_0225cb4c_V3(s32 a, s32 b, s32 c) {
-        x = a;
-        y = b;
-        z = c;
-    }
-    Unk_ov009_0225cb4c_V3() {}
-};
 
 class Actor : public GameProc {
 public:

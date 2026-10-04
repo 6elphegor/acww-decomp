@@ -4,6 +4,7 @@
 #include "net/Unk_020720f8_Data.h"
 #include "save/MuseumData.h"
 #include "sys/RecordFile.h"
+#include "save/Unk_020942c8.h"
 
 // U125: design (pattern) storage and display helpers, 0x02070560-0x020720f8
 
@@ -120,18 +121,6 @@ struct Unk_020719b0 {
 };
 
 // ======== types of unk_02071ae0.cpp ========
-class Unk_020942c8 {
-public:
-    Unk_020942c8();
-    ~Unk_020942c8();
-    u16 townId;
-    Unk_02071fa4_Id8 townName;
-    u16 playerId;
-    Unk_02071fa4_Id8 playerName;
-    s8 gender;
-    u8 unk_15;
-    BOOL func_020941e8(Unk_020942c8 *o);
-};
 class EncodedString16Buf {
 public:
     virtual void vfunc_00();

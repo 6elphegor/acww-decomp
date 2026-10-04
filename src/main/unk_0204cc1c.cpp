@@ -9,12 +9,9 @@
 #include "sys/OverlaySlot.h"
 #include "town/MapBlockEntry.h"
 #include "town/TownBlockMap.h"
+#include "game/Unk_0204da0c_Map.h"
 
 
-struct Unk_0204da0c_Map {
-    u32 blocks;
-    Unk_0204da0c_Size size;
-};
 
 
 

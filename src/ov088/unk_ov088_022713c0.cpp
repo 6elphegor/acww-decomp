@@ -7,6 +7,11 @@
 #include "npc/NpcAnimCtrl.h"
 #include "npc/NpcSpeechState.h"
 #include "npc/NpcResHandleView.h"
+#include "npc/NpcLookAt.h"
+#include "npc/NpcObstacleProbe.h"
+#include "npc/Unk_0201ac88.h"
+#include "npc/Unk_0201ad18.h"
+#include "npc/Unk_020135e4.h"
 
 // Library base class (same as GameProc.h, but vfunc_08 takes the s32 the vtable symbol names).
 class ProcBase {
@@ -253,40 +258,8 @@ struct ThreeLayerAnimModel {
 };
 MEMBER(Unk_0201ad3c, 0xc);
 MEMBER(NpcFaceAnim, 0x334 - 0x2ac);
-struct Unk_0201accc {
-    u8 unk_00[0x3a8 - 0x350];
-    Unk_0201accc();
-    ~Unk_0201accc();
-    Unk_ov088_Vec *func_0201a978();
-    BOOL func_0201a9a0(void *owner, s32 v);
-    void func_0201a97c(Unk_ov088_Vec *v);
-    BOOL func_0201a968();
-    void func_0201a8f0();
-};
-struct Unk_0201a8bc { u8 unk_00[2]; Unk_0201a8bc(); s32 func_0201a7e8(); };
-struct Unk_0201ad18 {
-    u8 unk_00[6];
-    Unk_0201ad18();
-    s32 func_0201acfc();
-};
-struct Unk_0201a794 {
-    u8 unk_00[0x418 - 0x3b0];
-    Unk_0201a794();
-    ~Unk_0201a794();
-    void func_0201a6c0(s32 a, s32 b, s32 c, Unk_ov088_Vec *d, s32 e, s32 f, s32 g);
-};
 MEMBER(Unk_0201a13c, 0x49c - 0x420);
 MEMBER(CollisionState, 0x30);
-struct Unk_020135e4 {
-    u8 pad_00[8];
-    u8 unk_08;
-    u8 pad_09[2];
-    u8 unk_0b;
-    Unk_020135e4();
-    ~Unk_020135e4();
-    void func_020135bc();
-    void func_020135c4();
-};
 struct NpcActionCtrl {
     NpcActionCtrl();
     ~NpcActionCtrl();

@@ -4,6 +4,8 @@
 #include "net/Unk_ov065_0226cfe4_Buf.h"
 #include "net/Unk_ov065_0226d158_Owner.h"
 #include "net/Unk_ov065_02290600_Obj.h"
+#include "net/Unk_ov065_0226b488_Ctx.h"
+#include "net/Unk_ov065_02290600_S.h"
 #pragma opt_strength_reduction off
 
 extern "C" {
@@ -40,25 +42,6 @@ typedef long long s64;
 typedef void *(*Unk_ov065_02290600_Alloc)(const char *, u32);
 typedef void (*Unk_ov065_02290600_Free)(const char *, void *, u32);
 
-struct Unk_ov065_02290600_S {
-    u8 pad_00[4];
-    s32 state;
-    s32 resultCode;
-    char returnCd[4];
-    char datetime[0xf];
-    char locator[0x33];
-    char token[0x12d];
-    char challenge[9];
-    char cookie[0x41];
-    u8 pad_1c9[0x1f0 - 0x1c9];
-    Unk_ov065_02290600_Alloc unk_1f0;
-    Unk_ov065_02290600_Free unk_1f4;
-    u8 httpFields[0x2f8 - 0x1f8];
-    Unk_ov065_02290600_Obj *http;
-    u8 pad_2fc[0x3bc - 0x2fc];
-    u8 mutex[0x18];
-    s32 isAborting;
-};
 
 typedef Unk_ov065_02290600_S S;
 
@@ -208,32 +191,6 @@ extern "C" {
 
 
 
-struct Unk_ov065_0226b488_Ctx {
-    u8 pad000[0x300];
-    Unk_ov065_0226b488_Entry searchEntries[9];
-    u8 foundApInfo[0x2c];
-    Unk_ov065_0226b488_Rec foundApBss[11];
-    u32 stepStartTick;
-    u32 stepStartTickHi;
-    u8 wepSetting[0x52];
-    u8 padd0a;
-    u8 unk_d0b_lo : 2;
-    u8 unk_d0b_hi : 2;
-    u8 unk_d0b_pad : 4;
-    u8 unk_d0c_st : 4;
-    u8 unk_d0c_mid : 2;
-    u8 unk_d0c_mode : 2;
-    u8 apType;
-    u8 resumeState;
-    u8 searchIndex;
-    u8 numSearchEntries;
-    s8 scanChannel;
-    u8 numFoundAps;
-    u8 selectedAp;
-    u8 connectFailKind;
-    u8 stepCount;
-    u16 foundChannelMask;
-};
 
 
 extern u8 gWifiLinkAnyBssid[];

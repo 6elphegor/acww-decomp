@@ -1,10 +1,8 @@
 #include "types.h"
 #include "net/CommManager.h"
 #include "room/Unk_0209c41c_Actor.h"
+#include "room/Unk_0209c614_Actor.h"
 
-struct Unk_0209c82c_V {
-    s32 x, y, z;
-};
 typedef Unk_0209c82c_V Unk_0209c614_Vec;
 
 
@@ -40,13 +38,6 @@ public:
 
 extern "C" CommManager *gCommManager;
 
-class Unk_0209c614_Actor {
-public:
-    u8 pad_00[0x5c];
-    Unk_0209c614_Vec position;
-    u8 pad_68[0x8e - 0x68];
-    s16 rotY;
-};
 
 extern "C" {
 extern u8 gFieldSceneKind;

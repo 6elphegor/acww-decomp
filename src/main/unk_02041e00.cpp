@@ -4,6 +4,7 @@
 #include "town/Unk_02041e00_Ent.h"
 #include "game/Unk_02042104_Date.h"
 #include "game/Unk_0204da0c_Size.h"
+#include "game/Unk_0204da0c_Map.h"
 
 
 struct Unk_0204a768_Pos {
@@ -1647,10 +1648,6 @@ struct Unk_02048cc4_Pos {
     Unk_02048cc4_Pos(const Unk_02048cc4_Pos &o) : x(o.x), y(o.y) {}
 };
 typedef Unk_02048cc4_Pos Pos;
-struct Unk_0204da0c_Map {
-    u32 blocks;
-    Unk_0204da0c_Size size;
-};
 u16 *BlockMap_GetItemPtr(void *m, s32 a, s32 b, s32 c, s32 d, s32 e);
 BOOL Item_IsTreeStage0(u16 *p);
 void Town_WitherSapling(void *m, u32 id, s32 x, s32 y);

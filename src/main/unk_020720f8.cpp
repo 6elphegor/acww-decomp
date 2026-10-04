@@ -6,20 +6,9 @@
 #include "net/CommManager.h"
 #include "save/PatternOrder.h"
 #include "net/Unk_020720f8_Data.h"
+#include "save/Unk_020942c8.h"
 
 // ======== types of unk_02071ae0.cpp ========
-class Unk_020942c8 {
-public:
-    Unk_020942c8();
-    ~Unk_020942c8();
-    u16 townId;
-    Unk_02071fa4_Id8 townName;
-    u16 playerId;
-    Unk_02071fa4_Id8 playerName;
-    s8 gender;
-    u8 unk_15;
-    BOOL func_020941e8(Unk_020942c8 *o);
-};
 class EncodedString16Buf {
 public:
     virtual void vfunc_00();

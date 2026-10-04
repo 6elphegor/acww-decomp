@@ -19,6 +19,8 @@
 #include "room/FtrAnimSet.h"
 #include "room/FtrStackedSet.h"
 #include "game/BoxCollider.h"
+#include "room/Unk_ov004_02205c80_Obj.h"
+#include "room/Unk_ov004_02206570_Act.h"
 
 // ================================================================ plain value types
 
@@ -168,20 +170,6 @@ public:
 };
 
 // ================================================================ helper object types (members of / used by the 0224882c object)
-struct Unk_ov004_02205c80_Obj {
-    u8 pad_00[0x8e];
-    s16 rotY;
-    u8 pad_90[0x284 - 0x90];
-    u8 mapLayer;
-    u8 pad_285[0x598 - 0x285];
-    Unk_ov004_Mtx modelMtx;
-    u8 pad_5c8[0x768 - 0x5c8];
-    s32 spawnMode;
-    u8 pad_76c[0x789 - 0x76c];
-    u8 startsOff;
-    u8 pad_78a[2];
-    s32 surfaceHeight;
-};
 
 
 // ---- 0x02206520: list of up to 4 tile positions
@@ -300,13 +288,6 @@ public:
 };
 
 
-struct Unk_ov004_02206570_Act {
-    u8 pad_00[0x5c];
-    Unk_ov004_02206744_V3 position;
-    Unk_ov004_02206744_V3 prevPosition;
-    u8 pad_74[0x8e - 0x74];
-    s16 rotY;
-};
 
 
 struct FtrCollider : BoxCollider {

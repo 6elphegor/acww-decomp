@@ -6,6 +6,12 @@
 #include "actor/Unk_ov068_SceneEntry.h"
 #include "item/ItemId.h"
 #include "npc/NpcResHandleView.h"
+#include "npc/NpcLookAt.h"
+#include "npc/NpcObstacleProbe.h"
+#include "npc/Unk_0201ac88.h"
+#include "npc/NpcMoveAnimSet.h"
+#include "npc/Unk_0201ad18.h"
+#include "npc/Unk_020135e4.h"
 
 // Library base class (same as GameProc.h, but vfunc_08 takes the s32 the vtable symbol names).
 class ProcBase {
@@ -131,17 +137,11 @@ extern const char *sNookTexPaths[];
 
 // Member object types of the scene object, named after their constructors.
 struct ThreeLayerAnimModel { ThreeLayerAnimModel(); u32 pad[0x1b4 / 4]; };
-struct Unk_0201ad3c { Unk_0201ad3c(); u32 pad[0xc / 4]; };
 struct NpcFaceAnim { NpcFaceAnim(); u32 pad[0x88 / 4]; };
 struct NpcAnimCtrl { NpcAnimCtrl(); u32 pad[0x1c / 4]; };
-struct Unk_0201accc { Unk_0201accc(); u32 pad[0x58 / 4]; };
-struct Unk_0201a8bc { Unk_0201a8bc(); u8 pad[2]; };
-struct Unk_0201ad18 { Unk_0201ad18(); u8 pad[6]; };
-struct Unk_0201a794 { Unk_0201a794(); u32 pad[0x68 / 4]; };
 struct NpcSpeechState { NpcSpeechState(); u32 pad[8 / 4]; };
 struct CollisionState { CollisionState(); u32 pad[0x30 / 4]; };
 struct Unk_020f4080 { Unk_020f4080(); u32 pad[0x44 / 4]; };
-struct Unk_020135e4 { Unk_020135e4(); u8 pad[0xb]; u8 unk_0b; };
 struct NpcActionCtrl { NpcActionCtrl(); u32 pad[0xb4 / 4]; };
 struct Unk_02014254 { Unk_02014254(); u32 pad[0x28 / 4]; };
 

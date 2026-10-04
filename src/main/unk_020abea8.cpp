@@ -7,6 +7,7 @@
 #include "gfx/Unk_021ede90.h"
 #include "game/Vec3.h"
 #include "gfx/ObjShadowBits.h"
+#include "gfx/Unk_020ac2e8_V.h"
 
 
 struct Vec3Z2 {
@@ -141,10 +142,6 @@ static inline Unk_020ac500_Pltt *Unk_020ac500_PlttData(const Unk_020ac500_Tex *t
     return (Unk_020ac500_Pltt *)Unk_020ac500_Data((const Unk_020ac500_Dict *)((u8 *)tex + tex->ofsPlttDict), idx);
 }
 
-struct Unk_020ac2e8_V : Vec3 {
-    Unk_020ac2e8_V() {}
-    ~Unk_020ac2e8_V() {}
-};
 
 extern "C" void ObjShadow_NormalizeAxes(void *a, void *b) {
     VEC_Normalize(a, b);

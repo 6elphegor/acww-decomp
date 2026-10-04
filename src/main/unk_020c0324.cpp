@@ -7,6 +7,9 @@
 #include "npc/NpcAnimCtrl.h"
 #include "npc/NpcSpeechState.h"
 #include "npc/NpcResHandleView.h"
+#include "npc/NpcObstacleProbe.h"
+#include "npc/Unk_0201ad18.h"
+#include "npc/Unk_020135e4.h"
 
 typedef Unk_020bfe30_Vec Unk_020c0acc_Vec;
 
@@ -240,8 +243,6 @@ struct ThreeLayerAnimModel {
 MEMBER(Unk_0201ad3c, 0xc);
 MEMBER(NpcFaceAnim, 0x334 - 0x2ac);
 MEMBER(Unk_0201accc, 0x3a8 - 0x350);
-struct Unk_0201a8bc { u8 unk_00[2]; Unk_0201a8bc(); };
-struct Unk_0201ad18 { u8 unk_00[6]; Unk_0201ad18(); };
 MEMBER(Unk_0201a794, 0x418 - 0x3b0);
 MEMBER(CollisionState, 0x30);
 struct ActorFollowCollider {
@@ -252,7 +253,6 @@ struct ActorFollowCollider {
     u8 pad_45[3];
     ActorFollowCollider();
 };
-struct Unk_020135e4 { u8 pad_00[0xb]; u8 unk_0b; Unk_020135e4(); };
 MEMBER(NpcActionCtrl, 0x618 - 0x564);
 MEMBER(Unk_02014254, 0x28);
 

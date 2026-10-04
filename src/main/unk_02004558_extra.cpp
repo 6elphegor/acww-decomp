@@ -51,6 +51,11 @@
 #include "player/Unk_02009a78_Locals.h"
 #include "player/Unk_02009d5c_Sub.h"
 #include "player/Unk_02009f68_Bytes.h"
+#include "player/Unk_0205dfa4.h"
+#include "player/Unk_0200e2e0.h"
+#include "player/Unk_0200bc78_Vec.h"
+#include "player/Unk_0200b76c_Msg.h"
+#include "player/Unk_0200944c.h"
 #include "player/PlayerActionRequest.h"
 #include "player/PMRaw.h"
 #include "snd/SndSeEmitter.h"
@@ -502,11 +507,6 @@ struct Unk_020093d4 {
     void initWalkTo(Unk_02006d14_Vec v, s32 a, s32 b);
 };
 
-struct Unk_0200944c {
-    Unk_02006d14_Vec targetPos;
-    s32 maxSpeed;
-    void setWalkToArgs(Unk_02006d14_Vec v, s32 a);
-};
 
 
 
@@ -1545,7 +1545,6 @@ s32 _ZN12Unk_0200769421getActionDonePriorityEj(void *, s32 v);
 namespace nH {
 extern "C" {
 
-struct Unk_0200e2e0 { u8 pad_00[0xc]; Unk_02009d5c_Sub args; };
 extern u8 gFieldSceneKind;
 extern Unk_02006d14_Data* gCommManager;
 extern s16 data_02135f44[];
@@ -2011,26 +2010,10 @@ s32 _ZN12Unk_02006d1415getHeldToolKindEv(void *);
 namespace nK {
 extern "C" {
 
-struct Unk_0200b76c_Msg {
-    u32 action, priority, netSeq;
-    Unk_0200b7bc args;
-    u8 pad_14[8];
-};
-struct Unk_0200ba8c_Msg {
-    u32 action, priority, netSeq;
-    Unk_0200b750 args;
-    u8 pad_14[0x8];
-};
-struct Unk_0200bd60_Msg {
-    u32 action, priority, netSeq;
-    Unk_0200bda0 args;
-    u8 pad_0e[0xe];
-};
 static inline void func_0200bc78_sub(Unk_02006d14_Vec *o, Unk_02006d14_Vec *a, Unk_02006d14_Vec *b) {
     o->x = a->x - b->x;
     o->z = a->z - b->z;
 }
-struct Unk_0200bc78_Vec : Unk_02006d14_Vec { Unk_0200bc78_Vec() {} };
 struct Unk_02006d14_7d0 {
     union {
         struct { s32 w0; u8 b4, b5, b6; };
@@ -2351,8 +2334,6 @@ void _ZN12Unk_02006d1411tryInteractEv(void *);
 namespace nM {
 extern "C" {
 
-struct Unk_0205dfa4 : Unk_0205dfa4_Base, Unk_0205dfa4_Sub {
-};
 extern s16 data_02135f44[];
 extern u8 gFieldSceneKind;
 extern u8 gScreenTransition;

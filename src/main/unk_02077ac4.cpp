@@ -7,6 +7,7 @@
 #include "npc/VillagerId.h"
 #include "npc/VillagerDataItemView.h"
 #include "talk/EncodedStringBase.h"
+#include "npc/Unk_020781ec_Data.h"
 
 
 
@@ -292,17 +293,6 @@ namespace nA {
 extern "C" {
 
 typedef u32 Unk_02077a54_Fn;
-struct Unk_020781ec_Data {
-    Unk_020781ec_Elem entries[8];
-    s8 fleaVillager;
-    s8 greeter;
-    s8 birthdayHost;
-    s8 birthdayGuest;
-    s8 fleaMarketBuyer;
-    u8 pad_165[3];
-    s32 idleFrames;
-    s8 birthdayVisitor;
-};
 extern void *gCommManager;
 extern void *sSpNpcAnimHeapPool[];
 extern void *sVillagerAnimHeapPool[];

@@ -1,6 +1,7 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
 #include "net/Unk_ov065_0227d8e0_Ctx.h"
+#include "net/Unk_ov065_0227dc48_Conn.h"
 
 // ov065_050: DWC HTTP socket send/recv + growable string buffer + callback list (0x0227d8e0..0x0227e1c8)
 
@@ -11,13 +12,6 @@
 
 
 
-struct Unk_ov065_0227dc48_Conn {
-    u8 pad_00[8];
-    s32 sock;
-    u8 pad_0c[0x28 - 0xc];
-    Unk_ov065_0227d8e0_Buf outputBuffer;
-    s32 messageQueue;
-};
 
 
 

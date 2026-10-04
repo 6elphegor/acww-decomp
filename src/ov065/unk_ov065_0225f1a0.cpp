@@ -1,6 +1,7 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
 #include "net/Unk_ov065_0225f1cc_Cfg.h"
+#include "net/Unk_ov065_0225f378_Obj.h"
 
 
 struct Unk_ov065_0225f210_G {
@@ -18,13 +19,6 @@ struct Unk_ov065_0225f210_G {
     u32 yieldMode;
 };
 
-struct Unk_ov065_0225f634_Params {
-    s8 sockType;
-    s8 blocking;
-    u16 rxBufSize;
-    u16 rxConsumeLimit;
-    u8 pad_06[0x12];
-};
 
 extern "C" {
 extern Unk_ov065_0225f1cc_Cfg *sSockCoreConfig;

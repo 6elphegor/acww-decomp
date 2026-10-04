@@ -3,80 +3,18 @@
 #include "net/Unk_ov065_0225fd18_Counters.h"
 #include "net/Unk_ov065_0225f4d4_Msg.h"
 #include "net/Unk_ov065_0225faf4_Sess.h"
+#include "net/Unk_ov065_0225f378_Obj.h"
 
 // ---- types of the former unk_0225f1a0.cpp part (functions 0x0225f5c8..0x0225fa6c)
 
-struct Unk_ov065_0225f5c8_T {
-    u16 stackSize;
-    u8 priority;
-    u8 msgQueueSize;
-};
 
-struct Unk_ov065_0225f634_Params {
-    s8 sockType;
-    s8 blocking;
-    u16 rxBufSize;
-    u16 rxConsumeLimit;
-    u16 txBufSize;
-    u16 rxAuxBufSize;
-    u16 pendingTxBufSize;
-    u16 sendRingSize;
-    u16 udpQueueCap;
-    Unk_ov065_0225f5c8_T recvThread;
-    Unk_ov065_0225f5c8_T sendThread;
-};
 
-struct Unk_ov065_0225f618_Pair {
-    void *size;
-    u32 buf;
-};
 
 struct Unk_ov065_0225f378_Obj;
 
 
-struct Unk_ov065_0225f634_Sub1 {
-    u8 unk_00[0xe0];
-    u8 mutex[0x18];
-    u32 pos;
-    u16 limit;
-    u8 unk_fe[0x0c];
-    u16 cap;
-    u32 queue;
-    u32 queueTail;
-    u8 threadArea[4];
-};
 
-struct Unk_ov065_0225f634_Sub2 {
-    u8 unk_00[0xe0];
-    u8 unk_e0[0x18];
-    Unk_ov065_0225f618_Pair ring;
-    u8 unk_100[4];
-    u32 spaceWaitQueue;
-    u32 spaceWaitQueueTail;
-    Unk_ov065_0225f378_Obj *owner;
-    u8 threadArea[4];
-};
 
-struct Unk_ov065_0225f378_Obj {
-    u8 unk_00[4];
-    u32 unk_04;
-    u8 unk_08[0x34];
-    Unk_ov065_0225f618_Pair rxBuffer;
-    u8 unk_44[4];
-    Unk_ov065_0225f618_Pair txBuffer;
-    Unk_ov065_0225f618_Pair rxAuxBuffer;
-    Unk_ov065_0225f618_Pair pendingTxBuffer;
-    u8 unk_60[4];
-    Unk_ov065_0225f634_Sub1 *recvPipe;
-    Unk_ov065_0225f634_Sub2 *sendPipe;
-    s32 result;
-    s16 flags;
-    s8 blocking;
-    s8 sockType;
-    u16 boundPort;
-    u8 unk_76[10];
-    u8 pipeArea[4];
-};
 
 // ---- types of the former unk_0225faf4.cpp part (functions 0x0225faf4..0x0225fd18)
 

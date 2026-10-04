@@ -5,6 +5,8 @@
 #include "net/Unk_ov065_0227ee64_Obj.h"
 #include "net/Unk_ov065_0227f00c_Host.h"
 #include "net/Unk_ov065_0227f324_Rec.h"
+#include "net/Unk_ov065_0227c538_Ctx.h"
+#include "net/Unk_ov065_0227dc48_Conn.h"
 
 // ov065 TU44: GP gpiConnect.c (0x0227e160..0x0227f2a4)
 
@@ -22,13 +24,6 @@ namespace Na {
 
 
 
-struct Unk_ov065_0227dc48_Conn {
-    u8 pad_00[8];
-    s32 sock;
-    u8 pad_0c[0x28 - 0xc];
-    Unk_ov065_0227d8e0_Buf outputBuffer;
-    s32 messageQueue;
-};
 
 
 
@@ -235,28 +230,6 @@ namespace Nc {
 
 
 
-struct Unk_ov065_0227c538_Ctx {
-    u8 errorString;
-    u8 pad_001[0xff];
-    s32 infoCaching;
-    s32 infoCachingBuddyOnly;
-    s32 simulation;
-    s32 firewall;
-    char nick[0x1f];
-    char uniqueNick[0x15];
-    char email[0x33];
-    char password[0x1f];
-    u8 pad_196[0x2];
-    s32 sessKey;
-    u8 pad_19c[0x38];
-    s32 cmSocket;
-    s32 connectState;
-    u8 pad_1dc[0x18];
-    char *outputBuffer;
-    u8 pad_1f8[0xc];
-    s32 peerSocket;
-    s32 peerPort;
-};
 
 
 

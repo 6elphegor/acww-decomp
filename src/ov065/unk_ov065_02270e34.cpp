@@ -8,6 +8,7 @@
 #include "net/Unk_ov065_02272428_Sub.h"
 #include "net/Unk_ov065_0229080c.h"
 #include "net/Unk_ov065_02290814.h"
+#include "net/Unk_ov065_02270ba4_G.h"
 
 typedef long long s64;
 
@@ -25,69 +26,9 @@ typedef void (*Unk_ov065_02270c94_Cb)(s32, s32, u32);
 typedef void (*Unk_ov065_02271440_Cb)(void *, void *, u32);
 
 
-struct Unk_ov065_02270ba4_G {
-    void *transportSocket;
-    void *gt2ConnectedCallback;
-    void *gt2ReceivedCallback;
-    void *gt2ClosedCallback;
-    void *gt2PingCallback;
-    void *gt2SendBufferSize;
-    void *gt2RecvBufferSize;
-    Unk_ov065_02270ba4_Sub gpConnection;
-    void *userData;
-    u32 state;
-    u32 prevState;
-    u8 myAid;
-    u8 isClosingAll;
-    u16 unk_2e;
-    u32 ownProfileId;
-    u8 buddyRequestText[0x20];
-    void *gameName;
-    void *secretKey;
-    u32 loginCallback;
-    u32 loginCallbackArg;
-    u32 updateCallback;
-    u32 updateCallbackArg;
-    u32 matchCallback;
-    u32 matchCallbackArg;
-    u32 serverMatchCallback;
-    u32 serverMatchCallbackArg;
-    u32 closedCallback;
-    u32 closedCallbackArg;
-    u8 loginControl[0x2e8 - 0x84];
-    u8 friendControl[0x33c - 0x2e8];
-    u8 matchControl[0x34c - 0x33c];
-    void *qr2Object;
-    u8 unk_350[4];
-    u8 qr2ShutdownPending;
-    u8 unk_355[0x420 - 0x355];
-    void *serverBrowser;
-    u8 unk_424[0x7a0 - 0x424];
-    u8 netChannelTable[4];
-};
 
 
 
-struct Unk_ov065_02270eb0_H {
-    void *gpConnection;
-    s32 state;
-    u8 unk_08[4];
-    u32 gameCode;
-    u8 unk_10[8];
-    Unk_ov065_02270c94_Cb unk_18;
-    u32 resultCallbackArg;
-    Unk_ov065_02270eb0_P *userData;
-    u8 unk_24[4];
-    void *nasAuthWork;
-    u64 nasAuthStartTick;
-    s32 gpConnectPending;
-    u64 gpConnectStartTick;
-    Unk_ov065_02270eb0_Tri loginId;
-    char authToken[0x100];
-    char authChallenge[0x100];
-    u8 loginIdText[9];
-    char gsbrcd[0x100];
-};
 
 
 

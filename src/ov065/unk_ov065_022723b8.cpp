@@ -6,6 +6,7 @@
 #include "net/Unk_ov065_0229080c.h"
 #include "net/Unk_ov065_02290814.h"
 #include "net/Unk_ov065_02290840_Ent.h"
+#include "net/Unk_ov065_02290f78.h"
 
 typedef long long s64;
 
@@ -986,15 +987,6 @@ extern "C" {
 // ov065_039: DWC-like send/receive channel table (0x0227702c..0x022778b0)
 
 
-struct Unk_ov065_02290f78 {
-    Unk_ov065_02277418_Rec channels[32];
-    void (*unk_600)(...);
-    void (*unk_604)(...);
-    void (*unk_608)(...);
-    void (*unk_60c)(...);
-    u16 maxChunkSize;
-    u16 unk_612;
-};
 
 struct Unk_ov065_02277054_Sm {
     u8 isEnabled;

@@ -2,18 +2,11 @@
 #include "types.h"
 #include "net/Unk_ov065_0225f1cc_Cfg.h"
 #include "net/Unk_ov065_0225f4d4_Msg.h"
+#include "net/Unk_ov065_0225f378_Obj.h"
 
 struct Unk_ov065_0225f378_Obj;
 
 
-struct Unk_ov065_0225f378_Obj {
-    u8 pad_00[0x64];
-    void *recvPipe;
-    void *sendPipe;
-    s32 result;
-    u8 pad_70[3];
-    s8 sockType;
-};
 
 struct Unk_ov065_0225f410_Q {
     u32 unk_00[8];

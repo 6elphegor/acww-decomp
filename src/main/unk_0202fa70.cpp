@@ -4,6 +4,7 @@
 #include "game/GroundInfoBase.h"
 #include "game/UnitShapeQueryX.h"
 #include "game/Unk_02031e10_Vec.h"
+#include "game/Unk_0202f7b8_V3.h"
 
 struct Unk_0202ff44_V3;
 struct CollisionVisitor;
@@ -146,10 +147,6 @@ public:
 };
 
 // ---------------------------------------------------------------- unk_0202f600.cpp
-struct Unk_0202f7b8_V3 : Unk_0202f660_V3 {
-    Unk_0202f7b8_V3() {}
-    Unk_0202f7b8_V3(s32 a, s32 b, s32 c) { x = a; y = b; z = c; }
-};
 extern "C" s32 FX_Div(s32 a, s32 b);
 extern "C" s32 FX_Sqrt(s32 a);
 extern "C" s32 func_020e9650(Unk_0202f660_V3 *a, Unk_0202f660_V3 *b);

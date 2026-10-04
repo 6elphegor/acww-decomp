@@ -6,6 +6,7 @@
 #include "save/TownId.h"
 #include "talk/EncodedStringBase.h"
 #include "player/PlayerId.h"
+#include "gfx/Unk_02093c28_Obj.h"
 
 
 
@@ -13,13 +14,6 @@
 
 
 
-// Particle object
-struct Unk_02093c28_Obj {
-    /* 0x00 */ u32 unk_00;
-    /* 0x04 */ Unk_02093c28_Handle tag;
-    /* 0x08 */ u32 unk_08;
-    /* 0x0c */ struct Unk_02093dc8_Obj *emitter;
-};
 
 
 

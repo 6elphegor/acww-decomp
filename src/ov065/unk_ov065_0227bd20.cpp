@@ -2,6 +2,7 @@
 #include "types.h"
 #include "net/Unk_ov065_0227bd20_Ctx.h"
 #include "net/Unk_ov065_0227c538_Node.h"
+#include "net/Unk_ov065_0227c538_Ctx.h"
 
 namespace Nb {
 // ov065_047: DWC HTTP/GHI-like API wrappers (0x0227bbf4..0x0227c4b0)
@@ -46,69 +47,6 @@ namespace Nc {
 
 
 
-struct Unk_ov065_0227c538_Ctx {
-    u8 errorString;
-    u8 pad_001[0xff];
-    s32 infoCaching;
-    s32 infoCachingBuddyOnly;
-    s32 simulation;
-    s32 firewall;
-    u8 nick;
-    u8 pad_111[0x1e];
-    u8 uniqueNick;
-    u8 pad_130[0x14];
-    u8 email;
-    u8 pad_145[0x53];
-    s32 sessKey;
-    s32 userId;
-    s32 profileId;
-    Unk_ov065_0227c538_Pair callbacks[6];
-    s32 cmSocket;
-    s32 connectState;
-    char *recvBuffer;
-    s32 recvBufferCapacity;
-    s32 recvBufferLength;
-    s32 recvBufferPos;
-    char *inputBuffer;
-    s32 inputBufferSize;
-    char *outputBuffer;
-    s32 outputBufferCapacity;
-    s32 outputBufferLength;
-    s32 outputBufferPos;
-    s32 peerSocket;
-    s32 peerPort;
-    s32 nextOperationId;
-    s32 numSearches;
-    s32 lastStatus;
-    u8 lastStatusString;
-    u8 pad_219[0xff];
-    u8 lastLocationString;
-    u8 pad_319[0xff];
-    s32 errorCode;
-    s32 fatalError;
-    s32 unk_420;
-    Unk_ov065_0227c538_Node *operationList;
-    void *profileTable;
-    s32 unk_42c;
-    s32 numBuddies;
-    s32 peerList;
-    s32 callbackList;
-    s32 callbackListTail;
-    char *profileUpdateBuffer;
-    s32 profileUpdateBufferCapacity;
-    s32 profileUpdateBufferLength;
-    s32 profileUpdateBufferPos;
-    char *userUpdateBuffer;
-    s32 userUpdateBufferCapacity;
-    s32 userUpdateBufferLength;
-    s32 userUpdateBufferPos;
-    char *unk_460;
-    s32 unk_464;
-    s32 unk_468;
-    s32 productId;
-    s32 namespaceId;
-    u8 pad_474[0x1c];
-};
 
 typedef Unk_ov065_0227c538_Ctx Ctx0227;
 extern "C" {
