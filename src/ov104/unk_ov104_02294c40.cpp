@@ -16,6 +16,7 @@
 #include "ui/UiWidget.h"
 #include "menu/MenuLauncher.h"
 #include "ui/LabelBalloon.h"
+#include "gfx/BgVramTask.h"
 
 class PostOfficeMenu;
 class MenuLauncher;
@@ -146,15 +147,6 @@ public:
 
 struct Unk_0206d1d4_Src;
 
-class BgVramTask {
-public:
-    void cancel();
-};
-class BgVramTaskPair : public BgVramTask {
-public:
-    BgVramTaskPair();
-    u32 unk_00[0x38 / 4];
-};
 
 
 

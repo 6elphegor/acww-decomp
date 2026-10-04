@@ -4,6 +4,7 @@
 #include "ui/HandCursor.h"
 #include "talk/MsgString193.h"
 #include "ui/LabelString.h"
+#include "gfx/BgVramTask.h"
 
 // Calls into other modules' class methods: extern "C" functions named by the real mangled symbol (self first).
 #define LabelString_redrawAligned _ZN11LabelString13redrawAlignedEii
@@ -181,15 +182,6 @@ extern Unk_ov119_02295588 data_ov119_02295588;
 
 
 
-// 0x24-byte helper objects at +0x1a58
-class BgVramTask {
-public:
-    BgVramTask();
-    BOOL requestScreen(u32 buf, u8 n, u32 size, u32 z);
-    void requestPalette(u32 buf, u8 n, u32 z);
-    void cancel();
-    u32 unk_00[0x24 / 4];
-};
 
 struct PopupChoiceIdList;
 

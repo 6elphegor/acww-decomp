@@ -11,6 +11,7 @@
 #include "sys/ProcBase.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
+#include "gfx/AnimModel.h"
 
 extern "C" {
 void _ZN19PlayerActionRequestC1Ev(void *self);
@@ -42,19 +43,6 @@ s32 data_ov004_0224d4b4 = 0x400;
 
 
 
-class AnimModel : public CachedModel, public AnimFrameCtrl {
-public:
-    AnimModel();
-    virtual ~AnimModel();
-    void *anmObj;
-
-    s32 attachAnim();
-    s32 drawAnimated(void *q);
-    void stepAnim();
-    BOOL allocAnmObj(void *x);
-    // declared in BlendAnimModel in src/main, but it is called on this object
-    void func_02054720(s32 a, s32 b, s32 c, u16 d, u16 e);
-};
 
 extern "C" {
 s32 RoomObjRes_GetBca(void *self, u32 i);

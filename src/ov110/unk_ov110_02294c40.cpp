@@ -12,6 +12,7 @@
 #include "menu/MenuLauncher.h"
 #include "ui/LabelString.h"
 #include "ui/LabelBalloon.h"
+#include "gfx/BgVramTask.h"
 
 class LostFoundRecycleMenu;
 
@@ -107,19 +108,8 @@ void LetterGrid_LoadPocketLetters(void *a);
 }
 
 
-// Screen upload helper sub-object, 0x38 bytes
-class BgVramTaskPair {
-public:
-    BgVramTaskPair();
-//@@CLS_Unk_020e4608@@
-    u32 unk_00[0x38 / 4];
-};
 
 
-class BgVramTask {
-public:
-    void cancel();
-};
 
 // Comm/session singleton (gCommManager)
 

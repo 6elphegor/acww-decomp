@@ -21,6 +21,7 @@
 #include "talk/MsgString9B.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
+#include "talk/ChoiceString.h"
 
 
 struct Unk_0201bc1c;
@@ -47,11 +48,6 @@ struct ChoiceList {
     void clear();
 };
 
-struct ChoiceString {
-    u8 unk_00[0x34];
-    ChoiceString();
-    ~ChoiceString();
-};
 
 
 

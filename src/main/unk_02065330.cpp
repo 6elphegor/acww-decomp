@@ -3,17 +3,9 @@
 #include "talk/MsgString33B.h"
 #include "talk/MsgString129.h"
 #include "talk/MsgString25B.h"
+#include "talk/EncodedString128.h"
 
 
-class EncodedString128 : public EncodedString {
-public:
-    EncodedString128();
-    virtual ~EncodedString128();
-    virtual u32 capacity();
-    virtual u8 *data();
-
-    /* 0x0e */ u8 text[0x82];
-};
 
 class Letter {
 public:

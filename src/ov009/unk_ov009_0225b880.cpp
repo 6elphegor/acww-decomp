@@ -18,6 +18,7 @@
 #include "town/BuildingShadowTable.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
+#include "snd/BgmManager.h"
 
 
 
@@ -88,10 +89,6 @@ struct TouchPickTriangle {
 
 
 
-struct BgmManager {
-    u8 pad_00[0x2d0];
-    BgmSceneFade sceneFade;
-};
 
 class BuildingActor;
 struct Unk_ov009_0225cc24_Obj;

@@ -1,10 +1,7 @@
 // mwcc-flags: -str reuse
 #include "types.h"
+#include "gfx/BgVramTask.h"
 
-class BgVramTaskPair {
-public:
-    BOOL requestCharsAndPalette(u32 a, u8 b, u32 c, u32 d, u32 e, u32 f, u8 g);
-};
 
 extern "C" {
 extern u8 gMelodyPlayer[];

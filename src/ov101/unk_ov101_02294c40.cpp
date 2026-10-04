@@ -9,6 +9,7 @@
 #include "ui/HandCursor.h"
 #include "menu/MenuLauncher.h"
 #include "ui/LabelBalloon.h"
+#include "gfx/BgVramTask.h"
 
 class PocketItemSelectMenu;
 class MenuLauncher;
@@ -96,16 +97,7 @@ static inline BOOL Unk_ov101_02296280_Both()
 }
 
 
-class BgVramTask {
-public:
-    void cancel();
-};
 
-class BgVramTaskPair : public BgVramTask {
-public:
-    BgVramTaskPair();
-    u32 unk_00[0x38 / 4];
-};
 
 
 

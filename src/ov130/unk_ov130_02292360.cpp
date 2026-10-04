@@ -1,5 +1,6 @@
 #include "types.h"
 #include "ui/LabelString.h"
+#include "gfx/BgVramTask.h"
 
 extern "C" {
 extern void *gCurrentHeap;
@@ -21,16 +22,6 @@ void Snd_SetKeySeMode(u32 v);
 }
 
 
-// sound/effect handle, 0x24 bytes (see src/main/unk_020b8464.cpp)
-class BgVramTask {
-public:
-    BgVramTask();
-    virtual void vfunc_00();
-    virtual void clear();
-    BOOL requestScreen(u32 a, u8 b, u32 c, u32 d);
-    void cancel();
-    u8 unk_04[0x20];
-};
 
 extern "C" {
 void NumberPad_LoadObjGraphics(s32 n);

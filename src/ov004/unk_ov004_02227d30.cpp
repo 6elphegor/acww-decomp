@@ -11,6 +11,7 @@
 #include "sys/ProcBase.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
+#include "gfx/AnimModel.h"
 
 // shared_0224d4e8.h.txt -- final declaration of class RoomObjActor (defined in ov004 TU17, 0x0221e7a8-0x02225290).
 // Paste this block unchanged into TU18..TU26 (it is the base of 0224d618 (TU18), 0224d80c (TU19), 0224dd98 (TU23),
@@ -43,19 +44,6 @@
 
 
 
-class AnimModel : public CachedModel, public AnimFrameCtrl {
-public:
-    AnimModel();
-    virtual ~AnimModel();
-    void *anmObj;
-
-    s32 attachAnim();
-    s32 drawAnimated(void *q);
-    void stepAnim();
-    BOOL allocAnmObj(void *x);
-    // declared in BlendAnimModel in src/main, but it is called on this object
-    void func_02054720(s32 a, s32 b, s32 c, u16 d, u16 e);
-};
 
 extern "C" {
 s32 RoomObjRes_GetBca(void *self, u32 i);

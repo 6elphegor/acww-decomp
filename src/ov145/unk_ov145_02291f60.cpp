@@ -8,6 +8,7 @@
 #include "talk/MsgString9B.h"
 #include "item/ItemName.h"
 #include "ui/LabelString.h"
+#include "gfx/BgVramTask.h"
 
 class DonationMenu;
 typedef void (DonationMenu::*Unk_ov145_022937c0_Fn)();
@@ -66,11 +67,6 @@ class TextLabel;
 
 
 
-class BgVramTask {
-public:
-    BgVramTask();
-    u32 unk_00[0x24 / 4];
-};
 
 class MenuCursorBuf0 {
 public:

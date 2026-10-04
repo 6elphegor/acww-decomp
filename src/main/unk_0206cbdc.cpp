@@ -36,16 +36,7 @@ class MsgString;
 
 
 
-// 0x28-byte destination buffer at +0xe
-class EncodedString40 : public EncodedString {
-public:
-    EncodedString40() {}
-    virtual ~EncodedString40() {}
-    virtual u32 capacity();
-    virtual u8 *data();
-
-    /* 0x0e */ u8 text[0x28];
-};
+#include "talk/EncodedString40.h"
 #include "ui/LetterTextLine.h"
 
 

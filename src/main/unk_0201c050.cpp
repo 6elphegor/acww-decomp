@@ -25,6 +25,7 @@
 #include "npc/Unk_0201a13c.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
+#include "talk/ConstellationEncodedString16.h"
 
 
 class VillagerTalk;
@@ -529,14 +530,6 @@ typedef u32 (VillagerTalkTopics::*Unk_02020d90_Fn)(u8 *, s32 *, u8 *, u32 *);
 
 
 
-class ConstellationEncodedString16 : public EncodedString {
-public:
-    ConstellationEncodedString16();
-    virtual ~ConstellationEncodedString16();
-    virtual u32 capacity();
-    virtual u8 *data();
-    /* 0x0e */ u8 pad_0e[0x20 - 0xe];
-};
 
 struct Unk_02021048_Sys {
     u8 pad_00[0x64];

@@ -5,6 +5,7 @@
 #include "menu/MenuProc.h"
 #include "ui/HandCursor.h"
 #include "ui/LabelBalloon.h"
+#include "gfx/BgVramTask.h"
 
 #define func_020624c0 _ZN18EncodedString16BufD1Ev
 #define func_02062510 _ZN18EncodedString16BufC1Ev
@@ -243,16 +244,7 @@ extern u32 sDesignTabTargetFrameCells[];
 // ---- external classes (real names from symbols.txt), sized for the sub-objects ----
 
 
-class BgVramTask {
-public:
-    void BgVramTask_cancel();
-};
 
-class BgVramTaskPair : public BgVramTask {
-public:
-    BgVramTaskPair();
-    u32 unk_00[0x38 / 4];
-};
 
 class TouchPromptBalloon : public LabelBalloon {
 public:

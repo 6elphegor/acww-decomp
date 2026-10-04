@@ -7,6 +7,7 @@
 #include "talk/EncodedStringBase.h"
 #include "talk/EncodedString.h"
 #include "game/InfoTableSet.h"
+#include "talk/EncodedString40.h"
 
 extern u32 OVERLAY_1_ID[];
 extern u32 OVERLAY_65_ID[];
@@ -15,15 +16,6 @@ extern u32 OVERLAY_65_ID[];
 
 
 
-// local text buffer, vtable 0x020ddf5c (0x38 bytes)
-class EncodedString40 : public EncodedString {
-public:
-    EncodedString40() {}
-    virtual ~EncodedString40() {}
-    virtual u32 capacity();
-    virtual u8 *data();
-    u8 pad_10[0x28];
-};
 
 // ---- 0x4c-byte object (ctor func_0206ce50, dtor func_0206ce30) ----
 class Unk_0206ce50 {

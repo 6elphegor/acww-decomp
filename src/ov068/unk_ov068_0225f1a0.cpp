@@ -15,6 +15,7 @@
 #include "talk/MsgString11.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
+#include "talk/EncodedString10.h"
 #define X_func_ov068_0225f5f4 _ZN17FieldVillagerLook17setLookModeLockedEP13FieldVillagerjiiPviih
 #define X_func_ov068_0225f630 _ZN17FieldVillagerLook9resetLookEP13FieldVillager
 #define X_func_ov068_0225f670 _ZN17FieldVillagerLook4initEP13FieldVillager
@@ -762,12 +763,6 @@ public:
     BOOL tryChatMoodByRelation(Unk_ov068_Owner *o);
 };
 
-class EncodedString10 {
-public:
-    u32 v[7];
-    EncodedString10();
-    ~EncodedString10();
-};
 
 
 struct Unk_ov068_02262c20_Blk {

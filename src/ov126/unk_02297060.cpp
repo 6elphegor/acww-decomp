@@ -6,6 +6,8 @@
 #include "ui/HandCursor.h"
 #include "item/ItemName.h"
 #include "ui/LabelString.h"
+#include "gfx/BgVramTask.h"
+#include "talk/EncodedString41.h"
 
 #define ItemName_setFromItem _ZN8ItemName11setFromItemEPt
 #define func_0206260c _ZN8ItemNameD1Ev
@@ -273,20 +275,7 @@ void Keyboard_DrawCaret(void *p, s32 a, s32 b, s32 c);
 }
 
 
-class EncodedString41 {  // 0x38 bytes
-public:
-    EncodedString41();
-    ~EncodedString41();
-    u8 unk_00[0x38];
-};
 
-class BgVramTask {  // screen upload helper, 0x24 bytes
-public:
-    BgVramTask();
-    virtual void vfunc_00();
-    virtual void clear();
-    u8 unk_04[0x20];
-};
 
 
 class MenuCursorBase : public HandCursor {};

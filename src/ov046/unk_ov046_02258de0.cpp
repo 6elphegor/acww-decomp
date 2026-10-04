@@ -19,6 +19,7 @@
 #include "talk/MsgString256.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
+#include "talk/ConstellationMsgString17.h"
 
 
 struct Unk_0201bc1c;
@@ -56,11 +57,6 @@ struct ChoiceList {
     s32 setCancelToLast();
 };
 
-struct ConstellationMsgString17 {
-    u32 pad[9];
-    ConstellationMsgString17();
-    ~ConstellationMsgString17();
-};
 
 extern "C" {
 extern void *gCommManager;

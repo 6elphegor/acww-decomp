@@ -4,6 +4,7 @@
 #include "ui/HandCursor.h"
 #include "menu/MenuLauncher.h"
 #include "ui/LabelString.h"
+#include "gfx/BgVramTask.h"
 
 extern "C" {
 extern u8 gSaveBlancaFace;
@@ -90,12 +91,6 @@ void _ZN10BgVramTask6cancelEv(void *self);
 
 
 
-// Element at +0xf8 (0x38 bytes each)
-class BgVramTaskPair {
-public:
-    BgVramTaskPair();
-    u32 unk_00[0x38 / 4];
-};
 
 
 class MenuCursorBase : public HandCursor {

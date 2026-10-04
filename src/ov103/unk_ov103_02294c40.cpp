@@ -15,6 +15,7 @@
 #include "ui/LabelButton.h"
 #include "menu/MenuLauncher.h"
 #include "ui/LabelBalloon.h"
+#include "gfx/BgVramTask.h"
 
 extern "C" {
 extern u8 gTouchCurX;
@@ -77,16 +78,7 @@ s32 LetterGrid_GetSlotX(void *p, u32 a);
 
 
 
-class BgVramTask {
-public:
-    void cancel();
-};
 
-class BgVramTaskPair : public BgVramTask {
-public:
-    BgVramTaskPair();
-    u32 unk_00[0x38 / 4];
-};
 
 
 

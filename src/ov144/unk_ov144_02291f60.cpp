@@ -3,6 +3,7 @@
 #include "Unk_020d8c7c.h"
 #include "menu/MenuProc.h"
 #include "ui/LabelString.h"
+#include "gfx/BgVramTask.h"
 
 class MusicMenu;
 typedef void (MusicMenu::*Unk_ov144_02293db8_Fn)();
@@ -191,11 +192,6 @@ public:
 };
 
 
-class BgVramTask {
-public:
-    BgVramTask();
-    u32 unk_00[0x24 / 4];
-};
 
 class MenuErrorMessage {
 public:

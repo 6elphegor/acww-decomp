@@ -6,6 +6,7 @@
 #include "ui/HandCursor.h"
 #include "menu/MenuLauncher.h"
 #include "ui/LabelString.h"
+#include "gfx/BgVramTask.h"
 
 struct Unk_ov143_02293b38_E {
     u32 w0;
@@ -59,16 +60,6 @@ class MelodyMenu;
 typedef void (MelodyMenu::*Unk_ov143_02293b80_Fn)();
 
 
-// Screen upload helper, 0x24 bytes (src/main/unk_020b8464.cpp)
-class BgVramTask {
-public:
-    BgVramTask();
-    virtual BOOL vfunc_00();
-    virtual void clear();
-    BOOL requestScreen(u32 a, u8 b, u32 c, u32 d);
-    void cancel();
-    u32 unk_04[0x20 / 4];
-};
 
 
 class MenuCursorBase : public HandCursor {

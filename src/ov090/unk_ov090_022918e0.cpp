@@ -12,6 +12,8 @@
 #include "menu/MenuSlide.h"
 #include "menu/MenuProc.h"
 #include "ui/LabelBalloon.h"
+#include "gfx/BgVramTask.h"
+#include "snd/BgmManager.h"
 
 extern "C" {
 void Gfx2d_SetWindowRect(s32 a, s32 x0, s32 y0, s32 x1, s32 y1);
@@ -111,27 +113,7 @@ class Unk_02083b0_dummy;
 
 
 
-class BgVramTask : public VramTask {
-public:
-    BgTransfer xfer;
 
-    BgVramTask();
-    virtual BOOL execute();
-    virtual void clear();
-    BOOL requestPalette(u32 a, u8 b, u32 c);
-    BOOL requestChars(u32 a, u8 b, u32 c, u32 d, u32 e);
-    void cancel(void);
-};
-
-class BgVramTaskPair : public BgVramTask {
-public:
-    BgTransfer unk_24;
-
-    BgVramTaskPair();
-    virtual BOOL execute();
-    virtual void clear();
-    BOOL requestCharPair(u32 a, u32 b, u8 c, u32 d, u32 e, u32 f, u32 g);
-};
 
 class MenuErrorMessage {
 public:
@@ -144,11 +126,6 @@ public:
 };
 
 
-class BgmManager {
-public:
-    u32 requests[0x71];
-    BgmVolumeMixer mixer;
-};
 
 extern "C" BgmManager *data_021c1b3c;
 

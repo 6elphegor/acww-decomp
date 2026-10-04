@@ -6,6 +6,8 @@
 #include "ui/HandCursor.h"
 #include "ui/ScrollKnob.h"
 #include "talk/EncodedString.h"
+#include "gfx/BgVramTask.h"
+#include "talk/EncodedString128.h"
 
 class EncodedString;
 
@@ -22,16 +24,6 @@ public:
     u32 unk_04[(0x94 - 4) / 4];
 };
 
-class EncodedString128 : public EncodedString {
-public:
-    EncodedString128();
-    virtual ~EncodedString128();
-    virtual u32 capacity();
-    virtual u8 *data();
-    /* 0x0e */ u8 unk_0e[0x90 - 0xe];
-    u8 unk_90[0x28];
-    u8 unk_b8[0x80];
-};
 
 // text window, 0x40 bytes
 class LabelString : public MsgString {
@@ -41,14 +33,6 @@ public:
     u32 unk_04[(0x40 - 4) / 4];
 };
 
-// screen upload helper, 0x24 bytes
-class BgVramTask {
-public:
-    BgVramTask();
-    virtual void vfunc_00();
-    virtual void clear();
-    u32 unk_04[8];
-};
 
 
 
@@ -486,6 +470,8 @@ public:
     /* 0x3ed4 */ MenuCursorBuf0 cursor;
     /* 0x3f38 */ MsgString129 censorString;
     /* 0x3fcc */ EncodedString128 encodedText;
+    /* 0x405c */ u8 greetingBuf[0x28];
+    /* 0x4084 */ u8 partTextBuf[0x80];
     /* 0x4104 */ PopupChoiceMenu addresseeMenu;
     /* 0x43f8 */ MenuBottomButtons bottomButtons;
     /* 0x455c */ MenuErrorMessage errorMessage;
@@ -1093,14 +1079,14 @@ void LetterWriteMenu::redrawText(u32 a, u32 b) {
     u32 flag;
     setFlags(0x1000);
     if (a != 0) {
-        _ZN14LetterRenderer11setGreetingEP16Unk_0206d1d4_SrcPh(&renderer, letter, encodedText.unk_90);
+        _ZN14LetterRenderer11setGreetingEP16Unk_0206d1d4_SrcPh(&renderer, letter, greetingBuf);
         _ZN14LetterRenderer7setBodyEPhi(&renderer, letter + 0x4c, b);
         _ZN14LetterRenderer12setSignatureEPh(&renderer, letter + 0xcc);
     } else {
         switch (editPart) {
         case 0:
         case 1:
-            _ZN14LetterRenderer11setGreetingEP16Unk_0206d1d4_SrcPh(&renderer, letter, encodedText.unk_90);
+            _ZN14LetterRenderer11setGreetingEP16Unk_0206d1d4_SrcPh(&renderer, letter, greetingBuf);
             break;
         case 2:
             _ZN14LetterRenderer7setBodyEPhi(&renderer, letter + 0x4c, b);
@@ -1455,8 +1441,8 @@ void C::copy() {
             lo = b;
             n = a - b;
         }
-        Mem_Clear(encodedText.unk_b8, 0x80);
-        Mem_Copy(getPartText() + lo, encodedText.unk_b8, n);
+        Mem_Clear(partTextBuf, 0x80);
+        Mem_Copy(getPartText() + lo, partTextBuf, n);
         setFlags(0x400);
         Keyboard_PlayCopySe(&keyboard);
         refreshKeys();
@@ -1470,7 +1456,7 @@ void C::paste() {
         }
         Keyboard_ResetTypedRun(&keyboard);
         Keyboard_BeginPaste(&keyboard);
-        s32 n = Text_GetLength(encodedText.unk_b8, 0x80);
+        s32 n = Text_GetLength(partTextBuf, 0x80);
         s32 i;
         for (i = 0; i < n; i++) {
             if (!insertCharRaw(*((u8 *)this + i + 0x4084), 0)) {
@@ -2120,7 +2106,7 @@ void C::moveCaretToGreeting() {
 
 u8 C::hitTestGreeting(s32 a, u8 *p) {
     u8 out;
-    Keyboard_HitTestText(&keyboard, encodedText.unk_90, 0x28, 0xa0, (u8)(a - 0x30), &out);
+    Keyboard_HitTestText(&keyboard, greetingBuf, 0x28, 0xa0, (u8)(a - 0x30), &out);
     s32 e = letter[0xec];
     s32 s = e + _ZN14LetterRenderer22getRecipientNameLengthEv(&renderer);
     s32 h = (e + s) >> 1;
@@ -2262,7 +2248,7 @@ void C::updateCaretPosGreeting() {
         s32 t = _ZN14LetterRenderer22getRecipientNameLengthEv(&renderer);
         v += letter[0xec] + t;
     }
-    caretX = (u8)(Text_MeasureWidth(encodedText.unk_90, v) + 0x30);
+    caretX = (u8)(Text_MeasureWidth(greetingBuf, v) + 0x30);
     caretY = 0x28;
 }
 

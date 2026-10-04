@@ -2,17 +2,11 @@
 #include "talk/MsgString.h"
 #include "talk/MsgString193.h"
 #include "ui/LabelString.h"
+#include "gfx/BgVramTask.h"
 
 
 
 
-class BgVramTask {
-public:
-    BgVramTask();
-    void cancel();
-    BOOL requestScreen(u32 a, u8 b, u32 c, u32 d);
-    u32 pad[9];
-};
 
 extern "C" {
 void Gfx2d_HideLayer(s32 a);

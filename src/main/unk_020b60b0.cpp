@@ -6,6 +6,7 @@
 #include "game/TouchPicker.h"
 #include "game/TouchPickSphere.h"
 #include "gfx/Mtx43.h"
+#include "game/CollisionCylinder.h"
 
 
 
@@ -38,14 +39,6 @@ struct TouchPickTriangle : Unk_0202f64c {
 struct Unk_0202f660_V3;
 struct Unk_0202e918_Vec3;
 
-// base of TouchPickCylinder: symbols.txt names its base-object constructor/destructor and func_0202fd8c with the class
-// name CollisionCylinderX and these parameter types (labels at 0x0202fddc / 0x0202fda4 / 0x0202fd8c)
-struct CollisionCylinderX {
-    CollisionCylinderX();
-    ~CollisionCylinderX();
-    void setCylinder(Unk_0202f660_V3 *a, s32 b, s32 c);
-    u8 pad[0x14];
-};
 
 struct TouchPickCylinder : CollisionCylinderX {
     TouchPickCylinder();

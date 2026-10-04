@@ -15,6 +15,8 @@
 #include "gfx/ModelAnim.h"
 #include "game/GroundInfo.h"
 #include "snd/Unk_0213b954.h"
+#include "gfx/AnimModel.h"
+#include "game/BugNetTarget.h"
 
 // ---- main-module library classes shared by several functions of this unit (global: their methods are called by symbol)
 
@@ -54,19 +56,7 @@ public:
 
 // ---- library sub-objects (declarations only; ctors/dtors live in main)
 
-class AnimModel {
-public:
-    AnimModel();
-    ~AnimModel();
-    u32 pad[0xb8 / 4];
-};
 
-class BugNetTarget {
-public:
-    BugNetTarget();
-    ~BugNetTarget();
-    u32 pad[0x28 / 4];
-};
 
 class PooledModel {
 public:

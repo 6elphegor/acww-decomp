@@ -13,6 +13,8 @@
 #include "talk/MsgString129.h"
 #include "talk/MsgString25B.h"
 #include "ui/LetterTextLine.h"
+#include "talk/EncodedString40.h"
+#include "talk/EncodedString512.h"
 
 extern "C" {
 extern u8 sMailCheckWords[];
@@ -79,27 +81,7 @@ extern "C" BOOL String_Load(MsgString *buf, u8 *key, const char *name);
 // ---------------------------------------------------------------------------------------------------------------------
 
 
-// 0x200-byte destination buffer at +0xe
-class EncodedString512 : public EncodedString {
-public:
-    EncodedString512();
-    virtual ~EncodedString512();
-    virtual u32 capacity();
-    virtual u8 *data();
 
-    /* 0x0e */ u8 text[0x200];
-};
-
-// 0x28-byte destination buffer at +0xe
-class EncodedString40 : public EncodedString {
-public:
-    EncodedString40();
-    virtual ~EncodedString40();
-    virtual u32 capacity();
-    virtual u8 *data();
-
-    /* 0x0e */ u8 text[0x28];
-};
 
 
 

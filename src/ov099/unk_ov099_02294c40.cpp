@@ -10,6 +10,7 @@
 #include "ui/HandCursor.h"
 #include "menu/MenuLauncher.h"
 #include "ui/LabelBalloon.h"
+#include "gfx/BgVramTask.h"
 
 class PocketMenuUnk;
 struct PopupChoiceIdList;
@@ -88,20 +89,7 @@ s32 LetterGrid_GetSlotX(void *p, u32 v);
 // Classes of other modules (minimal declarations; sub-objects are opaque)
 
 
-class BgVramTask {
-public:
-    BgVramTask();
-    virtual void vfunc_00();
-    virtual void clear();
-    void cancel();
-    u8 unk_04[0x20];
-};
 
-class BgVramTaskPair : public BgVramTask {
-public:
-    BgVramTaskPair();
-    u8 unk_24[0x14];
-};
 
 
 

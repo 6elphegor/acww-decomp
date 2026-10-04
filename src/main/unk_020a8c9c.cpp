@@ -10,6 +10,7 @@
 #include "ui/HandCursor.h"
 #include "ui/ScrollKnob.h"
 #include "ui/LabelButton.h"
+#include "talk/ChoiceString.h"
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Classes from other files
@@ -18,18 +19,6 @@
 
 
 
-// 0x33-byte buffer; unk_020a6914.cpp calls this class Unk_020aa8e0 (its constructor)
-class ChoiceString : public MsgString {
-public:
-    ChoiceString();
-    virtual ~ChoiceString();
-    virtual u32 capacity();
-    virtual u8 *data();
-
-    BOOL loadFromBmg(const char *path, void *entry, BmgMsgAttr *out);
-
-    /* 0x14 */ u8 unk_14[0x20];
-};
 
 
 

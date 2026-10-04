@@ -11,6 +11,7 @@
 #include "sys/ProcBase.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
+#include "gfx/AnimModel.h"
 #define AnimFrameCtrl_hasPassedFrame _ZN13AnimFrameCtrl14hasPassedFrameEi
 #define AnimFrameCtrl_step _ZN13AnimFrameCtrl4stepEv
 #define BlendAnimModel_initAnim _ZN14BlendAnimModel8initAnimEiiitt
@@ -58,19 +59,6 @@
 
 
 
-class AnimModel : public CachedModel, public AnimFrameCtrl {
-public:
-    AnimModel();
-    virtual ~AnimModel();
-    void *anmObj;
-
-    s32 AnimModel_attachAnim();
-    s32 AnimModel_drawAnimated(void *q);
-    void AnimModel_stepAnim();
-    BOOL AnimModel_allocAnmObj(void *x);
-    // declared in BlendAnimModel in src/main, but it is called on this object
-    void BlendAnimModel_initAnim(s32 a, s32 b, s32 c, u16 d, u16 e);
-};
 
 extern "C" {
 s32 RoomObjRes_GetBca(void *self, u32 i);

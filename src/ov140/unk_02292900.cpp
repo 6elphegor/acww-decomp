@@ -6,6 +6,7 @@
 #include "ui/HandCursor.h"
 #include "menu/MenuLauncher.h"
 #include "ui/LabelString.h"
+#include "gfx/BgVramTask.h"
 
 class DistantTownsMenu;
 
@@ -47,16 +48,6 @@ void DistantTownsMenu_SetupBgLayers();
 
 
 
-// Screen upload helper, 0x24 bytes (src/main/unk_020b8464.cpp)
-class BgVramTask {
-public:
-    BgVramTask();
-    virtual void vfunc_00();
-    virtual void clear();
-    BOOL requestScreen(u32 a, u8 b, u32 c, u32 d);
-    void cancel();
-    u8 unk_04[0x20];
-};
 
 
 class MenuCursorBase : public HandCursor {

@@ -1,13 +1,6 @@
 #include "types.h"
+#include "talk/EncodedString41.h"
 
-// Fixed 0x29 byte string holder (vtable and constructors live in the next unit)
-class EncodedString41 {
-public:
-    s32 getLength();
-
-    /* 0x00 */ u8 pad_00[0x0e];
-    /* 0x0e */ u8 bytes[0x29];
-};
 
 extern "C" {
 extern u8 sCommSubPostReply;

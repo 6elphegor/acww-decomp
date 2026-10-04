@@ -13,6 +13,7 @@
 #include "sys/ProcBase.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
+#include "gfx/AnimModel.h"
 
 
 
@@ -24,19 +25,6 @@
 
 
 
-class AnimModel : public CachedModel, public AnimFrameCtrl {
-public:
-    AnimModel();
-    virtual ~AnimModel();
-    void *anmObj;
-
-    s32 attachAnim();
-    s32 drawAnimated(void *q);
-    void stepAnim();
-    BOOL allocAnmObj(void *x);
-    // declared in BlendAnimModel in src/main, but it is called on this object
-    void func_02054720(s32 a, s32 b, s32 c, u16 d, u16 e);
-};
 
 // ---- helper objects at +0x1a4, +0x248, +0x250 (their other methods live in ov004_054)
 

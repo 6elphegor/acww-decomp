@@ -6,6 +6,8 @@
 #include "talk/EncodedStringBase.h"
 #include "talk/MsgString.h"
 #include "talk/EncodedString.h"
+#include "talk/ConstellationMsgString17.h"
+#include "talk/ConstellationEncodedString16.h"
 extern u16 sConstellationLineCells[0x718];
 extern char *sStarTwinklePalettePaths[5];
 extern char sStarPalPathB4[0x14];
@@ -28,23 +30,7 @@ void _ZN8PlayerIdC1EPv(void *p);
 
 
 
-class ConstellationMsgString17 : public MsgString {
-public:
-    ConstellationMsgString17();
-    virtual ~ConstellationMsgString17();
-    virtual u32 capacity();
-    virtual u8 *data();
-    u8 text[0x11];
-};
 
-class ConstellationEncodedString16 : public EncodedString {
-public:
-    ConstellationEncodedString16();
-    virtual ~ConstellationEncodedString16();
-    virtual u32 capacity();
-    virtual u8 *data();
-    u8 text[0x10];
-};
 
 
 class ConstellationStore {

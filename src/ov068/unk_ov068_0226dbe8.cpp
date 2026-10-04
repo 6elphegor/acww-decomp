@@ -29,6 +29,7 @@
 #include "npc/NpcFaceAnim.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
+#include "talk/EncodedString16Buf.h"
 #define VillagerId_makeFileName _ZN10VillagerId12makeFileNameEPvjj
 #define Unk_02013474_enableFootsteps _ZN12Unk_0201347415enableFootstepsEv
 #define NpcTalkCtrl_requestTalk _ZN11NpcTalkCtrl11requestTalkEhh
@@ -295,14 +296,6 @@ public:
     void fromEncoded(EncodedString *dst, s32 a, s32 b);
 };
 
-class EncodedString16Buf : public EncodedString {
-public:
-    EncodedString16Buf(u8 *src);
-    virtual ~EncodedString16Buf();
-    virtual u32 capacity();
-    virtual u8 *data();
-    /* 0x0e */ u8 text[16];
-};
 
 class MsgString33 : public MsgString {
 public:

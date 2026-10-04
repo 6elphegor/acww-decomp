@@ -5,6 +5,7 @@
 #include "menu/MenuProc.h"
 #include "ui/ScrollKnob.h"
 #include "ui/LabelString.h"
+#include "gfx/BgVramTask.h"
 
 extern "C" {
 BOOL _ZN10HandCursor10isAnimDoneEv(void *self);
@@ -83,14 +84,6 @@ BOOL MenuKeys_HasUp(void *pad);
 }
 
 
-// 0x24-byte helper objects at +0xb4 / +0xd8
-class BgVramTask {
-public:
-    BgVramTask();
-    BOOL requestScreen(u32 buf, u8 n, u32 size, u32 z);
-    void cancel();
-    u32 unk_00[0x24 / 4];
-};
 
 class MenuTabBar {
 public:

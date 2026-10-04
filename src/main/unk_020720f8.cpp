@@ -8,20 +8,9 @@
 #include "net/Unk_020720f8_Data.h"
 #include "save/Unk_020942c8.h"
 #include "save/Pattern.h"
+#include "talk/EncodedString16Buf.h"
 
 // ======== types of unk_02071ae0.cpp ========
-class EncodedString16Buf {
-public:
-    virtual void vfunc_00();
-    virtual void vfunc_04();
-    virtual void capacity();
-    virtual void data();
-    EncodedString16Buf();
-    virtual ~EncodedString16Buf();
-    void copyTo(u8 *dst, s32 n);
-    void StrBuf_SetBytes(u8 *src, s32 n);
-    u8 unk_04[0x20];
-};
 enum Unk_020720f8_Id { Unk_020720f8_Id_0 = 0 };
 
 // ======== types of unk_02072408.cpp ========

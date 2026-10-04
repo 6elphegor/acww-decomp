@@ -4,6 +4,7 @@
 // Continues G002c (0x020ea34c-0x020ea960); the file ends at 0x020ec848 (tail-call stubs from there on are another file).
 #include "types.h"
 #include "net/HexTable.h"
+#include "net/WifiPingState.h"
 
 extern "C" {
 void MI_CpuFill8(void *dst, u32 v, u32 n); // MI_CpuFill8
@@ -83,11 +84,6 @@ typedef void (*NetCb)(u32);
 typedef void (*NetCb3)(u32, u32, u32);
 typedef void *(*AllocFn)(u32, u32);
 typedef void (*FreeFn)(void *);
-struct Ent {
-    u16 a;
-    u8 b;
-    u8 c;
-};
 struct NetInit {
     u32 w;
     u8 b4;

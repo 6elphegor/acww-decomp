@@ -3,6 +3,7 @@
 // (21 functions). mwcc 1.2/base, C++, ARM, -O4,p. PARTIAL unit: no data defined, everything extern. Continues at 0x020ea960.
 #include "types.h"
 #include "net/HexTable.h"
+#include "net/WifiPingState.h"
 
 extern "C" {
 void MI_CpuFill8(void *dst, u32 v, u32 n); // MI_CpuFill8
@@ -48,11 +49,6 @@ extern u8 data_021f488c;
 extern u8 data_021f49e0[];
 extern u32 data_021f4910[];
 extern u32 sLastErrorCode;
-struct Ent {
-    u16 a;
-    u8 b;
-    u8 c;
-};
 extern Ent sWifiPingState[];
 
 extern u16 sWifiConnectStep;

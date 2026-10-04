@@ -9,6 +9,7 @@
 #include "game/CollisionState.h"
 #include "game/FxVec3.h"
 #include "game/GroundInfo.h"
+#include "game/CollisionCylinder.h"
 
 struct Unk_0202ff44_V3;
 struct CollisionVisitor;
@@ -148,19 +149,6 @@ public:
 extern "C" s32 FX_Div(s32 a, s32 b);
 extern "C" s32 FX_Sqrt(s32 a);
 extern "C" s32 func_020e9650(Unk_0202f660_V3 *a, Unk_0202f660_V3 *b);
-class CollisionCylinderX : public CollisionCircle {
-public:
-    s32 cylinderHeight;
-
-    BOOL clipSegmentSide(Unk_0202f660_V3 *out, Unk_0202f660_V3 *a);
-    BOOL clipSegmentTop(Unk_0202f660_V3 *out, Unk_0202f660_V3 *a);
-    BOOL landOnTop(Unk_0202f660_V3 *out, Unk_0202f660_V3 *a);
-    BOOL pushOut(Unk_0202f660_V3 *pos, s32 r);
-    void setCylinder(Unk_0202f660_V3 *pos, s32 radius, s32 height);
-    ~CollisionCylinderX();
-    CollisionCylinderX(Unk_0202f660_V3 *pos, s32 radius, s32 height);
-    CollisionCylinderX();
-};
 struct Unk_0202fe84_Range { s32 lo, hi; };
 struct Unk_0202fe84_Pad { s32 v[6]; Unk_0202fe84_Pad() {} ~Unk_0202fe84_Pad() {} };
 

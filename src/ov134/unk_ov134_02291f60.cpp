@@ -2,6 +2,7 @@
 #include "types.h"
 #include "ui/ScrollKnob.h"
 #include "ui/LabelString.h"
+#include "gfx/BgVramTask.h"
 
 
 class MenuScrollKnob : public ScrollKnob {
@@ -18,17 +19,6 @@ public:
 };
 
 
-// 0x24 byte transfer object
-class BgVramTask {
-public:
-    BgVramTask();
-    virtual BOOL vfunc_00();
-    virtual void clear();
-    BOOL requestScreen(u32 a, u8 b, u32 c, u32 d);
-    void requestPalette(u32 a, u8 b, u32 c);
-    void cancel();
-    u8 unk_04[0x20];
-};
 
 struct Unk_ov134_Date8 {
     u8 b[8];

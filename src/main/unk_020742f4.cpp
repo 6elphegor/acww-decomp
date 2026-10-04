@@ -8,6 +8,7 @@
 #include "save/BbsBoard.h"
 #include "talk/MsgString.h"
 #include "talk/EncodedString.h"
+#include "talk/EncodedString192.h"
 
 // ======== types of unk_020742f4.cpp ========
 
@@ -80,14 +81,6 @@ struct Unk_02076fc8_D {
 
 class EncodedStringBase;
 
-class EncodedString192 : public EncodedString {
-public:
-    EncodedString192();
-    virtual ~EncodedString192();
-    virtual u32 capacity();
-    virtual u8 *data();
-    u8 bytes[0xb2];
-};
 // ======== types of unk_02077138.cpp ========
 
 

@@ -9,6 +9,7 @@
 #include "talk/MsgRequest.h"
 #include "item/LetterView.h"
 #include "talk/MsgString9B.h"
+#include "gfx/BgVramTask.h"
 
 struct TitleChoiceSet {
     u8 *msgIds;
@@ -48,15 +49,6 @@ public:
 
 
 
-class BgVramTask {
-public:
-    BgVramTask();
-    virtual void vfunc_00();
-    virtual void clear();
-    BOOL requestChars(u32 a, u8 b, u32 c, u32 d, u32 e);
-    void cancel();
-    u8 unk_04[0x20];
-};
 
 
 

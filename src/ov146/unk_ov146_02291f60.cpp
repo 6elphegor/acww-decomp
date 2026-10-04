@@ -9,6 +9,8 @@
 #include "talk/EncodedString.h"
 #include "talk/MsgString9C.h"
 #include "ui/LabelString.h"
+#include "gfx/BgVramTask.h"
+#include "talk/EncodedString8B.h"
 
 #define LabelBalloon_setPos _ZN12LabelBalloon6setPosEii
 #define LabelBalloon_showLayer2 _ZN12LabelBalloon10showLayer2Ev
@@ -60,14 +62,6 @@ class MsgString;
 
 
 
-class EncodedString8B : public EncodedString {
-public:
-    EncodedString8B();
-    virtual ~EncodedString8B();
-    virtual u32 capacity();
-    virtual u8 *data();
-    /* 0x0e */ u8 text[10];
-};
 
 
 extern "C" {
@@ -174,11 +168,6 @@ public:
     u32 unk_04[0xb8 / 4];
 };
 
-class BgVramTask {
-public:
-    BgVramTask();
-    u32 unk_00[0x24 / 4];
-};
 
 // ---- ov002 scene base (vtable 0x022044e4) ----
 

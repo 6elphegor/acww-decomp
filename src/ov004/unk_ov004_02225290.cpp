@@ -10,6 +10,7 @@
 #include "game/BoxCollider.h"
 #include "gfx/CachedModel.h"
 #include "talk/MsgRequest.h"
+#include "gfx/AnimModel.h"
 // Library base class (as include/GameProc.h, but vfunc_20 takes the u32 that ov004's override uses)
 class ProcBase {
 public:
@@ -92,19 +93,6 @@ public:
 
 
 
-class AnimModel : public CachedModel, public AnimFrameCtrl {
-public:
-    AnimModel();
-    virtual ~AnimModel();
-    void *anmObj;
-
-    s32 attachAnim();
-    s32 drawAnimated(void *q);
-    void stepAnim();
-    BOOL allocAnmObj(void *x);
-    // declared in BlendAnimModel in src/main, but it is called on this object
-    void func_02054720(s32 a, s32 b, s32 c, u16 d, u16 e);
-};
 
 // ---- helper objects at +0x1a4, +0x248, +0x250 (their other methods live in ov004_054)
 

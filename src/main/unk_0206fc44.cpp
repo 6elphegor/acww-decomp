@@ -8,6 +8,7 @@
 #include "talk/MsgString.h"
 #include "talk/EncodedString.h"
 #include "ui/LabelString.h"
+#include "talk/EncodedString41.h"
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Classes from other files (see unk_020a6914.cpp)
@@ -21,18 +22,6 @@ class MsgString;
 
 // ---------------------------------------------------------------------------------------------------------------------
 
-// Fixed 0x29 byte string holder
-class EncodedString41 : public EncodedString {
-public:
-    EncodedString41();
-    virtual ~EncodedString41();
-    virtual u32 capacity();
-    virtual u8 *data();
-
-    s32 getLength();
-
-    /* 0x0e */ u8 bytes[0x29];
-};
 
 
 

@@ -11,6 +11,7 @@
 #include "game/GroundInfo.h"
 #include "talk/EncodedString.h"
 #include "talk/MsgString9B.h"
+#include "talk/EncodedString8.h"
 
 
 
@@ -137,18 +138,6 @@ class MsgString;
 
 extern "C" BOOL EncodedString_SetRaw(void *, const void *, s32);
 
-// 8-byte destination buffer at +0xe
-class EncodedString8 : public EncodedString {
-public:
-    EncodedString8();
-    virtual ~EncodedString8();
-    virtual u32 capacity();
-    virtual u8 *data();
-
-    void copyTo(void *dst, u32 n);
-
-    /* 0x0e */ u8 text[8];
-};
 
 
 // ---------------------------------------------------------------------------------------------------------------------

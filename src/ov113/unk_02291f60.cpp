@@ -7,6 +7,7 @@
 #include "ui/HandCursor.h"
 #include "menu/MenuLauncher.h"
 #include "ui/LabelString.h"
+#include "gfx/BgVramTask.h"
 
 class BbsReadMenu;
 
@@ -66,17 +67,6 @@ public:
 
 
 
-// Screen upload helper, 0x24 bytes
-class BgVramTask {
-public:
-    BgVramTask();
-    virtual void vfunc_00();
-    virtual void clear();
-    void requestChars(u32 a, u8 b, u32 c, u32 d, u32 e);
-    BOOL requestScreen(u32 a, u8 b, u32 c, u32 d);
-    void cancel();
-    u8 unk_04[0x20];
-};
 
 
 class MenuCursorBase : public HandCursor {

@@ -20,6 +20,7 @@
 #include "item/ItemName.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
+#include "talk/EncodedString16Buf.h"
 #define Actor_spawn _ZN5Actor5spawnEPvS0_S0_S0_S0_
 #define NpcTalkCtrl_requestTalk _ZN11NpcTalkCtrl11requestTalkEhh
 #define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
@@ -342,11 +343,6 @@ struct Unk_ov068_0226c3b4_Vec {
 };
 
 
-struct EncodedString16Buf {
-    EncodedString16Buf();
-    ~EncodedString16Buf();
-    u32 pad[0x20 / 4];
-};
 
 struct Unk_ov068_0226c870_Pad {
     s32 v[2];

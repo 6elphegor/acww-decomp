@@ -13,6 +13,7 @@
 #include "ui/LabelButton.h"
 #include "menu/MenuLauncher.h"
 #include "ui/LabelBalloon.h"
+#include "gfx/BgVramTask.h"
 
 // ov106: scene overlay (class MailboxMenu, vtable 0x02298180, 0x3f80 bytes).
 
@@ -136,11 +137,6 @@ class InventoryBg;
 class InventoryItemGrid;
 class LetterGrid;
 
-class BgVramTaskPair {
-public:
-    BgVramTaskPair();
-    u32 unk_00[0x38 / 4];
-};
 
 
 
@@ -228,10 +224,6 @@ public:
 
 
 
-class BgVramTask {
-public:
-    void cancel();
-};
 
 class PopupChoiceMenuBody {
 public:

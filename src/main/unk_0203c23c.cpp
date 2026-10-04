@@ -5,6 +5,7 @@
 #include "gfx/CameraPose.h"
 #include "gfx/FxMtx43.h"
 #include "item/ItemId.h"
+#include "sys/CameraBase.h"
 
 
 
@@ -14,11 +15,6 @@ struct Unk_0203c0b0_Vec {
 
 
 
-class CameraBase : public GameProc {
-public:
-    virtual ~CameraBase();
-    virtual BOOL onDraw();
-};
 
 extern "C" {
 extern void *gCamera;

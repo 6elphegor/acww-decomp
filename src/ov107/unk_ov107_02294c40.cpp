@@ -5,6 +5,7 @@
 #include "menu/LetterGrid.h"
 #include "menu/InventoryBg.h"
 #include "menu/MenuProc.h"
+#include "gfx/BgVramTask.h"
 
 // ov107: scene overlay (class PocketsFullMenu, vtable 0x02296e78, 0x281c bytes).
 
@@ -78,12 +79,6 @@ struct Unk_ov107_SceneEntry {
 #define BgVramTask_cancel _ZN10BgVramTask6cancelEv
 
 
-// Sub-objects of the scene (constructor/destructor symbols live in main, ov002 and ov094).
-class BgVramTaskPair {
-public:
-    BgVramTaskPair();
-    u32 unk_00[0x38 / 4];
-};
 
 
 

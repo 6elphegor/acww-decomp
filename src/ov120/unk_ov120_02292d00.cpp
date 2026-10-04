@@ -3,6 +3,7 @@
 #include "town/TownMapMarkers.h"
 #include "menu/MenuProc.h"
 #include "ui/LabelString.h"
+#include "gfx/BgVramTask.h"
 
 #define MenuCursorBase_drawWrapped _ZN14MenuCursorBase11drawWrappedEv
 #define func_02063870 _ZN11MsgString9CD1Ev
@@ -127,11 +128,6 @@ void PopupChoice_CopyResidentName(void *p, s32 a);
 void PopupChoice_CopyVillagerName(void *p, s32 a);
 }
 
-class BgVramTask {
-public:
-    BgVramTask();
-    u32 unk_00[0x24 / 4];
-};
 
 
 // sub-object at +0x438 (ctor func_ov002_02202f88), 0x48 bytes, polymorphic

@@ -7,6 +7,8 @@
 #include "talk/EncodedString.h"
 #include "ui/LabelString.h"
 #include "ui/LabelBalloon.h"
+#include "gfx/BgVramTask.h"
+#include "talk/EncodedString8B.h"
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Declarations from other files
@@ -18,15 +20,6 @@ class MsgString;
 
 
 
-class EncodedString8B : public EncodedString {
-public:
-    EncodedString8B();
-    virtual ~EncodedString8B();
-    virtual u32 capacity();
-    virtual u8 *data();
-
-    /* 0x0e */ u8 text[10];
-};
 
 class MsgString9C : public MsgString {
 public:
@@ -51,17 +44,6 @@ public:
     void showText(u8 a, s32 b, s32 c);
 };
 
-// Button/sound helper (size 0x24)
-class BgVramTask {
-public:
-    BgVramTask();
-    virtual BOOL vfunc_00();
-    virtual void clear();
-    BOOL requestPalette(u32 a, u8 b, u32 c);
-    void cancel(void);
-
-    /* 0x04 */ u8 unk_04[0x20];
-};
 
 extern "C" {
 extern u32 gCurrentHeap;

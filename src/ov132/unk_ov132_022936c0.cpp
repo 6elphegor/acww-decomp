@@ -2,6 +2,7 @@
 #include "Unk_020d8c7c.h"
 #include "menu/MenuProc.h"
 #include "ui/LabelString.h"
+#include "gfx/BgVramTask.h"
 
 extern "C" {
 extern u8 gSaveHouse[];
@@ -121,12 +122,6 @@ public:
 
 
 
-class BgVramTask {
-public:
-    BgVramTask();
-    void cancel();
-    u32 unk_00[0x24 / 4];
-};
 
 class MenuErrorMessage {
 public:

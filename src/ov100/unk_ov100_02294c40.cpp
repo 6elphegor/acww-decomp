@@ -10,6 +10,7 @@
 #include "menu/MenuLauncher.h"
 #include "ui/LabelString.h"
 #include "ui/LabelBalloon.h"
+#include "gfx/BgVramTask.h"
 
 extern "C" {
 void Gfx2d_ShowLayer(u32 x);
@@ -101,12 +102,6 @@ extern s32 gCurrentHeap;
 
 class ShopSellMenu;
 
-class BgVramTaskPair {
-public:
-    BgVramTaskPair();
-
-    u32 unk_00[0x38 / 4];
-};
 
 
 
@@ -159,10 +154,6 @@ public:
 
 
 
-class BgVramTask {
-public:
-    void cancel();
-};
 
 class PopupChoiceMenuBody {
 public:

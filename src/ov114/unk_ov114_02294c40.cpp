@@ -4,6 +4,7 @@
 #include "talk/MsgStringAttr.h"
 #include "talk/MsgString.h"
 #include "ui/LabelString.h"
+#include "gfx/BgVramTask.h"
 
 struct Unk_ov114_02294c40_Bits {
     u32 idx : 10;
@@ -210,21 +211,7 @@ public:
 };
 
 
-class BgVramTask {
-public:
-    BgVramTask();
-    void cancel();
-    u32 requestPalette(u32 a, u8 b, u32 c);
-    u8 unk_00[0x24];
-    u8 unk_24[0x20];
-    u8 unk_44[0x4e4 - 0x44];
-};
 
-class BgVramTaskPair {
-public:
-    BgVramTaskPair();
-    u32 unk_00[0x38 / 4];
-};
 
 
 // sub-object at +0x11f8 (ctor func_ov002_02202f88, dtor func_ov002_02202f70)
@@ -264,6 +251,8 @@ public:
     /* 0x808 */ MsgString406 descText;
     /* 0x828 */ u8 unk_828[0x9b0 - 0x828];
     /* 0x9b0 */ BgVramTask paletteTask;
+    /* 0x9d4 */ u8 paletteFile[0x20];
+    /* 0x9f4 */ u8 paletteBuf[0xe94 - 0x9f4];
     /* 0xe94 */ BgVramTaskPair rowIconTasks[9];
     /* 0x108c */ u8 unk_108c[0x10f8 - 0x108c];
     /* 0x10f8 */ LabelString labels[4];
@@ -351,7 +340,7 @@ void CreatureBookPanel::postUpdate() {
     scrollKnob.updateRelease();
     CreatureBook_UpdatePictureFade((S *)this);
     if (CreatureBook_HasFlags((S *)this, 1)) {
-        if (paletteTask.requestPalette((u32)paletteTask.unk_44, mainLayer, 4)) {
+        if (paletteTask.requestPalette((u32)paletteBuf, mainLayer, 4)) {
             CreatureBook_ClearFlags((S *)this, 1);
         }
     }
@@ -373,8 +362,8 @@ void CreatureBookPanel::loadBgGraphics() {
         break;
     }
     Gfx2d_LoadPaletteFile(sCreatureBgPaletteName, h, mainLayer, 1, 1, 6);
-    File_LoadToBuffer("menu/fish/bg4.bpl", paletteTask.unk_24, 0x20);
-    MIi_CpuCopy16(paletteTask.unk_24, paletteTask.unk_44, 0x20);
+    File_LoadToBuffer("menu/fish/bg4.bpl", paletteFile, 0x20);
+    MIi_CpuCopy16(paletteFile, paletteBuf, 0x20);
     Gfx2d_LoadScreenFile("menu/fish/a_bg.bsc", h, mainLayer);
     Gfx2d_LoadScreenFile("menu/fish/b_bg.bsc", h, listLayer);
     Gfx2d_LoadScreenFile("menu/fish/c_bg.bsc", h, pictureLayer);

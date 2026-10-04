@@ -7,6 +7,7 @@
 #include "gfx/CameraPose.h"
 #include "gfx/CameraSetup.h"
 #include "gfx/FxMtx43.h"
+#include "sys/CameraBase.h"
 
 struct Unk_0203b350_V {
     s32 x, y, z;
@@ -116,11 +117,6 @@ struct Unk_0203c23c_Static {
 
 
 
-class CameraBase : public GameProc {
-public:
-    virtual ~CameraBase() {}
-    virtual BOOL onDraw();
-};
 
 
 #define M(T, o) (*(T *)((u8 *)this + (o)))

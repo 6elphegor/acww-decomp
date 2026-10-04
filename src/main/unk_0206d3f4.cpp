@@ -5,6 +5,7 @@
 #include "talk/MsgStringAttr.h"
 #include "talk/EncodedStringBase.h"
 #include "talk/EncodedString.h"
+#include "talk/EncodedString40.h"
 
 // TU113, first part: 0x0206d3f4-0x0206d470 (the unit's remaining functions are the assembly routine
 // Fatal_SaveRegisters and its caller). Owns its string literal (.data 0x020ddf6c-0x020ddf88).
@@ -16,15 +17,6 @@ extern u32 OVERLAY_65_ID[];
 
 
 
-// local text buffer, vtable 0x020ddf5c (0x38 bytes)
-class EncodedString40 : public EncodedString {
-public:
-    EncodedString40() {}
-    virtual ~EncodedString40() {}
-    virtual u32 capacity();
-    virtual u8 *data();
-    u8 pad_10[0x28];
-};
 
 // ---- 0x4c-byte object (ctor func_0206ce50, dtor func_0206ce30) ----
 class LetterTextLine {

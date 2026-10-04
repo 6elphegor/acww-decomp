@@ -8,6 +8,9 @@
 #include "ui/ScrollKnob.h"
 #include "talk/EncodedString.h"
 #include "menu/MenuLauncher.h"
+#include "gfx/BgVramTask.h"
+#include "talk/EncodedString192.h"
+#include "talk/EncodedString41.h"
 
 // Plain view of the scene object used by the extern "C" helpers (offsets only).
 struct Unk_ov112_02296840 {
@@ -71,14 +74,6 @@ public:
     u32 unk_04[(0xc4 - 4) / 4];
 };
 
-class EncodedString192 : public EncodedString {
-public:
-    EncodedString192();
-    virtual ~EncodedString192();
-    virtual u32 capacity();
-    virtual u8 *data();
-    /* 0x0e */ u8 unk_0e[0xd0 - 0xe];
-};
 
 // text window, 0x40 bytes
 class LabelString : public MsgString {
@@ -93,14 +88,6 @@ public:
     u32 unk_04[(0x40 - 4) / 4];
 };
 
-class EncodedString41 : public EncodedString {
-public:
-    EncodedString41();
-    virtual ~EncodedString41();
-    virtual u32 capacity();
-    virtual u8 *data();
-    /* 0x0e */ char text[0x2a];
-};
 
 class MsgString9B : public MsgString {
 public:
@@ -109,16 +96,6 @@ public:
     u32 unk_04[6];
 };
 
-// screen upload helper, 0x24 bytes
-class BgVramTask {
-public:
-    BgVramTask();
-    virtual void vfunc_00();
-    virtual void clear();
-    void requestChars(u32 a, u8 b, u32 c, u32 d, u32 e);
-    void cancel();
-    u32 unk_04[8];
-};
 
 // comm/session singleton (gCommManager)
 
@@ -337,6 +314,7 @@ public:
     /* 0x42bc */ MsgString193 censorString;
     /* 0x4380 */ u32 unk_4380[(0x4390 - 0x4380) / 4];
     /* 0x4390 */ EncodedString192 encodedText;
+    /* 0x4450 */ u8 unk_4450[0x10];
     /* 0x4460 */ u8 bgScreenBuf[0x800];
     /* 0x4c60 */ u8 lineCharBufs[0x1e00];
     /* 0x6a60 */ s32 lineStarts[7];
@@ -881,8 +859,8 @@ void BbsWriteMenu::init() {
     String_Load2dMenu(&a, 0x89);
     EncodedString41 c;
     ((EncodedString *)(&c))->fromMsgString(&a);
-    s32 n = Text_GetLength(c.text, 0x28);
-    Mem_Copy(c.text, text, n);
+    s32 n = Text_GetLength(c.bytes, 0x28);
+    Mem_Copy(c.bytes, text, n);
     text[n] = 0x86;
     n++;
     if (Text_MeasureWidth(text, n) > 0x96) {

@@ -4,6 +4,7 @@
 #include "game/Unk_0202f7b8_V3.h"
 #include "game/CollisionCircle.h"
 #include "game/CollisionTriangle.h"
+#include "game/CollisionCylinder.h"
 
 
 extern "C" {
@@ -71,16 +72,6 @@ public:
 };
 
 
-class CollisionCylinder : public CollisionCircle {
-public:
-    s32 cylinderHeight;
-
-    BOOL clipSegmentSideBounded(Unk_0202f660_V3 *out, Unk_0202f660_V3 *a);
-    BOOL clipSegmentCaps(Unk_0202f660_V3 *out, Unk_0202f660_V3 *a);
-    ~CollisionCylinder();
-    CollisionCylinder(Unk_0202f660_V3 *pos, s32 radius, s32 height);
-    CollisionCylinder();
-};
 
 BOOL CollisionCylinder::clipSegmentCaps(Unk_0202f660_V3 *out, Unk_0202f660_V3 *a) {
     s32 t1, t2;

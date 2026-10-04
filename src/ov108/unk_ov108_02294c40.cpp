@@ -9,6 +9,7 @@
 #include "ui/HandCursor.h"
 #include "menu/MenuLauncher.h"
 #include "ui/LabelBalloon.h"
+#include "gfx/BgVramTask.h"
 
 extern "C" {
 extern u8 gTouchCurX;
@@ -70,10 +71,6 @@ s32 LetterGrid_GetSlotX(void *p, u32 a);
 
 
 
-class BgVramTask {
-public:
-    void cancel();
-};
 
 struct PopupChoiceIdList;
 
@@ -123,11 +120,6 @@ public:
 // ---- sub-objects with their own constructor/destructor
 
 
-class BgVramTaskPair {
-public:
-    BgVramTaskPair();
-    u32 unk_00[0x38 / 4];
-};
 
 
 

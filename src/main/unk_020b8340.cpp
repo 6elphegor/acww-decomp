@@ -3,6 +3,7 @@
 #include "gfx/BgTransfer.h"
 #include "gfx/TexTransfer.h"
 #include "gfx/VramTask.h"
+#include "gfx/BgVramTask.h"
 
 extern "C" {
 void func_020e79a0(void *list, void *node);
@@ -37,31 +38,7 @@ void VramQueue2d_Dequeue(VramTask *p);
 BOOL VramQueue2d_Enqueue(VramTask *p);
 }
 
-class BgVramTask : public VramTask {
-public:
-    BgTransfer xfer;
 
-    BgVramTask();
-    virtual BOOL execute();
-    virtual void clear();
-    BOOL requestPaletteRange(u32 a, u8 b, u32 c, u8 d);
-    BOOL requestPalette(u32 a, u8 b, u32 c);
-    BOOL requestScreen(u32 a, u8 b, u32 c, u32 d);
-    BOOL requestChars(u32 a, u8 b, u32 c, u32 d, u32 e);
-    void prepare(void);
-    void cancel(void);
-};
-
-class BgVramTaskPair : public BgVramTask {
-public:
-    BgTransfer unk_24;
-
-    BgVramTaskPair();
-    virtual BOOL execute();
-    virtual void clear();
-    BOOL requestCharsAndPalette(u32 a, u8 b, u32 c, u32 d, u32 e, u32 f, u8 g);
-    BOOL requestCharPair(u32 a, u32 b, u8 c, u32 d, u32 e, u32 f, u32 g);
-};
 
 class Unk_020b8340_Task {
 public:

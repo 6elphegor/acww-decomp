@@ -9,6 +9,7 @@
 #include "ui/HandCursor.h"
 #include "menu/MenuLauncher.h"
 #include "ui/LabelBalloon.h"
+#include "gfx/BgVramTask.h"
 
 class SongPickMenu;
 struct Unk_ov109_02295570;
@@ -89,17 +90,7 @@ void InventoryBg_DrawSprite(void *p, s32 a);
 // ---- out-of-overlay classes, named as in their symbols.txt ----
 
 
-// Screen upload helper, 0x38 bytes
-class BgVramTask {
-public:
-    void cancel();
-    u32 unk_00[0x38 / 4];
-};
 
-class BgVramTaskPair : public BgVramTask {
-public:
-    BgVramTaskPair();
-};
 
 
 class MenuCursorBase : public HandCursor {
