@@ -1,18 +1,15 @@
 // mwcc-version: 1.2/base
 #include "types.h"
 #include "Unk_020d8c7c.h"
+#include "gfx/Unk_ov003_02215c7c_Blk.h"
+#include "field/Unk_ov003_02217910_V3.h"
+#include "field/Unk_ov003_02217b78_Ent.h"
 
 // TU19 of ov003: ground part classes 0x02217be8 / 0x02217dbc and the scene 0x02232418 (0x02217be8-0x022187f8)
 
-struct Unk_ov003_02215c7c_Blk {
-    s64 v[6];
-};
 
 struct Unk_020553f8_Res;
 
-struct Unk_ov003_02217910_V3 {
-    s32 x, y, z;
-};
 
 // ---- main-module helper classes ----
 class CachedModel {
@@ -69,10 +66,6 @@ public:
 };
 
 // ---- this overlay's part classes ----
-struct Unk_ov003_02217b78_Ent {
-    u8 pad_00[8];
-    Unk_020553f8_Res *modelRes;
-};
 
 struct Unk_ov003_02217c3c_P {
     u8 pad_00[8];

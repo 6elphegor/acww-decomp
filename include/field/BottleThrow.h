@@ -2,13 +2,10 @@
 #define FIELD_BOTTLETHROW_H
 
 #include "types.h"
+#include "field/Unk_ov003_02224ba4_V3.h"
 
 // Message-bottle throw state (ov003): array sBottleThrows[4]. Constructor/destructor defined in
 // src/ov003/unk_ov003_0221ffb8.cpp; used by unk_ov003_02224e68/02225108/02225238.cpp.
-
-struct Unk_ov003_02224ba4_V3 {
-    s32 x, y, z;
-};
 
 struct BottleThrow {
     BottleThrow();

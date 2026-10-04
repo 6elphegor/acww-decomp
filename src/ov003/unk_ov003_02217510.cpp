@@ -1,6 +1,10 @@
 // mwcc-version: 1.2/sp2
 // mwcc-flags: -str reuse
 #include "types.h"
+#include "gfx/Unk_ov003_Blk.h"
+#include "field/Unk_ov003_Flags.h"
+#include "actor/Unk_ov003_SceneEntry.h"
+#include "game/Unk_ov003_Vec.h"
 
 class ProcBase {
 public:
@@ -35,9 +39,6 @@ public:
     /* 0x04 */ u8 unk_04[0x4c];
 };
 
-struct Unk_ov003_Vec {
-    s32 x, y, z;
-};
 
 class Actor : public GameProc {
 public:
@@ -141,15 +142,7 @@ public:
     u8 pad_41[3];
 };
 
-struct Unk_ov003_Blk {
-    s64 v[6];
-};
 
-struct Unk_ov003_Flags {
-    u8 f0 : 1;
-    u8 f1 : 1;
-    u8 rest : 6;
-};
 
 class Unk_020b1ddc;
 
@@ -240,13 +233,6 @@ BOOL NookShop_IsClosedTomorrow(void *p);
 BOOL NookShop_IsClosedToday(void *p);
 }
 
-struct Unk_ov003_SceneEntry {
-    void *(*factory)();
-    u16 id;
-    u16 size;
-    u32 zero;
-    u32 a, b, c;
-};
 
 // ============================================================ class ShopBuilding
 class ShopBuilding : public BuildingActor {

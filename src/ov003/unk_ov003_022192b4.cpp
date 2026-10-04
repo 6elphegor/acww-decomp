@@ -3,6 +3,7 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
+#include "gfx/Unk_020dbd44.h"
 
 // ================================================================ other modules' real names
 #define CommManager_isOnline _ZN11CommManager8isOnlineEv
@@ -52,14 +53,6 @@ public:
     u32 unk_98;
 };
 
-class Unk_020dbd44 {
-public:
-    u32 unk_04;
-    u32 unk_08;
-    u32 unk_0c;
-    Unk_020dbd44();
-    virtual ~Unk_020dbd44();
-};
 
 extern "C" {
 void TreeAnimSet_Construct(void *p);
@@ -1292,14 +1285,6 @@ public:
     u32 pad_60;
     u8 unk_64[0x30];
     u32 pad_94[2];
-};
-class Unk_020dbd44 {
-public:
-    u32 unk_04;
-    u32 unk_08;
-    u32 unk_0c;
-    Unk_020dbd44();
-    virtual ~Unk_020dbd44();
 };
 class TreeAnimSet {
 public:

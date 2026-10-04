@@ -3,12 +3,11 @@
 #include "game/Unk_02003a6c_Vec.h"
 #include "snd/Unk_02003c30.h"
 #include "snd/Unk_02003c40.h"
+#include "gfx/Unk_ov003_02215c7c_Blk.h"
+#include "field/Unk_ov003_02217910_V3D.h"
 
 // TU17 of ov003: ground helper free functions 0x02217908..0x02217b10 and the six colour constants of its header
 
-struct Unk_ov003_02215c7c_Blk {
-    s64 v[6];
-};
 
 class Model {
 public:
@@ -26,11 +25,6 @@ public:
 
 typedef Unk_02003a6c_Vec Unk_ov003_02217910_V3;
 
-struct Unk_ov003_02217910_V3D {
-    s32 x, y, z;
-    Unk_ov003_02217910_V3D() {}
-    ~Unk_ov003_02217910_V3D() {}
-};
 
 
 

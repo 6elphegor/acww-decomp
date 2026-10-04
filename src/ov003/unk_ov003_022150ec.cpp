@@ -2,6 +2,13 @@
 // mwcc-flags: -O4,s
 #include "types.h"
 #include "sys/Unk_0209d498_Time.h"
+#include "field/Unk_ov003_02215748_Ent.h"
+#include "gfx/Unk_ov003_02215a04_Obj.h"
+#include "field/Unk_ov003_02215ad8_Str.h"
+#include "gfx/Unk_ov003_Blk.h"
+#include "field/Unk_ov003_Flags.h"
+#include "actor/Unk_ov003_SceneEntry.h"
+#include "game/Unk_ov003_Vec.h"
 class ProcBase {
 public:
     static void *operator new(unsigned long size);
@@ -35,9 +42,6 @@ public:
     /* 0x04 */ u8 unk_04[0x4c];
 };
 
-struct Unk_ov003_Vec {
-    s32 x, y, z;
-};
 
 class Actor : public GameProc {
 public:
@@ -143,15 +147,7 @@ public:
     u8 pad_41[3];
 };
 
-struct Unk_ov003_Blk {
-    s64 v[6];
-};
 
-struct Unk_ov003_Flags {
-    u8 f0 : 1;
-    u8 f1 : 1;
-    u8 rest : 6;
-};
 
 class Unk_020b1ddc;
 
@@ -237,13 +233,7 @@ struct ModelAnim {
     u8 pad_1c[4];
 };
 
-// Other actor with a u8 at +0x2d4 (element of the Y child list)
-struct Unk_ov003_02215748_Ent {
-    u8 pad_00[0x2d4];
-    u8 isCounting;
-};
 
-struct Unk_ov003_SceneEntry {void *(*factory)(); u16 id,size; u32 zero,a,b,c;};
 class CountdownDigit; class CountdownSign;
 extern "C" CountdownDigit *CountdownDigit_Create();
 extern "C" CountdownSign *CountdownSign_Create();
@@ -288,13 +278,6 @@ void *Heap_Alloc(u32 heap, u32 size);
 void func_0212899c(void *p, s32 v, u32 n);
 }
 
-class Unk_ov003_02215ad8_Str {
-public:
-    virtual void vfunc_00();
-    virtual void vfunc_04();
-    virtual void vfunc_08();
-    virtual s32 vfunc_0c();
-};
 
 // ---------------------------------------------------------------- DoorLight
 class CountdownDigit : public BuildingActor {
@@ -357,28 +340,6 @@ public:
     /* 0x2b0 */ u8 createHour;
 };
 
-struct Unk_ov003_02215a04_Ctx {
-    u8 cmd[2];
-    u8 pad_02[2];
-};
-struct Unk_ov003_02215a04_Sub {
-    u8 pad_00[0x2c];
-    u32 ptrUser;
-};
-struct Unk_ov003_022159c8_Word {
-    u8 pad_00[0xc];
-    u32 prmPolygonAttr;
-};
-struct Unk_ov003_02215a04_Obj {
-    Unk_ov003_02215a04_Ctx *c;
-    Unk_ov003_02215a04_Sub *pRenderObj;
-    u8 pad_08[0x14];
-    void (*cbVecFuncMat)(void *);
-    u8 pad_20[0x90 - 0x20];
-    u8 cbVecTimingMat;
-    u8 pad_91[0xb0 - 0x91];
-    Unk_ov003_022159c8_Word *pMatAnmResult;
-};
 
 // ================================================================
 BOOL CountdownDigit::onExecute() {

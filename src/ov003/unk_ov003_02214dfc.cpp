@@ -1,6 +1,10 @@
 // mwcc-version: 1.2/sp2
 // ov003 TU07 (helper 02214e04 + actor 022312f4): .text 0x02214dfc-0x022150ec
 #include "types.h"
+#include "gfx/Unk_ov003_Blk.h"
+#include "field/Unk_ov003_Flags.h"
+#include "actor/Unk_ov003_SceneEntry.h"
+#include "game/Unk_ov003_Vec.h"
 
 // shared_actor.h.txt -- declarations shared by the ov003 actor units (class family of ov009 BuildingActor).
 // Written by the agent that owns ov003 TU06/07/09/10/11/12 (all 1.2/sp2).  Paste unchanged after `#include "types.h"`
@@ -65,9 +69,6 @@ public:
     /* 0x04 */ u8 unk_04[0x4c];
 };
 
-struct Unk_ov003_Vec {
-    s32 x, y, z;
-};
 
 class Actor : public GameProc {
 public:
@@ -173,15 +174,7 @@ public:
     u8 pad_41[3];
 };
 
-struct Unk_ov003_Blk {
-    s64 v[6];
-};
 
-struct Unk_ov003_Flags {
-    u8 f0 : 1;
-    u8 f1 : 1;
-    u8 rest : 6;
-};
 
 class Unk_020b1ddc;
 
@@ -314,13 +307,6 @@ public:
     /* 0x2dc */ u8 pad_2dc[0x59c - 0x2dc];
 };
 
-struct Unk_ov003_SceneEntry {
-    void (*factory)();
-    u16 id;
-    u16 size;
-    u32 zero;
-    u32 a, b, c;
-};
 
 extern "C" {
 char data_ov003_02235228[0x24];
@@ -380,7 +366,7 @@ extern "C" u32 GateHouse_GetModelName() {
     return sGateHouseModelNames[GateHouse_GetDesign()];
 }
 
-extern "C" Unk_ov003_SceneEntry sGateHouseProfile = { GateHouse_Create, 0x1c, 0x22, 0, 0xc8000, 0x12c000, 0x258000 };
+extern "C" Unk_ov003_SceneEntry sGateHouseProfile = { (void *(*)())GateHouse_Create, 0x1c, 0x22, 0, 0xc8000, 0x12c000, 0x258000 };
 
 char *GateHouse::vfunc_a4() {
     u32 x = GateHouse_GetModelName();

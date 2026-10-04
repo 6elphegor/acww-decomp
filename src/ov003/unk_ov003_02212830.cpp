@@ -1,6 +1,7 @@
 // mwcc-version: 1.2/sp2
 #include "types.h"
 #include "game/Unk_0203389c_Vec.h"
+#include "actor/Unk_ov003_SceneEntry.h"
 
 class ProcBase {
 public:
@@ -279,13 +280,6 @@ public:
     /* 0x44 */ u8 unk_44;
 };
 
-struct Unk_ov003_SceneEntry {
-    void *(*factory)();
-    u16 id;
-    u16 size;
-    u32 zero;
-    u32 a, b, c;
-};
 
 class Snowball;
 typedef Snowball Obj;

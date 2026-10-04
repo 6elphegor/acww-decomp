@@ -3,6 +3,9 @@
 #include "Unk_020d8c7c.h"
 #include "net/Unk_020cbb18_Ptr.h"
 #include "game/Unk_0203389c_Vec.h"
+#include "field/Unk_ov003_0222adc4_V3.h"
+#include "field/Unk_ov003_0222aff0_Bits.h"
+#include "field/Unk_ov003_0225980c_Rec.h"
 
 // ---- main-module library classes shared by several functions of this unit (global: their methods are called by symbol)
 
@@ -714,10 +717,6 @@ extern "C" void InsectPool_UpdateInViewOfPlayer(s32 obj, s32 flag, s32 idx, s32 
 #define PooledModel_getModel _ZN11PooledModel8getModelEv
 #define data_ov003_02234b06 ((Unk_ov003_02234b06_Rec *)&::sInsectModelParams[1])
 namespace s02 {
-struct Unk_ov003_0225980c_V3 {
-    s32 x, y, z;
-    Unk_ov003_0225980c_V3() {}
-};
 
 typedef Unk_ov003_0225980c_V3 V3;
 
@@ -858,52 +857,9 @@ extern "C" BOOL Insect_IsTreeKindForCulling(s32 a, s32 t);
 #define func_ov003_022287c8 _ZN13InsectManager10freeInsectEP22Unk_ov003_02228710_Acti
 #define func_ov003_0222898c _ZN13InsectManager15allocHeldInsectEP22Unk_ov003_02228710_Act
 namespace s03 {
-struct Unk_ov003_0225980c_V3 {
-    s32 x, y, z;
-    Unk_ov003_0225980c_V3() {}
-    Unk_ov003_0225980c_V3(s32 a, s32 b, s32 c) {
-        x = a;
-        y = b;
-        z = c;
-    }
-};
 
 typedef Unk_ov003_0225980c_V3 V3;
 
-// One 0x25c-byte entry of the tables at sSpecialInsects (2), 0225980c (4), 0225a17c (8)
-struct Unk_ov003_0225980c_Rec {
-    u8 pad_000[0x20];
-    u8 unk_20[0x174 - 0x20];
-    u8 seEmitter[0x1c8 - 0x174];
-    V3 homePos;
-    V3 targetPos;
-    u8 pad_1e0[0x204 - 0x1e0];
-    V3 position;
-    u8 pad_210[0x220 - 0x210];
-    s32 targetHeight;
-    s32 disturbRadius;
-    s32 baseHeight;
-    s32 effectHandle;
-    u8 pad_230[0x238 - 0x230];
-    u16 rotX;
-    s16 rotY;
-    u16 rotZ;
-    u8 pad_23e[0x242 - 0x23e];
-    s16 stateTimer;
-    u8 pad_244[0x246 - 0x244];
-    u8 canSing;
-    u8 playerHoldsNet;
-    u8 inUse;
-    u8 inView;
-    u8 pad_24a[3];
-    s8 kind;
-    u8 pad_24e[2];
-    u8 lifeState;
-    u8 state;
-    u8 pad_252[2];
-    u8 alarm;
-    u8 pad_255[0x25c - 0x255];
-};
 
 typedef Unk_ov003_0225980c_Rec Rec;
 
@@ -1699,60 +1655,9 @@ extern "C" void TreeBug_DropAndFly(Rec *o, s16 *p);
 #define Unk_ov068_02268214_spiderSway _ZN18Unk_ov068_0226821410spiderSwayEv
 #define Unk_ov068_02268214_spiderCheckPlayerHit _ZN18Unk_ov068_0226821420spiderCheckPlayerHitEv
 namespace s08 {
-struct Unk_ov003_0225980c_V3 {
-    s32 x, y, z;
-    Unk_ov003_0225980c_V3() {}
-    Unk_ov003_0225980c_V3(s32 a, s32 b, s32 c) {
-        x = a;
-        y = b;
-        z = c;
-    }
-};
 
 typedef Unk_ov003_0225980c_V3 V3;
 
-// One 0x25c-byte entry of the tables at sSpecialInsects (2), 0225980c (4), 0225a17c (8)
-struct Unk_ov003_0225980c_Rec {
-    u8 unk_00[0x50];
-    u8 model[0x9c];       // 0x50 model sub-object
-    u8 animFrameCtrl[4];          // 0xec animation sub-object
-    s32 animNumFrames;
-    u32 animFrame;
-    u8 unk_f8[8];
-    u8 unk_100;
-    u8 pad_101[0x130 - 0x101];
-    u8 pooledModel[0x1d4 - 0x130];
-    V3 targetPos;
-    u8 pad_1e0[0x204 - 0x1e0];
-    V3 position;
-    s32 scaleX;
-    s32 scaleY;
-    s32 scaleZ;
-    s32 behaviourWork;
-    u8 pad_220[8];
-    s32 baseHeight;
-    u8 pad_22c[0x232 - 0x22c];
-    s16 auxTimer;
-    u8 pad_234[4];
-    s16 rotX;
-    s16 rotY;
-    s16 rotZ;
-    u8 pad_23e[4];
-    s16 stateTimer;
-    u8 pad_244[2];
-    u8 canSing;
-    u8 pad_247[0x24a - 0x247];
-    u8 isAlarmed;
-    u8 unk_24b;
-    u8 unk_24c;
-    s8 kind;
-    u8 pad_24e[3];
-    u8 state;
-    u8 cooldownTimer;
-    u8 pad_253;
-    u8 alarm;
-    u8 pad_255[0x25c - 0x255];
-};
 
 typedef Unk_ov003_0225980c_Rec Rec;
 
@@ -1877,17 +1782,9 @@ extern "C" s32 Insect_GroundWalkNet(Rec *self);
 #define Unk_ov068_02268214_dungBeetlePushSnowball _ZN18Unk_ov068_0226821422dungBeetlePushSnowballEv
 #define Unk_ov068_02268214_dungBeetleWalk _ZN18Unk_ov068_0226821414dungBeetleWalkEv
 namespace s09 {
-struct Unk_ov003_0222adc4_V3 {
-    s32 x, y, z;
-};
 
 typedef Unk_ov003_0222adc4_V3 V3;
 
-struct Unk_ov003_0222aff0_Bits {
-    u32 lo : 12;
-    u32 mid : 16;
-    u32 hi : 4;
-};
 
 // One 0x25c-byte entry of the tables at sSpecialInsects / 0225980c / 0225a17c
 struct Unk_ov003_0222aff0_A {
@@ -2149,17 +2046,9 @@ extern "C" void Hoverer_Update(Rec *self);
 #define Unk_ov068_02268214_beeEnterSwarm _ZN18Unk_ov068_0226821413beeEnterSwarmEv
 #define Unk_ov068_02268214_mosquitoChase _ZN18Unk_ov068_0226821413mosquitoChaseEPs
 namespace s11 {
-struct Unk_ov003_0222adc4_V3 {
-    s32 x, y, z;
-};
 
 typedef Unk_ov003_0222adc4_V3 V3;
 
-struct Unk_ov003_0222aff0_Bits {
-    u32 lo : 12;
-    u32 mid : 16;
-    u32 hi : 4;
-};
 
 // One 0x25c-byte entry of the tables at sSpecialInsects / 0225980c / 0225a17c
 struct Unk_ov003_0222adc4_Rec {

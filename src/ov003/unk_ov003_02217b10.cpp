@@ -1,11 +1,12 @@
 // mwcc-version: 1.2/base
 #include "types.h"
+#include "gfx/Unk_ov003_02215c7c_Blk.h"
+#include "field/Unk_ov003_02217910_V3.h"
+#include "field/Unk_ov003_02217910_V3D.h"
+#include "field/Unk_ov003_02217b78_Ent.h"
 
 // TU18 of ov003: ground helper class FieldGroundBackdrop (0x02217b10-0x02217be8) and the six colour constants of its header
 
-struct Unk_ov003_02215c7c_Blk {
-    s64 v[6];
-};
 
 struct Unk_020553f8_Res;
 
@@ -25,20 +26,8 @@ public:
     void setResourceAndBind(Unk_020553f8_Res *r, u32 a);
 };
 
-struct Unk_ov003_02217910_V3 {
-    s32 x, y, z;
-};
 
-struct Unk_ov003_02217910_V3D {
-    s32 x, y, z;
-    Unk_ov003_02217910_V3D() {}
-    ~Unk_ov003_02217910_V3D() {}
-};
 
-struct Unk_ov003_02217b78_Ent {
-    u8 pad_00[8];
-    Unk_020553f8_Res *modelRes;
-};
 
 // 4-byte colour constructors (unreferenced except by __sinit)
 struct Unk_ov003_02235478_Col {

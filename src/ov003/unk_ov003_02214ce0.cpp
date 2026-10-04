@@ -1,6 +1,11 @@
 // mwcc-version: 1.2/sp2
 // ov003 TU06 (actor 02231168): .text 0x02214ce0-0x02214dfc
 #include "types.h"
+#include "field/Unk_ov003_02214494_Views.h"
+#include "gfx/Unk_ov003_Blk.h"
+#include "field/Unk_ov003_Flags.h"
+#include "actor/Unk_ov003_SceneEntry.h"
+#include "game/Unk_ov003_Vec.h"
 
 // shared_actor.h.txt -- declarations shared by the ov003 actor units (class family of ov009 BuildingActor).
 // Written by the agent that owns ov003 TU06/07/09/10/11/12 (all 1.2/sp2).  Paste unchanged after `#include "types.h"`
@@ -65,9 +70,6 @@ public:
     /* 0x04 */ u8 unk_04[0x4c];
 };
 
-struct Unk_ov003_Vec {
-    s32 x, y, z;
-};
 
 class Actor : public GameProc {
 public:
@@ -173,15 +175,7 @@ public:
     u8 pad_41[3];
 };
 
-struct Unk_ov003_Blk {
-    s64 v[6];
-};
 
-struct Unk_ov003_Flags {
-    u8 f0 : 1;
-    u8 f1 : 1;
-    u8 rest : 6;
-};
 
 class Unk_020b1ddc;
 
@@ -255,10 +249,6 @@ public:
     /* 0x2b0 */
 };
 
-struct Unk_ov003_02214890_Buf {
-    s32 w0;
-    s32 w1;
-};
 
 extern "C" {
 void Clock_GetDateTime(void *);
@@ -275,17 +265,10 @@ public:
     virtual BOOL vfunc_70();
 };
 
-struct Unk_ov003_SceneEntry {
-    void (*factory)();
-    u16 id;
-    u16 size;
-    u32 zero;
-    u32 a, b, c;
-};
 
 extern "C" void GracieCar_Create();
 extern "C" u32 sGracieCarVisitorProfile = 0x6c;
-extern "C" Unk_ov003_SceneEntry sGracieCarProfile = { GracieCar_Create, 0x29, 0x2f, 0, 0xc8000, 0x12c000, 0x258000 };
+extern "C" Unk_ov003_SceneEntry sGracieCarProfile = { (void *(*)())GracieCar_Create, 0x29, 0x2f, 0, 0xc8000, 0x12c000, 0x258000 };
 
 static inline BOOL Unk_ov003_02214ce0_Chk(void *m) {
     if (Event_GetState(0x40, m, 0)) {

@@ -1,5 +1,7 @@
 // mwcc-version: 1.2/sp2
 #include "types.h"
+#include "actor/Unk_ov003_SceneEntry.h"
+#include "game/Unk_ov003_Vec.h"
 
 class ProcBase {
 public:
@@ -34,9 +36,6 @@ public:
     /* 0x04 */ u8 unk_04[0x4c];
 };
 
-struct Unk_ov003_Vec {
-    s32 x, y, z;
-};
 
 class Actor : public GameProc {
 public:
@@ -179,13 +178,6 @@ struct Unk_ov003_022309d0_Color {
     }
 };
 
-struct Unk_ov003_SceneEntry {
-    void *(*factory)();
-    u16 id;
-    u16 size;
-    u32 zero;
-    u32 a, b, c;
-};
 
 extern "C" {
 extern u8 gSaveVillagers[];

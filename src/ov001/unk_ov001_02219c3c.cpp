@@ -1,5 +1,6 @@
 // mwcc-flags: -O4,p
 #include "types.h"
+#include "ui/Unk_ov001_0221a40c.h"
 
 #pragma thumb off
 
@@ -24,10 +25,6 @@ struct WfcConnSelectWork {
     u8 pad_1e[2];
 };
 
-struct Unk_ov001_0221abb4_R { u16 v[16]; };
-struct Unk_ov001_0221ab50_B { u8 b[4]; };
-struct Unk_ov001_0221a8a8_P { u16 x, y; };
-struct Unk_ov001_0221a9c8_B { u8 b[22]; };
 
 extern "C" {
 extern WfcConnSelectWork *sWfcConnSelect;

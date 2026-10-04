@@ -1,6 +1,10 @@
 // mwcc-version: 1.2/base
 // mwcc-flags: -O4,s
 #include "types.h"
+#include "field/Unk_ov003_02214494_Views.h"
+#include "gfx/Unk_ov003_Blk.h"
+#include "field/Unk_ov003_Flags.h"
+#include "game/Unk_ov009_0225b880_Vec3.h"
 class ProcBase {
 public:
     static void *operator new(unsigned long size);
@@ -34,9 +38,6 @@ public:
     /* 0x04 */ u8 unk_04[0x4c];
 };
 
-struct Unk_ov009_0225b880_Vec3 {
-    s32 x, y, z;
-};
 
 class Actor : public GameProc {
 public:
@@ -143,15 +144,7 @@ public:
     u8 pad_41[3];
 };
 
-struct Unk_ov003_Blk {
-    s64 v[6];
-};
 
-struct Unk_ov003_Flags {
-    u8 f0 : 1;
-    u8 f1 : 1;
-    u8 rest : 6;
-};
 
 class Unk_020b1ddc;
 
@@ -228,9 +221,6 @@ public:
     /* 0x2b0 */
 };
 
-struct Unk_ov003_022141bc_Target {u8 pad_00[4]; u32 state; u32 nextState;};
-struct Unk_ov003_0221475c_Pad {s32 v[2]; Unk_ov003_0221475c_Pad() {} ~Unk_ov003_0221475c_Pad() {}};
-struct Unk_ov003_02214890_Buf {s32 w0,w1;};
 class ReddPassword {public: u32 getPromptText(void *w);};
 
 

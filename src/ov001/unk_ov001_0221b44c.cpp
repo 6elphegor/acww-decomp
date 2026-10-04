@@ -1,5 +1,6 @@
 // mwcc-flags: -O4,p
 #include "types.h"
+#include "ui/Unk_ov001_0221b220_A22.h"
 
 #pragma thumb off
 
@@ -117,7 +118,6 @@ void WfcConnTest_LoadBg() {
 
 namespace F0221ae34 {
 
-struct Unk_ov001_0221b220_A22 { u8 b[22]; };
 struct Unk_ov001_0221b6f8_A12 { u8 b[12]; };
 
 extern "C" {

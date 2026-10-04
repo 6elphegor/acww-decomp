@@ -97,14 +97,8 @@ public:
     BOOL loadKeyed(void *res, void *name, u32 tag);
 };
 
-class Unk_020dbd44 {
-public:
-    u32 unk_04;
-    u32 unk_08;
-    Unk_020dbd44();
-    virtual ~Unk_020dbd44();
-};
-
+// included here, not at the top: the vtable emission order (CachedModel before Unk_020dbd44) follows declaration order
+#include "gfx/Unk_020dbd44.h"
 
 class AnimFrameCtrl {
 public:

@@ -1,5 +1,6 @@
 // mwcc-flags: -O3,p
 #include "types.h"
+#include "ui/Unk_ov001_0220a7f0.h"
 
 #pragma thumb off
 
@@ -53,20 +54,8 @@ extern "C" u16 data_ov001_0222aa58[4] = {0, 1, 0, 0};
 
 namespace N_0a758 {
 
-struct Unk_ov001_0220a7f0_Reg { u32 w0; u16 h4; };
 
-struct Unk_ov001_0220a7f0_Pos {
-    volatile u16 x, y, w, h;
-    Unk_ov001_0220a7f0_Pos() { x = 0; y = 0; w = 0; h = 0; }
-};
 
-struct Unk_ov001_0220a7f0_H {
-    u16 v;
-    u16 v2;
-    u16 v3;
-    u16 v4;
-    Unk_ov001_0220a7f0_H() { v = 0; v2 = 0; v3 = 0; v4 = 0; }
-};
 
 struct Unk_ov001_0222dddc {
     void *rowCanvases[3][4];

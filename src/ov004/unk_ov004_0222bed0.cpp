@@ -2,6 +2,7 @@
 #include "Unk_020d8c7c.h"
 #include "sys/Unk_0209d498_Time.h"
 #include "room/Unk_ov004_0222c9d0.h"
+#include "gfx/Unk_020dbd44.h"
 
 // ---------------------------------------------------------------- real symbol names of main-module methods
 
@@ -94,12 +95,6 @@ struct Unk_ov004_0222c570_Comm {
     s32 myAid;
 };
 
-class Unk_020dbd44 {
-public:
-    Unk_020dbd44();
-    ~Unk_020dbd44();
-    u32 pad[4];
-};
 
 struct Unk_ov004_0222c880_Model {
     u8 pad_00[0x5c];

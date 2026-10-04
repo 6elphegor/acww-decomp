@@ -1,6 +1,9 @@
 // mwcc-version: 1.2/sp2
 #include "types.h"
 #include "actor/Unk_ov068_SceneEntry.h"
+#include "gfx/Unk_ov003_Blk.h"
+#include "field/Unk_ov003_Flags.h"
+#include "game/Unk_ov003_Vec.h"
 
 struct Unk_ov068_0226acf8_Vec {
     s32 x, y, z;
@@ -49,9 +52,6 @@ public:
     /* 0x04 */ u8 unk_04[0x4c];
 };
 
-struct Unk_ov003_Vec {
-    s32 x, y, z;
-};
 
 class Actor : public GameProc {
 public:
@@ -160,15 +160,7 @@ struct Unk_ov068_0226b5a4_Bits {
     u32 hi : 4;
 };
 
-struct Unk_ov003_Blk {
-    s64 v[6];
-};
 
-struct Unk_ov003_Flags {
-    u8 f0 : 1;
-    u8 f1 : 1;
-    u8 rest : 6;
-};
 
 class Unk_020b1ddc;
 

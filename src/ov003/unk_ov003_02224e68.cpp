@@ -3,13 +3,11 @@
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
 #include "field/BottleThrow.h"
+#include "field/Unk_ov003_02224ba4_V3.h"
+#include "field/Unk_ov003_02225238_Grid.h"
 
 typedef Unk_ov003_02224ba4_V3 V3;
 
-struct Unk_ov003_02224e68_V3 {
-    s32 x, y, z;
-    Unk_ov003_02224e68_V3(s32 a, s32 b, s32 c) : x(a), y(b), z(c) {}
-};
 
 // polymorphic actor returned by PlayerActor_GetCharacter (only the slots used here)
 class Unk_ov003_02224bc4_Actor : public GameProc {
@@ -35,11 +33,6 @@ static inline BOOL Unk_ov003_02224bc4_Bit(u32 f, u32 m)
 
 
 
-struct Unk_ov003_02225238_Grid {
-    u8 *cells;
-    u32 w;
-    u32 h;
-};
 
 extern "C" {
 extern BottleThrow sBottleThrows[4];
