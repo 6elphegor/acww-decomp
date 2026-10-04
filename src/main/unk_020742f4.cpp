@@ -11,6 +11,7 @@
 #include "talk/EncodedString192.h"
 #include "talk/EncodedString41.h"
 #include "ui/LabelString.h"
+#include "field/FieldAction.h"
 
 // ======== types of unk_020742f4.cpp ========
 
@@ -23,22 +24,6 @@ struct Unk_02074c4c_G { u8 pad[0x64]; u32 myAid; u32 localSlot; };
 struct Unk_02075558_Obj {
     u32 pad_00[0x19];
     void *myAid;
-};struct Unk_02075bc4_Buf {
-    u8 kind : 2;
-    u8 pad0 : 6;
-    u8 pad1 : 7;
-    u8 flag : 1;
-    u16 pos;
-    u16 id;
-    u16 pad2;
-};
-struct Unk_02075bc4_Q {
-    u8 a : 3;
-    u8 pad0 : 5;
-    u8 pad1 : 7;
-    u8 b : 1;
-    u8 c : 1;
-    u8 pad2 : 7;
 };
 struct Unk_02075bc4_Pt {
     s32 x, y;
@@ -2473,7 +2458,7 @@ extern "C" {
 s32 Field_IsUnitClearOfOthersForAid(Unk_02075bc4_Pt *, void *);
 }
 extern "C" {
-Unk_02075bc4_Q *PendingUnit_Get();
+PendingUnit *PendingUnit_Get();
 }
 extern "C" {
 s32 FieldAction_HostProcess(void *, BOOL, void *);
@@ -2587,14 +2572,14 @@ extern "C" void CommRecv_TanChange(s32 n, s32 b, s32 c, s32 d) {
 extern "C" void CommRecv_ItemActionRequest(s32 a, s32 b, s32 c, void *d) {
     void *grid;
     volatile u16 c1, b1, c2, b2, a1, a2;
-    Unk_02075bc4_Buf buf;
+    FieldActionRequestMsg buf;
     Unk_02075bc4_Pt pt, pt2;
     grid = TownBlockMap_Get();
     if (grid != NULL) {
         BOOL ok;
         _ZN11CommManager10readRecordEPhj(gCommManager, &buf, 8);
         ok = FALSE;
-        a1 = buf.pos;
+        a1 = buf.unit;
         u16 t1 = a1;
         b1 = t1;
         c1 = t1;
@@ -2602,25 +2587,25 @@ extern "C" void CommRecv_ItemActionRequest(s32 a, s32 b, s32 c, void *d) {
         s32 y = b1 & 0xff;
         s32 hx = x >> 4;
         s32 hy = y >> 4;
-        u16 *cell = BlockMap_GetItemPtr(grid, hx, hy, x - (hx << 4), y - (hy << 4), buf.flag);
+        u16 *cell = BlockMap_GetItemPtr(grid, hx, hy, x - (hx << 4), y - (hy << 4), buf.layer);
         if (cell != NULL) {
-            if (*cell == buf.id) {
-                a2 = buf.pos;
+            if (*cell == buf.oldItem) {
+                a2 = buf.unit;
                 u16 t2 = a2;
                 b2 = t2;
                 c2 = t2;
                 s32 x2, y2;
                 pt.x = x2 = c2 >> 8;
                 pt.y = y2 = b2 & 0xff;
-                if (PendingUnit_IndexAt(&pt, buf.flag) < 0) {
+                if (PendingUnit_IndexAt(&pt, buf.layer) < 0) {
                     pt2.x = x2;
                     pt2.y = y2;
                     if (Field_IsUnitClearOfOthersForAid(&pt2, d) != 0) ok = TRUE;
                 } else {
-                    Unk_02075bc4_Q *q = PendingUnit_Get();
-                    if (q->a == buf.kind) {
-                        if (q->b != 0) {
-                            if (q->c == 0) ok = TRUE;
+                    PendingUnit *q = PendingUnit_Get();
+                    if (q->aid == buf.aid) {
+                        if (q->unk_01_d != 0) {
+                            if (q->unk_02_a == 0) ok = TRUE;
                         }
                     }
                 }

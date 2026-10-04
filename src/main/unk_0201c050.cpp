@@ -39,6 +39,7 @@
 #include "talk/ConstellationMsgString17.h"
 #include "talk/MsgString25B.h"
 #include "talk/MsgString129.h"
+#include "talk/MsgString9BStorage.h"
 #include "talk/MsgString33B.h"
 #include "talk/MsgString17.h"
 #include "talk/MsgString9B.h"
@@ -551,10 +552,6 @@ struct Unk_0201d2d0_Key {
     u32 w0, w1;
 };
 
-
-struct MsgString9BStorage {
-    u8 v[0x1c];
-};
 
 struct Unk_02029a88_Pair {
     u32 unk_00;

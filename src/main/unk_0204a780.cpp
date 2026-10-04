@@ -1,4 +1,7 @@
 #include "types.h"
+#include "town/TownState.h"
+#include "town/TownEventRecord.h"
+#include "town/TownBlockMap.h"
 
 
 struct ItemId {
@@ -307,21 +310,11 @@ extern "C" {
 struct Unk_0204c0f4_Date {
     u8 a, b, c, d;
 };
-struct TownEventRecord {
-    u16 eventId;
-    u8 year;
-    s32 start;
-    s32 end;
-};
 struct Unk_0204c084_Data {
     u8 pad[0x15];
     s8 perfectStreak;
     u8 pad16;
     u8 seasonPeriod;
-};
-struct Unk_0204c0b8_S {
-    u8 pad[0x21];
-    s8 perfectStreak;
 };
 struct Unk_0204c20c_S {
     u8 pad[0x16];
@@ -330,11 +323,6 @@ struct Unk_0204c20c_S {
 struct Unk_0204c21c_S {
     u8 pad[0xc];
     u8 unk_0c[10];
-};
-struct Unk_0204c290_W {
-    s32 blocks;
-    s32 width;
-    s32 height;
 };
 BOOL Item_IsFullHeadwear(u16 *p);
 s32 Item_GetId(u16 *p);
@@ -368,9 +356,9 @@ s32 FX_Div(s32 a, s32 b);
 s32 Date_GetWeekday(u32 a, u32 b, u32 c);
 void DateTime_AddDays(void *p, s32 n);
 s32 Random_GlobalBelow(s32 n);
-Unk_0204c290_W *TownBlockMap_Get();
-u16 *BlockMap_GetItemPtr(Unk_0204c290_W *w, s32 cx, s32 cy, s32 ix, s32 iy, u32 z);
-void BlockMap_SetItemAtUnit(Unk_0204c290_W *w, u16 *item, s32 x, s32 y, u32 z);
+TownBlockMap *TownBlockMap_Get();
+u16 *BlockMap_GetItemPtr(TownBlockMap *w, s32 cx, s32 cy, s32 ix, s32 iy, u32 z);
+void BlockMap_SetItemAtUnit(TownBlockMap *w, u16 *item, s32 x, s32 y, u32 z);
 extern void *gCommManager;
 extern u8 gSaveData[];
 extern Unk_0204c084_Data data_021ed1b0;
@@ -439,7 +427,7 @@ s32 TownState_GetNativeFruit(u8 *p);
 BOOL Item_IsFruit(u16 *p);
 void TownState_SetSeasonPeriod(u32 n);
 u32 TownState_GetSeasonPeriod();
-void TownState_UpdatePerfectStreak(Unk_0204c0b8_S *p, s32 k, s32 add);
+void TownState_UpdatePerfectStreak(TownState *p, s32 k, s32 add);
 BOOL TownState_IsPerfectStreak15();
 BOOL TownState_IsPlayerDateNotToday(u8 *p);
 void TownState_SetPlayerDateToday(u8 *p);
@@ -463,7 +451,7 @@ u8 *Item_GetSaveData();
 
 namespace nC {
 extern "C" void Town_ReplaceSouthCedars() {
-    Unk_0204c290_W *w;
+    TownBlockMap *w;
     s32 wd, ht, x, y;
     s32 cx, cy;
     w = TownBlockMap_Get();
@@ -608,7 +596,7 @@ extern "C" BOOL TownState_IsPerfectStreak15() {
 }
 
 namespace nC {
-extern "C" void TownState_UpdatePerfectStreak(Unk_0204c0b8_S *p, s32 k, s32 add) {
+extern "C" void TownState_UpdatePerfectStreak(TownState *p, s32 k, s32 add) {
     if (k == 4) {
         s32 v = p->perfectStreak;
         if (v < 0) p->perfectStreak = 1;

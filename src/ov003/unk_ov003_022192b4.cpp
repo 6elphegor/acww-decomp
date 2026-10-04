@@ -625,7 +625,7 @@ s32 BlockMap_IsBuriedAtUnit(void *g, s32 x, s32 z);
 s32 Item_IsFlower(void *c);
 s32 Flower_SpawnPetalFx(void *c, void *p, s32 a, s32 b);
 s32 Weed_SpawnPullFx(void *c, void *p);
-s32 func_02044014(void *p);
+s32 DeadTurnip_SpawnDigFx(void *p);
 s32 func_02133150(s32 a, s32 b);
 s32 PendingUnit_Find(void *p, s32 a);
 Unk_ov003_0221b7d4_Ent *PendingUnit_Get(s32 i);
@@ -6777,7 +6777,7 @@ extern "C" void FieldItemFx_InitDigHole(Unk_ov003_0221aed4_Fx *self, P2 p, void 
                 Unk_ov003_0221aed4_Raw2 q;
             q.x = p.x;
             q.z = p.z;
-                func_02044014(&q);
+                DeadTurnip_SpawnDigFx(&q);
             } else if (r != 0 || (v >= 0xd4 && v <= 0xda) || (v >= 0xdb && v <= 0xe1)) {
                 if (flag != 0) {
                     self->pendingApply = 0;

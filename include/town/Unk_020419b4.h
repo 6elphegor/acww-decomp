@@ -2,6 +2,7 @@
 #define TOWN_UNK_020419B4_H
 
 #include "types.h"
+#include "gfx/VecFx32.h"
 
 // Town update thread context (TownUpdateThread_*) and the gTownUpdater global (TownUpdater) that points to it
 // (src/main/unk_02041868.cpp, unk_02041e00.cpp).
@@ -25,10 +26,24 @@ struct Unk_020419b4 {
     /* 0x10ea */ u8 started;
 };
 
+// Parameters of the next flower petal effect (FlowerFx_SetParams), read by the particle init callbacks
+// FlowerFx_InitByColor / FlowerFx_InitBySpecies (unk_02041e00.cpp).
+struct FlowerFxParams {
+    /* 0x00 */ s32 mode;      // Flower_SpawnPetalFx mode: 1 = one effect only, 2 = petals turned by angle
+    /* 0x04 */ u8 species;
+    /* 0x05 */ u8 color;
+    /* 0x06 */ u8 unk_06;
+    /* 0x08 */ VecFx32 pos;   // unit centre
+    /* 0x14 */ s16 angle;
+};
+
 // gTownUpdater (0x24 bytes, defined in unk_02041e00.cpp; data_021c3ea8 is its offset 4).
 struct TownUpdater {
-    /* 0x00 */ u32 unk_00;
-    /* 0x04 */ u32 unk_04[7];
+    /* 0x00 */ u16 seashellTime;   // {minute, hour} (Clock_GetMinuteHour)
+    /* 0x02 */ u8 pad_02[2];
+    /* 0x04 */ FlowerFxParams flowerFx;
+    /* 0x1c */ u8 beesReleased;    // Town_SetBeesReleased / Town_ClearBeesReleased / Town_CanReleaseBees
+    /* 0x1d */ u8 pad_1d[3];
     /* 0x20 */ Unk_020419b4 *updateThread;
     ~TownUpdater() {}
 };
