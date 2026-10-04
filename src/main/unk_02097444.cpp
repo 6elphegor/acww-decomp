@@ -2,12 +2,8 @@
 #include "item/ItemId.h"
 #include "player/PlayerData.h"
 #include "net/CommManager.h"
+#include "player/PlayerInventory.h"
 
-
-struct Unk_02097ac4 {
-    u8 pad[0x9f8];
-    s32 wallet;
-};
 
 
 // the three-element object at gGuestPlayers (constructor func_020975c4, destructor func_020975a4)
@@ -167,7 +163,7 @@ extern "C" s32 PlayerInventory_PayWithBags(u8 *p, s32 n) {
     return n;
 }
 
-extern "C" void PlayerInventory_SetWallet(Unk_02097ac4 *p, s32 v, s32 mode) {
+extern "C" void PlayerInventory_SetWallet(PlayerInventory *p, s32 v, s32 mode) {
     if (v < 0) v = 0;
     if ((u32)v > 99999) {
         if (mode == 1) {
@@ -201,7 +197,7 @@ extern "C" void PlayerInventory_AddBells(u8 *p, s32 v, s32 mode) {
             x = 0;
         }
     }
-    PlayerInventory_SetWallet((Unk_02097ac4 *)p, x, mode);
+    PlayerInventory_SetWallet((PlayerInventory *)p, x, mode);
 }
 
 extern "C" u8 *PlayerData_GetFutureLetter(u8 *p) { return p + 0x1c6c; }

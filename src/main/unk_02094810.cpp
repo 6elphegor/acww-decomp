@@ -33,7 +33,7 @@ struct PlayerSessionTable {
     ~PlayerSessionTable();
 };
 
-struct Unk_020954f8_L { u32 out; u8 t[12]; };
+struct PlayerNetStateLocals { u32 out; u8 t[12]; };
 
 extern "C" {
 extern u8 gFieldSceneKind;
@@ -132,8 +132,8 @@ Unk_02095338_E *PlayerSession_GetLastPos(s32 i);
 u8 *PlayerSession_GetLastScene(s32 i);
 u32 *PlayerSession_GetLastAction(s32 i);
 s32 PlayerActor_RequestChangeClothes(u16 *p, s32 a, s32 b);
-void func_02095200();
-void func_02095218();
+void PlayerActor_GetCharacterNop();
+void PlayerActor_GetActorNop();
 }
 
 extern "C" PlayerActor *PlayerActor_Get(s32 idx) {
@@ -239,7 +239,7 @@ extern "C" BOOL PlayerActor_GetSlotAction(u32 *out, s32 a, s32 idx)
 
 extern "C" void PlayerActor_PackNetState(void *dst, s32 x)
 {
-    Unk_020954f8_L l;
+    PlayerNetStateLocals l;
     PlayerActor *o = PlayerActor_Get(4);
     if (o) {
         CommRecord_PackSource(l.t, Scene_GetCurrent(), 0);
@@ -464,20 +464,20 @@ extern "C" u32 PlayerSession_FindFreeGfxSlot()
     return PlayerSessionTable_FindFreeGfxSlot(&gPlayerSessionTable);
 }
 
-extern "C" void func_02095218() {}
+extern "C" void PlayerActor_GetActorNop() {}
 
 extern "C" void PlayerActor_GetActor(s32 id)
 {
     PlayerActor_Get(id);
-    func_02095218();
+    PlayerActor_GetActorNop();
 }
 
-extern "C" void func_02095200() {}
+extern "C" void PlayerActor_GetCharacterNop() {}
 
 extern "C" void PlayerActor_GetCharacter(s32 id)
 {
     PlayerActor_Get(id);
-    func_02095200();
+    PlayerActor_GetCharacterNop();
 }
 
 extern "C" u32 PlayerActor_ParamGetSlot(u32 v)

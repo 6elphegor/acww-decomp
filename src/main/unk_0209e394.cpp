@@ -22,7 +22,7 @@ public:
 
     void setOwner(SaveMenu *owner);
 
-    /* 0x44 */ SaveMenu *unk_44;
+    /* 0x44 */ SaveMenu *ownerMenu;
     /* 0x48 */ u16 unk_48;
 };
 
@@ -52,7 +52,7 @@ public:
 };
 
 typedef void (SaveMenu::*Unk_020e23fc_Fn)();
-struct Unk_0209e840_Ent {
+struct SaveMenuStateEntry {
     Unk_020e23fc_Fn enter;
     Unk_020e23fc_Fn update;
 };
@@ -66,7 +66,7 @@ ProcProfile sSaveMenuProfile = {(void *(*)())SaveMenu_Create, 0xd5, 0xd0};
 extern const s32 sSaveMenuDebugDonationLevels[22];
 const s32 sSaveMenuDebugDonationLevels[22] = {0, 10000, 50000, 100000, 200000, 300000, 400000, 500000, 600000, 700000, 800000, 900000, 1000000, 1100000, 1200000, 1300000, 1400000, 1500000, 1600000, 3200000, 6400000, 9999999};
 
-Unk_0209e840_Ent sSaveMenuStates[6] = {
+SaveMenuStateEntry sSaveMenuStates[6] = {
     {&SaveMenu::enterIdle, &SaveMenu::updateIdle},
     {&SaveMenu::enterOpenTalk, &SaveMenu::updateOpenTalk},
     {&SaveMenu::enterTalking, &SaveMenu::updateTalking},
@@ -580,7 +580,7 @@ SaveMenuTalk::SaveMenuTalk() {}
 SaveMenuTalk::~SaveMenuTalk() {}
 
 void SaveMenuTalk::setOwner(SaveMenu *owner) {
-    unk_44 = owner;
+    ownerMenu = owner;
 }
 
 void SaveMenuTalk::onMessageEnd(u32) {
@@ -611,7 +611,7 @@ void SaveMenuTalk::onChoice(u32) {
         case 0:
             o->lockAdvance();
             _ZN15TalkWindowState12showBusyIconEv(o, 1);
-            unk_44->setState(4);
+            ownerMenu->setState(4);
             break;
         case 1: {
             u8 b = 8;
@@ -625,7 +625,7 @@ void SaveMenuTalk::onChoice(u32) {
         case 0:
             o->lockAdvance();
             _ZN15TalkWindowState12showBusyIconEv(o, 1);
-            unk_44->setState(5);
+            ownerMenu->setState(5);
             break;
         case 1:
             o->setNextMessage(gTalkMsgIndexEnd, 0);
@@ -635,7 +635,7 @@ void SaveMenuTalk::onChoice(u32) {
     case 0:
         if (r == 0) {
             o->setNextMessage(gTalkMsgIndexEnd, 0);
-            unk_44->setState(3);
+            ownerMenu->setState(3);
         }
         break;
     }

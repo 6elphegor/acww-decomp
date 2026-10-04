@@ -2,6 +2,7 @@
 #include "item/PocketMatches.h"
 #include "item/ItemId.h"
 #include "npc/VillagerId.h"
+#include "player/PlayerId.h"
 #include "player/PlayerData.h"
 
 // Entry of the const table at 0x020d0604 (8 bytes): name, random range
@@ -27,7 +28,7 @@ struct ErrandRecord {
     void setStep(u8 v);
     u32 getStep();
     s32 getSubGroup();
-    s32 func_0209ac10();
+    s32 getSlotIndex();
     s32 setTimeFromNow(s32 x);
     u32 getKind();
     BOOL getGroupIndex(s32 *out);
@@ -43,16 +44,6 @@ struct ErrandRecord {
 
 // ======== types of unk_02098f90.cpp ========
 
-struct Unk_020030d8_R256 {
-    u8 pad[0xc];
-};
-
-
-struct Unk_020994cc_Ent {
-    u16 townId;
-    u8 townName[8];
-    u8 pad_0a[0xc];
-};
 
 struct Unk_020994cc_Date {
     u32 v;
@@ -61,24 +52,24 @@ struct Unk_020994cc_Date {
 class SickVillagerRecord {
 public:
     u8 errand[0xc];
-    Unk_020030d8_R256 villagerId;
-    Unk_020994cc_Ent visitors[5];
+    VillagerId villagerId;
+    PlayerId visitors[5];
     u8 startDate[4];
     u8 statusDate[4];
     u8 sickDay;
-    Unk_020994cc_Ent *getTopVisitor();
+    PlayerId *getTopVisitor();
     BOOL isRecentlyRecovered(Unk_020994cc_Date *d);
     BOOL isRecovered();
-    void setTodaysVisitor(Unk_020994cc_Ent *e);
+    void setTodaysVisitor(PlayerId *e);
     BOOL hasTodaysVisitor();
-    BOOL hasVisitor(Unk_020994cc_Ent *e);
-    Unk_020994cc_Ent *getTodaysVisitor();
-    Unk_020994cc_Ent *getVisitor(u32 i);
-    void startSickness(Unk_020030d8_R256 *a, u8 *b);
-    Unk_020030d8_R256 *getVillagerId();
+    BOOL hasVisitor(PlayerId *e);
+    PlayerId *getTodaysVisitor();
+    PlayerId *getVisitor(u32 i);
+    void startSickness(VillagerId *a, u8 *b);
+    VillagerId *getVillagerId();
     SickVillagerRecord *destructRecord();
     SickVillagerRecord *constructRecord();
-    void func_0209978c();
+    void getErrand();
     void resetRecord();
     u8 *getParcelErrand();
 };
@@ -104,7 +95,7 @@ public:
     ~PlayerErrandSlot();
 
     /* 0x0c */ Unk_02003130 villagers[2];
-    /* 0x24 */ u8 unk_24;
+    /* 0x24 */ u8 presentReaction;
 };
 
 // Y record with an index byte and a flag byte (0x10 bytes)
@@ -121,7 +112,7 @@ public:
 
     /* 0x0c */ ErrandRecord errand;
     /* 0x18 */ u32 visitTime;
-    /* 0x1c */ u32 unk_1c;
+    /* 0x1c */ u32 visitTimeHi;
     /* 0x20 */ u8 unk_20[8];
 };
 
@@ -170,17 +161,17 @@ struct TrendScores {
 };
 
 
-struct Unk_0209b2e4_Bits { u8 f : 1; u8 x : 7; };
+struct VillagerPlanFlags { u8 state2Flag : 1; u8 x : 7; };
 
 struct VillagerPlan {
-    u32 unk_00;
-    u32 unk_04;
-    u32 unk_08;
-    u32 unk_0c;
+    u32 planTime;
+    u32 planTimeHi;
+    u32 stateTime;
+    u32 stateTimeHi;
     u8 planState;
     TrendScores scores;
     TrendScores pendingScores;
-    Unk_0209b2e4_Bits unk_21;
+    VillagerPlanFlags flags;
     u8 unk_22[2];
 
     VillagerPlan();
@@ -190,15 +181,15 @@ struct VillagerPlan {
     BOOL addRandomScores(s16 *p);
     void applyPendingScores(s16 *p);
     s32 getTrendName(s32 x);
-    s32 func_0209b044(void *x);
-    s32 func_0209b0c4(VillagerPlan *o);
-    s32 func_0209b12c();
-    s32 func_0209b18c();
+    s32 finishMovingIn(void *x);
+    s32 leaveState0B(VillagerPlan *o);
+    s32 finishTrendChange();
+    s32 updateTopTrend();
     BOOL isTrendOlderThanWeek(void *o);
     BOOL isTrendOlderThan(void *o, u32 c);
-    void func_0209b238();
-    void func_0209b294();
-    BOOL func_0209b2e4();
+    void enterState0B();
+    void startTrendChange();
+    BOOL hasState2Flag();
     s32 getStateGroup();
     void setState(u32 v);
     u32 getState();
@@ -223,10 +214,10 @@ BOOL ErrandSetup_RandomShirt(void *p);
 typedef BOOL (PlayerErrandSlot::*Unk_0209a4f4_Fn)();
 
 // Entry of the slot-kind table (0x14 bytes): setup handler, second handler (always null), limit byte
-struct Unk_0209a4f4_Rec {
-    Unk_0209a4f4_Fn unk_00;
+struct ErrandKindSetup {
+    Unk_0209a4f4_Fn setup;
     Unk_0209a4f4_Fn unk_08;
-    u8 unk_10;
+    u8 stepLimit;
 };
 
 
@@ -362,7 +353,7 @@ extern u32 sErrandClassStarts[];
 extern u8 sPlanStateGroupStarts[];
 extern u8 sTrendWeights[];
 s32 Errand_GetSubGroup(u32 x);
-s32 func_0209ac1c(u32 x);
+s32 Errand_GetSlotIndex(u32 x);
 BOOL Errand_GetGroupIndex(s32 *out, s32 x);
 s32 Errand_GetGroup(u32 x);
 BOOL Errand_IsValidGroup(u32 x);
@@ -379,7 +370,7 @@ extern "C" s32 PlanState_GetGroup(u32 x);
 extern "C" void *PlanErrand_Destruct(ErrandRecord *self);
 extern "C" void *PlanErrand_Construct(ErrandRecord *self);
 extern "C" s32 Errand_GetSubGroup(u32 x);
-extern "C" s32 func_0209ac1c(u32 x);
+extern "C" s32 Errand_GetSlotIndex(u32 x);
 extern "C" void ErrandRecord_GetTime();
 extern "C" BOOL Errand_GetGroupIndex(s32 *out, s32 x);
 extern "C" s32 Errand_GetGroup(u32 x);
@@ -390,7 +381,7 @@ extern "C" BOOL Errand_IsValidClass(u32 x);
 extern "C" BOOL Errand_IsValidKind(u32 x);
 extern "C" void Trend_GetToolItem(u16 *out, s32 idx);
 extern "C" void *VillagerPlan_GetStateDate(void *p);
-extern "C" void func_0209b010();
+extern "C" void VillagerPlan_GetPlanTime();
 extern "C" s32 PlanState_GetGroupIndex(u8 *out, s32 x);
 extern "C" s32 PlanState_GetGroup(u32 x);
 extern "C" BOOL Trend_IsValid(u32 x);
@@ -427,7 +418,7 @@ u32 TrendScores::get(u32 i) {
 
 namespace n5 {
 }
-VillagerPlan::VillagerPlan() : unk_00(0), unk_04(0), unk_08(0), unk_0c(0) {
+VillagerPlan::VillagerPlan() : planTime(0), planTimeHi(0), stateTime(0), stateTimeHi(0) {
     using namespace n5; clear(); }
 
 
@@ -445,10 +436,10 @@ void VillagerPlan::clear() {
     planState = 7;
     scores.clear();
     pendingScores.clear();
-    unk_00 = 0;
-    unk_04 = 0;
-    unk_08 = 0;
-    unk_0c = 0;
+    planTime = 0;
+    planTimeHi = 0;
+    stateTime = 0;
+    stateTimeHi = 0;
 }
 
 
@@ -524,21 +515,21 @@ extern "C" s32 PlanState_GetGroupIndex(u8 *out, s32 x) {
 }
 
 }
-BOOL VillagerPlan::func_0209b2e4() {
+BOOL VillagerPlan::hasState2Flag() {
     using namespace n5;
-    if (unk_21.f) return TRUE;
+    if (flags.state2Flag) return TRUE;
     return FALSE;
 }
 
 
 namespace n5 {
 }
-void VillagerPlan::func_0209b294() {
+void VillagerPlan::startTrendChange() {
     using namespace n5;
     if (getState() == 2) {
-        unk_21.f = 1;
+        flags.state2Flag = 1;
     } else {
-        unk_21.f = 0;
+        flags.state2Flag = 0;
     }
     setState(8);
     Clock_GetDateTime(this);
@@ -548,12 +539,12 @@ void VillagerPlan::func_0209b294() {
 
 namespace n5 {
 }
-void VillagerPlan::func_0209b238() {
+void VillagerPlan::enterState0B() {
     using namespace n5;
-    if (getState() == 2 || func_0209b2e4()) {
-        unk_21.f = 1;
+    if (getState() == 2 || hasState2Flag()) {
+        flags.state2Flag = 1;
     } else {
-        unk_21.f = 0;
+        flags.state2Flag = 0;
     }
     setState(0xb);
     Clock_GetDateTime(this);
@@ -583,7 +574,7 @@ BOOL VillagerPlan::isTrendOlderThanWeek(void *o) {
 
 namespace n5 {
 }
-s32 VillagerPlan::func_0209b18c() {
+s32 VillagerPlan::updateTopTrend() {
     using namespace n5;
     if (Trend_IsValid(planState)) {
         u32 i = scores.pickTop();
@@ -593,7 +584,7 @@ s32 VillagerPlan::func_0209b18c() {
                     scores.resetAndHalve(planState);
                     return planState;
                 } else {
-                    func_0209b294();
+                    startTrendChange();
                     return 8;
                 }
             }
@@ -605,14 +596,14 @@ s32 VillagerPlan::func_0209b18c() {
 
 namespace n5 {
 }
-s32 VillagerPlan::func_0209b12c() {
+s32 VillagerPlan::finishTrendChange() {
     using namespace n5;
     if (planState == 8) {
         u32 i = scores.pickTop();
         if (Trend_IsValid(i)) {
             setState(i);
             scores.resetAndHalve(i);
-            unk_21.f = 0;
+            flags.state2Flag = 0;
             Clock_GetDateTime(this);
             MI_CpuCopy8(this, (u8 *)this + 8, 8);
             return i;
@@ -624,14 +615,14 @@ s32 VillagerPlan::func_0209b12c() {
 
 namespace n5 {
 }
-s32 VillagerPlan::func_0209b0c4(VillagerPlan *o) {
+s32 VillagerPlan::leaveState0B(VillagerPlan *o) {
     using namespace n5;
     if (planState == 0xb && *((u8 *)o + 3) != *((u8 *)this + 3)) {
         u32 i = scores.pickTop();
         if (Trend_IsValid(i)) {
             setState(i);
             scores.resetAndHalve(i);
-            unk_21.f = 0;
+            flags.state2Flag = 0;
             Clock_GetDateTime(this);
             MI_CpuCopy8(this, (u8 *)this + 8, 8);
             return i;
@@ -643,7 +634,7 @@ s32 VillagerPlan::func_0209b0c4(VillagerPlan *o) {
 
 namespace n5 {
 }
-s32 VillagerPlan::func_0209b044(void *x) {
+s32 VillagerPlan::finishMovingIn(void *x) {
     using namespace n5;
     if (planState == 0xa) {
         if (x == 0 || (DateTime_Compare(x, this, 0x3f) == 1 && DateTime_DiffDays(this, x) >= 1)) {
@@ -651,7 +642,7 @@ s32 VillagerPlan::func_0209b044(void *x) {
             if (Trend_IsValid(i)) {
                 setState(i);
                 scores.resetAndHalve(i);
-                unk_21.f = 0;
+                flags.state2Flag = 0;
                 Clock_GetDateTime(this);
                 MI_CpuCopy8(this, (u8 *)this + 8, 8);
                 return i;
@@ -673,7 +664,7 @@ s32 VillagerPlan::getTrendName(s32 x) {
 
 
 namespace n5 {
-extern "C" void func_0209b010() {}
+extern "C" void VillagerPlan_GetPlanTime() {}
 
 extern "C" void *VillagerPlan_GetStateDate(void *p) { return (u8 *)p + 8; }
 
@@ -896,7 +887,7 @@ s32 ErrandRecord::setTimeFromNow(s32 x) {
 namespace n5 {
 extern "C" void ErrandRecord_GetTime() {}
 
-extern "C" s32 func_0209ac1c(u32 x) {
+extern "C" s32 Errand_GetSlotIndex(u32 x) {
     s32 r = 2;
     if (Errand_GetGroup(x) == 1) {
         if (x < 0x13) {
@@ -909,8 +900,8 @@ extern "C" s32 func_0209ac1c(u32 x) {
 }
 
 }
-s32 ErrandRecord::func_0209ac10() {
-    using namespace n5; return func_0209ac1c(kind); }
+s32 ErrandRecord::getSlotIndex() {
+    using namespace n5; return Errand_GetSlotIndex(kind); }
 
 
 namespace n5 {
@@ -991,11 +982,7 @@ extern "C" void *PlanErrand_Destruct(ErrandRecord *self) {
 
 // ======== unk_0209a208.cpp ========
 namespace n4 {
-struct Unk_0209a4f4_Ent;
-struct PlayerErrandSlot;
-struct Unk_0209a4f4_Ent;
-
-typedef void (*Unk_0209a5b8_Fn)(void *);extern "C" {
+extern "C" {
 void *_ZN12ErrandRecord5clearEv(void *p);
 void _ZN12ErrandRecord13func_0209ada0Ev(void *p);
 void *_ZN12ErrandRecord4initEv(void *p);
@@ -1066,7 +1053,7 @@ extern u8 data_020e218c[];
 }
 
 
-extern "C" Unk_0209a4f4_Ent sErrandKindSetups[];extern "C" {
+extern "C" ErrandKindSetup sErrandKindSetups[];extern "C" {
 u8 ParcelErrand_CountPending(void *unused, s32 v);
 u8 ParcelErrand_CountPendingRecipients(void *unused, s32 v);
 void *PlanErrand_GetRecord(void *p);
@@ -1091,19 +1078,6 @@ extern "C" s32 PlanErrand_SetStep(void *p, u8 v);
 }
 
 
-struct Unk_0209a4f4_Ent;
-
-struct PlayerErrandSlot {
-    u8 unk_00[0xc];
-    u8 villagers[2][0xc];
-    u8 unk_24;
-};
-
-struct Unk_0209a4f4_Ent {
-    BOOL (PlayerErrandSlot::*unk_00)();
-    u32 unk_08[2];
-    u8 unk_10;
-};
 extern "C" u8 ParcelErrand_CountPendingRecipients(void *unused, s32 v);
 extern "C" u8 ParcelErrand_CountPending(void *unused, s32 v);
 extern "C" void ParcelErrand_Clear(u8 *p);
@@ -1113,11 +1087,11 @@ extern "C" BOOL ErrandSetup_FurnitureParcel(void *p);
 extern "C" void PlayerErrandSlot_ComposeLetter(PlayerErrandSlot *self, void *arg);
 extern "C" BOOL ErrandSetup_LetterBundle(void *p);
 extern "C" BOOL ErrandSetup_RandomShirt(void *p);
-extern "C" u8 *func_0209a420(u8 *p);
-extern "C" void func_0209a424(u8 *p, u32 v);
+extern "C" u8 *PlayerErrandSlot_GetPresentReaction(u8 *p);
+extern "C" void PlayerErrandSlot_SetPresentReaction(u8 *p, u32 v);
 extern "C" s32 PlayerErrandSlot_IsStepDone(void *self);
 extern "C" s32 PlayerErrandSlot_IsPastStepLimit(void *self, s32 kind);
-extern "C" BOOL func_0209a49c(s32 a, void *b);
+extern "C" BOOL Errand_CanOfferInPlanState(s32 a, void *b);
 extern "C" u8 *PlayerErrandSlot_GetVillager(PlayerErrandSlot *p, s32 i);
 extern "C" void PlayerErrandSlot_GetRecord(void);
 extern "C" BOOL PlayerErrandSlot_Start(PlayerErrandSlot *self, s32 kind, s32 r6, s32 r3);
@@ -1478,9 +1452,9 @@ extern "C" void PlayerErrandSlot_Clear(PlayerErrandSlot *self) {
     s32 i;
     _ZN12ErrandRecord5clearEv(self);
     for (i = 0; i < 2; i++) {
-        VillagerId_Clear(self->villagers[i]);
+        VillagerId_Clear(&self->villagers[i]);
     }
-    self->unk_24 = 0;
+    self->presentReaction = 0;
 }
 
 extern "C" BOOL PlayerErrandSlot_Start(PlayerErrandSlot *self, s32 kind, s32 r6, s32 r3) {
@@ -1492,16 +1466,16 @@ extern "C" BOOL PlayerErrandSlot_Start(PlayerErrandSlot *self, s32 kind, s32 r6,
             v = 0xfff1;
             _ZN12ErrandRecord5startEhPth(self, kind, &v, r);
             {
-                Unk_0209a4f4_Ent *e = &sErrandKindSetups[idx];
-                if (e->unk_00) {
-                    (self->*(e->unk_00))();
+                ErrandKindSetup *e = &sErrandKindSetups[idx];
+                if (e->setup) {
+                    (self->*(e->setup))();
                 }
             }
             if (r6) {
-                VillagerId_Copy(self->villagers[0], r6);
+                VillagerId_Copy(&self->villagers[0], r6);
             }
             if (r3) {
-                VillagerId_Copy(self->villagers[1], r3);
+                VillagerId_Copy(&self->villagers[1], r3);
             }
             r = TRUE;
         }
@@ -1513,10 +1487,10 @@ extern "C" void PlayerErrandSlot_GetRecord(void) {
 }
 
 extern "C" u8 *PlayerErrandSlot_GetVillager(PlayerErrandSlot *p, s32 i) {
-    return p->villagers[i];
+    return (u8 *)&p->villagers[i];
 }
 
-extern "C" BOOL func_0209a49c(s32 a, void *b) {
+extern "C" BOOL Errand_CanOfferInPlanState(s32 a, void *b) {
     s32 t;
     BOOL r;
     if (_ZN11CommManager8isOnlineEv(gCommManager)) {
@@ -1542,7 +1516,7 @@ extern "C" s32 PlayerErrandSlot_IsPastStepLimit(void *self, s32 kind) {
         if (Errand_GetGroup(kind) == 1) {
             if (kind == _ZN12ErrandRecord7getKindEv(self)) {
                 if (_ZN12ErrandRecord13getGroupIndexEPi(self, &idx)) {
-                    if (_ZN12ErrandRecord7getStepEv(self) > sErrandKindSetups[idx].unk_10) {
+                    if (_ZN12ErrandRecord7getStepEv(self) > sErrandKindSetups[idx].stepLimit) {
                         r = TRUE;
                     }
                 }
@@ -1556,11 +1530,11 @@ extern "C" s32 PlayerErrandSlot_IsStepDone(void *self) {
     return PlayerErrandSlot_IsPastStepLimit(self, _ZN12ErrandRecord7getKindEv(self));
 }
 
-extern "C" void func_0209a424(u8 *p, u32 v) {
+extern "C" void PlayerErrandSlot_SetPresentReaction(u8 *p, u32 v) {
     p[0x24] = v;
 }
 
-extern "C" u8 *func_0209a420(u8 *p) {
+extern "C" u8 *PlayerErrandSlot_GetPresentReaction(u8 *p) {
     return p + 0x24;
 }
 
@@ -1588,14 +1562,14 @@ extern "C" void PlayerErrandSlot_ComposeLetter(PlayerErrandSlot *self, void *arg
     u32 Y[13];
     s32 i;
     s32 r;
-    if (_ZN10VillagerId7isValidEv(self->villagers[0]) && _ZN10VillagerId7isValidEv(self->villagers[1])) {
+    if (_ZN10VillagerId7isValidEv(&self->villagers[0]) && _ZN10VillagerId7isValidEv(&self->villagers[1])) {
         _ZN11MsgString9BC1Ev(X);
         _ZN11MsgString33C1Ev(Y);
         cnt = 0;
-        _ZN10VillagerId7getNameEj(self->villagers[1], X);
+        _ZN10VillagerId7getNameEj(&self->villagers[1], X);
         MailText_SetSlot(0, X);
         _ZN9MsgString5clearEv(X);
-        _ZN10VillagerId7getNameEj(self->villagers[0], X);
+        _ZN10VillagerId7getNameEj(&self->villagers[0], X);
         MailText_SetSlot(1, X);
         for (i = 0; i < 6; i++) {
             r = TopicWord_PickRandom(&cnt, i);
@@ -1604,12 +1578,12 @@ extern "C" void PlayerErrandSlot_ComposeLetter(PlayerErrandSlot *self, void *arg
             String_LoadResolveAltText(Y, b, r);
             MailText_SetSlot(i + 2, Y);
         }
-        _ZN10VillagerId12makeFileNameEPvjj(self->villagers[0], buf, 0x1e, data_020d05bc);
+        _ZN10VillagerId12makeFileNameEPvjj(&self->villagers[0], buf, 0x1e, data_020d05bc);
         b[1] = Random_GlobalBelow(10);
         b[2] = Random_GlobalBelow(10);
         b[3] = Random_GlobalBelow(10);
         b[4] = Random_GlobalBelow(10);
-        Letter_ComposeVillagerToVillagerZ(arg, &b[1], &b[2], &b[3], &b[4], buf, data_020e218c, self->villagers[0], self->villagers[1], 1);
+        Letter_ComposeVillagerToVillagerZ(arg, &b[1], &b[2], &b[3], &b[4], buf, data_020e218c, &self->villagers[0], &self->villagers[1], 1);
         _ZN11MsgString33D1Ev(Y);
         _ZN11MsgString9BD1Ev(X);
     }
@@ -1871,12 +1845,12 @@ extern "C" BOOL ParcelErrand_IsFor(ParcelErrand *z, u16 *p) {
 }
 
 }
-HouseVisitInvite::HouseVisitInvite() : visitTime(0), unk_1c(0) {
+HouseVisitInvite::HouseVisitInvite() : visitTime(0), visitTimeHi(0) {
     using namespace n3;
     VillagerId_Clear(this);
     _ZN12ErrandRecord5clearEv(&errand);
     visitTime = 0;
-    unk_1c = 0;
+    visitTimeHi = 0;
     MI_CpuFill8(unk_20, 0, 1);
 }
 
@@ -1892,7 +1866,7 @@ extern "C" void HouseVisitInvite_Clear(HouseVisitInvite *x) {
     _ZN12ErrandRecord5clearEv(&x->errand);
     VillagerId_Clear(x);
     x->visitTime = 0;
-    x->unk_1c = 0;
+    x->visitTimeHi = 0;
     MI_CpuFill8(x->unk_20, 0, 1);
 }
 
@@ -2259,8 +2233,8 @@ extern "C" void Quat_Mul(s32 *a, s32 *b, s32 *out);
 extern "C" void Quat_ToMtx43(s32 *a, s32 *b);
 extern "C" void Quat_ToMtx33(s32 *a, s32 *m);
 extern "C" void Quat_Normalize(s32 *q);
-extern "C" s32 func_0209948c(u32 v);
-extern "C" s32 func_0209949c(u32 v);
+extern "C" s32 FishSpawn_GetWeightClass(u32 v);
+extern "C" s32 InsectSpawn_GetWeightClass(u32 v);
 extern "C" s32 Threshold_FindIndex(u32 v, u8 *tbl, s32 n);
 
 }
@@ -2315,14 +2289,14 @@ void SickVillagerRecord::resetRecord() {
 
 namespace n2 {
 }
-void SickVillagerRecord::func_0209978c() {
+void SickVillagerRecord::getErrand() {
     using namespace n2;
 }
 
 
 namespace n2 {
 }
-Unk_020030d8_R256 *SickVillagerRecord::getVillagerId() {
+VillagerId *SickVillagerRecord::getVillagerId() {
     using namespace n2;
     return &villagerId;
 }
@@ -2330,7 +2304,7 @@ Unk_020030d8_R256 *SickVillagerRecord::getVillagerId() {
 
 namespace n2 {
 }
-void SickVillagerRecord::startSickness(Unk_020030d8_R256 *a, u8 *b) {
+void SickVillagerRecord::startSickness(VillagerId *a, u8 *b) {
     using namespace n2;
     u16 v;
     resetRecord();
@@ -2346,7 +2320,7 @@ void SickVillagerRecord::startSickness(Unk_020030d8_R256 *a, u8 *b) {
 
 namespace n2 {
 }
-Unk_020994cc_Ent *SickVillagerRecord::getVisitor(u32 i) {
+PlayerId *SickVillagerRecord::getVisitor(u32 i) {
     using namespace n2;
     if (i < 5) return &visitors[i];
     return NULL;
@@ -2355,7 +2329,7 @@ Unk_020994cc_Ent *SickVillagerRecord::getVisitor(u32 i) {
 
 namespace n2 {
 }
-Unk_020994cc_Ent *SickVillagerRecord::getTodaysVisitor() {
+PlayerId *SickVillagerRecord::getTodaysVisitor() {
     using namespace n2;
     return getVisitor(sickDay);
 }
@@ -2363,10 +2337,10 @@ Unk_020994cc_Ent *SickVillagerRecord::getTodaysVisitor() {
 
 namespace n2 {
 }
-BOOL SickVillagerRecord::hasVisitor(Unk_020994cc_Ent *e) {
+BOOL SickVillagerRecord::hasVisitor(PlayerId *e) {
     using namespace n2;
     if (_ZN8PlayerId7isValidEv(e)) {
-        Unk_020994cc_Ent *p = visitors;
+        PlayerId *p = visitors;
         s32 i;
         for (i = 0; i < 5; i++) {
             if (e->townId == p->townId && memcmp(e->townName, p->townName, 8) == 0 && _ZN8PlayerId6equalsEPS_(e, p)) return TRUE;
@@ -2380,7 +2354,7 @@ namespace n2 {
 }
 BOOL SickVillagerRecord::hasTodaysVisitor() {
     using namespace n2;
-    Unk_020994cc_Ent *p = getTodaysVisitor();
+    PlayerId *p = getTodaysVisitor();
     if (p && _ZN8PlayerId7isValidEv(p)) return TRUE;
     return FALSE;
 }
@@ -2388,9 +2362,9 @@ BOOL SickVillagerRecord::hasTodaysVisitor() {
 
 namespace n2 {
 }
-void SickVillagerRecord::setTodaysVisitor(Unk_020994cc_Ent *e) {
+void SickVillagerRecord::setTodaysVisitor(PlayerId *e) {
     using namespace n2;
-    Unk_020994cc_Ent *p = getTodaysVisitor();
+    PlayerId *p = getTodaysVisitor();
     if (p) _ZN8PlayerId6setRawEPv(p, e);
 }
 
@@ -2424,13 +2398,13 @@ BOOL SickVillagerRecord::isRecentlyRecovered(Unk_020994cc_Date *d) {
 
 namespace n2 {
 }
-Unk_020994cc_Ent *SickVillagerRecord::getTopVisitor() {
+PlayerId *SickVillagerRecord::getTopVisitor() {
     using namespace n2;
     u8 counts[5];
     s32 mask;
     s32 i, j, k;
     s32 grp, f1, f2;
-    Unk_020994cc_Ent *pi, *e;
+    PlayerId *pi, *e;
     u8 *cnt;
     s32 off;
     if (!isRecovered()) goto ret0;
@@ -2446,16 +2420,16 @@ Unk_020994cc_Ent *SickVillagerRecord::getTopVisitor() {
         cnt = &counts[i];
         counts[i] = 1;
         j = i + 1;
-        pi = (Unk_020994cc_Ent *)((u8 *)this + i * 0x16);
+        pi = (PlayerId *)((u8 *)this + i * 0x16);
         for (; j < 5; j++) {
             f1 = 0;
             f2 = 0;
             off = j;
             off = off * 0x16;
             if (*(u16 *)((u8 *)pi + 0x18) == *(u16 *)((u8 *)this + off + 0x18)) {
-                if (memcmp(e->townName, ((Unk_020994cc_Ent *)((u8 *)visitors + off))->townName, 8) == 0) f2 = 1;
+                if (memcmp(e->townName, ((PlayerId *)((u8 *)visitors + off))->townName, 8) == 0) f2 = 1;
             }
-            if (f2 && _ZN8PlayerId6equalsEPS_(e, (Unk_020994cc_Ent *)((u8 *)visitors + off))) f1 = 1;
+            if (f2 && _ZN8PlayerId6equalsEPS_(e, (PlayerId *)((u8 *)visitors + off))) f1 = 1;
             if (f1) {
                 grp |= 1 << j;
                 grp = (u8)grp;
@@ -2500,11 +2474,11 @@ extern "C" s32 Threshold_FindIndex(u32 v, u8 *tbl, s32 n) {
     return n;
 }
 
-extern "C" s32 func_0209949c(u32 v) {
+extern "C" s32 InsectSpawn_GetWeightClass(u32 v) {
     return Threshold_FindIndex(v, data_020d05a0, 4);
 }
 
-extern "C" s32 func_0209948c(u32 v) {
+extern "C" s32 FishSpawn_GetWeightClass(u32 v) {
     return Threshold_FindIndex(v, data_020d0598, 4);
 }
 
@@ -2747,7 +2721,7 @@ extern const u8 sFurnitureGoalCounts[6];
 extern const u8 data_020d05a0[4];
 extern void *data_020e2198[2];
 extern const u8 data_020d0598[4];
-extern Unk_0209a4f4_Rec sErrandKindSetups[10];
+extern ErrandKindSetup sErrandKindSetups[10];
 const u32 sPlanErrandStepCounts[5] = {5, 5, 5, 7, 7};
 void *data_020e21b8[2] = {(void *)ErrandSetup_WateringCan, 0};
 const u32 sErrandClassStarts[2] = {0, 5};
@@ -2770,7 +2744,7 @@ const u8 sFurnitureGoalCounts[6] = {2, 4, 6, 8, 10, 13};
 const u8 data_020d05a0[4] = {0x0f, 0x0a, 6, 3};
 void *data_020e2198[2] = {(void *)ErrandSetup_FurnitureParcel, 0};
 const u8 data_020d0598[4] = {0x11, 0x0b, 6, 3};
-Unk_0209a4f4_Rec sErrandKindSetups[10] = {
+ErrandKindSetup sErrandKindSetups[10] = {
     {*(Unk_0209a4f4_Fn *)data_020e2190, 0, 0},
     {0, 0, 1},
     {0, 0, 1},

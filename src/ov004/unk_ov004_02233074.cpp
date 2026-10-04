@@ -230,8 +230,8 @@ struct Unk_ov004_02233f3c_V3 {
 
 
 // main's 0x18-byte pool object
-typedef void *(*Unk_0209c1a4_Alloc)(u32, u32);
-typedef void (*Unk_0209c15c_Fn)();
+typedef void *(*ModelSlotAllocFunc)(u32, u32);
+typedef void (*ModelSlotFreeFunc)();
 
 // ---- classes of unk_022350c8 (symbols name their methods)
 

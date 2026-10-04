@@ -1,21 +1,17 @@
 // mwcc-flags: -str reuse
 #include "types.h"
 #include "item/Letter.h"
+#include "save/SaveData.h"
 
 
-struct Unk_020973e4 {
+struct PlayerBank {
     u32 balance;
     u8 donationLevel;
 };
 
-struct Unk_020973ec_G {
-    u32 unk_00;
-    u32 unk_04;
-    s32 donationTotal;
-};
+extern SaveData gSaveData;
 
 extern "C" {
-extern Unk_020973ec_G data_021e9350;
 extern u8 sFatalEntered;
 extern u8 gSaveTownId[];
 
@@ -46,9 +42,9 @@ void Letter_ComposeFromMail(void *, void *, void *, void *, void *, s32);
 BOOL LetterDelivery_PutInAddresseeMailbox(Letter *e);
 void func_0211ea4c(s32 (*f)());
 s32 Startup_OnCardPulledOut();
-void PlayerBank_SetBalance(Unk_020973e4 *p, u32 v);
-u32 PlayerBank_GetBalance(Unk_020973e4 *p);
-u32 PlayerBank_GetDonationLevel(Unk_020973e4 *p);
+void PlayerBank_SetBalance(PlayerBank *p, u32 v);
+u32 PlayerBank_GetBalance(PlayerBank *p);
+u32 PlayerBank_GetDonationLevel(PlayerBank *p);
 }
 
 s32 data_020e1e08 = 6;
@@ -69,32 +65,32 @@ extern "C" void PlayerBank_Construct() {}
 
 extern "C" void PlayerBank_Destruct() {}
 
-extern "C" void PlayerBank_Clear(Unk_020973e4 *p) {
+extern "C" void PlayerBank_Clear(PlayerBank *p) {
     p->balance = 0;
     p->donationLevel = 0;
 }
 
-extern "C" u32 PlayerBank_GetBalance(Unk_020973e4 *p) { return p->balance; }
+extern "C" u32 PlayerBank_GetBalance(PlayerBank *p) { return p->balance; }
 
-extern "C" void PlayerBank_SetBalance(Unk_020973e4 *p, u32 v) { p->balance = v; }
+extern "C" void PlayerBank_SetBalance(PlayerBank *p, u32 v) { p->balance = v; }
 
-extern "C" s32 Donation_GetTotal() { return data_021e9350.donationTotal; }
+extern "C" s32 Donation_GetTotal() { return gSaveData.donationTotal; }
 
 extern "C" void Donation_SetTotal(s32 v) {
     if (v > 999999999) v = 999999999;
-    data_021e9350.donationTotal = v;
+    gSaveData.donationTotal = v;
 }
 
-extern "C" u32 PlayerBank_GetDonationLevel(Unk_020973e4 *p) { return p->donationLevel; }
+extern "C" u32 PlayerBank_GetDonationLevel(PlayerBank *p) { return p->donationLevel; }
 
-extern "C" void PlayerBank_SetDonationLevel(Unk_020973e4 *p, u32 v) { p->donationLevel = v; }
+extern "C" void PlayerBank_SetDonationLevel(PlayerBank *p, u32 v) { p->donationLevel = v; }
 
 extern "C" void PlayerBank_PayInterest(s32 n) {
     s32 s = PlayerData_GetCurrent();
     s32 o = _ZN12Unk_02097ff414getBankAccountEv(s);
     if (MenuCtrl_IsClockMovedForward() == 0) {
         if (n > 0) {
-            s32 m = PlayerBank_GetBalance((Unk_020973e4 *)o);
+            s32 m = PlayerBank_GetBalance((PlayerBank *)o);
             s32 q = _s32_div_f(m, 2000);
             n = q * n * 10;
             if (n > 99999) {
@@ -106,7 +102,7 @@ extern "C" void PlayerBank_PayInterest(s32 n) {
                     if (t > 999999999) {
                         t = 999999999;
                     }
-                    PlayerBank_SetBalance((Unk_020973e4 *)o, t);
+                    PlayerBank_SetBalance((PlayerBank *)o, t);
                     Letter e;
                     u8 ch;
                     u32 buf[11];
@@ -127,7 +123,7 @@ extern "C" void PlayerBank_SendMilestoneLetter(s32 n) {
     s32 s = PlayerData_GetCurrent();
     s32 o = _ZN12Unk_02097ff414getBankAccountEv(s);
     if (n > 0) {
-        s32 m = PlayerBank_GetBalance((Unk_020973e4 *)o);
+        s32 m = PlayerBank_GetBalance((PlayerBank *)o);
         if (m >= 1000000) {
             u32 col = 0x37dc;
             s32 k = 0;
@@ -174,7 +170,7 @@ extern "C" void PlayerBank_SendDonationLetter(s32 n) {
     s32 o = _ZN12Unk_02097ff414getBankAccountEv(s);
     if (n > 0) {
         if (_ZN12Unk_02097ff48testFlagEj(s, 0x16)) {
-            s32 id = PlayerBank_GetDonationLevel((Unk_020973e4 *)o);
+            s32 id = PlayerBank_GetDonationLevel((PlayerBank *)o);
             Letter e;
             u8 ch;
             ch = id;

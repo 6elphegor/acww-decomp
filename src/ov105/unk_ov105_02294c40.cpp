@@ -65,7 +65,7 @@ s32 LetterDelivery_HasKnownAddressee(void *p);
 s32 LetterDelivery_FindAddresseePlayer(void *p);
 s32 LetterDelivery_PutInMailbox(void *p, s32 a, s32 b);
 s32 LetterDelivery_QueueOutgoing(void *p, s32 a);
-void func_020968e0();
+void LetterDelivery_PostOfficeClosedNop();
 void LetterDelivery_DeliverOutgoing();
 s32 PlayerData_GetCurrent();
 s32 PlayerData_GetResident(void *p, s32 a);

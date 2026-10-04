@@ -208,9 +208,9 @@ void FutureLetter::clearFutureLetter() {
     unk_f7 = 0;
 }
 
-extern "C" void func_02096e24() {}
+extern "C" void MotherLetterState_Construct() {}
 
-extern "C" void func_02096e20() {}
+extern "C" void MotherLetterState_Destruct() {}
 
 void MotherLetterState::clear() {
     s32 i;

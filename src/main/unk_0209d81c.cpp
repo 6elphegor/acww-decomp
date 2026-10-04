@@ -1,5 +1,6 @@
 #include "types.h"
 #include "save/SaveData.h"
+#include "save/TownId.h"
 
 extern "C" {
 void SaveData_SyncClockOffset(void *);
@@ -86,11 +87,6 @@ extern u32 sSndOutputModeTable[];
 u8 sFallbackTownName[8] = {0x13, 0x1b, 0x30, 0x1b, 0x0e, 0x29, 0x28, 0x1f};
 
 
-
-struct Unk_0209d994_Buf {
-    u16 h;
-    u8 b[8];
-};
 
 void SaveData::setupNoSave() {
     ClockOffset_Clear(&clockOffset);
@@ -183,9 +179,9 @@ void SaveData::setupMode06() {
 
 void SaveData_InitCurrentPlayer(u8 *p) {
     void *r4 = PlayerData_GetCurrent();
-    Unk_0209d994_Buf l;
+    TownId l;
     _ZN10PlayerData11getPlayerIdEv(r4);
-    l = *(Unk_0209d994_Buf *)PlayerId_GetTownId();
+    l = *(TownId *)PlayerId_GetTownId();
     Clock_GetDate(_ZN12Unk_02097ff416getDayUpdateDateEv(r4));
     _ZN6TownId7setTownEPS_(_ZN10PlayerData11getPlayerIdEv(r4), p + 2);
     void *r5 = _ZN10PlayerData11getPatternsEv(r4);

@@ -19,7 +19,7 @@ void PlayerData_GetCurrent();
 }
 
 extern "C" {
-PlayerOptions *_ZN10PlayerData13func_02098668Ev();
+PlayerOptions *_ZN10PlayerData10getOptionsEv();
 }
 
 extern "C" {
@@ -66,7 +66,7 @@ extern "C" void PlayerOptions_Commit() {
     PlayerOptions *r5, *r4;
     u8 l;
     PlayerData_GetCurrent();
-    r5 = _ZN10PlayerData13func_02098668Ev();
+    r5 = _ZN10PlayerData10getOptionsEv();
     r4 = PlayerOptions_Get();
     if (r4->isHiraganaChanged()) {
         if (PlayerOptions_IsHiragana() == 1) r5->setHiragana();

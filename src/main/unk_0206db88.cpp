@@ -57,13 +57,13 @@ void Gfx2d_SetMainWin1Rect(s32, s32, s32, s32);
 BOOL func_0203d4d4();
 void MenuCtrl_SetScreenChanging();
 u32 PlayerData_GetCurrent();
-u16 *_ZN12Unk_02097ff413func_020983ccEv();
+u16 *_ZN12Unk_02097ff422getInventoryBackgroundEv();
 void *Heap_AllocTail(void *, u32);
 void Heap_Free(void *, void *);
 void ClothTex_LoadItem(void *, void *, u32);
 void *ClothTex_GetPlttData(void *);
 void *ClothTex_GetTexData(void *);
-s32 _ZN12Unk_02097ff413func_020983c0EPt(u32 a, u16 *p);
+s32 _ZN12Unk_02097ff422setInventoryBackgroundEPt(u32 a, u16 *p);
 s32 Gfx2d_LoadPaletteRange(void *, u32, u32, u32, u32);
 void Gfx2d_LinearToTiles4bppBytes(void *, void *, u32, u32);
 s32 Gfx2d_LoadCharRange(void *, u32, u32, u32, u32);
@@ -248,7 +248,7 @@ extern "C" void MenuScreen_UploadClothPattern(u16 *p, BgVramTaskPair *x, u8 *img
             Gfx2d_LinearToTiles4bppBytes(ClothTex_GetTexData(o), img, 4, 4);
             Heap_Free(heap, o);
             if (x->requestCharsAndPalette((u32)img, 5, 0, 0, 0xf, (u32)pal, 0) != 0) {
-                _ZN12Unk_02097ff413func_020983c0EPt(r, p);
+                _ZN12Unk_02097ff422setInventoryBackgroundEPt(r, p);
             }
         }
     }
@@ -286,7 +286,7 @@ extern "C" BOOL MenuScreen_LoadBackground(u32 arg) {
     BOOL ok;
     void *heap = *(void **)gCurrentHeap;
     s32 r = PlayerData_GetCurrent();
-    u16 tmp = *_ZN12Unk_02097ff413func_020983ccEv();
+    u16 tmp = *_ZN12Unk_02097ff422getInventoryBackgroundEv();
     void *a = Heap_AllocTail(heap, 0x200);
     if (a == NULL) {
         return FALSE;

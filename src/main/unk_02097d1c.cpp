@@ -4,8 +4,9 @@
 #include "item/Letter.h"
 #include "save/Pattern.h"
 #include "player/PlayerData.h"
+#include "player/PlayerInventory.h"
+#include "item/ItemPickSpec.h"
 
-class PlayerInventory;
 class Unk_02097ff4;
 class PlayerData;
 
@@ -69,7 +70,7 @@ void MI_CpuFill8(void *, s32, u32);
 void Catalog_Clear(void *);
 void PlayerErrands_Clear(void *);
 void NookPoints_Reset(void *);
-void func_02096e20(void *);
+void MotherLetterState_Destruct(void *);
 void LostChildRecord_Destruct(void *);
 void DramaRecord_Destruct(void *);
 void PlayerSpNpcRecord_Destruct(void *);
@@ -94,7 +95,7 @@ void NookPoints_Create(void *);
 void PlayerSpNpcRecord_Construct(void *);
 void DramaRecord_Construct(void *);
 void LostChildRecord_Construct(void *);
-void func_02096e24(void *);
+void MotherLetterState_Construct(void *);
 s32 PlayerErrands_GetDeliveryRecipientName(void *, void *, void *);
 u16 *func_02097f6c(void *, u32);
 s32 func_02097e98(void *, s32);
@@ -129,29 +130,6 @@ BOOL _ZN8PlayerId7isValidEv(...);
 void *Clock_GetDate(...);
 void *_ZN10PlayerData11getPlayerIdEv(...);
 }
-class PlayerInventory {
-public:
-    u8 letters[0x988];
-    u8 letterDefaults[0x52];
-    u16 pockets[15];
-    u32 wallet;
-    u32 pocketFlags;
-
-    s32 getTotalBells(BOOL flag);
-    s32 getBellsSpace(s32 n);
-    s32 getPocketBells();
-    void *getUnk988();
-    void *getEmptyLetter();
-    s32 findEmptyLetter();
-    void *getLetter(s32 idx);
-    BOOL isPocketFlagsClear(s32 idx);
-    u32 getPocketFlags(s32 idx);
-    s32 findEmptyPocket();
-    void setPocketFlags(s32 idx, u32 val);
-    BOOL setPocket(u16 *p, s32 idx, u32 val);
-    u16 *getPocket(s32 idx);
-    void clear();
-};
 
 
 
@@ -171,7 +149,6 @@ extern u8 gSavePlayers[];
 }
 
 struct Unk_020981f8_Pos { u8 a, b, c, d; };
-struct Unk_020984a8_Obj { u32 pad[2]; Unk_020984a8_Obj(){} ~Unk_020984a8_Obj(){} };
 
 PlayerData::PlayerData() {
     Catalog_Construct(&catalog);
@@ -192,7 +169,7 @@ PlayerData::PlayerData() {
     PlayerSpNpcRecord_Construct(&spNpcRecord);
     DramaRecord_Construct(&dramaRecord);
     LostChildRecord_Construct(&lostChildRecord);
-    func_02096e24(&motherLetterState);
+    MotherLetterState_Construct(&motherLetterState);
     _ZN21ForeignVillagerRecordC1Ev(&foreignVillagerRecord);
     _ZN8PlayerIdC1EPv(&id);
 }
@@ -200,7 +177,7 @@ PlayerData::PlayerData() {
 PlayerData::~PlayerData() {
     _ZN8PlayerIdC1Ev(&id);
     _ZN21ForeignVillagerRecordD1Ev(&foreignVillagerRecord);
-    func_02096e20(&motherLetterState);
+    MotherLetterState_Destruct(&motherLetterState);
     LostChildRecord_Destruct(&lostChildRecord);
     DramaRecord_Destruct(&dramaRecord);
     PlayerSpNpcRecord_Destruct(&spNpcRecord);
@@ -349,11 +326,11 @@ void *PlayerData::getWifiUserData() { return &wifiUserData; }
 
 void *PlayerData::getFriendList() { return &friendList; }
 
-void *PlayerData::func_02098668() { return &options; }
+void *PlayerData::getOptions() { return &options; }
 
 void *PlayerData::getErrands() { return &errands; }
 
-void Unk_02097ff4::func_020984a8()
+void Unk_02097ff4::rerollFlaggedPocketItems()
 {
     if (((PlayerData *)this)->isUsed()) {
         volatile u16 v0;
@@ -389,21 +366,19 @@ void Unk_02097ff4::func_020984a8()
                     ItemPick_FromRange(&v1, 0x1100, 0x44, z30, z30, this, k, 10, z30, k);
                     v0 = v1;
                     if (v0 == 0xfff1) {
-                        Unk_020984a8_Obj o5c;
-                        _ZN12ItemPickSpec3setEii(&o5c, 4, z34);
+                        ItemPickSpec o5c;
+                        o5c.set(4, z34);
                         ItemPick_One(&v2, &o5c, z38, z38, k, k, z38);
                         v0 = v2;
-                        ItemPickSpec_Destruct(&o5c);
                     }
                 } else {
                     ItemPick_FromRange(&v3, 0x1144, 0x44, z3c, z3c, this, k, 10, z3c, k);
                     v0 = v3;
                     if (v0 == 0xfff1) {
-                        Unk_020984a8_Obj o64;
-                        _ZN12ItemPickSpec3setEii(&o64, 3, z40);
+                        ItemPickSpec o64;
+                        o64.set(3, z40);
                         ItemPick_One(&v4, &o64, z44, z44, k, k, z44);
                         v0 = v4;
-                        ItemPickSpec_Destruct(&o64);
                     }
                 }
                 in->setPocket((u16 *)&v0, i, z48);
@@ -447,12 +422,12 @@ void Unk_02097ff4::resetForNewTown()
     }
 }
 
-void *Unk_02097ff4::func_020983cc()
+void *Unk_02097ff4::getInventoryBackground()
 {
     return &inventoryBackground;
 }
 
-void Unk_02097ff4::func_020983c0(u16 *p)
+void Unk_02097ff4::setInventoryBackground(u16 *p)
 {
     inventoryBackground = *p;
 }
@@ -547,7 +522,7 @@ extern "C" void PlayerData_UpdateDay()
         _ZN17PlayerSpNpcRecord20sendInsuranceLettersEv(((PlayerData *)p)->getSpNpcRecord());
         PlayerSpNpcRecord_SendMissingLetter(((PlayerData *)p)->getSpNpcRecord());
         if (r4) {
-            p->func_020984a8();
+            p->rerollFlaggedPocketItems();
         }
         if (loc.c != p->getBirthdayTalkYear()) {
             p->setBirthdayTalkYear(0xff);
@@ -592,7 +567,7 @@ void Unk_02097ff4::setSkyShotHits(u32 v)
     skyShotHits = v;
 }
 
-u32 Unk_02097ff4::func_02098198(u32 idx)
+u32 Unk_02097ff4::getBirthdayNoticeDay(u32 idx)
 {
     if (idx < 8) {
         return unk_2254[idx];
@@ -600,7 +575,7 @@ u32 Unk_02097ff4::func_02098198(u32 idx)
     return 0xff;
 }
 
-void Unk_02097ff4::func_02098188(u32 idx, u32 v)
+void Unk_02097ff4::setBirthdayNoticeDay(u32 idx, u32 v)
 {
     if (idx < 8) {
         unk_2254[idx] = v;

@@ -6,8 +6,8 @@
 typedef Unk_0209c82c_V Unk_0209c614_Vec;
 
 
-struct Unk_0209c7a4_T {
-    u8 scene, unk_01, unk_02, unk_03;
+struct SceneExitResolveOut {
+    u8 scene, fadeIn, fadeOut, unk_03;
 };
 
 // 0x24-byte state object at sRoomEntryRequest
@@ -26,11 +26,11 @@ public:
 };
 
 // one-byte bit set (4 bits), no constructor (also used as a stack copy)
-struct Unk_0209c980_Raw {
+struct SceneOccupantBits {
     u8 occupantBits;
 };
 
-class SceneOccupants : public Unk_0209c980_Raw {
+class SceneOccupants : public SceneOccupantBits {
 public:
     SceneOccupants();
     ~SceneOccupants();
@@ -62,16 +62,16 @@ void RoomEntryRequest_SetDoorKind(RoomEntryRequest *t, u32 v);
 void RoomEntryRequest_SetExitId(RoomEntryRequest *t, u32 v);
 void RoomEntryRequest_SetResult(RoomEntryRequest *t, u32 v);
 void RoomEntryRequest_Init(RoomEntryRequest *t);
-s32 SceneOccupantTable_CountWith(Unk_0209c980_Raw *t, u32 i, u32 b);
-void SceneOccupantTable_Remove(Unk_0209c980_Raw *t, u32 i, u32 b);
-void SceneOccupantTable_Add(Unk_0209c980_Raw *t, u32 i, u32 b);
-void SceneOccupantTable_Clear(Unk_0209c980_Raw *t);
-s32 SceneOccupants_CountWith(Unk_0209c980_Raw *t, u32 b);
-s32 SceneOccupants_Count(Unk_0209c980_Raw *t);
-u32 SceneOccupants_Has(Unk_0209c980_Raw *t, u32 i);
-void SceneOccupants_Remove(Unk_0209c980_Raw *t, u32 i);
-void SceneOccupants_Add(Unk_0209c980_Raw *t, u32 i);
-void SceneOccupants_Clear(Unk_0209c980_Raw *t);
+s32 SceneOccupantTable_CountWith(SceneOccupantBits *t, u32 i, u32 b);
+void SceneOccupantTable_Remove(SceneOccupantBits *t, u32 i, u32 b);
+void SceneOccupantTable_Add(SceneOccupantBits *t, u32 i, u32 b);
+void SceneOccupantTable_Clear(SceneOccupantBits *t);
+s32 SceneOccupants_CountWith(SceneOccupantBits *t, u32 b);
+s32 SceneOccupants_Count(SceneOccupantBits *t);
+u32 SceneOccupants_Has(SceneOccupantBits *t, u32 i);
+void SceneOccupants_Remove(SceneOccupantBits *t, u32 i);
+void SceneOccupants_Add(SceneOccupantBits *t, u32 i);
+void SceneOccupants_Clear(SceneOccupantBits *t);
 }
 
 // the 0x33-entry array object at sSceneOccupantTable
@@ -101,23 +101,23 @@ SceneOccupants::SceneOccupants() {
 
 SceneOccupantTable::~SceneOccupantTable() {}
 
-extern "C" void SceneOccupants_Clear(Unk_0209c980_Raw *t) {
+extern "C" void SceneOccupants_Clear(SceneOccupantBits *t) {
     t->occupantBits = 0;
 }
 
-extern "C" void SceneOccupants_Add(Unk_0209c980_Raw *t, u32 i) {
+extern "C" void SceneOccupants_Add(SceneOccupantBits *t, u32 i) {
     t->occupantBits |= 1 << (i & 3);
 }
 
-extern "C" void SceneOccupants_Remove(Unk_0209c980_Raw *t, u32 i) {
+extern "C" void SceneOccupants_Remove(SceneOccupantBits *t, u32 i) {
     t->occupantBits &= ~(1 << (i & 3));
 }
 
-extern "C" u32 SceneOccupants_Has(Unk_0209c980_Raw *t, u32 i) {
+extern "C" u32 SceneOccupants_Has(SceneOccupantBits *t, u32 i) {
     return ((t->occupantBits >> (i & 3)) & 1) != 0 ? TRUE : FALSE;
 }
 
-extern "C" s32 SceneOccupants_Count(Unk_0209c980_Raw *t) {
+extern "C" s32 SceneOccupants_Count(SceneOccupantBits *t) {
     s32 n = 0;
     u32 i = n;
     for (; i < 4; i++) {
@@ -130,33 +130,33 @@ extern "C" s32 SceneOccupants_Count(Unk_0209c980_Raw *t) {
 
 SceneOccupants::~SceneOccupants() {}
 
-extern "C" s32 SceneOccupants_CountWith(Unk_0209c980_Raw *t, u32 b) {
-    Unk_0209c980_Raw c;
+extern "C" s32 SceneOccupants_CountWith(SceneOccupantBits *t, u32 b) {
+    SceneOccupantBits c;
     c.occupantBits = t->occupantBits;
     SceneOccupants_Add(&c, b);
     return SceneOccupants_Count(&c);
 }
 
-extern "C" void SceneOccupantTable_Clear(Unk_0209c980_Raw *t) {
+extern "C" void SceneOccupantTable_Clear(SceneOccupantBits *t) {
     u32 i;
     for (i = 0; i < 0x33; i++) {
         SceneOccupants_Clear(t + i);
     }
 }
 
-extern "C" void SceneOccupantTable_Add(Unk_0209c980_Raw *t, u32 i, u32 b) {
+extern "C" void SceneOccupantTable_Add(SceneOccupantBits *t, u32 i, u32 b) {
     if (i < 0x33) {
         SceneOccupants_Add(t + i, b);
     }
 }
 
-extern "C" void SceneOccupantTable_Remove(Unk_0209c980_Raw *t, u32 i, u32 b) {
+extern "C" void SceneOccupantTable_Remove(SceneOccupantBits *t, u32 i, u32 b) {
     if (i < 0x33) {
         SceneOccupants_Remove(t + i, b);
     }
 }
 
-extern "C" s32 SceneOccupantTable_CountWith(Unk_0209c980_Raw *t, u32 i, u32 b) {
+extern "C" s32 SceneOccupantTable_CountWith(SceneOccupantBits *t, u32 i, u32 b) {
     if (i < 0x33) {
         return SceneOccupants_CountWith(t + i, b);
     }
@@ -243,10 +243,10 @@ extern "C" u32 RoomEntry_IsExclusiveScene(u32 v) {
 }
 
 extern "C" s32 RoomEntry_IsExclusiveExit(void *p) {
-    Unk_0209c7a4_T t;
+    SceneExitResolveOut t;
     s32 b, a;
     u32 c[3];
-    if (SceneExit_Resolve(Scene_GetWarpRequest(), (u32)p, (u8 *)&t, (Unk_0209c614_Vec *)c, (u32 *)&a, (u16 *)&b, &t.unk_02, &t.unk_01, 0, 0)) {
+    if (SceneExit_Resolve(Scene_GetWarpRequest(), (u32)p, (u8 *)&t, (Unk_0209c614_Vec *)c, (u32 *)&a, (u16 *)&b, &t.fadeOut, &t.fadeIn, 0, 0)) {
         return RoomEntry_IsExclusiveScene(t.scene);
     }
     return 0;
@@ -258,7 +258,7 @@ extern "C" BOOL RoomEntry_Request(u32 id) {
     SceneExitResult s;
     u32 a20, a24;
     Unk_0209c614_Vec v28, v34, v40, v4c;
-    s32 r = SceneExit_Resolve(o, id, &s.a, &v28, &a20, &s.e, &s.c, &s.b, 0, 0);
+    s32 r = SceneExit_Resolve(o, id, &s.scene, &v28, &a20, &s.e, &s.fadeOut, &s.fadeIn, 0, 0);
     RoomEntryRequest_SetResult(&sRoomEntryRequest, 0);
     if (r != 0 && p != 0) {
         Unk_0209c614_Vec *pv = &p->position;
@@ -270,7 +270,7 @@ extern "C" BOOL RoomEntry_Request(u32 id) {
         SceneExit_SnapPos(Scene_GetWarpRequest(), id, &v34, &v40);
         RoomEntryRequest_SetExitId(&sRoomEntryRequest, id);
         RoomEntryRequest_SetDoorKind(&sRoomEntryRequest, a24);
-        RoomEntryRequest_SetScene(&sRoomEntryRequest, s.a);
+        RoomEntryRequest_SetScene(&sRoomEntryRequest, s.scene);
         if (a24 != 0) {
             RoomEntryRequest_SetPos(&sRoomEntryRequest, &v34);
             RoomEntryRequest_SetAngle(&sRoomEntryRequest, s.f);
@@ -285,17 +285,17 @@ extern "C" BOOL RoomEntry_Request(u32 id) {
         FieldPos_SnapToUnitCenter(&v4c, &v4c);
         v4c.x = v40.x;
         RoomEntryRequest_SetRetreatPos(&sRoomEntryRequest, &v4c);
-        if (RoomEntry_IsExclusiveScene(s.a)) {
+        if (RoomEntry_IsExclusiveScene(s.scene)) {
             CommManager *g = gCommManager;
             if (!g->isOnline() || g->isMyAid(0) != 0) {
-                if ((u32)SceneOccupantTable_CountWith(sSceneOccupantTable.e, s.a, 0) <= 1) {
-                    SceneOccupantTable_Add(sSceneOccupantTable.e, s.a, 0);
+                if ((u32)SceneOccupantTable_CountWith(sSceneOccupantTable.e, s.scene, 0) <= 1) {
+                    SceneOccupantTable_Add(sSceneOccupantTable.e, s.scene, 0);
                     RoomEntryRequest_SetResult(&sRoomEntryRequest, 2);
                 } else {
                     RoomEntryRequest_SetResult(&sRoomEntryRequest, 1);
                 }
             } else {
-                s.d = s.a;
+                s.d = s.scene;
                 g = gCommManager;
                 g->beginRecord();
                 g->writeRecord(&s.d, 1);

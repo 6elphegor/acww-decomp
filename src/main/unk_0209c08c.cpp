@@ -17,8 +17,6 @@
 
 inline void *operator new(unsigned long, void *p) { return p; }
 
-typedef void (*Unk_0209c15c_Fn)();
-typedef void *(*Unk_0209c1a4_Alloc)(u32, u32);
 
 extern "C" {
 void Mem_Free(void *p);
@@ -199,7 +197,7 @@ void ModelSlotPool::release(u16 *idx) {
     }
 }
 
-BOOL ModelSlotPool::init(u32 n, void *a, void *b, u32 size, Unk_0209c1a4_Alloc alloc, Unk_0209c15c_Fn free) {
+BOOL ModelSlotPool::init(u32 n, void *a, void *b, u32 size, ModelSlotAllocFunc alloc, ModelSlotFreeFunc free) {
     void *mem;
     allocFunc = alloc;
     freeFunc = free;

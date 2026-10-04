@@ -31,8 +31,8 @@ public:
     BOOL testFlag(u32 bit);
     void sendForeignVillagerLetter();
     void *getForeignVillagerRecord();
-    void func_02098188(u32 idx, u32 v);
-    u32 func_02098198(u32 idx);
+    void setBirthdayNoticeDay(u32 idx, u32 v);
+    u32 getBirthdayNoticeDay(u32 idx);
     void setSkyShotHits(u32 v);
     u32 getSkyShotHits();
     void advanceArbeitTalkCount();
@@ -48,10 +48,10 @@ public:
     s32 findUnusedSlot(s32 n);
     BOOL getOtherResidentName(void *p);
     s32 pickOtherResident();
-    void func_020983c0(u16 *p);
-    void *func_020983cc();
+    void setInventoryBackground(u16 *p);
+    void *getInventoryBackground();
     void resetForNewTown();
-    void func_020984a8();
+    void rerollFlaggedPocketItems();
 };
 
 #endif // PLAYER_UNK_02097FF4_H

@@ -67,7 +67,7 @@ public:
     /* 0x2276 */ u8 id[0x16];
 
     void *getErrands();
-    void *func_02098668();
+    void *getOptions();
     void *getFriendList();
     void *getWifiUserData();
     void *getSpNpcRecord();

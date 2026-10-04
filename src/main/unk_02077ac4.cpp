@@ -888,8 +888,8 @@ s32 EventSchedule_CollectDayAll(void *, void *);
 s32 VillagerRelations_GetScore(void *, s32, s32);
 void *PlayerData_GetResident(void *, s32);
 s32 Villager_GetUpcomingBirthdayDay(void *, s32, void *);
-s32 _ZN12Unk_02097ff413func_02098198Ej(void *, s32);
-void _ZN12Unk_02097ff413func_02098188Ejj(void *, s32, s32);
+s32 _ZN12Unk_02097ff420getBirthdayNoticeDayEj(void *, s32);
+void _ZN12Unk_02097ff420setBirthdayNoticeDayEjj(void *, s32, s32);
 s32 Villager_SendBirthdayNoticeLetter(void *, void *);
 void VillagerState_SetMood(void *, s32);
 void VillagerState_SetMoodTimer(void *, s32);
@@ -993,7 +993,7 @@ s32 DateTime_SubDays(void *d, s32 n);
 BOOL SaveVillagers_CanSomeoneGetSick(void *p);
 s32 SaveVillagers_PickSickVillager(void *p, u32 idx);
 void *SaveVillagers_Get(void *p, s32 i);
-void _ZN18SickVillagerRecord13startSicknessEP17Unk_020030d8_R256Ph(void *p, void *q, void *d);
+void _ZN18SickVillagerRecord13startSicknessEP10VillagerIdPh(void *p, void *q, void *d);
 void OutdoorSchedule_ForceReroll(void *p);
 s32 _ZN18SickVillagerRecord16hasTodaysVisitorEv(void *p);
 void *_ZN18SickVillagerRecord10getVisitorEj(void *p, u32 i);
@@ -1003,7 +1003,7 @@ s32 Villager_IsFreeOfPlayerErrands(void *p);
 s32 Villager_GetUpcomingBirthdayDay(void *p, s32 a, void *d);
 u8 *Villager_GetInfo();
 s32 Random_GlobalBelow(s32 n);
-s32 _ZN18SickVillagerRecord13func_0209978cEv(void *p);
+s32 _ZN18SickVillagerRecord9getErrandEv(void *p);
 s32 _ZN12ErrandRecord8isActiveEv(s32 p);
 s32 _ZN18SickVillagerRecord13getVillagerIdEv(void *p);
 s32 SaveVillagers_FindIndex(void *p, s32 i);
@@ -1093,7 +1093,7 @@ u8 *PlayerErrands_GetSlot(u8 *p, s32 i);
 void *PlayerErrandSlot_GetRecord(void *p);
 u16 *PlayerErrandSlot_GetVillager(void *p, s32 i);
 s32 memcmp(void *a, void *b, u32 n);
-void *_ZN18SickVillagerRecord13func_0209978cEv(u8 *p);
+void *_ZN18SickVillagerRecord9getErrandEv(u8 *p);
 u16 *_ZN18SickVillagerRecord13getVillagerIdEv(u8 *p);
 s32 HouseVisitInvite_IsFrom(u8 *a, u16 *b);
 u8 *Villager_GetPlan(u8 *p);
@@ -1150,8 +1150,8 @@ void SaveVillagers_UpdateBirthdayNotices(u8 *self);
 s32 SaveVillagers_UpdateBirthdayParty(u8 *self);
 void Villager_UpdatePlan(u8 *p, ClockDateTime *b);
 void *VillagerPlanBlock_GetPlan(void *p);
-void *_ZN12VillagerPlan13func_0209b2e4Ev();
-s32 _ZN12VillagerPlan13func_0209b044EPv(void *p, s32 i);
+void *_ZN12VillagerPlan13hasState2FlagEv();
+s32 _ZN12VillagerPlan14finishMovingInEPv(void *p, s32 i);
 void Villager_PickRoomLayout(u8 *p, s32 a, void *b);
 s32 Villager_InitPlanDateA(u8 *p, u8 *x);
 s32 Villager_InitPlanDateB(u8 *p, u8 *x);
@@ -1215,7 +1215,7 @@ s32 Villager_IsJustMovedIn(void *);
 s32 Villager_IsMovingOut(void *);
 void *Villager_GetPlan();
 void *VillagerPlanBlock_GetPlan(void *);
-void *func_0209b010(void *);
+void *VillagerPlan_GetPlanTime(void *);
 s32 DateTime_Compare(void *, void *, s32);
 s32 DateTime_DiffDays(void *, void *);
 s32 DateTime_IsInvalid(void *);
@@ -1406,7 +1406,7 @@ struct VillagerDataFurnitureView {
 };
 struct VillagerPlanView {
     u8 pad[0x21];
-    u8 unk_21_0 : 1;
+    u8 state2Flag : 1;
 };
 extern u8 sVillagerLetterPath[];
 extern u8 sVillagerLetter4Path[];
@@ -1452,19 +1452,19 @@ s32 _ZN12ErrandRecord7getStepEv(void *);
 s32 _ZN12ErrandRecord7getKindEv(void *);
 s32 PlanErrand_Clear(void *);
 void *VillagerPlanBlock_GetPlan(void *);
-s32 _ZN12VillagerPlan13func_0209b294Ev(void *);
+s32 _ZN12VillagerPlan16startTrendChangeEv(void *);
 s32 Villager_NextFurnitureTaste(void *);
-s32 _ZN12VillagerPlan13func_0209b2e4Ev(void *);
+s32 _ZN12VillagerPlan13hasState2FlagEv(void *);
 s32 _ZN12VillagerPlan12isValidStateEv(void *);
 s32 _ZN12VillagerPlan8getStateEv(void *);
-s32 _ZN12VillagerPlan13func_0209b0c4EPS_(void *, void *);
-s32 _ZN12VillagerPlan13func_0209b044EPv(void *, void *);
+s32 _ZN12VillagerPlan12leaveState0BEPS_(void *, void *);
+s32 _ZN12VillagerPlan14finishMovingInEPv(void *, void *);
 void Villager_PickRoomLayout(void *, s32, s32);
 void MI_CpuCopy8(void *, void *, u32);
 s32 Villager_IsMoveTimeReached(void *, void *);
-s32 _ZN12VillagerPlan13func_0209b12cEv(void *);
+s32 _ZN12VillagerPlan17finishTrendChangeEv(void *);
 void Villager_UpdateTrendDays(void *, void *);
-s32 _ZN12VillagerPlan13func_0209b18cEv(void *);
+s32 _ZN12VillagerPlan14updateTopTrendEv(void *);
 s32 Trend_IsValid(s32);
 void *Villager_GetState(void *);
 void *VillagerState_GetErrand(void *);
@@ -1472,7 +1472,7 @@ s32 _ZN12ErrandRecord5clearEv(void *);
 s32 PlanState_GetGroup(s32);
 void _ZN12ErrandRecord5startEhPth(void *, s32, void *, s32);
 void *VillagerPlan_GetStateDate(void *);
-void *func_0209b010(void *);
+void *VillagerPlan_GetPlanTime(void *);
 s32 DateTime_IsInvalid(void *);
 s32 DateTime_Compare(void *, void *, s32);
 void *Villager_GetInfo3a(void *);
@@ -1784,7 +1784,7 @@ void *PlayerData_GetCurrent();
 void *_ZN10PlayerData10getErrandsEv(void *);
 void *VillagerPlanBlock_GetPlan(void *);
 s32 _ZN12VillagerPlan8getStateEv(void *);
-s32 _ZN12VillagerPlan13func_0209b2e4Ev(void *);
+s32 _ZN12VillagerPlan13hasState2FlagEv(void *);
 s32 _ZN12VillagerPlan13getStateGroupEv(void *);
 s32 _ZN12VillagerPlan12getTrendNameEi(s32, s32);
 s32 VillagerState_GetRole(s32);
@@ -1923,7 +1923,7 @@ s32 _ZN10VillagerId7isValidEv(void *);
 void *VillagerId_GetSpecies(void *);
 s32 VillagerInfo_Get(void *);
 s32 _ZN12VillagerPlan8getStateEv(void *);
-s32 _ZN12VillagerPlan13func_0209b2e4Ev(void *);
+s32 _ZN12VillagerPlan13hasState2FlagEv(void *);
 void *TownBlockMap_Get(void);
 void BlockMap_RemoveStructure(void *, u32, u32, u16 *);
 s32 HousePos_IsValid(u8 *);
@@ -5106,7 +5106,7 @@ BOOL VillagerDataItemView::getRoomLayout(s32 *o1, s32 *o2) {
             if (_ZN12VillagerPlan8getStateEv(t) == 2 ||
                 ((_ZN12VillagerPlan8getStateEv(t) == 8 || _ZN12VillagerPlan8getStateEv(t) == 9 || _ZN12VillagerPlan8getStateEv(t) == 10 ||
                   _ZN12VillagerPlan8getStateEv(t) == 11) &&
-                 _ZN12VillagerPlan13func_0209b2e4Ev(t) != 0)) {
+                 _ZN12VillagerPlan13hasState2FlagEv(t) != 0)) {
                 *o1 = 3;
                 *o2 = roomLayout % 10;
             } else {
@@ -5522,7 +5522,7 @@ extern "C" BOOL Villager_PlaceItemInHouse(Unk_0207e268 *a, u16 *b) {
         Item_ToPlacedForm(v, b, 1);
         r6 = VillagerPlanBlock_GetPlan(Villager_GetPlan(a));
         r7 = _ZN12VillagerPlan8getStateEv(r6);
-        s8 = _ZN12VillagerPlan13func_0209b2e4Ev(r6);
+        s8 = _ZN12VillagerPlan13hasState2FlagEv(r6);
         if (Item_IsFurniture(v) != 0) {
             s32 r6 = _ZN20VillagerDataItemView12matchesTrendEPti(a, b, r7);
             n = Ftr_GetUnk05(v);
@@ -5596,7 +5596,7 @@ extern "C" void Villager_DropRandomFurniture(Unk_0207e268 *a) {
             if (Random_GlobalBelow(2) == 0) {
                 void *r4 = VillagerPlanBlock_GetPlan(Villager_GetPlan(a));
                 s8 = _ZN12VillagerPlan8getStateEv(r4);
-                sc = _ZN12VillagerPlan13func_0209b2e4Ev(r4);
+                sc = _ZN12VillagerPlan13hasState2FlagEv(r4);
                 tbl = *(FurnitureDropSlots *)data_020e05ac;
                 s32 *p = tbl.v;
                 cnt = 0;
@@ -6910,11 +6910,11 @@ namespace nI {
 extern "C" void Villager_StartMovingOut(void *a, void *b) {
     if (_ZN10VillagerId7isValidEv(_ZN12VillagerData13getVillagerIdEv(a))) {
         VillagerPlanView *r4 = (VillagerPlanView *)VillagerPlanBlock_GetPlan(Villager_GetPlan(a));
-        if (_ZN12VillagerPlan8getStateEv(r4) == 2 || (_ZN12VillagerPlan8getStateEv(r4) == 8 && _ZN12VillagerPlan13func_0209b2e4Ev(r4) != 0)) {
-            r4->unk_21_0 = 1;
+        if (_ZN12VillagerPlan8getStateEv(r4) == 2 || (_ZN12VillagerPlan8getStateEv(r4) == 8 && _ZN12VillagerPlan13hasState2FlagEv(r4) != 0)) {
+            r4->state2Flag = 1;
         }
         _ZN12VillagerPlan8setStateEj(r4, 9);
-        MI_CpuCopy8(b, func_0209b010(r4), 8);
+        MI_CpuCopy8(b, VillagerPlan_GetPlanTime(r4), 8);
         PlanErrand_Clear(VillagerPlanBlock_GetErrand(Villager_GetPlan(a)));
     }
 }
@@ -6925,7 +6925,7 @@ extern "C" void Villager_StartMovingIn(void *a, void *b) {
     if (_ZN10VillagerId7isValidEv(_ZN12VillagerData13getVillagerIdEv(a))) {
         void *r6 = VillagerPlanBlock_GetPlan(Villager_GetPlan(a));
         _ZN12VillagerPlan8setStateEj(r6, 10);
-        MI_CpuCopy8(b, func_0209b010(r6), 8);
+        MI_CpuCopy8(b, VillagerPlan_GetPlanTime(r6), 8);
         PlanErrand_Clear(VillagerPlanBlock_GetErrand(Villager_GetPlan(a)));
     }
 }
@@ -6937,7 +6937,7 @@ extern "C" s32 Villager_IsMoveTimeReached(void *a, void *b) {
     u8 *r4 = (u8 *)VillagerPlanBlock_GetPlan(Villager_GetPlan(a));
     if (_ZN10VillagerId7isValidEv(r5) && _ZN12VillagerPlan12isValidStateEv(r4)) {
         u8 *r5b = (u8 *)Personality_GetSleepHours(VillagerId_GetPersonality(r5));
-        r4 = (u8 *)func_0209b010(r4);
+        r4 = (u8 *)VillagerPlan_GetPlanTime(r4);
         if (DateTime_IsInvalid(r4) == 0) {
             u32 tmpw[2];
             tmpw[0] = 0;
@@ -6990,7 +6990,7 @@ extern "C" void Villager_UpdateTrendDays(void *a, void *b) {
                     tmp[0] = 0;
                     tmp[1] = 0;
                     r4 = cnt;
-                    MI_CpuCopy8(func_0209b010(r5), tmp, 8);
+                    MI_CpuCopy8(VillagerPlan_GetPlanTime(r5), tmp, 8);
                     d = DateTime_DiffMinutes(tmp, r6);
                     if (d < 0) d = -d;
                     if (d / 0x5a0 < 7) {
@@ -7016,7 +7016,7 @@ namespace nI {
 extern "C" void Villager_InitPlanDateA(void *a, void *b) {
     void *r4 = VillagerPlanBlock_GetPlan(Villager_GetPlan(a));
     if (_ZN10VillagerId7isValidEv(_ZN12VillagerData13getVillagerIdEv(a)) && _ZN12VillagerPlan12isValidStateEv(r4)) {
-        r4 = func_0209b010(r4);
+        r4 = VillagerPlan_GetPlanTime(r4);
         if (DateTime_IsInvalid(r4) != 0 || DateTime_Compare(b, r4, 0x3f) == -1) MI_CpuCopy8(b, r4, 8);
     }
 }
@@ -7040,12 +7040,12 @@ extern "C" s32 Villager_UpdatePlan(void *a, void *b) {
     s32 r7 = _ZN12VillagerPlan8getStateEv(r6);
     s32 t;
     if (_ZN10VillagerId7isValidEv(r8) && _ZN12VillagerPlan12isValidStateEv(r6)) {
-        t = _ZN12VillagerPlan13func_0209b2e4Ev(r6);
+        t = _ZN12VillagerPlan13hasState2FlagEv(r6);
         if (_ZN12VillagerPlan8getStateEv(r6) == 8) {
-            if (Villager_IsMoveTimeReached(a, b)) r4 = _ZN12VillagerPlan13func_0209b12cEv(r6);
+            if (Villager_IsMoveTimeReached(a, b)) r4 = _ZN12VillagerPlan17finishTrendChangeEv(r6);
         } else {
             Villager_UpdateTrendDays(a, b);
-            r4 = _ZN12VillagerPlan13func_0209b18cEv(r6);
+            r4 = _ZN12VillagerPlan14updateTopTrendEv(r6);
         }
         if (r4 != 12) {
             if (Trend_IsValid(r7) == 0 || r7 != r4) {
@@ -7071,11 +7071,11 @@ extern "C" s32 Villager_UpdatePlanState(void *a, void *b, void *c, void *d) {
     void *r8 = _ZN12VillagerData13getVillagerIdEv(a);
     void *r7 = VillagerPlanBlock_GetPlan(Villager_GetPlan(a));
     s32 r4 = 12;
-    s32 t = _ZN12VillagerPlan13func_0209b2e4Ev(r7);
+    s32 t = _ZN12VillagerPlan13hasState2FlagEv(r7);
     if (_ZN10VillagerId7isValidEv(r8) && _ZN12VillagerPlan12isValidStateEv(r7)) {
         switch (_ZN12VillagerPlan8getStateEv(r7)) {
         case 11:
-            r4 = _ZN12VillagerPlan13func_0209b0c4EPS_(r7, r5);
+            r4 = _ZN12VillagerPlan12leaveState0BEPS_(r7, r5);
             if (r4 != 12) Villager_PickRoomLayout(r6, r4, t);
             if (r4 != 12) {
                 MI_CpuCopy8(r5, b, 8);
@@ -7083,7 +7083,7 @@ extern "C" s32 Villager_UpdatePlanState(void *a, void *b, void *c, void *d) {
             }
             break;
         case 10:
-            r4 = _ZN12VillagerPlan13func_0209b044EPv(r7, r5);
+            r4 = _ZN12VillagerPlan14finishMovingInEPv(r7, r5);
             if (r4 != 12) Villager_PickRoomLayout(r6, r4, t);
             break;
         default:
@@ -7106,7 +7106,7 @@ extern "C" void Villager_UpdatePlanErrand(void *a) {
                 if (_ZN12ErrandRecord7getStepEv(r4) == 3) {
                     if (_ZN12ErrandRecord7getKindEv(r4) == 4) Villager_NextFurnitureTaste(a);
                     PlanErrand_Clear(r7);
-                    _ZN12VillagerPlan13func_0209b294Ev(VillagerPlanBlock_GetPlan(r6));
+                    _ZN12VillagerPlan16startTrendChangeEv(VillagerPlanBlock_GetPlan(r6));
                 }
             }
         }
@@ -8190,12 +8190,12 @@ extern "C" s32 SaveVillagers_FindMovingOutDue(SaveVillagers *self, void *name) {
     s32 idx = SaveVillagers_FindMovingOut(self);
     if (SaveVillagers_Get(self, idx) != 0) {
         void *q = VillagerPlanBlock_GetPlan(Villager_GetPlan());
-        s32 r = DateTime_Compare(name, func_0209b010(q), 0x3f);
+        s32 r = DateTime_Compare(name, VillagerPlan_GetPlanTime(q), 0x3f);
         s32 n = 0;
         if (r == 1) {
-            n = DateTime_DiffDays(func_0209b010(q), name);
+            n = DateTime_DiffDays(VillagerPlan_GetPlanTime(q), name);
         } else if (r == -1) {
-            n = DateTime_DiffDays(name, func_0209b010(q));
+            n = DateTime_DiffDays(name, VillagerPlan_GetPlanTime(q));
         }
         if (n >= 2) {
             return idx;
@@ -8302,8 +8302,8 @@ extern "C" void SaveVillagers_RefreshPlanStates(u8 *self) {
     do {
         if (_ZN12VillagerData13getVillagerIdEv(p)->isValid()) {
             void *r6 = VillagerPlanBlock_GetPlan(Villager_GetPlan(p));
-            void *r7 = _ZN12VillagerPlan13func_0209b2e4Ev();
-            s32 r1 = _ZN12VillagerPlan13func_0209b044EPv(r6, idx);
+            void *r7 = _ZN12VillagerPlan13hasState2FlagEv();
+            s32 r1 = _ZN12VillagerPlan14finishMovingInEPv(r6, idx);
             if (r1 != 0xc) {
                 Villager_PickRoomLayout(p, r1, r7);
             }
@@ -8598,10 +8598,10 @@ extern "C" s32 Villager_GetPlayerErrandKind(u8 *self, u8 *p, u8 *r4) {
                 goto end;
             }
         }
-        if (_ZN12ErrandRecord8isActiveEv(_ZN18SickVillagerRecord13func_0209978cEv(self + 0x3830))) {
+        if (_ZN12ErrandRecord8isActiveEv(_ZN18SickVillagerRecord9getErrandEv(self + 0x3830))) {
             u16 *r7 = _ZN18SickVillagerRecord13getVillagerIdEv(self + 0x3830);
             if (r7[0] == r5[0] && memcmp(r7 + 1, r5 + 1, 8) == 0 && ((u8 *)r7)[0xb] == ((u8 *)r5)[0xb]) {
-                result = _ZN12ErrandRecord7getKindEv(_ZN18SickVillagerRecord13func_0209978cEv(self + 0x3830));
+                result = _ZN12ErrandRecord7getKindEv(_ZN18SickVillagerRecord9getErrandEv(self + 0x3830));
                 goto end;
             }
         }
@@ -8844,7 +8844,7 @@ extern "C" s32 SaveVillagers_GetUnk3830(void *p) {
 
 namespace nE {
 extern "C" s32 SaveVillagers_GetUnk3830Index(void *p) {
-    if (_ZN12ErrandRecord8isActiveEv(_ZN18SickVillagerRecord13func_0209978cEv((void *)SaveVillagers_GetUnk3830(p)))) {
+    if (_ZN12ErrandRecord8isActiveEv(_ZN18SickVillagerRecord9getErrandEv((void *)SaveVillagers_GetUnk3830(p)))) {
         return SaveVillagers_FindIndex(p, _ZN18SickVillagerRecord13getVillagerIdEv((void *)SaveVillagers_GetUnk3830(p)));
     }
     return -1;
@@ -8992,7 +8992,7 @@ extern "C" void SaveVillagers_UpdateSickVillager(u8 *b) {
                 void *q = SaveVillagers_Get(b, r4);
                 if (q) {
                     if (((VillagerId *)_ZN12VillagerData13getVillagerIdEv(q))->isValid()) {
-                        _ZN18SickVillagerRecord13startSicknessEP17Unk_020030d8_R256Ph(b + 0x3830, _ZN12VillagerData13getVillagerIdEv(q), &d);
+                        _ZN18SickVillagerRecord13startSicknessEP10VillagerIdPh(b + 0x3830, _ZN12VillagerData13getVillagerIdEv(q), &d);
                         b[0x38ea] = r4;
                         OutdoorSchedule_ForceReroll(b + 0x381c);
                     }
@@ -9274,14 +9274,14 @@ extern "C" void SaveVillagers_UpdateBirthdayNotices(u8 *self) {
                             if (_ZN12Unk_02097ff48testFlagEj(r7, 1) == 0) {
                                 s32 t = Villager_GetUpcomingBirthdayDay(self, 7, buf);
                                 if (t != -1) {
-                                    s32 c = _ZN12Unk_02097ff413func_02098198Ej(r7, i);
+                                    s32 c = _ZN12Unk_02097ff420getBirthdayNoticeDayEj(r7, i);
                                     if (c != t) {
                                         if (Villager_SendBirthdayNoticeLetter(a, o) != 0) {
-                                            _ZN12Unk_02097ff413func_02098188Ejj(r7, i, (u8)t);
+                                            _ZN12Unk_02097ff420setBirthdayNoticeDayEjj(r7, i, (u8)t);
                                         }
                                     }
                                 } else {
-                                    _ZN12Unk_02097ff413func_02098188Ejj(r7, i, 0xff);
+                                    _ZN12Unk_02097ff420setBirthdayNoticeDayEjj(r7, i, 0xff);
                                 }
                             }
                         }

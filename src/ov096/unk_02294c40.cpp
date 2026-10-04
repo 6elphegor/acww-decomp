@@ -239,7 +239,7 @@ void *PlayerData_GetCurrent();
 s32 PlayerInventory_SetWallet(void *p, s32 a, s32 b);
 s32 _ZN15PlayerInventory13getTotalBellsEi(void *p, s32 a);
 void _ZN12Unk_02097ff47setFlagEj(void *p, u32 a);
-u16 *_ZN12Unk_02097ff413func_020983ccEv(void *p);
+u16 *_ZN12Unk_02097ff422getInventoryBackgroundEv(void *p);
 void _ZN10PlayerData11setFaceItemEPt(void *o, u16 *p);
 u16 *_ZN10PlayerData11getFaceItemEv(void *o);
 void _ZN10PlayerData6setHatEPt(void *o, u16 *p);
@@ -4098,7 +4098,7 @@ void PocketMenu::wearHeldShirt() {
         u16 a;
         u16 b;
     } l;
-    l.a = *_ZN12Unk_02097ff413func_020983ccEv(PlayerData_GetCurrent());
+    l.a = *_ZN12Unk_02097ff422getInventoryBackgroundEv(PlayerData_GetCurrent());
     l.b = handItem;
     MenuScreen_UploadClothPattern(&l.b, &bgTasks[1], &clothImage, &clothPalette);
     BOOL ok = FALSE;

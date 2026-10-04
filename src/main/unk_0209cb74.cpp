@@ -24,12 +24,12 @@ struct Unk_0209cc08_T {
     }
 };
 
-union Unk_0209cdf8_T {
+union MinuteHour {
     struct {
-        u8 unk_00;
-        u8 unk_01;
+        u8 minute;
+        u8 hour;
     };
-    u16 unk_h;
+    u16 v;
 };
 
 struct ClockDateTime {
@@ -129,11 +129,11 @@ void VillagerStates_ResetTalkRepeats(void);
 void VillagerStates_ClearUnk1dBit0(void);
 }
 
-static inline void Unk_0209cdf8_Norm(Unk_0209cdf8_T *p, u16 *out) {
-    while (p->unk_01 >= 0x18) {
-        p->unk_01 -= 0x18;
+static inline void Unk_0209cdf8_Norm(MinuteHour *p, u16 *out) {
+    while (p->hour >= 0x18) {
+        p->hour -= 0x18;
     }
-    *out = p->unk_h;
+    *out = p->v;
 }
 
 static inline s32 Unk_0209d0e4_Abs(s32 v) {
@@ -143,13 +143,11 @@ static inline s32 Unk_0209d0e4_Abs(s32 v) {
     return v;
 }
 
-struct Unk_0209d4c0_V4 { s32 v[4]; };
-struct Unk_0209d4c0_V3 { s32 v[3]; };
-struct Unk_0209d4c0_B : ClockDateTime {
-    Unk_0209d4c0_B() { ((u32 *)this)[0] = 0; ((u32 *)this)[1] = 0; }
+struct ZeroedClockDateTime : ClockDateTime {
+    ZeroedClockDateTime() { ((u32 *)this)[0] = 0; ((u32 *)this)[1] = 0; }
 };
-struct Unk_0209d4c0_Dt : Unk_0209d4c0_B {
-    Unk_0209d4c0_Dt() { ((u32 *)this)[0] = 0; ((u32 *)this)[1] = 0; }
+struct ZeroedClockDateTime2 : ZeroedClockDateTime {
+    ZeroedClockDateTime2() { ((u32 *)this)[0] = 0; ((u32 *)this)[1] = 0; }
 };
 static inline s16 Unk_0209d4c0_Abs16(s16 v) {
     if (v < 0) {
@@ -158,7 +156,7 @@ static inline s16 Unk_0209d4c0_Abs16(s16 v) {
     return v;
 }
 
-class Unk_0209d5f8 {
+class LetterStorageBlock {
 public:
     u32 pad[0x11df0 / 4];
     u8 validMarker;
@@ -204,18 +202,18 @@ extern "C" void SaveData_Apply(u8 *p) {
     VillagerStates_ClearUnk1dBit0();
 }
 
-extern "C" BOOL LetterStorage_IsValid(Unk_0209d5f8 *p) {
+extern "C" BOOL LetterStorage_IsValid(LetterStorageBlock *p) {
     if (p->validMarker == 2) {
         return TRUE;
     }
     return FALSE;
 }
 
-extern "C" void LetterStorage_MarkInterrupted(Unk_0209d5f8 *p) {
+extern "C" void LetterStorage_MarkInterrupted(LetterStorageBlock *p) {
     p->validMarker = 0x1c;
 }
 
-extern "C" void LetterStorage_MarkValid(Unk_0209d5f8 *p) {
+extern "C" void LetterStorage_MarkValid(LetterStorageBlock *p) {
     p->validMarker = 2;
 }
 
@@ -227,22 +225,22 @@ extern "C" void Clock_ReadRtc(Unk_0209d4c0_Date *d, Unk_0209d4c0_Time *t) {
 }
 
 extern "C" void Clock_ReadAdjusted(s32 *out) {
-    Unk_0209d4c0_V4 d;
-    Unk_0209d4c0_V3 t;
-    Clock_ReadRtc((Unk_0209d4c0_Date*)&d, (Unk_0209d4c0_Time*)&t);
-    Unk_0209d4c0_V4 d2 = d;
-    out[0] = d2.v[0]; out[1] = d2.v[1]; out[2] = d2.v[2]; out[3] = d2.v[3];
-    Unk_0209d4c0_V3 t2 = t;
-    out[4] = t2.v[0]; out[5] = t2.v[1]; out[6] = t2.v[2];
+    Unk_0209d4c0_Date d;
+    Unk_0209d4c0_Time t;
+    Clock_ReadRtc(&d, &t);
+    Unk_0209d4c0_Date d2 = d;
+    out[0] = d2.year; out[1] = d2.month; out[2] = d2.day; out[3] = d2.week;
+    Unk_0209d4c0_Time t2 = t;
+    out[4] = t2.hour; out[5] = t2.min; out[6] = t2.sec;
     s32 a = *(s32 *)(data_021ed2d0 + 0x34);
     s16 b = *(s16 *)(data_021ed2d0 + 0x38);
-    Unk_0209d4c0_Dt dtl;
-    dtl.year = d.v[0];
-    dtl.month = d.v[1];
-    dtl.day = d.v[2];
-    dtl.hour = t.v[0];
-    dtl.minute = t.v[1];
-    dtl.second = t.v[2];
+    ZeroedClockDateTime2 dtl;
+    dtl.year = d.year;
+    dtl.month = d.month;
+    dtl.day = d.day;
+    dtl.hour = t.hour;
+    dtl.minute = t.min;
+    dtl.second = t.sec;
     if (a < 0) {
         DateTime_SubMinutes(&dtl, Unk_0209d0e4_Abs(a));
     } else {
@@ -254,17 +252,17 @@ extern "C" void Clock_ReadAdjusted(s32 *out) {
     } else {
         DateTime_AddSeconds(&dtl, b);
     }
-    d.v[0] = dtl.year;
-    d.v[1] = dtl.month;
-    d.v[2] = dtl.day;
-    t.v[0] = dtl.hour;
-    t.v[1] = dtl.minute;
-    t.v[2] = dtl.second;
-    d.v[3] = Date_GetWeekday((u8)d.v[0], (u8)d.v[1], (u8)d.v[2]);
-    Unk_0209d4c0_V4 d3 = d;
-    out[0] = d3.v[0]; out[1] = d3.v[1]; out[2] = d3.v[2]; out[3] = d3.v[3];
-    Unk_0209d4c0_V3 t3 = t;
-    out[4] = t3.v[0]; out[5] = t3.v[1]; out[6] = t3.v[2];
+    d.year = dtl.year;
+    d.month = dtl.month;
+    d.day = dtl.day;
+    t.hour = dtl.hour;
+    t.min = dtl.minute;
+    t.sec = dtl.second;
+    d.week = Date_GetWeekday((u8)d.year, (u8)d.month, (u8)d.day);
+    Unk_0209d4c0_Date d3 = d;
+    out[0] = d3.year; out[1] = d3.month; out[2] = d3.day; out[3] = d3.week;
+    Unk_0209d4c0_Time t3 = t;
+    out[4] = t3.hour; out[5] = t3.min; out[6] = t3.sec;
 }
 
 extern "C" void Clock_GetDateTime(ClockDateTime *p) {
@@ -646,13 +644,13 @@ extern "C" s32 Date_GetDaysInMonth(u32 y, u32 m) {
     return sDaysInMonth[m - 1];
 }
 
-extern "C" void Time_AddHourMinute(Unk_0209cdf8_T a, Unk_0209cdf8_T b, u16 *out) {
-    Unk_0209cdf8_T t = a;
-    t.unk_00 += b.unk_00;
-    t.unk_01 += b.unk_01;
-    while (t.unk_00 >= 0x3c) {
-        t.unk_01++;
-        t.unk_00 -= 0x3c;
+extern "C" void Time_AddHourMinute(MinuteHour a, MinuteHour b, u16 *out) {
+    MinuteHour t = a;
+    t.minute += b.minute;
+    t.hour += b.hour;
+    while (t.minute >= 0x3c) {
+        t.hour++;
+        t.minute -= 0x3c;
     }
     Unk_0209cdf8_Norm(&t, out);
 }

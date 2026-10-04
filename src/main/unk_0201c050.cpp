@@ -629,8 +629,8 @@ void * _ZN10PlayerData12getInventoryEv(void *);
 void * _ZN10PlayerData11getPlayerIdEv(void *);
 u16 * _ZN18SickVillagerRecord13getTopVisitorEv(void *);
 s32 _ZN18SickVillagerRecord19isRecentlyRecoveredEP17Unk_020994cc_Date(void *, s32);
-s32 _ZN18SickVillagerRecord10hasVisitorEP16Unk_020994cc_Ent(void *, void *);
-void * _ZN18SickVillagerRecord13func_0209978cEv(void *);
+s32 _ZN18SickVillagerRecord10hasVisitorEP8PlayerId(void *, void *);
+void * _ZN18SickVillagerRecord9getErrandEv(void *);
 void _ZN18SickVillagerRecord11resetRecordEv();
 void * _ZN12ErrandRecord7getItemEv(void *);
 void _ZN12ErrandRecord8setExtraEh(void *, u32);
@@ -638,14 +638,14 @@ void * _ZN12ErrandRecord8getExtraEv(void *);
 void _ZN12ErrandRecord7setStepEh(void *, s32);
 s32 _ZN12ErrandRecord7getStepEv(void *);
 s32 _ZN12ErrandRecord11getSubGroupEv(void *);
-void * _ZN12ErrandRecord13func_0209ac10Ev();
+void * _ZN12ErrandRecord12getSlotIndexEv();
 s32 _ZN12ErrandRecord7getKindEv(void *);
 s32 _ZN12ErrandRecord8getGroupEv(void *);
 s32 _ZN12ErrandRecord13getClassIndexEPi(void *, s32 *);
 s32 _ZN12ErrandRecord8getClassEv(void *);
 s32 _ZN12ErrandRecord8isActiveEv(void *);
 s32 _ZN12ErrandRecord5clearEv(void *);
-void _ZN12VillagerPlan13func_0209b238Ev(void *);
+void _ZN12VillagerPlan12enterState0BEv(void *);
 s32 _ZN12VillagerPlan8getStateEv(void *);
 s32 _ZN8SaveData8testFlagEj(void *, s32);
 s32 _ZN10ChoiceList9getResultEv(void *);
@@ -967,18 +967,18 @@ u32 Pocket_GetItem(s32);
 void Pocket_SetItem(u16 *, s32, s32);
 s32 Inventory_GetEmptyLetter();
 s32 Inventory_FindEmptyLetter();
-s32 func_0209948c(u32);
-s32 func_0209949c(u32);
+s32 FishSpawn_GetWeightClass(u32);
+s32 InsectSpawn_GetWeightClass(u32);
 void * PlayerErrandSlots_FindByVillager(s32, void *, s32);
 void * PlayerErrands_GetSlot(s32, void *);
 void HouseVisitInvite_Set(void *, void *, void *);
 s32 HouseVisitInvite_IsFrom(void *, void *);
 void HouseVisitInvite_Clear(void *);
 void PlayerErrandSlot_ComposeLetter(void *, s32);
-u8 * func_0209a420(void *);
-void func_0209a424(void *, s32);
+u8 * PlayerErrandSlot_GetPresentReaction(void *);
+void PlayerErrandSlot_SetPresentReaction(void *, s32);
 s32 PlayerErrandSlot_IsStepDone(void *);
-s32 func_0209a49c(s32, s32);
+s32 Errand_CanOfferInPlanState(s32, s32);
 void * PlayerErrandSlot_GetVillager(void *, s32);
 void * PlayerErrandSlot_GetRecord(void *);
 void PlayerErrandSlot_Start(void *, s32, void *, void *);
@@ -1002,7 +1002,7 @@ void * PlanErrand_GetRecord(void *);
 void PlanErrand_AdvanceStep(void *);
 void PlanErrand_Assign(void *, s32, void *, s32, s32);
 void * PlanErrand_ResetProgress(void *);
-void * func_0209ac1c(s32);
+void * Errand_GetSlotIndex(s32);
 s32 ErrandRecord_GetTime(void *);
 s32 Errand_GetGroup(s32);
 s32 Errand_GetClass();
@@ -3286,7 +3286,7 @@ extern "C" s32 InsectPick_CountInSlot(s32 c, u8 *p, s32 n, s32 *arr, s32 cnt) {
         for (i = 0; i < n; i++) {
             d = p[1] - prev;
             if (d > 0) {
-                if (c == func_0209949c((u8)d)) {
+                if (c == InsectSpawn_GetWeightClass((u8)d)) {
                     if (Talk_ArrayContains(Insect_GetHabitat(p[0]), arr, cnt) == 0) {
                         result++;
                     }
@@ -3318,7 +3318,7 @@ extern "C" s32 InsectPick_PickInSlot(u16 *a, s32 *b, s32 c, u8 *p, s32 n, s32 *a
             for (i = 0; i < n; i++) {
                 d = p[1] - prev;
                 if (d > 0) {
-                    if (c == func_0209949c((u8)d)) {
+                    if (c == InsectSpawn_GetWeightClass((u8)d)) {
                         q = Insect_GetHabitat(p[0]);
                         if (Talk_ArrayContains(q, arr, cnt) == 0) {
                             if (k == 0) {
@@ -3552,7 +3552,7 @@ extern "C" s32 FishPick_CountInRow(s32 key, FishSpawnRow *p) {
     if (en != NULL && p->count != 0) {
         s32 i;
         for (i = 0; i < p->count; en++, i++) {
-            if (en->fish < 0x38 && en->weight != 0 && key == func_0209948c(en->weight)) {
+            if (en->fish < 0x38 && en->weight != 0 && key == FishSpawn_GetWeightClass(en->weight)) {
                 cnt++;
             }
         }
@@ -3568,7 +3568,7 @@ extern "C" s32 FishPick_PickInRow(u16 *a, s32 *b, s32 key, FishSpawnRow *row) {
         s32 r = Random_GlobalBelow(n);
         s32 i;
         for (i = 0; i < row->count; en++, i++) {
-            if (en->weight != 0 && en->fish < 0x38 && key == func_0209948c(en->weight)) {
+            if (en->weight != 0 && en->fish < 0x38 && key == FishSpawn_GetWeightClass(en->weight)) {
                 if (r == 0) {
                     u16 v;
                     if (en->fish < 0x38) {
@@ -4386,7 +4386,7 @@ void VillagerTalkTopics::continueAfterGreeting() {
         case 0:
             break;
         case 1:
-            errandSlot = PlayerErrands_GetSlot((s32)r4, (void *)((s32)func_0209ac1c(v)));
+            errandSlot = PlayerErrands_GetSlot((s32)r4, (void *)((s32)Errand_GetSlotIndex(v)));
             if (errandSlot != 0) {
                 if (_ZN12ErrandRecord7getStepEv(PlayerErrandSlot_GetRecord(errandSlot)) == 0) {
                     if (DateTime_Compare((void *)ErrandRecord_GetTime(PlayerErrandSlot_GetRecord(errandSlot)), buf, 0x3f) == -1) {
@@ -5503,7 +5503,7 @@ BOOL VillagerTalkTopics::tryAddDeliveryRecipientChoice(s32 a, s32 b) {
 
 BOOL VillagerTalkTopics::tryAddDeliveryClientChoice(s32 unused, s32 a, s32 b) {
     BOOL r = FALSE;
-    errandSlot = PlayerErrands_GetSlot(a, func_0209ac1c(b));
+    errandSlot = PlayerErrands_GetSlot(a, Errand_GetSlotIndex(b));
     if (errandSlot != 0) {
         TalkChoiceTable s;
         TalkChoiceTable_Init(this, (TalkChoiceTable *)(&s));
@@ -6140,7 +6140,7 @@ BOOL VillagerTalkTopics::tryOfferDeliveryRequest(void *a, void *b) {
     TalkChoiceTable s;
     Unk_0201d2d0_Key k;
     void *r7 = VillagerState_GetErrand(Villager_GetState(a));
-    void *r4 = PlayerErrands_GetSlot((s32)b, _ZN12ErrandRecord13func_0209ac10Ev());
+    void *r4 = PlayerErrands_GetSlot((s32)b, _ZN12ErrandRecord12getSlotIndexEv());
     void *r6 = VillagerPlanBlock_GetPlan(Villager_GetPlan(a));
     s32 t;
     k.w0 = 0;
@@ -6148,7 +6148,7 @@ BOOL VillagerTalkTopics::tryOfferDeliveryRequest(void *a, void *b) {
     Clock_GetDateTime(&k);
     if (r4 != NULL && _ZN12ErrandRecord8isActiveEv(PlayerErrandSlot_GetRecord(r4)) == 0) {
         t = _ZN12ErrandRecord7getKindEv(r7);
-        if (func_0209a49c(t, _ZN12VillagerPlan8getStateEv(r6)) != 0 && ((VillagerTalk *)actor)->getEventKind() == 0xb && SaveVillagers_FindBirthdayVillager(gSaveVillagers, &k) == -1 && pickRandomOtherVillager() != 0) {
+        if (Errand_CanOfferInPlanState(t, _ZN12VillagerPlan8getStateEv(r6)) != 0 && ((VillagerTalk *)actor)->getEventKind() == 0xb && SaveVillagers_FindBirthdayVillager(gSaveVillagers, &k) == -1 && pickRandomOtherVillager() != 0) {
             TalkChoiceTable_Init(this, (TalkChoiceTable *)(&s));
             errandSlot = r4;
             TalkChoiceTable_SetRange(this, (TalkChoiceTable *)(&s), 0, (const u8 *)sSmallTalkChoiceMsgRange, (s32)((u8 *)&nZ::sRequestTopicsA[1]));
@@ -6311,7 +6311,7 @@ BOOL VillagerTalkRequestReplyTopics::tryAddSickVillagerChoice(void *arg) {
     if (r4 != -1) {
         if (r4 == Villager_GetIndex(arg)) {
             void *p = SaveVillagers_GetUnk3830(r7);
-            void *v = _ZN18SickVillagerRecord13func_0209978cEv(p);
+            void *v = _ZN18SickVillagerRecord9getErrandEv(p);
             if (_ZN12ErrandRecord8isActiveEv(v) != 0) {
                 if (_ZN18SickVillagerRecord19isRecentlyRecoveredEP17Unk_020994cc_Date(p, 0) != 0) {
                     u16 *q = _ZN18SickVillagerRecord13getTopVisitorEv(p);
@@ -6326,7 +6326,7 @@ BOOL VillagerTalkRequestReplyTopics::tryAddSickVillagerChoice(void *arg) {
                                 } else {
                                     msg = ((u8 *)&nZ::sRequestTopicsB[33]);
                                 }
-                            } else if (_ZN18SickVillagerRecord10hasVisitorEP16Unk_020994cc_Ent(p, r6) != 0) {
+                            } else if (_ZN18SickVillagerRecord10hasVisitorEP8PlayerId(p, r6) != 0) {
                                 msg = ((u8 *)&nZ::sRequestTopicsB[32]);
                             } else {
                                 msg = ((u8 *)&nZ::sRequestTopicsB[31]);
@@ -6878,7 +6878,7 @@ void VillagerTalkTopics::judgePresent() {
             r4 = 2;
         }
     }
-    func_0209a424(errandSlot, r4);
+    PlayerErrandSlot_SetPresentReaction(errandSlot, r4);
     switch (r4) {
     case 0:
         ((VillagerTalk *)this)->setTopicFns((VillagerTalkTopicFns *)((u8 *)&nZ::sRequestTopicsA[14]));
@@ -7147,7 +7147,7 @@ void VillagerTalkTopics::onPresentOpinionChoice(s32 unused, s32 idx) {
 
 void VillagerTalkTopics::selectQ06Good(TalkTopicMsg *out) {
     u16 loc[5];
-    u8 t = *func_0209a420(errandSlot);
+    u8 t = *PlayerErrandSlot_GetPresentReaction(errandSlot);
     itemFromPlayer = 0xfff1;
     switch (t) {
     case 0:
@@ -7185,7 +7185,7 @@ void VillagerTalkTopics::selectQ06Good(TalkTopicMsg *out) {
 
 void VillagerTalkTopics::selectQ06Normal(TalkTopicMsg *out) {
     u16 loc[4];
-    u8 t = *func_0209a420(errandSlot);
+    u8 t = *PlayerErrandSlot_GetPresentReaction(errandSlot);
     itemFromPlayer = 0xfff1;
     switch (t) {
     case 0:
@@ -7213,7 +7213,7 @@ void VillagerTalkTopics::selectQ06Normal(TalkTopicMsg *out) {
 
 void VillagerTalkTopics::selectQ06Bad(TalkTopicMsg *out) {
     u16 loc[4];
-    u8 t = *func_0209a420(errandSlot);
+    u8 t = *PlayerErrandSlot_GetPresentReaction(errandSlot);
     itemFromPlayer = 0xfff1;
     if (t == 2) {
         Talk_PickErrandItem(&loc[0], 0);
@@ -8792,7 +8792,7 @@ void VillagerTalkTopics::selectQ12Full(TalkTopicMsg *out) {
 void VillagerTalkTopics::onQ12FullClose() {
     void *p;
     SaveVillagers_GetUnk3830(gSaveVillagers);
-    p = ((void * (*)())_ZN18SickVillagerRecord13func_0209978cEv)();
+    p = ((void * (*)())_ZN18SickVillagerRecord9getErrandEv)();
     if (((s32 (*)())_ZN12ErrandRecord8isActiveEv)() != 0) {
         _ZN12ErrandRecord7setStepEh(p, 1);
     }
@@ -9022,7 +9022,7 @@ void VillagerTalkTopics::setFishTimeSlot(s32 a, u16 *p, s32 c, FishSpawnRow **ar
                         rec = e->entries;
                         if (rec) {
                             for (k = 0; k < e->count; rec++, k++) {
-                                if (rec->fish == idx && func_0209948c(rec->weight) <= 1) {
+                                if (rec->fish == idx && FishSpawn_GetWeightClass(rec->weight) <= 1) {
                                     break;
                                 }
                             }
@@ -10991,7 +10991,7 @@ void VillagerTalkTopics::selectTsuMove1B(TalkTopicMsg *out) {
         Villager_GetPlan(r6);
         r7 = ((void * (*)())VillagerPlanBlock_GetPlan)();
         if (Villager_IsJustMovedIn(r6) == 0) {
-            _ZN12VillagerPlan13func_0209b238Ev(r7);
+            _ZN12VillagerPlan12enterState0BEv(r7);
             SaveVillagers_SetLastMovedInById(gSaveVillagers, _ZN12VillagerData13getVillagerIdEv(r6));
         }
         v = 3;

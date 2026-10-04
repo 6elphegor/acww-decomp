@@ -7,8 +7,8 @@
 
 class ModelSlot;
 
-typedef void (*Unk_0209c15c_Fn)();
-typedef void *(*Unk_0209c1a4_Alloc)(u32, u32);
+typedef void (*ModelSlotFreeFunc)();
+typedef void *(*ModelSlotAllocFunc)(u32, u32);
 
 class ModelSlotHandle {
 public:
@@ -22,7 +22,7 @@ public:
     ModelSlotPool();
     ~ModelSlotPool();
     BOOL destroy();
-    BOOL init(u32 n, void *a, void *b, u32 size, Unk_0209c1a4_Alloc alloc, Unk_0209c15c_Fn free);
+    BOOL init(u32 n, void *a, void *b, u32 size, ModelSlotAllocFunc alloc, ModelSlotFreeFunc free);
     void release(u16 *idx);
     ModelSlot *acquire(u16 *idx);
 
@@ -30,8 +30,8 @@ public:
     /* 0x04 */ u32 numSlots;
     /* 0x08 */ u32 numInUse;
     /* 0x0c */ ModelSlot *slots;
-    /* 0x10 */ Unk_0209c1a4_Alloc allocFunc;
-    /* 0x14 */ Unk_0209c15c_Fn freeFunc;
+    /* 0x10 */ ModelSlotAllocFunc allocFunc;
+    /* 0x14 */ ModelSlotFreeFunc freeFunc;
 };
 
 #endif

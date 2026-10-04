@@ -25,16 +25,16 @@ struct Unk_02096354_Arg {
     u32 day;
 };
 
-struct Unk_020966f8_Rec {
-    union { struct { u32 a; u32 b; }; struct { u8 d0, d1, d2, d3, d4, d5, d6, d7; }; };
+struct DateTimeWords {
+    union { struct { u32 a; u32 b; }; struct { u8 d0, d1, hour, day, month, year, d6, d7; }; };
 };
 
-struct Unk_02096484_Base {
-    union { struct { u32 a; u32 b; }; struct { u8 d0, d1, d2, d3, d4, d5, d6, d7; }; };
-    Unk_02096484_Base() { a = 0; b = 0; }
+struct ZeroedDateTimeWords {
+    union { struct { u32 a; u32 b; }; struct { u8 d0, d1, d2, day, month, year, d6, d7; }; };
+    ZeroedDateTimeWords() { a = 0; b = 0; }
 };
-struct Unk_02096484_Rec : Unk_02096484_Base {
-    Unk_02096484_Rec() { a = 0; b = 0; }
+struct ZeroedDateTimeWords2 : ZeroedDateTimeWords {
+    ZeroedDateTimeWords2() { a = 0; b = 0; }
 };
 
 
@@ -185,7 +185,7 @@ u8 LetterPaper_PickRandom(u32 a, u32 b);
 void LetterDelivery_Update(void);
 s32 LetterDelivery_HasFreeOutgoingSlot(void);
 s32 LetterDelivery_HasFutureLetter(void *p);
-void func_020968e0(void);
+void LetterDelivery_PostOfficeClosedNop(void);
 s32 LetterList_CountUsed(void *base, s32 n);
 s32 LetterList_Compact(void *base, s32 n);
 s32 LetterDelivery_FindAddresseeVillager(Letter *);
@@ -438,7 +438,7 @@ extern "C" s32 LetterList_CountUsed(void *base, s32 n) {
     return cnt;
 }
 
-extern "C" void func_020968e0(void) {}
+extern "C" void LetterDelivery_PostOfficeClosedNop(void) {}
 
 extern "C" s32 LetterDelivery_HasFutureLetter(void *p) {
     if (p == 0) p = PlayerData_GetCurrent();
@@ -460,8 +460,8 @@ extern "C" void LetterDelivery_Update(void) {
     if (_ZN11CommManager8isOnlineEv(gCommManager)) return;
     u8 *const g = (u8 *)&data_021eb98c;
     r5 = _ZN12LetterOutbox19getLastDeliveryTimeEv(g);
-    Unk_020966f8_Rec A;
-    Unk_020966f8_Rec Y, Z;
+    DateTimeWords A;
+    DateTimeWords Y, Z;
     s32 z0, z1, z2;
     s32 i;
     u8 *r6;
@@ -472,24 +472,24 @@ extern "C" void LetterDelivery_Update(void) {
     Y.a = 0; Y.b = 0; Z.a = 0; Z.b = 0;
     if (_ZN12LetterOutbox8testFlagEj(g, 1)) {
         Y.a = 0; Y.b = 0;
-        Y.d5 = r5[2];
-        Y.d4 = r5[1];
-        Y.d3 = r5[0];
+        Y.year = r5[2];
+        Y.month = r5[1];
+        Y.day = r5[0];
         MI_CpuCopy8(&Y, &Z, 8);
         if (r5[3] < 9) {
             r5[3] = 9;
-            Z.d2 = 0x11;
+            Z.hour = 0x11;
         } else if (r5[3] < 0x11) {
             r5[3] = 0x11;
-            Z.d2 = 9;
+            Z.hour = 9;
             DateTime_AddDays(&Z, 1);
         } else {
             r5[3] = 9;
             DateTime_AddDays(&Y, 1);
-            Z.d2 = 0x11;
+            Z.hour = 0x11;
             DateTime_AddDays(&Z, 1);
         }
-        Y.d2 = r5[3];
+        Y.hour = r5[3];
         if (DateTime_Compare(&A, &Y, 0x3c) != -1) {
             LetterDelivery_DeliverOutgoing();
             if (DateTime_Compare(&A, &Z, 0x3c) != -1) LetterDelivery_DeliverOutgoing();
@@ -505,20 +505,20 @@ extern "C" void LetterDelivery_Update(void) {
             s4 = FutureLetter_GetLetter(PlayerData_GetFutureLetter(s0));
             if (((LetterView *)s4)->getState()) {
                 Y.a = z0; Y.b = z0;
-                Y.d5 = r6[2];
-                Y.d4 = r6[1];
-                Y.d3 = r6[0];
-                Y.d2 = 9;
+                Y.year = r6[2];
+                Y.month = r6[1];
+                Y.day = r6[0];
+                Y.hour = 9;
                 if (DateTime_Compare(&A, &Y, 0x3c) != ~z2) {
                     if (LetterDelivery_PutInMailbox((Letter *)s4, i, z1)) _ZN12FutureLetter17clearFutureLetterEv(PlayerData_GetFutureLetter(s0));
                 }
             }
         }
     }
-    r5[2] = A.d5;
-    r5[1] = A.d4;
-    r5[0] = A.d3;
-    r5[3] = A.d2;
+    r5[2] = A.year;
+    r5[1] = A.month;
+    r5[0] = A.day;
+    r5[3] = A.hour;
 }
 
 extern "C" u8 LetterPaper_PickRandom(u32 a, u32 b) {
@@ -588,20 +588,20 @@ extern "C" s32 MotherLetter_TrySendBirthday(Unk_02096354_Arg *p) {
     if (*(u16 *)q == 0) return 0;
     if (p->year == _ZN17MotherLetterState21getBirthdayLetterYearEv(r6)) return 0;
     s32 r;
-    Unk_02096484_Rec A;
-    A.d5 = p->year;
-    A.d4 = q[1];
-    A.d3 = q[0];
-    Unk_02096484_Rec B;
-    B.d5 = p->year;
-    B.d4 = p->month;
-    B.d3 = p->day;
-    Unk_02096484_Base C;
+    ZeroedDateTimeWords2 A;
+    A.year = p->year;
+    A.month = q[1];
+    A.day = q[0];
+    ZeroedDateTimeWords2 B;
+    B.year = p->year;
+    B.month = p->month;
+    B.day = p->day;
+    ZeroedDateTimeWords C;
     MI_CpuCopy8(&A, &C, 8);
     DateTime_AddDays(&C, 7);
     r = 0;
-    if (C.d5 != A.d5) {
-        C.d5 = A.d5;
+    if (C.year != A.year) {
+        C.year = A.year;
         if (DateTime_Compare(&B, &C, 0x38) == 1) {
             if (DateTime_Compare(&B, &A, 0x38) == -1) goto end;
         }

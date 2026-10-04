@@ -110,7 +110,7 @@ void PlayerData_GetCurrent();
 }
 
 extern "C" {
-PlayerOptions *func_02098668();
+PlayerOptions *_ZN10PlayerData10getOptionsEv();
 }
 
 extern "C" {

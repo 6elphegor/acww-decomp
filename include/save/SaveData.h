@@ -42,7 +42,8 @@ struct SaveData {
     /* 0x0fafc */ u8 ableSistersPatterns[0x1140];
     /* 0x10c3c */ u8 townExchange[0x84c]; // TownExchangeRecord
     /* 0x11488 */ u8 bbsBoard[0xb78];
-    /* 0x12000 */ u8 unk_12000[0xc];
+    /* 0x12000 */ u8 unk_12000[0x8];
+    /* 0x12008 */ s32 donationTotal; // Donation_GetTotal / Donation_SetTotal (capped at 999999999)
     /* 0x1200c */ u8 mailboxes[4][0x98c]; // PlayerMailbox
     /* 0x1463c */ u8 letterOutbox[0x990];
     /* 0x14fcc */ u8 constellations[0x464];

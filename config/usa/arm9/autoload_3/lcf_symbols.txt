@@ -185,7 +185,6 @@ gSaveSongSet addr:0x021e6e3c base:gSaveData
 gSaveAbleSistersPatterns addr:0x021e6e4c base:gSaveData
 data_021e7f8c addr:0x021e7f8c base:gSaveData
 data_021e87d8 addr:0x021e87d8 base:gSaveData
-data_021e9350 addr:0x021e9350 base:gSaveData
 data_021e935c addr:0x021e935c base:gSaveData
 data_021eb98c addr:0x021eb98c base:gSaveData
 data_021ec31c addr:0x021ec31c base:gSaveData
