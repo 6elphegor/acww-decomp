@@ -101,7 +101,7 @@ s32 GameProc_CreateChild(u32, u32, u32, u32);
 void List_Remove(void *, void *);
 void List_PushBack(void *, u32);
 void MenuScreen_Update();
-BOOL func_0203d4d4();
+BOOL Stub_ReturnFalse();
 s32 Scene_GetCurrent();
 BOOL TalkRequest_IsActive();
 s32 Hud_GetSceneHudKind();
@@ -465,7 +465,7 @@ BOOL MenuManager::onExecute() {
     MenuCtrl_LoadRequestedOverlays();
     MenuCtrl_CreateRequestedMenu();
     MenuScreen_Update();
-    if (func_0203d4d4()) return TRUE;
+    if (Stub_ReturnFalse()) return TRUE;
     if (Scene_GetCurrent() == 6) return TRUE;
     if (gSoftResetRequested) return TRUE;
     if (TalkRequest_IsActive()) return TRUE;

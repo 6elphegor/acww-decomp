@@ -166,7 +166,7 @@ extern "C" Ramp *Snd_GetVolumeCurve(void) {
 }
 
 // set data_021f5bfc (byte flag)
-extern "C" void func_020f44f0(u8 v) {
+extern "C" void Snd_SetUnusedFlag(u8 v) {
     data_021f5bfc = v;
 }
 

@@ -85,7 +85,7 @@ void MI_CpuCopy8(void *src, void *dst, s32 n);
 void MIi_CpuCopy16(void *src, void *dst, s32 n);
 BOOL Net_GetFriendDataType(void *p);
 BOOL Net_IsSameFriendData(void *p, void *q);
-s32 func_020e9d70(void *p);
+s32 Net_IsBuddyFriendData(void *p);
 s32 Net_GetMode();
 void *Net_GetWifiFriendList();
 BOOL Net_WifiDeleteFriend(u32 a);
@@ -1604,8 +1604,8 @@ s32 FriendRosterTab::syncFromWifiFriendList()
         }
         u8 *rec = b + i * 0x1c;
         if (Net_IsSameFriendData(tmp, DwcFriendData_GetBytes(FriendEntry_GetFriendData(rec))) != 0) {
-            s32 t = func_020e9d70(tmp);
-            if (t == func_020e9d70(DwcFriendData_GetBytes(FriendEntry_GetFriendData(rec)))) {
+            s32 t = Net_IsBuddyFriendData(tmp);
+            if (t == Net_IsBuddyFriendData(DwcFriendData_GetBytes(FriendEntry_GetFriendData(rec)))) {
                 continue;
             }
         }

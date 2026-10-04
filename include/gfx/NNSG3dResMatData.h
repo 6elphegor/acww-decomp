@@ -8,7 +8,8 @@
 // code, src/itcm/unk_01ffa3cc.c). sCharaShadowMatData (src/main/unk_020abbcc.cpp) points at material 0 of
 // chara_shadow.nsbmd; RoomShell (ov004) reads the light bits of polyAttr and the texture size of the wall/floor material.
 struct NNSG3dResMatData {
-    /* 0x00 */ u32 unk_00, diffAmb, specEmi, polyAttr, polyAttrMask;
+    /* 0x00 */ u16 itemTag, size;
+    /* 0x04 */ u32 diffAmb, specEmi, polyAttr, polyAttrMask;
     /* 0x14 */ u32 texImageParam, texImageParamMask;
     /* 0x1c */ u16 texPlttBase, flag;
     /* 0x20 */ u16 origWidth, origHeight;

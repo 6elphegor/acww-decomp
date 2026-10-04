@@ -11,11 +11,6 @@
 
 extern "C" void MI_CpuCopy8(const void *src, void *dst, u32 size);
 
-struct Unk_0203f484_Date {
-    u32 a;
-    u32 b;
-};
-
 struct ClockDateTimeCopy {
     u8 b[8];
     ClockDateTimeCopy() {}
@@ -821,22 +816,22 @@ extern "C" s32 EventSchedule_CollectDayAll(EventEntryView *a, ClockDateTimeCopy 
 }
 
 extern "C" void Event_RefreshToday(s32 x) {
-    Unk_0203f484_Date d;
-    d.a = 0;
-    d.b = 0;
+    ClockDateTimeWords d;
+    d.words[0] = 0;
+    d.words[1] = 0;
     Clock_GetDateTime(&d);
     EventSchedule_CollectDay((EventEntryView *)gTodayEvents.entries, *(ClockDateTimeCopy *)&d, x);
-    gTodayEvents.date[2] = ((u8 *)&d)[5];
-    gTodayEvents.date[1] = ((u8 *)&d)[4];
-    gTodayEvents.date[0] = ((u8 *)&d)[3];
+    gTodayEvents.date[2] = d.dt.year;
+    gTodayEvents.date[1] = d.dt.month;
+    gTodayEvents.date[0] = d.dt.day;
 }
 
 extern "C" void Event_RefreshIfDateChanged() {
-    Unk_0203f484_Date d;
-    d.a = 0;
-    d.b = 0;
+    ClockDateTimeWords d;
+    d.words[0] = 0;
+    d.words[1] = 0;
     Clock_GetDateTime(&d);
-    if (((u8 *)&d)[5] != gTodayEvents.date[2] || ((u8 *)&d)[4] != gTodayEvents.date[1] || ((u8 *)&d)[3] != gTodayEvents.date[0]) {
+    if (d.dt.year != gTodayEvents.date[2] || d.dt.month != gTodayEvents.date[1] || d.dt.day != gTodayEvents.date[0]) {
         Event_RefreshToday(0);
     }
 }

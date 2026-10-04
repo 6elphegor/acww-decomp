@@ -54,7 +54,7 @@ void MenuCtrl_SetMenuOnTop();
 BOOL Camera_SetMode1();
 void MenuCtrl_SetTransitionActive();
 void Gfx2d_SetMainWin1Rect(s32, s32, s32, s32);
-BOOL func_0203d4d4();
+BOOL Stub_ReturnFalse();
 void MenuCtrl_SetScreenChanging();
 u32 PlayerData_GetCurrent();
 u16 *_ZN10PlayerData22getInventoryBackgroundEv();
@@ -335,7 +335,7 @@ extern "C" void MenuScreen_ClearState() {
 }
 
 extern "C" void MenuScreen_Reset() {
-    if (!func_0203d4d4()) {
+    if (!Stub_ReturnFalse()) {
         Gfx2d_ResetLayer(1);
         Gfx2d_ResetLayer(5);
     }

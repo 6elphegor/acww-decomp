@@ -13,7 +13,8 @@ struct TownState {
     /* 0x09 */ u8 nextWeekMonth;
     /* 0x0a */ u8 nextWeekYear;
     /* 0x0b */ u8 unk_0b;
-    /* 0x0c */ u8 pad_0c[0x21 - 0x0c];
+    /* 0x0c */ u8 unk_0c[10];   // cleared by TownState_ClearUnk0c
+    /* 0x16 */ u8 unk_16[11];   // cleared by TownState_ClearUnk16
     /* 0x21 */ s8 perfectStreak;
     /* 0x22 */ u8 unk_22;
     /* 0x23 */ u8 pad_23[0x54 - 0x23];

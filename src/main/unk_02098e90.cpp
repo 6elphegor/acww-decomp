@@ -2,11 +2,12 @@
 #include "item/PocketMatches.h"
 #include "item/ItemId.h"
 #include "npc/VillagerId.h"
+#include "sys/ClockDate.h"
 #include "player/PlayerId.h"
 #include "player/PlayerData.h"
 
 // Entry of the const table at 0x020d0604 (8 bytes): name, random range
-struct Unk_0209b570_Ent {
+struct TopicWordList {
     char *fileName;
     u8 wordCount;
 };
@@ -45,9 +46,6 @@ struct ErrandRecord {
 // ======== types of unk_02098f90.cpp ========
 
 
-struct Unk_020994cc_Date {
-    u32 v;
-};
 
 class SickVillagerRecord {
 public:
@@ -58,7 +56,7 @@ public:
     u8 statusDate[4];
     u8 sickDay;
     PlayerId *getTopVisitor();
-    BOOL isRecentlyRecovered(Unk_020994cc_Date *d);
+    BOOL isRecentlyRecovered(ClockDate *d);
     BOOL isRecovered();
     void setTodaysVisitor(PlayerId *e);
     BOOL hasTodaysVisitor();
@@ -75,12 +73,12 @@ public:
 };
 // ======== types of unk_020998b8.cpp ========
 
-// Record (12 bytes): u16 id, 8 bytes, type byte at +0x0a, key byte at +0x0b
-class Unk_02003130 {
+// VillagerId (npc/VillagerId.h) with its constructors / destructor declared (VillagerId_Construct, _ConstructCopy, _Destruct)
+class VillagerIdCtorDtor {
 public:
-    Unk_02003130();
-    Unk_02003130(s32 v);
-    ~Unk_02003130();
+    VillagerIdCtorDtor();
+    VillagerIdCtorDtor(s32 v);
+    ~VillagerIdCtorDtor();
 
     /* 0x00 */ u16 townId;
     /* 0x02 */ u8 townName[8];
@@ -94,7 +92,7 @@ public:
     PlayerErrandSlot();
     ~PlayerErrandSlot();
 
-    /* 0x0c */ Unk_02003130 villagers[2];
+    /* 0x0c */ VillagerIdCtorDtor villagers[2];
     /* 0x24 */ u8 presentReaction;
 };
 
@@ -105,7 +103,7 @@ public:
     /* 0x0d */ u8 pendingRecipients;
 };
 
-class HouseVisitInvite : public Unk_02003130 {
+class HouseVisitInvite : public VillagerIdCtorDtor {
 public:
     HouseVisitInvite();
     ~HouseVisitInvite();
@@ -122,7 +120,7 @@ public:
     ~PlayerErrands();
 
     /* 0x00 */ PlayerErrandSlot slots[2];
-    /* 0x50 */ Unk_02003130 jobVillagers[3];
+    /* 0x50 */ VillagerIdCtorDtor jobVillagers[3];
     /* 0x74 */ u8 onDuty;
     /* 0x78 */ ParcelErrand parcelErrand;
     /* 0x88 */ HouseVisitInvite houseVisitInvite;
@@ -243,7 +241,7 @@ extern "C" {
 s32 Random_GlobalBelow(s32);
 void *MI_CpuCopy8(void *, void *, s32);
 void *MI_CpuFill8(void *, s32, s32);
-extern const Unk_0209b570_Ent sTopicWordLists[];
+extern const TopicWordList sTopicWordLists[];
 }
 
 extern "C" {
@@ -1656,7 +1654,7 @@ s32 ParcelErrand_CountPending(ParcelErrand *z, u32 mask);
 void ParcelErrand_Clear(ParcelErrand *z);
 s32 PlayerErrandSlot_Clear(PlayerErrandSlot *e);
 ErrandRecord *PlayerErrandSlot_GetRecord(PlayerErrandSlot *e);
-Unk_02003130 *PlayerErrandSlot_GetVillager(PlayerErrandSlot *e, s32 i);
+VillagerIdCtorDtor *PlayerErrandSlot_GetVillager(PlayerErrandSlot *e, s32 i);
 void PlayerErrandSlot_Start(PlayerErrandSlot *e, s32 a, s32 b, void *c);
 void *ParcelErrand_GetRecord(ParcelErrand *z);
 void *ParcelErrand_GetRecipientName(ParcelErrand *z, s32 v);
@@ -1670,11 +1668,11 @@ u32 _ZN12ErrandRecord7getKindEv(ErrandRecord *y);
 void _ZN12ErrandRecord5startEhPth(ErrandRecord *y, s32 t, u16 *v, s32 k);
 s32 _ZN12ErrandRecord8isActiveEv(ErrandRecord *y);
 void _ZN12ErrandRecord5clearEv(ErrandRecord *y);
-s32 _ZN10VillagerId7isValidEv(Unk_02003130 *r);
-void VillagerId_Copy(Unk_02003130 *r, Unk_02003130 *o);
-void VillagerId_Clear(Unk_02003130 *r);
-Unk_02003130 *_ZN12VillagerData13getVillagerIdEv(void *p);
-void *SaveVillagers_PickRandomTalkPartner(void *g, Unk_02003130 **a, s32 n);
+s32 _ZN10VillagerId7isValidEv(VillagerIdCtorDtor *r);
+void VillagerId_Copy(VillagerIdCtorDtor *r, VillagerIdCtorDtor *o);
+void VillagerId_Clear(VillagerIdCtorDtor *r);
+VillagerIdCtorDtor *_ZN12VillagerData13getVillagerIdEv(void *p);
+void *SaveVillagers_PickRandomTalkPartner(void *g, VillagerIdCtorDtor **a, s32 n);
 s32 _ZN10LetterView8getStateEv(void *p);
 s32 Letter_GetRecipientVillager(void *p);
 s32 PlayerData_GetCurrent();
@@ -1687,7 +1685,7 @@ s32 Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
 u32 Random_GlobalBelow(u32 n);
 s32 Npc_GetName(void *p, u16 *v);
-u32 _ZN10VillagerId7getNameEj(Unk_02003130 *r, u32 a);
+u32 _ZN10VillagerId7getNameEj(VillagerIdCtorDtor *r, u32 a);
 s32 _ZN10PlayerData11getPlayerIdEv(s32 v);
 s32 _ZN6TownId15getTownRelationEv(s32 v);
 s32 NookShop_IsOpenHour();
@@ -1695,7 +1693,7 @@ s32 NookShop_IsClosedToday(void *p);
 }
 
 
-extern "C" BOOL Arbeit_IsLetterRecipient(PlayerErrands *m, Unk_02003130 *r);
+extern "C" BOOL Arbeit_IsLetterRecipient(PlayerErrands *m, VillagerIdCtorDtor *r);
 extern "C" void Arbeit_Finish(PlayerErrands *m);
 extern "C" void Arbeit_OnBbsPosted(PlayerErrands *m);
 extern "C" void Arbeit_StartBbsTask(PlayerErrands *m);
@@ -1715,11 +1713,11 @@ extern "C" void Arbeit_Start(PlayerErrands *m);
 extern "C" BOOL PlayerErrands_IsJobActive(PlayerErrands *m);
 extern "C" void PlayerErrands_ClearJobVillagers(PlayerErrands *m);
 extern "C" void *PlayerErrands_GetDeliveryRecipientName(PlayerErrands *m, s32 a, u16 *p);
-extern "C" PlayerErrandSlot *PlayerErrandSlots_FindByVillager(PlayerErrandSlot *arr, Unk_02003130 *p, s32 idx);
+extern "C" PlayerErrandSlot *PlayerErrandSlots_FindByVillager(PlayerErrandSlot *arr, VillagerIdCtorDtor *p, s32 idx);
 extern "C" PlayerErrandSlot *PlayerErrands_GetSlot(PlayerErrands *m, s32 i);
 extern "C" void PlayerErrands_Clear(PlayerErrands *m);
-extern "C" void HouseVisitInvite_Set(HouseVisitInvite *x, Unk_02003130 *r, void *src);
-extern "C" BOOL HouseVisitInvite_IsFrom(HouseVisitInvite *x, Unk_02003130 *p);
+extern "C" void HouseVisitInvite_Set(HouseVisitInvite *x, VillagerIdCtorDtor *r, void *src);
+extern "C" BOOL HouseVisitInvite_IsFrom(HouseVisitInvite *x, VillagerIdCtorDtor *p);
 extern "C" void HouseVisitInvite_Clear(HouseVisitInvite *x);
 extern "C" BOOL ParcelErrand_IsFor(ParcelErrand *z, u16 *p);
 extern "C" BOOL ParcelErrand_NextRecipient(ParcelErrand *z);
@@ -1870,7 +1868,7 @@ extern "C" void HouseVisitInvite_Clear(HouseVisitInvite *x) {
     MI_CpuFill8(x->unk_20, 0, 1);
 }
 
-extern "C" BOOL HouseVisitInvite_IsFrom(HouseVisitInvite *x, Unk_02003130 *p) {
+extern "C" BOOL HouseVisitInvite_IsFrom(HouseVisitInvite *x, VillagerIdCtorDtor *p) {
     if (_ZN12ErrandRecord8isActiveEv(&x->errand) && _ZN10VillagerId7isValidEv(p) && p->townId == x->townId &&
         memcmp(p->townName, x->townName, 8) == 0 && p->species == x->species) {
         return TRUE;
@@ -1878,7 +1876,7 @@ extern "C" BOOL HouseVisitInvite_IsFrom(HouseVisitInvite *x, Unk_02003130 *p) {
     return FALSE;
 }
 
-extern "C" void HouseVisitInvite_Set(HouseVisitInvite *x, Unk_02003130 *r, void *src) {
+extern "C" void HouseVisitInvite_Set(HouseVisitInvite *x, VillagerIdCtorDtor *r, void *src) {
     HouseVisitInvite_Clear(x);
     u16 v = 0xfff1;
     _ZN12ErrandRecord5startEhPth(&x->errand, 0x15, &v, 0);
@@ -1916,14 +1914,14 @@ extern "C" PlayerErrandSlot *PlayerErrands_GetSlot(PlayerErrands *m, s32 i) {
     return r;
 }
 
-extern "C" PlayerErrandSlot *PlayerErrandSlots_FindByVillager(PlayerErrandSlot *arr, Unk_02003130 *p, s32 idx) {
+extern "C" PlayerErrandSlot *PlayerErrandSlots_FindByVillager(PlayerErrandSlot *arr, VillagerIdCtorDtor *p, s32 idx) {
     PlayerErrandSlot *ret = 0;
     if (_ZN10VillagerId7isValidEv(p)) {
         s32 i;
         for (i = 0; i < 2; i++) {
             PlayerErrandSlot *e = &arr[i];
             if (_ZN12ErrandRecord8isActiveEv(PlayerErrandSlot_GetRecord(e))) {
-                Unk_02003130 *q = PlayerErrandSlot_GetVillager(e, idx);
+                VillagerIdCtorDtor *q = PlayerErrandSlot_GetVillager(e, idx);
                 if (q->townId == p->townId && memcmp(q->townName, p->townName, 8) == 0 && q->species == p->species) {
                     ret = e;
                     break;
@@ -2039,7 +2037,7 @@ extern "C" void Arbeit_StartFurnitureDelivery(PlayerErrands *m) {
 extern "C" void Arbeit_StartLetterTask(PlayerErrands *m) {
     PlayerErrandSlot *e = PlayerErrands_GetSlot(m, 0);
     PlayerErrandSlot_GetRecord(e);
-    Unk_02003130 *a[1];
+    VillagerIdCtorDtor *a[1];
     func_02133ef8(a, 4);
     s32 n = 0;
     if (_ZN10VillagerId7isValidEv(&m->jobVillagers[0])) {
@@ -2074,9 +2072,9 @@ extern "C" BOOL Arbeit_OnLetterSent(PlayerErrands *m, void *p) {
         if (_ZN12ErrandRecord7getKindEv(y) == 0xf) {
             s32 v = Letter_GetRecipientVillager(p);
             if (v) {
-                Unk_02003130 tmp(v);
+                VillagerIdCtorDtor tmp(v);
                 if (_ZN10VillagerId7isValidEv(&tmp)) {
-                    Unk_02003130 *q = PlayerErrandSlot_GetVillager(e, 1);
+                    VillagerIdCtorDtor *q = PlayerErrandSlot_GetVillager(e, 1);
                     if (q->townId == tmp.townId && memcmp(q->townName, tmp.townName, 8) == 0 && q->species == tmp.species) {
                         if (_ZN12ErrandRecord7getStepEv(y) < 2) {
                             _ZN12ErrandRecord7setStepEh(y, 2);
@@ -2103,11 +2101,11 @@ extern "C" BOOL Arbeit_OnLetterSent(PlayerErrands *m, void *p) {
 
 extern "C" void Arbeit_StartCarpetDelivery(PlayerErrands *m) {
     PlayerErrandSlot *e = PlayerErrands_GetSlot(m, 0);
-    Unk_02003130 *a[2];
+    VillagerIdCtorDtor *a[2];
     func_02133ef8(a, 8);
     s32 n = 0, i = n;
     for (; i < 2; i++) {
-        Unk_02003130 *r = &m->jobVillagers[i];
+        VillagerIdCtorDtor *r = &m->jobVillagers[i];
         if (_ZN10VillagerId7isValidEv(r)) {
             a[n] = r;
             n++;
@@ -2143,7 +2141,7 @@ extern "C" void Arbeit_Finish(PlayerErrands *m) {
     }
 }
 
-extern "C" BOOL Arbeit_IsLetterRecipient(PlayerErrands *m, Unk_02003130 *r) {
+extern "C" BOOL Arbeit_IsLetterRecipient(PlayerErrands *m, VillagerIdCtorDtor *r) {
     if (_ZN10VillagerId7isValidEv(r) && PlayerErrands_IsJobActive(m) && r->townId == m->jobVillagers[1].townId &&
         memcmp(r->townName, m->jobVillagers[1].townName, 8) == 0 && r->species == m->jobVillagers[1].species) {
         return TRUE;
@@ -2228,7 +2226,7 @@ extern "C" s32 Pocket_SetFoundItem(u16 *a, s32 b);
 extern "C" u16 Item_PickRandomPresent();
 extern "C" s32 Inventory_GetEmptyLetter();
 extern "C" s32 Inventory_FindEmptyLetter();
-extern "C" void func_02099214();
+extern "C" void Main_EmptyInitStub();
 extern "C" void Quat_Mul(s32 *a, s32 *b, s32 *out);
 extern "C" void Quat_ToMtx43(s32 *a, s32 *b);
 extern "C" void Quat_ToMtx33(s32 *a, s32 *m);
@@ -2380,9 +2378,9 @@ BOOL SickVillagerRecord::isRecovered() {
 
 namespace n2 {
 }
-BOOL SickVillagerRecord::isRecentlyRecovered(Unk_020994cc_Date *d) {
+BOOL SickVillagerRecord::isRecentlyRecovered(ClockDate *d) {
     using namespace n2;
-    Unk_020994cc_Date local;
+    ClockDate local;
     if (d == NULL) {
         Clock_GetDate(&local);
         d = &local;
@@ -2536,7 +2534,7 @@ extern "C" void Quat_Mul(s32 *a, s32 *b, s32 *out) {
     out[3] = o3;
 }
 
-extern "C" void func_02099214() {
+extern "C" void Main_EmptyInitStub() {
 }
 
 extern "C" s32 Inventory_FindEmptyLetter() {
@@ -2716,7 +2714,7 @@ extern void *data_020e21a8[2];
 extern const u16 sParcelRecipients[5];
 extern char data_020e21cc[9];
 extern const u8 sPlanStateGroupStarts[3];
-extern const Unk_0209b570_Ent sTopicWordLists[6];
+extern const TopicWordList sTopicWordLists[6];
 extern const u8 sFurnitureGoalCounts[6];
 extern const u8 data_020d05a0[4];
 extern void *data_020e2198[2];
@@ -2736,7 +2734,7 @@ void *data_020e21a8[2] = {(void *)ErrandSetup_LetterBundle, 0};
 const u16 sParcelRecipients[5] = {0xd019, 0xd004, 0xd006, 0xd007, 0xd00c};
 char data_020e21cc[9] = "st_music";
 const u8 sPlanStateGroupStarts[3] = {0, 5, 8};
-const Unk_0209b570_Ent sTopicWordLists[6] = {
+const TopicWordList sTopicWordLists[6] = {
     {data_020e21cc, 0x20}, {data_020e21e4, 0x20}, {data_020e21c0, 0x24},
     {data_020e21d8, 0x18}, {data_020e21f0, 0x28}, {data_020e21b0, 0x20},
 };

@@ -1,4 +1,5 @@
 #include "types.h"
+#include "sys/StackPad.h"
 #include "item/ItemId.h"
 #include "player/PlayerData.h"
 #include "net/CommManager.h"
@@ -67,11 +68,6 @@ s32 _ZN15PlayerInventory14getPocketFlagsEi(u8 *, s32);
 s32 Item_GetPrice(u16 *);
 }
 
-struct Unk_02097c50_Pad {
-    s32 v[2];
-    Unk_02097c50_Pad() {}
-    ~Unk_02097c50_Pad() {}
-};
 
 extern "C" s32 PlayerInventory_GetBellsRoom(u8 *p, s32 mode, s32 arg) {
     s32 x = 99999 - _ZN15PlayerInventory13getTotalBellsEi(p, 0);
@@ -81,7 +77,7 @@ extern "C" s32 PlayerInventory_GetBellsRoom(u8 *p, s32 mode, s32 arg) {
 }
 
 extern "C" s32 PlayerInventory_FindSmallestBag(u8 *p, s32 mode) {
-    Unk_02097c50_Pad pad;
+    StackPad8 pad;
     u16 *q = _ZN15PlayerInventory9getPocketEi(p, 0);
     s32 lim = mode == 1 ? 0x6b : 0x6a;
     s32 i = 0;

@@ -60,13 +60,13 @@ struct SndSeqHandle {
 
 struct SeqHeader {
     /* 0x00 */ u8 unk_00[0x38];
-    /* 0x38 */ u16 unk_38;
-    /* 0x3a */ u16 unk_3a;
+    /* 0x38 */ u16 seqNo;
+    /* 0x3a */ u16 seqArcIndex;
 };
 
 struct SeqInfo {
     u8 pad[4];
-    u8 unk_04;
+    u8 playerPrio;
 };
 
 struct Pan4500 {
@@ -382,7 +382,7 @@ void SndPosNode::restart() {
     BOOL halt = FALSE;
     void *p = h.p;
     if (notNull(p)) {
-        if ((s32)((SeqHeader *)p)->unk_3a != (id % 1000)) {
+        if ((s32)((SeqHeader *)p)->seqArcIndex != (id % 1000)) {
             start = TRUE;
             halt = start;
         } else {
@@ -511,7 +511,7 @@ void SndPosList::update() {
     if (gSndMgr.f2c->id != 10) return;
     SndSeqHandle *bh = (SndSeqHandle *)(void *)&gSndBgmHandle;
     if (!bh) return;
-    u32 id = ((SeqHeader *)bh->p)->unk_38;
+    u32 id = ((SeqHeader *)bh->p)->seqNo;
     if (id < 176 || id > 245) NNS_SndPlayerStopSeqBySeqNo(1, 0x107, 5);
 }
 
@@ -566,7 +566,7 @@ void SndEnvChannel::request(u32 nv) {
 extern "C" s32 Snd_CalcSeVolume(s32 a, s32 b) {
     SeqInfo *inf = NNS_SndArcGetSeqArcSeqParam(a / 1000, a % 1000);
     if (inf == NULL) Fatal_Trap();
-    s32 v = b + (inf->unk_04 - 100);
+    s32 v = b + (inf->playerPrio - 100);
     if (v > 0) {
         if (v >= 127) v = 127;
     } else {

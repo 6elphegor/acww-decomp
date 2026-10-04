@@ -191,13 +191,13 @@ _ZN10VillagerId7isValidEv kind:function(thumb,size=0x22) addr:0x020030b4
 VillagerId_Copy kind:function(thumb,size=0x10) addr:0x020030d8
 VillagerId_Clear kind:function(thumb,size=0x16) addr:0x020030e8
 VillagerId_Destruct kind:function(thumb,size=0x10) addr:0x02003100
-_ZN12Unk_02003130D2Ev kind:label(thumb) addr:0x02003100
-_ZN12Unk_02003130D1Ev kind:label(thumb) addr:0x02003100
+_ZN18VillagerIdCtorDtorD2Ev kind:label(thumb) addr:0x02003100
+_ZN18VillagerIdCtorDtorD1Ev kind:label(thumb) addr:0x02003100
 VillagerId_ConstructCopy kind:function(thumb,size=0x1e) addr:0x02003110
-_ZN12Unk_02003130C1Ei kind:label(thumb) addr:0x02003110
+_ZN18VillagerIdCtorDtorC1Ei kind:label(thumb) addr:0x02003110
 VillagerId_Construct kind:function(thumb,size=0x10) addr:0x02003130
-_ZN12Unk_02003130C2Ev kind:label(thumb) addr:0x02003130
-_ZN12Unk_02003130C1Ev kind:label(thumb) addr:0x02003130
+_ZN18VillagerIdCtorDtorC2Ev kind:label(thumb) addr:0x02003130
+_ZN18VillagerIdCtorDtorC1Ev kind:label(thumb) addr:0x02003130
 VillagerId_CopyTo kind:function(thumb,size=0x1c) addr:0x02003140
 VillagerId_CopyFrom kind:function(thumb,size=0x1c) addr:0x0200315c
 _ZN15HudUnkSlideIcon19applyVariantRequestEv kind:function(thumb,size=0x4c) addr:0x02003178
@@ -340,8 +340,8 @@ _ZN11PlayerActorD1Ev kind:function(thumb,size=0x184) addr:0x02004760
 _ZN11PlayerActorC1Ev kind:function(thumb,size=0x264) addr:0x020048e4
 _ZN17SndSeEmitterKind1D1Ev kind:function(thumb,size=0x18) addr:0x02004b48
 _ZN6ItemIdD1Ev kind:function(thumb,size=0x2) addr:0x02004b60
-_ZN17Unk_0204b598_ElemD1Ev kind:label(thumb) addr:0x02004b60
-_ZN17Unk_020601cc_DfltD1Ev kind:label(thumb) addr:0x02004b60
+_ZN12ItemIdNoInitD1Ev kind:label(thumb) addr:0x02004b60
+_ZN11EmptyItemIdD1Ev kind:label(thumb) addr:0x02004b60
 _ZN11PlayerActor8doDeleteEv kind:function(thumb,size=0x184) addr:0x02004b64
 _ZN11PlayerActor6doDrawEv kind:function(thumb,size=0x124) addr:0x02004ce8
 _ZN11PlayerActor15getJointGroundYEi kind:function(thumb,size=0x34) addr:0x02004e0c
@@ -397,7 +397,7 @@ _ZN11PlayerActor17requestHoldUpItemEPtjj kind:function(thumb,size=0x50) addr:0x0
 _ZN11PlayerActor16mainErrorMessageEv kind:function(thumb,size=0x40) addr:0x02008150
 _ZN11PlayerActor18errorMessageUpdateEv kind:function(thumb,size=0x118) addr:0x02008190
 _ZN11PlayerActor13func_020082a8Ev kind:function(thumb,size=0x2) addr:0x020082a8
-_ZN12Unk_020082a8D1Ev kind:label(thumb) addr:0x020082a8
+_ZN12TalkMsgIndexD1Ev kind:label(thumb) addr:0x020082a8
 _ZN11PlayerActor15netErrorMessageEj kind:function(thumb,size=0x14) addr:0x020082ac
 _ZN11PlayerActor17setupErrorMessageEPh kind:function(thumb,size=0x24) addr:0x020082c0
 _ZN11PlayerActor19requestErrorMessageEhjj kind:function(thumb,size=0x3c) addr:0x020082e4
@@ -884,7 +884,7 @@ _ZN13VillagerRoute12findJunctionEP12RouteGridPos kind:function(thumb,size=0x2e) 
 _ZN13VillagerRoute12pushJunctionEjjP12RouteGridPos kind:function(thumb,size=0x6a) addr:0x02012d6c
 _ZN13VillagerRoute14countJunctionsEv kind:function(thumb,size=0x20) addr:0x02012dd8
 _ZN13VillagerRoute14clearJunctionsEv kind:function(thumb,size=0x10) addr:0x02012df8
-_ZN13VillagerRoute7scanDirEP12RouteGridPos16Unk_02012e08_PosjS1_P8BlockMap kind:function(thumb,size=0xa8) addr:0x02012e08
+_ZN13VillagerRoute7scanDirEP12RouteGridPos16RouteGridPosCopyjS1_P8BlockMap kind:function(thumb,size=0xa8) addr:0x02012e08
 _ZN13VillagerRoute8firstDirEi kind:function(thumb,size=0x1e) addr:0x02012eb0
 _ZN13VillagerRoute9isArrivedEP7VecFx32 kind:function(thumb,size=0x34) addr:0x02012ed0
 _ZN13VillagerRoute15findNearestPathEP12RouteGridPosP7VecFx32 kind:function(thumb,size=0x1ec) addr:0x02012f04
@@ -1617,8 +1617,8 @@ _ZN23VillagerTalkRumorTopics28pickMemoryLetterFromResidentEPPvi kind:function(th
 Talk_IsMemoryLetterSenderResident kind:function(thumb,size=0x44) addr:0x020214a8
 _ZN23VillagerTalkRumorTopics24pickMemoryWithComplimentEPPvi kind:function(thumb,size=0x5c) addr:0x020214ec
 Talk_MemoryHasCompliment kind:function(thumb,size=0x1a) addr:0x02021548
-_ZN23VillagerTalkRumorTopics13func_02021564EPPvi kind:function(thumb,size=0x44) addr:0x02021564
-func_020215a8 kind:function(thumb,size=0x50) addr:0x020215a8
+_ZN23VillagerTalkRumorTopics32pickMemoryLetterFromVillagerTownEPPvi kind:function(thumb,size=0x44) addr:0x02021564
+Talk_IsMemoryLetterSenderFromVillagerTown kind:function(thumb,size=0x50) addr:0x020215a8
 Talk_IsMemoryLetterSender kind:function(thumb,size=0x18) addr:0x020215f8
 _ZN23VillagerTalkRumorTopics21pickMemoryDislikedOldEPPvi kind:function(thumb,size=0x50) addr:0x02021610
 Talk_IsMemoryDislikedAndOld kind:function(thumb,size=0x24) addr:0x02021660
@@ -1913,7 +1913,7 @@ _ZN18VillagerTalkTopics13isBeeSwarmOutEv kind:function(thumb,size=0x30) addr:0x0
 _ZN18VillagerTalkTopics9hasFallenEv kind:function(thumb,size=0x4) addr:0x0202bb84
 _ZN18VillagerTalkTopics17getGreetingStatusEPi kind:function(thumb,size=0x154) addr:0x0202bb88
 _ZN13VillagerActor16updateCatchPlansEPhPvj kind:function(thumb,size=0x60) addr:0x0202bcdc
-_ZN13VillagerActor19updateFishCatchPlanEPvPhS0_hP16Unk_0202bd3c_Arr kind:function(thumb,size=0x128) addr:0x0202bd3c
+_ZN13VillagerActor19updateFishCatchPlanEPvPhS0_hP18ClockDateTimeWords kind:function(thumb,size=0x128) addr:0x0202bd3c
 Talk_UpdateInsectCatchPlan kind:function(thumb,size=0x120) addr:0x0202be64
 Talk_IsCatchPlanDue kind:function(thumb,size=0x110) addr:0x0202bf84
 Talk_FindNearbyInsectOfKinds kind:function(thumb,size=0x68) addr:0x0202c094
@@ -3097,7 +3097,7 @@ ScreenLayers_ReleaseStub kind:function(thumb,size=0x2) addr:0x0203d4c4
 ScreenLayers_AcquireStub kind:function(thumb,size=0x2) addr:0x0203d4c8
 Main_PostTaskStub kind:function(thumb,size=0x2) addr:0x0203d4cc
 Main_PreTaskStub kind:function(thumb,size=0x2) addr:0x0203d4d0
-func_0203d4d4 kind:function(thumb,size=0x4) addr:0x0203d4d4
+Stub_ReturnFalse kind:function(thumb,size=0x4) addr:0x0203d4d4
 _ZN16TalkRequestQueueD1Ev kind:function(thumb,size=0x20) addr:0x0203d4d8
 _ZN16TalkRequestQueueD0Ev kind:function(thumb,size=0x28) addr:0x0203d4f8
 TalkRequestFlags_ClearTitleTimeout kind:function(thumb,size=0xc) addr:0x0203d520
@@ -5152,7 +5152,7 @@ _ZN9HouseData7getDebtEv kind:function(thumb,size=0xc) addr:0x02060388
 _ZN9HouseData17addRoachesForDaysEi kind:function(thumb,size=0x1c) addr:0x02060394
 _ZN9HouseData13setRoachCountEh kind:function(thumb,size=0xc) addr:0x020603b0
 _ZN9HouseData13getRoachCountEv kind:function(thumb,size=0xc) addr:0x020603bc
-func_020603c8 kind:function(thumb,size=0x2c) addr:0x020603c8
+House_GetLevelAcreId kind:function(thumb,size=0x2c) addr:0x020603c8
 _ZN9HouseData13getRoomAcreIdEi kind:function(thumb,size=0x3c) addr:0x020603f4
 _ZN9HouseData14orderRoofPaintEj kind:function(thumb,size=0x2c) addr:0x02060430
 _ZN9HouseData12getRoofColorEv kind:function(thumb,size=0x18) addr:0x0206045c
@@ -9565,7 +9565,7 @@ Pocket_SetFoundItem kind:function(thumb,size=0x50) addr:0x02099160
 Item_PickRandomPresent kind:function(thumb,size=0x32) addr:0x020991b0
 Inventory_GetEmptyLetter kind:function(thumb,size=0x16) addr:0x020991e4
 Inventory_FindEmptyLetter kind:function(thumb,size=0x16) addr:0x020991fc
-func_02099214 kind:function(thumb,size=0x2) addr:0x02099214
+Main_EmptyInitStub kind:function(thumb,size=0x2) addr:0x02099214
 Quat_Mul kind:function(thumb,size=0xe6) addr:0x02099218
 Quat_ToMtx43 kind:function(thumb,size=0x16) addr:0x02099300
 Quat_ToMtx33 kind:function(thumb,size=0xc4) addr:0x02099318
@@ -9574,7 +9574,7 @@ FishSpawn_GetWeightClass kind:function(thumb,size=0x10) addr:0x0209948c
 InsectSpawn_GetWeightClass kind:function(thumb,size=0x10) addr:0x0209949c
 Threshold_FindIndex kind:function(thumb,size=0x20) addr:0x020994ac
 _ZN18SickVillagerRecord13getTopVisitorEv kind:function(thumb,size=0x158) addr:0x020994cc
-_ZN18SickVillagerRecord19isRecentlyRecoveredEP17Unk_020994cc_Date kind:function(thumb,size=0x42) addr:0x02099624
+_ZN18SickVillagerRecord19isRecentlyRecoveredEP9ClockDate kind:function(thumb,size=0x42) addr:0x02099624
 _ZN18SickVillagerRecord11isRecoveredEv kind:function(thumb,size=0x10) addr:0x02099668
 _ZN18SickVillagerRecord16setTodaysVisitorEP8PlayerId kind:function(thumb,size=0x18) addr:0x02099678
 _ZN18SickVillagerRecord16hasTodaysVisitorEv kind:function(thumb,size=0x20) addr:0x02099690

@@ -1,4 +1,5 @@
 #include "types.h"
+#include "sys/ClockDateTime.h"
 #include "gfx/VecFx32.h"
 #include "player/PlayerSpNpcRecord.h"
 #include "npc/VillagerId.h"
@@ -369,17 +370,6 @@ struct DramaScheduleEntry {
     u8 b;
     u8 pad[2];
     u32 c;
-};
-
-struct Unk_02087650_S {
-    union {
-        u32 z[2];
-        struct {
-            u8 pad[3];
-            u8 c, b, a;
-            u8 pad2[2];
-        };
-    };
 };
 
 class PlayerDailyTalkFlags {
@@ -989,7 +979,7 @@ extern "C" u8 *DramaRecord_GetDate(u8 *p) {
 }
 
 extern "C" BOOL Drama_FindScheduledPart(s32 lim, s32 b, s32 c, Unk_020874e8_Bits *out) {
-    Unk_02087650_S s1, s2;
+    ClockDateTimeWords s1, s2;
     s32 r4, r7, r6;
     u32 x4, x8, xc;
     s32 j;
@@ -997,11 +987,11 @@ extern "C" BOOL Drama_FindScheduledPart(s32 lim, s32 b, s32 c, Unk_020874e8_Bits
     DramaScheduleEntry *t1;
     const u8 *t2;
     u32 *t3;
-    s1.z[0] = 0;
-    s1.z[1] = 0;
-    s1.a = lim;
-    s1.b = b;
-    s1.c = c;
+    s1.words[0] = 0;
+    s1.words[1] = 0;
+    s1.dt.year = lim;
+    s1.dt.month = b;
+    s1.dt.day = c;
     r4 = lim - 1;
     goto test4;
 loop4:
@@ -1027,11 +1017,11 @@ loop4:
                 x4 = (u8)(x4 - 1);
                 goto retry;
             }
-            s2.z[0] = 0;
-            s2.z[1] = 0;
-            s2.a = r4;
-            s2.b = x8;
-            s2.c = r;
+            s2.words[0] = 0;
+            s2.words[1] = 0;
+            s2.dt.year = r4;
+            s2.dt.month = x8;
+            s2.dt.day = r;
             j = 0;
             t3 = (u32 *)(t2 + r6 * 0x1c);
             for (; j < 7; j++) {

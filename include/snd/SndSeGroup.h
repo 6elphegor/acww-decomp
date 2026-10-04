@@ -31,7 +31,7 @@ struct Group {
 // sequence info record (NNS_SndArcGetSeqArcSeqParam)
 struct InfoB {
     /* 0x0 */ u8 pad[4];
-    /* 0x4 */ u8 unk_04;
+    /* 0x4 */ u8 playerPrio;
 };
 
 #endif

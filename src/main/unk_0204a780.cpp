@@ -13,10 +13,10 @@ struct ItemId {
 };
 
 
-struct Unk_0204b598_Elem {
+struct ItemIdNoInit {
     u16 v;
-    Unk_0204b598_Elem() {}
-    ~Unk_0204b598_Elem();
+    ItemIdNoInit() {}
+    ~ItemIdNoInit();
 };
 
 // ---- unk_0204a754.cpp
@@ -313,14 +313,6 @@ struct Unk_0204c084_Data {
     u8 pad16;
     u8 seasonPeriod;
 };
-struct Unk_0204c20c_S {
-    u8 pad[0x16];
-    u8 unk_16[11];
-};
-struct Unk_0204c21c_S {
-    u8 pad[0xc];
-    u8 unk_0c[10];
-};
 BOOL Item_IsFullHeadwear(u16 *p);
 s32 Item_GetId(u16 *p);
 void func_0204b950_dummy();
@@ -434,8 +426,8 @@ s32 TownState_FindEvent(s32 x, u32 id);
 void TownState_RemoveEvent(s32 x, u32 id);
 void TownState_ClearEvents();
 TownEventRecord *TownState_GetEvent(s32 i);
-void TownState_ClearUnk16(Unk_0204c20c_S *p);
-void TownState_ClearUnk0c(Unk_0204c21c_S *p);
+void TownState_ClearUnk16(TownState *p);
+void TownState_ClearUnk0c(TownState *p);
 void TownState_PickNextWeekDate(u8 *dst, u8 *src);
 struct Unk_0204c290_V {
     u16 v;
@@ -503,11 +495,11 @@ extern "C" void TownState_PickNextWeekDate(u8 *dst, u8 *src) {
 }
 
 namespace nC {
-extern "C" void TownState_ClearUnk0c(Unk_0204c21c_S *p) { for (s32 i = 0; i < 10; i++) p->unk_0c[i] = 0; }
+extern "C" void TownState_ClearUnk0c(TownState *p) { for (s32 i = 0; i < 10; i++) p->unk_0c[i] = 0; }
 }
 
 namespace nC {
-extern "C" void TownState_ClearUnk16(Unk_0204c20c_S *p) { for (s32 i = 0; i < 11; i++) p->unk_16[i] = 0; }
+extern "C" void TownState_ClearUnk16(TownState *p) { for (s32 i = 0; i < 11; i++) p->unk_16[i] = 0; }
 }
 
 namespace nC {
@@ -875,7 +867,7 @@ extern "C" u16 Item_GetInsectBaseSize(u16 *p) {
 
 namespace nB {
 extern "C" BOOL Item_TestInfoFlag3(u32 x) {
-    Unk_0204b598_Elem e;
+    ItemIdNoInit e;
     Item_FromPlacedForm(&e, x);
     if (Item_GetIdClass(&e.v) == 1) return ItemInfo_TestFlag3(&e.v);
     if (Item_IsFurniture(&e.v)) return Ftr_TestIndoorFlag7(&e.v);
@@ -885,7 +877,7 @@ extern "C" BOOL Item_TestInfoFlag3(u32 x) {
 
 namespace nB {
 extern "C" BOOL Item_TestInfoFlag4(u32 x) {
-    Unk_0204b598_Elem e;
+    ItemIdNoInit e;
     Item_FromPlacedForm(&e, x);
     if (Item_GetIdClass(&e.v) == 1) return ItemInfo_TestFlag4(&e.v);
     if (Item_IsFurniture(&e.v)) return Ftr_TestIndoorFlagC(&e.v);
@@ -983,7 +975,7 @@ extern "C" s32 Item_GetFlowerItemOrdinal(u16 *p) {
     if (Item_IsFlowerItem(p)) {
         u32 i;
         for (i = 0; i < Item_GetFlowerItemCount(); i++) {
-            Unk_0204b598_Elem e;
+            ItemIdNoInit e;
             Item_GetNthFlowerItem(&e.v, i);
             s32 c = Item_GetId(p);
             if (c == Item_GetId(&e.v)) return i;
@@ -998,7 +990,7 @@ extern "C" s32 Item_GetFlowerAltOrdinal(u16 *p) {
     if (Item_IsFlowerAltItem(p)) {
         u32 i;
         for (i = 0; i < Item_GetFlowerAltCount(); i++) {
-            Unk_0204b598_Elem e;
+            ItemIdNoInit e;
             Item_GetNthFlowerAlt(&e.v, i);
             s32 c = Item_GetId(p);
             if (c == Item_GetId(&e.v)) return i;

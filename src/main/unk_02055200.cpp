@@ -14,7 +14,8 @@ struct NNSG3dResMdl {
 };
 
 struct NNSG3dResMat {
-    u32 unk_00;
+    u16 ofsDictTexToMatList;
+    u16 ofsDictPlttToMatList;
     NNSG3dResDict dict;
 };
 

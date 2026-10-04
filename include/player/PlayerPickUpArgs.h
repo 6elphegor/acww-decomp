@@ -11,7 +11,7 @@
 struct PlayerNetPickUpArgs {
     /* 0x0 */ u8 commitUnit;
     /* 0x1 */ u8 item;      // u16 item number, written bytewise over 0x01..0x02 (NetBuf_WriteU16)
-    /* 0x2 */ u8 unk_02;
+    /* 0x2 */ u8 itemHi;
     /* 0x3 */ s8 ftrActorIndex;
     /* 0x4 */ u8 unitX;
     /* 0x5 */ u8 unitZ;

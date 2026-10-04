@@ -1,4 +1,5 @@
 #include "types.h"
+#include "sys/StackPad.h"
 #include "town/MapBlockEntry.h"
 #include "item/ItemId.h"
 #include "room/RoomFtrState.h"
@@ -38,7 +39,7 @@ void OS_GetOwnerInfo(u8 *buf);
 void RoomFtrState_SetSwitch(s32 a, s32 b, s32 c, s32 d, s32 e);
 u32 HouseData_GetRoomFlagMask(u32 x);
 BOOL HouseData_IsValidRoomIndex(s32 i);
-u16 func_020603c8();
+u16 House_GetLevelAcreId();
 BOOL PlayerHouse_ReplaceStructure(s32 x);
 }
 
@@ -58,11 +59,11 @@ BOOL HouseRoom_SetSongForScene(s32 a, u16 *p);
 }
 
 
-class Unk_020601cc_Dflt {
+class EmptyItemId {
 public:
     u16 item;
-    inline Unk_020601cc_Dflt() { item = 0xfff1; }
-    ~Unk_020601cc_Dflt();
+    inline EmptyItemId() { item = 0xfff1; }
+    ~EmptyItemId();
 };
 
 extern const u16 data_020cb550[7];
@@ -82,11 +83,6 @@ const u16 sHouseRoomAcreIds[7][5] = {
 };
 
 
-struct Unk_02060654_Pad {
-    s32 v[6];
-    Unk_02060654_Pad() {}
-    ~Unk_02060654_Pad() {}
-};
 
 static inline s32 Unk_02060044_Idx(u32 id)
 {
@@ -211,7 +207,7 @@ extern "C" BOOL PlayerHouse_ReplaceStructure(s32 x) {
     void *g = TownBlockMap_Get();
     u16 arr[3];
     s32 ox, oz, a, b, c, d;
-    Unk_02060654_Pad pad;
+    StackPad24 pad;
     arr[1] = 0x5014;
     arr[2] = 0x501a;
     if (BlockMap_FindItemAnyAttr(g, &a, &b, &c, &d, &arr[1], &arr[2], 1, 0)) {
@@ -309,7 +305,7 @@ u16 HouseData::getRoomAcreId(s32 x) {
     return 0x1002;
 }
 
-extern "C" u16 func_020603c8() {
+extern "C" u16 House_GetLevelAcreId() {
     s32 m = gSaveHouse.getLevel();
     if (m < 7) return data_020cb550[m];
     return 0x1003;
@@ -396,7 +392,7 @@ extern "C" u16 *HouseRoom_GetCurrentSong()
     if (r != 0) {
         return r->getSong();
     }
-    static Unk_020601cc_Dflt dflt;
+    static EmptyItemId dflt;
     return &dflt.item;
 }
 

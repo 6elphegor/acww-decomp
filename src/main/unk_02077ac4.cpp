@@ -942,7 +942,7 @@ void Clock_GetDate(void *d);
 s32 Date_IsAfterOrEqual(void *d, void *e);
 void _ZN18SickVillagerRecord11resetRecordEv(void *p);
 s32 _ZN18SickVillagerRecord11isRecoveredEv(void *p);
-s32 _ZN18SickVillagerRecord19isRecentlyRecoveredEP17Unk_020994cc_Date(void *p, void *d);
+s32 _ZN18SickVillagerRecord19isRecentlyRecoveredEP9ClockDate(void *p, void *d);
 s32 Date_DaysBetween(void *d, void *e);
 s32 DateTime_Make(void *d, void *e, s32 a, s32 b, s32 c);
 s32 DateTime_SubDays(void *d, s32 n);
@@ -8849,7 +8849,7 @@ extern "C" void SaveVillagers_UpdateSickVillager(u8 *b) {
             return;
         }
         if (_ZN18SickVillagerRecord11isRecoveredEv(b + 0x3830)) {
-            if (_ZN18SickVillagerRecord19isRecentlyRecoveredEP17Unk_020994cc_Date(b + 0x3830, &d) == 0) _ZN18SickVillagerRecord11resetRecordEv(b + 0x3830);
+            if (_ZN18SickVillagerRecord19isRecentlyRecoveredEP9ClockDate(b + 0x3830, &d) == 0) _ZN18SickVillagerRecord11resetRecordEv(b + 0x3830);
             return;
         }
         r7 = Date_DaysBetween(&d, b + 0x38ba);

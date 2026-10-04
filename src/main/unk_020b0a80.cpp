@@ -363,7 +363,7 @@ void CommCaution_LoadMessages(void);
 }
 
 extern "C" {
-void func_02099214(void);
+void Main_EmptyInitStub(void);
 }
 
 extern "C" {
@@ -588,7 +588,7 @@ extern "C" void Main_Init(void) {
     Field_ResetActions();
     CommCaution_LoadMessages();
     gProfileTable = (u32)sProfileTableMain;
-    func_02099214();
+    Main_EmptyInitStub();
     Random_SeedGlobal();
     *(vu32 *)0x40004c8 = 0x296a5800;
     *(vu32 *)0x40004cc = 0x7fff;

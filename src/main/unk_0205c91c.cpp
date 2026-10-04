@@ -1,12 +1,8 @@
 #include "types.h"
+#include "sys/StackPad.h"
 #include "actor/CharaClothTexRef.h"
 #include "item/ItemId.h"
 
-struct Unk_0205cc70_Pad {
-    s32 v[2];
-    Unk_0205cc70_Pad() {}
-    ~Unk_0205cc70_Pad() {}
-};
 
 
 struct CharaClothTexPool;
@@ -94,7 +90,7 @@ void CharaClothTexPool::allocBuffers() {
 }
 
 void CharaClothTexPool::freeBuffers() {
-    Unk_0205cc70_Pad pad;
+    StackPad8 pad;
     sub.release();
     for (s32 i = 0; i < 10; i++) {
         ptr[i] = 0;

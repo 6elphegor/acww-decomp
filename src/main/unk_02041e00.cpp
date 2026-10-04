@@ -1,4 +1,6 @@
 #include "types.h"
+#include "sys/StackPad.h"
+#include "sys/ClockDateTime.h"
 #include "gfx/VecFx32.h"
 #include "net/CommManager.h"
 #include "gfx/EffectSplEmitter.h"
@@ -752,11 +754,6 @@ void PendingUnit_ApplyAt(Vec2 *pos, s32 flag);
 s32 PendingUnit_Flush(PendingUnit *e);
 s32 PendingUnit_Reset(PendingUnit *e);
 void PendingUnit_Commit(PendingUnit *e);
-struct Unk_02045af8_Pad {
-    u32 pad[2];
-    Unk_02045af8_Pad() {}
-    ~Unk_02045af8_Pad() {}
-};
 void PendingUnit_NoteJunk(PendingUnit *e);
 void PendingUnit_WriteToMap(PendingUnit *e);
 void PendingUnit_Set(PendingUnit *e, u8 aid, u16 pos, u16 a, u16 c, u8 k, u8 b, u8 c2, u8 d, u8 f, s8 g);
@@ -786,7 +783,7 @@ struct Unk_02046a0_Ts {
 struct Unk_02046230_Ts {
     s32 a, b;
 };
-struct Unk_020460dc_Obj {
+struct RoomScoreEvaluatorBuf {
     u8 b[0x14];
 };
 static inline BOOL Unk_02046358_R1(u16 *p) {
@@ -935,15 +932,6 @@ void Town_RefillSeashells(void *p, void *q);
 namespace nI {
 extern "C" {
 
-struct Unk_02046c80_T {
-    union {
-        struct {
-            u32 a;
-            u32 b;
-        };
-        u8 bytes[8];
-    };
-};
 extern void *gCommManager;
 extern u16 gTownUpdater[];
 extern char gTownEval[];
@@ -1108,8 +1096,7 @@ struct Unk_020473cc_Date {
     u32 w0, w1;
     Unk_020473cc_Date() { w0 = 0; w1 = 0; }
 };
-struct Unk_020473cc_Rgb { u8 b[3]; };
-struct Unk_02046e90_Pair { u32 a, b; };
+struct DayMonthYear { u8 b[3]; };
 extern u8 data_020da2a0[];
 extern u8 gSaveTownState[];
 extern u8 data_020c910c[];
@@ -1264,8 +1251,8 @@ void Town_SpawnClover(void *a, void *b, s32 c, s32 d);
 void Town_SpawnDandelion(void *a, void *b, s32 c, s32 d);
 void Town_SpawnRandomFlower(void *a, void *b, s32 c, s32 d);
 void Town_UpdateVillagerHouseFlowers(void *a, void *b, void *c, s32 d);
-struct Unk_02047e64_Pos : Vec2 {
-    Unk_02047e64_Pos(s32 px, s32 py) { x = px; y = py; }
+struct Vec2Ctor : Vec2 {
+    Vec2Ctor(s32 px, s32 py) { x = px; y = py; }
 };
 void Town_SpawnVillagerHouseFlowers(void *a, void *b, s32 c, s32 d);
 void Town_SpawnFlowersAroundHouse(void *a, void *b, Vec2 *pos, s32 d);
@@ -1548,11 +1535,11 @@ void TownEval_EvaluateAcre(TownEvalAcre *out, void *map, s32 x, s32 z);
 void TownEval_EvaluateAndCleanAcre(TownEvalAcre *out, void *map, s32 x, s32 z);
 void TownEval_RemoveObject(TownEvalAcre *out, void *map, s32 x, s32 z, s32 n);
 void TownEval_CalcScore(TownEvalAcre *out);
-struct Unk_0204a6b8_In {
+struct TownEvalAcrePos {
     s32 acreX;
     s32 acreZ;
 };
-void TownEval_PickAdvice(TownEvalAdvice *out, Unk_0204a6b8_In *in, TownEvalAcre *res);
+void TownEval_PickAdvice(TownEvalAdvice *out, TownEvalAcrePos *in, TownEvalAcre *res);
 }
 }
 
@@ -2420,7 +2407,7 @@ const u16 sTreeDropFruit[6] = {
 }
 
 namespace nO {
-extern "C" void TownEval_PickAdvice(TownEvalAdvice *out, Unk_0204a6b8_In *in, TownEvalAcre *res) {
+extern "C" void TownEval_PickAdvice(TownEvalAdvice *out, TownEvalAcrePos *in, TownEvalAcre *res) {
     out->acreX = in->acreX;
     out->acreZ = in->acreZ;
     if (out->acreX < 0) {
@@ -4157,7 +4144,7 @@ extern "C" void Town_SpawnVillagerHouseFlowers(void *a, void *b, s32 c, s32 d) {
             }
             q = _ZN20VillagerDataItemView11getHousePosEv(p);
             if (HousePos_IsValid(q)) {
-                Unk_02047e64_Pos pos(q[0], q[1]);
+                Vec2Ctor pos(q[0], q[1]);
                 Town_SpawnFlowersAroundHouse(a, b, &pos, d);
             }
         }
@@ -4586,7 +4573,7 @@ extern "C" s32 Town_CountEventDays(void *a, s32 b, u8 *c, u8 *d, s32 e, s32 f, s
                 r = DateTime_DiffDays(&t, d) + 1;
             }
         } else {
-            Unk_020473cc_Rgb t;
+            DayMonthYear t;
             t.b[2] = d[5];
             t.b[1] = d[4];
             t.b[0] = d[3];
@@ -4800,10 +4787,10 @@ extern "C" void Town_ApplyDailyEvents(void *a, void *b, void *c, s32 d, s32 e, s
 namespace nJ {
 extern "C" void Town_PlaceVisitorStructures(u32 a, u32 b, u32 c) {
     if (_ZN11SaveRecord412isDateActiveEv(b + 0x15fc5) == 0) {
-        Unk_02046e90_Pair d;
+        ClockDateTimeWords d;
         u8 buf[8];
-        d.a = 0;
-        d.b = 0;
+        d.words[0] = 0;
+        d.words[1] = 0;
         Clock_GetDateTime(&d);
         for (s32 i = 0; i < 3; i++) {
             MI_CpuCopy8(&d, buf, 8);
@@ -4868,10 +4855,10 @@ extern "C" void Town_CleanupExpiredEvents(void *a, void *p, s32 x, s32 y, void *
 
 namespace nI {
 extern "C" void Town_RemoveVisitorStructures(void *a, s32 b) {
-    Unk_02046c80_T s;
-    Unk_02046c80_T t1, t2, t3, t4;
-    s.a = 0;
-    s.b = 0;
+    ClockDateTimeWords s;
+    ClockDateTimeWords t1, t2, t3, t4;
+    s.words[0] = 0;
+    s.words[1] = 0;
     Clock_GetDateTime(&s);
     MI_CpuCopy8(&s, &t1, 8);
     if (Unk_02046d28_Z(Event_GetState(0x3d, &t1, b))) Town_RemoveReddTent();
@@ -4887,19 +4874,19 @@ extern "C" void Town_RemoveVisitorStructures(void *a, s32 b) {
 namespace nI {
 extern "C" void Town_UpdateEvents(void *a, void *p, s32 x, s32 y, void *c, s32 f) {
     if (!Game_IsIntroPeriod() || (f && !PlayerData_GetCurrent())) {
-        Unk_02046c80_T s;
+        ClockDateTimeWords s;
         u8 *q;
-        s.a = 0;
-        s.b = 0;
+        s.words[0] = 0;
+        s.words[1] = 0;
         Clock_GetDateTimeCleared(&s);
         DateTime_SubHours(&s, 6);
         q = gSaveTownEventDate;
-        if (q[2] != s.bytes[5] || q[1] != s.bytes[4] || q[0] != s.bytes[3]) {
+        if (q[2] != s.dt.year || q[1] != s.dt.month || q[0] != s.dt.day) {
             Town_CleanupExpiredEvents(a, p, x, y, gSaveData);
             Town_ApplyDailyEvents(a, p, x, y, c, f, gSaveData);
-            q[2] = s.bytes[5];
-            q[1] = s.bytes[4];
-            q[0] = s.bytes[3];
+            q[2] = s.dt.year;
+            q[1] = s.dt.month;
+            q[0] = s.dt.day;
         }
         Town_RemoveVisitorStructures(a, f);
         Town_PlaceVisitorStructures(a, gSaveData, f);
@@ -4911,10 +4898,10 @@ namespace nI {
 extern "C" s32 Town_RefreshEvents(void *a, s32 b) {
     TownBlockMap *p = TownBlockMap_Get();
     if (p) {
-        Unk_02046c80_T s;
+        ClockDateTimeWords s;
         s32 x, y;
-        s.a = 0;
-        s.b = 0;
+        s.words[0] = 0;
+        s.words[1] = 0;
         Clock_GetDateTime(&s);
         x = p->width - 2;
         y = p->height - 2;
@@ -4993,7 +4980,7 @@ extern "C" void Town_AdvanceDays(void *a, u8 *b, u8 *c, s32 n, u8 e, s32 f) {
         s32 x = p->width - 2;
         s32 y = p->height - 2;
         s32 lim1, i, lim4, lim3, lim2, l, k, j, m;
-        Unk_02046c80_T s1, s2;
+        ClockDateTimeWords s1, s2;
         Unk_0204674c_V t3;
         Unk_0204674c_O obj;
         Town_ClearBorderTrees(p);
@@ -5004,8 +4991,8 @@ extern "C" void Town_AdvanceDays(void *a, u8 *b, u8 *c, s32 n, u8 e, s32 f) {
         if (lim1 > 5) lim1 = 5;
         for (i = 0; i < lim1; i++) Town_UpdateTrees(a, p, x, y);
 
-        s1.a = 0;
-        s1.b = 0;
+        s1.words[0] = 0;
+        s1.words[1] = 0;
         MI_CpuCopy8(c, &s1, 8);
         lim2 = n;
         if (lim2 > 0x16d) lim2 = 0x16d;
@@ -5027,8 +5014,8 @@ extern "C" void Town_AdvanceDays(void *a, u8 *b, u8 *c, s32 n, u8 e, s32 f) {
             DateTime_AddDays(&s1, 1);
         }
 
-        s2.a = 0;
-        s2.b = 0;
+        s2.words[0] = 0;
+        s2.words[1] = 0;
         MI_CpuCopy8(c, &s2, 8);
         lim3 = n;
         if (lim3 > 0x1e) lim3 = 0x1e;
@@ -5387,7 +5374,7 @@ extern "C" void Town_UpdateDay(s32 flag) {
         Unk_02046a0_Ts t;
         Unk_02045f6c_Rgb c3;
     } l;
-    Unk_020460dc_Obj o;
+    RoomScoreEvaluatorBuf o;
     Unk_02045f6c_Rgb *src;
     u8 *base = gSaveData;
     s32 dt, days, hours;
@@ -5765,7 +5752,7 @@ extern "C" void PendingUnit_WriteToMap(PendingUnit *e) {
 
 namespace nG {
 extern "C" void PendingUnit_NoteJunk(PendingUnit *e) {
-    Unk_02045af8_Pad pad;
+    StackPad8 pad;
     u16 v = e->item;
     if (v >= 0x154a && v <= 0x1553) {
         gTownJunkInsectFlags[1] = 1;

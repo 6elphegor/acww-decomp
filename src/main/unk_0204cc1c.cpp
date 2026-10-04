@@ -1,4 +1,5 @@
 #include "types.h"
+#include "sys/StackPad.h"
 #include "gfx/VecFx32.h"
 
 #include "Unk_020d8c7c.h"
@@ -71,10 +72,9 @@ struct AcreItemGrid {
 
 
 extern "C" {
-struct Unk_0204d920_Pad { s32 v[4]; Unk_0204d920_Pad() {} ~Unk_0204d920_Pad() {} };
 }
 
-struct Unk_0204db24_L { volatile s32 xy[2]; VecFx32 v, w; };
+struct TownBlockMapBuildLocals { volatile s32 xy[2]; VecFx32 v, w; };
 
 struct BuriedMask {
     u8 data[0x20];
@@ -86,7 +86,7 @@ struct BlockMapSize {
     s32 v[2];
 };
 
-struct Unk_0204e1a8_Loc {
+struct BlockMapBuildLocals {
     volatile s32 x, y;
     VecFx32 v;
 };
@@ -195,7 +195,7 @@ void Heap_Free(void *heap, void *p);
 void *Heap_Alloc(void *heap, s32 size);
 SceneMapInfo *Scene_GetMapInfo();
 s32 Scene_InUnk6To8();
-u32 func_020603c8(void *p);
+u32 House_GetLevelAcreId(void *p);
 u32 _ZN9HouseData19buildRoomBlockEntryEiPv(void *p, u32 a, void *heap);
 s32 Scene_GetCurrent();
 s32 Scene_InHouseRoom();
@@ -1082,7 +1082,7 @@ BOOL BlockMap::build(MapBlockEntry *e, BlockMapSize *sz, s32 heap) {
     mapSlot = 0;
     if (blocks == NULL) blocks = Ns_0204debc::MapBlock_NewArray(count, heap, 4);
     if (blocks) {
-        Unk_0204e1a8_Loc l;
+        BlockMapBuildLocals l;
         u8 *buf;
         s32 zero = 0;
         l.x = zero;
@@ -1352,7 +1352,7 @@ extern "C" s32 TownBlockMap_Destroy(void *heap) {
 }
 
 BOOL TownBlockMap::build(void *heap) {
-     BOOL result; Unk_0204db24_L l; u8 *cell; s32 *q; s32 *tbl; 
+     BOOL result; TownBlockMapBuildLocals l; u8 *cell; s32 *q; s32 *tbl; 
     result = FALSE;
     mapSlot = 1;
     if (!blocks) blocks = (u8 *)Ns_0204d560::MapBlock_NewArray(0x24, (u32)heap, 4);
@@ -1457,7 +1457,7 @@ extern "C" void BlockMap_RemoveStructureAt(u32 a, s32 b, s32 c, s32 d, s32 e, u3
 extern "C" void BlockMap_FindItem(u16 *ret, void *m, void *pos, s32 *p4, s32 *p5, u16 a6, u16 a7, s32 a8) {
     u16 t[2];
     s32 l1c, l20, l24, l28;
-    Unk_0204d920_Pad pad;
+    StackPad16 pad;
     t[0] = a6;
     t[1] = a7;
     if (Ns_0204d560::BlockMap_FindItemAnyAttr(m, &l24, &l28, &l1c, &l20, &t[0], &t[1], a8, 0)) {

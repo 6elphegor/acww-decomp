@@ -93,10 +93,10 @@ struct VillagerRouteType {
 };
 
 // unk_02012810.cpp
-struct Unk_02012e08_Pos {
+struct RouteGridPosCopy {
     u32 x, z;
-    Unk_02012e08_Pos(const RouteGridPos &o) : x(o.x), z(o.z) {}
-    Unk_02012e08_Pos(const Unk_02012e08_Pos &o) : x(o.x), z(o.z) {}
+    RouteGridPosCopy(const RouteGridPos &o) : x(o.x), z(o.z) {}
+    RouteGridPosCopy(const RouteGridPosCopy &o) : x(o.x), z(o.z) {}
 };
 
 // unk_02012810.cpp
@@ -153,7 +153,7 @@ struct VillagerRoute {
     s32 findJunction(RouteGridPos *p);
     RouteJunction popJunction(RouteGridPos *p);
     void pushJunction(u32 hi, u32 lo, RouteGridPos *p);
-    s32 scanDir(RouteGridPos *out, Unk_02012e08_Pos pos, u32 mask, RouteGridPos *lim, BlockMap *obj);
+    s32 scanDir(RouteGridPos *out, RouteGridPosCopy pos, u32 mask, RouteGridPos *lim, BlockMap *obj);
     u32 pickAdjacentUnit(VecFx32 *v, BlockMap *o);
     s32 scanForPath(VecFx32 *cand, RouteGridPos *p, VecXZ *d, s32 limit, RouteGridPos *q, s32 flag, BlockMap *o);
     u32 findNearestPath(RouteGridPos *out, VecFx32 *pos);
@@ -195,7 +195,6 @@ typedef void (NpcTalkCtrl::*Unk_02013474_Fn)(NpcActor*);
 
 
 // unk_02013b10.cpp
-struct Unk_02013b10_VecT : VecFx32 { Unk_02013b10_VecT() {} Unk_02013b10_VecT(const VecFx32 &o) { x = o.x; y = o.y; z = o.z; } void set(const VecFx32 &o) { x = o.x; y = o.y; z = o.z; } };
 
 
 class NpcTalkCtrl;
@@ -272,7 +271,7 @@ struct Unk_02006d14_Prim {
 };
 // NpcActor view (also passed for the player by HeldToolModel): the model at +0xec, reached as a secondary base
 struct Unk_02006d14_TalkBase {
-    Unk_02016a44_S0ec unk_ec;
+    Unk_02016a44_S0ec model;
 };
 class Unk_02006d14 : public Unk_02006d14_Prim, public Unk_02006d14_TalkBase {
 public:
@@ -379,7 +378,7 @@ class NpcObstacleProbe;
 struct Unk_0201b2b8_Bits { u32 lo : 12; u32 mid : 16; u32 hi : 4; };
 
 // unk_0201ac80.cpp
-struct Unk_0201b2b8_S { u8 b0; u8 pad; s16 h2; s16 h4; u16 h6; u16 h8; u16 ha; };
+struct NpcNetActionHalves { u8 b0; u8 pad; s16 h2; s16 h4; u16 h6; u16 h8; u16 ha; };
 
 
 
@@ -2241,8 +2240,8 @@ BOOL NpcActor::updateAct() {
 
 BOOL NpcActor::onExecute() {
     using namespace nQ;
-    Unk_0201b2b8_S s;
-    struct Unk_0201b2b8_L { s32 a, b, x, y, z; } L;
+    NpcNetActionHalves s;
+    struct NpcNetActionWords { s32 a, b, x, y, z; } L;
     Mtx43 t;
     u8 buf[0x10];
     VecFx32 v;
@@ -5256,7 +5255,7 @@ BOOL NpcActionCtrl::setupAct10(Unk_02006d14 *o) {
             _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&o->animCtrl, o, 0x27, data_020c6cc8, 1, 0x1000, 0, 0);
             Snd_SeEmitterPlayOneShotAlt(&o->seEmitter, 0x4f, 0x7f, 0);
             if (_ZN11NpcAnimCtrl9getAnimIdEj(&o->animCtrl, 1) == 0x139) {
-                _ZN17TwoLayerAnimModel18playLayer2FromBaseEjj(&o->unk_ec, 0, 0);
+                _ZN17TwoLayerAnimModel18playLayer2FromBaseEjj(&o->model, 0, 0);
             }
             nJ::_ZN13NpcActionCtrl13setActionDoneEi(this, 0);
         }
@@ -5279,7 +5278,7 @@ BOOL NpcActionCtrl::setupAct11(Unk_02006d14 *o) {
         if (HandOverItem_RequestMode(7, o)) {
             _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(&o->animCtrl, o, 0x26, data_020c6cc8, 3, 0x1000, 0, 0);
             if (_ZN11NpcAnimCtrl9getAnimIdEj(&o->animCtrl, 1) == 0x139) {
-                _ZN17TwoLayerAnimModel18playLayer2FromBaseEjj(&o->unk_ec, 0, 0);
+                _ZN17TwoLayerAnimModel18playLayer2FromBaseEjj(&o->model, 0, 0);
             }
             HandOverItem_SetNextMode(5, o);
             nJ::_ZN13NpcActionCtrl13setActionDoneEi(this, 0);
@@ -8308,7 +8307,7 @@ s32 VillagerRoute::firstDir(s32 v) {
     return 4;
 }
 
-s32 VillagerRoute::scanDir(RouteGridPos *out, Unk_02012e08_Pos pos, u32 mask, RouteGridPos *lim, BlockMap *obj) {
+s32 VillagerRoute::scanDir(RouteGridPos *out, RouteGridPosCopy pos, u32 mask, RouteGridPos *lim, BlockMap *obj) {
     using namespace nC;
     s32 m, dx, dz;
     s32 d = firstDir(mask);

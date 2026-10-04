@@ -364,16 +364,16 @@ extern "C" {
 }
 
 // class of the byte globals registered with the destructor at 0x020082a8
-struct Unk_020082a8 {
+struct TalkMsgIndex {
     u8 v;
-    Unk_020082a8(u8 x) { v = x; }
-    ~Unk_020082a8();
+    TalkMsgIndex(u8 x) { v = x; }
+    ~TalkMsgIndex();
 };
 
 
-extern Unk_020082a8 gU8None;
-extern Unk_020082a8 gTalkMsgIndexNone;
-extern Unk_020082a8 gTalkMsgIndexEnd;
+extern TalkMsgIndex gU8None;
+extern TalkMsgIndex gTalkMsgIndexNone;
+extern TalkMsgIndex gTalkMsgIndexEnd;
 extern const u8 sColorTags[10][7];
 extern const u32 sBmgMsgAttrTableA[25];
 extern const u32 sBmgMsgAttrTableB[25];
@@ -561,7 +561,7 @@ extern "C" BOOL Msg_EncodeGameChar(u8 *out, const u8 *src);
 
 extern "C" void MsgUiProc_Create(void);
 const u32 sBmgMsgAttrTableC[25] = {0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1};
-Unk_020082a8 gU8None(0xff);
+TalkMsgIndex gU8None(0xff);
 u8 sInputLocked;
 BmgFileHeader sBmgFileHeader;
 
@@ -2044,10 +2044,10 @@ const u8 sColorTags[10][7] = {
     {26, 6, 255, 0, 0, 8, 0},
     {26, 6, 255, 0, 0, 9, 0}};
 u8 sInputButtonMode;
-Unk_020082a8 gTalkMsgIndexNone(0xff);
+TalkMsgIndex gTalkMsgIndexNone(0xff);
 const u32 sBmgMsgAttrTableA[25] = {0, 0, 0, 0, 0, 0, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6};
 const u32 sBmgMsgAttrTableB[25] = {0, 0, 1, 1, 2, 2, 1, 0, 1, 2, 0, 2, 1, 0, 1, 0, 1, 0, 0, 1, 1, 0, 0, 1, 1};
-Unk_020082a8 gTalkMsgIndexEnd(0xfe);
+TalkMsgIndex gTalkMsgIndexEnd(0xfe);
 ProcProfile sMsgUiProcProfile = {(void *(*)())MsgUiProc_Create, 0xc9, 0xc7};
 BmgDatHeader sBmgDatHeader;
 

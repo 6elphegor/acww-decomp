@@ -125,8 +125,8 @@ struct EffectSplPool {
 
 
 struct EffectSplResEntry {
-    u32 unk_00_0 : 1;
-    u32 unk_00_1 : 1;
+    u32 splitBySign : 1;
+    u32 reuseEmitters : 1;
     u32 unk_00_rest : 30;
     u32 *emitterIds;
     s32 emitterCount;
@@ -982,7 +982,7 @@ extern "C" s32 EffectSpl_CreateOneShot(s32 idx, s32 p1, s16 *p2, u32 *p3)
     count = row->emitterCount;
     ids = row->emitterIds;
     if (p2 != NULL) {
-        if (row->unk_00_0 == 1) {
+        if (row->splitBySign == 1) {
             count = count >> 1;
             if (*p2 >= 0) {
                 ids += count;
@@ -990,7 +990,7 @@ extern "C" s32 EffectSpl_CreateOneShot(s32 idx, s32 p1, s16 *p2, u32 *p3)
         }
     }
     sEffectSplEmitPos = (s32 *)p1;
-    if (row->unk_00_1 != 0) {
+    if (row->reuseEmitters != 0) {
         ctx = &mgr->emitterMap;
         i = 0;
         zero18 = 0;
@@ -1054,7 +1054,7 @@ extern "C" s32 EffectSpl_CreateTracked(s32 idx, s32 p1, s16 *p2, EffectEmitterCb
     count = row->emitterCount;
     ids = row->emitterIds;
     if (p2 != NULL) {
-        if (row->unk_00_0 == 1) {
+        if (row->splitBySign == 1) {
             count = count >> 1;
             if (*p2 >= 0) {
                 ids += count;

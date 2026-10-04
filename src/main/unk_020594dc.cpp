@@ -4,18 +4,18 @@
 #include "item/ItemPickSpec.h"
 
 
-struct Unk_020594dc_H {
+struct ItemPickResult {
     u16 v;
-    Unk_020594dc_H(u16 x) : v(x) {}
+    ItemPickResult(u16 x) : v(x) {}
 };
 
-struct Unk_0205a930_H {
+struct RoomSurfaceItem {
     u16 item;
-    Unk_0205a930_H() {}
+    RoomSurfaceItem() {}
 };
 
-struct Unk_0205b320_Buf {
-    u32 unk_00, unk_04, unk_08;
+struct FtrFootprintBuf {
+    u32 shapeIndex, direction, unk_08;
 };
 
 struct Unk_0205b524_T {
@@ -61,8 +61,8 @@ public:
 class RoomScoreSourceCallView {
 public:
     virtual void *getRoomMap(s32 i) = 0;
-    virtual Unk_0205a930_H getWallpaper(s32 i) = 0;
-    virtual Unk_0205a930_H getCarpet(s32 i) = 0;
+    virtual RoomSurfaceItem getWallpaper(s32 i) = 0;
+    virtual RoomSurfaceItem getCarpet(s32 i) = 0;
 };
 
 class RoomScoreSource {
@@ -264,17 +264,17 @@ s32 SaveVillagers_Get(void *p, s32 k);
 s32 Villager_GetCarpet();
 s32 Villager_GetWallpaper();
 u32 MATH_CountPopulation(u32 v);
-void FtrFootprint_Init(Unk_0205b320_Buf *b, void *cell);
-u32 FtrFootprint_GetTileCount(Unk_0205b320_Buf *b);
-s16 *FtrFootprint_GetTileOffset(Unk_0205b320_Buf *b, u32 i);
-void FtrFootprint_Destruct(Unk_0205b320_Buf *b);
+void FtrFootprint_Init(FtrFootprintBuf *b, void *cell);
+u32 FtrFootprint_GetTileCount(FtrFootprintBuf *b);
+s16 *FtrFootprint_GetTileOffset(FtrFootprintBuf *b, u32 i);
+void FtrFootprint_Destruct(FtrFootprintBuf *b);
 void Clock_GetDateTime(Unk_0205b524_T *t);
 void DateTime_SubDays(Unk_0205b524_T *t, s32 v);
 s32 Date_GetWeekday(s32 a, s32 b, s32 c);
 void DateTime_AddDays(Unk_0205b524_T *t, s32 v);
 s32 DateTime_Compare(Unk_0205b524_T *a, Unk_0205b524_T *b, s32 n);
-Unk_020594dc_H ItemPick_One(ItemPickSpec o, s32 a, s32 b, s32 c, s32 d, s32 e);
-Unk_020594dc_H ItemPick_OneSimple(ItemPickSpec o);
+ItemPickResult ItemPick_One(ItemPickSpec o, s32 a, s32 b, s32 c, s32 d, s32 e);
+ItemPickResult ItemPick_OneSimple(ItemPickSpec o);
 s32 PlayerDataArray_GetById(void *p, s32 q);
 }
 
@@ -442,7 +442,7 @@ u8 RoomFengShui::countInStrip(s32 m, s32 x0, s32 x1, volatile s32 y0, volatile s
     u32 n, i;
     BOOL ok;
     s32 nx;
-    Unk_0205b320_Buf buf;
+    FtrFootprintBuf buf;
     s32 y, x;
     s32 ya = y0;
     s32 yb = y1;
@@ -1584,7 +1584,7 @@ extern "C" s32 Villager_SendHouseVisitLetter(u32 a, s32 b, s32 c)
     if (a > 5) {
         return 0;
     }
-    Unk_020594dc_H res(0xfff1);
+    ItemPickResult res(0xfff1);
     Random_GlobalBelow(3);
     Random_GlobalBelow(3);
     switch (a) {

@@ -78,7 +78,7 @@ void SndMgr_stopAll(Glob *g);
 void SndMgr_startOutputEffect(Glob *g);
 void Snd_ClearListenerCallbacks(void);
 void Snd_InstallListenerCallbacks(void);
-void func_020f44f0(s32 v);
+void Snd_SetUnusedFlag(s32 v);
 void MelodyPlayer_SetInstrument(F30 *a, s32 b);
 void MelodyPlayer_StopTrackB(F30 *v);
 #define BgmBeatSync_setEnable _ZN11BgmBeatSync9setEnableEh
@@ -396,7 +396,7 @@ SndSceneBase::SndSceneBase() {
     id = -1;
     f5 = 0;
     f6 = 0;
-    func_020f44f0(0);
+    Snd_SetUnusedFlag(0);
 }
 
 SndSceneBase::~SndSceneBase() {
@@ -540,7 +540,7 @@ void SndSceneBase::createPlayer12Heaps() {
 SndScene01::SndScene01() {
     if (gSndMgr.f30 != 0) MelodyPlayer_SetInstrument(gSndMgr.f30, 209);
     id = 1;
-    func_020f44f0(1);
+    Snd_SetUnusedFlag(1);
     gSndMgr.f73 = 0;
 }
 
@@ -1012,7 +1012,7 @@ void SndScene48::load() {
 
 SndScene50::SndScene50() {
     id = 50;
-    func_020f44f0(1);
+    Snd_SetUnusedFlag(1);
 }
 
 SndScene50::~SndScene50() {

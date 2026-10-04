@@ -1,4 +1,5 @@
 #include "types.h"
+#include "sys/ClockDateTime.h"
 #include "gfx/VecFx32.h"
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
@@ -68,22 +69,6 @@ class SpNpcKatie;
 struct MinuteHour {
     /* 0x0 */ u8 minute;
     /* 0x1 */ u8 hour;
-};
-// Date and time as Clock_GetDateTime writes it (same record as in unk_0209cb74.cpp / unk_0201c050.cpp)
-struct ClockDateTime {
-    /* 0x0 */ u8 second;
-    /* 0x1 */ u8 minute;
-    /* 0x2 */ u8 hour;
-    /* 0x3 */ u8 day;
-    /* 0x4 */ u8 month;
-    /* 0x5 */ u8 year;
-    /* 0x6 */ u8 unk_06;
-    /* 0x7 */ u8 unk_07;
-};
-// The weather code's ClockDateTime locals: cleared as two words before Clock_GetDateTime, read by field (word aligned)
-union ClockDateTimeWords {
-    ClockDateTime dt;
-    u32 words[2];
 };
 // Per-line affine parameters of the cloud BG layer (BG3 reference point x/y and pa scale), written by
 // Sky_UpdateLineTables, copied to the BG registers by the H-blank handler and the V-blank functions.

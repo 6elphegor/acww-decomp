@@ -992,7 +992,7 @@ void FieldInfoBalloon_ClearNetMsg();
 s32 Net_GetMode();
 void Net_WifiHostKeepAlive();
 void TalkRequest_FinishSceneEntry();
-BOOL func_0203d4d4();
+BOOL Stub_ReturnFalse();
 BOOL TalkRequestFlags_IsResetti();
 u8 *Scene_GetTouchPicker();
 s32 TouchPick_GetGroundPos(u8 *obj, VecFx32Ctor *out);
@@ -1798,7 +1798,7 @@ void PlayerActor::readInput() {
             }
         }
     }
-    if (flag != 0 || (func_0203d4d4() && vc == 0)) {
+    if (flag != 0 || (Stub_ReturnFalse() && vc == 0)) {
         ((PlayerActor *)this)->inputMagnitude = 0;
         ((PlayerActor *)this)->inputRun = 0;
         v10 = 1;

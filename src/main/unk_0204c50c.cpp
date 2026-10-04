@@ -144,7 +144,7 @@ s32 Scene_InUnk6To8();
 }
 
 extern "C" {
-u32 func_020603c8(void *p);
+u32 House_GetLevelAcreId(void *p);
 }
 
 extern "C" {
@@ -405,7 +405,7 @@ test2:
 }
 
 void SceneMapModule::getHouseUnk(u32 *out, s32 n) {
-    if (Scene_InUnk6To8()) *out = func_020603c8(gSaveHouse);
+    if (Scene_InUnk6To8()) *out = House_GetLevelAcreId(gSaveHouse);
 }
 
 s32 SceneMapModule::buildSceneMap(void *heap) {

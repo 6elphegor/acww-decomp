@@ -299,7 +299,7 @@ extern "C" void SndSeGroup_Update(Group *g, void *src) {
                     s32 base = ctx.baseVolume;
                     InfoB *inf = NNS_SndArcGetSeqArcSeqParam(e->seqArc, e->index);
                     if (inf == NULL) Fatal_Trap();
-                    vol = base + (inf->unk_04 - 64);
+                    vol = base + (inf->playerPrio - 64);
                     if (vol > 0) {
                         if (vol >= 127) vol = 127;
                     } else {
@@ -326,7 +326,7 @@ extern "C" void SndSeGroup_Update(Group *g, void *src) {
                     s32 base = ctx.baseVolume;
                     InfoB *inf = NNS_SndArcGetSeqArcSeqParam(e->seqArc, e->index);
                     if (inf == NULL) Fatal_Trap();
-                    vol = base + (inf->unk_04 - 64);
+                    vol = base + (inf->playerPrio - 64);
                     if (vol > 0) {
                         if (vol >= 127) vol = 127;
                     } else {

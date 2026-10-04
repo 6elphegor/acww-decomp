@@ -25,8 +25,8 @@ public:
 
 struct SndHandle {
     /* 0x00 */ u8 unk_00[0x38];
-    /* 0x38 */ u16 unk_38;
-    /* 0x3a */ u16 unk_3a;
+    /* 0x38 */ u16 seqNo;
+    /* 0x3a */ u16 seqArcIndex;
 };
 
 
@@ -365,7 +365,7 @@ extern "C" void SndMgr_SetBgmTrackVariant(SndMgr *self, u32 st) {
     if (!isSet(h)) {
         return;
     }
-    u16 idx = h->unk_38 - 22;
+    u16 idx = h->seqNo - 22;
     if (idx > 23) {
         return;
     }
@@ -533,7 +533,7 @@ extern "C" void SndMgr_ApplyPan(SndMgr *self, u32 flag) {
     if (!isSet(h)) {
         return;
     }
-    switch (h->unk_3a) {
+    switch (h->seqArcIndex) {
         case 11:
         case 146:
         case 147:

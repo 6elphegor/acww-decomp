@@ -163,7 +163,6 @@ extern "C" BOOL Ground_IsShore(s32 a, s32 b);
 extern "C" BOOL Ground_IsWaterAround(VecFx32 *pos, s32 r, s32 *out, s32 flags);
 extern "C" BOOL Ground_FindWaterAlongDir(VecFx32 *out, VecFx32 *pos, u32 dist, s32 *dir, u32 count, s32 r, s32 flags);
 extern "C" BOOL Ground_IsGrassSurface(s32 a, s32 b);
-struct Unk_02030f10_Vec : VecFx32 { Unk_02030f10_Vec() {} };
 static inline BOOL Unk_02030f10_Flat(GroundCellView *T)
 {
     BOOL f = FALSE, e = FALSE;
@@ -171,7 +170,7 @@ static inline BOOL Unk_02030f10_Flat(GroundCellView *T)
     if (e && T->quadHeights[0] == T->quadHeights[3]) f = TRUE;
     return f;
 }
-struct NeighbourReachLocals { Unk_02030f10_Vec R; GroundCellView T; Unk_02030f10_Vec S; GroundCellView T2; };
+struct NeighbourReachLocals { VecFx32Ctor R; GroundCellView T; VecFx32Ctor S; GroundCellView T2; };
 static inline BOOL Unk_02030be4_A(GroundCellView *T)
 {
     BOOL g = FALSE, f = FALSE, e = FALSE;
@@ -2551,8 +2550,8 @@ extern "C" BOOL Ground_IsNeighbourReachable(s32 a, s32 b, s32 c, s32 d, u8 flag)
 {
     s32 dy, dx;
     s32 r5;
-    volatile Unk_02030f10_Vec A;
-    Unk_02030f10_Vec Q;
+    volatile VecFx32Ctor A;
+    VecFx32Ctor Q;
     dx = a - c;
     if (dx < 0) dx = -dx;
     if (dx > 1) return FALSE;
@@ -2582,7 +2581,7 @@ extern "C" BOOL Ground_IsNeighbourReachable(s32 a, s32 b, s32 c, s32 d, u8 flag)
         l.R.z = A.z;
         tR = Ground_GetHeightAt((VecFx32 *)(&l.R), 0, 25);
         if (tR == 0 && r5 == tR) {
-            _ZN10GroundCell9loadAtPosEP7VecFx32i(&l.T, &l.R, 0);
+            _ZN10GroundCell9loadAtPosEP7VecFx32i(&l.T, (VecFx32 *)&l.R, 0);
             if (Unk_02030f10_Flat(&l.T)) return TRUE;
         }
         l.S.x = A.x;
@@ -2590,7 +2589,7 @@ extern "C" BOOL Ground_IsNeighbourReachable(s32 a, s32 b, s32 c, s32 d, u8 flag)
         l.S.z = Q.z;
         tS = Ground_GetHeightAt((VecFx32 *)(&l.S), 0, 25);
         if (tS == 0 && r5 == tS) {
-            _ZN10GroundCell9loadAtPosEP7VecFx32i(&l.T2, &l.S, 0);
+            _ZN10GroundCell9loadAtPosEP7VecFx32i(&l.T2, (VecFx32 *)&l.S, 0);
             if (Unk_02030f10_Flat(&l.T2)) return TRUE;
         }
         return FALSE;

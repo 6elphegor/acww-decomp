@@ -1,4 +1,5 @@
 #include "types.h"
+#include "sys/ClockDateTime.h"
 #include "nitro/os_rtc.h"
 
 struct ClockOffset {
@@ -15,13 +16,13 @@ struct Unk_0209cf28_T {
     }
 };
 
-struct Unk_0209cc08_T {
-    u8 day, month, year, unk_03;
-    Unk_0209cc08_T() {
+struct ClockDateInit {
+    u8 day, month, year, pad_03;
+    ClockDateInit() {
         day = 1;
         month = 1;
         year = 0;
-        unk_03 = 0;
+        pad_03 = 0;
     }
 };
 
@@ -33,16 +34,6 @@ union MinuteHour {
     u16 v;
 };
 
-struct ClockDateTime {
-    u8 second; // seconds
-    u8 minute; // minutes
-    u8 hour; // hours
-    u8 day; // day
-    u8 month; // month
-    u8 year; // year (0..99)
-    u8 unk_06;
-    u8 unk_07;
-};
 
 
 // rodata
@@ -76,8 +67,8 @@ s32 DateTime_DiffMinutes(ClockDateTime *a, ClockDateTime *b);
 s32 DateTime_DiffDays(ClockDateTime *a, ClockDateTime *b);
 void Clock_ReadAdjusted(s32 *out);
 void Clock_ReadRtc(RTCDate *d, RTCTime *t);
-s32 Date_GetWeatherPeriod(Unk_0209cc08_T *t);
-s32 Date_GetSeasonPeriod(Unk_0209cc08_T *t);
+s32 Date_GetWeatherPeriod(ClockDateInit *t);
+s32 Date_GetSeasonPeriod(ClockDateInit *t);
 s32 Date_IsAfterOrEqual(u8 *a, u8 *b);
 s32 Date_DaysBetween(u8 *a, u8 *b);
 void Clock_GetMinuteHour(u8 *out);
@@ -730,7 +721,7 @@ extern "C" s32 Clock_GetTimeOfDay() {
     return 2;
 }
 
-extern "C" s32 Date_GetSeasonPeriod(Unk_0209cc08_T *p) {
+extern "C" s32 Date_GetSeasonPeriod(ClockDateInit *p) {
     u8 s[2];
     u16 v;
     s32 r;
@@ -752,14 +743,14 @@ extern "C" s32 Date_GetSeasonPeriod(Unk_0209cc08_T *p) {
 }
 
 extern "C" s32 DateTime_GetSeasonPeriod(u8 *p) {
-    Unk_0209cc08_T t;
+    ClockDateInit t;
     t.year = p[5];
     t.month = p[4];
     t.day = p[3];
     return Date_GetSeasonPeriod(&t);
 }
 
-extern "C" s32 Date_GetWeatherPeriod(Unk_0209cc08_T *p) {
+extern "C" s32 Date_GetWeatherPeriod(ClockDateInit *p) {
     u8 s[2];
     u16 v;
     s32 r;
@@ -781,7 +772,7 @@ extern "C" s32 Date_GetWeatherPeriod(Unk_0209cc08_T *p) {
 }
 
 extern "C" s32 DateTime_GetWeatherPeriod(u8 *p) {
-    Unk_0209cc08_T t;
+    ClockDateInit t;
     t.year = p[5];
     t.month = p[4];
     t.day = p[3];

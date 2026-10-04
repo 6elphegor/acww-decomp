@@ -126,7 +126,7 @@ extern MailTextBuilder gMailTextBuilder;
 
 enum Unk_0203d134_E { Unk_0203d134_E0 = 0, Unk_0203d134_E15 = 15 };
 
-extern "C" s32 func_0203d4d4(void) { return 0; }
+extern "C" s32 Stub_ReturnFalse(void) { return 0; }
 
 extern "C" void Main_PreTaskStub(void) {}
 

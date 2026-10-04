@@ -1445,7 +1445,7 @@ extern "C" BOOL Net_GetFriendDataType(void *p) {
     return DWC_GetFriendDataType(p);
 }
 
-extern "C" s32 func_020e9d70(void *p) {
+extern "C" s32 Net_IsBuddyFriendData(void *p) {
     return DWC_IsBuddyFriendData(p);
 }
 
