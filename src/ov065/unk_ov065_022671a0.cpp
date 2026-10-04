@@ -10,7 +10,7 @@ struct Unk_ov065_022672a0_Tbl {
 
 struct Unk_ov065_022672ec_Ptr {
     u8 pad_00[0xc];
-    Unk_ov065_022672a0_Tbl *unk_0c;
+    Unk_ov065_022672a0_Tbl *sslCtx;
 };
 
 struct Unk_ov065_022672ec_Root {
@@ -239,7 +239,7 @@ void Ssl_SetRootCaList(void *a, s32 b)
 {
     Unk_ov065_022672ec_Ptr *q = *(Unk_ov065_022672ec_Ptr **)((u8 *)((Unk_ov065_022672ec_Root *)data_021fcc2c)->cur + 0xa4);
     if (q != 0) {
-        Unk_ov065_022672a0_Tbl *t = q->unk_0c;
+        Unk_ov065_022672a0_Tbl *t = q->sslCtx;
         if (t != 0) {
             t->rootCaList = (void **)a;
             t->numRootCas = b;

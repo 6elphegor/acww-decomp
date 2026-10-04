@@ -9,7 +9,7 @@ struct Unk_ov065_0226ab5c_Conn {
     u8 targetSsid[0x114];
     s32 phase;
     u8 unk_2264[7];
-    u8 unk_226b;
+    u8 isResetting;
 };
 
 struct Unk_ov065_0226aed4_Fc {
@@ -17,9 +17,9 @@ struct Unk_ov065_0226aed4_Fc {
     void (*unk_04)(u32, void *, u32);
     u8 allocMask;
     u8 state;
-    u8 unk_0a;
+    u8 errorState;
     u8 anyApFound;
-    u32 unk_0c;
+    u32 errorCode;
     u8 unk_10[4];
     u8 furthestApStatus;
     u8 furthestApIndex;
@@ -32,7 +32,7 @@ struct Unk_ov065_0226b27c_Cfg {
     void (*unk_04)(u32, void *, u32);
     u8 dmaNo;
     u8 powerMode;
-    u8 unk_0a;
+    u8 apFilter;
     u8 netCheckMode;
 };
 
@@ -137,7 +137,7 @@ s32 WifiAp_Init(Unk_ov065_0226b27c_Cfg *cfg) {
     f8->unk_08 = 0;
     {
         Unk_ov065_0226b27c_B0c *b = (Unk_ov065_0226b27c_B0c *)(ec + 0xd0c);
-        b->lo = cfg->unk_0a;
+        b->lo = cfg->apFilter;
         b->mid = cfg->netCheckMode;
     }
     func_020ff154(ec);
@@ -318,12 +318,12 @@ u8 WifiAp_GetState() {
 
 void WifiAp_SetError(u32 v) {
     Unk_ov065_0226aed4_Fc *f = (Unk_ov065_0226aed4_Fc *)WifiAp_GetBlock(1);
-    f->unk_0c = v;
-    f->unk_0a = WifiAp_GetState();
+    f->errorCode = v;
+    f->errorState = WifiAp_GetState();
 }
 
 u32 WifiAp_GetErrorCode() {
-    return sWifiApControl->unk_0c;
+    return sWifiApControl->errorCode;
 }
 
 void WifiAp_SetConnectedApType(u32 v) {

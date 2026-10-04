@@ -35,8 +35,8 @@ struct Unk_ov065_0226b488_Rec {
     u8 unk_01;
     u16 rssi;
     u8 bssid[6];
-    u16 unk_0a;
-    u8 unk_0c[0x2c - 0xc];
+    u16 ssidLength;
+    u8 ssid[0x2c - 0xc];
     u16 capaInfo;
     u8 pad2e[0x36 - 0x2e];
     u16 channel;
@@ -888,8 +888,8 @@ struct Unk_ov065_0226b488_Rec {
     u8 unk_01;
     u16 rssi;
     u8 bssid[6];
-    u16 unk_0a;
-    u8 unk_0c[0x2c - 0xc];
+    u16 ssidLength;
+    u8 ssid[0x2c - 0xc];
     u16 capaInfo;
     u8 pad2e[0x36 - 0x2e];
     u16 channel;
@@ -1165,7 +1165,7 @@ s32 WifiAp_PrepareConnect(Unk_ov065_0226b488_Ctx *ctx) {
             ctx->foundApInfo[ctx->selectedAp * 4] = 3;
             return 9;
         }
-        if (ctx->apType == 6 && rec->unk_0c[9] == 0) {
+        if (ctx->apType == 6 && rec->ssid[9] == 0) {
             ctx->foundApInfo[ctx->selectedAp * 4] = 3;
             return 9;
         }
@@ -1229,7 +1229,7 @@ u32 WifiAp_SelectApType(Unk_ov065_0226b488_Ctx *ctx) {
     l.result = 0;
     if (ctx->unk_d0c_mode == 0) {
         u32 cnt = l.result;
-        u32 proto = l.rec->unk_0a;
+        u32 proto = l.rec->ssidLength;
         if (proto == 0x20) {
             l.result = WifiAp_MatchSpecialSsid(l.rec);
             if (l.result > 0) {
@@ -1253,8 +1253,8 @@ u32 WifiAp_SelectApType(Unk_ov065_0226b488_Ctx *ctx) {
             l.d = (u8 *)ctx + 0x304;
             e = ctx->searchEntries;
             do {
-                u32 pr = l.rec->unk_0a;
-                if (pr == p[0x303] && strncmp(l.rec->unk_0c, l.d, pr) == 0) {
+                u32 pr = l.rec->ssidLength;
+                if (pr == p[0x303] && strncmp(l.rec->ssid, l.d, pr) == 0) {
                     if (cnt == 0) {
                         l.result = p[0x301];
                     } else {
@@ -1334,11 +1334,11 @@ BOOL WifiAp_GetWepSetting(Unk_ov065_0226b488_Ctx *ctx, u32 idx, u8 *out) {
         break;
     case 6:
         out[0] = 2;
-        WifiAp_GetUsbApWepKey(ctx->foundApBss[ctx->selectedAp].unk_0c, out + 2);
+        WifiAp_GetUsbApWepKey(ctx->foundApBss[ctx->selectedAp].ssid, out + 2);
         break;
     case 7:
         out[0] = 2;
-        WifiAp_GetNdwcshapWepKey(ctx->foundApBss[ctx->selectedAp].unk_0c, out + 2);
+        WifiAp_GetNdwcshapWepKey(ctx->foundApBss[ctx->selectedAp].ssid, out + 2);
         break;
     case 8:
     case 9:
@@ -1380,9 +1380,9 @@ void WifiAp_OnApFound(Unk_ov065_0226b488_Rec *rec) {
     WifiAp_GetBlock(1)[0xb] = 1;
     switch (WifiAp_GetState()) {
     case 3: {
-        u16 proto = rec->unk_0a;
+        u16 proto = rec->ssidLength;
         u8 c;
-        if (proto == 0 || (c = rec->unk_0c[0]) == 0) {
+        if (proto == 0 || (c = rec->ssid[0]) == 0) {
             WifiAp_AddFoundChannel(rec->channel);
         } else if (proto == 1 || c == 0x20) {
             WifiAp_AddFoundChannel(rec->channel);
@@ -1411,14 +1411,14 @@ s32 WifiAp_MatchSpecialSsid(Unk_ov065_0226b488_Rec *rec) {
     Unk_ov065_0226b488_Ctx *ctx = (Unk_ov065_0226b488_Ctx *)WifiAp_GetBlock(0x10);
     if (ctx->unk_d0c_st == 0 || ctx->unk_d0c_st == 4) {
         if ((u8)(((s32)rec->capaInfo >> 4) & 1) == 1) {
-            if (WifiAp_IsUsbConnectorAp(rec->unk_0c) == 1) {
+            if (WifiAp_IsUsbConnectorAp(rec->ssid) == 1) {
                 return 6;
             }
         }
     }
     if (ctx->unk_d0c_st == 0 || ctx->unk_d0c_st == 5) {
         if ((u8)(((s32)rec->capaInfo >> 4) & 1) == 1) {
-            if (WifiAp_IsNdwcshapAp(rec->unk_0c) == 1) {
+            if (WifiAp_IsNdwcshapAp(rec->ssid) == 1) {
                 return 7;
             }
         }
@@ -1429,7 +1429,7 @@ s32 WifiAp_MatchSpecialSsid(Unk_ov065_0226b488_Rec *rec) {
 s32 WifiAp_MatchSearchEntry(Unk_ov065_0226b488_Rec *rec, s32 n, Unk_ov065_0226b488_Entry *e) {
     s32 i;
     u16 proto;
-    if (rec->unk_0a == 0x20) {
+    if (rec->ssidLength == 0x20) {
         s32 r = WifiAp_MatchSpecialSsid(rec);
         if (r > 0) {
             return r;
@@ -1437,9 +1437,9 @@ s32 WifiAp_MatchSearchEntry(Unk_ov065_0226b488_Rec *rec, s32 n, Unk_ov065_0226b4
     }
     i = 0;
     if (n > 0) {
-        proto = rec->unk_0a;
+        proto = rec->ssidLength;
         do {
-            if ((u8)proto == e->ssidLength && strncmp(rec->unk_0c, e->ssid, proto) == 0) {
+            if ((u8)proto == e->ssidLength && strncmp(rec->ssid, e->ssid, proto) == 0) {
                 return e->apType;
             }
             e++;
@@ -1520,7 +1520,7 @@ struct Unk_ov065_0226ab5c_Conn {
     u8 targetSsid[0x114];
     s32 phase;
     u8 unk_2264[7];
-    u8 unk_226b;
+    u8 isResetting;
 };
 
 typedef void (*Unk_ov065_0226ac54_Cb)(void *, void *, void *, u32);
@@ -1540,9 +1540,9 @@ struct Unk_ov065_0226aed4_Fc {
     void (*unk_04)(u32, void *, u32);
     u8 allocMask;
     u8 state;
-    u8 unk_0a;
+    u8 errorState;
     u8 anyApFound;
-    u32 unk_0c;
+    u32 errorCode;
     u8 unk_10[4];
     u8 furthestApStatus;
     u8 furthestApIndex;
@@ -1555,7 +1555,7 @@ struct Unk_ov065_0226b27c_Cfg {
     void (*unk_04)(u32, void *, u32);
     u8 dmaNo;
     u8 powerMode;
-    u8 unk_0a;
+    u8 apFilter;
     u8 netCheckMode;
 };
 

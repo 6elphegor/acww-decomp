@@ -251,8 +251,8 @@ struct Unk_ov065_0226b488_Rec {
     u8 unk_01;
     u16 rssi;
     u8 bssid[6];
-    u16 unk_0a;
-    u8 unk_0c[0x2c - 0xc];
+    u16 ssidLength;
+    u8 ssid[0x2c - 0xc];
     u16 capaInfo;
     u8 pad2e[0x36 - 0x2e];
     u16 channel;

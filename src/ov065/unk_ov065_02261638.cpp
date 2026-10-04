@@ -127,7 +127,7 @@ struct Unk_ov065_02264d80_Obj {
     u8 unk_00[8];
     u8 state;
     u8 unk_09[3];
-    Unk_ov065_02264d80_Conn *unk_0c;
+    Unk_ov065_02264d80_Conn *sslCtx;
     u8 unk_10[0x34];
     u32 rxLen;
 };

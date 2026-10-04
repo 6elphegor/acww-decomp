@@ -11,7 +11,7 @@ struct Unk_ov065_022665d8_Rsa {
     s32 modulusLen;
     u8 *modulus;
     s32 primePLen;
-    u8 *unk_0c;
+    u8 *primeP;
     s32 primeQLen;
     u8 *primeQ;
     s32 exponentPLen;
@@ -26,7 +26,7 @@ struct Unk_ov065_02266c90_Key {
     u32 caName;
     s32 modulusLen;
     u8 *modulus;
-    s32 unk_0c;
+    s32 exponentLen;
     u8 *exponent;
 };
 
@@ -206,7 +206,7 @@ s32 SslCert_ParseAsn1(Ctx *c, u8 **pp, s32 depth, s32 idx, s32 mode) {
                     }
                     break;
                 case 2:
-                    c->issuerKey.unk_0c = len;
+                    c->issuerKey.exponentLen = len;
                     c->issuerKey.exponent = p;
                     break;
                 }
@@ -343,7 +343,7 @@ s32 SslCert_ParseAsn1(Ctx *c, u8 **pp, s32 depth, s32 idx, s32 mode) {
 }
 
 s32 SslCert_VerifySignature(Ctx *c, Key *k) {
-    if (c->certSignature == 0 || c->certSignatureLen == 0 || k->exponent == 0 || k->unk_0c == 0 || k->modulus == 0 || k->modulusLen == 0) {
+    if (c->certSignature == 0 || c->certSignatureLen == 0 || k->exponent == 0 || k->exponentLen == 0 || k->modulus == 0 || k->modulusLen == 0) {
         return 2;
     }
     s32 n = (k->modulusLen * 2) / 2;
@@ -355,7 +355,7 @@ s32 SslCert_VerifySignature(Ctx *c, Key *k) {
     u16 *b2 = b1 + n;
     u16 *b3 = b2 + n;
     SslBigNum_FromBytes(b1, c->certSignature, c->certSignatureLen, n);
-    SslBigNum_FromBytes(b2, k->exponent, k->unk_0c, n);
+    SslBigNum_FromBytes(b2, k->exponent, k->exponentLen, n);
     SslBigNum_FromBytes(b3, k->modulus, k->modulusLen, n);
     if (gSslRsaThreadPriority < 0x20) {
         u32 th = data_021fcc2c.cur;
@@ -640,7 +640,7 @@ void SslRsa_PrivateDecrypt(u8 *out, u8 *in, Rsa *k) {
             u16 *b7 = b6 + n;
             SslBigNum_FromBytes(b0, in, k->modulusLen, n);
             SslBigNum_FromBytes(b1, k->exponentP, k->exponentPLen, n);
-            SslBigNum_FromBytes(b5, k->unk_0c, k->primePLen, n);
+            SslBigNum_FromBytes(b5, k->primeP, k->primePLen, n);
             SslBigNum_ModExpMontgomery(b3, b0, b1, n, b5);
             SslBigNum_FromBytes(b1, k->exponentQ, k->exponentQLen, n);
             SslBigNum_FromBytes(b5, k->primeQ, k->primeQLen, n);
@@ -731,7 +731,7 @@ struct Unk_ov065_02265a5c_St {
 
 struct Unk_ov065_02265a5c_Sess {
     u8 unk_00[0xc];
-    Unk_ov065_02265a5c_St *unk_0c;
+    Unk_ov065_02265a5c_St *sslCtx;
 };
 
 typedef Unk_ov065_02265a5c_St St;
@@ -1161,7 +1161,7 @@ void Ssl_ProcessRecord(St *st, u8 *buf) {
 }
 
 u8 Ssl_ReadRecord(Sess *s) {
-    St *st = s->unk_0c;
+    St *st = s->sslCtx;
     u32 len;
     u8 *p;
     u8 *buf;
@@ -1273,8 +1273,8 @@ struct Unk_ov065_02265130_Sess {
     u32 waitReason;
     u8 state;
     u8 useSsl;
-    u16 unk_0a;
-    Unk_ov065_02265130_Ctx *unk_0c;
+    u16 localPort;
+    Unk_ov065_02265130_Ctx *sslCtx;
     u32 unk_10;
     u32 unk_14;
     u16 remotePort;
@@ -1416,7 +1416,7 @@ void SslRand_AddSeed(u8 *p, u32 n) {
 }
 
 s32 Ssl_SendServerHello(Sess *s) {
-    Ctx *ctx = s->unk_0c;
+    Ctx *ctx = s->sslCtx;
     Unk_ov065_02265130_Cert *cert = ctx->serverCert;
     s32 cl;
     u32 t;
@@ -1504,7 +1504,7 @@ s32 Ssl_SendServerHello(Sess *s) {
 }
 
 void Ssl_SendFinished(Sess *s) {
-    Ctx *ctx = s->unk_0c;
+    Ctx *ctx = s->sslCtx;
     u8 *b;
     b = (u8 *)sIpAlloc(0x83);
     if (b == 0) {
@@ -1540,7 +1540,7 @@ void Ssl_SendFinished(Sess *s) {
 }
 
 void Ssl_SendClientHello(Sess *s) {
-    Ctx *ctx = s->unk_0c;
+    Ctx *ctx = s->sslCtx;
     u8 *buf;
     u8 *q;
     u32 t;
@@ -1600,7 +1600,7 @@ void Ssl_SendClientHello(Sess *s) {
 }
 
 void Ssl_SendClientKeyExchange(Sess *s) {
-    Ctx *ctx = s->unk_0c;
+    Ctx *ctx = s->sslCtx;
     s32 n;
     s32 cnt;
     u16 *p0;
@@ -1704,7 +1704,7 @@ s32 Ssl_ServerHandshake(Sess *s) {
         return 1;
     }
     if (Ssl_SendServerHello(s)) {
-        Ssl_DeriveKeyBlock(s->unk_0c);
+        Ssl_DeriveKeyBlock(s->sslCtx);
         Ssl_SendFinished(s);
         if (Ssl_WaitPeerFinished(s)) {
             return 1;
@@ -1722,7 +1722,7 @@ s32 Ssl_ServerHandshake(Sess *s) {
 }
 
 void Ssl_Accept(Sess *s) {
-    Ctx *ctx = s->unk_0c;
+    Ctx *ctx = s->sslCtx;
     for (;;) {
         Tcp_Listen(s);
         ctx->handshakeState = 0;
@@ -1740,7 +1740,7 @@ void Ssl_Accept(Sess *s) {
 }
 
 s32 Ssl_ClientHandshake(Sess *s) {
-    Ctx *ctx = s->unk_0c;
+    Ctx *ctx = s->sslCtx;
     s32 r;
     Ssl_SendClientHello(s);
     do {
@@ -1771,7 +1771,7 @@ s32 Ssl_ClientHandshake(Sess *s) {
 }
 
 s32 Ssl_Connect(Sess *s) {
-    Ctx *ctx = s->unk_0c;
+    Ctx *ctx = s->sslCtx;
     if (s->state != 4) {
         if (Tcp_Connect(s)) {
             return 1;
@@ -1865,7 +1865,7 @@ struct Unk_ov065_02264d80_Obj {
     u8 unk_00[8];
     u8 state;
     u8 unk_09[3];
-    Unk_ov065_02264d80_Conn *unk_0c;
+    Unk_ov065_02264d80_Conn *sslCtx;
     u8 unk_10[0x34];
     u32 rxLen;
 };
@@ -1945,7 +1945,7 @@ void IpStack_Nop(void);
 extern "C" {
 
 u8 *Ssl_Read(u32 *out, Unk_ov065_02264d80_Obj *o) {
-    Unk_ov065_02264d80_Conn *c = o->unk_0c;
+    Unk_ov065_02264d80_Conn *c = o->sslCtx;
     u8 **pb;
     if (c->recordBuf != 0 && c->recordReady == 0) {
         if (Ssl_ReadExact(c->recordBuf + c->recordPos, c->recordLen - c->recordPos, o) != 0) {
@@ -1973,7 +1973,7 @@ u8 *Ssl_Read(u32 *out, Unk_ov065_02264d80_Obj *o) {
 }
 
 void Ssl_Consume(u32 n, Unk_ov065_02264d80_Obj *o) {
-    Unk_ov065_02264d80_Conn *c = o->unk_0c;
+    Unk_ov065_02264d80_Conn *c = o->sslCtx;
     if (n >= c->recordLen - c->recordPos) {
         if (c->recordBuf != 0) {
             sIpFree(c->recordBuf);
@@ -1985,7 +1985,7 @@ void Ssl_Consume(u32 n, Unk_ov065_02264d80_Obj *o) {
 }
 
 void Ssl_ReceiveRecordPart(Unk_ov065_02264d80_Obj *o) {
-    Unk_ov065_02264d80_Conn *c = o->unk_0c;
+    Unk_ov065_02264d80_Conn *c = o->sslCtx;
     u32 len;
     u8 *src;
     BOOL flag;
@@ -2037,7 +2037,7 @@ void Ssl_ReceiveRecordPart(Unk_ov065_02264d80_Obj *o) {
 }
 
 s32 Ssl_GetReadLength(Unk_ov065_02264d80_Obj *o) {
-    Unk_ov065_02264d80_Conn *c = o->unk_0c;
+    Unk_ov065_02264d80_Conn *c = o->sslCtx;
     if (c->recordBuf == 0 || c->recordReady == 0) {
         Ssl_ReceiveRecordPart(o);
     }
@@ -2053,7 +2053,7 @@ s32 Ssl_GetReadLength(Unk_ov065_02264d80_Obj *o) {
 }
 
 u32 Ssl_Write(u8 *p1, u32 n1, u8 *p2, u32 n2, Unk_ov065_02264d80_Obj *o) {
-    Unk_ov065_02264d80_Conn *c = o->unk_0c;
+    Unk_ov065_02264d80_Conn *c = o->sslCtx;
     s32 total = n1 + n2;
     u32 c2;
     u32 sent = 0;
@@ -2101,7 +2101,7 @@ u32 Ssl_Write(u8 *p1, u32 n1, u8 *p2, u32 n2, Unk_ov065_02264d80_Obj *o) {
 }
 
 void Ssl_Shutdown(Unk_ov065_02264d80_Obj *o) {
-    Unk_ov065_02264d80_Conn *c = o->unk_0c;
+    Unk_ov065_02264d80_Conn *c = o->sslCtx;
     if (c->handshakeState == 8) {
         u8 b[32];
         u32 n;
