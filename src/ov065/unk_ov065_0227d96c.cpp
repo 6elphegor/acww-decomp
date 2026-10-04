@@ -4,80 +4,80 @@
 // ov065_050: DWC HTTP socket send/recv + growable string buffer + callback list (0x0227d8e0..0x0227e1c8)
 
 struct Unk_ov065_0227d8e0_Buf {
-    char *unk_00;
-    s32 unk_04;
-    s32 unk_08;
-    s32 unk_0c;
+    char *buffer;
+    s32 capacity;
+    s32 length;
+    s32 pos;
 };
 
 struct Unk_ov065_0227d8e0_Pair {
-    s32 unk_00;
-    s32 unk_04;
+    s32 func;
+    s32 param;
 };
 
 struct Unk_ov065_0227e0e8_Wrap {
-    Unk_ov065_0227d8e0_Pair unk_00;
+    Unk_ov065_0227d8e0_Pair callback;
 };
 
 struct Unk_ov065_0227d8e0_Node {
     void (*unk_00)(void *, void *, s32);
-    s32 unk_04;
-    void *unk_08;
-    s32 unk_0c;
-    void *unk_10;
-    Unk_ov065_0227d8e0_Node *unk_14;
+    s32 param;
+    void *arg;
+    s32 argType;
+    void *operationId;
+    Unk_ov065_0227d8e0_Node *next;
 };
 
 struct Unk_ov065_0227d8e0_Ctx {
     u8 pad_000[0x198];
-    s32 unk_198;
-    s32 unk_19c;
-    s32 unk_1a0;
-    Unk_ov065_0227e0e8_Wrap unk_1a4[6];
-    s32 unk_1d4;
-    s32 unk_1d8;
-    char *unk_1dc;
+    s32 sessKey;
+    s32 userId;
+    s32 profileId;
+    Unk_ov065_0227e0e8_Wrap callbacks[6];
+    s32 cmSocket;
+    s32 connectState;
+    char *recvBuffer;
     u8 pad_1e0[0x1ec - 0x1e0];
-    char *unk_1ec;
+    char *inputBuffer;
     u8 pad_1f0[4];
-    Unk_ov065_0227d8e0_Buf unk_1f4;
-    s32 unk_204;
+    Unk_ov065_0227d8e0_Buf outputBuffer;
+    s32 peerSocket;
     u8 pad_208[0x418 - 0x208];
-    s32 unk_418;
-    s32 unk_41c;
+    s32 errorCode;
+    s32 fatalError;
     u8 pad_420[4];
-    void *unk_424;
+    void *operationList;
     u8 pad_428[0x434 - 0x428];
-    void *unk_434;
-    Unk_ov065_0227d8e0_Node *unk_438;
-    Unk_ov065_0227d8e0_Node *unk_43c;
-    void *unk_440;
+    void *peerList;
+    Unk_ov065_0227d8e0_Node *callbackList;
+    Unk_ov065_0227d8e0_Node *callbackListTail;
+    void *profileUpdateBuffer;
     u8 pad_444[0x450 - 0x444];
-    void *unk_450;
+    void *userUpdateBuffer;
 };
 
 struct Unk_ov065_0227d8e0_Handle {
-    Unk_ov065_0227d8e0_Ctx *unk_00;
+    Unk_ov065_0227d8e0_Ctx *connection;
 };
 
 struct Unk_ov065_0227d8e0_Arg {
     u8 pad_00[0x10];
-    char *unk_10;
+    char *authSig;
 };
 
 struct Unk_ov065_0227dc48_Conn {
     u8 pad_00[8];
-    s32 unk_08;
+    s32 sock;
     u8 pad_0c[0x28 - 0xc];
-    Unk_ov065_0227d8e0_Buf unk_28;
-    s32 unk_38;
+    Unk_ov065_0227d8e0_Buf outputBuffer;
+    s32 messageQueue;
 };
 
 struct Unk_ov065_0227dfd8_D3 {
     u8 pad_00[0x38];
-    s32 unk_38;
-    s32 *unk_3c;
-    s32 *unk_40;
+    s32 numNicks;
+    s32 *nicks;
+    s32 *uniqueNicks;
 };
 
 struct Unk_ov065_0227dfd8_D4 {
@@ -90,20 +90,20 @@ struct Unk_ov065_0227dfd8_D4 {
 
 struct Unk_ov065_0227dfd8_D9 {
     s32 unk_00;
-    s32 unk_04;
-    s32 *unk_08;
+    s32 numNicks;
+    s32 *nicks;
 };
 
 struct Unk_ov065_0227e0e8_G {
     u8 pad_00[0x18];
-    void *unk_18;
+    void *id;
 };
 
 struct Unk_ov065_0227e160_Cb {
-    s32 unk_00;
-    s32 unk_04;
-    void *unk_08;
-    s32 unk_0c;
+    s32 result;
+    s32 errorCode;
+    void *errorString;
+    s32 isFatal;
 };
 
 typedef Unk_ov065_0227d8e0_Handle Unk_H;
@@ -150,9 +150,9 @@ void GsGp_CallErrorCallback(Unk_H *, s32, s32);
 
 extern "C" {
 s32 GsGpBuf_AppendChar(Unk_H *h, Unk_B *b, char c) {
-    s32 len = b->unk_08;
-    s32 cap = b->unk_04;
-    char *data = b->unk_00;
+    s32 len = b->length;
+    s32 cap = b->capacity;
+    char *data = b->buffer;
     if (cap == len) {
         cap += 0x800;
         data = (char *)GsUtil_Realloc(data, cap + 1);
@@ -163,9 +163,9 @@ s32 GsGpBuf_AppendChar(Unk_H *h, Unk_B *b, char c) {
     }
     data[len] = c;
     data[len + 1] = 0;
-    b->unk_08 = b->unk_08 + 1;
-    b->unk_04 = cap;
-    b->unk_00 = data;
+    b->length = b->length + 1;
+    b->capacity = cap;
+    b->buffer = data;
     return 0;
 }
 }
@@ -178,9 +178,9 @@ s32 GsGpBuf_Append(Unk_H *h, Unk_B *b, const char *s, s32 n) {
     if (s == NULL) {
         return 0;
     }
-    len = b->unk_08;
-    cap = b->unk_04;
-    data = b->unk_00;
+    len = b->length;
+    cap = b->capacity;
+    data = b->buffer;
     if (cap - len < n) {
         cap += (n < 0x800) ? 0x800 : n;
         data = (char *)GsUtil_Realloc(data, cap + 1);
@@ -191,9 +191,9 @@ s32 GsGpBuf_Append(Unk_H *h, Unk_B *b, const char *s, s32 n) {
     }
     memcpy(data + len, s, n);
     data[len + n] = 0;
-    b->unk_08 = b->unk_08 + n;
-    b->unk_04 = cap;
-    b->unk_00 = data;
+    b->length = b->length + n;
+    b->capacity = cap;
+    b->buffer = data;
     return 0;
 }
 }
@@ -246,8 +246,8 @@ s32 GsGpPeer_SendChar(Unk_H *h, Unk_ov065_0227dc48_Conn *c, char ch) {
     s32 flag;
     s32 cnt;
     s32 r;
-    if (c->unk_28.unk_08 - c->unk_28.unk_0c == 0 && GsArray_Count(c->unk_38) == 0) {
-        r = GsGp_SocketSend(h, c->unk_08, &ch, 1, &flag, &cnt, "PT");
+    if (c->outputBuffer.length - c->outputBuffer.pos == 0 && GsArray_Count(c->messageQueue) == 0) {
+        r = GsGp_SocketSend(h, c->sock, &ch, 1, &flag, &cnt, "PT");
         if (r != 0) {
             return r;
         }
@@ -255,7 +255,7 @@ s32 GsGpPeer_SendChar(Unk_H *h, Unk_ov065_0227dc48_Conn *c, char ch) {
             return 0;
         }
     }
-    return GsGpBuf_AppendChar(h, &c->unk_28, ch);
+    return GsGpBuf_AppendChar(h, &c->outputBuffer, ch);
 }
 }
 
@@ -268,9 +268,9 @@ s32 GsGpPeer_Send(Unk_H *h, Unk_ov065_0227dc48_Conn *c, const char *s, s32 n) {
     if (n == 0) {
         return sent;
     }
-    if (c->unk_28.unk_08 - c->unk_28.unk_0c == 0 && GsArray_Count(c->unk_38) == 0) {
+    if (c->outputBuffer.length - c->outputBuffer.pos == 0 && GsArray_Count(c->messageQueue) == 0) {
         do {
-            r = GsGp_SocketSend(h, c->unk_08, (char *)s + sent, n, &flag, &cnt, "PT");
+            r = GsGp_SocketSend(h, c->sock, (char *)s + sent, n, &flag, &cnt, "PT");
             if (r != 0) {
                 return r;
             }
@@ -281,7 +281,7 @@ s32 GsGpPeer_Send(Unk_H *h, Unk_ov065_0227dc48_Conn *c, const char *s, s32 n) {
         } while (cnt != 0 && n != 0);
     }
     if (n != 0) {
-        r = GsGpBuf_Append(h, &c->unk_28, s + sent, n);
+        r = GsGpBuf_Append(h, &c->outputBuffer, s + sent, n);
         if (r != 0) {
             return r;
         }
@@ -306,9 +306,9 @@ __declspec(weak) void Unk_ov065_0227dc00_pool_order(void) {
 
 extern "C" {
 s32 GsGp_RecvToBuffer(Unk_H *h, s32 fd, Unk_B *b, s32 *pout, s32 *pflag, const char *str) {
-    char *data = b->unk_00;
-    s32 len = b->unk_08;
-    s32 cap = b->unk_04;
+    char *data = b->buffer;
+    s32 len = b->length;
+    s32 cap = b->capacity;
     s32 total = 0;
     s32 flag = 0;
     volatile s32 z0 = 0;
@@ -348,9 +348,9 @@ s32 GsGp_RecvToBuffer(Unk_H *h, s32 fd, Unk_B *b, s32 *pout, s32 *pflag, const c
     if (total != 0) {
         GsGp_DebugLog(h, "RECVTOTL(%s): %d\n", str, total);
     }
-    b->unk_00 = data;
-    b->unk_08 = len;
-    b->unk_04 = cap;
+    b->buffer = data;
+    b->length = len;
+    b->capacity = cap;
     *pout = total;
     s32 *pf = pflag;
     *pf = flag;
@@ -360,9 +360,9 @@ s32 GsGp_RecvToBuffer(Unk_H *h, s32 fd, Unk_B *b, s32 *pout, s32 *pflag, const c
 
 extern "C" {
 s32 GsGp_SendBuffer(Unk_H *h, s32 fd, Unk_B *b, s32 *pout, s32 compact, const char *str) {
-    char *data = b->unk_00;
-    s32 len = b->unk_08;
-    s32 pos = b->unk_0c;
+    char *data = b->buffer;
+    s32 len = b->length;
+    s32 pos = b->pos;
     s32 sent;
     s32 rem = len - pos;
     sent = 0;
@@ -390,8 +390,8 @@ s32 GsGp_SendBuffer(Unk_H *h, s32 fd, Unk_B *b, s32 *pout, s32 compact, const ch
     } else {
         pos += sent;
     }
-    b->unk_08 = len;
-    b->unk_0c = pos;
+    b->length = len;
+    b->pos = pos;
     if (pout != NULL) {
         *pout = flag;
     }
@@ -406,32 +406,32 @@ s32 GsGpPeer_ParseMessage(void *h, Unk_B *b, char **pp, s32 *plen, s32 *pval) {
     s32 n;
     s32 k;
     *pp = NULL;
-    if (b->unk_08 < 5) {
+    if (b->length < 5) {
         return 0;
     }
     {
-        p = func_0212a120(b->unk_00, 10);
+        p = func_0212a120(b->buffer, 10);
         if (p != NULL) {
             if (strncmp(p - 5, "\\msg\\", 5) != 0) {
                 return 3;
             }
             *p = 0;
-            if (GsGp_GetValue(b->unk_00, "\\m\\", line, 16) == 0) {
+            if (GsGp_GetValue(b->buffer, "\\m\\", line, 16) == 0) {
                 return 3;
             }
             *plen = func_0212b770(line);
-            if (GsGp_GetValue(b->unk_00, "\\len\\", line, 16) == 0) {
+            if (GsGp_GetValue(b->buffer, "\\len\\", line, 16) == 0) {
                 return 3;
             }
             n = func_0212b770(line);
             k = n + 1;
-            if (b->unk_08 > k + (p - b->unk_00)) {
+            if (b->length > k + (p - b->buffer)) {
                 if (p[k] != 0) {
                     return 3;
                 }
                 *pp = p + 1;
                 *pval = n;
-                b->unk_0c = k + (p - b->unk_00) + 1;
+                b->pos = k + (p - b->buffer) + 1;
             } else {
                 *p = 10;
             }
@@ -443,15 +443,15 @@ s32 GsGpPeer_ParseMessage(void *h, Unk_B *b, char **pp, s32 *plen, s32 *pval) {
 
 extern "C" {
 s32 GsGpBuf_Compact(void *h, Unk_B *b) {
-    if (b == NULL || b->unk_00 == NULL || b->unk_0c == 0) {
+    if (b == NULL || b->buffer == NULL || b->pos == 0) {
         return 0;
     }
-    b->unk_08 = b->unk_08 - b->unk_0c;
-    if (b->unk_08 != 0) {
-        memmove(b->unk_00, b->unk_00 + b->unk_0c, b->unk_08);
+    b->length = b->length - b->pos;
+    if (b->length != 0) {
+        memmove(b->buffer, b->buffer + b->pos, b->length);
     }
-    b->unk_00[b->unk_08] = 0;
-    b->unk_0c = 0;
+    b->buffer[b->length] = 0;
+    b->pos = 0;
     return 0;
 }
 }

@@ -6,65 +6,65 @@ namespace Nb {
 
 struct Unk_ov065_0227bd20_Ctx {
     u8 pad_000[0x100];
-    s32 unk_100;
+    s32 infoCaching;
     u8 pad_104[4];
-    s32 unk_108;
+    s32 simulation;
     u8 pad_10c[0x198 - 0x10c];
-    s32 unk_198;
+    s32 sessKey;
     u8 pad_19c[0x1d8 - 0x19c];
-    s32 unk_1d8;
+    s32 connectState;
     u8 pad_1dc[0x1f4 - 0x1dc];
-    char unk_1f4[0x14];
+    char outputBuffer[0x14];
     s32 unk_208;
     s32 unk_20c;
     s32 unk_210;
-    s32 unk_214;
-    char unk_218[0x100];
-    char unk_318[0x100];
+    s32 lastStatus;
+    char lastStatusString[0x100];
+    char lastLocationString[0x100];
     u8 pad_418[0x430 - 0x418];
-    s32 unk_430;
+    s32 numBuddies;
 };
 
 struct Unk_ov065_0227bd20_Handle {
-    Unk_ov065_0227bd20_Ctx *unk_00;
+    Unk_ov065_0227bd20_Ctx *connection;
 };
 
 struct Unk_ov065_0227bbf4_Url {
     u8 pad_00[0x14];
-    char *unk_14;
-    char *unk_18;
+    char *url;
+    char *serverHost;
     u16 unk_1c;
     u16 unk_1e;
-    u16 unk_20;
+    u16 serverPort;
     u16 unk_22;
-    char *unk_24;
+    char *requestPath;
 };
 
 struct Unk_ov065_0227c05c_Src {
     s32 unk_00;
-    s32 unk_04;
-    char *unk_08;
-    char *unk_0c;
-    s32 unk_10;
-    s32 unk_14;
+    s32 status;
+    char *statusString;
+    char *locationString;
+    s32 ip;
+    s32 port;
 };
 
 struct Unk_ov065_0227c05c_Ent {
-    s32 unk_00;
+    s32 profileId;
     s32 unk_04;
-    Unk_ov065_0227c05c_Src *unk_08;
+    Unk_ov065_0227c05c_Src *buddyStatus;
     s32 unk_0c;
     s32 unk_10;
     s32 unk_14;
 };
 
 struct Unk_ov065_0227c05c_Out {
-    s32 unk_000;
-    s32 unk_004;
-    char unk_008[0x100];
-    char unk_108[0x100];
-    s32 unk_208;
-    s32 unk_20c;
+    s32 profileId;
+    s32 status;
+    char statusString[0x100];
+    char locationString[0x100];
+    s32 ip;
+    s32 port;
 };
 
 struct Unk_ov065_0227c400_Buf {
@@ -102,90 +102,90 @@ namespace Nc {
 // ov065_048: DWC HTTP/session context (0x0227c538..0x0227ce30)
 
 struct Unk_ov065_0227c538_Pair {
-    s32 unk_00;
-    s32 unk_04;
+    s32 func;
+    s32 param;
 };
 
 struct Unk_ov065_0227c538_Sub {
     s32 unk_00;
     s32 unk_04;
     void *unk_08;
-    void *unk_0c;
+    void *locationString;
 };
 
 struct Unk_ov065_0227c538_Node {
     s32 unk_00;
     s32 unk_04;
     Unk_ov065_0227c538_Sub *unk_08;
-    s32 unk_0c;
-    s32 unk_10;
+    s32 infoCache;
+    s32 authSig;
     s32 unk_14;
     s32 unk_18;
-    s32 unk_1c;
-    Unk_ov065_0227c538_Node *unk_20;
+    s32 result;
+    Unk_ov065_0227c538_Node *next;
 };
 
 struct Unk_ov065_0227c538_Ctx {
-    u8 unk_000;
+    u8 errorString;
     u8 pad_001[0xff];
-    s32 unk_100;
-    s32 unk_104;
-    s32 unk_108;
-    s32 unk_10c;
-    u8 unk_110;
+    s32 infoCaching;
+    s32 infoCachingBuddyOnly;
+    s32 simulation;
+    s32 firewall;
+    u8 nick;
     u8 pad_111[0x1e];
-    u8 unk_12f;
+    u8 uniqueNick;
     u8 pad_130[0x14];
-    u8 unk_144;
+    u8 email;
     u8 pad_145[0x53];
-    s32 unk_198;
-    s32 unk_19c;
-    s32 unk_1a0;
-    Unk_ov065_0227c538_Pair unk_1a4[6];
-    s32 unk_1d4;
-    s32 unk_1d8;
-    char *unk_1dc;
-    s32 unk_1e0;
-    s32 unk_1e4;
-    s32 unk_1e8;
-    char *unk_1ec;
-    s32 unk_1f0;
-    char *unk_1f4;
-    s32 unk_1f8;
-    s32 unk_1fc;
-    s32 unk_200;
-    s32 unk_204;
-    s32 unk_208;
-    s32 unk_20c;
-    s32 unk_210;
-    s32 unk_214;
-    u8 unk_218;
+    s32 sessKey;
+    s32 userId;
+    s32 profileId;
+    Unk_ov065_0227c538_Pair callbacks[6];
+    s32 cmSocket;
+    s32 connectState;
+    char *recvBuffer;
+    s32 recvBufferCapacity;
+    s32 recvBufferLength;
+    s32 recvBufferPos;
+    char *inputBuffer;
+    s32 inputBufferSize;
+    char *outputBuffer;
+    s32 outputBufferCapacity;
+    s32 outputBufferLength;
+    s32 outputBufferPos;
+    s32 peerSocket;
+    s32 peerPort;
+    s32 nextOperationId;
+    s32 numSearches;
+    s32 lastStatus;
+    u8 lastStatusString;
     u8 pad_219[0xff];
-    u8 unk_318;
+    u8 lastLocationString;
     u8 pad_319[0xff];
-    s32 unk_418;
-    s32 unk_41c;
+    s32 errorCode;
+    s32 fatalError;
     s32 unk_420;
-    Unk_ov065_0227c538_Node *unk_424;
-    void *unk_428;
+    Unk_ov065_0227c538_Node *operationList;
+    void *profileTable;
     s32 unk_42c;
-    s32 unk_430;
-    s32 unk_434;
-    s32 unk_438;
-    s32 unk_43c;
-    char *unk_440;
-    s32 unk_444;
-    s32 unk_448;
-    s32 unk_44c;
-    char *unk_450;
-    s32 unk_454;
-    s32 unk_458;
-    s32 unk_45c;
+    s32 numBuddies;
+    s32 peerList;
+    s32 callbackList;
+    s32 callbackListTail;
+    char *profileUpdateBuffer;
+    s32 profileUpdateBufferCapacity;
+    s32 profileUpdateBufferLength;
+    s32 profileUpdateBufferPos;
+    char *userUpdateBuffer;
+    s32 userUpdateBufferCapacity;
+    s32 userUpdateBufferLength;
+    s32 userUpdateBufferPos;
     char *unk_460;
     s32 unk_464;
     s32 unk_468;
-    s32 unk_46c;
-    s32 unk_470;
+    s32 productId;
+    s32 namespaceId;
     u8 pad_474[0x1c];
 };
 
@@ -285,7 +285,7 @@ s32 GsGp_Process(Ctx0227 **h) {
     if (h == NULL || (c = *h) == NULL) {
         return 2;
     }
-    if (c->unk_108 != 0) {
+    if (c->simulation != 0) {
         return 0;
     }
     return GsGp_ProcessConnection(h, 0);
@@ -304,8 +304,8 @@ s32 GsGp_SetCallback(Ctx0227 **h, s32 i, s32 x, s32 y) {
         GsGp_SetErrorString(h, "Invalid func.");
         return 2;
     }
-    c->unk_1a4[i].unk_00 = x;
-    c->unk_1a4[i].unk_04 = y;
+    c->callbacks[i].func = x;
+    c->callbacks[i].param = y;
     return 0;
 }
 }
@@ -328,7 +328,7 @@ s32 GsGp_ConnectPreAuth(Ctx0227 **h, char *a, char *b, s32 c, s32 d, Unk_ov065_0
         GsGp_SetErrorString(h, "No callback.");
         return 2;
     }
-    if (ctx->unk_108 != 0) {
+    if (ctx->simulation != 0) {
         s32 z[8] = {0};
         cb(h, z, e);
         return 0;
@@ -346,7 +346,7 @@ void GsGp_Disconnect(Ctx0227 **h) {
     if (h != NULL) {
         c = *h;
         if (c != NULL) {
-            if (c->unk_108 == 0) {
+            if (c->simulation == 0) {
                 GsGp_CloseConnection(h, 1);
                 GsGp_ResetConnection(h);
             }
@@ -363,14 +363,14 @@ struct Unk_ov065_0227c4b0_Args {
 extern "C" {
 s32 GsGp_ProfileSearch(Unk_ov065_0227bd20_Handle *h, s32 a1, s32 a2, s32 a3, s32 a4, s32 a5, s32 a6, s32 a7, Unk_ov065_0227c400_Cb cb, void *arg) {
     Unk_ov065_0227bd20_Ctx *c;
-    if (h == NULL || (c = h->unk_00) == NULL) {
+    if (h == NULL || (c = h->connection) == NULL) {
         return 2;
     }
     if (cb == NULL) {
         GsGp_SetErrorString(h, "No callback.");
         return 2;
     }
-    if (c->unk_108 != 0) {
+    if (c->simulation != 0) {
         Unk_ov065_0227c4b0_Args l = {{0, 0, 0, 0}};
         l.v[2] = 0x601;
         cb(h, &l, arg);
@@ -385,19 +385,19 @@ namespace Nb {
 extern "C" {
 s32 GsGp_GetInfo(Unk_ov065_0227bd20_Handle *h, s32 a1, s32 a2, s32 a3, Unk_ov065_0227c400_Cb cb, void *arg) {
     Unk_ov065_0227bd20_Ctx *c;
-    if (h == NULL || (c = h->unk_00) == NULL || a1 == 0) {
+    if (h == NULL || (c = h->connection) == NULL || a1 == 0) {
         return 2;
     }
     if (cb == NULL) {
         GsGp_SetErrorString(h, "No callback.");
         return 2;
     }
-    if (c->unk_108 != 0) {
+    if (c->simulation != 0) {
         Unk_ov065_0227c400_Buf b = {{0}};
         cb(h, &b, arg);
         return 0;
     }
-    if (c->unk_1d8 == 4) {
+    if (c->connectState == 4) {
         GsGp_SetErrorString(h, "The connection has already been disconnected.");
         return 2;
     }
@@ -410,13 +410,13 @@ namespace Nb {
 extern "C" {
 s32 GsGp_SetInfo(Unk_ov065_0227bd20_Handle *h, s32 a, s32 b) {
     Unk_ov065_0227bd20_Ctx *c;
-    if (h == NULL || (c = h->unk_00) == NULL) {
+    if (h == NULL || (c = h->connection) == NULL) {
         return 2;
     }
-    if (c->unk_108 != 0) {
+    if (c->simulation != 0) {
         return 0;
     }
-    if (c->unk_1d8 == 4) {
+    if (c->connectState == 4) {
         GsGp_SetErrorString(h, "The connection has already been disconnected.");
         return 2;
     }
@@ -431,13 +431,13 @@ s32 GsGp_SendBuddyRequest(Unk_ov065_0227bd20_Handle *h, s32 v, const char *s) {
     Unk_ov065_0227bd20_Ctx *c;
     char b[0x401];
     char *p;
-    if (h == NULL || (c = h->unk_00) == NULL) {
+    if (h == NULL || (c = h->connection) == NULL) {
         return 2;
     }
-    if (c->unk_108 != 0) {
+    if (c->simulation != 0) {
         return 0;
     }
-    if (c->unk_1d8 == 4) {
+    if (c->connectState == 4) {
         GsGp_SetErrorString(h, "The connection has already been disconnected.");
         return 2;
     }
@@ -455,14 +455,14 @@ s32 GsGp_SendBuddyRequest(Unk_ov065_0227bd20_Handle *h, s32 v, const char *s) {
             p++;
         } while (*p != 0);
     }
-    GsGpBuf_AppendString(h, c->unk_1f4, "\\addbuddy\\");
-    GsGpBuf_AppendString(h, c->unk_1f4, "\\sesskey\\");
-    GsGpBuf_AppendInt(h, c->unk_1f4, c->unk_198);
-    GsGpBuf_AppendString(h, c->unk_1f4, "\\newprofileid\\");
-    GsGpBuf_AppendInt(h, c->unk_1f4, v);
-    GsGpBuf_AppendString(h, c->unk_1f4, "\\reason\\");
-    GsGpBuf_AppendString(h, c->unk_1f4, b);
-    GsGpBuf_AppendString(h, c->unk_1f4, "\\final\\");
+    GsGpBuf_AppendString(h, c->outputBuffer, "\\addbuddy\\");
+    GsGpBuf_AppendString(h, c->outputBuffer, "\\sesskey\\");
+    GsGpBuf_AppendInt(h, c->outputBuffer, c->sessKey);
+    GsGpBuf_AppendString(h, c->outputBuffer, "\\newprofileid\\");
+    GsGpBuf_AppendInt(h, c->outputBuffer, v);
+    GsGpBuf_AppendString(h, c->outputBuffer, "\\reason\\");
+    GsGpBuf_AppendString(h, c->outputBuffer, b);
+    GsGpBuf_AppendString(h, c->outputBuffer, "\\final\\");
     return 0;
 }
 }
@@ -472,13 +472,13 @@ namespace Nb {
 extern "C" {
 s32 GsGp_AuthorizeBuddyRequest(Unk_ov065_0227bd20_Handle *h, s32 a) {
     Unk_ov065_0227bd20_Ctx *c;
-    if (h == NULL || (c = h->unk_00) == NULL) {
+    if (h == NULL || (c = h->connection) == NULL) {
         return 2;
     }
-    if (c->unk_108 != 0) {
+    if (c->simulation != 0) {
         return 0;
     }
-    if (c->unk_1d8 == 4) {
+    if (c->connectState == 4) {
         GsGp_SetErrorString(h, "The connection has already been disconnected.");
         return 2;
     }
@@ -492,13 +492,13 @@ extern "C" {
 s32 GsGp_DenyBuddyRequest(Unk_ov065_0227bd20_Handle *h, s32 a) {
     Unk_ov065_0227bd20_Ctx *c;
     s32 *e;
-    if (h == NULL || (c = h->unk_00) == NULL) {
+    if (h == NULL || (c = h->connection) == NULL) {
         return 2;
     }
-    if (c->unk_108 != 0) {
+    if (c->simulation != 0) {
         return 0;
     }
-    if (c->unk_1d8 == 4) {
+    if (c->connectState == 4) {
         GsGp_SetErrorString(h, "The connection has already been disconnected.");
         return 2;
     }
@@ -506,7 +506,7 @@ s32 GsGp_DenyBuddyRequest(Unk_ov065_0227bd20_Handle *h, s32 a) {
         return 0;
     }
     e[5]--;
-    if (c->unk_100 == 0 && e[5] <= 0) {
+    if (c->infoCaching == 0 && e[5] <= 0) {
         GsUtil_Free((void *)e[4]);
         e[4] = 0;
         if (GsGpProfile_IsUnused(e) != 0) {
@@ -522,14 +522,14 @@ namespace Nb {
 extern "C" {
 s32 GsGp_GetNumBuddies(Unk_ov065_0227bd20_Handle *h, s32 *out) {
     Unk_ov065_0227bd20_Ctx *c;
-    if (h == NULL || (c = h->unk_00) == NULL) {
+    if (h == NULL || (c = h->connection) == NULL) {
         return 2;
     }
-    if (c->unk_108 != 0) {
+    if (c->simulation != 0) {
         *out = 0;
         return 0;
     }
-    *out = c->unk_430;
+    *out = c->numBuddies;
     return 0;
 }
 }
@@ -542,10 +542,10 @@ s32 GsGp_GetBuddyStatus(Unk_ov065_0227bd20_Handle *h, s32 idx, Unk_ov065_0227c05
     Unk_ov065_0227c05c_Ent *ent;
     Unk_ov065_0227c05c_Src *s;
     s32 n;
-    if (h == NULL || (c = h->unk_00) == NULL) {
+    if (h == NULL || (c = h->connection) == NULL) {
         return 2;
     }
-    if (c->unk_108 != 0) {
+    if (c->simulation != 0) {
         func_0212899c(out, 0, 0x210);
         return 0;
     }
@@ -553,7 +553,7 @@ s32 GsGp_GetBuddyStatus(Unk_ov065_0227bd20_Handle *h, s32 idx, Unk_ov065_0227c05
         GsGp_SetErrorString(h, "Invalid status.");
         return 2;
     }
-    n = c->unk_430;
+    n = c->numBuddies;
     if (idx < 0 || idx >= n) {
         GsGp_SetErrorString(h, "Invalid index.");
         return 2;
@@ -563,21 +563,21 @@ s32 GsGp_GetBuddyStatus(Unk_ov065_0227bd20_Handle *h, s32 idx, Unk_ov065_0227c05
         GsGp_SetErrorString(h, "Invalid index.");
         return 2;
     }
-    s = ent->unk_08;
-    out->unk_000 = ent->unk_00;
-    out->unk_004 = s->unk_04;
-    if (s->unk_08 != NULL) {
-        GsUtil_StrCopyN(out->unk_008, s->unk_08, 0x100);
+    s = ent->buddyStatus;
+    out->profileId = ent->profileId;
+    out->status = s->status;
+    if (s->statusString != NULL) {
+        GsUtil_StrCopyN(out->statusString, s->statusString, 0x100);
     } else {
-        *s->unk_08 = 0;
+        *s->statusString = 0;
     }
-    if (s->unk_0c != NULL) {
-        GsUtil_StrCopyN(out->unk_108, s->unk_0c, 0x100);
+    if (s->locationString != NULL) {
+        GsUtil_StrCopyN(out->locationString, s->locationString, 0x100);
     } else {
-        *s->unk_0c = 0;
+        *s->locationString = 0;
     }
-    out->unk_208 = s->unk_10;
-    out->unk_20c = s->unk_14;
+    out->ip = s->ip;
+    out->port = s->port;
     return 0;
 }
 }
@@ -588,10 +588,10 @@ extern "C" {
 s32 GsGp_GetBuddyIndex(Unk_ov065_0227bd20_Handle *h, s32 a, s32 *out) {
     Unk_ov065_0227bd20_Ctx *c;
     s32 **e;
-    if (h == NULL || (c = h->unk_00) == NULL) {
+    if (h == NULL || (c = h->connection) == NULL) {
         return 2;
     }
-    if (c->unk_108 != 0) {
+    if (c->simulation != 0) {
         *out = 0;
         return 0;
     }
@@ -610,10 +610,10 @@ extern "C" {
 s32 GsGp_IsBuddy(Unk_ov065_0227bd20_Handle *h, s32 a) {
     Unk_ov065_0227bd20_Ctx *c;
     s32 **e;
-    if (h == NULL || (c = h->unk_00) == NULL) {
+    if (h == NULL || (c = h->connection) == NULL) {
         return 0;
     }
-    if (c->unk_108 != 0) {
+    if (c->simulation != 0) {
         return 0;
     }
     if (GsGpProfile_Find(h, a, &e) != 0 && e[2] != 0) {
@@ -628,13 +628,13 @@ namespace Nb {
 extern "C" {
 s32 GsGp_DeleteBuddy(Unk_ov065_0227bd20_Handle *h, s32 a) {
     Unk_ov065_0227bd20_Ctx *c;
-    if (h == NULL || (c = h->unk_00) == NULL) {
+    if (h == NULL || (c = h->connection) == NULL) {
         return 2;
     }
-    if (c->unk_108 != 0) {
+    if (c->simulation != 0) {
         return 0;
     }
-    if (c->unk_1d8 == 4) {
+    if (c->connectState == 4) {
         GsGp_SetErrorString(h, "The connection has already been disconnected.");
         return 2;
     }
@@ -652,13 +652,13 @@ s32 GsGp_SetStatus(Unk_ov065_0227bd20_Handle *h, s32 v, const char *s1, const ch
     char b1[0x100];
     char b2[0x100];
     char *p;
-    if (h == NULL || (c = h->unk_00) == NULL) {
+    if (h == NULL || (c = h->connection) == NULL) {
         return 2;
     }
-    if (c->unk_108 != 0) {
+    if (c->simulation != 0) {
         return 0;
     }
-    if (c->unk_1d8 == 4) {
+    if (c->connectState == 4) {
         GsGp_SetErrorString(h, "The connection has already been disconnected.");
         return 2;
     }
@@ -690,21 +690,21 @@ s32 GsGp_SetStatus(Unk_ov065_0227bd20_Handle *h, s32 v, const char *s1, const ch
             p++;
         } while (*p != 0);
     }
-    if (v == c->unk_214 && strcmp(b1, c->unk_218) == 0 && strcmp(b2, c->unk_318) == 0) {
+    if (v == c->lastStatus && strcmp(b1, c->lastStatusString) == 0 && strcmp(b2, c->lastLocationString) == 0) {
         return 0;
     }
-    c->unk_214 = v;
-    GsUtil_StrCopyN(c->unk_218, b1, 0x100);
-    GsUtil_StrCopyN(c->unk_318, b2, 0x100);
-    GsGpBuf_AppendString(h, c->unk_1f4, "\\status\\");
-    GsGpBuf_AppendInt(h, c->unk_1f4, v);
-    GsGpBuf_AppendString(h, c->unk_1f4, "\\sesskey\\");
-    GsGpBuf_AppendInt(h, c->unk_1f4, c->unk_198);
-    GsGpBuf_AppendString(h, c->unk_1f4, "\\statstring\\");
-    GsGpBuf_AppendString(h, c->unk_1f4, b1);
-    GsGpBuf_AppendString(h, c->unk_1f4, "\\locstring\\");
-    GsGpBuf_AppendString(h, c->unk_1f4, b2);
-    GsGpBuf_AppendString(h, c->unk_1f4, "\\final\\");
+    c->lastStatus = v;
+    GsUtil_StrCopyN(c->lastStatusString, b1, 0x100);
+    GsUtil_StrCopyN(c->lastLocationString, b2, 0x100);
+    GsGpBuf_AppendString(h, c->outputBuffer, "\\status\\");
+    GsGpBuf_AppendInt(h, c->outputBuffer, v);
+    GsGpBuf_AppendString(h, c->outputBuffer, "\\sesskey\\");
+    GsGpBuf_AppendInt(h, c->outputBuffer, c->sessKey);
+    GsGpBuf_AppendString(h, c->outputBuffer, "\\statstring\\");
+    GsGpBuf_AppendString(h, c->outputBuffer, b1);
+    GsGpBuf_AppendString(h, c->outputBuffer, "\\locstring\\");
+    GsGpBuf_AppendString(h, c->outputBuffer, b2);
+    GsGpBuf_AppendString(h, c->outputBuffer, "\\final\\");
     return 0;
 }
 }
@@ -714,13 +714,13 @@ namespace Nb {
 extern "C" {
 s32 GsGp_SendBuddyMessage(Unk_ov065_0227bd20_Handle *h, s32 a, s32 b) {
     Unk_ov065_0227bd20_Ctx *c;
-    if (h == NULL || (c = h->unk_00) == NULL) {
+    if (h == NULL || (c = h->connection) == NULL) {
         return 2;
     }
-    if (c->unk_108 != 0) {
+    if (c->simulation != 0) {
         return 0;
     }
-    if (c->unk_1d8 == 4) {
+    if (c->connectState == 4) {
         GsGp_SetErrorString(h, "The connection has already been disconnected.");
         return 2;
     }

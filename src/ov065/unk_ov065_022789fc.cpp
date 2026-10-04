@@ -18,7 +18,7 @@ struct Unk_ov065_02278e64_B {
     u8 pad_08[0x10];
 };
 struct Unk_ov065_02291094 {
-    u32 unk_00;
+    u32 hostIp;
     u8 pad_04[0x10];
 };
 
@@ -465,9 +465,9 @@ s32 GsSock_GetLocalHost() {
     sGsLocalHostEnt.unk_08 = 2;
     sGsLocalHostEnt.unk_0a = 0;
     sGsLocalHostEnt.unk_0c = (u32)&data_ov065_022910a8;
-    data_ov065_02291094.unk_00 = 0;
+    data_ov065_02291094.hostIp = 0;
     IpAddr_StoreBe32(SockCore_GetHostIp(), (u32 *)&data_ov065_02291094);
-    if (data_ov065_02291094.unk_00 == 0) {
+    if (data_ov065_02291094.hostIp == 0) {
         return 0;
     }
     data_ov065_022910a8.unk_00 = (u32 *)&data_ov065_02291094;

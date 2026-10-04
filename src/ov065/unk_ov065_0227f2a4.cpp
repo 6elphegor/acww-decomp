@@ -7,43 +7,43 @@ namespace Na {
 // ov065_052: DWC/GameSpy GP connection setup helpers (0x0227ee64..0x0227f54c)
 
 struct Unk_ov065_0227c538_Pair {
-    s32 unk_00;
-    s32 unk_04;
+    s32 func;
+    s32 param;
 };
 
 struct Unk_ov065_0227c538_Node {
     s32 unk_00;
     s32 unk_04;
     void *unk_08;
-    s32 unk_0c;
-    char *unk_10;
+    s32 infoCache;
+    char *authSig;
     s32 unk_14;
     s32 unk_18;
-    s32 unk_1c;
-    Unk_ov065_0227c538_Node *unk_20;
+    s32 result;
+    Unk_ov065_0227c538_Node *next;
 };
 
 struct Unk_ov065_0227c538_Ctx {
-    u8 unk_000;
+    u8 errorString;
     u8 pad_001[0xff];
-    s32 unk_100;
-    s32 unk_104;
-    s32 unk_108;
-    s32 unk_10c;
-    char unk_110[0x1f];
-    char unk_12f[0x15];
-    char unk_144[0x33];
-    char unk_177[0x1f];
+    s32 infoCaching;
+    s32 infoCachingBuddyOnly;
+    s32 simulation;
+    s32 firewall;
+    char nick[0x1f];
+    char uniqueNick[0x15];
+    char email[0x33];
+    char password[0x1f];
     u8 pad_196[0x2];
-    s32 unk_198;
+    s32 sessKey;
     u8 pad_19c[0x38];
-    s32 unk_1d4;
-    s32 unk_1d8;
+    s32 cmSocket;
+    s32 connectState;
     u8 pad_1dc[0x18];
-    char *unk_1f4;
+    char *outputBuffer;
     u8 pad_1f8[0xc];
-    s32 unk_204;
-    s32 unk_208;
+    s32 peerSocket;
+    s32 peerPort;
 };
 
 struct Unk_ov065_0227ee64_Obj {
@@ -1054,14 +1054,14 @@ s32 GsGp_SetInfoString(Ctx0227 **h, s32 cmd, char *val) {
     case 0x700:
         CK_NONEMPTY
         GsUtil_StrCopyN(buf, val, 0x1f);
-        GsUtil_StrCopyN(ctx->unk_110, buf, 0x1f);
+        GsUtil_StrCopyN(ctx->nick, buf, 0x1f);
         r = GsGp_QueueProfileUpdate(h, "\\nick\\", buf);
         if (r != 0) return r;
         break;
     case 0x701:
         CK_NONEMPTY
         GsUtil_StrCopyN(buf, val, 0x15);
-        GsUtil_StrCopyN(ctx->unk_12f, buf, 0x15);
+        GsUtil_StrCopyN(ctx->uniqueNick, buf, 0x15);
         r = GsGp_QueueProfileUpdate(h, "\\uniquenick\\", buf);
         if (r != 0) return r;
         break;
@@ -1069,14 +1069,14 @@ s32 GsGp_SetInfoString(Ctx0227 **h, s32 cmd, char *val) {
         CK_NONEMPTY
         GsUtil_StrCopyN(buf, val, 0x33);
         GsUtil_StrToLower(buf);
-        GsUtil_StrCopyN(ctx->unk_144, buf, 0x33);
+        GsUtil_StrCopyN(ctx->email, buf, 0x33);
         r = GsGp_QueueUserUpdate(h, "\\email\\", buf);
         if (r != 0) return r;
         break;
     case 0x703:
         CK_NONEMPTY
         GsUtil_StrCopyN(buf, val, 0x1f);
-        GsUtil_StrCopyN(ctx->unk_177, buf, 0x1f);
+        GsUtil_StrCopyN(ctx->password, buf, 0x1f);
         r = GsGp_QueueUserUpdate(h, "\\password\\", buf);
         if (r != 0) return r;
         break;
@@ -1234,13 +1234,13 @@ namespace Na {
 extern "C" {
 s32 GsGp_SendGetProfile(Ctx0227 **h, s32 a1, s32 a2) {
     Ctx0227 *ctx = *h;
-    GsGpBuf_AppendString(h, &ctx->unk_1f4, "\\getprofile\\\\sesskey\\");
-    GsGpBuf_AppendInt(h, &ctx->unk_1f4, ctx->unk_198);
-    GsGpBuf_AppendString(h, &ctx->unk_1f4, "\\profileid\\");
-    GsGpBuf_AppendInt(h, &ctx->unk_1f4, a1);
-    GsGpBuf_AppendString(h, &ctx->unk_1f4, "\\id\\");
-    GsGpBuf_AppendInt(h, &ctx->unk_1f4, a2);
-    GsGpBuf_AppendString(h, &ctx->unk_1f4, "\\final\\");
+    GsGpBuf_AppendString(h, &ctx->outputBuffer, "\\getprofile\\\\sesskey\\");
+    GsGpBuf_AppendInt(h, &ctx->outputBuffer, ctx->sessKey);
+    GsGpBuf_AppendString(h, &ctx->outputBuffer, "\\profileid\\");
+    GsGpBuf_AppendInt(h, &ctx->outputBuffer, a1);
+    GsGpBuf_AppendString(h, &ctx->outputBuffer, "\\id\\");
+    GsGpBuf_AppendInt(h, &ctx->outputBuffer, a2);
+    GsGpBuf_AppendString(h, &ctx->outputBuffer, "\\final\\");
     return 0;
 }
 }
@@ -1263,20 +1263,20 @@ s32 GsGp_RequestProfileInfo(Ctx0227 **h, s32 a1, s32 a2, s32 a3, s32 a4, s32 a5)
     if (a2 == 1) {
         ok = 1;
     }
-    if (ctx->unk_100 == 0) {
+    if (ctx->infoCaching == 0) {
         ok = 0;
     }
-    if (a4 != 0 && ok != 0 && GsGpProfile_Find(h, a1, &n) != 0 && n->unk_0c != 0) {
+    if (a4 != 0 && ok != 0 && GsGpProfile_Find(h, a1, &n) != 0 && n->infoCache != 0) {
         m = GsUtil_Alloc(0x204);
         if (m == 0) {
             GsGp_SetErrorString(h, "Out of memory.");
             return 1;
         }
-        GsGp_CopyInfoResult(n->unk_0c, m);
+        GsGp_CopyInfoResult(n->infoCache, m);
         ((s32 *)m)[0] = 0;
         ((s32 *)m)[1] = a1;
-        pr.unk_00 = a4;
-        pr.unk_04 = a5;
+        pr.func = a4;
+        pr.param = a5;
         r = GsGp_AddOperation(h, 2, 0, &out2, 1, a4, a5);
         if (r != 0) {
             return r;
@@ -1313,7 +1313,7 @@ namespace Na {
 extern "C" {
 s32 GsGp_CacheProfileInfo(Ctx0227 **h, Unk_ov065_0227f324_Owner *p, Unk_ov065_0227f324_Rec *q) {
     Unk_ov065_0227f324_Rec *d;
-    if ((*h)->unk_100 == 0) {
+    if ((*h)->infoCaching == 0) {
         return 1;
     }
     GsGp_FreeCachedInfo(p);

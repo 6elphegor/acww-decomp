@@ -6,11 +6,11 @@ typedef long long s64;
 // ov065_040: DWC net helpers: tick->ms, string key lookup, alloc wrappers, WiFi state machine, HTTP-ish task (0x02277974..0x02278250)
 
 struct Unk_ov065_02290f9c {
-    s32 unk_00;
+    s32 connectResult;
     u16 unk_04;
-    u16 unk_06;
-    u16 unk_08;
-    u16 unk_0a;
+    u16 isConnected;
+    u16 apInitParam0;
+    u16 apInitParam1;
 };
 
 struct Unk_ov065_02277d68_Args {
@@ -107,10 +107,10 @@ u64 DwcNet_GetTimeMs();
 void DwcInet_InitEx(Unk_ov065_02290f9c *p, s32 x, s32 y, u32 z) {
     if (sDwcInet == NULL) {
         MI_CpuFill8(p, 0, 12);
-        p->unk_08 = x;
-        p->unk_0a = 1;
+        p->apInitParam0 = x;
+        p->apInitParam1 = 1;
         p->unk_04 = 1;
-        p->unk_06 = 0;
+        p->isConnected = 0;
         sDwcInet = p;
         DwcInet_SelectAuthServer(0);
         gSslRsaThreadPriority = z;
@@ -142,8 +142,8 @@ void DwcInet_StartConnect() {
             Unk_ov065_02290f9c *s;
             MI_CpuFill8(&l, 0, 12);
             s = sDwcInet;
-            l.unk_08 = s->unk_08;
-            l.unk_09 = s->unk_0a;
+            l.unk_08 = s->apInitParam0;
+            l.unk_09 = s->apInitParam1;
             l.unk_00 = (void *)DwcNet_Alloc;
             l.unk_04 = (void *)DwcNet_Free;
             s->unk_04 = 2;
@@ -161,7 +161,7 @@ BOOL DwcInet_IsConnectDone() {
     if (s == NULL) {
         return FALSE;
     }
-    if (s->unk_00 != 0) {
+    if (s->connectResult != 0) {
         s->unk_04 = 3;
         DwcInet_UpdateStatus();
         return TRUE;
@@ -172,11 +172,11 @@ BOOL DwcInet_IsConnectDone() {
 void DwcInet_Process() {
     Unk_ov065_02290f9c *s = sDwcInet;
     if (s != NULL && s->unk_04 == 2) {
-        sDwcInet->unk_00 = (s32)WifiAp_Process();
+        sDwcInet->connectResult = (s32)WifiAp_Process();
         return;
     }
-    if (s != NULL && s->unk_04 == 4 && s->unk_06 != 0 && WifiLink_GetPhase() != 9) {
-        sDwcInet->unk_06 = 0;
+    if (s != NULL && s->unk_04 == 4 && s->isConnected != 0 && WifiLink_GetPhase() != 9) {
+        sDwcInet->isConnected = 0;
         sDwcInet->unk_04 = 6;
     }
 }
@@ -188,7 +188,7 @@ s32 DwcInet_UpdateStatus() {
         if (t == 5) {
             st = 4;
             sDwcInet->unk_04 = st;
-            sDwcInet->unk_06 = 1;
+            sDwcInet->isConnected = 1;
             return st;
         }
         if (t < 0) {

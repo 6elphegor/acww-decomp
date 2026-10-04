@@ -4,90 +4,90 @@
 // ov065_048: DWC HTTP/session context (0x0227c538..0x0227ce30)
 
 struct Unk_ov065_0227c538_Pair {
-    s32 unk_00;
-    s32 unk_04;
+    s32 func;
+    s32 param;
 };
 
 struct Unk_ov065_0227c538_Sub {
     s32 unk_00;
     s32 unk_04;
     void *unk_08;
-    void *unk_0c;
+    void *locationString;
 };
 
 struct Unk_ov065_0227c538_Node {
     s32 unk_00;
     s32 unk_04;
     Unk_ov065_0227c538_Sub *unk_08;
-    s32 unk_0c;
-    s32 unk_10;
+    s32 infoCache;
+    s32 authSig;
     s32 unk_14;
     s32 unk_18;
-    s32 unk_1c;
-    Unk_ov065_0227c538_Node *unk_20;
+    s32 result;
+    Unk_ov065_0227c538_Node *next;
 };
 
 struct Unk_ov065_0227c538_Ctx {
-    u8 unk_000;
+    u8 errorString;
     u8 pad_001[0xff];
-    s32 unk_100;
-    s32 unk_104;
-    s32 unk_108;
-    s32 unk_10c;
-    u8 unk_110;
+    s32 infoCaching;
+    s32 infoCachingBuddyOnly;
+    s32 simulation;
+    s32 firewall;
+    u8 nick;
     u8 pad_111[0x1e];
-    u8 unk_12f;
+    u8 uniqueNick;
     u8 pad_130[0x14];
-    u8 unk_144;
+    u8 email;
     u8 pad_145[0x53];
-    s32 unk_198;
-    s32 unk_19c;
-    s32 unk_1a0;
-    Unk_ov065_0227c538_Pair unk_1a4[6];
-    s32 unk_1d4;
-    s32 unk_1d8;
-    char *unk_1dc;
-    s32 unk_1e0;
-    s32 unk_1e4;
-    s32 unk_1e8;
-    char *unk_1ec;
-    s32 unk_1f0;
-    char *unk_1f4;
-    s32 unk_1f8;
-    s32 unk_1fc;
-    s32 unk_200;
-    s32 unk_204;
-    s32 unk_208;
-    s32 unk_20c;
-    s32 unk_210;
-    s32 unk_214;
-    u8 unk_218;
+    s32 sessKey;
+    s32 userId;
+    s32 profileId;
+    Unk_ov065_0227c538_Pair callbacks[6];
+    s32 cmSocket;
+    s32 connectState;
+    char *recvBuffer;
+    s32 recvBufferCapacity;
+    s32 recvBufferLength;
+    s32 recvBufferPos;
+    char *inputBuffer;
+    s32 inputBufferSize;
+    char *outputBuffer;
+    s32 outputBufferCapacity;
+    s32 outputBufferLength;
+    s32 outputBufferPos;
+    s32 peerSocket;
+    s32 peerPort;
+    s32 nextOperationId;
+    s32 numSearches;
+    s32 lastStatus;
+    u8 lastStatusString;
     u8 pad_219[0xff];
-    u8 unk_318;
+    u8 lastLocationString;
     u8 pad_319[0xff];
-    s32 unk_418;
-    s32 unk_41c;
+    s32 errorCode;
+    s32 fatalError;
     s32 unk_420;
-    Unk_ov065_0227c538_Node *unk_424;
-    void *unk_428;
+    Unk_ov065_0227c538_Node *operationList;
+    void *profileTable;
     s32 unk_42c;
-    s32 unk_430;
-    s32 unk_434;
-    s32 unk_438;
-    s32 unk_43c;
-    char *unk_440;
-    s32 unk_444;
-    s32 unk_448;
-    s32 unk_44c;
-    char *unk_450;
-    s32 unk_454;
-    s32 unk_458;
-    s32 unk_45c;
+    s32 numBuddies;
+    s32 peerList;
+    s32 callbackList;
+    s32 callbackListTail;
+    char *profileUpdateBuffer;
+    s32 profileUpdateBufferCapacity;
+    s32 profileUpdateBufferLength;
+    s32 profileUpdateBufferPos;
+    char *userUpdateBuffer;
+    s32 userUpdateBufferCapacity;
+    s32 userUpdateBufferLength;
+    s32 userUpdateBufferPos;
     char *unk_460;
     s32 unk_464;
     s32 unk_468;
-    s32 unk_46c;
-    s32 unk_470;
+    s32 productId;
+    s32 namespaceId;
     u8 pad_474[0x1c];
 };
 
@@ -164,14 +164,14 @@ s32 gpiInitialize(Ctx0227 **h, s32 a, s32 b) {
         return 1;
     }
     func_0212899c(c, 0, 0x490);
-    c->unk_000 = 0;
-    c->unk_418 = 0;
-    c->unk_100 = 1;
-    c->unk_104 = 0;
-    c->unk_108 = 0;
-    c->unk_10c = 0;
-    c->unk_46c = a;
-    c->unk_470 = b;
+    c->errorString = 0;
+    c->errorCode = 0;
+    c->infoCaching = 1;
+    c->infoCachingBuddyOnly = 0;
+    c->simulation = 0;
+    c->firewall = 0;
+    c->productId = a;
+    c->namespaceId = b;
     if (GsGpProfile_InitTable(&c) == 0) {
         GsUtil_Free(c);
         c = 0;
@@ -181,8 +181,8 @@ s32 gpiInitialize(Ctx0227 **h, s32 a, s32 b) {
     {
         s32 i;
         for (i = 0; i < 6; i++) {
-            c->unk_1a4[i].unk_00 = 0;
-            c->unk_1a4[i].unk_04 = 0;
+            c->callbacks[i].func = 0;
+            c->callbacks[i].param = 0;
         }
     }
     c->unk_460 = 0;
@@ -208,7 +208,7 @@ s32 GsGp_DestroyConnection(Ctx0227 **h) {
     GsGp_CloseConnection(h, 1);
     GsUtil_Free(c->unk_460);
     c->unk_460 = 0;
-    GsHash_Free(c->unk_428);
+    GsHash_Free(c->profileTable);
     GsUtil_Free(c);
     *h = 0;
     return 0;
@@ -218,7 +218,7 @@ s32 GsGp_DestroyConnection(Ctx0227 **h) {
 extern "C" {
 s32 GsGp_ClearProfileCb(Ctx0227 **h, Unk_ov065_0227c538_Node *n, s32 m) {
     n->unk_08 = 0;
-    n->unk_10 = 0;
+    n->authSig = 0;
     n->unk_14 = 0;
     n->unk_18 = 0;
     return 1;
@@ -229,58 +229,58 @@ extern "C" {
 s32 GsGp_ResetConnection(Ctx0227 **h) {
     Ctx0227 *c = *h;
     Unk_ov065_0227c538_Node *n;
-    c->unk_110 = 0;
-    c->unk_12f = 0;
-    c->unk_144 = 0;
-    c->unk_1d4 = -1;
-    c->unk_1d8 = 0;
-    c->unk_1e4 = 0;
-    c->unk_1e8 = 0;
-    c->unk_1e0 = 0;
-    GsUtil_Free(c->unk_1dc);
-    c->unk_1dc = 0;
-    c->unk_1dc = 0;
-    c->unk_1f0 = 0;
-    GsUtil_Free(c->unk_1ec);
-    c->unk_1ec = 0;
-    c->unk_1ec = 0;
-    c->unk_1fc = 0;
-    c->unk_200 = 0;
-    c->unk_1f8 = 0;
-    GsUtil_Free(c->unk_1f4);
-    c->unk_1f4 = 0;
-    c->unk_1f4 = 0;
-    c->unk_448 = 0;
-    c->unk_44c = 0;
-    c->unk_444 = 0;
-    GsUtil_Free(c->unk_440);
-    c->unk_440 = 0;
-    c->unk_440 = 0;
-    c->unk_458 = 0;
-    c->unk_45c = 0;
-    c->unk_454 = 0;
-    GsUtil_Free(c->unk_450);
-    c->unk_450 = 0;
-    c->unk_450 = 0;
-    c->unk_204 = -1;
-    c->unk_20c = 2;
-    n = c->unk_424;
+    c->nick = 0;
+    c->uniqueNick = 0;
+    c->email = 0;
+    c->cmSocket = -1;
+    c->connectState = 0;
+    c->recvBufferLength = 0;
+    c->recvBufferPos = 0;
+    c->recvBufferCapacity = 0;
+    GsUtil_Free(c->recvBuffer);
+    c->recvBuffer = 0;
+    c->recvBuffer = 0;
+    c->inputBufferSize = 0;
+    GsUtil_Free(c->inputBuffer);
+    c->inputBuffer = 0;
+    c->inputBuffer = 0;
+    c->outputBufferLength = 0;
+    c->outputBufferPos = 0;
+    c->outputBufferCapacity = 0;
+    GsUtil_Free(c->outputBuffer);
+    c->outputBuffer = 0;
+    c->outputBuffer = 0;
+    c->profileUpdateBufferLength = 0;
+    c->profileUpdateBufferPos = 0;
+    c->profileUpdateBufferCapacity = 0;
+    GsUtil_Free(c->profileUpdateBuffer);
+    c->profileUpdateBuffer = 0;
+    c->profileUpdateBuffer = 0;
+    c->userUpdateBufferLength = 0;
+    c->userUpdateBufferPos = 0;
+    c->userUpdateBufferCapacity = 0;
+    GsUtil_Free(c->userUpdateBuffer);
+    c->userUpdateBuffer = 0;
+    c->userUpdateBuffer = 0;
+    c->peerSocket = -1;
+    c->nextOperationId = 2;
+    n = c->operationList;
     while (n != NULL) {
         GsGp_RemoveOperation(h, n);
-        n = c->unk_424;
+        n = c->operationList;
     }
-    c->unk_424 = 0;
-    c->unk_430 = 0;
+    c->operationList = 0;
+    c->numBuddies = 0;
     GsGpProfile_FindIf(h, GsGp_ClearProfileCb, 0);
-    c->unk_19c = 0;
-    c->unk_1a0 = 0;
-    c->unk_198 = 0;
-    c->unk_210 = 0;
-    c->unk_41c = 0;
-    c->unk_434 = 0;
-    c->unk_214 = -1;
-    c->unk_218 = 0;
-    c->unk_318 = 0;
+    c->userId = 0;
+    c->profileId = 0;
+    c->sessKey = 0;
+    c->numSearches = 0;
+    c->fatalError = 0;
+    c->peerList = 0;
+    c->lastStatus = -1;
+    c->lastStatusString = 0;
+    c->lastLocationString = 0;
     return 0;
 }
 }
@@ -294,12 +294,12 @@ s32 GsGp_ProcessCmMessages(Ctx0227 **h) {
     char *p;
     s32 r;
     for (;;) {
-        GsGp_FlushInfoUpdates(h, &c->unk_1f4);
-        r = GsGp_SendBuffer(h, c->unk_1d4, &c->unk_1f4, &flag, 1, "CM");
+        GsGp_FlushInfoUpdates(h, &c->outputBuffer);
+        r = GsGp_SendBuffer(h, c->cmSocket, &c->outputBuffer, &flag, 1, "CM");
         if (r != 0) {
             return r;
         }
-        r = GsGp_RecvToBuffer(h, c->unk_1d4, &c->unk_1dc, &len, &flag, "CM");
+        r = GsGp_RecvToBuffer(h, c->cmSocket, &c->recvBuffer, &len, &flag, "CM");
         if (r != 0) {
             if (r == 3) {
                 GsGp_SetError(h, 5, "There was an error reading from the server.");
@@ -308,36 +308,36 @@ s32 GsGp_ProcessCmMessages(Ctx0227 **h) {
             }
             return r;
         }
-        p = func_02129f1c(c->unk_1dc, "\\final\\");
+        p = func_02129f1c(c->recvBuffer, "\\final\\");
         if (p != NULL) {
             do {
                 *p = 0;
-                GsGp_DebugLog(h, "CMD: %s\n", c->unk_1dc);
-                len = p - c->unk_1dc;
-                if (len > c->unk_1f0) {
+                GsGp_DebugLog(h, "CMD: %s\n", c->recvBuffer);
+                len = p - c->recvBuffer;
+                if (len > c->inputBufferSize) {
                     s32 n = len;
                     if (n < 0x800) {
                         n = 0x800;
                     }
-                    c->unk_1f0 = c->unk_1f0 + n;
-                    void *np = GsUtil_Realloc(c->unk_1ec, c->unk_1f0 + 1);
+                    c->inputBufferSize = c->inputBufferSize + n;
+                    void *np = GsUtil_Realloc(c->inputBuffer, c->inputBufferSize + 1);
                     if (np == NULL) {
                         GsGp_SetErrorString(h, "Out of memory.");
                         return 1;
                     }
-                    c->unk_1ec = (char *)np;
+                    c->inputBuffer = (char *)np;
                 }
-                memcpy(c->unk_1ec, c->unk_1dc, len + 1);
-                c->unk_1e4 = c->unk_1e4 - ((p + 7) - c->unk_1dc);
-                memmove(c->unk_1dc, p + 7, c->unk_1e4 + 1);
-                char *q = c->unk_1ec;
+                memcpy(c->inputBuffer, c->recvBuffer, len + 1);
+                c->recvBufferLength = c->recvBufferLength - ((p + 7) - c->recvBuffer);
+                memmove(c->recvBuffer, p + 7, c->recvBufferLength + 1);
+                char *q = c->inputBuffer;
                 char *f = func_02129f1c(q, "\\id\\");
                 if (f != NULL) {
                     q = (char *)func_0212b770(f + 4);
                     if (GsGp_FindOperation(h, &rec, (s32)q) == 0) {
                         GsGp_DebugLog(h, "No matching operation found for id %d\n", q);
                     } else {
-                        r = gpiProcessOperation(h, rec, c->unk_1ec);
+                        r = gpiProcessOperation(h, rec, c->inputBuffer);
                         if (r != 0) {
                             return r;
                         }
@@ -346,7 +346,7 @@ s32 GsGp_ProcessCmMessages(Ctx0227 **h) {
                     if (GsGp_CheckServerError(h, q, 1) != 0) {
                         return 4;
                     }
-                    q = c->unk_1ec;
+                    q = c->inputBuffer;
                     if (strncmp(q, "\\bm\\", 4) == 0) {
                         r = GsGp_ProcessBuddyMessage(h, q);
                         if (r != 0) {
@@ -356,11 +356,11 @@ s32 GsGp_ProcessCmMessages(Ctx0227 **h) {
                         GsGp_DebugLog(h, "Received an unrecognized, unsolicited message.\n");
                     }
                 }
-                p = func_02129f1c(c->unk_1dc, "\\final\\");
+                p = func_02129f1c(c->recvBuffer, "\\final\\");
             } while (p != NULL);
         }
         if (flag != 0) {
-            c->unk_1d8 = 4;
+            c->connectState = 4;
             GsGp_SetError(h, 7, "The server has closed the connection.");
             GsGp_CallErrorCallback(h, 3, 1);
             return 0;
@@ -381,12 +381,12 @@ s32 GsGp_ProcessConnection(Ctx0227 **h, s32 arg) {
     Ctx0227 *c = *h;
     s32 r = 0;
     Unk_ov065_0227c538_Node *rec;
-    if (c->unk_1d8 == 1) {
+    if (c->connectState == 1) {
         s32 zero = 0;
         s32 k;
         do {
             r = GsGp_CheckConnected(h);
-            if (r == 0 && arg != 0 && c->unk_1d8 == 1) {
+            if (r == 0 && arg != 0 && c->connectState == 1) {
                 k = 1;
             } else {
                 k = zero;
@@ -397,11 +397,11 @@ s32 GsGp_ProcessConnection(Ctx0227 **h, s32 arg) {
         } while (k != 0);
         if (r != 0) {
             if (GsGp_FindOperation(h, &rec, 1) != 0) {
-                rec->unk_1c = 4;
+                rec->result = 4;
             }
         }
     }
-    if ((u32)(c->unk_1d8 - 2) <= 1) {
+    if ((u32)(c->connectState - 2) <= 1) {
         if (r == 0) {
             r = GsGp_ProcessCmMessages(h);
         }
@@ -412,23 +412,23 @@ s32 GsGp_ProcessConnection(Ctx0227 **h, s32 arg) {
     if (r == 0) {
         r = GsGpSearch_ProcessAll(h);
     }
-    rec = c->unk_424;
+    rec = c->operationList;
     if (rec != NULL) {
         do {
-            if (rec->unk_1c != 0) {
+            if (rec->result != 0) {
                 GsGp_CallFailedCallback(h, rec);
                 Unk_ov065_0227c538_Node *o = rec;
-                rec = rec->unk_20;
+                rec = rec->next;
                 GsGp_RemoveOperation(h, o);
             } else {
-                rec = rec->unk_20;
+                rec = rec->next;
             }
         } while (rec != NULL);
     }
     {
         s32 t = GsGp_CallPendingCallbacks(h, arg);
         if (t == 0) {
-            if (c->unk_41c != 0) {
+            if (c->fatalError != 0) {
                 GsGp_CloseConnection(h, 0);
             }
             t = r;

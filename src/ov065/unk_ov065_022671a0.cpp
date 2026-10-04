@@ -4,8 +4,8 @@
 
 struct Unk_ov065_022672a0_Tbl {
     u8 pad_000[0x7e8];
-    void **unk_7e8;
-    s32 unk_7ec;
+    void **rootCaList;
+    s32 numRootCas;
 };
 
 struct Unk_ov065_022672ec_Ptr {
@@ -15,16 +15,16 @@ struct Unk_ov065_022672ec_Ptr {
 
 struct Unk_ov065_022672ec_Root {
     u32 unk_00;
-    u32 unk_04;
+    u32 cur;
 };
 
 struct Unk_ov065_0226733c_Ent {
-    u8 unk_00[0x20];
+    u8 sessionId[0x20];
     u8 pad_20[0x30];
-    u32 unk_50;
-    u32 unk_54;
-    u16 unk_58;
-    u8 unk_5a;
+    u32 lastUsed;
+    u32 peerAddr;
+    u16 peerPort;
+    u8 inUse;
     u8 pad_5b;
 };
 
@@ -175,8 +175,8 @@ Unk_ov065_0226733c_Ent *SslSession_FindById(const void *p)
     s32 i = 0;
     Unk_ov065_0226733c_Ent *e = sSslSessionCache;
     for (; i < 4; e++, i++) {
-        if (e->unk_5a != 0 && memcmp(e, p, 0x20) == 0) {
-            e->unk_50 = (u32)(OS_GetTick() >> 16);
+        if (e->inUse != 0 && memcmp(e, p, 0x20) == 0) {
+            e->lastUsed = (u32)(OS_GetTick() >> 16);
             return e;
         }
     }
@@ -188,8 +188,8 @@ Unk_ov065_0226733c_Ent *SslSession_FindByPeer(u32 a, u32 b)
     s32 i = 0;
     Unk_ov065_0226733c_Ent *e = sSslSessionCache;
     for (; i < 4; e++, i++) {
-        if (e->unk_5a != 0 && e->unk_54 == a && e->unk_58 == b) {
-            e->unk_50 = (u32)(OS_GetTick() >> 16);
+        if (e->inUse != 0 && e->peerAddr == a && e->peerPort == b) {
+            e->lastUsed = (u32)(OS_GetTick() >> 16);
             return e;
         }
     }
@@ -210,19 +210,19 @@ Unk_ov065_0226733c_Ent *SslSession_Add(const void *src)
     e = pick;
     for (; i < 4; e++, i++) {
         u32 age;
-        if (e->unk_5a == 0) {
+        if (e->inUse == 0) {
             pick = e;
             break;
         }
-        age = tick - e->unk_50;
+        age = tick - e->lastUsed;
         if (age > best) {
             best = age;
             pick = e;
         }
     }
     MI_CpuCopy8(src, pick, 0x20);
-    pick->unk_50 = tick;
-    pick->unk_5a = 1;
+    pick->lastUsed = tick;
+    pick->inUse = 1;
     return pick;
 }
 
@@ -237,12 +237,12 @@ u32 Ssl_GetUnixTime(void)
 
 void Ssl_SetRootCaList(void *a, s32 b)
 {
-    Unk_ov065_022672ec_Ptr *q = *(Unk_ov065_022672ec_Ptr **)((u8 *)((Unk_ov065_022672ec_Root *)data_021fcc2c)->unk_04 + 0xa4);
+    Unk_ov065_022672ec_Ptr *q = *(Unk_ov065_022672ec_Ptr **)((u8 *)((Unk_ov065_022672ec_Root *)data_021fcc2c)->cur + 0xa4);
     if (q != 0) {
         Unk_ov065_022672a0_Tbl *t = q->unk_0c;
         if (t != 0) {
-            t->unk_7e8 = (void **)a;
-            t->unk_7ec = b;
+            t->rootCaList = (void **)a;
+            t->numRootCas = b;
         }
     }
 }
@@ -250,11 +250,11 @@ void Ssl_SetRootCaList(void *a, s32 b)
 void *SslCert_FindRootCa(Unk_ov065_022672a0_Tbl *o, const void *name)
 {
     s32 i = 0;
-    s32 n = o->unk_7ec;
+    s32 n = o->numRootCas;
     void **p;
     void **arr;
     if (n > 0) {
-        p = arr = o->unk_7e8;
+        p = arr = o->rootCaList;
         do {
             if (strcmp(**(void ***)p, name) == 0) {
                 return arr[i];

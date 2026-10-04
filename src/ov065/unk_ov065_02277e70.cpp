@@ -9,16 +9,16 @@ struct Unk_ov065_02277f70_Ctx {
 };
 
 struct Unk_ov065_02291024 {
-    s32 unk_00;
+    s32 socket;
     u8 unk_04[2];
-    u16 unk_06;
-    u8 unk_08[4];
-    u8 unk_0c;
+    u16 serverPort;
+    u8 serverIp[4];
+    u8 queryPacket;
     u8 unk_0d[4];
-    char unk_11[0x3b];
-    u32 unk_4c;
-    u32 unk_50;
-    u32 unk_54;
+    char gameName[0x3b];
+    u32 packetLength;
+    u32 lastSendTime;
+    u32 retryCount;
 };
 
 extern "C" {
@@ -63,16 +63,16 @@ s32 GsSock_SendTo(s32, void *, s32, s32, void *, s32);
 extern "C" {
 
 void GsAvail_SendQuery() {
-    GsSock_SendTo(sGsAvailQuery.unk_00, &sGsAvailQuery.unk_0c, sGsAvailQuery.unk_4c, 0,
+    GsSock_SendTo(sGsAvailQuery.socket, &sGsAvailQuery.queryPacket, sGsAvailQuery.packetLength, 0,
                         sGsAvailQuery.unk_04, 8);
-    sGsAvailQuery.unk_50 = GsUtil_GetTimeMs();
+    sGsAvailQuery.lastSendTime = GsUtil_GetTimeMs();
 }
 
 void GsAvail_Start(char *url) {
     char buf[0x44];
     s8 c;
     func_02127838(sGsGameName, url);
-    sGsAvailQuery.unk_00 = -1;
+    sGsAvailQuery.socket = -1;
     GsSock_StartupStub();
     c = sGsAvailHostOverride[0];
     if (c == 0) {
@@ -80,15 +80,15 @@ void GsAvail_Start(char *url) {
     }
     if (GsSock_ResolveAddress(c != 0 ? sGsAvailHostOverride : buf, 0x6cfc, sGsAvailQuery.unk_04) != 0) {
         s32 s = GsSock_Socket(2, 2, 0);
-        sGsAvailQuery.unk_00 = s;
+        sGsAvailQuery.socket = s;
         if (s != -1) {
             s32 n;
-            sGsAvailQuery.unk_0c = 9;
+            sGsAvailQuery.queryPacket = 9;
             n = STD_GetStringLength(url);
-            memcpy(sGsAvailQuery.unk_11, url, n + 1);
-            sGsAvailQuery.unk_4c = n + 6;
+            memcpy(sGsAvailQuery.gameName, url, n + 1);
+            sGsAvailQuery.packetLength = n + 6;
             GsAvail_SendQuery();
-            sGsAvailQuery.unk_54 = 0;
+            sGsAvailQuery.retryCount = 0;
         }
     }
 }
@@ -97,10 +97,10 @@ s32 GsAvail_ParseReply(s8 *b, s32 n, u8 *addr, u32 *out) {
     if (n < 7) {
         return 1;
     }
-    if (memcmp(addr + 4, sGsAvailQuery.unk_08, 4) != 0) {
+    if (memcmp(addr + 4, sGsAvailQuery.serverIp, 4) != 0) {
         return 1;
     }
-    if (*(u16 *)(addr + 2) != sGsAvailQuery.unk_06) {
+    if (*(u16 *)(addr + 2) != sGsAvailQuery.serverPort) {
         return 1;
     }
     if (memcmp(b, "\xfe\xfd\x09", 3) != 0) {
@@ -120,14 +120,14 @@ s32 GsAvail_Poll() {
     u32 flags;
     u8 buf[0x40];
     len = 8;
-    if (sGsAvailQuery.unk_00 == -1) {
+    if (sGsAvailQuery.socket == -1) {
         sGsAvailStatus = 1;
         return 1;
     }
-    if (GsSock_CanRead(sGsAvailQuery.unk_00) != 0) {
-        s32 n = GsSock_RecvFrom(sGsAvailQuery.unk_00, buf, 0x40, 0, addr, &len);
+    if (GsSock_CanRead(sGsAvailQuery.socket) != 0) {
+        s32 n = GsSock_RecvFrom(sGsAvailQuery.socket, buf, 0x40, 0, addr, &len);
         if (GsAvail_ParseReply((s8 *)buf, n, (u8 *)addr, &flags) == 0) {
-            GsSock_Close(sGsAvailQuery.unk_00);
+            GsSock_Close(sGsAvailQuery.socket);
             if ((flags & 1) != 0) {
                 sGsAvailStatus = 2;
             } else if ((flags & 2) != 0) {
@@ -138,14 +138,14 @@ s32 GsAvail_Poll() {
             return sGsAvailStatus;
         }
     }
-    if (GsUtil_GetTimeMs() > sGsAvailQuery.unk_50 + 0x7d0) {
-        if (sGsAvailQuery.unk_54 == 1) {
-            GsSock_Close(sGsAvailQuery.unk_00);
+    if (GsUtil_GetTimeMs() > sGsAvailQuery.lastSendTime + 0x7d0) {
+        if (sGsAvailQuery.retryCount == 1) {
+            GsSock_Close(sGsAvailQuery.socket);
             sGsAvailStatus = 1;
             return 1;
         }
         GsAvail_SendQuery();
-        sGsAvailQuery.unk_54++;
+        sGsAvailQuery.retryCount++;
     }
     return 0;
 }

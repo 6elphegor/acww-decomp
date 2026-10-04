@@ -3,11 +3,11 @@
 
 struct Unk_ov065_0226ab5c_Conn {
     u8 unk_0000[0xf00];
-    u8 unk_0f00[0x1244];
-    u8 unk_2144[6];
-    u16 unk_214a;
-    u8 unk_214c[0x114];
-    s32 unk_2260;
+    u8 sendBuf[0x1244];
+    u8 targetBssid[6];
+    u16 targetSsidLength;
+    u8 targetSsid[0x114];
+    s32 phase;
     u8 unk_2264[7];
     u8 unk_226b;
 };
@@ -15,25 +15,25 @@ struct Unk_ov065_0226ab5c_Conn {
 struct Unk_ov065_0226aed4_Fc {
     void *(*unk_00)(u32, u32);
     void (*unk_04)(u32, void *, u32);
-    u8 unk_08;
-    u8 unk_09;
+    u8 allocMask;
+    u8 state;
     u8 unk_0a;
-    u8 unk_0b;
+    u8 anyApFound;
     u32 unk_0c;
     u8 unk_10[4];
-    u8 unk_14;
-    u8 unk_15;
-    u8 unk_16;
-    u8 unk_17;
+    u8 furthestApStatus;
+    u8 furthestApIndex;
+    u8 furthestState;
+    u8 connectedApType;
 };
 
 struct Unk_ov065_0226b27c_Cfg {
     void *(*unk_00)(u32, u32);
     void (*unk_04)(u32, void *, u32);
-    u8 unk_08;
-    u8 unk_09;
+    u8 dmaNo;
+    u8 powerMode;
     u8 unk_0a;
-    u8 unk_0b;
+    u8 netCheckMode;
 };
 
 struct Unk_ov065_0226b27c_F8 {
@@ -117,9 +117,9 @@ s32 WifiAp_Init(Unk_ov065_0226b27c_Cfg *cfg) {
     fc = sWifiApControl;
     fc->unk_00 = cfg->unk_00;
     fc->unk_04 = cfg->unk_04;
-    fc->unk_09 = 1;
-    fc->unk_16 = 1;
-    fc->unk_08 = 1;
+    fc->state = 1;
+    fc->furthestState = 1;
+    fc->allocMask = 1;
     sWifiApContext = (u8 *)WifiAp_AllocBlock(0x10, 0xd18);
     sWifiApLinkWork = WifiAp_AllocBlock(2, 0x2300);
     sWifiApSocketConfig = WifiAp_AllocBlock(4, 0x58);
@@ -129,8 +129,8 @@ s32 WifiAp_Init(Unk_ov065_0226b27c_Cfg *cfg) {
     { volatile u32 z = 0; MIi_CpuClear32(z, sWifiApSocketConfig, 0x58); }
     { volatile u32 z = 0; MIi_CpuClear32(z, sWifiApAllocator, 0xc); }
     ec = sWifiApContext;
-    ec[0xd0a] = cfg->unk_08;
-    ((Unk_ov065_0226b27c_B0b *)(ec + 0xd0b))->lo = cfg->unk_09;
+    ec[0xd0a] = cfg->dmaNo;
+    ((Unk_ov065_0226b27c_B0b *)(ec + 0xd0b))->lo = cfg->powerMode;
     f8 = sWifiApAllocator;
     f8->unk_00 = cfg->unk_00;
     f8->unk_04 = cfg->unk_04;
@@ -138,7 +138,7 @@ s32 WifiAp_Init(Unk_ov065_0226b27c_Cfg *cfg) {
     {
         Unk_ov065_0226b27c_B0c *b = (Unk_ov065_0226b27c_B0c *)(ec + 0xd0c);
         b->lo = cfg->unk_0a;
-        b->mid = cfg->unk_0b;
+        b->mid = cfg->netCheckMode;
     }
     func_020ff154(ec);
     r = WifiLink_Init(sWifiApLinkWork, 0x2300);
@@ -214,7 +214,7 @@ u32 WifiAp_GetConnectedApType() {
     u32 r = 0xff;
     u32 n = WifiAp_GetState();
     if (n >= 0xa && n <= 0x10) {
-        r = sWifiApControl->unk_17;
+        r = sWifiApControl->connectedApType;
     }
     return r;
 }
@@ -237,8 +237,8 @@ void WifiAp_SetApEntry(u32 idx, void *dst) {
 
 void *WifiAp_AllocBlock(u32 m, u32 a) {
     Unk_ov065_0226aed4_Fc *f = (Unk_ov065_0226aed4_Fc *)WifiAp_GetBlock(1);
-    if ((f->unk_08 & m) == 0) {
-        f->unk_08 |= m;
+    if ((f->allocMask & m) == 0) {
+        f->allocMask |= m;
         return f->unk_00(m, a);
     }
     return 0;
@@ -246,36 +246,36 @@ void *WifiAp_AllocBlock(u32 m, u32 a) {
 
 void WifiAp_FreeBlock(u32 m, void *a, u32 b) {
     Unk_ov065_0226aed4_Fc *f = (Unk_ov065_0226aed4_Fc *)WifiAp_GetBlock(1);
-    if ((f->unk_08 & m) != 0) {
-        f->unk_08 &= ~m;
+    if ((f->allocMask & m) != 0) {
+        f->allocMask &= ~m;
         f->unk_04(m, a, b);
     }
 }
 
 void WifiAp_FreeAll() {
     Unk_ov065_0226aed4_Fc *f = (Unk_ov065_0226aed4_Fc *)WifiAp_GetBlock(1);
-    if ((f->unk_08 & 0x10) != 0) {
+    if ((f->allocMask & 0x10) != 0) {
         void *o = WifiAp_GetBlock(0x10);
-        f->unk_08 &= ~0x10;
+        f->allocMask &= ~0x10;
         f->unk_04(0x10, o, 0xd18);
     }
-    if ((f->unk_08 & 8) != 0) {
+    if ((f->allocMask & 8) != 0) {
         void *o = WifiAp_GetBlock(8);
-        f->unk_08 &= ~8;
+        f->allocMask &= ~8;
         f->unk_04(8, o, 0xc);
     }
-    if ((f->unk_08 & 4) != 0) {
+    if ((f->allocMask & 4) != 0) {
         void *o = WifiAp_GetBlock(4);
-        f->unk_08 &= ~4;
+        f->allocMask &= ~4;
         f->unk_04(4, o, 0x58);
     }
-    if ((f->unk_08 & 2) != 0) {
+    if ((f->allocMask & 2) != 0) {
         void *o = WifiAp_GetBlock(2);
-        f->unk_08 &= ~2;
+        f->allocMask &= ~2;
         f->unk_04(2, o, 0x2300);
     }
-    if ((f->unk_08 & 1) != 0) {
-        f->unk_08 &= ~1;
+    if ((f->allocMask & 1) != 0) {
+        f->allocMask &= ~1;
         f->unk_04(1, f, 0x18);
     }
 }
@@ -302,18 +302,18 @@ void *WifiAp_GetBlock(u32 m) {
 void WifiAp_SetState(u8 v) {
     Unk_ov065_0226aed4_Fc *f = (Unk_ov065_0226aed4_Fc *)WifiAp_GetBlock(1);
     u8 *e = (u8 *)WifiAp_GetBlock(0x10);
-    f->unk_09 = v;
-    if (v < 0x10 && v > f->unk_16) {
-        f->unk_16 = v;
+    f->state = v;
+    if (v < 0x10 && v > f->furthestState) {
+        f->furthestState = v;
         if (v > 7) {
-            f->unk_15 = WifiAp_FoldApIndex(e[0xd0d]);
-            f->unk_14 = (e + e[0xd13] * 4)[0x444];
+            f->furthestApIndex = WifiAp_FoldApIndex(e[0xd0d]);
+            f->furthestApStatus = (e + e[0xd13] * 4)[0x444];
         }
     }
 }
 
 u8 WifiAp_GetState() {
-    return sWifiApControl->unk_09;
+    return sWifiApControl->state;
 }
 
 void WifiAp_SetError(u32 v) {
@@ -327,7 +327,7 @@ u32 WifiAp_GetErrorCode() {
 }
 
 void WifiAp_SetConnectedApType(u32 v) {
-    sWifiApControl->unk_17 = WifiAp_FoldApIndex(v);
+    sWifiApControl->connectedApType = WifiAp_FoldApIndex(v);
 }
 
 u32 WifiAp_FoldApIndex(u32 x) {
@@ -390,7 +390,7 @@ s32 WifiAp_GetLinkLevel() {
     u32 irq = OS_DisableInterrupts();
     Unk_ov065_0226ab5c_Conn *c = WifiLink_GetWork();
     s32 r = 0;
-    if (c != 0 && c->unk_2260 == 9) {
+    if (c != 0 && c->phase == 9) {
         r = WifiLink_GetLinkLevel();
     }
     OS_RestoreInterrupts(irq);

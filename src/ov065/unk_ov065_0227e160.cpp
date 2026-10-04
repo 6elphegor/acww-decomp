@@ -11,80 +11,80 @@ namespace Na {
 // ov065_050: DWC HTTP socket send/recv + growable string buffer + callback list (0x0227d8e0..0x0227e1c8)
 
 struct Unk_ov065_0227d8e0_Buf {
-    char *unk_00;
-    s32 unk_04;
-    s32 unk_08;
-    s32 unk_0c;
+    char *buffer;
+    s32 capacity;
+    s32 length;
+    s32 pos;
 };
 
 struct Unk_ov065_0227d8e0_Pair {
-    s32 unk_00;
-    s32 unk_04;
+    s32 func;
+    s32 param;
 };
 
 struct Unk_ov065_0227e0e8_Wrap {
-    Unk_ov065_0227d8e0_Pair unk_00;
+    Unk_ov065_0227d8e0_Pair callback;
 };
 
 struct Unk_ov065_0227d8e0_Node {
     void (*unk_00)(void *, void *, s32);
-    s32 unk_04;
-    void *unk_08;
-    s32 unk_0c;
-    void *unk_10;
-    Unk_ov065_0227d8e0_Node *unk_14;
+    s32 param;
+    void *arg;
+    s32 argType;
+    void *operationId;
+    Unk_ov065_0227d8e0_Node *next;
 };
 
 struct Unk_ov065_0227d8e0_Ctx {
     u8 pad_000[0x198];
-    s32 unk_198;
-    s32 unk_19c;
-    s32 unk_1a0;
-    Unk_ov065_0227e0e8_Wrap unk_1a4[6];
-    s32 unk_1d4;
-    s32 unk_1d8;
-    char *unk_1dc;
+    s32 sessKey;
+    s32 userId;
+    s32 profileId;
+    Unk_ov065_0227e0e8_Wrap callbacks[6];
+    s32 cmSocket;
+    s32 connectState;
+    char *recvBuffer;
     u8 pad_1e0[0x1ec - 0x1e0];
-    char *unk_1ec;
+    char *inputBuffer;
     u8 pad_1f0[4];
-    Unk_ov065_0227d8e0_Buf unk_1f4;
-    s32 unk_204;
+    Unk_ov065_0227d8e0_Buf outputBuffer;
+    s32 peerSocket;
     u8 pad_208[0x418 - 0x208];
-    s32 unk_418;
-    s32 unk_41c;
+    s32 errorCode;
+    s32 fatalError;
     u8 pad_420[4];
-    void *unk_424;
+    void *operationList;
     u8 pad_428[0x434 - 0x428];
-    void *unk_434;
-    Unk_ov065_0227d8e0_Node *unk_438;
-    Unk_ov065_0227d8e0_Node *unk_43c;
-    void *unk_440;
+    void *peerList;
+    Unk_ov065_0227d8e0_Node *callbackList;
+    Unk_ov065_0227d8e0_Node *callbackListTail;
+    void *profileUpdateBuffer;
     u8 pad_444[0x450 - 0x444];
-    void *unk_450;
+    void *userUpdateBuffer;
 };
 
 struct Unk_ov065_0227d8e0_Handle {
-    Unk_ov065_0227d8e0_Ctx *unk_00;
+    Unk_ov065_0227d8e0_Ctx *connection;
 };
 
 struct Unk_ov065_0227d8e0_Arg {
     u8 pad_00[0x10];
-    char *unk_10;
+    char *authSig;
 };
 
 struct Unk_ov065_0227dc48_Conn {
     u8 pad_00[8];
-    s32 unk_08;
+    s32 sock;
     u8 pad_0c[0x28 - 0xc];
-    Unk_ov065_0227d8e0_Buf unk_28;
-    s32 unk_38;
+    Unk_ov065_0227d8e0_Buf outputBuffer;
+    s32 messageQueue;
 };
 
 struct Unk_ov065_0227dfd8_D3 {
     u8 pad_00[0x38];
-    s32 unk_38;
-    s32 *unk_3c;
-    s32 *unk_40;
+    s32 numNicks;
+    s32 *nicks;
+    s32 *uniqueNicks;
 };
 
 struct Unk_ov065_0227dfd8_D4 {
@@ -97,20 +97,20 @@ struct Unk_ov065_0227dfd8_D4 {
 
 struct Unk_ov065_0227dfd8_D9 {
     s32 unk_00;
-    s32 unk_04;
-    s32 *unk_08;
+    s32 numNicks;
+    s32 *nicks;
 };
 
 struct Unk_ov065_0227e0e8_G {
     u8 pad_00[0x18];
-    void *unk_18;
+    void *id;
 };
 
 struct Unk_ov065_0227e160_Cb {
-    s32 unk_00;
-    s32 unk_04;
-    void *unk_08;
-    s32 unk_0c;
+    s32 result;
+    s32 errorCode;
+    void *errorString;
+    s32 isFatal;
 };
 
 typedef Unk_ov065_0227d8e0_Handle Unk_H;
@@ -224,31 +224,31 @@ struct Unk_ov065_0227e350_Node {
 };
 
 struct Unk_ov065_0227e350_Ctx {
-    u8 unk_000;
+    u8 errorString;
     u8 pad_001[0xff];
-    s32 unk_100;
-    s32 unk_104;
-    s32 unk_108;
-    s32 unk_10c;
-    char unk_110[0x1f];
-    char unk_12f[0x15];
-    char unk_144[0x33];
-    char unk_177[0x21];
-    s32 unk_198;
-    s32 unk_19c;
-    s32 unk_1a0;
+    s32 infoCaching;
+    s32 infoCachingBuddyOnly;
+    s32 simulation;
+    s32 firewall;
+    char nick[0x1f];
+    char uniqueNick[0x15];
+    char email[0x33];
+    char password[0x21];
+    s32 sessKey;
+    s32 userId;
+    s32 profileId;
     u8 pad_1a4[0x30];
-    s32 unk_1d4;
-    s32 unk_1d8;
+    s32 cmSocket;
+    s32 connectState;
     u8 pad_1dc[0x18];
-    char unk_1f4[0x14];
-    s32 unk_208;
+    char outputBuffer[0x14];
+    s32 peerPort;
     u8 pad_20c[0x20c];
-    s32 unk_418;
+    s32 errorCode;
     u8 pad_41c[0x50];
-    s32 unk_46c;
-    s32 unk_470;
-    char unk_474[0x1c];
+    s32 productId;
+    s32 namespaceId;
+    char loginTicket[0x1c];
 };
 
 struct Unk_ov065_0227e438_Req {
@@ -312,43 +312,43 @@ namespace Nc {
 // ov065_052: DWC/GameSpy GP connection setup helpers (0x0227ee64..0x0227f54c)
 
 struct Unk_ov065_0227c538_Pair {
-    s32 unk_00;
-    s32 unk_04;
+    s32 func;
+    s32 param;
 };
 
 struct Unk_ov065_0227c538_Node {
     s32 unk_00;
     s32 unk_04;
     void *unk_08;
-    s32 unk_0c;
-    char *unk_10;
+    s32 infoCache;
+    char *authSig;
     s32 unk_14;
     s32 unk_18;
-    s32 unk_1c;
-    Unk_ov065_0227c538_Node *unk_20;
+    s32 result;
+    Unk_ov065_0227c538_Node *next;
 };
 
 struct Unk_ov065_0227c538_Ctx {
-    u8 unk_000;
+    u8 errorString;
     u8 pad_001[0xff];
-    s32 unk_100;
-    s32 unk_104;
-    s32 unk_108;
-    s32 unk_10c;
-    char unk_110[0x1f];
-    char unk_12f[0x15];
-    char unk_144[0x33];
-    char unk_177[0x1f];
+    s32 infoCaching;
+    s32 infoCachingBuddyOnly;
+    s32 simulation;
+    s32 firewall;
+    char nick[0x1f];
+    char uniqueNick[0x15];
+    char email[0x33];
+    char password[0x1f];
     u8 pad_196[0x2];
-    s32 unk_198;
+    s32 sessKey;
     u8 pad_19c[0x38];
-    s32 unk_1d4;
-    s32 unk_1d8;
+    s32 cmSocket;
+    s32 connectState;
     u8 pad_1dc[0x18];
-    char *unk_1f4;
+    char *outputBuffer;
     u8 pad_1f8[0xc];
-    s32 unk_204;
-    s32 unk_208;
+    s32 peerSocket;
+    s32 peerPort;
 };
 
 struct Unk_ov065_0227ee64_Obj {
@@ -513,28 +513,28 @@ s32 GsGp_OpenSockets(Ctx0227 **h, Node0227 *n) {
     Unk_ov065_0227f00c_Host *host;
     s32 e;
     u32 *w;
-    if (ctx->unk_10c == 0) {
-        ctx->unk_204 = GsSock_Socket(2, 1, 0);
-        if (-1 == ctx->unk_204) GP_FAIL("There was an error creating a socket.")
-        if (GsSock_SetBlocking(ctx->unk_204, 0) == 0) GP_FAIL("There was an error making a socket non-blocking.")
+    if (ctx->firewall == 0) {
+        ctx->peerSocket = GsSock_Socket(2, 1, 0);
+        if (-1 == ctx->peerSocket) GP_FAIL("There was an error creating a socket.")
+        if (GsSock_SetBlocking(ctx->peerSocket, 0) == 0) GP_FAIL("There was an error making a socket non-blocking.")
         w = (u32 *)&sa;
         w[0] = 0;
         w[1] = 0;
         sa.unk_1 = 2;
-        if (GsSock_Bind(ctx->unk_204, w, 8) == -1) GP_FAIL("There was an error binding a socket.")
-        if (GsSock_Listen(ctx->unk_204, 5) == -1) GP_FAIL("There was an error listening on a socket.")
+        if (GsSock_Bind(ctx->peerSocket, w, 8) == -1) GP_FAIL("There was an error binding a socket.")
+        if (GsSock_Listen(ctx->peerSocket, 5) == -1) GP_FAIL("There was an error listening on a socket.")
         len = 8;
-        if (GsSock_GetSockName(ctx->unk_204, &sa, &len) == -1) GP_FAIL("There was an error getting a socket's addres.")
-        ctx->unk_208 = sa.unk_2;
+        if (GsSock_GetSockName(ctx->peerSocket, &sa, &len) == -1) GP_FAIL("There was an error getting a socket's addres.")
+        ctx->peerPort = sa.unk_2;
     } else {
-        ctx->unk_204 = -1;
-        ctx->unk_208 = 0;
+        ctx->peerSocket = -1;
+        ctx->peerPort = 0;
     }
     {
-        ctx->unk_1d4 = GsSock_Socket(2, 1, 0);
-        if (-1 == ctx->unk_1d4) GP_FAIL("There was an error creating a socket.")
+        ctx->cmSocket = GsSock_Socket(2, 1, 0);
+        if (-1 == ctx->cmSocket) GP_FAIL("There was an error creating a socket.")
     }
-    if (GsSock_SetBlocking(ctx->unk_1d4, 0) == 0) GP_FAIL("There was an error making a socket non-blocking.")
+    if (GsSock_SetBlocking(ctx->cmSocket, 0) == 0) GP_FAIL("There was an error making a socket non-blocking.")
     host = Sock_GetHostByName(data_ov065_0228d1a4);
     if (host == 0) GP_FAIL("Could not resolve connection mananger host name.")
     w = (u32 *)&sa;
@@ -543,12 +543,12 @@ s32 GsGp_OpenSockets(Ctx0227 **h, Node0227 *n) {
     sa.unk_1 = 2;
     sa.unk_4 = **host->unk_0c;
     sa.unk_2 = 0xcc74;
-    if (GsSock_Connect(ctx->unk_1d4, &sa, 8) == -1) {
-        e = GsSock_GetLastError(ctx->unk_1d4);
+    if (GsSock_Connect(ctx->cmSocket, &sa, 8) == -1) {
+        e = GsSock_GetLastError(ctx->cmSocket);
         if (e != -6 && e != -0x1a && e != -0x4c) GP_FAIL("There was an error connecting a socket.")
     }
     n->unk_14 = 1;
-    ctx->unk_1d8 = 1;
+    ctx->connectState = 1;
     return 0;
 }
 }
@@ -562,33 +562,33 @@ s32 GsGp_Connect(Ctx0227 **h, const char *a1, const char *a2, const char *a3, co
     Unk_ov065_0227ee64_Obj *obj;
     Node0227 *node;
     s32 r;
-    if (ctx->unk_1d8 == 4) {
+    if (ctx->connectState == 4) {
         r = GsGp_ResetConnection(h);
         if (r != 0) {
             return r;
         }
     }
-    if (ctx->unk_1d8 != 0) {
+    if (ctx->connectState != 0) {
         GsGp_SetErrorString(h, "Invalid connection.");
         return 2;
     }
     switch (mode) {
     case 1:
-        ctx->unk_10c = 1;
+        ctx->firewall = 1;
         break;
     case 0:
-        ctx->unk_10c = 0;
+        ctx->firewall = 0;
         break;
     default:
         GsGp_SetErrorString(h, "Invalid firewall.");
         return 2;
     }
-    ctx->unk_10c = 1;
-    GsUtil_StrCopyN(ctx->unk_110, a1, 0x1f);
-    GsUtil_StrCopyN(ctx->unk_12f, a2, 0x15);
-    GsUtil_StrCopyN(ctx->unk_144, a3, 0x33);
-    GsUtil_StrCopyN(ctx->unk_177, a4, 0x1f);
-    GsUtil_StrToLower(ctx->unk_144);
+    ctx->firewall = 1;
+    GsUtil_StrCopyN(ctx->nick, a1, 0x1f);
+    GsUtil_StrCopyN(ctx->uniqueNick, a2, 0x15);
+    GsUtil_StrCopyN(ctx->email, a3, 0x33);
+    GsUtil_StrCopyN(ctx->password, a4, 0x1f);
+    GsUtil_StrToLower(ctx->email);
     obj = (Unk_ov065_0227ee64_Obj *)GsUtil_Alloc(0x308);
     if (obj == 0) {
         GsGp_SetErrorString(h, "Out of memory.");
@@ -609,7 +609,7 @@ s32 GsGp_Connect(Ctx0227 **h, const char *a1, const char *a2, const char *a3, co
     }
     r = GsGp_OpenSockets(h, node);
     if (r != 0) {
-        node->unk_1c = r;
+        node->result = r;
         GsGp_CallFailedCallback(h, node);
         GsGp_CloseConnection(h, 0);
         return r;
@@ -639,68 +639,68 @@ s32 GsGp_SendLogin(Ctx0227 **h, Req0227 *req) {
     if (req->unk_1c2[0] != 0) {
         p = req->unk_1c2;
     } else {
-        p = c->unk_177;
+        p = c->password;
     }
     GsUtil_Md5Hex(p, STD_GetStringLength(p), req->unk_a1);
     if (req->unk_c2[0] != 0) {
         q = req->unk_c2;
-    } else if (c->unk_12f[0] != 0) {
-        q = c->unk_12f;
+    } else if (c->uniqueNick[0] != 0) {
+        q = c->uniqueNick;
     } else {
-        OS_SPrintf(b3, "%s@%s", c->unk_110, c->unk_144);
+        OS_SPrintf(b3, "%s@%s", c->nick, c->email);
         q = b3;
     }
     OS_SPrintf(b2, "%s%s%s%s%s%s", req->unk_a1, "                                                ", q, req->unk_80, req, req->unk_a1);
     GsUtil_Md5Hex(b2, STD_GetStringLength(b2), b1);
-    if (c->unk_100 != 0) {
-        GsGpProfile_FindByNickEmail(h, c->unk_110, c->unk_144, &out);
+    if (c->infoCaching != 0) {
+        GsGpProfile_FindByNickEmail(h, c->nick, c->email, &out);
         if (out != NULL) {
-            c->unk_19c = out[1];
-            c->unk_1a0 = out[0];
+            c->userId = out[1];
+            c->profileId = out[0];
         }
     }
-    GsGpBuf_AppendString(h, c->unk_1f4, "\\login\\");
-    GsGpBuf_AppendString(h, c->unk_1f4, "\\challenge\\");
-    GsGpBuf_AppendString(h, c->unk_1f4, req->unk_80);
+    GsGpBuf_AppendString(h, c->outputBuffer, "\\login\\");
+    GsGpBuf_AppendString(h, c->outputBuffer, "\\challenge\\");
+    GsGpBuf_AppendString(h, c->outputBuffer, req->unk_80);
     if (req->unk_c2[0] != 0) {
-        GsGpBuf_AppendString(h, c->unk_1f4, "\\authtoken\\");
-        GsGpBuf_AppendString(h, c->unk_1f4, req->unk_c2);
-    } else if (c->unk_12f[0] != 0) {
-        GsGpBuf_AppendString(h, c->unk_1f4, "\\uniquenick\\");
-        GsGpBuf_AppendString(h, c->unk_1f4, c->unk_12f);
+        GsGpBuf_AppendString(h, c->outputBuffer, "\\authtoken\\");
+        GsGpBuf_AppendString(h, c->outputBuffer, req->unk_c2);
+    } else if (c->uniqueNick[0] != 0) {
+        GsGpBuf_AppendString(h, c->outputBuffer, "\\uniquenick\\");
+        GsGpBuf_AppendString(h, c->outputBuffer, c->uniqueNick);
     } else {
-        GsGpBuf_AppendString(h, c->unk_1f4, "\\user\\");
-        GsGpBuf_AppendString(h, c->unk_1f4, c->unk_110);
-        GsGpBuf_AppendString(h, c->unk_1f4, "@");
-        GsGpBuf_AppendString(h, c->unk_1f4, c->unk_144);
+        GsGpBuf_AppendString(h, c->outputBuffer, "\\user\\");
+        GsGpBuf_AppendString(h, c->outputBuffer, c->nick);
+        GsGpBuf_AppendString(h, c->outputBuffer, "@");
+        GsGpBuf_AppendString(h, c->outputBuffer, c->email);
     }
-    if (c->unk_19c != 0) {
-        GsGpBuf_AppendString(h, c->unk_1f4, "\\userid\\");
-        GsGpBuf_AppendInt(h, c->unk_1f4, c->unk_19c);
+    if (c->userId != 0) {
+        GsGpBuf_AppendString(h, c->outputBuffer, "\\userid\\");
+        GsGpBuf_AppendInt(h, c->outputBuffer, c->userId);
     }
-    if (c->unk_1a0 != 0) {
-        GsGpBuf_AppendString(h, c->unk_1f4, "\\profileid\\");
-        GsGpBuf_AppendInt(h, c->unk_1f4, c->unk_1a0);
+    if (c->profileId != 0) {
+        GsGpBuf_AppendString(h, c->outputBuffer, "\\profileid\\");
+        GsGpBuf_AppendInt(h, c->outputBuffer, c->profileId);
     }
-    GsGpBuf_AppendString(h, c->unk_1f4, "\\response\\");
-    GsGpBuf_AppendString(h, c->unk_1f4, b1);
-    if (c->unk_10c == 1) {
-        GsGpBuf_AppendString(h, c->unk_1f4, "\\firewall\\1");
+    GsGpBuf_AppendString(h, c->outputBuffer, "\\response\\");
+    GsGpBuf_AppendString(h, c->outputBuffer, b1);
+    if (c->firewall == 1) {
+        GsGpBuf_AppendString(h, c->outputBuffer, "\\firewall\\1");
     }
-    GsGpBuf_AppendString(h, c->unk_1f4, "\\port\\");
+    GsGpBuf_AppendString(h, c->outputBuffer, "\\port\\");
     {
-        s32 t = (u16)c->unk_208;
+        s32 t = (u16)c->peerPort;
         s32 sw = (s16)(u16)(((t >> 8) & 0xff) | ((t << 8) & 0xff00));
-        GsGpBuf_AppendInt(h, c->unk_1f4, sw);
+        GsGpBuf_AppendInt(h, c->outputBuffer, sw);
     }
-    GsGpBuf_AppendString(h, c->unk_1f4, "\\productid\\");
-    GsGpBuf_AppendInt(h, c->unk_1f4, c->unk_46c);
-    GsGpBuf_AppendString(h, c->unk_1f4, "\\gamename\\");
-    GsGpBuf_AppendString(h, c->unk_1f4, sGsGameName);
-    GsGpBuf_AppendString(h, c->unk_1f4, "\\namespaceid\\");
-    GsGpBuf_AppendInt(h, c->unk_1f4, c->unk_470);
-    GsGpBuf_AppendString(h, c->unk_1f4, "\\id\\1");
-    GsGpBuf_AppendString(h, c->unk_1f4, "\\final\\");
+    GsGpBuf_AppendString(h, c->outputBuffer, "\\productid\\");
+    GsGpBuf_AppendInt(h, c->outputBuffer, c->productId);
+    GsGpBuf_AppendString(h, c->outputBuffer, "\\gamename\\");
+    GsGpBuf_AppendString(h, c->outputBuffer, sGsGameName);
+    GsGpBuf_AppendString(h, c->outputBuffer, "\\namespaceid\\");
+    GsGpBuf_AppendInt(h, c->outputBuffer, c->namespaceId);
+    GsGpBuf_AppendString(h, c->outputBuffer, "\\id\\1");
+    GsGpBuf_AppendString(h, c->outputBuffer, "\\final\\");
     return 0;
 }
 }
@@ -718,7 +718,7 @@ s32 GsGp_SendNewUser(Ctx0227 **h, Req0227 *req) {
     volatile s32 z1;
     u32 len;
     u32 i;
-    len = STD_GetStringLength(c->unk_177);
+    len = STD_GetStringLength(c->password);
     GsUtil_SeedRand(0x79707367);
     i = 0;
     if (i < len) {
@@ -726,26 +726,26 @@ s32 GsGp_SendNewUser(Ctx0227 **h, Req0227 *req) {
         z0 = i;
         do {
             s8 r = GsUtil_RandRange(z0, 0xff);
-            *p++ = r ^ c->unk_177[i];
+            *p++ = r ^ c->password[i];
         } while (++i < len);
     }
     a1[i] = 0;
     GsUtil_Base64Encode(a1, b1, len, 1);
-    GsGpBuf_AppendString(h, c->unk_1f4, "\\newuser\\");
-    GsGpBuf_AppendString(h, c->unk_1f4, "\\email\\");
-    GsGpBuf_AppendString(h, c->unk_1f4, c->unk_144);
-    GsGpBuf_AppendString(h, c->unk_1f4, "\\nick\\");
-    GsGpBuf_AppendString(h, c->unk_1f4, c->unk_110);
-    GsGpBuf_AppendString(h, c->unk_1f4, "\\passwordenc\\");
-    GsGpBuf_AppendString(h, c->unk_1f4, b1);
-    GsGpBuf_AppendString(h, c->unk_1f4, "\\productid\\");
-    GsGpBuf_AppendInt(h, c->unk_1f4, c->unk_46c);
-    GsGpBuf_AppendString(h, c->unk_1f4, "\\gamename\\");
-    GsGpBuf_AppendString(h, c->unk_1f4, sGsGameName);
-    GsGpBuf_AppendString(h, c->unk_1f4, "\\namespaceid\\");
-    GsGpBuf_AppendInt(h, c->unk_1f4, c->unk_470);
-    GsGpBuf_AppendString(h, c->unk_1f4, "\\uniquenick\\");
-    GsGpBuf_AppendString(h, c->unk_1f4, c->unk_12f);
+    GsGpBuf_AppendString(h, c->outputBuffer, "\\newuser\\");
+    GsGpBuf_AppendString(h, c->outputBuffer, "\\email\\");
+    GsGpBuf_AppendString(h, c->outputBuffer, c->email);
+    GsGpBuf_AppendString(h, c->outputBuffer, "\\nick\\");
+    GsGpBuf_AppendString(h, c->outputBuffer, c->nick);
+    GsGpBuf_AppendString(h, c->outputBuffer, "\\passwordenc\\");
+    GsGpBuf_AppendString(h, c->outputBuffer, b1);
+    GsGpBuf_AppendString(h, c->outputBuffer, "\\productid\\");
+    GsGpBuf_AppendInt(h, c->outputBuffer, c->productId);
+    GsGpBuf_AppendString(h, c->outputBuffer, "\\gamename\\");
+    GsGpBuf_AppendString(h, c->outputBuffer, sGsGameName);
+    GsGpBuf_AppendString(h, c->outputBuffer, "\\namespaceid\\");
+    GsGpBuf_AppendInt(h, c->outputBuffer, c->namespaceId);
+    GsGpBuf_AppendString(h, c->outputBuffer, "\\uniquenick\\");
+    GsGpBuf_AppendString(h, c->outputBuffer, c->uniqueNick);
     if (req->unk_2c2[0] != 0) {
         len = STD_GetStringLength(req->unk_2c2);
         GsUtil_SeedRand(0x79707367);
@@ -760,11 +760,11 @@ s32 GsGp_SendNewUser(Ctx0227 **h, Req0227 *req) {
         }
         a2[i] = 0;
         GsUtil_Base64Encode(a2, b2, len, 1);
-        GsGpBuf_AppendString(h, c->unk_1f4, "\\cdkeyenc\\");
-        GsGpBuf_AppendString(h, c->unk_1f4, b2);
+        GsGpBuf_AppendString(h, c->outputBuffer, "\\cdkeyenc\\");
+        GsGpBuf_AppendString(h, c->outputBuffer, b2);
     }
-    GsGpBuf_AppendString(h, c->unk_1f4, "\\id\\1");
-    GsGpBuf_AppendString(h, c->unk_1f4, "\\final\\");
+    GsGpBuf_AppendString(h, c->outputBuffer, "\\id\\1");
+    GsGpBuf_AppendString(h, c->outputBuffer, "\\final\\");
     return 0;
 }
 }
@@ -783,22 +783,22 @@ s32 GsGp_ProcessConnectReply(Ctx0227 **h, Node0227 *n, char *line) {
     char *p;
     s32 t;
     if (GsGp_CheckServerError(h, line, 0) != 0) {
-        t = c->unk_418;
-        if (t == 0x106 && c->unk_1a0 != 0) {
+        t = c->errorCode;
+        if (t == 0x106 && c->profileId != 0) {
             GsGpProfile_RemoveById(h);
-            c->unk_19c = 0;
-            c->unk_1a0 = 0;
+            c->userId = 0;
+            c->profileId = 0;
         } else if (t == 0x201) {
             if (GsGp_GetValue(line, "\\pid\\", b3, 0x200) != 0) {
-                c->unk_1a0 = func_0212b770(b3);
+                c->profileId = func_0212b770(b3);
             }
         }
         if (func_02129f1c(line, "\\fatal\\") != 0) {
-            GsGp_SetError(h, c->unk_418, c);
+            GsGp_SetError(h, c->errorCode, c);
             GsGp_CallErrorCallback(h, 4, 1);
             return 4;
         }
-        GsGp_SetError(h, c->unk_418, c);
+        GsGp_SetError(h, c->errorCode, c);
         GsGp_CallErrorCallback(h, 4, 0);
         return 4;
     }
@@ -840,13 +840,13 @@ s32 GsGp_ProcessConnectReply(Ctx0227 **h, Node0227 *n, char *line) {
             GsGp_CallErrorCallback(h, 3, 1);
             return 3;
         }
-        c->unk_19c = func_0212b770(b3);
+        c->userId = func_0212b770(b3);
         if (GsGp_GetValue(line, "\\profileid\\", b3, 0x200) == 0) {
             GsGp_SetError(h, 1, "Unexepected data was received from the server.");
             GsGp_CallErrorCallback(h, 3, 1);
             return 3;
         }
-        c->unk_1a0 = func_0212b770(b3);
+        c->profileId = func_0212b770(b3);
         t = GsGp_SendLogin(h, req);
         if (t != 0) {
             return t;
@@ -864,31 +864,31 @@ s32 GsGp_ProcessConnectReply(Ctx0227 **h, Node0227 *n, char *line) {
             GsGp_CallErrorCallback(h, 3, 1);
             return 3;
         }
-        c->unk_198 = func_0212b770(b3);
+        c->sessKey = func_0212b770(b3);
         if (GsGp_GetValue(line, "\\userid\\", b3, 0x200) == 0) {
             GsGp_SetError(h, 1, "Unexepected data was received from the server.");
             GsGp_CallErrorCallback(h, 3, 1);
             return 3;
         }
-        c->unk_19c = func_0212b770(b3);
+        c->userId = func_0212b770(b3);
         if (GsGp_GetValue(line, "\\profileid\\", b3, 0x200) == 0) {
             GsGp_SetError(h, 1, "Unexepected data was received from the server.");
             GsGp_CallErrorCallback(h, 3, 1);
             return 3;
         }
-        c->unk_1a0 = func_0212b770(b3);
+        c->profileId = func_0212b770(b3);
         if (GsGp_GetValue(line, "\\uniquenick\\", b2, 0x15) == 0) {
             b2[0] = 0;
         }
-        if (GsGp_GetValue(line, "\\lt\\", c->unk_474, 0x19) == 0) {
-            c->unk_474[0] = 0;
+        if (GsGp_GetValue(line, "\\lt\\", c->loginTicket, 0x19) == 0) {
+            c->loginTicket[0] = 0;
         }
         if (req->unk_c2[0] != 0) {
             p = req->unk_c2;
-        } else if (c->unk_12f[0] != 0) {
-            p = c->unk_12f;
+        } else if (c->uniqueNick[0] != 0) {
+            p = c->uniqueNick;
         } else {
-            OS_SPrintf(b4, "%s@%s", c->unk_110, c->unk_144);
+            OS_SPrintf(b4, "%s@%s", c->nick, c->email);
             p = b4;
         }
         OS_SPrintf(b3, "%s%s%s%s%s%s", req->unk_a1, "                                                ", p, req, req->unk_80, req->unk_a1);
@@ -903,12 +903,12 @@ s32 GsGp_ProcessConnectReply(Ctx0227 **h, Node0227 *n, char *line) {
             GsGp_CallErrorCallback(h, 3, 1);
             return 3;
         }
-        if (c->unk_100 != 0) {
-            u32 *e = GsGpProfile_Add(h, c->unk_1a0);
-            e[0] = c->unk_1a0;
-            e[1] = c->unk_19c;
+        if (c->infoCaching != 0) {
+            u32 *e = GsGpProfile_Add(h, c->profileId);
+            e[0] = c->profileId;
+            e[1] = c->userId;
         }
-        c->unk_1d8 = 3;
+        c->connectState = 3;
         pr = n->unk_0c;
         if (pr.p.unk_00 != 0) {
             u32 *q = (u32 *)GsUtil_Alloc(0x20);
@@ -917,7 +917,7 @@ s32 GsGp_ProcessConnectReply(Ctx0227 **h, Node0227 *n, char *line) {
                 return 1;
             }
             func_0212899c(q, 0, 0x20);
-            q[1] = c->unk_1a0;
+            q[1] = c->profileId;
             q[0] = 0;
             GsUtil_StrCopyN(q + 2, b2, 0x15);
             t = GsGp_QueueCallback(h, pr.p, q, n, 0);
@@ -938,7 +938,7 @@ extern "C" {
 s32 GsGp_CheckConnected(Ctx0227 **h) {
     Ctx0227 *c = *h;
     s32 out;
-    s32 r = GsGp_CheckConnectComplete(h, c->unk_1d4, &out);
+    s32 r = GsGp_CheckConnectComplete(h, c->cmSocket, &out);
     if (r == 0) {
         if (out == 4) {
             GsGp_SetError(h, 0x107, "The server has refused the connection.");
@@ -948,7 +948,7 @@ s32 GsGp_CheckConnected(Ctx0227 **h) {
         if (out == 0) {
             return 0;
         }
-        c->unk_1d8 = 2;
+        c->connectState = 2;
         return 0;
     }
     return r;
@@ -961,7 +961,7 @@ extern "C" {
 s32 GsGp_FreeBuddyDataCb(Ctx0227 **h, Node0227 *n) {
     Ctx0227 *c = *h;
     if (n->unk_08 != NULL) {
-        if (c->unk_104 == 0) {
+        if (c->infoCachingBuddyOnly == 0) {
             GsUtil_Free(n->unk_08->unk_08);
             n->unk_08->unk_08 = NULL;
             GsUtil_Free(n->unk_08->unk_0c);
@@ -975,7 +975,7 @@ s32 GsGp_FreeBuddyDataCb(Ctx0227 **h, Node0227 *n) {
     GsUtil_Free((void *)n->unk_18);
     n->unk_18 = 0;
     n->unk_14 = 0;
-    if (n->unk_0c.p.unk_00 == 0 || (c->unk_104 == 1 && n->unk_08 == NULL)) {
+    if (n->unk_0c.p.unk_00 == 0 || (c->infoCachingBuddyOnly == 1 && n->unk_08 == NULL)) {
         GsGpProfile_Remove(h, n);
         return 0;
     }
@@ -987,8 +987,8 @@ s32 GsGp_FreeBuddyDataCb(Ctx0227 **h, Node0227 *n) {
 namespace Na {
 extern "C" {
 s32 GsGp_CloseConnection(Unk_H *h, s32 a) {
-    Unk_C *ctx = h->unk_00;
-    s32 st = ctx->unk_1d8;
+    Unk_C *ctx = h->connection;
+    s32 st = ctx->connectState;
     s32 out;
     void *p;
     Unk_N *n;
@@ -996,46 +996,46 @@ s32 GsGp_CloseConnection(Unk_H *h, s32 a) {
     if (st != 4) {
     if (st != 0) {
         if (a != 0 && st == 3) {
-            GsGpBuf_AppendString(h, &ctx->unk_1f4, "\\logout\\\\sesskey\\");
-            GsGpBuf_AppendInt(h, &ctx->unk_1f4, ctx->unk_198);
-            GsGpBuf_AppendString(h, &ctx->unk_1f4, "\\final\\");
+            GsGpBuf_AppendString(h, &ctx->outputBuffer, "\\logout\\\\sesskey\\");
+            GsGpBuf_AppendInt(h, &ctx->outputBuffer, ctx->sessKey);
+            GsGpBuf_AppendString(h, &ctx->outputBuffer, "\\final\\");
         }
-        GsGp_SendBuffer(h, ctx->unk_1d4, &ctx->unk_1f4, &out, 1, "CM");
-        if (ctx->unk_1d4 != -1) {
-            GsSock_Shutdown(ctx->unk_1d4, 2);
-            GsSock_Close(ctx->unk_1d4);
-            ctx->unk_1d4 = -1;
+        GsGp_SendBuffer(h, ctx->cmSocket, &ctx->outputBuffer, &out, 1, "CM");
+        if (ctx->cmSocket != -1) {
+            GsSock_Shutdown(ctx->cmSocket, 2);
+            GsSock_Close(ctx->cmSocket);
+            ctx->cmSocket = -1;
         }
-        if (ctx->unk_204 != -1) {
-            GsSock_Shutdown(ctx->unk_204, 2);
-            GsSock_Close(ctx->unk_204);
-            ctx->unk_204 = -1;
+        if (ctx->peerSocket != -1) {
+            GsSock_Shutdown(ctx->peerSocket, 2);
+            GsSock_Close(ctx->peerSocket);
+            ctx->peerSocket = -1;
         }
-        ctx->unk_1d8 = 4;
-        ctx->unk_19c = 0;
-        ctx->unk_1a0 = 0;
+        ctx->connectState = 4;
+        ctx->userId = 0;
+        ctx->profileId = 0;
     }
-    GsUtil_Free(ctx->unk_1dc);
-    ctx->unk_1dc = NULL;
-    GsUtil_Free(ctx->unk_1ec);
-    ctx->unk_1ec = NULL;
-    GsUtil_Free(ctx->unk_1f4.unk_00);
-    ctx->unk_1f4.unk_00 = NULL;
-    GsUtil_Free(ctx->unk_440);
-    ctx->unk_440 = NULL;
-    GsUtil_Free(ctx->unk_450);
-    ctx->unk_450 = NULL;
-    while (ctx->unk_424 != NULL) {
-        GsGp_RemoveOperation(h, ctx->unk_424);
+    GsUtil_Free(ctx->recvBuffer);
+    ctx->recvBuffer = NULL;
+    GsUtil_Free(ctx->inputBuffer);
+    ctx->inputBuffer = NULL;
+    GsUtil_Free(ctx->outputBuffer.buffer);
+    ctx->outputBuffer.buffer = NULL;
+    GsUtil_Free(ctx->profileUpdateBuffer);
+    ctx->profileUpdateBuffer = NULL;
+    GsUtil_Free(ctx->userUpdateBuffer);
+    ctx->userUpdateBuffer = NULL;
+    while (ctx->operationList != NULL) {
+        GsGp_RemoveOperation(h, ctx->operationList);
     }
-    ctx->unk_424 = NULL;
-    n = (Unk_N *)ctx->unk_434;
+    ctx->operationList = NULL;
+    n = (Unk_N *)ctx->peerList;
     while (n != NULL) {
         cur = n;
         n = *(Unk_N **)((u8 *)n + 0x3c);
         GsGpPeer_Free(h, cur);
     }
-    ctx->unk_434 = NULL;
+    ctx->peerList = NULL;
     while (GsGpProfile_FindIf(h, (s32)GsGp_FreeBuddyDataCb, 0) == 0) {
     }
     }
@@ -1046,20 +1046,20 @@ s32 GsGp_CloseConnection(Unk_H *h, s32 a) {
 namespace Na {
 extern "C" {
 void GsGp_CallErrorCallback(Unk_H *h, s32 a, s32 b) {
-    Unk_C *ctx = h->unk_00;
+    Unk_C *ctx = h->connection;
     Unk_ov065_0227e0e8_Wrap p;
     Unk_ov065_0227e160_Cb *m;
     if (b == 1) {
-        ctx->unk_41c = 1;
+        ctx->fatalError = 1;
     }
-    p = ctx->unk_1a4[0];
-    if (p.unk_00.unk_00 != 0) {
+    p = ctx->callbacks[0];
+    if (p.callback.func != 0) {
         m = (Unk_ov065_0227e160_Cb *)GsUtil_Alloc(0x10);
         if (m != NULL) {
-            m->unk_00 = a;
-            m->unk_0c = b;
-            m->unk_04 = ctx->unk_418;
-            m->unk_08 = ctx;
+            m->result = a;
+            m->isFatal = b;
+            m->errorCode = ctx->errorCode;
+            m->errorString = ctx;
         }
         GsGp_QueueCallback(h, p, (Unk_N *)m, NULL, 1);
     }

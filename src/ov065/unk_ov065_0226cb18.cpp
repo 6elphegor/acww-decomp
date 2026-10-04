@@ -249,33 +249,33 @@ extern "C" {
 struct Unk_ov065_0226b488_Rec {
     u8 unk_00;
     u8 unk_01;
-    u16 unk_02;
-    u8 unk_04[6];
+    u16 rssi;
+    u8 bssid[6];
     u16 unk_0a;
     u8 unk_0c[0x2c - 0xc];
-    u16 unk_2c;
+    u16 capaInfo;
     u8 pad2e[0x36 - 0x2e];
-    u16 unk_36;
+    u16 channel;
     u8 pad38[0xc0 - 0x38];
 };
 
 struct Unk_ov065_0226b488_Entry {
     u8 lo : 4;
     u8 hi : 4;
-    u8 unk_01;
-    u8 unk_02;
-    u8 unk_03;
-    u8 unk_04[0x20];
+    u8 apType;
+    u8 channelIndex;
+    u8 ssidLength;
+    u8 ssid[0x20];
 };
 
 struct Unk_ov065_0226b488_Ctx {
     u8 pad000[0x300];
-    Unk_ov065_0226b488_Entry unk_300[9];
-    u8 unk_444[0x2c];
-    Unk_ov065_0226b488_Rec unk_470[11];
-    u32 unk_cb0;
-    u32 unk_cb4;
-    u8 unk_cb8[0x52];
+    Unk_ov065_0226b488_Entry searchEntries[9];
+    u8 foundApInfo[0x2c];
+    Unk_ov065_0226b488_Rec foundApBss[11];
+    u32 stepStartTick;
+    u32 stepStartTickHi;
+    u8 wepSetting[0x52];
     u8 padd0a;
     u8 unk_d0b_lo : 2;
     u8 unk_d0b_hi : 2;
@@ -283,16 +283,16 @@ struct Unk_ov065_0226b488_Ctx {
     u8 unk_d0c_st : 4;
     u8 unk_d0c_mid : 2;
     u8 unk_d0c_mode : 2;
-    u8 unk_d0d;
-    u8 unk_d0e;
-    u8 unk_d0f;
-    u8 unk_d10;
-    s8 unk_d11;
-    u8 unk_d12;
-    u8 unk_d13;
-    u8 unk_d14;
-    u8 unk_d15;
-    u16 unk_d16;
+    u8 apType;
+    u8 resumeState;
+    u8 searchIndex;
+    u8 numSearchEntries;
+    s8 scanChannel;
+    u8 numFoundAps;
+    u8 selectedAp;
+    u8 connectFailKind;
+    u8 stepCount;
+    u16 foundChannelMask;
 };
 
 struct Unk_ov065_0226cfe4_Buf {
@@ -588,7 +588,7 @@ s32 WifiAp_ProcessNetSetup(void) {
             NetCheck_Abort();
             NetCheck_Destroy();
         default:
-            *((u8 *)c + c->unk_d13 * 4 + 0x444) = 2;
+            *((u8 *)c + c->selectedAp * 4 + 0x444) = 2;
             a = 0xb;
             break;
         }
@@ -617,10 +617,10 @@ s32 WifiAp_StepWaitAddress(Unk_ov065_0226b488_Ctx *c) {
         return 0xd;
     }
     s64 now = OS_GetTick();
-    s64 d = now - *(s64 *)&c->unk_cb0;
+    s64 d = now - *(s64 *)&c->stepStartTick;
     u64 r = ((u64)d << 6) / 0x1ff6210LL;
     if (r >= 10) {
-        *((u8 *)c + c->unk_d13 * 4 + 0x444) = 1;
+        *((u8 *)c + c->selectedAp * 4 + 0x444) = 1;
         return 0xb;
     }
     return 0xc;
@@ -639,13 +639,13 @@ s32 WifiAp_StepWaitNetCheck(Unk_ov065_0226b488_Ctx *c) {
     u8 *p = WifiAp_GetBlock(1);
     s32 r = NetCheck_GetState();
     if (r != 0) {
-        s32 x = WifiAp_FoldApIndex(c->unk_d0d);
+        s32 x = WifiAp_FoldApIndex(c->apType);
         if (p[0x15] == x) {
             *(u32 *)(p + 0x10) = NetCheck_GetErrorCode();
         }
         NetCheck_Destroy();
         if (r != 0xb) {
-            *((u8 *)c + c->unk_d13 * 4 + 0x444) = 1;
+            *((u8 *)c + c->selectedAp * 4 + 0x444) = 1;
             return 0xb;
         }
         return 0xf;
@@ -654,7 +654,7 @@ s32 WifiAp_StepWaitNetCheck(Unk_ov065_0226b488_Ctx *c) {
 }
 
 s32 WifiAp_StepConnected(Unk_ov065_0226b488_Ctx *c) {
-    WifiAp_SetConnectedApType(c->unk_d0d);
+    WifiAp_SetConnectedApType(c->apType);
     return 0x10;
 }
 

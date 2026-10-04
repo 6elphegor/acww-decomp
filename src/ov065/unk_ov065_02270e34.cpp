@@ -395,7 +395,7 @@ struct Unk_ov065_02272428_Rec {
 };
 
 struct Unk_ov065_02290814_Sub {
-    u32 unk_00;
+    u32 transportSocket;
 };
 
 struct Unk_ov065_02290814 {

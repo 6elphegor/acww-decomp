@@ -25,12 +25,12 @@ struct Unk_ov065_02277418_Rec {
 };
 
 struct Unk_ov065_02290f78 {
-    Unk_ov065_02277418_Rec unk_000[32];
+    Unk_ov065_02277418_Rec channels[32];
     void (*unk_600)(...);
     void (*unk_604)(...);
     void (*unk_608)(...);
     void (*unk_60c)(...);
-    u16 unk_610;
+    u16 maxChunkSize;
     u16 unk_612;
 };
 
@@ -164,7 +164,7 @@ BOOL DwcNet_SendData(s32 m, s32 id, u8 *buf, s32 n) {
     r->unk_14 = n;
     DwcNet_BuildHeader(&h, m, n);
     DwcNet_SendToAid(id, &h, 8, 1);
-    chunk = sDwcNetChannels->unk_610;
+    chunk = sDwcNetChannels->maxChunkSize;
     if (n <= chunk) {
         chunk = n;
     }
@@ -221,7 +221,7 @@ void DwcNet_SetMaxChunkSize(u32 v) {
     if (v > 0x5b9) {
         v = 0x5b9;
     }
-    sDwcNetChannels->unk_610 = v;
+    sDwcNetChannels->maxChunkSize = v;
 }
 
 void DwcNet_BuildHeader(void *p, u32 a, u32 b) {
@@ -253,7 +253,7 @@ s32 DwcNet_GetHeaderSize(s32 m) {
 void DwcNet_InitChannelTable(void *p) {
     sDwcNetChannels = (Unk_ov065_02290f78 *)p;
     MI_CpuFill8(p, 0, 0x614);
-    sDwcNetChannels->unk_610 = 0x5b9;
+    sDwcNetChannels->maxChunkSize = 0x5b9;
 }
 
 void DwcNet_OnReceive(s32 a, void *b, s32 c, s32 d) {
@@ -290,7 +290,7 @@ void DwcNet_ProcessSend(void) {
                         s32 chunk;
                         r = DwcNet_GetChannel(id);
                         rem = r->unk_14 - r->unk_0c;
-                        chunk = sDwcNetChannels->unk_610;
+                        chunk = sDwcNetChannels->maxChunkSize;
                         if (rem <= chunk) {
                             chunk = rem;
                         }
@@ -331,12 +331,12 @@ void DwcNet_ProcessSend(void) {
 void DwcNet_ResetChannel(s32 id) {
     if (sDwcNetChannels != NULL) {
         s32 z = 0;
-        sDwcNetChannels->unk_000[id].unk_0c = z;
-        sDwcNetChannels->unk_000[id].unk_10 = z;
-        sDwcNetChannels->unk_000[id].unk_14 = z;
-        sDwcNetChannels->unk_000[id].unk_18 = z;
-        sDwcNetChannels->unk_000[id].unk_1c = z;
-        sDwcNetChannels->unk_000[id].unk_22 = z;
+        sDwcNetChannels->channels[id].unk_0c = z;
+        sDwcNetChannels->channels[id].unk_10 = z;
+        sDwcNetChannels->channels[id].unk_14 = z;
+        sDwcNetChannels->channels[id].unk_18 = z;
+        sDwcNetChannels->channels[id].unk_1c = z;
+        sDwcNetChannels->channels[id].unk_22 = z;
     }
 }
 
@@ -345,15 +345,15 @@ void DwcNet_ClearChannelTable(void) {
 }
 
 Unk_ov065_02277418_Rec *DwcNet_GetChannel(s32 id) {
-    return &sDwcNetChannels->unk_000[id];
+    return &sDwcNetChannels->channels[id];
 }
 
 u32 DwcNet_IsSending(s32 id) {
-    return sDwcNetChannels->unk_000[id].unk_1c;
+    return sDwcNetChannels->channels[id].unk_1c;
 }
 
 u32 DwcNet_GetRecvState(s32 id) {
-    return sDwcNetChannels->unk_000[id].unk_1d;
+    return sDwcNetChannels->channels[id].unk_1d;
 }
 
 void DwcNet_SendToAid(s32 id, void *buf, s32 n, s32 f) {
@@ -381,9 +381,9 @@ void DwcNet_RecvReliable(s32 a, void *buf, s32 n) {
         DwcNet_RecvControlBody(id, buf, n);
         return;
     case 4:
-        sDwcNetChannels->unk_000[id].unk_1d = 1;
-        sDwcNetChannels->unk_000[id].unk_10 = 0;
-        sDwcNetChannels->unk_000[id].unk_18 = 0;
+        sDwcNetChannels->channels[id].unk_1d = 1;
+        sDwcNetChannels->channels[id].unk_10 = 0;
+        sDwcNetChannels->channels[id].unk_18 = 0;
         return;
     default:
         DwcCore_SetError(6, -0x17d4a);
@@ -393,7 +393,7 @@ void DwcNet_RecvReliable(s32 a, void *buf, s32 n) {
 
 void DwcNet_RecvUnreliable(s32 a, void *buf, s32 n) {
     s32 id = DwcConn_GetAid(a);
-    Unk_ov065_02277418_Rec *r = &sDwcNetChannels->unk_000[id];
+    Unk_ov065_02277418_Rec *r = &sDwcNetChannels->channels[id];
     if (r->unk_04 != NULL && r->unk_08 >= n) {
         MI_CpuCopy8(buf, r->unk_04, n);
         if (sDwcNetChannels->unk_604 != NULL) {
@@ -408,7 +408,7 @@ void DwcNet_RecvUnreliable(s32 a, void *buf, s32 n) {
 }
 
 void DwcNet_RecvHeader(s32 id, void *buf, s32 n) {
-    Unk_ov065_02277418_Rec *r = &sDwcNetChannels->unk_000[id];
+    Unk_ov065_02277418_Rec *r = &sDwcNetChannels->channels[id];
     u32 t;
     Unk_ov065_0227762c_Hdr h;
     r->unk_1e = DwcNet_GetRecvState(id);
@@ -439,7 +439,7 @@ void DwcNet_RecvHeader(s32 id, void *buf, s32 n) {
 }
 
 void DwcNet_RecvBodyChunk(s32 id, void *buf, s32 n) {
-    Unk_ov065_02277418_Rec *r = &sDwcNetChannels->unk_000[id];
+    Unk_ov065_02277418_Rec *r = &sDwcNetChannels->channels[id];
     if (DwcNet_GetRecvState(id) == 2) {
         if (r->unk_10 + n > r->unk_08) {
             DwcCore_SetError(6, -0x17d54);

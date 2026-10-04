@@ -5,19 +5,19 @@ struct Unk_ov065_0225f378_Obj;
 
 struct Unk_ov065_0225f4d4_Msg {
     s32 (*unk_00)(Unk_ov065_0225f4d4_Msg *);
-    Unk_ov065_0225f378_Obj *unk_04;
-    void *unk_08;
-    s8 unk_0c;
-    s8 unk_0d;
+    Unk_ov065_0225f378_Obj *sock;
+    void *replyQueue;
+    s8 sockType;
+    s8 blocking;
 };
 
 struct Unk_ov065_0225f378_Obj {
     u8 pad_00[0x64];
-    void *unk_64;
-    void *unk_68;
-    s32 unk_6c;
+    void *recvPipe;
+    void *sendPipe;
+    s32 result;
     u8 pad_70[3];
-    s8 unk_73;
+    s8 sockType;
 };
 
 struct Unk_ov065_0225f410_Q {
@@ -26,9 +26,9 @@ struct Unk_ov065_0225f410_Q {
 
 struct Unk_ov065_0225f524_Q {
     u32 unk_00[5];
-    s32 unk_14;
+    s32 msgCount;
     u32 unk_18;
-    s32 unk_1c;
+    s32 usedCount;
 };
 
 struct Unk_ov065_0225f1cc_Cfg {
@@ -93,7 +93,7 @@ s32 SockCore_CreateMsgPool(s32 n)
 
 s32 SockCore_DestroyMsgPool(void)
 {
-    if (sSockMsgFreeQueue.unk_1c < sSockMsgFreeQueue.unk_14) {
+    if (sSockMsgFreeQueue.usedCount < sSockMsgFreeQueue.msgCount) {
         return -1;
     }
     sSockCoreConfig->unk_1c(sSockMsgPool);
@@ -115,10 +115,10 @@ Unk_ov065_0225f4d4_Msg *SockCore_AllocMsg(void *fn, Unk_ov065_0225f378_Obj *o, s
     Unk_ov065_0225f4d4_Msg *m = SockCore_TakeFreeMsg(c);
     if (m != NULL) {
         m->unk_00 = (s32 (*)(Unk_ov065_0225f4d4_Msg *))fn;
-        m->unk_04 = o;
-        m->unk_08 = NULL;
-        m->unk_0c = o->unk_73;
-        m->unk_0d = c;
+        m->sock = o;
+        m->replyQueue = NULL;
+        m->sockType = o->sockType;
+        m->blocking = c;
     }
     return m;
 }
@@ -132,9 +132,9 @@ void SockCore_FreeMsg(void *m)
 
 void *SockCore_GetCommandQueue(Unk_ov065_0225f378_Obj *o)
 {
-    void *p = o->unk_64;
+    void *p = o->recvPipe;
     if (p == NULL) {
-        p = o->unk_68;
+        p = o->sendPipe;
     }
     return p;
 }
@@ -144,7 +144,7 @@ s32 SockCore_PostCommand(void *q, Unk_ov065_0225f4d4_Msg *m)
     s32 flag;
     s32 r;
     if (m != NULL) {
-        flag = m->unk_0d;
+        flag = m->blocking;
     } else {
         flag = 1;
     }
@@ -168,12 +168,12 @@ s32 SockCore_PostCommandAndWait(void *q, Unk_ov065_0225f4d4_Msg *m)
     s32 res;
     s32 buf;
     Unk_ov065_0225f410_Q lq;
-    if (m->unk_0d == 0) {
-        m->unk_08 = NULL;
+    if (m->blocking == 0) {
+        m->replyQueue = NULL;
         res = SockCore_PostCommand(q, m);
     } else {
         OS_InitMessageQueue(&lq, &buf, 1);
-        m->unk_08 = &lq;
+        m->replyQueue = &lq;
         SockCore_PostCommand(q, m);
         OS_ReceiveMessage(&lq, &res, 1);
     }
@@ -182,12 +182,12 @@ s32 SockCore_PostCommandAndWait(void *q, Unk_ov065_0225f4d4_Msg *m)
 
 s32 SockCore_ExecOnRecvSide(Unk_ov065_0225f378_Obj *o, Unk_ov065_0225f4d4_Msg *m)
 {
-    return SockCore_PostCommandAndWait(o->unk_64, m);
+    return SockCore_PostCommandAndWait(o->recvPipe, m);
 }
 
 s32 SockCore_ExecOnSendSide(Unk_ov065_0225f378_Obj *o, Unk_ov065_0225f4d4_Msg *m)
 {
-    return SockCore_PostCommandAndWait(o->unk_68, m);
+    return SockCore_PostCommandAndWait(o->sendPipe, m);
 }
 
 s32 SockCore_ExecCommand(Unk_ov065_0225f378_Obj *o, Unk_ov065_0225f4d4_Msg *m)
@@ -207,11 +207,11 @@ void SockCore_CommandThreadMain(void *q)
         u32 irq = OS_DisableInterrupts();
         OS_DisableScheduler();
         OS_ReceiveMessage(q, 0, 0);
-        if (m->unk_04 != NULL) {
-            m->unk_04->unk_6c = r;
+        if (m->sock != NULL) {
+            m->sock->result = r;
         }
-        if (m->unk_08 != NULL) {
-            OS_SendMessage(m->unk_08, (void *)r, 0);
+        if (m->replyQueue != NULL) {
+            OS_SendMessage(m->replyQueue, (void *)r, 0);
         }
         SockCore_FreeMsg(m);
         OS_EnableScheduler();

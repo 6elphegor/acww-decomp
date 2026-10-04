@@ -59,7 +59,7 @@ struct Unk_ov065_0227931c_Buf {
 
 extern s32 sGsSockLastError;
 struct Unk_ov065_02291094 {
-    u32 unk_00;
+    u32 hostIp;
 };
 extern Unk_ov065_02291094 data_ov065_02291094;
 extern u8 data_0213a410[];
@@ -287,31 +287,31 @@ void GsHttp_InitCritical();
 
 namespace Nm {
 struct Unk_ov065_0227a4e8_Part {
-    s32 unk_00;
-    char *unk_04;
-    char *unk_08;
+    s32 type;
+    char *partName;
+    char *data;
     s32 unk_0c;
     s32 unk_10;
     s32 unk_14;
 };
 
 struct Unk_ov065_0227a4e8_Slot {
-    Unk_ov065_0227a4e8_Part *unk_00;
-    s32 unk_04;
-    u32 unk_08;
-    s32 unk_0c;
+    Unk_ov065_0227a4e8_Part *part;
+    s32 pos;
+    u32 file;
+    s32 fileLength;
 };
 
 struct Unk_ov065_0227a3f4_List {
-    void *unk_00;
-    s32 unk_04;
+    void *postParts;
+    s32 postPartIndex;
 };
 
 struct Unk_ov065_0227a4e8_Req {
     s32 unk_00;
     s32 unk_04;
     s32 unk_08;
-    s32 unk_0c;
+    s32 isMultipart;
 };
 
 struct Unk_ov065_02279c7c {

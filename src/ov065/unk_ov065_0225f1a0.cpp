@@ -2,42 +2,42 @@
 #include "types.h"
 
 struct Unk_ov065_0225f1cc_Cfg {
-    u32 unk_00;
-    u32 unk_04;
-    u32 unk_08;
-    u32 unk_0c;
-    u32 unk_10;
-    u32 unk_14;
+    u32 useDhcp;
+    u32 ownIp;
+    u32 netmask;
+    u32 gateway;
+    u32 dns1;
+    u32 dns2;
     void *(*unk_18)(u32);
     void (*unk_1c)(void *);
-    s32 unk_20;
-    u32 unk_24;
-    u32 unk_28;
-    s32 unk_2c;
-    s32 unk_30;
-    s32 unk_34;
+    s32 msgPoolSize;
+    u32 recvRingSize;
+    u32 recvRingBuf;
+    s32 threadPriority;
+    s32 mtu;
+    s32 recvWindow;
 };
 
 struct Unk_ov065_0225f210_G {
-    s32 unk_00;
-    void *unk_04;
-    void *unk_08;
-    void *unk_0c;
-    void *unk_10;
-    u32 unk_14;
-    u32 unk_18;
-    void *unk_1c;
-    u32 unk_20;
-    s32 unk_24;
-    u32 unk_28;
-    u32 unk_2c;
+    s32 stackFlags;
+    void *allocFunc;
+    void *freeFunc;
+    void *addrReadyCallback;
+    void *linkCheckCallback;
+    u32 randSeed;
+    u32 randSeedHi;
+    void *recvRingBuf;
+    u32 recvRingSize;
+    s32 mss;
+    u32 requestedIp;
+    u32 yieldMode;
 };
 
 struct Unk_ov065_0225f634_Params {
-    s8 unk_00;
-    s8 unk_01;
-    u16 unk_02;
-    u16 unk_04;
+    s8 sockType;
+    s8 blocking;
+    u16 rxBufSize;
+    u16 rxConsumeLimit;
     u8 pad_06[0x12];
 };
 
@@ -101,7 +101,7 @@ s32 SockCore_Startup(Unk_ov065_0225f1cc_Cfg *cfg)
 
 s32 SockCore_CreateMsgPoolAndDefaultSocket(void)
 {
-    s32 r = SockCore_CreateMsgPool(sSockCoreConfig->unk_20);
+    s32 r = SockCore_CreateMsgPool(sSockCoreConfig->msgPoolSize);
     if (r >= 0) {
         sSockDefaultSocket = (void *)SockCore_Create(&sSockSendOnlyParams);
     }
@@ -115,46 +115,46 @@ void SockCore_SetupStackConfig(void)
     s32 a;
     s32 b;
     MI_CpuFill8(g, 0, 0x30);
-    g->unk_04 = (void *)c->unk_18;
-    g->unk_08 = (void *)c->unk_1c;
-    g->unk_10 = (void *)SockCore_IsLinkUp;
-    g->unk_14 = 0;
-    g->unk_18 = 0;
-    g->unk_2c = sSockYieldMode;
-    if (c->unk_24 != 0) {
-        g->unk_20 = c->unk_24;
+    g->allocFunc = (void *)c->unk_18;
+    g->freeFunc = (void *)c->unk_1c;
+    g->linkCheckCallback = (void *)SockCore_IsLinkUp;
+    g->randSeed = 0;
+    g->randSeedHi = 0;
+    g->yieldMode = sSockYieldMode;
+    if (c->recvRingSize != 0) {
+        g->recvRingSize = c->recvRingSize;
     } else {
-        g->unk_20 = 0x4000;
+        g->recvRingSize = 0x4000;
     }
-    if (c->unk_28 != 0) {
-        g->unk_1c = (void *)c->unk_28;
+    if (c->recvRingBuf != 0) {
+        g->recvRingBuf = (void *)c->recvRingBuf;
     } else {
-        g->unk_1c = sSockCoreConfig->unk_18(g->unk_20);
+        g->recvRingBuf = sSockCoreConfig->unk_18(g->recvRingSize);
     }
-    a = c->unk_30;
+    a = c->mtu;
     if (a == 0) {
         a = 0x240;
     }
-    b = c->unk_34;
+    b = c->recvWindow;
     if (b == 0) {
         b = 0x10c0;
     }
-    g->unk_24 = a - 0x28;
-    sSockTcpParams.unk_02 = b;
-    sSockTcpParams.unk_04 = _s32_div_f(b, 2);
+    g->mss = a - 0x28;
+    sSockTcpParams.rxBufSize = b;
+    sSockTcpParams.rxConsumeLimit = _s32_div_f(b, 2);
     gOwnIp = 0;
-    if (c->unk_00 != 0) {
+    if (c->useDhcp != 0) {
         sSockCoreState = 1;
-        g->unk_00 = 0;
-        g->unk_0c = (void *)SockCore_OnDhcpAddressReady;
-        g->unk_28 = sSockLastHostIp;
+        g->stackFlags = 0;
+        g->addrReadyCallback = (void *)SockCore_OnDhcpAddressReady;
+        g->requestedIp = sSockLastHostIp;
     } else {
         sSockCoreState = 0;
-        g->unk_00 = 1;
-        g->unk_0c = (void *)SockCore_OnStaticAddressReady;
+        g->stackFlags = 1;
+        g->addrReadyCallback = (void *)SockCore_OnStaticAddressReady;
     }
     {
-        s32 t = c->unk_2c;
+        s32 t = c->threadPriority;
         if (t == 0) {
             t = 0xb;
         }
@@ -168,11 +168,11 @@ void SockCore_SetupStackConfig(void)
 void SockCore_OnStaticAddressReady(void)
 {
     Unk_ov065_0225f1cc_Cfg *c = sSockCoreConfig;
-    gOwnIp = c->unk_04;
-    sNetmask = c->unk_08;
-    sGateway = c->unk_0c;
-    sDnsServers[0] = c->unk_10;
-    sDnsServers[1] = c->unk_14;
+    gOwnIp = c->ownIp;
+    sNetmask = c->netmask;
+    sGateway = c->gateway;
+    sDnsServers[0] = c->dns1;
+    sDnsServers[1] = c->dns2;
     sSockCoreState |= 2;
 }
 

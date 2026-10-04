@@ -14,81 +14,81 @@ struct Unk_ov065_02260de4_Ring {
 
 struct Unk_ov065_02260de4_Buf {
     u8 pad_00[4];
-    u16 unk_04;
+    u16 len;
 };
 
 struct Unk_ov065_02260de4_Ctx {
     u8 pad_00[0xf8];
-    s32 unk_f8;
+    s32 pos;
     u8 pad_fc[8];
-    Unk_ov065_02260de4_Buf *unk_104;
+    Unk_ov065_02260de4_Buf *head;
 };
 
 struct Unk_ov065_02260de4 {
     u8 pad_00[8];
-    u8 unk_08;
+    u8 ipState;
     u8 pad_09[0x3b];
-    s32 unk_44;
+    s32 rxLen;
     u8 pad_48[0x1c];
-    Unk_ov065_02260de4_Ctx *unk_64;
+    Unk_ov065_02260de4_Ctx *recvPipe;
     u8 pad_68[8];
-    volatile s16 unk_70;
-    s8 unk_72;
-    s8 unk_73;
-    u16 unk_74;
+    volatile s16 flags;
+    s8 blocking;
+    s8 sockType;
+    u16 boundPort;
     u8 pad_76[6];
-    Unk_ov065_02260de4 *unk_7c;
+    Unk_ov065_02260de4 *next;
 };
 
 struct Unk_ov065_02260fa4_Ent {
-    Unk_ov065_02260de4 *unk_00;
-    s16 unk_04;
-    u16 unk_06;
+    Unk_ov065_02260de4 *sock;
+    s16 events;
+    u16 revents;
 };
 
 struct Unk_ov065_0226129c_Sa {
-    u8 unk_00;
-    u8 unk_01;
-    u16 unk_02;
-    u32 unk_04;
+    u8 len;
+    u8 family;
+    u16 port;
+    u32 addr;
 };
 
 struct Unk_ov065_02261118_Cfg {
-    u32 unk_00;
-    u32 unk_04;
-    u32 unk_08;
-    u32 unk_0c;
-    u32 unk_10;
-    u32 unk_14;
-    void *unk_18;
-    void *unk_1c;
-    u32 unk_20;
+    u32 useDhcp;
+    u32 ownIp;
+    u32 netmask;
+    u32 gateway;
+    u32 dns1;
+    u32 dns2;
+    void *allocFunc;
+    void *freeFunc;
+    u32 msgPoolSize;
     u8 pad_24[0xc];
-    u32 unk_30;
-    u32 unk_34;
+    u32 mtu;
+    u32 recvWindow;
 };
 
 struct Unk_ov065_02261118_Src {
     u8 pad_00[4];
-    void *unk_04;
-    void *unk_08;
-    u32 unk_0c;
-    u32 unk_10;
-    u32 unk_14;
-    u32 unk_18;
-    u32 unk_1c;
-    u32 unk_20;
+    void *allocFunc;
+    void *freeFunc;
+    u32 dhcpMode;
+    u32 ownIp;
+    u32 netmask;
+    u32 gateway;
+    u32 dns1;
+    u32 dns2;
     u8 pad_24[8];
-    u32 unk_2c;
-    u32 unk_30;
+    u32 mtu;
+    u32 recvWindow;
 };
 
 struct Unk_ov065_02261408_Hostent {
-    char *unk_00;
-    char **unk_04;
-    s16 unk_08;
-    s16 unk_0a;
-    char **unk_0c;
+    char *hostName;
+    char **aliases;
+    s16 addrType;
+    s16 addrLength;
+    char **addrList;
 };
 
 typedef void (*Unk_ov065_02261118_Free)(s32, void *, u32);
@@ -142,9 +142,9 @@ char *Sock_InetNtoP(s32 mode, s32 x, char *buf, u32 len);
 void IpAddr_StoreBe32(u32 v, u8 *p);
 
 struct Unk_ov065_02261638_Rng {
-    u64 unk_00;
-    s64 unk_08;
-    s64 unk_10;
+    u64 value;
+    s64 multiplier;
+    s64 increment;
 };
 extern Unk_ov065_02261638_Rng sIpRandState;
 
@@ -179,11 +179,11 @@ s32 Sock_Create(s32 a, s32 b) {
 }
 
 s32 Sock_Bind(s32 a, Unk_ov065_0226129c_Sa *sa) {
-    return SockCore_Bind(a, HTONS(sa->unk_02));
+    return SockCore_Bind(a, HTONS(sa->port));
 }
 
 s32 Sock_Connect(s32 a, Unk_ov065_0226129c_Sa *sa) {
-    return SockCore_Connect(a, HTONS(sa->unk_02), HTONL(sa->unk_04));
+    return SockCore_Connect(a, HTONS(sa->port), HTONL(sa->addr));
 }
 
 s32 Sock_Recv(s32 a, s32 b, s32 c, u32 d) {
@@ -197,8 +197,8 @@ s32 Sock_RecvFrom(s32 a, s32 b, s32 c, u32 d, Unk_ov065_0226129c_Sa *sa) {
     if (r >= 0) {
         Unk_ov065_0226129c_Sa *q = *(Unk_ov065_0226129c_Sa *volatile *)&sa;
         if (q != NULL) {
-            q->unk_02 = HTONS(port);
-            q->unk_04 = HTONL(ip);
+            q->port = HTONS(port);
+            q->addr = HTONL(ip);
         }
     }
     return r;
@@ -212,8 +212,8 @@ s32 Sock_SendTo(s32 a, s32 b, s32 c, u32 d, Unk_ov065_0226129c_Sa *sa) {
     u32 port;
     u32 ip;
     if (sa != NULL) {
-        port = HTONS(sa->unk_02);
-        ip = HTONL(sa->unk_04);
+        port = HTONS(sa->port);
+        ip = HTONL(sa->addr);
     } else {
         port = 0;
         ip = port;
@@ -236,11 +236,11 @@ Unk_ov065_02261408_Hostent *Sock_GetHostByName(s32 x) {
     }
     func_021277fc(sHostentName, x, 0x101);
     Unk_ov065_02261408_Hostent *h = &sHostent;
-    h->unk_00 = sHostentName;
-    h->unk_04 = NULL;
-    h->unk_08 = 2;
-    h->unk_0a = 4;
-    h->unk_0c = sHostentAddrList;
+    h->hostName = sHostentName;
+    h->aliases = NULL;
+    h->addrType = 2;
+    h->addrLength = 4;
+    h->addrList = sHostentAddrList;
     sHostentAddrList[0] = (char *)&sHostentAddr;
     sHostentAddrList[1] = NULL;
     sHostentAddr = HTONL(ip);
@@ -255,17 +255,17 @@ s32 Sock_GetSockName(Unk_ov065_02260de4 *o, Unk_ov065_0226129c_Sa *sa) {
     }
     ip = SockCore_GetHostIp();
     if (o != NULL) {
-        port = o->unk_74;
+        port = o->boundPort;
     } else {
         port = 0;
     }
     if (ip == 0) {
         port = 0;
     }
-    sa->unk_00 = 8;
-    sa->unk_01 = 2;
-    sa->unk_02 = HTONS(port);
-    sa->unk_04 = HTONL(ip);
+    sa->len = 8;
+    sa->family = 2;
+    sa->port = HTONS(port);
+    sa->addr = HTONL(ip);
     return 0;
 }
 
@@ -286,8 +286,8 @@ s32 Sock_Accept(s32 a, Unk_ov065_0226129c_Sa *sa) {
     u32 addr;
     s32 r = SockCore_Accept(a, &port, &addr);
     if (r >= 0) {
-        sa->unk_02 = HTONS(port);
-        sa->unk_04 = HTONL(addr);
+        sa->port = HTONS(port);
+        sa->addr = HTONL(addr);
     }
     return r;
 }
@@ -298,15 +298,15 @@ s32 Sock_Fcntl(Unk_ov065_02260de4 *o, s32 cmd, u32 flags) {
     }
     switch (cmd) {
     case 3:
-        if (o->unk_72 == 1) {
+        if (o->blocking == 1) {
             return 0;
         }
         return 4;
     case 4:
         if (flags & 4) {
-            o->unk_72 = 0;
+            o->blocking = 0;
         } else {
-            o->unk_72 = 1;
+            o->blocking = 1;
         }
         break;
     }
@@ -334,25 +334,25 @@ void Sock_FreeHook(void *p) {
 s32 Sock_Startup(Unk_ov065_02261118_Src *s) {
     u32 t;
     Unk_ov065_02261118_Cfg *c;
-    if (s->unk_0c == 1) {
+    if (s->dhcpMode == 1) {
         t = 1;
     } else {
         t = 0;
     }
     c = &sSockStartupConfig;
-    c->unk_00 = t;
-    c->unk_04 = HTONL(s->unk_10);
-    c->unk_08 = HTONL(s->unk_14);
-    c->unk_0c = HTONL(s->unk_18);
-    c->unk_10 = HTONL(s->unk_1c);
-    c->unk_14 = HTONL(s->unk_20);
-    c->unk_18 = (void *)Sock_AllocHook;
-    c->unk_1c = (void *)Sock_FreeHook;
-    sSockUserAlloc = (Unk_ov065_02261118_Alloc)s->unk_04;
-    sSockUserFree = (Unk_ov065_02261118_Free)s->unk_08;
-    c->unk_20 = 0x40;
-    c->unk_30 = s->unk_2c;
-    c->unk_34 = s->unk_30;
+    c->useDhcp = t;
+    c->ownIp = HTONL(s->ownIp);
+    c->netmask = HTONL(s->netmask);
+    c->gateway = HTONL(s->gateway);
+    c->dns1 = HTONL(s->dns1);
+    c->dns2 = HTONL(s->dns2);
+    c->allocFunc = (void *)Sock_AllocHook;
+    c->freeFunc = (void *)Sock_FreeHook;
+    sSockUserAlloc = (Unk_ov065_02261118_Alloc)s->allocFunc;
+    sSockUserFree = (Unk_ov065_02261118_Free)s->freeFunc;
+    c->msgPoolSize = 0x40;
+    c->mtu = s->mtu;
+    c->recvWindow = s->recvWindow;
     return SockCore_Startup(c);
 }
 
@@ -405,13 +405,13 @@ s32 Sock_Poll(Unk_ov065_02260fa4_Ent *arr, u32 n, s64 timeout) {
         i = cnt = 0;
         if (i < n) {
             do {
-                s32 ev = p->unk_04;
+                s32 ev = p->events;
                 ev |= 0xe0;
-                ev &= SockCore_GetPollEvents(p->unk_00);
+                ev &= SockCore_GetPollEvents(p->sock);
                 if (ev != 0) {
                     cnt++;
                 }
-                p->unk_06 = ev;
+                p->revents = ev;
                 p++;
                 i++;
             } while (i < n);
@@ -433,7 +433,7 @@ void SockCore_AddToOpenList(Unk_ov065_02260de4 *n) {
 }
 
 void SockList_Push(Unk_ov065_02260de4 **pp, Unk_ov065_02260de4 *n) {
-    n->unk_7c = *pp;
+    n->next = *pp;
     *pp = n;
 }
 
@@ -448,7 +448,7 @@ void SockCore_RemoveFromOpenList(Unk_ov065_02260de4 *n) {
 void SockList_Remove(Unk_ov065_02260de4 **pp, Unk_ov065_02260de4 *n) {
     Unk_ov065_02260de4 **l = SockList_Find(pp, n);
     if (l != NULL) {
-        *l = n->unk_7c;
+        *l = n->next;
     }
 }
 
@@ -459,8 +459,8 @@ Unk_ov065_02260de4 **SockList_Find(Unk_ov065_02260de4 **pp, Unk_ov065_02260de4 *
             if (p == n) {
                 return pp;
             }
-            pp = &p->unk_7c;
-            p = p->unk_7c;
+            pp = &p->next;
+            p = p->next;
         } while (p != NULL);
     }
     return NULL;
@@ -494,10 +494,10 @@ u32 SockCore_GetPollEvents(Unk_ov065_02260de4 *o) {
     if (SockCore_IsInvalidHandle((s32)o)) {
         r |= 0x80;
     } else {
-        if (o->unk_70 & 0x40) {
+        if (o->flags & 0x40) {
             r |= 0x20;
         }
-        if (o->unk_73 == 1 || (o->unk_70 & 4)) {
+        if (o->sockType == 1 || (o->flags & 4)) {
             s32 h = OS_DisableInterrupts();
             if (SockCore_GetRecvAvailable(o) > 0) {
                 r |= 1;
@@ -508,14 +508,14 @@ u32 SockCore_GetPollEvents(Unk_ov065_02260de4 *o) {
             OS_RestoreInterrupts(h);
         }
         ok = TRUE;
-        if (o->unk_73 != 0 && o->unk_73 != 4) {
+        if (o->sockType != 0 && o->sockType != 4) {
             ok = FALSE;
         }
         if (ok) {
-            if ((o->unk_70 & 4) && o->unk_08 != 4 && (r & 1) == 0) {
-                o->unk_70 &= ~6;
+            if ((o->flags & 4) && o->ipState != 4 && (r & 1) == 0) {
+                o->flags &= ~6;
             }
-            if ((o->unk_70 & 2) == 0 && (o->unk_70 & 4) == 0) {
+            if ((o->flags & 2) == 0 && (o->flags & 4) == 0) {
                 r |= 0x40;
             }
         }
@@ -526,17 +526,17 @@ u32 SockCore_GetPollEvents(Unk_ov065_02260de4 *o) {
 s32 SockCore_GetRecvAvailable(Unk_ov065_02260de4 *o) {
     s32 r;
     Unk_ov065_02260de4_Ctx *c;
-    c = o->unk_64;
+    c = o->recvPipe;
     r = 0;
     if (c != NULL) {
-        s32 m = o->unk_73;
+        s32 m = o->sockType;
         if (m == 1) {
-            Unk_ov065_02260de4_Buf *b = c->unk_104;
+            Unk_ov065_02260de4_Buf *b = c->head;
             if (b != NULL) {
-                r = b->unk_04;
+                r = b->len;
             }
         } else if (m == 0 || m == 4) {
-            r = o->unk_44 - c->unk_f8;
+            r = o->rxLen - c->pos;
         }
     }
     return r;
@@ -553,62 +553,62 @@ struct Unk_ov065_02260488_Q64;
 
 struct Unk_ov065_02260488_File {
     u8 pad_00[0x0a];
-    u16 unk_0a;
+    u16 localPort;
     u8 pad_0c[0x64 - 0x0c];
-    Unk_ov065_02260488_Q64 *unk_64;
-    Unk_ov065_02260488_Q68 *unk_68;
+    Unk_ov065_02260488_Q64 *recvPipe;
+    Unk_ov065_02260488_Q68 *sendPipe;
     u8 pad_6c[4];
-    s16 unk_70;
-    s8 unk_72;
-    s8 unk_73;
-    u16 unk_74;
-    u16 unk_76;
-    u32 unk_78;
-    Unk_ov065_02260488_File *unk_7c;
+    s16 flags;
+    s8 blocking;
+    s8 sockType;
+    u16 boundPort;
+    u16 peerPort;
+    u32 peerAddr;
+    Unk_ov065_02260488_File *next;
 };
 
 struct Unk_ov065_02260488_Q68 {
     u8 pad_00[0x20];
-    u8 unk_20[0xc0];
-    u8 unk_e0[0x18];
-    s32 unk_f8;
-    u8 *unk_fc;
-    u16 unk_100;
-    u16 unk_102;
-    u8 unk_104[8];
-    u32 unk_10c;
+    u8 thread[0xc0];
+    u8 mutex[0x18];
+    s32 ringSize;
+    u8 *ringBuf;
+    u16 ringWrite;
+    u16 ringRead;
+    u8 spaceWaitQueue[8];
+    u32 owner;
 };
 
 struct Unk_ov065_02260488_Q64 {
     u8 pad_00[0x100];
-    s32 unk_100;
-    u32 unk_104;
-    u16 unk_108;
+    s32 tail;
+    u32 head;
+    u16 used;
     u8 pad_10a[2];
-    u8 unk_10c[4];
+    u8 queue[4];
 };
 
 struct Unk_ov065_02260488_Node {
     u8 pad_00[8];
-    u32 unk_08;
+    u32 replyQueue;
     u8 pad_0c;
-    u8 unk_0d;
+    u8 blocking;
     u8 pad_0e[2];
-    u8 *unk_10;
-    s32 unk_14;
-    u8 *unk_18;
-    s32 unk_1c;
-    u16 unk_20;
+    u8 *data1;
+    s32 len1;
+    u8 *data2;
+    s32 len2;
+    u16 ringEnd;
     u8 pad_22[2];
-    u16 unk_24;
-    u16 unk_26;
-    u32 unk_28;
+    u16 localPort;
+    u16 remotePort;
+    u32 remoteAddr;
 };
 
 struct Unk_ov065_02260488_Msg {
-    Unk_ov065_02260488_Msg *unk_00;
-    Unk_ov065_02260488_File *unk_04;
-    u32 unk_08;
+    Unk_ov065_02260488_Msg *next;
+    Unk_ov065_02260488_File *sock;
+    u32 replyQueue;
 };
 
 struct Unk_ov065_02260488_Alloc {
@@ -616,7 +616,7 @@ struct Unk_ov065_02260488_Alloc {
     void *(*unk_18)(u32);
     void (*unk_1c)(void *);
     u8 pad_20[8];
-    s32 unk_28;
+    s32 recvRingBuf;
 };
 
 typedef Unk_ov065_02260488_File File;
@@ -702,7 +702,7 @@ s32 SockCore_ResolveHost(void *x);
 
 static inline BOOL Unk_ov065_02260488_Valid(File *p) {
     BOOL r = FALSE;
-    if (p == NULL || (p->unk_70 & 1) == 0) {
+    if (p == NULL || (p->flags & 1) == 0) {
     } else {
         r = TRUE;
     }
@@ -711,7 +711,7 @@ static inline BOOL Unk_ov065_02260488_Valid(File *p) {
 
 static inline BOOL Unk_ov065_02260488_Local(File *p) {
     BOOL r = TRUE;
-    s32 t = p->unk_73;
+    s32 t = p->sockType;
     if (t != 0 && t != 4) {
         r = FALSE;
     }
@@ -792,7 +792,7 @@ s32 SockCore_Cleanup() {
         IpStack_Shutdown();
         IpStack_SetIdleCallback(0);
         Alloc *a = sSockCoreConfig;
-        if (a->unk_28 == 0) {
+        if (a->recvRingBuf == 0) {
             a->unk_1c((void *)sIpStackParams[7]);
         }
         sSockCoreConfig = NULL;
@@ -808,10 +808,10 @@ s32 SockCore_CloseAllUserSockets() {
         if (p != NULL) {
             File *g = sSockDefaultSocket;
             do {
-                if (p != g && (p->unk_70 & 0x10) == 0) {
+                if (p != g && (p->flags & 0x10) == 0) {
                     break;
                 }
-                p = p->unk_7c;
+                p = p->next;
             } while (p != NULL);
         }
         OS_RestoreInterrupts(irq);
@@ -825,7 +825,7 @@ s32 SockCore_CloseAllUserSockets() {
         if (q != sSockDefaultSocket) {
             goto fail;
         }
-        if (q->unk_7c != NULL) {
+        if (q->next != NULL) {
             goto fail;
         }
     }
@@ -879,68 +879,68 @@ s32 SockCore_Close(File *self) {
     if (!Unk_ov065_02260488_Valid(self)) {
         return -0x27;
     }
-    if ((*(volatile s16 *)&self->unk_70 & 0x10) != 0) {
+    if ((*(volatile s16 *)&self->flags & 0x10) != 0) {
         return -0x1a;
     }
-    self->unk_70 = *(volatile s16 *)&self->unk_70 | 0x18;
+    self->flags = *(volatile s16 *)&self->flags | 0x18;
     if (Unk_ov065_02260488_Local(self)) {
-        SockCore_PostCommand(self->unk_68, 0);
+        SockCore_PostCommand(self->sendPipe, 0);
     }
     Node *n = SockCore_AllocMsg((void *)SockCore_CmdClose, (u32)self, 1);
     s32 z = 0;
-    n->unk_08 = z;
+    n->replyQueue = z;
     SockCore_PostCommandAsync(self, n);
     return z;
 }
 
 s32 SockCore_CmdClose(Unk_ov065_02260488_Msg *m) {
-    File *f = m->unk_04;
+    File *f = m->sock;
     if (Unk_ov065_02260488_Local(f)) {
-        OS_JoinThread(f->unk_68->unk_20);
+        OS_JoinThread(f->sendPipe->thread);
         IpSoc_TcpShutdown();
         IpSoc_TcpWaitClosed();
         IpSoc_Release();
     }
     IpSoc_Unuse();
-    f->unk_70 = f->unk_70 & ~6;
+    f->flags = f->flags & ~6;
     void *x;
-    if (f->unk_73 == 2) {
-        x = f->unk_68;
+    if (f->sockType == 2) {
+        x = f->sendPipe;
     } else {
-        x = f->unk_64;
+        x = f->recvPipe;
     }
     SockCore_PostCommand(x, 0);
     u32 irq = OS_DisableInterrupts();
     SockCore_RemoveFromOpenList(f);
     SockCore_AddToClosedList(f);
     OS_RestoreInterrupts(irq);
-    f->unk_70 = f->unk_70 | 0x20;
+    f->flags = f->flags | 0x20;
     return 0;
 }
 
 void SockCore_Free(File *self) {
     if (self != NULL) {
-        self->unk_70 = 0;
+        self->flags = 0;
         BOOL local = Unk_ov065_02260488_Local(self);
         if (local) {
-            SockCore_StopCommandThread(self->unk_68);
-            SockCore_StopCommandThread(self->unk_64);
-        } else if (self->unk_73 == 1) {
-            Unk_ov065_02260488_Msg *p = (Unk_ov065_02260488_Msg *)self->unk_64->unk_104;
+            SockCore_StopCommandThread(self->sendPipe);
+            SockCore_StopCommandThread(self->recvPipe);
+        } else if (self->sockType == 1) {
+            Unk_ov065_02260488_Msg *p = (Unk_ov065_02260488_Msg *)self->recvPipe->head;
             if (p != NULL) {
                 do {
-                    Unk_ov065_02260488_Msg *next = p->unk_00;
+                    Unk_ov065_02260488_Msg *next = p->next;
                     sSockCoreConfig->unk_1c(p);
                     p = next;
                 } while (p != NULL);
             }
-            self->unk_64->unk_108 = 0;
-            self->unk_64->unk_100 = 0;
-            self->unk_64->unk_104 = 0;
-            OS_WakeupThread(self->unk_64->unk_10c);
-            SockCore_StopCommandThread(self->unk_64);
-        } else if (self->unk_73 == 2) {
-            SockCore_StopCommandThread(self->unk_68);
+            self->recvPipe->used = 0;
+            self->recvPipe->tail = 0;
+            self->recvPipe->head = 0;
+            OS_WakeupThread(self->recvPipe->queue);
+            SockCore_StopCommandThread(self->recvPipe);
+        } else if (self->sockType == 2) {
+            SockCore_StopCommandThread(self->sendPipe);
         }
         u32 irq = OS_DisableInterrupts();
         SockCore_RemoveFromOpenList(self);
@@ -959,8 +959,8 @@ void SockCore_StopCommandThread(void *q) {
         if (OS_ReceiveMessage(q, &msg, 0)) {
             do {
                 if (msg != NULL) {
-                    if (((Unk_ov065_02260488_Msg *)msg)->unk_08 != 0) {
-                        OS_SendMessage((void *)((Unk_ov065_02260488_Msg *)msg)->unk_08, -0xb, 0);
+                    if (((Unk_ov065_02260488_Msg *)msg)->replyQueue != 0) {
+                        OS_SendMessage((void *)((Unk_ov065_02260488_Msg *)msg)->replyQueue, -0xb, 0);
                     }
                     SockCore_FreeMsg(msg);
                 }
@@ -992,23 +992,23 @@ s32 SockCore_Shutdown(File *self) {
     if (!v) {
         return -0x27;
     }
-    if ((*(volatile s16 *)&self->unk_70 & 4) == 0 || (*(volatile s16 *)&self->unk_70 & 8) != 0) {
+    if ((*(volatile s16 *)&self->flags & 4) == 0 || (*(volatile s16 *)&self->flags & 8) != 0) {
         return -0x38;
     }
-    self->unk_70 = self->unk_70 | 8;
-    Q68 *q = self->unk_68;
-    if (q != NULL && q->unk_10c != 0) {
-        Node *n = SockCore_AllocMsg((void *)SockCore_CmdShutdown, q->unk_10c, self->unk_72);
+    self->flags = self->flags | 8;
+    Q68 *q = self->sendPipe;
+    if (q != NULL && q->owner != 0) {
+        Node *n = SockCore_AllocMsg((void *)SockCore_CmdShutdown, q->owner, self->blocking);
         if (n == NULL) {
             return -0x21;
         }
-        return SockCore_ExecOnSendSide(q->unk_10c, n);
+        return SockCore_ExecOnSendSide(q->owner, n);
     }
     return 0;
 }
 
 s32 SockCore_CmdShutdown(Unk_ov065_02260488_Msg *m) {
-    if (Unk_ov065_02260488_Local(m->unk_04)) {
+    if (Unk_ov065_02260488_Local(m->sock)) {
         IpSoc_TcpShutdown();
     }
     return 0;
@@ -1025,31 +1025,31 @@ s32 SockCore_SendTo(File *self, u8 *buf, s32 len, s32 a4, u32 a5, u32 a6) {
         return -0x27;
     }
     if (Unk_ov065_02260488_Local(self)) {
-        if ((*(volatile s16 *)&self->unk_70 & 4) == 0 || (*(volatile s16 *)&self->unk_70 & 8) != 0) {
+        if ((*(volatile s16 *)&self->flags & 4) == 0 || (*(volatile s16 *)&self->flags & 8) != 0) {
             return -0x38;
         }
     }
-    q = self->unk_68;
-    if ((a6 & 4) != 0 || self->unk_72 == 0) {
-        if (!OS_TryLockMutex(q->unk_e0)) {
+    q = self->sendPipe;
+    if ((a6 & 4) != 0 || self->blocking == 0) {
+        if (!OS_TryLockMutex(q->mutex)) {
             return -6;
         }
         flag = 0;
     } else {
-        OS_LockMutex(q->unk_e0);
+        OS_LockMutex(q->mutex);
         flag = 1;
     }
     s32 r = SockCore_SendLoop(self, buf, len, a4, a5, flag);
-    OS_UnlockMutex(q->unk_e0);
+    OS_UnlockMutex(q->mutex);
     return r;
 }
 
 s32 SockCore_SendLoop(File *self, u8 *buf, s32 len, s32 a4, u32 a5, s32 wait) {
     s32 lim, total, off;
     total = 0;
-    lim = self->unk_68->unk_10c;
+    lim = self->sendPipe->owner;
     lim = ((u32 *)lim)[0x48 / 4];
-    if (self->unk_73 == 1) {
+    if (self->sockType == 1) {
         lim -= 0x2a;
         if (len > lim) {
             return -0x23;
@@ -1087,7 +1087,7 @@ s32 SockCore_SendLoop(File *self, u8 *buf, s32 len, s32 a4, u32 a5, s32 wait) {
 }
 
 s32 SockCore_WaitSendRingSpace(File *self, s32 max, s32 want, s32 *out, s32 wait) {
-    Q68 *q = self->unk_68;
+    Q68 *q = self->sendPipe;
     s32 avail;
     if (want > max) {
         want = max;
@@ -1099,24 +1099,24 @@ s32 SockCore_WaitSendRingSpace(File *self, s32 max, s32 want, s32 *out, s32 wait
             if (avail >= max) {
                 avail = max;
             }
-            *out = q->unk_100;
+            *out = q->ringWrite;
             break;
         }
         if (wait == 0) {
             avail = 0;
             break;
         }
-        OS_SleepThread(q->unk_104);
+        OS_SleepThread(q->spaceWaitQueue);
     }
     OS_RestoreInterrupts(irq);
     return avail;
 }
 
 s32 SockCore_GetSendRingFree(File *self) {
-    Q68 *q = self->unk_68;
-    s32 size = q->unk_f8;
-    s32 a = *(volatile u16 *)&q->unk_100;
-    s32 b = *(volatile u16 *)&q->unk_102;
+    Q68 *q = self->sendPipe;
+    s32 size = q->ringSize;
+    s32 a = *(volatile u16 *)&q->ringWrite;
+    s32 b = *(volatile u16 *)&q->ringRead;
     s32 r = b - a - 1;
     if (r < 0) {
         r += size;
@@ -1125,53 +1125,53 @@ s32 SockCore_GetSendRingFree(File *self) {
 }
 
 s32 SockCore_QueueSend(File *self, u8 *buf, s32 len, s32 off, u32 a5, u32 a6, s32 wait) {
-    Q68 *q = self->unk_68;
-    Node *n = SockCore_AllocMsg((void *)SockCore_CmdSend, q->unk_10c, wait);
+    Q68 *q = self->sendPipe;
+    Node *n = SockCore_AllocMsg((void *)SockCore_CmdSend, q->owner, wait);
     if (n == NULL) {
         return -0x21;
     }
-    n->unk_0d = 0;
-    u8 *base = q->unk_fc;
-    s32 size = q->unk_f8;
+    n->blocking = 0;
+    u8 *base = q->ringBuf;
+    s32 size = q->ringSize;
     s32 end = off + len;
     if (end < size) {
-        n->unk_10 = base + off;
-        n->unk_14 = len;
-        n->unk_18 = 0;
-        n->unk_1c = 0;
+        n->data1 = base + off;
+        n->len1 = len;
+        n->data2 = 0;
+        n->len2 = 0;
         off = end;
     } else {
-        n->unk_10 = base + off;
-        n->unk_14 = size - off;
-        n->unk_18 = base;
-        n->unk_1c = len - n->unk_14;
-        off = n->unk_1c;
-        MI_CpuCopy8(buf + n->unk_14, n->unk_18, off);
+        n->data1 = base + off;
+        n->len1 = size - off;
+        n->data2 = base;
+        n->len2 = len - n->len1;
+        off = n->len2;
+        MI_CpuCopy8(buf + n->len1, n->data2, off);
     }
-    MI_CpuCopy8(buf, n->unk_10, n->unk_14);
-    u16 *p = &q->unk_100;
+    MI_CpuCopy8(buf, n->data1, n->len1);
+    u16 *p = &q->ringWrite;
     u32 saved = *p;
-    n->unk_20 = off;
-    *p = n->unk_20;
-    if (self->unk_73 == 1) {
-        if (self->unk_74 == 0) {
-            self->unk_74 = IpSoc_AllocEphemeralPort();
-            self->unk_0a = self->unk_74;
+    n->ringEnd = off;
+    *p = n->ringEnd;
+    if (self->sockType == 1) {
+        if (self->boundPort == 0) {
+            self->boundPort = IpSoc_AllocEphemeralPort();
+            self->localPort = self->boundPort;
         }
-        n->unk_24 = self->unk_74;
-        u32 w = self->unk_78;
+        n->localPort = self->boundPort;
+        u32 w = self->peerAddr;
         if (w == 0 || a6 != 0) {
-            n->unk_28 = a6;
-            n->unk_26 = *(u16 *)&a5;
+            n->remoteAddr = a6;
+            n->remotePort = *(u16 *)&a5;
         } else {
-            n->unk_28 = w;
-            n->unk_26 = self->unk_76;
+            n->remoteAddr = w;
+            n->remotePort = self->peerPort;
         }
     } else {
-        n->unk_28 = 0;
+        n->remoteAddr = 0;
     }
-    if (SockCore_ExecOnSendSide(q->unk_10c, n)) {
-        q->unk_100 = saved;
+    if (SockCore_ExecOnSendSide(q->owner, n)) {
+        q->ringWrite = saved;
         len = 0;
     }
     return len;
@@ -1186,8 +1186,8 @@ namespace Unk_ov065_0225faf4_Ns {
 struct Unk_ov065_0225faf4_Node {
     Unk_ov065_0225faf4_Node *next;
     u16 len;
-    u16 unk_06;
-    u32 unk_08;
+    u16 remotePort;
+    u32 remoteAddr;
     u8 data[4];
 };
 
@@ -1217,36 +1217,36 @@ struct Unk_ov065_0225faf4_Ctx {
 
 struct Unk_ov065_022603bc_Rx {
     u8 pad_00[0x102];
-    u16 unk_102;
+    u16 ringRead;
     u8 pad_104[4];
 };
 
 struct Unk_ov065_0225faf4_Sess {
     u32 unk_00;
     u32 unk_04;
-    u8 unk_08;
+    u8 ipState;
     u8 pad_09;
-    u16 unk_0a;
+    u16 localPort;
     u8 pad_0c[0xc];
-    u16 unk_18;
-    u16 unk_1a;
-    u32 unk_1c;
-    u32 unk_20;
+    u16 remotePort;
+    u16 boundRemotePort;
+    u32 remoteAddr;
+    u32 boundRemoteAddr;
     u8 pad_24[0x1c];
-    u8 *unk_40;
-    s32 unk_44;
-    s32 unk_48;
-    u8 *unk_4c;
+    u8 *rxBuf;
+    s32 rxLen;
+    s32 txBufSize;
+    u8 *txBuf;
     u8 pad_50[0x14];
     Unk_ov065_0225faf4_Ctx *ctx;
     Unk_ov065_022603bc_Rx *rx;
-    s32 unk_6c;
+    s32 result;
     volatile s16 flags;
-    s8 unk_72;
+    s8 blocking;
     s8 state;
-    u16 unk_74;
-    u16 unk_76;
-    u32 unk_78;
+    u16 boundPort;
+    u16 peerPort;
+    u32 peerAddr;
 };
 
 typedef Unk_ov065_0225faf4_Node Node;
@@ -1258,36 +1258,36 @@ struct Unk_ov065_0225faf4_Job {
     u32 unk_00;
     Sess *sess;
     u32 unk_08;
-    s8 unk_0c;
+    s8 sockType;
     u8 pad_0d[3];
-    u16 unk_10;
-    u16 unk_12;
-    void *unk_14;
+    u16 localPort;
+    u16 remotePort;
+    void *remoteAddr;
 };
 
 struct Unk_ov065_0225ff64_Job {
     u32 unk_00;
     Sess *sess;
     u8 pad_08[8];
-    u8 *unk_10;
-    u32 unk_14;
-    u16 *unk_18;
-    u32 *unk_1c;
+    u8 *buf;
+    u32 len;
+    u16 *outPort;
+    u32 *outAddr;
 };
 
 struct Unk_ov065_022603bc_Job {
     u32 unk_00;
     Sess *sess;
     u8 pad_08[8];
-    u8 *unk_10;
-    s32 unk_14;
-    u8 *unk_18;
-    s32 unk_1c;
-    u16 unk_20;
+    u8 *data1;
+    s32 len1;
+    u8 *data2;
+    s32 len2;
+    u16 ringEnd;
     u8 pad_22[2];
-    u16 unk_24;
-    u16 unk_26;
-    void *unk_28;
+    u16 localPort;
+    u16 remotePort;
+    void *remoteAddr;
 };
 
 typedef Unk_ov065_0225faf4_Job Job;
@@ -1295,8 +1295,8 @@ typedef Unk_ov065_0225ff64_Job RJob;
 typedef Unk_ov065_022603bc_Job WJob;
 
 struct Unk_ov065_0225fd18_Counters {
-    u32 unk_00;
-    u32 unk_04;
+    u32 noMemDrops;
+    u32 queueFullDrops;
 };
 
 extern "C" {
@@ -1382,16 +1382,16 @@ s32 SockCore_CmdSend(WJob *j)
     s32 m;
 
     if (!IsIdle(s) || (s->flags & 4)) {
-        if (j->unk_28 != NULL) {
-            IpSoc_Bind(j->unk_24, j->unk_26, j->unk_28);
+        if (j->remoteAddr != NULL) {
+            IpSoc_Bind(j->localPort, j->remotePort, j->remoteAddr);
         }
         if (IsIdle(s)) {
             off = 0x36;
         } else {
             off = 0x2a;
         }
-        buf = s->unk_4c + off;
-        room = s->unk_48 - off;
+        buf = s->txBuf + off;
+        room = s->txBufSize - off;
         for (;;) {
             k = SockCore_CopySendChunk(buf, room, j);
             if (k <= 0) {
@@ -1412,15 +1412,15 @@ s32 SockCore_CmdSend(WJob *j)
     } else {
         r = -0x4c;
     }
-    rx->unk_102 = j->unk_20;
+    rx->ringRead = j->ringEnd;
     OS_WakeupThread((u8 *)rx + 0x104);
     return r;
 }
 
 s32 SockCore_CopySendChunk(u8 *buf, s32 n, WJob *j)
 {
-    s32 a = j->unk_14;
-    s32 b = j->unk_1c;
+    s32 a = j->len1;
+    s32 b = j->len2;
     if (a > n) {
         a = n;
         b = 0;
@@ -1428,14 +1428,14 @@ s32 SockCore_CopySendChunk(u8 *buf, s32 n, WJob *j)
         b = n - a;
     }
     if (a > 0) {
-        MI_CpuCopy8(j->unk_10, buf, a);
-        j->unk_10 += a;
-        j->unk_14 -= a;
+        MI_CpuCopy8(j->data1, buf, a);
+        j->data1 += a;
+        j->len1 -= a;
     }
     if (b > 0) {
-        MI_CpuCopy8(j->unk_18, buf + a, b);
-        j->unk_18 += b;
-        j->unk_1c -= b;
+        MI_CpuCopy8(j->data2, buf + a, b);
+        j->data2 += b;
+        j->len2 -= b;
     }
     return a + b;
 }
@@ -1449,7 +1449,7 @@ s32 SockCore_RecvFrom(Sess *s, u8 *buf, s32 n, u16 *pa, u32 *pb, s32 e)
     if (SockCore_IsInvalidHandle(s) != 0) {
         return -0x1c;
     }
-    if ((e & 4) || s->unk_72 == 0) {
+    if ((e & 4) || s->blocking == 0) {
         if (s->state == 4) {
             return -0x1c;
         }
@@ -1563,8 +1563,8 @@ s32 SockCore_RecvStreamData(Sess *s, u8 *buf, s32 n, u16 *pa, u32 *pb)
             *pa = v[1];
             *pb = c;
         }
-        if (s->unk_74 == 0) {
-            s->unk_74 = v[0];
+        if (s->boundPort == 0) {
+            s->boundPort = v[0];
         }
     }
     OS_RestoreInterrupts(irq);
@@ -1576,29 +1576,29 @@ u8 *SockCore_PeekStreamData(Sess *s, s32 *outlen, u16 *a, u16 *b, u32 *c)
     Ctx *ctx = s->ctx;
     Sess *e = ctx->cur;
     s32 pos = ctx->pos;
-    s32 d = e->unk_44 - pos;
+    s32 d = e->rxLen - pos;
     if (d >= 0) {
-        *a = e->unk_0a;
-        *b = e->unk_18;
-        *c = e->unk_1c;
+        *a = e->localPort;
+        *b = e->remotePort;
+        *c = e->remoteAddr;
         *outlen = d;
-        if (d == 0 && e->unk_08 != 4) {
+        if (d == 0 && e->ipState != 4) {
             return NULL;
         }
     } else {
         *outlen = -1;
         return NULL;
     }
-    return e->unk_40 + pos;
+    return e->rxBuf + pos;
 }
 
 s32 SockCore_PostRecvWait(Sess *s, u8 *a, s32 b, u16 *c, u32 *d)
 {
     RJob *j = (RJob *)AllocJob((void *)SockCore_CmdRecvWait, s, 1);
-    j->unk_10 = a;
-    j->unk_14 = b;
-    j->unk_18 = c;
-    j->unk_1c = d;
+    j->buf = a;
+    j->len = b;
+    j->outPort = c;
+    j->outAddr = d;
     return SockCore_ExecOnRecvSide(s, j);
 }
 
@@ -1606,10 +1606,10 @@ s32 SockCore_CmdRecvWait(RJob *j)
 {
     Sess *s = j->sess;
     Ctx *c = s->ctx;
-    u8 *dst = j->unk_10;
-    u32 n = j->unk_14;
-    u16 *pa = j->unk_18;
-    u32 *pb = j->unk_1c;
+    u8 *dst = j->buf;
+    u32 n = j->len;
+    u16 *pa = j->outPort;
+    u32 *pb = j->outAddr;
     s32 pos = c->pos;
     u8 *src;
     u32 x;
@@ -1623,7 +1623,7 @@ s32 SockCore_CmdRecvWait(RJob *j)
             break;
         }
         if (IsIdle(s)) {
-            if (s->unk_08 != 4) {
+            if (s->ipState != 4) {
                 src = NULL;
                 break;
             }
@@ -1713,10 +1713,10 @@ s32 SockCore_RecvDatagram(Sess *s, u8 *dst, s32 max, u16 *o1, u32 *o2, s32 block
         }
         MI_CpuCopy8(n->data, dst, max);
         if (o1 != NULL) {
-            *o1 = n->unk_06;
+            *o1 = n->remotePort;
         }
         if (o2 != NULL) {
-            *o2 = n->unk_08;
+            *o2 = n->remoteAddr;
         }
         err = n->len;
         if (c->lock == 0) {

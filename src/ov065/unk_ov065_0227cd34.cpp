@@ -5,90 +5,90 @@ namespace Nc {
 // ov065_048: DWC HTTP/session context (0x0227c538..0x0227ce30)
 
 struct Unk_ov065_0227c538_Pair {
-    s32 unk_00;
-    s32 unk_04;
+    s32 func;
+    s32 param;
 };
 
 struct Unk_ov065_0227c538_Sub {
     s32 unk_00;
     s32 unk_04;
     void *unk_08;
-    void *unk_0c;
+    void *locationString;
 };
 
 struct Unk_ov065_0227c538_Node {
     s32 unk_00;
     s32 unk_04;
     Unk_ov065_0227c538_Sub *unk_08;
-    s32 unk_0c;
-    s32 unk_10;
+    s32 infoCache;
+    s32 authSig;
     s32 unk_14;
     s32 unk_18;
-    s32 unk_1c;
-    Unk_ov065_0227c538_Node *unk_20;
+    s32 result;
+    Unk_ov065_0227c538_Node *next;
 };
 
 struct Unk_ov065_0227c538_Ctx {
-    u8 unk_000;
+    u8 errorString;
     u8 pad_001[0xff];
-    s32 unk_100;
-    s32 unk_104;
-    s32 unk_108;
-    s32 unk_10c;
-    u8 unk_110;
+    s32 infoCaching;
+    s32 infoCachingBuddyOnly;
+    s32 simulation;
+    s32 firewall;
+    u8 nick;
     u8 pad_111[0x1e];
-    u8 unk_12f;
+    u8 uniqueNick;
     u8 pad_130[0x14];
-    u8 unk_144;
+    u8 email;
     u8 pad_145[0x53];
-    s32 unk_198;
-    s32 unk_19c;
-    s32 unk_1a0;
-    Unk_ov065_0227c538_Pair unk_1a4[6];
-    s32 unk_1d4;
-    s32 unk_1d8;
-    char *unk_1dc;
-    s32 unk_1e0;
-    s32 unk_1e4;
-    s32 unk_1e8;
-    char *unk_1ec;
-    s32 unk_1f0;
-    char *unk_1f4;
-    s32 unk_1f8;
-    s32 unk_1fc;
-    s32 unk_200;
-    s32 unk_204;
-    s32 unk_208;
-    s32 unk_20c;
-    s32 unk_210;
-    s32 unk_214;
-    u8 unk_218;
+    s32 sessKey;
+    s32 userId;
+    s32 profileId;
+    Unk_ov065_0227c538_Pair callbacks[6];
+    s32 cmSocket;
+    s32 connectState;
+    char *recvBuffer;
+    s32 recvBufferCapacity;
+    s32 recvBufferLength;
+    s32 recvBufferPos;
+    char *inputBuffer;
+    s32 inputBufferSize;
+    char *outputBuffer;
+    s32 outputBufferCapacity;
+    s32 outputBufferLength;
+    s32 outputBufferPos;
+    s32 peerSocket;
+    s32 peerPort;
+    s32 nextOperationId;
+    s32 numSearches;
+    s32 lastStatus;
+    u8 lastStatusString;
     u8 pad_219[0xff];
-    u8 unk_318;
+    u8 lastLocationString;
     u8 pad_319[0xff];
-    s32 unk_418;
-    s32 unk_41c;
+    s32 errorCode;
+    s32 fatalError;
     s32 unk_420;
-    Unk_ov065_0227c538_Node *unk_424;
-    void *unk_428;
+    Unk_ov065_0227c538_Node *operationList;
+    void *profileTable;
     s32 unk_42c;
-    s32 unk_430;
-    s32 unk_434;
-    s32 unk_438;
-    s32 unk_43c;
-    char *unk_440;
-    s32 unk_444;
-    s32 unk_448;
-    s32 unk_44c;
-    char *unk_450;
-    s32 unk_454;
-    s32 unk_458;
-    s32 unk_45c;
+    s32 numBuddies;
+    s32 peerList;
+    s32 callbackList;
+    s32 callbackListTail;
+    char *profileUpdateBuffer;
+    s32 profileUpdateBufferCapacity;
+    s32 profileUpdateBufferLength;
+    s32 profileUpdateBufferPos;
+    char *userUpdateBuffer;
+    s32 userUpdateBufferCapacity;
+    s32 userUpdateBufferLength;
+    s32 userUpdateBufferPos;
     char *unk_460;
     s32 unk_464;
     s32 unk_468;
-    s32 unk_46c;
-    s32 unk_470;
+    s32 productId;
+    s32 namespaceId;
     u8 pad_474[0x1c];
 };
 
@@ -161,92 +161,92 @@ namespace Nd {
 // ov065_049: DWC HTTP request setup (0x0227ce44..0x0227d8e0)
 
 struct Unk_ov065_0227c538_Pair {
-    s32 unk_00;
-    s32 unk_04;
+    s32 func;
+    s32 param;
 };
 
 struct Unk_ov065_0227c538_Sub {
     s32 unk_00;
     s32 unk_04;
     char *unk_08;
-    char *unk_0c;
-    s32 unk_10;
-    s32 unk_14;
+    char *locationString;
+    s32 ip;
+    s32 port;
 };
 
 struct Unk_ov065_0227c538_Node {
     s32 unk_00;
     s32 unk_04;
     Unk_ov065_0227c538_Sub *unk_08;
-    s32 unk_0c;
-    char *unk_10;
+    s32 infoCache;
+    char *authSig;
     s32 unk_14;
     s32 unk_18;
-    s32 unk_1c;
-    Unk_ov065_0227c538_Node *unk_20;
+    s32 result;
+    Unk_ov065_0227c538_Node *next;
 };
 
 struct Unk_ov065_0227c538_Ctx {
-    u8 unk_000;
+    u8 errorString;
     u8 pad_001[0xff];
-    s32 unk_100;
-    s32 unk_104;
-    s32 unk_108;
-    s32 unk_10c;
-    u8 unk_110;
+    s32 infoCaching;
+    s32 infoCachingBuddyOnly;
+    s32 simulation;
+    s32 firewall;
+    u8 nick;
     u8 pad_111[0x1e];
-    u8 unk_12f;
+    u8 uniqueNick;
     u8 pad_130[0x14];
-    u8 unk_144;
+    u8 email;
     u8 pad_145[0x53];
-    s32 unk_198;
-    s32 unk_19c;
-    s32 unk_1a0;
-    Unk_ov065_0227c538_Pair unk_1a4[6];
-    s32 unk_1d4;
-    s32 unk_1d8;
-    char *unk_1dc;
-    s32 unk_1e0;
-    s32 unk_1e4;
-    s32 unk_1e8;
-    char *unk_1ec;
-    s32 unk_1f0;
-    char *unk_1f4;
-    s32 unk_1f8;
-    s32 unk_1fc;
-    s32 unk_200;
-    s32 unk_204;
-    s32 unk_208;
-    s32 unk_20c;
-    s32 unk_210;
-    s32 unk_214;
-    u8 unk_218;
+    s32 sessKey;
+    s32 userId;
+    s32 profileId;
+    Unk_ov065_0227c538_Pair callbacks[6];
+    s32 cmSocket;
+    s32 connectState;
+    char *recvBuffer;
+    s32 recvBufferCapacity;
+    s32 recvBufferLength;
+    s32 recvBufferPos;
+    char *inputBuffer;
+    s32 inputBufferSize;
+    char *outputBuffer;
+    s32 outputBufferCapacity;
+    s32 outputBufferLength;
+    s32 outputBufferPos;
+    s32 peerSocket;
+    s32 peerPort;
+    s32 nextOperationId;
+    s32 numSearches;
+    s32 lastStatus;
+    u8 lastStatusString;
     u8 pad_219[0xff];
-    u8 unk_318;
+    u8 lastLocationString;
     u8 pad_319[0xff];
-    s32 unk_418;
-    s32 unk_41c;
+    s32 errorCode;
+    s32 fatalError;
     s32 unk_420;
-    Unk_ov065_0227c538_Node *unk_424;
-    void *unk_428;
+    Unk_ov065_0227c538_Node *operationList;
+    void *profileTable;
     s32 unk_42c;
-    s32 unk_430;
-    s32 unk_434;
-    s32 unk_438;
-    s32 unk_43c;
-    char *unk_440;
-    s32 unk_444;
-    s32 unk_448;
-    s32 unk_44c;
-    char *unk_450;
-    s32 unk_454;
-    s32 unk_458;
-    s32 unk_45c;
+    s32 numBuddies;
+    s32 peerList;
+    s32 callbackList;
+    s32 callbackListTail;
+    char *profileUpdateBuffer;
+    s32 profileUpdateBufferCapacity;
+    s32 profileUpdateBufferLength;
+    s32 profileUpdateBufferPos;
+    char *userUpdateBuffer;
+    s32 userUpdateBufferCapacity;
+    s32 userUpdateBufferLength;
+    s32 userUpdateBufferPos;
     char *unk_460;
     s32 unk_464;
     s32 unk_468;
-    s32 unk_46c;
-    s32 unk_470;
+    s32 productId;
+    s32 namespaceId;
     u8 pad_474[0x1c];
 };
 
@@ -289,80 +289,80 @@ namespace Nf {
 // ov065_050: DWC HTTP socket send/recv + growable string buffer + callback list (0x0227d8e0..0x0227e1c8)
 
 struct Unk_ov065_0227d8e0_Buf {
-    char *unk_00;
-    s32 unk_04;
-    s32 unk_08;
-    s32 unk_0c;
+    char *buffer;
+    s32 capacity;
+    s32 length;
+    s32 pos;
 };
 
 struct Unk_ov065_0227d8e0_Pair {
-    s32 unk_00;
-    s32 unk_04;
+    s32 func;
+    s32 param;
 };
 
 struct Unk_ov065_0227e0e8_Wrap {
-    Unk_ov065_0227d8e0_Pair unk_00;
+    Unk_ov065_0227d8e0_Pair callback;
 };
 
 struct Unk_ov065_0227d8e0_Node {
     void (*unk_00)(void *, void *, s32);
-    s32 unk_04;
-    void *unk_08;
-    s32 unk_0c;
-    void *unk_10;
-    Unk_ov065_0227d8e0_Node *unk_14;
+    s32 param;
+    void *arg;
+    s32 argType;
+    void *operationId;
+    Unk_ov065_0227d8e0_Node *next;
 };
 
 struct Unk_ov065_0227d8e0_Ctx {
     u8 pad_000[0x198];
-    s32 unk_198;
-    s32 unk_19c;
-    s32 unk_1a0;
-    Unk_ov065_0227e0e8_Wrap unk_1a4[6];
-    s32 unk_1d4;
-    s32 unk_1d8;
-    char *unk_1dc;
+    s32 sessKey;
+    s32 userId;
+    s32 profileId;
+    Unk_ov065_0227e0e8_Wrap callbacks[6];
+    s32 cmSocket;
+    s32 connectState;
+    char *recvBuffer;
     u8 pad_1e0[0x1ec - 0x1e0];
-    char *unk_1ec;
+    char *inputBuffer;
     u8 pad_1f0[4];
-    Unk_ov065_0227d8e0_Buf unk_1f4;
-    s32 unk_204;
+    Unk_ov065_0227d8e0_Buf outputBuffer;
+    s32 peerSocket;
     u8 pad_208[0x418 - 0x208];
-    s32 unk_418;
-    s32 unk_41c;
+    s32 errorCode;
+    s32 fatalError;
     u8 pad_420[4];
-    void *unk_424;
+    void *operationList;
     u8 pad_428[0x434 - 0x428];
-    void *unk_434;
-    Unk_ov065_0227d8e0_Node *unk_438;
-    Unk_ov065_0227d8e0_Node *unk_43c;
-    void *unk_440;
+    void *peerList;
+    Unk_ov065_0227d8e0_Node *callbackList;
+    Unk_ov065_0227d8e0_Node *callbackListTail;
+    void *profileUpdateBuffer;
     u8 pad_444[0x450 - 0x444];
-    void *unk_450;
+    void *userUpdateBuffer;
 };
 
 struct Unk_ov065_0227d8e0_Handle {
-    Unk_ov065_0227d8e0_Ctx *unk_00;
+    Unk_ov065_0227d8e0_Ctx *connection;
 };
 
 struct Unk_ov065_0227d8e0_Arg {
     u8 pad_00[0x10];
-    char *unk_10;
+    char *authSig;
 };
 
 struct Unk_ov065_0227dc48_Conn {
     u8 pad_00[8];
-    s32 unk_08;
+    s32 sock;
     u8 pad_0c[0x28 - 0xc];
-    Unk_ov065_0227d8e0_Buf unk_28;
-    s32 unk_38;
+    Unk_ov065_0227d8e0_Buf outputBuffer;
+    s32 messageQueue;
 };
 
 struct Unk_ov065_0227dfd8_D3 {
     u8 pad_00[0x38];
-    s32 unk_38;
-    s32 *unk_3c;
-    s32 *unk_40;
+    s32 numNicks;
+    s32 *nicks;
+    s32 *uniqueNicks;
 };
 
 struct Unk_ov065_0227dfd8_D4 {
@@ -375,20 +375,20 @@ struct Unk_ov065_0227dfd8_D4 {
 
 struct Unk_ov065_0227dfd8_D9 {
     s32 unk_00;
-    s32 unk_04;
-    s32 *unk_08;
+    s32 numNicks;
+    s32 *nicks;
 };
 
 struct Unk_ov065_0227e0e8_G {
     u8 pad_00[0x18];
-    void *unk_18;
+    void *id;
 };
 
 struct Unk_ov065_0227e160_Cb {
-    s32 unk_00;
-    s32 unk_04;
-    void *unk_08;
-    s32 unk_0c;
+    s32 result;
+    s32 errorCode;
+    void *errorString;
+    s32 isFatal;
 };
 
 typedef Unk_ov065_0227d8e0_Handle Unk_H;
@@ -437,15 +437,15 @@ void GsGp_CallErrorCallback(Unk_H *, s32, s32);
 namespace Nf {
 extern "C" {
 s32 GsGp_SendAuthAdd(Unk_H *h, Unk_ov065_0227d8e0_Arg *a) {
-    Unk_C *c = h->unk_00;
-    GsGpBuf_AppendString(h, &c->unk_1f4, "\\authadd\\");
-    GsGpBuf_AppendString(h, &c->unk_1f4, "\\sesskey\\");
-    GsGpBuf_AppendInt(h, &c->unk_1f4, c->unk_198);
-    GsGpBuf_AppendString(h, &c->unk_1f4, "\\fromprofileid\\");
-    GsGpBuf_AppendInt(h, &c->unk_1f4, *(s32 *)a);
-    GsGpBuf_AppendString(h, &c->unk_1f4, "\\sig\\");
-    GsGpBuf_AppendString(h, &c->unk_1f4, a->unk_10);
-    GsGpBuf_AppendString(h, &c->unk_1f4, "\\final\\");
+    Unk_C *c = h->connection;
+    GsGpBuf_AppendString(h, &c->outputBuffer, "\\authadd\\");
+    GsGpBuf_AppendString(h, &c->outputBuffer, "\\sesskey\\");
+    GsGpBuf_AppendInt(h, &c->outputBuffer, c->sessKey);
+    GsGpBuf_AppendString(h, &c->outputBuffer, "\\fromprofileid\\");
+    GsGpBuf_AppendInt(h, &c->outputBuffer, *(s32 *)a);
+    GsGpBuf_AppendString(h, &c->outputBuffer, "\\sig\\");
+    GsGpBuf_AppendString(h, &c->outputBuffer, a->authSig);
+    GsGpBuf_AppendString(h, &c->outputBuffer, "\\final\\");
     return 0;
 }
 }
@@ -504,8 +504,8 @@ s32 GsGp_ProcessBuddyMessage(Ctx0227 **h, const char *s) {
     switch (code) {
     case 1: {
         Unk_ov065_0227c538_Sub *r5;
-        p = *(Unk_ov065_0227d040_PW *)&c->unk_1a4[3];
-        if (p.p.unk_00 == 0) {
+        p = *(Unk_ov065_0227d040_PW *)&c->callbacks[3];
+        if (p.p.func == 0) {
             break;
         }
         r5 = (Unk_ov065_0227c538_Sub *)GsUtil_Alloc(0xc);
@@ -548,12 +548,12 @@ s32 GsGp_ProcessBuddyMessage(Ctx0227 **h, const char *s) {
         if (STD_GetStringLength(t + 8) != 0x20) {
             ERR3();
         }
-        GsUtil_Free(n->unk_10);
-        n->unk_10 = 0;
-        n->unk_10 = GsUtil_StrDup(t + 8);
+        GsUtil_Free(n->authSig);
+        n->authSig = 0;
+        n->authSig = GsUtil_StrDup(t + 8);
         n->unk_14 = n->unk_14 + 1;
-        p2 = *(Unk_ov065_0227d040_PW *)&c->unk_1a4[1];
-        if (p2.p.unk_00 == 0) {
+        p2 = *(Unk_ov065_0227d040_PW *)&c->callbacks[1];
+        if (p2.p.func == 0) {
             break;
         }
         {
@@ -594,7 +594,7 @@ s32 GsGp_ProcessBuddyMessage(Ctx0227 **h, const char *s) {
                 k--;
             } while (k != NULL);
             {
-                s32 *cnt = &c->unk_430;
+                s32 *cnt = &c->numBuddies;
                 s32 o = *cnt;
                 *cnt = o + 1;
                 n->unk_08->unk_00 = o;
@@ -617,27 +617,27 @@ s32 GsGp_ProcessBuddyMessage(Ctx0227 **h, const char *s) {
         if (r5->unk_08 == NULL) {
             ERR1();
         }
-        GsUtil_Free(r5->unk_0c);
-        r5->unk_0c = NULL;
+        GsUtil_Free(r5->locationString);
+        r5->locationString = NULL;
         if (GsGp_GetValue(buf, "|ls|", buf3, 0x100) == 0) {
             buf3[0] = 0;
         }
-        r5->unk_0c = GsUtil_StrDup(buf3);
-        if (r5->unk_0c == NULL) {
+        r5->locationString = GsUtil_StrDup(buf3);
+        if (r5->locationString == NULL) {
             ERR1();
         }
         if (GsGp_GetValue(buf, "|ip|", tmp, 0x10) == 0) {
-            r5->unk_10 = 0;
+            r5->ip = 0;
         } else {
-            r5->unk_10 = SWAP32((u32)func_0212b770(tmp));
+            r5->ip = SWAP32((u32)func_0212b770(tmp));
         }
         if (GsGp_GetValue(buf, "|p|", tmp, 0x10) == 0) {
-            r5->unk_14 = 0;
+            r5->port = 0;
         } else {
-            r5->unk_14 = Swap16(func_0212b770(tmp));
+            r5->port = Swap16(func_0212b770(tmp));
         }
-        p3 = *(Unk_ov065_0227d040_PW *)&c->unk_1a4[2];
-        if (p3.p.unk_00 == 0) {
+        p3 = *(Unk_ov065_0227d040_PW *)&c->callbacks[2];
+        if (p3.p.func == 0) {
             break;
         }
         {
@@ -679,8 +679,8 @@ s32 GsGp_ProcessBuddyMessage(Ctx0227 **h, const char *s) {
         } else {
             buf3[0] = 0;
         }
-        p4 = *(Unk_ov065_0227d040_PW *)&c->unk_1a4[4];
-        if (p4.p.unk_00 == 0) {
+        p4 = *(Unk_ov065_0227d040_PW *)&c->callbacks[4];
+        if (p4.p.func == 0) {
             break;
         }
         r5 = (Unk_ov065_0227c538_Sub *)GsUtil_Alloc(0x108);
@@ -716,15 +716,15 @@ s32 GsGp_SendServerBuddyMessage(Ctx0227 **h, s32 a, s32 b, const char *s) {
     Ctx0227 *c = *h;
     char buf[0xdad];
     GsUtil_StrCopyN(buf, s, 0xdad);
-    GsGpBuf_AppendString(h, &c->unk_1f4, "\\bm\\");
-    GsGpBuf_AppendInt(h, &c->unk_1f4, b);
-    GsGpBuf_AppendString(h, &c->unk_1f4, "\\sesskey\\");
-    GsGpBuf_AppendInt(h, &c->unk_1f4, c->unk_198);
-    GsGpBuf_AppendString(h, &c->unk_1f4, "\\t\\");
-    GsGpBuf_AppendInt(h, &c->unk_1f4, a);
-    GsGpBuf_AppendString(h, &c->unk_1f4, "\\msg\\");
-    GsGpBuf_AppendString(h, &c->unk_1f4, buf);
-    GsGpBuf_AppendString(h, &c->unk_1f4, "\\final\\");
+    GsGpBuf_AppendString(h, &c->outputBuffer, "\\bm\\");
+    GsGpBuf_AppendInt(h, &c->outputBuffer, b);
+    GsGpBuf_AppendString(h, &c->outputBuffer, "\\sesskey\\");
+    GsGpBuf_AppendInt(h, &c->outputBuffer, c->sessKey);
+    GsGpBuf_AppendString(h, &c->outputBuffer, "\\t\\");
+    GsGpBuf_AppendInt(h, &c->outputBuffer, a);
+    GsGpBuf_AppendString(h, &c->outputBuffer, "\\msg\\");
+    GsGpBuf_AppendString(h, &c->outputBuffer, buf);
+    GsGpBuf_AppendString(h, &c->outputBuffer, "\\final\\");
     return 0;
 }
 }
@@ -737,7 +737,7 @@ s32 GsGp_SendBuddyMessageEx(Ctx0227 **h, s32 id, s32 b, s32 t) {
     s32 r6;
     r6 = GsGpPeer_FindConnected(h);
     if (r6 == 0) {
-        if (!(GsGpProfile_Find(h, id, &n) != 0 && n->unk_08 != NULL && n->unk_08->unk_14 != 0)) {
+        if (!(GsGpProfile_Find(h, id, &n) != 0 && n->unk_08 != NULL && n->unk_08->port != 0)) {
             return GsGp_SendServerBuddyMessage(h, id, b, (const char *)t);
         }
         r6 = GsGpPeer_New(h, id, 1);
@@ -777,7 +777,7 @@ s32 GsGp_AuthorizeBuddy(Ctx0227 **h, s32 id) {
         GsGp_SetErrorString(h, "Invalid profile.");
         return 2;
     }
-    if (n->unk_10 == 0) {
+    if (n->authSig == 0) {
         GsGp_SetErrorString(h, "Invalid profile.");
         return 2;
     }
@@ -786,10 +786,10 @@ s32 GsGp_AuthorizeBuddy(Ctx0227 **h, s32 id) {
         return r;
     }
     n->unk_14 = n->unk_14 - 1;
-    if (c->unk_100 == 0) {
+    if (c->infoCaching == 0) {
         if (n->unk_14 <= 0) {
-            GsUtil_Free(n->unk_10);
-            n->unk_10 = 0;
+            GsUtil_Free(n->authSig);
+            n->authSig = 0;
             if (GsGpProfile_IsUnused(n) != 0) {
                 GsGpProfile_Remove(h, n);
             }
@@ -823,24 +823,24 @@ s32 GsGp_SendDeleteBuddy(Ctx0227 **h, s32 x) {
         GsGp_SetErrorString(h, "Invalid profile.");
         return 2;
     }
-    GsGpBuf_AppendString(h, &c->unk_1f4, "\\delbuddy\\");
-    GsGpBuf_AppendString(h, &c->unk_1f4, "\\sesskey\\");
-    GsGpBuf_AppendInt(h, &c->unk_1f4, c->unk_198);
-    GsGpBuf_AppendString(h, &c->unk_1f4, "\\delprofileid\\");
-    GsGpBuf_AppendInt(h, &c->unk_1f4, n->unk_00);
-    GsGpBuf_AppendString(h, &c->unk_1f4, "\\final\\");
+    GsGpBuf_AppendString(h, &c->outputBuffer, "\\delbuddy\\");
+    GsGpBuf_AppendString(h, &c->outputBuffer, "\\sesskey\\");
+    GsGpBuf_AppendInt(h, &c->outputBuffer, c->sessKey);
+    GsGpBuf_AppendString(h, &c->outputBuffer, "\\delprofileid\\");
+    GsGpBuf_AppendInt(h, &c->outputBuffer, n->unk_00);
+    GsGpBuf_AppendString(h, &c->outputBuffer, "\\final\\");
     if (n->unk_08 != NULL) {
         s32 r6 = n->unk_08->unk_00;
         GsUtil_Free(n->unk_08->unk_08);
         n->unk_08->unk_08 = 0;
-        GsUtil_Free(n->unk_08->unk_0c);
-        n->unk_08->unk_0c = 0;
+        GsUtil_Free(n->unk_08->locationString);
+        n->unk_08->locationString = 0;
         GsUtil_Free(n->unk_08);
         n->unk_08 = 0;
         if (GsGpProfile_IsUnused(n) != 0) {
             GsGpProfile_Remove(h, n);
         }
-        c->unk_430 = c->unk_430 - 1;
+        c->numBuddies = c->numBuddies - 1;
         GsGpProfile_FindIf(h, GsGp_FixBuddyIndexCb, r6);
     }
     return 0;

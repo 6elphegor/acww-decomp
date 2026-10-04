@@ -4,80 +4,80 @@
 // ov065_050: DWC HTTP socket send/recv + growable string buffer + callback list (0x0227d8e0..0x0227e1c8)
 
 struct Unk_ov065_0227d8e0_Buf {
-    char *unk_00;
-    s32 unk_04;
-    s32 unk_08;
-    s32 unk_0c;
+    char *buffer;
+    s32 capacity;
+    s32 length;
+    s32 pos;
 };
 
 struct Unk_ov065_0227d8e0_Pair {
-    s32 unk_00;
-    s32 unk_04;
+    s32 func;
+    s32 param;
 };
 
 struct Unk_ov065_0227e0e8_Wrap {
-    Unk_ov065_0227d8e0_Pair unk_00;
+    Unk_ov065_0227d8e0_Pair callback;
 };
 
 struct Unk_ov065_0227d8e0_Node {
     void (*unk_00)(void *, void *, s32);
-    s32 unk_04;
-    void *unk_08;
-    s32 unk_0c;
-    void *unk_10;
-    Unk_ov065_0227d8e0_Node *unk_14;
+    s32 param;
+    void *arg;
+    s32 argType;
+    void *operationId;
+    Unk_ov065_0227d8e0_Node *next;
 };
 
 struct Unk_ov065_0227d8e0_Ctx {
     u8 pad_000[0x198];
-    s32 unk_198;
-    s32 unk_19c;
-    s32 unk_1a0;
-    Unk_ov065_0227e0e8_Wrap unk_1a4[6];
-    s32 unk_1d4;
-    s32 unk_1d8;
-    char *unk_1dc;
+    s32 sessKey;
+    s32 userId;
+    s32 profileId;
+    Unk_ov065_0227e0e8_Wrap callbacks[6];
+    s32 cmSocket;
+    s32 connectState;
+    char *recvBuffer;
     u8 pad_1e0[0x1ec - 0x1e0];
-    char *unk_1ec;
+    char *inputBuffer;
     u8 pad_1f0[4];
-    Unk_ov065_0227d8e0_Buf unk_1f4;
-    s32 unk_204;
+    Unk_ov065_0227d8e0_Buf outputBuffer;
+    s32 peerSocket;
     u8 pad_208[0x418 - 0x208];
-    s32 unk_418;
-    s32 unk_41c;
+    s32 errorCode;
+    s32 fatalError;
     u8 pad_420[4];
-    void *unk_424;
+    void *operationList;
     u8 pad_428[0x434 - 0x428];
-    void *unk_434;
-    Unk_ov065_0227d8e0_Node *unk_438;
-    Unk_ov065_0227d8e0_Node *unk_43c;
-    void *unk_440;
+    void *peerList;
+    Unk_ov065_0227d8e0_Node *callbackList;
+    Unk_ov065_0227d8e0_Node *callbackListTail;
+    void *profileUpdateBuffer;
     u8 pad_444[0x450 - 0x444];
-    void *unk_450;
+    void *userUpdateBuffer;
 };
 
 struct Unk_ov065_0227d8e0_Handle {
-    Unk_ov065_0227d8e0_Ctx *unk_00;
+    Unk_ov065_0227d8e0_Ctx *connection;
 };
 
 struct Unk_ov065_0227d8e0_Arg {
     u8 pad_00[0x10];
-    char *unk_10;
+    char *authSig;
 };
 
 struct Unk_ov065_0227dc48_Conn {
     u8 pad_00[8];
-    s32 unk_08;
+    s32 sock;
     u8 pad_0c[0x28 - 0xc];
-    Unk_ov065_0227d8e0_Buf unk_28;
-    s32 unk_38;
+    Unk_ov065_0227d8e0_Buf outputBuffer;
+    s32 messageQueue;
 };
 
 struct Unk_ov065_0227dfd8_D3 {
     u8 pad_00[0x38];
-    s32 unk_38;
-    s32 *unk_3c;
-    s32 *unk_40;
+    s32 numNicks;
+    s32 *nicks;
+    s32 *uniqueNicks;
 };
 
 struct Unk_ov065_0227dfd8_D4 {
@@ -90,20 +90,20 @@ struct Unk_ov065_0227dfd8_D4 {
 
 struct Unk_ov065_0227dfd8_D9 {
     s32 unk_00;
-    s32 unk_04;
-    s32 *unk_08;
+    s32 numNicks;
+    s32 *nicks;
 };
 
 struct Unk_ov065_0227e0e8_G {
     u8 pad_00[0x18];
-    void *unk_18;
+    void *id;
 };
 
 struct Unk_ov065_0227e160_Cb {
-    s32 unk_00;
-    s32 unk_04;
-    void *unk_08;
-    s32 unk_0c;
+    s32 result;
+    s32 errorCode;
+    void *errorString;
+    s32 isFatal;
 };
 
 typedef Unk_ov065_0227d8e0_Handle Unk_H;
@@ -150,28 +150,28 @@ void GsGp_CallErrorCallback(Unk_H *, s32, s32);
 
 extern "C" {
 s32 GsGp_QueueCallback(Unk_H *h, Unk_ov065_0227e0e8_Wrap p, Unk_N *m, Unk_ov065_0227e0e8_G *g, s32 k) {
-    Unk_C *ctx = h->unk_00;
+    Unk_C *ctx = h->connection;
     Unk_N *node = (Unk_N *)GsUtil_Alloc(0x18);
     if (node == NULL) {
         GsGp_SetErrorString(h, "Out of memory.");
         return 1;
     }
     *(Unk_ov065_0227e0e8_Wrap *)node = p;
-    node->unk_08 = m;
+    node->arg = m;
     if (g != NULL) {
-        node->unk_10 = g->unk_18;
+        node->operationId = g->id;
     } else {
-        node->unk_10 = NULL;
+        node->operationId = NULL;
     }
-    node->unk_0c = k;
-    node->unk_14 = NULL;
-    if (ctx->unk_438 == NULL) {
-        ctx->unk_438 = node;
+    node->argType = k;
+    node->next = NULL;
+    if (ctx->callbackList == NULL) {
+        ctx->callbackList = node;
     }
-    if (ctx->unk_43c != NULL) {
-        ctx->unk_43c->unk_14 = node;
+    if (ctx->callbackListTail != NULL) {
+        ctx->callbackListTail->next = node;
     }
-    ctx->unk_43c = node;
+    ctx->callbackListTail = node;
     return 0;
 }
 }
@@ -180,75 +180,75 @@ extern "C" {
 s32 GsGp_CallCallback(Unk_H *h, Unk_N *n) {
     s32 i;
     s32 k;
-    n->unk_00(h, n->unk_08, n->unk_04);
-    k = n->unk_0c;
+    n->unk_00(h, n->arg, n->param);
+    k = n->argType;
     if (k == 2) {
-        GsUtil_Free((void *)((Unk_ov065_0227dfd8_D4 *)n->unk_08)->unk_08);
-        ((Unk_ov065_0227dfd8_D4 *)n->unk_08)->unk_08 = 0;
+        GsUtil_Free((void *)((Unk_ov065_0227dfd8_D4 *)n->arg)->unk_08);
+        ((Unk_ov065_0227dfd8_D4 *)n->arg)->unk_08 = 0;
     } else if (k == 3) {
-        Unk_ov065_0227dfd8_D3 *d = (Unk_ov065_0227dfd8_D3 *)n->unk_08;
-        for (i = 0; i < d->unk_38; i++) {
-            GsUtil_Free((void *)d->unk_3c[i]);
-            d->unk_3c[i] = 0;
-            GsUtil_Free((void *)d->unk_40[i]);
-            d->unk_40[i] = 0;
+        Unk_ov065_0227dfd8_D3 *d = (Unk_ov065_0227dfd8_D3 *)n->arg;
+        for (i = 0; i < d->numNicks; i++) {
+            GsUtil_Free((void *)d->nicks[i]);
+            d->nicks[i] = 0;
+            GsUtil_Free((void *)d->uniqueNicks[i]);
+            d->uniqueNicks[i] = 0;
         }
-        GsUtil_Free(d->unk_3c);
-        d->unk_3c = NULL;
-        GsUtil_Free(d->unk_40);
-        d->unk_40 = NULL;
+        GsUtil_Free(d->nicks);
+        d->nicks = NULL;
+        GsUtil_Free(d->uniqueNicks);
+        d->uniqueNicks = NULL;
     } else if (k == 4) {
-        Unk_ov065_0227dfd8_D4 *d = (Unk_ov065_0227dfd8_D4 *)n->unk_08;
+        Unk_ov065_0227dfd8_D4 *d = (Unk_ov065_0227dfd8_D4 *)n->arg;
         GsUtil_Free((void *)d->unk_0c);
         d->unk_0c = 0;
     } else if (k == 7) {
-        Unk_ov065_0227dfd8_D4 *d = (Unk_ov065_0227dfd8_D4 *)n->unk_08;
+        Unk_ov065_0227dfd8_D4 *d = (Unk_ov065_0227dfd8_D4 *)n->arg;
         if (d->unk_10 != 0) {
             GsUtil_Free((void *)d->unk_10);
             d->unk_10 = 0;
         }
     } else if (k == 8) {
-        Unk_ov065_0227dfd8_D4 *d = (Unk_ov065_0227dfd8_D4 *)n->unk_08;
+        Unk_ov065_0227dfd8_D4 *d = (Unk_ov065_0227dfd8_D4 *)n->arg;
         if (d->unk_08 != 0) {
             GsUtil_Free((void *)d->unk_08);
             d->unk_08 = 0;
         }
     } else if (k == 9) {
-        Unk_ov065_0227dfd8_D9 *d = (Unk_ov065_0227dfd8_D9 *)n->unk_08;
-        for (i = 0; i < d->unk_04; i++) {
-            GsUtil_Free((void *)d->unk_08[i]);
-            d->unk_08[i] = 0;
+        Unk_ov065_0227dfd8_D9 *d = (Unk_ov065_0227dfd8_D9 *)n->arg;
+        for (i = 0; i < d->numNicks; i++) {
+            GsUtil_Free((void *)d->nicks[i]);
+            d->nicks[i] = 0;
         }
-        GsUtil_Free(d->unk_08);
-        d->unk_08 = NULL;
+        GsUtil_Free(d->nicks);
+        d->nicks = NULL;
     }
-    GsUtil_Free(n->unk_08);
-    n->unk_08 = NULL;
+    GsUtil_Free(n->arg);
+    n->arg = NULL;
     GsUtil_Free(n);
 }
 }
 
 extern "C" {
 s32 GsGp_CallPendingCallbacks(Unk_H *h, void *key) {
-    Unk_C *ctx = h->unk_00;
+    Unk_C *ctx = h->connection;
     Unk_N *head;
     Unk_N *tail;
     Unk_N *prev;
     Unk_N *node;
     Unk_N *next;
     if (key != NULL) {
-        head = ctx->unk_438;
-        tail = ctx->unk_43c;
+        head = ctx->callbackList;
+        tail = ctx->callbackListTail;
         prev = NULL;
-        ctx->unk_438 = NULL;
-        ctx->unk_43c = NULL;
+        ctx->callbackList = NULL;
+        ctx->callbackListTail = NULL;
         node = head;
         if (node != NULL) {
             do {
-                next = node->unk_14;
-                if (node->unk_10 == key || node->unk_0c == 1) {
+                next = node->next;
+                if (node->operationId == key || node->argType == 1) {
                     if (prev != NULL) {
-                        prev->unk_14 = next;
+                        prev->next = next;
                     } else {
                         head = next;
                     }
@@ -262,28 +262,28 @@ s32 GsGp_CallPendingCallbacks(Unk_H *h, void *key) {
                 node = next;
             } while (node != NULL);
         }
-        if (ctx->unk_438 != NULL) {
-            ctx->unk_43c->unk_14 = head;
-            ctx->unk_43c = tail;
+        if (ctx->callbackList != NULL) {
+            ctx->callbackListTail->next = head;
+            ctx->callbackListTail = tail;
         } else {
-            ctx->unk_438 = head;
-            ctx->unk_43c = tail;
+            ctx->callbackList = head;
+            ctx->callbackListTail = tail;
         }
         return 0;
     }
-    node = ctx->unk_438;
+    node = ctx->callbackList;
     if (node != NULL) {
         do {
-            ctx->unk_438 = NULL;
-            ctx->unk_43c = NULL;
+            ctx->callbackList = NULL;
+            ctx->callbackListTail = NULL;
             if (node != NULL) {
                 do {
-                    next = node->unk_14;
+                    next = node->next;
                     GsGp_CallCallback(h, node);
                     node = next;
                 } while (node != NULL);
             }
-            node = ctx->unk_438;
+            node = ctx->callbackList;
         } while (node != NULL);
     }
     return 0;
