@@ -236,9 +236,9 @@ void IpStack_Init(IpStackConfig *c) {
         sIpRandState.multiplier = 0x5d588b656c078965ULL;
         sIpRandState.increment = 0x269ec3;
     }
-    if (c->unk_04 != 0 && c->unk_08 != 0) {
-        sIpAlloc = c->unk_04;
-        sIpFree = c->unk_08;
+    if (c->allocFunc != 0 && c->freeFunc != 0) {
+        sIpAlloc = c->allocFunc;
+        sIpFree = c->freeFunc;
     } else {
         sIpAlloc = (void *(*)(u32))IpStack_Nop;
         sIpFree = (void (*)(void *))IpStack_Nop;
@@ -251,13 +251,13 @@ void IpStack_Init(IpStackConfig *c) {
     }
     sDhcpRequestedIp = c->requestedIp;
     sIpYieldMode = c->yieldMode;
-    if (c->unk_0c != 0) {
-        sAddrConfiguredCallback = (void *(*)(void))c->unk_0c;
+    if (c->addrReadyCallback != 0) {
+        sAddrConfiguredCallback = (void *(*)(void))c->addrReadyCallback;
     } else {
         sAddrConfiguredCallback = (void *(*)(void))IpStack_Nop;
     }
-    if (c->unk_10 != 0) {
-        sIpLinkCheckCallback = c->unk_10;
+    if (c->linkCheckCallback != 0) {
+        sIpLinkCheckCallback = c->linkCheckCallback;
     } else {
         sIpLinkCheckCallback = IpStack_ReturnTrue;
     }

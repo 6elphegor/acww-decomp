@@ -39,18 +39,6 @@ typedef struct {
     u32 reqArg[16];
 } WMArm9Buf;
 
-typedef struct {
-    u8 id;
-    u8 length;
-    u16 _pad;
-    u8 *body;
-} WMOtherElement;
-
-typedef struct {
-    u8 count;
-    WMOtherElement element[16];
-} WMOtherElements;
-
 extern CardCommon data_021fec00;
 extern u32 data_021ff240[];
 extern int (*data_021ff464)(void);

@@ -10,7 +10,7 @@ struct WfcVramBlock {
     u16 blockSize;
 };
 
-struct Unk_ov001_022269e0_Rec {
+struct WfcVramHeap {
     u8 pad_000[0x180];
     WfcVramBlock headNode;
     WfcVramBlock tailNode;
@@ -18,8 +18,8 @@ struct Unk_ov001_022269e0_Rec {
     void *nodePool;
 };
 
-struct Unk_ov001_0222df74 {
-    Unk_ov001_022269e0_Rec heaps[2];
+struct WfcVramWork {
+    WfcVramHeap heaps[2];
 };
 
 extern "C" {
@@ -40,16 +40,16 @@ WfcVramBlock *WfcVram_AllocObjChar(s32 idx, s32 size, s32 flag, u32 *out);
 void WfcVram_Init();
 }
 
-extern "C" Unk_ov001_0222df74 *sWfcVram = 0;
+extern "C" WfcVramWork *sWfcVram = 0;
 
 #pragma thumb off
 
 void WfcVram_Init()
 {
-#define Unk_ov001_02226b60_R (*(Unk_ov001_022269e0_Rec *)((u8 *)sWfcVram + off))
+#define Unk_ov001_02226b60_R (*(WfcVramHeap *)((u8 *)sWfcVram + off))
     s32 i;
     u32 off;
-    sWfcVram = (Unk_ov001_0222df74 *)WfcHeap_AllocClear(0x340, 4);
+    sWfcVram = (WfcVramWork *)WfcHeap_AllocClear(0x340, 4);
     for (i = 0, off = 0; i < 2; i++, off += 0x1a0) {
         Unk_ov001_02226b60_R.nodePool = WfcPool_CreateFrom(0x20, &Unk_ov001_02226b60_R, 0xc);
         Unk_ov001_02226b60_R.list = WfcList_Create();
@@ -66,12 +66,12 @@ WfcVramBlock *WfcVram_AllocObjChar(s32 idx, s32 size, s32 flag, u32 *out)
     WfcVramBlock *blk;
     WfcVramBlock *cur;
     WfcVramBlock *end;
-    Unk_ov001_0222df74 *base;
+    WfcVramWork *base;
     s32 words;
     s32 old;
     s32 start;
     u32 off = idx * 0x1a0;
-    blk = (WfcVramBlock *)WfcPool_Get(((Unk_ov001_022269e0_Rec *)((u8 *)sWfcVram + off))->nodePool);
+    blk = (WfcVramBlock *)WfcPool_Get(((WfcVramHeap *)((u8 *)sWfcVram + off))->nodePool);
     words = (size + 3) & ~3;
     words >>= 2;
     blk->blockSize = words;
@@ -118,7 +118,7 @@ void WfcVram_FreeObjChar(WfcListNode *p)
 {
     s32 z = 0;
     WfcList_Remove(p);
-    Unk_ov001_0222df74 *b = sWfcVram;
+    WfcVramWork *b = sWfcVram;
     if ((u32)p >= (u32)b + 0x1a0) z = 1;
     WfcPool_Put(b->heaps[z].nodePool, p);
 }

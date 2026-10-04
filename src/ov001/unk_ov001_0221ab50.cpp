@@ -1,7 +1,6 @@
 // mwcc-flags: -O4,p
 #include "types.h"
 #include "ui/Unk_ov001_0221a40c.h"
-#include "net/Unk_ov001_0221b6f8_A12.h"
 #include "menu/WfcConnSelectWork.h"
 
 #pragma thumb off
@@ -420,7 +419,7 @@ void WfcSetupMethod_MoveCursor(s32 p) {
 }
 
 void WfcSetupMethod_HighlightOption() {
-    Unk_ov001_0221ab50_B l = *(Unk_ov001_0221ab50_B *)data_ov001_0222b2d0;
+    WfcSetupMethodPalettesCopy l = *(WfcSetupMethodPalettesCopy *)data_ov001_0222b2d0;
     u32 v = l.b[sWfcSetupMethodCursor];
     WfcUtil_RequestPaletteLine(sWfcSetupMethodPalette, v, v);
 }

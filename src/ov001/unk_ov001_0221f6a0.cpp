@@ -1,14 +1,16 @@
 // mwcc-flags: -O4,p
 #include "types.h"
+#include "nitro/wm.h"
 
 #pragma thumb off
 
-struct Unk_ov001_0222df00_Rec {
-    u8 name[6];
-    u8 flag;
+struct WfcUsbFoundAp {
+    u8 bssid[6];
+    u8 isGranted;
 };
 
-struct Unk_ov001_0222a348_Blk {
+// WMScanExParam (0x44) copied as 17 words: a WMScanExParam struct copy compiles differently
+struct WfcUsbScanParamCopy {
     u32 v[17];
 };
 
@@ -24,31 +26,10 @@ struct Unk_ov001_0222df00_Buf {
     u8 rest[0x3c];
 };
 
-struct Unk_ov001_0221f7f4_Entry {
-    u8 pad_00[4];
-    u8 bssid[8];
-    u8 ssidPrefix[8];
-    u8 unk_14;
-    u8 usbGrantFlags;
-};
-
-struct Unk_ov001_0221f7f4_Arg {
-    u8 pad_00[0xe];
-    u16 count;
-    Unk_ov001_0221f7f4_Entry *items[1];
-};
-
-struct Unk_ov001_0221faf0_Msg {
-    u16 apiid;
-    u16 errcode;
-    u8 pad_04[4];
-    u16 state;
-};
-
-struct Unk_ov001_0222df00 {
+struct WfcUsbScanWork {
     u8 pad_0000[0xf00];
     u8 scanBuf[0x400];
-    Unk_ov001_0222df00_Rec foundAps[16];
+    WfcUsbFoundAp foundAps[16];
     void (*unk_1370)(s32);
     u8 scanParam[8];
     u16 scanMaxChannelTime;
@@ -69,7 +50,7 @@ struct Unk_ov001_0222df00 {
 extern "C" const u8 sWfcEmptyBssid[8];
 extern "C" const u8 sWfcUsbApSsid[12];
 extern "C" const u32 sWfcUsbScanParam[17];
-extern "C" Unk_ov001_0222df00 *sWfcUsbScan;
+extern "C" WfcUsbScanWork *sWfcUsbScan;
 
 extern "C" {
 void DC_InvalidateRange(void *, s32);
@@ -101,9 +82,9 @@ s32 WfcUsbScan_Start(void (*)(s32));
 
 s32 WfcUsbScan_Start(void (*cb)(s32))
 {
-    Unk_ov001_0222df00 *g;
+    WfcUsbScanWork *g;
     Unk_ov001_0221fd14_Info info;
-    g = (Unk_ov001_0222df00 *)WfcHeap_AllocClear(0x1ba0, 0x20);
+    g = (WfcUsbScanWork *)WfcHeap_AllocClear(0x1ba0, 0x20);
     sWfcUsbScan = g;
     g->unk_1370 = cb;
     g = sWfcUsbScan;
@@ -113,7 +94,7 @@ s32 WfcUsbScan_Start(void (*cb)(s32))
             WM_ReadStatus((u8 *)sWfcUsbScan + 0x13b8);
             g = sWfcUsbScan;
         } while (((Unk_ov001_0222df00_Buf *)((u8 *)g + 0x13b8))->status != 2);
-        *(Unk_ov001_0222a348_Blk *)g->scanParam = *(const Unk_ov001_0222a348_Blk *)sWfcUsbScanParam;
+        *(WfcUsbScanParamCopy *)g->scanParam = *(const WfcUsbScanParamCopy *)sWfcUsbScanParam;
         *(void **)g->scanParam = g->scanBuf;
         u16 v = WM_GetDispersionScanPeriod();
         sWfcUsbScan->scanMaxChannelTime = v;
@@ -137,7 +118,7 @@ s32 WfcUsbScan_StartScan()
 
 s32 WfcUsbScan_Stop()
 {
-    Unk_ov001_0222df00 *g = sWfcUsbScan;
+    WfcUsbScanWork *g = sWfcUsbScan;
     g->stopState = 1;
     WM_ReadStatus((u8 *)sWfcUsbScan + 0x13b8);
     if (((Unk_ov001_0222df00_Buf *)((u8 *)sWfcUsbScan + 0x13b8))->status != 2) {
@@ -151,11 +132,11 @@ s32 WfcUsbScan_Stop()
     if (WM_End((void *)WfcUsbScan_WmCallback) != 2) {
         return 0;
     }
-    Unk_ov001_0222df00 *h = sWfcUsbScan;
+    WfcUsbScanWork *h = sWfcUsbScan;
     if (h->timeoutTask != 0) {
         WfcTask_Delete(0, h->timeoutTask);
     }
-    volatile Unk_ov001_0222df00 *v = sWfcUsbScan;
+    volatile WfcUsbScanWork *v = sWfcUsbScan;
     while (v->stopState != 2) {
     }
     WfcHeap_FreeAndClear(&sWfcUsbScan);
@@ -169,8 +150,8 @@ void WfcUsbScan_SetCallback(void (*cb)(s32))
 
 void WfcUsbScan_WmCallback(void *arg0)
 {
-    Unk_ov001_0221faf0_Msg *m = (Unk_ov001_0221faf0_Msg *)arg0;
-    Unk_ov001_0222df00 *g;
+    WMStartScanExCallback *m = (WMStartScanExCallback *)arg0;
+    WfcUsbScanWork *g;
     if (m->errcode != 0) {
         return;
     }
@@ -206,23 +187,24 @@ void WfcUsbScan_CollectAps(void *arg0)
 {
     // DECL_BEGIN
     s32 i;
-    Unk_ov001_0221f7f4_Entry *e;
+    WMBssDesc *e;
     s32 j;
-    Unk_ov001_0221f7f4_Arg *a = (Unk_ov001_0221f7f4_Arg *)arg0;
-    Unk_ov001_0222df00_Rec *p;
-    Unk_ov001_0222df00 *g;
+    WMStartScanExCallback *a = (WMStartScanExCallback *)arg0;
+    WfcUsbFoundAp *p;
+    WfcUsbScanWork *g;
     // DECL_END
-    for (i = 0; i < a->count; i++) {
-        e = a->items[i];
+    for (i = 0; i < a->bssDescCount; i++) {
+        e = a->bssDesc[i];
         DC_InvalidateRange(e, 0xc0);
-        if (memcmp(e->ssidPrefix, sWfcUsbApSsid, 8) == 0) {
+        // USB connector APs use the SSID "NWCUSBAP" + flags; bit 0 of SSID byte 9 = this DS was granted access
+        if (memcmp(e->ssid, sWfcUsbApSsid, 8) == 0) {
             g = sWfcUsbScan;
             for (j = 0, p = g->foundAps; j < 16; p++, j++) {
-                if (memcmp(e->bssid, p->name, 6) == 0) {
-                    if (g->foundAps[j].flag != 0) {
+                if (memcmp(e->bssid, p->bssid, 6) == 0) {
+                    if (g->foundAps[j].isGranted != 0) {
                         goto next;
                     }
-                    if ((e->usbGrantFlags & 1) == 0) {
+                    if ((e->ssid[9] & 1) == 0) {
                         goto next;
                     }
                     if (g->unk_1370 == NULL) {
@@ -233,9 +215,9 @@ void WfcUsbScan_CollectAps(void *arg0)
                 }
             }
             for (j = 0; j < 16; j++) {
-                if (memcmp(g->foundAps[j].name, sWfcEmptyBssid, 6) == 0) {
-                    MI_CpuCopy8(e->bssid, g->foundAps[j].name, 6);
-                    sWfcUsbScan->foundAps[j].flag = (e->usbGrantFlags & 1) ? 1 : 0;
+                if (memcmp(g->foundAps[j].bssid, sWfcEmptyBssid, 6) == 0) {
+                    MI_CpuCopy8(e->bssid, g->foundAps[j].bssid, 6);
+                    sWfcUsbScan->foundAps[j].isGranted = (e->ssid[9] & 1) ? 1 : 0;
                     break;
                 }
             }
@@ -247,14 +229,14 @@ void WfcUsbScan_CollectAps(void *arg0)
 void WfcUsbScan_CheckGranted(void *arg0)
 {
     // DECL_BEGIN
-    Unk_ov001_0221f7f4_Arg *a = (Unk_ov001_0221f7f4_Arg *)arg0;
-    Unk_ov001_0221f7f4_Entry *e;
-    Unk_ov001_0222df00 *g = sWfcUsbScan;
+    WMStartScanExCallback *a = (WMStartScanExCallback *)arg0;
+    WMBssDesc *e;
+    WfcUsbScanWork *g = sWfcUsbScan;
     s32 i;
     s32 j;
     s32 n;
-    Unk_ov001_0222df00_Rec *p;
-    Unk_ov001_0222df00 *h;
+    WfcUsbFoundAp *p;
+    WfcUsbScanWork *h;
     // DECL_END
     if (g->pendingResult != 0) {
         if (g->unk_1370 != NULL) {
@@ -263,18 +245,18 @@ void WfcUsbScan_CheckGranted(void *arg0)
         return;
     }
     DC_InvalidateRange(g->scanBuf, 0x400);
-    n = a->count;
+    n = a->bssDescCount;
     i = 0;
     if (n <= 0) {
         return;
     }
     h = sWfcUsbScan;
     do {
-        e = a->items[i];
-        if (memcmp(e->ssidPrefix, sWfcUsbApSsid, 8) == 0 && (e->usbGrantFlags & 1) != 0) {
+        e = a->bssDesc[i];
+        if (memcmp(e->ssid, sWfcUsbApSsid, 8) == 0 && (e->ssid[9] & 1) != 0) {
             for (j = 0, p = h->foundAps; j < 16; j++, p++) {
-                if (memcmp(e->bssid, p->name, 6) == 0) {
-                    if (h->foundAps[j].flag != 0) {
+                if (memcmp(e->bssid, p->bssid, 6) == 0) {
+                    if (h->foundAps[j].isGranted != 0) {
                         break;
                     }
                     if (h->unk_1370 == NULL) {
@@ -292,7 +274,7 @@ void WfcUsbScan_CheckGranted(void *arg0)
 
 void WfcUsbScan_TimeoutTask(s32 arg)
 {
-    Unk_ov001_0222df00 *g;
+    WfcUsbScanWork *g;
     s32 i, b, a;
     u64 now = OS_GetTick();
     g = sWfcUsbScan;
@@ -300,8 +282,8 @@ void WfcUsbScan_TimeoutTask(s32 arg)
     if (now < g->startTick + 0x17f898) return;
     b = 0;
     for (i = 0; i < 16; i++) {
-        if (memcmp(g->foundAps[i].name, sWfcEmptyBssid, 6)) {
-            if (g->foundAps[i].flag) b = 1;
+        if (memcmp(g->foundAps[i].bssid, sWfcEmptyBssid, 6)) {
+            if (g->foundAps[i].isGranted) b = 1;
             else a = 1;
         }
     }
@@ -320,4 +302,4 @@ void WfcUsbScan_TimeoutTask(s32 arg)
 extern "C" const u8 sWfcEmptyBssid[8] = {0, 0, 0, 0, 0, 0, 0, 0};
 extern "C" const u8 sWfcUsbApSsid[12] = {'N', 'W', 'C', 'U', 'S', 'B', 'A', 'P', 0, 0, 0, 0};
 extern "C" const u32 sWfcUsbScanParam[17] = {0x0, 0x3fff0400, 0xffff0000, 0xffffffff, 0x200002, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x8, 0x0, 0x0, 0x0};
-extern "C" Unk_ov001_0222df00 *sWfcUsbScan = 0;
+extern "C" WfcUsbScanWork *sWfcUsbScan = 0;

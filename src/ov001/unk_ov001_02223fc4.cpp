@@ -1,29 +1,15 @@
 // mwcc-flags: -O4,p
 #include "types.h"
+#include "nitro/fs.h"
 
 #pragma thumb off
 
-struct Unk_ov001_0222df30 {
+struct WfcFsWork {
     void *archiveTables;
     u8 fileSlotStorage[0x80];
     void *fileSlotPool;
     u8 archive[0x5c];
     u16 lockId;
-};
-
-struct Unk_ov001_02224074_Obj {
-    u8 pad_00[0x24];
-    u32 top;
-    u32 bottom;
-    u8 pad_2c[0x1c];
-};
-
-struct Unk_ov001_022242e8_Obj {
-    u8 pad_00[0x48];
-};
-
-struct Unk_ov001_022242e8_Obj2 {
-    u8 pad_00[0x80];
 };
 
 extern "C" {
@@ -68,21 +54,21 @@ BOOL WfcFs_WriteCallback();
 
 extern "C" const char sWfcArchiveName[4];
 extern "C" const char sWfcArchiveName[4] = "dwc";
-extern "C" Unk_ov001_0222df30 *sWfcFs = 0;
+extern "C" WfcFsWork *sWfcFs = 0;
 
 extern "C" void WfcFs_MountArchive() {
     u32 a[2];
     u32 b[2];
-    Unk_ov001_022242e8_Obj o;
-    Unk_ov001_022242e8_Obj2 o2;
+    FSFile o;
+    char path[0x80];
     u32 r4;
-    sWfcFs = (Unk_ov001_0222df30 *)WfcHeap_AllocClear(0xe8, 4);
+    sWfcFs = (WfcFsWork *)WfcHeap_AllocClear(0xe8, 4);
     FS_InitFile(&o);
     if (FS_OpenFile(&o, (void *)"rom:/dwc/utility.bin") == 0) {
         Fatal_Trap();
     }
     sWfcFs->lockId = OS_GetLockID();
-    r4 = *(u32 *)((u8 *)&o + 0x24);
+    r4 = o.prop.file.start;
     FS_ReadFile(&o, a, 8);
     FS_ReadFile(&o, b, 8);
     FS_CloseFile(&o);
@@ -98,8 +84,8 @@ extern "C" void WfcFs_MountArchive() {
     sWfcFs->archiveTables = WfcHeap_Alloc((s32)r4b, 4);
     FS_LoadArchiveTables(sWfcFs->archive, sWfcFs->archiveTables, r4b);
     sWfcFs->fileSlotPool = WfcPool_CreateFrom(0x20, sWfcFs->fileSlotStorage, 4);
-    OS_SPrintf(&o2, (void *)"%s:/", (void *)sWfcArchiveName);
-    FS_ChangeDir(&o2);
+    OS_SPrintf(path, (void *)"%s:/", (void *)sWfcArchiveName);
+    FS_ChangeDir(path);
 }
 
 extern "C" void WfcFs_UnmountArchive() {
@@ -144,7 +130,7 @@ extern "C" BOOL WfcFs_WriteCallback() {
 
 extern "C" void *WfcFs_LoadFile(void *name, u32 *outSize, s32 c) {
     void *p;
-    Unk_ov001_02224074_Obj o;
+    FSFile o;
     s32 r6;
     u32 n;
     WfcPool_Get(sWfcFs->fileSlotPool);
@@ -152,7 +138,7 @@ extern "C" void *WfcFs_LoadFile(void *name, u32 *outSize, s32 c) {
     if (FS_OpenFile(&o, name) == 0) {
         Fatal_Trap();
     }
-    n = o.bottom - o.top;
+    n = o.prop.file.end - o.prop.file.start;
     if (outSize != 0) {
         *outSize = n;
     }

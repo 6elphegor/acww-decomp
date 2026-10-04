@@ -1,7 +1,7 @@
 // mwcc-flags: -O4,p
 #include "types.h"
 #include "nitro/gxoam.h"
-#include "net/Unk_ov001_02225924_Rect.h"
+#include "net/WfcRect.h"
 
 #pragma thumb off
 
@@ -9,7 +9,7 @@ struct WfcOptionsPalettePath { u8 v[0x16]; };
 struct WfcOptionsPalette1Path { u8 v[0x17]; };
 struct WfcOptionsLoadBgLocals { u8 a[0x16]; u8 b[0x17]; u64 t; u32 pad[4]; };
 extern "C" const u16 data_ov001_02229fc4[2];
-extern "C" const Unk_ov001_02225924_Rect data_ov001_02229fc8[3];
+extern "C" const WfcRect data_ov001_02229fc8[3];
 extern "C" const u8 data_ov001_02229fe0[24];
 extern "C" const u8 data_ov001_02229fc0[3];
 #define data_ov001_02229fe2 (data_ov001_02229fe0 + 2)
@@ -161,7 +161,7 @@ extern "C" void WfcOptions_Update() {
 
 extern "C" void WfcOptions_HandleInput() {
     u32 i;
-    const Unk_ov001_02225924_Rect *q = data_ov001_02229fc8;
+    const WfcRect *q = data_ov001_02229fc8;
     for (i = 0; i < 3; i++, q++) {
         if (WfcInput_IsTouchPressedIn((void *)q) != 0) {
             WfcButtonBar_SetResult(1);
@@ -224,7 +224,7 @@ extern "C" void WfcOptions_FadeOut() {
 
 extern "C" const u16 data_ov001_02229fc4[2] = {0x00e0, 0x0084};
 
-extern "C" const Unk_ov001_02225924_Rect data_ov001_02229fc8[3] = {{0x0008, 0x0024, 0x00f8, 0x0044}, {0x0008, 0x0050, 0x00f8, 0x0070}, {0x0008, 0x007c, 0x00f8, 0x009c}};
+extern "C" const WfcRect data_ov001_02229fc8[3] = {{0x0008, 0x0024, 0x00f8, 0x0044}, {0x0008, 0x0050, 0x00f8, 0x0070}, {0x0008, 0x007c, 0x00f8, 0x009c}};
 
 extern "C" const u8 data_ov001_02229fe0[24] = {0x06, 0x00, 0x22, 0x00, 0xea, 0x00, 0x36, 0x00, 0x06, 0x00, 0x4e, 0x00, 0xea, 0x00, 0x62, 0x00, 0x06, 0x00, 0x7a, 0x00, 0xea, 0x00, 0x8e, 0x00};
 

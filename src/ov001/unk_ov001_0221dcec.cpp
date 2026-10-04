@@ -1,42 +1,9 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
+#include "net/WfcConfigSlot.h"
 
-struct Unk_ov001_0221dd9c_Bits {
-    u8 wepKeySize : 2;
-    u8 wepAscii : 6;
-};
-
-struct Unk_ov001_0221dd9c_Body {
+struct WfcConfigSlotBody {
     u8 v[0xf0];
-};
-
-// 0x100 byte save slot
-struct WfcConfigSlot {
-    u8 unk_00[0x40];
-    u8 ssid[0x20];
-    u8 aossWep64Ssid[0x20];
-    u8 wepKeys[0x40];
-    u8 ipAddress[4];
-    u8 gateway[4];
-    u8 dnsServers[8];
-    u8 subnetPrefixLen;
-    u8 aossWepKeys[0x15];
-    Unk_ov001_0221dd9c_Bits wepMode;
-    u8 status;
-    u8 unk_e8[7];
-    u8 configuredMask;
-    u8 editSubnetMask[4];
-    u8 editSlotIndex;
-    u8 editAutoIp;
-    u8 editAutoDns;
-    u8 unk_f7;
-    u8 unk_f8[6];
-    u16 crc16;
-};
-
-struct WfcConfigData {
-    WfcConfigSlot slots[4];
-    WfcConfigSlot editSlot;
 };
 
 #pragma thumb on
@@ -224,7 +191,7 @@ u32 WfcConfig_GetSlotStatus(s32 idx) {
 void WfcConfig_BeginEdit(s32 idx) {
     WfcConfigData *d = sWfcConfig;
     WfcConfigSlot *s = &d->slots[idx];
-    *(Unk_ov001_0221dd9c_Body *)&d->editSlot = *(Unk_ov001_0221dd9c_Body *)s;
+    *(WfcConfigSlotBody *)&d->editSlot = *(WfcConfigSlotBody *)s;
     d->editSlot.editSlotIndex = idx;
     if (memcmp(s->ipAddress, sWfcZeroIp, 4) != 0) {
         sWfcConfig->editSlot.editAutoIp = 0;
@@ -244,7 +211,7 @@ void WfcConfig_CommitEdit() {
     WfcConfigData *d = sWfcConfig;
     WfcConfigSlot *b = &d->editSlot;
     WfcConfigSlot *s = &d->slots[b->editSlotIndex];
-    *(Unk_ov001_0221dd9c_Body *)s = *(Unk_ov001_0221dd9c_Body *)b;
+    *(WfcConfigSlotBody *)s = *(WfcConfigSlotBody *)b;
     if (b->editAutoIp != 0) {
         MI_CpuFill8(s->ipAddress, 0, 4);
         MI_CpuFill8(s->gateway, 0, 4);

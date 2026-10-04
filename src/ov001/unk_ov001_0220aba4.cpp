@@ -2,7 +2,7 @@
 #include "types.h"
 #include "nitro/gxoam.h"
 #include "ui/WfcTextKb.h"
-#include "net/Unk_ov001_02225924_Rect.h"
+#include "net/WfcRect.h"
 
 #pragma thumb off
 
@@ -117,9 +117,9 @@ extern u8 data_ov001_02229e8c[];
 extern u8 data_ov001_02229e9c[];
 extern u8 data_ov001_02229ea0[];
 extern u8 data_ov001_02229ec4[];
-extern Unk_ov001_02225924_Pt data_ov001_02229eec[];
-extern Unk_ov001_02225924_Pt data_ov001_02229eb4[];
-extern Unk_ov001_02225924_Pt data_ov001_02229ebc[];
+extern WfcPoint data_ov001_02229eec[];
+extern WfcPoint data_ov001_02229eb4[];
+extern WfcPoint data_ov001_02229ebc[];
 extern u8 gWfcScreenRect[];
 extern u8 data_ov001_02229ea4[];
 extern u8 data_ov001_02229eac[];
@@ -205,7 +205,7 @@ void WfcNumPad_SlideInStep0(void *self);
 }
 
 namespace N_0ba08 {
-struct WfcPosSize { Unk_ov001_02225924_Pt pos; Unk_ov001_02225924_Pt size; };
+struct WfcPosSize { WfcPoint pos; WfcPoint size; };
 }
 
 
@@ -261,7 +261,7 @@ void WfcNumPad_Create() {
     u16 v[2];
     s32 i, j, k;
     pos = *(WfcPosSize *)data_ov001_0222aa58;
-    pos.size = *(Unk_ov001_02225924_Pt *)data_ov001_02229ea4;
+    pos.size = *(WfcPoint *)data_ov001_02229ea4;
     sWfcNumPad = (WfcNumPad *)WfcHeap_AllocClear(0x6c, 4);
     sWfcNumPad->inputKey = 0x1f;
     sWfcNumPad->cursorKey = 0;
@@ -526,7 +526,7 @@ void WfcNumPad_HandleTouchPress() {
 namespace N_0b05c {
 extern "C" {
 void WfcNumPad_HandleTouchRelease() {
-    Unk_ov001_02225924_Pt *p;
+    WfcPoint *p;
     s32 i;
     u32 buf[3];
     sWfcNumPad->inputKey = 0;
@@ -569,7 +569,7 @@ namespace N_0b05c {
 extern "C" {
 void WfcNumPad_HandleTouchHold() {
     s32 i;
-    Unk_ov001_02225924_Pt *p;
+    WfcPoint *p;
     u32 buf[3];
     if (!WfcInput_IsTouchHeldIn(gWfcScreenRect)) goto fail;
     for (p = data_ov001_02229eec, i = 0; i < 10; p++, i++) {

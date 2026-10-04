@@ -16,7 +16,7 @@ struct WfcFadeState {
     u8 pad_0a[2];
 };
 
-struct Unk_ov001_02224ff8_Four {
+struct WfcFadeLevelTable {
     u8 v[4];
 };
 
@@ -52,7 +52,7 @@ WfcFadeState *sWfcFade;
 
 extern "C" u8 sWfcFadeFlags[4] = {0x11, 0x10, 0x01, 0x00};
 extern "C" u8 sWfcFadeEndValues[4] = {0x00, 0xf0, 0x00, 0x10};
-extern "C" Unk_ov001_02224ff8_Four sWfcFadeStartValues = {{0xf0, 0x00, 0x10, 0x00}};
+extern "C" WfcFadeLevelTable sWfcFadeStartValues = {{0xf0, 0x00, 0x10, 0x00}};
 
 void WfcFade_Init() {
     sWfcFade = (WfcFadeState *)WfcHeap_AllocClear(0x18, 4);
@@ -75,7 +75,7 @@ u8 WfcFade_IsBusy(u32 mode) {
 }
 
 u32 WfcFade_Start(u32 idx, u32 mode, s32 val, u32 h) {
-    Unk_ov001_02224ff8_Four arr = sWfcFadeStartValues;
+    WfcFadeLevelTable arr = sWfcFadeStartValues;
     WfcFadeState *p = mode == 1 ? sWfcFade : (WfcFadeState *)((u8 *)sWfcFade + 0xc);
     if (p->isBusy != 0) {
         return 0;

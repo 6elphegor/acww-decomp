@@ -1,16 +1,16 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
 #include "net/SockUdpDropCounters.h"
-#include "net/Unk_ov065_0225f4d4_Msg.h"
+#include "net/SockCoreCommand.h"
 #include "net/Unk_ov065_0225faf4_Sess.h"
-#include "net/Unk_ov065_0225f378_Obj.h"
+#include "net/SockCoreSocket.h"
 
 // ---- types of the former unk_0225f1a0.cpp part (functions 0x0225f5c8..0x0225fa6c)
 
 
 
 
-struct Unk_ov065_0225f378_Obj;
+struct SockCoreSocket;
 
 
 
@@ -32,8 +32,8 @@ typedef Unk_ov065_0225faf4_Ctx Ctx;
 typedef Unk_ov065_0225faf4_Job Job;
 
 
-typedef Unk_ov065_0225f378_Obj Obj;
-typedef Unk_ov065_0225f4d4_Msg Msg;
+typedef SockCoreSocket Obj;
+typedef SockCoreCommand Msg;
 
 // ---- externals
 
@@ -46,7 +46,7 @@ extern "C" {
 // own data (other TUs of the overlay)
 extern Unk_ov065_0225faf4_Alloc *sSockCoreConfig;
 extern Obj *sSockDefaultSocket;
-extern Unk_ov065_0225f634_Params sSockTcpParams;
+extern SockCreateParams sSockTcpParams;
 
 // main module
 u32 OS_DisableInterrupts(void);
@@ -89,14 +89,14 @@ s32 SockCore_Listen(Obj *);
 s32 SockCore_Accept(Obj *, u32 *, u32 *);
 s32 SockCore_StartAccept(Obj *, u32 *, u32 *);
 s32 SockCore_CmdAccept(Msg *);
-s32 SockCore_Create(Unk_ov065_0225f634_Params *);
+s32 SockCore_Create(SockCreateParams *);
 s32 SockCore_CmdOpen(Msg *);
-Obj *SockCore_Alloc(Unk_ov065_0225f634_Params *);
-u32 SockCore_CalcSize(Unk_ov065_0225f634_Params *);
-u32 SockCore_CalcThreadAreaSize(Unk_ov065_0225f5c8_T *);
-u8 *SockCore_InitLayout(Obj *, Unk_ov065_0225f634_Params *);
-u8 *SockCore_CarveBuffer(u8 *, Unk_ov065_0225f618_Pair *, u32);
-u32 SockCore_StartCommandThread(void *, void *, Unk_ov065_0225f5c8_T *);
+Obj *SockCore_Alloc(SockCreateParams *);
+u32 SockCore_CalcSize(SockCreateParams *);
+u32 SockCore_CalcThreadAreaSize(SockThreadParams *);
+u8 *SockCore_InitLayout(Obj *, SockCreateParams *);
+u8 *SockCore_CarveBuffer(u8 *, SockBuffer *, u32);
+u32 SockCore_StartCommandThread(void *, void *, SockThreadParams *);
 }
 
 static inline BOOL Unk_ov065_0225f8dc_IsOpen(Obj *o)
@@ -354,7 +354,7 @@ s32 SockCore_StartAccept(Obj *o, u32 *x, u32 *y)
 s32 SockCore_CmdAccept(Msg *m)
 {
     Obj *o = m->sock;
-    Unk_ov065_0225f634_Sub1 *s = o->recvPipe;
+    SockRecvPipe *s = o->recvPipe;
     u16 a;
     s32 b;
     s32 r;
@@ -370,7 +370,7 @@ s32 SockCore_CmdAccept(Msg *m)
     return 0;
 }
 
-s32 SockCore_Create(Unk_ov065_0225f634_Params *p)
+s32 SockCore_Create(SockCreateParams *p)
 {
     Obj *o = SockCore_Alloc(p);
     if (o == NULL) {
@@ -407,7 +407,7 @@ s32 SockCore_CmdOpen(Msg *m)
     return 0;
 }
 
-Obj *SockCore_Alloc(Unk_ov065_0225f634_Params *p)
+Obj *SockCore_Alloc(SockCreateParams *p)
 {
     u32 size = SockCore_CalcSize(p);
     u32 irq = OS_DisableInterrupts();
@@ -421,7 +421,7 @@ Obj *SockCore_Alloc(Unk_ov065_0225f634_Params *p)
     return o;
 }
 
-u32 SockCore_CalcSize(Unk_ov065_0225f634_Params *p)
+u32 SockCore_CalcSize(SockCreateParams *p)
 {
     u32 sz = 0x80;
     if (p->rxBufSize != 0) {
@@ -440,22 +440,22 @@ u32 SockCore_CalcSize(Unk_ov065_0225f634_Params *p)
     return sz;
 }
 
-u32 SockCore_CalcThreadAreaSize(Unk_ov065_0225f5c8_T *t)
+u32 SockCore_CalcThreadAreaSize(SockThreadParams *t)
 {
     u32 a = SockCore_Align4(t->msgQueueSize << 2);
     return a + SockCore_Align4(t->stackSize);
 }
 
-u8 *SockCore_InitLayout(Obj *o, Unk_ov065_0225f634_Params *p)
+u8 *SockCore_InitLayout(Obj *o, SockCreateParams *p)
 {
-    Unk_ov065_0225f634_Sub1 *s1;
-    Unk_ov065_0225f634_Sub2 *s2;
+    SockRecvPipe *s1;
+    SockSendPipe *s2;
     u8 *cur;
     o->sockType = p->sockType;
     o->blocking = p->blocking;
     cur = o->pipeArea;
     if (p->rxBufSize != 0) {
-        s1 = (Unk_ov065_0225f634_Sub1 *)cur;
+        s1 = (SockRecvPipe *)cur;
         o->recvPipe = s1;
         s1->limit = p->rxConsumeLimit;
         cur = (u8 *)SockCore_StartCommandThread(s1->threadArea, s1, &p->recvThread);
@@ -465,7 +465,7 @@ u8 *SockCore_InitLayout(Obj *o, Unk_ov065_0225f634_Params *p)
         s1->queue = s1->queueTail = 0;
     }
     if (p->txBufSize != 0) {
-        s2 = (Unk_ov065_0225f634_Sub2 *)cur;
+        s2 = (SockSendPipe *)cur;
         o->sendPipe = s2;
         s2->owner = o;
         cur = (u8 *)SockCore_StartCommandThread(s2->threadArea, s2, &p->sendThread);
@@ -479,7 +479,7 @@ u8 *SockCore_InitLayout(Obj *o, Unk_ov065_0225f634_Params *p)
     return cur;
 }
 
-u8 *SockCore_CarveBuffer(u8 *base, Unk_ov065_0225f618_Pair *dst, u32 n)
+u8 *SockCore_CarveBuffer(u8 *base, SockBuffer *dst, u32 n)
 {
     u8 *v = base;
     if (n == 0) {
@@ -490,7 +490,7 @@ u8 *SockCore_CarveBuffer(u8 *base, Unk_ov065_0225f618_Pair *dst, u32 n)
     return base + SockCore_Align4(n);
 }
 
-u32 SockCore_StartCommandThread(void *a, void *b, Unk_ov065_0225f5c8_T *c)
+u32 SockCore_StartCommandThread(void *a, void *b, SockThreadParams *c)
 {
     u32 r = (u32)a + SockCore_CalcThreadAreaSize(c);
     OS_InitMessageQueue(b, a, c->msgQueueSize);

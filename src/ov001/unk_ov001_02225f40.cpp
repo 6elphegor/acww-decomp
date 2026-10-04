@@ -1,25 +1,27 @@
 // mwcc-flags: -O4,p
 #include "types.h"
-#include "net/Unk_ov001_02225924_Rect.h"
+#include "net/WfcRect.h"
 
 #pragma thumb off
 
 
 
 struct Unk_ov001_02225f40_W {
-    Unk_ov001_02225924_Pt p;
+    WfcPoint p;
 };
 
-struct Unk_ov001_02226214_Ent {
-    u32 unk_00;
+// NitroSDK touch panel sample (TP_RequestAutoSampling buffer entry)
+struct TPData {
+    u16 x;
+    u16 y;
     u16 touch;
     u16 validity;
 };
 
 struct WfcInputState {
-    Unk_ov001_02226214_Ent ent[5];
-    Unk_ov001_02225924_Pt pos0;
-    Unk_ov001_02225924_Pt pos1;
+    TPData ent[5];
+    WfcPoint pos0;
+    WfcPoint pos1;
     u16 heldKeys;
     u16 pressedKeys;
     u16 repeatKeys;
@@ -38,9 +40,9 @@ u32 OS_DisableIrqMask(u32 a);
 void OS_EnableIrqMask(u32 a);
 void Fatal_Trap();
 u32 TP_GetLatestIndexInAuto();
-void TP_GetCalibratedPoint(Unk_ov001_02225924_Pt *p, void *e);
+void TP_GetCalibratedPoint(WfcPoint *p, void *e);
 u32 FX_ModS32(u32 a, u32 b);
-void WfcUtil_SetPoint(u32 a, u32 b, Unk_ov001_02225924_Pt *out);
+void WfcUtil_SetPoint(u32 a, u32 b, WfcPoint *out);
 void *WfcHeap_AllocClear(s32, s32);
 void WfcHeap_FreeAndClear(void *);
 void TP_RequestAutoSamplingStopAsync();
@@ -49,14 +51,14 @@ s32 TP_CheckError(s32);
 s32 TP_GetUserInfo(void *);
 void TP_SetCalibrateParam(void *);
 void TP_RequestAutoSamplingStartAsync(s32, s32, void *, s32);
-BOOL WfcInput_IsTouchPressedIn(Unk_ov001_02225924_Rect *r);
+BOOL WfcInput_IsTouchPressedIn(WfcRect *r);
 void WfcInput_UpdateTouch();
-BOOL WfcInput_GetTouchPos(Unk_ov001_02225924_Pt *out);
-BOOL WfcInput_IsTouchPressedInBox(Unk_ov001_02225924_Rect *r);
-BOOL WfcInput_IsTouchReleasedIn(Unk_ov001_02225924_Rect *r);
-BOOL WfcInput_IsTouchRepeatIn(Unk_ov001_02225924_Rect *r);
-BOOL WfcInput_IsTouchPressedIn(Unk_ov001_02225924_Rect *r);
-BOOL WfcInput_IsTouchHeldIn(Unk_ov001_02225924_Rect *r);
+BOOL WfcInput_GetTouchPos(WfcPoint *out);
+BOOL WfcInput_IsTouchPressedInBox(WfcRect *r);
+BOOL WfcInput_IsTouchReleasedIn(WfcRect *r);
+BOOL WfcInput_IsTouchRepeatIn(WfcRect *r);
+BOOL WfcInput_IsTouchPressedIn(WfcRect *r);
+BOOL WfcInput_IsTouchHeldIn(WfcRect *r);
 BOOL WfcInput_IsKeyReleased(u32 m);
 BOOL WfcInput_IsKeyRepeat(u32 m);
 BOOL WfcInput_IsKeyPressed(u32 m);
@@ -145,9 +147,9 @@ void WfcInput_UpdateTouch() {
     WfcInputState *s = sWfcInput;
     *(Unk_ov001_02225f40_W *)&s->pos1 = *(Unk_ov001_02225f40_W *)&s->pos0;
     do {
-        Unk_ov001_02226214_Ent *e = &sWfcInput->ent[n];
+        TPData *e = &sWfcInput->ent[n];
         if (e->touch == 1 && e->validity == 0) {
-            Unk_ov001_02225924_Pt pt;
+            WfcPoint pt;
             found = TRUE;
             TP_GetCalibratedPoint(&pt, e);
             WfcUtil_SetPoint(pt.x, pt.y, &sWfcInput->pos0);
@@ -197,60 +199,60 @@ BOOL WfcInput_IsKeyReleased(u32 m) {
     return m == t;
 }
 
-BOOL WfcInput_IsTouchHeldIn(Unk_ov001_02225924_Rect *r) {
+BOOL WfcInput_IsTouchHeldIn(WfcRect *r) {
     WfcInputState *s = sWfcInput;
     if (!s->flag0) return FALSE;
     u32 x = s->pos0.x;
-    if (r->x > x) return FALSE;
-    if (r->w < x) return FALSE;
+    if (r->left > x) return FALSE;
+    if (r->right < x) return FALSE;
     u32 y = s->pos0.y;
-    if (r->y > y) return FALSE;
-    return r->h >= y;
+    if (r->top > y) return FALSE;
+    return r->bottom >= y;
 }
 
-BOOL WfcInput_IsTouchPressedIn(Unk_ov001_02225924_Rect *r) {
+BOOL WfcInput_IsTouchPressedIn(WfcRect *r) {
     WfcInputState *s = sWfcInput;
     if (!s->flag1) return FALSE;
     u32 x = s->pos0.x;
-    if (r->x > x) return FALSE;
-    if (r->w < x) return FALSE;
+    if (r->left > x) return FALSE;
+    if (r->right < x) return FALSE;
     u32 y = s->pos0.y;
-    if (r->y > y) return FALSE;
-    return r->h >= y;
+    if (r->top > y) return FALSE;
+    return r->bottom >= y;
 }
 
-BOOL WfcInput_IsTouchRepeatIn(Unk_ov001_02225924_Rect *r) {
+BOOL WfcInput_IsTouchRepeatIn(WfcRect *r) {
     WfcInputState *s = sWfcInput;
     if (!s->flag2) return FALSE;
     u32 x = s->pos0.x;
-    if (r->x > x) return FALSE;
-    if (r->w < x) return FALSE;
+    if (r->left > x) return FALSE;
+    if (r->right < x) return FALSE;
     u32 y = s->pos0.y;
-    if (r->y > y) return FALSE;
-    return r->h >= y;
+    if (r->top > y) return FALSE;
+    return r->bottom >= y;
 }
 
-BOOL WfcInput_IsTouchReleasedIn(Unk_ov001_02225924_Rect *r) {
+BOOL WfcInput_IsTouchReleasedIn(WfcRect *r) {
     WfcInputState *s = sWfcInput;
     if (!s->flag3) return FALSE;
     u32 x = s->pos0.x;
-    if (r->x > x) return FALSE;
-    if (r->w < x) return FALSE;
+    if (r->left > x) return FALSE;
+    if (r->right < x) return FALSE;
     u32 y = s->pos0.y;
-    if (r->y > y) return FALSE;
-    return r->h >= y;
+    if (r->top > y) return FALSE;
+    return r->bottom >= y;
 }
 
-BOOL WfcInput_IsTouchPressedInBox(Unk_ov001_02225924_Rect *r) {
-    Unk_ov001_02225924_Rect t;
-    t.x = r->x;
-    t.y = r->y;
-    t.w = r->x + r->w;
-    t.h = r->y + r->h;
+BOOL WfcInput_IsTouchPressedInBox(WfcRect *r) {
+    WfcRect t;
+    t.left = r->left;
+    t.top = r->top;
+    t.right = r->left + r->right;
+    t.bottom = r->top + r->bottom;
     return WfcInput_IsTouchPressedIn(&t);
 }
 
-BOOL WfcInput_GetTouchPos(Unk_ov001_02225924_Pt *out) {
+BOOL WfcInput_GetTouchPos(WfcPoint *out) {
     WfcInputState *s = sWfcInput;
     if (!s->flag0) {
         *(Unk_ov001_02225f40_W *)out = *(Unk_ov001_02225f40_W *)&s->pos1;

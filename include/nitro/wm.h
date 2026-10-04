@@ -152,4 +152,46 @@ typedef struct WMPortSendCallback {
     /* 0x20 */ void *arg;
 } WMPortSendCallback;
 
+// WM_StartScanEx parameter (0x44).
+typedef struct WMScanExParam {
+    /* 0x00 */ WMBssDesc *scanBuf;
+    /* 0x04 */ u16 scanBufSize;
+    /* 0x06 */ u16 channelList;
+    /* 0x08 */ u16 maxChannelTime;
+    /* 0x0a */ u8 bssid[6];
+    /* 0x10 */ u16 scanType;
+    /* 0x12 */ u16 ssidLength;
+    /* 0x14 */ u8 ssid[32];
+    /* 0x34 */ u16 ssidMatchLength;
+    /* 0x36 */ u16 rsv[7];
+} WMScanExParam;
+
+// WM_StartScanEx callback argument (apiid 0x26 = WM_APIID_START_SCAN_EX).
+typedef struct WMStartScanExCallback {
+    /* 0x00 */ u16 apiid;
+    /* 0x02 */ u16 errcode;
+    /* 0x04 */ u16 wlCmdID;
+    /* 0x06 */ u16 wlResult;
+    /* 0x08 */ u16 state;
+    /* 0x0a */ u16 channelList;
+    /* 0x0c */ u8 reserved[2];
+    /* 0x0e */ u16 bssDescCount;
+    /* 0x10 */ WMBssDesc *bssDesc[16];
+    /* 0x50 */ u16 linkLevel[16];
+} WMStartScanExCallback;
+
+// WM_GetOtherElements result; WMOtherElement names the SDK's anonymous element struct.
+typedef struct WMOtherElement {
+    /* 0x0 */ u8 id;
+    /* 0x1 */ u8 length;
+    /* 0x2 */ u16 rsv;
+    /* 0x4 */ u8 *body;
+} WMOtherElement;
+
+typedef struct WMOtherElements {
+    /* 0x00 */ u8 count;
+    /* 0x01 */ u8 rsv[3];
+    /* 0x04 */ WMOtherElement element[16];
+} WMOtherElements;
+
 #endif

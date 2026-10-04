@@ -2,7 +2,7 @@
 #include "types.h"
 #include "ui/WfcTextRect.h"
 #include "ui/WfcTextKb.h"
-#include "net/Unk_ov001_02225924_Rect.h"
+#include "net/WfcRect.h"
 #include "nitro/gxoam.h"
 #include "ui/WfcLinkIcon.h"
 
@@ -158,7 +158,7 @@ extern u32 WfcTask_Add(s32, void *, s32, s32);
 void WfcLinkIcon_Task();
 extern WfcTextKb *sWfcTextKb;
 extern s8 sWfcTextKbNavTable[][4];
-extern Unk_ov001_02225924_Pt data_ov001_02229ce4[];
+extern WfcPoint data_ov001_02229ce4[];
 void WfcText_DestroyObjCanvas(void *);
 void WfcObj_Free(void *);
 void WfcOam_FreeEntry(void *);

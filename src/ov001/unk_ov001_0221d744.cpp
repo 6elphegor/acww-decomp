@@ -1,41 +1,12 @@
 // mwcc-flags: -O4,p
 #include "types.h"
 #include "net/WfcApScanEntry.h"
+#include "nitro/wm.h"
 
 #pragma thumb off
 
-struct Unk_ov001_0221d744_Tlv {
-    u8 type;
-    u8 len;
-    u16 pad;
-    u8 *data;
-};
-
-struct Unk_ov001_0221d744_Buf {
-    u8 cnt;
-    u8 pad[3];
-    Unk_ov001_0221d744_Tlv v[16];
-};
-
-struct Unk_ov001_0221db6c_Blob { u32 v[17]; };
-
-struct Unk_ov001_0221d744_Node {
-    u8 unk_00[4];
-    u8 bssid[6];
-    u8 unk_0a[2];
-    u8 ssid;
-    u8 unk_0d[0x1f];
-    u16 capaInfo;
-    u8 unk_2e[0xe];
-    u16 gameInfoLength;
-};
-
-struct Unk_ov001_0221d744_List {
-    u8 unk_00[0xe];
-    u16 bssDescCount;
-    Unk_ov001_0221d744_Node *bssDesc[0x10];
-    u16 linkLevel[1];
-};
+// WMScanExParam (0x44) copied as 17 words: a WMScanExParam struct copy compiles differently
+struct WfcApScanParamCopy { u32 v[17]; };
 
 extern "C" {
 s32 DC_InvalidateRange(void *, s32);
@@ -54,7 +25,7 @@ u32 WM_GetAllowedChannel();
 void WfcHeap_FreeAndClear(void *);
 void *WfcHeap_AllocClear(s32, s32);
 
-void WfcApScan_StoreResults(Unk_ov001_0221d744_List *);
+void WfcApScan_StoreResults(WMStartScanExCallback *);
 void WfcApScan_WmCallback(u16 *);
 s32 WfcApScan_GetResults(WfcApScanEntry **out);
 BOOL WfcApScan_Stop();
@@ -90,8 +61,8 @@ BOOL WfcApScan_Start() {
         WM_ReadStatus(sWfcApScan + 0x168c);
         g = sWfcApScan;
     } while (*(u16 *)(g + 0x168c) != 2);
-    *(Unk_ov001_0221db6c_Blob *)(g + 0x1648) = *(const Unk_ov001_0221db6c_Blob *)sWfcApScanParam;
-    *(u32 *)(g + 0x1648) = (u32)(g + 0xf00);
+    *(WfcApScanParamCopy *)(g + 0x1648) = *(const WfcApScanParamCopy *)sWfcApScanParam;
+    ((WMScanExParam *)(g + 0x1648))->scanBuf = (WMBssDesc *)(g + 0xf00);
     *(u16 *)(sWfcApScan + 0x1650) = WM_GetDispersionScanPeriod();
     if (WfcApScan_StartScan() != 0) return TRUE;
     return FALSE;
@@ -132,7 +103,7 @@ void WfcApScan_WmCallback(u16 *p) {
     if (p[0] != 0x26) return;
     switch (p[4]) {
     case 5:
-        WfcApScan_StoreResults((Unk_ov001_0221d744_List *)p);
+        WfcApScan_StoreResults((WMStartScanExCallback *)p);
         WfcApScan_StartScan();
         break;
     case 4:
@@ -144,15 +115,15 @@ void WfcApScan_WmCallback(u16 *p) {
     }
 }
 
-void WfcApScan_StoreResults(Unk_ov001_0221d744_List *p) {
+void WfcApScan_StoreResults(WMStartScanExCallback *p) {
     WfcApScanEntry *tbl;
-    Unk_ov001_0221d744_Buf buf;
+    WMOtherElements buf;
     s32 i;
     tbl = (WfcApScanEntry *)(sWfcApScan + 0x1300);
     DC_InvalidateRange(sWfcApScan + 0xf00, 0x400);
     for (i = 0; i < p->bssDescCount; i++) {
-        Unk_ov001_0221d744_Node *n = p->bssDesc[i];
-        if (n->ssid != 0 && n->gameInfoLength == 0) {
+        WMBssDesc *n = p->bssDesc[i];
+        if (n->ssid[0] != 0 && n->gameInfoLength == 0) {
             s32 j = 0;
             WfcApScanEntry *e = tbl;
             do {
@@ -172,7 +143,7 @@ void WfcApScan_StoreResults(Unk_ov001_0221d744_List *p) {
             }
             e = tbl + j;
             MI_CpuCopy8(n->bssid, e->bssid, 6);
-            MI_CpuCopy8(&n->ssid, e, 0x20);
+            MI_CpuCopy8(n->ssid, e->ssid, 0x20);
             e->linkLevel = p->linkLevel[i];
             if ((n->capaInfo & 0x10) == 0) {
                 e->security = 0;
@@ -180,13 +151,13 @@ void WfcApScan_StoreResults(Unk_ov001_0221d744_List *p) {
                 e->security = 1;
                 WM_GetOtherElements(&buf, n);
                 s32 k;
-                s32 cnt = buf.cnt;
+                s32 cnt = buf.count;
                 for (k = 0; k < cnt; k++) {
-                    if (buf.v[k].type == 0x30) {
+                    if (buf.element[k].id == 0x30) {
                         e->security = 2;
                         break;
                     }
-                    if (buf.v[k].type == 0xdd && buf.v[k].len >= 4 && memcmp(buf.v[k].data, sWfcWpaOui, 4) == 0) {
+                    if (buf.element[k].id == 0xdd && buf.element[k].length >= 4 && memcmp(buf.element[k].body, sWfcWpaOui, 4) == 0) {
                         e->security = 2;
                         break;
                     }

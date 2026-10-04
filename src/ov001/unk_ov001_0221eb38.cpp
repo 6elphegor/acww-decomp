@@ -1,23 +1,19 @@
 // mwcc-flags: -O4,p
 #include "types.h"
+#include "net/WfcRect.h"
 
 #pragma thumb off
 
-struct Unk_ov001_0222defc {
+struct WfcHeaderWork {
     void *parts[5];
     void *task;
     u8 isSlidingOut;
 };
 
-struct Unk_ov001_0222a320 {
-    u16 a;
-    u16 b;
-};
-
 extern "C" const u8 sWfcHeaderCells[16];
 extern "C" const u8 sWfcHeaderPalettes[16];
-extern "C" const Unk_ov001_0222a320 sWfcHeaderPartPos[5];
-extern "C" Unk_ov001_0222defc *sWfcHeader;
+extern "C" const WfcPoint sWfcHeaderPartPos[5];
+extern "C" WfcHeaderWork *sWfcHeader;
 
 extern "C" {
 
@@ -59,14 +55,14 @@ void WfcHeader_Create(s32 n)
 {
     s32 i;
     void *p = WfcHeap_AllocClear(0x1c, 4);
-    sWfcHeader = (Unk_ov001_0222defc *)p;
+    sWfcHeader = (WfcHeaderWork *)p;
     const u8 *p9 = sWfcHeaderCells + n * 5;
     const u8 *p8 = sWfcHeaderPalettes + n * 5;
     s32 z = 0;
     for (i = 0; i < 5; i++) {
         sWfcHeader->parts[i] = WfcObj_Create(1, *p9, 1);
         WfcObj_SetPriority(sWfcHeader->parts[i], -1, z);
-        WfcObj_SetPos(sWfcHeader->parts[i], -1, -0x2a, sWfcHeaderPartPos[i].b);
+        WfcObj_SetPos(sWfcHeader->parts[i], -1, -0x2a, sWfcHeaderPartPos[i].y);
         WfcObj_SetModePalette(sWfcHeader->parts[i], -1, z, *p8);
         p9++;
         p8++;
@@ -81,14 +77,14 @@ void WfcHeader_SlideInTask0(s32 r)
     s32 a, b, i;
     WfcObj_GetPos(sWfcHeader->parts[0], 0, &a, &b);
     a += 8;
-    if (a < sWfcHeaderPartPos[0].a || a > 0x100) {
+    if (a < sWfcHeaderPartPos[0].x || a > 0x100) {
         for (i = 0; i < 5; i++)
-            WfcObj_SetPos(sWfcHeader->parts[i], -1, a, sWfcHeaderPartPos[i].b);
+            WfcObj_SetPos(sWfcHeader->parts[i], -1, a, sWfcHeaderPartPos[i].y);
         return;
     }
-    a = sWfcHeaderPartPos[0].a;
+    a = sWfcHeaderPartPos[0].x;
     for (i = 0; i < 5; i++)
-        WfcObj_SetPos(sWfcHeader->parts[i], -1, a, sWfcHeaderPartPos[i].b);
+        WfcObj_SetPos(sWfcHeader->parts[i], -1, a, sWfcHeaderPartPos[i].y);
     WfcTask_SetFunc(r, (void *)WfcHeader_SlideInTask1);
 }
 
@@ -97,14 +93,14 @@ void WfcHeader_SlideInTask1(s32 r)
     s32 a, b, i;
     WfcObj_GetPos(sWfcHeader->parts[1], 0, &a, &b);
     a += 8;
-    if (a < sWfcHeaderPartPos[1].a || a > 0x100) {
+    if (a < sWfcHeaderPartPos[1].x || a > 0x100) {
         for (i = 1; i < 5; i++)
-            WfcObj_SetPos(sWfcHeader->parts[i], -1, a, sWfcHeaderPartPos[i].b);
+            WfcObj_SetPos(sWfcHeader->parts[i], -1, a, sWfcHeaderPartPos[i].y);
         return;
     }
-    a = sWfcHeaderPartPos[1].a;
+    a = sWfcHeaderPartPos[1].x;
     for (i = 1; i < 5; i++)
-        WfcObj_SetPos(sWfcHeader->parts[i], -1, a, sWfcHeaderPartPos[i].b);
+        WfcObj_SetPos(sWfcHeader->parts[i], -1, a, sWfcHeaderPartPos[i].y);
     WfcTask_SetFunc(r, (void *)WfcHeader_SlideInTask2);
 }
 
@@ -113,14 +109,14 @@ void WfcHeader_SlideInTask2(s32 r)
     s32 a, b, i;
     WfcObj_GetPos(sWfcHeader->parts[2], 0, &a, &b);
     a += 8;
-    if (a < sWfcHeaderPartPos[2].a || a > 0x100) {
+    if (a < sWfcHeaderPartPos[2].x || a > 0x100) {
         for (i = 2; i < 5; i++)
-            WfcObj_SetPos(sWfcHeader->parts[i], -1, a, sWfcHeaderPartPos[i].b);
+            WfcObj_SetPos(sWfcHeader->parts[i], -1, a, sWfcHeaderPartPos[i].y);
         return;
     }
-    a = sWfcHeaderPartPos[2].a;
+    a = sWfcHeaderPartPos[2].x;
     for (i = 2; i < 5; i++)
-        WfcObj_SetPos(sWfcHeader->parts[i], -1, a, sWfcHeaderPartPos[i].b);
+        WfcObj_SetPos(sWfcHeader->parts[i], -1, a, sWfcHeaderPartPos[i].y);
     WfcTask_SetFunc(r, (void *)WfcHeader_SlideInTask3);
 }
 
@@ -129,14 +125,14 @@ void WfcHeader_SlideInTask3(s32 r)
     s32 a, b, i;
     WfcObj_GetPos(sWfcHeader->parts[3], 0, &a, &b);
     a += 8;
-    if (a < sWfcHeaderPartPos[3].a || a > 0x100) {
+    if (a < sWfcHeaderPartPos[3].x || a > 0x100) {
         for (i = 3; i < 5; i++)
-            WfcObj_SetPos(sWfcHeader->parts[i], -1, a, sWfcHeaderPartPos[i].b);
+            WfcObj_SetPos(sWfcHeader->parts[i], -1, a, sWfcHeaderPartPos[i].y);
         return;
     }
-    a = sWfcHeaderPartPos[3].a;
+    a = sWfcHeaderPartPos[3].x;
     for (i = 3; i < 5; i++)
-        WfcObj_SetPos(sWfcHeader->parts[i], -1, a, sWfcHeaderPartPos[i].b);
+        WfcObj_SetPos(sWfcHeader->parts[i], -1, a, sWfcHeaderPartPos[i].y);
     WfcTask_SetFunc(r, (void *)WfcHeader_SlideInTask4);
 }
 
@@ -145,12 +141,12 @@ void WfcHeader_SlideInTask4(s32 r)
     s32 a, b;
     WfcObj_GetPos(sWfcHeader->parts[4], 0, &a, &b);
     a += 8;
-    if (a < sWfcHeaderPartPos[4].a || a > 0x100) {
-        WfcObj_SetPos(sWfcHeader->parts[4], -1, a, sWfcHeaderPartPos[4].b);
+    if (a < sWfcHeaderPartPos[4].x || a > 0x100) {
+        WfcObj_SetPos(sWfcHeader->parts[4], -1, a, sWfcHeaderPartPos[4].y);
         return;
     }
-    a = sWfcHeaderPartPos[4].a;
-    WfcObj_SetPos(sWfcHeader->parts[4], -1, a, sWfcHeaderPartPos[4].b);
+    a = sWfcHeaderPartPos[4].x;
+    WfcObj_SetPos(sWfcHeader->parts[4], -1, a, sWfcHeaderPartPos[4].y);
     WfcTask_SetFunc(r, (void *)WfcHeader_SlideInDone);
 }
 
@@ -176,7 +172,7 @@ void WfcHeader_SetStep(s32 n)
         void *t = WfcObj_GetOam(sWfcHeader->parts[i], z);
         WfcCell_Copy(1, *p9, t);
         WfcObj_SetPriority(sWfcHeader->parts[i], -1, z);
-        WfcObj_SetPos(sWfcHeader->parts[i], -1, sWfcHeaderPartPos[i].a, sWfcHeaderPartPos[i].b);
+        WfcObj_SetPos(sWfcHeader->parts[i], -1, sWfcHeaderPartPos[i].x, sWfcHeaderPartPos[i].y);
         WfcObj_SetModePalette(sWfcHeader->parts[i], -1, z, *p8);
         p9 += 2;
         p8 += 2;
@@ -195,12 +191,12 @@ void WfcHeader_SlideOutTask4(s32 r)
     s32 a, b;
     WfcObj_GetPos(sWfcHeader->parts[4], 0, &a, &b);
     a -= 8;
-    if (a > sWfcHeaderPartPos[3].a) {
-        WfcObj_SetPos(sWfcHeader->parts[4], -1, a, sWfcHeaderPartPos[4].b);
+    if (a > sWfcHeaderPartPos[3].x) {
+        WfcObj_SetPos(sWfcHeader->parts[4], -1, a, sWfcHeaderPartPos[4].y);
         return;
     }
-    a = sWfcHeaderPartPos[3].a;
-    WfcObj_SetPos(sWfcHeader->parts[4], -1, a, sWfcHeaderPartPos[4].b);
+    a = sWfcHeaderPartPos[3].x;
+    WfcObj_SetPos(sWfcHeader->parts[4], -1, a, sWfcHeaderPartPos[4].y);
     WfcTask_SetFunc(r, (void *)WfcHeader_SlideOutTask3);
 }
 
@@ -210,15 +206,15 @@ void WfcHeader_SlideOutTask3(s32 a)
     s32 i;
     WfcObj_GetPos(sWfcHeader->parts[3], 0, &xy[0], &xy[1]);
     xy[0] -= 8;
-    if (xy[0] > sWfcHeaderPartPos[2].a) {
+    if (xy[0] > sWfcHeaderPartPos[2].x) {
         for (i = 3; i < 5; i++) {
-            WfcObj_SetPos(sWfcHeader->parts[i], -1, xy[0], sWfcHeaderPartPos[i].b);
+            WfcObj_SetPos(sWfcHeader->parts[i], -1, xy[0], sWfcHeaderPartPos[i].y);
         }
         return;
     }
-    xy[0] = sWfcHeaderPartPos[2].a;
+    xy[0] = sWfcHeaderPartPos[2].x;
     for (i = 3; i < 5; i++) {
-        WfcObj_SetPos(sWfcHeader->parts[i], -1, xy[0], sWfcHeaderPartPos[i].b);
+        WfcObj_SetPos(sWfcHeader->parts[i], -1, xy[0], sWfcHeaderPartPos[i].y);
     }
     WfcTask_SetFunc(a, (void *)WfcHeader_SlideOutTask2);
 }
@@ -229,15 +225,15 @@ void WfcHeader_SlideOutTask2(s32 a)
     s32 i;
     WfcObj_GetPos(sWfcHeader->parts[2], 0, &xy[0], &xy[1]);
     xy[0] -= 8;
-    if (xy[0] > sWfcHeaderPartPos[1].a) {
+    if (xy[0] > sWfcHeaderPartPos[1].x) {
         for (i = 2; i < 5; i++) {
-            WfcObj_SetPos(sWfcHeader->parts[i], -1, xy[0], sWfcHeaderPartPos[i].b);
+            WfcObj_SetPos(sWfcHeader->parts[i], -1, xy[0], sWfcHeaderPartPos[i].y);
         }
         return;
     }
-    xy[0] = sWfcHeaderPartPos[1].a;
+    xy[0] = sWfcHeaderPartPos[1].x;
     for (i = 2; i < 5; i++) {
-        WfcObj_SetPos(sWfcHeader->parts[i], -1, xy[0], sWfcHeaderPartPos[i].b);
+        WfcObj_SetPos(sWfcHeader->parts[i], -1, xy[0], sWfcHeaderPartPos[i].y);
     }
     WfcTask_SetFunc(a, (void *)WfcHeader_SlideOutTask1);
 }
@@ -248,15 +244,15 @@ void WfcHeader_SlideOutTask1(s32 a)
     s32 i;
     WfcObj_GetPos(sWfcHeader->parts[1], 0, &xy[0], &xy[1]);
     xy[0] -= 8;
-    if (xy[0] > sWfcHeaderPartPos[0].a) {
+    if (xy[0] > sWfcHeaderPartPos[0].x) {
         for (i = 1; i < 5; i++) {
-            WfcObj_SetPos(sWfcHeader->parts[i], -1, xy[0], sWfcHeaderPartPos[i].b);
+            WfcObj_SetPos(sWfcHeader->parts[i], -1, xy[0], sWfcHeaderPartPos[i].y);
         }
         return;
     }
-    xy[0] = sWfcHeaderPartPos[0].a;
+    xy[0] = sWfcHeaderPartPos[0].x;
     for (i = 1; i < 5; i++) {
-        WfcObj_SetPos(sWfcHeader->parts[i], -1, xy[0], sWfcHeaderPartPos[i].b);
+        WfcObj_SetPos(sWfcHeader->parts[i], -1, xy[0], sWfcHeaderPartPos[i].y);
     }
     WfcTask_SetFunc(a, (void *)WfcHeader_SlideOutTask0);
 }
@@ -268,7 +264,7 @@ void WfcHeader_SlideOutTask0(s32 a)
     WfcObj_GetPos(sWfcHeader->parts[0], 0, &xy[0], &xy[1]);
     xy[0] -= 8;
     for (i = 0; i < 5; i++) {
-        WfcObj_SetPos(sWfcHeader->parts[i], -1, xy[0], sWfcHeaderPartPos[i].b);
+        WfcObj_SetPos(sWfcHeader->parts[i], -1, xy[0], sWfcHeaderPartPos[i].y);
     }
     if (xy[0] > 0x1d6) return;
     if (xy[0] < 0x100) return;
@@ -281,7 +277,7 @@ void WfcHeader_SlideOutTask0(s32 a)
 
 BOOL WfcHeader_IsSlideOutDone()
 {
-    Unk_ov001_0222defc *g = sWfcHeader;
+    WfcHeaderWork *g = sWfcHeader;
     if (g == 0) return TRUE;
     return g->isSlidingOut == 0 ? TRUE : FALSE;
 }
@@ -289,12 +285,12 @@ BOOL WfcHeader_IsSlideOutDone()
 // Declarations for data defined further down (definition order sets the data layout)
 extern "C" const u8 sWfcHeaderPalettes[16];
 extern "C" const u8 sWfcHeaderCells[16];
-extern "C" const Unk_ov001_0222a320 sWfcHeaderPartPos[5];
+extern "C" const WfcPoint sWfcHeaderPartPos[5];
 
 extern "C" const u8 sWfcHeaderPalettes[16] = {2, 1, 3, 1, 3, 5, 1, 4, 1, 5, 7, 1, 7, 1, 6, 0};
 
 extern "C" const u8 sWfcHeaderCells[16] = {1, 0, 5, 0, 6, 4, 0, 2, 0, 6, 4, 0, 5, 0, 3, 0};
 
-extern "C" const Unk_ov001_0222a320 sWfcHeaderPartPos[5] = {{0x20, 0x21}, {0x50, 0x30}, {0x68, 0x21}, {0x98, 0x30}, {0xb0, 0x21}};
+extern "C" const WfcPoint sWfcHeaderPartPos[5] = {{0x20, 0x21}, {0x50, 0x30}, {0x68, 0x21}, {0x98, 0x30}, {0xb0, 0x21}};
 
-extern "C" Unk_ov001_0222defc *sWfcHeader = 0;
+extern "C" WfcHeaderWork *sWfcHeader = 0;

@@ -3,7 +3,7 @@
 #include "net/WfcListNode.h"
 
 
-struct Unk_ov001_0222df70 {
+struct WfcOamBuffer {
     u8 pad_000[0x800];
     void *entryPools[2];
     void *transferTask;
@@ -38,14 +38,14 @@ void WfcOam_TransferTask();
 void WfcOam_Init();
 }
 
-extern "C" Unk_ov001_0222df70 *sWfcOamBuf = 0;
+extern "C" WfcOamBuffer *sWfcOamBuf = 0;
 
 #pragma thumb off
 
 void WfcOam_Init()
 {
     volatile u32 v;
-    Unk_ov001_0222df70 *b = (Unk_ov001_0222df70 *)WfcHeap_Alloc(0x80c, 4);
+    WfcOamBuffer *b = (WfcOamBuffer *)WfcHeap_Alloc(0x80c, 4);
     s32 i;
     sWfcOamBuf = b;
     v = 0x200;

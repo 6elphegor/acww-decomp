@@ -1,40 +1,24 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
-#include "net/Unk_ov065_0225f1cc_Cfg.h"
-#include "net/Unk_ov065_0225f378_Obj.h"
-
-
-struct Unk_ov065_0225f210_G {
-    s32 stackFlags;
-    void *allocFunc;
-    void *freeFunc;
-    void *addrReadyCallback;
-    void *linkCheckCallback;
-    u32 randSeed;
-    u32 randSeedHi;
-    void *recvRingBuf;
-    u32 recvRingSize;
-    s32 mss;
-    u32 requestedIp;
-    u32 yieldMode;
-};
-
+#include "net/SockCoreConfig.h"
+#include "net/SockCoreSocket.h"
+#include "net/IpStackConfig.h"
 
 extern "C" {
-extern Unk_ov065_0225f1cc_Cfg *sSockCoreConfig;
+extern SockCoreConfig *sSockCoreConfig;
 extern u32 sSockYieldMode;
 extern u32 sSockLastHostIp;
 extern u32 sSockCoreState;
 extern void *sSockDefaultSocket;
-extern Unk_ov065_0225f210_G sIpStackParams;
+extern IpStackConfig sIpStackParams;
 
 // other TUs of this overlay
 extern u32 gOwnIp;
 extern u32 sNetmask;
 extern u32 sGateway;
 extern u32 sDnsServers[2];
-extern Unk_ov065_0225f634_Params sSockTcpParams;
-extern Unk_ov065_0225f634_Params sSockSendOnlyParams;
+extern SockCreateParams sSockTcpParams;
+extern SockCreateParams sSockSendOnlyParams;
 
 // main module
 void OSi_ReferSymbol(u32);
@@ -49,14 +33,14 @@ void IpStack_Init(void *);
 void Eth_OnFrameReceived(void);
 void SockCore_FreeClosedSockets(void);
 s32 SockCore_CreateMsgPool(s32);
-s32 SockCore_Create(Unk_ov065_0225f634_Params *);
+s32 SockCore_Create(SockCreateParams *);
 
 BOOL SockCore_IsLinkUp(void);
 void SockCore_OnDhcpAddressReady(void);
 void SockCore_OnStaticAddressReady(void);
 void SockCore_SetupStackConfig(void);
 s32 SockCore_CreateMsgPoolAndDefaultSocket(void);
-s32 SockCore_Startup(Unk_ov065_0225f1cc_Cfg *);
+s32 SockCore_Startup(SockCoreConfig *);
 }
 
 extern "C" {
@@ -64,10 +48,10 @@ void *sSockDefaultSocket;
 u32 sSockCoreState;
 u32 sSockLastHostIp;
 u32 sSockYieldMode;
-Unk_ov065_0225f1cc_Cfg *sSockCoreConfig;
-Unk_ov065_0225f210_G sIpStackParams;
+SockCoreConfig *sSockCoreConfig;
+IpStackConfig sIpStackParams;
 
-s32 SockCore_Startup(Unk_ov065_0225f1cc_Cfg *cfg)
+s32 SockCore_Startup(SockCoreConfig *cfg)
 {
     OSi_ReferSymbol(0x2000bd4);
     if (sSockCoreConfig != NULL) {
@@ -89,14 +73,14 @@ s32 SockCore_CreateMsgPoolAndDefaultSocket(void)
 
 void SockCore_SetupStackConfig(void)
 {
-    Unk_ov065_0225f210_G *g = &sIpStackParams;
-    Unk_ov065_0225f1cc_Cfg *c = sSockCoreConfig;
+    IpStackConfig *g = &sIpStackParams;
+    SockCoreConfig *c = sSockCoreConfig;
     s32 a;
     s32 b;
     MI_CpuFill8(g, 0, 0x30);
-    g->allocFunc = (void *)c->unk_18;
-    g->freeFunc = (void *)c->unk_1c;
-    g->linkCheckCallback = (void *)SockCore_IsLinkUp;
+    g->allocFunc = c->alloc;
+    g->freeFunc = c->free;
+    g->linkCheckCallback = SockCore_IsLinkUp;
     g->randSeed = 0;
     g->randSeedHi = 0;
     g->yieldMode = sSockYieldMode;
@@ -106,9 +90,9 @@ void SockCore_SetupStackConfig(void)
         g->recvRingSize = 0x4000;
     }
     if (c->recvRingBuf != 0) {
-        g->recvRingBuf = (void *)c->recvRingBuf;
+        g->recvRingBuf = c->recvRingBuf;
     } else {
-        g->recvRingBuf = sSockCoreConfig->unk_18(g->recvRingSize);
+        g->recvRingBuf = (u32)sSockCoreConfig->alloc(g->recvRingSize);
     }
     a = c->mtu;
     if (a == 0) {
@@ -125,12 +109,12 @@ void SockCore_SetupStackConfig(void)
     if (c->useDhcp != 0) {
         sSockCoreState = 1;
         g->stackFlags = 0;
-        g->addrReadyCallback = (void *)SockCore_OnDhcpAddressReady;
+        g->addrReadyCallback = SockCore_OnDhcpAddressReady;
         g->requestedIp = sSockLastHostIp;
     } else {
         sSockCoreState = 0;
         g->stackFlags = 1;
-        g->addrReadyCallback = (void *)SockCore_OnStaticAddressReady;
+        g->addrReadyCallback = SockCore_OnStaticAddressReady;
     }
     {
         s32 t = c->threadPriority;
@@ -146,7 +130,7 @@ void SockCore_SetupStackConfig(void)
 
 void SockCore_OnStaticAddressReady(void)
 {
-    Unk_ov065_0225f1cc_Cfg *c = sSockCoreConfig;
+    SockCoreConfig *c = sSockCoreConfig;
     gOwnIp = c->ownIp;
     sNetmask = c->netmask;
     sGateway = c->gateway;

@@ -35,7 +35,7 @@ void WfcTestConfirm_Enter();
 void WfcConnTest_Enter();
 }
 
-struct Unk_0221bd00_V { s32 v[3]; };
+struct WfcTestConfirmMessagesCopy { s32 v[3]; };
 
 extern "C" s32 sWfcTestConfirmMessages[3] = {0x75, 0x75, 0x9d};
 
@@ -72,7 +72,7 @@ extern "C" void WfcTestConfirm_FadeIn() {
 
 extern "C" void WfcTestConfirm_ShowDialog() {
     s32 x;
-    Unk_0221bd00_V a = *(Unk_0221bd00_V *)sWfcTestConfirmMessages;
+    WfcTestConfirmMessagesCopy a = *(WfcTestConfirmMessagesCopy *)sWfcTestConfirmMessages;
     if (WfcFade_IsBusy(1) != 0) return;
     if (WfcFade_IsBusy(0) != 0) return;
     WfcUtil_GetEditParams(0, &x);

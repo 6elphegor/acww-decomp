@@ -6,23 +6,7 @@
 
 #pragma thumb off
 
-struct Unk_ov001_0222449c_Ent {
-    u32 w0;
-    u16 w4;
-    u16 w6;
-};
-
-struct Unk_ov001_0222449c {
-    u32 unk_00;
-    u32 unk_04;
-    Unk_ov001_0222449c_Ent *oams;
-    u8 numOams;
-};
-
-
-
-
-struct Unk_ov001_0222df34 {
+struct WfcObjList {
     u8 pad_000[0x200];
     WfcObjGroup headNode;
     WfcObjGroup tailNode;
@@ -31,7 +15,7 @@ struct Unk_ov001_0222df34 {
 };
 
 extern "C" {
-Unk_ov001_0222df34 *sWfcObj;
+WfcObjList *sWfcObj;
 }
 
 extern "C" {
@@ -51,9 +35,9 @@ void WfcList_Remove(void *);
 void WfcList_Destroy(void *, ...);
 void *WfcList_Create();
 GXOamAttr *WfcOam_GetEntry(s32, s32);
-void WfcObj_GetPos(Unk_ov001_0222449c *self, s32 idx, u32 *o1, u32 *o2);
-void WfcObj_SetPriority(Unk_ov001_0222449c *self, s32 idx, s32 v);
-void WfcObj_SetPos(Unk_ov001_0222449c *self, s32 idx, s32 x, s32 y);
+void WfcObj_GetPos(WfcObjGroup *self, s32 idx, u32 *o1, u32 *o2);
+void WfcObj_SetPriority(WfcObjGroup *self, s32 idx, s32 v);
+void WfcObj_SetPos(WfcObjGroup *self, s32 idx, s32 x, s32 y);
 void WfcObj_SetModePalette(WfcObjGroup *p, s32 idx, u32 a, u32 b);
 void WfcObj_SetAffineMode(WfcObjGroup *p, s32 idx, u32 v, u32 x);
 u32 WfcObj_GetCount(WfcObjGroup *p);
@@ -65,26 +49,26 @@ void WfcObj_Init();
 }
 
 // NitroSDK-style OAM position accessors (attr01: y in bits 0-7, x in bits 16-24)
-static inline void Unk_ov001_02224558_GetPos(const Unk_ov001_0222449c_Ent *e, u32 *x, u32 *y) {
-    *x = (e->w0 & 0x1ff0000) >> 16;
-    *y = (e->w0 & 0xff) >> 0;
+static inline void Unk_ov001_02224558_GetPos(const GXOamAttr *e, u32 *x, u32 *y) {
+    *x = (e->attr01 & 0x1ff0000) >> 16;
+    *y = (e->attr01 & 0xff) >> 0;
 }
 
-static inline void Unk_ov001_02224558_SetPos(Unk_ov001_0222449c_Ent *e, s32 x, s32 y) {
-    e->w0 = (e->w0 & 0xfe00ff00) | (y & 0xff) | ((x & 0x1ff) << 16);
+static inline void Unk_ov001_02224558_SetPos(GXOamAttr *e, s32 x, s32 y) {
+    e->attr01 = (e->attr01 & 0xfe00ff00) | (y & 0xff) | ((x & 0x1ff) << 16);
 }
 
 void WfcObj_Init() {
-    sWfcObj = (Unk_ov001_0222df34 *)WfcHeap_AllocClear(0x450, 4);
+    sWfcObj = (WfcObjList *)WfcHeap_AllocClear(0x450, 4);
     s32 i = 0;
     s32 off = i;
     for (; i < 2; off += 0x228, i++) {
-        ((Unk_ov001_0222df34 *)((u8 *)sWfcObj + off))->nodePool = WfcPool_CreateFrom(0x20, (u8 *)sWfcObj + off, 0x10);
-        ((Unk_ov001_0222df34 *)((u8 *)sWfcObj + off))->list = WfcList_Create();
-        ((Unk_ov001_0222df34 *)((u8 *)sWfcObj + off))->headNode.oams = WfcOam_GetEntry(i, 0x40);
-        ((Unk_ov001_0222df34 *)((u8 *)sWfcObj + off))->tailNode.oams = WfcOam_GetEntry(i, 0x7f) + 1;
-        WfcList_PushFront(((Unk_ov001_0222df34 *)((u8 *)sWfcObj + off))->list, (u8 *)sWfcObj + off + 0x200);
-        WfcList_PushBack(((Unk_ov001_0222df34 *)((u8 *)sWfcObj + off))->list, (u8 *)sWfcObj + off + 0x210);
+        ((WfcObjList *)((u8 *)sWfcObj + off))->nodePool = WfcPool_CreateFrom(0x20, (u8 *)sWfcObj + off, 0x10);
+        ((WfcObjList *)((u8 *)sWfcObj + off))->list = WfcList_Create();
+        ((WfcObjList *)((u8 *)sWfcObj + off))->headNode.oams = WfcOam_GetEntry(i, 0x40);
+        ((WfcObjList *)((u8 *)sWfcObj + off))->tailNode.oams = WfcOam_GetEntry(i, 0x7f) + 1;
+        WfcList_PushFront(((WfcObjList *)((u8 *)sWfcObj + off))->list, (u8 *)sWfcObj + off + 0x200);
+        WfcList_PushBack(((WfcObjList *)((u8 *)sWfcObj + off))->list, (u8 *)sWfcObj + off + 0x210);
     }
 }
 
@@ -141,7 +125,7 @@ void WfcObj_Free(WfcObjGroup *p) {
         e->attr01 = (e->attr01 & 0xc1fffcff) | 0x200;
     }
     WfcList_Remove(p);
-    Unk_ov001_0222df34 *g = sWfcObj;
+    WfcObjList *g = sWfcObj;
     if ((u32)p >= (u32)g + 0x228) t = 1;
     WfcPool_Put(g[t].nodePool, p);
 }
@@ -188,8 +172,8 @@ void WfcObj_SetModePalette(WfcObjGroup *p, s32 idx, u32 a, u32 b) {
     }
 }
 
-void WfcObj_SetPos(Unk_ov001_0222449c *self, s32 idx, s32 x, s32 y) {
-    Unk_ov001_0222449c_Ent *p = self->oams;
+void WfcObj_SetPos(WfcObjGroup *self, s32 idx, s32 x, s32 y) {
+    GXOamAttr *p = self->oams;
     if (idx >= 0) {
         Unk_ov001_02224558_SetPos(&p[idx], x, y);
     } else {
@@ -208,23 +192,23 @@ void WfcObj_SetPos(Unk_ov001_0222449c *self, s32 idx, s32 x, s32 y) {
     }
 }
 
-void WfcObj_SetPriority(Unk_ov001_0222449c *self, s32 idx, s32 v) {
-    Unk_ov001_0222449c_Ent *p = self->oams;
+void WfcObj_SetPriority(WfcObjGroup *self, s32 idx, s32 v) {
+    GXOamAttr *p = self->oams;
     if (idx >= 0) {
-        Unk_ov001_0222449c_Ent *e = &p[idx];
-        e->w4 = (e->w4 & ~0xc00) | (v << 10);
+        GXOamAttr *e = &p[idx];
+        e->attr2 = (e->attr2 & ~0xc00) | (v << 10);
     } else {
         s32 i;
         for (i = 0; i < self->numOams; i++) {
-            u32 t = p[i].w4 & ~0xc00;
-            p[i].w4 = t | (v << 10);
+            u32 t = p[i].attr2 & ~0xc00;
+            p[i].attr2 = t | (v << 10);
         }
     }
 }
 
-void WfcObj_GetPos(Unk_ov001_0222449c *self, s32 idx, u32 *o1, u32 *o2) {
-    Unk_ov001_0222449c_Ent *p = self->oams;
-    *o1 = (p[idx].w0 & 0x1ff0000) >> 16;
-    *o2 = p[idx].w0 & 0xff;
+void WfcObj_GetPos(WfcObjGroup *self, s32 idx, u32 *o1, u32 *o2) {
+    GXOamAttr *p = self->oams;
+    *o1 = (p[idx].attr01 & 0x1ff0000) >> 16;
+    *o2 = p[idx].attr01 & 0xff;
 }
 

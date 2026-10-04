@@ -7,10 +7,10 @@
 
 
 
-struct Unk_ov001_02224b9c_T {
-    u16 unk_00;
+struct WfcCellEntry {
+    u16 numOams;
     u16 unk_02;
-    u32 unk_04;
+    u32 dataOffset;
 };
 
 extern "C" {
@@ -29,12 +29,12 @@ void WfcCell_Copy(s32 which, s32 idx, void *dst);
 void WfcCell_Unload(s32 which);
 void WfcCell_Load(s32 which, u32 path);
 
-Unk_ov001_02224b9c_T *sWfcCellData[2];
+WfcCellEntry *sWfcCellData[2];
 }
 
 void WfcCell_Load(s32 which, u32 path) {
     u32 buf[2];
-    sWfcCellData[which] = (Unk_ov001_02224b9c_T *)WfcFs_LoadFile(path, buf, 4);
+    sWfcCellData[which] = (WfcCellEntry *)WfcFs_LoadFile(path, buf, 4);
 }
 
 void WfcCell_Unload(s32 which) {
@@ -43,11 +43,11 @@ void WfcCell_Unload(s32 which) {
 }
 
 void WfcCell_Copy(s32 which, s32 idx, void *dst) {
-    Unk_ov001_02224b9c_T *tbl = sWfcCellData[which];
+    WfcCellEntry *tbl = sWfcCellData[which];
     u8 buf[8];
     volatile s32 z;
-    u32 off = tbl[idx].unk_04;
-    u32 cnt = tbl[idx].unk_00;
+    u32 off = tbl[idx].dataOffset;
+    u32 cnt = tbl[idx].numOams;
     u8 *src = (u8 *)tbl + off;
     s32 i;
     z = 0;
@@ -68,7 +68,7 @@ WfcObjGroup *WfcObj_CreateSingle(s32 which, s32 idx) {
 }
 
 WfcObjGroup *WfcObj_Create(s32 which, s32 idx, s32 flag) {
-    WfcObjGroup *r = WfcObj_Alloc(which, sWfcCellData[which][idx].unk_00, flag);
+    WfcObjGroup *r = WfcObj_Alloc(which, sWfcCellData[which][idx].numOams, flag);
     WfcCell_Copy(which, idx, WfcObj_GetOam(r, 0));
     return r;
 }

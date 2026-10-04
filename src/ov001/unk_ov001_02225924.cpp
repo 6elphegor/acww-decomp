@@ -1,6 +1,6 @@
 // mwcc-flags: -O4,p
 #include "types.h"
-#include "net/Unk_ov001_02225924_Rect.h"
+#include "net/WfcRect.h"
 
 #pragma thumb off
 
@@ -19,11 +19,11 @@ void *NNS_FndCreateExpHeapEx(void *buf, u32 size, u32 b);
 void MI_CpuFill8(void *p, u32 v, u32 size);
 void Fatal_Trap();
 
-void WfcUtil_RectFromPosSize(Unk_ov001_02225924_Pt *a, Unk_ov001_02225924_Pt *b, Unk_ov001_02225924_Rect *out);
-void WfcUtil_SetRect(u32 a, u32 b, u32 c, u32 d, Unk_ov001_02225924_Rect *out);
-void WfcUtil_SetPoint(u32 a, u32 b, Unk_ov001_02225924_Pt *out);
+void WfcUtil_RectFromPosSize(WfcPoint *a, WfcPoint *b, WfcRect *out);
+void WfcUtil_SetRect(u32 a, u32 b, u32 c, u32 d, WfcRect *out);
+void WfcUtil_SetPoint(u32 a, u32 b, WfcPoint *out);
 void WfcGx_SetWindowPlanes(u32 eng, u32 which, u32 v, u32 on);
-void WfcGx_SetWindowRect(u32 eng, u32 which, Unk_ov001_02225924_Rect *r);
+void WfcGx_SetWindowRect(u32 eng, u32 which, WfcRect *r);
 void WfcGx_HidePlanes(u32 eng, u32 m);
 void WfcGx_ShowPlanes(u32 eng, u32 m);
 void WfcHeap_Free(void *p);
@@ -42,11 +42,11 @@ struct Unk_ov001_02225ae8_Pad {
     ~Unk_ov001_02225ae8_Pad() {}
 };
 
-static inline void Unk_ov001_02225ae8_Set(u32 ha, u32 va, Unk_ov001_02225924_Rect *r) {
-    u32 x1 = r->x;
-    u32 x2 = r->w;
-    u32 y1 = r->y;
-    u32 y2 = r->h;
+static inline void Unk_ov001_02225ae8_Set(u32 ha, u32 va, WfcRect *r) {
+    u32 x1 = r->left;
+    u32 x2 = r->right;
+    u32 y1 = r->top;
+    u32 y2 = r->bottom;
     *(vu16 *)ha = ((x1 << 8) & 0xff00) | (x2 & 0xff);
     *(vu16 *)va = ((y1 << 8) & 0xff00) | (y2 & 0xff);
 }
@@ -112,7 +112,7 @@ void WfcGx_HidePlanes(u32 eng, u32 m) {
     }
 }
 
-void WfcGx_SetWindowRect(u32 eng, u32 which, Unk_ov001_02225924_Rect *r) {
+void WfcGx_SetWindowRect(u32 eng, u32 which, WfcRect *r) {
     Unk_ov001_02225ae8_Pad pad;
     if (eng == 1) {
         if (which == 0) {
@@ -179,22 +179,22 @@ void WfcGx_SetWindowPlanes(u32 eng, u32 which, u32 v, u32 on) {
     }
 }
 
-void WfcUtil_SetPoint(u32 a, u32 b, Unk_ov001_02225924_Pt *out) {
+void WfcUtil_SetPoint(u32 a, u32 b, WfcPoint *out) {
     out->x = a;
     out->y = b;
 }
 
-void WfcUtil_SetRect(u32 a, u32 b, u32 c, u32 d, Unk_ov001_02225924_Rect *out) {
-    out->x = a;
-    out->y = b;
-    out->w = c;
-    out->h = d;
+void WfcUtil_SetRect(u32 a, u32 b, u32 c, u32 d, WfcRect *out) {
+    out->left = a;
+    out->top = b;
+    out->right = c;
+    out->bottom = d;
 }
 
-void WfcUtil_RectFromPosSize(Unk_ov001_02225924_Pt *a, Unk_ov001_02225924_Pt *b, Unk_ov001_02225924_Rect *out) {
-    out->x = a->x;
-    out->y = a->y;
-    out->w = a->x + b->x;
-    out->h = a->y + b->y;
+void WfcUtil_RectFromPosSize(WfcPoint *a, WfcPoint *b, WfcRect *out) {
+    out->left = a->x;
+    out->top = a->y;
+    out->right = a->x + b->x;
+    out->bottom = a->y + b->y;
 }
 

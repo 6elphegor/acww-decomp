@@ -1,10 +1,11 @@
 // mwcc-flags: -O4,p
 #include "types.h"
+#include "net/WfcConfigSlot.h"
 #include "nitro/gxoam.h"
 
 #pragma thumb off
 
-struct Unk_ov001_0222de94 {
+struct WfcManualSetupWork {
     void *flashTask;
     u8 toggleFlashTimers[4];
     void *bgMapFile;
@@ -24,18 +25,12 @@ struct Unk_ov001_0222de94 {
     u8 errorSoundPlayed;
 };
 
-struct Unk_ov001_022169cc_Bits {
-    u8 pad_00[0xe6];
-    u8 lo : 2;
-    u8 hi : 6;
-};
-
-struct Unk_ov001_02215830_L { u8 b[4]; };
-struct Unk_ov001_02215e1c_E { u16 a, b, c, d; };
-struct Unk_ov001_02215e1c_L { u8 b[14]; };
-struct Unk_ov001_02217c24_A23 { u8 b[23]; };
-struct Unk_ov001_02217c24_A21 { u8 b[21]; };
-struct Unk_ov001_02217c24_A22 { u8 b[22]; };
+struct WfcManualSetupToggleItemsCopy { u8 b[4]; };
+struct WfcManualSetupCursorBox { u16 left, top, right, bottom; };
+struct WfcManualSetupCursorBoxIdsCopy { u8 b[14]; };
+struct WfcManualSetupListMapPathCopy { u8 b[23]; };
+struct WfcManualSetupPalettePathCopy { u8 b[21]; };
+struct WfcManualSetupPalette2PathCopy { u8 b[22]; };
 
 #define E34 ((GXOamAttr *)sWfcManualSetup->statusIcon)
 #define BGCNT(a, v) (*(volatile u16 *)(a) = (*(volatile u16 *)(a) & ~3) | (v))
@@ -55,7 +50,7 @@ extern const u8 sWfcManualSetupItemRows[11] = {0, 1, 2, 2, 3, 4, 5, 6, 6, 7, 8};
 extern const u8 sWfcManualSetupRowButtonCells[15] = {0, 0x29, 0x2c, 0x52, 0x53, 0x30, 0, 0x2a, 0x30, 0x54, 0x55, 0, 0, 0x2b, 0};
 extern const u16 sWfcManualSetupBgRowOffsets[10] = {0, 0x60, 0xe0, 0x140, 0x1c0, 0x240, 0x2a0, 0x320, 0x3a0, 0};
 extern const u16 sWfcManualSetupButtonRects[3][4] = {{0x84, 0x1b, 0xfc, 0x2c}, {0x84, 0xac, 0xfc, 0xbd}, {0x04, 0xac, 0x7c, 0xbd}};
-extern const Unk_ov001_02215e1c_E sWfcManualSetupCursorPos[6] = {{0xc8, 0x31, 0xe0, 0x4d}, {0xbc, 0x31, 0xe0, 0x4d}, {0x8b, 0x31, 0xaf, 0x4d}, {0x82, 0x18, 0xee, 0x2c}, {0x82, 0xa9, 0xee, 0xbd}, {0x02, 0xa9, 0x6e, 0xbd}};
+extern const WfcManualSetupCursorBox sWfcManualSetupCursorPos[6] = {{0xc8, 0x31, 0xe0, 0x4d}, {0xbc, 0x31, 0xe0, 0x4d}, {0x8b, 0x31, 0xaf, 0x4d}, {0x82, 0x18, 0xee, 0x2c}, {0x82, 0xa9, 0xee, 0xbd}, {0x02, 0xa9, 0x6e, 0xbd}};
 
 u8 sWfcManualSetupToggleItems[4] = {2, 3, 7, 8};
 u8 data_ov001_0222b050[14] = {0, 0, 1, 2, 0, 0, 0, 1, 2, 0, 0, 3, 4, 5};
@@ -68,7 +63,7 @@ u8 sWfcManualSetupCursorItem;
 u8 sWfcManualSetupMode;
 u8 sWfcManualSetupCursorRow;
 u16 sWfcManualSetupScroll;
-Unk_ov001_0222de94 *sWfcManualSetup;
+WfcManualSetupWork *sWfcManualSetup;
 }
 
 extern "C" {
@@ -213,7 +208,7 @@ extern "C" void WfcManualSetup_Enter() {
     s32 i;
     BOOL z = FALSE;
     u32 b;
-    sWfcManualSetup = (Unk_ov001_0222de94 *)WfcHeap_AllocClear(0x48, 4);
+    sWfcManualSetup = (WfcManualSetupWork *)WfcHeap_AllocClear(0x48, 4);
     sWfcManualSetup->savedAutoDns = p[0xf6];
     sWfcManualSetup->lastBottomItem = 0xc;
     WfcManualSetup_ResetCursor();
@@ -251,12 +246,12 @@ extern "C" void WfcManualSetup_Enter() {
 }
 
 extern "C" void WfcManualSetup_LoadBg() {
-    Unk_ov001_02217c24_A23 lb;
-    Unk_ov001_02217c24_A21 lc;
-    Unk_ov001_02217c24_A22 ld;
-    lb = *(Unk_ov001_02217c24_A23 *)data_ov001_0222b090;
-    lc = *(Unk_ov001_02217c24_A21 *)data_ov001_0222b060;
-    ld = *(Unk_ov001_02217c24_A22 *)data_ov001_0222b078;
+    WfcManualSetupListMapPathCopy lb;
+    WfcManualSetupPalettePathCopy lc;
+    WfcManualSetupPalette2PathCopy ld;
+    lb = *(WfcManualSetupListMapPathCopy *)data_ov001_0222b090;
+    lc = *(WfcManualSetupPalettePathCopy *)data_ov001_0222b060;
+    ld = *(WfcManualSetupPalette2PathCopy *)data_ov001_0222b078;
     {
         u32 t = *(volatile u16 *)0x400000c;
         t &= 0x43;
@@ -628,8 +623,8 @@ extern "C" s32 WfcManualSetup_DrawRowValue(s32 idx, s32 arg) {
         WfcManualSetup_DrawString(p + 0x40, arg);
         return;
     case 1: {
-        Unk_ov001_022169cc_Bits *bits = (Unk_ov001_022169cc_Bits *)p;
-        switch (bits->lo) {
+        WfcConfigSlot *slot = (WfcConfigSlot *)p;
+        switch (slot->wepMode.wepKeySize) {
         case 0:
             return;
         case 1:
@@ -642,7 +637,7 @@ extern "C" s32 WfcManualSetup_DrawRowValue(s32 idx, s32 arg) {
             n = 0x20;
             break;
         }
-        if (bits->hi == 1) n = n / 2;
+        if (slot->wepMode.wepAscii == 1) n = n / 2;
         MI_CpuFill8(buf, 0, 0x21);
         func_0212899c(buf, 0x2a, n);
         WfcManualSetup_DrawString(buf, arg);
@@ -982,19 +977,19 @@ extern "C" void WfcManualSetup_ScrollBgTask() {
 }
 
 extern "C" void WfcManualSetup_DrawCursor() {
-    Unk_ov001_02215e1c_L l;
+    WfcManualSetupCursorBoxIdsCopy l;
     u8 *src = data_ov001_0222b050;
     s32 v;
-    l = *(Unk_ov001_02215e1c_L *)src;
+    l = *(WfcManualSetupCursorBoxIdsCopy *)src;
     v = l.b[sWfcManualSetupCursorItem];
     if (v >= 3) {
-        WfcCursor_ShowPair(3, sWfcManualSetupCursorPos[v].a, sWfcManualSetupCursorPos[v].c, sWfcManualSetupCursorPos[v].b);
+        WfcCursor_ShowPair(3, sWfcManualSetupCursorPos[v].left, sWfcManualSetupCursorPos[v].right, sWfcManualSetupCursorPos[v].top);
         return;
     }
     {
-        Unk_ov001_02215e1c_E e = sWfcManualSetupCursorPos[v];
-        e.b += sWfcManualSetupCursorRow * 0x1d;
-        WfcCursor_ShowPair(1, e.a, e.c, e.b);
+        WfcManualSetupCursorBox e = sWfcManualSetupCursorPos[v];
+        e.top += sWfcManualSetupCursorRow * 0x1d;
+        WfcCursor_ShowPair(1, e.left, e.right, e.top);
     }
 }
 
@@ -1168,7 +1163,7 @@ extern "C" void WfcManualSetup_ToggleFlashTask() {
 }
 
 extern "C" void WfcManualSetup_FlashToggle() {
-    Unk_ov001_02215830_L l;
+    WfcManualSetupToggleItemsCopy l;
     u8 *q;
     s32 i;
     u8 s;
@@ -1180,7 +1175,7 @@ extern "C" void WfcManualSetup_FlashToggle() {
     s = sWfcManualSetupCursorItem;
     for (i = 0, q = l.b; i < 4; i++, q++) {
         if (s == *q) {
-            Unk_ov001_0222de94 *g = sWfcManualSetup;
+            WfcManualSetupWork *g = sWfcManualSetup;
             g->toggleFlashTimers[i] = 0x14;
             if ((i & 1) != 0) {
                 sWfcManualSetup->toggleFlashTimers[i - 1] = 0;

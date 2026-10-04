@@ -1,22 +1,11 @@
 // mwcc-flags: -O4,p
 #include "types.h"
 #include "net/Unk_ov001_02221734_B.h"
+#include "net/WfcMoveMbWork.h"
 
 #pragma thumb off
 
-struct Unk_ov001_02220ad8_S {
-    u16 state;
-    u16 m[6];
-    u8 pad_0e[0x1b140 - 0x0e];
-    void *mbWork;
-    void *segmentBuffer;
-};
-struct Unk_ov001_02220ad8_Z { u8 pad[0x1b140]; s32 mbWork; s32 segmentBuffer; };
-
-
-
-
-extern "C" Unk_ov001_02220ad8_S *sWfcMoveMb;
+extern "C" WfcMoveMbWork *sWfcMoveMb;
 extern "C" u16 *sWfcMoveMbMaskPtrs[6];
 
 extern "C" {
@@ -63,7 +52,7 @@ void WfcMoveMb_SetWork(void *p);
 }
 
 void WfcMoveMb_SetWork(void *p) {
-    sWfcMoveMb = (Unk_ov001_02220ad8_S *)p;
+    sWfcMoveMb = (WfcMoveMbWork *)p;
     WfcMoveWh_SetWork((u8 *)p + 0x1b160);
     sWfcMoveMb->mbWork = 0;
     sWfcMoveMb->segmentBuffer = 0;
@@ -77,7 +66,7 @@ void WfcMoveMb_Init(s32 a, s32 b) {
     d.b1 = buf.nickNameLength;
     MI_CpuCopy8(buf.nickName, d.data, buf.nickNameLength * 2);
     d.hi = 0;
-    Unk_ov001_02221734_Z *zp = &d.z;
+    WfcMoveMbStateCopy *zp = &d.z;
     zp->v[0] = 0;
     zp->v[1] = 0;
     zp->v[2] = 0;
@@ -85,7 +74,7 @@ void WfcMoveMb_Init(s32 a, s32 b) {
     zp->v[4] = 0;
     zp->v[5] = 0;
     zp->v[6] = 0;
-    *(Unk_ov001_02221734_Z *)sWfcMoveMb = *zp;
+    *(WfcMoveMbStateCopy *)sWfcMoveMb = *zp;
     sWfcMoveMb->mbWork = (u8 *)sWfcMoveMb + 0x10040;
     if (func_021251ac(sWfcMoveMb->mbWork, &d, a, b, 2) != 0) Fatal_Trap();
     MB_SetParentCommParam(0x100, 1);
@@ -115,7 +104,7 @@ s32 WfcMoveMb_RegisterFile(s32 *p) {
         q = buf;
     }
     if (MB_GetSegmentLength(q) != 0) {
-        Unk_ov001_02220ad8_S *g = sWfcMoveMb;
+        WfcMoveMbWork *g = sWfcMoveMb;
         g->segmentBuffer = (u8 *)g + 0x2c;
         if (sWfcMoveMb->segmentBuffer != 0) {
             if (MB_ReadSegment(q, sWfcMoveMb->segmentBuffer, 0x10000) != 0) {
@@ -131,12 +120,12 @@ void WfcMoveMb_AcceptChild(u32 n) {
     if (MB_CommResponseRequest(n, 1) != 0) return;
     u16 m = ~(1 << n);
     s32 e = OS_DisableInterrupts();
-    sWfcMoveMb->m[0] &= m;
-    sWfcMoveMb->m[1] &= m;
-    sWfcMoveMb->m[2] &= m;
-    sWfcMoveMb->m[3] &= m;
-    sWfcMoveMb->m[4] &= m;
-    sWfcMoveMb->m[5] &= m;
+    sWfcMoveMb->childMasks[0] &= m;
+    sWfcMoveMb->childMasks[1] &= m;
+    sWfcMoveMb->childMasks[2] &= m;
+    sWfcMoveMb->childMasks[3] &= m;
+    sWfcMoveMb->childMasks[4] &= m;
+    sWfcMoveMb->childMasks[5] &= m;
     OS_RestoreInterrupts(e);
     func_02124a94(n);
 }
@@ -145,19 +134,19 @@ void WfcMoveMb_KickChild(u32 n) {
     if (MB_CommResponseRequest(n, 0) == 0) {
         u16 m = ~(1 << n);
         s32 e = OS_DisableInterrupts();
-        sWfcMoveMb->m[0] &= m;
-        sWfcMoveMb->m[1] &= m;
-        sWfcMoveMb->m[2] &= m;
-        sWfcMoveMb->m[3] &= m;
-        sWfcMoveMb->m[4] &= m;
-        sWfcMoveMb->m[5] &= m;
+        sWfcMoveMb->childMasks[0] &= m;
+        sWfcMoveMb->childMasks[1] &= m;
+        sWfcMoveMb->childMasks[2] &= m;
+        sWfcMoveMb->childMasks[3] &= m;
+        sWfcMoveMb->childMasks[4] &= m;
+        sWfcMoveMb->childMasks[5] &= m;
         OS_RestoreInterrupts(e);
         func_02124a94(n);
     } else {
         s32 e = OS_DisableInterrupts();
         u32 m = ~(1 << n);
-        sWfcMoveMb->m[1] &= m;
-        sWfcMoveMb->m[0] &= m;
+        sWfcMoveMb->childMasks[1] &= m;
+        sWfcMoveMb->childMasks[0] &= m;
         OS_RestoreInterrupts(e);
     }
 }
@@ -167,21 +156,21 @@ void WfcMoveMb_StartDownload(u32 id)
     if (MB_CommResponseRequest(id, 2) == 0) {
         u16 k = ~(1 << id);
         u32 r = OS_DisableInterrupts();
-        sWfcMoveMb->m[0] &= k;
-        sWfcMoveMb->m[1] &= k;
-        sWfcMoveMb->m[2] &= k;
-        sWfcMoveMb->m[3] &= k;
-        sWfcMoveMb->m[4] &= k;
-        sWfcMoveMb->m[5] &= k;
+        sWfcMoveMb->childMasks[0] &= k;
+        sWfcMoveMb->childMasks[1] &= k;
+        sWfcMoveMb->childMasks[2] &= k;
+        sWfcMoveMb->childMasks[3] &= k;
+        sWfcMoveMb->childMasks[4] &= k;
+        sWfcMoveMb->childMasks[5] &= k;
         OS_RestoreInterrupts(r);
         func_02124a94(id);
     } else {
         u32 r = OS_DisableInterrupts();
         u32 one = 1;
-        Unk_ov001_02220ad8_S *s = sWfcMoveMb;
-        s->m[2] = s->m[2] & ~(one << id);
+        WfcMoveMbWork *s = sWfcMoveMb;
+        s->childMasks[2] = s->childMasks[2] & ~(one << id);
         s = sWfcMoveMb;
-        s->m[3] = s->m[3] | (one << id);
+        s->childMasks[3] = s->childMasks[3] | (one << id);
         OS_RestoreInterrupts(r);
     }
 }
@@ -192,17 +181,17 @@ void WfcMoveMb_StartDownloadAll()
     u16 i;
     for (i = 1; i < 16; i++) {
         u32 bit = 1 << i;
-        if (sWfcMoveMb->m[0] & bit) {
-            if (!(sWfcMoveMb->m[1] & bit)) {
-                if (!(sWfcMoveMb->m[2] & bit)) {
+        if (sWfcMoveMb->childMasks[0] & bit) {
+            if (!(sWfcMoveMb->childMasks[1] & bit)) {
+                if (!(sWfcMoveMb->childMasks[2] & bit)) {
                     u16 k = ~bit;
                     u32 r = OS_DisableInterrupts();
-                    sWfcMoveMb->m[0] &= k;
-                    sWfcMoveMb->m[1] &= k;
-                    sWfcMoveMb->m[2] &= k;
-                    sWfcMoveMb->m[3] &= k;
-                    sWfcMoveMb->m[4] &= k;
-                    sWfcMoveMb->m[5] &= k;
+                    sWfcMoveMb->childMasks[0] &= k;
+                    sWfcMoveMb->childMasks[1] &= k;
+                    sWfcMoveMb->childMasks[2] &= k;
+                    sWfcMoveMb->childMasks[3] &= k;
+                    sWfcMoveMb->childMasks[4] &= k;
+                    sWfcMoveMb->childMasks[5] &= k;
                     OS_RestoreInterrupts(r);
                     func_02124a94(i);
                 } else {
@@ -215,10 +204,10 @@ void WfcMoveMb_StartDownloadAll()
 
 u32 WfcMoveMb_IsAllBootable()
 {
-    if (sWfcMoveMb->m[0] == 0) return 0;
+    if (sWfcMoveMb->childMasks[0] == 0) return 0;
     u16 i;
     for (i = 1; i < 16; i++) {
-        if (sWfcMoveMb->m[0] & (1 << i)) {
+        if (sWfcMoveMb->childMasks[0] & (1 << i)) {
             if (MB_CommIsBootable(i) == 0) return 0;
         }
     }
@@ -231,18 +220,18 @@ void WfcMoveMb_StartRebootAll()
     ok = 0;
     for (i = 1; i < 16; i++) {
         u32 bit = 1 << i;
-        if (sWfcMoveMb->m[4] & bit) {
+        if (sWfcMoveMb->childMasks[4] & bit) {
             if (MB_CommResponseRequest(i, 3)) {
                 ok = ok | bit;
             } else {
                 u16 k = ~bit;
                 u32 r = OS_DisableInterrupts();
-                sWfcMoveMb->m[0] &= k;
-                sWfcMoveMb->m[1] &= k;
-                sWfcMoveMb->m[2] &= k;
-                sWfcMoveMb->m[3] &= k;
-                sWfcMoveMb->m[4] &= k;
-                sWfcMoveMb->m[5] &= k;
+                sWfcMoveMb->childMasks[0] &= k;
+                sWfcMoveMb->childMasks[1] &= k;
+                sWfcMoveMb->childMasks[2] &= k;
+                sWfcMoveMb->childMasks[3] &= k;
+                sWfcMoveMb->childMasks[4] &= k;
+                sWfcMoveMb->childMasks[5] &= k;
                 OS_RestoreInterrupts(r);
                 func_02124a94(i);
             }
@@ -273,9 +262,9 @@ void WfcMoveMb_ParentStateCallback(u32 id, u32 cmd, u8 *data)
         break;
     case 2: {
         if (WfcMoveMb_GetState() != 2) return;
-        Unk_ov001_02220ad8_S *s = sWfcMoveMb;
+        WfcMoveMbWork *s = sWfcMoveMb;
         u32 r = OS_DisableInterrupts();
-        s->m[0] = s->m[0] | (1 << id);
+        s->childMasks[0] = s->childMasks[0] | (1 << id);
         OS_RestoreInterrupts(r);
         u8 *e = (u8 *)sWfcMoveMb + 0x24 + (id - 1) * 0x1e;
         e[0] = data[0xa];
@@ -291,12 +280,12 @@ void WfcMoveMb_ParentStateCallback(u32 id, u32 cmd, u8 *data)
         if (WfcMoveMb_GetChildState(id) == 6) return;
         u16 k = ~(1 << id);
         u32 r = OS_DisableInterrupts();
-        sWfcMoveMb->m[0] &= k;
-        sWfcMoveMb->m[1] &= k;
-        sWfcMoveMb->m[2] &= k;
-        sWfcMoveMb->m[3] &= k;
-        sWfcMoveMb->m[4] &= k;
-        sWfcMoveMb->m[5] &= k;
+        sWfcMoveMb->childMasks[0] &= k;
+        sWfcMoveMb->childMasks[1] &= k;
+        sWfcMoveMb->childMasks[2] &= k;
+        sWfcMoveMb->childMasks[3] &= k;
+        sWfcMoveMb->childMasks[4] &= k;
+        sWfcMoveMb->childMasks[5] &= k;
         OS_RestoreInterrupts(r);
         break;
     }
@@ -305,8 +294,8 @@ void WfcMoveMb_ParentStateCallback(u32 id, u32 cmd, u8 *data)
             WfcMoveMb_KickChild(id);
             return;
         }
-        Unk_ov001_02220ad8_S *s = sWfcMoveMb;
-        s->m[1] = s->m[1] | (1 << id);
+        WfcMoveMbWork *s = sWfcMoveMb;
+        s->childMasks[1] = s->childMasks[1] | (1 << id);
         WfcMoveMb_AcceptChild(id);
         s32 r = MB_CommGetChildUser(id);
         if (r == 0) return;
@@ -314,31 +303,31 @@ void WfcMoveMb_ParentStateCallback(u32 id, u32 cmd, u8 *data)
         break;
     }
     case 14: {
-        Unk_ov001_02220ad8_S *s = sWfcMoveMb;
+        WfcMoveMbWork *s = sWfcMoveMb;
         u32 one = 1;
-        s->m[1] = s->m[1] & ~(one << id);
+        s->childMasks[1] = s->childMasks[1] & ~(one << id);
         s = sWfcMoveMb;
-        s->m[2] = s->m[2] | (one << id);
+        s->childMasks[2] = s->childMasks[2] | (one << id);
         if (WfcMoveMb_GetState() != 3) return;
         WfcMoveMb_StartDownload(id);
         break;
     }
     case 7: {
-        Unk_ov001_02220ad8_S *s = sWfcMoveMb;
+        WfcMoveMbWork *s = sWfcMoveMb;
         u32 one = 1;
-        s->m[3] = s->m[3] & ~(one << id);
+        s->childMasks[3] = s->childMasks[3] & ~(one << id);
         s = sWfcMoveMb;
-        s->m[4] = s->m[4] | (one << id);
+        s->childMasks[4] = s->childMasks[4] | (one << id);
         break;
     }
     case 9: {
-        Unk_ov001_02220ad8_S *s = sWfcMoveMb;
+        WfcMoveMbWork *s = sWfcMoveMb;
         u32 one = 1;
-        s->m[4] = s->m[4] & ~(one << id);
+        s->childMasks[4] = s->childMasks[4] & ~(one << id);
         s = sWfcMoveMb;
-        s->m[5] = s->m[5] | (one << id);
+        s->childMasks[5] = s->childMasks[5] | (one << id);
         s = sWfcMoveMb;
-        if (s->m[0] != s->m[5]) return;
+        if (s->childMasks[0] != s->childMasks[5]) return;
         MB_End();
         break;
     }
@@ -348,9 +337,9 @@ void WfcMoveMb_ParentStateCallback(u32 id, u32 cmd, u8 *data)
         } else {
             WfcMoveMb_SetState(0);
         }
-        Unk_ov001_02220ad8_Z *z = (Unk_ov001_02220ad8_Z *)sWfcMoveMb;
+        WfcMoveMbWork *z = sWfcMoveMb;
         if (z->segmentBuffer != 0) z->segmentBuffer = 0;
-        z = (Unk_ov001_02220ad8_Z *)sWfcMoveMb;
+        z = sWfcMoveMb;
         if (z->mbWork != 0) z->mbWork = 0;
         break;
     }
@@ -385,13 +374,13 @@ u32 WfcMoveMb_GetState()
 
 u32 WfcMoveMb_GetChildMask(u32 i)
 {
-    Unk_ov001_02220ad8_S *s = sWfcMoveMb;
-    sWfcMoveMbMaskPtrs[0] = &s->m[0];
-    sWfcMoveMbMaskPtrs[1] = &s->m[1];
-    sWfcMoveMbMaskPtrs[2] = &s->m[2];
-    sWfcMoveMbMaskPtrs[3] = &s->m[3];
-    sWfcMoveMbMaskPtrs[4] = &s->m[4];
-    sWfcMoveMbMaskPtrs[5] = &s->m[5];
+    WfcMoveMbWork *s = sWfcMoveMb;
+    sWfcMoveMbMaskPtrs[0] = &s->childMasks[0];
+    sWfcMoveMbMaskPtrs[1] = &s->childMasks[1];
+    sWfcMoveMbMaskPtrs[2] = &s->childMasks[2];
+    sWfcMoveMbMaskPtrs[3] = &s->childMasks[3];
+    sWfcMoveMbMaskPtrs[4] = &s->childMasks[4];
+    sWfcMoveMbMaskPtrs[5] = &s->childMasks[5];
     return *sWfcMoveMbMaskPtrs[i];
 }
 
@@ -400,8 +389,8 @@ u32 WfcMoveMb_GetChildState(u32 id)
     u16 buf[7];
     u32 r = OS_DisableInterrupts();
     u16 bit = 1 << id;
-    Unk_ov001_02220ad8_S *s = sWfcMoveMb;
-    if (!(s->m[0] & bit)) {
+    WfcMoveMbWork *s = sWfcMoveMb;
+    if (!(s->childMasks[0] & bit)) {
         OS_RestoreInterrupts(r);
         return 0;
     }
@@ -417,8 +406,8 @@ u32 WfcMoveMb_GetChildState(u32 id)
 
 u8 *WfcMoveMb_GetChildInfo(u32 id)
 {
-    Unk_ov001_02220ad8_S *s = sWfcMoveMb;
-    if (s->m[0] & (1 << id)) {
+    WfcMoveMbWork *s = sWfcMoveMb;
+    if (s->childMasks[0] & (1 << id)) {
         return (u8 *)s + 0xe + (id - 1) * 0x1e;
     }
     return 0;
@@ -426,9 +415,9 @@ u8 *WfcMoveMb_GetChildInfo(u32 id)
 
 u32 WfcMoveMb_FindAidByMac(u8 *mac)
 {
-    Unk_ov001_02220ad8_S *s = sWfcMoveMb;
+    WfcMoveMbWork *s = sWfcMoveMb;
     u16 i;
-    u16 mask = s->m[0];
+    u16 mask = s->childMasks[0];
     for (i = 1; i < 2; i++) {
         if (mask & (1 << i)) {
             u8 *e = (u8 *)s + 0x24 + (i - 1) * 0x1e;
@@ -440,5 +429,5 @@ u32 WfcMoveMb_FindAidByMac(u8 *mac)
     return 0;
 }
 
-extern "C" Unk_ov001_02220ad8_S *sWfcMoveMb = 0;
+extern "C" WfcMoveMbWork *sWfcMoveMb = 0;
 extern "C" u16 *sWfcMoveMbMaskPtrs[6] = {0, 0, 0, 0, 0, 0};

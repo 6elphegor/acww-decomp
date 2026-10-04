@@ -1,6 +1,6 @@
 // mwcc-flags: -O4,p
 #include "types.h"
-#include "net/Unk_ov001_0221b6f8_A12.h"
+#include "net/WifiApConfig.h"
 
 #pragma thumb off
 
@@ -227,12 +227,12 @@ void WfcConnTest_Start();
 
 void WfcConnTest_Start() {
     u32 l;
-    Unk_ov001_0221b6f8_A12 m;
+    WifiApConfig m;
     u8 *o = WfcConfig_GetEdit();
     MIi_CpuCopy32((void *)sWfcConnTestParam, &m, 12);
     WfcUtil_GetEditParams(0, &l);
-    if (l == 2) m.b[10] = 4;
-    else m.b[10] = o[0xf4] + 1;
+    if (l == 2) m.apFilter = 4;
+    else m.apFilter = o[0xf4] + 1;
     if (WifiAp_Init(&m) == 0) Fatal_Trap();
     if (l == 0) WifiAp_SetApEntry(o[0xf4], o);
     WfcTask_Add(0, (void *)WfcConnTest_PollTask, 0, 0x78);

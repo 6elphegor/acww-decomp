@@ -1,25 +1,14 @@
 // mwcc-flags: -O4,p -str reuse
 #include "types.h"
 #include "net/Unk_ov001_02221734_B.h"
+#include "net/WfcMoveMbWork.h"
+#include "nitro/wm.h"
 
 #pragma thumb off
 
-typedef s32 (*Unk_ov001_0222df28_Fn)(...);
+typedef s32 (*WfcMoveWhFunc)(...);
 
-struct Unk_ov001_0222df08_S {
-    u16 state;
-    u16 unk_02;
-    u16 unk_04;
-    u16 unk_06;
-    u16 unk_08;
-    u16 unk_0a;
-    u16 unk_0c;
-    u8 pad_0e[0x1b140 - 0x0e];
-    void *mbWork;
-    void *segmentBuffer;
-};
-
-struct Unk_ov001_0222df28_S {
+struct WfcMoveWhWork {
     s32 userGameInfo;
     u16 userGameInfoLength;
     u8 pad_06[2];
@@ -39,7 +28,7 @@ struct Unk_ov001_0222df28_S {
     s32 sysState;
     s32 connectMode;
     s32 receiverFunc;
-    Unk_ov001_0222df28_Fn judgeAcceptFunc;
+    WfcMoveWhFunc judgeAcceptFunc;
     u16 myAid;
     u16 connectBitmap;
     s32 errCode;
@@ -54,7 +43,7 @@ struct Unk_ov001_0222df28_S {
     s32 recvBufferSize;
     u8 pad_12a8[0x13a8 - 0x12a8];
     u32 unk_13a8;
-    Unk_ov001_0222df28_Fn unk_13ac;
+    WfcMoveWhFunc parentWepKeyGenerator;
     u32 unk_13b0;
     u8 pad_13b4[0xc];
     u8 wepKey[0x20];
@@ -63,21 +52,10 @@ struct Unk_ov001_0222df28_S {
     u8 keySetBuf[4];
 };
 
-
-
-
-struct Unk_ov001_02222088_A {
-    u8 pad_00[2];
-    u16 errcode;
-    u8 pad_04[4];
-    u16 channel;
-    u16 ccaBusyRatio;
-};
-
-typedef void (*Unk_ov001_0222df24_Fn)(u32, const void *, ...);
+typedef void (*WfcMoveWhPrintFn)(u32, const void *, ...);
 
 extern "C" {
-extern Unk_ov001_0222df08_S *sWfcMoveMb;
+extern WfcMoveMbWork *sWfcMoveMb;
 
 s32 MB_CommResponseRequest(s32, s32);
 s32 OS_DisableInterrupts();
@@ -127,15 +105,15 @@ void WfcMoveWh_GetSharedData(s32 a);
 void WfcMoveWh_SetJudgeCallback(s32 a);
 s32 WfcMoveWh_ParentConnect(s32 a, u32 b, u32 c);
 void WfcMoveWh_StateOutInitialize(u16 *);
-void WfcMoveWh_IndicationCallback(Unk_ov001_02222088_A *);
-void WfcMoveWh_StateOutMeasureChannel(Unk_ov001_02222088_A *);
-void WfcMoveWh_StateOutReset(Unk_ov001_02222088_A *);
-void WfcMoveWh_StateOutEndChild(Unk_ov001_02222088_A *);
-void WfcMoveWh_StateOutEndChildMp(Unk_ov001_02222088_A *);
-void WfcMoveWh_StateOutEndParent(Unk_ov001_02222088_A *);
-void WfcMoveWh_StateOutEndParentMp(Unk_ov001_02222088_A *);
+void WfcMoveWh_IndicationCallback(WMMsg *);
+void WfcMoveWh_StateOutMeasureChannel(WMMeasureChannelCallback *);
+void WfcMoveWh_StateOutReset(WMMsg *);
+void WfcMoveWh_StateOutEndChild(WMMsg *);
+void WfcMoveWh_StateOutEndChildMp(WMMsg *);
+void WfcMoveWh_StateOutEndParent(WMMsg *);
+void WfcMoveWh_StateOutEndParentMp(WMMsg *);
 u16 WfcMoveWh_MeasureNextChannel(u16);
-void WfcMoveWh_StateOutEnd(Unk_ov001_02222088_A *);
+void WfcMoveWh_StateOutEnd(WMMsg *);
 s32 WfcMoveWh_StateInEndChildKeyShare();
 s32 WfcMoveWh_StateInEndChildMp();
 s32 WfcMoveWh_EndKeySharing();
@@ -144,7 +122,7 @@ s32 WfcMoveWh_StateInReset();
 s32 WfcMoveWh_StateInSetParentParam();
 void WfcMoveWh_SetError(u32);
 void WfcMoveWh_ChangeSysState(s32);
-void WfcMoveWh_SetWork(Unk_ov001_0222df28_S *);
+void WfcMoveWh_SetWork(WfcMoveWhWork *);
 s32 DWCi_MOV_WH_StateInStartParentKeyShare();
 s32 WfcMoveWh_StateInStartParentMp();
 s32 WfcMoveWh_StateInStartParent();
@@ -164,7 +142,7 @@ s32 WfcMoveWh_StateInInitialize();
 // Declarations for data defined further down (definition order sets the data layout)
 extern "C" char data_ov001_0222b4ec[];
 extern "C" char data_ov001_0222b508[];
-extern "C" Unk_ov001_0222df24_Fn sWfcMoveWhDebugPrint;
+extern "C" WfcMoveWhPrintFn sWfcMoveWhDebugPrint;
 extern "C" char data_ov001_0222b524[];
 extern "C" char data_ov001_0222b540[];
 extern "C" char data_ov001_0222b55c[];
@@ -174,17 +152,16 @@ extern "C" char data_ov001_0222b5bc[];
 extern "C" char data_ov001_0222b5e0[];
 extern "C" char data_ov001_0222b604[];
 extern "C" char *sWfcMoveWhSysStateNames[10];
-extern "C" Unk_ov001_0222df28_S *sWfcMoveWh;
-
+extern "C" WfcMoveWhWork *sWfcMoveWh;
 
 #define G (sWfcMoveWh)
 #define LOG (sWfcMoveWhDebugPrint)
 
-extern "C" void WfcMoveWh_SetWork(Unk_ov001_0222df28_S *p) {
+extern "C" void WfcMoveWh_SetWork(WfcMoveWhWork *p) {
     G = p;
     p->sysState = 0;
     G->unk_13a8 = 0;
-    G->unk_13ac = 0;
+    G->parentWepKeyGenerator = 0;
     G->unk_13b0 = 0;
 }
 
@@ -199,7 +176,7 @@ extern "C" void WfcMoveWh_ChangeSysState(s32 n) {
 }
 
 extern "C" void WfcMoveWh_SetError(u32 v) {
-    Unk_ov001_0222df28_S *g = G;
+    WfcMoveWhWork *g = G;
     if ((u32)(g->sysState - 9) > 1) {
         g->errCode = v;
     }
@@ -223,7 +200,7 @@ extern "C" void WfcMoveWh_StateOutSetParentParam(u16 *p) {
         WfcMoveWh_ChangeSysState(9);
         return;
     }
-    if (G->unk_13ac != 0) {
+    if (G->parentWepKeyGenerator != 0) {
         if (WfcMoveWh_StateInSetWepKey()) {
             return;
         }
@@ -239,7 +216,7 @@ extern "C" void WfcMoveWh_StateOutSetParentParam(u16 *p) {
 extern "C" s32 WfcMoveWh_StateInSetWepKey() {
     s32 r;
     WfcMoveWh_ChangeSysState(3);
-    r = G->unk_13ac(G->wepKey, G);
+    r = G->parentWepKeyGenerator(G->wepKey, G);
     r = WM_SetWEPKey((void *)WfcMoveWh_StateOutSetWepKey, r, G->wepKey);
     if (r == 2) {
         return TRUE;
@@ -331,7 +308,7 @@ extern "C" s32 WfcMoveWh_StateInStartParentMp() {
     }
     WfcMoveWh_ChangeSysState(4);
     {
-        Unk_ov001_0222df28_S *g = G;
+        WfcMoveWhWork *g = G;
         r = func_021206b4((void *)WfcMoveWh_StateOutStartParentMp, g->recvBuffer, (u16)g->recvBufferSize, g->sendBuffer, (u16)g->sendBufferSize, 1, 0, 0, 0, 0, 0);
     }
     if (r == 2) {
@@ -349,7 +326,7 @@ extern "C" void WfcMoveWh_StateOutStartParentMp(u16 *p) {
     }
     switch (p[2]) {
     case 10: {
-        Unk_ov001_0222df28_S *g = G;
+        WfcMoveWhWork *g = G;
         if (g->connectMode == 2) {
             if (g->sysState == 4) {
                 if (DWCi_MOV_WH_StateInStartParentKeyShare()) {
@@ -416,7 +393,7 @@ extern "C" s32 WfcMoveWh_StateInEndParentMp() {
     return 0;
 }
 
-extern "C" void WfcMoveWh_StateOutEndParentMp(Unk_ov001_02222088_A *a) {
+extern "C" void WfcMoveWh_StateOutEndParentMp(WMMsg *a) {
     if (a->errcode != 0) {
         WfcMoveWh_SetError(a->errcode);
         WfcMoveWh_Reset();
@@ -439,7 +416,7 @@ extern "C" s32 DWCi_MOV_WH_StateInEndParent() {
     return 0;
 }
 
-extern "C" void WfcMoveWh_StateOutEndParent(Unk_ov001_02222088_A *a) {
+extern "C" void WfcMoveWh_StateOutEndParent(WMMsg *a) {
     if (a->errcode != 0) {
         WfcMoveWh_SetError(a->errcode);
         return;
@@ -466,7 +443,7 @@ extern "C" s32 WfcMoveWh_StateInEndChildMp() {
     return 0;
 }
 
-extern "C" void WfcMoveWh_StateOutEndChildMp(Unk_ov001_02222088_A *a) {
+extern "C" void WfcMoveWh_StateOutEndChildMp(WMMsg *a) {
     if (a->errcode != 0) {
         WfcMoveWh_SetError(a->errcode);
         DWCi_MOV_WH_Finalize();
@@ -486,7 +463,7 @@ extern "C" s32 WfcMoveWh_StateInEndChild() {
     return 0;
 }
 
-extern "C" void WfcMoveWh_StateOutEndChild(Unk_ov001_02222088_A *a) {
+extern "C" void WfcMoveWh_StateOutEndChild(WMMsg *a) {
     if (a->errcode != 0) {
         WfcMoveWh_SetError(a->errcode);
         return;
@@ -503,7 +480,7 @@ extern "C" s32 WfcMoveWh_StateInReset() {
     return 0;
 }
 
-extern "C" void WfcMoveWh_StateOutReset(Unk_ov001_02222088_A *a) {
+extern "C" void WfcMoveWh_StateOutReset(WMMsg *a) {
     if (a->errcode != 0) {
         WfcMoveWh_ChangeSysState(9);
         WfcMoveWh_SetError(a->errcode);
@@ -512,7 +489,7 @@ extern "C" void WfcMoveWh_StateOutReset(Unk_ov001_02222088_A *a) {
     WfcMoveWh_ChangeSysState(1);
 }
 
-extern "C" void WfcMoveWh_StateOutEnd(Unk_ov001_02222088_A *a) {
+extern "C" void WfcMoveWh_StateOutEnd(WMMsg *a) {
     if (a->errcode != 0) {
         WfcMoveWh_ChangeSysState(10);
         return;
@@ -575,7 +552,7 @@ extern "C" u16 WfcMoveWh_MeasureNextChannel(u16 x) {
     return WfcMoveWh_StateInMeasureChannel((void *)WfcMoveWh_StateOutMeasureChannel, x);
 }
 
-extern "C" void WfcMoveWh_StateOutMeasureChannel(Unk_ov001_02222088_A *a) {
+extern "C" void WfcMoveWh_StateOutMeasureChannel(WMMeasureChannelCallback *a) {
     if (a->errcode != 0) {
         WfcMoveWh_SetError(a->errcode);
         WfcMoveWh_ChangeSysState(9);
@@ -583,7 +560,7 @@ extern "C" void WfcMoveWh_StateOutMeasureChannel(Unk_ov001_02222088_A *a) {
     }
     if (sWfcMoveWhDebugPrint != 0) sWfcMoveWhDebugPrint(0x8000000, "channel %d bratio = %x\n", a->channel, a->ccaBusyRatio);
     {
-        Unk_ov001_0222df28_S *g = sWfcMoveWh;
+        WfcMoveWhWork *g = sWfcMoveWh;
         u16 y = a->ccaBusyRatio;
         u16 x = a->channel;
         u16 w = g->channelBusyRatio;
@@ -641,7 +618,7 @@ extern "C" s16 WfcMoveWh_PickRandomChannel(u16 mask) {
 }
 
 extern "C" BOOL WfcMoveWh_Initialize() {
-    Unk_ov001_0222df28_S **g = &sWfcMoveWh;
+    WfcMoveWhWork **g = &sWfcMoveWh;
     (*g)->recvBufferSize = 0;
     (*g)->sendBufferSize = 0;
     (*g)->receiverFunc = 0;
@@ -655,7 +632,7 @@ extern "C" BOOL WfcMoveWh_Initialize() {
     return FALSE;
 }
 
-extern "C" void WfcMoveWh_IndicationCallback(Unk_ov001_02222088_A *a) {
+extern "C" void WfcMoveWh_IndicationCallback(WMMsg *a) {
     if (a->errcode != 8) return;
     WfcMoveWh_ChangeSysState(9);
     Fatal_Trap();
@@ -710,16 +687,16 @@ extern "C" s32 WfcMoveWh_ParentConnect(s32 a, u32 b, u32 c) {
 }
 
 extern "C" void WfcMoveWh_SetJudgeCallback(s32 a) {
-    sWfcMoveWh->judgeAcceptFunc = (Unk_ov001_0222df28_Fn)a;
+    sWfcMoveWh->judgeAcceptFunc = (WfcMoveWhFunc)a;
 }
 
 extern "C" void WfcMoveWh_GetSharedData(s32 a) {
-    Unk_ov001_0222df28_S *g = sWfcMoveWh;
+    WfcMoveWhWork *g = sWfcMoveWh;
     WM_GetSharedDataAddress(g->dsInfo, g->dataSet, a);
 }
 
 extern "C" s32 DWCi_MOV_WH_StepDataSharing(s32 a) {
-    Unk_ov001_0222df28_S *g = sWfcMoveWh;
+    WfcMoveWhWork *g = sWfcMoveWh;
     s32 r = WM_StepDataSharing(g->dsInfo, a, g->dataSet);
     if (r == 7) {
         if (sWfcMoveWhDebugPrint != 0) sWfcMoveWhDebugPrint(0x8000000, "DWCi_MOV_WH_StepDataSharing - Warning No Child\n");
@@ -789,7 +766,7 @@ extern "C" char data_ov001_0222b4ec[] = "DWCi_MOV_WH_SYSSTATE_STOP";
 
 extern "C" char data_ov001_0222b508[] = "DWCi_MOV_WH_SYSSTATE_IDLE";
 
-extern "C" Unk_ov001_0222df24_Fn sWfcMoveWhDebugPrint = 0;
+extern "C" WfcMoveWhPrintFn sWfcMoveWhDebugPrint = 0;
 
 extern "C" char data_ov001_0222b524[] = "DWCi_MOV_WH_SYSSTATE_BUSY";
 
@@ -809,4 +786,4 @@ extern "C" char data_ov001_0222b604[] = "DWCi_MOV_WH_SYSSTATE_MEASURECHANNEL";
 
 extern "C" char *sWfcMoveWhSysStateNames[10] = {data_ov001_0222b4ec, data_ov001_0222b508, data_ov001_0222b55c, data_ov001_0222b524, data_ov001_0222b57c, data_ov001_0222b5bc, data_ov001_0222b59c, data_ov001_0222b604, data_ov001_0222b5e0, data_ov001_0222b540};
 
-extern "C" Unk_ov001_0222df28_S *sWfcMoveWh = 0;
+extern "C" WfcMoveWhWork *sWfcMoveWh = 0;

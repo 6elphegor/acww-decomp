@@ -5,7 +5,7 @@
 
 // ov001 user-profile records (favourite colour, nickname) built in unk_ov001_02220ad8.cpp and
 // unk_ov001_022218a4.cpp.
-struct Unk_ov001_02221734_Z {
+struct WfcMoveMbStateCopy {
     /* 0x0 */ u16 v[7];
 };
 
@@ -14,7 +14,7 @@ struct Unk_ov001_02221734_D {
     /* 0x00 */ u8 hi : 4;
     /* 0x01 */ u8 b1;
     /* 0x02 */ u8 data[0x14];
-    /* 0x16 */ Unk_ov001_02221734_Z z;
+    /* 0x16 */ WfcMoveMbStateCopy z;
 };
 
 struct Unk_ov001_02221734_B {

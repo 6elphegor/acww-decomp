@@ -1,5 +1,5 @@
-#ifndef NET_UNK_OV065_0225F378_OBJ_H
-#define NET_UNK_OV065_0225F378_OBJ_H
+#ifndef NET_SOCKCORESOCKET_H
+#define NET_SOCKCORESOCKET_H
 
 #include "types.h"
 
@@ -7,13 +7,13 @@
 // src/ov065/unk_ov065_0225f5c8.cpp (SockCore_Create etc.); also used by src/ov065/unk_ov065_0225f378.cpp and
 // (Params) src/ov065/unk_ov065_0225f1a0.cpp.
 
-struct Unk_ov065_0225f5c8_T {
+struct SockThreadParams {
     /* 0x0 */ u16 stackSize;
     /* 0x2 */ u8 priority;
     /* 0x3 */ u8 msgQueueSize;
 };
 
-struct Unk_ov065_0225f634_Params {
+struct SockCreateParams {
     /* 0x00 */ s8 sockType;
     /* 0x01 */ s8 blocking;
     /* 0x02 */ u16 rxBufSize;
@@ -23,18 +23,18 @@ struct Unk_ov065_0225f634_Params {
     /* 0x0a */ u16 pendingTxBufSize;
     /* 0x0c */ u16 sendRingSize;
     /* 0x0e */ u16 udpQueueCap;
-    /* 0x10 */ Unk_ov065_0225f5c8_T recvThread;
-    /* 0x14 */ Unk_ov065_0225f5c8_T sendThread;
+    /* 0x10 */ SockThreadParams recvThread;
+    /* 0x14 */ SockThreadParams sendThread;
 };
 
-struct Unk_ov065_0225f618_Pair {
+struct SockBuffer {
     /* 0x0 */ void *size;
     /* 0x4 */ u32 buf;
 };
 
-struct Unk_ov065_0225f378_Obj;
+struct SockCoreSocket;
 
-struct Unk_ov065_0225f634_Sub1 {
+struct SockRecvPipe {
     /* 0x00 */ u8 unk_00[0xe0];
     /* 0xe0 */ u8 mutex[0x18];
     /* 0xf8 */ u32 pos;
@@ -46,29 +46,29 @@ struct Unk_ov065_0225f634_Sub1 {
     /* 0x114 */ u8 threadArea[4];
 };
 
-struct Unk_ov065_0225f634_Sub2 {
+struct SockSendPipe {
     /* 0x00 */ u8 unk_00[0xe0];
     /* 0xe0 */ u8 unk_e0[0x18];
-    /* 0xf8 */ Unk_ov065_0225f618_Pair ring;
+    /* 0xf8 */ SockBuffer ring;
     /* 0x100 */ u8 unk_100[4];
     /* 0x104 */ u32 spaceWaitQueue;
     /* 0x108 */ u32 spaceWaitQueueTail;
-    /* 0x10c */ Unk_ov065_0225f378_Obj *owner;
+    /* 0x10c */ SockCoreSocket *owner;
     /* 0x110 */ u8 threadArea[4];
 };
 
-struct Unk_ov065_0225f378_Obj {
+struct SockCoreSocket {
     /* 0x00 */ u8 unk_00[4];
     /* 0x04 */ u32 unk_04;
     /* 0x08 */ u8 unk_08[0x34];
-    /* 0x3c */ Unk_ov065_0225f618_Pair rxBuffer;
+    /* 0x3c */ SockBuffer rxBuffer;
     /* 0x44 */ u8 unk_44[4];
-    /* 0x48 */ Unk_ov065_0225f618_Pair txBuffer;
-    /* 0x50 */ Unk_ov065_0225f618_Pair rxAuxBuffer;
-    /* 0x58 */ Unk_ov065_0225f618_Pair pendingTxBuffer;
+    /* 0x48 */ SockBuffer txBuffer;
+    /* 0x50 */ SockBuffer rxAuxBuffer;
+    /* 0x58 */ SockBuffer pendingTxBuffer;
     /* 0x60 */ u8 unk_60[4];
-    /* 0x64 */ Unk_ov065_0225f634_Sub1 *recvPipe;
-    /* 0x68 */ Unk_ov065_0225f634_Sub2 *sendPipe;
+    /* 0x64 */ SockRecvPipe *recvPipe;
+    /* 0x68 */ SockSendPipe *sendPipe;
     /* 0x6c */ s32 result;
     /* 0x70 */ s16 flags;
     /* 0x72 */ s8 blocking;

@@ -3,14 +3,14 @@
 
 #pragma thumb off
 
-struct Unk_ov001_0222df2c_Rec {
+struct WfcMoveSharedRecord {
     u16 command;
     u8 pad_02[0x42];
 };
 
-struct Unk_ov001_0222df2c {
+struct WfcMoveWork {
     u32 pad_000[0x40];
-    Unk_ov001_0222df2c_Rec sharedRecv[2];
+    WfcMoveSharedRecord sharedRecv[2];
     u8 pad_188[0x200 - 0x188];
     u16 blockIndex;
     u16 unk_202;
@@ -19,7 +19,7 @@ struct Unk_ov001_0222df2c {
     u8 pad_248[0x648 - 0x248];
     u16 tgid;
     u16 channel;
-    u8 unk_64c[0xa50 - 0x64c];
+    u8 configBuf[0xa50 - 0x64c];
     u8 configHead[0x40];
     u8 state;
     u8 prevState;
@@ -97,13 +97,13 @@ void WfcMove_ResetSession();
 BOOL WfcMove_Start();
 }
 
-extern "C" Unk_ov001_0222df2c *sWfcMove = 0;
+extern "C" WfcMoveWork *sWfcMove = 0;
 
 #define H (sWfcMove)
 
 void WfcMove_ResetSession();
 
-extern "C" void WfcMove_Init(Unk_ov001_0222df2c *self, u32 *a) {
+extern "C" void WfcMove_Init(WfcMoveWork *self, u32 *a) {
     sWfcMove = self;
     WfcMoveMb_SetWork(self->moveMbWork);
     sWfcMove->tgid = 0;
@@ -121,13 +121,13 @@ extern "C" void WfcMove_Init(Unk_ov001_0222df2c *self, u32 *a) {
     sWfcMove->unk_a92 = *(u8 *)&a[6];
     sWfcMove->maxPlayerNum = 2;
     OS_GetTick();
-    func_020fefb0(sWfcMove->unk_64c);
+    func_020fefb0(sWfcMove->configBuf);
     OS_GetTick();
     sWfcMove->config = WfcConfig_Get();
 }
 
 extern "C" BOOL WfcMove_RequestCancel() {
-    Unk_ov001_0222df2c *s = sWfcMove;
+    WfcMoveWork *s = sWfcMove;
     u32 st = s->state;
     if (st == 1 || st == 0x14 || st == 0x17 || st == 0x1a || st == 0x1d) {
         s->state = 0x22;
@@ -184,7 +184,7 @@ extern "C" BOOL WfcMove_Start() {
 }
 
 extern "C" BOOL WfcMove_StartDownload() {
-    Unk_ov001_0222df2c *s = sWfcMove;
+    WfcMoveWork *s = sWfcMove;
     if (s->state != 5) {
         return FALSE;
     }
@@ -447,7 +447,7 @@ extern "C" void WfcMove_ClearBuffers() {
 }
 
 extern "C" void WfcMove_SendBlock(u32 a, u32 b, void *src) {
-    Unk_ov001_0222df2c *h = H;
+    WfcMoveWork *h = H;
     u16 i;
     if (h->isHandshakeDone == 1) {
         *(u16 *)h->sendBuffer = a;
@@ -489,9 +489,9 @@ extern "C" void WfcMove_SendBlock(u32 a, u32 b, void *src) {
 extern "C" void WfcMove_ProcessRecv() {
     s32 i;
     for (i = 0; i < 16; i++) {
-        Unk_ov001_0222df2c *h = H;
+        WfcMoveWork *h = H;
         if (h->sharedRecvValid[i] != 0) {
-            Unk_ov001_0222df2c_Rec *r = &h->sharedRecv[(u32)i];
+            WfcMoveSharedRecord *r = &h->sharedRecv[(u32)i];
             if (i == 1) {
                 if (h->isHandshakeDone == 1) {
                     if (r->command != 0x10) {

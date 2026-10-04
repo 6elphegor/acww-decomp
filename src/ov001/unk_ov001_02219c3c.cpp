@@ -1,6 +1,6 @@
 // mwcc-flags: -O4,p
 #include "types.h"
-#include "net/Unk_ov001_02225924_Rect.h"
+#include "net/WfcRect.h"
 #include "ui/Unk_ov001_0221a40c.h"
 #include "menu/WfcConnSelectWork.h"
 
@@ -132,7 +132,7 @@ void WfcConnSelect_LoadBg() {
     BGCNT(0x400000c, 3);
 }
 
-#define P168 ((const Unk_ov001_02225924_Pt *)sWfcConnSelectButtonPos)
+#define P168 ((const WfcPoint *)sWfcConnSelectButtonPos)
 
 void WfcConnSelect_CreateSlotButtons() {
     u32 z[2];
@@ -295,15 +295,7 @@ void WfcConnSelect_FadeOut() {
 
 namespace F02219a98 {
 
-struct Unk_ov001_0222deb4_G {
-    void *paletteFile;
-    void *slotButtons[3];
-    void *eraseButtons[3];
-    u8 lastColumn;
-    u8 exitAction;
-};
-
-struct Unk_ov001_02219c3c_Q { u8 b[4]; };
+struct WfcConnSelectPalettesCopy { u8 b[4]; };
 
 extern "C" {
 extern u8 data_ov001_0222b1fc[];
@@ -315,7 +307,7 @@ extern char data_ov001_0222b260[];
 extern u16 sWfcApSearchTimer;
 extern u8 sWfcApSearchResult;
 extern u8 sWfcConnSelectCursor;
-extern Unk_ov001_0222deb4_G *sWfcConnSelect;
+extern WfcConnSelectWork *sWfcConnSelect;
 extern const u8 sWfcConnSelectSlotCells[];
 extern const u16 sWfcConnSelectButtonPos[];
 
@@ -389,14 +381,14 @@ void WfcConnSelect_Exit() {
     if (WfcHeader_IsSlideOutDone() == 0) return;
     if (WfcButtonBar_IsClosed() == 0) return;
     for (i = 0; (u32)i < 3; i++) {
-        if (sWfcConnSelect->slotButtons[i] != 0) WfcObj_Free(sWfcConnSelect->slotButtons[i]);
+        if (sWfcConnSelect->slotButtons[i] != 0) WfcObj_Free((void *)sWfcConnSelect->slotButtons[i]);
     }
     for (i = 0; (u32)i < 3; i++) {
-        if (sWfcConnSelect->eraseButtons[i] != 0) WfcObj_Free(sWfcConnSelect->eraseButtons[i]);
+        if (sWfcConnSelect->eraseButtons[i] != 0) WfcObj_Free((void *)sWfcConnSelect->eraseButtons[i]);
     }
     WfcCursor_Clear();
     WfcUtil_HideTopMessage();
-    WfcFs_FreeFile(sWfcConnSelect->paletteFile);
+    WfcFs_FreeFile((void *)sWfcConnSelect->paletteFile);
     WfcUtil_LoadFileTo(data_ov001_0222b260, (void *)GX_LoadOBJPltt);
     WfcGx_HidePlanes(1, 1);
     WfcGx_HidePlanes(0, 0x14);
@@ -494,9 +486,9 @@ void WfcConnSelect_MoveCursor(u32 a) {
 
 void WfcConnSelect_PressEraseButton() {
     s32 i = sWfcConnSelectCursor - 4;
-    WfcCell_Copy(0, 0x32, WfcObj_GetOam(sWfcConnSelect->eraseButtons[i], 0));
-    WfcObj_SetPos(sWfcConnSelect->eraseButtons[i], -1, sWfcConnSelectButtonPos[(i + 3) * 2], (sWfcConnSelectButtonPos + 1)[(i + 3) * 2]);
-    WfcObj_SetPriority(sWfcConnSelect->eraseButtons[i], -1, 3);
+    WfcCell_Copy(0, 0x32, WfcObj_GetOam((void *)sWfcConnSelect->eraseButtons[i], 0));
+    WfcObj_SetPos((void *)sWfcConnSelect->eraseButtons[i], -1, sWfcConnSelectButtonPos[(i + 3) * 2], (sWfcConnSelectButtonPos + 1)[(i + 3) * 2]);
+    WfcObj_SetPriority((void *)sWfcConnSelect->eraseButtons[i], -1, 3);
 }
 
 void WfcConnSelect_EraseDialog() {
@@ -506,17 +498,17 @@ void WfcConnSelect_EraseDialog() {
     case 1:
         WfcSound_Play(14);
         WfcConfig_EraseSlot(i);
-        WfcCell_Copy(0, sWfcConnSelectSlotCells[3], WfcObj_GetOam(sWfcConnSelect->slotButtons[i], 0));
-        WfcObj_SetPos(sWfcConnSelect->slotButtons[i], -1, ((u16 (*)[2])sWfcConnSelectButtonPos)[i][0], ((u16 (*)[2])(sWfcConnSelectButtonPos + 1))[i][0]);
-        WfcObj_SetPriority(sWfcConnSelect->slotButtons[i], -1, 3);
-        WfcObj_Free(sWfcConnSelect->eraseButtons[i]);
+        WfcCell_Copy(0, sWfcConnSelectSlotCells[3], WfcObj_GetOam((void *)sWfcConnSelect->slotButtons[i], 0));
+        WfcObj_SetPos((void *)sWfcConnSelect->slotButtons[i], -1, ((u16 (*)[2])sWfcConnSelectButtonPos)[i][0], ((u16 (*)[2])(sWfcConnSelectButtonPos + 1))[i][0]);
+        WfcObj_SetPriority((void *)sWfcConnSelect->slotButtons[i], -1, 3);
+        WfcObj_Free((void *)sWfcConnSelect->eraseButtons[i]);
         sWfcConnSelect->eraseButtons[i] = 0;
         break;
     case 0:
         WfcSound_Play(7);
-        WfcCell_Copy(0, 0x11, WfcObj_GetOam(sWfcConnSelect->eraseButtons[i], 0));
-        WfcObj_SetPos(sWfcConnSelect->eraseButtons[i], -1, sWfcConnSelectButtonPos[(i + 3) * 2], (sWfcConnSelectButtonPos + 1)[(i + 3) * 2]);
-        WfcObj_SetPriority(sWfcConnSelect->eraseButtons[i], -1, 3);
+        WfcCell_Copy(0, 0x11, WfcObj_GetOam((void *)sWfcConnSelect->eraseButtons[i], 0));
+        WfcObj_SetPos((void *)sWfcConnSelect->eraseButtons[i], -1, sWfcConnSelectButtonPos[(i + 3) * 2], (sWfcConnSelectButtonPos + 1)[(i + 3) * 2]);
+        WfcObj_SetPriority((void *)sWfcConnSelect->eraseButtons[i], -1, 3);
         break;
     default:
         return;
@@ -532,15 +524,15 @@ void WfcConnSelect_WaitDialogClosed() {
 }
 
 void WfcConnSelect_HighlightSelection() {
-    Unk_ov001_02219c3c_Q b = *(Unk_ov001_02219c3c_Q *)data_ov001_0222b240;
-    Unk_ov001_02219c3c_Q c = *(Unk_ov001_02219c3c_Q *)data_ov001_0222b244;
+    WfcConnSelectPalettesCopy b = *(WfcConnSelectPalettesCopy *)data_ov001_0222b240;
+    WfcConnSelectPalettesCopy c = *(WfcConnSelectPalettesCopy *)data_ov001_0222b244;
     if (sWfcConnSelectCursor > 3) return;
     u32 v = b.b[sWfcConnSelectCursor];
-    WfcUtil_RequestPaletteLine(sWfcConnSelect->paletteFile, v, v);
+    WfcUtil_RequestPaletteLine((void *)sWfcConnSelect->paletteFile, v, v);
     if (sWfcConnSelectCursor == 3) return;
     s32 r = WfcConfig_GetSlotStatus();
     if (r > 2) r = 3;
-    WfcObj_SetModePalette(sWfcConnSelect->slotButtons[sWfcConnSelectCursor], -1, 0, c.b[r]);
+    WfcObj_SetModePalette((void *)sWfcConnSelect->slotButtons[sWfcConnSelectCursor], -1, 0, c.b[r]);
 }
 
 }
