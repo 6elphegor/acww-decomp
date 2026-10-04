@@ -13,6 +13,8 @@
 #include "sys/ProcBase.h"
 #include "npc/NpcActionCtrl.h"
 #include "npc/Unk_0201a13c.h"
+#include "actor/Actor.h"
+#include "actor/Character.h"
 
 extern "C" {
 void _ZN8NpcActor14setTalkRequestEP12Unk_0201bc1c(void *a, void *b);
@@ -188,35 +190,7 @@ struct Unk_020f4080 {
 
 typedef Unk_020d77a4_Vec3 Unk_0203e7a4_Vec;
 
-class Actor : public ProcBase {
-public:
-    virtual BOOL vfunc_14(s32 status);
-    virtual BOOL vfunc_20(u32 status);
-    virtual BOOL preDraw();
-    virtual BOOL postDraw(s32 status);
-};
 
-struct Character : Actor {
-    u8 pad_50[0x5c - 0x50];
-    s32 position, positionY, positionZ;
-    u8 pad_68[0x8e - 0x68 - 0];
-    s16 rotY;
-    u8 pad_90[4];
-    s16 moveAngleY;
-    u8 pad_96[2];
-    s32 speed;
-    u8 pad_9c[0xea - 0x9c];
-    Character();
-    virtual BOOL preDelete();
-    virtual BOOL preExecute();
-    virtual ~Character();
-    virtual BOOL vfunc_48();
-    virtual void vfunc_4c(int a);
-    virtual void getInteractionPos();
-    virtual void acceptsInteractionOutOfRange(void *p);
-    virtual void vfunc_58(void *p);
-    virtual void vfunc_5c(Unk_020d77a4_Vec3 *p);
-};
 
 struct NpcActor : Character {
     u16 unk_ea;
@@ -244,8 +218,8 @@ struct NpcActor : Character {
     virtual BOOL onExecute();
     virtual BOOL onDraw();
     virtual BOOL vfunc_30();
-    virtual void vfunc_4c(int a);
-    virtual void vfunc_5c(Unk_020d77a4_Vec3 *p);
+    virtual void vfunc_4c(u32 a, u8 b);
+    virtual BOOL vfunc_5c(Unk_020d77a4_Vec3 *p);
     virtual void onToolHit();
     virtual void vfunc_64();
     virtual BOOL updateAct() = 0;
@@ -306,8 +280,8 @@ public:
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_0c();
     virtual ~SpNpcKaitlin() {}
-    virtual BOOL vfunc_48();
-    virtual void vfunc_4c(s32 a);
+    virtual BOOL vfunc_48(void *other);
+    virtual void vfunc_4c(u32 a, u8 b);
     virtual BOOL updateAct();
     virtual const char *getTexturePath();
     virtual const char *getModelPath();
@@ -405,8 +379,8 @@ BOOL SpNpcKaitlin::vfunc_00() {
     if (Scene_GetCurrent() == 0x2f) {
         collider.unk_44 = 0;
         _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(&lookAt, 0, 0, 0, (s32)gVec3Zero, 4, data_020c6d1c, 1);
-        position = 0x10000;
-        positionZ = 0x16800;
+        position.x = 0x10000;
+        position.z = 0x16800;
     }
     return TRUE;
 }
@@ -447,14 +421,14 @@ BOOL SpNpcKaitlin::updateAct() {
     return result;
 }
 
-BOOL SpNpcKaitlin::vfunc_48() {
+BOOL SpNpcKaitlin::vfunc_48(void *) {
     if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) == 0) {
         return TRUE;
     }
     return FALSE;
 }
 
-void SpNpcKaitlin::vfunc_4c(s32 a) {
+void SpNpcKaitlin::vfunc_4c(u32 a, u8) {
     switch (a) {
     case 1:
         talk.vfunc_08();
@@ -710,9 +684,9 @@ BOOL SpNpcKaitlin::findRandomWalkTarget(s32 *px, s32 *pz) {
     for (i = 0; i < 6; i++) {
         s32 idx = ((u16)(s16)Random_Next(gRandom) >> 4) * 2;
         s32 m = func_01ffcb0c(0xc000, data_02135f44[idx]);
-        v.x = m + position;
+        v.x = m + position.x;
         m = func_01ffcb0c(0xc000, data_02135f44[idx + 1]);
-        v.z = m + positionZ;
+        v.z = m + position.z;
         FieldPos_SnapToUnitCenter(&v, &v);
         if (TownMap_IsPosWalkable(&v, 0)) {
             *ppx = v.x;

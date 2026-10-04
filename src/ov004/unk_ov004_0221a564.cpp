@@ -25,6 +25,8 @@
 #include "snd/SndSeEmitterKind1.h"
 #include "npc/Unk_02014254.h"
 #include "npc/NpcFaceAnim.h"
+#include "actor/Actor.h"
+#include "actor/Character.h"
 
 class SickVillager;
 
@@ -218,38 +220,9 @@ u32 Item_GetFurnitureIndex(void *);
 
 
 
-class Actor : public ProcBase {
-public:
-    virtual BOOL vfunc_14(s32 status);
-    virtual BOOL vfunc_20(u32 status);
-    virtual BOOL preDraw();
-    virtual BOOL postDraw(s32 status);
-};
 
 struct Unk_020d77a4_Vec3;
 
-class Character : public Actor {
-public:
-    Character();
-    virtual ~Character();
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_48();
-    virtual void vfunc_4c(u32 idx, u32 v);
-    virtual void getInteractionPos();
-    virtual void acceptsInteractionOutOfRange(void *p);
-    virtual void vfunc_58(void *p);
-    u32 pad_50[(0x5c - 0x50) / 4];
-    u32 position;
-    u32 positionY;
-    u32 positionZ;
-    u32 prevPosition;
-    u32 pad_6c;
-    u32 prevPositionZ;
-    u32 pad_74[(0x8c - 0x74) / 4];
-    s16 rotX, rotY, rotZ, moveAngleX, moveAngleY, moveAngleZ;
-    u32 pad_98[(0xd4 - 0x98) / 4];
-    u32 charNode, unk_d8, unk_dc;
-};
 
 class NpcActor : public Character {
 public:
@@ -258,7 +231,7 @@ public:
     virtual BOOL onExecute();
     virtual BOOL onDraw();
     virtual BOOL vfunc_30();
-    virtual void vfunc_5c(Unk_020d77a4_Vec3 *v);
+    virtual BOOL vfunc_5c(Unk_020d77a4_Vec3 *v);
     virtual void onToolHit();
     virtual void *vfunc_64();
     virtual BOOL updateAct();
@@ -277,7 +250,6 @@ public:
     virtual void vfunc_9c();
     virtual void getTeachableEmotion();
 
-    u16 pad_e0[5];
     u16 unk_ea;
     Unk_02053d3c model;
     Unk_0201ad3c moveAnimSet;
@@ -436,8 +408,8 @@ public:
     virtual BOOL vfunc_04();
     virtual BOOL preDelete();
     virtual BOOL onDraw();
-    virtual BOOL vfunc_48();
-    virtual void vfunc_4c(u32 idx, u32 v);
+    virtual BOOL vfunc_48(void *other);
+    virtual void vfunc_4c(u32 idx, u8 v);
     virtual BOOL updateAct();
     virtual BOOL canPlayTalkMelody();
     virtual void onTalkMelodyPlayed();
@@ -650,7 +622,7 @@ void SickVillager::func_ov004_0221b1b0() {
     }
 }
 
-BOOL SickVillager::vfunc_48() {
+BOOL SickVillager::vfunc_48(void *) {
     if (NpcTalkCtrl_isBusy(&talkCtrl)) {
         return FALSE;
     }
@@ -660,11 +632,11 @@ BOOL SickVillager::vfunc_48() {
     return TRUE;
 }
 
-void SickVillager::vfunc_4c(u32 idx, u32 v) {
+void SickVillager::vfunc_4c(u32 idx, u8 v) {
     Unk_ov004_0221b0f0_Vec vec;
-    vec.x = position;
-    vec.y = positionY;
-    vec.z = positionZ;
+    vec.x = position.x;
+    vec.y = position.y;
+    vec.z = position.z;
     vec.y += 0x2000;
     switch (idx) {
     case 3:

@@ -14,6 +14,8 @@
 #include "npc/Unk_02014254.h"
 #include "talk/EncodedString.h"
 #include "npc/Unk_0201a13c.h"
+#include "actor/Actor.h"
+#include "actor/Character.h"
 
 // Real (mangled) names of other modules' functions that the unit calls as plain functions taking the object first.
 #define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv
@@ -262,33 +264,7 @@ MEMBER(CollisionState, 0x30);
 struct Unk_020d77a4_Vec3;
 struct Unk_0201bc1c;
 
-class Actor : public ProcBase {
-public:
-    BOOL vfunc_14(s32 status);
-    BOOL vfunc_20(u32 status);
-    BOOL preDraw();
-    BOOL postDraw(s32 status);
-};
 
-class Character : public Actor {
-public:
-    Character();
-    virtual ~Character();
-    BOOL preExecute();
-    virtual BOOL vfunc_48();
-    virtual void vfunc_4c(s32 a, u32 b);
-    virtual void getInteractionPos();
-    virtual void acceptsInteractionOutOfRange(void *p);
-    virtual void vfunc_58(void *p);
-    void setInteractionRange(s32 v);
-    u8 pad_50[0x5c - 0x50];
-    s32 position, positionY, positionZ;
-    u8 pad_68[0x8e - 0x68];
-    s16 rotY;
-    u8 pad_90[4];
-    s16 moveAngleY;
-    u8 pad_96[0xea - 0x96];
-};
 
 class NpcActor : public Character {
 public:
@@ -298,7 +274,7 @@ public:
     BOOL onExecute();
     BOOL onDraw();
     BOOL vfunc_30();
-    virtual void vfunc_5c(Unk_020d77a4_Vec3 *p);
+    virtual BOOL vfunc_5c(Unk_020d77a4_Vec3 *p);
     virtual void onToolHit();
     virtual void vfunc_64();
     virtual BOOL updateAct();
@@ -385,8 +361,8 @@ public:
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_0c();
     virtual BOOL onDraw();
-    virtual BOOL vfunc_48();
-    virtual void vfunc_4c(s32 a, u32 b);
+    virtual BOOL vfunc_48(void *other);
+    virtual void vfunc_4c(u32 a, u8 b);
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
@@ -901,7 +877,7 @@ void SpNpcKatrinaTalk::scriptReadPartnerName() {
     ((TalkWindowState *)o)->setNextMessage(&msg, sSpNpcKatrinaMsgKey);
 }
 
-BOOL SpNpcKatrina::vfunc_48() {
+BOOL SpNpcKatrina::vfunc_48(void *) {
     BOOL r = FALSE;
     Unk_ov045_02259070_Rec *src = (Unk_ov045_02259070_Rec *)PlayerActor_GetBodyPos(4);
     Unk_ov045_02259070_Rec rec;
@@ -913,9 +889,9 @@ BOOL SpNpcKatrina::vfunc_48() {
     by = r;
     FieldPos_ToUnit(&bx, &by, &rec);
     if (act == 0) {
-        s32 x = position;
+        s32 x = position.x;
         if (rec.a > x - 0x1000 && rec.a < x + 0x1000) {
-            s32 z = positionZ;
+            s32 z = position.z;
             if (rec.c > z + 0x2000 && rec.c < z + 0x4000) {
                 r = TRUE;
             }
@@ -924,7 +900,7 @@ BOOL SpNpcKatrina::vfunc_48() {
     return r;
 }
 
-void SpNpcKatrina::vfunc_4c(s32 cmd, u32 b) {
+void SpNpcKatrina::vfunc_4c(u32 cmd, u8 b) {
     switch (cmd) {
     case 0:
     case 1:

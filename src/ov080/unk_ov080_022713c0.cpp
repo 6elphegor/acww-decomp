@@ -14,6 +14,8 @@
 #include "snd/SndSeEmitterKind1.h"
 #include "npc/Unk_02014254.h"
 #include "npc/Unk_0201a13c.h"
+#include "actor/Actor.h"
+#include "actor/Character.h"
 
 // Real (mangled) names of other modules' functions that the unit calls as plain functions taking the object first.
 #define NpcAnimCtrl_playAnim _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti
@@ -181,32 +183,7 @@ MEMBER(CollisionState, 0x30);
 struct Unk_020d77a4_Vec3;
 struct Unk_0201bc1c;
 
-class Actor : public ProcBase {
-public:
-    BOOL vfunc_14(s32 status);
-    BOOL vfunc_20(u32 status);
-    BOOL preDraw();
-    BOOL postDraw(s32 status);
-};
 
-class Character : public Actor {
-public:
-    Character();
-    virtual ~Character();
-    BOOL preExecute();
-    virtual BOOL vfunc_48();
-    virtual void vfunc_4c(u32 a, u32 b);
-    virtual void getInteractionPos();
-    virtual void acceptsInteractionOutOfRange(void *p);
-    virtual void vfunc_58(void *p);
-    u8 pad_50[0x5c - 0x50];
-    s32 position, positionY, positionZ;
-    u8 pad_68[0x8e - 0x68];
-    s16 rotY;
-    u8 pad_90[4];
-    s16 moveAngleY;
-    u8 pad_96[0xea - 0x96];
-};
 
 class NpcActor : public Character {
 public:
@@ -216,7 +193,7 @@ public:
     BOOL onExecute();
     BOOL onDraw();
     BOOL vfunc_30();
-    virtual void vfunc_5c(Unk_020d77a4_Vec3 *p);
+    virtual BOOL vfunc_5c(Unk_020d77a4_Vec3 *p);
     virtual void onToolHit();
     virtual void vfunc_64();
     virtual BOOL updateAct();
@@ -286,8 +263,8 @@ public:
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_48();
-    virtual void vfunc_4c(u32 a, u32 b);
+    virtual BOOL vfunc_48(void *other);
+    virtual void vfunc_4c(u32 a, u8 b);
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
@@ -575,7 +552,7 @@ void SpNpcTortimerTalk::onChoice() {
     }
 }
 
-BOOL SpNpcTortimer::vfunc_48() {
+BOOL SpNpcTortimer::vfunc_48(void *) {
     BOOL r = FALSE;
     if (unk_618_func_02014220(&talkCtrl) == 0) {
         r = TRUE;
@@ -583,7 +560,7 @@ BOOL SpNpcTortimer::vfunc_48() {
     return r;
 }
 
-void SpNpcTortimer::vfunc_4c(u32 a, u32 b) {
+void SpNpcTortimer::vfunc_4c(u32 a, u8 b) {
     switch (a) {
     case 0:
         talk.vfunc_08();

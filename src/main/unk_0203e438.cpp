@@ -1,11 +1,12 @@
 #include "types.h"
 #include "actor/Unk_0203e5d0_Node.h"
-#include "game/Unk_0203e4f0_Vec.h"
 #include "talk/Unk_0203e22c_State.h"
 #include "game/Unk_0203e5d0_List.h"
 #include "net/Unk_0203e938_Net.h"
 #include "sys/ProcBase.h"
 #include "talk/TalkRequestQueue.h"
+#include "actor/Actor.h"
+#include "actor/Character.h"
 
 
 
@@ -46,7 +47,6 @@ extern s16 data_020c905c;
 }
 
 extern "C" {
-extern u8 gActorList[];
 }
 
 extern "C" {
@@ -118,11 +118,11 @@ u32 Talk_AttachRequestToWindow0(s32);
 }
 
 extern "C" {
-s32 Math_AngleXZ(Unk_0203e4f0_Vec *, Unk_0203e4f0_Vec *);
+s32 Math_AngleXZ(VecFx32 *, VecFx32 *);
 }
 
 extern "C" {
-long long func_020e9630(Unk_0203e4f0_Vec *);
+long long func_020e9630(VecFx32 *);
 }
 
 extern "C" {
@@ -201,62 +201,7 @@ extern "C" {
 Character *Character_FindByCharId(u32 id);
 }
 
-class Actor : public GameProc {
-public:
-    Actor();
-    virtual BOOL vfunc_04();
-    virtual void postCreate(s32 a);
-    virtual BOOL preDelete();
-    virtual BOOL vfunc_14(s32 status);
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_20(u32 status);
-    virtual BOOL preDraw();
-    virtual BOOL postDraw(s32 status);
-    virtual ~Actor() { func_020e79a0(gActorList, &unk_50); }
 
-    /* 0x50 */ u8 unk_50[0xc];
-    /* 0x5c */ s32 position[3];
-    /* 0x68 */ u8 pad_68[0xd4 - 0x68];
-};
-
-class Character : public Actor {
-public:
-    Character();
-    virtual ~Character();
-    virtual BOOL vfunc_04();
-    virtual void postCreate(s32 a);
-    virtual BOOL preDelete();
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_48(void *a);
-    virtual void vfunc_4c(u32 a, u8 b);
-    virtual Unk_0203e4f0_Vec *getInteractionPos();
-    virtual BOOL acceptsInteractionOutOfRange(void *a);
-    virtual BOOL vfunc_58(void *a);
-    virtual BOOL vfunc_5c();
-
-    void clearCharFlags(u32 mask);
-    void setCharFlags(u32 mask);
-    BOOL testCharFlags(u32 mask);
-    BOOL isAreaSynced();
-    void setAreaSynced();
-    s32 getTalkStartMode();
-    void clearTalkStartMode();
-    void setTalkStartMode1();
-    void setTalkStartMode0();
-    void setInteractionRange(s32 v);
-    void detachTalkRequest(s32 a);
-    void attachTalkRequest(s32 a);
-    BOOL checkInteraction(Character *other);
-    BOOL isInInteractionRange(Character *other);
-    BOOL isInFacingArcOf(Character *other, s16 lo, s16 hi);
-    void setCharId(u32 a);
-    u32 getCharId();
-
-    /* 0xd4 */ Unk_0203e5d0_Node charNode;
-    /* 0xe4 */ s32 interactionRangeSq;
-    /* 0xe8 */ u16 charFlags;
-    /* 0xea */ u16 pad_ea;
-};
 
 Unk_0203e5d0_List gCharacterList;
 
@@ -334,7 +279,7 @@ extern "C" Character *Character_FindInteractionTarget(Character *self) {
 }
 
 BOOL Character::isInFacingArcOf(Character *other, s16 lo, s16 hi) {
-    Unk_0203e4f0_Vec a, b;
+    VecFx32 a, b;
     a = *other->getInteractionPos();
     b = *getInteractionPos();
     s16 d = Math_AngleXZ(&a, &b) - *(s16 *)((u8 *)other + 0x8e);
@@ -345,7 +290,7 @@ BOOL Character::isInFacingArcOf(Character *other, s16 lo, s16 hi) {
 }
 
 BOOL Character::isInInteractionRange(Character *other) {
-    Unk_0203e4f0_Vec d;
+    VecFx32 d;
     if (interactionRangeSq == 0) {
         return TRUE;
     }
@@ -372,13 +317,13 @@ BOOL Character::checkInteraction(Character *other) {
 
 void Character::vfunc_4c(u32 a, u8 b) {}
 
-Unk_0203e4f0_Vec *Character::getInteractionPos() { return (Unk_0203e4f0_Vec *)position; }
+VecFx32 *Character::getInteractionPos() { return &position; }
 
 BOOL Character::acceptsInteractionOutOfRange(void *a) { return FALSE; }
 
 BOOL Character::vfunc_58(void *a) { return FALSE; }
 
-BOOL Character::vfunc_5c() { return FALSE; }
+BOOL Character::vfunc_5c(Unk_020d77a4_Vec3 *out) { return FALSE; }
 
 void Character::attachTalkRequest(s32 a) { Talk_AttachRequestToWindow0(a); }
 

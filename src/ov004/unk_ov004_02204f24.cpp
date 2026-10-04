@@ -30,6 +30,8 @@
 #include "room/FtrCollider.h"
 #include "room/FtrGlowMatSet.h"
 #include "room/FtrTopItems.h"
+#include "actor/Actor.h"
+#include "actor/Character.h"
 
 // ================================================================ plain value types
 
@@ -57,45 +59,8 @@ struct FxVec3 {
 
 
 
-class Actor : public GameProc {
-public:
-    Actor();
-    virtual BOOL vfunc_04();
-    virtual BOOL preDelete();
-    virtual BOOL vfunc_14(s32 a);
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_20(u32 status);
-    virtual BOOL preDraw();
-    virtual BOOL postDraw(s32 status);
-    virtual ~Actor();
-
-    /* 0x50 */ Unk_02002f14_Node listNode;
-    /* 0x5c */ s32 position[3];
-    /* 0x68 */ u8 pad_68[0x8e - 0x68];
-    /* 0x8e */ s16 rotY;
-    /* 0x90 */ u8 pad_90[0xd4 - 0x90];
-};
 
 
-class Character : public Actor {
-public:
-    Character();
-    virtual ~Character();
-    virtual BOOL vfunc_04();
-    virtual BOOL preDelete();
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_48(void *a);
-    virtual void vfunc_4c(u32 a, u8 b);
-    virtual FxVec3 *getInteractionPos();
-    virtual BOOL acceptsInteractionOutOfRange(void *a);
-    virtual BOOL vfunc_58(void *a);
-    virtual BOOL vfunc_5c();
-
-    /* 0xd4 */ Unk_0203e5d0_Node charNode;
-    /* 0xe4 */ s32 interactionRangeSq;
-    /* 0xe8 */ u16 charFlags;
-    /* 0xea */ u16 pad_ea;
-};
 
 // ---------------------------------------------------------------- secondary base at +0xec (vtable 0x020ddcf0 in main)
 class MsgRequest {
@@ -283,7 +248,7 @@ public:
     virtual BOOL vfunc_14(s32 a);
     virtual BOOL onExecute();
     virtual BOOL preDraw();
-    virtual FxVec3 *getInteractionPos();
+    virtual VecFx32 *getInteractionPos();
     virtual BOOL vfunc_60();
     virtual void vfunc_64(s32 a, Unk_ov004_02206ec8_Ctx *b);
     virtual BOOL vfunc_68();
@@ -1631,11 +1596,11 @@ FxVec3 *sFtrFootprintCorners[3] = {data_ov004_0224f88c, data_ov004_0224f8bc, dat
 u16 gFtrSoundNone = 0xffff;
 
 // @022091fc
-FxVec3 *FtrActor::getInteractionPos() {
+VecFx32 *FtrActor::getInteractionPos() {
     static FxVec3 v;
-    v.x = position[0];
-    v.y = position[1];
-    v.z = position[2];
+    v.x = position.x;
+    v.y = position.y;
+    v.z = position.z;
     u8 *o = (u8 *)PlayerActor_GetActor(4);
     if (o) {
         s32 i = *(u16 *)(o + 0x8e) >> 4;
@@ -1644,7 +1609,7 @@ FxVec3 *FtrActor::getInteractionPos() {
         v.y = *(s32 *)(o + 0x60);
         v.z = *(s32 *)(o + 0x64) + data_02135f44[k + 1];
     }
-    return &v;
+    return (VecFx32 *)&v;
 }
 
 // @022091f0
@@ -2229,8 +2194,8 @@ void Unk_ov004_022077a4::setupFromSpawnArg() {
         Unk_ov004_022077a4_Vec3 p1, p2, r;
         volatile Unk_ov004_022077a4_Vec3 q;
         if (!((FtrActor *)this)->isPreview()) {
-            FieldPos_FromBlockUnitCenter(position, 0, 0, f.bits.lo, f.bits.mid);
-            position[1] = FtrMgr_GetSurfaceHeightAtPos(position);
+            FieldPos_FromBlockUnitCenter(&position, 0, 0, f.bits.lo, f.bits.mid);
+            position.y = FtrMgr_GetSurfaceHeightAtPos(&position);
             drawScale = 0x1000;
             drawScaleY = 0x1000;
             drawScaleZ = 0x1000;
@@ -2246,9 +2211,9 @@ void Unk_ov004_022077a4::setupFromSpawnArg() {
             q.x = qx;
             q.y = qy;
             q.z = qz;
-            position[0] = p1.x + qx;
-            position[1] = p1.y + q.y;
-            position[2] = p1.z + q.z;
+            position.x = p1.x + qx;
+            position.y = p1.y + q.y;
+            position.z = p1.z + q.z;
             drawScale = 0x400;
             drawScaleY = 0x400;
             drawScaleZ = 0x400;
@@ -2264,9 +2229,9 @@ void Unk_ov004_022077a4::setupFromSpawnArg() {
         f.tmp = Item_MakeFurniture(ftrIndex, 0);
         mapLayer = f.bits.flag;
         if (!((FtrActor *)this)->isPreview() && mapLayer == 0) {
-            position[1] = 0;
+            position.y = 0;
             if (Scene_GetCurrent() == 10) {
-                position[1] = FtrMgr_GetSurfaceHeightAtPos(position);
+                position.y = FtrMgr_GetSurfaceHeightAtPos(&position);
             }
         }
         kind = FtrInfo_GetDmaUnk02(ftrIndex);
@@ -2280,8 +2245,8 @@ void Unk_ov004_022077a4::setupFromSpawnArg() {
         lightKind = FtrInfo_GetIndoorFlagPair(ftrIndex);
         if (!((FtrActor *)this)->isPreview()) {
             if (footprint == 2) {
-                position[0] += 0x1000;
-                position[2] += 0x1000;
+                position.x += 0x1000;
+                position.z += 0x1000;
             }
             if (mapLayer == 1) {
                 ((FtrStackLink *)(stackLink))->attachAt(f.bits.lo, f.bits.mid, rotY);
@@ -2331,9 +2296,9 @@ void Unk_ov004_022077a4::getTiles(Unk_ov004_02207854_List *l, void *x, s32 y) {
     Unk_ov004_022077a4_Vec3 d;
     Unk_ov004_022077a4_Vec3 e;
     s32 ox, oy;
-    c.x = position[0];
-    c.y = position[1];
-    c.z = position[2];
+    c.x = position.x;
+    c.y = position.y;
+    c.z = position.z;
     if (x != 0) {
         VEC_Add(&c, x, &c);
     }
@@ -2840,7 +2805,7 @@ void FtrActor::spawnEffectAtCorner(s32 a) {
     s32 r[3];
     FtrActor_GetCorner(this, p, a);
     FtrActor_GetCenter(this, (Vec3 *)q);
-    s32 y = position[1];
+    s32 y = position.y;
     r[0] = (p[0] + q[0]) >> 1;
     r[1] = y;
     r[2] = (p[2] + q[2]) >> 1;
@@ -3974,7 +3939,7 @@ BOOL FtrActor::startPush(s16 a) {
     func_020e93a0(&v, a);
     if (canMoveBy((s32)&v)) {
         Unk_ov004_Vec3 w;
-        func_01ffd070(&w, (Vec3 *)position, &v);
+        func_01ffd070(&w, (Vec3 *)&position, &v);
         targetPos[0] = w.x;
         targetPos[1] = w.y;
         targetPos[2] = w.z;
@@ -3998,7 +3963,7 @@ BOOL FtrActor::startPull(s16 a) {
     func_020e93a0(&v, (s16)(a + 0x8000));
     if (canMoveBy((s32)&v)) {
         Unk_ov004_Vec3 w;
-        func_01ffd070(&w, (Vec3 *)position, &v);
+        func_01ffd070(&w, (Vec3 *)&position, &v);
         targetPos[0] = w.x;
         targetPos[1] = w.y;
         targetPos[2] = w.z;
@@ -4225,12 +4190,12 @@ BOOL FtrActor::execRotate() {
 // @022051a4
 BOOL FtrActor::enterPush() {
     Unk_ov004_0224882c_Buf buf;
-    func_020e9960(&buf, targetPos, position);
+    func_020e9960(&buf, targetPos, &position);
     ((FtrTopItems *)topItems)->pickUpAll((Unk_ov004_02205c80_Obj *)this);
     ((Unk_ov004_022077a4 *)this)->moveTiles(&buf, 0);
     void *g = FurnitureManager_GetMoveAnim();
     if (g) {
-        if (FtrMoveAnim_StartPush(g, moveFlag, position, targetAngle)) {
+        if (FtrMoveAnim_StartPush(g, moveFlag, &position.x, targetAngle)) {
             VCALL94(this, 1);
             spawnActorC0AtTile(0);
             return TRUE;
@@ -4245,15 +4210,15 @@ void FtrActor::execPush() {
     void *g = FurnitureManager_GetMoveAnim();
     if (g) {
         if (FtrMoveAnim_Step(g, moveFlag, buf.v)) {
-            position[0] = targetPos[0];
-            position[1] = targetPos[1];
-            position[2] = targetPos[2];
+            position.x = targetPos[0];
+            position.y = targetPos[1];
+            position.z = targetPos[2];
             setAct(1);
             ((FtrTopItems *)topItems)->dropAll((Unk_ov004_02205c80_Obj *)this);
         } else {
-            position[0] = buf.v[0];
-            position[1] = buf.v[1];
-            position[2] = buf.v[2];
+            position.x = buf.v[0];
+            position.y = buf.v[1];
+            position.z = buf.v[2];
         }
     }
 }
@@ -4261,12 +4226,12 @@ void FtrActor::execPush() {
 // @022050c0
 BOOL FtrActor::enterPull() {
     Unk_ov004_0224882c_Buf buf;
-    func_020e9960(&buf, targetPos, position);
+    func_020e9960(&buf, targetPos, &position);
     ((FtrTopItems *)topItems)->pickUpAll((Unk_ov004_02205c80_Obj *)this);
     ((Unk_ov004_022077a4 *)this)->moveTiles(&buf, 0);
     void *g = FurnitureManager_GetMoveAnim();
     if (g) {
-        if (FtrMoveAnim_StartPull(g, moveFlag, position, targetAngle)) {
+        if (FtrMoveAnim_StartPull(g, moveFlag, &position.x, targetAngle)) {
             VCALL94(this, 0);
             spawnActorC0AtTile(1);
             return TRUE;

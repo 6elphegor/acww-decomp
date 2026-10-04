@@ -24,6 +24,8 @@
 #include "snd/SndSeEmitterKind1.h"
 #include "npc/Unk_02014254.h"
 #include "npc/NpcFaceAnim.h"
+#include "actor/Actor.h"
+#include "actor/Character.h"
 
 class FleaMarketSellerVillager;
 
@@ -184,35 +186,9 @@ void *ActorTalkRequest_getChoiceList(void *o);
 
 
 
-class Actor : public ProcBase {
-public:
-    virtual BOOL vfunc_14(s32 status);
-    virtual BOOL vfunc_20(u32 status);
-    virtual BOOL preDraw();
-    virtual BOOL postDraw(s32 status);
-};
 
 struct Unk_020d77a4_Vec3;
 
-class Character : public Actor {
-public:
-    Character();
-    virtual ~Character();
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_48();
-    virtual void vfunc_4c(s32 a);
-    virtual void getInteractionPos();
-    virtual void acceptsInteractionOutOfRange(void *p);
-    virtual BOOL vfunc_58();
-    u32 pad_50[(0x5c - 0x50) / 4];
-    u32 position;
-    u32 positionY;
-    u32 positionZ;
-    u8 pad_68[0x8e - 0x68];
-    s16 rotY;
-    u8 pad_90[0xd4 - 0x90];
-    u32 charNode, unk_d8, unk_dc;
-};
 
 class NpcActor : public Character {
 public:
@@ -221,7 +197,7 @@ public:
     virtual BOOL onExecute();
     virtual BOOL onDraw();
     virtual BOOL vfunc_30();
-    virtual void vfunc_5c(Unk_020d77a4_Vec3 *v);
+    virtual BOOL vfunc_5c(Unk_020d77a4_Vec3 *v);
     virtual void onToolHit();
     virtual void *vfunc_64();
     virtual BOOL updateAct();
@@ -240,7 +216,6 @@ public:
     virtual void vfunc_9c();
     virtual void getTeachableEmotion();
 
-    u16 pad_e0[5];
     u16 unk_ea;
     Unk_02053d3c model;
     Unk_0201ad3c moveAnimSet;
@@ -398,9 +373,9 @@ public:
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_48();
-    virtual void vfunc_4c(s32 a);
-    virtual BOOL vfunc_58();
+    virtual BOOL vfunc_48(void *other);
+    virtual void vfunc_4c(u32 a, u8 b);
+    virtual BOOL vfunc_58(void *a);
     virtual BOOL updateAct();
     virtual BOOL canPlayTalkMelody();
     virtual void onTalkMelodyPlayed();
@@ -937,21 +912,21 @@ void FleaMarketSellerVillagerTalk::onChoice() {
     }
 }
 
-BOOL FleaMarketSellerVillager::vfunc_48() {
+BOOL FleaMarketSellerVillager::vfunc_48(void *) {
     if (NpcTalkCtrl_isBusy(&talkCtrl) != 0 || requestTradeTalk()) {
         return FALSE;
     }
     return TRUE;
 }
 
-BOOL FleaMarketSellerVillager::vfunc_58() {
+BOOL FleaMarketSellerVillager::vfunc_58(void *) {
     if (NpcTalkCtrl_isBusy(&talkCtrl) == 0) {
         return TRUE;
     }
     return FALSE;
 }
 
-void FleaMarketSellerVillager::vfunc_4c(s32 a) {
+void FleaMarketSellerVillager::vfunc_4c(u32 a, u8) {
     switch (a) {
     case 1:
         talk.vfunc_08();

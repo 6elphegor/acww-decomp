@@ -5,6 +5,7 @@
 #include "net/CommManager.h"
 #include "actor/Unk_02002cb0_Vec.h"
 #include "actor/Unk_02002f14_Node.h"
+#include "actor/Actor.h"
 
 // main / runtime symbols by their real names
 #define func_02000c8c _ZN6FxVec3D1Ev
@@ -89,7 +90,6 @@ public:
 extern "C" {
 void func_02031c48(void *p);
 void func_02031c10(void *p);
-extern u8 gActorList[];
 void func_020e79a0(void *list, void *node);
 }
 
@@ -98,51 +98,6 @@ struct Unk_ov004_02236950_Obj {
     Unk_ov004_02236950_Obj() { func_02031c48(this); }
 };
 
-// Library actor base. Its constructor is out of line (func_02002f14) but its destructor is inline in this overlay.
-class Actor : public GameProc {
-public:
-    Actor();
-    virtual BOOL vfunc_04();
-    virtual void postCreate(s32 status);
-    virtual BOOL preDelete();
-    virtual BOOL vfunc_14(s32 status);
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_20(u32 status);
-    virtual BOOL preDraw();
-    virtual BOOL postDraw(s32 status);
-    virtual ~Actor() { func_020e79a0(gActorList, &listNode); }
-
-    void calcModelMatrix(void *out);
-    void updatePosition(Unk_02002cb0_Vec *v);
-
-    /* 0x50 */ Unk_02002f14_Node listNode;
-    /* 0x5c */ Unk_ov004_02236320_V3 position;
-    /* 0x68 */ s32 prevPosition;
-    /* 0x6c */ s32 prevPositionY;
-    /* 0x70 */ s32 prevPositionZ;
-    /* 0x74 */ u8 viewPos[0x18];
-    /* 0x8c */ s16 rotX;
-    /* 0x8e */ s16 rotY;
-    /* 0x90 */ s16 rotZ;
-    /* 0x92 */ s16 moveAngleX;
-    /* 0x94 */ u16 moveAngleY;
-    /* 0x96 */ s16 moveAngleZ;
-    /* 0x98 */ s32 speed;
-    /* 0x9c */ s32 gravity;
-    /* 0xa0 */ s32 maxFallSpeed;
-    /* 0xa4 */ s32 velocity;
-    /* 0xa8 */ s32 velocityY;
-    /* 0xac */ s32 velocityZ;
-    /* 0xb0 */ u32 actorFlags;
-    /* 0xb4 */ s32 cullHeight;
-    /* 0xb8 */ s32 cullRadius;
-    /* 0xbc */ s32 cullDepth;
-    /* 0xc0 */ u32 unk_c0;
-    /* 0xc4 */ s32 drawPos;
-    /* 0xc8 */ s32 drawPosY;
-    /* 0xcc */ s32 drawPosZ;
-    /* 0xd0 */ u16 drawTilt;
-};
 
 #define F08(o) (*(u32 *)((u8 *)(o) + 8))
 
@@ -617,7 +572,7 @@ void HouseRoach::updateState() {
         }
         break;
     }
-    Unk_ov004_02236320_V3 *pv = &position;
+    Unk_ov004_02236320_V3 *pv = (Unk_ov004_02236320_V3 *)&position;
     v.x = position.x;
     v.y = pv->y;
     v.z = pv->z;
@@ -710,8 +665,8 @@ void HouseRoach::updateAppear() {
     Unk_ov004_02236320_V3 v;
     speed = crawlSpeed;
     updateCollision();
-    position.y = prevPositionY;
-    Unk_ov004_02236320_V3 *pv = &position;
+    position.y = prevPosition.y;
+    Unk_ov004_02236320_V3 *pv = (Unk_ov004_02236320_V3 *)&position;
     v.x = position.x;
     v.y = pv->y;
     v.z = pv->z;
@@ -761,7 +716,7 @@ BOOL HouseRoach::execute() {
 
 BOOL HouseRoach::checkHeight() {
     if (position.y >= 0xc00) {
-        position.y = prevPositionY;
+        position.y = prevPosition.y;
         if ((moveResult[1] & 1) != 0) {
             u8 buf[0x40];
             roachState = 2;
@@ -801,7 +756,7 @@ BOOL HouseRoach::checkStomped() {
 
 BOOL HouseRoach::draw() {
     if (lifeState != 4) {
-        Unk_ov004_02236320_V3 *pv = &position;
+        Unk_ov004_02236320_V3 *pv = (Unk_ov004_02236320_V3 *)&position;
         if (F08(this) > 0x1f) {
             F08(this) = 0x1f;
         }
@@ -884,7 +839,7 @@ u8 HouseRoach::probeWalls() {
 }
 
 void HouseRoach::setProbePoints(s32 dist, s32 delta) {
-    Unk_ov004_02236320_V3 *pv = &position;
+    Unk_ov004_02236320_V3 *pv = (Unk_ov004_02236320_V3 *)&position;
     s16 ang = rotY;
     u32 idx;
     probePoints[0].x = position.x;
@@ -920,7 +875,7 @@ Unk_ov004_02236320_Ent *HouseRoach::getNearestCharacter() {
     g = sHouseRoachVillager;
     if (g != NULL) {
         if (p != NULL) {
-            a = &position;
+            a = (Unk_ov004_02236320_V3 *)&position;
             b = &p->position;
             c = &g->position;
             d1 = position.x - p->position.x;
@@ -987,7 +942,7 @@ void HouseRoach::updateHitBox() {
 
 BOOL HouseRoach::move() {
     s32 a = rotY;
-    Unk_ov004_02236320_V3 *p6 = &position;
+    Unk_ov004_02236320_V3 *p6 = (Unk_ov004_02236320_V3 *)&position;
     s32 hit = 0;
     u8 i;
     setProbePoints(0x3c, 0xe38);

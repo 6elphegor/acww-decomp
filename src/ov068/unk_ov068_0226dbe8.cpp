@@ -27,6 +27,8 @@
 #include "npc/Unk_02014254.h"
 #include "talk/EncodedString.h"
 #include "npc/NpcFaceAnim.h"
+#include "actor/Actor.h"
+#include "actor/Character.h"
 #define VillagerId_makeFileName _ZN10VillagerId12makeFileNameEPvjj
 #define Unk_02013474_enableFootsteps _ZN12Unk_0201347415enableFootstepsEv
 #define NpcTalkCtrl_requestTalk _ZN11NpcTalkCtrl11requestTalkEhh
@@ -57,38 +59,9 @@
 
 
 
-class Actor : public ProcBase {
-public:
-    virtual BOOL vfunc_14(s32 status);
-    virtual BOOL vfunc_20(u32 status);
-    virtual BOOL preDraw();
-    virtual BOOL postDraw(s32 status);
-};
 
 struct Unk_020d77a4_Vec3;
 
-class Character : public Actor {
-public:
-    Character();
-    virtual ~Character();
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_48();
-    virtual void vfunc_4c(u32 a, u32 b);
-    virtual void getInteractionPos();
-    virtual void acceptsInteractionOutOfRange(void *p);
-    virtual void vfunc_58(void *p);
-    u32 pad_50[(0x5c - 0x50) / 4];
-    s32 position;
-    s32 positionY;
-    s32 positionZ;
-    u32 prevPosition;
-    u32 pad_6c;
-    u32 prevPositionZ;
-    u32 pad_74[(0x8c - 0x74) / 4];
-    s16 rotX, rotY, rotZ, moveAngleX, moveAngleY, moveAngleZ;
-    u32 pad_98[(0xd4 - 0x98) / 4];
-    u32 charNode, unk_d8, unk_dc;
-};
 
 class NpcActor : public Character {
 public:
@@ -97,7 +70,7 @@ public:
     virtual BOOL onExecute();
     virtual BOOL onDraw();
     virtual BOOL vfunc_30();
-    virtual void vfunc_5c(Unk_020d77a4_Vec3 *v);
+    virtual BOOL vfunc_5c(Unk_020d77a4_Vec3 *v);
     virtual void onToolHit();
     virtual void *vfunc_64();
     virtual BOOL updateAct();
@@ -116,7 +89,6 @@ public:
     virtual void vfunc_9c();
     virtual void getTeachableEmotion();
 
-    u16 pad_e0[5];
     u16 unk_ea;
     Unk_02053d3c model;
     Unk_0201ad3c moveAnimSet;
@@ -362,8 +334,8 @@ public:
     virtual BOOL vfunc_04();
     virtual BOOL preDelete();
     virtual BOOL onDraw();
-    virtual BOOL vfunc_48();
-    virtual void vfunc_4c(u32 idx, u32 v);
+    virtual BOOL vfunc_48(void *other);
+    virtual void vfunc_4c(u32 idx, u8 v);
     virtual BOOL updateAct();
     virtual BOOL canPlayTalkMelody();
     virtual void onTalkMelodyPlayed();
@@ -764,7 +736,7 @@ extern "C" void HouseVisit_SetFinished(void *) {
     ErrandRecord_setStep(PlayerData_getErrands(PlayerData_GetCurrent()) + 0x94, 4);
 }
 
-BOOL HouseVisitVillager::vfunc_48() {
+BOOL HouseVisitVillager::vfunc_48(void *) {
     using namespace sC;
     if (NpcTalkCtrl_isBusy(&talkCtrl) != 0) {
         return FALSE;
@@ -775,7 +747,7 @@ BOOL HouseVisitVillager::vfunc_48() {
     return FALSE;
 }
 
-void HouseVisitVillager::vfunc_4c(u32 idx, u32 v) {
+void HouseVisitVillager::vfunc_4c(u32 idx, u8 v) {
     using namespace sC;
     switch (idx) {
     case 3:
@@ -1089,8 +1061,8 @@ extern "C" void *data_ov068_022709ac[2] = {(void *)_ZN18HouseVisitVillager14exec
 
 BOOL HouseVisitVillager::enterVisitOutside() {
     using namespace sB;
-    position = data_020c8cb4;
-    positionZ = data_020c8cb8 - 0x1000;
+    position.x = data_020c8cb4;
+    position.z = data_020c8cb8 - 0x1000;
     Unk_ov068_02270afc_Pair &q = *(Unk_ov068_02270afc_Pair *)&moveAngleX;
     q.b = -0x8000;
     rotY = q.b;
@@ -1164,9 +1136,9 @@ void HouseVisitVillager::execVisitDoorOpen() {
 
 BOOL HouseVisitVillager::enterVisitWalkIn() {
     using namespace sB;
-    walkTargetX = position;
-    walkTargetY = positionY;
-    walkTargetZ = positionZ;
+    walkTargetX = position.x;
+    walkTargetY = position.y;
+    walkTargetZ = position.z;
     walkTargetZ = walkTargetZ - 0x2000;
     drawFn = data_0213a740;
     collider.collisionEnabled = 1;

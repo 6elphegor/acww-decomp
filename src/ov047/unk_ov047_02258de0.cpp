@@ -16,6 +16,8 @@
 #include "npc/Unk_02014254.h"
 #include "npc/Unk_0201a13c.h"
 #include "talk/MsgString9B.h"
+#include "actor/Actor.h"
+#include "actor/Character.h"
 
 
 struct Unk_0201bc1c;
@@ -279,36 +281,9 @@ MEMBER(Unk_0201a794, 0x418 - 0x3b0);
 MEMBER(CollisionState, 0x30);
 
 
-class Actor : public ProcBase {
-public:
-    virtual BOOL vfunc_14(s32 status);
-    virtual BOOL vfunc_20(u32 status);
-    virtual BOOL preDraw();
-    virtual BOOL postDraw(s32 status);
-};
 
 struct Unk_020d77a4_Vec3;
 
-class Character : public Actor {
-public:
-    Character();
-    virtual ~Character();
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_48();
-    virtual void vfunc_4c(u32 a, u32 b);
-    virtual void getInteractionPos();
-    virtual void acceptsInteractionOutOfRange(void *p);
-    virtual void vfunc_58(void *p);
-    u8 pad_50[0x5c - 0x50];
-    s32 position, positionY, positionZ;
-    u8 pad_68[0x8e - 0x68];
-    s16 rotY;
-    u8 pad_90[4];
-    s16 moveAngleY;
-    u8 pad_96[2];
-    s32 speed;
-    u8 pad_9c[0xea - 0x9c];
-};
 
 class NpcActor : public Character {
 public:
@@ -318,7 +293,7 @@ public:
     virtual BOOL onExecute();
     virtual BOOL onDraw();
     virtual BOOL vfunc_30();
-    virtual void vfunc_5c(Unk_020d77a4_Vec3 *v);
+    virtual BOOL vfunc_5c(Unk_020d77a4_Vec3 *v);
     virtual void onToolHit();
     virtual void vfunc_64();
     virtual BOOL updateAct();
@@ -459,8 +434,8 @@ public:
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_48();
-    virtual void vfunc_4c(u32 cmd, u32 arg);
+    virtual BOOL vfunc_48(void *other);
+    virtual void vfunc_4c(u32 cmd, u8 arg);
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
@@ -758,8 +733,8 @@ BOOL SpNpcBlathers::vfunc_00() {
     if (CommManager_isOnline(gCommManager) != 0 || *DebugVar_GetPtr(0, 0x4a) != 0) {
         collider.groups |= 2;
         if (NetArea_IsLocalOwner()) {
-            position = 0xf000;
-            positionZ = 0x15000;
+            position.x = 0xf000;
+            position.z = 0x15000;
             rotY = 0;
             moveAngleY = 0;
             changeAct(0);
@@ -1924,14 +1899,14 @@ void SpNpcBlathersTalk::onDeliveryChoice(u32 a) {
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
-BOOL SpNpcBlathers::vfunc_48() {
+BOOL SpNpcBlathers::vfunc_48(void *) {
     if (NpcTalkCtrl_isBusy(&talkCtrl) || netIsTalkLocked()) {
         return FALSE;
     }
     return TRUE;
 }
 
-void SpNpcBlathers::vfunc_4c(u32 cmd, u32 arg) {
+void SpNpcBlathers::vfunc_4c(u32 cmd, u8 arg) {
     s32 a, b;
     switch (cmd) {
     case 3:

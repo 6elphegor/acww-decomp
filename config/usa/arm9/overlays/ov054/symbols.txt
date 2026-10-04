@@ -4,7 +4,9 @@ _ZN17SpNpcPellyPhyllis8isOnlineEv kind:function(thumb,size=0x10) addr:0x02258e34
 _ZN17SpNpcPellyPhyllis17isLocalSlotActiveEv kind:function(thumb,size=0x14) addr:0x02258e44
 _ZN17SpNpcPellyPhyllis12canStartSaveEv kind:function(thumb,size=0x38) addr:0x02258e58
 _ZN17SpNpcPellyPhyllis8vfunc_4cEjj kind:function(thumb,size=0x19c) addr:0x02258e90
+_ZN17SpNpcPellyPhyllis8vfunc_4cEjh kind:label(thumb) addr:0x02258e90
 _ZN17SpNpcPellyPhyllis8vfunc_48EP9Character kind:function(thumb,size=0xa4) addr:0x0225902c
+_ZN17SpNpcPellyPhyllis8vfunc_48EPv kind:label(thumb) addr:0x0225902c
 _ZN21SpNpcPellyPhyllisTalk19updateDonationLevelEi kind:function(thumb,size=0xa8) addr:0x022590d0
 _ZN21SpNpcPellyPhyllisTalk10askSavingsEv kind:function(thumb,size=0x34) addr:0x02259178
 _ZN21SpNpcPellyPhyllisTalk14askLoanPaymentEv kind:function(thumb,size=0x54) addr:0x022591ac

@@ -1,26 +1,13 @@
 #include "types.h"
 #include "sys/ProcBase.h"
 #include "talk/TalkRequestQueue.h"
+#include "actor/Character.h"
 
 struct Unk_0203dad4_Task;
 
 
 
 
-// Only the non-virtual methods of this class (vtable and constructor are in the next unit)
-class Character {
-public:
-    void clearCharFlags(u32 mask);
-    void setCharFlags(u32 mask);
-    BOOL testCharFlags(u32 mask);
-    BOOL isAreaSynced();
-    void setAreaSynced();
-    s32 getTalkStartMode();
-    void clearTalkStartMode();
-
-    /* 0x00 */ u8 pad_00[0xe8];
-    /* 0xe8 */ u16 charFlags;
-};
 
 class Unk_0203e604_Obj {
 public:
@@ -96,7 +83,7 @@ Unk_0203e604_Obj *Character_FindByCharId(u32 id);
 Unk_0203dad4_Task *TalkRequestPool_Alloc();
 void PrioList_Insert(TalkRequestList *l, Unk_0203dad4_Task *t);
 void TalkRequestList_FreeAll(TalkRequestList *l);
-void func_020e79a0(TalkRequestList *l, Unk_0203dad4_Task *t);
+void func_020e79a0(void *l, void *t);
 void NetArea_SendStateToNewOwner();
 void NetArea_SendStateToRequester();
 void Scene_CheckExit();

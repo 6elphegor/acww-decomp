@@ -1,7 +1,9 @@
 _ZN12SpNpcWendellD1Ev kind:function(thumb,size=0x28) addr:0x022713c0
 _ZN12SpNpcWendellD0Ev kind:function(thumb,size=0x2c) addr:0x022713e8
 _ZN12SpNpcWendell8vfunc_4cEi kind:function(thumb,size=0x50) addr:0x02271414
+_ZN12SpNpcWendell8vfunc_4cEjh kind:label(thumb) addr:0x02271414
 _ZN12SpNpcWendell8vfunc_48Ev kind:function(thumb,size=0x20) addr:0x02271464
+_ZN12SpNpcWendell8vfunc_48EPv kind:label(thumb) addr:0x02271464
 _ZN16SpNpcWendellTalk8onChoiceEv kind:function(thumb,size=0x68) addr:0x02271484
 _ZN16SpNpcWendellTalk12onMessageEndEv kind:function(thumb,size=0x10c) addr:0x022714ec
 _ZN16SpNpcWendellTalk14onMessageStartEv kind:function(thumb,size=0x14) addr:0x022715f8

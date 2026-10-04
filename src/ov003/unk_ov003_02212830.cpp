@@ -9,55 +9,14 @@
 #include "actor/ActorFollowCollider.h"
 #include "sys/ProcBase.h"
 #include "talk/MsgString9B.h"
+#include "actor/Actor.h"
+#include "actor/Character.h"
 
 
 
 typedef Unk_0203389c_Vec Unk_ov003_Vec;
 
-class Actor : public GameProc {
-public:
-    Actor();
-    virtual BOOL vfunc_04();
-    virtual BOOL preDelete();
-    virtual BOOL vfunc_14(s32 status);
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_20(u32 status);
-    virtual BOOL preDraw();
-    virtual BOOL postDraw(s32 status);
-    virtual ~Actor();
 
-    /* 0x50 */ u8 unk_50[0xc];
-    /* 0x5c */ Unk_ov003_Vec position;
-    /* 0x68 */ Unk_ov003_Vec prevPosition;
-    /* 0x74 */ u8 pad_74[0x8e - 0x74];
-    /* 0x8e */ s16 rotY;
-    /* 0x90 */ u8 pad_90[0xd4 - 0x90];
-};
-
-class Character : public Actor {
-public:
-    Character();
-    virtual ~Character();
-    virtual void postCreate(s32 v);
-    virtual BOOL vfunc_04();
-    virtual BOOL preDelete();
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_48(void *a);
-    virtual void vfunc_4c(u32 a, u8 b);
-    virtual Unk_ov003_Vec *getInteractionPos();
-    virtual BOOL acceptsInteractionOutOfRange(void *a);
-    virtual BOOL vfunc_58(void *a);
-    virtual BOOL vfunc_5c();
-
-    void clearTalkStartMode();
-    void setCharId(u32 a);
-
-    /* 0xd4 */ u8 unk_d4[0x10];
-    /* 0xe4 */ s32 interactionRangeSq;
-    /* 0xe8 */ u16 charFlags;
-    /* 0xea */ u8 unk_ea;
-    /* 0xeb */ u8 pad_eb;
-};
 
 // Secondary base at +0xec (vtable main 0x020ddcf0 chain).
 class MsgRequest {
@@ -487,7 +446,7 @@ BOOL Snowball::vfunc_00() {
     prevPosition.x = position.x;
     prevPosition.y = position.y;
     prevPosition.z = position.z;
-    V3P *pv = &prevPosition;
+    V3P *pv = (V3P *)&prevPosition;
     lastFramePos.x = prevPosition.x;
     lastFramePos.y = pv->y;
     lastFramePos.z = pv->z;
@@ -495,7 +454,7 @@ BOOL Snowball::vfunc_00() {
     prevPosition.x = position.x;
     prevPosition.y = position.y;
     prevPosition.z = position.z;
-    pv = &prevPosition;
+    pv = (V3P *)&prevPosition;
     lastFramePos.x = prevPosition.x;
     lastFramePos.y = pv->y;
     lastFramePos.z = pv->z;
@@ -525,11 +484,11 @@ BOOL Snowball::onExecute() {
     prevPosition.x = position.x;
     prevPosition.y = position.y;
     prevPosition.z = position.z;
-    V3P *pv = &prevPosition;
+    V3P *pv = (V3P *)&prevPosition;
     lastFramePos.x = prevPosition.x;
     lastFramePos.y = pv->y;
     lastFramePos.z = pv->z;
-    V3P sp = position;
+    V3P sp = *(V3P *)&position;
     _ZN12Unk_02003c4013func_02003e80EP16Unk_02003a6c_Vec(seEmitter, &sp);
     return TRUE;
 }
@@ -719,7 +678,7 @@ extern "C" s32 Snowball_UpdateRolling(Obj *o)
         o->rollVelX = 0;
         o->rollVelZ = 0;
     }
-    loc.initAtPos(&o->position, 0, 0);
+    loc.initAtPos((Unk_0203389c_Vec *)&o->position, 0, 0);
     if (loc.attr == 3) {
         if (o->snowballFlags.i == 0) {
             o->radius = func_01ffcb0c(o->radius, (len >> 7) + 0x1000);

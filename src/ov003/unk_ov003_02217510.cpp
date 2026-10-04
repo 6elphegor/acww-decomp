@@ -7,50 +7,13 @@
 #include "game/Unk_ov003_Vec.h"
 #include "talk/TalkWindowState.h"
 #include "sys/ProcBase.h"
+#include "actor/Actor.h"
+#include "actor/Character.h"
 
 
 
 
-class Actor : public GameProc {
-public:
-    Actor();
-    virtual BOOL vfunc_04();
-    virtual BOOL preDelete();
-    virtual BOOL vfunc_14(s32 status);
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_20(u32 a);
-    virtual BOOL preDraw();
-    virtual BOOL postDraw(s32 status);
-    virtual ~Actor();
 
-    /* 0x50 */ u8 unk_50[0xc];
-    /* 0x5c */ s32 position[3];
-    /* 0x68 */ u8 pad_68[0xd4 - 0x68];
-};
-
-class Character : public Actor {
-public:
-    Character();
-    virtual ~Character();
-    virtual void postCreate(s32 v);
-    virtual BOOL vfunc_04();
-    virtual BOOL preDelete();
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_48(Character *a);
-    virtual void vfunc_4c(u32 a, u8 b);
-    virtual Unk_ov003_Vec *getInteractionPos();
-    virtual BOOL acceptsInteractionOutOfRange(void *a);
-    virtual BOOL vfunc_58(void *a);
-    virtual BOOL vfunc_5c();
-
-    void setCharId(u32 a);
-
-    /* 0xd4 */ u8 unk_d4[0x10];
-    /* 0xe4 */ s32 interactionRangeSq;
-    /* 0xe8 */ u16 charFlags;
-    /* 0xea */ u8 unk_ea;
-    /* 0xeb */ u8 pad_eb;
-};
 
 // Secondary base at +0xec (vtable main 0x020ddcf0 chain).  Slot names are TalkMsgRequest's; slot 0x14
 // (onMessageEnd) is overridden by BuildingActor.
@@ -123,9 +86,9 @@ public:
     virtual BOOL preExecute();
     virtual BOOL vfunc_20(u32 a);
     virtual BOOL preDraw();
-    virtual BOOL vfunc_48(Character *a);
+    virtual BOOL vfunc_48(void *a);
     virtual void vfunc_4c(u32 a, u8 b);
-    virtual Unk_ov003_Vec *getInteractionPos();
+    virtual VecFx32 *getInteractionPos();
     virtual void vfunc_60(u32 a, void *p);
     virtual s32 vfunc_64();
     virtual s32 vfunc_68();

@@ -24,6 +24,8 @@
 #include "snd/SndSeEmitterKind1.h"
 #include "npc/Unk_02014254.h"
 #include "npc/NpcFaceAnim.h"
+#include "actor/Actor.h"
+#include "actor/Character.h"
 
 class HouseOwnerVillager;
 
@@ -140,35 +142,9 @@ u32 Unk_02015b8c_getAnimId(void *o, u32 v);
 
 
 
-class Actor : public ProcBase {
-public:
-    virtual BOOL vfunc_14(s32 status);
-    virtual BOOL vfunc_20(u32 status);
-    virtual BOOL preDraw();
-    virtual BOOL postDraw(s32 status);
-};
 
 struct Unk_020d77a4_Vec3;
 
-class Character : public Actor {
-public:
-    Character();
-    virtual ~Character();
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_48();
-    virtual void vfunc_4c(u32 idx, u32 v);
-    virtual void getInteractionPos();
-    virtual void acceptsInteractionOutOfRange(void *p);
-    virtual void vfunc_58(void *p);
-    u32 pad_50[(0x5c - 0x50) / 4];
-    u32 position;
-    u32 positionY;
-    u32 positionZ;
-    u8 pad_68[0x8e - 0x68];
-    s16 rotY;
-    u8 pad_90[0xd4 - 0x90];
-    u32 charNode, unk_d8, unk_dc;
-};
 
 class NpcActor : public Character {
 public:
@@ -177,7 +153,7 @@ public:
     virtual BOOL onExecute();
     virtual BOOL onDraw();
     virtual BOOL vfunc_30();
-    virtual void vfunc_5c(Unk_020d77a4_Vec3 *v);
+    virtual BOOL vfunc_5c(Unk_020d77a4_Vec3 *v);
     virtual void onToolHit();
     virtual void *vfunc_64();
     virtual BOOL updateAct();
@@ -196,7 +172,6 @@ public:
     virtual void vfunc_9c();
     virtual void getTeachableEmotion();
 
-    u16 pad_e0[5];
     u16 unk_ea;
     Unk_02053d3c model;
     Unk_0201ad3c moveAnimSet;
@@ -294,8 +269,8 @@ public:
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL onDraw();
-    virtual BOOL vfunc_48();
-    virtual void vfunc_4c(u32 idx, u32 v);
+    virtual BOOL vfunc_48(void *other);
+    virtual void vfunc_4c(u32 idx, u8 v);
     virtual BOOL updateAct();
     virtual BOOL canPlayTalkMelody();
     virtual void onTalkMelodyPlayed();
@@ -653,14 +628,14 @@ BOOL HouseOwnerAi::updateState04(HouseOwnerVillager *o) {
     return FALSE;
 }
 
-BOOL HouseOwnerVillager::vfunc_48() {
+BOOL HouseOwnerVillager::vfunc_48(void *) {
     if (NpcTalkCtrl_isBusy(&talkCtrl) != 0 || NpcActor_netIsTalkLocked(this) != 0) {
         return FALSE;
     }
     return TRUE;
 }
 
-void HouseOwnerVillager::vfunc_4c(u32 idx, u32 v) {
+void HouseOwnerVillager::vfunc_4c(u32 idx, u8 v) {
     switch (idx) {
     case 3:
         footstepFx.unk_08 = v;

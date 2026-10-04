@@ -6,53 +6,13 @@
 #include "game/Unk_ov003_Vec.h"
 #include "talk/TalkWindowState.h"
 #include "sys/ProcBase.h"
+#include "actor/Actor.h"
+#include "actor/Character.h"
 
 
 
 
-class Actor : public GameProc {
-public:
-    Actor();
-    virtual BOOL vfunc_04();
-    virtual BOOL preDelete();
-    virtual BOOL vfunc_14(s32 status);
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_20(u32 a);
-    virtual BOOL preDraw();
-    virtual BOOL postDraw(s32 status);
-    virtual ~Actor();
 
-    /* 0x50 */ u8 unk_50[0xc];
-    /* 0x5c */ s32 position[3];
-    /* 0x68 */ u8 pad_68[0x8e - 0x68];
-    /* 0x8e */ s16 rotY;
-    /* 0x90 */ u8 pad_90[0xd4 - 0x90];
-};
-
-class Character : public Actor {
-public:
-    Character();
-    virtual ~Character();
-    virtual void postCreate(s32 v);
-    virtual BOOL vfunc_04();
-    virtual BOOL preDelete();
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_48(Character *a);
-    virtual void vfunc_4c(u32 a, u8 b);
-    virtual Unk_ov003_Vec *getInteractionPos();
-    virtual BOOL acceptsInteractionOutOfRange(void *a);
-    virtual BOOL vfunc_58(void *a);
-    virtual BOOL vfunc_5c();
-
-    void clearTalkStartMode();
-    void setCharId(u32 a);
-
-    /* 0xd4 */ u8 unk_d4[0x10];
-    /* 0xe4 */ s32 interactionRangeSq;
-    /* 0xe8 */ u16 charFlags;
-    /* 0xea */ u8 unk_ea;
-    /* 0xeb */ u8 pad_eb;
-};
 
 // Secondary base at +0xec (vtable main 0x020ddcf0 chain).  Slot names are TalkMsgRequest's; slot 0x14
 // (onMessageEnd) is overridden by BuildingActor.
@@ -124,9 +84,9 @@ public:
     virtual BOOL preExecute();
     virtual BOOL vfunc_20(u32 a);
     virtual BOOL preDraw();
-    virtual BOOL vfunc_48(Character *a);
+    virtual BOOL vfunc_48(void *a);
     virtual void vfunc_4c(u32 a, u8 b);
-    virtual Unk_ov003_Vec *getInteractionPos();
+    virtual VecFx32 *getInteractionPos();
     virtual void vfunc_60(u32 a, void *p);
     virtual s32 vfunc_64();
     virtual s32 vfunc_68();
@@ -209,7 +169,7 @@ public:
     virtual BOOL vfunc_0c();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
-    virtual BOOL vfunc_48(Character *a);
+    virtual BOOL vfunc_48(void *a);
     virtual void vfunc_4c(u32 a, u8 b);
     virtual BOOL vfunc_70();
 
@@ -264,7 +224,8 @@ BOOL BulletinBoard::vfunc_0c() {
     return TRUE;
 }
 
-BOOL BulletinBoard::vfunc_48(Character *a) {
+BOOL BulletinBoard::vfunc_48(void *other) {
+    Character *a = (Character *)other;
     if (colliderFlags & 8) {
         if (a) {
             if (func_020e780c((s16)(rotY + 0x8000), a->rotY) < 0x1300) {

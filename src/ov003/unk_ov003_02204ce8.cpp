@@ -5,6 +5,8 @@
 // descending address order, each in its own namespace block.
 #include "types.h"
 #include "Unk_020d8c7c.h"
+#include "actor/Actor.h"
+#include "actor/Character.h"
 
 // calls into other modules (the old extern "C" declarations keep their local signatures; the call compiles like the method call)
 #define Unk_02007694_getActionDonePriority _ZN12Unk_0200769421getActionDonePriorityEj
@@ -583,43 +585,7 @@ struct Unk_ov003_02205c28_V3 {
     s32 x, y, z;
 };
 
-class Actor : public GameProc {
-public:
-    virtual BOOL vfunc_04();
-    virtual void postCreate(s32 a);
-    virtual BOOL preDelete();
-    virtual BOOL vfunc_14(s32 a);
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_20(u32 status);
-    virtual BOOL preDraw();
-    virtual BOOL postDraw(s32 status);
 
-    /* 0x50 */ u8 unk_50[0xc];
-    /* 0x5c */ Unk_ov003_02205c28_V3 position;
-    /* 0x68 */ u8 pad_68[0x8e - 0x68];
-    /* 0x8e */ s16 rotY;
-    /* 0x90 */ u8 pad_90[0xd4 - 0x90];
-};
-
-class Character : public Actor {
-public:
-    Character();
-    virtual ~Character();
-    virtual BOOL vfunc_04();
-    virtual BOOL preDelete();
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_48(void *a);
-    virtual void vfunc_4c(u32 a, u8 b);
-    virtual void *getInteractionPos();
-    virtual BOOL acceptsInteractionOutOfRange(void *a);
-    virtual BOOL vfunc_58(void *a);
-    virtual BOOL vfunc_5c(void *a);
-
-    /* 0xd4 */ u8 unk_d4[0x10];
-    /* 0xe4 */ s32 interactionRangeSq;
-    /* 0xe8 */ u16 charFlags;
-    /* 0xea */ u16 pad_ea;
-};
 
 struct Unk_ov003_02206120_V3 {
     s32 x, y, z;
@@ -648,6 +614,7 @@ static inline void Unk_ov003_02205e58_Set(Unk_ov003_02205e58_Pair *q, u32 a, u32
 
 class Unk_ov003_02205c28_Obj : public Character {
 public:
+    /* 0x0ea */ u16 pad_ea;
     /* 0x0ec */ u8 pad_ec[0x2cc - 0xec];
     /* 0x2cc */ u8 anim[8];
     /* 0x2d4 */ Unk_ov003_02205c90_Bits animFrame;
@@ -801,43 +768,7 @@ struct Unk_ov003_02206574_V3 {
     s32 x, y, z;
 };
 
-class Actor : public GameProc {
-public:
-    virtual BOOL vfunc_04();
-    virtual void postCreate(s32 a);
-    virtual BOOL preDelete();
-    virtual BOOL vfunc_14(s32 a);
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_20(u32 status);
-    virtual BOOL preDraw();
-    virtual BOOL postDraw(s32 status);
 
-    /* 0x50 */ u8 unk_50[0xc];
-    /* 0x5c */ Unk_ov003_02206574_V3 position;
-    /* 0x68 */ u8 pad_68[0x8e - 0x68];
-    /* 0x8e */ s16 rotY;
-    /* 0x90 */ u8 pad_90[0xd4 - 0x90];
-};
-
-class Character : public Actor {
-public:
-    Character();
-    virtual ~Character();
-    virtual BOOL vfunc_04();
-    virtual BOOL preDelete();
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_48(void *a);
-    virtual void vfunc_4c(u32 a, u8 b);
-    virtual void *getInteractionPos();
-    virtual BOOL acceptsInteractionOutOfRange(void *a);
-    virtual BOOL vfunc_58(void *a);
-    virtual BOOL vfunc_5c(void *a);
-
-    /* 0xd4 */ u8 unk_d4[0x10];
-    /* 0xe4 */ s32 interactionRangeSq;
-    /* 0xe8 */ u16 charFlags;
-    /* 0xea */ u16 pad_ea;
-};
 
 struct Unk_ov003_022067c4_Shared {
     /* 0x00 */ u32 unk_00;
@@ -2240,45 +2171,7 @@ public:
     virtual s32 vfunc_60(u16 *p);
 };
 
-class Actor : public GameProc {
-public:
-    virtual BOOL vfunc_04();
-    virtual void postCreate(s32 a);
-    virtual BOOL preDelete();
-    virtual BOOL vfunc_14(s32 a);
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_20(u32 status);
-    virtual BOOL preDraw();
-    virtual BOOL postDraw(s32 status);
 
-    /* 0x50 */ u8 unk_50[0xc];
-    /* 0x5c */ Unk_ov003_0220a684_V3 position;
-    /* 0x68 */ u8 pad_68[0x8e - 0x68];
-    /* 0x8e */ s16 rotY;
-    /* 0x90 */ u8 pad_90[8];
-    /* 0x98 */ s32 speed;
-    /* 0x9c */ u8 pad_9c[0xd4 - 0x9c];
-};
-
-class Character : public Actor {
-public:
-    Character();
-    virtual ~Character();
-    virtual BOOL vfunc_04();
-    virtual BOOL preDelete();
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_48(void *a);
-    virtual void vfunc_4c(u32 a, u8 b);
-    virtual void *getInteractionPos();
-    virtual BOOL acceptsInteractionOutOfRange(void *a);
-    virtual BOOL vfunc_58(void *a);
-    virtual BOOL vfunc_5c(void *a);
-
-    /* 0xd4 */ u8 unk_d4[0x10];
-    /* 0xe4 */ s32 interactionRangeSq;
-    /* 0xe8 */ u16 charFlags;
-    /* 0xea */ u16 pad_ea;
-};
 
 struct Unk_ov003_0220a684_Shared {
     /* 0x00 */ u32 unk_00;
@@ -2698,46 +2591,7 @@ struct Unk_ov003_0220bc84_T48 {
     s32 v[12];
 };
 
-class Actor : public GameProc {
-public:
-    virtual BOOL vfunc_04();
-    virtual void postCreate(s32 a);
-    virtual BOOL preDelete();
-    virtual BOOL vfunc_14(s32 a);
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_20(u32 status);
-    virtual BOOL preDraw();
-    virtual BOOL postDraw(s32 status);
 
-    /* 0x50 */ u8 unk_50[0xc];
-    /* 0x5c */ Unk_ov003_0220bc84_V3 position;
-    /* 0x68 */ u8 pad_68[0x8e - 0x68];
-    /* 0x8e */ s16 rotY;
-    /* 0x90 */ u8 pad_90[0xc4 - 0x90];
-    /* 0xc4 */ Unk_ov003_0220bc84_V3 drawPos;
-    /* 0xd0 */ s16 drawTilt;
-    /* 0xd2 */ u8 pad_d2[0xd4 - 0xd2];
-};
-
-class Character : public Actor {
-public:
-    Character();
-    virtual ~Character();
-    virtual BOOL vfunc_04();
-    virtual BOOL preDelete();
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_48(void *a);
-    virtual void vfunc_4c(u32 a, u8 b);
-    virtual void *getInteractionPos();
-    virtual BOOL acceptsInteractionOutOfRange(void *a);
-    virtual BOOL vfunc_58(void *a);
-    virtual BOOL vfunc_5c(void *a);
-
-    /* 0xd4 */ u8 unk_d4[0x10];
-    /* 0xe4 */ s32 interactionRangeSq;
-    /* 0xe8 */ u16 charFlags;
-    /* 0xea */ u16 pad_ea;
-};
 
 class MsgRequest {
 public:
@@ -9862,7 +9716,7 @@ extern "C" void PlayerActor_InsectShowCatchUpdate(Obj *o) {
             return;
         } else {
             V3 *q = HeldInsect_GetPos(r7);
-            V3 *pv = &o->position;
+            V3 *pv = (V3 *)&o->position;
             pos.x = o->position.x;
             pos.y = pv->y;
             pos.z = pv->z;
@@ -9910,7 +9764,7 @@ namespace ns_0220ba90 {
 extern "C" void PlayerActor_MainInsectShowCatch(Obj *o) {
     Unk_020102ec_advanceAnim(o);
     volatile V3 sv;
-    V3 *pv = &o->drawPos;
+    V3 *pv = (V3 *)&o->drawPos;
     sv.x = o->drawPos.x;
     sv.y = pv->y;
     sv.z = pv->z;
@@ -10558,7 +10412,7 @@ extern "C" void PlayerActor_MainShovelWait(Obj *o) {
     PlayerActor_ShovelWaitTrackTarget(o);
     if (r4 != 0) {
         if (o->speed == 0) {
-            Effect_Create(0x2a, &o->position, &o->rotY, 0);
+            Effect_Create(0x2a, (Unk_ov003_0220a684_V3 *)&o->position, &o->rotY, 0);
         }
     }
 }
@@ -10821,7 +10675,7 @@ extern "C" void PlayerActor_ShovelStrikeUpdate(Obj *o) {
         l_a9f0:
             Unk_02006d14_playSe(o, 0x844);
             {
-                V3 *pv = &o->position;
+                V3 *pv = (V3 *)&o->position;
                 pos.x = pv->x;
                 pos.y = pv->y;
                 pos.z = pv->z;
@@ -13568,7 +13422,7 @@ extern "C" void PlayerActor_SetupPitfallClimbOut(Obj *o) {
     } else {
         Unk_020102ec_startAnimOnce(o, 0x93, 3, 0);
     }
-    V3 *pv = &o->position;
+    V3 *pv = (V3 *)&o->position;
     pos.x = o->position.x;
     pos.y = pv->y;
     pos.z = pv->z;
@@ -13579,7 +13433,7 @@ extern "C" void PlayerActor_SetupPitfallClimbOut(Obj *o) {
         Effect_PlayById(0x90, &pos, 0, 0);
     }
     Unk_02006d14_setActionFlag(o, 9);
-    pv = &o->position;
+    pv = (V3 *)&o->position;
     pos2.x = o->position.x;
     pos2.y = pv->y;
     pos2.z = pv->z;
@@ -14085,7 +13939,7 @@ extern "C" void PlayerActor_ThrowBottleShowItem(Obj *o) {
         s32 f = o->animFrame.f;
         if (f >= 6 && f <= 0x19) {
             Unk_02006d14_setActionFlag(o, 0xd);
-            o->vfunc_5c(o->shownItemPos);
+            o->vfunc_5c((Unk_020d77a4_Vec3 *)o->shownItemPos);
             o->shownItem = 0x1520;
             s32 v = (f - 6) * 0x333;
             if (f >= 0xb) {
@@ -14118,7 +13972,7 @@ extern "C" void PlayerActor_ThrowBottleLook(Obj *o) {
             a.x = q->x;
             a.y = q->y;
             a.z = q->z;
-            V3 *pv = &o->position;
+            V3 *pv = (V3 *)&o->position;
             b.x = pv->x;
             b.y = pv->y;
             b.z = pv->z;
@@ -14207,7 +14061,7 @@ extern "C" void PlayerActor_FishReleaseLook(Obj *o) {
             a.x = q->x;
             a.y = q->y;
             a.z = q->z;
-            V3 *pv = &o->position;
+            V3 *pv = (V3 *)&o->position;
             b.x = pv->x;
             b.y = pv->y;
             b.z = pv->z;

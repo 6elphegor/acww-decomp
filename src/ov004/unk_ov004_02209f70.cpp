@@ -37,6 +37,8 @@
 #include "room/FtrGlowMatSet.h"
 #include "room/FtrTopItems.h"
 #include "room/FtrModelAnim.h"
+#include "actor/Actor.h"
+#include "actor/Character.h"
 // ov004 translation unit 0x02209f70-0x022136d0 (34 classes derived from FtrActor). Built by two compilers:
 // this file's thunks need mwcc 1.2/sp2, FtrSingingInsect::updateActive / vfunc_7c (in the _switch file) need 1.2/base;
 // the functions and data objects are placed by address (config/usa/arm9/overlays/ov004/object_order.txt).
@@ -60,48 +62,8 @@ typedef Unk_ov004_Mtx Unk_ov004_02205eb0_Mtx;
 
 
 
-class Actor : public GameProc {
-public:
-    Actor();
-    virtual BOOL vfunc_04();
-    virtual BOOL preDelete();
-    virtual BOOL vfunc_14(s32 a);
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_20(u32 status);
-    virtual BOOL preDraw();
-    virtual BOOL postDraw(s32 status);
-    virtual ~Actor();
-
-    /* 0x50 */ Unk_02002f14_Node listNode;
-    /* 0x5c */ s32 position[3];
-    /* 0x68 */ u8 pad_68[0x8e - 0x68];
-    /* 0x8e */ s16 rotY;
-    /* 0x90 */ u8 pad_90[0xd4 - 0x90];
-};
 
 
-class Character : public Actor {
-public:
-    Character();
-    virtual ~Character();
-    virtual BOOL vfunc_04();
-    virtual BOOL preDelete();
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_48(void *a);
-    virtual void vfunc_4c(u32 a, u8 b);
-    virtual FxVec3 *getInteractionPos();
-    virtual BOOL acceptsInteractionOutOfRange(void *a);
-    virtual BOOL vfunc_58(void *a);
-    virtual BOOL vfunc_5c();
-
-    void detachTalkRequest(s32 a);
-    void attachTalkRequest(s32 a);
-
-    /* 0xd4 */ Unk_0203e5d0_Node charNode;
-    /* 0xe4 */ s32 interactionRangeSq;
-    /* 0xe8 */ u16 charFlags;
-    /* 0xea */ u16 pad_ea;
-};
 
 // ---------------------------------------------------------------- secondary base at +0xec (vtable 0x020ddcf0 in main)
 class MsgRequest {
@@ -315,7 +277,7 @@ public:
     virtual BOOL vfunc_14(s32 a);
     virtual BOOL onExecute();
     virtual BOOL preDraw();
-    virtual FxVec3 *getInteractionPos();
+    virtual VecFx32 *getInteractionPos();
     virtual BOOL vfunc_60();
     virtual void vfunc_64(s32 a, Unk_ov004_02206ec8_Ctx *b);
     virtual BOOL vfunc_68();
@@ -3198,7 +3160,7 @@ BOOL FtrGyroid::enterFtrAct02() {
 }
 
 void FtrGyroid::execFtrAct01() {
-    updateSync((Unk_ov004_0220d69c_Vec *)position);
+    updateSync((Unk_ov004_0220d69c_Vec *)&position);
     if (syncStartFrames != 0) {
         p16::_ZN14BlendAnimModel9stepBlendEv(b16_unk_534);
         syncStartFrames--;
@@ -3216,7 +3178,7 @@ void FtrGyroid::execFtrAct01() {
     if (p16::_ZN9FtrSwitch10isChangingEv(b16_unk_73c)) {
         p16::_ZN9FtrSwitch3setEji(b16_unk_73c, 1, 0);
         s32 s = p16::Scene_GetCurrent();
-        p16::FtrSync_RequestToggleGyroid(s, position, p16::FtrActor_GetLayer(this));
+        p16::FtrSync_RequestToggleGyroid(s, &position, p16::FtrActor_GetLayer(this));
     }
 }
 
@@ -3225,7 +3187,7 @@ BOOL FtrGyroid::enterFtrAct01() {
     p16::_ZN8FtrActor10playSound1Ev(this);
     p16::_ZN9FtrSwitch3setEji(b16_unk_73c, 1, 0);
     syncStartFrames = 0xffff;
-    p16::FieldPos_ToUnit(&a, &b, position);
+    p16::FieldPos_ToUnit(&a, &b, &position);
     if (b16_unk_77a != 0) {
         if (b16_unk_768 != 0 || p16::Scene_InVillagerHouse() != 0) {
             p16::Snd_BgmSyncSetState(bgmSync, 1);
@@ -3266,18 +3228,18 @@ BOOL FtrGyroid::enterFtrAct01() {
 }
 
 void FtrGyroid::execFtrAct00() {
-    updateSync((Unk_ov004_0220d69c_Vec *)position);
+    updateSync((Unk_ov004_0220d69c_Vec *)&position);
     p16::_ZN14BlendAnimModel9stepBlendEv(b16_unk_534);
     if (p16::_ZN9FtrSwitch10isChangingEv(b16_unk_73c)) {
         p16::_ZN9FtrSwitch3setEji(b16_unk_73c, 0, 0);
         s32 s = p16::Scene_GetCurrent();
-        p16::FtrSync_RequestToggleGyroid(s, position, p16::FtrActor_GetLayer(this));
+        p16::FtrSync_RequestToggleGyroid(s, &position, p16::FtrActor_GetLayer(this));
     }
 }
 
 BOOL FtrGyroid::enterFtrAct00() {
     s32 a, b;
-    p16::FieldPos_ToUnit(&a, &b, position);
+    p16::FieldPos_ToUnit(&a, &b, &position);
     b16_unk_778 = 0xff;
     p16::RoomFtrState_RemoveGyroidBeat(a, b, p16::Scene_GetCurrent());
     setSyncState(0);
@@ -3426,7 +3388,7 @@ BOOL FtrGyroid::initModel() {
     if (b16_unk_768 == 1) {
         p16::_ZN9FtrSwitch3setEji(b16_unk_73c, 0, 0);
         s32 s = p16::Scene_GetCurrent();
-        p16::FtrSync_RequestToggleGyroid(s, position, p16::FtrActor_GetLayer(this));
+        p16::FtrSync_RequestToggleGyroid(s, &position, p16::FtrActor_GetLayer(this));
     } else if (p16::_ZN8FtrActor9isPreviewEv(this) != 0) {
         changeAct(0, 0xff);
     } else if (p16::_ZN9FtrSwitch4isOnEv(b16_unk_73c) != 0) {
@@ -5192,8 +5154,8 @@ void FtrBed::execFtrAct01() {
 }
 
 BOOL FtrBed::enterFtrAct01() {
-    inLeftHalf = (position[0] < (p21::data_020c8cbc >> 1)) ? 1 : 0;
-    inFrontHalf = (position[2] < 0x16000) ? 1 : 0;
+    inLeftHalf = (position.x < (p21::data_020c8cbc >> 1)) ? 1 : 0;
+    inFrontHalf = (position.z < 0x16000) ? 1 : 0;
     if (inLeftHalf) {
         if (inFrontHalf) {
             ownerPlayer = 0;
@@ -5649,9 +5611,9 @@ extern "C" void FtrBed_Create() {
 // ================================================================ FtrSeat ==========
 void FtrSeat::getSitterPos(Unk_ov004_02210f0c_V3 *out, void *o) {
     if (b22_unk_780 == 0) {
-        out->x = position[0];
-        out->y = position[1];
-        out->z = position[2];
+        out->x = position.x;
+        out->y = position.y;
+        out->z = position.z;
     } else {
         s32 *p = (s32 *)p22::_ZN10FtrContact22getClampedContactPointEv(o);
         out->x = p[0];
@@ -6808,7 +6770,7 @@ extern "C" void FtrBasic_Create() {
 
 // ---- functions of classes declared by a later part than the one that holds them
 void FtrGyroid::execFtrAct02() {
-    s32 v = updateSync((Unk_ov004_0220d69c_Vec *)&position[0]);
+    s32 v = updateSync((Unk_ov004_0220d69c_Vec *)&position.x);
     if (v >= 0) {
         s32 i = v >> 12;
         p15::_ZN14BlendAnimModel8initAnimEiiitt(b15_f_534, p15::_ZN10FtrAnimSet6getBcaEj(p15::_ZN11FtrModelRes10getAnimSetEv(b15_f_6c8), 0), 0, v - (i << 12), (u16)i, 0);
@@ -6817,7 +6779,7 @@ void FtrGyroid::execFtrAct02() {
     if (p15::_ZN9FtrSwitch10isChangingEv(b15_f_73c)) {
         p15::_ZN9FtrSwitch3setEji(b15_f_73c, 1, 0);
         u32 r4 = p15::Scene_GetCurrent();
-        p15::FtrSync_RequestToggleGyroid(r4, &position[0], p15::FtrActor_GetLayer(this));
+        p15::FtrSync_RequestToggleGyroid(r4, &position.x, p15::FtrActor_GetLayer(this));
     }
 }
 

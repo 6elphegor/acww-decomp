@@ -1,7 +1,9 @@
 _ZN9SpNpcJoanD1Ev kind:function(thumb,size=0x28) addr:0x022713c0
 _ZN9SpNpcJoanD0Ev kind:function(thumb,size=0x2c) addr:0x022713e8
 _ZN9SpNpcJoan8vfunc_4cEi kind:function(thumb,size=0x50) addr:0x02271414
+_ZN9SpNpcJoan8vfunc_4cEjh kind:label(thumb) addr:0x02271414
 _ZN9SpNpcJoan8vfunc_48Ev kind:function(thumb,size=0x20) addr:0x02271464
+_ZN9SpNpcJoan8vfunc_48EPv kind:label(thumb) addr:0x02271464
 _ZN13SpNpcJoanTalk8onChoiceEv kind:function(thumb,size=0x1e0) addr:0x02271484
 _ZN13SpNpcJoanTalk12onMessageEndEv kind:function(thumb,size=0x64) addr:0x02271664
 _ZN13SpNpcJoanTalk5startEPv kind:function(thumb,size=0x58) addr:0x022716c8

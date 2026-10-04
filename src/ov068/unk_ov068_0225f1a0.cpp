@@ -13,6 +13,8 @@
 #include "player/HeldToolModel.h"
 #include "sys/ProcBase.h"
 #include "talk/MsgString11.h"
+#include "actor/Actor.h"
+#include "actor/Character.h"
 #define X_func_ov068_0225f5f4 _ZN17FieldVillagerLook17setLookModeLockedEP13FieldVillagerjiiPviih
 #define X_func_ov068_0225f630 _ZN17FieldVillagerLook9resetLookEP13FieldVillager
 #define X_func_ov068_0225f670 _ZN17FieldVillagerLook4initEP13FieldVillager
@@ -318,28 +320,9 @@ public:
     u8 pad[0x1a4 - 4];
 };
 
-// Owner base (VillagerActor), size 0x894
-class Actor : public ProcBase {
-public:
-    virtual BOOL vfunc_14(s32 status);
-    virtual BOOL vfunc_20(u32 status);
-    virtual BOOL preDraw();
-    virtual BOOL postDraw(s32 status);
-};
 
 struct Unk_020d77a4_Vec3;
 
-class Character : public Actor {
-public:
-    Character();
-    virtual ~Character();
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_48();
-    virtual void vfunc_4c(u32 a, u32 b);
-    virtual void getInteractionPos();
-    virtual void acceptsInteractionOutOfRange(void *p);
-    virtual void vfunc_58(void *p);
-};
 
 class NpcActor : public Character {
 public:
@@ -347,7 +330,7 @@ public:
     virtual BOOL onExecute();
     virtual BOOL onDraw();
     virtual BOOL vfunc_30();
-    virtual void vfunc_5c(Unk_020d77a4_Vec3 *v);
+    virtual BOOL vfunc_5c(Unk_020d77a4_Vec3 *v);
     virtual BOOL onToolHit(u16 *p);
     virtual void *vfunc_64();
     virtual BOOL updateAct();
@@ -392,10 +375,7 @@ public:
     virtual BOOL vfunc_b8(u32 idx);
     virtual BOOL vfunc_bc();
 
-    /* 0x50 */ u8 pad_50[0x5c - 0x50];
-    /* 0x05c */ Unk_ov068_0225f23c_Vec position;
-    /* 0x068 */ Unk_ov068_0225f23c_Vec prevPosition;
-    /* 0x074 */ u8 pad_74[0x150 - 0x74];
+    /* 0x0ea */ u8 pad_ea[0x150 - 0xea];
     /* 0x150 */ Unk_ov068_022661c8_Blk unk_150;
     /* 0x180 */ u8 pad_180[0x3b0 - 0x180];
     /* 0x3b0 */ u8 unk_3b0[0x5c];
@@ -436,9 +416,9 @@ public:
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_0c();
     virtual BOOL onDraw();
-    virtual BOOL vfunc_48();
-    virtual void vfunc_4c(u32 idx, u32 v);
-    virtual void acceptsInteractionOutOfRange(void *p);
+    virtual BOOL vfunc_48(void *other);
+    virtual void vfunc_4c(u32 idx, u8 v);
+    virtual BOOL acceptsInteractionOutOfRange(void *p);
     virtual BOOL onToolHit(u16 *p);
     virtual BOOL updateAct();
     virtual void onJoinTalk();
@@ -1130,7 +1110,7 @@ void Villager_HalveTalkUrge(s32);
 void NpcTalkCtrl_requestTurnAndTalk(void *, s32, s32, s32);
 }
 extern "C" BOOL _ZN13FieldVillager28acceptsInteractionOutOfRangeEPv(Unk_ov068_Owner *o, s32 x);
-extern "C" BOOL _ZN13FieldVillager8vfunc_48Ev(u8 *o);
+extern "C" BOOL _ZN13FieldVillager8vfunc_48EPv(u8 *o);
 typedef void (FieldVillagerAiStates::*Fn_225fd54)(Unk_ov068_Owner *);
 extern "C" {
 extern Fn_225fd54 sAdmireCatchSteps[2];
@@ -3337,7 +3317,7 @@ BOOL FieldVillager::onDraw() {
     if (look.drawFn != 0) {
         r = (this->*look.drawFn)();
     } else {
-        Unk_ov068_0225f23c_Vec *pv = &position;
+        Unk_ov068_0225f23c_Vec *pv = (Unk_ov068_0225f23c_Vec *)&position;
         unk_478.x = position.x;
         unk_478.y = pv->y;
         unk_478.z = pv->z;
@@ -7235,7 +7215,7 @@ s32 FieldVillagerAiStates::execAdmireCatch(Unk_ov068_Owner *o) {
 
 namespace ns_0225fc60 {
 extern "C" {
-BOOL _ZN13FieldVillager8vfunc_48Ev(u8 *o) {
+BOOL _ZN13FieldVillager8vfunc_48EPv(u8 *o) {
     if (NpcTalkCtrl_isBusy(o + 0x618) != 0 || VillagerActor_isFlag834(o) != 0) {
         return FALSE;
     }
@@ -7271,7 +7251,7 @@ BOOL _ZN13FieldVillager28acceptsInteractionOutOfRangeEPv(Unk_ov068_Owner *o, s32
 }
 }
 
-void FieldVillager::vfunc_4c(u32 idx, u32 v) {
+void FieldVillager::vfunc_4c(u32 idx, u8 v) {
     using namespace ns_0225f1a0;
     switch (idx) {
     case 3:
@@ -7376,7 +7356,7 @@ void FieldVillager::vfunc_4c(u32 idx, u32 v) {
             t = Villager_GetWhereabouts(vfunc_64());
             q = VillagerDataItemView_getHousePos(vfunc_64());
             FieldPos_FromUnitCenter(&position, ((u8 *)q)[0], ((u8 *)q)[1]);
-            { Unk_ov068_0225f23c_Vec *sp = &position; Unk_ov068_0225f23c_Vec *d = &prevPosition; d->x = sp->x; d->y = sp->y; d->z = sp->z; }
+            { Unk_ov068_0225f23c_Vec *sp = (Unk_ov068_0225f23c_Vec *)&position; Unk_ov068_0225f23c_Vec *d = (Unk_ov068_0225f23c_Vec *)&prevPosition; d->x = sp->x; d->y = sp->y; d->z = sp->z; }
             sv = VillagerStates_GetBirthdayHost();
             if (sv == Villager_GetIndex(vfunc_64()) || (u32)(t - 3) <= 4) {
                 FieldVillagerAi_ChangeState(&ai, this, 0xc);
@@ -7635,7 +7615,7 @@ void FieldVillagerLook::trackInsect(FieldVillager *o) {
     using namespace ns_0225f1a0;
     Unk_ov068_0225f23c_Vec buf;
     if (isSameInsect(targetSlot, targetId)) {
-        s32 r = getInsectIfNear(&buf, targetSlot, &o->position, o->unk_40c);
+        s32 r = getInsectIfNear(&buf, targetSlot, (Unk_ov068_0225f23c_Vec *)&o->position, o->unk_40c);
         if (r != -1 && r == targetId) {
             NpcLookAt_setTargetPos(o->unk_3b0, &buf);
         } else {
@@ -7692,7 +7672,7 @@ void FieldVillagerLook::trackFish(FieldVillager *o) {
     using namespace ns_0225f1a0;
     Unk_ov068_0225f23c_Vec buf;
     if (isSameFish(targetSlot, targetId)) {
-        if (getFishPosIfNear(&buf, targetSlot, &o->position, o->unk_40c)) {
+        if (getFishPosIfNear(&buf, targetSlot, (Unk_ov068_0225f23c_Vec *)&o->position, o->unk_40c)) {
             NpcLookAt_setTargetPos(o->unk_3b0, &buf);
         } else {
             resetLook(o);
@@ -7716,12 +7696,12 @@ void FieldVillagerLook::update(FieldVillager *o) {
                     if (NpcLookAt_canSeeTarget(o->unk_3b0, o) == 0) {
                         s32 r;
                         idx = -1;
-                        r = findInsectNear(&buf, &idx, &o->position, 0x5000);
+                        r = findInsectNear(&buf, &idx, (Unk_ov068_0225f23c_Vec *)&o->position, 0x5000);
                         if (r != -1) {
                             startLookAtInsect(o, idx, r, &buf);
                         } else {
                             idx = -1;
-                            r = findFishNear(&buf, &idx, &o->position, 0x5000);
+                            r = findFishNear(&buf, &idx, (Unk_ov068_0225f23c_Vec *)&o->position, 0x5000);
                             if (r != -1) {
                                 startLookAtFish(o, idx, r, &buf);
                             }

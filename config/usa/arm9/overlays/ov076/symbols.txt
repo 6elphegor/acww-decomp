@@ -1,7 +1,9 @@
 _ZN11SpNpcPascalD1Ev kind:function(thumb,size=0x28) addr:0x022713c0
 _ZN11SpNpcPascalD0Ev kind:function(thumb,size=0x2c) addr:0x022713e8
 _ZN11SpNpcPascal8vfunc_4cEi kind:function(thumb,size=0x58) addr:0x02271414
+_ZN11SpNpcPascal8vfunc_4cEjh kind:label(thumb) addr:0x02271414
 _ZN11SpNpcPascal8vfunc_48Ev kind:function(thumb,size=0x34) addr:0x0227146c
+_ZN11SpNpcPascal8vfunc_48EPv kind:label(thumb) addr:0x0227146c
 _ZN15SpNpcPascalTalk8onChoiceEv kind:function(thumb,size=0x88) addr:0x022714a0
 _ZN15SpNpcPascalTalk12onMessageEndEv kind:function(thumb,size=0x21c) addr:0x02271528
 _ZN15SpNpcPascalTalk5startEPv kind:function(thumb,size=0x70) addr:0x02271744

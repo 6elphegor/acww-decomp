@@ -1,7 +1,9 @@
 _ZN12SpNpcResettiD1Ev kind:function(thumb,size=0x28) addr:0x022713c0
 _ZN12SpNpcResettiD0Ev kind:function(thumb,size=0x2c) addr:0x022713e8
 _ZN12SpNpcResetti8vfunc_4cEi kind:function(thumb,size=0x44) addr:0x02271414
+_ZN12SpNpcResetti8vfunc_4cEjh kind:label(thumb) addr:0x02271414
 _ZN12SpNpcResetti8vfunc_48Ev kind:function(thumb,size=0x4) addr:0x02271458
+_ZN12SpNpcResetti8vfunc_48EPv kind:label(thumb) addr:0x02271458
 _ZN16SpNpcResettiTalk8onChoiceEv kind:function(thumb,size=0xb8) addr:0x0227145c
 _ZN16SpNpcResettiTalk12onMessageEndEv kind:function(thumb,size=0x4c) addr:0x02271514
 _ZN16SpNpcResettiTalk14onMessageStartEv kind:function(thumb,size=0x5c) addr:0x02271560

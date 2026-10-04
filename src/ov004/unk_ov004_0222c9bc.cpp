@@ -7,6 +7,7 @@
 #include "snd/SndEnvChannel.h"
 #include "game/FxVec3.h"
 #include "gfx/VecFx32.h"
+#include "gfx/V3.h"
 #include "snd/Unk_0213b954.h"
 
 // ---------------------------------------------------------------------------------------------------------------

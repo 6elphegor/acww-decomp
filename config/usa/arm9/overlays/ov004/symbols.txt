@@ -1032,8 +1032,11 @@ _ZN24BirthdayHostVillagerTalk15setPartyGreetedEv kind:function(thumb,size=0x16) 
 _ZN24BirthdayHostVillagerTalk17isPartyNotGreetedEv kind:function(thumb,size=0x24) addr:0x02215a2c
 _ZN24BirthdayHostVillagerTalk15getPlayerMemoryEv kind:function(thumb,size=0x3c) addr:0x02215a50
 _ZN20BirthdayHostVillager8vfunc_4cEij kind:function(thumb,size=0xc0) addr:0x02215a8c
+_ZN20BirthdayHostVillager8vfunc_4cEjh kind:label(thumb) addr:0x02215a8c
 _ZN20BirthdayHostVillager8vfunc_58Ev kind:function(thumb,size=0x20) addr:0x02215b4c
+_ZN20BirthdayHostVillager8vfunc_58EPv kind:label(thumb) addr:0x02215b4c
 _ZN20BirthdayHostVillager8vfunc_48Ev kind:function(thumb,size=0x30) addr:0x02215b6c
+_ZN20BirthdayHostVillager8vfunc_48EPv kind:label(thumb) addr:0x02215b6c
 _ZN20BirthdayHostVillager19func_ov004_02215b9cEv kind:function(thumb,size=0x38) addr:0x02215b9c
 _ZN20BirthdayHostVillager9updateActEv kind:function(thumb,size=0x10) addr:0x02215bd4
 _ZN20BirthdayHostVillager9preDeleteEv kind:function(thumb,size=0x24) addr:0x02215be4
@@ -1076,7 +1079,9 @@ _ZN25BirthdayGuestVillagerTalk9setTalkedEv kind:function(thumb,size=0x16) addr:0
 _ZN25BirthdayGuestVillagerTalk14isNotTalkedYetEv kind:function(thumb,size=0x24) addr:0x022168f8
 _ZN25BirthdayGuestVillagerTalk15getPlayerMemoryEv kind:function(thumb,size=0x3c) addr:0x0221691c
 _ZN21BirthdayGuestVillager8vfunc_4cEij kind:function(thumb,size=0x84) addr:0x02216958
+_ZN21BirthdayGuestVillager8vfunc_4cEjh kind:label(thumb) addr:0x02216958
 _ZN21BirthdayGuestVillager8vfunc_48Ev kind:function(thumb,size=0x30) addr:0x022169dc
+_ZN21BirthdayGuestVillager8vfunc_48EPv kind:label(thumb) addr:0x022169dc
 _ZN21BirthdayGuestVillager19func_ov004_02216a0cEv kind:function(thumb,size=0x38) addr:0x02216a0c
 _ZN21BirthdayGuestVillager19blockFurnitureCellsEv kind:function(thumb,size=0x5c) addr:0x02216a44
 _ZN21BirthdayGuestVillager9updateActEv kind:function(thumb,size=0x10) addr:0x02216aa0
@@ -1091,7 +1096,9 @@ BirthdayGuestVillager_Create kind:function(thumb,size=0x3c) addr:0x02216c90
 _ZN18HouseOwnerVillagerD1Ev kind:function(thumb,size=0x34) addr:0x02216ccc
 _ZN18HouseOwnerVillagerD0Ev kind:function(thumb,size=0x38) addr:0x02216d00
 _ZN18HouseOwnerVillager8vfunc_4cEjj kind:function(thumb,size=0x220) addr:0x02216d38
+_ZN18HouseOwnerVillager8vfunc_4cEjh kind:label(thumb) addr:0x02216d38
 _ZN18HouseOwnerVillager8vfunc_48Ev kind:function(thumb,size=0x2c) addr:0x02216f58
+_ZN18HouseOwnerVillager8vfunc_48EPv kind:label(thumb) addr:0x02216f58
 _ZN12HouseOwnerAi13updateState04EP18HouseOwnerVillager kind:function(thumb,size=0x70) addr:0x02216f84
 _ZN12HouseOwnerAi12enterState04EP18HouseOwnerVillager kind:function(thumb,size=0x4) addr:0x02216ff4
 _ZN12HouseOwnerAi13updateState03EP18HouseOwnerVillager kind:function(thumb,size=0xe4) addr:0x02216ff8
@@ -1126,8 +1133,11 @@ _ZN24FleaMarketSellerVillager18checkPlayerLeavingEv kind:function(thumb,size=0x4
 _ZN24FleaMarketSellerVillager16requestTradeTalkEv kind:function(thumb,size=0x20) addr:0x02217934
 _ZN24FleaMarketSellerVillager17checkFurnitureTapEv kind:function(thumb,size=0x2c4) addr:0x02217954
 _ZN24FleaMarketSellerVillager8vfunc_4cEi kind:function(thumb,size=0x94) addr:0x02217c18
+_ZN24FleaMarketSellerVillager8vfunc_4cEjh kind:label(thumb) addr:0x02217c18
 _ZN24FleaMarketSellerVillager8vfunc_58Ev kind:function(thumb,size=0x20) addr:0x02217cac
+_ZN24FleaMarketSellerVillager8vfunc_58EPv kind:label(thumb) addr:0x02217cac
 _ZN24FleaMarketSellerVillager8vfunc_48Ev kind:function(thumb,size=0x2c) addr:0x02217ccc
+_ZN24FleaMarketSellerVillager8vfunc_48EPv kind:label(thumb) addr:0x02217ccc
 _ZN28FleaMarketSellerVillagerTalk8onChoiceEv kind:function(thumb,size=0x104) addr:0x02217cf8
 _ZN28FleaMarketSellerVillagerTalk12onMessageEndEv kind:function(thumb,size=0x2) addr:0x02217dfc
 _ZN24FleaMarketSellerVillager18onTalkMelodyPlayedEv kind:function(thumb,size=0xc) addr:0x02217e00
@@ -1167,8 +1177,11 @@ _ZN23FleaMarketBuyerVillager18isFurnitureForSaleEi kind:function(thumb,size=0x18
 _ZN23FleaMarketBuyerVillager19pickFurnitureToViewEv kind:function(thumb,size=0x108) addr:0x02218bd4
 _ZN23FleaMarketBuyerVillager10checkLeaveEv kind:function(thumb,size=0xc8) addr:0x02218cdc
 _ZN23FleaMarketBuyerVillager8vfunc_4cEij kind:function(thumb,size=0xec) addr:0x02218da4
+_ZN23FleaMarketBuyerVillager8vfunc_4cEjh kind:label(thumb) addr:0x02218da4
 _ZN23FleaMarketBuyerVillager8vfunc_58Ev kind:function(thumb,size=0x20) addr:0x02218e90
+_ZN23FleaMarketBuyerVillager8vfunc_58EPv kind:label(thumb) addr:0x02218e90
 _ZN23FleaMarketBuyerVillager8vfunc_48Ev kind:function(thumb,size=0x20) addr:0x02218eb0
+_ZN23FleaMarketBuyerVillager8vfunc_48EPv kind:label(thumb) addr:0x02218eb0
 _ZN27FleaMarketBuyerVillagerTalk8onChoiceEv kind:function(thumb,size=0x1b4) addr:0x02218ed0
 _ZN27FleaMarketBuyerVillagerTalk10clearOfferEv kind:function(thumb,size=0x18) addr:0x02219084
 _ZN27FleaMarketBuyerVillagerTalk12onMessageEndEv kind:function(thumb,size=0x124) addr:0x0221909c
@@ -1213,7 +1226,9 @@ FleaMarketBuyerVillager_Create kind:function(thumb,size=0x54) addr:0x0221a1c4
 _ZN12CafeVillagerD1Ev kind:function(thumb,size=0x28) addr:0x0221a218
 _ZN12CafeVillagerD0Ev kind:function(thumb,size=0x2c) addr:0x0221a240
 _ZN12CafeVillager8vfunc_4cEi kind:function(thumb,size=0x44) addr:0x0221a26c
+_ZN12CafeVillager8vfunc_4cEjh kind:label(thumb) addr:0x0221a26c
 _ZN12CafeVillager8vfunc_48Ev kind:function(thumb,size=0x20) addr:0x0221a2b0
+_ZN12CafeVillager8vfunc_48EPv kind:label(thumb) addr:0x0221a2b0
 _ZN16CafeVillagerTalk8onChoiceEv kind:function(thumb,size=0x2) addr:0x0221a2d0
 _ZN16CafeVillagerTalk12onMessageEndEv kind:function(thumb,size=0x2) addr:0x0221a2d4
 _ZN16CafeVillagerTalk5startEPv kind:function(thumb,size=0x3c) addr:0x0221a2d8
@@ -1266,7 +1281,9 @@ SickVillager_SetCurrentVisitor kind:function(thumb,size=0x24) addr:0x0221b09c
 SickVillager_HasCurrentVisitor kind:function(thumb,size=0x24) addr:0x0221b0c0
 _ZN16SickVillagerTalk12getSickStageEv kind:function(thumb,size=0xc) addr:0x0221b0e4
 _ZN12SickVillager8vfunc_4cEjj kind:function(thumb,size=0x90) addr:0x0221b0f0
+_ZN12SickVillager8vfunc_4cEjh kind:label(thumb) addr:0x0221b0f0
 _ZN12SickVillager8vfunc_48Ev kind:function(thumb,size=0x30) addr:0x0221b180
+_ZN12SickVillager8vfunc_48EPv kind:label(thumb) addr:0x0221b180
 _ZN12SickVillager19func_ov004_0221b1b0Ev kind:function(thumb,size=0x38) addr:0x0221b1b0
 _ZN12SickVillager19blockFurnitureCellsEv kind:function(thumb,size=0x5c) addr:0x0221b1e8
 _ZN12SickVillager9updateActEv kind:function(thumb,size=0x20) addr:0x0221b244
@@ -1282,7 +1299,9 @@ _ZN10SpNpcSableD0Ev kind:function(thumb,size=0x2c) addr:0x0221b4c0
 SpNpcSable_SetTalkCount kind:function(thumb,size=0x18) addr:0x0221b4ec
 SpNpcSable_GetTalkCount kind:function(thumb,size=0x16) addr:0x0221b504
 _ZN10SpNpcSable8vfunc_4cEjj kind:function(thumb,size=0x184) addr:0x0221b51c
+_ZN10SpNpcSable8vfunc_4cEjh kind:label(thumb) addr:0x0221b51c
 _ZN10SpNpcSable8vfunc_48Ev kind:function(thumb,size=0x2c) addr:0x0221b6a0
+_ZN10SpNpcSable8vfunc_48EPv kind:label(thumb) addr:0x0221b6a0
 _ZN14SpNpcSableTalk8onChoiceEv kind:function(thumb,size=0x2) addr:0x0221b6cc
 _ZN14SpNpcSableTalk12onMessageEndEv kind:function(thumb,size=0x2) addr:0x0221b6d0
 _ZN14SpNpcSableTalk5startEP22Unk_ov004_0221b6d4_Out kind:function(thumb,size=0x1b4) addr:0x0221b6d4
@@ -1319,7 +1338,9 @@ SpNpcBrewster_GetAnimFrame kind:function(thumb,size=0x18) addr:0x0221c08c
 SpNpcBrewster_GetJointMtxB kind:function(thumb,size=0x14) addr:0x0221c0a4
 SpNpcBrewster_GetJointMtxE kind:function(thumb,size=0x14) addr:0x0221c0b8
 _ZN13SpNpcBrewster8vfunc_4cEjj kind:function(thumb,size=0x20c) addr:0x0221c0cc
+_ZN13SpNpcBrewster8vfunc_4cEjh kind:label(thumb) addr:0x0221c0cc
 _ZN13SpNpcBrewster8vfunc_48Ev kind:function(thumb,size=0x2c) addr:0x0221c2d8
+_ZN13SpNpcBrewster8vfunc_48EPv kind:label(thumb) addr:0x0221c2d8
 _ZN17SpNpcBrewsterTalk11runScript03Ev kind:function(thumb,size=0x2e0) addr:0x0221c304
 _ZN17SpNpcBrewsterTalk13onWindowCloseEv kind:function(thumb,size=0x24) addr:0x0221c5e4
 _ZN17SpNpcBrewsterTalk14runDrinkScriptEv kind:function(thumb,size=0x18c) addr:0x0221c608
@@ -1362,8 +1383,10 @@ SpNpcBrewster_Create kind:function(thumb,size=0x118) addr:0x0221d630
 _ZN11SpNpcBookerD1Ev kind:function(thumb,size=0x28) addr:0x0221d748
 _ZN11SpNpcBookerD0Ev kind:function(thumb,size=0x2c) addr:0x0221d770
 _ZN11SpNpcBooker8vfunc_4cEjj kind:function(thumb,size=0x15c) addr:0x0221d79c
+_ZN11SpNpcBooker8vfunc_4cEjh kind:label(thumb) addr:0x0221d79c
 _ZN11SpNpcBooker8vfunc_58EPv kind:function(thumb,size=0x3c) addr:0x0221d8f8
 _ZN11SpNpcBooker8vfunc_48Ev kind:function(thumb,size=0x2c) addr:0x0221d934
+_ZN11SpNpcBooker8vfunc_48EPv kind:label(thumb) addr:0x0221d934
 _ZN15SpNpcBookerTalk11runScript03Ev kind:function(thumb,size=0x5c) addr:0x0221d960
 _ZN15SpNpcBookerTalk11runScript02Ev kind:function(thumb,size=0x128) addr:0x0221d9bc
 _ZN15SpNpcBookerTalk11runScript01Ev kind:function(thumb,size=0x88) addr:0x0221dae4

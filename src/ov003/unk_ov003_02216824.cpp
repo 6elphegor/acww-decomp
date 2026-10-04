@@ -9,55 +9,13 @@
 #include "sys/ProcBase.h"
 #include "gfx/ModelAnim.h"
 #include "item/PlayerMailbox.h"
+#include "actor/Actor.h"
+#include "actor/Character.h"
 
 
 
 
-class Actor : public GameProc {
-public:
-    Actor();
-    virtual BOOL vfunc_04();
-    virtual BOOL preDelete();
-    virtual BOOL vfunc_14(s32 status);
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_20(u32 a);
-    virtual BOOL preDraw();
-    virtual BOOL postDraw(s32 status);
-    virtual ~Actor();
 
-    /* 0x50 */ u8 unk_50[0xc];
-    /* 0x5c */ s32 position[3];
-    /* 0x68 */ u8 pad_68[0x8e - 0x68];
-    /* 0x8e */ s16 rotY;
-    /* 0x90 */ u8 pad_90[0xc4 - 0x90];
-    /* 0xc4 */ u8 drawPos[0xc];
-    /* 0xd0 */ u16 drawTilt;
-    /* 0xd2 */ u8 pad_d2[2];
-};
-
-class Character : public Actor {
-public:
-    Character();
-    virtual ~Character();
-    virtual void postCreate(s32 v);
-    virtual BOOL vfunc_04();
-    virtual BOOL preDelete();
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_48(void *a);
-    virtual void vfunc_4c(u32 a, u8 b);
-    virtual Unk_ov003_Vec *getInteractionPos();
-    virtual BOOL acceptsInteractionOutOfRange(void *a);
-    virtual BOOL vfunc_58(void *a);
-    virtual BOOL vfunc_5c();
-
-    void setCharId(u32 a);
-
-    /* 0xd4 */ u8 unk_d4[0x10];
-    /* 0xe4 */ s32 interactionRangeSq;
-    /* 0xe8 */ u16 charFlags;
-    /* 0xea */ u8 unk_ea;
-    /* 0xeb */ u8 pad_eb;
-};
 
 // Secondary base at +0xec (vtable main 0x020ddcf0 chain).  Slot names are TalkMsgRequest's; slot 0x14
 // (onMessageEnd) is overridden by BuildingActor.
@@ -132,7 +90,7 @@ public:
     virtual BOOL preDraw();
     virtual BOOL vfunc_48(void *a);
     virtual void vfunc_4c(u32 a, u8 b);
-    virtual Unk_ov003_Vec *getInteractionPos();
+    virtual VecFx32 *getInteractionPos();
     virtual void vfunc_60(u32 a, void *p);
     virtual s32 vfunc_64();
     virtual s32 vfunc_68();
@@ -354,9 +312,9 @@ BOOL Mailbox::vfunc_70() {
     struct {
         s32 x, y, z;
     } v;
-    v.x = position[0];
-    v.y = position[1];
-    v.z = position[2];
+    v.x = position.x;
+    v.y = position.y;
+    v.z = position.z;
     v.y = v.y + 0x1000;
     _ZN11TouchPicker9addSphereEP15TouchPickSphereP4Vec3S3_ih(Scene_GetTouchPicker(), &touchSphere, &v, 0x1000, 7, b);
     canUse = 1;
@@ -395,7 +353,7 @@ BOOL Mailbox::vfunc_48(void *a) {
         return FALSE;
     }
     if (doorState == 2 && a) {
-        if (func_020e9650((u8 *)a + 0x5c, position) < 0x2333) {
+        if (func_020e9650((u8 *)a + 0x5c, &position) < 0x2333) {
             if (func_020e780c((s16)(rotY + 0x8000), *(s16 *)((u8 *)a + 0x8e)) < 0x1200) {
                 return TRUE;
             }
@@ -443,11 +401,11 @@ BOOL Mailbox::vfunc_b8(void *a) {
     struct {
         s32 a, b, c;
     } v;
-    s32 z = position[2] - 0x1000;
-    v.a = position[0] + 0x2000;
+    s32 z = position.z - 0x1000;
+    v.a = position.x + 0x2000;
     v.b = 0;
     v.c = z;
-    drawTilt = WorldCurve_ToCurved(drawPos, &v);
+    drawTilt = WorldCurve_ToCurved(&drawPos, &v);
     makeCurvedMatrix((Unk_ov009_0225bc88_Blk *)a);
     *(Unk_ov009_0225bc88_Blk *)data_021f47e0 = *(Unk_ov009_0225bc88_Blk *)a;
     func_020e8528(data_021f47e0, (s32)0xffffe000, 0, 0x1000);
@@ -496,9 +454,9 @@ s32 Mailbox::enterUseOpen() {
     struct {
         s32 a, b, c;
     } v;
-    v.a = position[0];
+    v.a = position.x;
     v.b = Ground_GetDefaultY(0);
-    v.c = position[2] + 0x2000;
+    v.c = position.z + 0x2000;
     if (PlayerActor_LocalRequestMailboxOpen(&v)) {
         Building_RequestState(this, 3);
     }

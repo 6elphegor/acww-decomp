@@ -7,7 +7,9 @@ _ZN12SpNpcHarriet16tryLeavePaidTalkEv kind:function(thumb,size=0x54) addr:0x0225
 _ZN12SpNpcHarriet12tryChairTalkEv kind:function(thumb,size=0xc8) addr:0x02258f18
 _ZN12SpNpcHarriet8vfunc_4cEjh kind:function(thumb,size=0xfc) addr:0x02258fe0
 _ZN12SpNpcHarriet8vfunc_58Ev kind:function(thumb,size=0x20) addr:0x022590dc
+_ZN12SpNpcHarriet8vfunc_58EPv kind:label(thumb) addr:0x022590dc
 _ZN12SpNpcHarriet8vfunc_48Ev kind:function(thumb,size=0x20) addr:0x022590fc
+_ZN12SpNpcHarriet8vfunc_48EPv kind:label(thumb) addr:0x022590fc
 _ZN16SpNpcHarrietTalk20getQuestionsStartMsgEv kind:function(thumb,size=0x32) addr:0x0225911c
 _ZN16SpNpcHarrietTalk8onChoiceEv kind:function(thumb,size=0x104) addr:0x02259150
 _ZN16SpNpcHarrietTalk12onMessageEndEv kind:function(thumb,size=0x168) addr:0x02259254

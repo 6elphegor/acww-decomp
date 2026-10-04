@@ -12,6 +12,8 @@
 #include "npc/Unk_02014254.h"
 #include "npc/Unk_0201a13c.h"
 #include "talk/MsgString25.h"
+#include "actor/Actor.h"
+#include "actor/Character.h"
 
 
 struct Unk_0201bc1c;
@@ -506,36 +508,9 @@ MEMBER(CollisionState, 0x30);
 MEMBER(NpcActionCtrl, 0x618 - 0x564);
 
 
-class Actor : public ProcBase {
-public:
-    virtual BOOL vfunc_14(s32 status);
-    virtual BOOL vfunc_20(u32 status);
-    virtual BOOL preDraw();
-    virtual BOOL postDraw(s32 status);
-};
 
 struct Unk_020d77a4_Vec3;
 
-class Character : public Actor {
-public:
-    Character();
-    virtual ~Character();
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_48();
-    virtual void vfunc_4c(u32 a, u32 b);
-    virtual void getInteractionPos();
-    virtual void acceptsInteractionOutOfRange(void *p);
-    virtual BOOL vfunc_58();
-    u8 pad_50[0x5c - 0x50];
-    s32 position, positionY, positionZ;
-    u8 pad_68[0x8e - 0x68];
-    s16 rotY;
-    u8 pad_90[4];
-    s16 moveAngleY;
-    u8 pad_96[2];
-    s32 speed;
-    u8 pad_9c[0xea - 0x9c];
-};
 
 class NpcActor : public Character {
 public:
@@ -545,7 +520,7 @@ public:
     virtual BOOL onExecute();
     virtual BOOL onDraw();
     virtual BOOL vfunc_30();
-    virtual void vfunc_5c(Unk_020d77a4_Vec3 *v);
+    virtual BOOL vfunc_5c(Unk_020d77a4_Vec3 *v);
     virtual void onToolHit();
     virtual void vfunc_64();
     virtual BOOL updateAct();
@@ -621,9 +596,9 @@ public:
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_48();
-    virtual void vfunc_4c(u32 cmd, u32 arg);
-    virtual BOOL vfunc_58();
+    virtual BOOL vfunc_48(void *other);
+    virtual void vfunc_4c(u32 cmd, u8 arg);
+    virtual BOOL vfunc_58(void *a);
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
@@ -3440,14 +3415,14 @@ s32 SpNpcCopper::getWifiErrorMsg(s32 id) {
     return r;
 }
 
-BOOL SpNpcCopper::vfunc_48() {
+BOOL SpNpcCopper::vfunc_48(void *) {
     if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) || netIsTalkLocked()) {
         return FALSE;
     }
     return TRUE;
 }
 
-BOOL SpNpcCopper::vfunc_58() {
+BOOL SpNpcCopper::vfunc_58(void *) {
     if (footstepFx.unk_0b != 0) {
         return TRUE;
     }
@@ -3457,7 +3432,7 @@ BOOL SpNpcCopper::vfunc_58() {
     return TRUE;
 }
 
-void SpNpcCopper::vfunc_4c(u32 cmd, u32 arg) {
+void SpNpcCopper::vfunc_4c(u32 cmd, u8 arg) {
     s32 a, b;
     switch (cmd) {
     case 3:

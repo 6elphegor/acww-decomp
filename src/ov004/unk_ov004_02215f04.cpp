@@ -11,6 +11,8 @@
 #include "npc/Unk_ov004_0221572c_Sub.h"
 #include "game/Unk_ov004_02215c94_V.h"
 #include "talk/MsgString9B.h"
+#include "actor/Actor.h"
+#include "actor/Character.h"
 
 extern "C" {
 struct Unk_ov004_02215c94_S : Unk_ov004_02215c94_V {
@@ -21,32 +23,7 @@ struct Unk_ov004_02215c94_S : Unk_ov004_02215c94_V {
 
 
 // ---------------------------------------------------------------------------------------------------------------------
-// Class chain of BirthdayGuestVillager (vtable 0x0224c228). Every slot's final overrider carries the name the symbols use.
-class Actor : public ProcBase {
-public:
-    virtual BOOL vfunc_14(s32 status);
-    virtual BOOL vfunc_20(u32 status);
-    virtual BOOL preDraw();
-    virtual BOOL postDraw(s32 status);
-};
 
-class Character : public Actor {
-public:
-    Character();
-    virtual ~Character();
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_48();
-    virtual void vfunc_4c(s32 a, u32 b);
-    virtual void getInteractionPos();
-    virtual BOOL acceptsInteractionOutOfRange(void *a);
-    virtual BOOL vfunc_58(void *a);
-
-    u32 pad_50[(0x5c - 0x50) / 4];
-    s32 position[3];
-    u8 pad_68[0x8e - 0x68];
-    s16 rotY;
-    u8 pad_90[0xe0 - 0x90];
-};
 
 class NpcActor : public Character {
 public:
@@ -54,7 +31,7 @@ public:
     virtual void postCreate(s32 a);
     virtual BOOL onExecute();
     virtual BOOL vfunc_30();
-    virtual void vfunc_5c(Unk_020d77a4_Vec3 *p);
+    virtual BOOL vfunc_5c(Unk_020d77a4_Vec3 *p);
     virtual void onToolHit();
     virtual void *vfunc_64();
     virtual BOOL updateAct();
@@ -74,7 +51,6 @@ public:
     virtual void getTeachableEmotion();
     virtual void addMood(u32 a, s32 b);
 
-    u16 pad_e0[5];
     u16 unk_ea;
     u8 unk_ec[0x350 - 0xec];
     u8 unk_350[0x3b0 - 0x350];
@@ -204,8 +180,8 @@ public:
     virtual BOOL vfunc_04();
     virtual BOOL preDelete();
     virtual BOOL onDraw();
-    virtual BOOL vfunc_48();
-    virtual void vfunc_4c(s32 a, u32 b);
+    virtual BOOL vfunc_48(void *other);
+    virtual void vfunc_4c(u32 a, u8 b);
     virtual BOOL updateAct();
     virtual BOOL canPlayTalkMelody();
     virtual void onTalkMelodyPlayed();
@@ -537,7 +513,7 @@ void BirthdayGuestVillager::func_ov004_02216a0c() {
     }
 }
 
-BOOL BirthdayGuestVillager::vfunc_48() {
+BOOL BirthdayGuestVillager::vfunc_48(void *) {
     if (NpcTalkCtrl_isBusy(unk_618)) {
         return FALSE;
     }
@@ -547,11 +523,11 @@ BOOL BirthdayGuestVillager::vfunc_48() {
     return FALSE;
 }
 
-void BirthdayGuestVillager::vfunc_4c(s32 a, u32 b) {
+void BirthdayGuestVillager::vfunc_4c(u32 a, u8 b) {
     Unk_ov004_Vec3 v;
-    v.x = position[0];
-    v.y = position[1];
-    v.z = position[2];
+    v.x = position.x;
+    v.y = position.y;
+    v.z = position.z;
     v.y += 0x2000;
     switch (a) {
     case 3:
@@ -701,7 +677,7 @@ void BirthdayGuestVillager::mainAct00() {
     Unk_ov004_022162f0_Actor *a = (Unk_ov004_022162f0_Actor *)BirthdayHostVillager_Get(this);
     s32 d;
     if (a) {
-        d = func_020e9650(&a->pos, position);
+        d = func_020e9650(&a->pos, &position);
     } else {
         d = data_020c8cbc;
     }
@@ -725,12 +701,12 @@ void BirthdayGuestVillager::mainAct00() {
             walkTimer--;
         }
         if (walkTimer == 0) {
-            walkAngle = Room_PickRandomWalkTarget(&walkTarget, (Unk_ov004_Vec3 *)position, rotY);
+            walkAngle = Room_PickRandomWalkTarget(&walkTarget, (Unk_ov004_Vec3 *)&position, rotY);
             waypoint.x = walkTarget.x;
             waypoint.y = walkTarget.y;
             waypoint.z = walkTarget.z;
             if (a && d >= 0x6000 && Random_GlobalBelow(2) == 0) {
-                d = func_020e7b98(a->pos.x - position[0], a->pos.z - position[2]);
+                d = func_020e7b98(a->pos.x - position.x, a->pos.z - position.z);
                 s32 df = func_020e780c(rotY, d);
                 Unk_ov004_Vec3 *pa = &a->pos;
                 s32 xx = *(volatile s32 *)&a->pos.x;
@@ -787,7 +763,7 @@ void BirthdayGuestVillager::mainAct00() {
                     waypoint.y = walkTarget.y;
                     waypoint.z = walkTarget.z;
                     NpcMoveCtrl_setWaypoint(unk_350, pw);
-                } else if (func_020e9650(&walkTarget, position) < 0x200) {
+                } else if (func_020e9650(&walkTarget, &position) < 0x200) {
                     NpcActionCtrl_requestStand(unk_564, 1, data_020c6cc8);
                 }
                 break;
@@ -802,7 +778,7 @@ BOOL BirthdayGuestVillager::setupAct01() {
         void *p = &unk_564;
         BirthdayHostVillager *o = BirthdayHostVillager_Get();
         if (o != NULL) {
-            walkAngle = func_020e7b98(o->position[0] - position[0], o->position[2] - position[2]);
+            walkAngle = func_020e7b98(o->position.x - position.x, o->position.z - position.z);
             BirthdayHostVillager *g = sBirthdayHostVillager;
             BOOL r;
             if (g != NULL && (u32)g->act <= 1) {

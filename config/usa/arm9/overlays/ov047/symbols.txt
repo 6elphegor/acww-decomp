@@ -1,7 +1,9 @@
 _ZN13SpNpcBlathersD1Ev kind:function(thumb,size=0x28) addr:0x02258de0
 _ZN13SpNpcBlathersD0Ev kind:function(thumb,size=0x2c) addr:0x02258e08
 _ZN13SpNpcBlathers8vfunc_4cEjj kind:function(thumb,size=0x19c) addr:0x02258e34
+_ZN13SpNpcBlathers8vfunc_4cEjh kind:label(thumb) addr:0x02258e34
 _ZN13SpNpcBlathers8vfunc_48Ev kind:function(thumb,size=0x2c) addr:0x02258fd0
+_ZN13SpNpcBlathers8vfunc_48EPv kind:label(thumb) addr:0x02258fd0
 _ZN17SpNpcBlathersTalk16onDeliveryChoiceEj kind:function(thumb,size=0x4c) addr:0x02258ffc
 _ZN17SpNpcBlathersTalk18onDonateMoreChoiceEj kind:function(thumb,size=0x14) addr:0x02259048
 _ZN17SpNpcBlathersTalk20onAnythingElseChoiceEj kind:function(thumb,size=0x54) addr:0x0225905c

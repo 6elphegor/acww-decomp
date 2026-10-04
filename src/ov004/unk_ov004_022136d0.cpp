@@ -7,48 +7,11 @@
 #include "game/Unk_ov004_022091fc_Vec.h"
 #include "talk/TalkWindowState.h"
 #include "talk/MsgRequest.h"
+#include "actor/Actor.h"
+#include "actor/Character.h"
 
 
-class Actor : public GameProc {
-public:
-    virtual BOOL vfunc_04();
-    virtual void postCreate(s32 status);
-    virtual BOOL preDelete();
-    virtual BOOL vfunc_14(s32 status);
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_20(u32 status);
-    virtual BOOL preDraw();
-    virtual BOOL postDraw(s32 status);
 
-    /* 0x50 */ u8 unk_50[0xc];
-    /* 0x5c */ s32 position[3];
-    /* 0x68 */ u8 pad_68[0x8e - 0x68];
-    /* 0x8e */ s16 rotY;
-    /* 0x90 */ u8 pad_90[0xd4 - 0x90];
-};
-
-class Character : public Actor {
-public:
-    Character();
-    virtual ~Character();
-    virtual BOOL vfunc_04();
-    virtual void postCreate(s32 status);
-    virtual BOOL preDelete();
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_48(void *a);
-    virtual void vfunc_4c(u32 a, u8 b);
-    virtual Unk_ov004_022091fc_Vec *getInteractionPos();
-    virtual BOOL acceptsInteractionOutOfRange(void *a);
-    virtual BOOL vfunc_58(void *a);
-    virtual BOOL vfunc_5c();
-
-    void setCharId(u32 a);
-
-    /* 0xd4 */ u8 unk_d4[0x10];
-    /* 0xe4 */ s32 interactionRangeSq;
-    /* 0xe8 */ u16 charFlags;
-    /* 0xea */ u16 pad_ea;
-};
 
 
 
@@ -204,7 +167,7 @@ BOOL RoomBoardSign::vfunc_00() {
 
 BOOL RoomBoardSign::onExecute() {
     execAct();
-    _ZN11TouchPicker9addSphereEP15TouchPickSphereP4Vec3S3_ih(Scene_GetTouchPicker(), &touchSphere, position, radius, 0x10, index);
+    _ZN11TouchPicker9addSphereEP15TouchPickSphereP4Vec3S3_ih(Scene_GetTouchPicker(), &touchSphere, &position, radius, 0x10, index);
     return TRUE;
 }
 
@@ -252,7 +215,7 @@ BOOL RoomBoardSign::vfunc_48(void *a) {
     Character *o = (Character *)a;
     s32 lim = radius + 0x2ccd;
     if (o) {
-        if (func_020e9650(o->position, position) < lim) {
+        if (func_020e9650(&o->position.x, &position.x) < lim) {
             if (func_020e780c((s16)(rotY + 0x8000), o->rotY) < 0x1300) {
                 return TRUE;
             }

@@ -5,8 +5,11 @@ _ZN10SpNpcRover18loadTagModeOverlayEv kind:function(thumb,size=0x20) addr:0x0225
 _ZN10SpNpcRover11saveTagDataEv kind:function(thumb,size=0x30) addr:0x02258ed4
 _ZN10SpNpcRover14prepareTagDataEv kind:function(thumb,size=0x5c) addr:0x02258f04
 _ZN10SpNpcRover8vfunc_4cEi kind:function(thumb,size=0x70) addr:0x02258f60
+_ZN10SpNpcRover8vfunc_4cEjh kind:label(thumb) addr:0x02258f60
 _ZN10SpNpcRover8vfunc_58Ev kind:function(thumb,size=0x2c) addr:0x02258fd0
+_ZN10SpNpcRover8vfunc_58EPv kind:label(thumb) addr:0x02258fd0
 _ZN10SpNpcRover8vfunc_48Ev kind:function(thumb,size=0x2c) addr:0x02258ffc
+_ZN10SpNpcRover8vfunc_48EPv kind:label(thumb) addr:0x02258ffc
 _ZN10SpNpcRover18restoreOwnTransferEv kind:function(thumb,size=0x24) addr:0x02259028
 _ZN10SpNpcRover17applyReceivedDataEv kind:function(thumb,size=0x64) addr:0x0225904c
 _ZN14SpNpcRoverTalk15waitTagModeStopEv kind:function(thumb,size=0x78) addr:0x022590b0

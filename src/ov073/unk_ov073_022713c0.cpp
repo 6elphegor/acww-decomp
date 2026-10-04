@@ -12,6 +12,8 @@
 #include "snd/SndSeEmitterKind1.h"
 #include "npc/Unk_02014254.h"
 #include "npc/Unk_0201a13c.h"
+#include "actor/Actor.h"
+#include "actor/Character.h"
 
 
 struct Unk_0201bc1c;
@@ -229,36 +231,9 @@ MEMBER(Unk_0201a794, 0x418 - 0x3b0);
 MEMBER(CollisionState, 0x30);
 
 
-class Actor : public ProcBase {
-public:
-    virtual BOOL vfunc_14(s32 status);
-    virtual BOOL vfunc_20(u32 status);
-    virtual BOOL preDraw();
-    virtual BOOL postDraw(s32 status);
-};
 
 struct Unk_020d77a4_Vec3;
 
-class Character : public Actor {
-public:
-    Character();
-    virtual ~Character();
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_48();
-    virtual void vfunc_4c(s32 v);
-    virtual void getInteractionPos();
-    virtual void acceptsInteractionOutOfRange(void *p);
-    virtual void vfunc_58(void *p);
-    u8 pad_50[0x5c - 0x50];
-    Unk_ov073_Vec position;
-    u8 pad_68[0x8e - 0x68];
-    s16 rotY;
-    u8 pad_90[4];
-    s16 moveAngleY;
-    u8 pad_96[2];
-    u32 speed;
-    u8 pad_9c[0xea - 0x9c];
-};
 
 class NpcActor : public Character {
 public:
@@ -268,7 +243,7 @@ public:
     virtual BOOL onExecute();
     virtual BOOL onDraw();
     virtual BOOL vfunc_30();
-    virtual void vfunc_5c(Unk_020d77a4_Vec3 *v);
+    virtual BOOL vfunc_5c(Unk_020d77a4_Vec3 *v);
     virtual void onToolHit();
     virtual void vfunc_64();
     virtual BOOL updateAct();
@@ -339,8 +314,8 @@ public:
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_48();
-    virtual void vfunc_4c(s32 a);
+    virtual BOOL vfunc_48(void *other);
+    virtual void vfunc_4c(u32 a, u8 b);
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
@@ -495,7 +470,7 @@ BOOL SpNpcJoan::isInFocusBox(Unk_ov073_Vec *a, Unk_ov073_Vec *b) {
 }
 
 BOOL SpNpcJoan::isInCameraBox() {
-    Unk_ov073_Vec *p = &position;
+    Unk_ov073_Vec *p = (Unk_ov073_Vec *)&position;
     BOOL r = FALSE;
     if (gCamera != 0) {
         Unk_ov073_Vec v;
@@ -1249,7 +1224,7 @@ L_ret:
 }
 #endif
 
-BOOL SpNpcJoan::vfunc_48() {
+BOOL SpNpcJoan::vfunc_48(void *) {
     BOOL r = FALSE;
     if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) == 0) {
         r = TRUE;
@@ -1257,7 +1232,7 @@ BOOL SpNpcJoan::vfunc_48() {
     return r;
 }
 
-void SpNpcJoan::vfunc_4c(s32 a) {
+void SpNpcJoan::vfunc_4c(u32 a, u8) {
     switch (a) {
     case 0:
         changeAct(0);

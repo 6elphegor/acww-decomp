@@ -27,6 +27,8 @@
 #include "talk/MsgString25.h"
 #include "npc/NpcFaceAnim.h"
 #include "item/ItemName.h"
+#include "actor/Actor.h"
+#include "actor/Character.h"
 
 
 // unk_02011580.cpp
@@ -1771,38 +1773,6 @@ struct Unk_020d77a4_Global {
     s32 myAid;
 };
 
-class Actor : public ProcBase {
-public:
-    virtual BOOL vfunc_14(s32 status);
-    virtual BOOL vfunc_20(u32 status);
-    virtual BOOL preDraw();
-    virtual BOOL postDraw(s32 status);
-    virtual ~Actor();
-};
-class Character : public Actor {
-public:
-    virtual BOOL preDelete();
-    virtual BOOL preExecute();
-    virtual ~Character();
-    virtual void vfunc_48(void *p);
-    virtual void vfunc_4c(s32 v);
-    virtual void getInteractionPos();
-    virtual void acceptsInteractionOutOfRange(void *p);
-    virtual void vfunc_58(void *p);
-    virtual BOOL vfunc_5c(Unk_020d77a4_Vec3 *out);
-
-    /* 0x50 */ u8 pad_50[0x5c - 0x50];
-    /* 0x5c */ Unk_020d77a4_Vec position;
-    /* 0x68 */ u8 pad_68[0x8e - 0x68];
-    /* 0x8e */ s16 rotY;
-    /* 0x90 */ u8 pad_90[4];
-    /* 0x94 */ s16 moveAngleY;
-    /* 0x96 */ u8 pad_96[6];
-    /* 0x9c */ s32 gravity;
-    /* 0xa0 */ s32 maxFallSpeed;
-    /* 0xa4 */ u8 pad_a4[0xea - 0xa4];
-    /* 0xea */ u16 unk_ea;
-};
 class NpcActor : public Character {
 public:
     virtual BOOL vfunc_00();
@@ -1813,7 +1783,7 @@ public:
     virtual BOOL onDraw();
     virtual BOOL vfunc_30();
     virtual ~NpcActor();
-    virtual void vfunc_4c(s32 v);
+    virtual void vfunc_4c(u32 v, u8 b);
     virtual BOOL vfunc_5c(Unk_020d77a4_Vec3 *out);
     virtual s32 onToolHit();
     virtual s32 vfunc_64();
@@ -1866,6 +1836,7 @@ public:
     void releaseModel();
     BOOL loadModel();
 
+    /* 0xea */ u16 unk_ea;
     /* 0xec */ u8 unk_ec[0x2a0 - 0xec];
     /* 0x2a0 */ u8 pad_2a0[0x350 - 0x2a0];
     /* 0x350 */ u8 unk_350[0x3a8 - 0x350];
@@ -3579,7 +3550,7 @@ s32 NpcActor::findAvoidPos(Unk_020d77a4_Vec *out) {
     using namespace nR;
     s32 r = _ZN9NpcLookAt15getObstacleBitsEv(unk_3a8);
     s32 result = 0;
-    Unk_020d77a4_Vec *pv = &position;
+    Unk_020d77a4_Vec *pv = (Unk_020d77a4_Vec *)&position;
     *out = *pv;
     switch (r) {
     case 3:
@@ -4006,7 +3977,7 @@ BOOL NpcActor::vfunc_5c(Unk_020d77a4_Vec3 *out) {
     return TRUE;
 }
 
-void NpcActor::vfunc_4c(s32 v) {
+void NpcActor::vfunc_4c(u32 v, u8) {
     using namespace nQ;
     if (v == 8) {
         PlayerActor_SetNoFaceTalkTarget(0, 4);

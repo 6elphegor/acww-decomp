@@ -11,6 +11,8 @@
 #include "npc/Unk_0201ad18.h"
 #include "npc/Unk_020135e4.h"
 #include "sys/ProcBase.h"
+#include "actor/Actor.h"
+#include "actor/Character.h"
 
 typedef Unk_020bfe30_Vec Unk_020c0acc_Vec;
 
@@ -237,33 +239,7 @@ struct Unk_020f4080 {
 };
 
 
-class Actor : public ProcBase {
-public:
-    virtual BOOL vfunc_14(s32 status);
-    virtual BOOL vfunc_20(u32 status);
-    virtual BOOL preDraw();
-    virtual BOOL postDraw(s32 status);
-};
 
-struct Character : Actor {
-    u8 pad_50[0x5c - 0x50];
-    Unk_020c0acc_Vec position;
-    u8 pad_68[0x8e - 0x68];
-    s16 rotY;
-    u8 pad_90[4];
-    s16 moveAngleY;
-    u8 pad_96[0xea - 0x96];
-    Character();
-    virtual BOOL preDelete();
-    virtual BOOL preExecute();
-    virtual ~Character();
-    virtual BOOL vfunc_48();
-    virtual void vfunc_4c(int a);
-    virtual void getInteractionPos();
-    virtual void acceptsInteractionOutOfRange(void *p);
-    virtual void vfunc_58(void *p);
-    virtual void vfunc_5c(Unk_020d77a4_Vec3 *p);
-};
 
 struct NpcActor : Character {
     u16 unk_ea;
@@ -291,8 +267,8 @@ struct NpcActor : Character {
     virtual BOOL onExecute();
     virtual BOOL onDraw();
     virtual BOOL vfunc_30();
-    virtual void vfunc_4c(int a);
-    virtual void vfunc_5c(Unk_020d77a4_Vec3 *p);
+    virtual void vfunc_4c(u32 a, u8 b);
+    virtual BOOL vfunc_5c(Unk_020d77a4_Vec3 *p);
     virtual void onToolHit();
     virtual void vfunc_64();
     virtual BOOL updateAct() = 0;
@@ -348,8 +324,8 @@ public:
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_0c();
     virtual ~SpNpcKatie() {}
-    virtual BOOL vfunc_48();
-    virtual void vfunc_4c(s32 a);
+    virtual BOOL vfunc_48(void *other);
+    virtual void vfunc_4c(u32 a, u8 b);
     virtual BOOL updateAct();
     virtual void *getTexturePath();
     virtual void *getModelPath();
@@ -434,15 +410,15 @@ BOOL SpNpcKatie::vfunc_00() {
     effectHandle = -1;
     p = PlayerData_GetCurrent();
     if (Scene_GetCurrent() == 0) {
-        FieldPos_SnapToUnitCenter(&position, &position);
-        if (TownMap_FindBuildingAbovePos(&position, 1, 0, 0)) {
-            TownMap_IsPosWalkable(&position, 0);
+        FieldPos_SnapToUnitCenter((Unk_020bfe30_Vec *)&position, (Unk_020bfe30_Vec *)&position);
+        if (TownMap_FindBuildingAbovePos((Unk_020bfe30_Vec *)&position, 1, 0, 0)) {
+            TownMap_IsPosWalkable((Unk_020bfe30_Vec *)&position, 0);
             position.x += 0x2000;
             position.z += 0x2000;
         }
         if (_ZN12Unk_02086f8411isFollowingEv(TownSessionState_GetKatieState(TownSessionState_Get())) != 0) {
             if (Scene_GetPrevious() == 0xb) {
-                Town_FindGateHouse(TownBlockMap_Get(), &position, 0, 0);
+                Town_FindGateHouse(TownBlockMap_Get(), (Unk_020bfe30_Vec *)&position, 0, 0);
                 position.z -= 0x2000;
                 talk.setTopic(3);
                 changeAct(5);
@@ -517,11 +493,11 @@ BOOL SpNpcKatie::updateAct() {
     return r;
 }
 
-BOOL SpNpcKatie::vfunc_48() {
+BOOL SpNpcKatie::vfunc_48(void *) {
     return _ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) == 0;
 }
 
-void SpNpcKatie::vfunc_4c(s32 state) {
+void SpNpcKatie::vfunc_4c(u32 state, u8) {
     switch (state) {
     case 0:
     case 1:
@@ -576,7 +552,7 @@ BOOL SpNpcKatie::setupAct01() {
     _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(&lookAt, 0, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
     _ZN13NpcActionCtrl15requestPlayAnimEiijtt(&actionCtrl, 1, 0x53, 1, data_020c6cc8, 0);
     Town_FindGateHouse(TownBlockMap_Get(), &a, 0, 0);
-    FieldPos_SnapToUnitCenter(&b, &position);
+    FieldPos_SnapToUnitCenter(&b, (Unk_020bfe30_Vec *)&position);
     if (b.z < a.z) {
         if (b.x >= a.x - 0x4000 && b.x <= a.x + 0x4000) {
             position.z = a.z + 0x1000;
@@ -663,7 +639,7 @@ BOOL SpNpcKatie::mainAct04() {
 BOOL SpNpcKatie::setupAct05() {
     collider.groups &= ~2;
     stuckTimer = 0x28;
-    prevPos = position;
+    prevPos = *(Unk_020bfe30_Vec *)&position;
     return TRUE;
 }
 
@@ -677,13 +653,13 @@ BOOL SpNpcKatie::mainAct05() {
     }
     if (collider.unk_44 == 0 && Scene_GetCurrent() == 0) {
         Town_FindGateHouse(TownBlockMap_Get(), &a, 0, 0);
-        FieldPos_SnapToUnitCenter(&b, &position);
+        FieldPos_SnapToUnitCenter(&b, (Unk_020bfe30_Vec *)&position);
         if (b.z > a.z) {
             collider.unk_44 = 1;
         }
     }
     if (collider.unk_44 == 0 && Scene_GetCurrent() == 0xb) {
-        FieldPos_SnapToUnitCenter(&d, &position);
+        FieldPos_SnapToUnitCenter(&d, (Unk_020bfe30_Vec *)&position);
         FieldPos_FromUnitCenter(&c, 6, 15);
         if (d.z < c.z) {
             collider.unk_44 = 1;
@@ -702,7 +678,7 @@ BOOL SpNpcKatie::mainAct05() {
         }
         v = _ZN9NpcLookAt15getObstacleBitsEv(&obstacleProbe);
         d2 = func_020e9650(&prevPos, &position);
-        prevPos = position;
+        prevPos = *(Unk_020bfe30_Vec *)&position;
         if (d2 <= 0x29 || v != 0) {
             if (func_020e7500(&stuckTimer) == 0) {
                 changeAct(1);
@@ -738,7 +714,7 @@ BOOL SpNpcKatie::mainAct06() {
     s16 a;
     if (_ZN11NpcAnimCtrl13isPlayingAnimEiPv(&animCtrl, 0x122, &moveAnimSet)) {
         a = rotY;
-        Unk_020c0acc_Vec *src = &position;
+        Unk_020c0acc_Vec *src = (Unk_020c0acc_Vec *)&position;
         v = *src;
         if (((model.curFrame << 4) >> 16) == 7) {
             Effect_Create(0x39, &v, &a, 0);

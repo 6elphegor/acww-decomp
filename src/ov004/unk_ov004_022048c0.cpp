@@ -8,54 +8,16 @@
 #include "game/TouchPicker.h"
 #include "sys/ProcBase.h"
 #include "talk/MsgString25.h"
+#include "actor/Actor.h"
+#include "actor/Character.h"
 
 
 // ---------------------------------------------------------------- library base chain (as in link_ov009)
 
 
 
-class Actor : public GameProc {
-public:
-    Actor();
-    virtual BOOL vfunc_04();
-    virtual BOOL preDelete();
-    virtual BOOL vfunc_14(s32 status);
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_20(u32 status);
-    virtual BOOL preDraw();
-    virtual BOOL postDraw(s32 status);
-    virtual ~Actor();
-
-    /* 0x50 */ Unk_02002f14_Node listNode;
-    /* 0x5c */ s32 position[3];
-    /* 0x68 */ u8 pad_68[0x8e - 0x68];
-    /* 0x8e */ s16 rotY;
-    /* 0x90 */ u8 pad_90[0xd4 - 0x90];
-};
 
 
-class Character : public Actor {
-public:
-    Character();
-    virtual ~Character();
-    virtual void postCreate(s32 v);
-    virtual BOOL vfunc_04();
-    virtual BOOL preDelete();
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_48(void *a);
-    virtual void vfunc_4c(u32 a, u8 b);
-    virtual void *getInteractionPos();
-    virtual BOOL acceptsInteractionOutOfRange(void *a);
-    virtual BOOL vfunc_58(void *a);
-    virtual BOOL vfunc_5c();
-
-    void setCharId(u32 a);
-
-    /* 0xd4 */ Unk_0203e5d0_Node charNode;
-    /* 0xe4 */ s32 interactionRangeSq;
-    /* 0xe8 */ u16 charFlags;
-    /* 0xea */ u16 pad_ea;
-};
 
 // ---------------------------------------------------------------- secondary base at +0xec (vtable 0x020ddcf0 in main)
 class MsgRequest {
@@ -234,8 +196,8 @@ BOOL Atm::vfunc_0c() {
 }
 
 void Atm::initCollision() {
-    BoxCollider_Register(collider, 0x2000, 0x2000, 0x2000, position, 0, 0);
-    Scene_GetTouchPicker()->addBox(&touchBox, (Vec3 *)position, 0x2000, 0x2000, 0x2000, 0, 0xb, 0xff);
+    BoxCollider_Register(collider, 0x2000, 0x2000, 0x2000, &position.x, 0, 0);
+    Scene_GetTouchPicker()->addBox(&touchBox, (Vec3 *)&position, 0x2000, 0x2000, 0x2000, 0, 0xb, 0xff);
 }
 
 BOOL Atm::releaseCollision() {
@@ -263,7 +225,7 @@ void Atm::setPointTexts() {
 BOOL Atm::vfunc_48(void *a) {
     Character *o = (Character *)a;
     if (o) {
-        if (func_020e9650(o->position, position) < 0x2333) {
+        if (func_020e9650(&o->position.x, &position.x) < 0x2333) {
             u32 d = (u16)(o->rotY - (rotY + 0x8000));
             if (d < 0x1000 || d >= 0xf000) {
                 return TRUE;

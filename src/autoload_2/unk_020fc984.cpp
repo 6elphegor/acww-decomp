@@ -7,6 +7,7 @@
 #include "gfx/SplPtclTypes.h"
 #include "gfx/SplParticleViews.h"
 #include "gfx/VecFx32.h"
+#include "gfx/V3.h"
 #include "gfx/SplTex.h"
 #include "gfx/MagF.h"
 #include "gfx/P.h"

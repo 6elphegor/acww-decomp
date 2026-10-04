@@ -1,7 +1,9 @@
 _ZN11SpNpcGracieD1Ev kind:function(thumb,size=0x28) addr:0x022713c0
 _ZN11SpNpcGracieD0Ev kind:function(thumb,size=0x2c) addr:0x022713e8
 _ZN11SpNpcGracie8vfunc_4cEi kind:function(thumb,size=0x44) addr:0x02271414
+_ZN11SpNpcGracie8vfunc_4cEjh kind:label(thumb) addr:0x02271414
 _ZN11SpNpcGracie8vfunc_48Ev kind:function(thumb,size=0x20) addr:0x02271458
+_ZN11SpNpcGracie8vfunc_48EPv kind:label(thumb) addr:0x02271458
 _ZN15SpNpcGracieTalk8onChoiceEv kind:function(thumb,size=0xac) addr:0x02271478
 _ZN15SpNpcGracieTalk12onMessageEndEv kind:function(thumb,size=0x2cc) addr:0x02271524
 _ZN15SpNpcGracieTalk13dressUpPlayerEv kind:function(thumb,size=0x29c) addr:0x022717f0

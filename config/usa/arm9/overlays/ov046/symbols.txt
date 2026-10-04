@@ -3,8 +3,11 @@ _ZN12SpNpcCelesteD0Ev kind:function(thumb,size=0x2c) addr:0x02258e08
 _ZN12SpNpcCeleste21tryStartTelescopeTalkEv kind:function(thumb,size=0x34) addr:0x02258e34
 _ZN12SpNpcCeleste19isPlayerAtTelescopeEv kind:function(thumb,size=0x108) addr:0x02258e68
 _ZN12SpNpcCeleste8vfunc_4cEi kind:function(thumb,size=0x48) addr:0x02258f70
+_ZN12SpNpcCeleste8vfunc_4cEjh kind:label(thumb) addr:0x02258f70
 _ZN12SpNpcCeleste8vfunc_58Ev kind:function(thumb,size=0x20) addr:0x02258fb8
+_ZN12SpNpcCeleste8vfunc_58EPv kind:label(thumb) addr:0x02258fb8
 _ZN12SpNpcCeleste8vfunc_48Ev kind:function(thumb,size=0x2c) addr:0x02258fd8
+_ZN12SpNpcCeleste8vfunc_48EPv kind:label(thumb) addr:0x02258fd8
 _ZN16SpNpcCelesteTalk14onRenameChoiceEi kind:function(thumb,size=0x1e) addr:0x02259004
 _ZN16SpNpcCelesteTalk19onLookOrTimesChoiceEi kind:function(thumb,size=0x28) addr:0x02259024
 _ZN16SpNpcCelesteTalk19func_ov046_0225904cEi kind:function(thumb,size=0x54) addr:0x0225904c

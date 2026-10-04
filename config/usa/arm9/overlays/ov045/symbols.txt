@@ -16,7 +16,9 @@ SpNpcKatrina_GetAnimFrame kind:function(thumb,size=0x18) addr:0x02258fd8
 SpNpcKatrina_GetJointMtx kind:function(thumb,size=0x14) addr:0x02258ff0
 _ZN12SpNpcKatrina13isClosingTimeEv kind:function(thumb,size=0x24) addr:0x02259004
 _ZN12SpNpcKatrina8vfunc_4cEij kind:function(thumb,size=0x48) addr:0x02259028
+_ZN12SpNpcKatrina8vfunc_4cEjh kind:label(thumb) addr:0x02259028
 _ZN12SpNpcKatrina8vfunc_48Ev kind:function(thumb,size=0x74) addr:0x02259070
+_ZN12SpNpcKatrina8vfunc_48EPv kind:label(thumb) addr:0x02259070
 _ZN16SpNpcKatrinaTalk21scriptReadPartnerNameEv kind:function(thumb,size=0x88) addr:0x022590e4
 _ZN16SpNpcKatrinaTalk9setScriptEi kind:function(thumb,size=0x6) addr:0x0225916c
 _ZN16SpNpcKatrinaTalk10onTaskDoneEv kind:function(thumb,size=0x50) addr:0x02259174

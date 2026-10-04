@@ -3,7 +3,9 @@ _ZN11SpNpcShrunkD0Ev kind:function(thumb,size=0x2c) addr:0x022713e8
 _ZN11SpNpcShrunk12teachEmotionEii kind:function(thumb,size=0x18) addr:0x02271414
 _ZN11SpNpcShrunk19getTeachableEmotionEv kind:function(thumb,size=0x20) addr:0x0227142c
 _ZN11SpNpcShrunk8vfunc_4cEi kind:function(thumb,size=0x50) addr:0x0227144c
+_ZN11SpNpcShrunk8vfunc_4cEjh kind:label(thumb) addr:0x0227144c
 _ZN11SpNpcShrunk8vfunc_48Ev kind:function(thumb,size=0x20) addr:0x0227149c
+_ZN11SpNpcShrunk8vfunc_48EPv kind:label(thumb) addr:0x0227149c
 _ZN15SpNpcShrunkTalk8onChoiceEv kind:function(thumb,size=0xa8) addr:0x022714bc
 _ZN15SpNpcShrunkTalk12onMessageEndEv kind:function(thumb,size=0x94) addr:0x02271564
 _ZN15SpNpcShrunkTalk5startEP12TalkStartMsg kind:function(thumb,size=0x5c) addr:0x022715f8

@@ -51,6 +51,8 @@
 #include "player/Unk_02009a78_Locals.h"
 #include "player/Unk_02009d5c_Sub.h"
 #include "player/Unk_02009f68_Bytes.h"
+#include "actor/Character.h"
+#include "actor/Actor.h"
 #include "gfx/MatTexVramTask.h"
 #include "player/PM_020076f0.h"
 #include "player/PM_020063a0.h"
@@ -118,37 +120,7 @@ typedef void (*PMF)();
 // ---- library base class chain of the object (declarations only; vtables and code are in other units)
 
 
-class Actor : public GameProc {
-public:
-    Actor();
-    virtual BOOL vfunc_04();
-    virtual BOOL preDelete();
-    virtual BOOL vfunc_14(s32 status);
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_20(u32 status);
-    virtual BOOL preDraw();
-    virtual BOOL postDraw(s32 status);
-    virtual ~Actor();
 
-    /* 0x50 */ u8 unk_50[0xd4 - 0x50];
-};
-
-class Character : public Actor {
-public:
-    Character();
-    virtual ~Character();
-    virtual BOOL vfunc_04();
-    virtual void postCreate(s32 status);
-    virtual BOOL preDelete();
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_48(void *a);
-    virtual void vfunc_4c(u32 a, u8 b);
-    virtual void *getInteractionPos();
-    virtual BOOL acceptsInteractionOutOfRange(void *a);
-    virtual BOOL vfunc_58(void *a);
-
-    /* 0xd4 */ u8 unk_d4[0xec - 0xd4];
-};
 
 // secondary base at +0xec. Its virtuals have the names symbols.txt gives them as second names (vfunc_sNN); the four
 // slots the object overrides are named after the object's functions (slot 0x10, 0x14, 0x18, 0x70).
@@ -3101,7 +3073,7 @@ public:
     virtual BOOL onExecute();
     virtual BOOL onDraw();
     virtual ~PlayerActor();
-    virtual BOOL vfunc_5c(Unk_02006d14_Vec3 *out);
+    virtual BOOL vfunc_5c(Unk_020d77a4_Vec3 *out);
     virtual s32 onMessageStart();
     virtual void onMessageEnd();
     virtual void onChoice();

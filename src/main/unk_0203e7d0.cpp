@@ -5,36 +5,11 @@
 #include "game/Unk_0203e5d0_List.h"
 #include "net/Unk_0203e938_Net.h"
 #include "sys/ProcBase.h"
+#include "actor/Character.h"
 
 
 
 
-class Character {
-public:
-    virtual void vfunc_00();
-    virtual void vfunc_04();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void vfunc_10();
-    virtual void vfunc_14();
-    virtual void vfunc_18();
-    virtual void vfunc_1c();
-    virtual void vfunc_20();
-    virtual void vfunc_24();
-    virtual void vfunc_28();
-    virtual void vfunc_2c();
-    virtual void vfunc_30();
-    virtual void vfunc_34();
-    virtual void vfunc_38();
-    virtual void vfunc_3c();
-    virtual void vfunc_40();
-    virtual void vfunc_44();
-    virtual BOOL vfunc_48(void *a);
-    virtual void vfunc_4c(u32 a, u8 b);
-    virtual void getInteractionPos();
-    virtual BOOL acceptsInteractionOutOfRange(void *a);
-    virtual BOOL vfunc_58(void *a);
-};
 
 
 
@@ -71,7 +46,6 @@ extern s16 data_020c905c;
 }
 
 extern "C" {
-extern u8 gActorList[];
 }
 
 extern "C" {

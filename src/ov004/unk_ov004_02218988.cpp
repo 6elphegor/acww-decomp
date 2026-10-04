@@ -24,6 +24,8 @@
 #include "snd/SndSeEmitterKind1.h"
 #include "npc/Unk_02014254.h"
 #include "npc/NpcFaceAnim.h"
+#include "actor/Actor.h"
+#include "actor/Character.h"
 
 class FleaMarketBuyerVillagerTalk;
 class FleaMarketBuyerVillager;
@@ -221,38 +223,9 @@ s32 SceneId_IsTownUnk31();
 
 
 
-class Actor : public ProcBase {
-public:
-    virtual BOOL vfunc_14(s32 status);
-    virtual BOOL vfunc_20(u32 status);
-    virtual BOOL preDraw();
-    virtual BOOL postDraw(s32 status);
-};
 
 struct Unk_020d77a4_Vec3;
 
-class Character : public Actor {
-public:
-    Character();
-    virtual ~Character();
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_48();
-    virtual void vfunc_4c(s32 a, u32 b);
-    virtual void getInteractionPos();
-    virtual void acceptsInteractionOutOfRange(void *p);
-    virtual BOOL vfunc_58();
-    u32 pad_50[(0x5c - 0x50) / 4];
-    u32 position;
-    u32 positionY;
-    u32 positionZ;
-    u32 prevPosition;
-    u32 pad_6c;
-    u32 prevPositionZ;
-    u32 pad_74[(0x8c - 0x74) / 4];
-    s16 rotX, rotY, rotZ, moveAngleX, moveAngleY, moveAngleZ;
-    u32 pad_98[(0xd4 - 0x98) / 4];
-    u32 charNode, unk_d8, unk_dc;
-};
 
 class NpcActor : public Character {
 public:
@@ -261,7 +234,7 @@ public:
     virtual BOOL onExecute();
     virtual BOOL onDraw();
     virtual BOOL vfunc_30();
-    virtual void vfunc_5c(Unk_020d77a4_Vec3 *v);
+    virtual BOOL vfunc_5c(Unk_020d77a4_Vec3 *v);
     virtual void onToolHit();
     virtual void *vfunc_64();
     virtual BOOL updateAct();
@@ -280,7 +253,6 @@ public:
     virtual void vfunc_9c();
     virtual void getTeachableEmotion();
 
-    u16 pad_e0[5];
     u16 unk_ea;
     Unk_02053d3c model;
     Unk_0201ad3c moveAnimSet;
@@ -447,9 +419,9 @@ public:
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_0c();
     virtual BOOL onDraw();
-    virtual BOOL vfunc_48();
-    virtual void vfunc_4c(s32 a, u32 b);
-    virtual BOOL vfunc_58();
+    virtual BOOL vfunc_48(void *other);
+    virtual void vfunc_4c(u32 a, u8 b);
+    virtual BOOL vfunc_58(void *a);
     virtual BOOL updateAct();
     virtual BOOL canPlayTalkMelody();
     virtual void onTalkMelodyPlayed();
@@ -657,9 +629,9 @@ BOOL FleaMarketBuyerVillager::vfunc_00() {
     }
     targetItem = 0xfff1;
     Unk_02013474_enableFootsteps(&footstepFx);
-    targetPos[0] = position;
-    targetPos[1] = positionY;
-    targetPos[2] = positionZ;
+    targetPos[0] = position.x;
+    targetPos[1] = position.y;
+    targetPos[2] = position.z;
     viewDistance = 0x3000;
     s32 i;
     for (i = 0; i < 100; i++) {
@@ -684,10 +656,10 @@ BOOL FleaMarketBuyerVillager::vfunc_00() {
         visitStage = 2;
         changeAct(3);
     } else {
-        position = 0x10000;
-        prevPosition = 0x10000;
-        positionZ = 0x23000;
-        prevPositionZ = 0x23000;
+        position.x = 0x10000;
+        prevPosition.x = 0x10000;
+        position.z = 0x23000;
+        prevPosition.z = 0x23000;
         callCheckTimer = 100;
         doorWaitFrames = 1;
         changeAct(0);
@@ -803,10 +775,10 @@ BOOL FleaMarketBuyerVillager::mainAct01() {
     moveAngleZ = 0;
     if (func_020e7518(&entryTimer)) {
         if (entryTimer == 8) {
-            position = 0x10000;
-            prevPosition = 0x10000;
-            positionZ = 0x1f000;
-            prevPositionZ = 0x1f000;
+            position.x = 0x10000;
+            prevPosition.x = 0x10000;
+            position.z = 0x1f000;
+            prevPosition.z = 0x1f000;
         }
         return TRUE;
     }
@@ -838,9 +810,9 @@ BOOL FleaMarketBuyerVillager::mainAct02() {
         v.y = 0;
         v.z = 0;
         s32 g = func_01ffcb0c(0x4000, data_02135f44[(*(u16 *)&rotY >> 4) * 2]);
-        v.x = g + position;
+        v.x = g + position.x;
         g = func_01ffcb0c(0x4000, data_02135f44[(*(u16 *)&rotY >> 4) * 2 + 1]);
-        v.z = g + positionZ;
+        v.z = g + position.z;
         NpcActionCtrl_requestAction(&actionCtrl, 1, 2, v.x, v.z, 0, 0, 0, 0, data_020c6cc8, 0);
         entryTimer = 30;
         return TRUE;
@@ -925,9 +897,9 @@ BOOL FleaMarketBuyerVillager::mainAct05() {
     if (r4 <= viewDistance || func_020e972c(loc24, &position)) {
         changeAct(3);
     }
-    v.x = position;
-    v.y = positionY;
-    v.z = positionZ;
+    v.x = position.x;
+    v.y = position.y;
+    v.z = position.z;
     s32 h = *(u16 *)&rotY;
     xy[0] = 0;
     xy[1] = 0;
@@ -1336,21 +1308,21 @@ void FleaMarketBuyerVillagerTalk::onChoice() {
     }
 }
 
-BOOL FleaMarketBuyerVillager::vfunc_48() {
+BOOL FleaMarketBuyerVillager::vfunc_48(void *) {
     if (NpcTalkCtrl_isBusy(&talkCtrl) == 0) {
         return TRUE;
     }
     return FALSE;
 }
 
-BOOL FleaMarketBuyerVillager::vfunc_58() {
+BOOL FleaMarketBuyerVillager::vfunc_58(void *) {
     if (NpcTalkCtrl_isBusy(&talkCtrl) == 0) {
         return TRUE;
     }
     return FALSE;
 }
 
-void FleaMarketBuyerVillager::vfunc_4c(s32 cmd, u32 b) {
+void FleaMarketBuyerVillager::vfunc_4c(u32 cmd, u8 b) {
     switch (cmd) {
     case 1:
         talk.vfunc_08();

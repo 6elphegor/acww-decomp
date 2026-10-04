@@ -12,6 +12,8 @@
 #include "npc/Unk_02014254.h"
 #include "npc/Unk_0201a13c.h"
 #include "talk/MsgString9B.h"
+#include "actor/Actor.h"
+#include "actor/Character.h"
 
 #define Actor_findByProfile _ZN5Actor13findByProfileEjPS_
 #define VillagerId_getName _ZN10VillagerId7getNameEj
@@ -261,36 +263,9 @@ MEMBER(CollisionState, 0x30);
 MEMBER(NpcActionCtrl, 0x618 - 0x564);
 
 
-class Actor : public ProcBase {
-public:
-    virtual BOOL vfunc_14(s32 status);
-    virtual BOOL vfunc_20(u32 status);
-    virtual BOOL preDraw();
-    virtual BOOL postDraw(s32 status);
-};
 
 struct Unk_020d77a4_Vec3;
 
-class Character : public Actor {
-public:
-    Character();
-    virtual ~Character();
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_48();
-    virtual void vfunc_4c(u32 cmd, u32 arg);
-    virtual void getInteractionPos();
-    virtual void acceptsInteractionOutOfRange(void *p);
-    virtual BOOL vfunc_58();
-    u8 pad_50[0x5c - 0x50];
-    s32 position, positionY, positionZ;
-    u8 pad_68[0x8e - 0x68];
-    s16 rotY;
-    u8 pad_90[4];
-    s16 moveAngleY;
-    u8 pad_96[2];
-    s32 speed;
-    u8 pad_9c[0xea - 0x9c];
-};
 
 class NpcActor : public Character {
 public:
@@ -300,7 +275,7 @@ public:
     virtual BOOL onExecute();
     virtual BOOL onDraw();
     virtual BOOL vfunc_30();
-    virtual void vfunc_5c(Unk_020d77a4_Vec3 *v);
+    virtual BOOL vfunc_5c(Unk_020d77a4_Vec3 *v);
     virtual void onToolHit();
     virtual void vfunc_64();
     virtual BOOL updateAct();
@@ -471,9 +446,9 @@ public:
     SpNpcNookShop() : talk(), selectedItem(0xfff1), selectedItemX(0), selectedItemZ(0) {}
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
-    virtual BOOL vfunc_48();
-    virtual void vfunc_4c(u32 cmd, u32 arg);
-    virtual BOOL vfunc_58();
+    virtual BOOL vfunc_48(void *other);
+    virtual void vfunc_4c(u32 cmd, u8 arg);
+    virtual BOOL vfunc_58(void *a);
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
@@ -1031,34 +1006,34 @@ BOOL SpNpcNookShop::vfunc_04() {
     if (CommManager_isOnline(gCommManager) || *DebugVar_GetPtr(0, 0x4a) != 0) {
         switch (param) {
         case 0xd00f:
-            position = 0xf000;
-            positionY = 0;
-            positionZ = 0x11000;
+            position.x = 0xf000;
+            position.y = 0;
+            position.z = 0x11000;
             break;
         case 0xd010:
-            position = 0xf000;
-            positionY = 0;
-            positionZ = 0x13000;
+            position.x = 0xf000;
+            position.y = 0;
+            position.z = 0x13000;
             break;
         case 0xd019:
-            position = 0xf000;
-            positionY = 0;
-            positionZ = 0x19000;
+            position.x = 0xf000;
+            position.y = 0;
+            position.z = 0x19000;
             break;
         case 0xd01a:
-            position = 0x13000;
-            positionY = 0;
-            positionZ = 0x17000;
+            position.x = 0x13000;
+            position.y = 0;
+            position.z = 0x17000;
             break;
         case 0xd01b:
-            position = 0xf000;
-            positionY = 0;
-            positionZ = 0x15000;
+            position.x = 0xf000;
+            position.y = 0;
+            position.z = 0x15000;
             break;
         case 0xd01c:
-            position = 0x11000;
-            positionY = 0;
-            positionZ = 0x13000;
+            position.x = 0x11000;
+            position.y = 0;
+            position.z = 0x13000;
             break;
         }
     }
@@ -3949,8 +3924,8 @@ s32 SpNpcNookShopTalk::buySelectedItem() {
     VillagerTrend_OnFurnitureBought();
 }
 
-BOOL SpNpcNookShop::vfunc_48() {
-    if (positionZ < data_ov050_0225da40[2]) {
+BOOL SpNpcNookShop::vfunc_48(void *) {
+    if (position.z < data_ov050_0225da40[2]) {
         return FALSE;
     }
     if (NpcTalkCtrl_isBusy(&talkCtrl) != 0 || netIsTalkLocked() != 0 || tryItemTalk() != 0) {
@@ -3962,14 +3937,14 @@ BOOL SpNpcNookShop::vfunc_48() {
 // ---------------------------------------------------------------------------------------------------------------------
 // SpNpcNookShop
 
-BOOL SpNpcNookShop::vfunc_58() {
+BOOL SpNpcNookShop::vfunc_58(void *) {
     if (NpcTalkCtrl_isBusy(&talkCtrl) != 0 || netIsTalkLocked() != 0) {
         return FALSE;
     }
     return TRUE;
 }
 
-void SpNpcNookShop::vfunc_4c(u32 cmd, u32 arg) {
+void SpNpcNookShop::vfunc_4c(u32 cmd, u8 arg) {
     Unk_020cbb18_Ov050 *g;
     s32 a, b;
     switch (cmd) {
@@ -4111,7 +4086,7 @@ BOOL SpNpcNookShop::pickItemTopic() {
     }
     selectedItem = 0xfff1;
     Unk_ov050_022590f8_Pos *pv = (Unk_ov050_022590f8_Pos *)&p->position;
-    v.x = p->position;
+    v.x = p->position.x;
     v.y = pv->y;
     v.z = pv->z;
     u32 ang = p->rotY;

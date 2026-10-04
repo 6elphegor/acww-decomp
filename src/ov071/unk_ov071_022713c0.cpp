@@ -17,6 +17,8 @@
 #include "snd/SndSeEmitterKind1.h"
 #include "npc/Unk_02014254.h"
 #include "npc/Unk_0201a13c.h"
+#include "actor/Actor.h"
+#include "actor/Character.h"
 
 
 class SpNpcLyle;
@@ -273,36 +275,9 @@ MEMBER(NpcFaceAnim, 0x334 - 0x2ac);
 MEMBER(CollisionState, 0x30);
 
 
-class Actor : public ProcBase {
-public:
-    virtual BOOL vfunc_14(s32 status);
-    virtual BOOL vfunc_20(u32 status);
-    virtual BOOL preDraw();
-    virtual BOOL postDraw(s32 status);
-};
 
 struct Unk_020d77a4_Vec3;
 
-class Character : public Actor {
-public:
-    Character();
-    virtual ~Character();
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_48();
-    virtual void vfunc_4c(s32 v);
-    virtual void getInteractionPos();
-    virtual void acceptsInteractionOutOfRange(void *p);
-    virtual void vfunc_58(void *p);
-    u8 pad_50[0x5c - 0x50];
-    Unk_ov071_02271f54_Vec position;
-    u8 pad_68[0x8e - 0x68];
-    s16 rotY;
-    u8 pad_90[4];
-    s16 moveAngleY;
-    u8 pad_96[2];
-    s32 speed;
-    u8 pad_9c[0xea - 0x9c];
-};
 
 class NpcActor : public Character {
 public:
@@ -312,7 +287,7 @@ public:
     virtual BOOL onExecute();
     virtual BOOL onDraw();
     virtual BOOL vfunc_30();
-    virtual void vfunc_5c(Unk_020d77a4_Vec3 *v);
+    virtual BOOL vfunc_5c(Unk_020d77a4_Vec3 *v);
     virtual void onToolHit();
     virtual void vfunc_64();
     virtual BOOL updateAct();
@@ -383,8 +358,8 @@ public:
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_48();
-    virtual void vfunc_4c(s32 a);
+    virtual BOOL vfunc_48(void *other);
+    virtual void vfunc_4c(u32 a, u8 b);
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
@@ -613,7 +588,7 @@ BOOL SpNpcLyle::isInFocusBox(Unk_ov071_02271f54_Vec *a, Unk_ov071_02271f54_Vec *
 }
 
 BOOL SpNpcLyle::isNearCameraFocus(s32 a) {
-    Unk_ov071_02271f54_Vec *pos = &position;
+    Unk_ov071_02271f54_Vec *pos = (Unk_ov071_02271f54_Vec *)&position;
     BOOL r = FALSE;
     if (gCamera != 0) {
         Unk_ov071_02271f54_Vec v;
@@ -684,7 +659,7 @@ void SpNpcLyle::act01Step0() {
                 act01Step = 2;
             } else {
                 Character *p = chaseTarget;
-                Unk_ov071_02271f54_Vec &v = p->position;
+                Unk_ov071_02271f54_Vec &v = *(Unk_ov071_02271f54_Vec *)&p->position;
                 _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 2, 1, v.x, v.z, 0, 0, 0, 0, data_020c6cc8, 0);
                 stepTimer = 300;
                 act01Step = 1;
@@ -704,7 +679,7 @@ void SpNpcLyle::act01Step1() {
             act01Step = 2;
             stepTimer = 240;
         } else if (isNearChaseStart() != 0) {
-            _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(q, &chaseTarget->position);
+            _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(q, (Unk_ov071_02271f54_Vec *)&chaseTarget->position);
         } else {
             approachCooldown = 200;
             changeAct(3);
@@ -725,7 +700,7 @@ void SpNpcLyle::act01Step2() {
         changeAct(3);
     } else if (isPlayerInFront(0x5000) == 0) {
         Character *p = chaseTarget;
-        Unk_ov071_02271f54_Vec &v = p->position;
+        Unk_ov071_02271f54_Vec &v = *(Unk_ov071_02271f54_Vec *)&p->position;
         _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 2, 1, v.x, v.z, 0, 0, 0, 0, data_020c6cc8, 0);
         stepTimer = 300;
         act01Step = 1;
@@ -734,7 +709,7 @@ void SpNpcLyle::act01Step2() {
 
 BOOL SpNpcLyle::setupAct01() {
     chaseTarget = (Character *)PlayerActor_GetCharacter(4);
-    Unk_ov071_02271f54_Vec *pv = &position;
+    Unk_ov071_02271f54_Vec *pv = (Unk_ov071_02271f54_Vec *)&position;
     chaseStart = *pv;
     _ZN13NpcActionCtrl15requestPlayAnimEiijtt(&actionCtrl, 1, 0xdf, 1, data_020c6cc8, 0);
     _ZN12Unk_0201347415enableFootstepsEv(&footstepFx);
@@ -1365,7 +1340,7 @@ end:
     }
 }
 
-BOOL SpNpcLyle::vfunc_48() {
+BOOL SpNpcLyle::vfunc_48(void *) {
     BOOL r = FALSE;
     if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) == 0) {
         r = TRUE;
@@ -1375,7 +1350,7 @@ BOOL SpNpcLyle::vfunc_48() {
 
 // ---------------------------------------------------------------------------------------------------------------------
 
-void SpNpcLyle::vfunc_4c(s32 a) {
+void SpNpcLyle::vfunc_4c(u32 a, u8) {
     switch (a) {
     case 0:
         changeAct(0);

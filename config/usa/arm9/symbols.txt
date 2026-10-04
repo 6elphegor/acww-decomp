@@ -670,6 +670,7 @@ _ZN12Unk_02006d1410netSendTanEv kind:function(thumb,size=0x48) addr:0x0200ead0
 PlayerActor_NetSendFaceChange kind:function(thumb,size=0x40) addr:0x0200eb18
 _ZN12Unk_02006d1420netSendClothesChangeEjj kind:function(thumb,size=0x48) addr:0x0200eb58
 _ZN11PlayerActor8vfunc_5cEP17Unk_02006d14_Vec3 kind:function(thumb,size=0x48) addr:0x0200eba0
+_ZN11PlayerActor8vfunc_5cEP17Unk_020d77a4_Vec3 kind:label(thumb) addr:0x0200eba0
 _ZN12Unk_02006d1413loadInputModeEv kind:function(thumb,size=0x34) addr:0x0200ebe8
 _ZN12Unk_02006d1415clearActionFlagEj kind:function(thumb,size=0x14) addr:0x0200ec1c
 _ZN12Unk_02006d1413setActionFlagEj kind:function(thumb,size=0x14) addr:0x0200ec30
@@ -1350,6 +1351,7 @@ NpcActor_FindFreeUnitNear kind:function(thumb,size=0x284) addr:0x0201ae00
 _ZN8NpcActor8vfunc_64Ev kind:function(thumb,size=0x4) addr:0x0201b084
 _ZN8NpcActor9onToolHitEv kind:function(thumb,size=0x4) addr:0x0201b088
 _ZN8NpcActor8vfunc_4cEi kind:function(thumb,size=0x16) addr:0x0201b08c
+_ZN8NpcActor8vfunc_4cEjh kind:label(thumb) addr:0x0201b08c
 _ZN8NpcActor8vfunc_5cEP17Unk_020d77a4_Vec3 kind:function(thumb,size=0x48) addr:0x0201b0a4
 _ZN8NpcActor8vfunc_0cEv kind:function(thumb,size=0x48) addr:0x0201b0ec
 _ZN8NpcActor8vfunc_30Ev kind:function(thumb,size=0x2) addr:0x0201b134
@@ -3219,6 +3221,7 @@ _ZN9Character19setInteractionRangeEi kind:function(thumb,size=0x14) addr:0x0203e
 _ZN9Character17detachTalkRequestEi kind:function(thumb,size=0xc) addr:0x0203e47c
 _ZN9Character17attachTalkRequestEi kind:function(thumb,size=0xc) addr:0x0203e488
 _ZN9Character8vfunc_5cEv kind:function(thumb,size=0x4) addr:0x0203e494
+_ZN9Character8vfunc_5cEP17Unk_020d77a4_Vec3 kind:label(thumb) addr:0x0203e494
 _ZN9Character8vfunc_58EPv kind:function(thumb,size=0x4) addr:0x0203e498
 _ZN9Character28acceptsInteractionOutOfRangeEPv kind:function(thumb,size=0x4) addr:0x0203e49c
 _ZN9Character17getInteractionPosEv kind:function(thumb,size=0x4) addr:0x0203e4a0
@@ -12208,7 +12211,9 @@ _ZN10SpNpcKatie9mainAct00Ev kind:function(thumb,size=0x4) addr:0x020c1140
 _ZN10SpNpcKatie10setupAct00Ev kind:function(thumb,size=0x74) addr:0x020c1144
 _ZN10SpNpcKatie9changeActEi kind:function(thumb,size=0x64) addr:0x020c11b8
 _ZN10SpNpcKatie8vfunc_4cEi kind:function(thumb,size=0x90) addr:0x020c121c
+_ZN10SpNpcKatie8vfunc_4cEjh kind:label(thumb) addr:0x020c121c
 _ZN10SpNpcKatie8vfunc_48Ev kind:function(thumb,size=0x20) addr:0x020c12ac
+_ZN10SpNpcKatie8vfunc_48EPv kind:label(thumb) addr:0x020c12ac
 _ZN10SpNpcKatie9updateActEv kind:function(thumb,size=0x90) addr:0x020c12cc
 _ZN10SpNpcKatie12getModelPathEv kind:function(thumb,size=0x8) addr:0x020c135c
 _ZN10SpNpcKatie14getTexturePathEv kind:function(thumb,size=0x8) addr:0x020c1364
@@ -12258,7 +12263,9 @@ _ZN12SpNpcKaitlin9mainAct00Ev kind:function(thumb,size=0x1c) addr:0x020c2144
 _ZN12SpNpcKaitlin10setupAct00Ev kind:function(thumb,size=0x34) addr:0x020c2160
 _ZN12SpNpcKaitlin9changeActEi kind:function(thumb,size=0x44) addr:0x020c2194
 _ZN12SpNpcKaitlin8vfunc_4cEi kind:function(thumb,size=0x8c) addr:0x020c21d8
+_ZN12SpNpcKaitlin8vfunc_4cEjh kind:label(thumb) addr:0x020c21d8
 _ZN12SpNpcKaitlin8vfunc_48Ev kind:function(thumb,size=0x20) addr:0x020c2264
+_ZN12SpNpcKaitlin8vfunc_48EPv kind:label(thumb) addr:0x020c2264
 _ZN12SpNpcKaitlin9updateActEv kind:function(thumb,size=0x4c) addr:0x020c2284
 _ZN12SpNpcKaitlin12getModelPathEv kind:function(thumb,size=0x8) addr:0x020c22d0
 _ZN12SpNpcKaitlin14getTexturePathEv kind:function(thumb,size=0x8) addr:0x020c22d8
@@ -12272,6 +12279,7 @@ SpNpcKaitlin_Create kind:function(thumb,size=0x118) addr:0x020c2454
 _ZN9SpNpcTestD1Ev kind:function(thumb,size=0x28) addr:0x020c256c
 _ZN9SpNpcTestD0Ev kind:function(thumb,size=0x2c) addr:0x020c2594
 _ZN9SpNpcTest8vfunc_4cEi kind:function(thumb,size=0x44) addr:0x020c25c0
+_ZN9SpNpcTest8vfunc_4cEjh kind:label(thumb) addr:0x020c25c0
 _ZN9SpNpcTest8vfunc_48EPv kind:function(thumb,size=0x1c) addr:0x020c2604
 _ZN13SpNpcTestTalk12onMessageEndEPv kind:function(thumb,size=0x70) addr:0x020c2620
 _ZN13SpNpcTestTalk19onMessageEndPhase00EPv kind:function(thumb,size=0x2) addr:0x020c2690

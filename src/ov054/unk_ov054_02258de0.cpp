@@ -13,6 +13,8 @@
 #include "npc/Unk_02014254.h"
 #include "npc/Unk_0201a13c.h"
 #include "npc/NpcFaceAnim.h"
+#include "actor/Actor.h"
+#include "actor/Character.h"
 
 
 struct Unk_0201bc1c;
@@ -170,36 +172,9 @@ MEMBER(CollisionState, 0x30);
 MEMBER(NpcActionCtrl, 0x618 - 0x564);
 
 
-// Owner base chain (main): ProcBase <- Actor <- Character <- NpcActor <- SpNpcActor.
-class Actor : public ProcBase {
-public:
-    virtual BOOL vfunc_14(s32 status);
-    virtual BOOL vfunc_20(u32 status);
-    virtual BOOL preDraw();
-    virtual BOOL postDraw(s32 status);
-};
 
 struct Unk_020d77a4_Vec3;
 
-class Character : public Actor {
-public:
-    Character();
-    virtual ~Character();
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_48(Character *o);
-    virtual void vfunc_4c(u32 cmd, u32 arg);
-    virtual void getInteractionPos();
-    virtual void acceptsInteractionOutOfRange(void *p);
-    virtual void vfunc_58(void *p);
-    void setInteractionRange(s32 v);
-    u8 pad_50[0x5c - 0x50];
-    s32 position, positionY, positionZ;
-    u8 pad_68[0x8e - 0x68];
-    s16 rotY;
-    u8 pad_90[4];
-    s16 moveAngleY;
-    u8 pad_96[0xea - 0x96];
-};
 
 class NpcActor : public Character {
 public:
@@ -209,7 +184,7 @@ public:
     virtual BOOL onExecute();
     virtual BOOL onDraw();
     virtual BOOL vfunc_30();
-    virtual void vfunc_5c(Unk_020d77a4_Vec3 *v);
+    virtual BOOL vfunc_5c(Unk_020d77a4_Vec3 *v);
     virtual void onToolHit();
     virtual void vfunc_64();
     virtual BOOL updateAct();
@@ -365,8 +340,8 @@ public:
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_48(Character *o);
-    virtual void vfunc_4c(u32 cmd, u32 arg);
+    virtual BOOL vfunc_48(void *o);
+    virtual void vfunc_4c(u32 cmd, u8 arg);
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
@@ -897,9 +872,9 @@ BOOL SpNpcPellyPhyllis::vfunc_04() {
         if (m) {
             sister = 0;
             window = 1;
-            position = sSpNpcPellyPhyllisCounterPos[1].a;
-            positionY = sSpNpcPellyPhyllisCounterPos[1].b;
-            positionZ = sSpNpcPellyPhyllisCounterPos[1].c;
+            position.x = sSpNpcPellyPhyllisCounterPos[1].a;
+            position.y = sSpNpcPellyPhyllisCounterPos[1].b;
+            position.z = sSpNpcPellyPhyllisCounterPos[1].c;
             l.spawnRot[0] = 0;
             l.spawnRot[1] = 0;
             l.spawnRot[2] = 0;
@@ -910,9 +885,9 @@ BOOL SpNpcPellyPhyllis::vfunc_04() {
         } else {
             sister = 1;
             window = 0;
-            position = sSpNpcPellyPhyllisCounterPos[0].a;
-            positionY = sSpNpcPellyPhyllisCounterPos[0].b;
-            positionZ = sSpNpcPellyPhyllisCounterPos[0].c;
+            position.x = sSpNpcPellyPhyllisCounterPos[0].a;
+            position.y = sSpNpcPellyPhyllisCounterPos[0].b;
+            position.z = sSpNpcPellyPhyllisCounterPos[0].c;
         }
     } else {
         Clock_GetMinuteHour(&l);
@@ -2444,12 +2419,13 @@ void SpNpcPellyPhyllisTalk::updateDonationLevel(s32 a) {
     TalkWindowState_setNextMessage(o, &m, (u32)name);
 }
 
-BOOL SpNpcPellyPhyllis::vfunc_48(Character *o) {
+BOOL SpNpcPellyPhyllis::vfunc_48(void *other) {
+    Character *o = (Character *)other;
     BOOL r = FALSE;
     s32 bx, by, cx, cy;
     Unk_ov054_0225902c_Vec pos;
     Unk_ov054_0225902c_Vec *pv = (Unk_ov054_0225902c_Vec *)&o->position;
-    pos.x = o->position;
+    pos.x = o->position.x;
     pos.y = pv->y;
     pos.z = pv->z;
     bx = 0;
@@ -2474,7 +2450,7 @@ BOOL SpNpcPellyPhyllis::vfunc_48(Character *o) {
     return r;
 }
 
-void SpNpcPellyPhyllis::vfunc_4c(u32 cmd, u32 arg) {
+void SpNpcPellyPhyllis::vfunc_4c(u32 cmd, u8 arg) {
     s32 a, b;
     switch (cmd) {
     case 3:

@@ -11,45 +11,22 @@
 #include "npc/Unk_ov004_0221572c_Sub.h"
 #include "game/Unk_ov004_02215c94_V.h"
 #include "game/FxVec3.h"
+#include "actor/Actor.h"
+#include "actor/Character.h"
 
 extern "C" {
 }
 
 
 // ---------------------------------------------------------------------------------------------------------------------
-// Class chain of BirthdayHostVillager (vtable 0x0224c034). Every slot's final overrider carries the name the symbols use.
-class Actor : public ProcBase {
-public:
-    virtual BOOL vfunc_14(s32 status);
-    virtual BOOL vfunc_20(u32 status);
-    virtual BOOL preDraw();
-    virtual BOOL postDraw(s32 status);
-};
 
-class Character : public Actor {
-public:
-    Character();
-    virtual ~Character();
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_48();
-    virtual void vfunc_4c(s32 a, u32 b);
-    virtual void getInteractionPos();
-    virtual BOOL acceptsInteractionOutOfRange(void *a);
-    virtual BOOL vfunc_58();
-
-    u32 pad_50[(0x5c - 0x50) / 4];
-    s32 position[3];
-    u8 pad_68[0x8e - 0x68];
-    s16 rotY;
-    u8 pad_90[0xe0 - 0x90];
-};
 
 class NpcActor : public Character {
 public:
     virtual void postCreate(s32 a);
     virtual BOOL onExecute();
     virtual BOOL vfunc_30();
-    virtual void vfunc_5c(Unk_020d77a4_Vec3 *p);
+    virtual BOOL vfunc_5c(Unk_020d77a4_Vec3 *p);
     virtual void onToolHit();
     virtual void *vfunc_64();
     virtual BOOL updateAct();
@@ -69,7 +46,6 @@ public:
     virtual void getTeachableEmotion();
     virtual void addMood(u32 a, s32 b);
 
-    u16 pad_e0[5];
     u16 unk_ea;
     u8 unk_ec[0x350 - 0xec];
     u8 unk_350[0x3b0 - 0x350];
@@ -202,9 +178,9 @@ public:
     virtual BOOL vfunc_04();
     virtual BOOL preDelete();
     virtual BOOL onDraw();
-    virtual BOOL vfunc_48();
-    virtual void vfunc_4c(s32 a, u32 b);
-    virtual BOOL vfunc_58();
+    virtual BOOL vfunc_48(void *other);
+    virtual void vfunc_4c(u32 a, u8 b);
+    virtual BOOL vfunc_58(void *a);
     virtual BOOL updateAct();
     virtual BOOL canPlayTalkMelody();
     virtual void onTalkMelodyPlayed();
@@ -472,8 +448,8 @@ BOOL BirthdayHostVillager::vfunc_04() {
     if (!func_0202dab0(this)) {
         return FALSE;
     }
-    position[0] = data_020c8cb4 + 0x1000;
-    position[2] = data_020c8cb8 - 0x7000;
+    position.x = data_020c8cb4 + 0x1000;
+    position.z = data_020c8cb8 - 0x7000;
     static FxVec3 vs[6] = {
         FxVec3(0, 0, 0), FxVec3(-0x2000, 0, 0), FxVec3(-0x4000, 0, 0),
         FxVec3(0x2000, 0, 0), FxVec3(0, 0, 0x2000), FxVec3(-0x2000, 0, 0x2000)
@@ -481,11 +457,11 @@ BOOL BirthdayHostVillager::vfunc_04() {
     u32 i;
     for (i = 0; i < 6; i++) {
         Unk_ov004_02215c94_V t;
-        func_01ffd070(&t, position, &vs[i]);
+        func_01ffd070(&t, &position, &vs[i]);
         if (!FtrMgr_GetSurfaceHeightAtPos(&t)) {
-            position[0] = t.x;
-            position[1] = t.y;
-            position[2] = t.z;
+            position.x = t.x;
+            position.y = t.y;
+            position.z = t.z;
             break;
         }
     }
@@ -552,7 +528,7 @@ void BirthdayHostVillager::func_ov004_02215b9c() {
     }
 }
 
-BOOL BirthdayHostVillager::vfunc_48() {
+BOOL BirthdayHostVillager::vfunc_48(void *) {
     if (NpcTalkCtrl_isBusy(&unk_618)) {
         return FALSE;
     }
@@ -562,18 +538,18 @@ BOOL BirthdayHostVillager::vfunc_48() {
     return FALSE;
 }
 
-BOOL BirthdayHostVillager::vfunc_58() {
+BOOL BirthdayHostVillager::vfunc_58(void *) {
     if (NpcTalkCtrl_isBusy(&unk_618) == 0) {
         return TRUE;
     }
     return FALSE;
 }
 
-void BirthdayHostVillager::vfunc_4c(s32 a, u32 b) {
+void BirthdayHostVillager::vfunc_4c(u32 a, u8 b) {
     Unk_ov004_02215c94_V v;
-    v.x = position[0];
-    v.y = position[1];
-    v.z = position[2];
+    v.x = position.x;
+    v.y = position.y;
+    v.z = position.z;
     v.y = v.y + 0x2000;
     switch (a) {
     case 3:
@@ -997,7 +973,7 @@ void BirthdayHostVillager::mainAct00() {
             walkTimer--;
         }
         if (walkTimer == 0) {
-            walkAngle = Room_PickRandomWalkTarget(walkTarget, position, rotY);
+            walkAngle = Room_PickRandomWalkTarget(walkTarget, &position, rotY);
             waypoint[0] = walkTarget[0];
             waypoint[1] = walkTarget[1];
             waypoint[2] = walkTarget[2];
@@ -1036,7 +1012,7 @@ void BirthdayHostVillager::mainAct00() {
                 waypoint[1] = walkTarget[1];
                 waypoint[2] = walkTarget[2];
                 NpcMoveCtrl_setWaypoint(unk_350, walkTarget);
-            } else if (func_020e9650(walkTarget, position) < 0x200) {
+            } else if (func_020e9650(walkTarget, &position) < 0x200) {
                 NpcActionCtrl_requestStand(unk_564, 1, data_020c6cc8);
             }
             break;
@@ -1048,8 +1024,8 @@ BOOL BirthdayHostVillager::setupAct01() {
     u8 *m = unk_564;
     Unk_ov004_022146ec_Actor *o = BirthdayGuestVillager_Get();
     if (o != 0) {
-        s32 dx = o->pos[0] - position[0];
-        s32 dz = o->pos[2] - position[2];
+        s32 dx = o->pos[0] - position.x;
+        s32 dz = o->pos[2] - position.z;
         s32 ang = func_020e7b98(dx, dz);
         NpcActionCtrl_requestAction(m, 3, 1, 0, 0, 0, ang, 0, 0, data_020c6cc8, 0);
         NpcLookAt_setTarget(unk_3b0, 2, 0, o, gVec3Zero, 4, data_020c6d1c, 1);
@@ -1180,7 +1156,7 @@ void BirthdayHostVillager::mainAct08() {
     if (approachTimer != 0) {
         approachTimer--;
     }
-    r4 = Math_AngleXZ(position, &a);
+    r4 = Math_AngleXZ(&position, &a);
     r0 = func_020e780c(rotY, r4);
     if (v <= 0x3000 || approachTimer == 0) {
         NpcTalkCtrl_requestTurnAndTalk(unk_618, 0, r4, 0);

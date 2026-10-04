@@ -9,6 +9,7 @@
 #include "gfx/ViewFrustum.h"
 #include "gfx/AbAllObjGfx.h"
 #include "npc/VillagerId.h"
+#include "actor/Actor.h"
 
 typedef volatile u16 vu16;
 typedef volatile u32 vu32;
@@ -241,73 +242,11 @@ extern AbAllObjGfx sAbAllObjGfx;
 
 
 
-// list head (8 bytes, zeroed by an inline constructor: the unit's __sinit) and two pointers
-struct Unk_0213c874 {
-    u32 head;
-    u32 tail;
-    Unk_0213c874() {
-        head = 0;
-        tail = 0;
-    }
-};
 
 Unk_0213c874 gActorList;
 void *sActorSpawnPos;
 void *sActorSpawnRot;
 
-class Actor : public GameProc {
-public:
-    Actor();
-    virtual BOOL vfunc_04();
-    virtual void postCreate(s32 status);
-    virtual BOOL preDelete();
-    virtual BOOL vfunc_14(s32 status);
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_20(u32 status);
-    virtual BOOL preDraw();
-    virtual BOOL postDraw(s32 status);
-    virtual ~Actor() { func_020e79a0(&gActorList, &listNode); }
-
-    void calcModelMatrix(void *out);
-    void updatePosition(Unk_02002cb0_Vec *v);
-    void calcVelocity();
-    void applyVelocity(Unk_02002cb0_Vec *v);
-    void setCullParams(s32 a, s32 b, s32 c);
-    static void spawn(void *a, void *b, void *c, void *d, void *e);
-    static void setSpawnTransform(void *a, void *b);
-    static void *findByProfile(u32 id, Actor *o);
-    static void *findById(u32 id);
-
-    /* 0x50 */ Unk_02002f14_Node listNode;
-    /* 0x5c */ s32 position;
-    /* 0x60 */ s32 positionY;
-    /* 0x64 */ s32 positionZ;
-    /* 0x68 */ s32 prevPosition;
-    /* 0x6c */ s32 prevPositionY;
-    /* 0x70 */ s32 prevPositionZ;
-    /* 0x74 */ u8 viewPos[0x18];
-    /* 0x8c */ s16 rotX;
-    /* 0x8e */ s16 rotY;
-    /* 0x90 */ s16 rotZ;
-    /* 0x92 */ s16 moveAngleX;
-    /* 0x94 */ u16 moveAngleY;
-    /* 0x96 */ s16 moveAngleZ;
-    /* 0x98 */ s32 speed;
-    /* 0x9c */ s32 gravity;
-    /* 0xa0 */ s32 maxFallSpeed;
-    /* 0xa4 */ s32 velocity;
-    /* 0xa8 */ s32 velocityY;
-    /* 0xac */ s32 velocityZ;
-    /* 0xb0 */ u32 actorFlags;
-    /* 0xb4 */ s32 cullHeight;
-    /* 0xb8 */ s32 cullRadius;
-    /* 0xbc */ s32 cullDepth;
-    /* 0xc0 */ u32 unk_c0;
-    /* 0xc4 */ s32 drawPos;
-    /* 0xc8 */ s32 drawPosY;
-    /* 0xcc */ s32 drawPosZ;
-    /* 0xd0 */ u16 drawTilt;
-};
 
 
 extern "C" u32 VillagerId_GetPersonality(VillagerId *o);
@@ -345,9 +284,9 @@ Actor::Actor() {
     func_020e7968(&gActorList, &listNode);
     Unk_02002f14_S32Vec *v = (Unk_02002f14_S32Vec *)sActorSpawnPos;
     if (v) {
-        position = v->x;
-        positionY = v->y;
-        positionZ = v->z;
+        position.x = v->x;
+        position.y = v->y;
+        position.z = v->z;
     }
     Unk_02002f14_S16Vec *w = (Unk_02002f14_S16Vec *)sActorSpawnRot;
     if (w) {
@@ -384,14 +323,14 @@ BOOL Actor::vfunc_14(s32 status) { return ProcBase::vfunc_14(status); }
 BOOL Actor::preExecute() {
     s32 r4;
     if (!ProcBase::preExecute()) return FALSE;
-    prevPosition = position;
-    prevPositionY = positionY;
-    prevPositionZ = positionZ;
+    prevPosition.x = position.x;
+    prevPosition.y = position.y;
+    prevPosition.z = position.z;
     if (cullRadius) {
-        s32 x = drawPosZ + func_01ffcb0c(cullHeight, data_02135f44[(drawTilt >> 4) * 2]);
-        s32 z = drawPosY + func_01ffcb0c(cullHeight, data_02135f44[(drawTilt >> 4) * 2 + 1]);
+        s32 x = drawPos.z + func_01ffcb0c(cullHeight, data_02135f44[(drawTilt >> 4) * 2]);
+        s32 z = drawPos.y + func_01ffcb0c(cullHeight, data_02135f44[(drawTilt >> 4) * 2 + 1]);
         s32 v[3];
-        v[0] = drawPos;
+        v[0] = drawPos.x;
         v[1] = z;
         v[2] = x;
         r4 = ((ViewFrustum *)gViewFrustum)->testSphere(&gViewMtx, v, cullRadius, (s32 *)viewPos);
@@ -454,27 +393,27 @@ void Actor::setCullParams(s32 a, s32 b, s32 c) {
 void Actor::applyVelocity(Unk_02002cb0_Vec *v) {
     VEC_Add(&position, &velocity, &position);
     if (v) {
-        position = position + v->pushX;
-        positionZ = positionZ + v->pushZ;
+        position.x = position.x + v->pushX;
+        position.z = position.z + v->pushZ;
     }
 }
 
 void Actor::calcVelocity() {
     if (speed == 0) {
         s32 v = maxFallSpeed;
-        s32 w = velocityY + gravity;
+        s32 w = velocity.y + gravity;
         if (w >= v) v = w;
-        velocity = 0;
-        velocityY = v;
-        velocityZ = 0;
+        velocity.x = 0;
+        velocity.y = v;
+        velocity.z = 0;
     } else {
-        s32 r = func_01ffcb0c(speed, data_02135f44[(moveAngleY >> 4) * 2 + 1]);
+        s32 r = func_01ffcb0c(speed, data_02135f44[((u16)moveAngleY >> 4) * 2 + 1]);
         s32 v = maxFallSpeed;
-        s32 w = velocityY + gravity;
+        s32 w = velocity.y + gravity;
         if (w >= v) v = w;
-        velocity = func_01ffcb0c(speed, data_02135f44[(moveAngleY >> 4) * 2]);
-        velocityY = v;
-        velocityZ = r;
+        velocity.x = func_01ffcb0c(speed, data_02135f44[((u16)moveAngleY >> 4) * 2]);
+        velocity.y = v;
+        velocity.z = r;
     }
 }
 
@@ -489,7 +428,7 @@ extern "C" void Math_AngleXZ(s32 *a, s32 *b) {
 
 void Actor::calcModelMatrix(void *out) {
     u32 m[12];
-    func_020e8388(m, drawPos, drawPosY, drawPosZ);
+    func_020e8388(m, drawPos.x, drawPos.y, drawPos.z);
     func_020e8434(m, (s16)drawTilt);
     func_020e8404(m, rotY);
     if (rotX != 0) func_020e8434(m, rotX);

@@ -16,60 +16,16 @@
 #include "talk/MsgRequest.h"
 #include "gfx/ObjShadowStrip.h"
 #include "town/BuildingShadowTable.h"
+#include "actor/Actor.h"
+#include "actor/Character.h"
 
 
 
 
 
 
-class Actor : public GameProc {
-public:
-    Actor();
-    virtual BOOL vfunc_04();
-    virtual BOOL preDelete();
-    virtual BOOL vfunc_14(s32 status);
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_20(u32 a);
-    virtual BOOL preDraw();
-    virtual BOOL postDraw(s32 status);
-    virtual ~Actor();
-
-    /* 0x50 */ u8 unk_50[0xc];
-    /* 0x5c */ s32 position[3];
-    /* 0x68 */ u8 pad_68[0x8e - 0x68];
-    /* 0x8e */ s16 rotY;
-    /* 0x90 */ u8 pad_90[0xc4 - 0x90];
-    /* 0xc4 */ s32 drawPos;
-    /* 0xc8 */ s32 drawPosY;
-    /* 0xcc */ s32 drawPosZ;
-    /* 0xd0 */ s16 drawTilt;
-    /* 0xd2 */ u16 pad_d2;
-};
 
 
-class Character : public Actor {
-public:
-    Character();
-    virtual ~Character();
-    virtual void postCreate(s32 v);
-    virtual BOOL vfunc_04();
-    virtual BOOL preDelete();
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_48(Character *a);
-    virtual void vfunc_4c(u32 a, u8 b);
-    virtual Unk_ov009_0225b880_Vec3 *getInteractionPos();
-    virtual BOOL acceptsInteractionOutOfRange(void *a);
-    virtual BOOL vfunc_58(void *a);
-    virtual BOOL vfunc_5c();
-
-    void clearTalkStartMode();
-    void setInteractionRange(s32 v);
-
-    /* 0xd4 */ Unk_0203e5d0_Node charNode;
-    /* 0xe4 */ s32 interactionRangeSq;
-    /* 0xe8 */ u16 charFlags;
-    /* 0xea */ u16 pad_ea;
-};
 
 
 
@@ -224,9 +180,9 @@ public:
     virtual BOOL preExecute();
     virtual BOOL vfunc_20(u32 a);
     virtual BOOL preDraw();
-    virtual BOOL vfunc_48(Character *a);
+    virtual BOOL vfunc_48(void *a);
     virtual void vfunc_4c(u32 a, u8 b);
-    virtual Unk_ov009_0225b880_Vec3 *getInteractionPos();
+    virtual VecFx32 *getInteractionPos();
     virtual void vfunc_60(u32 a, void *b);
     virtual s32 func_ov009_0225d708();
     virtual s32 func_ov009_0225d6f0();
@@ -712,8 +668,8 @@ BOOL BuildingActor::vfunc_00() {
     } m;
     Unk_ov009_0225b880_Vec3 v;
     BuildingList_Add(this);
-    gridX = position[0] >> 13;
-    gridZ = position[2] >> 13;
+    gridX = position.x >> 13;
+    gridZ = position.z >> 13;
     Character_setCharId(this, (u16)(((gridZ & 0xff) << 8) | (gridX & 0xff)));
     itemId = *(u32 *)((u8 *)this + 8);
     buildingIndex = itemId & 0xfff;
@@ -727,7 +683,7 @@ BOOL BuildingActor::vfunc_00() {
     Model_setInitCallback(unk_138, (void *)Building_InitModelCallback, this);
     b2 = b1;
     createShadows(&b2);
-    s32 ang = WorldCurve_Apply(&v, &position[0]);
+    s32 ang = WorldCurve_Apply(&v, &position.x);
     func_020e8388(&m, v.x, v.y, v.z);
     func_020e8434(&m, ang);
     createColliders((Unk_ov009_0225bc88_Blk *)&m);
@@ -822,9 +778,9 @@ BOOL BuildingActor::preDelete() {
 void BuildingActor::initEntryArea() {
     BuildingResources *r = getResources();
     if (r != NULL) {
-        s32 z = position[2] + r->solidCenterZ;
-        s32 y = position[1];
-        s32 x = position[0] + r->solidCenterX;
+        s32 z = position.z + r->solidCenterZ;
+        s32 y = position.y;
+        s32 x = position.x + r->solidCenterX;
         solidCenterX = x;
         solidCenterY = y;
         solidCenterZ = z;
@@ -1119,8 +1075,8 @@ BOOL BuildingActor::loadResources(char *a, char *b, char *c) {
 
 void BuildingActor::makeCurvedMatrix(Unk_ov009_0225bc88_Blk *out) {
     Unk_ov009_0225bc88_Blk m;
-    func_020e8388(&m, drawPos, drawPosY, drawPosZ);
-    func_020e8434(&m, drawTilt);
+    func_020e8388(&m, drawPos.x, drawPos.y, drawPos.z);
+    func_020e8434(&m, (s16)drawTilt);
     *out = m;
 }
 
@@ -1180,7 +1136,7 @@ void BuildingActor::func_ov009_0225d0d8() {
 void BuildingActor::updateBaseMatrix(Unk_ov009_0225bc88_Blk *out) {
     Unk_ov009_0225bc88_Blk blk;
     if (!vfunc_b8(&blk)) {
-        drawTilt = WorldCurve_ToCurved(&drawPos, position);
+        drawTilt = WorldCurve_ToCurved(&drawPos, &position);
         makeCurvedMatrix(&blk);
     }
     baseMatrix = blk;
@@ -1268,9 +1224,9 @@ void BuildingActor::createColliders(Unk_ov009_0225bc88_Blk *m) {
                     Building_LocalToWorld(&wa, (s32)&a, (s32)m);
                     Building_LocalToWorld(&wb, (s32)&b, (s32)m);
                     Building_LocalToWorld(&wc, (s32)&c, (s32)m);
-                    func_01ffd070(&la, position, &a);
-                    func_01ffd070(&lb, position, &b);
-                    func_01ffd070(&lc, position, &c);
+                    func_01ffd070(&la, &position, &a);
+                    func_01ffd070(&lb, &position, &b);
+                    func_01ffd070(&lc, &position, &c);
                     e6 = new (e6) TouchPickTriangle;
                     Scene_GetTouchPicker()->addTriangle(e6, (Vec3 *)&wa, (Vec3 *)&wb, (Vec3 *)&wc, 7, k);
                     e4 = new (e4) BuildingCollider;
@@ -1875,9 +1831,10 @@ void BuildingActor::execEntry08() {
     }
 }
 
-Unk_ov009_0225b880_Vec3 *BuildingActor::getInteractionPos() { return &entryPos; }
+VecFx32 *BuildingActor::getInteractionPos() { return (VecFx32 *)&entryPos; }
 
-BOOL BuildingActor::vfunc_48(Character *a) {
+BOOL BuildingActor::vfunc_48(void *other) {
+    Character *a = (Character *)other;
     if (a == NULL) {
         return FALSE;
     }
@@ -1972,9 +1929,9 @@ BOOL BuildingActor::getDoorPos(Unk_ov009_0225b880_Vec3 *out, s16 *ang) {
         }
         return TRUE;
     }
-    out->x = position[0];
-    out->y = position[1];
-    out->z = position[2];
+    out->x = position.x;
+    out->y = position.y;
+    out->z = position.z;
     return FALSE;
 }
 
@@ -2027,11 +1984,11 @@ BOOL BuildingActor::vfunc_98() { return FALSE; }
 BOOL BuildingActor::isOffscreen() {
     if (gCamera != 0) {
         Unk_ov009_0225b880_Vec3 *g = &gCameraLookAt;
-        s32 dx = position[0] - g->x;
+        s32 dx = position.x - g->x;
         if (dx < 0) {
             dx = -dx;
         }
-        s32 dz = position[2] - g->z;
+        s32 dz = position.z - g->z;
         if (dx > getViewRangeX() || dz > getViewRangeFront() || dz < -getViewRangeBack()) {
             return TRUE;
         }
@@ -2151,9 +2108,9 @@ void BuildingSeEmitter::playSeHeld(u32 a) {
 
 Unk_ov009_0225da90_Vec3 BuildingActor::vfunc_b4() {
     Unk_ov009_0225da90_Vec3 r;
-    r.x = position[0];
-    r.y = position[1];
-    r.z = position[2];
+    r.x = position.x;
+    r.y = position.y;
+    r.z = position.z;
     return r;
 }
 

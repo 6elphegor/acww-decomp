@@ -23,6 +23,8 @@
 #include "npc/Unk_02014254.h"
 #include "talk/VillagerTalkKaraokeTopics.h"
 #include "npc/Unk_0201a13c.h"
+#include "actor/Actor.h"
+#include "actor/Character.h"
 
 
 class VillagerTalk;
@@ -1234,33 +1236,7 @@ struct Unk_020f4080 {
 };
 
 
-class Actor : public ProcBase {
-public:
-    virtual BOOL vfunc_14(s32 status);
-    virtual BOOL vfunc_20(u32 status);
-    virtual BOOL preDraw();
-    virtual BOOL postDraw(s32 status);
-};
 
-struct Character : Actor {
-    u8 pad_50[0x5c - 0x50];
-    Unk_020d77a4_Vec3 position;
-    u8 pad_68[0x8e - 0x68];
-    s16 rotY;
-    u8 pad_90[4];
-    s16 moveAngleY;
-    u8 pad_96[0xe6 - 0x92];
-    Character();
-    virtual BOOL preDelete();
-    virtual BOOL preExecute();
-    virtual ~Character();
-    virtual void vfunc_48(void *p);
-    virtual void vfunc_4c(int a);
-    virtual void getInteractionPos();
-    virtual void acceptsInteractionOutOfRange(void *p);
-    virtual void vfunc_58(void *p);
-    virtual void vfunc_5c(Unk_020d77a4_Vec3 *p);
-};
 
 struct NpcActor : Character {
     u16 unk_ea;
@@ -1289,8 +1265,8 @@ struct NpcActor : Character {
     virtual BOOL onExecute();
     virtual BOOL onDraw();
     virtual BOOL vfunc_30();
-    virtual void vfunc_4c(int a);
-    virtual void vfunc_5c(Unk_020d77a4_Vec3 *p);
+    virtual void vfunc_4c(u32 a, u8 b);
+    virtual BOOL vfunc_5c(Unk_020d77a4_Vec3 *p);
     virtual void onToolHit();
     virtual void *vfunc_64();
     virtual void updateAct();

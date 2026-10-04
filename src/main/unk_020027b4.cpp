@@ -8,6 +8,7 @@
 #include "actor/Unk_02002f14_Node.h"
 #include "gfx/AbAllObjGfx.h"
 #include "npc/VillagerId.h"
+#include "actor/Actor.h"
 
 typedef volatile u16 vu16;
 typedef volatile u32 vu32;
@@ -67,7 +68,6 @@ extern u8 gViewFrustum[];
 }
 
 extern "C" {
-extern u8 gActorList[];
 }
 
 extern "C" {
@@ -250,59 +250,6 @@ extern AbAllObjGfx sAbAllObjGfx;
 
 
 
-class Actor : public GameProc {
-public:
-    Actor();
-    virtual BOOL vfunc_04();
-    virtual void postCreate(s32 status);
-    virtual BOOL preDelete();
-    virtual BOOL vfunc_14(s32 status);
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_20(u32 status);
-    virtual BOOL preDraw();
-    virtual BOOL postDraw(s32 status);
-    virtual ~Actor();
-
-    void calcModelMatrix(void *out);
-    void updatePosition(Unk_02002cb0_Vec *v);
-    void calcVelocity();
-    void applyVelocity(Unk_02002cb0_Vec *v);
-    void setCullParams(s32 a, s32 b, s32 c);
-    static void spawn(void *a, void *b, void *c, void *d, void *e);
-    static void setSpawnTransform(void *a, void *b);
-    static void *findByProfile(u32 id, Actor *o);
-    static void *findById(u32 id);
-
-    /* 0x50 */ Unk_02002f14_Node listNode;
-    /* 0x5c */ s32 position;
-    /* 0x60 */ s32 positionY;
-    /* 0x64 */ s32 positionZ;
-    /* 0x68 */ s32 prevPosition;
-    /* 0x6c */ s32 prevPositionY;
-    /* 0x70 */ s32 prevPositionZ;
-    /* 0x74 */ u8 viewPos[0x18];
-    /* 0x8c */ s16 rotX;
-    /* 0x8e */ s16 rotY;
-    /* 0x90 */ s16 rotZ;
-    /* 0x92 */ s16 moveAngleX;
-    /* 0x94 */ u16 moveAngleY;
-    /* 0x96 */ s16 moveAngleZ;
-    /* 0x98 */ s32 speed;
-    /* 0x9c */ s32 gravity;
-    /* 0xa0 */ s32 maxFallSpeed;
-    /* 0xa4 */ s32 velocity;
-    /* 0xa8 */ s32 velocityY;
-    /* 0xac */ s32 velocityZ;
-    /* 0xb0 */ u32 actorFlags;
-    /* 0xb4 */ s32 cullHeight;
-    /* 0xb8 */ s32 cullRadius;
-    /* 0xbc */ s32 cullDepth;
-    /* 0xc0 */ u32 unk_c0;
-    /* 0xc4 */ s32 drawPos;
-    /* 0xc8 */ s32 drawPosY;
-    /* 0xcc */ s32 drawPosZ;
-    /* 0xd0 */ u16 drawTilt;
-};
 
 
 extern "C" u32 VillagerId_GetPersonality(VillagerId *o);

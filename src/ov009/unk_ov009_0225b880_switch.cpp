@@ -16,60 +16,16 @@
 #include "talk/MsgRequest.h"
 #include "gfx/ObjShadowStrip.h"
 #include "town/BuildingShadowTable.h"
+#include "actor/Actor.h"
+#include "actor/Character.h"
 
 
 
 
 
 
-class Actor : public GameProc {
-public:
-    Actor();
-    virtual BOOL vfunc_04();
-    virtual BOOL preDelete();
-    virtual BOOL vfunc_14(s32 status);
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_20(u32 a);
-    virtual BOOL preDraw();
-    virtual BOOL postDraw(s32 status);
-    virtual ~Actor();
-
-    /* 0x50 */ u8 unk_50[0xc];
-    /* 0x5c */ s32 position[3];
-    /* 0x68 */ u8 pad_68[0x8e - 0x68];
-    /* 0x8e */ s16 rotY;
-    /* 0x90 */ u8 pad_90[0xc4 - 0x90];
-    /* 0xc4 */ s32 drawPos;
-    /* 0xc8 */ s32 drawPosY;
-    /* 0xcc */ s32 drawPosZ;
-    /* 0xd0 */ s16 drawTilt;
-    /* 0xd2 */ u16 pad_d2;
-};
 
 
-class Character : public Actor {
-public:
-    Character();
-    virtual ~Character();
-    virtual void postCreate(s32 v);
-    virtual BOOL vfunc_04();
-    virtual BOOL preDelete();
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_48(Character *a);
-    virtual void vfunc_4c(u32 a, u8 b);
-    virtual Unk_ov009_0225b880_Vec3 *getInteractionPos();
-    virtual BOOL acceptsInteractionOutOfRange(void *a);
-    virtual BOOL vfunc_58(void *a);
-    virtual BOOL vfunc_5c();
-
-    void clearTalkStartMode();
-    void setInteractionRange(s32 v);
-
-    /* 0xd4 */ Unk_0203e5d0_Node charNode;
-    /* 0xe4 */ s32 interactionRangeSq;
-    /* 0xe8 */ u16 charFlags;
-    /* 0xea */ u16 pad_ea;
-};
 
 
 
@@ -224,9 +180,9 @@ public:
     virtual BOOL preExecute();
     virtual BOOL vfunc_20(u32 a);
     virtual BOOL preDraw();
-    virtual BOOL vfunc_48(Character *a);
+    virtual BOOL vfunc_48(void *a);
     virtual void vfunc_4c(u32 a, u8 b);
-    virtual Unk_ov009_0225b880_Vec3 *getInteractionPos();
+    virtual VecFx32 *getInteractionPos();
     virtual void vfunc_60(u32 a, void *b);
     virtual s32 func_ov009_0225d708();
     virtual s32 func_ov009_0225d6f0();

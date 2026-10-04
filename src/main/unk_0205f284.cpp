@@ -10,21 +10,10 @@
 #include "game/GroundInfo.h"
 #include "gfx/TexVramTask.h"
 #include "player/FishBobberStates.h"
+#include "actor/Character.h"
 
 
 
-// Actor (see Character): virtual at 0x5c fills a position, position at +0x5c.
-class Character : public GameProc {
-public:
-    virtual BOOL vfunc_48();
-    virtual BOOL vfunc_4c();
-    virtual BOOL getInteractionPos();
-    virtual BOOL acceptsInteractionOutOfRange();
-    virtual BOOL vfunc_58();
-    virtual BOOL vfunc_5c(Unk_0205f8d4_Vec *out);
-    u8 pad_50[0xc];
-    Unk_0205f8d4_Vec position;
-};
 
 // Local scratch object filled by _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii and cleaned by GroundInfo_Destruct.
 struct Unk_0205f92c_Buf {
@@ -514,8 +503,8 @@ void FishBobber::setState(s32 state)
         break;
     case 7: {
         Unk_0205f8d4_Vec a, b;
-        if (!ownerActor->vfunc_5c(&targetPos)) {
-            Unk_0205f8d4_Vec *pv = &ownerActor->position;
+        if (!ownerActor->vfunc_5c((Unk_020d77a4_Vec3 *)&targetPos)) {
+            Unk_0205f8d4_Vec *pv = (Unk_0205f8d4_Vec *)&ownerActor->position;
             targetPos.x = pv->x;
             targetPos.y = pv->y;
             targetPos.z = pv->z;
@@ -538,8 +527,8 @@ void FishBobber::setState(s32 state)
     }
     case 8: {
         Unk_0205f8d4_Vec c, d;
-        if (!ownerActor->vfunc_5c(&targetPos)) {
-            Unk_0205f8d4_Vec *pv = &ownerActor->position;
+        if (!ownerActor->vfunc_5c((Unk_020d77a4_Vec3 *)&targetPos)) {
+            Unk_0205f8d4_Vec *pv = (Unk_0205f8d4_Vec *)&ownerActor->position;
             targetPos.x = pv->x;
             targetPos.y = pv->y;
             targetPos.z = pv->z;

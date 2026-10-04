@@ -13,46 +13,11 @@
 #include "talk/TalkWindowState.h"
 #include "talk/MsgString9B.h"
 #include "item/ItemName.h"
+#include "actor/Actor.h"
+#include "actor/Character.h"
 
 
-class Actor : public GameProc {
-public:
-    virtual BOOL vfunc_04();
-    virtual void postCreate(s32 status);
-    virtual BOOL preDelete();
-    virtual BOOL vfunc_14(s32 status);
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_20(u32 status);
-    virtual BOOL preDraw();
-    virtual BOOL postDraw(s32 status);
 
-    /* 0x50 */ u8 unk_50[0xc];
-    /* 0x5c */ s32 position[3];
-    /* 0x68 */ u8 pad_68[0x8e - 0x68];
-    /* 0x8e */ s16 rotY;
-    /* 0x90 */ u8 pad_90[0xd4 - 0x90];
-};
-
-class Character : public Actor {
-public:
-    Character();
-    virtual ~Character();
-    virtual BOOL vfunc_04();
-    virtual void postCreate(s32 status);
-    virtual BOOL preDelete();
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_48(void *a);
-    virtual void vfunc_4c(u32 a, u8 b);
-    virtual Unk_ov004_022091fc_Vec *getInteractionPos();
-    virtual BOOL acceptsInteractionOutOfRange(void *a);
-    virtual BOOL vfunc_58(void *a);
-    virtual BOOL vfunc_5c();
-
-    /* 0xd4 */ u8 unk_d4[0x10];
-    /* 0xe4 */ s32 interactionRangeSq;
-    /* 0xe8 */ u16 charFlags;
-    /* 0xea */ u16 pad_ea;
-};
 
 
 // Secondary base at +0xec (vtable main 0x020ddcf0). MuseumExhibitInfo overrides its slots 0x10, 0x14 and 0x18 with
@@ -666,7 +631,7 @@ BOOL MuseumExhibitInfo::onDraw() {
 BOOL MuseumExhibitInfo::onExecute() {
     execAct();
     if (isAutoTalkKind() == 0) {
-        TouchPicker_addSphere(Scene_GetTouchPicker(), &touchSphere, position, 0xc00, 0xe, index);
+        TouchPicker_addSphere(Scene_GetTouchPicker(), &touchSphere, &position, 0xc00, 0xe, index);
     }
     return TRUE;
 }
@@ -690,9 +655,9 @@ BOOL MuseumExhibitInfo::vfunc_00() {
                 v[1] = 0;
                 v[2] = data_02135f44[idx + 1];
                 func_01ffd070(out, o->pos, v);
-                position[0] = out[0];
-                position[1] = out[1];
-                position[2] = out[2];
+                position.x = out[0];
+                position.y = out[1];
+                position.z = out[2];
             }
         }
         l.a = (u16)gCommManager->myAid;

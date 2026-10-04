@@ -15,6 +15,8 @@
 #include "snd/SndSeEmitterKind1.h"
 #include "npc/Unk_02014254.h"
 #include "npc/Unk_0201a13c.h"
+#include "actor/Actor.h"
+#include "actor/Character.h"
 
 
 // Real (mangled) names of other modules' functions that the unit calls as plain functions taking the object first.
@@ -239,38 +241,10 @@ MEMBER(Unk_0201a794, 0x418 - 0x3b0);
 MEMBER(CollisionState, 0x30);
 
 
-class Actor : public ProcBase {
-public:
-    virtual BOOL vfunc_14(s32 status);
-    virtual BOOL vfunc_20(u32 status);
-    virtual BOOL preDraw();
-    virtual BOOL postDraw(s32 status);
-};
 
 struct Unk_020d77a4_Vec3;
 struct Unk_0201bc1c;
 
-class Character : public Actor {
-public:
-    Character();
-    virtual ~Character();
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_48();
-    virtual void vfunc_4c(s32 v);
-    virtual void getInteractionPos();
-    virtual void acceptsInteractionOutOfRange(void *p);
-    virtual void vfunc_58(void *p);
-    u8 pad_50[0x5c - 0x50];
-    s32 position, positionY, positionZ;
-    s32 prevPosition, prevPositionY, prevPositionZ;
-    u8 pad_74[0x8e - 0x74];
-    s16 rotY;
-    u8 pad_90[4];
-    s16 moveAngleY;
-    u8 pad_96[2];
-    s32 speed;
-    u8 pad_9c[0xea - 0x9c];
-};
 
 class NpcActor : public Character {
 public:
@@ -280,7 +254,7 @@ public:
     virtual BOOL onExecute();
     virtual BOOL onDraw();
     virtual BOOL vfunc_30();
-    virtual void vfunc_5c(Unk_020d77a4_Vec3 *v);
+    virtual BOOL vfunc_5c(Unk_020d77a4_Vec3 *v);
     virtual void onToolHit();
     virtual void vfunc_64();
     virtual BOOL updateAct();
@@ -348,8 +322,8 @@ public:
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_48();
-    virtual void vfunc_4c(s32 a);
+    virtual BOOL vfunc_48(void *other);
+    virtual void vfunc_4c(u32 a, u8 b);
     virtual BOOL updateAct();
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
@@ -569,7 +543,7 @@ BOOL SpNpcPete::mainAct04() {
         PeteFallState_getPos(r5, &position);
         Unk_ov075_Vec3 *s = (Unk_ov075_Vec3 *)&position;
         Unk_ov075_Vec3 *d = (Unk_ov075_Vec3 *)&prevPosition;
-        d->x = position;
+        d->x = position.x;
         d->y = s->y;
         d->z = s->z;
         footstepFx.unk_09 = 1;
@@ -638,9 +612,9 @@ BOOL SpNpcPete::pickWanderTarget(s32 *px, s32 *pz) {
     for (i = 0; i < 6; i++) {
         s32 idx = ((u16)(s16)Random_Next(gRandom) >> 4) * 2;
         s32 t = func_01ffcb0c(0xc000, data_02135f44[idx]);
-        v.x = t + position;
+        v.x = t + position.x;
         t = func_01ffcb0c(0xc000, data_02135f44[idx + 1]);
-        v.z = t + positionZ;
+        v.z = t + position.z;
         FieldPos_SnapToUnitCenter(&v, &v);
         if (TownMap_IsPosWalkable(&v, r) != 0) {
             *px = v.x;
@@ -906,7 +880,7 @@ void SpNpcPeteTalk::onChoice() {
     s32 r = ChoiceList_getResult();
 }
 
-BOOL SpNpcPete::vfunc_48() {
+BOOL SpNpcPete::vfunc_48(void *) {
     BOOL r = FALSE;
     if (footstepFx.unk_09 != 0) {
         if (NpcTalkCtrl_isBusy(&talkCtrl) == 0) {
@@ -917,7 +891,7 @@ BOOL SpNpcPete::vfunc_48() {
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
-void SpNpcPete::vfunc_4c(s32 a) {
+void SpNpcPete::vfunc_4c(u32 a, u8) {
     switch (a) {
     case 0:
         SpNpcPete_ChangeAct(this, 2);

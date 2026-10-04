@@ -5,8 +5,11 @@ _ZN10SpNpcMabel20tryStartShopItemTalkEv kind:function(thumb,size=0x20) addr:0x02
 _ZN10SpNpcMabel20pickShopItemAtPlayerEv kind:function(thumb,size=0x260) addr:0x02258ee0
 _ZN10SpNpcMabel16setDesignConceptEj kind:function(thumb,size=0x2c) addr:0x02259140
 _ZN10SpNpcMabel8vfunc_4cEji kind:function(thumb,size=0x2b8) addr:0x0225916c
+_ZN10SpNpcMabel8vfunc_4cEjh kind:label(thumb) addr:0x0225916c
 _ZN10SpNpcMabel8vfunc_58Ev kind:function(thumb,size=0x2c) addr:0x02259424
+_ZN10SpNpcMabel8vfunc_58EPv kind:label(thumb) addr:0x02259424
 _ZN10SpNpcMabel8vfunc_48Ev kind:function(thumb,size=0x34) addr:0x02259450
+_ZN10SpNpcMabel8vfunc_48EPv kind:label(thumb) addr:0x02259450
 _ZN14SpNpcMabelTalk16sellItemToPlayerEv kind:function(thumb,size=0x5c) addr:0x02259484
 _ZN14SpNpcMabelTalk14openChoiceMenuEPvi kind:function(thumb,size=0x7c) addr:0x022594e0
 _ZN14SpNpcMabelTalk20onDeliveryItemChosenEv kind:function(thumb,size=0xc4) addr:0x0225955c

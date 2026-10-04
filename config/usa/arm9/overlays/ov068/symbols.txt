@@ -31,8 +31,10 @@ _ZN20FieldVillagerFxTimer5clearEv kind:function(thumb,size=0xa) addr:0x0225f8f0
 _ZN20FieldVillagerFxTimerD1Ev kind:function(thumb,size=0x2) addr:0x0225f8fc
 _ZN20FieldVillagerFxTimer9constructEv kind:function(thumb,size=0x2) addr:0x0225f900
 _ZN13FieldVillager8vfunc_4cEjj kind:function(thumb,size=0x35c) addr:0x0225f904
+_ZN13FieldVillager8vfunc_4cEjh kind:label(thumb) addr:0x0225f904
 _ZN13FieldVillager28acceptsInteractionOutOfRangeEPv kind:function(thumb,size=0x90) addr:0x0225fc60
 _ZN13FieldVillager8vfunc_48Ev kind:function(thumb,size=0x64) addr:0x0225fcf0
+_ZN13FieldVillager8vfunc_48EPv kind:label(thumb) addr:0x0225fcf0
 _ZN21FieldVillagerAiStates15execAdmireCatchEP15Unk_ov068_Owner kind:function(thumb,size=0x6c) addr:0x0225fd54
 _ZN21FieldVillagerAiStates16admireCatchStep1EP15Unk_ov068_Owner kind:function(thumb,size=0x68) addr:0x0225fdc0
 _ZN21FieldVillagerAiStates16admireCatchStep0EP15Unk_ov068_Owner kind:function(thumb,size=0x48) addr:0x0225fe28
@@ -226,7 +228,9 @@ _ZN16CameraEventModes20initModeFollowTargetEv kind:function(thumb,size=0x20) add
 _ZN14SpNpcNookIntroD1Ev kind:function(thumb,size=0x28) addr:0x02266b44
 _ZN14SpNpcNookIntroD0Ev kind:function(thumb,size=0x2c) addr:0x02266b6c
 _ZN14SpNpcNookIntro8vfunc_4cEi kind:function(thumb,size=0x22) addr:0x02266b98
+_ZN14SpNpcNookIntro8vfunc_4cEjh kind:label(thumb) addr:0x02266b98
 _ZN14SpNpcNookIntro8vfunc_48Ev kind:function(thumb,size=0x14) addr:0x02266bbc
+_ZN14SpNpcNookIntro8vfunc_48EPv kind:label(thumb) addr:0x02266bbc
 _ZN18SpNpcNookIntroTalk13runWalkScriptEv kind:function(thumb,size=0x194) addr:0x02266bd0
 _ZN18SpNpcNookIntroTalk9setScriptEi kind:function(thumb,size=0xe) addr:0x02266d64
 _ZN18SpNpcNookIntroTalk10onTaskDoneEv kind:function(thumb,size=0x50) addr:0x02266d74
@@ -425,7 +429,9 @@ _ZN15SpNpcRoostGuest8getGuestEv kind:function(thumb,size=0xc) addr:0x0226c334
 RoostGuest_PickKKSong kind:function(thumb,size=0x74) addr:0x0226c340
 _ZN15SpNpcRoostGuest17checkPlayerSeatedEv kind:function(thumb,size=0x68) addr:0x0226c3b4
 _ZN15SpNpcRoostGuest8vfunc_4cEi kind:function(thumb,size=0xa8) addr:0x0226c41c
+_ZN15SpNpcRoostGuest8vfunc_4cEjh kind:label(thumb) addr:0x0226c41c
 _ZN15SpNpcRoostGuest8vfunc_48Ev kind:function(thumb,size=0x14) addr:0x0226c4c4
+_ZN15SpNpcRoostGuest8vfunc_48EPv kind:label(thumb) addr:0x0226c4c4
 _ZN19SpNpcRoostGuestTalk17scriptRestoreLookEv kind:function(thumb,size=0x58) addr:0x0226c4d8
 _ZN19SpNpcRoostGuestTalk20scriptEndPerformanceEv kind:function(thumb,size=0x10c) addr:0x0226c530
 _ZN19SpNpcRoostGuestTalk13scriptPerformEv kind:function(thumb,size=0x234) addr:0x0226c63c
@@ -526,7 +532,9 @@ HouseVisit_IsDoorTalkDone kind:function(thumb,size=0x22) addr:0x0226ec14
 HouseVisit_SetCalled kind:function(thumb,size=0x22) addr:0x0226ec38
 HouseVisit_IsCalled kind:function(thumb,size=0x22) addr:0x0226ec5c
 _ZN18HouseVisitVillager8vfunc_4cEjj kind:function(thumb,size=0xd4) addr:0x0226ec80
+_ZN18HouseVisitVillager8vfunc_4cEjh kind:label(thumb) addr:0x0226ec80
 _ZN18HouseVisitVillager8vfunc_48Ev kind:function(thumb,size=0x34) addr:0x0226ed54
+_ZN18HouseVisitVillager8vfunc_48EPv kind:label(thumb) addr:0x0226ed54
 HouseVisit_SetFinished kind:function(thumb,size=0x1a) addr:0x0226ed88
 HouseVisit_IsAppointmentNow kind:function(thumb,size=0x72) addr:0x0226eda4
 _ZN18HouseVisitVillager17setVisitWalkSpeedEv kind:function(thumb,size=0x24) addr:0x0226ee18

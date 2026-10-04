@@ -14,6 +14,8 @@
 #include "npc/Unk_020135e4.h"
 #include "sys/ProcBase.h"
 #include "npc/NpcActionCtrl.h"
+#include "actor/Actor.h"
+#include "actor/Character.h"
 
 
 class FieldVillager;
@@ -122,36 +124,9 @@ struct Unk_020f4080 { Unk_020f4080(); u32 pad[0x44 / 4]; };
 struct Unk_02014254 { Unk_02014254(); u32 pad[0x28 / 4]; };
 
 // ---------------------------------------------------------------------------------------------------------------------
-// Scene object (vtable 0x0226ff34). The class chain declares every slot after the class that names it in the vtable symbols.
-class Actor : public ProcBase {
-public:
-    virtual BOOL vfunc_14(s32 status);
-    virtual BOOL vfunc_20(u32 status);
-    virtual BOOL preDraw();
-    virtual BOOL postDraw(s32 status);
-};
 
 struct Unk_020d77a4_Vec3;
 
-class Character : public Actor {
-public:
-    Character();
-    virtual ~Character();
-    virtual BOOL preExecute();
-    virtual BOOL vfunc_48();
-    virtual void vfunc_4c(s32 a);
-    virtual void getInteractionPos();
-    virtual void acceptsInteractionOutOfRange(void *p);
-    virtual void vfunc_58(void *p);
-    u32 pad_50[(0x5c - 0x50) / 4];
-    u32 position;
-    u32 positionY;
-    u32 positionZ;
-    u8 pad_68[0x8e - 0x68];
-    s16 rotY;
-    u8 pad_90[0xd4 - 0x90];
-    u32 charNode, unk_d8, unk_dc;
-};
 
 class NpcActor : public Character {
 public:
@@ -160,7 +135,7 @@ public:
     virtual BOOL onExecute();
     virtual BOOL onDraw();
     virtual BOOL vfunc_30();
-    virtual void vfunc_5c(Unk_020d77a4_Vec3 *v);
+    virtual BOOL vfunc_5c(Unk_020d77a4_Vec3 *v);
     virtual void onToolHit();
     virtual void vfunc_64();
     virtual BOOL updateAct();
@@ -180,7 +155,6 @@ public:
     virtual void getTeachableEmotion();
     virtual void addMood();
 
-    u16 pad_e0[5];
     u16 unk_ea;
     ThreeLayerAnimModel model;
     Unk_0201ad3c moveAnimSet;
@@ -337,8 +311,8 @@ public:
     SpNpcNookIntro() {}
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
-    virtual BOOL vfunc_48();
-    virtual void vfunc_4c(s32 a);
+    virtual BOOL vfunc_48(void *other);
+    virtual void vfunc_4c(u32 a, u8 b);
     virtual BOOL updateAct();
     virtual const char *getTexturePath();
     virtual const char *getModelPath();
@@ -582,9 +556,9 @@ BOOL SpNpcNookIntro::mainAct03() {
 }
 
 BOOL SpNpcNookIntro::setupAct04() {
-    walkTargetX = position;
-    walkTargetY = positionY;
-    walkTargetZ = positionZ;
+    walkTargetX = position.x;
+    walkTargetY = position.y;
+    walkTargetZ = position.z;
     walkTargetX -= 0x2000;
     walkTargetZ += 0xa000;
     NpcActionCtrl_requestAction(&actionCtrl, 2, 1, walkTargetX, walkTargetZ, 0, 0, 0, 0, data_020c6cc8, 0);
@@ -771,7 +745,7 @@ void SpNpcNookIntroTalk::runWalkScript() {
     }
 }
 
-BOOL SpNpcNookIntro::vfunc_48() {
+BOOL SpNpcNookIntro::vfunc_48(void *) {
     BOOL r = FALSE;
     if (unk_654 == 0) {
         r = TRUE;
@@ -779,7 +753,7 @@ BOOL SpNpcNookIntro::vfunc_48() {
     return r;
 }
 
-void SpNpcNookIntro::vfunc_4c(s32 a) {
+void SpNpcNookIntro::vfunc_4c(u32 a, u8) {
     switch (a) {
     case 1:
         changeAct(2);

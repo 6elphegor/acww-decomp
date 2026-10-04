@@ -1,7 +1,9 @@
 _ZN13SpNpcGulliverD1Ev kind:function(thumb,size=0x28) addr:0x022713c0
 _ZN13SpNpcGulliverD0Ev kind:function(thumb,size=0x2c) addr:0x022713e8
 _ZN13SpNpcGulliver8vfunc_4cEi kind:function(thumb,size=0x60) addr:0x02271414
+_ZN13SpNpcGulliver8vfunc_4cEjh kind:label(thumb) addr:0x02271414
 _ZN13SpNpcGulliver8vfunc_48Ev kind:function(thumb,size=0x20) addr:0x02271474
+_ZN13SpNpcGulliver8vfunc_48EPv kind:label(thumb) addr:0x02271474
 _ZN17SpNpcGulliverTalk8onChoiceEv kind:function(thumb,size=0x12) addr:0x02271494
 _ZN17SpNpcGulliverTalk12onMessageEndEv kind:function(thumb,size=0x114) addr:0x022714a8
 _ZN17SpNpcGulliverTalk5startEP12TalkStartMsg kind:function(thumb,size=0x158) addr:0x022715bc
