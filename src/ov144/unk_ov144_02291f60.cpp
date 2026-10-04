@@ -6,6 +6,7 @@
 #include "gfx/BgVramTask.h"
 #include "menu/MenuScrollKnob.h"
 #include "menu/MenuCursor.h"
+#include "menu/MenuBottomButtons.h"
 
 class MusicMenu;
 typedef void (MusicMenu::*Unk_ov144_02293db8_Fn)();
@@ -170,12 +171,6 @@ extern "C" u32 data_ov144_02293d70[16] = {0x20508028, 0x50c0, 0x508018, 0x50e0, 
 
 
 
-class MenuBottomButtons {
-public:
-    MenuBottomButtons();
-    ~MenuBottomButtons();
-    u32 unk_00[0x164 / 4];
-};
 
 
 

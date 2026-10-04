@@ -9,6 +9,8 @@
 #include "gfx/BgVramTask.h"
 #include "talk/EncodedString41.h"
 #include "menu/MenuCursor.h"
+#include "menu/GeneralMenuHeader.h"
+#include "menu/MenuBottomButtons.h"
 
 #define ItemName_setFromItem _ZN8ItemName11setFromItemEPt
 #define func_0206260c _ZN8ItemNameD1Ev
@@ -281,13 +283,6 @@ void Keyboard_DrawCaret(void *p, s32 a, s32 b, s32 c);
 
 
 
-// +0x3d00 sub-object (0x164 bytes)
-class MenuBottomButtons {
-public:
-    MenuBottomButtons();
-    ~MenuBottomButtons();
-    u32 unk_00[0x164 / 4];
-};
 
 // +0x3f80 holder object, 0x108 bytes
 class MenuErrorMessage {
@@ -297,13 +292,6 @@ public:
     u32 unk_00[0x108 / 4];
 };
 
-// +0xb0 menu sub-object, 0x94 bytes
-class GeneralMenuHeader {
-public:
-    GeneralMenuHeader();
-    ~GeneralMenuHeader();
-    u32 titleLabel[0x94 / 4];
-};
 
 
 // +0x144 ov095 menu sub-object, 0x23bc bytes

@@ -8,6 +8,8 @@
 #include "gfx/BgVramTask.h"
 #include "ui/TouchPromptBalloon.h"
 #include "menu/MenuCursor.h"
+#include "menu/MenuBottomButtons.h"
+#include "menu/PopupChoiceMenu.h"
 
 // ov107: scene overlay (class PocketsFullMenu, vtable 0x02296e78, 0x281c bytes).
 
@@ -88,14 +90,6 @@ struct Unk_ov107_SceneEntry {
 
 
 
-class PopupChoiceMenu {
-public:
-    PopupChoiceMenu();
-    ~PopupChoiceMenu();
-    u32 unk_00[0x2f4 / 4];
-    u8 unk_2f4[5];
-    u8 choiceValues[7];
-};
 
 class MenuErrorMessage {
 public:
@@ -104,12 +98,6 @@ public:
     u32 unk_00[0x108 / 4];
 };
 
-class MenuBottomButtons {
-public:
-    MenuBottomButtons();
-    ~MenuBottomButtons();
-    u32 unk_00[0x164 / 4];
-};
 
 struct Unk_ov107_Comm {
     u32 unk_00[0x64 / 4];
@@ -431,6 +419,8 @@ public:
     /* 0x2234 */ CursorMotion flyMotion;
     /* 0x224c */ MenuCursorBuf0 cursor;
     /* 0x22b0 */ PopupChoiceMenu popup;
+    /* 0x25a4 */ PopupChoiceIdList choiceList;
+    /* 0x25af */ u8 pad_25af[1];
     /* 0x25b0 */ MenuErrorMessage errorMessage;
     /* 0x26b8 */ MenuBottomButtons bottomButtons;
 };
@@ -735,7 +725,7 @@ void PocketsFullMenu::mainAct04()
             s32 r = PopupChoiceMenuBody_hitTestRowOrLast(&popup, gTouchCurX, gTouchCurY);
             if (r >= 0) {
                 PopupChoice_DecideRow(&popup, r, 1);
-                popupChoice = popup.choiceValues[r];
+                popupChoice = choiceList.values[r];
                 setMainState(0xc);
             }
         }
@@ -789,7 +779,7 @@ void PocketsFullMenu::mainAct07()
 {
     if (HandCursor_isAnimDone(&cursor)) {
         PopupChoice_DecideRow(&popup, popupRow, 1);
-        popupChoice = popup.choiceValues[popupRow];
+        popupChoice = choiceList.values[popupRow];
         setMainState(0xc);
     }
 }
@@ -1226,7 +1216,7 @@ void PocketsFullMenu::onPopupChoice() {
 
 void PocketsFullMenu::openPopup(s32 a) {
     s32 r6, r2;
-    PopupChoiceMenuBody_setRowsFromIds(&popup, (void *)&popup.unk_2f4, 0);
+    PopupChoiceMenuBody_setRowsFromIds(&popup, &choiceList, 0);
     r6 = getSlotX(selectedSlot);
     r2 = getSlotY(selectedSlot);
     if (a != 0) {
@@ -1292,25 +1282,25 @@ void PocketsFullMenu::setPopupChoices() {
         ok = TRUE;
     }
     if (ok) {
-        ChoiceIdList_Add(&popup.unk_2f4, 0x10, 0);
+        ChoiceIdList_Add(&choiceList, 0x10, 0);
     } else if (a >= 0x12e8 && a <= 0x131f) {
-        ChoiceIdList_Add(&popup.unk_2f4, 0x10, 2);
+        ChoiceIdList_Add(&choiceList, 0x10, 2);
     } else if (t == 0x2a) {
-        ChoiceIdList_Add(&popup.unk_2f4, 0x10, 3);
+        ChoiceIdList_Add(&choiceList, 0x10, 3);
     }
     if (InvItem_IsNotFishInsectOrFlower(r6)) {
         if (t == 0x2a) {
-            ChoiceIdList_Add(&popup.unk_2f4, 1, 1);
+            ChoiceIdList_Add(&choiceList, 1, 1);
         } else {
-            ChoiceIdList_Add(&popup.unk_2f4, 0x10, 1);
+            ChoiceIdList_Add(&choiceList, 0x10, 1);
         }
     }
-    ChoiceIdList_Add(&popup.unk_2f4, 2, 4);
+    ChoiceIdList_Add(&choiceList, 2, 4);
 }
 
 void PocketsFullMenu::selectPocket(u32 idx, u32 flag) {
     selectedSlot = idx;
-    ChoiceIdList_Clear(&popup.unk_2f4, 4);
+    ChoiceIdList_Clear(&choiceList, 4);
     if (isPocketSlot(idx)) {
         setPopupChoices();
         hideCursor();

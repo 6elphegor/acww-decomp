@@ -14,6 +14,7 @@
 #include "gfx/BgVramTask.h"
 #include "menu/MenuCursor.h"
 #include "menu/MenuScrollKnob.h"
+#include "menu/MenuBottomButtons.h"
 
 class CatalogMenu;
 
@@ -91,27 +92,7 @@ void *PlayerData_getCatalog(u32 p);
 
 
 
-class MenuBottomButtonsBody {
-public:
-    virtual ~MenuBottomButtonsBody();
-    s32 getPressOffset();
-    BOOL stepPress();
-    void setSelected(u8 v);
-    s32 getTargetY(s32 idx);
-    s32 getTargetX(s32 idx);
-    BOOL isTouched(s32 idx);
-    void setLayoutYesNo0C(s32 idx);
-    u32 unk_04[0x160 / 4];
-};
 
-class MenuBottomButtons : public MenuBottomButtonsBody {
-public:
-    MenuBottomButtons();
-    virtual ~MenuBottomButtons();
-    void setLayoutSingle05(s32 idx);
-    void drawAt(s32 a);
-    void freeTexts();
-};
 
 // ---- ov002 scene base (vtable 0x022044e4) ----
 
@@ -581,7 +562,7 @@ void CatalogMenu::stateDialogOpen() {
     if (stepSlideOut(-1)) {
         setTransitionState(5);
         initSlideIn(0, 0);
-        bottomButtons.setLayoutYesNo0C(0x22);
+        ((MenuBottomButtonsBody *)&bottomButtons)->setLayoutYesNo0C(0x22);
     }
     buttonsSlideY = getSlideOffsetY();
 }
@@ -860,9 +841,9 @@ void CatalogMenu::updateConfirmTouch() {
         return;
     }
     if (Both()) {
-        if (bottomButtons.isTouched(3)) {
+        if (((MenuBottomButtonsBody *)&bottomButtons)->isTouched(3)) {
             confirmOrder();
-        } else if (bottomButtons.isTouched(4)) {
+        } else if (((MenuBottomButtonsBody *)&bottomButtons)->isTouched(4)) {
             cancelOrderConfirm();
         }
     }
@@ -904,7 +885,7 @@ void CatalogMenu::updateConfirmButtons() {
 
 void CatalogMenu::confirmOrder() {
     Snd_PlaySe(0x29);
-    bottomButtons.setSelected(3);
+    ((MenuBottomButtonsBody *)&bottomButtons)->setSelected(3);
     setMainState(0xd);
     MenuCtrl_SetResult(1);
     MenuCtrl_SetCatalogItem(*getTabItemPtr(selectedIndex));
@@ -913,7 +894,7 @@ void CatalogMenu::confirmOrder() {
 
 void CatalogMenu::cancelOrderConfirm() {
     Snd_PlaySe(0x2a);
-    bottomButtons.setSelected(4);
+    ((MenuBottomButtonsBody *)&bottomButtons)->setSelected(4);
     transitionState = 6;
     initSlideOut(0, 0);
     setMainState(0xd);
@@ -924,11 +905,11 @@ void CatalogMenu::cancelOrderConfirm() {
 }
 
 void CatalogMenu::updateBarTransition() {
-    if (bottomButtons.stepPress()) {
+    if (((MenuBottomButtonsBody *)&bottomButtons)->stepPress()) {
         if (cursor.getAnim()) {
-            s32 a = bottomButtons.getPressOffset();
-            s32 b = bottomButtons.getTargetX(-1);
-            s32 c = bottomButtons.getTargetY(-1);
+            s32 a = ((MenuBottomButtonsBody *)&bottomButtons)->getPressOffset();
+            s32 b = ((MenuBottomButtonsBody *)&bottomButtons)->getTargetX(-1);
+            s32 c = ((MenuBottomButtonsBody *)&bottomButtons)->getTargetY(-1);
             cursor.warpTo(a + b, a + c);
         }
     } else {
@@ -1004,7 +985,7 @@ void CatalogMenu::startOrderConfirm() {
 
 void CatalogMenu::startQuit() {
     MenuCtrl_SetResult(0);
-    bottomButtons.setSelected(6);
+    ((MenuBottomButtonsBody *)&bottomButtons)->setSelected(6);
     setMainState(0xd);
     beginClose();
 }
@@ -1027,15 +1008,15 @@ s32 CatalogMenu::getCursorTargetX() {
     }
     switch (c - 0x12) {
     case 1:
-        return bottomButtons.getTargetX(6);
+        return ((MenuBottomButtonsBody *)&bottomButtons)->getTargetX(6);
     case 0:
         return 0xe8;
     case 2:
         return scrollKnob.getGripX();
     case 5:
-        return bottomButtons.getTargetX(3);
+        return ((MenuBottomButtonsBody *)&bottomButtons)->getTargetX(3);
     case 6:
-        return bottomButtons.getTargetX(4);
+        return ((MenuBottomButtonsBody *)&bottomButtons)->getTargetX(4);
     case 3:
     case 4:
         return 0xc0;
@@ -1054,15 +1035,15 @@ s32 CatalogMenu::getCursorTargetY() {
     }
     switch (c - 0x12) {
     case 1:
-        return bottomButtons.getTargetY(6);
+        return ((MenuBottomButtonsBody *)&bottomButtons)->getTargetY(6);
     case 0:
         return 0x57;
     case 2:
         return scrollKnob.getGripY();
     case 5:
-        return bottomButtons.getTargetY(3);
+        return ((MenuBottomButtonsBody *)&bottomButtons)->getTargetY(3);
     case 6:
-        return bottomButtons.getTargetY(4);
+        return ((MenuBottomButtonsBody *)&bottomButtons)->getTargetY(4);
     case 3:
         return 0x23;
     case 4:
@@ -1535,7 +1516,7 @@ BOOL CatalogMenu::activateTarget(u32 a) {
 }
 
 u32 CatalogMenu::hitTestTarget(s32 x, s32 y) {
-    if (bottomButtons.isTouched(6)) {
+    if (((MenuBottomButtonsBody *)&bottomButtons)->isTouched(6)) {
         return 0x13;
     }
     if (testFlags(0x20)) {

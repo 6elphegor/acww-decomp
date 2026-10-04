@@ -12,6 +12,8 @@
 #include "gfx/BgVramTask.h"
 #include "ui/TouchPromptBalloon.h"
 #include "menu/MenuCursor.h"
+#include "menu/MenuBottomButtons.h"
+#include "menu/PopupChoiceMenu.h"
 
 class PocketItemSelectMenu;
 class MenuLauncher;
@@ -111,27 +113,7 @@ static inline BOOL Unk_ov101_02296280_Both()
 
 
 
-class PopupChoiceMenuBody {
-public:
-    BOOL isClosed();
-    BOOL isOpen();
-    s32 getRowX();
-    s32 getRowY(s32 a);
-    s32 hitTestRowOrLast(s32 a, s32 b);
-    void setRowsFromIds(PopupChoiceIdList *r, s32 a);
-};
 
-class PopupChoiceMenu {
-public:
-    PopupChoiceMenu();
-    virtual ~PopupChoiceMenu();
-    void placeAboveBalloon(LabelBalloon *p);
-    void placeNearPoint(s32 a, s32 b);
-    void init(s32 a, s32 b, const char *path);
-    u32 unk_04[(0x2f4 - 4) / 4];
-    u8 unk_2f4[5];
-    u8 choiceValues[7];
-};
 
 class MenuErrorMessage {
 public:
@@ -141,25 +123,7 @@ public:
     u32 unk_00[0x108 / 4];
 };
 
-class MenuBottomButtonsBody {
-public:
-    u32 unk_00[0x164 / 4];
-    BOOL isTouched(s32 idx);
-    void setSelected(u8 v);
-    BOOL stepPress();
-    s32 getPressOffset();
-    s32 getTargetY(s32 idx);
-    s32 getTargetX(s32 idx);
-};
 
-class MenuBottomButtons : public MenuBottomButtonsBody {
-public:
-    MenuBottomButtons();
-    ~MenuBottomButtons();
-    void freeTexts();
-    void drawAt(s32 a);
-    void setLayoutSingle05(s32 a);
-};
 
 
 typedef void (PocketItemSelectMenu::*Unk_ov101_02296b38_Fn)();
@@ -309,6 +273,8 @@ public:
     /* 0x221c */ CursorMotion flyMotion;
     /* 0x2234 */ MenuCursorBuf0 cursor;
     /* 0x2298 */ PopupChoiceMenu popup;
+    /* 0x258c */ PopupChoiceIdList choiceList;
+    /* 0x2597 */ u8 pad_2597[1];
     /* 0x2598 */ MenuErrorMessage errorMessage;
     /* 0x26a0 */ MenuBottomButtons bottomButtons;
 };
@@ -528,8 +494,8 @@ void PocketItemSelectMenu::mainAct00() {
             if (r != 0x10) {
                 beginTouchOnSlot(r);
             } else {
-                if (bottomButtons.isTouched(9)) {
-                    bottomButtons.setSelected(9);
+                if (((MenuBottomButtonsBody *)&bottomButtons)->isTouched(9)) {
+                    ((MenuBottomButtonsBody *)&bottomButtons)->setSelected(9);
                     setMainState(0x17);
                     Snd_PlaySe(0x28);
                 }
@@ -587,7 +553,7 @@ void PocketItemSelectMenu::mainAct04() {
                 s32 t = ((PopupChoiceMenuBody *)&popup)->hitTestRowOrLast(gTouchCurX, gTouchCurY);
                 if (t >= 0) {
                     PopupChoice_DecideRow(&popup, t, 1);
-                    popupChoice = popup.choiceValues[t - 0];
+                    popupChoice = choiceList.values[t - 0];
                     setMainState(0x14);
                 }
             }
@@ -632,7 +598,7 @@ void PocketItemSelectMenu::mainAct06() {
     } else {
         if ((gPad[1] & 2) != 0) {
             hideCursor();
-            bottomButtons.setSelected(9);
+            ((MenuBottomButtonsBody *)&bottomButtons)->setSelected(9);
             setMainState(0x17);
             Snd_PlaySe(0x28);
             nameBalloon.hide(0);
@@ -687,7 +653,7 @@ void PocketItemSelectMenu::mainAct08() {
 void PocketItemSelectMenu::mainAct09() {
     if (cursor.isAnimDone()) {
         PopupChoice_DecideRow(&popup, popupRow, 1);
-        popupChoice = popup.choiceValues[popupRow];
+        popupChoice = choiceList.values[popupRow];
         setMainState(0x14);
     }
 }
@@ -705,7 +671,7 @@ void PocketItemSelectMenu::mainAct0A() {
 
 void PocketItemSelectMenu::mainAct0B() {
     if (cursor.isAnimDone()) {
-        bottomButtons.setSelected(9);
+        ((MenuBottomButtonsBody *)&bottomButtons)->setSelected(9);
         setMainState(0x17);
         Snd_PlaySe(0x28);
     }
@@ -813,11 +779,11 @@ void PocketItemSelectMenu::mainAct16() {
 }
 
 void PocketItemSelectMenu::mainAct17() {
-    if (bottomButtons.stepPress()) {
+    if (((MenuBottomButtonsBody *)&bottomButtons)->stepPress()) {
         if (cursor.getAnim()) {
-            s32 r4 = bottomButtons.getPressOffset();
-            s32 r6 = bottomButtons.getTargetX(-1);
-            s32 r2 = bottomButtons.getTargetY(-1);
+            s32 r4 = ((MenuBottomButtonsBody *)&bottomButtons)->getPressOffset();
+            s32 r6 = ((MenuBottomButtonsBody *)&bottomButtons)->getTargetX(-1);
+            s32 r2 = ((MenuBottomButtonsBody *)&bottomButtons)->getTargetY(-1);
             cursor.warpTo(r4 + r6, r4 + r2);
         }
     } else {
@@ -1197,7 +1163,7 @@ s32 PocketItemSelectMenu::onPopupChoice() {
 }
 
 void PocketItemSelectMenu::openPopup(u32 v) {
-    ((PopupChoiceMenuBody *)&popup)->setRowsFromIds((PopupChoiceIdList *)&popup.unk_2f4, 0);
+    ((PopupChoiceMenuBody *)&popup)->setRowsFromIds(&choiceList, 0);
     s32 a = getSlotX(selectedSlot);
     s32 b = getSlotY(selectedSlot);
     if (v) {
@@ -1234,13 +1200,13 @@ void PocketItemSelectMenu::closeWithoutChoice() {
 }
 
 void PocketItemSelectMenu::setPopupChoices() {
-    ChoiceIdList_Add(&popup.unk_2f4, MenuCtrl_GetPocketSelectLabel(), 0);
-    ChoiceIdList_Add(&popup.unk_2f4, 2, 1);
+    ChoiceIdList_Add(&choiceList, MenuCtrl_GetPocketSelectLabel(), 0);
+    ChoiceIdList_Add(&choiceList, 2, 1);
 }
 
 void PocketItemSelectMenu::selectPocket(u32 idx, u32 v) {
     selectedSlot = idx;
-    ChoiceIdList_Clear(&popup.unk_2f4, 1);
+    ChoiceIdList_Clear(&choiceList, 1);
     if (isPocketSlot(idx)) {
         setPopupChoices();
         hideCursor();

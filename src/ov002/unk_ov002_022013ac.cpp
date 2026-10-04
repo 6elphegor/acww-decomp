@@ -30,6 +30,8 @@
 #include "menu/MenuCursor.h"
 #include "menu/MenuScrollKnob.h"
 #include "menu/PopupChoiceRow.h"
+#include "menu/MenuBottomButtons.h"
+#include "menu/PopupChoiceMenu.h"
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Real names of functions of other modules (plain names that are really methods / ctors / dtors)
@@ -221,55 +223,7 @@ typedef void (MenuProc::*Unk_ov002_02200a68_Fn)();
 
 
 
-// Owner, vtable 0x022046cc
-class MenuBottomButtons {
-public:
-    MenuBottomButtons();
-    virtual ~MenuBottomButtons();
 
-    void setLayoutConfirmAnd06(u8 v);
-    void setLayoutSingle05(s32 v);
-    void setLayoutConfirmQuit04();
-    void setLayoutConfirmQuit03();
-    void setLayoutConfirm();
-    void setLayoutChangeAddressee();
-    void setLayoutNeverMindConfirm();
-    void hide();
-    void drawAt(s32 a);
-    void freeTexts();
-
-    /* 0x004 */ MenuTextButton unk_04[2];
-    /* 0x0a4 */ MenuTitleBalloon title;
-    /* 0x160 */ u8 layout;
-    /* 0x161 */ u8 selectedTarget;
-};
-
-// Methods of the same object that the symbols list under another class name
-class MenuBottomButtonsBody : public MenuBottomButtons {
-public:
-    void isButtonDisabled(s32 idx);
-    void enableButton(s32 idx);
-    void disableButton(s32 idx);
-    s32 getButtonOfTarget(s32 idx);
-    void disableObjWindow();
-    void enableObjWindow();
-    void getPressOffset();
-    void stepPress();
-    void setSelected(u8 v);
-    s32 getTargetY(s32 idx);
-    s32 getTargetX(s32 idx);
-    BOOL isTouched(s32 idx);
-    BOOL hitTest(s32 idx, s32 x, s32 y);
-    void showTitleLayer2();
-    void setLayoutYesNo0D(s32 x);
-    void setLayoutYesNo0C(s32 x);
-    void setLayoutYesNo0B(s32 x);
-    void setLayoutTossKeep();
-    void setLayoutYesNo09(s32 x);
-    void setYesNoButtons();
-    void setLayoutYesNo08(s32 x);
-    void setLayoutYesNo07(s32 x);
-};
 
 
 
@@ -314,72 +268,7 @@ public:
 
 
 
-// Menu/selection object, vtable 0x02204558
-class PopupChoiceMenu {
-public:
-    PopupChoiceMenu();
-    virtual ~PopupChoiceMenu();
 
-    void placeAboveBalloon(LabelBalloon *p);
-    void placeAbove(s32 a, s32 b);
-    void placeAt(s32 a, s32 b);
-    void placeNearPoint(s32 a, s32 b);
-    s32 placeCentered(s32 a, s32 b);
-    void init(s32 a, s32 b, const char *path);
-
-    /* 0x04 */ u32 rowCharBase;
-    /* 0x08 */ s32 scrollX;
-    /* 0x0c */ s32 scrollY;
-    /* 0x10 */ u32 bgPriority;
-    /* 0x14 */ u16 flags;
-    /* 0x16 */ u8 state;
-    /* 0x17 */ u8 request;
-    /* 0x18 */ u8 stateStep;
-    /* 0x19 */ u8 openLeftward;
-    /* 0x1a */ u8 layer;
-    /* 0x1b */ u8 textWidthTiles;
-    /* 0x1c */ u8 numRows;
-    /* 0x1d */ u8 numPages;
-    /* 0x1e */ u8 decideDelay;
-    /* 0x1f */ u8 decidedRow;
-    /* 0x20 */ u8 addresseePage;
-    /* 0x21 */ volatile u8 titleRefreshDelay;
-    /* 0x22 */ u8 pad_22[2];
-    /* 0x24 */ const char *screenFile;
-    /* 0x28 */ PopupChoiceRow rows[5];
-    /* 0x190 */ MenuLabelButton pageButton;
-    /* 0x200 */ MenuTitleBalloon title;
-    /* 0x2bc */ MenuSlide slide;
-    /* 0x2d8 */ u8 addresseeIds[0x19];
-};
-
-// Methods of the same object that the symbols list under another class name
-class PopupChoiceMenuBody : public PopupChoiceMenu {
-public:
-    void load2dString(void *buf, u32 c);
-    void clearFlags(u32 m);
-    void setFlags(u32 m);
-    BOOL testFlags(u32 m);
-    s32 applyAddressee(void *p, u32 id);
-    s32 getAddresseeKind(u32 id);
-    u32 pickAddressee(u32 a, u32 b);
-    u32 getPageCount();
-    u32 getRowCount();
-    s32 getRowY(s32 v);
-    s32 getRowX();
-    s32 hitTestRow(s32 x, s32 y);
-    s32 hitTestRowOrLast(s32 x, s32 y);
-    s32 hitTestRowOr(s32 x, s32 y, s32 d);
-    void loadAddresseePage(PopupChoiceIdList *r);
-    void setRowsFromIds(PopupChoiceIdList *r, s32 f);
-    s32 addCustomRow(PopupChoiceIdList *r, void *s, u32 v);
-    void renderRows();
-    void resetRowColors();
-    void freeRowTexts();
-    BOOL isClosed();
-    BOOL isOpen();
-    void buildAddresseeList();
-};
 
 typedef PopupChoiceMenuBody Self;
 

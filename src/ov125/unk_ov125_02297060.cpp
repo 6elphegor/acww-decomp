@@ -6,6 +6,9 @@
 #include "menu/MenuLauncher.h"
 #include "ui/TouchPromptBalloon.h"
 #include "menu/MenuCursor.h"
+#include "menu/GeneralMenuHeader.h"
+#include "menu/MenuBottomButtons.h"
+#include "menu/PopupChoiceMenu.h"
 
 struct PopupChoiceIdList;
 
@@ -82,59 +85,12 @@ extern const u8 sPatternSelectSlotY[9];
 
 
 
-// Same object as PopupChoiceMenu under the name used by its other methods
-class PopupChoiceMenuBody {
-public:
-    s32 getRowY(s32 a);
-    s32 getRowX();
-    s32 hitTestRowOrLast(s32 a, s32 b);
-    void setRowsFromIds(PopupChoiceIdList *r, s32 a);
-    BOOL isClosed();
-    BOOL isOpen();
-};
-
-class PopupChoiceMenu {
-public:
-    PopupChoiceMenu();
-    ~PopupChoiceMenu();
-    void placeAbove(s32 a, s32 b);
-    void init(s32 a, s32 b, const char *c);
-    u32 unk_00[0x300 / 4];
-};
 
 
-class MenuBottomButtonsBody {
-public:
-    u32 unk_00[0x164 / 4];
-    s32 getPressOffset();
-    BOOL stepPress();
-    void setSelected(u8 v);
-    s32 getTargetY(s32 i);
-    s32 getTargetX(s32 i);
-    BOOL isTouched(s32 i);
-};
-
-class MenuBottomButtons : public MenuBottomButtonsBody {
-public:
-    MenuBottomButtons();
-    ~MenuBottomButtons();
-    void setLayoutSingle05(s32 a);
-    void drawAt(s32 a);
-    void freeTexts();
-};
 
 
-// ov124 library object (menu/han text + sprite), size 0x94
-class GeneralMenuHeader {
-public:
-    GeneralMenuHeader();
-    ~GeneralMenuHeader();
-    void resetFrame();
-    void drawPlain(s32 x, s32 y);
-    void loadObjGfx(s32 v);
-    void loadTitleBg(s32 a, s32 b);
-    u32 titleLabel[0x94 / 4];
-};
+
+
 
 
 class PatternSelectMenu;
@@ -215,6 +171,8 @@ public:
     /* 0x091 */ u8 unk_91[3];
     /* 0x094 */ GeneralMenuHeader header;
     /* 0x128 */ PopupChoiceMenu popup;
+    /* 0x41c */ PopupChoiceIdList choiceList;
+    /* 0x427 */ u8 pad_427[1];
     /* 0x428 */ TouchPromptBalloon nameBalloon;
     /* 0x4e8 */ MenuCursorBuf0 cursor;
     /* 0x54c */ MenuBottomButtons bottomButtons;
@@ -483,7 +441,7 @@ void PatternSelectMenu::updateTouch() {
     } else if (Unk_ov125_02297bd4_Both()) {
         s32 r = findTouchedSlot();
         if (r == 8) {
-            bottomButtons.setSelected(9);
+            ((MenuBottomButtonsBody *)&bottomButtons)->setSelected(9);
             setMainState(10);
         } else if (r != 9) {
             setPopupChoices();
@@ -532,7 +490,7 @@ void PatternSelectMenu::updateButtons() {
                 }
             } else if (t & 2) {
                 hideCursor();
-                bottomButtons.setSelected(9);
+                ((MenuBottomButtonsBody *)&bottomButtons)->setSelected(9);
                 setMainState(10);
                 nameBalloon.hide(1);
             } else {
@@ -577,7 +535,7 @@ void PatternSelectMenu::updateCursorMove() {
 
 void PatternSelectMenu::updateQuitPress() {
     if (cursor.isAnimDone()) {
-        bottomButtons.setSelected(9);
+        ((MenuBottomButtonsBody *)&bottomButtons)->setSelected(9);
         setMainState(10);
     }
 }
@@ -610,11 +568,11 @@ void PatternSelectMenu::updatePopupDone() {
 }
 
 void PatternSelectMenu::updateBarTransition() {
-    if (bottomButtons.stepPress()) {
+    if (((MenuBottomButtonsBody *)&bottomButtons)->stepPress()) {
         if (cursor.getAnim()) {
-            s32 a = bottomButtons.getPressOffset();
-            s32 b = bottomButtons.getTargetX(-1);
-            s32 c = bottomButtons.getTargetY(-1);
+            s32 a = ((MenuBottomButtonsBody *)&bottomButtons)->getPressOffset();
+            s32 b = ((MenuBottomButtonsBody *)&bottomButtons)->getTargetX(-1);
+            s32 c = ((MenuBottomButtonsBody *)&bottomButtons)->getTargetY(-1);
             cursor.warpTo(a + b, a + c);
         }
     } else {
@@ -659,7 +617,7 @@ s32 PatternSelectMenu::getSlotY(u32 i) { return sPatternSelectSlotY[i] - 0x10; }
 
 u32 PatternSelectMenu::findTouchedSlot() {
     u8 i;
-    if (bottomButtons.isTouched(9)) {
+    if (((MenuBottomButtonsBody *)&bottomButtons)->isTouched(9)) {
         return 8;
     }
     s32 x = gTouchCurX;

@@ -1,6 +1,7 @@
 #include "types.h"
 #include "ui/LabelString.h"
 #include "menu/MenuTextButton.h"
+#include "menu/GeneralMenuHeader.h"
 
 extern "C" {
 void String_Load2dMenu(void *a, u32 v);
@@ -29,29 +30,6 @@ extern u8 data_ov124_02296f90[];
 struct Unk_ov002_02203c5c_Rec;
 
 
-// Non-polymorphic menu sub-object: 1 text buffer at +0, a sprite/text pair at +0x40, state bytes at +0x90/0x91
-class GeneralMenuHeader {
-public:
-    GeneralMenuHeader();
-    ~GeneralMenuHeader();
-
-    void resetFrame();
-    void drawWithIcon(s32 x, s32 y);
-    void drawPlain(s32 x, s32 y);
-    void loadObjGfx(s32 v);
-    void loadBgGfx(s32 a, s32 b);
-    void func_ov124_02296c7c(u8 a, u8 b, u32 c, u32 d);
-    void setTitleText(void *s, s32 n);
-    void func_ov124_02296c98();
-    void placeTitleText();
-    void loadBgGfxForStyle(s32 a);
-    void loadTitleBg(s32 a, s32 b);
-
-    /* 0x00 */ LabelString titleLabel[1];
-    /* 0x40 */ MenuTextButton iconButton;
-    /* 0x90 */ u8 pictureIndex;
-    /* 0x91 */ u8 objPalette;
-};
 
 extern "C" {
 s32 GeneralMenuHeader_GetStyle();

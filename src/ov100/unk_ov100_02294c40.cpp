@@ -13,6 +13,7 @@
 #include "gfx/BgVramTask.h"
 #include "ui/TouchPromptBalloon.h"
 #include "menu/MenuCursor.h"
+#include "menu/PopupChoiceMenu.h"
 
 extern "C" {
 void Gfx2d_ShowLayer(u32 x);
@@ -111,15 +112,6 @@ class ShopSellMenu;
 
 
 
-class PopupChoiceMenu {
-public:
-    PopupChoiceMenu();
-    ~PopupChoiceMenu();
-    void init(s32, s32, const char *);
-    u32 unk_00[0x2f8 / 4];
-    u8 unk_2f8;
-    u8 choiceValues[7];
-};
 
 class MenuErrorMessage {
 public:
@@ -135,14 +127,6 @@ public:
 
 
 
-class PopupChoiceMenuBody {
-public:
-    s32 getRowY(s32);
-    s32 getRowX();
-    s32 hitTestRowOrLast(s32, s32);
-    BOOL isClosed();
-    BOOL isOpen();
-};
 
 
 
@@ -227,6 +211,8 @@ public:
     /* 0x21f4 */ CursorMotion flyMotion;
     /* 0x220c */ MenuCursorBuf0 cursor;
     /* 0x2270 */ PopupChoiceMenu choiceMenu;
+    /* 0x2564 */ PopupChoiceIdList choiceList;
+    /* 0x256f */ u8 pad_256f[1];
     /* 0x2570 */ MenuErrorMessage errorMessage;
     /* 0x2678 */ LabelString textLabels[2];
     /* 0x26f8 */ u32 stateFlags;
@@ -688,7 +674,7 @@ void ShopSellMenu::mainAct02() {
             s32 t = ((PopupChoiceMenuBody *)&s->choiceMenu)->hitTestRowOrLast(gTouchCurX, gTouchCurY);
             if (t >= 0) {
                 PopupChoice_DecideRow(&s->choiceMenu, t, 1);
-                s->chosenAction = s->choiceMenu.choiceValues[t - 0];
+                s->chosenAction = s->choiceList.values[t - 0];
                 s->setMainState(0x12);
             }
         }
@@ -836,7 +822,7 @@ void ShopSellMenu::mainAct07() {
     S *const s = this;
     if (((HandCursor *)&s->cursor)->isAnimDone()) {
         PopupChoice_DecideRow(&s->choiceMenu, s->choiceRow, 1);
-        s->chosenAction = s->choiceMenu.choiceValues[s->choiceRow];
+        s->chosenAction = s->choiceList.values[s->choiceRow];
         s->setMainState(0x12);
     }
 }

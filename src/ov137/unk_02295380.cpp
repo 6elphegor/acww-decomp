@@ -2,6 +2,7 @@
 #include "Unk_020d8c7c.h"
 #include "menu/MenuProc.h"
 #include "menu/MenuCursor.h"
+#include "menu/MenuBottomButtons.h"
 
 extern "C" {
 extern const u8 sBirthdayCursorRightTable[4];
@@ -62,26 +63,7 @@ void DateTimePicker_Init(void *self, u32 a, u32 b, u32 c, u8 d);
 
 
 
-class MenuBottomButtonsBody {
-public:
-    void setSelected(u8 v);
-    BOOL isTouched(s32 v);
-    BOOL stepPress();
-    s32 getPressOffset();
-    s32 getTargetX(s32 v);
-    s32 getTargetY(s32 v);
-};
 
-// Sub-object at +0xf8 (vtable 0x022046cc, size 0x164)
-class MenuBottomButtons : public MenuBottomButtonsBody {
-public:
-    MenuBottomButtons();
-    ~MenuBottomButtons();
-    void setLayoutSingle05(s32 v);
-    void drawAt(s32 a);
-    void freeTexts();
-    u32 unk_00[0x164 / 4];
-};
 
 // ov134 sub-object at +0x25c (class DateTimePicker)
 class DateTimePicker {
@@ -388,7 +370,7 @@ void BirthdayMenu::updateTouch() {
         startButtonInput();
     } else {
         if (Unk_ov137_Both()) {
-            if (bottomButtons.isTouched(6)) {
+            if (((MenuBottomButtonsBody *)&bottomButtons)->isTouched(6)) {
                 confirm();
             } else {
                 s32 r = DateTimePicker_HitTestMonthDayField(&picker, gTouchCurX, gTouchCurY);
@@ -549,11 +531,11 @@ void BirthdayMenu::updateCursorRelease() {
 }
 
 void BirthdayMenu::stateExit() {
-    if (bottomButtons.stepPress()) {
+    if (((MenuBottomButtonsBody *)&bottomButtons)->stepPress()) {
         if (_ZN10HandCursor7getAnimEv(&cursor)) {
-            s32 a = bottomButtons.getPressOffset();
-            s32 b = bottomButtons.getTargetX(-1);
-            s32 c = bottomButtons.getTargetY(-1);
+            s32 a = ((MenuBottomButtonsBody *)&bottomButtons)->getPressOffset();
+            s32 b = ((MenuBottomButtonsBody *)&bottomButtons)->getTargetX(-1);
+            s32 c = ((MenuBottomButtonsBody *)&bottomButtons)->getTargetY(-1);
             U94A->warpTo(a + b, a + c);
         }
     } else {
@@ -601,7 +583,7 @@ void BirthdayMenu::resumeInput() {
 
 void BirthdayMenu::confirm() {
     u32 w[2];
-    bottomButtons.setSelected(6);
+    ((MenuBottomButtonsBody *)&bottomButtons)->setSelected(6);
     setTransitionState(2);
     setMainState(0xb);
     void *obj = PlayerData_GetCurrent();
@@ -670,7 +652,7 @@ s32 BirthdayMenu::getCursorTargetX() {
         return picker.getListCursorX();
     }
     if (cursorSlot == 2) {
-        return bottomButtons.getTargetX(6);
+        return ((MenuBottomButtonsBody *)&bottomButtons)->getTargetX(6);
     }
     return sBirthdayCursorXTable[cursorSlot];
 }
@@ -680,7 +662,7 @@ s32 BirthdayMenu::getCursorTargetY() {
         return picker.getListCursorY();
     }
     if (cursorSlot == 2) {
-        return bottomButtons.getTargetY(6);
+        return ((MenuBottomButtonsBody *)&bottomButtons)->getTargetY(6);
     }
     return sBirthdayCursorYTable[cursorSlot];
 }

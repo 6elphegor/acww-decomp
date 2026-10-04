@@ -8,6 +8,7 @@
 #include "gfx/BgVramTask.h"
 #include "ui/TouchPromptBalloon.h"
 #include "menu/MenuCursor.h"
+#include "menu/PopupChoiceMenu.h"
 
 #define func_020624c0 _ZN18EncodedString16BufD1Ev
 #define func_02062510 _ZN18EncodedString16BufC1Ev
@@ -253,17 +254,7 @@ extern u32 sDesignTabTargetFrameCells[];
 
 
 
-class PopupChoiceMenuBody {
-public:
-};
 
-class PopupChoiceMenu : public PopupChoiceMenuBody {
-public:
-    PopupChoiceMenu();
-    ~PopupChoiceMenu();
-    u32 unk_00[0x2f4 / 4];
-    u8 unk_2f4[0xc];
-};
 
 class MenuErrorMessage {
 public:
@@ -423,6 +414,8 @@ public:
     /* 0x398 */ MenuCursorBuf0 cursor;
     /* 0x3fc */ MenuErrorMessage errorMessage;
     /* 0x504 */ PopupChoiceMenu popup;
+    /* 0x7f8 */ PopupChoiceIdList choiceList;
+    /* 0x803 */ u8 pad_803[1];
     /* 0x804 */ BgVramTaskPair bgTasks[2];
     /* 0x874 */ u8 mainScreen[0x1074 - 0x874];
     /* 0x1074 */ u8 slotIcons[8];
@@ -1303,7 +1296,7 @@ u32 DesignTab::getSlotPattern(u32 i) {
 }
 
 void DesignTab::setPopupChoices(u32 i) {
-    MI_CpuCopy8(sDesignTabPopupChoices[i], popup.unk_2f4, 0xb);
+    MI_CpuCopy8(sDesignTabPopupChoices[i], &choiceList, 0xb);
 }
 
 u32 DesignTab::getPopupRowValue(u32 i) {
@@ -1543,7 +1536,7 @@ void DesignTab::onPopupChoice() {
 }
 
 void DesignTab::openPopup() {
-    PopupChoiceMenuBody_setRowsFromIds(&popup, popup.unk_2f4, 0);
+    PopupChoiceMenuBody_setRowsFromIds(&popup, &choiceList, 0);
     s32 a = getSlotX(targetSlot) - 0x18;
     s32 b = getSlotY(targetSlot) + 0x10;
     PopupChoiceMenu_placeAt(&popup, a, b);

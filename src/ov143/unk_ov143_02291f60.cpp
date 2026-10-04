@@ -8,6 +8,7 @@
 #include "ui/LabelString.h"
 #include "gfx/BgVramTask.h"
 #include "menu/MenuCursor.h"
+#include "menu/MenuBottomButtons.h"
 
 struct Unk_ov143_02293b38_E {
     u32 w0;
@@ -66,30 +67,7 @@ typedef void (MelodyMenu::*Unk_ov143_02293b80_Fn)();
 
 
 
-// Menu list sub-object, 0x164 bytes (src/ov002/)
-class MenuBottomButtons {
-public:
-    MenuBottomButtons();
-    ~MenuBottomButtons();
-    void setLayoutConfirmQuit03();
-    void drawAt(s32 a);
-    void freeTexts();
-    u32 unk_00[0x164 / 4];
-};
 
-// Same object as MenuBottomButtons under the name used by the ov002 list functions
-class MenuBottomButtonsBody {
-public:
-    void disableObjWindow();
-    void enableObjWindow();
-    void setLayoutYesNo0D(s32 a);
-    s32 getPressOffset();
-    s32 stepPress();
-    s32 setSelected(u8 a);
-    s32 getTargetY(s32 a);
-    s32 getTargetX(s32 a);
-    s32 isTouched(s32 a);
-};
 
 // Global at 0x020cbb18
 

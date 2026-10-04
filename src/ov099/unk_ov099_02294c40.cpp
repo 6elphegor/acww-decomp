@@ -13,6 +13,7 @@
 #include "gfx/BgVramTask.h"
 #include "ui/TouchPromptBalloon.h"
 #include "menu/MenuCursor.h"
+#include "menu/PopupChoiceMenu.h"
 
 class PocketMenuUnk;
 struct PopupChoiceIdList;
@@ -103,27 +104,7 @@ s32 LetterGrid_GetSlotX(void *p, u32 v);
 
 
 
-// Same object as PopupChoiceMenu under the name used by its other methods
-class PopupChoiceMenuBody {
-public:
-    s32 getRowY(s32 a);
-    s32 getRowX();
-    s32 hitTestRowOrLast(s32 a, s32 b);
-    void setRowsFromIds(PopupChoiceIdList *r, s32 a);
-    BOOL isClosed();
-    BOOL isOpen();
-};
 
-class PopupChoiceMenu {
-public:
-    PopupChoiceMenu();
-    ~PopupChoiceMenu();
-    void placeNearPoint(s32 a, s32 b);
-    void init(s32 a, s32 b, const char *c);
-    u32 unk_00[0x2f4 / 4];
-    u8 unk_2f4[5];
-    u8 choiceValues[7];
-};
 
 class MenuErrorMessage {
 public:
@@ -233,6 +214,8 @@ public:
     /* 0x21f4 */ CursorMotion flyMotion;
     /* 0x220c */ MenuCursorBuf0 cursor;
     /* 0x2270 */ PopupChoiceMenu popup;
+    /* 0x2564 */ PopupChoiceIdList choiceList;
+    /* 0x256f */ u8 pad_256f[1];
     /* 0x2570 */ MenuErrorMessage errorMessage;
     /* 0x2678 */ u32 stateFlags;
     /* 0x267c */ u32 slideY;
@@ -539,7 +522,7 @@ void PocketMenuUnk::mainAct02() {
             s32 t = ((PopupChoiceMenuBody *)&popup)->hitTestRowOrLast(gTouchCurX, gTouchCurY);
             if (t >= 0) {
                 PopupChoice_DecideRow(&popup, t, 1);
-                chosenAction = popup.choiceValues[t];
+                chosenAction = choiceList.values[t];
                 setMainState(0x12);
             }
         }
@@ -633,7 +616,7 @@ void PocketMenuUnk::mainAct06() {
 void PocketMenuUnk::mainAct07() {
     if (cursor.isAnimDone()) {
         PopupChoice_DecideRow(&popup, popupRow, 1);
-        chosenAction = popup.choiceValues[popupRow];
+        chosenAction = choiceList.values[popupRow];
         setMainState(0x12);
     }
 }
@@ -1198,7 +1181,7 @@ s32 PocketMenuUnk::runChosenAction() {
 }
 
 void PocketMenuUnk::showOptionList() {
-    ((PopupChoiceMenuBody *)&popup)->setRowsFromIds((PopupChoiceIdList *)&popup.unk_2f4, 0);
+    ((PopupChoiceMenuBody *)&popup)->setRowsFromIds(&choiceList, 0);
     s32 a = PocketMenuUnk_GetTargetX(this, actionTarget);
     s32 b = PocketMenuUnk_GetTargetY(this, actionTarget);
     popup.placeNearPoint(a, b);
@@ -1215,15 +1198,15 @@ void PocketMenuUnk::cancelOptions() {
 
 void PocketMenuUnk::addItemOptions() {
     if (MenuCtrl_IsButtons()) {
-        ChoiceIdList_Add(&popup.unk_2f4, 0, 0);
+        ChoiceIdList_Add(&choiceList, 0, 0);
     }
-    ChoiceIdList_Add(&popup.unk_2f4, 1, 1);
-    ChoiceIdList_Add(&popup.unk_2f4, 2, 1);
+    ChoiceIdList_Add(&choiceList, 1, 1);
+    ChoiceIdList_Add(&choiceList, 2, 1);
 }
 
 void PocketMenuUnk::openTargetOptions(u32 idx) {
     actionTarget = idx;
-    ChoiceIdList_Clear(&popup.unk_2f4, 1);
+    ChoiceIdList_Clear(&choiceList, 1);
     if (PocketMenuUnk_IsPocketTarget(this, idx)) {
         addItemOptions();
         hideCursor();

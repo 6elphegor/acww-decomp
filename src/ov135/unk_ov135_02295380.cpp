@@ -3,6 +3,7 @@
 #include "menu/MenuProc.h"
 #include "ui/HandCursor.h"
 #include "menu/MenuCursor.h"
+#include "menu/MenuBottomButtons.h"
 
 extern "C" {
 extern const u8 sClockAdjustCursorLeftTable[7];
@@ -76,26 +77,7 @@ void DateTimePicker_Init(void *self, s32 a, s32 b, s32 c, s32 d);
 
 
 
-class MenuBottomButtonsBody {
-public:
-    s32 getPressOffset();
-    BOOL stepPress();
-    void setSelected(u8 v);
-    s32 getTargetY(s32 idx);
-    s32 getTargetX(s32 idx);
-    BOOL isTouched(s32 a);
-};
 
-// Menu list sub-object, 0x164 bytes
-class MenuBottomButtons : public MenuBottomButtonsBody {
-public:
-    MenuBottomButtons();
-    ~MenuBottomButtons();
-    void setLayoutConfirmAnd06(u8 a);
-    void drawAt(s32 a);
-    void freeTexts();
-    u32 unk_00[0x164 / 4];
-};
 
 // ov134 library object at +0x260, 0x25c4 bytes
 class DateTimePicker {
@@ -392,9 +374,9 @@ void ClockAdjustMenu::updateTouch() {
         startButtonInput();
     } else {
         if (Unk_ov135_Both()) {
-            if (bottomButtons.isTouched(6)) {
+            if (((MenuBottomButtonsBody *)&bottomButtons)->isTouched(6)) {
                 confirm();
-            } else if (bottomButtons.isTouched(7)) {
+            } else if (((MenuBottomButtonsBody *)&bottomButtons)->isTouched(7)) {
                 cancel();
             } else {
                 u8 a = gTouchCurX;
@@ -587,11 +569,11 @@ void ClockAdjustMenu::updateCursorRelease() {
 }
 
 void ClockAdjustMenu::stateExit() {
-    if (bottomButtons.stepPress()) {
+    if (((MenuBottomButtonsBody *)&bottomButtons)->stepPress()) {
         if (cursor.getAnim()) {
-            s32 a = bottomButtons.getPressOffset();
-            s32 b = bottomButtons.getTargetX(-1);
-            s32 c = bottomButtons.getTargetY(-1);
+            s32 a = ((MenuBottomButtonsBody *)&bottomButtons)->getPressOffset();
+            s32 b = ((MenuBottomButtonsBody *)&bottomButtons)->getTargetX(-1);
+            s32 c = ((MenuBottomButtonsBody *)&bottomButtons)->getTargetY(-1);
             cursor.warpTo(a + b, a + c);
         }
     } else {
@@ -638,7 +620,7 @@ void ClockAdjustMenu::resumeInput() {
 }
 
 void ClockAdjustMenu::confirm() {
-    bottomButtons.setSelected(6);
+    ((MenuBottomButtonsBody *)&bottomButtons)->setSelected(6);
     setTransitionState(2);
     setMainState(0xd);
     MenuCtrl_SetResult(1);
@@ -665,7 +647,7 @@ void ClockAdjustMenu::confirm() {
 }
 
 void ClockAdjustMenu::cancel() {
-    bottomButtons.setSelected(7);
+    ((MenuBottomButtonsBody *)&bottomButtons)->setSelected(7);
     setTransitionState(2);
     setMainState(0xd);
     MenuCtrl_SetResult(0);
@@ -733,9 +715,9 @@ s32 ClockAdjustMenu::getCursorTargetX() {
     }
     switch (cursorSlot) {
     case 5:
-        return bottomButtons.getTargetX(6);
+        return ((MenuBottomButtonsBody *)&bottomButtons)->getTargetX(6);
     case 6:
-        return bottomButtons.getTargetX(7);
+        return ((MenuBottomButtonsBody *)&bottomButtons)->getTargetX(7);
     default:
         return sClockAdjustCursorXTable[cursorSlot];
     }
@@ -747,9 +729,9 @@ s32 ClockAdjustMenu::getCursorTargetY() {
     }
     switch (cursorSlot) {
     case 5:
-        return bottomButtons.getTargetY(6);
+        return ((MenuBottomButtonsBody *)&bottomButtons)->getTargetY(6);
     case 6:
-        return bottomButtons.getTargetY(7);
+        return ((MenuBottomButtonsBody *)&bottomButtons)->getTargetY(7);
     default:
         return sClockAdjustCursorYTable[cursorSlot];
     }

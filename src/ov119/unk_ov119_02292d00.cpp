@@ -6,6 +6,7 @@
 #include "ui/LabelString.h"
 #include "gfx/BgVramTask.h"
 #include "menu/MenuCursor.h"
+#include "menu/PopupChoiceMenu.h"
 
 // Calls into other modules' class methods: extern "C" functions named by the real mangled symbol (self first).
 #define LabelString_redrawAligned _ZN11LabelString13redrawAlignedEii
@@ -186,22 +187,7 @@ extern Unk_ov119_02295588 data_ov119_02295588;
 
 struct PopupChoiceIdList;
 
-// cursor object at +0xdc (size 0x300)
-class PopupChoiceMenuBody {
-public:
-    s32 getRowY(s32 v);
-    s32 getRowX();
-    BOOL isClosed();
-    BOOL isOpen();
-    u8 unk_00[0x2f4];
-};
 
-class PopupChoiceMenu : public PopupChoiceMenuBody {
-public:
-    PopupChoiceMenu();
-    ~PopupChoiceMenu();
-    u8 unk_2f4[0xc];
-};
 
 
 
@@ -432,6 +418,8 @@ public:
     /* 0x0b8 */ s32 fadeLevel;
     /* 0x0bc */ u8 rosterIndices[0x20];
     /* 0x0dc */ PopupChoiceMenu popup;
+    /* 0x3d0 */ PopupChoiceIdList choiceList;
+    /* 0x3db */ u8 pad_3db[1];
     /* 0x3dc */ LabelString textLabels[0x13];
     /* 0x89c */ MsgString193 helpText;
     /* 0x970 */ MenuCursorBuf0 cursor;
@@ -966,7 +954,7 @@ void FriendRosterTab::mainAct09() {
 }
 
 void FriendRosterTab::mainAct0A() {
-    if (popup.isOpen()) {
+    if (((PopupChoiceMenuBody *)&popup)->isOpen()) {
         if (MenuCtrl_IsButtons()) {
             cursorToPopupTop();
             setMainState(6);
@@ -987,7 +975,7 @@ void FriendRosterTab::mainAct0B() {
 }
 
 void FriendRosterTab::mainAct0C() {
-    if (popup.isClosed()) {
+    if (((PopupChoiceMenuBody *)&popup)->isClosed()) {
         onPopupChoice();
     }
 }
@@ -1176,8 +1164,8 @@ void FriendRosterTab::moveCursorToTarget() {
 }
 
 void FriendRosterTab::moveCursorToPopupRow() {
-    s32 a = popup.getRowX();
-    s32 b = popup.getRowY(popupRow);
+    s32 a = ((PopupChoiceMenuBody *)&popup)->getRowX();
+    s32 b = ((PopupChoiceMenuBody *)&popup)->getRowY(popupRow);
     U970_A->moveToLinear(a, b, 2);
     returnState = mainState;
     setMainState(3);
@@ -1186,8 +1174,8 @@ void FriendRosterTab::moveCursorToPopupRow() {
 void FriendRosterTab::cancelPopup() {
     popupValue = 10;
     popupRow = PopupChoice_DecideCancel(&popup, 1);
-    s32 a = popup.getRowX();
-    s32 b = popup.getRowY(popupRow);
+    s32 a = ((PopupChoiceMenuBody *)&popup)->getRowX();
+    s32 b = ((PopupChoiceMenuBody *)&popup)->getRowY(popupRow);
     U970_A->warpTo(a, b);
     U970_C->setAnimAtEnd(8);
     setMainState(0xb);
@@ -1199,8 +1187,8 @@ void FriendRosterTab::cursorToPopupTop() {
     } else {
         popupRow = 0;
     }
-    s32 a = popup.getRowX();
-    s32 b = popup.getRowY(popupRow);
+    s32 a = ((PopupChoiceMenuBody *)&popup)->getRowX();
+    s32 b = ((PopupChoiceMenuBody *)&popup)->getRowY(popupRow);
     U970_A->warpTo(a, b);
     U970_B->setAnimIfChanged(7);
 }

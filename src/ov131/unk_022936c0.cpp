@@ -2,6 +2,7 @@
 #include "Unk_020d8c7c.h"
 #include "menu/MenuProc.h"
 #include "menu/MenuCursor.h"
+#include "menu/MenuBottomButtons.h"
 
 extern "C" {
 extern u8 gSaveHouse[];
@@ -63,28 +64,7 @@ void NumberPad_PressKey(void *self);
 
 
 
-class MenuBottomButtonsBody {
-public:
-    void setSelected(u8 v);
-    void disableButton(s32 v);
-    void enableButton(s32 v);
-    s32 isTouched(s32 v);
-    s32 isButtonDisabled(s32 v);
-    s32 stepPress();
-    s32 getPressOffset();
-    s32 getTargetX(s32 v);
-    s32 getTargetY(s32 v);
-};
 
-class MenuBottomButtons : public MenuBottomButtonsBody {
-public:
-    MenuBottomButtons();
-    ~MenuBottomButtons();
-    void setLayoutConfirmAnd06(u8 v);
-    void drawAt(s32 a);
-    void freeTexts();
-    u32 unk_00[0x164 / 4];
-};
 
 class NumberPad {
 public:
@@ -321,9 +301,9 @@ void AmountEntryMenu::preStateUpdate() {
 void AmountEntryMenu::postStateUpdate() {
     numberPad.flushScreens();
     if (NumberPad_GetValue(&numberPad) == 0) {
-        bottomButtons.disableButton(6);
+        ((MenuBottomButtonsBody *)&bottomButtons)->disableButton(6);
     } else {
-        bottomButtons.enableButton(6);
+        ((MenuBottomButtonsBody *)&bottomButtons)->enableButton(6);
     }
 }
 
@@ -347,9 +327,9 @@ void AmountEntryMenu::updateTouch() {
         startButtonInput();
     } else {
         if (func_ov131_Both()) {
-            if (bottomButtons.isTouched(6)) {
+            if (((MenuBottomButtonsBody *)&bottomButtons)->isTouched(6)) {
                 confirm();
-            } else if (bottomButtons.isTouched(7)) {
+            } else if (((MenuBottomButtonsBody *)&bottomButtons)->isTouched(7)) {
                 cancel();
             } else {
                 if (NumberPad_HitTestKey(&numberPad, gTouchCurX[0], gTouchCurY[0]) != 0xd) {
@@ -432,11 +412,11 @@ void AmountEntryMenu::stateButtonRepeat() {
 }
 
 void AmountEntryMenu::stateExit() {
-    if (bottomButtons.stepPress()) {
+    if (((MenuBottomButtonsBody *)&bottomButtons)->stepPress()) {
         if (_ZN10HandCursor7getAnimEv(&cursor)) {
-            s32 a = bottomButtons.getPressOffset();
-            s32 b = bottomButtons.getTargetX(-1);
-            s32 c = bottomButtons.getTargetY(-1);
+            s32 a = ((MenuBottomButtonsBody *)&bottomButtons)->getPressOffset();
+            s32 b = ((MenuBottomButtonsBody *)&bottomButtons)->getTargetX(-1);
+            s32 c = ((MenuBottomButtonsBody *)&bottomButtons)->getTargetY(-1);
             ((MenuCursorBase *)&cursor)->warpTo(a + b, a + c);
         }
     } else {
@@ -465,10 +445,10 @@ void AmountEntryMenu::resumeInput() {
 }
 
 BOOL AmountEntryMenu::confirm() {
-    if (bottomButtons.isButtonDisabled(6)) {
+    if (((MenuBottomButtonsBody *)&bottomButtons)->isButtonDisabled(6)) {
         return FALSE;
     }
-    bottomButtons.setSelected(6);
+    ((MenuBottomButtonsBody *)&bottomButtons)->setSelected(6);
     setTransitionState(2);
     setMainState(7);
     MenuCtrl_SetResult(1);
@@ -481,7 +461,7 @@ BOOL AmountEntryMenu::confirm() {
 void AmountEntryMenu::cancel() {
     Snd_PlaySe(0x2a);
     MenuCtrl_SetResult(0);
-    bottomButtons.setSelected(7);
+    ((MenuBottomButtonsBody *)&bottomButtons)->setSelected(7);
     setTransitionState(2);
     setMainState(7);
 }

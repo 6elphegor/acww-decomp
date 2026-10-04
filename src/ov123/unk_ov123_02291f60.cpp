@@ -6,6 +6,7 @@
 #include "ui/LabelString.h"
 #include "gfx/BgVramTask.h"
 #include "menu/MenuCursor.h"
+#include "menu/MenuBottomButtons.h"
 
 extern "C" {
 extern u8 gSaveBlancaFace;
@@ -97,31 +98,7 @@ void _ZN10BgVramTask6cancelEv(void *self);
 
 
 
-class MenuBottomButtonsBody {
-public:
-    void disableObjWindow();
-    void enableObjWindow();
-    s32 getPressOffset();
-    BOOL stepPress();
-    void setSelected(u8 v);
-    s32 getTargetY(s32 idx);
-    s32 getTargetX(s32 idx);
-    BOOL isTouched(s32 a);
-    BOOL hitTest(s32 idx, s32 x, s32 y);
-    void setLayoutYesNo07(s32 a);
-};
 
-// Menu list sub-object, 0x164 bytes
-class MenuBottomButtons : public MenuBottomButtonsBody {
-public:
-    MenuBottomButtons();
-    ~MenuBottomButtons();
-    void setLayoutNeverMindConfirm();
-    void hide();
-    void drawAt(s32 a);
-    void freeTexts();
-    u32 unk_00[0x164 / 4];
-};
 
 
 struct Unk_ov123_022958c0 {
@@ -756,9 +733,9 @@ void PatternEditorMenu::stateConfirmOpening() {
     if (stepSlideOut(-1)) {
         initSlideIn(0, 0);
         if (testFlags(8)) {
-            bottomButtons.setLayoutYesNo07(0x87);
+            ((MenuBottomButtonsBody *)&bottomButtons)->setLayoutYesNo07(0x87);
         } else {
-            bottomButtons.setLayoutYesNo07(0x22);
+            ((MenuBottomButtonsBody *)&bottomButtons)->setLayoutYesNo07(0x22);
         }
         setTransitionState(8);
     }
@@ -940,10 +917,10 @@ void PatternEditorMenu::updateConfirmTouch() {
     if (checkSwitchToButtons(1)) {
         startConfirmButtons();
     } else if (Unk_ov123_022946c4_Both()) {
-        if (bottomButtons.isTouched(3)) {
+        if (((MenuBottomButtonsBody *)&bottomButtons)->isTouched(3)) {
             pressedButton = 0x1f;
             activateButton();
-        } else if (bottomButtons.isTouched(4)) {
+        } else if (((MenuBottomButtonsBody *)&bottomButtons)->isTouched(4)) {
             pressedButton = 0x20;
             activateButton();
         }
@@ -1181,11 +1158,11 @@ void PatternEditorMenu::updateCursorRelease()
 
 void PatternEditorMenu::updateBarTransition()
 {
-    if (bottomButtons.stepPress()) {
+    if (((MenuBottomButtonsBody *)&bottomButtons)->stepPress()) {
         if (cursor.getAnim()) {
-            s32 a = bottomButtons.getPressOffset();
-            s32 b = bottomButtons.getTargetX(-1);
-            s32 c = bottomButtons.getTargetY(-1);
+            s32 a = ((MenuBottomButtonsBody *)&bottomButtons)->getPressOffset();
+            s32 b = ((MenuBottomButtonsBody *)&bottomButtons)->getTargetX(-1);
+            s32 c = ((MenuBottomButtonsBody *)&bottomButtons)->getTargetY(-1);
             cursor.warpTo(a + b, a + c);
         }
     } else {
@@ -1269,7 +1246,7 @@ void PatternEditorMenu::askQuit()
 void PatternEditorMenu::startBarTransition(u8 a, u8 b)
 {
     setTransitionState(a);
-    bottomButtons.setSelected(b);
+    ((MenuBottomButtonsBody *)&bottomButtons)->setSelected(b);
     setMainState(0xc);
 }
 
@@ -1433,10 +1410,10 @@ void PatternEditorMenu::setPalette(u8 a) {
 }
 
 u8 PatternEditorMenu::hitTest(s32 x, s32 y) {
-    if (bottomButtons.hitTest(9, x, y)) {
+    if (((MenuBottomButtonsBody *)&bottomButtons)->hitTest(9, x, y)) {
         return 0x1d;
     }
-    if (bottomButtons.hitTest(8, x, y)) {
+    if (((MenuBottomButtonsBody *)&bottomButtons)->hitTest(8, x, y)) {
         return 0x1e;
     }
     if (x >= 0x8 && x <= 0x28 && y >= 0x18 && y <= 0x38) {
@@ -2561,7 +2538,7 @@ void PatternEditorMenu::beginScreenDim() {
     }
     Gfx2d_BeginSubObjWinBrightness();
     Gfx2d_SetSubBrightness(-6);
-    bottomButtons.enableObjWindow();
+    ((MenuBottomButtonsBody *)&bottomButtons)->enableObjWindow();
     Gfx2d_SetSubWin1Planes(0x1f, 0);
     Gfx2d_EnableSubWindows(2);
     Gfx2d_SetSubWin1Rect(0x40, 0x18, 0xc0, 0x98);
@@ -2571,7 +2548,7 @@ void PatternEditorMenu::beginScreenDim() {
 
 void PatternEditorMenu::endScreenDim() {
     Gfx2d_EndSubObjWinBrightness();
-    bottomButtons.disableObjWindow();
+    ((MenuBottomButtonsBody *)&bottomButtons)->disableObjWindow();
     Gfx2d_DisableSubWindows(2);
 }
 

@@ -2,6 +2,7 @@
 #include "Unk_020d8c7c.h"
 #include "menu/MenuProc.h"
 #include "menu/MenuCursor.h"
+#include "menu/MenuBottomButtons.h"
 
 extern "C" {
 extern const u8 sDateSelectCursorLeftTable[5];
@@ -63,25 +64,7 @@ void DateTimePicker_Init(void *self, s32 a, s32 b, s32 c, s32 d);
 
 
 
-class MenuBottomButtonsBody {
-public:
-    void setSelected(u8 v);
-    s32 isTouched(s32 v);
-    s32 stepPress();
-    s32 getPressOffset();
-    s32 getTargetX(s32 v);
-    s32 getTargetY(s32 v);
-};
 
-class MenuBottomButtons : public MenuBottomButtonsBody {
-public:
-    MenuBottomButtons();
-    ~MenuBottomButtons();
-    void setLayoutConfirmAnd06(u8 v);
-    void drawAt(s32 a);
-    void freeTexts();
-    u32 unk_00[0x164 / 4];
-};
 
 // ov134's library object at +0x260 (plain class DateTimePicker)
 class DateTimePicker {
@@ -382,9 +365,9 @@ void DateSelectMenu::updateTouch() {
         startButtonInput();
     } else {
         if (Unk_ov138_Both()) {
-            if (bottomButtons.isTouched(6)) {
+            if (((MenuBottomButtonsBody *)&bottomButtons)->isTouched(6)) {
                 confirm();
-            } else if (bottomButtons.isTouched(7)) {
+            } else if (((MenuBottomButtonsBody *)&bottomButtons)->isTouched(7)) {
                 cancel();
             } else {
                 s32 r = DateTimePicker_HitTestDateField(&picker, gTouchCurX, gTouchCurY);
@@ -558,11 +541,11 @@ void DateSelectMenu::updateCursorRelease() {
 }
 
 void DateSelectMenu::stateExit() {
-    if (bottomButtons.stepPress()) {
+    if (((MenuBottomButtonsBody *)&bottomButtons)->stepPress()) {
         if (_ZN10HandCursor7getAnimEv(&cursor)) {
-            s32 a = bottomButtons.getPressOffset();
-            s32 b = bottomButtons.getTargetX(-1);
-            s32 c = bottomButtons.getTargetY(-1);
+            s32 a = ((MenuBottomButtonsBody *)&bottomButtons)->getPressOffset();
+            s32 b = ((MenuBottomButtonsBody *)&bottomButtons)->getTargetX(-1);
+            s32 c = ((MenuBottomButtonsBody *)&bottomButtons)->getTargetY(-1);
             ((MenuCursorBase *)&cursor)->warpTo(a + b, a + c);
         }
     } else {
@@ -609,7 +592,7 @@ void DateSelectMenu::resumeInput() {
 }
 
 void DateSelectMenu::confirm() {
-    bottomButtons.setSelected(6);
+    ((MenuBottomButtonsBody *)&bottomButtons)->setSelected(6);
     setTransitionState(2);
     setMainState(0xb);
     u32 v[2];
@@ -621,7 +604,7 @@ void DateSelectMenu::confirm() {
 }
 
 void DateSelectMenu::cancel() {
-    bottomButtons.setSelected(7);
+    ((MenuBottomButtonsBody *)&bottomButtons)->setSelected(7);
     setTransitionState(2);
     setMainState(0xb);
     MenuCtrl_SetResult(0);
@@ -700,9 +683,9 @@ s32 DateSelectMenu::getCursorTargetX() {
     }
     switch (cursorSlot) {
     case 3:
-        return bottomButtons.getTargetX(6);
+        return ((MenuBottomButtonsBody *)&bottomButtons)->getTargetX(6);
     case 4:
-        return bottomButtons.getTargetX(7);
+        return ((MenuBottomButtonsBody *)&bottomButtons)->getTargetX(7);
     default:
         return sDateSelectCursorXTable[cursorSlot];
     }
@@ -714,9 +697,9 @@ s32 DateSelectMenu::getCursorTargetY() {
     }
     switch (cursorSlot) {
     case 3:
-        return bottomButtons.getTargetY(6);
+        return ((MenuBottomButtonsBody *)&bottomButtons)->getTargetY(6);
     case 4:
-        return bottomButtons.getTargetY(7);
+        return ((MenuBottomButtonsBody *)&bottomButtons)->getTargetY(7);
     default:
         return sDateSelectCursorYTable[cursorSlot];
     }

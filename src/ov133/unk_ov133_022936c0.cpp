@@ -9,6 +9,7 @@
 #include "gfx/BgVramTask.h"
 #include "menu/MenuCursor.h"
 #include "player/PlayerData.h"
+#include "menu/MenuBottomButtons.h"
 
 extern "C" {
 extern const u8 sKeyDigits[12];
@@ -127,29 +128,7 @@ extern "C" CommManager *gCommManager;
 
 
 
-class MenuBottomButtonsBody {
-public:
-    s32 getPressOffset();
-    BOOL stepPress();
-    void setSelected(u8 v);
-    s32 getTargetY(s32 idx);
-    s32 getTargetX(s32 idx);
-    BOOL isTouched(s32 a);
-    BOOL isButtonDisabled(s32 idx);
-    void enableButton(s32 idx);
-    void disableButton(s32 idx);
-};
 
-// Menu list sub-object, 0x164 bytes
-class MenuBottomButtons : public MenuBottomButtonsBody {
-public:
-    MenuBottomButtons();
-    ~MenuBottomButtons();
-    void setLayoutConfirmAnd06(u8 a);
-    void drawAt(s32 a);
-    void freeTexts();
-    u32 unk_00[0x164 / 4];
-};
 
 // Object at +0x1300 (0x108 bytes)
 class MenuErrorMessage {
@@ -592,9 +571,9 @@ void FriendCodeMenu::updateTouch() {
             ok = FALSE;
         }
         if (ok) {
-            if (bottomButtons.isButtonDisabled(6) == 0 && bottomButtons.isTouched(6) != 0) {
+            if (((MenuBottomButtonsBody *)&bottomButtons)->isButtonDisabled(6) == 0 && ((MenuBottomButtonsBody *)&bottomButtons)->isTouched(6) != 0) {
                 confirm();
-            } else if (bottomButtons.isTouched(7)) {
+            } else if (((MenuBottomButtonsBody *)&bottomButtons)->isTouched(7)) {
                 cancel();
             } else {
                 u32 r = hitTest(gTouchCurX, gTouchCurY);
@@ -657,7 +636,7 @@ void FriendCodeMenu::updateButtons() {
                     hideCursor();
                 }
             } else if (t & 8) {
-                if (!bottomButtons.isButtonDisabled(6)) {
+                if (!((MenuBottomButtonsBody *)&bottomButtons)->isButtonDisabled(6)) {
                     confirm();
                     hideCursor();
                 }
@@ -738,11 +717,11 @@ void FriendCodeMenu::stateCaretSelect() {
 }
 
 void FriendCodeMenu::stateExit() {
-    if (bottomButtons.stepPress()) {
+    if (((MenuBottomButtonsBody *)&bottomButtons)->stepPress()) {
         if (cursor.getAnim()) {
-            s32 a = bottomButtons.getPressOffset();
-            s32 b = bottomButtons.getTargetX(-1);
-            s32 c = bottomButtons.getTargetY(-1);
+            s32 a = ((MenuBottomButtonsBody *)&bottomButtons)->getPressOffset();
+            s32 b = ((MenuBottomButtonsBody *)&bottomButtons)->getTargetX(-1);
+            s32 c = ((MenuBottomButtonsBody *)&bottomButtons)->getTargetY(-1);
             cursor.warpTo(a + (b - 6), a + c);
         }
     } else {
@@ -829,9 +808,9 @@ s32 FriendCodeMenu::getCursorTargetX() {
     case 0xc:
         return (caretPos << 4) + 0x20;
     case 0xd:
-        return bottomButtons.getTargetX(6);
+        return ((MenuBottomButtonsBody *)&bottomButtons)->getTargetX(6);
     case 0xe:
-        return bottomButtons.getTargetX(7);
+        return ((MenuBottomButtonsBody *)&bottomButtons)->getTargetX(7);
     default:
         return 0x80;
     }
@@ -846,9 +825,9 @@ s32 FriendCodeMenu::getCursorTargetY() {
     case 0xc:
         return 0x40;
     case 0xd:
-        return bottomButtons.getTargetY(6);
+        return ((MenuBottomButtonsBody *)&bottomButtons)->getTargetY(6);
     case 0xe:
-        return bottomButtons.getTargetY(7);
+        return ((MenuBottomButtonsBody *)&bottomButtons)->getTargetY(7);
     default:
         return 0x60;
     }
@@ -1025,7 +1004,7 @@ void FriendCodeMenu::confirm() {
     void *t = FriendEntry_GetFriendData(s);
     DwcFriendData_FromCodeDigits(t, codeDigits, PlayerWifiData_GetDwcUserData(((PlayerData *)h)->getWifiUserData()));
     MenuCtrl_SetResult(1);
-    bottomButtons.setSelected(6);
+    ((MenuBottomButtonsBody *)&bottomButtons)->setSelected(6);
     setTransitionState(3);
     setMainState(10);
     Snd_PlaySe(0x29);
@@ -1053,7 +1032,7 @@ void FriendCodeMenu::confirm() {
 
 void FriendCodeMenu::cancel() {
     MenuCtrl_SetResult(0);
-    bottomButtons.setSelected(7);
+    ((MenuBottomButtonsBody *)&bottomButtons)->setSelected(7);
     setTransitionState(3);
     setMainState(10);
     notifyParent(6);
@@ -1076,7 +1055,7 @@ s32 FriendCodeMenu::activateCursorKey() {
     case 12:
         break;
     case 13:
-        if (!bottomButtons.isButtonDisabled(6)) {
+        if (!((MenuBottomButtonsBody *)&bottomButtons)->isButtonDisabled(6)) {
             confirm();
             return 1;
         }
@@ -1282,12 +1261,12 @@ void FriendCodeMenu::drawCodeDigits() {
             p[0x21] = (p[0x21] & 0xfc00) | (v + 3);
         }
     }
-    if (bottomButtons.isButtonDisabled(6)) {
+    if (((MenuBottomButtonsBody *)&bottomButtons)->isButtonDisabled(6)) {
         if (codeDigits[11] != 10) {
-            bottomButtons.enableButton(6);
+            ((MenuBottomButtonsBody *)&bottomButtons)->enableButton(6);
         }
     } else if (codeDigits[11] == 10) {
-        bottomButtons.disableButton(6);
+        ((MenuBottomButtonsBody *)&bottomButtons)->disableButton(6);
     }
 }
 

@@ -7,6 +7,7 @@
 #include "ui/HandCursor.h"
 #include "menu/MenuLauncher.h"
 #include "menu/MenuCursor.h"
+#include "menu/MenuBottomButtons.h"
 
 extern "C" {
 extern u16 gPad[];
@@ -158,30 +159,7 @@ static inline BOOL Unk_ov129_02295000_Both() {
 
 
 
-class MenuBottomButtonsBody {
-public:
-    s32 getPressOffset();
-    BOOL stepPress();
-    void setSelected(u8 v);
-    s32 getTargetY(s32 idx);
-    s32 getTargetX(s32 idx);
-    BOOL isTouched(s32 a);
-    BOOL isButtonDisabled(s32 idx);
-    void enableButton(s32 idx);
-    void disableButton(s32 idx);
-    void setLayoutYesNo09(s32 a);
-};
 
-// Menu list sub-object, 0x164 bytes
-class MenuBottomButtons : public MenuBottomButtonsBody {
-public:
-    MenuBottomButtons();
-    ~MenuBottomButtons();
-    void setLayoutConfirmQuit04();
-    void drawAt(s32 a);
-    void freeTexts();
-    u32 unk_00[0x164 / 4];
-};
 
 // Object at +0xb8 (0x108 bytes)
 class MenuErrorMessage {
@@ -585,11 +563,11 @@ void ConstellationEditorMenu::transitionAct05() {
 
 void ConstellationEditorMenu::transitionAct06() {
     initSlideIn(0, 0);
-    bottomButtons.enableButton(6);
+    ((MenuBottomButtonsBody *)&bottomButtons)->enableButton(6);
     if (testFlags(4)) {
-        bottomButtons.setLayoutYesNo09(0x87);
+        ((MenuBottomButtonsBody *)&bottomButtons)->setLayoutYesNo09(0x87);
     } else {
-        bottomButtons.setLayoutYesNo09(0x22);
+        ((MenuBottomButtonsBody *)&bottomButtons)->setLayoutYesNo09(0x22);
     }
     clearFlags(1);
     setTransitionState(7);
@@ -619,9 +597,9 @@ void ConstellationEditorMenu::transitionAct0A() {
     initSlideIn(0, 0);
     bottomButtons.setLayoutConfirmQuit04();
     if (editMode == 2) {
-        bottomButtons.enableButton(6);
+        ((MenuBottomButtonsBody *)&bottomButtons)->enableButton(6);
     } else {
-        bottomButtons.disableButton(6);
+        ((MenuBottomButtonsBody *)&bottomButtons)->disableButton(6);
     }
     setTransitionState(0xb);
     setFlags(1);
@@ -648,8 +626,8 @@ void ConstellationEditorMenu::func_ov129_02295d38() {
     confirmChoice = 1;
     ((MenuCursor *)&cursor)->setAnimIfChanged(1);
     cursor.vfunc_0c();
-    s32 t = bottomButtons.getTargetX(4);
-    cursor.warpTo(t, bottomButtons.getTargetY(4));
+    s32 t = ((MenuBottomButtonsBody *)&bottomButtons)->getTargetX(4);
+    cursor.warpTo(t, ((MenuBottomButtonsBody *)&bottomButtons)->getTargetY(4));
     setMainState(0xc);
 }
 
@@ -733,9 +711,9 @@ void ConstellationEditorMenu::setupSkyView() {
     MenuButtons_LoadTextColors(&bottomButtons);
     bottomButtons.setLayoutConfirmQuit04();
     if (editMode == 2) {
-        bottomButtons.enableButton(6);
+        ((MenuBottomButtonsBody *)&bottomButtons)->enableButton(6);
     } else {
-        bottomButtons.disableButton(6);
+        ((MenuBottomButtonsBody *)&bottomButtons)->disableButton(6);
     }
 }
 
@@ -751,10 +729,10 @@ void ConstellationEditorMenu::mainAct00() {
             StarSky_ScrollInDir(&skyView, scrollDir, 0);
             setMainState(1);
             clearTappedStar();
-        } else if (bottomButtons.isButtonDisabled(6) == 0 && bottomButtons.isTouched(6)) {
+        } else if (((MenuBottomButtonsBody *)&bottomButtons)->isButtonDisabled(6) == 0 && ((MenuBottomButtonsBody *)&bottomButtons)->isTouched(6)) {
             startFinish();
             clearTappedStar();
-        } else if (bottomButtons.isTouched(5)) {
+        } else if (((MenuBottomButtonsBody *)&bottomButtons)->isTouched(5)) {
             startQuit();
             clearTappedStar();
         } else {
@@ -815,7 +793,7 @@ void ConstellationEditorMenu::mainAct03() {
             moveCursorToTarget();
             clearHoverStar();
         } else if (k & 8) {
-            if (bottomButtons.isButtonDisabled(6) == 0) {
+            if (((MenuBottomButtonsBody *)&bottomButtons)->isButtonDisabled(6) == 0) {
                 clearFlags(2);
                 cursorTarget = 4;
                 clearHoverStar();
@@ -885,7 +863,7 @@ void ConstellationEditorMenu::mainAct04() {
             setMainState(3);
             moveCursorToTarget();
         } else if (k & 8) {
-            if (bottomButtons.isButtonDisabled(6) == 0) {
+            if (((MenuBottomButtonsBody *)&bottomButtons)->isButtonDisabled(6) == 0) {
                 hideCursor();
                 startFinish();
             }
@@ -941,7 +919,7 @@ void ConstellationEditorMenu::updateCursorPress() {
             u32 v = cursorTarget;
             switch (v) {
             case 4:
-                if (bottomButtons.isButtonDisabled(6) == 0) {
+                if (((MenuBottomButtonsBody *)&bottomButtons)->isButtonDisabled(6) == 0) {
                     startFinish();
                 } else {
                     setMainState(4);
@@ -972,11 +950,11 @@ void ConstellationEditorMenu::updateCursorRelease() {
 }
 
 void ConstellationEditorMenu::mainAct0A() {
-    if (bottomButtons.stepPress()) {
+    if (((MenuBottomButtonsBody *)&bottomButtons)->stepPress()) {
         if (cursor.getAnim()) {
-            s32 a = bottomButtons.getPressOffset();
-            s32 b = bottomButtons.getTargetX(-1);
-            s32 c = bottomButtons.getTargetY(-1);
+            s32 a = ((MenuBottomButtonsBody *)&bottomButtons)->getPressOffset();
+            s32 b = ((MenuBottomButtonsBody *)&bottomButtons)->getTargetX(-1);
+            s32 c = ((MenuBottomButtonsBody *)&bottomButtons)->getTargetY(-1);
             cursor.warpTo(a + b, a + c);
         }
     } else {
@@ -989,9 +967,9 @@ void ConstellationEditorMenu::mainAct0B() {
     if (checkSwitchToButtons(1)) {
         func_ov129_02295d38();
     } else if (Unk_ov129_02295000_Both()) {
-        if (bottomButtons.isTouched(3)) {
+        if (((MenuBottomButtonsBody *)&bottomButtons)->isTouched(3)) {
             acceptConfirmation();
-        } else if (bottomButtons.isTouched(4)) {
+        } else if (((MenuBottomButtonsBody *)&bottomButtons)->isTouched(4)) {
             rejectConfirmation();
         }
     }
@@ -1031,12 +1009,12 @@ void ConstellationEditorMenu::mainAct0C() {
     }
     if (old != confirmChoice) {
         if (confirmChoice != 0) {
-            s32 a = bottomButtons.getTargetX(4);
-            s32 b = bottomButtons.getTargetY(4);
+            s32 a = ((MenuBottomButtonsBody *)&bottomButtons)->getTargetX(4);
+            s32 b = ((MenuBottomButtonsBody *)&bottomButtons)->getTargetY(4);
             moveCursorToPos(a, b);
         } else {
-            s32 a = bottomButtons.getTargetX(3);
-            s32 b = bottomButtons.getTargetY(3);
+            s32 a = ((MenuBottomButtonsBody *)&bottomButtons)->getTargetX(3);
+            s32 b = ((MenuBottomButtonsBody *)&bottomButtons)->getTargetY(3);
             moveCursorToPos(a, b);
         }
     }
@@ -1085,7 +1063,7 @@ void ConstellationEditorMenu::resumeInput() {
 void ConstellationEditorMenu::startFinish() {
     s32 a, b;
     clearFlags(4);
-    bottomButtons.setSelected(6);
+    ((MenuBottomButtonsBody *)&bottomButtons)->setSelected(6);
     setTransitionState(4);
     setMainState(0xa);
     clearFlags(0x10);
@@ -1100,7 +1078,7 @@ void ConstellationEditorMenu::startFinish() {
 
 void ConstellationEditorMenu::startQuit() {
     setFlags(4);
-    bottomButtons.setSelected(5);
+    ((MenuBottomButtonsBody *)&bottomButtons)->setSelected(5);
     setTransitionState(4);
     setMainState(0xa);
     clearFlags(0x10);
@@ -1114,7 +1092,7 @@ extern "C" void *data_ov129_022965a0[2] = {(void *)_ZN23ConstellationEditorMenu9
 extern "C" const s32 data_ov129_022964bc[5] = {0, 0, 0, -4, 4};
 
 void ConstellationEditorMenu::acceptConfirmation() {
-    bottomButtons.setSelected(3);
+    ((MenuBottomButtonsBody *)&bottomButtons)->setSelected(3);
     setTransitionState(2);
     setMainState(0xa);
     if (testFlags(4)) {
@@ -1144,7 +1122,7 @@ void ConstellationEditorMenu::rejectConfirmation() {
     } else {
         Snd_PlaySe(0x2a);
     }
-    bottomButtons.setSelected(4);
+    ((MenuBottomButtonsBody *)&bottomButtons)->setSelected(4);
     setTransitionState(8);
     setMainState(0xa);
 }
@@ -1211,9 +1189,9 @@ s32 ConstellationEditorMenu::getCursorTargetX() {
     }
     switch (cursorTarget) {
     case 4:
-        return bottomButtons.getTargetX(6);
+        return ((MenuBottomButtonsBody *)&bottomButtons)->getTargetX(6);
     case 5:
-        return bottomButtons.getTargetX(5);
+        return ((MenuBottomButtonsBody *)&bottomButtons)->getTargetX(5);
     default:
         return sEditorArrowCursorX[cursorTarget];
     }
@@ -1225,9 +1203,9 @@ s32 ConstellationEditorMenu::getCursorTargetY() {
     }
     switch (cursorTarget) {
     case 4:
-        return bottomButtons.getTargetY(6);
+        return ((MenuBottomButtonsBody *)&bottomButtons)->getTargetY(6);
     case 5:
-        return bottomButtons.getTargetY(5);
+        return ((MenuBottomButtonsBody *)&bottomButtons)->getTargetY(5);
     default:
         return sEditorArrowCursorY[cursorTarget];
     }
@@ -1641,7 +1619,7 @@ s32 ConstellationEditorMenu::func_ov129_022943ec() {
         }
     }
     if (cnt == 0) {
-        bottomButtons.disableButton(6);
+        ((MenuBottomButtonsBody *)&bottomButtons)->disableButton(6);
         editMode = 0;
         endStar = 0xff;
         Snd_PlaySe(0x882);
@@ -1747,7 +1725,7 @@ s32 ConstellationEditorMenu::func_ov129_022942d0() {
     if (cur != 0xffff && lineStates[cur] == 3) {
         editMode = 2;
         lines[0] = cursorLine;
-        bottomButtons.enableButton(6);
+        ((MenuBottomButtonsBody *)&bottomButtons)->enableButton(6);
         func_ov129_02294360();
         return 2;
     }

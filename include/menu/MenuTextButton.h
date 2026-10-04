@@ -22,7 +22,7 @@ public:
     void setLabelWithShadow(u8 v);              // 0x02203cc4
     void setLabel(u8 v);                        // 0x02203ce4
     void setup(Unk_ov002_02203c5c_Rec *p, u8 a, u8 b); // 0x02203cf8
-    void isDisabled();                          // 0x02203ab8
+    BOOL isDisabled();                          // 0x02203ab8
     void setEnabled();                          // 0x02203ac4
     void setDisabled();                         // 0x02203ad0
     void disableObjWindow();                    // 0x02203adc

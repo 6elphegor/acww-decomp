@@ -19,6 +19,7 @@
 #include "ui/TouchPromptBalloon.h"
 #include "menu/MenuLabelButton.h"
 #include "menu/MenuCursor.h"
+#include "menu/PopupChoiceMenu.h"
 
 extern "C" {
 extern u8 gTouchCurX;
@@ -100,25 +101,7 @@ struct Unk_0206d1d4_Src;
 
 
 
-class PopupChoiceMenuBody {
-public:
-    s32 getRowY(s32 a);
-    s32 getRowX();
-    s32 hitTestRowOrLast(s32 a, s32 b);
-    void setRowsFromIds(PopupChoiceIdList *a, s32 b);
-    BOOL isClosed();
-    BOOL isOpen();
-};
 
-class PopupChoiceMenu : public PopupChoiceMenuBody {
-public:
-    PopupChoiceMenu();
-    ~PopupChoiceMenu();
-    void placeNearPoint(s32 a, s32 b);
-    void init(s32 a, s32 b, const char *c);
-    u32 unk_00[0x2f4 / 4];
-    u8 unk_2f4[0xc];
-};
 
 class MenuErrorMessage {
 public:
@@ -260,6 +243,8 @@ public:
     /* 0x21f4 */ CursorMotion flyMotion;
     /* 0x220c */ MenuCursorBuf0 cursor;
     /* 0x2270 */ PopupChoiceMenu popup;
+    /* 0x2564 */ PopupChoiceIdList choiceList;
+    /* 0x256f */ u8 pad_256f[1];
     /* 0x2570 */ MenuErrorMessage errorMessage;
     /* 0x2678 */ LetterRenderer letterView;
     /* 0x2888 */ MenuLabelButton letterCloseButton;
@@ -286,7 +271,7 @@ public:
 typedef char Unk_ov103_size_Unk_ov103_02296da0[(sizeof(PocketLettersMenu) == 0x2b04) ? 1 : -1];
 typedef char Unk_ov103_size_Unk_ov002_02204468[(sizeof(TouchPromptBalloon) == 0xc0) ? 1 : -1];
 typedef char Unk_ov103_size_Unk_ov002_02204614[(sizeof(MenuCursorBuf0) == 0x64) ? 1 : -1];
-typedef char Unk_ov103_size_Unk_ov002_02204558[(sizeof(PopupChoiceMenu) == 0x300) ? 1 : -1];
+typedef char Unk_ov103_size_Unk_ov002_02204558[(sizeof(PopupChoiceMenu) == 0x2f4) ? 1 : -1];
 typedef char Unk_ov103_size_Unk_ov002_02204738[(sizeof(MenuLabelButton) == 0x70) ? 1 : -1];
 typedef char Unk_ov103_size_Unk_020dd458[(sizeof(Letter) == 0xf4) ? 1 : -1];
 typedef char Unk_ov103_size_Unk_ov094_02292d6c[(sizeof(InventoryBg) == 0x15e0) ? 1 : -1];
@@ -630,7 +615,7 @@ void PocketLettersMenu::mainAct04() {
         cancelPopupForButtons();
     } else {
         if (Unk_ov103_02295f10_Both()) {
-            s32 t = popup.hitTestRowOrLast(gTouchCurX, gTouchCurY);
+            s32 t = ((PopupChoiceMenuBody *)&popup)->hitTestRowOrLast(gTouchCurX, gTouchCurY);
             if (t >= 0) {
                 PopupChoice_DecideRow(&popup, t, 1);
                 popupChoice = ((u8 *)this + 0x2569)[t];
@@ -822,7 +807,7 @@ void PocketLettersMenu::mainAct13() {
 }
 
 void PocketLettersMenu::mainAct14() {
-    if (popup.isOpen()) {
+    if (((PopupChoiceMenuBody *)&popup)->isOpen()) {
         if (MenuCtrl_IsButtons()) {
             cursorToPopupTop();
             setMainState(9);
@@ -843,7 +828,7 @@ void PocketLettersMenu::mainAct15() {
 }
 
 void PocketLettersMenu::mainAct16() {
-    if (popup.isClosed()) {
+    if (((PopupChoiceMenuBody *)&popup)->isClosed()) {
         onPopupChoice();
     }
 }
@@ -1175,8 +1160,8 @@ void PocketLettersMenu::moveCursorToTarget() {
 }
 
 void PocketLettersMenu::moveCursorToPopupRow() {
-    s32 a = popup.getRowX();
-    s32 b = popup.getRowY(popupRow);
+    s32 a = ((PopupChoiceMenuBody *)&popup)->getRowX();
+    s32 b = ((PopupChoiceMenuBody *)&popup)->getRowY(popupRow);
     cursor.moveToLinear(a, b, 2);
     returnState = mainState;
     setMainState(0xb);
@@ -1184,8 +1169,8 @@ void PocketLettersMenu::moveCursorToPopupRow() {
 
 void PocketLettersMenu::cursorToPopupTop() {
     popupRow = 0;
-    s32 a = popup.getRowX();
-    s32 b = popup.getRowY(popupRow);
+    s32 a = ((PopupChoiceMenuBody *)&popup)->getRowX();
+    s32 b = ((PopupChoiceMenuBody *)&popup)->getRowY(popupRow);
     cursor.warpTo(a, b);
     ((MenuCursor *)&cursor)->setAnimIfChanged(7);
 }
@@ -1243,7 +1228,7 @@ s32 PocketLettersMenu::onPopupChoice() {
 }
 
 void PocketLettersMenu::openPopup() {
-    popup.setRowsFromIds((PopupChoiceIdList *)&popup.unk_2f4, 0);
+    ((PopupChoiceMenuBody *)&popup)->setRowsFromIds(&choiceList, 0);
     s32 a = getSlotX(selectedSlot);
     s32 b = getSlotY(selectedSlot);
     popup.placeNearPoint(a, b);
@@ -1260,23 +1245,23 @@ void PocketLettersMenu::cancelPopupForButtons() {
 
 void PocketLettersMenu::selectLetter(u32 idx) {
     selectedSlot = idx;
-    ChoiceIdList_Clear(&popup.unk_2f4, 3);
+    ChoiceIdList_Clear(&choiceList, 3);
     s32 r6 = getSlotLetter(idx);
     if (MenuCtrl_IsButtons()) {
-        ChoiceIdList_Add(&popup.unk_2f4, 0, 0);
+        ChoiceIdList_Add(&choiceList, 0, 0);
     }
     s32 r4 = ((LetterView *)r6)->getState();
     if (r4 != 0) {
         if (r4 == 7) {
-            ChoiceIdList_Add(&popup.unk_2f4, 0x17, 1);
+            ChoiceIdList_Add(&choiceList, 0x17, 1);
         } else {
-            ChoiceIdList_Add(&popup.unk_2f4, 0x14, 1);
+            ChoiceIdList_Add(&choiceList, 0x14, 1);
         }
     }
     if (((LetterView *)r6)->getPresent() != 0xfff1 && r4 == 3 || r4 == 6 || r4 == 1) {
-        ChoiceIdList_Add(&popup.unk_2f4, 0x15, 2);
+        ChoiceIdList_Add(&choiceList, 0x15, 2);
     }
-    ChoiceIdList_Add(&popup.unk_2f4, 2, 3);
+    ChoiceIdList_Add(&choiceList, 2, 3);
     hideCursor();
     nameBalloon.hide(1);
     openPopup();

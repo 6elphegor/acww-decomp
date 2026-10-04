@@ -8,6 +8,7 @@
 #include "ui/LabelString.h"
 #include "gfx/BgVramTask.h"
 #include "menu/MenuCursor.h"
+#include "menu/MenuBottomButtons.h"
 
 class DistantTownsMenu;
 
@@ -54,15 +55,6 @@ void DistantTownsMenu_SetupBgLayers();
 
 
 
-// Menu list sub-object, 0x164 bytes (src/ov002/unk_022034c4.cpp)
-class MenuBottomButtons {
-public:
-    MenuBottomButtons();
-    ~MenuBottomButtons();
-    void drawAt(s32 a);
-    void freeTexts();
-    u32 unk_00[0x164 / 4];
-};
 
 // ov139 menu helper, 0x624 bytes (src/ov139/unk_02291f60.cpp)
 class MenuTownListPanel {

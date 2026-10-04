@@ -4,6 +4,7 @@
 #include "ui/LabelString.h"
 #include "gfx/BgVramTask.h"
 #include "menu/MenuCursor.h"
+#include "menu/MenuBottomButtons.h"
 
 extern "C" {
 extern u8 gSaveHouse[];
@@ -73,29 +74,7 @@ void NumberPad_PressKey(void *self);
 
 
 
-class MenuBottomButtonsBody {
-public:
-    void setSelected(u8 v);
-    void disableButton(s32 v);
-    void enableButton(s32 v);
-    s32 isTouched(s32 v);
-    s32 isButtonDisabled(s32 v);
-    s32 stepPress();
-    s32 getPressOffset();
-    s32 getTargetX(s32 v);
-    s32 getTargetY(s32 v);
-};
 
-class MenuBottomButtons : public MenuBottomButtonsBody {
-public:
-    MenuBottomButtons();
-    ~MenuBottomButtons();
-    void setLayoutConfirmAnd06(u8 v);
-    void setLayoutSingle05(s32 v);
-    void drawAt(s32 a);
-    void freeTexts();
-    u32 unk_00[0x164 / 4];
-};
 
 
 
@@ -381,7 +360,7 @@ void BankMenu::updateTouch() {
         return;
     }
     if (Unk_ov132_02293d40_Both()) {
-        if (bottomButtons.isTouched(6)) {
+        if (((MenuBottomButtonsBody *)&bottomButtons)->isTouched(6)) {
             quit();
         } else {
             s32 x = gTouchCurX[0];
@@ -459,11 +438,11 @@ void BankMenu::updateCursorRelease() {
 }
 
 void BankMenu::stateExit() {
-    if (bottomButtons.stepPress()) {
+    if (((MenuBottomButtonsBody *)&bottomButtons)->stepPress()) {
         if (_ZN10HandCursor7getAnimEv(&cursor)) {
-            s32 a = bottomButtons.getPressOffset();
-            s32 b = bottomButtons.getTargetX(-1);
-            s32 c = bottomButtons.getTargetY(-1);
+            s32 a = ((MenuBottomButtonsBody *)&bottomButtons)->getPressOffset();
+            s32 b = ((MenuBottomButtonsBody *)&bottomButtons)->getTargetX(-1);
+            s32 c = ((MenuBottomButtonsBody *)&bottomButtons)->getTargetY(-1);
             ((MenuCursorBase *)&cursor)->warpTo(a + b, a + c);
         }
     } else {
@@ -511,7 +490,7 @@ void BankMenu::resumeInput() {
 void BankMenu::quit() {
     nextMenuId = 0x44;
     MenuCtrl_SetResult(0);
-    bottomButtons.setSelected(6);
+    ((MenuBottomButtonsBody *)&bottomButtons)->setSelected(6);
     setTransitionState(2);
     setMainState(5);
 }
@@ -568,14 +547,14 @@ void BankMenu::showCursor() {
 
 s32 BankMenu::getCursorTargetX() {
     if (cursorSlot == 2) {
-        return bottomButtons.getTargetX(6);
+        return ((MenuBottomButtonsBody *)&bottomButtons)->getTargetX(6);
     }
     return sBankMenuCursorXTable[cursorSlot];
 }
 
 s32 BankMenu::getCursorTargetY() {
     if (cursorSlot == 2) {
-        return bottomButtons.getTargetY(6);
+        return ((MenuBottomButtonsBody *)&bottomButtons)->getTargetY(6);
     }
     return sBankMenuCursorYTable[cursorSlot];
 }

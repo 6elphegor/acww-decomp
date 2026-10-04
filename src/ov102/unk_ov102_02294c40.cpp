@@ -13,6 +13,7 @@
 #include "gfx/BgVramTask.h"
 #include "ui/TouchPromptBalloon.h"
 #include "menu/MenuCursor.h"
+#include "menu/PopupChoiceMenu.h"
 
 extern "C" {
 void Gfx2d_ShowLayer(u32 x);
@@ -122,15 +123,6 @@ class ChestMenu;
 
 
 
-class PopupChoiceMenu {
-public:
-    PopupChoiceMenu();
-    ~PopupChoiceMenu();
-    void init(s32, s32, const char *);
-    u32 unk_00[0x2f8 / 4];
-    u8 unk_2f8;
-    u8 choiceValues[7];
-};
 
 class MenuErrorMessage {
 public:
@@ -146,14 +138,6 @@ public:
 
 
 
-class PopupChoiceMenuBody {
-public:
-    s32 getRowY(s32);
-    s32 getRowX();
-    s32 hitTestRowOrLast(s32, s32);
-    BOOL isClosed();
-    BOOL isOpen();
-};
 
 
 

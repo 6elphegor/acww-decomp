@@ -15,6 +15,7 @@
 #include "gfx/BgVramTask.h"
 #include "ui/TouchPromptBalloon.h"
 #include "menu/MenuCursor.h"
+#include "menu/PopupChoiceMenu.h"
 
 class LostFoundRecycleMenu;
 
@@ -121,22 +122,7 @@ void LetterGrid_LoadPocketLetters(void *a);
 
 
 
-class PopupChoiceMenuBody {
-public:
-    s32 getRowY(s32);
-    s32 getRowX();
-    s32 hitTestRowOrLast(s32, s32);
-    BOOL isClosed();
-    BOOL isOpen();
-};
 
-class PopupChoiceMenu : public PopupChoiceMenuBody {
-public:
-    PopupChoiceMenu();
-    ~PopupChoiceMenu();
-    void init(s32, s32, const char *);
-    u32 unk_00[0x300 / 4];
-};
 
 class MenuErrorMessage {
 public:
@@ -304,6 +290,8 @@ public:
     /* 0x2260 */ CursorMotion flyMotion;
     /* 0x2278 */ MenuCursorBuf0 cursor;
     /* 0x22dc */ PopupChoiceMenu choiceMenu;
+    /* 0x25d0 */ PopupChoiceIdList choiceList;
+    /* 0x25db */ u8 pad_25db[1];
     /* 0x25dc */ MenuErrorMessage errorMessage;
     /* 0x26e4 */ LabelString textLabels[2];
 };

@@ -11,6 +11,7 @@
 #include "gfx/BgVramTask.h"
 #include "menu/MenuScrollKnob.h"
 #include "menu/MenuCursor.h"
+#include "menu/MenuBottomButtons.h"
 
 class DonationMenu;
 typedef void (DonationMenu::*Unk_ov145_022937c0_Fn)();
@@ -72,12 +73,6 @@ class TextLabel;
 
 
 
-class MenuBottomButtons {
-public:
-    MenuBottomButtons();
-    ~MenuBottomButtons();
-    u32 unk_00[0x164 / 4];
-};
 
 // ---- ov002 scene base (vtable 0x022044e4) ----
 

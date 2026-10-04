@@ -12,6 +12,8 @@
 #include "gfx/BgVramTask.h"
 #include "ui/TouchPromptBalloon.h"
 #include "menu/MenuCursor.h"
+#include "menu/MenuBottomButtons.h"
+#include "menu/PopupChoiceMenu.h"
 
 extern "C" {
 extern u8 gTouchCurX;
@@ -76,27 +78,9 @@ s32 LetterGrid_GetSlotX(void *p, u32 a);
 
 struct PopupChoiceIdList;
 
-class PopupChoiceMenuBody {
-public:
-    s32 getRowY(s32 a);
-    s32 getRowX();
-    s32 hitTestRowOrLast(s32 a, s32 b);
-    void setRowsFromIds(PopupChoiceIdList *a, s32 b);
-    BOOL isClosed();
-    BOOL isOpen();
-};
 
 
 
-class MenuBottomButtonsBody {
-public:
-    s32 getPressOffset();
-    BOOL stepPress();
-    void setSelected(u8 a);
-    s32 getTargetY(s32 a);
-    s32 getTargetX(s32 a);
-    BOOL isTouched(s32 a);
-};
 
 
 // ---- sub-objects with their own constructor/destructor
@@ -109,19 +93,6 @@ public:
 
 
 
-class PopupChoiceMenu {
-public:
-    PopupChoiceMenu();
-    ~PopupChoiceMenu();
-
-    void placeAboveBalloon(LabelBalloon *a);
-    void placeNearPoint(s32 a, s32 b);
-    void init(s32 a, s32 b, const char *c);
-
-    u32 unk_00[0x2f4 / 4];
-    u8 unk_2f4[5];
-    u8 choiceValues[7];
-};
 
 class MenuErrorMessage {
 public:
@@ -133,17 +104,6 @@ public:
     u32 unk_00[0x108 / 4];
 };
 
-class MenuBottomButtons {
-public:
-    MenuBottomButtons();
-    ~MenuBottomButtons();
-
-    void setLayoutSingle05(s32 a);
-    void drawAt(s32 a);
-    void freeTexts();
-
-    u32 unk_00[0x164 / 4];
-};
 
 
 class LetterGiveMenu;
@@ -300,6 +260,8 @@ public:
     /* 0x2400 */ CursorMotion flyMotion;
     /* 0x2418 */ MenuCursorBuf0 cursor;
     /* 0x247c */ PopupChoiceMenu popup;
+    /* 0x2770 */ PopupChoiceIdList choiceList;
+    /* 0x277b */ u8 pad_277b[1];
     /* 0x277c */ MenuErrorMessage errorMessage;
     /* 0x2884 */ MenuBottomButtons bottomButtons;
 };
@@ -591,7 +553,7 @@ void LetterGiveMenu::mainAct05() {
             s32 r = ((PopupChoiceMenuBody *)&popup)->hitTestRowOrLast(gTouchCurX, gTouchCurY);
             if (r >= 0) {
                 PopupChoice_DecideRow(&popup, r, 1);
-                popupChoice = popup.choiceValues[r];
+                popupChoice = choiceList.values[r];
                 setMainState(0x14);
             }
         }
@@ -664,7 +626,7 @@ void LetterGiveMenu::mainAct08() {
 void LetterGiveMenu::mainAct09() {
     if (((HandCursor *)&cursor)->isAnimDone()) {
         PopupChoice_DecideRow(&popup, popupRow, 1);
-        popupChoice = popup.choiceValues[popupRow];
+        popupChoice = choiceList.values[popupRow];
         setMainState(0x14);
     }
 }
@@ -1194,7 +1156,7 @@ void LetterGiveMenu::onPopupChoice() {
 }
 
 void LetterGiveMenu::openPopup(u32 x) {
-    ((PopupChoiceMenuBody *)&popup)->setRowsFromIds((PopupChoiceIdList *)popup.unk_2f4, 0);
+    ((PopupChoiceMenuBody *)&popup)->setRowsFromIds(&choiceList, 0);
     s32 a = getSlotX(selectedSlot);
     s32 b = getSlotY(selectedSlot);
     if (x != 0) {
@@ -1215,10 +1177,10 @@ void LetterGiveMenu::cancelChoice() {
 
 void LetterGiveMenu::openLetterChoice(u32 idx, u32 x) {
     selectedSlot = idx;
-    ChoiceIdList_Clear(&popup.unk_2f4, 1);
+    ChoiceIdList_Clear(&choiceList, 1);
     getLetter(idx);
-    ChoiceIdList_Add(&popup.unk_2f4, 0xd, 0);
-    ChoiceIdList_Add(&popup.unk_2f4, 2, 1);
+    ChoiceIdList_Add(&choiceList, 0xd, 0);
+    ChoiceIdList_Add(&choiceList, 2, 1);
     hideCursor();
     if (x == 0) {
         nameBalloon.hide(1);

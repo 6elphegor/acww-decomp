@@ -2,6 +2,7 @@
 #include "Unk_020d8c7c.h"
 #include "menu/MenuProc.h"
 #include "menu/MenuCursor.h"
+#include "menu/MenuBottomButtons.h"
 
 class DateTimePicker;
 
@@ -85,26 +86,7 @@ public:
 
 
 
-class MenuBottomButtonsBody {
-public:
-    void setSelected(u8 v);
-    s32 isTouched(s32 v);
-    s32 stepPress();
-    s32 getPressOffset();
-    s32 getTargetX(s32 v);
-    s32 getTargetY(s32 v);
-};
 
-class MenuBottomButtons : public MenuBottomButtonsBody {
-public:
-    MenuBottomButtons();
-    ~MenuBottomButtons();
-    void setLayoutSingle05(s32 v);
-    void drawAt(s32 a);
-    void freeTexts();
-
-    u32 unk_00[0x164 / 4];
-};
 
 
 class TimeSelectMenu;
@@ -380,7 +362,7 @@ void TimeSelectMenu::updateTouch() {
     if (checkSwitchToButtons(1)) {
         startButtonInput();
     } else if (Unk_ov136_02295d1c_Both()) {
-        if (bottomButtons.isTouched(6)) {
+        if (((MenuBottomButtonsBody *)&bottomButtons)->isTouched(6)) {
             confirm();
         } else {
             u8 a = gTouchCurX;
@@ -566,11 +548,11 @@ void TimeSelectMenu::updateCursorRelease() {
 }
 
 void TimeSelectMenu::stateExit() {
-    if (bottomButtons.stepPress()) {
+    if (((MenuBottomButtonsBody *)&bottomButtons)->stepPress()) {
         if (_ZN10HandCursor7getAnimEv(&cursor)) {
-            s32 a = bottomButtons.getPressOffset();
-            s32 b = bottomButtons.getTargetX(-1);
-            s32 c = bottomButtons.getTargetY(-1);
+            s32 a = ((MenuBottomButtonsBody *)&bottomButtons)->getPressOffset();
+            s32 b = ((MenuBottomButtonsBody *)&bottomButtons)->getTargetX(-1);
+            s32 c = ((MenuBottomButtonsBody *)&bottomButtons)->getTargetY(-1);
             ((MenuCursorBase *)&cursor)->warpTo(a + b, a + c);
         }
     } else {
@@ -617,7 +599,7 @@ void TimeSelectMenu::resumeInput() {
 }
 
 void TimeSelectMenu::confirm() {
-    bottomButtons.setSelected(6);
+    ((MenuBottomButtonsBody *)&bottomButtons)->setSelected(6);
     setTransitionState(2);
     setMainState(0xd);
     u32 v[2];
@@ -688,7 +670,7 @@ s32 TimeSelectMenu::getCursorTargetX() {
     }
     u32 c = cursorSlot;
     if (c == 2) {
-        return bottomButtons.getTargetX(6);
+        return ((MenuBottomButtonsBody *)&bottomButtons)->getTargetX(6);
     }
     return sTimeSelectCursorXTable[c];
 }
@@ -699,7 +681,7 @@ s32 TimeSelectMenu::getCursorTargetY() {
     }
     u32 c = cursorSlot;
     if (c == 2) {
-        return bottomButtons.getTargetY(6);
+        return ((MenuBottomButtonsBody *)&bottomButtons)->getTargetY(6);
     }
     return sTimeSelectCursorYTable[c];
 }

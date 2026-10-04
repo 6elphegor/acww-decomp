@@ -12,6 +12,8 @@
 #include "gfx/BgVramTask.h"
 #include "ui/TouchPromptBalloon.h"
 #include "menu/MenuCursor.h"
+#include "menu/MenuBottomButtons.h"
+#include "menu/PopupChoiceMenu.h"
 
 class SongPickMenu;
 struct Unk_ov109_02295570;
@@ -100,26 +102,7 @@ void InventoryBg_DrawSprite(void *p, s32 a);
 
 
 
-class PopupChoiceMenuBody {
-public:
-    void setRowsFromIds(PopupChoiceIdList *p, s32 v);
-    s32 getRowY(s32 i);
-    s32 getRowX();
-    s32 hitTestRowOrLast(s32 a, s32 b);
-    BOOL isClosed();
-    BOOL isOpen();
-    u32 unk_00[0x2f4 / 4];
-    u8 unk_2f4[0xc];
-};
 
-class PopupChoiceMenu : public PopupChoiceMenuBody {
-public:
-    PopupChoiceMenu();
-    ~PopupChoiceMenu();
-    void placeAboveBalloon(LabelBalloon *p);
-    void placeNearPoint(s32 a, s32 b);
-    void init(s32 a, s32 b, const char *path);
-};
 
 class MenuErrorMessage {
 public:
@@ -130,25 +113,7 @@ public:
     u32 unk_00[0x108 / 4];
 };
 
-class MenuBottomButtonsBody {
-public:
-    BOOL stepPress();
-    s32 getPressOffset();
-    s32 getTargetX(s32 a);
-    s32 getTargetY(s32 a);
-    s32 isTouched(s32 a);
-    void setSelected(u8 a);
-    u32 unk_00[0x164 / 4];
-};
 
-class MenuBottomButtons : public MenuBottomButtonsBody {
-public:
-    MenuBottomButtons();
-    ~MenuBottomButtons();
-    void setLayoutSingle05(s32 a);
-    void drawAt(s32 a);
-    void freeTexts();
-};
 
 
 
@@ -247,6 +212,8 @@ public:
     /* 0x21f4 */ CursorMotion flyMotion;
     /* 0x220c */ MenuCursorBuf0 cursor;
     /* 0x2270 */ PopupChoiceMenu popup;
+    /* 0x2564 */ PopupChoiceIdList choiceList;
+    /* 0x256f */ u8 pad_256f[1];
     /* 0x2570 */ MenuErrorMessage errorMessage;
     /* 0x2678 */ MenuBottomButtons bottomButtons;
     /* 0x27dc */ u32 stateFlags;
@@ -565,7 +532,7 @@ void SongPickMenu::updateTouch() {
         u32 r = SongPickMenu_HitTestSlot(s, gTouchCurX, gTouchCurY + 0x10, 1);
         if (r != 0x10) {
             SongPickMenu_BeginTouchSlot(s, r);
-        } else if (((MenuBottomButtons *)s->bottomButtons)->isTouched(9)) {
+        } else if (((MenuBottomButtonsBody *)s->bottomButtons)->isTouched(9)) {
             M(s)->startClose();
         }
     }
@@ -618,13 +585,13 @@ void SongPickMenu::mainAct03() {
 
 void SongPickMenu::mainAct04() {
     S *s = (S *)this;
-    if (((PopupChoiceMenu *)s->popup)->isOpen()) {
+    if (((PopupChoiceMenuBody *)s->popup)->isOpen()) {
         if (MenuCtrl_IsForceCloseDue()) {
             M(s)->cancelChoice();
         } else if (M(s)->checkSwitchToButtons(1)) {
             M(s)->cancelChoice();
         } else if (Unk_ov109_02295c70_Both()) {
-            s32 r = ((PopupChoiceMenu *)s->popup)->hitTestRowOrLast(gTouchCurX, gTouchCurY);
+            s32 r = ((PopupChoiceMenuBody *)s->popup)->hitTestRowOrLast(gTouchCurX, gTouchCurY);
             if (r >= 0) {
                 PopupChoice_DecideRow(s->popup, r, 1);
                 s->popupChoice = s->popupValues[r];
@@ -702,7 +669,7 @@ void SongPickMenu::updateCursorMove() {
 void SongPickMenu::mainAct09() {
     S *s = (S *)this;
     if (((MenuCursorBuf0 *)s->cursor)->isAnimDone()) {
-        ((MenuBottomButtons *)s->bottomButtons)->setSelected(9);
+        ((MenuBottomButtonsBody *)s->bottomButtons)->setSelected(9);
         M(s)->setMainState(0xf);
         Snd_PlaySe(0x28);
     }
@@ -718,7 +685,7 @@ void SongPickMenu::mainAct0A() {
 
 void SongPickMenu::mainAct0B() {
     S *s = (S *)this;
-    if (((PopupChoiceMenu *)s->popup)->isOpen()) {
+    if (((PopupChoiceMenuBody *)s->popup)->isOpen()) {
         if (MenuCtrl_IsButtons()) {
             M(s)->cursorToPopupTop();
             M(s)->setMainState(6);
@@ -742,7 +709,7 @@ void SongPickMenu::mainAct0C() {
 
 void SongPickMenu::mainAct0D() {
     S *s = (S *)this;
-    if (((PopupChoiceMenu *)s->popup)->isClosed()) {
+    if (((PopupChoiceMenuBody *)s->popup)->isClosed()) {
         M(s)->onPopupChoice();
     }
 }
@@ -757,11 +724,11 @@ void SongPickMenu::mainAct0E() {
 
 void SongPickMenu::mainAct0F() {
     S *s = (S *)this;
-    if (((MenuBottomButtons *)s->bottomButtons)->stepPress()) {
+    if (((MenuBottomButtonsBody *)s->bottomButtons)->stepPress()) {
         if (((MenuCursorBuf0 *)s->cursor)->getAnim()) {
-            s32 t = ((MenuBottomButtons *)s->bottomButtons)->getPressOffset();
-            s32 u = ((MenuBottomButtons *)s->bottomButtons)->getTargetX(-1);
-            s32 w = ((MenuBottomButtons *)s->bottomButtons)->getTargetY(-1);
+            s32 t = ((MenuBottomButtonsBody *)s->bottomButtons)->getPressOffset();
+            s32 u = ((MenuBottomButtonsBody *)s->bottomButtons)->getTargetX(-1);
+            s32 w = ((MenuBottomButtonsBody *)s->bottomButtons)->getTargetY(-1);
             ((MenuCursorBuf0 *)s->cursor)->warpTo(t + u, t + w);
         }
     } else {
@@ -1017,8 +984,8 @@ void SongPickMenu::moveCursorToTarget() {
 }
 
 void SongPickMenu::moveCursorToPopupRow() {
-    s32 a = popup.getRowX();
-    s32 b = popup.getRowY(popupRow);
+    s32 a = ((PopupChoiceMenuBody *)&popup)->getRowX();
+    s32 b = ((PopupChoiceMenuBody *)&popup)->getRowY(popupRow);
     cursor.moveToLinear(a, b, 2);
     returnState = mainState;
     setMainState(8);
@@ -1027,8 +994,8 @@ void SongPickMenu::moveCursorToPopupRow() {
 void SongPickMenu::cancelPopup() {
     popupChoice = 1;
     popupRow = PopupChoice_DecideCancel(&popup);
-    s32 a = popup.getRowX();
-    s32 b = popup.getRowY(popupRow);
+    s32 a = ((PopupChoiceMenuBody *)&popup)->getRowX();
+    s32 b = ((PopupChoiceMenuBody *)&popup)->getRowY(popupRow);
     cursor.warpTo(a, b);
     cursor.setAnimAtEnd(8);
     setMainState(0xc);
@@ -1036,8 +1003,8 @@ void SongPickMenu::cancelPopup() {
 
 void SongPickMenu::cursorToPopupTop() {
     popupRow = 0;
-    s32 a = popup.getRowX();
-    s32 b = popup.getRowY(popupRow);
+    s32 a = ((PopupChoiceMenuBody *)&popup)->getRowX();
+    s32 b = ((PopupChoiceMenuBody *)&popup)->getRowY(popupRow);
     cursor.warpTo(a, b);
     C220(cursor)->setAnimIfChanged(7);
 }
@@ -1080,7 +1047,7 @@ void SongPickMenu::onPopupChoice() {
 }
 
 void SongPickMenu::openPopup(u32 x) {
-    popup.setRowsFromIds((PopupChoiceIdList *)&popup.unk_2f4, 0);
+    ((PopupChoiceMenuBody *)&popup)->setRowsFromIds(&choiceList, 0);
     s32 a = SongPickMenu_GetSlotX((S *)this, selectedSlot);
     s32 b = SongPickMenu_GetSlotY((S *)this, selectedSlot);
     if (x != 0) {
@@ -1109,7 +1076,7 @@ void SongPickMenu::closeWithSlot() {
 }
 
 void SongPickMenu::startClose() {
-    bottomButtons.setSelected(9);
+    ((MenuBottomButtonsBody *)&bottomButtons)->setSelected(9);
     setMainState(0xf);
     Snd_PlaySe(0x28);
 }
@@ -1123,13 +1090,13 @@ void SongPickMenu::closeWithoutResult() {
 }
 
 void SongPickMenu::setPopupChoices() {
-    ChoiceIdList_Add(&popup.unk_2f4, 0x73, 0);
-    ChoiceIdList_Add(&popup.unk_2f4, 2, 1);
+    ChoiceIdList_Add(&choiceList, 0x73, 0);
+    ChoiceIdList_Add(&choiceList, 2, 1);
 }
 
 void SongPickMenu::openItemChoice(u32 idx, u32 x) {
     selectedSlot = idx;
-    ChoiceIdList_Clear(&popup.unk_2f4, 1);
+    ChoiceIdList_Clear(&choiceList, 1);
     if (SongPickMenu_IsPocketSlot((S *)this, idx)) {
         setPopupChoices();
         hideCursor();

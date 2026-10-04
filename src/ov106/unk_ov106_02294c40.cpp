@@ -18,6 +18,8 @@
 #include "menu/MenuLabelButton.h"
 #include "menu/MenuCursor.h"
 #include "player/PlayerData.h"
+#include "menu/MenuBottomButtons.h"
+#include "menu/PopupChoiceMenu.h"
 
 // ov106: scene overlay (class MailboxMenu, vtable 0x02298180, 0x3f80 bytes).
 
@@ -148,15 +150,6 @@ class LetterGrid;
 
 
 
-class PopupChoiceMenu {
-public:
-    PopupChoiceMenu();
-    ~PopupChoiceMenu();
-    void placeNearPoint(s32, s32);
-    void init(s32, s32, const char *);
-    u32 unk_00[0x2f4 / 4];
-    u8 unk_2f4[0xc];
-};
 
 class MenuErrorMessage {
 public:
@@ -173,16 +166,6 @@ public:
 
 
 
-class MenuBottomButtons {
-public:
-    MenuBottomButtons();
-    ~MenuBottomButtons();
-    void setLayoutSingle05(s32);
-    void hide();
-    void drawAt(s32);
-    void freeTexts();
-    u32 unk_00[0x164 / 4];
-};
 
 
 
@@ -191,29 +174,8 @@ public:
 
 
 
-class PopupChoiceMenuBody {
-public:
-    s32 getRowY(s32);
-    s32 getRowX();
-    s32 hitTestRowOrLast(s32, s32);
-    void setRowsFromIds(PopupChoiceIdList *, s32);
-    s32 isClosed();
-    s32 isOpen();
-};
 
 
-class MenuBottomButtonsBody {
-public:
-    void disableObjWindow();
-    void enableObjWindow();
-    s32 getPressOffset();
-    BOOL stepPress();
-    void setSelected(u8);
-    s32 getTargetY(s32);
-    s32 getTargetX(s32);
-    BOOL isTouched(s32);
-    void setLayoutTossKeep();
-};
 
 
 
@@ -408,6 +370,8 @@ public:
     /* 0x2220 */ CursorMotion flyMotion;
     /* 0x2238 */ MenuCursorBuf0 cursor;
     /* 0x229c */ PopupChoiceMenu popup;
+    /* 0x2590 */ PopupChoiceIdList choiceList;
+    /* 0x259b */ u8 pad_259b[1];
     /* 0x259c */ MenuErrorMessage errorMessage;
     /* 0x26a4 */ LetterRenderer letterView;
     /* 0x28b4 */ MenuLabelButton letterCloseButton;
@@ -1970,7 +1934,7 @@ void MailboxMenu::onPopupChoice() {
 }
 
 void MailboxMenu::openPopup(u32 x) {
-    ((PopupChoiceMenuBody *)&popup)->setRowsFromIds((PopupChoiceIdList *)&popup.unk_2f4, testFlags(0x10000));
+    ((PopupChoiceMenuBody *)&popup)->setRowsFromIds(&choiceList, testFlags(0x10000));
     s32 a = getSlotX(selectedSlot);
     s32 b = getSlotY(selectedSlot);
     if (x != 0) {
@@ -1992,25 +1956,25 @@ void MailboxMenu::cancelPopupForButtons() {
 void MailboxMenu::selectLetter(u32 idx, u32 x) {
     clearFlags(0x10000);
     selectedSlot = idx;
-    ChoiceIdList_Clear(&popup.unk_2f4, 4);
+    ChoiceIdList_Clear(&choiceList, 4);
     void *r7 = getSlotLetter(idx);
     if (MenuCtrl_IsButtons()) {
-        ChoiceIdList_Add(&popup.unk_2f4, 0, 0);
+        ChoiceIdList_Add(&choiceList, 0, 0);
     }
     s32 r5 = ((LetterView *)r7)->getState();
     if (r5 != 0) {
         if (r5 == 7) {
-            ChoiceIdList_Add(&popup.unk_2f4, 0x17, 1);
+            ChoiceIdList_Add(&choiceList, 0x17, 1);
         } else {
-            ChoiceIdList_Add(&popup.unk_2f4, 0x14, 1);
+            ChoiceIdList_Add(&choiceList, 0x14, 1);
         }
     }
     if (((LetterView *)r7)->getPresent() == 0xfff1) {
         if (r5 == 3 || r5 == 6 || r5 == 1 || r5 == 4) {
-            ChoiceIdList_Add(&popup.unk_2f4, 0x15, 3);
+            ChoiceIdList_Add(&choiceList, 0x15, 3);
         }
     }
-    ChoiceIdList_Add(&popup.unk_2f4, 2, 4);
+    ChoiceIdList_Add(&choiceList, 2, 4);
     hideCursor();
     if (x == 0) {
         ((TouchPromptBalloon *)&nameBalloon)->hide(1);
@@ -2020,10 +1984,10 @@ void MailboxMenu::selectLetter(u32 idx, u32 x) {
 
 void MailboxMenu::openDiscardConfirm() {
     setFlags(0x10000);
-    ChoiceIdList_Clear(&popup.unk_2f4, 4);
-    ChoiceIdList_Add(&popup.unk_2f4, 0x1a, 4);
-    ChoiceIdList_Add(&popup.unk_2f4, 0x15, 2);
-    ChoiceIdList_Add(&popup.unk_2f4, 0x19, 4);
+    ChoiceIdList_Clear(&choiceList, 4);
+    ChoiceIdList_Add(&choiceList, 0x1a, 4);
+    ChoiceIdList_Add(&choiceList, 0x15, 2);
+    ChoiceIdList_Add(&choiceList, 0x19, 4);
     openPopup(0);
 }
 
