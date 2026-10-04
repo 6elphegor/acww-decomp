@@ -36,6 +36,8 @@
 #include "actor/VillagerActor.h"
 #include "talk/Unk_020d7710.h"
 #include "talk/VillagerTalk.h"
+#include "talk/MsgString.h"
+#include "talk/MsgString33.h"
 #define VillagerId_makeFileName _ZN10VillagerId12makeFileNameEPvjj
 #define Unk_02013474_enableFootsteps _ZN12Unk_0201347415enableFootstepsEv
 #define NpcTalkCtrl_requestTalk _ZN11NpcTalkCtrl11requestTalkEhh
@@ -133,22 +135,8 @@ typedef BOOL (HouseVisitVillager::*Unk_ov068_02270afc_BFn)();
 
 
 
-class MsgString : public MsgStringBase {
-public:
-    MsgString();
-    virtual ~MsgString();
-    virtual u32 capacity();
-    virtual u8 *data();
-    void fromEncoded(EncodedString *dst, s32 a, s32 b);
-};
 
 
-class MsgString33 : public MsgString {
-public:
-    MsgString33();
-    virtual ~MsgString33();
-    u8 pad[0x30];
-};
 
 #define SPEAK(str) VillagerId_makeFileName(VillagerData_getVillagerId(unk_1a0->villagerData), sHouseVisitMsgFileName, 0x28, (void *)str)
 

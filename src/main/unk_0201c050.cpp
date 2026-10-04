@@ -28,6 +28,16 @@
 #include "talk/ConstellationEncodedString16.h"
 #include "talk/VillagerTalkAcornTopics.h"
 #include "gfx/ThreeLayerAnimModel.h"
+#include "talk/MsgString.h"
+#include "talk/TalkMsgRequest.h"
+#include "talk/ActorTalkRequest.h"
+#include "talk/VillagerTalk.h"
+#include "talk/ConstellationMsgString17.h"
+#include "talk/MsgString25B.h"
+#include "talk/MsgString129.h"
+#include "talk/MsgString33B.h"
+#include "talk/MsgString17.h"
+#include "talk/MsgString9B.h"
 
 
 class VillagerTalk;
@@ -211,11 +221,8 @@ class ActorTalkRequest;
 class SpNpcTalkRequest;
 class SpNpcActor;
 
-struct MsgString25B { MsgString25B(); ~MsgString25B(); u32 pad[0x2c / 4]; };
 
-struct MsgString129 { MsgString129(); ~MsgString129(); u32 pad[0x98 / 4]; };
 
-struct MsgString33B { MsgString33B(); ~MsgString33B(); u32 pad[0x34 / 4]; };
 
 struct TownIdView {
     TownIdView();
@@ -223,13 +230,7 @@ struct TownIdView {
     u32 pad[0x10 / 4];
 };
 
-struct MsgString17 { MsgString17(); ~MsgString17(); u32 pad[0x24 / 4]; };
 
-struct MsgString9B {
-    MsgString9B();
-    ~MsgString9B();
-    u32 pad[0x20 / 4];
-};
 
 typedef void (VillagerTalk::*Unk_020d8938_Fn)();
 
@@ -237,11 +238,6 @@ typedef void (VillagerTalk::*Unk_020d8938_ArgFn)(void *arg);
 
 typedef VillagerActor Unk_020d8938_Parent;
 
-struct Unk_020d8938_Tbl {
-    Unk_020d8938_Fn a;
-    Unk_020d8938_Fn b;
-    Unk_020d8938_Fn c;
-};
 
 
 
@@ -1013,182 +1009,12 @@ struct Unk_0202ce90_Parent {
 
 
 // ---- class chain of VillagerTalk (vtable 0x020d8930): TalkMsgRequest <- ActorTalkRequest <- VillagerTalk.
-// The two bases are classes of other units (only declared; the same declarations as in the unit of SpNpcTalkRequest).
-class TalkMsgRequest {
-public:
-    TalkMsgRequest();
-    virtual ~TalkMsgRequest();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void onMessageStart(u32 a);
-    virtual void onMessageEnd(u32 a);
-    virtual void onChoice(u32 a);
-    virtual void onSignalTag();
-    virtual void onActionTag0();
-    virtual void onActionTag1(u32 a);
-    virtual void onActionTag2(u32 a);
-    virtual void onActionTag3(u32 a);
-    virtual void onActionTag4(u32 a);
-    virtual void onConditionTag();
-    virtual void onEventTag(u32 a);
-    virtual void onTag09_0();
-    virtual void onTag09_1();
-    virtual void onTag09_2();
-    virtual void onTag09_3();
-    virtual void onTag09_4();
-    virtual void onTag09_5();
-    virtual void onTag09_6();
-    virtual void onTag09_7();
-    virtual void onTag09_8();
-    virtual s32 onTag09_9();
-    virtual void *onScannedTag();
-    virtual u32 getSpeakerData();
-    virtual s32 getVoiceType();
-    virtual void onWindowClose();
-    virtual void onTalkEnd();
 
-    /* 0x04 */ u32 fileName[0x38 / 4];
-    /* 0x3c */ u32 unk_3c;
-    /* 0x40 */ u8 unk_40;
-};
-
-class ActorTalkRequest : public TalkMsgRequest {
-public:
-    ActorTalkRequest();
-    virtual ~ActorTalkRequest();
-    virtual void vfunc_08();
-    virtual void onConditionTag();
-    virtual void onEventTag(u32 a);
-    virtual void onTag09_0();
-    virtual void onTag09_1();
-    virtual void onTag09_2();
-    virtual void onTag09_3();
-    virtual void onTag09_4();
-    virtual void onTag09_5();
-    virtual void onTag09_6();
-    virtual void onTag09_7();
-    virtual void onTag09_8();
-    virtual s32 onTag09_9();
-    virtual s32 getVoiceType();
-    virtual void start(void *arg) = 0;
-    virtual void runDeferred();
-    virtual void update();
-    virtual void onTaskDone();
-
-    /* 0x44 */ u8 pad_44[0xac - 0x44];
-};
 
 typedef void (VillagerTalk::*Unk_020d8938_Fn2)(u32 a, s32 b);
 typedef s32 (VillagerTalk::*Unk_020d8938_FnS)();
 typedef void (VillagerTalk::*Unk_020d8938_FnArg)(u32);
 
-class VillagerTalk : public ActorTalkRequest {
-public:
-    VillagerTalk();
-    virtual ~VillagerTalk();
-    virtual void onMessageStart(u32 a);
-    virtual void onMessageEnd(u32 a);
-    virtual void onChoice(u32 a);
-    virtual void onActionTag0();
-    virtual void onActionTag1(u32 a);
-    virtual void onActionTag2(u32 a);
-    virtual void onActionTag3(u32 a);
-    virtual void onActionTag4(u32 a);
-    virtual s32 onTag09_9();
-    virtual u32 getSpeakerData();
-    virtual void onWindowClose();
-    virtual void start(void *arg);
-    virtual void runDeferred();
-    virtual void update();
-    virtual void onTaskDone();
-
-    // the three functions at 0x0201c7d4..0x0201c7dc: symbols.txt names them as members of this class; they are the
-    // slots vfunc_b4 / vfunc_b8 / vfunc_bc of VillagerActor (labels _ZN13VillagerActor8vfunc_b4Ev ...)
-    s32 vfunc_144();
-    s32 vfunc_148();
-    s32 vfunc_14c();
-    u8 getEventKind();
-    void refreshEventKind();
-    BOOL hasPartner();
-    u8 isInvitedByPartner();
-    void setInvitedByPartner(u8 v);
-    u32 getPartner();
-    void setPartner(u32 v);
-    void setupChoiceMenu(void *t_);
-    void clearChoiceValues();
-    s32 runMsgAttrHandler(u32 idx);
-    s32 runCustomFn4();
-    s32 runCustomFn3();
-    s32 runCustomFn2();
-    s32 runCustomFn1();
-    s32 runCustomFn0();
-    void setConstellationSlots();
-    s32 attrOpenBirthdayEntry();
-    s32 setHiraganaOff();
-    s32 setHiraganaOn();
-    s32 giveItemToPlayer();
-    void showMoneyItem();
-    s32 sellItemToPlayer();
-    void receiveItemB();
-    s32 swapItemWithPlayer();
-    void receiveItem();
-    s32 buyItemFromPlayer();
-    s32 attrPlayMemoryTune();
-    s32 attrShowLetter();
-    s32 attrGiveItem();
-    u32 getUnk150();
-    void setUnk150(u32 v);
-    void *getActorByIndex(s32 idx);
-    void setChoiceFn(Unk_020d8938_Fn fn);
-    void setTopicFns(Unk_020d8938_Tbl *t);
-    void clearTopicFns();
-    void setDeferredFn(Unk_020d8938_Fn fn);
-    void setNextTaskDoneFn(Unk_020d8938_Fn fn);
-    void setTaskDoneFn(Unk_020d8938_Fn fn);
-    void begin(Unk_020d8938_Parent *owner, u32 idx);
-    void setSpeakerStateUnk(void *arg);
-
-    /* 0x0ac */ Unk_020d8938_Fn selectFn;
-    /* 0x0b4 */ union { Unk_020d8938_Fn unk_b4; Unk_020d8938_FnArg unk_b4_a; };
-    /* 0x0bc */ union { Unk_020d8938_Fn unk_bc; Unk_020d8938_FnArg unk_bc_a; };
-    /* 0x0c4 */ union { Unk_020d8938_Fn unk_c4; Unk_020d8938_FnArg unk_c4_a; };
-    /* 0x0cc */ union { Unk_020d8938_Fn unk_cc; Unk_020d8938_Fn2 unk_cc_2; };
-    /* 0x0d4 */ Unk_020d8938_Fn taskDoneFn;
-    /* 0x0dc */ Unk_020d8938_Fn nextTaskDoneFn;
-    /* 0x0e4 */ Unk_020d8938_Fn deferredFn;
-    /* 0x0ec */ Unk_020d8938_Fn unk_ec;
-    /* 0x0f4 */ Unk_020d8938_Fn closeFn;
-    /* 0x0fc */ Unk_020d8938_Parent *actor;
-    /* 0x100 */ u8 pad_100[0x120 - 0x100];
-    /* 0x120 */ u16 itemFromPlayer;
-    /* 0x122 */ u8 pad_122[2];
-    /* 0x124 */ s32 memoryIndex;
-    /* 0x128 */ union { s32 unk_128; void *unk_128_p; };
-    /* 0x12c */ s32 partnerMemoryIndex;
-    /* 0x130 */ union { s32 unk_130; void *unk_130_p; };
-    /* 0x134 */ union { s32 unk_134; u8 *unk_134_p; };
-    /* 0x138 */ u8 unk_138;
-    /* 0x139 */ u8 pad_139[3];
-    /* 0x13c */ s32 choiceValues[5];
-    /* 0x150 */ u32 errandRecord;
-    /* 0x154 */ u8 unk_154;
-    /* 0x155 */ u8 unk_155;
-    /* 0x156 */ u16 unk_156;
-    /* 0x158 */ u32 unk_158;
-    /* 0x15c */ u32 unk_15c;
-    /* 0x160 */ u32 unk_160;
-    /* 0x164 */ u32 unk_164;
-    /* 0x168 */ union { Unk_020d8938_Fn unk_168; Unk_020d8938_FnS unk_168_s; };
-    /* 0x170 */ union { Unk_020d8938_Fn unk_170; Unk_020d8938_FnS unk_170_s; };
-    /* 0x178 */ union { Unk_020d8938_Fn unk_178; Unk_020d8938_FnS unk_178_s; };
-    /* 0x180 */ union { Unk_020d8938_Fn unk_180; Unk_020d8938_FnS unk_180_s; };
-    /* 0x188 */ union { Unk_020d8938_Fn unk_188; Unk_020d8938_FnS unk_188_s; };
-    /* 0x190 */ u8 pad_190[8];
-    /* 0x198 */ u16 itemToPlayer;
-    /* 0x19a */ u8 itemToPlayerIsReceived;
-    /* 0x19b */ u8 pad_19b;
-    /* 0x19c */ union { u32 unk_19c; s32 unk_19c_s; };
-};
 
 // ---- class chain of VillagerActor (vtable 0x020d89c0):
 
@@ -1671,15 +1497,6 @@ public:
 };
 
 
-class Unk_020d7710 {
-public:
-    virtual void vfunc_00();
-    u8 pad_04[0x38];
-    u32 unk_3c;
-    u8 pad_40[0x6c];
-    void setSubSceneKind2(u32 a, u32 b, u32 c, u8 d);
-    BOOL openSubScene(s32 x);
-};
 
 class VillagerTalkHobbyTopics : public Unk_020d7710 {
 public:
@@ -1715,23 +1532,7 @@ public:
 };
 
 
-class MsgString : public MsgStringBase {
-public:
-    MsgString();
-    virtual ~MsgString();
-    virtual u32 capacity() = 0;
-    virtual u8 *data() = 0;
-    BOOL fromEncoded(EncodedString *src, BOOL a, BOOL b);
-};
 
-class ConstellationMsgString17 : public MsgString {
-public:
-    ConstellationMsgString17();
-    virtual ~ConstellationMsgString17();
-    virtual u32 capacity();
-    virtual u8 *data();
-    u8 pad_04[0x1c];
-};
 
 
 class Unk_02021340_Base {
@@ -4257,7 +4058,7 @@ void VillagerTalk::setTaskDoneFn(Unk_020d8938_Fn fn) { taskDoneFn = fn; }
 
 void VillagerTalk::setNextTaskDoneFn(Unk_020d8938_Fn fn) { nextTaskDoneFn = fn; }
 
-void VillagerTalk::onTaskDone() {
+void VillagerTalk::onTaskDone(u32 id) {
     Unk_020d8938_Fn t;
     if (taskDoneFn) {
         (this->*taskDoneFn)();
@@ -4329,7 +4130,7 @@ void VillagerTalk::setUnk150(u32 v) { errandRecord = v; }
 
 u32 VillagerTalk::getUnk150() { return errandRecord; }
 
-void VillagerTalk::start(void *arg) {
+void VillagerTalk::start(TalkStartMsg *arg) {
     if (selectFn) {
         (this->*reinterpret_cast<Unk_020d8938_ArgFn>(selectFn))(arg);
     }
@@ -4362,8 +4163,8 @@ extern "C" void VillagerTalk_EnsureMemory(u8 *self, s32 *pa, s32 *pb, s32 c, s32
     }
 }
 
-s32 VillagerTalk::onTag09_9() {
-    return _ZN12Unk_0201425820requestSwitchSpeakerEh(this, 0);
+void VillagerTalk::onTag09_9() {
+    _ZN12Unk_0201425820requestSwitchSpeakerEh(this, 0);
 }
 
 void VillagerTalk::onActionTag0() {
@@ -5293,8 +5094,8 @@ void VillagerTalkTopics::updateFishCatchPlan(void *s1, u8 *tbl, void *p2, u8 p3,
 }
 
 void VillagerTalkTopics::updateCatchPlans(u8 *a, void *b, u32 c) {
-    if (((VillagerTalk *)this)->onScannedTag()) {
-        void *s = VillagerPlanBlock_GetErrand(Villager_GetPlan(((VillagerTalk *)this)->onScannedTag()));
+    if (((VillagerActor *)this)->vfunc_64()) {
+        void *s = VillagerPlanBlock_GetErrand(Villager_GetPlan(((VillagerActor *)this)->vfunc_64()));
         Unk_0202bd3c_Arr arr;
         arr.unk_00 = 0;
         arr.unk_04 = 0;
@@ -14203,7 +14004,7 @@ BOOL VillagerMood::isActive() {
 }
 
 void VillagerMood::setMoodAnimation(VillagerTalk *s, u32 mode) {
-    s32 r = (s32)s->onScannedTag();
+    s32 r = (s32)((VillagerActor *)s)->vfunc_64();
     if (mode == 4 && r != 0) {
         ((s32 (*)())_ZN12VillagerData13getVillagerIdEv)();
         s32 t = ((s32 (*)())VillagerId_GetPersonality)();

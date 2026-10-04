@@ -4,12 +4,11 @@
 // The player object (PlayerActor, 0xc9c bytes, vtable 0x020d6dec) and the two method sets of the same object that
 // symbols.txt names Unk_02006d14 / Unk_02008040. All of it is defined in src/main/unk_02004558.cpp and
 // unk_02004558_extra.cpp (one translation unit built by two compilers).
-// The including unit includes talk/MsgRequest.h and declares its own TalkMsgRequest (slots without parameters, slot
-// 0x0c named vfunc_s0c: PlayerActor::onMessageStart returns a value, which talk/TalkMsgRequest.h's slot cannot) and
-// SndSeEmitterKind1 / SndSeEmitterKind99 (SndSeEmitterKind1 with the inline destructor whose link-once D1/D0 that unit
-// emits) before including this header.
+// TalkMsgRequest is talk/TalkMsgRequest.h. The including unit defines SndSeEmitterKind1's destructor inline (its
+// link-once D1/D0 are emitted there) before including this header.
 #include "types.h"
 #include "actor/Character.h"
+#include "talk/TalkMsgRequest.h"
 #include "actor/ActorPlacedCollider.h"
 #include "actor/BlinkTimer.h"
 #include "actor/CharaClothTexRef.h"
@@ -61,9 +60,9 @@ public:
     virtual BOOL onDraw();
     virtual ~PlayerActor();
     virtual BOOL vfunc_5c(Unk_020d77a4_Vec3 *out);
-    virtual s32 onMessageStart();
-    virtual void onMessageEnd();
-    virtual void onChoice();
+    virtual void onMessageStart(u32 attr);
+    virtual void onMessageEnd(u32 attr);
+    virtual void onChoice(u32 attr);
     virtual void onWindowClose();
 
     void doDraw();

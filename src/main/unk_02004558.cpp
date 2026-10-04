@@ -47,6 +47,7 @@
 #include "player/Unk_020080e8.h"
 #include "player/Unk_02008100_Msg.h"
 #include "player/Unk_02008858_Blk.h"
+#include "talk/TalkMsgRequest.h"
 #include "snd/SndSeEmitterKind99.h"
 #include "snd/SndSeEmitterKind1.h"
 #include "talk/MsgRequest.h"
@@ -129,44 +130,6 @@ typedef void (*PMF)();
 
 
 
-class TalkMsgRequest : public MsgRequest {
-public:
-    TalkMsgRequest();
-    virtual ~TalkMsgRequest();
-    virtual void vfunc_08();
-    virtual const char *vfunc_s0c();
-    virtual s32 onMessageStart();
-    virtual void onMessageEnd();
-    virtual void onChoice();
-    virtual void onSignalTag();
-    virtual void onActionTag0();
-    virtual void onActionTag1();
-    virtual void onActionTag2();
-    virtual void onActionTag3();
-    virtual void onActionTag4();
-    virtual void onConditionTag();
-    virtual void onEventTag(u32 a);
-    virtual void onTag09_0();
-    virtual void onTag09_1();
-    virtual void onTag09_2();
-    virtual void onTag09_3();
-    virtual void onTag09_4();
-    virtual void onTag09_5();
-    virtual void onTag09_6();
-    virtual void onTag09_7();
-    virtual void onTag09_8();
-    virtual void onTag09_9();
-    virtual void onScannedTag();
-    virtual void getSpeakerData();
-    virtual void getVoiceType();
-    virtual void onWindowClose();
-    virtual void onTalkEnd();
-
-    /* 0x20 */ u8 pad_20[0x1c];
-    /* 0x3c */ TalkWindowState *unk_3c;
-    /* 0x40 */ u8 unk_40;
-    /* 0x41 */ u8 pad_41[3];
-};
 
 // ---- sound emitters of PlayerActor (snd/SndSeEmitterKind1.h, snd/SndSeEmitterKind99.h). SndSeEmitterKind1 has no key
 // function: this unit emits its link-once vtable and D1 0x02004b48 / D0 0x02010fa4, so the destructor that the header
@@ -5882,13 +5845,10 @@ extern "C" BOOL PlayerActor_IsWaitingForSlots() {
 }
 }
 
-s32 PlayerActor::onMessageStart() {
+// The same opening as onMessageEnd / onChoice with nothing after it: the load of msgStep and the compare stay.
+void PlayerActor::onMessageStart(u32 attr) {
     using namespace nP;
-    s32 v = ((nP::Unk_02006d14 *)this)->msgStep;
-    if (v > 15) {
-        v = ((nP::Unk_02006d14 *)this)->msgStep;
-    }
-    return v;
+    if (((nP::Unk_02006d14 *)this)->msgStep >= 0xf) return;
 }
 
 u8 PlayerActor::isLocomotionAction(u32 i) {

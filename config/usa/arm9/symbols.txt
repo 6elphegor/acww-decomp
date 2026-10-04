@@ -657,8 +657,11 @@ _ZN11PlayerActor18getRemoteTransformEPhPiS1_Pt kind:function(thumb,size=0x64) ad
 _ZN11PlayerActor18isLocomotionActionEj kind:function(thumb,size=0xc) addr:0x0200e3c0
 _ZN11PlayerActor13onWindowCloseEv kind:function(thumb,size=0x1a4) addr:0x0200e3cc
 _ZN11PlayerActor8onChoiceEv kind:function(thumb,size=0x90) addr:0x0200e570
+_ZN11PlayerActor8onChoiceEj kind:label(thumb) addr:0x0200e570
 _ZN11PlayerActor12onMessageEndEv kind:function(thumb,size=0x158) addr:0x0200e600
+_ZN11PlayerActor12onMessageEndEj kind:label(thumb) addr:0x0200e600
 _ZN11PlayerActor14onMessageStartEv kind:function(thumb,size=0xc) addr:0x0200e758
+_ZN11PlayerActor14onMessageStartEj kind:label(thumb) addr:0x0200e758
 PlayerActor_IsWaitingForSlots kind:function(thumb,size=0x5c) addr:0x0200e764
 _ZN12Unk_02006d1416isGuestInSessionEv kind:function(thumb,size=0x34) addr:0x0200e7c0
 _ZN12Unk_02006d1411calcHandMtxEv kind:function(thumb,size=0x7c) addr:0x0200e7f4
@@ -784,8 +787,11 @@ _ZN17SndSeEmitterKind1D0Ev kind:function(thumb,size=0x20) addr:0x02010fa4
 _ZThn236_N11PlayerActorD0Ev kind:function(thumb,size=0x1c) addr:0x02010fc4
 _ZThn236_N11PlayerActor13onWindowCloseEv kind:function(thumb,size=0x1c) addr:0x02010fe0
 _ZThn236_N11PlayerActor8onChoiceEv kind:function(thumb,size=0x1c) addr:0x02010ffc
+_ZThn236_N11PlayerActor8onChoiceEj kind:label(thumb) addr:0x02010ffc
 _ZThn236_N11PlayerActor12onMessageEndEv kind:function(thumb,size=0x1c) addr:0x02011018
+_ZThn236_N11PlayerActor12onMessageEndEj kind:label(thumb) addr:0x02011018
 _ZThn236_N11PlayerActor14onMessageStartEv kind:function(thumb,size=0x1c) addr:0x02011034
+_ZThn236_N11PlayerActor14onMessageStartEj kind:label(thumb) addr:0x02011034
 _ZThn236_N11PlayerActorD1Ev kind:function(thumb,size=0x1c) addr:0x02011050
 _ZN11HudObjGfxIo21releaseSlideIconCharsEv kind:function(thumb,size=0x8) addr:0x0201106c
 _ZN11HudObjGfxIo20uploadSlideIconCharsEv kind:function(thumb,size=0x48) addr:0x02011074
@@ -6052,6 +6058,7 @@ _ZN18TalkParserCondTags15expandNamedSlotEi kind:label(thumb) addr:0x0206ad58
 _ZN10TalkParser10expandSlotEi kind:function(thumb,size=0x38) addr:0x0206adb8
 _ZN18TalkParserCondTags10expandSlotEi kind:label(thumb) addr:0x0206adb8
 _ZN10TalkParser13expandArticleEP16Unk_0206ad58_Enti kind:function(thumb,size=0x7e) addr:0x0206adf0
+_ZN10TalkParser13expandArticleEP9MsgStringi kind:label(thumb) addr:0x0206adf0
 _ZN10TalkParser9stepSpeedEv kind:function(thumb,size=0xf0) addr:0x0206ae70
 _ZN10TalkParser12stepSteppersEv kind:function(thumb,size=0x18) addr:0x0206af60
 _ZN10TalkParser12steppersIdleEv kind:function(thumb,size=0x26) addr:0x0206af78

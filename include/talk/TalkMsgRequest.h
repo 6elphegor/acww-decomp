@@ -3,15 +3,14 @@
 
 #include "types.h"
 #include "talk/MsgRequest.h"
+#include "talk/MsgString9.h"
 
-class MsgString;
-class MsgString9;
 class TalkWindowState;
 
 // Talk-window message request (vtable 0x020ddce8, 0x44 bytes): MsgRequest plus the speaker name and the talk window it
 // is attached to; the notification slots are called by TalkWindowState / TalkWindowMsg / the talk parsers.
-// Defined in src/main/unk_02065e88.cpp (0x02065e88..0x0206609c), which keeps its own copy (speakerName is a
-// MsgString9 by value there, laid out on that unit's 0xc-byte MsgString view; nameKind at 0x2c is its attr form).
+// Defined in src/main/unk_02065e88.cpp (0x02065e88..0x0206609c). The name kind (getNameKind, 0x2c) is
+// speakerName.attr.form.
 // Slot parameters are the ones the talk window passes; symbols.txt names TalkMsgRequest's empty bodies without them,
 // the parameterised names are alias labels. Slot 0x0c is vfunc_s0c (alias label of TalkMsgRequest::vfunc_0c) so that
 // classes that also derive from ProcBase (BuildingActor, FtrActor, RoomObjActor users ...) do not override both
@@ -59,9 +58,7 @@ public:
     void setSpeakerNameStr(MsgString *p, u32 v);
     void setSpeakerName(u8 *p, u32 v);
 
-    /* 0x20 */ u32 speakerName[0xc / 4];    // MsgString9 (its text buffer reaches into pad_30)
-    /* 0x2c */ u32 nameKind;
-    /* 0x30 */ u8 pad_30[0xc];
+    /* 0x20 */ MsgString9 speakerName;      // 0x2c speakerName.attr.form: name kind
     /* 0x3c */ TalkWindowState *unk_3c;     // talk window this request is attached to (attachWindow)
     /* 0x40 */ u8 unk_40;                   // no speaker name (setNoSpeakerName)
     // 0x41: end of data. mwcc places a derived class's first members in the tail padding (BuildingActor: u16 at

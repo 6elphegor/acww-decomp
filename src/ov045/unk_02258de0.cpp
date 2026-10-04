@@ -22,6 +22,7 @@
 #include "actor/NpcActor.h"
 #include "actor/SpNpcActor.h"
 #include "talk/Unk_020d7710.h"
+#include "talk/MsgString.h"
 
 // Real (mangled) names of other modules' functions that the unit calls as plain functions taking the object first.
 #define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv
@@ -116,16 +117,6 @@ struct Unk_ov045_022590e4_Msg {
 
 
 
-class MsgString : public MsgStringBase {
-public:
-    MsgString();
-    virtual ~MsgString();
-    virtual u32 capacity() = 0;
-    virtual u8 *data() = 0;
-    void fromEncoded(EncodedString *dst, s32 a, s32 b);
-
-    u8 unk_04[14];
-};
 
 // vtable 0x02259dd4, data at +0x12, 0x24 bytes
 class KatrinaMsgString17 : public MsgString {

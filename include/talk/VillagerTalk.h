@@ -22,8 +22,7 @@ struct Unk_020d8938_Tbl {
 
 // Villager talk request (0x1a0 bytes, vtable 0x020d8930; member at 0x680 of VillagerActor): topic state functions,
 // item hand-over state, memory / partner indices, choice values. Base of the event villagers' talk requests (ov004,
-// ov068). Defined in src/main/unk_0201c050.cpp, which keeps its own copy (its slots onTag09_9 / onScannedTag return
-// values, see C04's notes); the slot signatures here are the shared ones.
+// ov068). Defined in src/main/unk_0201c050.cpp.
 class VillagerTalk : public Unk_020d7710 {
 public:
     VillagerTalk();
