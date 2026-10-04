@@ -17,7 +17,6 @@
 #include "game/ShopAckCounter.h"
 #include "item/Letter.h"
 #include "gfx/ObjShadowBits.h"
-#include "gfx/Unk_020ac2e8_V.h"
 #include "gfx/SceneLightsCol.h"
 #include "item/ShopPurchaseBits.h"
 #include "item/ShopAckCounter.h"

@@ -1,12 +1,12 @@
-#ifndef PLAYER_UNK_0200B868_MSG_H
-#define PLAYER_UNK_0200B868_MSG_H
+#ifndef PLAYER_PLAYERNOARGSREQUEST_H
+#define PLAYER_PLAYERNOARGSREQUEST_H
 
 #include "types.h"
 
-// Player action request message without arguments (action 10 / emotion)
+// Player action request message without arguments (requestAct13 / Act15 / Act79, requestLidClosed)
 // (src/main/unk_02004558.cpp; also used by src/main/unk_02004558_extra.cpp).
 
-struct Unk_0200b868_Msg {
+struct PlayerNoArgsRequest {
     /* 0x00 */ u32 action;
     /* 0x04 */ u32 priority;
     /* 0x08 */ u32 netSeq;

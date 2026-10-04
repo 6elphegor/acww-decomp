@@ -6,12 +6,6 @@
 // Last-play date / location record views used when the player enters the field
 // (src/main/unk_02004558.cpp; also used by src/main/unk_02004558_extra.cpp).
 
-struct Unk_020092c8_Flags {
-    /* 0x0 */ u8 f0 : 1;
-    /* 0x0 */ u8 f1 : 2;
-    /* 0x0 */ u8 f3 : 5;
-};
-
 struct Unk_020092c8_Date {
     union {
         struct {

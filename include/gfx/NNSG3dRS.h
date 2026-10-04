@@ -5,18 +5,22 @@
 #include "gfx/NNSG3dRenderObj.h"
 
 struct NNSG3dJntAnmResult;
+struct NNSG3dRS;
+
+// SBC command callback (NNSG3dSbcCallBackFunc of the SDK's g3d/sbc.h).
+typedef void (*NNSG3dSbcCallBackFunc)(NNSG3dRS *);
 
 // View of the NitroSystem G3D render state NNSG3dRS passed to SBC command callbacks: current command pointer,
 // render object, flags and the per-command callback vectors / timings (NNS_G3D_SBC_COMMAND_NUM = 0x20;
 // NODEDESC = 6, MAT = 4), current node/material and the joint animation result (0xb4). Used by the ov009 building
 // model callbacks, JointBlend::capturePose/blendPose (src/main/unk_02055c38.cpp), the PlayerActor joint callbacks
-// (src/main/unk_02004558.cpp), the Two/ThreeLayerAnimModel joint callbacks and JointCb_* (unk_02053848.cpp),
-// NpcActor_JointCalcLayer3Cb and HeldItemModels_OnJointCalcPre/Post.
+// (src/main/unk_02004558.cpp), the Two/ThreeLayerAnimModel joint callbacks and JointCb_* (unk_02053848.cpp,
+// unk_020b0e60.cpp), NpcActor_JointCalcLayer3Cb / NpcActor_OnJointCalc and HeldItemModels_OnJointCalcPre/Post.
 struct NNSG3dRS {
     /* 0x00 */ u8 *c;
     /* 0x04 */ NNSG3dRenderObj *pRenderObj;
     /* 0x08 */ u32 flag;
-    /* 0x0c */ void *cbVecFunc[0x20];
+    /* 0x0c */ void *cbVecFunc[0x20]; // NNSG3dSbcCallBackFunc
     /* 0x8c */ u8 cbVecTiming[0x20];
     /* 0xac */ u8 currentNode;
     /* 0xad */ u8 currentMat;

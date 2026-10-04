@@ -1109,7 +1109,7 @@ void CreatureBook_BuildCaughtMask(CreatureBookPanel *s) {
     s32 i;
     u16 v;
     for (i = 0; i < 3; i++) {
-        s->unk_1240[i] = 0;
+        s->caughtMask[i] = 0;
     }
     void *p = PlayerData_GetCurrent();
     v = 0xfff1;
@@ -1117,14 +1117,14 @@ void CreatureBook_BuildCaughtMask(CreatureBookPanel *s) {
         for (i = 0; i < s->listLength; i++) {
             v = (u32)i < 0x38 ? (u16)(i + 0x12e8) : 0x12e8;
             if (Catalog_HasItem(_ZN10PlayerData10getCatalogEv(p), &v)) {
-                s->unk_1240[i >> 5] |= 1 << (i & 0x1f);
+                s->caughtMask[i >> 5] |= 1 << (i & 0x1f);
             }
         }
     } else {
         for (i = 0; i < s->listLength; i++) {
             v = (u32)i < 0x38 ? (u16)(i + 0x12b0) : 0x12b0;
             if (Catalog_HasItem(_ZN10PlayerData10getCatalogEv(p), &v)) {
-                s->unk_1240[i >> 5] |= 1 << (i & 0x1f);
+                s->caughtMask[i >> 5] |= 1 << (i & 0x1f);
             }
         }
     }
@@ -1132,7 +1132,7 @@ void CreatureBook_BuildCaughtMask(CreatureBookPanel *s) {
 
 BOOL CreatureBook_IsCaught(CreatureBookPanel *s, s32 i) {
     BOOL r = TRUE;
-    if (((1 << (i & 0x1f)) & s->unk_1240[i >> 5]) == 0) {
+    if (((1 << (i & 0x1f)) & s->caughtMask[i >> 5]) == 0) {
         r = FALSE;
     }
     return r;

@@ -6,54 +6,50 @@
 #include "net/CommManager.h"
 #include "talk/TalkWindowState.h"
 #include "gfx/NNSG3dRS.h"
-#include "player/Unk_02005f50_Flags.h"
+#include "player/PendingFieldActionFx.h"
 #include "player/Unk_02005f50_Area.h"
-#include "player/Unk_02005f50_Pkt.h"
+#include "player/FieldActionFxEvent.h"
 #include "player/Unk_02006d14_Pair.h"
 #include "player/Unk_02006d14_V3.h"
 #include "player/Unk_02006d14_Trip.h"
-#include "player/Unk_02006d14_St7d0.h"
-#include "player/Unk_02006d14_Sub7d0.h"
+#include "player/PlayerPickUpWork.h"
 #include "player/Unk_02006d14_Ptr.h"
-#include "player/Unk_0200d560.h"
-#include "player/Unk_0200e2c8.h"
+#include "player/PlayerInitWork.h"
+#include "player/PlayerActionRequestBase.h"
 #include "game/Unk_0200f6d4_V2.h"
 #include "player/Unk_0200d64c_Xyz.h"
-#include "player/Unk_0200e7f4_T24.h"
 #include "player/Unk_0200f070_V3.h"
 #include "player/Unk_0200ff08_Obj.h"
 #include "player/Unk_020107c8_Blk.h"
 #include "player/PlayerNetActionArgs.h"
-#include "player/Unk_02008100_Msg.h"
-#include "player/Unk_02008e50_Pay.h"
-#include "player/Unk_02008f5c.h"
+#include "player/PlayerU16ArgsRequest.h"
+#include "player/PlayerAct76Args.h"
+#include "player/PlayerTurnToWork.h"
 #include "player/Unk_020092c8_Loc.h"
-#include "player/Unk_02009624_Pair.h"
-#include "player/Unk_02009a78_Locals.h"
-#include "player/Unk_02009d5c_Sub.h"
-#include "player/Unk_02009f68_Bytes.h"
+#include "player/PlayerChangeHeldItemWork.h"
+#include "player/PlayerAct32Locals.h"
+#include "player/PlayerAct30Args.h"
+#include "player/PlayerPickUpFanfareArgs.h"
 #include "talk/TalkMsgRequest.h"
 #include "snd/SndSeEmitterKind99.h"
 #include "snd/SndSeEmitterKind1.h"
 #include "talk/MsgRequest.h"
-#include "player/Unk_02006d14_7d0.h"
+#include "player/PlayerActionWork.h"
 #include "actor/Character.h"
 #include "actor/Actor.h"
 #include "gfx/MatTexVramTask.h"
 #include "player/PM_020076f0.h"
 #include "player/PM_020063a0.h"
-#include "player/Unk_020093f4_Msg.h"
+#include "player/PlayerWalkToRequest.h"
 #include "gfx/MatTexPatAnim.h"
 #include "sys/ProcBase.h"
 #include "player/Unk_02007694.h"
-#include "player/Unk_020093d4.h"
-#include "player/Unk_02008e50_Msg.h"
+#include "player/PlayerWalkToWork.h"
+#include "player/PlayerAct76Request.h"
 #include "player/Unk_02005e7c.h"
-#include "player/Unk_0205dfa4.h"
-#include "player/Unk_0200e2e0.h"
-#include "player/Unk_0200bc78_Vec.h"
-#include "player/Unk_0200b76c_Msg.h"
-#include "player/Unk_0200944c.h"
+#include "player/PlayerAct30Request.h"
+#include "player/PlayerPickUpReachRequest.h"
+#include "player/PlayerWalkToArgs.h"
 #include "player/PlayerActionRequest.h"
 #include "player/PMRaw.h"
 #include "snd/SndSeEmitter.h"
@@ -65,20 +61,19 @@
 #include "actor/CharaFaceAnimWorkRef.h"
 #include "actor/CharaFaceAnimRef.h"
 #include "actor/CharaClothTexRef.h"
-#include "player/Unk_0205ef98.h"
-#include "player/Unk_0205dfa4_Base.h"
-#include "player/Unk_0205c3a4.h"
+#include "player/PlayerPaletteRef.h"
+#include "player/Unk_0200bc78_Vec.h"
+#include "player/AnimSlotRef.h"
 #include "game/Unk_0203d820_Ptr.h"
 #include "gfx/Mtx43.h"
 #include "player/Unk_021c1b3c.h"
-#include "player/Unk_020d6df4_7d0.h"
+#include "player/PlayerWalkWork.h"
 #include "player/PlayerHead.h"
-#include "player/Unk_0200c2fc.h"
-#include "player/Unk_0200bda0.h"
-#include "player/Unk_0200bc08_Obj.h"
+#include "player/PlayerChangeClothesArgs.h"
+#include "player/PlayerAct10Args.h"
 #include "player/Unk_0200b908_Obj.h"
-#include "player/Unk_0200b868_Msg.h"
-#include "player/Unk_0200b750.h"
+#include "player/PlayerNoArgsRequest.h"
+#include "player/PlayerPickUpReachArgs.h"
 #include "player/PlayerPickUpArgs.h"
 
 class PlayerActor;
@@ -552,22 +547,22 @@ u32 HandOverItem_GetNextMode();
 u32 HandOverItem_RequestMode(u32 a, void* p);
 u32 HandOverItem_IsMaster(void* p);
 void HandOverItem_Begin(void* p, u32 a, u8 b, u32 c, void* d, u32 e);
-void _ZN19PlayerActionRequestC1Ev(Unk_0200e2e0* p);
-void _ZN19PlayerActionRequest6assignEiis(Unk_0200e2e0* p, u32 a, u32 b, u32 c);
-void _ZN19PlayerActionRequestD1Ev(Unk_0200e2e0* p);
+void _ZN19PlayerActionRequestC1Ev(PlayerAct30Request* p);
+void _ZN19PlayerActionRequest6assignEiis(PlayerAct30Request* p, u32 a, u32 b, u32 c);
+void _ZN19PlayerActionRequestD1Ev(PlayerAct30Request* p);
 void PlayerActor_GetHeldItem(u16* out, void* p);
 void _ZN11PlayerActor9setAngleYEPs(void* p, void* q);
 s32 _ZN11PlayerActor8setSpeedEPj(void* p, void* q);
 s32 PlayerActor_Accelerate(s32 a, s32 b);
 void PlayerActor_TurnAngle(void* out, s32 a);
-void PlayerActor_SetArgsAct30(Unk_02009d5c_Sub* p, u32 a, u32 b, u32 c, u32 d);
+void PlayerActor_SetArgsAct30(PlayerAct30Args* p, u32 a, u32 b, u32 c, u32 d);
 void PlayerActor_InitAct32Work(u32* p);
 void PlayerActor_NetReadChangeHeldItem(void* p, u16* out);
 void PlayerActor_NetWriteChangeHeldItem(void* p, u32 v);
 void PlayerActor_NetReadChangeHeldItem(void* p, u16* out);
 void PlayerActor_NetWriteChangeHeldItem(void* p, u32 v);
 void PlayerActor_InitAct32Work(u32* p);
-void PlayerActor_SetArgsAct30(Unk_02009d5c_Sub* p, u32 a, u32 b, u32 c, u32 d);
+void PlayerActor_SetArgsAct30(PlayerAct30Args* p, u32 a, u32 b, u32 c, u32 d);
 static inline BOOL Unk_02009624_Check()
 {
     if (gFieldSceneKind == 0) {
@@ -578,7 +573,7 @@ static inline BOOL Unk_02009624_Check()
 void* PlayerActor_GetPlayerData(void *);
 s32 _ZN11PlayerActor13startAnimOnceEijt(void *, u32 a, u32 b, u32 c);
 void _ZN11PlayerActor6playSeEj(void *, u32 a);
-s32 _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(void *, Unk_0200e2e0* p);
+s32 _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(void *, PlayerAct30Request* p);
 void _ZN11PlayerActor11advanceAnimEv(void *);
 void _ZN11PlayerActor18updateBodyColliderEv(void *);
 u32 _ZN12Unk_0200769421getActionDonePriorityEj(void *, u32 a);
@@ -605,21 +600,21 @@ static inline BOOL Unk_0200a114_IsZero(u8* p)
     if (*p == 0) return TRUE;
     return FALSE;
 }
-void PlayerActor_NetReadPickUpFanfareStow(Unk_02009f68_Bytes* src, Unk_02006d14_Pair* out, u8* b);
-void PlayerActor_NetWritePickUpFanfareStow(Unk_02009f68_Bytes* dst, Unk_02006d14_Pair* p, u8 b);
-void PlayerActor_SetArgsPickUpFanfareStow(Unk_0200a0a0_Bytes* dst, Unk_02006d14_Pair* p, u8 b);
-void PlayerActor_NetReadPickUpFanfare(Unk_0200a63c_St* s, Unk_02006d14_Pair* out, u16* h, u8* b);
-void PlayerActor_NetWritePickUpFanfare(Unk_0200a63c_St* s, Unk_02006d14_Pair* p, u16 h, u8 b);
-void PlayerActor_SetArgsPickUpFanfare(Unk_0200a728_St* s, Unk_02006d14_Pair* p, u16 h, u8 b);
+void PlayerActor_NetReadPickUpFanfareStow(PlayerNetPickUpFanfareStowArgs* src, Unk_02006d14_Pair* out, u8* b);
+void PlayerActor_NetWritePickUpFanfareStow(PlayerNetPickUpFanfareStowArgs* dst, Unk_02006d14_Pair* p, u8 b);
+void PlayerActor_SetArgsPickUpFanfareStow(PlayerPickUpFanfareStowArgs* dst, Unk_02006d14_Pair* p, u8 b);
+void PlayerActor_NetReadPickUpFanfare(PlayerNetPickUpFanfareArgs* s, Unk_02006d14_Pair* out, u16* h, u8* b);
+void PlayerActor_NetWritePickUpFanfare(PlayerNetPickUpFanfareArgs* s, Unk_02006d14_Pair* p, u16 h, u8 b);
+void PlayerActor_SetArgsPickUpFanfare(PlayerPickUpFanfareArgs* s, Unk_02006d14_Pair* p, u16 h, u8 b);
 extern CommManager* gCommManager;
 extern u8 gFieldSceneKind[];
 extern u8 sPlayerActorErrorMsgFile[];
 extern u8 sPlayerActorMsgFile[];
 extern void* gSceneBlockMap;
 BOOL _ZN11CommManager11isLocalSlotEj(CommManager* p, u32 v);
-void _ZN19PlayerActionRequestC1Ev(Unk_0200a050_Obj* o);
-void _ZN19PlayerActionRequest6assignEiis(Unk_0200a050_Obj* o, u32 a, u32 b, s16 c);
-void _ZN19PlayerActionRequestD1Ev(Unk_0200a050_Obj* o);
+void _ZN19PlayerActionRequestC1Ev(PlayerActionRequestHead* o);
+void _ZN19PlayerActionRequest6assignEiis(PlayerActionRequestHead* o, u32 a, u32 b, s16 c);
+void _ZN19PlayerActionRequestD1Ev(PlayerActionRequestHead* o);
 void PendingUnit_CommitAt(Unk_02006d14_Pair* p, u32 v);
 void PendingUnit_ApplyAt(Unk_02006d14_Pair* p, u32 v);
 BOOL _ZN13AnimFrameCtrl14hasPassedFrameEi(void* p, u32 v);
@@ -646,16 +641,16 @@ BOOL MenuCtrl_OpenPocketsFullPickUp(u32 v);
 BOOL MenuCtrl_IsFinished();
 BOOL MenuCtrl_IsResultOk();
 s32 FieldAction_RequestPlaceAtPendingForAid(u32 a, u32 b);
-void PlayerActor_NetReadPickUpFanfareStow(Unk_02009f68_Bytes* src, Unk_02006d14_Pair* out, u8* b);
-void PlayerActor_NetWritePickUpFanfareStow(Unk_02009f68_Bytes* dst, Unk_02006d14_Pair* p, u8 b);
-void PlayerActor_SetArgsPickUpFanfareStow(Unk_0200a0a0_Bytes* dst, Unk_02006d14_Pair* p, u8 b);
-void PlayerActor_NetReadPickUpFanfare(Unk_0200a63c_St* s, Unk_02006d14_Pair* out, u16* h, u8* b);
-void PlayerActor_NetWritePickUpFanfare(Unk_0200a63c_St* s, Unk_02006d14_Pair* p, u16 h, u8 b);
-void PlayerActor_SetArgsPickUpFanfare(Unk_0200a728_St* s, Unk_02006d14_Pair* p, u16 h, u8 b);
+void PlayerActor_NetReadPickUpFanfareStow(PlayerNetPickUpFanfareStowArgs* src, Unk_02006d14_Pair* out, u8* b);
+void PlayerActor_NetWritePickUpFanfareStow(PlayerNetPickUpFanfareStowArgs* dst, Unk_02006d14_Pair* p, u8 b);
+void PlayerActor_SetArgsPickUpFanfareStow(PlayerPickUpFanfareStowArgs* dst, Unk_02006d14_Pair* p, u8 b);
+void PlayerActor_NetReadPickUpFanfare(PlayerNetPickUpFanfareArgs* s, Unk_02006d14_Pair* out, u16* h, u8* b);
+void PlayerActor_NetWritePickUpFanfare(PlayerNetPickUpFanfareArgs* s, Unk_02006d14_Pair* p, u16 h, u8 b);
+void PlayerActor_SetArgsPickUpFanfare(PlayerPickUpFanfareArgs* s, Unk_02006d14_Pair* p, u16 h, u8 b);
 void _ZN11PlayerActor6playSeEj(void *, u32 id);
 void _ZN11PlayerActor13startAnimOnceEijt(void *, u32 a, u32 b, u32 c);
 s32 _ZN11PlayerActor15getHeldToolKindEv(void *);
-s32 _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(void *, Unk_0200a050_Obj* o);
+s32 _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(void *, PlayerActionRequestHead* o);
 void _ZN11PlayerActor11advanceAnimEv(void *);
 void _ZN11PlayerActor18updateBodyColliderEv(void *);
 void _ZN11PlayerActor15netSyncNearUnitEPi(void *, Unk_02006d14_Pair* p);
@@ -887,7 +882,7 @@ s32 func_01ffcb0c(s32 a, s32 b);
 s32 FX_Sqrt(s32 a);
 s32 Vec_DistXZ(void *a, void *b);
 s32 Field_TryPushSnowball(void *out, void *a, void *b, s32 c, s32 d);
-Unk_0205dfa4 &HeldItemModel_GetModel(void *p);
+BlendAnimModel &HeldItemModel_GetModel(void *p);
 void _ZN17TwoLayerAnimModel12updateLayersEv(void *p);
 BOOL _ZN11CommManager11isLocalSlotEj(void *p, s32 v);
 BOOL Scene_GetCurrent();
@@ -1131,7 +1126,7 @@ namespace nP {
 extern "C" {
 
 extern CommManager *gCommManager;
-extern Unk_0200e7f4_T24 data_021cb69c;
+extern Mtx43 data_021cb69c;
 extern u8 sPlayerActionTalkable[];
 extern s16 data_02135f44[];
 extern u32 data_020d5e40;
@@ -1193,7 +1188,7 @@ extern void *gCommManager;
 extern void *gSceneBlockMap;
 extern u32 data_020c6210[];
 s32 func_01ffcb0c(s32 a, s32 b);
-void MTX_MultVec43(VecFx32 *v, Unk_0200f070_M *m, VecFx32 *out);
+void MTX_MultVec43(VecFx32 *v, Mtx43 *m, VecFx32 *out);
 void WorldCurve_FromCurved(VecFx32 *dst, VecFx32 *src);
 BOOL _ZN11CommManager11isLocalSlotEj(void *a, s32 b);
 BOOL _ZN11PlayerActor14testActionFlagEj(PlayerActor *o, s32 id);
@@ -1392,7 +1387,7 @@ void _ZN19ActorPlacedCollider15setupForActorAtEPvP7VecFx32iijjjhi(void *a, void 
 u32 Ground_GetDefaultY(u32 a);
 BOOL _ZN13AnimFrameCtrl14hasPassedFrameEi(void *a, u32 b);
 BOOL BlinkTimer_Update(void *a);
-BOOL _ZN11PlayerActor18getRemoteTransformEPhPiS1_Pt(PlayerActor *a, Unk_02010924_Msg *b, u32 *c, u32 *d, s16 *e);
+BOOL _ZN11PlayerActor18getRemoteTransformEPhPiS1_Pt(PlayerActor *a, PlayerNetApproachLocals *b, u32 *c, u32 *d, s16 *e);
 BOOL PlayerActor_TurnAngleSlow(s16 *a, s32 b);
 void PlayerActor_ApproachCoord(void *a, u32 b);
 void _ZN5Actor13applyVelocityEP13ActorCollider(PlayerActor *a, void *b);
@@ -1937,7 +1932,7 @@ void PlayerActor::readInput() {
 
 void Unk_02007694::endChangeClothes(u32 a) {
     using namespace nL;
-    Unk_0200c288 *p = &((Unk_02007694 *)this)->actionWork;
+    PlayerChangeClothesWork *p = &((Unk_02007694 *)this)->actionWork;
     if (p->isApplied == 0) {
         switch (p->changeKind) {
         case 0:
@@ -2018,7 +2013,7 @@ void Unk_02007694::changeClothesApply() {
 
 void PlayerActor::pickUpReachUpdate() {
     using namespace nJ;
-    Unk_02006d14_Sub7d0* s = (Unk_02006d14_Sub7d0 *)((PlayerActor *)this)->actionWorkRaw;
+    PlayerPickUpWork* s = (PlayerPickUpWork *)((PlayerActor *)this)->actionWorkRaw;
     u8* st = &s->unk_04.b.unk_04;
     struct { u32 pad; Vec2 p[2]; } l;
     switch (*st) {
@@ -2254,9 +2249,9 @@ void PlayerActor::setupAct76(PlayerActionRequest *item, u32 old) {
     u8 a = p[0];
     u8 b = p[1];
     u8 c = p[2];
-    Unk_02006d14_7d0 *s;
+    PlayerActionWork *s;
     if ((u8)(a + 254) <= 1) TalkRequest_FinishSceneEntry();
-    s = (Unk_02006d14_7d0 *)((PlayerActor *)this)->actionWorkRaw;
+    s = (PlayerActionWork *)((PlayerActor *)this)->actionWorkRaw;
     s->unk_02 = a;
     if (a == 0) {
         if (old != 0x57) s->unk_03 = 3;
@@ -2484,7 +2479,7 @@ void PlayerActor::act76Update() {
 
 void Unk_02005e7c::handleNetEvent() {
     using namespace nC;
-    Unk_02005f50_Pkt pkt;
+    FieldActionFxEvent pkt;
     volatile u16 pos;
     s32 ux, uy;
     s32 ux2, uy2;

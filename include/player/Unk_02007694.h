@@ -4,7 +4,7 @@
 #include "types.h"
 #include "gfx/VecFx32.h"
 #include "gfx/Mtx43.h"
-#include "player/Unk_0200c2fc.h"
+#include "player/PlayerChangeClothesArgs.h"
 
 // PlayerActor view of the action handlers (walk, skid turn, change clothes, act05/91/92, wait menu, held-up item).
 // The 53 methods of the first group are defined in src/main/unk_02004558.cpp; the rest are declared by the
@@ -182,7 +182,7 @@ public:
     /* 0x704 */ u8 handPose[5];
     /* 0x709 */ u8 faceTex[0x7a0 - 0x709];
     /* 0x7a0 */ u8 bgCheckWork[0x30];
-    /* 0x7d0 */ Unk_0200c288 actionWork;
+    /* 0x7d0 */ PlayerChangeClothesWork actionWork;
     /* 0x7ec */ u32 action;
     /* 0x7f0 */ u8 prevAction[8];
     /* 0x7f8 */ u32 actionPriority;
@@ -197,7 +197,7 @@ public:
     /* 0x838 */ u8 seEmitterLocal[0x8e4 - 0x838];
     /* 0x8e4 */ u8 tripCooldown;
     /* 0x8e5 */ u8 alpha[0x8ec - 0x8e5];
-    /* 0x8ec */ Unk_0200c24c netData;
+    /* 0x8ec */ PlayerNetChangeClothesArgs netData;
     /* 0x8f0 */ u8 unk_8f0[0xc80 - 0x8f0];
     /* 0xc80 */ u16 netSeq;
 };

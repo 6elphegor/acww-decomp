@@ -1,12 +1,12 @@
-#ifndef PLAYER_UNK_02008100_MSG_H
-#define PLAYER_UNK_02008100_MSG_H
+#ifndef PLAYER_PLAYERU16ARGSREQUEST_H
+#define PLAYER_PLAYERU16ARGSREQUEST_H
 
 #include "types.h"
 
-// Player action request messages (hold-up item, error message, lid closed)
+// Player action request messages with a u16 (act 0x77, hold-up item) or u8 (error message) argument
 // (src/main/unk_02004558.cpp; also used by src/main/unk_02004558_extra.cpp).
 
-struct Unk_02008100_Msg {
+struct PlayerU16ArgsRequest {
     /* 0x00 */ u32 action;
     /* 0x04 */ u32 priority;
     /* 0x08 */ u16 netSeq;
@@ -15,20 +15,13 @@ struct Unk_02008100_Msg {
     /* 0x0e */ u8 unk_0e[0x0e];
 };
 
-struct Unk_020082e4_Msg {
+struct PlayerU8ArgsRequest {
     /* 0x00 */ u32 action;
     /* 0x04 */ u32 priority;
     /* 0x08 */ u16 netSeq;
     /* 0x0a */ u16 unk_0a;
     /* 0x0c */ u8 args;
     /* 0x0d */ u8 unk_0d[0x0f];
-};
-
-struct Unk_02008404_Msg {
-    /* 0x00 */ u32 action;
-    /* 0x04 */ u32 priority;
-    /* 0x08 */ u16 netSeq;
-    /* 0x0a */ u8 unk_0a[0x12];
 };
 
 #endif

@@ -30,8 +30,8 @@
 #include "player/PlayerFaceTexRef.h"
 #include "player/PlayerGlassesModelRef.h"
 #include "player/PlayerHead.h"
-#include "player/Unk_0205c3a4.h"
-#include "player/Unk_0205ef98.h"
+#include "player/AnimSlotRef.h"
+#include "player/PlayerPaletteRef.h"
 #include "player/PlayerNetActionArgs.h"
 #include "snd/SndSeEmitterKind1.h"
 #include "snd/SndSeEmitterKind99.h"
@@ -364,7 +364,7 @@ public:
     /* 0x148 */ VecFx32 toolTargetPos;
     /* 0x154 */ VecFx32 targetPos;
     /* 0x160 */ u8 pad_160[4];
-    /* 0x164 */ s32 toolHitActor;
+    /* 0x164 */ Actor *toolHitActor;
     /* 0x168 */ u8 toolHitKind;
     /* 0x169 */ u8 touchTargetId;
     /* 0x16a */ u8 pad_16a[2];
@@ -399,8 +399,8 @@ public:
     /* 0x6e8 */ s32 actionFlags;
     /* 0x6ec */ s32 shadowSize;
     /* 0x6f0 */ VecFx32 bodyPos;
-    /* 0x6fc */ Unk_0205c3a4 bodyAnimSlot;
-    /* 0x6fd */ Unk_0205c3a4 holdAnimSlot;
+    /* 0x6fc */ AnimSlotRef bodyAnimSlot;
+    /* 0x6fd */ AnimSlotRef holdAnimSlot;
     /* 0x6fe */ u8 pad_6fe[2];
     /* 0x700 */ s32 animId;
     /* 0x704 */ s32 handPose;
@@ -416,7 +416,7 @@ public:
     /* 0x770 */ CharaClothTexRef shirtTex;
     /* 0x771 */ u8 pad_771[3];
     /* 0x774 */ MatTexVramTask shirtTexUpload;
-    /* 0x79c */ Unk_0205ef98 skinHairPalette;
+    /* 0x79c */ PlayerPaletteRef skinHairPalette;
     /* 0x79d */ u8 pad_79d[3];
     /* 0x7a0 */ CollisionState bgCheckWork;
     /* 0x7d0 */ union {                     // per-action work area, mostly read through per-action views

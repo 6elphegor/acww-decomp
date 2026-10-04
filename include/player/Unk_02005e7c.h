@@ -2,7 +2,7 @@
 #define PLAYER_UNK_02005E7C_H
 
 #include "types.h"
-#include "player/Unk_02005f50_Flags.h"
+#include "player/PendingFieldActionFx.h"
 
 // PlayerActor view of the net-action handlers (PlayerActor_Net* / per-action net receivers, 0x02005e7c...); its
 // methods are defined in src/main/unk_02004558.cpp and unk_02004558_extra.cpp.
@@ -29,7 +29,7 @@ public:
     /* 0x8f4 */ s32 lastNetAction;
     /* 0x8f8 */ s32 pendingEventUnitX;
     /* 0x8fc */ s32 pendingEventUnitZ;
-    /* 0x900 */ Unk_02005f50_Flags pendingEvent;
+    /* 0x900 */ PendingFieldActionFx pendingEvent;
     /* 0x901 */ u8 pad_901[0x37f];
     /* 0xc80 */ s16 netSeq;
     /* 0xc82 */ u8 pad_c82[2];

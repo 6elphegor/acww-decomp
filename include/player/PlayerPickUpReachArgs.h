@@ -1,5 +1,5 @@
-#ifndef PLAYER_UNK_0200B750_H
-#define PLAYER_UNK_0200B750_H
+#ifndef PLAYER_PLAYERPICKUPREACHARGS_H
+#define PLAYER_PLAYERPICKUPREACHARGS_H
 
 #include "types.h"
 
@@ -13,7 +13,7 @@ struct Unk_0200b750_Pair {
     Unk_0200b750_Pair(const Unk_0200b750_Pair &o) : unitX(o.unitX), unitZ(o.unitZ) {}
 };
 
-struct Unk_0200b750 {
+struct PlayerNetPickUpReachArgs {
     /* 0x0 */ u8 unk_00;
     /* 0x1 */ u8 unk_01;
     /* 0x2 */ u8 pad_02[2];
@@ -24,7 +24,7 @@ struct Unk_0200b750 {
     void writeEmotionNet(u8 a, u8 b);
 };
 
-struct Unk_0200b7bc {
+struct PlayerPickUpReachArgs {
     /* 0x0 */ u32 ftrActorIndex;
     /* 0x4 */ u8 unitX;
     /* 0x5 */ u8 unitZ;

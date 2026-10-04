@@ -51,7 +51,7 @@ public:
     /* 0x108c */ u8 rowIcons[0x10f8 - 0x108c]; // CreatureBookIconObj[9] (type defined in the TU)
     /* 0x10f8 */ LabelString labels[4];
     /* 0x11f8 */ MenuScrollKnob scrollKnob;
-    /* 0x1240 */ u32 unk_1240[3];
+    /* 0x1240 */ u32 caughtMask[3];
     /* 0x124c */ s32 knobPos;
     /* 0x1250 */ s32 knobGrabOffset;
     /* 0x1254 */ s32 knobLastTickPos;

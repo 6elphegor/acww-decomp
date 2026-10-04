@@ -1,6 +1,6 @@
 #include "types.h"
 #include "npc/NpcResPool.h"
-#include "player/Unk_0205c3a4.h"
+#include "player/AnimSlotRef.h"
 #include "actor/CharaClothTexRef.h"
 #include "actor/CharaFaceAnimRef.h"
 #include "actor/CharaFaceAnimWorkRef.h"
@@ -166,7 +166,7 @@ struct NpcBodyAnimPool : NpcResPool {
     virtual ~NpcBodyAnimPool();
     virtual NpcBodyAnimSlot *getSlot(u32 i);
     virtual void occupySlot(u32 i);
-    Unk_0205c3a4 *getLayer(u32 i, u32 off);
+    AnimSlotRef *getLayer(u32 i, u32 off);
 };
 
 extern NpcBodyAnimPool sNpcBodyAnimPool;
@@ -231,9 +231,9 @@ NpcBodyAnimSlot *NpcBodyAnimPool::getSlot(u32 i) {
     return r;
 }
 
-Unk_0205c3a4 *NpcBodyAnimPool::getLayer(u32 i, u32 off) {
-    Unk_0205c3a4 *r = 0;
-    if (i < (u32)numSlots) r = (Unk_0205c3a4 *)((u8 *)&NpcBodyAnimPool_Get()->slots[i] + 1 + off);
+AnimSlotRef *NpcBodyAnimPool::getLayer(u32 i, u32 off) {
+    AnimSlotRef *r = 0;
+    if (i < (u32)numSlots) r = (AnimSlotRef *)((u8 *)&NpcBodyAnimPool_Get()->slots[i] + 1 + off);
     return r;
 }
 

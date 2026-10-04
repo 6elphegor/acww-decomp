@@ -10,7 +10,7 @@ struct Unk_020107c8_Blk {
     /* 0x8 */ u32 z;
 }; // size 0xc
 
-struct Unk_02010924_Msg {
+struct PlayerNetApproachLocals {
     /* 0x0 */ u8 scene;
     /* 0x2 */ s16 netAngle;
     /* 0x4 */ s16 curAngle;

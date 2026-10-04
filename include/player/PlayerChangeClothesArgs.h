@@ -1,12 +1,12 @@
-#ifndef PLAYER_UNK_0200C2FC_H
-#define PLAYER_UNK_0200C2FC_H
+#ifndef PLAYER_PLAYERCHANGECLOTHESARGS_H
+#define PLAYER_PLAYERCHANGECLOTHESARGS_H
 
 #include "types.h"
 
 // Change-clothes / skid-turn request arguments, action work and net record; methods are defined in
 // src/main/unk_02004558.cpp.
 
-struct Unk_0200c2fc {
+struct PlayerChangeClothesArgs {
     /* 0x0 */ u16 unk_00;
     /* 0x4 */ s32 changeKind;
     /* 0x8 */ s32 wearStyle;
@@ -16,7 +16,7 @@ struct Unk_0200c2fc {
     void setSkidTurnArgs(u16 a);
 };
 
-struct Unk_0200c288 {
+struct PlayerChangeClothesWork {
     /* 0x00 */ u16 unk_00;
     /* 0x02 */ s16 skidEffectAngle;
     /* 0x04 */ s32 changeKind;
@@ -28,8 +28,8 @@ struct Unk_0200c288 {
     void initSkidTurn(s16 a);
 };
 
-struct Unk_0200c24c {
-    /* 0x0 */ u16 unk_00;
+struct PlayerNetChangeClothesArgs {
+    /* 0x0 */ u16 item;
     /* 0x2 */ u8 changeKind;
     /* 0x3 */ u8 wearStyle;
     void readChangeClothesNet(u16 *a, u8 *b, u8 *c);

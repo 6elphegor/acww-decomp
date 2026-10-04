@@ -7,7 +7,6 @@
 #include "gfx/ObjShadowTexDef.h"
 #include "gfx/NNSG3dResMatData.h"
 #include "gfx/ObjShadowBits.h"
-#include "gfx/Unk_020ac2e8_V.h"
 #include "gfx/SceneLightsCol.h"
 #include "item/ShopPurchaseBits.h"
 #include "gfx/Vec3Z.h"
@@ -205,7 +204,7 @@ extern "C" void ObjShadow_Exit() {
 
 extern "C" u8 ObjShadow_CalcAlpha(VecFx32 *p, s32 q, u8 r4) {
     if (gCamera != 0) {
-        Unk_020ac2e8_V v;
+        VecFx32CtorDtor v;
         v.x = gCameraLookAt.x;
         v.y = gCameraLookAt.y;
         v.z = gCameraLookAt.z;

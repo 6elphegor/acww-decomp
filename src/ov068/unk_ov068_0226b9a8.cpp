@@ -98,8 +98,6 @@ class TaxiInterior;
 extern "C" TaxiInterior *sTaxiInterior;
 extern "C" ActorProfile sTaxiInteriorProfile;
 
-typedef void (*NNSG3dSbcCallBackFunc)(NNSG3dRS *);
-
 extern "C" {
 extern void *gBgHeap;
 BOOL AnimFrameCtrl_hasPassedFrame(void *p, u32 i);

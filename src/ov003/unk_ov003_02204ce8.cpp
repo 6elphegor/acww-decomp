@@ -13044,7 +13044,7 @@ extern "C" BOOL PlayerActor_CheckToolHitActor(Obj *o) {
                     break;
                 }
             } else {
-                o->toolHitActor = (s32)it;
+                o->toolHitActor = it;
             }
             o->toolHitKind = 2;
         }
@@ -13055,7 +13055,7 @@ extern "C" BOOL PlayerActor_CheckToolHitActor(Obj *o) {
         void *it = Snowball_FindByParam(id);
         if (it != NULL) {
             BOOL f = Unk_ov003_022052f4_Rng(buf, 0x1376, 0x1376);
-            if (!f && !Unk_ov003_022052f4_Rng(buf, 0x1377, 0x1377)) o->toolHitActor = (s32)it;
+            if (!f && !Unk_ov003_022052f4_Rng(buf, 0x1377, 0x1377)) o->toolHitActor = (Actor *)it;
             o->toolHitKind = 3;
         }
         break;

@@ -9,7 +9,7 @@
 #include "npc/NpcAnimCtrl.h"
 #include "npc/NpcSpeechState.h"
 #include "npc/NpcTalkCtrl.h"
-#include "player/Unk_0205dfa4.h"
+#include "gfx/TwoLayerAnimModel.h"
 #include "npc/NpcLookAt.h"
 #include "npc/NpcObstacleProbe.h"
 #include "npc/NpcMoveCtrl.h"
@@ -38,6 +38,7 @@
 #include "npc/NpcFootstepFx.h"
 #include "actor/NpcActor.h"
 #include "nitro/mtx.h"
+#include "gfx/NNSG3dRS.h"
 #include "net/CommManager.h"
 
 
@@ -393,45 +394,6 @@ typedef VecFx32 V3;
 
 
 
-// unk_0201b690.cpp
-struct Unk_0201be44_Hdr {
-    u8 cmd;
-    u8 nodeId;
-};
-
-// unk_0201b690.cpp
-struct NNSG3dRenderObj {
-    u8 pad_00[0x2c];
-    NpcActor *ptrUser;
-};
-
-// unk_0201b690.cpp
-struct NNSG3dJntAnmResult {
-    u8 pad_00[0x28];
-    MtxFx33 rot;
-    VecFx32 trans;
-};
-
-class NNSG3dRS;
-
-// unk_0201b690.cpp
-typedef void (*NNSG3dSbcCallBackFunc)(NNSG3dRS *);
-
-// unk_0201b690.cpp
-class NNSG3dRS {
-public:
-
-      Unk_0201be44_Hdr *c;
-      NNSG3dRenderObj *pRenderObj;
-      u8 pad_08[0x24 - 0x08];
-      NNSG3dSbcCallBackFunc cbVecFuncNodeDesc;
-      u8 pad_28[0x92 - 0x28];
-      u8 cbVecTimingNodeDesc;
-      u8 pad_93[0xb4 - 0x93];
-      NNSG3dJntAnmResult *pJntAnmResult;
-      u8 pad_b8[0xd4 - 0xb8];
-      u8 *pResNodeInfo;
-};
 
 
 // the direction table sRouteDirs (filled by __sinit)
@@ -498,7 +460,7 @@ void HudObjGfx_InitFile(void *p);
 void SndSeEmitter_dtorBase(void *p);
 HeldItemModel *_ZN16NpcResHandleView16getHeldItemModelEv(void *p);
 void HeldItemModel_SetAnimSpeed(HeldItemModel *p, u32 v);
-Unk_0205dfa4 *HeldItemModel_GetModel(HeldItemModel *p);
+BlendAnimModel *HeldItemModel_GetModel(HeldItemModel *p);
 void Model_GetJointWorldMtx(Unk_02006d14_TalkBase *dst, void *src, u32 n);
 void HeldItemModel_Draw(HeldItemModel *p, void *src);
 void HeldItemModel_Update(HeldItemModel *p);
@@ -1776,8 +1738,8 @@ extern void *data_020d7704[2];
 
 namespace nR {
 extern "C" void NpcActor_OnJointCalc(NNSG3dRS *self) {
-    u32 idx = self->c->nodeId;
-    NpcActor *p = self->pRenderObj->ptrUser;
+    u32 idx = self->c[1];
+    NpcActor *p = (NpcActor *)self->pRenderObj->ptrUser;
     u16 tmp[2];
     MtxFx33 mB;
     MtxFx33 mA;
@@ -1811,7 +1773,7 @@ extern "C" void NpcActor_OnJointCalc(NNSG3dRS *self) {
         }
     }
     if (idx == (u32)data_020c6d20 && p != NULL && p->lookAt.lookType < 6) {
-        MtxFx33 *m = &self->pJntAnmResult->rot;
+        MtxFx33 *m = (MtxFx33 *)&self->pJntAnmResult->rot;
         if (p->lookAt.pitch != 0) {
             u32 a = (u16)p->lookAt.pitch >> 4;
             MTX_RotY33_(&mA, data_02135f44[a * 2], data_02135f44[a * 2 + 1]);
@@ -1833,7 +1795,7 @@ extern "C" void NpcActor_OnJointCalc(NNSG3dRS *self) {
         }
         if (isY) {
             NNSG3dJntAnmResult *d = self->pJntAnmResult;
-            MtxFx33 *m = &d->rot;
+            MtxFx33 *m = (MtxFx33 *)&d->rot;
             VecFx32 *pv = &d->trans;
             s32 r;
             va = *pv;
@@ -1851,15 +1813,15 @@ extern "C" void NpcActor_OnJointCalc(NNSG3dRS *self) {
     if (p != NULL) {
         _ZN19ThreeLayerAnimModel21onJointCalcPostLayer3EP8NNSG3dRS(&p->model, self);
     }
-    self->cbVecFuncNodeDesc = NpcActor_SetJointCallbackNext;
-    self->cbVecTimingNodeDesc = 3;
+    self->cbVecFunc[6] = (void *)NpcActor_SetJointCallbackNext;
+    self->cbVecTiming[6] = 3;
 }
 }
 
 namespace nR {
 extern "C" void NpcActor_SetJointCallbackNext(NNSG3dRS *self) {
-    self->cbVecFuncNodeDesc = NpcActor_JointCalcLayer3Cb;
-    self->cbVecTimingNodeDesc = 1;
+    self->cbVecFunc[6] = (void *)NpcActor_JointCalcLayer3Cb;
+    self->cbVecTiming[6] = 1;
 }
 }
 
@@ -9187,7 +9149,7 @@ void HeldToolModel::update(Unk_02006d14 *p) {
     HeldItemModel *r = _ZN16NpcResHandleView16getHeldItemModelEv(&modelHandle);
     if (r) {
         u32 v = p->modelAnimFrameStep;
-        Unk_0205dfa4_Sub &s = *HeldItemModel_GetModel(r);
+        AnimFrameCtrl &s = *HeldItemModel_GetModel(r);
         s.frameStep = v;
         HeldItemModel_Update(r);
     }
@@ -9218,7 +9180,7 @@ void HeldToolModel::setAnimSpeed(u32 v) {
     if (r) r->scale = v;
 }
 
-Unk_0205dfa4 *HeldToolModel::getModel() {
+BlendAnimModel *HeldToolModel::getModel() {
     using namespace nA;
     HeldItemModel *r = _ZN16NpcResHandleView16getHeldItemModelEv(&modelHandle);
     if (r) return HeldItemModel_GetModel(r);

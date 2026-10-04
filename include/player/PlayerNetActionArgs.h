@@ -6,7 +6,7 @@
 // Player action arguments as sent over the network (PlayerActor::netData at 0x8ec, 8 bytes: bytes 4..11 of the
 // slot's net state var). Each action's net*/setup* handlers read/write their arguments here; the methods are defined
 // in src/main/unk_02004558.cpp. Per-action layouts still read through views: PlayerNetPickUpArgs (action 0x19),
-// Unk_0200b750 (emotion / pick-up reach), Unk_0200a63c_St, Unk_02009f68_Bytes.
+// PlayerNetPickUpReachArgs (emotion / pick-up reach), PlayerNetPickUpFanfareArgs, PlayerNetPickUpFanfareStowArgs.
 
 class PlayerNetActionArgs {
 public:

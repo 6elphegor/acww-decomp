@@ -3,7 +3,7 @@
 
 #include "types.h"
 
-struct Unk_0205dfa4;
+class BlendAnimModel;
 struct Unk_02006d14;
 
 // 0x40-byte model of the tool held in the player's hand (item, model handle, hand matrix). Defined in main,
@@ -18,7 +18,7 @@ struct HeldToolModel {
 
     ~HeldToolModel();
     void setModelAnimSpeed(u32 v);
-    Unk_0205dfa4 *getModel();
+    BlendAnimModel *getModel();
     void setAnimSpeed(u32 v);
     u32 getAnimSpeed();
     void draw(Unk_02006d14 *p);

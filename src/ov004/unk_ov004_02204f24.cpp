@@ -382,8 +382,8 @@ void Effect_PlayById2(u32 id, void *v, u32 a, u32 b);
 void *PlayerActor_GetBodyPos(u32 id);
 void *Math_AngleXZ(void *v, void *cam);
 u32 Scene_InUnk6To8(void);
-void JointCb_RotateClockHourHand(void *p);
-void JointCb_RotateClockMinuteHand(void *p);
+void JointCb_RotateClockHourHand(NNSG3dRS *rs);
+void JointCb_RotateClockMinuteHand(NNSG3dRS *rs);
 extern u8 gCameraEye[];
 extern u8 gCameraLookAt[];
 BOOL SceneId_IsHouseRoom(u32 a);
@@ -2442,9 +2442,9 @@ BOOL FtrActor::onJointCalcPre(s32 nodeId, NNSG3dRS *rs) {
 void FtrActor::onJointCalcPost(s32 a, void *b) {
     if (clockHandsValid != 0) {
         if (clockHands == a) {
-            JointCb_RotateClockHourHand(b);
+            JointCb_RotateClockHourHand((NNSG3dRS *)b);
         } else if (clockHandsMinJnt == a) {
-            JointCb_RotateClockMinuteHand(b);
+            JointCb_RotateClockMinuteHand((NNSG3dRS *)b);
         }
     }
 }
