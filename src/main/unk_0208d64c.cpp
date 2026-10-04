@@ -2,6 +2,8 @@
 #include "gfx/Unk_02089240_Rec.h"
 #include "gfx/SpriteAnim.h"
 #include "ui/UiWidget.h"
+#include "ui/HandCursor.h"
+#include "ui/ScrollKnob.h"
 
 extern "C" {
 void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
@@ -10,40 +12,7 @@ void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, 
 
 
 
-class HandCursor : public UiWidget {
-public:
-    HandCursor(BOOL flag);
-    virtual ~HandCursor();
-    virtual void draw();
-    virtual void vfunc_0c();
 
-    void setAnim(s32 idx);
-
-    /* 0x0c */ SpriteAnim layer1;
-    /* 0x20 */ s32 unk_20;
-    /* 0x24 */ s32 unk_24;
-    /* 0x28 */ s32 priority;
-    /* 0x2c */ SpriteAnim layer2;
-    /* 0x40 */ s32 anim;
-    /* 0x44 */ s32 unk_44;
-    /* 0x48 */ u8 onBufferA;
-    /* 0x49 */ u8 hasLayer2;
-    /* 0x4a */ u8 objWindow;
-};
-
-class ScrollKnob : public UiWidget {
-public:
-    BOOL areAnimsDone();
-    s32 getState();
-
-    /* 0x0c */ s32 layer1;
-    /* 0x10 */ s32 posY;
-    /* 0x14 */ SpriteAnim layerAnim1;
-    /* 0x28 */ SpriteAnim priority;
-    /* 0x3c */ s32 state;
-    /* 0x40 */ u8 anim;
-    /* 0x44 */ s32 unk_44;
-};
 
 s32 ScrollKnob::getState() {
     return state;

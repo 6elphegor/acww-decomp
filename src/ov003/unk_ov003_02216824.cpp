@@ -8,6 +8,7 @@
 #include "gfx/Unk_ov009_0225bc88_Blk.h"
 #include "sys/ProcBase.h"
 #include "gfx/ModelAnim.h"
+#include "item/PlayerMailbox.h"
 
 
 
@@ -225,10 +226,6 @@ struct Unk_ov003_02216824_Rec {
     u16 numFrame;
 };
 
-class PlayerMailbox {
-public:
-    BOOL getLetter(s32 i);
-};
 
 extern "C" {
 extern void *gFieldStructureHeap;

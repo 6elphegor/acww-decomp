@@ -5,6 +5,7 @@
 #include "game/LightLevel.h"
 #include "game/UnitShapeQueryX.h"
 #include "game/FxVec3.h"
+#include "town/TownUnitShapeQuery.h"
 
 inline void *operator new(unsigned long, void *p) { return p; }
 
@@ -254,12 +255,6 @@ public:
 };
 
 
-class TownUnitShapeQuery : public UnitShapeQueryX {
-public:
-    TownUnitShapeQuery();
-    virtual ~TownUnitShapeQuery();
-    virtual BOOL getUnitShape(s32 *a, s32 *b, s32 *c, volatile s32 x, volatile s32 y);
-};
 
 
 // overlay class whose vtable is at 0x02232c00 (only its D1 is in this unit)

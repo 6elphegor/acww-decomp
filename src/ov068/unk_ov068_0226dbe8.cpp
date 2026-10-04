@@ -23,6 +23,9 @@
 #include "npc/Unk_020135e4.h"
 #include "sys/ProcBase.h"
 #include "npc/NpcActionCtrl.h"
+#include "snd/SndSeEmitterKind1.h"
+#include "npc/Unk_02014254.h"
+#include "talk/EncodedString.h"
 #define VillagerId_makeFileName _ZN10VillagerId12makeFileNameEPvjj
 #define Unk_02013474_enableFootsteps _ZN12Unk_0201347415enableFootstepsEv
 #define NpcTalkCtrl_requestTalk _ZN11NpcTalkCtrl11requestTalkEhh
@@ -51,13 +54,7 @@
 
 
 struct NpcFaceAnim { NpcFaceAnim(); ~NpcFaceAnim(); u32 pad[0x88 / 4]; };
-struct Unk_02014254 { Unk_02014254(); ~Unk_02014254(); u32 pad[0x28 / 4]; };
 
-class Unk_020f4080 : public SndSeEmitter {
-public:
-    Unk_020f4080();
-    ~Unk_020f4080() {}
-};
 
 
 class Actor : public ProcBase {
@@ -315,12 +312,6 @@ typedef BOOL (HouseVisitVillager::*Unk_ov068_02270afc_BFn)();
 
 
 
-class EncodedString {
-public:
-    virtual ~EncodedString();
-    virtual u32 capacity();
-    virtual u8 *data();
-};
 
 
 class MsgString : public MsgStringBase {
@@ -336,7 +327,9 @@ class EncodedString16Buf : public EncodedString {
 public:
     EncodedString16Buf(u8 *src);
     virtual ~EncodedString16Buf();
-    u8 pad[0x1c];
+    virtual u32 capacity();
+    virtual u8 *data();
+    /* 0x0e */ u8 text[16];
 };
 
 class MsgString33 : public MsgString {

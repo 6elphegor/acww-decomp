@@ -2,6 +2,7 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "menu/MenuProc.h"
+#include "ui/HandCursor.h"
 
 struct PopupChoiceIdList;
 
@@ -74,15 +75,6 @@ extern const u8 sPatternSelectSlotY[9];
 // ---------------------------------------------------------------------------------------------
 // Classes of other modules (minimal declarations)
 
-class HandCursor {
-public:
-    virtual ~HandCursor();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    BOOL isAnimDone();
-    s32 getAnim();
-    void setAnimAtEnd(s32 a);
-};
 
 class MenuCursorBase : public HandCursor {
 public:
@@ -107,7 +99,7 @@ class MenuCursorBuf0 : public MenuCursorBase {
 public:
     MenuCursorBuf0();
     virtual ~MenuCursorBuf0();
-    u32 unk_04[0x60 / 4];
+    u8 unk_4c[0x64 - 0x4c];
 };
 
 // Same object as PopupChoiceMenu under the name used by its other methods

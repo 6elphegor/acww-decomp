@@ -1,6 +1,7 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "menu/MenuProc.h"
+#include "ui/HandCursor.h"
 
 // Calls into other modules' class methods: extern "C" functions named by the real mangled symbol (self first).
 #define LabelString_redrawAligned _ZN11LabelString13redrawAlignedEii
@@ -243,12 +244,6 @@ public:
     void setAnimIfChanged(s32 v);
 };
 
-class HandCursor {
-public:
-    BOOL isAnimDone();
-    BOOL getAnim();
-    void setAnimAtEnd(s32 a);
-};
 
 class MenuCursorBuf0 {
 public:

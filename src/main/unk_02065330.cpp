@@ -1,13 +1,6 @@
 #include "types.h"
+#include "talk/EncodedString.h"
 
-// Base of the destructor-registered buffers (defined elsewhere).
-class EncodedString {
-public:
-    EncodedString();
-    virtual ~EncodedString();
-    virtual u32 capacity() = 0;
-    virtual u8 *data() = 0;
-};
 
 class EncodedString128 : public EncodedString {
 public:
@@ -16,7 +9,6 @@ public:
     virtual u32 capacity();
     virtual u8 *data();
 
-    /* 0x04 */ u8 unk_04[0xa];
     /* 0x0e */ u8 text[0x82];
 };
 

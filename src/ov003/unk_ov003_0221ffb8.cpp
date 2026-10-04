@@ -4,6 +4,7 @@
 #include "field/BottleThrow.h"
 #include "gfx/ModelSlotPool.h"
 #include "gfx/ModelAnim.h"
+#include "game/GroundInfo.h"
 
 // TU23 of ov003 (fish actors, scene classes 0223498c / 02234a94): 0x0221ffb8-0x02224e68, static initialiser 0x354 bytes.
 // Merged from ten unit files; every view of the shared objects (sFishShadows etc.) is reached through casts.
@@ -521,17 +522,6 @@ public:
 
 typedef Unk_ov003_02222658_Obj Obj_f6;
 
-class GroundInfo {
-public:
-    u8 pad_00[0x24];
-    s32 flowDir, flowDirY, flowDirZ;
-    s32 waterKind;
-    s32 attr;
-    u8 pad_38[4];
-    s32 waterSurfaceY;
-    GroundInfo() {}
-    ~GroundInfo();
-};
 
 static inline BOOL R74(volatile u16 *p)
 {

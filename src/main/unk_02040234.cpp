@@ -6,11 +6,8 @@
 #include "game/Unk_0203ff50_Slot.h"
 #include "game/Unk_020400b0_Big.h"
 #include "game/ReddPassword.h"
+#include "game/ReddShop.h"
 
-class ReddShop {
-public:
-    ReddPassword *getPassword();
-};
 
 class EventCalendarModule : public GameProc {
 public:

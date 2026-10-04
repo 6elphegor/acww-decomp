@@ -6,6 +6,7 @@
 #include "menu/LetterGrid.h"
 #include "menu/InventoryBg.h"
 #include "menu/MenuProc.h"
+#include "ui/HandCursor.h"
 
 extern "C" {
 extern u8 gTouchCurX;
@@ -70,13 +71,6 @@ public:
     void setPos(s32 a, s32 b);
 };
 
-class HandCursor {
-public:
-    BOOL isAnimDone();
-    s32 getAnim();
-    void setAnimAtEnd(s32 a);
-    void enableObjWindow();
-};
 
 class BgVramTask {
 public:

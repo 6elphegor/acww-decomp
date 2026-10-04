@@ -2,6 +2,7 @@
 #include "Unk_020d8c7c.h"
 #include "ui/UiWidget.h"
 #include "menu/MenuProc.h"
+#include "ui/HandCursor.h"
 
 extern "C" {
 extern u8 gTouchCurX;
@@ -81,17 +82,6 @@ public:
 };
 
 
-class HandCursor : public UiWidget {
-public:
-    HandCursor(BOOL flag);
-    virtual ~HandCursor();
-    virtual void draw();
-    virtual void vfunc_0c();
-
-    BOOL isAnimDone();
-
-    /* 0x0c */ u8 unk_0c[0x3f];
-};
 
 class MenuCursorBase : public HandCursor {
 public:

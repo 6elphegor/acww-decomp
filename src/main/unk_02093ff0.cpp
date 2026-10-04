@@ -8,6 +8,8 @@
 #include "player/PlayerId.h"
 #include "gfx/Unk_02093c28_Obj.h"
 #include "talk/MsgString.h"
+#include "game/GroundInfo.h"
+#include "talk/EncodedString.h"
 
 
 
@@ -19,17 +21,6 @@
 
 
 
-class GroundInfo {
-public:
-    u8 pad_00[0x24];
-    s32 flowDir, flowDirY, flowDirZ;
-    s32 waterKind;
-    u8 pad_34[8];
-    s32 waterSurfaceY;
-    GroundInfo() {}
-    GroundInfo *initAtPos(Unk_02093aa8_Vec *v, s32 a, s32 b);
-    ~GroundInfo();
-};
 
 extern "C" {
 extern Unk_02093c28_Entry gEffectManager[];
@@ -141,16 +132,6 @@ s32 EffectCb_InitOneShot(Unk_02093dc8_Obj *o);
 
 class MsgString;
 
-class EncodedString : public EncodedStringBase {
-public:
-    EncodedString();
-    virtual ~EncodedString();
-    virtual u32 capacity() = 0;
-    virtual u8 *data() = 0;
-    BOOL fromMsgString(MsgString *src);
-
-    /* 0x04 */ MsgStringAttr attr;
-};
 
 
 extern "C" BOOL EncodedString_SetRaw(void *, const void *, s32);

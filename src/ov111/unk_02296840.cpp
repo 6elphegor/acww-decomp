@@ -6,6 +6,9 @@
 #include "player/PlayerId.h"
 #include "talk/MsgString.h"
 #include "menu/MenuProc.h"
+#include "ui/HandCursor.h"
+#include "talk/EncodedString.h"
+#include "talk/ChatBalloonText.h"
 
 enum Unk_ov111_022970cc_Status { UNK_OV111_ST_0 = 0, UNK_OV111_ST_1 = 1, UNK_OV111_ST_2 = 2, UNK_OV111_ST_3 = 3 };
 
@@ -152,18 +155,6 @@ BOOL Keyboard_IsSlotDisabled(void *s, s32 i);
 
 
 
-class HandCursor : public UiWidget {
-public:
-    HandCursor(BOOL flag);
-    virtual ~HandCursor();
-    virtual void draw();
-    virtual void vfunc_0c();
-
-    BOOL isAnimDone();
-    s32 getAnim();
-
-    /* 0x0c */ u8 unk_0c[0x3f];
-};
 
 class MenuCursorBuf0 : public HandCursor {
 public:
@@ -227,24 +218,7 @@ public:
     /* 0x233c */ LabelString labels[2];
 };
 
-// +0x3c68
-class ChatBalloonText {
-public:
-    ChatBalloonText();
-    ~ChatBalloonText();
-    u32 unk_00[0x34 / 4];
-};
 
-// Message buffer (see src/main/unk_0206c714.cpp / src/ov045/unk_02258de0.cpp)
-class EncodedString {
-public:
-    EncodedString();
-    virtual ~EncodedString();
-    virtual u32 capacity() = 0;
-    virtual u8 *data() = 0;
-
-    u8 unk_04[10];
-};
 
 // vtable 0x02298a30, data at +0xe, 0x20 bytes
 class EncodedString32 : public EncodedString {

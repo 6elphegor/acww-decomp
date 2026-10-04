@@ -8,6 +8,8 @@
 #include "ui/UiWidget.h"
 #include "talk/EncodedStringBase.h"
 #include "talk/MsgString.h"
+#include "talk/EncodedString.h"
+#include "talk/ChatBalloonText.h"
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Classes owned by other units (declarations only, no inline bodies)
@@ -15,17 +17,6 @@
 
 
 
-// destination-side buffer interface
-class EncodedString : public EncodedStringBase {
-public:
-    EncodedString();
-    virtual ~EncodedString();
-    virtual u32 capacity() = 0;
-    virtual u8 *data() = 0;
-    BOOL fromMsgString(class MsgString *src);
-
-    /* 0x04 */ MsgStringAttr attr;
-};
 
 
 
@@ -50,15 +41,6 @@ public:
     void init();
 };
 
-// 0x34-byte buffer
-class ChatBalloonText : public MsgString {
-public:
-    ChatBalloonText();
-    virtual ~ChatBalloonText();
-    virtual u32 capacity();
-    virtual u8 *data();
-    /* 0x14 */ u8 text[0x20];
-};
 
 // Text (vtable 0x020d9134), 0x10 bytes
 class ChatBalloonName : public MsgStringBase {

@@ -27,6 +27,7 @@
 #include "room/FtrTopItem.h"
 #include "sys/ProcBase.h"
 #include "gfx/ModelAnim.h"
+#include "room/FtrCollider.h"
 
 // ================================================================ plain value types
 
@@ -222,14 +223,6 @@ public:
 
 
 
-struct FtrCollider : BoxCollider {
-    void *owner;
-    FtrCollider();
-    void onEdgeContact(CollisionEdge *a, Unk_ov004_02206570_Act *b, s32 c);
-    void slideOwnerForWideFtr(Unk_ov004_02206570_Act *b);
-    void clearOwner();
-    void setOwner(void *p);
-};
 
 // ---- 0x022069ec / 0x02206e38 (model loader, member at 0x6c8)
 class TexVramSlot;

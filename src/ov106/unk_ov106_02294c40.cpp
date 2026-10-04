@@ -7,6 +7,10 @@
 #include "menu/InventoryBg.h"
 #include "ui/LetterRenderer.h"
 #include "menu/MenuProc.h"
+#include "ui/HandCursor.h"
+#include "item/LetterView.h"
+#include "item/PlayerMailbox.h"
+#include "ui/LabelButton.h"
 
 // ov106: scene overlay (class MailboxMenu, vtable 0x02298180, 0x3f80 bytes).
 
@@ -212,16 +216,7 @@ public:
     u32 unk_00[0x164 / 4];
 };
 
-class LetterView {
-public:
-    s32 getState();
-    u32 getPresent();
-};
 
-class PlayerMailbox {
-public:
-    u8 * getLetter(s32);
-};
 
 class PlayerData {
 public:
@@ -233,19 +228,7 @@ public:
     void setPos(s32, s32);
 };
 
-class HandCursor {
-public:
-    s32 isAnimDone();
-    s32 getAnim();
-    s32 setAnimAtEnd(s32);
-    void enableObjWindow();
-};
 
-class LabelButton {
-public:
-    void setState(s32);
-    void setPos(s32, s32);
-};
 
 class BgVramTask {
 public:
@@ -661,7 +644,7 @@ BOOL MailboxMenu::execClosed() {
     MenuCtrl_SetResult(1);
     LetterList_Compact(mailboxLetters, 10);
     PlayerData_GetCurrent();
-    u8 *p = ((PlayerMailbox *)PlayerData_GetMailbox())->getLetter(0);
+    u8 *p = (u8 *)((PlayerMailbox *)PlayerData_GetMailbox())->getLetter(0);
     s32 i = 0;
     u8 *q = (u8 *)mailboxLetters;
     for (; i < 10; i++) {
@@ -840,7 +823,7 @@ void MailboxMenu::initParts() {
         Letter_Clear((u8 *)mailboxLetters + i * 0xf4);
     }
     PlayerData_GetCurrent();
-    p = ((PlayerMailbox *)PlayerData_GetMailbox())->getLetter(0);
+    p = (u8 *)((PlayerMailbox *)PlayerData_GetMailbox())->getLetter(0);
     for (i = 0; i < 10; i++) {
         Letter_Copy((u8 *)mailboxLetters + i * 0xf4, p);
         p += 0xf4;

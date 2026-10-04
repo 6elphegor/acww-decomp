@@ -3,6 +3,7 @@
 #include "net/CommManager.h"
 #include "gfx/SpriteAnim.h"
 #include "ui/UiWidget.h"
+#include "ui/InputModeIcon.h"
 
 extern "C" {
 void Oam_DrawCell(u32 a, u32 h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
@@ -102,24 +103,6 @@ public:
     virtual BOOL onDraw();
 };
 
-// Vtable at 0x020e1164 belongs to the next unit; only the members used here
-class InputModeIcon : public UiWidget {
-public:
-    InputModeIcon();
-    virtual ~InputModeIcon();
-    virtual void draw();
-    virtual void vfunc_0c();
-
-    void startModeAnim();
-    BOOL isDrawBlocked();
-    void exit();
-    void init();
-
-    /* 0x0c */ s32 inputMode;
-    /* 0x10 */ s32 shownMode;
-    /* 0x14 */ SpriteAnim anim;
-    /* 0x28 */ u8 isVisible;
-};
 
 extern "C" TransitionCommIconProc *TransitionCommIconProc_Create();
 

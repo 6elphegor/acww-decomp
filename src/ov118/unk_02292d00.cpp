@@ -3,6 +3,7 @@
 #include "town/TownMapMarkers.h"
 #include "ui/UiWidget.h"
 #include "menu/MenuProc.h"
+#include "ui/ScrollKnob.h"
 
 extern "C" {
 BOOL _ZN10HandCursor10isAnimDoneEv(void *self);
@@ -139,17 +140,6 @@ public:
     u32 unk_04[0x60 / 4];
 };
 
-// object at +0x43c (size 0x48)
-class ScrollKnob {
-public:
-    virtual ~ScrollKnob();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    void setState(s32 a);
-    void moveTo(s32 a, s32 b);
-    s32 areAnimsDone();
-    u32 unk_04[0x44 / 4];
-};
 
 class MenuScrollKnob : public ScrollKnob {
 public:
@@ -488,7 +478,7 @@ BOOL MapTab::onDraw() {
             }
         }
         if (testFlags(8)) {
-            scrollKnob.vfunc_08();
+            scrollKnob.draw();
         }
     }
     return TRUE;

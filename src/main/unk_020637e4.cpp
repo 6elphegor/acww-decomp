@@ -1,5 +1,6 @@
 #include "types.h"
 #include "talk/MsgStringBase.h"
+#include "talk/EncodedString.h"
 
 extern "C" {
 void _ZdlPv(void *);
@@ -9,16 +10,6 @@ BOOL EncodedString_SetRaw(void *, const void *, s32);
 
 class MsgString;
 
-class EncodedString {
-public:
-    EncodedString();
-    virtual ~EncodedString();
-    virtual u32 capacity() = 0;
-    virtual u8 *data() = 0;
-    BOOL fromMsgString(MsgString *src);
-
-    /* 0x04 */ u8 unk_04[10];
-};
 
 
 class MsgString : public MsgStringBase {

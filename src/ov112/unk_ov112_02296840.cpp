@@ -4,6 +4,9 @@
 #include "net/CommManager.h"
 #include "player/PlayerId.h"
 #include "menu/MenuProc.h"
+#include "ui/HandCursor.h"
+#include "ui/ScrollKnob.h"
+#include "talk/EncodedString.h"
 
 // Plain view of the scene object used by the extern "C" helpers (offsets only).
 struct Unk_ov112_02296840 {
@@ -59,11 +62,6 @@ public:
     void clear();
 };
 
-class EncodedString {
-public:
-    virtual ~EncodedString();
-    void fromMsgString(MsgString *src);
-};
 
 class MsgString193 : public MsgString {
 public:
@@ -76,7 +74,9 @@ class EncodedString192 : public EncodedString {
 public:
     EncodedString192();
     virtual ~EncodedString192();
-    u32 unk_04[(0xd0 - 4) / 4];
+    virtual u32 capacity();
+    virtual u8 *data();
+    /* 0x0e */ u8 unk_0e[0xd0 - 0xe];
 };
 
 // text window, 0x40 bytes
@@ -96,8 +96,9 @@ class EncodedString41 : public EncodedString {
 public:
     EncodedString41();
     virtual ~EncodedString41();
-    u8 pad_04[0xa];
-    char text[0x2a];
+    virtual u32 capacity();
+    virtual u8 *data();
+    /* 0x0e */ char text[0x2a];
 };
 
 class MsgString9B : public MsgString {
@@ -127,20 +128,7 @@ public:
     PlayerId *getPlayerId();
 };
 
-class HandCursor {
-public:
-    virtual ~HandCursor();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    BOOL isAnimDone();
-    s32 getAnim();
-};
 
-class ScrollKnob : public HandCursor {
-public:
-    BOOL areAnimsDone();
-    void moveTo(s32 a, s32 b);
-};
 
 // ---- ov002 classes ----
 class MenuErrorMessage {
@@ -162,7 +150,6 @@ public:
     void grab();
     void show();
     BOOL hitTest(s32 x, s32 y);
-    u32 unk_04[0x44 / 4];
 };
 
 class MenuBottomButtonsBody {
@@ -212,7 +199,7 @@ class MenuCursorBuf0 : public MenuCursorBase {
 public:
     MenuCursorBuf0();
     virtual ~MenuCursorBuf0();
-    u32 unk_04[0x60 / 4];
+    u8 unk_4c[0x64 - 0x4c];
 };
 
 class MenuLauncher {
@@ -601,7 +588,7 @@ BOOL BbsWriteMenu::onDraw() {
         ((ScrollKnob *)(&scrollKnob))->moveTo(0x5d, scrollKnobY + (u32)(keyboardSlideY - 0x50));
         s32 t = scrollKnob.getGripX();
         Keyboard_SetTextFieldPos(&keyboard, t, scrollKnob.getGripY());
-        scrollKnob.vfunc_08();
+        scrollKnob.draw();
     }
     if (MenuCtrl_IsButtons()) {
         if (BbsWriteMenu_HasFlags((S *)this, 0x1000)) {

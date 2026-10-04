@@ -4,6 +4,7 @@
 #include "talk/MsgStringAttr.h"
 #include "talk/EncodedStringBase.h"
 #include "talk/MsgString.h"
+#include "talk/EncodedString.h"
 
 extern "C" {
 extern u8 gItemInfo[];
@@ -335,15 +336,6 @@ extern "C" void *func_0206243c(void *o);
 
 class MsgString;
 
-class EncodedString : public EncodedStringBase {
-public:
-    EncodedString();
-    virtual ~EncodedString();
-    virtual u32 capacity() = 0;
-    virtual u8 *data() = 0;
-
-    /* 0x04 */ MsgStringAttr attr;
-};
 
 
 

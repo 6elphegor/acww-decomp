@@ -4,6 +4,7 @@
 #include "save/BbsPost.h"
 #include "talk/MsgString.h"
 #include "menu/MenuProc.h"
+#include "ui/HandCursor.h"
 
 class BbsReadMenu;
 
@@ -91,13 +92,6 @@ public:
     u8 unk_04[0x20];
 };
 
-class HandCursor {
-public:
-    virtual ~HandCursor();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    BOOL isAnimDone();
-};
 
 class MenuCursorBase : public HandCursor {
 public:
@@ -121,7 +115,7 @@ class MenuCursorBuf1 : public MenuCursorBase {
 public:
     MenuCursorBuf1();
     virtual ~MenuCursorBuf1();
-    u32 unk_04[0x60 / 4];
+    u8 unk_4c[0x64 - 0x4c];
 };
 
 

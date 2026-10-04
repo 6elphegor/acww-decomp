@@ -1,20 +1,11 @@
 #include "types.h"
 #include "save/Unk_02085810_Rec.h"
 #include "save/ContestRecord.h"
+#include "game/GroundInfo.h"
 
 
 
 
-// Scratch object of the grid probe (func_0203398c constructs, GroundInfo_Destruct destroys).
-class GroundInfo {
-public:
-    u8 pad_00[0x34];
-    s32 attr;
-    u8 pad_38[8];
-    GroundInfo() {}
-    GroundInfo *initAtUnit(s32 x, s32 z, s32 a, s32 b);
-    ~GroundInfo();
-};
 
 extern u8 gSaveVillagers[];
 extern u8 gFieldSceneKind;

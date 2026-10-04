@@ -5,22 +5,11 @@
 #include "gfx/Unk_02093dc8_Obj.h"
 #include "gfx/Unk_02093c28_Obj.h"
 #include "gfx/EffectSplEmitter.h"
+#include "game/GroundInfo.h"
 
 typedef Unk_0203389c_Vec Unk_02093aa8_Vec;
 typedef Unk_0203389c_Vec Unk_02093748_Vec;
 
-class GroundInfo {
-public:
-    u8 pad_00[0x24];
-    s32 flowDir, flowDirY, flowDirZ;
-    s32 waterKind;
-    s32 attr;
-    u8 pad_38[4];
-    s32 waterSurfaceY;
-    GroundInfo() {}
-    GroundInfo *initAtPos(Unk_0203389c_Vec *v, s32 a, s32 b);
-    ~GroundInfo();
-};
 
 struct Unk_020904f0_Vec {
     s32 x, y, z;

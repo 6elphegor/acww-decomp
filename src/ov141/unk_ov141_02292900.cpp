@@ -3,6 +3,7 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "menu/MenuProc.h"
+#include "ui/HandCursor.h"
 
 class NearbyTownsMenu;
 
@@ -60,14 +61,6 @@ public:
     u32 unk_04[0x20 / 4];
 };
 
-// Menu cursor sub-object hierarchy (src/ov002/unk_02202200.cpp, unk_02202b68.cpp)
-class HandCursor {
-public:
-    virtual ~HandCursor();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    BOOL isAnimDone();
-};
 
 class MenuCursorBase : public HandCursor {
 public:
@@ -90,7 +83,7 @@ class MenuCursorBuf0 : public MenuCursorBase {
 public:
     MenuCursorBuf0();
     virtual ~MenuCursorBuf0();
-    u32 unk_04[0x60 / 4];
+    u8 unk_4c[0x64 - 0x4c];
 };
 
 // Menu list sub-object, 0x164 bytes (src/ov002/unk_022034c4.cpp)

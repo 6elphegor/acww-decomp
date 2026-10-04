@@ -10,6 +10,7 @@
 #include "town/TownAcreCell.h"
 #include "room/Unk_0209c614_Actor.h"
 #include "gfx/VramTask.h"
+#include "town/TownAcreGrid.h"
 
 inline void *operator new(unsigned long, void *p) { return p; }
 
@@ -53,27 +54,6 @@ extern "C" {
 // ---- 8-byte cell
 
 // ---- 6x6 cell grid
-class TownAcreGenerator {
-public:
-    TownAcreGenerator();
-    ~TownAcreGenerator();
-    TownAcreCell *func_0209bc54(u32 x, u32 y);
-    void func_0209b5d4(s32 v);
-    BOOL func_0209b63c();
-    BOOL func_0209b830();
-    BOOL func_0209b9ac(s32 v);
-    BOOL func_0209bcf8();
-    BOOL func_0209bca8();
-
-    void writeAcreIds(u8 *out);
-    u32 getTotalArchiveSize();
-    BOOL generate(s32 v);
-    void closeCandidates();
-    BOOL openCandidates();
-
-    TownAcreCell cells[0x24];
-    RecordFile candidates;
-};
 
 // ---- row helper
 

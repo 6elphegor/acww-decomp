@@ -8,6 +8,7 @@
 #include "game/CollisionCircle.h"
 #include "game/CollisionState.h"
 #include "game/FxVec3.h"
+#include "game/GroundInfo.h"
 
 struct Unk_0202ff44_V3;
 struct CollisionVisitor;
@@ -654,14 +655,6 @@ public:
     s32 maxX;
     s32 minZ;
     s32 maxZ;
-};
-// the constructors and the destructor of the object whose other methods are GroundInfoCalc's and GroundInfoBase's
-class GroundInfo : public GroundInfoBase {
-public:
-    GroundInfo(Unk_0203389c_Vec *v, s32 a, s32 b);
-    ~GroundInfo();
-    GroundInfo *initAtUnit(s32 x, s32 z, s32 a, s32 b);
-    GroundInfo *initAtPos(Unk_0203389c_Vec *v, s32 a, s32 b);
 };
 class DigHoleColliders {
 public:

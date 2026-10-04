@@ -10,6 +10,9 @@
 #include "menu/InventoryBg.h"
 #include "ui/LetterRenderer.h"
 #include "menu/MenuProc.h"
+#include "ui/HandCursor.h"
+#include "item/LetterView.h"
+#include "ui/LabelButton.h"
 
 extern "C" {
 extern u8 gTouchCurX;
@@ -77,13 +80,6 @@ public:
     void setPos(s32 x, s32 y);
 };
 
-class LabelButton {
-public:
-    virtual ~LabelButton();
-    virtual void vfunc_08();
-    void setState(s32 v);
-    void setPos(s32 a, s32 b);
-};
 
 class BgVramTask {
 public:
@@ -96,11 +92,6 @@ public:
     u32 unk_00[0x38 / 4];
 };
 
-class LetterView {
-public:
-    s32 getState();
-    u32 getPresent();
-};
 
 
 struct Unk_0206d1d4_Src;
@@ -131,19 +122,6 @@ public:
 
 
 
-class HandCursor : public UiWidget {
-public:
-    HandCursor(BOOL flag);
-    virtual ~HandCursor();
-    virtual void draw();
-    virtual void vfunc_0c();
-
-    BOOL isAnimDone();
-    s32 getAnim();
-    s32 enableObjWindow();
-
-    /* 0x0c */ u8 unk_0c[0x3f];
-};
 
 class MenuCursorBase : public HandCursor {
 public:
@@ -207,13 +185,11 @@ class MenuLabelButton : public LabelButton {
 public:
     MenuLabelButton();
     virtual ~MenuLabelButton();
-    virtual void vfunc_08();
     BOOL isTouched();
     void showDefault(s32 a);
     BOOL stepAnim();
     s32 getAnchorY(s32 a);
     s32 getAnchorX(s32 a);
-    u32 unk_04[(0x70 - 4) / 4];
 };
 
 
@@ -431,7 +407,7 @@ BOOL PocketLettersMenu::onDraw() {
     if (testFlags(0x80)) {
         s32 r = getSlideOffsetY();
         letterCloseButton.setPos(0, r);
-        letterCloseButton.vfunc_08();
+        letterCloseButton.draw();
     }
     return TRUE;
 }// Declarations for data defined further down (definition order sets the data layout)

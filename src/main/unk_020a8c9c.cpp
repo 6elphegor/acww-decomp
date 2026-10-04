@@ -7,6 +7,9 @@
 #include "talk/BmgReader.h"
 #include "talk/BmgMsgAttr.h"
 #include "talk/MsgString.h"
+#include "ui/HandCursor.h"
+#include "ui/ScrollKnob.h"
+#include "ui/LabelButton.h"
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Classes from other files
@@ -28,16 +31,6 @@ public:
     /* 0x14 */ u8 unk_14[0x20];
 };
 
-// Buffer used on the stack in func_020aadcc; ctor func_0208e6b8, dtor func_0208e6a0
-class LabelButtonText : public MsgString {
-public:
-    LabelButtonText();
-    virtual ~LabelButtonText();
-    virtual u32 capacity();
-    virtual u8 *data();
-
-    /* 0x14 */ u8 unk_14[8];
-};
 
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -45,84 +38,8 @@ public:
 
 
 
-// Vtable 0x020e100c
-class HandCursor : public UiWidget {
-public:
-    HandCursor(s32 a);
-    virtual ~HandCursor();
-    virtual void draw();
-    virtual void vfunc_0c();
-
-    BOOL isAnimDone();
-    s32 getAnim();
-    void setAnim(s32 v);
-    void setPos(s32 a, s32 b);
-
-    /* 0x0c */ SpriteAnim layer1;
-    /* 0x20 */ s32 unk_20;
-    /* 0x24 */ s32 unk_24;
-    /* 0x28 */ s32 priority;
-    /* 0x2c */ SpriteAnim layer2;
-    /* 0x40 */ s32 anim;
-    /* 0x44 */ s32 unk_44;
-    /* 0x48 */ u8 onBufferA;
-    /* 0x49 */ u8 hasLayer2;
-    /* 0x4a */ u8 objWindow;
-};
-
-// Vtable 0x020e1028
-class ScrollKnob : public UiWidget {
-public:
-    ScrollKnob(u32 a);
-    virtual ~ScrollKnob();
-    virtual void draw();
-    virtual void vfunc_0c();
-
-    BOOL areAnimsDone();
-    s32 getState();
-    void setState(s32 a);
-    void getAnimOffset(s32 *x, s32 *y);
-    void setPriority(s32 a);
-    void moveTo(s32 a, s32 b);
-
-    /* 0x0c */ s32 layer1;
-    /* 0x10 */ s32 posY;
-    /* 0x14 */ SpriteAnim layerAnim1;
-    /* 0x28 */ SpriteAnim priority;
-    /* 0x3c */ s32 state;
-    /* 0x40 */ u8 anim;
-    /* 0x44 */ s32 unk_44;
-};
-
-// Vtable 0x020e1098 (ctor func_0208e590)
-class LabelButton : public UiWidget {
-public:
-    LabelButton(u8 a, s32 b);
-    virtual ~LabelButton();
-    virtual void draw();
-    virtual void vfunc_0c();
-
-    BOOL isAnimDone();
-    void setState(s32 v);
-    void getAnimOffset(s32 *x, s32 *y);
-    void setPos(s32 x, s32 y);
 
 
-    /* 0x0c */ s32 unk_0c;
-    /* 0x10 */ s32 unk_10;
-    /* 0x14 */ s32 palette;
-    /* 0x18 */ s32 kind;
-    /* 0x1c */ SpriteAnim layer1;
-    /* 0x30 */ SpriteAnim layer2;
-    /* 0x44 */ s32 state;
-    /* 0x48 */ s32 label;
-    /* 0x4c */ LabelButtonText text;
-    /* 0x68 */ u16 textColor;
-    /* 0x6a */ u8 onBufferA;
-    /* 0x6b */ u8 objWindow;
-    /* 0x6c */ u8 layer2Hidden;
-    /* 0x6d */ u8 textColorDirty;
-};
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Classes of this file

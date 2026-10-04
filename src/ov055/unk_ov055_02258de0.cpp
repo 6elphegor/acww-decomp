@@ -12,6 +12,9 @@
 #include "npc/Unk_0201ad18.h"
 #include "npc/Unk_020135e4.h"
 #include "sys/ProcBase.h"
+#include "snd/SndSeEmitterKind1.h"
+#include "npc/Unk_02014254.h"
+#include "item/ReceivedLetterBlock.h"
 
 
 
@@ -116,17 +119,7 @@ MEMBER(Unk_0201a794, 0x418 - 0x3b0);
 MEMBER(Unk_0201a13c, 0x49c - 0x420);
 MEMBER(CollisionState, 0x30);
 MEMBER(NpcActionCtrl, 0x618 - 0x564);
-struct Unk_02014254 {
-    Unk_02014254();
-    ~Unk_02014254();
-    u8 unk_00[0x28];
-};
 
-struct Unk_020f4080 {
-    u8 unk_00[0x558 - 0x514];
-    Unk_020f4080();
-    ~Unk_020f4080();
-};
 
 
 class Actor : public ProcBase {
@@ -316,14 +309,6 @@ struct Unk_ov055_02259234_Flag {
     u8 pad[11];
 };
 
-struct ReceivedLetterBlock {
-    u8 unk_00[0xf8];
-    u8 exchangeKind;
-    u8 pad_f9[3];
-
-    ReceivedLetterBlock();
-    ~ReceivedLetterBlock();
-};
 
 extern "C" void _ZN18TownExchangeRecordC1Ev(void *self);
 extern "C" void _ZN19ReceivedLetterBlockC1Ev(void *self);

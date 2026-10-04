@@ -7,6 +7,7 @@
 #include "player/PlayerId.h"
 #include "talk/MsgString.h"
 #include "talk/MsgRequest.h"
+#include "item/LetterView.h"
 
 struct TitleChoiceSet {
     u8 *msgIds;
@@ -44,10 +45,6 @@ public:
 };
 
 
-class LetterView {
-public:
-    u8 getState();
-};
 
 
 class BgVramTask {

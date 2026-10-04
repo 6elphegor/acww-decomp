@@ -6,6 +6,7 @@
 #include "menu/LetterGrid.h"
 #include "menu/InventoryBg.h"
 #include "menu/MenuProc.h"
+#include "ui/HandCursor.h"
 
 extern "C" {
 void Gfx2d_ShowLayer(u32 x);
@@ -169,13 +170,6 @@ public:
     void setPopDownward();
 };
 
-class HandCursor {
-public:
-    s32 isAnimDone();
-    s32 getAnim();
-    void setAnimAtEnd(s32);
-    s32 enableObjWindow();
-};
 
 class BgVramTask {
 public:

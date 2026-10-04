@@ -2,6 +2,9 @@
 #include "text/Unk_02050288.h"
 #include "gfx/SpriteAnim.h"
 #include "ui/UiWidget.h"
+#include "ui/ScrollKnob.h"
+#include "ui/LabelButton.h"
+#include "ui/HudUnkIcon.h"
 
 extern "C" {
 void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
@@ -57,80 +60,10 @@ extern s32 sLabelButtonStatePlayOnce[];
 
 
 
-class ScrollKnob : public UiWidget {
-public:
-    ScrollKnob(u32 flag);
-    virtual ~ScrollKnob();
-    virtual void draw();
-    virtual void vfunc_0c();
 
-    void setState();
-    void setPriority(s32 v);
-    void moveTo(s32 x, s32 y);
-
-    /* 0x0c */ s32 layer1;
-    /* 0x10 */ s32 posY;
-    /* 0x14 */ SpriteAnim layerAnim1;
-    /* 0x28 */ SpriteAnim priority;
-    /* 0x3c */ s32 state;
-    /* 0x40 */ u8 anim;
-    /* 0x44 */ s32 unk_44;
-};
-
-class HudUnkIcon : public UiWidget {
-public:
-    HudUnkIcon();
-    virtual ~HudUnkIcon();
-    virtual void draw();
-    virtual void vfunc_0c();
-
-    void updateHiding();
-    void updateShown();
-    void updateAppearing();
-    void updateHidden();
-
-    /* 0x0c */ SpriteAnim anim;
-    /* 0x20 */ s32 state;
-};
 
 HudUnkIcon sHudUnkIcon;
 
-class LabelButton : public UiWidget {
-public:
-    LabelButton(u32 flag);
-    virtual ~LabelButton();
-    virtual void draw();
-    virtual void vfunc_0c();
-
-    void syncTextColor();
-    void freeLabel();
-    void createLabel();
-    BOOL isAnimDone();
-    s32 getState();
-    void setState(s32 v);
-    void getAnimOffset(s32 *outx, s32 *outy);
-    void setPos(s32 x, s32 y);
-    void setLabelText();
-    void showLayer2();
-    void hideLayer2();
-    void enableObjWindow();
-
-    /* 0x0c */ s32 unk_0c;
-    /* 0x10 */ s32 unk_10;
-    /* 0x14 */ s32 palette;
-    /* 0x18 */ s32 kind;
-    /* 0x1c */ SpriteAnim layer1;
-    /* 0x30 */ SpriteAnim layer2;
-    /* 0x44 */ s32 state;
-    /* 0x48 */ TextLabel *label;
-    /* 0x4c */ StrBuf text;
-    /* 0x50 */ u32 unk_50[6];
-    /* 0x68 */ u16 textColor;
-    /* 0x6a */ u8 onBufferA;
-    /* 0x6b */ u8 objWindow;
-    /* 0x6c */ u8 layer2Hidden;
-    /* 0x6d */ u8 textColorDirty;
-};
 // forward declarations
 extern "C" void HudUnkIcon_Reset();
 extern "C" void HudUnkIcon_Exit();

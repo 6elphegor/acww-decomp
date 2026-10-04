@@ -12,6 +12,8 @@
 #include "npc/Unk_020135e4.h"
 #include "sys/ProcBase.h"
 #include "npc/NpcActionCtrl.h"
+#include "snd/SndSeEmitterKind1.h"
+#include "npc/Unk_02014254.h"
 
 #pragma opt_loop_invariants off
 
@@ -187,19 +189,7 @@ MEMBER(NpcFaceAnim, 0x334 - 0x2ac);
 MEMBER(Unk_0201a794, 0x418 - 0x3b0);
 MEMBER(Unk_0201a13c, 0x49c - 0x420);
 MEMBER(CollisionState, 0x30);
-struct Unk_02014254 {
-    Unk_02014254();
-    ~Unk_02014254();
-    BOOL func_02014220();
-    void func_020141b4(u32 a, u32 b, u32 c);
-    u8 unk_00[0x28];
-};
 
-struct Unk_020f4080 {
-    u8 unk_00[0x558 - 0x514];
-    Unk_020f4080();
-    ~Unk_020f4080();
-};
 
 class Actor : public ProcBase {
 public:

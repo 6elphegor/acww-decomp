@@ -6,6 +6,7 @@
 #include "talk/MsgStringAttr.h"
 #include "talk/EncodedStringBase.h"
 #include "talk/MsgString.h"
+#include "talk/EncodedString.h"
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Classes from other files (see unk_020a6914.cpp)
@@ -15,17 +16,6 @@
 
 class MsgString;
 
-// buffer interface (destination-side, member at +4)
-class EncodedString : public EncodedStringBase {
-public:
-    EncodedString();
-    virtual ~EncodedString();
-    virtual u32 capacity() = 0;
-    virtual u8 *data() = 0;
-    BOOL fromMsgString(MsgString *src);
-
-    /* 0x04 */ MsgStringAttr attr;
-};
 
 
 // ---------------------------------------------------------------------------------------------------------------------

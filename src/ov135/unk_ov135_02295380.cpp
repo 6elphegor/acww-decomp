@@ -1,6 +1,7 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "menu/MenuProc.h"
+#include "ui/HandCursor.h"
 
 extern "C" {
 extern const u8 sClockAdjustCursorLeftTable[7];
@@ -70,15 +71,6 @@ void DateTimePicker_Init(void *self, s32 a, s32 b, s32 c, s32 d);
 }
 
 
-// Menu cursor sub-object hierarchy (src/ov002/unk_02202200.cpp, unk_02202b68.cpp)
-class HandCursor {
-public:
-    virtual ~HandCursor();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    BOOL isAnimDone();
-    BOOL getAnim();
-};
 
 class MenuCursorBase : public HandCursor {
 public:
@@ -103,7 +95,7 @@ class MenuCursorBuf0 : public MenuCursorBase {
 public:
     MenuCursorBuf0();
     virtual ~MenuCursorBuf0();
-    u32 unk_04[0x60 / 4];
+    u8 unk_4c[0x64 - 0x4c];
 };
 
 class MenuBottomButtonsBody {

@@ -1,6 +1,7 @@
 #include "types.h"
 #include "gfx/SpriteAnim.h"
 #include "ui/UiWidget.h"
+#include "ui/ScrollKnob.h"
 
 extern "C" {
 extern u8 data_020d5b0c[];
@@ -13,21 +14,6 @@ struct SpriteAnimSeq;
 
 
 
-class ScrollKnob : public UiWidget {
-public:
-    BOOL areAnimsDone();
-    s32 getState();
-    void setState(s32 idx);
-    void getAnimOffset(s32 *a, s32 *b);
-
-    /* 0x0c */ s32 layer1;
-    /* 0x10 */ s32 posY;
-    /* 0x14 */ SpriteAnim layerAnim1;
-    /* 0x28 */ SpriteAnim priority;
-    /* 0x3c */ s32 state;
-    /* 0x40 */ u8 anim;
-    /* 0x44 */ s32 unk_44;
-};
 
 enum Unk_0208d9d4_E { Unk_0208d9d4_E0 = 0 };
 

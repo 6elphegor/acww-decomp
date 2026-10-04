@@ -7,6 +7,7 @@
 #include "gfx/TexVramSlot.h"
 #include "gfx/CachedModel.h"
 #include "player/FishBobber.h"
+#include "game/GroundInfo.h"
 
 
 
@@ -50,17 +51,6 @@ public:
     u8 pad_0e[0x0e];
 };
 
-class GroundInfo {
-public:
-    u8 pad_00[0x24];
-    s32 flowDir, flowDirY, flowDirZ;
-    s32 waterKind;
-    u8 pad_34[8];
-    s32 waterSurfaceY;
-    GroundInfo() {}
-    GroundInfo *_ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii(Unk_0205f8d4_Vec *v, s32 a, s32 b);
-    ~GroundInfo();
-};
 
 extern "C" {
 extern u32 gFishBobberHeap;

@@ -6,10 +6,10 @@
 #include "item/ShopAckCounter.h"
 #include "game/Elem2a.h"
 #include "game/Loc488.h"
+#include "game/NookShop.h"
 
 
 struct Elem2b { Elem2b(); ~Elem2b(); u16 d; };
-struct NookShop { u32 vt; Elem2b e[0x25]; NookShop(); };
 
 struct Str { Str(const u16 *s); ~Str(); u8 d[0x24]; };
 struct Obj30 { Obj30(); ~Obj30(); u8 d[0x30]; };

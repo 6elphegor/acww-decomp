@@ -8,6 +8,7 @@
 #include "menu/LetterGrid.h"
 #include "menu/InventoryBg.h"
 #include "menu/MenuProc.h"
+#include "ui/HandCursor.h"
 
 class LostFoundRecycleMenu;
 
@@ -184,17 +185,6 @@ public:
     u32 unk_00[0x108 / 4];
 };
 
-// Menu cursor sub-object hierarchy (same as ov140)
-class HandCursor {
-public:
-    virtual ~HandCursor();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    s32 isAnimDone();
-    s32 getAnim();
-    void setAnimAtEnd(s32);
-    s32 enableObjWindow();
-};
 
 class MenuCursorBase : public HandCursor {
 public:
@@ -223,7 +213,7 @@ class MenuCursorBuf0 : public MenuCursorBase {
 public:
     MenuCursorBuf0();
     virtual ~MenuCursorBuf0();
-    u32 unk_04[0x60 / 4];
+    u8 unk_4c[0x64 - 0x4c];
 };
 
 
@@ -398,7 +388,7 @@ static inline void func_02089af8(void *p) { ((LabelBalloon *)p)->setPopDownward(
 static inline s32 func_0208d4fc(void *p) { return ((HandCursor *)p)->isAnimDone(); }
 static inline s32 func_0208d534(void *p) { return ((HandCursor *)p)->getAnim(); }
 static inline void func_0208d538(void *p, s32 a) { ((HandCursor *)p)->setAnimAtEnd((s32)a); }
-static inline s32 func_0208d644(void *p) { return ((HandCursor *)p)->enableObjWindow(); }
+static inline void func_0208d644(void *p) { ((HandCursor *)p)->enableObjWindow(); }
 static inline void func_020b87d0(void *p) { ((BgVramTask *)p)->cancel(); }
 static inline void func_ov002_022006a4(void *a, s32 b) { ((TouchPromptBalloon *)a)->setAutoCloseTimer((u8)b); }
 static inline void func_ov002_022006b0(void *p) { ((TouchPromptBalloon *)p)->cancelQueuedOpen(); }

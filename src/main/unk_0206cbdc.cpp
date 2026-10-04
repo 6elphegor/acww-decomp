@@ -8,6 +8,7 @@
 #include "talk/EncodedStringBase.h"
 #include "ui/LetterRenderer.h"
 #include "talk/MsgString.h"
+#include "talk/EncodedString.h"
 
 extern "C" {
 s32 Text_GetLength(void *p, s32 n);
@@ -33,15 +34,6 @@ s32 Text_MeasureWidth(void *p, s32 n);
 
 class MsgString;
 
-class EncodedString : public EncodedStringBase {
-public:
-    EncodedString();
-    virtual ~EncodedString();
-    virtual u32 capacity() = 0;
-    virtual u8 *data() = 0;
-
-    MsgStringAttr attr;
-};
 
 
 // 0x28-byte destination buffer at +0xe

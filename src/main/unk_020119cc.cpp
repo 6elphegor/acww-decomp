@@ -20,6 +20,7 @@
 #include "npc/NpcResHandleView.h"
 #include "gfx/MatTexPatAnim.h"
 #include "npc/NpcActionCtrl.h"
+#include "game/GroundInfo.h"
 
 
 // unk_02011580.cpp
@@ -227,14 +228,6 @@ public:
     void func_020132ec(Unk_02012810_Vec *v);
 };
 
-// unk_020131a4.cpp
-struct GroundInfo {
-    u8 pad_00[0x30];
-    s32 waterKind;
-    u8 pad_34[0x10];
-    GroundInfo(u32 x, u32 y, u32 z, u32 w);
-    ~GroundInfo();
-};
 
 struct VillagerRoute;
 

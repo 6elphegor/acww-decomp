@@ -1,6 +1,7 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "menu/MenuProc.h"
+#include "ui/HandCursor.h"
 
 extern "C" {
 extern u8 gSaveBlancaFace;
@@ -110,15 +111,6 @@ public:
     u32 unk_00[0x38 / 4];
 };
 
-// Menu cursor sub-object hierarchy
-class HandCursor {
-public:
-    virtual ~HandCursor();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    BOOL isAnimDone();
-    BOOL getAnim();
-};
 
 class MenuCursorBase : public HandCursor {
 public:
@@ -144,7 +136,7 @@ class MenuCursorBuf0 : public MenuCursorBase {
 public:
     MenuCursorBuf0();
     virtual ~MenuCursorBuf0();
-    u32 unk_04[0x60 / 4];
+    u8 unk_4c[0x64 - 0x4c];
 };
 
 class MenuBottomButtonsBody {

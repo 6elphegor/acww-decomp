@@ -31,6 +31,7 @@
 #include "game/FxVec3.h"
 #include "sys/ProcBase.h"
 #include "gfx/ModelAnim.h"
+#include "room/FtrCollider.h"
 // The two functions of the ov004 translation unit 0x02209f70-0x022136d0 that need mwcc 1.2/base (signed-halfword
 // switch tables): FtrSingingInsect::updateActive and vfunc_7c. Same declarations as the main file of the unit;
 // nothing else is emitted here (see config/usa/arm9/overlays/ov004/object_order.txt).
@@ -206,14 +207,6 @@ struct FtrTopItems {
 
 
 
-struct FtrCollider : BoxCollider {
-    void *owner;
-    FtrCollider();
-    void onEdgeContact(CollisionEdge *a, Unk_ov004_02206570_Act *b, s32 c);
-    void slideOwnerForWideFtr(Unk_ov004_02206570_Act *b);
-    void clearOwner();
-    void setOwner(void *p);
-};
 
 // ---- 0x022069ec / 0x02206e38 (model loader, member at 0x6c8)
 class TexVramSlot;

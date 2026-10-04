@@ -12,6 +12,8 @@
 #include "menu/InventoryBg.h"
 #include "ui/LetterRenderer.h"
 #include "menu/MenuProc.h"
+#include "item/LetterView.h"
+#include "item/LetterStorage.h"
 
 class LetterStorageMenu;
 class MenuLauncher;
@@ -120,13 +122,6 @@ extern void *gMenuHeap;
 // Main-module helper classes (real symbol names) -------------------------------------------------
 
 
-// Same 0xf4-byte element object under the name that owns the state accessors
-class LetterView {
-public:
-    s32 isToFutureSelf();
-    s32 getState();
-    u32 getPresent();
-};
 
 extern "C" CommManager *gCommManager;
 
@@ -330,10 +325,6 @@ extern "C" char data_ov105_02298504[];
 extern "C" char data_ov105_02298524[];
 extern "C" const char *sLetterStoragePageChars[3];
 
-class LetterStorage {
-public:
-    void *getPage(s32 a);
-};
 extern "C" void InventoryItemGrid_DrawPocketsClipped(void *p, s32 a, s32 b, u32 c);
 extern "C" void _ZN17LetterStorageMenu14dropHeldOnSlotEj(void *self);
 extern "C" void _ZN17LetterStorageMenu14pickUpAndFlyToEjjj(void *self, u32 a, u32 b);

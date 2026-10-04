@@ -27,6 +27,8 @@
 #include "gfx/Mtx43.h"
 #include "game/Loc488.h"
 #include "gfx/ObjShadowStrip.h"
+#include "game/ReddShop.h"
+#include "game/NookShop.h"
 struct MsgString25 {
     MsgString25();
     ~MsgString25();
@@ -78,19 +80,6 @@ public:
 };
 
 
-class ReddShop {
-public:
-    /* 0x00 */ ItemId arr[3];
-    /* 0x08 */ ReddPassword s;
-    /* 0x10 */ u16 tbl[3];
-
-    ReddShop();
-    ~ReddShop();
-    void restock();
-    ReddPassword *getPassword();
-    void clearStock();
-    void reset();
-};
 
 // ---- NookPoints group (u16 at +0) ----
 struct NookPoints {
@@ -141,7 +130,6 @@ struct Obj {
 // ======== types of unk_020aebbc.cpp ========
 
 
-struct NookShop { u32 vt; ItemId e[0x25]; NookShop(); };
 
 extern const s32 sObjShadowCoordShift;
 extern const u8 kNookCarpetCounts[4];

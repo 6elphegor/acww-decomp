@@ -2,38 +2,12 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "ui/UiWidget.h"
+#include "ui/HandCursor.h"
+#include "ui/NameLabelBalloon.h"
 
 // ---- sub-object declarations (defined in src/main/unk_0208d154.cpp etc.) ----
 
-class NameLabelBalloon : public UiWidget {
-public:
-    NameLabelBalloon();
-    virtual ~NameLabelBalloon();
-    virtual void draw();
-    virtual void vfunc_0c();
 
-    BOOL requestHide();
-    BOOL requestShow();
-    void setText(void *p);
-    void setOffset(s32 a, s32 b);
-    void release();
-    void setKind(s32 a);
-
-    /* 0x0c */ u8 unk_0c[0x74];
-};
-
-class HandCursor : public UiWidget {
-public:
-    HandCursor(BOOL flag);
-    virtual ~HandCursor();
-    virtual void draw();
-    virtual void vfunc_0c();
-
-    void setAnim(s32 idx);
-    void setPos(s32 a, s32 b);
-
-    /* 0x0c */ u8 unk_0c[0x40];
-};
 
 class MsgString9B {
 public:

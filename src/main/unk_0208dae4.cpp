@@ -1,6 +1,8 @@
 #include "types.h"
 #include "gfx/SpriteAnim.h"
 #include "ui/UiWidget.h"
+#include "ui/ScrollKnob.h"
+#include "ui/HudUnkIcon.h"
 
 extern "C" {
 void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
@@ -17,37 +19,7 @@ struct SpriteAnimSeq;
 
 
 
-class ScrollKnob : public UiWidget {
-public:
-    ScrollKnob(u32 flag);
-    virtual ~ScrollKnob();
-    virtual void draw();
-    virtual void vfunc_0c();
 
-    void setState(s32 idx);
-    void setPriority(s32 v);
-    void moveTo(s32 x, s32 y);
-
-    /* 0x0c */ s32 layer1;
-    /* 0x10 */ s32 posY;
-    /* 0x14 */ SpriteAnim layerAnim1;
-    /* 0x28 */ SpriteAnim priority;
-    /* 0x3c */ s32 state;
-    /* 0x40 */ u8 anim;
-    /* 0x44 */ s32 unk_44;
-};
-
-class HudUnkIcon {
-public:
-    void updateHiding();
-    void updateShown();
-    void updateAppearing();
-    void updateHidden();
-
-    /* 0x00 */ u8 unk_00[0x0c];
-    /* 0x0c */ SpriteAnim anim;
-    /* 0x20 */ s32 state;
-};
 
 extern "C" BOOL HudUnkIcon_CanShow();
 

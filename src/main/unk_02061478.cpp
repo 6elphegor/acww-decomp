@@ -3,6 +3,7 @@
 #include "item/ItemId.h"
 #include "sys/RecordFile.h"
 #include "talk/EncodedStringBase.h"
+#include "talk/EncodedString.h"
 
 
 
@@ -18,15 +19,6 @@ public:
 
 
 
-class EncodedString : public EncodedStringBase {
-public:
-    EncodedString();
-    virtual ~EncodedString();
-    virtual u32 capacity() = 0;
-    virtual u8 *data() = 0;
-
-    /* 0x04 */ MsgStringAttr attr;
-};
 
 // 16-byte raw buffer (vtable 0x020dd30c, in the next unit)
 class EncodedString16Buf : public EncodedString {

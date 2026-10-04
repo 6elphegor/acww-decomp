@@ -3,6 +3,7 @@
 #include "Unk_020d8c7c.h"
 #include "ui/UiWidget.h"
 #include "menu/MenuProc.h"
+#include "ui/HandCursor.h"
 
 #define func_020624c0 _ZN18EncodedString16BufD1Ev
 #define func_02062510 _ZN18EncodedString16BufC1Ev
@@ -266,15 +267,6 @@ public:
 };
 
 
-class HandCursor : public UiWidget {
-public:
-    HandCursor(BOOL flag);
-    virtual ~HandCursor();
-    virtual void draw();
-    virtual void vfunc_0c();
-
-    /* 0x0c */ u8 unk_0c[0x3f];
-};
 
 class MenuCursorBase : public HandCursor {
 public:

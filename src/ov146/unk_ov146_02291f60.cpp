@@ -6,6 +6,7 @@
 #include "talk/EncodedStringBase.h"
 #include "talk/MsgString.h"
 #include "menu/MenuProc.h"
+#include "talk/EncodedString.h"
 
 #define LabelBalloon_setPos _ZN12LabelBalloon6setPosEii
 #define LabelBalloon_showLayer2 _ZN12LabelBalloon10showLayer2Ev
@@ -54,14 +55,6 @@ struct Unk_ov146_SceneEntry {
 
 class MsgString;
 
-class EncodedString : public EncodedStringBase {
-public:
-    EncodedString();
-    virtual ~EncodedString();
-    virtual u32 capacity() = 0;
-    virtual u8 *data() = 0;
-    /* 0x04 */ MsgStringAttr attr;
-};
 
 
 class LabelString : public MsgString {

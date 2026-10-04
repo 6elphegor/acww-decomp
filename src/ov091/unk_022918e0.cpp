@@ -4,6 +4,8 @@
 #include "snd/BgmVolumeMixer.h"
 #include "ui/LetterRenderer.h"
 #include "menu/MenuProc.h"
+#include "ui/HandCursor.h"
+#include "ui/LabelButton.h"
 
 extern "C" {
 void Snd_PlaySe(s32 a);
@@ -28,31 +30,7 @@ struct Unk_0206d1d4_Src;
 
 
 
-class LabelButton : public UiWidget {
-public:
-    LabelButton(u32 flag);
-    virtual ~LabelButton();
-    virtual void draw();
-    virtual void vfunc_0c();
 
-    void setState(s32 v);
-    void setPos(s32 x, s32 y);
-
-    /* 0x0c */ u8 unk_0c[0x64];
-};
-
-class HandCursor : public UiWidget {
-public:
-    HandCursor(BOOL flag);
-    virtual ~HandCursor();
-    virtual void draw();
-    virtual void vfunc_0c();
-
-    BOOL isAnimDone();
-    s32 getAnim();
-
-    /* 0x0c */ u8 unk_0c[0x3f];
-};
 
 // +0x2a4 sub-object (0x70 bytes)
 class MenuLabelButtonStyle1 : public LabelButton {

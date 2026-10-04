@@ -2,6 +2,7 @@
 #include "town/TownAcreIndex.h"
 #include "sys/RecordFile.h"
 #include "town/TownAcreCell.h"
+#include "town/TownAcreGrid.h"
 
 extern "C" {
 void *MI_CpuFill8(void *p, u32 v, u32 n);
@@ -17,34 +18,7 @@ extern const u32 sPondAcreIds[6];
 // ---- 8-byte cell
 
 // ---- 6x6 cell grid (the same object is TownAcreGrid in the symbol names of two of its methods)
-class TownAcreGrid {
-public:
-    TownAcreCell *getCell(s32 x, s32 y);
-    void loadCandidate(s32 seed);
-    BOOL setBorder();
-    BOOL placeRiverVariant();
-    BOOL placeFacilities(u32 mode);
-    BOOL hasPond();
-    BOOL assignAcreIds();
 
-    TownAcreCell unk_00[0x24];
-    RecordFile candidates;
-};
-
-class TownAcreGenerator {
-public:
-    TownAcreGenerator();
-    ~TownAcreGenerator();
-
-    void writeAcreIds(u8 *out);
-    u32 getTotalArchiveSize();
-    BOOL generate(s32 v);
-    void closeCandidates();
-    BOOL openCandidates();
-
-    TownAcreCell cells[0x24];
-    RecordFile candidates;
-};
 
 // ---- row helper
 

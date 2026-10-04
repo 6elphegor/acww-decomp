@@ -8,6 +8,7 @@
 #include "snd/SndEnvChannel.h"
 #include "game/WeatherRecord.h"
 #include "gfx/Unk_020bfe30.h"
+#include "snd/Unk_0213b938.h"
 
 
 static inline void Unk_020bfe30_Set(Unk_020bfe30_Vec *v, s32 x, s32 y, s32 z) {
@@ -434,13 +435,6 @@ static inline void Unk_020bfe38_Add(s32 *dst, s32 v) {
 
 // ---------------------------------------------------------------------------------------------------------------------
 
-class Unk_0213b938 : public SndEnvChannel {
-public:
-    Unk_0213b938() {}
-    virtual void vfunc_00();
-
-    /* 0x0c */ u8 unk_0c[4];
-};
 
 class SkyProc : public GameProc {
 public:

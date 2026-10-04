@@ -10,6 +10,7 @@
 #include "room/FtrSwitch.h"
 #include "snd/TvSound.h"
 #include "game/GroundInfoBase.h"
+#include "game/GroundInfo.h"
 
 // other modules' symbols by their real names
 #define Actor_spawn _ZN5Actor5spawnEPvS0_S0_S0_S0_
@@ -304,12 +305,6 @@ public:
 
 
 
-class GroundInfo : public GroundInfoBase {
-public:
-    GroundInfo() {}
-    GroundInfo *initAtPos(Unk_0203389c_Vec *v, s32 a, s32 b);
-    ~GroundInfo();
-};
 
 // main's 0x18-byte pool object
 typedef void *(*Unk_0209c1a4_Alloc)(u32, u32);

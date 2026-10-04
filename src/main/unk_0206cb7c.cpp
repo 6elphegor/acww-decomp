@@ -6,6 +6,8 @@
 #include "talk/BmgReader.h"
 #include "talk/EncodedStringBase.h"
 #include "talk/MsgString.h"
+#include "talk/TalkBmgReader.h"
+#include "talk/EncodedString.h"
 
 extern "C" {
 extern u8 sMailCheckWords[];
@@ -64,16 +66,6 @@ s32 Gfx2d_GetLayerBgIndex(u32 n);
 
 class MsgString;
 
-class EncodedString : public EncodedStringBase {
-public:
-    EncodedString();
-    virtual ~EncodedString();
-    virtual u32 capacity() = 0;
-    virtual u8 *data() = 0;
-    BOOL fromMsgString(MsgString *src);
-
-    /* 0x04 */ MsgStringAttr attr;
-};
 
 
 
@@ -81,13 +73,6 @@ extern "C" BOOL String_Load(MsgString *buf, u8 *key, const char *name);
 
 // ---------------------------------------------------------------------------------------------------------------------
 
-class TalkBmgReader : public BmgReader {
-public:
-    TalkBmgReader();
-    virtual ~TalkBmgReader();
-    virtual u32 getBuffer();
-    virtual u32 getBufferSize();
-};
 
 // 0x200-byte destination buffer at +0xe
 class EncodedString512 : public EncodedString {

@@ -1,6 +1,7 @@
 #include "types.h"
 #include "gfx/SpriteAnim.h"
 #include "ui/UiWidget.h"
+#include "ui/TalkArrow.h"
 
 extern "C" {
 void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
@@ -10,28 +11,6 @@ void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, 
 
 
 
-// Two-cursor menu/sprite object; vtable 0x020e0d44 (ctor 0x020894c0)
-class TalkArrow : public UiWidget {
-public:
-    TalkArrow(u8 flag);
-    virtual ~TalkArrow();
-    virtual void draw();
-    virtual void vfunc_0c();
-
-    BOOL isAnimDone();
-    s32 getState();
-    void setState(s32 idx);
-    void setOffset(s32 x, s32 y);
-    void setAltStyle();
-
-    /* 0x0c */ SpriteAnim anim;
-    /* 0x20 */ SpriteAnim subAnim;
-    /* 0x34 */ s32 state;
-    /* 0x38 */ s32 offsetX;
-    /* 0x3c */ s32 offsetY;
-    /* 0x40 */ u8 useAltStyle;
-    /* 0x41 */ u8 unk_41;
-};
 
 TalkArrow::TalkArrow(u8 flag) {
     state = 0;

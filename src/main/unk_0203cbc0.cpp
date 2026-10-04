@@ -5,6 +5,7 @@
 #include "talk/MsgParser.h"
 #include "talk/MailTextBuilder.h"
 #include "talk/MsgRequest.h"
+#include "talk/MsgWalker.h"
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Classes of other units
@@ -12,13 +13,6 @@
 
 
 
-class MsgWalker : public MsgParser {
-public:
-    MsgWalker() {}
-    virtual ~MsgWalker() {}
-    virtual BOOL canContinue();
-    u8 *run(BOOL arg);
-};
 
 
 class MsgString {

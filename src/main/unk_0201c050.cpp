@@ -19,6 +19,8 @@
 #include "talk/VillagerTalkRequestStartTopics.h"
 #include "sys/ProcBase.h"
 #include "npc/NpcResHandleView.h"
+#include "talk/EncodedString.h"
+#include "npc/Unk_02014254.h"
 
 
 class VillagerTalk;
@@ -522,13 +524,6 @@ typedef u32 (VillagerTalkTopics::*Unk_02020d90_Fn)(u8 *, s32 *, u8 *, u32 *);
 
 
 
-class EncodedString : public EncodedStringBase {
-public:
-    EncodedString();
-    virtual ~EncodedString();
-    virtual u32 capacity() = 0;
-    virtual u8 *data() = 0;
-};
 
 class ConstellationEncodedString16 : public EncodedString {
 public:
@@ -536,7 +531,7 @@ public:
     virtual ~ConstellationEncodedString16();
     virtual u32 capacity();
     virtual u8 *data();
-    u8 pad_04[0x1c];
+    /* 0x0e */ u8 pad_0e[0x20 - 0xe];
 };
 
 struct Unk_02021048_Sys {
@@ -1221,7 +1216,6 @@ MEMBER(Unk_0201a13c, 0x49c - 0x420);
 MEMBER(CollisionState, 0x30);
 MEMBER(ActorFollowCollider, 0x514 - 0x4cc);
 MEMBER(NpcActionCtrl, 0x618 - 0x564);
-MEMBER(Unk_02014254, 0x28);
 #undef MEMBER
 
 extern "C" {

@@ -6,6 +6,7 @@
 #include "gfx/Unk_020dbd44.h"
 #include "game/UnitShapeQueryX.h"
 #include "gfx/CachedModel.h"
+#include "field/FieldObjectShapeQuery.h"
 
 // ================================================================ other modules' real names
 #define CommManager_isOnline _ZN11CommManager8isOnlineEv
@@ -62,11 +63,6 @@ public:
 };
 
 
-class FieldObjectShapeQuery : public UnitShapeQueryX {
-public:
-    virtual BOOL getUnitShape(s32 *a, s32 *b, s32 *c, s32 x, s32 z);
-    virtual ~FieldObjectShapeQuery();   // not defined here: D1 is main's, D0 is the separate unit at 0x02219294
-};
 
 class FieldObjectManager : public GameProc {
 public:

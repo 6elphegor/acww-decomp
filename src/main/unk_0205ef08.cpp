@@ -1,23 +1,13 @@
 #include "types.h"
 #include "game/Unk_0205f6b4_Obj.h"
 #include "gfx/Unk_0205f7f4_Mtx.h"
+#include "game/GroundInfo.h"
 
 struct Unk_0205f1e8_Vec {
     s32 x, y, z;
 };
 
 
-class GroundInfo {
-public:
-    u8 pad_00[0x24];
-    s32 flowDir, flowDirY, flowDirZ;
-    s32 waterKind;
-    u8 pad_34[8];
-    s32 waterSurfaceY;
-    GroundInfo() {}
-    GroundInfo *initAtPos(Unk_0205f1e8_Vec *v, s32 a, s32 b);
-    ~GroundInfo();
-};
 
 
 extern "C" {

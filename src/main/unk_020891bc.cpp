@@ -1,6 +1,7 @@
 #include "types.h"
 #include "gfx/SpriteAnim.h"
 #include "ui/UiWidget.h"
+#include "ui/TalkArrow.h"
 
 
 
@@ -10,28 +11,6 @@ extern const u32 sTalkArrowPlayOnce[];
 extern const u32 sTalkArrowSeqIds[];
 extern u8 data_020d5b0c[];
 
-// Two-cursor menu/sprite object; vtable 0x020e0d44 (ctor 0x020894c0)
-class TalkArrow : public UiWidget {
-public:
-    TalkArrow(u8 flag);
-    virtual ~TalkArrow();
-    virtual void draw();
-    virtual void vfunc_0c();
-
-    BOOL isAnimDone();
-    s32 getState();
-    void setState(s32 idx);
-    void setOffset(s32 x, s32 y);
-    void setAltStyle();
-
-    /* 0x0c */ SpriteAnim anim;
-    /* 0x20 */ SpriteAnim subAnim;
-    /* 0x34 */ s32 state;
-    /* 0x38 */ s32 offsetX;
-    /* 0x3c */ s32 offsetY;
-    /* 0x40 */ u8 useAltStyle;
-    /* 0x41 */ u8 unk_41;
-};
 
 enum Unk_020892b0_E { Unk_020892b0_E0 = 0 };
 

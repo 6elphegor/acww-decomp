@@ -11,6 +11,8 @@
 #include "npc/Unk_0201ad18.h"
 #include "npc/Unk_020135e4.h"
 #include "npc/NpcActionCtrl.h"
+#include "snd/SndSeEmitterKind1.h"
+#include "npc/Unk_02014254.h"
 
 // Real (mangled) names of other modules' functions that the unit calls as plain functions taking the object first.
 #define NpcAnimCtrl_playAnim _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti
@@ -174,19 +176,7 @@ MEMBER(Unk_0201accc, 0x3a8 - 0x350);
 MEMBER(Unk_0201a794, 0x418 - 0x3b0);
 MEMBER(Unk_0201a13c, 0x49c - 0x420);
 MEMBER(CollisionState, 0x30);
-struct Unk_02014254 {
-    Unk_02014254();
-    ~Unk_02014254();
-    BOOL func_02014220();
-    void func_020141b4(u32 a, u32 b, u32 c);
-    u8 unk_00[0x28];
-};
 
-struct Unk_020f4080 {
-    u8 unk_00[0x558 - 0x514];
-    Unk_020f4080();
-    ~Unk_020f4080();
-};
 
 struct Unk_020d77a4_Vec3;
 struct Unk_0201bc1c;

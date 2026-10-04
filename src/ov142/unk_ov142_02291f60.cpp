@@ -6,6 +6,8 @@
 #include "room/FtrPreviewer.h"
 #include "talk/MsgString.h"
 #include "menu/MenuProc.h"
+#include "ui/HandCursor.h"
+#include "ui/ScrollKnob.h"
 
 class CatalogMenu;
 
@@ -119,14 +121,6 @@ void *PlayerData_getCatalog(u32 p);
 }
 
 // ---- ov002 sub-objects ----
-class HandCursor {
-public:
-    virtual ~HandCursor();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    BOOL isAnimDone();
-    BOOL getAnim();
-};
 
 class MenuCursorBase : public HandCursor {
 public:
@@ -152,18 +146,9 @@ class MenuCursorBuf0 : public MenuCursorBase {
 public:
     MenuCursorBuf0();
     virtual ~MenuCursorBuf0();
-    u32 unk_04[0x60 / 4];
+    u8 unk_4c[0x64 - 0x4c];
 };
 
-class ScrollKnob {
-public:
-    virtual ~ScrollKnob();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    BOOL areAnimsDone();
-    void moveTo(s32 a, s32 b);
-    u32 unk_04[0x44 / 4];
-};
 
 class MenuScrollKnob : public ScrollKnob {
 public:
@@ -495,7 +480,7 @@ BOOL CatalogMenu::onDraw() {
     y = slideY + 0x60;
     if (!testFlags(0x100)) {
         MenuScrollKnob *p = &scrollKnob;
-        p->vfunc_08();
+        p->draw();
         t = testFlags(0x800) ? 9 : 8;
         x = y;
         if (testFlags(0x2000)) x = y + 2;

@@ -7,6 +7,7 @@
 #include "talk/MsgParser.h"
 #include "talk/MsgString.h"
 #include "talk/MsgRequest.h"
+#include "talk/MsgWalker.h"
 
 extern "C" {
 u32 Text_ToUpper(u32 key);
@@ -40,13 +41,6 @@ public:
 
 
 
-class MsgWalker : public MsgParser {
-public:
-    MsgWalker() {}
-    virtual ~MsgWalker() {}
-    virtual BOOL canContinue();
-    u8 *run(BOOL arg);
-};
 
 class StringBank;
 

@@ -4,6 +4,12 @@
 #include "game/Unk_02095774_Ent.h"
 #include "save/MotherLetterState.h"
 #include "item/Letter.h"
+#include "item/LetterView.h"
+#include "item/PlayerMailbox.h"
+#include "item/LetterStorage.h"
+#include "item/LetterOutbox.h"
+#include "item/FutureLetter.h"
+#include "item/BottleLetterRecord.h"
 
 
 
@@ -34,77 +40,13 @@ struct Unk_02096484_Base {
 struct Unk_02096484_Rec : Unk_02096484_Base {
     Unk_02096484_Rec() { a = 0; b = 0; }
 };
-class LetterView {
-public:
-    u8 getState();
-    u8 pad[0xf4];
-};
 
 
-// Array of ten elements, indexed table getter at 0x02097020.
-class LetterOutbox {
-public:
-    LetterOutbox();
-    ~LetterOutbox();
-    Letter *getLetter(s32 i);
-    void clear();
-    BOOL testFlag(u32 mask);
-    void setFlag(u32 mask);
-    u8 *getLastDeliveryTime();
-
-    /* 0x000 */ Letter unk_00[10];
-    /* 0x988 */ u8 lastDeliveryDay;
-    /* 0x989 */ u8 lastDeliveryMonth;
-    /* 0x98a */ u8 lastDeliveryYear;
-    /* 0x98b */ u8 lastDeliveryHour;
-    /* 0x98c */ u16 flags;
-    /* 0x98e */ u16 pad_98e;
-};
-
-class PlayerMailbox {
-public:
-    PlayerMailbox();
-    ~PlayerMailbox();
-    Letter *getLetter(s32 i);
-    void setLastWifiMailId(u32 v);
-    u32 getLastWifiMailId();
-    void clear();
-
-    /* 0x000 */ Letter unk_00[10];
-    /* 0x988 */ u16 lastWifiMailId;
-    /* 0x98a */ u16 pad_98a;
-};
 
 
-class FutureLetter : public Letter {
-public:
-    void clearFutureLetter();
-    u8 *getDeliveryDate();
 
-    /* 0xf4 */ u8 deliveryDay;
-    /* 0xf5 */ u8 deliveryMonth;
-    /* 0xf6 */ u8 deliveryYear;
-    /* 0xf7 */ u8 unk_f7;
-};
 
-class BottleLetterRecord : public Letter {
-public:
-    s32 pickUnusedMessage();
-    void clearUsedMessages();
-    BOOL isMessageUsed(s32 i);
-    void setMessageUsed(s32 i);
-    void clearRecord();
 
-    /* 0xf4 */ u8 unk_f4[5];
-};
-
-class LetterStorage {
-public:
-    void clear();
-    Letter *getPage(s32 i);
-
-    /* 0x000 */ Letter letters[75];
-};
 
 
 inline BOOL Unk_0209579c_IsTwo(u8 v) {

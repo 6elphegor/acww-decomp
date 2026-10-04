@@ -4,6 +4,7 @@
 #include "gfx/StarTwinkle.h"
 #include "game/StarSkyView.h"
 #include "menu/MenuProc.h"
+#include "ui/HandCursor.h"
 
 extern "C" {
 extern u16 gPad[];
@@ -156,17 +157,6 @@ public:
     void setNextRequest(s32 a, s32 b);
 };
 
-// Menu cursor sub-object hierarchy
-class HandCursor {
-public:
-    virtual ~HandCursor();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    BOOL isAnimDone();
-    BOOL getAnim();
-    void disableObjWindow();
-    void enableObjWindow();
-};
 
 class MenuCursorBase : public HandCursor {
 public:
@@ -193,7 +183,7 @@ class MenuCursorBuf0 : public MenuCursorBase {
 public:
     MenuCursorBuf0();
     virtual ~MenuCursorBuf0();
-    u32 unk_04[0x60 / 4];
+    u8 unk_4c[0x64 - 0x4c];
 };
 
 class MenuBottomButtonsBody {

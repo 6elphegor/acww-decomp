@@ -10,6 +10,9 @@
 #include "npc/Unk_0201ad18.h"
 #include "npc/Unk_020135e4.h"
 #include "npc/NpcActionCtrl.h"
+#include "snd/SndSeEmitterKind1.h"
+#include "npc/Unk_02014254.h"
+#include "talk/EncodedString.h"
 
 // Real (mangled) names of other modules' functions that the unit calls as plain functions taking the object first.
 #define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv
@@ -174,15 +177,6 @@ struct Unk_ov045_022590e4_Msg {
 // ---------------------------------------------------------------------------------------------------------------------
 // Message buffer classes (see src/main/unk_02062fd4.cpp)
 
-class EncodedString {
-public:
-    EncodedString();
-    virtual ~EncodedString();
-    virtual u32 capacity() = 0;
-    virtual u8 *data() = 0;
-
-    u8 unk_04[10];
-};
 
 
 class MsgString : public MsgStringBase {
@@ -263,17 +257,7 @@ MEMBER(Unk_0201accc, 0x3a8 - 0x350);
 MEMBER(Unk_0201a794, 0x418 - 0x3b0);
 MEMBER(Unk_0201a13c, 0x49c - 0x420);
 MEMBER(CollisionState, 0x30);
-struct Unk_02014254 {
-    Unk_02014254();
-    ~Unk_02014254();
-    u8 unk_00[0x28];
-};
 
-struct Unk_020f4080 {
-    u8 unk_00[0x558 - 0x514];
-    Unk_020f4080();
-    ~Unk_020f4080();
-};
 
 struct Unk_020d77a4_Vec3;
 struct Unk_0201bc1c;

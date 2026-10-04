@@ -13,16 +13,12 @@
 #include "game/CollisionState.h"
 #include "game/FxVec3.h"
 #include "gfx/ModelAnim.h"
+#include "game/GroundInfo.h"
+#include "snd/Unk_0213b954.h"
 
 // ---- main-module library classes shared by several functions of this unit (global: their methods are called by symbol)
 
 
-class GroundInfo : public GroundInfoBase {
-public:
-    GroundInfo() {}
-    GroundInfo *initAtPos(Unk_0203389c_Vec *v, s32 a, s32 b);
-    ~GroundInfo();
-};
 
 extern "C" {
 void *_ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii(void *self, Unk_0203389c_Vec *v, s32 a, s32 b);
@@ -83,13 +79,6 @@ public:
 
 
 
-class Unk_0213b954 : public SndEnvChannel {
-public:
-    Unk_0213b954() {}
-    virtual void vfunc_00();
-
-    /* 0x0c */ u8 unk_0c[4];
-};
 
 // ---- static object holding a InsectMatAnim plus library sub-objects (no vtable)
 class Insect {

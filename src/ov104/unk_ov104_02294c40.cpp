@@ -12,6 +12,7 @@
 #include "menu/InventoryBg.h"
 #include "ui/LetterRenderer.h"
 #include "menu/MenuProc.h"
+#include "item/LetterView.h"
 
 class PostOfficeMenu;
 class MenuLauncher;
@@ -120,13 +121,6 @@ extern void *gMenuHeap;
 // Main-module helper classes (real symbol names) -------------------------------------------------
 
 
-// Same 0xf4-byte element object under the name that owns the state accessors
-class LetterView {
-public:
-    s32 isToFutureSelf();
-    s32 getState();
-    u32 getPresent();
-};
 
 extern "C" CommManager *gCommManager;
 

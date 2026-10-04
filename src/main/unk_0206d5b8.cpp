@@ -5,6 +5,8 @@
 #include "talk/MsgStringAttr.h"
 #include "sys/RecordFile.h"
 #include "talk/EncodedStringBase.h"
+#include "talk/EncodedString.h"
+#include "game/InfoTableSet.h"
 
 extern u32 OVERLAY_1_ID[];
 extern u32 OVERLAY_65_ID[];
@@ -12,15 +14,6 @@ extern u32 OVERLAY_65_ID[];
 // ---- buffer interface classes (defined elsewhere) ----
 
 
-class EncodedString : public EncodedStringBase {
-public:
-    EncodedString();
-    virtual ~EncodedString();
-    virtual u32 capacity() = 0;
-    virtual u8 *data() = 0;
-
-    MsgStringAttr attr;
-};
 
 // local text buffer, vtable 0x020ddf5c (0x38 bytes)
 class EncodedString40 : public EncodedString {
@@ -487,20 +480,6 @@ void Fatal_Handler(void *arg);
 
 // ---- RecordFile: cached record table ----
 
-class InfoTableSet {
-public:
-    RecordFile *getDma();
-    RecordFile *getIndoor();
-    RecordFile *getAlways();
-    BOOL freeIndoor();
-    BOOL loadIndoor(s32 v);
-    void close();
-    BOOL open(void *a, s32 n0, void *b, s32 n1, void *c, s32 n2, s32 count);
-
-    /* 0x00 */ RecordFile alwaysTable;
-    /* 0x1c */ RecordFile indoorTable;
-    /* 0x38 */ RecordFile dmaTable;
-};
 extern "C" void Fatal_ExceptionCallback(void *arg, void *p);
 extern "C" void Main_InitNop(void);
 extern "C" void Main_WaitVBlank(void);

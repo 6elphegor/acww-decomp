@@ -1,6 +1,7 @@
 #include "types.h"
 #include "town/TownAcreIndex.h"
 #include "town/TownAcreCell.h"
+#include "town/TownAcreGrid.h"
 
 
 
@@ -11,18 +12,6 @@ s32 AcreType_GetAttr(s32);
 s32 AcreType_FindByAttr(s32);
 }
 
-class TownAcreGrid {
-public:
-    TownAcreCell cells[36];
-    u32 unk_120[8];
-
-    BOOL setBorder();
-    BOOL placeRiverVariant();
-    BOOL placeFacilities(u32 mode);
-    BOOL placeNextTo(s32 a, s32 b);
-    BOOL placeOnRandomGrass(s32 val);
-    TownAcreCell *getCell(s32 x, s32 y);
-};
 
 static inline BOOL Unk_0209b830_Bit(s32 t, s32 m)
 {

@@ -15,6 +15,7 @@
 #include "sys/ProcBase.h"
 #include "talk/MsgRequest.h"
 #include "gfx/ObjShadowStrip.h"
+#include "town/BuildingShadowTable.h"
 
 
 
@@ -178,13 +179,6 @@ public:
 
 
 
-struct BuildingShadowTable {
-    Unk_ov009_0225cd48_Item *getEntry(u32 i);
-    u32 getCount();
-
-    /* 0x00 */ u32 count;
-    /* 0x04 */ Unk_ov009_0225cd48_Item entries[1];
-};
 
 
 

@@ -11,6 +11,7 @@
 #include "town/TownBlockMap.h"
 #include "game/Unk_0204da0c_Map.h"
 #include "town/TownState.h"
+#include "town/TownUnitShapeQuery.h"
 
 
 
@@ -135,11 +136,6 @@ struct Unk_0204e1a8_Loc {
     Unk_0204e1a8_Vec v;
 };
 
-struct TownUnitShapeQuery {
-    u8 data[4];
-    TownUnitShapeQuery();
-    ~TownUnitShapeQuery();
-};
 
 class TownMap {
 public:

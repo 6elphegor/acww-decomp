@@ -3,6 +3,9 @@
 #include "gfx/Unk_0208d154_Sub.h"
 #include "gfx/SpriteAnim.h"
 #include "ui/UiWidget.h"
+#include "ui/HandCursor.h"
+#include "talk/ChatBalloonText.h"
+#include "ui/NameLabelBalloon.h"
 
 extern "C" {
 void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
@@ -28,91 +31,12 @@ extern u8 data_020d467c[];
 
 
 
-// Sub-object at +0x38 of NameLabelBalloon (0x34 bytes, ctor 0x02039b04, dtor 0x02039aec)
-class ChatBalloonText {
-public:
-    ChatBalloonText();
-    ~ChatBalloonText();
-    void func_020a7bd8(void *p);
-
-    /* 0x00 */ u32 unk_00[13];
-};
 
 
 
-class NameLabelBalloon : public UiWidget {
-public:
-    typedef void (NameLabelBalloon::*Fn)();
-
-    NameLabelBalloon();
-    virtual ~NameLabelBalloon();
-    virtual void draw();
-    virtual void vfunc_0c();
-
-    void func_0208d0bc();
-    void func_0208d0d4();
-    void fitToLabel();
-    void applyKindAnim();
-    void updateHiding();
-    void enterHiding();
-    void updateShown();
-    void enterShown();
-    void updateAppearing();
-    void enterAppearing();
-    void updateHidden();
-    void enterHidden();
-    static void loadKind4Palette();
-    BOOL requestHide();
-    BOOL requestShow();
-    void setText(void *p);
-    void setOffset(s32 a, s32 b);
-    void release();
-    void setKind(s32 a);
-
-    /* 0x0c */ s32 kind;
-    /* 0x10 */ s32 seqIndex;
-    /* 0x14 */ SpriteAnim anim;
-    /* 0x28 */ s32 offsetX;
-    /* 0x2c */ s32 offsetY;
-    /* 0x30 */ s32 slideY;
-    /* 0x34 */ s32 alignX;
-    /* 0x38 */ ChatBalloonText text;
-    /* 0x6c */ Unk_0208d154_Sub *textLabel;
-    /* 0x70 */ s32 state;
-    /* 0x74 */ s32 showRequested;
-    /* 0x78 */ s32 stateTimer;
-    /* 0x7c */ u8 isVisible;
-};
 
 // ---------------------------------------------------------------------------------------------------------------------
 
-class HandCursor : public UiWidget {
-public:
-    HandCursor(BOOL flag);
-    virtual ~HandCursor();
-    virtual void draw();
-    virtual void vfunc_0c();
-
-    void func_0208d4fc_dummy();
-    BOOL isAnimDone();
-    s32 getAnim();
-    void setAnimAtEnd(s32 idx);
-    void setAnim(s32 idx);
-    void setPos(s32 a, s32 b);
-    void disableObjWindow();
-    void enableObjWindow();
-
-    /* 0x0c */ SpriteAnim layer1;
-    /* 0x20 */ s32 unk_20;
-    /* 0x24 */ s32 unk_24;
-    /* 0x28 */ s32 priority;
-    /* 0x2c */ SpriteAnim layer2;
-    /* 0x40 */ s32 anim;
-    /* 0x44 */ s32 unk_44;
-    /* 0x48 */ u8 onBufferA;
-    /* 0x49 */ u8 hasLayer2;
-    /* 0x4a */ u8 objWindow;
-};
 
 s32 HandCursor::getAnim() {
     return anim;

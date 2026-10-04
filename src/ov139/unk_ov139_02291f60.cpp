@@ -4,6 +4,7 @@
 #include "ui/UiWidget.h"
 #include "talk/EncodedStringBase.h"
 #include "talk/MsgString.h"
+#include "talk/EncodedString.h"
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Declarations from other files
@@ -13,16 +14,6 @@
 
 class MsgString;
 
-class EncodedString : public EncodedStringBase {
-public:
-    EncodedString();
-    virtual ~EncodedString();
-    virtual u32 capacity() = 0;
-    virtual u8 *data() = 0;
-    BOOL fromMsgString(MsgString *src);
-
-    /* 0x04 */ MsgStringAttr attr;
-};
 
 
 class EncodedString8B : public EncodedString {

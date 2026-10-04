@@ -3,6 +3,9 @@
 #include "Unk_020d8c7c.h"
 #include "ui/LetterRenderer.h"
 #include "menu/MenuProc.h"
+#include "ui/HandCursor.h"
+#include "ui/ScrollKnob.h"
+#include "talk/EncodedString.h"
 
 class EncodedString;
 
@@ -11,10 +14,6 @@ public:
     virtual ~MsgString();
 };
 
-class EncodedString {
-public:
-    virtual ~EncodedString();
-};
 
 class MsgString129 : public MsgString {
 public:
@@ -27,7 +26,9 @@ class EncodedString128 : public EncodedString {
 public:
     EncodedString128();
     virtual ~EncodedString128();
-    u32 unk_04[(0x90 - 4) / 4];
+    virtual u32 capacity();
+    virtual u8 *data();
+    /* 0x0e */ u8 unk_0e[0x90 - 0xe];
     u8 unk_90[0x28];
     u8 unk_b8[0x80];
 };
@@ -50,22 +51,12 @@ public:
 };
 
 
-class HandCursor {
-public:
-    virtual ~HandCursor();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-};
 
-class ScrollKnob : public HandCursor {
-public:
-};
 
 class MenuScrollKnob : public ScrollKnob {
 public:
     MenuScrollKnob();
     virtual ~MenuScrollKnob();
-    u32 unk_04[0x44 / 4];
 };
 
 class MenuCursorBase : public HandCursor {
@@ -76,7 +67,7 @@ class MenuCursorBuf0 : public MenuCursorBase {
 public:
     MenuCursorBuf0();
     virtual ~MenuCursorBuf0();
-    u32 unk_04[0x60 / 4];
+    u8 unk_4c[0x64 - 0x4c];
 };
 
 class PopupChoiceMenuBody {
@@ -707,7 +698,7 @@ BOOL LetterWriteMenu::onDraw() {
         _ZN10ScrollKnob6moveToEii(&scrollKnob, 0x64, (u32)(keyboardSlideY - 0x58) + (scrollY >> 1));
         s32 t = _ZN14MenuScrollKnob8getGripXEv(&scrollKnob);
         Keyboard_SetTextFieldPos(&keyboard, t, _ZN14MenuScrollKnob8getGripYEv(&scrollKnob));
-        scrollKnob.vfunc_08();
+        scrollKnob.draw();
     }
     if (MenuCtrl_IsButtons()) {
         if (testFlags(0x200)) {

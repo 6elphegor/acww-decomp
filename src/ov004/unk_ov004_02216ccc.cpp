@@ -21,6 +21,8 @@
 #include "npc/Unk_020135e4.h"
 #include "sys/ProcBase.h"
 #include "npc/NpcActionCtrl.h"
+#include "snd/SndSeEmitterKind1.h"
+#include "npc/Unk_02014254.h"
 
 class HouseOwnerVillager;
 
@@ -135,13 +137,7 @@ u32 Unk_02015b8c_getAnimId(void *o, u32 v);
 }
 
 struct NpcFaceAnim { NpcFaceAnim(); ~NpcFaceAnim(); u32 pad[0x88 / 4]; };
-struct Unk_02014254 { Unk_02014254(); ~Unk_02014254(); u32 pad[0x28 / 4]; };
 
-class Unk_020f4080 : public SndSeEmitter {
-public:
-    Unk_020f4080();
-    ~Unk_020f4080() {}
-};
 
 
 class Actor : public ProcBase {

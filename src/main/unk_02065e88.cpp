@@ -9,6 +9,9 @@
 #include "talk/MsgParser.h"
 #include "talk/MsgTextLabel.h"
 #include "talk/MsgRequest.h"
+#include "talk/MsgProcessor.h"
+#include "talk/TalkBmgReader.h"
+#include "talk/MsgWalker.h"
 
 class MsgRequest;
 class MsgString;
@@ -85,14 +88,6 @@ class ChoiceString;
 
 
 
-class MsgProcessor : public MsgParser {
-public:
-    MsgProcessor(u8 flag);
-    virtual ~MsgProcessor();
-
-    /* 0x24 */ MsgTextLabel *label;
-    /* 0x28 */ u8 stopAtNewline;
-};
 
 class TalkRenderProcessor : public MsgProcessor {
 public:
@@ -186,21 +181,7 @@ public:
 };
 
 
-class TalkBmgReader : public BmgReader {
-public:
-    TalkBmgReader();
-    virtual ~TalkBmgReader();
-    virtual u32 getBuffer();
-    virtual u32 getBufferSize();
-};
 
-class MsgWalker : public MsgParser {
-public:
-    MsgWalker() {}
-    virtual ~MsgWalker() {}
-    virtual BOOL canContinue();
-    u8 *run(BOOL arg);
-};
 
 // Sub-object (0x3c bytes)
 class TalkCharStepper : public MsgWalker {

@@ -4,6 +4,7 @@
 #include "net/CommManager.h"
 #include "player/PlayerId.h"
 #include "menu/MenuProc.h"
+#include "ui/HandCursor.h"
 
 extern "C" {
 extern const u8 sKeyDigits[12];
@@ -144,15 +145,6 @@ public:
     u8 unk_04[0x20];
 };
 
-// Menu cursor sub-object hierarchy
-class HandCursor {
-public:
-    virtual ~HandCursor();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    BOOL isAnimDone();
-    BOOL getAnim();
-};
 
 class MenuCursorBase : public HandCursor {
 public:
@@ -178,7 +170,7 @@ class MenuCursorBuf0 : public MenuCursorBase {
 public:
     MenuCursorBuf0();
     virtual ~MenuCursorBuf0();
-    u32 unk_04[0x60 / 4];
+    u8 unk_4c[0x64 - 0x4c];
 };
 
 class MenuBottomButtonsBody {

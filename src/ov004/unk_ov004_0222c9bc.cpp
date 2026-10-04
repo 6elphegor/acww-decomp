@@ -7,6 +7,7 @@
 #include "snd/SndEnvChannel.h"
 #include "game/FxVec3.h"
 #include "gfx/VecFx32.h"
+#include "snd/Unk_0213b954.h"
 
 // ---------------------------------------------------------------------------------------------------------------
 // Calls into other modules: the old stand-in names are #defined to the real symbols (mangled method names).
@@ -93,15 +94,6 @@ struct Rec {
 
 // ---- library sub-object with two inline vtable stores (0x0213b91c, 0x0213b954)
 
-class Unk_0213b954 : public SndEnvChannel {
-public:
-    Unk_0213b954() {}
-    virtual void vfunc_00();
-
-    /* 0x0c */ u16 unk_0c;
-    /* 0x0e */ u8 unk_0e;
-    /* 0x0f */ u8 pad_0f;
-};
 
 // ---- collision sub-object chain (main: ActorCollider <- StaticCollider), derived class in this overlay
 

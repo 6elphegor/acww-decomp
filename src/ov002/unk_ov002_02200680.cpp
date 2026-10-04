@@ -18,6 +18,9 @@
 #include "talk/MsgString.h"
 #include "talk/MsgRequest.h"
 #include "menu/MenuProc.h"
+#include "ui/HandCursor.h"
+#include "ui/ScrollKnob.h"
+#include "ui/LabelButton.h"
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Real names of functions of other modules (plain names that are really methods / ctors / dtors)
@@ -221,72 +224,8 @@ public:
     /* 0xb8 */ s32 textMode;
 };
 
-class HandCursor : public UiWidget {
-public:
-    HandCursor(BOOL flag);
-    virtual ~HandCursor();
-    virtual void draw();
-    virtual void vfunc_0c();
 
-    BOOL isAnimDone();
-    s32 getAnim();
-    void setAnimAtEnd(s32 idx);
-    void setAnim(s32 idx);
-    void setPos(s32 a, s32 b);
-    void disableObjWindow();
-    void enableObjWindow();
 
-    /* 0x0c */ SpriteAnim layer1;
-    /* 0x20 */ s32 unk_20;
-    /* 0x24 */ s32 unk_24;
-    /* 0x28 */ s32 priority;
-    /* 0x2c */ SpriteAnim layer2;
-    /* 0x40 */ s32 anim;
-    /* 0x44 */ s32 unk_44;
-    /* 0x48 */ u8 onBufferA;
-    /* 0x49 */ u8 hasLayer2;
-    /* 0x4a */ u8 objWindow;
-};
-
-class ScrollKnob : public UiWidget {
-public:
-    ScrollKnob(u32 flag);
-    virtual ~ScrollKnob();
-    virtual void draw();
-    virtual void vfunc_0c();
-
-    BOOL areAnimsDone();
-    s32 getState();
-    void setState(s32 idx);
-    void getAnimOffset(s32 *a, s32 *b);
-
-    /* 0x0c */ s32 layer1;
-    /* 0x10 */ s32 posY;
-    /* 0x14 */ SpriteAnim layerAnim1;
-    /* 0x28 */ SpriteAnim priority;
-    /* 0x3c */ s32 state;
-    /* 0x40 */ u8 anim;
-    /* 0x44 */ s32 unk_44;
-};
-
-class LabelButton : public UiWidget {
-public:
-    LabelButton(u8 a, s32 b);
-    virtual ~LabelButton();
-    virtual void draw();
-    virtual void vfunc_0c();
-
-    BOOL isAnimDone();
-    s32 getState();
-    void setState(s32 v);
-    void getAnimOffset(s32 *x, s32 *y);
-    void setPos(s32 x, s32 y);
-    void showLayer2();
-    void hideLayer2();
-    void enableObjWindow();
-
-    /* 0x0c */ u8 unk_0c[0x64];
-};
 
 
 class TalkMsgRequest : public MsgRequest {

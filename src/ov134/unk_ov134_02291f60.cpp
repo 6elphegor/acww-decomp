@@ -1,16 +1,7 @@
 // mwcc-flags: -str reuse
 #include "types.h"
+#include "ui/ScrollKnob.h"
 
-// Base of the menu cursor sub-object at +0x18
-class ScrollKnob {
-public:
-    virtual ~ScrollKnob();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    void moveTo(s32 x, s32 y);
-    BOOL areAnimsDone();
-    u8 unk_04[0x44];
-};
 
 class MenuScrollKnob : public ScrollKnob {
 public:
@@ -766,7 +757,7 @@ extern "C" void DateTimePicker_Draw(S *s, u8 *a, u8 *b) {
     }
     Oam_DrawCell(1, data_ov134_02294d44, r6, (u32)r7, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
     if (s->testFlags(4)) {
-        s->knob.vfunc_08();
+        s->knob.draw();
     }
     if (s->listTopCell != 0) {
         Oam_DrawCell(1, data_ov134_02294d74, s->listX - 8, s->windowTop, -1, 1, 0x1000, 0x1000, 0, -1, 0, 0);

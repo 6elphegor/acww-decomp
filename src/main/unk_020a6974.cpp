@@ -11,6 +11,9 @@
 #include "talk/MsgParser.h"
 #include "talk/EncodedStringBase.h"
 #include "talk/Flag18.h"
+#include "talk/MsgProcessor.h"
+#include "talk/MsgWalker.h"
+#include "talk/EncodedString.h"
 
 inline void *operator new(unsigned long, void *p) { return p; }
 
@@ -420,40 +423,8 @@ class BmgReader;
 
 
 
-class MsgProcessor : public MsgParser {
-public:
-    MsgProcessor(u8 flag);
-    virtual ~MsgProcessor();
 
-    void clearStopAtNewline();
-    void setStopAtNewline();
-    void clearLabel();
-    void setLabel(MsgTextLabel *p);
-    u32 run(u8 *p);
 
-    /* 0x24 */ MsgTextLabel *label;
-    /* 0x28 */ u8 stopAtNewline;
-};
-
-class MsgWalker : public MsgParser {
-public:
-    MsgWalker() {}
-    virtual ~MsgWalker() {}
-    virtual BOOL canContinue();
-    u8 *run(BOOL arg);
-};
-
-// buffer interface (destination-side, member at +4)
-class EncodedString : public EncodedStringBase {
-public:
-    EncodedString();
-    virtual ~EncodedString();
-    virtual u32 capacity() = 0;
-    virtual u8 *data() = 0;
-    BOOL fromMsgString(MsgString *src);
-
-    /* 0x04 */ MsgStringAttr attr;
-};
 
 class MsgRequest {
 public:

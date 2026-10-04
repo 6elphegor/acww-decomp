@@ -9,6 +9,7 @@
 #include "talk/EncodedStringBase.h"
 #include "npc/Unk_020781ec_Data.h"
 #include "talk/MsgString.h"
+#include "talk/EncodedString.h"
 
 
 
@@ -181,16 +182,6 @@ struct VillagerData {
 
 class MsgString;
 
-class EncodedString : public EncodedStringBase {
-public:
-    EncodedString();
-    virtual ~EncodedString();
-    virtual u32 capacity() = 0;
-    virtual u8 *data() = 0;
-    BOOL fromMsgString(MsgString *src);
-
-      MsgStringAttr attr;
-};
 
 
 class MsgString17B : public MsgString {
