@@ -34,7 +34,7 @@
 // Aliases (zero-size labels, tools/pipeline/alias.py) the coordinator must add; <existing> -> <new>:
 //   ov009  _ZN13BuildingActor10preExecuteEv           -> _ZN13BuildingActor10preExecuteEv        (0x0225db04)
 //   ov009  _ZN13BuildingActor11postExecuteEj           -> _ZN13BuildingActor11postExecuteEj        (0x0225da90)
-//   ov009  _ZN13BuildingActor11postExecuteEv           -> _ZN13BuildingActor11postExecuteEv        (0x0225d9e4)
+//   ov009  _ZN13BuildingActor7preDrawEv           -> _ZN13BuildingActor7preDrawEv        (0x0225d9e4)
 //   ov009  func_ov009_0225b884                           -> _ZN13BuildingActor11getSoundPosEv        (0x0225b884)
 //   ov009  func_ov009_0225b880                           -> _ZN13BuildingActor20calcCustomBaseMatrixEv        (0x0225b880)
 //   main   TalkMsgRequest slots: the unit uses the TalkMsgRequest slot names (onMessageStart ... onTalkEnd); no
