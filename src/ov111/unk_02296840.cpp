@@ -10,6 +10,7 @@
 #include "talk/EncodedString.h"
 #include "talk/ChatBalloonText.h"
 #include "talk/MsgString9B.h"
+#include "ui/LabelString.h"
 
 enum Unk_ov111_022970cc_Status { UNK_OV111_ST_0 = 0, UNK_OV111_ST_1 = 1, UNK_OV111_ST_2 = 2, UNK_OV111_ST_3 = 3 };
 
@@ -195,13 +196,6 @@ public:
     u32 unk_00[0x24 / 4];
 };
 
-// 0x40-byte objects at +0x23e8
-class LabelString {
-public:
-    LabelString();
-    ~LabelString();
-    u32 unk_00[0x40 / 4];
-};
 
 // Sub-object at +0xac (ov095 menu/state struct; methods from ov095)
 class Keyboard {

@@ -4,6 +4,8 @@
 #include "Unk_020d8c7c.h"
 #include "menu/MenuProc.h"
 #include "ui/HandCursor.h"
+#include "item/ItemName.h"
+#include "ui/LabelString.h"
 
 #define ItemName_setFromItem _ZN8ItemName11setFromItemEPt
 #define func_0206260c _ZN8ItemNameD1Ev
@@ -270,13 +272,6 @@ void Keyboard_DrawCopyPasteKeys(void *p, u32 a, void *b);
 void Keyboard_DrawCaret(void *p, s32 a, s32 b, s32 c);
 }
 
-// Real class layouts for the objects whose constructors/destructors the compiler emits calls to.
-class LabelString {  // text window, 0x40 bytes
-public:
-    LabelString();
-    virtual ~LabelString();
-    u8 unk_04[0x3c];
-};
 
 class EncodedString41 {  // 0x38 bytes
 public:
@@ -328,13 +323,6 @@ public:
     u32 titleLabel[0x94 / 4];
 };
 
-// 0x24-byte record object (ctor/dtor in main)
-class ItemName {
-public:
-    ItemName();
-    ~ItemName();
-    u32 unk_00[9];
-};
 
 // +0x144 ov095 menu sub-object, 0x23bc bytes
 class Keyboard {

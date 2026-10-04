@@ -1,6 +1,7 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "menu/MenuProc.h"
+#include "ui/LabelString.h"
 
 extern "C" {
 extern u8 gSaveHouse[];
@@ -119,15 +120,6 @@ public:
 };
 
 
-class LabelString {
-public:
-    LabelString();
-    ~LabelString();
-    void redrawAligned(s32 a, s32 b);
-    void createLabel(u32 id, u32 a, u32 b, u8 x, u8 y, s32 flag);
-    void destroyLabel();
-    u8 unk_00[0x40];
-};
 
 class BgVramTask {
 public:

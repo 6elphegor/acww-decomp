@@ -5,6 +5,8 @@
 #include "talk/EncodedStringBase.h"
 #include "talk/MsgString.h"
 #include "talk/EncodedString.h"
+#include "ui/LabelString.h"
+#include "ui/LabelBalloon.h"
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Declarations from other files
@@ -36,36 +38,8 @@ public:
     /* 0x14 */ u32 unk_14;
 };
 
-// String buffer wrapping a text renderer at +0x3c (size 0x40)
-class LabelString : public MsgString {
-public:
-    LabelString();
-    virtual ~LabelString();
-    virtual u32 capacity();
-    virtual u8 *data();
-
-    s32 redrawAligned(s32 a, s32 b);
-    void createSmallLabel(u32 id, u32 a, u32 b, u8 x, u8 y, s32 flag);
-    void createLabel(u32 id, u32 a, u32 b, u8 x, u8 y, s32 flag);
-    void destroyLabel();
-
-    /* 0x12 */ u8 text[0x2a];
-    /* 0x3c */ void *label;
-};
 
 
-class LabelBalloon : public UiWidget {
-public:
-    LabelBalloon(s32 flag);
-    virtual ~LabelBalloon();
-    virtual void draw();
-    virtual void vfunc_0c();
-
-    void setPos(s32 a, s32 b);
-    void showLayer2();
-
-    /* 0x0c */ u8 unk_0c[0xb0];
-};
 
 class MenuTitleBalloon : public LabelBalloon {
 public:

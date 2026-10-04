@@ -14,6 +14,7 @@
 #include "item/LetterView.h"
 #include "ui/LabelButton.h"
 #include "menu/MenuLauncher.h"
+#include "ui/LabelBalloon.h"
 
 extern "C" {
 extern u8 gTouchCurX;
@@ -74,12 +75,6 @@ s32 LetterGrid_GetSlotX(void *p, u32 a);
 
 // ---- external classes (real names from symbols.txt) ----
 
-class LabelBalloon {
-public:
-    virtual ~LabelBalloon();
-    virtual void vfunc_08();
-    void setPos(s32 x, s32 y);
-};
 
 
 class BgVramTask {
@@ -106,14 +101,14 @@ class TouchPromptBalloon : public LabelBalloon {
 public:
     TouchPromptBalloon();
     virtual ~TouchPromptBalloon();
-    virtual void vfunc_08();
+    virtual void draw();
     void setAutoCloseTimer(u8 a);
     void cancelQueuedOpen();
     void queueOpen();
     void commitOpen();
     void hide(s32 a);
     BOOL updatePrompt();
-    u32 unk_04[(0xc0 - 4) / 4];
+    u32 unk_bc[(0xc0 - 0xbc) / 4];
 };
 
 
@@ -390,7 +385,7 @@ BOOL PocketLettersMenu::onDraw() {
     if (!testFlags(1)) {
         return TRUE;
     }
-    nameBalloon.vfunc_08();
+    nameBalloon.draw();
     if (MenuCtrl_IsButtons()) {
         cursor.drawWrapped();
     }

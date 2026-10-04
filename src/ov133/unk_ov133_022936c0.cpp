@@ -5,6 +5,7 @@
 #include "player/PlayerId.h"
 #include "menu/MenuProc.h"
 #include "ui/HandCursor.h"
+#include "ui/LabelString.h"
 
 extern "C" {
 extern const u8 sKeyDigits[12];
@@ -123,16 +124,6 @@ public:
 extern "C" CommManager *gCommManager;
 
 
-// Element at +0xb0, 0x40 bytes
-class LabelString {
-public:
-    LabelString();
-    virtual ~LabelString();
-    void destroyLabel();
-    void createLabel(u32 a, u32 b, u32 c, u8 d, u8 e, s32 f);
-    void redrawAligned(s32 a, s32 b);
-    u8 unk_04[0x3c];
-};
 
 // Menu/message cursor buffer objects at +0x2b8 and +0x2dc (0x24 bytes each)
 class BgVramTask {

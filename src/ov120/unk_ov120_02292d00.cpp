@@ -2,6 +2,7 @@
 #include "Unk_020d8c7c.h"
 #include "town/TownMapMarkers.h"
 #include "menu/MenuProc.h"
+#include "ui/LabelString.h"
 
 #define MenuCursorBase_drawWrapped _ZN14MenuCursorBase11drawWrappedEv
 #define func_02063870 _ZN11MsgString9CD1Ev
@@ -132,12 +133,6 @@ public:
     u32 unk_00[0x24 / 4];
 };
 
-class LabelString {
-public:
-    LabelString();
-    ~LabelString();
-    u32 unk_00[0x40 / 4];
-};
 
 // sub-object at +0x438 (ctor func_ov002_02202f88), 0x48 bytes, polymorphic
 class MenuScrollKnob {

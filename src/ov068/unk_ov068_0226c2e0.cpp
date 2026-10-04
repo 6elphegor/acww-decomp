@@ -17,6 +17,7 @@
 #include "snd/SndSeEmitterKind1.h"
 #include "npc/Unk_02014254.h"
 #include "npc/Unk_0201a13c.h"
+#include "item/ItemName.h"
 #define Actor_spawn _ZN5Actor5spawnEPvS0_S0_S0_S0_
 #define NpcTalkCtrl_requestTalk _ZN11NpcTalkCtrl11requestTalkEhh
 #define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
@@ -366,11 +367,6 @@ struct Unk_ov068_0226c3b4_Vec {
     s32 x, y, z;
 };
 
-struct ItemName {
-    ItemName();
-    ~ItemName();
-    u32 pad[0x24 / 4];
-};
 
 struct EncodedString16Buf {
     EncodedString16Buf();

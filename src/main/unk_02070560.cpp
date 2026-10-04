@@ -6,6 +6,7 @@
 #include "sys/RecordFile.h"
 #include "save/Unk_020942c8.h"
 #include "save/Pattern.h"
+#include "room/HouseRoom.h"
 
 // U125: design (pattern) storage and display helpers, 0x02070560-0x020720f8
 
@@ -59,14 +60,6 @@ struct Unk_020707ec_Rooms {
 };
 class HouseData;
 class HouseRoom;
-class HouseRoom {
-public:
-    u8 pad[0x448];
-    void setCarpet(u16 *src, u32 flag);
-    void setWallpaper(u16 *src, u32 flag);
-    u16 *getCarpet(s32 *out);
-    u16 *getWallpaper(s32 *out);
-};
 class HouseData {
 public:
     HouseRoom *getRoom(s32 idx);

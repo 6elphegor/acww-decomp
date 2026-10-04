@@ -4,6 +4,7 @@
 #include "ui/UiWidget.h"
 #include "menu/MenuProc.h"
 #include "ui/ScrollKnob.h"
+#include "ui/LabelString.h"
 
 extern "C" {
 BOOL _ZN10HandCursor10isAnimDoneEv(void *self);
@@ -81,16 +82,6 @@ BOOL MenuKeys_HasDown(void *pad);
 BOOL MenuKeys_HasUp(void *pad);
 }
 
-// 0x40-byte element with ctor/dtor in main
-class LabelString {
-public:
-    LabelString();
-    ~LabelString();
-    void redrawAligned(s32 a, s32 b);
-    void createLabel(u32 id, u32 a, u32 b, u8 x, u8 y, s32 flag);
-    void destroyLabel();
-    u8 unk_00[0x40];
-};
 
 // 0x24-byte helper objects at +0xb4 / +0xd8
 class BgVramTask {

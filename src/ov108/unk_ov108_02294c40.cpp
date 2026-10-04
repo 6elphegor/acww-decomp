@@ -8,6 +8,7 @@
 #include "menu/MenuProc.h"
 #include "ui/HandCursor.h"
 #include "menu/MenuLauncher.h"
+#include "ui/LabelBalloon.h"
 
 extern "C" {
 extern u8 gTouchCurX;
@@ -67,10 +68,6 @@ s32 LetterGrid_GetSlotX(void *p, u32 a);
 
 // ---- external classes (method holders: the real symbols name the class that owns the method)
 
-class LabelBalloon {
-public:
-    void setPos(s32 a, s32 b);
-};
 
 
 class BgVramTask {

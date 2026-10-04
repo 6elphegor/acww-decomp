@@ -4,6 +4,7 @@
 #include "ui/UiWidget.h"
 #include "menu/MenuProc.h"
 #include "ui/HandCursor.h"
+#include "ui/LabelBalloon.h"
 
 #define func_020624c0 _ZN18EncodedString16BufD1Ev
 #define func_02062510 _ZN18EncodedString16BufC1Ev
@@ -241,11 +242,6 @@ extern u32 sDesignTabTargetFrameCells[];
 
 // ---- external classes (real names from symbols.txt), sized for the sub-objects ----
 
-class LabelBalloon {
-public:
-    virtual ~LabelBalloon();
-    virtual void vfunc_08();
-};
 
 class BgVramTask {
 public:
@@ -262,8 +258,8 @@ class TouchPromptBalloon : public LabelBalloon {
 public:
     TouchPromptBalloon();
     virtual ~TouchPromptBalloon();
-    virtual void vfunc_08();
-    u32 unk_04[(0xc0 - 4) / 4];
+    virtual void draw();
+    u32 unk_bc[(0xc0 - 0xbc) / 4];
 };
 
 
@@ -513,7 +509,7 @@ BOOL DesignTab::onDraw() {
     if (!testFlags(1)) {
         return TRUE;
     }
-    nameBalloon.vfunc_08();
+    nameBalloon.draw();
     if (MenuCtrl_IsButtons()) {
         MenuCursorBase_drawWrapped(&cursor);
     }

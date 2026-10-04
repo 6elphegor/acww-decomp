@@ -21,6 +21,8 @@
 #include "ui/HandCursor.h"
 #include "ui/ScrollKnob.h"
 #include "ui/LabelButton.h"
+#include "ui/LabelString.h"
+#include "ui/LabelBalloon.h"
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Real names of functions of other modules (plain names that are really methods / ctors / dtors)
@@ -164,65 +166,8 @@ void _ZN8UiWidget9setOriginEii();
 
 
 
-// String buffer wrapping a text renderer (TextLabel) at +0x3c
-class LabelString : public MsgString {
-public:
-    LabelString();
-    virtual ~LabelString();
-    virtual u32 capacity();
-    virtual u8 *data();
-
-    u32 getTextWidth();
-    void redrawAligned(s32 a, s32 b);
-    void createLabel(u32 id, u32 a, u32 b, u8 x, u8 y, s32 flag);
-    void destroyLabel();
-
-    /* 0x12 */ u8 text[0x2a];
-    /* 0x3c */ TextLabel *label;
-};
 
 
-class LabelBalloon : public UiWidget {
-public:
-    LabelBalloon(s32 flag);
-    virtual ~LabelBalloon();
-    virtual void draw();
-    virtual void vfunc_0c();
-
-    s32 getWidth();
-    s32 getPosY();
-    s32 getPosX();
-    s32 getState();
-    BOOL requestClose();
-    BOOL requestOpen();
-    void refreshText(s32 flag);
-    void setClampToScreen(u8 v);
-    void enableCenterText();
-    void setText(StrBuf *src);
-    void setPos(s32 a, s32 b);
-    void hideLayer2();
-    void showLayer2();
-    void disablePopAnim();
-    void disableObjWindow();
-    void enableObjWindow();
-
-    /* 0x0c */ SpriteAnim layer1;
-    /* 0x20 */ SpriteAnim layer2;
-    /* 0x34 */ s32 state;
-    /* 0x38 */ s32 animTimer;
-    /* 0x3c */ s32 x;
-    /* 0x40 */ s32 unk_40;
-    /* 0x44 */ s32 priority;
-    /* 0x48 */ s32 popOffsetX;
-    /* 0x4c */ s32 popOffsetY;
-    /* 0x50 */ s32 clampOffsetX;
-    /* 0x54 */ u8 unk_54[9];
-    /* 0x60 */ LabelBalloonText text;
-    /* 0x88 */ LabelBalloonText text2;
-    /* 0xb0 */ TextLabel *label;
-    /* 0xb4 */ TextLabel *label2;
-    /* 0xb8 */ s32 textMode;
-};
 
 
 

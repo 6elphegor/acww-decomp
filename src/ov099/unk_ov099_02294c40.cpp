@@ -9,6 +9,7 @@
 #include "menu/MenuProc.h"
 #include "ui/HandCursor.h"
 #include "menu/MenuLauncher.h"
+#include "ui/LabelBalloon.h"
 
 class PocketMenuUnk;
 struct PopupChoiceIdList;
@@ -86,10 +87,6 @@ s32 LetterGrid_GetSlotX(void *p, u32 v);
 // ---------------------------------------------------------------------------------------------
 // Classes of other modules (minimal declarations; sub-objects are opaque)
 
-class LabelBalloon {
-public:
-    void setPos(s32 x, s32 y);
-};
 
 class BgVramTask {
 public:

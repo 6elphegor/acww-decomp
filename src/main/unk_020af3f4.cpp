@@ -2,6 +2,7 @@
 #include "types.h"
 #include "item/Letter.h"
 #include "game/Loc488.h"
+#include "item/ItemName.h"
 
 
 extern "C" {
@@ -19,7 +20,6 @@ extern u8 gLooseSnowballs[];
 extern const u16 sSnowmanPrizeItems[];
 extern u32 data_020e2eb8, data_020e2ebc;
 }
-struct ItemName { ItemName(u16 *s); ~ItemName(); u8 d[0x24]; };
 
 extern "C" void Snowman_SendLetter(u32 idx) {
     if (idx < 13) {

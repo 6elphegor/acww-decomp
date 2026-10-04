@@ -26,6 +26,7 @@
 #include "talk/MsgString33.h"
 #include "talk/MsgString25.h"
 #include "npc/NpcFaceAnim.h"
+#include "item/ItemName.h"
 
 
 // unk_02011580.cpp
@@ -859,8 +860,6 @@ typedef BOOL (Unk_020d7710::*Unk_020d7710_StateFn)();
 
 void operator delete(void *p);
 
-// unk_020156ac.cpp
-struct ItemName { ItemName(u16 *p); ~ItemName(); u32 pad[0x28 / 4]; };
 
 
 

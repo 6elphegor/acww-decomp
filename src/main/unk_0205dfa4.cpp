@@ -11,6 +11,7 @@
 #include "gfx/VramTask.h"
 #include "gfx/ModelAnim.h"
 #include "gfx/TexVramTask.h"
+#include "player/HeldItemModel.h"
 
 // ---- helper classes (declared elsewhere) ----
 
@@ -36,11 +37,6 @@ public:
 
 
 
-class HeldItemTexAnim : public ModelAnim {
-public:
-    HeldItemTexAnim();
-    virtual ~HeldItemTexAnim();
-};
 
 
 // ---- manager singleton (sHeldItemModelBank) ----
@@ -120,15 +116,6 @@ struct Unk_0205e184_Sub {
 };
 struct Unk_0205e184_Big : Unk_0205e184_Pre, Unk_0205e184_Sub {};
 
-class HeldItemModel {
-public:
-    u8 slot;
-    u32 scale;
-    HeldItemTexAnim texAnim;
-    FishBobber bobber;
-    HeldItemModel();
-    ~HeldItemModel();
-};
 
 static inline BOOL Unk_0205e6e4_Is(u8 v, u8 k) { return v == k ? TRUE : FALSE; }
 

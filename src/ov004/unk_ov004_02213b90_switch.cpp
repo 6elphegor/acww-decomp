@@ -12,6 +12,7 @@
 #include "net/Unk_ov004_022146ec_Sing.h"
 #include "talk/TalkWindowState.h"
 #include "talk/MsgString9B.h"
+#include "item/ItemName.h"
 
 
 class Actor : public GameProc {
@@ -113,12 +114,6 @@ struct TouchPickSphere {
     u8 pad[0x1c];
 };
 
-class ItemName {
-public:
-    ItemName(u16 *p);
-    ~ItemName();
-    u32 pad[9];
-};
 
 
 

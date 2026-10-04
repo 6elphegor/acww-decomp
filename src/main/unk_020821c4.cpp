@@ -8,6 +8,7 @@
 #include "npc/VillagerAnimHeapRefSlot.h"
 #include "npc/NpcBodyAnimSlot.h"
 #include "npc/VillagerAnimHeapRefPool.h"
+#include "player/HeldItemModel.h"
 
 
 
@@ -26,11 +27,6 @@ struct SpNpcAnimHeapRefSlot;
 void _ZN20SpNpcAnimHeapRefSlot6assignEv(SpNpcAnimHeapRefSlot *, u32);
 }
 
-struct HeldItemModel {
-    u32 pad[26];
-    HeldItemModel();
-    ~HeldItemModel();
-};
 struct NpcTexPatBufRef {
     u32 pad;
     NpcTexPatBufRef();

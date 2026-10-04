@@ -3,6 +3,7 @@
 #include "ui/UiWidget.h"
 #include "menu/MenuProc.h"
 #include "ui/HandCursor.h"
+#include "ui/LabelString.h"
 
 extern "C" {
 extern u8 gTouchCurX;
@@ -61,13 +62,6 @@ struct Unk_ov116_SceneEntry {
 };
 
 
-class LabelString {
-public:
-    LabelString();
-    virtual ~LabelString();
-    void destroyLabel();
-    u8 unk_04[0x3c];
-};
 
 class CreatureBookPanel {
 public:

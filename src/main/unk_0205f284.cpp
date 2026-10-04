@@ -9,6 +9,7 @@
 #include "player/FishBobber.h"
 #include "game/GroundInfo.h"
 #include "gfx/TexVramTask.h"
+#include "player/FishBobberStates.h"
 
 
 
@@ -147,20 +148,6 @@ public:
     FishBobber *unk_750[9];
 };
 
-class FishBobberStates : public FishBobber {
-public:
-    void updateCastSwing();
-    void updateAct09();
-    void updateEscape();
-    void updateReelIn();
-    void updateHooked();
-    void updateBite();
-    void updateFloat();
-    void updateCast();
-    void updateCastFail();
-    void updateHeld();
-    void updateIdle();
-};
 
 typedef void (FishBobberStates::*Unk_0205f360_Fn)();
 

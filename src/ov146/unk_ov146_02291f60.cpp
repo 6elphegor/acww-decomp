@@ -8,6 +8,7 @@
 #include "menu/MenuProc.h"
 #include "talk/EncodedString.h"
 #include "talk/MsgString9C.h"
+#include "ui/LabelString.h"
 
 #define LabelBalloon_setPos _ZN12LabelBalloon6setPosEii
 #define LabelBalloon_showLayer2 _ZN12LabelBalloon10showLayer2Ev
@@ -58,21 +59,6 @@ class MsgString;
 
 
 
-class LabelString : public MsgString {
-public:
-    LabelString();
-    virtual ~LabelString();
-    virtual u32 capacity();
-    virtual u8 *data();
-
-    void redrawAligned(s32 a, s32 b);
-    void createSmallLabel(u32 id, u32 a, u32 b, u8 x, u8 y, s32 flag);
-    void createLabel(u32 id, u32 a, u32 b, u8 x, u8 y, s32 flag);
-    void destroyLabel();
-
-    /* 0x12 */ u8 text[0x2a];
-    /* 0x3c */ void *label;
-};
 
 class EncodedString8B : public EncodedString {
 public:

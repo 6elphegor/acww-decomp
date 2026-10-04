@@ -4,22 +4,13 @@
 #include "field/Unk_ov003_02217910_V3.h"
 #include "field/Unk_ov003_02217910_V3D.h"
 #include "field/Unk_ov003_02217b78_Ent.h"
+#include "field/FieldGroundBackdrop.h"
 
 // TU18 of ov003: ground helper class FieldGroundBackdrop (0x02217b10-0x02217be8) and the six colour constants of its header
 
 
 struct Unk_020553f8_Res;
 
-class CachedModel {
-public:
-    CachedModel();
-    virtual ~CachedModel();
-
-    u8 pad_04[0x64 - 4];
-    Unk_ov003_02215c7c_Blk unk_64;
-    u8 pad_94[4];
-    u32 unk_98;
-};
 
 class Model : public CachedModel {
 public:
@@ -40,17 +31,6 @@ struct Unk_ov003_02235478_Col {
     }
 };
 
-class FieldGroundBackdrop {
-public:
-    FieldGroundBackdrop();
-    ~FieldGroundBackdrop();
-    BOOL followCamera();
-    BOOL init();
-    void clear();
-
-    /* 0x00 */ CachedModel model;
-    /* 0x9c */ Unk_020553f8_Res *modelRes;
-};
 
 // other modules' methods are reached through their real mangled symbols (object first)
 #define BgModelCache_getGroundTex _ZN12BgModelCache12getGroundTexEv
@@ -112,7 +92,7 @@ BOOL FieldGroundBackdrop::followCamera() {
         v.z = gCameraLookAt.z;
         func_020e8388(data_021f47e0, v.x - data_020c8cb4, 0, 0);
         func_020e8434(data_021f47e0, Unk_020d93b8_getEyeCurveAngle(cam));
-        model.unk_64 = *(Unk_ov003_02215c7c_Blk *)data_021f47e0;
+        *(Unk_ov003_02215c7c_Blk *)((u8 *)&model + 0x64) = *(Unk_ov003_02215c7c_Blk *)data_021f47e0;
         return TRUE;
     }
     return FALSE;

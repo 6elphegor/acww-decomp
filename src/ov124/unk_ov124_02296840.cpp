@@ -1,4 +1,5 @@
 #include "types.h"
+#include "ui/LabelString.h"
 
 extern "C" {
 void String_Load2dMenu(void *a, u32 v);
@@ -23,20 +24,6 @@ extern u8 data_ov124_02296f70[];
 extern u8 data_ov124_02296f90[];
 }
 
-// String buffer wrapping a text renderer (src/main/unk_0206f53c.cpp), 0x40 bytes; ctor 0x0206fcc8, D1 0x0206fca8
-class LabelString {
-public:
-    LabelString();
-    virtual ~LabelString();
-
-    void setHighlight(u8 a, u8 b, u32 c, u32 d);
-    void redrawAt(s32 v);
-    void redrawAligned(s32 a, s32 b);
-    void createLabel(u32 id, u32 a, u32 b, u8 x, u8 y, s32 flag);
-    void destroyLabel();
-
-    u32 unk_04[0x3c / 4];
-};
 
 struct Unk_ov002_02203c5c_Rec;
 

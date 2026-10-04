@@ -9,6 +9,8 @@
 #include "ui/HandCursor.h"
 #include "ui/ScrollKnob.h"
 #include "menu/MenuLauncher.h"
+#include "item/ItemName.h"
+#include "ui/LabelString.h"
 
 class CatalogMenu;
 
@@ -22,33 +24,7 @@ class CatalogMenu;
 
 class TextLabel;
 
-class LabelString : public MsgString {
-public:
-    LabelString();
-    virtual ~LabelString();
-    virtual u32 capacity();
-    virtual u8 *data();
 
-    void redrawRight();
-    void redrawAligned(s32 a, s32 b);
-    void createSmallLabel(u32 id, u32 a, u32 b, u8 x, u8 y, s32 flag);
-    void createLabel(u32 id, u32 a, u32 b, u8 x, u8 y, s32 flag);
-    void destroyLabel();
-
-    /* 0x12 */ u8 text[0x2a];
-    /* 0x3c */ TextLabel *label;
-};
-
-class ItemName : public MsgString {
-public:
-    ItemName();
-    virtual ~ItemName();
-    virtual u32 capacity();
-    virtual u8 *data();
-    BOOL setFromItem(u16 *p);
-
-    /* 0x12 */ u8 text[0x11];
-};
 
 // Screen upload helper, 0x24 bytes
 class BgVramTask {

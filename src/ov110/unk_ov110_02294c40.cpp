@@ -10,6 +10,8 @@
 #include "menu/MenuProc.h"
 #include "ui/HandCursor.h"
 #include "menu/MenuLauncher.h"
+#include "ui/LabelString.h"
+#include "ui/LabelBalloon.h"
 
 class LostFoundRecycleMenu;
 
@@ -104,16 +106,6 @@ void InventoryItemGrid_Init(void *a, s32 b);
 void LetterGrid_LoadPocketLetters(void *a);
 }
 
-// Text window, 0x40 bytes (src/main/unk_0206f53c.cpp)
-class LabelString {
-public:
-    LabelString();
-    virtual ~LabelString();
-    void redrawAligned(s32, s32);
-    void createLabel(u32, u32, u32, u8, u8, s32);
-    void destroyLabel();
-    u8 unk_04[0x3c];
-};
 
 // Screen upload helper sub-object, 0x38 bytes
 class BgVramTaskPair {
@@ -123,12 +115,6 @@ public:
     u32 unk_00[0x38 / 4];
 };
 
-class LabelBalloon {
-public:
-    void setPos(s32, s32);
-    void setPopUpward();
-    void setPopDownward();
-};
 
 class BgVramTask {
 public:

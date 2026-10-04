@@ -2,6 +2,7 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "menu/MenuProc.h"
+#include "ui/LabelString.h"
 
 class MusicMenu;
 typedef void (MusicMenu::*Unk_ov144_02293db8_Fn)();
@@ -189,12 +190,6 @@ public:
     u32 unk_00[0x164 / 4];
 };
 
-class LabelString {
-public:
-    LabelString();
-    ~LabelString();
-    u32 unk_00[0x40 / 4];
-};
 
 class BgVramTask {
 public:

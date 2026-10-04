@@ -2,6 +2,7 @@
 #include "game/Unk_0205f6b4_Obj.h"
 #include "gfx/Unk_0205f7f4_Mtx.h"
 #include "game/GroundInfo.h"
+#include "player/FishBobberStates.h"
 
 struct Unk_0205f1e8_Vec {
     s32 x, y, z;
@@ -71,33 +72,6 @@ void func_0205553c(void *e, s32 a);
 void GroundInfo_Destruct(void *p);
 }
 
-class FishBobberStates {
-public:
-    void updateCastSwing();
-    void func_0205f92c(s32 state);
-    void updateAct09();
-    void updateEscape();
-    void updateReelIn();
-    void updateHooked();
-    void updateBite();
-    void updateFloat();
-    void updateCast();
-    void updateCastFail();
-    void updateHeld();
-    void updateIdle();
-
-    u8 pad_00[8];
-    Unk_0205f1e8_Vec pos;
-    s32 gravity;
-    s32 ySpeed;
-    Unk_0205f1e8_Vec targetPos;
-    u8 *ownerActor;
-    s32 fish;
-    s32 stateTimer;
-    s32 effect;
-    u8 justLanded;
-    s32 ownerAid;
-};
 
 struct PlayerPalettePool {
     u32 unk_00[4];

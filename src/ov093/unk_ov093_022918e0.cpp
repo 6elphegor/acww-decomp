@@ -1,18 +1,8 @@
 #include "types.h"
 #include "talk/MsgString.h"
 #include "talk/MsgString193.h"
+#include "ui/LabelString.h"
 
-class LabelString {
-public:
-    LabelString();
-    ~LabelString();
-    void destroyLabel();
-    void createSmallLabel(u32 id, u32 a, u32 b, u8 x, u8 y, s32 flag);
-    void redrawAligned(s32 a, s32 b);
-    void createLabel(u32 id, u32 a, u32 b, u8 x, u8 y, s32 flag);
-    void redrawRight();
-    u32 pad[0x10];
-};
 
 
 

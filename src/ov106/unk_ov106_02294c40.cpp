@@ -12,6 +12,7 @@
 #include "item/PlayerMailbox.h"
 #include "ui/LabelButton.h"
 #include "menu/MenuLauncher.h"
+#include "ui/LabelBalloon.h"
 
 // ov106: scene overlay (class MailboxMenu, vtable 0x02298180, 0x3f80 bytes).
 
@@ -224,10 +225,6 @@ public:
     void * getCatalog();
 };
 
-class LabelBalloon {
-public:
-    void setPos(s32, s32);
-};
 
 
 

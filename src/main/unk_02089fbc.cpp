@@ -608,17 +608,8 @@ public:
     void updateCountdown();
 };
 
-// Vtable 0x020e0f80, created by the factory HudProc_Create
-class HudProc : public GameProc {
-public:
-    HudProc();
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
-    virtual BOOL onExecute();
-    virtual BOOL onDraw();
-    virtual ~HudProc();
-};
 
+#include "ui/HudProc.h"
 extern "C" HudProc *HudProc_Create();
 
 

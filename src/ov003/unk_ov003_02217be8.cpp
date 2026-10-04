@@ -7,6 +7,7 @@
 #include "gfx/AnimFrameCtrl.h"
 #include "gfx/ModelAnim.h"
 #include "gfx/TexPatVramAnim.h"
+#include "field/FieldGroundBackdrop.h"
 
 // TU19 of ov003: ground part classes 0x02217be8 / 0x02217dbc and the scene 0x02232418 (0x02217be8-0x022187f8)
 
@@ -15,16 +16,6 @@ struct Unk_020553f8_Res;
 
 
 // ---- main-module helper classes ----
-class CachedModel {
-public:
-    CachedModel();
-    virtual ~CachedModel();
-
-    u8 pad_04[0x64 - 4];
-    Unk_ov003_02215c7c_Blk unk_64;
-    u8 pad_94[4];
-    u32 unk_98;
-};
 
 class Model : public CachedModel {
 public:
@@ -52,17 +43,6 @@ struct Unk_ov003_02217c3c_Obj {
     Unk_ov003_02217c3c_P *bgModel;
 };
 
-class FieldGroundBackdrop {
-public:
-    FieldGroundBackdrop();
-    ~FieldGroundBackdrop();
-    BOOL followCamera();
-    BOOL init();
-    void clear();
-
-    /* 0x00 */ CachedModel model;
-    /* 0x9c */ void *modelRes;
-};
 
 class FieldGroundBlock {
 public:
@@ -614,7 +594,7 @@ BOOL FieldGroundPiece::setup(Unk_ov003_02217910_V3 *pos, s32 idx) {
     curveAngle = WorldCurve_ToCurved((Unk_ov003_02218478_V3 *)&tmp, (Unk_ov003_02218478_V3 *)&position);
     func_020e8388(data_021f47e0, position.x, 0, 0);
     func_020e8434(data_021f47e0, curveAngle);
-    model.unk_64 = *(Unk_ov003_02215c7c_Blk *)data_021f47e0;
+    *(Unk_ov003_02215c7c_Blk *)((u8 *)&model + 0x64) = *(Unk_ov003_02215c7c_Blk *)data_021f47e0;
     blockX = pos->x >> 17;
     blockZ = pos->z >> 17;
     return TRUE;
@@ -678,7 +658,7 @@ BOOL FieldGroundBlock::init(Unk_ov003_02217c3c_Obj *o, s32 a, s32 b) {
     func_020e8388(data_021f47e0, a * data_020c8cbc, 0, 0);
     s16 ang = b * WorldCurve_GetAngleScale();
     func_020e8434(data_021f47e0, ang);
-    model.unk_64 = *(Unk_ov003_02215c7c_Blk *)data_021f47e0;
+    *(Unk_ov003_02215c7c_Blk *)((u8 *)&model + 0x64) = *(Unk_ov003_02215c7c_Blk *)data_021f47e0;
     if (Acre_GetAttr(acreId) & 8) {
         beachMatIdx = G3dResAccess_findMatIdx(res, (s32)"m_grd_beA");
         if (beachMatIdx != -1) {

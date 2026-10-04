@@ -1,6 +1,7 @@
 // mwcc-flags: -str reuse
 #include "types.h"
 #include "ui/ScrollKnob.h"
+#include "ui/LabelString.h"
 
 
 class MenuScrollKnob : public ScrollKnob {
@@ -16,17 +17,6 @@ public:
     BOOL hitTest(s32 x, s32 y);
 };
 
-// 0x40 byte sprite/text object
-class LabelString {
-public:
-    LabelString();
-    virtual ~LabelString();
-    void destroyLabel();
-    void createLabel(u32 a, u32 b, u32 c, u8 d, u8 e, s32 f);
-    void redrawOffset(s32 a, s32 b);
-    void redrawAligned(s32 a, s32 b);
-    u8 unk_04[0x3c];
-};
 
 // 0x24 byte transfer object
 class BgVramTask {

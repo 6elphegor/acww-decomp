@@ -8,6 +8,8 @@
 #include "menu/MenuProc.h"
 #include "ui/HandCursor.h"
 #include "menu/MenuLauncher.h"
+#include "ui/LabelString.h"
+#include "ui/LabelBalloon.h"
 
 extern "C" {
 void Gfx2d_ShowLayer(u32 x);
@@ -152,24 +154,9 @@ public:
     u32 unk_00[0x108 / 4];
 };
 
-class LabelString {
-public:
-    LabelString();
-    ~LabelString();
-    void redrawAligned(s32, s32);
-    void createLabel(u32, u32, u32, u8, u8, s32);
-    void destroyLabel();
-    u32 unk_00[0x40 / 4];
-};
 
 
 
-class LabelBalloon {
-public:
-    void setPos(s32, s32);
-    void setPopUpward();
-    void setPopDownward();
-};
 
 
 class BgVramTask {

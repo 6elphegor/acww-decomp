@@ -1,6 +1,7 @@
 #include "types.h"
 #include "gfx/SpriteAnim.h"
 #include "ui/UiWidget.h"
+#include "ui/LabelBalloon.h"
 
 extern "C" {
 // Other files
@@ -18,14 +19,6 @@ void _ZN21FieldInfoLabelBalloon11updateBlinkEv(void *p);
 
 
 
-// Base of FieldInfoLabelBalloon (ctor func_02089e60, dtor func_02089d9c), 0xbc bytes
-class LabelBalloon : public UiWidget {
-public:
-    LabelBalloon(s32 a);
-    virtual ~LabelBalloon();
-
-    /* 0x0c */ u8 unk_0c[0xb0];
-};
 
 class FieldInfoLabelBalloon : public LabelBalloon {
 public:

@@ -3,6 +3,7 @@
 #include "talk/MsgStringBase.h"
 #include "talk/MsgStringAttr.h"
 #include "talk/MsgString.h"
+#include "ui/LabelString.h"
 
 struct Unk_ov114_02294c40_Bits {
     u32 idx : 10;
@@ -225,12 +226,6 @@ public:
     u32 unk_00[0x38 / 4];
 };
 
-class LabelString {
-public:
-    LabelString();
-    ~LabelString();
-    u32 unk_00[0x40 / 4];
-};
 
 // sub-object at +0x11f8 (ctor func_ov002_02202f88, dtor func_ov002_02202f70)
 class MenuScrollKnob {

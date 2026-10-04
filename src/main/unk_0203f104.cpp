@@ -5,6 +5,7 @@
 #include "game/Unk_0203f42c_L.h"
 #include "game/Unk_0203fe18_Date.h"
 #include "game/Unk_0203ff50_Slot.h"
+#include "game/EventCalendarModule.h"
 
 extern "C" void MI_CpuCopy8(const void *src, void *dst, u32 size);
 
@@ -80,13 +81,6 @@ struct Unk_0203fb1c_Rec {
 
 
 
-class EventCalendarModule : public GameProc {
-public:
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
-    virtual BOOL onExecute();
-    virtual BOOL onDraw();
-};
 
 extern "C" {
 extern u8 gSaveData[];

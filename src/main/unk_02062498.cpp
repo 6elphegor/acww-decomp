@@ -5,6 +5,7 @@
 #include "talk/EncodedStringBase.h"
 #include "talk/MsgString.h"
 #include "talk/EncodedString.h"
+#include "item/ItemName.h"
 
 extern "C" {
 extern u8 gItemInfo[];
@@ -352,21 +353,6 @@ public:
     /* 0x0e */ u8 text[16];
 };
 
-// buffer of 0x11 bytes (vtable 0x020dd324)
-class ItemName : public MsgString {
-public:
-    ItemName();
-    ItemName(s32 idx);
-    ItemName(u16 *p);
-    virtual ~ItemName();
-    virtual u32 capacity();
-    virtual u8 *data();
-    u8 setString(u8 *str);
-    BOOL setSeriesName(s32 idx);
-    BOOL setFromItem(u16 *p);
-
-    /* 0x12 */ u8 text[0x11];
-};
 
 EncodedString16Buf::EncodedString16Buf() {
     StrBuf_ClearAlt(this);

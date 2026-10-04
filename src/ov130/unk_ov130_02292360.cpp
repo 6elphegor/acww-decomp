@@ -1,4 +1,5 @@
 #include "types.h"
+#include "ui/LabelString.h"
 
 extern "C" {
 extern void *gCurrentHeap;
@@ -19,15 +20,6 @@ s32 _ZN8PlayerId9getGenderEv();
 void Snd_SetKeySeMode(u32 v);
 }
 
-// text buffer object, 0x40 bytes (vtable 0x020e0488, see src/main/unk_0206f53c.cpp)
-class LabelString {
-public:
-    LabelString();
-    virtual ~LabelString();
-    void redrawAligned(s32 a, s32 b);
-    void createLabel(u32 id, u32 a, u32 b, u8 x, u8 y, s32 flag);
-    u8 unk_04[0x3c];
-};
 
 // sound/effect handle, 0x24 bytes (see src/main/unk_020b8464.cpp)
 class BgVramTask {

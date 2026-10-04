@@ -15,6 +15,7 @@
 #include "item/LetterView.h"
 #include "ui/UiWidget.h"
 #include "menu/MenuLauncher.h"
+#include "ui/LabelBalloon.h"
 
 class PostOfficeMenu;
 class MenuLauncher;
@@ -156,12 +157,6 @@ public:
 };
 
 
-class LabelBalloon : public UiWidget {
-public:
-    virtual void draw();
-    virtual void vfunc_0c();
-    void setPos(s32 x, s32 y);
-};
 
 class LabelButton : public UiWidget {
 public:
@@ -194,7 +189,7 @@ public:
     void commitOpen();
     BOOL hide(s32 a);
     s32 updatePrompt();
-    u32 unk_0c[(0xc0 - 0xc) / 4];
+    u32 unk_bc[(0xc0 - 0xbc) / 4];
 };
 
 

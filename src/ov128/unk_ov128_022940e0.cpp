@@ -5,6 +5,7 @@
 #include "menu/MenuProc.h"
 #include "ui/HandCursor.h"
 #include "menu/MenuLauncher.h"
+#include "ui/LabelString.h"
 
 extern "C" {
 extern u8 gTouchHeld;
@@ -133,21 +134,6 @@ public:
     u32 unk_04[0x4c / 4];
 };
 
-// Text buffer (0x40 bytes, vptr + text renderer)
-class LabelString {
-public:
-    LabelString();
-    virtual ~LabelString();
-    virtual u32 capacity();
-    virtual u8 *data();
-
-    s32 getTextWidth();
-    void redrawAligned(s32 a, s32 b);
-    void createLabel(u32 id, u32 a, u32 b, u8 x, u8 y, s32 flag);
-    void destroyLabel();
-
-    u32 unk_04[0x3c / 4];
-};
 
 
 
@@ -842,7 +828,7 @@ void StargazingMenu::setupNameLabel() {
         if (u != labelConstellation) {
             u8 *s = ((u8 *(*)(s32))Constellation_GetRecord)(u);
             String_FromEncodedBytes(&nameLabel, s + 0x16, 0x10);
-            nameLabelWidth = (nameLabel.getTextWidth() + 7) >> 3;
+            nameLabelWidth = ((s32)nameLabel.getTextWidth() + 7) >> 3;
             if (nameLabelWidth < 2) {
                 nameLabelWidth = 2;
             }

@@ -3,6 +3,7 @@
 #include "menu/MenuProc.h"
 #include "ui/HandCursor.h"
 #include "menu/MenuLauncher.h"
+#include "ui/LabelString.h"
 
 extern "C" {
 extern u8 gSaveBlancaFace;
@@ -88,16 +89,6 @@ void _ZN10BgVramTask6cancelEv(void *self);
 }
 
 
-// Element at +0xb8, 0x40 bytes
-class LabelString {
-public:
-    LabelString();
-    virtual ~LabelString();
-    void destroyLabel();
-    void createSmallLabel(u32 a, u32 b, u32 c, u8 d, u8 e, s32 f);
-    void redrawAligned(s32 a, s32 b);
-    u8 unk_04[0x3c];
-};
 
 // Element at +0xf8 (0x38 bytes each)
 class BgVramTaskPair {

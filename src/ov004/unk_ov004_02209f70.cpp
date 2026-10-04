@@ -34,6 +34,9 @@
 #include "gfx/ModelAnim.h"
 #include "room/FtrCollider.h"
 #include "gfx/MatTexVramTask.h"
+#include "room/FtrGlowMatSet.h"
+#include "room/FtrTopItems.h"
+#include "room/FtrModelAnim.h"
 // ov004 translation unit 0x02209f70-0x022136d0 (34 classes derived from FtrActor). Built by two compilers:
 // this file's thunks need mwcc 1.2/sp2, FtrSingingInsect::updateActive / vfunc_7c (in the _switch file) need 1.2/base;
 // the functions and data objects are placed by address (config/usa/arm9/overlays/ov004/object_order.txt).
@@ -165,17 +168,6 @@ public:
 // ---- 0x02205b14: element view used by the 3-element container (same object as 0x02205bcc)
 
 
-class FtrGlowMatSet {
-public:
-    FtrGlowMatSet();
-    ~FtrGlowMatSet();
-    void update();
-    u32 setLit(u32 a, u32 b, u32 c);
-    u32 init(u32 a, u32 b);
-
-    /* 0x00 */ FtrGlowMat mats[3];
-    /* 0x54 */ u8 anyBound;
-};
 
 // ---- 0x02205c44 (member at 0x73c)
 
@@ -187,19 +179,6 @@ public:
 
 
 // ---- 0x022061b4 (member at 0x188)
-struct FtrTopItems {
-    FtrTopItems();
-    ~FtrTopItems();
-    void dropAll(Unk_ov004_02205c80_Obj *o);
-    BOOL pickUpAll(Unk_ov004_02205c80_Obj *o);
-    BOOL canPickUp(Unk_ov004_02205c80_Obj *o);
-    BOOL add(u16 *id, Unk_ov004_02205d8c_Vec *pos);
-    void drawAll(Unk_ov004_02205c80_Obj *o);
-    FtrTopItem *get(u32 i);
-    void clearAll();
-    u32 unk_00;
-    FtrTopItem items[4];
-};
 
 // ---- 0x02206398 (member at 0x44 of 0x02206e38; 5 pairs of resource pointers)
 
@@ -271,12 +250,6 @@ struct Unk_ov004_02206e38 {
 // ---- 0x02248804 (array of 4 at 0x7c0)
 
 
-class FtrModelAnim : public ModelAnim {
-public:
-    FtrModelAnim();
-    virtual ~FtrModelAnim();
-    u32 getAnmObj();
-};
 
 // ================================================================ FtrActor
 

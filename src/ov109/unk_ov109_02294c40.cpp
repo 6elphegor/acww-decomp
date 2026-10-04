@@ -8,6 +8,7 @@
 #include "menu/MenuProc.h"
 #include "ui/HandCursor.h"
 #include "menu/MenuLauncher.h"
+#include "ui/LabelBalloon.h"
 
 class SongPickMenu;
 struct Unk_ov109_02295570;
@@ -87,10 +88,6 @@ void InventoryBg_DrawSprite(void *p, s32 a);
 
 // ---- out-of-overlay classes, named as in their symbols.txt ----
 
-class LabelBalloon {
-public:
-    void setPos(s32 x, s32 y);
-};
 
 // Screen upload helper, 0x38 bytes
 class BgVramTask {

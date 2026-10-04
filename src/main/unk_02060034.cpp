@@ -1,19 +1,12 @@
 #include "types.h"
 #include "town/MapBlockEntry.h"
 #include "room/RoomFtrState.h"
+#include "room/HouseRoom.h"
 
 inline void *operator new(unsigned long, void *p) {
     return p;
 }
 
-class RoomItemGrid {
-public:
-    u16 items[0x100];
-    RoomItemGrid();
-    ~RoomItemGrid();
-    RoomItemGrid *getGrid();
-    void clear();
-};
 
 
 
@@ -25,28 +18,6 @@ public:
     void clear();
 };
 
-class HouseRoom {
-public:
-    RoomItemGrid layers[2];
-    RoomFtrState ftrState;
-    u16 wallpaper;
-    u16 carpet;
-    u16 song;
-    u8 unk_44e_0 : 1;
-    u8 unk_44e_1 : 1;
-    HouseRoom();
-    ~HouseRoom();
-    void func_02060878_dummy();
-    MapBlockEntry *buildBlockEntry(void *heap);
-    void reset(s32 i);
-    void setSong(u16 *src);
-    u16 *getSong();
-    void setCarpet(u16 *src, u32 flag);
-    void setWallpaper(u16 *src, u32 flag);
-    u16 *getCarpet(s32 *out);
-    u16 *getWallpaper(s32 *out);
-    RoomFtrState *func_0206086c();
-};
 
 struct Unk_0206022c_Bits {
     u32 a : 3;

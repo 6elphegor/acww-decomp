@@ -6,6 +6,7 @@
 #include "menu/MenuProc.h"
 #include "ui/HandCursor.h"
 #include "menu/MenuLauncher.h"
+#include "ui/LabelString.h"
 
 class BbsReadMenu;
 
@@ -63,17 +64,6 @@ public:
 };
 
 
-// Text window, 0x40 bytes
-class LabelString {
-public:
-    LabelString();
-    virtual ~LabelString();
-    void redrawAligned(s32 a, s32 b);
-    void createSmallLabel(u32 id, u32 a, u32 b, u8 x, u8 y, s32 flag);
-    void createBufferLabel(u32 a, u32 b, u8 x, u8 y);
-    void destroyLabel();
-    u8 unk_04[0x3c];
-};
 
 
 // Screen upload helper, 0x24 bytes

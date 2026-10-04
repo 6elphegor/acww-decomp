@@ -8,6 +8,7 @@
 #include "menu/MenuProc.h"
 #include "ui/HandCursor.h"
 #include "menu/MenuLauncher.h"
+#include "ui/LabelBalloon.h"
 
 class PocketItemSelectMenu;
 class MenuLauncher;
@@ -109,13 +110,6 @@ public:
 
 
 
-class LabelBalloon {
-public:
-    virtual ~LabelBalloon();
-    virtual void vfunc_08();
-    void setPos(s32 x, s32 y);
-    u32 unk_04[(0xbc - 4) / 4];
-};
 
 class TouchPromptBalloon : public LabelBalloon {
 public:
@@ -387,7 +381,7 @@ BOOL PocketItemSelectMenu::onDraw() {
     if (!testFlags(1)) {
         return TRUE;
     }
-    nameBalloon.vfunc_08();
+    nameBalloon.draw();
     if (MenuCtrl_IsButtons()) {
         cursor.drawWrapped();
     }

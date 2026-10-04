@@ -3,6 +3,7 @@
 #include "ui/UiWidget.h"
 #include "menu/MenuProc.h"
 #include "ui/HandCursor.h"
+#include "ui/LabelString.h"
 
 extern "C" {
 extern u8 gTouchCurX;
@@ -49,13 +50,6 @@ void func_ov114_02296498(void *p);
 
 class FishBookTab;
 
-class LabelString {
-public:
-    LabelString();
-    ~LabelString();
-    void destroyLabel();
-    u32 unk_00[0x40 / 4];
-};
 
 class MenuTabBar {
 public:

@@ -7,6 +7,7 @@
 #include "talk/MailTextBuilder.h"
 #include "talk/MsgString.h"
 #include "talk/MsgRequest.h"
+#include "talk/MailMsgRequest.h"
 
 // ---- 0x020d94b8 base (MsgRequest at 0x020e2a30)
 
@@ -89,25 +90,6 @@ void func_0203d3f8(void *, void *);
 }
 
 // ---- 0x020d94b8
-class MailMsgRequest : public MsgRequest {
-public:
-    MailMsgRequest();
-    virtual ~MailMsgRequest();
-    virtual u32 vfunc_0c();
-    u32 *getNamePosOut();
-    MsgString *getDest();
-    void setNamePosOut(u32 *v);
-    void setDest(MsgString *v);
-    void setPart(u32 v);
-    void setFolder(u32 v);
-    u32 getPartDir();
-    BOOL isAppendPart();
-
-    /* 0x20 */ u32 folder;
-    /* 0x24 */ u32 part;
-    /* 0x28 */ MsgString *dest;
-    /* 0x2c */ u32 *namePosOut;
-};
 
 // ---- container singleton at 0x021c3280
 

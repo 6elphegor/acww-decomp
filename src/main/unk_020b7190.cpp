@@ -2,6 +2,7 @@
 #include "talk/MsgStringBase.h"
 #include "gfx/SpriteAnim.h"
 #include "ui/UiWidget.h"
+#include "ui/LabelBalloon.h"
 
 struct Vec {
     s32 x, y, z;
@@ -31,14 +32,6 @@ public:
 
 
 
-// Base of FieldInfoLabelBalloon, 0xbc bytes
-class LabelBalloon : public UiWidget {
-public:
-    LabelBalloon(s32 a);
-    virtual ~LabelBalloon();
-
-    /* 0x0c */ u8 unk_0c[0xb0];
-};
 
 // Its vtable, constructor, destructor and virtuals belong to U225 (0x020b7bb0..)
 class FieldInfoLabelBalloon : public LabelBalloon {

@@ -7,13 +7,9 @@
 #include "game/Unk_020400b0_Big.h"
 #include "game/ReddPassword.h"
 #include "game/ReddShop.h"
+#include "game/EventCalendarModule.h"
 
 
-class EventCalendarModule : public GameProc {
-public:
-    EventCalendarModule() {}
-    virtual BOOL vfunc_0c();
-};
 
 extern "C" {
 extern u8 gSaveData[];

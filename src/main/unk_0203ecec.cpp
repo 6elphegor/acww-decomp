@@ -8,6 +8,7 @@
 #include "game/Unk_0203f42c_L.h"
 #include "talk/TalkRequestEntry.h"
 #include "gfx/WorldCurve.h"
+#include "game/EventCalendarModule.h"
 
 
 
@@ -435,14 +436,6 @@ extern "C" void WorldCurve_Update(WorldCurve *o, WorldCurve *in) {
     }
 }
 
-class EventCalendarModule : public GameProc {
-public:
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
-    virtual BOOL onExecute();
-    virtual BOOL onDraw();
-    virtual ~EventCalendarModule();
-};
 
 extern "C" {
 }

@@ -11,6 +11,7 @@
 #include "talk/LabelBalloonText.h"
 #include "menu/MenuSlide.h"
 #include "menu/MenuProc.h"
+#include "ui/LabelBalloon.h"
 
 extern "C" {
 void Gfx2d_SetWindowRect(s32 a, s32 x0, s32 y0, s32 x1, s32 y1);
@@ -50,36 +51,6 @@ extern u16 gPad[];
 
 
 
-class LabelBalloon : public UiWidget {
-public:
-    LabelBalloon(s32 flag);
-    virtual ~LabelBalloon();
-    virtual void draw();
-    virtual void vfunc_0c();
-
-    s32 getState();
-    BOOL requestClose();
-    BOOL requestOpen();
-    void setClampToScreen(u8 v);
-    void enableCenterText();
-
-    /* 0x0c */ SpriteAnim layer1;
-    /* 0x20 */ SpriteAnim layer2;
-    /* 0x34 */ s32 state;
-    /* 0x38 */ s32 animTimer;
-    /* 0x3c */ s32 x;
-    /* 0x40 */ s32 unk_40;
-    /* 0x44 */ s32 priority;
-    /* 0x48 */ s32 popOffsetX;
-    /* 0x4c */ s32 popOffsetY;
-    /* 0x50 */ s32 clampOffsetX;
-    /* 0x54 */ u8 unk_54[9];
-    /* 0x60 */ LabelBalloonText text;
-    /* 0x88 */ LabelBalloonText text2;
-    /* 0xb0 */ TextLabel *label;
-    /* 0xb4 */ TextLabel *label2;
-    /* 0xb8 */ s32 textMode;
-};
 
 // Vtable 0x02204468
 class TouchPromptBalloon : public LabelBalloon {

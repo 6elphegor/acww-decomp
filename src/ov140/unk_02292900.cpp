@@ -5,6 +5,7 @@
 #include "menu/MenuProc.h"
 #include "ui/HandCursor.h"
 #include "menu/MenuLauncher.h"
+#include "ui/LabelString.h"
 
 class DistantTownsMenu;
 
@@ -45,16 +46,6 @@ void DistantTownsMenu_SetupBgLayers();
 }
 
 
-// Text window, 0x40 bytes (src/main/unk_0206f53c.cpp)
-class LabelString {
-public:
-    LabelString();
-    virtual ~LabelString();
-    void redrawAligned(s32 a, s32 b);
-    void createSmallLabel(u32 id, u32 a, u32 b, u8 x, u8 y, s32 flag);
-    void destroyLabel();
-    u8 unk_04[0x3c];
-};
 
 // Screen upload helper, 0x24 bytes (src/main/unk_020b8464.cpp)
 class BgVramTask {

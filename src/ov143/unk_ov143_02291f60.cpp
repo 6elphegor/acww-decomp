@@ -5,6 +5,7 @@
 #include "menu/MenuProc.h"
 #include "ui/HandCursor.h"
 #include "menu/MenuLauncher.h"
+#include "ui/LabelString.h"
 
 struct Unk_ov143_02293b38_E {
     u32 w0;
@@ -57,16 +58,6 @@ struct Unk_ov143_02292898_V {
 class MelodyMenu;
 typedef void (MelodyMenu::*Unk_ov143_02293b80_Fn)();
 
-// Text window, 0x40 bytes (src/main/unk_0206f53c.cpp)
-class LabelString {
-public:
-    LabelString();
-    ~LabelString();
-    void redrawAligned(s32 a, s32 b);
-    void createLabel(u32 id, u32 a, u32 b, u8 x, u8 y, s32 flag);
-    void destroyLabel();
-    u32 unk_00[0x40 / 4];
-};
 
 // Screen upload helper, 0x24 bytes (src/main/unk_020b8464.cpp)
 class BgVramTask {
