@@ -5,6 +5,7 @@
 #include "talk/MsgStringAttr.h"
 #include "talk/MsgString.h"
 #include "menu/MenuProc.h"
+#include "talk/MsgString9B.h"
 
 class DonationMenu;
 typedef void (DonationMenu::*Unk_ov145_022937c0_Fn)();
@@ -57,12 +58,6 @@ struct Unk_ov145_SceneEntry {
 // ---- main-module classes (copied from src/main) ----
 
 
-class MsgString9B {
-public:
-    MsgString9B();
-    virtual ~MsgString9B();
-    u8 pad_04[0x18];
-};
 
 
 class TextLabel;

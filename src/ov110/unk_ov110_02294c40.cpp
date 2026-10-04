@@ -9,6 +9,7 @@
 #include "menu/InventoryBg.h"
 #include "menu/MenuProc.h"
 #include "ui/HandCursor.h"
+#include "menu/MenuLauncher.h"
 
 class LostFoundRecycleMenu;
 
@@ -139,11 +140,6 @@ public:
 
 
 
-class MenuLauncher {
-public:
-    void onChildClosed();
-    void setNextRequest(s32, s32);
-};
 
 class TouchPromptBalloon {
 public:

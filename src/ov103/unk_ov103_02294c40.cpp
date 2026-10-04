@@ -13,6 +13,7 @@
 #include "ui/HandCursor.h"
 #include "item/LetterView.h"
 #include "ui/LabelButton.h"
+#include "menu/MenuLauncher.h"
 
 extern "C" {
 extern u8 gTouchCurX;
@@ -97,11 +98,6 @@ public:
 struct Unk_0206d1d4_Src;
 
 
-class MenuLauncher {
-public:
-    void onChildClosed();
-    void setNextRequest(s32 a, s32 b);
-};
 
 
 

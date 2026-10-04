@@ -11,6 +11,7 @@
 #include "snd/SndSeEmitterKind1.h"
 #include "npc/Unk_02014254.h"
 #include "npc/Unk_0201a13c.h"
+#include "talk/MsgString9B.h"
 
 #define Actor_findByProfile _ZN5Actor13findByProfileEjPS_
 #define VillagerId_getName _ZN10VillagerId7getNameEj
@@ -146,11 +147,6 @@ struct Unk_ov050_0225c0a0_Msg {
     u16 unk_04;
 };
 
-struct MsgString9B {
-    u8 pad_00[0x1c];
-    MsgString9B();
-    ~MsgString9B();
-};
 
 struct Unk_ov050_MsgRow {
     const char *name;

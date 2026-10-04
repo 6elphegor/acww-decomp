@@ -51,6 +51,7 @@
 #include "player/Unk_02009a78_Locals.h"
 #include "player/Unk_02009d5c_Sub.h"
 #include "player/Unk_02009f68_Bytes.h"
+#include "gfx/MatTexVramTask.h"
 #include "player/PM_020076f0.h"
 #include "player/PM_020063a0.h"
 #include "player/Unk_020093f4_Msg.h"
@@ -205,7 +206,6 @@ struct TouchPickCylinder { TouchPickCylinder(); ~TouchPickCylinder(); };
 struct TwoLayerAnimModel { TwoLayerAnimModel(); ~TwoLayerAnimModel(); };
 struct CachedModel { CachedModel(); ~CachedModel(); };
 struct HeldItemModel { HeldItemModel(); ~HeldItemModel(); };
-struct MatTexVramTask { MatTexVramTask(); };
 struct CollisionState { CollisionState(); ~CollisionState(); };
 struct SndSeEmitterKind99 { SndSeEmitterKind99(); ~SndSeEmitterKind99(); };
 struct Unk_0201a13c { Unk_0201a13c(); ~Unk_0201a13c(); };
@@ -3199,7 +3199,6 @@ public:
     CharaClothTexRef shirtTex;
     u8 pad_771[0x3];
     MatTexVramTask shirtTexUpload;
-    u8 pad_775[0x27];
     Unk_0205ef98 skinHairPalette;
     u8 pad_79d[0x3];
     CollisionState bgCheckWork;

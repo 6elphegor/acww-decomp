@@ -7,6 +7,7 @@
 #include "menu/InventoryBg.h"
 #include "menu/MenuProc.h"
 #include "ui/HandCursor.h"
+#include "menu/MenuLauncher.h"
 
 class PocketItemSelectMenu;
 class MenuLauncher;
@@ -93,11 +94,6 @@ static inline BOOL Unk_ov101_02296280_Both()
     return FALSE;
 }
 
-class MenuLauncher {
-public:
-    void onChildClosed();
-    void setNextRequest(s32 a, s32 b);
-};
 
 class BgVramTask {
 public:

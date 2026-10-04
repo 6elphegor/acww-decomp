@@ -16,6 +16,7 @@
 #include "snd/SndSeEmitterKind1.h"
 #include "npc/Unk_02014254.h"
 #include "npc/Unk_0201a13c.h"
+#include "talk/MsgString9B.h"
 
 
 struct Unk_0201bc1c;
@@ -27,11 +28,6 @@ struct ChoiceList {
 };
 
 
-struct MsgString9B {
-    u32 v[7];
-    MsgString9B();
-    ~MsgString9B();
-};
 
 
 struct Unk_0209d498_Obj {

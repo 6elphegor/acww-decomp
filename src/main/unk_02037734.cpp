@@ -5,22 +5,13 @@
 #include "talk/MsgTextLabel.h"
 #include "talk/MsgString.h"
 #include "gfx/TexVramTask.h"
+#include "talk/MsgString25.h"
 
 // ---- Classes defined in other files (declarations only) ----
 
 
 
 
-// 0x2c bytes (ctor func_020b4154, dtor func_020b413c)
-class MsgString25 : public MsgString {
-public:
-    MsgString25();
-    virtual ~MsgString25();
-    virtual u32 capacity();
-    virtual u8 *data();
-
-    /* 0x14 */ u32 unk_14[6];
-};
 
 
 

@@ -7,6 +7,7 @@
 #include "room/RoomFreeUnitMap.h"
 #include "game/GroundInfoBase.h"
 #include "game/GroundInfo.h"
+#include "npc/NpcSpawner.h"
 
 typedef Unk_0203389c_Vec Unk_02083c28_Vec;
 struct VisitorSpawner;
@@ -115,16 +116,6 @@ struct Unk_02084ffc_Grid {
 };
 
 
-class NpcSpawner : public GameProc {
-public:
-    NpcSpawner() {}
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
-    virtual BOOL onExecute();
-
-    RoomFreeUnitMap freeUnitMap;
-    u8 unk_freeUnitMapTail[8]; // 8 more bytes of NpcSpawner after the 0x20-byte map
-};
 
 namespace Dp {
 extern "C" {

@@ -4,6 +4,7 @@
 #include "net/CommManager.h"
 #include "menu/MenuProc.h"
 #include "ui/HandCursor.h"
+#include "menu/MenuLauncher.h"
 
 struct Unk_ov143_02293b38_E {
     u32 w0;
@@ -132,12 +133,6 @@ public:
 
 // Global at 0x020cbb18
 
-// ov092 singleton returned by ProcBase_GetParent
-class MenuLauncher {
-public:
-    void onChildClosed();
-    void setNextRequest(s32 a, s32 b);
-};
 
 extern "C" {
 extern Unk_ov143_02293b38_E *sMelodyNoteSprites[16];

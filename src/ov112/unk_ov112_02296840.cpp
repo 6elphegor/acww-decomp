@@ -7,6 +7,7 @@
 #include "ui/HandCursor.h"
 #include "ui/ScrollKnob.h"
 #include "talk/EncodedString.h"
+#include "menu/MenuLauncher.h"
 
 // Plain view of the scene object used by the extern "C" helpers (offsets only).
 struct Unk_ov112_02296840 {
@@ -202,11 +203,6 @@ public:
     u8 unk_4c[0x64 - 0x4c];
 };
 
-class MenuLauncher {
-public:
-    void onChildClosed();
-    void setNextRequest(s32 a, s32 b);
-};
 
 
 // 0x370: ov095 list/text object, size 0x23bc

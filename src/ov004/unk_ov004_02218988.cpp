@@ -23,6 +23,7 @@
 #include "npc/NpcActionCtrl.h"
 #include "snd/SndSeEmitterKind1.h"
 #include "npc/Unk_02014254.h"
+#include "npc/NpcFaceAnim.h"
 
 class FleaMarketBuyerVillagerTalk;
 class FleaMarketBuyerVillager;
@@ -217,7 +218,6 @@ void Scene_GetPrevious();
 s32 SceneId_IsTownUnk31();
 }
 
-struct NpcFaceAnim { NpcFaceAnim(); ~NpcFaceAnim(); u32 pad[0x88 / 4]; };
 
 
 

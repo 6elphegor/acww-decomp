@@ -8,6 +8,7 @@
 #include "ui/UiWidget.h"
 #include "talk/MsgTextLabel.h"
 #include "talk/MsgString.h"
+#include "talk/MsgString25.h"
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Classes of the unit (declarations of the classes whose vtable another unit owns come first)
@@ -20,12 +21,6 @@ struct SpriteAnimSeq;
 
 
 
-class MsgString25 : public StrBuf {
-public:
-    MsgString25();
-    ~MsgString25();
-    u32 pad[10];
-};
 
 // ---------------------------------------------------------------------------------------------------------------------
 extern "C" {
@@ -2281,7 +2276,7 @@ void HudWallet::createLabel() {
             label->bgColor = 0;
             label->fgColor = 0xc;
             TextLabel *o = label;
-            StrBuf *s = &text;
+            StrBuf *s = (StrBuf *)&text;
             o->textStart = (u32)s->data();
             label->font = &gFontD;
             label->alignRight();

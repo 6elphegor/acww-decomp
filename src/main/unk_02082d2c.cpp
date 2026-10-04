@@ -7,6 +7,8 @@
 #include "npc/VillagerAnimHeapRefSlot.h"
 #include "npc/NpcBodyAnimSlot.h"
 #include "npc/VillagerAnimHeapRefPool.h"
+#include "npc/NpcSpawner.h"
+#include "npc/NpcBodyAnimPool.h"
 
 // Element payload types (defined elsewhere)
 struct Unk_020829b0_Y {
@@ -28,16 +30,6 @@ struct Unk_020829b0_Y_dummy;
 
 
 
-class NpcBodyAnimPool : public NpcResPool {
-public:
-    NpcBodyAnimPool();
-    virtual ~NpcBodyAnimPool();
-    virtual NpcBodyAnimSlot *getSlot(u32 i);
-    virtual void occupySlot(u32 i);
-    Unk_02082c54_Z *getLayer(u32 i, u32 off);
-
-    /* 0x08 */ NpcBodyAnimSlot slots[5];
-};
 
 extern "C" {
 VillagerAnimHeapRefPool *VillagerAnimHeapRefPool_Get();
@@ -59,11 +51,6 @@ struct Unk_02082d74_M {
     ~Unk_02082d74_M();
 };
 
-class NpcSpawner : public GameProc {
-public:
-    virtual ~NpcSpawner();
-    /* 0x50 */ Unk_02082d74_M freeUnitMap;
-};
 
 
 

@@ -26,6 +26,7 @@
 #include "snd/SndSeEmitterKind1.h"
 #include "npc/Unk_02014254.h"
 #include "talk/EncodedString.h"
+#include "npc/NpcFaceAnim.h"
 #define VillagerId_makeFileName _ZN10VillagerId12makeFileNameEPvjj
 #define Unk_02013474_enableFootsteps _ZN12Unk_0201347415enableFootstepsEv
 #define NpcTalkCtrl_requestTalk _ZN11NpcTalkCtrl11requestTalkEhh
@@ -53,7 +54,6 @@
 #define Mailbox_execNoMail _ZN7Mailbox10execNoMailEv
 
 
-struct NpcFaceAnim { NpcFaceAnim(); ~NpcFaceAnim(); u32 pad[0x88 / 4]; };
 
 
 

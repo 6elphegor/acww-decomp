@@ -4,18 +4,12 @@
 #include "ui/UiWidget.h"
 #include "ui/HandCursor.h"
 #include "ui/NameLabelBalloon.h"
+#include "talk/MsgString9B.h"
 
 // ---- sub-object declarations (defined in src/main/unk_0208d154.cpp etc.) ----
 
 
 
-class MsgString9B {
-public:
-    MsgString9B();
-    ~MsgString9B();
-
-    /* 0x00 */ u8 unk_00[0x1c];
-};
 
 class Unk_ov004_0224e2b8_Stub {
 public:

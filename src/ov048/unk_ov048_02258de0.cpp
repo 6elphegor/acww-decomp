@@ -11,6 +11,7 @@
 #include "snd/SndSeEmitterKind1.h"
 #include "npc/Unk_02014254.h"
 #include "npc/Unk_0201a13c.h"
+#include "talk/MsgString25.h"
 
 
 struct Unk_0201bc1c;
@@ -706,11 +707,6 @@ struct Unk_ov048_0225a8d4_Row {
     SpNpcCopperTalk::Fn f;
 };
 
-struct MsgString25 {
-    u8 unk_00[0x2c];
-    MsgString25();
-    ~MsgString25();
-};
 
 extern "C" {
 extern void *data_ov048_0225c6ec[2];

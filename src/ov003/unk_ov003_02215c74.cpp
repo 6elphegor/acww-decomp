@@ -10,6 +10,7 @@
 #include "game/FxVec3.h"
 #include "sys/ProcBase.h"
 #include "gfx/ModelAnim.h"
+#include "talk/MsgString9B.h"
 
 // shared_actor.h.txt -- declarations shared by the ov003 actor units (class family of ov009 BuildingActor).
 // Written by the agent that owns ov003 TU06/07/09/10/11/12 (all 1.2/sp2).  Paste unchanged after `#include "types.h"`
@@ -232,12 +233,6 @@ public:
     u8 pad_60[0xb8 - 0x60];
 };
 
-class MsgString9B {
-public:
-    MsgString9B();
-    ~MsgString9B();
-    u32 pad[8];
-};
 
 #define Actor_spawn _ZN5Actor5spawnEPvS0_S0_S0_S0_
 #define VillagerId_getName _ZN10VillagerId7getNameEj

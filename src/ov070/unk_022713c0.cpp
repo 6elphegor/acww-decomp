@@ -18,6 +18,7 @@
 #include "snd/SndSeEmitterKind1.h"
 #include "npc/Unk_02014254.h"
 #include "npc/Unk_0201a13c.h"
+#include "talk/MsgString25.h"
 
 
 struct Unk_0201bc1c;
@@ -37,11 +38,6 @@ struct ItemPickSpec {
     s32 itemClass;
 };
 
-struct MsgString25 {
-    MsgString25();
-    ~MsgString25();
-    u32 pad[0x28 / 4];
-};
 
 struct Unk_ov070_02271524_Out {
     u8 letterLevel;

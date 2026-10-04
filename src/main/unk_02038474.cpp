@@ -10,6 +10,7 @@
 #include "talk/MsgString.h"
 #include "talk/EncodedString.h"
 #include "talk/ChatBalloonText.h"
+#include "talk/MsgString9B.h"
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Classes owned by other units (declarations only, no inline bodies)
@@ -21,12 +22,6 @@
 
 
 
-class MsgString9B {
-public:
-    MsgString9B();
-    ~MsgString9B();
-    u32 pad[0x1c / 4];
-};
 
 
 // ---------------------------------------------------------------------------------------------------------------------

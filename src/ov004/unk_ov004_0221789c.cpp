@@ -23,6 +23,7 @@
 #include "npc/NpcActionCtrl.h"
 #include "snd/SndSeEmitterKind1.h"
 #include "npc/Unk_02014254.h"
+#include "npc/NpcFaceAnim.h"
 
 class FleaMarketSellerVillager;
 
@@ -180,7 +181,6 @@ void ActorTalkRequest_setItemNameSlot(void *o, void *a, u32 b, u32 c);
 void *ActorTalkRequest_getChoiceList(void *o);
 }
 
-struct NpcFaceAnim { NpcFaceAnim(); ~NpcFaceAnim(); u32 pad[0x88 / 4]; };
 
 
 

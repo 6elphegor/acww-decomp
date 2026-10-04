@@ -7,6 +7,7 @@
 #include "menu/InventoryBg.h"
 #include "menu/MenuProc.h"
 #include "ui/HandCursor.h"
+#include "menu/MenuLauncher.h"
 
 extern "C" {
 void Gfx2d_ShowLayer(u32 x);
@@ -219,11 +220,6 @@ public:
     void setAnimIfChanged(s32);
 };
 
-class MenuLauncher {
-public:
-    void onChildClosed();
-    void setNextRequest(s32, s32);
-};
 typedef void (ChestMenu::*Unk_ov102_02297520_Fn)();
 
 // Vtable 0x02297520

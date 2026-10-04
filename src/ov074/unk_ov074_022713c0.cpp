@@ -14,6 +14,7 @@
 #include "snd/SndSeEmitterKind1.h"
 #include "npc/Unk_02014254.h"
 #include "npc/Unk_0201a13c.h"
+#include "gfx/MatTexVramTask.h"
 
 
 struct Unk_0201bc1c;
@@ -251,12 +252,6 @@ public:
     virtual ~SpNpcTalkRequest();
 };
 
-class MatTexVramTask {
-public:
-    MatTexVramTask();
-    void cancel();
-    u8 pad_00[0x28];
-};
 
 class SpNpcBlancaFaceTexture {
 public:

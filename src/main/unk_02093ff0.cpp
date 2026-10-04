@@ -10,6 +10,7 @@
 #include "talk/MsgString.h"
 #include "game/GroundInfo.h"
 #include "talk/EncodedString.h"
+#include "talk/MsgString9B.h"
 
 
 
@@ -149,16 +150,6 @@ public:
     /* 0x0e */ u8 text[8];
 };
 
-// 9-byte source buffer at +0x12
-class MsgString9B : public MsgString {
-public:
-    MsgString9B();
-    virtual ~MsgString9B();
-    virtual u32 capacity();
-    virtual u8 *data();
-
-    /* 0x12 */ u8 text[9];
-};
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Record with a 10-byte header (id + 8 bytes), a u16 at +0xa, 8 bytes at +0xc and an s8 at +0x14

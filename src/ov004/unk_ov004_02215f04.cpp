@@ -10,6 +10,7 @@
 #include "town/Unk_0204e858_Grid.h"
 #include "npc/Unk_ov004_0221572c_Sub.h"
 #include "game/Unk_ov004_02215c94_V.h"
+#include "talk/MsgString9B.h"
 
 extern "C" {
 struct Unk_ov004_02215c94_S : Unk_ov004_02215c94_V {
@@ -401,12 +402,6 @@ u8 sBirthdayGuestMsgFile[0x28];
 extern "C" BirthdayHostVillager *sBirthdayHostVillager;
 extern "C" s32 Room_PickRandomWalkTarget(Unk_ov004_Vec3 *out, Unk_ov004_Vec3 *in, s32 angle);
 
-class MsgString9B {
-public:
-    MsgString9B();
-    ~MsgString9B();
-    u32 pad[8];
-};
 
 extern "C" BirthdayGuestVillager *BirthdayGuestVillager_Create() {
     return new BirthdayGuestVillager;

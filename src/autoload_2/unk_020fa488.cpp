@@ -9,6 +9,7 @@
 #include "gfx/SplEmitterViews.h"
 #include "gfx/SplTex.h"
 #include "gfx/SplViews.h"
+#include "gfx/SplNode.h"
 
 
 
@@ -22,11 +23,6 @@ struct Res {
     Blk14 *p14;
 };
 
-struct Node {
-    Node *next;
-    u8 p4[0x28];
-    u8 c2c;
-};
 
 
 
@@ -53,22 +49,6 @@ void func_020fb378(Mc *m, Node *n, u32 a);
 
 
 
-struct Nd {
-    u8 p0[8];
-    s32 w8;
-    s32 w12;
-    s32 w16;
-    u8 p14[12];
-    u16 h32;
-    u8 p22[12];
-    Cbits c46;
-    s32 w48;
-    s16 s52;
-    u16 h54;
-    s32 w56;
-    s32 w60;
-    s32 w64;
-};
 
 
 

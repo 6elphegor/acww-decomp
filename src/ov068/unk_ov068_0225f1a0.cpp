@@ -12,6 +12,7 @@
 #include "actor/Unk_ov068_SceneEntry.h"
 #include "player/HeldToolModel.h"
 #include "sys/ProcBase.h"
+#include "talk/MsgString11.h"
 #define X_func_ov068_0225f5f4 _ZN17FieldVillagerLook17setLookModeLockedEP13FieldVillagerjiiPviih
 #define X_func_ov068_0225f630 _ZN17FieldVillagerLook9resetLookEP13FieldVillager
 #define X_func_ov068_0225f670 _ZN17FieldVillagerLook4initEP13FieldVillager
@@ -788,12 +789,6 @@ public:
     ~EncodedString10();
 };
 
-class MsgString11 {
-public:
-    u32 v[8];
-    MsgString11();
-    ~MsgString11();
-};
 
 struct Unk_ov068_02262c20_Blk {
     u32 b[0x80];

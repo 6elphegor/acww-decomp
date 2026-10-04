@@ -7,6 +7,7 @@
 #include "menu/InventoryBg.h"
 #include "menu/MenuProc.h"
 #include "ui/HandCursor.h"
+#include "menu/MenuLauncher.h"
 
 extern "C" {
 extern u8 gTouchCurX;
@@ -121,11 +122,6 @@ public:
     BOOL isTouched(s32 a);
 };
 
-class MenuLauncher {
-public:
-    void onChildClosed();
-    void setNextRequest(s32 a, s32 b);
-};
 
 // ---- sub-objects with their own constructor/destructor
 

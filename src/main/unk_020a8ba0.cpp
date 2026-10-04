@@ -17,6 +17,11 @@
 #include "talk/MsgProcessor.h"
 #include "talk/MsgWalker.h"
 #include "talk/EncodedString.h"
+#include "talk/MsgString33.h"
+#include "talk/MsgRenderProcessor.h"
+#include "talk/MsgQuery.h"
+#include "talk/MsgCopyProcessor.h"
+#include "talk/MsgUiProc.h"
 
 inline void *operator new(unsigned long, void *p) { return p; }
 
@@ -387,14 +392,6 @@ class MsgString;
 
 
 
-class MsgString33 : public MsgString {
-public:
-    MsgString33();
-    virtual ~MsgString33();
-    virtual u32 capacity();
-    virtual u8 *data();
-    void initEmpty();
-};
 
 // Buffer defined in another file (ctor func_020aa8e0, dtor func_020aa8c8), 0x34 bytes
 class Unk_020aa8e0 : public MsgString {
@@ -411,76 +408,15 @@ public:
 
 
 
-class MsgQuery : public MsgWalker {
-public:
-    MsgQuery();
-    virtual ~MsgQuery();
-    virtual void onBegin();
-    virtual void onEnd();
-    virtual void onChar(u32 v);
-    virtual void onTag(u8 *cmd);
-    virtual BOOL canContinue();
-
-    void onTagFind();
-    void onCharCountLines();
-    void onCharCount();
-    void onCharFindNth();
-    void resetQuery();
-
-    /* 0x24 */ u32 mode;
-    /* 0x28 */ MsgTag tag;
-    /* 0x3c */ u32 curChar;
-    /* 0x40 */ s32 findGroup;
-    /* 0x44 */ s32 findId;
-    /* 0x48 */ u32 targetIndex;
-    /* 0x4c */ u32 charCount;
-    /* 0x50 */ u32 targetLines;
-    /* 0x54 */ u32 lineCount;
-    /* 0x58 */ u8 isDone;
-};
 
 class MsgProcessor;
 
 
 
-class MsgRenderProcessor : public MsgProcessor {
-public:
-    MsgRenderProcessor();
-    virtual ~MsgRenderProcessor();
-    virtual void onBegin();
-    virtual void onEnd();
-    virtual void onChar(u32 c);
-    virtual void onTag(u8 *p);
-
-    /* 0x2c */ u32 altTextEnd;
-};
-
-class MsgCopyProcessor : public MsgProcessor {
-public:
-    MsgCopyProcessor();
-    virtual ~MsgCopyProcessor();
-    virtual void onEnd();
-    u8 getResult();
-    void finish();
-    void beginCopy(MsgString *s, u8 *str, u32 mode, u8 flag);
-
-    /* 0x2c */ MsgString *dest;
-    /* 0x30 */ u8 *srcText;
-    /* 0x34 */ u32 copyMode;
-    /* 0x38 */ u8 result;
-};
 
 
 
-class MsgUiProc : public GameProc {
-public:
-    MsgUiProc();
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
-    virtual BOOL onExecute();
-    virtual BOOL onDraw();
-    virtual ~MsgUiProc();
-};
+
 
 
 

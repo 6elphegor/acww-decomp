@@ -5,6 +5,7 @@
 #include "npc/VillagerId.h"
 #include "talk/TalkWindowState.h"
 #include "sys/ProcBase.h"
+#include "talk/MsgString9B.h"
 
 
 
@@ -66,12 +67,6 @@ public:
     /* 0x1e */ u8 msgIndex;
 };
 
-class MsgString9B {
-public:
-    MsgString9B();
-    virtual ~MsgString9B();
-    u8 pad_04[0x18];
-};
 
 
 class TalkMsgRequest : public MsgRequest {

@@ -1,5 +1,8 @@
 #include "types.h"
 #include "talk/EncodedString.h"
+#include "talk/MsgString33B.h"
+#include "talk/MsgString129.h"
+#include "talk/MsgString25B.h"
 
 
 class EncodedString128 : public EncodedString {
@@ -22,27 +25,8 @@ public:
     /* 0x17 */ u8 pad_17;
 };
 
-// Classes of other units (constructed by this unit's __sinit).
-class MsgString25B {
-public:
-    MsgString25B();
-    virtual ~MsgString25B();
-    /* 0x04 */ u8 unk_04[0x28];
-};
 
-class MsgString33B {
-public:
-    MsgString33B();
-    virtual ~MsgString33B();
-    /* 0x04 */ u8 unk_04[0x30];
-};
 
-class MsgString129 {
-public:
-    MsgString129();
-    virtual ~MsgString129();
-    /* 0x04 */ u8 unk_04[0x90];
-};
 
 // Object with the byte/halfword state accessed by func_02065554 and friends.
 class LetterView {

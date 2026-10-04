@@ -10,6 +10,7 @@
 #include "npc/Unk_020781ec_Data.h"
 #include "talk/MsgString.h"
 #include "talk/EncodedString.h"
+#include "talk/MsgString9B.h"
 
 
 
@@ -27,11 +28,6 @@ class VillagerDataItemView;
 
 
 
-struct MsgString9B {
-    u32 v[7];
-    MsgString9B();
-    ~MsgString9B();
-};
 
 struct Unk_0207f804_Str {
     u32 v[6];

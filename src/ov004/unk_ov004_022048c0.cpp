@@ -7,6 +7,7 @@
 #include "talk/TalkWindowState.h"
 #include "game/TouchPicker.h"
 #include "sys/ProcBase.h"
+#include "talk/MsgString25.h"
 
 
 // ---------------------------------------------------------------- library base chain (as in link_ov009)
@@ -118,12 +119,6 @@ struct TouchPickBox {
 };
 
 
-class MsgString25 {
-public:
-    MsgString25();
-    ~MsgString25();
-    u32 pad[0xc];
-};
 
 extern "C" {
 void *PlayerData_GetCurrent();

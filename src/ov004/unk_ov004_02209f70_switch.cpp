@@ -32,6 +32,7 @@
 #include "sys/ProcBase.h"
 #include "gfx/ModelAnim.h"
 #include "room/FtrCollider.h"
+#include "gfx/MatTexVramTask.h"
 // The two functions of the ov004 translation unit 0x02209f70-0x022136d0 that need mwcc 1.2/base (signed-halfword
 // switch tables): FtrSingingInsect::updateActive and vfunc_7c. Same declarations as the main file of the unit;
 // nothing else is emitted here (see config/usa/arm9/overlays/ov004/object_order.txt).
@@ -1082,10 +1083,6 @@ public:
 // ---------------------------------------------------------------------------------------------------------------------
 // Vtable 0x0224981c
 
-struct MatTexVramTask {
-    MatTexVramTask();
-    u32 pad[10];
-};
 
 class FtrCarpetSample : public FtrActor {
 public:

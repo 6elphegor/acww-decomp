@@ -5,6 +5,7 @@
 #include "talk/MsgString.h"
 #include "menu/MenuProc.h"
 #include "ui/HandCursor.h"
+#include "menu/MenuLauncher.h"
 
 class BbsReadMenu;
 
@@ -55,11 +56,6 @@ BOOL MenuKeys_HasUp(void *pad);
 BbsReadMenu *BbsReadMenu_Create();
 }
 
-class MenuLauncher {
-public:
-    void onChildClosed();
-    void setNextRequest(s32 a, s32 b);
-};
 
 class BbsBoard {
 public:

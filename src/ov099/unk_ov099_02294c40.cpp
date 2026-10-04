@@ -8,6 +8,7 @@
 #include "menu/InventoryBg.h"
 #include "menu/MenuProc.h"
 #include "ui/HandCursor.h"
+#include "menu/MenuLauncher.h"
 
 class PocketMenuUnk;
 struct PopupChoiceIdList;
@@ -184,12 +185,6 @@ public:
     u32 unk_00[0x108 / 4];
 };
 
-// ov092 singleton returned by ProcBase_GetParent
-class MenuLauncher {
-public:
-    void onChildClosed();
-    void setNextRequest(s32 a, s32 b);
-};
 
 
 typedef void (PocketMenuUnk::*Unk_ov099_02296b00_Fn)();

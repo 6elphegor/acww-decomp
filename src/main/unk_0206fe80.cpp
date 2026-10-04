@@ -2,12 +2,8 @@
 #include "game/Unk_020702ec_Date.h"
 #include "save/MuseumData.h"
 #include "item/Letter.h"
+#include "talk/MsgString9C.h"
 
-struct MsgString9C {
-    MsgString9C();
-    virtual ~MsgString9C();
-    u32 pad[6];
-};
 
 extern u32 data_020e0498;
 extern u32 data_020e049c;

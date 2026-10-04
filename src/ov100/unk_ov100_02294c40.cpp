@@ -7,6 +7,7 @@
 #include "menu/InventoryBg.h"
 #include "menu/MenuProc.h"
 #include "ui/HandCursor.h"
+#include "menu/MenuLauncher.h"
 
 extern "C" {
 void Gfx2d_ShowLayer(u32 x);
@@ -208,11 +209,6 @@ public:
     void setAnimIfChanged(s32);
 };
 
-class MenuLauncher {
-public:
-    void onChildClosed();
-    void setNextRequest(s32, s32);
-};
 
 typedef void (ShopSellMenu::*Unk_ov100_02297778_Fn)();
 

@@ -9,6 +9,7 @@
 #include "ui/HandCursor.h"
 #include "talk/EncodedString.h"
 #include "talk/ChatBalloonText.h"
+#include "talk/MsgString9B.h"
 
 enum Unk_ov111_022970cc_Status { UNK_OV111_ST_0 = 0, UNK_OV111_ST_1 = 1, UNK_OV111_ST_2 = 2, UNK_OV111_ST_3 = 3 };
 
@@ -29,12 +30,6 @@ public:
     void *getPlayerId();
 };
 
-class MsgString9B {
-public:
-    MsgString9B();
-    virtual ~MsgString9B();
-    u8 pad_04[0x18];
-};
 
 extern "C" {
 extern u8 gU8None;

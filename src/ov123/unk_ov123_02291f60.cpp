@@ -2,6 +2,7 @@
 #include "Unk_020d8c7c.h"
 #include "menu/MenuProc.h"
 #include "ui/HandCursor.h"
+#include "menu/MenuLauncher.h"
 
 extern "C" {
 extern u8 gSaveBlancaFace;
@@ -86,12 +87,6 @@ BOOL _ZN10BgVramTask13requestScreenEjhjj(void *self, void *a, u32 b, u32 c, u32 
 void _ZN10BgVramTask6cancelEv(void *self);
 }
 
-// Other modules' classes (methods called directly)
-class MenuLauncher {
-public:
-    void onChildClosed();
-    void setNextRequest(s32 a, s32 b);
-};
 
 // Element at +0xb8, 0x40 bytes
 class LabelString {

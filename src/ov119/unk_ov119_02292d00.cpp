@@ -2,6 +2,7 @@
 #include "Unk_020d8c7c.h"
 #include "menu/MenuProc.h"
 #include "ui/HandCursor.h"
+#include "talk/MsgString193.h"
 
 // Calls into other modules' class methods: extern "C" functions named by the real mangled symbol (self first).
 #define LabelString_redrawAligned _ZN11LabelString13redrawAlignedEii
@@ -185,12 +186,6 @@ public:
     u8 unk_00[0x40];
 };
 
-class MsgString193 {
-public:
-    MsgString193();
-    ~MsgString193();
-    u32 unk_00[0xd4 / 4];
-};
 
 // 0x24-byte helper objects at +0x1a58
 class BgVramTask {

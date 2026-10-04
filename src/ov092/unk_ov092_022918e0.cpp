@@ -3,6 +3,7 @@
 #include "snd/BgmVolumeMixer.h"
 #include "menu/MenuSlide.h"
 #include "menu/MenuProc.h"
+#include "menu/MenuLauncher.h"
 
 extern "C" {
 u32 MenuCtrl_GetMode();
@@ -32,28 +33,6 @@ extern u8 *data_021c1b3c;
 class MenuLauncher;
 typedef void (MenuLauncher::*Unk_ov092_02291ec8_Fn)();
 
-// Vtable 0x02291ec8
-class MenuLauncher : public MenuProc {
-public:
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_0c();
-    virtual BOOL onDraw();
-    virtual BOOL execTransition();
-    virtual BOOL execMain();
-    virtual BOOL execPhase3();
-    virtual BOOL execPhase4();
-    virtual BOOL execClosed();
-
-    void releaseResources();
-    void initLauncher();
-    void stateStart();
-    void updateOpenRequested();
-    void updateIdle();
-    void onChildClosed();
-    void setNextRequest(s32 a, s32 b);
-
-    /* 0x91 */ u8 unk_91;
-};
 
 extern "C" MenuLauncher *MenuLauncher_Create() {
     return new MenuLauncher();

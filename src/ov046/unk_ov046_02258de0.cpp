@@ -16,6 +16,7 @@
 #include "snd/SndSeEmitterKind1.h"
 #include "npc/Unk_02014254.h"
 #include "npc/Unk_0201a13c.h"
+#include "talk/MsgString256.h"
 
 
 struct Unk_0201bc1c;
@@ -57,11 +58,6 @@ struct ConstellationMsgString17 {
     u32 pad[9];
     ConstellationMsgString17();
     ~ConstellationMsgString17();
-};
-struct MsgString256 {
-    u32 pad[0x114 / 4];
-    MsgString256();
-    ~MsgString256();
 };
 
 extern "C" {

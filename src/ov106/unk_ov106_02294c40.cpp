@@ -11,6 +11,7 @@
 #include "item/LetterView.h"
 #include "item/PlayerMailbox.h"
 #include "ui/LabelButton.h"
+#include "menu/MenuLauncher.h"
 
 // ov106: scene overlay (class MailboxMenu, vtable 0x02298180, 0x3f80 bytes).
 
@@ -281,11 +282,6 @@ public:
     void setAnimIfChanged(s32);
 };
 
-class MenuLauncher {
-public:
-    void onChildClosed();
-    void setNextRequest(s32, s32);
-};
 
 
 // Vtable 0x02298180

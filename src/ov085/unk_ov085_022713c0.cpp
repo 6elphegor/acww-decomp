@@ -15,6 +15,7 @@
 #include "snd/SndSeEmitterKind1.h"
 #include "npc/Unk_02014254.h"
 #include "npc/Unk_0201a13c.h"
+#include "talk/MsgString9B.h"
 
 #pragma opt_loop_invariants off
 
@@ -69,11 +70,6 @@ extern u8 gSaveData[];
 }
 
 
-struct MsgString9B {
-    u32 v[7];
-    MsgString9B();
-    ~MsgString9B();
-};
 
 class ActorTalkRequest {
 public:

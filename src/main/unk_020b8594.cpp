@@ -3,6 +3,7 @@
 #include "gfx/BgTransfer.h"
 #include "gfx/TexTransfer.h"
 #include "gfx/VramTask.h"
+#include "gfx/MatTexVramTask.h"
 
 extern "C" {
 // Other files
@@ -43,18 +44,6 @@ void VramQueue2d_Dequeue(VramTask *p);
 BOOL VramQueue2d_Enqueue(VramTask *p);
 }
 
-class MatTexVramTask: public VramTask {
-public:
-    TexTransfer texXfer;
-    TexTransfer plttXfer;
-
-    MatTexVramTask();
-    virtual BOOL execute();
-    BOOL request(void *a, u32 b, void *c, u32 d, u32 e);
-    void prepare(void);
-    void cancel(void);
-    void clear(void);
-};
 
 class TexVramTask : public VramTask {
 public:

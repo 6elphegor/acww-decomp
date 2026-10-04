@@ -8,6 +8,7 @@
 #include "talk/MsgString.h"
 #include "talk/MsgRequest.h"
 #include "item/LetterView.h"
+#include "talk/MsgString9B.h"
 
 struct TitleChoiceSet {
     u8 *msgIds;
@@ -59,12 +60,6 @@ public:
 
 
 
-class MsgString9B {
-public:
-    MsgString9B();
-    virtual ~MsgString9B();
-    u8 unk_04[0x18];
-};
 
 extern "C" {
 TalkWindowState *TalkWindow_Get(s32 a);

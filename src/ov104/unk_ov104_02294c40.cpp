@@ -14,6 +14,7 @@
 #include "menu/MenuProc.h"
 #include "item/LetterView.h"
 #include "ui/UiWidget.h"
+#include "menu/MenuLauncher.h"
 
 class PostOfficeMenu;
 class MenuLauncher;
@@ -287,11 +288,6 @@ public:
 // ov094 sub-objects ----------------------------------------------------------------------------
 
 
-class MenuLauncher {
-public:
-    void onChildClosed();
-    void setNextRequest(s32 a, s32 b);
-};
 
 
 typedef void (PostOfficeMenu::*Unk_ov104_02298170_Fn)();

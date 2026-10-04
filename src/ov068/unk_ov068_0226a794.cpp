@@ -7,6 +7,7 @@
 #include "talk/TalkWindowState.h"
 #include "player/PlayerActionRequest.h"
 #include "sys/ProcBase.h"
+#include "talk/MsgString9B.h"
 
 struct Unk_ov068_0226acf8_Vec {
     s32 x, y, z;
@@ -291,14 +292,6 @@ struct Unk_ov068_0226a940_Loc {
     u16 h;
 };
 
-class MsgString9B {
-public:
-    MsgString9B();
-    virtual ~MsgString9B();
-    virtual u32 capacity();
-    virtual u8 *data();
-    u8 pad_04[0x1c];
-};
 
 
 class PlayerActTaxiGetIn {

@@ -4,6 +4,7 @@
 #include "gfx/G3dResAccess.h"
 #include "gfx/MatTexBinder.h"
 #include "game/FxVec3.h"
+#include "gfx/MatTexVramTask.h"
 
 // ---------------------------------------------------------------- real symbol names of main-module methods
 // (called as free functions with the object as first argument; the mangled name is the symbols.txt name)
@@ -68,12 +69,6 @@ struct Unk_020b8d98 {
     }
 };
 
-class MatTexVramTask {
-public:
-    MatTexVramTask();
-    virtual BOOL vfunc_00();
-    u8 pad_04[0x24];
-};
 
 
 struct AnimModel {

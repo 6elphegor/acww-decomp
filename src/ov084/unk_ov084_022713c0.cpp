@@ -15,6 +15,7 @@
 #include "snd/SndSeEmitterKind1.h"
 #include "npc/Unk_02014254.h"
 #include "npc/Unk_0201a13c.h"
+#include "talk/MsgString33.h"
 
 #pragma opt_loop_invariants off
 
@@ -320,11 +321,6 @@ struct Unk_ov084_02271478_Ent {
     s32 b;
 };
 
-struct MsgString33 {
-    u32 unk_00[0xd];
-    MsgString33();
-    ~MsgString33();
-};
 
 extern "C" {
 void *_ZN10PlayerData11getPlayerIdEv(void *p);

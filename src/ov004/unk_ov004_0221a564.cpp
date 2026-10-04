@@ -24,6 +24,7 @@
 #include "npc/NpcActionCtrl.h"
 #include "snd/SndSeEmitterKind1.h"
 #include "npc/Unk_02014254.h"
+#include "npc/NpcFaceAnim.h"
 
 class SickVillager;
 
@@ -214,7 +215,6 @@ s32 Item_IsFurniture(void *);
 u32 Item_GetFurnitureIndex(void *);
 }
 
-struct NpcFaceAnim { NpcFaceAnim(); ~NpcFaceAnim(); u32 pad[0x88 / 4]; };
 
 
 

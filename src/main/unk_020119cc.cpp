@@ -21,6 +21,11 @@
 #include "gfx/MatTexPatAnim.h"
 #include "npc/NpcActionCtrl.h"
 #include "game/GroundInfo.h"
+#include "talk/MsgString9B.h"
+#include "talk/MsgString9C.h"
+#include "talk/MsgString33.h"
+#include "talk/MsgString25.h"
+#include "npc/NpcFaceAnim.h"
 
 
 // unk_02011580.cpp
@@ -857,17 +862,9 @@ void operator delete(void *p);
 // unk_020156ac.cpp
 struct ItemName { ItemName(u16 *p); ~ItemName(); u32 pad[0x28 / 4]; };
 
-// unk_020156ac.cpp
-struct MsgString9B { MsgString9B(); ~MsgString9B(); u32 pad[0x20 / 4]; };
 
-// unk_020156ac.cpp
-struct MsgString9C { MsgString9C(); ~MsgString9C(); u32 pad[0x20 / 4]; };
 
-// unk_020156ac.cpp
-struct MsgString33 { MsgString33(); ~MsgString33(); u32 pad[0x38 / 4]; };
 
-// unk_020156ac.cpp
-struct MsgString25 { MsgString25(); ~MsgString25(); u32 pad[0x2c / 4]; };
 
 // unk_020156ac.cpp
 class Unk_02015b8c_Scene {
@@ -1597,42 +1594,6 @@ struct Unk_02019cac_Owner {
     s32 modelResMdl;
 };
 
-// unk_02019998.cpp
-struct NpcFaceAnim : BlinkTimer {
-    NpcTexPatHeapHandle texPatHeap;
-    NpcTexPatBufRefHandle texPatBuf;
-    NpcFaceAnimHandle faceAnimRef;
-    MatTexPatAnim eyeTexAnim;
-    MatTexPatAnim mouthTexAnim;
-    s32 eyeAnimId;
-    s32 mouthAnimId;
-    s32 savedMouthAnimId;
-    s32 talkMouthVariant;
-    u8 loaded;
-
-    NpcFaceAnim();
-    ~NpcFaceAnim();
-    void release();
-    void func_020199c8();
-    void resumeMouthMaterial();
-    BOOL setMouthTexture(u32 a);
-    BOOL setMaterialTex(void *m, void *q, u32 r);
-    void setFaceAnimsFrom(void *a, s32 b, s32 c);
-    void setFaceAnims(s32 t, s32 u, s32 x, s32 mode);
-    void restoreMouthAnim();
-    void startTalkMouth(s32 i);
-    void setMouthAnim(s32 v, u32 w);
-    BOOL isMouthCycleDone();
-    void randomizeTalkMouth();
-    BOOL func_02019c50(s32 a, s32 b, s32 c);
-    s32 func_02019c70(s32 v);
-    void pickTalkMouthVariant();
-    BOOL isTalkMouthAnim(s32 v);
-    BOOL load(Unk_02019cac_Owner *o);
-    s32 getMouthAnim();
-    BOOL isLoaded();
-    void update(u8 *o);
-};
 
 // unk_02019998.cpp
 struct NpcEmotionFxSlot {

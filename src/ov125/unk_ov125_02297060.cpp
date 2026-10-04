@@ -3,6 +3,7 @@
 #include "Unk_020d8c7c.h"
 #include "menu/MenuProc.h"
 #include "ui/HandCursor.h"
+#include "menu/MenuLauncher.h"
 
 struct PopupChoiceIdList;
 
@@ -155,12 +156,6 @@ public:
     void freeTexts();
 };
 
-// ov092 singleton returned by ProcBase_GetParent
-class MenuLauncher {
-public:
-    void onChildClosed();
-    void setNextRequest(s32 a, s32 b);
-};
 
 // ov124 library object (menu/han text + sprite), size 0x94
 class GeneralMenuHeader {

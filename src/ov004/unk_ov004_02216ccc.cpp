@@ -23,6 +23,7 @@
 #include "npc/NpcActionCtrl.h"
 #include "snd/SndSeEmitterKind1.h"
 #include "npc/Unk_02014254.h"
+#include "npc/NpcFaceAnim.h"
 
 class HouseOwnerVillager;
 
@@ -136,7 +137,6 @@ void VillagerClothModel_change(void *self, void *owner, u16 *p);
 u32 Unk_02015b8c_getAnimId(void *o, u32 v);
 }
 
-struct NpcFaceAnim { NpcFaceAnim(); ~NpcFaceAnim(); u32 pad[0x88 / 4]; };
 
 
 

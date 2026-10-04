@@ -7,6 +7,7 @@
 #include "menu/InventoryBg.h"
 #include "menu/MenuProc.h"
 #include "ui/HandCursor.h"
+#include "menu/MenuLauncher.h"
 
 class SongPickMenu;
 struct Unk_ov109_02295570;
@@ -199,12 +200,6 @@ public:
 
 
 
-// ov092 singleton returned by ProcBase_GetParent
-class MenuLauncher {
-public:
-    void onChildClosed();
-    void setNextRequest(s32 a, s32 b);
-};
 
 
 typedef void (SongPickMenu::*Unk_ov109_02296698_Fn)();

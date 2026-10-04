@@ -23,6 +23,7 @@
 #include "npc/NpcActionCtrl.h"
 #include "snd/SndSeEmitterKind1.h"
 #include "npc/Unk_02014254.h"
+#include "npc/NpcFaceAnim.h"
 
 class CafeVillager;
 
@@ -76,7 +77,6 @@ void VillagerTalk_begin(void *, void *, u32);
 void NpcActionCtrl_requestAction(void *, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
 }
 
-struct NpcFaceAnim { NpcFaceAnim(); ~NpcFaceAnim(); u32 pad[0x88 / 4]; };
 
 
 

@@ -12,6 +12,7 @@
 #include "snd/SndSeEmitterKind1.h"
 #include "npc/Unk_02014254.h"
 #include "npc/Unk_0201a13c.h"
+#include "npc/NpcFaceAnim.h"
 
 
 struct Unk_0201bc1c;
@@ -163,12 +164,6 @@ struct ThreeLayerAnimModel {
     ~ThreeLayerAnimModel();
 };
 MEMBER(Unk_0201ad3c, 0xc);
-struct NpcFaceAnim {
-    u8 unk_00[0x334 - 0x2ac];
-    NpcFaceAnim();
-    ~NpcFaceAnim();
-    s32 getMouthAnim();
-};
 MEMBER(Unk_0201accc, 0x3a8 - 0x350);
 MEMBER(Unk_0201a794, 0x418 - 0x3b0);
 MEMBER(CollisionState, 0x30);

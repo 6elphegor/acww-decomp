@@ -8,6 +8,10 @@
 #include "talk/MsgString.h"
 #include "talk/TalkBmgReader.h"
 #include "talk/EncodedString.h"
+#include "talk/MsgString513.h"
+#include "talk/MsgString33B.h"
+#include "talk/MsgString129.h"
+#include "talk/MsgString25B.h"
 
 extern "C" {
 extern u8 sMailCheckWords[];
@@ -96,45 +100,9 @@ public:
     /* 0x0e */ u8 text[0x28];
 };
 
-class MsgString513 : public MsgString {
-public:
-    MsgString513();
-    virtual ~MsgString513();
-    virtual u32 capacity();
-    virtual u8 *data();
 
-    /* 0x12 */ u8 text[513];
-};
 
-class MsgString33B : public MsgString {
-public:
-    MsgString33B();
-    virtual ~MsgString33B();
-    virtual u32 capacity();
-    virtual u8 *data();
 
-    /* 0x12 */ u8 text[33];
-};
-
-class MsgString129 : public MsgString {
-public:
-    MsgString129();
-    virtual ~MsgString129();
-    virtual u32 capacity();
-    virtual u8 *data();
-
-    /* 0x12 */ u8 text[129];
-};
-
-class MsgString25B : public MsgString {
-public:
-    MsgString25B();
-    virtual ~MsgString25B();
-    virtual u32 capacity();
-    virtual u8 *data();
-
-    /* 0x12 */ u8 text[25];
-};
 
 class LetterTextLine : public MsgString {
 public:

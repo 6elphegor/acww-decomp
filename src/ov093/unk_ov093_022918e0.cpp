@@ -1,5 +1,6 @@
 #include "types.h"
 #include "talk/MsgString.h"
+#include "talk/MsgString193.h"
 
 class LabelString {
 public:
@@ -14,12 +15,6 @@ public:
 };
 
 
-class MsgString193 {
-public:
-    MsgString193();
-    ~MsgString193();
-    u32 pad[0xd4 / 4];
-};
 
 class BgVramTask {
 public:

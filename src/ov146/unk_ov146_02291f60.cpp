@@ -7,6 +7,7 @@
 #include "talk/MsgString.h"
 #include "menu/MenuProc.h"
 #include "talk/EncodedString.h"
+#include "talk/MsgString9C.h"
 
 #define LabelBalloon_setPos _ZN12LabelBalloon6setPosEii
 #define LabelBalloon_showLayer2 _ZN12LabelBalloon10showLayer2Ev
@@ -82,15 +83,6 @@ public:
     /* 0x0e */ u8 text[10];
 };
 
-class MsgString9C : public MsgString {
-public:
-    MsgString9C();
-    virtual ~MsgString9C();
-    virtual u32 capacity();
-    virtual u8 *data();
-
-    /* 0x14 */ u32 unk_14[2];
-};
 
 extern "C" {
 extern u16 gPad[];

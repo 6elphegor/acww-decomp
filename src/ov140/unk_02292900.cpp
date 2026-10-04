@@ -4,6 +4,7 @@
 #include "Unk_020d8c7c.h"
 #include "menu/MenuProc.h"
 #include "ui/HandCursor.h"
+#include "menu/MenuLauncher.h"
 
 class DistantTownsMenu;
 
@@ -122,12 +123,6 @@ public:
     u32 unk_00[0x624 / 4];
 };
 
-// ov092 singleton returned by ProcBase_GetParent
-class MenuLauncher {
-public:
-    void onChildClosed();
-    void setNextRequest(s32 a, s32 b);
-};
 
 typedef void (DistantTownsMenu::*Unk_ov140_02293e04_Fn)();
 

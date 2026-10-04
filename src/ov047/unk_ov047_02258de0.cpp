@@ -15,6 +15,7 @@
 #include "snd/SndSeEmitterKind1.h"
 #include "npc/Unk_02014254.h"
 #include "npc/Unk_0201a13c.h"
+#include "talk/MsgString9B.h"
 
 
 struct Unk_0201bc1c;
@@ -36,11 +37,6 @@ struct Unk_ov047_0225a074_Buf {
     u16 npcHandle;
 };
 
-struct MsgString9B {
-    u8 pad_00[0x20];
-    MsgString9B();
-    ~MsgString9B();
-};
 
 struct Unk_ov047_0225a3e4_Msg {
     u8 msgIndex;

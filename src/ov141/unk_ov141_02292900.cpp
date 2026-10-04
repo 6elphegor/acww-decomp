@@ -4,6 +4,7 @@
 #include "Unk_020d8c7c.h"
 #include "menu/MenuProc.h"
 #include "ui/HandCursor.h"
+#include "menu/MenuLauncher.h"
 
 class NearbyTownsMenu;
 
@@ -117,12 +118,6 @@ public:
     u32 unk_00[0x624 / 4];
 };
 
-// ov092 singleton returned by ProcBase_GetParent
-class MenuLauncher {
-public:
-    void onChildClosed();
-    void setNextRequest(s32 a, s32 b);
-};
 
 static inline BOOL Unk_ov141_02293194_Both() {
     if (gTouchHeld != 0 && gTouchChanged != 0) {

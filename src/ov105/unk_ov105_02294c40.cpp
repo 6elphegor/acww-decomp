@@ -15,6 +15,7 @@
 #include "item/LetterView.h"
 #include "item/LetterStorage.h"
 #include "ui/UiWidget.h"
+#include "menu/MenuLauncher.h"
 
 class LetterStorageMenu;
 class MenuLauncher;
@@ -295,11 +296,6 @@ public:
 // ov094 sub-objects ----------------------------------------------------------------------------
 
 
-class MenuLauncher {
-public:
-    void onChildClosed();
-    void setNextRequest(s32 a, s32 b);
-};
 
 
 extern "C" {

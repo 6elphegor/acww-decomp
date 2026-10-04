@@ -11,6 +11,7 @@
 #include "game/Unk_ov004_022146ec_Bits.h"
 #include "net/Unk_ov004_022146ec_Sing.h"
 #include "talk/TalkWindowState.h"
+#include "talk/MsgString9B.h"
 
 
 class Actor : public GameProc {
@@ -119,12 +120,6 @@ public:
     u32 pad[9];
 };
 
-class MsgString9B {
-public:
-    MsgString9B();
-    ~MsgString9B();
-    u32 pad[7];
-};
 
 
 
