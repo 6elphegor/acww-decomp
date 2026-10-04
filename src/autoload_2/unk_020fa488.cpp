@@ -7,17 +7,9 @@
 #include "gfx/SplManager.h"
 #include "gfx/SplRes.h"
 #include "gfx/SplEmitterViews.h"
+#include "gfx/SplTex.h"
 
 
-// texture table entry (20 bytes)
-struct TexEnt {
-    void *e;
-    u32 w4;
-    u32 w8;
-    u32 w12;
-    u16 h16;
-    u16 h18;
-};
 
 
 

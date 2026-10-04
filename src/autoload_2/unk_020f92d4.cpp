@@ -7,17 +7,10 @@
 #include "gfx/SplManager.h"
 #include "gfx/SplRes.h"
 #include "gfx/SplEmitterViews.h"
+#include "gfx/VecFx32.h"
+#include "gfx/SplTex.h"
 
 
-// texture table entry (20 bytes)
-struct TexEnt {
-    void *e;
-    u32 w4;
-    u32 w8;
-    u32 w12;
-    u16 h16;
-    u16 h18;
-};
 
 
 
@@ -128,11 +121,6 @@ typedef void (*TexFn)(void *);
 typedef void (*DrawFn)(Mc *, Node *, u32);
 
 
-struct V3 {
-    s32 x;
-    s32 y;
-    s32 z;
-};
 
 
 

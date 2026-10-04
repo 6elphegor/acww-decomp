@@ -23,6 +23,7 @@
 #include "item/ShopAckCounter.h"
 #include "item/DateSeededRandomSource.h"
 #include "game/Elem2a.h"
+#include "gfx/Vec3Z.h"
 struct MsgString25 {
     MsgString25();
     ~MsgString25();
@@ -39,26 +40,8 @@ struct ItemName {
 // ======== types of unk_020abbcc.cpp ========
 
 
-struct Vec3Z2 {
-    s32 x, y, z;
-    Vec3Z2() {
-        x = 0;
-        y = 0;
-        z = 0x1000;
-    }
-    ~Vec3Z2();
-};
 
 
-struct Vec3Z {
-    s32 x, y, z;
-    Vec3Z() {
-        x = 0;
-        y = 0;
-        z = 0;
-    }
-    ~Vec3Z();
-};
 
 
 

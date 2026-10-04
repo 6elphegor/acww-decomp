@@ -4,6 +4,7 @@
 #include "npc/NpcResPool.h"
 #include "town/Unk_02082e80_Grid.h"
 #include "npc/SpNpcAnimHeapRefSlot.h"
+#include "npc/VillagerAnimHeapRefSlot.h"
 
 // Element payload types (defined elsewhere)
 struct Unk_020829b0_Y {
@@ -11,12 +12,6 @@ struct Unk_020829b0_Y {
     Unk_020829b0_Y();
     ~Unk_020829b0_Y();
     void SpNpcAnimHeapRef_Assign();
-};
-struct Unk_02082af0_X {
-    u32 unk_00;
-    Unk_02082af0_X();
-    ~Unk_02082af0_X();
-    void VillagerAnimHeapRef_Assign();
 };
 struct Unk_02082c54_Z {
     Unk_02082c54_Z();
@@ -27,10 +22,6 @@ struct Unk_02082c54_Z {
 
 struct Unk_020829b0_Y_dummy;
 
-struct VillagerAnimHeapRefSlot : public NpcResSlot {
-    Unk_02082af0_X heapRef;
-    void assign(u32 x);
-};
 
 struct NpcBodyAnimSlot : public NpcResSlot {
     Unk_02082c54_Z layers[3];

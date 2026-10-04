@@ -10,6 +10,7 @@
 #include "gfx/SpriteAnim.h"
 #include "ui/UiWidget.h"
 #include "snd/BgmVolumeMixer.h"
+#include "gfx/VramTask.h"
 #undef postCreate
 #undef vfunc_14
 
@@ -236,15 +237,6 @@ extern u8 gFieldSceneKind;
 
 class Unk_02083b0_dummy;
 
-class VramTask : public Unk_020b83b0 {
-public:
-    u8 state;
-    u8 kind;
-    u8 cost;
-
-    VramTask();
-    virtual BOOL execute() = 0;
-};
 
 
 class BgVramTask : public VramTask {

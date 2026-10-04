@@ -2,6 +2,7 @@
 #include "sys/Unk_020b83b0.h"
 #include "gfx/BgTransfer.h"
 #include "gfx/TexTransfer.h"
+#include "gfx/VramTask.h"
 
 extern "C" {
 // Other files
@@ -36,18 +37,6 @@ u8 TexTransfer_GetPlttCost(TexTransfer *p);
 }
 
 
-class VramTask : public Unk_020b83b0 {
-public:
-    u8 state;
-    u8 kind;
-    u8 cost;
-
-    VramTask();
-    virtual BOOL execute() = 0;
-    void dequeueTex(void);
-    BOOL enqueueTex(void);
-    void resetState(void);
-};
 
 extern "C" {
 void VramQueue2d_Dequeue(VramTask *p);

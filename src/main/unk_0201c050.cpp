@@ -16,6 +16,7 @@
 #include "npc/NpcObstacleProbe.h"
 #include "npc/Unk_0201ad18.h"
 #include "npc/Unk_020135e4.h"
+#include "talk/VillagerTalkRequestStartTopics.h"
 
 
 class VillagerTalk;
@@ -1915,32 +1916,6 @@ public:
 };
 
 
-class VillagerTalkRequestStartTopics {
-public:
-    void gotoQ05Talk();
-    void selectQCon(Unk_020254ec_Out *out);
-    void registerRequestDeclined();
-    void selectQNo(Unk_020254ec_Out *out);
-    void registerRequestAccepted();
-    void selectQStart(Unk_020254ec_Out *out);
-    void registerRequestDeferred();
-    void openRequestChoice();
-    void prepareRequestItem();
-    u8 pad_00[0x3c];
-    void *window;
-    u8 pad_40[0xac - 0x40];
-    void (VillagerTalkRequestStartTopics::*unk_ac)(Unk_020254ec_Out *);
-    u8 pad_b4[0xfc - 0xb4];
-    Unk_020254ec_Parent *actor;
-    u8 topicFile[0x11e - 0x100];
-    u8 topicIndex;
-    u8 pad_11f;
-    u16 itemFromPlayer;
-    u8 pad_122[0x156 - 0x122];
-    u16 pendingSe;
-    u8 pad_158[0x160 - 0x158];
-    void *planErrand;
-};
 
 class VillagerTalkRequestReplyTopics {
 public:
@@ -9207,10 +9182,10 @@ void VillagerTalkRequestStartTopics::selectQCon(Unk_020254ec_Out *out) {
 
 void VillagerTalkRequestStartTopics::gotoQ05Talk() {
     u8 b;
-    Unk_020254ec_Out out;
+    Unk_020238b0_Out out;
     ((VillagerTalk *)this)->setTopicFns((Unk_020d8938_Tbl *)((u8 *)&nZ::sRequestTopicsB[7]));
-    if (unk_ac) {
-        (this->*unk_ac)(&out);
+    if (selectFn) {
+        (this->*selectFn)(&out);
     }
     b = out.msgIndex;
     _ZN15TalkWindowState21setNextMessageIfUnsetEPhPv(window, &b, out.fileName);

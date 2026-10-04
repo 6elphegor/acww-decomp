@@ -5,6 +5,7 @@
 #include "actor/CharaFaceAnimRef.h"
 #include "actor/CharaFaceAnimWorkRef.h"
 #include "npc/SpNpcAnimHeapRefSlot.h"
+#include "npc/VillagerAnimHeapRefSlot.h"
 
 
 
@@ -33,11 +34,6 @@ struct NpcTexPatBufRef {
     NpcTexPatBufRef();
     ~NpcTexPatBufRef();
 };
-struct VillagerAnimHeapRef {
-    u32 slot;
-    VillagerAnimHeapRef();
-    ~VillagerAnimHeapRef();
-};
 
 // ---- 0x020e077c
 struct NpcFaceAnimSlot : NpcResSlot {
@@ -60,12 +56,6 @@ extern NpcFaceAnimPool sNpcFaceAnimPool;
 extern "C" NpcFaceAnimPool *NpcFaceAnimPool_Get();
 
 // ---- 0x020e0798
-struct VillagerAnimHeapRefSlot : NpcResSlot {
-    VillagerAnimHeapRefSlot();
-    ~VillagerAnimHeapRefSlot();
-    VillagerAnimHeapRef heapRef;
-    void assign(u32 x);
-};
 
 struct VillagerAnimHeapRefPool : NpcResPool {
     VillagerAnimHeapRefSlot slots[8];

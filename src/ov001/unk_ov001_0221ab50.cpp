@@ -3,6 +3,7 @@
 #include "ui/Unk_ov001_0221a40c.h"
 #include "ui/Unk_ov001_0221b220_A22.h"
 #include "net/Unk_ov001_0221b6f8_A12.h"
+#include "menu/WfcConnSelectWork.h"
 
 #pragma thumb off
 
@@ -269,14 +270,6 @@ namespace F0221a40c {
 #define R25C ((const Unk_ov001_0221abb4_R *)((const u16 *)sWfcSetupMethodCursorPos + 2))
 #define R25E ((const Unk_ov001_0221abb4_R *)((const u16 *)sWfcSetupMethodCursorPos + 3))
 
-struct WfcConnSelectWork {
-    u32 paletteFile;
-    u32 slotButtons[3];
-    u32 eraseButtons[3];
-    u8 lastColumn;
-    u8 exitAction;
-    u8 pad_1e[2];
-};
 
 
 extern "C" {

@@ -1,0 +1,206 @@
+#ifndef PLAYER_UNK_02007694_H
+#define PLAYER_UNK_02007694_H
+
+#include "types.h"
+#include "player/Unk_02007c5c_Mtx.h"
+#include "player/Unk_02007ebc_Mtx.h"
+#include "player/Unk_0200bff8_Vec.h"
+#include "player/Unk_0200c2fc.h"
+
+// PlayerActor view of the action handlers (walk, skid turn, change clothes, act05/91/92, wait menu, held-up item).
+// The 53 methods of the first group are defined in src/main/unk_02004558.cpp; the rest are declared by the
+// per-section views (formerly nE / nL) and have no symbols. Layout merged from the nE and nL views.
+class PlayerActionRequest;
+
+class Unk_02007694 {
+public:
+    void resetRotXForAction(u32 a);
+    void stopMovementForAction(u32 a);
+    void clearActionWork();
+    void endAction(u32 a);
+    u8 getActionDonePriority(u32 a);
+    u8 getActionPriority(u32 a);
+    void updateBgCheckWork(u32 a, u32 b);
+    u8 keepsBgCheckWork(u32 a);
+    void calcModelMatrixCurved();
+    void mainAct92();
+    void netAct92();
+    void setupAct92();
+    void mainAct91();
+    void endAct91();
+    void netAct91();
+    void setupAct91();
+    void mainWaitMenu();
+    void waitMenuCheckEnd();
+    void netWaitMenu(u32 a);
+    void setupWaitMenu(PlayerActionRequest *p);
+    u32 requestWaitMenu(u32 a, u32 b, u32 c);
+    void mainLowerHeldUpItem();
+    void lowerHeldUpItemCheckEnd();
+    void netLowerHeldUpItem(u32 a);
+    void setupLowerHeldUpItem();
+    u32 requestLowerHeldUpItem(u32 a, u32 b);
+    void mainHoldUpItem();
+    void holdUpItemCheckEnd();
+    void holdUpItemUpdate();
+    void changeClothesSpin();
+    void changeClothesApply();
+    void changeClothesHat();
+    void changeClothesFaceItem();
+    void changeClothesShirt();
+    void changeClothesEffects();
+    void endChangeClothes(u32 a);
+    void netChangeClothes(s16 a);
+    void setupChangeClothes(PlayerActionRequest *item);
+    u32 requestChangeClothes(u16 a, u32 b, u32 c, u32 d, s16 e);
+    void mainAct05();
+    void netAct05(u32 a);
+    void setupAct05(PlayerActionRequest *item);
+    u32 requestAct05(u16 a, u32 b, u32 c);
+    void mainSkidTurn();
+    void skidCheckEnd();
+    void skidDecelerate();
+    void endSkidTurn(u32 a);
+    void netSkidTurn();
+    void setupSkidTurn(PlayerActionRequest *item);
+    u32 requestSkidTurn(u16 a, u32 b, u32 c);
+    void mainWalk();
+    void walkNetCheckEnd(u8 *p);
+    void walkCheckEnd(s16 *p);
+
+    void func_0200d3f0(u32 a);
+    void func_0200cee0(u32 a);
+    void func_0200cdfc(u32 a);
+    void func_02211e04(u32 a);
+    void func_022246bc(u32 a);
+    void func_02224224(u32 a);
+    void func_02223ca0(u32 a);
+    void func_02223a70(u32 a);
+    void func_022237fc(u32 a);
+    void func_0200b9bc(u32 a);
+    void func_022115bc(u32 a);
+    void func_0200ad58(u32 a);
+    void func_0200a450(u32 a);
+    void func_02222d74(u32 a);
+    void func_022223a8(u32 a);
+    void func_02222280(u32 a);
+    void func_02221fdc(u32 a);
+    void func_02221d2c(u32 a);
+    void func_02221ae4(u32 a);
+    void func_0222189c(u32 a);
+    void func_02221768(u32 a);
+    void func_02221558(u32 a);
+    void func_0222148c(u32 a);
+    void func_0222113c(u32 a);
+    void func_02210708(u32 a);
+    void func_02210404(u32 a);
+    void func_020095b8(u32 a);
+    void func_0220fdac(u32 a);
+    void func_0220f33c(u32 a);
+    void func_0220efd8(u32 a);
+    void func_0220ecb8(u32 a);
+    void func_0220e970(u32 a);
+    void func_0220e43c(u32 a);
+    void func_0220c2dc(u32 a);
+    void func_0220ba90(u32 a);
+    void func_0220ab20(u32 a);
+    void func_0220a5e4(u32 a);
+    void func_02209ef4(u32 a);
+    void func_02209284(u32 a);
+    void func_02208fb0(u32 a);
+    void func_02208904(u32 a);
+    void func_02208358(u32 a);
+    void func_0220714c(u32 a);
+    void func_02206e94(u32 a);
+    void func_0221fa98(u32 a);
+    void func_02206710(u32 a);
+    void func_0220646c(u32 a);
+    void func_022061e0(u32 a);
+    void func_0226a910(u32 a);
+    void func_0226a80c(u32 a);
+    void func_02010914();
+    void func_0201071c();
+    void func_020109c4();
+    void func_0201065c();
+    void func_0200ce98(u32 a, u32 b, u32 c);
+    void func_020103b4(u32 a, u32 b, u32 c);
+    void func_0200e870();
+    void func_02010358(u32 a, u32 b, u32 c);
+    u32 func_0200e248(PlayerActionRequest *p);
+    void func_0200ec1c(u32 a);
+    void func_0200ec30(u32 a);
+    void func_0200ecdc(u32 a);
+    BOOL func_0200f4c0(u32 a);
+    void func_02002b84(Unk_02007c5c_Mtx *out);
+    void func_02010a58(s16 *p);
+    void func_020105a8(void *a, u8 *b);
+    void func_02010564(void *a, u8 *b);
+    void func_020109ac();
+    void func_020102ec();
+    void func_02010050(u16 *p);
+    BOOL func_0201000c();
+    BOOL func_0200fab8(u16 *a, u32 b, u32 c, u32 d);
+    BOOL func_0200fd90(u16 *a);
+    void func_0200eb58(u32 a, u32 b);
+    BOOL func_0200ef08();
+    void func_0200e8d0();
+    void func_02010a34(s32 *p);
+    void func_0200ca60();
+    void func_0200c7dc();
+    void func_0200c778();
+    u8 func_0200c900();
+    s32 func_0200d640();
+    u16 func_0200d5fc();
+    void func_0200ff08();
+
+    /* 0x000 */ u8 unk_00[0x5c];
+    /* 0x05c */ u8 position[0x8e - 0x5c];
+    /* 0x08e */ s16 rotY;
+    /* 0x090 */ u8 unk_90[4];
+    /* 0x094 */ s16 moveAngleY;
+    /* 0x096 */ u8 unk_96[2];
+    /* 0x098 */ s32 speed;
+    /* 0x09c */ u8 unk_9c[8];
+    /* 0x0a4 */ u32 velocity;
+    /* 0x0a8 */ u32 velocityY;
+    /* 0x0ac */ u32 velocityZ;
+    /* 0x0b0 */ u8 actorFlags[0xc4 - 0xb0];
+    /* 0x0c4 */ u8 drawPos[0xd0 - 0xc4];
+    /* 0x0d0 */ u16 drawTilt;
+    /* 0x0d2 */ u8 unk_d2[0x294 - 0xd2];
+    /* 0x294 */ Unk_02007c5c_Mtx bodyBaseMtx;
+    /* 0x2c4 */ u8 unk_2c4[0x2cc - 0x2c4];
+    /* 0x2cc */ u8 bodyAnimCtrl[8];
+    /* 0x2d4 */ u32 bodyAnimFrame;
+    /* 0x2d8 */ u8 unk_2d8[0x2e0 - 0x2d8];
+    /* 0x2e0 */ u8 bodyAnimPlayMode;
+    /* 0x2e1 */ u8 unk_2e1[0x694 - 0x2e1];
+    /* 0x694 */ Unk_02007ebc_Mtx itemHandMtx;
+    /* 0x6c4 */ Unk_0200bff8_Vec footPosA;
+    /* 0x6d0 */ Unk_0200bff8_Vec footPosB;
+    /* 0x6dc */ u8 headTopPos[0x700 - 0x6dc];
+    /* 0x700 */ s32 animId;
+    /* 0x704 */ u8 handPose[5];
+    /* 0x709 */ u8 faceTex[0x7a0 - 0x709];
+    /* 0x7a0 */ u8 bgCheckWork[0x30];
+    /* 0x7d0 */ Unk_0200c288 actionWork;
+    /* 0x7ec */ u32 action;
+    /* 0x7f0 */ u8 prevAction[8];
+    /* 0x7f8 */ u32 actionPriority;
+    /* 0x7fc */ u32 sessionSlot;
+    /* 0x800 */ u8 exitIndex[0x820 - 0x800];
+    /* 0x820 */ s32 shownItemPosX;
+    /* 0x824 */ s32 shownItemPosY;
+    /* 0x828 */ s32 shownItemPosZ;
+    /* 0x82c */ s32 shownItemScaleX;
+    /* 0x830 */ s32 shownItemScaleY;
+    /* 0x834 */ s32 shownItemScaleZ;
+    /* 0x838 */ u8 seEmitterLocal[0x8e4 - 0x838];
+    /* 0x8e4 */ u8 tripCooldown;
+    /* 0x8e5 */ u8 alpha[0x8ec - 0x8e5];
+    /* 0x8ec */ Unk_0200c24c netData;
+    /* 0x8f0 */ u8 unk_8f0[0xc80 - 0x8f0];
+    /* 0xc80 */ u16 netSeq;
+};
+
+#endif

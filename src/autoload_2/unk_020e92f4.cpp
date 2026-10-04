@@ -3,11 +3,9 @@
 // The (probable) vector helper file (0x020e92f4-0x020e9a08) and the start of the network file (0x020e9a08-0x020ea0b4).
 // autoload_2 0x020e92f4-0x020ea0b4, 39 functions. mwcc 1.2/base, C++, ARM, -O4,p. PARTIAL, code unchanged from G002b, all data extern.
 #include "types.h"
+#include "gfx/VecFx32.h"
 
 typedef volatile u64 vu64;
-struct VecFx32 {
-    s32 x, y, z;
-};
 
 extern "C" {
 void VEC_Normalize(VecFx32 *v); // VEC_Normalize

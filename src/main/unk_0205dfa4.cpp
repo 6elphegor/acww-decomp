@@ -8,19 +8,12 @@
 #include "gfx/TexTransfer.h"
 #include "gfx/CachedModel.h"
 #include "player/FishBobber.h"
+#include "gfx/VramTask.h"
 
 // ---- helper classes (declared elsewhere) ----
 
 
 
-class VramTask : public Unk_020b83b0 {
-public:
-    u8 state;
-    u8 kind;
-    u8 cost;
-    VramTask();
-    virtual BOOL execute() = 0;
-};
 
 
 class TexVramTask : public VramTask {

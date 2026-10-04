@@ -6,6 +6,7 @@
 #include "actor/ActorCollider.h"
 #include "snd/SndEnvChannel.h"
 #include "game/FxVec3.h"
+#include "gfx/VecFx32.h"
 
 // ---------------------------------------------------------------------------------------------------------------
 // Calls into other modules: the old stand-in names are #defined to the real symbols (mangled method names).
@@ -57,9 +58,6 @@
 typedef GameProc Unk_ov004_Base;
 
 // ---------------------------------------------------------------------------------------------------------------
-struct V3 {
-    s32 x, y, z;
-};
 
 struct Mtx {
     s64 v[6];

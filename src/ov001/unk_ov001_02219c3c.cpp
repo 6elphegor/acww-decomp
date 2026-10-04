@@ -1,6 +1,7 @@
 // mwcc-flags: -O4,p
 #include "types.h"
 #include "ui/Unk_ov001_0221a40c.h"
+#include "menu/WfcConnSelectWork.h"
 
 #pragma thumb off
 
@@ -16,14 +17,6 @@ void *sWfcConnSelect;
 
 namespace F0221a40c {
 
-struct WfcConnSelectWork {
-    u32 paletteFile;
-    u32 slotButtons[3];
-    u32 eraseButtons[3];
-    u8 lastColumn;
-    u8 exitAction;
-    u8 pad_1e[2];
-};
 
 
 extern "C" {

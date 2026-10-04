@@ -2,6 +2,7 @@
 #include "sys/Unk_020b83b0.h"
 #include "gfx/TexVramSlot.h"
 #include "gfx/TexTransfer.h"
+#include "gfx/VramTask.h"
 
 extern "C" {
 void *Heap_AllocAligned(void *heap, s32 size, s32 align);
@@ -17,14 +18,6 @@ extern u8 *gCommManager;
 }
 
 
-class VramTask : public Unk_020b83b0 {
-public:
-    u8 state;
-    u8 kind;
-    u8 cost;
-    VramTask();
-    virtual BOOL execute() = 0;
-};
 
 
 class TexVramTask : public VramTask {

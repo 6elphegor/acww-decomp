@@ -11,6 +11,7 @@
 #include "gfx/Unk_ov009_0225bc88_Blk.h"
 #include "town/Unk_ov009_0225b880.h"
 #include "game/Unk_ov009_0225cb4c_V3.h"
+#include "game/TouchPicker.h"
 
 // Library base class chain (header GameProc.h rebuilt so that the vtable names the real symbols:
 // slot 08 is Character::postCreate(int)).
@@ -167,10 +168,6 @@ struct TouchPickTriangle {
     u8 pad[0x44];
 };
 
-struct TouchPicker {
-    BOOL addTriangle(TouchPickTriangle *o, Vec3 *a, Vec3 *b, Vec3 *c, s32 d, u8 e);
-    BOOL pushTriangle(TouchPickTriangle *o);
-};
 
 
 class ObjShadowStrip {

@@ -6,10 +6,9 @@
 #include "types.h"
 #include "gfx/SplPtclTypes.h"
 #include "gfx/SplParticleViews.h"
+#include "gfx/VecFx32.h"
+#include "gfx/SplTex.h"
 
-struct VecFx32 { s32 x, y, z; };
-struct VecFx16 { s16 x, y, z; };
-struct V3Arr { s32 v[3]; };
 struct MtxFx33 { s32 m[9]; };
 
 struct P;
@@ -37,32 +36,7 @@ struct P {
 
 
 
-struct Tex {
-    u16 c0;
-    u16 c1;
-    u8 p4[4];
-    u16 b0 : 1;
-    u16 rest : 15;
-};
 
-struct TabBF {
-    u32 n : 8;
-    u32 step : 8;
-    u32 f16 : 1;
-    u32 rest : 15;
-};
-struct TabB {
-    u8 n;
-    u8 step;
-};
-union TabU {
-    TabBF bf;
-    TabB b;
-};
-struct Tab {
-    u8 v[8];
-    TabU x;
-};
 
 struct Res {
     Hdr *hdr;

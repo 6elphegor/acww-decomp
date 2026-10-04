@@ -16,6 +16,7 @@
 // unit (unk_020ed8cc.cpp); whether Unk_Seq ends this file or starts the next one is not decided by any data, so it is left out.
 #include "types.h"
 #include "sys/PrioNode.h"
+#include "sys/TaskList.h"
 
 // library base class (include/GameProc.h) plus the five task callbacks (non-virtual members, not in the header yet)
 class ProcBase {
@@ -77,37 +78,9 @@ struct InfoList {
 // second view of a priority node (the inserted node's key is read through it inside the loop)
 struct PrioNodeB { void *a, *b, *c; u16 priority; };
 
-struct TaskNode {
-    TaskNode *unk_00;
-    TaskNode *unk_04;
-    ProcBase *unk_08;
-};
 
-// a phase's task list (EXECUTE, CREATE, DRAW, DELETE)
-class TaskList {
-public:
-    TaskList(TaskFn f) : head(0), count(0), fn(f) {}
-    BOOL run();                       // 0x020ed54c
 
-    /* 0x00 */ TaskNode *head;
-    /* 0x04 */ u32 count;
-    /* 0x08 */ TaskFn fn;
-};
 
-struct TaskNode10 {
-    u8 pad[0x10];
-    ProcBase *unk_10;
-};
-
-// the CONNECT list (another node layout, no count)
-class TaskTree {
-public:
-    TaskTree(TaskFn f) : head(0), fn(f) {}
-    BOOL run();                       // 0x020ed764
-
-    /* 0x00 */ TaskNode10 *head;
-    /* 0x04 */ TaskFn fn;
-};
 
 extern "C" {
 void *func_01ffcffc(void *);

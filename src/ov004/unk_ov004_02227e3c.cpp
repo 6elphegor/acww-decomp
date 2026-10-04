@@ -10,6 +10,7 @@
 #include "room/RoomObjRes.h"
 #include "room/RoomObjTex.h"
 #include "gfx/CachedModel.h"
+#include "game/TouchPicker.h"
 
 // shared_0224d4e8.h.txt -- final declaration of class RoomObjActor (defined in ov004 TU17, 0x0221e7a8-0x02225290).
 // Paste this block unchanged into TU18..TU26 (it is the base of 0224d618 (TU18), 0224d80c (TU19), 0224dd98 (TU23),
@@ -244,10 +245,6 @@ struct TouchPickBox {
     u8 pad[0x2a8];
 };
 
-struct TouchPicker {
-    BOOL addBox(TouchPickBox *box, Vec3 *pos, s32 w, s32 h, s32 d, s16 angle, s32 e, u8 f);
-    BOOL pushBox(TouchPickBox *box);
-};
 
 
 // a 4-byte colour record whose constructor is inline (the __sinit of this unit initialises six of them)

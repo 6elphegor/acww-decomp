@@ -3,6 +3,7 @@
 #include "game/Vec3.h"
 #include "gfx/ViewFrustum.h"
 #include "game/FxVec3.h"
+#include "game/TouchPicker.h"
 
 #define reg_4000358 (*(u32 *)0x4000358)
 #define reg_4000008 (*(u16 *)0x4000008)
@@ -104,13 +105,6 @@ struct Unk_020b5d5c_Rec {
 };
 
 
-// 0x28-byte object (constructor/destructor in another unit)
-class TouchPicker {
-public:
-    TouchPicker();
-    ~TouchPicker();
-    u8 d[0x28];
-};
 
 // Intermediate class (vtable 0x020e2988): its virtuals are defined by another unit, ctor/dtor inline
 class SceneBase : public GameProc {

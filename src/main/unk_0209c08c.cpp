@@ -9,6 +9,7 @@
 #include "sys/RecordFile.h"
 #include "town/TownAcreCell.h"
 #include "room/Unk_0209c614_Actor.h"
+#include "gfx/VramTask.h"
 
 inline void *operator new(unsigned long, void *p) { return p; }
 
@@ -78,14 +79,6 @@ public:
 
 // ---- model resource helpers
 
-class VramTask : public Unk_020b83b0 {
-public:
-    u8 state;
-    u8 kind;
-    u8 cost;
-    VramTask();
-    virtual BOOL execute() = 0;
-};
 
 
 class TexVramTask : public VramTask {

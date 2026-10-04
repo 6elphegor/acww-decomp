@@ -8,6 +8,7 @@
 #include "snd/BgmObj.h"
 #include "snd/SndSeGroup.h"
 #include "sys/FndList.h"
+#include "sys/TaskList.h"
 
 struct ListNode {
     ListNode *prev;
@@ -33,26 +34,7 @@ struct InfoList {
     InfoNode *head;
 };
 
-typedef void (Unk_Task::*TaskFn)();
 
-struct TaskNode {
-    TaskNode *unk_00;
-    TaskNode *unk_04;
-    Unk_Task *unk_08;
-};
-struct TaskNode10 {
-    u8 pad[0x10];
-    Unk_Task *unk_10;
-};
-struct TaskList4 {
-    TaskNode10 *head;
-    TaskFn fn;
-};
-struct TaskList {
-    TaskNode *unk_00;
-    u32 tail;
-    TaskFn unk_08;
-};
 
 
 

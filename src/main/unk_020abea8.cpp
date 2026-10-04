@@ -10,28 +10,11 @@
 #include "gfx/Unk_020ac2e8_V.h"
 #include "gfx/SceneLightsCol.h"
 #include "item/ShopPurchaseBits.h"
+#include "gfx/Vec3Z.h"
 
 
-struct Vec3Z2 {
-    s32 x, y, z;
-    Vec3Z2() {
-        x = 0;
-        y = 0;
-        z = 0x1000;
-    }
-    ~Vec3Z2();
-};
 
 
-struct Vec3Z {
-    s32 x, y, z;
-    Vec3Z() {
-        x = 0;
-        y = 0;
-        z = 0;
-    }
-    ~Vec3Z();
-};
 
 
 

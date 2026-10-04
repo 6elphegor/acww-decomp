@@ -5,6 +5,7 @@
 #include "actor/Unk_0203e5d0_Node.h"
 #include "game/Vec3.h"
 #include "talk/TalkWindowState.h"
+#include "game/TouchPicker.h"
 
 
 // ---------------------------------------------------------------- library base chain (as in link_ov009)
@@ -148,10 +149,6 @@ struct TouchPickBox {
     u8 pad[0x2a8];
 };
 
-struct TouchPicker {
-    BOOL addBox(TouchPickBox *box, Vec3 *pos, s32 w, s32 h, s32 d, s16 angle, s32 e, u8 f);
-    BOOL pushBox(TouchPickBox *box);
-};
 
 class MsgString25 {
 public:

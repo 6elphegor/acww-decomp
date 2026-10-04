@@ -1,5 +1,6 @@
 #include "types.h"
 #include "game/Vec3.h"
+#include "game/TouchPicker.h"
 
 
 struct Unk_02087e70_Ent {
@@ -25,10 +26,6 @@ struct TouchPickSphere {
 extern "C" void _ZN15TouchPickSphereC2Ev(TouchPickSphere *p);
 extern "C" void _ZN15TouchPickSphereD2Ev(TouchPickSphere *p);
 
-class TouchPicker {
-public:
-    BOOL addSphere(TouchPickSphere *o, Vec3 *a, Vec3 *b, s32 c, u8 d);
-};
 
 class BugNetTarget : public TouchPickSphere {
 public:

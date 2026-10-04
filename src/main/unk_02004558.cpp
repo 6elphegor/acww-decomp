@@ -47,6 +47,13 @@
 #include "player/Unk_02008100_Msg.h"
 #include "player/Unk_02008190_Ptr.h"
 #include "player/Unk_02008858_Blk.h"
+#include "player/Unk_02007694.h"
+#include "player/Unk_020093d4.h"
+#include "player/Unk_02008e50_Msg.h"
+#include "player/Unk_02008040_Base.h"
+#include "player/Unk_02006d14_Base0.h"
+#include "player/Unk_02006d14_A.h"
+#include "player/Unk_02005e7c.h"
 #include "player/Unk_0205dfa4.h"
 #include "player/Unk_0200e2e0.h"
 #include "player/Unk_0200bc78_Vec.h"
@@ -241,203 +248,11 @@ struct SndSeEmitterKind1 : SndSeEmitter {
 
 
 
-class Unk_02005e7c {
-public:
-    u8 pad_000[0x168];
-    u8 toolHitKind;
-    u8 pad_169[3];
-    s32 inputMode;
-    u8 pad_170[0x170];
-    u8 bodyAnimPlayMode;
-    u8 pad_2e1[0x40b];
-    s32 shadowSize;
-    u8 pad_6f0[0xe0];
-    u8 actionWork[0x1c];
-    s32 action;
-    u8 pad_7f0[8];
-    s32 actionPriority;
-    s32 sessionSlot;
-    u8 pad_800[0xe8];
-    u8 netPickUpDelay;
-    u8 pad_8e9[3];
-    u8 netData[8];
-    s32 lastNetAction;
-    s32 pendingEventUnitX;
-    s32 pendingEventUnitZ;
-    Unk_02005f50_Flags pendingEvent;
-    u8 pad_901[0x37f];
-    s16 netSeq;
-    u8 pad_c82[2];
-    s32 netSeqAction;
-
-    void func_02005e7c(u32 i);
-    void syncInputMode(u32 i);
-    void processRequests();
-    void handleNetEvent();
-    void followNetAction();
-    s32 func_02006d14(void *p);
-    void func_0200d538(s32 idx);
-    void func_0200ceec(s32 idx);
-    void func_0200ce28(s32 idx);
-    void func_0200caf4(s32 idx);
-    void func_0200c46c(s32 idx);
-    void func_0200c328(s32 idx);
-    void PlayerActor_NetReleaseCreature(s32 idx);
-    void func_0200c180(s32 idx);
-    void PlayerActor_NetLieInBed(s32 idx);
-    void PlayerActor_NetGetOutOfBedCheck(s32 idx);
-    void PlayerActor_NetGetOutOfBed(s32 idx);
-    void PlayerActor_NetBedRollCheck(s32 idx);
-    void PlayerActor_NetBedRollBlocked(s32 idx);
-    void PlayerActor_NetBedRoll(s32 idx);
-    void PlayerActor_NetBedApproach(s32 idx);
-    void PlayerActor_NetGetIntoBed(s32 idx);
-    void func_0200bd18(s32 idx);
-    void PlayerActor_NetAct11(s32 idx);
-    void WfcMove_StepMeasureChannel(s32 idx);
-    void func_0200bb48(s32 idx);
-    void func_0200b9cc(s32 idx);
-    void func_0200b848(s32 idx);
-    void PlayerActor_NetPluckReach(s32 idx);
-    void PlayerActor_NetPluck(s32 idx);
-    void func_0200b578(s32 idx);
-    void func_0200ad64(s32 idx);
-    void func_0200a484(s32 idx);
-    void func_02009f68(s32 idx);
-    void PlayerActor_NetPickUpItem(s32 idx);
-    void PlayerActor_NetFtrGrabApproach(s32 idx);
-    void PlayerActor_NetFtrHold(s32 idx);
-    void PlayerActor_NetFtrRotate(s32 idx);
-    void PlayerActor_NetFtrPush(s32 idx);
-    void PlayerActor_NetFtrPull(s32 idx);
-    void WfcMoveWh_StateInReset(s32 idx);
-    void PlayerActor_NetFtrPullMove(s32 idx);
-    void PlayerActor_NetSeatApproach(s32 idx);
-    void PlayerActor_NetSitDownFront(s32 idx);
-    void PlayerActor_NetSitDownSide2(s32 idx);
-    void PlayerActor_NetSitDownSide1(s32 idx);
-    void PlayerActor_NetSit(s32 idx);
-    void PlayerActor_NetStandUpSide2(s32 idx);
-    void PlayerActor_NetStandUpSide1(s32 idx);
-    void PlayerActor_NetStandUpCheck(s32 idx);
-    void PlayerActor_NetStandUpFront(s32 idx);
-    void PlayerActor_NetStorageOpen(s32 idx);
-    void PlayerActor_NetStorageHold(s32 idx);
-    void PlayerActor_NetStorageClose(s32 idx);
-    void func_02009d58(s32 idx);
-    void func_02009c90(s32 idx);
-    void func_02009bd0(s32 idx);
-    void func_02009944(s32 idx);
-    void func_02009884(s32 idx);
-    void func_020097d4(s32 idx);
-    void PlayerActor_NetAct36(s32 idx);
-    void PlayerActor_NetAct37(s32 idx);
-    void PlayerActor_NetDoorApproach(s32 idx);
-    void PlayerActor_NetDoorEnter(s32 idx);
-    void PlayerActor_NetDoorEntered(s32 idx);
-    void PlayerActor_NetDoorExit(s32 idx);
-    void PlayerActor_NetAct3C(s32 idx);
-    void PlayerActor_NetStowItem(s32 idx);
-    void PlayerActor_NetStowUmbrella(s32 idx);
-    void func_020095f8(s32 idx);
-    void PlayerActor_NetLeaveRoom(s32 idx);
-    void PlayerActor_NetAct41(s32 idx);
-    void PlayerActor_NetAct42(s32 idx);
-    void PlayerActor_NetAct43(s32 idx);
-    void FieldObjectManager_Create(s32 idx);
-    void PlayerActor_NetUmbrellaSpin(s32 idx);
-    void PlayerActor_NetAxeSwing(s32 idx);
-    void PlayerActor_NetAxeFollowThrough(s32 idx);
-    void PlayerActor_NetAct48(s32 idx);
-    void PlayerActor_NetAxeStrike(s32 idx);
-    void PlayerActor_NetAxeChop(s32 idx);
-    void PlayerActor_NetAxeBreak(s32 idx);
-    void PlayerActor_NetAxeBrokenMessage(s32 idx);
-    void PlayerActor_NetFishCast(s32 idx);
-    void PlayerActor_NetFishCastFail(s32 idx);
-    void PlayerActor_NetFishWait(s32 idx);
-    void PlayerActor_NetFishHook(s32 idx);
-    void PlayerActor_NetFishReelIn(s32 idx);
-    void PlayerActor_NetFishEscape(s32 idx);
-    void PlayerActor_NetFishLand(s32 idx);
-    void PlayerActor_NetFishShowCatch(s32 idx);
-    void PlayerActor_NetFishStore(s32 idx);
-    void PlayerActor_NetBugNetSwing(s32 idx);
-    void PlayerActor_NetInsectShowCatch(s32 idx);
-    void PlayerActor_NetInsectStore(s32 idx);
-    void PlayerActor_NetShovelReady(s32 idx);
-    void PlayerActor_NetShovelWait(s32 idx);
-    void PlayerActor_NetAct5B(s32 idx);
-    void PlayerActor_NetAct5C(s32 idx);
-    void PlayerActor_NetShovelStrike(s32 idx);
-    void PlayerActor_NetDig(s32 idx);
-    void PlayerActor_NetDigUpItem(s32 idx);
-    void PlayerActor_NetDugItemStore(s32 idx);
-    void PlayerActor_NetBuryItem(s32 idx);
-    void PlayerActor_NetFillHole(s32 idx);
-    void PlayerActor_NetWateringCan(s32 idx);
-    void PlayerActor_NetSlingshot(s32 idx);
-    void PlayerActor_NetSlingshotWatch(s32 idx);
-    void PlayerActor_NetAct66(s32 idx);
-    void PlayerActor_NetAct67(s32 idx);
-    void PlayerActor_NetTreeShake(s32 idx);
-    void PlayerActor_NetTreeShakeRelease(s32 idx);
-    void PlayerActor_NetMailboxOpen(s32 idx);
-    void PlayerActor_NetMailboxWait(s32 idx);
-    void PlayerActor_NetMailboxClose(s32 idx);
-    void PlayerActor_NetFaint(s32 idx);
-    void PlayerActor_NetAct6E(s32 idx);
-    void func_020092c4(s32 idx);
-    void func_02008f18(s32 idx);
-    void PlayerActor_NetTrip(s32 idx);
-    void PlayerActor_NetAct72(s32 idx);
-    void PlayerActor_NetPitfallFall(s32 idx);
-    void PlayerActor_NetPitfallStruggle(s32 idx);
-    void PlayerActor_NetPitfallClimbOut(s32 idx);
-    void func_02008cc0(s32 idx);
-    void func_020086dc(s32 idx);
-    void PlayerActor_NetBeeSting(s32 idx);
-    void func_02008598(s32 idx);
-    void PlayerActor_NetHaircutStart(s32 idx);
-    void PlayerActor_NetHaircutCut(s32 idx);
-    void PlayerActor_NetHaircutFinish(s32 idx);
-    void PlayerActor_NetPhonePickUp(s32 idx);
-    void PlayerActor_NetPhoneHold(s32 idx);
-    void PlayerActor_NetPhoneHangUp(s32 idx);
-    void PlayerActor_NetAct80(s32 idx);
-    void PlayerActor_NetFirework(s32 idx);
-    void PlayerActor_NetAct82(s32 idx);
-    void func_020083dc(s32 idx);
-    void func_020082ac(s32 idx);
-    void func_02008040(s32 idx);
-    void func_02007dc8(s32 idx);
-    void func_ov068_0226a93c(s32 idx);
-    void func_ov068_0226a838(s32 idx);
-    void PlayerActor_NetThrowBottle(s32 idx);
-    void PlayerActor_NetDrinkCoffee(s32 idx);
-    void PlayerActor_NetDoorWalkIn(s32 idx);
-    void PlayerActor_NetDoorWalkOut(s32 idx);
-    void PlayerActor_NetExitWalkOut(s32 idx);
-    void PlayerActor_NetExitWalkIn(s32 idx);
-    void PlayerActor_NetFishRelease(s32 idx);
-    void func_02007d00(s32 idx);
-    void func_02007cac(s32 idx);
-    void func_02007c9c(s32 idx);};
 
 
 
 
 
-class Unk_02008040_Base {
-public:
-    virtual void vfunc_00();
-      u8 unk_04[0x8a];
-      s16 rotY;
-      u8 unk_090[0x34];
-      Unk_02008074_Vec drawPos;
-      s16 drawTilt;
-      u8 unk_d2[0x1a];
-};
 
 class Unk_02008040 : public Unk_02008040_Base, public MsgRequest {
 public:
@@ -502,13 +317,6 @@ public:
 
 
 
-struct Unk_020093d4 {
-    Unk_02006d14_Vec targetPos;
-    s32 walkSpeed;
-    s32 maxSpeed;
-    s32 prevAction;
-    void initWalkTo(Unk_02006d14_Vec v, s32 a, s32 b);
-};
 
 
 
@@ -1575,7 +1383,6 @@ extern PM_02006d14 data_020d673c;
 namespace nE {
 extern "C" {
 
-class Unk_02007694;
 void MI_CpuFill8(void *p, u32 v, u32 n);
 void _ZN14CollisionState9beginStepEv(void *p);
 u16 WorldCurve_ToCurved(void *a, void *b);
@@ -1592,145 +1399,6 @@ extern u8 sPlayerActionStopsMovement[];
 extern u8 sPlayerActionDonePriority[];
 extern u8 sPlayerActionPriority[];
 extern u8 sPlayerActionKeepsBgCheckWork[];
-class Unk_02007694 {
-public:
-    
-    void endAct91();
-    void mainAct92();
-    void netAct92();
-    void setupAct92();
-    void mainAct91();
-    void netAct91();
-    void setupAct91();
-    void func_0200d3f0(u32 a);
-    void func_0200cee0(u32 a);
-    void func_0200cdfc(u32 a);
-    void endSkidTurn(u32 a);
-    void func_02211e04(u32 a);
-    void endChangeClothes(u32 a);
-    void func_022246bc(u32 a);
-    void func_02224224(u32 a);
-    void func_02223ca0(u32 a);
-    void func_02223a70(u32 a);
-    void func_022237fc(u32 a);
-    void func_0200b9bc(u32 a);
-    void func_022115bc(u32 a);
-    void func_0200ad58(u32 a);
-    void func_0200a450(u32 a);
-    void func_02222d74(u32 a);
-    void func_022223a8(u32 a);
-    void func_02222280(u32 a);
-    void func_02221fdc(u32 a);
-    void func_02221d2c(u32 a);
-    void func_02221ae4(u32 a);
-    void func_0222189c(u32 a);
-    void func_02221768(u32 a);
-    void func_02221558(u32 a);
-    void func_0222148c(u32 a);
-    void func_0222113c(u32 a);
-    void func_02210708(u32 a);
-    void func_02210404(u32 a);
-    void func_020095b8(u32 a);
-    void func_0220fdac(u32 a);
-    void func_0220f33c(u32 a);
-    void func_0220efd8(u32 a);
-    void func_0220ecb8(u32 a);
-    void func_0220e970(u32 a);
-    void func_0220e43c(u32 a);
-    void func_0220c2dc(u32 a);
-    void func_0220ba90(u32 a);
-    void func_0220ab20(u32 a);
-    void func_0220a5e4(u32 a);
-    void func_02209ef4(u32 a);
-    void func_02209284(u32 a);
-    void func_02208fb0(u32 a);
-    void func_02208904(u32 a);
-    void func_02208358(u32 a);
-    void func_0220714c(u32 a);
-    void func_02206e94(u32 a);
-    void func_0221fa98(u32 a);
-    void func_02206710(u32 a);
-    void func_0220646c(u32 a);
-    void func_022061e0(u32 a);
-    void func_0226a910(u32 a);
-    void func_0226a80c(u32 a);
-
-    
-    void resetRotXForAction(u32 a);
-    void stopMovementForAction(u32 a);
-    void clearActionWork();
-    void endAction(u32 a);
-    u8 getActionDonePriority(u32 a);
-    u8 getActionPriority(u32 a);
-    void updateBgCheckWork(u32 a, u32 b);
-    u8 keepsBgCheckWork(u32 a);
-    void calcModelMatrixCurved();
-    void mainWaitMenu();
-    void waitMenuCheckEnd();
-    void netWaitMenu(u32 a);
-    void setupWaitMenu(PlayerActionRequest *p);
-    u32 requestWaitMenu(u32 a, u32 b, u32 c);
-    void mainLowerHeldUpItem();
-    void lowerHeldUpItemCheckEnd();
-    void netLowerHeldUpItem(u32 a);
-    void setupLowerHeldUpItem();
-    u32 requestLowerHeldUpItem(u32 a, u32 b);
-    void mainHoldUpItem();
-    void holdUpItemCheckEnd();
-    void holdUpItemUpdate();
-
-    
-    void func_02010914();
-    void func_0201071c();
-    void func_020109c4();
-    void func_0201065c();
-    void func_0200ce98(u32 a, u32 b, u32 c);
-    void func_020103b4(u32 a, u32 b, u32 c);
-    void func_0200e870();
-    void func_02010358(u32 a, u32 b, u32 c);
-    u32 func_0200e248(PlayerActionRequest *p);
-    void func_0200ec1c(u32 a);
-    void func_0200ec30(u32 a);
-    void func_0200ecdc(u32 a);
-    BOOL func_0200f4c0(u32 a);
-    void requestAct05(u32 a, u32 b, u32 c);
-    void func_02002b84(Unk_02007c5c_Mtx *out);
-
-    u8 unk_00[0x5c];
-    u8 position[0x98 - 0x5c];
-    u32 speed;
-    u8 unk_9c[8];
-    u32 velocity;
-    u32 velocityY;
-    u32 velocityZ;
-    u8 actorFlags[0xc4 - 0xb0];
-    u8 drawPos[0xd0 - 0xc4];
-    u16 drawTilt;
-    u8 unk_d2[0x294 - 0xd2];
-    Unk_02007c5c_Mtx bodyBaseMtx;
-    u8 unk_2c4[0x2cc - 0x2c4];
-    u8 bodyAnimCtrl[8];
-    u32 bodyAnimFrame;
-    u8 unk_2d8[0x694 - 0x2d8];
-    Unk_02007ebc_Mtx itemHandMtx;
-    u8 footPosA[0x700 - 0x6c4];
-    s32 animId;
-    u8 handPose[0x7a0 - 0x704];
-    u8 bgCheckWork[0x30];
-    u8 actionWork[0x1c];
-    u32 action;
-    u8 prevAction[8];
-    u32 actionPriority;
-    u8 sessionSlot[0x820 - 0x7fc];
-    s32 shownItemPosX;
-    s32 shownItemPosY;
-    s32 shownItemPosZ;
-    s32 shownItemScaleX;
-    s32 shownItemScaleY;
-    s32 shownItemScaleZ;
-    u8 seEmitterLocal[0xc80 - 0x838];
-    u16 netSeq;
-};
 void PlayerActor_CalcHeldUpItemPos(Unk_02007ebc_Vec *out, Unk_02007694 *obj, s32 n);
 void _ZN12Unk_02006d1415clearActionFlagEj(void *, u32 a);
 void _ZN5Actor15calcModelMatrixEPv(void *, Unk_02007c5c_Mtx *out);
@@ -1883,19 +1551,6 @@ static inline BOOL Unk_02008858_IsZero(u8 v) {
 namespace nG {
 extern "C" {
 
-struct Unk_02008e50_Msg {
-    u32 action;
-    u32 priority;
-    u32 netSeq;
-    Unk_02008e50_Pay args;
-};
-struct Unk_02008f60_Msg {
-    u32 action;
-    u32 priority;
-    u32 netSeq;
-    Unk_02008fa0 args;
-    u8 pad_0e[0xe];
-};
 struct Unk_020093f4_Msg {
     u32 action;
     u32 priority;
@@ -2211,12 +1866,6 @@ void _ZN12Unk_02006d1418updateShownItemPosEjz(void *, u32 a);
 namespace nI {
 extern "C" {
 
-struct Unk_02006d14_Base0 {
-    u8 pad_000[0xc4];
-    Unk_02006d14_Trip unk_c4;
-    s16 unk_d0;
-    u8 pad_d2[0xec - 0xd2];
-};
 struct Unk_02006d14 : Unk_02006d14_Base0, Unk_02006d14_Objec {
     u8 pad_f0[0x10a - 0xf0];
     u8 msgIndex;
@@ -2373,28 +2022,6 @@ void _ZN11PlayerActor11requestWaitEjjj(void *, u32 a, u32 b, s32 c);
 namespace nJ {
 extern "C" {
 
-struct Unk_02006d14_A {
-    virtual void vfunc_00();
-    u8 pad_04[0xc4 - 4];
-    Unk_02006d14_V3 unk_c4;
-    s16 unk_d0;
-    u8 pad_d2[0xec - 0xd2];
-};
-struct Unk_02006d14_B {
-    virtual void vfunc_00();
-    u8 pad_f0[0x10a - 0xf0];
-    u8 msgIndex;
-    u8 pad_10b[0x128 - 0x10b];
-    Unk_0203d820_Ptr* unk_128;
-    u8 pad_12c[0x294 - 0x12c];
-    Unk_02006d14_Blk bodyBaseMtx;
-    u8 pad_2c4[0x2cc - 0x2c4];
-    u8 bodyAnimCtrl[8];
-    u32 bodyAnimFrame;
-    u8 pad_2d8[0x694 - 0x2d8];
-    Unk_02006d14_Blk unk_694;
-    u8 pad_6c4[0x700 - 0x6c4];
-};
 struct Unk_02006d14 : Unk_02006d14_A, Unk_02006d14_B {
     u32 animId;
     u8 pad_704[0x7d0-0x704];
@@ -2671,7 +2298,6 @@ void _ZN12Unk_0200769417changeClothesSpinEv(void *);
 namespace nL {
 extern "C" {
 
-class Unk_02007694;
 u16 NetBuf_ReadU16(void *p);
 void NetBuf_WriteU16(void *p, u32 a);
 void Effect_Create(u32 id, void *a, void *b, u32 c);
@@ -2697,98 +2323,6 @@ extern u8 gFieldSceneKind;
 extern s16 data_02135f44[];
 extern u8 data_020d5e3c[];
 extern u8 data_020d5e44[];
-class Unk_02007694 {
-public:
-    void changeClothesSpin();
-    void changeClothesApply();
-    void changeClothesHat();
-    void changeClothesFaceItem();
-    void changeClothesShirt();
-    void changeClothesEffects();
-    void endChangeClothes(u32 a);
-    void netChangeClothes(s16 a);
-    void setupChangeClothes(PlayerActionRequest *p);
-    void mainAct05();
-    void netAct05(u32 a);
-    void setupAct05(PlayerActionRequest *p);
-    u32 requestAct05(u16 a, u32 b, u32 c);
-    void mainSkidTurn();
-    void skidCheckEnd();
-    void skidDecelerate();
-    void endSkidTurn(u32 a);
-    void netSkidTurn();
-    void setupSkidTurn(PlayerActionRequest *p);
-    u32 requestSkidTurn(u16 a, u32 b, u32 c);
-    void mainWalk();
-    void walkNetCheckEnd(u8 *p);
-    void walkCheckEnd(s16 *p);
-    u32 requestChangeClothes(u16 a, u32 b, u32 c, u32 d, s16 e);
-
-    
-    void func_02010a58(s16 *p);
-    void func_020105a8(void *a, u8 *b);
-    void func_02010564(void *a, u8 *b);
-    void func_02010914();
-    void func_020109c4();
-    void func_020109ac();
-    void func_0201071c();
-    void func_0201065c();
-    void func_020102ec();
-    void func_02010050(u16 *p);
-    BOOL func_0201000c();
-    u32 PlayerActor_GetHairStyle();
-    u32 PlayerActor_GetHairColor();
-    BOOL func_0200fab8(u16 *a, u32 b, u32 c, u32 d);
-    BOOL func_0200fd90(u16 *a);
-    void func_0200ec1c(u32 a);
-    void func_0200ec30(u32 a);
-    void func_0200ecdc(u32 a);
-    void PlayerActor_NetSendFaceChange();
-    void func_0200eb58(u32 a, u32 b);
-    BOOL func_0200ef08();
-    void func_020103b4(u32 a, u32 b, u32 c);
-    void func_02010358(u32 a, u32 b, u32 c);
-    void func_0200e870();
-    void func_0200e8d0();
-    u32 func_0200e248(PlayerActionRequest *p);
-    void func_0200ce98(u32 a, u32 b, s32 c);
-    u8 getActionDonePriority(u32 a);
-    void func_02010a34(s32 *p);
-    void func_0200ca60();
-    void func_0200c7dc();
-    void func_0200c778();
-    u8 func_0200c900();
-    s32 func_0200d640();
-    u16 func_0200d5fc();
-    void func_0200ff08();
-
-    u8 unk_00[0x5c];
-    u8 position[0x8e - 0x5c];
-    s16 rotY;
-    u8 unk_90[4];
-    s16 moveAngleY;
-    u8 unk_96[2];
-    s32 speed;
-    u8 unk_9c[0x2cc - 0x9c];
-    u8 bodyAnimCtrl[0x2e0 - 0x2cc];
-    u8 bodyAnimPlayMode;
-    u8 unk_2e1[0x6c4 - 0x2e1];
-    Unk_0200bff8_Vec footPosA;
-    Unk_0200bff8_Vec footPosB;
-    u8 headTopPos[0x700 - 0x6dc];
-    s32 animId;
-    u8 handPose[5];
-    u8 faceTex[0x7d0 - 0x709];
-    Unk_0200c288 actionWork;
-    u32 action;
-    u8 prevAction[8];
-    u32 actionPriority;
-    u32 sessionSlot;
-    u8 exitIndex[0x8e4 - 0x800];
-    u8 tripCooldown;
-    u8 alpha[0x8ec - 0x8e5];
-    Unk_0200c24c netData;
-};
 void _ZN12Unk_020102ec9setAngleYEPs(void *, s16 *p);
 void _ZN12Unk_02006d1415clearActionFlagEj(void *, u32 a);
 void _ZN12Unk_02006d1413setActionFlagEj(void *, u32 a);
@@ -4094,62 +3628,6 @@ public:
     void applyHeldItemPose(s32 b, void *c);
 };
 
-class Unk_02007694 {
-public:
-    void resetRotXForAction(u32 a);
-    void stopMovementForAction(u32 a);
-    void clearActionWork();
-    void endAction(u32 a);
-    u8 getActionDonePriority(u32 a);
-    u8 getActionPriority(u32 a);
-    void updateBgCheckWork(u32 a, u32 b);
-    u8 keepsBgCheckWork(u32 a);
-    void calcModelMatrixCurved();
-    void mainAct92();
-    void netAct92();
-    void setupAct92();
-    void mainAct91();
-    void endAct91();
-    void netAct91();
-    void setupAct91();
-    void mainWaitMenu();
-    void waitMenuCheckEnd();
-    void netWaitMenu(u32 a);
-    void setupWaitMenu(PlayerActionRequest *p);
-    u32 requestWaitMenu(u32 a, u32 b, u32 c);
-    void mainLowerHeldUpItem();
-    void lowerHeldUpItemCheckEnd();
-    void netLowerHeldUpItem(u32 a);
-    void setupLowerHeldUpItem();
-    u32 requestLowerHeldUpItem(u32 a, u32 b);
-    void mainHoldUpItem();
-    void holdUpItemCheckEnd();
-    void holdUpItemUpdate();
-    void changeClothesSpin();
-    void changeClothesApply();
-    void changeClothesHat();
-    void changeClothesFaceItem();
-    void changeClothesShirt();
-    void changeClothesEffects();
-    void endChangeClothes(u32 a);
-    void netChangeClothes(s16 a);
-    void setupChangeClothes(PlayerActionRequest *item);
-    u32 requestChangeClothes(u16 a, u32 b, u32 c, u32 d, s16 e);
-    void mainAct05();
-    void netAct05(u32 a);
-    void setupAct05(PlayerActionRequest *item);
-    u32 requestAct05(u16 a, u32 b, u32 c);
-    void mainSkidTurn();
-    void skidCheckEnd();
-    void skidDecelerate();
-    void endSkidTurn(u32 a);
-    void netSkidTurn();
-    void setupSkidTurn(PlayerActionRequest *item);
-    u32 requestSkidTurn(u16 a, u32 b, u32 c);
-    void mainWalk();
-    void walkNetCheckEnd(u8 *p);
-    void walkCheckEnd(s16 *p);
-};
 
 
 // ---- the object (size 0xc9c; vtable 0x020d6dec with the secondary table at 0x020d6e64)
@@ -7728,19 +7206,19 @@ void PlayerActor::walkUpdateLean() {
 void Unk_02007694::walkCheckEnd(s16 *p) {
     using namespace nL;
     BOOL c = gFieldSceneKind == 0;
-    if (c && ((nL::Unk_02007694 *)this)->tripCooldown == 0 && ((nL::Unk_02007694 *)this)->speed == 0x6e2) {
+    if (c && ((Unk_02007694 *)this)->tripCooldown == 0 && ((Unk_02007694 *)this)->speed == 0x6e2) {
         u16 t;
-        if (_ZN10PlayerData10getFortuneEv(PlayerData_GetCurrent()) == 2 || (PlayerActor_GetHat(&t, ((nL::Unk_02007694 *)this)), t == 0x13c3)) {
+        if (_ZN10PlayerData10getFortuneEv(PlayerData_GetCurrent()) == 2 || (PlayerActor_GetHat(&t, ((Unk_02007694 *)this)), t == 0x13c3)) {
             if (Random_GlobalBelow(0x17a) == 0) {
-                PlayerActor_RequestTrip(((nL::Unk_02007694 *)this), 6, -1);
+                PlayerActor_RequestTrip(((Unk_02007694 *)this), 6, -1);
                 return;
             }
         }
     }
-    if (*(s32 *)&((nL::Unk_02007694 *)this)->actionWork <= 0) {
+    if (*(s32 *)&((Unk_02007694 *)this)->actionWork <= 0) {
         _ZN11PlayerActor11requestWaitEjjj(this, 3, 1, -1);
     }
-    if (((nL::Unk_02007694 *)this)->animId == 2 && _ZN11PlayerActor17getInputMagnitudeEv(this) > 0) {
+    if (((Unk_02007694 *)this)->animId == 2 && _ZN11PlayerActor17getInputMagnitudeEv(this) > 0) {
         u16 x = _ZN11PlayerActor13getInputAngleEv(this);
         if (func_020e780c(x, *p) > 0x3a4c) {
             requestSkidTurn(x, 3, -1);
@@ -7758,8 +7236,8 @@ void Unk_02007694::walkNetCheckEnd(u8 *p) {
 
 void Unk_02007694::mainWalk() {
     using namespace nL;
-    if (_ZN11CommManager11isLocalSlotEj(gCommManager, ((nL::Unk_02007694 *)this)->sessionSlot)) {
-        s16 x = ((nL::Unk_02007694 *)this)->moveAngleY;
+    if (_ZN11CommManager11isLocalSlotEj(gCommManager, ((Unk_02007694 *)this)->sessionSlot)) {
+        s16 x = ((Unk_02007694 *)this)->moveAngleY;
         _ZN11PlayerActor15walkUpdateSpeedEv(this);
         _ZN11PlayerActor8walkMoveEv(this);
         _ZN11PlayerActor14walkUpdateLeanEv(this);
@@ -7800,11 +7278,11 @@ void Unk_02007694::setupSkidTurn(PlayerActionRequest *item) {
     using namespace nL;
     s16 v = *(s16 *)&item->unk_0c_c2fc;
     Unk_0200bff8_Vec vec;
-    Unk_0200c288 *p = &((nL::Unk_02007694 *)this)->actionWork;
+    Unk_0200c288 *p = &((Unk_02007694 *)this)->actionWork;
     _ZN12Unk_020102ec9startAnimEijt(this, 4, 3, 0);
     p->initSkidTurn(v);
     s32 b, a;
-    a = ((nL::Unk_02007694 *)this)->rotY << 12;
+    a = ((Unk_02007694 *)this)->rotY << 12;
     b = v << 12;
     s32 d = b - a;
     if (d < 0) d = -d;
@@ -7821,7 +7299,7 @@ void Unk_02007694::setupSkidTurn(PlayerActionRequest *item) {
             v += 0x6fd0;
         }
     }
-    vec = ((nL::Unk_02007694 *)this)->footPosA;
+    vec = ((Unk_02007694 *)this)->footPosA;
     s32 i = (u16)v >> 4;
     s32 t1, t0;
     s32 sn = data_02135f44[i * 2];
@@ -7842,27 +7320,27 @@ void Unk_02007694::netSkidTurn() {
 
 void Unk_02007694::endSkidTurn(u32 a) {
     using namespace nL;
-    ((nL::Unk_02007694 *)this)->moveAngleY = ((nL::Unk_02007694 *)this)->rotY;
+    ((Unk_02007694 *)this)->moveAngleY = ((Unk_02007694 *)this)->rotY;
 }
 
 void Unk_02007694::skidDecelerate() {
     using namespace nL;
-    Unk_0200c288 *p = &((nL::Unk_02007694 *)this)->actionWork;
+    Unk_0200c288 *p = &((Unk_02007694 *)this)->actionWork;
     s32 t;
-    PlayerActor_TurnAngle(&((nL::Unk_02007694 *)this)->rotY, (s16)p->unk_00);
-    s32 v = ((nL::Unk_02007694 *)this)->speed;
+    PlayerActor_TurnAngle(&((Unk_02007694 *)this)->rotY, (s16)p->unk_00);
+    s32 v = ((Unk_02007694 *)this)->speed;
     t = PlayerActor_DecelerateSkid(v, 0);
     _ZN12Unk_020102ec8setSpeedEPj(this, &t);
     if (t == 0 && v != 0) {
-        Effect_Create(0x29, &((nL::Unk_02007694 *)this)->position[0], &p->skidEffectAngle, 0);
+        Effect_Create(0x29, &((Unk_02007694 *)this)->position[0], &p->skidEffectAngle, 0);
     }
 }
 
 void Unk_02007694::skidCheckEnd() {
     using namespace nL;
-    s32 t = ((nL::Unk_02007694 *)this)->speed;
-    if (((nL::Unk_02007694 *)this)->rotY == (s16)((nL::Unk_02007694 *)this)->actionWork.unk_00 && t <= 0) {
-        ((nL::Unk_02007694 *)this)->actionPriority = _ZN12Unk_0200769421getActionDonePriorityEj(this, ((nL::Unk_02007694 *)this)->action);
+    s32 t = ((Unk_02007694 *)this)->speed;
+    if (((Unk_02007694 *)this)->rotY == (s16)((Unk_02007694 *)this)->actionWork.unk_00 && t <= 0) {
+        ((Unk_02007694 *)this)->actionPriority = _ZN12Unk_0200769421getActionDonePriorityEj(this, ((Unk_02007694 *)this)->action);
         _ZN11PlayerActor11requestWaitEjjj(this, 3, 1, -1);
     }
 }
@@ -7962,38 +7440,38 @@ void Unk_02007694::setupChangeClothes(PlayerActionRequest *item) {
     } else {
         _ZN12Unk_020102ec13startAnimOnceEijt(this, 5, 3, 0);
     }
-    ((nL::Unk_02007694 *)this)->actionWork.initChangeClothes(a, b, c, ((nL::Unk_02007694 *)this)->rotY);
-    ((nL::Unk_02007694 *)this)->netData.writeChangeClothesNet(a, b, c);
+    ((Unk_02007694 *)this)->actionWork.initChangeClothes(a, b, c, ((Unk_02007694 *)this)->rotY);
+    ((Unk_02007694 *)this)->netData.writeChangeClothesNet(a, b, c);
     if (b == 2 && a == 0x13c3) {
         _ZN12Unk_02006d146playSeEj(this, 0x77);
     } else {
         _ZN12Unk_02006d146playSeEj(this, 0x76);
     }
-    Effect_PlayById2(0x61, &((nL::Unk_02007694 *)this)->position[0], 0, 0);
+    Effect_PlayById2(0x61, &((Unk_02007694 *)this)->position[0], 0, 0);
 }
 
 void Unk_02007694::netChangeClothes(s16 a) {
     using namespace nL;
     u16 x;
     u8 y, z;
-    ((nL::Unk_02007694 *)this)->netData.readChangeClothesNet(&x, &y, &z);
+    ((Unk_02007694 *)this)->netData.readChangeClothesNet(&x, &y, &z);
     requestChangeClothes(x, y, z, 6, a);
 }
 
 void Unk_02007694::changeClothesEffects() {
     using namespace nL;
     _ZN12Unk_020102ec11advanceAnimEv(this);
-    if (_ZN13AnimFrameCtrl14hasPassedFrameEi(&((nL::Unk_02007694 *)this)->bodyAnimCtrl[0], 0xd)) {
-        Effect_Create(0x22, &((nL::Unk_02007694 *)this)->position[0], 0, 0);
-    } else if (_ZN13AnimFrameCtrl14hasPassedFrameEi(&((nL::Unk_02007694 *)this)->bodyAnimCtrl[0], 3)) {
-        s16 x = ((nL::Unk_02007694 *)this)->rotY;
+    if (_ZN13AnimFrameCtrl14hasPassedFrameEi(&((Unk_02007694 *)this)->bodyAnimCtrl[0], 0xd)) {
+        Effect_Create(0x22, &((Unk_02007694 *)this)->position[0], 0, 0);
+    } else if (_ZN13AnimFrameCtrl14hasPassedFrameEi(&((Unk_02007694 *)this)->bodyAnimCtrl[0], 3)) {
+        s16 x = ((Unk_02007694 *)this)->rotY;
         Unk_0200bff8_Vec v;
         s16 h;
-        v = ((nL::Unk_02007694 *)this)->footPosB;
+        v = ((Unk_02007694 *)this)->footPosB;
         v.z += 0x266;
         h = x + 0xaf0;
         Effect_Create(0x27, &v, &h, 0);
-        v = ((nL::Unk_02007694 *)this)->footPosA;
+        v = ((Unk_02007694 *)this)->footPosA;
         v.z += 0x266;
         h = x - 0xaf0;
         Effect_Create(0x27, &v, &h, 0);
@@ -8002,7 +7480,7 @@ void Unk_02007694::changeClothesEffects() {
 
 void Unk_02007694::changeClothesShirt() {
     using namespace nL;
-    Unk_0200c288 *p = &((nL::Unk_02007694 *)this)->actionWork;
+    Unk_0200c288 *p = &((Unk_02007694 *)this)->actionWork;
     if (p->isApplied == 0) {
         u16 t = p->unk_00;
         _ZN12Unk_02006d1415setShirtTextureEPv(this, &t);
@@ -8014,7 +7492,7 @@ void Unk_02007694::changeClothesShirt() {
 
 void Unk_02007694::changeClothesFaceItem() {
     using namespace nL;
-    Unk_0200c288 *p = &((nL::Unk_02007694 *)this)->actionWork;
+    Unk_0200c288 *p = &((Unk_02007694 *)this)->actionWork;
     if (p->isApplied == 0) {
         u16 t = p->unk_00;
         if (_ZN12Unk_02006d1421requestFaceItemChangeEPt(this, &t)) {
@@ -8025,7 +7503,7 @@ void Unk_02007694::changeClothesFaceItem() {
 
 void Unk_02007694::changeClothesHat() {
     using namespace nL;
-    Unk_0200c288 *p = &((nL::Unk_02007694 *)this)->actionWork;
+    Unk_0200c288 *p = &((Unk_02007694 *)this)->actionWork;
     if (p->isApplied == 0) {
         u16 t = p->unk_00;
         u32 a = PlayerActor_GetHairStyle(this);
@@ -8038,7 +7516,7 @@ void Unk_02007694::changeClothesHat() {
 
 void Unk_02007694::changeClothesSpin() {
     using namespace nL;
-    s16 v = ((nL::Unk_02007694 *)this)->rotY; s32 a; s16 t = ((nL::Unk_02007694 *)this)->actionWork.spinStep;
+    s16 v = ((Unk_02007694 *)this)->rotY; s32 a; s16 t = ((Unk_02007694 *)this)->actionWork.spinStep;
     if (v != 0) {
         a = v;
         if (a < 0) a = -a;
@@ -10306,14 +9784,14 @@ void Unk_02007694::holdUpItemUpdate() {
     using namespace nE;
     Unk_02007ebc_Vec v;
     _ZN12Unk_020102ec11advanceAnimEv(this);
-    s32 n = ((u32)((nE::Unk_02007694 *)this)->bodyAnimFrame << 4) >> 16;
+    s32 n = ((u32)((Unk_02007694 *)this)->bodyAnimFrame << 4) >> 16;
     s32 t = 0x1000;
-    if (((nE::Unk_02007694 *)this)->animId == 0x7e) {
+    if (((Unk_02007694 *)this)->animId == 0x7e) {
         if (n == 10) {
             _ZN12Unk_02006d1413setActionFlagEj(this, 0xd);
         }
     } else {
-        s32 c = ((nE::Unk_02007694 *)this)->shownItemScaleX;
+        s32 c = ((Unk_02007694 *)this)->shownItemScaleX;
         if (n >= 9) {
             t = c - 0x155;
             if (t < 0) {
@@ -10321,13 +9799,13 @@ void Unk_02007694::holdUpItemUpdate() {
             }
         }
     }
-    ((nE::Unk_02007694 *)this)->shownItemScaleX = t;
-    ((nE::Unk_02007694 *)this)->shownItemScaleY = t;
-    ((nE::Unk_02007694 *)this)->shownItemScaleZ = t;
-    PlayerActor_CalcHeldUpItemPos(&v, ((nE::Unk_02007694 *)this), n);
-    func_020e7870(&((nE::Unk_02007694 *)this)->shownItemPosX, v.x, 0x800, 0x2000, 0x333);
-    func_020e7870(&((nE::Unk_02007694 *)this)->shownItemPosY, v.y, 0x800, 0x2000, 0x333);
-    func_020e7870(&((nE::Unk_02007694 *)this)->shownItemPosZ, v.z, 0x800, 0x2000, 0x333);
+    ((Unk_02007694 *)this)->shownItemScaleX = t;
+    ((Unk_02007694 *)this)->shownItemScaleY = t;
+    ((Unk_02007694 *)this)->shownItemScaleZ = t;
+    PlayerActor_CalcHeldUpItemPos(&v, ((Unk_02007694 *)this), n);
+    func_020e7870(&((Unk_02007694 *)this)->shownItemPosX, v.x, 0x800, 0x2000, 0x333);
+    func_020e7870(&((Unk_02007694 *)this)->shownItemPosY, v.y, 0x800, 0x2000, 0x333);
+    func_020e7870(&((Unk_02007694 *)this)->shownItemPosZ, v.z, 0x800, 0x2000, 0x333);
 }
 
 namespace nE {
@@ -10365,8 +9843,8 @@ extern "C" void PlayerActor_CalcHeldUpItemPos(Unk_02007ebc_Vec *out, Unk_0200769
 void Unk_02007694::holdUpItemCheckEnd() {
     using namespace nE;
     if (_ZN12Unk_02006d1412turnToCameraEi(this, 0x800)) {
-        if (_ZN13AnimFrameCtrl10isFinishedEv(((nE::Unk_02007694 *)this)->bodyAnimCtrl)) {
-            if (((nE::Unk_02007694 *)this)->animId == 0x7e) {
+        if (_ZN13AnimFrameCtrl10isFinishedEv(((Unk_02007694 *)this)->bodyAnimCtrl)) {
+            if (((Unk_02007694 *)this)->animId == 0x7e) {
                 _ZN12Unk_020102ec13startAnimOnceEijt(this, 0x7f, 0, 0);
                 _ZN12Unk_02006d146playSeEj(this, 0x6e);
             } else {
@@ -10399,9 +9877,9 @@ void Unk_02007694::setupLowerHeldUpItem() {
 
 void Unk_02007694::netLowerHeldUpItem(u32 a) {
     using namespace nE;
-    if (((nE::Unk_02007694 *)this)->action == 0x85) {
-    } else if (((nE::Unk_02007694 *)this)->action == 0x86) {
-        ((nE::Unk_02007694 *)this)->netSeq = a;
+    if (((Unk_02007694 *)this)->action == 0x85) {
+    } else if (((Unk_02007694 *)this)->action == 0x86) {
+        ((Unk_02007694 *)this)->netSeq = a;
     } else {
         requestLowerHeldUpItem(6, a);
     }
@@ -10409,8 +9887,8 @@ void Unk_02007694::netLowerHeldUpItem(u32 a) {
 
 void Unk_02007694::lowerHeldUpItemCheckEnd() {
     using namespace nE;
-    if (_ZN13AnimFrameCtrl10isFinishedEv(((nE::Unk_02007694 *)this)->bodyAnimCtrl)) {
-        ((nE::Unk_02007694 *)this)->actionPriority = getActionDonePriority(((nE::Unk_02007694 *)this)->action);
+    if (_ZN13AnimFrameCtrl10isFinishedEv(((Unk_02007694 *)this)->bodyAnimCtrl)) {
+        ((Unk_02007694 *)this)->actionPriority = getActionDonePriority(((Unk_02007694 *)this)->action);
         _ZN12Unk_0200769412requestAct05Etjj(this, 3, 5, -1);
     }
 }
@@ -10484,9 +9962,9 @@ void Unk_02007694::mainAct92() {
 void Unk_02007694::calcModelMatrixCurved() {
     using namespace nE;
     Unk_02007c5c_Mtx m;
-    ((nE::Unk_02007694 *)this)->drawTilt = WorldCurve_ToCurved(((nE::Unk_02007694 *)this)->drawPos, ((nE::Unk_02007694 *)this)->position);
+    ((Unk_02007694 *)this)->drawTilt = WorldCurve_ToCurved(((Unk_02007694 *)this)->drawPos, ((Unk_02007694 *)this)->position);
     _ZN5Actor15calcModelMatrixEPv(this, &m);
-    ((nE::Unk_02007694 *)this)->bodyBaseMtx = m;
+    ((Unk_02007694 *)this)->bodyBaseMtx = m;
 }
 
 u8 Unk_02007694::keepsBgCheckWork(u32 a) {
@@ -10500,7 +9978,7 @@ void Unk_02007694::updateBgCheckWork(u32 a, u32 b) {
     if (r) {
         keepsBgCheckWork(b);
         if (!r) {
-            _ZN14CollisionState9beginStepEv(((nE::Unk_02007694 *)this)->bgCheckWork);
+            _ZN14CollisionState9beginStepEv(((Unk_02007694 *)this)->bgCheckWork);
         }
     }
 }
@@ -10517,7 +9995,7 @@ u8 Unk_02007694::getActionDonePriority(u32 a) {
 
 void Unk_02007694::endAction(u32 a) {
     using namespace nE;
-    static void (nE::Unk_02007694::*tbl[147])(u32) = {
+    static void (Unk_02007694::*tbl[147])(u32) = {
         data_020d6da4.fn, data_020d6dac.fn, data_020d6d84.fn, 0, data_020d6d7c.fn, 0,
         data_020d6d74.fn, data_020d6d6c.fn, data_020d6d64.fn, 0, data_020d6d5c.fn, 0,
         0, data_020d6d54.fn, data_020d6d4c.fn, data_020d6d44.fn, 0, 0,
@@ -10544,33 +10022,33 @@ void Unk_02007694::endAction(u32 a) {
         0, 0, 0, 0, 0, 0,
         0, data_020d6bf4.fn, 0,
     };
-    void (nE::Unk_02007694::*fn)(u32) = tbl[((nE::Unk_02007694 *)this)->action];
+    void (Unk_02007694::*fn)(u32) = tbl[((Unk_02007694 *)this)->action];
     if (fn) {
-        (((nE::Unk_02007694 *)this)->*fn)(a);
+        (((Unk_02007694 *)this)->*fn)(a);
     }
     _ZN12Unk_02006d1415clearActionFlagEj(this, 0x1c);
 }
 
 void Unk_02007694::clearActionWork() {
     using namespace nE;
-    MI_CpuFill8(((nE::Unk_02007694 *)this)->actionWork + 0, 0, 0x1c);
+    MI_CpuFill8(&((Unk_02007694 *)this)->actionWork, 0, 0x1c);
 }
 
 void Unk_02007694::stopMovementForAction(u32 a) {
     using namespace nE;
     if (sPlayerActionStopsMovement[a]) {
-        ((nE::Unk_02007694 *)this)->speed = 0;
-        u32 t = ((nE::Unk_02007694 *)this)->velocityY;
-        ((nE::Unk_02007694 *)this)->velocity = 0;
-        ((nE::Unk_02007694 *)this)->velocityY = t;
-        ((nE::Unk_02007694 *)this)->velocityZ = 0;
+        ((Unk_02007694 *)this)->speed = 0;
+        u32 t = ((Unk_02007694 *)this)->velocityY;
+        ((Unk_02007694 *)this)->velocity = 0;
+        ((Unk_02007694 *)this)->velocityY = t;
+        ((Unk_02007694 *)this)->velocityZ = 0;
     }
 }
 
 void Unk_02007694::resetRotXForAction(u32 a) {
     using namespace nE;
     if (sPlayerActionResetsRotX[a]) {
-        _ZN12Unk_020102ec7setRotXEt(((nE::Unk_02007694 *)this), 0);
+        _ZN12Unk_020102ec7setRotXEt(((Unk_02007694 *)this), 0);
     }
 }
 

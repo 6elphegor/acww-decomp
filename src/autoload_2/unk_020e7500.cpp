@@ -4,6 +4,7 @@
 // and key sampling, 4x3 matrix helpers. No class with a vtable in this range.
 #include "types.h"
 #include "sys/TreeNode.h"
+#include "gfx/VecFx32.h"
 
 struct ListNode {
     ListNode *prev;
@@ -15,9 +16,6 @@ struct List {
 };
 struct Tree {
     TreeNode *root;
-};
-struct VecFx32 {
-    s32 x, y, z;
 };
 struct MtxFx43 {
     s32 m[4][3];

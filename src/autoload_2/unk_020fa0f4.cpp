@@ -4,17 +4,10 @@
 #include "gfx/SplManager.h"
 #include "gfx/SplRes.h"
 #include "gfx/SplEmitterViews.h"
+#include "gfx/VecFx32.h"
+#include "gfx/SplTex.h"
 
 
-// texture table entry (20 bytes)
-struct TexEnt {
-    void *e;
-    u32 w4;
-    u32 w8;
-    u32 w12;
-    u16 h16;
-    u16 h18;
-};
 
 
 
@@ -130,15 +123,6 @@ extern u32 (*data_0213bc10)(u32, u32, u32);
 typedef void (*TexFn)(void *);
 typedef void (*DrawFn)(Mc *, Node *, u32);
 
-struct TexBits {
-    u32 fmt : 4;
-    u32 sizeS : 4;
-    u32 sizeT : 4;
-    u32 rep : 2;
-    u32 flip : 2;
-    u32 c0 : 1;
-    u32 pad : 15;
-};
 
 static inline void G3_TexImageParam(u32 fmt, u32 texgen, u32 s, u32 t, u32 rep, u32 flip, u32 c0, u32 addr) {
     *(volatile u32 *)0x040004a8 = (addr >> 3) | (fmt << 26) | (texgen << 30) | (s << 20) | (t << 23) | (rep << 16) | (flip << 18) | (c0 << 29);
@@ -166,11 +150,6 @@ static inline void G3_Translate(s32 x, s32 y, s32 z) {
 }
 
 
-struct V3 {
-    s32 x;
-    s32 y;
-    s32 z;
-};
 
 
 
