@@ -10,6 +10,7 @@
 #include "gfx/ModelSlotPool.h"
 #include "snd/SndEnvChannel.h"
 #include "game/GroundInfoBase.h"
+#include "game/CollisionState.h"
 
 // ---- main-module library classes shared by several functions of this unit (global: their methods are called by symbol)
 
@@ -62,12 +63,6 @@ public:
 };
 
 // ---- library sub-objects (declarations only; ctors/dtors live in main)
-class CollisionState {
-public:
-    CollisionState();
-    ~CollisionState();
-    u32 pad[0x30 / 4];
-};
 
 class AnimModel {
 public:

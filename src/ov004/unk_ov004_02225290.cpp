@@ -8,6 +8,7 @@
 #include "room/RoomObjRes.h"
 #include "room/RoomObjTex.h"
 #include "game/BoxCollider.h"
+#include "gfx/CachedModel.h"
 // Library base class (as include/GameProc.h, but vfunc_20 takes the u32 that ov004's override uses)
 class ProcBase {
 public:
@@ -88,12 +89,6 @@ public:
 
 // ---- model resource sub-object at +0xec (see src/main/unk_02054190.cpp)
 
-class CachedModel : public Unk_02055704 {
-public:
-    CachedModel();
-    virtual ~CachedModel();
-    u32 unk_98;
-};
 
 
 class AnimModel : public CachedModel, public AnimFrameCtrl {

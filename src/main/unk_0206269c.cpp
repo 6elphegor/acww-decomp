@@ -1,6 +1,7 @@
 #include "types.h"
 #include "item/ItemPickSpec.h"
 #include "item/RandomSource.h"
+#include "item/DateSeededRandomSource.h"
 
 extern "C" {
 u32 Random_NextBelow(void *st, u32 n);
@@ -45,23 +46,6 @@ s32 ItemList_IsFullHeadwear(u16 *p);
 }
 
 
-// Random source seeded from the RTC (vtable 0x020dd344).
-class DateSeededRandomSource : public RandomSource {
-public:
-    DateSeededRandomSource();
-    ~DateSeededRandomSource();
-    virtual u8 getYear();
-    virtual u8 getMonth();
-    virtual u8 getDay();
-    virtual u32 random(u32 n);
-    void seed(u8 a, u8 b, u8 c);
-    void seedFromToday();
-
-    /* 0x04 */ u32 rngState;
-    /* 0x08 */ u8 year;
-    /* 0x09 */ u8 month;
-    /* 0x0a */ u8 day;
-};
 
 // One-byte element (value 0..5), 3-byte rows in sItemClassWeightOrders
 class ItemClassOrder {

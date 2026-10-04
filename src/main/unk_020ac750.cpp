@@ -18,6 +18,10 @@
 #include "item/Letter.h"
 #include "gfx/ObjShadowBits.h"
 #include "gfx/Unk_020ac2e8_V.h"
+#include "gfx/SceneLightsCol.h"
+#include "item/ShopPurchaseBits.h"
+#include "item/ShopAckCounter.h"
+#include "item/DateSeededRandomSource.h"
 struct MsgString25 {
     MsgString25();
     ~MsgString25();
@@ -25,22 +29,6 @@ struct MsgString25 {
 };
 
 
-class DateSeededRandomSource : public RandomSource {
-public:
-    DateSeededRandomSource();
-    ~DateSeededRandomSource();
-    virtual u8 getYear();
-    virtual u8 getMonth();
-    virtual u8 getDay();
-    virtual u32 random(u32 n);
-    void seed(u8 a, u8 b, u8 c);
-    void seedFromToday();
-
-    u32 rngState;
-    u8 year;
-    u8 month;
-    u8 day;
-};
 struct ItemName {
     ItemName(u16 *s);
     ~ItemName();
@@ -71,9 +59,6 @@ struct Vec3Z {
     ~Vec3Z();
 };
 
-struct Col {
-    u16 v;
-};
 
 
 
@@ -104,12 +89,6 @@ public:
 };
 
 
-struct Bits {
-    u32 a : 6;
-    u32 b : 19;
-    u32 c : 1;
-    u32 d : 6;
-};
 
 
 // ======== types of unk_020acf38.cpp ========
@@ -196,10 +175,6 @@ struct Obj {
 };
 // ======== types of unk_020aebbc.cpp ========
 
-struct Counter {
-    /* 0x00 */ u8 needed;
-    /* 0x01 */ u8 received;
-};
 
 struct Elem2a { Elem2a(); u16 d; };
 struct NookShop { u32 vt; ItemId e[0x25]; NookShop(); };

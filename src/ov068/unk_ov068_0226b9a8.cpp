@@ -7,6 +7,7 @@
 #include "actor/Unk_ov068_SceneEntry.h"
 #include "gfx/AnimFrameCtrl.h"
 #include "room/RoomObjRes.h"
+#include "gfx/CachedModel.h"
 #define AnimFrameCtrl_hasPassedFrame _ZN13AnimFrameCtrl14hasPassedFrameEi
 #define AnimFrameCtrl_step _ZN13AnimFrameCtrl4stepEv
 #define BlendAnimModel_initAnim _ZN14BlendAnimModel8initAnimEiiitt
@@ -124,12 +125,6 @@ public:
 
 // ---- model resource sub-object at +0xec (see src/main/unk_02054190.cpp)
 
-class CachedModel : public Unk_02055704 {
-public:
-    CachedModel();
-    virtual ~CachedModel();
-    u32 unk_98;
-};
 
 
 class AnimModel : public CachedModel, public AnimFrameCtrl {

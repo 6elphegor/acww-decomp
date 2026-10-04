@@ -5,6 +5,7 @@
 // start-up at 0x020edbbc) and the sound player object (Player) helpers. Fatal stop = Fatal_Trap (assert failure).
 #include "types.h"
 #include "sys/Unk_Seq.h"
+#include "snd/SndSeBytes4.h"
 
 
 struct Ent {
@@ -33,9 +34,6 @@ struct FndList {
     void *tail;
     u16 num;
     u16 offset;
-};
-struct Bytes4 {
-    u8 b0, b1, b2, b3;
 };
 struct Player {
     /* 0x00 */ FndList list;

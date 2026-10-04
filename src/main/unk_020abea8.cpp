@@ -8,6 +8,8 @@
 #include "game/Vec3.h"
 #include "gfx/ObjShadowBits.h"
 #include "gfx/Unk_020ac2e8_V.h"
+#include "gfx/SceneLightsCol.h"
+#include "item/ShopPurchaseBits.h"
 
 
 struct Vec3Z2 {
@@ -31,9 +33,6 @@ struct Vec3Z {
     ~Vec3Z();
 };
 
-struct Col {
-    u16 v;
-};
 
 
 
@@ -65,12 +64,6 @@ public:
 };
 
 
-struct Bits {
-    u32 a : 6;
-    u32 b : 19;
-    u32 c : 1;
-    u32 d : 6;
-};
 
 extern "C" {
 s32 FX_Div(s32 a, s32 b);

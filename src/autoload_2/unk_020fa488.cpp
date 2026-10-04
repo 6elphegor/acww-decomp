@@ -6,6 +6,7 @@
 #include "game/Vec3.h"
 #include "gfx/SplManager.h"
 #include "gfx/SplRes.h"
+#include "gfx/SplEmitterViews.h"
 
 // SPL-style particle manager (continued from G011b): resource header word, bits 24-29 = field types
 struct HdrBits {
@@ -60,13 +61,6 @@ struct HdrW {
     u8 c43;
 };
 
-struct Blk14 {
-    u16 pad0 : 7;
-    u16 k7 : 2;
-    u16 pad9 : 7;
-    u8 p2[13];
-    u8 c15;
-};
 
 struct Res {
     HdrW *p0;
@@ -167,11 +161,6 @@ struct Mt {
     s32 m[12];
 };
 
-struct Cbits {
-    u16 a : 5;
-    u16 b : 5;
-    u16 id : 6;
-};
 
 struct Nd {
     u8 p0[8];

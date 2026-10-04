@@ -3,6 +3,7 @@
 #include "game/Unk_02036c60_Vec.h"
 #include "game/Unk_02037674_V3.h"
 #include "game/Unk_021e5890_T.h"
+#include "gfx/BgModelCache.h"
 
 extern "C" {
 void func_02133ef8(void *, u32);
@@ -91,54 +92,8 @@ public:
 
 
 // ---- BgModelCache ----
-struct BgAcreModel {
-    s32 acreId;
-    void *arc;
-    void *mdl;
-    void *bcl;
-    void *bsd;
-    void *jntAnm;
-    void *matAnm;
-    void *texSrtAnm;
-    void *tex;
-    u8 unk_24[4];
-    void *mgt;
-    s32 mgtCount;
-};
 
-struct BgAcreBcl {
-    s32 acreId;
-    void *bcl;
-};
 
-struct BgModelCache {
-    BgAcreModel acres[31];
-    BgAcreBcl bclCache[9];
-    u8 withAnims;
-    u8 pad_619[3];
-    s32 heapSize;
-    u8 pad_620[0x10];
-    s32 groundTex;
-    s32 groundMatAnm;
-    s32 groundTexSrtAnm;
-    s32 riverPatAnm;
-    s32 riverPatTex;
-    s32 beBPatAnm;
-    s32 beBPatTex;
-
-    s32 getBeBPatTex();
-    s32 getBeBPatAnm();
-    s32 getRiverPatTex();
-    s32 getRiverPatAnm();
-    s32 getGroundTexSrtAnm();
-    s32 getGroundMatAnm();
-    s32 getGroundTex();
-    BOOL reset();
-    BgAcreModel *getAcre(s32 id);
-    void *getAcreBcl(s32 id);
-    void loadGroundAnims();
-    void loadGroundTexture();
-};
 
 extern "C" void *BgModel_LoadFile(void *a, void *b) {
     return File_LoadAlloc(a, gBgHeap, 4, b);

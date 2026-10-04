@@ -4,6 +4,9 @@
 #include "actor/Unk_ov003_SceneEntry.h"
 #include "actor/ActorCollider.h"
 #include "talk/TalkWindowState.h"
+#include "game/CollisionState.h"
+#include "gfx/CachedModel.h"
+#include "actor/ActorFollowCollider.h"
 
 class ProcBase {
 public:
@@ -208,23 +211,7 @@ public:
     virtual s32 vfunc_0c();
 };
 
-// main-module helper classes
-class CachedModel {
-public:
-    CachedModel();
-    virtual ~CachedModel();
-    u32 pad[0x26];
-};
 
-struct CollisionState {
-    CollisionState();
-    ~CollisionState();
-    u32 pad_00;
-    /* 0x04 */ s32 flags;
-    u32 pad_08[2];
-    /* 0x10 */ u8 numContacts;
-    u8 pad_11[0x30 - 0x11];
-};
 
 class GroundInfo {
 public:
@@ -238,15 +225,6 @@ public:
 typedef GroundInfo Loc;
 
 
-class ActorFollowCollider : public ActorCollider {
-public:
-    ActorFollowCollider();
-    ~ActorFollowCollider();
-    virtual Vec3 *getPos();
-    virtual u32 getOwnerId();
-    s32 setupForActor(void *o, s32 a, s32 b, u32 c, u32 d, u32 e, u8 f, s32 g);
-    /* 0x40 */ u8 *ownerActor;
-};
 
 class SnowballCollider : public ActorFollowCollider {
 public:
@@ -558,7 +536,7 @@ BOOL Snowball::vfunc_00() {
     lastFramePos.x = prevPosition.x;
     lastFramePos.y = pv->y;
     lastFramePos.z = pv->z;
-    prevContactCount = collisionState.numContacts;
+    prevContactCount = collisionState.contacts.numContacts;
     Snowball_UpdateMatrix(this, 0, 0);
     _ZN12Unk_02003c3013func_02003eccEv(seEmitter);
     clearTalkStartMode();
@@ -715,7 +693,7 @@ extern "C" s32 Snowball_UpdateRolling(Obj *o)
         o->position.y -= 0x200;
     }
     Collision_Move(&o->collisionState, &o->position, &o->prevPosition, 0, o->collisionRadius, o, kind);
-    u32 cur = o->collisionState.numContacts;
+    u32 cur = o->collisionState.contacts.numContacts;
     if (cur > o->prevContactCount && o->talkAct == 0 && o->snowballState == 0) {
         func_02003e70(o->seEmitter, 0x81d, 0x7f, 0);
     }

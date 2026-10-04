@@ -1,15 +1,13 @@
 #include "types.h"
 #include "game/Unk_0202f2ac_V3.h"
 #include "game/Vec3.h"
+#include "game/Basis.h"
 
 
 struct Mtx43 {
     s32 m[12];
 };
 
-struct Basis {
-    Vec3 a, b, c;
-};
 
 
 

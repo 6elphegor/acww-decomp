@@ -4,6 +4,8 @@
 #include "game/Unk_02036c60_Vec.h"
 #include "game/Unk_021e5890_T.h"
 #include "snd/BgmSceneFade.h"
+#include "gfx/BgModelCache.h"
+#include "snd/BgmVolumeMixer.h"
 
 extern "C" {
 extern u8 gFieldSceneKind;
@@ -283,55 +285,7 @@ public:
     BgmCommandQueue commands;
 };
 
-class BgmVolumeChannel {
-public:
-    BgmVolumeChannel();
-    ~BgmVolumeChannel();
-    void set(s32 a, s32 b, u8 c);
-    void clear();
 
-    u8 changed;
-    u8 masked;
-    u8 pad_02[2];
-    s32 volume;
-    s32 fadeFrames;
-    s32 state;
-};
-
-class BgmVolumeMixer {
-public:
-    BgmVolumeMixer(BgmManagerOwnerView *owner);
-    ~BgmVolumeMixer();
-    void clearMasks();
-    void clearChanged();
-    void applyVolume();
-    void maskForTopRequest();
-    void updateRequestVolume(BgmVolumeChannel *e);
-    void updateSceneDuck(BgmVolumeChannel *e);
-    void updatePositionDuck(BgmVolumeChannel *e);
-    void updateFireworkDuck(BgmVolumeChannel *e);
-    void updateFishDuck(BgmVolumeChannel *e);
-    void updateTalkDuck(BgmVolumeChannel *e);
-    void updateMenuDuck(BgmVolumeChannel *e);
-    void updateChannel0(BgmVolumeChannel *e);
-    void updateChannels();
-    void endFireworkDuck();
-    void startFireworkDuck();
-    void endFishDuck();
-    void startFishDuck();
-    void endMenuDuck();
-    void setMenuDuck(s32 i);
-    void endTalkDuck();
-    void startTalkDuck();
-    void reset();
-    void update();
-    void exit();
-    void init();
-
-    BgmManagerOwnerView *manager;
-    BgmVolumeChannel channels[8];
-    s32 talkDuckHold;
-};
 
 typedef void (BgmVolumeMixer::*Unk_02035758_Fn)(BgmVolumeChannel *);
 
@@ -581,54 +535,8 @@ extern "C" {
 
 
 // ---- BgModelCache ----
-struct BgAcreModel {
-    s32 acreId;
-    void *arc;
-    void *mdl;
-    void *bcl;
-    void *bsd;
-    void *jntAnm;
-    void *matAnm;
-    void *texSrtAnm;
-    void *tex;
-    u8 unk_24[4];
-    void *mgt;
-    s32 mgtCount;
-};
 
-struct BgAcreBcl {
-    s32 acreId;
-    void *bcl;
-};
 
-struct BgModelCache {
-    BgAcreModel acres[31];
-    BgAcreBcl bclCache[9];
-    u8 withAnims;
-    u8 pad_619[3];
-    s32 heapSize;
-    u8 pad_620[0x10];
-    s32 groundTex;
-    s32 groundMatAnm;
-    s32 groundTexSrtAnm;
-    s32 riverPatAnm;
-    s32 riverPatTex;
-    s32 beBPatAnm;
-    s32 beBPatTex;
-
-    s32 getBeBPatTex();
-    s32 getBeBPatAnm();
-    s32 getRiverPatTex();
-    s32 getRiverPatAnm();
-    s32 getGroundTexSrtAnm();
-    s32 getGroundMatAnm();
-    s32 getGroundTex();
-    BOOL reset();
-    BgAcreModel *getAcre(s32 id);
-    void *getAcreBcl(s32 id);
-    void loadGroundAnims();
-    void loadGroundTexture();
-};
 
 // extern declarations
 extern "C" {

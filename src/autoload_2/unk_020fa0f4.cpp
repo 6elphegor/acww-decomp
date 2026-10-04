@@ -3,6 +3,7 @@
 #include "game/Vec3.h"
 #include "gfx/SplManager.h"
 #include "gfx/SplRes.h"
+#include "gfx/SplEmitterViews.h"
 
 // SPL-style particle manager (continued from G011b): resource header word, bits 24-29 = field types
 struct HdrBits {
@@ -57,13 +58,6 @@ struct HdrW {
     u8 c43;
 };
 
-struct Blk14 {
-    u16 pad0 : 7;
-    u16 k7 : 2;
-    u16 pad9 : 7;
-    u8 p2[13];
-    u8 c15;
-};
 
 struct Res {
     HdrW *p0;
@@ -166,11 +160,6 @@ struct Mt {
     s32 m[12];
 };
 
-struct Cbits {
-    u16 a : 5;
-    u16 b : 5;
-    u16 id : 6;
-};
 
 struct Nd {
     u8 p0[8];
@@ -270,9 +259,6 @@ static inline void G3_Translate(s32 x, s32 y, s32 z) {
     *(volatile u32 *)0x04000470 = z;
 }
 
-struct A3 {
-    s32 a[3];
-};
 
 struct V3 {
     s32 x;
@@ -302,46 +288,10 @@ struct HdrP {
     u8 c66;
 };
 
-struct B4 {
-    u8 p0[8];
-    u16 b0 : 1;
-    u16 pad : 15;
-};
 
-struct B8 {
-    u8 p0[8];
-    u16 b0 : 1;
-    u16 b1 : 1;
-    u16 pad : 14;
-};
 
-struct B12 {
-    u8 p0[2];
-    u16 pad : 8;
-    u16 b8 : 1;
-    u16 pad2 : 7;
-};
 
-struct B10 {
-    u8 p0[8];
-    u32 pad : 16;
-    u32 b16 : 1;
-    u32 b17 : 1;
-    u32 pad2 : 14;
-};
 
-struct B14 {
-    u16 b0 : 1;
-    u16 b1 : 1;
-    u16 b2 : 1;
-    u16 b3 : 1;
-    u16 b4 : 1;
-    u16 b5 : 1;
-    u16 pad : 10;
-    u8 p2[11];
-    u8 c13;
-    u8 c14;
-};
 
 struct Pt {
     Pt *next;

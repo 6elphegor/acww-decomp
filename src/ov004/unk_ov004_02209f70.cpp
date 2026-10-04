@@ -24,6 +24,7 @@
 #include "room/Unk_ov004_02205c80_Obj.h"
 #include "room/Unk_ov004_02206570_Act.h"
 #include "room/Unk_ov004_View00_Chk.h"
+#include "game/CollisionEdge.h"
 // ov004 translation unit 0x02209f70-0x022136d0 (34 classes derived from FtrActor). Built by two compilers:
 // this file's thunks need mwcc 1.2/sp2, FtrSingingInsect::updateActive / vfunc_7c (in the _switch file) need 1.2/base;
 // the functions and data objects are placed by address (config/usa/arm9/overlays/ov004/object_order.txt).
@@ -283,14 +284,6 @@ struct FtrTopItems {
 
 // ---- 0x022487cc : BoxCollider (member at 0x628)
 
-class CollisionEdge {
-public:
-    virtual BOOL hasRoundEnds();
-    CollisionVec2 start, end, normal;
-    s32 offset;
-    BOOL intersectLine(CollisionVec2 *out, CollisionVec2 *a, CollisionVec2 *b);
-    s32 isBetweenEnds(CollisionVec2 *p);
-};
 
 
 

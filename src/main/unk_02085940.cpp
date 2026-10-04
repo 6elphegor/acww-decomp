@@ -4,6 +4,7 @@
 #include "save/BlancaFaceRecord.h"
 #include "save/LostChildRecord.h"
 #include "town/VisitorPos.h"
+#include "save/ContestRecord.h"
 #pragma opt_loop_invariants off
 #define LB(o) (((u8 *)&l)[o])
 extern "C" {
@@ -168,35 +169,6 @@ struct Unk_020859b4_Buf {
     ~Unk_020859b4_Buf() { _ZN6LetterD1Ev(this); }
 };
 
-class ContestRecord {
-public:
-    u32 getSize();
-    void setSize(s32 v);
-    void setVotedVillager(Unk_02085810_Rec *src);
-    Unk_02085810_Rec *getVotedVillager();
-    void clearVotedVillager();
-    Unk_02085810_Rec *getHolderVillager();
-    void setHolderVillager(Unk_02085810_Rec *src);
-    void setHolderPlayer(Unk_02085810_Base *src);
-    void setKind(u32 v);
-    void resetToday();
-    void clear();
-    void postResultNotice();
-    void sendResultLetters();
-    void func_020858ac();
-    ContestRecord *destruct();
-    ContestRecord *construct();
-
-    /* 0x00 */ Unk_02085810_Base holderPlayer;
-    /* 0x16 */ Unk_02085810_Rec holderVillager;
-    /* 0x22 */ Unk_02085810_Rec votedVillager;
-    /* 0x2e */ u16 item;
-    /* 0x30 */ s32 size;
-    /* 0x34 */ u8 dateDay;
-    /* 0x35 */ u8 dateMonth;
-    /* 0x36 */ u8 dateYear;
-    /* 0x37 */ u8 kind;
-};
 
 class RoostGuestRoll {
 public:

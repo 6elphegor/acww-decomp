@@ -2,6 +2,8 @@
 #include "game/Unk_0202f2ac_V3.h"
 #include "game/CollisionVec2.h"
 #include "game/Unk_0202f7b8_V3.h"
+#include "game/CollisionCircle.h"
+#include "game/CollisionTriangle.h"
 
 
 extern "C" {
@@ -51,26 +53,6 @@ public:
 };
 
 // ---- triangle (vtable 0x020d8ccc) ----
-class CollisionTriangle {
-public:
-    CollisionTriangle();
-    CollisionTriangle(Unk_0202f660_V3 *a, Unk_0202f660_V3 *b, Unk_0202f660_V3 *c, Unk_0202f660_V3 *d);
-    ~CollisionTriangle();
-    virtual BOOL pushOutFace(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, s32 c);
-    virtual BOOL pushBackCrossing(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, s32 c);
-    virtual BOOL pushOutEdges(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, s32 c);
-    virtual BOOL collide(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, s32 c);
-    Unk_0202f2ac_V3 vertex0, vertex1, vertex2, normal;
-    s32 offset;
-    BOOL intersectLine(Unk_0202f2ac_V3 *out, Unk_0202f2ac_V3 *p, Unk_0202f2ac_V3 *q);
-    BOOL intersectSegment(Unk_0202f2ac_V3 *out, Unk_0202f2ac_V3 *p, Unk_0202f2ac_V3 *q);
-    BOOL containsYZ(Unk_0202f2ac_V3 *p);
-    BOOL containsXY(Unk_0202f2ac_V3 *p);
-    s32 distanceTo(Unk_0202f2ac_V3 *p);
-    s32 calcOffset();
-    BOOL containsXZ(Unk_0202f2ac_V3 *p);
-    BOOL set(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, Unk_0202f2ac_V3 *c, Unk_0202f2ac_V3 *d);
-};
 
 class CollisionSegment {
 public:
@@ -88,17 +70,6 @@ public:
     CollisionSegment(Unk_0202f660_V3 *a, Unk_0202f660_V3 *b);
 };
 
-class CollisionCircle {
-public:
-    Unk_0202f660_V3 center;
-    s32 circleRadius;
-
-    BOOL containsXZ(Unk_0202f660_V3 *pt);
-    void setCircle(Unk_0202f660_V3 *pos, s32 radius);
-    ~CollisionCircle();
-    CollisionCircle(Unk_0202f660_V3 *pos, s32 radius);
-    CollisionCircle();
-};
 
 class CollisionCylinder : public CollisionCircle {
 public:

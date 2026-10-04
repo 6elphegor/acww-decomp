@@ -5,6 +5,8 @@
 // per-frame mixer with volume/pan clamping), init, flag helpers, and the list wrappers (NNS_Fnd list functions).
 #include "types.h"
 #include "snd/PlayCtx.h"
+#include "snd/SndSeSystemCfg.h"
+#include "snd/SndSeBytes4.h"
 
 struct Ent {
     /* 0x00 */ void *handle;
@@ -36,12 +38,6 @@ struct FndList {
 struct InfoB {
     u8 pad[4];
     u8 unk_04;
-};
-struct Cfg4 {
-    s32 unk_00, unk_04, unk_08, active;
-};
-struct Bytes4 {
-    u8 b0, b1, b2, b3;
 };
 struct Player {
     /* 0x00 */ FndList list;

@@ -2,11 +2,9 @@
 #include "game/Unk_02033914.h"
 #include "gfx/Unk_021ede90.h"
 #include "game/Vec3.h"
+#include "gfx/SceneLightsCol.h"
 
 
-struct Col {
-    u16 v;
-};
 
 
 struct Mtx43 {

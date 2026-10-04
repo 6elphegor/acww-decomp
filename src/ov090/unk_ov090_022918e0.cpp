@@ -9,6 +9,7 @@
 #include "gfx/BgTransfer.h"
 #include "gfx/SpriteAnim.h"
 #include "ui/UiWidget.h"
+#include "snd/BgmVolumeMixer.h"
 #undef postCreate
 #undef vfunc_14
 
@@ -278,12 +279,6 @@ public:
     u32 unk_00[0x42];
 };
 
-class BgmVolumeMixer {
-public:
-    void endMenuDuck();
-    void setMenuDuck(s32 i);
-    u32 manager;
-};
 
 class BgmManager {
 public:

@@ -3,6 +3,7 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "ui/UiWidget.h"
+#include "snd/BgmVolumeMixer.h"
 #undef postCreate
 #undef vfunc_14
 
@@ -37,11 +38,6 @@ public:
     u32 unk_00[0x210 / 4];
 };
 
-class BgmVolumeMixer {
-public:
-    void endMenuDuck();
-    void setMenuDuck(s32 v);
-};
 
 
 class LabelButton : public UiWidget {

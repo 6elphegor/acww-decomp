@@ -6,6 +6,7 @@
 #include "gfx/TexVramSlot.h"
 #include "item/ItemId.h"
 #include "gfx/TexTransfer.h"
+#include "gfx/CachedModel.h"
 
 // ---- helper classes (declared elsewhere) ----
 
@@ -31,14 +32,6 @@ public:
     void clear(void);
 };
 
-class CachedModel {
-public:
-    CachedModel();
-    virtual ~CachedModel();
-    u8 pad_04[0x94];
-    u32 unk_98;
-    BOOL release(void);
-};
 
 class BlendAnimModel : public CachedModel {
 public:

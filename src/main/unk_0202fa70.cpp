@@ -5,6 +5,8 @@
 #include "game/UnitShapeQueryX.h"
 #include "game/Unk_02031e10_Vec.h"
 #include "game/Unk_0202f7b8_V3.h"
+#include "game/CollisionCircle.h"
+#include "game/CollisionState.h"
 
 struct Unk_0202ff44_V3;
 struct CollisionVisitor;
@@ -150,17 +152,6 @@ public:
 extern "C" s32 FX_Div(s32 a, s32 b);
 extern "C" s32 FX_Sqrt(s32 a);
 extern "C" s32 func_020e9650(Unk_0202f660_V3 *a, Unk_0202f660_V3 *b);
-class CollisionCircle {
-public:
-    Unk_0202f660_V3 center;
-    s32 circleRadius;
-
-    BOOL containsXZ(Unk_0202f660_V3 *pt);
-    void setCircle(Unk_0202f660_V3 *pos, s32 radius);
-    ~CollisionCircle();
-    CollisionCircle(Unk_0202f660_V3 *pos, s32 radius);
-    CollisionCircle();
-};
 class CollisionCylinderX : public CollisionCircle {
 public:
     s32 cylinderHeight;
@@ -418,31 +409,6 @@ struct Unk_02032028_L4 {
     Unk_02032028_L4(s32 a, s32 b, s32 c) : v4(a, b, c) {}
 };
 // ---------------------------------------------------------------- CollisionState (accumulated collision flags) and friends
-struct CollisionContacts {
-    s16 unk_00[2];
-    u8 numContacts;
-    u8 unk_05[3];
-    s32 unk_08[2];
-    s32 unk_10[2];
-
-    CollisionContacts();
-    ~CollisionContacts();
-    BOOL addContact(s32 a, s32 b, s32 c);
-    void clear();
-};
-struct CollisionState {
-    u32 prevFlags;
-    volatile u32 flags;
-    s32 groundAttr;
-    CollisionContacts contacts;
-    s32 moveDelta, moveDeltaY, moveDeltaZ;
-
-    CollisionState();
-    ~CollisionState();
-    void reset();
-    void beginStep();
-    void updateWallFlags(s32 v);
-};
 // ---------------------------------------------------------------- MoveCollisionVisitor (collision accumulator driver)
 struct Unk_020d8d28_Best {
     s32 unk_00;

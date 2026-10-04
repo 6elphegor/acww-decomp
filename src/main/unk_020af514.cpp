@@ -1,6 +1,7 @@
 // mwcc-flags: -str reuse
 #include "types.h"
 #include "game/Vec3.h"
+#include "town/TownBlockCell.h"
 
 extern "C" {
 u32 GroundSeason_IsSnowPhase(u32);
@@ -73,9 +74,6 @@ public:
     SnowmanRecord e[3];
 };
 
-struct Cell {
-    u8 b[0x28];
-};
 
 struct Grid {
     Cell *cells;

@@ -2,15 +2,13 @@
 #include "game/Vec3.h"
 #include "actor/ActorCollider.h"
 #include "game/HitSphere.h"
+#include "game/Basis.h"
 
 
 struct Mtx43 {
     s32 m[12];
 };
 
-struct Basis {
-    Vec3 a, b, c;
-};
 
 struct Plane {
     s32 v[4];

@@ -2,6 +2,7 @@
 // NO mwcc-flags line: Thumb with the default -O4,s (with -O4,p func_01ffcb2c and func_01ffcbd8 differ).
 #include "types.h"
 #include "game/Vec3.h"
+#include "town/TownBlockCell.h"
 
 struct Chunk {
     /* 0x00 */ u8 *unk_00;
@@ -23,10 +24,6 @@ struct Cam {
     /* 0x15c */ Vec3 unk_15c;
 };
 
-struct Cell {
-    /* 0x00 */ u8 pad_00[0x24];
-    /* 0x24 */ u16 *unk_24;
-};
 
 struct CellGrid {
     /* 0x00 */ Cell *unk_00;

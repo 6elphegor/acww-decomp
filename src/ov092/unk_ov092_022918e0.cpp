@@ -3,6 +3,7 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "menu/Unk_ov002_022013a0.h"
+#include "snd/BgmVolumeMixer.h"
 #undef postCreate
 #undef vfunc_14
 
@@ -27,11 +28,6 @@ void ProcBase_RequestDelete();
 extern u8 *data_021c1b3c;
 }
 
-class BgmVolumeMixer {
-public:
-    void endMenuDuck();
-    void setMenuDuck(s32 a);
-};
 
 
 class MenuSlideView {

@@ -1,3 +1,4 @@
+#include "sys/CardCommon.h"
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK region, autoload_2 0x0211ef94-0x0211f488. ARM code, mwcc 1.2/base.
 typedef unsigned char u8;
@@ -12,24 +13,6 @@ typedef char *va_list;
 #define va_end(ap)
 
 typedef struct CardCommon CardCommon;
-struct CardCommon {
-    u32 *result;      // 0x00
-    u32 arg;          // 0x04
-    u8 _08[0x14];
-    u32 src;          // 0x1c
-    u32 dst;          // 0x20
-    u32 len;          // 0x24
-    u32 dma;          // 0x28
-    u8 _2c[0xc];
-    void (*callback)(u32); // 0x38
-    u32 callbackArg;       // 0x3c
-    void (*task)(CardCommon *); // 0x40
-    u8 thread[0xc0];       // 0x44
-    void *waiter;          // 0x104
-    u8 _108[4];
-    u8 queue[8];           // 0x10c
-    u32 flag;              // 0x114
-};
 
 typedef struct {
     u16 state;

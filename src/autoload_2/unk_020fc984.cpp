@@ -5,6 +5,7 @@
 // 020fe2f0/020fe35c/020fe3a0 list helpers, 020fe3ec/020fe448 random unit vectors.
 #include "types.h"
 #include "gfx/SplPtclTypes.h"
+#include "gfx/SplParticleViews.h"
 
 struct VecFx32 { s32 x, y, z; };
 struct VecFx16 { s16 x, y, z; };
@@ -134,49 +135,14 @@ struct E {
     VecFx16 ax2;
 };
 
-struct AnimRec {
-    s16 s0, s2, s4;
-    u8 t1, t2;
-};
-
-struct ColRec {
-    u16 c0;
-    u16 c2;
-    u8 b4, b5, b6, b7;
-    u16 f0 : 1;
-    u16 f1 : 1;
-    u16 f2 : 1;
-    u16 frest : 13;
-};
-
-struct Col5 {
-    u16 r : 5;
-    u16 g : 5;
-    u16 b : 5;
-    u16 x : 1;
-};
-
-struct AlphaRec {
-    Col5 c;
-    u8 b2;
-    u8 p3;
-    u8 t1, t2;
-};
 
 
-struct Ctx {
-    Hdr *hdr;
-    AnimRec *rec4;
-    ColRec *rec8;
-    AlphaRec *recc;
-    Tab *rec10;
-    SclRec *rec14;
-};
+
+
+
 
 struct GravF { s16 x, y, z; };
 struct MagF { s32 x, y, z; s16 force; };
-struct CollF { s32 y; s16 coef; u16 type : 2; u16 rest : 14; };
-struct ConvF { s32 x, y, z; s16 coef; };
 
 extern "C" {
 extern u32 data_021f5c3c;

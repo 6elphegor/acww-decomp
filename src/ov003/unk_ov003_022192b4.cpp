@@ -5,6 +5,7 @@
 #include "net/CommManager.h"
 #include "gfx/Unk_020dbd44.h"
 #include "game/UnitShapeQueryX.h"
+#include "gfx/CachedModel.h"
 
 // ================================================================ other modules' real names
 #define CommManager_isOnline _ZN11CommManager8isOnlineEv
@@ -46,13 +47,6 @@
 
 
 // ================================================================ shared (global) classes
-class CachedModel {
-public:
-    CachedModel();
-    virtual ~CachedModel();
-    u32 pad_04[0x94 / 4];
-    u32 unk_98;
-};
 
 
 extern "C" {

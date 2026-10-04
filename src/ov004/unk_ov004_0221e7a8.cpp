@@ -7,6 +7,7 @@
 #include "gfx/AnimFrameCtrl.h"
 #include "room/RoomObjRes.h"
 #include "room/RoomObjTex.h"
+#include "gfx/CachedModel.h"
 
 extern "C" {
 void _ZN19PlayerActionRequestC1Ev(void *self);
@@ -108,12 +109,6 @@ public:
 
 // ---- model resource sub-object at +0xec (see src/main/unk_02054190.cpp)
 
-class CachedModel : public Unk_02055704 {
-public:
-    CachedModel();
-    virtual ~CachedModel();
-    u32 unk_98;
-};
 
 
 class AnimModel : public CachedModel, public AnimFrameCtrl {

@@ -23,6 +23,7 @@
 #include "room/Unk_ov004_02205c80_Obj.h"
 #include "room/Unk_ov004_02206570_Act.h"
 #include "room/Unk_ov004_View00_Chk.h"
+#include "game/CollisionEdge.h"
 // The two functions of the ov004 translation unit 0x02209f70-0x022136d0 that need mwcc 1.2/base (signed-halfword
 // switch tables): FtrSingingInsect::updateActive and vfunc_7c. Same declarations as the main file of the unit;
 // nothing else is emitted here (see config/usa/arm9/overlays/ov004/object_order.txt).
@@ -279,14 +280,6 @@ struct FtrTopItems {
 
 // ---- 0x022487cc : BoxCollider (member at 0x628)
 
-class CollisionEdge {
-public:
-    virtual BOOL hasRoundEnds();
-    CollisionVec2 start, end, normal;
-    s32 offset;
-    BOOL intersectLine(CollisionVec2 *out, CollisionVec2 *a, CollisionVec2 *b);
-    s32 isBetweenEnds(CollisionVec2 *p);
-};
 
 
 

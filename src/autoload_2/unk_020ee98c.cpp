@@ -6,6 +6,9 @@
 #include "sys/Unk_Seq.h"
 #include "snd/PlayCtx.h"
 #include "sys/PrioNode.h"
+#include "snd/SndSeSystemCfg.h"
+#include "snd/SndSeBytes4.h"
+#include "snd/BgmObj.h"
 
 struct ListNode {
     ListNode *prev;
@@ -84,12 +87,6 @@ struct InfoB {
     u8 pad[4];
     u8 unk_04;
 };
-struct Cfg4 {
-    s32 unk_00, unk_04, unk_08, active;
-};
-struct Bytes4 {
-    u8 b0, b1, b2, b3;
-};
 struct Player {
     /* 0x00 */ FndList list;
     /* 0x0c */ u32 active;
@@ -154,10 +151,6 @@ void func_0210a1e8(void *p, s32 v);
 void NNS_SndPlayerSetTrackPan(void *p, u32 a, s32 v);
 void func_0210a148(void *p, u32 a, u32 b);
 void NNS_SndPlayerSetTrackPitch(void *p, u32 a, s32 b);
-struct BgmObj {
-    u8 pad[0x44];
-    s32 voiceType;
-};
 u64 OS_GetTick(void);
 u32 SndVoice_GetSyllable(u32 a, u32 b);
 u32 SndMgr_GetVoiceSeqIndex(BgmObj *o, u32 id); // BGM id -> sequence number for the object mode

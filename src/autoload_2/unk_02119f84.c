@@ -1,3 +1,4 @@
+#include "sys/DtorEntry.h"
 // mwcc-flags: -nothumb -O4,p
 // NitroSDK FS (fs_file / fs_archive / fs_overlay) + MATH_CalcHMACMD5, autoload_2 0x02119f84-0x0211a258. ARM code.
 typedef unsigned char u8;
@@ -111,11 +112,6 @@ typedef struct {
 } Digest20;
 
 typedef struct DtorEntry DtorEntry;
-struct DtorEntry {
-    DtorEntry *next;
-    void (*dtor)(void *);
-    void *obj;
-};
 
 extern u32 OS_DisableInterrupts(void);
 extern void OS_RestoreInterrupts(u32);

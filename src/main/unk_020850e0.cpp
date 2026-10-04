@@ -1,33 +1,9 @@
 #include "types.h"
 #include "save/Unk_02085810_Rec.h"
+#include "save/ContestRecord.h"
 
 
 
-class ContestRecord {
-public:
-    u32 getSize();
-    void setSize(s32 v);
-    void setVotedVillager(Unk_02085810_Rec *src);
-    Unk_02085810_Rec *getVotedVillager();
-    void clearVotedVillager();
-    Unk_02085810_Rec *getHolderVillager();
-    void setHolderVillager(Unk_02085810_Rec *src);
-    void setHolderPlayer(Unk_02085810_Base *src);
-    void setKind(u32 v);
-    void resetToday();
-    void clear();
-    void func_020858ac();
-
-    /* 0x00 */ Unk_02085810_Base holderPlayer;
-    /* 0x16 */ Unk_02085810_Rec holderVillager;
-    /* 0x22 */ Unk_02085810_Rec votedVillager;
-    /* 0x2e */ u16 item;
-    /* 0x30 */ s32 size;
-    /* 0x34 */ u8 dateDay;
-    /* 0x35 */ u8 dateMonth;
-    /* 0x36 */ u8 dateYear;
-    /* 0x37 */ u8 kind;
-};
 
 // Scratch object of the grid probe (func_0203398c constructs, GroundInfo_Destruct destroys).
 class GroundInfo {
