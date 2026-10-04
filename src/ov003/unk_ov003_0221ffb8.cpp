@@ -1,6 +1,7 @@
 // mwcc-version: 1.2/base
 #include "types.h"
 #include "Unk_020d8c7c.h"
+#include "field/BottleThrow.h"
 
 // TU23 of ov003 (fish actors, scene classes 0223498c / 02234a94): 0x0221ffb8-0x02224e68, static initialiser 0x354 bytes.
 // Merged from ten unit files; every view of the shared objects (sFishShadows etc.) is reached through casts.
@@ -790,9 +791,6 @@ struct Unk_ov003_02224ae0_StMp {
 
 
 // ---- from file 10
-struct Unk_ov003_02224ba4_V3 {
-    s32 x, y, z;
-};
 
 typedef Unk_ov003_02224ba4_V3 V3_f10;
 
@@ -819,20 +817,6 @@ static inline BOOL Unk_ov003_02224bc4_Bit(u32 f, u32 m)
 }
 
 
-// 0x60-byte entry, table at sBottleThrows
-struct BottleThrow {
-    BottleThrow();
-    ~BottleThrow();
-    u32 collisionState[0x30 / 4];
-    u8 state;
-    u8 pad_31[3];
-    V3_f10 position;
-    V3_f10 startPos;
-    V3_f10 targetPos;
-    s32 stateTimer;
-    u8 isLocal;
-    u8 pad_5d[3];
-};
 
 class ModelAnim {
 public:

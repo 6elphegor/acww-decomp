@@ -1,4 +1,5 @@
 #include "types.h"
+#include "player/PlayerSpNpcRecord.h"
 
 // Library base class (same as GameProc.h, but vfunc_08 takes the s32 the vtable symbol names).
 class ProcBase {
@@ -92,11 +93,6 @@ public:
     void *getCatalog();
 };
 
-class PlayerSpNpcRecord {
-public:
-    u32 getStyleScore();
-    void addStyleScore(u32 v);
-};
 
 class PlayerId {
 public:

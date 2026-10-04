@@ -3,6 +3,7 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
+#include "menu/Unk_ov002_022013a0.h"
 #undef postCreate
 #undef vfunc_14
 
@@ -21,12 +22,6 @@ BOOL ChoiceIdList_Add(u8 *p, u32 a, u32 b);
 
 extern "C" CommManager *gCommManager;
 
-class Unk_ov002_022013a0 {
-public:
-    Unk_ov002_022013a0();
-    ~Unk_ov002_022013a0();
-    /* 0x00 */ u8 unk_00[0x14];
-};
 
 class MenuSlideView {
 public:

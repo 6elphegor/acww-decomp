@@ -1,4 +1,5 @@
 #include "types.h"
+#include "npc/NpcResPool.h"
 
 extern "C" {
 s32 NpcBodyAnimPool_Get();
@@ -23,13 +24,6 @@ s32 _ZN10NpcResPool12findFreeSlotEv(void *);
 void NpcResPools_ClearAll();
 }
 
-struct NpcResPool {
-    s32 numSlots;
-    virtual ~NpcResPool();
-    virtual void occupySlot(u32 i) = 0;
-    virtual void releaseSlot(u32 i);
-    virtual void *getSlot(u32 i) = 0;
-};
 
 // Same object as NpcResHandle (symbols.txt names two of its methods after the class NpcResHandleView); declaration only.
 struct NpcResHandleView {

@@ -4,6 +4,7 @@
 // gCommManager) and its helpers, 0x020720f8-0x020742f4
 
 #include "net/CommManager.h"
+#include "save/PatternOrder.h"
 
 // ======== types of unk_02071ae0.cpp ========
 struct Unk_02071b10_Id16 {
@@ -80,15 +81,6 @@ class TownFlagPattern : public Pattern {
 public:
     TownFlagPattern();
     ~TownFlagPattern();
-};
-class PatternOrder {
-public:
-    PatternOrder();
-    ~PatternOrder();
-    u8 unk_00[8];
-    u32 getSlot(u32 i);
-    void swap(u32 a, u32 b);
-    void reset();
 };
 class AbleSistersPatterns {
 public:

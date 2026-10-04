@@ -1,4 +1,5 @@
 #include "types.h"
+#include "save/PatternOrder.h"
 
 // U125: design (pattern) storage and display helpers, 0x02070560-0x020720f8
 
@@ -231,15 +232,6 @@ public:
     Pattern pixels;
     TownFlagPattern();
     ~TownFlagPattern();
-};
-class PatternOrder {
-public:
-    PatternOrder();
-    ~PatternOrder();
-    u8 unk_00[8];
-    u32 getSlot(u32 i);
-    void swap(u32 a, u32 b);
-    void reset();
 };
 class AbleSistersPatterns {
 public:

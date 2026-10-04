@@ -1,5 +1,6 @@
 // mwcc-flags: -str reuse
 #include "types.h"
+#include "game/Unk_ov046_0225a11c_Vec.h"
 
 // Library base class (same as GameProc.h, but vfunc_08 takes the s32 the vtable symbol names).
 class ProcBase {
@@ -69,9 +70,6 @@ struct Unk_ov047_0225a5e8_Msg {
     u16 unk_02;
 };
 
-struct Unk_ov046_0225a11c_Vec {
-    s32 x, y, z;
-};
 
 typedef BOOL (*Unk_ov047_Cb)(u16 *p, s32 m);
 typedef BOOL (SpNpcBlathers::*Unk_ov047_0225aeb4_Fn)();

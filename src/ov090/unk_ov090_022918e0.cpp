@@ -3,6 +3,7 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "text/Unk_02050288.h"
+#include "menu/Unk_ov002_022013a0.h"
 #undef postCreate
 #undef vfunc_14
 
@@ -158,22 +159,6 @@ public:
     /* 0x18 */ u8 direction;
 };
 
-// Sub-object at +0x50 of MenuProc (pad input)
-class Unk_ov002_022013a0 {
-public:
-    Unk_ov002_022013a0();
-    ~Unk_ov002_022013a0();
-
-    void func_ov002_02201240(s32 a, s32 b, s32 c);
-    BOOL func_ov002_0220129c();
-    BOOL func_ov002_022012b0();
-    BOOL func_ov002_022012c4();
-    BOOL func_ov002_022012d8();
-    u32 func_ov002_022012ec();
-    void func_ov002_022012f8();
-
-    /* 0x00 */ u8 unk_00[0x14];
-};
 
 class MenuProc;
 typedef void (MenuProc::*Unk_ov002_02200a68_Fn)();

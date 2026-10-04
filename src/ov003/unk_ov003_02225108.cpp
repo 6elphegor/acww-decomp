@@ -3,10 +3,8 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
+#include "field/BottleThrow.h"
 
-struct Unk_ov003_02224ba4_V3 {
-    s32 x, y, z;
-};
 typedef Unk_ov003_02224ba4_V3 V3;
 
 struct Unk_ov003_02224e68_V3 {
@@ -37,18 +35,6 @@ static inline BOOL Unk_ov003_02224bc4_Bit(u32 f, u32 m)
 }
 
 
-// 0x60-byte entry, table at sBottleThrows
-struct BottleThrow {
-    u32 collisionState[0x30 / 4];
-    u8 state;
-    u8 pad_31[3];
-    V3 position;
-    V3 startPos;
-    V3 targetPos;
-    s32 stateTimer;
-    u8 isLocal;
-    u8 pad_5d[3];
-};
 
 struct Unk_ov003_02225238_Grid {
     u8 *cells;

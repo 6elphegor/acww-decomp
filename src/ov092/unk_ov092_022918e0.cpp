@@ -2,6 +2,7 @@
 #define vfunc_14() vfunc_14(s32 a)
 #include "types.h"
 #include "Unk_020d8c7c.h"
+#include "menu/Unk_ov002_022013a0.h"
 #undef postCreate
 #undef vfunc_14
 
@@ -32,12 +33,6 @@ public:
     void setMenuDuck(s32 a);
 };
 
-class Unk_ov002_022013a0 {
-public:
-    Unk_ov002_022013a0();
-    ~Unk_ov002_022013a0();
-    /* 0x00 */ u8 unk_00[0x14];
-};
 
 class MenuSlideView {
 public:

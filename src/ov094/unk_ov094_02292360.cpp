@@ -1,4 +1,5 @@
 #include "types.h"
+#include "item/ItemIconCache.h"
 
 struct Unk_ov094_02292360_Obj {
     s32 shownBells;
@@ -78,16 +79,6 @@ typedef Unk_ov094_02292d6c_Rec Rec;
 
 void operator delete(void *p);
 
-struct ItemIconCache {
-    u8 iconChars[0x800];
-    u8 loadedPage;
-
-    ItemIconCache();
-    virtual ~ItemIconCache();
-    u8 *getPresentChars(s32 idx);
-    u8 *getIconChars(s32 idx);
-    void invalidate();
-};
 
 struct InventoryItemGrid {
     u8 iconUploadChars[0x180];

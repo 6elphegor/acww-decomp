@@ -1,4 +1,5 @@
 #include "types.h"
+#include "player/PlayerSpNpcRecord.h"
 #pragma opt_loop_invariants off
 #define LB(o) (((u8 *)&l)[o])
 extern "C" {
@@ -534,60 +535,6 @@ public:
     u32 flags[2];
 };
 
-class PlayerSpNpcRecord {
-public:
-    void sendInsuranceLetters();
-    BOOL sendInsuranceLetter(s32 idx, u16 *v);
-    void addInsuranceClaim();
-    u32 getInsuranceClaims();
-    void clearFestivalGift();
-    void setFestivalGift();
-    u32 hasFestivalGift();
-    void resetAcornCount();
-    void resetFireworksGiven();
-    void addFireworksGiven();
-    u32 getFireworksGiven();
-    void setEnteredBugOff(s32 v);
-    u32 hasEnteredBugOff();
-    void setEnteredFishingTourney(s32 v);
-    u32 hasEnteredFishingTourney();
-    void addStyleScore(u32 v);
-    u32 getStyleScore();
-    void addResetCount();
-    u32 getResetCount();
-    void advanceAcornPrizeStep();
-    u32 getAcornPrizeStep();
-    void addAcornsDelivered(s32 v);
-    u32 getAcornsDelivered();
-    void addHaircutCount(u32 v);
-    u32 getHaircutCount();
-    void setCafeVisits(u32 v);
-    u32 getCafeVisits();
-    void setSableTalkCount(u32 v);
-    u32 getSableTalkCount();
-    void stampArbeitDate();
-    u8 *getArbeitDate();
-
-    u8 serviceDates[8];
-    u8 sableTalkCount;
-    u8 cafeVisits;
-    u8 haircutCount;
-    u8 acornsDelivered;
-    u8 acornPrizeStep;
-    u8 resetCount;
-    u8 styleScore;
-    u8 insuranceClaims;
-    union {
-        u8 unk_10;
-        struct {
-            u8 unk_10_0 : 1;
-            u8 unk_10_1 : 1;
-            u8 unk_10_2 : 4;
-            u8 unk_10_6 : 1;
-            u8 unk_10_7 : 1;
-        };
-    };
-};
 
 extern "C" BOOL func_02087650(s32 lim, s32 b, s32 c, Unk_020874e8_Bits *out);
 

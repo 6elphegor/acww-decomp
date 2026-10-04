@@ -47,6 +47,7 @@
 #include "player/Unk_02008100_Msg.h"
 #include "player/Unk_02008190_Ptr.h"
 #include "player/Unk_02008858_Blk.h"
+#include "player/PlayerHead.h"
 #include "player/Unk_0200c2fc.h"
 #include "player/Unk_0200bff8_Vec.h"
 #include "player/Unk_0200bda0.h"
@@ -208,7 +209,6 @@ struct TwoLayerAnimModel { TwoLayerAnimModel(); ~TwoLayerAnimModel(); };
 struct PlayerBodyWorkRef { PlayerBodyWorkRef(); ~PlayerBodyWorkRef(); };
 struct PlayerBodyModelRef { PlayerBodyModelRef(); ~PlayerBodyModelRef(); };
 struct CachedModel { CachedModel(); ~CachedModel(); };
-struct PlayerHead { PlayerHead(); ~PlayerHead(); };
 struct PlayerGlassesModelRef { PlayerGlassesModelRef(); ~PlayerGlassesModelRef(); };
 struct HeldItemModel { HeldItemModel(); ~HeldItemModel(); };
 struct Unk_0205c3a4 { Unk_0205c3a4(); ~Unk_0205c3a4(); };

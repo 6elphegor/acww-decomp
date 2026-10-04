@@ -1,5 +1,6 @@
 // mwcc-flags: -str reuse
 #include "types.h"
+#include "game/Unk_ov046_0225a11c_Vec.h"
 
 // Library base class (same as GameProc.h, but vfunc_08 takes the s32 the vtable symbol names).
 class ProcBase {
@@ -41,9 +42,6 @@ struct TalkStartMsg {
 struct Unk_ov046_0225a650_Entry {
     const void *p;
     u8 v;
-};
-struct Unk_ov046_0225a11c_Vec {
-    s32 x, y, z;
 };
 struct Unk_ov046_02258e68_Vec {
     s32 x, y, z;

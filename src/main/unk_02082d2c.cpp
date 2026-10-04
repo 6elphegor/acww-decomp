@@ -1,6 +1,7 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
+#include "npc/NpcResPool.h"
 
 // Element payload types (defined elsewhere)
 struct Unk_020829b0_Y {
@@ -21,11 +22,6 @@ struct Unk_02082c54_Z {
     void AnimSlotRef_Assign();
 };
 
-struct NpcResSlot {
-    u8 inUse;
-    NpcResSlot();
-    ~NpcResSlot();
-};
 
 struct Unk_020829b0_Y_dummy;
 struct SpNpcAnimHeapRefSlot : public NpcResSlot {
@@ -45,25 +41,13 @@ struct NpcBodyAnimSlot : public NpcResSlot {
     void assignLayer(s32 a, s32 i);
 };
 
-class NpcResPool {
-public:
-    NpcResPool(s32 n);
-    virtual ~NpcResPool();
-    virtual void occupySlot(u32 i) = 0;
-    virtual void releaseSlot(u32 i);
-    virtual u8 *getSlot(u32 i) = 0;
-    s32 findFreeSlot();
-    void clearAllSlots();
-
-    /* 0x04 */ s32 numSlots;
-};
 
 class VillagerAnimHeapRefPool : public NpcResPool {
 public:
     VillagerAnimHeapRefPool();
     virtual ~VillagerAnimHeapRefPool();
     virtual void occupySlot(u32 i);
-    virtual u8 *getSlot(u32 i);
+    virtual VillagerAnimHeapRefSlot *getSlot(u32 i);
     Unk_02082af0_X *getHeapRef(u32 i);
 
     /* 0x08 */ VillagerAnimHeapRefSlot slots[8];
@@ -73,7 +57,7 @@ class NpcBodyAnimPool : public NpcResPool {
 public:
     NpcBodyAnimPool();
     virtual ~NpcBodyAnimPool();
-    virtual u8 *getSlot(u32 i);
+    virtual NpcBodyAnimSlot *getSlot(u32 i);
     virtual void occupySlot(u32 i);
     Unk_02082c54_Z *getLayer(u32 i, u32 off);
 

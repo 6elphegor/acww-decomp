@@ -1,21 +1,7 @@
 #include "types.h"
+#include "npc/NpcResPool.h"
 
-struct NpcResSlot {
-    u8 inUse;
-    NpcResSlot();
-    ~NpcResSlot();
-};
 
-struct NpcResPool {
-    s32 numSlots;
-    NpcResPool(s32 n);
-    virtual ~NpcResPool();
-    virtual void occupySlot(u32 i) = 0;
-    virtual void releaseSlot(u32 i);
-    virtual NpcResSlot *getSlot(u32 i) = 0;
-    s32 findFreeSlot();
-    void clearAllSlots();
-};
 
 extern "C" {
 void HeldItemModel_Release(void *);

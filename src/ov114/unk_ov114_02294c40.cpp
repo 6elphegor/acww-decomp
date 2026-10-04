@@ -1,4 +1,5 @@
 #include "types.h"
+#include "item/ItemIconCache.h"
 
 struct Unk_ov114_02294c40_Bits {
     u32 idx : 10;
@@ -227,15 +228,6 @@ public:
     u8 unk_14[0x20 - 0x14];
 };
 
-// Base (vtable 0x02294a40 in ov094)
-class ItemIconCache {
-public:
-    ItemIconCache();
-    virtual ~ItemIconCache();
-    void invalidate();
-    u8 iconChars[0x800];
-    u8 loadedPage;
-};
 
 class BgVramTask {
 public:
