@@ -16,8 +16,7 @@ public:
     /* 0x54 */ TalkMsgRequest msgRequest;
 };
 
-struct Unk_02040754_Time { u8 b[4]; };
-struct Unk_020407fc_Data { u8 b[0x64]; };
+struct ClockDateBytes { u8 b[4]; };
 
 struct EventAnnounceState {
     EventAnnounceState() { announceState = 0; msgIndex = 0; isEnd = 0; }
@@ -33,14 +32,12 @@ struct EventAnnounceState {
 
 struct Unk_02040974_Obj { u8 pad[0x64]; s32 myAid; };
 struct Unk_02040974_Rtc { s32 a; s32 b; };
-struct Unk_02040cac_Rtc { u8 b0; u8 b1; u8 b2; u8 b3; s32 b; };
-union Unk_02040cac_Rtc2 { s32 w[2]; Unk_02040cac_Rtc v; };
 struct Unk_02040ad8_Member {
     virtual void vfunc_00();
     virtual void vfunc_04();
     virtual void vfunc_08();
 };
-struct Unk_02040ad8_Owner {
+struct EventAnnouncerView {
     u8 pad[0x54];
     Unk_02040ad8_Member msgRequest;
 };
@@ -83,8 +80,8 @@ void *TalkWindow_Get(s32);
 void _ZN15TalkWindowState13detachRequestEv(void *p);
 s32 Scene_GetWarpRequest(void);
 void SceneWarp_RequestExit(s32, s32);
-void _ZN12BgmSceneFade13func_02035368Eii(void *, s32, s32);
-void _ZN12BgmSceneFade13func_020353b0Eii(void *, s32, s32);
+void _ZN12BgmSceneFade18prepareEventReturnEii(void *, s32, s32);
+void _ZN12BgmSceneFade16prepareEventWarpEii(void *, s32, s32);
 void _ZN10MsgRequest11setFileNameEPKc(void *, void *);
 void _ZN15TalkWindowState13attachRequestEP14TalkMsgRequest(void *, void *);
 s32 TalkRequestFlags_IsEventWarpStarted(void);
@@ -93,7 +90,7 @@ void EventAnnounce_RunIdle(s32);
 void EventAnnounce_RunWaitChimeStart(s32);
 void EventAnnounce_RunWaitChimeEnd(s32);
 void EventAnnounce_RunWarp(s32);
-void EventAnnounce_RunShowMessage(Unk_02040ad8_Owner *);
+void EventAnnounce_RunShowMessage(EventAnnouncerView *);
 void EventAnnounce_RunWaitMessageEnd(s32);
 void EventAnnounce_Update(void);
 void EventAnnounce_Reset(void);
@@ -278,7 +275,7 @@ BOOL EventAnnouncer::onExecute()
             EventAnnounce_RunIdle(x);
             break;
         case 5:
-            EventAnnounce_RunShowMessage((Unk_02040ad8_Owner *)x);
+            EventAnnounce_RunShowMessage((EventAnnouncerView *)x);
             break;
         case 6:
             EventAnnounce_RunWaitMessageEnd(x);
@@ -485,7 +482,7 @@ extern "C" void EventAnnounce_RunWarp(s32)
                 if (r != 0) {
                     Scene_SavePlayerPos(Scene_GetWarpRequest(), 0);
                     SceneWarp_RequestAt(Scene_GetWarpRequest(), 0x31, buf, 0x400000, 0, 2, 2);
-                    _ZN12BgmSceneFade13func_020353b0Eii(data_021c1b3c + 0x2d0, sEventAnnounceBgmCode, sEventAnnounceState.msgIndex);
+                    _ZN12BgmSceneFade16prepareEventWarpEii(data_021c1b3c + 0x2d0, sEventAnnounceBgmCode, sEventAnnounceState.msgIndex);
                     sEventAnnounceState.announceState = 4;
                     sEventAnnounceBusy = 1;
                 }
@@ -494,7 +491,7 @@ extern "C" void EventAnnounce_RunWarp(s32)
     }
 }
 
-extern "C" void EventAnnounce_RunShowMessage(Unk_02040ad8_Owner *o)
+extern "C" void EventAnnounce_RunShowMessage(EventAnnouncerView *o)
 {
     if (Unk_02040ad8_IsTwo(gScreenTransition)) {
         Unk_02040a84_Obj *p = (Unk_02040a84_Obj *)TalkWindow_Get(0);
@@ -513,7 +510,7 @@ extern "C" void EventAnnounce_RunWaitMessageEnd(s32)
     if (p->state == 0) {
         _ZN15TalkWindowState13detachRequestEv(p);
         SceneWarp_RequestExit(Scene_GetWarpRequest(), 20);
-        _ZN12BgmSceneFade13func_02035368Eii(data_021c1b3c + 0x2d0, sEventAnnounceBgmCode, sEventAnnounceState.msgIndex);
+        _ZN12BgmSceneFade18prepareEventReturnEii(data_021c1b3c + 0x2d0, sEventAnnounceBgmCode, sEventAnnounceState.msgIndex);
         sEventAnnounceBgmCode = 0;
         sEventAnnounceState.announceState = 0;
         sEventAnnounceState.busy = 0;
@@ -632,14 +629,14 @@ extern "C" void EventWeekSlots_Destruct(void)
 
 extern "C" void EventWeekSlots_InitNew(u8 *p)
 {
-    Unk_02040754_Time t;
+    ClockDateBytes t;
     Clock_GetDate(&t);
-    Unk_02040754_Time t1 = t;
+    ClockDateBytes t1 = t;
     p[0] = t1.b[0];
     p[1] = t1.b[1];
     p[2] = t1.b[2];
     p[3] = t1.b[3];
-    Unk_02040754_Time t2 = t;
+    ClockDateBytes t2 = t;
     p[4] = t2.b[0];
     p[5] = t2.b[1];
     p[6] = t2.b[2];
@@ -667,8 +664,8 @@ extern "C" void EventWeekSlots_Reset(u8 *p)
 
 extern "C" void EventWeekSlots_OnLoad(u8 *p)
 {
-    Unk_02040754_Time a;
-    Unk_02040754_Time b;
+    ClockDateBytes a;
+    ClockDateBytes b;
     Clock_GetDate(&a);
     if (Date_DaysBetween(&a, p + 8) >= 7) {
         p[8] = 1;

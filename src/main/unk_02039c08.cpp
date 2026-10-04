@@ -2,8 +2,8 @@
 #include "gfx/ViewFrustum.h"
 
 struct Unk_02039cf4_Obj {
-    u32 unk_00;
-    u32 unk_04;
+    u32 listIndex;
+    u32 itemClass;
 };
 
 extern "C" {

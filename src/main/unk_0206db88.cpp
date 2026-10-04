@@ -40,12 +40,12 @@ void Gfx2d_ShowLayer(u32);
 void HudObjGfx_LoadForSceneSub();
 void Sky_SetEngine(u32);
 void MenuCtrl_ClearMenuOnTop();
-void func_0203d4c4(u32);
+void ScreenLayers_ReleaseStub(u32);
 s32 func_01ffcb0c(s32, s32);
 void MenuCtrl_SetTransitionProgress(s32);
 BOOL Camera_IsViewPushed();
 void Camera_PopView();
-void func_0203d4c8(u32);
+void ScreenLayers_AcquireStub(u32);
 void Sky_Disable();
 void Gfx2d_SetMainBgModeState(u32);
 void Gfx2d_HideSubPlanes(u32);
@@ -445,7 +445,7 @@ extern "C" BOOL MenuScreen_StepAct08() {
         Camera_PopView();
     }
     if (Unk_0206dc9c_IsZero(gFieldSceneKind)) {
-        func_0203d4c8(0);
+        ScreenLayers_AcquireStub(0);
         Sky_SetEngine(1);
         Gfx2d_HideMainPlanes(8);
     }
@@ -472,7 +472,7 @@ extern "C" BOOL MenuScreen_StepAct09() {
                 Sky_SetEngine(0);
             }
             MenuCtrl_ClearMenuOnTop();
-            func_0203d4c4(0);
+            ScreenLayers_ReleaseStub(0);
         }
     }
     if (sMenuScreenProgress > sMenuScreenProgressStep) {

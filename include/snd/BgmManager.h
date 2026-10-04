@@ -271,7 +271,7 @@ public:
     void releaseBgm(u16 id);
     void releasePriority(s32 v);
     void push(BgmRequestView *e);
-    s32 func_02034514();
+    s32 postUpdate();
     void update();
 
     /* 0x000 */ BgmRequest requests[16];

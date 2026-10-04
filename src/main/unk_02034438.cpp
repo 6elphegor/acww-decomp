@@ -216,9 +216,6 @@ class BgmRequest;
 
 class BgmManagerView;
 
-extern "C" {
-struct Unk_020353b0_Rec { s32 priority; u16 bgmId; };
-}
 
 class BgmManagerOwnerView;
 
@@ -448,7 +445,7 @@ extern BgmManagerView *data_021c1b3c;
 s32 Scene_GetCurrent(void);
 s32 Scene_InTown(void);
 void Bgm_Request(s32 a, s32 b, s32 c, s32 d);
-Unk_020353b0_Rec *Bgm_GetPlayingRequest(void);
+BgmRequest *Bgm_GetPlayingRequest(void);
 }
 }
 
@@ -1725,7 +1722,7 @@ void BgmSceneFade::reset() {
     }
 }
 
-void BgmSceneFade::func_020353b0(s32 a, s32 b) {
+void BgmSceneFade::prepareEventWarp(s32 a, s32 b) {
     s32 res = 0;
     s32 f = 0;
     if (Ns_02034ae8::Scene_InTown()) {
@@ -1734,7 +1731,7 @@ void BgmSceneFade::func_020353b0(s32 a, s32 b) {
         s32 a2 = (a == 2) ? 1 : 0;
         s32 b9 = (b == 9) ? 1 : 0;
         s32 b6 = (b == 6) ? 1 : 0;
-        Unk_020353b0_Rec *rec = Ns_02034ae8::Bgm_GetPlayingRequest();
+        BgmRequest *rec = Ns_02034ae8::Bgm_GetPlayingRequest();
         u32 x;
         s32 y;
         if (rec) x = rec->bgmId; else x = 0xffff;
@@ -1769,7 +1766,7 @@ void BgmSceneFade::func_020353b0(s32 a, s32 b) {
     if (f) exitSilenceState = 1;
 }
 
-void BgmSceneFade::func_02035368(s32 a, s32 b) {
+void BgmSceneFade::prepareEventReturn(s32 a, s32 b) {
     if (exitSilenceState == 2) {
         exitSilenceState = 3;
     } else {
@@ -2049,7 +2046,7 @@ void BgmManager::update() {
     roomBgm.update();
     updateRequests();
     updateHourChime();
-    func_02034514();
+    postUpdate();
 }
 
 extern "C" void Bgm_ResetAll() {
@@ -2295,7 +2292,7 @@ void BgmManager::updateHourChime() {
     }
 }
 
-s32 BgmManager::func_02034514() {}
+s32 BgmManager::postUpdate() {}
 
 BgmProc *BgmProc::create() { return new BgmProc(); }
 

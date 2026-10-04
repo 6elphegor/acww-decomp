@@ -37,8 +37,8 @@ class TalkMsgRequest;
 extern "C" {
 TalkWindowState *TalkWindow_Get(s32 a);
 void Gfx2d_HideLayer(s32 a);
-void func_0203d4c4(s32 a);
-void func_0203d4c8(s32 a);
+void ScreenLayers_ReleaseStub(s32 a);
+void ScreenLayers_AcquireStub(s32 a);
 void Gfx2d_ShowLayer(s32 a);
 void Gfx2d_SetLayerControl(u32 n, u32 a, u32 b, u32 c);
 void Gfx2d_SetLayerPriority(s32 a, s32 b);
@@ -811,7 +811,7 @@ u8 TitleTalk::getGreetingMsg() {
 }
 
 void TitleScreen::loadLogo() {
-    func_0203d4c8(1);
+    ScreenLayers_AcquireStub(1);
     Gfx2d_SetLayerControl(5, 0, 0, 0);
     Gfx2d_SetLayerPriority(5, 1);
     Gfx2d_LoadPaletteFile((void *)"menu/title/bg_us.bpl", (s32)gCurrentHeap, 5, 8, 8, 0xf);
@@ -883,7 +883,7 @@ void TitleScreen::dismissLogo() {
 
 void TitleScreen::hideLogo() {
     Gfx2d_HideLayer(5);
-    func_0203d4c4(1);
+    ScreenLayers_ReleaseStub(1);
     logoState = 5;
 }
 
@@ -934,7 +934,7 @@ void TitleScreen::startLogoHide() {
 BOOL TitleScreen::stepLogoHide() {
     if (logoStep == 0) {
         Gfx2d_HideLayer(5);
-        func_0203d4c4(1);
+        ScreenLayers_ReleaseStub(1);
         return TRUE;
     }
     logoStep = logoStep - 1;

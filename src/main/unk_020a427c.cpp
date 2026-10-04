@@ -188,7 +188,7 @@ extern "C" {
 void Gfx3d_InitEngine(void);
 void Snd_DestroyScene(void);
 s32 GameProc_CreateChild(u32 a, u32 b, s32 c, s32 d);
-void func_0203d4c0(void);
+void Scene_PostCreateStub(void);
 void TalkRequest_EndNetSyncHold(void);
 BOOL TalkRequest_BeginNetSyncHold(void);
 s32 TalkRequestQueue_Reset(void);
@@ -1695,7 +1695,7 @@ void SceneBase::postCreate(s32 a) {
         Comm_ProcessReceived(0);
         NetSession_Update();
         Field_UpdateActions();
-        func_0203d4c0();
+        Scene_PostCreateStub();
     }
     GameProc::postCreate(a);
 }

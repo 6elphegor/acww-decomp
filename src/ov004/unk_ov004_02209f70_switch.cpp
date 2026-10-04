@@ -382,7 +382,7 @@ s32 FtrSync_ChangeAct(s32 a, s32 b, u8 c, u8 d);
 s32 Random_GlobalBelow(s32 a, ...);
 s32 Item_MakeFurniture(s32 a, s32 b);
 BOOL CarpetTex_Load(u32 a, u16 *p);
-s32 func_0203c234(s32 a);
+s32 CarpetTex_GetTex(s32 a);
 BOOL _ZN14MatTexVramTask7requestEPvjS0_jj(void *a, s32 b, char *c, s32 d, s32 e, s32 f);
 
 s32 _ZN8FtrActor9initAnimsEiiii(void *p, s32 a, s32 b, s32 c, s32 d);

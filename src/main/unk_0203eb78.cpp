@@ -11,14 +11,6 @@
 
 
 
-struct Unk_0203ef38_Global {
-    /* 0x00 */ s32 unk_00;
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ volatile s32 unk_08;
-    /* 0x0c */ s32 unk_0c;
-    /* 0x10 */ s32 unk_10;
-    /* 0x14 */ s32 unk_14;
-};
 
 
 
@@ -48,9 +40,6 @@ extern "C" {
 extern s32 sWorldCurveZScale;
 }
 
-extern "C" {
-extern Unk_0203ef38_Global gWorldCurve;
-}
 
 extern "C" {
 extern s16 data_02135f44[];
@@ -319,13 +308,13 @@ extern "C" BOOL AxBbsNotice_Post(u8 *p) {
 TalkRequestEntry::TalkRequestEntry() {
     prev = 0;
     next = 0;
-    unk_08 = 0xff;
+    priority = 0xff;
 }
 
 extern "C" void TalkRequestEntry_Free(TalkRequestEntry *e) {
-    e->inUse = 0;
-    e->unk_0c = 0;
-    e->unk_10 = 0;
+    e->phase = 0;
+    e->requesterId = 0;
+    e->targetId = 0;
 }
 
 extern "C" void TalkRequestList_FreeAll(Unk_0203ebdc_List *l) {
@@ -348,7 +337,7 @@ extern "C" void TalkRequestPool_Reset(void) {
 extern "C" TalkRequestEntry *TalkRequestPool_Alloc(void) {
     for (s32 i = 0; i < 15; i++) {
         TalkRequestEntry *e = &sTalkRequestPool[i];
-        if (IsZero(e->inUse)) {
+        if (IsZero(e->phase)) {
             return e;
         }
     }

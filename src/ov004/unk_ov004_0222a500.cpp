@@ -316,7 +316,7 @@ u8 *PatternTexCache_getPlayerTexKey(u32 a, u32 b, u32 c);
 void RoomWallFloor_SetSceneCarpet(u32 a, u16 *p);
 void RoomWallFloor_SetSceneWallpaper(u32 a, u16 *p);
 BOOL CarpetTex_Load(void *o, u16 *p);
-void *func_0203c234(void *o);
+void *CarpetTex_GetTex(void *o);
 BOOL Wallpaper_LoadTexture(void *o, u16 *p);
 void *Wallpaper_GetTex(void *o);
 void *HouseData_getRoom(void *self, u32 idx);
@@ -841,7 +841,7 @@ BOOL RoomCarpet::setCarpet(u16 *q, G3dResAccess *a, s32 key) {
             if (Scene_InNookShop() == 0) {
                 MatTexBinder_bindByName(&matBinder, texRes, "dummy_floor", "dummy_floor_pl");
             }
-            void *r = func_0203c234(&texBuf);
+            void *r = CarpetTex_GetTex(&texBuf);
             if (MatTexVramTask_request(&texTask, a, (u32)sRoomCarpetMatName, r, 0, 0) == 0) goto fail;
             prevItem = item;
             item = *q;

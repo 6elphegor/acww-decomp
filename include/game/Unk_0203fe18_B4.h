@@ -4,7 +4,7 @@
 #include "types.h"
 
 // 4-byte date view (word or bytes) used by the week-event code (src/main/unk_02040050.cpp, unk_02040234.cpp).
-// unk_0203f104.cpp has its own Unk_0203fe18_B4 (a typedef of Unk_0203f554_Cal with an extra .s view).
+// unk_0203f104.cpp has its own Unk_0203fe18_B4 (a typedef of EventDate with an extra .s view).
 
 struct Unk_0203fe18_B4Bytes {
     /* 0x00 */ u8 b0, b1, b2, b3;

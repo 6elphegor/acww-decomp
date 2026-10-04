@@ -2,8 +2,8 @@
 #include "snd/BgmSceneFade.h"
 
 
-struct Unk_02041104_Ent {
-    void (*unk_00[4])();
+struct ScreenTransitionType {
+    void (*handlers[4])();
 };
 
 struct ScreenTransition {
@@ -31,8 +31,8 @@ void CutTransition_Update();
 void CutTransition_VBlank();
 }
 
-extern const Unk_02041104_Ent sTransitionTypeTable[4];
-const Unk_02041104_Ent sTransitionTypeTable[4] = {
+extern const ScreenTransitionType sTransitionTypeTable[4];
+const ScreenTransitionType sTransitionTypeTable[4] = {
     { { ScreenFade_Begin, ScreenFade_End, ScreenFade_Update, ScreenFade_VBlank } },
     { { ScreenFade_Begin, ScreenFade_End, ScreenFade_Update, ScreenFade_VBlank } },
     { { IrisWipe_Begin, IrisWipe_End, IrisWipe_Update, IrisWipe_SwapTables } },
@@ -66,8 +66,8 @@ void Gfx2d_ShowMainPlanes(u32);
 void Gfx2d_ShowSubPlanes(u32);
 void Gfx2d_HideMainPlanes(u32);
 void Gfx2d_HideSubPlanes(u32);
-void func_0203d4c4(u32);
-void func_0203d4c8(u32);
+void ScreenLayers_ReleaseStub(u32);
+void ScreenLayers_AcquireStub(u32);
 void Gfx2d_SetMainPlanes(u32);
 void Gfx2d_SetSubPlanes(u32);
 void Gfx2d_SetBrightness(s32);
@@ -147,7 +147,7 @@ extern "C" void IrisWipe_VBlankRegs() {
 
 extern "C" void IrisWipe_SetupLayers() {
     volatile u16 *r;
-    func_0203d4c8(0);
+    ScreenLayers_AcquireStub(0);
     Gfx2d_EnableMainWindows(1);
     Gfx2d_EnableSubWindows(1);
     Gfx2d_SetMainWin0Planes(0x1b);
@@ -197,7 +197,7 @@ extern "C" void IrisWipe_End() {
     }
     Gfx2d_HideMainPlanes(4);
     Gfx2d_HideSubPlanes(4);
-    func_0203d4c4(0);
+    ScreenLayers_ReleaseStub(0);
 }
 
 extern "C" void IrisWipe_Update() {
@@ -272,11 +272,11 @@ extern "C" BOOL ScreenTransition_StartFadeOut(u32 a, u32 b) {
     if (!ok && data_021c3cb8 == 0) return FALSE;
     gScreenTransition.state = 3;
     data_021c3cb8 = 0;
-    void (*fn)() = sTransitionTypeTable[old].unk_00[1];
+    void (*fn)() = sTransitionTypeTable[old].handlers[1];
     if (fn) fn();
     gScreenTransition.type = a;
     gScreenTransition.progress = 0;
-    fn = sTransitionTypeTable[a].unk_00[0];
+    fn = sTransitionTypeTable[a].handlers[0];
     if (fn) {
         fn();
         ((BgmSceneFade *)(data_021c1b3c + 0x2d0))->onFadeOut();
@@ -299,7 +299,7 @@ extern "C" BOOL ScreenTransition_StartFadeIn(u32 a, u32 b, u32 c) {
     gScreenTransition.state = 1;
     gScreenTransition.type = a;
     gScreenTransition.progress = 0x1000;
-    void (*fn)() = sTransitionTypeTable[a].unk_00[0];
+    void (*fn)() = sTransitionTypeTable[a].handlers[0];
     if (fn) fn();
     if (b == 0 || a == 3) {
         gScreenTransition.step = -0x1000;
@@ -326,7 +326,7 @@ extern "C" void ScreenTransition_Update() {
             gScreenTransition.step = 0;
         }
     }
-    void (*fn)() = sTransitionTypeTable[idx].unk_00[2];
+    void (*fn)() = sTransitionTypeTable[idx].handlers[2];
     if (fn) fn();
 }
 
@@ -336,24 +336,24 @@ extern "C" void ScreenTransition_VBlank() {
     u32 idx = s->type;
     u32 st = s->state;
     if (st == 2 || st == 0) return;
-    void (*fn)() = sTransitionTypeTable[idx].unk_00[3];
+    void (*fn)() = sTransitionTypeTable[idx].handlers[3];
     if (fn) fn();
     if (gScreenTransition.state == 1) {
         if (gScreenTransition.step != 0) return;
         gScreenTransition.state = 2;
-        fn = sTransitionTypeTable[idx].unk_00[1];
+        fn = sTransitionTypeTable[idx].handlers[1];
         if (fn) fn();
     } else if (gScreenTransition.state == 3) {
         if (gScreenTransition.step != 0) return;
         gScreenTransition.state = 0;
-        fn = sTransitionTypeTable[idx].unk_00[1];
+        fn = sTransitionTypeTable[idx].handlers[1];
         if (fn) fn();
         ScreenTransition_OnHidden();
     }
 }
 
 extern "C" void ScreenTransition_OnHidden() {
-    func_0203d4c8(0);
+    ScreenLayers_AcquireStub(0);
     Gfx2d_SetMainPlanes(0x10);
     Gfx2d_SetSubPlanes(0);
     ScreenTransition_ShowCover();
@@ -363,6 +363,6 @@ extern "C" void ScreenTransition_OnHidden() {
 extern "C" void ScreenTransition_HideCover() {
     Gfx2d_HideMainPlanes(4);
     Gfx2d_HideSubPlanes(4);
-    func_0203d4c4(0);
+    ScreenLayers_ReleaseStub(0);
 }
 

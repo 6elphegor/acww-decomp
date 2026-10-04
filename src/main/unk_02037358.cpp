@@ -1,5 +1,6 @@
 #include "types.h"
 #include "game/Unk_02037674_V3.h"
+#include "gfx/BgModelCache.h"
 
 
 extern "C" {
@@ -16,11 +17,6 @@ extern void *gCurrentHeap;
 u8 *sAcreAttrData;
 u32 sAcreAttrSize;
 
-struct Unk_02037478 {
-    u32 acreId;
-    u8 pad_04[0x20];
-    void *buried;
-};
 
 struct Marker1 {
     u16 v;
@@ -43,30 +39,26 @@ public:
     u32 acreId;
 };
 
-struct Unk_02037618_Sub {
-    u8 pad_00[0xc];
-    u32 collisionData;
-};
 
 class MapBlock {
 public:
     void clear();
-    void bindBg(Unk_02037618_Sub *s, u32 t, u32 u);
-    void init(s32 a, Unk_02037674_V3 *v, s32 b, s32 k0, s32 k1, Unk_02037618_Sub *k2, u32 k3, s32 k4, s32 k5, u32 k6);
+    void bindBg(BgAcreModel *s, u32 t, u32 u);
+    void init(s32 a, Unk_02037674_V3 *v, s32 b, s32 k0, s32 k1, BgAcreModel *k2, u32 k3, s32 k4, s32 k5, u32 k6);
 
     s32 acreId;
     s32 blockX;
     s32 blockZ;
     Unk_02037674_V3 pos;
     s32 layers[2];
-    Unk_02037618_Sub *bgModel;
+    BgAcreModel *bgModel;
     s32 buried;
 };
 
 extern "C" u32 AcreAttr_GetType(u32 i);
 extern "C" BOOL Bits16_Clear(void *, u16 *p, s32 bit);
 extern "C" BOOL Bits16_Set(void *, u16 *p, s32 bit);
-extern "C" u32 MapBlock_GetAttr(Unk_02037478 *o);
+extern "C" u32 MapBlock_GetAttr(MapBlock *o);
 extern "C" u16 *MapBlock_GetItemPtr(void *cell, u32 x, u32 y, u32 z);
 extern "C" void Unit_SplitIndex(s32 *a, s32 *b, s32 v);
 
@@ -78,7 +70,7 @@ void MapBlock::clear() {
     }
 }
 
-void MapBlock::init(s32 a, Unk_02037674_V3 *v, s32 b, s32 k0, s32 k1, Unk_02037618_Sub *k2, u32 k3, s32 k4, s32 k5, u32 k6) {
+void MapBlock::init(s32 a, Unk_02037674_V3 *v, s32 b, s32 k0, s32 k1, BgAcreModel *k2, u32 k3, s32 k4, s32 k5, u32 k6) {
     acreId = a;
     pos.x = v->x;
     pos.y = v->y;
@@ -91,7 +83,7 @@ void MapBlock::init(s32 a, Unk_02037674_V3 *v, s32 b, s32 k0, s32 k1, Unk_020376
     bindBg(k2, k3, k6);
 }
 
-extern "C" void MapBlock_Init(MapBlock *self, s32 a, Unk_02037674_V3 *v, s32 b, s32 k0, s32 k1, Unk_02037618_Sub *k2, u32 k3, Unk_02037638_S8 *k45, u32 k6) {
+extern "C" void MapBlock_Init(MapBlock *self, s32 a, Unk_02037674_V3 *v, s32 b, s32 k0, s32 k1, BgAcreModel *k2, u32 k3, Unk_02037638_S8 *k45, u32 k6) {
     Unk_02037674_V3 t;
     t.x = v->x;
     t.y = v->y;
@@ -99,10 +91,10 @@ extern "C" void MapBlock_Init(MapBlock *self, s32 a, Unk_02037674_V3 *v, s32 b, 
     self->init(a, &t, b, k0, k1, k2, k3, k45->a, k45->b, k6);
 }
 
-void MapBlock::bindBg(Unk_02037618_Sub *s, u32 t, u32 u) {
+void MapBlock::bindBg(BgAcreModel *s, u32 t, u32 u) {
     bgModel = s;
     if (bgModel != 0) {
-        t = bgModel->collisionData;
+        t = (u32)bgModel->bcl;
     }
     if (t != 0) {
         CollisionMap_SetBlock(blockX, blockZ, t, u);
@@ -173,11 +165,11 @@ extern "C" BOOL MapBlock_FindItemInRange(void *cell, s32 *a, s32 *b, Marker1 *m,
     return found;
 }
 
-extern "C" u32 MapBlock_GetAttr(Unk_02037478 *o) {
+extern "C" u32 MapBlock_GetAttr(MapBlock *o) {
     return Acre_GetAttr(o->acreId);
 }
 
-extern "C" BOOL MapBlock_HasAllAttr(Unk_02037478 *o, u32 mask) {
+extern "C" BOOL MapBlock_HasAllAttr(MapBlock *o, u32 mask) {
     u32 m = mask & MapBlock_GetAttr(o);
     if (mask == m) {
         return TRUE;
@@ -185,7 +177,7 @@ extern "C" BOOL MapBlock_HasAllAttr(Unk_02037478 *o, u32 mask) {
     return FALSE;
 }
 
-extern "C" BOOL MapBlock_HasAnyAttr(Unk_02037478 *o, u32 mask) {
+extern "C" BOOL MapBlock_HasAnyAttr(MapBlock *o, u32 mask) {
     if ((mask & MapBlock_GetAttr(o)) != 0) {
         return TRUE;
     }
@@ -195,18 +187,18 @@ extern "C" BOOL MapBlock_HasAnyAttr(Unk_02037478 *o, u32 mask) {
 extern "C" BOOL BuriedMask_Set(void *base, u32 a, u32 b);
 extern "C" BOOL BuriedMask_Clear(void *base, u32 a, u32 b);
 
-extern "C" BOOL MapBlock_SetBuried(Unk_02037478 *o, u32 a, u32 b) {
+extern "C" BOOL MapBlock_SetBuried(MapBlock *o, u32 a, u32 b) {
     BOOL r = FALSE;
     if (o->buried != 0) {
-        r = BuriedMask_Set(o->buried, a, b);
+        r = BuriedMask_Set((void *)o->buried, a, b);
     }
     return r;
 }
 
-extern "C" BOOL MapBlock_ClearBuried(Unk_02037478 *o, u32 a, u32 b) {
+extern "C" BOOL MapBlock_ClearBuried(MapBlock *o, u32 a, u32 b) {
     BOOL r = FALSE;
     if (o->buried != 0) {
-        r = BuriedMask_Clear(o->buried, a, b);
+        r = BuriedMask_Clear((void *)o->buried, a, b);
     }
     return r;
 }

@@ -9,6 +9,8 @@
 #include "gfx/FxMtx43.h"
 #include "sys/CameraBase.h"
 #include "gfx/Camera.h"
+#include "sys/ProcProfile.h"
+#include "gfx/Unk_ov068_0226647c_Cam.h"
 
 typedef Unk_0203b350_V V3;
 typedef Unk_0203b350_V Unk_0203a148_Vec;
@@ -20,41 +22,33 @@ struct FxVec3 : Unk_0203b350_V {
     ~FxVec3();
 };
 
-struct Unk_0203a148_Mtx {
+struct MtxFx43 {
     s32 m[12];
 };
 
-struct Unk_0203a148_Mtx_Tmp : Unk_0203a148_Mtx {
-    Unk_0203a148_Mtx_Tmp() {}
-};
 
-struct Unk_0203a8d4_Rot {
-    s32 len;
-    s16 ang;
-    s16 vel;
-};
 
 typedef CameraSetup Unk_0203a278_Cam;
 
 
-struct Unk_0203a9b8_Cfg {
+struct SceneInfoView {
     u8 pad[4];
-    u8 unk_04;
+    u8 isOutdoor;
 };
 
-struct Unk_0203a9b8_Row {
+struct CameraPoseGridRow {
     s32 v[3];
 };
 
-struct Unk_0203a9b8_Sub {
+struct CameraShakeParam {
     s32 len;
     s16 ang, vel;
 };
 
 
-struct Unk_0203a9b8_Rgba {
+struct GxColorRgba {
     u8 v[4];
-    Unk_0203a9b8_Rgba(u8 a, u8 b, u8 c, u8 d) {
+    GxColorRgba(u8 a, u8 b, u8 c, u8 d) {
         v[0] = a;
         v[1] = b;
         v[2] = c;
@@ -62,19 +56,9 @@ struct Unk_0203a9b8_Rgba {
     }
 };
 
-struct Unk_0203c1f0_Entry {
-    void *unk_00;
-    u16 unk_04;
-    u16 unk_06;
-};
 
 
 
-struct Unk_0203c23c_Static {
-    u16 v;
-    Unk_0203c23c_Static(u16 x) { v = x; }
-    ~Unk_0203c23c_Static();
-};
 
 
 
@@ -83,11 +67,11 @@ struct Unk_0203c23c_Static {
 #define M(T, o) (*(T *)((u8 *)this + (o)))
 
 class Camera;
-typedef BOOL (Camera::*Unk_021c30ec_Init)();
-typedef void (Camera::*Unk_021c30ec_Update)();
-struct Unk_021c30ec {
-    Unk_021c30ec_Init init;
-    Unk_021c30ec_Update update;
+typedef BOOL (Camera::*CameraModeInitFn)();
+typedef void (Camera::*CameraModeUpdateFn)();
+struct CameraModeEntry {
+    CameraModeInitFn init;
+    CameraModeUpdateFn update;
 };
 
 
@@ -122,13 +106,13 @@ static inline s32 Unk_0203c23c_None() {
 // ---- externals ----
 extern "C" {
 extern Unk_021c3070 *gCamera;
-extern Unk_0203a148_Mtx data_021f47e0;
+extern MtxFx43 data_021f47e0;
 extern s32 sCameraSpanDepthScale;
 extern s32 sCameraFollowVillagerIdx;
 extern s16 data_02135f44[];
 extern Unk_0203a9b8_Vec gVec3Zero;
-extern Unk_0203a9b8_Cfg *gCurSceneInfo;
-extern const Unk_0203a9b8_Row sCameraPoseGrid[3];
+extern SceneInfoView *gCurSceneInfo;
+extern const CameraPoseGridRow sCameraPoseGrid[3];
 extern s32 data_020c8cb8;
 extern Unk_021c47c4 *gSceneBlockMap;
 extern u8 gViewFrustum[];
@@ -141,7 +125,7 @@ extern Unk_0203bd10_Dtcm data_027e02c8;
 extern u32 data_027e00d0[];
 extern u32 data_027e0114[];
 }
-extern Unk_021c30ec sCameraModeTable[];
+extern CameraModeEntry sCameraModeTable[];
 extern const u32 sCameraBlendTable[6][4];
 extern const CameraPose sCameraPoseTable[33];
 extern FxVec3 gCameraLookAt;
@@ -307,7 +291,7 @@ extern void *data_020d93a8[2];
 // ---- own plain functions (file unk_0203a058) ----
 extern "C" {
 BOOL Camera_SetModeDefault(void);
-Unk_0203a148_Mtx *Camera_GetViewMatrix(void);
+MtxFx43 *Camera_GetViewMatrix(void);
 void Camera_StartBlend(void);
 void Camera_FinishBlend(void);
 s32 Camera_CalcPointSpan(Unk_0203a148_Vec *a, Unk_0203a148_Vec *b, Unk_0203a148_Vec *c, s32 *d);
@@ -337,7 +321,7 @@ void _ZN6Camera8loadPoseEiP10CameraPose(Unk_021c3070 *o, s32 a, s32 b);
 void _ZN6Camera14setBlendPresetEi(Unk_021c3070 *o, s32 a);
 }
 
-extern "C" s32 func_0203c234() {
+extern "C" s32 CarpetTex_GetTex() {
     return NNS_G3dGetTex();
 }
 
@@ -623,7 +607,7 @@ extern "C" void Camera_GetLookAtBlock(s32 a, s32 *x, s32 *z)
 
 void Camera::calcRoomBounds()
 {
-    if (gCurSceneInfo->unk_04 == 0) {
+    if (gCurSceneInfo->isOutdoor == 0) {
         Ground_GetFloorBounds(&M(s32, 0x178), &M(s32, 0x17c), &M(s32, 0x180), &M(s32, 0x184));
         s32 m = data_020c8cb8;
         if (M(s32, 0x184) < m) {
@@ -864,7 +848,7 @@ void Camera::dragFocusTo(V3 *p)
 }
 
 BOOL Camera::initModeDefault() {
-    if (gCurSceneInfo->unk_04 == 0) {
+    if (gCurSceneInfo->isOutdoor == 0) {
         if (prevMode == 2) {
             focusYawLocked = 0;
         }
@@ -903,7 +887,7 @@ void Camera::updateModeDefault() {
         d.y = p->y;
         d.z = p->z;
     }
-    if (gCurSceneInfo->unk_04 == 0) {
+    if (gCurSceneInfo->isOutdoor == 0) {
         if (Scene_InHouseRoom() || Scene_InVillagerHouse() || (Scene_InMuseumRoom() && Scene_GetCurrent() != 0x20 && Scene_GetCurrent() != 0x22)) {
             loadPose(sCameraPoseGrid[presetRow].v[presetCol], 0);
             targetFocus.x = d.x;
@@ -980,7 +964,7 @@ BOOL Camera::initMode1() {
         restoreEyeZ = p->z;
         Camera_FinishBlend();
     } else {
-        if (gCurSceneInfo->unk_04 == 0) {
+        if (gCurSceneInfo->isOutdoor == 0) {
             loadPose(0xf, 0);
         } else {
             loadPose(0xe, 0);
@@ -1037,7 +1021,7 @@ void Camera::updateMode1() {
 }
 
 BOOL Camera::initModeFocus() {
-    if (gCurSceneInfo->unk_04 == 0) {
+    if (gCurSceneInfo->isOutdoor == 0) {
         loadPose(0xb, 0);
         roomFocusSide = 3;
         Camera_UpdateRoomFocus(this, 0);
@@ -1056,7 +1040,7 @@ BOOL Camera::initModeFocus() {
 }
 
 void Camera::updateModeFocus() {
-    if (gCurSceneInfo->unk_04 == 0) {
+    if (gCurSceneInfo->isOutdoor == 0) {
         Camera_UpdateRoomFocus(this, 0);
     } else {
         FieldCamera_UpdateFocusZoom(this);
@@ -1066,7 +1050,7 @@ void Camera::updateModeFocus() {
 }
 
 BOOL Camera::initMode3() {
-    if (gCurSceneInfo->unk_04 == 0) {
+    if (gCurSceneInfo->isOutdoor == 0) {
         loadPose(0x1c, 0);
     } else {
         loadPose(0x1b, 0);
@@ -1095,7 +1079,7 @@ void Camera::updateMode3() {
 }
 
 BOOL Camera::initMode4() {
-    if (gCurSceneInfo->unk_04 == 0) {
+    if (gCurSceneInfo->isOutdoor == 0) {
         loadPose(0xd, 0);
     } else {
         loadPose(0xc, 0);
@@ -1165,7 +1149,7 @@ void Camera::updateModeRestore() {
 }
 
 BOOL Camera::initModeShake() {
-    Unk_0203a9b8_Sub *sub = (Unk_0203a9b8_Sub *)&modeParam;
+    CameraShakeParam *sub = (CameraShakeParam *)&modeParam;
     sub->ang = 0;
     sub->vel = 0x2000;
     Camera_FinishBlend();
@@ -1175,7 +1159,7 @@ BOOL Camera::initModeShake() {
 extern "C" void Camera_UpdateModeShake(Unk_021c3070 *o) {
     Unk_0203a148_Vec v;
     Unk_0203a148_Vec cam;
-    Unk_0203a8d4_Rot *r = (Unk_0203a8d4_Rot *)&o->modeParam;
+    CameraShakeParam *r = (CameraShakeParam *)&o->modeParam;
     s32 sc;
     r->ang = r->ang + r->vel;
     Math_StepS16(&r->vel, 0x6000, 0x180);
@@ -1471,9 +1455,9 @@ extern "C" void Camera_PlaySe(Unk_021c3070 *o, s32 a) {
     }
 }
 
-extern "C" Unk_0203a148_Mtx *Camera_GetViewMatrix(void) {
+extern "C" MtxFx43 *Camera_GetViewMatrix(void) {
     if (gCamera != NULL) {
-        return (Unk_0203a148_Mtx *)&(FxMtx43 &)*gCamera;
+        return (MtxFx43 *)&(FxMtx43 &)*gCamera;
     }
     return NULL;
 }
@@ -1495,10 +1479,10 @@ extern "C" BOOL Camera_SetPresetCell(s32 a, s32 b) {
 extern "C" BOOL Camera_ProjectToScreen(s32 *x, s32 *y, Unk_0203a148_Vec *p) {
     struct {
         Unk_0203a148_Vec v;
-        Unk_0203a148_Mtx m;
+        MtxFx43 m;
     } l;
     if (gCamera != NULL) {
-        Unk_0203a148_Mtx *src = Camera_GetViewMatrix();
+        MtxFx43 *src = Camera_GetViewMatrix();
         l.m = *src;
         data_021f47e0 = l.m;
         MTX_MultVec43(p, &data_021f47e0, &l.v);
@@ -1520,45 +1504,45 @@ extern "C" BOOL Camera_ProjectCurvedToScreen(s32 *x, s32 *y, Unk_0203a148_Vec *p
     return Camera_ProjectToScreen(x, y, &v);
 }
 
-Unk_0203a9b8_Rgba data_021c3060(31, 20, 20, 31);
-Unk_0203a9b8_Rgba data_021c3074(20, 20, 31, 31);
-Unk_0203a9b8_Rgba data_021c3064(31, 31, 20, 31);
-Unk_0203a9b8_Rgba data_021c305c(20, 31, 20, 31);
-Unk_0203a9b8_Rgba data_021c3058(20, 31, 31, 31);
-Unk_0203a9b8_Rgba data_021c306c(20, 24, 24, 31);
+GxColorRgba data_021c3060(31, 20, 20, 31);
+GxColorRgba data_021c3074(20, 20, 31, 31);
+GxColorRgba data_021c3064(31, 31, 20, 31);
+GxColorRgba data_021c305c(20, 31, 20, 31);
+GxColorRgba data_021c3058(20, 31, 31, 31);
+GxColorRgba data_021c306c(20, 24, 24, 31);
 FxVec3 gCameraEye;
 FxVec3 gCameraLookAt;
 CameraSetup sCameraSavedSetup;
 FxVec3 sCameraSavedEye;
-Unk_021c30ec sCameraModeTable[21] = {
-    { *(Unk_021c30ec_Init *)data_020d9280, *(Unk_021c30ec_Update *)data_020d9368 },
-    { *(Unk_021c30ec_Init *)data_020d9360, *(Unk_021c30ec_Update *)data_020d9358 },
-    { *(Unk_021c30ec_Init *)data_020d9350, *(Unk_021c30ec_Update *)data_020d9348 },
-    { *(Unk_021c30ec_Init *)data_020d9340, *(Unk_021c30ec_Update *)data_020d9338 },
-    { *(Unk_021c30ec_Init *)data_020d92b0, *(Unk_021c30ec_Update *)data_020d9328 },
-    { *(Unk_021c30ec_Init *)data_020d9320, *(Unk_021c30ec_Update *)data_020d9300 },
-    { *(Unk_021c30ec_Init *)data_020d9308, *(Unk_021c30ec_Update *)data_020d9330 },
-    { *(Unk_021c30ec_Init *)data_020d9370, *(Unk_021c30ec_Update *)data_020d9380 },
-    { *(Unk_021c30ec_Init *)data_020d9390, *(Unk_021c30ec_Update *)data_020d92e8 },
-    { *(Unk_021c30ec_Init *)data_020d92e0, *(Unk_021c30ec_Update *)data_020d92d8 },
-    { *(Unk_021c30ec_Init *)data_020d92d0, *(Unk_021c30ec_Update *)data_020d93a0 },
-    { *(Unk_021c30ec_Init *)data_020d9270, *(Unk_021c30ec_Update *)data_020d9388 },
-    { *(Unk_021c30ec_Init *)data_020d9278, *(Unk_021c30ec_Update *)data_020d92a8 },
-    { *(Unk_021c30ec_Init *)data_020d9290, *(Unk_021c30ec_Update *)data_020d92a0 },
-    { *(Unk_021c30ec_Init *)data_020d92c0, *(Unk_021c30ec_Update *)data_020d92f8 },
-    { *(Unk_021c30ec_Init *)data_020d9310, *(Unk_021c30ec_Update *)data_020d9378 },
-    { *(Unk_021c30ec_Init *)data_020d9398, *(Unk_021c30ec_Update *)data_020d9268 },
-    { *(Unk_021c30ec_Init *)data_020d9260, *(Unk_021c30ec_Update *)data_020d92c8 },
-    { *(Unk_021c30ec_Init *)data_020d92b8, *(Unk_021c30ec_Update *)data_020d9298 },
-    { *(Unk_021c30ec_Init *)data_020d92f0, *(Unk_021c30ec_Update *)data_020d9318 },
-    { *(Unk_021c30ec_Init *)data_020d93a8, *(Unk_021c30ec_Update *)data_020d9258 }
+CameraModeEntry sCameraModeTable[21] = {
+    { *(CameraModeInitFn *)data_020d9280, *(CameraModeUpdateFn *)data_020d9368 },
+    { *(CameraModeInitFn *)data_020d9360, *(CameraModeUpdateFn *)data_020d9358 },
+    { *(CameraModeInitFn *)data_020d9350, *(CameraModeUpdateFn *)data_020d9348 },
+    { *(CameraModeInitFn *)data_020d9340, *(CameraModeUpdateFn *)data_020d9338 },
+    { *(CameraModeInitFn *)data_020d92b0, *(CameraModeUpdateFn *)data_020d9328 },
+    { *(CameraModeInitFn *)data_020d9320, *(CameraModeUpdateFn *)data_020d9300 },
+    { *(CameraModeInitFn *)data_020d9308, *(CameraModeUpdateFn *)data_020d9330 },
+    { *(CameraModeInitFn *)data_020d9370, *(CameraModeUpdateFn *)data_020d9380 },
+    { *(CameraModeInitFn *)data_020d9390, *(CameraModeUpdateFn *)data_020d92e8 },
+    { *(CameraModeInitFn *)data_020d92e0, *(CameraModeUpdateFn *)data_020d92d8 },
+    { *(CameraModeInitFn *)data_020d92d0, *(CameraModeUpdateFn *)data_020d93a0 },
+    { *(CameraModeInitFn *)data_020d9270, *(CameraModeUpdateFn *)data_020d9388 },
+    { *(CameraModeInitFn *)data_020d9278, *(CameraModeUpdateFn *)data_020d92a8 },
+    { *(CameraModeInitFn *)data_020d9290, *(CameraModeUpdateFn *)data_020d92a0 },
+    { *(CameraModeInitFn *)data_020d92c0, *(CameraModeUpdateFn *)data_020d92f8 },
+    { *(CameraModeInitFn *)data_020d9310, *(CameraModeUpdateFn *)data_020d9378 },
+    { *(CameraModeInitFn *)data_020d9398, *(CameraModeUpdateFn *)data_020d9268 },
+    { *(CameraModeInitFn *)data_020d9260, *(CameraModeUpdateFn *)data_020d92c8 },
+    { *(CameraModeInitFn *)data_020d92b8, *(CameraModeUpdateFn *)data_020d9298 },
+    { *(CameraModeInitFn *)data_020d92f0, *(CameraModeUpdateFn *)data_020d9318 },
+    { *(CameraModeInitFn *)data_020d93a8, *(CameraModeUpdateFn *)data_020d9258 }
 };
 Unk_021c3070 *gCamera;
 s32 gCameraDistance;
 
 s32 sCameraFollowVillagerIdx = 0x8;
 s32 sCameraSpanDepthScale = 0x1800;
-Unk_0203c1f0_Entry sCameraProfile = { (void *)Camera_Create, 0xb, 0x6 };
+ProcProfile sCameraProfile = { (void *(*)())Camera_Create, 0xb, 0x6 };
 void *data_020d9258[2] = { (void *)Camera_UpdateMode20, 0 };
 void *data_020d9260[2] = { (void *)_ZN6Camera13initModeShakeEv, 0 };
 void *data_020d9268[2] = { (void *)Camera_UpdateMode16, 0 };
@@ -1607,19 +1591,13 @@ void *data_020d93a8[2] = { (void *)Camera_InitMode20, 0 };
 // file and ov004, kCameraSwayPatterns (with the interior labels 0x020c8d0e/d10/d14) by ov068.
 extern const u8 data_020c8ce4[4];
 const u8 data_020c8ce4[4] = { 0, 0, 0, 0 };
-const Unk_0203a9b8_Row sCameraPoseGrid[3] = { { { 1, 2, 3 } }, { { 4, 5, 6 } }, { { 7, 8, 9 } } };
-struct Unk_020c8d0c_Row {
-    s16 a;
-    s16 b;
-    s32 c;
-    s32 d;
-};
-extern const Unk_020c8d0c_Row kCameraSwayPatterns[4];
-const Unk_020c8d0c_Row kCameraSwayPatterns[4] = {
-    { 0x0, 0x14, 0x0, 0x0 },
-    { 0xa, 0x1, 0x2000, 0x28 },
-    { 0xa, 0x1, 0x2000, 0x64 },
-    { 0xa, 0x1, 0x2000, 0x96 }
+const CameraPoseGridRow sCameraPoseGrid[3] = { { { 1, 2, 3 } }, { { 4, 5, 6 } }, { { 7, 8, 9 } } };
+extern const CameraSwayPattern kCameraSwayPatterns[4];
+const CameraSwayPattern kCameraSwayPatterns[4] = {
+    { 0x0, 0x14, 0x0, 0x0, 0x0 },
+    { 0xa, 0x1, 0x2000, 0x0, 0x28 },
+    { 0xa, 0x1, 0x2000, 0x0, 0x64 },
+    { 0xa, 0x1, 0x2000, 0x0, 0x96 }
 };
 const u32 sCameraBlendTable[6][4] = {
     { 0x0, 0x1e000, 0x5000, 0x5000 },

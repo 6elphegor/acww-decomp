@@ -2080,8 +2080,8 @@ _ZN9HitSphereC1Ev kind:function(thumb,size=0xc) addr:0x0202e9c8
 _ZN9HitSphereC2Ev kind:label(thumb) addr:0x0202e9c8
 _ZN13CollisionEdge16pushBackCrossingEP13CollisionVec2S1_i kind:function(thumb,size=0x68) addr:0x0202e9d4
 _ZN13CollisionVec2D1Ev kind:function(thumb,size=0x2) addr:0x0202ea3c
-_ZN19Unk_02032864_StaticD1Ev kind:label(thumb) addr:0x0202ea3c
-_ZN12Unk_0202ea3cD1Ev kind:label(thumb) addr:0x0202ea3c
+_ZN14CellWallNormalD1Ev kind:label(thumb) addr:0x0202ea3c
+_ZN19ZeroedCollisionVec2D1Ev kind:label(thumb) addr:0x0202ea3c
 _ZN13CollisionEdge11pushOutEndsEP13CollisionVec2S1_i kind:function(thumb,size=0xec) addr:0x0202ea40
 _ZN13CollisionEdge12hasRoundEndsEv kind:function(thumb,size=0x4) addr:0x0202eb2c
 _ZN13CollisionEdge11pushOutFaceEP13CollisionVec2S1_i kind:function(thumb,size=0x80) addr:0x0202eb30
@@ -2285,7 +2285,7 @@ _ZN11BoxColliderD2Ev kind:function(thumb,size=0x38) addr:0x02031c10
 _ZN12BoxColliderXD1Ev kind:label(thumb) addr:0x02031c10
 _ZN11BoxColliderC1Ev kind:function(thumb,size=0x54) addr:0x02031c48
 _ZN12BoxColliderXC1Ev kind:label(thumb) addr:0x02031c48
-_ZN12Unk_0202ea3cC1Ev kind:function(thumb,size=0x14) addr:0x02031c9c
+_ZN19ZeroedCollisionVec2C1Ev kind:function(thumb,size=0x14) addr:0x02031c9c
 _ZN11BoxColliderC2Ev kind:function(thumb,size=0x54) addr:0x02031cb0
 _ZN12BoxColliderXC2Ev kind:label(thumb) addr:0x02031cb0
 _ZN11BoxCollider8resetBoxEv kind:function(thumb,size=0x58) addr:0x02031d04
@@ -2331,8 +2331,8 @@ _ZN13ShapeCylinderD1Ev kind:function(thumb,size=0x18) addr:0x02032834
 _ZN13ShapeCylinderC1Ev kind:function(thumb,size=0x18) addr:0x0203284c
 _ZN18WallEdgeListWriter14buildFromCellsEPviiiii kind:function(thumb,size=0x4fc) addr:0x02032864
 _ZN18WallEdgeListWriter7addEdgeEPvS0_S0_iiii kind:function(thumb,size=0x36) addr:0x02032d60
-_ZN18WallEdgeListWriter11addEdgeCopyEP17Unk_02032d60_Elem kind:function(thumb,size=0x2c) addr:0x02032d98
-_ZN12WallEdgeList7collideEP15Unk_0202f2ac_V3S1_iP16Unk_02032dc4_Outi kind:function(thumb,size=0x200) addr:0x02032dc4
+_ZN18WallEdgeListWriter11addEdgeCopyEP15WallEdgeStorage kind:function(thumb,size=0x2c) addr:0x02032d98
+_ZN12WallEdgeList7collideEP15Unk_0202f2ac_V3S1_iP14CollisionStatei kind:function(thumb,size=0x200) addr:0x02032dc4
 _ZN12WallEdgeListD1Ev kind:function(thumb,size=0x1c) addr:0x02032fc4
 _ZN12WallEdgeListC1Ev kind:function(thumb,size=0x30) addr:0x02032fe0
 _ZN8WallEdge9setupEdgeEP13CollisionVec2S1_S1_iijj kind:function(thumb,size=0x34) addr:0x02033010
@@ -2342,7 +2342,7 @@ _ZN8WallEdgeC1EP13CollisionVec2S1_S1_iijj kind:function(thumb,size=0x6c) addr:0x
 _ZN8WallEdgeD1Ev kind:function(thumb,size=0x24) addr:0x02033104
 _ZN8WallEdgeC1Ev kind:function(thumb,size=0x48) addr:0x02033128
 _ZN17FloorTriangleList11addTriangleEP15Unk_0202f2ac_V3S1_S1_S1_jj kind:function(thumb,size=0x38) addr:0x02033170
-_ZN17FloorTriangleList14buildFromCellsEP12Unk_02033a0ciiii kind:function(thumb,size=0x1d0) addr:0x020331a8
+_ZN17FloorTriangleList14buildFromCellsEP14GroundCellGridiiii kind:function(thumb,size=0x1d0) addr:0x020331a8
 _ZN17FloorTriangleListD1Ev kind:function(thumb,size=0x1c) addr:0x02033378
 _ZN17FloorTriangleListC1Ev kind:function(thumb,size=0x30) addr:0x02033394
 _ZN13FloorTriangle10setupFloorEP15Unk_0202f2ac_V3S1_S1_S1_jj kind:function(thumb,size=0x30) addr:0x020333c4
@@ -2423,7 +2423,7 @@ _ZN7BgmProcD0Ev kind:function(thumb,size=0x30) addr:0x02034474
 _ZN7BgmProcD1Ev kind:function(thumb,size=0x2c) addr:0x020344a4
 _ZN7BgmProcC1Ev kind:function(thumb,size=0x28) addr:0x020344d0
 _ZN7BgmProc6createEv kind:function(thumb,size=0x1c) addr:0x020344f8
-_ZN10BgmManager13func_02034514Ev kind:function(thumb,size=0x2) addr:0x02034514
+_ZN10BgmManager10postUpdateEv kind:function(thumb,size=0x2) addr:0x02034514
 _ZN10BgmManager15updateHourChimeEv kind:function(thumb,size=0x5c) addr:0x02034518
 _ZN10BgmManager14forEachRequestEM14BgmRequestViewFivE kind:function(thumb,size=0x50) addr:0x02034574
 _ZN19BgmManagerOwnerView14forEachRequestEMS_FvvE kind:label(thumb) addr:0x02034574
@@ -2492,8 +2492,8 @@ _ZN12BgmSceneFade14hasExitSilenceEv kind:function(thumb,size=0xe) addr:0x0203532
 _ZN12BgmSceneFade12isKeepingBgmEv kind:function(thumb,size=0x1a) addr:0x02035338
 _ZN12BgmSceneFade10setKeepBgmEv kind:function(thumb,size=0x6) addr:0x02035354
 _ZN12BgmSceneFade12setFadeDelayEi kind:function(thumb,size=0xc) addr:0x0203535c
-_ZN12BgmSceneFade13func_02035368Eii kind:function(thumb,size=0x48) addr:0x02035368
-_ZN12BgmSceneFade13func_020353b0Eii kind:function(thumb,size=0x128) addr:0x020353b0
+_ZN12BgmSceneFade18prepareEventReturnEii kind:function(thumb,size=0x48) addr:0x02035368
+_ZN12BgmSceneFade16prepareEventWarpEii kind:function(thumb,size=0x128) addr:0x020353b0
 _ZN12BgmSceneFade5resetEv kind:function(thumb,size=0x2c) addr:0x020354d8
 BgmSceneFade_Update kind:function(thumb,size=0x8) addr:0x02035504
 BgmSceneFade_Reset kind:function(thumb,size=0x8) addr:0x0203550c
@@ -2715,9 +2715,9 @@ _ZN12MapBlockAcre9getAcreIdEv kind:function(thumb,size=0x4) addr:0x020375d0
 _ZN12MapBlockAcre9setAcreIdEj kind:function(thumb,size=0x4) addr:0x020375d4
 _ZN12MapBlockAcre8getUnk04Ev kind:function(thumb,size=0x4) addr:0x020375d8
 MapBlock_NewArray kind:function(thumb,size=0x3c) addr:0x020375dc
-_ZN8MapBlock6bindBgEP16Unk_02037618_Subjj kind:function(thumb,size=0x20) addr:0x02037618
+_ZN8MapBlock6bindBgEP11BgAcreModeljj kind:function(thumb,size=0x20) addr:0x02037618
 MapBlock_Init kind:function(thumb,size=0x3c) addr:0x02037638
-_ZN8MapBlock4initEiP15Unk_02037674_V3iiiP16Unk_02037618_Subjiij kind:function(thumb,size=0x34) addr:0x02037674
+_ZN8MapBlock4initEiP15Unk_02037674_V3iiiP11BgAcreModeljiij kind:function(thumb,size=0x34) addr:0x02037674
 _ZN8MapBlock5clearEv kind:function(thumb,size=0x16) addr:0x020376a8
 Main_LoadBuildTime kind:function(thumb,size=0x34) addr:0x020376c0
 _ZN21CommCautionWindowView9execResetEv kind:function(thumb,size=0x26) addr:0x020376f4
@@ -3005,7 +3005,7 @@ _ZN6Camera8loadPoseEiP10CameraPose kind:function(thumb,size=0x4c) addr:0x0203c1a
 Camera_Create kind:function(thumb,size=0x40) addr:0x0203c1f0
 func_0203c230 kind:function(thumb,size=0x2) addr:0x0203c230
 _ZN11CameraSetupD1Ev kind:label(thumb) addr:0x0203c230
-func_0203c234 kind:function(thumb,size=0x8) addr:0x0203c234
+CarpetTex_GetTex kind:function(thumb,size=0x8) addr:0x0203c234
 CarpetTex_Load kind:function(thumb,size=0x90) addr:0x0203c23c
 CarpetTex_Init kind:function(thumb,size=0x2) addr:0x0203c2cc
 Catalog_AddCreature kind:function(thumb,size=0x22) addr:0x0203c2d0
@@ -3115,11 +3115,11 @@ _ZN12BmgReader51211clearBufferEv kind:function(thumb,size=0x14) addr:0x0203d458
 _ZN12BmgReader512D0Ev kind:function(thumb,size=0x20) addr:0x0203d46c
 _ZN12BmgReader512D1Ev kind:function(thumb,size=0x18) addr:0x0203d48c
 _ZN12BmgReader512C1Ev kind:function(thumb,size=0x1c) addr:0x0203d4a4
-func_0203d4c0 kind:function(thumb,size=0x2) addr:0x0203d4c0
-func_0203d4c4 kind:function(thumb,size=0x2) addr:0x0203d4c4
-func_0203d4c8 kind:function(thumb,size=0x2) addr:0x0203d4c8
-func_0203d4cc kind:function(thumb,size=0x2) addr:0x0203d4cc
-func_0203d4d0 kind:function(thumb,size=0x2) addr:0x0203d4d0
+Scene_PostCreateStub kind:function(thumb,size=0x2) addr:0x0203d4c0
+ScreenLayers_ReleaseStub kind:function(thumb,size=0x2) addr:0x0203d4c4
+ScreenLayers_AcquireStub kind:function(thumb,size=0x2) addr:0x0203d4c8
+Main_PostTaskStub kind:function(thumb,size=0x2) addr:0x0203d4cc
+Main_PreTaskStub kind:function(thumb,size=0x2) addr:0x0203d4d0
 func_0203d4d4 kind:function(thumb,size=0x4) addr:0x0203d4d4
 _ZN16TalkRequestQueueD1Ev kind:function(thumb,size=0x20) addr:0x0203d4d8
 _ZN16TalkRequestQueueD0Ev kind:function(thumb,size=0x28) addr:0x0203d4f8

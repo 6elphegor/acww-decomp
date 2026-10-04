@@ -248,10 +248,10 @@ void CollisionMap_Release(u32 h);
 void CollisionMap_Bind(u32 w, u32 h, u32 c, u32 d);
 u32 BgModelCache_Get();
 u32 _ZN12BgModelCache10getAcreBclEi(u32 a, u32 b);
-void _ZN8MapBlock4initEiP15Unk_02037674_V3iiiP16Unk_02037618_Subjiij(u32 h, u32 a, Unk_0204d0f4_V3 *v, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g, u32 h2, u32 i);
+void _ZN8MapBlock4initEiP15Unk_02037674_V3iiiP11BgAcreModeljiij(u32 h, u32 a, Unk_0204d0f4_V3 *v, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g, u32 h2, u32 i);
 u32 _ZN12MapBlockAcre9getAcreIdEv(u32 h);
 u32 BgModel_LoadBcl(u32 a, u32 b);
-s32 _ZN8MapBlock6bindBgEP16Unk_02037618_Subjj(u32 h, s32 a, u32 b, u32 c);
+s32 _ZN8MapBlock6bindBgEP11BgAcreModeljj(u32 h, s32 a, u32 b, u32 c);
 u32 _ZN9HouseData13getRoomAcreIdEi(u32 *a);
 void _ZN12MapBlockAcre9setAcreIdEj(u32 h, s32 i);
 void RoomBclHeap_Destroy();
@@ -462,7 +462,7 @@ void _ZN12MapBlockAcre9setAcreIdEj(void *p, u32 v);
 void *MapBlock_NewArray(u32 a, u32 b, u32 c);
 void BgModelCache_Get(void *p);
 s32 BgModel_LoadBcl(u32 a, void *b);
-void _ZN8MapBlock6bindBgEP16Unk_02037618_Subjj(void *c, s32 a, s32 b, s32 d);
+void _ZN8MapBlock6bindBgEP11BgAcreModeljj(void *c, s32 a, s32 b, s32 d);
 s32 *_ZN7TownMap17buildBlockEntriesEi(void *a, void *b);
 }
 }
@@ -1450,7 +1450,7 @@ void TownBlockMap::bindBg() {
                 u32 t = Ns_0204d560::_ZN12MapBlockAcre9getAcreIdEv(c);
                 void *d = gTownBclHeap;
                 Ns_0204d560::BgModelCache_Get(d);
-                Ns_0204d560::_ZN8MapBlock6bindBgEP16Unk_02037618_Subjj(c, 0, Ns_0204d560::BgModel_LoadBcl(t, d), mapSlot);
+                Ns_0204d560::_ZN8MapBlock6bindBgEP11BgAcreModeljj(c, 0, Ns_0204d560::BgModel_LoadBcl(t, d), mapSlot);
             }
         }
     }
@@ -1664,7 +1664,7 @@ join:
         u32 a = _ZN12MapBlockAcre9getAcreIdEv(h);
         u32 g = gRoomBclHeap;
         BgModelCache_Get();
-        _ZN8MapBlock6bindBgEP16Unk_02037618_Subjj(h, 0, BgModel_LoadBcl(a, g), p->mapSlot);
+        _ZN8MapBlock6bindBgEP11BgAcreModeljj(h, 0, BgModel_LoadBcl(a, g), p->mapSlot);
     }
 }
 
@@ -1691,7 +1691,7 @@ extern "C" BOOL HouseRoomMap_Init(Unk_0204d0a4 *p, s32 i, void *heap) {
         CollisionMap_Bind(p->width, p->height, 0, p->mapSlot);
         l.v.x = 0; l.v.z = 0;
         l.w = l.v;
-        _ZN8MapBlock4initEiP15Unk_02037674_V3iiiP16Unk_02037618_Subjiij(p->blocks, info->a, &l.w, info->b, info->c, info->d, 0, 0, 0, 0, p->mapSlot);
+        _ZN8MapBlock4initEiP15Unk_02037674_V3iiiP11BgAcreModeljiij(p->blocks, info->a, &l.w, info->b, info->c, info->d, 0, 0, 0, 0, p->mapSlot);
         Heap_Free(heap, info);
         r = TRUE;
     }
@@ -1773,7 +1773,7 @@ extern "C" BOOL VillagerRoomMap_Init(Unk_0204d0a4 *p, u32 a, void *heap) {
         l.v.x = 0; l.v.z = 0;
         u32 t = _ZN12BgModelCache10getAcreBclEi(BgModelCache_Get(), info->a);
         l.w = l.v;
-        _ZN8MapBlock4initEiP15Unk_02037674_V3iiiP16Unk_02037618_Subjiij(p->blocks, info->a, &l.w, info->b, info->c, info->d, 0, t, 0, 0, p->mapSlot);
+        _ZN8MapBlock4initEiP15Unk_02037674_V3iiiP11BgAcreModeljiij(p->blocks, info->a, &l.w, info->b, info->c, info->d, 0, t, 0, 0, p->mapSlot);
         Heap_Free(heap, info);
         r = TRUE;
     }

@@ -51,7 +51,7 @@ extern ItemId sSceneCarpets[0x33];
 static inline BOOL Unk_020341c0_IsOne(u8 v) { return v == 1 ? TRUE : FALSE; }
 
 
-struct Unk_02034048_Pkt {
+struct RoomWallFloorPacket {
     u16 item;
     u16 id : 6;
     u16 f6 : 1;
@@ -189,7 +189,7 @@ extern "C" u16 *RoomWallFloor_GetSceneCarpet(u32 i)
     return &sRoomWallFloorNoItem.id;
 }
 
-extern "C" void RoomWallFloor_ApplyRecv(Unk_02034048_Pkt *p)
+extern "C" void RoomWallFloor_ApplyRecv(RoomWallFloorPacket *p)
 {
     u16 tmp = p->item;
     u8 id = p->id;

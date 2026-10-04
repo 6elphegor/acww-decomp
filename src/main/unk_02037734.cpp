@@ -7,6 +7,7 @@
 #include "gfx/TexVramTask.h"
 #include "talk/MsgString25.h"
 #include "gfx/CachedModel.h"
+#include "sys/ProcBase.h"
 
 // ---- Classes defined in other files (declarations only) ----
 
@@ -99,11 +100,7 @@ extern Unk_020dbd34_Mtx data_021f47e0;
 extern u8 gFieldSceneKind;
 extern u8 gFontA[];
 
-struct Unk_020d905c_Ptr {
-    /* 0x00 */ u32 pad[3];
-    /* 0x0c */ u16 profile;
-};
-extern Unk_020d905c_Ptr *gActorDefaultParent;
+extern ProcBase *gActorDefaultParent;
 
 struct Unk_02037ea0_V {
     s32 x, y, z;

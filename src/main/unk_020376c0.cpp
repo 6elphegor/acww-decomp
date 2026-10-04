@@ -18,7 +18,7 @@ public:
     u8 pad_00[0xbc];
     s32 state;
     s32 timer;
-    s32 unk_c4;
+    s32 lineIndex;
     u8 modelVisible;
 };
 

@@ -57,12 +57,6 @@ extern BgModelCacheObj gBgModelCache;
 extern const u8 sBgHeapSizeByRoom[];
 
 
-struct Unk_0203718c_Ent {
-    u32 acreId, arc, mdl, bcl, bsd, jntAnm, matAnm, texSrtAnm, tex, unk_24, mgt, mgtCount;
-};
-struct Unk_0203718c_Ent2 {
-    u32 acreId, bcl;
-};
 
 class BgModelCacheObj {
 public:
@@ -71,8 +65,8 @@ public:
     BOOL setup(u32 flag);
     void clearEntries();
 
-    Unk_0203718c_Ent acres[31];
-    Unk_0203718c_Ent2 bclCache[9];
+    BgAcreModel acres[31];
+    BgAcreBcl bclCache[9];
     u8 withAnims;
     u8 pad_619[3];
     u32 heapSize;
@@ -106,7 +100,7 @@ BgModelCacheObj::BgModelCacheObj() {
 BgModelCacheObj::~BgModelCacheObj() {}
 
 void BgModelCacheObj::clearEntries() {
-    Unk_0203718c_Ent *p; Unk_0203718c_Ent2 *q; u32 i; u32 j;
+    BgAcreModel *p; BgAcreBcl *q; u32 i; u32 j;
     p = acres;
     for (i = 0; i < 0x1f; p++, i++) {
         p->acreId = 0xffff;

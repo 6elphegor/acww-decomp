@@ -273,11 +273,11 @@ void Main_LateUpdate(u32 v);
 }
 
 extern "C" {
-void func_0203d4cc(void);
+void Main_PostTaskStub(void);
 }
 
 extern "C" {
-void func_0203d4d0(void);
+void Main_PreTaskStub(void);
 }
 
 extern "C" {
@@ -616,11 +616,11 @@ extern "C" void Main_LateUpdate(u32 r) {
 }
 
 extern "C" void Main_PreTaskHook(void) {
-    func_0203d4d0();
+    Main_PreTaskStub();
 }
 
 extern "C" void Main_PostTaskHook(void) {
-    func_0203d4cc();
+    Main_PostTaskStub();
 }
 
 extern "C" void Main_Loop(void) {

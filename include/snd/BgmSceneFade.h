@@ -14,8 +14,8 @@ public:
     BOOL isKeepingBgm();
     void setKeepBgm();
     void setFadeDelay(s32 i);
-    void func_02035368(s32 a, s32 b);
-    void func_020353b0(s32 a, s32 b);
+    void prepareEventReturn(s32 a, s32 b);
+    void prepareEventWarp(s32 a, s32 b);
     void reset();
     void init();
     void onFadeIn();

@@ -5,7 +5,7 @@
 #include "game/Unk_02042104_Date.h"
 
 
-struct Unk_02041880_Pair { u8 spawnFlies; u8 spawnAnts; u8 pad[2]; };
+struct TownJunkInsectFlags { u8 spawnFlies; u8 spawnAnts; u8 pad[2]; };
 struct Unk_02041938 { u8 unk_00[0x10e9]; u8 done; u8 started; };
 
 
@@ -20,7 +20,7 @@ extern u8 gSaveData[];
 extern u8 data_021ed20c[];
 
 u8 sTownBbsUpdateCtx[4];
-Unk_02041880_Pair gTownJunkInsectFlags;
+TownJunkInsectFlags gTownJunkInsectFlags;
 
 
 extern "C" {
@@ -34,7 +34,7 @@ s32 OS_IsThreadTerminated();
 void OS_KillThread(u32, u32);
 s32 TownUpdateThread_Kill(Unk_02041938 *p);
 void TownUpdateThread_Destroy();
-void TownJunkInsects_InitFromEval(Unk_02041880_Pair *p);
+void TownJunkInsects_InitFromEval(TownJunkInsectFlags *p);
 void MI_CpuCopy8(void *src, void *dst, u32 n);
 void Clock_GetDateTime(Unk_02042104_Date *d);
 void DateTime_SubHours(Unk_02042104_Date *d, u32 n);
@@ -284,7 +284,7 @@ extern "C" void TownUpdateThread_Destroy() {
     }
 }
 
-extern "C" void TownJunkInsects_InitFromEval(Unk_02041880_Pair *p) {
+extern "C" void TownJunkInsects_InitFromEval(TownJunkInsectFlags *p) {
     if (((s32)(gTownEval[0x30 / 4] << 24) >> 31) != 0) {
         p->spawnFlies = 1;
     } else {
@@ -297,7 +297,7 @@ extern "C" void TownJunkInsects_InitFromEval(Unk_02041880_Pair *p) {
     }
 }
 
-extern "C" void TownJunkInsects_Apply(Unk_02041880_Pair *p) {
+extern "C" void TownJunkInsects_Apply(TownJunkInsectFlags *p) {
     if (_ZN11CommManager12isSlotActiveEi((u32)gCommManager, gCommManager->myAid) != 0) return;
     if (Scene_InTown() == 0) {
         if (Scene_InTownUnk31() == 0) return;

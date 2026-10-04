@@ -88,7 +88,7 @@ public:
     /* 0x4c */ s32 popOffsetY;
     /* 0x50 */ s32 slideY;
     /* 0x54 */ ChatBalloonText text;
-    /* 0x88 */ ChatBalloonName unk_88;
+    /* 0x88 */ ChatBalloonName name;
     /* 0x98 */ TextLabel *nameLabel;
     /* 0x9c */ TextLabel *textLabel;
     /* 0xa0 */ s32 state;
@@ -365,7 +365,7 @@ void ChatBalloon::updateSlideOffset() {
 }
 
 void ChatBalloon::setMessage(StrBuf *a, MsgString *b, s32 c) {
-    StrBuf_Copy((StrBuf *)&unk_88, a);
+    StrBuf_Copy((StrBuf *)&name, a);
     text.copy(b);
     palette = c + 5;
 }
@@ -406,7 +406,7 @@ void ChatBalloon::refreshLabelsUnk() {
 
 void ChatBalloon::reset() {
     text.clear();
-    StrBuf_Clear(&unk_88);
+    StrBuf_Clear(&name);
     destroyNameLabel();
     destroyTextLabel();
     stateTimer = 0;
@@ -592,7 +592,7 @@ void ChatBalloon::createNameLabel() {
         if (nameLabel != NULL) {
             nameLabel->vramLoader = 4;
             TextLabel *t = nameLabel;
-            t->textStart = (u32)((StrBuf *)&unk_88)->data();
+            t->textStart = (u32)((StrBuf *)&name)->data();
             if (gGfxMainOnTop == 0) {
                 nameLabel->copyMode = 3;
             } else {
