@@ -2,8 +2,6 @@
 // ov003 TU11 (actor 02231aa8): .text 0x02216430-0x022165d0
 #include "types.h"
 #include "game/Unk_020b1ddc.h"
-#include "gfx/Unk_ov003_Blk.h"
-#include "field/Unk_ov003_Flags.h"
 #include "actor/Unk_ov003_SceneEntry.h"
 #include "game/Unk_ov003_Vec.h"
 #include "talk/TalkWindowState.h"

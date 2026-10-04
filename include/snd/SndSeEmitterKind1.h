@@ -10,15 +10,13 @@
 // link-once, emitted by main's unk_02004558.cpp and autoload_2. Here the destructor is declared out of line so that
 // users do not emit link-once copies of their own; those two units (and main 0202e2d4 / 020119cc / 0201c050, whose inlined NpcActor
 // destructors need it) define it inline after including this header.
-// Unk_020f4080 is dsd's name for it (the function symbol of C1); the NPC actor files (main, ov004, ov045..ov088) hold
-// one by value as NpcActor::seEmitter.
+// The NPC actor files (main, ov004, ov045..ov088) hold one by value as NpcActor::seEmitter. (dsd's old name for it,
+// Unk_020f4080, survives only as the C1 function symbol in autoload_2/symbols.txt.)
 class SndSeEmitterKind1 : public SndSeEmitter {
 public:
     SndSeEmitterKind1();                            // C1 0x020f4080, C2 0x020f40c0
     virtual ~SndSeEmitterKind1();                   // D1 0x02004b48, D0 0x02010fa4 (link-once, main)
     static void onVolume(SndHandle *h, s32 idx);    // 0x020f4010
 };
-
-typedef SndSeEmitterKind1 Unk_020f4080;
 
 #endif

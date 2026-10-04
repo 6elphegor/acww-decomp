@@ -1676,7 +1676,7 @@ extern s16 data_02135f44[];
 extern u8 gFieldSceneKind;
 extern u8 gScreenTransition;
 extern u8 sHouseRoachActiveCount;
-extern Unk_020d6df4_Data *gCommManager;
+extern CommManager *gCommManager;
 extern u8 *data_021c1b3c;
 s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);

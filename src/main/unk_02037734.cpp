@@ -25,7 +25,7 @@ public:
     virtual u32 capacity();
     virtual u8 *data();
 
-    /* 0x14 */ u8 text[0x40];
+    /* 0x12 */ u8 text[0x40];
 };
 
 class CautionMsgString128 : public MsgString {
@@ -35,7 +35,7 @@ public:
     virtual u32 capacity();
     virtual u8 *data();
 
-    /* 0x14 */ u8 text[0x80];
+    /* 0x12 */ u8 text[0x80];
 };
 
 // Members of CommCautionWindow, all derived from MsgString
@@ -46,7 +46,7 @@ public:
     virtual u32 capacity();
     virtual u8 *data();
 
-    /* 0x14 */ u8 text[0x100];
+    /* 0x12 */ u8 text[0x100];
 };
 
 typedef Mtx43 Unk_020dbd34_Mtx;

@@ -1,6 +1,6 @@
 // mwcc-version: 1.2/base
 #include "types.h"
-#include "net/Unk_020cbb18_Ptr.h"
+#include "net/CommManager.h"
 
 // TU26 of ov003: the 0x80-byte table of eight 0x10-byte records (bss 0x0225b468)
 struct InsectNetSyncRec {
@@ -14,7 +14,7 @@ struct InsectNetSyncRec {
 
 
 extern "C" {
-extern Unk_020cbb18_Ptr *gCommManager;
+extern CommManager *gCommManager;
 
 BOOL NetArea_IsLocalOwner();
 BOOL _ZN11CommManager8isOnlineEv(void *g);
@@ -68,7 +68,7 @@ extern "C" void InsectNetSync_PackVar(void *dst, s32 idx) {
 
 extern "C" BOOL InsectNetSync_Get(s32 a, s32 b, s8 *c, s32 *d, s32 *e, u8 *f) {
     if (!NetArea_IsLocalOwner()) {
-        Unk_020cbb18_Ptr *g = gCommManager;
+        CommManager *g = gCommManager;
         if (_ZN11CommManager8isOnlineEv(g)) {
             s8 *r = (s8 *)_ZN11CommManager10getSyncVarEj(g, b + 0x18);
             if (r != 0) {

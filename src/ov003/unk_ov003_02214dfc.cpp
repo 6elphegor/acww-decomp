@@ -1,8 +1,6 @@
 // mwcc-version: 1.2/sp2
 // ov003 TU07 (helper 02214e04 + actor 022312f4): .text 0x02214dfc-0x022150ec
 #include "types.h"
-#include "gfx/Unk_ov003_Blk.h"
-#include "field/Unk_ov003_Flags.h"
 #include "actor/Unk_ov003_SceneEntry.h"
 #include "game/Unk_ov003_Vec.h"
 #include "talk/TalkWindowState.h"

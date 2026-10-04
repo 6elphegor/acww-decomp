@@ -2,8 +2,6 @@
 // mwcc-flags: -O4,s -str reuse
 #include "types.h"
 #include "field/Unk_ov003_02214494_Views.h"
-#include "gfx/Unk_ov003_Blk.h"
-#include "field/Unk_ov003_Flags.h"
 #include "actor/Unk_ov003_SceneEntry.h"
 #include "game/Unk_ov009_0225b880_Vec3.h"
 #include "talk/TalkWindowState.h"

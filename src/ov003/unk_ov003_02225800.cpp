@@ -1,7 +1,7 @@
 // mwcc-version: 1.2/base
 #include "types.h"
 #include "Unk_020d8c7c.h"
-#include "net/Unk_020cbb18_Ptr.h"
+#include "net/CommManager.h"
 #include "game/Unk_0203389c_Vec.h"
 #include "field/Unk_ov003_0222adc4_V3.h"
 #include "field/Unk_ov003_0222aff0_Bits.h"
@@ -561,7 +561,7 @@ typedef Unk_ov003_02226180_Vec Vec3;
 typedef Unk_ov003_022264f0_Buf Buf;
 
 extern "C" {
-extern Unk_020cbb18_Ptr *gCommManager;
+extern CommManager *gCommManager;
 extern void *gCamera;
 extern Vec3 gCameraLookAt;
 extern s16 data_02135f44[];
@@ -569,7 +569,7 @@ extern Rec sFieldInsects[];
 extern Rec sSpecialInsects[];
 extern Rec sHeldInsects[];
 extern u8 sTrashFlySpawnEnabled;
-BOOL CommManager_isSlotActive(Unk_020cbb18_Ptr *p, u32 v);
+BOOL CommManager_isSlotActive(CommManager *p, u32 v);
 s32 PooledModel_getModel(void *p);
 s32 func_02106020(s32 a, s32 b);
 void WorldCurve_FromCurved(void *dst, void *src);
@@ -798,13 +798,13 @@ struct Unk_ov003_02227970_Loc {
 };
 
 extern "C" {
-extern Unk_020cbb18_Ptr *gCommManager;
+extern CommManager *gCommManager;
 extern Rec sFieldInsects[];
 extern Rec sSpecialInsects[];
 extern Rec sHeldInsects[];
 extern Unk_ov003_02234c6c_Ent sInsectBehaviours[];
 extern Unk_ov003_02234b04_Ent sInsectModelParams[];
-BOOL CommManager_isSlotActive(Unk_020cbb18_Ptr *p, u32 v);
+BOOL CommManager_isSlotActive(CommManager *p, u32 v);
 s32 NetArea_IsLocalOwner(void);
 s32 Weather_GetFallingPrecip(void);
 s32 PlayerActor_GetAction(s32 v);
@@ -813,10 +813,10 @@ BOOL Camera_IsBlockingFocusView(void *p, s32 a, s32 b);
 void Collision_Move(void *a, void *b, void *c, s32 d, s32 e, s32 f, s32 g);
 s32 func_020e9650(void *a, void *b);
 void Unk_02003c40_callUpdateRelative(void *obj, V3 *v);
-void CommManager_beginRecord(Unk_020cbb18_Ptr *g);
-void CommManager_writeRecord(Unk_020cbb18_Ptr *g, void *buf, s32 n);
-void func_020728c4(Unk_020cbb18_Ptr *g, s32 a, s32 b);
-void CommManager_endRecord(Unk_020cbb18_Ptr *g, s32 a, s32 b);
+void CommManager_beginRecord(CommManager *g);
+void CommManager_writeRecord(CommManager *g, void *buf, s32 n);
+void func_020728c4(CommManager *g, s32 a, s32 b);
+void CommManager_endRecord(CommManager *g, s32 a, s32 b);
 void *TownBlockMap_Get(void);
 void FieldPos_ToUnit(s32 *x, s32 *y, void *p);
 u16 *BlockMap_GetItemPtr(void *g, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
@@ -1045,14 +1045,14 @@ struct Unk_ov003_02234c6c_Ent {
 };
 
 extern "C" {
-extern Unk_020cbb18_Ptr *gCommManager;
+extern CommManager *gCommManager;
 extern Unk_ov003_02234c6c_Ent sInsectBehaviours[];
 extern Rec sFieldInsects[];
 extern u8 sInsectSpawnTimer;
 extern u8 sAntSpawnEnabled;
 extern Unk_ov003_02234b04_Rec sInsectModelParams[];
 extern void *gCurrentHeap;
-BOOL CommManager_isSlotActive(Unk_020cbb18_Ptr *p, u32 v);
+BOOL CommManager_isSlotActive(CommManager *p, u32 v);
 BOOL NetArea_IsLocalOwner();
 s32 PlayerActor_GetSlotPosXZ(u8 *a, s32 *b, s32 *c, s32 d, s32 e);
 void *PlayerActor_GetActor(s32 a);
@@ -1763,8 +1763,8 @@ typedef Unk_ov003_0222adc4_Rec Rec;
 
 
 extern "C" {
-extern Unk_020cbb18_Ptr *gCommManager;
-BOOL CommManager_isSlotActive(Unk_020cbb18_Ptr *p, u32 v);
+extern CommManager *gCommManager;
+BOOL CommManager_isSlotActive(CommManager *p, u32 v);
 BOOL NetArea_IsLocalOwner();
 s32 MenuCtrl_IsMenuOpen();
 s32 PooledModel_getModel(void *p);
@@ -1895,9 +1895,9 @@ struct Unk_ov003_0222bb28_V3 : V3 {
 };
 
 extern "C" {
-extern Unk_020cbb18_Ptr *gCommManager;
+extern CommManager *gCommManager;
 extern u8 gEffectSplDefaultInitCbs[];
-BOOL CommManager_isSlotActive(Unk_020cbb18_Ptr *p, u32 v);
+BOOL CommManager_isSlotActive(CommManager *p, u32 v);
 BOOL NetArea_IsLocalOwner();
 BOOL Ground_GetDigKind(s32 x, s32 y);
 s32 PooledModel_getModel(void *p);
@@ -2026,8 +2026,8 @@ struct Unk_02095204_Obj {
 };
 
 extern "C" {
-extern Unk_020cbb18_Ptr *gCommManager;
-BOOL CommManager_isSlotActive(Unk_020cbb18_Ptr *p, u32 v);
+extern CommManager *gCommManager;
+BOOL CommManager_isSlotActive(CommManager *p, u32 v);
 BOOL NetArea_IsLocalOwner();
 s32 Random_GlobalBelow(s32 n);
 s32 FX_Div(s32 a, s32 b);
@@ -2157,8 +2157,8 @@ typedef Unk_ov003_0222c9e0_Rec Rec;
 
 
 extern "C" {
-extern Unk_020cbb18_Ptr *gCommManager;
-BOOL CommManager_isSlotActive(Unk_020cbb18_Ptr *p, u32 v);
+extern CommManager *gCommManager;
+BOOL CommManager_isSlotActive(CommManager *p, u32 v);
 BOOL NetArea_IsLocalOwner();
 s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
@@ -2274,9 +2274,9 @@ typedef Unk_ov003_0222d350_Rec Rec;
 
 
 extern "C" {
-extern Unk_020cbb18_Ptr *gCommManager;
+extern CommManager *gCommManager;
 extern s16 data_02135f44[];
-BOOL CommManager_isSlotActive(Unk_020cbb18_Ptr *p, u32 v);
+BOOL CommManager_isSlotActive(CommManager *p, u32 v);
 BOOL NetArea_IsLocalOwner();
 void *PlayerActor_GetActor(u32 a);
 s32 Math_AngleXZ(void *a, void *b);
@@ -2422,7 +2422,7 @@ struct Unk_02095204_Obj {
 };
 
 extern "C" {
-extern Unk_020cbb18_Ptr *gCommManager;
+extern CommManager *gCommManager;
 extern s16 data_02135f44[];
 extern u8 sHeldInsects[];
 extern u8 sSpecialInsects[];
@@ -2431,7 +2431,7 @@ extern u8 sInsectNetSync[];
 extern u8 data_ov003_0225b470[];
 extern u8 data_ov003_0225b474[];
 extern u8 data_ov003_0225b475[];
-BOOL CommManager_isSlotActive(Unk_020cbb18_Ptr *p, u32 v);
+BOOL CommManager_isSlotActive(CommManager *p, u32 v);
 BOOL NetArea_IsLocalOwner();
 s32 Random_GlobalBelow(s32 n);
 void AnimModel_setFrame(void *p, s32 v);
@@ -9564,7 +9564,7 @@ namespace s03 {
 // 0x2227970
 extern "C" void FieldInsect_UpdateAll(void *a) {
     u32 k;
-    Unk_020cbb18_Ptr *g;
+    CommManager *g;
     Unk_ov003_02227970_Loc l;
     s32 v18, v1c;
     V3 t1, t2;
@@ -9832,7 +9832,7 @@ extern "C" void SpecialInsect_UpdateAll(void *a) {
 namespace s03 {
 // 0x2227624
 extern "C" void HeldInsect_UpdateAll(void *a) {
-    Unk_020cbb18_Ptr *g = gCommManager;
+    CommManager *g = gCommManager;
     u32 cur = g->myAid;
     if (cur == 4) cur = 0;
     Rec *o = sHeldInsects;
@@ -9896,7 +9896,7 @@ extern "C" BOOL Insect_UsesCollisionMove(void *a, Rec *o) {
     t = o->kind;
     if (st == 9 || st == 0xb) goto yes;
     if (t != 0x3a && t != 0x3b) {
-        Unk_020cbb18_Ptr *g = gCommManager;
+        CommManager *g = gCommManager;
         if (CommManager_isSlotActive(g, g->myAid) == 0) goto cont;
         if (NetArea_IsLocalOwner() != 0) goto cont;
     }
@@ -11265,7 +11265,7 @@ extern "C" BOOL Insect_NetClaim(s32 x) {
 namespace s01 {
 // 0x222612c
 extern "C" BOOL Insect_IsBeeSwarmOut(void) {
-    Unk_020cbb18_Ptr *p = gCommManager;
+    CommManager *p = gCommManager;
     if (CommManager_isSlotActive(p, p->myAid) == 0) {
         Rec *e = sSpecialInsects;
         if (func_02106020(PooledModel_getModel(data_ov003_02259484), 0) > 0x1e && e->lifeState == 3 && e->kind != 0x13) {

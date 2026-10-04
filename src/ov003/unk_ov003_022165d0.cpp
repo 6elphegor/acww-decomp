@@ -1,8 +1,6 @@
 // mwcc-version: 1.2/sp2
 // ov003 TU12 (actor 02231c14): .text 0x022165d0-0x02216824
 #include "types.h"
-#include "gfx/Unk_ov003_Blk.h"
-#include "field/Unk_ov003_Flags.h"
 #include "actor/Unk_ov003_SceneEntry.h"
 #include "game/Unk_ov003_Vec.h"
 #include "talk/TalkWindowState.h"

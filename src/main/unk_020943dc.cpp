@@ -1,7 +1,7 @@
 #include "types.h"
 #include "player/Unk_02006d14_Vec.h"
 #include "player/Unk_02006d14_Blk.h"
-#include "net/Unk_020cbb18_Data.h"
+#include "net/CommManager.h"
 
 
 // An enum-typed local keeps the constant in a callee-saved register across the call.
@@ -78,7 +78,7 @@ extern u32 sPlayerFrontItemDist;
 }
 
 extern "C" {
-extern Unk_020cbb18_Data *gCommManager;
+extern CommManager *gCommManager;
 }
 
 extern "C" {

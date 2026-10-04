@@ -1,13 +1,14 @@
-#ifndef GFX_PT_H
-#define GFX_PT_H
+#ifndef GFX_SPLPT_H
+#define GFX_SPLPT_H
 
 #include "types.h"
 #include "gfx/SplEmitterViews.h"
 
 // SPL particle record as seen by the emitter update / draw units src/autoload_2/unk_020f92d4.cpp, unk_020fa0f4.cpp
-// and unk_020fa39c.cpp (singly linked through next). Not the same type as the ov001 Pt (net/Unk_ov001_02225924_Rect.h).
-struct Pt {
-    /* 0x00 */ Pt *next;
+// and unk_020fa39c.cpp (singly linked through next). Formerly named Pt; renamed to keep the generic name
+// free (ov001 has its own Unk_ov001_02225924_Pt in net/Unk_ov001_02225924_Rect.h).
+struct SplPt {
+    /* 0x00 */ SplPt *next;
     /* 0x04 */ u8 p4[4];
     /* 0x08 */ s32 w8;
     /* 0x0c */ s32 w12;

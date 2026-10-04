@@ -12,7 +12,7 @@ public:
     virtual ~ChatBalloonText();
     virtual u32 capacity();
     virtual u8 *data();
-    /* 0x14 */ u8 text[0x20];
+    /* 0x12 */ u8 text[0x20];
 };
 
 #endif

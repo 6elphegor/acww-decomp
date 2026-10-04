@@ -7,44 +7,8 @@
 
 
 
-class Letter {
-public:
-    Letter();
-    virtual ~Letter();
-
-    /* 0x04 */ u8 unk_04[0x12];
-    /* 0x16 */ u8 unk_16;
-    /* 0x17 */ u8 pad_17;
-};
-
-
-
-
-// Object with the byte/halfword state accessed by func_02065554 and friends.
-class LetterView {
-public:
-    void loadDefaultGreeting();
-    BOOL isToFutureSelf();
-    void setState(u32 v);
-    u8 getState();
-    u32 setPresent(u16 v, u32 w);
-    void setPresentFlags(u32 v);
-    u8 getPresentFlags();
-    u16 getPresent();
-
-    /* 0x00 */ u32 unk_00;
-    /* 0x04 */ Letter recipient;
-    /* 0x1c */ Letter sender;
-    /* 0x34 */ u8 greeting[0x18];
-    /* 0x4c */ u8 body[0x80];
-    /* 0xcc */ u8 signature[0x20];
-    /* 0xec */ u8 namePos;
-    /* 0xed */ u8 paper;
-    /* 0xee */ u8 status;
-    /* 0xef */ u8 kind;
-    /* 0xf0 */ u16 present;
-    /* 0xf2 */ u16 pad_f2;
-};
+#include "item/Letter.h"
+#include "item/LetterView.h"
 
 // Object filled by LetterDefaults_Init (0x52 bytes).
 struct LetterDefaults {
@@ -159,16 +123,16 @@ void Letter_FillVillagerToVillager(LetterView *self, void *a, void *b, void *c, 
 void Letter_FillFromVillager(LetterView *self, void *a, void *b, void *c, s32 v, u8 *ped, void *s1, void *s2);
 void Letter_Clear(LetterView *self);
 void Letter_InitDraft(LetterView *self, u32 v);
-u32 LetterParty_IsType(Letter *self, u32 t);
-void LetterParty_SetType(Letter *self, u32 v);
-void LetterParty_SetBottle(Letter *self);
-void LetterParty_SetFutureSelf(Letter *self, void *src);
-void LetterParty_SetPlayer(Letter *self, void *src);
-void LetterParty_SetVillager(Letter *self, void *src);
-Letter *LetterParty_AsVillager(Letter *self);
-Letter *LetterParty_AsPlayer(Letter *self);
-void LetterParty_GetName(Letter *self, void *out);
-void LetterParty_GetNameBytes(Letter *self, void *out);
+u32 LetterParty_IsType(LetterParty *self, u32 t);
+void LetterParty_SetType(LetterParty *self, u32 v);
+void LetterParty_SetBottle(LetterParty *self);
+void LetterParty_SetFutureSelf(LetterParty *self, void *src);
+void LetterParty_SetPlayer(LetterParty *self, void *src);
+void LetterParty_SetVillager(LetterParty *self, void *src);
+LetterParty *LetterParty_AsVillager(LetterParty *self);
+LetterParty *LetterParty_AsPlayer(LetterParty *self);
+void LetterParty_GetName(LetterParty *self, void *out);
+void LetterParty_GetNameBytes(LetterParty *self, void *out);
 }
 
 extern "C" LetterView *Letter_Copy(LetterView *self, const LetterView *src) {
@@ -176,7 +140,7 @@ extern "C" LetterView *Letter_Copy(LetterView *self, const LetterView *src) {
     return self;
 }
 
-extern "C" void LetterParty_GetNameBytes(Letter *self, void *out) {
+extern "C" void LetterParty_GetNameBytes(LetterParty *self, void *out) {
     Unk_02065dc8_Obj1c a;
     Unk_02065dc8_Obj18 b;
     Unk_02065d5c_Str c;
@@ -204,7 +168,7 @@ extern "C" void LetterParty_GetNameBytes(Letter *self, void *out) {
     }
 }
 
-extern "C" void LetterParty_GetName(Letter *self, void *out) {
+extern "C" void LetterParty_GetName(LetterParty *self, void *out) {
     Unk_02065d5c_Str a;
     Unk_02065d5c_Buf18 b;
     switch (self->unk_16) {
@@ -225,36 +189,36 @@ extern "C" void LetterParty_GetName(Letter *self, void *out) {
     }
 }
 
-extern "C" Letter *LetterParty_AsPlayer(Letter *self) {
+extern "C" LetterParty *LetterParty_AsPlayer(LetterParty *self) {
     if (self->unk_16 != 1 && self->unk_16 != 2 && self->unk_16 != 6) return 0;
     return self;
 }
 
-extern "C" Letter *LetterParty_AsVillager(Letter *self) {
+extern "C" LetterParty *LetterParty_AsVillager(LetterParty *self) {
     if (self->unk_16 != 3 && self->unk_16 != 5) return 0;
     return self;
 }
 
-extern "C" void LetterParty_SetVillager(Letter *self, void *src) {
+extern "C" void LetterParty_SetVillager(LetterParty *self, void *src) {
     self->unk_16 = 3;
     VillagerId_CopyTo(src, self);
 }
 
-extern "C" void LetterParty_SetPlayer(Letter *self, void *src) {
+extern "C" void LetterParty_SetPlayer(LetterParty *self, void *src) {
     self->unk_16 = 2;
     _ZN8PlayerId6copyToEPS_(src, self);
 }
 
-extern "C" void LetterParty_SetFutureSelf(Letter *self, void *src) {
+extern "C" void LetterParty_SetFutureSelf(LetterParty *self, void *src) {
     self->unk_16 = 1;
     _ZN8PlayerId6copyToEPS_(src, self);
 }
 
-extern "C" void LetterParty_SetBottle(Letter *self) { self->unk_16 = 7; }
+extern "C" void LetterParty_SetBottle(LetterParty *self) { self->unk_16 = 7; }
 
-extern "C" void LetterParty_SetType(Letter *self, u32 v) { self->unk_16 = v; }
+extern "C" void LetterParty_SetType(LetterParty *self, u32 v) { self->unk_16 = v; }
 
-extern "C" u32 LetterParty_IsType(Letter *self, u32 t) {
+extern "C" u32 LetterParty_IsType(LetterParty *self, u32 t) {
     if (self->unk_16 == t) return TRUE;
     return FALSE;
 }
@@ -473,11 +437,11 @@ extern "C" void Letter_ComposeBottleMail(LetterView *self, void *a, void *b) {
     Letter_FillBottleMail(self, &sMailGreeting, &sMailBody, &sMailSignature, out);
 }
 
-extern "C" Letter *Letter_GetSenderPlayer(LetterView *self) { return LetterParty_AsPlayer(&self->sender); }
+extern "C" LetterParty *Letter_GetSenderPlayer(LetterView *self) { return LetterParty_AsPlayer(&self->sender); }
 
-extern "C" Letter *Letter_GetRecipientPlayer(LetterView *self) { return LetterParty_AsPlayer(&self->recipient); }
+extern "C" LetterParty *Letter_GetRecipientPlayer(LetterView *self) { return LetterParty_AsPlayer(&self->recipient); }
 
-extern "C" Letter *Letter_GetRecipientVillager(LetterView *self) { return LetterParty_AsVillager(&self->recipient); }
+extern "C" LetterParty *Letter_GetRecipientVillager(LetterView *self) { return LetterParty_AsVillager(&self->recipient); }
 
 extern "C" void Letter_GetSenderNameBytes(LetterView *self, void *out) { LetterParty_GetNameBytes(&self->sender, out); }
 

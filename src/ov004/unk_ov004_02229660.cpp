@@ -22,6 +22,7 @@
 #include "talk/MsgRequest.h"
 #include "talk/TalkMsgRequest.h"
 #include "room/RoomTelephone.h"
+#include "net/CommManager.h"
 
 // shared_0224d4e8.h.txt -- final declaration of class RoomObjActor (defined in ov004 TU17, 0x0221e7a8-0x02225290).
 // Paste this block unchanged into TU18..TU26 (it is the base of 0224d618 (TU18), 0224d80c (TU19), 0224dd98 (TU23),
@@ -125,7 +126,7 @@ extern "C" {
 extern u8 gScreenTransition;
 extern u8 gTouchPrevHeld;
 extern u8 gTouchPrevChanged;
-extern Unk_ov004_02229970_Glob *gCommManager;
+extern CommManager *gCommManager;
 extern u8 gSaveData[];
 extern u8 gTalkMsgIndexNone[];
 extern s32 gBgHeap;

@@ -6,7 +6,7 @@
 #include "actor/Unk_ov004_SceneEntry.h"
 #include "actor/Unk_02088d00.h"
 #include "talk/Unk_ov004_0221b6d4_Out.h"
-#include "net/Unk_ov004_0221b954_Global.h"
+#include "net/CommManager.h"
 #include "game/Unk_ov004_0221b954_Vec.h"
 #include "talk/TalkWindowState.h"
 #include "npc/NpcAnimCtrl.h"
@@ -93,7 +93,7 @@ struct Unk_ov004_0221b6d4_Bits {
 #define PlayerSpNpcRecord_getSableTalkCount _ZN17PlayerSpNpcRecord17getSableTalkCountEv
 
 extern "C" {
-extern Unk_ov004_0221b954_Global *gCommManager;
+extern CommManager *gCommManager;
 extern s32 data_020c6d1c;
 extern u16 data_020c6cc8;
 extern Unk_ov004_0221b954_Vec gVec3Zero;

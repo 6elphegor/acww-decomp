@@ -5,7 +5,7 @@
 #include "actor/Unk_ov004_SceneEntry.h"
 #include "actor/Unk_02088d00.h"
 #include "talk/Unk_ov004_0221b6d4_Out.h"
-#include "net/Unk_ov004_0221b954_Global.h"
+#include "net/CommManager.h"
 #include "game/Unk_ov004_0221b954_Vec.h"
 #include "talk/TalkWindowState.h"
 #include "npc/NpcAnimCtrl.h"
@@ -121,7 +121,7 @@ struct Unk_ov004_0224d0a0_Ent {
 #define JointBlend_start _ZN10JointBlend5startEi
 
 extern "C" {
-extern Unk_ov004_0221b954_Global *gCommManager;
+extern CommManager *gCommManager;
 extern s32 data_020c6d1c;
 extern u16 data_020c6cc8;
 extern Unk_ov004_0221b954_Vec gVec3Zero;
@@ -962,7 +962,7 @@ void SpNpcBrewster::vfunc_4c(u32 cmd, u8 arg) {
             NpcActor_netSetSlotsIfOwner(this, 1, arg, arg);
             changeAct(6);
         } else if (NpcActor_isNetOwner(this)) {
-            Unk_ov004_0221b954_Global *gl = gCommManager;
+            CommManager *gl = gCommManager;
             s32 g = gl->myAid;
             NpcActor_netSetSlotsIfOwner(this, 1, g, g);
             ActorTalkRequest *p = &talk;

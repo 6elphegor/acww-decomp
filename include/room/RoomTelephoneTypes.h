@@ -15,12 +15,6 @@ struct Unk_ov004_02229970_Xyz {
     /* 0x0 */ s32 x, y, z;
 };
 
-// Partial view of the comm manager singleton (localSlot at 0x68).
-struct Unk_ov004_02229970_Glob {
-    /* 0x00 */ u8 pad_00[0x68];
-    /* 0x68 */ s32 localSlot;
-};
-
 struct Unk_ov004_02229660_Bits {
     u32 lo : 12;
     u32 mid : 16;

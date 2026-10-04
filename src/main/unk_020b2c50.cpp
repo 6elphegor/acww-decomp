@@ -192,7 +192,7 @@ public:
     virtual u32 capacity();
     virtual u8 *data();
 
-    /* 0x14 */ u8 unk_14[0x100];
+    /* 0x12 */ u8 unk_14[0x100];
 };
 
 class ArticleCacheEntry : public MsgString {

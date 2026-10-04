@@ -4,7 +4,8 @@
 #include "types.h"
 
 // Size-check mirrors of the per-part views (b<NN>_ anonymous structs, 0x130..0x840) of FtrActor and the small field
-// types they use. FtrActor is defined in src/ov004/unk_ov004_02209f70.cpp (+ _switch.cpp, same unit).
+// types they use. FtrActor is defined in src/ov004/unk_ov004_02204f24.cpp; its subclasses (whose old source parts the
+// views mirror) are in src/ov004/unk_ov004_02209f70.cpp (+ _switch.cpp, same unit).
 
 struct Unk_ov004_0220a648_Bits {
     u32 lo : 12;

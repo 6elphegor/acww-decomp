@@ -28,6 +28,7 @@
 #include "actor/Character.h"
 #include "actor/NpcActor.h"
 #include "actor/VillagerActor.h"
+#include "net/CommManager.h"
 
 class HouseOwnerVillager;
 
@@ -77,16 +78,11 @@ struct Unk_ov004_02216ff4_Entry {
     Unk_ov004_02216ff4_Fn update;
 };
 
-struct Unk_ov004_022170e0_Global {
-    u8 pad_00[0x64];
-    s32 myAid;
-};
-
 
 extern "C" {
 extern Unk_ov004_0221745c_Dir sHouseOwnerStepDirs[4];
 extern Unk_ov004_02216ff4_Entry sHouseOwnerAiStates[];
-extern Unk_ov004_022170e0_Global *gCommManager;
+extern CommManager *gCommManager;
 extern u16 data_020c6cc8;
 extern const u8 data_ov004_02240090[4];
 extern const u8 data_ov004_02240094[5];

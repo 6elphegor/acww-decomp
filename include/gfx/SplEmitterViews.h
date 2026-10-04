@@ -69,7 +69,7 @@ struct B14 {
 struct Node;
 struct Res;
 struct ResB;
-struct Pt;
+struct SplPt;
 struct RU;
 
 // resource header word, bits 24-29 = field types
@@ -196,7 +196,7 @@ struct HdrP {
 };
 
 struct Fi {
-    /* 0x0 */ void (*fn)(Pt *, Pt *, s32 *, void *);
+    /* 0x0 */ void (*fn)(SplPt *, SplPt *, s32 *, void *);
 };
 
 struct EFlags {
@@ -211,9 +211,9 @@ struct EFlags {
 // emitter (update view), A3 above
 struct EU {
     /* 0x00 */ u8 p0[8];
-    /* 0x08 */ Pt *l8;
+    /* 0x08 */ SplPt *l8;
     /* 0x0c */ u8 pc[4];
-    /* 0x10 */ Pt *l16;
+    /* 0x10 */ SplPt *l16;
     /* 0x14 */ u8 p14[4];
     /* 0x18 */ RU *res;
     /* 0x1c */ EFlags fl;
@@ -228,7 +228,7 @@ struct EU {
     /* 0x78 */ void (*cb)(EU *, u32);
 };
 
-typedef void (*FldFn)(Pt *, RU *, u32);
+typedef void (*FldFn)(SplPt *, RU *, u32);
 
 // field handler table entry
 struct FEnt {

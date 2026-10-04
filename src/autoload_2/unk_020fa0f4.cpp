@@ -7,7 +7,7 @@
 #include "gfx/VecFx32.h"
 #include "gfx/SplTex.h"
 #include "gfx/SplViews.h"
-#include "gfx/Pt.h"
+#include "gfx/SplPt.h"
 #include "gfx/SplNode.h"
 
 
@@ -132,24 +132,24 @@ static inline void G3_Translate(s32 x, s32 y, s32 z) {
 
 
 
-typedef void (*FldFn)(Pt *, RU *, u32);
+typedef void (*FldFn)(SplPt *, RU *, u32);
 
 
 extern "C" {
-void spl_scl_in_out(Pt *, RU *, u32);
-void spl_clr_in_out(Pt *, RU *, u32);
-void spl_alp_in_out(Pt *, RU *, u32);
-void spl_tex_ptn_anm(Pt *, RU *, u32);
-void spl_chld_scl_out(Pt *, RU *, u32);
-void spl_chld_alp_out(Pt *, RU *, u32);
-void func_020fc6bc(Pt *, EU *, void *);
+void spl_scl_in_out(SplPt *, RU *, u32);
+void spl_clr_in_out(SplPt *, RU *, u32);
+void spl_alp_in_out(SplPt *, RU *, u32);
+void spl_tex_ptn_anm(SplPt *, RU *, u32);
+void spl_chld_scl_out(SplPt *, RU *, u32);
+void spl_chld_alp_out(SplPt *, RU *, u32);
+void func_020fc6bc(SplPt *, EU *, void *);
 void spl_gen_ptcl(void *, void *);
 u32 func_02133150x(void);
-Pt *spl_del(void *, Pt *);
+SplPt *spl_del(void *, SplPt *);
 void spl_push_front(void *, void *);
 }
 
-typedef void (*IFn)(void *, Pt *, s32 *, EU *);
+typedef void (*IFn)(void *, SplPt *, s32 *, EU *);
 
 extern "C" void spl_init(EmI *e, ResB *res, s32 *pos) {
     e->res = res;

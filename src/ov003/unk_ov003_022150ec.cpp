@@ -5,8 +5,6 @@
 #include "field/Unk_ov003_02215748_Ent.h"
 #include "gfx/Unk_ov003_02215a04_Obj.h"
 #include "field/Unk_ov003_02215ad8_Str.h"
-#include "gfx/Unk_ov003_Blk.h"
-#include "field/Unk_ov003_Flags.h"
 #include "actor/Unk_ov003_SceneEntry.h"
 #include "game/Unk_ov003_Vec.h"
 #include "talk/TalkWindowState.h"

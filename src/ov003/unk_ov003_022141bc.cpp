@@ -1,7 +1,5 @@
 // mwcc-version: 1.2/sp2
 #include "types.h"
-#include "gfx/Unk_ov003_Blk.h"
-#include "field/Unk_ov003_Flags.h"
 #include "actor/Unk_ov003_SceneEntry.h"
 #include "game/Unk_ov003_Vec.h"
 #include "talk/TalkWindowState.h"

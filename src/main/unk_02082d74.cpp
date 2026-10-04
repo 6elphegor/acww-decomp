@@ -2,7 +2,6 @@
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
 #include "game/Unk_0203389c_Vec.h"
-#include "net/Unk_020cbb18_Data.h"
 #include "town/Unk_02082e80_Grid.h"
 #include "room/RoomFreeUnitMap.h"
 #include "game/GroundInfoBase.h"
@@ -577,7 +576,7 @@ extern u8 sSpNpcNetRecords[];
 extern u8 sVisitorSchedule[];
 extern u8 gSaveVillagers[];
 extern u8 gFieldSceneKind;
-extern Unk_020cbb18_Data *gCommManager;
+extern CommManager *gCommManager;
 void MI_CpuFill8(void *p, u32 v, u32 n);
 void *SaveVillagers_Get(void *, s32);
 void *_ZN12VillagerData13getVillagerIdEv(void *);
@@ -646,7 +645,7 @@ extern "C" s32 NpcSpawn_GetSpNpcSlotCount()
 {
     BOOL b = (F5::gFieldSceneKind == 0);
     if (b) {
-        Unk_020cbb18_Data *d = F5::gCommManager;
+        CommManager *d = F5::gCommManager;
         if (F5::_ZN11CommManager12isSlotActiveEi(d, d->myAid)) {
             return 0;
         }

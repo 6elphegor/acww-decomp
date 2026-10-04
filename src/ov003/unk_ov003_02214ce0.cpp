@@ -2,8 +2,6 @@
 // ov003 TU06 (actor 02231168): .text 0x02214ce0-0x02214dfc
 #include "types.h"
 #include "field/Unk_ov003_02214494_Views.h"
-#include "gfx/Unk_ov003_Blk.h"
-#include "field/Unk_ov003_Flags.h"
 #include "actor/Unk_ov003_SceneEntry.h"
 #include "game/Unk_ov003_Vec.h"
 #include "talk/TalkWindowState.h"

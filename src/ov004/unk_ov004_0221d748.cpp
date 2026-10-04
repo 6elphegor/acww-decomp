@@ -5,7 +5,7 @@
 #include "actor/Unk_ov004_SceneEntry.h"
 #include "actor/Unk_02088d00.h"
 #include "talk/Unk_ov004_0221b6d4_Out.h"
-#include "net/Unk_ov004_0221b954_Global.h"
+#include "net/CommManager.h"
 #include "game/Unk_ov004_0221b954_Vec.h"
 #include "talk/TalkWindowState.h"
 #include "npc/NpcAnimCtrl.h"
@@ -109,7 +109,7 @@ struct Unk_ov004_0221e0b4_Ent {
 #define SickVillagerRecord_resetRecord _ZN18SickVillagerRecord11resetRecordEv
 
 extern "C" {
-extern Unk_ov004_0221b954_Global *gCommManager;
+extern CommManager *gCommManager;
 extern s32 data_020c6d1c;
 extern u16 data_020c6cc8;
 extern u8 gSaveVillagers[];
@@ -289,7 +289,7 @@ BOOL SpNpcBooker::vfunc_0c() {
     if (!SpNpcActor::vfunc_0c()) {
         return FALSE;
     }
-    Unk_ov004_0221b954_Global *g = gCommManager;
+    CommManager *g = gCommManager;
     if (CommManager_isSlotActive(g, g->myAid) && !CommManager_isOnline(g)) {
         void *p = gSaveVillagers;
         if (SaveVillagers_GetUnk3830Index(p) != -1) {
@@ -468,7 +468,7 @@ void SpNpcBookerTalk::onChoice(u32) {
     switch (msgIndex) {
     case 0xf:
         if (t == 0) {
-            Unk_ov004_0221b954_Global *s = gCommManager;
+            CommManager *s = gCommManager;
             if (CommManager_isSlotActive(s, s->myAid) != 0) {
                 if (CommManager_isOnline(s) != 0) {
                     s32 q = PlayerData_GetBySessionSlot(JoinHistory_GetLatest());

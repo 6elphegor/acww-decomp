@@ -4,8 +4,15 @@
 #include "types.h"
 
 // 0xf4-byte field view of a Letter (recipient/sender party records, greeting, body, signature, paper, present).
-// Methods defined in main, unk_02065330.cpp (0x02065518..0x020655d6). That TU keeps its own copy: it types the two
-// 0x18-byte party records as its local polymorphic "Letter" (see item/Letter.h), which is not the 0xf4-byte Letter.
+// Methods defined in main, unk_02065330.cpp (0x02065518..0x020655d6), with the LetterParty_* functions.
+// 0x18-byte recipient/sender party record of a letter (LetterParty_* in unk_02065330.cpp; unk_16 = party type).
+struct LetterParty {
+    /* 0x00 */ u32 unk_00;
+    /* 0x04 */ u8 unk_04[0x12];
+    /* 0x16 */ u8 unk_16;
+    /* 0x17 */ u8 pad_17;
+};
+
 class LetterView {
 public:
     void loadDefaultGreeting();             // 0x02065518
@@ -18,8 +25,8 @@ public:
     u16 getPresent();                       // 0x020655d0
 
     /* 0x00 */ u32 unk_00;
-    /* 0x04 */ u8 recipient[0x18];
-    /* 0x1c */ u8 sender[0x18];
+    /* 0x04 */ LetterParty recipient;
+    /* 0x1c */ LetterParty sender;
     /* 0x34 */ u8 greeting[0x18];
     /* 0x4c */ u8 body[0x80];
     /* 0xcc */ u8 signature[0x20];

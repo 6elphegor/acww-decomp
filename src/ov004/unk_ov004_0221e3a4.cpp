@@ -5,7 +5,7 @@
 #include "actor/Unk_ov004_SceneEntry.h"
 #include "actor/Unk_02088d00.h"
 #include "talk/Unk_ov004_0221b6d4_Out.h"
-#include "net/Unk_ov004_0221b954_Global.h"
+#include "net/CommManager.h"
 #include "talk/TalkWindowState.h"
 #include "npc/NpcAnimCtrl.h"
 #include "npc/NpcSpeechState.h"

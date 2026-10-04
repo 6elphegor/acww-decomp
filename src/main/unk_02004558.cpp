@@ -2175,7 +2175,7 @@ extern s16 data_02135f44[];
 extern u8 gFieldSceneKind;
 extern u8 gScreenTransition;
 extern u8 sHouseRoachActiveCount;
-extern Unk_020d6df4_Data *gCommManager;
+extern CommManager *gCommManager;
 extern u8 *data_021c1b3c;
 s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
@@ -6205,7 +6205,7 @@ void PlayerActor::startFirstAction(s32 *p) {
     ((nM::PlayerActor *)this)->actionPriority = _ZN12Unk_0200769421getActionDonePriorityEj(this, ((nM::PlayerActor *)this)->action);
     s32 r4 = ((nM::PlayerActor *)this)->actionWork.walkSpeed;
     s32 f;
-    Unk_020d6df4_Data *r7;
+    CommManager *r7;
     BOOL c = gFieldSceneKind == 0 ? TRUE : FALSE;
     if (c && r4 != 1 && _ZN11CommManager11isLocalSlotEj(gCommManager, ((nM::PlayerActor *)this)->sessionSlot)) {
         if (Ground_GetHeightAt(&((nM::PlayerActor *)this)->position, 0, 0x19) >= 0x800) {

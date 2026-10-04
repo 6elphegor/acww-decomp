@@ -111,7 +111,7 @@ public:
     /* 0x510 */ u8 collisionEnabled;
     /* 0x511 */ u8 shadowEnabled;
     /* 0x512 */ u8 pad_512[2];
-    /* 0x514 */ Unk_020f4080 seEmitter;
+    /* 0x514 */ SndSeEmitterKind1 seEmitter;
     /* 0x558 */ Unk_020135e4 footstepFx;
     /* 0x560 */ u8 partnerPlayer;
     /* 0x561 */ u8 updateEnabled;     // isUpdating(); onExecute does nothing else while 0

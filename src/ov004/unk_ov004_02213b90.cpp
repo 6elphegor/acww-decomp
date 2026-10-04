@@ -9,7 +9,7 @@
 #include "actor/Unk_ov004_022142fc_Actor.h"
 #include "actor/Unk_ov004_022146ec_Actor.h"
 #include "game/Unk_ov004_022146ec_Bits.h"
-#include "net/Unk_ov004_022146ec_Sing.h"
+#include "net/CommManager.h"
 #include "talk/TalkWindowState.h"
 #include "talk/MsgString9B.h"
 #include "item/ItemName.h"
@@ -60,7 +60,7 @@ extern u8 gTalkMsgIndexEnd;
 extern char gTalkMsgIndexNone[];
 extern u8 gVec3Zero[];
 extern s16 data_02135f44[];
-extern Unk_ov004_022146ec_Sing *gCommManager;
+extern CommManager *gCommManager;
 extern TalkWindowState data_021ed0a0;
 
 void _ZN15TouchPickSphereC1Ev(TouchPickSphere *self);

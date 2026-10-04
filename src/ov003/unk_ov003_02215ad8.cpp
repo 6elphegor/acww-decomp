@@ -3,8 +3,6 @@
 #include "types.h"
 #include "sys/Unk_0209d498_Time.h"
 #include "field/Unk_ov003_02215ad8_Str.h"
-#include "gfx/Unk_ov003_Blk.h"
-#include "field/Unk_ov003_Flags.h"
 #include "actor/Unk_ov003_SceneEntry.h"
 #include "game/Unk_ov003_Vec.h"
 #include "talk/TalkWindowState.h"
