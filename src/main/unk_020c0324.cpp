@@ -181,7 +181,7 @@ BOOL SpNpcKatie::vfunc_04() {
         position.z = 0x4000;
         _ZN11NpcMoveCtrl14setSpeedPresetEiiii(&moveCtrl, 1, 0x280, 0xcc, 0x133);
     }
-    footstepFx.unk_0b = 1;
+    netSyncOff = 1;
     return TRUE;
 }
 
@@ -353,10 +353,10 @@ BOOL SpNpcKatie::mainAct01() {
         _ZN14NpcMoveAnimSet11setWalkAnimEi(&moveAnimSet, 0x54);
     }
     if (effectHandle == -1) {
-        effectHandle = Effect_Create(0x54, emotionFx.unk_58, &rotY, 0);
+        effectHandle = Effect_Create(0x54, &jointPos[0], &rotY, 0);
     }
     if (effectHandle != -1) {
-        Effect_SetPosition(effectHandle, emotionFx.unk_58, &rotY, 0);
+        Effect_SetPosition(effectHandle, &jointPos[0], &rotY, 0);
     }
     return TRUE;
 }

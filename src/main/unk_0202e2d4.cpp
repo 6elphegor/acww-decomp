@@ -109,7 +109,7 @@ BOOL SpNpcActor::vfunc_00() {
     if (!NpcActor::vfunc_00()) {
         return FALSE;
     }
-    if (!NetArea_IsLocalOwner() && _ZN11CommManager8isOnlineEv(gCommManager) && !footstepFx.unk_0b) {
+    if (!NetArea_IsLocalOwner() && _ZN11CommManager8isOnlineEv(gCommManager) && !netSyncOff) {
         Unk_0203e7a4_Vec v;
         s16 s;
         v.x = 0;

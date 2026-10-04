@@ -917,13 +917,13 @@ BOOL SpNpcHarriet::vfunc_58(void *) {
 
 void SpNpcHarriet::vfunc_4c(u32 cmd, u8 arg) {
     PlayerData_GetCurrent();
-    footstepFx.unk_08 = arg;
+    partnerPlayer = arg;
     switch (cmd) {
     case 3:
         changeAct(10);
         break;
     case 1:
-        footstepFx.unk_08 = arg;
+        partnerPlayer = arg;
         talk.vfunc_08();
         talk.func_02015ab0(getPlayerActor(4));
         if (talk.getTopic() == 4 || talk.getTopic() == 3) {

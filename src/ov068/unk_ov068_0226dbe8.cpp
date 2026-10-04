@@ -578,7 +578,7 @@ void HouseVisitVillager::vfunc_4c(u32 idx, u8 v) {
     using namespace sC;
     switch (idx) {
     case 3:
-        footstepFx.unk_08 = v;
+        partnerPlayer = v;
         if (visitState != 0) {
             if (visitState == 5) {
                 stayTimer = (Random_GlobalBelow(0x28) + 0x3c) * 0x3c;
@@ -587,12 +587,12 @@ void HouseVisitVillager::vfunc_4c(u32 idx, u8 v) {
         }
         break;
     case 0:
-        footstepFx.unk_08 = v;
+        partnerPlayer = v;
         talk.attachOwner(this);
         setVisitState(8);
         break;
     case 1:
-        footstepFx.unk_08 = v;
+        partnerPlayer = v;
         talk.attachOwner(this);
         if (visitState == 0) {
             setVisitState(1);

@@ -8,7 +8,8 @@
 // constructor (C1 0x020f4080, C2 0x020f40c0) and onVolume are defined in autoload_2, unk_020f30fc.cpp. The class has no
 // key function: its destructor is implicit/inline in the original, so the vtable and D1 0x02004b48 / D0 0x02010fa4 are
 // link-once, emitted by main's unk_02004558.cpp and autoload_2. Here the destructor is declared out of line so that
-// users do not emit link-once copies of their own; those two units define it inline after including this header.
+// users do not emit link-once copies of their own; those two units (and main 0202e2d4 / 020119cc, whose inlined NpcActor
+// destructors need it) define it inline after including this header.
 // Unk_020f4080 is dsd's name for it (the function symbol of C1); the NPC actor files (main, ov004, ov045..ov088) hold
 // one by value as NpcActor::seEmitter.
 class SndSeEmitterKind1 : public SndSeEmitter {

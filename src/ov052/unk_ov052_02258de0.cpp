@@ -913,7 +913,7 @@ BOOL SpNpcRedd::vfunc_58(void *) {
 }
 
 void SpNpcRedd::vfunc_4c(u32 cmd, u8 arg) {
-    footstepFx.unk_08 = arg;
+    partnerPlayer = arg;
     switch (cmd) {
     case 3:
         changeAct(8);

@@ -701,7 +701,7 @@ BOOL SpNpcCopper::vfunc_04() {
     _ZN14NpcMoveAnimSet11setWalkAnimEi(&moveAnimSet, 0xd9);
     _ZN14NpcMoveAnimSet12setStandAnimEi(&moveAnimSet, 0xd8);
     if (Scene_GetCurrent() != 0xb) {
-        footstepFx.unk_0b = 1;
+        netSyncOff = 1;
     }
     if (Scene_GetCurrent() == 0xc) {
         collisionEnabled = 0;
@@ -3263,7 +3263,7 @@ BOOL SpNpcCopper::vfunc_48(void *) {
 }
 
 BOOL SpNpcCopper::vfunc_58(void *) {
-    if (footstepFx.unk_0b != 0) {
+    if (netSyncOff != 0) {
         return TRUE;
     }
     if (_ZN11NpcTalkCtrl6isBusyEv(&talkCtrl) || netIsTalkLocked()) {
@@ -3276,7 +3276,7 @@ void SpNpcCopper::vfunc_4c(u32 cmd, u8 arg) {
     s32 a, b;
     switch (cmd) {
     case 3:
-        footstepFx.unk_08 = arg;
+        partnerPlayer = arg;
         if (arg != 4) {
             netSetSlotsIfOwner(1, gCommManager->myAid, arg);
             SpNpcCopper_ChangeAct(this, 0x10);
@@ -3293,7 +3293,7 @@ void SpNpcCopper::vfunc_4c(u32 cmd, u8 arg) {
         break;
     }
     case 0:
-        footstepFx.unk_08 = arg;
+        partnerPlayer = arg;
         if (arg != 4 && arg != gCommManager->myAid) {
             netSetSlotsIfOwner(1, arg, arg);
             SpNpcCopper_ChangeAct(this, 0x11);

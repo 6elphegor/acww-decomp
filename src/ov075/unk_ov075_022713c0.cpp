@@ -380,7 +380,7 @@ BOOL SpNpcPete::mainAct00() {
 }
 
 BOOL SpNpcPete::setupAct04() {
-    footstepFx.unk_09 = 0;
+    updateEnabled = 0;
     return TRUE;
 }
 
@@ -393,7 +393,7 @@ BOOL SpNpcPete::mainAct04() {
         d->x = position.x;
         d->y = s->y;
         d->z = s->z;
-        footstepFx.unk_09 = 1;
+        updateEnabled = 1;
         SpNpcPete_ChangeAct(this, 0);
     }
     return TRUE;
@@ -729,7 +729,7 @@ void SpNpcPeteTalk::onChoice(u32) {
 
 BOOL SpNpcPete::vfunc_48(void *) {
     BOOL r = FALSE;
-    if (footstepFx.unk_09 != 0) {
+    if (updateEnabled != 0) {
         if (NpcTalkCtrl_isBusy(&talkCtrl) == 0) {
             r = TRUE;
         }

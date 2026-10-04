@@ -207,7 +207,7 @@ BOOL SpNpcKaitlin::vfunc_04() {
         _ZN11NpcMoveCtrl14setSpeedPresetEiiii(&moveCtrl, 2, 0x333, 0xcc, 0x133);
         _ZN11NpcMoveCtrl14setSpeedPresetEiiii(&moveCtrl, 1, 0x280, 0xcc, 0x133);
     }
-    footstepFx.unk_0b = 1;
+    netSyncOff = 1;
     return TRUE;
 }
 

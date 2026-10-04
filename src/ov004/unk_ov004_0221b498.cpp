@@ -511,7 +511,7 @@ BOOL SpNpcSable::vfunc_48(void *) {
 void SpNpcSable::vfunc_4c(u32 idx, u8 v) {
     switch (idx) {
     case 3:
-        footstepFx.unk_08 = v;
+        partnerPlayer = v;
         if (v != 4) {
             NpcActor_netSetSlotsIfOwner(this, 1, gCommManager->myAid, v);
             changeAct(6);
@@ -524,7 +524,7 @@ void SpNpcSable::vfunc_4c(u32 idx, u8 v) {
         }
         break;
     case 0:
-        footstepFx.unk_08 = v;
+        partnerPlayer = v;
         if (v != 4 && v != gCommManager->myAid) {
             NpcActor_netSetSlotsIfOwner(this, 1, v, v);
             changeAct(5);

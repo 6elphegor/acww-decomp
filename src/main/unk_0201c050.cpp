@@ -1066,6 +1066,10 @@ struct NpcActor : Character {
     ActorFollowCollider collider;
     Unk_020f4080 seEmitter;
     Unk_020135e4 footstepFx;
+    u8 partnerPlayer;
+    u8 updateEnabled;
+    u8 drawEnabled;
+    u8 netSyncOff;
     NpcActionCtrl actionCtrl;
     Unk_02014254 talkCtrl;
     u8 unk_628[0x640 - 0x628]; // NpcActor tail fields (curHeldTool .. collisionRadius, see actor/NpcActor.h)

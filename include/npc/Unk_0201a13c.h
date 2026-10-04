@@ -3,8 +3,10 @@
 
 #include "types.h"
 
-// NPC head look-at controller (NpcActor::emotionFx, 0x7c bytes); methods defined in src/main/unk_020119cc.cpp
-// (unk_02019998 section, ctor 0x0201a13c).
+// Symbol-name view (0x7c bytes) whose methods (isOnTarget, update, lookAtPoint, ...) run on NpcActor::lookAt; defined in
+// src/main/unk_020119cc.cpp (unk_02019998 section). Its ctor/dtor 0x0201a13c / 0x0201a138 are NpcEmotionFx's, which is
+// the real type of NpcActor::emotionFx (0x28 bytes, followed by NpcActor::jointMtx / jointPos). Only the kept NpcActor
+// copy in src/main/unk_0201c050.cpp still uses it as a member type.
 
 struct Unk_0201a1e0_Base;
 struct Unk_0201a25c_Src;

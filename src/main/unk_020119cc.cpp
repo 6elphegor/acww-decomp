@@ -35,6 +35,8 @@
 #include "talk/ActorTalkRequest.h"
 #include "talk/Unk_020d7710.h"
 #include "talk/TalkWindowState.h"
+#include "npc/Unk_020135e4.h"
+#include "actor/NpcActor.h"
 
 
 // unk_02011580.cpp
@@ -399,6 +401,9 @@ struct Unk_020133cc_Player {
 struct Unk_02013474_Half { s16 a; s16 b; };
 
 // unk_020131a4.cpp
+// Method-set view named after the symbols (Unk_02013474::*). The footstep functions run on NpcActor::footstepFx
+// (Unk_020135e4, 8 bytes: footstepsEnabled, prevMoveMode); the setupState/stateNStep/mainState functions are the
+// NpcTalkCtrl state functions of talk states 1, 3 and 4 (sNpcTalkCtrlStates) and use NpcTalkCtrl's fields 0x8..0xd.
 struct Unk_02013474 {
     u8 footstepsEnabled;
     u8 pad_01[3];
@@ -1537,108 +1542,6 @@ struct Unk_020d77a4_Global {
     s32 myAid;
 };
 
-class NpcActor : public Character {
-public:
-    virtual BOOL vfunc_00();
-    virtual BOOL vfunc_04();
-    virtual void postCreate(s32 x);
-    virtual BOOL vfunc_0c();
-    virtual BOOL onExecute();
-    virtual BOOL onDraw();
-    virtual BOOL vfunc_30();
-    virtual ~NpcActor();
-    virtual void vfunc_4c(u32 v, u8 b);
-    virtual BOOL vfunc_5c(Unk_020d77a4_Vec3 *out);
-    virtual s32 onToolHit();
-    virtual s32 vfunc_64();
-    virtual BOOL updateAct();
-    virtual void getTexturePath() = 0;
-    virtual s32 getModelPath() = 0;
-    virtual void getName() = 0;
-    virtual s32 getGender() = 0;
-    virtual void canPlayTalkMelody() = 0;
-    virtual void onTalkMelodyPlayed() = 0;
-    virtual void getSpecies() = 0;
-    virtual void setShirt();
-    virtual void onJoinTalk();
-    virtual void onLeaveTalk();
-    virtual s32 getAct0BAnimA();
-    virtual s32 getAct0BAnimB();
-    virtual u16 vfunc_9c();
-    virtual s32 getTeachableEmotion();
-    virtual void addMood();
-
-    u8 isUpdating();
-    BOOL netReadAction(s32 *a, s32 *b, u8 *c);
-    BOOL netReadPosition(s32 *a, u8 *b);
-    void netSendState(u32 a, ...);
-    void setNetUserBytes(void *dst, s32 n);
-    BOOL getNetUserBytes(u8 *src, u32 n);
-    BOOL netIsTalkLocked();
-    s32 netGetSlots(s32 a, s32 b);
-    void netSetSlotsIfOwner(u32 a, u32 b, u32 c, ...);
-    s32 netSetSlots(s32 a, s32 b, s32 c);
-    BOOL isNetOwner();
-    s32 findAvoidPos(Unk_020d77a4_Vec *out);
-    BOOL getFreeOffsetPos(Unk_020d77a4_Vec *out, void *p);
-    s32 getSpeakerGender();
-    Unk_0201bc1c *getTalkRequest();
-    void setTalkRequest(Unk_0201bc1c *p);
-    s32 getPlayerActor(u32 id);
-    s16 getRelativeAngleTo(NpcActor *other);
-    s32 getAngleToPlayer(u32 id);
-    s32 getAngleTo(NpcActor *other);
-    BOOL isPlayerNear(s32 n, u32 id);
-    BOOL isNear(NpcActor *other, s32 n);
-    s32 getDistanceToPlayer(u32 id);
-    s32 getDistanceTo(NpcActor *other);
-    BOOL isPosInFront(s16 *out, Unk_020d77a4_Vec *pos);
-    void setCollisionRadius(s32 v);
-    void setNpcHandle(u16 *p);
-    void setNpcIndex(u16 v);
-    u16 getNpcIndex();
-    void releaseModel();
-    BOOL loadModel();
-
-    /* 0xea */ u16 unk_ea;
-    /* 0xec */ u8 unk_ec[0x2a0 - 0xec];
-    /* 0x2a0 */ u8 pad_2a0[0x350 - 0x2a0];
-    /* 0x350 */ u8 unk_350[0x3a8 - 0x350];
-    /* 0x3a8 */ u8 unk_3a8[0x3b0 - 0x3a8];
-    /* 0x3b0 */ u8 lookAt;
-    /* 0x3b1 */ u8 pad_3b1[0x3ca - 0x3b1];
-    /* 0x3ca */ s16 unk_3ca;
-    /* 0x3cc */ u8 pad_3cc[0x3d2 - 0x3cc];
-    /* 0x3d2 */ s16 unk_3d2;
-    /* 0x3d4 */ u8 pad_3d4[0x418 - 0x3d4];
-    /* 0x418 */ u8 unk_418[0x420 - 0x418];
-    /* 0x420 */ u8 unk_420[0x438 - 0x420];
-    /* 0x438 */ void *unk_438;
-    /* 0x43c */ u8 pad_43c[0x447 - 0x43c];
-    /* 0x447 */ u8 unk_447;
-    /* 0x448 */ u8 pad_448[0x4e8 - 0x448];
-    /* 0x4e8 */ u32 unk_4e8;
-    /* 0x4ec */ u8 pad_4ec[0x510 - 0x4ec];
-    /* 0x510 */ u8 collisionEnabled;
-    /* 0x511 */ u8 shadowEnabled;
-    /* 0x512 */ u8 pad_512[2];
-    /* 0x514 */ u8 unk_514[0x558 - 0x514];
-    /* 0x558 */ u8 unk_558[0x560 - 0x558];
-    /* 0x560 */ u8 partnerPlayer;
-    /* 0x561 */ u8 updateEnabled;
-    /* 0x562 */ u8 drawEnabled;
-    /* 0x563 */ u8 netSyncOff;
-    /* 0x564 */ u8 unk_564[4];
-    /* 0x568 */ u8 unk_568[0x618 - 0x568];
-    /* 0x618 */ u8 unk_618[0x628 - 0x618];
-    /* 0x628 */ s32 curHeldTool;
-    /* 0x62c */ u8 talkLockHeld;
-    /* 0x62d */ u8 netUserBytes[3];
-    /* 0x630 */ u8 pad_630[2];
-    /* 0x632 */ u16 npcIndex;
-    /* 0x634 */ Unk_0201bc1c *talkRequest;
-    /* 0x638 */ s32 collisionRadius;
-};
 
 // unk_0201b690.cpp
 struct Unk_0201be34_Mtx {
@@ -1686,7 +1589,6 @@ public:
 };
 
 
-struct Unk_020135e4 : Unk_02013474 { Unk_020135e4(); };
 // the direction table sRouteDirs (filled by __sinit)
 struct Unk_021be028_Dir {
     s32 x, z;
@@ -1702,25 +1604,6 @@ struct NpcEmotionEntry {
     u32 playFlags;
 };
 typedef void (NpcTalkCtrl::*Unk_02014040_Fn)(Unk_02013b10_Ctx *);
-extern u32 data_020d6f54[];
-namespace nDtor {
-extern "C" {
-void NpcTalkCtrl_Destroy(void *p);
-void _ZN13NpcActionCtrl13func_02019854Ev(void *p);
-void _ZN12Unk_0201347413func_020135e0Ev(void *p);
-void func_020f43c8(void *p);
-void _ZN19ActorFollowColliderD1Ev(void *p);
-void _ZN14CollisionStateD1Ev(void *p);
-void _ZN12Unk_0201a13cD2Ev(void *p);
-void _ZN14NpcSpeechStateD2Ev(void *p);
-void _ZN9NpcLookAt16clearTargetActorEv(void *p);
-void _ZN12Unk_0201ac8813func_0201acc8Ev(void *p);
-void _ZN11NpcAnimCtrlD1Ev(void *p);
-void _ZN11NpcFaceAnimD2Ev(void *p);
-void _ZN14NpcMoveAnimSet13func_0201ad38Ev(void *p);
-void _ZN19ThreeLayerAnimModelD1Ev(void *p);
-}
-}
 
 
 // ---- unk_02011580.cpp
@@ -3081,15 +2964,15 @@ extern "C" void NpcActor_OnJointCalc(Unk_0201be34 *self) {
             JointCb_UseRestTranslation(self, 0x800);
         }
     }
-    if (idx == (u32)data_020c6d20 && p != NULL && p->lookAt < 6) {
+    if (idx == (u32)data_020c6d20 && p != NULL && p->lookAt.lookType < 6) {
         Unk_0201be34_Mtx *m = &self->pJntAnmResult->rot;
-        if (p->unk_3ca != 0) {
-            u32 a = (u16)p->unk_3ca >> 4;
+        if (p->lookAt.pitch != 0) {
+            u32 a = (u16)p->lookAt.pitch >> 4;
             MTX_RotY33_(&mA, data_02135f44[a * 2], data_02135f44[a * 2 + 1]);
             MTX_Concat33(m, &mA, m);
         }
-        if (p->unk_3d2 != 0) {
-            u32 a = (u16)p->unk_3d2 >> 4;
+        if (p->lookAt.yaw != 0) {
+            u32 a = (u16)p->lookAt.yaw >> 4;
             MTX_RotX33_(&mB, data_02135f44[a * 2], data_02135f44[a * 2 + 1]);
             MTX_Concat33(m, &mB, m);
         }
@@ -3120,7 +3003,7 @@ extern "C" void NpcActor_OnJointCalc(Unk_0201be34 *self) {
         }
     }
     if (p != NULL) {
-        _ZN19ThreeLayerAnimModel21onJointCalcPostLayer3EP16Unk_02053a54_Msg(p->unk_ec, self);
+        _ZN19ThreeLayerAnimModel21onJointCalcPostLayer3EP16Unk_02053a54_Msg(&p->model, self);
     }
     self->cbVecFuncNodeDesc = NpcActor_SetJointCallbackNext;
     self->cbVecTimingNodeDesc = 3;
@@ -3136,9 +3019,9 @@ extern "C" void NpcActor_SetJointCallbackNext(Unk_0201be34 *self) {
 
 BOOL NpcActor::loadModel() {
     using namespace nR;
-    s32 t = getModelPath();
+    s32 t = (s32)getModelPath();
     BOOL r = FALSE;
-    if (_ZN11CachedModel4loadEPvS0_(unk_ec, t, gNpcModelHeap) != 0) {
+    if (_ZN11CachedModel4loadEPvS0_(&model, t, gNpcModelHeap) != 0) {
         r = TRUE;
     }
     return r;
@@ -3146,7 +3029,7 @@ BOOL NpcActor::loadModel() {
 
 void NpcActor::releaseModel() {
     using namespace nR;
-    _ZN11CachedModel7releaseEv(unk_ec);
+    _ZN11CachedModel7releaseEv(&model);
 }
 
 u16 NpcActor::getNpcIndex() {
@@ -3254,7 +3137,7 @@ s16 NpcActor::getRelativeAngleTo(NpcActor *other) {
     return getAngleTo(other) - rotY;
 }
 
-s32 NpcActor::getPlayerActor(u32 id) {
+u32 NpcActor::getPlayerActor(u32 id) {
     using namespace nR;
     return PlayerActor_GetCharacter(id);
 }
@@ -3287,7 +3170,7 @@ s32 NpcActor::getSpeakerGender() {
     return r;
 }
 
-void NpcActor::setShirt() {
+void NpcActor::setShirt(u16 *, BOOL) {
     using namespace nR;}
 
 void NpcActor::onJoinTalk() {
@@ -3312,7 +3195,7 @@ BOOL NpcActor::getFreeOffsetPos(Unk_020d77a4_Vec *out, void *p) {
 
 s32 NpcActor::findAvoidPos(Unk_020d77a4_Vec *out) {
     using namespace nR;
-    s32 r = _ZN9NpcLookAt15getObstacleBitsEv(unk_3a8);
+    s32 r = _ZN9NpcLookAt15getObstacleBitsEv(&obstacleProbe);
     s32 result = 0;
     Unk_020d77a4_Vec *pv = (Unk_020d77a4_Vec *)&position;
     *out = *pv;
@@ -3361,7 +3244,7 @@ u16 NpcActor::vfunc_9c() {
     return data_020c6cc8;
 }
 
-void NpcActor::addMood() {
+void NpcActor::addMood(u32, s32) {
     using namespace nR;}
 
 BOOL NpcActor::isNetOwner() {
@@ -3443,7 +3326,7 @@ void NpcActor::setNetUserBytes(void *dst, s32 n) {
 
 void NpcActor::netSendState(u32 a, ...) {
     using namespace nR;
-    NpcNetRecord_SetState(&unk_ea, Scene_GetCurrent(), &position, rotY, unk_568, netUserBytes);
+    NpcNetRecord_SetState(&unk_ea, Scene_GetCurrent(), &position, rotY, &actionCtrl.netAction, netUserBytes);
     if (_ZN11CommManager12isSlotActiveEi(gCommManager, gCommManager->myAid) != 0) {
         if (isNetOwner() != 0) {
             s32 t = (unk_ea & 0xf000) >> 12;
@@ -3496,16 +3379,16 @@ BOOL NpcActor::vfunc_04() {
     setNpcHandle(&tmp);
     talkRequest = NULL;
     setCollisionRadius(0xd00);
-    _ZN14NpcSpeechState5resetEv(unk_418);
-    _ZN11NpcTalkCtrl5resetEv(unk_618);
-    _ZN12NpcEmotionFx5resetEv(unk_420);
+    _ZN14NpcSpeechState5resetEv(&speechState);
+    _ZN11NpcTalkCtrl5resetEv(&talkCtrl);
+    _ZN12NpcEmotionFx5resetEv(&emotionFx);
     partnerPlayer = 0;
-    _ZN12Unk_0201ac885resetEv(unk_350);
+    _ZN12Unk_0201ac885resetEv(&moveCtrl);
     talkLockHeld = 0;
     MI_CpuFill8(netUserBytes, 0, 4);
-    _ZN12Unk_02003c3013func_02003e40Ev(unk_514);
-    unk_438 = unk_514;
-    _ZN12Unk_0201347414resetFootstepsEv(unk_558);
+    _ZN12Unk_02003c3013func_02003e40Ev(&seEmitter);
+    emotionFx.seEmitter = (s32)&seEmitter;
+    _ZN12Unk_0201347414resetFootstepsEv(&footstepFx);
     collisionEnabled = 1;
     shadowEnabled = 1;
     _ZN19Unk_020133cc_Player22resetLastTaughtEmotionEv(this);
@@ -3526,8 +3409,8 @@ BOOL NpcActor::vfunc_00() {
     }
     maxFallSpeed = 0xffffec00;
     gravity = 0;
-    _ZN11NpcMoveCtrl14setTargetAngleEs(unk_350, rotY);
-    unk_447 = Npc_GetInfoByte2(&unk_ea);
+    _ZN11NpcMoveCtrl14setTargetAngleEs(&moveCtrl, rotY);
+    emotionFx.effectParam = Npc_GetInfoByte2(&unk_ea);
     return TRUE;
 }
 
@@ -3535,8 +3418,8 @@ void NpcActor::postCreate(s32 x) {
     using namespace nR;
     if (x == 2) {
         if (NetArea_IsLocalOwner() == 0) {
-            if ((unk_4e8 & 2) == 0) {
-                unk_4e8 |= 2;
+            if ((collider.groups & 2) == 0) {
+                collider.groups |= 2;
                 talkLockHeld = 1;
             }
         }
@@ -3561,27 +3444,27 @@ BOOL NpcActor::onExecute() {
     Unk_020d77a4_Vec3 v;
     s32 cur;
 
-    NpcActor_UpdateMovement(((void *)((u8 *)this + (0x350))), this);
+    NpcActor_UpdateMovement(&moveCtrl, this);
     updateAct();
-    if ((*(u8 *)((u8 *)this + (0x561))) == 0) {
+    if (updateEnabled == 0) {
         return TRUE;
     }
-    if (!_ZN8NpcActor10isNetOwnerEv(this)) {
+    if (!isNetOwner()) {
         L.a = 0x16;
         L.b = 0;
-        if (_ZN8NpcActor13netReadActionEPiS0_Ph(this, &L.a, &L.b, buf)) {
+        if (netReadAction(&L.a, &L.b, buf)) {
             if (L.b == 1 && (u32)L.a <= 2) {
-                if (_ZN13NpcActionCtrl9getActionEv(((void *)((u8 *)this + (0x564)))) != 0x15) {
-                    _ZN13NpcActionCtrl13requestActionEjiiissiitt(((void *)((u8 *)this + (0x564))), 0x15, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
+                if (_ZN13NpcActionCtrl9getActionEv(&actionCtrl) != 0x15) {
+                    _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, 0x15, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
                 }
                 if ((u32)(L.a - 1) <= 1) {
-                    (*(s32 *)((u8 *)this + (0x564))) = L.a;
+                    actionCtrl.unk_00 = L.a;
                 } else {
-                    (*(s32 *)((u8 *)this + (0x564))) = 0;
+                    actionCtrl.unk_00 = 0;
                 }
             } else {
                 cur = L.a;
-                if (cur != _ZN13NpcActionCtrl9getActionEv(((void *)((u8 *)this + (0x564))))) {
+                if (cur != _ZN13NpcActionCtrl9getActionEv(&actionCtrl)) {
                     L.x = 0;
                     s.h2 = 0;
                     s.h4 = 0;
@@ -3591,76 +3474,76 @@ BOOL NpcActor::onExecute() {
                     L.b = 3;
                     switch (cur) {
                     case 0:
-                        _ZN13NpcActionCtrl12requestStandEjt(((void *)((u8 *)this + (0x564))), L.b, data_020c6cc8);
+                        _ZN13NpcActionCtrl12requestStandEjt(&actionCtrl, L.b, data_020c6cc8);
                         break;
                     case 1:
                     case 2:
                         NpcAction_UnpackMove(&L.x, &L.x, &L.y, &L.y, &s.h2, &s.h6, buf);
-                        _ZN13NpcActionCtrl13requestActionEjiiissiitt(((void *)((u8 *)this + (0x564))), L.a, L.b, L.x, 0, s.h2, s.h4, L.y, 0, s.h6, 0);
+                        _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, L.a, L.b, L.x, 0, s.h2, s.h4, L.y, 0, s.h6, 0);
                         break;
                     case 3:
                         NpcAction_UnpackTurn(&s.h2, (u16 *)&s.h4, &s.h6, buf);
-                        _ZN13NpcActionCtrl13requestActionEjiiissiitt(((void *)((u8 *)this + (0x564))), L.a, L.b, L.x, 0, s.h2, s.h4, L.y, 0, s.h6, 0);
+                        _ZN13NpcActionCtrl13requestActionEjiiissiitt(&actionCtrl, L.a, L.b, L.x, 0, s.h2, s.h4, L.y, 0, s.h6, 0);
                         break;
                     case 12:
                         L.z = 0x137;
                         s.b0 = 0;
                         NpcAction_UnpackAnim((u32 *)&L.z, &s, &s.h6, &s.h8, buf);
-                        _ZN13NpcActionCtrl15requestPlayAnimEiijtt(((void *)((u8 *)this + (0x564))), L.b, L.z, s.b0, s.h6, s.h8);
+                        _ZN13NpcActionCtrl15requestPlayAnimEiijtt(&actionCtrl, L.b, L.z, s.b0, s.h6, s.h8);
                         break;
                     case 20:
                         s.ha = 0xfff1;
                         NpcAction_UnpackItem(&s.ha, buf);
-                        _ZN12Unk_02016a4412requestAct14EiPt(((void *)((u8 *)this + (0x564))), L.b, &s.ha);
+                        _ZN12Unk_02016a4412requestAct14EiPt(&actionCtrl, L.b, &s.ha);
                         break;
                     }
                 }
             }
         }
     }
-    _ZN11NpcTalkCtrl6updateEP16Unk_02013b10_Ctx(((void *)((u8 *)this + (0x618))), this);
-    _ZN13NpcActionCtrl6updateEPh(((void *)((u8 *)this + (0x564))), this);
-    _ZN12NpcEmotionFx6updateEPvsit(((void *)((u8 *)this + (0x420))), ((void *)((u8 *)this + (0x478))), (*(s16 *)((u8 *)this + (0x8e))), _ZN12Unk_02015b8c9getAnimIdEj(((void *)((u8 *)this + (0x334))), 0), ((Unk_0201b2b8_Bits *)((void *)((u8 *)this + (0x190))))->mid);
-    _ZN11NpcMoveCtrl10updateTurnEP18Unk_0201a334_Scene(((void *)((u8 *)this + (0x350))), this);
-    if (NetArea_IsLocalOwner() && (*(u8 *)((u8 *)this + (0x510))) && (*(s32 *)((u8 *)this + (0x638))) > 0) {
-        Collision_Move(((void *)((u8 *)this + (0x49c))), ((void *)((u8 *)this + (0x5c))), ((void *)((u8 *)this + (0x68))), (*(s16 *)((u8 *)this + (0x8e))), (*(s32 *)((u8 *)this + (0x638))), this, 0xf);
+    _ZN11NpcTalkCtrl6updateEP16Unk_02013b10_Ctx(&talkCtrl, this);
+    _ZN13NpcActionCtrl6updateEPh(&actionCtrl, this);
+    _ZN12NpcEmotionFx6updateEPvsit(&emotionFx, &jointPos[0], rotY, _ZN12Unk_02015b8c9getAnimIdEj(&animCtrl, 0), ((Unk_0201b2b8_Bits *)&model.curFrame)->mid);
+    _ZN11NpcMoveCtrl10updateTurnEP18Unk_0201a334_Scene(&moveCtrl, this);
+    if (NetArea_IsLocalOwner() && collisionEnabled && collisionRadius > 0) {
+        Collision_Move(&collisionState, &position, &prevPosition, rotY, collisionRadius, this, 0xf);
     }
-    (*(s32 *)((u8 *)this + (0x60))) = Ground_GetDefaultY(0);
-    _ZN12Unk_0201a13c6updateEP17Unk_0201a1e0_Base(((void *)((u8 *)this + (0x3b0))), this);
-    _ZN16NpcObstacleProbe5clearEv(((void *)((u8 *)this + (0x3a8))));
-    _ZN16NpcObstacleProbe5probeEP18Unk_0201a334_Scene(((void *)((u8 *)this + (0x3a8))), this);
-    (*(u16 *)((u8 *)this + (0xd0))) = WorldCurve_ToCurved(((void *)((u8 *)this + (0xc4))), ((void *)((u8 *)this + (0x5c))));
+    position.y = Ground_GetDefaultY(0);
+    _ZN12Unk_0201a13c6updateEP17Unk_0201a1e0_Base(&lookAt, this);
+    _ZN16NpcObstacleProbe5clearEv(&obstacleProbe);
+    _ZN16NpcObstacleProbe5probeEP18Unk_0201a334_Scene(&obstacleProbe, this);
+    drawTilt = WorldCurve_ToCurved(&drawPos, &position);
     _ZN5Actor15calcModelMatrixEPv(this, &t);
-    (*(Unk_0201b2b8_T30 *)((u8 *)this + (0x150))) = t;
-    if (_ZN8NpcActor15netIsTalkLockedEv(this)) {
-        if (((*(u32 *)((u8 *)this + (0x4e8))) & 2) == 0 && NetArea_IsLocalOwner()) {
-            (*(u32 *)((u8 *)this + (0x4e8))) |= 2;
-            (*(u8 *)((u8 *)this + (0x62c))) = 1;
+    (*(Unk_0201b2b8_T30 *)&model.mtx) = t;
+    if (netIsTalkLocked()) {
+        if ((collider.groups & 2) == 0 && NetArea_IsLocalOwner()) {
+            collider.groups |= 2;
+            talkLockHeld = 1;
         }
-    } else if ((*(u8 *)((u8 *)this + (0x62c))) == 1 && NetArea_IsLocalOwner()) {
-        (*(u32 *)((u8 *)this + (0x4e8))) &= ~2;
-        (*(u8 *)((u8 *)this + (0x62c))) = 0;
+    } else if (talkLockHeld == 1 && NetArea_IsLocalOwner()) {
+        collider.groups &= ~2;
+        talkLockHeld = 0;
     }
-    if ((*(u8 *)((u8 *)this + (0x510)))) {
-        _ZN13ActorCollider6submitEv(((void *)((u8 *)this + (0x4cc))));
+    if (collisionEnabled) {
+        _ZN13ActorCollider6submitEv(&collider);
     } else {
-        _ZN13ActorCollider8resetHitEv(((void *)((u8 *)this + (0x4cc))));
+        _ZN13ActorCollider8resetHitEv(&collider);
     }
-    _ZN12Unk_02015b8c6updateEP18Unk_02015b8c_Scene(((void *)((u8 *)this + (0x334))), this);
-    _ZN19ThreeLayerAnimModel13updateLayers3Ev(((void *)((u8 *)this + (0xec))));
-    Unk_020d77a4_Vec3 *pp = (Unk_020d77a4_Vec3 *)((void *)((u8 *)this + (0x5c)));
-    v.x = (*(s32 *)((u8 *)this + (0x5c)));
+    _ZN12Unk_02015b8c6updateEP18Unk_02015b8c_Scene(&animCtrl, this);
+    _ZN19ThreeLayerAnimModel13updateLayers3Ev(&model);
+    Unk_020d77a4_Vec3 *pp = (Unk_020d77a4_Vec3 *)&position;
+    v.x = position.x;
     v.y = pp->y;
     v.z = pp->z;
-    _ZN12Unk_02003c4013func_02003df4EP16Unk_02003a6c_Vec(((void *)((u8 *)this + (0x514))), &v);
-    if ((*(s32 *)((u8 *)this + (0x628)))) {
-        _ZN13HeldToolModel6updateEP12Unk_02006d14((*(s32 *)((u8 *)this + (0x628))), this);
+    _ZN12Unk_02003c4013func_02003df4EP16Unk_02003a6c_Vec(&seEmitter, &v);
+    if (curHeldTool) {
+        _ZN13HeldToolModel6updateEP12Unk_02006d14((s32)curHeldTool, this);
     }
-    _ZN12Unk_0201347415updateFootstepsEP19Unk_020133cc_Player(((void *)((u8 *)this + (0x558))), this);
-    _ZN11NpcFaceAnim6updateEPh(((void *)((u8 *)this + (0x2ac))), this);
-    _ZN13NpcActionCtrl10postUpdateEPh(((void *)((u8 *)this + (0x564))), this);
-    if ((*(u8 *)((u8 *)this + (0x563))) == 0) {
-        _ZN8NpcActor12netSendStateEjz(this, 1);
+    _ZN12Unk_0201347415updateFootstepsEP19Unk_020133cc_Player(&footstepFx, this);
+    _ZN11NpcFaceAnim6updateEPh(&faceAnim, this);
+    _ZN13NpcActionCtrl10postUpdateEPh(&actionCtrl, this);
+    if (netSyncOff == 0) {
+        netSendState(1);
     }
     return TRUE;
 }
@@ -3669,46 +3552,46 @@ BOOL NpcActor::onDraw() {
     using namespace nQ;
     Unk_0201b138_Buf buf;
     Unk_020d77a4_Vec3 t0, t1, t2;
-    if ((*(u8 *)((u8 *)this + (0x561))) == 0) {
-        Unk_020d77a4_Vec3 *p = (Unk_020d77a4_Vec3 *)((void *)((u8 *)this + (0x5c)));
-        (*(s32 *)((u8 *)this + (0x478))) = (*(s32 *)((u8 *)this + (0x5c)));
-        (*(s32 *)((u8 *)this + (0x47c))) = p->y;
-        (*(s32 *)((u8 *)this + (0x480))) = p->z;
-        (*(s32 *)((u8 *)this + (0x484))) = (*(s32 *)((u8 *)this + (0x5c)));
-        (*(s32 *)((u8 *)this + (0x488))) = p->y;
-        (*(s32 *)((u8 *)this + (0x48c))) = p->z;
-        (*(s32 *)((u8 *)this + (0x490))) = (*(s32 *)((u8 *)this + (0x5c)));
-        (*(s32 *)((u8 *)this + (0x494))) = p->y;
-        (*(s32 *)((u8 *)this + (0x498))) = p->z;
+    if (updateEnabled == 0) {
+        Unk_020d77a4_Vec3 *p = (Unk_020d77a4_Vec3 *)&position;
+        jointPos[0].x = position.x;
+        jointPos[0].y = p->y;
+        jointPos[0].z = p->z;
+        jointPos[1].x = position.x;
+        jointPos[1].y = p->y;
+        jointPos[1].z = p->z;
+        jointPos[2].x = position.x;
+        jointPos[2].y = p->y;
+        jointPos[2].z = p->z;
         return TRUE;
     }
-    if ((*(u8 *)((u8 *)this + (0x562))) == 0) {
-        Unk_020d77a4_Vec3 *p = (Unk_020d77a4_Vec3 *)((void *)((u8 *)this + (0x5c)));
-        (*(s32 *)((u8 *)this + (0x478))) = (*(s32 *)((u8 *)this + (0x5c)));
-        (*(s32 *)((u8 *)this + (0x47c))) = p->y;
-        (*(s32 *)((u8 *)this + (0x480))) = p->z;
-        (*(s32 *)((u8 *)this + (0x484))) = (*(s32 *)((u8 *)this + (0x5c)));
-        (*(s32 *)((u8 *)this + (0x488))) = p->y;
-        (*(s32 *)((u8 *)this + (0x48c))) = p->z;
-        (*(s32 *)((u8 *)this + (0x490))) = (*(s32 *)((u8 *)this + (0x5c)));
-        (*(s32 *)((u8 *)this + (0x494))) = p->y;
-        (*(s32 *)((u8 *)this + (0x498))) = p->z;
+    if (drawEnabled == 0) {
+        Unk_020d77a4_Vec3 *p = (Unk_020d77a4_Vec3 *)&position;
+        jointPos[0].x = position.x;
+        jointPos[0].y = p->y;
+        jointPos[0].z = p->z;
+        jointPos[1].x = position.x;
+        jointPos[1].y = p->y;
+        jointPos[1].z = p->z;
+        jointPos[2].x = position.x;
+        jointPos[2].y = p->y;
+        jointPos[2].z = p->z;
         return TRUE;
     }
-    _ZN17TwoLayerAnimModel11drawLayeredEj(((void *)((u8 *)this + (0xec))), 0);
-    _ZN11NpcMoveCtrl12storeHeadMtxEP12Unk_02006d14(((void *)((u8 *)this + (0x3b0))), this);
-    Model_GetJointWorldMtx(((void *)((u8 *)this + (0xec))), ((void *)((u8 *)this + (0x448))), 0xb);
-    Model_GetJointWorldMtx(((void *)((u8 *)this + (0xec))), &buf, 0x10);
+    _ZN17TwoLayerAnimModel11drawLayeredEj(&model, 0);
+    _ZN11NpcMoveCtrl12storeHeadMtxEP12Unk_02006d14(&lookAt, this);
+    Model_GetJointWorldMtx(&model, &jointMtx, 0xb);
+    Model_GetJointWorldMtx(&model, &buf, 0x10);
     t0 = buf.v;
-    WorldCurve_FromCurved((Unk_020d77a4_Vec3 *)((void *)((u8 *)this + (0x478))), &t0);
-    Model_GetJointWorldMtx(((void *)((u8 *)this + (0xec))), &buf, 0x7);
+    WorldCurve_FromCurved((Unk_020d77a4_Vec3 *)&jointPos[0], &t0);
+    Model_GetJointWorldMtx(&model, &buf, 0x7);
     t1 = buf.v;
-    WorldCurve_FromCurved((Unk_020d77a4_Vec3 *)((void *)((u8 *)this + (0x484))), &t1);
-    Model_GetJointWorldMtx(((void *)((u8 *)this + (0xec))), &buf, 0x4);
+    WorldCurve_FromCurved((Unk_020d77a4_Vec3 *)&jointPos[1], &t1);
+    Model_GetJointWorldMtx(&model, &buf, 0x4);
     t2 = buf.v;
-    WorldCurve_FromCurved((Unk_020d77a4_Vec3 *)((void *)((u8 *)this + (0x490))), &t2);
-    if ((*(u8 *)((u8 *)this + (0x511))) != 0) {
-        CharaShadow_Draw(((void *)((u8 *)this + (0x5c))), 0xb00, 0x4000, 0x1000);
+    WorldCurve_FromCurved((Unk_020d77a4_Vec3 *)&jointPos[2], &t2);
+    if (shadowEnabled != 0) {
+        CharaShadow_Draw(&position, 0xb00, 0x4000, 0x1000);
     }
     return TRUE;
 }
@@ -3718,25 +3601,25 @@ BOOL NpcActor::vfunc_30() {
 
 BOOL NpcActor::vfunc_0c() {
     using namespace nQ;
-    _ZN8NpcActor12releaseModelEv(this);
-    _ZN11NpcFaceAnim7releaseEv(((void *)((u8 *)this + (0x2ac))));
-    _ZN12Unk_02015b8c7releaseEv(((void *)((u8 *)this + (0x334))));
-    _ZN12Unk_02003c3013func_02003dccEv(((void *)((u8 *)this + (0x514))));
-    if ((*(u8 *)((u8 *)this + (0x563))) == 0) {
-        _ZN8NpcActor12netSendStateEjz(this, 1);
+    releaseModel();
+    _ZN11NpcFaceAnim7releaseEv(&faceAnim);
+    _ZN12Unk_02015b8c7releaseEv(&animCtrl);
+    _ZN12Unk_02003c3013func_02003dccEv(&seEmitter);
+    if (netSyncOff == 0) {
+        netSendState(1);
     }
     return TRUE;
 }
 
 BOOL NpcActor::vfunc_5c(Unk_020d77a4_Vec3 *out) {
     using namespace nQ;
-    s32 a = (*(s32 *)((u8 *)this + (0x46c)));
-    if (a == 0 && (*(s32 *)((u8 *)this + (0x470))) == 0 && (*(s32 *)((u8 *)this + (0x474))) == 0) {
+    s32 a = jointMtx.m[9];
+    if (a == 0 && jointMtx.m[10] == 0 && jointMtx.m[11] == 0) {
         return FALSE;
     }
     out->x = a;
-    out->y = (*(s32 *)((u8 *)this + (0x470)));
-    out->z = (*(s32 *)((u8 *)this + (0x474)));
+    out->y = jointMtx.m[10];
+    out->z = jointMtx.m[11];
     WorldCurve_FromCurved(out, out);
     return TRUE;
 }
@@ -3748,10 +3631,10 @@ void NpcActor::vfunc_4c(u32 v, u8) {
     }
 }
 
-s32 NpcActor::onToolHit() {
+BOOL NpcActor::onToolHit(u16 *) {
     using namespace nQ; return 0; }
 
-s32 NpcActor::vfunc_64() {
+void *NpcActor::vfunc_64() {
     using namespace nQ; return 0; }
 
 namespace nQ {
@@ -10502,24 +10385,9 @@ void HeldToolModel::func_02011b60(u32 v) {
     if (r) HeldItemModel_SetAnimSpeed(r, v);
 }
 
-inline NpcActor::~NpcActor() {
-    using namespace nDtor;
-    NpcTalkCtrl_Destroy((u8 *)this + 0x618);
-    _ZN13NpcActionCtrl13func_02019854Ev((u8 *)this + 0x564);
-    _ZN12Unk_0201347413func_020135e0Ev((u8 *)this + 0x558);
-    *(u32 *)((u8 *)this + 0x514) = (u32)data_020d6f54;
-    func_020f43c8((u8 *)this + 0x514);
-    _ZN19ActorFollowColliderD1Ev((u8 *)this + 0x4cc);
-    _ZN14CollisionStateD1Ev((u8 *)this + 0x49c);
-    _ZN12Unk_0201a13cD2Ev((u8 *)this + 0x420);
-    _ZN14NpcSpeechStateD2Ev((u8 *)this + 0x418);
-    _ZN9NpcLookAt16clearTargetActorEv((u8 *)this + 0x3b0);
-    _ZN12Unk_0201ac8813func_0201acc8Ev((u8 *)this + 0x350);
-    _ZN11NpcAnimCtrlD1Ev((u8 *)this + 0x334);
-    _ZN11NpcFaceAnimD2Ev((u8 *)this + 0x2ac);
-    _ZN14NpcMoveAnimSet13func_0201ad38Ev((u8 *)this + 0x2a0);
-    _ZN19ThreeLayerAnimModelD1Ev((u8 *)this + 0xec);
-}
+inline SndSeEmitterKind1::~SndSeEmitterKind1() {}
+
+inline NpcActor::~NpcActor() {}
 
 namespace nZ {
 extern "C" {

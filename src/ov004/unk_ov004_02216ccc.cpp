@@ -474,7 +474,7 @@ BOOL HouseOwnerAi::updateState01(HouseOwnerVillager *o) {
 }
 
 BOOL HouseOwnerAi::enterState02(HouseOwnerVillager *o) {
-    s32 t = NpcActor_getAngleToPlayer(o, o->footstepFx.unk_08);
+    s32 t = NpcActor_getAngleToPlayer(o, o->partnerPlayer);
     NpcActionCtrl_requestAction(&o->actionCtrl, 3, 2, 0, 0, 0, t, 0, 0, data_020c6cc8, 0);
     step = 0;
     return TRUE;
@@ -562,7 +562,7 @@ BOOL HouseOwnerVillager::vfunc_48(void *) {
 void HouseOwnerVillager::vfunc_4c(u32 idx, u8 v) {
     switch (idx) {
     case 3:
-        footstepFx.unk_08 = v;
+        partnerPlayer = v;
         if (v != 4) {
             NpcActor_netSetSlotsIfOwner(this, 1, gCommManager->myAid, v);
             ai.changeState(this, 2);
@@ -595,7 +595,7 @@ void HouseOwnerVillager::vfunc_4c(u32 idx, u8 v) {
         }
         break;
     case 0:
-        footstepFx.unk_08 = v;
+        partnerPlayer = v;
         if (v != 4 && v != gCommManager->myAid) {
             NpcActor_netSetSlotsIfOwner(this, 1, v, v);
             ai.changeState(this, 4);

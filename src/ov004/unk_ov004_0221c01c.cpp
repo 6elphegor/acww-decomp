@@ -946,7 +946,7 @@ void SpNpcBrewster::vfunc_4c(u32 cmd, u8 arg) {
     s32 a, b;
     switch (cmd) {
     case 3:
-        footstepFx.unk_08 = arg;
+        partnerPlayer = arg;
         if (arg != 4) {
             NpcActor_netSetSlotsIfOwner(this, 1, gCommManager->myAid, arg);
             changeAct(7);
@@ -957,7 +957,7 @@ void SpNpcBrewster::vfunc_4c(u32 cmd, u8 arg) {
         }
         break;
     case 1:
-        footstepFx.unk_08 = arg;
+        partnerPlayer = arg;
         if (arg != 4 && arg != gCommManager->myAid) {
             NpcActor_netSetSlotsIfOwner(this, 1, arg, arg);
             changeAct(6);
@@ -976,7 +976,7 @@ void SpNpcBrewster::vfunc_4c(u32 cmd, u8 arg) {
         }
         break;
     case 0:
-        footstepFx.unk_08 = arg;
+        partnerPlayer = arg;
         if (arg != 4 && arg != gCommManager->myAid) {
             NpcActor_netSetSlotsIfOwner(this, 1, arg, arg);
             changeAct(6);

@@ -3238,15 +3238,15 @@ BOOL FieldVillager::onDraw() {
         r = (this->*look.drawFn)();
     } else {
         Unk_ov068_0225f23c_Vec *pv = (Unk_ov068_0225f23c_Vec *)&position;
-        (*(Unk_ov068_0225f23c_Vec *)((u8 *)&emotionFx + 0x58)).x = position.x;
-        (*(Unk_ov068_0225f23c_Vec *)((u8 *)&emotionFx + 0x58)).y = pv->y;
-        (*(Unk_ov068_0225f23c_Vec *)((u8 *)&emotionFx + 0x58)).z = pv->z;
-        (*(Unk_ov068_0225f23c_Vec *)((u8 *)&emotionFx + 0x64)).x = position.x;
-        (*(Unk_ov068_0225f23c_Vec *)((u8 *)&emotionFx + 0x64)).y = pv->y;
-        (*(Unk_ov068_0225f23c_Vec *)((u8 *)&emotionFx + 0x64)).z = pv->z;
-        (*(Unk_ov068_0225f23c_Vec *)((u8 *)&emotionFx + 0x70)).x = position.x;
-        (*(Unk_ov068_0225f23c_Vec *)((u8 *)&emotionFx + 0x70)).y = pv->y;
-        (*(Unk_ov068_0225f23c_Vec *)((u8 *)&emotionFx + 0x70)).z = pv->z;
+        jointPos[0].x = position.x;
+        jointPos[0].y = pv->y;
+        jointPos[0].z = pv->z;
+        jointPos[1].x = position.x;
+        jointPos[1].y = pv->y;
+        jointPos[1].z = pv->z;
+        jointPos[2].x = position.x;
+        jointPos[2].y = pv->y;
+        jointPos[2].z = pv->z;
     }
     return r;
 }
@@ -3346,7 +3346,7 @@ BOOL FieldVillager::isPlayerFacing() {
 
 void FieldVillager::updateStareTimer() {
     using namespace ns_02265d34;
-    if (footstepFx.unk_0a != 0 && footstepFx.unk_09 != 0 && look.drawFn != 0 && NpcTalkCtrl_isBusy(&talkCtrl) == 0 && getPlayerMemory() != 0) {
+    if (drawEnabled != 0 && updateEnabled != 0 && look.drawFn != 0 && NpcTalkCtrl_isBusy(&talkCtrl) == 0 && getPlayerMemory() != 0) {
         if (isPlayerFacing()) {
             pushFrames++;
             if ((s32)pushFrames >= 100) {
@@ -7175,7 +7175,7 @@ void FieldVillager::vfunc_4c(u32 idx, u8 v) {
     using namespace ns_0225f1a0;
     switch (idx) {
     case 3:
-        footstepFx.unk_08 = v;
+        partnerPlayer = v;
         if (VillagerTalk_hasPartner(this)) {
             talkType = 1;
             talkPartner = (Unk_ov068_0225f904_Menu *)VillagerTalk_getPartner(this);
@@ -7248,7 +7248,7 @@ void FieldVillager::vfunc_4c(u32 idx, u8 v) {
         break;
     }
     case 0:
-        footstepFx.unk_08 = v;
+        partnerPlayer = v;
         VillagerTalk_begin((&villagerTalk), this, talkType);
         func_02015ab0((&villagerTalk), NpcActor_getPlayerActor(this, 4));
         if (talkPartner) {
@@ -7264,7 +7264,7 @@ void FieldVillager::vfunc_4c(u32 idx, u8 v) {
         talkType = 0;
         break;
     case 5:
-        footstepFx.unk_08 = v;
+        partnerPlayer = v;
         FieldVillagerAi_SaveResumeState(&ai);
         FieldVillagerAi_ChangeState(&ai, this, 6);
         break;
@@ -7340,9 +7340,9 @@ void FieldVillagerFxTimer::update(FieldVillager *o) {
         holdCount = holdCount - 1;
     }
     if (fleaEffectTimer == 0) {
-        buf.a = (*(Unk_ov068_0225f23c_Vec *)((u8 *)&o->emotionFx + 0x58)).x;
-        buf.b = (*(Unk_ov068_0225f23c_Vec *)((u8 *)&o->emotionFx + 0x58)).y;
-        buf.c = (*(Unk_ov068_0225f23c_Vec *)((u8 *)&o->emotionFx + 0x58)).z;
+        buf.a = o->jointPos[0].x;
+        buf.b = o->jointPos[0].y;
+        buf.c = o->jointPos[0].z;
         Effect_PlayById(0x81, &buf, 0, 0);
         if (Villager_HasFlea(o->villagerData)) {
             fleaEffectTimer = Random_GlobalBelow(0xf) + 0xf;

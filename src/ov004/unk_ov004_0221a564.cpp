@@ -492,11 +492,11 @@ void SickVillager::vfunc_4c(u32 idx, u8 v) {
     vec.y += 0x2000;
     switch (idx) {
     case 3:
-        footstepFx.unk_08 = v;
+        partnerPlayer = v;
         changeAct(2);
         break;
     case 0:
-        footstepFx.unk_08 = v;
+        partnerPlayer = v;
         func_02015ab0(&talk, NpcActor_getPlayerActor(this, 4));
         changeAct(3);
         break;

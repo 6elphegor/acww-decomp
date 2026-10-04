@@ -262,7 +262,7 @@ BOOL SpNpcBooker::vfunc_04() {
     NpcMoveAnimSet_setWalkAnim(&moveAnimSet, 0xd9);
     NpcMoveAnimSet_setStandAnim(&moveAnimSet, 0xd8);
     if (Scene_GetCurrent() != 0xb) {
-        footstepFx.unk_0b = 1;
+        netSyncOff = 1;
     }
     return TRUE;
 }
@@ -657,7 +657,7 @@ BOOL SpNpcBooker::vfunc_48(void *) {
 }
 
 BOOL SpNpcBooker::vfunc_58(void *p) {
-    if (footstepFx.unk_0b != 0) {
+    if (netSyncOff != 0) {
         return TRUE;
     }
     if (NpcTalkCtrl_isBusy(&talkCtrl) != 0 || NpcActor_netIsTalkLocked(this) != 0) {
@@ -671,7 +671,7 @@ void SpNpcBooker::vfunc_4c(u32 cmd, u8 arg) {
     s32 b;
     switch (cmd) {
     case 3:
-        footstepFx.unk_08 = arg;
+        partnerPlayer = arg;
         if (arg != 4) {
             NpcActor_netSetSlotsIfOwner(this, 1, gCommManager->myAid, arg);
             changeAct(6);
@@ -686,7 +686,7 @@ void SpNpcBooker::vfunc_4c(u32 cmd, u8 arg) {
         changeAct(1);
         break;
     case 0:
-        footstepFx.unk_08 = arg;
+        partnerPlayer = arg;
         if (arg != 4 && arg != gCommManager->myAid) {
             NpcActor_netSetSlotsIfOwner(this, 1, arg, arg);
             changeAct(5);

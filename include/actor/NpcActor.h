@@ -12,7 +12,9 @@
 #include "npc/Unk_0201ad18.h"
 #include "npc/NpcLookAt.h"
 #include "npc/NpcSpeechState.h"
-#include "npc/Unk_0201a13c.h"
+#include "npc/NpcEmotionFx.h"
+#include "gfx/Mtx43.h"
+#include "gfx/VecFx32.h"
 #include "game/CollisionState.h"
 #include "actor/ActorFollowCollider.h"
 #include "snd/SndSeEmitterKind1.h"
@@ -25,7 +27,7 @@ struct Unk_020d77a4_Vec;
 struct Unk_0201bc1c;
 
 // Base of all NPC actors (villagers and special NPCs; 0x640 bytes). Methods and vtable in src/main/unk_020119cc.cpp
-// (0x0201b084..0x0201be04, D1 0x02011a98), which keeps its own raw-offset declaration; the constructor is inline.
+// (0x0201b084..0x0201be04, D0 0x020119cc / D1 0x02011a98, inline destructor defined there); the constructor is inline.
 class NpcActor : public Character {
 public:
     NpcActor() : unk_ea(0xfff1) {}
@@ -100,7 +102,9 @@ public:
     /* 0x3aa */ Unk_0201ad18 unk_3aa;
     /* 0x3b0 */ Unk_0201a794 lookAt;
     /* 0x418 */ NpcSpeechState speechState;
-    /* 0x420 */ Unk_0201a13c emotionFx;
+    /* 0x420 */ NpcEmotionFx emotionFx;
+    /* 0x448 */ Mtx43 jointMtx;       // world matrix of model joint 0xb (onDraw); its translation is vfunc_5c's position
+    /* 0x478 */ VecFx32 jointPos[3];  // un-curved world positions of model joints 0x10, 0x7, 0x4 (onDraw)
     /* 0x49c */ CollisionState collisionState;
     /* 0x4cc */ ActorFollowCollider collider;
     /* 0x510 */ u8 collisionEnabled;
@@ -108,6 +112,10 @@ public:
     /* 0x512 */ u8 pad_512[2];
     /* 0x514 */ Unk_020f4080 seEmitter;
     /* 0x558 */ Unk_020135e4 footstepFx;
+    /* 0x560 */ u8 partnerPlayer;
+    /* 0x561 */ u8 updateEnabled;     // isUpdating(); onExecute does nothing else while 0
+    /* 0x562 */ u8 drawEnabled;
+    /* 0x563 */ u8 netSyncOff;        // no NPC net-record sync while set
     /* 0x564 */ NpcActionCtrl actionCtrl;
     /* 0x618 */ Unk_02014254 talkCtrl;
     /* 0x628 */ void *curHeldTool; // HeldToolModel shown in the NPC's hand
