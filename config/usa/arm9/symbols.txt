@@ -31,7 +31,7 @@ NitroMain kind:function(thumb,size=0x60) addr:0x02000c2c
 _ZN6FxVec3D1Ev kind:function(thumb,size=0x2) addr:0x02000c8c
 _ZN6Vec3Z2D1Ev kind:label(thumb) addr:0x02000c8c
 _ZN5Vec3ZD1Ev kind:label(thumb) addr:0x02000c8c
-_ZN18Unk_ov003_02258f18D1Ev kind:label(thumb) addr:0x02000c8c
+_ZN12FxVec3NoCtorD1Ev kind:label(thumb) addr:0x02000c8c
 LitCedarPos_Construct kind:function(thumb,size=0x8) addr:0x02000c90
 _ZN11LitCedarPosC1Ev kind:label(thumb) addr:0x02000c90
 FxVec3_Construct kind:function(thumb,size=0x2) addr:0x02000c98

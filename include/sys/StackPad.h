@@ -17,4 +17,10 @@ struct StackPad8 {
     ~StackPad8() {}
 };
 
+struct StackPad12 {
+    /* 0x00 */ s32 v[3];
+    StackPad12() {}
+    ~StackPad12() {}
+};
+
 #endif // SYS_STACKPAD_H

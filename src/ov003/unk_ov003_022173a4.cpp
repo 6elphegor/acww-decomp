@@ -8,6 +8,7 @@
 #include "talk/MsgRequest.h"
 #include "talk/TalkMsgRequest.h"
 #include "town/BuildingActor.h"
+#include "game/Unk_02095774_Ent.h"
 
 
 
@@ -20,14 +21,9 @@
 
 
 
-
-struct Unk_ov003_022173a8_Glob {
-    u8 pad[0x58];
-    u32 nativeFruit;
-};
 
 extern "C" {
-extern Unk_ov003_022173a8_Glob data_021ed150;
+extern SaveTownStateView data_021ed150;
 
 void ObjShadow_DrawSign(void *p);
 s32 Field_GetSpawnedKind1Count();

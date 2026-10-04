@@ -1,7 +1,9 @@
 // mwcc-version: 1.2/base
 // ov003 TU22 (field objects, .text 0x02219294-0x0221ffb8): 11 unit files merged; every old file is a namespace
 #include "types.h"
+#include "sys/StackPad.h"
 #include "gfx/VecFx32.h"
+#include "gfx/Mtx43.h"
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
 #include "gfx/ModelSet.h"
@@ -87,9 +89,9 @@ struct TreeLeafFx {
 // emitter (TreeLeafFx_ApplyParams: +0x68, +0x58, +0x50).
 struct TreeLeafFxParams {
     /* 0x00 */ s32 lifeTime;
-    /* 0x04 */ u16 unk_04;
-    /* 0x06 */ u16 unk_06;
-    /* 0x08 */ s16 unk_08;
+    /* 0x04 */ u16 genInterval;
+    /* 0x06 */ u16 particleLife;
+    /* 0x08 */ s16 initVelMagAxis;
 };
 
 // Effect callbacks of the two emitters of a leaf effect (data_ov003_02232b48/b78, EffectSpl_CreateTracked).
@@ -177,13 +179,13 @@ public:
     virtual BOOL onDraw();
 
     /* 0x050 */ CachedModel *iconModels[0x49];
-    /* 0x174 */ CachedModel treeModels[0x12];
+    /* 0x174 */ CachedModel treeModels[3][6];
     /* 0xc6c */ CachedModel cedarModels[6];
     /* 0x1014 */ CachedModel litCedarModels[3];
     /* 0x11e8 */ CachedModel palmModels[6];
-    /* 0x1590 */ CachedModel flowerModels[0x28];
-    /* 0x2df0 */ CachedModel specialFlowerModels[4];
-    /* 0x3060 */ u8 pad_3060[8];
+    /* 0x1590 */ CachedModel flowerModels[4][10];
+    /* 0x2df0 */ CachedModel specialFlowerModels[2][2];
+    /* 0x3060 */ CachedModel *dandelionModels[2];
     /* 0x3068 */ CachedModel designModels[0x20];
     /* 0x43e8 */ CachedModel grassModels[5];
     /* 0x46f4 */ u32 stoneModels[5];
@@ -290,12 +292,9 @@ struct Unk_ov003_022359a4_P2 {
     }
     bool operator==(const Unk_ov003_022359a4_P2 &o) const { return x == o.x && y == o.y; }
 };
-struct Unk_ov003_022359a4_Blk {
-    s64 v[6];
-};
 typedef Unk_ov003_022359a4_P2 P2;
 typedef VecFx32Copy V3;
-typedef Unk_ov003_022359a4_Blk Blk;
+typedef Mtx43Align8 Blk;
 struct Unk_ov003_022359a4_Ent {
     /* 0x00 */ u32 sessionSlot;
     /* 0x04 */ u32 active;
@@ -776,11 +775,6 @@ extern "C" { void Tree_DropBeeHive(TreeAnim *o, s32 *p); }
 }
 
 namespace ns_0221c220 {
-struct Unk_ov003_0221c91c_Pad {
-    s32 v[2];
-    Unk_ov003_0221c91c_Pad() {}
-    ~Unk_ov003_0221c91c_Pad() {}
-};
 typedef TreeAnimSet Big;
 typedef TreeLeafFxEntry Rec;
 typedef VecXZ Pos;
@@ -900,10 +894,7 @@ typedef Unk_ov003_0221d118_K V3k;
 struct Unk_ov003_0221cb54_Col {
     volatile u16 a, b, c;
 };
-struct Unk_ov003_0221d37c_Blk {
-    s64 v[6];
-};
-typedef Unk_ov003_0221d37c_Blk Blk;
+typedef Mtx43Align8 Blk;
 typedef FieldObjectManager O;
 typedef Unk_ov003_0221cb54_P2 P2;
 typedef VecFx32Copy V3;
@@ -1082,11 +1073,8 @@ extern "C" { void FieldItemFx_StartStrikeResult(P2 pos); }
 }
 
 namespace ns_0221db54 {
-struct Unk_ov003_0221db54_Blk {
-    s64 v[6];
-};
 typedef VecFx32Copy V3;
-typedef Unk_ov003_0221db54_Blk Blk;
+typedef Mtx43Align8 Blk;
 class TreeAnimSet {
 public:
     TreeAnimSet();
@@ -1179,11 +1167,8 @@ extern "C" void FieldObj_DrawModel(O *o, M *p, Blk m);
 }
 
 namespace ns_0221e4d4 {
-struct Unk_ov003_0221e4d4_Blk {
-    s64 v[6];
-};
 typedef VecFx32 V3;
-typedef Unk_ov003_0221e4d4_Blk Blk;
+typedef Mtx43Align8 Blk;
 typedef CachedModel Elem;
 typedef FieldObjectManager Obj;
 typedef BOOL (*Fn)();
@@ -1360,24 +1345,7 @@ extern "C" { void FieldObj_DrawItemModel(Obj *o, u32 t, V3 *pos, V3 *scale, s32 
 
 namespace ns_0221ede8 {
 typedef CachedModel Elem;
-struct Unk_ov003_0221efb4_Obj {
-    /* 0x0000 */ u8 pad_0000[0x174];
-    /* 0x0174 */ Elem treeModels[3][6];
-    /* 0x0c6c */ Elem cedarModels[6];
-    /* 0x1014 */ Elem litCedarModels[3];
-    /* 0x11e8 */ Elem palmModels[6];
-    /* 0x1590 */ Elem flowerModels[4][10];
-    /* 0x2df0 */ Elem specialFlowerModels[2][2];
-    /* 0x3060 */ void *dandelionModels[2];
-    /* 0x3068 */ u8 pad_3068[0x4af0 - 0x3068];
-    /* 0x4af0 */ u8 dandelionModelSet[0x10];
-    /* 0x4b00 */ u8 pad_4b00[0x4b20 - 0x4b00];
-    /* 0x4b20 */ TreeAnim treeAnims[3][4];
-    /* 0x5ab0 */ TreeAnim cedarAnims[4];
-    /* 0x5fe0 */ u8 pad_5fe0[0x63c4 - 0x5fe0];
-    /* 0x63c4 */ TreeAnim palmAnims[4];
-};
-typedef Unk_ov003_0221efb4_Obj Obj;
+typedef FieldObjectManager Obj;
 extern "C" {
 
 extern Obj *gFieldObjectManager;
@@ -3495,7 +3463,7 @@ extern "C" BOOL FieldObj_LoadTreeStageModels(Obj *o, u32 *a, u32 *b, void *c)
     for (i = 0; i < 3; i++) {
         s32 t = FieldObj_GetSeasonSet(o, i);
         j = 0;
-        base2 = o->treeAnims[i];
+        base2 = o->treeAnimSet.treeAnims[i];
         pb2 = &b[i];
         q2 = a + t * 6;
         for (; j < 4; j++) {
@@ -3521,7 +3489,7 @@ extern "C" BOOL FieldObj_LoadCedarStageModels(Obj *o, u32 *a, u32 *b, void *c)
     }
     for (i = 0; i < 4; i++) {
         void *n = FieldObj_GetCedarAnimModelPath(o, i);
-        TreeAnim *sg = &o->cedarAnims[i];
+        TreeAnim *sg = &o->treeAnimSet.cedarAnims[i];
         if (!CachedModel_loadWithTex(sg->animModel, n, sFieldObjectModelHeap, (a + i)[1], *b, c, 2)) {
             return FALSE;
         }
@@ -3555,7 +3523,7 @@ extern "C" BOOL FieldObj_LoadPalmStageModels(Obj *o, u32 *a, u32 *b, void *c)
     }
     for (i = 0; i < 4; i++) {
         void *n = FieldObj_GetPalmAnimModelPath(o, i);
-        TreeAnim *sg = &o->palmAnims[i];
+        TreeAnim *sg = &o->treeAnimSet.palmAnims[i];
         if (!CachedModel_loadWithTex(sg->animModel, n, sFieldObjectModelHeap, (a + i)[1], *b, c, 2)) {
             return FALSE;
         }
@@ -3882,10 +3850,10 @@ namespace ns_0221ede8 {
 extern "C" BOOL FieldObj_LoadDandelionModels(Obj *o)
 {
     BOOL r = FALSE;
-    if (ModelSet_Load(o->dandelionModelSet, (u8 *)"/fg/flower/tanpopo.nsbmd", sFieldObjectModelHeap)) {
+    if (ModelSet_Load(&o->dandelionModelSet, (u8 *)"/fg/flower/tanpopo.nsbmd", sFieldObjectModelHeap)) {
         s32 i;
         for (i = 0; i < 2; i++) {
-            o->dandelionModels[i] = ModelSet_Find(o->dandelionModelSet, data_ov003_02232720[i]);
+            o->dandelionModels[i] = (CachedModel *)ModelSet_Find(&o->dandelionModelSet, data_ov003_02232720[i]);
         }
         r = TRUE;
     }
@@ -5232,9 +5200,9 @@ namespace ns_0221c220 {
 extern "C" {
 void TreeLeafFx_ApplyParams(Rec *r, Tgt *t) {
     PRec *p = TreeLeafFx_GetParams(r);
-    t->genInterval = p->unk_04;
-    t->particleLife = p->unk_06;
-    t->initVelMagAxis = p->unk_08;
+    t->genInterval = p->genInterval;
+    t->particleLife = p->particleLife;
+    t->initVelMagAxis = p->initVelMagAxis;
     r->lifeTimer = p->lifeTime;
 }
 }
@@ -5246,7 +5214,7 @@ void TreeLeafFx_UpdatePos(Rec *r, Tgt *t) {
     s32 sc = data_ov003_0222f564[r->treeType][r->treeStage];
     s32 x, y, z, d, e;
     s32 ang, lim;
-    Unk_ov003_0221c91c_Pad pad;
+    StackPad8 pad;
     switch (r->motionType) {
     case 3:
         switch (r->animKind - 4) {

@@ -4,7 +4,9 @@
 // (the file-local Obj/V3/Rec/Msg typedefs and the extern "C" declarations differ per file); functions are emitted in
 // descending address order, each in its own namespace block.
 #include "types.h"
+#include "sys/StackPad.h"
 #include "gfx/VecFx32.h"
+#include "game/SegmentHitResult.h"
 #include "Unk_020d8c7c.h"
 #include "actor/Actor.h"
 #include "actor/Character.h"
@@ -188,11 +190,6 @@ void FieldPos_ToUnit(s32 *a, s32 *b, s32 *c);
 void *BlockMap_GetItemPtr(void *m, s32 a, s32 b, s32 c, s32 d, s32 e);
 }
 
-struct Unk_ov003_02204f3c_Pad {
-    s32 v[3];
-    Unk_ov003_02204f3c_Pad() {}
-    ~Unk_ov003_02204f3c_Pad() {}
-};
 extern "C" s32 Unk_02006d14_getHeldToolKind(PlayerActor *self);
 extern "C" BOOL Unk_02006d14_isPosInReach(PlayerActor *self, s32 *p, s32 m);
 extern "C" BOOL Unk_02006d14_interactAt(PlayerActor *self, s32 m);
@@ -472,12 +469,6 @@ struct PitfallStruggleWork {
     /* 0x14 */ u16 f14;
     /* 0x16 */ u16 pad_16;
     /* 0x18 */ s32 f18;
-};
-
-struct Unk_ov003_022067c4_Pad {
-    s32 v[2];
-    Unk_ov003_022067c4_Pad() {}
-    ~Unk_ov003_022067c4_Pad() {}
 };
 
 enum Unk_ov003_02206a84_Three { Unk_ov003_02206a84_THREE = 3 };
@@ -1235,14 +1226,6 @@ struct DigUpItemMsgWork {
     u8 talkStep;
 };
 
-struct Unk_ov003_022093bc_Sub {
-    u8 unk_00;
-    u8 unk_01;
-    u8 unk_02;
-    u8 unk_03;
-    u8 unk_04;
-};
-
 
 
 typedef VecFx32 V3;
@@ -1250,7 +1233,6 @@ typedef Vec2 Pair;
 typedef PlayerActionRequest Msg;
 extern "C" void _ZN19PlayerActionRequest6assignEiis(Msg *self, s32 a, s32 b, s16 c);
 typedef PlayerBuryItemArgs Pay;
-typedef Unk_ov003_022093bc_Sub Sub;
 
 typedef PlayerActor Obj;
 
@@ -1311,15 +1293,15 @@ void PlayerActor_BuryItemCheckEnd(Obj *o);
 void PlayerActor_BuryItemTurn(Obj *o);
 void PlayerActor_NetBuryItem();
 void PlayerActor_SetupBuryItem(Obj *o, Msg *m);
-void PlayerActor_BuryItemSetNetData(Sub *s, u32 v, u8 a, u8 b, u8 c);
+void PlayerActor_BuryItemSetNetData(u8 *s, u32 v, u8 a, u8 b, u8 c);
 s32 PlayerActor_RequestBuryItem(Obj *o, u32 k, Pair *p, u32 v, s32 a, s16 b);
 void PlayerActor_MainDugItemStore(Obj *o);
 void PlayerActor_DugItemStoreUpdate(Obj *o);
 void PlayerActor_DugItemStoreShrink(Obj *o);
 void PlayerActor_NetDugItemStore(Obj *o, s32 a);
 void PlayerActor_SetupDugItemStore(Obj *o, Msg *m);
-void PlayerActor_DugItemStoreGetNetData(Sub *s, u8 *a, u8 *b, u8 *c);
-void PlayerActor_DugItemStoreSetNetData(Sub *s, u8 a, u8 b, u8 c);
+void PlayerActor_DugItemStoreGetNetData(u8 *s, u8 *a, u8 *b, u8 *c);
+void PlayerActor_DugItemStoreSetNetData(u8 *s, u8 a, u8 b, u8 c);
 s32 PlayerActor_RequestDugItemStore(Obj *o, Pair *p, u32 c, u32 d, s32 e);
 void PlayerActor_MainDigUpItem(Obj *o);
 void PlayerActor_DigUpItemMessage(Obj *o);
@@ -1338,15 +1320,15 @@ extern "C" void PlayerActor_BuryItemCheckEnd(Obj *o);
 extern "C" void PlayerActor_BuryItemTurn(Obj *o);
 extern "C" void PlayerActor_NetBuryItem();
 extern "C" void PlayerActor_SetupBuryItem(Obj *o, Msg *m);
-extern "C" void PlayerActor_BuryItemSetNetData(Sub *s, u32 v, u8 a, u8 b, u8 c);
+extern "C" void PlayerActor_BuryItemSetNetData(u8 *s, u32 v, u8 a, u8 b, u8 c);
 extern "C" s32 PlayerActor_RequestBuryItem(Obj *o, u32 k, Pair *p, u32 v, s32 a, s16 b);
 extern "C" void PlayerActor_MainDugItemStore(Obj *o);
 extern "C" void PlayerActor_DugItemStoreUpdate(Obj *o);
 extern "C" void PlayerActor_DugItemStoreShrink(Obj *o);
 extern "C" void PlayerActor_NetDugItemStore(Obj *o, s32 a);
 extern "C" void PlayerActor_SetupDugItemStore(Obj *o, Msg *m);
-extern "C" void PlayerActor_DugItemStoreGetNetData(Sub *s, u8 *a, u8 *b, u8 *c);
-extern "C" void PlayerActor_DugItemStoreSetNetData(Sub *s, u8 a, u8 b, u8 c);
+extern "C" void PlayerActor_DugItemStoreGetNetData(u8 *s, u8 *a, u8 *b, u8 *c);
+extern "C" void PlayerActor_DugItemStoreSetNetData(u8 *s, u8 a, u8 b, u8 c);
 extern "C" s32 PlayerActor_RequestDugItemStore(Obj *o, Pair *p, u32 c, u32 d, s32 e);
 extern "C" void PlayerActor_MainDigUpItem(Obj *o);
 extern "C" void PlayerActor_DigUpItemMessage(Obj *o);
@@ -1469,7 +1451,7 @@ static inline BOOL Unk_ov003_02209fc8_IsNone(u16 *p) {
 }
 // An object with an (empty) inline constructor and destructor keeps its stack slot although no code touches it;
 // the original frame has such an unused u16 slot between loc and the first inline temporary.
-struct Unk_ov003_02209fc8_ItE { u16 v; Unk_ov003_02209fc8_ItE() {} ~Unk_ov003_02209fc8_ItE() {} };
+struct DigUpItemStackPad { u16 v; DigUpItemStackPad() {} ~DigUpItemStackPad() {} };
 
 // forward declarations (functions are emitted in descending address order)
 extern "C" void PlayerActor_DigUpItemUpdate(Obj *o);
@@ -1953,12 +1935,6 @@ struct Unk_ov003_0220c448_Bits {
 };
 
 
-class Unk_ov003_0220c768_A {
-public:
-    // ctor CollisionTag_Construct, dtor CollisionTag_Destruct are called explicitly
-    u8 pad_00[0x14];
-};
-
 extern "C" void GroundInfo_initAtPos(GroundInfoBase *self, void *v, s32 a, s32 b);
 extern "C" void GroundInfo_Destruct(GroundInfoBase *self);
 
@@ -2062,10 +2038,6 @@ struct BugNetSwingWork {
 
 
 
-
-struct Unk_ov003_0220d114_Ent {
-    u8 v[20];
-};
 
 typedef PlayerActor Obj;
 typedef VecFx32Ctor V3;
@@ -2471,11 +2443,6 @@ struct Unk_ov003_0220e970_Pv {
     }
 };
 
-struct Unk_ov003_0220e970_Mtx {
-    s32 m[9];
-    VecFx32 v;
-};
-
 struct Unk_ov003_0220e970_Bits {
     u32 lo : 12;
     u32 mid : 16;
@@ -2493,7 +2460,7 @@ extern "C" void _ZN19PlayerActionRequest6assignEiis(Msg *self, s32 a, s32 b, s16
 typedef VecXZ P2;
 typedef Unk_ov003_0220e970_Pv Pv;
 typedef Unk_ov003_0220e970_Rec Rec;
-typedef Unk_ov003_0220e970_Mtx Mtx;
+typedef Mtx43 Mtx;
 typedef TalkMsgRequest Sec;
 
 extern "C" {
@@ -2616,7 +2583,7 @@ extern "C" void PlayerActor_AxeChopSetArgs(Rec *r, u32 a, u32 b, Pv p);
 
 namespace ns_0220f314 {
 
-struct Unk_ov003_0220f314_P2 {
+struct PlayerAxeSwingArgs {
     s32 x, z;
     u8 flag;
 };
@@ -2633,7 +2600,7 @@ typedef PlayerActor Obj;
 typedef VecFx32Ctor V3;
 typedef PlayerActionRequest Msg;
 extern "C" void _ZN19PlayerActionRequest6assignEiis(Msg *self, s32 a, s32 b, s16 c);
-typedef Unk_ov003_0220f314_P2 P2;
+typedef PlayerAxeSwingArgs P2;
 typedef Vec2 Pair;
 
 extern "C" {
@@ -2897,34 +2864,9 @@ struct Unk_ov003_022105bc_Bits {
     u32 hi : 4;
 };
 
-struct Unk_ov003_02210628_Pay {
-    s32 a;
-    s32 c;
-    s32 d;
-    s16 e;
-    u8 b;
-};
-
-struct Unk_ov003_02210608_Rec {
-    s32 a;
-    s32 c;
-    s32 d;
-    s32 f;
-    s16 e;
-    u8 b;
-};
-
 struct Unk_ov003_02210bdc_Rec {
     u8 a;
     u8 b;
-};
-
-struct Unk_ov003_02210eb4_Rec {
-    s32 a;
-    s32 b;
-    s16 c;
-    u8 pad_0a;
-    u8 cnt;
 };
 
 
@@ -2932,10 +2874,10 @@ typedef PlayerActor Obj;
 typedef Unk_ov003_022105bc_Bits Bits;
 typedef PlayerActionRequest Msg;
 extern "C" void _ZN19PlayerActionRequest6assignEiis(Msg *self, s32 a, s32 b, s32 c);
-typedef Unk_ov003_02210628_Pay Pay;
-typedef Unk_ov003_02210608_Rec Rec;
+typedef PlayerStowItemArgs Pay;
+typedef ns_0220fc88::StowItemWork Rec;
 typedef Unk_ov003_02210bdc_Rec Rec2;
-typedef Unk_ov003_02210eb4_Rec Rec3;
+typedef DoorEnterWork Rec3;
 
 extern "C" {
 extern void *gCommManager;
@@ -3198,9 +3140,9 @@ extern "C" void _ZN19PlayerActionRequest6assignEiis(Msg *self, s32 a, s32 b, s16
 typedef ReleaseCreatureWork Rec;
 typedef Vec2 Pair;
 
-struct Unk_ov003_02211818_T {
-    u16 a;
-    s16 b, c, d;
+struct ReleaseCreatureModelLocals {
+    u16 item;
+    s16 scaleX, scaleY, scaleZ;
 };
 
 extern "C" {
@@ -3977,7 +3919,7 @@ extern "C" void PlayerActor_EndReleaseCreature(Obj *o) {
 namespace ns_02211818 {
 extern "C" void PlayerActor_ReleaseCreatureUpdateModel(Obj *o) {
     Rec *r6 = (Rec *)&o->actionWork;
-    Unk_ov003_02211818_T t;
+    ReleaseCreatureModelLocals t;
     Blk b;
     V3 v50;
     V3 v5c;
@@ -3985,7 +3927,7 @@ extern "C" void PlayerActor_ReleaseCreatureUpdateModel(Obj *o) {
     s32 *r7;
     s16 sc;
     s32 m;
-    t.a = r6->item;
+    t.item = r6->item;
     r7 = &r6->effect;
     Unk_02006d14_turnToCamera(o, 0x400);
     b = o->itemHandMtx;
@@ -4009,7 +3951,7 @@ extern "C" void PlayerActor_ReleaseCreatureUpdateModel(Obj *o) {
     } else if (*r7 == -1) {
         *r7 = -2;
         if (r6->isFish == 0) {
-            s32 i = Idx(&t.a, 0x12b0, 0x12e7);
+            s32 i = Idx(&t.item, 0x12b0, 0x12e7);
             if (i == 0x18 || i == 0x30 || (u32)(i - 0x32) <= 1) {
                 v5c.x = b.m[9];
                 v5c.y = b.m[10];
@@ -4035,10 +3977,10 @@ extern "C" void PlayerActor_ReleaseCreatureUpdateModel(Obj *o) {
         }
     }
     if (r6->isFish == 0) {
-        t.b = sc;
-        t.c = sc;
-        t.d = sc;
-        HeldInsect_SetHandMatrix(o->sessionSlot, &t.b, &b, 0);
+        t.scaleX = sc;
+        t.scaleY = sc;
+        t.scaleZ = sc;
+        HeldInsect_SetHandMatrix(o->sessionSlot, &t.scaleX, &b, 0);
     } else {
         float f = (float)sc / 100.0f;
         float g;
@@ -4048,7 +3990,7 @@ extern "C" void PlayerActor_ReleaseCreatureUpdateModel(Obj *o) {
             g = 4096.0f * f - 0.5f;
         }
         s32 k = (s32)g;
-        s32 i = Idx(&t.a, 0x12e8, 0x131f);
+        s32 i = Idx(&t.item, 0x12e8, 0x131f);
         Fish_GetDisplayScale(&v68, i);
         v68.x = func_01ffcb0c(v68.x, k);
         v68.y = func_01ffcb0c(v68.y, k);
@@ -4057,7 +3999,7 @@ extern "C" void PlayerActor_ReleaseCreatureUpdateModel(Obj *o) {
         v5c.y = b.m[10];
         v5c.z = b.m[11];
         WorldCurve_FromCurved(&v5c, &v5c);
-        i = Idx(&t.a, 0x12e8, 0x131f);
+        i = Idx(&t.item, 0x12e8, 0x131f);
         FishDisplay_SetEntry(r6->fishDisplay, i, &v5c, &v68, 0, 0, 0, 1, 1, 0x1f);
     }
 }
@@ -4665,9 +4607,9 @@ extern "C" void PlayerActor_NetDoorEnter(Obj *o, s32 x) {
 namespace ns_022105bc {
 extern "C" s32 PlayerActor_DoorEnterMove(Obj *o) {
     Rec3 *r = (Rec3 *)&o->actionWorkRaw[0];
-    u8 *p = &r->cnt;
-    if (r->cnt) {
-        *p = r->cnt - 1;
+    u8 *p = &r->e;
+    if (r->e) {
+        *p = r->e - 1;
         if (*p == 0) {
             Unk_020102ec_startAnimOnce(o, 0x33, 3, 0);
         }
@@ -5040,11 +4982,11 @@ extern "C" void PlayerActor_MainAct3C() {}
 
 namespace ns_022105bc {
 extern "C" void PlayerActor_StowItemSetArgs(Pay *p, s32 a, u32 b, s32 c, s32 d, s16 e) {
-    p->a = a;
-    p->b = b;
-    p->c = c;
-    p->d = d;
-    p->e = e;
+    p->st = a;
+    p->bits = b;
+    p->a = c;
+    p->b = d;
+    p->h = e;
 }
 }
 
@@ -5076,12 +5018,12 @@ extern "C" s32 PlayerActor_RequestStowItem(Obj *o, s32 a, s32 b, s32 c, s32 d, s
 
 namespace ns_022105bc {
 extern "C" void PlayerActor_StowItemSetWork(Rec *p, s32 a, u32 b, s32 c, s32 d, s16 e, s32 f) {
-    p->a = a;
-    p->b = b;
-    p->c = c;
-    p->d = d;
-    p->e = e;
-    p->f = f;
+    p->st = a;
+    p->bits = b;
+    p->a = c;
+    p->b = d;
+    p->h = e;
+    p->timer = f;
 }
 }
 
@@ -6295,17 +6237,17 @@ extern "C" void PlayerActor_AxeBreakUpdate(Obj *o) {
             Unk_02006d14_playSe(o, 0x840);
             Unk_02006d14_clearActionFlag(o, 0);
             Unk_02006d14_setActionFlag(o, 9);
-            Mtx t = *(Mtx *)&o->toolHandMtx;
+            Mtx t = o->toolHandMtx;
             V3 pos;
-            pos.x = t.v.x;
-            pos.y = t.v.y;
-            pos.z = t.v.z;
+            pos.x = t.m[9];
+            pos.y = t.m[10];
+            pos.z = t.m[11];
             WorldCurve_FromCurved(&pos, &pos);
             Effect_PlayById(0x8c, &pos, 0, 0);
-            pos.x = t.v.x;
-            pos.y = t.v.y;
-            pos.z = t.v.z;
-            t.v.x = t.v.y = t.v.z = 0;
+            pos.x = t.m[9];
+            pos.y = t.m[10];
+            pos.z = t.m[11];
+            t.m[9] = t.m[10] = t.m[11] = 0;
             Mtx t2 = t;
             V3 v;
             V3 out;
@@ -7795,7 +7737,7 @@ extern "C" s32 PlayerActor_BugNetSwingCheckWall(Obj *o) {
 
 namespace ns_0220c448 {
 extern "C" s32 PlayerActor_BugNetSwingCheckGround(Obj *o, V3 *a, V3 *b, V3 *c) {
-    Unk_ov003_0220c768_A l;
+    SegmentHitResult l;
     CollisionTag_Construct(&l);
     s32 x, y;
     if (Collision_TestSegment(&l, c, a, 0x1b)) {
@@ -9546,7 +9488,7 @@ extern "C" void PlayerActor_SetupDigUpItem(Obj *o, Msg *m) {
     V3 v = pl->v;
     u16 loc = pl->a;
     u8 b = pl->b;
-    Unk_ov003_02209fc8_ItE dx;
+    DigUpItemStackPad dx;
 
     Rec *r = (Rec *)&o->actionWork;
     r->talkStep = 0;
@@ -9869,18 +9811,18 @@ extern "C" s32 PlayerActor_RequestDugItemStore(Obj *o, Pair *p, u32 c, u32 d, s3
 }
 
 namespace ns_022093bc {
-extern "C" void PlayerActor_DugItemStoreSetNetData(Sub *s, u8 a, u8 b, u8 c) {
-    s->unk_00 = a;
-    s->unk_01 = b;
-    s->unk_02 = c;
+extern "C" void PlayerActor_DugItemStoreSetNetData(u8 *s, u8 a, u8 b, u8 c) {
+    s[0] = a;
+    s[1] = b;
+    s[2] = c;
 }
 }
 
 namespace ns_022093bc {
-extern "C" void PlayerActor_DugItemStoreGetNetData(Sub *s, u8 *a, u8 *b, u8 *c) {
-    *a = s->unk_00;
-    *b = s->unk_01;
-    *c = s->unk_02;
+extern "C" void PlayerActor_DugItemStoreGetNetData(u8 *s, u8 *a, u8 *b, u8 *c) {
+    *a = s[0];
+    *b = s[1];
+    *c = s[2];
 }
 }
 
@@ -9894,7 +9836,7 @@ extern "C" void PlayerActor_SetupDugItemStore(Obj *o, Msg *m) {
     r->step = t2;
     r->digUnitX = t0;
     r->digUnitZ = t1;
-    PlayerActor_DugItemStoreSetNetData((Sub *)&o->netData, t0, t1, t2);
+    PlayerActor_DugItemStoreSetNetData(o->netData.bytes, t0, t1, t2);
     Unk_020102ec_startAnimOnce(o, 0x50, 3, 0);
     Unk_02006d14_playSe(o, 0x4f);
 }
@@ -9903,7 +9845,7 @@ extern "C" void PlayerActor_SetupDugItemStore(Obj *o, Msg *m) {
 namespace ns_022093bc {
 extern "C" void PlayerActor_NetDugItemStore(Obj *o, s32 a) {
     u8 b[3];
-    PlayerActor_DugItemStoreGetNetData((Sub *)&o->netData, &b[0], &b[1], &b[2]);
+    PlayerActor_DugItemStoreGetNetData(o->netData.bytes, &b[0], &b[1], &b[2]);
     Pair p;
     p.x = b[0];
     p.y = b[1];
@@ -10017,11 +9959,11 @@ extern "C" s32 PlayerActor_RequestBuryItem(Obj *o, u32 k, Pair *p, u32 v, s32 a,
 }
 
 namespace ns_022093bc {
-extern "C" void PlayerActor_BuryItemSetNetData(Sub *s, u32 v, u8 a, u8 b, u8 c) {
+extern "C" void PlayerActor_BuryItemSetNetData(u8 *s, u32 v, u8 a, u8 b, u8 c) {
     NetBuf_WriteU16(s, v);
-    s->unk_02 = a;
-    s->unk_03 = b;
-    s->unk_04 = c;
+    s[2] = a;
+    s[3] = b;
+    s[4] = c;
 }
 }
 
@@ -10049,7 +9991,7 @@ extern "C" void PlayerActor_SetupBuryItem(Obj *o, Msg *m) {
     r->fillMode = k;
     r->answerOk = 0;
     r->faceAngle = Math_Atan2(v.x - o->position.x, v.z - o->position.z);
-    PlayerActor_BuryItemSetNetData((Sub *)&o->netData, h, (u8)x, (u8)z, k);
+    PlayerActor_BuryItemSetNetData(o->netData.bytes, h, (u8)x, (u8)z, k);
     Unk_020102ec_startAnimOnce(o, 0x49, 7, 0);
     Unk_02006d14_clearActionFlag(o, 0xd);
 }
@@ -12102,7 +12044,7 @@ extern "C" const s32 sFieldFrontDist = 0x2000;
 
 namespace ns_02206574 {
 extern "C" void PlayerActor_BeeStingUpdate(Obj *o) {
-    Unk_ov003_022067c4_Pad pad;
+    StackPad8 pad;
 
     switch (o->animId) {
     case 0x71:
@@ -13064,7 +13006,7 @@ extern "C" BOOL PlayerActor_FieldUseTool(PlayerActor *self) {
     u16 ang;
     s32 xy[2];
     struct {
-        Unk_ov003_02204f3c_Pad pad;
+        StackPad12 pad;
         VecFx32 t, s, z, va, vb, vc;
     } l;
     if (self->actionPressed) {

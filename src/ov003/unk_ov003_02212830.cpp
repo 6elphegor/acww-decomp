@@ -1,6 +1,8 @@
 // mwcc-version: 1.2/sp2
 #include "types.h"
+#include "sys/StackPad.h"
 #include "gfx/VecFx32.h"
+#include "gfx/Mtx43.h"
 #include "actor/ActorProfile.h"
 #include "actor/ActorCollider.h"
 #include "talk/TalkWindowState.h"
@@ -27,14 +29,11 @@
 typedef VecFx32Ctor V3;
 typedef VecFx32 V3P;
 
-struct Unk_ov003_022135c4_Blk {
-    s64 v[6];
-};
 struct Unk_ov003_022135c4_Rec {
     s32 x, y, z, w;
 };
 typedef Quat Q4;
-typedef Unk_ov003_022135c4_Blk Blk;
+typedef Mtx43Align8 Blk;
 typedef Unk_ov003_022135c4_Rec Rec;
 
 struct Unk_ov003_02212f04_Pos {
@@ -170,12 +169,6 @@ static inline void *Unk_ov003_02213058_Cell(void *g, s32 x, s32 y) {
 
 typedef void (Obj::*Fn0)();
 typedef BOOL (Obj::*Fn1)();
-
-struct Unk_ov003_02213278_Pad {
-    s32 v[1];
-    Unk_ov003_02213278_Pad() {}
-    ~Unk_ov003_02213278_Pad() {}
-};
 
 extern "C" void Snowball_Create() {
     new Snowball;
@@ -631,7 +624,7 @@ extern "C" BOOL Snowball_IsLooseBall(Obj *o) {
 }
 
 extern "C" BOOL Snowball_IsSnowmanPart(Obj *o) {
-    Unk_ov003_02213278_Pad pad;
+    StackPad4 pad;
     if (!Snowball_IsLooseBall(o)) return TRUE;
     return FALSE;
 }

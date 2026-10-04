@@ -1,5 +1,6 @@
 #include "types.h"
 #include "gfx/VecFx32.h"
+#include "game/SegmentHitResult.h"
 #include "game/Unk_0202f2ac_V3.h"
 #include "game/GroundInfoBase.h"
 #include "game/UnitShapeQueryX.h"
@@ -184,12 +185,6 @@ static inline BOOL Unk_02030be4_B(GroundCellView *T)
     if (T->quadAttrs[0] == 0x14 && T->quadAttrs[1] == 0x14 && T->quadAttrs[2] == 0x14 && T->quadAttrs[3] == 0x14) return TRUE;
     return FALSE;
 }
-// result of Collision_TestSegment (an CollisionTagX and the hit data)
-struct SegmentHitResult {
-    u8 attr;
-    u32 callback;
-    VecFx32 hitNormal;
-};
 extern "C" void VEC_Add(VecFx32 *out, VecFx32 *a, VecFx32 *b);
 extern "C" void _ZN14CollisionState9beginStepEv(CollisionState *o);
 extern "C" void _ZN14CollisionState15updateWallFlagsEi(CollisionState *o, s32 v);

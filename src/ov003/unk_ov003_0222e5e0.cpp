@@ -28,9 +28,9 @@ void MI_CpuCopy8(void *, void *, s32);
 
 InsectNetSyncRec sInsectNetSync[8];
 
-extern "C" void _ZN18Unk_ov003_0222e708C2Ev() {}
+extern "C" void _ZN13InsectNetSyncC2Ev() {}
 
-extern "C" void _ZN18Unk_ov003_0222e708D2Ev() {}
+extern "C" void _ZN13InsectNetSyncD2Ev() {}
 
 extern "C" BOOL InsectNetSync_Set(s32 unused, s32 idx, s32 v, s32 *p, u8 e, s32 f) {
     if (NetArea_IsLocalOwner()) {

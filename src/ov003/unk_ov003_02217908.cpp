@@ -6,6 +6,8 @@
 #include "gfx/Mtx43.h"
 #include "gfx/Model.h"
 #include "gfx/DebugColor.h"
+#include "town/Unk_0204e858_Grid.h"
+#include "gfx/BgModelCache.h"
 
 // TU17 of ov003: ground helper free functions 0x02217908..0x02217b10 and the six colour constants of its header
 
@@ -28,23 +30,6 @@ struct Unk_ov003_022179b8_Ent {
     s32 kind;
     s32 x;
     s32 z;
-};
-
-struct Unk_ov003_02217a9c_Cell {
-    u8 pad_00[0x20];
-    void *bgModel;
-    u8 pad_24[4];
-};
-
-struct Unk_ov003_02217a9c_Grid {
-    Unk_ov003_02217a9c_Cell *cells;
-    u32 w;
-    u32 h;
-};
-
-struct Unk_ov003_02217a84_Sub {
-    u8 pad_00[0x10];
-    void *bgObjects;
 };
 
 // 4-byte colour constructors (unreferenced except by __sinit)
@@ -94,11 +79,11 @@ extern "C" BOOL FieldGround_ReleaseBackdrop(Model *p) {
 }
 
 extern "C" void *FieldGround_GetBlockAcre(GroundSoundSrc *r, u32 x, u32 y) {
-    Unk_ov003_02217a9c_Grid *g = (Unk_ov003_02217a9c_Grid *)gSceneBlockMap;
+    Unk_0204e858_Grid *g = (Unk_0204e858_Grid *)gSceneBlockMap;
     if (g != 0) {
-        Unk_ov003_02217a9c_Cell *c;
-        if (x < g->w && y < g->h && g->cells != 0) {
-            c = &g->cells[y * g->w + x];
+        TownBlockCell *c;
+        if (x < g->width && y < g->height && g->blocks != 0) {
+            c = &g->blocks[y * g->width + x];
         } else {
             c = 0;
         }
@@ -110,9 +95,9 @@ extern "C" void *FieldGround_GetBlockAcre(GroundSoundSrc *r, u32 x, u32 y) {
 }
 
 extern "C" void *FieldGround_GetBlockBgObjects(GroundSoundSrc *r, u32 x, u32 y) {
-    Unk_ov003_02217a84_Sub *s = (Unk_ov003_02217a84_Sub *)FieldGround_GetBlockAcre(r, x, y);
+    BgAcreModel *s = (BgAcreModel *)FieldGround_GetBlockAcre(r, x, y);
     if (s != 0) {
-        return s->bgObjects;
+        return s->bsd;
     }
     return 0;
 }

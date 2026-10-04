@@ -1,5 +1,6 @@
 // mwcc-version: 1.2/sp2
 #include "types.h"
+#include "sys/StackPad.h"
 #include "actor/ActorProfile.h"
 #include "npc/VillagerId.h"
 #include "talk/TalkWindowState.h"
@@ -20,12 +21,6 @@
 
 
 
-
-struct Unk_02204930_Pad {
-    s32 v;
-    Unk_02204930_Pad() {}
-    ~Unk_02204930_Pad() {}
-};
 
 
 
@@ -191,7 +186,7 @@ BOOL VillagerBoard::setupIdle() {
 void VillagerBoard::mainIdle() {}
 
 BOOL VillagerBoard::setupRead() {
-    Unk_02204930_Pad pad;
+    StackPad4 pad;
     _ZN9Character17attachTalkRequestEi(this, this);
     setFileName("obj_etc_board");
     msgIndex = 0;

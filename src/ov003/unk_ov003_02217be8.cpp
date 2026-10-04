@@ -12,6 +12,8 @@
 #include "sys/ProcProfile.h"
 #include "gfx/DebugColor.h"
 #include "gfx/NNSG3dRS.h"
+#include "town/Unk_0204e858_Grid.h"
+#include "gfx/BgModelCache.h"
 
 // TU19 of ov003: ground part classes 0x02217be8 / 0x02217dbc and the scene 0x02232418 (0x02217be8-0x022187f8)
 
@@ -27,18 +29,6 @@ struct NNSG3dResMdl;
 
 // ---- this overlay's part classes ----
 
-struct Unk_ov003_02217c3c_P {
-    u8 pad_00[8];
-    NNSG3dResMdl *modelRes;
-    u8 pad_0c[0x14];
-    u32 groundTex;
-};
-
-struct Unk_ov003_02217c3c_Obj {
-    u8 pad_00[0x20];
-    Unk_ov003_02217c3c_P *bgModel;
-};
-
 
 class FieldGroundBlock {
 public:
@@ -47,7 +37,7 @@ public:
     BOOL release();
     BOOL draw();
     BOOL updateAnims();
-    BOOL init(Unk_ov003_02217c3c_Obj *o, s32 a, s32 b);
+    BOOL init(TownBlockCell *o, s32 a, s32 b);
 
     /* 0x00 */ s32 acreId;
     /* 0x04 */ CachedModel model;
@@ -80,16 +70,7 @@ public:
 };
 
 
-struct Unk_ov003_02218478_Cell {
-    u8 pad[0x28];
-};
-
-struct Unk_ov003_02218478_Grid {
-    Unk_ov003_02218478_Cell *cells;
-    u32 w, h;
-};
-
-struct Unk_ov003_02217948 {
+struct SndEnvChannelStorage {
     u32 pad[0xc / 4];
 };
 
@@ -106,7 +87,7 @@ public:
     /* 0x150 */ FieldGroundBackdrop backdrop;
     /* 0x1f0 */ TexPatVramAnim riverPatAnim;
     /* 0x280 */ TexPatVramAnim beachPatAnim;
-    /* 0x310 */ Unk_ov003_02217948 envChannel;
+    /* 0x310 */ SndEnvChannelStorage envChannel;
 
     FieldGround();
     virtual BOOL onCreate();
@@ -135,7 +116,7 @@ extern "C" {
 extern void *gCamera;
 extern VecFx32Ctor gCameraLookAt;
 extern void *gBgHeap;
-extern Unk_ov003_02218478_Grid *gSceneBlockMap;
+extern Unk_0204e858_Grid *gSceneBlockMap;
 extern s32 data_021ce63c;
 extern s32 data_020c8cbc;
 extern u8 data_021f47e0[];
@@ -249,9 +230,9 @@ BOOL FieldGround::onCreate() {
     r4 = BgModelCache_getBeBPatTex(BgModelCache_Get());
     r0 = BgModelCache_getBeBPatAnm(BgModelCache_Get());
     TexPatVramAnim_init(&beachPatAnim, (void *)r6, "grd_beB", "grd_beB_pl", r4, r0, 1);
-    Unk_ov003_02218478_Grid *g = gSceneBlockMap;
-    numBlocksX = g->w;
-    numBlocksZ = g->h;
+    Unk_0204e858_Grid *g = gSceneBlockMap;
+    numBlocksX = g->width;
+    numBlocksZ = g->height;
     blocks = (FieldGroundBlock *)Heap_Alloc(gBgHeap, numBlocksZ * (numBlocksX * 0xec));
     {
         FieldGroundBlock *e = blocks;
@@ -283,13 +264,13 @@ BOOL FieldGround::onCreate() {
     s32 idx = 0;
     for (bx = 0; bx < numBlocksZ; bx++) {
         for (by = 0; by < numBlocksX; by++) {
-            Unk_ov003_02218478_Cell *c;
-            if (by < g->w && bx < g->h && g->cells != 0) {
-                c = &g->cells[bx * g->w + by];
+            TownBlockCell *c;
+            if (by < g->width && bx < g->height && g->blocks != 0) {
+                c = &g->blocks[bx * g->width + by];
             } else {
                 c = 0;
             }
-            (blocks + idx++)->init((Unk_ov003_02217c3c_Obj *)c, by, bx);
+            (blocks + idx++)->init(c, by, bx);
         }
     }
     FieldGround_ResetEnvChannel(&envChannel);
@@ -577,15 +558,15 @@ FieldGroundBlock::FieldGroundBlock() {
     blockZ = 0;
 }
 
-BOOL FieldGroundBlock::init(Unk_ov003_02217c3c_Obj *o, s32 a, s32 b) {
+BOOL FieldGroundBlock::init(TownBlockCell *o, s32 a, s32 b) {
     blockX = a;
     blockZ = b;
     acreId = MapBlockAcre_getAcreId(o);
     u32 t = BgModelCache_getGroundTex(BgModelCache_Get());
-    Unk_ov003_02217c3c_P *p = o->bgModel;
-    u32 q = p->groundTex;
+    BgAcreModel *p = o->bgModel;
+    u32 q = (u32)p->tex;
     if (q != 0) t = q;
-    NNSG3dResMdl *res = p->modelRes;
+    NNSG3dResMdl *res = (NNSG3dResMdl *)p->mdl;
     ((Model *)&model)->setResourceAndBind(res, t);
     if (matAnims[0].allocMatAnm((u32)res, gBgHeap)) {
         matAnims[0].init(BgModelCache_getGroundMatAnm(BgModelCache_Get()), 0, 0x1000, 0);

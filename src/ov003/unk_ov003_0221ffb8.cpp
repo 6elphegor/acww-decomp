@@ -164,10 +164,6 @@ typedef VecFx32 V3_f5;
 
 typedef Mtx43 T48_f5;
 
-struct Unk_ov003_02221cec_Dead : V3_f5 {
-    Unk_ov003_02221cec_Dead() {}
-};
-
 typedef Character Ent_f5;
 
 typedef FishCatch Self_f5;
@@ -2746,7 +2742,7 @@ extern "C" BOOL FishCatch_StateStart(Self_f5 *self, u32 a) {
 //@ 0x2222504
 extern "C" BOOL FishCatch_SetupLine(Self_f5 *self, u32 a) {
     struct {
-        Unk_ov003_02221cec_Dead dead;
+        VecFx32Ctor dead;
         T48_f5 t;
         V3_f5 d, w;
         T48_f5 blk;

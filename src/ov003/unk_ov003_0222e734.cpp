@@ -3,6 +3,7 @@
 #include "gfx/VecFx32.h"
 #include "net/CommManager.h"
 #include "field/Snowball.h"
+#include "town/Unk_0204e858_Grid.h"
 
 // TU27 of ov003: free functions (spawn-position search over a 4x4 pool of 16x16 bitmaps, object slot table)
 struct UnitMaskChunk {
@@ -16,26 +17,16 @@ struct UnitMaskPool {
     UnitMaskChunk c[4][4];
 };
 
-struct Unk_ov003_0222e734_Cell {
-    u8 pad_00[0x24];
-    u16 *unk_24;
-};
-
-struct Unk_ov003_0222e734_Grid {
-    Unk_ov003_0222e734_Cell *cells;
-    u32 w, h;
-};
-
 struct LooseSnowballsView {
     VecFx32 a;
     u32 pad_0c;
     VecFx32 b;
 };
 
-struct Unk_ov003_0222ed20_Loc {
-    u8 k[3];
+struct SnowballSpawnLocals {
+    u8 snowmanDate[3];
     u8 pad;
-    u32 w[2];
+    u32 dateTime[2];
 };
 
 // ---- externs ----
@@ -47,7 +38,7 @@ struct Unk_ov003_0222ed20_Loc {
 #define SnowmanRecords_getInfo _ZN14SnowmanRecords7getInfoEjPjS0_S0_PhS1_S1_
 
 extern "C" {
-extern Unk_ov003_0222e734_Grid *gSceneBlockMap;
+extern Unk_0204e858_Grid *gSceneBlockMap;
 extern CommManager *gCommManager;
 extern u8 data_021ed2e6[];
 
@@ -103,20 +94,20 @@ extern "C" void SnowballSpawner_SpawnLooseBalls(void *self) {
         return;
     }
     struct {
-        Unk_ov003_0222ed20_Loc l;
+        SnowballSpawnLocals l;
         s32 p[3];
         VecFx32 A, B;
     } f;
     u32 i;
     for (i = 0; i < 3; i++) {
-        f.l.w[0] = 0;
-        f.l.w[1] = 0;
-        Clock_GetDateTime(f.l.w);
+        f.l.dateTime[0] = 0;
+        f.l.dateTime[1] = 0;
+        Clock_GetDateTime(f.l.dateTime);
         if (((u8 *)&f.l)[6] < 6) {
-            DateTime_SubDays(f.l.w, 1);
+            DateTime_SubDays(f.l.dateTime, 1);
         }
-        if (SnowmanRecords_getInfo(data_021ed2e6, i, &f.p[0], &f.p[1], &f.p[2], &f.l.k[0], &f.l.k[1], &f.l.k[2]) != 0) {
-            if (f.l.k[0] == ((u8 *)&f.l)[9] && f.l.k[1] == ((u8 *)&f.l)[8] && f.l.k[2] == ((u8 *)&f.l)[7]) {
+        if (SnowmanRecords_getInfo(data_021ed2e6, i, &f.p[0], &f.p[1], &f.p[2], &f.l.snowmanDate[0], &f.l.snowmanDate[1], &f.l.snowmanDate[2]) != 0) {
+            if (f.l.snowmanDate[0] == ((u8 *)&f.l)[9] && f.l.snowmanDate[1] == ((u8 *)&f.l)[8] && f.l.snowmanDate[2] == ((u8 *)&f.l)[7]) {
                 LooseSnowballs_Get();
                 LooseSnowballs_reset();
                 return;
@@ -159,14 +150,14 @@ extern "C" void SnowballSpawner_SpawnLooseBalls(void *self) {
 }
 
 extern "C" void SnowballSpawner_SpawnSnowmen(void *self) {
-    Unk_ov003_0222e734_Grid *g = gSceneBlockMap;
+    Unk_0204e858_Grid *g = gSceneBlockMap;
     u32 by, bx;
     s32 lx, n;
-    Unk_ov003_0222e734_Cell *cell;
+    TownBlockCell *cell;
     for (by = 1; by <= 4; by++) {
         for (bx = 1; bx <= 4; bx++) {
-            if (bx < g->w && by < g->h && g->cells != 0) {
-                cell = &g->cells[by * g->w + bx];
+            if (bx < g->width && by < g->height && g->blocks != 0) {
+                cell = &g->blocks[by * g->width + bx];
             } else {
                 cell = 0;
             }
@@ -372,7 +363,7 @@ extern "C" BOOL UnitMaskPool_PickRandom(UnitMaskPool *pool, s32 *ox, s32 *oy) {
 }
 
 extern "C" BOOL Snowball_FindSpawnPos(void *a, void *b, s32 c, s32 d) {
-    Unk_ov003_0222e734_Grid *g = gSceneBlockMap;
+    Unk_0204e858_Grid *g = gSceneBlockMap;
     static UnitMaskPool pool;
     UnitMaskPool_Clear(&pool);
     u32 by, bx, ly, lx, k;

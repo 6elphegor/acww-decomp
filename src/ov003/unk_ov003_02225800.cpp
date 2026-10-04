@@ -47,13 +47,13 @@ void _ZN10GroundInfoD1Ev(void *self);
 
 
 
-class Unk_ov003_0222e708 {
+class InsectNetSync {
 public:
-    Unk_ov003_0222e708();
-    ~Unk_ov003_0222e708();
+    InsectNetSync();
+    ~InsectNetSync();
 };
 
-class InsectManager : public GameProc, public Unk_ov003_0222e708 {
+class InsectManager : public GameProc, public InsectNetSync {
 public:
     InsectManager();
     virtual ~InsectManager();
@@ -74,9 +74,9 @@ public:
 };
 
 // global object whose destructor is main's FxVec3::~FxVec3 (0x02000c8c); no constructor call in the __sinit
-class Unk_ov003_02258f18 {
+class FxVec3NoCtor {
 public:
-    ~Unk_ov003_02258f18();
+    ~FxVec3NoCtor();
     u32 pad[3];
 };
 
@@ -236,7 +236,7 @@ extern "C" void *sInsectBehaviors[120] = {
     (void *)Insect_InitAnt, (void *)Insect_UpdateAnt,
 };
 
-extern "C" { Unk_ov003_02258f18 sWateringPos; }
+extern "C" { FxVec3NoCtor sWateringPos; }
 
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define StrBSizeData_getLightUnit _ZN12StrBSizeData12getLightUnitEPiS0_j
@@ -284,9 +284,8 @@ extern InsectSpawnList *gInsectSpawnTables[];
 extern CommManager *gCommManager;
 extern u8 data_0213b91c[];
 extern u8 data_0213b954[];
-typedef void *(*Unk_ov003_02225ed0_Fn)(void *);
-void *__cxa_vec_ctor(void *, s32, s32, Unk_ov003_02225ed0_Fn, Unk_ov003_02225ed0_Fn);
-void *__cxa_vec_cleanup(void *, s32, s32, Unk_ov003_02225ed0_Fn);
+void *__cxa_vec_ctor(void *, s32, s32, void *(*)(void *), void *(*)(void *));
+void *__cxa_vec_cleanup(void *, s32, s32, void *(*)(void *));
 void *FxVec3_Construct(void *);
 void *func_02000c8c(void *);
 u32 Item_MakeBuilding(u32 a);
@@ -370,11 +369,6 @@ struct InsectSpawnMask {
 };
 
 
-
-struct Unk_ov003_02226768_Vec : VecFx32Ctor {
-    Unk_ov003_02226768_Vec() {}
-    ~Unk_ov003_02226768_Vec() {}
-};
 
 typedef Insect Rec;
 
@@ -570,10 +564,10 @@ struct Unk_ov003_02234b04_Ent {
     u16 a, b, c;
 };
 
-struct Unk_ov003_02227970_Loc {
-    s8 a;
-    u8 i;
-    u8 c;
+struct FieldInsectUpdateLocals {
+    s8 netKind;
+    u8 index;
+    u8 netAlarm;
 };
 
 extern "C" {
@@ -8805,13 +8799,13 @@ namespace s03 {
 extern "C" void FieldInsect_UpdateAll(void *a) {
     u32 k;
     CommManager *g;
-    Unk_ov003_02227970_Loc l;
+    FieldInsectUpdateLocals l;
     s32 v18, v1c;
     V3 t1, t2;
     Rec *o = sFieldInsects;
     v18 = 0;
     v1c = 0;
-    l.i = 0;
+    l.index = 0;
     g = gCommManager;
     s32 neg = -1;
     goto test0;
@@ -8823,13 +8817,13 @@ loop0:
         if (CommManager_isSlotActive(g, g->myAid)) {
             p204 = &o->position;
             p1d4 = &o->targetPos;
-            l.a = neg;
-            if (InsectNetSync_Set(a, l.i, o->kind, p1d4, o->alarm, 1) == 0) {
-                l.c = 0;
-                if (InsectNetSync_Get(a, l.i, &l.a, &v18, &v1c, &l.c)) {
+            l.netKind = neg;
+            if (InsectNetSync_Set(a, l.index, o->kind, p1d4, o->alarm, 1) == 0) {
+                l.netAlarm = 0;
+                if (InsectNetSync_Get(a, l.index, &l.netKind, &v18, &v1c, &l.netAlarm)) {
                     if (k == 0) {
                         if (v18 > 1) {
-                            s32 t = l.a;
+                            s32 t = l.netKind;
                             if (t >= 0) {
                                 p204->x = v18;
                                 p204->z = v1c;
@@ -8847,9 +8841,9 @@ loop0:
                             }
                         }
                     } else {
-                        u32 c = l.c;
+                        u32 c = l.netAlarm;
                         if (c == 0xff || v18 == 1) {
-                            if (l.a == 0x1e) {
+                            if (l.netKind == 0x1e) {
                                 u32 st = o->state;
                                 if (st == 9 || st == 0x11) goto sw0;
                             }
@@ -8874,7 +8868,7 @@ loop0:
         switch (k) {
         case 2:
             if (NetArea_IsLocalOwner() == 0 && CommManager_isSlotActive(g, g->myAid)) {
-                if (l.a != o->kind && v18 > 0) {
+                if (l.netKind != o->kind && v18 > 0) {
                     func_ov003_022287c8(a, o, 1);
                 } else {
                     if (Insect_IsTreeStillThere(a, o)) Insect_LoadModel(a, o, 0);
@@ -8886,7 +8880,7 @@ loop0:
         case 3:
             if (CommManager_isSlotActive(g, g->myAid)) {
                 if (NetArea_IsLocalOwner() == 0) {
-                    if (Insect_IsNetKindMismatch(a, o, l.a, v18, v1c)) {
+                    if (Insect_IsNetKindMismatch(a, o, l.netKind, v18, v1c)) {
                         o->state = 10;
                         func_ov003_022287c8(a, o, 1);
                     }
@@ -8898,7 +8892,7 @@ loop0:
                     o->canSing = 1;
                 }
             }
-            Insect_Update(a, o, l.i, 1);
+            Insect_Update(a, o, l.index, 1);
             break;
         case 4:
             if (CommManager_isSlotActive(g, g->myAid) == 0) {
@@ -8913,7 +8907,7 @@ loop0:
                 SndEnvChannel_callUpdateRelative(&o->seEmitter, &t1);
                 if (o->alarm != 0xff) {
                     o->alarm = 0xff;
-                    l.i |= 0x10;
+                    l.index |= 0x10;
                     V3 *q1 = &o->targetPos;
                     o->targetPos.x = 1;
                     q1->y = 1;
@@ -8923,7 +8917,7 @@ loop0:
                     q2->y = 1;
                     q2->z = 1;
                     CommManager_beginRecord(g);
-                    CommManager_writeRecord(g, &l.i, 1);
+                    CommManager_writeRecord(g, &l.index, 1);
                     CommManager_endRecord(g, 0x30, 7);
                 }
                 *cnt = *cnt + 1;
@@ -8944,9 +8938,9 @@ loop0:
         }
     }
     o++;
-    l.i++;
+    l.index++;
 test0:
-    if (l.i < 8) goto loop0;
+    if (l.index < 8) goto loop0;
 }
 }
 #undef SndEnvChannel_callUpdateRelative
@@ -10075,7 +10069,7 @@ extern "C" void InsectPool_UpdateInView(s32 obj, s32 flag) {
         n = 2;
     }
     if (c) {
-        Unk_ov003_02226768_Vec cp;
+        VecFx32CtorDtor cp;
         VecFx32Ctor *g = &gCameraLookAt;
         cp.x = g->x;
         cp.y = g->y;
