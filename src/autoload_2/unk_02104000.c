@@ -61,14 +61,14 @@ void NNSi_G3dAnmObjInitNsBma();
 void NNSi_G3dAnmObjInitNsBta();
 void NNSi_G3dAnmObjInitNsBtp();
 void NNSi_G3dAnmObjInitNsBva();
-void func_021044a4();
-void func_021074c8();
+void NNSi_G3dAnmBlendVis();
+void NNSi_G3dAnmObjInitNsBca();
 AnmObjInitFunc data_0213bcd8[10] = { // NNS_G3dAnmObjInitFuncArray
     {'M', 0, 'M' << 8 | 'A', NNSi_G3dAnmObjInitNsBma},
     {'M', 0, 'T' << 8 | 'P', NNSi_G3dAnmObjInitNsBtp},
     {'M', 0, 'T' << 8 | 'A', NNSi_G3dAnmObjInitNsBta},
     {'V', 0, 'V' << 8 | 'A', NNSi_G3dAnmObjInitNsBva},
-    {'J', 0, 'C' << 8 | 'A', func_021074c8},
+    {'J', 0, 'C' << 8 | 'A', NNSi_G3dAnmObjInitNsBca},
     {0, 0, 0, 0},
     {0, 0, 0, 0},
     {0, 0, 0, 0},
@@ -76,7 +76,7 @@ AnmObjInitFunc data_0213bcd8[10] = { // NNS_G3dAnmObjInitFuncArray
     {0, 0, 0, 0},
 };
 void *data_0213bcd0 = (void *)NNSi_G3dAnmBlendJnt;
-void *data_0213bccc = (void *)func_021044a4;
+void *data_0213bccc = (void *)NNSi_G3dAnmBlendVis;
 void *data_0213bcc8 = (void *)NNSi_G3dAnmCalcNsBma;
 void *data_0213bcc4 = (void *)NNSi_G3dAnmCalcNsBtp;
 void *data_0213bcd4 = (void *)NNSi_G3dAnmBlendMat;

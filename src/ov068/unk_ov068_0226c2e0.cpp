@@ -356,7 +356,7 @@ void Camera_SetMode18();
 void KkShowFx_Stop();
 void CafeCoffeeSet_StartEffectB(void *p);
 void CafeCoffeeSet_SetFlagEF8();
-void func_02105f90(s32 a, s32 b);
+void NNS_G3dMdlSetMdlLightEnableFlagAll(s32 a, s32 b);
 void NpcAnimCtrl_playAnim(void *a, void *b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h);
 void ThreeLayerAnimModel_AssignJointsToLayer2(void *a, s32 b, s32 c);
 void NpcActionCtrl_requestPlayAnim(void *self, s32 a, s32 b, u32 c, u16 d, u16 e);
@@ -550,7 +550,7 @@ BOOL SpNpcRoostGuest::onCreate() {
         return FALSE;
     }
     if (guestType == 7) {
-        func_02105f90(*(s32 *)((u8 *)this + 0x148), 3);
+        NNS_G3dMdlSetMdlLightEnableFlagAll(*(s32 *)((u8 *)this + 0x148), 3);
     }
     changeAct(0);
     collider.groups |= 2;

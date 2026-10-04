@@ -298,9 +298,9 @@ BOOL SceneId_IsVillagerHouse(u32 a);
 BOOL SceneId_IsHouseRoom(u32 a);
 void Math_StepS32(void *p, s32 a, s32 b);
 void Mem_Free(void *p);
-void *func_021012bc(char *name);
-void func_02101310(void *file);
-BOOL func_02101340(void *file, const void *mode, void *arc);
+void *NNS_FndGetArchiveFileByName(char *name);
+void NNS_FndUnmountArchive(void *file);
+BOOL NNS_FndMountArchive(void *file, const void *mode, void *arc);
 void NNS_G3dMdlSetMdlAlpha(Ctx *c, s32 i, u8 v);
 void NNS_G3dMdlSetMdlEmi(Pal *p, s32 i, u16 c);
 void NNS_G3dMdlSetMdlDiff(Ctx *c, s32 i, u16 v);
@@ -622,12 +622,12 @@ extern "C" void StrBSize_Load(void) {
     p = File_LoadAlloc("/str/bsize.arc", gCurrentHeap, 4, 0);
     sStrBSizeArchive = p;
     if (p != NULL) {
-        if (func_02101340(file, "STR", p)) {
+        if (NNS_FndMountArchive(file, "STR", p)) {
             for (i = 0; i < 0x22; i++) {
                 Str_SPrintf(name, "STR:a/%d.bsize", i);
-                sStrBSizeTable[i] = (u32)func_021012bc(name);
+                sStrBSizeTable[i] = (u32)NNS_FndGetArchiveFileByName(name);
             }
-            func_02101310(file);
+            NNS_FndUnmountArchive(file);
         }
     } else {
         for (i = 0; i < 0x22; i++) {

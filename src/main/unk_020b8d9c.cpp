@@ -168,7 +168,7 @@ struct WeatherManager {
 };
 enum Unk_020ba518_E { Unk_020ba518_E0 = 0 };
 // Locals of Sky_UpdateLighting kept together in their stack order: room light colour, current time, 3D clear colour
-// (gradient key 1) and the colour argument of func_02104238
+// (gradient key 1) and the colour argument of NNS_G3dGlbMaterialColorSpecEmi
 struct SkyLightingLocals {
     /* 0x0 */ u16 roomColor;
     /* 0x2 */ MinuteHour time;
@@ -6626,7 +6626,7 @@ extern "C" {
 u16 SceneLights_GetRoomColor();
 }
 extern "C" {
-s32 func_02104238(s32, u32, s32);
+s32 NNS_G3dGlbMaterialColorSpecEmi(s32, u32, s32);
 }
 
 extern "C" void RainSe_InitVolume(Unk_0213b938 *p);
@@ -6988,7 +6988,7 @@ extern "C" void Sky_UpdateLighting(s32 a, s32 b) {
     }
     b0.roomColor = SceneLights_GetRoomColor();
     b0.roomColorArg = b0.roomColor;
-    func_02104238(0, b0.roomColorArg, 0);
+    NNS_G3dGlbMaterialColorSpecEmi(0, b0.roomColorArg, 0);
 }
 
 extern "C" s16 Sky_GetLightColor(s32 i) {

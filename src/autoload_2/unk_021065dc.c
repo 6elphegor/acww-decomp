@@ -18,7 +18,7 @@ typedef struct P32 { s32 x, y; } P32;
 
 extern BOOL getRotDataByIdx_(M33 *, void *, void *, u32);   // itcm: decode compressed rotation matrix (tblA, tblB, index)
 extern void VEC_Normalize(s32 *, s32 *);                 // itcm: normalise a 3-vector (src, dst)
-extern u8 *func_021062ec(u8 *, u32);                     // block by index (N005a)
+extern u8 *NNS_G3dGetDataBlockHeaderByIdx(u8 *, u32);                     // block by index (N005a)
 u8 *NNSi_G3dGetTexPatAnmDataByIdx(u8 *, u32);
 u8 *func_021067c4(u8 *, u32, u32);
 
@@ -228,7 +228,7 @@ u8 *func_021067c4(u8 *p, u32 sig, u32 blk)
     if (*(u32 *)p == sig) {
         u32 i;
         for (i = 0; i < *(u16 *)(p + 14); i++) {
-            u8 *b = func_021062ec(p, i);
+            u8 *b = NNS_G3dGetDataBlockHeaderByIdx(p, i);
             if (*(u32 *)b == blk) {
                 return b;
             }

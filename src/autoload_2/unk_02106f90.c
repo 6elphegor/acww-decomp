@@ -51,7 +51,7 @@ static inline u8 *JntEnt(RS *rs)
 typedef struct P16 { s16 x, y; } P16;
 
 // anm object init from a joint anim: tbl[i] = node id | 0x100 (node map cleared with MI_CpuClear16)
-void func_021074c8(TexObj *o, u8 *res, u8 *src)
+void NNSi_G3dAnmObjInitNsBca(TexObj *o, u8 *res, u8 *src)
 {
     u32 i;
     u16 *offs;

@@ -749,8 +749,8 @@ u16 SceneLights_GetRoomColor(void);
 void NNS_G3dMdlSetMdlEmi(void *p, s32 a, s32 b);
 void AnimModel_stepAnim(void *p);
 s32 AnimFrameCtrl_isFinished(void *p);
-void func_02105f00(void *p, s32 a);
-void func_02105f48(void *p, s32 a);
+void NNS_G3dMdlSetMdlAlphaAll(void *p, s32 a);
+void NNS_G3dMdlSetMdlPolygonIDAll(void *p, s32 a);
 s32 Item_GetStumpSize(u16 *p);
 s32 Item_GetTreeStage(u16 *p);
 void *TreeLeafFx_SpawnLeaves(void *d, s32 mode, s32 n, u16 *cell, VecXZ *p, s32 c);
@@ -1145,7 +1145,7 @@ extern u16 sTreeFruitIcons[];
 
 void Model_drawShapesDirect(M *p, s32 a);
 u16 SceneLights_GetRoomColor();
-void func_02105fd8(u32 a, u32 b);
+void NNS_G3dMdlSetMdlEmiAll(u32 a, u32 b);
 s32 ObjShadow_DrawRock(s32 a);
 void ObjShadow_DrawTree(V3 *v, u8 n);
 s32 Flower_GetSpecies(u16 *p);
@@ -1227,7 +1227,7 @@ void Mtx43_SetTranslate(Blk *m, s32 x, s32 y, s32 z);
 void Mtx43_RotateX(Blk *m, s32 a);
 void Mtx43_RotateXYZ(Blk *m, s32 x, s32 y, s32 z);
 void Mtx43_Scale(Blk *m, s32 x, s32 y, s32 z);
-void func_02105f00(void *p, s32 a);
+void NNS_G3dMdlSetMdlAlphaAll(void *p, s32 a);
 void Heap_Free(void *heap, void *p);
 void *ExpHeap_CreateInPlace(void *p, u32 n);
 void *ExpHeap_Create(u32 n, void *heap);
@@ -4230,7 +4230,7 @@ s32 FieldObj_DrawIconModel(Obj *o, u32 idx, V3 *a, s32 b, V3 *c, s32 d, s32 e, s
     Mtx43_RotateX(&data_021f47e0, ang);
     Mtx43_RotateXYZ(&data_021f47e0, *(s16 *)&d, *(s16 *)&e, *(s16 *)&f);
     Mtx43_Scale(&data_021f47e0, c->x, c->y, c->z);
-    func_02105f00(m->resMdl, b);
+    NNS_G3dMdlSetMdlAlphaAll(m->resMdl, b);
     FieldObj_DrawModel(o, m, data_021f47e0);
     return (s32)m;
 }
@@ -4691,7 +4691,7 @@ extern "C" void FieldObj_DrawModel(O *o, M *p, Blk m)
         Model_drawShapesDirect(p, 0);
         volatile u16 a = SceneLights_GetRoomColor();
         volatile u16 b = a;
-        func_02105fd8((u32)p->resMdl, b);
+        NNS_G3dMdlSetMdlEmiAll((u32)p->resMdl, b);
     }
 }
 }
@@ -5900,8 +5900,8 @@ void TreeAnim_Update(TreeAnim *o) {
                 }
                 break;
             }
-            func_02105f00(o->resMdl, o->alpha >> 12);
-            func_02105f48(o->resMdl, r6 + 0x33);
+            NNS_G3dMdlSetMdlAlphaAll(o->resMdl, o->alpha >> 12);
+            NNS_G3dMdlSetMdlPolygonIDAll(o->resMdl, r6 + 0x33);
             if (r5 != 0) {
                 void *g = TownBlockMap_Get();
                 if (g != 0) {

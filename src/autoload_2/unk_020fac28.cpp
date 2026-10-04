@@ -117,7 +117,7 @@ static inline u32 rnd() {
 
 // Spawns the child particles of particle a (resource child block: count at +12): takes nodes from the free list, copies the
 // position, scales the velocity by the child ratio plus a random spread (LCG data_021f5c3c, 0x5eedf715 / 0x1b0cb173).
-extern "C" void func_020fc6bc(Part *a, Emit *b, void *list) {
+extern "C" void spl_gen_child(Part *a, Emit *b, void *list) {
     Part *p;
     s32 m;
     s32 r;
@@ -238,8 +238,8 @@ extern "C" void rotTypeY(s32 a, s32 b, s32 *m) {
     m[11] = 0;
 }
 
-// Same as func_020fbad0; only the final quad differs (as func_020fb378 differs from func_020fac28).
-extern "C" void func_020fbf94(Mg *self, Part *p, DrawCb fp) {
+// Same as spl_draw_chld_bb; only the final quad differs (as spl_draw_dbb differs from spl_draw_chld_dbb).
+extern "C" void spl_draw_bb(Mg *self, Part *p, DrawCb fp) {
     s32 sx;
     s32 sy;
     u8 mode = self->cur->res->p0->mode;
@@ -326,7 +326,7 @@ extern "C" void func_020fbf94(Mg *self, Part *p, DrawCb fp) {
 }
 
 // Particle draw: plain screen-facing billboard (rotation about the view axis by the particle angle h32, scaled).
-extern "C" void func_020fbad0(Mg *self, Part *p, DrawCb fp) {
+extern "C" void spl_draw_chld_bb(Mg *self, Part *p, DrawCb fp) {
     s32 *mtx = self->mtx;
     s32 sc = self->cur->res->p0->s48;
     V3Arr v;
@@ -414,8 +414,8 @@ extern "C" void func_020fbad0(Mg *self, Part *p, DrawCb fp) {
     drawXYPlane(self->cur->h100, self->cur->h102, 0, 0);
 }
 
-// Same as func_020fac28; only the final quad differs (texture coordinates / size taken from the emitter and the resource).
-extern "C" void func_020fb378(Mg *self, Part *p, DrawCb fp) {
+// Same as spl_draw_chld_dbb; only the final quad differs (texture coordinates / size taken from the emitter and the resource).
+extern "C" void spl_draw_dbb(Mg *self, Part *p, DrawCb fp) {
     s32 *mtx = self->mtx;
     s32 sc = self->cur->res->p0->s48;
     V3Arr e;
@@ -536,7 +536,7 @@ extern "C" void func_020fb378(Mg *self, Part *p, DrawCb fp) {
 // camera forward vector, scaled by how edge-on it is). self = particle manager (+0x30 polygon attribute base, +0x34 current
 // emitter, +0x38 camera matrix), p = particle, fp = per-resource callback (pos, pos) returning the roll angle.
 // Writes POLYGON_ATTR (0x040004a4), MTX_IDENTITY (0x04000454), MTX_TRANS (0x04000470), COLOR (0x04000480).
-extern "C" void func_020fac28(Mg *self, Part *p, DrawCb fp) {
+extern "C" void spl_draw_chld_dbb(Mg *self, Part *p, DrawCb fp) {
     s32 *mtx = self->mtx;
     s32 sc = self->cur->res->p0->s48;
     V3Arr e;

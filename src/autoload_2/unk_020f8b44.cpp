@@ -182,7 +182,7 @@ void spl_init(Entry *e, void *tab, void *v);
 Entry *spl_pop_front(void *list);
 void spl_push_front(void *list, Entry *e);
 Entry *spl_del(void *list, Entry *e);
-void func_020f969c(Mgr *m, u32 a);
+void spl_draw(Mgr *m, u32 a);
 void spl_calc(Mgr *m, Entry *e);
 extern u16 data_021f5c38;
 void spl_calc_gravity(void);
@@ -365,7 +365,7 @@ extern "C" void SPL_Calc(Mgr *m) {
     if (data_021f5c38 > 1) data_021f5c38 = 0;
 }
 
-extern "C" void func_020f8cb8(Mgr *m, u32 a1, u32 a2) {
+extern "C" void SPL_Draw(Mgr *m, u32 a1, u32 a2) {
     Entry *e;
     *(vu16 *)0x04000060 = (u16)((*(vu16 *)0x04000060 & ~0x3000) | 8);
     m->w38 = a1;
@@ -373,7 +373,7 @@ extern "C" void func_020f8cb8(Mgr *m, u32 a1, u32 a2) {
     if (e == 0) return;
     do {
         m->cur = e;
-        if (e->fl.b3 == 0) func_020f969c(m, a2);
+        if (e->fl.b3 == 0) spl_draw(m, a2);
         e = e->next;
     } while (e != 0);
 }

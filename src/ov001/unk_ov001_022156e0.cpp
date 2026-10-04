@@ -69,9 +69,9 @@ WfcManualSetupWork *sWfcManualSetup;
 extern "C" {
 s32 FX_ModS32(u32, s32);
 s32 FX_DivS32(u32, s32);
-s32 func_020fedcc(void *);
-s32 func_020fedec(void *, void *);
-s32 func_020fee84(void *);
+s32 DWC_BACKUPlCheckAddress(void *);
+s32 DWC_BACKUPlCheckIp(void *, void *);
+s32 DWCi_BACKUPlConvMaskCidr(void *);
 void GX_LoadBG3Char();
 void GX_LoadBG2Char();
 void GX_LoadBG3Scr();
@@ -571,7 +571,7 @@ extern "C" void WfcManualSetup_Exit() {
     }
     case 11: {
         u8 *p = WfcConfig_GetEdit();
-        p[0xd0] = func_020fee84(p + 0xf0);
+        p[0xd0] = DWCi_BACKUPlConvMaskCidr(p + 0xf0);
         if (p[0xf5] != 0) {
             MI_CpuFill8(p + 0xc0, 0, 4);
             MI_CpuFill8(p + 0xc4, 0, 4);
@@ -1190,11 +1190,11 @@ extern "C" void WfcManualSetup_FlashToggle() {
 extern "C" BOOL WfcManualSetup_ValidateSettings() {
     u8 *o = WfcConfig_GetEdit();
     if (o[0x40] == 0) return FALSE;
-    if (o[0xf6] == 0 && func_020fedcc(o + 0xc8) == 0 && func_020fedcc(o + 0xcc) == 0) return FALSE;
+    if (o[0xf6] == 0 && DWC_BACKUPlCheckAddress(o + 0xc8) == 0 && DWC_BACKUPlCheckAddress(o + 0xcc) == 0) return FALSE;
     if (o[0xf5] == 0) {
-        if (func_020fedcc(o + 0xc0) == 0) return FALSE;
-        if (func_020fedcc(o + 0xc4) == 0) return FALSE;
-        if (func_020fedec(o + 0xc0, o + 0xf0) == 0) return FALSE;
+        if (DWC_BACKUPlCheckAddress(o + 0xc0) == 0) return FALSE;
+        if (DWC_BACKUPlCheckAddress(o + 0xc4) == 0) return FALSE;
+        if (DWC_BACKUPlCheckIp(o + 0xc0, o + 0xf0) == 0) return FALSE;
     }
     return TRUE;
 }

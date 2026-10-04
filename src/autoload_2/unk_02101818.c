@@ -64,8 +64,8 @@ typedef struct Font {
 } Font;
 typedef struct TextRect { s32 width; s32 height; } TextRect;
 
-void func_02101818(void);
-u32 func_02101834(u32 key);
+void NNS_GfdResetFrmPlttVramState(void);
+u32 NNS_GfdFreeFrmPlttVram(u32 key);
 u32 NNS_GfdAllocFrmPlttVram(u32 szByte, BOOL b4pltt, u32 opt);
 extern s32 NNSi_G2dGetUnpackedFont(void *file, Font *font);
 extern u32 NNSi_G2dSplitCharUTF16(const void **);
@@ -236,10 +236,10 @@ void *NNS_G2dFindBinaryBlock(BinHeader *h, u32 kind) {
 // NNS_GfdInitFrmPlttVramManager
 void NNS_GfdInitFrmPlttVramManager(u32 szByte, BOOL useAsDefault) {
     data_021f5cb4.size = szByte;
-    func_02101818();
+    NNS_GfdResetFrmPlttVramState();
     if (useAsDefault) {
         data_0213bc18 = NNS_GfdAllocFrmPlttVram;
-        data_0213bc1c = func_02101834;
+        data_0213bc1c = NNS_GfdFreeFrmPlttVram;
     }
 }
 
@@ -257,12 +257,12 @@ u32 NNS_GfdAllocFrmPlttVram(u32 szByte, BOOL b4pltt, u32 opt) {
 }
 
 // NNS_GfdDefaultFuncFreePlttVram (always returns 0)
-u32 func_02101834(u32 key) {
+u32 NNS_GfdFreeFrmPlttVram(u32 key) {
     return 0;
 }
 
 // NNS_GfdResetFrmPlttVramState
-void func_02101818(void) {
+void NNS_GfdResetFrmPlttVramState(void) {
     data_021f5cb4.head = 0;
     data_021f5cb4.tail = data_021f5cb4.size;
 }

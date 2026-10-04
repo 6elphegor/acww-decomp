@@ -49,8 +49,8 @@ extern DwcFriendControl *sDwcFriendControl;
 extern DwcMatchControl *sDwcMatch;
 
 u64 OS_GetTick();
-s32 func_020ffc60(s32, void *);
-s32 func_020ffdd8(void *);
+s32 DWC_GetGsProfileId(s32, void *);
+s32 DWCi_Acc_IsValidFriendData(void *);
 s32 strcmp(const char *, const char *);
 s32 STD_GetStringLength(const char *);
 void func_02127838(char *, const char *);
@@ -289,8 +289,8 @@ s32 GsGp_GetBuddyStatus(u32, u32, void *);
 s32 GsUtil_GetKeyValue(const char *, void *, void *, s32);
 s32 DwcMatch_SendReservation(s32, s32);
 u64 OS_GetTick(void);
-s32 func_020ffc60(s32, u8 *);
-s32 func_020ffdd8(u8 *);
+s32 DWC_GetGsProfileId(s32, u8 *);
+s32 DWCi_Acc_IsValidFriendData(u8 *);
 s32 func_0212b854(void *, s32, s32);
 
 void DwcMatch_AbortAndRestart(void);
@@ -2911,10 +2911,10 @@ s32 DwcMatch_TryNextFriend(s32 a, s32 b) {
         }
         started = 1;
         c = *gp;
-        x = func_020ffc60(DwcLogin_GetUserData(), c->friendList + c->friendIndices[c->friendCursor] * 12);
+        x = DWC_GetGsProfileId(DwcLogin_GetUserData(), c->friendList + c->friendIndices[c->friendCursor] * 12);
         if (x == 0) continue;
         if (x == -1) continue;
-        if (func_020ffdd8((*gp)->friendList + (*gp)->friendIndices[(*gp)->friendCursor] * 12) == 0) continue;
+        if (DWCi_Acc_IsValidFriendData((*gp)->friendList + (*gp)->friendIndices[(*gp)->friendCursor] * 12) == 0) continue;
         i = 1;
         c = *gp;
         n = c->numClients;

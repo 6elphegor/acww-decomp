@@ -14,7 +14,7 @@ struct DwcLoginId {
 struct DwcUserData {
     /* 0x00 */ u8 unk_00[4];
     /* 0x04 */ DwcLoginId tempLoginId; // copied to DwcLoginControl::loginId when valid (DwcLogin_StartNasAuth)
-    /* 0x10 */ DwcLoginId loginId;     // formatted for NAS when func_020ffdfc says the user has one
+    /* 0x10 */ DwcLoginId loginId;     // formatted for NAS when DWCi_Acc_IsAuthentic says the user has one
     /* 0x1c */ u32 profileId;
     /* 0x20 */ u8 unk_20[4];
     /* 0x24 */ u32 gameCode;

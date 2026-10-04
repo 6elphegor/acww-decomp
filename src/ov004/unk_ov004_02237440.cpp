@@ -488,7 +488,7 @@ void func_0209c140(void *p);
 void PooledModel_reset(void *p);
 void ModelSlotPool_destroy(void *p);
 void *PooledModel_getModel(void *p);
-u32 func_02106020(u32 a, u32 b);
+u32 NNS_G3dMdlGetMdlAlpha(u32 a, u32 b);
 void AnimModel_drawAnimated(void *obj, void *arg);
 void AnimModel_stepAnim(void *obj);
 void CharaShadow_DrawFaded(void *p, s32 a, u32 b, u8 c);
@@ -4611,7 +4611,7 @@ BOOL MuseumInsectRoom::onDraw() {
                 AnimModel_drawAnimated(obj, (void *)z0);
             }
             if (hasShadow(e)) {
-                u32 r = func_02106020((u32)PooledModel_getModel(e->pooledModel), z1);
+                u32 r = NNS_G3dMdlGetMdlAlpha((u32)PooledModel_getModel(e->pooledModel), z1);
                 CharaShadow_DrawFaded(&e->position, sMuseumInsectParams[id].radius, 0x9000, (u8)r);
             }
         }

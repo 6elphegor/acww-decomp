@@ -63,68 +63,68 @@ extern s32 PXI_SendWordByFifo(u32 tag, u32 data, s32 err);
 extern void Fatal_Trap(void);
 extern void MI_CpuCopy8(const void *src, void *dst, u32 len);
 
-u32 func_02100144(FD *p);
-u32 func_02100130(FD *p);
-BOOL func_021001b8(u32 *p, u32 v, u32 shift, u32 mask);
-void func_021000dc(FD *p, u32 v);
-void func_021000b8(FD *p, u32 v);
-u64 func_021001a0(FD *p);
-u64 func_0210018c(FD *p);
-u32 func_02100188(FD *p);
-u32 func_0210019c(FD *p);
-void func_02100154(FD *p, u32 v);
-void func_02100158(FD *p, u32 a, u32 b);
-void func_02100160(FD *p, u32 v);
-void func_02100164(FD *p, u64 v);
-BOOL func_02100018(u64 v, u32 key);
-u64 func_02100060(u32 lo, u32 key);
-BOOL func_020ff554(void);
-u16 func_020fe8d4(u32 tag, u32 data, u32 err);
-BOOL func_020fe900(void);
-BOOL func_020fe948(void *ref, u32 addr, u32 size, void *tmp);
-void func_020fe984(u32 addr, u16 size, void *src);
-BOOL func_020fe9d8(u32 addr, u32 size, void *dst);
-u32 func_020fea34(u32 cmd, u32 a1, u16 a2, u32 a3);
-BOOL func_020fedcc(u8 *p);
-BOOL func_020fedec(u8 *a, u8 *b);
-BOOL func_020fee44(u8 *p);
-void func_020fee5c(u32 n, u8 *out);
-u8 func_020fee84(u8 *p);
-void func_020feeb4(u8 *p);
-BOOL func_020feec4(u8 *buf);
-BOOL func_020fef40(u8 *buf, u32 *flags, u8 *tmp);
-BOOL func_020fefb0(u8 *dst);
-BOOL func_020fefdc(u16 *p);
-BOOL func_020ff154(u8 *dst);
-void func_020ff180(u8 *buf, u32 idx);
-BOOL func_020ff1ac(u8 *buf);
-BOOL func_020ff210(u8 *page);
-s32 func_020ff2e4(u8 *p);
-u8 *func_020fe850(S *p);
-s32 func_020ff2e4(u8 *p);
-BOOL func_020ff734(u32 v);
-BOOL func_020ff6f4(S *p, u32 v);
+u32 DWCi_Acc_GetFlags(FD *p);
+u32 DWCi_Acc_GetFlag_DataType(FD *p);
+BOOL DWCi_Acc_SetMaskBits(u32 *p, u32 v, u32 shift, u32 mask);
+void DWCi_Acc_SetFlags(FD *p, u32 v);
+void DWCi_Acc_SetFlag_DataType(FD *p, u32 v);
+u64 DWCi_Acc_GetUserId(FD *p);
+u64 DWCi_Acc_GetFriendKey(FD *p);
+u32 DWCi_Acc_GetGsProfileId(FD *p);
+u32 DWCi_Acc_GetPlayerId(FD *p);
+void DWCi_Acc_SetGsProfileId(FD *p, u32 v);
+void DWCi_Acc_SetFriendKey(FD *p, u32 a, u32 b);
+void DWCi_Acc_SetPlayerId(FD *p, u32 v);
+void DWCi_Acc_SetUserId(FD *p, u64 v);
+BOOL DWC_Acc_CheckFriendKey(u64 v, u32 key);
+u64 DWC_Acc_CreateFriendKey(u32 lo, u32 key);
+BOOL DWC_Auth_CheckWiFiIDNeedCreate(void);
+u16 Callback_NVRAM(u32 tag, u32 data, u32 err);
+BOOL writeDisable(void);
+BOOL verify(void *ref, u32 addr, u32 size, void *tmp);
+void writeNvram(u32 addr, u16 size, void *src);
+BOOL readNvram(u32 addr, u32 size, void *dst);
+u32 NVRAMm_ExecuteCommand(u32 cmd, u32 a1, u16 a2, u32 a3);
+BOOL DWC_BACKUPlCheckAddress(u8 *p);
+BOOL DWC_BACKUPlCheckIp(u8 *a, u8 *b);
+BOOL DWC_BACKUPlCheckSsid(u8 *p);
+void DWCi_BACKUPlConvMaskAddr(u32 n, u8 *out);
+u8 DWCi_BACKUPlConvMaskCidr(u8 *p);
+void DWCi_BACKUPlSetWiFi(u8 *p);
+BOOL DWCi_BACKUPlWriteAll(u8 *buf);
+BOOL DWCi_BACKUPlWritePage(u8 *buf, u32 *flags, u8 *tmp);
+BOOL DWCi_BACKUPlRead(u8 *dst);
+BOOL DWCi_BACKUPlInit(u16 *p);
+BOOL DWCi_BM_GetApInfo(u8 *dst);
+void initPage(u8 *buf, u32 idx);
+BOOL init__DwcBm(u8 *buf);
+BOOL checkAp(u8 *page);
+s32 DWC_BM_Init(u8 *p);
+u8 *DWCi_BACKUPlConvWifiInfo(S *p);
+s32 DWC_BM_Init(u8 *p);
+BOOL DWCi_AUTH_MakeWiFiID(u32 v);
+BOOL DWCi_AUTH_UpDateWiFiID(S *p, u32 v);
 extern void RTC_Init(void);
 extern s32 RTC_GetDate(Date *d);
 extern s32 RTC_GetTime(Time *t);
 extern s32 OS_IsTickAvailable(void);
 extern void OS_GetMacAddress(u8 *mac);
-void func_020ff0bc(S *out);
-BOOL func_020ff014(S *p, u8 *buf);
-u64 func_020ff8c8(u32 a, u32 b, u32 c, u32 d);
-s64 func_020ff9f0(Date *d, Time *t);
-s32 func_020ffa38(Time *t);
-s32 func_020ffa4c(Date *d);
-u32 func_020ffffc(u64 v, u32 key);
-void func_020fffac(u64 v, s32 nbits, char *out);
-void func_020fff48(FD *fd, u32 gamecode, char *out);
-void func_020ffe84(FD *p);
-void func_020ff588(Rec *out);
-BOOL func_020ff770(S *p);
-BOOL func_020ffdfc(UserData *p);
-BOOL func_020ffe08(FD *p);
-void func_020ffeec(UserData *p, u32 key);
-BOOL func_020ffde0(FD *p);
+void DWCi_BM_GetWiFiInfo(S *out);
+BOOL DWCi_BM_SetWiFiInfo(S *p, u8 *buf);
+u64 DWCi_Util_WiFiId_scrambleUid(u32 a, u32 b, u32 c, u32 d);
+s64 DWCi_Util_ConvertDateTimeToSecond(Date *d, Time *t);
+s32 DWCi_Util_ConvertTimeToSecond(Time *t);
+s32 DWCi_Util_ConvertDateToDay(Date *d);
+u32 DWC_Acc_FriendKeyToGsProfileId(u64 v, u32 key);
+void DWCi_Acc_U64ToString32(u64 v, s32 nbits, char *out);
+void DWCi_Acc_LoginIdToUserName(FD *fd, u32 gamecode, char *out);
+void DWCi_Acc_CreateTempLoginId(FD *p);
+void DWC_Auth_GetId(Rec *out);
+BOOL DWCi_AUTH_GetNewWiFiInfo(S *p);
+BOOL DWCi_Acc_IsAuthentic(UserData *p);
+BOOL DWCi_Acc_IsValidLoginId(FD *p);
+void DWCi_Acc_CreateUserData(UserData *p, u32 key);
+BOOL DWC_IsValidFriendData(FD *p);
 
 static inline u32 clr(u32 v, u32 m) { return v & ~m; }
 static inline u64 fld(u64 v, u64 mask, s32 shift) { return (v & mask) << shift; }
@@ -196,13 +196,13 @@ static inline u64 fld(u64 v, u64 mask, s32 shift) { return (v & mask) << shift; 
 static inline u32 orr(u32 a, u32 b) { return a | b; }
 
 // top level: load, validate and repair the Wi-Fi settings and WFC-ID; returns 0 ok, 1 repaired, 2 repaired+bad, 3 bad
-u32 func_021001e0(u8 *p) {
+u32 DWC_Init(u8 *p) {
     BOOL r4 = 0;
     s32 r6;
     OSi_ReferSymbol((void *)0x02000b84);
-    r6 = func_020ff2e4(p);
-    if (func_020ff554()) {
-        func_020ff734((u32)p);
+    r6 = DWC_BM_Init(p);
+    if (DWC_Auth_CheckWiFiIDNeedCreate()) {
+        DWCi_AUTH_MakeWiFiID((u32)p);
         r4 = 1;
     }
     if (r6 < 0) {
@@ -218,7 +218,7 @@ u32 func_021001e0(u8 *p) {
 }
 
 // set a bit field (value, shift, mask) in a word; 0 when the value does not fit
-BOOL func_021001b8(u32 *p, u32 v, u32 shift, u32 mask) {
+BOOL DWCi_Acc_SetMaskBits(u32 *p, u32 v, u32 shift, u32 mask) {
     if (v & ~mask) {
         return 0;
     }
@@ -227,61 +227,61 @@ BOOL func_021001b8(u32 *p, u32 v, u32 shift, u32 mask) {
 }
 
 // friend record: get the 43 bit value
-u64 func_021001a0(FD *p) {
+u64 DWCi_Acc_GetUserId(FD *p) {
     return ((u64)(p->w0 & 0x7ff) << 32) | p->w1;
 }
 
 // friend record: get word 2
-u32 func_0210019c(FD *p) {
+u32 DWCi_Acc_GetPlayerId(FD *p) {
     return p->w2;
 }
 
 // friend record: get words 1,2 as 64 bit
-u64 func_0210018c(FD *p) {
+u64 DWCi_Acc_GetFriendKey(FD *p) {
     return ((u64)p->w2 << 32) | p->w1;
 }
 
 // friend record: get word 1
-u32 func_02100188(FD *p) {
+u32 DWCi_Acc_GetGsProfileId(FD *p) {
     return p->w1;
 }
 
 // friend record: set the 43 bit value (word 1, low 11 bits of word 0)
-void func_02100164(FD *p, u64 v) {
-    func_021001b8((u32 *)p, (u32)(v >> 32), 0, 0x7ff);
+void DWCi_Acc_SetUserId(FD *p, u64 v) {
+    DWCi_Acc_SetMaskBits((u32 *)p, (u32)(v >> 32), 0, 0x7ff);
     p->w1 = (u32)v;
 }
 
 // friend record: set word 2
-void func_02100160(FD *p, u32 v) {
+void DWCi_Acc_SetPlayerId(FD *p, u32 v) {
     p->w2 = v;
 }
 
 // friend record: set words 1 and 2
-void func_02100158(FD *p, u32 a, u32 b) {
+void DWCi_Acc_SetFriendKey(FD *p, u32 a, u32 b) {
     p->w1 = a;
     p->w2 = b;
 }
 
 // friend record: set word 1
-void func_02100154(FD *p, u32 v) {
+void DWCi_Acc_SetGsProfileId(FD *p, u32 v) {
     p->w1 = v;
 }
 
 // friend record: get the 21 bit attribute field
-u32 func_02100144(FD *p) {
+u32 DWCi_Acc_GetFlags(FD *p) {
     return (p->w0 >> 11) & 0x1fffff;
 }
 
 // friend record: get 2 bit type
-u32 func_02100130(FD *p) {
-    return func_02100144(p) & 3;
+u32 DWCi_Acc_GetFlag_DataType(FD *p) {
+    return DWCi_Acc_GetFlags(p) & 3;
 }
 
 // friend record: type 3 and flag bit 2 set
-BOOL func_021000fc(FD *p) {
-    if (func_02100130(p) == 3) {
-        if ((func_02100144(p) & 4) == 4) {
+BOOL DWC_IsBuddyFriendData(FD *p) {
+    if (DWCi_Acc_GetFlag_DataType(p) == 3) {
+        if ((DWCi_Acc_GetFlags(p) & 4) == 4) {
             return 1;
         }
         return 0;
@@ -290,33 +290,33 @@ BOOL func_021000fc(FD *p) {
 }
 
 // friend record: get type (thunk)
-u32 func_021000f4(FD *p) {
-    return func_02100130(p);
+u32 DWC_GetFriendDataType(FD *p) {
+    return DWCi_Acc_GetFlag_DataType(p);
 }
 
 // friend record: set the 21 bit attribute field (bits 11..31 of word 0)
-void func_021000dc(FD *p, u32 v) {
-    func_021001b8((u32 *)p, v, 11, 0x1fffff);
+void DWCi_Acc_SetFlags(FD *p, u32 v) {
+    DWCi_Acc_SetMaskBits((u32 *)p, v, 11, 0x1fffff);
 }
 
 // friend record: set the 2 bit type
-void func_021000b8(FD *p, u32 v) {
-    u32 t = func_02100144(p);
+void DWCi_Acc_SetFlag_DataType(FD *p, u32 v) {
+    u32 t = DWCi_Acc_GetFlags(p);
     t &= ~3;
     t |= v;
-    func_021000dc(p, t);
+    DWCi_Acc_SetFlags(p, t);
 }
 
 // friend record: set the flag bit 2 of a type 3 record
-void func_02100094(FD *p) {
-    if (func_02100130(p) == 3) {
-        u32 v = func_02100144(p) | 4;
-        func_021000dc(p, v);
+void DWCi_SetBuddyFriendData(FD *p) {
+    if (DWCi_Acc_GetFlag_DataType(p) == 3) {
+        u32 v = DWCi_Acc_GetFlags(p) | 4;
+        DWCi_Acc_SetFlags(p, v);
     }
 }
 
 // attach the CRC7 (MATH_CalcCRC8 poly 7, 0x7f) of {key, game code} to a key
-u64 func_02100060(u32 lo, u32 key) {
+u64 DWC_Acc_CreateFriendKey(u32 lo, u32 key) {
     u32 data[2];
     u8 table[256];
     u64 r;
@@ -330,12 +330,12 @@ u64 func_02100060(u32 lo, u32 key) {
 }
 
 // CRC7 check of a key using the user data's game code
-BOOL func_02100050(UserData *p, u64 v) {
-    return func_02100018(v, p->key);
+BOOL DWC_CheckFriendKey(UserData *p, u64 v) {
+    return DWC_Acc_CheckFriendKey(v, p->key);
 }
 
 // CRC7 check of a key against its stored checksum
-BOOL func_02100018(u64 v, u32 key) {
+BOOL DWC_Acc_CheckFriendKey(u64 v, u32 key) {
     u32 data[2];
     u8 table[256];
     s64 c;
@@ -347,9 +347,9 @@ BOOL func_02100018(u64 v, u32 key) {
 }
 
 // key low word if the CRC7 check passes, else 0
-u32 func_020ffffc(u64 v, u32 key) {
+u32 DWC_Acc_FriendKeyToGsProfileId(u64 v, u32 key) {
     u32 r;
-    if (func_02100018(v, key)) {
+    if (DWC_Acc_CheckFriendKey(v, key)) {
         r = clr((u32)v, 0);
     } else {
         r = 0;
@@ -358,7 +358,7 @@ u32 func_020ffffc(u64 v, u32 key) {
 }
 
 // base-32 text ('0123456789abcdefghijklmnopqrstuv') of a 64 bit value, (nbits+4)/5 characters
-void func_020fffac(u64 v, s32 nbits, char *out) {
+void DWCi_Acc_U64ToString32(u64 v, s32 nbits, char *out) {
     s32 i, n;
     const char *tbl;
     n = (nbits + 4) / 5;
@@ -371,54 +371,54 @@ void func_020fffac(u64 v, s32 nbits, char *out) {
 }
 
 // friend record + game code -> text '%s%c%c%c%c%s' (base-32 profile id, 4 char game code, base-32 key)
-void func_020fff48(FD *fd, u32 gamecode, char *out) {
+void DWCi_Acc_LoginIdToUserName(FD *fd, u32 gamecode, char *out) {
     char s1[20];
     char s2[24];
-    func_020fffac(func_021001a0(fd), 43, s1);
-    func_020fffac(func_0210019c(fd), 32, &s2[1]);
+    DWCi_Acc_U64ToString32(DWCi_Acc_GetUserId(fd), 43, s1);
+    DWCi_Acc_U64ToString32(DWCi_Acc_GetPlayerId(fd), 32, &s2[1]);
     OS_SNPrintf(out, 21, "%s%c%c%c%c%s", s1, (u8)(gamecode >> 24), (u8)(gamecode >> 16), (u8)(gamecode >> 8),
                   (u8)gamecode, &s2[1]);
 }
 
 // create (zero and initialise) a 0x40 byte user data block with a game code (DWCUserData style)
-void func_020ffeec(UserData *p, u32 key) {
+void DWCi_Acc_CreateUserData(UserData *p, u32 key) {
     u32 table[256];
     MI_CpuFill8(p, 0, 0x40);
     p->size = 0x40;
     p->v1c = 0;
     p->key = key;
-    func_020ffe84(&p->id);
-    func_021000b8(&p->fr, 0);
+    DWCi_Acc_CreateTempLoginId(&p->id);
+    DWCi_Acc_SetFlag_DataType(&p->fr, 0);
     MATHi_CRC32InitTableRev(table, 0xedb88320);
     p->crc = MATH_CalcCRC32(table, p, 0x3c);
     p->flags |= 1;
 }
 
 // create a new own id from OS_GetTick with an LCG (0x5d588b656c078965, 0x269ec3)
-void func_020ffe84(FD *p) {
+void DWCi_Acc_CreateTempLoginId(FD *p) {
     u64 tick = OS_GetTick();
     Rec t;
-    func_020ff588(&t);
+    DWC_Auth_GetId(&t);
     if (t.valid != 0) {
-        func_02100164(p, t.a);
+        DWCi_Acc_SetUserId(p, t.a);
     } else {
-        func_02100164(p, t.b);
+        DWCi_Acc_SetUserId(p, t.b);
     }
-    func_02100160(p, (u32)((tick * 0x5d588b656c078965ULL + 0x269ec3) >> 32));
-    func_021000b8(p, 1);
+    DWCi_Acc_SetPlayerId(p, (u32)((tick * 0x5d588b656c078965ULL + 0x269ec3) >> 32));
+    DWCi_Acc_SetFlag_DataType(p, 1);
 }
 
 // friend record equals the device WFC-ID
-BOOL func_020ffe24(FD *fd) {
+BOOL DWCi_Acc_CheckConsoleUserId(FD *fd) {
     Rec t;
-    func_020ff588(&t);
+    DWC_Auth_GetId(&t);
     if (t.valid != 0) {
-        if (func_021001a0(fd) == t.a) {
+        if (DWCi_Acc_GetUserId(fd) == t.a) {
             return 1;
         }
         return 0;
     } else {
-        if (func_021001a0(fd) == t.b) {
+        if (DWCi_Acc_GetUserId(fd) == t.b) {
             return 1;
         }
         return 0;
@@ -426,54 +426,54 @@ BOOL func_020ffe24(FD *fd) {
 }
 
 // friend record is type 1
-BOOL func_020ffe08(FD *p) {
-    if (func_02100130(p) == 1) {
+BOOL DWCi_Acc_IsValidLoginId(FD *p) {
+    if (DWCi_Acc_GetFlag_DataType(p) == 1) {
         return 1;
     }
     return 0;
 }
 
 // user data: friend record is type 1
-BOOL func_020ffdfc(UserData *p) {
-    return func_020ffe08(&p->fr);
+BOOL DWCi_Acc_IsAuthentic(UserData *p) {
+    return DWCi_Acc_IsValidLoginId(&p->fr);
 }
 
 // friend record type != 0
-BOOL func_020ffde0(FD *p) {
-    if (func_02100130(p)) {
+BOOL DWC_IsValidFriendData(FD *p) {
+    if (DWCi_Acc_GetFlag_DataType(p)) {
         return 1;
     }
     return 0;
 }
 
-// thunk to func_020ffde0
-BOOL func_020ffdd8(FD *p) {
-    return func_020ffde0(p);
+// thunk to DWC_IsValidFriendData
+BOOL DWCi_Acc_IsValidFriendData(FD *p) {
+    return DWC_IsValidFriendData(p);
 }
 
-// thunk to func_020ffeec (create user data)
-void func_020ffdd0(UserData *p, u32 key) {
-    func_020ffeec(p, key);
+// thunk to DWCi_Acc_CreateUserData (create user data)
+void DWC_CreateUserData(UserData *p, u32 key) {
+    DWCi_Acc_CreateUserData(p, key);
 }
 
 // user data: friend record matches the device WFC-ID
-BOOL func_020ffd78(UserData *p) {
+BOOL DWC_CheckValidConsole(UserData *p) {
     Rec t;
-    if (func_02100130(&p->fr) == 0) {
+    if (DWCi_Acc_GetFlag_DataType(&p->fr) == 0) {
         return 1;
     }
-    func_020ff588(&t);
+    DWC_Auth_GetId(&t);
     if (t.valid == 0) {
         return 0;
     }
-    if (func_021001a0(&p->fr) == t.a) {
+    if (DWCi_Acc_GetUserId(&p->fr) == t.a) {
         return 1;
     }
     return 0;
 }
 
 // user data: store a friend record and a key, recompute CRC32, set the valid flag
-void func_020ffd30(UserData *p, FD *src, u32 v) {
+void DWCi_Acc_SetLoginIdToUserData(UserData *p, FD *src, u32 v) {
     u32 table[256];
     p->fr = *src;
     p->v1c = v;
@@ -483,12 +483,12 @@ void func_020ffd30(UserData *p, FD *src, u32 v) {
 }
 
 // user data: valid flag set
-BOOL func_020ffd20(UserData *p) {
+BOOL DWC_CheckDirtyFlag(UserData *p) {
     return (p->flags & 1) == 1;
 }
 
 // user data: clear the valid flag and recompute the CRC32 (0x3c bytes)
-void func_020ffce8(UserData *p) {
+void DWC_ClearDirtyFlag(UserData *p) {
     u32 table[256];
     p->flags &= ~1;
     MATHi_CRC32InitTableRev(table, 0xedb88320);
@@ -496,25 +496,25 @@ void func_020ffce8(UserData *p) {
 }
 
 // friend record of type 2 -> 64 bit key, else 0
-u64 func_020ffcc4(FD *fd) {
-    if (func_02100130(fd) == 2) {
-        return func_0210018c(fd);
+u64 DWC_GetFriendKey(FD *fd) {
+    if (DWCi_Acc_GetFlag_DataType(fd) == 2) {
+        return DWCi_Acc_GetFriendKey(fd);
     }
     return 0;
 }
 
 // friend record -> profile id (validates the key CRC7 for type 2, -1 for type 1)
-u32 func_020ffc60(UserData *p, FD *fd) {
+u32 DWC_GetGsProfileId(UserData *p, FD *fd) {
     u64 v;
-    switch (func_02100130(fd)) {
+    switch (DWCi_Acc_GetFlag_DataType(fd)) {
     case 2:
-        v = func_0210018c(fd);
-        if (func_02100018(v, p->key)) {
-            return func_020ffffc(v, p->key);
+        v = DWCi_Acc_GetFriendKey(fd);
+        if (DWC_Acc_CheckFriendKey(v, p->key)) {
+            return DWC_Acc_FriendKeyToGsProfileId(v, p->key);
         }
         return 0;
     case 3:
-        return func_02100188(fd);
+        return DWCi_Acc_GetGsProfileId(fd);
     case 1:
         return ~0;
     default:
@@ -523,64 +523,64 @@ u32 func_020ffc60(UserData *p, FD *fd) {
 }
 
 // user data -> own key (low word) or 0
-u64 func_020ffc40(UserData *p) {
+u64 DWC_CreateFriendKey(UserData *p) {
     u64 r = 0;
     if (p->v1c != 0) {
-        r = func_02100060(p->v1c, p->key);
+        r = DWC_Acc_CreateFriendKey(p->v1c, p->key);
     }
     return r;
 }
 
 // make a type 2 friend record from a friend key
-void func_020ffc18(FD *fd, u32 a, u32 b) {
+void DWC_CreateFriendKeyToken(FD *fd, u32 a, u32 b) {
     MI_CpuFill8(fd, 0, 12);
-    func_02100158(fd, a, b);
-    func_021000b8(fd, 2);
+    DWCi_Acc_SetFriendKey(fd, a, b);
+    DWCi_Acc_SetFlag_DataType(fd, 2);
 }
 
 // get the user's own friend record from the user data
-void func_020ffbd0(UserData *p, FD *out) {
+void DWC_CreateExchangeToken(UserData *p, FD *out) {
     MI_CpuFill8(out, 0, 12);
-    if (func_020ffdfc(p)) {
-        func_02100154(out, p->v1c);
-        func_021000b8(out, 3);
+    if (DWCi_Acc_IsAuthentic(p)) {
+        DWCi_Acc_SetGsProfileId(out, p->v1c);
+        DWCi_Acc_SetFlag_DataType(out, 3);
         return;
     }
     *out = p->id;
 }
 
 // make a type 3 friend record from a profile id
-void func_020ffba8(FD *fd, u32 v) {
+void DWC_SetGsProfileId(FD *fd, u32 v) {
     MI_CpuFill8(fd, 0, 12);
-    func_02100154(fd, v);
-    func_021000b8(fd, 3);
+    DWCi_Acc_SetGsProfileId(fd, v);
+    DWCi_Acc_SetFlag_DataType(fd, 3);
 }
 
 // friend record -> friend key string using the user's game code (DWC_Acc friend key text)
-void func_020ffb98(UserData *p, FD *fd, char *out) {
-    func_020fff48(fd, p->key, out);
+void DWC_LoginIdToUserName(UserData *p, FD *fd, char *out) {
+    DWCi_Acc_LoginIdToUserName(fd, p->key, out);
 }
 
 // compare two friend records (type, then the matching fields)
-BOOL func_020ffad0(FD *a, FD *b) {
-    u32 t = func_02100130(a);
-    if (t != func_02100130(b)) {
+BOOL DWC_IsEqualFriendData(FD *a, FD *b) {
+    u32 t = DWCi_Acc_GetFlag_DataType(a);
+    if (t != DWCi_Acc_GetFlag_DataType(b)) {
         return 0;
     }
     if (t == 3) {
-        if (func_02100188(a) == func_02100188(b)) {
+        if (DWCi_Acc_GetGsProfileId(a) == DWCi_Acc_GetGsProfileId(b)) {
             return 1;
         }
         return 0;
     }
     if (t == 1) {
-        if (func_021001a0(a) == func_021001a0(b) && func_0210019c(a) == func_0210019c(b)) {
+        if (DWCi_Acc_GetUserId(a) == DWCi_Acc_GetUserId(b) && DWCi_Acc_GetPlayerId(a) == DWCi_Acc_GetPlayerId(b)) {
             return 1;
         }
         return 0;
     }
     if (t == 2) {
-        if (func_0210018c(a) == func_0210018c(b)) {
+        if (DWCi_Acc_GetFriendKey(a) == DWCi_Acc_GetFriendKey(b)) {
             return 1;
         }
         return 0;
@@ -589,7 +589,7 @@ BOOL func_020ffad0(FD *a, FD *b) {
 }
 
 // is a leap year (year & 3 == 0)
-BOOL func_020ffac0(u32 y) {
+BOOL DWCi_Util_IsLeapYear(u32 y) {
     if ((y & 3) == 0) {
         return 1;
     }
@@ -597,7 +597,7 @@ BOOL func_020ffac0(u32 y) {
 }
 
 // RTC date -> days since 2000 (RTC_ConvertDateToDay style), -1 when invalid
-s32 func_020ffa4c(Date *d) {
+s32 DWCi_Util_ConvertDateToDay(Date *d) {
     u32 days;
     if (d->year >= 100 || d->month < 1 || d->month > 12 || d->day < 1 || d->day > 31 || d->week >= 7 ||
         d->month < 1 || d->month > 12) {
@@ -605,7 +605,7 @@ s32 func_020ffa4c(Date *d) {
     }
     days = d->day - 1 + data_0213bba8[d->month];
     if (d->month >= 3) {
-        if (func_020ffac0(d->year)) {
+        if (DWCi_Util_IsLeapYear(d->year)) {
             days++;
         }
     }
@@ -615,24 +615,24 @@ s32 func_020ffa4c(Date *d) {
 }
 
 // RTC time -> seconds (RTC_ConvertTimeToSecond style)
-s32 func_020ffa38(Time *t) {
+s32 DWCi_Util_ConvertTimeToSecond(Time *t) {
     return t->second + (t->minute + t->hour * 60) * 60;
 }
 
 // RTC date + time -> seconds (RTC_ConvertDateTimeToSecond style), -1 when invalid
-s64 func_020ff9f0(Date *d, Time *t) {
+s64 DWCi_Util_ConvertDateTimeToSecond(Date *d, Time *t) {
     s32 days;
     s32 secs;
-    days = func_020ffa4c(d);
+    days = DWCi_Util_ConvertDateToDay(d);
     if (days == -1) {
         return -1;
     }
-    secs = func_020ffa38(t);
+    secs = DWCi_Util_ConvertTimeToSecond(t);
     return (s64)days * 86400 + secs;
 }
 
 // scramble the four ID fields into a 43 bit WFC-ID (xor 0xd6, nibble table, byte permutation, xor 0x67)
-u64 func_020ff8c8(u32 a, u32 b, u32 c, u32 d) {
+u64 DWCi_Util_WiFiId_scrambleUid(u32 a, u32 b, u32 c, u32 d) {
     union { u64 v; u8 b[8]; } x;
     u8 tmp[8];
     s32 i;
@@ -663,14 +663,14 @@ u64 func_020ff8c8(u32 a, u32 b, u32 c, u32 d) {
 }
 
 // create a WFC-ID, variant that keeps / increments the serial
-BOOL func_020ff770(S *p) {
+BOOL DWCi_AUTH_GetNewWiFiInfo(S *p) {
     u8 mac[6];
     u32 x0, x4;
     Date date;
     Time time;
     s64 secs;
     u32 seed;
-    func_020ff0bc(p);
+    DWCi_BM_GetWiFiInfo(p);
     RTC_Init();
     if (RTC_GetDate(&date)) {
         return 0;
@@ -678,7 +678,7 @@ BOOL func_020ff770(S *p) {
     if (RTC_GetTime(&time)) {
         return 0;
     }
-    secs = func_020ff9f0(&date, &time);
+    secs = DWCi_Util_ConvertDateTimeToSecond(&date, &time);
     seed = (u32)secs;
     if (secs < 0) {
         return 0;
@@ -701,51 +701,51 @@ BOOL func_020ff770(S *p) {
                 seed = seed * 0x5d588b65 + 0x269ec3;
             }
             p->f18 = (u16)seed;
-            p->b = func_020ff8c8(p->f18, x4, x0, 0);
+            p->b = DWCi_Util_WiFiId_scrambleUid(p->f18, x4, x0, 0);
         }
     } else {
         p->b = 0;
         while (p->b == 0) {
             p->f18++;
-            p->b = func_020ff8c8(p->f18, x4, x0, 0);
+            p->b = DWCi_Util_WiFiId_scrambleUid(p->f18, x4, x0, 0);
         }
     }
     return 1;
 }
 
 // create a WFC-ID (variant) and write it
-BOOL func_020ff734(u32 v) {
+BOOL DWCi_AUTH_MakeWiFiID(u32 v) {
     S t;
-    if (!func_020ff770(&t)) {
+    if (!DWCi_AUTH_GetNewWiFiInfo(&t)) {
         return 0;
     }
-    if (func_020ff014(&t, (u8 *)v)) {
+    if (DWCi_BM_SetWiFiInfo(&t, (u8 *)v)) {
         return 1;
     }
     return 0;
 }
 
 // rotate the WFC-ID records and write them
-BOOL func_020ff6f4(S *p, u32 v) {
+BOOL DWCi_AUTH_UpDateWiFiID(S *p, u32 v) {
     S t;
-    func_020ff0bc(&t);
+    DWCi_BM_GetWiFiInfo(&t);
     p->a = p->b;
     p->b = t.b;
-    if (func_020ff014(p, (u8 *)v)) {
+    if (DWCi_BM_SetWiFiInfo(p, (u8 *)v)) {
         return 1;
     }
     return 0;
 }
 
 // create a new WFC-ID from RTC date/time, MAC address and an LCG (0x5d588b65, 0x269ec3)
-BOOL func_020ff5cc(S *p) {
+BOOL DWCi_AUTH_RemakeWiFiID(S *p) {
     u8 mac[6] = {0, 0, 0, 0, 0, 0};
     u32 x0, x4;
     Date date;
     Time time;
     s64 secs;
     u32 seed;
-    func_020ff0bc(p);
+    DWCi_BM_GetWiFiInfo(p);
     RTC_Init();
     if (RTC_GetDate(&date)) {
         return 0;
@@ -753,7 +753,7 @@ BOOL func_020ff5cc(S *p) {
     if (RTC_GetTime(&time)) {
         return 0;
     }
-    secs = func_020ff9f0(&date, &time);
+    secs = DWCi_Util_ConvertDateTimeToSecond(&date, &time);
     seed = (u32)secs;
     if (secs < 0) {
         return 0;
@@ -774,15 +774,15 @@ BOOL func_020ff5cc(S *p) {
             seed = seed * 0x5d588b65 + 0x269ec3;
         }
         p->f18 = (u16)seed;
-        p->b = func_020ff8c8(p->f18, x4, x0, 0);
+        p->b = DWCi_Util_WiFiId_scrambleUid(p->f18, x4, x0, 0);
     }
     return 1;
 }
 
 // read the WFC-ID into a record with a validity flag
-void func_020ff588(Rec *out) {
+void DWC_Auth_GetId(Rec *out) {
     S t;
-    func_020ff0bc(&t);
+    DWCi_BM_GetWiFiInfo(&t);
     out->a = t.a;
     out->b = t.b;
     if (t.a == 0) {
@@ -793,9 +793,9 @@ void func_020ff588(Rec *out) {
 }
 
 // is the WFC-ID empty (all zero)
-BOOL func_020ff554(void) {
+BOOL DWC_Auth_CheckWiFiIDNeedCreate(void) {
     S t;
-    func_020ff0bc(&t);
+    DWCi_BM_GetWiFiInfo(&t);
     if (t.b == 0 && t.a == 0) {
         return 1;
     }
@@ -803,7 +803,7 @@ BOOL func_020ff554(void) {
 }
 
 // load the settings, check every page with CRC16 and repair from the good copies
-s32 func_020ff2e4(u8 *buf) {
+s32 DWC_BM_Init(u8 *buf) {
     u32 f[4];
     u8 *r4;
     u8 *r7;
@@ -811,11 +811,11 @@ s32 func_020ff2e4(u8 *buf) {
     u32 *r6;
     BOOL changed;
     u16 crc;
-    if (!func_020fefdc((u16 *)buf)) {
+    if (!DWCi_BACKUPlInit((u16 *)buf)) {
         return -10001;
     }
     MATHi_CRC16InitTableRev(buf + 0x500, 0xa001);
-    if (!func_020fefb0(buf)) {
+    if (!DWCi_BACKUPlRead(buf)) {
         return -10001;
     }
     MI_CpuFill8(f, 0, 16);
@@ -826,7 +826,7 @@ s32 func_020ff2e4(u8 *buf) {
     do {
         crc = MATH_CalcCRC16(buf + 0x500, r4, 0xfe);
         if (crc == *(u16 *)(r4 + 0xfe)) {
-            if (func_020ff210(r7)) {
+            if (checkAp(r7)) {
                 *r6 = 1;
             }
         }
@@ -840,42 +840,42 @@ s32 func_020ff2e4(u8 *buf) {
         f[3] = 1;
     }
     if (f[0] != 0 && f[1] != 0 && f[2] != 0 && f[3] != 0) {
-        func_020feeb4(buf + 0xf0);
+        DWCi_BACKUPlSetWiFi(buf + 0xf0);
         return 0;
     }
     if (f[0] == 0 && f[1] == 0 && f[2] == 0 && f[3] == 0) {
-        func_020ff1ac(buf);
-        if (func_020feec4(buf)) {
+        init__DwcBm(buf);
+        if (DWCi_BACKUPlWriteAll(buf)) {
             return 0;
         }
         return -10000;
     }
     if (!(f[0] != 0 && f[1] != 0) && !(f[2] != 0 && f[3] != 0)) {
-        func_020ff1ac(buf);
-        if (func_020feec4(buf)) {
+        init__DwcBm(buf);
+        if (DWCi_BACKUPlWriteAll(buf)) {
             return 0;
         }
         return -10000;
     }
     if (f[0] == 0 && f[1] == 0) {
-        func_020ff1ac(buf);
-        if (func_020feec4(buf)) {
+        init__DwcBm(buf);
+        if (DWCi_BACKUPlWriteAll(buf)) {
             return -10003;
         }
         return -10000;
     }
     if (f[0] == 0) {
-        func_020ff180(buf, 0);
+        initPage(buf, 0);
         MI_CpuCopy8(buf + 0x1f0, buf + 0xf0, 13);
         buf[0xef] = buf[0x1ef];
     } else if (f[1] == 0) {
-        func_020ff180(buf, 1);
+        initPage(buf, 1);
         MI_CpuCopy8(buf + 0xf0, buf + 0x1f0, 13);
         buf[0x1ef] = buf[0xef];
     }
-    func_020feeb4(buf + 0xf0);
+    DWCi_BACKUPlSetWiFi(buf + 0xf0);
     if (f[2] == 0) {
-        func_020ff180(buf, 2);
+        initPage(buf, 2);
     }
     if (f[3] == 0) {
         volatile u16 zero = 0;
@@ -890,7 +890,7 @@ s32 func_020ff2e4(u8 *buf) {
             }
         }
     }
-    if (!func_020feec4(buf)) {
+    if (!DWCi_BACKUPlWriteAll(buf)) {
         return -10000;
     }
     if (changed) {
@@ -900,7 +900,7 @@ s32 func_020ff2e4(u8 *buf) {
 }
 
 // validate one Wi-Fi connection settings page (SSID, IP, netmask, DNS)
-BOOL func_020ff210(u8 *page) {
+BOOL checkAp(u8 *page) {
     u8 mask[4];
     if (page[0xe7] == 0xff) {
         return 1;
@@ -908,24 +908,24 @@ BOOL func_020ff210(u8 *page) {
     if (page[0xe7] > 2) {
         return 0;
     }
-    if (!func_020fee44(page + 0x40)) {
+    if (!DWC_BACKUPlCheckSsid(page + 0x40)) {
         return 0;
     }
     if (memcmp(page + 0xc0, data_02135c9c, 4) != 0) {
-        if (!func_020fedcc(page + 0xc4)) {
+        if (!DWC_BACKUPlCheckAddress(page + 0xc4)) {
             return 0;
         }
         if (page[0xd0] > 32) {
             return 0;
         }
-        func_020fee5c(page[0xd0], mask);
-        if (!func_020fedec(page + 0xc0, mask)) {
+        DWCi_BACKUPlConvMaskAddr(page[0xd0], mask);
+        if (!DWC_BACKUPlCheckIp(page + 0xc0, mask)) {
             return 0;
         }
     }
     if (memcmp(page + 0xc8, data_02135c9c, 4) != 0) {
-        if (!func_020fedcc(page + 0xc8)) {
-            if (!func_020fedcc(page + 0xcc)) {
+        if (!DWC_BACKUPlCheckAddress(page + 0xc8)) {
+            if (!DWC_BACKUPlCheckAddress(page + 0xcc)) {
                 return 0;
             }
         }
@@ -934,7 +934,7 @@ BOOL func_020ff210(u8 *page) {
 }
 
 // reset the settings area and set a fresh ID
-BOOL func_020ff1ac(u8 *buf) {
+BOOL init__DwcBm(u8 *buf) {
     volatile u16 zero = 0;
     S t;
     u8 *r6;
@@ -947,8 +947,8 @@ BOOL func_020ff1ac(u8 *buf) {
         q[0xe7] = 0xff;
         q += 0x100;
     }
-    func_020ff770(&t);
-    r6 = func_020fe850(&t);
+    DWCi_AUTH_GetNewWiFiInfo(&t);
+    r6 = DWCi_BACKUPlConvWifiInfo(&t);
     for (i = 0; i < 2; i++) {
         MI_CpuCopy8(r6, buf + 0xf0, 14);
         buf += 0x100;
@@ -957,22 +957,22 @@ BOOL func_020ff1ac(u8 *buf) {
 }
 
 // clear one settings page and mark it unused (+0xe7 = 0xff)
-void func_020ff180(u8 *buf, u32 idx) {
+void initPage(u8 *buf, u32 idx) {
     volatile u16 zero = 0;
     MIi_CpuClear16(zero, buf + (idx << 8), 0x100);
     (buf + (idx << 8))[0xe7] = 0xff;
 }
 
 // read the 0x300 byte settings area
-BOOL func_020ff154(u8 *dst) {
-    if (func_020fe9d8(data_021f5c58, 0x300, dst)) {
+BOOL DWCi_BM_GetApInfo(u8 *dst) {
+    if (readNvram(data_021f5c58, 0x300, dst)) {
         return 1;
     }
     return 0;
 }
 
 // unpack the 14 byte NVRAM ID block into a WFC-ID record (S)
-void func_020ff0bc(S *p) {
+void DWCi_BM_GetWiFiInfo(S *p) {
     MI_CpuCopy8(data_021f5c5c, p, 6);
     p->a &= 0x7ffffffffffULL;
     MI_CpuCopy8(data_021f5c61, &p->b, 6);
@@ -985,34 +985,34 @@ void func_020ff0bc(S *p) {
 }
 
 // write the WFC-ID into the two ID pages, with CRC16, and verify
-BOOL func_020ff014(S *p, u8 *buf) {
+BOOL DWCi_BM_SetWiFiInfo(S *p, u8 *buf) {
     u32 nv = data_021f5c58;
     s32 j;
-    func_020fe850(p);
+    DWCi_BACKUPlConvWifiInfo(p);
     MATHi_CRC16InitTableRev(buf + 0x200, 0xa001);
     j = 0;
     do {
-        if (!func_020fe9d8(nv, 0x100, buf)) {
+        if (!readNvram(nv, 0x100, buf)) {
             Fatal_Trap();
             return 0;
         }
         MI_CpuCopy8(data_021f5c5c, buf + 0xf0, 14);
         *(u16 *)(buf + 0xfe) = MATH_CalcCRC16(buf + 0x200, buf, 0xfe);
         do {
-            func_020fe984(nv, 0x100, buf);
-        } while (!func_020fe948(buf, nv, 0x100, buf + 0x100));
+            writeNvram(nv, 0x100, buf);
+        } while (!verify(buf, nv, 0x100, buf + 0x100));
         j++;
         nv += 0x100;
     } while (j < 2);
-    if (func_020fe900()) {
+    if (writeDisable()) {
         return 1;
     }
     return 0;
 }
 
 // read the NVRAM header and compute the settings base address (data_021f5c58 = size*8 - 0x400)
-BOOL func_020fefdc(u16 *p) {
-    if (!func_020fe9d8(0x20, 0x20, p)) {
+BOOL DWCi_BACKUPlInit(u16 *p) {
+    if (!readNvram(0x20, 0x20, p)) {
         return 0;
     }
     data_021f5c58 = p[0] * 8 - 0x400;
@@ -1020,61 +1020,61 @@ BOOL func_020fefdc(u16 *p) {
 }
 
 // read the 0x400 byte Wi-Fi settings area
-BOOL func_020fefb0(u8 *dst) {
-    if (func_020fe9d8(data_021f5c58, 0x400, dst)) {
+BOOL DWCi_BACKUPlRead(u8 *dst) {
+    if (readNvram(data_021f5c58, 0x400, dst)) {
         return 1;
     }
     return 0;
 }
 
 // write the flagged pages of the Wi-Fi settings and verify
-BOOL func_020fef40(u8 *buf, u32 *flags, u8 *tmp) {
+BOOL DWCi_BACKUPlWritePage(u8 *buf, u32 *flags, u8 *tmp) {
     u32 nv = data_021f5c58;
     s32 i = 0;
     do {
         if (*flags != 0) {
             do {
-                func_020fe984(nv, 0x100, buf);
-            } while (!func_020fe948(buf, nv, 0x100, tmp));
+                writeNvram(nv, 0x100, buf);
+            } while (!verify(buf, nv, 0x100, tmp));
         }
         flags++;
         buf += 0x100;
         i++;
         nv += 0x100;
     } while (i < 4);
-    if (func_020fe900()) {
+    if (writeDisable()) {
         return 1;
     }
     return 0;
 }
 
 // write all four 0x100 byte pages of the Wi-Fi settings (CRC16 at +0xfe) and verify
-BOOL func_020feec4(u8 *buf) {
+BOOL DWCi_BACKUPlWriteAll(u8 *buf) {
     u32 nv = data_021f5c58;
     s32 i = 0;
     u8 *r4 = buf;
     do {
         *(u16 *)(r4 + 0xfe) = MATH_CalcCRC16(buf + 0x500, r4, 0xfe);
         do {
-            func_020fe984(nv, 0x100, r4);
-        } while (!func_020fe948(r4, nv, 0x100, buf + 0x400));
+            writeNvram(nv, 0x100, r4);
+        } while (!verify(r4, nv, 0x100, buf + 0x400));
         r4 += 0x100;
         i++;
         nv += 0x100;
     } while (i < 4);
-    if (func_020fe900()) {
+    if (writeDisable()) {
         return 1;
     }
     return 0;
 }
 
 // copy a 14 byte WFC-ID block into data_021f5c5c
-void func_020feeb4(u8 *p) {
+void DWCi_BACKUPlSetWiFi(u8 *p) {
     MI_CpuCopy8(p, data_021f5c5c, 14);
 }
 
 // 4 byte netmask -> prefix length (popcount)
-u8 func_020fee84(u8 *p) {
+u8 DWCi_BACKUPlConvMaskCidr(u8 *p) {
     u32 cnt;
     s32 i, j;
     cnt = i = 0;
@@ -1089,7 +1089,7 @@ u8 func_020fee84(u8 *p) {
 }
 
 // prefix length -> 4 byte netmask
-void func_020fee5c(u32 n, u8 *out) {
+void DWCi_BACKUPlConvMaskAddr(u32 n, u8 *out) {
     s32 i;
     u32 mask;
     s32 sh;
@@ -1103,7 +1103,7 @@ void func_020fee5c(u32 n, u8 *out) {
 }
 
 // any non-zero byte in the 32 byte SSID/key field
-BOOL func_020fee44(u8 *p) {
+BOOL DWC_BACKUPlCheckSsid(u8 *p) {
     s32 i;
     for (i = 0; i < 32; i++) {
         if (p[i] != 0) {
@@ -1114,9 +1114,9 @@ BOOL func_020fee44(u8 *p) {
 }
 
 // is a usable IPv4 address / netmask pair
-BOOL func_020fedec(u8 *a, u8 *b) {
+BOOL DWC_BACKUPlCheckIp(u8 *a, u8 *b) {
     u32 x, y;
-    if (!func_020fedcc(a)) {
+    if (!DWC_BACKUPlCheckAddress(a)) {
         return 0;
     }
     MI_CpuCopy8(a, &x, 4);
@@ -1131,7 +1131,7 @@ BOOL func_020fedec(u8 *a, u8 *b) {
 }
 
 // is a usable IPv4 first octet (1..223, not 127)
-BOOL func_020fedcc(u8 *p) {
+BOOL DWC_BACKUPlCheckAddress(u8 *p) {
     u8 c = *p;
     if (c == 0x7f) {
         return 0;

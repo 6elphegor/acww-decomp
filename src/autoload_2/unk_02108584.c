@@ -113,7 +113,7 @@ void texmtxCalc_flagTRS___3dsmax(s32 *o)
 }
 
 // NNS g3d: build the 4x4 texture matrix (LOAD_4x4 / MULT_4x4) from a material SRT result, 2D matrix chosen by a function-pointer table
-void func_021086bc(u32 *a)
+void NNSi_G3dSendTexSRT3dsMax(u32 *a)
 {
     GeBuf4 s;
     if (a[0] & 8) {

@@ -71,14 +71,14 @@ void NNS_G3dRenderObjRemoveAnmObj(u8 *o, Node *n)
     }
 }
 
-void func_02103d50(u8 *o, u32 a, u32 b, u32 c, u32 d)
+void NNS_G3dRenderObjSetCallBack(u8 *o, u32 a, u32 b, u32 c, u32 d)
 {
     *(u32 *)(o + 0x20) = a;
     o[0x24] = c;
     o[0x25] = d;
 }
 
-void func_02103d48(u8 *o, u32 v) { *(u32 *)(o + 0x28) = v; }
+void NNS_G3dRenderObjSetInitFunc(u8 *o, u32 v) { *(u32 *)(o + 0x28) = v; }
 
 // palette size in bytes
 u32 NNS_G3dTexGetRequiredSize(TexData *o) { return o->plttSize << 3; }

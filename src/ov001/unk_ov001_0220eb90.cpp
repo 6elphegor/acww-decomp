@@ -55,7 +55,7 @@ void WfcFade_Start(s32, s32, s32, s32);
 void WfcButtonBar_DisableInput();
 void WfcFade_StartWait(s32);
 s32 WfcButtonBar_GetResult();
-void func_020ff0bc(void *);
+void DWCi_BM_GetWiFiInfo(void *);
 void WfcButtonBar_ForceResult(s32);
 void WfcOptions_HighlightSelection();
 s32 WfcInput_IsTouchPressedIn(void *);
@@ -113,7 +113,7 @@ extern "C" void WfcOptions_LoadBg() {
     WfcUtil_LoadFileTo((void *)"char/jb5OptMenu.nsc.l", (void *)GX_LoadBG2Scr);
     sWfcOptionsPalette = WfcFs_LoadFile(WfcUtil_LocalizePath(buf.b), 0, 4);
     e = (u8 *)WfcFs_LoadFile(WfcUtil_LocalizePath(buf.a), 0, 4);
-    func_020ff0bc(&buf.t);
+    DWCi_BM_GetWiFiInfo(&buf.t);
     if (buf.t == 0) {
         d = e + 0xc0;
         s = e + 0x40;
@@ -190,7 +190,7 @@ extern "C" void WfcOptions_HandleResult() {
         WfcSound_Play(7);
         break;
     case 1:
-        func_020ff0bc(&t[0]);
+        DWCi_BM_GetWiFiInfo(&t[0]);
         if (sWfcOptionsSel != 0 && t[0] == 0) {
             WfcSound_Play(9);
             WfcButtonBar_ForceResult(-1);

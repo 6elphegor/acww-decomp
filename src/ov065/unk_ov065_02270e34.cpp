@@ -67,13 +67,13 @@ void DwcMatch_InitControl(void *, void *, void *, void *, void *, void *, void *
 void DwcNet_InitChannelTable(void *);
 u32 STD_GetStringLength(const char *);
 void MI_CpuCopy8(const void *, void *, u32);
-void func_020fff48(void *, u32, void *);
+void DWCi_Acc_LoginIdToUserName(void *, u32, void *);
 s32 GsGp_SetInfo(void *, s32, void *);
 s32 GsGp_GetInfo(void *, u32, s32, s32, void *, s32);
 s32 GsGp_Disconnect(void *);
 s32 GsGp_ConnectPreAuth(void *, void *, void *, s32, s32, void *, s32);
 s32 strcmp(const char *, const char *);
-void func_020ffd30(void *, void *, u32);
+void DWCi_Acc_SetLoginIdToUserData(void *, void *, u32);
 s32 NasAuth_GetState(void);
 void NasAuth_GetResult(s32 *);
 void NasAuth_Destroy(void);
@@ -84,11 +84,11 @@ void MI_CpuFill8(void *, s32, u32);
 u64 OS_GetTick(void);
 u64 func_02132ef8(u64, u32);
 u64 func_02133100(u64, u32, u32);
-s32 func_020ffdfc(void *);
-s32 func_020ffe08(void *);
-s32 func_020ffe24(void *);
-void func_020ffe84(void *);
-void func_02100160(void *, u32);
+s32 DWCi_Acc_IsAuthentic(void *);
+s32 DWCi_Acc_IsValidLoginId(void *);
+s32 DWCi_Acc_CheckConsoleUserId(void *);
+void DWCi_Acc_CreateTempLoginId(void *);
+void DWCi_Acc_SetPlayerId(void *, u32);
 void DwcNet_Free(s32, void *, s32);
 void DwcNet_Alloc(void);
 void *DwcNet_AllocAligned(s32, s32, s32);
@@ -134,12 +134,12 @@ u64 OS_GetTick(void);
 u64 func_02132ef8(u64, u64);
 void *MI_CpuFill8(void *, s32, u32);
 s32 strcmp(void *, void *);
-s32 func_021000f4(void *);
-s32 func_021000fc(void *);
-void func_02100094(void *);
-void func_020ffb98(void *, void *, void *);
-void func_020ffba8(void *, s32);
-s32 func_020ffc60(void *, void *);
+s32 DWC_GetFriendDataType(void *);
+s32 DWC_IsBuddyFriendData(void *);
+void DWCi_SetBuddyFriendData(void *);
+void DWC_LoginIdToUserName(void *, void *, void *);
+void DWC_SetGsProfileId(void *, s32);
+s32 DWC_GetGsProfileId(void *, void *);
 void DwcLogin_Fail(s32, s32);
 u32 DwcLogin_GetUserData(void);
 s32 DwcCore_HasError(void);
@@ -194,8 +194,8 @@ extern "C" {
 extern DwcFriendControl *sDwcFriendControl;
 extern DwcMatchControl *sDwcMatch;
 u64 OS_GetTick();
-s32 func_020ffc60(s32, void *);
-s32 func_020ffdd8(void *);
+s32 DWC_GetGsProfileId(s32, void *);
+s32 DWCi_Acc_IsValidFriendData(void *);
 s32 strcmp(const char *, const char *);
 s32 STD_GetStringLength(const char *);
 void func_02127838(char *, const char *);
@@ -336,7 +336,7 @@ s32 DwcFriend_CountValid(u8 *p, s32 n) {
         return 0;
     }
     for (i = 0; i < n; i++) {
-        if (func_020ffdd8(p) != 0) {
+        if (DWCi_Acc_IsValidFriendData(p) != 0) {
             cnt++;
         }
         p += 12;
@@ -384,7 +384,7 @@ namespace F02271da0 {
 extern "C" {
 void DwcFriend_DeleteFriend(void *p) {
     if (sDwcFriendControl != NULL && DwcLogin_IsLoggedIn() != 0 && DwcLogin_GetUserData() != 0) {
-        s32 t = func_020ffc60(DwcLogin_GetUserData(), p);
+        s32 t = DWC_GetGsProfileId(DwcLogin_GetUserData(), p);
         if (t != 0 && t != -1 && GsGp_IsBuddy(sDwcFriendControl->gpConnection, t) != 0) {
             GsGp_DeleteBuddy(sDwcFriendControl->gpConnection, t);
         }
@@ -542,7 +542,7 @@ void DwcFriend_OnBuddyStatus(void *a, u32 *b) {
 namespace F02271da0 {
 extern "C" {
 s32 DwcFriend_GetProfileId(s32 i) {
-    s32 r = func_020ffc60(DwcLogin_GetUserData(), &sDwcFriendControl->friendList[i]);
+    s32 r = DWC_GetGsProfileId(DwcLogin_GetUserData(), &sDwcFriendControl->friendList[i]);
     s32 m = -1;
     if (r == 0 || r == m) {
         r = 0;
@@ -676,10 +676,10 @@ void DwcFriend_SyncList(DwcFriendData *arr, s32 n)
                 for (j = 0; j < n; j++) {
                     if (out.profileId == DwcFriend_GetProfileId(j)) {
                         s32 off = j * 12;
-                        if (func_021000fc((void *)((u32)arr + off)) == 0) {
+                        if (DWC_IsBuddyFriendData((void *)((u32)arr + off)) == 0) {
                             DwcFriendData *e = (DwcFriendData *)((u8 *)arr + off);
-                            func_020ffba8(e, out.profileId);
-                            func_02100094(e);
+                            DWC_SetGsProfileId(e, out.profileId);
+                            DWCi_SetBuddyFriendData(e);
                             sDwcFriendControl->isListChanged = 1;
                         }
                         break;
@@ -705,8 +705,8 @@ void DwcFriend_SyncList(DwcFriendData *arr, s32 n)
                 }
             }
         } else {
-            if (func_020ffc60((void *)DwcLogin_GetUserData(), &arr[sDwcFriendControl->syncIndex]) == -1) {
-                func_020ffb98((void *)DwcLogin_GetUserData(), &arr[sDwcFriendControl->syncIndex], buf);
+            if (DWC_GetGsProfileId((void *)DwcLogin_GetUserData(), &arr[sDwcFriendControl->syncIndex]) == -1) {
+                DWC_LoginIdToUserName((void *)DwcLogin_GetUserData(), &arr[sDwcFriendControl->syncIndex], buf);
                 GsGp_ProfileSearch(sDwcFriendControl->gpConnection, 0, 0, 0, 0, buf, 0, 0, (void *)DwcFriend_OnProfileSearch, sDwcFriendControl->syncIndex);
                 sDwcFriendControl->syncPhase = 2;
                 return;
@@ -750,7 +750,7 @@ s32 DwcFriend_MergeDuplicate(DwcFriendData *arr, s32 n, s32 id)
     for (i = 0; i < n; i++) {
         s32 t = DwcFriend_GetProfileId(i);
         if (t != 0 && t == id) {
-            if (func_021000fc(&arr[n]) != 0 && func_021000fc(&arr[i]) == 0) {
+            if (DWC_IsBuddyFriendData(&arr[n]) != 0 && DWC_IsBuddyFriendData(&arr[i]) == 0) {
                 DwcFriend_DeleteEntry(arr, i, n);
             } else {
                 DwcFriend_DeleteEntry(arr, n, i);
@@ -784,11 +784,11 @@ s32 DwcFriend_RemoveDuplicates(DwcFriendData *arr, s32 n, s32 id)
                 j = i + 1;
                 for (; j < n; j++) {
                     if (t == DwcFriend_GetProfileId(j)) {
-                        if (func_021000f4(q) == 2 && func_021000f4(&arr[j]) == 3) {
-                            func_020ffba8(p, t);
+                        if (DWC_GetFriendDataType(q) == 2 && DWC_GetFriendDataType(&arr[j]) == 3) {
+                            DWC_SetGsProfileId(p, t);
                         }
-                        if (func_021000fc(&arr[j]) != 0) {
-                            func_02100094(p);
+                        if (DWC_IsBuddyFriendData(&arr[j]) != 0) {
+                            DWCi_SetBuddyFriendData(p);
                         }
                         DwcFriend_DeleteEntry(arr, j, i);
                         sDwcFriendControl->isListChanged = 1;
@@ -826,7 +826,7 @@ s32 DwcFriend_GetBuddyStatus(void *a, void *b)
     if (sDwcFriendControl == NULL || DwcLogin_IsLoggedIn() == 0) {
         return FALSE;
     }
-    t = func_020ffc60((void *)DwcLogin_GetUserData(), a);
+    t = DWC_GetGsProfileId((void *)DwcLogin_GetUserData(), a);
     if (t > 0) {
         if (GsGp_GetBuddyIndex(sDwcFriendControl->gpConnection, t, &out) != 0) {
             return FALSE;
@@ -889,7 +889,7 @@ void DwcFriend_OnProfileSearch(void *x, GsGpProfileSearchResponse *p, s32 idx)
     s32 out;
     if (p->result == 0 && p->numMatches != 0) {
         off = idx * 12;
-        if (func_021000f4((u8 *)sDwcFriendControl->friendList + off) != 0) {
+        if (DWC_GetFriendDataType((u8 *)sDwcFriendControl->friendList + off) != 0) {
             if (sDwcFriendControl->updateState == 1) {
                 sDwcFriendControl->isListChanged = 1;
                 for (i = 0; i < p->numMatches; i++) {
@@ -905,8 +905,8 @@ void DwcFriend_OnProfileSearch(void *x, GsGpProfileSearchResponse *p, s32 idx)
                     if (out == -1) {
                         DwcFriend_SendBuddyRequest(p->matches[i].profileId);
                     } else {
-                        func_020ffba8((u8 *)sDwcFriendControl->friendList + off, p->matches[0].profileId);
-                        func_02100094((u8 *)sDwcFriendControl->friendList + off);
+                        DWC_SetGsProfileId((u8 *)sDwcFriendControl->friendList + off, p->matches[0].profileId);
+                        DWCi_SetBuddyFriendData((u8 *)sDwcFriendControl->friendList + off);
                         DwcFriend_NotifyAdded(idx);
                         sDwcFriendControl->syncIndex++;
                         sDwcFriendControl->syncPhase = 1;
@@ -931,7 +931,7 @@ void DwcFriend_OnProfileSearch(void *x, GsGpProfileSearchResponse *p, s32 idx)
             e = e;
         }
     } else {
-        if (sDwcFriendControl->updateState == 1 || func_021000f4((u8 *)sDwcFriendControl->friendList + idx * 12) == 0) {
+        if (sDwcFriendControl->updateState == 1 || DWC_GetFriendDataType((u8 *)sDwcFriendControl->friendList + idx * 12) == 0) {
             sDwcFriendControl->syncIndex++;
             sDwcFriendControl->syncPhase = 1;
         }
@@ -950,18 +950,18 @@ void DwcFriend_OnBuddyRequestInfo(void *x, GsGpGetInfoResponse *p)
     if (p->result == 0) {
         i = found;
         for (; i < sDwcFriendControl->numFriends; i++) {
-            if (func_021000f4(&sDwcFriendControl->friendList[i]) == 1) {
+            if (DWC_GetFriendDataType(&sDwcFriendControl->friendList[i]) == 1) {
                 u8 buf[24];
-                func_020ffb98((void *)DwcLogin_GetUserData(), &sDwcFriendControl->friendList[i], buf);
+                DWC_LoginIdToUserName((void *)DwcLogin_GetUserData(), &sDwcFriendControl->friendList[i], buf);
                 if (strcmp(buf, (u8 *)p + 0x8e) == 0) {
                     GsGp_AuthorizeBuddyRequest(x, p->profileId);
-                    func_020ffba8(&sDwcFriendControl->friendList[i], p->profileId);
+                    DWC_SetGsProfileId(&sDwcFriendControl->friendList[i], p->profileId);
                     found = 1;
                 }
-            } else if (func_021000f4(&sDwcFriendControl->friendList[i]) == 3
-                       || func_021000f4(&sDwcFriendControl->friendList[i]) == 2) {
+            } else if (DWC_GetFriendDataType(&sDwcFriendControl->friendList[i]) == 3
+                       || DWC_GetFriendDataType(&sDwcFriendControl->friendList[i]) == 2) {
                 s32 v = p->profileId;
-                if (v == func_020ffc60((void *)DwcLogin_GetUserData(), &sDwcFriendControl->friendList[i])) {
+                if (v == DWC_GetGsProfileId((void *)DwcLogin_GetUserData(), &sDwcFriendControl->friendList[i])) {
                     GsGp_AuthorizeBuddyRequest(x, v);
                     found = 1;
                 }
@@ -988,19 +988,19 @@ void DwcFriend_OnAuthorizedInfo(void *x, GsGpGetInfoResponse *p)
     if (p->result == 0) {
         i = found;
         for (; i < sDwcFriendControl->numFriends; i++) {
-            if (func_021000f4(&sDwcFriendControl->friendList[i]) == 1) {
-                func_020ffb98((void *)DwcLogin_GetUserData(), &sDwcFriendControl->friendList[i], buf);
+            if (DWC_GetFriendDataType(&sDwcFriendControl->friendList[i]) == 1) {
+                DWC_LoginIdToUserName((void *)DwcLogin_GetUserData(), &sDwcFriendControl->friendList[i], buf);
                 if (strcmp(buf, (u8 *)p + 0x8e) == 0) {
-                    func_020ffba8(&sDwcFriendControl->friendList[i], p->profileId);
-                    func_02100094(&sDwcFriendControl->friendList[i]);
+                    DWC_SetGsProfileId(&sDwcFriendControl->friendList[i], p->profileId);
+                    DWCi_SetBuddyFriendData(&sDwcFriendControl->friendList[i]);
                     found = 1;
                 }
-            } else if (func_021000f4(&sDwcFriendControl->friendList[i]) == 3
-                       || func_021000f4(&sDwcFriendControl->friendList[i]) == 2) {
+            } else if (DWC_GetFriendDataType(&sDwcFriendControl->friendList[i]) == 3
+                       || DWC_GetFriendDataType(&sDwcFriendControl->friendList[i]) == 2) {
                 s32 v = p->profileId;
-                if (v == func_020ffc60((void *)DwcLogin_GetUserData(), &sDwcFriendControl->friendList[i])) {
-                    func_020ffba8(&sDwcFriendControl->friendList[i], v);
-                    func_02100094(&sDwcFriendControl->friendList[i]);
+                if (v == DWC_GetGsProfileId((void *)DwcLogin_GetUserData(), &sDwcFriendControl->friendList[i])) {
+                    DWC_SetGsProfileId(&sDwcFriendControl->friendList[i], v);
+                    DWCi_SetBuddyFriendData(&sDwcFriendControl->friendList[i]);
                     found = 1;
                 }
             }
@@ -1237,20 +1237,20 @@ void DwcLogin_StartNasAuth(DwcNasLoginCallback cb, u32 arg) {
     MI_CpuFill8(&cfg, 0, 0x2c);
     sDwcLoginDoneCallback = cb;
     sDwcLoginDoneArg = arg;
-    if (func_020ffdfc(sDwcLoginControl->userData)) {
-        func_020fff48((u8 *)sDwcLoginControl->userData + 0x10, sDwcLoginControl->userData->gameCode,
+    if (DWCi_Acc_IsAuthentic(sDwcLoginControl->userData)) {
+        DWCi_Acc_LoginIdToUserName((u8 *)sDwcLoginControl->userData + 0x10, sDwcLoginControl->userData->gameCode,
                       sDwcLoginControl->loginIdText);
     } else {
-        if (func_020ffe08(&sDwcLoginControl->loginId) == 0) {
-            if (func_020ffe24((u8 *)sDwcLoginControl->userData + 4)) {
+        if (DWCi_Acc_IsValidLoginId(&sDwcLoginControl->loginId) == 0) {
+            if (DWCi_Acc_CheckConsoleUserId((u8 *)sDwcLoginControl->userData + 4)) {
                 sDwcLoginControl->loginId = *(DwcLoginId *)((u8 *)sDwcLoginControl->userData + 4);
             } else {
-                func_020ffe84(&sDwcLoginControl->loginId);
+                DWCi_Acc_CreateTempLoginId(&sDwcLoginControl->loginId);
             }
         } else {
-            func_02100160(&sDwcLoginControl->loginId, (u32)(((u64)((s64)OS_GetTick() * 0x5d588b656c078965LL) + 0x269ec3) >> 32));
+            DWCi_Acc_SetPlayerId(&sDwcLoginControl->loginId, (u32)(((u64)((s64)OS_GetTick() * 0x5d588b656c078965LL) + 0x269ec3) >> 32));
         }
-        func_020fff48(&sDwcLoginControl->loginId, sDwcLoginControl->gameCode, sDwcLoginControl->loginIdText);
+        DWCi_Acc_LoginIdToUserName(&sDwcLoginControl->loginId, sDwcLoginControl->gameCode, sDwcLoginControl->loginIdText);
     }
     func_02127838(cfg.gsbrcd, sDwcLoginControl->gsbrcd);
     cfg.allocFunc = (DwcAllocFunc)DwcNet_Alloc;
@@ -1277,7 +1277,7 @@ void DwcLogin_PollNasAuth(void) {
         NasAuth_Destroy();
         DwcNet_Free(0, sDwcLoginControl->nasAuthWork, 0);
         sDwcLoginControl->nasAuthWork = NULL;
-        if (func_020ffdfc(sDwcLoginControl->userData)) {
+        if (DWCi_Acc_IsAuthentic(sDwcLoginControl->userData)) {
             sDwcLoginDoneCallback(sDwcLoginControl->authToken, sDwcLoginControl->authChallenge, sDwcLoginDoneArg);
         } else {
             DwcLogin_GpConnect(sDwcLoginControl->authToken, sDwcLoginControl->authChallenge,
@@ -1314,7 +1314,7 @@ void DwcLogin_OnGpProfileInfo(void *a0, GsGpGetInfoResponse *x) {
     if (x->result == 0) {
         if (sDwcLoginControl->state == 3) {
             if (x->lastName[0] == 0) {
-                func_020fff48((u8 *)sDwcLoginControl->userData + 4, sDwcLoginControl->gameCode, a);
+                DWCi_Acc_LoginIdToUserName((u8 *)sDwcLoginControl->userData + 4, sDwcLoginControl->gameCode, a);
                 if (Unk_ov065_0227138c_Ns::DwcLogin_HandleGpResult(GsGp_SetInfo(a0, 0x705, a)) == 0) {
                     sDwcLoginControl->state = 4;
                     s32 r = Unk_ov065_0227138c_Ns::DwcLogin_HandleGpResult(GsGp_GetInfo(a0, x->profileId, 0, 0, (void *)DwcLogin_OnGpProfileInfo, 0));
@@ -1329,10 +1329,10 @@ void DwcLogin_OnGpProfileInfo(void *a0, GsGpGetInfoResponse *x) {
                 sDwcLoginControl->state = 1;
             }
         } else if (sDwcLoginControl->state == 4) {
-            func_020fff48((u8 *)sDwcLoginControl->userData + 4, sDwcLoginControl->gameCode, &b[1]);
+            DWCi_Acc_LoginIdToUserName((u8 *)sDwcLoginControl->userData + 4, sDwcLoginControl->gameCode, &b[1]);
             if (strcmp((const char *)&x->lastName[0], (const char *)&b[1]) == 0) {
-                func_020fff48(&sDwcLoginControl->loginId, sDwcLoginControl->gameCode, &c[2]);
-                func_020ffd30(sDwcLoginControl->userData, &sDwcLoginControl->loginId, x->profileId);
+                DWCi_Acc_LoginIdToUserName(&sDwcLoginControl->loginId, sDwcLoginControl->gameCode, &c[2]);
+                DWCi_Acc_SetLoginIdToUserData(sDwcLoginControl->userData, &sDwcLoginControl->loginId, x->profileId);
                 GsGp_Disconnect(a0);
                 sDwcLoginDoneCallback(sDwcLoginControl->authToken, sDwcLoginControl->authChallenge, sDwcLoginDoneArg);
             } else {

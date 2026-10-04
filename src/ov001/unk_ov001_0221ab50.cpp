@@ -77,7 +77,7 @@ extern void WfcError_SetCode();
 extern void WfcConnTest_FadeOut();
 extern void WfcTask_RequestDelete(s32, s32);
 extern s32 WifiAp_RequestCleanup();
-extern void *func_020fe848();
+extern void *DWCi_BACKUPlGetWifi();
 extern void MI_CpuCopy8(void *, void *, s32);
 extern void WfcBusyIcon_Delete();
 extern void WfcText_DestroyBgCanvas(s32);

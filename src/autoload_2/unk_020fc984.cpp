@@ -65,8 +65,8 @@ s32 PXI_IsCallbackReady(u32 a, u32 b);
 void PXI_SetFifoRecvCallback(u32 a, void *b);
 s32 PXI_SendWordByFifo(u32 a, u32 b, u32 c);
 s32 OS_GetLockID(void);
-void func_020fe4b0(u32 a, u32 b);
-void func_020fe4b4(u32 a, u32 b);
+void WvrDummyAsyncCallback(u32 a, u32 b);
+void WvrReceiveCallback(u32 a, u32 b);
 void spl_rndm_get_arb_vec_xyz(VecFx32 *v);
 void spl_rndm_get_arb_vec_xy(VecFx32 *v);
 void spl_push_front(PList *l, P *n);
@@ -84,7 +84,7 @@ static inline s32 FX_Mul(s32 a, s32 b) {
 
 #define LCG() (data_021f5c3c = data_021f5c3c * 0x5eedf715 + 0x1b0cb173)
 
-extern "C" void func_020fe4b0(u32 a, u32 b) {
+extern "C" void WvrDummyAsyncCallback(u32 a, u32 b) {
 }
 
 extern "C" void spl_rndm_get_arb_vec_xyz(VecFx32 *v) {

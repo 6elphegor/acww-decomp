@@ -53,7 +53,7 @@ s32 MB_CommGetChildUser(s32);
 void Fatal_Trap();
 u64 OS_GetTick();
 u32 WM_GetNextTgid();
-void func_020fefb0(void *);
+void DWCi_BACKUPlRead(void *);
 
 s32 WfcMoveMb_FindAidByMac(s32);
 s32 WfcMoveMb_GetChildInfo();
@@ -121,7 +121,7 @@ extern "C" void WfcMove_Init(WfcMoveWork *self, u32 *a) {
     sWfcMove->unk_a92 = *(u8 *)&a[6];
     sWfcMove->maxPlayerNum = 2;
     OS_GetTick();
-    func_020fefb0(sWfcMove->configBuf);
+    DWCi_BACKUPlRead(sWfcMove->configBuf);
     OS_GetTick();
     sWfcMove->config = WfcConfig_Get();
 }

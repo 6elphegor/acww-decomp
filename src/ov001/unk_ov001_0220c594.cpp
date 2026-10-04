@@ -17,7 +17,7 @@ u32 sWfcScreenFlags[4];
 //ENDDEFS
 
 extern void Fatal_Trap();
-extern void func_020ff2e4();
+extern void DWC_BM_Init();
 extern void VBlankIntrWait();
 
 
@@ -148,7 +148,7 @@ s32 WfcUtil_InitSystem() {
     WfcInput_Init();
     WfcFade_Init();
     void *p = WfcHeap_Alloc(0x700, 0x20);
-    func_020ff2e4();
+    DWC_BM_Init();
     WfcHeap_FreeAndClear(&p);
 }
 

@@ -112,8 +112,8 @@ HeapHead *InitExpHeap(u32 start, u32 end, u16 opt);
 void NNSi_FndInitHeapHead(HeapHead *heap, u32 sig, u32 start, u32 end, u16 opt);
 void SetFirstObject(NNSFndList *list, void *obj);
 void NNS_FndPrependListObject(NNSFndList *list, void *obj);
-void *func_021011ec(FrmHead *f, u32 size, u32 alignment);
-void *func_02101170(FrmHead *f, u32 size, u32 alignment);
+void *AllocFromHead__FrameHeap(FrmHead *f, u32 size, u32 alignment);
+void *AllocFromTail__FrameHeap(FrmHead *f, u32 size, u32 alignment);
 void FreeHead(HeapHead *h);
 void FreeTail(HeapHead *h);
 void FreeHead(HeapHead *h);
@@ -157,7 +157,7 @@ extern s32 (*data_0213bc14)();
 void NNS_GfdResetFrmTexVramState(void);
 void NNSi_GfdSetTexNrmSearchArray(u32 a0, u32 a1, u32 a2, u32 a3, u32 a4);
 u32 NNS_GfdAllocFrmTexVram(u32 szByte, BOOL is4x4, BOOL opt);
-s32 func_02101500();
+s32 NNS_GfdFreeFrmTexVram();
 
 // prototypes
 void *NNS_FndGetPrevListObject(NNSFndList *list, void *obj);
@@ -172,11 +172,11 @@ void NNSi_FndFinalizeHeap(HeapHead *heap);
 void NNSi_FndInitHeapHead(HeapHead *heap, u32 sig, u32 start, u32 end, u16 opt);
 NNSFndList *FindListContainHeap(HeapHead *heap);
 HeapHead *FindContainHeap(NNSFndList *list, HeapHead *mem);
-u32 func_021005a4(u32 memBlock);
-void func_021005ac(HeapHead *heap, void (*visitor)(void *, HeapHead *, u32), u32 param);
-u16 func_02100600(HeapHead *heap);
-u16 func_02100608(HeapHead *heap, u16 id);
-u32 func_02100618(HeapHead *heap, s32 alignment);
+u32 NNS_FndGetSizeForMBlockExpHeap(u32 memBlock);
+void NNS_FndVisitAllocatedForExpHeap(HeapHead *heap, void (*visitor)(void *, HeapHead *, u32), u32 param);
+u16 NNS_FndGetGroupIDForExpHeap(HeapHead *heap);
+u16 NNS_FndSetGroupIDForExpHeap(HeapHead *heap, u16 id);
+u32 NNS_FndGetAllocatableSizeForExpHeapEx(HeapHead *heap, s32 alignment);
 u32 NNS_FndGetTotalFreeSizeForExpHeap(HeapHead *heap);
 void NNS_FndFreeToExpHeap(HeapHead *heap, u32 mem);
 u32 NNS_FndResizeForMBlockExpHeap(HeapHead *heap, u32 memBlock, u32 size);
@@ -192,8 +192,8 @@ MBlock *InitMBlock(Region *rgn, u16 sig);
 MBlock *InsertMBlock(void *listp, MBlock *blk, MBlock *prev);
 MBlock *RemoveMBlock(void *listp, MBlock *blk);
 void GetRegionOfMBlock(Region *rgn, MBlock *blk);
-u32 func_02100e7c(HeapHead *heap, u32 mem, u32 size);
-u32 func_02100f20(HeapHead *heap);
+u32 NNS_FndResizeForMBlockFrmHeap(HeapHead *heap, u32 mem, u32 size);
+u32 NNS_FndAdjustFrmHeap(HeapHead *heap);
 BOOL NNS_FndFreeByStateToFrmHeap(HeapHead *heap, u32 tag);
 BOOL NNS_FndRecordStateForFrmHeap(HeapHead *heap, u32 tag);
 u32 NNS_FndGetAllocatableSizeForFrmHeapEx(HeapHead *heap, s32 alignment);
@@ -203,33 +203,33 @@ void NNS_FndDestroyFrmHeap(HeapHead *heap);
 HeapHead *NNS_FndCreateFrmHeapEx(u32 start, u32 size, u16 opt);
 void FreeTail(HeapHead *heap);
 void FreeHead(HeapHead *heap);
-void *func_02101170(FrmHead *f, u32 size, u32 alignment);
-void *func_021011ec(FrmHead *f, u32 size, u32 alignment);
+void *AllocFromTail__FrameHeap(FrmHead *f, u32 size, u32 alignment);
+void *AllocFromHead__FrameHeap(FrmHead *f, u32 size, u32 alignment);
 HeapHead *InitFrameHeap(u32 start, u32 end, u16 opt);
-u32 func_021012bc(const char *path);
-BOOL func_02101310(void *arc);
-BOOL func_02101340(u32 *arc, const char *name, u32 *narc);
+u32 NNS_FndGetArchiveFileByName(const char *path);
+BOOL NNS_FndUnmountArchive(void *arc);
+BOOL NNS_FndMountArchive(u32 *arc, const char *name, u32 *narc);
 BOOL func_0210149c(u32 *narc);
-s32 func_021014e0();
-s32 func_021014e8();
-s32 func_021014f0();
-s32 func_021014f8();
-s32 func_02101500();
+s32 FreeTexVram_();
+s32 AllocTexVram_();
+s32 FreePlttVram_();
+s32 AllocPlttVram_();
+s32 NNS_GfdFreeFrmTexVram();
 u32 NNS_GfdAllocFrmTexVram(u32 szByte, BOOL is4x4, BOOL opt);
 void NNS_GfdResetFrmTexVramState(void);
 void NNS_GfdInitFrmTexVramManager(u32 mode, BOOL setFuncs);
 void NNSi_GfdSetTexNrmSearchArray(u32 a0, u32 a1, u32 a2, u32 a3, u32 a4);
 
-s32 func_02101500() { return 0; }
+s32 NNS_GfdFreeFrmTexVram() { return 0; }
 
-s32 func_021014f8() { return 0; }
+s32 AllocPlttVram_() { return 0; }
 
-s32 func_021014f0() { return -1; }
+s32 FreePlttVram_() { return -1; }
 
-s32 func_021014e8() { return 0; }
+s32 AllocTexVram_() { return 0; }
 
 // NNS_Gfd dummy functions
-s32 func_021014e0() { return -1; }
+s32 FreeTexVram_() { return -1; }
 
 // NNS: check NARC header ("NARC", byte order 0xfffe, version 0x0100)
 BOOL func_0210149c(u32 *narc) {
@@ -239,7 +239,7 @@ BOOL func_0210149c(u32 *narc) {
 }
 
 // NNS_FndMountArchive
-BOOL func_02101340(u32 *arc, const char *name, u32 *narc) {
+BOOL NNS_FndMountArchive(u32 *arc, const char *name, u32 *narc) {
     u8 *fat;
     u8 *fnt;
     u8 *img;
@@ -271,14 +271,14 @@ BOOL func_02101340(u32 *arc, const char *name, u32 *narc) {
 }
 
 // NNS_FndUnmountArchive
-BOOL func_02101310(void *arc) {
+BOOL NNS_FndUnmountArchive(void *arc) {
     if (FS_UnloadArchive(arc) == 0) return 0;
     FS_ReleaseArchiveName(arc);
     return 1;
 }
 
 // ROM address of a file (arc base + file top)
-u32 func_021012bc(const char *path) {
+u32 NNS_FndGetArchiveFileByName(const char *path) {
     u32 file[19];
     u32 result = 0;
     FS_InitFile(file);
@@ -301,7 +301,7 @@ HeapHead *InitFrameHeap(u32 start, u32 end, u16 opt) {
 }
 
 // frmheap: AllocFromHead
-void *func_021011ec(FrmHead *f, u32 size, u32 alignment) {
+void *AllocFromHead__FrameHeap(FrmHead *f, u32 size, u32 alignment) {
     u32 head = f->head;
     u32 start = (alignment - 1 + head) & ~(alignment - 1);
     u32 newHead = size + start;
@@ -315,7 +315,7 @@ void *func_021011ec(FrmHead *f, u32 size, u32 alignment) {
 }
 
 // frmheap: AllocFromTail
-void *func_02101170(FrmHead *f, u32 size, u32 alignment) {
+void *AllocFromTail__FrameHeap(FrmHead *f, u32 size, u32 alignment) {
     u32 tail = f->tail;
     u32 newTail = (tail - size) & ~(alignment - 1);
     if (newTail < f->head) return 0;
@@ -361,8 +361,8 @@ void *NNS_FndAllocFromFrmHeapEx(HeapHead *heap, u32 size, s32 alignment) {
     FrmHead *f = FRM(heap);
     if (size == 0) size = 1;
     size = (size + 3) & ~3;
-    if (alignment >= 0) return func_021011ec(f, size, alignment);
-    return func_02101170(f, size, -alignment);
+    if (alignment >= 0) return AllocFromHead__FrameHeap(f, size, alignment);
+    return AllocFromTail__FrameHeap(f, size, -alignment);
 }
 
 // NNS_FndFreeToFrmHeap
@@ -374,7 +374,7 @@ void NNS_FndFreeToFrmHeap(HeapHead *heap, u32 mode) {
 // ---- file-scope objects (.data 0x0213bc10-0x0213bc20): the default texture / palette VRAM manager functions
 // (NNS_GfdDefaultFuncAllocTexVram, ...FreeTexVram, ...AllocPlttVram, ...FreePlttVram), set to the dummies above. This
 // definition order gives the original order after mwcc's size sort.
-s32 (*data_0213bc18)() = func_021014f8;
-s32 (*data_0213bc14)() = func_021014e0;
-s32 (*data_0213bc10)() = func_021014e8;
-s32 (*data_0213bc1c)() = func_021014f0;
+s32 (*data_0213bc18)() = AllocPlttVram_;
+s32 (*data_0213bc14)() = FreeTexVram_;
+s32 (*data_0213bc10)() = AllocTexVram_;
+s32 (*data_0213bc1c)() = FreePlttVram_;

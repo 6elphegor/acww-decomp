@@ -1,6 +1,6 @@
 // mwcc-flags: -nothumb -O4,p
 // G015b: autoload_2 0x020fe5c0-0x020fe848 (1 function). mwcc 1.2/base, C++, ARM, -O4,p. PARTIAL: plain func_ name, nothing defined but the function.
-// WVR_StartUpAsync: acquire VRAM banks C/D (0x04000242/0x04000243 VRAMCNT) for the ARM7 under a lock id, with a completion callback (func_020fe4b4 is the PXI receive callback).
+// WVR_StartUpAsync: acquire VRAM banks C/D (0x04000242/0x04000243 VRAMCNT) for the ARM7 under a lock id, with a completion callback (WvrReceiveCallback is the PXI receive callback).
 #include "types.h"
 #include "gfx/SplPtclTypes.h"
 #include "gfx/SplParticleViews.h"
@@ -62,8 +62,8 @@ s32 PXI_IsCallbackReady(u32 a, u32 b);
 void PXI_SetFifoRecvCallback(u32 a, void *b);
 s32 PXI_SendWordByFifo(u32 a, u32 b, u32 c);
 s32 OS_GetLockID(void);
-void func_020fe4b0(u32 a, u32 b);
-void func_020fe4b4(u32 a, u32 b);
+void WvrDummyAsyncCallback(u32 a, u32 b);
+void WvrReceiveCallback(u32 a, u32 b);
 void spl_rndm_get_arb_vec_xyz(VecFx32 *v);
 void spl_rndm_get_arb_vec_xy(VecFx32 *v);
 void spl_push_front(PList *l, P *n);
@@ -131,10 +131,10 @@ extern "C" s32 WVR_StartUpAsync(u32 cmd, void (*cb)(u32, u32), u32 arg) {
         return 3;
     }
     if (PXI_IsCallbackReady(15, 0) == 0) {
-        PXI_SetFifoRecvCallback(15, (void *)func_020fe4b4);
+        PXI_SetFifoRecvCallback(15, (void *)WvrReceiveCallback);
     }
     if (cb == 0) {
-        data_021f5c4c = func_020fe4b0;
+        data_021f5c4c = WvrDummyAsyncCallback;
     } else {
         data_021f5c4c = cb;
     }

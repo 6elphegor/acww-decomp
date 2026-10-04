@@ -177,7 +177,7 @@ extern void WfcError_SetCode();
 extern void WfcConnTest_FadeOut();
 extern void WfcTask_RequestDelete(s32, s32);
 extern s32 WifiAp_RequestCleanup();
-extern void *func_020fe848();
+extern void *DWCi_BACKUPlGetWifi();
 extern void MI_CpuCopy8(void *, void *, s32);
 extern void WfcBusyIcon_Delete();
 extern void WfcText_DestroyBgCanvas(s32);
@@ -284,8 +284,8 @@ void WfcConnTest_WaitFadeOut() {
 void WfcConnTest_Exit() {
     u8 *o = WfcConfig_Get();
     if (WifiAp_RequestCleanup() == 0) return;
-    MI_CpuCopy8(func_020fe848(), o + 0xf0, 0xe);
-    MI_CpuCopy8(func_020fe848(), o + 0x1f0, 0xe);
+    MI_CpuCopy8(DWCi_BACKUPlGetWifi(), o + 0xf0, 0xe);
+    MI_CpuCopy8(DWCi_BACKUPlGetWifi(), o + 0x1f0, 0xe);
     WfcBusyIcon_Delete();
     WfcText_DestroyBgCanvas(0);
     WfcGx_HidePlanes(0, 0x15);

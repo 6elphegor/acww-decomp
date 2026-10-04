@@ -60,15 +60,15 @@ extern s32 OS_SPrintf(char *buf, const char *fmt, ...);
 extern s32 OS_SNPrintf(char *buf, u32 n, const char *fmt, ...);
 extern s32 func_0212a438(const char *s);
 extern s32 func_0212dcb4(const void *s);
-extern void func_020ff0bc(void *p);
+extern void DWCi_BM_GetWiFiInfo(void *p);
 extern void OS_LockMutex(void *m);
 extern void OS_UnlockMutex(void *m);
 extern s32 OS_InitMutex(void *m);
 extern s32 func_0212b770(void);
 extern s32 strtol(const char *s, char **end, s32 base);
-extern s32 func_020ff6f4(void *p, u32 v);
-extern void func_020ff5cc(void *p);
-extern void func_020ff734(u32 v);
+extern s32 DWCi_AUTH_UpDateWiFiID(void *p, u32 v);
+extern void DWCi_AUTH_RemakeWiFiID(void *p);
+extern void DWCi_AUTH_MakeWiFiID(u32 v);
 extern void OS_JoinThread(void *p);
 extern s32 OS_IsThreadTerminated(void *t);
 extern s32 OS_WakeupThreadDirect(void *t);
@@ -235,7 +235,7 @@ s32 NasAuth_SendRequest(s32 a) {
         return 4;
     }
     if (a == 1) {
-        func_020ff0bc(&sNasUserId);
+        DWCi_BM_GetWiFiInfo(&sNasUserId);
     }
     sNasAuth->state = NasAuth_BuildRequest(
         sNasAuth->http, (char *)sNasAuth + 0x1e2, (u16 *)((u8 *)sNasAuth + 0x1cc),
@@ -362,7 +362,7 @@ s32 NasAuth_HandleResponse(void) {
                 sNasAuth->resultCode = 0x4e84;
                 return 2;
             }
-            if (func_020ff6f4(&sNasUserId, ((u32)r + 0x1f) & ~0x1f) != 1) {
+            if (DWCi_AUTH_UpDateWiFiID(&sNasUserId, ((u32)r + 0x1f) & ~0x1f) != 1) {
                 sNasAuth->config.freeFunc(m, r, 0);
                 sNasAuth->resultCode = 0x4e84;
                 return 0xe;
@@ -373,7 +373,7 @@ s32 NasAuth_HandleResponse(void) {
     }
     switch (st) {
     case 0x4e88:
-        func_020ff5cc(&sNasUserId);
+        DWCi_AUTH_RemakeWiFiID(&sNasUserId);
         sNasAuth->resultCode = 0x4e88;
         return 0xf;
     case 0x4e8c:
@@ -383,7 +383,7 @@ s32 NasAuth_HandleResponse(void) {
             sNasAuth->resultCode = 0x4e8c;
             return 0x10;
         }
-        func_020ff734(((u32)r + 0x1f) & ~0x1f);
+        DWCi_AUTH_MakeWiFiID(((u32)r + 0x1f) & ~0x1f);
         sNasAuth->config.freeFunc(m, r, 0);
         sNasAuth->resultCode = 0x4e8c;
         return 0x10;
@@ -513,7 +513,7 @@ s32 NasAuth_BuildRequest(void *a0, const char *a1, const u16 *a2, DwcHttpField *
             DwcHttp_AddField(&form, "gsbrcd", a1);
         }
     } else {
-        func_020ff0bc(&sNasUserId);
+        DWCi_BM_GetWiFiInfo(&sNasUserId);
     }
     DwcHttp_AddField(&form, "sdkver", "001000");
     if (sNasUserId.userId != 0) {

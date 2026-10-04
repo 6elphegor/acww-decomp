@@ -23,7 +23,7 @@ void OS_RestoreInterrupts(u32);
 void MIi_CpuClear32(u32, void *, u32);
 void MIi_CpuCopy32(void *, void *, u32);
 s32 strncmp(void *, void *, u32);
-void func_020ff154(void *);
+void DWCi_BM_GetApInfo(void *);
 s32 DGT_Hash1GetDigest_R();
 s32 DGT_Hash1SetSource();
 s32 DGT_Hash1Reset();
@@ -99,7 +99,7 @@ s32 WifiAp_Init(WifiApConfig *cfg) {
         b->lo = cfg->apFilter;
         b->mid = cfg->netCheckMode;
     }
-    func_020ff154(ec);
+    DWCi_BM_GetApInfo(ec);
     r = WifiLink_Init(sWifiApLinkWork, 0x2300);
     if (r == 1 || r >= 4) {
         WifiAp_FreeAll();

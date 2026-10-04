@@ -382,9 +382,9 @@ void *File_LoadAlloc(void *path, void *heap, s32 mode, u32 *size);
 s32 Str_SPrintf(char *buf, char *fmt, ...);
 void *Heap_Alloc(void *a, u32 b);
 void MI_CpuCopy8(void *dst, void *src, u32 n);
-s32 func_02101340(void *buf, char *fmt, void *arg);
-void func_02101310(void *buf);
-s32 func_021012bc(s32 a);
+s32 NNS_FndMountArchive(void *buf, char *fmt, void *arg);
+void NNS_FndUnmountArchive(void *buf);
+s32 NNS_FndGetArchiveFileByName(s32 a);
 void *NNS_G3dGetMdlSet(s32 a);
 s32 func_021065dc(s32 a);
 s32 func_021065f8(s32 a, s32 b);
@@ -2602,41 +2602,41 @@ BOOL FtrModelRes::loadFiles(void *obj, s32 id) {
         arcFile = File_LoadAlloc(p, (void *)ModelSlot_getHeap(obj), 4, &size1);
     }
     if (model == 0 && arcFile != 0) {
-        if (func_02101340(&blk, "FTR", arcFile)) {
-            u8 *pb = (u8 *)NNS_G3dGetMdlSet(func_021012bc((s32)sFtrModelNamePtr));
+        if (NNS_FndMountArchive(&blk, "FTR", arcFile)) {
+            u8 *pb = (u8 *)NNS_G3dGetMdlSet(NNS_FndGetArchiveFileByName((s32)sFtrModelNamePtr));
             model = pb + *(u32 *)(pb + *(u16 *)(pb + 0xe) + 0xc);
             u32 i = 0;
             s32 z0 = 0, z1 = 0, z2 = 0, z3 = 0, z4 = 0;
             do {
                 s32 h;
                 Str_SPrintf(name, "FTR:a/bca/bca%d", i);
-                h = func_021012bc((s32)name);
+                h = NNS_FndGetArchiveFileByName((s32)name);
                 if (h) {
                     animSet.setBca((void *)func_021065f8(func_021065dc(h), z0), i);
                 }
                 Str_SPrintf(name, "FTR:a/bma/bma%d", i);
-                h = func_021012bc((s32)name);
+                h = NNS_FndGetArchiveFileByName((s32)name);
                 if (h) {
                     animSet.setBma((void *)func_02106634(func_02106618(h), z1), i);
                 }
                 Str_SPrintf(name, "FTR:a/bva/bva%d", i);
-                h = func_021012bc((s32)name);
+                h = NNS_FndGetArchiveFileByName((s32)name);
                 if (h) {
                     animSet.setBva((void *)func_021067a4(func_02106788(h), z2), i);
                 }
                 Str_SPrintf(name, "FTR:a/bta/bta%d", i);
-                h = func_021012bc((s32)name);
+                h = NNS_FndGetArchiveFileByName((s32)name);
                 if (h) {
                     animSet.setBta((void *)func_02106670(func_02106654(h), z3), i);
                 }
                 Str_SPrintf(name, "FTR:a/btp/btp%d", i);
-                h = func_021012bc((s32)name);
+                h = NNS_FndGetArchiveFileByName((s32)name);
                 if (h) {
                     animSet.setBtp((void *)func_021066ac(func_02106690(h), z4), i);
                 }
                 i++;
             } while (i < 2);
-            func_02101310(&blk);
+            NNS_FndUnmountArchive(&blk);
         }
     }
     if (texFile != 0 && model != 0) {

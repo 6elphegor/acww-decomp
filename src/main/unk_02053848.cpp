@@ -79,8 +79,8 @@ void *Gfx3d_CopyModel(void *a, void *heap);
 void _ZN5Model18setResourceAndBindEP12NNSG3dResMdlj(void *a, void *b, void *c);
 void NNS_G3dBindMdlTex(void *a, void *b);
 void NNS_G3dBindMdlPltt(void *a, void *b);
-void func_02103978(void *a, void *b, s32 c, s32 d);
-void func_021037b4(void *a, void *b, s32 c, void *d);
+void NNS_G3dForceBindMdlTex(void *a, void *b, s32 c, s32 d);
+void NNS_G3dForceBindMdlPltt(void *a, void *b, s32 c, void *d);
 void *ResCache_GetModel(void *a, u32 tag);
 void *ResCache_FindModel(void *a);
 void *PatternTexCache_Get(void);
@@ -150,7 +150,7 @@ BOOL CachedModel::loadWithTexKeyed(void *res, void *name, void *tex, void *d, u3
     if (d != NULL) {
         s32 i;
         for (i = 0; i < f; i++) {
-            func_021037b4(resMdl, d, i, (void *)e[i]);
+            NNS_G3dForceBindMdlPltt(resMdl, d, i, (void *)e[i]);
         }
     }
     Heap_Free(heap, h);
@@ -185,8 +185,8 @@ BOOL CachedModel::loadWithSharedTex(void *a, void *b, void *c) {
     u8 *p = Unk_02054b70_Off((u8 *)NNS_G3dGetMdlSet(h));
     resMdl = (NNSG3dResMdl *)ResCache_GetModel(p, 0x4e554c4c);
     void *r = _ZN15PatternTexCache15getPlayerTexKeyEii(PatternTexCache_Get(), b, c);
-    func_02103978(resMdl, r, 0, 0);
-    func_021037b4(resMdl, r, 0, 0);
+    NNS_G3dForceBindMdlTex(resMdl, r, 0, 0);
+    NNS_G3dForceBindMdlPltt(resMdl, r, 0, 0);
     Heap_Free(heap, h);
     initRenderObj();
     return TRUE;

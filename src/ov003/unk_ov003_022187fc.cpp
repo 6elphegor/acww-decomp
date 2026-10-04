@@ -134,13 +134,13 @@ void GameProc_CreateChild(s32 a, u32 *b, s32 c, s32 d);
 void Gfx3d_LoadPltt(void *, s32);
 extern u32 gSaveTownState[];
 s32 TownState_FindEvent(void *, s32);
-s32 func_02101340(char *, const char *, void *);
+s32 NNS_FndMountArchive(char *, const char *, void *);
 void Str_SPrintf(char *, const char *, ...);
-void *func_021012bc(const char *);
+void *NNS_FndGetArchiveFileByName(const char *);
 void *NNS_G3dGetMdlSet(void *);
 void *func_02106690(void *);
 void *func_021066ac(void *, s32);
-void func_02101310(char *);
+void NNS_FndUnmountArchive(char *);
 }
 
 extern "C" {
@@ -667,17 +667,17 @@ s32 HouseLightUpDeco_Load(HouseLightUpDeco *r) {
         return z;
     }
     void *t = File_LoadAlloc("/str/npcHsX.arc", gFieldStructureHeap, 4, z);
-    if (func_02101340((char *)buf, "STR", t) != 0) {
+    if (NNS_FndMountArchive((char *)buf, "STR", t) != 0) {
         for (i = 0; i < 5; i++) {
             Str_SPrintf(data_ov003_02235888, "STR:a/obj_x_house%d.nsbmd", i);
-            u8 *p = (u8 *)NNS_G3dGetMdlSet(func_021012bc(data_ov003_02235888));
+            u8 *p = (u8 *)NNS_G3dGetMdlSet(NNS_FndGetArchiveFileByName(data_ov003_02235888));
             r->models[i] = (s32)(p + *(s32 *)(p + *(u16 *)(p + 0xe) + 0xc));
         }
-        r->tex = (s32)NNS_G3dGetTex(func_021012bc("STR:a/obj_x_house0.nsbtx"));
+        r->tex = (s32)NNS_G3dGetTex(NNS_FndGetArchiveFileByName("STR:a/obj_x_house0.nsbtx"));
         Gfx3d_LoadTexAndPltt((void *)r->tex, 0);
-        r->texPattern = (s32)func_021066ac(func_02106690(func_021012bc("STR:a/obj_x_deco.nsbtp")), 0);
+        r->texPattern = (s32)func_021066ac(func_02106690(NNS_FndGetArchiveFileByName("STR:a/obj_x_deco.nsbtp")), 0);
         r->isLoaded = 1;
-        func_02101310((char *)buf);
+        NNS_FndUnmountArchive((char *)buf);
     }
     return 1;
 }

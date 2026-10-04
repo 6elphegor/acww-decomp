@@ -1401,7 +1401,7 @@ void MIi_CpuClear32(u32, void *, u32);
 void MIi_CpuCopy32(void *, void *, u32);
 s32 strncmp(void *, void *, u32);
 s32 WM_SetDCFData(void *, void *, void *, u32);
-void func_020ff154(void *);
+void DWCi_BM_GetApInfo(void *);
 
 WifiLinkWork *WifiLink_GetWork();
 s32 WifiLink_Init(void *, u32);

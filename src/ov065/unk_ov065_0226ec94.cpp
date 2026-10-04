@@ -47,7 +47,7 @@ void OS_JoinThread(void *p);
 void OS_Sleep(s32 t);
 s32 OS_DisableInterrupts(void);
 void OS_RestoreInterrupts(s32 v);
-void func_020ff0bc(u64 *out);
+void DWCi_BM_GetWiFiInfo(u64 *out);
 s32 func_0212b770(const char *s);
 s32 func_0212a438(const char *s);
 s32 strcmp(const char *a, const char *b);
@@ -327,7 +327,7 @@ void NetCheck_ThreadMain(void) {
             goto end;
         }
         DwcHttp_Destroy(sNetCheckHttp);
-        func_020ff0bc(&tk.userId);
+        DWCi_BM_GetWiFiInfo(&tk.userId);
         if (tk.userId == 0) {
             sNetCheck->errorCode = -3;
             sNetCheckNasConfig.inGameName[0] = 0;

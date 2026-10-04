@@ -392,7 +392,7 @@ extern Rec sHeldInsects[];
 extern u8 sTrashFlySpawnEnabled;
 BOOL CommManager_isSlotActive(CommManager *p, u32 v);
 s32 PooledModel_getModel(void *p);
-s32 func_02106020(s32 a, s32 b);
+s32 NNS_G3dMdlGetMdlAlpha(s32 a, s32 b);
 void WorldCurve_FromCurved(void *dst, void *src);
 s32 func_01ffcb0c(s32 a, s32 b);
 void AnimFrameCtrl_setup(void *p, u32 a, s32 b, s32 c, u32 d);
@@ -490,7 +490,7 @@ s32 Effect_Create(s32 a, V3 *v, s32 b, u16 *c);
 s32 Effect_SetPosition(s32 h, V3 *v, s32 a, u16 *c);
 s32 Effect_End(s32 h);
 void *PooledModel_getModel(void *p);
-s32 func_02106020(void *a, s32 b);
+s32 NNS_G3dMdlGetMdlAlpha(void *a, s32 b);
 s32 NNS_G3dMdlSetMdlAlpha(void *p, s32 a, s32 b);
 s32 AnimModel_drawAnimated(void *p, void *q);
 void CharaShadow_DrawFaded(void *p, s32 a, u32 b, u8 c);
@@ -1144,7 +1144,7 @@ s32 func_02133150(s32 a, s32 b);
 void AnimFrameCtrl_setup(void *p, u32 a, s32 b, s32 c, u32 d);
 void AnimModel_setFrame(void *p, u16 v);
 s32 PooledModel_getModel(void *p);
-u32 func_02106020(u32 a, u32 b);
+u32 NNS_G3dMdlGetMdlAlpha(u32 a, u32 b);
 s32 NNS_G3dMdlSetMdlAlpha(s32 p, s32 a, s32 b);
 void FieldPos_ToUnit(s32 *x, s32 *y, void *p);
 void *TownBlockMap_Get(void);
@@ -1262,7 +1262,7 @@ BOOL CommManager_isSlotActive(CommManager *p, u32 v);
 BOOL NetArea_IsLocalOwner();
 s32 MenuCtrl_IsMenuOpen();
 s32 PooledModel_getModel(void *p);
-s32 func_02106020(void *a, s32 b);
+s32 NNS_G3dMdlGetMdlAlpha(void *a, s32 b);
 s32 NNS_G3dMdlSetMdlAlpha(void *p, s32 a, s32 b);
 s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
@@ -4978,7 +4978,7 @@ namespace s09 {
 // 0x222af48
 extern "C" BOOL Insect_FadeOut(Rec *self, s32 a) {
     u8 *p = (u8 *)&self->pooledModel;
-    s32 t = func_02106020((void *)PooledModel_getModel(p), 0);
+    s32 t = NNS_G3dMdlGetMdlAlpha((void *)PooledModel_getModel(p), 0);
     if (t > 7) {
         NNS_G3dMdlSetMdlAlpha((void *)PooledModel_getModel(p), 0, t - a);
     } else {
@@ -5222,7 +5222,7 @@ namespace s08 {
 // 0x222a8d0
 extern "C" void Spider_Update(Rec *self) {
     s16 *cnt = &self->stateTimer;
-    func_02106020(PooledModel_getModel(&self->pooledModel), 0);
+    NNS_G3dMdlGetMdlAlpha(PooledModel_getModel(&self->pooledModel), 0);
     s32 st = self->state;
     if (st != 0xb && st != 9) {
         s32 xy[2];
@@ -9682,7 +9682,7 @@ extern "C" s32 Insect_TryCatch(u8 id) {
     u32 c4 = (u8)o->kind;
     if (c4 == -1 || o->lifeState != 3 || t6 == 0xb || t6 == 9 || t6 == 0x10) return 0;
     if (c4 == 0x31 || c4 == 0x1e || c4 == 0x35) {
-        if (func_02106020(PooledModel_getModel(&o->pooledModel), 0) < 0x1f) return 0;
+        if (NNS_G3dMdlGetMdlAlpha(PooledModel_getModel(&o->pooledModel), 0) < 0x1f) return 0;
     }
     if (c4 == 0x35 && t6 == 0x13) return 0;
     s32 c = o->kind;
@@ -9757,7 +9757,7 @@ extern "C" void Insect_Draw(void *a, Obj *o) {
     s32 *p = &o->scale.x;
     if (*p > 0) {
         void *t = PooledModel_getModel(&o->pooledModel);
-        s32 r = func_02106020(t, 0);
+        s32 r = NNS_G3dMdlGetMdlAlpha(t, 0);
         u32 c;
         r = (31 - r) << 1;
         if (r > 31) c = 0;
@@ -10508,7 +10508,7 @@ extern "C" BOOL Insect_IsBeeSwarmOut(void) {
     CommManager *p = gCommManager;
     if (CommManager_isSlotActive(p, p->myAid) == 0) {
         Rec *e = sSpecialInsects;
-        if (func_02106020(PooledModel_getModel(data_ov003_02259484), 0) > 0x1e && e->lifeState == 3 && e->kind != 0x13) {
+        if (NNS_G3dMdlGetMdlAlpha(PooledModel_getModel(data_ov003_02259484), 0) > 0x1e && e->lifeState == 3 && e->kind != 0x13) {
             return TRUE;
         }
     }

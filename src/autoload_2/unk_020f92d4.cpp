@@ -34,11 +34,11 @@ void spl_set_tex(void *p);
 void spl_set_tex_dummy(void *p);
 void spl_gen_ptcl(void *e, void *l);
 void sDrawChild(Pm *m, u32 a);
-void func_020f97d0(Pm *m, u32 a);
-void func_020fbad0(Mc *m, Node *n, u32 a);
-void func_020fac28(Mc *m, Node *n, u32 a);
-void func_020fbf94(Mc *m, Node *n, u32 a);
-void func_020fb378(Mc *m, Node *n, u32 a);
+void sDrawParent(Pm *m, u32 a);
+void spl_draw_chld_bb(Mc *m, Node *n, u32 a);
+void spl_draw_chld_dbb(Mc *m, Node *n, u32 a);
+void spl_draw_bb(Mc *m, Node *n, u32 a);
+void spl_draw_dbb(Mc *m, Node *n, u32 a);
 }
 
 
@@ -73,8 +73,8 @@ static inline s32 FxMul(s32 a, s32 b) {
     return (s32)(((s64)a * b + 0x800) >> 12);
 }
 extern "C" {
-void func_020fa488(Mg2 *m, Nd *p, PosCb cb);
-void func_020fa858(Mg2 *m, Nd *p, PosCb cb);
+void spl_draw_chld_pol(Mg2 *m, Nd *p, PosCb cb);
+void spl_draw_pol(Mg2 *m, Nd *p, PosCb cb);
 }
 
 
@@ -112,7 +112,7 @@ void spl_alp_in_out(SplPt *, RU *, u32);
 void spl_tex_ptn_anm(SplPt *, RU *, u32);
 void spl_chld_scl_out(SplPt *, RU *, u32);
 void spl_chld_alp_out(SplPt *, RU *, u32);
-void func_020fc6bc(SplPt *, EU *, void *);
+void spl_gen_child(SplPt *, EU *, void *);
 void spl_gen_ptcl(void *, void *);
 u32 func_02133150x(void);
 SplPt *spl_del(void *, SplPt *);
@@ -191,7 +191,7 @@ extern "C" void spl_calc(MU *m, EU *e) {
             if (h.b16) {
                 s32 d = (p->h38 << 12) - (FxMul(p->h36 << 12, b14->c13 << 12) >> 8);
                 if (d >= 0) {
-                    if ((d >> 12) % b14->c14 == 0) func_020fc6bc(p, e, (u8 *)m + 20);
+                    if ((d >> 12) % b14->c14 == 0) spl_gen_child(p, e, (u8 *)m + 20);
                 }
             }
             if (((HdrU *)e->res->p0)->b30) {
@@ -257,7 +257,7 @@ extern "C" void spl_calc(MU *m, EU *e) {
     if (e->cb) e->cb(e, 1);
 }
 
-extern "C" void func_020f97d0(Pm *mp, u32 a) {
+extern "C" void sDrawParent(Pm *mp, u32 a) {
     Mc *m = (Mc *)mp;
     Em *cur = m->cur;
     HdrW *h = cur->res->p0;
@@ -267,13 +267,13 @@ extern "C" void func_020f97d0(Pm *mp, u32 a) {
     spl_set_tex((u8 *)m->tex + h->c43 * 20);
     switch (h->k4) {
         case 0:
-            fn = func_020fbf94;
+            fn = spl_draw_bb;
             break;
         case 1:
-            fn = func_020fb378;
+            fn = spl_draw_dbb;
             break;
         case 2:
-            fn = (DrawFn)func_020fa858;
+            fn = (DrawFn)spl_draw_pol;
             break;
     }
     tf = h->b11 ? spl_set_tex : spl_set_tex_dummy;
@@ -296,13 +296,13 @@ extern "C" void sDrawChild(Pm *mp, u32 a) {
     spl_set_tex((u8 *)m->tex + res->p14->c15 * 20);
     switch (res->p14->k7) {
         case 0:
-            fn = func_020fbad0;
+            fn = spl_draw_chld_bb;
             break;
         case 1:
-            fn = func_020fac28;
+            fn = spl_draw_chld_dbb;
             break;
         case 2:
-            fn = (DrawFn)func_020fa488;
+            fn = (DrawFn)spl_draw_chld_pol;
             break;
     }
     n = cur->l16;
@@ -313,15 +313,15 @@ extern "C" void sDrawChild(Pm *mp, u32 a) {
     } while (n != 0);
 }
 
-extern "C" void func_020f969c(Pm *m, u32 a) {
+extern "C" void spl_draw(Pm *m, u32 a) {
     Mc *mm = (Mc *)m;
     HdrW *ri = mm->cur->res->p0;
     if (ri->b21) {
         sDrawChild(m, a);
         if (ri->b22) return;
-        func_020f97d0(m, a);
+        sDrawParent(m, a);
     } else {
-        if (!ri->b22) func_020f97d0(m, a);
+        if (!ri->b22) sDrawParent(m, a);
         sDrawChild(m, a);
     }
 }

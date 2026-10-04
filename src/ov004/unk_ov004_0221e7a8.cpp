@@ -308,9 +308,9 @@ u32 Gfx3d_CopyTex(void *p, void *g);
 void Mem_Free(s32 a);
 void Heap_Free(void *g, u32 p);
 s32 Str_SPrintf(char *buf, char *fmt, ...);
-s32 func_02101340(void *buf, char *name, u32 data);
-void *func_021012bc(char *name);
-void func_02101310(void *buf);
+s32 NNS_FndMountArchive(void *buf, char *name, u32 data);
+void *NNS_FndGetArchiveFileByName(char *name);
+void NNS_FndUnmountArchive(void *buf);
 void *NNS_G3dGetMdlSet(void *p);
 void *func_021065dc(void *p);
 u32 func_021065f8(void *p, u32 a);
@@ -363,16 +363,16 @@ extern "C" s32 RoomObjRes_Load(Res *self, u32 id) {
         u8 res[0x68];
         self->archive = File_LoadAlloc(id, gBgHeap, 4, 0);
         if (self->archive) {
-            if (func_02101340(res, "RMO", self->archive)) {
+            if (NNS_FndMountArchive(res, "RMO", self->archive)) {
                 u32 i, z;
-                void *h = func_021012bc("RMO:a/bmd/bmd0");
+                void *h = NNS_FndGetArchiveFileByName("RMO:a/bmd/bmd0");
                 if (h) {
                     u8 *r = (u8 *)NNS_G3dGetMdlSet(h);
                     self->model = (u32)(r + *(u32 *)(r + *(u16 *)(r + 0xe) + 0xc));
                 }
                 for (i = 0, z = i; i < 13;) {
                     Str_SPrintf(buf, "RMO:a/bca/bca%d", i);
-                    { void *h = func_021012bc(buf); if (h) {
+                    { void *h = NNS_FndGetArchiveFileByName(buf); if (h) {
                         self->bcas[i] = func_021065f8(func_021065dc(h), z);
                     } }
                     if (self->bcas[i] == 0) {
@@ -382,7 +382,7 @@ extern "C" s32 RoomObjRes_Load(Res *self, u32 id) {
                 }
                 for (i = 0, z = i; i < 13;) {
                     Str_SPrintf(buf, "RMO:a/bma/bma%d", i);
-                    { void *h = func_021012bc(buf); if (h) {
+                    { void *h = NNS_FndGetArchiveFileByName(buf); if (h) {
                         self->bmas[i] = func_02106634(func_02106618(h), z);
                     } }
                     if (self->bmas[i] == 0) {
@@ -392,7 +392,7 @@ extern "C" s32 RoomObjRes_Load(Res *self, u32 id) {
                 }
                 for (i = 0, z = i; i < 13;) {
                     Str_SPrintf(buf, "RMO:a/bta/bta%d", i);
-                    { void *h = func_021012bc(buf); if (h) {
+                    { void *h = NNS_FndGetArchiveFileByName(buf); if (h) {
                         self->btas[i] = func_02106670(func_02106654(h), z);
                     } }
                     if (self->btas[i] == 0) {
@@ -400,7 +400,7 @@ extern "C" s32 RoomObjRes_Load(Res *self, u32 id) {
                     }
                     i++;
                 }
-                func_02101310(res);
+                NNS_FndUnmountArchive(res);
                 return 1;
             }
         }

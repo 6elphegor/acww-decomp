@@ -50,7 +50,7 @@ void *WfcText_CreateBgCanvas(s32, s32);
 void OS_GetMacAddress(void *);
 void func_0212c234(void *, s32, void *, ...);
 void WfcText_DrawTextRect(void *, u32, u32, u32, u32, s32, u32, void *);
-void func_020ff0bc(void *);
+void DWCi_BM_GetWiFiInfo(void *);
 void WfcText_RequestTransfer(void *);
 void WfcErase_Idle();
 void WfcErase_HandleInput();
@@ -142,7 +142,7 @@ extern "C" void WfcSysInfo_DrawInfo() {
     OS_GetMacAddress(dt);
     func_0212c234(buf, 0x14, data_ov001_0222acd8, dt[0], dt[1], dt[2], dt[3], dt[4], dt[5]);
     WfcText_DrawTextRect(obj, data_ov001_02229fb0[0], data_ov001_02229fb0[1], data_ov001_02229fb0[2], data_ov001_02229fb0[3], 2, 0x480, buf);
-    func_020ff0bc(&tick);
+    DWCi_BM_GetWiFiInfo(&tick);
     u64 t = tick;
     if (t != 0) {
         s32 i;

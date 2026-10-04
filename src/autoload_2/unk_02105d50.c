@@ -47,7 +47,7 @@ extern void NNS_G3dMdlSetMdlLightEnableFlag(void *, u32, void *);
 extern void NNS_G3dMdlSetMdlEmi(void *, u32, void *);
 
 // NNS_G3dMdl*All: apply a per-material setter to all materials of a model (count at +0x18)
-void func_02105fd8(u8 *m, void *x)
+void NNS_G3dMdlSetMdlEmiAll(u8 *m, void *x)
 {
     u32 i;
     for (i = 0; i < m[24]; i++) {
@@ -55,7 +55,7 @@ void func_02105fd8(u8 *m, void *x)
     }
 }
 
-void func_02105f90(u8 *m, void *x)
+void NNS_G3dMdlSetMdlLightEnableFlagAll(u8 *m, void *x)
 {
     u32 i;
     for (i = 0; i < m[24]; i++) {
@@ -63,7 +63,7 @@ void func_02105f90(u8 *m, void *x)
     }
 }
 
-void func_02105f48(u8 *m, void *x)
+void NNS_G3dMdlSetMdlPolygonIDAll(u8 *m, void *x)
 {
     u32 i;
     for (i = 0; i < m[24]; i++) {
@@ -71,7 +71,7 @@ void func_02105f48(u8 *m, void *x)
     }
 }
 
-void func_02105f00(u8 *m, void *x)
+void NNS_G3dMdlSetMdlAlphaAll(u8 *m, void *x)
 {
     u32 i;
     for (i = 0; i < m[24]; i++) {
@@ -103,7 +103,7 @@ void NNS_G3dGetCurrentMtx(void *a, void *b)
 }
 
 // restores matrix stack slot of node entry idx (stack id 31 = none) and optionally reads back the current matrices
-BOOL func_02105dcc(RS *rs, void *a, void *b, u32 idx)
+BOOL NNS_G3dGetResultMtx(RS *rs, void *a, void *b, u32 idx)
 {
     u8 *base = (u8 *)rs->obj + 0x40;
     u8 *dict = base + *(u16 *)(base + 6);
@@ -131,7 +131,7 @@ void NNS_G3dInit(void)
 
 // byte length of an SBC command (table data_02135d5c, 0 = variable length for opcode 9, -1 = invalid)
 // NNS_G3dSbcCmdLen-like: byte length of an SBC command, -1 if unknown
-s32 func_02105d50(u8 *c)
+s32 NNS_G3dGetSbcCmdLen(u8 *c)
 {
     u32 cmd = *c;
     s32 n = data_02135d5c[cmd];

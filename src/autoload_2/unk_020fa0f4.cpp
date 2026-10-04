@@ -31,11 +31,11 @@ void spl_set_tex(void *p);
 void spl_set_tex_dummy(void *p);
 void spl_gen_ptcl(void *e, void *l);
 void sDrawChild(Pm *m, u32 a);
-void func_020f97d0(Pm *m, u32 a);
-void func_020fbad0(Mc *m, Node *n, u32 a);
-void func_020fac28(Mc *m, Node *n, u32 a);
-void func_020fbf94(Mc *m, Node *n, u32 a);
-void func_020fb378(Mc *m, Node *n, u32 a);
+void sDrawParent(Pm *m, u32 a);
+void spl_draw_chld_bb(Mc *m, Node *n, u32 a);
+void spl_draw_chld_dbb(Mc *m, Node *n, u32 a);
+void spl_draw_bb(Mc *m, Node *n, u32 a);
+void spl_draw_dbb(Mc *m, Node *n, u32 a);
 }
 
 
@@ -76,8 +76,8 @@ static inline u32 G3_PolygonAttr(u32 light, u32 mode, u32 cull, u32 id, u32 alph
 }
 
 extern "C" {
-void func_020fa488(Mg2 *m, Nd *p, PosCb cb);
-void func_020fa858(Mg2 *m, Nd *p, PosCb cb);
+void spl_draw_chld_pol(Mg2 *m, Nd *p, PosCb cb);
+void spl_draw_pol(Mg2 *m, Nd *p, PosCb cb);
 }
 
 
@@ -141,7 +141,7 @@ void spl_alp_in_out(SplPt *, RU *, u32);
 void spl_tex_ptn_anm(SplPt *, RU *, u32);
 void spl_chld_scl_out(SplPt *, RU *, u32);
 void spl_chld_alp_out(SplPt *, RU *, u32);
-void func_020fc6bc(SplPt *, EU *, void *);
+void spl_gen_child(SplPt *, EU *, void *);
 void spl_gen_ptcl(void *, void *);
 u32 func_02133150x(void);
 SplPt *spl_del(void *, SplPt *);

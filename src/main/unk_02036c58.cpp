@@ -18,9 +18,9 @@ void Clock_GetMinuteHour(u16 *);
 s32 Clock_GetSecond(void);
 void BgHeap_Destroy(void);
 void Str_SPrintf(void *buf, const void *fmt, ...);
-s32 func_02101340(void *, const void *, void *);
-void func_02101310(void *);
-void *func_021012bc(const void *);
+s32 NNS_FndMountArchive(void *, const void *, void *);
+void NNS_FndUnmountArchive(void *);
+void *NNS_FndGetArchiveFileByName(const void *);
 void *NNS_G3dGetMdlSet(void *);
 void *func_021065dc(void *);
 void *func_021065f8(void *, s32);
@@ -185,14 +185,14 @@ void BgModelCache::loadGroundAnims()
 {
     u8 file[0x68];
     void *p = BgModel_LoadFile((void *)"/bg/grd_anm.arc", 0);
-    if (func_02101340(file, "BG", p)) {
-        groundMatAnm = (s32)func_02106634(func_02106618(func_021012bc("BG:a/grd_set.nsbma")), 0);
-        groundTexSrtAnm = (s32)func_02106670(func_02106654(func_021012bc("BG:a/grd_set.nsbta")), 0);
-        riverPatAnm = (s32)func_021066ac(func_02106690(func_021012bc("BG:a/riv.nsbtp")), 0);
-        riverPatTex = (s32)NNS_G3dGetTex(func_021012bc("BG:a/riv_itp.nsbtx"));
-        beBPatAnm = (s32)func_021066ac(func_02106690(func_021012bc("BG:a/beB.nsbtp")), 0);
-        beBPatTex = (s32)NNS_G3dGetTex(func_021012bc("BG:a/beB_itp.nsbtx"));
-        func_02101310(file);
+    if (NNS_FndMountArchive(file, "BG", p)) {
+        groundMatAnm = (s32)func_02106634(func_02106618(NNS_FndGetArchiveFileByName("BG:a/grd_set.nsbma")), 0);
+        groundTexSrtAnm = (s32)func_02106670(func_02106654(NNS_FndGetArchiveFileByName("BG:a/grd_set.nsbta")), 0);
+        riverPatAnm = (s32)func_021066ac(func_02106690(NNS_FndGetArchiveFileByName("BG:a/riv.nsbtp")), 0);
+        riverPatTex = (s32)NNS_G3dGetTex(NNS_FndGetArchiveFileByName("BG:a/riv_itp.nsbtx"));
+        beBPatAnm = (s32)func_021066ac(func_02106690(NNS_FndGetArchiveFileByName("BG:a/beB.nsbtp")), 0);
+        beBPatTex = (s32)NNS_G3dGetTex(NNS_FndGetArchiveFileByName("BG:a/beB_itp.nsbtx"));
+        NNS_FndUnmountArchive(file);
     }
 }
 
@@ -204,9 +204,9 @@ void *BgModel_LoadBcl(s32 id, void *heap)
     Str_SPrintf(buf, "/bg/a%d/%04x.arc", id >> 4, id);
     p = File_LoadAlloc(buf, gCurrentHeap, -4, 0);
     r = 0;
-    if (func_02101340(file, "BG", p)) {
-        t = func_021012bc("BG:a/bcl/bcl0");
-        func_02101310(file);
+    if (NNS_FndMountArchive(file, "BG", p)) {
+        t = NNS_FndGetArchiveFileByName("BG:a/bcl/bcl0");
+        NNS_FndUnmountArchive(file);
         r = Heap_Alloc(heap, 0x180);
         MI_CpuCopy8(t, r, 0x180);
     }
@@ -259,29 +259,29 @@ BgAcreModel *BgModelCache::getAcre(s32 id)
             void *p;
             Str_SPrintf(l.buf, "/bg/a%d/%04x.arc", hi, id);
             e->arc = BgModel_LoadFile(l.buf, e->unk_24);
-            if (func_02101340(l.file, "BG", e->arc)) {
-                u8 *q = (u8 *)NNS_G3dGetMdlSet(func_021012bc("BG:a/bmd/bmd0"));
+            if (NNS_FndMountArchive(l.file, "BG", e->arc)) {
+                u8 *q = (u8 *)NNS_G3dGetMdlSet(NNS_FndGetArchiveFileByName("BG:a/bmd/bmd0"));
                 e->mdl = q + *(s32 *)(q + *(u16 *)(q + 0xe) + 0xc);
-                e->bcl = func_021012bc("BG:a/bcl/bcl0");
-                e->bsd = func_021012bc("BG:a/bsd/bsd0");
-                p = func_021012bc("BG:a/bca/bca0");
+                e->bcl = NNS_FndGetArchiveFileByName("BG:a/bcl/bcl0");
+                e->bsd = NNS_FndGetArchiveFileByName("BG:a/bsd/bsd0");
+                p = NNS_FndGetArchiveFileByName("BG:a/bca/bca0");
                 if (p) {
                     e->jntAnm = func_021065f8(func_021065dc(p), 0);
                 }
-                p = func_021012bc("BG:a/bma/bma0");
+                p = NNS_FndGetArchiveFileByName("BG:a/bma/bma0");
                 if (p) {
                     e->matAnm = func_02106634(func_02106618(p), 0);
                 }
-                p = func_021012bc("BG:a/bta/bta0");
+                p = NNS_FndGetArchiveFileByName("BG:a/bta/bta0");
                 if (p) {
                     e->texSrtAnm = func_02106670(func_02106654(p), 0);
                 }
-                p = func_021012bc("BG:a/mgt/mgt0");
+                p = NNS_FndGetArchiveFileByName("BG:a/mgt/mgt0");
                 if (p) {
                     e->mgt = (u8 *)p + 2;
                     e->mgtCount = *(s16 *)p;
                 }
-                func_02101310(l.file);
+                NNS_FndUnmountArchive(l.file);
             }
             if (((id & 0xf000) >> 12) == 1) {
                 Str_SPrintf(l.buf, "/bg/t%d/%04x.nsbtx", hi, id);

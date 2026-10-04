@@ -214,9 +214,9 @@ BOOL PlayerActor_IsInterruptibleByMenu();
 s32 Str_SPrintf(char *buf, const char *fmt, ...);
 void *File_LoadAlloc(void *a, void *heap, s32 c, s32 d);
 BOOL File_Exists(void *p);
-s32 func_02101340(void *buf, char *name, void *data);
-void *func_021012bc(void *name);
-void func_02101310(void *buf);
+s32 NNS_FndMountArchive(void *buf, char *name, void *data);
+void *NNS_FndGetArchiveFileByName(void *name);
+void NNS_FndUnmountArchive(void *buf);
 void *func_02106654();
 void *func_02106670(void *p, s32 a);
 void *func_02106690();
@@ -764,17 +764,17 @@ BOOL BuildingActor::loadResources(char *a, char *b, char *c) {
             Unk_ov009_0225d2a4_Obj obj;
             s32 z1, z2;
             u32 i;
-            if (func_02101340(&obj, data_ov009_0225e3e8, data)) {
+            if (NNS_FndMountArchive(&obj, data_ov009_0225e3e8, data)) {
                 void *t;
-                t = func_021012bc(data_ov009_0225e3ec);
+                t = NNS_FndGetArchiveFileByName(data_ov009_0225e3ec);
                 if (t) {
                     e->bca0 = (s32)Building_GetFirstAnm(t);
                 }
-                t = func_021012bc(data_ov009_0225e3fc);
+                t = NNS_FndGetArchiveFileByName(data_ov009_0225e3fc);
                 if (t) {
                     e->bca1 = (s32)Building_GetFirstAnm(t);
                 }
-                t = func_021012bc(data_ov009_0225e40c);
+                t = NNS_FndGetArchiveFileByName(data_ov009_0225e40c);
                 if (t) {
                     e->bca2 = (s32)Building_GetFirstAnm(t);
                 }
@@ -782,7 +782,7 @@ BOOL BuildingActor::loadResources(char *a, char *b, char *c) {
                 z1 = i;
                 for (; i < 4; i++) {
                     Str_SPrintf(b1, data_ov009_0225e41c, i);
-                    if (func_021012bc(b1)) {
+                    if (NNS_FndGetArchiveFileByName(b1)) {
                         e->btaAnims[i] = (s32)func_02106670(func_02106654(), z1);
                     }
                 }
@@ -790,17 +790,17 @@ BOOL BuildingActor::loadResources(char *a, char *b, char *c) {
                 z2 = i;
                 for (; i < 4; i++) {
                     Str_SPrintf(b2, data_ov009_0225e42c, i);
-                    if (func_021012bc(b2)) {
+                    if (NNS_FndGetArchiveFileByName(b2)) {
                         e->btpAnims[i] = (s32)func_021066ac(func_02106690(), z2);
                     }
                 }
-                e->bmd0 = (s32)Building_GetFirstMdl(func_021012bc(data_ov009_0225e43c));
-                t = func_021012bc(data_ov009_0225e44c);
+                e->bmd0 = (s32)Building_GetFirstMdl(NNS_FndGetArchiveFileByName(data_ov009_0225e43c));
+                t = NNS_FndGetArchiveFileByName(data_ov009_0225e44c);
                 if (t) {
                     e->bmd1 = (s32)Building_GetFirstMdl(t);
                 }
-                e->shadowTable = (BuildingShadowTable *)func_021012bc(data_ov009_0225e45c);
-                func_02101310(&obj);
+                e->shadowTable = (BuildingShadowTable *)NNS_FndGetArchiveFileByName(data_ov009_0225e45c);
+                NNS_FndUnmountArchive(&obj);
             }
             result = TRUE;
         }

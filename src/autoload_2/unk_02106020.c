@@ -25,7 +25,7 @@ static inline u32 *MatEntI(u8 *b, u32 i)
 }
 
 // NNSi_G3dGetBlockByIdx-like: file header + offset table[idx] (u32 table at hdr+hdr[12])
-u8 *func_021062ec(u8 *p, u32 i)
+u8 *NNS_G3dGetDataBlockHeaderByIdx(u8 *p, u32 i)
 {
     u8 *b = p + *(u16 *)(p + 12);
     return p + ((u32 *)b)[i];
@@ -118,7 +118,7 @@ void NNS_G3dMdlSetMdlAlpha(u8 *res, u32 i, u32 v)
 }
 
 // NNS_G3dMdlGetMdlAlpha (polyAttr bits 16-20)
-u32 func_02106020(u8 *res, u32 i)
+u32 NNS_G3dMdlGetMdlAlpha(u8 *res, u32 i)
 {
     u32 *m = MatEnt(res, i);
     return (m[3] & 0x1f0000) >> 16;

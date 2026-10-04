@@ -43,7 +43,7 @@ BOOL NNS_G3dBindMdlTex(u8 *mdl, u8 *pltt)
 }
 
 // NNS_G3dBindMdlPlttEx-like (by indices)
-BOOL func_02103978(u8 *mdl, u8 *pltt, u32 i, u32 j)
+BOOL NNS_G3dForceBindMdlTex(u8 *mdl, u8 *pltt, u32 i, u32 j)
 {
     u8 *set = mdl + *(u32 *)(mdl + 8);
     u8 *dict = set + *(u16 *)set;

@@ -60,7 +60,7 @@ s32 WfcUtil_ShowTopMessage(s32, s32, s32);
 s32 WfcUtil_ShowStepIndicator(s32);
 s32 WfcText_CreateBgCanvas(s32, s32);
 s32 WfcObj_CreateSingle(s32, s32);
-s32 func_020fedcc(void *a);
+s32 DWC_BACKUPlCheckAddress(void *a);
 s32 MI_CpuCopy8(void *a, void *b, u32 c);
 s32 MI_CpuFill8(void *a, u32 b, u32 c);
 s32 func_0212b770(void *a);
@@ -468,7 +468,7 @@ s32 WfcAddrEdit_ValidateAddress() {
         }
         return 1;
     }
-    if (func_020fedcc(out) != 0) return 1;
+    if (DWC_BACKUPlCheckAddress(out) != 0) return 1;
     return 0;
 }
 

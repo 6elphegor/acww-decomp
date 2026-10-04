@@ -40,8 +40,8 @@ ResCacheEntry sResCacheTexs[0x3c];
 ResCacheEntry sResCacheModels[0x96];
 
 extern "C" {
-void func_02103d48(void *p, s32 a);
-void func_02103d50(void *p, s32 a, s32 b, s32 c, s32 d);
+void NNS_G3dRenderObjSetInitFunc(void *p, s32 a);
+void NNS_G3dRenderObjSetCallBack(void *p, s32 a, s32 b, s32 c, s32 d);
 s32 NNS_G3dDraw(void *p);
 void MI_Copy36B(void *p, void *q);
 extern u8 data_027e0184[];
@@ -51,7 +51,7 @@ void NNS_G3dGlbSetBaseScale(void *p);
 void NNS_G3dGlbFlushP(void);
 s32 func_01ffcb0c(s32 a, s32 b);
 void NNS_G3dDraw1Mat1Shp(void *p, s32 a, s32 b, s32 c);
-s32 func_02105d50(void *p);
+s32 NNS_G3dGetSbcCmdLen(void *p);
 void NNS_G3dBindMdlTex(void *p, u32 n);
 void NNS_G3dBindMdlPltt(void *p, u32 q);
 void NNS_G3dRenderObjInit(void *p, void *q);
@@ -79,7 +79,7 @@ void ModelCacheHeap_Destroy(void);
 void ModelCacheHeap_Create(u32 a, u32 b);
 void _ZN13AnimFrameCtrl5setupEihit(void *p, u32 a, u32 b, u32 c, u32 d);
 void func_02056714(void *p);
-s32 func_02105dcc(void *a, void *b, s32 c, s32 d);
+s32 NNS_G3dGetResultMtx(void *a, void *b, s32 c, s32 d);
 void *NNS_G3dGlbGetInvV(void);
 void MTX_Concat43(void *a, void *b, void *c);
 extern void *gModelCacheHeap;
@@ -372,7 +372,7 @@ void Model::drawShapesDirect(s32 *p) {
             NNS_G3dDraw1Mat1Shp(resMdl, save, cmd[1], 1);
             break;
         }
-        cmd += func_02105d50(cmd);
+        cmd += NNS_G3dGetSbcCmdLen(cmd);
     }
 }
 
@@ -409,12 +409,12 @@ void *Model::getRenderObj() {
 }
 
 void Model::setCallback(s32 a, s32 b, s32 c, s32 d, s32 e) {
-    func_02103d50(unk_08, a, e, b, c);
+    NNS_G3dRenderObjSetCallBack(unk_08, a, e, b, c);
     renderUserPtr = d;
 }
 
 void Model::setInitCallback(s32 a, s32 b) {
-    func_02103d48(unk_08, a);
+    NNS_G3dRenderObjSetInitFunc(unk_08, a);
     renderUserPtr = b;
 }
 
@@ -451,7 +451,7 @@ void Model::setAlpha(u32 v) {
 }
 
 extern "C" BOOL Model_GetJointWorldMtx(u8 *p, void *a, s32 b) {
-    if (!func_02105dcc(p + 8, a, 0, b)) {
+    if (!NNS_G3dGetResultMtx(p + 8, a, 0, b)) {
         return FALSE;
     }
     MTX_Concat43(a, NNS_G3dGlbGetInvV(), a);

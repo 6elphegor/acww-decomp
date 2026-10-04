@@ -474,9 +474,9 @@ void Vec_Sub(void *out, void *a, void *b);
 void ProcBase_RequestDelete(void *p);
 #define SndPosList_release _ZN10SndPosList7releaseEv
 void SndPosList_release(void *);
-void *func_021012bc(const char *name);
-void func_02101310(void *buf);
-BOOL func_02101340(void *buf, const char *name, void *data);
+void *NNS_FndGetArchiveFileByName(const char *name);
+void NNS_FndUnmountArchive(void *buf);
+BOOL NNS_FndMountArchive(void *buf, const char *name, void *data);
 void *NNS_G3dGetTex(void *p);
 void *NNS_G3dGetMdlSet(void *p);
 void *func_021065dc(void *p);
@@ -4543,20 +4543,20 @@ extern "C" BOOL FtrMoveAnim_LoadAnims(FtrMoveAnim *r) {
         if (r->anmArc == 0) {
             return FALSE;
         }
-        if (func_02101340(&arc, "ANM", r->anmArc)) {
-            void *x = func_021012bc("ANM:a/bca/ft_push1.nsbca");
+        if (NNS_FndMountArchive(&arc, "ANM", r->anmArc)) {
+            void *x = NNS_FndGetArchiveFileByName("ANM:a/bca/ft_push1.nsbca");
             if (x) {
                 r->pushAnim = (u32)func_021065f8(func_021065dc(x), 0);
             }
-            x = func_021012bc("ANM:a/bca/ft_pull1.nsbca");
+            x = NNS_FndGetArchiveFileByName("ANM:a/bca/ft_pull1.nsbca");
             if (x) {
                 r->pullAnim = (u32)func_021065f8(func_021065dc(x), 0);
             }
-            x = func_021012bc("ANM:a/bca/ft_kb_hw_def_anim.nsbca");
+            x = NNS_FndGetArchiveFileByName("ANM:a/bca/ft_kb_hw_def_anim.nsbca");
             if (x) {
                 r->haniwaAnim = (u32)func_021065f8(func_021065dc(x), 0);
             }
-            func_02101310(&arc);
+            NNS_FndUnmountArchive(&arc);
             return TRUE;
         }
     }
@@ -4590,10 +4590,10 @@ extern "C" BOOL FtrMoveAnim_LoadModel(FtrMoveAnim *r) {
     Str_SPrintf(path.path, "/ftr/%d/%d/%04x.arc", v >> 8, (v & 0xff) >> 4, v);
     r->modelArc = File_LoadAlloc(path.path, r->heap, 4, 0);
     if (r->modelArc != 0) {
-        if (func_02101340(&arc, "FTT", r->modelArc)) {
+        if (NNS_FndMountArchive(&arc, "FTT", r->modelArc)) {
             BOOL ok = FALSE;
             u8 *p;
-            p = (u8 *)NNS_G3dGetMdlSet(func_021012bc(sFtrMoveAnimModelNamePtr));
+            p = (u8 *)NNS_G3dGetMdlSet(NNS_FndGetArchiveFileByName(sFtrMoveAnimModelNamePtr));
             r->resMdl = (u32)p + *(u32 *)(p + *(u16 *)(p + 0xe) + 0xc);
             if (Model_setResourceAndBind(r->model, (void *)r->resMdl, ok)) {
                 if (AnimModel_allocAnmObj(r->model, r->heap)) {
@@ -4603,7 +4603,7 @@ extern "C" BOOL FtrMoveAnim_LoadModel(FtrMoveAnim *r) {
                     ok = TRUE;
                 }
             }
-            func_02101310(&arc);
+            NNS_FndUnmountArchive(&arc);
             return ok;
         }
     }

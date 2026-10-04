@@ -8,7 +8,7 @@ struct WfcConfigSlotBody {
 
 #pragma thumb on
 extern "C" {
-s32 func_020fefb0(void *);
+s32 DWCi_BACKUPlRead(void *);
 }
 #pragma thumb off
 
@@ -22,11 +22,11 @@ extern void MI_CpuCopy8(void *, void *, u32);
 extern void MIi_CpuClear16(u32, void *, u32);
 extern s32 func_0212b770(void *);
 extern u32 MATH_CalcCRC16(void *, void *, u32);
-extern void func_020fef40(void *, void *, void *);
-extern void func_020ff770(void *);
-extern void *func_020fe850(void *);
-extern u32 func_020fee84(void *);
-extern void func_020fee5c(u32, void *);
+extern void DWCi_BACKUPlWritePage(void *, void *, void *);
+extern void DWCi_AUTH_GetNewWiFiInfo(void *);
+extern void *DWCi_BACKUPlConvWifiInfo(void *);
+extern u32 DWCi_BACKUPlConvMaskCidr(void *);
+extern void DWCi_BACKUPlConvMaskAddr(u32, void *);
 extern s32 memcmp(void *, const void *, u32);
 extern void OS_SPrintf(void *, const char *, u32, u32, u32, u32);
 extern s32 WfcUtil_StrNLen(void *, u32);
@@ -73,7 +73,7 @@ void WfcConfig_Init()
     u8 *g = (u8 *)WfcHeap_Alloc(0x6f8, 0x20);
     sWfcConfig = (WfcConfigData *)g;
     MATHi_CRC16InitTableRev(g + 0x4f8, 0xa001);
-    func_020fefb0(sWfcConfig);
+    DWCi_BACKUPlRead(sWfcConfig);
 }
 
 void WfcConfig_Shutdown() { WfcHeap_FreeAndClear(&sWfcConfig); }
@@ -204,7 +204,7 @@ void WfcConfig_BeginEdit(s32 idx) {
     } else {
         sWfcConfig->editSlot.editAutoDns = 1;
     }
-    func_020fee5c(s->subnetPrefixLen, sWfcConfig->editSlot.editSubnetMask);
+    DWCi_BACKUPlConvMaskAddr(s->subnetPrefixLen, sWfcConfig->editSlot.editSubnetMask);
 }
 
 void WfcConfig_CommitEdit() {
@@ -219,7 +219,7 @@ void WfcConfig_CommitEdit() {
     } else {
         MI_CpuCopy8(b->ipAddress, s->ipAddress, 4);
         MI_CpuCopy8(b->gateway, s->gateway, 4);
-        s->subnetPrefixLen = func_020fee84(b->editSubnetMask);
+        s->subnetPrefixLen = DWCi_BACKUPlConvMaskCidr(b->editSubnetMask);
     }
     if (b->editAutoDns != 0) {
         MI_CpuFill8(s->dnsServers, 0, 8);
@@ -310,8 +310,8 @@ void WfcConfig_EraseAll() {
     for (i = 0; i < 3; i++) {
         sWfcConfig->slots[i].status = 0xff;
     }
-    func_020ff770(rtc);
-    r8 = func_020fe850(rtc);
+    DWCi_AUTH_GetNewWiFiInfo(rtc);
+    r8 = DWCi_BACKUPlConvWifiInfo(rtc);
     i = 0;
     off = i;
     for (; i < 2; i++, off += 0x100) {
@@ -360,7 +360,7 @@ void WfcConfig_WriteSlot(s32 idx) {
         }
     }
     p = WfcHeap_Alloc(0x100, 0x20);
-    func_020fef40(sWfcConfig, flags, p);
+    DWCi_BACKUPlWritePage(sWfcConfig, flags, p);
     WfcHeap_FreeAndClear(&p);
 }
 

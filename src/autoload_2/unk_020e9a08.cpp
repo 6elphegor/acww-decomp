@@ -53,7 +53,7 @@ s32 DwcFriend_IsIdle(void);
 void DwcFriend_DeleteFriend(void *p);
 s32 DwcFriend_UpdateServersAsync(u32 a, void *b, u32 c, void *d, u32 e, void *f, u32 g);
 void DwcGsHttp_Get(void *a, void *b, void *c);
-void func_020fff48(void *a, u32 b, void *c);
+void DWCi_Acc_LoginIdToUserName(void *a, u32 b, void *c);
 void Net_OnWlxStopped(void);
 void Net_OnWlxExchangeDone(void);
 void Net_OnGameStatsChallenge(void);
@@ -62,10 +62,10 @@ void Net_OnWifiServersUpdated(void);
 void Net_OnWifiFriendStatus(void);
 void Net_OnHttpDownloadDone(void);
 s64 Net_GetOwnFriendKey(void *p);
-s32 func_021000fc(void *p);
-s32 func_021000f4(void *p);
-s32 func_020ffad0(void *p, void *q);
-s32 func_020ffd78(void *p);
+s32 DWC_IsBuddyFriendData(void *p);
+s32 DWC_GetFriendDataType(void *p);
+s32 DWC_IsEqualFriendData(void *p, void *q);
+s32 DWC_CheckValidConsole(void *p);
 
 extern u16 sWifiConnectStep;
 extern u8 sNetMode;
@@ -116,7 +116,7 @@ s32 NasBase64_Encode(void *a, u32 b, void *c, u32 d);
 void DwcGsHttp_PostCreate(void *p);
 void DwcGsHttp_PostAddString(void *p, const char *fmt, const void *arg);
 void DwcGsHttp_Post(void *a, void *b, void *c, u32 d);
-void func_020fff48(void *a, u32 b, void *c);
+void DWCi_Acc_LoginIdToUserName(void *a, u32 b, void *c);
 void Net_OnWlxStopped(void);
 void Net_OnWlxExchangeDone(void);
 void Net_OnGameStatsChallenge(void);
@@ -126,20 +126,20 @@ void Net_OnWifiFriendStatus(void);
 void Net_OnHttpDownloadDone(void);
 void Net_OnGameStatsUploadDone(void);
 s64 Net_GetOwnFriendKey(void *p);
-s32 func_021000fc(void *p);
-s32 func_021000f4(void *p);
-s32 func_020ffad0(void *p, void *q);
-s32 func_020ffd78(void *p);
-s64 func_020ffc40(void *p);
-s32 func_020ffbd0(void *p, void *q);
-s32 func_020ffdfc(void *p);
-u64 func_020ffcc4(u32 a);
-s32 func_02100050(u32 ctx, u32 lo, u32 hi);
-void func_020ffc18(void *out, u32 lo, u32 hi);
-s32 func_020ffc60(u32 ctx, void *out);
-BOOL func_020ffd20(void *p);
-void func_020ffce8(void *p);
-void func_020ffdd0(void *p, u32 v);
+s32 DWC_IsBuddyFriendData(void *p);
+s32 DWC_GetFriendDataType(void *p);
+s32 DWC_IsEqualFriendData(void *p, void *q);
+s32 DWC_CheckValidConsole(void *p);
+s64 DWC_CreateFriendKey(void *p);
+s32 DWC_CreateExchangeToken(void *p, void *q);
+s32 DWCi_Acc_IsAuthentic(void *p);
+u64 DWC_GetFriendKey(u32 a);
+s32 DWC_CheckFriendKey(u32 ctx, u32 lo, u32 hi);
+void DWC_CreateFriendKeyToken(void *out, u32 lo, u32 hi);
+s32 DWC_GetGsProfileId(u32 ctx, void *out);
+BOOL DWC_CheckDirtyFlag(void *p);
+void DWC_ClearDirtyFlag(void *p);
+void DWC_CreateUserData(void *p, u32 v);
 void DwcMatch_ConnectToFriendServer(u32 a, void *b, u32 c, void *d, u32 e);
 void DwcNet_SetSendDoneCallback(void *p);
 void DwcNet_SetRecvCallback(void *p);
@@ -204,16 +204,16 @@ void MI_CpuFill8(void *dst, u32 v, u32 n); // MI_CpuFill8
 void MI_CpuCopy8(const void *src, void *dst, u32 n); // MI_CpuCopy8
 
 s64 Net_GetOwnFriendKey(void *p);
-s64 func_020ffc40(void *p);
-s32 func_020ffbd0(void *p, void *q);
-s32 func_020ffdfc(void *p);
-u64 func_020ffcc4(u32 a);
-s32 func_02100050(u32 ctx, u32 lo, u32 hi);
-void func_020ffc18(void *out, u32 lo, u32 hi);
-s32 func_020ffc60(u32 ctx, void *out);
-BOOL func_020ffd20(void *p);
-void func_020ffce8(void *p);
-void func_020ffdd0(void *p, u32 v);
+s64 DWC_CreateFriendKey(void *p);
+s32 DWC_CreateExchangeToken(void *p, void *q);
+s32 DWCi_Acc_IsAuthentic(void *p);
+u64 DWC_GetFriendKey(u32 a);
+s32 DWC_CheckFriendKey(u32 ctx, u32 lo, u32 hi);
+void DWC_CreateFriendKeyToken(void *out, u32 lo, u32 hi);
+s32 DWC_GetGsProfileId(u32 ctx, void *out);
+BOOL DWC_CheckDirtyFlag(void *p);
+void DWC_ClearDirtyFlag(void *p);
+void DWC_CreateUserData(void *p, u32 v);
 void DwcMatch_ConnectToFriendServer(u32 a, void *b, u32 c, void *d, u32 e);
 void DwcNet_SetSendDoneCallback(void *p);
 void DwcNet_SetRecvCallback(void *p);
@@ -404,7 +404,7 @@ void NasBase64_Decode(u32 a, u32 b, u32 c, u32 d);
 void DwcFriend_SetStatusData(void *p, u32 n);
 void DwcFriend_UpdateServersAsync(u32 a, void *b, u32 c, void *d, u32 e, void *f, u32 g);
 u32 DwcFriend_GetStatusData(u8 *a, u8 *b, u8 *c, u8 *d, u32 *e);
-BOOL func_020ffde0(void *p);
+BOOL DWC_IsValidFriendData(void *p);
 char *func_02127838(char *dst, const char *src);
 char *func_021277a4(char *dst, const char *src);
 u32 STD_GetStringLength(const char *s);
@@ -595,7 +595,7 @@ extern "C" void Net_OnWifiServersUpdated(u32 a) {
     data_0213b06c = 0;
     t = u = i = 0;
     for (; i < 32; i++) {
-        if (func_020ffde0(sWifiFriendList + u) != 0) {
+        if (DWC_IsValidFriendData(sWifiFriendList + u) != 0) {
             u8 *p = sWifiFriendList;
             u32 r = DwcFriend_GetStatusData(p + u, p + 0x191 + t, p + 0x192 + t, p + 0x180 + t, &local);
             (sWifiFriendList + t)[0x190] = r;
@@ -1291,38 +1291,38 @@ extern "C" BOOL Net_WifiConnectToHost(u32 a) {
 }
 
 extern "C" void Net_CreateUserData(void *p, u32 v) {
-    func_020ffdd0(p, v);
-    func_020ffce8(p);
+    DWC_CreateUserData(p, v);
+    DWC_ClearDirtyFlag(p);
 }
 
 extern "C" BOOL Net_CheckUserDataChanged(void *p) {
-    if (func_020ffd20(p) == 0) return FALSE;
-    func_020ffce8(p);
+    if (DWC_CheckDirtyFlag(p) == 0) return FALSE;
+    DWC_ClearDirtyFlag(p);
     return TRUE;
 }
 
 extern "C" s32 Net_HasWifiUserId(void *p) {
-    return func_020ffdfc(p);
+    return DWCi_Acc_IsAuthentic(p);
 }
 
 extern "C" s32 Net_MakeOwnFriendData(void *p, void *q) {
-    return func_020ffbd0(p, q);
+    return DWC_CreateExchangeToken(p, q);
 }
 
 extern "C" s64 Net_GetOwnFriendKey(void *p) {
-    return func_020ffc40(p);
+    return DWC_CreateFriendKey(p);
 }
 
 extern "C" BOOL Net_FriendKeyToFriendData(u32 ctx, void *out, u64 key) {
-    if (func_02100050(ctx, (u32)key, (u32)(key >> 32)) != 0) {
-        func_020ffc18(out, (u32)key, (u32)(key >> 32));
-        if (func_020ffc60(ctx, out) > 0) return TRUE;
+    if (DWC_CheckFriendKey(ctx, (u32)key, (u32)(key >> 32)) != 0) {
+        DWC_CreateFriendKeyToken(out, (u32)key, (u32)(key >> 32));
+        if (DWC_GetGsProfileId(ctx, out) > 0) return TRUE;
     }
     return FALSE;
 }
 
 extern "C" u64 Net_GetFriendKey(u32 a) {
-    return func_020ffcc4(a);
+    return DWC_GetFriendKey(a);
 }
 } // namespace NetC
 
@@ -1434,19 +1434,19 @@ extern "C" BOOL Net_IsDownloadDone(s32 a) {
 }
 
 extern "C" s32 Net_IsWifiConfigValid(void *p) {
-    return func_020ffd78(p);
+    return DWC_CheckValidConsole(p);
 }
 
 extern "C" s32 Net_IsSameFriendData(void *p, void *q) {
-    return func_020ffad0(p, q);
+    return DWC_IsEqualFriendData(p, q);
 }
 
 extern "C" BOOL Net_GetFriendDataType(void *p) {
-    return func_021000f4(p);
+    return DWC_GetFriendDataType(p);
 }
 
 extern "C" s32 func_020e9d70(void *p) {
-    return func_021000fc(p);
+    return DWC_IsBuddyFriendData(p);
 }
 
 extern "C" s32 Net_WifiAddFriend(u32 a, void *b) {
@@ -1487,7 +1487,7 @@ extern "C" BOOL Net_WifiHostKeepAlive(void) {
 extern "C" BOOL Net_GetBrid(u8 *out) {
     u8 buf[24];
     if (sWifiConnectStep < 4) return FALSE;
-    func_020fff48(sWifiUserData + 0x20, data_021f489c, buf);
+    DWCi_Acc_LoginIdToUserName(sWifiUserData + 0x20, data_021f489c, buf);
     MI_CpuCopy8(buf + 9, out, 12);
     return TRUE;
 }

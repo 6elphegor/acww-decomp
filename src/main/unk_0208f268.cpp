@@ -50,7 +50,7 @@ void *SPL_Create(void *, s32, s32);
 void *SPL_CreateWithInitialize(void *, u32, u32);
 Unk_0209002c_Handle *SPL_Init(void *, s32, s32, s32, s32, s32);
 void func_020f8b44(void *, void *, s32);
-void func_020f8cb8(void *, void *, void *);
+void SPL_Draw(void *, void *, void *);
 void SPL_Calc(void *);
 void func_020f92d4(void *, void *);
 void SPL_Load(void *, s32);
@@ -875,7 +875,7 @@ extern "C" u16 EffectSpl_ToCurvedPos(void *a0, volatile s32 a1, volatile s32 a2,
 
 BOOL EffectSplProc::onDraw()
 {
-    func_020f8cb8(splManager, gViewMtx, (void *)EffectSpl_ToCurvedPos);
+    SPL_Draw(splManager, gViewMtx, (void *)EffectSpl_ToCurvedPos);
     EffectModels_DrawAll(modelGroups);
     return TRUE;
 }

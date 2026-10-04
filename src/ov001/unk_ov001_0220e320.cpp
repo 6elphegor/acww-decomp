@@ -36,7 +36,7 @@ void *WfcText_CreateBgCanvas(s32, s32);
 void OS_GetMacAddress(void *);
 void func_0212c234(void *, s32, void *, ...);
 void WfcText_DrawTextRect(void *, u32, u32, u32, u32, s32, u32, void *);
-void func_020ff0bc(u64 *);
+void DWCi_BM_GetWiFiInfo(u64 *);
 void WfcText_RequestTransfer(void *);
 void WfcErase_Idle();
 void WfcErase_HandleInput();

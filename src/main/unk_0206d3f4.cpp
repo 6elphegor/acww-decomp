@@ -67,7 +67,7 @@ void OverlayMgr_Release(u32 id);
 void *Mem_AllocAligned(u32 size, u32 align);
 void Mem_Free(void *p);
 void WfcUtil_Run(void *p, s32 a, s32 b);
-u32 func_021001e0(void *p);
+u32 DWC_Init(void *p);
 s32 PXI_SendWordByFifo(s32 a, s32 b, s32 c);
 void WaitByLoop(s32 n);
 void GX_DispOn(void);

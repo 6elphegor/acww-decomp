@@ -33,11 +33,11 @@ void spl_set_tex(void *p);
 void spl_set_tex_dummy(void *p);
 void spl_gen_ptcl(void *e, void *l);
 void sDrawChild(Pm *m, u32 a);
-void func_020f97d0(Pm *m, u32 a);
-void func_020fbad0(Mc *m, Node *n, u32 a);
-void func_020fac28(Mc *m, Node *n, u32 a);
-void func_020fbf94(Mc *m, Node *n, u32 a);
-void func_020fb378(Mc *m, Node *n, u32 a);
+void sDrawParent(Pm *m, u32 a);
+void spl_draw_chld_bb(Mc *m, Node *n, u32 a);
+void spl_draw_chld_dbb(Mc *m, Node *n, u32 a);
+void spl_draw_bb(Mc *m, Node *n, u32 a);
+void spl_draw_dbb(Mc *m, Node *n, u32 a);
 }
 
 
@@ -77,8 +77,8 @@ static inline u32 G3_PolygonAttr(u32 light, u32 mode, u32 cull, u32 id, u32 alph
 }
 
 extern "C" {
-void func_020fa488(Mg2 *m, Nd *p, PosCb cb);
-void func_020fa858(Mg2 *m, Nd *p, PosCb cb);
+void spl_draw_chld_pol(Mg2 *m, Nd *p, PosCb cb);
+void spl_draw_pol(Mg2 *m, Nd *p, PosCb cb);
 }
 
 
@@ -88,7 +88,7 @@ static inline void G3_Translate(s32 x, s32 y, s32 z) {
     *(volatile u32 *)0x04000470 = z;
 }
 
-extern "C" void func_020fa858(Mg2 *m, Nd *p, PosCb cb) {
+extern "C" void spl_draw_pol(Mg2 *m, Nd *p, PosCb cb) {
     s32 alpha = (p->c46.a * (p->c46.b + 1)) >> 5;
     Mt mA;
     Mt mB;
@@ -151,7 +151,7 @@ extern "C" void func_020fa858(Mg2 *m, Nd *p, PosCb cb) {
     data_0213bb94[m->cur->res->p0->k19](m->cur->s96, m->cur->s98, m->cur->res->p0->s76, m->cur->res->p0->s78);
 }
 
-extern "C" void func_020fa488(Mg2 *m, Nd *p, PosCb cb) {
+extern "C" void spl_draw_chld_pol(Mg2 *m, Nd *p, PosCb cb) {
     s32 alpha = (p->c46.a * (p->c46.b + 1)) >> 5;
     Mt mA;
     Mt mB;

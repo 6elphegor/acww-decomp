@@ -72,7 +72,7 @@ void blendScaleVec_(s32 *a, s32 *b, s32 c, BOOL flag)
     }
 }
 
-BOOL func_021044a4(u32 *out, Cb *n, u32 k)
+BOOL NNSi_G3dAnmBlendVis(u32 *out, Cb *n, u32 k)
 {
     u32 tmp[2];
     BOOL ret = 0;
@@ -162,7 +162,7 @@ void NNS_G3dGlbLightColor(u32 id, u32 v)
     data_027e0170[id] = v | (id << 30);
 }
 
-void func_02104238(u32 a, u32 b, BOOL c)
+void NNS_G3dGlbMaterialColorSpecEmi(u32 a, u32 b, BOOL c)
 {
     data_027e00c8.n.ctl98 = a | (b << 16) | ((c != 0) << 15);
 }

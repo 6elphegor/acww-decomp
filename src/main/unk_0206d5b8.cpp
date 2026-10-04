@@ -196,7 +196,7 @@ void WfcUtil_Run(void *p, s32 a, s32 b);
 }
 
 extern "C" {
-u32 func_021001e0(void *p);
+u32 DWC_Init(void *p);
 }
 
 extern "C" {
@@ -657,7 +657,7 @@ extern "C" void Main_Loop(void) {
 extern "C" u32 Main_InitDwc(void) {
     void *p = Mem_AllocAligned(0x700, 0x20);
     OverlayHandle_Load(gOverlayHandle, (s32)OVERLAY_65_ID);
-    u32 r = func_021001e0(p);
+    u32 r = DWC_Init(p);
     sDwcInitResult = r;
     OverlayHandle_Unload(gOverlayHandle);
     Mem_Free(p);

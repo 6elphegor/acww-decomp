@@ -72,7 +72,7 @@ s32 Insect_SetWanderBox(Insect *);
 s32 VEC_Subtract(void *, void *, void *);
 s32 VEC_Add(void *, void *, void *);
 s32 Insect_ClampStepXZ(void *, void *, s32);
-s32 func_02106020(s32, s32);
+s32 NNS_G3dMdlGetMdlAlpha(s32, s32);
 s32 PlayerActor_LocalFaint(s32);
 s32 _ZN13AnimFrameCtrl5setupEihit(void *, s32, s32, s32, s32);
 s32 Insect_PlaySe(void *, s32, s32);
@@ -1116,7 +1116,7 @@ s32 Stinger_Threaten(Insect *o, u32 mode, u32 q) {
     s16 *r6 = &o->unk_23e;
     AnimModel *s = &o->model;
     if (*r6 == 0 || o->kind == 0x37) {
-        if (func_02106020((s32)_ZN11PooledModel8getModelEv(&o->pooledModel), 0) == 0x1f) {
+        if (NNS_G3dMdlGetMdlAlpha((s32)_ZN11PooledModel8getModelEv(&o->pooledModel), 0) == 0x1f) {
             if (mode == 1) {
                 if (*r6 == 0) {
                     Insect_PlaySe(o, 1, 0);
@@ -1163,7 +1163,7 @@ s32 Stinger_Threaten(Insect *o, u32 mode, u32 q) {
 
 s32 Stinger_TryAttack(Insect *o, u32 mode, u32 q, s16 *p) {
     V3 *v = &o->position;
-    if (o->playerHoldsNet != 0 && (*p == 0 || *p > 0x1f) && func_02106020((s32)_ZN11PooledModel8getModelEv(&o->pooledModel), 0) == 0x1f) {
+    if (o->playerHoldsNet != 0 && (*p == 0 || *p > 0x1f) && NNS_G3dMdlGetMdlAlpha((s32)_ZN11PooledModel8getModelEv(&o->pooledModel), 0) == 0x1f) {
         if (mode == 3 || mode == 1) {
             if (Vec_DistXZ((void *)q, v) < 0x1000) {
                 s16 *pp = &o->unk_23e;
