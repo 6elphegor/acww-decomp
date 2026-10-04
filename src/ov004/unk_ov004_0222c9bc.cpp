@@ -69,22 +69,22 @@ struct Bits {
 
 // one 0x11-byte record of the actor table (sAquariumFishParams[56])
 struct Rec {
-    u8 unk_00;
-    u8 unk_01;
-    u8 unk_02;
-    u8 unk_03;
-    u8 unk_04;
-    u8 unk_05;
-    u8 unk_06;
-    u8 unk_07;
-    u8 unk_08;
-    u8 unk_09;
-    u8 unk_0a;
-    u8 unk_0b;
-    u8 unk_0c;
-    u8 unk_0d;
-    u8 unk_0e;
-    u8 unk_0f;
+    u8 rank;
+    u8 numAnims;
+    u8 hitHeight;
+    u8 hitRadius;
+    u8 baseY;
+    u8 accel;
+    u8 decel;
+    u8 maxSpeed;
+    u8 cruiseTimeMax;
+    u8 cruiseTimeMin;
+    u8 restTimeMax;
+    u8 restTimeMin;
+    u8 turnRange;
+    u8 verticalSpeed;
+    u8 maxY;
+    u8 minY;
     u8 unk_10;
 };
 
@@ -1262,7 +1262,7 @@ extern "C" void AquariumFish_TurnAtWall(E864 *o) {
                 l.x = o->pos.x;
                 l.y = o->pos.y;
                 l.z = o->pos.z;
-                Aquarium_StepXZ(&l, ((s32)sAquariumFishParams[o->fishIndex].unk_03 << 12) >> 7, o->unk_1c0);
+                Aquarium_StepXZ(&l, ((s32)sAquariumFishParams[o->fishIndex].hitRadius << 12) >> 7, o->unk_1c0);
                 s32 r = Aquarium_ProbeTurnSide((s32 *)&l, o->unk_1c0);
                 AquariumFish_PickTurn(o, r, 2, 6);
                 o->isWallTurning = 1;
@@ -1590,7 +1590,7 @@ extern "C" BOOL AquariumFish_IsNearWall(E864 *o)
     v.x = o->pos.x;
     v.y = o->pos.y;
     v.z = o->pos.z;
-    Aquarium_StepXZ(&v, (sAquariumFishParams[o->fishIndex].unk_03 << 12) >> 7, o->unk_1c0);
+    Aquarium_StepXZ(&v, (sAquariumFishParams[o->fishIndex].hitRadius << 12) >> 7, o->unk_1c0);
     x = 0x400;
     if (o->isWallTurning != 0) {
         x = 0x1000;
@@ -1618,10 +1618,10 @@ extern "C" void _ZN17AquariumJellyfish5setupEv(E7d4 *o)
     o->accel = 1;
     o->decel = 1;
     o->turnRange = 0x96;
-    o->cruiseTimeMax = sAquariumFishParams[*p].unk_08;
-    o->cruiseTimeMin = sAquariumFishParams[*p].unk_09;
-    o->restTimeMax = sAquariumFishParams[*p].unk_0a;
-    o->restTimeMin = sAquariumFishParams[*p].unk_0b;
+    o->cruiseTimeMax = sAquariumFishParams[*p].cruiseTimeMax;
+    o->cruiseTimeMin = sAquariumFishParams[*p].cruiseTimeMin;
+    o->restTimeMax = sAquariumFishParams[*p].restTimeMax;
+    o->restTimeMin = sAquariumFishParams[*p].restTimeMin;
     sAquariumJellyfish = o;
 }
 
@@ -1816,8 +1816,8 @@ extern "C" void AquariumJellyfish_PulseShrink(E7d4 *o) {
 
 extern "C" void AquariumFish_CalcHitCenter(R *o, V3 *out) {
     s32 t = o->fishIndex;
-    static s32 k1 = (sAquariumFishParams[t].unk_02 << 12) >> 7;
-    static s32 k2 = (sAquariumFishParams[t].unk_03 << 12) >> 7;
+    static s32 k1 = (sAquariumFishParams[t].hitHeight << 12) >> 7;
+    static s32 k2 = (sAquariumFishParams[t].hitRadius << 12) >> 7;
     V3 l[4];
     l[0].x = 0;
     l[0].y = k1;
@@ -1864,7 +1864,7 @@ extern "C" void AquariumFastFish_UpdateLap(E744 *o, s32 a, s32 b) {
         if (func_020e769c(&o->unk_1c0, 0x4000, 0x38e)) {
             o->pos.x += 0x19a;
         }
-        o->pos.y = ((sAquariumFishParams[o->fishIndex].unk_04 << 12) >> 6);
+        o->pos.y = ((sAquariumFishParams[o->fishIndex].baseY << 12) >> 6);
         Aquarium_StepXZ(&o->pos, 0x19a, o->unk_1c0);
         o->animFrameStep = 0x1000;
         AquariumFish_PlayTurnAnim(o, 3);
@@ -1875,7 +1875,7 @@ extern "C" void AquariumFastFish_UpdateLap(E744 *o, s32 a, s32 b) {
         if (func_020e769c(&o->unk_1c0, -0x4000, 0x38e)) {
             o->pos.x -= 0x19a;
         }
-        o->pos.y = ((sAquariumFishParams[o->fishIndex].unk_04 << 12) >> 6);
+        o->pos.y = ((sAquariumFishParams[o->fishIndex].baseY << 12) >> 6);
         Aquarium_StepXZ(&o->pos, 0x19a, o->unk_1c0);
         o->animFrameStep = 0x1000;
         AquariumFish_PlayTurnAnim(o, 10);
@@ -2093,10 +2093,10 @@ extern "C" void _ZN20AquariumSeaButterfly5setupEv(E7bc *e) {
     e->homePos[0] = 0x6000;
     e->homePos[1] = 0;
     e->homePos[2] = 0x14a00;
-    e->cruiseTimeMax = sAquariumFishParams[*p].unk_08;
-    e->cruiseTimeMin = sAquariumFishParams[*p].unk_09;
-    e->restTimeMax = sAquariumFishParams[*p].unk_0a;
-    e->restTimeMin = sAquariumFishParams[*p].unk_0b;
+    e->cruiseTimeMax = sAquariumFishParams[*p].cruiseTimeMax;
+    e->cruiseTimeMin = sAquariumFishParams[*p].cruiseTimeMin;
+    e->restTimeMax = sAquariumFishParams[*p].restTimeMax;
+    e->restTimeMin = sAquariumFishParams[*p].restTimeMin;
     sAquariumSeaButterfly = e;
 }
 
@@ -2168,10 +2168,10 @@ extern "C" void _ZN16AquariumSeahorse5setupEv(E7a4 *e) {
     e->homePos[0] = 0x7000;
     e->homePos[1] = 0;
     e->homePos[2] = 0x14a00;
-    e->cruiseTimeMax = sAquariumFishParams[*p].unk_08;
-    e->cruiseTimeMin = sAquariumFishParams[*p].unk_09;
-    e->restTimeMax = sAquariumFishParams[*p].unk_0a;
-    e->restTimeMin = sAquariumFishParams[*p].unk_0b;
+    e->cruiseTimeMax = sAquariumFishParams[*p].cruiseTimeMax;
+    e->cruiseTimeMin = sAquariumFishParams[*p].cruiseTimeMin;
+    e->restTimeMax = sAquariumFishParams[*p].restTimeMax;
+    e->restTimeMin = sAquariumFishParams[*p].restTimeMin;
 }
 
 extern "C" void _ZN16AquariumSeahorse6updateEv(E7a4 *e) {
@@ -2307,10 +2307,10 @@ extern "C" void _ZN15AquariumPiranha5setupEv(E75c *e) {
 
 extern "C" void _ZN15AquariumPiranha6updateEv(E75c *o) {
     (o->*sAquariumPiranhaStates[o->subState])();
-    s32 t = (sAquariumFishParams[30].unk_03 << 12) >> 7;
+    s32 t = (sAquariumFishParams[30].hitRadius << 12) >> 7;
     o->unk_256 = Collision_ClampToRect(&o->pos, t, &sAquariumTankCenterB, 0x11c00, 0x5c00);
     s32 g = func_02133150(o->rank << 12, 10);
-    StaticCollider_setupAtPos(o->unk_04, &o->pos, t, (sAquariumFishParams[30].unk_02 << 12) >> 7, 0x100, 0x140, 0, 0xff, g);
+    StaticCollider_setupAtPos(o->unk_04, &o->pos, t, (sAquariumFishParams[30].hitHeight << 12) >> 7, 0x100, 0x140, 0, 0xff, g);
     ActorCollider_submit(o->unk_04);
     o->prevPos.x = o->pos.x;
     o->prevPos.y = o->pos.y;
@@ -2895,7 +2895,7 @@ extern "C" void _ZN13AquariumSquid6updateEv(E81c *o) {
 }
 
 extern "C" void AquariumSquid_TurnAtTankEnd(E864 *e) {
-    s32 c = func_01ffcb0c(0x1800, (s32)(sAquariumFishParams[e->fishIndex].unk_03 << 12) >> 7);
+    s32 c = func_01ffcb0c(0x1800, (s32)(sAquariumFishParams[e->fishIndex].hitRadius << 12) >> 7);
     s32 a = e->pos.z + c;
     s32 b = e->pos.z - c;
     s32 t = e->pos.x;
@@ -3019,7 +3019,7 @@ extern "C" void AquariumSwimFish_UpdateSea(E864 *e) {
 }
 
 extern "C" void AquariumSwimFish_SetupFreshwater(E864 *e) {
-    if (sAquariumFishParams[e->fishIndex].unk_00 == 0) {
+    if (sAquariumFishParams[e->fishIndex].rank == 0) {
         e->hitBoxOwner = e;
     }
     e->contactFish = e->fishIndex;
@@ -3031,7 +3031,7 @@ extern "C" void AquariumSwimFish_SetupFreshwater(E864 *e) {
 
 extern "C" void AquariumSwimFish_UpdateFreshwater(E864 *e) {
     (e->*sAquariumSwimStates[e->state])();
-    if (sAquariumFishParams[e->fishIndex].unk_00 == 0) {
+    if (sAquariumFishParams[e->fishIndex].rank == 0) {
         u8 *p1 = &e->contactFish;
         u8 b = *p1;
         if (e->lastContactFish != b && b != e->fishIndex) {
@@ -3053,7 +3053,7 @@ extern "C" void AquariumSwimFish_UpdateFreshwater(E864 *e) {
         if (s == 0x1d) {
             AquariumFish_UpdatePitch(e, 0xe38, 0x4b0);
         } else {
-            u32 k = sAquariumFishParams[s].unk_00;
+            u32 k = sAquariumFishParams[s].rank;
             if (k == 0) {
                 AquariumFish_UpdatePitchByDir(e);
             } else if (k >= 4) {
@@ -3326,10 +3326,10 @@ extern "C" void AquariumFish_TurnAtTankEnds(R *e) {
     s32 x = e->pos.x >> 12;
     if (x <= lo) {
         e->unk_1c0 = 0x4000;
-        e->pos.y = (sAquariumFishParams[e->fishIndex].unk_04 << 12) >> 6;
+        e->pos.y = (sAquariumFishParams[e->fishIndex].baseY << 12) >> 6;
     } else if (x >= hi) {
         e->unk_1c0 = -0x4000;
-        e->pos.y = (sAquariumFishParams[e->fishIndex].unk_04 << 12) >> 6;
+        e->pos.y = (sAquariumFishParams[e->fishIndex].baseY << 12) >> 6;
     }
 }
 
@@ -3353,8 +3353,8 @@ extern "C" void AquariumFish_UpdateAvoid(E864 *e) {
                         if (!o) {
                             return;
                         } else {
-                            u32 ra = sAquariumFishParams[e->fishIndex].unk_03;
-                            u32 rb = sAquariumFishParams[o->fishIndex].unk_03;
+                            u32 ra = sAquariumFishParams[e->fishIndex].hitRadius;
+                            u32 rb = sAquariumFishParams[o->fishIndex].hitRadius;
                             if (ra <= rb) {
                                 AquariumFish_StartFlee(e, &o->pos);
                                 e->contactTimer = 0;
@@ -3374,8 +3374,8 @@ extern "C" void AquariumFish_UpdateAvoid(E864 *e) {
                     u32 m = e->contactFlags;
                     if ((m & 8) != 0 || (m & 0x10) != 0) {
                         if (e->state != 4) {
-                            u32 a = sAquariumFishParams[e->fishIndex].unk_00;
-                            u32 b = sAquariumFishParams[e->contactFish].unk_00;
+                            u32 a = sAquariumFishParams[e->fishIndex].rank;
+                            u32 b = sAquariumFishParams[e->contactFish].rank;
                             if (a <= b) {
                                 e->state = 4;
                                 e->stateTimer = 0;
@@ -3505,7 +3505,7 @@ extern "C" void AquariumFish_TurnToTarget(E864 *e) {
         if (e->state != 1) {
             if (e->isTurningToTarget != 0) {
                 BOOL r;
-                if (sAquariumFishParams[e->fishIndex].unk_00 >= 4) {
+                if (sAquariumFishParams[e->fishIndex].rank >= 4) {
                     r = func_020e769c(&e->unk_1c0, e->targetAngle, 0x88) ? TRUE : FALSE;
                 } else {
                     r = func_020e769c(&e->unk_1c0, e->targetAngle, 0x16c) ? TRUE : FALSE;
@@ -3566,7 +3566,7 @@ void AquariumFishHitBox::onCollide(u32 a, u32 idx, u32 c) {
         if (idx >= 0x38) {
             p->contactFlags |= 0x20;
         } else {
-            if (sAquariumFishParams[idx].unk_00 != 0 || idx < 0x23) {
+            if (sAquariumFishParams[idx].rank != 0 || idx < 0x23) {
                 R **q = &sAquariumFish[idx];
                 AquariumFish_RecordContact(this, &p, q);
                 AquariumFish_RecordContact(this, q, &p);
@@ -3593,8 +3593,8 @@ extern "C" void AquariumFish_RecordContact(void *unused, R **pp, R **q)
         (*pp)->contactFish = c;
         (*pp)->isAvoiding = 0;
     } else {
-        u32 rc = sAquariumFishParams[c].unk_00;
-        u32 rb = sAquariumFishParams[b].unk_00;
+        u32 rc = sAquariumFishParams[c].rank;
+        u32 rb = sAquariumFishParams[b].rank;
         if (rb < rc) {
             (*pp)->contactFlags = r2 | r1;
             (*pp)->contactFish = c;
@@ -3656,17 +3656,17 @@ extern "C" void AquariumFish_LoadParams(E864 *self)
 {
     const Rec *t = sAquariumFishParams;
     s32 *pi = &self->fishIndex;
-    self->maxSpeed = (s32)(t[*pi].unk_07 << 12) >> 10;
-    self->accel = (s32)(t[*pi].unk_05 << 12) >> 12;
-    self->decel = (s32)(t[*pi].unk_06 << 12) >> 13;
-    self->cruiseTimeMax = t[*pi].unk_08;
-    self->cruiseTimeMin = t[*pi].unk_09;
-    self->restTimeMax = t[*pi].unk_0a;
-    self->restTimeMin = t[*pi].unk_0b;
-    self->turnRange = t[*pi].unk_0c;
-    self->verticalSpeed = (s32)(t[*pi].unk_0d << 12) >> 10;
-    self->maxY = ((s32)(t[*pi].unk_0e << 12) >> 5) - 0x1000;
-    self->minY = ((s32)(t[*pi].unk_0f << 12) >> 6) - 0x1000;
+    self->maxSpeed = (s32)(t[*pi].maxSpeed << 12) >> 10;
+    self->accel = (s32)(t[*pi].accel << 12) >> 12;
+    self->decel = (s32)(t[*pi].decel << 12) >> 13;
+    self->cruiseTimeMax = t[*pi].cruiseTimeMax;
+    self->cruiseTimeMin = t[*pi].cruiseTimeMin;
+    self->restTimeMax = t[*pi].restTimeMax;
+    self->restTimeMin = t[*pi].restTimeMin;
+    self->turnRange = t[*pi].turnRange;
+    self->verticalSpeed = (s32)(t[*pi].verticalSpeed << 12) >> 10;
+    self->maxY = ((s32)(t[*pi].maxY << 12) >> 5) - 0x1000;
+    self->minY = ((s32)(t[*pi].minY << 12) >> 6) - 0x1000;
 }
 
 extern "C" BOOL MuseumAquarium_RequestFishModel(Mgr *self, s32 i)
@@ -3836,7 +3836,7 @@ extern "C" BOOL MuseumAquarium_CreateFreshwaterFish(Mgr *self)
         }
         R *e = *p;
         if (e == NULL) return FALSE;
-        u32 t = sAquariumFishParams[i].unk_01;
+        u32 t = sAquariumFishParams[i].numAnims;
         if (t == 3) e->hasTurnAnims = 1;
         if (!MuseumAquarium_LoadFishAnims(self, p, i, t)) {
             MuseumAquarium_ReleaseFish(self, i);
@@ -3938,10 +3938,10 @@ extern "C" s32 MuseumAquarium_CreateSeaFish(Mgr *o) {
         if (*p == 0) {
             return 0;
         }
-        if (sAquariumFishParams[i].unk_01 == 3) {
+        if (sAquariumFishParams[i].numAnims == 3) {
             (*p)->hasTurnAnims = 1;
         }
-        if (!MuseumAquarium_LoadFishAnims(o, p, i, sAquariumFishParams[i].unk_01)) {
+        if (!MuseumAquarium_LoadFishAnims(o, p, i, sAquariumFishParams[i].numAnims)) {
             MuseumAquarium_ReleaseFish(o, i);
             (*p)->hasTurnAnims = 0;
             return 0;
@@ -4186,7 +4186,7 @@ extern "C" void MuseumAquarium_PlaceFreshwaterFish(Mgr *o) {
                     break;
                 }
             }
-            v->y = ((sAquariumFishParams[i].unk_04 << 12) >> 6) - 0x1000;
+            v->y = ((sAquariumFishParams[i].baseY << 12) >> 6) - 0x1000;
             {
                 R *e = *p;
                 V3 *d = &e->prevPos;
@@ -4194,7 +4194,7 @@ extern "C" void MuseumAquarium_PlaceFreshwaterFish(Mgr *o) {
                 d->y = v->y;
                 d->z = v->z;
             }
-            (*p)->rank = sAquariumFishParams[i].unk_00;
+            (*p)->rank = sAquariumFishParams[i].rank;
             MuseumAquarium_RequestFishModel(o, i);
         }
     }
@@ -4242,12 +4242,12 @@ extern "C" void MuseumAquarium_PlaceSeaFish(Mgr *self) {
                 e[0] = Aquarium_RandFx(5, 0x1e);
                 break;
             }
-            e[1] = ((sAquariumFishParams[i].unk_04 << 12) >> 6) - 0x1000;
+            e[1] = ((sAquariumFishParams[i].baseY << 12) >> 6) - 0x1000;
             s32 *d = (s32 *)((u8 *)*pp + 0x1b4);
             d[0] = e[0];
             d[1] = e[1];
             d[2] = e[2];
-            *((u8 *)*pp + 0x164) = sAquariumFishParams[i].unk_00;
+            *((u8 *)*pp + 0x164) = sAquariumFishParams[i].rank;
             MuseumAquarium_RequestFishModel(self, i);
         }
     }
@@ -4268,11 +4268,11 @@ extern "C" void MuseumAquarium_ConfineFish(void *self, R **ctx, s32 type) {
     V3 *ep;
     s32 off;
     s32 c164 = o1->rank;
-    w = (sAquariumFishParams[type].unk_03 << 12) >> 7;
+    w = (sAquariumFishParams[type].hitRadius << 12) >> 7;
     if (o1->hasCollision == 0) {
         return;
     }
-    s32 h = (sAquariumFishParams[type].unk_02 << 12) >> 7;
+    s32 h = (sAquariumFishParams[type].hitHeight << 12) >> 7;
     if (sAquariumRoom == 0) {
         StaticCollider_setupAtPos(&o1->unk_04, v, w, h, 0x100, 0x140, 0x14, type, (c164 << 12) >> 3);
     } else if (sAquariumRoom == 1) {

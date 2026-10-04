@@ -136,9 +136,9 @@ public:
     BOOL runSpawnList(u8 *entryIdx, u8 *subIdx, u64 start);
     void createSceneMapModule();
 
-    SceneSpawnList *unk_00;
+    SceneSpawnList *spawnList;
     void *unk_04;
-    SceneMapInfo *unk_08;
+    SceneMapInfo *mapInfo;
 };
 
 // one of the 2 rollable loose snowballs of gLooseSnowballs
@@ -147,10 +147,10 @@ public:
     LooseSnowball();
     ~LooseSnowball();
 
-    void *unk_00;
-    void *unk_04;
-    void *unk_08;
-    u32 unk_0c;
+    void *posX;
+    void *posY;
+    void *posZ;
+    u32 radius;
 };
 
 class LooseSnowballs {
@@ -198,7 +198,7 @@ void func_01ffd070(Vec3 *, Vec3 *, Vec3 *);
 
 struct Data020cbb18 {
     u8 pad[0x64];
-    u32 unk_64;
+    u32 myAid;
 };
 extern Data020cbb18 *gCommManager;
 extern u8 gSavePlayers[];
@@ -282,7 +282,7 @@ BOOL SceneSpawnGroup::spawnPlayersAndCamera(u8 *idx, u32 lo, u32 hi) {
     ScenePlayerSpawn *items = (ScenePlayerSpawn *)ptr;
     if (items != NULL && Scene_GetCurrent() != 0xd && Scene_GetCurrent() != 0xe && Scene_GetCurrent() != 0x2f) {
         if (Scene_InUnk6Or7()) {
-            _ZN11CommManager12isSlotActiveEi(gCommManager, gCommManager->unk_64);
+            _ZN11CommManager12isSlotActiveEi(gCommManager, gCommManager->myAid);
             for (u32 i = 0; i < 4; i++) {
                 Vec3s rot;
                 u32 v;
@@ -380,18 +380,18 @@ void SceneMapInfo::createMapModule() {
 }
 
 void SceneInfo::createSceneMapModule() {
-    unk_08->createMapModule();
+    mapInfo->createMapModule();
 }
 
 BOOL SceneInfo::runSpawnList(u8 *entryIdx, u8 *subIdx, u64 start) {
-    return unk_00->run(entryIdx, subIdx, start);
+    return spawnList->run(entryIdx, subIdx, start);
 }
 
 LooseSnowball::LooseSnowball() {
-    unk_00 = NULL;
-    unk_04 = NULL;
-    unk_08 = NULL;
-    unk_0c = 0x800;
+    posX = NULL;
+    posY = NULL;
+    posZ = NULL;
+    radius = 0x800;
 }
 
 LooseSnowball::~LooseSnowball() {}
@@ -642,10 +642,10 @@ void SnowmanRecords::markUnplaced(u32 idx) {
 
 void LooseSnowballs::reset() {
     for (u32 i = 0; i < 2; i++) {
-        items[i].unk_00 = NULL;
-        items[i].unk_04 = NULL;
-        items[i].unk_08 = NULL;
-        items[i].unk_0c = 0x800;
+        items[i].posX = NULL;
+        items[i].posY = NULL;
+        items[i].posZ = NULL;
+        items[i].radius = 0x800;
     }
 }
 
