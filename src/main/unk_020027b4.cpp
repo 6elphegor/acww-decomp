@@ -1,5 +1,10 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
+#include "gfx/Unk_02002804_Buf.h"
+#include "gfx/Unk_02002848_Data.h"
+#include "actor/Unk_02002cb0_Vec.h"
+#include "actor/Unk_02002f14_S16Vec.h"
+#include "actor/Unk_02002f14_S32Vec.h"
 
 typedef volatile u16 vu16;
 typedef volatile u32 vu32;
@@ -226,14 +231,7 @@ extern "C" {
 void func_020030b4_dummy(void);
 }
 
-struct Unk_02002804_Buf {
-    u16 colors[32];
-};
 
-// 0x30-byte record copied around by Gfx3d_SetViewMatrix and Gfx3d_Init
-struct Unk_02002848_Data {
-    u32 m[12];
-};
 
 extern Unk_02002848_Data data_02135934_;
 
@@ -267,24 +265,8 @@ struct Unk_02002f14_Node {
     /* 0x08 */ void *owner;
 };
 
-struct Unk_02002cb0_Vec {
-    /* 0x00 */ u8 unk_00[0x10];
-    /* 0x10 */ s32 pushX;
-    /* 0x14 */ s32 unk_14;
-    /* 0x18 */ s32 pushZ;
-};
 
-struct Unk_02002f14_S16Vec {
-    s16 x;
-    s16 y;
-    s16 z;
-};
 
-struct Unk_02002f14_S32Vec {
-    s32 x;
-    s32 y;
-    s32 z;
-};
 
 class Actor : public GameProc {
 public:

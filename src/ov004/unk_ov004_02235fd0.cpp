@@ -3,6 +3,7 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
+#include "actor/Unk_02002cb0_Vec.h"
 
 // main / runtime symbols by their real names
 #define func_02000c8c _ZN6FxVec3D1Ev
@@ -62,9 +63,6 @@ struct Unk_ov004_02236320_Ent {
     s32 speed;
 };
 
-struct Unk_02002cb0_Vec {
-    s32 x, y, z;
-};
 
 struct Unk_ov004_02236320_O1 {
     u32 a[4];

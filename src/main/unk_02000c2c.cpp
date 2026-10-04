@@ -1,42 +1,19 @@
 #include "types.h"
+#include "sys/Unk_02000fc0_Col.h"
+#include "sys/Unk_02000fc0_Node.h"
+#include "sys/Unk_02000fc0_Cfg.h"
+#include "sys/Unk_02000fc0_Ptr.h"
+#include "sys/Unk_02000fc0_Ctx.h"
+#include "sys/Unk_02000fc0_Thr.h"
 
 typedef volatile u16 vu16;
 typedef volatile u32 vu32;
 
-struct Unk_02000fc0_Col {
-    u16 unk_00;
-    u16 charBase;
-};
 
-struct Unk_02000fc0_Node {
-    u8 pad_00[0x68];
-    Unk_02000fc0_Node *next;
-    u32 id;
-};
 
-struct Unk_02000fc0_Cfg {
-    u8 pad_00[0x0c];
-    u16 profile;
-};
 
-struct Unk_02000fc0_Ptr {
-    u8 pad_00[8];
-    Unk_02000fc0_Cfg *owner;
-};
 
-struct Unk_02000fc0_Ctx {
-    u8 pad_00[0x38];
-    u32 sp;
-};
 
-struct Unk_02000fc0_Thr {
-    u8 pad_00[0x6c];
-    u32 id;
-    u8 pad_70[0x20];
-    u32 stackTop;
-    u32 stackBottom;
-    u32 stackWarningOffset;
-};
 
 extern "C" {
 

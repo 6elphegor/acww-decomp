@@ -1,9 +1,9 @@
 #include "types.h"
 #include "net/CommManager.h"
+#include "player/Unk_02006d14_Vec.h"
+#include "player/Unk_02006d14_Blk.h"
 
-struct Unk_02006d14_Vec { s32 x, y, z; };
 typedef Unk_02006d14_Vec Unk_02006d14_V3;
-struct Unk_02006d14_Blk { u32 w[12]; };
 
 // An enum-typed local keeps the constant in a callee-saved register across the call.
 // _ZN12Unk_0200804012requestAct79Ejj is declared with the enum parameter (real type u32) so the argument is

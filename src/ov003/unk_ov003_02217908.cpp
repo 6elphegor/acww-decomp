@@ -1,5 +1,8 @@
 // mwcc-version: 1.2/base
 #include "types.h"
+#include "game/Unk_02003a6c_Vec.h"
+#include "snd/Unk_02003c30.h"
+#include "snd/Unk_02003c40.h"
 
 // TU17 of ov003: ground helper free functions 0x02217908..0x02217b10 and the six colour constants of its header
 
@@ -20,9 +23,6 @@ public:
     u32 unk_98;
 };
 
-struct Unk_02003a6c_Vec {
-    s32 x, y, z;
-};
 
 typedef Unk_02003a6c_Vec Unk_ov003_02217910_V3;
 
@@ -32,25 +32,7 @@ struct Unk_ov003_02217910_V3D {
     ~Unk_ov003_02217910_V3D() {}
 };
 
-struct Unk_02003c30 {
-    virtual void vfunc_00();
-    virtual void vfunc_04();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void vfunc_10();
-    void callRelease();
-    void callReset();
-};
 
-struct Unk_02003c40 {
-    virtual void vfunc_00();
-    virtual void vfunc_04();
-    virtual void vfunc_08(void *a);
-    virtual void vfunc_0c(void *a);
-    virtual void vfunc_10(void *a);
-    void callRequest(void *a);
-    void callUpdateRelative(Unk_ov003_02217910_V3 *v);
-};
 
 struct Unk_ov003_02217970_Rec {
     u8 found;

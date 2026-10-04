@@ -1,8 +1,8 @@
 #include "types.h"
+#include "game/Unk_02003a6c_Vec.h"
+#include "snd/Unk_02003c30.h"
+#include "snd/Unk_02003c40.h"
 
-struct Unk_02003a6c_Vec {
-    s32 x, y, z;
-};
 
 extern u32 gCamera;
 extern Unk_02003a6c_Vec gCameraEye;
@@ -11,33 +11,7 @@ extern u8 gFieldSceneKind;
 extern u8 *data_021c1b3c;
 extern u8 data_021f5be0[];
 
-struct Unk_02003c30 {
-    virtual void vfunc_00();
-    virtual void vfunc_04();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void vfunc_10();
-    void callRelease();
-    void callReset();
-    void func_02003dcc();
-    void func_02003e40();
-    void func_02003e50();
-    void func_02003ecc();
-};
 
-struct Unk_02003c40 {
-    virtual void vfunc_00();
-    virtual void vfunc_04();
-    virtual void vfunc_08(void *a);
-    virtual void vfunc_0c(void *a);
-    virtual void vfunc_10(void *a);
-    void callRequest(void *a);
-    void callRequestSustained(void *a);
-    void callUpdate(void *a);
-    void callUpdateRelative(Unk_02003a6c_Vec *v);
-    void func_02003df4(Unk_02003a6c_Vec *v);
-    void func_02003e80(Unk_02003a6c_Vec *v);
-};
 
 struct Unk_0213c8ec {
     virtual ~Unk_0213c8ec();

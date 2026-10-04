@@ -1,7 +1,7 @@
 #include "types.h"
+#include "player/Unk_02006d14_Vec.h"
+#include "player/Unk_02006d14_Blk.h"
 
-struct Unk_02006d14_Vec { s32 x, y, z; };
-struct Unk_02006d14_Blk { u32 w[12]; };
 struct Unk_020cbb18_Data { u8 pad_00[0x68]; s32 localSlot; };
 
 // An enum-typed local keeps the constant in a callee-saved register across the call.

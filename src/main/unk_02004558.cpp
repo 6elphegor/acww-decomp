@@ -6,6 +6,32 @@
 // namespace per old file holds that file's own declarations and its view of the object.
 #include "types.h"
 #include "net/CommManager.h"
+#include "player/Unk_02005294_Vec3.h"
+#include "player/Unk_020050e0_P.h"
+#include "player/Unk_020050e0_Q.h"
+#include "player/Unk_020050e0_R.h"
+#include "player/Unk_020050e0.h"
+#include "player/Unk_02005f50_Flags.h"
+#include "player/Unk_02005f50_V3.h"
+#include "player/Unk_02005f50_Area.h"
+#include "player/Unk_02005f50_Pkt.h"
+#include "player/Unk_02006d14_Pair.h"
+#include "player/Unk_02006d14_Vec.h"
+#include "player/Unk_02006d14_Vec3.h"
+#include "player/Unk_02006d14_V3.h"
+#include "player/Unk_02006d14_Item.h"
+#include "player/Unk_02006d14_Data.h"
+#include "player/Unk_02006d14_Blk.h"
+#include "player/Unk_02006d14_Blk30.h"
+#include "player/Unk_02006d14_Trip.h"
+#include "player/Unk_02006d14_St7d0.h"
+#include "player/Unk_02006d14_Sub7d0.h"
+#include "player/Unk_02006d14_Ptr.h"
+#include "player/Unk_02006d14_Obj2cc.h"
+#include "player/Unk_02006d14_Obj59c.h"
+#include "player/Unk_02006d14_Objec.h"
+#include "player/Unk_02007ebc_Mtx.h"
+#include "player/Unk_02007c5c_Mtx.h"
 
 class Unk_02006d14;
 class Unk_02007694;
@@ -182,11 +208,6 @@ struct SndSeEmitterKind1 : SndSeEmitter {
 };
 
 
-struct Unk_02005f50_Flags {
-    u8 type : 5;
-    u8 sub : 2;
-    u8 set : 1;
-};
 
 class Unk_02005e7c {
 public:
@@ -464,7 +485,6 @@ public:
       Unk_020080e8 netData;
 };
 
-struct Unk_02006d14_Vec { s32 x, y, z; Unk_02006d14_Vec() {} };
 
 struct Unk_02008e48 {
     u8 unk_00, unk_01, unk_02;
@@ -490,7 +510,6 @@ struct Unk_0200944c {
     void setWalkToArgs(Unk_02006d14_Vec v, s32 a);
 };
 
-struct Unk_02006d14_Pair { u32 unitX; u32 unitZ; };
 
 struct Unk_0200b144_Pos { s32 x; s32 y; };
 
@@ -595,7 +614,6 @@ public:
     };
 };
 
-struct Unk_02006d14_Vec3 { s32 x, y, z; };
 
 struct Unk_0200f6d4_V2 {
     s32 x, y;
@@ -746,9 +764,6 @@ extern PM_02004ce8 data_020d5ff4;
 namespace nB {
 extern "C" {
 
-struct Unk_02005294_Vec3 {
-    s32 x, y, z;
-};
 struct Unk_021cb69c {
     union {
         struct {
@@ -759,7 +774,6 @@ struct Unk_021cb69c {
     };
 };
 class PlayerActor;
-struct Unk_020050e0;
 void WorldCurve_FromCurved(Unk_02005294_Vec3 *dst, Unk_02005294_Vec3 *src);
 s32 WorldCurve_Apply(Unk_02005294_Vec3 *out, Unk_02005294_Vec3 *in);
 s32 WorldCurve_GetRadius();
@@ -1027,29 +1041,6 @@ public:
       u8 pendingAct76Kind;
       u8 netPickUpDelay;
 };
-struct Unk_020050e0_P {
-      u8 unk_00;
-      u8 idxNode;
-};
-struct Unk_020050e0_Q {
-      u8 unk_00[0x2c];
-      PlayerActor *ptrUser;
-};
-struct Unk_020050e0_R {
-      u8 unk_00[0x28];
-      s32 rot[9];
-      Unk_02005294_Vec3 trans;
-};
-struct Unk_020050e0 {
-      Unk_020050e0_P *c;
-      Unk_020050e0_Q *pRenderObj;
-      u8 unk_08[0x1c];
-      void (*unk_24)(Unk_020050e0 *);
-      u8 unk_28[0x92 - 0x28];
-      u8 unk_92;
-      u8 unk_93[0xb4 - 0x93];
-      Unk_020050e0_R *pJntAnmResult;
-};
 void PlayerActor_JointCbStart(Unk_020050e0 *p);
 void PlayerActor_JointCbPre(Unk_020050e0 *p);
 void PlayerActor_JointCbPost(Unk_020050e0 *p);
@@ -1229,13 +1220,6 @@ extern PM_02005294 data_020d65ac;
 namespace nC {
 extern "C" {
 
-struct Unk_02005f50_V3 {
-    s32 x, y, z;
-};
-struct Unk_02005f50_Area {
-    s32 a[3];
-    u8 e[4];
-};
 extern u8 data_020c64c8[];
 extern u8 data_020c6434[];
 extern u8 sPlayerActionLevelsTilt[];
@@ -1272,11 +1256,6 @@ void PlayerActor_RequestAct66(void *p, void *v, s32 a, s32 b, s32 c);
 void PlayerActor_RequestShovelStrike(void *p, s32 a, void *v, s32 b, s32 c);
 void PlayerActor_RequestAxeStrike(void *p, s32 a, s32 b, void *v, s32 c, s32 d);
 void PlayerActor_LevelTiltForAction(void *p, u32 i, s32 force);
-struct Unk_02005f50_Pkt {
-    u8 type;
-    u8 sub;
-    volatile u16 pos;
-};
 s32 _ZN12Unk_02006d1412changeActionEP17Unk_02006d14_Item(void *, void *p);
 union PM_020063a0 {
     PMRaw raw;
@@ -1436,8 +1415,6 @@ extern PM_020063a0 data_020d628c;
 namespace nD {
 extern "C" {
 
-struct Unk_02006d14_Item { u32 action; u32 priority; s16 netSeq; };
-struct Unk_02006d14_Data { u8 pad_00[0x64]; u32 myAid; };
 struct Unk_02006d14 {
     u8 pad_000[0x7ec];
     u32 action;
@@ -1782,14 +1759,8 @@ extern PM_02006d14 data_020d673c;
 namespace nE {
 extern "C" {
 
-struct Unk_02007ebc_Mtx {
-    s32 m[12];
-};
 struct Unk_02007ebc_Vec {
     s32 x, y, z;
-};
-struct Unk_02007c5c_Mtx {
-    s32 m[12];
 };
 class Unk_02007694;
 void MI_CpuFill8(void *p, u32 v, u32 n);
@@ -2127,13 +2098,6 @@ static inline BOOL Unk_02008858_IsZero(u8 v) {
 namespace nG {
 extern "C" {
 
-struct Unk_02006d14_Item {
-    u32 action;
-    u32 priority;
-    s16 netSeq;
-    u8 pad_0a[2];
-    u8 unk_0c[0x14];
-};
 struct Unk_02008e50_Pay {
     u8 unk_00, unk_01, unk_02;
     u8 pad_03[0xd];
@@ -2306,12 +2270,10 @@ namespace nH {
 extern "C" {
 
 struct Unk_02009d5c_Sub { u32 kind; u8 nextMode; u32 variant; u32 partner; };
-struct Unk_02006d14_Item { u32 action; u32 priority; s16 netSeq; u8 pad_0a[2]; Unk_02009d5c_Sub args; };
 struct Unk_0200e2e0 { u8 pad_00[0xc]; Unk_02009d5c_Sub args; };
 struct Unk_02009a78_Vec { s32 x, y, z; };
 struct Unk_02009624_Pair { u32 unk_00; u16 item; u8 fromAct10; };
 extern u8 gFieldSceneKind;
-struct Unk_02006d14_Data;
 extern Unk_02006d14_Data* gCommManager;
 extern s16 data_02135f44[];
 extern u32 data_020d5e4c[];
@@ -2480,24 +2442,11 @@ namespace nI {
 extern "C" {
 
 struct Unk_02009f68_Bytes { u8 unk_0; u8 unitX; u8 unitZ; };
-struct Unk_02006d14_Item { u32 action; u32 priority; s16 netSeq; u8 pad_0a[2]; union { Unk_02009f68_Bytes args; u8 unk_0c_raw[8]; }; };
 struct Unk_0200a0a0_Bytes { u8 unk_0; u8 unitX; u8 unitZ; u8 pad_3[13]; };
 struct Unk_0200a63c_St { u8 unk_0; u8 unk_1[2]; u8 unitX; u8 unitZ; };
 struct Unk_0200a728_St { u16 item; u8 unitX; u8 unitZ; u8 unk_4; u8 pad_5[15]; };
-struct Unk_02006d14_Trip { u32 x; u32 y; u32 z; };
-struct Unk_02006d14_St7d0 {
-    u8 commitUnit; u8 fanfareStep; u8 unitX; u8 unitZ;
-    u8 pad_4[4];
-    u8 storeStep; u8 pickUnitX; u8 pickUnitZ;
-};
 struct Unk_0200a6d4_St { u8 pad[16]; };
 struct Unk_0200a050_Obj { u8 pad[12]; };
-struct Unk_02006d14_Ptr { u32 index; u32 state; u32 nextState; };
-struct Unk_02006d14_Obj2cc { u8 pad[8]; u32 curFrame; };
-struct Unk_02006d14_Blk30 { u32 w[12]; };
-struct Unk_02006d14_Obj59c { u8 pad[4]; };
-struct Unk_02006d14_Objec { u8 pad[4]; };
-struct Unk_02006d14_Blk { u32 w[12]; };
 struct Unk_02006d14_Base0 {
     u8 pad_000[0xc4];
     Unk_02006d14_Trip unk_c4;
@@ -2580,7 +2529,6 @@ struct Unk_02006d14 : Unk_02006d14_Base0, Unk_02006d14_Objec {
     void func_0203e488(Unk_02006d14_Objec* p);
     void func_0203e47c(Unk_02006d14_Objec* p);
 };
-struct Unk_02006d14_Data { u8 pad_00[0x64]; u32 myAid; };
 static inline BOOL Unk_0200a114_IsZero(u8* p)
 {
     if (*p == 0) return TRUE;
@@ -2663,18 +2611,6 @@ extern "C" {
 
 struct Unk_0200b244_Out { u16 item; u16 pad_02; s32 ftrActorIndex; u8 unitX; u8 unitZ; u8 unk_0a; };
 struct Unk_0200b144_Src { u8 unk_00; u8 unk_01; u8 unk_02; s8 ftrActorIndex; u8 unitX; u8 unitZ; };
-struct Unk_02006d14_Item { u32 action; u32 priority; u32 netSeq; Unk_0200b244_Out args; };
-struct Unk_02006d14_V3 { s32 x; s32 y; s32 z; };
-struct Unk_02006d14_Blk { u32 w[12]; };
-struct Unk_02006d14_Vec { s32 x, y, z; };
-struct Unk_02006d14_Sub7d0 {
-    u8 commitUnit;
-    u8 pad_01[3];
-    union { s32 s; struct { u8 unk_04, unk_05, unk_06, unk_07; } b; } unk_04;
-    u8 storeStep;
-    u8 pickUnitX;
-    u8 pickUnitZ;
-};
 struct Unk_0203d820_Ptr { u32 index; u32 state; u32 nextState; };
 struct Unk_02006d14_A {
     virtual void vfunc_00();
@@ -2812,14 +2748,6 @@ s32 _ZN12Unk_02006d1415getHeldToolKindEv(void *);
 namespace nK {
 extern "C" {
 
-struct Unk_02006d14_Vec { s32 x, y, z; };
-struct Unk_02006d14_Item {
-    u32 action;
-    u32 priority;
-    s16 netSeq;
-    u8 pad_0a[2];
-    u8 unk_0c[0x14];
-};
 struct Unk_0200b76c_Msg {
     u32 action, priority, netSeq;
     Unk_0200b7bc args;
@@ -3195,13 +3123,6 @@ void _ZN12Unk_02006d1411tryInteractEv(void *);
 namespace nM {
 extern "C" {
 
-struct Unk_02006d14_Item {
-    u32 action;
-    u32 priority;
-    s16 netSeq;
-    u8 pad_0a[2];
-    u8 unk_0c[0x14];
-};
 struct Unk_020d6df4_Vec { s32 x, y, z; };
 struct Unk_020d6df4_Data {
     u8 pad_00[0x64];
@@ -7869,7 +7790,7 @@ BOOL PlayerActor::requestWait(u32 a, u32 b, u32 c) {
 void PlayerActor::setupWait(Unk_02006d14_Item *item, u32 old) {
     using namespace nM;
     if (!_ZN12Unk_02006d1416checkLidAndErrorEv(this)) {
-        u16 h = *(u16 *)&((nM::Unk_02006d14_Item *)item)->unk_0c[0];
+        u16 h = *(u16 *)&((Unk_02006d14_Item *)item)->unk_0c[0];
         *(u8 *)&((nM::PlayerActor *)this)->actionWork = old == 4 ? 1 : 0;
         _ZN12Unk_020102ec9startAnimEijt(this, 0, h, h);
         _ZN12Unk_02006d1417resetHeldToolAnimEv(this);
@@ -8014,7 +7935,7 @@ void Unk_020d6df4_7d0::initWalk() {
 
 void PlayerActor::setupWalk(Unk_02006d14_Item *item, u32 old) {
     using namespace nM;
-    u8 *p = &((nM::Unk_02006d14_Item *)item)->unk_0c[0];
+    u8 *p = &((Unk_02006d14_Item *)item)->unk_0c[0];
     Unk_020d6df4_7d0 *q = &((nM::PlayerActor *)this)->actionWork;
     _ZN12Unk_020102ec9startAnimEijt(this, 1, 3, 3);
     if (_ZN12Unk_02006d1415getHeldToolKindEv(this) == 4) {
@@ -8541,7 +8462,7 @@ s32 Unk_02006d14::requestAct10(s16 a, u32 b, s32 c) {
 
 void Unk_02006d14::setupAct10(Unk_02006d14_Item *item, u32 old) {
     using namespace nK;
-    u16 v = *(u16 *)&((nK::Unk_02006d14_Item *)item)->unk_0c[0];
+    u16 v = *(u16 *)&((Unk_02006d14_Item *)item)->unk_0c[0];
     if (!_ZN12Unk_02006d1414testActionFlagEj(this, 0x17)) {
         _ZN12Unk_020102ec9startAnimEijt(this, 0, v, 0);
     }
@@ -8568,13 +8489,13 @@ void Unk_02006d14::act10FaceTalkTarget() {
     s16 res;
     s16 h;
     Unk_0200bc78_Vec d;
-    nK::Unk_02006d14_Vec *pv;
+    Unk_02006d14_Vec *pv;
     s16 *pr;
     o = (Unk_0200bc78_Obj *)TalkRequest_GetTalkTarget();
     pr = 0;
     if (_ZN12Unk_02006d1414testActionFlagEj(this, 0xe)) o = 0;
     if (o != 0) {
-        nK::Unk_02006d14_Vec *ov;
+        Unk_02006d14_Vec *ov;
         pv = &((nK::Unk_02006d14 *)this)->position;
         ov = o->vfunc_50();
         func_0200bc78_sub(&d, ov, pv);
@@ -8695,7 +8616,7 @@ void Unk_0200b750::readEmotionNet(u8 *a, u8 *b) {
 
 void Unk_02006d14::setupEmotion(Unk_02006d14_Item *item, u32 old) {
     using namespace nK;
-    u8 *q = ((nK::Unk_02006d14_Item *)item)->unk_0c;
+    u8 *q = ((Unk_02006d14_Item *)item)->unk_0c;
     u8 a = q[1];
     u8 b = q[0];
     Unk_0200b908_Obj *p;
@@ -8839,10 +8760,10 @@ void Unk_0200b750::readPickUpReachNet(Unk_0200b750_Pair *pr, s32 *out) {
 
 void Unk_02006d14::setupPickUpReach(Unk_02006d14_Item *item, u32 old) {
     using namespace nK;
-    u8 *q = ((nK::Unk_02006d14_Item *)item)->unk_0c;
+    u8 *q = ((Unk_02006d14_Item *)item)->unk_0c;
     u8 a = q[4];
     u8 b = q[5];
-    s32 c = *(s32 *)((nK::Unk_02006d14_Item *)item)->unk_0c;
+    s32 c = *(s32 *)((Unk_02006d14_Item *)item)->unk_0c;
     Unk_02006d14_7d0 *p;
     _ZN12Unk_02006d1415clearActionFlagEj(this, 0xd);
     p = &((nK::Unk_02006d14 *)this)->actionWork;
@@ -9011,12 +8932,12 @@ extern "C" void PlayerActor_NetReadPickUp(Unk_0200b144_Src* src, Unk_0200b144_Po
 
 void Unk_02006d14::setupPickUp(Unk_02006d14_Item* item, u32 old) {
     using namespace nJ;
-    Unk_0200b244_Out* o = &((nJ::Unk_02006d14_Item *)item)->args;
+    Unk_0200b244_Out* o = (Unk_0200b244_Out *)((Unk_02006d14_Item *)item)->unk_0c;
     u8 x = o->unitX;
     u8 y = o->unitZ;
     s32 z = o->ftrActorIndex;
     u16 t[4];
-    t[0] = ((nJ::Unk_02006d14_Item *)item)->args.item;
+    t[0] = ((Unk_0200b244_Out *)((Unk_02006d14_Item *)item)->unk_0c)->item;
     u8 flag = o->unk_0a;
     if (z < 0) {
         BOOL r;
@@ -9345,7 +9266,7 @@ extern "C" void PlayerActor_NetReadPickUpFanfare(Unk_0200a63c_St* s, Unk_02006d1
 
 void Unk_02006d14::setupPickUpFanfare(Unk_02006d14_Item* item, u32 v) {
     using namespace nI;
-    u8* it = ((nI::Unk_02006d14_Item *)item)->unk_0c_raw;
+    u8* it = ((Unk_02006d14_Item *)item)->unk_0c;
     u32 a = it[2];
     u32 c = it[3];
     u16 g[2];
@@ -9612,7 +9533,7 @@ extern "C" void PlayerActor_NetReadPickUpFanfareStow(Unk_02009f68_Bytes* src, Un
 
 void Unk_02006d14::setupPickUpFanfareStow(Unk_02006d14_Item* item, u32 v) {
     using namespace nI;
-    Unk_02009f68_Bytes* it = &((nI::Unk_02006d14_Item *)item)->args;
+    Unk_02009f68_Bytes* it = (Unk_02009f68_Bytes *)((Unk_02006d14_Item *)item)->unk_0c;
     u32 a = it->unitX;
     u32 c = it->unitZ;
     u8 b = it->unk_0;
@@ -9723,8 +9644,8 @@ s32 Unk_02006d14::requestAct30(u16* p, u32 b, u32 c, u32 d, u32 e, u32 f, s16 g)
 
 void Unk_02006d14::setupAct30(Unk_02006d14_Item* item, u32 old) {
     using namespace nH;
-    Unk_02009d5c_Sub* s = &((nH::Unk_02006d14_Item *)item)->args;
-    HandOverItem_Begin(&((nH::Unk_02006d14 *)this)->actionItem, ((nH::Unk_02006d14_Item *)item)->args.kind, s->nextMode, s->variant, ((nH::Unk_02006d14 *)this), s->partner);
+    Unk_02009d5c_Sub* s = (Unk_02009d5c_Sub *)((Unk_02006d14_Item *)item)->unk_0c;
+    HandOverItem_Begin(&((nH::Unk_02006d14 *)this)->actionItem, ((Unk_02009d5c_Sub *)((Unk_02006d14_Item *)item)->unk_0c)->kind, s->nextMode, s->variant, ((nH::Unk_02006d14 *)this), s->partner);
     _ZN12Unk_020102ec13startAnimOnceEijt(this, 0x28, 3, 0);
     HandOverItem_RequestMode(1, ((nH::Unk_02006d14 *)this));
     _ZN12Unk_02006d146playSeEj(this, 0x4f);
@@ -10033,7 +9954,7 @@ extern "C" void PlayerActor_NetReadChangeHeldItem(void* p, u16* out) {
 
 void Unk_02006d14::setupChangeHeldItem(Unk_02006d14_Item* item, u32 old) {
     using namespace nH;
-    u16* q = (u16*)&((nH::Unk_02006d14_Item *)item)->args;
+    u16* q = (u16*)((Unk_02006d14_Item *)item)->unk_0c;
     if (Unk_02009624_Check()) {
         u16 buf[2];
         PlayerActor_GetHeldItem(buf, ((nH::Unk_02006d14 *)this));
@@ -10147,7 +10068,7 @@ void Unk_020093d4::initWalkTo(Unk_02006d14_Vec v, s32 a, s32 b) {
 
 void Unk_02006d14::setupWalkTo(Unk_02006d14_Item *item, u32 old) {
     using namespace nG;
-    Unk_02006d14_Vec *p = (Unk_02006d14_Vec *)&((nG::Unk_02006d14_Item *)item)->unk_0c[0];
+    Unk_02006d14_Vec *p = (Unk_02006d14_Vec *)&((Unk_02006d14_Item *)item)->unk_0c[0];
     Unk_020092c8_Loc loc;
     s32 r6;
     _ZN12Unk_020102ec9startAnimEijt(this, 1, 3, 0);
@@ -10322,7 +10243,7 @@ void Unk_02008f5c::initTurnTo(s16 v) {
 
 void Unk_02006d14::setupTurnTo(Unk_02006d14_Item *item, u32 old) {
     using namespace nG;
-    s16 *p = (s16 *)&((nG::Unk_02006d14_Item *)item)->unk_0c[0];
+    s16 *p = (s16 *)&((Unk_02006d14_Item *)item)->unk_0c[0];
     Unk_02008f5c *s = (Unk_02008f5c *)&((nG::Unk_02006d14 *)this)->actionWork;
     if (!_ZN12Unk_02006d1414testActionFlagEj(this, 0x17)) {
         _ZN12Unk_020102ec9startAnimEijt(this, 1, 3, 0);
@@ -11050,8 +10971,8 @@ void Unk_02006d14::changeAction(Unk_02006d14_Item* item) {
         data_020d677c.fn, data_020d6774.fn, data_020d627c.fn, data_020d6764.fn, data_020d675c.fn, data_020d626c.fn,
         data_020d5ffc.fn, data_020d6744.fn, data_020d673c.fn,
     };
-    u32 id = ((nD::Unk_02006d14_Item *)item)->action;
-    s16 v = ((nD::Unk_02006d14_Item *)item)->netSeq;
+    u32 id = ((Unk_02006d14_Item *)item)->action;
+    s16 v = ((Unk_02006d14_Item *)item)->netSeq;
     Unk_02006d14_Fn fn = table[id];
     u32 old = ((nD::Unk_02006d14 *)this)->prevAction;
     _ZN12Unk_020076949endActionEj(this, id);
@@ -11070,7 +10991,7 @@ void Unk_02006d14::changeAction(Unk_02006d14_Item* item) {
             ((nD::Unk_02006d14 *)this)->netSeq = _ZN11CommManager10getSendSeqEv(p);
         }
     }
-    (((nD::Unk_02006d14 *)this)->*fn)(((nD::Unk_02006d14_Item *)item), old);
+    (((nD::Unk_02006d14 *)this)->*fn)(((Unk_02006d14_Item *)item), old);
     ((nD::Unk_02006d14 *)this)->actionPriority = _ZN12Unk_0200769417getActionPriorityEj(this, id);
     if (!_ZN11CommManager11isLocalSlotEj(p, ((nD::Unk_02006d14 *)this)->sessionSlot) && data_020c6a18[id] != 0) _ZN12Unk_02006d1413setActionFlagEj(this, 0x12);
     else _ZN12Unk_02006d1415clearActionFlagEj(this, 0x12);
@@ -11323,7 +11244,7 @@ void PlayerActor::doExecute() {
 
 namespace nB {
 extern "C" void PlayerActor_JointCbPre(Unk_020050e0 *p) {
-    PlayerActor *obj = p->pRenderObj->ptrUser;
+    PlayerActor *obj = (PlayerActor *)p->pRenderObj->ptrUser;
     if (obj) {
         _ZN17TwoLayerAnimModel20onJointCalcPreLayer2EP16Unk_02053a54_Msg(obj->bodyModel, p);
     }
@@ -11345,7 +11266,7 @@ extern "C" void PlayerActor_JointCbPost(Unk_020050e0 *p) {
     PlayerActor *o;
     PlayerActor *r6;
     JointCb_UseRestTranslation(p, 0);
-    o = p->pRenderObj->ptrUser;
+    o = (PlayerActor *)p->pRenderObj->ptrUser;
     if (p->c->idxNode == 0xf && o != 0) {
         s16 a = o->headPitch;
         if (a != 0 || o->headYaw != 0) {
@@ -11358,7 +11279,7 @@ extern "C" void PlayerActor_JointCbPost(Unk_020050e0 *p) {
             MTX_Concat33(pm, m2, pm);
         }
     }
-    r6 = p->pRenderObj->ptrUser;
+    r6 = (PlayerActor *)p->pRenderObj->ptrUser;
     if (r6) {
         _ZN17TwoLayerAnimModel21onJointCalcPostLayer2EP16Unk_02053a54_Msg(r6->bodyModel, p);
         if (p->c->idxNode == 0) {
