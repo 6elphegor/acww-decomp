@@ -1954,7 +1954,7 @@ extern "C" void PlayerActor_PickUpItemUpdateScale(Obj *o) {
     s32 *p;
     s32 r;
     if (_ZN11PlayerActor14testActionFlagEj(o, 0xd) == 0) {
-        p = (s32 *)((u8 *)o + 0x7d0);
+        p = &o->actionWork;
         if (*p < 0) return;
         if (FtrMgr_PollRemovedPos() == 0) return;
         _ZN11PlayerActor13setActionFlagEj(o, 0xd);
@@ -2123,7 +2123,7 @@ static inline BOOL Unk_ov004_02222874_IsOne(u8 v) {
     }
 
 extern "C" void PlayerActor_PickUpItemUpdateState(Obj *o) {
-    u8 *p = (u8 *)o + 0x7d5;
+    u8 *p = &o->actionWorkRaw[5];
     struct {
         u32 pad;
         u16 a;
@@ -4602,7 +4602,7 @@ extern "C" void PlayerActor_LeaveRoomUpdateAnim(Obj *o) {
     _ZN11PlayerActor11advanceAnimEv(o);
     if (o->animId == 1) {
         V3 v;
-        Vec_Sub(&v, (V3 *)&o->position, (V3 *)((u8 *)o + 0x68));
+        Vec_Sub(&v, (V3 *)&o->position, (V3 *)&o->prevPosition);
         s32 t = func_01ffcb0c(Vec_MagXZ(&v), 0x3ae1) << 2;
         if (t <= (s32)((AnimFrameCtrl &)o->bodyModel).numFrames) {
             ((AnimFrameCtrl &)o->bodyModel).frameStep = t;
@@ -4627,9 +4627,9 @@ extern "C" void PlayerActor_LeaveRoomUpdateHeight(Obj *o) {
     if (_ZN12Unk_0200769416keepsBgCheckWorkEj(o, o->action) == 0) {
         sel = loc;
     } else {
-        sel = (u8 *)o + 0x7a0;
+        sel = (u8 *)&o->bgCheckWork;
     }
-    Collision_Move(sel, p, (V3 *)((u8 *)o + 0x68), ang, 0xfd7, o, 0xf);
+    Collision_Move(sel, p, (V3 *)&o->prevPosition, ang, 0xfd7, o, 0xf);
     _ZN14CollisionStateD1Ev(loc);
     p->y = Ground_GetDefaultY(0);
     Rec *r = (Rec *)&o->actionWork;
@@ -4690,10 +4690,12 @@ extern "C" void PlayerActor_LeaveRoomCheckArrive(Obj *o) {
                 }
                 break;
             case 1: {
-                Sec *s = o;
-                _ZN9Character17attachTalkRequestEi(o, s);
+                _ZN9Character17attachTalkRequestEi(o, o);
                 _ZN11PlayerActor13setActionFlagEj(o, 0x11);
-                _ZN10MsgRequest11setFileNameEPKc(&(Sec &)*o, sRoomErrorMsgFile);
+                {
+                    Sec &s = *o;
+                    _ZN10MsgRequest11setFileNameEPKc(&s, sRoomErrorMsgFile);
+                }
                 o->msgIndex = 0x15;
                 o->window->nextState = 1;
                 *st = *st + 1;
@@ -5200,7 +5202,7 @@ extern "C" void PlayerActor_EndHaircutFinish(Obj *o) {
 extern "C" void PlayerActor_HaircutFinishUpdate(Obj *o) {
     _ZN11PlayerActor11advanceAnimEv(o);
     if (_ZN13AnimFrameCtrl14hasPassedFrameEi(&(AnimFrameCtrl &)o->bodyModel, 10)) {
-        EffectSpl_CreateOneShot(0x60, (u8 *)o + 0x6dc, 0, gEffectSplDefaultInitCbs);
+        EffectSpl_CreateOneShot(0x60, &o->headTopPos, 0, gEffectSplDefaultInitCbs);
     }
     if (((Bits *)&((AnimFrameCtrl &)o->bodyModel).curFrame)->mid >= 0xb) {
         Rec *r = (Rec *)&o->actionWork;
@@ -5626,7 +5628,7 @@ extern "C" void PlayerActor_RoomWalkUpdateAnim(Obj *o) {
     } else {
         if (o->animId != 1) _ZN11PlayerActor10switchAnimEijt(o, 1, 3, 0);
     }
-    _ZN17TwoLayerAnimModel12updateLayersEv((u8 *)o + 0x230);
+    _ZN17TwoLayerAnimModel12updateLayersEv(&o->bodyModel);
     _ZN11PlayerActor16updateFootstepFxEv(o);
 }
 
