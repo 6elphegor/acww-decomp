@@ -4,14 +4,9 @@
 #include "net/Unk_0205f6f8_Cfg.h"
 #include "gfx/AnimFrameCtrl.h"
 #include "gfx/TexVramSlot.h"
+#include "item/ItemId.h"
 
 // ---- helper classes (declared elsewhere) ----
-class ItemId {
-public:
-    u16 id;
-    ItemId();
-    ~ItemId();
-};
 
 
 

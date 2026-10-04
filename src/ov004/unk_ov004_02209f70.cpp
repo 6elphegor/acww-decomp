@@ -10,6 +10,8 @@
 #include "room/FtrActorParts.h"
 #include "gfx/AnimFrameCtrl.h"
 #include "game/Vec3.h"
+#include "item/ItemId.h"
+#include "game/CollisionVec2.h"
 // ov004 translation unit 0x02209f70-0x022136d0 (34 classes derived from FtrActor). Built by two compilers:
 // this file's thunks need mwcc 1.2/sp2, FtrSingingInsect::updateActive / vfunc_7c (in the _switch file) need 1.2/base;
 // the functions and data objects are placed by address (config/usa/arm9/overlays/ov004/object_order.txt).
@@ -311,13 +313,6 @@ struct FtrTopItem {
     Unk_ov004_02205d8c_Vec relPos;
 };
 
-struct ItemId {
-    ItemId() {
-        id = 0xfff1;
-    }
-    ~ItemId();
-    u16 id;
-};
 
 // ---- 0x022061b4 (member at 0x188)
 struct FtrTopItems {
@@ -373,14 +368,6 @@ struct FtrStackedSet {
 };
 
 // ---- 0x022487cc : BoxCollider (member at 0x628)
-class CollisionVec2 {
-public:
-    s32 x, y;
-    void set(s32 a, s32 b);
-    void setDiff(CollisionVec2 *a, CollisionVec2 *b);
-    s64 distSq(CollisionVec2 *p);
-    BOOL normalize();
-};
 
 class CollisionEdge {
 public:
@@ -7597,7 +7584,7 @@ FxVec3 data_ov004_0224fc9c[2] = {FxVec3(0x1000, 0, 0x3000), FxVec3(0x1000, 0, -0
 FxVec3 data_ov004_0224fac0[1] = {FxVec3(0, 0, 0)};
 FxVec3 data_ov004_0224fcb4[2] = {FxVec3(-0x1000, 0, -0x1000), FxVec3(-0x1000, 0, 0x1000)};
 // item id shared by the FtrStereo objects (main class ItemId: u16, constructor stores 0xfff1)
-ItemId sStereoSong;
+ItemId sStereoSong(0xfff1);
 
 // ---- .rodata: rows {positions, count} indexed by the object's unk_780 (func_ov004_02210f0c)
 struct Unk_ov004_02240078_Row {

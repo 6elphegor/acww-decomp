@@ -1,5 +1,7 @@
 #include "types.h"
 #include "actor/Unk_02088d00.h"
+#include "item/ItemId.h"
+#include "talk/TalkStartMsg.h"
 
 // Library base class (same as GameProc.h, but vfunc_08 takes the s32 the vtable symbol names).
 class ProcBase {
@@ -27,10 +29,6 @@ public:
     virtual ~ProcBase();
 };
 
-struct TalkStartMsg {
-    const void *msgKey;
-    u8 msgIndex;
-};
 
 struct Unk_0201bc1c;
 class SpNpcRover;
@@ -169,11 +167,6 @@ struct Unk_020f4080 {
     ~Unk_020f4080();
 };
 
-struct ItemId {
-    u16 id;
-    ItemId();
-    ~ItemId();
-};
 
 class Actor : public ProcBase {
 public:
@@ -588,7 +581,7 @@ void SpNpcRoverTalk::attachOwner(SpNpcRover *owner) {
 }
 
 void SpNpcRoverTalk::start(TalkStartMsg *out) {
-    out->msgKey = sSpNpcRoverMsgKey;
+    out->msgKey = (const char *)sSpNpcRoverMsgKey;
     out->msgIndex = 0x38;
 }
 

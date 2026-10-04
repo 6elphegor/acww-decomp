@@ -1,30 +1,10 @@
 #include "types.h"
+#include "gfx/HudObjGfx.h"
 
 // TU014-TU017 (one original file): 0x020116e0-0x020119cc. The file owns the global HudObjGfx object
 // (.bss, autoload_3 0x021bdb74-0x021bddd8: registration record + object), which __sinit constructs, and a
 // lookup table in .rodata (0x020c6c88-0x020c6cbc).
 
-struct HudObjGfx {
-    u8 unk_00[0x48];
-    s32 paletteBuf;
-    s32 charBuf;
-    u8 cameraButtonChars[0x200];
-    s32 pendingCameraButtonScreens;
-    u8 msgUiActive;
-    u8 countdownVariant;
-
-    HudObjGfx();
-    ~HudObjGfx();
-    BOOL loadChars();
-    BOOL loadPalette(s32 mode);
-    const char *getCharPath(s32 mode);
-    const char *getPalettePath(s32 mode);
-    void loadSlideIcon(u32 v);
-    void loadLinkIcon(u32 v);
-    void loadCameraButton(u32 a, u32 b, u32 c);
-    void loadKind(u32 a, u32 b);
-    void loadForScene(u32 a);
-};
 
 // Methods of the same object under the class name of an earlier unit (0x0201106c-0x020116e0); called by
 // their symbols.txt names.

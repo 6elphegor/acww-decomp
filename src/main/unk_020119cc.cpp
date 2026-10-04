@@ -4,29 +4,8 @@
 #include "game/Unk_020d77a4_Vec3.h"
 #include "npc/Unk_0201a13c.h"
 #include "actor/BlinkTimer.h"
+#include "gfx/HudObjGfx.h"
 
-// unk_02011580.cpp
-struct HudObjGfx {
-    u8 unk_00[0x48];
-    s32 paletteBuf;
-    s32 charBuf;
-    u8 cameraButtonChars[0x200];
-    s32 pendingCameraButtonScreens;
-    u8 msgUiActive;
-    u8 countdownVariant;
-
-    HudObjGfx();
-    ~HudObjGfx();
-    BOOL loadChars();
-    BOOL loadPalette(s32 mode);
-    const char *getCharPath(s32 mode);
-    const char *getPalettePath(s32 mode);
-    void loadSlideIcon(u32 v);
-    void loadLinkIcon(u32 v);
-    void loadCameraButton(u32 a, u32 b, u32 c);
-    void loadKind(u32 a, u32 b);
-    void loadForScene(u32 a);
-};
 
 // unk_02011580.cpp
 struct Unk_02081d4c {

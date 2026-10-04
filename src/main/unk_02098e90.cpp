@@ -1,5 +1,6 @@
 #include "types.h"
 #include "item/Unk_02098f30_Out.h"
+#include "item/ItemId.h"
 
 // Entry of the const table at 0x020d0604 (8 bytes): name, random range
 struct Unk_0209b570_Ent {
@@ -175,11 +176,6 @@ struct TrendScores {
     void clear();
 };
 
-struct ItemId {
-    u16 v;
-    ItemId(u16 x) { v = x; }
-    ~ItemId();
-};
 
 struct Unk_0209b2e4_Bits { u8 f : 1; u8 x : 7; };
 
@@ -757,7 +753,7 @@ extern "C" void Trend_GetToolItem(u16 *out, s32 idx) {
         ItemId(0x1376), ItemId(0x1374), ItemId(0x1369), ItemId(0xfff1),
         ItemId(0xfff1), ItemId(0x1378), ItemId(0xfff1), ItemId(0xfff1)};
     if (Trend_IsValid(idx)) {
-        *out = tbl[idx].v;
+        *out = tbl[idx].id;
     } else {
         *out = 0xfff1;
     }

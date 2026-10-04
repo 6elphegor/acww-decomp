@@ -2,6 +2,7 @@
 #include "types.h"
 #include "game/Unk_0201acf8.h"
 #include "actor/Unk_02088d00.h"
+#include "talk/TalkStartMsg.h"
 
 // Library base class (same as GameProc.h, but vfunc_08 takes the s32 the vtable symbol names).
 class ProcBase {
@@ -59,10 +60,6 @@ struct Unk_ov074_02271564_B {
     u8 f;
 };
 
-struct TalkStartMsg {
-    char *msgKey;
-    u8 msgIndex;
-};
 
 struct Unk_ov074_02271be8_V {
     s32 v[3];
@@ -960,7 +957,7 @@ void SpNpcBlancaTalk::start(TalkStartMsg *out) {
     Unk_ov074_02271564_B m;
     u32 obj[9];
 
-    out->msgKey = ((char *)"sp_npc_mysterycat");
+    out->msgKey = "sp_npc_mysterycat";
     u8 *const g = gSaveBlancaFace;
     BlancaFaceRecord_getPattern(g);
     l = *Pattern_getInfo();

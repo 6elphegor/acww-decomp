@@ -1,4 +1,6 @@
 #include "types.h"
+#include "item/ItemPickSpec.h"
+#include "item/RandomSource.h"
 
 extern "C" {
 u32 Random_NextBelow(void *st, u32 n);
@@ -42,16 +44,6 @@ s32 Item_MakeFullHeadwear(u16 *p);
 s32 ItemList_IsFullHeadwear(u16 *p);
 }
 
-// Random source (vtable 0x020dd35c): default implementation uses the global generator.
-class RandomSource {
-public:
-    RandomSource();
-    ~RandomSource();
-    virtual u8 getYear();
-    virtual u8 getMonth();
-    virtual u8 getDay();
-    virtual u32 random(u32 n);
-};
 
 // Random source seeded from the RTC (vtable 0x020dd344).
 class DateSeededRandomSource : public RandomSource {
@@ -95,17 +87,6 @@ public:
     /* 0x00 */ ItemClassOrder orders[9];
 };
 
-struct ItemPickSpec {
-    ~ItemPickSpec();
-    ItemPickSpec() {}
-    ItemPickSpec(const ItemPickSpec &o) { listIndex = o.listIndex; itemClass = o.itemClass; }
-    s32 getClass();
-    s32 getList();
-    void set(s32 a, s32 b);
-
-    s32 listIndex;
-    s32 itemClass;
-};
 
 struct ItemPickList {
     u16 (*unk_00)(u32);

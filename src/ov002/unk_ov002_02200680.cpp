@@ -10,6 +10,8 @@
 #include "sys/KeyRepeat.h"
 #include "menu/MenuTween.h"
 #include "menu/PopupChoiceIdList.h"
+#include "ui/Unk_ov002_022018e4_Arg.h"
+#include "ui/Unk_ov002_02203c5c_Rec.h"
 #undef postCreate
 #undef vfunc_14
 
@@ -363,12 +365,6 @@ extern "C" TalkWindowState *TalkWindow_Get(s32 a);
 // ---------------------------------------------------------------------------------------------------------------------
 // Overlay 2 classes
 
-// 8-byte animation record
-struct Unk_ov002_02203c5c_Rec {
-    u32 unk_00;
-    u32 charName : 10;
-    u32 unk_04_hi : 22;
-};
 
 extern "C" {
 extern const u8 sTextButtonPressOffsets[];
@@ -813,9 +809,6 @@ public:
 
 typedef PopupChoiceMenuBody Self;
 
-struct Unk_ov002_022018e4_Arg {
-    u8 v;
-};
 
 // Plain functions of the menu (they take the menu object first)
 extern "C" {

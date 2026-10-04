@@ -4,6 +4,7 @@
 #include "actor/Unk_02088d00.h"
 #include "game/Unk_ov068_Vec.h"
 #include "actor/Unk_ov068_SceneEntry.h"
+#include "item/ItemId.h"
 
 // Library base class (same as GameProc.h, but vfunc_08 takes the s32 the vtable symbol names).
 class ProcBase {
@@ -78,12 +79,6 @@ struct Unk_ov068_0226fd68_Vec {
 };
 
 
-// Main's tiny class with an external destructor (one u16 element of the local static table of vfunc_04).
-struct ItemId {
-    u16 v;
-    ItemId(u16 x) { v = x; }
-    ~ItemId();
-};
 
 extern "C" {
 void *PlayerData_GetCurrent();
@@ -456,7 +451,7 @@ BOOL SpNpcNookIntro::vfunc_04() {
     if (!SpNpcActor::vfunc_04()) {
         return FALSE;
     }
-    NpcActor_setNpcHandle(this, &tbl[NookShop_GetLevel(&data_021ed104)].v);
+    NpcActor_setNpcHandle(this, &tbl[NookShop_GetLevel(&data_021ed104)].id);
     NpcActor_setTalkRequest(this, &talk);
     talk.attachOwner((FieldVillager *)this);
     NpcMoveCtrl_setSpeedPreset(&moveCtrl, 2, 0x399, 0x133, 0x199);

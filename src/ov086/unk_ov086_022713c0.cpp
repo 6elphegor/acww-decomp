@@ -1,6 +1,7 @@
 // mwcc-flags: -str reuse
 #include "types.h"
 #include "actor/Unk_02088d00.h"
+#include "talk/TalkStartMsg.h"
 
 #pragma opt_loop_invariants off
 
@@ -160,10 +161,6 @@ class SpNpcTalkRequest : public Unk_020d7710 {
 public:
     SpNpcTalkRequest();
     virtual ~SpNpcTalkRequest();
-};
-struct TalkStartMsg {
-    u32 a;
-    u8 b;
 };
 
 class SpNpcTortimerCountdownTalk : public SpNpcTalkRequest {
@@ -531,13 +528,13 @@ void SpNpcTortimerCountdownTalk::start(TalkStartMsg *out) {
     Unk_ov086_022716b0_B t;
     BOOL f;
     _ZN10PlayerData10getErrandsEv(PlayerData_GetCurrent());
-    out->a = (u32)"sp_npc_turtle6";
+    out->msgKey = "sp_npc_turtle6";
     if (massageChairSlot == -1) {
         h = 0x37e0;
         massageChairSlot = Pocket_FindItem(&h);
         if (massageChairSlot >= 0) {
-            out->a = (u32)"sp_npc_turtle";
-            out->b = 0;
+            out->msgKey = "sp_npc_turtle";
+            out->msgIndex = 0;
             return;
         }
     }
@@ -548,45 +545,45 @@ void SpNpcTortimerCountdownTalk::start(TalkStartMsg *out) {
     f = FALSE;
     if (a.b1 == 0xc) {
         if (Clock_GetTimeOfDay() == 0) {
-            out->b = Random_GlobalBelow(3);
+            out->msgIndex = Random_GlobalBelow(3);
         } else if (Clock_GetTimeOfDay() == 1) {
-            out->b = Random_GlobalBelow(3);
-            if (out->b != 0) {
-                out->b += 2;
+            out->msgIndex = Random_GlobalBelow(3);
+            if (out->msgIndex != 0) {
+                out->msgIndex += 2;
             }
         } else if (t.b2 < 0x17) {
-            out->b = Random_GlobalBelow(3);
-            if (out->b != 0) {
-                out->b += 4;
+            out->msgIndex = Random_GlobalBelow(3);
+            if (out->msgIndex != 0) {
+                out->msgIndex += 4;
             }
         } else if (t.b2 == 0x17 && t.b1 < 0x1e) {
-            out->b = Random_GlobalBelow(3);
-            if (out->b != 0) {
-                out->b += 6;
+            out->msgIndex = Random_GlobalBelow(3);
+            if (out->msgIndex != 0) {
+                out->msgIndex += 6;
             }
         } else if (t.b2 == 0x17 && t.b1 < 0x37) {
-            out->b = Random_GlobalBelow(3) + 9;
+            out->msgIndex = Random_GlobalBelow(3) + 9;
         } else if (t.b2 == 0x17 && t.b1 < 0x3b) {
-            out->b = Random_GlobalBelow(2) + 0xc;
+            out->msgIndex = Random_GlobalBelow(2) + 0xc;
             f = TRUE;
         } else {
-            out->b = Random_GlobalBelow(2) + 0xe;
+            out->msgIndex = Random_GlobalBelow(2) + 0xe;
             f = TRUE;
         }
     } else if (t.b2 < 6) {
-        out->b = Random_GlobalBelow(3) + 0x10;
+        out->msgIndex = Random_GlobalBelow(3) + 0x10;
         f = TRUE;
     } else if (TownSessionState_TestFlag(TownSessionState_Get(), 4) != 0) {
-        out->b = Random_GlobalBelow(3) + 0x16;
+        out->msgIndex = Random_GlobalBelow(3) + 0x16;
         f = TRUE;
     } else {
-        out->b = 0x13;
+        out->msgIndex = 0x13;
         f = TRUE;
     }
     if (!f) {
         if (Pocket_FindEmpty() != -1) {
             if (Random_GlobalBelow(2) == 0) {
-                out->b = Random_GlobalBelow(3) + 0x19;
+                out->msgIndex = Random_GlobalBelow(3) + 0x19;
             }
         }
     }

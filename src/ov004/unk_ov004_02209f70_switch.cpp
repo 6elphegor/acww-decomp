@@ -9,6 +9,8 @@
 #include "room/FtrActorParts.h"
 #include "gfx/AnimFrameCtrl.h"
 #include "game/Vec3.h"
+#include "item/ItemId.h"
+#include "game/CollisionVec2.h"
 // The two functions of the ov004 translation unit 0x02209f70-0x022136d0 that need mwcc 1.2/base (signed-halfword
 // switch tables): FtrSingingInsect::updateActive and vfunc_7c. Same declarations as the main file of the unit;
 // nothing else is emitted here (see config/usa/arm9/overlays/ov004/object_order.txt).
@@ -307,13 +309,6 @@ struct FtrTopItem {
     Unk_ov004_02205d8c_Vec relPos;
 };
 
-struct ItemId {
-    ItemId() {
-        id = 0xfff1;
-    }
-    ~ItemId();
-    u16 id;
-};
 
 // ---- 0x022061b4 (member at 0x188)
 struct FtrTopItems {
@@ -369,14 +364,6 @@ struct FtrStackedSet {
 };
 
 // ---- 0x022487cc : BoxCollider (member at 0x628)
-class CollisionVec2 {
-public:
-    s32 x, y;
-    void set(s32 a, s32 b);
-    void setDiff(CollisionVec2 *a, CollisionVec2 *b);
-    s64 distSq(CollisionVec2 *p);
-    BOOL normalize();
-};
 
 class CollisionEdge {
 public:

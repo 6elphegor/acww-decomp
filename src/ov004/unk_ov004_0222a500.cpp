@@ -1,5 +1,6 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
+#include "item/ItemId.h"
 
 // ---------------------------------------------------------------- real symbol names of main-module methods
 // (called as free functions with the object as first argument; the mangled name is the symbols.txt name)
@@ -58,13 +59,6 @@ struct FxVec3 {
     ~FxVec3();
 };
 
-struct ItemId {
-    u16 v;
-    ItemId(u16 a) {
-        v = a;
-    }
-    ~ItemId();
-};
 
 extern "C" {
 void CarpetTex_Init(void *o);
@@ -625,7 +619,7 @@ extern "C" void RoomShell_GetSceneWallFloor(void *self, u16 *a, s32 *b, u16 *c, 
                 ItemId(0x1140), ItemId(0x1141), ItemId(0x1142),
                 ItemId(0x1143), ItemId(0x1143), ItemId(0x1143)
             };
-            *a = t[i].v;
+            *a = t[i].id;
         }
         p = RoomWallFloor_GetSceneCarpet(r);
         if (Unk_ov004_0222b610_InB(p)) {
@@ -635,7 +629,7 @@ extern "C" void RoomShell_GetSceneWallFloor(void *self, u16 *a, s32 *b, u16 *c, 
                 ItemId(0x1184), ItemId(0x1185), ItemId(0x1186),
                 ItemId(0x1187), ItemId(0x1187), ItemId(0x1187)
             };
-            *c = t[i].v;
+            *c = t[i].id;
         }
     }
 }

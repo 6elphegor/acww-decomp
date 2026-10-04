@@ -1,5 +1,6 @@
 #include "types.h"
 #include "game/Unk_020702ec_Date.h"
+#include "save/MuseumData.h"
 
 struct MsgString9C {
     MsgString9C();
@@ -66,38 +67,6 @@ void TownFlag_GetPattern(s32 p);
 }
 
 
-class MuseumData {
-public:
-    s32 getDonationPercent();
-    BOOL isFishComplete();
-    BOOL isPaintingsComplete();
-    BOOL isFossilsComplete();
-    BOOL isInsectsComplete();
-    BOOL isComplete();
-    BOOL getDonorName(s32 x, u16 *id);
-    void releasePlayerDonations(u32 v);
-    void donate(u16 *id);
-    BOOL sendCompletionLetters();
-    void checkCompletionLetters();
-    BOOL isDonated(u16 *id);
-    u32 getDonationState(u16 *id);
-    u32 getDonor(u16 *id);
-    u8 *getEntry(u16 *id, s32 *out);
-    void markFormerResident(u16 *id);
-    void clearEntry(u16 *id);
-    void clear();
-    void destruct();
-    MuseumData *construct();
-
-    u8 fossilDonors[0x1b];
-    u8 fishDonors[0x1d];
-    u8 insectDonors[0x1d];
-    u8 paintingDonors[0xb];
-    u8 completeDay;
-    u8 completeMonth;
-    u8 completeYear;
-    u8 unk_63;
-};
 
 static inline BOOL Unk_020703d8_R(u16 v, u32 lo, u32 hi) {
     BOOL r = FALSE;

@@ -1,4 +1,5 @@
 #include "types.h"
+#include "game/HitSphere.h"
 
 // Library base class (ARM code in autoload_2 / ITCM). vfunc_08 takes a flag here.
 class ProcBase {
@@ -69,13 +70,6 @@ struct Unk_0202e918_Cap {
     s32 dirX, dirY, dirZ;
 };
 
-struct HitSphere {
-    s32 centerX, centerY, centerZ, radius;
-    HitSphere();
-    ~HitSphere();
-    BOOL intersectSegment(Unk_0202e918_Vec3 *out, Unk_0202e918_Cap *cap);
-    void set(Unk_0202e918_Vec3 *p, s32 r);
-};
 
 
 u8 sLowBatteryWarned;

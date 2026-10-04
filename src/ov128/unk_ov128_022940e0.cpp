@@ -3,6 +3,7 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "gfx/StarTwinkle.h"
+#include "game/StarSkyView.h"
 #undef postCreate
 #undef vfunc_14
 
@@ -164,13 +165,6 @@ public:
 };
 
 
-// ov127 sub-object at +0x478, ctor func_ov127_02292aac, dtor func_ov127_02292aa8
-class StarSkyView {
-public:
-    StarSkyView();
-    ~StarSkyView();
-    u32 unk_00[0x2838 / 4];
-};
 
 // Vtable 0x022044e4 (declaration copied from src/ov002/unk_ov002_02200680.cpp; sub-objects opaque)
 class MenuProc : public GameProc {

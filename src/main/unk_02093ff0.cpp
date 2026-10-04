@@ -3,6 +3,7 @@
 #include "gfx/Unk_02093dc8_Obj.h"
 #include "talk/MsgStringBase.h"
 #include "talk/MsgStringAttr.h"
+#include "save/TownId.h"
 
 
 
@@ -200,15 +201,6 @@ public:
 // ---------------------------------------------------------------------------------------------------------------------
 // Record with a 10-byte header (id + 8 bytes), a u16 at +0xa, 8 bytes at +0xc and an s8 at +0x14
 
-class TownId {
-public:
-    // constructors and methods at 0x020639b8.. are plain functions in symbols.txt (declared below, `this` first)
-    /* 0x00 */ u16 townId;
-    /* 0x02 */ u8 townName[8];
-
-    s32 getTownRelation();
-    void setTown(TownId *o);
-};
 
 class PlayerId : public TownId {
 public:

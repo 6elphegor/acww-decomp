@@ -2,6 +2,7 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "field/BottleThrow.h"
+#include "gfx/ModelSlotPool.h"
 
 // TU23 of ov003 (fish actors, scene classes 0223498c / 02234a94): 0x0221ffb8-0x02224e68, static initialiser 0x354 bytes.
 // Merged from ten unit files; every view of the shared objects (sFishShadows etc.) is reached through casts.
@@ -314,12 +315,6 @@ struct Unk_ov003_02221498_Tbl {
     Unk_ov003_022216f8_MFP unk_08;
 };
 
-class ModelSlotPool {
-public:
-    ModelSlotPool();
-    ~ModelSlotPool();
-    u32 unk_00[6];
-};
 
 class FieldFishManager : public GameProc {
 public:
@@ -856,13 +851,6 @@ public:
     ~BottleThrowStateOwner();
 };
 
-// members of the 0x13c-byte object at sFishFinModel (constructors and destructors live in main)
-class ModelSlotHandle {
-public:
-    ModelSlotHandle();
-    ~ModelSlotHandle();
-    u8 raw[4];
-};
 
 class PooledModel {
 public:
@@ -884,6 +872,7 @@ public:
     ~FishFinModel();
     u32 attachState;
     ModelSlotHandle modelSlot;
+    u8 pad_06[2];
     PooledModel pooledModel;
     AnimModel model;
     FishFinMatAnim matAnim;
@@ -3982,7 +3971,7 @@ extern "C" void FishShadow_Despawn(void *a, s32 idx) {
 //@ 0x22216cc
 extern "C" BOOL FishFinModel_Attach(u8 *a) {
     (*(u32 *)((u8 *)&sFishFinModel)) = 2;
-    ((void (*)(void *, void *))ModelSlotPool_acquire)(a + 0x68, ((u8 *)((u8 *)&sFishFinModel.modelSlot.raw[0])));
+    ((void (*)(void *, void *))ModelSlotPool_acquire)(a + 0x68, ((u8 *)((u8 *)&sFishFinModel.modelSlot.index)));
     PooledModel_reset(((u8 *)((u8 *)&sFishFinModel.pooledModel.raw[0])));
     return TRUE;
 }
@@ -3994,7 +3983,7 @@ extern "C" void FishFinModel_Release(u8 *a) {
     AnimModel_detachJointAnim(((u8 *)((u8 *)&sFishFinModel.model.raw[0])));
     CachedModel_release(((u8 *)((u8 *)&sFishFinModel.model.raw[0])));
     PooledModel_unload(((u8 *)((u8 *)&sFishFinModel.pooledModel.raw[0])));
-    ModelSlotPool_release(a + 0x68, ((u8 *)((u8 *)&sFishFinModel.modelSlot.raw[0])));
+    ModelSlotPool_release(a + 0x68, ((u8 *)((u8 *)&sFishFinModel.modelSlot.index)));
     sFishFinModel.matAnim.anmObj = 0;
     sFishFinModel.matAnim.resMdl = 0;
 }

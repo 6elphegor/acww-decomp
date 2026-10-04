@@ -3,6 +3,8 @@
 
 #include "Unk_020d8c7c.h"
 #include "game/Unk_ov004_0223d800_Vec.h"
+#include "item/ItemId.h"
+#include "save/MuseumData.h"
 
 
 // Spawn-definition record (0x1c bytes).
@@ -40,19 +42,9 @@ struct Unk_ov004_0223df20_V : V3 {
     Unk_ov004_0223df20_V(s32 a, s32 b, s32 c) { x = a; y = b; z = c; }
 };
 
-class MuseumData {
-public:
-    BOOL isDonated(u16 *id);
-};
 
 extern "C" MuseumData data_021ed0a0;
 
-// main's u16 holder class (dtor = main's 0x02004b60)
-struct ItemId {
-    u16 v;
-    ItemId(u16 x) { v = x; }
-    ~ItemId();
-};
 
 extern "C" {
 extern void *gSceneBlockMap;
@@ -493,9 +485,9 @@ BOOL MuseumFossilRoom::setupExhibits() {
                         s32 w = Ftr_GetUnk05(p);
                         u16 v = 0xfff1;
                         if (w == 0) {
-                            v = sa.v;
+                            v = sa.id;
                         } else {
-                            v = sb.v;
+                            v = sb.id;
                         }
                         BlockMap_SetItem(m, &v, 0, 0, x, y, 0);
                     }

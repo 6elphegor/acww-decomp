@@ -1,5 +1,6 @@
 #include "types.h"
 #include "game/Vec3.h"
+#include "room/FtrActorTable.h"
 
 
 extern "C" s32 Snowball_FindByParam(s32 a);
@@ -16,10 +17,6 @@ extern "C" s32 NpcRegistry_FindVillager(void);
 extern "C" s32 PlayerActor_GetCharacter(void);
 extern "C" BOOL TouchPickKind_HasTarget(u8 v);
 
-class FtrActorTable {
-public:
-    s32 get(u32 a);
-};
 
 extern "C" u8 gFieldSceneKind;
 extern "C" u8 gTouchPrevHeld;
@@ -118,7 +115,7 @@ extern "C" s32 TouchTarget_ResolveBuildingAlt(s32 a) { return TouchTarget_Resolv
 
 extern "C" s32 TouchTarget_ResolveFurniture(s32 a) {
     if (IsMode1()) {
-        return ((FtrActorTable *)FtrActorTable_GetInstance())->get(a);
+        return (s32)((FtrActorTable *)FtrActorTable_GetInstance())->get(a);
     }
     return 0;
 }

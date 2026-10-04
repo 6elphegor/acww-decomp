@@ -10,6 +10,7 @@
 #include "room/FtrActorParts.h"
 #include "gfx/AnimFrameCtrl.h"
 #include "game/Vec3.h"
+#include "item/ItemId.h"
 
 // ================================================================ plain value types
 
@@ -296,13 +297,6 @@ struct FtrTopItem {
     Unk_ov004_02205d8c_Vec relPos;
 };
 
-struct ItemId {
-    ItemId() {
-        id = 0xfff1;
-    }
-    ~ItemId();
-    u16 id;
-};
 
 // ---- 0x022061b4 (member at 0x188)
 struct FtrTopItems {
@@ -3794,7 +3788,7 @@ BOOL FtrTopItems::canPickUp(Unk_ov004_02205c80_Obj *o) {
 
 // @02205f58
 BOOL FtrTopItems::pickUpAll(Unk_ov004_02205c80_Obj *o) {
-    static ItemId dflt;
+    static ItemId dflt(0xfff1);
     BOOL res = TRUE;
     FtrTileList list;
     _ZN18Unk_ov004_022077a48getTilesEP23Unk_ov004_02207854_ListPvi(o, (Unk_ov004_02207854_List *)&list, 0, 0);

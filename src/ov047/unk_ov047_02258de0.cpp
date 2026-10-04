@@ -2,6 +2,7 @@
 #include "types.h"
 #include "game/Unk_ov046_0225a11c_Vec.h"
 #include "actor/Unk_02088d00.h"
+#include "talk/TalkStartMsg.h"
 
 // Library base class (same as GameProc.h, but vfunc_08 takes the s32 the vtable symbol names).
 class ProcBase {
@@ -39,10 +40,6 @@ struct Unk_ov047_02258e34_Global {
     s32 myAid;
 };
 
-struct TalkStartMsg {
-    const void *msgKey;
-    u8 msgIndex;
-};
 
 struct Unk_ov047_0225a074_Buf {
     u8 lo : 2;
@@ -1234,11 +1231,11 @@ void SpNpcBlathersTalk::attachOwner(SpNpcBlathers *owner) {
 // ---------------------------------------------------------------------------------------------------------------------
 void SpNpcBlathersTalk::start(TalkStartMsg *out) {
     if (GameStart_IsActive()) {
-        out->msgKey = sSpNpcBlathersSequence4Key;
+        out->msgKey = (const char *)sSpNpcBlathersSequence4Key;
         out->msgIndex = 8;
         return;
     }
-    out->msgKey = sSpNpcBlathersKey;
+    out->msgKey = (const char *)sSpNpcBlathersKey;
     u32 r7 = SickVillagerRecord_getParcelErrand(PlayerData_getErrands(PlayerData_GetCurrent()));
     void *g = gCommManager;
     Unk_ov047_0225a074_Buf l;
@@ -1255,7 +1252,7 @@ void SpNpcBlathersTalk::start(TalkStartMsg *out) {
     }
     if (ownerNpc->dramaShown == 0 && dramaTalk != 1 && !CommManager_isOnline(g) && *DebugVar_GetPtr(0, 0x4a) == 0) {
         if (Talk_IsDramaPending(ownerNpc, &l, 1)) {
-            out->msgKey = sSpNpcBlathersDramaKey;
+            out->msgKey = (const char *)sSpNpcBlathersDramaKey;
             out->msgIndex = (sSpNpcBlathersDramaMsgTable + l.b * 6)[l.c];
             dramaTalk = 1;
             ownerNpc->dramaShown = 1;

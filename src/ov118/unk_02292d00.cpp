@@ -2,6 +2,7 @@
 #define vfunc_14() vfunc_14(s32 a)
 #include "types.h"
 #include "Unk_020d8c7c.h"
+#include "town/TownMapMarkers.h"
 #undef postCreate
 #undef vfunc_14
 
@@ -221,13 +222,6 @@ public:
     /* 0x90 */ u8 menuId;
 };
 
-// ov117 object (0x66 bytes) initialised and torn down by plain ov117 functions
-class TownMapMarkers {
-public:
-    TownMapMarkers();
-    ~TownMapMarkers();
-    u8 unk_00[0x66];
-};
 
 
 // 3-byte element with empty out-of-line ctor and dtor

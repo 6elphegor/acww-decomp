@@ -1,6 +1,7 @@
 // mwcc-flags: -str reuse
 #include "types.h"
 #include "actor/Unk_02088d00.h"
+#include "talk/TalkStartMsg.h"
 
 // Library base class (same as GameProc.h, but vfunc_08 takes the s32 the vtable symbol names).
 class ProcBase {
@@ -41,10 +42,6 @@ struct Unk_ov072_02272234_Ent {
     u8 msgIndex;
 };
 
-struct TalkStartMsg {
-    const char *msgKey;
-    u8 msgIndex;
-};
 
 struct Unk_ov072_02271a58_Obj {
     u32 v[2];
@@ -944,7 +941,7 @@ void SpNpcGulliverTalk::start(TalkStartMsg *out) {
     }
     s32 s = topic;
     if (s >= 0 && s < 8) {
-        out->msgKey = sSpNpcGulliverTopicMsgs[s].msgKey;
+        out->msgKey = (const char *)sSpNpcGulliverTopicMsgs[s].msgKey;
         if (topic == 0) {
             out->msgIndex = Random_GlobalBelow(5);
         } else if (topic == 3) {

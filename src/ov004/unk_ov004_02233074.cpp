@@ -4,6 +4,9 @@
 #include "Unk_020d8c7c.h"
 #include "game/Unk_ov004_Vec3.h"
 #include "game/Unk_0203389c_Vec.h"
+#include "gfx/ModelSlotPool.h"
+#include "room/FtrActorTable.h"
+#include "room/FtrPreviewer.h"
 
 // other modules' symbols by their real names
 #define Actor_spawn _ZN5Actor5spawnEPvS0_S0_S0_S0_
@@ -325,18 +328,6 @@ public:
 // main's 0x18-byte pool object
 typedef void *(*Unk_0209c1a4_Alloc)(u32, u32);
 typedef void (*Unk_0209c15c_Fn)();
-class ModelSlotPool {
-public:
-    ModelSlotPool();
-    ~ModelSlotPool();
-    BOOL destroy();
-    u16 lastFreed;
-    u32 numSlots;
-    u32 numInUse;
-    void *slots;
-    Unk_0209c1a4_Alloc allocFunc;
-    Unk_0209c15c_Fn freeFunc;
-};
 
 // ---- classes of unk_022350c8 (symbols name their methods)
 
@@ -345,20 +336,6 @@ class FtrActorGrid;
 class FtrContactSet;
 class FtrActorHeap;
 
-// table of 0x1c object pointers
-class FtrActorTable {
-public:
-    void *actors[0x1c];
-    FtrActorTable();
-    ~FtrActorTable();
-    FtrActor *get(u32 idx);
-    s32 indexOf(void *v);
-    s32 countFree();
-    s32 countUsed();
-    s32 remove(void *v);
-    s32 add(void *v);
-    void clear();
-};
 
 // slot (0x40)
 class FtrContact {
@@ -455,27 +432,6 @@ public:
 
 // ---- classes of unk_02235984
 
-// two-slot cache of loaded model resources
-class FtrPreviewer {
-public:
-    /* 0x00 */ u32 unk_00[2];
-    /* 0x08 */ u16 unk_08[2];
-    /* 0x0c */ u8 curSlot;
-    /* 0x10 */ s32 sampleIndex;
-    /* 0x14 */ u32 unk_14[2];
-    /* 0x1c */ u32 unk_1c[2];
-
-    u32 getFloorBuffer();
-    u32 getWallBuffer();
-    void clear();
-    BOOL showItem(u16 *p);
-    void freeBuffers();
-    void allocBuffers();
-    s32 getSampleIndex();
-    void reset();
-    FtrPreviewer();
-    ~FtrPreviewer();
-};
 
 // object with a byte flag at +0x1c
 class Unk_ov004_02235984 {

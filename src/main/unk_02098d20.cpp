@@ -1,4 +1,5 @@
 #include "types.h"
+#include "item/ItemPickSpec.h"
 
 extern "C" void VillagerId_Clear(void *);
 extern "C" void VillagerId_Destruct(void *);
@@ -20,13 +21,6 @@ public:
     BOOL isValid();
 };
 
-struct ItemPickSpec {
-    u32 listIndex;
-    u32 itemClass;
-    ItemPickSpec() {}
-    ~ItemPickSpec();
-    void set(s32 a, s32 b);
-};
 
 class ForeignVillagerRecord {
 public:

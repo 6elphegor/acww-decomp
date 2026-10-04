@@ -1,6 +1,7 @@
 #include "types.h"
 #include "net/CommManager.h"
 #include "actor/Unk_02088d00.h"
+#include "talk/TalkStartMsg.h"
 
 // Library base class (same as GameProc.h, but vfunc_08 takes the s32 the vtable symbol names).
 class ProcBase {
@@ -63,10 +64,6 @@ struct Unk_ov054_02258e58_Sub {
     s32 unk_04;
 };
 
-struct TalkStartMsg {
-    u32 msgKey;
-    u8 msgIndex;
-};
 
 struct Unk_ov054_0225aa98_Rec {
     s32 unk_00;
@@ -1335,7 +1332,7 @@ end:
             }
         }
     }
-    out->msgKey = sSpNpcPellyPhyllisMsgKeys[owner->sister][r4];
+    out->msgKey = (const char *)sSpNpcPellyPhyllisMsgKeys[owner->sister][r4];
 }
 
 u32 SpNpcPellyPhyllisTalk::getMailResultMsg() {

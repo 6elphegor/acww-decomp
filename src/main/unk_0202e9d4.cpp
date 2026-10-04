@@ -1,5 +1,6 @@
 #include "types.h"
 #include "game/Unk_0202f2ac_V3.h"
+#include "game/CollisionVec2.h"
 
 struct Unk_0202f7b8_V3 : Unk_0202f660_V3 {
     Unk_0202f7b8_V3() {}
@@ -26,25 +27,6 @@ s32 func_020e9650(void *a, void *b);
 static inline s32 Unk_0202f2ac_Abs(s32 v) { return v < 0 ? -v : v; }
 
 // ---- 2D line segment with normal (vtable 0x020d8ce4) ----
-class CollisionVec2 {
-public:
-    s32 x, y;
-    CollisionVec2() {}
-    CollisionVec2(s32 a, s32 b);
-    ~CollisionVec2() {}
-    void operator=(const CollisionVec2 &o) { x = o.x; y = o.y; }
-    CollisionVec2(const CollisionVec2 &o) { x = o.x; y = o.y; }
-    void set(s32 a, s32 b);
-    CollisionVec2 *setFrom(CollisionVec2 *p);
-    void add(CollisionVec2 *p);
-    void setSum(CollisionVec2 *a, CollisionVec2 *b);
-    void setDiff(CollisionVec2 *a, CollisionVec2 *b);
-    CollisionVec2 *scale(s32 k);
-    s64 distSq(CollisionVec2 *p);
-    BOOL normalize();
-    void rotate(s16 a);
-    void setEdgeNormal(CollisionVec2 *a, CollisionVec2 *b);
-};
 
 CollisionVec2 gCollisionVec2Zero(0, 0);
 

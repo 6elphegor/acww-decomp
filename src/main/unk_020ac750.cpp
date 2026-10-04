@@ -9,17 +9,9 @@
 #include "gfx/Unk_021ede90.h"
 #include "item/Unk_02062f94_Ret.h"
 #include "game/Vec3.h"
-struct ItemId {
-    u16 v;
-    ItemId();
-    ItemId(u16 x) : v(x) {}
-    ~ItemId();
-};
-struct ItemPickSpec {
-    ItemPickSpec(s32 a, s32 b);
-    ~ItemPickSpec();
-    s32 listIndex, itemClass;
-};
+#include "item/ItemId.h"
+#include "item/ItemPickSpec.h"
+#include "item/RandomSource.h"
 struct Letter {
     Letter();
     ~Letter();
@@ -31,15 +23,6 @@ struct MsgString25 {
     u8 d[0x30];
 };
 
-class RandomSource {
-public:
-    RandomSource();
-    ~RandomSource();
-    virtual u8 getYear();
-    virtual u8 getMonth();
-    virtual u8 getDay();
-    virtual u32 random(u32 n);
-};
 
 class DateSeededRandomSource : public RandomSource {
 public:
@@ -1681,7 +1664,7 @@ extern "C" void NookShop_StockTools(S *s, s32 *p) {
     i = 0;
     base2 = (S*)((u16*)s + start);
     for (; i < NookShop_GetToolCount(s); i++) {
-        base2->str[i] = tbl[base2->str[i]].v;
+        base2->str[i] = tbl[base2->str[i]].id;
     }
 }
 extern "C" void NookShop_StockFurniture(S *s, void *p) {
@@ -2433,30 +2416,30 @@ void ReddShop::restock() {
     a = FengShui_GetTotal() / 10 + 0x32;
     if (Random_GlobalBelow(100) < a) {
         ItemPickSpec q(0, 0x26);
-        arr[0].v = ItemPick_One(&q, 0, 0, 0, 1, 0).v;
+        arr[0].id = ItemPick_One(&q, 0, 0, 0, 1, 0).v;
     } else {
         ItemPickSpec q(0, 0x27);
-        arr[0].v = ItemPick_One(&q, 0, 0, 0, 1, 0).v;
+        arr[0].id = ItemPick_One(&q, 0, 0, 0, 1, 0).v;
     }
     b = (FengShui_GetEastTotal() + FengShui_GetSouthTotal()) / 10 + 0x32;
     for (i = 1; i < 3; i++) {
         if (Random_GlobalBelow(100) < b) {
             ItemPickSpec q(0, 5);
-            arr[i].v = ItemPick_One(&q, 0, 0, 0, 1, 0).v;
+            arr[i].id = ItemPick_One(&q, 0, 0, 0, 1, 0).v;
         } else {
             ItemPickSpec q(0, 0);
-            arr[i].v = ItemPick_One(&q, 0, 0, 0, 1, 0).v;
+            arr[i].id = ItemPick_One(&q, 0, 0, 0, 1, 0).v;
         }
     }
     buf[0] = 0xfff1;
     buf[1] = 0xfff1;
     buf[2] = 0xfff1;
     for (i = 0; i < 3; i++) {
-        buf[i] = arr[i].v;
+        buf[i] = arr[i].id;
     }
     u32 r = Random_GlobalBelow(6);
     for (i = 0; i < 3; i++) {
-        arr[i].v = buf[n2::sReddStockOrders[r][i]];
+        arr[i].id = buf[n2::sReddStockOrders[r][i]];
     }
 }
 namespace n2 {

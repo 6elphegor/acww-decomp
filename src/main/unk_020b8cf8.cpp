@@ -1,13 +1,9 @@
 #include "types.h"
+#include "item/ItemId.h"
 
 extern "C" void func_020639e8(void *dst, const void *fmt, ...);
 extern "C" BOOL File_LoadToBuffer(void *a, void *b, s32 c);
 
-struct ItemId {
-    u16 id;
-    ItemId() : id(0x1100) {}
-    ~ItemId();
-};
 
 extern "C" BOOL Wallpaper_LoadTexture(void *dst, ItemId *p) {
     s32 idx;
@@ -29,6 +25,6 @@ extern "C" BOOL Wallpaper_LoadTexture(void *dst, ItemId *p) {
         }
         return FALSE;
     }
-    static ItemId def;
+    static ItemId def(0x1100);
     return Wallpaper_LoadTexture(dst, &def);
 }

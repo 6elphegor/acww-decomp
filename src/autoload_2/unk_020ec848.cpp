@@ -7,35 +7,8 @@
 // extern "C" functions that carry the mangled identifier verbatim and take the object first (as the game code
 // declares them), so no vtable, D0/D1 or C1 is emitted. Virtual calls go through the declared-only virtuals.
 #include "types.h"
+#include "sys/Heap.h"
 
-class Heap {
-public:
-    virtual ~Heap(); // 0x00 / 0x04
-    virtual void doLock();
-    virtual void doUnlock();
-    virtual void tryLock();
-    virtual void doDestroy();
-    virtual void *doAlloc(u32 size, s32 align) = 0; // alloc
-    virtual void doFree(void *p) = 0; // free
-    virtual void doFreeAll() = 0; // free all
-    virtual BOOL vfunc_24() = 0;
-    virtual void doDump() = 0;
-    virtual s32 doResize(void *p, u32 size) = 0; // resize
-    virtual u32 vfunc_30(void *p) = 0; // block size
-    virtual u32 doGetFreeSize() = 0;
-    virtual u32 doGetMaxFreeBlockSize() = 0;
-    virtual u32 vfunc_3c(s32 align) = 0; // largest allocatable size
-    virtual u32 getTotalFreeSize() = 0;
-    virtual void *changeGroupId() = 0;
-    virtual void *getGroupId() = 0;
-    virtual void *doAdjust() = 0;
-
-    /* 0x04 */ u32 regionStart;
-    /* 0x08 */ void *regionSize;
-    /* 0x0c */ Heap *parentHeap; // parent heap
-    /* 0x10 */ u32 heapFlags;
-    /* 0x14 */ void *heapHandle;
-};
 
 class ProcBase;
 

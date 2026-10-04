@@ -7,6 +7,7 @@
 #include "field/Unk_ov003_0222aff0_Bits.h"
 #include "field/Unk_ov003_0225980c_Rec.h"
 #include "gfx/AnimFrameCtrl.h"
+#include "gfx/ModelSlotPool.h"
 
 // ---- main-module library classes shared by several functions of this unit (global: their methods are called by symbol)
 
@@ -99,12 +100,6 @@ public:
     u32 pad[0x40 / 4];
 };
 
-class ModelSlotHandle {
-public:
-    ModelSlotHandle();
-    ~ModelSlotHandle();
-    u32 pad[2];
-};
 
 class FxVec3 {
 public:
@@ -145,6 +140,7 @@ public:
     u8 pad_210[0x22c - 0x210];
     /* 0x22c */ s32 effectHandle;
     /* 0x230 */ ModelSlotHandle modelSlot;
+    u8 pad_232[0x238 - 0x232];
     /* 0x238 */ u16 rotX;
     /* 0x23a */ u16 rotY;
     /* 0x23c */ u16 rotZ;
@@ -223,12 +219,6 @@ struct Unk_ov003_02228710_Act {
     u8 pad_25a[2];
 };
 
-class ModelSlotPool {
-public:
-    ModelSlotPool();
-    ~ModelSlotPool();
-    u32 unk_00[6];
-};
 
 class Unk_ov003_0222e708 {
 public:

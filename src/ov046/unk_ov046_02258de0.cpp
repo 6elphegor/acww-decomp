@@ -2,6 +2,7 @@
 #include "types.h"
 #include "game/Unk_ov046_0225a11c_Vec.h"
 #include "actor/Unk_02088d00.h"
+#include "talk/TalkStartMsg.h"
 
 // Library base class (same as GameProc.h, but vfunc_08 takes the s32 the vtable symbol names).
 class ProcBase {
@@ -35,10 +36,6 @@ class SpNpcCeleste;
 typedef void (SpNpcCelesteTalk::*Unk_ov046_0225aa0c_Fn)();
 typedef void (SpNpcCelesteTalk::*Unk_ov046_02259480_Fn)(s32);
 
-struct TalkStartMsg {
-    const void *msgKey;
-    u8 msgIndex;
-};
 
 struct Unk_ov046_0225a650_Entry {
     const void *p;
@@ -885,7 +882,7 @@ void SpNpcCelesteTalk::setTopic(s32 v) {
 
 void SpNpcCelesteTalk::start(TalkStartMsg *out) {
     if (GameStart_IsActive()) {
-        out->msgKey = (u8 *)"sp_etc_sequence4";
+        out->msgKey = "sp_etc_sequence4";
         out->msgIndex = 0x14;
         return;
     }
@@ -919,10 +916,10 @@ void SpNpcCelesteTalk::start(TalkStartMsg *out) {
                 out->msgIndex = 1;
             }
         }
-        out->msgKey = sSpNpcCelesteKey;
+        out->msgKey = (const char *)sSpNpcCelesteKey;
     } else if (t >= 0 && t < 5) {
         out->msgIndex = sSpNpcCelesteTopicMsgs[t].v;
-        out->msgKey = sSpNpcCelesteTopicMsgs[topic].p;
+        out->msgKey = (const char *)sSpNpcCelesteTopicMsgs[topic].p;
     }
 }
 

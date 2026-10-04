@@ -2,6 +2,7 @@
 #include "types.h"
 #include "game/Unk_0202368c_Obj.h"
 #include "actor/Unk_02088d00.h"
+#include "talk/TalkStartMsg.h"
 
 // Library base class (same as GameProc.h, but vfunc_08 takes the s32 the vtable symbol names).
 class ProcBase {
@@ -44,10 +45,6 @@ struct MsgString9B {
     ~MsgString9B();
 };
 
-struct TalkStartMsg {
-    u32 a;
-    u8 b;
-};
 
 struct Unk_0209d498_Obj {
     u32 w[2];
@@ -703,7 +700,7 @@ void SpNpcTortimerFishingTourneyTalk::start(TalkStartMsg *out) {
         Unk_0209d498_Obj o;
     } l;
     _ZN10PlayerData10getErrandsEv(PlayerData_GetCurrent());
-    out->a = (u32)"sp_npc_turtle1";
+    out->msgKey = "sp_npc_turtle1";
     l.o.w[0] = 0;
     l.o.w[1] = 0;
     Clock_GetDateTime(&l.o);
@@ -711,8 +708,8 @@ void SpNpcTortimerFishingTourneyTalk::start(TalkStartMsg *out) {
         l.h[2] = 0x37e0;
         massageChairSlot = Pocket_FindItem(&l.h[2]);
         if (massageChairSlot >= 0) {
-            out->a = (u32)"sp_npc_turtle";
-            out->b = 0;
+            out->msgKey = "sp_npc_turtle";
+            out->msgIndex = 0;
             return;
         }
     }
@@ -720,13 +717,13 @@ void SpNpcTortimerFishingTourneyTalk::start(TalkStartMsg *out) {
     {
         u32 v = *(u8 *)(a + 14);
         if (v < 0xc || v >= 0x12) {
-            out->b = 2;
+            out->msgIndex = 2;
             return;
         }
     }
     *(u16 *)a = 0x1374;
     PlayerActor_GetSlotHeldItem(&l.h[1], PlayerActor_GetLocalSessionSlot((u16 *)a));
-    out->b = 3;
+    out->msgIndex = 3;
     if (Talk_CheckAndSetPlayerFlag(0x1b, 0) == 0) {
         l.h[3] = 0x1374;
         BOOL n1 = Pocket_FindItem(&l.h[3]) < 0 ? TRUE : FALSE;
@@ -751,9 +748,9 @@ void SpNpcTortimerFishingTourneyTalk::start(TalkStartMsg *out) {
                     }
                     if (f2 == 0) {
                         if (Pocket_FindEmpty() >= 0) {
-                            out->b = 1;
+                            out->msgIndex = 1;
                         } else {
-                            out->b = 0;
+                            out->msgIndex = 0;
                         }
                         return;
                     }
@@ -762,7 +759,7 @@ void SpNpcTortimerFishingTourneyTalk::start(TalkStartMsg *out) {
         }
     }
     if (Talk_CheckAndSetPlayerFlag(0x1b, 1) != 0) {
-        out->b = 8;
+        out->msgIndex = 8;
     }
 }
 

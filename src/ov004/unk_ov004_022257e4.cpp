@@ -6,6 +6,8 @@
 #include "gfx/Unk_02055704.h"
 #include "game/Unk_ov004_02224ee4_Vec.h"
 #include "gfx/AnimFrameCtrl.h"
+#include "room/RoomObjRes.h"
+#include "room/RoomObjTex.h"
 
 // Library base class (as include/GameProc.h, but vfunc_20 takes the u32 that ov004's override uses)
 class ProcBase {
@@ -110,46 +112,8 @@ public:
 };
 
 // ---- helper objects at +0x1a4, +0x248, +0x250 (their other methods live in ov004_054)
-class RoomObjRes {
-public:
-    RoomObjRes();
-    ~RoomObjRes();
-    void clear();
-    s32 RoomObjRes_GetBca(u32 i);
-    void RoomObjRes_Free();
-    void RoomObjRes_Load(const char *s);
-    void *RoomObjRes_GetModel();
 
-    u32 archive;
-    u32 model;
-    u32 bcas[13];
-    u32 bmas[13];
-    u32 btas[13];
-};
 
-class RoomObjTex {
-public:
-    RoomObjTex();
-    ~RoomObjTex();
-    void RoomObjTex_Reset();
-    void RoomObjTex_Load(const char *s);
-    u32 RoomObjTex_Get();
-
-    u32 texture;
-    u8 syncState;
-};
-
-class RoomObjSe {
-public:
-    RoomObjSe();
-    ~RoomObjSe();
-    void RoomObj_PlaySe(s32 v);
-    void RoomObj_DeactivateSe();
-    void RoomObj_SetSePos(Unk_ov004_02224ee4_Vec *v);
-    void RoomObj_ActivateSe();
-
-    u32 emitter[0x10];
-};
 
 class RoomObjActor : public Character {
 public:
@@ -282,13 +246,10 @@ extern void *gCommManager;
 
 s32 RoomObjRes_GetBca(void *, u32);
 s32 RoomObjRes_GetBma(void *, u32);
-u8 *RoomObjRes_GetModel(void *);
 u32 RoomObjTex_Get(void *);
 void RoomObjTex_Reset(void *);
 void RoomObjRes_Free(void *);
-s32 RoomObjRes_Load(void *, const char *);
 void CheckInGate_SetInstance(Cls *c);
-s32 RoomObjTex_Load(void *, const char *);
 
 void _ZN14BlendAnimModel8initAnimEiiitt(void *, s32, s32, s32, u16, u16);
 void *_ZN5Model12getRenderObjEv(void *);
@@ -476,7 +437,7 @@ void CheckInGate::setGroundMatFlags() {
     u32 i;
     u8 *base;
     u32 col;
-    { u8 *h = RoomObjRes_GetModel(&res); base = h + *(s32 *)(h + 8); }
+    { u8 *h = (u8 *)RoomObjRes_GetModel(&res); base = h + *(s32 *)(h + 8); }
     i = 0;
     col = ((const u32 *)data_ov004_0224016c)[0x40];
     for (; i < 7; i++) {

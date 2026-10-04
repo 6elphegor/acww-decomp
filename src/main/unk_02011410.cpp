@@ -1,4 +1,5 @@
 #include "types.h"
+#include "gfx/HudObjGfx.h"
 
 extern "C" {
 void DC_FlushRange(void *p, u32 size);
@@ -15,36 +16,7 @@ BOOL FS_CloseFile(void *self);
 s32 Hud_GetSceneHudKind(void);
 }
 
-struct HudObjGfx {
-    u8 unk_00[0x48];
-    s32 paletteBuf;
-    s32 charBuf;
-    u8 cameraButtonChars[0x200];
-    s32 pendingCameraButtonScreens;
-    u8 msgUiActive;
-    u8 countdownVariant;
 
-    HudObjGfx();
-    ~HudObjGfx();
-    BOOL loadChars();
-    BOOL loadPalette(s32 mode);
-    const char *getCharPath(s32 mode);
-    const char *getPalettePath(s32 mode);
-};
-
-class HudObjGfxIo {
-public:
-    BOOL loadKindChars(s32 k);
-    void uploadChars(s32 which);
-    void uploadPalette(s32 which);
-    void freeChars();
-    void freePalette();
-
-    u8 unk_00[0x48];
-    u8 *paletteBuf;
-    u8 *charBuf;
-    u8 cameraButtonChars[0x200];
-};
 
 const char *HudObjGfx::getCharPath(s32 mode) {
     if (mode >= 4) mode = Hud_GetSceneHudKind();

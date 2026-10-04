@@ -2,6 +2,7 @@
 #include "game/Unk_0203c92c_Bits.h"
 #include "game/Unk_0203ce24_Elem.h"
 #include "player/PlayerOptions.h"
+#include "item/ItemId.h"
 
 // ---- 0x020d94b8 base (MsgRequest at 0x020e2a30)
 class MsgRequest {
@@ -187,11 +188,6 @@ struct Catalog {
     u8 paperBits[8];
 };
 
-struct ItemId {
-    u16 id;
-    ItemId() : id(0x11a8) {}
-    ~ItemId();
-};
 
 extern "C" {
 void Catalog_Clear(Catalog *p);
@@ -295,7 +291,7 @@ extern "C" BOOL ClothTex_LoadItem(void *self, u16 *p, void *q) {
             if (File_LoadToBuffer(buf, self, -1)) return TRUE;
             return FALSE;
         } else {
-            static ItemId def;
+            static ItemId def(0x11a8);
             return ClothTex_LoadItem(self, &def.id, q);
         }
     }

@@ -1,16 +1,8 @@
 #include "types.h"
+#include "town/TownMapMarkers.h"
+#include "game/StrBSizeData.h"
 
-struct Unk_ov117_02292c88_Icon {
-    s16 x;
-    s16 y;
-    u8 z;
-};
 
-struct TownMapMarkers {
-    Unk_ov117_02292c88_Icon e[17];
-    TownMapMarkers();
-    ~TownMapMarkers();
-};
 
 inline void *operator new(unsigned long, void *p) {
     return p;
@@ -47,7 +39,6 @@ static inline Unk_ov117_02292b54_Cell *Unk_ov117_02292b54_GetCell(Unk_ov117_0229
 
 struct HouseData { void getLevel(); };
 struct VillagerDataItemView { u8 *getHousePos(); };
-struct StrBSizeData { void getSolidBounds(s32 *, s32 *, s32 *, s32 *); };
 
 extern "C" {
 TownMapImage *sTownMapImage;

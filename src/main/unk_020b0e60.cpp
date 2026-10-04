@@ -1,5 +1,7 @@
 #include "types.h"
 #include "game/Unk_020b1ddc.h"
+#include "item/ItemId.h"
+#include "game/StrBSizeData.h"
 
 inline void *operator new(unsigned long, void *p) { return p; }
 
@@ -99,11 +101,6 @@ public:
     virtual BOOL vfunc_6c(u32 a);
 };
 
-struct ItemId {
-    u16 v;
-    ItemId(u16 x) : v(x) {}
-    ~ItemId();
-};
 typedef ItemId Marker2;
 
 // Info table of the next unit
@@ -291,21 +288,6 @@ public:
     virtual BOOL getUnitShape(s32 *a, s32 *b, s32 *c, volatile s32 x, volatile s32 y);
 };
 
-class StrBSizeData {
-public:
-    void getSolidBounds(s32 *outX, s32 *outY, s32 *outW, s32 *outH);
-    BOOL getTriangle(s32 *a, s32 *b, s32 *c, u32 idx);
-    u32 getTriangleCount();
-    BOOL getSolidUnit(s32 *a, s32 *b, s32 *c, u32 idx);
-    BOOL getFootprintUnit(s32 *a, s32 *b, u32 idx);
-    BOOL getClearUnit(s32 *a, s32 *b, u32 idx);
-    BOOL getLightUnit(s32 *a, s32 *b, u32 idx);
-    u32 getFootprintUnitCount();
-    u32 getSolidUnitCount();
-    u32 getFloorUnitCount();
-    u32 getClearUnitCount();
-    u32 getLightUnitCount();
-};
 
 // overlay class whose vtable is at 0x02232c00 (only its D1 is in this unit)
 class FieldObjectShapeQuery : public UnitShapeQueryX {

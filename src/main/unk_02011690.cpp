@@ -1,11 +1,6 @@
 #include "types.h"
+#include "gfx/HudObjGfx.h"
 
-struct HudObjGfx {
-    u8 unk_00[0x255];
-    u8 countdownVariant;
-
-    const char *getPalettePath(s32 mode);
-};
 
 extern "C" {
 s32 Hud_GetSceneHudKind(void);

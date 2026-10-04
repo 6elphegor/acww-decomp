@@ -4,6 +4,9 @@
 #include "actor/Unk_0203e5d0_Node.h"
 #include "game/Unk_ov009_0225b880_Vec3.h"
 #include "game/Vec3.h"
+#include "snd/BgmSceneFade.h"
+#include "game/StrBSizeData.h"
+#include "town/BuildingResources.h"
 
 // Library base class chain (header GameProc.h rebuilt so that the vtable names the real symbols:
 // slot 08 is Character::postCreate(int)).
@@ -216,11 +219,6 @@ struct TouchPicker {
     BOOL pushTriangle(TouchPickTriangle *o);
 };
 
-struct StrBSizeData {
-    void getSolidBounds(s32 *a, s32 *b, s32 *c, s32 *d);
-    BOOL getTriangle(s32 *a, s32 *b, s32 *c, u32 i);
-    u32 getTriangleCount();
-};
 
 class ObjShadowStrip {
 public:
@@ -231,9 +229,6 @@ public:
     u8 pad[0x34];
 };
 
-struct BgmSceneFade {
-    void setFadeDelay(s32 a);
-};
 
 struct BgmManager {
     u8 pad_00[0x2d0];
@@ -307,26 +302,6 @@ struct BuildingShadowTable {
     /* 0x04 */ Unk_ov009_0225cd48_Item entries[1];
 };
 
-// 0x50-byte record of the static array sBuildingResources (0x22 entries)
-struct BuildingResources {
-    BuildingResources();
-    ~BuildingResources();
-
-    /* 0x00 */ s32 bmd0;
-    /* 0x04 */ s32 bmd1;
-    /* 0x08 */ s32 bca0;
-    /* 0x0c */ s32 bca1;
-    /* 0x10 */ s32 bca2;
-    /* 0x14 */ s32 tex;
-    /* 0x18 */ s32 lightTex;
-    /* 0x1c */ BuildingShadowTable *shadowTable;
-    /* 0x20 */ s32 btaAnims[4];
-    /* 0x30 */ s32 btpAnims[4];
-    /* 0x40 */ s32 solidCenterX;
-    /* 0x44 */ s32 solidCenterZ;
-    /* 0x48 */ s32 solidSizeX;
-    /* 0x4c */ s32 solidSizeZ;
-};
 
 struct Unk_ov009_0225d2a4_Obj {
     u32 pad[0x6c / 4];

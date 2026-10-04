@@ -5,6 +5,8 @@
 #include "gfx/Unk_02055704.h"
 #include "game/Unk_ov004_02224ee4_Vec.h"
 #include "gfx/AnimFrameCtrl.h"
+#include "room/RoomObjRes.h"
+#include "room/RoomObjTex.h"
 // Library base class (as include/GameProc.h, but vfunc_20 takes the u32 that ov004's override uses)
 class ProcBase {
 public:
@@ -108,46 +110,8 @@ public:
 };
 
 // ---- helper objects at +0x1a4, +0x248, +0x250 (their other methods live in ov004_054)
-class RoomObjRes {
-public:
-    RoomObjRes();
-    ~RoomObjRes();
-    void clear();
-    s32 RoomObjRes_GetBca(u32 i);
-    void RoomObjRes_Free();
-    void RoomObjRes_Load(const char *s);
-    void *RoomObjRes_GetModel();
 
-    u32 archive;
-    u32 model;
-    u32 bcas[13];
-    u32 bmas[13];
-    u32 btas[13];
-};
 
-class RoomObjTex {
-public:
-    RoomObjTex();
-    ~RoomObjTex();
-    void RoomObjTex_Reset();
-    void RoomObjTex_Load(const char *s);
-    u32 RoomObjTex_Get();
-
-    u32 texture;
-    u8 syncState;
-};
-
-class RoomObjSe {
-public:
-    RoomObjSe();
-    ~RoomObjSe();
-    void RoomObj_PlaySe(s32 v);
-    void RoomObj_DeactivateSe();
-    void RoomObj_SetSePos(Unk_ov004_02224ee4_Vec *v);
-    void RoomObj_ActivateSe();
-
-    u32 emitter[0x10];
-};
 
 // ---- second base at +0x290 (see src/main/unk_02065f14.cpp)
 class MsgRequest {

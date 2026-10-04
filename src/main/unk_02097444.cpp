@@ -1,11 +1,6 @@
 #include "types.h"
+#include "item/ItemId.h"
 
-// element of the function-local static table in PlayerDataArray_CreateResident (destructor is another unit's, at 0x02004b60)
-struct ItemId {
-    u16 v;
-    ItemId(u16 x) { v = x; }
-    ~ItemId();
-};
 
 struct Unk_02097ac4 {
     u8 pad[0x9f8];

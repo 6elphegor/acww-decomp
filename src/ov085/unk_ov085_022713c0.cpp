@@ -1,6 +1,7 @@
 // mwcc-flags: -str reuse
 #include "types.h"
 #include "actor/Unk_02088d00.h"
+#include "talk/TalkStartMsg.h"
 
 #pragma opt_loop_invariants off
 
@@ -169,10 +170,6 @@ class SpNpcTalkRequest : public Unk_020d7710 {
 public:
     SpNpcTalkRequest();
     virtual ~SpNpcTalkRequest();
-};
-struct TalkStartMsg {
-    u32 a;
-    u8 b;
 };
 
 class SpNpcTortimerBrightNightsTalk : public SpNpcTalkRequest {
@@ -576,13 +573,13 @@ void SpNpcTortimerBrightNightsTalk::attachOwner(SpNpcTortimerBrightNights *owner
 void SpNpcTortimerBrightNightsTalk::start(TalkStartMsg *out) {
     u16 h;
     _ZN10PlayerData10getErrandsEv(PlayerData_GetCurrent());
-    out->a = (u32)"sp_npc_turtle5";
+    out->msgKey = "sp_npc_turtle5";
     if (massageChairSlot == -1) {
         h = 0x37e0;
         massageChairSlot = Pocket_FindItem(&h);
         if (massageChairSlot >= 0) {
-            out->a = (u32)"sp_npc_turtle";
-            out->b = 0;
+            out->msgKey = "sp_npc_turtle";
+            out->msgIndex = 0;
             return;
         }
     }
@@ -594,9 +591,9 @@ void SpNpcTortimerBrightNightsTalk::start(TalkStartMsg *out) {
                 _ZN10VillagerId7getNameEj(g, &o);
                 unk_3c->setSlot(1, &o);
             }
-            out->b = Random_GlobalBelow(3) + 0x11;
+            out->msgIndex = Random_GlobalBelow(3) + 0x11;
         } else {
-            out->b = 0xf;
+            out->msgIndex = 0xf;
             _ZN8SaveData7setFlagEj(gSaveData, 0x11);
         }
     } else {
@@ -605,24 +602,24 @@ void SpNpcTortimerBrightNightsTalk::start(TalkStartMsg *out) {
             MsgString9B o;
             _ZN10VillagerId7getNameEj(g, &o);
             unk_3c->setSlot(0, &o);
-            out->b = Random_GlobalBelow(4) + 0xb;
+            out->msgIndex = Random_GlobalBelow(4) + 0xb;
         } else {
-            out->b = 4;
+            out->msgIndex = 4;
             if (!Talk_CheckAndSetPlayerFlag(0x1f, 1)) {
                 switch (ownerNpc->festDay) {
                 case 0:
-                    out->b = 0;
+                    out->msgIndex = 0;
                     break;
                 case 1:
                 case 2:
-                    out->b = 1;
+                    out->msgIndex = 1;
                     break;
                 case 3:
                 case 4:
-                    out->b = 2;
+                    out->msgIndex = 2;
                     break;
                 case 5:
-                    out->b = 3;
+                    out->msgIndex = 3;
                     break;
                 }
             }

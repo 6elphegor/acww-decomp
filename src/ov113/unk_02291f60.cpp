@@ -3,6 +3,7 @@
 #define vfunc_14() vfunc_14(s32 a)
 #include "types.h"
 #include "Unk_020d8c7c.h"
+#include "save/BbsPost.h"
 #undef postCreate
 #undef vfunc_14
 
@@ -66,15 +67,6 @@ public:
     static void *getPost(s32 p);
 };
 
-class BbsPost {
-public:
-    BOOL isFreeText();
-    void setRead(s32 i);
-    BOOL isRead(s32 i);
-    u8 getYear();
-    u8 getMonth();
-    u8 getDay();
-};
 
 // Text window, 0x40 bytes
 class LabelString {

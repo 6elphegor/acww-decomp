@@ -2,6 +2,8 @@
 #include "player/PlayerSpNpcRecord.h"
 #include "item/Unk_02098f30_Out.h"
 #include "actor/Unk_02088d00.h"
+#include "item/ItemId.h"
+#include "talk/TalkStartMsg.h"
 
 // Library base class (same as GameProc.h, but vfunc_08 takes the s32 the vtable symbol names).
 class ProcBase {
@@ -33,10 +35,6 @@ struct Unk_0201bc1c;
 class SpNpcGracie;
 class SpNpcGracieTalk;
 
-struct TalkStartMsg {
-    u32 a;
-    u8 b;
-};
 
 struct Unk_ov070_02271478_Save {
     u8 pad_00[0x720];
@@ -97,11 +95,6 @@ public:
     s32 getGender();
 };
 
-struct ItemId {
-    u16 id;
-    ItemId();
-    ~ItemId();
-};
 
 struct TalkWindowState {
     void setNextMessage(u8 *a, void *b);
@@ -751,12 +744,12 @@ void SpNpcGracieTalk::start(TalkStartMsg *out) {
         }
     }
     if (topic >= 0 && topic < 7) {
-        out->b = (&sSpNpcGracieTopicMsgs[0].b_byte)[topic * 8];
+        out->msgIndex = (&sSpNpcGracieTopicMsgs[0].b_byte)[topic * 8];
         if (topic == 2) {
-            out->b = ownerNpc->talk.questionCount + 0x4c;
+            out->msgIndex = ownerNpc->talk.questionCount + 0x4c;
             ownerNpc->talk.questionCount++;
         }
-        out->a = *(u32 *)((u8 *)sSpNpcGracieTopicMsgs + topic * 8);
+        out->msgKey = (const char *)*(u32 *)((u8 *)sSpNpcGracieTopicMsgs + topic * 8);
     }
 }
 

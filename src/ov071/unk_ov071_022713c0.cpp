@@ -1,6 +1,7 @@
 // mwcc-flags: -str reuse
 #include "types.h"
 #include "actor/Unk_02088d00.h"
+#include "talk/TalkStartMsg.h"
 
 // Library base class (same as GameProc.h, but vfunc_08 takes the s32 the vtable symbol names).
 class ProcBase {
@@ -41,10 +42,6 @@ struct Unk_ov071_02271f54_Tmp {
     u32 v[4];
 };
 
-struct TalkStartMsg {
-    const char *msgKey;
-    u8 msgIndex;
-};
 
 // Message sent to the scene (func_02067a84): id byte, then two halfwords.
 struct Unk_ov071_0227160c_Msg {

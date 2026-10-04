@@ -3,6 +3,7 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "actor/Unk_02088d00.h"
+#include "talk/TalkStartMsg.h"
 #undef postCreate
 
 // Real (mangled) names of other modules' functions that the unit calls as plain functions taking the object first.
@@ -136,10 +137,6 @@ public:
     virtual ~SpNpcTalkRequest();
 };
 
-struct TalkStartMsg {
-    u8 *a;
-    u8 b;
-};
 
 class SpNpcTortimerTalk : public SpNpcTalkRequest {
 public:
@@ -470,12 +467,12 @@ void SpNpcTortimerTalk::attachOwner(SpNpcTortimer *owner) {
 void SpNpcTortimerTalk::start(TalkStartMsg *out) {
     void *g = PlayerData_GetCurrent();
     if (Unk_02097ff4_testFlag(g, 1)) {
-        out->a = (u8 *)"sp_etc_sequence5_2";
+        out->msgKey = "sp_etc_sequence5_2";
         if (Unk_02097ff4_testFlag(g, 0xd) == 0) {
-            out->b = 0;
+            out->msgIndex = 0;
             Unk_02097ff4_setFlag(g, 0xd);
         } else {
-            out->b = Random_GlobalBelow(4) + 3;
+            out->msgIndex = Random_GlobalBelow(4) + 3;
         }
         Unk_02097ff4_setFlag(g, 0xa);
     } else {
@@ -483,42 +480,42 @@ void SpNpcTortimerTalk::start(TalkStartMsg *out) {
             u16 v = 0x37e0;
             massageChairSlot = Pocket_FindItem(&v);
             if (massageChairSlot >= 0) {
-                out->a = (u8 *)"sp_npc_turtle";
-                out->b = 0;
+                out->msgKey = "sp_npc_turtle";
+                out->msgIndex = 0;
                 return;
             }
         }
-        out->a = (u8 *)"sp_npc_turtle7";
+        out->msgKey = "sp_npc_turtle7";
         if (Unk_02097ff4_testFlag(g, 0x21) == 0 && Catalog_HasAllFish()) {
-            out->b = 0;
+            out->msgIndex = 0;
             if (Pocket_FindEmpty() < 0) {
-                out->b = 9;
+                out->msgIndex = 9;
             } else {
                 s32 i;
                 for (i = 0; i < 4; i++) {
                     void *p = PlayerData_GetResident(gSavePlayers, i);
                     if (p != NULL && PlayerData_isUsed(p) && p != g && Unk_02097ff4_testFlag(p, 0x21)) {
-                        out->b = 2;
+                        out->msgIndex = 2;
                         break;
                     }
                 }
             }
         } else if (Unk_02097ff4_testFlag(g, 0x22) == 0 && Catalog_HasAllInsects()) {
-            out->b = 3;
+            out->msgIndex = 3;
             if (Pocket_FindEmpty() < 0) {
-                out->b = 0xa;
+                out->msgIndex = 0xa;
             } else {
                 s32 i;
                 for (i = 0; i < 4; i++) {
                     void *p = PlayerData_GetResident(gSavePlayers, i);
                     if (p != NULL && PlayerData_isUsed(p) && p != g && Unk_02097ff4_testFlag(p, 0x22)) {
-                        out->b = 5;
+                        out->msgIndex = 5;
                         break;
                     }
                 }
             }
         } else {
-            out->b = Random_GlobalBelow(3) + 6;
+            out->msgIndex = Random_GlobalBelow(3) + 6;
         }
     }
 }

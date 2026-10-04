@@ -1,5 +1,6 @@
 #include "types.h"
 #include "actor/Unk_02088d00.h"
+#include "talk/TalkStartMsg.h"
 
 #define NpcTalkCtrl_requestTurnAndTalk _ZN11NpcTalkCtrl18requestTurnAndTalkEssh
 #define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
@@ -104,10 +105,6 @@ struct Unk_020cbb18_Ov049 {
     s32 myAid;
 };
 
-struct TalkStartMsg {
-    char *msgKey;
-    u8 msgIndex;
-};
 
 struct Unk_ov049_0225a714_Name {
     u8 b[8];
@@ -1394,30 +1391,30 @@ void SpNpcMabelTalk::start(TalkStartMsg *out) {
     void *r6 = SickVillagerRecord_getParcelErrand(PlayerData_getErrands());
     u8 buf[4];
     if (GameStart_IsActive() != 0 && getTopic() == 2) {
-        out->msgKey = sSpNpcMabelMsgKeys[2];
+        out->msgKey = (const char *)sSpNpcMabelMsgKeys[2];
         out->msgIndex = 6;
         return;
     }
     if (getTopic() == 2 && ParcelErrand_IsFor(r6, &owner->unk_ea) != 0) {
         out->msgIndex = 0x2e;
-        out->msgKey = sSpNpcMabelMsgKeys[0];
+        out->msgKey = (const char *)sSpNpcMabelMsgKeys[0];
         return;
     }
     if (getTopic() == 2 && Talk_IsDramaPending(owner, buf, 2) != 0) {
         owner->dramaPending = 1;
         Unk_ov049_0225a714_Bits *b = (Unk_ov049_0225a714_Bits *)buf;
         out->msgIndex = *(sSpNpcMabelDramaMsgTable + b->mid * 7 + b->hi);
-        out->msgKey = sSpNpcMabelMsgKeys[1];
+        out->msgKey = (const char *)sSpNpcMabelMsgKeys[1];
         return;
     }
     out->msgIndex = sSpNpcMabelTopicMsgs[topic];
-    out->msgKey = sSpNpcMabelMsgKeys[0];
+    out->msgKey = (const char *)sSpNpcMabelMsgKeys[0];
     if (getTopic() == 4) {
         price = (s32)Item_GetPrice(&owner->selectedItem);
         ActorTalkRequest_setNumberSlot(this, price, 0, 0xa, 1, 0);
         ActorTalkRequest_setItemNameSlot(this, &owner->selectedItem, 0, 7);
         if (GameStart_IsActive() != 0) {
-            out->msgKey = sSpNpcMabelMsgKeys[2];
+            out->msgKey = (const char *)sSpNpcMabelMsgKeys[2];
             out->msgIndex = 0x1e;
         }
     } else if (getTopic() == 5) {
@@ -1444,7 +1441,7 @@ void SpNpcMabelTalk::start(TalkStartMsg *out) {
         Unk_ov049_0225a714_P c(*PlayerId_GetTownId(&a));
         Unk_ov049_0225a714_P d(*PlayerId_GetTownId(&b));
         if (GameStart_IsActive() != 0) {
-            out->msgKey = sSpNpcMabelMsgKeys[2];
+            out->msgKey = (const char *)sSpNpcMabelMsgKeys[2];
             out->msgIndex = 0x1d;
         } else if (c.id != d.id || memcmp(&c.name, &d.name, 8) != 0) {
             ActorTalkRequest_setPlayerNameSlot(this, &a, 2);

@@ -3,6 +3,8 @@
 // mwcc-flags: -str reuse
 #include "types.h"
 #include "actor/Unk_02088d00.h"
+#include "item/ItemId.h"
+#include "talk/TalkStartMsg.h"
 
 // Library base class (same as GameProc.h, but vfunc_08 takes the s32 the vtable symbol names).
 class ProcBase {
@@ -46,10 +48,6 @@ struct Unk_ov053_02258e7c_Loc : Unk_ov053_Vec {
     Unk_ov053_02258e7c_Loc() {}
 };
 
-struct TalkStartMsg {
-    const void *msgKey;
-    u8 msgIndex;
-};
 
 struct Unk_ov053_02259428_Ent {
     const void *p;
@@ -191,11 +189,6 @@ struct Unk_020f4080 {
     ~Unk_020f4080();
 };
 
-struct ItemId {
-    u16 id;
-    ItemId();
-    ~ItemId();
-};
 
 class Actor : public ProcBase {
 public:
@@ -971,7 +964,7 @@ void SpNpcHarrietTalk::start(TalkStartMsg *out) {
         {sSpNpcHarrietMsgKey, 6},    {sSpNpcHarrietMsgKey, 7},
     };
     if (getTopic() == 4) {
-        out->msgKey = tbl[topic].p;
+        out->msgKey = (const char *)tbl[topic].p;
         out->msgIndex = getQuestionsStartMsg();
     } else {
         if (getTopic() != 0 && getTopic() != 3 && getTopic() != 5 &&
@@ -994,7 +987,7 @@ void SpNpcHarrietTalk::start(TalkStartMsg *out) {
         }
         if (topic >= 0 && topic < 0xe) {
             out->msgIndex = tbl[topic].v;
-            out->msgKey = tbl[topic].p;
+            out->msgKey = (const char *)tbl[topic].p;
         }
     }
 }

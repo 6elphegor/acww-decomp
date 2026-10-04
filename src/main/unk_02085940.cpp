@@ -1,6 +1,9 @@
 #include "types.h"
 #include "player/PlayerSpNpcRecord.h"
 #include "save/Unk_02085810_Rec.h"
+#include "save/BlancaFaceRecord.h"
+#include "save/LostChildRecord.h"
+#include "town/VisitorPos.h"
 #pragma opt_loop_invariants off
 #define LB(o) (((u8 *)&l)[o])
 extern "C" {
@@ -289,14 +292,6 @@ struct TurnipMarket {
 };
 
 // ---- position pair ----
-struct VisitorPos {
-    s32 x, z;
-    void getPos(Unk_020868cc_Vec3 *out) const;
-    void setPos(s32 a, s32 b);
-    BOOL pickRandomPos();
-    BOOL pickFreeInAcre(Unk_020868cc_Vec3 *out, s32 *pos, void *ctx);
-    s32 countFreeInAcre(s32 *pos, void *ctx);
-};
 
 // ---- tail ----
 struct Unk_02086af0 {
@@ -442,48 +437,8 @@ public:
 };
 
 // ---- 0x02087224: big singleton (gSaveData)
-class BlancaFaceRecord {
-public:
-    u16 func_02087224();
-    void func_02087230(u32 v);
-    BOOL isBlancaDue();
-    u8 getConcept();
-    void setConcept(u32 v);
-    u8 getState();
-    void setState(u32 v);
-    void *getPattern();
-    void resetPattern();
-    void init();
-    void reset();
-    BlancaFaceRecord *destruct();
-    BlancaFaceRecord *construct();
-
-    u32 pattern[0x228 / 4];
-    u16 unk_228;
-    u8 visitState;
-    u8 concept;
-};
 
 // ---- 0x020872fc: flag byte at +0xa
-class LostChildRecord {
-public:
-    void clearEscorting();
-    void setEscorting();
-    BOOL isEscorting();
-    void setKaitlinRole(u8 v);
-    BOOL isKaitlinRole();
-    void setDaysLeft(u8 v);
-    u32 getDaysLeft();
-    void setTownId();
-    void getTownId();
-    void clear();
-
-    u32 unk_00[2];
-    u16 unk_08;
-    u8 unk_0a_0 : 4;
-    u8 unk_0a_4 : 1;
-    u8 unk_0a_5 : 1;
-};
 
 struct Unk_020874e8_Bits {
     u8 a : 2;
@@ -1311,7 +1266,7 @@ void LostChildRecord::clear() {
     unk_0a_5 = 0;
 }
 
-void LostChildRecord::getTownId() {}
+u16 *LostChildRecord::getTownId() { return (u16 *)this; }
 
 void LostChildRecord::setTownId() { TownId_Assign(this); }
 

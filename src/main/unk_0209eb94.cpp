@@ -2,6 +2,7 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
+#include "save/BlancaFaceRecord.h"
 
 // ---- declarations shared by the merged files
 class TalkMsgRequest;
@@ -184,12 +185,6 @@ public:
     u8 unk_00[0xd2];
 };
 
-class BlancaFaceRecord {
-public:
-    BlancaFaceRecord();
-    ~BlancaFaceRecord();
-    u8 pattern[0x22c];
-};
 
 struct Unk_020a4238_Entry {
     void *unk_00;

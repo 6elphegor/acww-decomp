@@ -6,6 +6,7 @@
 #include "room/Unk_ov004_02224d60_B.h"
 #include "actor/Unk_ov068_SceneEntry.h"
 #include "gfx/AnimFrameCtrl.h"
+#include "room/RoomObjRes.h"
 #define AnimFrameCtrl_hasPassedFrame _ZN13AnimFrameCtrl14hasPassedFrameEi
 #define AnimFrameCtrl_step _ZN13AnimFrameCtrl4stepEv
 #define BlendAnimModel_initAnim _ZN14BlendAnimModel8initAnimEiiitt
@@ -164,34 +165,8 @@ void RoomObj_ActivateSe(void *self);
 }
 
 // ---- helper objects at +0x1a4, +0x248, +0x250 (their other methods live in ov004_054)
-class RoomObjRes {
-public:
-    RoomObjRes();
-    ~RoomObjRes();
-    void clear();
-    inline s32 RoomObjRes_GetBca(u32 i) { return ::RoomObjRes_GetBca(this, i); }
-    inline void RoomObjRes_Free() { ::RoomObjRes_Free(this); }
-    inline void RoomObjRes_Load(const char *s) { ::RoomObjRes_Load(this, s); }
-    inline void *RoomObjRes_GetModel() { return ::RoomObjRes_GetModel(this); }
-
-    u32 archive;
-    u32 model;
-    u32 bcas[13];
-    u32 bmas[13];
-    u32 btas[13];
-};
 
 
-class RoomObjSe {
-public:
-    inline RoomObjSe() { RoomObj_ConstructSe(this); }
-    inline void RoomObj_PlaySe(s32 v) { ::RoomObj_PlaySe(this, v); }
-    inline void RoomObj_DeactivateSe() { ::RoomObj_DeactivateSe(this); }
-    inline void RoomObj_SetSePos(Unk_ov004_02224ee4_Vec *v) { ::RoomObj_SetSePos(this, v); }
-    inline void RoomObj_ActivateSe() { ::RoomObj_ActivateSe(this); }
-
-    u32 emitter[0x10];
-};
 
 class RoomObjActor : public Character {
 public:

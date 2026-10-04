@@ -1,5 +1,6 @@
 #include "types.h"
 #include "actor/CharaClothTexRef.h"
+#include "item/ItemId.h"
 
 struct Unk_0205cc70_Pad {
     s32 v[2];
@@ -7,12 +8,6 @@ struct Unk_0205cc70_Pad {
     ~Unk_0205cc70_Pad() {}
 };
 
-struct ItemId {
-    u16 v;
-    ItemId();
-    ItemId(u16 x) { v = x; }
-    ~ItemId();
-};
 
 struct CharaClothTexPool;
 
@@ -72,7 +67,7 @@ extern "C" void CharaClothTexPool_Destroy() {
 extern "C" void CharaClothTexPool_GetOwnRef() { sCharaClothTexPool.getOwnRef(); }
 
 CharaClothTexPool::CharaClothTexPool() {
-    for (s32 i = 0; i < 10; i++) id[i].v = 0xfff1;
+    for (s32 i = 0; i < 10; i++) id[i].id = 0xfff1;
 }
 
 CharaClothTexPool::~CharaClothTexPool() {}
@@ -101,7 +96,7 @@ void CharaClothTexPool::freeBuffers() {
     sub.release();
     for (s32 i = 0; i < 10; i++) {
         ptr[i] = 0;
-        id[i].v = 0xfff1;
+        id[i].id = 0xfff1;
     }
     if (gCharaClothTexHeap) func_020e885c(gCharaClothTexHeap);
 }
@@ -110,20 +105,20 @@ u32 CharaClothTexPool::getBuffer(u32 idx) { return ptr[idx]; }
 
 CharaClothTexRef *CharaClothTexPool::getOwnRef() { return &sub; }
 
-extern "C" void CharaClothTexPool_GetItem(u16 *out, CharaClothTexPool *t, u32 idx) { *out = t->id[idx].v; }
+extern "C" void CharaClothTexPool_GetItem(u16 *out, CharaClothTexPool *t, u32 idx) { *out = t->id[idx].id; }
 
-void CharaClothTexPool::setItem(u32 idx, u16 *s) { id[idx].v = *s; }
+void CharaClothTexPool::setItem(u32 idx, u16 *s) { id[idx].id = *s; }
 
 s32 CharaClothTexPool::findItem(u16 *s) {
     u16 *p;
     BOOL z1 = FALSE, z2 = FALSE;
     for (s32 i = 0; i < 10; i++) {
         BOOL r;
-        p = &id[i].v;
+        p = &id[i].id;
         if (Item_IsFurniture(p)) {
             r = (Item_GetFurnitureIndex(p) == Item_GetFurnitureIndex(s)) ? TRUE : z1;
         } else {
-            u16 a = id[i].v;
+            u16 a = id[i].id;
             r = (a == *s) ? TRUE : z2;
         }
         if (r) return i;
@@ -189,7 +184,7 @@ extern "C" void CharaClothTexRef_LoadPattern(u8 *p, void *q) {
     u32 cur = *p;
     if (ClothTex_LoadPatternThunk((void *)sCharaClothTexPool.getBuffer(cur), q)) {
         static ItemId dflt(0xffff);
-        sCharaClothTexPool.setItem(cur, &dflt.v);
+        sCharaClothTexPool.setItem(cur, &dflt.id);
     }
 }
 

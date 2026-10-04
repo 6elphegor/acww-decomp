@@ -1,6 +1,7 @@
 // mwcc-flags: -str reuse
 #include "types.h"
 #include "actor/Unk_02088d00.h"
+#include "talk/TalkStartMsg.h"
 
 #pragma opt_loop_invariants off
 
@@ -160,10 +161,6 @@ class SpNpcTalkRequest : public Unk_020d7710 {
 public:
     SpNpcTalkRequest();
     virtual ~SpNpcTalkRequest();
-};
-struct TalkStartMsg {
-    u8 *a;
-    u8 b;
 };
 
 class SpNpcCornimerTalk : public SpNpcTalkRequest {
@@ -579,17 +576,17 @@ void SpNpcCornimerTalk::attachOwner(SpNpcCornimer *owner) {
 void SpNpcCornimerTalk::start(TalkStartMsg *out) {
     void *g = PlayerData_GetCurrent();
     _ZN10PlayerData10getErrandsEv(g);
-    out->a = (u8 *)"sp_npc_acorn";
+    out->msgKey = "sp_npc_acorn";
     if (_ZN12Unk_02097ff48testFlagEj(g, 0xf) == 0) {
-        out->b = 0;
+        out->msgIndex = 0;
         _ZN12Unk_02097ff47setFlagEj(g, 0xf);
         Talk_CheckAndSetPlayerFlag(0x19, 1);
     } else if (Talk_CheckAndSetPlayerFlag(0x19, 1) == 0) {
-        out->b = 2;
+        out->msgIndex = 2;
     } else if (Random_GlobalBelow(2) == 0 || Talk_CheckAndSetPlayerFlag(0x1a, 0) != 0) {
-        out->b = 3;
+        out->msgIndex = 3;
     } else {
-        out->b = 0x10;
+        out->msgIndex = 0x10;
     }
 }
 

@@ -1,5 +1,6 @@
 #include "types.h"
 #include "player/Unk_02097ff4.h"
+#include "item/ItemId.h"
 
 class PlayerInventory;
 class Unk_02097ff4;
@@ -163,12 +164,6 @@ public:
     u8 unk_00[0xf4];
 };
 
-class ItemId {
-public:
-    ItemId();
-    ~ItemId();
-    u16 id;
-};
 
 struct Unk_0209865c_Nib {
     u8 lo : 4;

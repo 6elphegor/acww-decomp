@@ -2,6 +2,7 @@
 #pragma opt_loop_invariants off
 #include "types.h"
 #include "Unk_020d8c7c.h"
+#include "item/ItemId.h"
 
 class ShopStockPlacer;
 
@@ -93,11 +94,6 @@ static inline BOOL Unk_ov004_0223eb8c_Chk(u16 *p) {
     return FALSE;
 }
 
-struct ItemId {
-    u16 v;
-    ItemId(u16 x) { v = x; }
-    ~ItemId();
-};
 
 static inline BOOL Unk_ov004_0223ed40_Chk(u16 *p, u16 *c, u16 k) {
     if (Item_IsFurniture(p)) {
@@ -434,10 +430,10 @@ extern "C" u16 *ShopStock_GetItemAt(s32 x, s32 y) {
             if (!Unk_ov004_0223ed40_Chk(r4, &cv[1], 0xfff1)) {
                 if (Item_IsFurnitureOrF031(r4)) {
                     void *o = FtrActorGrid_getActor(FtrActorGrid_GetInstance(), x, y, 0);
-                    if (!o) return &dflt.v;
+                    if (!o) return &dflt.id;
                     static ItemId v2(0xfff1);
-                    v2.v = Item_MakeFurniture(FtrActor_GetFtrIndex(o), 0);
-                    if (ShopStock_IsForSale(&v2.v)) return &v2.v;
+                    v2.id = Item_MakeFurniture(FtrActor_GetFtrIndex(o), 0);
+                    if (ShopStock_IsForSale(&v2.id)) return &v2.id;
                 } else if (Item_IsNormalItem(r4)) {
                     if (!Unk_ov004_0223ed40_Chk(r4, &cv[2], 0x1547)) {
                         if (ShopStock_IsForSale(r4)) return r4;
@@ -446,7 +442,7 @@ extern "C" u16 *ShopStock_GetItemAt(s32 x, s32 y) {
             }
         }
     }
-    return &dflt.v;
+    return &dflt.id;
 }
 
 extern "C" s32 ShopStock_GetCode22Index(s32 x, s32 y) {

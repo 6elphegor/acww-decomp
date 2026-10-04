@@ -1,4 +1,5 @@
 #include "types.h"
+#include "gfx/HudObjGfx.h"
 
 extern "C" {
 void DC_FlushRange(void *p, u32 size);
@@ -12,36 +13,7 @@ s32 FS_ReadFile(void *self, void *dst, u32 size);
 BOOL FS_CloseFile(void *self);
 }
 
-// Defined in the neighbouring unit (U012).
-class HudObjGfx {
-public:
-    const void *getCharPath(s32 k);
-};
 
-// The class's other methods (0x02011410, 0x02011550, 0x02011568, ...) are defined in other units.
-class HudObjGfxIo {
-public:
-    void releaseSlideIconChars();
-    void uploadSlideIconChars();
-    BOOL loadSlideIconChars(s32 alt);
-    void releaseLinkIconChars();
-    void uploadLinkIconChars();
-    BOOL loadLinkIconChars(s32 alt);
-    void uploadCameraButtonChars(s32 which);
-    BOOL loadCameraButtonChars(s32 alt);
-    void uploadKindChars(s32 which);
-    void releaseKindChars();
-    BOOL loadKindChars(s32 k);
-    void uploadChars(s32 which);
-    void uploadPalette(s32 which);
-    void freeChars();
-    void freePalette();
-
-    u8 unk_00[0x48];
-    u8 *paletteBuf;
-    u8 *charBuf;
-    u8 cameraButtonChars[0x200];
-};
 
 extern const char sHudObjCharPathTen2[];
 const char sHudObjCharPathTen2[] = "/a_mes/a_mes_ten2_obj_ncg.bin";

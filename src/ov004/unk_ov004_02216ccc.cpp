@@ -8,6 +8,7 @@
 #include "npc/Unk_02082088.h"
 #include "npc/Unk_0202d5e8.h"
 #include "actor/Unk_02088d00.h"
+#include "room/RoomFreeUnitMap.h"
 // Library base class (same as GameProc.h, but vfunc_08 takes the s32 the vtable symbol names).
 class ProcBase {
 public:
@@ -320,12 +321,6 @@ public:
     ~HouseOwnerAiMember();
 };
 
-class RoomFreeUnitMap {
-public:
-    RoomFreeUnitMap();
-    ~RoomFreeUnitMap();
-    u32 pad[0x20 / 4];
-};
 
 class HouseOwnerVillager : public VillagerActor {
 public:

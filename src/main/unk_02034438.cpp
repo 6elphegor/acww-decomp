@@ -3,6 +3,7 @@
 #include "game/Unk_02034250_Id.h"
 #include "game/Unk_02036c60_Vec.h"
 #include "game/Unk_021e5890_T.h"
+#include "snd/BgmSceneFade.h"
 
 extern "C" {
 extern u8 gFieldSceneKind;
@@ -400,30 +401,6 @@ public:
     RoomBgm(u32 a);
 };
 
-class BgmSceneFade {
-public:
-    BgmSceneFade(u32 owner);
-    virtual ~BgmSceneFade();
-    void update();
-    BOOL hasExitSilence();
-    BOOL isKeepingBgm();
-    void setKeepBgm();
-    void setFadeDelay(s32 i);
-    void func_02035368(s32 a, s32 b);
-    void func_020353b0(s32 a, s32 b);
-    void reset();
-    void init();
-    void onFadeIn();
-    void onFadeOut();
-
-    u32 manager;
-    u8 keepForWarp;
-    u8 sameSceneBgm;
-    u8 keepRequested;
-    u8 exitSilenceState;
-    s32 fadeDelay;
-    s32 releaseTimer;
-};
 
 class FaintBgm {
 public:

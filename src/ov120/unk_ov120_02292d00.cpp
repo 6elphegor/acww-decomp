@@ -2,6 +2,7 @@
 #define vfunc_14() vfunc_14(s32 a)
 #include "types.h"
 #include "Unk_020d8c7c.h"
+#include "town/TownMapMarkers.h"
 #undef postCreate
 #undef vfunc_14
 
@@ -171,12 +172,6 @@ public:
     u8 cell;
 };
 
-class TownMapMarkers {
-public:
-    TownMapMarkers();
-    ~TownMapMarkers();
-    u8 unk_00[0x66];
-};
 
 class MenuProc : public GameProc {
 public:

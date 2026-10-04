@@ -2,6 +2,7 @@
 #include "types.h"
 #include "game/Unk_0202368c_Obj.h"
 #include "actor/Unk_02088d00.h"
+#include "talk/TalkStartMsg.h"
 
 // Library base class (same as GameProc.h, but vfunc_08 takes the s32 the vtable symbol names).
 class ProcBase {
@@ -44,10 +45,6 @@ struct MsgString9B {
     ~MsgString9B();
 };
 
-struct TalkStartMsg {
-    u8 *a;
-    u8 b;
-};
 
 extern "C" {
 void _ZN12Unk_0201442015requestKeepItemEv(void *p);
@@ -1124,11 +1121,11 @@ void SpNpcWendellTalk::attachOwner(SpNpcWendell *owner) {
 }
 
 void SpNpcWendellTalk::start(TalkStartMsg *out) {
-    out->a = (u8 *)"sp_npc_walrus";
+    out->msgKey = "sp_npc_walrus";
     if (!Talk_CheckAndSetPlayerFlag(0xa, 0)) {
-        out->b = 0;
+        out->msgIndex = 0;
     } else {
-        out->b = Random_GlobalBelow(3) + 6;
+        out->msgIndex = Random_GlobalBelow(3) + 6;
     }
 }
 

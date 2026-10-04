@@ -1,13 +1,8 @@
 // mwcc-flags: -str reuse
 #include "types.h"
 #include "gfx/HBlankTask.h"
+#include "item/ItemPickSpec.h"
 
-struct ItemPickSpec {
-    u32 v[2];
-    ItemPickSpec(s32 a, s32 b);
-    ItemPickSpec(const ItemPickSpec &o) { v[0] = o.v[0]; v[1] = o.v[1]; }
-    ~ItemPickSpec();
-};
 
 struct Unk_020594dc_H {
     u16 v;

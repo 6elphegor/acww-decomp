@@ -2,6 +2,9 @@
 #include "types.h"
 #include "game/Unk_0202368c_Obj.h"
 #include "actor/Unk_02088d00.h"
+#include "item/ItemId.h"
+#include "town/VisitorPos.h"
+#include "talk/TalkStartMsg.h"
 
 // Library base class (same as GameProc.h, but vfunc_08 takes the s32 the vtable symbol names).
 class ProcBase {
@@ -50,10 +53,6 @@ struct ChoiceList {
     s32 getResult();
 };
 
-struct TalkStartMsg {
-    u32 a;
-    u8 b;
-};
 
 extern "C" {
 void _ZN12Unk_0201347416disableFootstepsEv(void *self);
@@ -119,9 +118,6 @@ extern u32 gRandom[];
 extern Unk_ov078_Vec gVec3Zero;
 }
 
-struct VisitorPos {
-    void setPos(s32 a, s32 b);
-};
 
 struct TalkWindowState {
     void setNextMessage(u8 *a, void *b);
@@ -207,11 +203,6 @@ public:
     virtual ~SpNpcTalkRequest();
 };
 
-struct ItemId {
-    u16 id;
-    ItemId();
-    ~ItemId();
-};
 
 class SpNpcSaharahTalk : public SpNpcTalkRequest {
 public:
@@ -817,46 +808,46 @@ void SpNpcSaharahTalk::start(TalkStartMsg *out) {
     u16 h;
     void *g = _ZN18SickVillagerRecord15getParcelErrandEv(_ZN10PlayerData10getErrandsEv(PlayerData_GetCurrent()));
     MsgString9B o;
-    out->a = (u32)"sp_npc_camel";
+    out->msgKey = "sp_npc_camel";
     if (turbanSlot == -1) {
         h = 0x13ac;
         turbanSlot = Pocket_FindItem(&h);
     }
     if (turbanSlot >= 0) {
-        out->b = 0x14;
+        out->msgIndex = 0x14;
         return;
     }
     if (_ZN12ErrandRecord8isActiveEv(ParcelErrand_GetRecord(g)) != 0 && _ZN12ErrandRecord7getStepEv(ParcelErrand_GetRecord(g)) == 3) {
-        out->b = 0;
+        out->msgIndex = 0;
         return;
     }
     if (!Talk_CheckAndSetPlayerFlag(0xb, 1)) {
-        out->b = 1;
+        out->msgIndex = 1;
         return;
     }
     if (_ZN12ErrandRecord8isActiveEv(ParcelErrand_GetRecord(g)) == 0) {
-        out->b = 4;
+        out->msgIndex = 4;
         return;
     }
     if (_ZN12ErrandRecord8isActiveEv(ParcelErrand_GetRecord(g)) != 0 && _ZN12ErrandRecord7getStepEv(ParcelErrand_GetRecord(g)) == 0) {
         if (ParcelErrand_GetRecipientName(g, &o)) {
             unk_3c->setSlot(0, &o);
         }
-        out->b = 9;
+        out->msgIndex = 9;
         return;
     }
     if (Pocket_FindEmpty() < 0) {
-        out->b = 0x12;
+        out->msgIndex = 0x12;
         return;
     }
     if (ParcelErrand_NextRecipient(g)) {
         if (ParcelErrand_GetRecipientName(g, &o)) {
             unk_3c->setSlot(0, &o);
         }
-        out->b = 0xa;
+        out->msgIndex = 0xa;
     } else if (_ZN12ErrandRecord7getStepEv(ParcelErrand_GetRecord(g)) == 1) {
         _ZN12ErrandRecord7setStepEh(ParcelErrand_GetRecord(g), 2);
-        out->b = 0xc;
+        out->msgIndex = 0xc;
     }
 }
 

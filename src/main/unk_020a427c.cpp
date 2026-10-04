@@ -1,6 +1,7 @@
 #include "types.h"
 #include "net/CommManager.h"
 #include "net/NetSessionParts.h"
+#include "save/LostChildRecord.h"
 
 // Local copies of the library base classes with the parameters these overrides forward.
 class ProcBase {
@@ -36,11 +37,6 @@ public:
     /* 0x04 */ u8 unk_04[0x4c];
 };
 
-class LostChildRecord {
-public:
-    BOOL isEscorting();
-    u16 *getTownId();
-};
 
 
 // Static object registered with the atexit-style helper (class of the destructor at func_02000c8c).

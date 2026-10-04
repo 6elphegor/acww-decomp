@@ -5,6 +5,7 @@
 #include "town/Unk_0204c3c0_Ver.h"
 #include "game/Unk_0204da0c_Size.h"
 #include "town/Unk_0204e858_Grid.h"
+#include "item/ItemId.h"
 
 
 struct Unk_0204da0c_Map {
@@ -105,11 +106,6 @@ struct Unk_0204d0a4 {
 
 struct Unk_0204d560_Vec { s32 x, y, z; };
 
-struct ItemId {
-    u16 v;
-    ItemId();
-    ~ItemId();
-};
 
 struct AcreItemGrid {
     ItemId e[0x100];

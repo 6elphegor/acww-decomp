@@ -8,6 +8,7 @@
 #include "game/Unk_021eff48.h"
 #include "item/Unk_02062f94_Ret.h"
 #include "gfx/StarTwinkle.h"
+#include "item/ItemPickSpec.h"
 
 // ======== class types (global scope) ========
 struct Unk_021f4400;
@@ -491,12 +492,6 @@ struct Letter {
     Letter();
     ~Letter();
     u8 unk_00[0xf4];
-};
-struct ItemPickSpec {
-    ItemPickSpec(s32 a, s32 b);
-    ~ItemPickSpec();
-    u32 listIndex;
-    u32 itemClass;
 };
 struct Unk_020bc99c_Loc {
     u8 a;

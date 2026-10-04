@@ -1,6 +1,7 @@
 // mwcc-flags: -str reuse
 #include "types.h"
 #include "actor/Unk_02088d00.h"
+#include "talk/TalkStartMsg.h"
 
 // Library base class (same as GameProc.h, but vfunc_08 takes the s32 the vtable symbol names).
 class ProcBase {
@@ -32,10 +33,6 @@ struct Unk_0201bc1c;
 class SpNpcResetti;
 class SpNpcResettiTalk;
 
-struct TalkStartMsg {
-    u32 a;
-    u8 b;
-};
 
 struct ChoiceList {
     s32 getResult();
@@ -864,8 +861,8 @@ void SpNpcResettiTalk::start(TalkStartMsg *out) {
     } else if (t > 4) {
         t = 4;
     }
-    out->b = sSpNpcResettiOffenseMsgs[t];
-    out->a = (u32)sSpNpcResettiMsgKey;
+    out->msgIndex = sSpNpcResettiOffenseMsgs[t];
+    out->msgKey = (const char *)sSpNpcResettiMsgKey;
 }
 
 void SpNpcResettiTalk::onMessageStart() {

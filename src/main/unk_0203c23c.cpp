@@ -4,6 +4,7 @@
 #include "npc/Unk_0203be94_Obj.h"
 #include "gfx/CameraPose.h"
 #include "gfx/FxMtx43.h"
+#include "item/ItemId.h"
 
 
 
@@ -11,11 +12,6 @@ struct Unk_0203c0b0_Vec {
     s32 x, y, z;
 };
 
-struct ItemId {
-    u16 v;
-    ItemId(u16 x) { v = x; }
-    ~ItemId();
-};
 
 
 class CameraBase : public GameProc {
@@ -448,5 +444,5 @@ extern "C" BOOL CarpetTex_Load(u32 a, u16 *p) {
         return FALSE;
     }
     static ItemId s(0x1144);
-    return CarpetTex_Load(a, &s.v);
+    return CarpetTex_Load(a, &s.id);
 }

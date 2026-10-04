@@ -1,6 +1,8 @@
 // mwcc-flags: -str reuse
 #include "types.h"
 #include "actor/Unk_02088d00.h"
+#include "item/ItemId.h"
+#include "talk/TalkStartMsg.h"
 
 // Library base class (same as GameProc.h, but vfunc_08 takes the s32 the vtable symbol names).
 class ProcBase {
@@ -46,10 +48,6 @@ struct Unk_ov052_02258eac_Loc : Unk_ov052_Vec {
     Unk_ov052_02258eac_Loc() {}
 };
 
-struct TalkStartMsg {
-    char *msgKey;
-    u8 msgIndex;
-};
 
 struct ChoiceList {
     s32 getResult();
@@ -294,11 +292,6 @@ struct Unk_020f4080 {
     ~Unk_020f4080();
 };
 
-struct ItemId {
-    u16 id;
-    ItemId();
-    ~ItemId();
-};
 
 class Actor : public ProcBase {
 public:
@@ -925,7 +918,7 @@ void SpNpcReddTalk::start(TalkStartMsg *out) {
     void *h = PlayerData_GetCurrent();
     if (topic == 0xc) {
         out->msgIndex = MSG_ID(topic);
-        out->msgKey = (char *)sSpNpcReddTopicMsgs[topic].name;
+        out->msgKey = (const char *)sSpNpcReddTopicMsgs[topic].name;
         return;
     }
     if (topic != 0 && topic != 1 && topic != 2) {
@@ -1008,7 +1001,7 @@ void SpNpcReddTalk::start(TalkStartMsg *out) {
             }
         }
     }
-    out->msgKey = (char *)sSpNpcReddTopicMsgs[topic].name;
+    out->msgKey = (const char *)sSpNpcReddTopicMsgs[topic].name;
 }
 
 void SpNpcReddTalk::onMessageEnd() {

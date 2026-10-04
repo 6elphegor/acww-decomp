@@ -3,6 +3,7 @@
 #include "gfx/Unk_02093dc8_Obj.h"
 #include "talk/MsgStringBase.h"
 #include "talk/MsgStringAttr.h"
+#include "save/TownId.h"
 
 
 
@@ -200,22 +201,6 @@ public:
 // ---------------------------------------------------------------------------------------------------------------------
 // Record with a 10-byte header (id + 8 bytes), a u16 at +0xa, 8 bytes at +0xc and an s8 at +0x14
 
-class TownId {
-public:
-    TownId();
-    TownId(void *o);
-    s32 TownId_IsValid();
-    void TownId_CopyTo(TownId *o);
-    void TownId_CopyFrom(TownId *o);
-    void TownId_Assign(TownId *o);
-    void TownId_Clear();
-
-    /* 0x00 */ u16 townId;
-    /* 0x02 */ u8 townName[8];
-
-    s32 getTownRelation();
-    void setTown(TownId *o);
-};
 
 class PlayerId : public TownId {
 public:

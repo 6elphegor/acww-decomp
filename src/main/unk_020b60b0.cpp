@@ -1,6 +1,7 @@
 #include "types.h"
 #include "game/Vec3.h"
 #include "actor/ActorCollider.h"
+#include "game/HitSphere.h"
 
 
 struct Mtx43 {
@@ -57,12 +58,6 @@ struct TouchPickCylinder : CollisionCylinderX {
     /* 0x1c */ TouchPickCylinder *next;
 };
 
-struct HitSphere {
-    HitSphere();
-    ~HitSphere();
-    void set(Unk_0202e918_Vec3 *a, s32 b);
-    u8 pad[0x10];
-};
 
 struct TouchPickSphere : HitSphere {
     TouchPickSphere();

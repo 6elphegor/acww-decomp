@@ -1,12 +1,9 @@
 #include "types.h"
 #include "gfx/Unk_0206fd10_Mtx.h"
+#include "save/MuseumData.h"
 
 
 
-class MuseumData {
-public:
-    BOOL isDonated(u16 *id);
-};
 
 extern "C" {
 extern Unk_0206fd10_Mtx data_021cb69c;

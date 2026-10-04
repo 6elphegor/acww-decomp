@@ -2,6 +2,7 @@
 #include "types.h"
 #include "actor/Unk_02088d00.h"
 #include "game/Unk_ov083_Vec.h"
+#include "talk/TalkStartMsg.h"
 
 // Library base class (same as GameProc.h, but vfunc_08 takes the s32 the vtable symbol names).
 class ProcBase {
@@ -38,10 +39,6 @@ struct ChoiceList {
     s32 getResult();
 };
 
-struct TalkStartMsg {
-    u32 a;
-    u8 b;
-};
 
 extern "C" {
 void *PlayerData_GetCurrent();
@@ -503,13 +500,13 @@ void SpNpcTortimerFlowerFestTalk::start(TalkStartMsg *out) {
     u16 h;
     u32 w[2];
     _ZN10PlayerData10getErrandsEv(PlayerData_GetCurrent());
-    out->a = (u32)"sp_npc_turtle3";
+    out->msgKey = "sp_npc_turtle3";
     if (massageChairSlot == -1) {
         h = 0x37e0;
         massageChairSlot = Pocket_FindItem(&h);
         if (massageChairSlot >= 0) {
-            out->a = (u32)"sp_npc_turtle";
-            out->b = 0;
+            out->msgKey = "sp_npc_turtle";
+            out->msgIndex = 0;
             return;
         }
     }
@@ -519,7 +516,7 @@ void SpNpcTortimerFlowerFestTalk::start(TalkStartMsg *out) {
     {
         u32 v = ((u8 *)w)[2];
         if (v < 6 || v >= 0x12) {
-            out->b = 0;
+            out->msgIndex = 0;
             return;
         }
     }
@@ -528,14 +525,14 @@ void SpNpcTortimerFlowerFestTalk::start(TalkStartMsg *out) {
         TownSessionState_SetFlag(TownSessionState_Get(), 1);
         c = *((u8 *)ownerNpc + 0x714);
         if (c == 0) {
-            out->b = 1;
+            out->msgIndex = 1;
         } else if (c >= 1 && c <= 5) {
-            out->b = 2;
+            out->msgIndex = 2;
         } else {
-            out->b = 3;
+            out->msgIndex = 3;
         }
     } else {
-        out->b = 0xa;
+        out->msgIndex = 0xa;
     }
 }
 

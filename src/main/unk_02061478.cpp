@@ -1,12 +1,7 @@
 #include "types.h"
 #include "talk/MsgStringAttr.h"
+#include "item/ItemId.h"
 
-class ItemId {
-public:
-    ItemId() { id = 0xfff1; }
-    ~ItemId();
-    u16 id;
-};
 
 class RecordFile {
 public:
@@ -300,7 +295,7 @@ char sIconModelStrPear[] = "pear";
 char sIconModelStrRKabu[] = "r_kabu";
 char sIconModelStrWatering[] = "watering";
 char sIconModelStrGaxe[] = "gaxe";
-ItemId sFirstHoldableItem;
+ItemId sFirstHoldableItem(0xfff1);
 char sIconModelStrPaint04[] = "paint04";
 char sIconModelStrTimer[] = "timer";
 char sIconModelStrPaint07[] = "paint07";

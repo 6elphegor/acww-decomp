@@ -4,6 +4,7 @@
 #include "game/Unk_0203389c_Vec.h"
 #include "net/Unk_020cbb18_Data.h"
 #include "town/Unk_02082e80_Grid.h"
+#include "room/RoomFreeUnitMap.h"
 
 typedef Unk_0203389c_Vec Unk_02083c28_Vec;
 struct VisitorSpawner;
@@ -123,11 +124,6 @@ struct Unk_02084ffc_Grid {
     u32 height;
 };
 
-struct RoomFreeUnitMap {
-    u8 pad_00[0x28];
-    RoomFreeUnitMap();
-    ~RoomFreeUnitMap();
-};
 
 class NpcSpawner : public GameProc {
 public:
@@ -137,6 +133,7 @@ public:
     virtual BOOL onExecute();
 
     RoomFreeUnitMap freeUnitMap;
+    u8 unk_freeUnitMapTail[8]; // 8 more bytes of NpcSpawner after the 0x20-byte map
 };
 
 namespace Dp {

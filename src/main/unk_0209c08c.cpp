@@ -4,6 +4,7 @@
 #include "room/Unk_0209c41c_Actor.h"
 #include "gfx/TexVramSlot.h"
 #include "town/TownAcreIndex.h"
+#include "gfx/ModelSlotPool.h"
 
 inline void *operator new(unsigned long, void *p) { return p; }
 
@@ -172,22 +173,6 @@ public:
 };
 
 // ---- pool of 0x1c-byte entries
-class ModelSlotPool {
-public:
-    ModelSlotPool();
-    ~ModelSlotPool();
-    BOOL destroy();
-    BOOL init(u32 n, void *a, void *b, u32 size, Unk_0209c1a4_Alloc alloc, Unk_0209c15c_Fn free);
-    void release(u16 *idx);
-    ModelSlot *acquire(u16 *idx);
-
-    u16 lastFreed;
-    u32 numSlots;
-    u32 numInUse;
-    ModelSlot *slots;
-    Unk_0209c1a4_Alloc allocFunc;
-    Unk_0209c15c_Fn freeFunc;
-};
 // global of the file: 1-byte state with empty inline constructor/destructor (func_0209c0a8 / func_0209c0a4)
 class SavedFadeIn {
 public:

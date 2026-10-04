@@ -2,6 +2,7 @@
 #include "save/PatternOrder.h"
 #include "game/Unk_020702ec_Date.h"
 #include "net/Unk_020720f8_Data.h"
+#include "save/MuseumData.h"
 
 // U125: design (pattern) storage and display helpers, 0x02070560-0x020720f8
 
@@ -24,38 +25,6 @@ struct Unk_02070248_Big {
     Unk_02070248_Big();
     ~Unk_02070248_Big();
     u8 d[0xf4];
-};
-class MuseumData {
-public:
-    s32 getDonationPercent();
-    BOOL isFishComplete();
-    BOOL isPaintingsComplete();
-    BOOL isFossilsComplete();
-    BOOL isInsectsComplete();
-    BOOL isComplete();
-    BOOL getDonorName(s32 x, u16 *id);
-    void releasePlayerDonations(u32 v);
-    void donate(u16 *id);
-    BOOL sendCompletionLetters();
-    void checkCompletionLetters();
-    BOOL isDonated(u16 *id);
-    u32 getDonationState(u16 *id);
-    u32 getDonor(u16 *id);
-    u8 *getEntry(u16 *id, s32 *out);
-    void markFormerResident(u16 *id);
-    void clearEntry(u16 *id);
-    void clear();
-    void destruct();
-    MuseumData *construct();
-
-    u8 fossilDonors[0x1b];
-    u8 fishDonors[0x1d];
-    u8 insectDonors[0x1d];
-    u8 paintingDonors[0xb];
-    u8 completeDay;
-    u8 completeMonth;
-    u8 completeYear;
-    u8 unk_63;
 };
 
 // ======== types of unk_02070790.cpp ========

@@ -1,6 +1,7 @@
 // mwcc-flags: -str reuse
 #include "types.h"
 #include "actor/Unk_02088d00.h"
+#include "talk/TalkStartMsg.h"
 
 #pragma opt_loop_invariants off
 
@@ -160,10 +161,6 @@ class SpNpcTalkRequest : public Unk_020d7710 {
 public:
     SpNpcTalkRequest();
     virtual ~SpNpcTalkRequest();
-};
-struct TalkStartMsg {
-    u8 *a;
-    u8 b;
 };
 
 class SpNpcTortimerFireworksTalk : public SpNpcTalkRequest {
@@ -543,13 +540,13 @@ void SpNpcTortimerFireworksTalk::start(TalkStartMsg *out) {
     u16 h[4];
     u32 loc[2];
     _ZN10PlayerData10getErrandsEv(PlayerData_GetCurrent());
-    out->a = (u8 *)"sp_npc_turtle4";
+    out->msgKey = "sp_npc_turtle4";
     if (massageChairSlot == -1) {
         h[1] = 0x37e0;
         massageChairSlot = Pocket_FindItem(&h[1]);
         if (massageChairSlot >= 0) {
-            out->a = (u8 *)"sp_npc_turtle";
-            out->b = 0;
+            out->msgKey = "sp_npc_turtle";
+            out->msgIndex = 0;
             return;
         }
     }
@@ -567,20 +564,20 @@ void SpNpcTortimerFireworksTalk::start(TalkStartMsg *out) {
             if (!f2) goto skip;
         }
         if (!Unk_ov084_022717ac_Rng(&h[0], 0x137e, 0x137f)) {
-            out->b = 6;
+            out->msgIndex = 6;
             return;
         }
     skip:
         if (TownSessionState_TestFlag(TownSessionState_Get(), 3) == 0) {
-            out->b = 7;
+            out->msgIndex = 7;
         } else {
-            out->b = Random_GlobalBelow(4) + 0xd;
+            out->msgIndex = Random_GlobalBelow(4) + 0xd;
         }
     } else {
         if (TownSessionState_TestFlag(TownSessionState_Get(), 2) == 0) {
             TownSessionState_SetFlag(TownSessionState_Get(), 2);
             if (ownerNpc->showWeek == 1) {
-                out->b = 0;
+                out->msgIndex = 0;
             } else {
                 loc[0] = 0;
                 loc[1] = 0;
@@ -588,15 +585,15 @@ void SpNpcTortimerFireworksTalk::start(TalkStartMsg *out) {
                 s32 r = Date_GetNthWeekdayDay(((u8 *)loc)[5], ((u8 *)loc)[4], 6, 5);
                 if (r == -1) {
                     if (ownerNpc->showWeek <= 3) {
-                        out->b = 1;
+                        out->msgIndex = 1;
                     } else {
-                        out->b = 2;
+                        out->msgIndex = 2;
                     }
                 } else {
                     if (ownerNpc->showWeek <= 4) {
-                        out->b = 1;
+                        out->msgIndex = 1;
                     } else {
-                        out->b = 2;
+                        out->msgIndex = 2;
                     }
                 }
             }

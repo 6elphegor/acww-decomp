@@ -1,10 +1,6 @@
 #include "types.h"
+#include "snd/BgmSceneFade.h"
 
-class BgmSceneFade {
-public:
-    void onFadeIn();
-    void onFadeOut();
-};
 
 struct Unk_02041104_Ent {
     void (*unk_00[4])();

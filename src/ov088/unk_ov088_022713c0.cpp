@@ -1,6 +1,8 @@
 // mwcc-flags: -str reuse
 #include "types.h"
 #include "actor/Unk_02088d00.h"
+#include "town/VisitorPos.h"
+#include "talk/TalkStartMsg.h"
 
 // Library base class (same as GameProc.h, but vfunc_08 takes the s32 the vtable symbol names).
 class ProcBase {
@@ -75,10 +77,6 @@ struct TalkWindowState {
     void openChoices(s32 v);
 };
 
-struct TalkStartMsg {
-    u32 a;
-    u8 b;
-};
 
 extern "C" {
 void *PlayerData_GetCurrent();
@@ -139,10 +137,6 @@ s32 _ZN12Unk_0201acf813func_0201acfcEv(void *self);
 void _ZN13NpcActionCtrl13requestActionEjiiissiitt(void *self, u32 a, u32 b, u32 c, u32 s0, u32 s1, u32 s2, u32 s3, u32 s4, u32 s5, u32 s6);
 }
 
-struct VisitorPos {
-    void setPos(s32 a, s32 b);
-    void pickRandomPos();
-};
 
 class ActorTalkRequest {
 public:
@@ -1056,15 +1050,15 @@ void SpNpcShrunkTalk::attachOwner(SpNpcShrunk *owner) {
 }
 
 void SpNpcShrunkTalk::start(TalkStartMsg *out) {
-    out->a = (u32)"sp_npc_reaction";
-    out->b = 1;
+    out->msgKey = "sp_npc_reaction";
+    out->msgIndex = 1;
     if (_ZN12Unk_02097ff48testFlagEj(PlayerData_GetCurrent(), 0x10) == 1) {
         if (Talk_CheckAndSetPlayerFlag(0xe, 0) == 0) {
-            out->b = Random_GlobalBelow(2) + 0x13;
+            out->msgIndex = Random_GlobalBelow(2) + 0x13;
         } else if (Emotion_CountLearned() == 1) {
-            out->b = Random_GlobalBelow(3) + 0xd;
+            out->msgIndex = Random_GlobalBelow(3) + 0xd;
         } else {
-            out->b = Random_GlobalBelow(3) + 0x10;
+            out->msgIndex = Random_GlobalBelow(3) + 0x10;
         }
     }
 }

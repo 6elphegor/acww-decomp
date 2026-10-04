@@ -5,6 +5,7 @@
 #include "Unk_020d8c7c.h"
 #include "talk/MsgStringBase.h"
 #include "talk/MsgStringAttr.h"
+#include "room/FtrPreviewer.h"
 #undef postCreate
 #undef vfunc_14
 
@@ -72,11 +73,6 @@ public:
     u32 unk_04[0x20 / 4];
 };
 
-class FtrPreviewer {
-public:
-    void clear();
-    void showItem(u16 *p);
-};
 
 class MenuLauncher {
 public:
