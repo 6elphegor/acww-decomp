@@ -1,5 +1,10 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
+#include "game/Unk_0203f3a0_L.h"
+#include "game/Unk_0203f408_Entry.h"
+#include "game/Unk_0203f42c_L.h"
+#include "game/Unk_0203fe18_Date.h"
+#include "game/Unk_0203ff50_Slot.h"
 
 extern "C" void MI_CpuCopy8(const void *src, void *dst, u32 size);
 
@@ -44,12 +49,6 @@ struct Unk_0203f554_Tbl {
     Unk_0203f554_Sub b;
 };
 
-struct Unk_0203f408_Entry {
-    /* 0x00 */ u16 eventId;
-    /* 0x02 */ u16 unk_02;
-    /* 0x04 */ u32 start;
-    /* 0x08 */ u32 end;
-};
 
 class EventDayList {
 public:
@@ -78,19 +77,8 @@ struct Unk_0203fb1c_Rec {
     u8 id;
 };
 
-struct Unk_0203fe18_Date { u8 b0, b1, b2, b3, b4, b5, b6, b7; };
-struct Unk_0203ff20_Entry { u16 date; u8 eventId, state, occurred, playerMask; };
-struct Unk_0203ff50_Slot { u8 pad[0x10]; u8 reddWeekday, unk_11; u8 todayEventId, todayWeekday; Unk_0203ff20_Entry ent[5]; long long weekStart; };
 
-union Unk_0203f3a0_L {
-    u32 w[3];
-    u8 b[12];
-};
 
-union Unk_0203f42c_L {
-    u32 w[4];
-    u8 b[16];
-};
 
 class EventCalendarModule : public GameProc {
 public:

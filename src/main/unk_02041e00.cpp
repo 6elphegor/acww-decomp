@@ -1,5 +1,9 @@
 #include "types.h"
 #include "net/CommManager.h"
+#include "town/Unk_020419b4.h"
+#include "town/Unk_02041e00_Ent.h"
+#include "game/Unk_02042104_Date.h"
+#include "game/Unk_0204da0c_Size.h"
 
 
 struct Unk_0204a768_Pos {
@@ -79,33 +83,6 @@ extern Unk_021c3f88 sPendingUnits;
 namespace nA {
 extern "C" {
 
-struct Unk_02042104_Date {
-    u8 pad0[3];
-    u8 c3, c4, c5;
-    u8 pad6[2];
-};
-struct Unk_020419b4 {
-    u8 pad00[0x64];
-    s32 threadState;
-    u8 pad68[0xc0 - 0x68];
-    u32 callerThread;
-    u32 heap;
-    u8 unk_c8[8];
-    u8 unk_d0[8];
-    u32 unk_d8;
-    u8 unk_dc;
-    u8 paddd[3];
-    u32 stackGuardLow;
-    u8 pade4[0x10e4 - 0xe4];
-    u32 stackGuardHigh;
-    u8 hasArgs;
-    u8 done;
-    u8 started;
-};
-struct Unk_02041ac0_Glob {
-    u32 pad[8];
-    Unk_020419b4 *updateThread;
-};
 extern Unk_02041ac0_Glob gTownUpdater;
 extern u32 gCurrentHeap;
 extern u32 data_021fcc2c[];
@@ -141,12 +118,6 @@ void DateTime_AddDays(Unk_02042104_Date *a, s32 n);
 void TownState_PickNextWeekDate(void *a, u8 *b);
 void TownBbs_PostPelicanNotice(void *o, u8 *base, Unk_02042104_Date *d);
 void TownBbs_PostSlogan(void *o, u8 *base, Unk_02042104_Date *d);
-struct Unk_02041e00_Ent {
-    u16 h0;
-    u16 h2;
-    u32 w4;
-    u32 w8;
-};
 s32 EventSchedule_CollectDayAll(Unk_02041e00_Ent *z, Unk_02042104_Date *d);
 void TownBbs_PostDayEvents(void *o, Unk_02041e00_Ent *z, Unk_02042104_Date *d);
 struct Unk_02041e00_Obj {
@@ -1676,10 +1647,6 @@ struct Unk_02048cc4_Pos {
     Unk_02048cc4_Pos(const Unk_02048cc4_Pos &o) : x(o.x), y(o.y) {}
 };
 typedef Unk_02048cc4_Pos Pos;
-struct Unk_0204da0c_Size {
-    s32 w;
-    s32 h;
-};
 struct Unk_0204da0c_Map {
     u32 blocks;
     Unk_0204da0c_Size size;

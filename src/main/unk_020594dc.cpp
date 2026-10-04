@@ -1,5 +1,6 @@
 // mwcc-flags: -str reuse
 #include "types.h"
+#include "gfx/HBlankTask.h"
 
 struct ItemPickSpec {
     u32 v[2];
@@ -35,16 +36,6 @@ struct Unk_0205b524_T {
     u32 w0, w1;
 };
 
-struct HBlankTask {
-    u8 taskState;
-    u8 pad_01[3];
-    void (*unk_04)();
-    void (*unk_08)();
-    s32 param;
-    s32 nextParam;
-    void (*unk_14)();
-    HBlankTask *next;
-};
 
 class RoomFengShui {
 public:

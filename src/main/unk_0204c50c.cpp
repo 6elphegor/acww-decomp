@@ -1,30 +1,16 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "town/Unk_020b5350_Info.h"
+#include "town/Unk_0204c3c0_Ver.h"
+#include "game/Unk_0204da0c_Size.h"
 
-struct Unk_0204da0c_Size {
-    s32 w;
-    s32 h;
-};
 
 struct Unk_0204da0c_Map {
     u32 blocks;
     Unk_0204da0c_Size size;
 };
 
-struct Unk_0204c3c0_Ver {
-    u8 day;
-    u8 month;
-    u8 year;
-    u8 unk_03;
-};
 
-struct Unk_0204c3f4_Slot {
-    u8 day;
-    u8 month;
-    u8 year;
-    u8 unk_03;
-};
 
 struct TownState {
     /* 0x00 */ Unk_0204c3c0_Ver lastUpdate;

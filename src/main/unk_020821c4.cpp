@@ -1,5 +1,6 @@
 #include "types.h"
 #include "npc/NpcResPool.h"
+#include "player/Unk_0205c3a4.h"
 
 
 
@@ -52,10 +53,6 @@ struct VillagerAnimHeapRef {
     u32 slot;
     VillagerAnimHeapRef();
     ~VillagerAnimHeapRef();
-};
-struct Unk_0205c3a4 {
-    Unk_0205c3a4();
-    ~Unk_0205c3a4();
 };
 
 // ---- 0x020e077c

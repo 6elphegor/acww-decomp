@@ -1,4 +1,7 @@
 #include "types.h"
+#include "game/Unk_0206d0a0_Pad.h"
+#include "game/Unk_0206d1d4_Src.h"
+#include "sys/Unk_0206d8b8_Pair.h"
 
 extern u32 OVERLAY_1_ID[];
 extern u32 OVERLAY_65_ID[];
@@ -56,10 +59,6 @@ public:
     u8 pad_00[0x4c];
 };
 
-struct Unk_0206d8b8_Pair {
-    u32 a;
-    u32 b;
-};
 
 extern "C" {
 extern char data_020ddf6c[];
@@ -457,18 +456,7 @@ extern "C" {
 void *Main_DwcAlloc(u32 a, void *p, u32 n);
 }
 
-struct Unk_0206d0a0_Pad {
-    s32 v[1];
-    Unk_0206d0a0_Pad() {}
-    ~Unk_0206d0a0_Pad() {}
-};
 
-struct Unk_0206d1d4_Src {
-    u8 pad_00[0x34];
-    u8 name[0x18];
-    u8 pad_4c[0xa0];
-    u8 cnt;
-};
 
 // ---- LetterRenderer : Unk_0206ce50 ----
 class LetterRenderer : public Unk_0206ce50 {

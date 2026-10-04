@@ -1,5 +1,7 @@
 #include "types.h"
 #include "text/Unk_02050288.h"
+#include "game/Unk_0206d0a0_Pad.h"
+#include "game/Unk_0206d1d4_Src.h"
 
 extern "C" {
 s32 Text_GetLength(void *p, s32 n);
@@ -121,18 +123,7 @@ public:
     /* 0x204 */ s32 bodyLineCount;
 };
 
-struct Unk_0206d0a0_Pad {
-    s32 v[1];
-    Unk_0206d0a0_Pad() {}
-    ~Unk_0206d0a0_Pad() {}
-};
 
-struct Unk_0206d1d4_Src {
-    u8 pad_00[0x34];
-    u8 name[0x18];
-    u8 pad_4c[0xa0];
-    u8 cnt;
-};
 
 class LetterRenderer : public LetterLayout {
 public:

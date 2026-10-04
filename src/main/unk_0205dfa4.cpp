@@ -1,6 +1,7 @@
 // mwcc-flags: -str reuse
 #include "types.h"
 #include "sys/Unk_020b83b0.h"
+#include "net/Unk_0205f6f8_Cfg.h"
 
 // ---- helper classes (declared elsewhere) ----
 class ItemId {
@@ -138,7 +139,6 @@ struct Unk_0205e61c_Obj {
     u8 cbVecTimingNodeDesc;
 };
 
-struct Unk_0205f6f8_Cfg { u8 pad[0x6c]; u8 memberCount; };
 
 struct Unk_0205e310_P {
     u32 pad[6];

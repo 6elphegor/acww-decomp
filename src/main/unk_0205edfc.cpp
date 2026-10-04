@@ -1,6 +1,6 @@
 #include "types.h"
+#include "net/Unk_0205f6f8_Cfg.h"
 
-struct Unk_0205f6f8_Cfg { u8 pad[0x6c]; u8 memberCount; };
 
 struct PlayerBodyWorkPool {
     u32 heaps[4];

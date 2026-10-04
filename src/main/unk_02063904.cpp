@@ -1,4 +1,5 @@
 #include "types.h"
+#include "sys/Unk_02063d18_File.h"
 
 typedef char *va_list;
 #define va_start(ap, parm) ((ap) = (va_list)(((u32)&(parm)) & ~3) + 4)
@@ -8,17 +9,6 @@ struct Unk_02063eac_FileId {
     u32 file_id;
 };
 
-// FS file object, 0x48 bytes
-struct Unk_02063d18_File {
-    u8 unk_00[0x14];
-    s32 error;
-    u8 unk_18[8];
-    s32 unk_20;
-    s32 start;
-    s32 end;
-    s32 pos;
-    u8 unk_30[0x18];
-};
 
 struct FileLzHeader {
     u32 magic;

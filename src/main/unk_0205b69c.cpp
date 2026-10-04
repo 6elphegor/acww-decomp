@@ -1,15 +1,6 @@
 #include "types.h"
+#include "gfx/HBlankTask.h"
 
-struct HBlankTask {
-    u8 taskState;
-    u8 pad_01[3];
-    void (*unk_04)();
-    void (*unk_08)();
-    s32 param;
-    s32 nextParam;
-    void (*unk_14)();
-    HBlankTask *next;
-};
 
 // 0x021c6190: list head; this file's first .bss object (all five main users are functions of this file, plus itcm 0x01ffcc5c)
 HBlankTask *sHBlankListHead;

@@ -8,6 +8,7 @@
 #include "actor/Unk_ov004_SceneEntry.h"
 #include "game/Unk_020d77a4_Vec3.h"
 #include "talk/Unk_02015b54.h"
+#include "town/Unk_0204e858_Grid.h"
 #undef postCreate
 
 extern "C" {
@@ -260,10 +261,6 @@ public:
 
 typedef Unk_020d77a4_Vec3 Unk_ov004_Vec3;
 
-struct Unk_0204e858_Grid {
-    void *cells;
-    u32 w, h;
-};
 
 struct Unk_ov004_022162f0_Actor {
     u8 pad[0x5c];
@@ -527,8 +524,8 @@ void BirthdayGuestVillager::blockFurnitureCells() {
     Unk_0204e858_Grid *g = gSceneBlockMap;
     void *c;
     s32 y, x;
-    if ((u8 *)g->w > (u8 *)0 && (u8 *)g->h > (u8 *)0 && g->cells) {
-        c = g->cells;
+    if ((u8 *)g->width > (u8 *)0 && (u8 *)g->height > (u8 *)0 && g->blocks) {
+        c = g->blocks;
     } else {
         c = 0;
     }

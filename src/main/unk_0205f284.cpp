@@ -2,10 +2,9 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "net/CommManager.h"
+#include "game/Unk_0205f6b4_Obj.h"
+#include "gfx/Unk_0205f7f4_Mtx.h"
 
-struct Unk_0205f7f4_Mtx {
-    s32 v[12];
-};
 
 struct Unk_0205f8d4_Vec {
     s32 x, y, z;
@@ -80,16 +79,6 @@ public:
     ~GroundInfo();
 };
 
-class Unk_0205f6b4_Obj {
-public:
-    u8 pad_00[0x24];
-    s32 flowDir, unk_28, unk_2c;
-    s32 waterKind;
-    u8 pad_34[8];
-    s32 waterSurfaceY;
-    Unk_0205f6b4_Obj() {}
-    Unk_0205f6b4_Obj *_ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii(Unk_0205f8d4_Vec *v, s32 a, s32 b);
-};
 extern "C" {
 extern u32 gFishBobberHeap;
 extern CommManager *gCommManager;

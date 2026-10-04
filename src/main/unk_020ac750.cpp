@@ -7,6 +7,7 @@
 #include "gfx/Unk_020d094c.h"
 #include "game/Unk_021c47c4.h"
 #include "gfx/Unk_021ede90.h"
+#include "item/Unk_02062f94_Ret.h"
 struct ItemId {
     u16 v;
     ItemId();
@@ -148,11 +149,6 @@ struct Unk_020ac2e8_V : Vec3 {
 // ======== types of unk_020acf38.cpp ========
 
 // ---- externs ----
-// element with out-of-line ctor/dtor (0203442c / 02004b60)
-struct Unk_02062f94_Ret {
-    u16 v;
-    Unk_02062f94_Ret();
-};
 
 class MsgString {  // base of ReddPasswordString
 public:

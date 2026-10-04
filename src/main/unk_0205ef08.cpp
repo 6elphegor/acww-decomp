@@ -1,12 +1,11 @@
 #include "types.h"
+#include "game/Unk_0205f6b4_Obj.h"
+#include "gfx/Unk_0205f7f4_Mtx.h"
 
 struct Unk_0205f1e8_Vec {
     s32 x, y, z;
 };
 
-struct Unk_0205f7f4_Mtx {
-    s32 v[12];
-};
 
 class GroundInfo {
 public:
@@ -20,16 +19,6 @@ public:
     ~GroundInfo();
 };
 
-class Unk_0205f6b4_Obj {
-public:
-    u8 pad_00[0x24];
-    s32 flowDir, unk_28, unk_2c;
-    s32 waterKind;
-    u8 pad_34[8];
-    s32 waterSurfaceY;
-    Unk_0205f6b4_Obj() {}
-    Unk_0205f6b4_Obj *func_020339bc(Unk_0205f1e8_Vec *v, s32 a, s32 b);
-};
 
 extern "C" {
 extern void *gPlayerPaletteHeap;

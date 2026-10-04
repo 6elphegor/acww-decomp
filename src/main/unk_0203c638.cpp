@@ -1,5 +1,6 @@
 #include "types.h"
 #include "game/Unk_0203c92c_Bits.h"
+#include "game/Unk_0203ce24_Elem.h"
 
 // ---- 0x020d94b8 base (MsgRequest at 0x020e2a30)
 class MsgRequest {
@@ -141,9 +142,6 @@ public:
 };
 
 // ---- free functions on the 0x34-byte entries at 0x021c3784
-struct Unk_0203ce24_Elem {
-    u8 unk_00[0x34];
-};
 extern "C" Unk_0203ce24_Elem data_021c3784[];
 extern "C" MailTextBuilder gMailTextBuilder;
 

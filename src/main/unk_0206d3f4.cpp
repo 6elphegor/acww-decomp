@@ -1,4 +1,7 @@
 #include "types.h"
+#include "game/Unk_0206d0a0_Pad.h"
+#include "game/Unk_0206d1d4_Src.h"
+#include "sys/Unk_0206d8b8_Pair.h"
 
 // TU113, first part: 0x0206d3f4-0x0206d470 (the unit's remaining functions are the assembly routine
 // Fatal_SaveRegisters and its caller). Owns its string literal (.data 0x020ddf6c-0x020ddf88).
@@ -60,10 +63,6 @@ public:
 };
 
 
-struct Unk_0206d8b8_Pair {
-    u32 a;
-    u32 b;
-};
 
 extern "C" {
 extern u8 sDwcInitResult;
@@ -167,18 +166,7 @@ void Main_DwcFree(u32 a, void *p);
 void *Main_DwcAlloc(u32 a, void *p, u32 n);
 }
 
-struct Unk_0206d0a0_Pad {
-    s32 v[1];
-    Unk_0206d0a0_Pad() {}
-    ~Unk_0206d0a0_Pad() {}
-};
 
-struct Unk_0206d1d4_Src {
-    u8 pad_00[0x34];
-    u8 name[0x18];
-    u8 pad_4c[0xa0];
-    u8 cnt;
-};
 
 // ---- LetterRenderer : LetterTextLine ----
 class LetterRenderer : public LetterTextLine {

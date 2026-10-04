@@ -6,6 +6,7 @@
 #include "npc/Unk_020c0538_Out.h"
 #include "game/Unk_021ed2b0.h"
 #include "game/Unk_021eff48.h"
+#include "item/Unk_02062f94_Ret.h"
 
 // ======== class types (global scope) ========
 struct Unk_021f4400;
@@ -495,10 +496,6 @@ struct ItemPickSpec {
     ~ItemPickSpec();
     u32 listIndex;
     u32 itemClass;
-};
-struct Unk_02062f94_Ret {
-    u16 v;
-    Unk_02062f94_Ret();
 };
 struct Unk_020bc99c_Loc {
     u8 a;

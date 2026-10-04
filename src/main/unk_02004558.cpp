@@ -47,6 +47,10 @@
 #include "player/Unk_02008100_Msg.h"
 #include "player/Unk_02008190_Ptr.h"
 #include "player/Unk_02008858_Blk.h"
+#include "player/Unk_0205ef98.h"
+#include "player/Unk_0205dfa4_Base.h"
+#include "player/Unk_0205c3a4.h"
+#include "game/Unk_0203d820_Ptr.h"
 #include "gfx/Unk_021cb69c.h"
 #include "player/Unk_021c1b3c.h"
 #include "player/Unk_020d6df4_7d0.h"
@@ -214,7 +218,6 @@ struct PlayerBodyModelRef { PlayerBodyModelRef(); ~PlayerBodyModelRef(); };
 struct CachedModel { CachedModel(); ~CachedModel(); };
 struct PlayerGlassesModelRef { PlayerGlassesModelRef(); ~PlayerGlassesModelRef(); };
 struct HeldItemModel { HeldItemModel(); ~HeldItemModel(); };
-struct Unk_0205c3a4 { Unk_0205c3a4(); ~Unk_0205c3a4(); };
 struct PlayerFaceTexRef { PlayerFaceTexRef(); ~PlayerFaceTexRef(); };
 struct CharaFaceAnimRef { CharaFaceAnimRef(); ~CharaFaceAnimRef(); };
 struct CharaFaceAnimWorkRef { CharaFaceAnimWorkRef(); ~CharaFaceAnimWorkRef(); };
@@ -222,7 +225,6 @@ struct MatTexPatAnim { MatTexPatAnim(); ~MatTexPatAnim(); };
 struct BlinkTimer { BlinkTimer(); ~BlinkTimer(); };
 struct CharaClothTexRef { CharaClothTexRef(); ~CharaClothTexRef(); };
 struct MatTexVramTask { MatTexVramTask(); };
-struct Unk_0205ef98 { Unk_0205ef98(); ~Unk_0205ef98(); };
 struct CollisionState { CollisionState(); ~CollisionState(); };
 struct SndSeEmitterKind99 { SndSeEmitterKind99(); ~SndSeEmitterKind99(); };
 struct Unk_0201a13c { Unk_0201a13c(); ~Unk_0201a13c(); };
@@ -2397,7 +2399,6 @@ void _ZN11PlayerActor11requestWaitEjjj(void *, u32 a, u32 b, s32 c);
 namespace nJ {
 extern "C" {
 
-struct Unk_0203d820_Ptr { u32 index; u32 state; u32 nextState; };
 struct Unk_02006d14_A {
     virtual void vfunc_00();
     u8 pad_04[0xc4 - 4];
@@ -2874,16 +2875,6 @@ void _ZN12Unk_02006d1411tryInteractEv(void *);
 namespace nM {
 extern "C" {
 
-struct Unk_0205dfa4_Sub {
-    s32 unk_00;
-    s32 numFrames;
-    s32 curFrame;
-    s32 prevFrame;
-    s32 frameStep;
-};
-struct Unk_0205dfa4_Base {
-    u8 pad_00[0x9c];
-};
 struct Unk_0205dfa4 : Unk_0205dfa4_Base, Unk_0205dfa4_Sub {
 };
 extern s16 data_02135f44[];

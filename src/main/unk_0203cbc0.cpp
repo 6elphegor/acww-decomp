@@ -1,4 +1,5 @@
 #include "types.h"
+#include "game/Unk_0203ce24_Elem.h"
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Classes of other units
@@ -221,9 +222,6 @@ public:
     /* 0x58 */ s32 newlineCount;
 };
 
-struct Unk_0203ce24_Elem {
-    u8 unk_00[0x34];
-};
 
 // ---- container singleton at 0x021c3280 (a MailTextExpander at +0, a BmgReader512 at +0x5c)
 class MailTextBuilder {

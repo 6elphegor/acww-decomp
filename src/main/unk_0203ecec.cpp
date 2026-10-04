@@ -1,5 +1,11 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
+#include "talk/Unk_0203ebdc_List.h"
+#include "game/Unk_0203ecec_Global.h"
+#include "game/Unk_0203f218_Slot.h"
+#include "game/Unk_0203f3a0_L.h"
+#include "game/Unk_0203f408_Entry.h"
+#include "game/Unk_0203f42c_L.h"
 
 struct TalkRequestEntry {
     /* 0x00 */ u8 unk_00[0x0c];
@@ -9,9 +15,6 @@ struct TalkRequestEntry {
     /* 0x15 */ u8 unk_15[7];
 };
 
-struct Unk_0203ebdc_List {
-    /* 0x00 */ TalkRequestEntry *head;
-};
 
 struct Unk_0203ec0c {
     /* 0x00 */ s32 unk_00;
@@ -32,32 +35,10 @@ public:
     /* 0x14 */ s32 dropSlope;
 };
 
-struct Unk_0203ecec_Global {
-    /* 0x00 */ u8 unk_00[4];
-    /* 0x04 */ u8 unk_04;
-};
 
-struct Unk_0203f408_Entry {
-    /* 0x00 */ u16 eventId;
-    /* 0x02 */ u16 unk_02;
-    /* 0x04 */ u32 start;
-    /* 0x08 */ u32 end;
-};
 
-union Unk_0203f218_Ver {
-    u32 word;
-    u8 b[4];
-};
 
-struct Unk_0203f218_Date {
-    u8 b[8];
-};
 
-struct Unk_0203f218_Slot {
-    /* 0x00 */ u16 unk_00;
-    /* 0x02 */ u16 unk_02;
-    /* 0x04 */ u8 unk_04[0x18];
-};
 
 extern "C" {
 extern Unk_0203f218_Slot sEventSchedule[99];
@@ -481,16 +462,8 @@ public:
 };
 
 extern "C" {
-union Unk_0203f3a0_L {
-    u32 w[3];
-    u8 b[12];
-};
 }
 
 extern "C" {
-union Unk_0203f42c_L {
-    u32 w[4];
-    u8 b[16];
-};
 }
 

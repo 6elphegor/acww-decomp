@@ -1,23 +1,12 @@
 #include "types.h"
+#include "town/Unk_0204e858_Grid.h"
 
 inline void *operator new(unsigned long, void *p) {
     return p;
 }
 
-struct Unk_0204e858_Vec {
-    s32 x, y, z;
-};
 
-struct Unk_0204e858_Cell {
-    u8 pad_00[0x24];
-    u16 *buried;
-};
 
-struct Unk_0204e858_Grid {
-    Unk_0204e858_Cell *blocks;
-    u32 width;
-    u32 height;
-};
 
 struct MapBlockEntry {
     u32 acreId;
