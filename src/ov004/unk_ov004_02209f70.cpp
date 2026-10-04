@@ -237,7 +237,7 @@ void FtrPhone::execTalkAct02() {
 
 
 BOOL FtrPhone::enterTalkAct02() {
-    Unk_ov004_0220a0e4_Pad pad;
+    StackPad8 pad;
     attachTalkRequest((s32)(TalkMsgRequest *)this);
     window->nextState = 1;
     TalkMsgRequest &s = *this;

@@ -1,6 +1,6 @@
 #include "types.h"
 #include "text/Unk_02050288.h"
-#include "game/Unk_0206d0a0_Pad.h"
+#include "sys/StackPad.h"
 #include "item/LetterView.h"
 #include "talk/MsgStringBase.h"
 #include "talk/MsgStringAttr.h"
@@ -170,7 +170,7 @@ void LetterRenderer::setSignature(u8 *data) {
 }
 
 void LetterRenderer::highlightGreeting(u32 a, u32 b) {
-    Unk_0206d0a0_Pad pad;
+    StackPad4 pad;
     u32 u;
     greetingLine.setHighlight(a, b, u);
 }

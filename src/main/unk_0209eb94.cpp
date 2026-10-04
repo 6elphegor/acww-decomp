@@ -131,15 +131,32 @@ public:
     BOOL allPeersSentAct10();
     void runGatherPeersInScene(u8 *p, u32 base, u32 x, u32 y);
     s32 runSyncedSaveClient(u8 *p, u32 base, u32 fail, u8 a5, u8 a6, u8 a7, u32 a8);
+    // save-slot write / verify / erase / load steps (unk_020a0868.cpp; formerly declared through a separate view class, SaveSlotWriter)
+    typedef s32 (SaveManager::*SlotStepFn)(s32);
+    s32 stepPrepare(s32 idx);
+    s32 stepChecksum(s32 mode);
+    s32 stepReadBack(s32 idx);
+    s32 stepFindDirty(s32 idx);
+    s32 stepWriteDirty(s32 idx);
+    s32 stepCommit(s32 idx);
+    s32 eraseSlotStep(s32 idx);
+    s32 verifySlotStep(s32 idx);
+    s32 loadSlotStep(s32 idx);
+    BOOL memEqual(u8 *p, u8 *q, s32 n);
+    s32 saveSlotStep(s32 arg);
 
     /* 0x50 */ s32 act;
     /* 0x54 */ SaveManagerTalk talk;
     /* 0x9c */ u8 slotStep;
     /* 0x9d */ u8 actStep;
-    /* 0x9e */ u8 pad_9e[0xa8 - 0x9e];
+    /* 0x9e */ u8 blockCursor;
+    /* 0x9f */ u8 unk_9f;
+    /* 0xa0 */ s16 dirtyFirstBlock;
+    /* 0xa2 */ s16 unk_a2;
+    /* 0xa4 */ s32 dirtySize;
     /* 0xa8 */ void *bufferHeap;
-    /* 0xac */ void *workBuf;
-    /* 0xb0 */ void *readBackBuf;
+    /* 0xac */ u8 *workBuf;
+    /* 0xb0 */ u8 *readBackBuf;
     /* 0xb4 */ void *saveDataCopy;
     /* 0xb8 */ void *playerDataCopy;
     /* 0xbc */ void *villagerTransferBackup;
@@ -340,8 +357,8 @@ s32 CommCtrl_SendAct08(void);
 s32 Comm_IsConnectionLost(u32 a);
 void Comm_SetLostFlag(void);
 s32 _ZN11SaveManager15verifySlotsStepEv(void *p);
-s32 _ZN14SaveSlotWriter12loadSlotStepEi(void *p, u32 v);
-s32 _ZN14SaveSlotWriter12saveSlotStepEi(void *p, u32 v);
+s32 _ZN11SaveManager12loadSlotStepEi(void *p, u32 v);
+s32 _ZN11SaveManager12saveSlotStepEi(void *p, u32 v);
 s32 CommCtrl_SendAct0E(u32 a, u32 b);
 void SaveManager_ClearCtrlAct0E(void *p);
 void _ZN11SaveManager23restoreVillagerTransferEv(void *p);
@@ -379,7 +396,7 @@ void Comm_LeaveCritical();
 BOOL CommCtrl_SendAct0E(s32 a, u32 b);
 BOOL CommCtrl_SendAct13();
 s32 _ZN11SaveManager15verifySlotsStepEv(SaveManager *p);
-s32 _ZN14SaveSlotWriter12saveSlotStepEi(SaveManager *p, u32 v);
+s32 _ZN11SaveManager12saveSlotStepEi(SaveManager *p, u32 v);
 void _ZN11SaveManager23restoreVillagerTransferEv(SaveManager *p);
 void SaveManager_ClearCtrlAct0E(SaveManager *p);
 void _ZN11SaveManager18showSequence2Msg0AEv(SaveManager *p);
@@ -531,38 +548,6 @@ BOOL GameStart_IsMode3();
 
 // ---- unk_020a0868.cpp
 
-class SaveSlotWriter;
-
-typedef s32 (SaveSlotWriter::*Unk_020a09d8_State)(s32);
-
-class SaveSlotWriter {
-public:
-    s32 stepPrepare(s32 idx);
-    s32 stepChecksum(s32 mode);
-    s32 stepReadBack(s32 idx);
-    s32 stepFindDirty(s32 idx);
-    s32 stepWriteDirty(s32 idx);
-    s32 stepCommit(s32 idx);
-    s32 eraseSlotStep(s32 idx);
-    s32 verifySlotStep(s32 idx);
-    s32 loadSlotStep(s32 idx);
-    BOOL memEqual(u8 *p, u8 *q, s32 n);
-    s32 saveSlotStep(s32 arg);
-
-     u32 unk_00[0x14];
-     s32 act;
-     u32 unk_54[0x12];
-     u8 slotStep;
-     u8 actStep;
-     u8 blockCursor;
-     u8 unk_9f;
-     s16 dirtyFirstBlock;
-     s16 unk_a2;
-     s32 dirtySize;
-     u32 bufferHeap;
-     u8 *workBuf;
-     u8 *readBackBuf;
-};
 
 namespace NE {
 extern "C" {
@@ -573,7 +558,7 @@ extern s32 sSaveSlotSizes[];
 extern s32 sSaveSlotDataSizes[];
 extern s32 sSaveSlotOffsets[];
 extern u8 __ptmf_null[];
-extern SaveSlotWriter *gSaveManager;
+extern SaveManager *gSaveManager;
 TalkWindowState *TalkWindow_Get(s32 i);
 s32 Backup_GetStatus(void *p);
 s32 Backup_EndAccess(void *p);
@@ -630,8 +615,8 @@ extern u8 gSaveFooter[];
 extern u8 gTalkMsgIndexEnd[];
 extern u8 data_021e7f8c[];
 extern u8 sSessionResidentIndex;
-u8 _ZN14SaveSlotWriter14verifySlotStepEi(SaveManager *self, u32 x);
-s32 _ZN14SaveSlotWriter12saveSlotStepEi(SaveManager *self, u32 x);
+u8 _ZN11SaveManager14verifySlotStepEi(SaveManager *self, u32 x);
+s32 _ZN11SaveManager12saveSlotStepEi(SaveManager *self, u32 x);
 u32 Save_SlotStampsMatch(void);
 s32 SaveManager_GetCtrlAct14Aid(void);
 void _ZN11SaveManager8setStateEi(void *p, s32 x);
@@ -853,14 +838,14 @@ extern VecFx32 data_020d0788;
 extern VecFx32 data_020d0770;
 extern u8 gSaveVillagers[];
 s32 _ZN11SaveManager15verifySlotsStepEv(SaveManager *self);
-s32 _ZN14SaveSlotWriter12saveSlotStepEi(SaveManager *self, u32 n);
+s32 _ZN11SaveManager12saveSlotStepEi(SaveManager *self, u32 n);
 s32 _ZN11SaveManager13func_020a15c8Ej(SaveManager *self, u32 n);
 void _ZN11SaveManager13func_020a15f8Ev(SaveManager *self);
 void _ZN11SaveManager18showSequence2Msg0AEv(SaveManager *self);
 void _ZN11SaveManager8setStateEi(SaveManager *self, u32 n);
 void _ZN11SaveManager9startTalkEPKch(SaveManager *self, void *p, u32 n);
 s32 Save_InvalidateAll(SaveManager *self);
-s32 _ZN14SaveSlotWriter13eraseSlotStepEi(SaveManager *self, u32 n);
+s32 _ZN11SaveManager13eraseSlotStepEi(SaveManager *self, u32 n);
 TalkWindowState *TalkWindow_Get(s32 i);
 s32 Scene_GetWarpRequest();
 void SceneWarp_RequestExit(s32 a, s32 b);
@@ -928,7 +913,7 @@ s32 Comm_ResetNetSession(void);
 BOOL Wifi_EndSession(void *p);
 s32 NetOverlay_Restore(void);
 s32 _ZN11SaveManager15verifySlotsStepEv(void *p);
-s32 _ZN14SaveSlotWriter12saveSlotStepEi(void *p, u32 v);
+s32 _ZN11SaveManager12saveSlotStepEi(void *p, u32 v);
 s32 _ZN11SaveManager18showSequence2Msg0AEv(void *p);
 s32 _ZN11SaveManager13func_020a15f8Ev(void *p);
 void *PlayerData_GetCurrent(void);
@@ -1127,8 +1112,8 @@ BOOL SaveManager::onCreate() {
     NJ::_ZN15SaveManagerTalk8setOwnerEj(&talk, this);
     bufferHeap = NJ::gCurrentHeap;
     if (NJ::Scene_GetCurrent() == 0x2e || NJ::Scene_GetCurrent() == 6 || NJ::Scene_GetCurrent() == 9 || NJ::Scene_GetCurrent() == 0xb) {
-        workBuf = NJ::Heap_Alloc(bufferHeap, 0x15fe0);
-        readBackBuf = NJ::Heap_Alloc(bufferHeap, 0x15fe0);
+        workBuf = (u8 *)NJ::Heap_Alloc(bufferHeap, 0x15fe0);
+        readBackBuf = (u8 *)NJ::Heap_Alloc(bufferHeap, 0x15fe0);
         letterStorage = NJ::Heap_Alloc(bufferHeap, 0x11df4);
         NJ::Save_ReadSlot(2);
         void *r4 = NJ::SaveManager_GetLetterStorage();
@@ -1277,7 +1262,7 @@ void SaveManager::execAct01() {
         break;
     }
     case 2: {
-        s32 r = NJ::_ZN14SaveSlotWriter12saveSlotStepEi(this, slotOrder.hi);
+        s32 r = NJ::_ZN11SaveManager12saveSlotStepEi(this, slotOrder.hi);
         if (r == 1) {
             actStep = 4;
         } else if (r == 0) {
@@ -1286,7 +1271,7 @@ void SaveManager::execAct01() {
         break;
     }
     case 3: {
-        s32 r = NJ::_ZN14SaveSlotWriter12saveSlotStepEi(this, slotOrder.lo);
+        s32 r = NJ::_ZN11SaveManager12saveSlotStepEi(this, slotOrder.lo);
         if (r == 1) {
             actStep = 4;
         } else if (r == 0) {
@@ -1339,7 +1324,7 @@ void SaveManager::execAct02() {
         break;
     }
     case 2: {
-        s32 r = NJ::_ZN14SaveSlotWriter12saveSlotStepEi(this, slotOrder.hi);
+        s32 r = NJ::_ZN11SaveManager12saveSlotStepEi(this, slotOrder.hi);
         if (r == 1) {
             actStep = 4;
         } else if (r == 0) {
@@ -1348,7 +1333,7 @@ void SaveManager::execAct02() {
         break;
     }
     case 3: {
-        s32 r = NJ::_ZN14SaveSlotWriter12saveSlotStepEi(this, slotOrder.lo);
+        s32 r = NJ::_ZN11SaveManager12saveSlotStepEi(this, slotOrder.lo);
         if (r == 1) {
             actStep = 4;
         } else if (r == 0) {
@@ -1436,7 +1421,7 @@ void SaveManager::execAct04() {
         break;
     }
     case 4: {
-        s32 r = NI::_ZN14SaveSlotWriter12saveSlotStepEi(this, slotOrder.hi);
+        s32 r = NI::_ZN11SaveManager12saveSlotStepEi(this, slotOrder.hi);
         if (r == 1) {
             actStep = 6;
         } else if (r == 0) {
@@ -1445,7 +1430,7 @@ void SaveManager::execAct04() {
         break;
     }
     case 5: {
-        s32 r = NI::_ZN14SaveSlotWriter12saveSlotStepEi(this, slotOrder.lo);
+        s32 r = NI::_ZN11SaveManager12saveSlotStepEi(this, slotOrder.lo);
         if (r == 1) {
             actStep = 6;
         } else if (r == 0) {
@@ -1488,7 +1473,7 @@ void SaveManager::execAct05() {
         break;
     }
     case 2: {
-        s32 r = NI::_ZN14SaveSlotWriter13eraseSlotStepEi(this, 0);
+        s32 r = NI::_ZN11SaveManager13eraseSlotStepEi(this, 0);
         if (r == 1) {
             actStep = 5;
         } else if (r == 0) {
@@ -1497,7 +1482,7 @@ void SaveManager::execAct05() {
         break;
     }
     case 3: {
-        s32 r = NI::_ZN14SaveSlotWriter13eraseSlotStepEi(this, 1);
+        s32 r = NI::_ZN11SaveManager13eraseSlotStepEi(this, 1);
         if (r == 1) {
             actStep = 5;
         } else if (r == 0) {
@@ -1506,7 +1491,7 @@ void SaveManager::execAct05() {
         break;
     }
     case 4: {
-        s32 r = NI::_ZN14SaveSlotWriter13eraseSlotStepEi(this, 2);
+        s32 r = NI::_ZN11SaveManager13eraseSlotStepEi(this, 2);
         if (r == 1) {
             actStep = 5;
         } else if (r == 0) {
@@ -1562,7 +1547,7 @@ void SaveManager::execAct06() {
         break;
     }
     case 2: {
-        s32 r = NI::_ZN14SaveSlotWriter12saveSlotStepEi(this, slotOrder.hi);
+        s32 r = NI::_ZN11SaveManager12saveSlotStepEi(this, slotOrder.hi);
         if (r == 1) {
             actStep = 5;
         } else if (r == 0) {
@@ -1571,7 +1556,7 @@ void SaveManager::execAct06() {
         break;
     }
     case 3: {
-        s32 r = NI::_ZN14SaveSlotWriter12saveSlotStepEi(this, slotOrder.lo);
+        s32 r = NI::_ZN11SaveManager12saveSlotStepEi(this, slotOrder.lo);
         if (r == 1) {
             actStep = 5;
         } else if (r == 0) {
@@ -1580,7 +1565,7 @@ void SaveManager::execAct06() {
         break;
     }
     case 4: {
-        s32 r = NI::_ZN14SaveSlotWriter12saveSlotStepEi(this, 2);
+        s32 r = NI::_ZN11SaveManager12saveSlotStepEi(this, 2);
         if (r == 1) {
             actStep = 5;
         } else if (r == 0) {
@@ -1623,7 +1608,7 @@ void SaveManager::execAct07() {
         break;
     }
     case 2: {
-        s32 r = NI::_ZN14SaveSlotWriter12saveSlotStepEi(this, slotOrder.hi);
+        s32 r = NI::_ZN11SaveManager12saveSlotStepEi(this, slotOrder.hi);
         if (r == 1) {
             actStep = 4;
         } else if (r == 0) {
@@ -1632,7 +1617,7 @@ void SaveManager::execAct07() {
         break;
     }
     case 3: {
-        s32 r = NI::_ZN14SaveSlotWriter12saveSlotStepEi(this, slotOrder.lo);
+        s32 r = NI::_ZN11SaveManager12saveSlotStepEi(this, slotOrder.lo);
         if (r == 1) {
             actStep = 4;
         } else if (r == 0) {
@@ -1814,7 +1799,7 @@ void SaveManager::execAct12() {
         break;
     }
     case 1: {
-        s32 r = NI::_ZN14SaveSlotWriter12saveSlotStepEi(this, slotOrder.hi);
+        s32 r = NI::_ZN11SaveManager12saveSlotStepEi(this, slotOrder.hi);
         if (r == 1) {
             actStep = 3;
         } else if (r == 0) {
@@ -1823,7 +1808,7 @@ void SaveManager::execAct12() {
         break;
     }
     case 2: {
-        s32 r = NI::_ZN14SaveSlotWriter12saveSlotStepEi(this, 2);
+        s32 r = NI::_ZN11SaveManager12saveSlotStepEi(this, 2);
         if (r == 1) {
             actStep = 3;
         } else if (r == 0) {
@@ -1856,7 +1841,7 @@ void SaveManager::execAct13() {
         break;
     }
     case 1: {
-        s32 r = NI::_ZN14SaveSlotWriter12saveSlotStepEi(this, slotOrder.hi);
+        s32 r = NI::_ZN11SaveManager12saveSlotStepEi(this, slotOrder.hi);
         if (r == 1) {
             actStep = 3;
         } else if (r == 0) {
@@ -1865,7 +1850,7 @@ void SaveManager::execAct13() {
         break;
     }
     case 2: {
-        s32 r = NI::_ZN14SaveSlotWriter12saveSlotStepEi(this, 2);
+        s32 r = NI::_ZN11SaveManager12saveSlotStepEi(this, 2);
         if (r == 1) {
             actStep = 3;
         } else if (r == 0) {
@@ -2980,7 +2965,7 @@ void SaveManager::execAct1E() {
         if (NF::Comm_IsConnectionLost(-1)) {
             NF::Comm_SetLostFlag();
         } else {
-            s32 r = NF::_ZN14SaveSlotWriter12saveSlotStepEi(this, 2);
+            s32 r = NF::_ZN11SaveManager12saveSlotStepEi(this, 2);
             if (r == 1) {
                 actStep = 0xb;
             } else if (r == 0) {
@@ -3005,7 +2990,7 @@ void SaveManager::execAct1E() {
         if (NF::Comm_IsConnectionLost(-1)) {
             NF::Comm_SetLostFlag();
         } else {
-            s32 r = NF::_ZN14SaveSlotWriter12saveSlotStepEi(this, slotOrder.hi);
+            s32 r = NF::_ZN11SaveManager12saveSlotStepEi(this, slotOrder.hi);
             if (r == 1) {
                 actStep = 0xb;
             } else if (r == 0) {
@@ -3030,7 +3015,7 @@ void SaveManager::execAct1E() {
         break;
     case 7: {
         NF::Comm_IsConnectionLost(-1);
-        s32 r = NF::_ZN14SaveSlotWriter12saveSlotStepEi(this, slotOrder.hi);
+        s32 r = NF::_ZN11SaveManager12saveSlotStepEi(this, slotOrder.hi);
         if (r == 1) {
             NF::gCommManager->setErrorMode(0);
             actStep = 0xb;
@@ -3063,7 +3048,7 @@ void SaveManager::execAct1E() {
     }
     case 10: {
         NF::Comm_IsConnectionLost(-1);
-        s32 r = NF::_ZN14SaveSlotWriter12saveSlotStepEi(this, slotOrder.hi);
+        s32 r = NF::_ZN11SaveManager12saveSlotStepEi(this, slotOrder.hi);
         if (r == 1) {
             NF::gCommManager->setErrorMode(0);
             actStep = 0xb;
@@ -3159,7 +3144,7 @@ void SaveManager::execAct1F() {
         break;
     case 6: {
         NF::Comm_IsConnectionLost(1);
-        s32 r = NF::_ZN14SaveSlotWriter12saveSlotStepEi(this, slotOrder.hi);
+        s32 r = NF::_ZN11SaveManager12saveSlotStepEi(this, slotOrder.hi);
         if (r == 1) {
             NF::gCommManager->setErrorMode(0);
             actStep = 0xb;
@@ -3201,7 +3186,7 @@ void SaveManager::execAct1F() {
         break;
     case 10: {
         NF::Comm_IsConnectionLost(1);
-        s32 r = NF::_ZN14SaveSlotWriter12saveSlotStepEi(this, slotOrder.hi);
+        s32 r = NF::_ZN11SaveManager12saveSlotStepEi(this, slotOrder.hi);
         if (r == 1) {
             NF::gCommManager->setErrorMode(0);
             actStep = 0xb;
@@ -3570,7 +3555,7 @@ s32 SaveManager::verifyStepReset() {
 }
 
 s32 SaveManager::verifyStepSlot0() {
-    slotStatus.hi = NF::_ZN14SaveSlotWriter14verifySlotStepEi(this, 0);
+    slotStatus.hi = NF::_ZN11SaveManager14verifySlotStepEi(this, 0);
     if (slotStatus.hi == 3) {
         return 3;
     }
@@ -3579,7 +3564,7 @@ s32 SaveManager::verifyStepSlot0() {
 }
 
 s32 SaveManager::verifyStepSlot1() {
-    slotStatus.lo = NF::_ZN14SaveSlotWriter14verifySlotStepEi(this, 1);
+    slotStatus.lo = NF::_ZN11SaveManager14verifySlotStepEi(this, 1);
     if (slotStatus.lo == 3) {
         return 3;
     }
@@ -3613,11 +3598,11 @@ s32 SaveManager::verifyStepChoose() {
     return r;
 }
 
-s32 SaveSlotWriter::saveSlotStep(s32 arg) {
-    static Unk_020a09d8_State tbl[7] = {
-        &SaveSlotWriter::stepPrepare, &SaveSlotWriter::stepChecksum, &SaveSlotWriter::stepReadBack,
-        &SaveSlotWriter::stepFindDirty, &SaveSlotWriter::stepWriteDirty, &SaveSlotWriter::stepCommit,
-        *(Unk_020a09d8_State *)NE::__ptmf_null};
+s32 SaveManager::saveSlotStep(s32 arg) {
+    static SlotStepFn tbl[7] = {
+        &SaveManager::stepPrepare, &SaveManager::stepChecksum, &SaveManager::stepReadBack,
+        &SaveManager::stepFindDirty, &SaveManager::stepWriteDirty, &SaveManager::stepCommit,
+        *(SlotStepFn *)NE::__ptmf_null};
     s32 r = 3;
     if (tbl[slotStep]) r = (this->*tbl[slotStep])(arg);
     if (slotStep == 6) {
@@ -3627,7 +3612,7 @@ s32 SaveSlotWriter::saveSlotStep(s32 arg) {
     return r;
 }
 
-s32 SaveSlotWriter::stepPrepare(s32 idx) {
+s32 SaveManager::stepPrepare(s32 idx) {
     u8 *a[3];
     a[0] = NE::gSaveData;
     a[1] = NE::gSaveData;
@@ -3641,7 +3626,7 @@ s32 SaveSlotWriter::stepPrepare(s32 idx) {
     return 3;
 }
 
-s32 SaveSlotWriter::stepChecksum(s32 mode) {
+s32 SaveManager::stepChecksum(s32 mode) {
     if (mode == 2) {
         u8 *b = workBuf;
         *(u16 *)(b + 0x11df2) = NE::Save_CalcChecksum(b, 0x11df4, *(u16 *)(b + 0x11df2));
@@ -3678,7 +3663,7 @@ s32 SaveSlotWriter::stepChecksum(s32 mode) {
     return 3;
 }
 
-s32 SaveSlotWriter::stepReadBack(s32 idx) {
+s32 SaveManager::stepReadBack(s32 idx) {
     s32 r = NE::Backup_GetStatus(NE::gBackup);
     s32 off = NE::sSaveSlotOffsets[idx];
     s32 size = NE::sSaveSlotSizes[idx];
@@ -3695,7 +3680,7 @@ s32 SaveSlotWriter::stepReadBack(s32 idx) {
     return 3;
 }
 
-s32 SaveSlotWriter::stepFindDirty(s32 idx) {
+s32 SaveManager::stepFindDirty(s32 idx) {
     s32 size = NE::sSaveSlotSizes[idx];
     s32 q = size / 0x200;
     s32 rem = size % 0x200;
@@ -3721,7 +3706,7 @@ s32 SaveSlotWriter::stepFindDirty(s32 idx) {
     return 3;
 }
 
-s32 SaveSlotWriter::stepWriteDirty(s32 idx) {
+s32 SaveManager::stepWriteDirty(s32 idx) {
     s32 r = NE::Backup_GetStatus(NE::gBackup);
     s32 off = NE::sSaveSlotOffsets[idx];
     if (r == 1) {
@@ -3739,7 +3724,7 @@ s32 SaveSlotWriter::stepWriteDirty(s32 idx) {
     return 3;
 }
 
-s32 SaveSlotWriter::stepCommit(s32 idx) {
+s32 SaveManager::stepCommit(s32 idx) {
     u8 *a[3];
     a[0] = NE::gSaveData;
     a[1] = NE::gSaveData;
@@ -3749,7 +3734,7 @@ s32 SaveSlotWriter::stepCommit(s32 idx) {
     return 3;
 }
 
-s32 SaveSlotWriter::eraseSlotStep(s32 idx) {
+s32 SaveManager::eraseSlotStep(s32 idx) {
     s32 r = NE::Backup_GetStatus(NE::gBackup);
     s32 off = NE::sSaveSlotOffsets[idx];
     s32 size = NE::sSaveSlotSizes[idx];
@@ -3818,7 +3803,7 @@ extern "C" BOOL Save_ReadSlotSync(u32 idx, s32 flag) {
     s32 off = NE::sSaveSlotOffsets[idx];
     s32 size = NE::sSaveSlotSizes[idx];
     if (flag != 0 && idx <= 1) {
-        SaveSlotWriter *g = NE::gSaveManager;
+        SaveManager *g = NE::gSaveManager;
         if (g == NULL) return TRUE;
         buf = g->workBuf;
     }
@@ -3826,7 +3811,7 @@ extern "C" BOOL Save_ReadSlotSync(u32 idx, s32 flag) {
     return FALSE;
 }
 
-s32 SaveSlotWriter::verifySlotStep(s32 idx) {
+s32 SaveManager::verifySlotStep(s32 idx) {
     s32 r = NE::Backup_GetStatus(NE::gBackup);
     s32 off = NE::sSaveSlotOffsets[idx];
     s32 size = NE::sSaveSlotSizes[idx];
@@ -3865,7 +3850,7 @@ extern "C" s32 Save_ReadSlotAsyncStep(s32 idx, u8 *buf) {
     return 3;
 }
 
-s32 SaveSlotWriter::loadSlotStep(s32 idx) {
+s32 SaveManager::loadSlotStep(s32 idx) {
     u8 *a[3];
     a[0] = NE::gSaveData;
     a[1] = NE::gSaveData;
@@ -3887,7 +3872,7 @@ s32 SaveSlotWriter::loadSlotStep(s32 idx) {
     return 3;
 }
 
-BOOL SaveSlotWriter::memEqual(u8 *p, u8 *q, s32 n) {
+BOOL SaveManager::memEqual(u8 *p, u8 *q, s32 n) {
     while (n != 0) {
         if (*p != *q) return FALSE;
         p++;
@@ -3942,19 +3927,19 @@ extern "C" void SaveManager_RequestAct1F(void) { NE::sSaveManagerRequest = 0x1f;
 extern "C" void SaveManager_RequestAct1C(void) { NE::sSaveManagerRequest = 0x1c; }
 
 extern "C" BOOL SaveManager_IsIdle(void) {
-    SaveSlotWriter *p = NE::gSaveManager;
+    SaveManager *p = NE::gSaveManager;
     if (p != NULL && p->act == 0) return TRUE;
     return FALSE;
 }
 
 extern "C" BOOL SaveManager_HasAct12Failed(void) {
-    SaveSlotWriter *p = NE::gSaveManager;
+    SaveManager *p = NE::gSaveManager;
     if (p != NULL && p->act == 0x12 && p->actStep == 3) return TRUE;
     return FALSE;
 }
 
 extern "C" BOOL SaveManager_IsIdleForRoom(void) {
-    SaveSlotWriter *p = NE::gSaveManager;
+    SaveManager *p = NE::gSaveManager;
     if (p != NULL && p->act == 0) return TRUE;
     return FALSE;
 }
@@ -4674,7 +4659,7 @@ extern "C" s32 SaveManager_RunSyncedSaveHost(SaveManager *self, u8 *st, s32 a2, 
             NC::Comm_SetLostFlag();
             return 0x20;
         }
-        s32 r = NC::_ZN14SaveSlotWriter12saveSlotStepEi(self, self->slotOrder.hi);
+        s32 r = NC::_ZN11SaveManager12saveSlotStepEi(self, self->slotOrder.hi);
         if (r == 1) {
             *st = a5;
         } else if (r == 0) {
@@ -4729,7 +4714,7 @@ extern "C" s32 SaveManager_RunSyncedSaveHost(SaveManager *self, u8 *st, s32 a2, 
             NC::Comm_SetLostFlag();
             return 0x20;
         }
-        s32 r = NC::_ZN14SaveSlotWriter12saveSlotStepEi(self, self->slotOrder.hi);
+        s32 r = NC::_ZN11SaveManager12saveSlotStepEi(self, self->slotOrder.hi);
         if (r == 1) {
             *st = a5;
         } else if (r == 0) {
@@ -4797,7 +4782,7 @@ s32 SaveManager::runSyncedSaveClient(u8 *p, u32 base, u32 fail, u8 a5, u8 a6, u8
             NB::Comm_SetLostFlag();
             return 0x20;
         }
-        r = NB::_ZN14SaveSlotWriter12loadSlotStepEi(this, slotOrder.lo);
+        r = NB::_ZN11SaveManager12loadSlotStepEi(this, slotOrder.lo);
         if (r == 1) {
             *p = fail;
         } else if (r == 0) {
@@ -4817,7 +4802,7 @@ s32 SaveManager::runSyncedSaveClient(u8 *p, u32 base, u32 fail, u8 a5, u8 a6, u8
             NB::Comm_SetLostFlag();
             return 0x20;
         }
-        r = NB::_ZN14SaveSlotWriter12saveSlotStepEi(this, slotOrder.hi);
+        r = NB::_ZN11SaveManager12saveSlotStepEi(this, slotOrder.hi);
         if (r == 1) {
             *p = fail;
         } else if (r == 0) {
@@ -4848,7 +4833,7 @@ s32 SaveManager::runSyncedSaveClient(u8 *p, u32 base, u32 fail, u8 a5, u8 a6, u8
             NB::Comm_SetLostFlag();
             return 0x20;
         }
-        r = NB::_ZN14SaveSlotWriter12saveSlotStepEi(this, slotOrder.hi);
+        r = NB::_ZN11SaveManager12saveSlotStepEi(this, slotOrder.hi);
         if (r == 1) {
             *p = fail;
         } else if (r == 0) {

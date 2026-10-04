@@ -3,7 +3,6 @@
 #include "game/Unk_0202f2ac_V3.h"
 #include "game/GroundInfoBase.h"
 #include "game/UnitShapeQueryX.h"
-#include "game/Unk_0202f7b8_V3.h"
 #include "game/CollisionCircle.h"
 #include "game/CollisionState.h"
 #include "game/FxVec3.h"
@@ -3269,7 +3268,7 @@ BOOL CollisionCylinderX::pushOut(VecFx32 *pos, s32 r) {
     s32 lim = r + circleRadius;
     if (d < lim) {
         if (pos->y < center.y + cylinderHeight) {
-            Unk_0202f7b8_V3 v(pos->x - center.x, 0, pos->z - center.z);
+            VecFx32Ctor v(pos->x - center.x, 0, pos->z - center.z);
             if (Vec_SafeNormalize(&v)) {
                 s32 s = r + circleRadius - d;
                 pos->x = pos->x + func_01ffcb0c(v.x, s);
@@ -3296,10 +3295,10 @@ BOOL CollisionCylinderX::clipSegmentTop(VecFx32 *out, VecFx32 *a) {
     s32 top = center.y + cylinderHeight;
     s32 t;
     s32 y, z;
-    struct { Unk_0202f7b8_V3 A, B, D, P; } l;
-    l.A = Unk_0202f7b8_V3(a->x, a->y, a->z);
+    struct { VecFx32Ctor A, B, D, P; } l;
+    l.A = VecFx32Ctor(a->x, a->y, a->z);
     if (l.A.y > top) {
-        l.B = Unk_0202f7b8_V3(out->x, out->y, out->z);
+        l.B = VecFx32Ctor(out->x, out->y, out->z);
         if (l.B.y < top) {
             Vec_Sub(&l.D, &l.B, &l.A);
             if (Vec_SafeNormalize(&l.D)) {
@@ -3311,8 +3310,8 @@ BOOL CollisionCylinderX::clipSegmentTop(VecFx32 *out, VecFx32 *a) {
                     l.P.x = l.A.x + func_01ffcb0c(l.D.x, t);
                     l.P.y = y;
                     l.P.z = z;
-                    if (containsXZ(&l.P)) {
-                        *out = l.P;
+                    if (containsXZ((VecFx32 *)&l.P)) {
+                        *out = *(VecFx32 *)&l.P;
                         return TRUE;
                     }
                 }
@@ -3325,10 +3324,10 @@ BOOL CollisionCylinderX::clipSegmentTop(VecFx32 *out, VecFx32 *a) {
 BOOL CollisionCylinderX::clipSegmentSide(VecFx32 *out, VecFx32 *a) {
     s32 ymax, y1, z1, z2;
     if (!containsXZ(a)) {
-        struct { Unk_0202f7b8_V3 A, B, C, D; u32 pad[6]; } l;
-        l.A = Unk_0202f7b8_V3(a->x, a->y, a->z);
-        l.B = Unk_0202f7b8_V3(out->x, out->y, out->z);
-        l.C = Unk_0202f7b8_V3(center.x, center.y, center.z);
+        struct { VecFx32Ctor A, B, C, D; u32 pad[6]; } l;
+        l.A = VecFx32Ctor(a->x, a->y, a->z);
+        l.B = VecFx32Ctor(out->x, out->y, out->z);
+        l.C = VecFx32Ctor(center.x, center.y, center.z);
         s32 r = circleRadius;
         s32 h = cylinderHeight;
         Vec_Sub(&l.D, &l.B, &l.A);

@@ -2,7 +2,7 @@
 #include "Unk_020d8c7c.h"
 #include "talk/TalkRequestList.h"
 #include "game/SceneInfo.h"
-#include "game/Unk_0203f218_Slot.h"
+#include "game/EventScheduleRule.h"
 #include "game/EventDayEntry.h"
 #include "talk/TalkRequestEntry.h"
 #include "gfx/WorldCurve.h"
@@ -17,7 +17,7 @@
 
 
 extern "C" {
-extern Unk_0203f218_Slot sEventSchedule[99];
+extern EventScheduleRule sEventSchedule[99];
 }
 
 extern "C" {
@@ -230,11 +230,11 @@ void EventDayList_Clear(void *a, s32 n);
 }
 
 extern "C" {
-s32 EventSchedule_Match(EventDayEntry *out, Unk_0203f218_Slot *e, u32 v, Unk_0203f218_Ver w);
+s32 EventSchedule_Match(EventDayEntry *out, EventScheduleRule *e, u32 v, Unk_0203f218_Ver w);
 }
 
 extern "C" {
-s32 EventSchedule_IsBlocked(Unk_0203f218_Slot *e, Unk_0203f218_Ver w, EventDayEntry *tmp, EventDayEntry *out, s32 n, s32 x, s32 y);
+s32 EventSchedule_IsBlocked(EventScheduleRule *e, Unk_0203f218_Ver w, EventDayEntry *tmp, EventDayEntry *out, s32 n, s32 x, s32 y);
 }
 
 extern "C" {

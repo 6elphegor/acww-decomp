@@ -12,7 +12,7 @@ struct SndHandle {
     /* 0x34 */ u8 pad34[4];
 };
 
-// 0x44-byte sound-effect emitter (channel object base), vtable 0x0213b9a0 (dsd label data_0213b9a8).
+// 0x40-byte sound-effect emitter (channel object base), vtable 0x0213b9a0 (dsd label data_0213b9a8).
 // Defined in autoload_2, unk_020f30fc.cpp (key function ~SndSeEmitter); main / ov003 / ov004 / ov068 call its C1 and D1
 // as SndSeEmitter::SndSeEmitter / SndSeEmitter::~SndSeEmitter.
 class SndSeEmitter : public SndHandle {
@@ -36,10 +36,11 @@ public:
     void callUpdateRelativeAlt(VecFx32 *v);
     void callStopAlt();
 
-    /* 0x3c */ u16 h3c;
-    /* 0x3e */ u8 b3e;
-    /* 0x3f */ u8 b3f;
-    /* 0x40 */ u8 b40;
+    /* 0x3c */ u16 lastRandomSeId;
+    /* 0x3e */ u8 kind;
+    /* 0x3f */ u8 alternateFlags;
+    // size 0x40 (RoomItemDrop / HandOverItem / FishShadow reserve 0x40 bytes for a plain one); the byte at 0x40
+    // belongs to the 0x44-byte subclasses (SndSeEmitterKind1::volume, BuildingSeEmitter::active)
 };
 
 #endif

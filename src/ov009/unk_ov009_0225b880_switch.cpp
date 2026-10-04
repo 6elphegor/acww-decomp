@@ -8,7 +8,6 @@
 #include "town/BuildingResources.h"
 #include "gfx/Mtx43.h"
 #include "town/Unk_ov009_0225b880.h"
-#include "game/Unk_ov009_0225cb4c_V3.h"
 #include "game/TouchPicker.h"
 #include "sys/ProcBase.h"
 #include "talk/MsgRequest.h"

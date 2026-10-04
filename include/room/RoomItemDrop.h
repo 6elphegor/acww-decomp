@@ -6,8 +6,8 @@
 
 // One item dropped into a room (0x94 bytes; ctor 0x0222c9d0 / dtor defined in ov004 unk_ov004_0222c9bc.cpp). 15 of
 // them form sRoomItemDrops (unk_ov004_0222bed0.cpp, 5 groups of 3), driven by ItemDrop_Init / SetTrajectory / Update
-// / Settle / Clear there. The SE emitter at 0x4c is built and destroyed by hand (SndSeEmitter C1 / D1): bounceCount
-// sits at 0x8c, inside a by-value SndSeEmitter (0x44 bytes in snd/SndSeEmitter.h).
+// / Settle / Clear there. The SE emitter at 0x4c is a plain 0x40-byte SndSeEmitter, built and destroyed by hand
+// (SndSeEmitter C1 / D1).
 class RoomItemDrop {
 public:
     RoomItemDrop();

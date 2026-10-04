@@ -2,7 +2,6 @@
 #include "gfx/VecFx32.h"
 #include "game/Unk_0202f2ac_V3.h"
 #include "game/CollisionVec2.h"
-#include "game/Unk_0202f7b8_V3.h"
 #include "game/CollisionCircle.h"
 #include "game/CollisionTriangle.h"
 #include "game/CollisionCylinder.h"
@@ -45,9 +44,9 @@ inline BOOL CollisionEdge::hasRoundEnds() { return TRUE; }
 BOOL CollisionCylinder::clipSegmentCaps(VecFx32 *out, VecFx32 *a) {
     s32 t1, t2;
     s32 y, z, y2, z2;
-    struct { Unk_0202f7b8_V3 A, B, D, P1, P2; } l;
-    l.A = Unk_0202f7b8_V3(a->x, a->y, a->z);
-    l.B = Unk_0202f7b8_V3(out->x, out->y, out->z);
+    struct { VecFx32Ctor A, B, D, P1, P2; } l;
+    l.A = VecFx32Ctor(a->x, a->y, a->z);
+    l.B = VecFx32Ctor(out->x, out->y, out->z);
     Vec_Sub(&l.D, &l.B, &l.A);
     if (Vec_SafeNormalize(&l.D)) {
         s32 dy = l.D.y;
@@ -61,8 +60,8 @@ BOOL CollisionCylinder::clipSegmentCaps(VecFx32 *out, VecFx32 *a) {
                 l.P1.x = l.A.x + func_01ffcb0c(l.D.x, t1);
                 l.P1.y = y;
                 l.P1.z = z;
-                if (containsXZ(&l.P1)) {
-                    *out = l.P1;
+                if (containsXZ((VecFx32 *)&l.P1)) {
+                    *out = *(VecFx32 *)&l.P1;
                     return TRUE;
                 }
             } else if (ay < 0 && l.B.y > 0) {
@@ -72,8 +71,8 @@ BOOL CollisionCylinder::clipSegmentCaps(VecFx32 *out, VecFx32 *a) {
                 l.P2.x = l.A.x + func_01ffcb0c(l.D.x, t2);
                 l.P2.y = y2;
                 l.P2.z = z2;
-                if (containsXZ(&l.P2)) {
-                    *out = l.P2;
+                if (containsXZ((VecFx32 *)&l.P2)) {
+                    *out = *(VecFx32 *)&l.P2;
                     return TRUE;
                 }
             }
@@ -85,10 +84,10 @@ BOOL CollisionCylinder::clipSegmentCaps(VecFx32 *out, VecFx32 *a) {
 BOOL CollisionCylinder::clipSegmentSideBounded(VecFx32 *out, VecFx32 *a) {
     s32 ymin, ymax, z;
     if (!containsXZ(a)) {
-        struct { Unk_0202f7b8_V3 A, B, C, D; u32 pad[6]; } l;
-        l.A = Unk_0202f7b8_V3(a->x, a->y, a->z);
-        l.B = Unk_0202f7b8_V3(out->x, out->y, out->z);
-        l.C = Unk_0202f7b8_V3(center.x, center.y, center.z);
+        struct { VecFx32Ctor A, B, C, D; u32 pad[6]; } l;
+        l.A = VecFx32Ctor(a->x, a->y, a->z);
+        l.B = VecFx32Ctor(out->x, out->y, out->z);
+        l.C = VecFx32Ctor(center.x, center.y, center.z);
         s32 r = circleRadius;
         Vec_Sub(&l.D, &l.B, &l.A);
         s32 t = func_01ffcb0c(l.D.z, l.D.z);

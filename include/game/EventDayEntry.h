@@ -7,7 +7,7 @@
 
 struct EventDayEntry {
     /* 0x00 */ u16 eventId;
-    /* 0x02 */ u16 unk_02;
+    /* 0x02 */ u16 kind;
     /* 0x04 */ u32 start;
     /* 0x08 */ u32 end;
 };

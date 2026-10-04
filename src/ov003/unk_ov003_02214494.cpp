@@ -227,7 +227,7 @@ void ReddTent::execTentCheck() {
 
 
 BOOL ReddTent::enterTentTalkOpen() {
-    Unk_ov003_0221475c_Pad pad;
+    StackPad8 pad;
     _ZN9Character17attachTalkRequestEi(this, this);
     setFileName("sp_npc_fox");
     if (isOpen() == 0) {

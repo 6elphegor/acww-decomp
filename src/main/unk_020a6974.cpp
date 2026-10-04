@@ -1,7 +1,7 @@
 #include "types.h"
 #include "text/Unk_02050288.h"
 #include "Unk_020d8c7c.h"
-#include "game/Unk_020a88fc_Pad.h"
+#include "sys/StackPad.h"
 #include "talk/MsgStringBase.h"
 #include "talk/MsgStringAttr.h"
 #include "talk/MsgTag.h"
@@ -672,7 +672,7 @@ BOOL BmgReader::loadMessage(u8 *arg1) {
 }
 
 void BmgReader::resetState() {
-    Unk_020a88fc_Pad pad;
+    StackPad8 pad;
     msgIndex = 0;
     MI_CpuFill8(entry, 0, 12);
     textOffset = 0;
@@ -705,8 +705,8 @@ BOOL BmgReader::readInfHeader() {
     sBmgInfHeader.size = Bmg_ReadU32(&sBmgInfHeader.size);
     sBmgInfHeader.msgCount = Bmg_ReadU16(&sBmgInfHeader.msgCount);
     sBmgInfHeader.entrySize = Bmg_ReadU16(&sBmgInfHeader.entrySize);
-    sBmgInfHeader.unk_0c = Bmg_ReadU16(&sBmgInfHeader.unk_0c);
-    sBmgInfHeader.unk_0e = Bmg_ReadU8(&sBmgInfHeader.unk_0e);
+    sBmgInfHeader.groupId = Bmg_ReadU16(&sBmgInfHeader.groupId);
+    sBmgInfHeader.defaultColor = Bmg_ReadU8(&sBmgInfHeader.defaultColor);
     BOOL c1 = sBmgInfHeader.magic == 0x494e4631;
     u16 n = sBmgInfHeader.msgCount;
     BOOL c2 = FALSE;
@@ -714,7 +714,7 @@ BOOL BmgReader::readInfHeader() {
         c2 = TRUE;
     }
     BOOL c3 = sBmgInfHeader.entrySize == (hasAttributes ? 12 : 4);
-    BOOL c4 = sBmgInfHeader.unk_0c == 0;
+    BOOL c4 = sBmgInfHeader.groupId == 0;
     if (c1 && c2 && c3 && c4) {
         return TRUE;
     }

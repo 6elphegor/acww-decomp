@@ -1,7 +1,7 @@
 #include "types.h"
 #include "text/Unk_02050288.h"
 #include "Unk_020d8c7c.h"
-#include "game/Unk_020a88fc_Pad.h"
+#include "sys/StackPad.h"
 #include "talk/MsgStringBase.h"
 #include "talk/MsgStringAttr.h"
 #include "talk/MsgTag.h"

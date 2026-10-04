@@ -6,6 +6,8 @@
 
 // Sound-effect emitter with vtable 0x0213b9c4 (= SndSeEmitterKind2, C1 0x020f3e50 in autoload_2). Its destructor D1
 // is emitted in ov009 (src/ov009/unk_ov009_0225b880.cpp, by hand); the building SE emitter there holds one by value.
+// Not folded into autoload_2's SndSeEmitterKind2: ov009 defines this D1 as a global symbol, and a global plus the
+// link-once SndSeEmitterKind2 D1 of the same name is multiply defined in mwld (see unk_020f30fc.cpp).
 class Unk_0213b9c4 : public SndSeEmitter {
 public:
     Unk_0213b9c4();

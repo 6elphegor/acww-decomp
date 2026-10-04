@@ -8,7 +8,6 @@
 #include "town/BuildingResources.h"
 #include "gfx/Mtx43.h"
 #include "town/Unk_ov009_0225b880.h"
-#include "game/Unk_ov009_0225cb4c_V3.h"
 #include "game/TouchPicker.h"
 #include "sys/ProcBase.h"
 #include "talk/MsgRequest.h"
@@ -921,7 +920,7 @@ void BuildingActor::createShadows(Mtx43 *m) {
                     p = p->func_020ac1e0();
                 }
                 BuildingShadowEntry *it = e->shadowTable->getEntry(i);
-                Unk_ov009_0225cb4c_V3 v(it->offsetX, zero, it->offsetZ);
+                VecFx32Ctor v(it->offsetX, zero, it->offsetZ);
                 VecFx32 out;
                 Building_LocalToWorld(&out, (s32)&v, (s32)m);
                 p->build((VecFx32 *)&out, it->size, it->shift, it->texIndex, it->texLeft, it->texRight, (s32)heap);
@@ -939,7 +938,7 @@ void BuildingActor::updateShadows(Mtx43 *m) {
             s32 zero = i;
             for (; (u32)i < e->shadowTable->getCount(); p++, i++) {
                 BuildingShadowEntry *it = e->shadowTable->getEntry(i);
-                Unk_ov009_0225cb4c_V3 v(it->offsetX, zero, it->offsetZ);
+                VecFx32Ctor v(it->offsetX, zero, it->offsetZ);
                 VecFx32 out;
                 Building_LocalToWorld(&out, (s32)&v, (s32)m);
                 p->draw((VecFx32 *)&out);
@@ -1646,7 +1645,7 @@ void BuildingActor::onMessageEnd(u32) {
 }
 
 void BuildingActor::setupTalkMsg() {
-    Unk_ov009_0225bce0_Pad pad;
+    StackPad8 pad;
     setFileName((const char *)sBuildingDefaultMsgFile);
     msgIndex = 0;
 }
@@ -1820,7 +1819,7 @@ s32 BuildingActor::callIsLit() { return BuildingLights_isLit(lights); }
 
 
 BuildingSeEmitter::BuildingSeEmitter() {
-    emitter.b40 = 0;
+    active = 0;
 }
 
 extern "C" void *_ZN12Unk_0213b9c4D1Ev(void *p) {
@@ -1830,14 +1829,14 @@ extern "C" void *_ZN12Unk_0213b9c4D1Ev(void *p) {
 }
 
 void BuildingSeEmitter::activate() {
-    if (emitter.b40 == 0) {
+    if (active == 0) {
         SndSeEmitter_callInit(this);
-        emitter.b40 = 1;
+        active = 1;
     }
 }
 
 void BuildingSeEmitter::setPosition(VecFx32 *v) {
-    if (emitter.b40 != 0) {
+    if (active != 0) {
         VecFx32 t;
         t.x = v->x;
         t.y = v->y;
@@ -1847,20 +1846,20 @@ void BuildingSeEmitter::setPosition(VecFx32 *v) {
 }
 
 void BuildingSeEmitter::deactivate() {
-    if (emitter.b40 != 0) {
+    if (active != 0) {
         SndSeEmitter_callStop(this);
-        emitter.b40 = 0;
+        active = 0;
     }
 }
 
 void BuildingSeEmitter::playSe(u32 a) {
-    if (emitter.b40 != 0) {
+    if (active != 0) {
         Snd_SeEmitterPlayOneShot(this, a, 0x7f, 0);
     }
 }
 
 void BuildingSeEmitter::playSeHeld(u32 a) {
-    if (emitter.b40 != 0) {
+    if (active != 0) {
         Snd_SeEmitterPlayHeld(this, a, 0x7f, 0);
     }
 }

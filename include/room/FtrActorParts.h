@@ -2,6 +2,7 @@
 #define ROOM_FTRACTORPARTS_H
 
 #include "types.h"
+#include "sys/StackPad.h"
 #include "gfx/VecFx32.h"
 #include "gfx/NNSG3dResAnmCommon.h"
 
@@ -51,12 +52,6 @@ struct Unk_ov004_0220a648_Bits {
 struct Unk_ov004_02207854_List {
     /* 0x00 */ u32 count;
     /* 0x04 */ s32 v[4][2];
-};
-
-struct Unk_ov004_0220a0e4_Pad {
-    /* 0x0 */ s32 v[2];
-    Unk_ov004_0220a0e4_Pad() {}
-    ~Unk_ov004_0220a0e4_Pad() {}
 };
 
 #endif // ROOM_FTRACTORPARTS_H

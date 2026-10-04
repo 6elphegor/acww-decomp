@@ -7,6 +7,7 @@
 #include "gfx/DebugColor.h"
 #include "actor/ActorProfile.h"
 #include "actor/CharacterListNode.h"
+#include "gfx/V3.h"
 #include "room/RoomTelephoneTypes.h"
 #include "gfx/AnimFrameCtrl.h"
 #include "room/RoomObjRes.h"
@@ -490,7 +491,7 @@ void RoomTelephone::execAct02() {
 }
 
 void RoomTelephone::enterAct02() {
-    Unk_ov004_02229ae0_Pad pad;
+    StackPad8 pad;
     Character_attachTalkRequest(this, this);
     setFileName(data_ov004_0224e178);
     if (CommManager_isOnline(gCommManager)) {
@@ -665,7 +666,7 @@ BOOL RoomTelephone::onCreate() {
             AnimModel_attachAnim(&model);
         }
     }
-    Unk_ov004_0222a0bc_V3 v;
+    V3Arr v;
     v.v[0] = sRoomTelephonePos[0];
     v.v[1] = sRoomTelephonePos[1];
     v.v[2] = sRoomTelephonePos[2];

@@ -15,8 +15,8 @@ struct BmgInfHeader {
     /* 0x04 */ u32 size;
     /* 0x08 */ u16 msgCount;
     /* 0x0a */ u16 entrySize;
-    /* 0x0c */ u16 unk_0c;
-    /* 0x0e */ u8 unk_0e;
+    /* 0x0c */ u16 groupId;
+    /* 0x0e */ u8 defaultColor;
     /* 0x0f */ u8 pad_0f[5];
 };
 

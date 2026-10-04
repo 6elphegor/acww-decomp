@@ -11,7 +11,7 @@
 struct FieldActionRequestMsg {
     /* 0x00 */ u8 aid : 2;
     /*      */ u8 requestIndex : 2;
-    /*      */ u8 unk_00_4 : 2;     // FieldActionRequest unk_1d
+    /*      */ u8 unitFlag : 2;     // FieldActionRequest +0x1d; buried flag / tree chop count of the unit (PendingUnit.unitFlag)
     /*      */ u8 unk_00_6 : 2;
     /* 0x01 */ u8 kind : 5;
     /*      */ u8 mode : 2;
@@ -29,7 +29,7 @@ struct FieldActionResultMsg {
     /*      */ u8 kind : 5;
     /* 0x01 */ u8 requestIndex : 2;
     /*      */ u8 accepted : 1;
-    /*      */ u8 unk_01_3 : 2;     // FieldActionRequestMsg unk_00_4
+    /*      */ u8 unitFlag : 2;     // FieldActionRequestMsg.unitFlag
     /*      */ u8 mode : 2;
     /*      */ u8 layer : 1;
     /* 0x02 */ u16 unit;
@@ -54,11 +54,11 @@ union PackedUnitPos {
 struct PendingUnit {
     /* 0x00 */ u8 aid : 3;      // 7 = free
     /*      */ u8 kind : 5;     // FieldActionRequest kind
-    /* 0x01 */ u8 unk_01_a : 2;
+    /* 0x01 */ u8 unitFlag : 2;
     /*      */ u8 slot : 3;     // 4 = the action's unit, 0..2 = tree-drop units, 7 = free
     /*      */ u8 mode : 2;
-    /*      */ u8 unk_01_d : 1;
-    /* 0x02 */ u8 unk_02_a : 1;
+    /*      */ u8 committed : 1;
+    /* 0x02 */ u8 pending : 1;
     /*      */ u8 layer : 1;
     /*      */ s8 unk_02_c : 4;
     /*      */ s8 unk_02_d : 2;

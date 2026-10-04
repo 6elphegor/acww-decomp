@@ -5727,9 +5727,9 @@ extern "C" void PendingUnit_Clear(PendingUnit *p) {
     p->aid = 7;
     p->unit.v = 0xffff;
     p->item = 0xfff1;
-    p->unk_01_a = 0;
-    p->unk_01_d = 0;
-    p->unk_02_a = 0;
+    p->unitFlag = 0;
+    p->committed = 0;
+    p->pending = 0;
     p->slot = 7;
     p->layer = 0;
     p->unk_02_c = 15;
@@ -5743,19 +5743,19 @@ extern "C" void PendingUnit_Set(PendingUnit *e, u8 aid, u16 pos, u16 a, u16 c, u
     e->item = a;
     e->oldItem = c;
     e->kind = k;
-    e->unk_01_a = b;
+    e->unitFlag = b;
     e->mode = c2;
     e->slot = d;
     e->layer = f;
     e->unk_02_c = g;
-    e->unk_02_a = 1;
+    e->pending = 1;
 }
 }
 
 namespace nG {
 extern "C" void PendingUnit_WriteToMap(PendingUnit *e) {
     if (Scene_InTown()) {
-        Field_SetUnitItem(e->unit.v >> 8, e->unit.v & 0xff, e->item, e->unk_01_a);
+        Field_SetUnitItem(e->unit.v >> 8, e->unit.v & 0xff, e->item, e->unitFlag);
         PendingUnit_NoteJunk(e);
     } else {
         Room_SetItemAtUnit(e->unit.v >> 8, e->unit.v & 0xff, e->item, e->layer);
@@ -5845,7 +5845,7 @@ extern "C" s32 PendingUnit_Apply(PendingUnit *e) {
                         if (t >= 0x6a && t <= 0x6c) break;
                         if (t == 0x6d) break;
                         if (t >= 0xc8 && t <= 0xcf) break;
-                        if (e->unk_01_a != 0) {
+                        if (e->unitFlag != 0) {
                             flag = 1;
                         }
                     }
@@ -5854,7 +5854,7 @@ extern "C" s32 PendingUnit_Apply(PendingUnit *e) {
                 case 6:
                 case 7: {
                     if (e->mode != 2) {
-                        u32 a = e->unk_01_a;
+                        u32 a = e->unitFlag;
                         Vec2 q;
                         q.x = x;
                         q.y = y;
@@ -5863,7 +5863,7 @@ extern "C" s32 PendingUnit_Apply(PendingUnit *e) {
                     break;
                 }
                 case 10:
-                    flag = e->unk_01_a;
+                    flag = e->unitFlag;
                     break;
                 case 25:
                     if (e->unk_02_c >= 0) {
@@ -5887,7 +5887,7 @@ extern "C" s32 PendingUnit_Apply(PendingUnit *e) {
             }
         }
     }
-    e->unk_01_a = (u8)flag;
+    e->unitFlag = (u8)flag;
     PendingUnit_WriteToMap(e);
     PendingUnit_Clear(e);
 }
@@ -5900,15 +5900,15 @@ extern "C" void PendingUnit_Commit(PendingUnit *e) {
     case 22:
     case 25:
         PendingUnit_WriteToMap(e);
-        e->unk_01_d = 1;
-        e->unk_02_a = 0;
+        e->committed = 1;
+        e->pending = 0;
         break;
     case 10:
         PendingUnit_WriteToMap(e);
-        e->unk_01_d = 1;
-        e->unk_02_a = 0;
+        e->committed = 1;
+        e->pending = 0;
         e->item = e->oldItem;
-        e->unk_01_a = 1;
+        e->unitFlag = 1;
         break;
     default:
         PendingUnit_Apply(e);
@@ -5997,7 +5997,7 @@ extern "C" BOOL PendingUnit_Reserve(u8 aid, Vec2 *pos, u16 a, u16 c, u8 k, u8 b,
     s32 i = PendingUnit_Find(&t, f);
     if (i >= 0) {
         PendingUnit *e = &nZ::sPendingUnits.entries[i];
-        if ((aid & 3) == nZ::sPendingUnits.entries[i].aid && e->unk_01_d != 0) {
+        if ((aid & 3) == nZ::sPendingUnits.entries[i].aid && e->committed != 0) {
             Vec2 t2;
             t2.x = pos->x;
             t2.y = pos->y;
@@ -6022,7 +6022,7 @@ extern "C" void PendingUnit_Replace(u8 aid, Vec2 *pos, u16 a, u16 c, u8 k, u8 b,
     s32 i = PendingUnit_Find(&t, f);
     if (i >= 0) {
         PendingUnit *e = &nZ::sPendingUnits.entries[i];
-        if (e->unk_01_d == 0) {
+        if (e->committed == 0) {
             switch (e->kind) {
             case 1:
             case 2:
@@ -6128,8 +6128,8 @@ namespace nG {
 extern "C" void PendingUnit_CommitForAid(PendingUnit *e) {
     PendingUnit *p = nZ::sPendingUnits.entries;
     for (s32 i = 0; i < 20; p++, i++) {
-        if (p->aid == e->aid && p->unk_01_d != 0) {
-            p->unk_01_d = 0;
+        if (p->aid == e->aid && p->committed != 0) {
+            p->committed = 0;
         }
     }
     PendingUnit_Commit(e);
@@ -6226,7 +6226,7 @@ extern "C" s32 PendingUnit_FindActiveOfAid(u32 a) {
     a = (u8)(a & 3);
     e = nZ::sPendingUnits.entries;
     for (; i < 20; e++, i++) {
-        if (a == e->aid && e->unk_01_d) {
+        if (a == e->aid && e->committed) {
             r = i;
             break;
         }
@@ -6269,7 +6269,7 @@ extern "C" u8 *PendingUnit_GetActivePosOfAid(u32 a) {
     }
     e = nZ::sPendingUnits.entries;
     for (i = 0; i < 20; e++, i++) {
-        if (a == e->aid && e->unk_01_d) {
+        if (a == e->aid && e->committed) {
             r = (u8 *)e + 8;
             break;
         }
@@ -6357,7 +6357,7 @@ extern "C" BOOL FieldAction_CanReserveUnit(u32 idx, Vec2 *p) {
         PendingUnit *g = &nZ::sPendingUnits.entries[r];
         if (g->aid == (u8)(e->aid & 3)) {
             if (g->unk_02_c == e->unk_1e) {
-                if (g->unk_01_d) {
+                if (g->committed) {
                     res = TRUE;
                 }
             }
@@ -6451,7 +6451,7 @@ extern "C" void FieldAction_Submit(u8 idx, u32 arg) {
     }
     s.aid = e->aid;
     s.requestIndex = idx;
-    s.unk_00_4 = e->unk_1d;
+    s.unitFlag = e->unk_1d;
     s.kind = e->kind;
     ((u8 *)&s.unit)[1] = x;
     ((u8 *)&s.unit)[0] = y;
@@ -6475,7 +6475,7 @@ extern "C" void FieldAction_Submit(u8 idx, u32 arg) {
             s8 sb = e->unk_1e;
             p2.x = e->unit.x;
             p2.y = e->unit.y;
-            if (!PendingUnit_Reserve(0, &p2, s.item, s.oldItem, s.kind, s.unk_00_4, s.mode, 4, s.layer, sb)) {
+            if (!PendingUnit_Reserve(0, &p2, s.item, s.oldItem, s.kind, s.unitFlag, s.mode, 4, s.layer, sb)) {
                 e->state = 3;
             } else {
                 s32 px = *(volatile s32 *)&e->unit.x;
@@ -6704,7 +6704,7 @@ extern "C" void FieldAction_HostProcess(FieldActionRequestMsg *src, u8 flag, s32
     e.accepted = flag;
     e.mode = src->mode;
     e.layer = src->layer;
-    e.unk_01_3 = src->unk_00_4;
+    e.unitFlag = src->unitFlag;
     Unk_02044774_PP pp = *(Unk_02044774_PP *)&src->unit;
     *(Unk_02044774_PP *)&e.unit = pp;
     e.item = src->item;
@@ -6724,7 +6724,7 @@ extern "C" void FieldAction_HostProcess(FieldActionRequestMsg *src, u8 flag, s32
             VecXZ p;
             p.x = x;
             p.z = z;
-            PendingUnit_Reserve((u8)t, &p, e.item, 0xfff1, e.kind, e.unk_01_3, e.mode, 4, e.layer, -1);
+            PendingUnit_Reserve((u8)t, &p, e.item, 0xfff1, e.kind, e.unitFlag, e.mode, 4, e.layer, -1);
             VecXZ q;
             q.x = x;
             q.z = z;
@@ -6735,7 +6735,7 @@ extern "C" void FieldAction_HostProcess(FieldActionRequestMsg *src, u8 flag, s32
             VecXZ p;
             p.x = x;
             p.z = z;
-            PendingUnit_Reserve((u8)t, &p, e.item, 0xfff1, e.kind, e.unk_01_3, e.mode, 4, e.layer, -1);
+            PendingUnit_Reserve((u8)t, &p, e.item, 0xfff1, e.kind, e.unitFlag, e.mode, 4, e.layer, -1);
             if (!Field_IsLocalAid(t)) {
                 VecXZ q;
                 q.x = x;
@@ -6749,7 +6749,7 @@ extern "C" void FieldAction_HostProcess(FieldActionRequestMsg *src, u8 flag, s32
             VecXZ p;
             p.x = x;
             p.z = z;
-            PendingUnit_Reserve((u8)t, &p, e.item, h, e.kind, e.unk_01_3, e.mode, 4, e.layer, -1);
+            PendingUnit_Reserve((u8)t, &p, e.item, h, e.kind, e.unitFlag, e.mode, 4, e.layer, -1);
             if (TreeDrop_Spawn(&e, src, t)) {
                 e.hasDrops = 1;
                 mask = 14;
@@ -6804,7 +6804,7 @@ extern "C" void FieldAction_ApplyResult(FieldActionResultMsg *e) {
     VecXZ p1;
     s32 f7 = e->layer;
     s32 f5 = e->mode;
-    s32 f3 = e->unk_01_3;
+    s32 f3 = e->unitFlag;
     s32 t3 = e->kind;
     p1.x = x;
     p1.z = z;
@@ -6883,7 +6883,7 @@ extern "C" void FieldAction_ApplyResultOffscreen(FieldActionResultMsg *e, s32 m)
     case 23:
         return;
     }
-    Area_PlaceItem(m, e->unit >> 8, e->unit & 0xff, e->item, e->unk_01_3);
+    Area_PlaceItem(m, e->unit >> 8, e->unit & 0xff, e->item, e->unitFlag);
     if (e->hasDrops) {
         u16 w = e->dropItem;
         volatile s32 z = 0;

@@ -6,6 +6,7 @@
 #include "game/Unk_0203fe18_Date.h"
 #include "game/EventWeekSlots.h"
 #include "game/EventCalendarModule.h"
+#include "game/EventScheduleRule.h"
 
 extern "C" void MI_CpuCopy8(const void *src, void *dst, u32 size);
 
@@ -30,24 +31,11 @@ union EventDate {
 };
 typedef EventDate Unk_0203fe18_B4;
 
-struct Unk_0203f554_Sub {
-    u32 flags;
-    s32 off;
-    u32 hour;
-};
-
 struct EventEntryView {
     u16 id;
     u16 kind;
     EventDate a;
     EventDate b;
-};
-
-struct EventScheduleRule {
-    u16 id;
-    u16 kind;
-    Unk_0203f554_Sub a;
-    Unk_0203f554_Sub b;
 };
 
 

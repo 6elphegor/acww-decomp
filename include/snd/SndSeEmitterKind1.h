@@ -16,6 +16,8 @@ public:
     SndSeEmitterKind1();                            // C1 0x020f4080, C2 0x020f40c0
     virtual ~SndSeEmitterKind1();                   // D1 0x02004b48, D0 0x02010fa4 (link-once, main)
     static void onVolume(SndHandle *h, s32 idx);    // 0x020f4010
+
+    /* 0x40 */ u8 volume;   // percent of the volume onVolume sets (NNS_SndPlayerSetVolume(volume * 40 / 100))
 };
 
 #endif

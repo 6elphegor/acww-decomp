@@ -103,7 +103,7 @@ extern "C" void PlayerOptions_CopyOut(void *src, void *dst) { MI_CpuCopy8(src, d
 extern "C" void PlayerOptions_CopyIn(void *dst, void *src) { MI_CpuCopy8(src, dst, 1); }
 
 BOOL PlayerOptions::isHiragana() {
-    if (((Unk_0203c92c_Bits0 *)&options)->b0) return TRUE;
+    if (((PlayerOptionBits *)&options)->hiragana) return TRUE;
     return FALSE;
 }
 
@@ -112,7 +112,7 @@ void PlayerOptions::setHiragana() { options = (options & ~1) | 1; }
 void PlayerOptions::clearHiragana() { options &= ~1; }
 
 BOOL PlayerOptions::isStereo() {
-    if (((Unk_0203c92c_Bits0 *)&options)->b1) return TRUE;
+    if (((PlayerOptionBits *)&options)->stereo) return TRUE;
     return FALSE;
 }
 
@@ -120,7 +120,7 @@ void PlayerOptions::setStereo() { options |= 2; }
 
 void PlayerOptions::clearStereo() { options &= ~2; }
 
-u32 PlayerOptions::getTalkVoice() { return ((Unk_0203c92c_Bits0 *)&options)->b23; }
+u32 PlayerOptions::getTalkVoice() { return ((PlayerOptionBits *)&options)->talkVoice; }
 
 void PlayerOptions::setTalkVoice(u32 v) {
     options = (options & ~0xc) | (((u8)v & 3) << 2);

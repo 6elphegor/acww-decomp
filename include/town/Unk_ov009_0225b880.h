@@ -2,6 +2,7 @@
 #define TOWN_UNK_OV009_0225B880_H
 
 #include "types.h"
+#include "sys/StackPad.h"
 #include "gfx/VecFx32.h"
 #include "gfx/NNSG3dRS.h"
 #include "town/BuildingInfo.h"
@@ -15,12 +16,6 @@ struct BuildingEntryFlags {
     /* 0x0 */ u8 f0 : 1;
     /* 0x0 */ u8 f1 : 1;
     /* 0x0 */ u8 rest : 6;
-};
-
-struct Unk_ov009_0225bce0_Pad {
-    /* 0x0 */ s32 v[2];
-    Unk_ov009_0225bce0_Pad() {}
-    ~Unk_ov009_0225bce0_Pad() {}
 };
 
 struct BuildingShadowEntry {

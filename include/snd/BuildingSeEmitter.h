@@ -17,7 +17,8 @@ public:
     void setPosition(VecFx32 *v);
     void activate();
 
-    /* 0x00 */ Unk_0213b9c4 emitter; // the active flag is emitter.b40 (0x40)
+    /* 0x00 */ Unk_0213b9c4 emitter;
+    /* 0x40 */ u8 active;   // set by activate, cleared by deactivate; play / setPosition do nothing while clear
 };
 
 #endif // SND_BUILDINGSEEMITTER_H

@@ -2595,8 +2595,8 @@ extern "C" void CommRecv_ItemActionRequest(s32 a, s32 b, s32 c, void *d) {
                 } else {
                     PendingUnit *q = PendingUnit_Get();
                     if (q->aid == buf.aid) {
-                        if (q->unk_01_d != 0) {
-                            if (q->unk_02_a == 0) ok = TRUE;
+                        if (q->committed != 0) {
+                            if (q->pending == 0) ok = TRUE;
                         }
                     }
                 }

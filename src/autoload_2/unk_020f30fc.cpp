@@ -27,7 +27,7 @@
 // The class DECLARATION order (and the bss object gSndPosList being defined) sets the vtable order: keep both.
 // SndHandle is a non-polymorphic second base at +4 (mwcc puts the vptr first): the `this ? this + 4 : 0` conversions of the original
 // are the implicit derived-to-base conversions when `this` is passed to the extern "C" SndHandle functions of unk_020ede18.cpp, and
-// `h ? h - 4 : 0` in f4010 is static_cast<SndSeEmitter *>(h).
+// `h ? h - 4 : 0` in f4010 is static_cast<SndSeEmitterKind1 *>(h).
 #include "types.h"
 #include "gfx/VecFx32.h"
 #include "snd/SndSeEmitterKind99.h"
@@ -236,7 +236,7 @@ extern "C" void Snd_ClearListenerCallbacks(void) {
 }
 
 SndSeEmitter::SndSeEmitter() {
-    b3e = 0;
+    kind = 0;
 }
 
 SndSeEmitter::~SndSeEmitter() {
@@ -245,7 +245,7 @@ SndSeEmitter::~SndSeEmitter() {
 void SndSeEmitter::init() {
     SndSeGroup_Init(this);
     SndSeGroup_SetEnabled(this, 1);
-    h3c = 0;
+    lastRandomSeId = 0;
 }
 
 void SndSeEmitter::update(void *src) {
@@ -254,7 +254,7 @@ void SndSeEmitter::update(void *src) {
 
 BOOL SndSeEmitter::playOneShot(s32 id, s32 c, s16 d) {
     s32 x;
-    if (b3e == 99 && gSndMgr.f60 != 0) {
+    if (kind == 99 && gSndMgr.f60 != 0) {
         void *p = data_021f5bc0;
         Snd_StartSeqArcEx(p, 10, -1, -1, id / 1000, id % 1000);
         NNS_SndPlayerSetVolume(p, 100);
@@ -270,14 +270,14 @@ BOOL SndSeEmitter::playOneShot(s32 id, s32 c, s16 d) {
     x = id;
     if (id == 123 || id == 127) {
         x += SndMgr_Rand(&gSndMgr, 4);
-        if (x == h3c) {
+        if (x == lastRandomSeId) {
             if (x == id) {
                 x++;
             } else if (x == id + 3) {
                 x--;
             }
         }
-        h3c = x;
+        lastRandomSeId = x;
     }
     return SndSeGroup_Play(this, id / 1000, x % 1000, c, d);
 }
@@ -303,39 +303,39 @@ void SndSeEmitter::stopEffects() {
 
 SndSeEmitterKind1::SndSeEmitterKind1() {
     volCb = onVolume;
-    b3e = 1;
-    b3f = 0;
+    kind = 1;
+    alternateFlags = 0;
 }
 
 void SndSeEmitterKind1::onVolume(SndHandle *h, s32 idx) {
     if (gSndMgr.f60 == 0) return;
     void *slot = (u8 *)h + 8 + idx * 12;
-    SndSeEmitter *o = static_cast<SndSeEmitter *>(h);
-    NNS_SndPlayerSetVolume(slot, o->b40 * 40 / 100);
+    SndSeEmitterKind1 *o = static_cast<SndSeEmitterKind1 *>(h);
+    NNS_SndPlayerSetVolume(slot, o->volume * 40 / 100);
 }
 
 u16 SndSeEmitter::nextAlternateId(u16 s) {
     u32 r = SndMgr_Rand(&gSndMgr, 4);
-    u8 f = b3f;
+    u8 f = alternateFlags;
     u32 b = f & 2;
     u32 c = f & 4;
     if (f & 1) {
         if (r == 0 && b == 0 && c == 0) {
             s = s + 2;
-            b3f = f | 2;
+            alternateFlags = f | 2;
         } else {
-            b3f &= ~2;
+            alternateFlags &= ~2;
         }
     } else {
         if (r == 0 && b == 0 && c == 0) {
             s = s + 3;
-            b3f = f | 4;
+            alternateFlags = f | 4;
         } else {
             s = s + 1;
-            b3f &= ~4;
+            alternateFlags &= ~4;
         }
     }
-    b3f ^= 1;
+    alternateFlags ^= 1;
     return s;
 }
 
@@ -344,14 +344,14 @@ void SndSeEmitter::playAlternate(u16 s) {
 }
 
 SndSeEmitterKind99::SndSeEmitterKind99() {
-    b3e = 99;
+    kind = 99;
 }
 
 SndSeEmitterKind99::~SndSeEmitterKind99() {
 }
 
 SndSeEmitterKind2::SndSeEmitterKind2() {
-    b3e = 2;
+    kind = 2;
 }
 
 void SndPosNode::init(SndPosList *list) {
