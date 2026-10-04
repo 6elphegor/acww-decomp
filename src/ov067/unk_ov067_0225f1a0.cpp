@@ -2,50 +2,50 @@
 #include "types.h"
 
 struct Unk_ov067_0225f1a0_Ent {
-    u32 unk_00;
-    u32 unk_04;
-    u32 unk_08[8];
+    u32 ggid;
+    u32 doneCallback;
+    u32 bufferInfo[8];
 };
 
 struct Unk_ov067_0225f1a0_Cb {
-    u32 unk_00;
-    void (*unk_04)(u32, void *);
+    u32 ggid;
+    void (*doneCallback)(u32, void *);
 };
 
 struct Unk_ov067_0225f1a0_W {
-    u8 unk_00;
-    u8 unk_01;
-    u16 unk_02;
-    u8 unk_04;
-    u8 unk_05;
-    u16 unk_06;
-    u32 unk_08;
-    u32 unk_0c;
+    u8 reqSeq;
+    u8 reqKind;
+    u16 reqSegment;
+    u8 ackSeq;
+    u8 ackKind;
+    u16 ackSegment;
+    u32 sendData;
+    u32 sendSize;
     u32 unk_10;
-    u16 unk_14;
+    u16 sendCheck;
     u16 unk_16;
-    u32 unk_18;
-    u32 unk_1c;
-    u32 unk_20;
-    u16 unk_24;
+    u32 recvData;
+    u32 recvSize;
+    u32 recvBufSize;
+    u16 recvCheck;
     u16 unk_26;
-    u32 unk_28[0x56];
-    u16 unk_180;
-    u16 unk_182;
-    u32 unk_184;
-    u32 unk_188;
-    u16 unk_18c[2];
-    Unk_ov067_0225f1a0_Cb *unk_190;
-    Unk_ov067_0225f1a0_Ent unk_194[16];
+    u32 recvBitmap[0x56];
+    u16 sendSegSize;
+    u16 recvSegSize;
+    u32 numRecvSegments;
+    u32 numMissingSegments;
+    u16 lastReqSegments[2];
+    Unk_ov067_0225f1a0_Cb *curEntry;
+    Unk_ov067_0225f1a0_Ent entries[16];
 };
 
 struct Unk_ov067_0225f3fc_Hdr {
-    u8 unk_00;
-    u8 unk_01;
-    u16 unk_02;
-    u8 unk_04;
-    u8 unk_05;
-    u16 unk_06;
+    u8 reqSeq;
+    u8 reqKind;
+    u16 reqSegment;
+    u8 ackSeq;
+    u8 ackKind;
+    u16 ackSegment;
 };
 
 struct Unk_ov067_0225f3fc_Pair {
@@ -58,36 +58,36 @@ struct Unk_ov067_0225f3fc_Wrap {
 };
 
 struct Unk_ov067_0225f3fc_Msg {
-    Unk_ov067_0225f3fc_Hdr *unk_00;
-    u16 unk_04;
+    Unk_ov067_0225f3fc_Hdr *packet;
+    u16 length;
 };
 
 struct Unk_ov067_0225facc_Msg {
-    u16 unk_00;
-    u16 unk_02;
-    u16 unk_04;
+    u16 apiid;
+    u16 errcode;
+    u16 mpState;
     u16 unk_06;
     u16 unk_08;
     u16 unk_0a;
     u16 unk_0c;
     u16 unk_0e;
-    u16 unk_10;
+    u16 aid;
 };
 
 struct Unk_ov067_0225facc_Sub {
     u32 unk_00;
     u32 unk_04;
-    u32 unk_08;
-    u16 unk_0c;
-    u16 unk_0e;
+    u32 ggid;
+    u16 tgid;
+    u16 entryFlag;
     u16 unk_10;
     u16 unk_12;
     u16 unk_14;
-    u16 unk_16;
-    u16 unk_18;
+    u16 csFlag;
+    u16 beaconPeriod;
     u8 pad_1a[0x32 - 0x1a];
-    u16 unk_32;
-    u16 unk_34;
+    u16 channel;
+    u16 parentMaxSize;
 };
 
 typedef s32 (*Unk_ov067_022604c0_Fn)(u32, void *);
@@ -95,33 +95,33 @@ typedef Unk_ov067_022604c0_Fn Unk_ov067_0225facc_Cb;
 
 struct Unk_ov067_0225facc_Ctx {
     u8 pad_0000[0x4ee0];
-    u8 unk_4ee0[0x200];
-    u16 unk_50e0;
-    u16 unk_50e2;
-    u16 unk_50e4;
-    u16 unk_50e6;
-    u16 unk_50e8;
-    u16 unk_50ea;
-    s32 unk_50ec;
-    s32 unk_50f0;
-    s32 unk_50f4;
+    u8 mpSendData[0x200];
+    u16 dmaNo;
+    u16 channel;
+    u16 aid;
+    u16 connectedMask;
+    u16 sendBufSize;
+    u16 recvBufSize;
+    s32 isSending;
+    s32 state;
+    s32 requestedState;
     Unk_ov067_0225facc_Cb unk_50f8;
-    Unk_ov067_0225facc_Sub *unk_50fc;
-    s32 unk_5100;
-    s32 unk_5104;
-    s32 unk_5108;
+    Unk_ov067_0225facc_Sub *parentParam;
+    s32 needMeasureChannel;
+    s32 bestChannelBusy;
+    s32 numBeacons;
     u8 pad_510c[0x516c - 0x510c];
-    u16 unk_516c;
-    u16 unk_516e;
+    u16 bssParentMaxSize;
+    u16 bssChildMaxSize;
     u8 pad_5170[0x55e0 - 0x5170];
-    u32 unk_55e0;
-    u16 unk_55e4;
-    u16 unk_55e6;
-    u16 unk_55e8;
-    u8 unk_55ea[6];
-    u16 unk_55f0;
-    u16 unk_55f2;
-    u8 unk_55f4[0x20];
+    u32 scanBuf;
+    u16 scanBufSize;
+    u16 scanChannelList;
+    u16 scanMaxChannelTime;
+    u8 scanBssid[6];
+    u16 scanType;
+    u16 scanSsidLength;
+    u8 scanSsid[0x20];
     u8 pad_5614[0x5640 - 0x5614];
 };
 
@@ -135,13 +135,13 @@ typedef Sub Unk_ov067_0226fc_Sub;
 typedef Unk_ov067_0225f1a0_W Unk_ov067_02261484_W;
 
 struct Unk_ov067_022604c0_Msg {
-    u16 unk_00;
-    u16 unk_02;
-    u16 unk_04;
+    u16 apiid;
+    u16 errcode;
+    u16 state;
     u8 pad_06[6];
-    u32 unk_0c;
-    u16 unk_10;
-    u16 unk_12;
+    u32 data;
+    u16 length;
+    u16 aid;
 };
 
 struct Unk_ov067_022608c0_Cb {
@@ -151,57 +151,57 @@ struct Unk_ov067_022608c0_Cb {
 };
 
 struct Unk_ov067_02260f58_P {
-    s32 unk_00;
-    s32 unk_04;
-    s32 unk_08;
-    s32 unk_0c;
-    s32 unk_10[4][4];
+    s32 column;
+    s32 row;
+    s32 reseedRow;
+    s32 parentDisabled;
+    s32 pattern[4][4];
 };
 
 struct Unk_ov067_02261048_Ent {
-    u32 unk_00;
-    u32 unk_04;
-    u32 unk_08[8];
+    u32 ggid;
+    u32 doneCallback;
+    u32 bufferInfo[8];
 };
 
 struct Unk_ov067_02261484_Rec {
-    u16 unk_00;
-    u16 unk_02;
-    u16 unk_04;
-    u16 unk_06;
+    u16 aid;
+    u16 mac01;
+    u16 mac23;
+    u16 mac45;
 };
 
 struct Unk_ov067_02261484_Msg {
     u8 pad_00[0xa];
-    u16 unk_0a;
-    u16 unk_0c;
-    u16 unk_0e;
-    u16 unk_10;
+    u16 mac01;
+    u16 mac23;
+    u16 mac45;
+    u16 aid;
 };
 
 typedef s32 (*Unk_ov067_02261484_Fn)(s32, void *);
 
 struct Unk_ov067_02261484_G {
-    u32 unk_00;
-    Unk_ov067_02261484_Fn unk_04;
-    Unk_ov067_02260f58_P unk_08;
-    Unk_ov067_02261484_Rec unk_58[16];
-    u8 unk_d8;
+    u32 dmaNo;
+    Unk_ov067_02261484_Fn eventCallback;
+    Unk_ov067_02260f58_P role;
+    Unk_ov067_02261484_Rec members[16];
+    u8 idleMpCount;
     u8 pad_d9[0xe0 - 0xd9];
-    u32 unk_e0;
+    u32 parentParam;
     u32 unk_e4;
-    u32 unk_e8;
+    u32 parentGgid;
     u8 pad_ec[0xf0 - 0xec];
-    u16 unk_f0;
+    u16 parentMaxEntry;
     u16 unk_f2;
     u16 unk_f4;
-    u16 unk_f6;
+    u16 parentCsFlag;
     u8 pad_f8[0x114 - 0xf8];
-    u16 unk_114;
-    u16 unk_116;
+    u16 parentMaxSize;
+    u16 childMaxSize;
     u8 pad_118[0x120 - 0x118];
-    Unk_ov067_02261484_Ctx unk_120;
-    Unk_ov067_02261484_W unk_5760;
+    Unk_ov067_0225facc_Ctx wm;
+    Unk_ov067_0225f1a0_W block;
 };
 
 extern "C" {
@@ -577,12 +577,12 @@ static inline u32 Clz(u32 x) {
 
 extern "C" void Wlx_SelectNextEntry(void) {
     u32 *r;
-    r = (u32 *)WlxBlock_FindEntry(&sWlx->unk_5760, (void *)sWlx->unk_5760.unk_190, 0, 0);
+    r = (u32 *)WlxBlock_FindEntry(&sWlx->block, (void *)sWlx->block.curEntry, 0, 0);
     if (r == NULL) {
-        r = (u32 *)WlxBlock_FindEntry(&sWlx->unk_5760, 0, 0, 1);
+        r = (u32 *)WlxBlock_FindEntry(&sWlx->block, 0, 0, 1);
     }
-    WlxBlock_SetCurrent(&sWlx->unk_5760, r);
-    sWlx->unk_e8 = *r;
+    WlxBlock_SetCurrent(&sWlx->block, r);
+    sWlx->parentGgid = *r;
 }
 
 extern "C" s32 Wlx_OnWmEvent(u32 cmd, void *arg) {
@@ -591,30 +591,30 @@ extern "C" s32 Wlx_OnWmEvent(u32 cmd, void *arg) {
     switch (cmd) {
     case 5:
         if (Wlx_GetState() == 3) {
-            WlxBlock_OnMpEndStub(&sWlx->unk_5760, arg);
-            if (sWlx->unk_120.unk_50e6 == 0) {
-                sWlx->unk_d8++;
-                if (sWlx->unk_d8 > 10) {
-                    sWlx->unk_d8 = ret;
-                    if (WlxRole_NextIsParent(&sWlx->unk_08) == 0) {
-                        WlxWm_RequestState(&sWlx->unk_120, 5);
+            WlxBlock_OnMpEndStub(&sWlx->block, arg);
+            if (sWlx->wm.connectedMask == 0) {
+                sWlx->idleMpCount++;
+                if (sWlx->idleMpCount > 10) {
+                    sWlx->idleMpCount = ret;
+                    if (WlxRole_NextIsParent(&sWlx->role) == 0) {
+                        WlxWm_RequestState(&sWlx->wm, 5);
                     }
                 }
             }
         }
         break;
     case 6:
-        ret = WlxBlock_SelectByBeacon(&sWlx->unk_5760, (u32 *)arg);
+        ret = WlxBlock_SelectByBeacon(&sWlx->block, (u32 *)arg);
         if (ret != 0) {
-            u32 *e = (u32 *)WlxBlock_GetCurrent(&sWlx->unk_5760);
-            sWlx->unk_e8 = e[0];
+            u32 *e = (u32 *)WlxBlock_GetCurrent(&sWlx->block);
+            sWlx->parentGgid = e[0];
         }
         break;
     case 0: {
         Unk_ov067_02261484_G *g = sWlx;
         s32 ie = OS_DisableInterrupts();
         sWlxState = 0;
-        Unk_ov067_02261484_Fn cb = sWlx->unk_04;
+        Unk_ov067_02261484_Fn cb = sWlx->eventCallback;
         if (cb != NULL) {
             cb(0, g);
         }
@@ -624,7 +624,7 @@ extern "C" s32 Wlx_OnWmEvent(u32 cmd, void *arg) {
     case 2: {
         s32 ie = OS_DisableInterrupts();
         sWlxState = 2;
-        Unk_ov067_02261484_Fn cb = sWlx->unk_04;
+        Unk_ov067_02261484_Fn cb = sWlx->eventCallback;
         if (cb != NULL) {
             cb(2, 0);
         }
@@ -633,78 +633,78 @@ extern "C" s32 Wlx_OnWmEvent(u32 cmd, void *arg) {
     }
     case 1:
         if (Wlx_GetState() != 3) {
-            WlxWm_RequestState(&sWlx->unk_120, 0);
-        } else if (WlxRole_NextIsParent(&sWlx->unk_08) != 0) {
+            WlxWm_RequestState(&sWlx->wm, 0);
+        } else if (WlxRole_NextIsParent(&sWlx->role) != 0) {
             Wlx_SelectNextEntry();
-            WlxWm_RequestState(&sWlx->unk_120, 4);
+            WlxWm_RequestState(&sWlx->wm, 4);
         } else {
-            WlxWm_RequestState(&sWlx->unk_120, 5);
+            WlxWm_RequestState(&sWlx->wm, 5);
         }
         break;
     case 3:
         if (Wlx_GetState() != 3) {
-            WlxWm_RequestState(&sWlx->unk_120, 0);
+            WlxWm_RequestState(&sWlx->wm, 0);
         }
-        sWlx->unk_d8 = 0;
+        sWlx->idleMpCount = 0;
         {
             Unk_ov067_02261484_G *g = sWlx;
-            u16 i = g->unk_120.unk_50e4;
-            Unk_ov067_02261484_Rec *r = &g->unk_58[i];
-            r->unk_00 = i;
-            OS_GetMacAddress(&r->unk_02);
+            u16 i = g->wm.aid;
+            Unk_ov067_02261484_Rec *r = &g->members[i];
+            r->aid = i;
+            OS_GetMacAddress(&r->mac01);
         }
         break;
     case 4:
         if (Wlx_GetState() != 3) {
-            WlxWm_RequestState(&sWlx->unk_120, 0);
+            WlxWm_RequestState(&sWlx->wm, 0);
         }
         {
             Unk_ov067_02261484_G *g = sWlx;
-            u16 i = g->unk_120.unk_50e4;
-            Unk_ov067_02261484_Rec *r = &g->unk_58[i];
-            r->unk_00 = i;
-            OS_GetMacAddress(&r->unk_02);
+            u16 i = g->wm.aid;
+            Unk_ov067_02261484_Rec *r = &g->members[i];
+            r->aid = i;
+            OS_GetMacAddress(&r->mac01);
         }
         break;
     case 9: {
-        u32 *e = (u32 *)WlxBlock_GetCurrent(&sWlx->unk_5760);
+        u32 *e = (u32 *)WlxBlock_GetCurrent(&sWlx->block);
         s32 f = Wlx_IsParent();
         u32 x, y, idx;
         if (f != 0) {
-            x = sWlx->unk_114;
+            x = sWlx->parentMaxSize;
         } else {
-            x = sWlx->unk_120.unk_516c;
+            x = sWlx->wm.bssParentMaxSize;
         }
         if (f != 0) {
-            y = sWlx->unk_116;
+            y = sWlx->childMaxSize;
         } else {
-            y = sWlx->unk_120.unk_516e;
+            y = sWlx->wm.bssChildMaxSize;
         }
-        idx = (u16)(f != 0 ? m->unk_10 : 0);
+        idx = (u16)(f != 0 ? m->aid : 0);
         Unk_ov067_02261484_G *g = sWlx;
-        Unk_ov067_02261484_Rec *tbl = g->unk_58;
+        Unk_ov067_02261484_Rec *tbl = g->members;
         u32 off = idx * 8;
         Unk_ov067_02261484_Rec *r = (Unk_ov067_02261484_Rec *)((u8 *)tbl + idx * 8);
-        WlxBlock_Reset(&g->unk_5760, x, y);
+        WlxBlock_Reset(&g->block, x, y);
         *(u16 *)((u8 *)tbl + off) = idx;
         if (f != 0) {
-            r->unk_02 = m->unk_0a;
-            r->unk_04 = m->unk_0c;
-            r->unk_06 = m->unk_0e;
+            r->mac01 = m->mac01;
+            r->mac23 = m->mac23;
+            r->mac45 = m->mac45;
         } else {
             u16 *q = (u16 *)((u8 *)sWlx + 0x5240);
-            r->unk_02 = q[2];
-            r->unk_04 = q[3];
-            r->unk_06 = q[4];
+            r->mac01 = q[2];
+            r->mac23 = q[3];
+            r->mac45 = q[4];
         }
         if (Wlx_GetState() == 3 && e != NULL) {
-            WlxBlock_StartSend(&sWlx->unk_5760, e[2], e[3], e[6], e[7]);
+            WlxBlock_StartSend(&sWlx->block, e[2], e[3], e[6], e[7]);
         } else {
-            sWlx->unk_5760.unk_01 = 5;
+            sWlx->block.reqKind = 5;
         }
-        WlxBlock_OnConnectStub(&sWlx->unk_5760, (u16)(1 << idx));
-        if (sWlx->unk_5760.unk_01 != 5) {
-            Unk_ov067_02261484_Fn cb = sWlx->unk_04;
+        WlxBlock_OnConnectStub(&sWlx->block, (u16)(1 << idx));
+        if (sWlx->block.reqKind != 5) {
+            Unk_ov067_02261484_Fn cb = sWlx->eventCallback;
             if (cb != NULL) {
                 cb(4, r);
             }
@@ -712,24 +712,24 @@ extern "C" s32 Wlx_OnWmEvent(u32 cmd, void *arg) {
         break;
     }
     case 10:
-        WlxBlock_OnDisconnectStub(&sWlx->unk_5760, (u16)(u32)arg);
+        WlxBlock_OnDisconnectStub(&sWlx->block, (u16)(u32)arg);
         if (Wlx_GetConnectedMask() == 0) {
             if (Wlx_GetState() != 3) {
                 if (Wlx_GetState() != 1) {
-                    if (WlxBlock_GetCurrent(&sWlx->unk_5760) != NULL) {
+                    if (WlxBlock_GetCurrent(&sWlx->block) != NULL) {
                         break;
                     }
                 }
             }
-            sWlx->unk_d8 = 0;
-            WlxWm_RequestState(&sWlx->unk_120, 3);
+            sWlx->idleMpCount = 0;
+            WlxWm_RequestState(&sWlx->wm, 3);
         }
         break;
     case 7:
-        WlxBlock_BuildSend(&sWlx->unk_5760, (Unk_ov067_0225f3fc_Msg *)arg);
+        WlxBlock_BuildSend(&sWlx->block, (Unk_ov067_0225f3fc_Msg *)arg);
         break;
     case 8:
-        ret = WlxBlock_Receive(&sWlx->unk_5760, (Unk_ov067_0225f3fc_Msg *)arg);
+        ret = WlxBlock_Receive(&sWlx->block, (Unk_ov067_0225f3fc_Msg *)arg);
         break;
     default:
         Fatal_Trap();
@@ -748,21 +748,21 @@ extern "C" void Wlx_Init(u32 a, u32 b, u32 c) {
         z = 0;
         sWlx = (Unk_ov067_02261484_G *)a;
         MIi_CpuClear32(z, (void *)a, 0x5b74);
-        sWlx->unk_00 = c;
-        sWlx->unk_04 = (Unk_ov067_02261484_Fn)b;
-        WlxRole_Init(&sWlx->unk_08);
-        WlxBlock_Init(&sWlx->unk_5760);
-        sWlx->unk_f0 = 1;
-        sWlx->unk_114 = 0x200;
-        sWlx->unk_116 = 0x200;
-        sWlx->unk_f6 = 1;
+        sWlx->dmaNo = c;
+        sWlx->eventCallback = (Unk_ov067_02261484_Fn)b;
+        WlxRole_Init(&sWlx->role);
+        WlxBlock_Init(&sWlx->block);
+        sWlx->parentMaxEntry = 1;
+        sWlx->parentMaxSize = 0x200;
+        sWlx->childMaxSize = 0x200;
+        sWlx->parentCsFlag = 1;
         {
             Unk_ov067_02261484_G *g = sWlx;
-            WlxWm_Init(&g->unk_120, (Sub *)&g->unk_e0, Wlx_OnWmEvent, g->unk_00);
+            WlxWm_Init(&g->wm, (Sub *)&g->parentParam, Wlx_OnWmEvent, g->dmaNo);
         }
         s32 ie2 = OS_DisableInterrupts();
         sWlxState = 2;
-        Unk_ov067_02261484_Fn cb = sWlx->unk_04;
+        Unk_ov067_02261484_Fn cb = sWlx->eventCallback;
         if (cb != NULL) {
             cb(2, 0);
         }
@@ -778,8 +778,8 @@ extern "C" s32 Wlx_SetPacketSizes(u32 a, u32 b, u32 c) {
         s32 t = 0x14a + (a + 0x26) * 4 + c * ((b + 0x20) * 4 + 0x70);
         if (t < 0x15e0) {
             r = 1;
-            sWlx->unk_114 = a;
-            sWlx->unk_116 = b;
+            sWlx->parentMaxSize = a;
+            sWlx->childMaxSize = b;
         }
     }
     return r;
@@ -788,10 +788,10 @@ extern "C" s32 Wlx_SetPacketSizes(u32 a, u32 b, u32 c) {
 extern "C" void Wlx_StartExchange(void) {
     s32 ie = OS_DisableInterrupts();
     if (Wlx_GetState() == 2) {
-        WlxWm_RequestState(&sWlx->unk_120, 3);
+        WlxWm_RequestState(&sWlx->wm, 3);
         s32 ie2 = OS_DisableInterrupts();
         sWlxState = 3;
-        Unk_ov067_02261484_Fn cb = sWlx->unk_04;
+        Unk_ov067_02261484_Fn cb = sWlx->eventCallback;
         if (cb != NULL) {
             cb(3, 0);
         }
@@ -803,7 +803,7 @@ extern "C" void Wlx_StartExchange(void) {
 extern "C" void Wlx_StopExchange(void) {
     s32 ie = OS_DisableInterrupts();
     if (Wlx_GetState() == 3) {
-        WlxWm_RequestState(&sWlx->unk_120, 2);
+        WlxWm_RequestState(&sWlx->wm, 2);
     }
     OS_RestoreInterrupts(ie);
 }
@@ -818,13 +818,13 @@ extern "C" void Wlx_Stop(void) {
     case 3: {
         s32 ie2 = OS_DisableInterrupts();
         sWlxState = 1;
-        Unk_ov067_02261484_Fn cb = sWlx->unk_04;
+        Unk_ov067_02261484_Fn cb = sWlx->eventCallback;
         if (cb != NULL) {
             cb(1, 0);
         }
         OS_RestoreInterrupts(ie2);
         if (Wlx_GetConnectedMask() == 0) {
-            WlxWm_RequestState(&sWlx->unk_120, 0);
+            WlxWm_RequestState(&sWlx->wm, 0);
         }
         break;
     }
@@ -837,62 +837,62 @@ extern "C" s32 Wlx_GetState(void) {
 }
 
 extern "C" s32 Wlx_IsParent(void) {
-    if (sWlx->unk_120.unk_50f0 == 4) {
+    if (sWlx->wm.state == 4) {
         return 1;
     }
     return 0;
 }
 
 extern "C" u16 Wlx_GetConnectedMask(void) {
-    u16 r = sWlx->unk_120.unk_50e6;
+    u16 r = sWlx->wm.connectedMask;
     if (r != 0) {
-        r = r | (1 << sWlx->unk_120.unk_50e4);
+        r = r | (1 << sWlx->wm.aid);
     }
     return r;
 }
 
 extern "C" void Wlx_RegisterData(u32 a0, u32 a1, u32 a2, u32 a3, u32 a4, u32 a5) {
     s32 ie = OS_DisableInterrupts();
-    Unk_ov067_02261048_Ent *e = (Unk_ov067_02261048_Ent *)WlxBlock_FindEntry(&sWlx->unk_5760, 0, a0, 1);
+    Unk_ov067_02261048_Ent *e = (Unk_ov067_02261048_Ent *)WlxBlock_FindEntry(&sWlx->block, 0, a0, 1);
     if (e == NULL) {
-        e = (Unk_ov067_02261048_Ent *)WlxBlock_FindEntry(&sWlx->unk_5760, 0, 0, 1);
+        e = (Unk_ov067_02261048_Ent *)WlxBlock_FindEntry(&sWlx->block, 0, 0, 1);
         if (e == NULL) {
             Fatal_Trap();
         } else {
-            e->unk_00 = a0;
-            e->unk_04 = a1;
-            e->unk_08[0] = a2;
-            e->unk_08[1] = a3;
-            e->unk_08[4] = a4;
-            e->unk_08[5] = a5;
+            e->ggid = a0;
+            e->doneCallback = a1;
+            e->bufferInfo[0] = a2;
+            e->bufferInfo[1] = a3;
+            e->bufferInfo[4] = a4;
+            e->bufferInfo[5] = a5;
         }
     }
     OS_RestoreInterrupts(ie);
 }
 
 extern "C" void WlxRole_Init(Unk_ov067_02260f58_P *p) {
-    p->unk_00 = (u32)OS_GetTick() & 3;
-    p->unk_04 = (u32)(OS_GetTick() >> 2) & 3;
-    p->unk_08 = 0;
-    p->unk_0c = 0;
-    MIi_CpuCopy32(sWlxRoleTable, p->unk_10, 0x40);
+    p->column = (u32)OS_GetTick() & 3;
+    p->row = (u32)(OS_GetTick() >> 2) & 3;
+    p->reseedRow = 0;
+    p->parentDisabled = 0;
+    MIi_CpuCopy32(sWlxRoleTable, p->pattern, 0x40);
 }
 
 extern "C" s32 WlxRole_NextIsParent(Unk_ov067_02260f58_P *p) {
-    p->unk_00++;
-    if (p->unk_00 >= 4) {
-        p->unk_00 = 0;
-        p->unk_04++;
-        if (p->unk_04 >= 4) {
-            p->unk_04 = 0;
+    p->column++;
+    if (p->column >= 4) {
+        p->column = 0;
+        p->row++;
+        if (p->row >= 4) {
+            p->row = 0;
         }
-        if (p->unk_04 == p->unk_08) {
-            p->unk_08 = (u32)OS_GetTick() & 3;
-            p->unk_04 = p->unk_08;
+        if (p->row == p->reseedRow) {
+            p->reseedRow = (u32)OS_GetTick() & 3;
+            p->row = p->reseedRow;
         }
     }
-    if (p->unk_10[p->unk_04][p->unk_00] != 0) {
-        if (p->unk_0c == 0) {
+    if (p->pattern[p->row][p->column] != 0) {
+        if (p->parentDisabled == 0) {
             return 1;
         }
     }
@@ -900,8 +900,8 @@ extern "C" s32 WlxRole_NextIsParent(Unk_ov067_02260f58_P *p) {
 }
 
 extern "C" void WlxWm_Fail(Unk_ov067_02260de4_S *s) {
-    if (s->unk_50f0 == 1) {
-        s->unk_50f0 = s->unk_50f4;
+    if (s->state == 1) {
+        s->state = s->requestedState;
     }
     WlxWm_RequestState(s, 0);
 }
@@ -931,7 +931,7 @@ extern "C" void WlxWm_HandleError(Unk_ov067_02260de4_S *s, s32 id, u32 arg) {
         break;
     case 12:
         if (arg == 1 || arg - 0xb <= 1) {
-            s->unk_50f0 = 5;
+            s->state = 5;
             WlxWm_RequestState(s, 3);
         } else {
             WlxWm_Fail(s);
@@ -967,16 +967,16 @@ extern "C" void WlxWm_SendMpData(Unk_ov067_022604c0_S *s) {
         u16 e;
         u16 f;
     } l;
-    if (s->unk_50ec != 0) {
+    if (s->isSending != 0) {
         return;
     }
     u32 v;
-    if (s->unk_50e4 == 0) {
-        v = s->unk_50fc->unk_34;
+    if (s->aid == 0) {
+        v = s->parentParam->parentMaxSize;
     } else {
         v = *(u16 *)((u8 *)s + 0x516e);
     }
-    u16 fl = s->unk_50e6;
+    u16 fl = s->connectedMask;
     l.e = v;
     l.d = (void *)((u8 *)s + 0x4ee0);
     l.f = fl;
@@ -986,12 +986,12 @@ extern "C" void WlxWm_SendMpData(Unk_ov067_022604c0_S *s) {
     if (l.e > v) {
         return;
     }
-    s->unk_50ec = WlxWm_CheckApiCall(s, 0xf, WM_SetMPDataToPortEx((void *)WlxWm_OnMpDataSent, 0, l.d, l.e, l.f, 4, 2));
+    s->isSending = WlxWm_CheckApiCall(s, 0xf, WM_SetMPDataToPortEx((void *)WlxWm_OnMpDataSent, 0, l.d, l.e, l.f, 4, 2));
 }
 
 extern "C" void WlxWm_SetState(Unk_ov067_022604c0_S *s, s32 st, u32 arg) {
-    s->unk_50f0 = st;
-    s32 prev = s->unk_50f4;
+    s->state = st;
+    s32 prev = s->requestedState;
     if (prev == st) {
         switch (st) {
         case 0:
@@ -1010,18 +1010,18 @@ extern "C" void WlxWm_SetState(Unk_ov067_022604c0_S *s, s32 st, u32 arg) {
             s->unk_50f8(1, 0);
             return;
         case 4:
-            s->unk_50ec = 0;
+            s->isSending = 0;
             if (s->unk_50f8 == NULL) {
                 return;
             }
             s->unk_50f8(3, 0);
             return;
         case 5:
-            s->unk_50ec = 0;
+            s->isSending = 0;
             if (s->unk_50f8 != NULL) {
                 s->unk_50f8(4, 0);
             }
-            s->unk_50e6 |= 1;
+            s->connectedMask |= 1;
             if (s->unk_50f8 != NULL) {
                 s->unk_50f8(9, (void *)arg);
             }
@@ -1060,7 +1060,7 @@ extern "C" void WlxWm_SetState(Unk_ov067_022604c0_S *s, s32 st, u32 arg) {
         case 3:
             break;
         case 4:
-            if (s->unk_5100 != 0) {
+            if (s->needMeasureChannel != 0) {
                 WlxWm_MeasureChannelStep(0);
                 return;
             }
@@ -1082,8 +1082,8 @@ extern "C" void WlxWm_SetState(Unk_ov067_022604c0_S *s, s32 st, u32 arg) {
 extern "C" void WlxWm_OnMpDataSent(void *m) {
     Unk_ov067_022604c0_S *s = sWlxWm;
     WlxWm_CheckCallback(s, m);
-    s->unk_50ec = 0;
-    if (s->unk_50e6 == 0) {
+    s->isSending = 0;
+    if (s->connectedMask == 0) {
         return;
     }
     WlxWm_SendMpData(s);
@@ -1091,12 +1091,12 @@ extern "C" void WlxWm_OnMpDataSent(void *m) {
 
 extern "C" void WlxWm_OnIndication(Unk_ov067_022604c0_Msg *m) {
     Unk_ov067_022604c0_S *s = sWlxWm;
-    if (m->unk_02 != 8) {
+    if (m->errcode != 8) {
         return;
     }
     WlxDebug_Printf("WM_ERRCODE_FIFO_ERROR Indication!\n");
-    s->unk_50f4 = 6;
-    s->unk_50f0 = 6;
+    s->requestedState = 6;
+    s->state = 6;
 }
 
 extern "C" void WlxWm_OnPortRecv(Unk_ov067_022604c0_Msg *m) {
@@ -1104,16 +1104,16 @@ extern "C" void WlxWm_OnPortRecv(Unk_ov067_022604c0_Msg *m) {
     if (WlxWm_CheckCallback(s, m) == 0) {
         return;
     }
-    u32 t = m->unk_04;
+    u32 t = m->state;
     Unk_ov067_022608c0_Cb c;
     switch (t) {
     case 7:
         return;
     case 0x15: {
         s32 r = 0;
-        c.c = 1 << m->unk_12;
-        c.b = m->unk_10;
-        c.a = m->unk_0c;
+        c.c = 1 << m->aid;
+        c.b = m->length;
+        c.a = m->data;
         if (s->unk_50f8 != NULL) {
             r = s->unk_50f8(8, &c);
         }
@@ -1125,7 +1125,7 @@ extern "C" void WlxWm_OnPortRecv(Unk_ov067_022604c0_Msg *m) {
     }
     case 9: {
         Unk_ov067_022604c0_Fn cb = s->unk_50f8;
-        u32 sh = 1 << m->unk_12;
+        u32 sh = 1 << m->aid;
         if (cb == NULL) {
             return;
         }
@@ -1143,13 +1143,13 @@ extern "C" void WlxWm_EnableStep(Unk_ov067_022604c0_Msg *m) {
         }
     }
     if (m == NULL) {
-        s->unk_5100 = 1;
-        s->unk_50f0 = 1;
-        WlxWm_CheckApiCall(s, 0, WM_Init(s, s->unk_50e0));
+        s->needMeasureChannel = 1;
+        s->state = 1;
+        WlxWm_CheckApiCall(s, 0, WM_Init(s, s->dmaNo));
         WlxWm_CheckApiCall(s, 3, WM_Enable((void *)WlxWm_EnableStep));
         return;
     }
-    if (m->unk_00 != 3) {
+    if (m->apiid != 3) {
         return;
     }
     if (WlxWm_CheckApiCall(s, 0x80, WM_SetIndCallback((void *)WlxWm_OnIndication)) == 0) {
@@ -1169,11 +1169,11 @@ extern "C" void WlxWm_PowerOnStep(Unk_ov067_022604c0_Msg *m) {
         }
     }
     if (m == NULL) {
-        s->unk_50f0 = 1;
+        s->state = 1;
         WlxWm_CheckApiCall(s, 5, WM_PowerOn((void *)WlxWm_PowerOnStep));
         return;
     }
-    if (m->unk_00 != 5) {
+    if (m->apiid != 5) {
         return;
     }
     WlxWm_SetState(s, 3, 0);
@@ -1187,11 +1187,11 @@ extern "C" void WlxWm_PowerOffStep(Unk_ov067_022604c0_Msg *m) {
         }
     }
     if (m == NULL) {
-        s->unk_50f0 = 1;
+        s->state = 1;
         WlxWm_CheckApiCall(s, 6, WM_PowerOff((void *)WlxWm_PowerOffStep));
         return;
     }
-    if (m->unk_00 != 6) {
+    if (m->apiid != 6) {
         return;
     }
     WlxWm_SetState(s, 2, 0);
@@ -1205,18 +1205,18 @@ extern "C" void WlxWm_DisableStep(Unk_ov067_022604c0_Msg *m) {
         }
     }
     if (m == NULL) {
-        s->unk_50f0 = 1;
+        s->state = 1;
         WlxWm_CheckApiCall(s, 4, WM_Disable((void *)WlxWm_DisableStep));
         return;
     }
-    if (m->unk_00 != 4) {
+    if (m->apiid != 4) {
         return;
     }
     if (WlxWm_CheckApiCall(s, 2, func_0211f188()) == 0) {
         return;
     }
     sWlxWm = NULL;
-    s->unk_50f0 = 0;
+    s->state = 0;
     if (s->unk_50f8 == NULL) {
         return;
     }
@@ -1231,14 +1231,14 @@ extern "C" void WlxWm_ResetStep(Unk_ov067_022604c0_Msg *m) {
         }
     }
     if (m == NULL) {
-        s->unk_50f0 = 1;
+        s->state = 1;
         WlxWm_CheckApiCall(s, 1, WM_Reset((void *)WlxWm_ResetStep));
         return;
     }
-    if (m->unk_00 != 1) {
+    if (m->apiid != 1) {
         return;
     }
-    s->unk_50e4 = 0;
+    s->aid = 0;
     WlxWm_SetState(s, 3, 0);
 }
 
@@ -1250,16 +1250,16 @@ extern "C" void WlxWm_OnParentEvent(Msg *m) {
         WlxWm_StartParentStep(m);
         return;
     }
-    if (m->unk_02 != 0) {
+    if (m->errcode != 0) {
         return;
     }
     switch (t) {
     case 0:
         return;
     case 7: {
-        BOOL first = c->unk_50e6 == 0 ? TRUE : FALSE;
-        WlxDebug_Printf("connected(%02X+=%02X)\n", c->unk_50e6, 1 << m->unk_10);
-        c->unk_50e6 = c->unk_50e6 | (u16)(1 << m->unk_10);
+        BOOL first = c->connectedMask == 0 ? TRUE : FALSE;
+        WlxDebug_Printf("connected(%02X+=%02X)\n", c->connectedMask, 1 << m->aid);
+        c->connectedMask = c->connectedMask | (u16)(1 << m->aid);
         if (c->unk_50f8 != NULL) {
             c->unk_50f8(9, m);
         }
@@ -1269,16 +1269,16 @@ extern "C" void WlxWm_OnParentEvent(Msg *m) {
         return;
     }
     case 9:
-        WlxDebug_Printf("disconnected(%02X-=%02X)\n", c->unk_50e6, 1 << m->unk_10);
-        c->unk_50e6 = c->unk_50e6 & (u16)~(1 << m->unk_10);
+        WlxDebug_Printf("disconnected(%02X-=%02X)\n", c->connectedMask, 1 << m->aid);
+        c->connectedMask = c->connectedMask & (u16)~(1 << m->aid);
         Unk_ov067_0225facc_Cb cb = c->unk_50f8;
-        u32 a = 1 << m->unk_10;
+        u32 a = 1 << m->aid;
         if (cb != NULL) {
             cb(0xa, (void *)a);
         }
         return;
     case 2: {
-        void *a = c->unk_50fc;
+        void *a = c->parentParam;
         if (c->unk_50f8 != NULL) {
             c->unk_50f8(5, a);
         }
@@ -1295,31 +1295,31 @@ extern "C" void WlxWm_StartParentStep(Msg *m) {
         }
     }
     if (m == NULL) {
-        c->unk_50f0 = 1;
-        c->unk_50fc->unk_32 = c->unk_50e2;
-        c->unk_50fc->unk_0c = WM_GetNextTgid();
-        WlxDebug_Printf("start parent. (%2dch, TGID=%02X, GGID=%04X)\n", c->unk_50e2, c->unk_50fc->unk_0c, c->unk_50fc->unk_08);
-        WlxWm_CheckApiCall(c, 7, WM_SetParentParameter(WlxWm_StartParentStep, c->unk_50fc));
+        c->state = 1;
+        c->parentParam->channel = c->channel;
+        c->parentParam->tgid = WM_GetNextTgid();
+        WlxDebug_Printf("start parent. (%2dch, TGID=%02X, GGID=%04X)\n", c->channel, c->parentParam->tgid, c->parentParam->ggid);
+        WlxWm_CheckApiCall(c, 7, WM_SetParentParameter(WlxWm_StartParentStep, c->parentParam));
         return;
     }
-    if (m->unk_00 == 7) {
+    if (m->apiid == 7) {
         WlxWm_CheckApiCall(c, 8, WM_StartParent(WlxWm_OnParentEvent));
         return;
     }
-    if (m->unk_00 == 8) {
+    if (m->apiid == 8) {
         BOOL b = FALSE;
-        c->unk_50e4 = b;
-        c->unk_50e6 = b;
-        if (c->unk_50fc->unk_16 == 0) {
+        c->aid = b;
+        c->connectedMask = b;
+        if (c->parentParam->csFlag == 0) {
             b = TRUE;
         }
-        WlxWm_CheckApiCall(c, 0xe, func_021206b4(WlxWm_StartParentStep, (u8 *)c + 0x1120, c->unk_50ea, (u8 *)c + 0xf00, c->unk_50e8, (u16)b, 0, 0, 0, 0, 0));
+        WlxWm_CheckApiCall(c, 0xe, func_021206b4(WlxWm_StartParentStep, (u8 *)c + 0x1120, c->recvBufSize, (u8 *)c + 0xf00, c->sendBufSize, (u16)b, 0, 0, 0, 0, 0));
         return;
     }
-    if (m->unk_00 != 0xe) {
+    if (m->apiid != 0xe) {
         return;
     }
-    if (m->unk_04 != 0xa) {
+    if (m->mpState != 0xa) {
         return;
     }
     WlxWm_SetState(c, 4, 0);
@@ -1332,17 +1332,17 @@ extern "C" void WlxWm_OnChildEvent(Msg *m) {
     }
     switch (m->unk_08) {
     case 7:
-        if (c->unk_50f0 == 5) {
+        if (c->state == 5) {
             return;
         }
         WlxWm_ConnectStep(m);
         return;
     case 9:
-        if (c->unk_50f0 == 1) {
-            c->unk_50f4 = 3;
+        if (c->state == 1) {
+            c->requestedState = 3;
             return;
         }
-        c->unk_50f4 = 4;
+        c->requestedState = 4;
         WlxWm_ResetStep(0);
         return;
     case 6:
@@ -1362,20 +1362,20 @@ extern "C" void WlxWm_ConnectStep(Msg *m) {
         }
     }
     if (m == NULL) {
-        c->unk_50f0 = 1;
+        c->state = 1;
         WlxWm_CheckApiCall(c, 0xc, func_0211fcbc(WlxWm_OnChildEvent, (u8 *)c + 0x5120, 0, 1, 0));
         return;
     }
-    if (m->unk_00 == 0xc) {
-        c->unk_50e4 = m->unk_0a;
-        BOOL b = c->unk_50fc->unk_16 == 0 ? TRUE : FALSE;
-        WlxWm_CheckApiCall(c, 0xe, func_021206b4(WlxWm_ConnectStep, (u8 *)c + 0x1120, c->unk_50ea, (u8 *)c + 0xf00, c->unk_50e8, (u16)b, 0, 0, 0, 0, 0));
+    if (m->apiid == 0xc) {
+        c->aid = m->unk_0a;
+        BOOL b = c->parentParam->csFlag == 0 ? TRUE : FALSE;
+        WlxWm_CheckApiCall(c, 0xe, func_021206b4(WlxWm_ConnectStep, (u8 *)c + 0x1120, c->recvBufSize, (u8 *)c + 0xf00, c->sendBufSize, (u16)b, 0, 0, 0, 0, 0));
         return;
     }
-    if (m->unk_00 != 0xe) {
+    if (m->apiid != 0xe) {
         return;
     }
-    if (m->unk_04 != 0xa) {
+    if (m->mpState != 0xa) {
         return;
     }
     WlxWm_SetState(c, 5, (u32)m);
@@ -1385,23 +1385,23 @@ extern "C" void WlxWm_MeasureChannelStep(Msg *m) {
     Ctx *c = sWlxWm;
     u32 v = 0;
     if (m == NULL) {
-        c->unk_50f0 = 1;
-        c->unk_50e2 = v;
-        c->unk_5104 = 0x65;
+        c->state = 1;
+        c->channel = v;
+        c->bestChannelBusy = 0x65;
     } else if (WlxWm_CheckCallback(c, m) != 0) {
         v = m->unk_08;
-        if (c->unk_5104 > m->unk_0a) {
-            c->unk_5104 = m->unk_0a;
-            c->unk_50e2 = v;
+        if (c->bestChannelBusy > m->unk_0a) {
+            c->bestChannelBusy = m->unk_0a;
+            c->channel = v;
         }
         if (v == 32 - Clz(WM_GetAllowedChannel())) {
-            c->unk_5100 = 0;
+            c->needMeasureChannel = 0;
             WlxWm_SetState(c, 3, 0);
         }
     } else {
-        c->unk_5100 = 0;
+        c->needMeasureChannel = 0;
     }
-    if (c->unk_5100 == 0) {
+    if (c->needMeasureChannel == 0) {
         return;
     }
     u32 a = WlxWm_NextAllowedChannel(v);
@@ -1416,37 +1416,37 @@ extern "C" void WlxWm_ScanStep(Msg *m) {
         }
     }
     if (m == NULL) {
-        c->unk_50f0 = 1;
-        c->unk_5108 = 0;
-        c->unk_55e0 = (u32)c + 0x51e0;
-        c->unk_55e4 = 0x400;
-        c->unk_55e6 = WM_GetAllowedChannel();
-        c->unk_55e8 = 0x6e;
-        MI_CpuFill8(c->unk_55ea, 0xff, 6);
-        c->unk_55f0 = 1;
-        c->unk_55f2 = 0;
-        MI_CpuFill8(c->unk_55f4, 0xff, 0x20);
-        WlxWm_CheckApiCall(c, 0x26, WM_StartScanEx(WlxWm_ScanStep, &c->unk_55e0));
+        c->state = 1;
+        c->numBeacons = 0;
+        c->scanBuf = (u32)c + 0x51e0;
+        c->scanBufSize = 0x400;
+        c->scanChannelList = WM_GetAllowedChannel();
+        c->scanMaxChannelTime = 0x6e;
+        MI_CpuFill8(c->scanBssid, 0xff, 6);
+        c->scanType = 1;
+        c->scanSsidLength = 0;
+        MI_CpuFill8(c->scanSsid, 0xff, 0x20);
+        WlxWm_CheckApiCall(c, 0x26, WM_StartScanEx(WlxWm_ScanStep, &c->scanBuf));
         return;
     }
-    if (m->unk_00 == 0x26) {
+    if (m->apiid == 0x26) {
         if (m->unk_08 == 5) {
             DC_InvalidateRange((u8 *)c + 0x51e0, 0x400);
-            c->unk_5108 = m->unk_0e;
+            c->numBeacons = m->unk_0e;
         }
         WlxWm_CheckApiCall(c, 0xb, WM_EndScan(WlxWm_ScanStep));
         return;
     }
-    if (m->unk_00 != 0xb) {
+    if (m->apiid != 0xb) {
         return;
     }
     BOOL found = FALSE;
-    if (c->unk_50f4 == 5) {
+    if (c->requestedState == 5) {
         s32 i;
         u8 *p = (u8 *)c + 0x51e0;
-        WlxDebug_Printf("found:%d beacons\n", c->unk_5108);
+        WlxDebug_Printf("found:%d beacons\n", c->numBeacons);
         i = 0;
-        if (c->unk_5108 > 0) {
+        if (c->numBeacons > 0) {
             do {
                 s32 n = *(u16 *)p << 1;
                 WlxDebug_Printf("   GGID=%08X(%2dch:%3dBYTE)\n", n >= 0x48 ? *(s32 *)(p + 0x44) : -1, *(u16 *)(p + 0x36), n);
@@ -1463,15 +1463,15 @@ extern "C" void WlxWm_ScanStep(Msg *m) {
                 }
                 i++;
                 p += (n + 3) & ~3;
-            } while (i < c->unk_5108);
+            } while (i < c->numBeacons);
         }
     }
     if (found) {
         WlxWm_ConnectStep(NULL);
         return;
     }
-    if (c->unk_50f4 == 5) {
-        c->unk_50f4 = 3;
+    if (c->requestedState == 5) {
+        c->requestedState = 3;
     }
     WlxWm_SetState(c, 3, 0);
 }
@@ -1483,26 +1483,26 @@ extern "C" void WlxWm_Init(Ctx *c, Sub *s, Unk_ov067_0225facc_Cb cb, u32 v) {
     sWlxWm = c;
     volatile u32 z = 0;
     MIi_CpuClear32(z, c, 0x5640);
-    c->unk_50e4 = 0;
-    c->unk_50ec = 1;
+    c->aid = 0;
+    c->isSending = 1;
     c->unk_50f8 = cb;
-    c->unk_50e0 = v;
-    c->unk_50e8 = 0x220;
-    c->unk_50ea = 0x3dc0;
-    c->unk_50f0 = 0;
-    c->unk_50fc = s;
-    c->unk_50fc->unk_0e = 1;
-    c->unk_50fc->unk_18 = 0x5a;
-    c->unk_50fc->unk_32 = 1;
+    c->dmaNo = v;
+    c->sendBufSize = 0x220;
+    c->recvBufSize = 0x3dc0;
+    c->state = 0;
+    c->parentParam = s;
+    c->parentParam->entryFlag = 1;
+    c->parentParam->beaconPeriod = 0x5a;
+    c->parentParam->channel = 1;
 }
 
 extern "C" void WlxWm_RequestState(Ctx *x, u32 v) {
-    x->unk_50f4 = v;
-    u32 cur = x->unk_50f0;
+    x->requestedState = v;
+    u32 cur = x->state;
     if (cur == 1) {
         return;
     }
-    if (cur == x->unk_50f4) {
+    if (cur == x->requestedState) {
         return;
     }
     WlxWm_SetState(x, cur, 0);
@@ -1510,40 +1510,40 @@ extern "C" void WlxWm_RequestState(Ctx *x, u32 v) {
 
 extern "C" void WlxBlock_Init(Unk_ov067_0225f1a0_W *w) {
     volatile u32 tmp;
-    w->unk_190 = 0;
+    w->curEntry = 0;
     tmp = 0;
     MIi_CpuClear32(tmp, w, 4);
 }
 
 extern "C" void WlxBlock_Reset(Unk_ov067_0225f1a0_W *w, u32 a, u32 b) {
     volatile u32 tmp;
-    w->unk_180 = a - 8;
-    w->unk_182 = b - 8;
-    w->unk_00 = 0;
-    w->unk_01 = 0;
-    w->unk_04 = 0;
-    w->unk_05 = 0;
-    w->unk_08 = 0;
-    w->unk_0c = 0;
-    w->unk_14 = 0;
+    w->sendSegSize = a - 8;
+    w->recvSegSize = b - 8;
+    w->reqSeq = 0;
+    w->reqKind = 0;
+    w->ackSeq = 0;
+    w->ackKind = 0;
+    w->sendData = 0;
+    w->sendSize = 0;
+    w->sendCheck = 0;
     tmp = 0;
-    MIi_CpuClear32(tmp, &w->unk_28, 0x158);
-    w->unk_18 = 0;
-    w->unk_1c = 0;
-    w->unk_20 = 0;
-    w->unk_184 = 0;
+    MIi_CpuClear32(tmp, &w->recvBitmap, 0x158);
+    w->recvData = 0;
+    w->recvSize = 0;
+    w->recvBufSize = 0;
+    w->numRecvSegments = 0;
 }
 
 extern "C" void WlxBlock_StartSend(Unk_ov067_0225f1a0_W *w, u32 p, u32 q, u32 r, u32 s) {
-    if (w->unk_01 != 0) {
+    if (w->reqKind != 0) {
         return;
     }
-    w->unk_01 = 1;
-    w->unk_08 = p;
-    w->unk_0c = (u16)q;
-    w->unk_14 = func_021276e0(p, q);
-    w->unk_18 = r;
-    w->unk_20 = (u16)s;
+    w->reqKind = 1;
+    w->sendData = p;
+    w->sendSize = (u16)q;
+    w->sendCheck = func_021276e0(p, q);
+    w->recvData = r;
+    w->recvBufSize = (u16)s;
 }
 
 extern "C" void *WlxBlock_FindEntry(Unk_ov067_0225f1a0_W *w, void *start, u32 key, u32 flag) {
@@ -1553,18 +1553,18 @@ extern "C" void *WlxBlock_FindEntry(Unk_ov067_0225f1a0_W *w, void *start, u32 ke
     Unk_ov067_0225f1a0_Ent *e;
     Unk_ov067_0225f1a0_Ent *b;
     if (s == 0) {
-        s = &w->unk_194[15];
+        s = &w->entries[15];
     }
     p = s;
-    e = &w->unk_194[16];
-    b = &w->unk_194[0];
+    e = &w->entries[16];
+    b = &w->entries[0];
     do {
         BOOL m;
         p++;
         if (p >= e) {
             p = b;
         }
-        m = p->unk_00 == key ? TRUE : FALSE;
+        m = p->ggid == key ? TRUE : FALSE;
         if (flag != 0) {
             if (m != 0) {
                 goto done;
@@ -1582,11 +1582,11 @@ done:
 }
 
 extern "C" void *WlxBlock_GetCurrent(Unk_ov067_0225f1a0_W *w) {
-    return w->unk_190;
+    return w->curEntry;
 }
 
 extern "C" void WlxBlock_SetCurrent(Unk_ov067_0225f1a0_W *w, void *p) {
-    w->unk_190 = (Unk_ov067_0225f1a0_Cb *)p;
+    w->curEntry = (Unk_ov067_0225f1a0_Cb *)p;
 }
 
 extern "C" void WlxBlock_OnMpEndStub(void *, void *) {
@@ -1605,31 +1605,31 @@ extern "C" BOOL WlxBlock_SelectByBeacon(Unk_ov067_0225f1a0_W *w, u32 *x) {
 }
 
 extern "C" void WlxBlock_BuildSend(Unk_ov067_0225f1a0_W *w, Unk_ov067_0225f3fc_Msg *msg) {
-    Unk_ov067_0225f3fc_Hdr *h = msg->unk_00;
-    WlxDebug_Printf("--SEND:ACK=(%3d,%d,%04X),REQ=(%3d,%d,%04X)\n", w->unk_04, w->unk_05, w->unk_06, w->unk_00, w->unk_01, w->unk_02);
-    *(Unk_ov067_0225f3fc_Wrap *)&h->unk_00 = *(Unk_ov067_0225f3fc_Wrap *)&w->unk_00;
-    *(Unk_ov067_0225f3fc_Wrap *)&h->unk_04 = *(Unk_ov067_0225f3fc_Wrap *)&w->unk_04;
-    if (w->unk_04 == w->unk_00) {
-        u16 *p = (u16 *)((u8 *)msg->unk_00 + 8);
-        switch (w->unk_05) {
+    Unk_ov067_0225f3fc_Hdr *h = msg->packet;
+    WlxDebug_Printf("--SEND:ACK=(%3d,%d,%04X),REQ=(%3d,%d,%04X)\n", w->ackSeq, w->ackKind, w->ackSegment, w->reqSeq, w->reqKind, w->reqSegment);
+    *(Unk_ov067_0225f3fc_Wrap *)&h->reqSeq = *(Unk_ov067_0225f3fc_Wrap *)&w->reqSeq;
+    *(Unk_ov067_0225f3fc_Wrap *)&h->ackSeq = *(Unk_ov067_0225f3fc_Wrap *)&w->ackSeq;
+    if (w->ackSeq == w->reqSeq) {
+        u16 *p = (u16 *)((u8 *)msg->packet + 8);
+        switch (w->ackKind) {
         case 1:
-            WlxDebug_Printf("       INIT(%6d)\n", w->unk_0c);
-            p[0] = w->unk_0c;
-            p[1] = w->unk_14;
+            WlxDebug_Printf("       INIT(%6d)\n", w->sendSize);
+            p[0] = w->sendSize;
+            p[1] = w->sendCheck;
             break;
         case 2: {
-            u32 seg = w->unk_180;
-            u32 off = w->unk_06 * seg;
-            u32 rem = w->unk_0c - off;
+            u32 seg = w->sendSegSize;
+            u32 off = w->ackSegment * seg;
+            u32 rem = w->sendSize - off;
             if (rem > seg) {
                 rem = seg;
             }
-            MI_CpuCopy8((void *)(w->unk_08 + off), p, rem);
+            MI_CpuCopy8((void *)(w->sendData + off), p, rem);
             break;
         }
         }
     }
-    msg->unk_04 = (w->unk_180 + 9) & ~1;
+    msg->length = (w->sendSegSize + 9) & ~1;
 }
 
 extern "C" void WlxBlock_StoreSegment(Unk_ov067_0225f1a0_W *w, s32 idx, void *src) {
@@ -1644,34 +1644,34 @@ extern "C" void WlxBlock_StoreSegment(Unk_ov067_0225f1a0_W *w, s32 idx, void *sr
     u32 *slot;
     s32 i0;
     u32 total;
-    if (w->unk_18 == 0) {
+    if (w->recvData == 0) {
         return;
     }
-    if ((u32)idx >= w->unk_184) {
+    if ((u32)idx >= w->numRecvSegments) {
         return;
     }
-    bm = w->unk_28;
+    bm = w->recvBitmap;
     u32 bit = 1 << (idx & 0x1f);
     slot = &bm[idx >> 5];
     u32 t = bm[idx >> 5];
     if (t & bit) {
         return;
     }
-    seg = w->unk_182;
+    seg = w->recvSegSize;
     off = idx * seg;
-    rem = w->unk_1c - off;
+    rem = w->recvSize - off;
     if (rem > seg) {
         rem = seg;
     }
-    MI_CpuCopy8(src, (void *)(w->unk_18 + off), rem);
+    MI_CpuCopy8(src, (void *)(w->recvData + off), rem);
     *slot |= bit;
-    w->unk_188 = w->unk_188 - 1;
-    if (w->unk_188 == 0) {
-        w->unk_01 = 4;
+    w->numMissingSegments = w->numMissingSegments - 1;
+    if (w->numMissingSegments == 0) {
+        w->reqKind = 4;
         return;
     }
-    i0 = w->unk_18c[0];
-    total = w->unk_184;
+    i0 = w->lastReqSegments[0];
+    total = w->numRecvSegments;
     r5 = i0;
     if (i0 >= total) {
         r5 = total - 1;
@@ -1682,14 +1682,14 @@ extern "C" void WlxBlock_StoreSegment(Unk_ov067_0225f1a0_W *w, s32 idx, void *sr
             i0 = 0;
         }
         if (i0 == r5) {
-            i0 = w->unk_18c[1];
+            i0 = w->lastReqSegments[1];
             break;
         }
-        if (w->unk_28[i0 >> 5] & (1 << (i0 & 0x1f))) {
+        if (w->recvBitmap[i0 >> 5] & (1 << (i0 & 0x1f))) {
             continue;
         }
         for (j = 0; j < 2; j++) {
-            if (i0 == w->unk_18c[j]) {
+            if (i0 == w->lastReqSegments[j]) {
                 break;
             }
         }
@@ -1698,46 +1698,46 @@ extern "C" void WlxBlock_StoreSegment(Unk_ov067_0225f1a0_W *w, s32 idx, void *sr
         }
         break;
     }
-    n = 2; k = n; k = k - 1; while (k > 0) { w->unk_18c[k] = w->unk_18c[k - 1]; k = k - 1; }
-    w->unk_18c[0] = i0;
-    w->unk_02 = w->unk_18c[0];
+    n = 2; k = n; k = k - 1; while (k > 0) { w->lastReqSegments[k] = w->lastReqSegments[k - 1]; k = k - 1; }
+    w->lastReqSegments[0] = i0;
+    w->reqSegment = w->lastReqSegments[0];
 }
 
 extern "C" BOOL WlxBlock_Receive(Unk_ov067_0225f1a0_W *w, Unk_ov067_0225f3fc_Msg *msg) {
     Unk_ov067_0225f3fc_Hdr *h;
     BOOL r6;
-    h = msg->unk_00;
+    h = msg->packet;
     r6 = FALSE;
-    if (msg->unk_04 >= w->unk_182) {
-        WlxDebug_Printf("--RECV:REQ=(%3d,%d,%04X),ACK=(%3d,%d,%04X)\n", h->unk_00, h->unk_01, h->unk_02, h->unk_04, h->unk_05, h->unk_06);
-        if (h->unk_00 == w->unk_00) {
-            *(Unk_ov067_0225f3fc_Wrap *)&w->unk_04 = *(Unk_ov067_0225f3fc_Wrap *)&h->unk_00;
+    if (msg->length >= w->recvSegSize) {
+        WlxDebug_Printf("--RECV:REQ=(%3d,%d,%04X),ACK=(%3d,%d,%04X)\n", h->reqSeq, h->reqKind, h->reqSegment, h->ackSeq, h->ackKind, h->ackSegment);
+        if (h->reqSeq == w->reqSeq) {
+            *(Unk_ov067_0225f3fc_Wrap *)&w->ackSeq = *(Unk_ov067_0225f3fc_Wrap *)&h->reqSeq;
         }
-        if (h->unk_04 == w->unk_00) {
-            u16 *p2 = (u16 *)((u8 *)msg->unk_00 + 8);
-            switch (h->unk_05) {
+        if (h->ackSeq == w->reqSeq) {
+            u16 *p2 = (u16 *)((u8 *)msg->packet + 8);
+            switch (h->ackKind) {
             case 1:
-                w->unk_1c = p2[0];
-                w->unk_24 = p2[1];
-                w->unk_184 = (u16)_u32_div_f(w->unk_1c + w->unk_182 - 1, w->unk_182);
-                w->unk_188 = w->unk_184;
-                w->unk_02 = 0;
-                w->unk_01 = 2;
-                WlxDebug_Printf("       INIT(%6d)\n", w->unk_1c);
+                w->recvSize = p2[0];
+                w->recvCheck = p2[1];
+                w->numRecvSegments = (u16)_u32_div_f(w->recvSize + w->recvSegSize - 1, w->recvSegSize);
+                w->numMissingSegments = w->numRecvSegments;
+                w->reqSegment = 0;
+                w->reqKind = 2;
+                WlxDebug_Printf("       INIT(%6d)\n", w->recvSize);
                 break;
             case 2:
-                WlxBlock_StoreSegment(w, h->unk_06, p2);
+                WlxBlock_StoreSegment(w, h->ackSegment, p2);
                 break;
             case 5:
                 r6 = TRUE;
                 break;
             }
         }
-        if (h->unk_04 == w->unk_00) {
-            if (h->unk_05 == 4) {
-                if (w->unk_05 == 4) {
-                    Unk_ov067_0225f1a0_Cb *cb = w->unk_190;
-                    void (*fn)(u32, void *) = cb->unk_04;
+        if (h->ackSeq == w->reqSeq) {
+            if (h->ackKind == 4) {
+                if (w->ackKind == 4) {
+                    Unk_ov067_0225f1a0_Cb *cb = w->curEntry;
+                    void (*fn)(u32, void *) = cb->doneCallback;
                     u32 *e = (u32 *)WlxBlock_GetCurrent(w);
                     struct {
                         u32 a;
@@ -1747,30 +1747,30 @@ extern "C" BOOL WlxBlock_Receive(Unk_ov067_0225f1a0_W *w, Unk_ov067_0225f3fc_Msg
                     } l;
                     volatile u32 tmp;
                     WlxBlock_SetCurrent(w, 0);
-                    l.a = w->unk_18;
-                    l.b = w->unk_1c;
-                    l.c = w->unk_20;
-                    l.d = w->unk_24;
-                    w->unk_00 = w->unk_00 + 1;
-                    w->unk_01 = 0;
-                    w->unk_08 = 0;
-                    w->unk_0c = 0;
+                    l.a = w->recvData;
+                    l.b = w->recvSize;
+                    l.c = w->recvBufSize;
+                    l.d = w->recvCheck;
+                    w->reqSeq = w->reqSeq + 1;
+                    w->reqKind = 0;
+                    w->sendData = 0;
+                    w->sendSize = 0;
                     tmp = 0;
-                    MIi_CpuClear32(tmp, &w->unk_28, 0x158);
-                    w->unk_18 = 0;
-                    w->unk_1c = 0;
-                    w->unk_20 = 0;
-                    w->unk_184 = 0;
+                    MIi_CpuClear32(tmp, &w->recvBitmap, 0x158);
+                    w->recvData = 0;
+                    w->recvSize = 0;
+                    w->recvBufSize = 0;
+                    w->numRecvSegments = 0;
                     if (fn != 0) {
                         fn(5, &l);
                     }
                     if (e[0] != 0) {
                         WlxBlock_SetCurrent(w, e);
                     }
-                    if (w->unk_08 == 0) {
-                        w->unk_01 = 5;
+                    if (w->sendData == 0) {
+                        w->reqKind = 5;
                     } else {
-                        w->unk_01 = 1;
+                        w->reqKind = 1;
                     }
                 }
             }

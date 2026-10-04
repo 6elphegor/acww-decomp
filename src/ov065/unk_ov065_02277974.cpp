@@ -7,7 +7,7 @@ typedef long long s64;
 
 struct Unk_ov065_02290f9c {
     s32 connectResult;
-    u16 unk_04;
+    u16 state;
     u16 isConnected;
     u16 apInitParam0;
     u16 apInitParam1;
@@ -109,7 +109,7 @@ void DwcInet_InitEx(Unk_ov065_02290f9c *p, s32 x, s32 y, u32 z) {
         MI_CpuFill8(p, 0, 12);
         p->apInitParam0 = x;
         p->apInitParam1 = 1;
-        p->unk_04 = 1;
+        p->state = 1;
         p->isConnected = 0;
         sDwcInet = p;
         DwcInet_SelectAuthServer(0);
@@ -138,7 +138,7 @@ void DwcInet_SelectAuthServer(s32 x) {
 void DwcInet_StartConnect() {
     Unk_ov065_02277d68_Args l;
     if (sDwcInet != NULL) {
-        if (sDwcInet->unk_04 == 1) {
+        if (sDwcInet->state == 1) {
             Unk_ov065_02290f9c *s;
             MI_CpuFill8(&l, 0, 12);
             s = sDwcInet;
@@ -146,7 +146,7 @@ void DwcInet_StartConnect() {
             l.unk_09 = s->apInitParam1;
             l.unk_00 = (void *)DwcNet_Alloc;
             l.unk_04 = (void *)DwcNet_Free;
-            s->unk_04 = 2;
+            s->state = 2;
             if (WifiAp_Init(&l) == 0) {
                 DwcCore_SetError(8, -6);
             }
@@ -162,7 +162,7 @@ BOOL DwcInet_IsConnectDone() {
         return FALSE;
     }
     if (s->connectResult != 0) {
-        s->unk_04 = 3;
+        s->state = 3;
         DwcInet_UpdateStatus();
         return TRUE;
     }
@@ -171,13 +171,13 @@ BOOL DwcInet_IsConnectDone() {
 
 void DwcInet_Process() {
     Unk_ov065_02290f9c *s = sDwcInet;
-    if (s != NULL && s->unk_04 == 2) {
+    if (s != NULL && s->state == 2) {
         sDwcInet->connectResult = (s32)WifiAp_Process();
         return;
     }
-    if (s != NULL && s->unk_04 == 4 && s->isConnected != 0 && WifiLink_GetPhase() != 9) {
+    if (s != NULL && s->state == 4 && s->isConnected != 0 && WifiLink_GetPhase() != 9) {
         sDwcInet->isConnected = 0;
-        sDwcInet->unk_04 = 6;
+        sDwcInet->state = 6;
     }
 }
 
@@ -187,7 +187,7 @@ s32 DwcInet_UpdateStatus() {
         s32 t = WifiAp_GetStatus();
         if (t == 5) {
             st = 4;
-            sDwcInet->unk_04 = st;
+            sDwcInet->state = st;
             sDwcInet->isConnected = 1;
             return st;
         }
@@ -195,12 +195,12 @@ s32 DwcInet_UpdateStatus() {
             if (t >= -10) {
                 st = 8;
                 DwcCore_SetError(st, t - 0x2bc);
-                sDwcInet->unk_04 = st;
+                sDwcInet->state = st;
                 return st;
             }
             st = 7;
             DwcCore_SetError(5, t);
-            sDwcInet->unk_04 = st;
+            sDwcInet->state = st;
             return st;
         }
         st = 2;
@@ -224,14 +224,14 @@ BOOL DwcInet_Disconnect() {
     if (s == NULL) {
         return TRUE;
     }
-    if (s->unk_04 == 8) {
+    if (s->state == 8) {
         return FALSE;
     }
-    if (s->unk_04 == 1) {
+    if (s->state == 1) {
         sDwcInet = NULL;
         return TRUE;
     }
-    s->unk_04 = 5;
+    s->state = 5;
     if (WifiAp_RequestCleanup() != 0) {
         sDwcInet = NULL;
         return TRUE;
@@ -240,7 +240,7 @@ BOOL DwcInet_Disconnect() {
 }
 
 BOOL DwcInet_IsLinkLost() {
-    if (sDwcInet != NULL && sDwcInet->unk_04 == 6) {
+    if (sDwcInet != NULL && sDwcInet->state == 6) {
         return TRUE;
     }
     return FALSE;

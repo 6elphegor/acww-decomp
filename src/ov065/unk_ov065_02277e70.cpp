@@ -10,7 +10,7 @@ struct Unk_ov065_02277f70_Ctx {
 
 struct Unk_ov065_02291024 {
     s32 socket;
-    u8 unk_04[2];
+    u8 serverAddr[2];
     u16 serverPort;
     u8 serverIp[4];
     u8 queryPacket;
@@ -64,7 +64,7 @@ extern "C" {
 
 void GsAvail_SendQuery() {
     GsSock_SendTo(sGsAvailQuery.socket, &sGsAvailQuery.queryPacket, sGsAvailQuery.packetLength, 0,
-                        sGsAvailQuery.unk_04, 8);
+                        sGsAvailQuery.serverAddr, 8);
     sGsAvailQuery.lastSendTime = GsUtil_GetTimeMs();
 }
 
@@ -78,7 +78,7 @@ void GsAvail_Start(char *url) {
     if (c == 0) {
         OS_SPrintf(buf, "%s.available.gs.nintendowifi.net", url);
     }
-    if (GsSock_ResolveAddress(c != 0 ? sGsAvailHostOverride : buf, 0x6cfc, sGsAvailQuery.unk_04) != 0) {
+    if (GsSock_ResolveAddress(c != 0 ? sGsAvailHostOverride : buf, 0x6cfc, sGsAvailQuery.serverAddr) != 0) {
         s32 s = GsSock_Socket(2, 2, 0);
         sGsAvailQuery.socket = s;
         if (s != -1) {

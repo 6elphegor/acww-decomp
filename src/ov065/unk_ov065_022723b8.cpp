@@ -246,7 +246,7 @@ struct Unk_ov065_02290818_Sm {
     u8 minPlayers;
     u8 retryCount;
     u8 unk_03;
-    u32 unk_04;
+    u32 timeoutMs;
     u32 answeredAidMask;
     u32 acceptedAidMask;
     u64 startTime;
@@ -4464,7 +4464,7 @@ void DwcMatch_ProcessServerSync(void)
             goto end;
         }
         if (s->retryCount == 0) {
-            if (DwcNet_GetTimeMs() - s->startTime >= (u64)s->unk_04) {
+            if (DwcNet_GetTimeMs() - s->startTime >= (u64)s->timeoutMs) {
                 goto proceed;
             }
         }
@@ -4472,7 +4472,7 @@ void DwcMatch_ProcessServerSync(void)
             goto end;
         }
         s = sDwcMatchSyncOption;
-        if (DwcNet_GetTimeMs() - s->lastSendTime < (u64)(s->unk_04 >> 2)) {
+        if (DwcNet_GetTimeMs() - s->lastSendTime < (u64)(s->timeoutMs >> 2)) {
             goto end;
         }
     proceed:
