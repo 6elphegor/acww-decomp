@@ -693,7 +693,8 @@ extern "C" void Snd_EndTalk() { gSndScene->endTalk(); }
 
 extern "C" void Snd_SetVoiceType(u32 a) { SndMgr_SetVoiceType(gSndMgr, a); }
 
-extern "C" void func_02003f78() {}
+#define SndSceneBase_setBankVariant _ZN12SndSceneBase14setBankVariantEi
+extern "C" void SndSceneBase_setBankVariant() {}
 
 extern "C" void Snd_SetSceneBankVariant(u32 a) { gSndScene->setBankVariant(a); }
 

@@ -310,8 +310,7 @@ Snd_PlayKeySe kind:function(thumb,size=0x10) addr:0x02003f2c
 Snd_SetKeySeMode kind:function(thumb,size=0x10) addr:0x02003f3c
 Snd_SetSeHandleVolumes kind:function(thumb,size=0x10) addr:0x02003f4c
 Snd_SetSceneBankVariant kind:function(thumb,size=0x1c) addr:0x02003f5c
-func_02003f78 kind:function(thumb,size=0x2) addr:0x02003f78
-_ZN12SndSceneBase14setBankVariantEi kind:label(thumb) addr:0x02003f78
+_ZN12SndSceneBase14setBankVariantEi kind:function(thumb,size=0x2) addr:0x02003f78
 Snd_SetVoiceType kind:function(thumb,size=0x10) addr:0x02003f7c
 Snd_EndTalk kind:function(thumb,size=0x18) addr:0x02003f8c
 Snd_PlayTalkVoice kind:function(thumb,size=0x24) addr:0x02003fa4

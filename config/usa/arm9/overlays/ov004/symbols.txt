@@ -1948,8 +1948,7 @@ _ZN13BarberMachine12enterState00Ev kind:function(thumb,size=0x38) addr:0x0222548
 _ZN13BarberMachine11updateStateEv kind:function(thumb,size=0x8c) addr:0x022254c4
 _ZN13BarberMachine15changeSyncStateEj kind:function(thumb,size=0x9c) addr:0x02225550
 _ZN13BarberMachine11getSoundPosEP7VecFx32 kind:function(thumb,size=0x1c) addr:0x022255ec
-_ZN13BarberMachine19func_ov004_02225608Ev kind:function(thumb,size=0x20) addr:0x02225608
-_ZN13BarberMachine8onDeleteEv kind:label(thumb) addr:0x02225608
+_ZN13BarberMachine8onDeleteEv kind:function(thumb,size=0x20) addr:0x02225608
 _ZN13BarberMachine6onDrawEv kind:function(thumb,size=0x14) addr:0x02225628
 _ZN13BarberMachine9onExecuteEv kind:function(thumb,size=0x10) addr:0x0222563c
 _ZN13BarberMachine8onCreateEv kind:function(thumb,size=0x88) addr:0x0222564c
@@ -2098,8 +2097,7 @@ _ZN10RecycleBox11updateStateEv kind:function(thumb,size=0x8c) addr:0x022282d0
 _ZN10RecycleBox15changeSyncStateEj kind:function(thumb,size=0xa8) addr:0x0222835c
 _ZN10RecycleBox18onInteractionEventEjh kind:function(thumb,size=0x22) addr:0x02228404
 _ZN10RecycleBox18acceptsInteractionEPv kind:function(thumb,size=0x50) addr:0x02228428
-_ZN10RecycleBox19func_ov004_02228478Ev kind:function(thumb,size=0x20) addr:0x02228478
-_ZN10RecycleBox8onDeleteEv kind:label(thumb) addr:0x02228478
+_ZN10RecycleBox8onDeleteEv kind:function(thumb,size=0x20) addr:0x02228478
 _ZN10RecycleBox6onDrawEv kind:function(thumb,size=0x14) addr:0x02228498
 _ZN10RecycleBox9onExecuteEv kind:function(thumb,size=0x28) addr:0x022284ac
 _ZN10RecycleBox8onCreateEv kind:function(thumb,size=0x98) addr:0x022284d4

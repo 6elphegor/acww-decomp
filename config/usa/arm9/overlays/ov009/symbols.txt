@@ -71,8 +71,7 @@ _ZN13BuildingActor14execDoorOpenInEv kind:function(thumb,size=0x70) addr:0x0225c
 _ZN13BuildingActor15enterDoorOpenInEv kind:function(thumb,size=0x164) addr:0x0225c818
 _ZN13BuildingActor12execDoorIdleEv kind:function(thumb,size=0xd4) addr:0x0225c97c
 _ZN13BuildingActor13enterDoorIdleEv kind:function(thumb,size=0x48) addr:0x0225ca50
-_ZN13BuildingActor19func_ov009_0225ca98Ev kind:function(thumb,size=0xb4) addr:0x0225ca98
-_ZN13BuildingActor15updateDoorStateEv kind:label(thumb) addr:0x0225ca98
+_ZN13BuildingActor15updateDoorStateEv kind:function(thumb,size=0xb4) addr:0x0225ca98
 _ZN13BuildingActor12setDoorStateEi kind:function(thumb,size=0xd8) addr:0x0225cb4c
 _ZN13BuildingActor12setDoorStateEj kind:label(thumb) addr:0x0225cb4c
 _ZN16BuildingCollider14isPlayerAtDoorEP7VecFx32iP5Actor kind:function(thumb,size=0xc4) addr:0x0225cc24

@@ -5,7 +5,7 @@
 // Classes (named after the dsd vtable label, vtable object = label - 8):
 //   SndSceneBase              base: C2 f3078 (C1 unreferenced, dead-stripped), ~ D2 f2fc8 / D0 f3000 / D1 f3040, virtuals vfunc_08..28,
 //                             resource helpers f2aec..f2cd4, f2eac. vfunc_24 (slot 9) is DEFINED IN MAIN: the empty Thumb function
-//                             func_02003f78 of src/main/unk_020039ec.cpp (aliases.txt gives it the name _ZN12SndSceneBase14setBankVariantEi).
+//                             SndSceneBase::setBankVariant of src/main/unk_020039ec.cpp (aliases.txt gives it the name _ZN12SndSceneBase14setBankVariantEi).
 //   SndScene01 : base       mid-level base: C1 f2a3c / C2 f2a94 (both kept: C1 is called from outside, C2 by the derived ctors),
 //                             ~ D2 f29c8 / D0 f29ec / D1 f2a18, overrides vfunc_0c f2968, vfunc_1c f2938, vfunc_20 f2910, vfunc_24 f28c0
 //   26 + 3 subclasses         per class: ctor (C1; C2 unreferenced), ~ (D0, D1; D2 unreferenced except for the two bases), vfunc_0c
@@ -110,7 +110,7 @@ public:
     virtual void unload();            // 0x020f2e58
     virtual void beginTalk(s32 a);       // 0x020f2dec
     virtual void endTalk();            // 0x020f2dcc
-    virtual void setBankVariant(s32 a);       // main func_02003f78 (empty Thumb function, defined in main)
+    virtual void setBankVariant(s32 a);       // main SndSceneBase::setBankVariant (empty Thumb function, defined in main)
     virtual void onBgmChange(u32 a, u32 c); // 0x020f2dc8
     void stopPlayers(s32 v);              // 0x020f2eac
     void setupHeaps(u32 a, s32 b);           // 0x020f2cd4
