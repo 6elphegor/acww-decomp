@@ -44,7 +44,7 @@ void ChoiceIdList_Clear(void *p, u32 v);
 void ChoiceIdList_Add(void *p, u32 a, u32 b);
 BOOL PopupChoice_MoveCursor(void *p, s32 a, void *b, s32 c);
 BOOL PopupChoice_TickDecideDelay(void *p);
-u8 PopupChoice_DecideCancel(void *p);
+u8 PopupChoice_DecideCancel(void *p, s32 x);
 void PopupChoice_DecideRow(void *p, s32 a, s32 b);
 void PopupChoice_ForceClose(void *p);
 void PopupChoice_Draw(void *p);
@@ -1083,7 +1083,7 @@ void LetterGiveMenu::moveCursorToPopupRow() {
 
 void LetterGiveMenu::cancelPopup() {
     popupChoice = 1;
-    popupRow = PopupChoice_DecideCancel(&popup);
+    popupRow = PopupChoice_DecideCancel(&popup, 1);
     s32 a = ((PopupChoiceMenuBody *)&popup)->getRowX();
     s32 b = ((PopupChoiceMenuBody *)&popup)->getRowY(popupRow);
     ((MenuCursorBase *)&cursor)->warpTo(a, b);

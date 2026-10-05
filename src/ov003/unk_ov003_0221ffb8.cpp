@@ -360,7 +360,7 @@ void BlendAnimModel_initAnim(void *o, s32 a, s32 b, s32 c, s32 d, s32 e);
 BOOL AnimModel_allocAnmObj(void *o, void *t);
 s32 FishBobber_setState(void *p, s32 a);
 void FishBobber_setFish(void *e, void *o);
-void *FishBobber_GetFloating();
+void *FishBobber_GetFloating(s32 idx);
 u32 Random_GlobalBelow(u32 n);
 void *File_LoadAlloc(void *a, void *b, s32 c, s32 d);
 void CommManager_endRecord(void *g, s32 a, s32 b);
@@ -2136,7 +2136,7 @@ extern "C" BOOL FishShadow_FleeFromPlayer(Obj_f7 *self) {
 //@ 0x2222fe4
 extern "C" BOOL FishShadow_TryNoticeBobber(Obj_f7 *self) {
     s32 res = 0;
-    FishBobber *e = ((FishBobber * (*)(void))FishBobber_GetFloating)();
+    FishBobber *e = ((FishBobber * (*)(s32))FishBobber_GetFloating)(0);
     s32 who;
     Obj_f7 *p;
     s32 ok;
@@ -2213,7 +2213,7 @@ extern "C" BOOL FishShadow_CanSeeBobber(void *self, s32 a1, s32 a2, s32 a3)
     s32 val;
     FishRodParams *t;
 
-    p = (u8 *)FishBobber_GetFloating();
+    p = (u8 *)FishBobber_GetFloating(0);
     if (p == 0) {
         return FALSE;
     }

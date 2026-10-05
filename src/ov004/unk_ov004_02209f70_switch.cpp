@@ -333,8 +333,8 @@ BOOL _ZN14MatTexVramTask7requestEPvjS0_jj(void *a, s32 b, char *c, s32 d, s32 e,
 s32 _ZN8FtrActor9initAnimsEiiii(void *p, s32 a, s32 b, s32 c, s32 d);
 s32 _ZN8FtrActor8playAnimEiiij(void *p, s32 a, s32 b, s32 c, s32 d);
 s32 FtrActor_GetFtrIndex(void *p);
-s32 FtrSound_GetSe0(void);
-s32 _ZN8FtrActor17getAnimFrameCountEi(void *p);
+u16 FtrSound_GetSe0(s32 idx);
+u16 _ZN8FtrActor17getAnimFrameCountEi(void *p, s32 a);
 void FtrActor_StepAnims(void *p);
 void _ZN8FtrActor10playSound0Ev(void *p);
 void _ZN8FtrActor10playSound1Ev(void *p);
@@ -431,8 +431,7 @@ s32 _ZN12FtrPreviewer14getSampleIndexEv(s32 a);
 
 BOOL FtrSingingInsect::initModel() {
     p11::_ZN8FtrActor9initAnimsEiiii(this, 0, 1, 0x1000, 0);
-    p11::FtrActor_GetFtrIndex(this);
-    s32 t = p11::FtrSound_GetSe0();
+    s32 t = p11::FtrSound_GetSe0(p11::FtrActor_GetFtrIndex(this));
     switch (t) {
     case 0x3f9:
         loopCount = 4;
@@ -463,7 +462,7 @@ BOOL FtrSingingInsect::initModel() {
         } else if ((u16)(t + 0xfc07) <= 2) {
             restTimer = p11::Random_GlobalBelow(0xc8, 0);
         } else {
-            restTimer = p11::Random_GlobalBelow(loopsPerPhrase * p11::_ZN8FtrActor17getAnimFrameCountEi(this));
+            restTimer = p11::Random_GlobalBelow(loopsPerPhrase * p11::_ZN8FtrActor17getAnimFrameCountEi(this, 0));
         }
     }
     return TRUE;

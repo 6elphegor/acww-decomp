@@ -24,7 +24,7 @@ public:
     virtual u32 doGetMaxFreeBlockSize() = 0;
     virtual u32 vfunc_3c(s32 align) = 0; // largest allocatable size
     virtual u32 getTotalFreeSize() = 0;
-    virtual void *changeGroupId() = 0;
+    virtual void *changeGroupId(u16 id) = 0;
     virtual void *getGroupId() = 0;
     virtual void *doAdjust() = 0;
 

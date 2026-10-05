@@ -1128,7 +1128,7 @@ extern "C" {
 void __cxa_vec_cleanup(void *, u32, u32, void *(*)(void *));
 }
 extern "C" {
-s32 Net_GetFriendDataType(void);
+s32 Net_GetFriendDataType(void *p);
 }
 extern "C" {
 u64 Net_GetFriendKey(u32 a);
@@ -1218,7 +1218,7 @@ extern "C" {
 void _ZN13DwcFriendDataC1Ev(void *p);
 }
 extern "C" {
-void FriendEntry_GetFriendData(void *p);
+void *FriendEntry_GetFriendData(void *p);
 }
 extern "C" {
 void FriendEntry_Clear(void *p);
@@ -1236,7 +1236,7 @@ extern "C" {
 void *FriendEntry_Construct(void *p);
 }
 extern "C" {
-BOOL DwcFriendData_IsValid(void);
+BOOL DwcFriendData_IsValid(void *p);
 }
 extern "C" {
 void NetBuf_Unpack20(u8 *p, u32 *out, u8 *out2);
@@ -1269,7 +1269,7 @@ extern "C" {
 void Bbs_LoadMsg(void *a, u32 b, u32 c);
 }
 extern "C" {
-s32 DwcFriendData_IsFriendKey(void);
+s32 DwcFriendData_IsFriendKey(void *p);
 }
 extern "C" {
 extern u8 data_021e87d8[];
@@ -1388,15 +1388,15 @@ extern "C" s32 DwcFriendData_Compare(void *self, Unk_02076f28_T *src) {
 
 extern "C" void DwcFriendData_Clear(void *p) { MI_CpuFill8(p, 0, 0xc); }
 
-extern "C" BOOL DwcFriendData_IsValid(void) {
-    if (Net_GetFriendDataType() != 0) {
+extern "C" BOOL DwcFriendData_IsValid(void *p) {
+    if (Net_GetFriendDataType(p) != 0) {
         return TRUE;
     }
     return FALSE;
 }
 
-extern "C" BOOL DwcFriendData_IsFriendKey(void) {
-    if (Net_GetFriendDataType() == 2) {
+extern "C" BOOL DwcFriendData_IsFriendKey(void *p) {
+    if (Net_GetFriendDataType(p) == 2) {
         return TRUE;
     }
     return FALSE;
@@ -1421,7 +1421,7 @@ extern "C" BOOL DwcFriendData_FromCodeDigits(void *out, u8 *data, u32 ctx) {
 extern "C" BOOL DwcFriendData_ToCodeDigits(u32 a, u8 *buf) {
     u64 v;
     s32 i;
-    if (Net_GetFriendDataType() != 2) {
+    if (Net_GetFriendDataType((void *)a) != 2) {
         return FALSE;
     }
     v = Net_GetFriendKey(a);
@@ -1432,8 +1432,8 @@ extern "C" BOOL DwcFriendData_ToCodeDigits(u32 a, u8 *buf) {
     return TRUE;
 }
 
-extern "C" BOOL DwcFriendData_IsNotFriendKey(void) {
-    if (DwcFriendData_IsFriendKey() == 0) {
+extern "C" BOOL DwcFriendData_IsNotFriendKey(void *p) {
+    if (DwcFriendData_IsFriendKey(p) == 0) {
         return TRUE;
     }
     return FALSE;
@@ -1467,8 +1467,7 @@ extern "C" void FriendList_Compact(void) {
     i = n;
     for (; i < 0x20; i++) {
         FriendEntry *e = &base[i];
-        FriendEntry_GetFriendData(e);
-        if (DwcFriendData_IsValid()) {
+        if (DwcFriendData_IsValid(FriendEntry_GetFriendData(e))) {
             if (i != n) {
                 FriendEntry_Copy(&base[n], e);
                 FriendEntry_Clear(e);
@@ -1503,7 +1502,7 @@ extern "C" void FriendEntry_Clear(void *pp) {
     Mem_Clear(p + 0xc, 8);
     Mem_Clear(p + 0x14, 8);
 }
-extern "C" void FriendEntry_GetFriendData(void *p) {}
+extern "C" void *FriendEntry_GetFriendData(void *p) { return p; }
 extern "C" u8 *FriendEntry_GetPlayerName(u8 *p) { return p + 0xc; }
 
 extern "C" u8 *FriendEntry_GetTownName(u8 *p) { return p + 0x14; }
@@ -2949,7 +2948,7 @@ extern "C" {
 BOOL _ZN11CommManager12isSlotActiveEi(void *, s32);
 }
 extern "C" {
-void _ZN11CommManager10setReadPtrEPh(void *);
+void _ZN11CommManager10setReadPtrEPh(void *, u8 *v);
 }
 extern "C" {
 void _ZN11CommManager10readRecordEPhj(void *, void *, u32);
@@ -3000,10 +2999,10 @@ extern "C" {
 void NetSession_SetMemberSyncReply(u32, u32);
 }
 extern "C" {
-void NetSession_SetSyncKind();
+void NetSession_SetSyncKind(s32 a);
 }
 extern "C" {
-void NetSession_SetSyncRequester();
+void NetSession_SetSyncRequester(s32 a);
 }
 extern "C" {
 void NetSyncMsg_Fini(void *);
@@ -3123,8 +3122,8 @@ extern "C" void CommRecv_Act0C(u32 a, u32 b, u32 c, u32 d) {
     NetSyncMsg_Unpack(v, v + 1, v + 2, v + 3);
     if (d == 0) NetSession_SetMemberSyncReply(g->myAid, v[1]);
     else NetSession_SetMemberSyncReply(d, v[1]);
-    if (v[2] < 4) NetSession_SetSyncKind();
-    if (v[3] < 4) NetSession_SetSyncRequester();
+    if (v[2] < 4) NetSession_SetSyncKind(v[2]);
+    if (v[3] < 4) NetSession_SetSyncRequester(v[3]);
     NetSyncMsg_Fini(v);
 }
 extern "C" void CommRecv_Act0D(u32 a, u32 b, u32 c, u32 d) { NetArea_SetMemberAck(d, 1); }
@@ -3165,7 +3164,7 @@ extern "C" void CommRecv_ItemSetRequest(u32 n) {
     }
 }
 extern "C" void CommRecv_Dispatch(u32 idx, u32 x, u32 a, u32 b, u8 c, u32 d) {
-    _ZN11CommManager10setReadPtrEPh(gCommManager);
+    _ZN11CommManager10setReadPtrEPh(gCommManager, (u8 *)x);
     sCommRecvHandlers[idx](a, b, c, d);
 }
 extern "C" BOOL CommSend_MemberInfo(u32 a) {

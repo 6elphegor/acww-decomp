@@ -13,7 +13,7 @@ struct PlayerBodyWorkPool {
 extern "C" {
 extern void *gPlayerBodyAnimHeap;
 extern CommManager *gCommManager;
-extern void PlayerBodyAnimHeap_Create(void);
+extern void PlayerBodyAnimHeap_Create(void *parent);
 extern s32 PlayerBodyAnimHeap_Destroy(void);
 #define Heap_freeAll _ZN4Heap7freeAllEv
 extern void Heap_freeAll(void *p);
@@ -28,8 +28,8 @@ void PlayerBodyWorkPool_CreateHeaps(u32 *tbl);
 
 PlayerBodyWorkPool sPlayerBodyWorkPool;
 
-extern "C" void PlayerBodyWorkPool_Create(void) {
-    PlayerBodyAnimHeap_Create();
+extern "C" void PlayerBodyWorkPool_Create(void *parent) {
+    PlayerBodyAnimHeap_Create(parent);
     PlayerBodyWorkPool_CreateHeaps(sPlayerBodyWorkPool.heaps);
     if (gPlayerBodyAnimHeap) {
         Heap_adjust(gPlayerBodyAnimHeap);

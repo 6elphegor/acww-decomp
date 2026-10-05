@@ -47,8 +47,8 @@ void _ZN12TurnipMarket12spoilOnResetEv(void *);
 void SaveVillagers_PickPlayerBirthdayVisitor(void *, s32);
 s32 VillagerStates_GetBirthdayVisitor();
 s32 _ZN10PlayerData8testFlagEj(void *, s32);
-void _ZN10PlayerData14getSpNpcRecordEv(void *);
-void _ZN17PlayerSpNpcRecord13addResetCountEv();
+void *_ZN10PlayerData14getSpNpcRecordEv(void *);
+void _ZN17PlayerSpNpcRecord13addResetCountEv(void *self);
 void _ZN10PlayerData25sendForeignVillagerLetterEv(void *);
 void *_ZN10PlayerData11getPlayerIdEv(void *);
 void _ZN6TownId7setTownEPS_(void *, void *);
@@ -346,8 +346,7 @@ void SaveData::setupContinue() {
         if (VillagerStates_GetBirthdayVisitor() == -1) {
             if (_ZN10PlayerData8testFlagEj(a, 0x23) == 0) {
                 if (_ZN10PlayerData8testFlagEj(a, 2) != 0) {
-                    _ZN10PlayerData14getSpNpcRecordEv(a);
-                    _ZN17PlayerSpNpcRecord13addResetCountEv();
+                    _ZN17PlayerSpNpcRecord13addResetCountEv(_ZN10PlayerData14getSpNpcRecordEv(a));
                     TownSessionState_Get();
                     _ZN16ResettiVisitFlag3setEj(TownSessionState_GetResettiFlag(), 1);
                 }

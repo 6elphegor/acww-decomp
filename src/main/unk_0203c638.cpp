@@ -160,11 +160,11 @@ void *_ZN7Pattern9getPixelsEv(void *p);
 }
 
 extern "C" {
-void _ZN7Pattern7getInfoEv(void *p);
+void *_ZN7Pattern7getInfoEv(void *p);
 }
 
 extern "C" {
-void *_ZN11PatternInfo14getPaletteDataEv();
+void *_ZN11PatternInfo14getPaletteDataEv(void *self);
 }
 
 extern "C" {
@@ -254,8 +254,7 @@ extern "C" BOOL ClothTex_LoadPattern(void *a, void *b) {
         if (b != 0) {
             void *dst = _ZN7Pattern9getPixelsEv(b);
             MI_CpuCopy8(dst, ClothTex_GetTexData(a), 0x200);
-            _ZN7Pattern7getInfoEv(b);
-            void *dst2 = _ZN11PatternInfo14getPaletteDataEv();
+            void *dst2 = _ZN11PatternInfo14getPaletteDataEv(_ZN7Pattern7getInfoEv(b));
             MI_CpuCopy8(dst2, ClothTex_GetPlttData(a), 0x20);
             return TRUE;
         }

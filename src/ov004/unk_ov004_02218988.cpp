@@ -198,7 +198,7 @@ s32 PlayerId_isValid(void *);
 s32 VillagerMemory_isFleaMarketVisited(s32);
 void NpcActor_setTalkRequest(void *, void *);
 void VillagerTalk_begin(void *, void *, u32);
-s32 FtrInfo_GetUnk05();
+s32 FtrInfo_GetUnk05(s32 n);
 void Scene_GetPrevious();
 s32 SceneId_IsTownUnk31();
 }
@@ -1309,8 +1309,7 @@ void FleaMarketBuyerVillager::pushViewedFurniture(u32 v) {
 }
 
 void FleaMarketBuyerVillager::setViewDistance(void *arg) {
-    FtrActor_GetFtrIndex(arg);
-    switch (FtrInfo_GetUnk05()) {
+    switch (FtrInfo_GetUnk05((s32)FtrActor_GetFtrIndex(arg))) {
     case 0:
         viewDistance = 0x3000;
         break;

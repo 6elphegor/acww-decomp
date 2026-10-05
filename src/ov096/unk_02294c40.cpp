@@ -128,7 +128,7 @@ void _ZN10LetterView10setPresentEtj(void *a, u32 b, u32 c);
 s32 _ZN10LetterView15getPresentFlagsEv(void *a);
 s32 _ZN10LetterView10getPresentEv(void *obj);
 void Letter_MarkRead();
-s32 Letter_InitBottleDraft();
+s32 Letter_InitBottleDraft(void *self);
 void Letter_InitDraft(void *p, u8 v);
 void *_ZN6LetterD1Ev(void *p);
 void *_ZN15MenuLabelButtonD1Ev(void *p);
@@ -242,7 +242,7 @@ s32 _ZN12CursorMotion4getXEv(void *p);
 s32 _ZN12CursorMotion6updateEv(void *p);
 void _ZN12CursorMotion5resetEv(void *p);
 void _ZN14MenuCursorBase11drawWrappedEv(void *p);
-void _ZN14MenuCursorBase10getScreenXEv(void *p);
+s32 _ZN14MenuCursorBase10getScreenXEv(void *p);
 s32 _ZN14MenuCursorBase15getFrameScreenYEv(void *p);
 s32 _ZN14MenuCursorBase15getFrameScreenXEv(void *p);
 BOOL _ZN14MenuCursorBase8isMovingEv(void *p);
@@ -260,15 +260,15 @@ s32 _ZN15MenuLabelButton10getAnchorYEi(void *p, s32 a);
 s32 _ZN15MenuLabelButton10getAnchorXEi(void *p, s32 a);
 s32 _ZN16MenuErrorMessage6updateEi(void *p, s32 a);
 void _ZN16MenuErrorMessage4openEPhij(void *p, void *q, u32 a, u32 b);
-s32 _ZN10MenuTabBar12isJustOpenedEv();
-s32 MenuTabBar_TabFromX();
+s32 _ZN10MenuTabBar12isJustOpenedEv(void *self);
+s32 MenuTabBar_TabFromX(s32 a);
 s32 MenuTabBar_NextTab(s32 a);
 s32 MenuTabBar_PrevTab(s32 a);
 s32 MenuTabBar_GetTabX(s32 a);
 void _ZN10MenuTabBar8hideTabsEv(void *p);
 void _ZN10MenuTabBar8showTabsEv(void *p);
 s32 MenuTabBar_HitTestTouch();
-void _ZN10MenuTabBar15onTabMenuClosedEv();
+void _ZN10MenuTabBar15onTabMenuClosedEv(void *self);
 void _ZN10MenuTabBar9selectTabEj(void *p, u32 idx);
 void Inventory_PlayPickUpSe();
 void Inventory_PlayTouchSe();
@@ -314,7 +314,7 @@ s32 InventoryItemGrid_GetSlotX(void *p, u32 a);
 void InventoryItemGrid_ShowSlotName(void *p, void *q, s32 a);
 void InventoryItemGrid_LoadPockets(void *p);
 s32 InventoryItemGrid_HitTestSlot21(void *p, s32 x, s32 y);
-s32 InventoryItemGrid_FindPocketSlotAt(void *p);
+s32 InventoryItemGrid_FindPocketSlotAt(void *p, s32 a, s32 b);
 void InventoryItemGrid_Exit(void *p);
 void InventoryItemGrid_PreUpdate(void *p);
 void InventoryItemGrid_Init(void *p, s32 a);
@@ -502,8 +502,7 @@ BOOL PocketMenu::onCreate() {
 }
 
 BOOL PocketMenu::onDelete() {
-    ProcBase_GetParent(this);
-    _ZN10MenuTabBar15onTabMenuClosedEv();
+    _ZN10MenuTabBar15onTabMenuClosedEv(ProcBase_GetParent(this));
     releaseResources();
     MenuCtrl_SetHandBells(0);
     return TRUE;
@@ -823,8 +822,7 @@ void PocketMenu::initPocketMenu() {
     _ZN19PopupChoiceMenuBody18buildAddresseeListEv(unk_24fc);
     _ZN14LetterRenderer8setLayerEi(unk_2904, 3);
     optionsOpenDelay = 0;
-    ProcBase_GetParent(this);
-    if (_ZN10MenuTabBar12isJustOpenedEv()) {
+    if (_ZN10MenuTabBar12isJustOpenedEv(ProcBase_GetParent(this))) {
         setFlags(0x80000);
     }
 }
@@ -1961,8 +1959,7 @@ extern "C" u32 PocketMenu_IsSpecialTarget(PocketMenu *s, u32 id)
 
 extern "C" void PocketMenu_MoveCursorToTab(PocketMenu *s)
 {
-    _ZN14MenuCursorBase10getScreenXEv((u8 *)s + 0x2498);
-    s->cursorTarget = MenuTabBar_TabFromX() + 0x19;
+    s->cursorTarget = MenuTabBar_TabFromX(_ZN14MenuCursorBase10getScreenXEv((u8 *)s + 0x2498)) + 0x19;
 }
 
 extern "C" u32 PocketMenu_TargetToGridIndex(PocketMenu *s, u32 id)
@@ -1986,7 +1983,7 @@ extern "C" u32 PocketMenu_PocketIndexToTarget(PocketMenu *s, u32 id)
 
 extern "C" u32 PocketMenu_HitPocket(PocketMenu *s, s32 a, s32 b, s32 c)
 {
-    s32 r = InventoryItemGrid_FindPocketSlotAt((u8 *)s + 0x358);
+    s32 r = InventoryItemGrid_FindPocketSlotAt((u8 *)s + 0x358, a, b);
     if (r != 0x23) {
         if (c && InventoryItemGrid_IsSlotEmpty((u8 *)s + 0x358, r)) {
             return 0x26;
@@ -3285,7 +3282,7 @@ void PocketMenu::actionWriteLetter() {
 void PocketMenu::actionAct08() {
     if (allocLetterSlot()) {
         s32 t = (s32)getActionLetter();
-        Letter_InitBottleDraft();
+        Letter_InitBottleDraft((void *)t);
         MenuCtrl_SetArg((void *)t);
         PocketMenu_ClearSlotItem(this, paperTarget);
         requestTab(8);

@@ -49,7 +49,7 @@ SslSession *SslSession_FindById(u8 *);
 SslSession *SslSession_Add(u8 *);
 s32 SslCert_ReadDerLength(u8 **);
 void SslCert_AppendName(void *, u8 *, s32);
-u32 SslCert_ParseTime(u8 *);
+u32 SslCert_ParseTime(const u8 *p, s32 mode);
 Key *SslCert_FindRootCa(Ctx *, u8 *);
 void SslBigNum_FromBytes(u16 *, u8 *, s32, s32);
 void SslBigNum_ModExpMontgomery(u16 *, u16 *, u16 *, s32, u16 *);
@@ -216,7 +216,7 @@ s32 SslCert_ParseAsn1(Ctx *c, u8 **pp, s32 depth, s32 idx, s32 mode) {
     case 23:
     case 24:
         if (mode != 2) {
-            u32 t = SslCert_ParseTime(p);
+            u32 t = SslCert_ParseTime(p, tag & 0x1f);
             if (idx == 0) {
                 if (c->currentDate >= t) {
                     c->isDateValid = 1;

@@ -32,7 +32,13 @@ namespace F02270b74 {
 
 
 namespace Unk_ov065_0227138c_Ns {
+#ifdef MODERN
+// `unused` is only read for a result outside GP_NO_ERROR..GP_SERVER_ERROR (0-4), never returned by gp*; the
+// original leaves whatever r1 holds
+extern "C" s32 DwcLogin_HandleGpResult(s32 r, s32 unused = 0);
+#else
 extern "C" s32 DwcLogin_HandleGpResult(s32 r);
+#endif
 }
 extern "C" {
 extern s32 sDwcErrorClass;
@@ -214,8 +220,8 @@ s32 DwcFriend_GetControlField20();
 void DwcFriend_OnAuthorizedInfo();
 void DwcFriend_OnBuddyRequestInfo();
 void DwcFriend_Abort();
-void DwcFriend_Tick();
-s32 DwcFriend_HandleGpResult();
+s32 DwcFriend_Tick();
+s32 DwcFriend_HandleGpResult(s32 r);
 s32 DwcFriend_GetBuddyStatus(void *, GPBuddyStatus *);
 s32 NasBase64_Decode(const char *, s32, char *, u32);
 s32 NasBase64_Encode(void *, s32, void *, u32);
@@ -445,8 +451,7 @@ void DwcFriend_Process() {
         return;
     }
     if (sDwcFriendControl->gpConnection != NULL && *sDwcFriendControl->gpConnection != NULL) {
-        DwcFriend_Tick();
-        if (DwcFriend_HandleGpResult() != 0) {
+        if (DwcFriend_HandleGpResult(DwcFriend_Tick()) != 0) {
             return;
         }
         if (sDwcFriendControl->friendList != NULL && sDwcFriendControl->syncPhase != 3 && sDwcFriendControl->tickCount > 7) {
