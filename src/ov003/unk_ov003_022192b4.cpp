@@ -217,11 +217,9 @@ struct FieldItemFxTable {
 };
 
 // zero-initialised 3-word object whose (empty) destructor lives in main
-class FxVec3 {
-public:
+struct FxVec3 : VecFx32Copy {
     FxVec3() {}
     ~FxVec3();
-    s32 x, y, z;
 };
 
 extern "C" {

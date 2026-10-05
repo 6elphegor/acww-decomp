@@ -32,11 +32,7 @@
 #include "talk/MsgString25.h"
 
 
-struct ItemName {
-    ItemName(u16 *s);
-    ~ItemName();
-    u8 d[0x24];
-};
+#include "item/ItemName.h"
 
 // ======== types of unk_020abbcc.cpp ========
 

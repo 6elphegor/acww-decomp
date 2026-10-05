@@ -6,7 +6,8 @@
 #include "actor/ActorCollider.h"
 
 // Collider at a fixed position (0x4c bytes). Defined in src/main/unk_02088b98.cpp, which keeps its own declaration
-// on the declaration-only twin base ActorColliderView (vtable order).
+// on the declaration-only twin base ActorColliderView (vtable order) in the matching build; the modern build includes
+// this header there.
 class StaticCollider : public ActorCollider {
 public:
     StaticCollider();

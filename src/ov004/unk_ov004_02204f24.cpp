@@ -41,14 +41,9 @@
 
 
 // main class 0x02000c8c (3 words, registered for destruction through __register_global_object)
-struct FxVec3 {
-    s32 x, y, z;
+struct FxVec3 : VecFx32Copy {
     FxVec3() {}
-    FxVec3(s32 a, s32 b, s32 c) {
-        x = a;
-        y = b;
-        z = c;
-    }
+    FxVec3(s32 a, s32 b, s32 c) : VecFx32Copy(a, b, c) {}
     ~FxVec3();
 };
 

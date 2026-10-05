@@ -17,7 +17,7 @@
 
 typedef VecFx32 V3;
 
-struct FxVec3 : VecFx32 {
+struct FxVec3 : VecFx32Copy {
     FxVec3() {}
     ~FxVec3();
 };
@@ -1386,7 +1386,7 @@ extern "C" void Camera_SaveView(void) {
 
 extern "C" void Camera_RestoreView(void) {
     *(CameraSetup *)&gCamera->target = sCameraSavedSetup;
-    *(VecFx32 *)&gCamera->eye = sCameraSavedEye;
+    *(VecFx32 *)&gCamera->eye = *(VecFx32 *)&sCameraSavedEye;
 }
 
 extern "C" BOOL Camera_IsViewPushed(void) {

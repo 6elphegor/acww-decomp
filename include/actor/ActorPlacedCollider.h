@@ -6,7 +6,8 @@
 #include "actor/ActorFollowCollider.h"
 
 // ActorFollowCollider with its own position (0x50 bytes; PlayerActor::bodyCollider/subCollider). Defined in
-// src/main/unk_02088b98.cpp, which keeps its declaration-only twin chain for the vtable order.
+// src/main/unk_02088b98.cpp, which keeps its declaration-only twin chain for the vtable order
+// in the matching build (the modern build includes this header there).
 class ActorPlacedCollider : public ActorFollowCollider {
 public:
     ActorPlacedCollider();
