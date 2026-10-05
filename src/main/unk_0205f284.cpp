@@ -48,9 +48,9 @@ u32 Scene_GetMaxPlayers(s32 a);
 u32 Scene_GetMaxCharacters(s32 a);
 u32 NpcSpawn_GetSpNpcSlotCount();
 #define Heap_freeAll _ZN4Heap7freeAllEv
-void Heap_freeAll();
+void Heap_freeAll(u32 heap);
 #define Heap_adjust _ZN4Heap6adjustEv
-void Heap_adjust();
+void Heap_adjust(u32 heap);
 void *Heap_AllocAligned(u32 heap, u32 size, u32 align);
 s32 FishBobberHeap_Destroy();
 void FishBobberHeap_Create(void *parent);
@@ -178,7 +178,7 @@ extern "C" void FishBobberPool_Create(void *parent)
     FishBobberHeap_Create(parent);
     sFishBobberPool.allocBuffers();
     if (gFishBobberHeap != 0) {
-        Heap_adjust();
+        Heap_adjust(gFishBobberHeap);
     }
 }
 
@@ -267,7 +267,7 @@ void FishBobberPool::freeBuffers()
         bobbers[i] = 0;
     }
     if (gFishBobberHeap != 0) {
-        Heap_freeAll();
+        Heap_freeAll(gFishBobberHeap);
     }
 }
 

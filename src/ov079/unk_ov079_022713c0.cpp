@@ -237,8 +237,8 @@ BOOL TownMap_IsPosWalkable(void *v, s32 a);
 void _ZN9NpcLookAt9setTargetEhiiP7VecFx32iih(void *p, u32 a, u32 b, void *c, void *d, u32 e, u32 f, u32 g);
 BOOL EventAnnounce_IsBusy();
 void *TownSessionState_Get();
-void TownSessionState_GetVisitorPos(void *p);
-void _ZN10VisitorPos13pickRandomPosEv();
+void *TownSessionState_GetVisitorPos(void *p);
+void _ZN10VisitorPos13pickRandomPosEv(void *self);
 void _ZN16ActorTalkRequest14requestEatItemEv(void *p);
 void _ZN16ActorTalkRequest17requestReturnItemEv(void *p);
 void _ZN16ActorTalkRequest15setSubSceneKindEjj(void *p, u32 a, u32 b);
@@ -314,8 +314,7 @@ BOOL SpNpcWendell::onDelete() {
         return FALSE;
     }
     if (EventAnnounce_IsBusy() == 0) {
-        TownSessionState_GetVisitorPos(TownSessionState_Get());
-        _ZN10VisitorPos13pickRandomPosEv();
+        _ZN10VisitorPos13pickRandomPosEv(TownSessionState_GetVisitorPos(TownSessionState_Get()));
     }
     return TRUE;
 }

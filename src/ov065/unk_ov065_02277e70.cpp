@@ -37,7 +37,7 @@ void *DwcNet_Free(s32 a, void *b, s32 c);
 void *DwcNet_Alloc(s32 a, s32 b);
 s32 ghttpGetA(s32, s32, void *, void *);
 s32 ghttpPostA(s32, s32, s32, void *, void *);
-s32 ghttpPostAddStringA(s32);
+s32 ghttpPostAddStringA(s32 post, const char *name, const char *value);
 s32 ghttpNewPost();
 void ghttpThink();
 void ghttpCleanup();
@@ -181,8 +181,8 @@ void DwcGsHttp_PostCreate(s32 *p) {
     *p = ghttpNewPost();
 }
 
-s32 DwcGsHttp_PostAddString(s32 *p) {
-    return ghttpPostAddStringA(*p);
+s32 DwcGsHttp_PostAddString(s32 *p, const char *name, const char *value) {
+    return ghttpPostAddStringA(*p, name, value);
 }
 
 s32 DwcGsHttp_Post(s32 a, s32 *pa, void (*cb)(s32, s32, s32, u32), u32 ud) {

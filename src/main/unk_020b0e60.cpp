@@ -260,7 +260,7 @@ u16 Item_MakeNookShop(u32 a);
 BOOL Item_IsNookShop(u16 *p);
 u32 Item_MakeBuilding(u32 v);
 s32 Item_GetFurnitureIndex(const u16 *p);
-BOOL Item_IsFurniture(void);
+BOOL Item_IsFurniture(u16 *p);
 BOOL BlockMap_RemoveStructureAt(Grid *g, u32 x, u32 y, u32 a, u32 b, Marker2 *m);
 BOOL BlockMap_RemoveStructure(Map *m, s32 x, s32 y, s32 z);
 void BlockMap_PutStructure(Map *m, u16 *p, s32 x, s32 y);
@@ -273,7 +273,7 @@ void Str_SPrintf(char *buf, const char *fmt, ...);
 u32 Random_GlobalBelow(...);
 void *File_LoadAlloc(const char *name, u32 a, u32 b, u32 c);
 void Melody_PlayAt(void *p, s32 a);
-void Pattern_CopyFields(void *p);
+void Pattern_CopyFields(void *dst, void *src);
 void TownFlagPattern_GetPattern(void *p);
 void *TownFlagPattern_InitDefault(void *p);
 void _ZN15TownFlagPatternD1Ev(void *p);
@@ -345,7 +345,7 @@ void TownStyleRecord_DestructStub(void *p);
 void TownStyleRecord_ConstructStub(void *p);
 void TownStyle_RollVillagerHouseStyles(u8 *out);
 u32 TownStyle_GetVillagerHouseStyle(u8 *p, u32 idx);
-void TownFlag_SetPattern(void *p);
+void TownFlag_SetPattern(void *p, void *src);
 void TownFlag_GetPattern(void *p);
 void TownStyleRecord_InitNew(u8 *self);
 u16 Light_GetBaseEmission(void);
@@ -813,7 +813,7 @@ void TownFlag::getGateDesign() {
     }
 }
 
-extern "C" void TownFlag_SetPattern(void *p) { Pattern_CopyFields(p); }
+extern "C" void TownFlag_SetPattern(void *p, void *src) { Pattern_CopyFields(p, src); }
 
 extern "C" void TownFlag_GetPattern(void *p) { TownFlagPattern_GetPattern(p); }
 
@@ -1197,7 +1197,7 @@ extern "C" BOOL TownStructure_RemoveFromEventPlot(u16 id)
         u16 *p = Town_GetEventPlotItem(&x, &y);
         if (p) {
             BOOL eq;
-            if (Item_IsFurniture()) {
+            if (Item_IsFurniture(p)) {
                 t[1] = id;
                 eq = Item_GetFurnitureIndex(p) == Item_GetFurnitureIndex(&t[1]);
             } else {
@@ -1275,8 +1275,9 @@ extern "C" u32 MapBlock_ReplaceNthSign(u8 *cell, u32 target, u32 v) {
 }
 
 extern "C" BOOL MapBlock_ReplaceRandomSign(u8 *cell, u32 v) {
-    if (MapBlock_CountSigns(cell)) {
-        return MapBlock_ReplaceNthSign(cell, Random_GlobalBelow(), v);
+    u32 n = MapBlock_CountSigns(cell);
+    if (n) {
+        return MapBlock_ReplaceNthSign(cell, Random_GlobalBelow(n), v);
     }
     return 0;
 }

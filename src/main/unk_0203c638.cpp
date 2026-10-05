@@ -144,7 +144,7 @@ void Catalog_Clear(Catalog *p);
 }
 
 extern "C" {
-void *NNS_G3dGetTex();
+void *NNS_G3dGetTex(void *p);
 }
 
 extern "C" {
@@ -190,9 +190,9 @@ extern u8 gSaveAbleSistersPatterns[];
 extern "C" {
 BOOL ClothTex_LoadItem(void *self, u16 *p, void *q);
 }
-extern "C" void *ClothTex_GetTex();
-extern "C" void *ClothTex_GetTexData(void *unused);
-extern "C" void *ClothTex_GetPlttData(void *unused);
+extern "C" void *ClothTex_GetTex(void *tex);
+extern "C" void *ClothTex_GetTexData(void *tex);
+extern "C" void *ClothTex_GetPlttData(void *tex);
 extern "C" BOOL ClothTex_LoadPattern(void *a, void *b);
 
 static inline BOOL Unk_0203c764_InRange(u16 *p, u32 lo, u32 hi) {
@@ -263,11 +263,11 @@ extern "C" BOOL ClothTex_LoadPattern(void *a, void *b) {
     return FALSE;
 }
 
-extern "C" void *ClothTex_GetTexData(void *unused) { return _ZN12G3dResAccess10getTexDataEi(ClothTex_GetTex(), 0); }
+extern "C" void *ClothTex_GetTexData(void *tex) { return _ZN12G3dResAccess10getTexDataEi(ClothTex_GetTex(tex), 0); }
 
-extern "C" void *ClothTex_GetPlttData(void *unused) { return _ZN12G3dResAccess11getPlttDataEi(ClothTex_GetTex(), 0); }
+extern "C" void *ClothTex_GetPlttData(void *tex) { return _ZN12G3dResAccess11getPlttDataEi(ClothTex_GetTex(tex), 0); }
 
-extern "C" void *ClothTex_GetTex() { return NNS_G3dGetTex(); }
+extern "C" void *ClothTex_GetTex(void *tex) { return NNS_G3dGetTex(tex); }
 
 extern "C" u32 ClothTex_GetBufferSize() { return 0x2c4; }
 
@@ -275,7 +275,7 @@ extern "C" BOOL ClothTex_LoadItemThunk(void *a, u16 *b, void *c) { return ClothT
 
 extern "C" BOOL ClothTex_LoadPatternThunk(void *a, void *b) { return ClothTex_LoadPattern(a, b); }
 
-extern "C" void *ClothTex_GetTexThunk() { return ClothTex_GetTex(); }
+extern "C" void *ClothTex_GetTexThunk(void *tex) { return ClothTex_GetTex(tex); }
 
 extern "C" void Catalog_Construct() {}
 

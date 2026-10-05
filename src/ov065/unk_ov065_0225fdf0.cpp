@@ -39,12 +39,12 @@ u32 SockCore_ParseDottedAddr(u32);
 u32 SockCore_ResolveHost(s32);
 s32 SockCore_Startup(void *);
 s32 SockCore_Accept(s32, u16 *, u32 *);
-s32 SockCore_Listen(s32, s32, s32);
+s32 SockCore_Listen(s32);
 s32 SockCore_Connect(s32, u32, u32);
 s32 SockCore_Bind(s32, u32);
 s32 SockCore_Create(void *);
 s32 SockCore_Close(s32);
-s32 SockCore_Shutdown(s32, s32, s32);
+s32 SockCore_Shutdown(s32);
 s32 SockCore_SendTo(s32, s32, s32, u32, u32, u32);
 s32 SockCore_RecvFrom(s32, s32, s32, u16 *, u32 *, u32);
 s32 Dns_QueryServer(s32, u32, u32);
@@ -141,8 +141,8 @@ s32 Sock_SendTo(s32 a, s32 b, s32 c, u32 d, SockAddrIn *sa) {
     return SockCore_SendTo(a, b, c, port, ip, d);
 }
 
-s32 Sock_Shutdown(s32 a, s32 b, s32 c) {
-    return SockCore_Shutdown(a, b, c);
+s32 Sock_Shutdown(s32 a) {
+    return SockCore_Shutdown(a);
 }
 
 s32 Sock_Close(s32 a) {
@@ -197,8 +197,8 @@ s32 Sock_SetDnsServers(u32 *a, u32 *b) {
     return SockCore_SetDnsServers(HTONL(*a), HTONL(*b));
 }
 
-s32 Sock_Listen(s32 a, s32 b, s32 c) {
-    return SockCore_Listen(a, b, c);
+s32 Sock_Listen(s32 a) {
+    return SockCore_Listen(a);
 }
 
 s32 Sock_Accept(s32 a, SockAddrIn *sa) {

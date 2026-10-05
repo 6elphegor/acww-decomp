@@ -39,7 +39,7 @@ void String_Load2dMenu(void *p, s32 a);
 s32 Comm_IsSeqConfirmed(s32 a);
 s32 Pocket_FindEmpty();
 BOOL Clock_GetWeekday();
-void *ProcBase_GetParent(...);
+void *ProcBase_GetParent(void *p);
 void ProcBase_RequestDelete(void *p);
 void MI_CpuCopy8(void *a, void *b, u32 c);
 void Inventory_PlayPickUpSe();
@@ -88,7 +88,7 @@ s32 InventoryItemGrid_GetSlotY(void *p, u32 v);
 s32 InventoryItemGrid_GetSlotX(void *p, u32 v);
 void InventoryItemGrid_ShowSlotName(void *p, void *q, u32 v);
 u32 InventoryItemGrid_FindBoxSlotAt(void *p, u32 a, u32 b);
-u32 InventoryItemGrid_FindPocketSlotAt(void *p);
+u32 InventoryItemGrid_FindPocketSlotAt(void *p, s32 a, s32 b);
 void InventoryItemGrid_Exit(void *a);
 void InventoryItemGrid_PreUpdate(void *a);
 void InventoryItemGrid_Init(void *a, s32 b);
@@ -328,7 +328,7 @@ BOOL ChestMenu::onCreate() {
 }
 
 BOOL ChestMenu::onDelete() {
-    ((MenuLauncher *)ProcBase_GetParent())->onChildClosed();
+    ((MenuLauncher *)ProcBase_GetParent(this))->onChildClosed();
     releaseResources();
     return TRUE;
 }
@@ -1089,7 +1089,7 @@ u32 ChestMenu_GridToPocketSlot(S *s, u32 v) {
 
 u32 ChestMenu_FindSlotAt(S *s, u32 a, u32 b, u32 c)
 {
-    u32 r = InventoryItemGrid_FindPocketSlotAt(&s->itemGrid);
+    u32 r = InventoryItemGrid_FindPocketSlotAt(&s->itemGrid, a, b);
     if (r != 0x23) {
         if (c != 0 && InventoryItemGrid_IsSlotEmpty(&s->itemGrid, r)) {
             return 0x25;

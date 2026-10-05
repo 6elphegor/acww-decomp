@@ -67,7 +67,7 @@ extern void WfcCell_Unload(s32);
 extern void WfcCell_Load(s32, void *);
 extern void WfcFade_Start(s32, s32, s32, s32);
 extern void WfcGx_ShowPlanes(s32, s32);
-extern void WfcHeap_Free();
+extern void WfcHeap_Free(void *p);
 extern void WfcHeap_FreeAndClear(void *);
 extern void *WfcHeap_AllocClear(s32, s32);
 extern void *WfcHeap_Alloc(s32, s32);
@@ -78,7 +78,7 @@ void WfcUtil_Quit();
 void WfcBoot_Dispatch();
 void WfcBoot_FadeIn();
 void WfcBoot_Enter();
-void WfcSimpleStart_Free();
+void WfcSimpleStart_Free(void *p);
 void *WfcSimpleStart_Alloc(s32);
 void WfcSimpleStart_StatusCallback(SimpleStartStatus *);
 
@@ -214,8 +214,8 @@ void *WfcSimpleStart_Alloc(s32 a) {
     return WfcHeap_Alloc(a, 0x20);
 }
 
-void WfcSimpleStart_Free() {
-    WfcHeap_Free();
+void WfcSimpleStart_Free(void *p) {
+    WfcHeap_Free(p);
 }
 }
 #pragma thumb reset

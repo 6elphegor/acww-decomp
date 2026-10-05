@@ -718,7 +718,7 @@ s32 MapBlock_HasAnyAttr(void *, u32);
 u16 * MapBlock_GetItemPtr(void *, s32, s32, s32);
 void Camera_FocusOnPoint(void *);
 s32 Catalog_SetItem(s32, void *, u32, u32);
-void * ClothTex_GetTexThunk();
+void * ClothTex_GetTexThunk(s32 tex);
 void PlayerOptions_Commit();
 void PlayerOptions_SetHiragana(u32);
 void MailText_LoadLetter(void *, void *, void *, void *, void *, void *);
@@ -2735,8 +2735,9 @@ void *VillagerClothModel::buildTexture(VillagerActor *parent, u16 *id) {
         } else {
             _ZN16CharaClothTexRef8loadItemEPtiii(r4, id, 0, 1, 1);
         }
-        if (CharaClothTexRef_GetBuffer(r4)) {
-            r6 = ClothTex_GetTexThunk();
+        s32 buf = CharaClothTexRef_GetBuffer(r4);
+        if (buf) {
+            r6 = ClothTex_GetTexThunk(buf);
         }
     }
     return r6;

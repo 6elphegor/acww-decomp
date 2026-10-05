@@ -1818,8 +1818,8 @@ void TalkRequest_AddTalk(void *, void *);
 BOOL Character_FindInteractionTarget(void *);
 BOOL _ZN9Character16checkInteractionEPS_(void *, void *);
 void PlayerActor_OffsetByAngle(VecFx32 *, void *, void *, void *, void *);
-void CharaClothTexRef_GetBuffer(void *);
-u32 ClothTex_GetTexThunk();
+void *CharaClothTexRef_GetBuffer(void *);
+u32 ClothTex_GetTexThunk(void *tex);
 void _ZN14MatTexVramTask7requestEPvjS0_jj(void *, u32, void *, u32, u32, u32);
 void _ZN16CharaClothTexRef8loadItemEPtiii(void *, s32, void *, u32, u32);
 void PlayerPaletteRef_LoadSkin(void *, u32 y);
@@ -3697,8 +3697,8 @@ void PlayerActor::setShirtTexture(void *p) {
 void PlayerActor::requestShirtTexUpload() {
     using namespace nR;
     u32 r4 = (u32)((PlayerActor *)this)->bodyModel.resMdl;
-    CharaClothTexRef_GetBuffer(&((PlayerActor *)this)->shirtTex);
-    _ZN14MatTexVramTask7requestEPvjS0_jj(&((PlayerActor *)this)->shirtTexUpload, r4, sPlayerShirtTexName, ClothTex_GetTexThunk(), 0, 0);
+    _ZN14MatTexVramTask7requestEPvjS0_jj(&((PlayerActor *)this)->shirtTexUpload, r4, sPlayerShirtTexName,
+                                         ClothTex_GetTexThunk(CharaClothTexRef_GetBuffer(&((PlayerActor *)this)->shirtTex)), 0, 0);
 }
 
 s32 PlayerActor::tryInteract() {

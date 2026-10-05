@@ -81,15 +81,15 @@ void Pocket_AddItem(u16 *p, s32 v);
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 BOOL MenuCtrl_IsResultOk();
 s32 MenuCtrl_GetIndex();
-s32 Pocket_GetItem();
+s32 Pocket_GetItem(s32 i);
 s32 Contest_GetCatchSize(u16 *p);
 s32 memcmp(void *a, void *b, u32 n);
 u32 Random_GlobalBelow(u32 n);
 void ContestRecord_BeginContestDay(void *g, u32 a);
 u32 Insect_GetSpawnTable(u32 v);
 s32 InsectPick_PickAnyHour(u16 *a, s32 *b, s32 *c, s32 d, void *tbl, s32 *arr, s32 cnt);
-s32 SaveVillagers_PickRandomExcept(void *p, u32 a, u32 b);
-void *_ZN12VillagerData13getVillagerIdEv();
+void *SaveVillagers_PickRandomExcept(void *p, u32 a, u32 b);
+void *_ZN12VillagerData13getVillagerIdEv(void *v);
 void _ZN13ContestRecord17setHolderVillagerEP10VillagerId(void *g, void *p);
 void ThreeLayerAnimModel_AssignJointsToLayer2(void *p, s32 a, s32 b);
 void _ZN11NpcAnimCtrl8playAnimEP8NpcActoriiiiti(void *p, void *owner, s32 a, s32 b, s32 s0, s32 s1, s32 s2, s32 s3);
@@ -247,8 +247,9 @@ BOOL SpNpcTortimerBugOff::onCreate() {
         ContestRecord_SetItem(g, &l.w0);
         ContestRecord_GetItem(&l.s4, g);
         if (Unk_ov082_InRange(&l.s4, 0x12b0, 0x12e7)) {
-            if (SaveVillagers_PickRandomExcept(gSaveVillagers, 0, 0) != 0) {
-                _ZN13ContestRecord17setHolderVillagerEP10VillagerId(g, _ZN12VillagerData13getVillagerIdEv());
+            void *v = SaveVillagers_PickRandomExcept(gSaveVillagers, 0, 0);
+            if (v != 0) {
+                _ZN13ContestRecord17setHolderVillagerEP10VillagerId(g, _ZN12VillagerData13getVillagerIdEv(v));
                 _ZN13ContestRecord7setKindEj(g, 2);
                 _ZN8SaveData7setFlagEj(gSaveData, 0xf);
             }
@@ -374,7 +375,7 @@ void SpNpcTortimerBugOffTalk::scriptCatchChosen() {
     b = 0xc;
     if (MenuCtrl_IsResultOk()) {
         s32 r4 = MenuCtrl_GetIndex();
-        entryItem = Pocket_GetItem();
+        entryItem = Pocket_GetItem(r4);
         ownerNpc->entrySize = Contest_GetCatchSize(&entryItem);
         _ZN16ActorTalkRequest15requestTakeItemEPtjjj(this, &entryItem, 0, 4, 0);
         setNextScript(1);
