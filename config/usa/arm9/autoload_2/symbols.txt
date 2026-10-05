@@ -58,8 +58,8 @@ _ZN7ExpHeap8doAdjustEv kind:function(arm,size=0x8) addr:0x020e8774
 _ZN4Heap6adjustEv kind:function(arm,size=0x50) addr:0x020e877c
 _ZN9FrameHeap10getGroupIdEv kind:function(arm,size=0x8) addr:0x020e87cc
 _ZN7ExpHeap10getGroupIdEv kind:function(arm,size=0x10) addr:0x020e87d4
-_ZN9FrameHeap13changeGroupIdEv kind:function(arm,size=0x8) addr:0x020e87e4
-_ZN7ExpHeap13changeGroupIdEv kind:function(arm,size=0x10) addr:0x020e87ec
+_ZN9FrameHeap13changeGroupIdEt kind:function(arm,size=0x8) addr:0x020e87e4
+_ZN7ExpHeap13changeGroupIdEt kind:function(arm,size=0x10) addr:0x020e87ec
 func_020e87fc kind:function(arm,size=0x8) addr:0x020e87fc
 _ZN9FrameHeap8vfunc_30EPv kind:label(arm) addr:0x020e87fc
 func_020e8804 kind:function(arm,size=0x10) addr:0x020e8804
