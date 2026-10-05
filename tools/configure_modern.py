@@ -40,6 +40,7 @@ CXX = prefix + "g++"
 AS = prefix + "as"
 NM = prefix + "nm"
 OBJCOPY = prefix + "objcopy"
+READELF = prefix + "readelf"
 PYTHON = sys.executable
 DSD = "./dsd"
 config_path = root_path / "config" / args.version / "arm9"
@@ -132,6 +133,10 @@ def main():
                depfile="$out.d", deps="gcc", description="CC $in")
         n.rule("cxx", f"{CXX} {COMMON_FLAGS} {CXX_FLAGS} $flags -MMD -MF $out.d -c $in -o $out",
                depfile="$out.d", deps="gcc", description="CXX $in")
+        # overlay objects: vague-linkage definitions renamed per overlay (tools/modern_comdat.py)
+        comdat = f" && {PYTHON} tools/modern_comdat.py --nm {NM} --objcopy {OBJCOPY} --readelf {READELF} $overlay $out $out"
+        n.rule("cxx_ov", f"{CXX} {COMMON_FLAGS} {CXX_FLAGS} $flags -MMD -MF $out.d -c $in -o $out{comdat}",
+               depfile="$out.d", deps="gcc", description="CXX $in")
         n.newline()
 
         n.rule("as", f"{PYTHON} tools/gas_from_mwasm.py $in $out.s && "
@@ -149,8 +154,14 @@ def main():
         for source in source_files():
             obj = str(build_path / source.with_suffix(".o"))
             flags = source_flags(source)
-            n.build(obj, "cxx" if source.suffix == ".cpp" else "cc", str(source),
-                    variables={"flags": " ".join(flags)} if flags else None)
+            variables = {"flags": " ".join(flags)} if flags else {}
+            overlay = re.match(r"ov\d+$", source.parts[1]) and source.parts[1] if len(source.parts) > 2 else None
+            rule = "cxx" if source.suffix == ".cpp" else "cc"
+            if overlay and rule == "cxx":
+                rule = "cxx_ov"
+                variables["overlay"] = overlay
+            n.build(obj, rule, str(source), implicit=["tools/modern_comdat.py"] if rule == "cxx_ov" else None,
+                    variables=variables or None)
             objects.append(obj)
         for source in source_files((".s",)):
             obj = str(build_path / source.with_suffix(".o"))
