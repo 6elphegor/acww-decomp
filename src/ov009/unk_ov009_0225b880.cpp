@@ -270,7 +270,7 @@ void __cxa_vec_cleanup(void *, s32, s32, void (*)(BuildingResources *));
 void Building_LocalToWorld(void *p, s32 a, s32 b);
 BOOL _ZN13BuildingActor13setEntryStateEi(void *self, s32 a);
 BOOL Building_IsNight();
-void BuildingActor_Create();
+void *BuildingActor_Create();
 BOOL BuildingResources_IsLoaded(BuildingResources *e);
 void *Building_GetFirstAnm(void *res);
 void *Building_GetFirstMdl(void *res);
@@ -326,8 +326,8 @@ static inline BOOL Unk_ov009_0225d858_Is(u16 *p, u32 v) {
 
 
 
-extern "C" void BuildingActor_Create() {
-    BuildingActor *p = new BuildingActor();
+extern "C" void *BuildingActor_Create() {
+    return new BuildingActor();
 }
 
 extern "C" void Building_LocalToWorld(void *p, s32 a, s32 b) {

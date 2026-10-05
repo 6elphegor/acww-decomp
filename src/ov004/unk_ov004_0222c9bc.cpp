@@ -658,7 +658,7 @@ static inline s32 Unk_ov004_0222d460_Clamp(s32 a) {
     return a;
 }
 
-extern "C" void MuseumAquarium_Create();
+extern "C" void *MuseumAquarium_Create();
 extern "C" void Aquarium_StepX(s32 *p, s32 a, u32 ang);
 extern "C" void Aquarium_StepZ(s32 *p, s32 a, u32 ang);
 extern "C" void Aquarium_StepXZ(V3 *p, s32 a, s16 ang);
@@ -927,8 +927,8 @@ void *data_ov004_0224e6a0[2] = {(void *)AquariumEel_StateSpeedUp, 0};
 void *data_ov004_0224e5f8[2] = {(void *)AquariumEel_StateWait, 0};
 }
 
-extern "C" void MuseumAquarium_Create() {
-    new MuseumAquarium;
+extern "C" void *MuseumAquarium_Create() {
+    return new MuseumAquarium;
 }
 
 AquariumFish::AquariumFish() {

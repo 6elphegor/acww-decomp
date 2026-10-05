@@ -64,7 +64,7 @@ s32 _ZN12G3dResAccess11findNodeIdxEi(void *self, s32 i);
 extern "C" void TownHall_NodeCallback(NNSG3dRS *a);
 extern "C" void JointCb_RotateClockHourHand(NNSG3dRS *rs);
 extern "C" void JointCb_RotateClockMinuteHand(NNSG3dRS *rs);
-extern "C" void TownHall_Create();
+extern "C" void *TownHall_Create();
 
 class TownHall : public BuildingActor {
 public:
@@ -83,8 +83,8 @@ public:
 
 extern "C" ActorProfile sTownHallProfile = { (void *(*)())TownHall_Create, 0x1e, 0x24, 0, 0xc8000, 0x12c000, 0x258000 };
 
-extern "C" void TownHall_Create() {
-    new TownHall();
+extern "C" void *TownHall_Create() {
+    return new TownHall();
 }
 
 extern "C" void TownHall_NodeCallback(NNSG3dRS *a) {

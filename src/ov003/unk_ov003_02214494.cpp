@@ -15,7 +15,7 @@
 #include "town/ReddTent.h"
 #include "gfx/DebugColor.h"
 
-extern "C" void ReddTent_Create();
+extern "C" void *ReddTent_Create();
 extern "C" DebugColor data_ov003_02235144(0x1f, 0x14, 0x14, 0x1f);
 extern "C" DebugColor data_ov003_02235160(0x14, 0x14, 0x1f, 0x1f);
 extern "C" DebugColor data_ov003_0223514c(0x1f, 0x1f, 0x14, 0x1f);
@@ -76,8 +76,8 @@ s32 Scene_GetCurrent();
 }
 
 
-extern "C" void ReddTent_Create() {
-    new ReddTent;
+extern "C" void *ReddTent_Create() {
+    return new ReddTent;
 }
 
 

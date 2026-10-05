@@ -114,7 +114,7 @@ s32 HouseLightUpDeco_GetTexPattern(void *p);
 s32 VillagerHouseTex_GetHouseTex(s32 a, s32 b);
 s32 VillagerHouseTex_GetLightTex(s32 a, s32 b);
 s32 Field_GetStructureTexSuffix();
-void VillagerHouse_Create();
+void *VillagerHouse_Create();
 }
 
 static inline s32 Unk_ov003_02215c7c_Idx(BuildingActor *o) {
@@ -171,8 +171,8 @@ char data_ov003_02235308[0x28];
 char data_ov003_02235330[0x28];
 }
 
-extern "C" void VillagerHouse_Create() {
-    new VillagerHouse;
+extern "C" void *VillagerHouse_Create() {
+    return new VillagerHouse;
 }
 
 VillagerHouse::VillagerHouse() {

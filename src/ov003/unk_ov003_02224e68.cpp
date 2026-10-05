@@ -61,7 +61,7 @@ void BottleThrow_SetTarget(V3 *v, s32 i);
 void *func_ov003_02224d80(void *p);
 void func_ov003_02224dc4();
 void func_ov003_02224dc8();
-void FieldFishManager_Create();
+void *FieldFishManager_Create();
 void func_ov003_02224e04();
 void func_ov003_02224e24();
 void func_ov003_02224e44();

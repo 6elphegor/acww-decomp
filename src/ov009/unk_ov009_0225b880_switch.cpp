@@ -267,7 +267,7 @@ void __cxa_vec_cleanup(void *, s32, s32, void (*)(BuildingResources *));
 void Building_LocalToWorld(void *p, s32 a, s32 b);
 BOOL _ZN13BuildingActor13setEntryStateEi(void *self, s32 a);
 BOOL Building_IsNight();
-void BuildingActor_Create();
+void *BuildingActor_Create();
 BOOL BuildingResources_IsLoaded(BuildingResources *e);
 void *Building_GetFirstAnm(void *unused);
 void *Building_GetFirstMdl(void *unused);

@@ -170,8 +170,8 @@ static inline void *Unk_ov003_02213058_Cell(void *g, s32 x, s32 y) {
 typedef void (Obj::*Fn0)();
 typedef BOOL (Obj::*Fn1)();
 
-extern "C" void Snowball_Create() {
-    new Snowball;
+extern "C" void *Snowball_Create() {
+    return new Snowball;
 }
 
 // ================================================================

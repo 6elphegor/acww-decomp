@@ -52,7 +52,7 @@ public:
     /* 0x2b0 */ s32 boardState;
 };
 
-extern "C" void BulletinBoard_Create();
+extern "C" void *BulletinBoard_Create();
 
 typedef void (BulletinBoard::*Unk_02214208_Fn)();
 typedef BOOL (BulletinBoard::*Unk_02214284_Fn)();
@@ -65,8 +65,8 @@ extern "C" DebugColor data_ov003_022350f8(0x14, 0x1f, 0x1f, 0x1f);
 extern "C" DebugColor data_ov003_022350f4(0x14, 0x18, 0x18, 0x1f);
 extern "C" ActorProfile sBulletinBoardProfile = {(void *(*)())BulletinBoard_Create, 0x22, 0x28, 0, 0xc8000, 0x12c000, 0x258000};
 
-extern "C" void BulletinBoard_Create() {
-    new BulletinBoard;
+extern "C" void *BulletinBoard_Create() {
+    return new BulletinBoard;
 }
 
 BulletinBoard::BulletinBoard() {}

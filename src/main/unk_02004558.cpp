@@ -1988,7 +1988,7 @@ s32 FS_ReadFile(void *self, void *dst, u32 size);
 BOOL FS_CloseFile(void *self);
 extern u8 sHudObjCharPathTen2[];
 extern u32 sSlideIconCharOffsets[];
-void PlayerActor_Create();
+void *PlayerActor_Create();
 }
 }
 
@@ -3017,8 +3017,8 @@ PM_020076f0 data_020d6bf4 = {{(PMF)nPM::_ZN12Unk_020076948endAct91Ev, 0}};
 }
 
 namespace nT {
-extern "C" void PlayerActor_Create() {
-    new PlayerActor();
+extern "C" void *PlayerActor_Create() {
+    return new PlayerActor();
 }
 }
 
@@ -9088,7 +9088,7 @@ u32 data_020d5e48 = 0xccd;
 u32 data_020d5e4c = 0;
 #pragma explicit_zero_data reset
 u32 data_020d5e50 = 0x14000;
-void PlayerActor_Create();
+void *PlayerActor_Create();
 ActorProfile sPlayerActorProfile = {(void *(*)())PlayerActor_Create, 9, 0xd, 2, 0x800, 0x800, 0x2b000};
 char sPlayerActorErrorMsgFile[] = "obj_etc_error";
 char sPlayerActorMsgFile[] = "obj_etc_player";

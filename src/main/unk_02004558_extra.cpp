@@ -1480,7 +1480,7 @@ s32 FS_ReadFile(void *self, void *dst, u32 size);
 BOOL FS_CloseFile(void *self);
 extern u8 sHudObjCharPathTen2[];
 extern u32 sSlideIconCharOffsets[];
-void PlayerActor_Create();
+void *PlayerActor_Create();
 }
 }
 

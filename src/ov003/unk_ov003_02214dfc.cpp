@@ -81,7 +81,7 @@ s32 Str_SPrintf(char *buf, const char *fmt, ...);
 s32 Field_GetStructureTexSuffix();
 u32 GateHouse_GetModelName();
 s32 GateHouse_GetDesign();
-void GateHouse_Create();
+void *GateHouse_Create();
 }
 #define TownStyleRecordView_getTownFlag _ZN19TownStyleRecordView11getTownFlagEv
 #define TownFlag_getGateDesign _ZN8TownFlag13getGateDesignEv
@@ -118,8 +118,8 @@ extern "C" u32 sGateHouseModelNames[3];
 extern "C" char data_ov003_022312b0[12];
 extern "C" char data_ov003_022312bc[12];
 
-extern "C" void GateHouse_Create() {
-    new GateHouse;
+extern "C" void *GateHouse_Create() {
+    return new GateHouse;
 }
 
 GateHouse::GateHouse() {

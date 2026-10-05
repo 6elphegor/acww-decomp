@@ -69,7 +69,7 @@ BOOL Scene_InTown();
 BOOL _ZN11CommManager8isOnlineEv(void *self);
 BOOL _ZN11CommManager7isMyAidEj(void *self, u32 a);
 u32 BuildingState_Get(u32 a);
-void Mailbox_Create();
+void *Mailbox_Create();
 void _ZN15TouchPickSphereC1Ev(TouchPickSphere *self);
 void _ZN15TouchPickSphereD1Ev(TouchPickSphere *self);
 void _ZN9Character18clearTalkStartModeEv(void *self, void *a);
@@ -142,8 +142,8 @@ extern "C" DebugColor data_ov003_0223538c(0x14, 0x1f, 0x1f, 0x1f);
 extern "C" DebugColor data_ov003_02235388(0x14, 0x18, 0x18, 0x1f);
 extern "C" ActorProfile sMailboxProfile = {(void *(*)())Mailbox_Create, 0x24, 0x2a, 0, 0xc8000, 0x12c000, 0x258000};
 
-extern "C" void Mailbox_Create() {
-    new Mailbox;
+extern "C" void *Mailbox_Create() {
+    return new Mailbox;
 }
 
 Mailbox::Mailbox() {

@@ -616,7 +616,7 @@ void FishShadow_MoveRest(Obj_f9 *o);
 void func_ov003_02224e44();
 void func_ov003_02224e24();
 void func_ov003_02224e04();
-void FieldFishManager_Create();
+void *FieldFishManager_Create();
 void func_ov003_02224dc8();
 void func_ov003_02224dc4();
 BottleThrow *func_ov003_02224d90(BottleThrow *p);
@@ -813,9 +813,9 @@ void *data_ov003_02234868[2] = {(void *)BottleThrow_StateFly, 0};
 }
 
 //@ 0x2224dcc
-extern "C" void FieldFishManager_Create()
+extern "C" void *FieldFishManager_Create()
 {
-    new FieldFishManager;
+    return new FieldFishManager;
 }
 
 
@@ -4474,8 +4474,8 @@ extern "C" BOOL FishShadow_LoadModel(u8 *self, void *p, s32 q) {
     if (p == NULL) {
         return r;
     }
-    ((void (*)(s32, void *))ModelSlotPool_acquire)(q, self + 0x7c);
-    s32 t = ((s32 (*)(void))ModelSlot_getHeap)();
+    void *slot = ((void *(*)(s32, void *))ModelSlotPool_acquire)(q, self + 0x7c);
+    s32 t = ((s32 (*)(void *))ModelSlot_getHeap)(slot);
     s32 u = func_021065f8(func_021065dc((s32)p), r);
     if (((BOOL (*)(void *, s32))AnimModel_allocAnmObj)(o, t)) {
         BlendAnimModel_initAnim(o, u, r, 0x1000, 1, r);

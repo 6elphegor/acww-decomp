@@ -77,7 +77,7 @@ BOOL _ZN13BuildingActor10getDoorPosEP7VecFx32Ps(void *self, void *v, s16 *ang);
 
 BuildingActor *BuildingList_FindByItem(u32 a);
 u32 Field_GetStructureTexSuffix();
-void PlayerHouse_Create();
+void *PlayerHouse_Create();
 u8 PlayerHouse_GetTexIndex();
 char *PlayerHouse_GetTexPath();
 }
@@ -108,8 +108,8 @@ extern "C" {
 char data_ov003_02235358[0x20];
 }
 
-extern "C" void PlayerHouse_Create() {
-    new PlayerHouse();
+extern "C" void *PlayerHouse_Create() {
+    return new PlayerHouse();
 }
 
 PlayerHouse::PlayerHouse() {}

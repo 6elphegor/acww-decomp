@@ -250,7 +250,7 @@ s32 _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(void *, void *);
 }
 
 
-extern "C" void KappnTaxi_Create();
+extern "C" void *KappnTaxi_Create();
 
 extern "C" DebugColor data_ov068_02271090(0x1f, 0x14, 0x14, 0x1f);
 extern "C" DebugColor data_ov068_02271098(0x14, 0x14, 0x1f, 0x1f);
@@ -260,8 +260,8 @@ extern "C" DebugColor data_ov068_02271094(0x14, 0x1f, 0x1f, 0x1f);
 extern "C" DebugColor data_ov068_0227109c(0x14, 0x18, 0x18, 0x1f);
 extern "C" ActorProfile sKappnTaxiProfile = {(void *(*)())KappnTaxi_Create, 0x23, 0x29, 0, 0xc8000, 0x12c000, 0x258000};
 
-extern "C" void KappnTaxi_Create() {
-    new KappnTaxi();
+extern "C" void *KappnTaxi_Create() {
+    return new KappnTaxi();
 }
 
 KappnTaxi::KappnTaxi() {

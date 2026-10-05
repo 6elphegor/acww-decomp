@@ -62,7 +62,7 @@ void Clock_GetDateTime(void *p);
 void Npc_GetName(void *p, void *q);
 void _ZN11MsgString9BC1Ev(void *p);
 void _ZN11MsgString9BD1Ev(void *p);
-void KatrinaTent_Create();
+void *KatrinaTent_Create();
 }
 #define func_02094030 _ZN11MsgString9BC1Ev
 #define func_02094018 _ZN11MsgString9BD1Ev
@@ -71,8 +71,8 @@ void KatrinaTent_Create();
 
 extern "C" ActorProfile sKatrinaTentProfile = { (void *(*)())KatrinaTent_Create, 0x28, 0x2e, 0, 0xc8000, 0x12c000, 0x258000 };
 
-extern "C" void KatrinaTent_Create() {
-    new KatrinaTent;
+extern "C" void *KatrinaTent_Create() {
+    return new KatrinaTent;
 }
 
 KatrinaTent::KatrinaTent() {

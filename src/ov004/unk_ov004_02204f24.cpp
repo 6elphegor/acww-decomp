@@ -598,7 +598,7 @@ void FtrActor_NodeCallback(NNSG3dRS *o);
 void FtrActor_NodeDescCallbackB(NNSG3dRS *self);
 void FtrActor_NodeDescCallbackA(NNSG3dRS *self);
 void FtrActor_MatCallback(NNSG3dRS *self);
-void FtrActor_Create();
+void *FtrActor_Create();
 }
 
 // ================================================================ static inline helpers
@@ -705,8 +705,8 @@ extern FxVec3 *sFtrFootprintCorners[3];
 // ================================================================ functions and data
 
 // @02209f1c
-extern "C" void FtrActor_Create() {
-    new FtrActor;
+extern "C" void *FtrActor_Create() {
+    return new FtrActor;
 }
 
 // @02209ef0

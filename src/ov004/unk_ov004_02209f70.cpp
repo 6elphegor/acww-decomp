@@ -196,8 +196,8 @@ FtrNookway::~FtrNookway() {}
 
 FtrNookway::FtrNookway() {}
 
-extern "C" void FtrNookway_Create() {
-    new FtrNookway;
+extern "C" void *FtrNookway_Create() {
+    return new FtrNookway;
 }
 
 // ---------------------------------------------------------------- FtrPhone
@@ -417,8 +417,8 @@ FtrPhone::~FtrPhone() {}
 
 FtrPhone::FtrPhone() {}
 
-extern "C" void FtrPhone_Create() {
-    new FtrPhone;
+extern "C" void *FtrPhone_Create() {
+    return new FtrPhone;
 }
 
 // ---------------------------------------------------------------- FtrSingingInsect
@@ -496,8 +496,8 @@ s32 _ZN12FtrPreviewer14getSampleIndexEv(s32 a);
 // FtrSingingInsect
 
 
-extern "C" void FtrSingingInsect_Create() {
-    new FtrSingingInsect;
+extern "C" void *FtrSingingInsect_Create() {
+    return new FtrSingingInsect;
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -585,8 +585,8 @@ BOOL FtrComputer::initModel() {
     return TRUE;
 }
 
-extern "C" void FtrComputer_Create() {
-    new FtrComputer;
+extern "C" void *FtrComputer_Create() {
+    return new FtrComputer;
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -687,8 +687,8 @@ BOOL FtrHeadwear::initModel() {
     return TRUE;
 }
 
-extern "C" void FtrHeadwear_Create() {
-    new FtrHeadwear;
+extern "C" void *FtrHeadwear_Create() {
+    return new FtrHeadwear;
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -707,8 +707,8 @@ BOOL FtrKind25::initModel() {
     return TRUE;
 }
 
-extern "C" void FtrKind25_Create() {
-    new FtrKind25;
+extern "C" void *FtrKind25_Create() {
+    return new FtrKind25;
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -809,8 +809,8 @@ FtrCarpetSample::~FtrCarpetSample() {}
 
 FtrCarpetSample::FtrCarpetSample() {}
 
-extern "C" void FtrCarpetSample_Create() {
-    new FtrCarpetSample;
+extern "C" void *FtrCarpetSample_Create() {
+    return new FtrCarpetSample;
 }
 
 // ---------------------------------------------------------------------------
@@ -869,8 +869,8 @@ FtrWallpaperSample::~FtrWallpaperSample() {}
 
 FtrWallpaperSample::FtrWallpaperSample() {}
 
-extern "C" void FtrWallpaperSample_Create() {
-    new FtrWallpaperSample;
+extern "C" void *FtrWallpaperSample_Create() {
+    return new FtrWallpaperSample;
 }
 
 // ---------------------------------------------------------------------------
@@ -1078,8 +1078,8 @@ FtrMetronome::~FtrMetronome() {}
 
 FtrMetronome::FtrMetronome() {}
 
-extern "C" void FtrMetronome_Create() {
-    new FtrMetronome;
+extern "C" void *FtrMetronome_Create() {
+    return new FtrMetronome;
 }
 
 // ------------------------------------------------------------------ class FtrPiggyBank (vtable 0x02249f24)
@@ -1228,8 +1228,8 @@ FtrPiggyBank::~FtrPiggyBank() {}
 
 FtrPiggyBank::FtrPiggyBank() {}
 
-extern "C" void FtrPiggyBank_Create() {
-    new FtrPiggyBank;
+extern "C" void *FtrPiggyBank_Create() {
+    return new FtrPiggyBank;
 }
 
 // ------------------------------------------------------------------ class B (vtable 0x0224a050)
@@ -1291,8 +1291,8 @@ FtrInstrument::FtrInstrument() {
     p13::MelodyBeat_Construct(melodyBeat);
 }
 
-extern "C" void FtrInstrument_Create() {
-    new FtrInstrument;
+extern "C" void *FtrInstrument_Create() {
+    return new FtrInstrument;
 }
 
 // ------------------------------------------------------------------ class C (vtable 0x0224a500)
@@ -1433,8 +1433,8 @@ FtrVillagerPic::~FtrVillagerPic() {}
 
 FtrVillagerPic::FtrVillagerPic() {}
 
-extern "C" void FtrVillagerPic_Create() {
-    new FtrVillagerPic;
+extern "C" void *FtrVillagerPic_Create() {
+    return new FtrVillagerPic;
 }
 
 // ------------------------------------------------------------------ class D (vtable 0x0224a62c)
@@ -1526,8 +1526,8 @@ FtrCompass::FtrCompass() {
     compassNode = -1;
 }
 
-extern "C" void FtrCompass_Create() {
-    new FtrCompass;
+extern "C" void *FtrCompass_Create() {
+    return new FtrCompass;
 }
 
 // ------------------------------------------------------------------ class F (vtable 0x0224a884)
@@ -2116,8 +2116,8 @@ FtrCannon::~FtrCannon() {
 FtrCannon::FtrCannon() {
 }
 
-extern "C" void FtrCannon_Create() {
-    new FtrCannon;
+extern "C" void *FtrCannon_Create() {
+    return new FtrCannon;
 }
 
 void FtrKind19::execFtrAct03() {
@@ -2317,8 +2317,8 @@ FtrKind19::~FtrKind19() {
 FtrKind19::FtrKind19() {
 }
 
-extern "C" void FtrKind19_Create() {
-    new FtrKind19;
+extern "C" void *FtrKind19_Create() {
+    return new FtrKind19;
 }
 
 
@@ -2680,8 +2680,8 @@ FtrGyroid::FtrGyroid() {
     actAid = 0xff;
 }
 
-extern "C" void FtrGyroid_Create() {
-    new FtrGyroid;
+extern "C" void *FtrGyroid_Create() {
+    return new FtrGyroid;
 }
 
 
@@ -3494,8 +3494,8 @@ FtrStereo::~FtrStereo() {}
 
 FtrStereo::FtrStereo() {}
 
-extern "C" void FtrStereo_Create() {
-    new FtrStereo;
+extern "C" void *FtrStereo_Create() {
+    return new FtrStereo;
 }
 
 union Unk_ov004_0220f2c0_Pad {
@@ -3672,8 +3672,8 @@ FtrClock::~FtrClock() {
 FtrClock::FtrClock() {
 }
 
-extern "C" void FtrClock_Create() {
-    new FtrClock;
+extern "C" void *FtrClock_Create() {
+    return new FtrClock;
 }
 
 
@@ -4040,8 +4040,8 @@ FtrStorage::FtrStorage() {
     ftrAct = 0;
 }
 
-extern "C" void FtrStorage_Create() {
-    new FtrStorage;
+extern "C" void *FtrStorage_Create() {
+    return new FtrStorage;
 }
 
 
@@ -4842,8 +4842,8 @@ FtrBed::~FtrBed() {
 FtrBed::FtrBed() : newBedItem(0xfff1) {
 }
 
-extern "C" void FtrBed_Create() {
-    new FtrBed;
+extern "C" void *FtrBed_Create() {
+    return new FtrBed;
 }
 
 // ================================================================ FtrSeat ==========
@@ -4959,8 +4959,8 @@ FtrSeat::~FtrSeat() {
 FtrSeat::FtrSeat() {
 }
 
-extern "C" void FtrSeat_Create() {
-    new FtrSeat;
+extern "C" void *FtrSeat_Create() {
+    return new FtrSeat;
 }
 
 // ================================================================ FtrKind07 ==========
@@ -5190,8 +5190,8 @@ FtrKind07::~FtrKind07() {
 FtrKind07::FtrKind07() {
 }
 
-extern "C" void FtrKind07_Create() {
-    new FtrKind07;
+extern "C" void *FtrKind07_Create() {
+    return new FtrKind07;
 }
 
 // ---- class B (0x0224a2a8) ----
@@ -5320,8 +5320,8 @@ FtrKind06::~FtrKind06() {
 FtrKind06::FtrKind06() {
 }
 
-extern "C" void FtrKind06_Create() {
-    new FtrKind06;
+extern "C" void *FtrKind06_Create() {
+    return new FtrKind06;
 }
 
 // ---- class C (0x0224ac08) ----
@@ -5442,8 +5442,8 @@ FtrKind05::~FtrKind05() {
 FtrKind05::FtrKind05() {
 }
 
-extern "C" void FtrKind05_Create() {
-    new FtrKind05;
+extern "C" void *FtrKind05_Create() {
+    return new FtrKind05;
 }
 
 // ---- class D (0x0224af8c) ----
@@ -5875,8 +5875,8 @@ FtrKind02::~FtrKind02() {
 FtrKind02::FtrKind02() {
 }
 
-extern "C" void FtrKind02_Create() {
-    new FtrKind02;
+extern "C" void *FtrKind02_Create() {
+    return new FtrKind02;
 }
 
 // ---- class FtrBasic ----
@@ -6001,8 +6001,8 @@ FtrBasic::~FtrBasic() {
 FtrBasic::FtrBasic() {
 }
 
-extern "C" void FtrBasic_Create() {
-    new FtrBasic;
+extern "C" void *FtrBasic_Create() {
+    return new FtrBasic;
 }
 
 

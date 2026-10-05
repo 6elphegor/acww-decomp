@@ -47,8 +47,8 @@ public:
     /* 0x2b2 */ u16 pad_2b2;
 };
 
-extern "C" void TownSign_Create() {
-    new TownSign;
+extern "C" void *TownSign_Create() {
+    return new TownSign;
 }
 
 TownSign::TownSign() {

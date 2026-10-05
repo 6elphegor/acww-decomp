@@ -70,7 +70,7 @@ public:
 };
 
 
-extern "C" void GracieCar_Create();
+extern "C" void *GracieCar_Create();
 extern "C" u32 sGracieCarVisitorProfile = 0x6c;
 extern "C" ActorProfile sGracieCarProfile = { (void *(*)())GracieCar_Create, 0x29, 0x2f, 0, 0xc8000, 0x12c000, 0x258000 };
 
@@ -81,8 +81,8 @@ static inline BOOL Unk_ov003_02214ce0_Chk(void *m) {
     return FALSE;
 }
 
-extern "C" void GracieCar_Create() {
-    new GracieCar;
+extern "C" void *GracieCar_Create() {
+    return new GracieCar;
 }
 
 GracieCar::GracieCar() {
