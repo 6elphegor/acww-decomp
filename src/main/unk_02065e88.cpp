@@ -1742,7 +1742,8 @@ BOOL TalkParser::stepSpeed() {
         t = FALSE;
     }
     if (t) printVars.waitTimer = 0;
-    s32 v = printVars.waitTimer;
+    s32 v;
+    v = printVars.waitTimer;
     if (v > 0) {
         printVars.waitTimer = v - 0x1800;
         r = FALSE;

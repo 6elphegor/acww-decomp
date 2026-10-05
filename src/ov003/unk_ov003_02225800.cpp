@@ -10187,7 +10187,8 @@ extern "C" BOOL Insect_Spawn(s32 obj, s32 kind, u8 sub, s32 flag) {
     if (found < 0 && flag != 2) {
         goto fail;
     }
-    VecFx32Ctor *q = (VecFx32Ctor *)PlayerActor_GetActor(4);
+    VecFx32Ctor *q;
+    q = (VecFx32Ctor *)PlayerActor_GetActor(4);
     if (q != 0 && flag == 1 && kind != 0x33) {
         if (CommManager_isSlotActive(gCommManager, gCommManager->myAid)) {
             s32 k;

@@ -1809,7 +1809,7 @@ void SpNpcPellyPhyllisTalk::onChoice(u32 a_) {
 // (see docs/assembly.md). The assembly below is the original code; the C version under
 // NONMATCHING is the closest known attempt (246 bytes differ: it gets a 17-entry jump table for cases 0..16 under a
 // compare tree rooted at 0x52, the original has a 10-entry table for cases 0..9 under a tree rooted at 0x39).
-#ifdef NONMATCHING
+#if defined(NONMATCHING) || defined(MODERN)
 void SpNpcPellyPhyllisTalk::onPostOfficeChoice(s32 a) {
     TalkWindowState *o = window;
     s32 r = ChoiceList_getResult(ActorTalkRequest_getChoiceList(this));

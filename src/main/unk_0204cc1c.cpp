@@ -390,7 +390,6 @@ void FieldPos_ToUnit(s32 *ox, s32 *oz, VecFx32 *v);
 void FieldPos_ToBlockUnit2(s32 *a, s32 *c, VecFx32 *v);
 void FieldPos_ToBlockUnit(s32 *ax, s32 *az, s32 *cx, s32 *cz, VecFx32 *v);
 MapBlockEntry *MapBlockEntry_NewArray(s32 n, void *heap);
-MapBlockEntry::MapBlockEntry();
 void BlockMap_DebugStub();
 }
 
@@ -517,7 +516,7 @@ static inline BOOL Unk_0204e51c_InRange(u16 *p, u32 lo, u32 hi) {
     return r;
 }
 
-inline void *operator new(unsigned long, void *p) {
+inline void *operator new(size_t, void *p) {
     return p;
 }
 

@@ -7977,7 +7977,7 @@ void VillagerTalkTopics::openRequestItemPicker() {
     switch (_ZN12ErrandRecord7getKindEv(((void *)((VillagerTalk *)this)->getUnk150()))) {
     case 2:
         if (((u32)PlanErrand_GetStep(planErrand)) <= 1) {
-            _ZN16ActorTalkRequest15setPocketFilterEjjj(this, ((void (*)())Talk_FilterPickFossil), 0xd, 1);
+            _ZN16ActorTalkRequest15setPocketFilterEjjj(this, ((void *)Talk_FilterPickFossil), 0xd, 1);
         } else {
             _ZN16ActorTalkRequest13setPocketItemEjjj(this, ((void *)Talk_GetWantedFossilPocketMask(planErrand)), 0xd, 1);
         }
@@ -7986,7 +7986,7 @@ void VillagerTalkTopics::openRequestItemPicker() {
         break;
     case 3:
         if (((u32)PlanErrand_GetStep(planErrand)) <= 1) {
-            _ZN16ActorTalkRequest15setPocketFilterEjjj(this, ((void (*)())Talk_FilterPickShirt), 0xd, 1);
+            _ZN16ActorTalkRequest15setPocketFilterEjjj(this, ((void *)Talk_FilterPickShirt), 0xd, 1);
         } else {
             _ZN16ActorTalkRequest13setPocketItemEjjj(this, ((void *)Talk_GetPocketMaskForItem((u16 *)_ZN12ErrandRecord7getItemEv(((void *)((VillagerTalk *)this)->getUnk150())))), 0xd, 1);
         }
@@ -7994,7 +7994,7 @@ void VillagerTalkTopics::openRequestItemPicker() {
         ((VillagerTalk *)this)->setTaskDoneFn((*(Unk_020d8938_Fn *)&data_020d79c0));
         break;
     case 4:
-        _ZN16ActorTalkRequest15setPocketFilterEjjj(this, ((void (*)())Talk_FilterPickNonFossilFurniture), 0xd, 1);
+        _ZN16ActorTalkRequest15setPocketFilterEjjj(this, ((void *)Talk_FilterPickNonFossilFurniture), 0xd, 1);
         _ZN16ActorTalkRequest12openSubSceneEi(this, 0);
         ((VillagerTalk *)this)->setTaskDoneFn((*(Unk_020d8938_Fn *)&data_020d7ba8));
         break;
@@ -11264,7 +11264,11 @@ void VillagerTalkHobbyTopics::selectEvAdmireMsg12(TalkTopicMsg *out) {
 void VillagerTalkHobbyTopics::openEvAdmireWordEntryB() {
     ((VillagerTalk *)this)->setSubSceneKind2(0x17, (u32)sTalkInputBuffer, 0x10, 0);
     ((VillagerTalk *)this)->openSubScene(6);
+#ifdef MODERN
+    ((VillagerTalk *)this)->setTaskDoneFn(*(Unk_020d8938_Fn *)nZ::data_020d7f70);
+#else
     ((VillagerTalk *)this)->setTaskDoneFn((*(Unk_020d8938_Fn *)&((Unk_0201eea4_Fn)(*(void (VillagerTalkHobbyTopics::**)())nZ::data_020d7f70))));
+#endif
 }
 
 void VillagerTalkHobbyTopics::onEvAdmireWordEnteredB() {

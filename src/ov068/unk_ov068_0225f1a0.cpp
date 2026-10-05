@@ -3978,7 +3978,8 @@ BOOL FieldVillagerAi_CheckHeldItemChange(FieldVillagerAiStates *self, FieldVilla
         }
     }
     Clock_GetDateTime(l.z);
-    s16 t = self->activityTimer;
+    s16 t;
+    t = self->activityTimer;
     if (t == 0 || self->heldItemCheckTimer == 0) {
         if (t == 0) {
             X_func_ov068_02265dc8(o);

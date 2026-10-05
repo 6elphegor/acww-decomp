@@ -1,7 +1,13 @@
 // mwcc-flags: -nothumb -O4,p
 
+#ifdef MODERN
+// GCC has no cast lvalues (an mwcc extension): reinterpret the pointer variable itself
+#define cpd (*(unsigned char **)&dst)
+#define lpd (*(unsigned long **)&dst)
+#else
 #define cpd ((unsigned char *) dst)
 #define lpd ((unsigned long *) dst)
+#endif
 #define deref_auto_inc(p) *(p)++
 // __fill_mem
 void __fill_mem(void *dst, int val, unsigned long n) {

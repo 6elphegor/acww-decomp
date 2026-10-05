@@ -45,7 +45,7 @@ public:
     virtual BOOL onDraw();
     virtual BOOL acceptsInteraction(void *a);
     virtual void onInteractionEvent(u32 a, u8 b);
-    static void *operator new(unsigned long size);
+    static void *operator new(size_t size);
     static void operator delete(void *p);
 
     void mainTalkEnd();

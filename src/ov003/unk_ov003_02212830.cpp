@@ -205,7 +205,7 @@ extern "C" s32 Snowball_GetMinRadius() { return 0x800; }
 
 extern "C" s32 Snowball_GetMaxRadius() { return 0x1400; }
 
-void *Snowball::operator new(unsigned long size) {
+void *Snowball::operator new(size_t size) {
     void *p = Heap_Alloc(gBgHeap, size);
     memset(p, 0, size);
     return p;

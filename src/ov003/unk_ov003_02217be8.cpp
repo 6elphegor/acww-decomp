@@ -32,7 +32,7 @@ struct NNSG3dResMdl;
 
 class FieldGroundBlock {
 public:
-    static void *operator new(unsigned long, void *p) { return p; }
+    static void *operator new(size_t, void *p) { return p; }
     FieldGroundBlock();
     BOOL release();
     BOOL draw();

@@ -6,7 +6,7 @@
 #include "room/HouseRoom.h"
 #include "room/HouseData.h"
 
-inline void *operator new(unsigned long, void *p) {
+inline void *operator new(size_t, void *p) {
     return p;
 }
 

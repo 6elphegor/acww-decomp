@@ -654,7 +654,7 @@ void SpNpcJoanTalk::onMessageEnd(u32) {
 // moment it is parsed, ahead of every (deferred) C++ function of the file, which would put it at the start of the
 // overlay. Around the block mwcc generates the original prologue and epilogue itself (`push {r4-r6, lr}; sub sp, #16`
 // ... `add sp, #16; pop {r4-r6}; pop {r3}; bx r3`) from the registers the block writes and the 16-byte local.
-#ifdef NONMATCHING
+#if defined(NONMATCHING) || defined(MODERN)
 void SpNpcJoanTalk::onChoice(u32) {
     u8 buf[2];
     u16 a, b, c;

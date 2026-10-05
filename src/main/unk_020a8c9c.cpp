@@ -1326,14 +1326,22 @@ BOOL ChoiceListCursor::updateKeys() {
         goto end;
     }
     held = gPad[0];
-    BOOL heldUp = (held & 0x40) != 0;
-    BOOL heldDown = (held & 0x80) != 0;
-    BOOL pressUp = (pressed & 0x40) != 0;
-    BOOL pressDown = (pressed & 0x80) != 0;
-    s32 last = list->getCount() - 1;
-    s32 old = row;
-    BOOL moved = FALSE;
-    s32 state = repeatDir;
+    BOOL heldUp;
+    heldUp = (held & 0x40) != 0;
+    BOOL heldDown;
+    heldDown = (held & 0x80) != 0;
+    BOOL pressUp;
+    pressUp = (pressed & 0x40) != 0;
+    BOOL pressDown;
+    pressDown = (pressed & 0x80) != 0;
+    s32 last;
+    last = list->getCount() - 1;
+    s32 old;
+    old = row;
+    BOOL moved;
+    moved = FALSE;
+    s32 state;
+    state = repeatDir;
     if (state == 0 && (heldUp || heldDown) && (pressUp || pressDown)) {
         moved = TRUE;
         Input_Lock();

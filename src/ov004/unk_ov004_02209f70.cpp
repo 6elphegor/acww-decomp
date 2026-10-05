@@ -850,7 +850,7 @@ BOOL FtrWallpaperSample::initModel() {
     u16 tmp;
     u32 s;
     u32 t;
-    sampleIndex = (u16)p12::_ZN12FtrPreviewer14getSampleIndexEv(p12::FtrPreviewer_GetInstance());
+    sampleIndex = (u16)(u32)p12::_ZN12FtrPreviewer14getSampleIndexEv(p12::FtrPreviewer_GetInstance());
     initFrames = 0;
     if (sampleIndex < 0x44) {
         v = sampleIndex + 0x1100;

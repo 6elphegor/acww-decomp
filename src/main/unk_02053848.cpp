@@ -4,7 +4,7 @@
 #include "gfx/JointBlend.h"
 #include "gfx/NNSG3dRS.h"
 
-inline void *operator new(unsigned long, void *p) { return p; }
+inline void *operator new(size_t, void *p) { return p; }
 
 
 

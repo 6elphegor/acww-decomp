@@ -8761,7 +8761,7 @@ BOOL PlayerActor::onDelete() {
     return doDelete();
 }
 
-void *PlayerActor::operator new(unsigned long size) {
+void *PlayerActor::operator new(size_t size) {
     using namespace nA;
     void *heap = gPlayerActorHeap;
     void *p = Heap_AllocAligned(heap, size, PlayerActor_GetObjectAlign());

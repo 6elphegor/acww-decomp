@@ -26,40 +26,40 @@ s32 WfcTransfer_IsFinished();
 s32 WfcTransfer_RequestEnd();
 s32 WfcOptions_Enter();
 s32 WfcTransferSend_OnResult(s32 a);
-s32 WfcTransferSend_Exit();
+void WfcTransferSend_Exit();
 s32 WfcTransferSend_FadeOut();
 void WfcTransferSend_Nop2();
 void WfcTransferSend_Nop1();
 void WfcTransferSend_Update();
-s32 WfcTransferSend_WaitFadeIn();
+void WfcTransferSend_WaitFadeIn();
 s32 WfcTransferSend_FadeIn();
 void WfcTransferSend_LoadBg();
 s32 WfcTransferSend_Enter();
-s32 WfcTransferDone_PowerOff();
-s32 WfcTransferDone_FadeOut();
+void WfcTransferDone_PowerOff();
+void WfcTransferDone_FadeOut();
 s32 WfcTransferDone_StartExit();
-s32 WfcTransferDone_HandleResult();
+void WfcTransferDone_HandleResult();
 void WfcTransferDone_Idle();
-s32 WfcTransferDone_HandleInput();
+void WfcTransferDone_HandleInput();
 s32 WfcTransferDone_Update();
-s32 WfcTransferDone_WaitButtonBar();
-s32 WfcTransferDone_WaitFadeIn();
+void WfcTransferDone_WaitButtonBar();
+void WfcTransferDone_WaitFadeIn();
 s32 WfcTransferDone_FadeIn();
 void WfcTransferDone_SetupBg();
 s32 WfcTransferDone_Enter();
-s32 WfcTransferNotice_Exit();
-s32 WfcTransferNotice_FadeOut();
+void WfcTransferNotice_Exit();
+void WfcTransferNotice_FadeOut();
 s32 WfcTransferNotice_StartExit();
-s32 WfcTransferNotice_HandleResult();
+void WfcTransferNotice_HandleResult();
 void WfcTransferNotice_Idle();
-s32 WfcTransferNotice_HandleInput();
+void WfcTransferNotice_HandleInput();
 s32 WfcTransferNotice_Update();
-s32 WfcTransferNotice_WaitButtonBar();
-s32 WfcTransferNotice_WaitFadeIn();
+void WfcTransferNotice_WaitButtonBar();
+void WfcTransferNotice_WaitFadeIn();
 s32 WfcTransferNotice_FadeIn();
 void WfcTransferNotice_SetupBg();
 s32 WfcTransferNotice_Enter();
-s32 WfcTransferIntro_Exit();
+void WfcTransferIntro_Exit();
 s32 WfcTransferCancelled_Enter();
 s32 WfcTransferFailed_Enter();
 s32 WfcTransferWait_Enter();
@@ -109,13 +109,13 @@ s32 WfcTransferDone_FadeIn() {
     C668(WfcTransferDone_WaitFadeIn);
 }
 
-s32 WfcTransferDone_WaitFadeIn() {
+void WfcTransferDone_WaitFadeIn() {
     if (WfcFade_IsBusy(0) != 0) return;
     WfcUtil_OpenButtonBar(5);
     C668(WfcTransferDone_WaitButtonBar);
 }
 
-s32 WfcTransferDone_WaitButtonBar() {
+void WfcTransferDone_WaitButtonBar() {
     if (WfcButtonBar_GetResult() == -2) return;
     WfcButtonBar_EnableInput();
     C668(WfcTransferDone_Update);
@@ -127,14 +127,14 @@ s32 WfcTransferDone_Update() {
     WfcTransferDone_HandleResult();
 }
 
-s32 WfcTransferDone_HandleInput() {
+void WfcTransferDone_HandleInput() {
     if (WfcInput_IsKeyPressed(1) == 0) return;
     WfcButtonBar_SetResult(0);
 }
 
 void WfcTransferDone_Idle() {}
 
-s32 WfcTransferDone_HandleResult() {
+void WfcTransferDone_HandleResult() {
     if (WfcButtonBar_GetResult() != 0) return;
     WfcSound_Play(6);
     C668(WfcTransferDone_StartExit);
@@ -146,14 +146,14 @@ s32 WfcTransferDone_StartExit() {
     C668(WfcTransferDone_FadeOut);
 }
 
-s32 WfcTransferDone_FadeOut() {
+void WfcTransferDone_FadeOut() {
     if (WfcFade_IsBusy(1) != 0) return;
     WfcFade_Start(3, 1, 0x3f, 0x40);
     WfcFade_Start(3, 0, 0x3f, 0x40);
     C668(WfcTransferDone_PowerOff);
 }
 
-s32 WfcTransferDone_PowerOff() {
+void WfcTransferDone_PowerOff() {
     if (WfcFade_IsBusy(1) != 0) return;
     if (WfcFade_IsBusy(0) != 0) return;
     OS_SpinWait(0x1000000);
@@ -180,7 +180,7 @@ s32 WfcTransferSend_FadeIn() {
     C668(WfcTransferSend_WaitFadeIn);
 }
 
-s32 WfcTransferSend_WaitFadeIn() {
+void WfcTransferSend_WaitFadeIn() {
     if (WfcFade_IsBusy(0) != 0) return;
     WfcTransfer_SetCallback((void *)WfcTransferSend_OnResult);
     C668(WfcTransferSend_Update);
@@ -200,7 +200,7 @@ s32 WfcTransferSend_FadeOut() {
     C668(WfcTransferSend_Exit);
 }
 
-s32 WfcTransferSend_Exit() {
+void WfcTransferSend_Exit() {
     if (WfcFade_IsBusy(0) != 0) return;
     if (WfcTransfer_IsFinished() == 0) return;
     WfcLinkIcon_Delete();

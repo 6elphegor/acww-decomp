@@ -702,7 +702,8 @@ void SpNpcKappnTalk::onMessageEnd(u32) {
     u8 *idp = &msgIndex;
     goto test0;
 loop0:
-    u32 id = tbl[i].id;
+    u32 id;
+    id = tbl[i].id;
     if (id == *idp) {
         (this->*((SpNpcKappnMessageEndHandler *)((u32)tbl + i * 12))->fn)();
     }
@@ -926,8 +927,10 @@ void SpNpcKappnTalk::onChoice(u32) {
     u8 *idp = &msgIndex;
     goto test0;
 loop0:
-    u32 off = i * 12;
-    u32 id = *(u32 *)((u8 *)tbl + off);
+    u32 off;
+    off = i * 12;
+    u32 id;
+    id = *(u32 *)((u8 *)tbl + off);
     if (id == *idp) {
         u32 arg = window->getChoiceList()->getResult();
         (this->*((SpNpcKappnChoiceHandler *)((u32)tbl + off))->fn)(arg);

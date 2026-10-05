@@ -14,7 +14,7 @@
 #include "gfx/ModelResource.h"
 #include "gfx/PooledModel.h"
 
-inline void *operator new(unsigned long, void *p) { return p; }
+inline void *operator new(size_t, void *p) { return p; }
 
 
 extern "C" {

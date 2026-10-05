@@ -341,7 +341,7 @@ void WfcConnSelect_EraseDialog();
 
 void WfcConnSelect_FadeOut();
 void WfcConnSelect_StartExit();
-s32 WfcConnSelect_HandleSelection();
+void WfcConnSelect_HandleSelection();
 void WfcConnSelect_Idle();
 void WfcConnSelect_HandleInput();
 void WfcConnSelect_Update();

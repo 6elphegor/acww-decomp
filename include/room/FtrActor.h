@@ -18,7 +18,7 @@ class FtrActor : public Character, public TalkMsgRequest {
 public:
     FtrActor();
     virtual ~FtrActor();
-    static void *operator new(unsigned long size);
+    static void *operator new(size_t size);
     static void operator delete(void *p);
 
     virtual BOOL onCreate();

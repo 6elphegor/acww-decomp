@@ -537,9 +537,11 @@ extern "C" void HeldItemModel_Setup(HeldItemModel *o, u32 id, u32 x, u16 *code, 
             }
         }
         HeldItemModels_RelocateTexture(&sHeldItemModelBank, id);
-        u8 *slot = (u8 *)HeldItemModels_GetModel(&sHeldItemModelBank, id);
+        u8 *slot;
+        slot = (u8 *)HeldItemModels_GetModel(&sHeldItemModelBank, id);
         _ZN11CachedModel11setFromFileEPv(slot, s);
-        s32 kind = HeldItem_GetAnimId(code);
+        s32 kind;
+        kind = HeldItem_GetAnimId(code);
         if (kind == 0x2b)
             goto done;
         _ZN9AnimModel11allocAnmObjEPv(slot, (u32)HeldItemModels_GetAnimHeap(&sHeldItemModelBank, id));
@@ -561,8 +563,10 @@ extern "C" void HeldItemModel_Setup(HeldItemModel *o, u32 id, u32 x, u16 *code, 
             _ZN9ModelAnim4initEiiit(p, q, 1, 0x1000, 0);
             _ZN9ModelAnim14addToRenderObjEj(p, (u32)((Model *)slot)->getRenderObj());
         }
-        void *a2 = HeldItemModels_GetAnimHeap(&sHeldItemModelBank, id);
-        u32 n = Heap_getFreeSize((u32)a2);
+        void *a2;
+        a2 = HeldItemModels_GetAnimHeap(&sHeldItemModelBank, id);
+        u32 n;
+        n = Heap_getFreeSize((u32)a2);
         ((void (*)(HeldItemModelBank *, u32, void *, u32))HeldItemModels_SetAnimBuffer)(&sHeldItemModelBank, id, Heap_AllocAligned(a2, n, 4), n);
         HeldItemModels_PlayAnim(&sHeldItemModelBank, id, kind, 0, 0);
         _ZN9AnimModel10attachAnimEv(slot);

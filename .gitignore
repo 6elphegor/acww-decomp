@@ -20,3 +20,4 @@ build.ninja
 /tools/mwccarm/
 __pycache__/
 build_init.log
+build_modern.ninja

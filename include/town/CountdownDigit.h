@@ -14,7 +14,7 @@ public:
     virtual ~CountdownDigit();
     virtual BOOL onExecute();
     virtual BOOL initBuilding();
-    static void *operator new(unsigned long size);
+    static void *operator new(size_t size);
     static void operator delete(void *p);
 
     /* 0x2b0 */ u8 digitIndex;

@@ -161,7 +161,8 @@ extern "C" void CountdownDigit_Update(void *arg) {
             o->digit = sCountdownSeconds % 10;
             break;
         }
-        s32 r = -1;
+        s32 r;
+        r = -1;
         if (sCountdownHours != 0) {
             goto done;
         }

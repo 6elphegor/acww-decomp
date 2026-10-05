@@ -1086,7 +1086,8 @@ extern "C" BOOL Drama_GetAvailablePart(s32 a, s32 b, s32 c, Unk_020874e8_Bits *d
             }
             break;
         case 3:
-            Unk_020874e8_K k = UNK_020874E8_K;
+            Unk_020874e8_K k;
+            k = UNK_020874E8_K;
             if (NookShop_GetLevel((u8 *)((u32)gSaveData + k)) == 3) {
                 return TRUE;
             }

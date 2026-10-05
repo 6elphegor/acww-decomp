@@ -90,7 +90,7 @@ void WfcConnSelect_EraseDialog();
 
 void WfcConnSelect_FadeOut();
 void WfcConnSelect_StartExit();
-s32 WfcConnSelect_HandleSelection();
+void WfcConnSelect_HandleSelection();
 void WfcConnSelect_Idle();
 void WfcConnSelect_HandleInput();
 void WfcConnSelect_Update();
@@ -221,7 +221,7 @@ void WfcConnSelect_HandleInput() {
 
 void WfcConnSelect_Idle() {}
 
-s32 WfcConnSelect_HandleSelection() {
+void WfcConnSelect_HandleSelection() {
     s32 r = WfcButtonBar_GetResult();
     switch (r) {
     case 0:

@@ -1118,7 +1118,8 @@ BOOL SpNpcCeleste::isPlayerAtTelescope() {
         result = FALSE;
         goto end;
     }
-    VecFx32 *pv = &p->position;
+    VecFx32 *pv;
+    pv = &p->position;
     v0.x = p->position.x;
     v0.y = pv->y;
     v0.z = pv->z;
@@ -1127,8 +1128,10 @@ BOOL SpNpcCeleste::isPlayerAtTelescope() {
     v1.z = pv->z;
     v1.x = 0x10800;
     v1.z = 0x17000;
-    s32 d = Vec_DistXZ(&v0, &v1);
-    s32 a = p->rotY;
+    s32 d;
+    d = Vec_DistXZ(&v0, &v1);
+    s32 a;
+    a = p->rotY;
     if (d < 0x1000) {
         a = a & 0xffff;
         if (a < 0x6000 || a > 0xa000) {

@@ -809,7 +809,8 @@ extern "C" void NpcSpawner_SpawnVillagers(void *a)
         i = cnt;
         goto test0;
     loop0:
-        void *r7 = F4::SaveVillagers_Get(F4::gSaveVillagers, i);
+        void *r7;
+        r7 = F4::SaveVillagers_Get(F4::gSaveVillagers, i);
         if (r7 == 0) goto next0;
         if (F4::_ZN10VillagerId7isValidEv(F4::_ZN12VillagerData13getVillagerIdEv(r7)) == 0) goto next0;
         if (F4::SaveVillagers_IsOutdoors(F4::gSaveVillagers, F4::_ZN12VillagerData13getVillagerIdEv(r7)) == 0) goto next0;
@@ -821,7 +822,8 @@ extern "C" void NpcSpawner_SpawnVillagers(void *a)
         w.h[2] = 0;
         w.h[3] = 0;
         w.h[0] = (i & 0xfff) | 0xe000;
-        u8 *e = (u8 *)F4::NpcNetRecord_GetVillagerVar(&w.h[0]);
+        u8 *e;
+        e = (u8 *)F4::NpcNetRecord_GetVillagerVar(&w.h[0]);
         if (e != 0 && e[0] != 0) {
             F4::CommRecord_UnpackSource(e + 3, &w, 0);
             if (w.b == F4::Scene_GetCurrent()) {

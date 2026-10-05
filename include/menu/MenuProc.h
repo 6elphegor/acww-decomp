@@ -12,7 +12,7 @@ class MenuProc : public GameProc {
 public:
     MenuProc();
     virtual ~MenuProc();
-    static void *operator new(unsigned long size);
+    static void *operator new(size_t size);
     static void operator delete(void *p);
 
     virtual BOOL preCreate();

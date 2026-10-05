@@ -847,7 +847,7 @@ void MenuProc::restartKeyRepeat() { ((KeyRepeatView *)&keyRepeat)->init(8, 1, 7)
 
 void MenuProc::initKeyRepeat(s32 a, s32 b, s32 c) { ((KeyRepeatView *)&keyRepeat)->init(a, b, c); }
 
-void *MenuProc::operator new(unsigned long size) {
+void *MenuProc::operator new(size_t size) {
     void *p = Heap_AllocTail(gMenuHeap, size);
     if (p == 0) {
         return 0;

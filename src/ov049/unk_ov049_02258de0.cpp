@@ -1276,7 +1276,8 @@ void SpNpcMabelTalk::dispatchShopMessageEnd() {
     u8 *idp = &msgIndex;
     goto test0;
 loop0:
-    u32 id = tbl[i].id;
+    u32 id;
+    id = tbl[i].id;
     if (id == *idp) {
         (this->*((SpNpcMabelMessageEndHandler *)((u32)tbl + i * 12))->fn)();
     }
@@ -1448,8 +1449,10 @@ void SpNpcMabelTalk::dispatchShopChoice() {
     u8 *idp = &msgIndex;
     goto test0;
 loop0:
-    u32 off = i * 12;
-    u32 id = tbl[i].id;
+    u32 off;
+    off = i * 12;
+    u32 id;
+    id = tbl[i].id;
     if (id == *idp) {
         u32 arg = ChoiceList_getResult(TalkWindowState_getChoiceList(window));
         (this->*((SpNpcMabelChoiceHandler *)((u32)tbl + off))->fn)(arg);

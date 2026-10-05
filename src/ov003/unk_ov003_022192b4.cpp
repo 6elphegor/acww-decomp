@@ -4242,8 +4242,10 @@ void FieldObj_DrawItemModel(Obj *o, u32 t, V3 *pos, V3 *scale, s32 rx, s32 ry, s
     s32 k = (type & 0xf000) >> 12;
     switch (k) {
     case 0:
-        BOOL c4 = FALSE;
-        u16 x = a + 0xffe6;
+        BOOL c4;
+        c4 = FALSE;
+        u16 x;
+        x = a + 0xffe6;
         if (x <= 4) {
             if ((1 << x) & 0x1b) {
                 c4 = TRUE;

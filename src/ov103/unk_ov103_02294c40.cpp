@@ -263,15 +263,25 @@ public:
     /* 0x2b01 */ u8 popupRow;
 };
 
+#ifndef MODERN // mwcc packs derived members into the tail padding of a base's last member object; GCC doesn't
 typedef char PocketLettersMenu_SizeCheck[(sizeof(PocketLettersMenu) == 0x2b04) ? 1 : -1];
+#endif
 typedef char TouchPromptBalloon_SizeCheck[(sizeof(TouchPromptBalloon) == 0xc0) ? 1 : -1];
 typedef char MenuCursorBuf0_SizeCheck[(sizeof(MenuCursorBuf0) == 0x64) ? 1 : -1];
+#ifndef MODERN // mwcc packs derived members into the tail padding of a base's last member object; GCC doesn't
 typedef char PopupChoiceMenu_SizeCheck[(sizeof(PopupChoiceMenu) == 0x2f4) ? 1 : -1];
+#endif
+#ifndef MODERN // mwcc packs derived members into the tail padding of a base's last member object; GCC doesn't
 typedef char MenuLabelButton_SizeCheck[(sizeof(MenuLabelButton) == 0x70) ? 1 : -1];
+#endif
 typedef char Letter_SizeCheck[(sizeof(Letter) == 0xf4) ? 1 : -1];
 typedef char InventoryBg_SizeCheck[(sizeof(InventoryBg) == 0x15e0) ? 1 : -1];
+#ifndef MODERN // mwcc packs derived members into the tail padding of a base's last member object; GCC doesn't
 typedef char LetterRenderer_SizeCheck[(sizeof(LetterRenderer) == 0x210) ? 1 : -1];
+#endif
+#ifndef MODERN // mwcc packs derived members into the tail padding of a base's last member object; GCC doesn't
 typedef char MenuErrorMessage_SizeCheck[(sizeof(MenuErrorMessage) == 0x108) ? 1 : -1];
+#endif
 typedef char CursorMotion_SizeCheck[(sizeof(CursorMotion) == 0x18) ? 1 : -1];
 typedef char InventoryItemGrid_SizeCheck[(sizeof(InventoryItemGrid) == 0xa60) ? 1 : -1];
 typedef char LetterGrid_SizeCheck[(sizeof(LetterGrid) == 0x28) ? 1 : -1];

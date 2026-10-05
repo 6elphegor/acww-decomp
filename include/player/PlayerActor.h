@@ -47,7 +47,7 @@ struct Unk_020107c8_Blk;
 // ---- the object (size 0xc9c; vtable 0x020d6dec with the secondary table at 0x020d6e64)
 class PlayerActor : public Character, public TalkMsgRequest {
 public:
-    static void *operator new(unsigned long size);
+    static void *operator new(size_t size);
     static void operator delete(void *p);
 
     PlayerActor();

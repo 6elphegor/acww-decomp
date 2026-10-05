@@ -513,9 +513,13 @@ extern "C" s32 sWlxState = 0;
 // Count leading zeros: the NitroSDK form of MATH_CountLeadingZeros (math.h), a one-instruction inline asm in the
 // SDK itself. mwcc 1.2 has no intrinsic for clz. Kept by decision (see the project's assembly policy).
 static inline u32 Clz(u32 x) {
+#ifdef MODERN
+    return x == 0 ? 32 : __builtin_clz(x);
+#else
     u32 r;
     asm { clz r, x }
     return r;
+#endif
 }
 
 
@@ -1217,8 +1221,10 @@ extern "C" void WlxWm_OnParentEvent(WlxWmMsg *m) {
     case 9:
         WlxDebug_Printf("disconnected(%02X-=%02X)\n", c->connectedMask, 1 << m->aid);
         c->connectedMask = c->connectedMask & (u16)~(1 << m->aid);
-        WlxWmEventFn cb = c->eventCallback;
-        u32 a = 1 << m->aid;
+        WlxWmEventFn cb;
+        cb = c->eventCallback;
+        u32 a;
+        a = 1 << m->aid;
         if (cb != NULL) {
             cb(0xa, (void *)a);
         }

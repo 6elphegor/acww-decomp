@@ -18,7 +18,7 @@ class InsectMatAnim : public ModelAnim {
 public:
     InsectMatAnim();
     virtual ~InsectMatAnim();
-    static void *operator new(unsigned long, void *p) { return p; }
+    static void *operator new(size_t, void *p) { return p; }
 };
 
 // One insect (0x25c bytes, code in src/ov003/unk_ov003_02225800.cpp): sFieldInsects[8], sSpecialInsects[2],

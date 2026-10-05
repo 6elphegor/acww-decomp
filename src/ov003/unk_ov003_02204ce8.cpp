@@ -544,7 +544,7 @@ s32 FieldItemFx_StartPitfallClose(s32 a, V3 *v);
 s32 PlayerActor_RequestStowItem(Obj *o, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
 
 s32 PlayerActor_RequestFirework(Obj *o, s32 a, s32 b);
-s32 PlayerActor_Act80CheckEnd(Obj *o);
+void PlayerActor_Act80CheckEnd(Obj *o);
 s32 PlayerActor_Act80Update(Obj *o);
 s32 PlayerActor_RequestAct80(Obj *o, s32 a, s32 b);
 void PlayerActor_BeeStingUpdate(Obj *o);
@@ -564,7 +564,7 @@ extern "C" void MsgRequest_setFileName(void *self, const char *s);
 // forward declarations (functions are emitted in descending address order)
 extern "C" s32 PlayerActor_RequestFirework(Obj *o, s32 a, s32 b);
 extern "C" void PlayerActor_MainAct80(Obj *o);
-extern "C" s32 PlayerActor_Act80CheckEnd(Obj *o);
+extern "C" void PlayerActor_Act80CheckEnd(Obj *o);
 extern "C" s32 PlayerActor_Act80Update(Obj *o);
 extern "C" void PlayerActor_EndAct80(Obj *o);
 extern "C" s32 PlayerActor_NetAct80(Obj *o, s32 a);
@@ -12192,7 +12192,7 @@ extern "C" s32 PlayerActor_Act80Update(Obj *o) {
 }
 
 namespace ns_02206574 {
-extern "C" s32 PlayerActor_Act80CheckEnd(Obj *o) {
+extern "C" void PlayerActor_Act80CheckEnd(Obj *o) {
     if (AnimFrameCtrl_isFinished((AnimFrameCtrl *)&o->bodyModel)) {
         u16 t = 0x137d;
         o->actionPriority = Unk_02007694_getActionDonePriority(o, o->action);

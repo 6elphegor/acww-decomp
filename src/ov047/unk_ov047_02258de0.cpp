@@ -1176,20 +1176,26 @@ void SpNpcBlathersTalk::onMessageEnd(u32) {
         {0x42, *(SpNpcBlathersTalkFn *)data_ov047_0225b3d8}, {0x43, *(SpNpcBlathersTalkFn *)data_ov047_0225b3d0},
         {0x6a, *(SpNpcBlathersTalkFn *)data_ov047_0225b3c8},
     };
-    u32 i = 0;
-    u8 *pid = &msgIndex;
-    SpNpcBlathersMessageEndHandler *tp = tbl;
+    u32 i;
+    i = 0;
+    u8 *pid;
+    pid = &msgIndex;
+    SpNpcBlathersMessageEndHandler *tp;
+    tp = tbl;
     goto test;
 loop:
-    u32 ida = *(u32 *)((u8 *)tp + i * 12);
-    u32 idb = *pid;
+    u32 ida;
+    ida = *(u32 *)((u8 *)tp + i * 12);
+    u32 idb;
+    idb = *pid;
     if (ida == idb) {
         (this->*tp[i].fn)();
     }
     i++;
 test:
     if (i < 0x23) goto loop;
-    s32 v50 = *(volatile u8 *)&msgIndex;
+    s32 v50;
+    v50 = *(volatile u8 *)&msgIndex;
     if (v50 >= 0x50 && v50 <= 0x67) {
         if (MuseumData_isFossilsComplete(data_021ed0a0)) {
             nextMsg = 0x29;
@@ -1551,7 +1557,8 @@ void SpNpcBlathersTalk::dispatchChoice(u32 a) {
     u8 *idp = &msgIndex;
     goto test0;
 loop0:
-    u32 id = tbl[i].id;
+    u32 id;
+    id = tbl[i].id;
     if (id == *idp) {
         (this->*((SpNpcBlathersChoiceHandler *)((u32)tbl + i * 12))->fn)(arg);
     }

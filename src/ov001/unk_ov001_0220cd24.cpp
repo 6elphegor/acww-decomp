@@ -95,7 +95,7 @@ u8 *WfcTransfer_GetChildUser() {
 // (see docs/assembly.md). The assembly below is the original code; the C version under
 // NONMATCHING is the closest known attempt (2 bytes differ: the jump-table guard comes out as
 // `cmp r0, #20` / `addls` instead of the original lower-bound-only `cmp r0, #0` / `addge`).
-#ifdef NONMATCHING
+#if defined(NONMATCHING) || defined(MODERN)
 void WfcTransfer_Task(s32 a) {
     u8 t[2];
     s32 x;

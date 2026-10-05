@@ -6,7 +6,6 @@
 // 0x020c2bd4-0x020c2c40 and .exception tables 0x020c2b04-0x020c2b2c.
 #include "types.h"
 
-typedef unsigned long size_t;
 typedef void (*VoidFunc)(void);
 typedef void (*DtorFunc)(void *, int);
 typedef void (*ObjFunc)(void *);

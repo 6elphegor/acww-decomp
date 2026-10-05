@@ -421,8 +421,6 @@ static inline BOOL Unk_ov107_InRange(u16 *p, u32 lo, u32 hi) {
 
 extern "C" PocketsFullMenu *PocketsFullMenu_Create();
 
-void PocketsFullMenu::postInputUpdate();
-
 extern "C" PocketsFullMenu *PocketsFullMenu_Create() { return new PocketsFullMenu(); }
 
 BOOL PocketsFullMenu::onCreate() {

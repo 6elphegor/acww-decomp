@@ -98,7 +98,7 @@ BOOL CountdownDigit::onExecute() {
 CountdownDigit::CountdownDigit() {}
 CountdownDigit::~CountdownDigit() {}
 
-void *CountdownDigit::operator new(unsigned long size) {
+void *CountdownDigit::operator new(size_t size) {
     void *p = Heap_Alloc(gFieldStructureHeap, size);
     memset(p, 0, size);
     return p;

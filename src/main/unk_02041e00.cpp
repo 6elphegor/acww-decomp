@@ -5194,7 +5194,7 @@ extern "C" void Town_RefillSeashells(void *p, void *q) {
     for (i = 0; i < h; i++) {
         s32 n = 2 - ((TownEvalAcre (*)[4])nZ::gTownEval.acres)[i][3].shells;
         while (n > 0) {
-            Town_SpawnItemInAcre(p, q, i + 1, 4, Item_RandomSeashell(p), Town_IsSandAt, 0);
+            Town_SpawnItemInAcre(p, q, i + 1, 4, Item_RandomSeashell(p), (void *)Town_IsSandAt, 0);
             n--;
         }
     }
@@ -5208,7 +5208,7 @@ extern "C" s32 Town_WashUpBottle(void *p) {
     void *q = TownBlockMap_Get();
     s32 i;
     for (i = 0; i < 4; i++) {
-        if (Town_SpawnItemInAcre(p, q, r5 + 1, 4, 0x1520, Town_IsSandAt, 0) != 0) {
+        if (Town_SpawnItemInAcre(p, q, r5 + 1, 4, 0x1520, (void *)Town_IsSandAt, 0) != 0) {
             return 1;
         }
         r5 = (r5 + 1) & 3;
@@ -7683,11 +7683,16 @@ extern "C" s32 FieldAction_RequestPickUpOutdoor(s32 a, Pos *p) {
                 }
             }
             {
-                BOOL t3 = TRUE;
-                BOOL t2 = TRUE;
-                BOOL t1 = TRUE;
-                BOOL t0 = FALSE;
-                u16 c2 = *m;
+                BOOL t3;
+                t3 = TRUE;
+                BOOL t2;
+                t2 = TRUE;
+                BOOL t1;
+                t1 = TRUE;
+                BOOL t0;
+                t0 = FALSE;
+                u16 c2;
+                c2 = *m;
                 if (c2 <= 5) {
                     t0 = TRUE;
                 }
@@ -7716,7 +7721,8 @@ extern "C" s32 FieldAction_RequestPickUpOutdoor(s32 a, Pos *p) {
                         goto v3;
                     }
                 }
-                BOOL in = FALSE;
+                BOOL in;
+                in = FALSE;
                 c2 = *m;
                 if (c2 >= 0xa7 && c2 <= 0xc6) {
                     in = TRUE;

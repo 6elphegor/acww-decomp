@@ -140,7 +140,7 @@ void CharaFaceAnimRef::getAnimBuffer(u32 j) { sCharaFaceAnimPool.getAnimBuffer(v
 void CharaFaceAnimRef::getEyeAnimBuffer() { getAnimBuffer(0); }
 void CharaFaceAnimRef::getMouthAnimBuffer() { getAnimBuffer(1); }
 
-s32 CharaFaceAnimRef::loadAnim(s32 a, s32 b, s32 c) {
+void CharaFaceAnimRef::loadAnim(s32 a, s32 b, s32 c) {
     u32 st = v;
     u32 j = CharaFaceAnim_GetKind(a);
     if (c == 0) {

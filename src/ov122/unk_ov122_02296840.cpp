@@ -1321,7 +1321,8 @@ BOOL C::insertCharRaw(u32 a, u32 b) {
         }
         return FALSE;
     }
-    s32 h = 0xa0;
+    s32 h;
+    h = 0xa0;
     if (editPart != 3) {
         h = h - 0x40;
     }

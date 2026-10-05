@@ -715,7 +715,7 @@ extern "C" void FtrActor_Create() {
 }
 
 // @02209ef0
-void *FtrActor::operator new(unsigned long size) {
+void *FtrActor::operator new(size_t size) {
     void *p = FtrActorHeap_alloc(FtrActorHeap_GetInstance(), size);
     if (p == 0) {
         return 0;

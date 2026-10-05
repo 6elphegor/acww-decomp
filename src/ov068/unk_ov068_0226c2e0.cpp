@@ -899,8 +899,10 @@ void SpNpcRoostGuestTalk::dispatchKkChoice(s32 a) {
     u8 *pe = &msgIndex;
     goto test;
 loop:
-    u32 idv = tbl[i].id;
-    u32 off = i * 12;
+    u32 idv;
+    idv = tbl[i].id;
+    u32 off;
+    off = i * 12;
     if (idv == *pe) {
         u32 x = ChoiceList_getResult(TalkWindowState_getChoiceList(window));
         SpNpcRoostGuestChoiceFn *fp = (SpNpcRoostGuestChoiceFn *)((u8 *)tbl + off + 4);

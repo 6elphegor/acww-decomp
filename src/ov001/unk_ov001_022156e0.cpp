@@ -118,7 +118,7 @@ void WfcManualSetup_DrawString(u8 *a, s32 b);
 void WfcManualSetup_SetRowButton(s32 a, s32 b, s32 c);
 s32 WfcManualSetup_IsItemEnabled(s32 idx);
 s32 WfcManualSetup_DrawRowButtons(s32 idx, s32 arg);
-s32 WfcManualSetup_DrawRowValue(s32 idx, s32 arg);
+void WfcManualSetup_DrawRowValue(s32 idx, s32 arg);
 s32 WfcManualSetup_Redraw();
 void WfcManualSetup_Exit();
 void WfcManualSetup_FadeOut();
@@ -614,7 +614,7 @@ extern "C" s32 WfcManualSetup_Redraw() {
     WfcManualSetup_PlaceObjs();
 }
 
-extern "C" s32 WfcManualSetup_DrawRowValue(s32 idx, s32 arg) {
+extern "C" void WfcManualSetup_DrawRowValue(s32 idx, s32 arg) {
     u8 buf[0x28];
     u8 *p = WfcConfig_GetEdit();
     s32 n;

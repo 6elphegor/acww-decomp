@@ -1536,7 +1536,7 @@ s32 SimpleStart_SearchAp() {
             goto cleanup;
         }
         OS_CreateAlarm(name);
-        OS_SetAlarm(name, 0xffb10, 0, SimpleStart_AlarmCallback, 0x13);
+        OS_SetAlarm(name, 0xffb10, 0, (void *)SimpleStart_AlarmCallback, 0x13);
         cont = 1;
         result = 0;
         do {
@@ -1553,7 +1553,7 @@ s32 SimpleStart_SearchAp() {
                     if (sc > result) {
                         result = sc;
                         OS_CancelAlarm(name);
-                        OS_SetAlarm(name, 0xffb10, 0, SimpleStart_AlarmCallback, 0x13);
+                        OS_SetAlarm(name, 0xffb10, 0, (void *)SimpleStart_AlarmCallback, 0x13);
                     }
                     break;
                 case 10:

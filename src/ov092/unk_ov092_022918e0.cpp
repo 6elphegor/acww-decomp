@@ -148,7 +148,7 @@ void MenuLauncher::updateIdle() {}
 // before the table (an `lsl r7, ...` would make mwcc save r7 in the prologue). `bls _in_range; b _end` is a
 // dcd as well: written as instructions mwcc folds the pair into a far `bhi _end` and then rejects every later
 // dcd as misaligned. The `_arg_*` and `_in_range` names are the targets the table entries/constants encode.
-#ifdef NONMATCHING
+#if defined(NONMATCHING) || defined(MODERN)
 void MenuLauncher::updateOpenRequested() {
     switch (requestedMode) {
     case 0:

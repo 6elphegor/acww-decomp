@@ -13,7 +13,7 @@ class Heap;
 // ProcBase_RunPhase through member pointers. The post hooks of the four phases are slots 0x08, 0x14, 0x20 and 0x2c.
 class ProcBase {
 public:
-    static void *operator new(unsigned long size);
+    static void *operator new(size_t size);
     static void operator delete(void *ptr);
 
     ProcBase();

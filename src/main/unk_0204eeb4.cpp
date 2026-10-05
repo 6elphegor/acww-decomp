@@ -4,7 +4,7 @@
 #include "sys/OverlaySlot.h"
 #include "town/MapBlockEntry.h"
 
-inline void *operator new(unsigned long, void *p) {
+inline void *operator new(size_t, void *p) {
     return p;
 }
 

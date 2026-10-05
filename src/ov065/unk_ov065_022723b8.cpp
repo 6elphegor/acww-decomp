@@ -1099,7 +1099,8 @@ void DwcMatch_Process(u32 a) {
                     }
                 }
                 {
-                    u64 d = DwcNet_GetTimeMs() - *(u64 *)&g->cmdTime;
+                    u64 d;
+                    d = DwcNet_GetTimeMs() - *(u64 *)&g->cmdTime;
                     if (d > 0x4a38) {
                     do_b:
                         DwcMatch_ClearPendingCommand();

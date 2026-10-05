@@ -9,7 +9,7 @@ struct CharaFaceAnimRef {
     CharaFaceAnimRef();
     ~CharaFaceAnimRef();
     void load(s32 a, s32 b, s32 c, s32 d);
-    s32 loadAnim(s32 a, s32 b, s32 c);
+    void loadAnim(s32 a, s32 b, s32 c);
     void getMouthAnimBuffer();
     void getEyeAnimBuffer();
     void getAnimBuffer(u32 j);

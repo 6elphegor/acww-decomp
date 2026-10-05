@@ -529,7 +529,8 @@ void DistantTownsMenu::updateCursorPress() {
         } else if (c == 7) {
             startQuit();
         } else {
-            u8 *e = (u8 *)this + c;
+            u8 *e;
+            e = (u8 *)this + c;
             if (e[0x8af] == 0 || e[0x8e0] == 4) {
                 goto tail;
             }

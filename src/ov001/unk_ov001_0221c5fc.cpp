@@ -58,7 +58,7 @@ void WfcUsbWait_FadeOut();
 void WfcUsbWait_StartExit();
 void WfcUsbWait_HandleResult();
 void WfcUsbWait_Idle();
-s32 WfcUsbWait_HandleInput();
+void WfcUsbWait_HandleInput();
 void WfcUsbWait_Update();
 void WfcUsbWait_WaitButtonBar();
 void WfcUsbWait_WaitFadeIn();
@@ -136,7 +136,7 @@ extern "C" void WfcUsbWait_Update() {
     WfcUsbWait_HandleResult();
 }
 
-extern "C" s32 WfcUsbWait_HandleInput() {
+extern "C" void WfcUsbWait_HandleInput() {
     if (WfcInput_IsKeyPressed(2) != 0) {
         WfcButtonBar_SetResult(0);
         return;

@@ -659,30 +659,6 @@ static inline s32 Unk_ov004_0222d460_Clamp(s32 a) {
 }
 
 extern "C" void MuseumAquarium_Create();
-extern "C" AquariumSeaButterfly::AquariumSeaButterfly();
-extern "C" AquariumSeaButterfly::~AquariumSeaButterfly();
-extern "C" AquariumSeahorse::AquariumSeahorse();
-extern "C" AquariumSeahorse::~AquariumSeahorse();
-extern "C" AquariumCrawfish::AquariumCrawfish();
-extern "C" AquariumCrawfish::~AquariumCrawfish();
-extern "C" AquariumPufferFish::AquariumPufferFish();
-extern "C" AquariumPufferFish::~AquariumPufferFish();
-extern "C" AquariumPiranha::AquariumPiranha();
-extern "C" AquariumPiranha::~AquariumPiranha();
-extern "C" AquariumSurfacingFish::AquariumSurfacingFish();
-extern "C" AquariumSurfacingFish::~AquariumSurfacingFish();
-extern "C" AquariumHidingFish::AquariumHidingFish();
-extern "C" AquariumHidingFish::~AquariumHidingFish();
-extern "C" AquariumSquid::AquariumSquid();
-extern "C" AquariumSquid::~AquariumSquid();
-extern "C" AquariumOctopus::AquariumOctopus();
-extern "C" AquariumOctopus::~AquariumOctopus();
-extern "C" MuseumAquarium::MuseumAquarium();
-extern "C" MuseumAquarium::~MuseumAquarium();
-extern "C" AquariumFishHitBox::AquariumFishHitBox();
-extern "C" /*EXTERN_C_CLOSE*/
-
-AquariumFishHitBox::~AquariumFishHitBox();
 extern "C" void Aquarium_StepX(s32 *p, s32 a, u32 ang);
 extern "C" void Aquarium_StepZ(s32 *p, s32 a, u32 ang);
 extern "C" void Aquarium_StepXZ(V3 *p, s32 a, s16 ang);
@@ -960,7 +936,7 @@ AquariumFish::AquariumFish() {
     func_02054514(model);
     ModelSlotHandle_Init((u16 *)modelSlot);
     func_0209c140(pooledModel);
-    __cxa_vec_ctor(bodyEnds, 2, 0xc, FxVec3_Construct, func_02000c8c);
+    __cxa_vec_ctor(bodyEnds, 2, 0xc, (void *)FxVec3_Construct, (void *)func_02000c8c);
     fishIndex = -1;
     loadState = 0;
     PooledModel_reset(pooledModel);
@@ -972,7 +948,7 @@ AquariumFish::AquariumFish() {
 }
 
 AquariumFish::~AquariumFish() {
-    __cxa_vec_cleanup(bodyEnds, 2, 0xc, func_02000c8c);
+    __cxa_vec_cleanup(bodyEnds, 2, 0xc, (void *)func_02000c8c);
     func_0209c128(pooledModel);
     ModelSlotHandle_Destroy((u16 *)modelSlot);
     func_020544d8(model);

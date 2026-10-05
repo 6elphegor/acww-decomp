@@ -7,7 +7,14 @@
 // The .data range ends with the 12 zero bytes that align the end of autoload_2's data to 32 bytes (0x0213c6c0).
 #include "types.h"
 
-typedef unsigned long size_t;
+#ifdef MODERN
+// The modern build has no C++ exceptions (the game never throws, it was built with -Cpp_exceptions off): the
+// try blocks run as plain blocks and their handlers are never entered.
+#define try if (1)
+#define catch(x) else
+#define throw
+#endif
+
 typedef void (*VoidFunc)(void);
 typedef void (*DtorFunc)(void *, int);
 typedef void (*ObjFunc)(void *);

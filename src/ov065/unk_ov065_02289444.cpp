@@ -877,7 +877,8 @@ s32 SBServerListConnectAndQuery(SBServerList *ctx, const char *user, const char 
         u16 l = (u16)*(volatile s32 *)&len;
         tmp = (u16)(((l >> 8) & 0xff) | ((l << 8) & 0xff00));
     }
-    u32 da = (u32)buf;
+    u32 da;
+    da = (u32)buf;
     sp = (u8 *)&tmp;
     *(u8 *)da = sp[0];
     *(u8 *)(da + 1) = sp[1];

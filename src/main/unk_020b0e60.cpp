@@ -10,7 +10,7 @@
 #include "town/TownUnitShapeQuery.h"
 #include "game/NibblePair.h"
 
-inline void *operator new(unsigned long, void *p) { return p; }
+inline void *operator new(size_t, void *p) { return p; }
 
 extern "C" {
 extern u32 OVERLAY_0_ID[];

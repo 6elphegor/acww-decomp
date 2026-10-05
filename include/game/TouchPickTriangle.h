@@ -11,7 +11,7 @@
 struct TouchPickTriangle : CollisionTriangleX {
     TouchPickTriangle();
     ~TouchPickTriangle();
-    static void *operator new(unsigned long, void *p) { return p; }   // ov009 builds them in place
+    static void *operator new(size_t, void *p) { return p; }   // ov009 builds them in place
     BOOL setupCurved(VecFx32 *a, VecFx32 *b, VecFx32 *c, s32 d, u8 e);
     BOOL setup(VecFx32 *a, VecFx32 *b, VecFx32 *c, s32 d, u8 e);
     /* 0x38 */ TouchPickTriangle *next;
