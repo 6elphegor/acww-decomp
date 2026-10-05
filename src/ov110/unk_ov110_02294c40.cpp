@@ -66,7 +66,7 @@ BOOL MenuKeys_HasDown(void *pad);
 BOOL MenuKeys_HasUp(void *pad);
 BOOL PopupChoice_MoveCursor(void *p, s32 a, void *q, s32 b);
 BOOL PopupChoice_TickDecideDelay(void *p);
-s32 PopupChoice_DecideCancel(void *p);
+s32 PopupChoice_DecideCancel(void *p, s32 x);
 void PopupChoice_DecideRow(void *p, s32 a, s32 b);
 void PopupChoice_ForceClose(void *a);
 void PopupChoice_Update(void *a);
@@ -105,7 +105,7 @@ void InventoryItemGrid_ShowSlotName(void *p, void *q, u32 v);
 void InventoryItemGrid_LoadBox(void *a, void *b);
 void InventoryItemGrid_LoadPockets(void *a);
 u32 InventoryItemGrid_FindBoxSlotAt(void *p, u32 a, u32 b);
-u32 InventoryItemGrid_FindPocketSlotAt(void *p);
+u32 InventoryItemGrid_FindPocketSlotAt(void *p, u32 x, u32 y);
 void InventoryItemGrid_Exit(void *a);
 void InventoryItemGrid_PreUpdate(void *a);
 void InventoryItemGrid_Init(void *a, s32 b);
@@ -456,7 +456,7 @@ BOOL LostFoundRecycleMenu::onCreate() {
 }
 
 BOOL LostFoundRecycleMenu::onDelete() {
-    ((MenuLauncher *)ProcBase_GetParent())->onChildClosed();
+    ((MenuLauncher *)ProcBase_GetParent(this))->onChildClosed();
     LostFoundRecycleMenu_Exit(this);
     return TRUE;
 }
@@ -1240,7 +1240,7 @@ extern "C" u32 LostFoundRecycleMenu_GridToPocketSlot(LostFoundRecycleMenu *s, u3
 }
 
 extern "C" u32 LostFoundRecycleMenu_FindSlotAt(LostFoundRecycleMenu *s, u32 a, u32 b, s32 c) {
-    u32 t = InventoryItemGrid_FindPocketSlotAt(&s->itemGrid);
+    u32 t = InventoryItemGrid_FindPocketSlotAt(&s->itemGrid, a, b);
     if (t != 0x23) {
         if (c != 0) {
             if (InventoryItemGrid_IsSlotEmpty(&s->itemGrid, t)) return 0x1f;
@@ -1605,7 +1605,7 @@ extern "C" void LostFoundRecycleMenu_MoveCursorToChoice(LostFoundRecycleMenu *s)
 extern "C" void LostFoundRecycleMenu_PickCancelChoice(LostFoundRecycleMenu *s)
 {
     s->chosenAction = 1;
-    s->choiceRow = PopupChoice_DecideCancel(&s->choiceMenu);
+    s->choiceRow = PopupChoice_DecideCancel(&s->choiceMenu, 1);
     s32 a = func_ov002_022014a4(&s->choiceMenu);
     s32 b = func_ov002_02201498(&s->choiceMenu, s->choiceRow);
     func_ov002_02202a40(&s->cursor, a, b);

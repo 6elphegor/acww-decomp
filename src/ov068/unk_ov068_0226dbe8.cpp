@@ -366,7 +366,7 @@ void *PlayerData_getPlayerId(void *);
 void *Villager_FindOrCreateMemory(void *, void *);
 void VillagerMemory_RecordTalk(void *, s32, s32, s32);
 s32 MapBlock_GetItemPtr(void *, s32, s32, s32);
-s32 Item_IsFurnitureOrF031();
+s32 Item_IsFurnitureOrF031(u16 *p);
 void Ground_UnlinkUnit(s32, s32);
 s32 func_0202d928(void *);
 s32 func_0202d948(void *);
@@ -491,8 +491,9 @@ void HouseVisitVillager::unlinkFurnitureUnits() {
     z = 0;
     for (; y < 16; y++) {
         for (x = 0; x < 16; x++) {
-            if (MapBlock_GetItemPtr(grid, x, y, z) != 0) {
-                if (Item_IsFurnitureOrF031() != 0) {
+            s32 item;
+            if ((item = MapBlock_GetItemPtr(grid, x, y, z)) != 0) {
+                if (Item_IsFurnitureOrF031((u16 *)item) != 0) {
                     Ground_UnlinkUnit(x, y);
                 }
             }

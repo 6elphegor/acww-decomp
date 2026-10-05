@@ -3342,7 +3342,7 @@ extern "C" s32 PlayerActor_LocalRequestMailboxOpen(V3 *p);
 extern "C" s32 PlayerActor_LocalRequestDoorExit();
 extern "C" s32 PlayerActor_LocalRequestDoorEnter(u32 a, s32 *b, s32 *c, s32 d);
 extern "C" s32 PlayerActor_LocalRequestDoorApproach(s32 *a, s32 *b, s16 *c);
-extern "C" s32 PlayerActor_LocalReleaseCatch(u8 a, s32 b, s32 c, s32 d);
+extern "C" s32 PlayerActor_LocalReleaseCatch(u8 a);
 extern "C" s32 PlayerActor_LocalRequestBuryItem(V3 *p, u16 *b);
 extern "C" u16 PlayerActor_GetLocalShownItem();
 extern "C" s32 PlayerActor_IsLocalReleaseWaiting();
@@ -3527,7 +3527,7 @@ extern "C" s32 PlayerActor_LocalRequestBuryItem(V3 *p, u16 *b) {
 }
 
 namespace ns_02212140 {
-extern "C" s32 PlayerActor_LocalReleaseCatch(u8 a, s32 b, s32 c, s32 d) {
+extern "C" s32 PlayerActor_LocalReleaseCatch(u8 a) {
     Obj *o = PlayerActor_Get(4);
     if (o) {
         if (a) {

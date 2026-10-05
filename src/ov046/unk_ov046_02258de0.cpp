@@ -75,7 +75,7 @@ s32 Clock_GetTimeOfDay();
 s32 Math_CountDownU16(void *p);
 void Effect_End(s32 h);
 s32 Effect_Create(s32 a, void *b, void *c, s32 d);
-void Effect_SetPosition(s32 h, void *b, void *c);
+void Effect_SetPosition(s32 h, void *b, void *c, void *d);
 
 BOOL _ZN11CommManager8isOnlineEv(void *self);
 void _ZN24ConstellationMsgString17C1Ev(void *self);
@@ -360,7 +360,7 @@ BOOL SpNpcCeleste::mainAct02() {
     if (effectHandle == -1) {
         effectHandle = Effect_Create(0x3c, (u8 *)this + 0x478, &rotY, 0);
     } else {
-        Effect_SetPosition(effectHandle, (u8 *)this + 0x478, &rotY);
+        Effect_SetPosition(effectHandle, (u8 *)this + 0x478, &rotY, 0);
     }
     return TRUE;
 }

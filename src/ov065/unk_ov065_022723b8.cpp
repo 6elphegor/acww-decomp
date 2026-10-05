@@ -441,7 +441,7 @@ s32 ServerBrowserClear(u32);
 s32 ServerBrowserLimitUpdateA(u32, u32, u32, void *, u32, void *, u32);
 s32 ServerBrowserFree(u32);
 s32 NNFreeNegotiateList(void);
-void DwcNet_Free(u32, u32);
+void DwcNet_Free(u32, u32, u32);
 void DwcMatch_ClearUserKeys(void);
 void qr2_register_keyA(u32, char *);
 
@@ -1898,7 +1898,7 @@ void DwcMatch_Cleanup(void) {
         NNFreeNegotiateList();
         G->matchState = 0;
         if (sDwcMatchUserFilter != 0) {
-            DwcNet_Free(4, sDwcMatchUserFilter);
+            DwcNet_Free(4, sDwcMatchUserFilter, 0);
             sDwcMatchUserFilter = 0;
         }
         DwcMatch_ClearUserKeys();

@@ -151,7 +151,7 @@ extern void SND_SetPlayerChannelPriority();
 extern void SND_SetPlayerVolume(u32, s32);
 extern void SND_SetPlayerTempoRatio();
 extern void SND_StartPreparedSeq(u32);
-extern void SND_PrepareSeq();
+extern void SND_PrepareSeq(u32 player, u32 seqBase, u32 seqOffset, u32 bank);
 extern void SND_StopSeq(u32);
 extern void SND_Init(void);
 extern u32 SND_IsFinishedCommandTag(u32);
@@ -576,10 +576,10 @@ void NNSi_SndPlayerFreeSeqPlayer(Seq *s)
 }
 
 // NNSi_SndPlayerStartSeq (SND_StartSeq command)
-void NNSi_SndPlayerStartSeq(Seq *s)
+void NNSi_SndPlayerStartSeq(Seq *s, const void *seqBase, u32 seqOffset, const void *bank)
 {
     Player *p = s->player;
-    SND_PrepareSeq(s->id);
+    SND_PrepareSeq(s->id, (u32)seqBase, seqOffset, (u32)bank);
     if (p->bank != 0) {
         SND_SetTrackAllocatableChannel(s->id, 0xffff, p->bank);
     }

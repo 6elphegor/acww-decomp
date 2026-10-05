@@ -124,10 +124,10 @@ void _ZN11MsgString9BD1Ev(void *p);
 void _ZN8PlayerId13getNameStringEP9MsgString(void *a, void *b);
 BOOL _ZN21ForeignVillagerRecord5isSetEv(void *p);
 void _ZN21ForeignVillagerRecord5clearEv(void *p);
-s32 PlayerId_FindResidentIndex(...);
-BOOL _ZN8PlayerId7isValidEv(...);
-void *Clock_GetDate(...);
-void *_ZN10PlayerData11getPlayerIdEv(...);
+s32 PlayerId_FindResidentIndex(void *id);
+BOOL _ZN8PlayerId7isValidEv(void *self);
+void Clock_GetDate(void *out);
+void *_ZN10PlayerData11getPlayerIdEv(void *self);
 }
 
 
@@ -242,8 +242,7 @@ void PlayerData::setupNew(u32 p1, u32 p2, u32 p3, u32 s0, u8 s1, u8 s2, u8 s3, u
     DramaRecord_Clear(&dramaRecord);
     PlayerBank_Clear(&bank);
     EmotionSlots_Clear(&emotions);
-    getDayUpdateDate();
-    Clock_GetDate();
+    Clock_GetDate(getDayUpdateDate());
     MI_CpuFill8(&birthdayNoticeDays, 0xff, 8);
 }
 
@@ -438,11 +437,12 @@ s32 PlayerData::pickOtherResident()
 
 BOOL PlayerData::getOtherResidentName(void *q)
 {
-    getPlayerId();
+    void *id = getPlayerId();
     BOOL r = FALSE;
-    if (PlayerId_FindResidentIndex() != -1) {
-        if (pickOtherResident()) {
-            _ZN8PlayerId13getNameStringEP9MsgString(_ZN10PlayerData11getPlayerIdEv(), q);
+    if (PlayerId_FindResidentIndex(id) != -1) {
+        s32 o;
+        if ((o = pickOtherResident()) != 0) {
+            _ZN8PlayerId13getNameStringEP9MsgString(_ZN10PlayerData11getPlayerIdEv((void *)o), q);
             r = TRUE;
         }
     }
@@ -589,7 +589,7 @@ void *PlayerData::getForeignVillagerRecord()
 void PlayerData::sendForeignVillagerLetter()
 {
     void *r8 = getPlayerId();
-    if (_ZN8PlayerId7isValidEv()) {
+    if (_ZN8PlayerId7isValidEv(r8)) {
         if (_ZN21ForeignVillagerRecord5isSetEv(foreignVillagerRecord)) {
             u8 *r7 = foreignVillagerRecord + 0xa;
             s32 a;

@@ -42,7 +42,7 @@ extern u16 sInsectSpawnMaskLand[];
 extern u16 sInsectSpawnMaskDry[];
 void InsectSpawn_BuildMasks();
 BOOL InsectSpawn_FindUnitInBlock(u16 *buf, s32 kind, s32 *px, s32 *py, Unk_ov003_02225238_Grid *grid, s32 mode);
-u32 MapBlock_GetAttr();
+u32 MapBlock_GetAttr(void *block);
 s32 BlockMap_IsBuriedAtUnit(void *g, s32 x, s32 y);
 s32 Ground_IsGrassUnit(s32 x, s32 y);
 s32 Ground_IsPond(s32 x, s32 y);
@@ -181,7 +181,7 @@ BOOL InsectSpawn_FindUnitInBlock(u16 *buf, s32 kind, s32 *px, s32 *py, Unk_ov003
         if (cell == 0) {
             return FALSE;
         }
-        if ((MapBlock_GetAttr() & 0x100) != 0) f20 = 1;
+        if ((MapBlock_GetAttr(cell) & 0x100) != 0) f20 = 1;
     }
     s32 xo = (*px + 1) << 4;
     s32 yo = (*py + 1) << 4;

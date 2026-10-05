@@ -93,7 +93,7 @@ void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, 
 void Oam_DrawObj(s32 mode, void *info, s32 x, s32 y, s32 pal, s32 pri, s32 flag);
 void Oam_DrawObjRotated(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4);
 void MI_CpuCopy8(void *dst, void *src, s32 n);
-void *ProcBase_GetParent();
+void *ProcBase_GetParent(void *self);
 void ProcBase_RequestDelete(void *p);
 void MenuButtons_LoadTextColors(void *p);
 BOOL MenuKeys_HasRight(u32 pad);
@@ -255,7 +255,7 @@ BOOL MelodyMenu::onCreate() {
 }
 
 BOOL MelodyMenu::onDelete() {
-    ((MenuLauncher *)ProcBase_GetParent())->onChildClosed();
+    ((MenuLauncher *)ProcBase_GetParent(this))->onChildClosed();
     releaseResources();
     return TRUE;
 }
@@ -335,7 +335,7 @@ void MelodyMenu::stateOpening() {
 }
 
 void MelodyMenu::stateClose() {
-    ((MenuLauncher *)ProcBase_GetParent())->setNextRequest(0x44, 1);
+    ((MenuLauncher *)ProcBase_GetParent(this))->setNextRequest(0x44, 1);
     beginSubSlideOut(10, 0, 0, 0x18);
     updateLayerSlide();
     setTransitionState(3);

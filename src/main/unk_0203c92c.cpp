@@ -15,11 +15,11 @@ extern "C" void PlayerOptions_OnDestruct();
 extern "C" void PlayerOptions_OnConstruct();
 
 extern "C" {
-void PlayerData_GetCurrent();
+void *PlayerData_GetCurrent();
 }
 
 extern "C" {
-PlayerOptions *_ZN10PlayerData10getOptionsEv();
+PlayerOptions *_ZN10PlayerData10getOptionsEv(void *self);
 }
 
 extern "C" {
@@ -65,8 +65,7 @@ extern "C" void PlayerOptions_SetTalkVoice(u32 v) {
 extern "C" void PlayerOptions_Commit() {
     PlayerOptions *r5, *r4;
     u8 l;
-    PlayerData_GetCurrent();
-    r5 = _ZN10PlayerData10getOptionsEv();
+    r5 = _ZN10PlayerData10getOptionsEv(PlayerData_GetCurrent());
     r4 = PlayerOptions_Get();
     if (r4->isHiraganaChanged()) {
         if (PlayerOptions_IsHiragana() == 1) r5->setHiragana();

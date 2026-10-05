@@ -320,7 +320,7 @@ void TalkWindowState_setNamedSlot(TalkWindowState *self, s32 a, void *b, u32 c);
 BOOL MenuCtrl_IsResultOk();
 u32 MenuCtrl_GetIndex();
 s32 Pocket_FindItem(u16 *p);
-void Pocket_RemoveItem();
+void Pocket_RemoveItem(s32 slot);
 u32 TalkWindowState_getChoiceList(TalkWindowState *self);
 u32 ChoiceList_getResult(u32 a);
 
@@ -962,8 +962,9 @@ void SpNpcRoostGuestTalk::onKkChoiceTradeGuitar(s32 a) {
     u16 h1;
     if (a == 0) {
         h0 = 0x3530;
-        if (Pocket_FindItem(&h0) != -1) {
-            Pocket_RemoveItem();
+        s32 slot;
+        if ((slot = Pocket_FindItem(&h0)) != -1) {
+            Pocket_RemoveItem(slot);
             h1 = 0x4a34;
             Pocket_AddItem(&h1, 0);
         }
